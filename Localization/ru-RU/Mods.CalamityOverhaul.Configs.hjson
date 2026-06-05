@@ -169,4 +169,7 @@ CWRServerConfig: {
 		// Label: Signal Tower Decryption Auto Play
 		// Tooltip: ""
 	}
+
+	ConfigChangePrefix: Пользователь
+	ConfigChangeSuffix: Конфигурация сервера была изменена
 }

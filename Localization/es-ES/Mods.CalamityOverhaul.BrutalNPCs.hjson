@@ -1,0 +1,13 @@
+HeadPrimeAI: {
+	SkeletronPrime_Text: Don't try to kill me with this stupid thing! Die, organism!
+}
+
+TwinsAIController: {
+	Spazmatism_Text1: Despliegue exitoso de EUX_001, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
+	Spazmatism_Text2: Despliegue exitoso de EUX_002, comportamiento registrado: Colaborar con PCZ_001 para eliminar el objetivo
+	Spazmatism_Text3: Estructura principal de EUX_001 dañada, intentando retirarse del campo de batalla...
+	Spazmatism_Text4: Estructura principal de EUX_002 dañada, intentando retirarse del campo de batalla...
+	Spazmatism_Text5: Objetivo eliminado
+	Spazmatism_Text6: Retirándose...
+	Spazmatism_Text7: Misión fallida, intentando retirarse del campo de batalla...
+}

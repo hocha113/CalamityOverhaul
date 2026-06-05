@@ -2527,3 +2527,23 @@ ArchiveFrameModule: {
 		O dano por tiro aumenta ligeiramente com uma pequena sobretaxa de mana
 		'''
 }
+
+CWRItem: {
+	TemperatureText: Temperatura de Combustao
+	InternalStoredEnergy: Energia Interna Armazenada
+	DeathModeItemText: Item do Modo Morte
+	LegendItemUpgradeDisable:
+		'''
+		Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.
+		Para remover esta restricao, por favor, reentre no mundo.
+		'''
+	ItemLegendOnMouseLang: Pressione 'Shift' para ouvir a historia...
+}
+
+RMagicConch: {
+	DontUseMagicConch: Voce esta sendo observado por uma criatura poderosa...
+}
+
+InfiniteToiletItem: {
+	OnlyZenithCondition: Apenas no Mundo Zenith
+}

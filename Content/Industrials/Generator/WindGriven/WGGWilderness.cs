@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -60,8 +61,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
     }
 
-    internal class WGGWildernessTP : BaseWindGrivenTP
+    internal class WGGWildernessTP : BaseWindGrivenTP, ILocalizedModType
     {
+        public string LocalizationCategory => "Industrials";
+
+        public static LocalizedText WindGrivenDiscovery1 { get; private set; }
+
+        public override void SetStaticDefaults() {
+            WindGrivenDiscovery1 = this.GetLocalization(nameof(WindGrivenDiscovery1),
+                () => "你觉得这种随风而动的机械很有趣，寻思自己也得整几个...");
+        }
+
         public override int TargetTileID => ModContent.TileType<WGGWildernessTile>();
         public override float MaxUEValue => 200;
         public override bool CanDrop => false;
@@ -80,7 +90,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
                 Player player = VaultUtils.FindClosestPlayer(CenterInWorld, 1200);
                 if (player != null && (!player.CWR().UnderstandWindGriven || Main.rand.NextBool(3))) {
                     player.CWR().UnderstandWindGriven = true;
-                    int text = CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.WindGriven_Text1.Value, false);
+                    int text = CombatText.NewText(HitBox, new Color(111, 247, 200), WindGrivenDiscovery1.Value, false);
                     Main.combatText[text].lifeTime = 300;
                 }
             }

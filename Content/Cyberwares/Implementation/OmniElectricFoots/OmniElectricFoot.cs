@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             //在工具提示中嵌入实际绑定的快捷键，未绑定时给出可读的"未绑定"提示
             string keyHint = CWRKeySystem.CyberwareSkill_Key?.GetAssignedKeys() is { Count: > 0 } keys
                 ? $"[{keys[0]}]"
-                : CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
+                : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
             tooltips.Add(new TooltipLine(Mod, "CyberwareSkillHint",
                 Language.GetTextValue("Mods.CalamityOverhaul.Items.OmniElectricFoot.SkillHint", keyHint)));
         }

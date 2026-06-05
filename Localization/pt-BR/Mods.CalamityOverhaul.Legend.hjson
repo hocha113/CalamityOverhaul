@@ -1,20 +1,17 @@
-HalibutText: {
+HalibutOverride: {
 	FishByStudied:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		Este peixe pode ser pesquisado.
-		'''
-	FishOnStudied:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		Este peixe foi pesquisado.
-		'''
-	FishByPuzzle:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		Este peixe pode ser usado como uma peca de quebra-cabeca.
-		'''
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			Este peixe pode ser pesquisado.
+			'''
+		FishOnStudied:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			Este peixe foi pesquisado.
+			'''
+}
 
+HalibutText: {
 	SkillSlot: {
 		Hover1: Clique Esquerdo: Selecionar
 		Hover2: Clique Direito: Fixar
@@ -172,27 +169,16 @@ HalibutText: {
 	}
 }
 
-MuraText: {
-	Subtest_Text0: Devemos ir para o Submundo para desencadear os poderes da luz e da escuridao. Isso desencadeara uma tempestade de dobra, mas deve ser feito, recruta, para escrever um traco magnifico para nossa cruzada!
-	Subtest_Text1:
-		'''
-		Sinto falta da temperagem ardente das Falésias de Enxofre. Vamos encontrar sua guardia.
-		Posso sentir dois olhares sobre nos. Va cuidar deles.
-		'''
-	Subtest_Text2:
-		'''
-		Uma prisao dentro do baluarte de Gelo Verdadeiro. Um poderoso psiquico esta detido la. Liberte-o; ele sera uma grande aquisicao para reclamar Terra.
-		Uma batalha decisiva se aproxima. Aqueles montes de sucata planejam se unir em uma tentativa vã de nos parar.
-		Diga-lhes com lamina e sangue que a marcha da nossa cruzada esmagara toda heresia xeno e inteligencia abominavel.
-		'''
+MurasamaOverride: {
 	World_Text0: Mundo Anteriormente Atualizado: <{0}> | Nivel Registrado: <{1}>
-	Subtest_Text4: Na selva, a criacao desajeitada de alguem ainda vagueia. Como um fracasso, deveria ser apenas um monte de sucata.
-	Subtest_Text5: Uma casca de carne entrelacada, o espectro ressentido de um campo de batalha antigo, um golem de destruicao incessante. Ele destroi todas as coisas, e nos o destruiremos.
-	Subtest_Text6: Os deuses estelares de outrora caíram ha muito tempo. O que resta e meramente um verme. Vamos acabar com a era dos deuses estelares de uma vez por todas.
-	Subtest_Text7: Deixe aquela agregacao de almas na masmorra definhar sob minha lamina. Sua alma sera o mais fino alimento.
-	Subtest_Text8: Uma divindade patetica que persiste sugando energia termica solar. Seu fogo heretico deve ser completamente extinto.
-	Subtest_Text9: Aquela planta alienigena no fundo da selva. Va arrancar suas petalas, esmagar seus bulbos, e deixar sua seiva manchar esta terra.
-	Subtest_Text10: Aquela bruxa que se jogou no caos tem uma irmã clone deformada. Mate aquela xeno, e ofereca seu sangue e fogo a lamina.
+	Text0: Desbloqueado
+	Text1: Nao desbloqueado. Necessita Prova [Unhook]
+	Text_Lang_0: Provação:
+}
+
+LegendUpgradeManagerSystem: {
+	QuestManagerHint: Pressione [{KEY}] para abrir a lista de missoes
+	TrialPassed: Ja passou
 }
 
 TrialBlockedHint: A proxima provacao exige que o conteudo relevante esteja ativado antes de comecar.
@@ -218,6 +204,71 @@ HalibutTrialQuestLine: {
 	TrackerBrief: Alvo：{0}
 	BossRushTargetName: Batalha do Terminus
 	EventActiveFormat: "{0}: ativo"
+	TextDictionary_Content_0: Amigo, vamos desafiar aquela enorme e viscosa criatura terrestre.
+	TextDictionary_Content_1: Ha um grande olho nos encarando. Isso e muito rude; deveriamos dar uma licao nele.
+	TextDictionary_Content_2: A vida nao prospera apenas no Abismo, mas tambem na Selva. Deveriamos fazer uma visita a abelha rainha de la.
+	TextDictionary_Content_3:
+		'''
+		Um esqueleto amaldicoado que nunca se decompõe—precisamos coloca-lo para descansar.
+		Os pedidos de socorro do Inferno estao se tornando mais frequentes. Devemos partir em breve. Tenho certeza de que o Guia nao se importara.
+		'''
+	TextDictionary_Content_4:
+		'''
+		Voce sabe como objetos inanimados ganham vida? Uma vez construi uma enorme maquina submarina que podia lancar ogivas nucleares feitas de bolhas
+		e inumeros torpedos termonucleares. Usei-a para cacar criaturas gigantes que viviam a 10.000 metros abaixo do mar—ate que encontrei...
+		Oh, divago. Acho que em breve teremos quatro amigos mecanicos nos visitando, entao devemos estar preparados.
+		Ale disso, ha um verme marinho gigante mutante nas aguas poluídas acima do Abismo. Costumava ser um porteiro na Universidade do Mar Sulfuroso.
+		Ainda deve ser bem amigavel; podemos tomar cha da tarde com ele.
+		'''
+	TextDictionary_Content_5:
+		'''
+		A proxima amostra de pesquisa e a clone.
+		Uma replica grosseira, sim, mas esta saturada com aquela presenca de enxofre... material excelente para analise.
+		...Oh, certo. Mais uma coisa.
+		Eu gosto da selva. E praticamente minha segunda casa, repleta de energia vital
+		comparável ao abismo profundo. No entanto, precisamos encontrar uma maneira de libera-la primeiro.
+		Lembra daqueles bulbos gigantes subterraneos? Va 'colhe-los'. Isso vai... ajudar no meu diploma de botânica.
+		'''
+	TextDictionary_Content_6:
+		'''
+		Eu gosto de escavacoes arqueologicas. Da ultima vez que estava vagando pela Selva, vi uma ruína massiva.
+		Agora devemos ter a chave para abrir a porta daquela ruína. Vamos dar uma olhada.
+		Dentro, ha uma maquina antiga esperando para ser energizada, como um controle remoto de ar condicionado.
+		Alem disso, ha uma peste alienigena se espalhando na superficie, infectando a terra e a maioria dos objetos inorganicos.
+		Toda noite, uma maquina de mineracao atormentada vagueia, infectada ha muito tempo. Vamos acabar com seu sofrimento.
+		'''
+	TextDictionary_Content_7:
+		'''
+		Voce sabe o segredo no lado mais distante da Lua? Ha um polvo gigante, uma esponja e uma estrela do mar...
+		Oh, quero dizer, a crise lunar esta chegando.
+		'''
+	TextDictionary_Content_8:
+		'''
+		Agora e a hora da crise solar. Um ser energetico poderoso escapou do lado mais distante do Sol e enterrou-se no nucleo do planeta.
+		Precisamos ir la embaixo e dar um banho frio nele.
+		'''
+	TextDictionary_Content_9:
+		'''
+		Inumeras almas indomaveis de campos de batalha antigos se reuniram agora, escondidas nas profundezas da masmorra, e estao ficando inquietas.
+		Podemos ir la e matar alguns dos espiritos errantes. Isso pode trazer uma pequena tempestade no Subespaco, mas tambem os atraira para fora.
+		'''
+	TextDictionary_Content_10:
+		'''
+		Ha uma especie que nasce e cresce no espaco, capaz de suportar radiacao cosmica intensa e energia de nivel celestial.
+		Nos encontramos com um ha muito tempo, mas agora enfrentamos o campeao entre eles—um ser que afirma ter devorado deuses.
+		'''
+	TextDictionary_Content_11: A temperatura da Selva aumentou ultimamente; acho que aquele dragao poderoso voltou.
+	TextDictionary_Content_12:
+		'''
+		Estamos prestes a enfrentar o apice das criacoes inorganicas, com poder de fogo e defesa incomparaveis.
+		Ale disso, o Altar de Fogo Sulfurico parece capaz de invocar algo.
+		'''
+	TextDictionary_Content_13:
+		'''
+		No Abismo jaz uma pedra especial—use-a para enfrentar a batalha final.
+		Ha tambem uma poderosa criatura marinha que destruiu minha maquina; vamos nos vingar.
+		'''
+	TextDictionary_Content_14: Honestamente, eu sinto vontade de voltar para o mar.
 }
 
 MurasamaTrialQuestLine: {

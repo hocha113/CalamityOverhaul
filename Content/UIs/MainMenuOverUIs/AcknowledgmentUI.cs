@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,17 +11,27 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class AcknowledgmentUI : UIHandle, ICWRLoader, IUpdateAudio
+    internal class AcknowledgmentUI : UIHandle, ICWRLoader, IUpdateAudio, ILocalizedModType
     {
-        internal static string ArtistText => $" [{CWRLocText.GetTextValue("IconUI_Text3")}]";
-        internal static string CodeAssistanceText => $" [{CWRLocText.GetTextValue("IconUI_Text4")}]";
-        internal static string MusicianText => $" [{CWRLocText.GetTextValue("IconUI_Text9")}]";
-        internal static string DonorText => $" [{CWRLocText.GetTextValue("IconUI_Text5")}]";
-        internal static string BalanceTesterText => $" [{CWRLocText.GetTextValue("IconUI_Text6")}]";
+        public string LocalizationCategory => "UI";
+
+        public static LocalizedText ArtistRole { get; private set; }
+        public static LocalizedText CodeAssistanceRole { get; private set; }
+        public static LocalizedText MusicianRole { get; private set; }
+        public static LocalizedText DonorRole { get; private set; }
+        public static LocalizedText BalanceTesterRole { get; private set; }
+
+        internal static string ArtistText => $" [{ArtistRole.Value}]";
+        internal static string CodeAssistanceText => $" [{CodeAssistanceRole.Value}]";
+        internal static string MusicianText => $" [{MusicianRole.Value}]";
+        internal static string DonorText => $" [{DonorRole.Value}]";
+        internal static string BalanceTesterText => $" [{BalanceTesterRole.Value}]";
+
         internal static string[] names = [];
         private int musicFade50;
         private float _sengs;
@@ -271,6 +280,11 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override bool CanLoad() => true;
         void ICWRLoader.SetupData() => LoadName();
         public override void SetStaticDefaults() {
+            ArtistRole = this.GetLocalization(nameof(ArtistRole), () => "画师");
+            CodeAssistanceRole = this.GetLocalization(nameof(CodeAssistanceRole), () => "代码援助");
+            MusicianRole = this.GetLocalization(nameof(MusicianRole), () => "音乐制作");
+            DonorRole = this.GetLocalization(nameof(DonorRole), () => "捐赠者");
+            BalanceTesterRole = this.GetLocalization(nameof(BalanceTesterRole), () => "平衡测试");
             Instance = UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
             _sengs = 0;
         }

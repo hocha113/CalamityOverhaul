@@ -1,9 +1,13 @@
-﻿using Terraria.ModLoader;
+﻿using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Common
 {
-    internal class CWRKeySystem : ICWRLoader
+    internal class CWRKeySystem : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "Keybinds";
+
+        public static LocalizedText Notbound { get; private set; }
         public static ModKeybind QuestLog_Key { get; private set; }
         public static ModKeybind QuestManager_Key { get; private set; }
         public static ModKeybind Legend_UIControl { get; private set; }
@@ -26,7 +30,11 @@ namespace CalamityOverhaul.Common
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
 
-        void ICWRLoader.LoadData() {
+        public override void SetStaticDefaults() {
+            Notbound = this.GetLocalization(nameof(Notbound), () => "[未绑定按键]");
+        }
+
+        public override void Load() {
             Mod mod = CWRMod.Instance;
             QuestLog_Key = KeybindLoader.RegisterKeybind(mod, nameof(QuestLog_Key), "L");
             QuestManager_Key = KeybindLoader.RegisterKeybind(mod, nameof(QuestManager_Key), "K");
@@ -51,7 +59,7 @@ namespace CalamityOverhaul.Common
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
         }
 
-        void ICWRLoader.UnLoadData() {
+        public override void Unload() {
             QuestLog_Key = null;
             QuestManager_Key = null;
             Murasama_TriggerKey = null;

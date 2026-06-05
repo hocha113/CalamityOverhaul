@@ -816,3 +816,48 @@ AbandonedPortalStrings: {
 	// DiagnosticRepairing: INFO: Nano-weld array synchronizing... Do not move the portal base
 	// DiagnosticRepaired: OK: All Subsystems Online / Coordinate Parsing Ready
 }
+
+SupertableUI: {
+	RecipeViewLabel: Voir la recette
+	RecipeEmptyLabel: Aucun
+	PlacementMonitorOff: Désactiver la surveillance de placement
+	PlacementMonitorOn: Activer la surveillance de placement
+	QuickPlaceMaterials: Déposer rapidement des matériaux
+	QuickTakeMaterials: Ramasser rapidement des matériaux
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: Left Click On The Marked Arrow
+	UnmarkArrowHint: Right Click Untag
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: Aller à la bibliothèque open-source du mod :)
+	WikiLabel: Mod Wiki
+	FeedbackLabel: Signaler un problème
+	LogLabel: Voir le journal
+	AcknowledgmentLabel: Liste des remerciements
+}
+
+AcknowledgmentUI: {
+	ArtistRole: Artistes
+	CodeAssistanceRole: Assistance technique
+	MusicianRole: Musician
+	DonorRole: Donateurs
+	BalanceTesterRole: Tests d'équilibrage
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		hook failed, in order to normal the game, please close the game and re-enter, 
+		if this still does not return to normal, please bring the exported log to find the module developer
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		Détecté que vous avez installé [Better Experience], mais votre version de [Better Experience] est trop ancienne
+		Pour assurer le bon fonctionnement du jeu, assurez-vous que la version de [Better Experience] est supérieure ou égale à 1.7.1.7
+		'''
+	HellfireExplosionDeathReason: "{0} Réduit en cendres dans les flammes de l'enfer"
+	SoulfireExplosionDeathReason: "{0} The Soul Rises In Fire"
+}

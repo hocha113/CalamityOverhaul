@@ -276,15 +276,15 @@ namespace CalamityOverhaul.Content.LegendWeapon
             }
             if (!cwrItem.LegendData.UpgradeTagNameIsEmpty && !cwrItem.LegendData.IsUpgradeWorld) {
                 string worldName = cwrItem.LegendData.UpgradeWorldName;
-                string key = MuraText.GetTextKey("World_Text0");
-                text = VaultUtils.FormatColorTextMultiLine($"{Language.GetTextValue(key, worldName, cwrItem.LegendData.Level)}", Color.Gold);
+                text = VaultUtils.FormatColorTextMultiLine(
+                    MurasamaLegend.MurasamaOverride.World_Text0.Format(worldName, cwrItem.LegendData.Level), Color.Gold);
             }
             return text;
         }
 
-        public static string GetLevelTrialPreText(CWRItem cwrItem, string key, string level) {
+        public static string GetLevelTrialPreText(CWRItem cwrItem, LocalizedText trialLabel, string level) {
             string worldLine = GetWorldUpLines(cwrItem);
-            string trialPreText = $"[c/00736d:{CWRLocText.GetTextValue(key) + " "}{level}]";
+            string trialPreText = $"[c/00736d:{trialLabel.Value + " "}{level}]";
             if (worldLine == "") {
                 return trialPreText;
             }

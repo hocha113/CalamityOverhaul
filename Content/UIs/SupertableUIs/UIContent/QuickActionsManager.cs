@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 
             if (_isHovered) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
-                    CWRLocText.GetTextValue("SupMUI_OneClick_Text1"),
+                    SupertableUI.QuickPlaceMaterials.Value,
                     _hitbox.X - 30, _hitbox.Y + 30,
                     Color.White * alpha, Color.Black * alpha, new Vector2(0.3f), 0.8f);
             }
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 
             if (_isHovered) {
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value,
-                    CWRLocText.GetTextValue("SupMUI_OneClick_Text2"),
+                    SupertableUI.QuickTakeMaterials.Value,
                     _hitbox.X - 30, _hitbox.Y + 30,
                     Color.White * alpha, Color.Black * alpha, new Vector2(0.3f), 0.8f);
             }
@@ -209,8 +209,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 
             if (_isHovered) {
                 string text = _highlightEnabled
-                    ? CWRLocText.GetTextValue("SupertableUI_Text4")
-                    : CWRLocText.GetTextValue("SupertableUI_Text5");
+                    ? SupertableUI.PlacementMonitorOff.Value
+                    : SupertableUI.PlacementMonitorOn.Value;
 
                 Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text,
                     _hitbox.X - 30, _hitbox.Y + 30,

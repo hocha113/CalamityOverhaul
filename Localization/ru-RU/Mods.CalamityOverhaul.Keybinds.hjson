@@ -19,3 +19,7 @@ Murasama_DownKey.DisplayName: Мурамаса: Удар в падении
 WeponSkill_Q.DisplayName: Оружие: Левая кнопка навыка
 WeponSkill_R.DisplayName: Оружие: Правая кнопка навыка
 Accessory_Skills.DisplayName: Навык аксессуара
+
+CWRKeySystem: {
+	Notbound: "[Не назначено]"
+}

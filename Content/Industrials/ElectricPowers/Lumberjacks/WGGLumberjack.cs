@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -324,7 +325,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 Projectile.damage = 0;
                 isCharging = false;
                 if (!BatteryPrompt) {
-                    CombatText.NewText(lumberjackTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
+                    CombatText.NewText(lumberjackTP.HitBox, new Color(111, 247, 200), WGGLifeWeaver.TurretBatteryDepleted.Value, false);
                     BatteryPrompt = true;
                 }
                 DoIdleMotion();

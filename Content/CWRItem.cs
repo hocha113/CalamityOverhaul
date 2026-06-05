@@ -14,14 +14,35 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace CalamityOverhaul.Content
 {
-    public class CWRItem : GlobalItem
+    public class CWRItem : GlobalItem, ILocalizedModType
     {
+        public string LocalizationCategory => "Items.CWRItem";
+
+        public static LocalizedText TemperatureText { get; private set; }
+        public static LocalizedText InternalStoredEnergy { get; private set; }
+        public static LocalizedText DeathModeItemText { get; private set; }
+        public static LocalizedText LegendItemUpgradeDisable { get; private set; }
+        public static LocalizedText ItemLegendOnMouseLang { get; private set; }
+
+        public override void SetStaticDefaults() {
+            TemperatureText = this.GetLocalization(nameof(TemperatureText), () => "燃烧温度");
+            InternalStoredEnergy = this.GetLocalization(nameof(InternalStoredEnergy), () => "能量存储");
+            DeathModeItemText = this.GetLocalization(nameof(DeathModeItemText), () => "死亡模式");
+            LegendItemUpgradeDisable = this.GetLocalization(nameof(LegendItemUpgradeDisable), () =>
+                """
+                这把传奇武器在当前世界中已被设定为无法升级
+                若需要解除禁用状态，请重新进入世界
+                """);
+            ItemLegendOnMouseLang = this.GetLocalization(nameof(ItemLegendOnMouseLang), () => "按下'Shift'聆听故事...");
+        }
+
         #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
@@ -400,20 +421,20 @@ namespace CalamityOverhaul.Content
             }
 
             if (Main.LocalPlayer.CWR().ThermalGenerationActiveTime > 0 && FuelItems.FuelItemToCombustion.TryGetValue(item.type, out int value)) {
-                var line = new TooltipLine(CWRMod.Instance, "FuelItem", $"{CWRLocText.Instance.TemperatureText}: {value * 4}°C");
+                var line = new TooltipLine(CWRMod.Instance, "FuelItem", $"{TemperatureText.Value}: {value * 4}°C");
                 line.OverrideColor = Color.Orange;
                 tooltips.Add(line);
             }
 
             if (item.CWR().StorageUE) {
-                var line = new TooltipLine(CWRMod.Instance, "UEValue", $"{CWRLocText.Instance.InternalStoredEnergy.Value}: {(int)item.CWR().UEValue}UE");
+                var line = new TooltipLine(CWRMod.Instance, "UEValue", $"{InternalStoredEnergy.Value}: {(int)item.CWR().UEValue}UE");
                 line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 300 / 300f
                     , Color.Yellow, Color.White, Color.Yellow);
                 tooltips.Add(line);
             }
 
             if (item.CWR().DeathModeItem) {
-                var line = new TooltipLine(CWRMod.Instance, "DeathModeItem", $"--{CWRLocText.Instance.DeathModeItem.Value}--");
+                var line = new TooltipLine(CWRMod.Instance, "DeathModeItem", $"--{DeathModeItemText.Value}--");
                 line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f
                     , Color.Gold, Color.Red, Color.DarkRed, Color.Red, Color.Gold);
                 tooltips.Add(line);
@@ -422,7 +443,7 @@ namespace CalamityOverhaul.Content
             HalibutUIPanel.FishSkillTooltip(item, tooltips);
 
             if (item.CWR().LegendData != null && item.CWR().LegendData.DontUpgradeName == SaveWorld.WorldFullName) {
-                var line = new TooltipLine(CWRMod.Instance, "LegendItemUpgradeDisable", CWRLocText.Instance.LegendItemUpgradeDisable.Value);
+                var line = new TooltipLine(CWRMod.Instance, "LegendItemUpgradeDisable", LegendItemUpgradeDisable.Value);
                 line.OverrideColor = VaultUtils.MultiStepColorLerp(Main.LocalPlayer.miscCounter % 100 / 100f
                     , Color.Yellow, Color.Goldenrod, Color.Gold, Color.Goldenrod, Color.Yellow);
                 tooltips.Add(line);

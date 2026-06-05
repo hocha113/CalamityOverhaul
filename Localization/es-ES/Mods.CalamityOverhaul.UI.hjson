@@ -816,3 +816,48 @@ AbandonedPortalStrings: {
 	// DiagnosticRepairing: INFO: Nano-weld array synchronizing... Do not move the portal base
 	// DiagnosticRepaired: OK: All Subsystems Online / Coordinate Parsing Ready
 }
+
+SupertableUI: {
+	RecipeViewLabel: Ver recetas
+	RecipeEmptyLabel: Ninguno
+	PlacementMonitorOff: Cerrar la supervisión de colocación
+	PlacementMonitorOn: Abrir la supervisión de colocación
+	QuickPlaceMaterials: Colocar materiales rápidamente
+	QuickTakeMaterials: Recoger materiales rápidamente
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: Left Click On The Marked Arrow
+	UnmarkArrowHint: Right Click Untag
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: Ir al repositorio de código abierto del mod :)
+	WikiLabel: Mod Wiki
+	FeedbackLabel: Retroalimentación de problemas
+	LogLabel: Ver registro
+	AcknowledgmentLabel: Lista de agradecimientos
+}
+
+AcknowledgmentUI: {
+	ArtistRole: Artistas
+	CodeAssistanceRole: Ayuda con el código
+	MusicianRole: Musician
+	DonorRole: Donantes
+	BalanceTesterRole: Pruebas de equilibrio
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		Un gancho ha fallado. Para el funcionamiento normal del juego, por favor cierra el juego y vuelve a entrar.
+		Si eso no resuelve el problema, lleva el registro exportado a un desarrollador del mod.
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		Se ha detectado que ha instalado [Mejor Experiencia], pero su versión de [Mejor Experiencia] está desactualizada.
+		Para garantizar el funcionamiento normal del juego, asegúrese de que la versión de [Mejor Experiencia] no sea inferior a 1.7.1.7
+		'''
+	HellfireExplosionDeathReason: "{0} "{0} Se convierte en cenizas en el fuego del infierno""
+	SoulfireExplosionDeathReason: "{0} The Soul Rises In Fire"
+}

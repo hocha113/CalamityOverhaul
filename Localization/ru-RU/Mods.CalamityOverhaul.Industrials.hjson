@@ -1,0 +1,15 @@
+ElectricMinRocket: {
+	EnergyShortage: Energy Shortage
+}
+
+WGGLifeWeaver: {
+	TurretBatteryDepleted: Battery Runs Out
+}
+
+WGGWildernessTP: {
+	WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+}
+
+WGGMK2WildernessTP: {
+	WindGrivenDiscovery2: Вас поразила эта гигантская машина, и вы чувствуете, что тоже должны попробовать создать такую...
+}

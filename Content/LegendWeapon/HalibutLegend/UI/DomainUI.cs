@@ -1046,11 +1046,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 var lt = EyeLayerDescriptions[layer];
                 if (lt != null) {
                     string value = lt.Value;
-                    value = value.Replace("[Halibut_Domain]", CWRKeySystem.Legend_Domain.ToTooltipString(CWRLocText.Instance.Notbound.Value));
-                    value = value.Replace("[Halibut_Restart]", CWRKeySystem.Legend_Restart.ToTooltipString(CWRLocText.Instance.Notbound.Value));
-                    value = value.Replace("[Halibut_Clone]", CWRKeySystem.Halibut_Clone.ToTooltipString(CWRLocText.Instance.Notbound.Value));
-                    value = value.Replace("[Halibut_Superposition]", CWRKeySystem.Halibut_Superposition.ToTooltipString(CWRLocText.Instance.Notbound.Value));
-                    value = value.Replace("[Halibut_Teleport]", CWRKeySystem.Legend_Teleport.ToTooltipString(CWRLocText.Instance.Notbound.Value));
+                    value = value.Replace("[Halibut_Domain]", CWRKeySystem.Legend_Domain.ToTooltipString(CWRKeySystem.Notbound.Value));
+                    value = value.Replace("[Halibut_Restart]", CWRKeySystem.Legend_Restart.ToTooltipString(CWRKeySystem.Notbound.Value));
+                    value = value.Replace("[Halibut_Clone]", CWRKeySystem.Halibut_Clone.ToTooltipString(CWRKeySystem.Notbound.Value));
+                    value = value.Replace("[Halibut_Superposition]", CWRKeySystem.Halibut_Superposition.ToTooltipString(CWRKeySystem.Notbound.Value));
+                    value = value.Replace("[Halibut_Teleport]", CWRKeySystem.Legend_Teleport.ToTooltipString(CWRKeySystem.Notbound.Value));
                     value = value.Replace("[Line]", "______________");
                     return value;
                 }

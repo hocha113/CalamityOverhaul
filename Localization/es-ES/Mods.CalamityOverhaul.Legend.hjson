@@ -9,12 +9,6 @@ HalibutText: {
 		[i:CalamityMod/HalibutCannon]:
 		This fish has been researched.
 		''' */
-	/* FishByPuzzle:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish can be used as a puzzle piece.
-		''' */
-
 	SkillSlot: {
 		// Hover1: Left Click: Select
 		// Hover2: Right Click: Pin
@@ -172,35 +166,19 @@ HalibutText: {
 	}
 }
 
-MuraText: {
-	Subtest_Text0:
-		'''
-		Debemos ir al infierno para liberar el poder de la luz y la oscuridad. 
-		Esto desatará una tormenta de subespacio, pero no tenemos otra opción. 
-		¡Recluta, escribe un capítulo grandioso para el viaje!
-		'''
-	Subtest_Text1:
-		'''
-		Echo de menos el temple ardiente de los Riscos de Azufre. Ve a enfrentarte a su guardián.
-		Puedo sentir dos miradas observándonos. Ve y ocúpate de ellas.
-		'''
-	Subtest_Text2:
-		'''
-		Una prisión dentro del verdadero baluarte de hielo. Allí encierran a un poderoso psíquico. Libéralo; será de gran ayuda para recuperar Terra.
-		Se acerca una batalla decisiva. Esos montones de chatarra planean unirse para detenernos.
-		Díselo con espada y sangre: el avance de nuestra cruzada aplastará toda herejía xeno y abominable inteligencia.
-		'''
-	// World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
-	// Subtest_Text4: In the jungle, someone's former clumsy creation still wanders. As a failure, it should rightfully be just a pile of scrap metal.
-	// Subtest_Text5: A shell of interwoven flesh, the resentful wraith of an ancient battlefield, a ceaselessly destructive golem. It destroys all things, and we shall destroy it.
-	// Subtest_Text6: The star gods of old have long fallen. What remains is but a mere maggot. Let us put an end to the era of the star gods once and for all.
-	// Subtest_Text7: Let that aggregation of souls in the dungeon wither beneath my blade. Its soul will be the finest nourishment.
-	// Subtest_Text8: A pathetic deity lingering by siphoning solar thermal energy. Its heretical fire must be completely extinguished.
-	// Subtest_Text9: That alien plant deep in the jungle. Go tear its petals, crush its bulbs, and let its sap stain this land.
-	// Subtest_Text10: That witch who threw herself into chaos has a deformed clone sister. Kill that xeno, and offer its blood and fire to the blade.
+MurasamaOverride: {
+	World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
+	Text0: Desbloqueado
+	Text1: No desbloqueado. Necesita Prueba [Unhook]
+	Text_Lang_0: Prueba:
 }
 
-// TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
+LegendUpgradeManagerSystem: {
+	QuestManagerHint: Press [{KEY}] to open the quest list
+	TrialPassed: Completada
+}
+
+TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
 
 HalibutTrialQuestLine: {
 	// QuestCategory: Halibut Legend
@@ -223,6 +201,68 @@ HalibutTrialQuestLine: {
 	// TrackerBrief: Target：{0}
 	// BossRushTargetName: Boss Rush
 	// EventActiveFormat: "{0}: active"
+	TextDictionary_Content_0: Amigo, vamos a desafiar a esa enorme criatura terrestre pegajosa
+	TextDictionary_Content_1: Hay un gran ojo mirándonos, eso es muy grosero, necesitamos enseñarle una lección
+	TextDictionary_Content_2: En los lugares llenos de vida no solo hay abismos, también hay junglas, amigo, necesitamos visitar a la reina de las abejas
+	TextDictionary_Content_3:
+		'''
+		Los huesos malditos que no se disuelven, necesitamos dejarlos descansar en paz
+		Los gritos de auxilio desde el infierno son cada vez más frecuentes, necesitamos partir pronto, creo que a nuestro hermano guía no le importará
+		'''
+	TextDictionary_Content_4:
+		'''
+		¿Sabes cómo se mueven los inorgánicos? Una vez construí una enorme máquina submarina que podía disparar misiles de burbujas,
+		y un número interminable de torpedos de fusión térmica, la usé para cazar enormes criaturas que viven a 10,000 metros bajo el mar, hasta que encontré...
+		Oh, me estoy desviando: creo que en un momento llegarán cuatro amigos mecánicos a visitarnos, necesitamos prepararnos
+		Además, en las aguas contaminadas sobre el abismo, hay un gusano marino gigante mutado que solía ser el guardián de la Universidad del Mar de Azufre
+		Debería seguir siendo bastante amigable, podemos ir a tomar té por la tarde con él
+		'''
+	TextDictionary_Content_5:
+		'''
+		Me encanta la jungla, es como mi segundo hogar, rebosante de energía vital,
+		no es menos que el fondo del abismo, pero primero necesitamos encontrar una manera de liberarlos,
+		¿Recuerdas esos enormes capullos subterráneos? Ve y cógelos, esto me ayudará a obtener mi título en botánica
+		'''
+	TextDictionary_Content_6:
+		'''
+		Me gusta la arqueología, la última vez que estuve vagando por la jungla vi una gran ruina
+		Ahora deberíamos tener la llave para abrir la puerta de esa ruina, vamos a echar un vistazo,
+		dentro hay una enorme máquina antigua que espera que le pongamos una batería, como un control remoto de aire acondicionado
+		Aparte de eso, en la superficie hay una plaga extraterrestre que puede infectar la tierra y la mayoría de los inorgánicos,
+		cada noche hay una máquina minera agonizante merodeando, ha estado infectada por mucho tiempo, démosle un descanso
+		'''
+	TextDictionary_Content_7:
+		'''
+		¿Sabes el secreto de la cara oculta de la luna? Allí hay un gran pulpo, una esponja y una estrella de mar...
+		Oh, quise decir que la crisis lunar se avecina
+		'''
+	TextDictionary_Content_8:
+		'''
+		Ahora es la crisis solar, un poderoso ente energético ha escapado del lado oscuro del sol hacia el núcleo de este planeta,
+		necesitamos seguir bajando, encontrarlo y darle un baño frío
+		'''
+	TextDictionary_Content_9:
+		'''
+		Las innumerables almas indomables de antiguas batallas se han reunido ahora, se esconden en las profundidades de la mazmorras y están muy inquietas.
+		Podemos ir a matar algunas almas solitarias, esto podría hacer que la pequeña tormenta en el espacio llegue antes, pero también puede atraerlas
+		'''
+	TextDictionary_Content_10:
+		'''
+		Hay una clase de seres que nacen y crecen en el espacio, sus cuerpos pueden soportar radiaciones cósmicas y energías de nivel celeste
+		Hace mucho tiempo nos encontramos con uno, y ahora, debemos enfrentar al más destacado entre ellos, uno que dice haber devorado a dioses
+		'''
+	TextDictionary_Content_11: La temperatura de la jungla ha aumentado últimamente, creo que ese poderoso dragón ha vuelto
+	TextDictionary_Content_12:
+		'''
+		Nos enfrentaremos a la cúspide de los seres inorgánicos, tienen un gran poder de fuego y defensa.
+		Además, parece que el altar de fuego de azufre puede convocar algo
+		'''
+	TextDictionary_Content_13:
+		'''
+		Hay una piedra especial en el abismo, úsala para enfrentar la batalla final
+		Y hay un poderoso ser marino que destruyó mi máquina, vamos a buscarlo para vengarnos
+		'''
+	TextDictionary_Content_14: Honestamente, quiero regresar al mar
 }
 
 MurasamaTrialQuestLine: {

@@ -816,3 +816,48 @@ AbandonedPortalStrings: {
 	DiagnosticRepairing: INFO: 纳米焊缝阵列同步中…请勿移动门基座
 	DiagnosticRepaired: OK: 全部子系统在线 / 坐标解析就绪
 }
+
+SupertableUI: {
+	RecipeViewLabel: 查看配方
+	RecipeEmptyLabel: 无
+	PlacementMonitorOff: 关闭摆放监视
+	PlacementMonitorOn: 开启摆放监视
+	QuickPlaceMaterials: 快捷放置材料
+	QuickTakeMaterials: 快捷拿取材料
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: 左键点击标记箭矢
+	UnmarkArrowHint: 右键点击取消标记
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: 前往模组的开源库 :)
+	WikiLabel: 模组维基
+	FeedbackLabel: 问题反馈
+	LogLabel: 查看日志
+	AcknowledgmentLabel: 致谢名单
+}
+
+AcknowledgmentUI: {
+	ArtistRole: 画师
+	CodeAssistanceRole: 代码援助
+	MusicianRole: 音乐制作
+	DonorRole: 捐赠者
+	BalanceTesterRole: 平衡测试
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		个钩子失效了，为了游戏正常，请关闭游戏并重新进入，
+		如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		检测到您安装了[更好的体验]，但您的[更好的体验]版本过旧
+		为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
+		'''
+	HellfireExplosionDeathReason: "{0}在地狱的烈火中化为灰烬"
+	SoulfireExplosionDeathReason: "{0}的灵魂在火焰中升华"
+}

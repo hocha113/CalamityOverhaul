@@ -819,3 +819,50 @@ AbandonedPortalStrings: {
 	DiagnosticRepairing: INFO: Nano-weld array synchronizing... Do not move the portal base
 	DiagnosticRepaired: OK: All Subsystems Online / Coordinate Parsing Ready
 }
+
+SupertableUI: {
+	RecipeViewLabel: View recipe
+	RecipeEmptyLabel: nothing
+	PlacementMonitorOff: Close display monitor
+	PlacementMonitorOn: Open display monitor
+	QuickPlaceMaterials: Quick placement material
+	QuickTakeMaterials: Quick access to material
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: Left Click On The Marked Arrow
+	UnmarkArrowHint: Right Click Untag
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: Go to the mod's open source repository :)
+	WikiLabel: Mod Wiki
+	FeedbackLabel: Issue Feedback
+	LogLabel: View log
+	AcknowledgmentLabel: Acknowledgments
+}
+
+AcknowledgmentUI: {
+	ArtistRole: Artist
+	CodeAssistanceRole: Code Assistance
+	MusicianRole: Musician
+	DonorRole: Donor
+	BalanceTesterRole: Balance Tester
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		hook failed, in order to normal the game, please close the game and re-enter, 
+		if this still does not return to normal, please bring the exported log to find the module developer
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		It has been detected that you have installed [Quality of Terraria Mod], 
+		but your [Quality of Terraria Mod] version is outdated.
+		To ensure the game runs properly, please make sure your 
+		[Quality of Terraria Mod] version is at least 1.7.1.7.
+		'''
+	HellfireExplosionDeathReason: "{0} To Burn In The Flames Of Hell"
+	SoulfireExplosionDeathReason: "{0} The Soul Rises In Fire"
+}

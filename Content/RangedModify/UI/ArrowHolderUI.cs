@@ -1,15 +1,26 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.RangedModify.UI
 {
-    internal class ArrowHolderUI : UIHandle
+    internal class ArrowHolderUI : UIHandle, ILocalizedModType
     {
+        public string LocalizationCategory => "UI";
+
+        public static LocalizedText MarkArrowHint { get; private set; }
+        public static LocalizedText UnmarkArrowHint { get; private set; }
+
+        public override void SetStaticDefaults() {
+            MarkArrowHint = this.GetLocalization(nameof(MarkArrowHint), () => "左键点击标记箭矢");
+            UnmarkArrowHint = this.GetLocalization(nameof(UnmarkArrowHint), () => "右键点击取消标记");
+        }
+
         public override Texture2D Texture => TextureAssets.Item[ChooseAmmo.type].Value;
         public override bool Active => GlobalBow.IsBow || GlobalBow.IsArrow;
         private static Item HeldWeapon;
@@ -130,7 +141,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                 if (hoverInMainPage) {
                     Texture2D aim = CWRAsset.AimTarget.Value;
                     spriteBatch.Draw(aim, MousePosition, null, Color.White, 0, aim.Size() / 2, 0.1f, SpriteEffects.None, 0);
-                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ArrowHolderUI_Text0.Value
+                    Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, MarkArrowHint.Value
                     , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                 }
             }
@@ -159,7 +170,7 @@ namespace CalamityOverhaul.Content.RangedModify.UI
                     , MousePosition.X, MousePosition.Y + 30, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
 
                     if (targetLockAmmo != null && targetLockAmmo.type > ItemID.None) {
-                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, CWRLocText.Instance.ArrowHolderUI_Text1.Value
+                        Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, UnmarkArrowHint.Value
                         , MousePosition.X + 0, MousePosition.Y + 50, Color.Goldenrod, Color.Black, Vector2.Zero, 1f);
                     }
                 }

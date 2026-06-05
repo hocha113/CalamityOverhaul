@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon
@@ -236,8 +237,18 @@ namespace CalamityOverhaul.Content.LegendWeapon
     /// <summary>
     /// 负责在世界生命周期事件中清理<see cref="LegendUpgradeManager"/>的全局静态状态
     /// </summary>
-    internal class LegendUpgradeManagerSystem : ModSystem
+    internal class LegendUpgradeManagerSystem : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend";
+
+        public static LocalizedText QuestManagerHint { get; private set; }
+        public static LocalizedText TrialPassed { get; private set; }
+
+        public override void SetStaticDefaults() {
+            QuestManagerHint = this.GetLocalization(nameof(QuestManagerHint), () => "按下[{KEY}]打开任务列表");
+            TrialPassed = this.GetLocalization(nameof(TrialPassed), () => "已通过");
+        }
+
         public override void OnWorldUnload() => LegendUpgradeManager.CancelAll();
 
         public override void OnWorldLoad() => LegendUpgradeManager.CancelAll();

@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+﻿using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.GameSystem;
 using Terraria;
 using Terraria.Audio;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
                 Volume = 0.6f,
                 Pitch = -0.5f
             }, player.Center);
-            PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(player.name));
+            PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(BloodAltarTP.SacrificeDeathReason.ToNetworkText(player.name));
             player.Hurt(pd, 250, 0);
         }
         public static bool? Click() {

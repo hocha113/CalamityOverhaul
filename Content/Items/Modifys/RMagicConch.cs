@@ -1,15 +1,24 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Modifys
 {
-    internal class RMagicConch : ItemOverride
+    internal class RMagicConch : ItemOverride, ILocalizedModType
     {
-        public override bool CanLoadLocalization => false;
+        public string LocalizationCategory => "Items.RMagicConch";
+
+        public static LocalizedText DontUseMagicConch { get; private set; }
+
         public override int TargetID => ItemID.MagicConch;
         public override bool DrawingInfo => false;
+
+        public override void SetStaticDefaults() {
+            DontUseMagicConch = this.GetLocalization(nameof(DontUseMagicConch), () => "你被一个强大的生物盯住了...");
+        }
+
         public override bool? On_CanUseItem(Item item, Player player) => DontInBossUseItem(player);
         public static bool? DontInBossUseItem(Player player) {
             if (CWRRef.GetDeathMode() || CWRRef.GetBossRushActive()) {
@@ -22,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Modifys
                 }
                 if (myIsBossTarget) {
                     if (player.whoAmI == Main.myPlayer) {
-                        VaultUtils.Text(CWRLocText.GetTextValue("DontUseMagicConch"), Color.Goldenrod);
+                        VaultUtils.Text(DontUseMagicConch.Value, Color.Goldenrod);
                     }
                     return false;
                 }
@@ -33,7 +42,6 @@ namespace CalamityOverhaul.Content.Items.Modifys
 
     internal class RDemonConch : ItemOverride
     {
-        public override bool CanLoadLocalization => false;
         public override int TargetID => ItemID.DemonConch;
         public override bool DrawingInfo => false;
         public override bool? On_CanUseItem(Item item, Player player) => RMagicConch.DontInBossUseItem(player);

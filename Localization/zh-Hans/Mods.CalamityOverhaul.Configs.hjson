@@ -166,4 +166,7 @@ CWRServerConfig: {
 			默认关闭，保留原有交互挑战
 			'''
 	}
+
+	ConfigChangePrefix: 用户
+	ConfigChangeSuffix: 修改了服务端配置
 }

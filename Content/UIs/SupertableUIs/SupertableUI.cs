@@ -14,6 +14,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
@@ -21,8 +23,17 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
     /// <summary>
     /// 欧米茄物质聚合仪UI
     /// </summary>
-    public class SupertableUI : UIHandle, ICWRLoader
+    public class SupertableUI : UIHandle, ICWRLoader, ILocalizedModType
     {
+        public string LocalizationCategory => "UI";
+
+        public static LocalizedText RecipeViewLabel { get; private set; }
+        public static LocalizedText RecipeEmptyLabel { get; private set; }
+        public static LocalizedText PlacementMonitorOff { get; private set; }
+        public static LocalizedText PlacementMonitorOn { get; private set; }
+        public static LocalizedText QuickPlaceMaterials { get; private set; }
+        public static LocalizedText QuickTakeMaterials { get; private set; }
+
         #region 静态数据和实例
 
         public static SupertableUI Instance => UIHandleLoader.GetUIHandleOfType<SupertableUI>();
@@ -102,6 +113,15 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         #endregion
 
         #region 生命周期方法
+
+        public override void SetStaticDefaults() {
+            RecipeViewLabel = this.GetLocalization(nameof(RecipeViewLabel), () => "查看配方");
+            RecipeEmptyLabel = this.GetLocalization(nameof(RecipeEmptyLabel), () => "无");
+            PlacementMonitorOff = this.GetLocalization(nameof(PlacementMonitorOff), () => "关闭摆放监视");
+            PlacementMonitorOn = this.GetLocalization(nameof(PlacementMonitorOn), () => "开启摆放监视");
+            QuickPlaceMaterials = this.GetLocalization(nameof(QuickPlaceMaterials), () => "快捷放置材料");
+            QuickTakeMaterials = this.GetLocalization(nameof(QuickTakeMaterials), () => "快捷拿取材料");
+        }
 
         void ICWRLoader.SetupData() {//不要试图在这个接口钩子里使用this，对于实例来讲，this只是接口自己new的实例，和UIHandleLoader管理的实例无关
             Instance._controller = new SupertableController();

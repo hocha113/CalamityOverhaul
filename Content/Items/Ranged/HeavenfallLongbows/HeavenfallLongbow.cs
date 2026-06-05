@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, noneTip: CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.WeponSkill_Q.DisplayName}]");
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, noneTip: CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.WeponSkill_Q.DisplayName}]");
             CWRUtils.SetItemLegendContentTops(ref tooltips, Name);
         }
 

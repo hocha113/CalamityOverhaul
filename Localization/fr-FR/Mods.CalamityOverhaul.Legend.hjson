@@ -9,12 +9,6 @@ HalibutText: {
 		[i:CalamityMod/HalibutCannon]:
 		This fish has been researched.
 		''' */
-	/* FishByPuzzle:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish can be used as a puzzle piece.
-		''' */
-
 	SkillSlot: {
 		// Hover1: Left Click: Select
 		// Hover2: Right Click: Pin
@@ -172,35 +166,19 @@ HalibutText: {
 	}
 }
 
-MuraText: {
-	Subtest_Text0:
-		'''
-		Nous devons aller en enfer pour libérer le pouvoir de la lumière et des ténèbres. 
-		Cela déclenchera une tempête subspatiale, mais nous n'avons pas le choix. 
-		Recrue, écrivez un chapitre grandiose pour le voyage !
-		'''
-	Subtest_Text1:
-		'''
-		Les falaises de soufre me manquent, et leur forge ardente. Va affronter leur gardien.
-		Je sens deux regards posés sur nous. Va t'en occuper.
-		'''
-	Subtest_Text2:
-		'''
-		Une prison dans le rempart de glace véritable. Un puissant psyker y est enchaîné. Libère-le ; il sera un grand atout pour reconquérir Terra.
-		Une bataille décisive approche. Ces tas de ferraille comptent s'unir pour nous arrêter.
-		Dis-leur par la lame et le sang que notre croisade écrasera toute hérésie xeno et intelligence abominable.
-		'''
-	// World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
-	// Subtest_Text4: In the jungle, someone's former clumsy creation still wanders. As a failure, it should rightfully be just a pile of scrap metal.
-	// Subtest_Text5: A shell of interwoven flesh, the resentful wraith of an ancient battlefield, a ceaselessly destructive golem. It destroys all things, and we shall destroy it.
-	// Subtest_Text6: The star gods of old have long fallen. What remains is but a mere maggot. Let us put an end to the era of the star gods once and for all.
-	// Subtest_Text7: Let that aggregation of souls in the dungeon wither beneath my blade. Its soul will be the finest nourishment.
-	// Subtest_Text8: A pathetic deity lingering by siphoning solar thermal energy. Its heretical fire must be completely extinguished.
-	// Subtest_Text9: That alien plant deep in the jungle. Go tear its petals, crush its bulbs, and let its sap stain this land.
-	// Subtest_Text10: That witch who threw herself into chaos has a deformed clone sister. Kill that xeno, and offer its blood and fire to the blade.
+MurasamaOverride: {
+	World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
+	Text0: Déverrouillé
+	Text1: Non déverrouillé - Requiert l'épreuve [Unhook]
+	Text_Lang_0: Épreuves :
 }
 
-// TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
+LegendUpgradeManagerSystem: {
+	QuestManagerHint: Press [{KEY}] to open the quest list
+	TrialPassed: A été adopté
+}
+
+TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
 
 HalibutTrialQuestLine: {
 	// QuestCategory: Halibut Legend
@@ -223,6 +201,68 @@ HalibutTrialQuestLine: {
 	// TrackerBrief: Target：{0}
 	// BossRushTargetName: Boss Rush
 	// EventActiveFormat: "{0}: active"
+	TextDictionary_Content_0: Ami, allons défier cette énorme créature gluante qui rampe sur la terre ferme.
+	TextDictionary_Content_1: Il y a un grand œil qui nous fixe, c'est impoli, nous devons lui donner une leçon.
+	TextDictionary_Content_2: La vie ne se trouve pas seulement dans les abysses, mais aussi dans la jungle. Ami, nous devons rendre visite au chef des abeilles là-bas.
+	TextDictionary_Content_3:
+		'''
+		Le géant maudit fait d'os immortels doit être mis au repos.
+		Les appels à l'aide de l'enfer deviennent de plus en plus fréquents. Nous devons partir rapidement, je pense que le guide ne nous en voudra pas.
+		'''
+	TextDictionary_Content_4:
+		'''
+		Sais-tu comment les objets inorganiques se déplacent ? Une fois, j'ai construit une énorme machine sous-marine capable de tirer des ogives atomiques faites de bulles,
+		ainsi qu'une multitude de torpilles thermonucléaires. Je l'ai utilisée pour chasser des créatures géantes vivant à 10 000 mètres sous la mer, jusqu'à ce que je rencontre...
+		Oh, je m'égare. Je pense que quatre amis mécaniques viendront bientôt nous rendre visite, nous devrions être prêts.
+		De plus, il y a un ver marin géant et muté dans les eaux contaminées au-dessus de l'abîme. Il était autrefois le gardien de l'Université de la Mer de Soufre.
+		Il est probablement encore assez amical ; nous pourrions le rencontrer pour le thé de l'après-midi.
+		'''
+	TextDictionary_Content_5:
+		'''
+		J'aime la jungle ; c'est presque ma seconde maison, remplie d'une énergie vitale
+		qui n'est pas inférieure à celle des profondeurs abyssales. Mais d'abord, nous devons trouver un moyen de la libérer.
+		Tu te souviens de ces énormes bourgeons sous terre ? Cueille-les — ils m'aideront à obtenir mon diplôme de botanique.
+		'''
+	TextDictionary_Content_6:
+		'''
+		J'adore l'archéologie. La dernière fois que je me suis promené dans la jungle, j'ai vu d'immenses ruines.
+		Nous devrions maintenant avoir la clé pour ouvrir la porte de ces ruines. Allons voir.
+		À l'intérieur, il y a une ancienne machine que nous devons mettre en marche, comme une télécommande de climatisation.
+		De plus, une peste extraterrestre se répand à la surface, infectant la terre et la plupart des objets inorganiques.
+		Chaque nuit, une machine minière souffrante erre, infectée depuis longtemps. Allons la libérer.
+		'''
+	TextDictionary_Content_7:
+		'''
+		Connais-tu le secret de l'autre côté de la lune ? Il y a là-bas un énorme poulpe, une éponge et une étoile de mer...
+		Oh, je voulais dire, la crise lunaire est imminente.
+		'''
+	TextDictionary_Content_8:
+		'''
+		Maintenant, c'est au tour de la crise solaire. Une puissante entité énergétique s'est échappée de l'autre côté du soleil et s'est réfugiée dans le noyau de cette planète.
+		Nous devons descendre et lui donner une douche froide pour la calmer.
+		'''
+	TextDictionary_Content_9:
+		'''
+		D'innombrables âmes invincibles des anciens champs de bataille se sont maintenant rassemblées et se cachent profondément dans le donjon, devenant de plus en plus agitées.
+		Nous pouvons y aller et éliminer quelques âmes perdues. Cela pourrait provoquer une petite tempête dans le sous-espace, mais cela pourrait aussi les faire sortir.
+		'''
+	TextDictionary_Content_10:
+		'''
+		Il existe une catégorie de créatures qui naissent et grandissent dans l'espace, dont le corps peut supporter des radiations cosmiques intenses et des énergies de niveau planétaire.
+		Il y a longtemps, nous avons rencontré l'une d'entre elles, et maintenant, nous allons affronter l'une des plus puissantes d'entre elles — une créature qui aurait dévoré des dieux.
+		'''
+	TextDictionary_Content_11: La température dans la jungle a augmenté récemment; je pense que ce puissant dragon est de retour.
+	TextDictionary_Content_12:
+		'''
+		Nous allons bientôt affronter le summum des créations inorganiques, dotées d'une puissance de feu et d'une défense impressionnantes.
+		De plus, il semble que quelque chose puisse être invoqué à l'autel du Feu de Soufre.
+		'''
+	TextDictionary_Content_13:
+		'''
+		Dans les profondeurs, il y a une pierre spéciale — utilise-la pour affronter la bataille finale.
+		Il y a aussi une puissante créature marine qui a détruit ma machine ; vengeons-nous.
+		'''
+	TextDictionary_Content_14: Honnêtement, j'aimerais bien retourner à la mer.
 }
 
 MurasamaTrialQuestLine: {

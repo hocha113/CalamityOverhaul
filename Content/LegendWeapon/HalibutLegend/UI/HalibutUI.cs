@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
 
             var line = new TooltipLine(CWRMod.Instance, "FishSkillTooltip"
-                , unlock ? HalibutText.Instance.FishOnStudied.Value : HalibutText.Instance.FishByStudied.Value) {
+                , unlock ? HalibutOverride.FishOnStudied.Value : HalibutOverride.FishByStudied.Value) {
                 OverrideColor = accent
             };
             tooltips.Add(line);

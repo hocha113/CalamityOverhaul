@@ -364,7 +364,7 @@ namespace CalamityOverhaul
                     legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.White, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
                 }
                 else {
-                    legendtops.Text = CWRLocText.GetTextValue("Item_LegendOnMouseLang");
+                    legendtops.Text = Content.CWRItem.ItemLegendOnMouseLang.Value;
                     legendtops.OverrideColor = Color.Lerp(Color.BlueViolet, Color.Gold, 0.5f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.5f);
                 }
             }
@@ -469,7 +469,7 @@ namespace CalamityOverhaul
         }
 
         /// <summary>
-        /// 快速修改一个物品的简介文本，从<see cref="CWRLocText"/>中拉取资源
+        /// 快速修改一个物品的简介文本，从宿主类的本地化字段中拉取资源
         /// </summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
             List<TooltipLine> newTooltips = new(tooltips);

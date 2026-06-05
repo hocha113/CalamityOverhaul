@@ -819,3 +819,50 @@ AbandonedPortalStrings: {
 	DiagnosticRepairing: INFO: Matriz de nano-solda sincronizando... Nao mova a base do portal
 	DiagnosticRepaired: OK: Todos os Subsistemas Online / Analise de Coordenadas Pronta
 }
+
+SupertableUI: {
+	RecipeViewLabel: Ver receita
+	RecipeEmptyLabel: nada
+	PlacementMonitorOff: Fechar monitor de exibicao
+	PlacementMonitorOn: Abrir monitor de exibicao
+	QuickPlaceMaterials: Material de colocacao rapida
+	QuickTakeMaterials: Acesso rapido ao material
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: Clique Esquerdo Na Flecha Marcada
+	UnmarkArrowHint: Clique Direito Desmarcar
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: Ir para o repositorio de codigo aberto do mod :)
+	WikiLabel: Wiki do Mod
+	FeedbackLabel: Feedback de Problemas
+	LogLabel: Ver log
+	AcknowledgmentLabel: Agradecimentos
+}
+
+AcknowledgmentUI: {
+	ArtistRole: Artista
+	CodeAssistanceRole: Assistencia de Codigo
+	MusicianRole: Musico
+	DonorRole: Doador
+	BalanceTesterRole: Testador de Balanceamento
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		hook falhou, para normalizar o jogo, por favor feche o jogo e reentre,
+		se isso ainda nao retornar ao normal, por favor traga o log exportado para encontrar o desenvolvedor do modulo
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		Foi detectado que voce instalou o [Quality of Terraria Mod],
+		mas sua versao do [Quality of Terraria Mod] esta desatualizada.
+		Para garantir que o jogo funcione corretamente, certifique-se de que sua
+		versao do [Quality of Terraria Mod] seja pelo menos 1.7.1.7.
+		'''
+	HellfireExplosionDeathReason: "{0} "{0} Para Queimar Nas Chamas do Inferno""
+	SoulfireExplosionDeathReason: "{0} A Alma Se Eleva em Fogo"
+}

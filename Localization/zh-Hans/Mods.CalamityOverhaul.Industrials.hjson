@@ -1,0 +1,15 @@
+ElectricMinRocket: {
+	EnergyShortage: 电力不足
+}
+
+WGGLifeWeaver: {
+	TurretBatteryDepleted: 电量耗尽
+}
+
+WGGWildernessTP: {
+	WindGrivenDiscovery1: 你觉得这种随风而动的机械很有趣，寻思自己也得整几个...
+}
+
+WGGMK2WildernessTP: {
+	WindGrivenDiscovery2: 你被这种巨大的机械震撼到了，你觉得自己也该尝试制作一个...
+}

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.OverhaulSettings;
+﻿using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -10,6 +9,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 #if DEBUG
 #endif
 
@@ -17,8 +18,16 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
     //老实说，这样的完全不利于扩展，如果想加入一条新的词条会非常麻烦，更别说如果想更换词条之间的顺序，更好的选择是将每个词条抽象成类实例管理 -hocah113 2024/6/28
     //Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 就是这样，这样才是优雅的 -hocah113 2025/2/1
-    internal class BulletinBoardUI : UIHandle, ICWRLoader
+    internal class BulletinBoardUI : UIHandle, ICWRLoader, ILocalizedModType
     {
+        public string LocalizationCategory => "UI";
+
+        public static LocalizedText MenuHoverLabel { get; private set; }
+        public static LocalizedText WikiLabel { get; private set; }
+        public static LocalizedText FeedbackLabel { get; private set; }
+        public static LocalizedText LogLabel { get; private set; }
+        public static LocalizedText AcknowledgmentLabel { get; private set; }
+
         #region Data
         [VaultLoaden("CalamityOverhaul/")]
         internal static Asset<Texture2D> icon = null;
@@ -30,7 +39,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         internal static bool SafeStart => !FeedbackUI.Instance.OnActive() && !AcknowledgmentUI.OnActive();
         public static Asset<DynamicSpriteFont> Font { get; private set; }
         public static List<BulletinBoardElement> bulletinBoardElements = [];
-        private static string HoverText => CWRLocText.Instance.IconUI_Text0.Value;
+        private static string HoverText => MenuHoverLabel.Value;
         private static Vector2 HoverTextSize => Font.Value.MeasureString(HoverText);
         private string ModNameAndVersion => Mod.Name + " v" + Mod.Version;
         private Vector2 ModNameSize => Font.Value.MeasureString(ModNameAndVersion);
@@ -38,6 +47,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override bool Active => CWRLoad.OnLoadContentBool;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         #endregion
+        public override void SetStaticDefaults() {
+            MenuHoverLabel = this.GetLocalization(nameof(MenuHoverLabel), () => "前往模组的开源库 :)");
+            WikiLabel = this.GetLocalization(nameof(WikiLabel), () => "模组维基");
+            FeedbackLabel = this.GetLocalization(nameof(FeedbackLabel), () => "问题反馈");
+            LogLabel = this.GetLocalization(nameof(LogLabel), () => "查看日志");
+            AcknowledgmentLabel = this.GetLocalization(nameof(AcknowledgmentLabel), () => "致谢名单");
+        }
+
         public override void Load() {
             Font = FontAssets.MouseText;
             sengs = 0;
@@ -52,19 +69,19 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             bulletinBoardElements = [];
 
             BulletinBoardElement wikiBulletinBoard = new BulletinBoardElement()
-                .Setproperty(CWRLocText.Instance.IconUI_Text8, () => CWRConstant.modWikiUrl.WebRedirection());
+                .Setproperty(WikiLabel, () => CWRConstant.modWikiUrl.WebRedirection());
             bulletinBoardElements.Add(wikiBulletinBoard);
 
             BulletinBoardElement feedbackUIbulletinBoard = new BulletinBoardElement()
-                .Setproperty(CWRLocText.Instance.IconUI_Text1, () => FeedbackUI.Instance._active = true);
+                .Setproperty(FeedbackLabel, () => FeedbackUI.Instance._active = true);
             bulletinBoardElements.Add(feedbackUIbulletinBoard);
 
             BulletinBoardElement logBulletinBoard = new BulletinBoardElement()
-                .Setproperty(CWRLocText.Instance.IconUI_Text7, LogFunc, true);
+                .Setproperty(LogLabel, LogFunc, true);
             bulletinBoardElements.Add(logBulletinBoard);
 
             BulletinBoardElement acknowledgmentNulletinBoard = new BulletinBoardElement()
-                .Setproperty(CWRLocText.Instance.IconUI_Text2, () => AcknowledgmentUI.Instance._active = true);
+                .Setproperty(AcknowledgmentLabel, () => AcknowledgmentUI.Instance._active = true);
             bulletinBoardElements.Add(acknowledgmentNulletinBoard);
 
             BulletinBoardElement overhaulSettingsButtonBoard = new BulletinBoardElement()

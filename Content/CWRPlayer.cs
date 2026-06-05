@@ -24,8 +24,32 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content
 {
-    public class CWRPlayer : ModPlayer
+    public class CWRPlayer : ModPlayer, ILocalizedModType
     {
+        public string LocalizationCategory => "UI.CWRPlayer";
+
+        public static LocalizedText Error_HookFailure { get; private set; }
+        public static LocalizedText OnEnterWorld_ImproveGameWarning { get; private set; }
+        public static LocalizedText HellfireExplosionDeathReason { get; private set; }
+        public static LocalizedText SoulfireExplosionDeathReason { get; private set; }
+
+        public override void SetStaticDefaults() {
+            Error_HookFailure = this.GetLocalization(nameof(Error_HookFailure), () =>
+                """
+                个钩子失效了，为了游戏正常，请关闭游戏并重新进入，
+                如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
+                """);
+            OnEnterWorld_ImproveGameWarning = this.GetLocalization(nameof(OnEnterWorld_ImproveGameWarning), () =>
+                """
+                检测到您安装了[更好的体验]，但您的[更好的体验]版本过旧
+                为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
+                """);
+            HellfireExplosionDeathReason = this.GetLocalization(nameof(HellfireExplosionDeathReason),
+                () => "{0}在地狱的烈火中化为灰烬");
+            SoulfireExplosionDeathReason = this.GetLocalization(nameof(SoulfireExplosionDeathReason),
+                () => "{0}的灵魂在火焰中升华");
+        }
+
         #region Data
         /// <summary>
         /// 是否拥有大修宝典
@@ -325,7 +349,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (!VaultHook.CheckHookStatus(out int num)) {
-                string hookDownText1 = $"{num} " + CWRLocText.GetTextValue("Error_1");
+                string hookDownText1 = $"{num} " + Error_HookFailure.Value;
                 VaultUtils.Text(hookDownText1, Color.Red);
             }
 
@@ -335,7 +359,7 @@ namespace CalamityOverhaul.Content
             }
 
             if (!ImproveRef.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
-                string improvGameText = CWRLocText.GetTextValue("OnEnterWorld_TextContent2");
+                string improvGameText = OnEnterWorld_ImproveGameWarning.Value;
                 SpwanTextProj.New(Player, () => VaultUtils.Text(improvGameText, Color.Red), 210);
                 CWRMod.Instance.Logger.Info(improvGameText);
             }
@@ -560,11 +584,11 @@ namespace CalamityOverhaul.Content
 
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource) {
             if (HellfireExplosion) {
-                NetworkText networkText = CWRLocText.Instance.HellfireExplosion_DeadLang_Text.ToNetworkText(Player.name);
+                NetworkText networkText = HellfireExplosionDeathReason.ToNetworkText(Player.name);
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (SoulfireExplosion) {
-                NetworkText networkText = CWRLocText.Instance.SoulfireExplosion_DeadLang_Text.ToNetworkText(Player.name);
+                NetworkText networkText = SoulfireExplosionDeathReason.ToNetworkText(Player.name);
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {

@@ -19,3 +19,7 @@ Murasama_DownKey.DisplayName: Murasama : Frappe vers le bas
 // WeponSkill_Q.DisplayName: Weapon: Left Skill Key
 // WeponSkill_R.DisplayName: Weapon: Right Skill Key
 // Accessory_Skills.DisplayName: Accessory Skill
+
+CWRKeySystem: {
+	Notbound: "[Unbound keys]"
+}

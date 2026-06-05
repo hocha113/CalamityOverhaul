@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -331,7 +332,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             if (collectorTP.MachineData.UEvalue < 10) {
                 Projectile.damage = 0;
                 if (!BatteryPrompt) {
-                    CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value, false);
+                    CombatText.NewText(collectorTP.HitBox, new Color(111, 247, 200), WGGLifeWeaver.TurretBatteryDepleted.Value, false);
                     BatteryPrompt = true;
                 }
                 DoIdleMotion();

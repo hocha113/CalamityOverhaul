@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 if (npc.ai[0] > 1 && TargetPlayerIsActive()) {
                     if (npc.ai[1] == 4) {
                         for (int i = 0; i < 5; i++) {
-                            VaultUtils.Text(CWRLocText.Instance.SkeletronPrime_Text.Value, Color.Red);
+                            VaultUtils.Text(SkeletronPrime_Text.Value, Color.Red);
                         }
                     }
                     npc.ai[1] = 3f;

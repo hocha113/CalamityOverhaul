@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using Terraria.GameContent.ItemDropRules;
 
@@ -20,6 +20,6 @@ namespace CalamityOverhaul.Content.Items.Modifys.ModifyBag
     {
         public bool CanDrop(DropAttemptInfo info) => CWRWorld.Death;
         public bool CanShowItemDropInUI() => CWRWorld.Death || InfernumRef.InfernumModeOpenState;
-        public string GetConditionDescription() => CWRLocText.Instance.DeathModeItem.Value;
+        public string GetConditionDescription() => CWRItem.DeathModeItemText.Value;
     }
 }

@@ -52,8 +52,8 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, "AriaofTheCosmosQSkill", CWRLocText.Instance.Notbound.Value);
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, "AriaofTheCosmosRSkill", CWRLocText.Instance.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, "AriaofTheCosmosQSkill", CWRKeySystem.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, "AriaofTheCosmosRSkill", CWRKeySystem.Notbound.Value);
         }
     }
 }

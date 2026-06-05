@@ -56,8 +56,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, "PandemoniumQSkill", CWRLocText.Instance.Notbound.Value);
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, "PandemoniumRSkill", CWRLocText.Instance.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, "PandemoniumQSkill", CWRKeySystem.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, "PandemoniumRSkill", CWRKeySystem.Notbound.Value);
 
             if (Main.LocalPlayer.TryGetADVSave(out ADVSave save) && save.Get<SupCalADVData>().EternalBlazingNow) {
                 TooltipLine line = new(Mod, "Story", SupCalDisplayText.Story4.Value);

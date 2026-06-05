@@ -816,3 +816,48 @@ AbandonedPortalStrings: {
 	// DiagnosticRepairing: INFO: Nano-weld array synchronizing... Do not move the portal base
 	// DiagnosticRepaired: OK: All Subsystems Online / Coordinate Parsing Ready
 }
+
+SupertableUI: {
+	RecipeViewLabel: Rezept anzeigen
+	RecipeEmptyLabel: Kein
+	PlacementMonitorOff: Platzierungsüberwachung schließen
+	PlacementMonitorOn: Platzierungsüberwachung öffnen
+	QuickPlaceMaterials: Materialien schnell platzieren
+	QuickTakeMaterials: Materialien schnell nehmen
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: Left Click On The Marked Arrow
+	UnmarkArrowHint: Right Click Untag
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: Zum Open-Source-Repository des Mods gehen :)
+	WikiLabel: Mod Wiki
+	FeedbackLabel: Problem melden
+	LogLabel: Log anzeigen
+	AcknowledgmentLabel: Dankeschön-Liste
+}
+
+AcknowledgmentUI: {
+	ArtistRole: Künstler
+	CodeAssistanceRole: Code-Hilfe
+	MusicianRole: Musician
+	DonorRole: Spender
+	BalanceTesterRole: Balancing-Tests
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		hook failed, in order to normal the game, please close the game and re-enter, 
+		if this still does not return to normal, please bring the exported log to find the module developer
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		Es wurde erkannt, dass Sie [Better Experience] installiert haben, aber Ihre Version von [Better Experience] ist veraltet.
+		Um sicherzustellen, dass das Spiel ordnungsgemäß funktioniert, stellen Sie sicher, dass die Version von [Better Experience] nicht niedriger als 1.7.1.7 ist.
+		'''
+	HellfireExplosionDeathReason: "{0} Verbrenne in der Hölle zu Asche"
+	SoulfireExplosionDeathReason: "{0} The Soul Rises In Fire"
+}

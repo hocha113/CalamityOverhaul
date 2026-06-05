@@ -10,12 +10,25 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TileProcessors
 {
-    internal class BloodAltarTP : TileProcessor, ICWRLoader
+    internal class BloodAltarTP : TileProcessor, ICWRLoader, ILocalizedModType
     {
+        public string LocalizationCategory => "Tiles";
+
+        public static LocalizedText ApproachingText { get; private set; }
+        public static LocalizedText InsufficientOfferingText { get; private set; }
+        public static LocalizedText SacrificeDeathReason { get; private set; }
+
+        public override void SetStaticDefaults() {
+            ApproachingText = this.GetLocalization(nameof(ApproachingText), () => "深红的注视正在降临...");
+            InsufficientOfferingText = this.GetLocalization(nameof(InsufficientOfferingText), () => "你身上的血珠不够向深红之王进行朝贡...");
+            SacrificeDeathReason = this.GetLocalization(nameof(SacrificeDeathReason), () => "{0}陷入了无尽的血与肉的狂想");
+        }
+
         public override int TargetTileID => ModContent.TileType<BloodAltar>();
         public Vector2 Center => PosInWorld + new Vector2(BloodAltar.Width * 18, BloodAltar.Height * 18) / 2;
         public static int targetFuncsWhoAmi;
@@ -99,9 +112,9 @@ namespace CalamityOverhaul.Content.TileProcessors
         }
 
         private static void SommonLose(Player player) {
-            VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text2"), Color.DarkRed);
+            VaultUtils.Text(InsufficientOfferingText.Value, Color.DarkRed);
             if (player != null) {
-                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(CWRLocText.Instance.BloodAltar_Text3.ToNetworkText(player.name));
+                PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(SacrificeDeathReason.ToNetworkText(player.name));
                 player.Hurt(pd, 50, 0);
             }
             Old_OnBoolMoon = OnBoolMoon = false;
@@ -158,7 +171,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                         Dust.NewDust(Center - new Vector2(16, 16), 32, 32, DustID.Blood, vr.X, vr.Y
                             , Scale: Main.rand.NextFloat(1.2f, 3.1f));
                     }
-                    VaultUtils.Text(CWRLocText.GetTextValue("BloodAltar_Text1"), Color.DarkRed);
+                    VaultUtils.Text(ApproachingText.Value, Color.DarkRed);
                 }
 
                 Main.dayTime = false;

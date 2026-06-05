@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, noneTip: CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.WeponSkill_Q.DisplayName}]");
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, noneTip: CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.WeponSkill_Q.DisplayName}]");
         }
 
         public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset) {

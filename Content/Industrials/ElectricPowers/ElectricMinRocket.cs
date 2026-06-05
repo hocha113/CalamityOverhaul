@@ -14,13 +14,22 @@ using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers
 {
-    internal class ElectricMinRocket : ModItem
+    internal class ElectricMinRocket : ModItem, ILocalizedModType
     {
+        public string LocalizationCategory => "Industrials";
+
+        public static LocalizedText EnergyShortage { get; private set; }
+
+        public override void SetStaticDefaults() {
+            EnergyShortage = this.GetLocalization(nameof(EnergyShortage), () => "电力不足");
+        }
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/ElectricMinRocket";
         [VaultLoaden(CWRConstant.Asset + "ElectricPowers/ElectricMinRocketGlow")]
         public static Asset<Texture2D> Glow = null;
@@ -58,7 +67,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         public override bool? UseItem(Player player) {
             if (player.altFunctionUse == 2) {
                 if (Item.CWR().UEValue <= 0) {
-                    CombatText.NewText(player.Hitbox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
+                    CombatText.NewText(player.Hitbox, Color.DimGray, EnergyShortage.Value);
                     SoundEngine.PlaySound(SoundID.MenuClose);
                     Item.createTile = ModContent.TileType<ElectricMinRocketTile>();
                     return true;
@@ -272,7 +281,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             }
 
             if (tp.MachineData.UEvalue <= 0) {
-                CombatText.NewText(tp.HitBox, Color.DimGray, CWRLocText.Instance.EnergyShortage.Value);
+                CombatText.NewText(tp.HitBox, Color.DimGray, ElectricMinRocket.EnergyShortage.Value);
                 SoundEngine.PlaySound(SoundID.MenuClose);
                 return false;
             }

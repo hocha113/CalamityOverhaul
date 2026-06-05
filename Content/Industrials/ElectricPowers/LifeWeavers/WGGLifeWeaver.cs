@@ -12,13 +12,22 @@ using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
 {
-    internal class WGGLifeWeaver : ModItem
+    internal class WGGLifeWeaver : ModItem, ILocalizedModType
     {
+        public string LocalizationCategory => "Industrials";
+
+        public static LocalizedText TurretBatteryDepleted { get; private set; }
+
+        public override void SetStaticDefaults() {
+            TurretBatteryDepleted = this.GetLocalization(nameof(TurretBatteryDepleted), () => "电量耗尽");
+        }
+
         public override string Texture => CWRConstant.Asset + "ElectricPowers/WGGLifeWeaver";
         public override void SetDefaults() {
             Item.width = 32;
@@ -344,7 +353,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt) {
                 if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, new Color(111, 247, 200), CWRLocText.Instance.Turret_Text1.Value);
+                    CombatText.NewText(HitBox, new Color(111, 247, 200), WGGLifeWeaver.TurretBatteryDepleted.Value);
                     textIdleTime = 300;
                 }
                 return;

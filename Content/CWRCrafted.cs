@@ -12,8 +12,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content
 {
-    internal class CWRCrafted : ModSystem
+    internal class CWRCrafted : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "Recipes";
+
+        public static LocalizedText ApostolicRelicsGroup { get; private set; }
+        public static LocalizedText GodEaterWeaponGroup { get; private set; }
+        public static LocalizedText FishGroupName { get; private set; }
+
         public static string Any => Language.GetTextValue("LegacyMisc.37");
         public static RecipeGroup ARGroup;
         public static RecipeGroup GodDWGroup;
@@ -30,6 +36,12 @@ namespace CalamityOverhaul.Content
             Main.LocalPlayer.CWR().InspectOmigaTime = 120;
             CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor
                 , Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
+        }
+
+        public override void SetStaticDefaults() {
+            ApostolicRelicsGroup = this.GetLocalization(nameof(ApostolicRelicsGroup), () => "使徒遗物");
+            GodEaterWeaponGroup = this.GetLocalization(nameof(GodEaterWeaponGroup), () => "噬神者武器");
+            FishGroupName = this.GetLocalization(nameof(FishGroupName), () => "鱼");
         }
 
         public override void Unload() {
@@ -281,7 +293,7 @@ namespace CalamityOverhaul.Content
             ]);
             RecipeGroup.RegisterGroup("CWRMod:MythrilBarGroup", MythrilBarGroup);
 
-            ARGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_ApostolicRelics")}",
+            ARGroup = new RecipeGroup(() => $"{Any} {ApostolicRelicsGroup.Value}",
             [
                 CWRID.Item_ArmoredShell,
                 CWRID.Item_DarkPlasma,
@@ -289,7 +301,7 @@ namespace CalamityOverhaul.Content
             ]);
             RecipeGroup.RegisterGroup("CWRMod:ARGroup", ARGroup);
 
-            GodDWGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_GodEaterWeapon")}",
+            GodDWGroup = new RecipeGroup(() => $"{Any} {GodEaterWeaponGroup.Value}",
             [
                 CWRID.Item_Excelsus,
                 CWRID.Item_TheObliterator,
@@ -302,7 +314,7 @@ namespace CalamityOverhaul.Content
             ]);
             RecipeGroup.RegisterGroup("CWRMod:GodDWGroup", GodDWGroup);
 
-            FishGroup = new RecipeGroup(() => $"{Any} {CWRLocText.GetTextValue("CWRRecipes_FishGroup")}",
+            FishGroup = new RecipeGroup(() => $"{Any} {FishGroupName.Value}",
             [
                 ItemID.Goldfish,
                 ItemID.Bass,

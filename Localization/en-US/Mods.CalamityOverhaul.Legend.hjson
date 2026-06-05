@@ -1,20 +1,17 @@
-﻿HalibutText: {
+HalibutOverride: {
 	FishByStudied:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish can be researched.
-		'''
-	FishOnStudied:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish has been researched.
-		'''
-	FishByPuzzle:
-		'''
-		[i:CalamityMod/HalibutCannon]:
-		This fish can be used as a puzzle piece.
-		'''
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			This fish can be researched.
+			'''
+		FishOnStudied:
+			'''
+			[i:CalamityMod/HalibutCannon]:
+			This fish has been researched.
+			'''
+}
 
+HalibutText: {
 	SkillSlot: {
 		Hover1: Left Click: Select
 		Hover2: Right Click: Pin
@@ -172,27 +169,16 @@
 	}
 }
 
-MuraText: {
-	Subtest_Text0: We must head to the Underworld to unleash the powers of light and dark. It will trigger a warp storm, but it must be done, recruit, to pen a magnificent stroke for our crusade!
-	Subtest_Text1:
-		'''
-		I miss the fiery tempering of the Brimstone Crags. Let's go meet its guardian.
-		I can feel two gazes upon us. Go take care of them.
-		'''
-	Subtest_Text2:
-		'''
-		A prison within the True Ice bulwark. A powerful psyker is held there. Free him; he will be a great asset in reclaiming Terra.
-		A decisive battle is approaching. Those heaps of scrap metal plan to unite in a vain attempt to stop us.
-		Tell them with blade and blood that the march of our crusade will crush all xenos heresy and abominable intelligence.
-		'''
+MurasamaOverride: {
 	World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
-	Subtest_Text4: In the jungle, someone's former clumsy creation still wanders. As a failure, it should rightfully be just a pile of scrap metal.
-	Subtest_Text5: A shell of interwoven flesh, the resentful wraith of an ancient battlefield, a ceaselessly destructive golem. It destroys all things, and we shall destroy it.
-	Subtest_Text6: The star gods of old have long fallen. What remains is but a mere maggot. Let us put an end to the era of the star gods once and for all.
-	Subtest_Text7: Let that aggregation of souls in the dungeon wither beneath my blade. Its soul will be the finest nourishment.
-	Subtest_Text8: A pathetic deity lingering by siphoning solar thermal energy. Its heretical fire must be completely extinguished.
-	Subtest_Text9: That alien plant deep in the jungle. Go tear its petals, crush its bulbs, and let its sap stain this land.
-	Subtest_Text10: That witch who threw herself into chaos has a deformed clone sister. Kill that xeno, and offer its blood and fire to the blade.
+	Text0: Unlocked
+	Text1: Not yet unlocked. Need to pass test [Unhook]
+	Text_Lang_0: Trial:
+}
+
+LegendUpgradeManagerSystem: {
+	QuestManagerHint: Press [{KEY}] to open the quest list
+	TrialPassed: Already passed
 }
 
 TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
@@ -218,6 +204,71 @@ HalibutTrialQuestLine: {
 	TrackerBrief: Target：{0}
 	BossRushTargetName: Battle of Terminus
 	EventActiveFormat: "{0}: active"
+	TextDictionary_Content_0: Friend, let's challenge that enormous, slimy land creature.
+	TextDictionary_Content_1: There's a big eye staring at us. That's quite rude; we should teach it a lesson.
+	TextDictionary_Content_2: Life thrives not only in the Abyss but also in the Jungle. We should pay a visit to the queen bee there.
+	TextDictionary_Content_3:
+		'''
+		A cursed skeleton that never decays—we need to put it to rest.
+		The cries for help from Hell are becoming more frequent. We should leave soon. I'm sure the Guide won't mind.
+		'''
+	TextDictionary_Content_4:
+		'''
+		Do you know how inanimate objects come to life? I once built a massive underwater machine that could launch nuclear warheads made of bubbles
+		and countless thermonuclear torpedoes. I used it to hunt gigantic creatures living 10,000 meters below the sea—until I met...
+		Oh, I digress. I think we'll soon have four mechanical friends visiting us, so we should be prepared.
+		Also, there's a mutated giant sea worm in the polluted waters above the Abyss. It used to be a gatekeeper at the Sulphurous Sea University.
+		It should still be quite friendly; we can go have some afternoon tea with it.
+		'''
+	TextDictionary_Content_5:
+		'''
+		The next research sample is the clone.
+		A crude replica, yes, but it's saturated with that brimstone presence... excellent material for analysis.
+		...Oh, right. One more thing.
+		I'm fond of the jungle. It's practically my second home, brimming with life energy
+		on par with the deep abyss. However, we need to find a way to release it first.
+		Remember those giant bulbs underground? Go 'pick' them. It will... help with my botany degree.
+		'''
+	TextDictionary_Content_6:
+		'''
+		I enjoy archaeological digs. Last time I was wandering through the Jungle, I saw a massive ruin.
+		We should now have the key to open the door to that ruin. Let's go check it out.
+		Inside, there's an ancient machine waiting for us to power it up, just like a remote control for an air conditioner.
+		Besides that, there's an alien plague spreading on the surface, infecting the land and most inorganic objects.
+		Every night, a tormented mining machine roams around, long since infected. Let's put it out of its misery.
+		'''
+	TextDictionary_Content_7:
+		'''
+		Do you know the secret on the far side of the Moon? There's a giant octopus, a sponge, and a starfish...
+		Oh, I mean, the lunar crisis is coming.
+		'''
+	TextDictionary_Content_8:
+		'''
+		Now it's time for the solar crisis. A powerful energy being escaped from the far side of the Sun and burrowed into the planet's core.
+		We need to head down there and give it a cold shower.
+		'''
+	TextDictionary_Content_9:
+		'''
+		Countless indomitable souls from ancient battlefields have gathered now, hidden deep within the dungeon, and are becoming restless.
+		We can go down there and slay some of the wandering spirits. This might bring about a small storm in the Subspace, but it'll also lure them out.
+		'''
+	TextDictionary_Content_10:
+		'''
+		There's a species that is born and grows in space, capable of withstanding intense cosmic radiation and celestial-level energy.
+		We encountered one a long time ago, but now we face the champion among them—a being that claims to have devoured gods.
+		'''
+	TextDictionary_Content_11: The Jungle's temperature has risen lately; I think that powerful dragon has returned.
+	TextDictionary_Content_12:
+		'''
+		We're about to face the pinnacle of inorganic creations, with unmatched firepower and defense.
+		Additionally, the Sulphurous Fire Altar seems capable of summoning something.
+		'''
+	TextDictionary_Content_13:
+		'''
+		In the Abyss lies a special stone—use it to face the final battle.
+		There's also a powerful sea creature that destroyed my machine; let's seek revenge.
+		'''
+	TextDictionary_Content_14: Honestly, I feel like going back to the sea.
 }
 
 MurasamaTrialQuestLine: {

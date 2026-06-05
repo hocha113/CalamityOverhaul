@@ -86,8 +86,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             if (Ai[0] == 0) {
                 if (!VaultUtils.isServer && isSpazmatism) {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text1"), TwinsAIController.TextColor1);
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text2"), TwinsAIController.TextColor2);
+                    VaultUtils.Text(TwinsAIController.Spazmatism_Text1.Value, TwinsAIController.TextColor1);
+                    VaultUtils.Text(TwinsAIController.Spazmatism_Text2.Value, TwinsAIController.TextColor2);
                 }
                 Ai[0] = 1;
                 Npc.netUpdate = true;
@@ -173,20 +173,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             if (!VaultUtils.isServer && ExitTextShownSet.Add(Npc.whoAmI)) {
                 if (lowBloodVolume) {
                     if (isSpazmatism) {
-                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text3"), TwinsAIController.TextColor1);
+                        VaultUtils.Text(TwinsAIController.Spazmatism_Text3.Value, TwinsAIController.TextColor1);
                     }
                     else {
-                        VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text4"), TwinsAIController.TextColor2);
+                        VaultUtils.Text(TwinsAIController.Spazmatism_Text4.Value, TwinsAIController.TextColor2);
                     }
                 }
                 else if (skeletronPrime?.ai[1] == 3) {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text5"), TwinsAIController.TextColor2);
+                    VaultUtils.Text(TwinsAIController.Spazmatism_Text5.Value, TwinsAIController.TextColor2);
                 }
                 else if (isSpawnFirstStageFromeExeunt) {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text6"), TwinsAIController.TextColor2);
+                    VaultUtils.Text(TwinsAIController.Spazmatism_Text6.Value, TwinsAIController.TextColor2);
                 }
                 else {
-                    VaultUtils.Text(CWRLocText.GetTextValue("Spazmatism_Text7"), TwinsAIController.TextColor2);
+                    VaultUtils.Text(TwinsAIController.Spazmatism_Text7.Value, TwinsAIController.TextColor2);
                 }
             }
 

@@ -160,4 +160,7 @@ CWRServerConfig: {
 		Label: Reproducao Automatica de Decifracao da Torre de Sinal
 		Tooltip: ""
 	}
+
+	ConfigChangePrefix: Usuario
+	ConfigChangeSuffix: A configuracao do servidor foi modificada
 }

@@ -2502,3 +2502,23 @@ ArchiveFrameModule: {
 		Базовый урон увеличен, затраты маны слегка повышены.
 		'''
 }
+
+CWRItem: {
+	TemperatureText: Температура сгорания
+	InternalStoredEnergy: Накоплено энергии
+	DeathModeItemText: Предмет режима Смерть
+	LegendItemUpgradeDisable:
+		'''
+		Улучшение этого легендарного оружия отключено в текущем мире
+		Если требуется снять это ограничение, пожалуйста, перезайдите в мир
+		'''
+	ItemLegendOnMouseLang: Нажмите [Shift], чтобы прослушать историю...
+}
+
+RMagicConch: {
+	DontUseMagicConch: За тобой наблюдает могущественное существо...
+}
+
+InfiniteToiletItem: {
+	OnlyZenithCondition: Только в мирах с сидом «Get fixed boi»
+}

@@ -1,17 +1,26 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Materials;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Placeable
 {
-    internal class InfiniteToiletItem : ModItem
+    internal class InfiniteToiletItem : ModItem, ILocalizedModType
     {
+        public string LocalizationCategory => "Items.InfiniteToiletItem";
+
+        public static LocalizedText OnlyZenithCondition { get; private set; }
+
+        public override void SetStaticDefaults() {
+            OnlyZenithCondition = this.GetLocalization(nameof(OnlyZenithCondition), () => "仅在天顶世界");
+            SupertableUI.OtherRpsData_ZenithWorld_StringList.Add(FullItems);
+        }
+
         public static string[] FullItems = ["CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
             "CalamityOverhaul/InfiniteIngot", "CalamityOverhaul/InfiniteIngot", "0", "0", "0", "0", "0", "0", "0",
@@ -24,7 +33,6 @@ namespace CalamityOverhaul.Content.Items.Placeable
             "CalamityOverhaul/InfiniteToiletItem"
         ];
         public override string Texture => CWRConstant.Item + "Placeable/" + "InfiniteToiletItem";
-        public override void SetStaticDefaults() => SupertableUI.OtherRpsData_ZenithWorld_StringList.Add(FullItems);
         public override void SetDefaults() {
             Item.width = 28;
             Item.height = 20;
@@ -66,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
-            Condition condition = new Condition(CWRLocText.GetTextKey("OnlyZenith"), () => Main.zenithWorld);
+            Condition condition = new Condition(OnlyZenithCondition.Value, () => Main.zenithWorld);
             CreateRecipe()
                 .AddIngredient<InfiniteIngot>(29)
                 .AddIngredient<InfinityCatalyst>(9)

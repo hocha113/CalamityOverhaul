@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             string keyHint = CWRKeySystem.CyberwareSkill_Key?.GetAssignedKeys() is { Count: > 0 } keys
                 ? $"[{keys[0]}]"
-                : CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
+                : CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.CyberwareSkill_Key?.DisplayName}]";
             tooltips.Add(new TooltipLine(Mod, "CyberwareSkillHint",
                 Language.GetTextValue("Mods.CalamityOverhaul.Items.SelfHackCrystal.SkillHint", keyHint)));
         }

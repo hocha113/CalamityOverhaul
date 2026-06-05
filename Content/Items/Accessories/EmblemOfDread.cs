@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            tooltips.InsertHotkeyBinding(CWRKeySystem.Accessory_Skills, "[KEY]", CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.Accessory_Skills.DisplayName}]");
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Accessory_Skills, "[KEY]", CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.Accessory_Skills.DisplayName}]");
         }
     }
 

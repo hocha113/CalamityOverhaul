@@ -816,3 +816,47 @@ AbandonedPortalStrings: {
 	DiagnosticRepairing: INFO: Синхронизация массива нано-сварки... Не сдвигайте основание врат
 	DiagnosticRepaired: OK: Все подсистемы в сети / Разрешение координат готово
 }
+
+SupertableUI: {
+	RecipeViewLabel: Просмотреть рецепт
+	RecipeEmptyLabel: Нет
+	PlacementMonitorOff: Отключить наблюдение за расстановкой
+	PlacementMonitorOn: Включить наблюдение за расстановкой
+	QuickPlaceMaterials: Быстрая установка материалов
+	QuickTakeMaterials: Быстрое извлечение материалов
+}
+
+ArrowHolderUI: {
+	MarkArrowHint: ЛКМ - поставить метку
+	UnmarkArrowHint: ПКМ — снять метку
+}
+
+BulletinBoardUI: {
+	MenuHoverLabel: Перейти к репозиторию мода :)
+	WikiLabel: Wiki мода
+	FeedbackLabel: Обратная связь
+	LogLabel: Список изменений
+	AcknowledgmentLabel: Особая благодарность
+}
+
+AcknowledgmentUI: {
+	ArtistRole: Художник
+	CodeAssistanceRole: Помощь с кодом
+	MusicianRole: Musician
+	DonorRole: Донатер
+	BalanceTesterRole: Тестирование баланса
+}
+
+CWRPlayer: {
+	Error_HookFailure:
+		'''
+		Один из хуков вышел из строя. Чтобы восстановить нормальную работу игры, пожалуйста, закройте игру и перезапустите её. Если проблема не исчезнет, приложите экспортированный лог и обратитесь к разработчику модуля
+		'''
+	OnEnterWorld_ImproveGameWarning:
+		'''
+		Было установлено, что вы установили [Quality of Terraria Mod], но ваша [Quality of Terraria Mod] версия была переработана
+		Для обеспечения функционирования игры, пожалуйста, убедитесь, что [Quality of Terraria Mod] версия не ниже 1.7.1.7
+		'''
+	HellfireExplosionDeathReason: "{0} "{0} Сгореть в пламени ада""
+	SoulfireExplosionDeathReason: "{0} Душа восстаёт в огне"
+}

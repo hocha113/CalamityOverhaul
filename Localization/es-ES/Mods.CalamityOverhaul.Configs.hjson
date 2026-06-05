@@ -159,4 +159,7 @@ CWRServerConfig: {
 		// Label: Signal Tower Decryption Auto Play
 		// Tooltip: ""
 	}
+
+	ConfigChangePrefix: Usuario
+	ConfigChangeSuffix: Se ha modificado la configuración del servidor
 }

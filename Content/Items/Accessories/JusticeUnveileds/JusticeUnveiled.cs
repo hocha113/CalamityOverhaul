@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            tooltips.InsertHotkeyBinding(CWRKeySystem.Accessory_Skills, "UP", CWRLocText.Instance.Notbound.Value + $"[{CWRKeySystem.Accessory_Skills.DisplayName}]");
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Accessory_Skills, "UP", CWRKeySystem.Notbound.Value + $"[{CWRKeySystem.Accessory_Skills.DisplayName}]");
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

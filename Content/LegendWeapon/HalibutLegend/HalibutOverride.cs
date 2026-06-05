@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
 using System;
@@ -6,12 +8,18 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    internal class HalibutOverride : ItemOverride
+    internal class HalibutOverride : ItemOverride, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend";
+
+        public static LocalizedText FishByStudied { get; private set; }
+        public static LocalizedText FishOnStudied { get; private set; }
+
         #region Data
         /// <summary>
         /// 目标ID
@@ -101,12 +109,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override bool? On_ModifyTooltips(Item item, List<TooltipLine> tooltips) {
             CWRItem.OverModifyTooltip(item, tooltips);
-            HalibutText.SetTooltip(item, ref tooltips);
+            SetTooltip(item, ref tooltips);
             WikithisRef.TryAppendWikiTooltip(item, tooltips);
             return false;
         }
 
-        public override void SetStaticDefaults() => LoadWeaponData();
+        public override void SetStaticDefaults() {
+            FishByStudied = this.GetLocalization(nameof(FishByStudied), () =>
+                """
+                [i:CalamityMod/HalibutCannon]:
+                这条鱼可被研究
+                """);
+            FishOnStudied = this.GetLocalization(nameof(FishOnStudied), () =>
+                """
+                [i:CalamityMod/HalibutCannon]:
+                这条鱼已经研究
+                """);
+            LoadWeaponData();
+        }
+
+        public static void SetTooltip(Item item, ref List<TooltipLine> tooltips) {
+            string keyDisplay = CWRKeySystem.QuestManager_Key?.GetAssignedKeys() is { Count: > 0 } k ? k[0] : CWRKeySystem.Notbound.Value;
+            tooltips.ReplacePlaceholder("legend_Text", LegendUpgradeManagerSystem.QuestManagerHint.Value.Replace("{KEY}", keyDisplay), "");
+            int index = item.CWR()?.LegendData?.TargetLevel ?? 0;
+            string num = (index + 1).ToString();
+            if (index == 14) {
+                num = LegendUpgradeManagerSystem.TrialPassed.Value;
+            }
+            string text = LegendData.GetLevelTrialPreText(item.CWR(), MurasamaLegend.MurasamaOverride.Text_Lang_0, num);
+            tooltips.ReplacePlaceholder("[Lang4]", text, "");
+        }
 
         public static void SetDefaultsFunc(Item Item) {
             LoadWeaponData();

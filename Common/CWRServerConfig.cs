@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Terraria;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Config;
 
 namespace CalamityOverhaul.Common
@@ -9,9 +10,13 @@ namespace CalamityOverhaul.Common
     [BackgroundColor(49, 32, 36, 216)]
     public class CWRServerConfig : ModConfig
     {
+        public static LocalizedText ConfigChangePrefix { get; private set; }
+        public static LocalizedText ConfigChangeSuffix { get; private set; }
+
         //提醒自己不要用懒加载
         public static CWRServerConfig Instance { get; private set; }
         public override ConfigScope Mode => ConfigScope.ServerSide;
+
         private static class Data
         {
             internal const float MScaleOffset_MinValue = 0.2f;
@@ -150,6 +155,8 @@ namespace CalamityOverhaul.Common
 
         public override void OnLoaded() {
             Instance = this;
+            ConfigChangePrefix = this.GetLocalization(nameof(ConfigChangePrefix), () => "用户");
+            ConfigChangeSuffix = this.GetLocalization(nameof(ConfigChangeSuffix), () => "修改了服务端配置");
             Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
         }
 
@@ -161,8 +168,8 @@ namespace CalamityOverhaul.Common
         }
 
         public override bool AcceptClientChanges(ModConfig pendingConfig, int whoAmI, ref NetworkText message) {
-            string text = CWRLocText.GetTextValue("Config_1")
-                + Main.player[whoAmI].name + CWRLocText.GetTextValue("Config_2");
+            string text = ConfigChangePrefix.Value
+                + Main.player[whoAmI].name + ConfigChangeSuffix.Value;
             VaultUtils.Text(text);
             return true;
         }

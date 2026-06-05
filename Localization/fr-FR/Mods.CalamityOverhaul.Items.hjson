@@ -2504,3 +2504,23 @@ ArchiveFrameModule: {
 		Per-shot damage rises slightly with a small mana surcharge
 		''' */
 }
+
+CWRItem: {
+	TemperatureText: Combustion Temperature
+	InternalStoredEnergy: Internal Stored Energy
+	DeathModeItemText: Death Mode Item
+	LegendItemUpgradeDisable:
+		'''
+		This legendary weapon has been set to disable upgrades in the current world.
+		To lift this restriction, please re-enter the world.
+		'''
+	ItemLegendOnMouseLang: Appuyez sur [Maj] pour écouter l'histoire...
+}
+
+RMagicConch: {
+	DontUseMagicConch: You're being watched by a powerful creature...
+}
+
+InfiniteToiletItem: {
+	OnlyZenithCondition: Uniquement dans le monde de Zenith
+}

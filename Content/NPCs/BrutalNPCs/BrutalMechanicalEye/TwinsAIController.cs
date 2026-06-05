@@ -22,6 +22,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
@@ -30,8 +31,33 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
     /// 双子魔眼AI控制器
     /// 使用状态机模式管理战斗行为
     /// </summary>
-    internal class TwinsAIController : CWRNPCOverride, ICWRLoader
+    internal class TwinsAIController : CWRNPCOverride, ICWRLoader, ILocalizedModType
     {
+        public string LocalizationCategory => "BrutalNPCs";
+
+        public static LocalizedText Spazmatism_Text1 { get; private set; }
+        public static LocalizedText Spazmatism_Text2 { get; private set; }
+        public static LocalizedText Spazmatism_Text3 { get; private set; }
+        public static LocalizedText Spazmatism_Text4 { get; private set; }
+        public static LocalizedText Spazmatism_Text5 { get; private set; }
+        public static LocalizedText Spazmatism_Text6 { get; private set; }
+        public static LocalizedText Spazmatism_Text7 { get; private set; }
+
+        public override void SetStaticDefaults() {
+            Spazmatism_Text1 = this.GetLocalization(nameof(Spazmatism_Text1),
+                () => "EUX_001部署成功，行为写入:协同PCZ_001终结目标");
+            Spazmatism_Text2 = this.GetLocalization(nameof(Spazmatism_Text2),
+                () => "EUX_002部署成功，行为写入:协同PCZ_001终结目标");
+            Spazmatism_Text3 = this.GetLocalization(nameof(Spazmatism_Text3),
+                () => "EUX_001主结构受损，尝试从战场撤离...");
+            Spazmatism_Text4 = this.GetLocalization(nameof(Spazmatism_Text4),
+                () => "EUX_002主结构受损，尝试从战场撤离...");
+            Spazmatism_Text5 = this.GetLocalization(nameof(Spazmatism_Text5), () => "目标已被终结");
+            Spazmatism_Text6 = this.GetLocalization(nameof(Spazmatism_Text6), () => "正在撤离...");
+            Spazmatism_Text7 = this.GetLocalization(nameof(Spazmatism_Text7),
+                () => "任务失败，尝试从战场撤离...");
+        }
+
         #region 常量与枚举
 
         /// <summary>

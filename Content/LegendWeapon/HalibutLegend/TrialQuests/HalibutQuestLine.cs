@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.EntrustManager;
+﻿using CalamityOverhaul.Content.ADV.EntrustManager;
 using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
@@ -36,6 +35,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
         /// <summary>每条试炼的标题</summary>
         public static LocalizedText[] TrialTitles { get; private set; }
 
+        /// <summary>每条试炼的叙事摘要</summary>
+        public static LocalizedText[] TrialContents { get; private set; }
+
         #endregion
 
         private static IReadOnlyList<LegendTrialDefinition> trials;
@@ -67,15 +69,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
                 "造物巅峰",         //12 星流巨械+至尊灾厄
                 "回到海里",         //13 始源妖龙
             ];
+            TrialContents = new LocalizedText[TRIAL_COUNT];
             for (int i = 0; i < TRIAL_COUNT; i++) {
                 int idx = i;
                 TrialTitles[i] = this.GetLocalization($"Trial_{i}", () => defaultTitles[idx]);
+                TrialContents[i] = this.GetLocalization($"TextDictionary_Content_{i}", () => "");
             }
         }
 
         public override void PostSetupContent() {
             trials = LegendTrialRouteCatalog.CreateHalibut(TrialTitles,
-                static i => CWRLocText.GetText($"Halibut_TextDictionary_Content_{i}"),
+                static i => TrialContents[i],
                 BossRushTargetName, EventActiveFormat);
         }
 

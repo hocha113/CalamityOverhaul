@@ -10,6 +10,7 @@ using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
@@ -17,8 +18,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
     /// <summary>
     /// 妖刀
     /// </summary>
-    internal class MurasamaOverride : ItemOverride
+    internal class MurasamaOverride : ItemOverride, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend";
+
+        public static LocalizedText World_Text0 { get; private set; }
+        public static LocalizedText Text0 { get; private set; }
+        public static LocalizedText Text1 { get; private set; }
+        public static LocalizedText Text_Lang_0 { get; private set; }
+
         #region Data
         /// <summary>
         /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
@@ -277,6 +285,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
             };
         }
         public override void SetStaticDefaults() {
+            World_Text0 = this.GetLocalization(nameof(World_Text0), () => "上次升级的世界:<{0}>|记录等级:<{1}>");
+            Text0 = this.GetLocalization(nameof(Text0), () => "已解锁");
+            Text1 = this.GetLocalization(nameof(Text1), () => "未解锁 需要通过试炼[Unhook]");
+            Text_Lang_0 = this.GetLocalization(nameof(Text_Lang_0), () => "试炼:");
             Main.RegisterItemAnimation(TargetID, new DrawAnimationVertical(5, 13));
             ItemID.Sets.AnimatesAsSoul[TargetID] = true;
         }
