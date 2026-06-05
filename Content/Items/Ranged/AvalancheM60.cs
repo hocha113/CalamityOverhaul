@@ -60,7 +60,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             ShootPosToMouLengValue = 18;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
-            CanCreateCaseEjection = false;
         }
 
         public override void PostInOwner() {

@@ -60,7 +60,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             ShootPosNorlLengValue = 0;
             ShootPosToMouLengValue = 30;
             CanCreateSpawnGunDust = false;
-            CanCreateCaseEjection = false;
             ControlForce = 0;
             GunPressure = 0;
             EnableRecoilRetroEffect = false;

@@ -37,7 +37,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
             //CWRWeapon组
-            AddToggle(nameof(config.EnableCasingsEntity), () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
             AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
             AddToggle(nameof(config.MurasamaSpaceFragmentationBool), () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
             AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
@@ -58,7 +57,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             config.BiologyOverhaul = true;
 
             //CWRWeapon组
-            config.EnableCasingsEntity = true;
             config.ScreenVibration = true;
             config.MurasamaSpaceFragmentationBool = true;
             config.DomainConciseDisplay = false;

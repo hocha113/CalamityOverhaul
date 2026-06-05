@@ -52,7 +52,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             FiringDefaultSound = false;
             CanCreateSpawnGunDust = false;
             Onehanded = true;
-            CanCreateCaseEjection = false;
             InOwner_HandState_AlwaysSetInFireRoding = true;
         }
         public override void PostInOwner() {

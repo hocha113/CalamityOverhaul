@@ -132,7 +132,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetShootAttribute() {
             if (onFireR) {
                 SoundEngine.PlaySound(CWRSound.Dash, Owner.Center);
-                CanCreateCaseEjection = false;
                 CanCreateSpawnGunDust = false;
                 FiringDefaultSound = false;
             }
@@ -149,7 +148,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void PostShootEverthing() {
-            CanCreateCaseEjection = true;
             CanCreateSpawnGunDust = true;
             FiringDefaultSound = true;
             Item.UseSound = SoundID.Item36;
@@ -221,7 +219,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override void SetShootAttribute() {
             if (onFireR) {
                 SoundEngine.PlaySound(CWRSound.Dash, Owner.Center);
-                CanCreateCaseEjection = false;
                 CanCreateSpawnGunDust = false;
                 FiringDefaultSound = false;
             }
@@ -238,7 +235,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void PostShootEverthing() {
-            CanCreateCaseEjection = true;
             CanCreateSpawnGunDust = true;
             FiringDefaultSound = true;
             Item.UseSound = SoundID.Item36;

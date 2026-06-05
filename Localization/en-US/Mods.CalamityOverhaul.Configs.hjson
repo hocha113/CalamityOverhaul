@@ -40,11 +40,6 @@
 		Label: Lens Easing
 		Tooltip: When enabled, long distance rapid displacement will slow the lens, which avoids the feeling of being moved too fast
 	}
-	EnableCasingsEntity: {
-		Label: Enable Casings Entity
-		Tooltip: If you find the casings rolling around an eyesore, it's a good idea to turn this option off
-	}
-
 	BiologyOverhaul: {
 		Label: Biology Overhaul [c/06e33f:(Experimental)]
 		Tooltip:

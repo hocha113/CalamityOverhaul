@@ -94,7 +94,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 8;
             InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanCreateCaseEjection = false;
             CanCreateSpawnGunDust = false;
         }
 
@@ -129,7 +128,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             ShootPosNorlLengValue = -4;
             ShootPosToMouLengValue = 8;
             InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanCreateCaseEjection = false;
             CanCreateSpawnGunDust = false;
         }
 

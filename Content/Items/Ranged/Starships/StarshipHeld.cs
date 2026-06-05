@@ -46,7 +46,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             ShootPosNorlLengValue = -2;
             ShootPosToMouLengValue = 40;
             InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanCreateCaseEjection = false;
             CanCreateSpawnGunDust = false;
             CanCreateRecoilBool = false;
             FiringDefaultSound = false;

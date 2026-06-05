@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.GoreEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -16,11 +15,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
     public abstract class BaseGun : BaseHeldRanged
     {
         #region Data
-        /// <summary>
-        /// 一个专用与子类的属性，仅仅用于保证自动抛壳<see cref="AutomaticPolishing"/>会在正确的时机运行
-        /// ，一般来讲不要设置它，它会在一次射击中自动恢复为<see langword="true"/>
-        /// </summary>
-        protected bool automaticPolishingInShootStartFarg;
         /// <summary>
         /// 枪械旋转角矫正
         /// </summary>
@@ -45,14 +39,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 是否自动在一次单次射击后调用开火粒子，默认为<see langword="true"/>
         /// </summary>
         internal bool CanCreateSpawnGunDust = true;
-        /// <summary>
-        /// 是否自动在一次单次射击后调用抛壳函数，默认为<see langword="true"/>，如果<see cref="AutomaticPolishingEffect"/>为<see langword="true"/>，那么该属性将无效化
-        /// </summary>
-        internal bool CanCreateCaseEjection = true;
-        /// <summary>
-        /// 是否启用自动抛弹壳的行为，如果为<see langword="true"/>，那么枪械AI会在合适的时机自行调用<see cref="CaseEjection"/>函数
-        /// </summary>
-        public bool AutomaticPolishingEffect;
         /// <summary>
         /// 是否在<see cref="InOwner"/>执行后自动更新手臂参数，默认为<see langword="true"/>
         /// </summary>
@@ -163,10 +149,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         protected Vector2 CustomDrawOrig = Vector2.Zero;
         /// <summary>
-        /// 快速设置抛壳大小，默认为1
-        /// </summary>
-        protected float EjectCasingProjSize = 1;
-        /// <summary>
         /// 快捷获取该枪械的发射口位置
         /// </summary>
         public override Vector2 ShootPos => GetShootPos(ShootPosToMouLengValue, ShootPosNorlLengValue);
@@ -267,7 +249,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public override void PostSetRangedProperty() {
             if (IsCrossbow) {
                 CanCreateSpawnGunDust = false;
-                CanCreateCaseEjection = false;
             }
         }
 
@@ -396,23 +377,10 @@ namespace CalamityOverhaul.Content.RangedModify.Core
             if (SafeMouseInterfaceValue) {
                 FiringIncident();
             }
-            if (AutomaticPolishingEffect) {
-                AutomaticPolishing(Item.useTime);
-            }
             PostInOwner();
 
             if (!onFire && !onFireR && LazyRotationUpdate) {//在闲置期间要时刻更新待定的旋转角
                 oldSetRoting = ToMouseA;
-            }
-        }
-        /// <summary>
-        /// 一个自动抛壳的行为的二次封装
-        /// </summary>
-        protected void AutomaticPolishing(int maxTime) {
-            if (ShootCoolingValue == maxTime / 2 && maxTime > 0) {
-                SoundEngine.PlaySound(CWRSound.Gun_BoltAction with { Volume = 0.5f, PitchRange = (-0.05f, 0.05f) }, Projectile.Center);
-                CaseEjection();
-                automaticPolishingInShootStartFarg = false;
             }
         }
         /// <summary>
@@ -440,19 +408,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public virtual Vector2 GetShootPos(float toMouLeng, float norlLeng) {
             Vector2 norlVr = (Projectile.rotation + (DirSign > 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2)).ToRotationVector2();
             return Projectile.Center + Projectile.rotation.ToRotationVector2() * toMouLeng + norlVr * norlLeng;
-        }
-        /// <summary>
-        /// 一个快捷的抛壳方法，需要自行调用
-        /// </summary>
-        /// <param name="slp"></param>
-        public virtual void CaseEjection(float slp = 1) {
-            if (CWRMod.Instance.terrariaOverhaul != null && slp == 1
-                || !CWRServerConfig.Instance.EnableCasingsEntity) {
-                return;
-            }
-            Vector2 pos = Owner.Top + Owner.Top.To(ShootPos) / 2;
-            Vector2 vr = (Projectile.rotation - Main.rand.NextFloat(-0.1f, 0.1f) * DirSign).ToRotationVector2() * -Main.rand.NextFloat(3, 7) + Owner.velocity;
-            Gore.NewGore(Source2, pos, vr, CaseGore.PType, slp == 1 ? EjectCasingProjSize : slp);//这是早该有的改变
         }
         /// <summary>
         /// 一个快捷的创造开火烟尘粒子效果的方法
@@ -500,10 +455,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         public virtual void HanderSpwanDust() {
             SpawnGunFireDust(SpwanGunDustData.pos, SpwanGunDustData.velocity, SpwanGunDustData.splNum
                         , SpwanGunDustData.dustID1, SpwanGunDustData.dustID2, SpwanGunDustData.dustID3);
-        }
-
-        public virtual void HanderCaseEjection() {
-            CaseEjection();
         }
 
         public virtual void SetShootAttribute() {
@@ -563,9 +514,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     if (CanCreateSpawnGunDust) {
                         HanderSpwanDust();
                     }
-                    if (CanCreateCaseEjection && !AutomaticPolishingEffect) {
-                        HanderCaseEjection();
-                    }
                     if (CanCreateRecoilBool) {
                         CreateRecoil();
                     }
@@ -577,7 +525,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                     }
                 }
                 PostFiringShoot();
-                automaticPolishingInShootStartFarg = true;
                 ShootCoolingValue += MathHelper.Max((int)(Item.useTime / AttackSpeed), 1f);
                 onFireR = onFire = false;
                 PostShootEverthing();

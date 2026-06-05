@@ -40,11 +40,6 @@ CWRServerConfig: {
 		Label: Suavizado de la cámara
 		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
 	}
-	EnableCasingsEntity: {
-		Label: Habilitar entidades de casquillos
-		Tooltip: Si consideras que los casquillos regados por todas partes son molestos, desactivar esta opción es una buena idea.
-	}
-
 	BiologyOverhaul: {
 		Label: Modificación de comportamiento biológico[c/06e33f:(experimental)]
 		Tooltip:

@@ -40,11 +40,6 @@ CWRServerConfig: {
 		Label: Objektiv-Easing
 		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
-	EnableCasingsEntity: {
-		Label: Aktiviere Hülsenentitäten
-		Tooltip: Wenn Sie das störende Aufsammeln von Hülsen vermeiden möchten, ist das Deaktivieren dieser Option eine gute Idee
-	}
-
 	BiologyOverhaul: {
 		Label: Biologische Verhaltensüberlagerung[c/06e33f:(Experimentell)]
 		Tooltip:

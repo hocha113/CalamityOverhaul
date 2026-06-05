@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             RecoilOffsetRecoverValue = 0.6f;
             EnableRecoilRetroEffect = true;
             FiringDefaultSound = false;
-            CanCreateSpawnGunDust = CanCreateCaseEjection = false;
+            CanCreateSpawnGunDust = false;
             InOwner_HandState_AlwaysSetInFireRoding = true;
         }
 

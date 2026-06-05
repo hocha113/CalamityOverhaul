@@ -40,11 +40,6 @@ CWRServerConfig: {
 		Label: Adoucissement de la caméra
 		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
 	}
-	EnableCasingsEntity: {
-		Label: Activer les entités d'étui de cartouches
-		Tooltip: Si vous trouvez les douilles éparpillées dérangeantes, désactiver cette option serait une bonne idée
-	}
-
 	BiologyOverhaul: {
 		Label: Modification du comportement biologique [c/06e33f:(expérimental)]
 		Tooltip:

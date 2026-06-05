@@ -40,11 +40,6 @@ CWRServerConfig: {
 		Label: 镜头缓动
 		Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
 	}
-	EnableCasingsEntity: {
-		Label: 启用弹壳实体
-		Tooltip: 如果觉得滚动一地的弹壳很碍眼，关掉这个选项将是一个好主意
-	}
-
 	BiologyOverhaul: {
 		Label: 生物大修[c/06e33f:(实验性)]
 		Tooltip:

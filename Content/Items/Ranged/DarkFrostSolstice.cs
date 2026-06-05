@@ -63,7 +63,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             ShootPosToMouLengValue = 30;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
-            CanCreateCaseEjection = false;
             HandheldDisplay = false;
             SpwanGunDustData.dustID1 = 76;
             SpwanGunDustData.dustID2 = 149;

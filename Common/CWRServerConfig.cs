@@ -43,10 +43,6 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
-        public bool EnableCasingsEntity { get; set; }
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
         public bool ScreenVibration { get; set; }//武器屏幕振动
 
         [BackgroundColor(192, 54, 94, 255)]

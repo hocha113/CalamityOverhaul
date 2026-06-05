@@ -40,11 +40,6 @@ CWRServerConfig: {
 		Label: Suavizacao da Camera
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
-	EnableCasingsEntity: {
-		Label: Ativar Entidade de Carcacas
-		Tooltip: Se voce acha as carcacas rolando um incomodo, e uma boa ideia desativar esta opcao
-	}
-
 	BiologyOverhaul: {
 		Label: Reformulacao de Biologia [c/06e33f:(Experimental)]
 		Tooltip:

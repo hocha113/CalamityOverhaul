@@ -59,7 +59,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Onehanded = true;
             EnableRecoilRetroEffect = true;
             CanCreateSpawnGunDust = false;
-            CanCreateCaseEjection = false;
             RecoilRetroForceMagnitude = 6;
             InOwner_HandState_AlwaysSetInFireRoding = true;
         }

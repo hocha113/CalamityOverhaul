@@ -55,7 +55,6 @@ namespace CalamityOverhaul.Content.Items.Magic
             FiringDefaultSound = false;
             CanCreateSpawnGunDust = false;
             Onehanded = true;
-            CanCreateCaseEjection = false;
             InOwner_HandState_AlwaysSetInFireRoding = true;
         }
         public override void PostInOwner() {

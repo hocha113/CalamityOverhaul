@@ -49,7 +49,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
             ShootPosToMouLengValue = 22;
             RecoilRetroForceMagnitude = 5;
             EnableRecoilRetroEffect = true;
-            CanCreateCaseEjection = false;
             ForcedConversionTargetAmmoFunc = () => true;
             ToTargetAmmo = ModContent.ProjectileType<SnowQuayBall>();
             SpwanGunDustData.dustID1 = 76;
