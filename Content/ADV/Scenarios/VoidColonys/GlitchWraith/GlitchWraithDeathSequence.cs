@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.TileProcessors;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -80,10 +81,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
                 if (p.active && !p.dead) {
                     p.immune = false;
                     p.immuneTime = 0;
-                    PlayerDeathReason reason = PlayerDeathReason.ByCustomReason(
-                        Language.GetTextValue("Mods.CalamityOverhaul.DeathMessages.GlitchWraith", p.name)
-                    );
-                    p.KillMe(reason, p.statLifeMax2 * 10, 0);
+                    PlayerDeathReason pd = PlayerDeathReason.ByCustomReason(BloodAltarTP.SacrificeDeathReason.ToNetworkText(p.name));
+                    p.KillMe(pd, p.statLifeMax2 * 10, 0);
                 }
             }
             targetWhoAmI = -1;

@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.HackTimes.Targets;
 using System;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             if (item.accessory) return HackTime.ItemScanAccessory.Value;
             if (item.ammo > 0) return HackTime.ItemScanAmmo.Value;
             if (item.consumable) return HackTime.ItemScanConsumable.Value;
-            if (item.createTile >= 0 || item.createWall >= 0) return HackTime.ItemScanPlaceable.Value;
+            if (item.createTile >= TileID.Dirt || item.createWall >= 0) return HackTime.ItemScanPlaceable.Value;
             if (item.material) return HackTime.ItemScanMaterial.Value;
             if (item.questItem) return HackTime.ItemScanQuest.Value;
             return HackTime.ItemScanMisc.Value;

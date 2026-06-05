@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
 {
     internal class WGGLifeWeaver : ModItem, ILocalizedModType
     {
-        public string LocalizationCategory => "Industrials";
+        public override string LocalizationCategory => "Industrials";
 
         public static LocalizedText TurretBatteryDepleted { get; private set; }
 

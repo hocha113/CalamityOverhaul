@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         private bool isOpen;
 
         /// <summary>外部只读访问</summary>
-        public bool IsOpen => isOpen;
+        public new bool IsOpen => isOpen;
 
         /// <summary>当前面板右边缘X坐标（含滑动动画），用于其他UI联动定位</summary>
         public int PanelRightEdge { get; private set; }

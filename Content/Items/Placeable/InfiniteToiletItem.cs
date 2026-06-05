@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Placeable
 {
     internal class InfiniteToiletItem : ModItem, ILocalizedModType
     {
-        public string LocalizationCategory => "Items.InfiniteToiletItem";
+        public override string LocalizationCategory => "Items.InfiniteToiletItem";
 
         public static LocalizedText OnlyZenithCondition { get; private set; }
 

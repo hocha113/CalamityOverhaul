@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     internal class HalibutOverride : ItemOverride, ILocalizedModType
     {
-        public string LocalizationCategory => "Legend";
+        public override string LocalizationCategory => "Legend";
 
         public static LocalizedText FishByStudied { get; private set; }
         public static LocalizedText FishOnStudied { get; private set; }

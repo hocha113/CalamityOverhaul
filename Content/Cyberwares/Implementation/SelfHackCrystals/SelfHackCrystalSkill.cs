@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Cyberwares.Skills;
+﻿using CalamityOverhaul.Content.Cyberwares.Skills;
 using CalamityOverhaul.Content.RAMSystems;
 using Terraria;
 using Terraria.Localization;
@@ -33,9 +33,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                     return 0f;
                 }
                 int frames = p.GetModPlayer<SelfHackCrystalPlayer>().SkillCooldownTimer;
-                if (SelfHackCrystal.SkillCooldown <= 0) {
-                    return 1f;
-                }
                 return 1f - MathHelper.Clamp((float)frames / SelfHackCrystal.SkillCooldown, 0f, 1f);
             }
         }

@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
-using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
+﻿using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
 using System;

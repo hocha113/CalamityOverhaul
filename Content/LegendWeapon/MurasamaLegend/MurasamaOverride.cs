@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
     /// </summary>
     internal class MurasamaOverride : ItemOverride, ILocalizedModType
     {
-        public string LocalizationCategory => "Legend";
+        public override string LocalizationCategory => "Legend";
 
         public static LocalizedText World_Text0 { get; private set; }
         public static LocalizedText Text0 { get; private set; }

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Modifys
 {
     internal class RMagicConch : ItemOverride, ILocalizedModType
     {
-        public string LocalizationCategory => "Items.RMagicConch";
+        public override string LocalizationCategory => "Items.RMagicConch";
 
         public static LocalizedText DontUseMagicConch { get; private set; }
 
