@@ -9,8 +9,13 @@ HalibutOverride: {
 		[i:CalamityMod/HalibutCannon]:
 		Dieser Fisch wurde erforscht.
 		'''
-	// DisplayName: 大比目鱼
-	// Tooltip: ""
+	DisplayName: Halibut
+	Tooltip:
+		'''
+		Verwandelt Gewehrkugeln in Meeresgeschosse
+		[Lang4]
+		legend_Text
+		'''
 }
 
 HalibutText: {
@@ -176,8 +181,33 @@ MurasamaOverride: {
 	Text0: Entsperrt
 	Text1: Nicht entsperrt, benötigt Trial [Unhook]
 	Text_Lang_0: Prüfung:
-	// DisplayName: MurasamaOverride
-	// Tooltip: ""
+	DisplayName: Murasama-Geisterklinge
+	Tooltip:
+		'''
+		Rechtsklick, um zu zielen und Schwertenergie zu sammeln. Linksklick führt einen Nahkampfangriff aus, der bei einem Treffer die Schwertenergie auflädt.
+		Wenn sich starke Feinde in der Nähe befinden, lädt sich die Schwertenergie langsam von selbst auf.
+		Bei voller Schwertenergie [KEY1] drücken, um die Klinge abzufeuern. Während des Fluges der Klinge Linksklick, um einen aufsteigenden Schnitt auszuführen [Lang1]
+		Bei einem Treffer des aufsteigenden Schnitts wird Waffe 1 aufgeladen. [KEY2] drücken, um 1 Punkt Waffenladungswert zu verbrauchen und einen abwärts gerichteten Schlag auszuführen [Lang2]
+		Bei maximaler Waffenladungswert von 10 Punkten wird bei einem weiteren Treffer des aufsteigenden Schnitts eine Finisher-Technik ausgelöst [Lang3]
+		[c/ff4500:"Eine Kettensägenklinge wäre besser"]
+		[Lang4]
+		legend_Text
+		'''
+}
+
+SHPCOverride: {
+	DisplayName: SHPC
+	Tooltip:
+		'''
+		Feuert instabile, konzentrierte Seelenenergiekugeln ab, die verweilen und nach einer Verzögerung explodieren
+		Nach dem Zerfall setzen die Kugeln verfolgende Seelen und einsammelbare Restseelen frei
+		Die Kugeleffekte variieren je nach verwendetem Seelentyp
+		Mache einen Rechtsklick, um die Maschine als Vakuum zu nutzen und Restseelen einzusaugen
+		Beim Loslassen wird ein Strom aus Seelenlasern abgefeuert, der mit der Anzahl der eingesaugten Seelen skaliert
+		Halte die Umschalttaste (Shift), um das Seelenkern-Kontrollfeld zu öffnen
+		[Lang4]
+		legend_Text
+		'''
 }
 
 LegendUpgradeManagerSystem: {

@@ -1,43 +1,5 @@
-HalibutOverride: {
-	DisplayName: Halibut
-	Tooltip:
-		'''
-		Converts Musket balls into a stream of Ocean Current
-		[Lang4]
-		legend_Text
-		'''
-}
 
-MurasamaOverride: {
-	DisplayName: Murasama
-	Tooltip:
-		'''
-		Right-click to aim and charge the sword's energy. 
-		When a target is hit with a true melee attack using the left-click, the sword's energy will be charged. 
-		If there are powerful enemies nearby, the sword's energy will slowly charge on its own.
-		When the sword's energy is fully charged, press [KEY1] to release the blade. 
-		During the blade's flight, press the left-click to perform an Ascending Slash. [Lang1]
-		Hitting an enemy with the Ascending Slash will charge Weapon 1. 
-		Press [KEY2] to consume 1 point of weapon charge and perform a downward strike. [Lang2]
-		When the weapon charge reaches the maximum value of 10 points, 
-		hitting an enemy with the Ascending Slash again will trigger a finishing move. [Lang3]
-		[c/ff4500:" It would be better if this were a chainsaw sword "]
-		[Lang4]
-		legend_Text
-		'''
-}
 
-SHPCOverride: {
-	DisplayName: SHPC
-	Tooltip:
-		'''
-		Left-click to fire three laser beams
-		Right-click and hold to charge energy
-		All attacks can be enhanced by the field
-		[Lang4]
-		legend_Text
-		'''
-}
 
 ModifyChargingStationItem: {
 	DisplayName: Charging Station

@@ -14,8 +14,9 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
-    internal class SHPCOverride : ItemOverride
+    internal class SHPCOverride : ItemOverride, ILocalizedModType
     {
+        public override string LocalizationCategory => "Legend";
         /// <summary>
         /// 目标ID，指向本模组独立物品 <see cref="SHPCItem"/>
         /// </summary>

@@ -9,8 +9,13 @@ HalibutOverride: {
 		[i:CalamityMod/HalibutCannon]:
 		Este peixe foi pesquisado.
 		'''
-	// DisplayName: 大比目鱼
-	// Tooltip: ""
+	DisplayName: Halibut
+	Tooltip:
+		'''
+		Converte balas de mosquete em um fluxo de Corrente Oceanica
+		[Lang4]
+		texto_lenda
+		'''
 }
 
 HalibutText: {
@@ -176,8 +181,34 @@ MurasamaOverride: {
 	Text0: Desbloqueado
 	Text1: Nao desbloqueado. Necessita Prova [Unhook]
 	Text_Lang_0: Provação:
-	// DisplayName: MurasamaOverride
-	// Tooltip: ""
+	DisplayName: Murasama
+	Tooltip:
+		'''
+		Clique direito para mirar e carregar a energia da espada.
+		Quando um alvo e atingido com um ataque corpo a corpo verdadeiro usando o clique esquerdo, a energia da espada sera carregada.
+		Se houver inimigos poderosos por perto, a energia da espada carregara lentamente por conta propria.
+		Quando a energia da espada estiver totalmente carregada, pressione [KEY1] para liberar a lamina.
+		Durante o voo da lamina, pressione o clique esquerdo para realizar um Corte Ascendente. [Lang1]
+		Acertar um inimigo com o Corte Ascendente carregara a Arma 1.
+		Pressione [KEY2] para consumir 1 ponto de carga da arma e realizar um golpe descendente. [Lang2]
+		Quando a carga da arma atingir o valor maximo de 10 pontos,
+		acertar um inimigo com o Corte Ascendente novamente desencadeara um golpe final. [Lang3]
+		[c/ff4500:"Seria melhor se isso fosse uma espada motosserra"]
+		[Lang4]
+		texto_lenda
+		'''
+}
+
+SHPCOverride: {
+	DisplayName: SHPC
+	Tooltip:
+		'''
+		Clique esquerdo para disparar tres feixes de laser
+		Clique direito e segure para carregar energia
+		Todos os ataques podem ser melhorados pelo campo
+		[Lang4]
+		texto_lenda
+		'''
 }
 
 LegendUpgradeManagerSystem: {

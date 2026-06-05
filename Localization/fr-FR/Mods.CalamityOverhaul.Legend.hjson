@@ -9,8 +9,13 @@ HalibutOverride: {
 		[i:CalamityMod/HalibutCannon]:
 		Ce poisson a été étudié.
 		'''
-	// DisplayName: 大比目鱼
-	// Tooltip: ""
+	DisplayName: Hippoglosse
+	Tooltip:
+		'''
+		Transforme les balles de fusil en projectiles marins
+		[Lang4]
+		legend_Text
+		'''
 }
 
 HalibutText: {
@@ -176,8 +181,30 @@ MurasamaOverride: {
 	Text0: Déverrouillé
 	Text1: Non déverrouillé - Requiert l'épreuve [Unhook]
 	Text_Lang_0: Épreuves :
-	// DisplayName: MurasamaOverride
-	// Tooltip: ""
+	DisplayName: Muramasa
+	Tooltip:
+		'''
+		Viser avec le clic droit et accumuler l'énergie de l'épée. Utiliser le clic gauche pour une attaque de mêlée véritable, chargée d'énergie d'épée.
+		Si des ennemis puissants sont autour, l'énergie de l'épée se rechargera lentement.
+		Une fois que l'énergie de l'épée est pleine, appuyer sur [KEY1] pour lancer la lame. En cours de vol, appuyer sur le clic gauche pour exécuter un coup Ascension de Dragon [Lang1]
+		Ascension de Dragon recharge l'arme 1 après avoir touché un ennemi. Appuyer sur [KEY2] consomme 1 point de recharge d'arme, effectuant une attaque de plongée [Lang2]
+		Une fois que la valeur de recharge de l'arme atteint son maximum de 10 points, toucher à nouveau un ennemi avec Ascension de Dragon déclenchera une compétence finale  [Lang3]
+		[c/ff4500:"Il serait mieux avec une épée à chaîne"]
+		[Lang4]
+		legend_Text
+		'''
+}
+
+SHPCOverride: {
+	DisplayName: SHPC
+	Tooltip:
+		'''
+		Clic gauche pour tirer trois faisceaux laser
+		Maintenir clic droit pour charger l'énergie
+		Toutes les attaques peuvent être renforcées par le Domaine
+		[Lang4]
+		legend_Text
+		'''
 }
 
 LegendUpgradeManagerSystem: {

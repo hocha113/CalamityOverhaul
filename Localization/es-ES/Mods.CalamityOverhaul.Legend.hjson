@@ -9,8 +9,13 @@ HalibutOverride: {
 		[i:CalamityMod/HalibutCannon]:
 		Este pez ha sido investigado.
 		'''
-	// DisplayName: 大比目鱼
-	// Tooltip: ""
+	DisplayName: Halibut
+	Tooltip:
+		'''
+		Convierte balas de mosquete en proyectiles oceánicos.
+		[Lang4]
+		legend_Text
+		'''
 }
 
 HalibutText: {
@@ -176,8 +181,36 @@ MurasamaOverride: {
 	Text0: Desbloqueado
 	Text1: No desbloqueado. Necesita Prueba [Unhook]
 	Text_Lang_0: Prueba:
-	// DisplayName: MurasamaOverride
-	// Tooltip: ""
+	DisplayName: Murasama
+	Tooltip:
+		'''
+		Haz clic derecho para apuntar y acumular energía de la espada. 
+		Haz clic izquierdo para realizar un ataque cuerpo a cuerpo verdadero, 
+		cargando la energía de la espada al golpear al objetivo.
+		Si hay enemigos poderosos alrededor, la energía de la espada se cargará lentamente por sí sola.
+		Cuando la energía de la espada esté completamente cargada, 
+		presiona [KEY1] para lanzar la hoja. Durante el vuelo de la hoja, 
+		presiona clic izquierdo para ejecutar el golpe ascendente [Lang1].
+		Si el golpe ascendente golpea a un enemigo, cargará el arma 1. 
+		Presiona [KEY2] para consumir 1 punto de carga de arma y realizar un ataque de golpe descendente [Lang2].
+		Cuando el valor de carga de la arma alcance el máximo de 10 puntos, 
+		un nuevo golpe ascendente que golpee a un enemigo activará un movimiento final [Lang3].
+		[c/ff4500:"Sería mejor si tuviera una espada de cadena."]
+		[Lang4]
+		legend_Text
+		'''
+}
+
+SHPCOverride: {
+	DisplayName: SHPC
+	Tooltip:
+		'''
+		Clic izquierdo para disparar tres rayos láser
+		Mantén clic derecho para cargar energía
+		Todos los ataques pueden ser potenciados por el Dominio
+		[Lang4]
+		legend_Text
+		'''
 }
 
 LegendUpgradeManagerSystem: {

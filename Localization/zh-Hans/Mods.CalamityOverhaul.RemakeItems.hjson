@@ -1,39 +1,4 @@
-HalibutOverride: {
-	DisplayName: 大比目鱼
-	Tooltip:
-		'''
-		火枪子弹会被转化为海洋射流
-		[Lang4]
-		legend_Text
-		'''
-}
 
-MurasamaOverride: {
-	DisplayName: 鬼妖村正
-	Tooltip:
-		'''
-		右键瞄准并积蓄剑之能量。左键进行真近战攻击击中目标时，将为剑之能量充能。
-		如果周围存在强大的敌人，剑之能量将会缓慢自行充能。
-		当剑之能量蓄满后，按下[KEY1]发射刀身。在刀身飞行过程中，按下左键执行升龙斩击 [Lang1]
-		升龙斩击命中敌人后会为武器1充能。按下[KEY2]消耗1点武器充能值，进行一次下砸攻击 [Lang2]
-		当武器充能值达到最大值10点后，再次用升龙斩击命中敌人将触发终结技  [Lang3]
-		[c/ff4500:"如果有链锯剑会更好"]
-		[Lang4]
-		legend_Text
-		'''
-}
-
-SHPCOverride: {
-	DisplayName: SHPC
-	Tooltip:
-		'''
-		左键发射三道激光束
-		长按右键进行蓄能
-		所有攻击均可受到领域强化
-		[Lang4]
-		legend_Text
-		'''
-}
 
 ModifyChargingStationItem: {
 	DisplayName: 充能站
