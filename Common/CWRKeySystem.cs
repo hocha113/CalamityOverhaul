@@ -6,7 +6,6 @@ namespace CalamityOverhaul.Common
     internal class CWRKeySystem : ModSystem, ILocalizedModType
     {
         public string LocalizationCategory => "Keybinds";
-
         public static LocalizedText Notbound { get; private set; }
         public static ModKeybind QuestLog_Key { get; private set; }
         public static ModKeybind QuestManager_Key { get; private set; }
