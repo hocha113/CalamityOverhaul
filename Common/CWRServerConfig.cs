@@ -43,19 +43,7 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
-        public bool EnableSwordLight { get; set; }
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
         public bool EnableCasingsEntity { get; set; }
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool BowArrowDraw { get; set; }
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(false)]
-        public bool WeaponLazyRotationAngle { get; set; }
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
@@ -136,10 +124,6 @@ namespace CalamityOverhaul.Common
         [Range(1f, 2f)]
         [DefaultValue(1)]
         public float DialogueBox_Scale_Value { get; set; }//对话框缩放比例
-
-        [BackgroundColor(45, 175, 225, 255)]
-        [DefaultValue(false)]
-        public bool SignalTowerDecryptionAutoPlay { get; set; }//信号塔破译傻瓜模式：开启后小游戏自动演示正确解答
 
         public override void OnLoaded() {
             Instance = this;

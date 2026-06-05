@@ -40,27 +40,9 @@ CWRServerConfig: {
 		Label: Suavizado de la cámara
 		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
 	}
-	BowArrowDraw: {
-		Label: Dibujar arco y flecha
-		Tooltip:
-			'''
-			Cuando el jugador usa un arco para atacar, se dibujará en tiempo real la animación correspondiente de la flecha.
-			Está habilitado por defecto, se puede ajustar según las preferencias personales.
-			'''
-	}
-
 	EnableCasingsEntity: {
 		Label: Habilitar entidades de casquillos
 		Tooltip: Si consideras que los casquillos regados por todas partes son molestos, desactivar esta opción es una buena idea.
-	}
-
-	WeaponLazyRotationAngle: {
-		// Label: Weapon Inertia Rotation Angle Update
-		/* Tooltip:
-			'''
-			If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
-			where the facing direction changes only once when firing.
-			''' */
 	}
 
 	BiologyOverhaul: {
@@ -70,15 +52,6 @@ CWRServerConfig: {
 			[c/c20909:Incompleto]
 			Habilitado por defecto, modificará el comportamiento de IA de algunos biomas, como la IA de los jefes bajo el módulo de muerte.
 			Esto puede aumentar drásticamente la dificultad del juego; se puede elegir desactivarlo según las preferencias personales.
-			'''
-	}
-
-	EnableSwordLight: {
-		Label: Habilitar luz de espada
-		Tooltip:
-			'''
-			Habilitado por defecto, muchas armas de tipo espada tendrán brillantes efectos de luz.
-			En la mayoría de los casos, esto hará que el juego se vea más impresionante.
 			'''
 	}
 
@@ -142,11 +115,6 @@ CWRServerConfig: {
 	GenSylvanOutpost: {
 		// Label: Generate Sylvan Outpost
 		// Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
-	}
-
-	SignalTowerDecryptionAutoPlay: {
-		// Label: Signal Tower Decryption Auto Play
-		// Tooltip: ""
 	}
 
 	ConfigChangePrefix: Usuario

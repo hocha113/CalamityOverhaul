@@ -625,7 +625,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
 
-            if (IsCrossbow && CanDrawCrossArrow && CWRServerConfig.Instance.BowArrowDraw) {
+            if (IsCrossbow && CanDrawCrossArrow) {
                 DrawBolt(drawPos, lightColor);
             }
         }

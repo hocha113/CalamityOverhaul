@@ -168,12 +168,7 @@ namespace CalamityOverhaul.Content.MeleeModify.Core
         /// 是否绘制弧光，默认为<see langword="false"/>
         /// </summary>
         protected bool canDrawSlashTrail {
-            get {
-                if (!CWRServerConfig.Instance.EnableSwordLight) {
-                    return false;
-                }
-                return _canDrawSlashTrail;
-            }
+            get => _canDrawSlashTrail;
             set => _canDrawSlashTrail = value;
         }
         /// <summary>

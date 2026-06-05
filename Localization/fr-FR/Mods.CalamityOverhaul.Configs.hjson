@@ -40,27 +40,9 @@ CWRServerConfig: {
 		Label: Adoucissement de la caméra
 		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
 	}
-	BowArrowDraw: {
-		Label: Dessin dynamique des flèches de l'arc
-		Tooltip:
-			'''
-			Lorsque les joueurs attaquent avec un arc, une animation dynamique des flèches correspondantes est affichée en temps réel
-			Activé par défaut, ajustable selon les préférences personnelles
-			'''
-	}
-
 	EnableCasingsEntity: {
 		Label: Activer les entités d'étui de cartouches
 		Tooltip: Si vous trouvez les douilles éparpillées dérangeantes, désactiver cette option serait une bonne idée
-	}
-
-	WeaponLazyRotationAngle: {
-		// Label: Weapon Inertia Rotation Angle Update
-		/* Tooltip:
-			'''
-			If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
-			where the facing direction changes only once when firing.
-			''' */
 	}
 
 	BiologyOverhaul: {
@@ -70,15 +52,6 @@ CWRServerConfig: {
 			[c/c20909:Non achevé]
 			Activé par défaut, modifie le comportement de l'IA de certaines créatures, comme les BossAI dans le module de mort
 			Cela peut considérablement augmenter la difficulté du jeu, et peut être désactivé selon les préférences personnelles
-			'''
-	}
-
-	EnableSwordLight: {
-		Label: Activer l'éclat de l'épée
-		Tooltip:
-			'''
-			Activé par défaut, de nombreuses épées auront des effets lumineux éclatants.
-			Dans la plupart des cas, cela rendra le jeu plus cool.
 			'''
 	}
 
@@ -142,11 +115,6 @@ CWRServerConfig: {
 	GenSylvanOutpost: {
 		// Label: Generate Sylvan Outpost
 		// Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
-	}
-
-	SignalTowerDecryptionAutoPlay: {
-		// Label: Signal Tower Decryption Auto Play
-		// Tooltip: ""
 	}
 
 	ConfigChangePrefix: User

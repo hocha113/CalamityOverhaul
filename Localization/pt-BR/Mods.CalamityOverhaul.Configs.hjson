@@ -40,27 +40,9 @@ CWRServerConfig: {
 		Label: Suavizacao da Camera
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
-	BowArrowDraw: {
-		Label: Desenhar flecha da corda do arco
-		Tooltip:
-			'''
-			Quando o jogador usa a classe de arco para atacar, a animacao da flecha correspondente sera desenhada em tempo real
-			Esta ativado por padrao e pode ser configurado de acordo com preferencias pessoais
-			'''
-	}
-
 	EnableCasingsEntity: {
 		Label: Ativar Entidade de Carcacas
 		Tooltip: Se voce acha as carcacas rolando um incomodo, e uma boa ideia desativar esta opcao
-	}
-
-	WeaponLazyRotationAngle: {
-		Label: Atualizacao do Angulo de Rotacao Inercial da Arma
-		Tooltip:
-			'''
-			Se ativado, torna a animacao de uso de armas de mao mais proxima do jogo original,
-			onde a direcao de enfrentamento muda apenas uma vez ao atirar.
-			'''
 	}
 
 	BiologyOverhaul: {
@@ -70,15 +52,6 @@ CWRServerConfig: {
 			[c/c20909:Incompleto]
 			Ativado por padrao, isso modificara o comportamento de IA de certas criaturas, como chefes no modo morte.
 			Isso pode aumentar significativamente a dificuldade do jogo, entao voce pode optar por desativar com base na sua preferencia pessoal.
-			'''
-	}
-
-	EnableSwordLight: {
-		Label: Ativar Luz da Espada
-		Tooltip:
-			'''
-			Ativado por padrao, muitas armas de espada terao uma luz ofuscante
-			Na grande maioria dos casos, isso torna o jogo mais legal
 			'''
 	}
 
@@ -142,11 +115,6 @@ CWRServerConfig: {
 	GenSylvanOutpost: {
 		Label: Gerar Posto Avancado Silvano
 		Tooltip: Gera postos avancados de madeira de elfos ou guardioes da floresta nas profundezas da floresta.
-	}
-
-	SignalTowerDecryptionAutoPlay: {
-		Label: Reproducao Automatica de Decifracao da Torre de Sinal
-		Tooltip: ""
 	}
 
 	ConfigChangePrefix: Usuario

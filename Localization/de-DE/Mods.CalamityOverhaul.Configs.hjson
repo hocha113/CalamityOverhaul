@@ -40,27 +40,9 @@ CWRServerConfig: {
 		Label: Objektiv-Easing
 		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
-	BowArrowDraw: {
-		Label: Bogenpfeilzeichnung
-		Tooltip:
-			'''
-			Zeigt beim Angriff mit einem Bogen animierte Pfeilzeichnungen in Echtzeit an
-			Standardmäßig aktiviert, kann je nach persönlicher Vorliebe eingestellt werden
-			'''
-	}
-
 	EnableCasingsEntity: {
 		Label: Aktiviere Hülsenentitäten
 		Tooltip: Wenn Sie das störende Aufsammeln von Hülsen vermeiden möchten, ist das Deaktivieren dieser Option eine gute Idee
-	}
-
-	WeaponLazyRotationAngle: {
-		// Label: Weapon Inertia Rotation Angle Update
-		/* Tooltip:
-			'''
-			If enabled, it makes the usage animation of handheld weapons closer to the vanilla game,
-			where the facing direction changes only once when firing.
-			''' */
 	}
 
 	BiologyOverhaul: {
@@ -70,15 +52,6 @@ CWRServerConfig: {
 			[c/c20909:Nicht vollständig implementiert]
 			Standardmäßig aktiviert, ändert das Verhalten einiger Kreaturen, z. B. Boss-KIs unter dem Einfluss des Tod-Moduls
 			Dies kann die Spielherausforderung erhöhen, je nach Vorliebe kann dies deaktiviert werden
-			'''
-	}
-
-	EnableSwordLight: {
-		Label: Schwertlicht aktivieren
-		Tooltip:
-			'''
-			Standardmäßig aktiviert, viele Schwertwaffen werden schillernde Lichteffekte haben.
-			In den meisten Fällen wird dies das Spiel cooler machen.
 			'''
 	}
 
@@ -142,11 +115,6 @@ CWRServerConfig: {
 	GenSylvanOutpost: {
 		// Label: Generate Sylvan Outpost
 		// Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
-	}
-
-	SignalTowerDecryptionAutoPlay: {
-		// Label: Signal Tower Decryption Auto Play
-		// Tooltip: ""
 	}
 
 	ConfigChangePrefix: User

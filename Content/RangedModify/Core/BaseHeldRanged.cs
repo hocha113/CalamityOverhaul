@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 是否启用惰性旋转角更新，如果为<see langword="true"/>，武器的旋转角度只会在开火前更新一次
         /// </summary>
         public bool LazyRotationUpdate {
-            get => _lazyRotationUpdate || CWRServerConfig.Instance.WeaponLazyRotationAngle;
+            get => _lazyRotationUpdate;
             set => _lazyRotationUpdate = value;
         }
         /// <summary>

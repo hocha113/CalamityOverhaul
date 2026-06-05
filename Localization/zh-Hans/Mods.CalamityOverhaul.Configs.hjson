@@ -40,27 +40,9 @@ CWRServerConfig: {
 		Label: 镜头缓动
 		Tooltip: 启用后，长距离快速位移会让镜头具有缓动，这避免了移动过快所带来的违和感
 	}
-	BowArrowDraw: {
-		Label: 绘制弓弦箭矢
-		Tooltip:
-			'''
-			玩家使用弓类进行攻击时，会实时绘制出对应的箭矢动画
-			默认开启，可以根据个人喜好进行设置
-			'''
-	}
-
 	EnableCasingsEntity: {
 		Label: 启用弹壳实体
 		Tooltip: 如果觉得滚动一地的弹壳很碍眼，关掉这个选项将是一个好主意
-	}
-
-	WeaponLazyRotationAngle: {
-		Label: 武器惰性旋转角更新
-		Tooltip:
-			'''
-			如果启用，会让手持类武器的使用动画更加接近原版，
-			使用的朝向将只在开火时改变一次
-			'''
 	}
 
 	BiologyOverhaul: {
@@ -70,15 +52,6 @@ CWRServerConfig: {
 			[c/c20909:未完成]
 			默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
 			这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
-			'''
-	}
-
-	EnableSwordLight: {
-		Label: 启用刀光
-		Tooltip:
-			'''
-			默认开启，许多刀剑类武器将会拥有炫彩亮丽的刀光
-			在绝大多数情况下，这会让游戏变得更酷
 			'''
 	}
 
@@ -142,17 +115,6 @@ CWRServerConfig: {
 	GenSylvanOutpost: {
 		Label: 生成森之哨站
 		Tooltip: 在森林深处生成木制的精灵或森林守卫哨站
-	}
-
-	SignalTowerDecryptionAutoPlay: {
-		Label: 信号塔破译傻瓜模式
-		Tooltip:
-			'''
-			开启后，信号塔解密的破译小游戏将自动演示正确解答
-			游戏会在新一轮生成后自动按正确路径点击字节块
-			既保证演出完整性，也解决玩家卡关的困扰
-			默认关闭，保留原有交互挑战
-			'''
 	}
 
 	ConfigChangePrefix: 用户

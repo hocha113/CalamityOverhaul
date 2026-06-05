@@ -37,10 +37,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
             //CWRWeapon组
-            AddToggle(nameof(config.EnableSwordLight), () => config.EnableSwordLight, v => config.EnableSwordLight = v, false);
             AddToggle(nameof(config.EnableCasingsEntity), () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
-            AddToggle(nameof(config.BowArrowDraw), () => config.BowArrowDraw, v => config.BowArrowDraw = v, false);
-            AddToggle(nameof(config.WeaponLazyRotationAngle), () => config.WeaponLazyRotationAngle, v => config.WeaponLazyRotationAngle = v, false);
             AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
             AddToggle(nameof(config.MurasamaSpaceFragmentationBool), () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
             AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
@@ -61,10 +58,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             config.BiologyOverhaul = true;
 
             //CWRWeapon组
-            config.EnableSwordLight = true;
             config.EnableCasingsEntity = true;
-            config.BowArrowDraw = true;
-            config.WeaponLazyRotationAngle = false;
             config.ScreenVibration = true;
             config.MurasamaSpaceFragmentationBool = true;
             config.DomainConciseDisplay = false;
