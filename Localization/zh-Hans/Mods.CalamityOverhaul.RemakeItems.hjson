@@ -1,4 +1,4 @@
-ModifyChargingStationItem: {
+﻿ModifyChargingStationItem: {
 	DisplayName: 充能站
 	Tooltip:
 		'''
@@ -21,10 +21,10 @@ DyeVatItem: {
 }
 
 RDemonConch: {
-	// DisplayName: 恶魔海螺
-	/* Tooltip:
+	DisplayName: 恶魔海螺
+	Tooltip:
 		'''
 		仔细听，你会听到尖叫声
 		“小心”
-		''' */
+		'''
 }

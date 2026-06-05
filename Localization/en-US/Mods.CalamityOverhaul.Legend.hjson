@@ -596,7 +596,7 @@ MoldProcessingUI: {
 	UnknownName: ??????
 	ProgressFormat: "{0}/{1}"
 	ShardSuffix: SHARDS
-	EmptyCandidates: "// no compatible modules in inventory"
+	EmptyCandidates: "// No matching modules in inventory to salvage"
 	CloseHint: ESC TO CLOSE
 	DecomposeHint: Click a module to decompose it
 	CodexHint: Click a discovered mold to pin it as reforge target
