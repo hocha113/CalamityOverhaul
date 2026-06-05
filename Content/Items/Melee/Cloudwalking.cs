@@ -282,22 +282,18 @@ namespace CalamityOverhaul.Content.Items.Melee
                 float toAxeAngle = toAxe.ToRotation();
                 Owner.itemRotation = (float)Math.Atan2(toAxe.Y * lockedDirection
                     , Math.Abs(toAxe.X)) * lockedDirection;
-                if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                    float armAngle = toAxeAngle - MathHelper.PiOver2;
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, armAngle);
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters
-                        , armAngle + 0.22f * lockedDirection);
-                }
+                float armAngle = toAxeAngle - MathHelper.PiOver2;
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, armAngle);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters
+                    , armAngle + 0.22f * lockedDirection);
             }
             else {
                 //蓄力/收手阶段双臂举起跟随斧头
                 Owner.itemRotation = currentRotation;
-                if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                    float armAngle = currentRotation - MathHelper.PiOver2;
-                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armAngle);
-                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full
-                        , armAngle + 0.15f * lockedDirection);
-                }
+                float armAngle = currentRotation - MathHelper.PiOver2;
+                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armAngle);
+                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full
+                    , armAngle + 0.15f * lockedDirection);
                 Projectile.Center = axePivot;
             }
 
@@ -378,10 +374,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return false;
-            }
-
             Texture2D tex = TextureAssets.Item[ModContent.ItemType<Cloudwalking>()].Value;
             Vector2 origin = tex.Size() / 2f;
             float drawRot = currentRotation - TextureBladeAngle;

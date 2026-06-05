@@ -19,20 +19,12 @@ namespace CalamityOverhaul.Common
 
         private static class Data
         {
-            internal const float MScaleOffset_MinValue = 0.2f;
-            internal const float MScaleOffset_MaxValue = 1f;
-            internal const float M_RDCD_BarSize_MinValue = 0.5f;
-            internal const float M_RDCD_BarSize_MaxValue = 2f;
             internal const int MuraUIStyleMaxType = 5;
             internal const int MuraUIStyleMinType = 1;
             public static int MuraUIStyleValue;
             internal const int MuraPosStyleMaxType = 3;
             internal const int MuraPosStyleMinType = 1;
             public static int MuraPosStyleValue;
-            /// <summary>
-            /// 旧的手持开关，用于对比检测手持是否改变设置
-            /// </summary>
-            internal static bool OldWeaponHandheldDisplay;
         }
 
         [Header("CWRSystem")]
@@ -48,10 +40,6 @@ namespace CalamityOverhaul.Common
         public bool BiologyOverhaul { get; set; }
 
         [Header("CWRWeapon")]
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool WeaponHandheldDisplay { get; set; }
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
@@ -157,7 +145,6 @@ namespace CalamityOverhaul.Common
             Instance = this;
             ConfigChangePrefix = this.GetLocalization(nameof(ConfigChangePrefix), () => "用户");
             ConfigChangeSuffix = this.GetLocalization(nameof(ConfigChangeSuffix), () => "修改了服务端配置");
-            Data.OldWeaponHandheldDisplay = WeaponHandheldDisplay;
         }
 
         public override void OnChanged() {

@@ -343,12 +343,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             Owner.itemRotation = currentRotation;
 
             //双手抬起跟随斧头：两只手指向斧头方向，模拟双手紧握斧柄
-            if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                float armAngle = currentRotation - MathHelper.PiOver2;
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armAngle);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full
-                    , armAngle + 0.15f * lockedDirection);
-            }
+            float armAngle = currentRotation - MathHelper.PiOver2;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armAngle);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full
+                , armAngle + 0.15f * lockedDirection);
 
             //hitbox 跟着斧头位置走，broad-phase 才能覆盖到劈砍轨迹上的 NPC
             Projectile.Center = axePivot;
@@ -472,10 +470,6 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return false;
-            }
-
             Texture2D tex = TextureAssets.Item[ModContent.ItemType<Arbiter>()].Value;
             Vector2 origin = tex.Size() / 2f;
             //纹理无旋转时斧刃指向 -π/4，所以补偿 +π/4 让 currentRotation 表示斧刃在世界中的实际指向

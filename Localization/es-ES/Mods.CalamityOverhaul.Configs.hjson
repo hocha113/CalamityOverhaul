@@ -40,17 +40,6 @@ CWRServerConfig: {
 		Label: Suavizado de la cámara
 		Tooltip: Al habilitar, los movimientos rápidos a larga distancia suavizarán la cámara, evitando la sensación de desajuste por moverse demasiado rápido.
 	}
-
-	WeaponHandheldDisplay: {
-		Label: Visualización de armas en mano
-		Tooltip:
-			'''
-			Al activarlo, la mayoría de las armas tendrán animaciones de mano y acciones especiales de uso.
-			Este efecto tiene una alta prioridad y anulará la mayoría de las animaciones de mano de otros mods.
-			Activado por defecto y, por razones de experiencia visual, el autor no recomienda desactivarlo.
-			'''
-	}
-
 	BowArrowDraw: {
 		Label: Dibujar arco y flecha
 		Tooltip:

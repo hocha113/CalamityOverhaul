@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0;
 
         public override void HoldItem(Player player) {
-            if (Main.myPlayer != player.whoAmI || player.PressKey() || !CWRServerConfig.Instance.WeaponHandheldDisplay) {
+            if (Main.myPlayer != player.whoAmI || player.PressKey()) {
                 return;
             }
 

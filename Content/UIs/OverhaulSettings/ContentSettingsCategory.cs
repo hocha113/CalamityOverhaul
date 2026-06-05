@@ -37,7 +37,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             AddToggle("BiologyOverhaul", () => config.BiologyOverhaul, v => config.BiologyOverhaul = v, true);
 
             //CWRWeapon组
-            AddToggle(nameof(config.WeaponHandheldDisplay), () => config.WeaponHandheldDisplay, v => config.WeaponHandheldDisplay = v, false);
             AddToggle(nameof(config.EnableSwordLight), () => config.EnableSwordLight, v => config.EnableSwordLight = v, false);
             AddToggle(nameof(config.EnableCasingsEntity), () => config.EnableCasingsEntity, v => config.EnableCasingsEntity = v, false);
             AddToggle(nameof(config.BowArrowDraw), () => config.BowArrowDraw, v => config.BowArrowDraw = v, false);
@@ -62,7 +61,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             config.BiologyOverhaul = true;
 
             //CWRWeapon组
-            config.WeaponHandheldDisplay = true;
             config.EnableSwordLight = true;
             config.EnableCasingsEntity = true;
             config.BowArrowDraw = true;

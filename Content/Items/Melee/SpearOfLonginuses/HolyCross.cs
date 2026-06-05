@@ -85,9 +85,6 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return false;
-            }
             if (Owner?.HeldItem?.ModItem is not SpearOfLonginus longinus) {
                 return false;
             }

@@ -318,10 +318,6 @@ namespace CalamityOverhaul.Common
                 }
             }
 
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return true;
-            }
-
             bool isHeld = ritem.isHeldItem || hasHeldProj;
             return !isHeld;
         }
@@ -335,10 +331,6 @@ namespace CalamityOverhaul.Common
 
             if (isHeld) {
                 return false;
-            }
-
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return true;
             }
 
             if (ritem.hasHeldNoCanUseBool && ritem.heldProjType > 0) {

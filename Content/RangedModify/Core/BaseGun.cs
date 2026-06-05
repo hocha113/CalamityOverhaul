@@ -183,9 +183,9 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public override bool CanFire => (DownLeft || DownRight && !onFire && CanRightClick && SafeMousetStart) && SafeMouseInterfaceValue;
         /// <summary>
-        /// 是否允许手持状态，如果玩家关闭了手持动画设置，这个值将在非开火状态时返回<see langword="false"/>
+        /// 是否允许手持状态
         /// </summary>
-        public override bool OnHandheldDisplayBool => (HandheldDisplay || CanFire) && (WeaponHandheldDisplay || CanFire);
+        public override bool OnHandheldDisplayBool => HandheldDisplay || CanFire;
         /// <summary>
         /// 枪焰粒子数据体
         /// </summary>

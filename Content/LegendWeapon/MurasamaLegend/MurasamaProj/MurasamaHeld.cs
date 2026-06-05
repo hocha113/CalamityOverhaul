@@ -290,10 +290,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 armRotSengsBack = 110;
             }
 
-            if (CWRServerConfig.Instance.WeaponHandheldDisplay || DownLeft || OnFireR) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign * safeGravDir);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign * safeGravDir);
-            }
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsFront) * -DirSign * safeGravDir);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(armRotSengsBack) * -DirSign * safeGravDir);
         }
 
         private void SpanTriggerEffDust() {
@@ -331,9 +329,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public override void PostDraw(Color lightColor) => MuraChargeUI.Instance.DrawOverheadSorwdBar(Owner, RisingDragon, uiFrame, maxFrame);
 
         public override bool PreDraw(ref Color lightColor) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay && !(DownLeft || OnFireR)) {
-                return false;
-            }
             if (!noHasDownSkillProj) {
                 return false;
             }

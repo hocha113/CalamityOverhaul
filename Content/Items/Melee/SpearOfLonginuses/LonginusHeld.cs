@@ -82,8 +82,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             //每帧累积一次能量；玩家持枪不动时也会涨
             longinus.HolyEnergy++;
 
-            //充能粒子效果（仅在视觉开关开启时绘制）
-            if (CWRServerConfig.Instance.WeaponHandheldDisplay && Main.rand.NextBool(2)) {
+            //充能粒子效果
+            if (Main.rand.NextBool(2)) {
                 Vector2 spanStarPos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.Next(33) + Projectile.velocity * 55;
                 Vector2 vr = spanStarPos.To(Projectile.velocity * 198 + Projectile.Center).UnitVector() * 3;
                 PRTLoader.NewParticle<PRT_LonginusStar>(spanStarPos, vr, Color.Gold, Main.rand.NextFloat(0.9f, 1.1f)).Configure(false, Main.rand.Next(17, 25), Projectile);
@@ -123,20 +123,14 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Projectile.rotation = ToMouseA;
             Owner.direction = Math.Sign(ToMouse.X);
 
-            if (CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
-                Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
-            }
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
 
             Projectile.Center = Owner.GetPlayerStabilityCenter() + UnitToMouseV * 70;
             Projectile.timeLeft = 2;
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            if (!CWRServerConfig.Instance.WeaponHandheldDisplay) {
-                return false;
-            }
-
             Texture2D value = TextureAssets.Item[SpearOfLonginus.ID].Value;
             int dir = Owner.direction * (int)Owner.gravDir;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset, null, lightColor

@@ -40,17 +40,6 @@ CWRServerConfig: {
 		Label: Adoucissement de la caméra
 		Tooltip: Lorsqu'activé, les déplacements rapides à longue distance adoucissent la caméra, évitant ainsi toute sensation de malaise due à un déplacement trop rapide
 	}
-
-	WeaponHandheldDisplay: {
-		Label: Affichage portatif des armes
-		Tooltip:
-			'''
-			Lorsqu'activé, la plupart des armes auront des animations de tenue et des actions spéciales
-			Cette fonctionnalité a une priorité très élevée et remplacera la plupart des animations portatives des mods tiers
-			Activé par défaut, et pour des raisons d'expérience visuelle, l'auteur ne recommande pas de le désactiver
-			'''
-	}
-
 	BowArrowDraw: {
 		Label: Dessin dynamique des flèches de l'arc
 		Tooltip:

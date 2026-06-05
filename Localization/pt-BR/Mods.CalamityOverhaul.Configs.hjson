@@ -40,18 +40,6 @@ CWRServerConfig: {
 		Label: Suavizacao da Camera
 		Tooltip: Quando ativado, deslocamentos rapidos de longa distancia suavizarao a camera, o que evita a sensacao de ser movido muito rapido
 	}
-
-	WeaponHandheldDisplay: {
-		Label: Exibicao de Arma na Mao
-		Tooltip:
-			'''
-			Quando ativado, a maioria das armas tem animacoes de empunhadura e acoes de uso especiais
-			Este efeito tem uma prioridade muito alta e sobrescrevera a maioria das animacoes de empunhadura de mods de terceiros
-			Esta ativado por padrao, e por razoes visuais, os autores nao recomendam desativa-lo
-			Se voce alterar esta configuracao durante o jogo, alguns efeitos precisarao recarregar os arquivos do mod antes de serem alterados
-			'''
-	}
-
 	BowArrowDraw: {
 		Label: Desenhar flecha da corda do arco
 		Tooltip:

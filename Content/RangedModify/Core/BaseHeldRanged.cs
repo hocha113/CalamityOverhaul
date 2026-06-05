@@ -94,10 +94,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public float AttackSpeed => Owner.GetAttackSpeed<RangedDamageClass>() + Item.GetPrefixState().shootSpeedMult - 1f;
         /// <summary>
-        /// 是否启用手持开关
-        /// </summary>
-        public bool WeaponHandheldDisplay => CWRServerConfig.Instance.WeaponHandheldDisplay;
-        /// <summary>
         /// 是否自动设置手臂状态
         /// </summary>
         public virtual bool OnHandheldDisplayBool => true;

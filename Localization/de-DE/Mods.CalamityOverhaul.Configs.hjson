@@ -40,17 +40,6 @@ CWRServerConfig: {
 		Label: Objektiv-Easing
 		Tooltip: Bei Aktivierung wird bei schnellen Langstreckenbewegungen ein Easing-Effekt auf das Objektiv angewendet, um ein unnatürliches Gefühl zu vermeiden
 	}
-
-	WeaponHandheldDisplay: {
-		Label: Anzeige für handgehaltene Waffen
-		Tooltip:
-			'''
-			Wenn aktiviert, haben die meisten Waffen Handanimations- und spezielle Nutzungsaktionen
-			Dieser Effekt hat eine hohe Priorität und überschreibt die Handanimations der meisten Drittanbieter-Module
-			Standardmäßig aktiviert und aus visuellen Gründen wird empfohlen, ihn nicht zu deaktivieren
-			'''
-	}
-
 	BowArrowDraw: {
 		Label: Bogenpfeilzeichnung
 		Tooltip:
