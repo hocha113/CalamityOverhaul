@@ -30,8 +30,8 @@ CWRServerConfig: {
 	}
 
 	DomainConciseDisplay: {
-		// Label: Domain Minimal Display
-		// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		Label: Минималистичное отображение домена
+		Tooltip: По умолчанию выключено. При включении скрывает большинство визуальных эффектов внутри домена.
 	}
 
 	Headers: {

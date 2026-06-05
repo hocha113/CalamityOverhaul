@@ -14,7 +14,7 @@ VoidErosion: {
 }
 
 DestroyerSummonBuff: {
-	DisplayName: Buff de Invocacao do Destruidor
+	DisplayName: O Destruidor
 	Description: O Mini Destruidor seguira voce na batalha
 }
 

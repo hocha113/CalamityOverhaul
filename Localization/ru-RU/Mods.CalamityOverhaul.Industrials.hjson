@@ -1,14 +1,22 @@
 ElectricMinRocket: {
-	EnergyShortage: Energy Shortage
-	// DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
-	// Tooltip: ""
+	EnergyShortage: Нехватка энергии
+	DisplayName: Электрическая Мини-ракета
+	Tooltip:
+		'''
+		Щёлкните правой кнопкой мыши, чтобы использовать ракету, 
+		или поставьте её на землю и щёлкните правой кнопкой для начала полёта.
+		В воздухе нажимайте стрелки влево или вправо, чтобы изменить направление.
+		Удерживайте стрелку вниз, чтобы медленно снижаться; полёт постепенно расходует энергию.
+		Нажмите пробел, чтобы прервать полёт.
+		«Сделано в Советском Союзе, прочное и надёжное, почти достигло Луны.»
+		'''
 }
 
 WGGLifeWeaver: {
-	TurretBatteryDepleted: Battery Runs Out
-	// DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
-	// Tooltip: ""
+	TurretBatteryDepleted: Батарея разряжена
+	DisplayName: Ткач жизни пустошей
+	Tooltip: ""
 }
 
-WGGWildernessTP.WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
+WGGWildernessTP.WindGrivenDiscovery1: Вам понравились эти машины, приводимые в движение ветром, и вы решаете сделать несколько своих...
 WGGMK2WildernessTP.WindGrivenDiscovery2: Вас поразила эта гигантская машина, и вы чувствуете, что тоже должны попробовать создать такую...

@@ -1,445 +1,444 @@
 FishSwarm: {
-	// DisplayName: Phantom Swarm
-	/* Tooltip:
+	DisplayName: Métamorphose du banc
+	Tooltip:
 		'''
-		Right-click to transform into a fish swarm and dash.
-		Left-click to launch the swarm towards the cursor.
-		''' */
-	// Studied: An unremarkable fish, but it shows considerable potential.
+		Clic droit : transformez-vous en banc de poissons pour vous faufiler.
+		Clic gauche : envoyez le banc vers le curseur.
+		'''
+	Studied: Un poisson banal, mais il a du potentiel.
 }
 
 FishSparkling: {
-	// DisplayName: Regal Spark-dance
-	/* Tooltip:
+	DisplayName: Danse royale étincelante
+	Tooltip:
 		'''
-		Periodically summons several Sparkling Queenfish for a volley while firing.
-		Cooldown does not recharge while firing.
-		''' */
-	// Studied: I believe research into this specimen could lead to advancements in laser pointer technology.
+		Lorsque vous tirez, invoque périodiquement plusieurs reines étincelantes pour une salve.
+		Le temps de recharge ne diminue pas pendant le tir.
+		'''
+	Studied: Je crois qu'étudier ce poisson pourrait faire progresser la technologie des lasers.
 }
 
 FishZombie: {
-	// DisplayName: Risen Tide
-	/* Tooltip:
+	DisplayName: Déferlante des noyés
+	Tooltip:
 		'''
-		Right-click to summon a horde of drowned dead that rush enemies.
-		They explode upon nearing a target.
-		''' */
-	// Studied: A foul-smelling fish. Is it even... animate?
+		Clic droit : invoque une horde de noyés qui foncent sur les ennemis.
+		Elle explose à l'approche des ennemis.
+		'''
+	Studied: Un poisson qui pue… Est-il encore vivant ?
 }
 
 FishCloud: {
-	// DisplayName: Cloudsurfer
-	/* Tooltip:
+	DisplayName: Chevauchée des nuages
+	Tooltip:
 		'''
-		Right-click to ride a rain cloud for high-speed movement.
-		While riding, you can pass through walls and use weapons.
-		Leaves a trail of rain along your path.
-		''' */
-	// Studied: It appears to be a fish, but it's technically a swimming cloud.
+		Clic droit : montez sur un nuage de pluie pour vous déplacer à grande vitesse.
+		En chevauchant, vous pouvez traverser les murs et utiliser des armes.
+		Des gouttes de pluie tombent sur votre trajectoire.
+		'''
+	Studied: On dirait un poisson, mais c'est en fait un nuage qui nage.
 }
 
 FishVoodoo: {
-	// DisplayName: Voodoo Ward
-	/* Tooltip:
+	DisplayName: Poupée de substitution
+	Tooltip:
 		'''
-		When equipped, this skill prevents death on a fatal blow,
-		transferring the damage to a nearby enemy instead. Triggers a cooldown.
-		If a Domain is active, damage is transferred to *all* enemies within it.
-		''' */
-	// Studied: A useful specimen. It gives me... interesting ideas for new experiments.
+		Avec cette compétence équipée, un coup mortel est annulé et les dégâts sont transférés à un ennemi proche, déclenchant le temps de recharge.
+		Si un domaine est actif, les dégâts sont répartis sur tous les ennemis qu'il contient.
+		'''
+	Studied: Pas mal, ce poisson — il m'inspire des expériences intéressantes.
 }
 
 FishDemonicHell: {
-	// DisplayName: Inferno Burst
-	/* Tooltip:
+	DisplayName: Éruption infernale
+	Tooltip:
 		'''
-		Periodically summons an inferno sigil while firing.
-		When fully charged, the sigil launches a hellfire ball
-		that explodes after a short flight.
-		''' */
-	// Studied: It burns in the inferno.
+		Lorsque vous tirez, invoque périodiquement un cercle infernal.
+		Une fois chargé, il lance une boule de feu infernal
+		qui explose après un court vol.
+		'''
+	Studied: Il brûle dans les Enfers.
 }
 
 FishDynamite: {
-	// DisplayName: Dynamite Fish
-	/* Tooltip:
+	DisplayName: Torpille étincelante
+	Tooltip:
 		'''
-		Right-click to lob a Dynamite Fish, which is affected by gravity.
-		The fish explodes on contact with an enemy or after a short time.
-		''' */
-	// Studied: Its internal anatomy is highly complex. It's composed primarily of the part that goes 'BOOM'.
+		Clic droit : lancez un poisson-dynamite soumis à la gravité.
+		La torpille explose au contact d'un ennemi ou après un court délai.
+		'''
+	Studied: Sa structure interne est très complexe — surtout la partie qui fait « BOUM ».
 }
 
 FishBone: {
-	// DisplayName: Bone Cyclone
-	/* Tooltip:
+	DisplayName: Os en orbite
+	Tooltip:
 		'''
-		Periodically generates orbiting bones while firing.
-		After circling, they fly out towards enemies and return.
-		The bones will shatter if you take damage.
-		''' */
-	// Studied: Might be good for a broth. Delicious and high in calcium.
+		Lorsque vous tirez, génère périodiquement des os tournoyant autour de vous.
+		Après une rotation, ils s'élancent puis reviennent.
+		Si vous subissez des dégâts, ces os se brisent immédiatement.
+		'''
+	Studied: Une soupe avec ça, ce serait pas mal — bon et riche en calcium.
 }
 
 FishHarpy: {
-	// DisplayName: Feather Typhoon
-	/* Tooltip:
+	DisplayName: Plumes de harpie
+	Tooltip:
 		'''
-		Periodically generates orbiting harpy feathers while firing.
-		With sustained fire, the feathers will eventually launch outwards.
-		''' */
-	// Studied: I doubt this fish can actually fly, but it does, technically, have wings.
+		Lorsque vous tirez, génère périodiquement des plumes de harpie en orbite.
+		Si le tir continue, elles s'envolent dans toutes les directions après un moment.
+		'''
+	Studied: Je ne crois pas que ce poisson vole, mais il a bien des ailes.
 }
 
 FishFallenStar: {
-	// DisplayName: Star-spawn
-	/* Tooltip:
+	DisplayName: Pluie d'étoiles
+	Tooltip:
 		'''
-		Firing is accompanied by stars, which are orbited by smaller starlets.
-		Every set number of shots summons a starfall.
-		''' */
-	// Studied: In the daylight, it might just... vanish.
+		Lorsque vous tirez, des étoiles partent accompagnées d'étoiles satellites.
+		Après un certain nombre d'étoiles, une pluie de météores s'abat.
+		'''
+	Studied: En plein jour, il disparaîtrait peut-être comme une étoile.
 }
 
 FishHunger: {
-	// DisplayName: Famished Maw
-	/* Tooltip:
+	DisplayName: Fantôme affamé
+	Tooltip:
 		'''
-		Periodically spawns an orbiting Hungry Maw while firing.
-		At maximum capacity, the Maws will follow your aim to tear at enemies.
-		''' */
-	// Studied: It appears... famished.
+		Lorsque vous tirez, génère périodiquement des fantômes affamés en orbite.
+		À capacité maximale, ils suivent vos indications et déchirent les ennemis.
+		'''
+	Studied: Il a l'air affamé.
 }
 
 FishBat: {
-	// DisplayName: Phantom Echo
-	/* Tooltip:
+	DisplayName: Essaim de chauves-souris
+	Tooltip:
 		'''
-		Right-click to transform into a bat swarm for a rapid dash.
-		Attacking will exit the form.
-		''' */
-	// Studied: I wonder, if one hangs this fish upside down, will it fall asleep?
+		Clic droit : transformez-vous en essaim de chauves-souris pour vous déplacer rapidement.
+		Attaquer met fin à la transformation.
+		'''
+	Studied: Ce poisson s'endort-il la tête en bas ?
 }
 
 FishEaterofPlankton: {
-	// DisplayName: Eater's Spawn
-	/* Tooltip:
+	DisplayName: Traînée du dévoreur
+	Tooltip:
 		'''
-		Firing also launches a miniature Eater of Souls
-		that will wriggle and attack enemies.
-		''' */
-	// Studied: This fish has worms!
+		Lorsque vous tirez, projette de petits dévoreurs d'âmes.
+		Ils ondulent sans cesse et attaquent les ennemis.
+		'''
+	Studied: Ce poisson est infesté de vers !
 }
 
 FishAmanita: {
-	// DisplayName: Fungal Cycle
-	/* Tooltip:
+	DisplayName: Bulle de spores toxiques
+	Tooltip:
 		'''
-		Firing cycles through four different fungal shots. Each shot switches to the next type.
-		Explosive Mushroom: Scatters 3 explosive mushrooms that deal area damage.
-		Homing Spore: Scatters 5 spores that track the nearest target.
-		Toxin Mushroom: Scatters 2 toxin mushrooms that create a damaging cloud.
-		Lightning Spore: Scatters 5 lightning spores that chain once on hit.
-		''' */
-	// Studied: This fish represents an entire fungal ecosystem.
+		Lorsque vous tirez, quatre projectiles fongiques alternent à chaque tir.
+		Champignon explosif : disperse 3 champignons qui explosent à l'impact dans une petite zone.
+		Spore traqueuse : disperse 5 spores qui poursuivent la cible la plus proche.
+		Champignon de brume toxique : disperse 2 champignons qui créent une brume empoisonnée à l'impact.
+		Spore foudroyante : disperse 5 spores qui se réfractent à l'impact.
+		'''
+	Studied: Ce poisson incarne l'écosystème du champignon.
 }
 
 FishHoney: {
-	// DisplayName: Bee-caller
-	/* Tooltip:
+	DisplayName: Essaim d'abeilles
+	Tooltip:
 		'''
-		Right-click to summon a swarm of bees that orbit you.
-		Bees will automatically attack enemies on sight.
-		''' */
-	// Studied: For some reason, it seems terrified of catfish.
+		Clic droit : invoque un essaim d'abeilles en orbite autour de vous.
+		Elles attaquent activement dès qu'elles repèrent un ennemi.
+		'''
+	Studied: Pour une raison obscure, il a peur des poissons-chats.
 }
 
 Fishotroning: {
-	// DisplayName: Bony Grasp
-	/* Tooltip:
+	DisplayName: Poing du Roi Squelette
+	Tooltip:
 		'''
-		Firing grows Skeletron Hands to assist in combat. You lose a hand when damaged.
-		At long range, hands charge to throw bones.
-		At close range, hands charge to slap the target.
-		''' */
-	// Studied: It has more than four hands!
+		Lorsque vous tirez, des mains du Roi Squelette vous assistent ; chaque blessure en fait perdre une.
+		À distance, elles lancent des os chargés.
+		De près, elles frappent la cible.
+		'''
+	Studied: Il a plus de quatre mains !
 }
 
 FishIchorn: {
-	// DisplayName: Ichor Stream
-	/* Tooltip:
+	DisplayName: Érosion de goudron
+	Tooltip:
 		'''
-		Firing is accompanied by a scattering spray of ichor.
-		Hits inflict the 'Ichor' debuff.
-		''' */
-	// Studied: This fish's... 'saliva'... is remarkably useful!
+		Lorsque vous tirez, des jets de goudron sont dispersés.
+		À l'impact, la cible est affectée par le goudron.
+		'''
+	Studied: La salive de ce poisson est très utile !
 }
 
 FishCursed: {
-	// DisplayName: Cursed Burst
-	/* Tooltip:
+	DisplayName: Éruption de flammes maudites
+	Tooltip:
 		'''
-		Firing is accompanied by a scattering of cursed flames.
-		The flames fall with an unnatural, arcing trajectory.
-		''' */
-	// Studied: And it somehow doesn't incinerate the fishing rod!?
+		Lorsque vous tirez, des flammes maudites sont dispersées.
+		Elles retombent en sens inverse de la gravité.
+		'''
+	Studied: Il ne brûle même pas la canne à pêche !?
 }
 
 FishSlime: {
-	// DisplayName: Viscous Trail
-	/* Tooltip:
+	DisplayName: Traînée visqueuse
+	Tooltip:
 		'''
-		Throws slime gel as you move.
-		The gel will stick to any target it touches.
-		''' */
-	// Studied: It seems very... 'attached'.
+		Lorsque vous vous déplacez, des blocs de gelée sont projetés.
+		Ils collent aux cibles qu'ils touchent.
+		'''
+	Studied: Il a l'air bien « collant ».
 }
 
 FishBunny: {
-	// DisplayName: Bouncing Bombs
-	/* Tooltip:
+	DisplayName: Bombe bondissante
+	Tooltip:
 		'''
-		Right-click to toss a cluster of bouncing, gravity-affected Bunny Fish.
-		They explode on contact with an enemy or after a short time.
-		''' */
-	// Studied: Dangerously fluffy!
+		Clic droit : lancez des poissons-lapins bondissants soumis à la gravité.
+		Ils explosent au contact d'un ennemi ou après un court délai.
+		'''
+	Studied: De la peluche dangereuse !
 }
 
 FishCat: {
-	// DisplayName: Bouncing Catfish
-	/* Tooltip:
+	DisplayName: Torpille miaou
+	Tooltip:
 		'''
-		Right-Toss a cluster of bouncing, gravity-affected Catfish.
-		They meow on each bounce and explode on contact or after a short time.
-		''' */
-	// Studied: This fish seems to have a particular fondness for honey.
+		Clic droit : lancez des poissons-chats bondissants qui miaulent à chaque rebond.
+		Ils explosent au contact d'un ennemi ou après un court délai.
+		'''
+	Studied: Ce poisson semble adorer le miel.
 }
 
 FishDirt: {
-	// DisplayName: Earthen Swarm
-	/* Tooltip:
+	DisplayName: Poissons de terre en orbite
+	Tooltip:
 		'''
-		Summons a swarm of Dirt Fish that orbit you while moving.
-		At full capacity, you can fire a Dirt Ball.
-		The ball bounces, then rolls, dealing continuous damage.
-		Only one ball can be active at a time.
-		''' */
-	/* Studied:
+		Lorsque vous vous déplacez, des poissons de terre tournent autour de vous.
+		À nombre suffisant, vous pouvez lancer une boule de terre.
+		Elle rebondit puis roule au sol, infligeant des dégâts continus.
+		Une seule boule de terre à la fois.
 		'''
-		The scent of the soil reminds me of the seabed...
-		These little ones are quite good at huddling for warmth.
-		''' */
+	Studied:
+		'''
+		Le goût de la terre me rappelle le fond marin de chez moi.
+		Ces petits aiment bien se serrer les uns contre les autres.
+		'''
 }
 
 FishMud: {
-	// DisplayName: Mud Sentries
-	/* Tooltip:
+	DisplayName: Sentinelle des boues
+	Tooltip:
 		'''
-		Firing summons Mud Sentries from the ground.
-		Sentries emerge, fire a gravity-affected mud ball at enemies,
-		then submerge and disappear.
-		''' */
-	// Studied: These creatures are masters of concealment.
+		Lorsque vous tirez, invoque des sentinelles de boue depuis le sol.
+		Elles surgissent, lancent des boules de boue soumises à la gravité, puis replongent.
+		'''
+	Studied: Ces types savent vraiment se cacher.
 }
 
 FishPeng: {
-	// DisplayName: Penguin Strike
-	/* Tooltip:
+	DisplayName: Pingouin kamikaze
+	Tooltip:
 		'''
-		Firing summons penguins from the sky above enemies.
-		The penguins plummet, dealing area damage and knockback.
-		''' */
-	// Studied: They might be from Madagascar.
+		Lorsque vous tirez, invoque des pingouins au-dessus des ennemis.
+		Ils tombent du ciel sur la cible,
+		infligeant des dégâts de zone et un recul.
+		'''
+	Studied: Ils viennent peut-être de Madagascar.
 }
 
 FishDrizzle: {
-	// DisplayName: Sulphuric Drizzle
-	/* Tooltip:
+	DisplayName: Souffle de soufre
+	Tooltip:
 		'''
-		Periodically summons several brimstone-spitting fish while firing.
-		Cooldown does not recharge while firing.
-		''' */
-	// Studied: I suspect this is useful for more than just lighting a campfire.
+		Lorsque vous tirez, invoque périodiquement plusieurs cracheurs de soufre.
+		Le temps de recharge ne diminue pas pendant le tir.
+		'''
+	Studied: Je crois qu'il sert à bien plus qu'allumer un feu de camp.
 }
 
 FishofCthulu: {
-	// DisplayName: Abyssal Gaze
-	/* Tooltip:
+	DisplayName: Regard de l'Abysse
+	Tooltip:
 		'''
-		Firing summons a Gazing Eye to observe enemies.
-		When close, the eye transforms and dashes.
-		''' */
-	// Studied: It's... staring at you.
+		Lorsque vous tirez, invoque des yeux de l'Abysse pour observer les ennemis.
+		À l'approche, ils changent de forme et foncent.
+		'''
+	Studied: Il ne cesse de vous fixer…
 }
 
 FishJewel: {
-	// DisplayName: Prismatic Overture
-	/* Tooltip:
+	DisplayName: Ouverture irisée
+	Tooltip:
 		'''
-		Firing scatters gem projectiles in a set sequence.
-		Each gem type produces a different sound.
-		''' */
-	// Studied: A six-color overture... Perhaps one could truly compose a rainbow symphony with it.
+		Lorsque vous tirez, projette des gemmes en salve selon un ordre fixe.
+		Chaque gemme produit un son distinct à l'émission.
+		'''
+	Studied: Une suite en six couleurs… peut-être pour jouer un concert arc-en-ciel.
 }
 
 FishTunabeard: {
-	// DisplayName: Torrent Dash
-	/* Tooltip:
+	DisplayName: Éclair des courants
+	Tooltip:
 		'''
-		Right-click to perform a long-distance, high-speed dash towards the cursor.
-		Grants invincibility and phases through walls during the dash.
-		''' */
-	// Studied: For a fish, is there really a difference between a pirate and a robber?
+		Clic droit : effectue une ruée rapide et longue portée vers le curseur.
+		Pendant la ruée, vous êtes invulnérable et pouvez traverser les murs.
+		'''
+	Studied: Pour un poisson, y a-t-il une différence entre pirates et bandits ?
 }
 
 FishBloodyManowar: {
-	// DisplayName: Crimson Judgment
-	/* Tooltip:
+	DisplayName: Jugement cramoisie
+	Tooltip:
 		'''
-		When firing, summon a group of bloody jellyfish to approach the enemy.
-		The gathering of the bloody jellyfish will cause extensive damage.
-		''' */
-	// Studied: Is their relationship symbiotic, or... hierarchical?
+		Lorsque vous tirez, invoque une nuée de méduses sanglantes qui convergent vers les ennemis.
+		Le rassemblement inflige de lourds dégâts de zone.
+		'''
+	Studied: Symbiose ou relation de domination ?
 }
 
 FishUnicorn: {
-	// DisplayName: Prismatic Lancer
-	/* Tooltip:
+	DisplayName: Perforation iridescente
+	Tooltip:
 		'''
-		Right-click to perform a long-distance, horizontal dash.
-		Grants invincibility and phases through walls during the dash.
-		''' */
-	// Studied: Legend says only a pure maiden can catch this one!
+		Clic droit : effectue une ruée rapide et longue portée horizontalement.
+		Pendant la ruée, vous êtes invulnérable et pouvez traverser les murs.
+		'''
+	Studied: La légende dit que seule une jeune fille pure peut le pêcher !
 }
 
 FishWyverntail: {
-	// DisplayName: White Piercing Shadow
-	/* Tooltip:
+	DisplayName: Ombre du dragon blanc
+	Tooltip:
 		'''
-		Periodically summons a white dragon while firing.
-		The white dragon swiftly flies toward enemies and deals damage.
-		''' */
-	// Studied: I believe it should be considered a type of legendary creature.
+		Après un tir, invoque des dragons blancs pendant un moment.
+		Ils foncent sur les ennemis et infligent des dégâts.
+		'''
+	Studied: Je crois qu'il fait partie des créatures légendaires.
 }
 
 FishScorpio: {
-	// DisplayName: Sand Scorpion Sentinel
-	/* Tooltip:
+	DisplayName: Sentinelle scorpion
+	Tooltip:
 		'''
-		Summon the ground-moving scorpion sentinels
-		Launch the salamon rolls at the enemy
-		''' */
-	// Studied: Its entire body is filled with sand.
+		Lorsque vous tirez, invoque des sentinelles scorpion se déplaçant au sol.
+		Elles lancent des tornades de sable sur les ennemis.
+		'''
+	Studied: Il est rempli de sable à l'intérieur.
 }
 
 FishPrismite: {
-	// DisplayName: Prismatic Barrage
-	/* Tooltip:
+	DisplayName: Choc prismatique
+	Tooltip:
 		'''
-		Firing converts bullets into prismatic shockwaves.
-		Shockwaves split into multiple projectiles upon hitting enemies or tiles.
-		''' */
-	// Studied: This fish's iridescence is likely due to excessive heavy metal content.
+		Lorsque vous tirez, les projectiles deviennent des ondes de choc prismatiques.
+		À l'impact sur un ennemi ou un bloc, elles se divisent et continuent leur course.
+		'''
+	Studied: La beauté de ce poisson vient d'un excès de métaux lourds.
 }
 
 FishObsidian: {
-	// DisplayName: Obsidian Fortress
-	/* Tooltip:
+	DisplayName: Forteresse d'obsidienne
+	Tooltip:
 		'''
-		Firing spawns Obsidianfish that orbit the player.
-		Obsidianfish deal continuous contact damage to enemies.
-		One fish shatters each time you take damage.
-		''' */
-	// Studied: Obsidian is actually quite brittle, you know.
+		Lorsque vous tirez, des poissons d'obsidienne tournent autour de vous.
+		Ils infligent des dégâts continus aux ennemis touchés.
+		Chaque blessure fait briser un poisson d'obsidienne.
+		'''
+	Studied: L'obsidienne est en fait assez fragile.
 }
 
 FishRock: {
-	// DisplayName: Rock Hammer Slam
-	/* Tooltip:
+	DisplayName: Marteau de roche
+	Tooltip:
 		'''
-		Periodically spawns a Rock Hammerfish that tracks nearby enemies.
-		It charges above the target before slamming down.
-		''' */
-	// Studied: No one ever asks the poor creature if it *wants* to be used as a hammer.
+		Génère périodiquement des marteaux-poissons qui poursuivent les ennemis proches.
+		Au-dessus de la cible, ils chargent puis frappent vers le bas.
+		'''
+	Studied: Personne n'a jamais demandé à ce pauvre être s'il voulait servir de marteau.
 }
 
 FishVariegatedLard: {
-	// DisplayName: Viscous Slick
-	/* Tooltip:
+	DisplayName: Taches d'huile bigarrées
+	Tooltip:
 		'''
-		Attacks hitting enemies spray oil from them.
-		The oil sticks to tiles or enemies and spreads further.
-		''' */
-	// Studied: I'm going to need a substantial amount of detergent.
+		À chaque coup sur un ennemi, de l'huile est projetée.
+		Elle adhère aux blocs ou aux ennemis et en génère davantage.
+		'''
+	Studied: Il me faudrait des tonnes de liquide vaisselle.
 }
 
 FishPrincess: {
-	// DisplayName: Regal Radiance
-	/* Tooltip:
+	DisplayName: Conte de fées
+	Tooltip:
 		'''
-		Firing summons a Princess Fish to fight for you.
-		The Princess Fish fires scattering magic orbs at enemies.
-		''' */
-	// Studied: Clearly not a prince.
+		Lorsque vous tirez, invoque une princesse-poisson qui combat pour vous.
+		Elle lance des projectiles magiques en salve sur les ennemis.
+		'''
+	Studied: Évidemment, ce n'est pas un prince.
 }
 
 FishCrimsonTiger: {
-	// DisplayName: Crimson Patrol
-	/* Tooltip:
+	DisplayName: Patrouille cramoisie
+	Tooltip:
 		'''
-		Right-click to summon a school of Crimson Tigerfish that follow you.
-		They will actively seek out and attack enemies on sight.
-		''' */
-	// Studied: They appear quite ferocious.
+		Clic droit : invoque un groupe de tigres cramoisins qui vous suivent.
+		Ils attaquent activement dès qu'ils repèrent un ennemi.
+		'''
+	Studied: Ils ont l'air bien féroces.
 }
 
 FishTropicalBarracuda: {
-	// DisplayName: Barracuda Blitz
-	/* Tooltip:
+	DisplayName: Traversée tropicale
+	Tooltip:
 		'''
-		Firing summons schools of Tropical Barracudas from the screen edges.
-		They rapidly dart across the entire screen from a random direction.
-		''' */
-	// Studied: Their speed is remarkable.
+		Lorsque vous tirez, invoque des bancs de barracudas depuis le bord de l'écran.
+		Ils traversent l'écran à grande vitesse depuis une direction aléatoire.
+		'''
+	Studied: Ils sont terriblement rapides.
 }
 
 FishNeonTetra: {
-	// DisplayName: Neon Trail
-	/* Tooltip:
+	DisplayName: Traînée néon
+	Tooltip:
 		'''
-		Leave glowing Neon Tetras behind while moving.
-		The Tetras illuminate and damage enemies along your path.
-		''' */
-	// Studied: I am rather fond of its scales.
+		Lorsque vous vous déplacez, vous laissez des poissons néon lumineux sur votre passage.
+		Ils éclairent les ennemis sur la trajectoire et leur infligent des dégâts.
+		'''
+	Studied: J'adore leurs écailles.
 }
 
 FishBrimlish: {
-	// DisplayName: Brimstone Dispersion
-	/* Tooltip:
+	DisplayName: Dispersion de soufre
+	Tooltip:
 		'''
-		Periodically summons a small Brimfish while firing.
-		The Brimfish spits numerous scattering brimstone balls at enemies.
-		''' */
-	// Studied: Alarmingly high temperature.
+		Lorsque vous tirez, invoque périodiquement un petit poisson de soufre.
+		Il crache de nombreuses boules de soufre en salve sur les ennemis.
+		'''
+	Studied: La température est effrayante.
 }
 
 FishDoubleCod: {
-	// DisplayName: Twin Cod Pursuit
-	/* Tooltip:
+	DisplayName: Morues jumelles
+	Tooltip:
 		'''
-		Periodically fires homing Cod while firing.
-		The Cod continuously track enemies and deal contact damage.
-		''' */
-	// Studied: A most peculiar species.
+		Lorsque vous tirez, lance périodiquement des morues traqueuses.
+		Elles poursuivent les ennemis et infligent des dégâts au contact.
+		'''
+	Studied: Une espèce de poisson bien curieuse.
 }
 
 FishFrostMinnow: {
-	// DisplayName: Frost Proclamation
-	/* Tooltip:
+	DisplayName: Décret givrant
+	Tooltip:
 		'''
-		Periodically summons a Frost Minnow while firing.
-		The Frost Minnow spits numerous scattering frost balls at enemies.
-		''' */
-	// Studied: Brace yourself for frostbite!
+		Lorsque vous tirez, invoque périodiquement un poisson de givre.
+		Il crache de nombreuses boules de givre en salve sur les ennemis.
+		'''
+	Studied: Attention aux doigts gelés !
 }

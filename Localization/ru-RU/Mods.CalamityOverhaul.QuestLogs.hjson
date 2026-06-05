@@ -241,7 +241,7 @@ QuestNode: {
 		DisplayName: Первозданный змий
 		Description: Победить Первозданного змия
 		QuestObjective.Description: Победить Первозданного змия
-		QuestReward.Description: Палтус
+		QuestReward.Description: Пушка палтуса
 		DetailedDescription: Страж глубочайшего слоя Бездны. Существо более древнее, чем сами боги. Не беспокойте его без необходимости.
 	}
 

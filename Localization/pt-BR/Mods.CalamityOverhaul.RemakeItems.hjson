@@ -15,16 +15,16 @@ DyeVatItem: {
 	Tooltip:
 		'''
 		Usado para fabricar tinturas
-		Clique direito apos colocar para abrir o painel de controle, permitindo que voce tinge itens
+		Clique direito após colocar para abrir o painel de controle, permitindo que você tinga itens
 		Coloque um Balde d'Agua no slot de tintura para lavar tinturas dos itens
 		'''
 }
 
 RDemonConch: {
-	// DisplayName: 恶魔海螺
-	/* Tooltip:
+	DisplayName: Concha Demoníaca
+	Tooltip:
 		'''
-		仔细听，你会听到尖叫声
-		“小心”
-		''' */
+		Escute com atenção e você ouvirá gritos
+		"Cuidado."
+		'''
 }

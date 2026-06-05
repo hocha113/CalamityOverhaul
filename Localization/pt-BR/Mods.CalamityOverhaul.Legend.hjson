@@ -14,7 +14,7 @@
 		'''
 		Converte balas de mosquete em um fluxo de Corrente Oceanica
 		[Lang4]
-		texto_lenda
+		legend_Text
 		'''
 }
 
@@ -35,7 +35,7 @@ HalibutText: {
 			'''
 			O primeiro olho se abre, rasgando uma fenda no lado sombrio da sua consciencia.
 			Voce ouve o som das mares que nao deveriam existir, enquanto um frio umido comeca a infiltrar-se pelo veu da realidade.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -45,7 +45,7 @@ HalibutText: {
 			O segundo olho se sobrepoe ao primeiro, e sua visao fica turva com imagens duplas desfocadas.
 			A realidade se borra como uma fotografia danificada pela agua, enquanto a paisagem maritima sombria de outra dimensao se força a entrar no espaco atual.
 			Um novo dominio foi forcadamente aberto dentro do original, formando uma estranha dimensao aninhada de camada dupla.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -54,7 +54,7 @@ HalibutText: {
 			'''
 			Uma agonia dilacerante rasga sua testa enquanto tres olhos azuis espectrais, brilhando com uma luz ominosa, rolam freneticamente sob sua pele.
 			A luz comeca a ser engolida por este espaco, e os sussurros abissais de dentro do seu corpo nao soam mais como alucinacoes, mas como distintos sons de mastigacao.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -63,7 +63,7 @@ HalibutText: {
 			'''
 			Quatro olhos se dividem em dois pares, cobrindo os seus. As projecoes abissais outrora separadas comecam a se sobrepor e fundir.
 			O mundo em seus olhos nao e mais como antes; a estrutura da materia e desconstruida e reorganizada dentro da agua do mar turva.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -73,7 +73,7 @@ HalibutText: {
 			Sua pele fica palida e inchada, como um cadaver muito tempo submerso.
 			Inumeros olhos inquietos nadam e se agitam sob sua pele como peixes, finalmente convergindo em sua testa, rasgando um unico olho horrivel.
 			Os cinco niveis do dominio se fundem completamente, concedendo-lhe a habilidade de torcer a causalidade dentro do espaco distorcido.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -84,7 +84,7 @@ HalibutText: {
 			O sexto olho se abre sobre seu coracao.
 			Ele nao bombeia mais sangue quente, mas uma agua negra estranha, fetida e fria, como esgoto encharcado de cadaveres em decomposicao.
 			A cada pulsacao, ele agita veias azul-escuras visiveis dentro do mar.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -94,7 +94,7 @@ HalibutText: {
 			'''
 			Sete olhos se arranjam em uma formacao bizarra em sua testa, explodindo em luz ao pulso do tempo.
 			O dominio comeca uma erosao frenetica da realidade. Onde suas fronteiras alcancam, a materia se dissolve como areia, e as leis sao reescritas pelas mares.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -105,7 +105,7 @@ HalibutText: {
 			'''
 			O oitavo olho se materializa como um vortice silencioso na palma da sua mao.
 			A pressao da agua dentro do dominio se torna quase palpavel; a luz se curva aqui, e o som morre aqui.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -116,7 +116,7 @@ HalibutText: {
 			'''
 			Nove e o numero absoluto. Nove olhos formam um anel ilusorio do abismo acima de sua cabeca.
 			O ultimo traco de humanidade foi lavado pela agua do mar. O que esta aqui agora e uma casca carregando um mar infinito de cadaveres.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -129,7 +129,7 @@ HalibutText: {
 			Voce se tornou o abismo, e o abismo e voce.
 			Onde quer que seu olhar caia e uma nova Genesis.
 			Voce alcancou o fim desta costa e se tornou a divindade do outro.
-			[Linha]
+			[Line]
 			Pressione [Halibut_Domain] para abrir ou fechar o dominio.
 			Pressione [Halibut_Teleport] para se teletransportar dentro do dominio.
 			Pressione [Halibut_Clone] para deixar o passado invadir o presente.
@@ -195,7 +195,7 @@ MurasamaOverride: {
 		acertar um inimigo com o Corte Ascendente novamente desencadeara um golpe final. [Lang3]
 		[c/ff4500:"Seria melhor se isso fosse uma espada motosserra"]
 		[Lang4]
-		texto_lenda
+		legend_Text
 		'''
 }
 
@@ -205,9 +205,9 @@ SHPCOverride: {
 		'''
 		Clique esquerdo para disparar tres feixes de laser
 		Clique direito e segure para carregar energia
-		Todos os ataques podem ser melhorados pelo campo
+		Todos os ataques podem ser reforçados pelo domínio
 		[Lang4]
-		texto_lenda
+		legend_Text
 		'''
 }
 
@@ -236,9 +236,9 @@ HalibutTrialQuestLine: {
 	Trial_11: Aquecendo
 	Trial_12: Pinaculo da Criacao
 	Trial_13: De Volta ao Mar
-	TrackerBrief: Alvo：{0}
+	TrackerBrief: Alvo: {0}
 	BossRushTargetName: Batalha do Terminus
-	EventActiveFormat: "{0}: ativo"
+	EventActiveFormat: "{0}: em andamento"
 	TextDictionary_Content_0: Amigo, vamos desafiar aquela enorme e viscosa criatura terrestre.
 	TextDictionary_Content_1: Ha um grande olho nos encarando. Isso e muito rude; deveriamos dar uma licao nele.
 	TextDictionary_Content_2: A vida nao prospera apenas no Abismo, mas tambem na Selva. Deveriamos fazer uma visita a abelha rainha de la.
@@ -268,9 +268,7 @@ HalibutTrialQuestLine: {
 		'''
 		Eu gosto de escavacoes arqueologicas. Da ultima vez que estava vagando pela Selva, vi uma ruína massiva.
 		Agora devemos ter a chave para abrir a porta daquela ruína. Vamos dar uma olhada.
-		Dentro, ha uma maquina antiga esperando para ser energizada, como um controle remoto de ar condicionado.
-		Alem disso, ha uma peste alienigena se espalhando na superficie, infectando a terra e a maioria dos objetos inorganicos.
-		Toda noite, uma maquina de mineracao atormentada vagueia, infectada ha muito tempo. Vamos acabar com seu sofrimento.
+		Dentro, há uma máquina antiga esperando para ser energizada, como um controle remoto de ar-condicionado.
 		'''
 	TextDictionary_Content_7:
 		'''
@@ -364,7 +362,7 @@ MurasamaTrialQuestLine: {
 	TrialSummary_14: Aquela bruxa que se jogou no caos tem uma irmã clone deformada. Mate aquela xeno, e ofereca seu sangue e fogo a lamina.
 	TrialSummary_15: A planta louca no fundo da selva enlouqueceu. Use sua lamina para acabar com este crescimento descontrolado.
 	TrialSummary_16: A raça tola dos Lihzahrd so sabe adorar estas pedras teimosas. Vamos esmaga-la em po e destruir sua fe.
-	TrialSummary_17: Em meio ao vapor e gas toxico esta uma abelha-mquina híbrida. Atire naquela coisa imunda.
+	TrialSummary_17: Em meio ao vapor e gás tóxico está uma abelha-máquina híbrida. Abata aquela coisa imunda.
 	TrialSummary_18: Aquele golem de destruicao esta devastando a terra. Pulverize seu corpo de aco completamente.
 	TrialSummary_19: Os vermes astrais estao coletando energia cosmica aqui. Acabe com ele, para que este campo estelar possa ser nosso.
 	TrialSummary_20:
@@ -396,9 +394,9 @@ MurasamaTrialQuestLine: {
 		Nosso caminho de conquista ja e imparavel. Estilhaçe a armadura do dragao demoniaco sob o abismo negro.
 		Use o Terminus e envolva-se na batalha final decisiva com o xeno.
 		'''
-	TrackerBrief: Alvo：{0}
+	TrackerBrief: Alvo: {0}
 	BossRushTargetName: Batalha do Terminus
-	EventActiveFormat: "{0}: ativo"
+	EventActiveFormat: "{0}: em andamento"
 }
 
 SHPCTrialQuestLine: {
@@ -537,9 +535,9 @@ SHPCTrialQuestLine: {
 		Mestre, os inimigos que voce derrotou anteriormente formaram uma coalizao e estao preparando um ataque final.
 		Por favor, esteja preparado. Monitorarei o campo de batalha durante todo o tempo e ajudarei a resolver isto de uma vez por todas.
 		'''
-	TrackerBrief: Alvo：{0}
+	TrackerBrief: Alvo: {0}
 	BossRushTargetName: Batalha do Terminus
-	EventActiveFormat: "{0}: ativo"
+	EventActiveFormat: "{0}: em andamento"
 }
 
 SHPCModuleStat: {

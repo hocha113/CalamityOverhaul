@@ -1,25 +1,25 @@
-EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño Infinito
-Tools.RecipesLoseText: ¡No puedes fabricar este artículo directamente!
+EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño infinito
+Tools.RecipesLoseText: ¡No puedes fabricar este objeto directamente!
 
 Biomes: {
 	TungstenBiome: {
-		DisplayName: Rebelión de Tungsteno
-		TownNPCDialogueName: Bioma de Tungsteno
+		DisplayName: Rebelión de tungsteno
+		TownNPCDialogueName: bioma de tungsteno
 	}
 
 	MachineBiome: {
-		// DisplayName: Machine Biome
-		// TownNPCDialogueName: the Machine Biome
+		DisplayName: Bioma mecánico
+		TownNPCDialogueName: bioma mecánico
 	}
 
 	DropPodBiome: {
-		// DisplayName: Drop Pod Biome
-		// TownNPCDialogueName: the Drop Pod Biome
+		DisplayName: Bioma de cápsula de despliegue
+		TownNPCDialogueName: bioma de cápsula de despliegue
 	}
 
 	VoidColonyBiome: {
-		// DisplayName: Void Colony Biome
-		// TownNPCDialogueName: the Void Colony Biome
+		DisplayName: Bioma de colonia del Vacío
+		TownNPCDialogueName: bioma de colonia del Vacío
 	}
 }
 
@@ -32,250 +32,250 @@ Biomes: {
 Arcanes: {
 	Items: {
 		ArcaneTransformer: {
-			// DisplayName: Arcane Transformer
-			// Tooltip: ""
+			DisplayName: Transformador arcano
+			Tooltip: ""
 		}
 	}
 }
 
 Resurrections: {
 	ResurrectionDeath: {
-		// DeathText: "{0} died from Abyssal Resurrection"
-		// WarningCombatText: The Abyss is consuming you...
-		// DeathNoticeText: You were consumed by the Abyss...
-		// MarkRemainText: The mark of the Abyss still entwines you...
-		// RetainValueFormat: Resurrection Value: {0}%
+		DeathText: "{0} murió por la Resurrección del Abismo"
+		WarningCombatText: El Abismo te está consumiendo...
+		DeathNoticeText: Has sido consumido por el Abismo...
+		MarkRemainText: La marca del Abismo aún te envuelve...
+		RetainValueFormat: Valor de resurrección: {0}%
 	}
 }
 
 QuickHack: {
 	SynapseBurn: {
-		// DisplayName: Synapse Burnout
-		// Description: Overloads the target's neural synapses, dealing continuous thermal damage.
+		DisplayName: Quemadura sináptica
+		Description: Sobrecarga las sinapsis neuronales del objetivo, infligiendo daño térmico continuo.
 	}
 
 	ShortCircuit: {
-		// DisplayName: Short Circuit
-		// Description: Releases an EMP causing instant damage and brief paralysis.
+		DisplayName: Cortocircuito
+		Description: Libera un pulso electromagnético que inflige daño instantáneo y una breve parálisis.
 	}
 
 	Cyberpsychosis: {
-		// DisplayName: Cyberpsychosis
-		// Description: Drives the target into a frenzy, attacking all nearby units.
+		DisplayName: Ciberpsicosis
+		Description: Sumerge al objetivo en un frenesí y lo hace atacar a todas las unidades cercanas.
 	}
 
 	SystemReset: {
-		// DisplayName: System Reset
-		// Description: Forces a system reboot on the target, completely paralyzing them.
+		DisplayName: Reinicio del sistema
+		Description: Fuerza un reinicio del sistema del objetivo, paralizándolo por completo.
 	}
 
 	OpticOverload: {
-		// DisplayName: Optic Overload
-		// Description: Blinds the target, making them unable to perceive their surroundings.
+		DisplayName: Sobrecarga óptica
+		Description: Ciega al objetivo, impidiéndole percibir su entorno.
 	}
 
 	MemoryWipe: {
-		// DisplayName: Memory Wipe
-		// Description: Clears the target's hostility data, resetting their aggro list.
+		DisplayName: Borrado de memoria
+		Description: Borra los datos de hostilidad del objetivo y restablece su lista de agresión.
 	}
 
 	Contagion: {
-		// DisplayName: Contagion
-		// Description: Implants a self-replicating malware that spreads to nearby targets.
+		DisplayName: Propagación
+		Description: Implanta un programa malicioso autorreplicante que se extiende a objetivos cercanos.
 	}
 
 	TileDetonate: {
-		// DisplayName: Tile Detonation
-		// Description: Compromises structural integrity, triggering a localized explosion.
+		DisplayName: Detonación de bloques
+		Description: Compromete la integridad estructural y provoca una explosión localizada.
 	}
 
 	TilePhase: {
-		// DisplayName: Phasing Protocol
-		// Description: Alters the physical properties of a tile, making it intangible for a duration.
+		DisplayName: Protocolo de virtualización
+		Description: Altera las propiedades físicas de un bloque, volviéndolo intangible durante un tiempo.
 	}
 
 	TileMagPull: {
-		// DisplayName: Magnetic Pull
-		// Description: Generates a magnetic field, pulling nearby dropped items towards you.
+		DisplayName: Atracción magnética
+		Description: Genera un campo magnético que atrae hacia ti los objetos caídos cercanos.
 	}
 
 	MachineShortCircuit: {
-		// DisplayName: Machine Short Circuit
-		// Description: Drains the target machine's energy, releasing electric arcs that damage nearby entities.
+		DisplayName: Cortocircuito mecánico
+		Description: Vacía la energía eléctrica de la máquina objetivo y libera arcos eléctricos que dañan entidades cercanas.
 	}
 
 	TurretHijack: {
-		// DisplayName: Turret Hijack
-		// Description: Tampers with the IFF recognition module, temporarily flipping the turret's friend-or-foe identification.
+		DisplayName: Secuestro de torreta
+		Description: Altera el módulo de identificación amigo-enemigo, invirtiendo temporalmente la lealtad de la torreta.
 	}
 
 	FalseMemory: {
-		// DisplayName: False Memory
-		// Description: Implants false memories, causing a brief interruption in pursuit or suppressing their killing pattern.
+		DisplayName: Falso recuerdo
+		Description: Implanta recuerdos falsos, interrumpiendo brevemente la persecución o suprimiendo su patrón asesino.
 	}
 
 	SelfDismember: {
-		// DisplayName: Self-Dismemberment
-		// Description: Forces the paranormal entity to dismember itself.
+		DisplayName: Autodesmembramiento
+		Description: Obliga a la entidad paranormal a desmembrarse a sí misma.
 	}
 
 	SystemHalt: {
-		// DisplayName: System Halt
-		// Description: Causes the target to briefly fall silent and cease all activities.
+		DisplayName: Bloqueo del sistema
+		Description: Sumerge al objetivo en un silencio temporal y detiene toda actividad.
 	}
 
 	TurretCircuitOverload: {
-		// DisplayName: Circuit Overload
-		// Description: Injects reverse current into the turret's power circuit, completely disabling it for a long duration.
+		DisplayName: Sobrecarga de circuito
+		Description: Inyecta corriente inversa en el circuito de alimentación de la torreta, dejándola totalmente inoperativa durante mucho tiempo.
 	}
 
 	TurretShortCircuit: {
-		// DisplayName: Turret Short Circuit
-		// Description: Instantly discharges the turret's energy to briefly stall it, immediately coming back online after recovery.
+		DisplayName: Cortocircuito de torreta
+		Description: Descarga al instante la energía de la torreta para un breve parón; vuelve a activarse en cuanto se recupera.
 	}
 
 	VirusBroadcast: {
-		// DisplayName: Virus Broadcast
-		// Description: Injects worm code into the signal tower, causing it to emit cyber EMP waves that short-circuit all turrets within broadcast range for a long duration.
+		DisplayName: Difusión viral
+		Description: Inyecta código gusano en la torre de señales, provocando ondas EMP cibernéticas que cortocircuitan todas las torretas a su alcance durante mucho tiempo.
 	}
 }
 
 HackTargetType: {
-	// ItemTargetType.DisplayName: Dropped Item Target
-	// NpcTargetType.DisplayName: NPC Target
-	// ProjectileTargetType.DisplayName: Projectile Target
-	// SignalTowerTargetType.DisplayName: Signal Tower Target
-	// TileTargetType.DisplayName: Tile Target
-	// TurretTargetType.DisplayName: Turret Target
-	// WaterTargetType.DisplayName: Liquid Target
-	// WraithTargetType.DisplayName: Wraith Target
+	ItemTargetType.DisplayName: Objetivo: objeto caído
+	NpcTargetType.DisplayName: Objetivo: PNJ
+	ProjectileTargetType.DisplayName: Objetivo: proyectil
+	SignalTowerTargetType.DisplayName: Objetivo: torre de señales
+	TileTargetType.DisplayName: Objetivo: bloque
+	TurretTargetType.DisplayName: Objetivo: torreta
+	WaterTargetType.DisplayName: Objetivo: líquido
+	WraithTargetType.DisplayName: Objetivo: espectro
 }
 
 TileNameFallback: {
-	// Dirt: Dirt Block
-	// Stone: Stone Block
-	// Grass: Grass
-	// Plants: Plants
-	// Torch: Torch
-	// Tree: Tree
-	// Iron: Iron Ore
-	// Copper: Copper Ore
-	// Gold: Gold Ore
-	// Silver: Silver Ore
-	// ClosedDoor: Door
-	// OpenDoor: Door
-	// Heart: Life Crystal
-	// Bottle: Bottle
-	// Table: Table
-	// Chair: Chair
-	// Anvil: Anvil
-	// Furnace: Furnace
-	// WorkBench: Work Bench
-	// Platform: Platform
-	// Sapling: Sapling
-	// Container: Chest
-	// Demonite: Demonite Ore
-	// CorruptGrass: Corrupt Grass
-	// CorruptPlants: Corrupt Plants
-	// Ebonstone: Ebonstone Block
-	// DemonAltar: Demon Altar
-	// Sunflower: Sunflower
-	// Pot: Pot
-	// PiggyBank: Piggy Bank
-	// WoodBlock: Wood
-	// ShadowOrb: Shadow Orb
-	// CorruptThorns: Corrupt Thorns
-	// Candle: Candle
-	// Chandelier: Chandelier
-	// JackOLantern: Jack 'O Lantern
-	// Present: Present
-	// Meteorite: Meteorite
-	// GrayBrick: Gray Brick
-	// RedBrick: Red Brick
-	// ClayBlock: Clay Block
-	// BlueDungeonBrick: Blue Brick
-	// HangingLantern: Hanging Lantern
-	// GreenDungeonBrick: Green Brick
-	// PinkDungeonBrick: Pink Brick
-	// GoldBrick: Gold Brick
-	// SilverBrick: Silver Brick
-	// CopperBrick: Copper Brick
-	// Spikes: Spikes
-	// WaterCandle: Water Candle
-	// Book: Book
-	// Cobweb: Cobweb
-	// Vine: Vine
-	// Sand: Sand Block
-	// Glass: Glass
-	// Sign: Sign
-	// Obsidian: Obsidian
-	// Ash: Ash Block
-	// Hellstone: Hellstone
-	// Mud: Mud Block
-	// JungleGrass: Jungle Grass
-	// JunglePlants: Jungle Plants
-	// JungleVine: Jungle Vine
-	// Sapphire: Sapphire Block
-	// Ruby: Ruby Block
-	// Emerald: Emerald Block
-	// Topaz: Topaz Block
-	// Amethyst: Amethyst Block
-	// Diamond: Diamond Block
-	// JungleThorns: Jungle Thorns
-	// MushroomGrass: Mushroom Grass
-	// MushroomPlants: Glowing Mushroom
-	// MushroomTree: Giant Glowing Mushroom
-	// Plants2: Tall Grass
-	// JunglePlants2: Tall Jungle Plants
-	// ObsidianBrick: Obsidian Brick
-	// HellstoneBrick: Hellstone Brick
-	// Hellforge: Hellforge
-	// ClayPot: Clay Pot
-	// Bed: Bed
-	// Cactus: Cactus
-	// Coral: Coral
-	// ImmatureHerb: Immature Herb
-	// MatureHerb: Mature Herb
-	// BloomingHerb: Blooming Herb
-	// Tombstone: Tombstone
-	// Loom: Loom
-	// Piano: Piano
-	// Dresser: Dresser
-	// Bench: Bench
-	// Bathtub: Bathtub
-	// BlueTorch: Blue Torch
-	// RedTorch: Red Torch
-	// GreenTorch: Green Torch
-	// PurpleTorch: Purple Torch
-	// WhiteTorch: White Torch
-	// YellowTorch: Yellow Torch
-	// DemonTorch: Demon Torch
-	// CursedTorch: Cursed Torch
-	// IceTorch: Ice Torch
-	// OrangeTorch: Orange Torch
-	// IchorTorch: Ichor Torch
-	// UltrabrightTorch: Ultrabright Torch
-	// BoneTorch: Bone Torch
-	// RainbowTorch: Rainbow Torch
-	// PinkTorch: Pink Torch
-	// DesertTorch: Desert Torch
-	// CoralTorch: Coral Torch
-	// CorruptTorch: Corrupt Torch
-	// CrimsonTorch: Crimson Torch
-	// HallowedTorch: Hallowed Torch
-	// JungleTorch: Jungle Torch
-	// MushroomTorch: Mushroom Torch
-	// AetherTorch: Aether Torch
-	// ForestTree: Forest Tree
-	// EbonwoodTree: Ebonwood Tree
-	// RichMahoganyTree: Rich Mahogany Tree
-	// PearlwoodTree: Pearlwood Tree
-	// BorealTree: Boreal Tree
-	// ShadewoodTree: Shadewood Tree
-	// IronAnvil: Iron Anvil
-	// LeadAnvil: Lead Anvil
-	// CrimsonAltar: Crimson Altar
-	// Tile192: Living Wood Leaves
-	// Tile187: Weeds
-	// Tile352: Thorns
+	Dirt: Bloque de tierra
+	Stone: Bloque de piedra
+	Grass: Hierba
+	Plants: Plantas silvestres
+	Torch: Antorcha
+	Tree: Árbol
+	Iron: Mineral de hierro
+	Copper: Mineral de cobre
+	Gold: Mineral de oro
+	Silver: Mineral de plata
+	ClosedDoor: Puerta
+	OpenDoor: Puerta
+	Heart: Cristal de vida
+	Bottle: Botella
+	Table: Mesa
+	Chair: Silla
+	Anvil: Yunque
+	Furnace: Horno
+	WorkBench: Banco de trabajo
+	Platform: Plataforma
+	Sapling: Brote
+	Container: Cofre
+	Demonite: Mineral de demonita
+	CorruptGrass: Hierba corrupta
+	CorruptPlants: Plantas corruptas
+	Ebonstone: Bloque de piedra de ébano
+	DemonAltar: Altar demoníaco
+	Sunflower: Girasol
+	Pot: Maceta
+	PiggyBank: Hucha
+	WoodBlock: Madera
+	ShadowOrb: Orbe sombrío
+	CorruptThorns: Espinas corruptas
+	Candle: Vela
+	Chandelier: Candelabro
+	JackOLantern: Calabaza linterna
+	Present: Regalo
+	Meteorite: Meteorito
+	GrayBrick: Ladrillo gris
+	RedBrick: Ladrillo rojo
+	ClayBlock: Bloque de arcilla
+	BlueDungeonBrick: Ladrillo azul
+	HangingLantern: Farolillo colgante
+	GreenDungeonBrick: Ladrillo verde
+	PinkDungeonBrick: Ladrillo rosa
+	GoldBrick: Ladrillo dorado
+	SilverBrick: Ladrillo de plata
+	CopperBrick: Ladrillo de cobre
+	Spikes: Pinchos
+	WaterCandle: Vela de agua
+	Book: Libro
+	Cobweb: Telaraña
+	Vine: Enredadera
+	Sand: Bloque de arena
+	Glass: Cristal
+	Sign: Cartel
+	Obsidian: Obsidiana
+	Ash: Bloque de ceniza
+	Hellstone: Piedra infernal
+	Mud: Bloque de barro
+	JungleGrass: Hierba de la jungla
+	JunglePlants: Plantas de la jungla
+	JungleVine: Enredadera de la jungla
+	Sapphire: Bloque de zafiro
+	Ruby: Bloque de rubí
+	Emerald: Bloque de esmeralda
+	Topaz: Bloque de topacio
+	Amethyst: Bloque de amatista
+	Diamond: Bloque de diamante
+	JungleThorns: Espinas de la jungla
+	MushroomGrass: Hierba de hongo
+	MushroomPlants: Hongo luminoso
+	MushroomTree: Hongo luminoso gigante
+	Plants2: Hierba alta
+	JunglePlants2: Plantas altas de la jungla
+	ObsidianBrick: Ladrillo de obsidiana
+	HellstoneBrick: Ladrillo infernal
+	Hellforge: Fragua infernal
+	ClayPot: Maceta de arcilla
+	Bed: Cama
+	Cactus: Cactus
+	Coral: Coral
+	ImmatureHerb: Hierba inmadura
+	MatureHerb: Hierba madura
+	BloomingHerb: Hierba floreciente
+	Tombstone: Lápida
+	Loom: Telar
+	Piano: Piano
+	Dresser: Cómoda
+	Bench: Banco
+	Bathtub: Bañera
+	BlueTorch: Antorcha azul
+	RedTorch: Antorcha roja
+	GreenTorch: Antorcha verde
+	PurpleTorch: Antorcha morada
+	WhiteTorch: Antorcha blanca
+	YellowTorch: Antorcha amarilla
+	DemonTorch: Antorcha demoníaca
+	CursedTorch: Antorcha maldita
+	IceTorch: Antorcha de hielo
+	OrangeTorch: Antorcha naranja
+	IchorTorch: Antorcha de icor
+	UltrabrightTorch: Antorcha ultrabrillante
+	BoneTorch: Antorcha de hueso
+	RainbowTorch: Antorcha arcoíris
+	PinkTorch: Antorcha rosa
+	DesertTorch: Antorcha del desierto
+	CoralTorch: Antorcha de coral
+	CorruptTorch: Antorcha corrupta
+	CrimsonTorch: Antorcha carmesí
+	HallowedTorch: Antorcha sagrada
+	JungleTorch: Antorcha de la jungla
+	MushroomTorch: Antorcha de hongo
+	AetherTorch: Antorcha etérea
+	ForestTree: Árbol del bosque
+	EbonwoodTree: Árbol de madera de ébano
+	RichMahoganyTree: Árbol de caoba rica
+	PearlwoodTree: Árbol de madera perlada
+	BorealTree: Árbol boreal
+	ShadewoodTree: Árbol de madera sombría
+	IronAnvil: Yunque de hierro
+	LeadAnvil: Yunque de plomo
+	CrimsonAltar: Altar carmesí
+	Tile192: Hojas de madera viva
+	Tile187: Malas hierbas
+	Tile352: Espinas
 }

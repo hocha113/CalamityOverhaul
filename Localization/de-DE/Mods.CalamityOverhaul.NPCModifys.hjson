@@ -1,95 +1,95 @@
 ModifyCrabulon: {
-	// CrouchText: Await
-	// CrouchAltText: Follow
-	// MountHoverText: Left-Click To Mount Saddle
-	// RideHoverText: Right-Click To Ride
-	// ChangeSaddleText: Left-Click To Change Saddle
-	// DismountText: Right-Click To Dismount
-	// DontDismountText: The mount feature is temporarily unavailable in multiplayer mode!
-	// RecallText: Recall
-	// SaddleText: Saddle
-	// ReleaseText: Release
-	// ReleasedText: "{0} has been released"
-	// StatusRestText: "[REST]"
-	// StatusMountText: "[MOUNT]"
-	// StatusFollowText: "[FOLLOW]"
+	CrouchText: Warten
+	CrouchAltText: Folgen
+	MountHoverText: Linksklick zum Anlegen des Sattels
+	RideHoverText: Rechtsklick zum Reiten
+	ChangeSaddleText: Linksklick zum Wechseln des Sattels
+	DismountText: Rechtsklick zum Absteigen
+	DontDismountText: Im Mehrspielermodus ist das Reiten vorübergehend nicht verfügbar!
+	RecallText: Zurückrufen
+	SaddleText: Sattel
+	ReleaseText: Freilassen
+	ReleasedText: "{0} wurde freigelassen"
+	StatusRestText: "[RUHE]"
+	StatusMountText: "[REITEN]"
+	StatusFollowText: "[FOLGEN]"
 }
 
 ModifyTruffle: {
-	// SleepName: ???
-	// ButtonText: Awaken
-	/* Chat0:
+	SleepName: ???
+	ButtonText: Aufwecken
+	Chat0:
 		'''
-		The belly of that crab was so cozy, I’d been living there all this time.  
-		But you split it wide open—now I’m homeless.  
-		''' */
-	/* Chat1:
+		In dem Bauch der Krabbe war es so gemütlich, ich habe die ganze Zeit dort gewohnt.
+		Aber du hast sie aufgeschlitzt — jetzt bin ich obdachlos.
 		'''
-		I once ran a mushroom farm, with my children helping me.  
-		One day I found out half of them were growing inside someone else’s stomach.  
-		''' */
-	// Chat2: "Red cap, white stem… eat it and lie flat forever.  "
-	// Chat3: "You can sell mushrooms to me, but you’ll get absolutely nothing in return.  "
-	// Chat4: "Everyone here wants to eat me.  "
-	/* Chat5:
+	Chat1:
 		'''
-		I once saw a mushroom tree, at least 2000 meters tall.  
-		They say if you climb to the top and jump off, you’ll land in the Mushroom World.  
-		''' */
-	/* Chat6:
+		Ich hatte einmal einen Pilzfarm, meine Kinder halfen mir gut dabei.
+		Bis ich eines Tages merkte, dass die Hälfte von ihnen in jemandes Magen wuchs.
 		'''
-		If you need soup, buy my mushrooms.  
-		At least they won’t scream in the pot.  
-		''' */
-	// Chat7: "All the mushrooms here are mine.  "
-	/* Chat8:
+	Chat2: Roter Hut, weißer Stiel — iss ihn und leg dich hin.
+	Chat3: Du kannst mir Pilze verkaufen, aber du bekommst absolut nichts dafür.
+	Chat4: Hier will mich jeder fressen.
+	Chat5:
 		'''
-		Ten years ago, you could hire me to guide you to the Fungal Kingdom underground.  
-		I hear it’s on clearance sale now.  
-		''' */
-	/* Chat9:
+		Ich habe einmal einen Pilzbaum gesehen, mindestens 2000 Meter hoch.
+		Man sagt, wenn du hochkletterst und abspringst, landest du in der Pilzwelt.
 		'''
-		I think you’ve got some fungus growing in your lungs.  
-		Come check my shop—I’ve got the perfect cure.  
-		''' */
-	// Chat10: "Oh, I hate that red guy.  "
-	/* Chat11:
+	Chat6:
 		'''
-		I hate this kind of blood moon.  
-		It makes me fade… like a wilted mushroom nobody wants.  
-		''' */
+		Wenn du Suppe brauchst, kauf meine Pilze.
+		Wenigstens schreien sie nicht im Topf.
+		'''
+	Chat7: Alle Pilze hier gehören mir.
+	Chat8:
+		'''
+		Vor zehn Jahren konntest du mich anheuern, ich führte dich ins unterirdische Pilzkönigreich.
+		Da gibt's wohl jetzt einen Ausverkauf.
+		'''
+	Chat9:
+		'''
+		Ich glaube, in deinen Lungen wächst etwas Pilz.
+		Schau in meinem Laden vorbei — ich habe das passende Mittel.
+		'''
+	Chat10: Oh, ich hasse den roten Kerl.
+	Chat11:
+		'''
+		Ich hasse diese Art von Blutmond.
+		Er lässt mich verblassen — wie ein welker Pilz, den niemand will.
+		'''
 }
 
 ModifyWITCH: {
-	// Homeless0: Apologies, I have nothing to offer you. Perhaps you could try reforging some items, then return to me...
-	// Homeless1: Do you have a place for me to stay? I mean... I am prepared to set up camp nearby otherwise.
-	// Homeless2: Do you know how people lived in the past era? They had no houses, dwelling only in hollowed-out trees. Could you at least find me a tree hollow?
-	// Homeless3: No vacant housing? What... you expect me to pay rent?
-	// L0: I cannot afford rent. Perhaps I could perform an exorcism for your town to offset some of the cost?
-	// L1: I have never believed in the concept of souls. Any attempt to resurrect the dead only invites greater catastrophe.
-	/* L2:
+	Homeless0: Entschuldigung, ich habe nichts anzubieten. Vielleicht versuchst du, etwas umzuschmieden, und kommst dann wieder zu mir …
+	Homeless1: Hast du hier einen Platz für mich? Ich meine … ich werde sonst in der Nähe lagern.
+	Homeless2: Weißt du, wie die Menschen in der vergangenen Ära lebten? Sie hatten keine Häuser, wohnten nur in ausgehöhlten Bäumen. Könntest du mir wenigstens ein Baumloch finden?
+	Homeless3: Kein freies Haus? Was … du erwartest, dass ich Miete zahle?
+	L0: Ich kann mir keine Miete leisten. Vielleicht könnte ich deiner Stadt eine Exorzismus-Zeremonie anbieten, um einen Teil der Kosten auszugleichen?
+	L1: Ich habe nie an Seelen geglaubt. Der Versuch, Tote wiederzubeleben, bringt nur größeres Unheil.
+	L2:
 		'''
-		In the last century, I once stepped into a small town.
-		The streets were crowded with 'friends and family' who were supposed to be dead. They smiled, waved, and even cried for help...
-		I attempted to bring back my 'mother' from there.
-		She looked exactly as she did in life, her tone flawless... until I realized she had no heartbeat, and she found amusement in that fact.
-		''' */
-	/* L3:
+		Im letzten Jahrhundert betrat ich einmal eine kleine Stadt.
+		Auf den Straßen wimmelte es von „Freunden und Verwandten", die längst tot sein sollten. Sie winkten, riefen um Hilfe, weinten …
+		Ich versuchte, meine „Mutter" von dort zurückzubringen — und gelang.
+		Sie sah genauso aus wie zu Lebzeiten, makellos … bis ich merkte, dass sie keinen Herzschlag hatte und das amüsierte sie.
 		'''
-		I feel you are sometimes overly confident; you will achieve nothing at this rate.
-		I have seen too many like you perish on their quest for power.
-		''' */
-	/* L4:
+	L3:
 		'''
-		I know you are interested in my magic, but it is... not magic.
-		I hope you stay away from it. Those who touch these powers meet no good end.
-		''' */
-	// BloodMoon0: This unnatural blood-red sky... It pales in comparison to the color of my brimstone flames.
-	// BloodMoon1: I cannot work on a night like this. Even the stars seem to shrink away in fear.
-	// Night0: Night is when the spirits haunt. I have no desire to be outside at such a time.
-	// Night1: Long ago, I performed a divination every night before sleep. Until once, for seven consecutive nights, I foresaw that I would die on the eighth.
-	// SeaKing: The Sea King always looks at me with such sorrowful eyes. He seems to wish I wouldn't die. I cannot understand why he holds such deep sympathy for me.
-	// Party: I refuse any invitation to dance, as my partners tend to end up as charred corpses.
+		Manchmal bist du mir zu selbstsicher; so wirst du nichts erreichen.
+		Ich habe zu viele wie dich auf dem Weg zur Macht sterben sehen.
+		'''
+	L4:
+		'''
+		Ich weiß, dass meine Magie dich interessiert — aber es ist … keine Magie.
+		Bleib davon fern. Wer diese Kräfte berührt, findet kein gutes Ende.
+		'''
+	BloodMoon0: Dieser unnatürliche blutrote Nachthimmel … er verblasst neben der Farbe meiner Schwefelflammen.
+	BloodMoon1: An so einer Nacht kann ich nicht arbeiten. Selbst die Sterne scheinen vor Angst zu schrumpfen.
+	Night0: Die Nacht ist die Zeit der Geister. Ich will nicht draußen sein, wenn es so weit ist.
+	Night1: Vor langer Zeit wahrsagte ich jede Nacht vor dem Schlaf — bis ich sieben Nächte hintereinander sah, dass ich in der achten sterben würde.
+	SeaKing: Der Meereskönig sieht mich immer mit so traurigen Augen an. Er scheint nicht zu wollen, dass ich sterbe. Ich verstehe nicht, warum er so tiefes Mitgefühl für mich hat.
+	Party: Ich lehne jede Einladung zum Tanzen ab — meine Partner enden meist als verkohlte Leichen.
 }
 
-// ModifyOldDuke.LeavingDiveText: The Old Duke dove into the water...
+ModifyOldDuke.LeavingDiveText: Der Alte Herzog tauchte ins Wasser ab …

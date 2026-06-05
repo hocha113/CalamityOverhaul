@@ -1,30 +1,30 @@
 ModifyChargingStationItem: {
-	// DisplayName: Charging Station
-	/* Tooltip:
+	DisplayName: Ladestation
+	Tooltip:
 		'''
-		Uses electricity to charge electrical devices  
-		Batteries can be placed inside to store electricity  
-		Can be connected to pipelines for power transmission  
-		Right-click the block while holding a rechargeable item to quickly insert it  
-		Shift + Right-click to retrieve items
-		''' */
+		Nutzt Strom, um elektrische Geräte aufzuladen
+		Batterien können hineingelegt werden, um Strom zu speichern
+		Kann an Rohrleitungen angeschlossen werden, um Strom zu übertragen
+		Rechtsklick auf den Block mit einem aufladbaren Item in der Hand, um es schnell einzulegen
+		Umschalt + Rechtsklick, um Items herauszunehmen
+		'''
 }
 
 DyeVatItem: {
-	// DisplayName: "{$ItemName.DyeVat}"
-	/* Tooltip:
+	DisplayName: "{$ItemName.DyeVat}"
+	Tooltip:
 		'''
-		Used for crafting dyes
-		Right-click after placing to open the control panel, allowing you to dye items
-		Place a Water Bucket into the dye slot to wash dyes off items
-		''' */
+		Wird zum Herstellen von Farbstoffen verwendet
+		Nach dem Platzieren Rechtsklick, um das Bedienfeld zu öffnen und Items einzufärben
+		Lege einen Wassereimer in den Farbstoff-Slot, um Farben von Items zu entfernen
+		'''
 }
 
 RDemonConch: {
-	// DisplayName: 恶魔海螺
-	/* Tooltip:
+	DisplayName: Dämonenmuschel
+	Tooltip:
 		'''
-		仔细听，你会听到尖叫声
-		“小心”
-		''' */
+		Hör genau hin – du wirst Schreie hören
+		„Vorsicht.“
+		'''
 }

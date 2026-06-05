@@ -14,7 +14,7 @@ VoidErosion: {
 }
 
 DestroyerSummonBuff: {
-	DisplayName: Бафф Призыва Разрушителя
+	DisplayName: Разрушитель
 	Description: Мини-Разрушитель будет следовать за вами в бою
 }
 
@@ -29,6 +29,6 @@ FishoilBuff: {
 }
 
 HyperDisintegration: {
-	// DisplayName: Hyper Disintegration
-	// Description: Let the goal disintegrate from within
+	DisplayName: Гипердезинтеграция
+	Description: Разрушает цель изнутри
 }

@@ -1,19 +1,17 @@
 SHPCModTooltipDraw: {
-	// InstalledHeader: INSTALLED MODULES
-	// NoModules: NONE
-	// BonusHeader: TOTAL MODULE BONUSES
+	InstalledHeader: INSTALLIERTE MODULE
+	NoModules: KEINE
+	BonusHeader: GESAMTE MODULBONI
 }
-
 MoldProcessingTable: {
-	// DisplayName: Mold Processing Table
-	/* Tooltip:
+	DisplayName: Formverarbeitungstisch
+	Tooltip:
 		'''
-		Right-click to open the Mold Processing Table
-		Deconstruct: Melts down surplus modification parts into fragments
-		Recast: Consumes fragments to produce new molds; can lock onto specific targets in the index
-		''' */
+		Rechtsklick öffnet den Formverarbeitungstisch
+		Zerlegen: Überzählige gleichartige Modifikationsteile in Fragmente schmelzen
+		Umgießen: Fragmente verbrauchen für neue Formen; Ziel im Index sperrbar
+		'''
 }
-
 ElementWhip: {
 	DisplayName: Elementarpeitsche
 	Tooltip:
@@ -22,7 +20,6 @@ ElementWhip: {
 		"Die Urkraft von Terra durchdringt zusammen mit den Elementen des Universums die Welt"
 		'''
 }
-
 TheRelicLuxor: {
 	DisplayName: Luxors Relikt
 	Tooltip:
@@ -31,7 +28,6 @@ TheRelicLuxor: {
 		[tips]
 		'''
 }
-
 TheLuxirSoulArtifact: {
 	DisplayName: Luxors Seelenartefakt
 	Tooltip:
@@ -40,17 +36,14 @@ TheLuxirSoulArtifact: {
 		[tips]
 		'''
 }
-
 AzureDragonRage: {
 	DisplayName: Zorn des Azurdrachen
 	Tooltip: Hat einen starken Duft von frischem Gras
 }
-
 BleedingScourge: {
 	DisplayName: Blutpeitsche
 	Tooltip: Bei einem Treffer wird der Feind markiert und ein Blutregen fällt nieder
 }
-
 GhostFireWhip: {
 	DisplayName: Geisterfeuerpeitsche
 	Tooltip:
@@ -59,12 +52,10 @@ GhostFireWhip: {
 		[c/d4bc75:Reine Leidenschaft aus der Hölle ermutigt dich, herauszufinden, wer dich ungerecht behandelt hat]
 		'''
 }
-
 AllhallowsGoldWhip: {
 	DisplayName: Goldene Peitsche
 	Tooltip: Sie ist noch nicht fertiggestellt
 }
-
 DivineSourceBlade: {
 	DisplayName: Göttliche Energie-Klinge
 	Tooltip:
@@ -73,12 +64,10 @@ DivineSourceBlade: {
 		"Das Leben endet nie"
 		'''
 }
-
 FoodStallChair: {
 	DisplayName: Essensstand-Plastikstuhl
-	Tooltip: ""
+	Tooltip: I AM THE CHAIR THAT IS APPROACHING!
 }
-
 Arbiter: {
 	DisplayName: Schlichter
 	Tooltip:
@@ -89,7 +78,6 @@ Arbiter: {
 		"Das Urteil steigt aus den Flammen herab"
 		'''
 }
-
 Cloudwalking: {
 	DisplayName: Wolkenwanderer
 	Tooltip:
@@ -99,7 +87,6 @@ Cloudwalking: {
 		Die Axt kehrt automatisch zum Spieler zurück
 		'''
 }
-
 AnnihilatingUniverse: {
 	DisplayName: Universum-Vernichter
 	Tooltip:
@@ -108,7 +95,6 @@ AnnihilatingUniverse: {
 		Rechtsklick zerstört Feinde mit der Macht des Götterschlächters
 		'''
 }
-
 HeavenfallLongbow: {
 	DisplayName: Himmelsfall-Langbogen
 	Tooltip:
@@ -120,7 +106,7 @@ HeavenfallLongbow: {
 		'''
 	Legend:
 		'''
-
+		
 		Vor hundert Milliarden Jahren erlosch das Feuer des Krieges nicht; 
 		es glimmt wie glühende Kohlen und durchdringt die endlose Zeit, um bis heute zu brennen.
 		Dies sind die Überreste der Götterdämmerung, 
@@ -138,25 +124,21 @@ HeavenfallLongbow: {
 		Mit dem Ende des Krieges wurde dieser Bogen von den Fluten der Zeit verschlungen und in endloser Mysterien und Legenden begraben.
 		Doch jetzt dreht sich das Rad des Schicksals erneut. Der Zorn des Himmels entflammt aufs Neue. 
 		Der Gottesmörderbogen wird wieder auftauchen, inmitten der Symphonie der Sterne, und die Geschichte wird erneut in Blut und Sternenstaub geschrieben.
-
+		
 		'''
 }
-
 TestItem: {
 	DisplayName: Testobjekt
 	Tooltip: Hm... du solltest es nicht besitzen
 }
-
 BaseSingularity: {
 	DisplayName: Basis-Singularität
 	Tooltip: Hm... du solltest es nicht besitzen
 }
-
 InfiniteIngot: {
 	DisplayName: Unendlicher Barren
 	Tooltip: Die Macht des Universums liegt in deiner Hand
 }
-
 TransmutationOfMatterItem: {
 	DisplayName: Omega-Materie-Konverter
 	Tooltip:
@@ -165,12 +147,10 @@ TransmutationOfMatterItem: {
 		"Deine Reise der Gier beginnt jetzt"
 		'''
 }
-
 DarkMatterCompressorItem: {
 	DisplayName: Dunkelmaterie-Kompressor
 	Tooltip: Rekonstruiert Materie wie ein schwarzes Loch
 }
-
 InfinitePick: {
 	DisplayName: Unendliche Spitzhacke
 	Tooltip:
@@ -180,38 +160,33 @@ InfinitePick: {
 		"Du spürst, dass das Land von Terraria in Angst erzittert, wann immer du sie hältst"
 		'''
 }
-
 DarkMatterBall: {
-	DisplayName: Sphère de Matière Noire
+	DisplayName: Dunkelmateriekugel
 	Tooltip:
 		'''
-		Elle a été compressée en un trou noir, mais reste miraculeusement stable.
-		Faites un clic droit en tenant l'objet pour y stocker des objets.
-		Faites un clic droit avec les mains vides pour récupérer les objets stockés.
+		Sie wurde zu einem Schwarzen Loch komprimiert, bleibt aber wunderbar stabil
+		Rechtsklick mit Item in der Hand, um Gegenstände hineinzulegen
+		Rechtsklick mit leeren Händen, um den Inhalt herauszuholen
 		'''
-	// Contents: Contents:
+	Contents: Inhalt:
 }
-
 NeutronStarIngot: {
 	DisplayName: Neutronensternverdichter
 	Tooltip: Das Gewicht des Universums in deinen Fingerspitzen
 }
-
 InfinityCatalyst: {
 	DisplayName: Unendlicher Katalysator
 	Tooltip: Deine Gier erreicht ihren Höhepunkt
 }
-
 DawnshatterAzure: {
 	DisplayName: Morgendämmerungsbrecher
 	Tooltip:
 		'''
 		Feuert eine Schattenkrone ab, die bei einem Treffer explodierende Drachenflammen beschwört
-		Halten Sie die rechte Maustaste gedrückt, um mit erhobener Waffe zu stürmen
+		Halte die rechte Maustaste gedrückt, um mit erhobener Waffe vorzustoßen
 		Feuer reinigt die Seele und plündert deine Feinde vollständig
 		'''
 }
-
 DecayParticles: {
 	DisplayName: Zerfallspartikel
 	Tooltip:
@@ -220,7 +195,6 @@ DecayParticles: {
 		Das bloße Dasein ist ein Wunder
 		'''
 }
-
 DecaySubstance: {
 	DisplayName: Zerfallende Materie
 	Tooltip:
@@ -229,7 +203,6 @@ DecaySubstance: {
 		Der Zyklus von Zerstörung und Wiedergeburt
 		'''
 }
-
 DissipationSubstance: {
 	DisplayName: Zerfallende Substanz
 	Tooltip:
@@ -238,47 +211,43 @@ DissipationSubstance: {
 		Sie zerfällt ständig, ist aber dennoch riesig
 		'''
 }
-
 SpectralMatter: {
 	DisplayName: Spektrale Materie
 	Tooltip: Ungefähr 3.700.000.000.000 Tonnen
 }
-
 InfiniteToiletItem: {
 	OnlyZenithCondition: Nur in der Zenith-Welt
 
 	InfiniteToiletItem: {
-		// OnlyZenithCondition: 仅在天顶世界
-		// DisplayName: Infinite Toilet Item
-		// Tooltip: ""
+		OnlyZenithCondition: Nur in der Zenith-Welt
+		DisplayName: Unendliche Toilette
+		Tooltip: ""
 	}
 }
-
 StormGoddessSpear: {
-	DisplayName: Speer der Sturm Göttin
+	DisplayName: Sturmgöttinnen-Speer
 	Tooltip:
 		'''
-		Feuert einen Sturm Kuss ab, der zerstörerische Blitze trägt
+		Schleudert Sturmküsse mit zerstörerischen Lichtbögen
+		Beim Halten beschwört der Geist der Sturmgöttin und unterstützt dich im Kampf
 		[legend]
 		'''
 	Legend:
 		'''
-
-		Im düsteren Reich der Terraria-Lande ist die ehemalige Kriegsgöttin Alena in endloses Chaos und Verzweiflung verfallen und wird nun als Sturm Göttin geflüstert.
-		Einst war sie die unbesiegbare Kriegerin des Landes, ihre unerschrockene Tapferkeit und die Schärfe ihrer Klinge beherrschten den Himmel wie ein Blitz.
-		Doch das Schicksal breitete seine Schatten unter ihren Füßen aus. Im Endkampf von Licht und Dunkelheit fiel der Himmel auseinander, das Licht verschlang die Dunkelheit.
-		Die Sturm Göttin erlebte den grausamen Zorn des höchsten Gottes. Arrogante Götter nahmen ihr ihre Gefährten und Familie, zerstörten alles, was sie beschützte.
-		Die Sünden des höchsten Gottes brachten sie dazu, an ihrer einstigen Gerechtigkeit zu zweifeln, und sie fiel in einen Abgrund der Verdammnis.
-		Nach dem Verwehen der Kriegsasche kehrte Alena nach Terraria zurück, doch sie war nicht mehr die tapfere Kriegerin von einst.
-		Innerer Schmerz und endlose Verzweiflung ließen sie ihren erhabenen Glauben aufgeben und nach neuen Kräften suchen.
-		In einem blutigen Ritual erhielt sie die verbotene Gabe, endlose Macht, aber um den Preis der ewigen Verdammnis ihrer Seele.
-		Die Sturm Göttin ist nun das Symbol der Tiefe von Terraria, ihr Panzer ist mit Obsidian wie der Nachthimmel besetzt, ihre Augen blitzen vor Verderbnis, Chaos wogt, Hass auf Terraria projiziert.
-		Ihre Klinge ist wie ein Blitz in der Nacht, zerstörerische Blitze tanzen um sie. Sie kämpft nicht mehr für die Gerechtigkeit, sondern ist eine dunkle Macht, die alles zerstört.
-		Sie bewahrt ihre früheren Kampffähigkeiten, doch sie ist jetzt die Feindin von Terraria, verachtet von allen.
-		Die Sturm Göttin schreitet auf ihrem einsamen, verdammten Pfad, ein Hohn auf Terrarias einstigen Glanz, eine alles verschlingende Sturm.
+		Alina, Terras einst schärfste Klinge.
+		Ihr Glaube war unerschütterlich, ihr Kampf unerschrocken. Eisenstaub am silbernen Speer, Haar im Sturm. Die Klinge des Gewitters heult vorbei.
+		Doch selbst die schärfste Klinge bricht und zerschellt; der Glaube fand nur die Gleichgültigkeit der Götter.
+		Als der Höchste sein Urteil fällte, wurden ihre Kameraden, ihre Sippe, ihre Schwüre und ihr Ruhm zu Asche.
+		Mit eigenen Augen sah sie, wie die sogenannte Gerechtigkeit alles zertrete … Blut und Tränen … Staub … Wie im Namen der Ordnung die niederträchtigste Vernichtung vollzogen wurde.
+		Götter … Alina blickt nicht mehr zu den Göttern auf.
+		Sie wich in die Tiefe zurück, zerstörte sich selbst und ließ verbotene Urkräfte ihre Seele verschlingen.
+		Alinas Rüstung schmolz zu einem aus Tiefeneisen geschmiedeten Wrack.
+		Alte Wolkenfetzen, blutrote Sonne und die Vergangenheit verwebten sich; der Blick ihrer Kameraden … und ihrer Sippe im Tod … Alina … alles war vorbei.
+		Sie war nicht mehr die Alina von einst, Terras Kriegsgöttin.
+		Ihr Zorn kehrte wie ein Sturm zurück, riss die Käfer auf dem Schlachtfeld mit sich, ihr Donner durchschnitt Himmel und Wolken, spaltete Throne und Erde.
+		Die Sturmgöttin Alina brachte unbarmherzig Vernichtung und Rache.
 		'''
 }
-
 DragonsScaleGreatsword: {
 	DisplayName: Drachenschuppen-Großschwert
 	Tooltip:
@@ -287,12 +256,10 @@ DragonsScaleGreatsword: {
 		Echter Nahkampfangriff erzeugt viele Giftwolken
 		'''
 }
-
 CosmicCalamity: {
 	DisplayName: Kosmische Katastrophe
-	Tooltip: Angriff startete eine sichelförmige schockwelle
+	Tooltip: Angriffe erzeugen sichelförmige Schockwellen
 }
-
 SpearOfLonginus: {
 	DisplayName: Lanze von Longinus
 	Tooltip:
@@ -305,7 +272,7 @@ SpearOfLonginus: {
 		'''
 	Legend:
 		'''
-
+		
 		“Gebrochener Gott, bitte erlaube mir, meine Sünden zu büßen.”
 		Der Krieg dauert schon seit Jahrhunderten an, ich, als Überlebender der großen Zivilisation, überlebe einsam auf diesem öden Planeten am Rande des Universums.
 		Tausende von Lichtjahren entfernt zermalmen die Kriegsmaschinen Sterne, ihre brutalen Angriffe können in einem Augenblick mehrere Lichtjahre Sternenhimmel auslöschen und sie zu einem stillen Bereich machen.
@@ -317,7 +284,6 @@ SpearOfLonginus: {
 		Das ist unvermeidlicher Frevel, um die Zivilisation zu retten und den Krieg zu gewinnen, ich muss der frommste Anhänger des Höchsten werden, der größte Frevler aller Zeiten.
 		'''
 }
-
 BloodAltar: {
 	DisplayName: Blutaltar
 	Tooltip:
@@ -327,12 +293,10 @@ BloodAltar: {
 		"Lass die Welt vom Karmesin beobachtet werden"
 		'''
 }
-
 BarrenBow: {
 	DisplayName: Brachbogen
 	Tooltip: Die abgefeuerten Pfeile lösen bei Treffern elektrische Entladungen aus
 }
-
 ElementMuzzleBrake: {
 	DisplayName: Elementarer Schalldämpfer
 	Tooltip:
@@ -342,7 +306,6 @@ ElementMuzzleBrake: {
 		Erhöht kritische Trefferchance auf Distanz um 15%
 		'''
 }
-
 EyeOfSingularity: {
 	DisplayName: Neutronenstern-Stabilisator
 	Tooltip:
@@ -353,7 +316,6 @@ EyeOfSingularity: {
 		Verbessert erheblich Fernprojektile
 		'''
 }
-
 PrecisionMuzzleBrake: {
 	DisplayName: Hochpräziser Schalldämpfer
 	Tooltip:
@@ -363,7 +325,6 @@ PrecisionMuzzleBrake: {
 		Erhöht kritische Trefferchance auf Distanz um 10%
 		'''
 }
-
 SimpleMuzzleBrake: {
 	DisplayName: Einfacher Schalldämpfer
 	Tooltip:
@@ -373,60 +334,53 @@ SimpleMuzzleBrake: {
 		Erhöht kritische Trefferchance auf Distanz um 5%
 		'''
 }
-
 AmmoBoxFire: {
 	DisplayName: Brandmunitionskiste
 	Tooltip:
 		'''
-		Halten Sie zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
+		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
 		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
 		Macht die Geschossspitzen hochentzündlich, so dass sie beim Aufprall explodieren
 		'''
 }
-
 ArmourPiercerBox: {
 	DisplayName: Panzerbrecher-Munitionskiste
 	Tooltip:
 		'''
-		Halten Sie zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
+		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
 		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
 		Beschichtet die Geschossspitzen mit Wolfram, erhöht die Durchschlagskraft der Kugeln, ignoriert 75% der Rüstung des Ziels
-		"Aber versuchen Sie trotzdem nicht, einen Panzer mit einer Pistole zu zerstören"
+		"Aber versuche trotzdem nicht, einen Panzer mit einer Pistole zu zerstören"
 		'''
 }
-
 HighExplosiveBox: {
 	DisplayName: Hochexplosive Munitionskiste
 	Tooltip:
 		'''
-		Halten Sie zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
+		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
 		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
 		Verwandelt die Geschossspitzen in hochexplosive Bomben, die bei Treffern eine heftige Explosion auslösen
 		"Lasst sie alle explodieren!"
 		'''
 }
-
 DragonBreathBox: {
 	DisplayName: Drachenatem-Munitionskiste
 	Tooltip:
 		'''
-		Halten Sie zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
+		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
 		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
 		Fusion von Magie und Technologie; Kugeln lösen nach dem Aufprall einen metallischen Strahl aus, der großen Schaden bei einer Vielzahl von Feinden verursacht
 		"Ist das der Speichel des Drachen, an den du glauben möchtest?"
 		'''
 }
-
 HalibutItem: {
-	// DisplayName: Halibut
-	// Tooltip: ""
+	DisplayName: Halibut
+	Tooltip: ""
 }
-
 SHPCItem: {
-	// DisplayName: SHPC
-	// Tooltip: ""
+	DisplayName: SHPC
+	Tooltip: ""
 }
-
 AvalancheM60: {
 	DisplayName: Lawine M60
 	Tooltip:
@@ -437,7 +391,6 @@ AvalancheM60: {
 		"Elisabeth, lass uns Schneeballschlacht machen"
 		'''
 }
-
 CrystalDimming: {
 	DisplayName: Eiszeit
 	Tooltip:
@@ -447,7 +400,6 @@ CrystalDimming: {
 		Alle 20 Schüsse löst eine Überlastexplosion aus, erzeugt einen riesigen Eisbalken am Mauszeiger
 		'''
 }
-
 DarkFrostSolstice: {
 	DisplayName: Dunkelfrostflut
 	Tooltip:
@@ -457,7 +409,6 @@ DarkFrostSolstice: {
 		Alle 20 Schüsse löst eine Überlastexplosion aus, ruft göttliche Winterstürme am Mauszeiger hervor
 		'''
 }
-
 SnowQuay: {
 	DisplayName: Schneequay M16
 	Tooltip:
@@ -466,49 +417,44 @@ SnowQuay: {
 		Eine großkalibrige Schneekanone, feuert gemischte Eis- und Schneegeschosse ab
 		'''
 }
-
 NeutronGlaive: {
 	DisplayName: Neutronengleve
 	Tooltip:
 		'''
-		Schwingen Sie einen starken Gravitationswellenschwertstoß, der bei Treffer eine Neutronensternexplosion erzeugt
-		Halten Sie die rechte Maustaste gedrückt, um das Schwert aufzuladen. Wenn die Ladung vollständig ist und Sie die Maustaste loslassen, wird in der Nähe des Mauszeigers eine große Neutronensternexplosion ausgelöst. Wenn die Ladung nicht vollständig ist, wird die Energie freigesetzt
+		Schwinge einen starken Gravitationswellenschwertstoß, der bei Treffer eine Neutronensternexplosion erzeugt
+		Halte die rechte Maustaste gedrückt, um das Schwert aufzuladen; bei voller Ladung und Loslassen entsteht am Cursor eine große Neutronensternexplosion, sonst wird die gespeicherte Energie freigesetzt
 		'''
 }
-
 NeutronBow: {
 	DisplayName: Neutronenbogen
 	Tooltip:
 		'''
-		Feuern Sie Gravitationspfeile ab, die bei Treffer Gammastrahlen erzeugen
-		Halten Sie die rechte Maustaste für Dreistufenladung gedrückt. Wenn die Energie vollständig aufgeladen ist, werden drei starke Gravitationspfeile abgefeuert
+		Feuere Gravitationspfeile ab, die bei Treffer Gammastrahlen erzeugen
+		Halte die rechte Maustaste für Dreistufenladung gedrückt. Wenn die Energie vollständig aufgeladen ist, werden drei starke Gravitationspfeile abgefeuert
 		'''
-	// Lang1: Trapping gravity
-	// Lang2: Is making gravity yield
-	// Lang3: Finished!!
+	Lang1: Fängt Schwerkraft ein
+	Lang2: Zwingt Schwerkraft in die Knie
+	Lang3: Bereit!!
 }
-
 NeutronGun: {
 	DisplayName: Sternenjäger
 	Tooltip:
 		'''
-		Feuern Sie Gravitationsgeschosse ab, die bei Treffer einen Verzerrungspunkt erzeugen
-		Drücken Sie die rechte Maustaste, um in den Scharfschützenmodus zu wechseln und stärkere Gravitationsgeschosse abzufeuern. Die Geschosse erzeugen bei Treffer Gammastrahlen, die herabregnen
+		Feuere Gravitationsgeschosse ab, die bei Treffer einen Verzerrungspunkt erzeugen
+		Drücke die rechte Maustaste, um in den Scharfschützenmodus zu wechseln und stärkere Gravitationsgeschosse abzufeuern. Die Geschosse erzeugen bei Treffer Gammastrahlen, die herabregnen
 		Jeder Schuss lädt die Waffe auf. Wenn die Ladung vollständig ist und erneut geschossen wird, wird an der Mausposition eine Neutronensternexplosion ausgelöst
-		"Schießen Sie die Sonne herunter!"
+		"Schieße die Sonne herunter!"
 		'''
 }
-
 NeutronWand: {
 	DisplayName: Sternengraberlicht
 	Tooltip:
 		'''
-		Feuern Sie vier starke Gravitationssterne ab
-		Halten Sie die rechte Maustaste gedrückt, um an der Mausposition Gravitationsmagie auszuführen
+		Feuere vier starke Gravitationssterne ab
+		Halte die rechte Maustaste gedrückt, um an der Mausposition Gravitationsmagie auszuführen
 		"Es wird erzählt, dass ein mächtiger psychischer Begabter in der Antike diesen Stab benutzte, um Sterne zu einem Schwarzen Loch zu komprimieren, aber es gibt keine Bestätigung, nur ein Fragment von einem alten Gedicht, das von den interstellaren Nomaden gesungen wird"
 		'''
 }
-
 FadingGlory: {
 	DisplayName: Verblassende Herrlichkeit
 	Tooltip:
@@ -517,16 +463,14 @@ FadingGlory: {
 		Bei nicht echten Nahkämpfen feuert es automatisch Schwertklingen ab, die das Ziel durchdringen und beim Explodieren zusätzliche Seelenfragmente und einen Bluttentakel freisetzen
 		'''
 }
-
 NeutronScythe: {
-	DisplayName: Planetenbote
+	DisplayName: Schwarzloch-Bote
 	Tooltip:
 		'''
 		Eine mit hoher Geschwindigkeit rotierende Neutronensense, die Gammastrahlen auf nahe Feinde abfeuert und entlang ihrer Flugbahn Verzerrungs-Detonationspunkte hinterlässt
 		Rechtsklick: Entfesselt einen Schwarzlochausbruch, der dreizehn Sensen in einem vollen Kreis ausschleudert
 		'''
 }
-
 RebelBlade: {
 	DisplayName: Rebellionsschwert
 	Tooltip:
@@ -535,7 +479,6 @@ RebelBlade: {
 		Rechtsklick steuert den Schwertflug und führt einen Schnitt zum Cursor hin aus
 		'''
 }
-
 MG42: {
 	DisplayName: MG42
 	Tooltip:
@@ -544,7 +487,6 @@ MG42: {
 		Verwandelt Gewehrkugeln in Panzerungsdurchschlagsgeschosse
 		'''
 }
-
 DragonsWord: {
 	DisplayName: Drachensprache
 	Tooltip:
@@ -554,17 +496,15 @@ DragonsWord: {
 		"Ein Drache kann nur einmal im Leben weinen."
 		'''
 }
-
 SnowQuayMK2: {
 	DisplayName: Snow Quay MK2
 	Tooltip:
 		'''
-		Verwenden Sie Schneebälle als Munition
+		Verwende Schneebälle als Munition
 		Eine großkalibrige Schneekanone, die gemischte Eis- und Schneeshells abfeuert
 		Zum Abfeuern ist keine Vorheizung erforderlich
 		'''
 }
-
 HghExplosiveBox: {
 	DisplayName: Sprengstoffkiste
 	Tooltip:
@@ -575,59 +515,49 @@ HghExplosiveBox: {
 		"Schieß sie in den Himmel!"
 		'''
 }
-
 JusticeUnveiled: {
-	// DisplayName: Justice Unveiled
-	/* Tooltip:
+	DisplayName: Offenbarung der Gerechtigkeit
+	Tooltip:
 		'''
-		Ranged attacks build charges of "Judgment Strike", up to a maximum of 5
-		Press [UP] to expend 1 charge and call down a devastating holy impact
-		"Should justice be summoned, I shall heed the call—wherever it leads."
-		''' */
+		Fernkampftreffer sammeln „Gerechtigkeitsschlag“-Ladungen, maximal fünf
+		[UP] drücken verbraucht eine Ladung und ruft einen gewaltigen heiligen Einschlag herab
+		„Wenn Gerechtigkeit gerufen wird, folge ich – wohin auch immer sie führt“
+		'''
 }
-
 WeaverGrievances: {
-	// DisplayName: Weaver Grievances
-	/* Tooltip:
+	DisplayName: Gewebe der Groll
+	Tooltip:
 		'''
-		Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
-		Right-click and roll in the direction of the cursor. Hitting an enemy during the roll will give the player an invincible frame
-		A close roll would be considered a perfect dodge
+		Entfesselt zahlreiche Klauen der Grollgeister mit Spezialeffekten in Unterwelt und Kerker
+		Rechtsklick rollt zum Cursor; Treffer während des Rollens gewähren Unverwundbarkeitsframes
+		Kurzer Rollen als perfektes Ausweichen
 		[legend]
-		''' */
-	/* Legend:
 		'''
-		The eternal dungeon stretches across the land, its walls etched with the inscriptions and screams of ancient warriors. 
-		Each stone is saturated with lingering malice, like chains of the damned, binding it to the endless darkness at time’s end.  
-		These warriors were once the blades of their king, waging war across the realms. 
-		Their swords had illuminated countless battlefields, their blood forged the towering empire. 
-		Their loyalty was as enduring as the stars, their conviction as unyielding as iron.  
-		Yet, when the wars ceased, and the Demonlord’s banners were torn asunder at the king’s feet, 
-		the moment peace descended, the king decreed their consignment to the abyss.  
-		“We betrayed not, yet the king has betrayed us!” The anguished wails of the damned tore through the void, piercing the silence of eternity. 
-		Their noble spirits did not return to the dust but were imprisoned in the void’s chasm, condemned as witnesses to eternal night.  
-		The ceaseless lamentations transformed into a silent accusation, one that reached the furthest ends of the stars.  
-		It is said the king, in fear of their unyielding loyalty and the inferno of their wrath, 
-		heeded the whispers of the Demonlord’s sorcerers, choosing to consign these warriors to the shadows of history.  
-		But malice, like a tide, has twisted the dungeon’s reality. Their suffering has shaken the barriers of time and space, weaving a prophecy of vengeance:  
-		“The Demonlord shall return; the void shall be torn asunder, and our wrath shall consume all!”  
-		When Terra once more faces the brink of annihilation, these restless dead will rise from the darkness. 
-		Their blades will no longer fight for the glory of an empire but for the judgment of the betrayer.  
-		Glory and loyalty are long since obliterated—only the flames of vengeance remain, destined to engulf all.
-		''' */
+	Legend:
+		'''
+		Seit jeher erstreckt sich der Kerker über das Land, seine Wände bedeckt mit Inschriften und Schreien alter Krieger. Jeder Stein tränkt stillstehenden Groll, wie Ketten der Toten, gefesselt an die endlose Nacht am Ende der Zeit.
+		Diese Krieger waren einst die Klingen ihres Königs und zogen in alle Welt. Ihr Schwertlicht erhellte Schlachtfelder, ihr Blut errichtete Terras Türme. Ihre Treue war sternenhaft, ihr Glaube eisern.
+		Doch als die Kriege endeten und die Banner des Dämonfürsten vor dem König zerrissen wurden, befahl der König in dem Moment des Friedens, sie in die dunkle Tiefe zu werfen.
+		„Wir haben nicht verraten, doch der König hat uns verraten!“ Die Klage der Verdammten riss die Stille der Ewigkeit.
+		Ihre edlen Geister kehrten nicht zur Erde zurück, sondern wurden Zeugen der ewigen Nacht in der Leere.
+		Das unaufhörliche Wehklagen wurde zum stillen Vorwurf bis ans Ende der Sterne.
+		Man sagt, der König fürchtete ihre Treue und ihren Zorn und folgte den Flüstern der Dämonfürsten-Sorcerer, sie zur Schatten der Geschichte zu machen.
+		Doch der Groll wie eine Flut verzerrte die Realität des Kerkers. Ihr Leid erschütterte die Schranken der Zeit und webte eine Racheprophezeiung:
+		„Der Dämonfürst wird zurückkehren, die Leere wird zerreißen, unsere Flammen werden alles verzehren!“
+		Wenn Terra erneut dem Untergang nahe, werden diese Untoten aus der Finsternis erstehen. Ihre Klingen kämpfen nicht mehr für Terras Ruhm, sondern zum Urteil des Verräters.
+		Ruhm und Treue sind längst vernichtet – nur die Flammen der Rache bleiben.
+		'''
 }
-
 Starship: {
-	// DisplayName: Starship
-	/* Tooltip:
+	DisplayName: Sternenriese
+	Tooltip:
 		'''
-		Continuously firing builds heat, increasing fire rate over time
-		Right-click to consume ammo and load a comet shell; the next shot fires it for massive damage and inflicts Hyper-Disintegration
-		At peak heat, two escort wingmen fly alongside firing homing star bolts; planets are periodically hurled from behind you
-		Releasing the trigger unleashes the finale: 14 defense-ignoring homing meteors and a micro-galaxy rain down at the cursor
-		''' */
+		Dauerfeuer baut Hitze auf, Feuerrate steigt mit der Hitze
+		Rechtsklick lädt Kometengeschoss, nächster Schuss mit massivem Schaden und Hyper-Zersetzung
+		Bei Spitzenhitze begleiten zwei Flügeljäger mit zielsuchenden Sternbolzen; periodisch Planetensalven von hinten
+		Loslassen des Abzugs: Finale – 14 verteidigungsignorierende Meteore und Miniaturgalaxie am Cursor
+		'''
 }
-
 SandDagger: {
 	DisplayName: Sandklinge
 	Tooltip:
@@ -636,56 +566,50 @@ SandDagger: {
 		Bohrt sich beim Aufprall ein; trifft sie auf Sand, lädt sie sich auf und schießt dann nach oben, um eine Erdbebenwelle und Sandstacheln freizusetzen
 		'''
 }
-
 UnderTheSand: {
-	// DisplayName: Beneath the Sand
-	/* Tooltip:
+	DisplayName: Unter dem Sand
+	Tooltip:
 		'''
-		Hurls a pair of sand surges that arc downward under gravity
-		On impact with the ground, a vertical sand spike erupts from beneath, launching enemies skyward
-		''' */
+		Schleudert ein Paar Sandwogen, die unter Schwerkraft fallen
+		Beim Aufprall schießt ein vertikaler Sandspeer aus dem Boden und schleudert Gegner empor
+		'''
 }
-
 WastelandFang: {
-	// DisplayName: Wasteland Fang
-	/* Tooltip:
+	DisplayName: Ödlandzahn
+	Tooltip:
 		'''
-		Bounces off blocks and accelerates when retracting
-		Opens its mouth and spits out several sand orbs
-		''' */
+		Prallt von Blöcken ab und beschleunigt beim Einholen
+		Sperrt den Mund auf und spuckt mehrere Sandkugeln
+		'''
 }
-
 MelodyTheSand: {
-	// DisplayName: Song of the Sand
-	/* Tooltip:
+	DisplayName: Lied des Sandes
+	Tooltip:
 		'''
-		Fires a small sand tornado that falls to the ground under gravity
-		Once grounded, it patrols back and forth along the surface, reversing at walls and ledges
-		Repeatedly hurls struck enemies into the sky
-		''' */
+		Feuert einen kleinen Sandwirbel, der unter Schwerkraft zur Erde fällt
+		Am Boden patrouilliert er hin und her, wendet an Wänden und Abstürzen um
+		Schleudert getroffene Gegner wiederholt in die Höhe
+		'''
 }
-
 SandVortexOfTheDecayedSea: {
-	// DisplayName: Decayed Sea Sand Vortex
-	/* Tooltip:
+	DisplayName: Sandwirbel des Verfallenen Meeres
+	Tooltip:
 		'''
-		Summons a colossal decayed sea vortex at the cursor
-		The vortex relentlessly draws nearby enemies in and rends them, even unraveling hostile projectiles
-		Periodically hurls outward homing decayed sea orbs
-		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
-		"The roar of the rotting depths churned into sand"
-		''' */
+		Beschwört am Cursor einen gewaltigen verfallenen Meereswirbel
+		Der Wirbel saugt Gegner an und zerreißt sie, stört feindliche Projektile
+		Wirft periodisch zielsuchende verfallene Meereskugeln aus
+		Erneuter Klick erneuert den Wirbel; beim Verblassen ein Ring aus Meereskugeln
+		„Das Brüllen der faulenden Tiefe, in Sand gewälzt“
+		'''
 }
-
 DuneStalker: {
-	// DisplayName: Dune Stalker
-	/* Tooltip:
+	DisplayName: Dünenjäger
+	Tooltip:
 		'''
-		Fires a chain-bound hookhead instead of consuming the ammunition outright
-		The hook tears through enemies along its path, then automatically reels back on impact or once it reaches its maximum range
-		''' */
+		Feuert einen kettengebundenen Haken statt der Munition selbst
+		Der Haken zerreißt Gegner auf seinem Weg und kehrt nach Treffer oder Reichweitenende automatisch zurück
+		'''
 }
-
 SeasonalKunai: {
 	DisplayName: Jahreszeiten-Kunai
 	Tooltip:
@@ -696,7 +620,6 @@ SeasonalKunai: {
 		"Spiegel der vier Jahreszeiten"
 		'''
 }
-
 WraithKunai: {
 	DisplayName: Geisterkunai
 	Tooltip:
@@ -706,32 +629,28 @@ WraithKunai: {
 		Tagsüber Brand, nachts Seelenbrand
 		'''
 }
-
 CalSelfPortrait: {
-	// DisplayName: Forgotten Photograph
-	/* Tooltip:
+	DisplayName: Vergessenes Foto
+	Tooltip:
 		'''
-		A forgotten photograph
+		Ein vergessenes Foto
 		[legend]
-		''' */
-	// Legend: What else do you want to see? :)
-}
-
-WUTIVSelfPortrait: {
-	// DisplayName: Thank You, Wuti
-	// Tooltip: ""
-}
-
-HandmadeDoll: {
-	// DisplayName: Handmade Sewn Doll
-	/* Tooltip:
 		'''
-		Used in the Underworld to summon the Wall of Flesh
-		If the Guide is alive, he will be sacrificed upon use
-		"Handmade, and the Guide doesn't know"
-		''' */
+	Legend: "Was willst du denn noch sehen? :)"
 }
-
+WUTIVSelfPortrait: {
+	DisplayName: "Danke, Wuti"
+	Tooltip: ""
+}
+HandmadeDoll: {
+	DisplayName: Handgenähte Puppe
+	Tooltip:
+		'''
+		In der Unterwelt benutzen, um die Fleischwand zu beschwören
+		Lebt der Führer, wird er beim Benutzen geopfert
+		„Handarbeit – der Führer weiß nichts davon“
+		'''
+}
 Snowblindness: {
 	DisplayName: Schneemonster
 	Tooltip:
@@ -742,7 +661,6 @@ Snowblindness: {
 		Gefrorene Risse, vertrocknete Blutflecken, rotes Eis, weinender Biber, Gestalten im Eis"
 		'''
 }
-
 WhiplashGalactica: {
 	DisplayName: Galaktische Peitsche
 	Tooltip:
@@ -751,67 +669,60 @@ WhiplashGalactica: {
 		"Die Wirbelsäule der kosmischen Riesenschlange, gefüllt mit kosmischer Energie, leitet den Zorn des Universums"
 		'''
 }
-
 FocusingGrimoire: {
-	// DisplayName: Focusing Grimoire
-	/* Tooltip:
+	DisplayName: Fokussierendes Zauberbuch
+	Tooltip:
 		'''
-		Left click to fire homing thermal rings
-		Right click to rapidly fire death rays
-		"Better than six books combined"
-		''' */
+		Linksklick feuert zielsuchende Wärmeringe
+		Rechtsklick feuert schnell Todesstrahlen
+		„Ein Buch schlägt sechs Bücher“
+		'''
 }
-
 CommandersStaff: {
-	// DisplayName: Commander's Staff
-	/* Tooltip:
+	DisplayName: Kommandeur-Stab
+	Tooltip:
 		'''
-		Fires a thermal disintegration beam that pierces enemies
-		"Taken from that machine’s arm, how about using psionic energy instead of diesel?"
-		''' */
+		Feuert einen thermischen Zersetzungsstrahl, der Gegner durchdringt
+		„Vom Arm jener Maschine abmontiert – wie wäre es mit Psi-Energie statt Diesel?“
+		'''
 }
-
 RaiderGun: {
-	// DisplayName: Raider
-	/* Tooltip:
+	DisplayName: Räuber
+	Tooltip:
 		'''
-		Converts musket balls into high-speed bullets
-		Right click to roll dash and reload the magazine
-		The first bullet fired after rolling is converted into a Destroyer Grenade
-		"Perfect for indoor hostage rescues"
-		''' */
+		Wandelt Musketenkugeln in Hochgeschwindigkeitsgeschosse
+		Rechtsklick für Rollstoß und volles Magazin
+		Erster Schuss nach dem Rollen wird zur Zerstörer-Granate
+		„Perfekt für Geiselbefreiungen in Innenräumen“
+		'''
 }
-
 HyperionBarrage: {
-	// DisplayName: Hyperion Auto-Turret
-	/* Tooltip:
+	DisplayName: Hyperion-Automatenturm
+	Tooltip:
 		'''
-		Fires thermal cruise missiles
-		"Make full use of everything"
-		''' */
+		Feuert thermische Marschflugkörper
+		„Alles nutzen, was geht“
+		'''
 }
-
 RaiderGunEX: {
-	// DisplayName: Raider EX
-	/* Tooltip:
+	DisplayName: Räuber EX
+	Tooltip:
 		'''
-		Converts musket balls into high-speed bullets
-		Additionally fires a barrage of Destroyer Homing Missiles
-		Right click to roll dash and reload the magazine
-		The first bullet fired after rolling is converted into a Destroyer Grenade
-		"Carpet bombing"
-		''' */
+		Wandelt Musketenkugeln in Hochgeschwindigkeitsgeschosse
+		Feuert zusätzlich viele Zerstörer-Homing-Raketen
+		Rechtsklick für Rollstoß und volles Magazin
+		Erster Schuss nach dem Rollen wird zur Zerstörer-Granate
+		„Flächenbombardement“
+		'''
 }
-
 CommandersChainsaw: {
-	// DisplayName: Commander's Chainsaw
-	/* Tooltip:
+	DisplayName: Kommandeur-Kettensäge
+	Tooltip:
 		'''
-		Generates sparks upon hitting a target
-		"Add more diesel"
-		''' */
+		Erzeugt Funken beim Treffen eines Ziels
+		„Mehr Diesel dazu“
+		'''
 }
-
 GeminisTribute: {
 	DisplayName: Jenseits der Zwillinge
 	Tooltip:
@@ -821,416 +732,369 @@ GeminisTribute: {
 		"Es kann nur eine dominante Persönlichkeit geben, und eindeutig hat das Magmaflammenauge gewonnen."
 		'''
 }
-
 Dicoria: {
-	// DisplayName: Dicoria
-	/* Tooltip:
-		'''
-		Fires dual bullets, can be charged
-		Fully charged shots release a thermal beam
-		"By the way, won't this make us cross-eyed?"
-		''' */
-}
-
-GeminisTributeEX: {
-	// DisplayName: Twins' Tribute EX
-	/* Tooltip:
-		'''
-		Throws a fast-revolving scythe that slashes back and forth
-		Hitting an enemy spawns two additional companion scythes
-		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
-		''' */
-}
-
-DestroyersBlade: {
-	// DisplayName: Destroyer's Blade
-	/* Tooltip:
-		'''
-		Fires thermal barrages
-		"Contains the immense energy core of the Destroyer."
-		''' */
-}
-
-Observer: {
-	// DisplayName: Observer
-	// Tooltip: '''"It's still watching you"'''
-}
-
-StaffoftheDestroyer: {
-	// DisplayName: Staff of the Destroyer
-	/* Tooltip:
-		'''
-		Summons a miniature Destroyer to fight for you
-		The higher the summon limit, the stronger the Destroyer
-		At least four summoning slots are required
-		''' */
-}
-
-ForgedLash: {
-	// DisplayName: Forged Lash
-	// Tooltip: '''"Not suitable for being bought as scrap iron."'''
-}
-
-CommandersClaw: {
-	DisplayName: Kommandantenklaue
+	DisplayName: Dicoria
 	Tooltip:
 		'''
-		Schleudert einen verzierten Kommandantenspeer, dessen Spitze stets in Flugrichtung zeigt
+		Feuert zwei Kugeln, Schüsse können aufgeladen werden
+		Voll aufgeladen entsteht ein Wärmestrahl
+		„Sagen wir mal so – bekommen wir davon Schielen?“
+		'''
+}
+GeminisTributeEX: {
+	DisplayName: Zwillings-Tribut EX
+	Tooltip:
+		'''
+		Wirft eine schnell hin und her schneidende Sense
+		Bei Treffer entstehen zwei Begleitsensen
+		„Es kann nur eine dominante Persönlichkeit geben – offensichtlich hat das Magmaflammen-Auge gewonnen“
+		'''
+}
+DestroyersBlade: {
+	DisplayName: Zerstörer-Klinge
+	Tooltip:
+		'''
+		Feuert thermische Salven
+		„Enthält den gewaltigen Energiekern des Zerstörers“
+		'''
+}
+Observer: {
+	DisplayName: Beobachter
+	Tooltip: „Es beobachtet dich noch immer“
+}
+StaffoftheDestroyer: {
+	DisplayName: Zerstörer-Beschwörungsstab
+	Tooltip:
+		'''
+		Beschwört einen Miniatur-Zerstörer
+		Stärker bei höherem Beschwörungslimit, mindestens 4 Plätze nötig
+		'''
+}
+ForgedLash: {
+	DisplayName: Geschmiedete Peitsche
+	Tooltip: „Nicht als Schrott verkaufbar“
+}
+CommandersClaw: {
+	DisplayName: Kommandeur-Klaue
+	Tooltip:
+		'''
+		Schleudert einen verzierten Kommandeur-Speer, dessen Spitze stets in Flugrichtung zeigt
 		Jeder Treffer entfesselt metallische Funken, Schockwellen und ein kurzes Bildschirmbeben
 		Mehrere Speere können gleichzeitig fliegen, sich in Gelände bohren oder getroffene Gegner kurzzeitig durchbohrt festhalten
 		'''
 }
-
 DraedonsRemote: {
-	// DisplayName: Draedon's Remote
-	/* Tooltip:
+	DisplayName: Draedons Fernbedienung
+	Tooltip:
 		'''
-		Summons the EX Mechanical Trio
-		Can only be used at night
-		''' */
-	// DontUseByDeath: The current game difficulty does not allow sending signals!
+		Beschwört das EX-Mechanische-Trio
+		Nur nachts verwendbar
+		'''
+	DontUseByDeath: Die aktuelle Spielschwierigkeit erlaubt kein Senden von Signalen!
 }
-
 CommandersStaffEX: {
-	// DisplayName: Commander's Staff EX
-	/* Tooltip:
+	DisplayName: Kommandeur-Stab EX
+	Tooltip:
 		'''
-		Fires multiple spreading thermal beams
-		"Suitable for cutting metal"
-		''' */
+		Feuert mehrere sich ausbreitende Wärmestrahlen
+		„Geeignet zum Schneiden von Metall“
+		'''
 }
-
 CommandersChainsawEX: {
-	// DisplayName: Commander's Chainsaw EX
-	// Tooltip: '''"Shreds everything in your path"'''
+	DisplayName: Kommandeur-Kettensäge EX
+	Tooltip: "„Zerkleinert alles, was dir im Weg steht“"
 }
-
 ForgedLashEX: {
-	// DisplayName: Forged Lash EX
-	// Tooltip: ""
+	DisplayName: Geschmiedete Peitsche EX
+	Tooltip: Feuert beim Peitschen verfolgende Wärmebälle ab
 }
-
 SoulofFrightEX: {
-	// DisplayName: Soul of Fright EX
-	/* Tooltip:
+	DisplayName: Seele der Furcht EX
+	Tooltip:
 		'''
-		Concentrated fear energy pulses within  
-		Obtain by defeating rebel machines during the Mechanical Uprising
-		''' */
+		Konzentrierte Furchtenergie pulsiert darin
+		Erhältlich durch Besiegung rebellischer Maschinen im Maschinenaufstand
+		'''
 }
-
 SoulofMightEX: {
-	// DisplayName: Soul of Might EX
-	/* Tooltip:
+	DisplayName: Seele der Macht EX
+	Tooltip:
 		'''
-		Concentrated destructive energy pulses within  
-		Obtain by defeating rebel machines during the Mechanical Uprising
-		''' */
+		Konzentrierte Zerstörungsenergie pulsiert darin
+		Erhältlich durch Besiegung rebellischer Maschinen im Maschinenaufstand
+		'''
 }
-
 SoulofSightEX: {
-	// DisplayName: Soul of Sight EX
-	/* Tooltip:
+	DisplayName: Seele der Einsicht EX
+	Tooltip:
 		'''
-		Concentrated wisdom energy pulses within  
-		Obtain by defeating rebel machines during the Mechanical Uprising
-		''' */
+		Konzentrierte Weisheitsenergie pulsiert darin
+		Erhältlich durch Besiegung rebellischer Maschinen im Maschinenaufstand
+		'''
 }
-
 DestroyersBladeEX: {
-	// DisplayName: Destroyers Blade EX
-	/* Tooltip:
+	DisplayName: Zerstörer-Klinge EX
+	Tooltip:
 		'''
-		Launch a thermal barrage
-		"It's always easier to destroy than to build"
-		''' */
+		Feuert thermische Salven
+		„Zerstören ist immer leichter als Bauen“
+		'''
 }
-
 ThermalGenerator: {
-	// DisplayName: Thermal Generator
-	/* Tooltip:
+	DisplayName: Thermogenerator
+	Tooltip:
 		'''
-		Put fuel in for power generation.
-		Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
-		''' */
+		Brennstoff einlegen zur Stromerzeugung
+		Rechtsklick auf den Block legt Brennstoff schnell ein, Umschalt+Rechtsklick entnimmt
+		'''
 }
-
 ThermalBattery: {
-	// DisplayName: Thermal Battery
-	// Tooltip: Store a certain amount of electrical energy
+	DisplayName: Wärmebatterie
+	Tooltip: Speichert eine bestimmte Menge Strom
 }
-
 WindGrivenGenerator: {
-	// DisplayName: Wind Griven Generator
-	// Tooltip: Move with the wind and generate electricity
-	// UnderstandWindGriven: An initial understanding of how wind power works is required
-	// UnderstandWindGriven2: Need to dig up old wind machines on asteroids to understand how they're made
+	DisplayName: Windkraftgenerator
+	Tooltip: Folgt dem Wind und erzeugt Strom
+	UnderstandWindGriven: Grundlegendes Verständnis der Windkraft nötig
+	UnderstandWindGriven2: "Auf Asteroiden alte Windmaschinen ausgraben, um ihre Herstellung zu verstehen"
 }
-
 WindGrivenGeneratorMK2: {
-	// DisplayName: Wind Griven Generator MK2
-	// Tooltip: Move with the wind and generate electricity
-	// UnderstandWindGrivenMK2: A deep understanding of wind power is required
-	// UnderstandWindGrivenMK2Remind: Need to mine the giant wind turbines on asteroids to understand their crafting principles
+	DisplayName: Windkraftgenerator MK2
+	Tooltip: Folgt dem Wind und erzeugt Strom
+	UnderstandWindGrivenMK2: Tiefes Verständnis der Windkraft nötig
+	UnderstandWindGrivenMK2Remind:
+		'''
+		Riesige Windturbinen auf Asteroiden abbauen, um ihre Herstellungsprinzipien zu lernen
+		'''
 }
-
 ThermalGeneratorMK2: {
-	// DisplayName: Thermal Generator MK2
-	/* Tooltip:
+	DisplayName: Thermogenerator MK2
+	Tooltip:
 		'''
-		Put fuel in for power generation.
-		Right-clicking on the block can quickly insert fuel, and Shift-right-clicking can remove it.
-		''' */
+		Brennstoff einlegen zur Stromerzeugung
+		Rechtsklick auf den Block legt Brennstoff schnell ein, Umschalt+Rechtsklick entnimmt
+		'''
 }
-
 WGGMK2Wilderness: {
-	// DisplayName: Giant Wind Turbines In The Wilderness
-	// Tooltip: ""
+	DisplayName: Riesige Windkraftanlage in der Wildnis
+	Tooltip: ""
 }
-
 WGGWilderness: {
-	// DisplayName: Wind Turbines In The Wilderness
-	// Tooltip: ""
+	DisplayName: Windkraftanlage in der Wildnis
+	Tooltip: ""
 }
-
 MedicalBox: {
-	// DisplayName: Medical Box
-	/* Tooltip:
+	DisplayName: Medizinkiste
+	Tooltip:
 		'''
-		Press and hold to deploy to the ground
-		Right-click on the medical box after deployment to heal yourself
-		''' */
+		Gedrückt halten zum Ausrollen auf den Boden
+		Rechtsklick auf ausgerollte Kiste heilt dich
+		'''
 }
-
 TeslaElectromagneticTower: {
-	// DisplayName: Tesla Electromagnetic Tower
-	/* Tooltip:
+	DisplayName: Tesla-Elektromagnetturm
+	Tooltip:
 		'''
-		Requires electrical energy to operate
-		Right-click after placing on the ground to switch between attack mode and guard mode
-		In attack mode, it emits electric arcs to nearby enemies
-		In guard mode, it inflicts an electrified debuff on all enemies within range; if a player is within range
-		and holding a chargeable item, the electromagnetic tower will emit electric arcs to remotely charge the player
-		"Engineers, stay away"
-		''' */
+		Benötigt Strom
+		Nach dem Platzieren Rechtsklick wechselt zwischen Angriffs- und Wachmodus
+		Angriffsmodus schießt Lichtbögen auf nahe Gegner
+		Wachmodus: elektrischer Debuff im Radius; hältst du ein aufladbares Item im Radius, lädt der Turm dich aus der Ferne auf
+		„Ingenieure bitte fernbleiben“
+		'''
 }
-
 EmblemOfDread: {
-	// DisplayName: Emblem of Dread
-	/* Tooltip:
+	DisplayName: Abzeichen des Todesfürchtenden
+	Tooltip:
 		'''
-		Increases melee damage by 100%
-		Increases melee critical strike chance by 100%
-		Increases melee speed by 100%
-		Increases defense by 100, ignoring all defense damage and reduction
-		Reduces incoming damage by 75% and reflects 100x damage back to the attacker
-		All melee attacks inflict the 'Void Erosion' debuff
-		True melee attacks have a chance to instantly erase enemies with less than 250,000 HP
-		Moving at high speeds leaves warp points in your path, dealing extreme damage to enemies
-		Grants the ability to use Gravity Dash; press [KEY] to dash a long distance and release massive gravitational rays
-		If you receive fatal damage, you immediately regain full HP and gain a Gravity Shield (60 second cooldown)
-		Enemies are more likely to target you
-		[c/d94fff:"A sanctified angel veils your gaze, whispering eternal, saccharine lies"]
-		[c/ff4d4d:"A blood-soaked butcher raises your twin blades, declaring that only slaughter brings glory"]
-		[c/4da6ff:"An azure dove pecks through your brow, mocking your insignificant struggle"]
-		''' */
+		Erhöht Nahkampfschaden um 100 %
+		Erhöht Nahkampf-Krit-Chance um 100 %
+		Erhöht Nahkampftempo um 100 %
+		Erhöht Verteidigung um 100, ignoriert alle Verteidigungsabzüge
+		Reduziert erlittenen Schaden um 75 % und reflektiert 100-fachen Schaden auf den Angreifer
+		Alle Nahkampfangriffe belegen Gegner mit dem Debuff „Leererosion“
+		Bei Gegnern unter 250.000 LP können echte Nahkampftreffer sie direkt auslöschen
+		Bei hoher Bewegungsgeschwindigkeit hinterlässt du Verzerrungspunkte auf dem Weg mit extremem Schaden
+		Gewährt Gravitationsstoß; [KEY] drücken für extremen Stoß und massive Gravitationsstrahlen
+		Bei tödlichem Treffer sofort volle LP und Gravitationsschild (60 s Abklingzeit)
+		Gegner zielen leichter auf dich
+		[c/d94fff:„Ein geheiligter Engel hüllt deine Augen und flüstert ewige, süße Lügen“]
+		[c/ff4d4d:„Ein blutgetränkter Metzger hebt deine Zwillingsklingen und verkündet: Nur Schlachten bringt Ruhm“]
+		[c/4da6ff:„Eine azurblaue Taube pickt deine Stirn auf und verspottet deinen kleinen Kampf“]
+		'''
 }
-
 ElectricMinRocket: {
-	// DisplayName: Electric Mini Rocket
-	/* Tooltip:
+	DisplayName: Elektrische Minirakete
+	Tooltip:
 		'''
-		Right-click to use the rocket, or place it on the ground and right-click to start flying.
-		Press the left or right arrow keys in the air to adjust direction.
-		Hold the down arrow key to descend slowly; flying will gradually consume power.
-		Press the spacebar to interrupt flight.
-		“Made in the Soviet Union, sturdy and reliable, it almost made it to the moon.”
-		''' */
+		Rechtsklick zum Benutzen der Rakete, oder auf den Boden legen und Rechtsklick zum Start des Flugs
+		In der Luft mit Links-/Rechts-Pfeiltasten steuern
+		Gedrückte Abwärtspfeiltaste für langsames Sinken; Flug verbraucht nach und nach Strom
+		Leertaste unterbricht den Flug
+		„Sowjetische Herstellung, robust und zuverlässig – sie hätte fast den Mond erreicht“
+		'''
 }
-
 UEPipeline: {
-	// DisplayName: Energy Pipeline
-	/* Tooltip:
+	DisplayName: Energieleitung
+	Tooltip:
 		'''
-		Used for transmitting electrical energy
-		Right-click to quickly dismantle and retrieve the pipeline at the cursor position
-		Connects to generators and other power sources to transfer energy to batteries or electrical devices
-		''' */
+		Zur Stromübertragung
+		Rechtsklick demontiert und recycelt die Zielleitung
+		Verbindet Generatoren mit Batterien oder Verbrauchern
+		'''
 }
-
 EnergySword: {
-	// DisplayName: Energy Sword
-	/* Tooltip:
+	DisplayName: Energieschwert
+	Tooltip:
 		'''
-		Expend energy to shoot lasers and penetrate multiple enemies
-		"Utilization is not high."
-		''' */
+		Verbraucht Energie, um Laser abzufeuern, die mehrere Gegner durchdringen
+		„Die Auslastung ist nicht besonders hoch“
+		'''
 }
-
 LaserPistol: {
-	// DisplayName: Laser Pistol
-	/* Tooltip:
+	DisplayName: Laserpistole
+	Tooltip:
 		'''
-		Expend energy to shoot lasers and penetrate multiple enemies
-		"Utilization is not high."
-		''' */
+		Verbraucht Energie, um Laser abzufeuern, die mehrere Gegner durchdringen
+		„Die Auslastung ist nicht besonders hoch“
+		'''
 }
-
 HyperionBarrageEX: {
-	// DisplayName: Hyperion Barrage EX
-	/* Tooltip:
+	DisplayName: Hyperion-Automatenturm EX
+	Tooltip:
 		'''
-		After hitting the target, the heat-seeking cruise missile will split into multiple parts to cause secondary damage.
-		"Beyond its intended use"
-		''' */
+		Feuert thermische Marschflugkörper; nach Treffer spaltet sich der Geschoss in sechs Submunitionen für Sekundärschaden
+		„Mehr als vorgesehen“
+		'''
 }
-
 MiningMachine: {
-	// DisplayName: Mining Machine
-	/* Tooltip:
+	DisplayName: Bergbaumaschine
+	Tooltip:
 		'''
-		Drilling minerals by consuming electrical energy
-		It needs to be placed in an appropriate location to work properly
-		Special minerals can be extracted in special environments
-		''' */
-	// DontWork: It needs to be placed on a hard surface in order to carry out mining operations.
+		Bohrt Mineralien mit Strom
+		Muss an geeigneter Stelle platziert werden
+		In besonderen Umgebungen spezielle Mineralien
+		'''
+	DontWork: "Muss auf festem Untergrund stehen, um zu arbeiten"
 }
-
 HoChaMeditatorItem: {
-	// DisplayName: HoCha Meditator
-	// Tooltip: ""
+	DisplayName: HoCha-Meditator
+	Tooltip: ""
 }
-
 Collector: {
-	// DisplayName: Collector
-	/* Tooltip:
+	DisplayName: Sammler
+	Tooltip:
 		'''
-		Automatically pick up the fallen objects around and place them in the nearest box
-		It won't work if there are no boxes around
-		''' */
-	// Text1: Excessive Quantity!
-	// Text2: There are no boxes around!
-	// Text3: Lack of Electricity!
+		Verbraucht Strom für Sammelarbeit
+		Hebt automatisch Beute in der Umgebung auf und legt sie in die nächste Kiste
+		Funktioniert nicht ohne Kiste in der Nähe
+		Rechtsklick mit einem Gegenstand markiert den Sammler, damit er nur diese Art aufsammelt
+		'''
+	Text1: Zu viele!
+	Text2: Keine Kisten in der Nähe!
+	Text3: Strommangel!
 }
-
 WGGCollector: {
-	// DisplayName: Junkman
-	/* Tooltip:
+	DisplayName: Schrotthändler
+	Tooltip:
 		'''
-		It’s passionate about recycling — including you.
-		To it, there’s no real difference between a plastic bottle and your spinal cord.
-		''' */
+		Es recycelt leidenschaftlich alles – auch dich
+		Für es gibt es keinen Unterschied zwischen Plastikflasche und Wirbelsäule
+		'''
 }
-
 LaserEnergyTrans: {
-	// DisplayName: Laser Energy Trans
-	/* Tooltip:
+	DisplayName: Laser-Energieübertrager
+	Tooltip:
 		'''
-		Remote power transmission.
-		After placement, right-click to activate the laser navigation, 
-		and then right-click on other power buildings to link them.
-		The farther the transmission distance, the greater the energy loss. 
-		The maximum loss is 100%.
-		''' */
+		Fernübertragung von Strom
+		Nach dem Platzieren Rechtsklick startet die Lasernavigation, erneuter Rechtsklick auf andere Stromgebäude verknüpft sie
+		Je weiter die Strecke, desto höher der Energieverlust, maximal 100 %
+		'''
 }
-
 MetalMusicBox: {
-	// DisplayName: Music Box (Machine Rebellion)
-	// Tooltip: Plays 'Fall of the Bit' by Ryusa
+	DisplayName: Spieluhr (Maschinenaufstand)
+	Tooltip: Spielt „Fall of the Bit“ von Ryusa
 }
-
 Hydroelectric: {
-	// DisplayName: Hydroelectric
-	/* Tooltip:
+	DisplayName: Wasserkraftwerk
+	Tooltip:
 		'''
-		Generating electricity by placing in water
-		"One application of fluid mechanics"
-		''' */
+		Im Wasser platzieren zur Stromerzeugung
+		„Eine Anwendung der Strömungsmechanik“
+		'''
 }
-
 HydroelectricMK2: {
-	// DisplayName: Hydroelectric MK2
-	/* Tooltip:
+	DisplayName: Wasserkraftwerk MK2
+	Tooltip:
 		'''
-		Generating electricity by placing in water
-		"One application of fluid mechanics"
-		''' */
+		Im Wasser platzieren zur Stromerzeugung
+		„Eine Anwendung der Strömungsmechanik“
+		'''
 }
-
 CreativeUEPipeline: {
-	// DisplayName: Energy Creative Pipeline
-	// Tooltip: ""
+	DisplayName: Göttliche Energieleitung
+	Tooltip: ""
 }
-
 ItemFilter: {
-	// DisplayName: Item Filter Board
-	/* Tooltip:
+	DisplayName: Gegenstandsfilterplatte
+	Tooltip:
 		'''
-		Use to open the filter panel
-		Right-click a compatible machine to apply
-		Left-click a chest to copy its contents as filter rules
-		''' */
+		Benutzen öffnet das Filterpanel
+		Rechtsklick auf kompatible Maschinen zum Anwenden
+		Linksklick auf Kiste kopiert deren Inhalt als Filterregeln
+		'''
 }
-
 SporeBubbleBlaster: {
-	// DisplayName: Spore Bubble Blaster
-	/* Tooltip:
-		'''
-		Sprays a stream of spore particles
-		Causes only 50% damage during the day
-		''' */
+	DisplayName: Sporenblasenwerfer
+	Tooltip: Sprüht einen Strom von Sporenpartikeln
 }
-
 TomeofFungalDecay: {
-	// DisplayName: Tomeof Fungal Decay
-	// Tooltip: ""
+	DisplayName: Foliant des Pilzverfalls
+	Tooltip: Sprüht einen Ring aus Sporenstößen
 }
-
 FungalRevolver: {
-	// DisplayName: Fungal Revolver
-	// Tooltip: ""
+	DisplayName: Pilzrevolver
+	Tooltip:
+		'''
+		Verwandelt Musketenkugeln in Pilzgeschosse
+		„Nach dem Reinigen ließ es sich nicht mehr benutzen“
+		'''
 }
-
 FungalFeed: {
-	// DisplayName: Fungal Feed
-	/* Tooltip:
+	DisplayName: Pilzfutter
+	Tooltip:
 		'''
-		Throw at a Sporecrab to tame it
-		A tamed Sporecrab will follow you and fight by your side
-		Can be equipped with a [i:CalamityOverhaul/MushroomSaddle] Mushroom Saddle to become a mount
-		"They just love mushrooms"
-		''' */
+		Wirf es auf einen Sporenkrebs zum Zähmen
+		Gezähmte Sporenkrebse folgen dir und kämpfen an deiner Seite
+		Mit [i:CalamityOverhaul/MushroomSaddle] Pilzsattel als Reittier ausrüstbar
+		„Sie lieben Pilze über alles“
+		'''
 }
-
 MushroomSaddle: {
-	// DisplayName: Mushroom Saddle
-	/* Tooltip:
+	DisplayName: Pilzsattel
+	Tooltip:
 		'''
-		Can be equipped on a Sporecrab tamed with [i:CalamityOverhaul/FungalFeed] Fungal Feed
-		Left-click the Sporecrab while holding the saddle to equip it
-		Right-click an equipped Sporecrab to ride
-		''' */
-	// UseCombat: Can only be applied to crabulon
+		Ausrüstbar auf mit [i:CalamityOverhaul/FungalFeed] Pilzfutter gezähmten Sporenkrebsen
+		Linksklick auf Sporenkrebs zum Anlegen
+		Rechtsklick auf ausgerüsteten Sporenkrebs zum Reiten
+		'''
+	UseCombat: Nur auf Sporenkrebs anlegbar
 }
-
 SporeboundRoller: {
-	// DisplayName: Sporebound Roller
-	/* Tooltip:
+	DisplayName: Sporengebundener Roller
+	Tooltip:
 		'''
-		Generates a floating little mushroom after hitting an enemy
-		"They love to keep rolling around"
-		''' */
+		Erzeugt nach Treffer einen schwebenden kleinen Pilz
+		„Sie rollen am liebsten immer weiter“
+		'''
 }
-
 Spectrometer: {
-	// DisplayName: Spectrometer
-	/* Tooltip:
+	DisplayName: Spektrometer
+	Tooltip:
 		'''
-		Allows dyeing items with color
-		Requires power to operate
-		''' */
+		Ermöglicht das Färben von Gegenständen mit Farbstoff
+		Benötigt Strom zum Betrieb
+		'''
 }
-
 SporeburstPouch: {
 	DisplayName: Sporenbeutel
 	Tooltip:
@@ -1239,1306 +1103,1237 @@ SporeburstPouch: {
 		Setzt eine giftige Schockwelle und einen Schwarm zielsuchender Sporensplitter frei; getroffene Gegner werden Vergiftet
 		'''
 }
-
 Pallbearer: {
-	// DisplayName: Pallbearer
-	/* Tooltip:
+	DisplayName: Sargträger
+	Tooltip:
 		'''
-		Hold left-click to charge, releasing to fire a Pallbearer Arrow
-		The longer the charge, the more powerful the arrow
-		Right-click to throw the crossbow
-		Hitting an enemy significantly empowers the next arrow and accelerates charge speed
-		"Also known as the Coffin Carrier"
-		''' */
+		Linksklick gedrückt halten zum Aufladen, loslassen feuert Sargträger-Pfeil
+		Längeres Aufladen verstärkt den Pfeil
+		Rechtsklick wirft die Armbrust
+		Treffer verstärkt den nächsten Schuss stark und beschleunigt das Aufladen
+		„Auch Sargträger genannt“
+		'''
 }
-
 EncyclopediaofOceanicKnowledge: {
-	// DisplayName: Encyclopediaof Oceanic Knowledge
-	/* Tooltip:
+	DisplayName: Enzyklopädie des Meereswissens
+	Tooltip:
 		'''
-		Instantly gain knowledge of all fish species
-		Unlock all fish-related skills
-		[c/FFD700: The wisdom of the ocean will converge upon you]
-		''' */
-	// Text1: You have mastered all the knowledge
-	// Text2: You have acquired [NUM] kinds of fish knowledge!
+		Nach Gebrauch sofortiges Verständnis aller Fischarten
+		Schaltet alle Fisch-Fähigkeiten frei
+		[c/FFD700:Die Weisheit des Meeres wird sich in dir sammeln]
+		'''
+	Text1: Du beherrschst bereits alles Wissen
+	Text2: "[NUM] Fischarten gelernt!"
 }
-
 TheForgottenTome: {
-	// DisplayName: The Forgotten Tome
-	/* Tooltip:
+	DisplayName: Buch der vergessenen Welt
+	Tooltip:
 		'''
-		When used, it erases every trace of your worldly memories.
-		A life turned specter, condemned to eternal descent
-		all beings are burdened with sin, and no soul shall return to the next life.
-		My name is [NAME]. When you read this, I am already dead.
-		''' */
-	// CompletionText: You have forgotten everything
-	// ConditionsText: Achieve any story ending
+		Nach Gebrauch vergisst du augenblicklich alle weltlichen Erfahrungen
+		Leben als Gespenst, ewiger Abstieg, alle Wesen sind Sünde, keine Wiedergeburt
+		Ich heiße [NAME]. Wenn du das liest, bin ich bereits tot
+		'''
+	CompletionText: Du hast alles vergessen
+	ConditionsText: Beliebiges Story-Ende erreichen
 }
-
 Fishoil: {
-	// DisplayName: Bottled Fish Oil
-	/* Tooltip:
+	DisplayName: Fischöl in der Flasche
+	Tooltip:
 		'''
-		Increases fishing power by 10%
-		Allows breathing underwater
-		Grants additional resistance against certain eerie entities
-		''' */
+		Erhöht Angelkraft um 10 %
+		Ermöglicht Unterwasseratmung
+		Unterdrückt einige unheimliche Wesen zusätzlich
+		'''
 }
-
 SirenMusicalBox: {
-	// DisplayName: Siren Musical Box
-	/* Tooltip:
+	DisplayName: Sirenen-Spieluhr
+	Tooltip:
 		'''
-		Right-click to play eerie music from a music box.
-		All who hear it will be cursed, unable to die while the music plays.
-		When the music ends, they will suffer a fatal attack.
-		''' */
-	// DeathText: "{0} Disintegrated into putrid flesh under the attack of the unknown"
+		Rechtsklick spielt unheimliche Spieluhrmusik
+		Alle Hörer werden verflucht und können während der Musik nicht sterben
+		Nach dem Ende erwartet sie ein tödlicher Angriff
+		'''
+	DeathText: "{0} zerfiel unter einem unbekannten Angriff zu fauligem Fleisch"
 }
-
 Heartcarver: {
-	// DisplayName: Heartcarver
-	/* Tooltip:
+	DisplayName: Herzschnitzer
+	Tooltip:
 		'''
-		Generate three additional ritual daggers to rotate around the player.
-		After the charging is completed, fly towards the target.
-		Right-click to perform a short-range thrust.
-		''' */
+		Erzeugt drei zusätzliche Ritualdolche, die um dich kreisen
+		Nach vollständigem Aufladen fliegen sie zum Ziel
+		Rechtsklick für kurzen Stoß
+		'''
 }
-
 OniMachete: {
-	// DisplayName: Oni Machete
-	/* Tooltip:
+	DisplayName: Oni-Machete
+	Tooltip:
 		'''
-		When held, six oni hands will be generated to assist in combat.
-		True melee attacks will release ghost flames.
-		''' */
+		Beim Halten erscheinen sechs Oni-Hände im Kampf
+		Echte Nahkampftreffer entfesseln Geisterflammen
+		'''
 }
-
 Pandemonium: {
-	// DisplayName: Pandemonium
-	/* Tooltip:
+	DisplayName: Pandämonium
+	Tooltip:
 		'''
-		Left-click to charge and release Transcendent Magic
-		Right-click to cast a Brimstone Rune at the cursor
-		Press [PandemoniumQSkill] to unleash Brimstone Judgement
-		Press [PandemoniumRSkill] to perform The End of All Demons
-		''' */
+		Linksklick aufladen und Transzendente Magie freisetzen
+		Rechtsklick wirkt Schwefelbrand-Rune am Cursor
+		[PandemoniumQSkill] drücken für Schwefelbrand-Himmelsstrafe
+		[PandemoniumRSkill] drücken für Ende aller Dämonen
+		'''
 }
-
 Proverbs: {
-	// DisplayName: Proverb
-	/* Tooltip:
+	DisplayName: Spruch
+	Tooltip:
 		'''
-		Generates a small brimstone rune behind you
-		Grants immunity to most fire-based debuffs
-		Most of your attacks inflict the Withered Curse debuff
+		Erzeugt hinter dir eine kleine Schwefelbrand-Rune
+		Immunität gegen die meisten Feuer-Debuffs
+		Die meisten Angriffe belegen Gegner mit dem Verwelkungsfluch
 		[Content]
-		''' */
-	/* L1:
 		'''
-		Deals double damage to the Brimstone Witch; 
-		her attacks have a chance to critically strike you
-		''' */
-	/* L2:
+	L1:
 		'''
-		If you are reading this, then I am likely already gone.
-		Throughout my long years, this ring was the only thing that felt truly cold.
-		But somewhere along the way, it absorbed a mortal's warmth... and became... too hot to let go.
-		I have returned to the Brimstone, reduced to the ashes of an era.
-		I should have departed with nothing, 
-		yet I found myself greedy for this singular warmth, wishing to preserve it.
-		Wear it.
-		And when you finally raise your blade against the gods...
-		Know that even if the world freezes over, I will still be burning at your fingertips.
-		''' */
+		Doppelter Schaden an der Schwefelbrand-Hexe; ihre Angriffe können dich kritisch treffen
+		'''
+	L2:
+		'''
+		Wenn du das liest, bin ich wohl schon nicht mehr da.
+		Dieser Ring war in meinen langen Jahren das Einzige, das sich wirklich kalt anfühlte.
+		Doch irgendwann nahm er sterbliche Wärme auf und wurde … zu heiß zum Loslassen.
+		Ich bin zum Schwefelbrand zurückgekehrt, zur Asche einer Ära.
+		Ich hätte mit leeren Händen gehen sollen, doch diese eine Wärme ließ mich gierig werden, sie zu bewahren.
+		Trage ihn.
+		Wenn du dein Schwert gegen die Götter erhebst …
+		Selbst wenn die Welt erfriert, brenne ich noch an deinen Fingerspitzen.
+		'''
 }
-
 AncientStormGoddessSpear: {
-	// DisplayName: Ancient Storm Goddess Spear
-	/* Tooltip:
+	DisplayName: Speer der Uralten Sturmgöttin
+	Tooltip:
 		'''
-		A Spear capable of sending out Fierce Lightning Kisses that bounces off enemies.
-		"It is already a thing of the past, but it still works."
+		Schleudert Sturmküsse mit zerstörerischen Lichtbögen
+		„Es gehört längst der Vergangenheit an, aber es funktioniert noch immer“
 		[legend]
-		''' */
-	/* Legend:
 		'''
-		Alina was once Terra’s sharpest warrior, wielding a blade of thunder to cleave through darkness, 
-		her faith unwavering and absolute. But faith could not shield her from the indifference of the gods.  
-		When the Supreme Deity passed judgment, her comrades, kin, oaths, and glory were reduced to ashes. 
-		She witnessed firsthand how so-called justice trampled everything into dust, how order was merely a veil for the cruelest of destructions.  
-		She no longer sought the light but reforged herself in the abyss. An ancient, 
-		forbidden power consumed her soul, granting her strength beyond mortal comprehension.  
-		Her armor became wreckage forged in the depths, her eyes burned with the remnants of thunder and darkness entwined. 
-		She was no longer Terra’s guardian, but the storm itself—a vengeance that could not be stopped.  
-		Her fury swept the battlefield like a howling tempest, her thunder tore through thrones and temples. 
-		She fought not for justice, not for Terra, not for the gods.  
-		She fought for vengeance, for annihilation—to make those who deemed themselves righteous understand the true meaning of fear.
-		''' */
+	Legend:
+		'''
+		Alina, Terras einst schärfste Klinge.
+		Ihr Glaube war unerschütterlich, ihr Kampf unerschrocken. Eisenstaub am silbernen Speer, Haar im Sturm. Die Klinge des Gewitters heult vorbei.
+		Doch selbst die schärfste Klinge bricht und zerschellt; der Glaube fand nur die Gleichgültigkeit der Götter.
+		Als der Höchste sein Urteil fällte, wurden ihre Kameraden, ihre Sippe, ihre Schwüre und ihr Ruhm zu Asche.
+		Mit eigenen Augen sah sie, wie die sogenannte Gerechtigkeit alles zertrete … Blut und Tränen … Staub … Wie im Namen der Ordnung die niederträchtigste Vernichtung vollzogen wurde.
+		Götter … Alina blickt nicht mehr zu den Göttern auf.
+		Sie wich in die Tiefe zurück, zerstörte sich selbst und ließ verbotene Urkräfte ihre Seele verschlingen.
+		Alinas Rüstung schmolz zu einem aus Tiefeneisen geschmiedeten Wrack.
+		Alte Wolkenfetzen, blutrote Sonne und die Vergangenheit verwebten sich; der Blick ihrer Kameraden … und ihrer Sippe im Tod … Alina … alles war vorbei.
+		Sie war nicht mehr die Alina von einst, Terras Kriegsgöttin.
+		Ihr Zorn kehrte wie ein Sturm zurück, riss die Käfer auf dem Schlachtfeld mit sich, ihr Donner durchschnitt Himmel und Wolken, spaltete Throne und Erde.
+		Die Sturmgöttin Alina brachte unbarmherzig Vernichtung und Rache.
+		'''
 }
-
 ConstructionBlueprintQET: {
-	// DisplayName: Construction Blueprint (Quantum Entanglement Tower)
-	/* Tooltip:
+	DisplayName: Konstruktionsbauplan (Quantenverschränkungsturm)
+	Tooltip:
 		'''
-		Use to learn how to craft the [i:CalamityOverhaul/CQETConstructor] Self-Constructor
-		"Your hands will forge the cornerstone and tower that connect two worlds"
-		''' */
-	// L1: Learned to craft the Self-Constructor (Quantum Entanglement Tower)!
-	// L2: You have already learned this blueprint!
+		Nach Gebrauch lernst du, den [i:CalamityOverhaul/CQETConstructor] Selbstkonstruktor herzustellen
+		„Deine Hände werden den Grundstein und den Turm schmieden, die zwei Welten verbinden“
+		'''
+	L1:
+		'''
+		Wissen zum Herstellen des Selbstkonstruktors (Quantenverschränkungsturm) erlangt!
+		'''
+	L2: Du hast diesen Bauplan bereits gelernt!
 }
-
 CQETConstructor: {
-	// DisplayName: Self-Constructor (Quantum Entanglement Tower)
-	/* Tooltip:
+	DisplayName: Selbstkonstruktor (Quantenverschränkungsturm)
+	Tooltip:
 		'''
-		Place to construct a Quantum Entanglement Tower
-		Requires a large amount of [i:CalamityOverhaul/StarflowPlatedBlock] Starflow Plated Blocks
-		''' */
-	// UseConstructionBlueprint: Learn the Construction Blueprint (Quantum Entanglement Tower)
+		Nach dem Platzieren zum Bau eines Quantenverschränkungsturms
+		Benötigt große Mengen [i:CalamityOverhaul/StarflowPlatedBlock] Sternstrom-Plattierungsblöcke
+		'''
+	UseConstructionBlueprint: Konstruktionsbauplan lernen (Quantenverschränkungsturm)
 }
-
 DeploySignaltower: {
-	// DisplayName: Quantum Entanglement Tower
-	/* Tooltip:
+	DisplayName: Quantenverschränkungsturm
+	Tooltip:
 		'''
-		An important communication device that acts as a lighthouse in subspace
-		"A wild child raises a torch in the forest, shouting I am here"
-		''' */
+		Wichtiges Kommunikationsgerät, das als Leuchtfeuer im Subraum dient
+		„Ein Wildkind hebt eine Fackel im Wald und ruft: Ich bin hier“
+		'''
 }
-
 StarflowPlatedBlock: {
-	// DisplayName: Starflow Plated Block
-	/* Tooltip:
+	DisplayName: Sternstrom-Plattierungsblock
+	Tooltip:
 		'''
-		Basic material for building the [i:CalamityOverhaul/DeploySignaltower] Quantum Entanglement Tower
-		"Forging flowing starlight into an immortal foundation"
-		''' */
+		Grundmaterial für den [i:CalamityOverhaul/DeploySignaltower] Quantenverschränkungsturm
+		„Fließendes Sternenlicht zu unvergänglichem Grundstein geschmiedet“
+		'''
 }
-
 PQCD: {
-	// DisplayName: Portable Quantum Communicator
-	/* Tooltip:
+	DisplayName: Tragbarer Quantenkommunikator
+	Tooltip:
 		'''
-		Use to contact Draedon and open the Draedon's Arsenal holographic shopping interface
-		"Theoretically capable of issuing an Extermination Order, but authorization seems insufficient"
-		''' */
-	// NeedSignalTowersText: Quantum entanglement link incomplete! Requires all {0} Signal Towers to be deployed.
-	// SignalTowerProgressText: Signal Tower Deployment Progress: {0}/{1}
+		Benutzen kontaktiert Draedon und öffnet Draedons Arsenal-Hologramm-Shop
+		„Theoretisch für ein Exterminationsdekret – scheinbar fehlt die Berechtigung“
+		'''
+	NeedSignalTowersText:
+		'''
+		Quantenverschränkungsverbindung unvollständig! Alle {0} Signaltürme müssen deployt sein
+		'''
+	SignalTowerProgressText: "Signalturm-Fortschritt: {0}/{1}"
 }
-
 Unsunghero: {
-	// DisplayName: Unsung Hero
-	/* Tooltip:
+	DisplayName: Unbesungener Held
+	Tooltip:
 		'''
-		Increases maximum stealth by 10
-		Stealth regeneration speed no longer reduces stealth damage
-		"What if you never return?"
-		"Then I shall never return."
-		''' */
+		Erhöht maximale Tarnung um 10
+		Tarnungsregeneration senkt Tarnungsschaden nicht mehr
+		„Was, wenn du nicht zurückkommst?“
+		„Dann komme ich nicht zurück.“
+		'''
 }
-
 AriaofTheCosmos: {
-	// DisplayName: Aria of the Cosmos
-	/* Tooltip:
+	DisplayName: Aria des Kosmos
+	Tooltip:
 		'''
-		Hold left-click to charge a powerful quasar, dealing devastating damage upon release
-		Right-click to release a miniature black hole that fires a barrage of gamma rays once formed
-		Press [AriaofTheCosmosQSkill] to summon a Star Ring Guardian
-		Press [AriaofTheCosmosRSkill] to generate a Gamma Ray Burst
-		''' */
+		Linksklick gedrückt halten, um einen mächtigen Quasar zu formen; bei Loslassen verheerender Schaden an Gegnern
+		Rechtsklick setzt ein Miniatur-Schwarzes Loch frei, das nach der Formung eine Salve Gammastrahlen abfeuert
+		[AriaofTheCosmosQSkill] drücken, um einen Sternenring-Wächter zu beschwören
+		[AriaofTheCosmosRSkill] drücken, um einen Gammastrahlen-Ausbruch zu erzeugen
+		'''
 }
-
 Oceanfragments: {
-	// DisplayName: Ocean Scraps
-	// Tooltip: A mysterious trinket. The Old Duke might be interested in it.
+	DisplayName: Meeresfragmente
+	Tooltip: Ein mysteriöses Kleinod – der Alte Herzog könnte Interesse haben
 }
-
 OceanRaiders: {
-	// WorkingText: Working...
-	// NoWaterText: Must be placed above water to operate!
-	// NoEnergyText: Insufficient Power!
-	// DisplayName: Ocean Devourer
-	/* Tooltip:
+	WorkingText: Arbeitet …
+	NoWaterText: Muss über Wasser platziert werden!
+	NoEnergyText: Energiemangel!
+	DisplayName: Meeresverschlinger
+	Tooltip:
 		'''
-		Consumes power to extract resources from water bodies
-		Right-click to open internal storage
-		''' */
+		Verbraucht Strom, um Ressourcen aus Gewässern zu extrahieren
+		Rechtsklick öffnet internen Speicher
+		'''
 }
-
 OldDuchest: {
-	// StorageText: Large Storage Chest
-	// DisplayName: Old Duchest
-	/* Tooltip:
+	StorageText: Große Lagerkiste
+	DisplayName: Alte Kiste
+	Tooltip:
 		'''
-		A storage chest with immense capacity
-		"The Old Duke's former chest. If he is nearby, he might toss some things inside."
-		''' */
+		Eine Kiste mit enormer Kapazität
+		„Die frühere Kiste des Alten Herzogs – in seiner Nähe wirft er vielleicht etwas hinein“
+		'''
 }
-
 QuestLogBook: {
-	// DisplayName: Quest Book
-	// Tooltip: Use to open or close the quest interface
+	DisplayName: Questbuch
+	Tooltip: Benutzen öffnet oder schließt die Quest-Oberfläche
 }
-
 MermanRod: {
-	// Text1: A Merman's Perch has already been placed in the world!
-	// DisplayName: Merman's Perch
-	/* Tooltip:
+	Text1: In der Welt steht bereits eine Meermensch-Angel!
+	DisplayName: Meermensch-Angel
+	Tooltip:
 		'''
-		Increases fishing power by 20 when fishing nearby
-		The Old Duke will move his campsite here
-		''' */
+		Erhöht Angelkraft um 20 beim Angeln in der Nähe
+		Der Alte Herzog verlegt sein Lager hierher
+		'''
 }
-
 MiningMachineMk2: {
-	// DontWork: It needs to be placed on a hard surface in order to carry out excavation work.
-	// DisplayName: Mining Machine Mk2
-	/* Tooltip:
+	DontWork: "Muss auf fester Oberfläche stehen, um zu graben"
+	DisplayName: Bergbaumaschine MK2
+	Tooltip:
 		'''
-		Drilling minerals by consuming electrical energy
-		It needs to be placed in an appropriate location to work properly
-		Special minerals can be extracted in special environments
-		''' */
+		Bohrt Mineralien mit Strom
+		Muss an geeigneter Stelle platziert werden
+		In besonderen Umgebungen spezielle Mineralien
+		'''
 }
-
 UniversalFrost: {
-	// DisplayName: Universal Frost
-	/* Tooltip:
+	DisplayName: Allfrost
+	Tooltip:
 		'''
-		Uses Snowballs as ammo
-		Fires hailstones and frigid nova orbs
-		The orbs bounce, home in on enemies, and release frost beams upon explosion
-		Continuous firing accumulates ice energy
-		When fully charged, the next attack unleashes the Glacial Age
-		The Glacial Age summons a massive array of icicles and a blizzard field at the cursor position
-		"When all creation falls into silence, only eternal frost shall blanket the world"
-		''' */
+		Verwendet Schneebälle als Munition
+		Feuert Hagel und eiskalte Nova-Kugeln; Kugeln prallen, verfolgen und explodieren mit Froststrahlen
+		Dauerfeuer sammelt Eisenergie; bei Voll ladung nächster Schuss löst Eiszeit aus
+		Eiszeit beschwört am Cursor gewaltige Eiszapfen und Blizzard
+		„Wenn alles verstummt, bleibt nur ewiger Frost“
+		'''
 }
-
 GodslayerScabbard: {
-	// DisplayName: Godslayer Scabbard
-	/* Tooltip:
+	DisplayName: Götterschlächter-Scheide
+	Tooltip:
 		'''
-		Accumulates charge while holding a melee weapon without attacking
-		Attacking with full charge grants 2 second of invulnerability
-		"Though the blade remains sheathed, its killing intent is palpable.
-		When the time is right, slaying a god takes but an instant."
-		''' */
+		Beim Halten einer Nahkampfwaffe ohne Angriff sammelt sich Zieh-Ladung
+		Bei voller Ladung gewährt der nächste Angriff 2 Sekunden Unverwundbarkeit
+		„Die Klinge ruht in der Scheide, doch die Tötungsabsicht ist spürbar
+		Wenn die Zeit reif ist, genügt ein Augenblick, einen Gott zu fällen“
+		'''
 }
-
 Lumberjack: {
-	// Text1: Excessive Quantity!
-	// Text2: Lack of Electricity!
-	// CycleModeText: Cycle Mode
-	// ClearModeText: Clear Mode
-	// DisplayName: Lumberjack
-	/* Tooltip:
+	Text1: Zu viele!
+	Text2: Strommangel!
+	CycleModeText: Zyklusmodus
+	ClearModeText: Räummodus
+	DisplayName: Holzfäller
+	Tooltip:
 		'''
-		Consumes power to harvest timber
-		Automatically chops down surrounding trees
-		Right-click to switch between Cycle Mode and Clear Mode
-		Cycle Mode continuously harvests trees and replants saplings
-		Clear Mode only harvests trees without replanting
-		''' */
+		Verbraucht Strom zum Fällen
+		Fällt automatisch Bäume in der Umgebung
+		Rechtsklick wechselt zwischen Zyklus- und Räummodus
+		Zyklusmodus fällt fortlaufend und lässt Setzlinge nachwachsen
+		Räummodus fällt nur, ohne Nachwuchs
+		'''
 }
-
 LifeWeaver: {
-	// NoValidPositionText: No valid planting spots nearby!
-	// NoEnergyText: Insufficient power!
-	// DisplayName: Life Weaver
-	// Tooltip: Consumes power to plant trees nearby
+	NoValidPositionText: Keine gültigen Pflanzplätze in der Nähe!
+	NoEnergyText: Strommangel!
+	DisplayName: Baumpflanzer
+	Tooltip: "Verbraucht Strom, um Bäume in der Umgebung zu pflanzen"
 }
-
 WGGLumberjack: {
-	// DisplayName: Wilderness Lumberjack
-	// Tooltip: ""
+	DisplayName: Holzfäller in der Wildnis
+	Tooltip: ""
 }
-
 WGGLifeWeaver: {
-	// DisplayName: Wilderness Life Weaver
-	// Tooltip: ""
+	DisplayName: Baumpflanzer in der Wildnis
+	Tooltip: ""
 }
-
 Incinerator: {
-	// DisplayName: Electric Incinerator
-	/* Tooltip:
+	DisplayName: Elektrischer Verbrennungsofen
+	Tooltip:
 		'''
-		Consumes power to smelt items
-		Right-click to open the control panel
-		Shift + Right-click to quickly deposit ingredients or retrieve products
-		Smelting items yields double output
-		''' */
+		Verbraucht Strom zum Schmelzen von Gegenständen
+		Rechtsklick öffnet das Bedienfeld
+		Umschalt+Rechtsklick zum schnellen Einlegen von Schmelzgut oder Entnehmen der Produkte
+		Schmelzen liefert doppelte Ausbeute
+		'''
 }
-
 ItemPipeline: {
-	// DisplayName: Item Pipeline
-	/* Tooltip:
+	DisplayName: Logistikleitung
+	Tooltip:
 		'''
-		Used to transport items
-		Right-click to quickly dismantle and retrieve the target pipe (only when holding a pipeline)
-		Right-click a pipe endpoint to switch between Output and Input modes (only when NOT holding a pipeline)
-		Pipes in Output mode extract items from connected containers and transfer them to containers connected to Input mode pipes
-		''' */
+		Zum Transport von Gegenständen
+		Rechtsklick demontiert und recycelt die Zielleitung (nur beim Halten einer Leitung)
+		Rechtsklick auf Endpunkt schaltet zwischen Ausgabe- und Eingangsmodus (nicht beim Halten einer Leitung)
+		Ausgabemodus zieht Gegenstände aus verbundenen Behältern und leitet sie zu Eingangsbehältern
+		'''
 }
-
 Thrower: {
-	// NoEnergyText: Insufficient energy!
-	// NoItemText: No items to throw!
-	// WorkingText: Throwing...
-	// IdleText: Idle
-	// DisplayName: Thrower
-	/* Tooltip:
+	NoEnergyText: Energiemangel!
+	NoItemText: Nichts zum Werfen!
+	WorkingText: Wirft …
+	IdleText: Bereit
+	DisplayName: Werfer
+	Tooltip:
 		'''
-		Consumes power to throw items
-		Right-click to open the control panel
-		''' */
+		Verbraucht Strom zum Werfen von Gegenständen
+		Rechtsklick öffnet das Bedienfeld
+		'''
 }
-
 Elysium: {
-	// DisplayName: Elysium
-	/* Tooltip:
+	DisplayName: Elysium
+	Tooltip:
 		'''
-		Hold left-click to channel a holy serpent
-		Right-click to convert nearby town residents into one of the Twelve Disciples (up to 12)
-		When disciples are martyred they build Martyrdom energy; at 11 stacks, press [ElysiumQKey] to martyr John and invoke the Revelation
-		Using [ElysiumQKey] before reaching 11 stacks calls down a divine lightning strike instead
-		[c/AADDFF:More disciples grant increasing global damage, critical strike chance, and defense; 11 disciples restores life, 12 grants bonus move speed]
-		[c/FF6666:With all 12 gathered: if your health falls below 30%, Judas will betray and instantly kill you (10s cooldown)]
-		[c/FFD700:━━ Revelation Phase ━━]
-		[c/FFD700:[ElysiumQKey] Drop a Celestial Meteor (180% damage)]
-		[c/FFD700:[ElysiumRKey] Trigger the Last Three Seals Judgment (420% damage)]
-		[c/FFD700:Right-click to summon the Four Horsemen in order: Pestilence, War, Famine, Death]
-		[c/FFAA55:War boosts damage and crits; Famine grants massive armor penetration; Death amplifies all Meteor and War Horseman effects]
-		''' */
-	// DiscipleName_0: Simon Peter
-	// DiscipleName_1: Saint Andrew
-	// DiscipleName_2: James
-	// DiscipleName_3: Saint John
-	// DiscipleName_4: Philip
-	// DiscipleName_5: Bartholomew
-	// DiscipleName_6: Thomas
-	// DiscipleName_7: Saint Matthew
-	// DiscipleName_8: James the Lesser
-	// DiscipleName_9: Thaddaeus
-	// DiscipleName_10: Simon the Zealot
-	// DiscipleName_11: Judas Iscariot
-	// HorsemanName_0: Pestilence
-	// HorsemanName_1: War
-	// HorsemanName_2: Famine
-	// HorsemanName_3: Death
-	// DiscipleFullText: Disciple slots full
-	// NoConvertTargetText: No convertible residents nearby
-	// DiscipleFallbackText: Disciple
-	// RevelationText: Revelation
-	// RevelationEndText: Revelation ended
-	// CelestialMeteorText: Celestial Meteor
-	// SealStarsText: Fifth Star Sixth Star Seventh Star
-	// HorsemenFullText: All Four Horsemen summoned
-	// HorsemanArrivalText: Horseman of {0} descends
-	// DiscipleJoinedText: "{0} has joined"
-	// JudasBetrayalText: Judas's Betrayal!
-	// JudasDeathReasonText: "{0} was betrayed by Judas"
-	// DiscipleMartyrText: "{0} was martyred"
-	// MartyrdomPowerText: Martyrdom {0}/11
-	// Tooltip_DiscipleCountText: Current Disciples: {0}/12
-	// Tooltip_NoDisciplesText: No disciples following
-	// Tooltip_MartyrdomPowerText: Martyrdom: {0} {1}/11
-	// Tooltip_RevelationReadyText: Press Q — John will be martyred, Revelation begins
-	// Tooltip_JudgmentActiveText: Last Three Seals judgment in progress
-	// Tooltip_RevelationActiveText: Revelation active Q:Meteor R:Seal Judgment RMB:Horsemen {0}/4
-	// Tooltip_JudasWarningText: Warning: Judas's betrayal lurks beside you
+		Linksklick hält eine heilige Riesenschlange am Laufen
+		Rechtsklick bekehrt nahe Bewohner zu einem der zwölf Jünger, maximal 12
+		Nach Martyrium der Jünger sammelt sich Martyriumskraft; bei 11 Stapeln [ElysiumQKey] drücken, damit Johannes martyriert wird und die Offenbarung beginnt
+		Vor 11 Stapeln ruft [ElysiumQKey] einen göttlichen Blitz herab
+		[c/AADDFF:Mehr Jünger erhöhen Gesamtschaden, Krit-Chance und Verteidigung; bei 11 zusätzliche Lebensregeneration, bei 12 deutlich höhere Bewegungsgeschwindigkeit]
+		[c/FF6666:Bei allen 12: Fällt deine Gesundheit unter 30 %, ersticht dich Judas von hinten (10 s Abklingzeit)]
+		[c/FFD700:━━ Offenbarungsphase ━━]
+		[c/FFD700:[ElysiumQKey] Himmelsmeteorit abwerfen (180 % Schaden)]
+		[c/FFD700:[ElysiumRKey] Urteil der letzten drei Siegel (420 % Schaden)]
+		[c/FFD700:Rechtsklick beschwört nacheinander die vier Reiter: Pest, Krieg, Hunger, Tod]
+		[c/FFAA55:Kriegsreiter erhöht Schaden und Krit; Hungerreiter gewährt hohe Rüstungsdurchdringung; Todesreiter verstärkt Himmelsmeteoriten und alle Effekte des Kriegsreiters]
+		'''
+	DiscipleName_0: Simon Petrus
+	DiscipleName_1: Andreas
+	DiscipleName_2: Jakobus
+	DiscipleName_3: Johannes
+	DiscipleName_4: Philippus
+	DiscipleName_5: Bartholomäus
+	DiscipleName_6: Thomas
+	DiscipleName_7: Matthäus
+	DiscipleName_8: Jakobus der Jüngere
+	DiscipleName_9: Thaddäus
+	DiscipleName_10: Simon
+	DiscipleName_11: Judas
+	HorsemanName_0: Pest
+	HorsemanName_1: Krieg
+	HorsemanName_2: Hunger
+	HorsemanName_3: Tod
+	DiscipleFullText: Jüngerplätze voll
+	NoConvertTargetText: Keine bekehrbaren Bewohner in der Nähe
+	DiscipleFallbackText: Jünger
+	RevelationText: Offenbarung
+	RevelationEndText: Offenbarung beendet
+	CelestialMeteorText: Himmelsmeteorit
+	SealStarsText: Fünfter Stern Sechster Stern Siebter Stern
+	HorsemenFullText: Alle vier Reiter versammelt
+	HorsemanArrivalText: "Ritter des {0} erscheint"
+	DiscipleJoinedText: "{0} ist beigetreten"
+	JudasBetrayalText: "Judas' Verrat!"
+	JudasDeathReasonText: "{0} wurde von Judas verraten"
+	DiscipleMartyrText: "{0} ist martyriert worden"
+	MartyrdomPowerText: "Martyriumskraft {0}/11"
+	Tooltip_DiscipleCountText: "Aktuelle Jünger: {0}/12"
+	Tooltip_NoDisciplesText: Noch keine Jünger folgen dir
+	Tooltip_MartyrdomPowerText: "Martyriumskraft: {0} {1}/11"
+	Tooltip_RevelationReadyText: "Q drücken — Johannes wird martyriert, die Offenbarung beginnt"
+	Tooltip_JudgmentActiveText: "Urteil der letzten drei Siegel läuft, warte auf den Abschluss"
+	Tooltip_RevelationActiveText: "Offenbarung aktiv Q:Meteorit R:Siegel-Urteil RMB:Reiter {0}/4"
+	Tooltip_JudasWarningText: "Warnung: Judas' Verrat lauert an deiner Seite"
 }
-
 SandevistansItem: {
-	// DisplayName: Sandevistans Item
-	// Tooltip: Militech Sandevistan Mk.5 — Slows perceived time by 70% for 3.5 seconds. Cooldown 15s.
+	DisplayName: Sandevistan Mk5
+	Tooltip:
+		'''
+		Verlangsamt wahrgenommene Zeit um 70 %, 5 Sekunden Dauer. 15 Sekunden Abklingzeit.
+		'''
 }
-
 Sandevistan: {
-	// SkillName: Sandevistan
-	/* SkillDesc:
+	SkillName: Zeitverzögerung · Sandevistan
+	SkillDesc:
 		'''
-		Drastically slows perceived time, letting you move and act in apparent slow motion.
-		The reserve drains during use and auto-disables when empty, then refills naturally.
-		Select again in the radial to toggle it back off manually.
-		''' */
+		Verlangsamt die wahrgenommene Zeit stark – du bewegst und handelst in scheinbarer Zeitlupe
+		Die Reserve leert sich im Betrieb und schaltet automatisch ab; danach natürliche Regeneration
+		Im Radial erneut wählen zum manuellen Ausschalten
+		'''
 }
-
 MimicPerchedAuxBrain: {
-	// DisplayName: Mimic Perched Auxiliary Brain
-	/* Tooltip:
+	DisplayName: Mimisches Sitz-Hilfsgehirn
+	Tooltip:
 		'''
-		Splits the host into four illusions that drift around the main body.
-		When struck, the real self hidden among the illusions will cause chaos and gain immunity, 
-		taking no damage from the attack.
-		Meanwhile, the illusions will charge at the attacker and detonate, 
-		dealing damage scaled with the enemy's raw attack power.
-		''' */
+		Teilt den Träger in vier Illusionen, die um den Körper schweben
+		Bei Treffer löst das verborgene wahre Ich Chaos aus und gewährt Immunität ohne Schaden
+		Die Illusionen stürmen auf den Angreifer und detonieren mit schadensskalierendem Ausbruch
+		'''
 }
-
 CstmVisualEye: {
-	// DisplayName: CSTM Opti-Visual Cybereye
-	/* Tooltip:
+	DisplayName: CSTM-Optik-Cyberauge
+	Tooltip:
 		'''
-		A cybernetic optical implant that syncs Hack-Time directly into your cranial neural network.
-		Increases max RAM by 4
-		Displays an independent RAM arc bar in the bottom-left corner of the screen
-		''' */
+		Netzwerkoptisches Kyberimplantat, das Hack-Zeit direkt ins kraniale Neuralnetz einspeist
+		Erhöht maximales RAM um 4
+		Zeigt einen eigenständigen RAM-Bogen unten links auf dem Bildschirm
+		'''
 }
-
 PrimePlasama: {
-	// DisplayName: Prime Plasma Subdermal Armor
-	/* Tooltip:
+	DisplayName: Prime-Plasma-Unterhautpanzer
+	Tooltip:
 		'''
-		A layer of electroactive gel woven beneath the entire body's skin.
-		Permanently grants 25 defense and 6% damage reduction.
-		Massively boosts knockback resistance — common impacts can hardly stagger you.
-		''' */
+		Elektroaktive Gelschicht unter der gesamten Haut
+		Dauerhaft +25 Verteidigung und 6 % Schadensreduktion
+		Massiv erhöhte Rückstoßresistenz – gewöhnliche Stöße bewegen dich kaum
+		'''
 }
-
 OmniElectricFoot: {
-	// DisplayName: OmniElectric Foot
-	/* Tooltip:
+	DisplayName: Omni-elektrischer Kyberfuß
+	Tooltip:
 		'''
-		A high-output locomotor cybernetic combining electromagnetic recoil with dense propulsion gel.
-		Grants a mid-air double jump, letting you launch off again after leaving the ground.
-		Hover the Charge Jump slice in the cyberware radial to charge up, then release to launch.
-		A fully charged jump can reach more than twice the height of a normal jump.
-		''' */
-	// SkillHint: Hover Charge Jump on the {0} radial to charge
-	// SkillName: Charge Jump
-	/* SkillDesc:
+		Hochleistungs-Bewegungskyberware aus elektromagnetischem Rückstoß und dichter Antriebsgel-Schicht
+		Gewährt Luft-Doppelsprung beim erneuten Abstoßen in der Luft
+		Im Kyberware-Radial „Aufladesprung“ schweben zum Aufladen, loslassen zum Start
+		Voll geladen mehr als doppelte normale Sprunghöhe
 		'''
-		Electromagnetic-propulsion burst leap.
-		Requires standing on the ground; hover time on the slice IS the charge time.
-		Release the key to launch at up to 2.5x normal jump height when fully charged.
-		''' */
+	SkillHint: "Im {0}-Radial schweben zum Aufladesprung"
+	SkillName: Aufladesprung
+	SkillDesc:
+		'''
+		Hochspannungs-elektromagnetischer Sprung
+		Muss auf dem Boden stehen zum Aufladen; Schweben im Radial ist Ladezeit
+		Loslassen startet proportional zur Ladung; voll geladen 2,5-fache Sprunghöhe
+		'''
 }
-
 PlowSteelClampArm: {
-	// DisplayName: PlowSteel Clamp Arm
-	/* Tooltip:
+	DisplayName: Pflugstahl-Zangarm
+	Tooltip:
 		'''
-		An industrial cybernetic featuring magnetic pickup and high-rigidity clamps.
-		Greatly extends mining and block-placement range.
-		Permanently enables magnetic pickup of items and coins.
-		Cyberware skill: release a high-heat monomolecular wire from your palm.
-		Tap for a short wire, hold for a long wire; enemies along the path are continuously scorched.
-		''' */
-	// SkillHint: "[c/8AC4E8:{1}] Open the cyberware radial to switch · [c/F5C56A:{0}] Fire the wire (tap = short / hold = long)"
-	// SkillName: Monomolecular Wire
-	/* SkillDesc:
+		Industriekyberware mit Magnetsammeln und hochstarren Zangen
+		Erweitert Bergbau- und Platzierungsreichweite stark
+		Permanentes magnetisches Aufsammeln von Gegenständen und Münzen
+		Kyberware-Fähigkeit: hochheiße Monomolekularfaden aus der Handfläche
+		Kurzdruck → kurze Leine, Halten → lange Leine; Gegner auf dem Pfad verbrennen fortlaufend
 		'''
-		Hurls a high-heat monomolecular wire from your palm. Enemies along the path are continuously scorched.
-		[c/8AC4E8:Tap] —— Lays a ~12-tile short wire toward the cursor, lasts 2 seconds, no anchor required.
-		[c/F5C56A:Hold] —— Once fully charged, pins to a solid tile near the cursor for 5 seconds; if no anchor is found, falls back to a short wire.
-		Damage scales with the player's generic damage multipliers.
-		''' */
+	SkillHint:
+		'''
+		[c/8AC4E8:{1}] Kyberware-Radial zum Wechseln · [c/F5C56A:{0}] Monomolekularfaden (Kurzdruck = kurz / Halten = lang)
+		'''
+	SkillName: Monomolekularfaden
+	SkillDesc:
+		'''
+		Schleudert eine hochheiße Monomolekularfaden aus der Handfläche; Gegner auf dem Pfad verbrennen fortlaufend
+		[c/8AC4E8:Kurzdruck] — ~12 Felder kurze Leine in Cursorrichtung, 2 Sekunden, ohne Anker
+		[c/F5C56A:Gedrückt halten] — Voll aufgeladen am festen Block nahe dem Cursor, 5 Sekunden; ohne Anker Fallback zur kurzen Leine
+		Schaden skaliert mit allgemeinen Schadensmultiplikatoren
+		'''
 }
-
 SelfHealingSkelent: {
-	// DisplayName: Self-Healing Endoskeleton
-	/* Tooltip:
+	DisplayName: Selbstheilendes Endoskelett
+	Tooltip:
 		'''
-		A high-tier biocyber implant that replaces the native skeleton with a nanocrystal lattice.
-		Continuously grants +2 HP/s life regeneration and +40 max life.
-		Out of combat for 4 seconds, enters Nanorepair state with greatly boosted regeneration.
-		The metallic endoskeleton fully negates fall damage.
-		''' */
+		Hochstufiges Bioimplantat ersetzt das native Skelett durch Nanokristallgitter
+		Dauerhaft +2 LP/s und +40 maximale LP
+		4 Sekunden außerhalb des Kampfs: Nanoreparatur mit stark erhöhter Regeneration
+		Metallisches Endoskelett negiert Fallschaden vollständig
+		'''
 }
-
 SelfHackCrystal: {
-	// DisplayName: Self-Hack Crystal
-	/* Tooltip:
+	DisplayName: Selbst-Hack-Kristall
+	Tooltip:
 		'''
-		A high-tier network cybernetic in the operating system slot.
-		Redirects the hacking interface back at the host.
-		Continuously grants additional RAM recovery speed.
-		Cyberware skill: spend RAM to instantly clear all debuffs
-		and gain brief invincibility — a window to break out of lethal situations.
-		''' */
-	// SkillHint: Trigger Self-Hack from the {0} radial to purge debuffs with RAM
-	// SkillName: Self-Hack
-	/* SkillDesc:
+		Hochstufige Netzwerk-Kyberware im Betriebssystem-Slot
+		Leitet die Hack-Schnittstelle auf den Träger zurück
+		Dauerhaft zusätzliche RAM-Regeneration
+		Kyberware-Fähigkeit: RAM verbrauchen, alle Debuffs sofort löschen
+		und kurze Unverwundbarkeit – Ausweg aus tödlichen Situationen
 		'''
-		Redirects the hacking interface back at yourself for an emergency cleanse.
-		Spends 3 RAM to instantly remove all debuffs and grants ~1.5s of invincibility.
-		12s cooldown; auto-greys out when RAM is insufficient or still cooling down.
-		''' */
+	SkillHint: "Im {0}-Radial Selbst-Hack auslösen, RAM verbrauchen um Debuffs zu löschen"
+	SkillName: Selbst-Hack-Protokoll
+	SkillDesc:
+		'''
+		Leitet die Hack-Schnittstelle auf dich selbst um für Notfallreinigung
+		Verbraucht 3 RAM, entfernt sofort alle Debuffs und gewährt ~1,5 s Unverwundbarkeit
+		12 s Abklingzeit; ausgegraut bei zu wenig RAM oder Abklingzeit
+		'''
 }
-
 SCCA32CRP: {
-	// DisplayName: SCCA-32 CRP
-	/* Tooltip:
+	DisplayName: SCCA-32 CRP
+	Tooltip:
 		'''
-		An advanced neural-muscular co-processor.
-		Routes threat prediction and muscle-fiber reflexes around the brain entirely.
-		Continuously grants +8% critical strike chance and +8% movement speed.
-		18% chance to trigger a Reflex Dodge when struck, fully negating that hit.
-		On a successful dodge, enters a 3-second Reflex Surge with bonus crit and move speed.
-		''' */
+		Muskel-Koprozessor
+		Leitet Angriffsprognose und Muskelreflexe am Gehirn vorbei
+		Dauerhaft +8 % Krit-Chance und +8 % Bewegungsgeschwindigkeit
+		18 % Chance auf Reflexausweichen bei Treffer, vollständige Schadensimmunität
+		Nach Ausweichen 3 s Reflexrausch mit Bonus auf Krit und Tempo
+		'''
 }
-
 RamCapacityUpgradeChip: {
-	// DisplayName: RAM Capacity Upgrade Chip
-	// Tooltip: Permanently increases base maximum RAM by 1
+	DisplayName: RAM-Kapazitäts-Upgrade-Chip
+	Tooltip: Erhöht dauerhaft das Basis-RAM-Maximum um 1
 }
-
 RamRecoveryUpgradeChip: {
-	// DisplayName: RAM Recovery Upgrade Chip
-	// Tooltip: Permanently increases base RAM recovery speed by 0.05 per second
+	DisplayName: RAM-Regenerations-Upgrade-Chip
+	Tooltip: "Erhöht dauerhaft die Basis-RAM-Regeneration um 0,05 pro Sekunde"
 }
-
 Mewtwo: {
-	// DisplayName: Mewtwo
-	// Tooltip: ""
+	DisplayName: Braindance-Chip
+	Tooltip: "Nutzen, um eine Braindance zu betreten"
 }
-
 RapidBarrelModule: {
-	// DisplayName: Rapid Barrel
-	// Tooltip: Hyper-extended recoil spring delivers searing pulses at the cost of stability and per-shot power
+	DisplayName: Schnellfeuer-Lauf
+	Tooltip:
+		'''
+		Überlange Rückholfeder liefert glühende Impulse auf Kosten von Stabilität und Einzelschuss
+		'''
 }
-
 FocusBarrelModule: {
-	// DisplayName: Focus Barrel
-	// Tooltip: Forces the three tracking beams to converge into one catastrophic concentrated strike
+	DisplayName: Fokuslauf
+	Tooltip:
+		'''
+		Zwingt die drei zielsuchenden Strahlen zu einem einzigen verheerenden Konzentratsschlag zusammen
+		'''
 }
-
 PrecisionOpticModule: {
-	// DisplayName: Precision Optic
-	// Tooltip: Laser-assisted aiming eliminates all spread and grants additional crit chance
+	DisplayName: Präzisionsvisier
+	Tooltip:
+		'''
+		Laserunterstütztes Zielen eliminiert Streuung vollständig und gewährt zusätzliche Krit-Chance
+		'''
 }
-
 OverloadCoreModule: {
-	// DisplayName: Overload Core
-	// Tooltip: Replaces the buffer with a faster cycling logic, charging the orb faster and launching it harder
+	DisplayName: Überlastungskern
+	Tooltip:
+		'''
+		Schnellere Zykluslogik statt Puffer – Energiekugel lädt schneller und fliegt heftiger
+		'''
 }
-
 SteadyStockModule: {
-	// DisplayName: Steady Stock
-	// Tooltip: Composite heavy stock absorbs recoil, trading some fire rate for extra damage per shot
+	DisplayName: Stabilisierungsschaft
+	Tooltip:
+		'''
+		Komposit-Schwerschaft absorbiert Rückstoß, etwas Feuerrate für Extra-Schaden pro Schuss
+		'''
 }
-
 HarmonyGripModule: {
-	// DisplayName: Harmony Grip
-	// Tooltip: Bio-conductive grip channels mana through the body, drastically reducing mana cost
+	DisplayName: Harmoniegriff
+	Tooltip:
+		'''
+		Bioleitfähiger Griff leitet Mana durch den Körper und senkt den Mana-Verbrauch drastisch
+		'''
 }
-
 ResonanceFrameModule: {
-	// DisplayName: Resonance Frame
-	// Tooltip: Harmonic-stacked frame leaks an extra beam, intensifying the volley
+	DisplayName: Resonanzrahmen
+	Tooltip:
+		'''
+		Harmonisch gestapelter Rahmen lässt einen zusätzlichen Strahl überlaufen – dichteres Feuer
+		'''
 }
-
 AdaptiveOpticModule: {
-	// DisplayName: Adaptive Optic
-	// Tooltip: Neural-link algorithms continuously correct trajectory, locking each beam tighter onto its target
+	DisplayName: Adaptives Visier
+	Tooltip:
+		'''
+		Neuralverknüpfte Algorithmen korrigieren fortlaufend die Flugbahn, damit jeder Strahl schnell und präzise sein Ziel trifft
+		'''
 }
-
 AssaultStockModule: {
-	// DisplayName: Assault Stock
-	// Tooltip: Adrenaline-assisted bracing cycles the weapon more aggressively, raising firepower at higher mana cost
+	DisplayName: Sturmschaft
+	Tooltip:
+		'''
+		Adrenalin-gestützte Spannhalterung löst in aggressiverer Haltung aus; Feuerkraft steigt, Energieverbrauch nimmt zu
+		'''
 }
-
 BalancedGripModule: {
-	// DisplayName: Balanced Grip
-	// Tooltip: Re-tuned weight distribution gives a small all-around boost to fire rate, damage and stability
+	DisplayName: Ausgewogener Griff
+	Tooltip:
+		'''
+		Neu verteiltes Gewicht verstärkt Feuerrate, Schaden und Stabilität in allen Bereichen geringfügig
+		'''
 }
-
 CapacitorBankModule: {
-	// DisplayName: Capacitor Bank
-	// Tooltip: Dense capacitor stack tops the orb off in a much shorter cycle, but dampens its launch energy
+	DisplayName: Kondensatorbank
+	Tooltip:
+		'''
+		Hochdichte Kondensatorstapel füllen die Energiekugel in kürzeren Zyklen, dämpfen aber ihre Abfertigungsenergie
+		'''
 }
-
 CrystalGripModule: {
-	// DisplayName: Crystal Grip
-	// Tooltip: Synthetic crystal dielectric resonates with the user, trimming mana cost and boosting crit, but slowing charge
+	DisplayName: Kristallgriff
+	Tooltip:
+		'''
+		Synthetisches Kristallmedium schwingt mit dem Nutzer mit, senkt Mana-Verbrauch und erhöht Krit-Chance, verlangsamt aber das Aufladen
+		'''
 }
-
 EfficientGripModule: {
-	// DisplayName: Efficient Grip
-	// Tooltip: Engineering-grade ergonomic grip refines both energy draw and trigger cadence
+	DisplayName: Effizienzgriff
+	Tooltip:
+		'''
+		Ingenieur-Ergonomiegriff optimiert Energieverbrauch und Abzugsrhythmus gleichzeitig
+		'''
 }
-
 HeavyBarrelModule: {
-	// DisplayName: Heavy Barrel
-	// Tooltip: Reinforced rifling crushes spread and cadence, turning every shot into a heavy strike
+	DisplayName: Schwerer Lauf
+	Tooltip:
+		'''
+		Verstärkte Züge drücken Streuung und Rhythmus nieder – jeder Schuss wird zum schweren Schlag
+		'''
 }
-
 HighVoltageCoreModule: {
-	// DisplayName: High Voltage Core
-	// Tooltip: Output voltage is pushed up the scale, amplifying both raw and merged-beam damage at extra mana cost
+	DisplayName: Hochspannungskern
+	Tooltip:
+		'''
+		Angehobene Ausgangsspannung verstärkt allen Schaden und Fokusschlag deutlich, auf Kosten von Mana
+		'''
 }
-
 HoloOpticModule: {
-	// DisplayName: Holo Optic
-	// Tooltip: Holographic reticle locks the impact point, slashing spread and accelerating the trigger at slight mana overhead
+	DisplayName: Hologrammvisier
+	Tooltip:
+		'''
+		Holografisches Fadenkreuz fixiert den Einschlag, drückt Streuung stark und beschleunigt den Abzug bei leicht erhöhtem Mana-Verbrauch
+		'''
 }
-
 HypersonicBarrelModule: {
-	// DisplayName: Hypersonic Barrel
-	// Tooltip: Sonic-shock chamber pushes beams to extreme velocity, but fine homing can no longer keep up
+	DisplayName: Hyperschall-Lauf
+	Tooltip:
+		'''
+		Schallstoßkammer beschleunigt Strahlen auf Grenzgeschwindigkeit, feine Zielverfolgung kann nicht mehr mithalten
+		'''
 }
-
 KineticDamperModule: {
-	// DisplayName: Kinetic Damper Stock
-	// Tooltip: Liquid damper swallows recoil, all but eliminating spread and granting a small crit edge
+	DisplayName: Kinetische Dämpfungsschaft
+	Tooltip:
+		'''
+		Flüssigkeitsdämpfer schluckt Rückstoß, Streuung nahezu null und leichter Krit-Bonus
+		'''
 }
-
 LightStockModule: {
-	// DisplayName: Light Stock
-	// Tooltip: Carbon-composite frame greatly increases fire rate at a mild cost to stability and per-shot power
+	DisplayName: Leichtschaft
+	Tooltip:
+		'''
+		Kohlefasergerüst beschleunigt Feuerrate deutlich, Stabilität und Einzelschuss leicht reduziert
+		'''
 }
-
 MultiCellFrameModule: {
-	// DisplayName: Multi-Cell Frame
-	// Tooltip: Parallel cooling cells discharge two beams at once, widening coverage at the cost of per-beam damage
+	DisplayName: Mehrzellenrahmen
+	Tooltip:
+		'''
+		Parallele Kühlkammern feuern zwei Strahlen gleichzeitig – mehr Abdeckung, weniger Einzelschaden
+		'''
 }
-
 PlasmaInjectorModule: {
-	// DisplayName: Plasma Injector
-	// Tooltip: High-enthalpy plasma injection vastly amplifies orb velocity and merged-beam damage, charging slightly slower
+	DisplayName: Plasmainjektor
+	Tooltip:
+		'''
+		Hochenthalpie-Plasmainjektion verstärkt Kugelgeschwindigkeit und Fokusschlag stark, Aufladen etwas langsamer
+		'''
 }
-
 QuantumFrameModule: {
-	// DisplayName: Quantum Frame
-	// Tooltip: Quantum steering circuits make beams turn smarter and orbs fly faster at slightly elevated mana cost
+	DisplayName: Quantenrahmen
+	Tooltip:
+		'''
+		Quantenlenkschaltkreise lassen Strahlen schlauer abbiegen und Kugeln schneller fliegen, Mana leicht erhöht
+		'''
 }
-
 ScattershotBarrelModule: {
-	// DisplayName: Scattershot Barrel
-	// Tooltip: Fractured muzzle splits each shot into a spray of beams, drastically expanding coverage but tanking per-beam damage
+	DisplayName: Streuschuss-Lauf
+	Tooltip:
+		'''
+		Rissmündung spaltet einen Schuss in viele Strahlen – Abdeckung massiv, Einzelschaden stark reduziert
+		'''
 }
-
 ThermalOpticModule: {
-	// DisplayName: Thermal Optic
-	// Tooltip: Infrared lock makes beams cling to their target, doubling down with both precision and crit gains
+	DisplayName: Wärmebildvisier
+	Tooltip:
+		'''
+		Infrarot-Fixierung lässt Strahlen am Ziel festhalten mit Präzisions- und Krit-Boni
+		'''
 }
-
 VolatileFrameModule: {
-	// DisplayName: Volatile Frame
-	// Tooltip: Overclocked cooling lattice squeezes out an extra beam and crit chance, while mana draw and spread spike
+	DisplayName: Instabiler Rahmen
+	Tooltip:
+		'''
+		Übertaktete Kühlung presst Extra-Strahl und Krit heraus, Mana und Streuung steigen stark
+		'''
 }
-
 NovaBarrelModule: {
-	// DisplayName: Nova Barrel
-	/* Tooltip:
+	DisplayName: Nova-Lauf
+	Tooltip:
 		'''
-		An overcharged plasma muzzle detonates a micro-pulse where each beam lands
-		The price is wider spread, weaker per-shot impact and heavier mana draw
-		''' */
+		Überladene Plasmamündung detoniert bei jedem Treffer einen Mikroimpuls
+		Preis: mehr Streuung, schwächerer Einzelschuss und höherer Mana-Verbrauch
+		'''
 }
-
 PrismOpticModule: {
-	// DisplayName: Prism Optic
-	/* Tooltip:
+	DisplayName: Prismenvisier
+	Tooltip:
 		'''
-		A phase prism at the end of the optical path forks each beam into two splinters on expiration
-		Primary beams travel a touch shorter in exchange for a sharper crit window
-		''' */
+		Phasenprisma am Strahlende spaltet beim Verlöschen zwei Nebenstrahlen ab
+		Hauptstrahl etwas kürzer, dafür schärferes Krit-Fenster
+		'''
 }
-
 TeslaCoreModule: {
-	// DisplayName: Tesla Core
-	/* Tooltip:
+	DisplayName: Tesla-Kern
+	Tooltip:
 		'''
-		High-voltage arcing lets struck beams leap to the nearest foe
-		Each chained node inherits the on-hit behaviors, at a steeper mana cost
-		''' */
+		Hochspannungslichtbogen springt nach Treffer zum nächsten Gegner
+		Jeder Knoten erbt Trefferverhalten, Mana-Verbrauch steigt
+		'''
 }
-
 RecoilStockModule: {
-	// DisplayName: Recoil Stock
-	/* Tooltip:
+	DisplayName: Rückstoßschaft
+	Tooltip:
 		'''
-		An overload buffer converts orb detonations into kinetic propellant for the wielder
-		Beam range is extended in tandem; the trigger feels a touch sluggish
-		''' */
+		Überlastungspuffer wandelt Kugel-Explosionen in Schub für den Nutzer
+		Strahlreichweite verlängert; Abzug fühlt sich etwas träger an
+		'''
 }
-
 SwarmGripModule: {
-	// DisplayName: Swarm Grip
-	/* Tooltip:
+	DisplayName: Schwarmgriff
+	Tooltip:
 		'''
-		A neural-mesh grip releases a swarm of strongly homing micro-orbs the moment the orb detonates
-		Orb velocity dips and mana draw climbs as compensation
-		''' */
+		Neuralnetz-Griff entlässt beim Detonieren stark zielsuchende Mikrokugeln
+		Kugelgeschwindigkeit und Mana-Verbrauch steigen als Gegenleistung
+		'''
 }
-
 GravityFrameModule: {
-	// DisplayName: Gravity Frame
-	/* Tooltip:
+	DisplayName: Gravitationsrahmen
+	Tooltip:
 		'''
-		A miniature singularity ring turns the energy orb into a gravitic well
-		It pulls nearby foes toward its core while charging and the detonation radius is greatly enlarged
-		The precision chamber makes charging feel slightly heavier
-		''' */
+		Miniatur-Singularitätsring verwandelt die Energiekugel in einen Anziehungspunkt
+		Zieht beim Aufladen nahe Gegner zum Kern, Explosionsradius stark vergrößert
+		Präzisionskammer verlangsamt den Laderhythmus leicht
+		'''
 }
-
 LaserBarrelModule: {
-	// DisplayName: Prism Laser Barrel
-	// Tooltip: Replaces left-click with a continuous prism laser column that tracks the cursor
+	DisplayName: Prisma-Laserlauf
+	Tooltip:
+		'''
+		Verwandelt gebündelte Strahlen in eine kontinuierliche Prisma-Lasersäule mit enormem Mana-Verbrauch und begrenzter Leistung
+		'''
 }
-
 OscillatorBarrelModule: {
-	// DisplayName: Oscillator Laser Barrel
-	/* Tooltip:
+	DisplayName: Oszillator-Laserlauf
+	Tooltip:
 		'''
-		An embedded pulse capacitor detonates a micro-explosion at the beam tip every 45 frames
-		Direct damage is slightly reduced and mana cost increases, but area bursts cover the continuous-fire gap
-		''' */
+		Eingebetteter Impulskondensator detoniert alle 30 Frames am Strahlende einen Energieimpuls
+		Einzelbild-Schaden leicht reduziert, Flächenexplosion und niedrigerer Mana-Verbrauch gleichen Dauerfeuer aus
+		'''
 }
-
 ScorchBarrelModule: {
-	// DisplayName: Scorch Laser Barrel
-	/* Tooltip:
+	DisplayName: Brand-Laserlauf
+	Tooltip:
 		'''
-		A high-enthalpy plasma nozzle sets struck enemies ablaze on laser contact
-		Direct beam damage is slightly lower, but sustained burning offsets the direct output loss
-		''' */
+		Hochenthalpie-Plasmamündung entzündet Ziele beim Laserkontakt
+		Direktschaden leicht reduziert, anhaltende Verbrennung und niedrigerer Mana-Verbrauch gleichen aus
+		'''
 }
-
 ReflectionBarrelModule: {
-	// DisplayName: Reflection Laser Barrel
-	/* Tooltip:
+	DisplayName: Reflexions-Laserlauf
+	Tooltip:
 		'''
-		A diamond prism at the impact point deflects part of the energy into two flanking beams
-		Main beam damage increases, but the extreme mana draw makes sustained fire costly
-		''' */
+		Diamantprisma am Trefferpunkt bricht Teilenergie in zwei Nebenstrahlen
+		Hauptstrahl-Schaden steigt, extremer Mana-Verbrauch macht Dauerfeuer teuer
+		'''
 }
-
 EchoOpticModule: {
-	// DisplayName: Echo Optic
-	/* Tooltip:
+	DisplayName: Echovisier
+	Tooltip:
 		'''
-		A resonance element at the path end captures the energy echo when a beam expires
-		Each beam death spawns three fan-spread homing sub-beams, offsetting the shortened range
-		''' */
+		Resonanzelement am Strahlende fängt die Energierückwelle beim Verlöschen des Strahls
+		Jeder verlöschende Strahl erzeugt drei fächerförmige zielsuchende Nebenstrahlen und gleicht verkürzte Reichweite aus
+		'''
 }
-
 FrostOpticModule: {
-	// DisplayName: Frost Optic
-	/* Tooltip:
+	DisplayName: Frostvisier
+	Tooltip:
 		'''
-		A cryo-focusing lens inflicts Frostburn on struck targets
-		Beam velocity is reduced but homing is more stable, with bonus pierce and crit
-		''' */
+		Kryo-Fokussierungssystem versetzt getroffene Ziele in Frostbrand
+		Strahlgeschwindigkeit etwas reduziert, Zielverfolgung stabiler, zusätzliche Durchdringung und Krit-Bonus
+		'''
 }
-
 SingularityCoreModule: {
-	// DisplayName: Singularity Core
-	/* Tooltip:
+	DisplayName: Singularitätskern
+	Tooltip:
 		'''
-		A micro-gravity generator continuously steers the orb toward the nearest enemy in flight
-		Explosion radius is greatly expanded, but the dense field drives up mana cost
-		''' */
+		Mikrogravitationsgenerator lenkt die Kugel im Flug zum nächsten Gegner
+		Explosionsradius stark vergrößert, dichtes Feld treibt Mana-Verbrauch hoch
+		'''
 }
-
 ScrambleFieldModule: {
-	// DisplayName: Scramble Field Module
-	/* Tooltip:
+	DisplayName: Störfeldmodul
+	Tooltip:
 		'''
-		A high-frequency coil fires a micro-shockwave around the orb every 40 frames while charging
-		Blast scale is amplified at the cost of slower charge time and higher mana usage
-		''' */
+		Hochfrequenzspule löst beim Aufladen alle 40 Frames eine Mikrostosswelle um die Kugel aus
+		Explosionsmaß vergrößert, langsameres Aufladen und höherer Mana-Verbrauch
+		'''
 }
-
 BraceStockModule: {
-	// DisplayName: Brace Stock
-	// Tooltip: A heavy stabilizer brace eliminates all spread and extends beam range, trading a little fire rate for pinpoint accuracy
+	DisplayName: Stützschaft
+	Tooltip:
+		'''
+		Schwere Stabilisierungsstütze eliminiert Streuung vollständig und verlängert die Strahlreichweite; etwas Feuerrate für höchste Präzision eingetauscht
+		'''
 }
-
 LaunchStockModule: {
-	// DisplayName: Launch Stock
-	/* Tooltip:
+	DisplayName: Abschussschaft
+	Tooltip:
 		'''
-		An overloaded spring mechanism fires three fan-spread homing beams the instant the orb launches
-		Orb velocity increases while mana cost rises in tandem
-		''' */
+		Überlastete Feder entlädt beim Abschuss der Energiekugel drei fächerförmige zielsuchende Strahlen
+		Kugelgeschwindigkeit steigt, Mana-Verbrauch steigt mit
+		'''
 }
-
 SentinelGripModule: {
-	// DisplayName: Sentinel Grip
-	/* Tooltip:
+	DisplayName: Wächtergriff
+	Tooltip:
 		'''
-		A smart-sensor grip auto-fires a homing beam at the nearest enemy every 20 frames while the orb is airborne
-		Orb speed is slightly reduced and mana cost rises, but the continuous side-fire compensates
-		''' */
+		Intelligenter Sensorgriff feuert während des Kugelflugs alle 20 Frames einen zielsuchenden Strahl auf den nächsten Gegner
+		Kugelgeschwindigkeit leicht reduziert, Mana steigt, Begleitfeuer gleicht aus
+		'''
 }
-
 ConductorGripModule: {
-	// DisplayName: Conductor Grip
-	/* Tooltip:
+	DisplayName: Leitergriff
+	Tooltip:
 		'''
-		Superconducting material boosts chain-arc hops to longer range and more jumps
-		Each hit is accompanied by an arc-particle burst; slight damage and mana cost increase
-		''' */
+		Supraleitendes Material verstärkt Kettenlichtbögen zu größerer Reichweite und mehr Sprüngen
+		Jeder Treffer begleitet von einem Lichtbogen-Partikelausbruch; leichter Schaden- und Mana-Anstieg
+		'''
 }
-
 PhantomFrameModule: {
-	// DisplayName: Phantom Frame
-	/* Tooltip:
+	DisplayName: Phasenrahmen
+	Tooltip:
 		'''
-		A quantum-phase cavity teleports the beam to 80px from the nearest enemy every 30 frames
-		Bypasses obstacles entirely; slight beam range and damage boost at increased mana cost
-		''' */
+		Quantenphasenkammer teleportiert den Strahl alle 30 Frames 80 Pixel zum nächsten Gegner
+		Umgeht Hindernisse vollständig; leichte Reichweiten- und Schadensboni bei höherem Mana-Verbrauch
+		'''
 }
-
 RecursiveFrameModule: {
-	// DisplayName: Recursive Frame
-	/* Tooltip:
+	DisplayName: Rekursivrahmen
+	Tooltip:
 		'''
-		A topological-loop chassis respawns each beam from the player position in its original direction on death
-		Main beam damage rises but range is shortened; the echo has reduced damage and does not recurse
-		''' */
+		Topologieschleifen-Chassis feuert bei Strahlverlöschen eine Kopie vom Spieler in Originalrichtung
+		Hauptstrahl stärker aber kürzer; Echo schwächer und nicht rekursiv, Mana-Verbrauch steigt
+		'''
 }
-
 ForkBarrelModule: {
-	// DisplayName: Fork Barrel
-	/* Tooltip:
+	DisplayName: Gabel-Lauf
+	Tooltip:
 		'''
-		An internal splitting prism forks each beam into two angled sub-beams every 50 frames
-		Slight damage and mana cost penalty
-		''' */
+		Interne Teilerprisma gabelt alle 50 Frames den Strahl in zwei seitliche Nebenstrahlen
+		Leichter Schaden- und Mana-Verlust
+		'''
 }
-
 NullBarrelModule: {
-	// DisplayName: Null Barrel
-	/* Tooltip:
+	DisplayName: Null-Lauf
+	Tooltip:
 		'''
-		A data-erasure chamber drops damage to near-zero but grants virtually unlimited pierce
-		Hits inject a virulent toxin that corrodes the target over time
-		''' */
+		Datenlöscher drückt Einzelschaden nahe null, gewährt aber praktisch unbegrenzte Durchdringung
+		Treffer injizieren giftigen Datenstrom zur fortlaufenden Korrosion
+		'''
 }
-
 HelixBarrelModule: {
-	// DisplayName: Helix Barrel
-	/* Tooltip:
+	DisplayName: Helix-Lauf
+	Tooltip:
 		'''
-		Dual-channel optics force two beams to spiral around a shared axis
-		Spread is zeroed; slight damage and speed penalty; great synergy with high-pierce setups
-		''' */
+		Zweikanal-Optik zwingt zwei Strahlen spiralförmig um eine gemeinsame Achse
+		Streuung null, leichter Schaden- und Geschwindigkeitsverlust; hervorragend mit hoher Durchdringung
+		'''
 }
-
 TargetPainterOpticModule: {
-	// DisplayName: Target Painter
-	/* Tooltip:
+	DisplayName: Zielmarkierungsvisier
+	Tooltip:
 		'''
-		A laser designation system marks struck targets with corrosive ichor, reducing their defense
-		Also boosts homing strength and critical strike chance
-		''' */
+		Laserzielsystem belegt Ziele mit korrosivem Eiter und senkt Verteidigung stark
+		Zielverfolgung und Krit-Chance steigen mit
+		'''
 }
-
 StrobeOpticModule: {
-	// DisplayName: Strobe Optic
-	/* Tooltip:
+	DisplayName: Stroboskopvisier
+	Tooltip:
 		'''
-		A phase-shift modulator rapidly cycles the beam between wall-piercing and solid states
-		Has a 30% chance to confuse struck enemies; minor pierce and speed bonus
-		''' */
+		Phasenmodulator wechselt den Strahl zwischen Wanddurchdringung und solid
+		Chance auf Verwirrung beim Treffer; leichte Durchdringungs- und Tempoboni
+		'''
 }
-
 SniperOpticModule: {
-	// DisplayName: Sniper Optic
-	/* Tooltip:
+	DisplayName: Scharfschützenvisier
+	Tooltip:
 		'''
-		Magnetic collimators dramatically increase projectile speed, range, and single-hit damage
-		At the cost of greatly reduced fire rate and near-zero homing
-		Best paired with the Focus Barrel for extreme long-range strikes
-		''' */
+		Magnetische Kollimatoren erhöhen Geschwindigkeit, Reichweite und Einzelschaden stark
+		Auf Kosten von Tempo und nahezu null Zielverfolgung
+		Mit Hyperschall-Lauf für extreme Fernschläge
+		'''
 }
-
 StormCellModule: {
-	// DisplayName: Storm Cell
-	/* Tooltip:
+	DisplayName: Sturmzelle
+	Tooltip:
 		'''
-		During charge, releases a homing electric bolt toward the nearest enemy every 25 frames
-		Faster charge and larger blast radius, but higher mana cost
-		''' */
+		Beim Aufladen alle 25 Frames ein zielsuchender Blitz zum nächsten Gegner
+		Schnelleres Aufladen und größerer Explosionsradius, höherer Mana-Verbrauch
+		'''
 }
-
 CryoCoreModule: {
-	// DisplayName: Cryo Core
-	/* Tooltip:
+	DisplayName: Kryokern
+	Tooltip:
 		'''
-		A supercooled energy cell freezes all enemies caught in the orb's blast radius
-		Slightly larger explosion, slightly slower charge
-		''' */
+		Ultratiefkalte Energiezelle friert alle Gegner im Explosionsradius der Energiekugel ein
+		Explosionsradius vergrößert, Laderhythmus etwas langsamer
+		'''
 }
-
 DarkMatterCoreModule: {
-	// DisplayName: Dark Matter Core
-	/* Tooltip:
+	DisplayName: Dunkelmateriekern
+	Tooltip:
 		'''
-		A dark-matter field pulls nearby enemies toward the orb during its flight phase
-		The orb simultaneously tracks targets; explosion radius significantly increased
-		High mana cost
-		''' */
+		Dunkelmateriefeld zieht während der Flugphase nahe Gegner zum Kugelzentrum
+		Die Kugel verfolgt gleichzeitig Ziele; Explosionsradius deutlich vergrößert, hoher Mana-Verbrauch
+		'''
 }
-
 ErgonomicStockModule: {
-	// DisplayName: Ergonomic Stock
-	// Tooltip: Precision ergonomic design substantially lowers mana cost with minor gains to fire rate and accuracy
+	DisplayName: Ergonomieschaft
+	Tooltip:
+		'''
+		Präzises ergonomisches Design senkt Mana-Verbrauch deutlich mit leichten Boni auf Feuerrate und Präzision
+		'''
 }
-
 ExtenderStockModule: {
-	// DisplayName: Extender Stock
-	/* Tooltip:
+	DisplayName: Verlängerungsschaft
+	Tooltip:
 		'''
-		An extended rail grants beams greater range and flight speed at minimal damage cost
-		Stack with the Sniper Optic for extreme long-range coverage
-		''' */
+		Verlängerte Schiene gewährt Strahlen mehr Reichweite und Fluggeschwindigkeit bei minimalem Schadensverlust
+		Mit Scharfschützenvisier für extreme Fernabdeckung kombinierbar
+		'''
 }
-
 StormStockModule: {
-	// DisplayName: Storm Stock
-	/* Tooltip:
+	DisplayName: Sturmschaft
+	Tooltip:
 		'''
-		High-density recoil springs push fire rate and beam count to the limit at the cost of per-hit damage
-		Pair with the Scattershot Barrel for carpet-coverage saturation
-		''' */
+		Hochdichte Rückholfeder treibt Feuerrate und Strahlzahl an die Grenze, Einzelschaden leidet
+		Mit Streuschuss-Lauf für Teppichbombardement
+		'''
 }
-
 VampireGripModule: {
-	// DisplayName: Vampire Grip
-	/* Tooltip:
+	DisplayName: Vampirblut-Griff
+	Tooltip:
 		'''
-		A bio-electric grip converts a portion of beam damage into health recovery
-		Laser hits are more frequent but restore less per tick; effective for sustained fights
-		''' */
+		Bioelektrischer Griff wandelt einen Teil des Strahlschadens in Lebensregeneration
+		Laser-Treffer häufiger, kleinere Heilung pro Tick – gut für lange Kämpfe
+		'''
 }
-
 ChronalGripModule: {
-	// DisplayName: Chronal Grip
-	/* Tooltip:
+	DisplayName: Chronaler Griff
+	Tooltip:
 		'''
-		A phase-delay coil slows enemies on each hit
-		Combined with improved homing, dense fire can maintain persistent crowd control
-		''' */
+		Phasenverzögerungsspule verlangsamt getroffene Ziele
+		Mit verbesserter Zielverfolgung ermöglicht dichtes Feuer anhaltende Kontrolle
+		'''
 }
-
 CascadeGripModule: {
-	// DisplayName: Cascade Grip
-	/* Tooltip:
+	DisplayName: Kaskadengriff
+	Tooltip:
 		'''
-		Every 5 hits, spawns a hovering cascade node at the point of impact
-		The node lingers ~2 seconds and fires 5 homing beams that hunt nearby enemies
-		Slightly reduces base damage
-		''' */
+		Nach 5 Treffern entsteht am Einschlagpunkt ein schwebender Kaskadenknoten
+		Der Knoten bleibt ~2 Sekunden und feuert 5 zielsuchende Strahlen auf nahe Gegner
+		Einzelschuss-Schaden sinkt leicht
+		'''
 }
-
 MirrorFrameModule: {
-	// DisplayName: Mirror Frame
-	/* Tooltip:
+	DisplayName: Spiegelrahmen
+	Tooltip:
 		'''
-		A symmetric reflection cavity spawns a 180-degree mirror beam for every beam fired
-		Mirror beams deal reduced damage; dual-directional coverage dramatically increases hit density
-		''' */
+		Symmetrische Reflexionskammer erzeugt bei jedem Strahl einen 180°-Spiegelstrahl
+		Spiegelstrahlen schwächer, doppelte Richtungsabdeckung verdichtet das Feuer deutlich
+		'''
 }
-
 NullspaceFrameModule: {
-	// DisplayName: Nullspace Frame
-	/* Tooltip:
+	DisplayName: Nullraumrahmen
+	Tooltip:
 		'''
-		A void-rift generator leaves a micro-explosion echo along the beam's path every 20 frames
-		Slightly extended range; minimal damage penalty
-		''' */
+		Leerriss-Generator hinterlässt alle 20 Frames einen Mikroexplosionsnachhall auf der Strahlbahn
+		Reichweite leicht verlängert, minimaler Schadensverlust
+		'''
 }
-
 OverkillFrameModule: {
-	// DisplayName: Overkill Frame
-	/* Tooltip:
+	DisplayName: Overkill-Rahmen
+	Tooltip:
 		'''
-		An overkill-sensing circuit stacks one Overkill charge per kill, up to 10; each stack adds 3% damage
-		Stacks decay over time — the faster you slay, the stronger you become
-		''' */
+		Overkill-Schaltkreis stapelt bei jedem Kill eine „Tötungswelle“ (max. 15), jede +2 % Schaden
+		Stapel schwinden mit der Zeit – je schneller das Tempo, desto stärker
+		'''
 }
-
 GraviticBarrelModule: {
-	// DisplayName: Gravitic Barrel
-	/* Tooltip:
+	DisplayName: Gravitationslauf
+	Tooltip:
 		'''
-		An embedded micro-singularity tugs nearby enemies toward each beam in flight
-		Spread and homing tighten while range extends; muzzle velocity drops slightly
-		''' */
+		Eingebettete Mikrosingularität zieht nahe Gegner während des Strahlflugs an
+		Streuung und Zielverfolgung verbessern sich, Reichweite verlängert, Mündungsgeschwindigkeit leicht reduziert
+		'''
 }
-
 PrismaticBarrelModule: {
-	// DisplayName: Prismatic Barrel
-	/* Tooltip:
+	DisplayName: Prismatischer Lauf
+	Tooltip:
 		'''
-		Dispersion prisms shed RGB tracers from every beam, scattering color shards on hit
-		Adds one extra beam and a crit edge at the cost of a little damage and spread
-		''' */
+		Dispersionsprisma wirft farbige Spuren ab und streut Farbsplitter beim Treffer
+		Ein zusätzlicher Strahl und Krit-Kompensation, leichter Schaden- und Streuungsverlust
+		'''
 }
-
 ConcussionBarrelModule: {
-	// DisplayName: Concussion Muzzle
-	/* Tooltip:
+	DisplayName: Erschütterungsmündung
+	Tooltip:
 		'''
-		An overload buffer detonates a small concussion ring at the impact point every 5 stacked hits
-		Per-shot damage and spread tighten, but attack speed pays the toll
-		''' */
+		Überlastungspuffer detoniert alle 5 Treffer am Einschlagpunkt einen Miniatur-Erschütterungsring
+		Einzelschuss-Schaden und Streuung verbessern sich, Angriffstempo leidet deutlich
+		'''
 }
-
 ObsidianBarrelModule: {
-	// DisplayName: Obsidian Barrel
-	/* Tooltip:
+	DisplayName: Obsidian-Lauf
+	Tooltip:
 		'''
-		Hits carve obsidian cracks into targets; at full stacks they shatter into hunting volcanic glass
-		Orb detonations rupture nearby cracks early, rewarding sustained pressure on clustered enemies
-		''' */
+		Treffer ritzen Obsidianrisse ins Ziel; bei voller Stapelung zerspringen sie zu jagenden Vulkanglas-Splittern
+		Rechtsklick-Explosionen sprengen nahe Risse vorzeitig – ideal gegen gedrängte Gruppen
+		'''
 }
-
 LifebloomBarrelModule: {
-	// DisplayName: Lifebloom Barrel
-	/* Tooltip:
+	DisplayName: Lebensblüten-Lauf
+	Tooltip:
 		'''
-		Beams seed parasitic lifebuds that drain delayed damage and return a little life to the wielder
-		When a host dies, the bud transfers to a nearby enemy and keeps growing
-		''' */
+		Strahlen säen parasitäre Lebenssprossen, die verzögert Leben absaugen und etwas zurück an den Nutzer geben
+		Stirbt der Wirt, wandert die Sprosse zu einem nahen Gegner
+		'''
 }
-
 MagmaVentBarrelModule: {
-	// DisplayName: Magma Vent Barrel
-	/* Tooltip:
+	DisplayName: Magmalauf
+	Tooltip:
 		'''
-		Hits and expired beams leave short-lived magma vents that periodically erupt into vertical heat columns
-		Underworld and high-heat liquid conditions make the vents cycle faster for area denial
-		''' */
+		Treffer und verlöschende Strahlen hinterlassen kurzlebige Magmaöffnungen mit periodischen vertikalen Hitzeimpulsen
+		In der Unterwelt oder heißen Flüssigkeiten schnellerer Zyklus für Gebietskontrolle
+		'''
 }
-
 CumulusBarrelModule: {
-	// DisplayName: Cumulus Barrel
-	/* Tooltip:
+	DisplayName: Kumulus-Lauf
+	Tooltip:
 		'''
-		Beam paths condense chargeable cloud nodes that feed on nearby SHPC beams and charge orbs
-		Once full, each cloud drops three short rain-lightning beams for positional firepower
-		''' */
+		Strahlwege kondensieren aufladbare Wolkenkerne; nachfolgende SHPC-Strahlen und Energiekugeln laden sie auf
+		Voll geladen senkt jede Wolke drei kurze Regenblitz-Strahlen – ideal für Stellungsfeuer
+		'''
 }
-
 MossboundBarrelModule: {
-	// DisplayName: Mossbound Barrel
-	/* Tooltip:
+	DisplayName: Moos-Lauf
+	Tooltip:
 		'''
-		Beams sow wet moss patches that slow enemies and build toward a brief root snare
-		Flying charge orbs absorb nearby moss to enlarge their final blast
-		''' */
+		Strahlen legen feuchte Moosflächen; Gegner darin werden verlangsamt und schließlich kurz verwurzelt
+		Rechtsklick-Energiekugeln absorbieren Moos und vergrößern die Endexplosion
+		'''
 }
-
 FrostfernBarrelModule: {
-	// DisplayName: Frostfern Barrel
-	/* Tooltip:
+	DisplayName: Frostfarn-Lauf
+	Tooltip:
 		'''
-		The first strike draws an ice-vein behind the target, sharing frost with enemies caught along the line
-		It links crowds through branching fern geometry instead of simply freezing one victim
-		''' */
+		Erster Treffer zieht eine Eiskristallader hinter dem Ziel; Gegner entlang der Linie teilen Frost
+		Verkettet Gruppen zu einem sich ausbreitenden Frostfarn-Zweig
+		'''
 }
-
 SandstormBarrelModule: {
-	// DisplayName: Sandstorm Barrel
-	/* Tooltip:
+	DisplayName: Sandsturm-Lauf
+	Tooltip:
 		'''
-		Sustained fire rolls a moving sand curtain forward, abrading enemies and softening hostile projectiles
-		Beams gain extra pierce while mana draw rises to keep the storm moving
-		''' */
+		Dauerfeuer wälzt eine wandernde Sandwand nach vorn, schleift Gegner und schwächt feindliche Projektile
+		Strahlen erhalten Extra-Durchdringung, Mana steigt mit der Sandwand
+		'''
 }
-
 CoralReefBarrelModule: {
-	// DisplayName: Coral Reef Barrel
-	/* Tooltip:
+	DisplayName: Korallenriff-Lauf
+	Tooltip:
 		'''
-		Impact points grow coral anchors that connect into damaging reef lines
-		Orb detonations make nearby anchors release synchronized circular surges
-		''' */
+		Trefferpunkte wachsen Korallenanker; mehrere Anker verbinden sich zu schneidenden Rifflinien
+		Rechtsklick-Energiekugel-Explosionen lassen nahe Korallenanker synchronisierte Ringwellen freisetzen
+		'''
 }
-
 HiveBarrelModule: {
-	// DisplayName: Hive Barrel
-	/* Tooltip:
+	DisplayName: Bienenstock-Lauf
+	Tooltip:
 		'''
-		Left-click hits tag foes with pheromones, then orb detonations launch cyber bees at marked targets
-		Spread markers across the fight to make the swarm split and cover the field
-		''' */
+		Linksklick markiert Gegner mit Pheromonen, Rechtsklick-Explosionen entsenden Cyber-Bienen auf markierte Ziele
+		Markierungen verteilen – Schwarm deckt das Feld stabiler ab
+		'''
 }
-
 MoondewBarrelModule: {
-	// DisplayName: Moondew Barrel
-	/* Tooltip:
+	DisplayName: Mondtau-Lauf
+	Tooltip:
 		'''
-		Beam trails condense dew prisms that refract later beams into short derived shots
-		Night and near-full moons raise each prism's refraction ceiling and payoff
-		''' */
+		Strahlwege kondensieren Tautropfen-Prismen; nachfolgende Strahlen brechen zu kurzen Ableitungsstrahlen
+		Nacht und Vollmond erhöhen Refraktionslimit und Dauer
+		'''
 }
-
 CrosslinkOpticModule: {
-	// DisplayName: Crosslink Optic
-	/* Tooltip:
+	DisplayName: Querverbindungsvisier
+	Tooltip:
 		'''
-		On hit, a neural-link unit arcs a data tether from the struck target to the nearest other foe
-		Chain count and chain range both extend, with a slight bump to mana cost
-		''' */
+		Neuralverknüpfungsmodul spannt beim Treffer einen Datenlichtbogen zwischen dem Ziel und dem nächsten Gegner
+		Kettenanzahl und Sprungradius steigen, Mana-Verbrauch leicht erhöht
+		'''
 }
-
 ZoomOpticModule: {
-	// DisplayName: Zoom Optic
-	/* Tooltip:
+	DisplayName: Zoomvisier
+	Tooltip:
 		'''
-		A long-focus magnetic lens pushes beams faster and farther at the cost of homing and attack speed
-		Hits beyond 600 px trigger a bonus white-hot strike that scales with distance
-		''' */
+		Langfokus-Magnetlinse schiebt Strahlen schneller und weiter, opfert Zielverfolgung und Tempo
+		Treffer ab 600 Pixel lösen zusätzlichen Weißglühschlag aus, skaliert mit Entfernung
+		'''
 }
-
 PingOpticModule: {
-	// DisplayName: Ping Optic
-	/* Tooltip:
+	DisplayName: Markierungsvisier
+	Tooltip:
 		'''
-		Signal-painter system stamps Marked-for-Death on every target struck, amplifying all incoming damage
-		Bonus homing, crit, and tighter spread complete the targeting kit
-		''' */
+		Signalmarkierungssystem verleiht getroffenen Zielen Todesmarkierung und erhöht Krit-Chance
+		'''
 }
-
 CapacitorPulseModule: {
-	// DisplayName: Capacitor Pulse
-	/* Tooltip:
+	DisplayName: Impulskondensator
+	Tooltip:
 		'''
-		Dense capacitor stacks vent a micro-pulse detonation roughly twice a second while charging
-		Explosion radius and charge time both rise, mana cost climbs
-		''' */
+		Hochdichte Kondensatorstapel entladen beim Aufladen etwa alle halbe Sekunde eine kleine Impuls-Detonation auf der Kugel
+		Explosionsradius und Ladezeit steigen, Mana-Verbrauch nimmt zu
+		'''
 }
-
 EntropyCoreModule: {
-	// DisplayName: Entropy Core
-	/* Tooltip:
+	DisplayName: Entropiekern
+	Tooltip:
 		'''
-		The orb siphons "entropy" from nearby enemies during flight
-		On detonation it releases a secondary aftershock scaled by accumulated entropy
-		''' */
+		Die Kugel saugt während des Flugs „Entropie“ von nahen Gegnern ab
+		Bei Detonation folgt eine Nachbeben-Explosion proportional zur gesammelten Entropie – je dichter die Gruppe, desto stärker
+		'''
 }
-
 ResonanceReactorModule: {
-	// DisplayName: Resonance Reactor
-	/* Tooltip:
+	DisplayName: Resonanzreaktor
+	Tooltip:
 		'''
-		Emits a resonance ring every ~0.75 s while charging
-		Detonation triggers an extra resonance shock at the player's feet, covering melee gaps
-		''' */
+		Gibt beim Aufladen etwa alle 0,75 s einen Resonanzring ab
+		Detonation löst zusätzlichen Resonanzstoß unter den Füßen aus für Nahkampfabdeckung
+		'''
 }
-
 OverwatchStockModule: {
-	// DisplayName: Overwatch Stock
-	/* Tooltip:
+	DisplayName: Wachschaft
+	Tooltip:
 		'''
-		Standing still ramps up "Overwatch" stacks (max 5) that decay rapidly once you move
-		Each stack grants +2.5% damage and +2% crit; a stoic posture trims attack speed and spread
-		''' */
+		Beim Stillstehen stapeln sich „Wachposten“-Stufen (max. 5), die beim Bewegen schnell schwinden
+		Jede Stufe: +3 % Schaden und +2 % Krit; stabile Haltung reduziert leicht Tempo und Streuung
+		'''
 }
-
 MomentumStockModule: {
-	// DisplayName: Momentum Stock
-	/* Tooltip:
+	DisplayName: Impulsschaft
+	Tooltip:
 		'''
-		Moving fast ramps up "Momentum" stacks (max 6) that decay rapidly once you stop
-		Each stack grants +5% attack speed and +8% beam speed — a mirror to Overwatch
-		''' */
+		Bei hoher Bewegung stapeln sich „Impuls“-Stufen (max. 6), die nach dem Stoppen schnell schwinden
+		Jede Stufe: +4 % Angriffstempo und +6 % Projektilgeschwindigkeit – Spiegel zum Wachschaft
+		'''
 }
-
 BulwarkStockModule: {
-	// DisplayName: Bulwark Stock
-	/* Tooltip:
+	DisplayName: Bollwerkschaft
+	Tooltip:
 		'''
-		Holding the SHPC grants modest damage reduction
-		The reinforced posture slightly slows charge time and bumps mana cost
-		''' */
+		Beim Halten des SHPC gewährt dir leichte Schadensreduktion
+		Die stabile Haltung verlangsamt das Aufladen leicht und senkt den Mana-Verbrauch
+		'''
 }
-
 CombatGripModule: {
-	// DisplayName: Combat Grip
-	/* Tooltip:
+	DisplayName: Kampfgriff
+	Tooltip:
 		'''
-		Killing blows with beams or laser stack "Combat" charges (max 5)
-		Each stack grants +6% attack speed and +2% damage; charges decay between fights
-		''' */
+		Treffer mit Tötung stapeln „Kampfesmut“ (max. 5)
+		Jede Stufe: +4 % Angriffstempo und +2 % Schaden; Stapel schwinden ohne Tötung mit der Zeit
+		'''
 }
-
 TempestGripModule: {
-	// DisplayName: Tempest Grip
-	/* Tooltip:
+	DisplayName: Sturmgriff
+	Tooltip:
 		'''
-		After every few stacked hits, fires a Tempest Burst — multiple data arcs around the latest impact
-		Per-shot damage trims and mana cost climbs in exchange for rhythmic clearing
-		''' */
+		Nach mehreren Treffern „Sturmausbruch“ – mehrere Lichtbögen um den letzten Einschlag
+		Einzelschaden und Mana leicht erhöht, rhythmisches Flächenräumen
+		'''
 }
-
 AbsorberGripModule: {
-	// DisplayName: Absorber Grip
-	/* Tooltip:
+	DisplayName: Absorptionsgriff
+	Tooltip:
 		'''
-		Beam and laser hits return a slice of the damage dealt as mana
-		Per-shot damage drops slightly and base mana cost rises in exchange
-		''' */
+		Strahl- und Laser-Treffer geben einen Anteil des verursachten Schadens als Mana zurück
+		Eigener Mana-Kreislauf als Nachschub; Einzelschuss-Schaden sinkt leicht, Grund-Mana-Kosten steigen als Gegenleistung
+		'''
 }
-
 HarmonicFrameModule: {
-	// DisplayName: Harmonic Frame
-	/* Tooltip:
+	DisplayName: Harmonischer Rahmen
+	Tooltip:
 		'''
-		Multiple coexisting beams arc resonance tethers between each other for bonus damage
-		Adds one extra beam at the cost of per-shot damage and a touch of spread
-		''' */
+		Mehrere gleichzeitige Strahlen spannen Resonanzlichtbögen zueinander für Bonusschaden
+		Ein zusätzlicher Strahl, leichter Einzelschuss-Verlust und etwas mehr Streuung
+		'''
 }
-
 ReplicatorFrameModule: {
-	// DisplayName: Replicator Frame
-	/* Tooltip:
+	DisplayName: Replikatorrahmen
+	Tooltip:
 		'''
-		On expiration, a beam spawns a brief echo in place that flies on along its original heading
-		Primary damage rises while range shortens; mana cost climbs
-		''' */
+		Beim Verlöschen des zielsuchenden Strahls entsteht ein kurzlebiges Echo in Originalrichtung
+		Hauptschaden steigt, Lebensdauer sinkt, Mana-Verbrauch steigt
+		'''
 }
-
 ArchiveFrameModule: {
-	// DisplayName: Archive Frame
-	/* Tooltip:
+	DisplayName: Archivrahmen
+	Tooltip:
 		'''
-		Accumulates SHPC damage; each time the threshold is crossed, an Archive blast detonates at the player's feet
-		Per-shot damage rises slightly with a small mana surcharge
-		''' */
+		Sammelt fortlaufend den durch SHPC-Treffer verursachten Schaden; bei Erreichen des Schwellenwerts detoniert an deiner Position eine „Datenarchivierung“-Explosion
+		Einzelschuss-Schaden steigt, Mana-Verbrauch steigt leicht
+		'''
 }
-
 CWRItem: {
-	TemperatureText: Combustion Temperature
-	InternalStoredEnergy: Internal Stored Energy
-	DeathModeItemText: Death Mode Item
+	TemperatureText: Verbrennungstemperatur
+	InternalStoredEnergy: Gespeicherte Energie
+	DeathModeItemText: Todesmodus
 	LegendItemUpgradeDisable:
 		'''
-		This legendary weapon has been set to disable upgrades in the current world.
-		To lift this restriction, please re-enter the world.
+		Diese legendäre Waffe kann in der aktuellen Welt nicht aufgewertet werden.
+		Betrete die Welt erneut, um diese Einschränkung aufzuheben.
 		'''
-	ItemLegendOnMouseLang: Halte [Shift] gedrückt, um die Geschichte zu hören...
-
-	CWRItem: {
-		// TemperatureText: 燃烧温度
-		// InternalStoredEnergy: 能量存储
-		// DeathModeItemText: 死亡模式
-		/* LegendItemUpgradeDisable:
-			'''
-			这把传奇武器在当前世界中已被设定为无法升级
-			若需要解除禁用状态，请重新进入世界
-			''' */
-		// ItemLegendOnMouseLang: 按下'Shift'聆听故事...
-	}
+	ItemLegendOnMouseLang: "Halte [Shift] gedrückt, um die Geschichte zu hören..."
 }
-
 RMagicConch: {
-	DontUseMagicConch: You're being watched by a powerful creature...
-
-	RMagicConch: {
-		// DontUseMagicConch: 你被一个强大的生物盯住了...
-		// DisplayName: 魔法海螺
-		// Tooltip: 仔细听，你会听到海洋的声音
-	}
+	DontUseMagicConch: Du wirst von einer mächtigen Kreatur beobachtet...
 }

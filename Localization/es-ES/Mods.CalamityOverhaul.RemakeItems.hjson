@@ -1,30 +1,33 @@
-ModifyChargingStationItem: {
-	// DisplayName: Charging Station
-	/* Tooltip:
-		'''
-		Uses electricity to charge electrical devices  
-		Batteries can be placed inside to store electricity  
-		Can be connected to pipelines for power transmission  
-		Right-click the block while holding a rechargeable item to quickly insert it  
-		Shift + Right-click to retrieve items
-		''' */
-}
-
-DyeVatItem: {
-	// DisplayName: "{$ItemName.DyeVat}"
-	/* Tooltip:
-		'''
-		Used for crafting dyes
-		Right-click after placing to open the control panel, allowing you to dye items
-		Place a Water Bucket into the dye slot to wash dyes off items
-		''' */
-}
-
-RDemonConch: {
-	// DisplayName: 恶魔海螺
-	/* Tooltip:
-		'''
-		仔细听，你会听到尖叫声
-		“小心”
-		''' */
+{
+	ModifyChargingStationItem:
+	{
+		DisplayName: Estación de carga
+		Tooltip:
+			'''
+			Usa electricidad para cargar aparatos
+			Puedes colocar baterías para almacenar energía
+			Conéctala a tuberías para transmitir electricidad
+			Clic derecho con un objeto recargable para insertarlo rápidamente
+			Mayús + clic derecho para retirar objetos
+			'''
+	}
+	DyeVatItem:
+	{
+		DisplayName: "{$ItemName.DyeVat}"
+		Tooltip:
+			'''
+			Sirve para fabricar tintes
+			Clic derecho tras colocarla para abrir el panel y teñir objetos
+			Coloca un cubo de agua en la ranura para quitar tintes
+			'''
+	}
+	RDemonConch:
+	{
+		DisplayName: Caracola demoníaca
+		Tooltip:
+			'''
+			Escucha con atención y oirás gritos
+			«Cuidado.»
+			'''
+	}
 }

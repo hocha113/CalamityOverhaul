@@ -1,8 +1,8 @@
 HighFPSRef.DisableMotionInterpolationMessage:
 	'''
-	Detected that you have enabled the HighFPSSupport: [Motion Smoothing] feature.
-	To ensure the stability of certain visual effects in the mod,
-	this feature has been automatically disabled for you.
-	To make sure the change takes effect,
-	it is strongly recommended that you manually toggle and keep this feature turned off.
+	Es wurde erkannt, dass du die HighFPSSupport-Funktion [Bewegungsglättung] aktiviert hast.
+	Um die Stabilität bestimmter visueller Effekte des Mods zu gewährleisten,
+	wurde diese Funktion automatisch für dich deaktiviert.
+	Damit die Änderung wirksam wird,
+	wird dringend empfohlen, diese Funktion manuell umzuschalten und ausgeschaltet zu lassen.
 	'''

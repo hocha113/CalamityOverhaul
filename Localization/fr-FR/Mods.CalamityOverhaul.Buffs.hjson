@@ -1,34 +1,34 @@
 SoulBurning: {
 	DisplayName: Feu de l'âme
-	Description: Flamme de l'enfer
+	Description: Flammes venues des Enfers
 }
 
 HellburnBuff: {
-	DisplayName: Explosion de feu de l'enfer
-	Description: Flamme de l'enfer
+	DisplayName: Éruption infernale
+	Description: Flammes venues des Enfers
 }
 
 VoidErosion: {
-	DisplayName: Érosion du vide
-	Description: Se transforme peu à peu en néant
+	DisplayName: Érosion du Vide
+	Description: Vous vous dissolvez peu à peu dans le néant
 }
 
 DestroyerSummonBuff: {
-	// DisplayName: Destroyer Summon Buff
-	// Description: The Mini Destroyer will follow you into battle
+	DisplayName: Le Destructeur
+	Description: Un mini Destructeur vous accompagne au combat
 }
 
 FrenziedMachineSoul: {
-	// DisplayName: Frenzied Machine Soul
-	// Description: The Machine Spirit is overjoyed!
+	DisplayName: Âme mécanique frénétique
+	Description: L'âme de la machine est en extase !
 }
 
 FishoilBuff: {
-	// DisplayName: Fishoil
-	// Description: You feel that your skin is becoming oily
+	DisplayName: Huile de poisson
+	Description: Vous sentez votre peau devenir huileuse
 }
 
 HyperDisintegration: {
-	// DisplayName: Hyper Disintegration
-	// Description: Let the goal disintegrate from within
+	DisplayName: Hyper-désintégration
+	Description: Fait s'effondrer la cible de l'intérieur
 }

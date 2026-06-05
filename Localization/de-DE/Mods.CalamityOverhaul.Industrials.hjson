@@ -1,14 +1,21 @@
 ElectricMinRocket: {
-	EnergyShortage: Energy Shortage
-	// DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
-	// Tooltip: ""
+	EnergyShortage: Energiemangel
+	DisplayName: Elektrische Minirakete
+	Tooltip:
+		'''
+		Rechtsklick zum Benutzen der Rakete, oder auf den Boden legen und Rechtsklick zum Start des Flugs
+		In der Luft mit Links-/Rechts-Pfeiltasten steuern
+		Gedrückte Abwärtspfeiltaste für langsames Sinken; Flug verbraucht nach und nach Strom
+		Leertaste unterbricht den Flug
+		„Sowjetische Herstellung, robust und zuverlässig – sie hätte fast den Mond erreicht“
+		'''
 }
 
 WGGLifeWeaver: {
-	TurretBatteryDepleted: Battery Runs Out
-	// DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
-	// Tooltip: ""
+	TurretBatteryDepleted: Batterie leer
+	DisplayName: Baumpflanzer in der Wildnis
+	Tooltip: ""
 }
 
-WGGWildernessTP.WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
-WGGMK2WildernessTP.WindGrivenDiscovery2: You are awed by this massive machine and feel you should try building one yourself...
+WGGWildernessTP.WindGrivenDiscovery1: Diese windgetriebenen Maschinen faszinieren dich – du überlegst, selbst ein paar zu bauen...
+WGGMK2WildernessTP.WindGrivenDiscovery2: Diese gewaltige Maschine beeindruckt dich – du willst unbedingt selbst eine bauen...

@@ -6,7 +6,7 @@ CWRServerConfig: {
 		Tooltip:
 			'''
 			Al activarlo, se modificarán la mayoría de las armas.
-			[c/FF0000: ¡Si desea una experiencia óptima con el contenido del mod de desastre, actívelo!]
+			[c/FF0000:¡Para disfrutar al máximo el contenido de Calamity Overhaul, actívalo!]
 			'''
 	}
 
@@ -25,15 +25,15 @@ CWRServerConfig: {
 	}
 
 	DomainConciseDisplay: {
-		// Label: Domain Minimal Display
-		// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		Label: Dominio en modo minimalista
+		Tooltip: Desactivado por defecto. Al activarlo, se ocultan la mayoría de efectos visuales dentro del dominio.
 	}
 
 	Headers: {
-		CWRSystem: Configuración del sistema de mejora
-		CWRWeapon: Configuración de armas de mejora
-		CWRUI: Configuración de interfaz de usuario de mejora
-		// CWRWorldGen: World Gen Configs
+		CWRSystem: Ajustes del sistema de reforma
+		CWRWeapon: Ajustes de armas de reforma
+		CWRUI: Ajustes de interfaz de reforma
+		CWRWorldGen: Ajustes de estructuras de reforma
 	}
 
 	LensEasing: {
@@ -42,11 +42,11 @@ CWRServerConfig: {
 	}
 
 	BiologyOverhaul: {
-		Label: Modificación de comportamiento biológico[c/06e33f:(experimental)]
+		Label: Reforma biológica[c/06e33f:(experimental)]
 		Tooltip:
 			'''
 			[c/c20909:Incompleto]
-			Habilitado por defecto, modificará el comportamiento de IA de algunos biomas, como la IA de los jefes bajo el módulo de muerte.
+			Activado por defecto, modifica la IA de algunas criaturas, como la de los jefes del módulo de muerte.
 			Esto puede aumentar drásticamente la dificultad del juego; se puede elegir desactivarlo según las preferencias personales.
 			'''
 	}
@@ -59,7 +59,7 @@ CWRServerConfig: {
 			Estilo 2: Elegante - Compacto
 			Estilo 3: Clásico - Flotante sobre la cabeza
 			Estilo 4: Clásico - Compacto
-			Estilo 5: Conceal
+			Estilo 5: Oculto
 			'''
 	}
 
@@ -74,43 +74,43 @@ CWRServerConfig: {
 	}
 
 	QuestLog: {
-		// Label: Quest Log Guidance
-		/* Tooltip:
+		Label: Guía del diario de misiones
+		Tooltip:
 			'''
-			When enabled, the quest log will guide you through game progression
-			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
-			Enabled by default. Disabling this removes all quest guidance
-			''' */
+			Al activarlo, el diario de misiones te guiará durante la partida
+			Puedes abrir la interfaz con el objeto diario, desde el inventario o con un atajo
+			Activado por defecto. Al desactivarlo, desaparece toda la guía de misiones
+			'''
 	}
 
 	DialogueBox_Scale_Value: {
-		// Label: Dialogue Box Scale
-		// Tooltip: Adjusts the overall size of the dialogue box
+		Label: Escala del cuadro de diálogo
+		Tooltip: Ajusta el tamaño general del cuadro de diálogo
 	}
 
 	GenWindGrivenGenerator: {
-		// Label: Generate Wind-Driven Generator
-		// Tooltip: Places wind-powered generator structures throughout the world.
+		Label: Generar aerogeneradores
+		Tooltip: Coloca estructuras de generadores eólicos por el mundo
 	}
 
 	GenWGGCollector: {
-		// Label: Generate Scavenger Outposts
-		// Tooltip: Randomly spawns hostile scavenger structures throughout the world. This setting only takes effect in Legendary worlds.
+		Label: Generar puestos de chatarreros
+		Tooltip: Genera al azar estructuras hostiles de chatarreros. Solo tiene efecto en mundos legendarios
 	}
 
 	GenJunkmanBase: {
-		// Label: Generate Junkman's Base
-		// Tooltip: Spawns a scavenger stronghold base in wastelands or underground.
+		Label: Generar base del chatarrero
+		Tooltip: Genera una base fortificada de chatarreros en páramos o bajo tierra
 	}
 
 	GenRocketHut: {
-		// Label: Generate Rocket Hut
-		// Tooltip: Generates a mysterious shack containing rocket components or technological relics.
+		Label: Generar cabaña del cohete
+		Tooltip: Genera una cabaña misteriosa con piezas de cohete o reliquias tecnológicas
 	}
 
 	GenSylvanOutpost: {
-		// Label: Generate Sylvan Outpost
-		// Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
+		Label: Generar puesto silvano
+		Tooltip: Genera puestos de avanzada de elfos o guardianes del bosque en lo profundo del bosque
 	}
 
 	ConfigChangePrefix: Usuario

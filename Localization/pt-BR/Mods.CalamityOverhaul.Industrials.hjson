@@ -1,14 +1,21 @@
 ElectricMinRocket: {
-	EnergyShortage: Energy Shortage
-	// DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
-	// Tooltip: ""
+	EnergyShortage: Energia Insuficiente
+	DisplayName: Mini Foguete Eletrico
+	Tooltip:
+		'''
+		Clique direito para usar o foguete, ou coloque-o no chao e clique direito para comecar a voar.
+		Pressione as teclas de seta esquerda ou direita no ar para ajustar a direcao.
+		Segure a tecla de seta para baixo para descer lentamente; voar consumira gradualmente energia.
+		Pressione a barra de espaco para interromper o voo.
+		"Feito na Uniao Sovietica, robusto e confiavel, quase chegou a lua."
+		'''
 }
 
 WGGLifeWeaver: {
-	TurretBatteryDepleted: Battery Runs Out
-	// DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
-	// Tooltip: ""
+	TurretBatteryDepleted: Bateria Esgotada
+	DisplayName: Tecedor da Vida do Ermo
+	Tooltip: ""
 }
 
-WGGWildernessTP.WindGrivenDiscovery1: You find these wind-driven machines fascinating and start thinking about making a few yourself...
-WGGMK2WildernessTP.WindGrivenDiscovery2: You are awed by this massive machine and feel you should try building one yourself...
+WGGWildernessTP.WindGrivenDiscovery1: Você acha essas máquinas movidas pelo vento fascinantes e começa a pensar em fazer algumas...
+WGGMK2WildernessTP.WindGrivenDiscovery2: Você fica impressionado com essa máquina enorme e sente que deveria tentar construir uma também...

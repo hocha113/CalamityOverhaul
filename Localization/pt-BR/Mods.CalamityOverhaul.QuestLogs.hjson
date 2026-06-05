@@ -241,7 +241,7 @@ QuestNode: {
 		DisplayName: Wyrm Primordial
 		Description: Derrote o Wyrm Primordial
 		QuestObjective.Description: Derrote o Wyrm Primordial
-		QuestReward.Description: Canhao Halibut
+		QuestReward.Description: Canhao do Halibut
 		DetailedDescription: O guardiao do Abismo mais profundo. Uma entidade mais antiga que os proprios deuses. Nao o perturbe a menos que necessario.
 	}
 

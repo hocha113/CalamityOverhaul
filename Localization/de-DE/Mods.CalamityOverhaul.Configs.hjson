@@ -1,5 +1,5 @@
 CWRServerConfig: {
-	DisplayName: Inhalt eingeben
+	DisplayName: Inhalts-Einstellungen
 
 	WeaponOverhaul: {
 		Label: Waffen Überholung
@@ -25,15 +25,15 @@ CWRServerConfig: {
 	}
 
 	DomainConciseDisplay: {
-		// Label: Domain Minimal Display
-		// Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		Label: Domain-Minimalanzeige
+		Tooltip: Standardmäßig aus. Wenn aktiviert, werden die meisten visuellen Effekte innerhalb der Domain ausgeblendet.
 	}
 
 	Headers: {
 		CWRSystem: Großreparatursystemeinstellungen
 		CWRWeapon: Großreparaturwaffeneinstellungen
 		CWRUI: Großreparatur-UI-Einstellungen
-		// CWRWorldGen: World Gen Configs
+		CWRWorldGen: Großreparatur-Struktureinstellungen
 	}
 
 	LensEasing: {
@@ -74,45 +74,45 @@ CWRServerConfig: {
 	}
 
 	QuestLog: {
-		// Label: Quest Log Guidance
-		/* Tooltip:
+		Label: Questbuch-Anleitung
+		Tooltip:
 			'''
-			When enabled, the quest log will guide you through game progression
-			You can access the quest interface via the Quest Book item, inventory UI, or a hotkey to view current quests
-			Enabled by default. Disabling this removes all quest guidance
-			''' */
+			Wenn aktiviert, führt dich das Questbuch durch den Spielfortschritt
+			Du kannst die Quest-Oberfläche über das Questbuch-Item, die Inventar-UI oder eine Tastenkombination öffnen, um aktuelle Quests anzuzeigen
+			Standardmäßig aktiviert. Deaktivieren entfernt jegliche Quest-Anleitung
+			'''
 	}
 
 	DialogueBox_Scale_Value: {
-		// Label: Dialogue Box Scale
-		// Tooltip: Adjusts the overall size of the dialogue box
+		Label: Dialogfeld-Skalierung
+		Tooltip: Passt die Gesamtgröße des Dialogfelds an
 	}
 
 	GenWindGrivenGenerator: {
-		// Label: Generate Wind-Driven Generator
-		// Tooltip: Places wind-powered generator structures throughout the world.
+		Label: Windkraftgeneratoren erzeugen
+		Tooltip: Platziert windbetriebene Generatorstrukturen in der Welt.
 	}
 
 	GenWGGCollector: {
-		// Label: Generate Scavenger Outposts
-		// Tooltip: Randomly spawns hostile scavenger structures throughout the world. This setting only takes effect in Legendary worlds.
+		Label: Plünderer-Außenposten erzeugen
+		Tooltip: Spawnt zufällig feindliche Plünderer-Gebäude in der Welt. Diese Einstellung wirkt nur in Legendären Welten.
 	}
 
 	GenJunkmanBase: {
-		// Label: Generate Junkman's Base
-		// Tooltip: Spawns a scavenger stronghold base in wastelands or underground.
+		Label: Plünderer-Basis erzeugen
+		Tooltip: Spawnt eine Plünderer-Festung in Ödlanden oder unter der Erde.
 	}
 
 	GenRocketHut: {
-		// Label: Generate Rocket Hut
-		// Tooltip: Generates a mysterious shack containing rocket components or technological relics.
+		Label: Raketenhütte erzeugen
+		Tooltip: Erzeugt eine mysteriöse Hütte mit Raketenteilen oder technologischen Relikten.
 	}
 
 	GenSylvanOutpost: {
-		// Label: Generate Sylvan Outpost
-		// Tooltip: Spawns wooden elven or forest guardian outposts deep within the forest.
+		Label: Waldelfen-Außenposten erzeugen
+		Tooltip: Spawnt hölzerne Elfen- oder Waldschützer-Außenposten tief im Wald.
 	}
 
-	ConfigChangePrefix: User
-	ConfigChangeSuffix: The server configuration is modified
+	ConfigChangePrefix: Benutzer
+	ConfigChangeSuffix: hat die Serverkonfiguration geändert
 }

@@ -327,10 +327,10 @@ FishScorpio: {
 	DisplayName: Sentinela Escorpiao da Areia
 	Tooltip:
 		'''
-		Invoca as sentinelas escorpiao que se movem pelo chao
-		Lanca os rolinhos de salmao no inimigo
+		Invoca sentinelas-escorpiao que se movem pelo chao
+		As sentinelas lancam redemoinhos de areia nos inimigos
 		'''
-	Studied: Seu corpo inteiro esta cheio de areia.
+	Studied: Por dentro ele e feito so de areia.
 }
 
 FishPrismite: {

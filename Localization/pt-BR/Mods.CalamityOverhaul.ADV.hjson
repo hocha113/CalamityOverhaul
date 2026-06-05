@@ -5,7 +5,7 @@ FirstMet: {
 	Line1: Pode me chamar de Dr. Halibut.
 	Line2: Ou, apenas Halibut esta bom.
 	Line3: Gracias ao seu anzol, fui puxado daquela agua silenciosa e morta.
-	Line4: Se nao fosse por voce, eu provavelmente estaria preso em uma falha do sistema... ate verdadeiramente expirar.
+	Line4: Se nao fosse por voce, eu provavelmente ficaria adormecido para sempre, ate realmente morrer.
 	Line5: Este peixe deveria ser sua pescaria. Agora, e um presente para marcar nosso encontro.
 	Line6: ......
 	Line7: Esta se perguntando por que estou aqui, nao esta.
@@ -13,7 +13,7 @@ FirstMet: {
 	Line9: Alguns anos atras, organizamos um 'Projeto de Amostragem Ecologica Abissal.'
 	Line10: Fui o unico que voltou.
 	Line11: No fundo do abismo, encontramos... uma existencia que nao pode ser compreendida.
-	Line12: Nao podia ser um ser vivo, nem algo que pudesse ser 'morto'. Era mais como... terror, em sua forma conceitual.
+	Line12: Nao era algo que pudesse ser morto.
 	Line13: Enquanto fugia, encontrei um olho debaixo de uma arvore de coral.
 	Line14: Por puro instinto de sobrevivencia, o engoli.
 	Line15: Usando o poder daquele olho, abri um dominio... e rasguei uma fissura no abismo para escapar.
@@ -372,7 +372,7 @@ FishoilQuestUI: {
 
 DoGQuestUI: {
 	QuestTitle: Comissao: O Devorador de Deuses
-	QuestDesc: Derrote O Devorador de Deuses usando o Heartstopper.
+	QuestDesc: Derrote O Devorador de Deuses usando o Escultor de Coracoes.
 	AcceptText: Aceitar
 	DeclineText: Recusar
 }
@@ -403,7 +403,7 @@ SupCalYharonQuestReward: {
 
 YharonQuestUI: {
 	QuestTitle: Comissao: O Dragao da Incineracao
-	QuestDesc: Use a Muramasa para matar Yharon, o Dragao da Incineracao.
+	QuestDesc: Use o Machete Oni para matar Yharon, o Dragao da Incineracao.
 	AcceptText: Aceitar
 	DeclineText: Recusar
 }
@@ -618,7 +618,7 @@ EternalBlazingNow: {
 	Line1: Voce esta brincando...
 	Line2: Eles desapareceram... Este fogo esta... *selando* o passado?!
 	Line3: Esta bruxa... seu poder realmente nao e magia comum.
-	Line4: Ela estava se segurando durante a luta? Nao importa. Mesmo contra esse tipo de poder, estou confiante que posso mata-lo novamente.
+	Line4: Mesmo contra esse tipo de poder, estou confiante de que posso mata-la novamente.
 	Line5: Eu nao posso morrer... mas... isso e perto o suficiente.
 	Line6: Voce se saiu bem... Talvez... voce seja verdadeiramente o 'Escolhido da Era' que ele mencionou, o que vale a pena esperar.
 	Line7: Entao... tenho mais um pedido para voce.
@@ -908,7 +908,7 @@ CampsiteInteractionDialogue: {
 		Choice_History_MoreRuins: Onde e o lugar mais perigoso?
 		Choice_History_Dangers: Ha alguma contra-medida?
 		Choice_History_Back: Inquietante
-		History_MoreRuins1: No fundo daquele mar de cadaveres. Ha uma porta. Nao bata. Ninguem pode lidar com o que esta trancado atras dela, a menos que aquele tirano venha.
+		History_MoreRuins1: No fundo daquele mar de cadaveres. Ha uma porta. Nao bata. O que esta trancado atras dela e melhor apodrecer la para sempre.
 		History_MoreRuins2: Ainda ha salas nao abertas naquelas ruinas submersas. Sao camaras secretas fundidas de metais pesados especiais, projetadas para cortar a percepção daquelas coisas.
 		History_Dangers1: Alem dos mortos-vivos mutantes, cuidado com coisas que voce nao pode ver. As vezes, o golpe fatal e invisivel.
 		History_Dangers2: Nao confie em seus olhos. Nao responda a chamados inexplicaveis. Naquele mar de cadaveres, os vivos sao as anomalias.
@@ -927,7 +927,7 @@ CampsiteInteractionDialogue: {
 		Choice_Personal_Back: Se cuide
 		Personal_Tea1: Isto e preparado com varias plantas especiais do abismo. O gosto... e como lama podre.
 		Personal_Tea2: Quer uma xícara? Vai acalma-lo como um peixe morto.
-		Personal_Past1: Quem sabe? Talvez o verdadeiro eu tenha morrido ha muito tempo, e eu seja apenas um... fantasma com as memorias do Velho Duque? Cada morte aciona um reinicio, retornando ao momento anterior a morte.
+		Personal_Past1: Quem sabe? Talvez o verdadeiro eu tenha morrido ha muito tempo, e eu seja apenas outra coisa... que ainda guarda as memorias dele.
 		Personal_Past2: Mas ainda me lembro da sensacao do sol no rosto, do toque dos livros. Enquanto eu lembrar disso, me considero vivo.
 		Personal_Past3: Se nao fosse aquele acidente... eu provavelmente estaria deitado pacificamente em um tumulo agora. Em vez de estar assim, incapaz de morrer mesmo se quisesse.
 		Farewell_Normal: Vamos deixar assim. Procure-me se precisar de algo.

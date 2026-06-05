@@ -869,15 +869,17 @@ CWRPlayer: {
 	CWRPlayer: {
 		/* Error_HookFailure:
 			'''
-			个钩子失效了，为了游戏正常，请关闭游戏并重新进入，
-			如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
+			Um hook falhou. Feche o jogo e entre novamente para restaurar o funcionamento normal.
+			Se o problema persistir, exporte o log e entre em contato com o desenvolvedor do mod.
 			''' */
 		/* OnEnterWorld_ImproveGameWarning:
 			'''
-			检测到您安装了[更好的体验]，但您的[更好的体验]版本过旧
-			为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
+			Foi detectado que você instalou o [Quality of Terraria Mod],
+			mas sua versão do [Quality of Terraria Mod] está desatualizada.
+			Para garantir que o jogo funcione corretamente, certifique-se de que sua
+			versão do [Quality of Terraria Mod] seja pelo menos 1.7.1.7.
 			''' */
-		// HellfireExplosionDeathReason: "{0}在地狱的烈火中化为灰烬"
-		// SoulfireExplosionDeathReason: "{0}的灵魂在火焰中升华"
+		// HellfireExplosionDeathReason: "{0} foi reduzido a cinzas nas chamas do Submundo"
+		// SoulfireExplosionDeathReason: "A alma de {0} ascendeu em chamas"
 	}
 }

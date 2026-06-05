@@ -1,22 +1,22 @@
-// QuestLog_Key.DisplayName: Quest Log: Toggle Main Interface
-// QuestManager_Key.DisplayName: Quest Manager: Toggle Management Panel
-// Legend_UIControl.DisplayName: Toggle Legendary Weapon HUD
-// Legend_Domain.DisplayName: Domain Expansion
-// Legend_Teleport.DisplayName: Domain Teleport
-// Legend_Restart.DisplayName: Self-Restart
-// HackTime_Toggle.DisplayName: Hack Time
-// CyberBanish_Key.DisplayName: Cyberspace: Banish
-// CyberFreeze_Key.DisplayName: Cyberspace: Freeze
-// CyberwareSkill_Key.DisplayName: Cyberware: Trigger current skill
-// CyberwareRadial_Key.DisplayName: Cyberware: Open radial menu
-// VoidTimeShift_Key.DisplayName: Void Time Shift
-// Halibut_Clone.DisplayName: Halibut: Past Self Invasion
-// Halibut_Superposition.DisplayName: Halibut: Superposition
-// Halibut_Skill_L.DisplayName: Halibut: Switch Skill Left
-// Halibut_Skill_R.DisplayName: Halibut: Switch Skill Right
-Murasama_TriggerKey.DisplayName: Murasama : Touche de déclenchement
-Murasama_DownKey.DisplayName: Murasama : Frappe vers le bas
-// WeponSkill_Q.DisplayName: Weapon: Left Skill Key
-// WeponSkill_R.DisplayName: Weapon: Right Skill Key
-// Accessory_Skills.DisplayName: Accessory Skill
-CWRKeySystem.Notbound: "[Unbound keys]"
+QuestLog_Key.DisplayName: Journal de quêtes : basculer l'interface principale
+QuestManager_Key.DisplayName: Commissions : basculer le panneau de gestion
+Legend_UIControl.DisplayName: Basculer le HUD d'arme légendaire
+Legend_Domain.DisplayName: Déploiement de domaine
+Legend_Teleport.DisplayName: Téléportation de domaine
+Legend_Restart.DisplayName: Auto-redémarrage
+HackTime_Toggle.DisplayName: Temps de piratage
+CyberBanish_Key.DisplayName: Cyberespace : bannir
+CyberFreeze_Key.DisplayName: Cyberespace : geler
+CyberwareSkill_Key.DisplayName: Cyberware : déclencher la compétence active
+CyberwareRadial_Key.DisplayName: Cyberware : ouvrir le menu radial
+VoidTimeShift_Key.DisplayName: Invasion temporelle du Vide
+Halibut_Clone.DisplayName: Halibut : invasion du moi passé
+Halibut_Superposition.DisplayName: Halibut : superposition
+Halibut_Skill_L.DisplayName: Halibut : changer compétence gauche
+Halibut_Skill_R.DisplayName: Halibut : changer compétence droite
+Murasama_TriggerKey.DisplayName: Murasama : touche de déclenchement
+Murasama_DownKey.DisplayName: Murasama : frappe descendante
+WeponSkill_Q.DisplayName: Arme : compétence gauche
+WeponSkill_R.DisplayName: Arme : compétence droite
+Accessory_Skills.DisplayName: Compétence d'accessoire
+CWRKeySystem.Notbound: "[Touches non assignées]"

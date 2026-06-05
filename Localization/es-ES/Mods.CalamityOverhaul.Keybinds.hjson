@@ -1,22 +1,22 @@
-// QuestLog_Key.DisplayName: Quest Log: Toggle Main Interface
-// QuestManager_Key.DisplayName: Quest Manager: Toggle Management Panel
-// Legend_UIControl.DisplayName: Toggle Legendary Weapon HUD
-// Legend_Domain.DisplayName: Domain Expansion
-// Legend_Teleport.DisplayName: Domain Teleport
-// Legend_Restart.DisplayName: Self-Restart
-// HackTime_Toggle.DisplayName: Hack Time
-// CyberBanish_Key.DisplayName: Cyberspace: Banish
-// CyberFreeze_Key.DisplayName: Cyberspace: Freeze
-// CyberwareSkill_Key.DisplayName: Cyberware: Trigger current skill
-// CyberwareRadial_Key.DisplayName: Cyberware: Open radial menu
-// VoidTimeShift_Key.DisplayName: Void Time Shift
-// Halibut_Clone.DisplayName: Halibut: Past Self Invasion
-// Halibut_Superposition.DisplayName: Halibut: Superposition
-// Halibut_Skill_L.DisplayName: Halibut: Switch Skill Left
-// Halibut_Skill_R.DisplayName: Halibut: Switch Skill Right
-Murasama_TriggerKey.DisplayName: Murasama: Tecla de disparo
-Murasama_DownKey.DisplayName: Murasama: Golpe descendente
-// WeponSkill_Q.DisplayName: Weapon: Left Skill Key
-// WeponSkill_R.DisplayName: Weapon: Right Skill Key
-// Accessory_Skills.DisplayName: Accessory Skill
-CWRKeySystem.Notbound: "[Unbound keys]"
+QuestLog_Key.DisplayName: Diario de misiones: alternar interfaz principal
+QuestManager_Key.DisplayName: Encargos: alternar panel de gestión
+Legend_UIControl.DisplayName: Alternar HUD de arma legendaria
+Legend_Domain.DisplayName: Despliegue de dominio
+Legend_Teleport.DisplayName: Teletransporte de dominio
+Legend_Restart.DisplayName: Autorreinicio
+HackTime_Toggle.DisplayName: Tiempo de hackeo
+CyberBanish_Key.DisplayName: Ciberespacio: desterrar
+CyberFreeze_Key.DisplayName: Ciberespacio: congelar
+CyberwareSkill_Key.DisplayName: Ciberimplante: activar habilidad actual
+CyberwareRadial_Key.DisplayName: Ciberimplante: abrir menú radial
+VoidTimeShift_Key.DisplayName: Invasión temporal del Vacío
+Halibut_Clone.DisplayName: Halibut: invasión del yo pasado
+Halibut_Superposition.DisplayName: Halibut: superposición
+Halibut_Skill_L.DisplayName: Halibut: cambiar habilidad izquierda
+Halibut_Skill_R.DisplayName: Halibut: cambiar habilidad derecha
+Murasama_TriggerKey.DisplayName: Murasama: tecla de disparo
+Murasama_DownKey.DisplayName: Murasama: golpe descendente
+WeponSkill_Q.DisplayName: Arma: habilidad izquierda
+WeponSkill_R.DisplayName: Arma: habilidad derecha
+Accessory_Skills.DisplayName: Habilidad de accesorio
+CWRKeySystem.Notbound: "[Sin tecla asignada]"

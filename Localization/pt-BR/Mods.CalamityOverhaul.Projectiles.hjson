@@ -1,5 +1,5 @@
-MurasamaHeld.DisplayName: Murasama
-MuraTriggerDash.DisplayName: Murasama
+MurasamaHeld.DisplayName: Corte Molecular
+MuraTriggerDash.DisplayName: Corte Molecular
 MuraBreakerSlash.DisplayName: Corte da Lua Crescente
 MuraExecutionCut.DisplayName: Cessacao Dimensional - Final
 MuraExecutionCutOnSpan.DisplayName: Cessacao Dimensional - Genesis
@@ -25,13 +25,13 @@ WarpingPoint.DisplayName: Ponto de Dobra
 CommandersRay.DisplayName: Raio do Comandante
 DecayedSeaOrb.DisplayName: Orbe do Mar Decaido
 PowerCoil.DisplayName: Bobina de Energia
-// SandSmallTornado.DisplayName: Small Sand Tornado
-// DecayedSeaVortex.DisplayName: Decayed Sea Vortex
-// UnderTheSandSurge.DisplayName: Sand Surge
+SandSmallTornado.DisplayName: Pequeno Tornado de Areia
+DecayedSeaVortex.DisplayName: Vórtice do Mar Decaído
+UnderTheSandSurge.DisplayName: Onda de Areia
 SporeBoboMagic.DisplayName: Bobo de Esporo
 SporeBobo.DisplayName: Bobo de Esporo
 DestroyersBeam.DisplayName: Raio do Destruidor
-Glomushroom.DisplayName: Glomushroom
+Glomushroom.DisplayName: Cogumelo Luminescente
 WastelandFangProj.DisplayName: Presa do Esteril
 WeaverBeam.DisplayName: Raio do Tecedor
 WeaverExplode.DisplayName: Ira do Tecedor
@@ -240,7 +240,7 @@ CosmicEddies.DisplayName: Redemoinho Cosmico
 DivineDevourerIllusionBody.DisplayName: Ilusao do Devorador Divino
 DivineDevourerIllusionHead.DisplayName: Ilusao do Devorador Divino
 DivineDevourerIllusionTail.DisplayName: Ilusao do Devorador Divino
-ArcNovaDiffuserOnSpan.DisplayName: Arc Nova
+ArcNovaDiffuserOnSpan.DisplayName: Nova Arco
 BarracudaProj.DisplayName: Barracuda
 BarrenOrb.DisplayName: Orbe Barren
 BloodVerdict.DisplayName: Veredito de Sangue
@@ -303,7 +303,7 @@ XenopopperProj.DisplayName: Xenopopper
 CosmicCalamityProjectile.DisplayName: Desastre Cosmico
 CosmicCalamityRay.DisplayName: Raio do Desastre Cosmico
 FrostcrushValariHeld.DisplayName: Valari Esmagador de Gelo
-// NeutronScytheExplosion.DisplayName: Neutron Explosion
+NeutronScytheExplosion.DisplayName: Explosão de Nêutrons
 NeutronScytheHeld.DisplayName: Foice de Neutrons
 EnchantedBoomerangHeld.DisplayName: Bumerangue Encantado
 FlamarangHeld.DisplayName: Chama-rangue
@@ -486,7 +486,7 @@ QuantumLeapProj.DisplayName: Salto Quantico
 SingularityBlackHole.DisplayName: Buraco Negro da Singularidade
 SupernovaExplosion.DisplayName: Explosao de Supernova
 StarfuryFallingStar.DisplayName: Estrela Cadente Starfury
-SpawnOldDukeWannaToFight.DisplayName: Gerar Velho Duque Querendo Lutar
+SpawnOldDukeWannaToFight.DisplayName: Duelo com o Velho Duque
 MachineTesla.DisplayName: Mecha Tesla
 CyberGlitchBoltProj.DisplayName: Raio de Falha Cibernetica
 CyberShockwaveProj.DisplayName: Onda de Choque Cibernetica
@@ -547,10 +547,10 @@ SHPCObsidianShardProj.DisplayName: Fragmento de Obsidiana SHPC
 SHPCSandCurtainProj.DisplayName: Cortina de Areia SHPC
 SHPCMoondewRefractFlashProj.DisplayName: Flash de Refracao de Orvalho Lunar SHPC
 MonomolecularWire.DisplayName: Fio Monomolecular
-// HolyCross.DisplayName: Holy Cross
-// ArbiterFireSnake.DisplayName: Fire Snake
-// ArbiterGroundFire.DisplayName: Ground Fire
-// ArbiterHeld.DisplayName: Arbiter
-// ArbiterShockwave.DisplayName: Shockwave
-// CloudwalkingHeld.DisplayName: Cloudwalking
-// DuneStalkerHeadProj.DisplayName: Dune Stalker Hook
+HolyCross.DisplayName: Cruz Sagrada
+ArbiterFireSnake.DisplayName: Serpente de Fogo
+ArbiterGroundFire.DisplayName: Chamas do Solo
+ArbiterHeld.DisplayName: Sentenciador
+ArbiterShockwave.DisplayName: Onda de Choque
+CloudwalkingHeld.DisplayName: Caminhante das Nuvens
+DuneStalkerHeadProj.DisplayName: Gancho do Perseguidor das Dunas

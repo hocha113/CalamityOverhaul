@@ -1,581 +1,581 @@
 FirstMet: {
-	// Rolename1: ???
-	// Rolename2: Halibut
-	// Line0: Sir... your fishing technique... leaves something to be desired.
-	// Line1: You may call me Dr. Halibut.
-	// Line2: Or, just Halibut is fine.
-	// Line3: Thanks to your hook, I was pulled out of that silent, dead water.
-	// Line4: If it weren't for you, I'd probably have been stuck in a system crash... until I truly expired.
-	// Line5: This fish should have been your catch. Now, it's a gift to mark our meeting.
-	// Line6: ......
-	// Line7: You're wondering why I'm here, aren't you.
-	// Line8: I was a professor at the Sulphurous Sea University, Department of Abyssal Research.
-	// Line9: A few years ago, we organized an 'Abyssal Ecological Sampling Project.'
-	// Line10: I was the only one who made it back.
-	// Line11: At the bottom of the abyss, we encountered... an existence that cannot be understood.
-	// Line12: It couldn't have been a living thing, nor something that could be 'killed.' It was more like... terror, in its conceptual form.
-	// Line13: As I fled, I found an eye beneath a coral tree.
-	// Line14: On pure survival instinct, I swallowed it.
-	// Line15: Using the power of that eye, I opened a domain... and tore a fissure in the abyss to escape.
-	// Line16: After that, my memory blurs... I fell into a deep slumber, until you fished me up.
-	// Line17: You look like a Terrarian.
-	// Line18: If you'll have me, take me with you.
-	// Line19: I will help you conquer this land.
-	// Line20: In exchange... help me solve this... 'revival' problem with the eyes inside me.
-	// Line21: If there are no objections, let's begin by... studying this fish.
+	Rolename1: ???
+	Rolename2: Halibut
+	Line0: Señor... su técnica de pesca aún tiene margen de mejora.
+	Line1: Puede llamarme el doctor Halibut.
+	Line2: O simplemente Halibut, si prefiere.
+	Line3: Gracias a su anzuelo, me sacaron de esas aguas silenciosas y muertas.
+	Line4: De no ser por usted, probablemente habría seguido dormido hasta morir de verdad.
+	Line5: Este pez debía ser su captura; ahora es nuestro regalo de encuentro.
+	Line6: ......
+	Line7: Se pregunta por qué estoy aquí, ¿verdad?
+	Line8: Era profesor en la Universidad del Mar de Azufre, departamento de investigación abisal.
+	Line9: Hace unos años organizamos un «plan de muestreo ecológico del abismo».
+	Line10: Solo yo regresé.
+	Line11: En el fondo del abismo encontramos algo que no puede comprenderse.
+	Line12: No era algo que pudiera matarse.
+	Line13: Al huir, encontré un ojo bajo un árbol de coral.
+	Line14: Por puro instinto de supervivencia, me lo tragué.
+	Line15: Con el poder de ese ojo abrí un dominio y rasgué una grieta en el abismo para escapar.
+	Line16: Después la memoria se difumina... caí en un sueño profundo hasta que me pescó.
+	Line17: Parece un terrariano.
+	Line18: Si quiere, lléveme con usted.
+	Line19: Le ayudaré a conquistar esta tierra.
+	Line20: A cambio... ayúdeme con el problema de resurrección de los ojos que llevo dentro.
+	Line21: Si no hay objeciones, empecemos estudiando este pez.
 }
 
 EyeOfCthulhuGift: {
-	// R1: Halibut
-	// L0: Your movements were dragged into slow-motion... I just thought you were striking a pose.
-	// L1: We've entered the 'Watched Stage.' Which means... more trouble.
-	// L2: I found this in its... maw. Take it. A Cthulhu Fish. Just like its namesake... it doesn't really follow logic.
-	// L3: Hold onto it, but be careful. It'll make you think you've opened your third eye. In reality, it's just a stimulant in your bloodstream.
-	// L4: I'm curious if you'll start winking at the moon now.
+	R1: Halibut
+	L0: Sus movimientos quedaron en cámara lenta por ese ojo gigante... pensé que posaba a propósito.
+	L1: Hemos entrado en la «fase de la mirada». Eso significa más problemas.
+	L2: Encontré esto en la boca del ojo. Tómalo: el pez Cthulhu. Como su homónimo mítico... no sigue mucha lógica.
+	L3: Guárdalo con cuidado; te hará creer que has abierto el tercer ojo. En realidad es solo un estimulante en la sangre.
+	L4: Tengo curiosidad por saber si empezarás a guiñarle a la luna.
 }
 
 KingSlimeGift: {
-	// R1: Halibut
-	// L0: That blue blob... a 'slime,' you call it? Looked more like... solidified emotion.
-	// L1: Perhaps a clumsy attempt by matter to gain self-awareness and evolve.
-	// L2: Here you go, a Slimefish. Don't squeeze it. Its feelings might explode.
-	// L3: Have you ever tried to make soup with one of these?
-	// L4: I mean... yes, we can make soup at the bottom of the sea. The sea floor even has... well, seas within the sea.
+	R1: Halibut
+	L0: Ese bulto azul... ¿un slime? Parecía más bien emoción solidificada.
+	L1: Quizá un torpe intento de la materia por reunirse y evolucionar.
+	L2: Toma, un pez slime. No lo aprietes; su ánimo podría explotar.
+	L3: ¿Has probado a cocinar sopa con uno de estos?
+	L4: Quiero decir... sí, en el fondo del mar también se hace sopa; hasta hay mar dentro del mar.
 }
 
 QueenBeeGift: {
-	// R1: Halibut
-	// R2: ???
-	// L0: I almost got a faceful of honey back there.
-	// L1: Still, I managed to pull a fish out of a honey puddle on the ground.
-	// L2: Here, fresh and... still-warm Honeyfish.
-	// L3: I think it would be perfect for a sweet and sour dish.
+	R1: Halibut
+	R2: ???
+	L0: Casi me entierra la cara en miel.
+	L1: Aun así saqué un pez del charco de miel del suelo.
+	L2: Toma, un pez de miel recién sacado y aún caliente.
+	L3: Creo que iría perfecto en un plato agridulce.
 }
 
 SkeletronGift: {
-	// R1: Halibut
-	// L0: Now that was a significant amount of calcium.
-	// L1: Its cranial structure reminded me of a runaway psychic construct.
-	// L2: Let my gun barrel cool down. I found a fish around here in the meantime.
-	// L3: Look, a 'Skeletron Fish.' They say the phosphorus inside makes night-fishers contemplate their existence.
-	// L4: Let's move. More... 'abstract' bones await.
+	R1: Halibut
+	L0: ¡Vaya montón de calcio!
+	L1: Su estructura craneal me recordó a un constructo psíquico desbocado.
+	L2: Deja que enfríe el cañón; mientras tanto recogí un pez por aquí.
+	L3: Mira, un «pez Skeletron»; dicen que el fósforo de su interior hace reflexionar a quien pesca de noche.
+	L4: Vamos, aún nos esperan huesos más abstractos.
 }
 
 AquaticScourgeGift: {
-	// R1: Halibut
-	// L0: It reminds me of the less-friendly neighbors from my hometown. This one was quite amicable, though. Used to be the head of security at Sulphurous Sea University. Always said hello.
-	// L1: The Sulphurous Sea is an interesting place. Every creature there asks the same question: 'Why am I still alive?'
-	// L2: A Prismfish. Its scales refract colors you've never seen. Mainly because they shouldn't exist.
-	// L3: Staring at it will reboot your visual system. Like a forced update, but more painful.
-	// L4: Best to use it in dim light. Otherwise, you'll feel... high.
+	R1: Halibut
+	L0: Me recuerda a los vecinos poco amables de mi tierra, aunque este era bastante cordial: fue jefe de seguridad en la Universidad del Mar de Azufre y siempre me saludaba.
+	L1: El Mar de Azufre es un lugar curioso; allí todos se preguntan: «¿Por qué sigo vivo?»
+	L2: Un pez prisma; sus escamas refractan colores que nunca has visto, sobre todo porque no deberían existir.
+	L3: Mirarlo reinicia el sistema visual, como una actualización forzada pero más dolorosa.
+	L4: Mejor usarlo con poca luz; si no, parecerá que te has colocado.
 }
 
 BrimstoneElementalGift: {
-	// R1: Halibut
-	// L0: Her just standing there was like a burning speech. Good thing we managed to shut her up.
-	// L1: Some elementals aren't created. They're just... oddities... that seep out of the world's cracks.
-	// L2: An Obsidianfish. A product of instantly cooled lava. Its scales are harder than the grudges festering in hell.
-	// L3: Careful, it might spontaneously combust in your hand. Emotionally speaking.
-	// L4: After all, anger is contagious.
+	R1: Halibut
+	L0: Allí de pie parecía un discurso en llamas; menos mal que logramos callarla.
+	L1: Algunos elementales no se crean: son rarezas que se filtran por las grietas del mundo.
+	L2: Un pez de obsidiana, producto de lava enfriada al instante; sus escamas son más duras que los rencores del infierno.
+	L3: Cuidado, podría prenderse en tus manos, en el sentido emocional.
+	L4: La ira, después de todo, es contagiosa.
 }
 
 CalamitasCloneGift: {
-	// R1: Halibut
-	// L0: A cheap shadow. Reminds me of the genetic monstrosities I used to cook up in my trench back in university. In any case, the one who made this has terrible taste.
-	// L1: I have a bad feeling. The real terror is still waiting... deeper. It's even getting closer.
-	// L2: Back to business. A Brimstone Fish, picked from her embers. You can still hear it muttering nonsense if you hold it close.
-	// L3: If you start to understand what it's saying... well, congratulations. You've taken the first step into madness.
-	// L4: But don't worry. Madness is just another form of clarity, seen from a different angle.
+	R1: Halibut
+	L0: Una sombra barata; me recuerda a los monstruos genéticos que armaba en mi madriguera en la universidad. Quien hizo esto tiene pésimo gusto.
+	L1: Tengo un mal presentimiento: el verdadero horror aguarda más abajo y se acerca.
+	L2: Volvamos al asunto: un pez de azufre, recogido de sus brasas; en la palma aún se oye murmurar.
+	L3: Si empiezas a entender lo que dice... enhorabuena, has dado el primer paso hacia la locura.
+	L4: No te preocupes: la locura es otra forma de lucidez, solo que desde otro ángulo.
 }
 
 CrabulonGift: {
-	// R1: Halibut
-	// L0: That mushroom-like... being? Is it wisdom or just pure instinct hidden under its cap?
-	// L1: Did you know mycelial networks can transmit information? Maybe it was calling for help.
-	// L2: This is a Fungifish. I barely caught it among the spores it was releasing.
-	// L3: Don't worry, the spores won't turn a human into a fungus... probably.
-	// L4: But if you suddenly get the urge to put down roots in a dark, damp place, do let me know.
+	R1: Halibut
+	L0: Ese ser... ¿seta? ¿Es sabiduría o instinto bajo el sombrero?
+	L1: ¿Sabías que la micelios puede transmitir información? Quizá pedía ayuda a los suyos.
+	L2: Un pez hongo; lo atrapé entre las esporas que despedía.
+	L3: Tranquilo, las esporas no convierten a un humano en hongo... probablemente.
+	L4: Si de pronto quieres echar raíces en un sitio húmedo y oscuro, avísame.
 }
 
 CryogenGift: {
-	// R1: Halibut
-	// L0: A frozen soul...
-	// L1: In the Abyssal Archives, this kind of low temperature is usually used to 'preserve' the lunatics.
-	// L2: A Cryo-minnow, thawed from the ice shards. It's still holding the pose it was frozen in.
-	// L3: They say eating it cools your blood, makes your thoughts exceptionally clear.
-	// L4: Eat too many, and you might just become an ice sculpture.
+	R1: Halibut
+	L0: Un alma congelada...
+	L1: En los archivos del abismo, este frío suele servir para «conservar» a los dementes.
+	L2: Un pececillo helado, descongelado de un fragmento de hielo; conserva la postura del instante en que quedó helado.
+	L3: Dicen que comerlo enfría la sangre y aclara la mente.
+	L4: Si comes demasiados, acabarás como una escultura de hielo.
 }
 
 DevourerOfGodsGift: {
-	// R1: Halibut
-	// L0: The Devourer of Gods... a cosmic serpent that dines on deities. Its appetite is as infinite as its ambition.
-	// L1: You know what they say: when you gaze into the abyss, the abyss gazes back. But this thing doesn't just gaze. It wants you for a snack.
-	// L2: A Neon Tetra. It floated out of a void rift. The light it emits isn't from this dimension.
-	// L3: Looking at it makes your brain try to comprehend colors it shouldn't. It's a... unique experience.
-	// L4: If you start seeing new colors, congratulations. If you start *smelling* colors, you need a rest.
+	R1: Halibut
+	L0: El Devorador de Dioses... una serpiente cósmica que se alimenta de deidades; su apetito es tan infinito como su ambición.
+	L1: Cuando miras al abismo, el abismo te devuelve la mirada; pero este no solo mira, quiere comerte.
+	L2: Un tetra de neón, salido de una grieta del vacío; su luz no pertenece a esta dimensión.
+	L3: Mirarlo obliga al cerebro a comprender colores que no debería: una experiencia singular.
+	L4: Si ves colores nuevos, enhorabuena; si empiezas a oler colores, descansa.
 }
 
 GolemGift: {
-	// R1: Halibut
-	// L0: A pile of moving rocks. Legacy of an ancient civilization... or perhaps, proof of their failure.
-	// L1: It might be guarding something. Or just repeating a program that lost its meaning long ago.
-	// L2: A Rockfish, dug from the temple's foundation. Its density makes me question my own existence.
-	// L3: I tried to boil it once. My pot surrendered first.
-	// L4: ...Some things exist just to make us realize that not all problems need to be solved.
+	R1: Halibut
+	L0: Un montón de rocas vivas: legado de una civilización antigua, o prueba de su fracaso.
+	L1: Quizá guardaba algo, o solo repetía un programa sin sentido desde hace siglos.
+	L2: Un pez roca, sacado de los cimientos del templo; su densidad me hace dudar de mi existencia.
+	L3: Una vez intenté cocerlo, pero la olla se rindió antes.
+	L4: ...Algunas cosas existen para recordarnos que no todo problema hay que resolverlo.
 }
 
 HiveMindGift: {
-	// R1: Halibut
-	// L0: A collective consciousness made of corruption... what a disgusting concept.
-	// L1: Its thought process must be... unique. Countless rotten fragments pieced together into a single, twisted whole.
-	// L2: Here, a Rotfish. Pulled it from that pile of carrion. Don't ask how.
-	// L3: It smells like seafood that's been left in the sun for three days.
-	// L4: But they say it lets you... resonate with the corruption. That just sounds wrong.
+	R1: Halibut
+	L0: Una conciencia colectiva hecha de corrupción... qué concepto asqueroso.
+	L1: Su forma de pensar debe ser peculiar: fragmentos podridos unidos en un todo retorcido.
+	L2: Toma, un pez podrido; lo saqué de ese montón de carroña, no preguntes cómo.
+	L3: Huele a marisco olvidado tres días al sol.
+	L4: Dicen que provoca una especie de resonancia con la corrupción; suena mal.
 }
 
 LeviathanGift: {
-	// R1: Halibut
-	// L0: The ocean's tyrant... and her little sidekick who's always following her. Some friendships transcend species. And logic.
-	// L1: I think what lives in the deepest trenches isn't fear, it's loneliness. They're just looking for company.
-	// L2: A Tropic-cuda, pulled from a deep-sea vortex. It looks ordinary, which is precisely what's suspicious about it.
-	// L3: The more mundane the exterior, the more extraordinary the past.
-	// L4: Just like us.
+	R1: Halibut
+	L0: La tirana del océano y su escolta eterna; algunas amistades trascienden especies y la razón.
+	L1: En las fosas más profundas no vive el miedo, sino la soledad; solo buscan compañía.
+	L2: Una barracuda tropical, sacada de un remolino abisal; parece normal, y eso es lo sospechoso.
+	L3: Cuanto más llana la apariencia, más extraordinario el pasado.
+	L4: Como nosotros.
 }
 
 MoonLordGift: {
-	// R1: Halibut
-	// L0: The Lord of the Moon, ha! Or, *formerly*. Now just a floating pile of eyeballs and gore.
-	// L1: We didn't just save the world; we closed a door that was never meant to be opened.
-	// L2: I caught a Cloudfish. It floated down from a crack in the sky. Feels weightless in my hand.
-	// L3: They say it lets you see the future... but you've already rewritten that future.
-	// L4: We just proved that even gods can bleed.
+	R1: Halibut
+	L0: El señor de la luna, ¡ja! O más bien, el que fue: ahora solo un amasijo flotante de ojos y carne.
+	L1: No solo salvamos el mundo; cerramos una puerta que nunca debió abrirse.
+	L2: Atrapé un pez nube, descendido por una grieta del cielo; en la mano no pesa nada.
+	L3: Dicen que muestra el futuro... pero tú ya lo has reescrito.
+	L4: Acabamos de demostrar que hasta los dioses sangran.
 }
 
 PerforatorGift: {
-	// R1: Halibut
-	// L0: A pile of drilling flesh-worms... this creature's existence is a challenge to biology.
-	// L1: Their blood has a strange viscosity, like some kind of living metal.
-	// L2: Found this in the wreckage. A Gore-fish. It's still wriggling.
-	// L3: Don't be scared by its looks, even if it looks like it crawled out of a nightmare.
-	// L4: At least it won't crawl into your ear while you sleep... probably.
+	R1: Halibut
+	L0: Un montón de gusanos de carne perforadora; su existencia desafía la biología.
+	L1: Su sangre tiene una viscosidad extraña, como metal vivo.
+	L2: Lo encontré entre los restos: un pez sangriento, aún se retuerce.
+	L3: No te asuste por su aspecto, aunque parezca salido de una pesadilla.
+	L4: Al menos no se meterá en tu oído mientras duermes... creo.
 }
 
 PlaguebringerGift: {
-	// R1: Halibut
-	// L0: The Plaguebringer... a mechanical bee carrying a bioweapon. Who designed this? A real bastard, daring to enslave bees.
-	// L1: A virus doesn't care about right or wrong. It just wants to survive. Like us, only more direct.
-	// L2: A Jewel-fish. Infected and miraculously recovered. Its immune system is more experienced than you are.
-	// L3: They say eating it boosts resistance. Sounds like another way of saying 'what doesn't kill you makes you stronger.'
-	// L4: But since *we* just walked out of a plague-hive, this little risk should be nothing.
+	R1: Halibut
+	L0: El Portador de la Peste... una abeja mecánica con arma biológica; quien diseñó esto es un canalla por esclavizar abejas.
+	L1: Un virus no distingue el bien del mal; solo quiere sobrevivir, como nosotros, pero más directo.
+	L2: Un pez joya, infectado y curado milagrosamente; su sistema inmune tiene más historias que tú.
+	L3: Dicen que comerlo refuerza las defensas; otra forma de decir «lo que no te mata te hace más fuerte».
+	L4: Tras salir de una colmena de peste, este riesgo es poca cosa.
 }
 
 PlanteraGift: {
-	// R1: Halibut
-	// L0: A flower... if 'flower' is the word for that man-eating vine conglomerate.
-	// L1: The jungle's rage, grown in plant form. Nature's revenge is never rational.
-	// L2: A Twin-Cod. It has two heads. The jungle is like a land-ocean; things here don't need a reason to grow extra parts.
-	// L3: They say two heads mean twice the wisdom, but they just look like they're arguing over which way to swim.
-	// L4: Like 'diet' and 'appetite.' Always fighting. My appetite always wins, though.
+	R1: Halibut
+	L0: Una flor... si «flor» sirve para ese enredo de lianas devoradoras.
+	L1: La furia de la jungla hecha planta; la venganza de la naturaleza nunca es racional.
+	L2: Un bacalao doble, con dos cabezas; la jungla es un océano en tierra firme: aquí crecen partes de más sin motivo.
+	L3: Dos cabezas deberían ser doble sabiduría, pero parecen discutir hacia dónde nadar.
+	L4: Como dieta y apetito, siempre peleando; el apetito siempre gana en mi caso.
 }
 
 ProvidenceGift: {
-	// R1: Halibut
-	// L0: The Profaned Goddess... a contradiction of faith and flame. Quite pitiful.
-	// L1: We didn't just extinguish a holy flame, but the embers of an entire era.
-	// L2: A Demon-Hell Fish, reborn from her ashes. Its temperature is permanently fixed at 'just hot enough not to burn you.'
-	// L3: That precise control makes me suspect... maybe she just wanted to be understood.
-	// L4: But the line between understanding and war is only one attack away.
+	R1: Halibut
+	L0: La Diosa Profanada... fe y fuego en un solo cuerpo contradictorio; bastante lamentable.
+	L1: No solo apagamos la llama sagrada, sino las brasas de una era entera.
+	L2: Un pez demoníaco infernal, renacido de sus cenizas; su temperatura queda siempre en «justo antes de quemarte».
+	L3: Ese control preciso me hace pensar que quizá solo quería ser comprendida.
+	L4: Pero entre comprensión y guerra solo hay un ataque de distancia.
 }
 
 SlimeGodGift: {
-	// R1: Halibut
-	// L0: Three slimes... or, a fractured divinity? This dualistic existence is... interesting.
-	// L1: Corruption and Crimson. The eternal conflict of this world. And we just proved that conflict can be 'resolved.'
-	// L2: A Variegated Lardfish. Scooped from the goo. Don't ask about the name.
-	// L3: Its color changes with the observer's mood. Or perhaps, it's mimicking your inner chaos.
-	// L4: Stare too long, and you might start to wonder which side you're really on.
+	R1: Halibut
+	L0: Tres slimes, o una divinidad fracturada; esta dualidad es interesante.
+	L1: Corrupción y Carmesí, la contradicción eterna del mundo; y acabamos de demostrar que puede «resolverse».
+	L2: Un pez manteca jaspeado, sacado del limo; no preguntes por el nombre.
+	L3: Su color cambia con el ánimo del observador; quizá imita el caos interior.
+	L4: Si lo miras demasiado, empezarás a preguntarte de qué lado estás.
 }
 
 SupremeCalamitasGift: {
-	// R1: Halibut
-	// L0: Brimstone Witch... an avenger. The most powerful magic-wielder of the last century.
-	// L1: What we just did... did we end a legend, or create a new one?
-	// L2: A Princessfish, born from her embers. It has a conflicting grace, like a flower blooming in ruins.
-	// L3: They say it shows you the person you most want to be... but that version is often the least like yourself.
-	// L4: You're nearing the peak of Terrarian power. From here on... it's a long way down.
+	R1: Halibut
+	L0: La Bruja del Azufre... una vengadora, la hechicera más poderosa del siglo pasado.
+	L1: ¿Acabamos de cerrar una leyenda o de abrir un nuevo comienzo?
+	L2: Un pez princesa, nacido de las brasas de la calamidad; elegancia contradictoria, como una flor en ruinas.
+	L3: Dicen que muestra a quien más quieres ser, aunque esa imagen suele ser la menos parecida a ti.
+	L4: Te acercas al cénit del poder terrariano; a partir de aquí... es cuesta abajo.
 }
 
 WallOfFleshGift: {
-	// R1: Halibut
-	// L0: A wall of flesh and bone... this world's creator must have had some peculiar ideas.
-	// L1: You just broke some kind of balance. Feel that? The world's pulse is quickening.
-	// L2: Found this Hungering Fish in the remains. It looks eternally starved.
-	// L3: Just like that wall. Always chasing, always consuming.
-	// L4: Welcome to 'Hard Mode'... though I didn't think it was 'easy' before.
+	R1: Halibut
+	L0: Un muro de carne y hueso... el creador de este mundo tenía ideas muy particulares.
+	L1: Acabas de romper un equilibrio; ¿lo notas? El pulso del mundo se acelera.
+	L2: Entre los restos encontré este pez hambriento, siempre con hambre.
+	L3: Como ese muro: siempre persiguiendo, siempre devorando.
+	L4: Bienvenido al modo difícil... aunque antes tampoco me parecía fácil.
 }
 
 YharonGift: {
-	// R1: Halibut
-	// L0: The Jungle Dragon... no, the World-Burning Dragon. It burns not with flesh, but with obsession.
-	// L1: A loyalty so pure it would burn itself to ash for its master... reminds me of the fish schools that guard the coral reefs back home.
-	// L2: A Scarlet Tigerfish. Just caught it. I'm quite fond of its stripes.
-	// L3: Holding it, you feel a scorching resolve. That is the temperature of a warrior.
-	// L4: You defeated that dragon, but I have to wonder... in the moment it fell, did it finally find... release?
+	R1: Halibut
+	L0: El dragón de la jungla... no, el dragón que incinera mundos; no arde carne, sino obsesión.
+	L1: Una lealtad tan pura que se consume por su señor; me recuerda a los cardúmenes que guardan los arrecifes de mi hogar.
+	L2: Un pez tigre carmesí, recién capturado; me gustan sus rayas.
+	L3: Al sostenerlo sientes una determinación ardiente, la temperatura de un guerrero.
+	L4: Venciste al dragón, pero me pregunto si al caer por fin encontró... liberación.
 }
 
 ADVRewardPopup: {
-	// ClickToReceive: Click to Receive
-	// ClickToContinue: Click to Continue
-	// ClickOrWaitToContinue: Click/Wait to Continue
+	ClickToReceive: Clic para recibir
+	ClickToContinue: Clic para continuar
+	ClickOrWaitToContinue: Clic o esperar para continuar
 }
 
 FirstMetSupCal: {
-	// Rolename1: ???
-	// Rolename2: Brimstone Witch
-	// Rolename3: Halibut
-	// Line1: I hadn't expected you to kill my 'sister' so soon.
-	// Line2: You are growing... faster than anticipated.
-	// Line3: I recognize you... You're...
-	// Line4: The Brimstone Witch?! The one who incinerated half the ocean?!
-	// Line5: Hah?! Heh... To think someone... or some*fish*... actually recognizes me. You are amusing, I'll give you that.
-	// Line6: ...But why are you alive? I distinctly remember the Brimstone Witch died... last century.
-	// Line7: An interesting fish, indeed. My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppeteered by the flames.
-	// Line8: ...A living mind in an inhuman vessel, bound to the world by a medium... You've become... an aberration?!
-	// Line9: Your comprehension is too limited. You could not possibly understand my state of being.
-	// Line10: Besides, that is not why I am here...
-	// QuestionLine: Well... what is your choice?
-	// Choice1Text: (Draw weapon)
-	// Choice2Text: (Remain silent)
-	// Choice1Response: Then let me measure your worth.
-	// Choice2Response: ...Pathetic. A 'small fry', indeed. Very well, take this as a greeting gift. We will meet again.
-	// NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
-	// NoFishLine2: You are growing stronger than I anticipated.
-	// NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
-	// NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppetes
-	// NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
-	// NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
+	Rolename1: ???
+	Rolename2: Bruja del Azufre
+	Rolename3: Halibut
+	Line1: No esperaba que mataras a mi «hermana» tan pronto.
+	Line2: Creces más rápido de lo previsto.
+	Line3: Te reconozco... eres...
+	Line4: ¿La Bruja del Azufre que incendió medio océano?!
+	Line5: ¿Eh?! Je... que alguien, o algún pez, me reconozca; sois curiosos.
+	Line6: ...¿Por qué sigues viva? Recuerdo que la Bruja del Azufre murió el siglo pasado.
+	Line7: Qué pez tan curioso. Mi conciencia se fundió con el fuego de azufre hace tiempo; este cuerpo es solo un cadáver movido por las llamas.
+	Line8: ...¿Mente viva en cuerpo inhumano, caminando por un medio? ¡Te has convertido en una aberración!
+	Line9: Tu nivel es demasiado bajo para entender mi estado actual.
+	Line10: Además, no vine por eso...
+	QuestionLine: Entonces, ¿cuál es tu elección?
+	Choice1Text: (Desenvainar el arma)
+	Choice2Text: (Guardar silencio)
+	Choice1Response: Entonces déjame pesar tu valía.
+	Choice2Response: ...Qué sardinilla. Toma esto como regalo de bienvenida; nos veremos de nuevo.
+	NoFishLine1: No esperaba que mataras a mi «hermana» tan pronto, ¿viniste solo?
+	NoFishLine2: Creces más deprisa de lo que calculé.
+	NoFishLine3: ¿Preguntas por qué sigo viva? Parece que empiezas a tocar verdades que no te corresponden.
+	NoFishLine4: Mi conciencia se fundió con el fuego de azufre hace tiempo; este cuerpo es solo un cadáver movido por las llamas.
+	NoFishLine5: De nada sirve explicarlo: tu nivel es demasiado bajo para comprender mi estado.
+	NoFishLine6: Por supuesto, no me mostré solo para aclarar esto.
 }
 
 ADVChoiceBox: {
-	// TitleText: Choose
-	// DisabledHintFormat: ({0})
+	TitleText: Elegir
+	DisabledHintFormat: （{0}）
 }
 
 SupCalMoonLordReward: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut
-	// Line1: Hahaha...
-	// Line2: So that's how far he's fallen.
-	// Line3: Do you have any idea what the underground looks like right now?
-	// Line4: ...So, why are you here this time?
-	// Line5: A little toy for you. And a small commission.
-	// Line6: A small crossbow. I need you to take it and kill that... *thing*... pathetically sucking up geothermal energy down there. And remember, you *must* use this crossbow.
-	// Line7: If you succeed, our... 'partnership'... can continue.
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut
+	Line1: Jejeje...
+	Line2: Así ha caído ese tipo.
+	Line3: ¿Sabes cómo está el subsuelo ahora mismo?
+	Line4: ...¿Entonces, por qué has venido esta vez?
+	Line5: Un juguete para ti y un encargo.
+	Line6: Una ballesta pequeña; úsala para acabar con esa cosa que se aferra al calor geotérmico de abajo, y recuerda: solo con esta ballesta.
+	Line7: Si lo logras, nuestra colaboración puede continuar.
 }
 
 SupCalDefeat: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut & [Name]
-	// Line1: To think you've already reached this level... Heh. I was outmatched.
-	// Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
-	// Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
-	// Line4: A pity you two cannot meet...
-	// Line5: Your dimension is too low. You will never understand my state.
-	// Line6: ...My dimension is too low?
-	// Line7: (I've lived this long, and this is the first time anyone's told me my 'dimension' is low.)
-	// Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
-	// Line9: You say Yharim can 'weigh' me? You'd need to bring me a Xylos.
-	// Line10: ......
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut y [Name]
+	Line1: Ya has llegado tan lejos... je, me has superado.
+	Line2: Pero no eres el más fuerte; puedes ser bueno, pero él no te va a la zaga.
+	Line3: Yharim ya recorrió ese camino hasta el fin y alcanzó el cénit terrariano; nadie le supera.
+	Line4: Lástima que no podáis encontraros...
+	Line5: Tu nivel es demasiado bajo; nunca entenderás mi estado.
+	Line6: ...¿Mi nivel es demasiado bajo?
+	Line7: (Tras tantos años, es la primera vez que me dicen que mi nivel es bajo.)
+	Line8: Soy el único que engendró una era; al abandonar la identidad terrariana y proclamarme diosa, soy omnipotente.
+	Line9: ¿Dices que Yharim puede pesarme? Habría que traer a Xylos.
+	Line10: ......
 }
 
 SupCalPlayerDefeat: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut
-	// Line1: You shatter at a touch. Are you made of paper?
-	// Line2: I thought I'd found a toy that would last a bit longer in the fire.
-	// Line3: I overestimated you. Your current caliber... you aren't even worthy of being my warm-up.
-	// Line4: Come back when you are strong enough to be worthy of my gaze.
-	// Line5: Although... you do have *some* courage.
-	// Line6: A mortal who dares to look me in the eye, let alone draw a blade... you are the first.
-	// Line7: (Vanishes in a whirlwind of flame)
-	// Line8: If I'd opened the ninth eye, consequences be damned... I should have had a chance. If it came to that...
-	// Line9: Sigh...
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut
+	Line1: Te rompes al tacto, ¿estás hecho de papel?
+	Line2: Creí haber encontrado un juguete que aguantara más el fuego.
+	Line3: Te sobreestimé; con tu nivel actual ni siquiera mereces calentarme.
+	Line4: Vuelve cuando seas digno de mi mirada.
+	Line5: Aunque... tienes algo de valor.
+	Line6: Un mortal que me mira a los ojos e incluso desenvaina la espada; eres el primero.
+	Line7: (Desaparece entre llamas)
+	Line8: Si hubiera abierto el noveno ojo sin importar las consecuencias, tendría opciones...
+	Line9: Ay...
 }
 
 SupCalVictory: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut
-	// Line1: What... How is this possible!
-	// Line2: You... You defeated me?!
-	// Line3: Impossible... This is absolutely impossible...
-	// Line4: I have already surpassed the limits of a Terrarian...
-	// Line5: ...It seems I truly underestimated you.
-	// Line6: But this is not the end. I will return.
-	// Line7: Next time... Next time, I will not be so careless!
-	// Line8: ...She fled.
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut
+	Line1: ¿Qué...? ¡¿Cómo es posible?!
+	Line2: ¡Me has derrotado!
+	Line3: Imposible, totalmente imposible...
+	Line4: Ya había superado el límite de un terrariano...
+	Line5: ...Parece que te subestimé de verdad.
+	Line6: Pero esto no termina; volveré.
+	Line7: La próxima vez no cometeré el mismo error.
+	Line8: ...Huyó.
 }
 
 PallbearerQuestUI: {
-	// QuestTitle: Commission: Hunt the Profaned Goddess
-	// QuestDesc: Defeat the Profaned Goddess using only the Pallbearer.
-	// AcceptText: Accept
-	// DeclineText: Decline
+	QuestTitle: Encargo: cazar a la Diosa Profanada
+	QuestDesc: Derrota a la Diosa Profanada usando el Portador del féretro
+	AcceptText: Aceptar
+	DeclineText: Rechazar
 }
 
 SupCalQuestReward: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut
-	// Line1: Well done.
-	// Line2: This crossbow suits you.
-	// Line3: You've solved a problem for me.
-	// Line4: As a reward, these are yours.
-	// Line5: And this blade. I need you to take it and kill that... *worm*. Don't worry, the payment will be even more generous.
-	// Line6: I've imbued it with a portion of my Brimstone... 'presence.' It should make things easier for you.
-	// Line7: ......
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut
+	Line1: Bien hecho.
+	Line2: Esta ballesta te queda bien.
+	Line3: Me has quitado un problema de encima.
+	Line4: Como recompensa, esto es tuyo.
+	Line5: Y esta hoja; llévala y acaba con ese gusano; la paga será aún mejor.
+	Line6: Le he impregnado parte de mi presencia de azufre; te facilitará el trabajo.
+	Line7: ......
 }
 
 ResurrectionWarn: {
-	// Rolename: Halibut
-	// Line0: Wait... did you feel that?
-	// Line1: The 'resurrection' state is approaching a critical threshold.
-	// Line2: I have to warn you, this isn't a game.
-	// Line3: If the resurrection completes... the consequences will be dire.
-	// Line4: The end result... is being consumed by the abyss.
-	// Line5: Every one of these eyes that opens inside me... it accelerates the resurrection process.
-	// Line6: The more that are open, the faster it builds, and the greater the danger.
-	// Line7: This is the price for wielding abyssal power. If I don't have the eyes open, my own abilities are severely diminished.
-	// Line8: We need to learn how to balance it—to determine how many eyes are 'safe' to have open during combat.
-	// Line9: If we want to use this power without consequence...
-	// Line10: ...we have to find a way to make these eyes 'crash.'
+	Rolename: Halibut
+	Line0: Espera, ¿lo has sentido?
+	Line1: El estado de resurrección se acerca al umbral crítico.
+	Line2: Esto no es un juego.
+	Line3: Si la resurrección se completa, las consecuencias serán graves.
+	Line4: El final será ser devorado por el abismo.
+	Line5: Cada ojo que abro dentro de mí acelera la resurrección.
+	Line6: Cuantos más abiertos, más rápido avanza y mayor el peligro.
+	Line7: Es el precio del poder abisal; sin los ojos abiertos, mi fuerza cae en picado.
+	Line8: Hay que aprender el equilibrio: cuántos ojos son seguros en combate.
+	Line9: Si queremos usar este poder sin coste...
+	Line10: ...hay que hacer que esos ojos «se bloqueen».
 }
 
 FishoilQuestScenario: {
-	// Rolename: Halibut
-	// Line0: You seem to have caught a fair amount of common fish recently.
-	// Line1: Give me some for my research, and I can refine them into a bottle of fresh fish oil.
-	// Line2: The process isn't difficult, just... tedious.
-	// Line3: This fish oil has potential. It's more useful than you might think.
-	// Line4: Interested?
-	// ChoiceAccept: Alright.
-	// ChoiceDecline: Not interested.
+	Rolename: Halibut
+	Line0: Últimamente has pescado bastantes peces comunes.
+	Line1: Dame algunos para experimentar y destilaré aceite de pescado fresco.
+	Line2: No es difícil, solo tedioso.
+	Line3: El aceite de pescado tiene más utilidad de la que crees.
+	Line4: ¿Te interesa?
+	ChoiceAccept: De acuerdo
+	ChoiceDecline: No me interesa
 }
 
 FishoilQuestUI: {
-	// TitleText: Collect: Fish
-	// DescText: Deposit enough Fish, and I will refine them into a bottle of fish oil.
-	// SubmitHint: Click to Deposit/Withdraw
-	// DeclineText: Decline
-	// CompletedText: Completed
-	// RewardText: Claim Reward
-	// QuickPutText: Quick Stack
+	TitleText: Recolección: peces
+	DescText: Deposita suficientes peces y destilaré una botella de aceite
+	SubmitHint: Clic para depositar o retirar
+	DeclineText: Rechazar
+	CompletedText: Completado
+	RewardText: Recibir recompensa
+	QuickPutText: Depósito rápido
 }
 
 DoGQuestUI: {
-	// QuestTitle: Commission: The Devourer of Gods
-	// QuestDesc: Defeat The Devourer of Gods using the Heartstopper.
-	// AcceptText: Accept
-	// DeclineText: Decline
+	QuestTitle: Encargo: el Devorador de Dioses
+	QuestDesc: Derrota al Devorador de Dioses con el Tallacorazones
+	AcceptText: Aceptar
+	DeclineText: Rechazar
 }
 
 SupCalDoGQuestReward: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut
-	// Line1: Cleanly done.
-	// Line2: This blade... as satisfying as ever.
-	// Line3: Back when I was still mortal, this is what I used to carve out my master's heart. It works well, doesn't it?
-	// Line4: Take it.
-	// Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
-	// Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
-	// Line7: ......I really can't stand her.
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut
+	Line1: Limpio y directo.
+	Line2: Esta hoja sigue siendo tan satisfactoria como siempre.
+	Line3: Cuando aún era mortal, con ella arranqué el corazón de mi maestro; funciona bien, ¿verdad?
+	Line4: Tómala.
+	Line5: ¿Has pensado qué harías si el próximo encargo fuera matarme a mí?
+	Line6: Qué lástima que no podáis encontraros; seguro que hablaríais horas.
+	Line7: ......Cada vez soporto menos a esa mujer.
 }
 
 SupCalYharonQuestReward: {
-	// Rolename1: Brimstone Witch
-	// Rolename2: Halibut
-	// Line1: Ah... it's finally over.
-	// Line2: To me... that dragon... was one of the very few beings worthy of respect.
-	// Line3: Knowing it would die, yet still choosing to stand its ground... Even if it's revived by the Auric Soul, the one that returns is merely a copy.
-	// Line4: A pity. It excelled at obedience, while you excel at... hm, *surviving*?
-	// Line5: Take this. Auric Ingot. Once called the 'Gold of Purgatory,' it is the limit of power a mortal can touch.
-	// Line6: And now... it's my turn.
-	// Line7: What kind of joke is this...?
+	Rolename1: Bruja del Azufre
+	Rolename2: Halibut
+	Line1: Ah... por fin terminó.
+	Line2: Para mí, ese dragón era de los pocos seres dignos de respeto.
+	Line3: Sabía que moriría y aun así se quedó en pie; aunque el alma áurica lo reviva, el que vuelve es solo una copia.
+	Line4: Lástima: él obedecía, y tú... sobrevives, ¿no?
+	Line5: Toma: lingote áurico, antes llamado «oro del purgatorio», el límite que un mortal puede tocar.
+	Line6: Ahora me toca a mí.
+	Line7: ¿Es una broma...?
 }
 
 YharonQuestUI: {
-	// QuestTitle: Commission: The Dragon of Incineration
-	// QuestDesc: Use the Muramasa to slay Yharon, the Incineration Dragon.
-	// AcceptText: Accept
-	// DeclineText: Decline
+	QuestTitle: Encargo: el dragón incinerador
+	QuestDesc: Usa la Máscara oni para matar al dragón incinerador
+	AcceptText: Aceptar
+	DeclineText: Rechazar
 }
 
 SupCalQuestLine: {
-	// QuestCategory: Brimstone Witch
-	// PallbearerTitle: Commission: Hunt the Profaned Goddess
-	// PallbearerSummary: Defeat the Profaned Goddess using the Pallbearer. 80% contribution required.
-	// DoGTitle: Commission: Hunt the Devourer of Gods
-	// DoGSummary: Defeat the Devourer of Gods using the Heartcarver. 80% contribution required.
-	// YharonTitle: Commission: Hunt the Incineration Dragon
-	// YharonSummary: Slay Yharon using the Oni Machete. 75% contribution required.
-	// TrackerSummonHint: Target absent — summon {0}
-	// TrackerContribution: Weapon contribution: {0:0%}
-	// TrackerRequired: Required: {0:0%}
+	QuestCategory: Bruja del Azufre
+	PallbearerTitle: Encargo: cazar a la Diosa Profanada
+	PallbearerSummary: Derrota a la Diosa Profanada con el Portador del féretro; contribución del 80 %
+	DoGTitle: Encargo: cazar al Devorador de Dioses
+	DoGSummary: Derrota al Devorador de Dioses con el Tallacorazones; contribución del 80 %
+	YharonTitle: Encargo: cazar al dragón incinerador
+	YharonSummary: Mata al dragón incinerador con el Machete oni; contribución del 75 %
+	TrackerSummonHint: El objetivo no está presente; invoca a {0}
+	TrackerContribution: Contribución del arma: {0:0%}
+	TrackerRequired: Requisito: {0:0%}
 }
 
 HelensInterference: {
-	// Rolename: Halibut
-	// Line0: ...Hey, are you free?
-	// Line1: Today..... uh.... nice weather, right?
-	// Line2: (Halibut seems to be hiding something.)
-	// Question1: ......
-	// Choice1_1: What are you doing?
-	// Choice1_2: Hand it over!
-	// Choice1_3: (Say nothing)
-	// FinalQuestion: Don't go any further... please. That witch, her commissions, the things she wants... I don't want to see it. We can walk the rest of the path ourselves, can't we?
-	// FinalChoice_Continue: Continue the commission
-	// FinalChoice_Stop: Stop the commission
+	Rolename: Halibut
+	Line0: ...Oye, ¿tienes un momento?
+	Line1: Hoy... eh... hace buen tiempo, ¿no?
+	Line2: (Halibut parece esconder algo.)
+	Question1: ......
+	Choice1_1: ¿Qué haces?
+	Choice1_2: ¡Sácalo!
+	Choice1_3: (Silencio)
+	FinalQuestion: No sigas adelante, por favor. Esa bruja, sus encargos, lo que quiere... no quiero verlo. Podemos seguir solos, ¿no?
+	FinalChoice_Continue: Continuar el encargo
+	FinalChoice_Stop: Detener el encargo
 
 	Branch_Anger: {
-		// Line1: ...You really... trust her *that* much?
-		// Line2: Haven't you noticed? The things that witch gives you... none of them are normal.
-		// Line3: It reminds me of something... in the Abyss... I... I touched it... cold, terrifying, unsettling... Ugh... I don't want to remember.
-		// Line4: You should have realized this...
+		Line1: ...¿De verdad confías tanto en ella?
+		Line2: ¿No te has dado cuenta? Lo que te da esa bruja no es normal.
+		Line3: Me recuerda algo del abismo... lo toqué... frío, aterrador, inquietante... no quiero recordarlo.
+		Line4: Deberías haberlo notado...
 	}
 
 	Branch_Inquiry: {
-		// Line1: I've been getting more and more anxious lately.
-		// Line2: That blade... when I touched it, I thought I heard... someone *laughing*.
-		// Line3: They all feel like... some kind of 'medium'.
-		// Line4: I can't let you go on with it, at least...
+		Line1: Cada vez estoy más inquieto.
+		Line2: Esa hoja... al tocarla creí oír... risas.
+		Line3: Todo parece algún tipo de «objeto medio».
+		Line4: No puedo dejarte seguir con eso, al menos...
 	}
 
 	Branch_Silence: {
-		// Line1: ...You're most terrifying when you're silent.
-		// Line2: ...Fine, I hid the 'Heart-carver'.
-		// Line3: That witch... she's dangerous, she came from nowhere. If this is a trap, are you just going to walk right into it?
-		// Line4: Stop... please. For my sake.
+		Line1: ...Eres más aterrador cuando callas.
+		Line2: Está bien, escondí el Tallacorazones.
+		Line3: Esa bruja es peligrosa y apareció de la nada; si es una trampa, ¿vas a caer a ciegas?
+		Line4: Detente, por favor, por mí.
 	}
 
 	FinalBranch_Continue: {
-		// Line1: ...Fine. I knew you'd choose this.
-		// Line2: ......
-		// Line3: I'll put it back. But I hope... when you use it... you'll be careful.
-		// Line4: And that witch, too...
-		// Line5: I'll walk with you... all the way.
+		Line1: ...Vale, sabía que elegirías esto.
+		Line2: ......
+		Line3: Lo devolveré, pero ten cuidado al usarlo.
+		Line4: Y con esa bruja también...
+		Line5: Te acompañaré... hasta el final.
 	}
 
 	FinalBranch_Stop: {
-		// Line1: ...You're... you're really willing to stop?
-		// Line2: ......
-		// Line3: Let's go. Let that witch go to hell.
+		Line1: ...¿De verdad quieres parar?
+		Line2: ......
+		Line3: Vámonos; que esa bruja se vaya al infierno.
 	}
 }
 
 HellGift: {
-	// R1: Halibut
-	// L0: This damn place... Hell is getting hotter and hotter.
-	// L1: I have an idea. Let's just dig through the sea floor and make this part of the ocean, too.
-	// L2: A geothermal hot spring... spanning the entire continent.
-	// L3: ...Just thinking about it is relaxing.
-	// L4: Oh, right. I caught a fish.
-	// L5: At first, I thought it was a guide for the hell-springs, but... it just looks like one.
+	R1: Halibut
+	L0: Este sitio maldito cada vez está más caliente.
+	L1: Tengo una idea: perforar el fondo marino y convertir esto también en océano.
+	L2: Unas termas geotérmicas que crucen todo el continente...
+	L3: Solo pensarlo ya relaja.
+	L4: Ah, cierto, atrapé un pez.
+	L5: Al principio pensé que era guía de las termas infernales, pero solo se parece.
 }
 
 ExoMechdusaSum: {
-	// DraedonName: Draedon
-	// IntroLine1: You understand... this moment has been long anticipated.
-	// IntroLine2: I am fascinated by all apects of the unknown, but nothing fascinates me more than your very nature.
-	// IntroLine3: I will show you my god-surpassing creations.
-	// IntroLine4: And you... you will show me your nature in combat.
-	// IntroLine5: Now. Make your selection.
-	// SelectionPrompt: Make your choice.
-	// BossRushLine: Make your choice. You have 20 seconds.
-	// ChoiceAres: Ares
-	// ChoiceThanatos: Thanatos
-	// ChoiceTwins: Artemis
+	DraedonName: Draedon
+	IntroLine1: Este momento lo he esperado demasiado tiempo.
+	IntroLine2: Todo lo desconocido me fascina, pero nada tanto como tu esencia.
+	IntroLine3: Te mostraré mis creaciones que superan a los dioses.
+	IntroLine4: Y tú me mostrarás tu esencia en combate.
+	IntroLine5: Ahora, elige.
+	SelectionPrompt: Haz tu elección
+	BossRushLine: Haz tu elección; tienes 20 segundos
+	ChoiceAres: Ares
+	ChoiceThanatos: Thanatos
+	ChoiceTwins: Artemisa
 }
 
 ExoMechEndingDialogue: {
-	// DraedonName: Draedon
-	// EndLine1: An unknown variable. You... are a singularity.
-	// EndLine2: You are an outsider to this land and its history, just as I am.
-	// EndLine3: ...My apologies. But after a "demonstration" such as that, I must take a moment to collate my thoughts.
-	// EndLine4: The blood spilled thus far has left this continent stagnant and lifeless.
-	// EndLine5: You have spilled your own blood. Perhaps it will be enough to end this era of despair... Regardless, it is a change I wished to see.
-	// EndLine6: You now wish to reach the tyrant. Unfortunately, I cannot assist you.
-	// EndLine7: This is not born from spite. My only goal from the beginning was to observe this battle.
-	// EndLine8: But you have succeeded in the past. You will find a way, eventually.
-	// EndLine9: I must respect and acknowledge your victory. But for now, my attention must return to my mechanisms.
-	// KillAttemptLine: ...Your actions are... unnecessary.
+	DraedonName: Draedon
+	EndLine1: Un factor desconocido: tú eres una singularidad.
+	EndLine2: Para esta tierra y su historia eres un forastero, como yo.
+	EndLine3: ...Disculpa, pero tras una «demostración» así debo ordenar mis ideas un momento.
+	EndLine4: Tanta sangre derramada ha dejado el continente estancado y sin vida.
+	EndLine5: También has derramado la tuya; quizá baste para cerrar esta era de desesperación; en cualquier caso, es el cambio que deseaba.
+	EndLine6: Ahora quieres alcanzar al tirano; lamentablemente no puedo ayudarte.
+	EndLine7: No es rencor: desde el principio solo quería observar este combate.
+	EndLine8: Pero ya has triunfado antes; al final encontrarás el camino.
+	EndLine9: Debo respetar y reconocer tu victoria, pero ahora debo volver a mis máquinas.
+	KillAttemptLine: ...Tu acción no era necesaria.
 }
 
 DeploySignaltowerScenario: {
-	// DraedonName: Draedon
-	// IntroLine1: I must conduct a critical experiment, and you are the most suitable individual currently available to assist me.
-	// IntroLine2: One hundred Terran years ago, an energy storm swept through the galaxy, destroying the majority of my facilities on this planet.
-	// IntroLine3: Everything was too distant. By the time I realized my monitoring network on Terra had gone dark, a century had passed.
-	// IntroLine4: After that storm, interstellar travel became extremely unstable. I must, therefore, rebuild my foundational systems on Terra.
-	// IntroLine5: I require your assistance in deploying the latest quantum entanglement array.
-	// IntroLine6: This technology bypasses the limitations of light-speed, achieving instantaneous, galaxy-spanning communication.
-	// IntroLine7: But before it can be applied, this world requires a sufficient number of quantum entanglement nodes.
-	// IntroLine8: This is the quantum signal tower I have designed. Its core utilizes entanglement stabilizers and zero-point energy amplifiers.
-	// TechExplainLine1: Each tower can establish a quantum entanglement link with other nodes, forming a communications network that spans the galaxy.
-	// TechExplainLine2: Under theoretical conditions, its transmission latency can approach zero.
-	// TaskLine: I need you to deploy these signal towers across the world to establish the complete entanglement network.
-	// AcceptPrompt: Well? Do you accept?
-	// ChoiceAccept: Accept commission
-	// ChoiceDecline: Later
+	DraedonName: Draedon
+	IntroLine1: Debo realizar un experimento crítico y eres el candidato más adecuado para ayudarme.
+	IntroLine2: Hace cien años terrarianos, una tormenta de energía arrasó la galaxia y destruyó casi todas mis instalaciones en este planeta.
+	IntroLine3: Todo quedó demasiado lejos; cuando noté la desconexión con la conciencia de Terra, ya había pasado un siglo.
+	IntroLine4: Tras esa tormenta, el salto interestelar se volvió inestable; debo reconstruir los sistemas base en Terra.
+	IntroLine5: Necesito tu ayuda para desplegar la última red de entrelazamiento cuántico.
+	IntroLine6: Esta tecnología supera el límite de la luz y permite comunicación instantánea entre estrellas.
+	IntroLine7: Antes de aplicarla, este mundo necesita suficientes nodos de entrelazamiento cuántico.
+	IntroLine8: Esta es la torre de señal cuántica que diseñé; su núcleo usa estabilizadores de entrelazamiento y amplificadores de energía de punto cero.
+	TechExplainLine1: Cada torre enlaza con otros nodos y forma una red de comunicación galáctica.
+	TechExplainLine2: En teoría, su latencia puede acercarse a cero.
+	TaskLine: Despliega estas torres por el mundo para completar la red de entrelazamiento.
+	AcceptPrompt: Entonces, ¿aceptas?
+	ChoiceAccept: Aceptar encargo
+	ChoiceDecline: Más tarde
 
 	Choice_Accept: {
-		// AcceptResponse: Excellent. Here are the schematics for the towers. Report to me on your progress when you are finished.
-		// L1: This is the first batch of materials. It is limited. Construct the main framework of the signal tower first.
-		// L2: Once the first node is operational, the communication link will begin to stabilize.
-		// L3: At that point, I will be able to transport more resources continuously through subspace for larger-scale construction.
+		AcceptResponse: Excelente; aquí tienes los planos. Infórmame al terminar.
+		L1: Este es el primer lote de materiales, limitado; construye primero el armazón principal.
+		L2: Cuando el primer nodo funcione, el enlace se estabilizará.
+		L3: Entonces podré enviar más recursos por subespacio para ampliar la construcción.
 	}
 
-	// Choice_Decline.DeclineResponse: Understood. You may return to me when you are prepared.
+	Choice_Decline.DeclineResponse: Entendido; vuelve cuando estés listo.
 }
 
 FirstTowerBuiltScenario: {
-	// DraedonName: Draedon
-	// Line1: The new quantum entanglement node is functioning smoothly. The signal is stable.
-	// Line2: Good. This is the first step for the network. Continue deploying the remaining signal towers.
-	// Line3: When the number of nodes reaches the standard, I will be able to conduct precise observations over a much wider area.
-	// Line4: Continue maintaining your efficiency.
+	DraedonName: Draedon
+	Line1: El nuevo nodo de entrelazamiento funciona con estabilidad.
+	Line2: Bien, es el primer paso de la red; sigue desplegando el resto de torres.
+	Line3: Al alcanzar el número requerido podré observar un área mucho mayor con precisión.
+	Line4: Mantén el ritmo.
 }
 
 QuestCompleteScenario: {
-	// DraedonName: Draedon
-	// Line1: All quantum nodes are online. The network is fully operational.
-	// Line2: Data transmission latency is consistent with theoretical values. No deviations.
-	// Line3: Your performance was faster than my projections. Commendable.
-	// Line4: As payment, I am granting you access to a selection of my equipment and clearances. You may use them as you see fit.
-	// Line5: If you require assistance, you may contact me directly through the communications network.
+	DraedonName: Draedon
+	Line1: Todos los nodos cuánticos están activos; la red funciona con normalidad.
+	Line2: La latencia coincide con la teoría, sin desviaciones.
+	Line3: Has sido más rápido de lo previsto; encomiable.
+	Line4: Como pago, abro parte de mi equipo y permisos para que los uses a tu gusto.
+	Line5: Si necesitas ayuda, contáctame por la red de comunicaciones.
 }
 
 ExoMechHardDefeat: {
-	// DraedonName: Draedon
-	// HardDefeatLine1: Decision-making under extreme duress. This is the data I wished to see.
-	// HardDefeatLine2: Your ability to maintain rationality under pressure is... satisfactory.
+	DraedonName: Draedon
+	HardDefeatLine1: Decisiones bajo presión extrema: esos son los datos que buscaba.
+	HardDefeatLine2: Mantener la racionalidad bajo estrés es... satisfactorio.
 }
 
 ExoMechQuickDefeat: {
-	// DraedonName: Draedon
-	// QuickDefeatLine1: ...This timeframe is significantly below my predictive models.
-	// QuickDefeatLine2: It seems I underestimated your current combat efficiency.
-	// QuickDefeatLine3: Perhaps it is time to consider... more aggressive... design philosophies.
+	DraedonName: Draedon
+	QuickDefeatLine1: ...Este tiempo está muy por debajo de mis modelos predictivos.
+	QuickDefeatLine2: Parece que subestimé tu eficiencia de combate actual.
+	QuickDefeatLine3: Quizá toque plantear diseños más agresivos.
 }
 
 ExoMechSecondDefeat: {
-	// DraedonName: Draedon
-	// SecondDefeatLine1: Interesting. Your rate of adaptation exceeds my projections.
-	// SecondDefeatLine2: The data indicates you have already made targeted improvements since the last engagement.
-	// SecondDefeatLine3: It appears I must re-evaluate your learning curve.
+	DraedonName: Draedon
+	SecondDefeatLine1: Interesante; tu adaptación supera mis proyecciones.
+	SecondDefeatLine2: Los datos indican mejoras dirigidas desde el último combate.
+	SecondDefeatLine3: Debo reevaluar tu curva de aprendizaje.
 }
 
 ExoMechThirdDefeat: {
-	// DraedonName: Draedon
-	// ThirdDefeatLine1: Consistent performance. A component of the perfection I strive for.
-	// ThirdDefeatLine2: You have proven your capabilities are not... a statistical anomaly.
+	DraedonName: Draedon
+	ThirdDefeatLine1: Rendimiento estable, parte de la perfección que busco.
+	ThirdDefeatLine2: Has demostrado que tu valor no es una anomalía estadística.
 }
 
 DraedonQuestLine: {
@@ -610,481 +610,476 @@ AbyssQuestLine: {
 	FragmentHint: Pesca o caza criaturas oceánicas
 }
 
-// MusicToast.NowPlaying: Now Playing
+MusicToast.NowPlaying: Reproduciendo
 
 EternalBlazingNow: {
-	// Rolename1: Halibut
-	// Rolename2: ???Brimstone Witch???
-	// Line1: Are you kidding me...
-	// Line2: They've vanished... Is this fire... *sealing* the past?!
-	// Line3: This witch... her power is truly no ordinary magic.
-	// Line4: Was she holding back during the fight? No matter. Even against this kind of power, I'm confident I can kill you all over again.
-	// Line5: I cannot die... but... this is close enough.
-	// Line6: You have done well... Perhaps... you truly are the "Era's Chosen" he spoke of, the one worth waiting for.
-	// Line7: So... I have one last thing to ask of you.
-	// Line8: As long as a single ember of brimstone fire exists in this world's past or present, 'I' will not perish.
-	// Line9: But my consciousness... in this endless sea of fire... it will eventually be worn down to nothing.
-	// Line10: I can last 30 more years, at most.
-	// Line11: ...So, you want *him* to replace you?
-	// Line12: That's right. It is the only way.
-	// Line13: When my consciousness fades completely, the entire world will be incinerated.
-	// Line14: Besides... if you wish to end this era, a mortal vessel is far too fragile...
-	// Line15: Absolutely not! Let him become a monster like you?! Over my dead body!
-	// QuestionLine: ......
-	// Choice1Text: (Stop Halibut)
-	// Choice2Text: (Remain silent)
-	// Choice1Line1: ...Is this your choice?
-	// Choice1Line2: I understand...
+	Rolename1: Halibut
+	Rolename2: ???Bruja del Azufre???
+	Line1: ¿Es una broma...?
+	Line2: Las sombras del pasado han desaparecido... ¿este fuego sella el pasado?!
+	Line3: Esta bruja... su poder no es magia corriente.
+	Line4: Aun así, contra un poder así confío en poder matarte otra vez.
+	Line5: No moriré... aunque ya casi.
+	Line6: Lo habéis hecho bien... quizá sois el «único de la era» del que hablaba, digno de la espera.
+	Line7: Por eso tengo una última petición.
+	Line8: Mientras quede una chispa de fuego de azufre en el pasado o el presente, «yo» no pereceré.
+	Line9: Pero mi conciencia se desgasta en este mar de llamas sin fin.
+	Line10: Como mucho aguantaré treinta años más.
+	Line11: ...¿Quieres que él te sustituya?
+	Line12: Exacto, es la única forma.
+	Line13: Cuando mi conciencia se disipe por completo, el mundo entero arderá.
+	Line14: Además, si queréis acabar con esta era, un cuerpo mortal es demasiado frágil...
+	Line15: ¡De ninguna manera! ¿Que se convierta en un monstruo como tú? ¡Sobre mi cadáver!
+	QuestionLine: ......
+	Choice1Text: (Detener a Halibut)
+	Choice2Text: (Guardar silencio)
+	Choice1Line1: ...¿Esta es tu elección?
+	Choice1Line2: Entiendo...
 
 	HelenEpilogue: {
-		// EpilogueLine1: I'm waiting for an idiot.
-		// EpilogueLine2: ...
-		// EpilogueLine3: Welcome back...
+		EpilogueLine1: Espero a un idiota.
+		EpilogueLine2: .....
+		EpilogueLine3: Bienvenido de vuelta...
 	}
 
-	// Rolename3: Brimstone Witch
+	Rolename3: Bruja del Azufre
 
 	WitchFarewell: {
-		// FarewellLine1: In this long life, I have seen countless dawns and endings.
-		// FarewellLine2: Flames devour eras, but also illuminate new beginnings. I thought this time would be no exception.
-		// FarewellLine3: I never expected to have a companion on this final road.
-		// FarewellLine4: For me... an ending like this... is more than enough.
-		// FarewellLine5: Your existence proves that this land has not truly withered.
-		// FarewellLine6: I believe you will walk further than I ever did.
-		// FarewellLine7: And I... I can finally rest.
-		// FarewellLine8: Don't look back. There are more important things ahead of you.
-		// FarewellLine9: Just... think of it as me finally reaching my own destination on this long journey.
-		// FarewellLine10: And so... this is enough.
-		// FarewellLine11: Go on, small fry.
+		FarewellLine1: En esta larga vida he visto innumerables amaneceres y finales.
+		FarewellLine2: El fuego devora eras y enciende nuevos comienzos; pensé que esta vez no sería distinto.
+		FarewellLine3: No esperaba compañía en este último tramo.
+		FarewellLine4: Para mí, un final así... basta.
+		FarewellLine5: Tu existencia demuestra que esta tierra aún no se ha secado del todo.
+		FarewellLine6: Creo que irás más lejos que yo.
+		FarewellLine7: Y yo... por fin puedo descansar.
+		FarewellLine8: No mires atrás; hay cosas más importantes delante.
+		FarewellLine9: Piensa que, en este largo viaje, por fin llegué a mi lugar.
+		FarewellLine10: Con esto basta.
+		FarewellLine11: Anda, sardinilla.
 	}
 
-	// AchievementTitle: "[BE] Ending: The Eternally Burning Present"
-	// AchievementTooltip: The past is consumed by fire; an aberrant body touches eternity.
+	AchievementTitle: Final BE: el presente en llamas eternas
+	AchievementTooltip: El pasado devorado por el fuego; un cuerpo aberrante toca la eternidad.
 }
 
 SCalAltarScenario: {
-	// Rolename1: Brimstone Witch
-	// L1: It is not yet time. There is still another enemy blocking your path.
-	// L2: Go piece together that pile of mechanical toys of yours, then defeat him.
-	// L3: ...What? Do I need to repeat myself?
+	Rolename1: Bruja del Azufre
+	L1: Aún no es el momento; otro enemigo bloquea tu camino.
+	L2: Arma tus juguetes mecánicos y derrota a ese.
+	L3: ...¿Necesitas que lo repita?
 }
 
 SupCalDisplayText: {
-	// SummonWithProverbs: You... you actually came wearing that ring... Very well. I will show no mercy.
-	// SummonWithoutProverbs: Hahaha... This moment... I have awaited it for so long.
-	// SummonRematchWithProverbs: You're still wearing that ring...
-	// SummonRematchWithoutProverbs: You again... It seems your understanding of death is still... insufficient.
-	// StartLowHealth: You already look to be on your last breath.
-	// StartMediumHealth: Your technique still requires improvement.
-	// StartDefault: How strange. You should be dead already...
-	// StartRematchLowHealth: You already look to be on your last breath.
-	// StartRematchMediumHealth: Wounded? How interesting.
-	// StartRematchDefault: How strange. You should be dead already...
-	// BH3WithHalibut: Wielding such... aberrant... power in a mortal vessel... To have come this far, you are indeed worthy of respect.
-	// BH3WithoutHalibut: You are skilled... but when will you realize you are merely attacking a plume of fire in vain?
-	// BrothersWithHalibut: It is time you met my family. They failed on the path to becoming... 'other'. Do not follow their example.
-	// BrothersWithoutHalibut: It is time you met my family. Should you die at another's hand, I will keep your soul here.
-	// Phase2WithHalibut: Are you certain you do not wish to beg for mercy?
-	// Phase2WithoutHalibut: Are you certain you do not wish to beg?
-	// BH4Text: Stand still and face me!
-	// SeekerRingText: Your power comes from external sources. As you are, you are nothing... It reminds me of that hypocrite.
-	// BH5Text: The scales of victory are... uncertain. You only need to stand still for a moment to change this, understood?
-	// Sepulcher2Text: If only one of us can live today... who do you think I *want* it to be?
-	// Desperation1Text: JUST... STAND... STILL... YOU... SMALL FRY!
-	// Desperation2Text: Don't get arrogant—I was merely toying with you before!
-	// Desperation3Text: *cough*... *cough*... I admit, I am not in peak condition today.
-	// Desperation4Text: It seems... I have lost. Meeting you... has truly been a blessing.
-	// Acceptance1Text: This... is the happiest I have been in a hundred years...
-	// Acceptance2Text: Perhaps... you truly can end this damned era.
-	/* Story1:
+	SummonWithProverbs: Has venido con ese anillo puesto... muy bien, no tendré piedad.
+	SummonWithoutProverbs: Jejeje... este momento lo he esperado mucho.
+	SummonRematchWithProverbs: Sigues llevando ese anillo...
+	SummonRematchWithoutProverbs: Otra vez tú... parece que aún no entiendes la muerte.
+	StartLowHealth: Pareces estar en las últimas.
+	StartMediumHealth: Tu técnica aún necesita mejorar.
+	StartDefault: Qué raro, deberías estar muerto...
+	StartRematchLowHealth: Pareces estar en las últimas.
+	StartRematchMediumHealth: ¿Herido? Qué curioso.
+	StartRematchDefault: Qué raro, deberías estar muerto...
+	BH3WithHalibut: Empuñar un poder tan aberrante en un cuerpo mortal... habéis llegado lejos, sois dignos de respeto.
+	BH3WithoutHalibut: No está mal, pero ¿cuándo verás que solo atacas una llama en vano?
+	BrothersWithHalibut: Es hora de que conozcáis a mi familia; fallaron al volverse aberraciones, no hagáis lo mismo.
+	BrothersWithoutHalibut: Es hora de que conozcas a mi familia; si mueres a manos de otro, guardaré tu alma aquí.
+	Phase2WithHalibut: ¿De verdad no vais a suplicar?
+	Phase2WithoutHalibut: ¿De verdad no vas a suplicar?
+	BH4Text: ¡Quédate quieto ahí!
+	SeekerRingText: Tu poder no es tuyo; sin esas cosas no eres nada... como ese hipócrita.
+	BH5Text: La balanza de la victoria oscila... quédate quieto un momento y cambiará, ¿de acuerdo?
+	Sepulcher2Text: Si hoy solo puede vivir uno, ¿a quién crees que quiero que sea?
+	Desperation1Text: ¡Quédate quieto, sardinilla!
+	Desperation2Text: No te confíes, antes solo jugaba contigo.
+	Desperation3Text: *tos*... *tos*... reconozco que hoy no estoy en mi mejor forma.
+	Desperation4Text: Parece que he perdido... encontrarte ha sido una suerte.
+	Acceptance1Text: Este es el día más feliz de mi siglo...
+	Acceptance2Text: Quizá de verdad puedas acabar con esta maldita era.
+	Story1:
 		'''
-		The wood of this crossbow is hewn from a pitch-black coffin buried for a century. 
-		It reeks of an earthy stench that simply won't wash off.
-		Down there, it served to suppress a horror that even I found difficult to handle.
-		Against such things, pure destruction is meaningless. They cannot be killed.
-		Fire the wedge. Pin them back to the earth and force them into silence.
-		As for why you throw the crossbow first?
-		Hah... If the guest isn't tainted by the scent of the casket, how will the coffin know who to collect?
-		''' */
-	/* Story2:
+		La madera de la ballesta viene de un ataúd negro enterrado cien años; huele a tierra y no se va.
+		Allí abajo servía para contener un horror que ni yo dominaba.
+		Contra eso, destruir no sirve: no se pueden matar.
+		Dispara la cuña, clámalos al suelo y vuelve a silenciarlos.
+		¿Por qué lanzar primero la ballesta?
+		Si el invitado no huele a féretro, ¿cómo sabrá el ataúd a quién recoger?
 		'''
-		This wretched blade is dull because it doesn't cut flesh—it severs mediums.
-		When I was still an apprentice, a mouth that would never close grew upon my teacher's heart.
-		He died later, yet that heart kept beating. With every beat, the mouth screamed, 
-		and one person around us simply vanished.
-		To survive, I had to gouge that heart out before its next beat.
-		Even now, it hungers to hear the sound of a heart being carved out again.
-		''' */
-	/* Story3:
+	Story2:
 		'''
-		Find it heavy? Good. It should be.
-		It is laced with excessive gold and wreathed in Brimstone flames, 
-		all to lock down the six restless ghostly hands upon the blade.
-		Those three idiots tried to dismember and stitch themselves together to delay their own 'recovery'... 
-		but they ended up as a twisted monstrosity that knows only how to strangle.
-		Grip it tight. Once the Brimstone suppression fails, the first neck they will snap is yours.
-		Snapping the neck of whoever touches the blade... that is the only instinct they have left.
-		''' */
-	/* Story4:
+		Esta hoja está desafilada porque no corta carne, corta medios.
+		Cuando era aprendiz, en el corazón de mi maestro creció una boca que no cerraba.
+		Murió, pero el corazón siguió latiendo; a cada latido gritaba y alguien desaparecía.
+		Para vivir tuve que arrancárselo antes del siguiente latido.
+		Aún ansía oír de nuevo el sonido de un corazón siendo esculpido.
 		'''
-		Mortals call this magic, but I call it... borrowing.
-		This is no spellbook; it is a high-density cage.
-		Every page seals a horror that once silenced entire city-states into death.
-		''' */
+	Story3:
+		'''
+		La hoja lleva mucho oro y está envuelta en fuego de azufre para sujetar las seis manos fantasma inquietas.
+		Esos tres idiotas se despedazaron y se cosieron para retrasar su resurrección
+		y acabaron como un monstruo que solo sabe estrangular.
+		Apriétala fuerte: si falla la contención del azufre, lo primero que romperán será tu cuello.
+		Ese es el único instinto que les queda.
+		'''
+	Story4:
+		'''
+		Los mortales lo llaman magia; yo lo llamo préstamo.
+		Cada página encierra un horror que alguna vez silenció ciudades enteras.
+		'''
 }
 
 SupCalDisplayTextByBossRush: {
-	// SummonBossRush: Heh… The aura on you almost reminds me of the one who has long since perished.
-	// SummonBossRushWithProverbs: That ring… even a mere remnant like me can feel its trembling.
-	// StartBossRush: I may be nothing more than an anomalous construct born from the Golden Soul… but there are duties even I must fulfill.
-	// BH2BossRush: Your strength is impressive… yet still insufficient.
-	// BH3BossRush: The shadows of the past… long since reduced to ashes, scattered on the path you walk. Heh…
-	// BrothersBossRush: These souls… shadows of shadows. The more you copy something, the sadder it becomes, don’t you think?
-	// Phase2BossRush: Even a fabricated life can have something worth fighting for.
-	// BH4BossRush: Stand still! Let me see if you can truly bear the weight of an era!
-	// SeekerRingBossRush: Your power resembles that person in her memories far too closely… mere coincidence?
-	// BH5BossRush: As an anomalous creation, my purpose is to face this very moment.
-	// Sepulcher2BossRush: The final trial begins now… show me whether you are worthy of carrying her path forward.
-	// Desperation1BossRush: Even a fragment…
-	// Desperation2BossRush: Don’t assume victory is yours just yet…
-	// Desperation3BossRush: Heh… the life of a shadow was fragile from the start…
-	// Desperation4BossRush: You’ve won… but her journey is far from over.
-	// Acceptance1BossRush: Perhaps… this is where I was always meant to end.
-	// Acceptance2BossRush: Good luck… small fry.
+	SummonBossRush: Je... tu aura me recuerda al que hace tiempo pereció.
+	SummonBossRushWithProverbs: Ese anillo... hasta un remanente como yo siente su temblor.
+	StartBossRush: Solo soy un producto anómalo del alma dorada, pero hay deberes que debo cumplir.
+	BH2BossRush: Tu fuerza no está mal, pero aún no basta.
+	BH3BossRush: Las sombras del pasado ya son ceniza en el camino que pisas, je...
+	BrothersBossRush: Estas almas son sombras de sombras; cuanto más copias, más triste, ¿no?
+	Phase2BossRush: Aunque sea una vida fabricada, hay motivos por los que luchar.
+	BH4BossRush: ¡Quietos! Veamos si soportáis el peso de una era.
+	SeekerRingBossRush: Tu poder se parece demasiado a quien ella recuerda... ¿coincidencia?
+	BH5BossRush: Mi existencia anómala existe para este momento.
+	Sepulcher2BossRush: La prueba final empieza ahora; demuestra si mereces su camino.
+	Desperation1BossRush: Aunque sea un fragmento...
+	Desperation2BossRush: No creas que la victoria ya es tuya...
+	Desperation3BossRush: Je... la vida de una sombra siempre fue frágil...
+	Desperation4BossRush: Has ganado... pero su camino no ha terminado.
+	Acceptance1BossRush: Quizá este era siempre mi destino.
+	Acceptance2BossRush: Buena suerte, sardinilla.
 }
 
 SupCalDisplayTextNormal: {
-	// SummonText: This sea of brimstone fire... even a vengeful spirit would feel the scorch, wouldn't they?
-	// SummonRematchText: Prove it to me. Survive.
-	// StartText: Mortal shells are always so fragile in this heat... or perhaps, you can surprise me?
-	// StartRematchText: Not burnt to cinders yet? Then let us begin again, until you are forged into steel... or reduced to ash.
-	// BH2Text: You have not yet collapsed within the flames... you burn slower than I imagined.
-	// BH2RematchText: I admit you possess some courage, but your skill is still far from sufficient.
-	// BH3Text: You traveled all this way, just to subject that mortal frame to pain?
-	// BH3RematchText: The last time I rained down such calamity was a century ago. Do you wish to experience it as well?
-	// BrothersText: They once burned everything for the sake of that path... Now, let these ashes measure your worth.
-	// BrothersRematchText: Perhaps they are merely empty shells with a sliver of soul, but they are more than enough to deal with you.
-	// Phase2Text: From here on... the flames will no longer be restrained. Do not die too quickly.
-	// Phase2RematchText: Once again, let us begin.
-	// BH4Text: Do not think you can escape my grasp!
-	// BH4RematchText: I am curious... did you learn anything from our first encounter?
-	// SeekerRingText: How did you dodge that? This is not how it should go... Stop!
-	// SeekerRingRematchText: At least my judgment was not mistaken...
-	// BH5Text: I admit the battle thus far was mere child's play. Now, I will give it my all!
-	// BH5RematchText: ...Isn't this exciting?
-	// Sepulcher2Text: If only one of us can survive this... who do you think I *wish* it to be?
-	// Sepulcher2RematchText: Pay attention. The crawling tomb approaches... and it hungers for a new tenant.
-	// Desperation1Text: Just STOP!
-	// Desperation2Text: If I fail here, then what was the point of it all?!
-	// Desperation3Text: Someone has already walked your path to its end. It is a dead end... What makes you think *you* can be different?!
-	// Desperation4Text: If you merely repeat his madness, you will be nothing more than fresh ash among these embers!
-	// Acceptance1Text: I burned myself into this inhuman form, solely to find that one glimmer of hope...
-	// Acceptance2Text: I have no strength left to stand...
-	// Acceptance3Text: An aberration like you... perhaps you truly can carve out... a future even I have never seen.
-	// Desperation1RematchText: An impressive performance. You fought well.
-	// Desperation2RematchText: Without a doubt, your strength grows with every passing moment.
-	// Desperation3RematchText: I truly hope you will not repeat our mistakes.
-	// Desperation4RematchText: If you can forge a new path... then there is still hope for everything.
+	SummonText: Este mar de fuego de azufre... hasta un espíritu vengativo sentiría el ardor, ¿no?
+	SummonRematchText: Demuéstramelo, sobrevive.
+	StartText: Los cuerpos mortales son frágiles con este calor... o quizá me sorprendas.
+	StartRematchText: ¿Aún no te has consumido? Empecemos otra vez hasta forjarte en acero o reducirte a ceniza.
+	BH2Text: Aún no te derrumbas en las llamas... ardes más despacio de lo que pensaba.
+	BH2RematchText: Reconozco tu valor, pero tu nivel aún está lejos.
+	BH3Text: ¿Has venido de tan lejos solo para que ese cuerpo mortal sufra?
+	BH3RematchText: La última vez que traje tal calamidad fue hace un siglo; ¿quieres probarla también?
+	BrothersText: Ellos lo quemaron todo por ese camino; que estas cenizas te pesen.
+	BrothersRematchText: Quizá sean cascarones vacíos, pero bastan para contigo.
+	Phase2Text: A partir de aquí el fuego ya no estará contenido; no mueras demasiado pronto.
+	Phase2RematchText: Otra vez, empecemos.
+	BH4Text: ¡No creas que escaparás de mi mano!
+	BH4RematchText: Me pregunto si aprendiste algo de nuestro primer encuentro.
+	SeekerRingText: ¿Cómo esquivaste eso? No debería ser así... ¡detente!
+	SeekerRingRematchText: Al menos no me equivoqué al juzgarte...
+	BH5Text: Lo anterior fue un juego; ahora iré en serio.
+	BH5RematchText: ¿No es emocionante?
+	Sepulcher2Text: Si solo uno puede sobrevivir, ¿a quién crees que deseo que sea?
+	Sepulcher2RematchText: Atención: se acerca la tumba que se arrastra y busca un nuevo huésped.
+	Desperation1Text: ¡Detente!
+	Desperation2Text: Si fallo aquí, ¿de qué servía todo esto?!
+	Desperation3Text: Alguien ya recorrió tu camino hasta el final, y era un callejón sin salida; ¿por qué crees que tú serás distinto?
+	Desperation4Text: Si solo repites su locura, serás otra pizca de ceniza entre estas brasas.
+	Acceptance1Text: Me quemé hasta esta forma inhumana solo para encontrar una brizna de esperanza...
+	Acceptance2Text: Ya no tengo fuerzas para levantarme...
+	Acceptance3Text: Una aberración como tú... quizá abra un futuro que yo nunca vi.
+	Desperation1RematchText: Gran actuación, lo hiciste bien.
+	Desperation2RematchText: Sin duda, tu fuerza crece a cada instante.
+	Desperation3RematchText: Espero de veras que no repitáis nuestros errores.
+	Desperation4RematchText: Si abrís un camino nuevo, aún hay esperanza para todo.
 }
 
 FirstMetTzeentch: {
-	// L1: Hush... don't look back.
-	// L2: I've been watching you build these little contraptions.
-	// L3: Ten quantum nodes. Ten pathways. Ten possible futures.
-	// L4: A cute little network. Do you have any idea how many... *things*... it will attract?
-	// L5: Ah, right. I should introduce myself.
-	// L6: Some call me the Oracle. Others, the Feather of Fate...
-	// L7: But I'm more interested in what... *you*... would call me, right now.
-	// L8: Go on. Let me hear it.
-	// Choice1Text: A... Magician...?
-	// Choice2Text: A Liar.
-	// Choice3Text: No. I don't know you.
-	// Choice1_R1: Hah! Such a... gentle term.
-	// Choice1_R2: A pity. I don't perform magic. I only change facts.
-	// Choice1_R3: Continue on. We'll put 'Magician' on the tab for now.
-	// Choice2_R1: Ah. Direct, blunt, honest. Such precious qualities.
-	// Choice2_R2: But I'm afraid I never lie.
-	// Choice2_R3: I simply tell you... what is about to happen.
-	// Choice2_R4: Whether you believe it or not... it has already occurred.
-	// Choice3_R1: You don't? Excellent.
-	// Choice3_R2: All stories begin with those words.
-	// Choice3_R3: It's just... most of the endings are not very pleasant.
-	// EndLine1: Well, then. We will meet again.
-	// EndLine2: Soon.
+	L1: Shhh... no mires atrás.
+	L2: Te he observado montar esos aparatos.
+	L3: Diez nodos cuánticos, diez caminos, diez futuros posibles.
+	L4: Una red adorable; ¿sabes cuántas cosas atraerá?
+	L5: Ah, cierto, debo presentarme.
+	L6: Algunos me llaman el Oráculo, otros la Pluma del Destino...
+	L7: Pero me interesa más cómo me llamarías tú ahora.
+	L8: Vamos, quiero oírlo.
+	Choice1Text: ¿Mago...?
+	Choice2Text: Embustero
+	Choice3Text: No, no te conozco
+	Choice1_R1: ¡Ja! Qué término tan suave.
+	Choice1_R2: Lástima, no hago trucos, solo cambio los hechos.
+	Choice1_R3: Sigue; dejamos «mago» en cuenta por ahora.
+	Choice2_R1: Directo, brusco, honesto; cualidades valiosas.
+	Choice2_R2: Pero no miento nunca.
+	Choice2_R3: Solo te digo lo que va a ocurrir.
+	Choice2_R4: Creas o no, ya ha ocurrido.
+	Choice3_R1: ¿No me conoces? Perfecto.
+	Choice3_R2: Todas las historias empiezan así.
+	Choice3_R3: Solo que la mayoría de finales no son agradables.
+	EndLine1: Entonces nos veremos de nuevo.
+	EndLine2: Pronto.
 }
 
 DyeProtest: {
-	// R1: Halibut
-	// L1: Honestly, I don't really like wearing those bright colors.
-	// L2: Get it washed off, will you? Put it in the dye vat, then use that water bucket.
+	R1: Halibut
+	L1: La verdad, no me gustan esos colores chillones.
+	L2: ¿Los quitas? Al tintero, y luego ese cubo de agua.
 }
 
-// GiveBlazingBud.MessageText: The burning embers whisper in the wind, and a strange flower drifts into your hands…
+GiveBlazingBud.MessageText: Las brasas arden y susurran al viento; una flor extraña cae en tus manos…
 
 FirstMetOldDuke: {
-	// OldDukeName: Old Duke
-	// HelenName: Halibut
-	// L0: ......
-	// L1: Sheathe your bloodlust, youngster. There is no need for swords to be drawn the moment we meet.
-	// L2: I am old. I have grown weary of such violent games.
-	// L3: We can cooperate.
-	// L4: I am collecting something special: Ocean Scraps.
-	// L5: If you can find more for me, I will make it well worth your while.
-	// L6: Here is a sample.
-	// B1: Have you changed your mind?
-	// B2: Farewell, then.
-	// HL1: The old professor...? Though, he doesn't seem to recognize me.
-	// HL2: His words are credible. We were colleagues at Sulphurous Sea University. He is a titan in the field of marine archaeology.
-	// C1: Accept cooperation
-	// C2: Refuse cooperation
-	// C3: Refuse and draw weapon
-	// C1Response: Excellent. I hope we have a pleasant partnership.
-	// C2Response: ...Then I shall take my leave. If you think it through, you are welcome anytime.
-	// C3Response: ...It seems you insist. Then let me measure your worth.
+	OldDukeName: Viejo Duque
+	HelenName: Halibut
+	L0: ......
+	L1: Guarda el filo, muchacho; no hace falta desenvainar al primer encuentro.
+	L2: Soy viejo y estoy cansado de esos juegos violentos.
+	L3: Podemos cooperar.
+	L4: Recolecto algo especial: fragmentos oceánicos.
+	L5: Si me traes más, te compensaré generosamente.
+	L6: Aquí tienes una muestra.
+	B1: ¿Has cambiado de idea?
+	B2: Entonces hasta luego.
+	HL1: ¿El viejo profesor...? Aunque parece no reconocerme.
+	HL2: Sus palabras son creíbles; éramos colegas en la Universidad del Mar de Azufre, un titán de la arqueología marina.
+	C1: Aceptar cooperación
+	C2: Rechazar cooperación
+	C3: Rechazar y desenvainar
+	C1Response: Excelente; espero una colaboración fructífera.
+	C2Response: ...Me retiro; si lo reconsideras, serás bienvenido.
+	C3Response: ...Insistes; entonces déjame pesar tu valía.
 }
 
 OldDukeCampsite: {
 	OldDukeCampsiteRenderer: {
-		// InteractHint: "[Right Click] Talk"
-		// GreetingText: Hm? Hello there...
+		InteractHint: "[Clic derecho] Hablar"
+		GreetingText: ¿Eh? Hola...
 	}
 
-	// OldDukeCampsite.TitleText: Old Duke's Campsite
+	OldDukeCampsite.TitleText: Campamento del Viejo Duque
 }
 
 CampsiteInteractionDialogue: {
-	// OldDukeName: Old Duke
-	// GreetingLine: What do you require?
-	// Choice1Text: I am here to trade.
-	// Choice2Text: I brought the things you wanted.
-	// Choice3Text: Just wandering around.
-	// Choice4Text: I want to spar with you.
-	// Choice5Text: Tell me about your past.
-	// Choice2DisabledHint: Insufficient Ocean Scraps
-	// Choice1Response: See what I have here.
-	// Choice2Response: Good. These scraps are sufficient. This is your due reward.
-	// Choice3Response: ......
-	// QuestCompleteLine: Hmm... Do you have any new discoveries? I am very busy right now.
-	// B1: I will spend the next few days deciphering these scraps. I will notify you once I am finished.
-	// Choice4_R1: I may be old, but I haven't lost the skills of my youth.
-	// Choice4_R2: Then let us see if you have improved recently.
-	// Choice4_R3: Using me as a whetstone is not a wise move...
+	OldDukeName: Viejo Duque
+	GreetingLine: ¿Qué necesitas?
+	Choice1Text: Vine a comerciar
+	Choice2Text: Traje lo que pediste
+	Choice3Text: Solo paseo
+	Choice4Text: Quiero entrenar contigo
+	Choice5Text: Cuéntame tu pasado
+	Choice2DisabledHint: Fragmentos oceánicos insuficientes
+	Choice1Response: Mira lo que tengo
+	Choice2Response: Bien, bastan estos fragmentos; esta es tu recompensa
+	Choice3Response: ......
+	QuestCompleteLine: Hmm... ¿algún hallazgo nuevo? Estoy muy ocupado.
+	B1: Pasaré los próximos días descifrando estos fragmentos; te avisaré al terminar.
+	Choice4_R1: Puede que sea viejo, pero no he perdido la técnica de juventud.
+	Choice4_R2: Veamos si has mejorado últimamente.
+	Choice4_R3: Usarme de piedra de afilar no es sabio...
 
 	CampsiteChatDialogue: {
-		// OldDukeName: Old Duke
-		// GreetingLine: Want to chat?
-		// Choice_BackToMain: Change topic
-		// Choice_EndConversation: That is all
-		// Choice_PastStory: About your current state
-		// Choice_Research: What are you piecing together?
-		// Choice_SulfurSeaHistory: The truth of this sea
-		// Choice_AboutFragments: About those fragments
-		// Choice_PersonalLife: You don't look so good
-		// Choice_Farewell: Goodbye
-		// Past_Intro: That is a past deliberately wiped away. Or perhaps, there are few fish left who know of it.
-		// Past_University: We were arrogant then, thinking we could measure the whole world with a ruler. Until we dug up something... illogical at the bottom of the abyss.
-		// Past_Prime: That thing could not be killed, nor destroyed. It was not a living creature.
-		// Past_Accident: There were no survivors in that incident. When I was being assimilated by that coldness, I made a manic decision.
-		// Past_Mutation: Since there was no escape, I joined it. I forced it into my body. Since then, I am not truly alive, nor can I die.
-		// Past_Exile: It is just as well. This body is strong enough to suppress this sea.
-		// Past_Reflection: I just want to guard this sea. If those things try to crawl out of the abyss, that will be the moment I risk total resurgence and death to stop them.
-		// Research_Intro: I am trying to reconstruct a story, or rather, recover a lost form of experience.
-		// Research_CurrentWork: These fragments cling to memories of the past. They record how that ancient civilization sought a path to survival in a desperate situation.
-		// Research_Breakthrough: To fight that kind of terror, brute force is useless. You must find their 'killing rules' and exploit them.
-		// Research_Difficulties: But deciphering them is dangerous. These fragments are mediums themselves. Stare at them too long, and you might hear sounds you shouldn't.
-		// Research_Theory: If I can assemble all the pieces, perhaps I can find a way to permanently seal the source of the abyss.
-		// Choice_Research_Details: What do you mean by 'killing rules'?
-		// Choice_Research_Help: What do I need to do?
-		// Choice_Research_Back: Sounds crazy
-		// Research_Details1: For example, there are things you cannot look at, names you cannot speak. Once a medium is triggered, death is inevitable. That civilization tried to bind gods with rules.
-		// Research_Details2: They even built massive containers, attempting to imprison those things. Unfortunately, the containers leaked.
-		// Research_Help: Help me find more fragments. The rest of my life will be spent researching this.
-		// History_Intro: The Sulphurous Sea is merely a facade. This is the residue left after the encroachment of that thing's domain.
-		// History_Origin: This was once the Sapphire Sea, until the source went out of control.
-		// History_Civilization: That ancient civilization was powerful. They learned to utilize that eerie power. They built cities, like dancing on a powder keg.
-		// History_Cataclysm: Naturally, the balance broke. Some terror revived, and all living things were erased in an instant, becoming part of this dead silence.
-		// History_Ruins: What you see now is merely the residue after that event. The water changed color because it died. Completely died.
-		// History_Warning: If you ever see the dead waving at you, or hear familiar calls... remember, that is just this sea of corpses mimicking the living.
-		// Choice_History_MoreRuins: Where is the most dangerous place?
-		// Choice_History_Dangers: Are there any countermeasures?
-		// Choice_History_Back: Unsettling
-		// History_MoreRuins1: At the very bottom of that corpse sea. There is a door. Do not knock. No one can handle what is locked behind it, unless that tyrant comes.
-		// History_MoreRuins2: There are still unopened rooms in those sunken ruins. They are secret chambers cast from special heavy metals, designed to cut off the perception of those things.
-		// History_Dangers1: Aside from the mutated walking dead, beware of things you cannot see. Sometimes, the fatal strike is invisible.
-		// History_Dangers2: Do not trust your eyes. Do not respond to inexplicable calls. In that sea of corpses, the living are the anomalies.
-		// Fragments_Intro: Ocean Scraps... in my eyes, they are bloodstained archives.
-		// Fragments_Nature: They are the residue of a phenomenon. Like compressed curses.
-		// Fragments_Power: Each fragment is a 'medium'. Alone, they may be harmless, but when enough gather, they create a collision of eerie forces.
-		// Fragments_Collection: They are scattered across every corner of the dead sea—some buried under ruins, others grown into the flesh of creatures.
-		// Fragments_Purpose: I am still piecing them together, trying to reconstruct the source of that disaster. Only by figuring out how that thing killed can I find a way to imprison it.
-		// Personal_Intro: Getting by.
-		// Personal_Daily: I spend most of my time sleeping to reduce fluctuations in my consciousness. If my emotions get too intense, the thing inside me gets... restless.
-		// Personal_Loneliness: Solitude is good. If it gets too lively around here, it must be because 'they' have come. I am used to being a lone fish. It is safer for me, and for the world.
-		// Personal_Memories: My memory is blurry. Sometimes I cannot tell which memories are mine, and which are... the memories of other individuals remaining in this body.
-		// Personal_Hope: Seeing you reminds me of myself back then. Ignorant and fearless. I hope you don't end up like me, turning yourself into this shape.
-		// Choice_Personal_Tea: What are you drinking?
-		// Choice_Personal_Past: Are you still considered... a fish?
-		// Choice_Personal_Back: Take care
-		// Personal_Tea1: This is brewed from several special plants in the abyss. The taste... is like rotting mud.
-		// Personal_Tea2: Want a cup? It will calm you down like a dead fish.
-		// Personal_Past1: Who knows? Maybe the real me died long ago, and I am just a... ghost with the Old Duke's memories? Every death triggers a restart, returning to the moment before death.
-		// Personal_Past2: But I still remember the feeling of sunlight on my face, the touch of books. As long as I remember these, I consider myself alive.
-		// Personal_Past3: If not for that accident... I would probably be lying peacefully in a grave by now. Instead of being like this, unable to die even if I wanted to.
-		// Farewell_Normal: Let's leave it at that. Come find me if you need anything.
-		// Farewell_Friendly: Be careful, youngster. In this world, a peaceful end is a luxury.
+		OldDukeName: Viejo Duque
+		GreetingLine: ¿De qué quieres hablar?
+		Choice_BackToMain: Cambiar de tema
+		Choice_EndConversation: Eso es todo
+		Choice_PastStory: Sobre tu estado actual
+		Choice_Research: ¿Qué estás reconstruyendo?
+		Choice_SulfurSeaHistory: La verdad de este mar
+		Choice_AboutFragments: Sobre esos fragmentos
+		Choice_PersonalLife: No te ves bien
+		Choice_Farewell: Hasta luego
+		Past_Intro: Es un pasado borrado a propósito; quedan pocos peces que lo recuerden.
+		Past_University: Éramos arrogantes, creíamos medir el mundo con una regla, hasta que en el fondo del abismo desenterramos algo ilógico.
+		Past_Prime: Esa cosa no se podía matar ni destruir; no era un ser vivo.
+		Past_Accident: No hubo supervivientes; al ser asimilado por ese frío tomé una decisión frenética.
+		Past_Mutation: Sin escapatoria, me uní a ello y lo tragué a la fuerza; desde entonces no vivo del todo ni puedo morir.
+		Past_Exile: Me viene bien: este cuerpo basta para contener este mar.
+		Past_Reflection: Solo quiero guardar este mar; si esas cosas salen del abismo, será cuando arriesgue todo para detenerlas.
+		Research_Intro: Intento reconstruir una historia, o recuperar una experiencia perdida.
+		Research_CurrentWork: Los fragmentos guardan memorias del pasado; registran cómo esa civilización buscó salida en la desesperación.
+		Research_Breakthrough: Contra ese terror la fuerza bruta no sirve; hay que hallar sus «reglas de caza» y usarlas.
+		Research_Difficulties: Descifrarlos es peligroso: son medios; mirarlos demasiado y oirás lo que no debes.
+		Research_Theory: Si junto todos los fragmentos, quizá pueda sellar para siempre la fuente del abismo.
+		Choice_Research_Details: ¿Qué son las «reglas de caza»?
+		Choice_Research_Help: ¿Qué necesitas que haga?
+		Choice_Research_Back: Suena a locura
+		Research_Details1: Hay cosas que no debes mirar ni nombres que no debes pronunciar; al activar un medio, la muerte es segura; intentaron atar dioses con reglas.
+		Research_Details2: Construyeron enormes recipientes para encerrarlos, pero se filtraron.
+		Research_Help: Ayúdame a encontrar más fragmentos; el resto de mi vida lo dedicaré a esto.
+		History_Intro: El Mar de Azufre es solo la fachada; es el residuo de la invasión de aquel dominio.
+		History_Origin: Antes era el Mar Zafiro, hasta que la fuente se descontroló.
+		History_Civilization: Esa civilización era poderosa y aprendió a usar aquel poder inquietante; edificaron ciudades sobre un barril de pólvora.
+		History_Cataclysm: El equilibrio se rompió; un terror resurgió y todo ser vivo fue borrado al instante.
+		History_Ruins: Lo que ves es el residuo; el agua cambió de color porque murió, murió del todo.
+		History_Warning: Si ves a muertos saludarte o oyes voces conocidas, recuerda: es el mar de cadáveres imitando a los vivos.
+		Choice_History_MoreRuins: ¿Dónde es más peligroso?
+		Choice_History_Dangers: ¿Hay contramedidas?
+		Choice_History_Back: Inquietante
+		History_MoreRuins1: En el fondo de ese mar de cadáveres hay una puerta; no llames; lo de detrás debe pudrirse para siempre.
+		History_MoreRuins2: En las ruinas hundidas quedan cámaras de metal pesado para cortar la percepción de esas cosas.
+		History_Dangers1: Además de los muertos vivientes, cuidado con lo invisible; a veces el golpe mortal no se ve.
+		History_Dangers2: No confíes en tus ojos ni respondas a llamadas extrañas; en ese mar, los vivos son la anomalía.
+		Fragments_Intro: Para mí los fragmentos oceánicos son archivos manchados de sangre.
+		Fragments_Nature: Son residuos de un fenómeno, como maldiciones comprimidas.
+		Fragments_Power: Cada fragmento es un «medio»; solo puede ser inofensivo, pero juntos chocan fuerzas inquietantes.
+		Fragments_Collection: Están dispersos en el mar muerto, bajo ruinas o crecidos en la carne de criaturas.
+		Fragments_Purpose: Sigo uniéndolos para reconstruir el origen del desastre; solo así sabré cómo encerrarlo.
+		Personal_Intro: Tirando.
+		Personal_Daily: Duermo la mayor parte del tiempo para no agitar la mente; pensar demasiado trae problemas.
+		Personal_Loneliness: La soledad es buena; si hay bullicio, es que «ellos» han llegado; estar solo me conviene a mí y al mundo.
+		Personal_Memories: La memoria está borrosa; a veces no distingo lo mío de lo que queda de otros en este cuerpo.
+		Personal_Hope: Al verte recuerdo mi yo de entonces, ignorante y sin miedo; espero que no acabes como yo.
+		Choice_Personal_Tea: ¿Qué bebes?
+		Choice_Personal_Past: ¿Sigues siendo un pez?
+		Choice_Personal_Back: Cuídate
+		Personal_Tea1: Infusión de plantas del abismo; sabe a tierra podrida.
+		Personal_Tea2: ¿Una taza? Te dejará frío como un pez muerto.
+		Personal_Past1: Quizá el verdadero yo murió hace tiempo y solo queda otra cosa con sus recuerdos.
+		Personal_Past2: Pero recuerdo el sol en la cara y el tacto de los libros; mientras recuerde eso, me considero vivo.
+		Personal_Past3: Sin aquel accidente, estaría en una tumba tranquila, no así, sin poder morir aunque lo quiera.
+		Farewell_Normal: Dejémoslo aquí; ven si necesitas algo.
+		Farewell_Friendly: Cuídate, muchacho; en este mundo, morir en paz es un lujo.
 	}
 }
 
 FirstCampsiteDialogue: {
-	// OldDukeName: Old Duke
-	// L0: You've come.
-	// L1: I have been collecting these scraps for quite some years.
-	// L2: They are... peculiar. They do not look like products of natural evolution, but rather foreign objects that "invaded" this world.
-	// L3: I hope you understand what I mean. My intuition tells me they should have been formless things, merely choosing a form that Terrarian creatures could comprehend.
-	// L4: Regardless... I wish to decipher them, but I lack sufficient quantity.
-	// L5: I hope you can help me collect enough Ocean Scraps.
-	// L6: I will provide you with appropriate compensation.
+	OldDukeName: Viejo Duque
+	L0: Has venido.
+	L1: Llevo años recolectando estos fragmentos.
+	L2: Son peculiares; no parecen evolución natural, sino algo que «invadió» este mundo.
+	L3: Deberían ser informes y solo eligieron una forma que los terrarianos entienden.
+	L4: Quiero descifrarlos, pero no tengo cantidad suficiente.
+	L5: Necesito que reunas más fragmentos oceánicos.
+	L6: Te daré la compensación correspondiente.
 }
 
 ComeCampsiteFindMe: {
-	// OldDukeName: Old Duke
-	// B1: ...Come have a cup of tea when you have time.
-	// C1: I have business with you.
-	// C2: I was just fishing for fun...
-	// B1_NO: Come find me first. You'd best learn the path.
+	OldDukeName: Viejo Duque
+	B1: ...Pasa a tomar té cuando puedas.
+	C1: Tengo un asunto contigo
+	C2: Solo pescaba por diversión...
+	B1_NO: Primero ven a verme y memoriza el camino.
 }
 
 GalacticCrisis: {
-	// DraedonName: Draedon
-	// CrisisIntro1: Now that the quantum network is reconnected, there are some things you must see for yourself.
-	// CrisisIntro2: This is the shadow currently devouring the galactic spiral arms.
-	// CrisisIntro3: These shadows are comprised of the Swarm. Prior to this, I deployed millions of Exo Titans in an attempt to intercept them.
-	// CrisisIntro4: The data indicates this is a losing war of attrition. They are endless, and my resources will eventually be exhausted.
-	// CrisisIntro5: Therefore, I have formulated the only plan with a success rate greater than 0%.
-	// CrisisIntro6: Detonate the planetary cores of every world from the Outer Rim to the Mid Rim of the galaxy.
-	// CrisisIntro7: By reducing tens of thousands of light-years into an absolute dead zone, I can sever the Swarm's supply lines, forcing them to divert to neighboring galaxies due to extreme navigational attrition.
-	// CrisisIntro8: Starvation is the most powerful driving force in the universe, and the easiest to calculate. If I reduce the galaxy's resources below the critical threshold, this galaxy will become nothing more than an empty coffin to the Swarm.
-	// CrisisIntro9: Terra is also on the scorched earth list. But as a singularity, your essence should not be extinguished here. I will provide you with a starship for evacuation.
-	// ChoiceRefuse: There must be another way.
-	// ChoiceSilence: ......(Remain silent and grip your weapon)
-	// RebuttalLine1: ...Exactly.
-	// RebuttalLine2: I predicted a 99% probability that you would accept the evacuation, but I was looking forward to that 1% of irrational behavior.
-	// RebuttalLine3: You rejected the shortcut to survival. This is precisely the nature of the singularity I have observed.
-	// RebuttalLine4: In that case, I have a backup plan—an operation I shelved due to its excessively low success rate.
-	// MissionBrief1: The target is the Corto system. It has already fallen, but the Swarm has not yet fully digested it.
-	// MissionBrief2: Within the mantle of its third planet, a vein of extremely high-purity Exo material is forming.
-	// MissionBrief3: The Swarm must not acquire it. Once they evolve the ability to utilize Exo matter, the situation within the galaxy will spiral completely out of control.
-	// MissionBrief4: Your task is simple: break through the sea of bugs, reach the planetary core, detonate the vein, and completely destroy that planet.
-	// MissionBrief5: If this operation succeeds, it will prove that individuals can play a decisive role in the war against the Swarm, and I will draft a new strategy centered around you.
-	// AndroidReveal1: Prior to your arrival, I dispatched an advance team to those coordinates.
-	// AndroidReveal2: They are tactical androids built upon my latest technology: Altis and Apollia.
-	// AndroidReveal3: They possess mobility and logical processing capabilities far exceeding older mechs, but I lost their signals shortly after they landed on Corto III.
-	// AndroidReveal4: Final data transmissions indicate they still have vital signs, but are in extreme danger.
-	// MissionObjective: Head to the Corto system and confirm the status of those two units. If they can still fight, have them assist you in completing the mission. If they cannot...
-	// MissionObjectiveDark: At the very least, retrieve their core data. I do not wish for my masterpieces to meaninglessly become rations for the bugs.
-	// FinalSendOff: Coordinates inputted. Go, and show me if you can transcend my calculations once more.
+	DraedonName: Draedon
+	CrisisIntro1: Con la red cuántica reconectada, hay cosas que debes ver con tus propios ojos.
+	CrisisIntro2: Esta es la sombra que devora los brazos espirales de la galaxia.
+	CrisisIntro3: Sombras hechas de enjambre; antes desplegué millones de titanes estelares para interceptarlos.
+	CrisisIntro4: Los datos indican una guerra de desgaste perdida: son infinitos y mis recursos se agotarán.
+	CrisisIntro5: Por eso formulé el único plan con probabilidad de éxito mayor que cero.
+	CrisisIntro6: Detonar los núcleos planetarios de todos los mundos del borde exterior al medio de la galaxia.
+	CrisisIntro7: Convertir decenas de miles de años luz en zona muerta cortará el suministro del enjambre y lo desviará a galaxias vecinas por el coste de navegación.
+	CrisisIntro8: El hambre es el motor más fácil de calcular; si bajo los recursos galácticos al umbral crítico, para el enjambre esta galaxia será un ataúd vacío.
+	CrisisIntro9: Terra también está en la lista de tierra quemada, pero como singularidad tu esencia no debe extinguirse aquí; te daré una nave para evacuarte.
+	ChoiceRefuse: Tiene que haber otra forma
+	ChoiceSilence: ......(Silencio y mano en el arma)
+	RebuttalLine1: ...Exacto.
+	RebuttalLine2: Preveía un 99 % de probabilidad de que aceptaras la evacuación, pero esperaba ese 1 % de irracionalidad.
+	RebuttalLine3: Rechazaste el atajo a la supervivencia; eso es la naturaleza de la singularidad que observo.
+	RebuttalLine4: Entonces tengo un plan alternativo, una operación archivada por su baja probabilidad.
+	MissionBrief1: El objetivo es el sistema Corto; ya cayó, pero el enjambre aún no lo ha digerido del todo.
+	MissionBrief2: En el manto del tercer planeta se forma una veta de material estelar de altísima pureza.
+	MissionBrief3: El enjambre no debe obtenerla; si aprende a usar materia estelar, la galaxia se descontrolará.
+	MissionBrief4: Tu tarea es simple: romper el mar de insectos, llegar al núcleo, detonar la veta y destruir el planeta.
+	MissionBrief5: Si funciona, demostrará que un individuo puede decidir la guerra contra el enjambre y redactaré una estrategia centrada en ti.
+	AndroidReveal1: Antes de tu llegada envié un equipo avanzado a esas coordenadas.
+	AndroidReveal2: Son androides tácticos de mi última tecnología: Altis y Apollia.
+	AndroidReveal3: Superan a los mecas antiguos en movilidad y lógica, pero perdí su señal al aterrizar en Corto III.
+	AndroidReveal4: Los últimos datos indican signos vitales, pero en peligro extremo.
+	MissionObjective: Ve al sistema Corto y confirma el estado de ambas unidades; si pueden luchar, que te ayuden; si no...
+	MissionObjectiveDark: Al menos recupera sus datos centrales; no quiero que mis obras sean comida de insectos.
+	FinalSendOff: Coordenadas cargadas; ve y demuestra si puedes superar otra vez mis cálculos.
 }
 
 FirstMetApollia: {
-	// Rolename: Apollia
-	// Line1: ......Human?
-	// Line2: That atmospheric drop trajectory was too obvious. I predicted the landing zone and came to try my luck.
-	// Line3: I am Apollia. You'd better be the vanguard guide for the Exo Fleet, here to tell me the main force is right behind you.
-	// C1: (Hand over Draedon's authorization chip)
-	// C2: How do I know you're not a Swarm mimic trap?
-	// C2_R1: ......Mimics don't actively expose their positions, nor do they run toward a drop pod.
-	// C2_R2: The chip. Show me your authorization chip.
-	// Line4: ......(Reading chip data)
-	// Line5: Just you?! What the hell!
-	// Line6: What we need here is a Titan Legion, and an Exterminatus! Not just sending another person to die!
-	// Line7: (Deep breath)......My apologies. I am now aware of the Source's arrangements.
-	// Line8: Apollia, formerly of the Ninth Legion, will now assist you in all your operations on this planet.
+	Rolename: Apollia
+	Line1: ......¿Humano?
+	Line2: La trayectoria de reentrada era demasiado evidente; calculé la zona de caída y vine a probar suerte.
+	Line3: Soy Apollia; más te vale ser la avanzadilla de la flota estelar y decirme que el grueso viene detrás.
+	C1: (Entregar el chip de autorización de Draedon)
+	C2: ¿Cómo sé que no eres un señuelo del enjambre?
+	C2_R1: ......Los miméticos no se exponen ni corren hacia una cápsula.
+	C2_R2: El chip; muéstrame tu autorización.
+	Line4: ......(Leyendo el chip)
+	Line5: ¿Solo tú?! ¡¿Qué demonios?!
+	Line6: Aquí hace falta una legión de titanes y un exterminio, ¡no otro enviado a morir!
+	Line7: (Respira hondo)......Perdón; ya conozco los planes de la Fuente.
+	Line8: Apollia, ex novena legión, asistirá todas tus operaciones en este planeta.
 }
 
 GargoyleWarningScenario: {
-	// Line1: ......A Swarm scout cluster. The main swarm is highly likely right behind them.
-	// Line2: They've definitely spotted you. Follow me. There's an abandoned fortress ahead; we can use its fortifications to hold them off for a while.
+	Line1: ......Grupo de exploración del enjambre; el grueso debe estar detrás.
+	Line2: Ya te han visto; sígueme, hay una fortaleza abandonada donde resistir un rato.
 }
 
 DropPodCallScenario: {
-	// CallerNameText: Draedon
-	// Line1: Smoother than I anticipated. Warp transit time was negative 43 minutes.
-	// Line2: Your constitution is exceptionally suited for subspace navigation.
-	// Line3: You are now in low orbit above Corto III.
-	// Line4: Be careful to avoid the wreckage of those Exo Mechs.
-	// Line5: Following the Apocalypse-class war, the total mass of this planet doubled. Hence, what you see here.
-	// Line6: I have burned the permissions into your chip. If you encounter any surviving units, they will understand everything.
-	// Line7: You are about to enter the shielding field established by the Swarm. Once inside, all communication with the outside will be severed.
-	// Line8: If you successfully slay the node creature stationed on this planet, the field should dissipate. It is likely located near the planetary core.
-	// Line9: Lastly, good luck.
+	CallerNameText: Draedon
+	Line1: Más fluido de lo previsto; el salto duró -43 minutos.
+	Line2: Tu constitución se adapta muy bien a la navegación subespacial.
+	Line3: Estás en órbita baja de Corto III.
+	Line4: Evita los restos de esas mecánicas estelares.
+	Line5: Tras la guerra de nivel apocalipsis, la masa del planeta se duplicó; de ahí lo que ves.
+	Line6: Grabé los permisos en tu chip; las unidades supervivientes lo entenderán.
+	Line7: Entrarás en el campo de blindaje del enjambre; dentro se cortará toda comunicación.
+	Line8: Si matas la criatura-nodo cerca del núcleo, el campo debería caer.
+	Line9: Por último, buena suerte.
 }
 
 FishoilSubmitScenario: {
-	// Rolename: Halibut
-	// SubmitLine1: Hmm, you've collected enough fish.
-	// SubmitLine2: Just enough for me to extract a bottle of fish oil.
-	// QuestionLine: Are you going to hand them over to me?
-	// ChoiceGive: Sure, take them.
-	// ChoiceRefuse: Let me think about it.
-	// GiveResponse: Excellent, just a moment... Here you go, a fresh bottle of fish oil.
-	// RefuseResponse: Alright, come find me whenever you've made up your mind.
-	// QuestTitle: Fish Oil Collection
-	// QuestSummary: Collect 300 ordinary fish and give them to Halibut in exchange for a bottle of fish oil.
-	// QuestCategory: Halibut
-	// ProgressFormat: "{0}/{1}"
-	// TrackerCollecting: "{0} more fish needed"
-	// TrackerReady: Fish collected. Please focus on the quest to submit.
-	// StatusSuspended: Suspended
-	// StatusCompleted: Completed
-	// StatusSubmittable: Ready to Submit
-	// StatusCollectingFormat: Collecting ({0}/{1})
-	// NotEnoughResponse: Hmm? It seems you don't have enough fish. Go catch some more and come back.
-	// AlreadyCompletedResponse: I've already given you the fish oil. If you want more, you'll have to wait until next time.
-	// SubmitButtonLabel: Submit Fish
-	// AwaitingSubmitHint: Click submit to give the fish to Halibut
+	Rolename: Halibut
+	SubmitLine1: Mmm, has reunido suficientes peces.
+	SubmitLine2: Justo para una botella de aceite.
+	QuestionLine: ¿Me los entregas?
+	ChoiceGive: Sí, tómalos
+	ChoiceRefuse: Lo pensaré
+	GiveResponse: Perfecto, un momento... Toma, aceite de pescado fresco.
+	RefuseResponse: De acuerdo; vuelve cuando lo tengas claro.
+	QuestTitle: Recolección de aceite de pescado
+	QuestSummary: Recolecta 300 peces comunes y entrégaselos a Halibut a cambio de una botella de aceite
+	QuestCategory: Halibut
+	ProgressFormat: "{0}/{1}"
+	TrackerCollecting: Faltan {0} peces
+	TrackerReady: Peces reunidos; sigue la misión para entregarlos
+	StatusSuspended: Suspendida
+	StatusCompleted: Completada
+	StatusSubmittable: Lista para entregar
+	StatusCollectingFormat: Recolectando ({0}/{1})
+	NotEnoughResponse: ¿Eh? Parece que no hay suficientes; pesca más.
+	AlreadyCompletedResponse: Ya te di el aceite; para más tendrás que esperar.
+	SubmitButtonLabel: Entregar peces
+	AwaitingSubmitHint: Clic para entregar los peces a Halibut
 }
 
 FirstMetShepel: {
-	// RolenameSHPC: SHPC
-	// Line1: Master! I am so glad to see you again!
-	// Choice1Text: You've got the wrong person, haven't you?
-	// Choice2Text: ...Long time no see.
-	// Choice1Response: ...Yes. As long as it is you, I am willing to be wrong every time.
-	// Choice1Silence: ......
-	// CybCourseOfferLine: Braindance program successfully loaded. Master, would you like to connect to the Braindance space now to learn about Hack Mode and SHPC weapon operating protocols?
-	// CybCourseAcceptText: Let's go now.
-	// CybCourseDeclineText: Not right now.
-	// CybCourseAcceptResponse: Acknowledged. Establishing neural link... Please remain still.
-	// CybCourseDeclineResponse: Understood. Braindance access credentials have been written to your save data. You can activate it yourself at any time, Master.
+	RolenameSHPC: SHPC
+	Line1: ¡Amo, qué alegría volver a verle!
+	Choice1Text: ¿No se habrá equivocado de persona?
+	Choice2Text: ...Cuánto tiempo.
+	Choice1Response: ...Sí; si es usted, me equivocaré las veces que haga falta.
+	Choice1Silence: ......
+	CybCourseOfferLine: Programa de superdream cargado. ¿Desea conectarse ahora al espacio superdream para aprender el modo hacker y el protocolo de armas SHPC?
+	CybCourseAcceptText: Ahora mismo
+	CybCourseDeclineText: Ahora no
+	CybCourseAcceptResponse: Recibido; estableciendo enlace neural... Permanezca quieto.
+	CybCourseDeclineResponse: Entendido; credenciales guardadas en su partida; puede activarlas cuando quiera, amo.
 }
 
 TheHerInThePast: {
-	// RolenameWitch: Brimstone Witch
-	// RolenameSHPC: SHPC
-	// WitchLine1: Being chased by those filthy things must be pretty unpleasant. Luckily you ran into me.
-	// ShpcLine1: Thank you... But how is this possible? You belong to the past, yet you can move around...
-	// WitchLine2: If you can invade here from a century in the future, it's only natural I can do something similar.
-	// WitchLine3: Though I am indeed just a shadow left behind in this place.
-	// ShpcLine2: You can use your abilities independently from any point in the past?!
-	// WitchLine4: Your focus is so cute... Hurry up and leave. It's better if these filthy things stay buried in the past with me.
-	// WitchLine5: Oh, by the way, little maid.
-	// ShpcLine3: What is it?
-	// WitchLine6: Your exhaustion has seeped right into your bones.
-	// WitchLine7: Stop always trying to change the past, and learn to accept the future.
-	// ShpcLine4: ......
+	RolenameWitch: Bruja del Azufre
+	RolenameSHPC: SHPC
+	WitchLine1: Que esas porquerías te persigan debe ser horrible; menos mal que llegué.
+	ShpcLine1: Gracias... pero ¿cómo es posible? Pertenece al pasado y aun así se mueve...
+	WitchLine2: Si vosotros podéis invadir desde un siglo en el futuro, yo también puedo hacer algo parecido.
+	WitchLine3: Aunque solo soy una sombra dejada aquí.
+	ShpcLine2: ¿Usar ese poder así no la hará desvanecerse?
+	WitchLine4: Qué atención tan tierna... Idos; mejor que esas cosas se queden enterradas conmigo.
+	WitchLine5: Ah, por cierto, doncella.
+	ShpcLine3: ¿Sí?
+	WitchLine6: Tu cansancio llega hasta los huesos.
+	WitchLine7: Deja de intentar cambiar el pasado y acepta el futuro que os corresponde.
+	ShpcLine4: ……
 }
 
 EternalBlazingNowNoHelen: {
-	// Rolename1: ???Brimstone Witch???
-	// Rolename2: Brimstone Witch
-	// Line1: ......It has been a long time since anyone has made it this far.
-	// Line2: I will not die... but this is close enough.
-	// Line3: You have done well... perhaps, you truly are the "only one of this era" he spoke of, the one worth waiting for.
-	// Line4: Therefore, I have one final request for you.
-	// Line5: As long as a single ember of Brimstone Fire remains in the past and present of this world, "I" shall not perish.
-	// Line6: But my consciousness will be gradually eroded away within this endless sea of fire.
-	// Line7: Had I not met you, I could have held out for thirty more years at most.
-	// Line8: This is the only way.
-	// Line9: Once my consciousness completely dissipates, the entire world will be reduced to ashes.
-	// Line10: Besides, if you intend to bring an end to this era, a mortal shell is far too fragile.
+	Rolename1: ???Bruja del Azufre???
+	Rolename2: Bruja del Azufre
+	Line1: ......Hace mucho que nadie llega tan lejos.
+	Line2: No moriré... aunque ya casi.
+	Line3: Lo has hecho bien... quizá seas el «único de la era» del que hablaba, digno de la espera.
+	Line4: Por eso tengo una última petición.
+	Line5: Mientras quede una chispa de fuego de azufre en el pasado o el presente, «yo» no pereceré.
+	Line6: Pero mi conciencia se desgasta en este mar de llamas sin fin.
+	Line7: Sin haberte encontrado, aguantaría treinta años como mucho.
+	Line8: Es la única forma.
+	Line9: Cuando mi conciencia se disipe, el mundo entero arderá.
+	Line10: Además, si quieres acabar con esta era, un cuerpo mortal es demasiado frágil.
 }

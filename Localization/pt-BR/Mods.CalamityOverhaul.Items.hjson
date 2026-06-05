@@ -16,7 +16,12 @@ MoldProcessingTable: {
 
 ElementWhip: {
 	DisplayName: Chicote Elemental
-	Tooltip: Um Chicote infundido com a energia da Lua e dos Elementos.
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		Incendeia inimigos com fogo elemental
+		"A essencia de Terra atravessa o mundo junto com os elementos do universo"
+		'''
 }
 
 TheRelicLuxor: {
@@ -24,7 +29,7 @@ TheRelicLuxor: {
 	Tooltip:
 		'''
 		Poder psiquico abrasador acompanhara cada um de seus ataques, e o Deus da Gloria esta com voce
-		[dicas]
+		[tips]
 		'''
 }
 
@@ -33,37 +38,46 @@ TheLuxirSoulArtifact: {
 	Tooltip:
 		'''
 		Ambos Deus e a imortalidade reconhecem sua gloria
-		[dicas]
+		[tips]
 		'''
 }
 
 AzureDragonRage: {
 	DisplayName: Furia do Dragao Azure
-	Tooltip: Cheira a grama fresca cortada, embora levemente mofada.
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		Tem um forte cheiro de grama fresca
+		'''
 }
 
 BleedingScourge: {
 	DisplayName: Flagelo Sangrento
-	Tooltip: Acertar um inimigo com este chicote faz chover sangue do ceu antes de explodir no inimigo abaixo, marcando-o para os lacaios.
+	Tooltip: Ao acertar, marca o inimigo e faz chover sangue
 }
 
 GhostFireWhip: {
 	DisplayName: Chicote de Fogo Fantasma
 	Tooltip:
 		'''
-		Um chicote extremamente longo, formado pela furia dos espiritos inquietos da masmorra.
-		[c/d4bc75:Pura Ciumeira emana da base, encorajando voce a procurar quem te prejudicou.]
+		{$CommonItemTooltip.Whips}
+		Um chicote muito longo, tecido com a furia dos espiritos inquietos da masmorra
+		[c/d4bc75:Pura paixao emana do inferno, encorajando voce a descobrir quem te prejudicou]
 		'''
 }
 
 AllhallowsGoldWhip: {
-	DisplayName: Chicote de Ouro do Dia de Todos os Santos
+	DisplayName: Chicote de Ouro Divino
 	Tooltip: Na verdade ainda nao esta terminado
 }
 
 DivineSourceBlade: {
-	DisplayName: Lamina da Fonte Divina
-	Tooltip: Balancar libera uma lamina de alta velocidade que corta em fitas o primeiro inimigo que perfura.
+	DisplayName: Lamina Aniquiladora da Fonte Divina
+	Tooltip:
+		'''
+		Brandir o poder da fonte divina
+		"A vida nunca cessa"
+		'''
 }
 
 FoodStallChair: {
@@ -72,35 +86,32 @@ FoodStallChair: {
 }
 
 Arbiter: {
-	// DisplayName: Arbiter
-	/* Tooltip:
+	DisplayName: Sentenciador
+	Tooltip:
 		'''
-		Hold left click to charge and raise the axe of judgment
-		Release to cleave downward, sending a ground-hugging flame shockwave bursting out to both sides
-		Longer charges increase the flames' reach and power
-		"Judgment descends through fire"
-		''' */
+		Segure o botão esquerdo para carregar e erguer o machado do julgamento
+		Solte para golpear para baixo, liberando uma onda de choque flamejante que se espalha pelo chão
+		Quanto mais tempo carregar, maior o alcance e a força das chamas
+		"O julgamento desce pelas chamas"
+		'''
 }
 
 Cloudwalking: {
-	// DisplayName: Cloudwalking
-	/* Tooltip:
+	DisplayName: Caminhante das Nuvens
+	Tooltip:
 		'''
-		Hold left click to charge and raise the great axe
-		Release to send the axe flying forward, trailing clouds in its wake
-		The axe automatically returns to you
-		''' */
+		Segure o botão esquerdo para carregar e erguer o grande machado
+		Solte para arremessá-lo à frente, deixando nuvens em seu rastro
+		O machado retorna automaticamente a você
+		'''
 }
 
 AnnihilatingUniverse: {
-	DisplayName: Universo Aniquilador
+	DisplayName: Estrela Aniquiladora do Universo
 	Tooltip:
 		'''
-		Flechas de Madeira se transformam em uma dispersao de Raios Cosmicos.
-		Acertar um inimigo faz com que Fendas da Galaxia ataquem outros inimigos e deixa para tras uma estrela perto da morte, eventualmente implodindo.
-		Clique direito para invocar Projecoes do Devorador que ficam mais fortes e maiores com o tempo.
-		Soltar o clique direito dispara o portal usado para rastrear inimigos antes de eventualmente se extinguir.
-		[c/9C27B0:O Fim esta Proximo.]
+		As flechas deixam uma estrela brilhante no local ao acertar um inimigo
+		Clique direito para destruir inimigos com o poder do Devorador de Deuses
 		'''
 }
 
@@ -108,10 +119,10 @@ HeavenfallLongbow: {
 	DisplayName: Arco Longo da Queda Celestial
 	Tooltip:
 		'''
-		Dispara Luz Pura Primordial do Arco-Iris para aniquilar completamente seus inimigos em brilho.
-		Clique direito fara com que a luz primordial chova sobre seus inimigos, explodindo em pura magnificencia.
-		Pressione [TECLA] para iniciar o Julgamento de Vientiane quando estiver no poder maximo.
-		[lenda]
+		Dispara flechas infinitas; a energia arco-iris do fim seguira em seguida
+		Clique direito faz flechas celestiais cairem do ceu
+		Pressione [KEY] para iniciar o Julgamento de Vientiane quando totalmente carregado
+		[legend]
 		'''
 	Legend:
 		'''
@@ -152,21 +163,21 @@ BaseSingularity: {
 
 InfiniteIngot: {
 	DisplayName: Lingote Infinito
-	Tooltip: O poder de muitos mundos, universos e galaxias, todos se coalescem neste unico lingote.
+	Tooltip: O poder do universo, nas palmas das suas maos
 }
 
 TransmutationOfMatterItem: {
 	DisplayName: Polimerizador de Materia Omega
 	Tooltip:
 		'''
-		Um Dispositivo Experimental da Criacao de Draedon. Coloca-lo no chao e clicar com o botao direito abre uma interface de fabricacao estendida para ir alem dos limites mortais.
-		"Sua Jornada para a Loucura Gananciosa esta agora em andamento."
+		Coloque no chao e clique com o botao direito para abrir a bancada de fabricacao
+		"Sua jornada gananciosa comeca agora"
 		'''
 }
 
 DarkMatterCompressorItem: {
 	DisplayName: Compressor de Materia Escura
-	Tooltip: Uma Culminacao de varias estacoes de trabalho, agora capaz de comprimir materia pura como um buraco negro.
+	Tooltip: Reconstitui materia como um buraco negro
 }
 
 InfinitePick: {
@@ -197,16 +208,16 @@ NeutronStarIngot: {
 
 InfinityCatalyst: {
 	DisplayName: Catalisador do Infinito
-	Tooltip: ""
+	Tooltip: Sua ganancia esta prestes a atingir o apice
 }
 
 DawnshatterAzure: {
-	DisplayName: Azure Estilhaçador do Amanhecer
+	DisplayName: Romper-Aurora Azure
 	Tooltip:
 		'''
-		Dispara uma sombra da coroa, invocando chamas de dragao explosivas ao atingir inimigos.
-		Segure o botao direito do mouse para investir enquanto levanta sua arma.
-		"Deixe as chamas purificarem sua alma e saquearem completamente seus inimigos."
+		Dispara uma sombra da coroa, invocando chamas de dragao explosivas ao atingir inimigos
+		Segure o botao direito do mouse para investir enquanto levanta sua arma
+		"Deixe as chamas purificarem sua alma e saquearem completamente seus inimigos"
 		'''
 }
 
@@ -239,16 +250,16 @@ DissipationSubstance: {
 
 SpectralMatter: {
 	DisplayName: Materia Espectral
-	Tooltip: Cerca de 3,7 trilhoes de bilhoes de toneladas
+	Tooltip: Cerca de 3,7 trilhoes de toneladas
 }
 
 InfiniteToiletItem: {
 	OnlyZenithCondition: Apenas no Mundo Zenith
 
 	InfiniteToiletItem: {
-		// OnlyZenithCondition: 仅在天顶世界
-		// DisplayName: Infinite Toilet Item
-		// Tooltip: ""
+		OnlyZenithCondition: Apenas no Mundo Zenith
+		DisplayName: Vaso Sanitario Infinito
+		Tooltip: ""
 	}
 }
 
@@ -256,9 +267,9 @@ StormGoddessSpear: {
 	DisplayName: Lanca da Deusa da Tempestade
 	Tooltip:
 		'''
-		Uma Lanca capaz de enviar Beijos de Relampago Ferozes que ricocheteiam nos inimigos.
-		Quando segurada, invoca o espirito remanescente da Deusa da Tempestade para auxiliar no combate.
-		[lenda]
+		Lanca beijos de tempestade com arcos eletricos destrutivos
+		Ao segurar, invoca o espirito remanescente da Deusa da Tempestade para auxiliar no combate
+		[legend]
 		'''
 	Legend:
 		'''
@@ -266,35 +277,39 @@ StormGoddessSpear: {
 		sua fe inabalavel e absoluta. Mas a fe nao pôde protege-la da indiferenca dos deuses.
 		Quando o Deus Supremo passou o julgamento, seus companheiros, parentes, juramentos e gloria foram reduzidos a cinzas.
 		Ela testemunhou em primeira mao como a chamada justica pisoteava tudo em po, como a ordem era meramente um veu para a mais cruel das destruicoes.
-		Ela nao buscava mais a luz, mas se reforgejou no abismo. Um poder antigo e proibido consumiu sua alma,
-		concedendo-lhe forca alem da compreensao mortal.
-		Sua armadura se tornou os destrocos forjados nas profundezas, seus olhos ardiam com os restos de trovao e escuridao entrelacados.
-		Ela nao era mais a guardia de Terra, mas a propria tempestade—uma vinganca que nao podia ser impedida.
-		Sua furia varreu o campo de batalha como uma tempestade uivante, sua trovao destruiu tronos e templos.
-		Ela lutou nao por justica, nao por Terra, nao pelos deuses.
-		Ela lutou por vinganca, por aniquilacao—para fazer aqueles que se consideravam justos entenderem o verdadeiro significado do medo.
+		Deuses... Alina nao olha mais para os deuses.
+		Ela recuou para o abismo, destruiu a si mesma e deixou um poder antigo e proibido consumir sua alma.
+		A armadura de Alina fundiu-se em um corpo forjado nas profundezas do abismo.
+		Restos de nuvens antigas, sol ensanguentado e o passado entreteceram-se; o olhar de seus companheiros... e de sua parentela antes da morte... Alina... tudo acabou.
+		Ela nao era mais a Alina de outrora, a deusa da guerra de Terra.
+		Sua furia voltou como uma tempestade, arrastando insetos pelo campo de batalha; seu trovao rasgou ceu e nuvens, tronos e terra.
+		A Deusa da Tempestade, Alina, trouxe implacavelmente destruicao e vinganca.
 		'''
 }
 
 DragonsScaleGreatsword: {
-	DisplayName: Grande Espada de Alga de Dragao
-	Tooltip: Balanca uma espada poderosa que invoca nuvens venenosas que rastreiam fracamente os inimigos.
+	DisplayName: Espada Grande de Alga Draconica
+	Tooltip:
+		'''
+		Dispara ondas de espada de algas verdes em espiral; ao acertar, explodem em varias nuvens de algas venenosas
+		Ataques corpo a corpo verdadeiros geram muitas nuvens de algas venenosas
+		'''
 }
 
 CosmicCalamity: {
-	DisplayName: Desastre Galactico
-	Tooltip: O ataque gera ondas de choque em forma de crescente.
+	DisplayName: Calamidade Galactica
+	Tooltip: Os ataques geram ondas de choque em forma de crescente
 }
 
 SpearOfLonginus: {
 	DisplayName: Lanca de Longinus
 	Tooltip:
 		'''
-		Cada vez que a barra de furtividade enche, a Lanca carrega e esgota a furtividade de volta para 0.
-		A quantidade maxima de carga e 6 barras de furtividade cheias.
-		Quando carregada, circulos mostrarao a Area de efeito. Ao ser lancada, desencadeara um golpe que estilhaça o mundo.
-		Se a lanca tiver carga, o ataque sera seguido por um laser do sol, selando o destino de qualquer coisa.
-		[lenda]
+		Ao segurar a lanca, uma cruz sagrada surge abaixo de voce, absorvendo energia sagrada automaticamente
+		Cada vez que a barra enche, completa uma carga, ate um maximo de seis camadas
+		Ao segurar, marca o inimigo mais proximo com o destino
+		Um arremesso carregado contra um inimigo marcado desencadeia a Furia do Peregrino
+		[legend]
 		'''
 	Legend:
 		'''
@@ -318,32 +333,33 @@ SpearOfLonginus: {
 }
 
 BloodAltar: {
-	DisplayName: Altar de Sangue
+	DisplayName: Altar Carmesim
 	Tooltip:
 		'''
-		Clique direito no Altar para invocar a Lua de Sangue
-		Coleta automaticamente orbes de sangue dropados ao redor do mundo e os armazena no deposito mais proximo.
-		"Deixe o mundo ser envolto pelo Carmesim."
+		Clique direito no altar para invocar a Lua de Sangue com perolas de sangue
+		Coleta automaticamente perolas de sangue dropadas pelo mundo e as armazena no bau mais proximo
+		"Deixe o mundo ser observado pelo carmesim"
 		'''
 }
 
 BarrenBow: {
-	DisplayName: Arco Barren
-	Tooltip: As flechas disparadas explodirao uma corrente estéril quando atingirem o inimigo
+	DisplayName: Arco Arido
+	Tooltip: As flechas disparadas liberam uma corrente arida ao acertar inimigos
 }
 
 ElementMuzzleBrake: {
-	DisplayName: Freio de Boca Elemental
+	DisplayName: Estabilizador Elemental
 	Tooltip:
 		'''
 		Reduz o recuo e a pressao da camara em 65%
 		Reduz o dano de longo alcance em 5%
 		Aumenta a taxa de acerto critico de longo alcance em 15%
+		Os inimigos terao mais dificuldade em detectar voce
 		'''
 }
 
 EyeOfSingularity: {
-	DisplayName: Olho da Singularidade
+	DisplayName: Horizonte da Singularidade
 	Tooltip:
 		'''
 		Aumenta o dano de longo alcance em 100%
@@ -351,7 +367,7 @@ EyeOfSingularity: {
 		Aumenta a velocidade de tiro de longo alcance em 100% e evita o consumo de municao
 		Define o multiplicador de dano critico para todas as armas de longo alcance para 500%
 		Seus projeteis de longo alcance rasgam o espaco, criando buracos negros em miniatura no impacto que arrastam e esmagam os inimigos
-		Enquanto parado, voce entra no estado 'Horizonte de Eventos':
+		Enquanto parado, voce entra no estado de Horizonte de Eventos:
 		  - Concede invisibilidade e imunidade a todo dano de contato
 		  - Ataques liberam Rajadas adicionais de Raio Gama que rastreiam inimigos
 		Concede a habilidade de Salto Quantico; pressione [TECLA] para teleportar para o cursor, apagando projeteis inimigos ao longo do caminho
@@ -367,22 +383,24 @@ EyeOfSingularity: {
 }
 
 PrecisionMuzzleBrake: {
-	DisplayName: Freio de Boca de Precisao
+	DisplayName: Estabilizador de Alta Precisao
 	Tooltip:
 		'''
 		Reduz o recuo e a pressao da camara em 55%
 		Reduz o dano de longo alcance em 10%
 		Aumenta a taxa de acerto critico de longo alcance em 10%
+		Os inimigos terao mais dificuldade em detectar voce
 		'''
 }
 
 SimpleMuzzleBrake: {
-	DisplayName: Freio de Boca Simples
+	DisplayName: Estabilizador Simples
 	Tooltip:
 		'''
 		Reduz o recuo e a pressao da camara em 40%
 		Reduz o dano de longo alcance em 15%
 		Aumenta a taxa de acerto critico de longo alcance em 5%
+		Os inimigos terao mais dificuldade em detectar voce
 		'''
 }
 
@@ -394,7 +412,7 @@ AmmoBoxFire: {
 		deixe a municao especial encher o carregador
 		A municao especial pode ser sobreposta ao efeito da bala original
 		Torna a ogiva altamente inflamavel e explode quando atinge o alvo
-		"Isso nao e cod."
+		"Isso nao e COD."
 		'''
 }
 
@@ -435,68 +453,61 @@ DragonBreathBox: {
 }
 
 HalibutItem: {
-	DisplayName: Halibut
+	DisplayName: Linguado
 	Tooltip: ""
 }
 
 SHPCItem: {
-	// DisplayName: SHPC
-	// Tooltip: ""
+	DisplayName: SHPC
+	Tooltip: ""
 }
 
 AvalancheM60: {
 	DisplayName: Avalanche M60
 	Tooltip:
 		'''
-		Usa bolas de neve como municao.
-		Dispara uma saraivada de bolas de neve,
-		Poder de fogo aumentando a medida que a municao diminui.
-		Cada 20 tiros aciona uma sobrecarga,
-		Criando uma pequena avalanche.
-		"Denji, vamos ter uma guerra de bolas de neve."
+		Usa bolas de neve como municao
+		Dispara uma grande quantidade de bolas de neve; o poder de fogo aumenta conforme a municao diminui
+		A cada 20 disparos, entra em sobrecarga e cria uma pequena avalanche
+		"Denji, vamos ter uma guerra de bolas de neve"
 		'''
 }
 
 CrystalDimming: {
-	DisplayName: Escurecimento de Cristal
+	DisplayName: Era do Gelo
 	Tooltip:
 		'''
-		Usa bolas de neve como municao.
-		Lanca granizo glacial e bolas de neve,
-		Cristais de gelo ricocheteiam rapidamente ao bater nas paredes,
-		Entao rastreiam os inimigos.
-		Cada 20 tiros aciona uma sobrecarga,
-		Invocando um pilar de gelo massivo no cursor do mouse.
+		Usa bolas de neve como municao
+		Lanca granizo glacial e bolas de neve; cristais de gelo ricocheteiam rapidamente ao bater nas paredes e entao rastreiam inimigos
+		A cada 20 disparos, entra em sobrecarga e gera um pilar de gelo colossal no cursor
 		'''
 }
 
 DarkFrostSolstice: {
-	DisplayName: Solsticio de Gelo Escuro
+	DisplayName: Divindade do Inverno Gelido
 	Tooltip:
 		'''
-		Usa bolas de neve como municao.
-		Dispara granizo e chamas polares,
-		Cada 20 tiros aciona uma sobrecarga,
-		Invocando divindade invernal no cursor do mouse.
+		Usa bolas de neve como municao
+		Dispara granizo e chamas polares; os ataques tem chance de congelar inimigos
+		A cada 20 disparos, entra em sobrecarga e gera um pilar de gelo colossal no cursor
 		'''
 }
 
 SnowQuay: {
-	DisplayName: Neve Viper M16
+	DisplayName: Naja da Neve
 	Tooltip:
 		'''
 		Usa bolas de neve como municao
-		Um canhao de neve de grande calibre, dispara projeteis mistos de gelo e neve
+		Um canhao de neve de grande calibre que dispara projeteis mistos de gelo e neve
 		'''
 }
 
 NeutronGlaive: {
-	DisplayName: Ceifador da Zona Negra
+	DisplayName: Corte da Zona Negra
 	Tooltip:
 		'''
-		Balancar libera poderosas ondas de choque de espada gravitacionais, causando uma explosao de estrela de neutrons ao atingir um alvo.
-		Clique direito para carregar a lamina; soltar quando totalmente carregada desencadeia uma grande explosao de estrela de neutrons no cursor.
-		Soltar antes de totalmente carregada fara com que a energia se espalhe.
+		Balancar libera ondas de choque gravitacionais poderosas; ao acertar, gera uma explosao de estrela de neutrons
+		Clique direito para carregar a lamina; soltar totalmente carregado causa uma grande explosao de estrela de neutrons no cursor, senao a energia se espalha
 		'''
 }
 
@@ -504,21 +515,21 @@ NeutronBow: {
 	DisplayName: Corda de Roche
 	Tooltip:
 		'''
-		Dispara flechas gravitacionais que geram raios gama ao atingir um alvo.
-		Clique direito para realizar uma carga de tres niveis, liberando tres poderosas flechas gravitacionais quando totalmente carregado.
+		Dispara flechas gravitacionais que geram raios gama ao atingir um alvo
+		Clique direito para carregar em tres niveis; totalmente carregado dispara tres flechas gravitacionais poderosas
 		'''
-	Lang1: Prendendo a gravidade
-	Lang2: Esta fazendo a gravidade ceder
-	Lang3: Terminado!!
+	Lang1: Capturando gravidade
+	Lang2: Fazendo a gravidade ceder
+	Lang3: Pronto!!
 }
 
 NeutronGun: {
 	DisplayName: Cacador Estelar
 	Tooltip:
 		'''
-		Dispara projeteis gravitacionais que criam pontos de dobra ao atingir um alvo.
-		Clique direito para alternar para o modo atirador, disparando balas gravitacionais mais poderosas que invocam raios gama no impacto.
-		Cada tiro carrega a arma, e quando totalmente carregada, o proximo tiro desencadeia uma explosao de estrela de neutrons no cursor.
+		Dispara projeteis gravitacionais que criam pontos de dobra ao atingir um alvo
+		Clique direito alterna para modo sniper, disparando balas gravitacionais mais poderosas que invocam raios gama no impacto
+		Cada tiro carrega a arma; totalmente carregada, o proximo disparo causa uma explosao de estrela de neutrons no cursor
 		"Atire o sol para baixo!"
 		'''
 }
@@ -527,10 +538,10 @@ NeutronWand: {
 	DisplayName: Luz da Tumba Estelar
 	Tooltip:
 		'''
-		Dispara quatro poderosas estrelas gravitacionais.
-		Clique direito para lancar magia gravitacional no cursor.
-		"A lenda diz que nos tempos antigos, um poderoso psiquico usou esta varinha para comprimir estrelas em buracos negros,
-		mas este conto se perdeu no tempo, agora apenas um fragmento de cancao cantada por nomades interestelares."
+		Dispara quatro estrelas gravitacionais poderosas
+		Clique direito lanca magia gravitacional no cursor
+		"Diz a lenda que, na antiguidade, um poderoso psiquico usou este cajado para comprimir estrelas em buracos negros,
+		mas isso ja nao pode ser comprovado — resta apenas um fragmento de canto dos nomades interestelares"
 		'''
 }
 
@@ -538,11 +549,8 @@ FadingGlory: {
 	DisplayName: Gloria Desvanecente
 	Tooltip:
 		'''
-		Ataques corpo a corpo verdadeiros acertam um alvo que cura o jogador se o alvo for um organismo,
-		e libera muitas faiscas se o alvo nao for organismo
-		Batalhas nao corpo a corpo verdadeiras dispararao ativamente a lamina,
-		que gerara um corte fantasma perseguidor de sino extra apos
-		atingir o alvo e liberara um tentaculo de sangue ao explodir
+		Ataques corpo a corpo verdadeiros curam o jogador se o alvo for organico; se for inorganico, liberam muitas faiscas
+		Fora de corpo a corpo verdadeiro, dispara laminas ativamente; ao acertar, gera um corte fantasma perseguidor extra e libera um tentaculo de sangue na explosao
 		'''
 }
 
@@ -550,8 +558,8 @@ NeutronScythe: {
 	DisplayName: Mensageiro do Buraco Negro
 	Tooltip:
 		'''
-		A foice dispara raios gama nos inimigos, deixando varios pontos de dobra ao longo de seu caminho.
-		Ataque furtivo lanca um circulo de foices.
+		Foices de neutrons giram em alta velocidade, disparando raios gama contra inimigos proximos e deixando pontos de detonacao de dobra ao longo da trajetoria
+		Clique direito libera uma erupcao de buraco negro, arremessando treze foices em um circulo completo
 		'''
 }
 
@@ -559,8 +567,8 @@ RebelBlade: {
 	DisplayName: Lamina Rebelde
 	Tooltip:
 		'''
-		Corpo a corpo verdadeiro gera um grande numero de bolas de luz demoniaca ao redor do alvo
-		Clique direito para controlar o voo da lamina e cortar em direcao ao cursor
+		Corpo a corpo verdadeiro gera muitas bolas de luz demoniaca ao redor do alvo
+		Clique direito controla o voo da lamina e corta em direcao ao cursor
 		'''
 }
 
@@ -568,8 +576,8 @@ MG42: {
 	DisplayName: MG42
 	Tooltip:
 		'''
-		Disparo continuo faz com que o cano superaqueça
-		Transforma balas de mosquete em balas perfurantes de armadura
+		Disparo continuo faz o cano superaquecer
+		Converte balas de mosquete em balas perfurantes de armadura
 		'''
 }
 
@@ -577,50 +585,51 @@ DragonsWord: {
 	DisplayName: Palavra do Dragao
 	Tooltip:
 		'''
-		Dispara lagrimas de dragao que giram por um tempo antes de rastrear os inimigos.
-		Clique direito para lancar Magia de Comando do Dragao no cursor, emitindo um comando de morte para inimigos dentro da area.
-		"Um dragao so pode derramar lagrimas uma vez em sua vida."
+		Dispara lagrimas de dragao que giram por um tempo antes de rastrear inimigos
+		Clique direito lanca Magia de Comando do Dragao no cursor, emitindo ordem de morte aos inimigos na area
+		"Um dragao so pode derramar lagrimas uma vez na vida"
 		'''
 }
 
 SnowQuayMK2: {
-	DisplayName: Snow Quay MK2
+	DisplayName: Naja da Neve MK2
 	Tooltip:
 		'''
 		Usa bolas de neve como municao
 		Um canhao de neve de grande calibre que dispara projeteis mistos de gelo e neve
-		Nenhum pre-aquecimento e necessario para disparar
+		Nao e mais necessario pre-aquecer para disparar
 		'''
 }
 
 HghExplosiveBox: {
-	DisplayName: Caixa Explosiva Hgh
+	DisplayName: Caixa de Municao de Alta Explosividade
 	Tooltip:
 		'''
-		Segure para implantar. Uma vez implantado, clique com o botao direito na caixa de municao com uma arma de fogo para carregar municao especial no carregador.
-		A municao especial pode acumular efeitos com balas comuns.
-		"Exploda todos eles para os ceus!"
+		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador
+		A municao especial pode acumular efeitos com a bala original
+		A ogiva contem explosivos de alta potencia e causa uma pequena explosao ao acertar o alvo
+		"Exploda todos eles!"
 		'''
 }
 
 JusticeUnveiled: {
-	DisplayName: Justica Revelada
+	DisplayName: Manifestacao da Justica
 	Tooltip:
 		'''
-		Ataques de longo alcance acumulam cargas de "Golpe do Julgamento", ate um maximo de 5
+		Ataques de longo alcance acumulam cargas de Golpe da Justica, ate um maximo de 5
 		Pressione [CIMA] para gastar 1 carga e invocar um impacto sagrado devastador
-		"Se a justica for convocada, atenderei ao chamado—onde quer que ele leve."
+		"Se a justica for necessaria, irei aonde quer que ela me leve"
 		'''
 }
 
 WeaverGrievances: {
-	DisplayName: Queixas do Tecedor
+	DisplayName: Rancor Enredado
 	Tooltip:
 		'''
-		Libera um grande numero de garras de espiritos malignos e tem efeitos especiais em ambientes infernais e de masmorra
-		Clique direito e role na direcao do cursor. Acertar um inimigo durante o rolamento dara ao jogador um quadro invencivel
-		Um rolamento proximo seria considerado uma esquiva perfeita
-		[lenda]
+		Libera muitas garras de espiritos rancorosos; tem efeitos especiais em ambientes infernais e de masmorra
+		Clique direito rola em direcao ao cursor; acertar um inimigo durante o rolamento concede invencibilidade
+		Um rolamento proximo conta como esquiva perfeita
+		[legend]
 		'''
 	Legend:
 		'''
@@ -645,36 +654,36 @@ WeaverGrievances: {
 }
 
 Starship: {
-	DisplayName: Nave Estelar
+	DisplayName: Nave Colossal das Estrelas
 	Tooltip:
 		'''
-		Disparar continuamente acumula calor, aumentando a taxa de tiro ao longo do tempo
-		Clique direito para consumir municao e carregar um projetil cometa; o proximo tiro o dispara para dano massivo e inflige Hiper-Desintegracao
-		No pico de calor, dois pilotos de escolta voam ao lado disparando raios estelares homing; planetas sao periodicamente arremessados de tras de voce
-		Soltar o gatilho libera o final: 14 meteoros homing que ignoram defesa e uma micro-galaxia chovem no cursor
+		Disparo continuo acumula calor, aumentando a cadencia ao longo do tempo
+		Clique direito consome municao e carrega um projetil cometa; o proximo tiro causa dano massivo e aplica Hiper-Desintegracao
+		No pico de calor, dois cacas de escolta voam ao lado disparando raios estelares homing; planetas sao arremessados periodicamente de tras de voce
+		Soltar o gatilho libera o finale: 14 meteoros homing que ignoram defesa e uma micro-galaxia chovem no cursor
 		'''
 }
 
 SandDagger: {
-	DisplayName: Adaga de Areia
+	DisplayName: Adaga das Areias
 	Tooltip:
 		'''
-		Lanca na areia, entao salta no ar e explode depois de um tempo
-		Ataques furtivos lancam uma adaga melhorada
+		Lancada em linha reta, caindo levemente pela gravidade
+		Perfura o chao ao impacto; se cravar na areia, carrega e dispara para cima, detonando uma onda sismica e espinhos de areia
 		'''
 }
 
 UnderTheSand: {
 	DisplayName: Sob a Areia
-	/* Tooltip:
+	Tooltip:
 		'''
-		Hurls a pair of sand surges that arc downward under gravity
-		On impact with the ground, a vertical sand spike erupts from beneath, launching enemies skyward
-		''' */
+		Lanca um par de ondas de areia que caem sob a gravidade
+		Ao tocar o chao, um espinho de areia irrompe de baixo, arremessando inimigos para cima
+		'''
 }
 
 WastelandFang: {
-	DisplayName: Presa do Esteril
+	DisplayName: Presa do Ermo
 	Tooltip:
 		'''
 		Ricocheteia em blocos e acelera ao recuar
@@ -683,34 +692,34 @@ WastelandFang: {
 }
 
 MelodyTheSand: {
-	DisplayName: Cancao da Areia
-	/* Tooltip:
+	DisplayName: Melodia da Areia
+	Tooltip:
 		'''
-		Fires a small sand tornado that falls to the ground under gravity
-		Once grounded, it patrols back and forth along the surface, reversing at walls and ledges
-		Repeatedly hurls struck enemies into the sky
-		''' */
+		Dispara um pequeno tornado de areia que cai ao chao pela gravidade
+		Ao pousar, patrulha a superficie de um lado para o outro, invertendo ao bater em paredes ou bordas
+		Arremessa repetidamente os inimigos atingidos para o ceu
+		'''
 }
 
 SandVortexOfTheDecayedSea: {
 	DisplayName: Vortice de Areia do Mar Decaido
-	/* Tooltip:
+	Tooltip:
 		'''
-		Summons a colossal decayed sea vortex at the cursor
-		The vortex relentlessly draws nearby enemies in and rends them, even unraveling hostile projectiles
-		Periodically hurls outward homing decayed sea orbs
-		Firing again refreshes the existing vortex; on natural collapse it bursts into a ring of orbs
-		"The roar of the rotting depths churned into sand"
-		''' */
+		Invoca um vórtice colossal do mar decaído na posição do cursor
+		O vórtice puxa e dilacera inimigos próximos, até desfazendo projéteis hostis
+		Periodicamente arremessa orbes rastreadoras do mar decaído
+		Disparar novamente renova o vórtice existente; ao se dissipar, libera um anel de orbes
+		"O rugido das profundezas podres, agitado em areia"
+		'''
 }
 
 DuneStalker: {
-	// DisplayName: Dune Stalker
-	/* Tooltip:
+	DisplayName: Perseguidor das Dunas
+	Tooltip:
 		'''
-		Fires a chain-bound hookhead instead of consuming the ammunition outright
-		The hook tears through enemies along its path, then automatically reels back on impact or once it reaches its maximum range
-		''' */
+		Dispara uma cabeça de gancho presa a uma corrente em vez de consumir a munição
+		O gancho dilacera inimigos no caminho e recolhe automaticamente ao atingir algo ou alcançar o alcance máximo
+		'''
 }
 
 SeasonalKunai: {
@@ -737,7 +746,7 @@ CalSelfPortrait: {
 	Tooltip:
 		'''
 		Uma fotografia esquecida
-		[lenda]
+		[legend]
 		'''
 	Legend: O que mais voce quer ver? :)
 }
@@ -848,10 +857,10 @@ GeminisTribute: {
 }
 
 Dicoria: {
-	DisplayName: Dicoria
+	DisplayName: Heterocromia
 	Tooltip:
 		'''
-		Dispara balas duais, pode ser carregada
+		Dispara balas duais; pode ser carregada
 		Tiros totalmente carregados liberam um raio termico
 		"A proposito, isso nao vai nos deixar vesgos?"
 		'''
@@ -931,7 +940,7 @@ CommandersChainsawEX: {
 
 ForgedLashEX: {
 	DisplayName: Chicote Forjado EX
-	Tooltip: ""
+	Tooltip: Dispara bolas de calor homing ao chicotear
 }
 
 SoulofFrightEX: {
@@ -1101,11 +1110,11 @@ LaserPistol: {
 }
 
 HyperionBarrageEX: {
-	DisplayName: Hiperion Barrage EX
+	DisplayName: Hiperion Auto-Torreta EX
 	Tooltip:
 		'''
-		Apos atingir o alvo, o míssil de cruzeiro termobuscador se dividira em varias partes para causar dano secundario.
-		"Alem do uso pretendido"
+		Dispara misseis de cruzeiro termicos; ao acertar, o projetil se divide em seis submisseis causando dano secundario
+		"Alem do uso previsto"
 		'''
 }
 
@@ -1207,12 +1216,16 @@ SporeBubbleBlaster: {
 
 TomeofFungalDecay: {
 	DisplayName: Tomo da Decomposicao Fungica
-	Tooltip: ""
+	Tooltip: Pulveriza um anel de rajadas de esporos
 }
 
 FungalRevolver: {
 	DisplayName: Revólver Fungico
-	Tooltip: ""
+	Tooltip:
+		'''
+		Converte balas de mosquete em projeteis fungicos
+		"Depois de limpar, nao da mais para usar"
+		'''
 }
 
 FungalFeed: {
@@ -1386,7 +1399,7 @@ AncientStormGoddessSpear: {
 		'''
 		Uma Lanca capaz de enviar Beijos de Relampago Ferozes que ricocheteiam nos inimigos.
 		"Ja e uma coisa do passado, mas ainda funciona."
-		[lenda]
+		[legend]
 		'''
 	Legend:
 		'''
@@ -1818,8 +1831,8 @@ RamRecoveryUpgradeChip: {
 }
 
 Mewtwo: {
-	DisplayName: Mewtwo
-	Tooltip: ""
+	DisplayName: Chip Mewtwo
+	Tooltip: Usar para entrar em Mewtwo
 }
 
 RapidBarrelModule: {
@@ -2545,15 +2558,15 @@ CWRItem: {
 	ItemLegendOnMouseLang: Pressione 'Shift' para ouvir a historia...
 
 	CWRItem: {
-		// TemperatureText: 燃烧温度
-		// InternalStoredEnergy: 能量存储
-		// DeathModeItemText: 死亡模式
-		/* LegendItemUpgradeDisable:
+		TemperatureText: Temperatura de Combustao
+		InternalStoredEnergy: Armazenamento de Energia
+		DeathModeItemText: Modo Morte
+		LegendItemUpgradeDisable:
 			'''
-			这把传奇武器在当前世界中已被设定为无法升级
-			若需要解除禁用状态，请重新进入世界
-			''' */
-		// ItemLegendOnMouseLang: 按下'Shift'聆听故事...
+			Esta arma lendaria foi configurada para desabilitar atualizacoes no mundo atual.
+			Para remover esta restricao, por favor, reentre no mundo.
+			'''
+		ItemLegendOnMouseLang: Pressione 'Shift' para ouvir a historia...
 	}
 }
 
@@ -2561,8 +2574,8 @@ RMagicConch: {
 	DontUseMagicConch: Voce esta sendo observado por uma criatura poderosa...
 
 	RMagicConch: {
-		// DontUseMagicConch: 你被一个强大的生物盯住了...
-		// DisplayName: 魔法海螺
-		// Tooltip: 仔细听，你会听到海洋的声音
+		DontUseMagicConch: Voce esta sendo observado por uma criatura poderosa...
+		DisplayName: Concha Magica
+		Tooltip: Escute com atencao e voce ouvira o som do oceano
 	}
 }

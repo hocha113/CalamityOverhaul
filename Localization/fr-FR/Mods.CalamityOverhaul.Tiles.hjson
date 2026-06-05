@@ -1,5 +1,5 @@
 BloodAltarTP: {
 	ApproachingText: Un regard rouge profond s'approche...
 	InsufficientOfferingText: Vous n'avez pas assez de perles de sang sur vous pour rendre hommage au roi rouge profond...
-	SacrificeDeathReason: Plongé dans une folie de sang et de chair sans fin
+	SacrificeDeathReason: "{0} a sombré dans une folie sans fin de sang et de chair"
 }
