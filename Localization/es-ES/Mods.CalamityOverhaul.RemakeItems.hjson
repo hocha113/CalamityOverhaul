@@ -1,33 +1,30 @@
-{
-	ModifyChargingStationItem:
-	{
-		DisplayName: Estación de carga
-		Tooltip:
-			'''
-			Usa electricidad para cargar aparatos
-			Puedes colocar baterías para almacenar energía
-			Conéctala a tuberías para transmitir electricidad
-			Clic derecho con un objeto recargable para insertarlo rápidamente
-			Mayús + clic derecho para retirar objetos
-			'''
-	}
-	DyeVatItem:
-	{
-		DisplayName: "{$ItemName.DyeVat}"
-		Tooltip:
-			'''
-			Sirve para fabricar tintes
-			Clic derecho tras colocarla para abrir el panel y teñir objetos
-			Coloca un cubo de agua en la ranura para quitar tintes
-			'''
-	}
-	RDemonConch:
-	{
-		DisplayName: Caracola demoníaca
-		Tooltip:
-			'''
-			Escucha con atención y oirás gritos
-			«Cuidado.»
-			'''
-	}
+ModifyChargingStationItem: {
+	DisplayName: Estación de carga
+	Tooltip:
+		'''
+		Usa electricidad para cargar aparatos
+		Puedes colocar baterías para almacenar energía
+		Conéctala a tuberías para transmitir electricidad
+		Clic derecho con un objeto recargable para insertarlo rápidamente
+		Mayús + clic derecho para retirar objetos
+		'''
+}
+
+DyeVatItem: {
+	DisplayName: "{$ItemName.DyeVat}"
+	Tooltip:
+		'''
+		Sirve para fabricar tintes
+		Clic derecho tras colocarla para abrir el panel y teñir objetos
+		Coloca un cubo de agua en la ranura para quitar tintes
+		'''
+}
+
+RDemonConch: {
+	DisplayName: Caracola demoníaca
+	Tooltip:
+		'''
+		Escucha con atención y oirás gritos
+		«Cuidado.»
+		'''
 }

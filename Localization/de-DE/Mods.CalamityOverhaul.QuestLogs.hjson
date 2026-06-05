@@ -1,1475 +1,903 @@
-{
-	QuestNode:
-	{
-		FirstQuest:
-		{
-			DisplayName: Willkommen in der Welt von Calamity!
-			Description: Der Beginn der Reise
-			DetailedDescription: Jede Legende beginnt klein. Hol dir deine Startausrüstung und bereite dich auf eine Welt voller Götter und Monster vor.
-			QuestObjective:
-			{
-				Description: Klicke, um Startgegenstände abzuholen
-			}
-			QuestReward:
-			{
-				Description: Starter-Abenteuerpaket
-			}
-		}
-		MiningQuest:
-		{
-			DisplayName: Mining-Grundlagen
-			Description: Erhalte zehn {0}
-			DetailedDescription: Unter der Erde liegt unendlicher Reichtum. Zuerst brauchen wir Grundmetalle für Werkzeuge.
-			QuestObjective:
-			{
-				Description: Sammle zehn {0}
-			}
-			QuestReward:
-			{
-				Description: Fünf {0}
-				Description2: Eine {0}
-			}
-		}
-		MiningQuestII:
-		{
-			DisplayName: Eisenzeit
-			Description: Sammle fünfzig {0}
-			QuestObjective:
-			{
-				Description: Sammle fünfzig {0}
-			}
-			QuestReward:
-			{
-				Description: Fünfzig {0}
-				Description2: Eine {0}
-			}
-			DetailedDescription: Kupfer ist zu weich — wir brauchen härtere Metalle. Grabe tiefer nach Eisenerz.
-		}
-		MiningQuestIII:
-		{
-			DisplayName: Goldrausch
-			Description: Sammle hundert {0}
-			QuestObjective:
-			{
-				Description: Sammle hundert {0}
-			}
-			QuestReward:
-			{
-				Description: Hundert {0}
-				Description2: Eine {0}
-			}
-			DetailedDescription: Gold ist nicht nur Währung — es leitet Magie gut und ist formbar. Weicher als Eisen, aber wichtig für fortgeschrittene Ausrüstung.
-		}
-		BrimstoneElementalQuest:
-		{
-			DisplayName: Schwefelfeuer-Elementar
-			Description: Besiege den Schwefelfeuer-Elementar
-			QuestObjective:
-			{
-				Description: Besiege den Schwefelfeuer-Elementar
-			}
-			QuestReward:
-			{
-				Description: 10 Seelen der Nacht
-			}
-			DetailedDescription: In den Ruinen der Schwefelfeuerklippe erwecke und besiege den schlummernden Elementargeist. Hüte dich vor ihrem Bullet-Hell.
-		}
-		CalamitasCloneQuest:
-		{
-			DisplayName: Calamitas-Klon
-			Description: Besiege den Calamitas-Klon
-			QuestObjective:
-			{
-				Description: Besiege den Calamitas-Klon
-			}
-			QuestReward:
-			{
-				Description: 10 Calamity-Staub
-			}
-			DetailedDescription: Ein Klon voller Hass und Zerstörungswut. Besiege ihn und beweise, dass du der wahren Hexe gewachsen bist.
-		}
-		CrabulonQuest:
-		{
-			DisplayName: Crabulon
-			Description: Besiege Crabulon
-			QuestObjective:
-			{
-				Description: Besiege Crabulon
-			}
-			QuestReward:
-			{
-				Description: 50 leuchtende Pilze
-			}
-			DetailedDescription: Im leuchtenden Pilz-Untergrund lauert eine von Pilzen befallene Riesenkrabbe. Ihre Sporen sind äußerst gefährlich.
-		}
-		CryogenQuest:
-		{
-			DisplayName: Kryogen
-			Description: Besiege Kryogen
-			QuestObjective:
-			{
-				Description: Besiege Kryogen
-			}
-			QuestReward:
-			{
-				Description: 10 Seelen des Lichts
-			}
-			DetailedDescription: Der einstige Erzmagier des Kosmos liegt in ewigem Eis gefangen. Befreie und besiege ihn.
-		}
-		DesertScourgeQuest:
-		{
-			DisplayName: Wüstenplage
-			Description: Besiege die Wüstenplage
-			QuestObjective:
-			{
-				Description: Besiege die Wüstenplage
-			}
-			QuestReward:
-			{
-				Description: 10 Siegesscherben
-			}
-			DetailedDescription: Der einstige Herrscher der Meere ringt in der ausgetrockneten Wüste um Luft. Hüte dich vor seinen gewaltigen Kiefern und Dienern.
-		}
-		EaterofWorldsQuest:
-		{
-			DisplayName: Weltenfresser / Gehirn von Cthulhu
-			Description: Besiege den Boss der Verderbnis oder Purpur
-			QuestObjective:
-			{
-				Description: Besiege den Weltenfresser oder das Gehirn von Cthulhu
-			}
-			QuestReward:
-			{
-				Description: 20 Schattenschuppen / Gewebeproben
-			}
-			DetailedDescription: Das Böse breitet sich aus. Dringe in die Wunden der Welt vor und beseitige den Riesenwurm oder das verderbte Gehirn.
-		}
-		EyeofCthulhuQuest:
-		{
-			DisplayName: Auge von Cthulhu
-			Description: Besiege das Auge von Cthulhu
-			QuestObjective:
-			{
-				Description: Besiege das Auge von Cthulhu
-			}
-			QuestReward:
-			{
-				Description: 20 Dämonit- / Purpurerz
-			}
-			DetailedDescription: Sobald du den bösen Blick spürst, erscheint es. Deine erste echte Prüfung der Stärke.
-		}
-		GolemQuest:
-		{
-			DisplayName: Golem
-			Description: Besiege den Golem
-			QuestObjective:
-			{
-				Description: Besiege den Golem
-			}
-			QuestReward:
-			{
-				Description: 10 Käferpanzer
-			}
-			DetailedDescription: Tief im Dschungeltempel thront eine uralte Kriegsmaschine. Hüte dich vor Lasern und schweren Schlägen.
-		}
-		HiveMindQuest:
-		{
-			DisplayName: Der Hive Mind / Die Perforatoren
-			Description: Besiege den wahren Gott des bösen Bioms
-			QuestObjective:
-			{
-				Description: Besiege den Hive Mind oder die Perforatoren
-			}
-			QuestReward:
-			{
-				Description: 10 Dämonitbarren / Purpurbarren
-			}
-			DetailedDescription: Sie sind die Verkörperung des Bewusstseins von Verderbnis und Purpur. Ohne sie gibt es keinen Frieden.
-		}
-		KingSlimeQuest:
-		{
-			DisplayName: Schleimkönig
-			Description: Besiege den Schleimkönig
-			QuestObjective:
-			{
-				Description: Besiege den Schleimkönig
-			}
-			QuestReward:
-			{
-				Description: 5 Goldmünzen
-			}
-			DetailedDescription: Der Herrscher aller Glibberwesen. Er wirkt komisch — lass dich von der Größe nicht zerquetschen.
-		}
-		LunaticCultistQuest:
-		{
-			DisplayName: Lunatischer Kultist
-			Description: Besiege den lunatischen Kultisten
-			QuestObjective:
-			{
-				Description: Besiege den lunatischen Kultisten
-			}
-			QuestReward:
-			{
-				Description: 5 Sonnenfragmente
-			}
-			DetailedDescription: Am Dungeon-Eingang versuchen fanatische Kultisten, das Ende herauf- oder abzubeschwören. Stoppe ihr Ritual.
-		}
-		MechanicalBossesQuest:
-		{
-			DisplayName: Mechanische Bosse
-			Description: Besiege alle mechanischen Bosse
-			QuestObjective:
-			{
-				Description: Besiege alle mechanischen Bosse
-			}
-			QuestReward:
-			{
-				Description: 20 geweihte Barren
-			}
-			DetailedDescription: Draedons frühe Schöpfungen, die Cthulhus Organe nachahmen. Nur ihr Fall lässt die Welt neu erblühen.
-		}
-		MoonLordQuest:
-		{
-			DisplayName: Mondherr
-			Description: Besiege den Mondherrn
-			QuestObjective:
-			{
-				Description: Besiege den Mondherrn
-			}
-			QuestReward:
-			{
-				Description: Mondherr-Trophäe
-			}
-			DetailedDescription: Der Drahtzieher hinter allem — der Schrecken auf der Mondrückseite. Beende diesen langen Albtraum.
-		}
-		PlaguebringerGoliathQuest:
-		{
-			DisplayName: Seuchenbringer-Goliath
-			Description: Besiege den Seuchenbringer-Goliath
-			QuestObjective:
-			{
-				Description: Besiege den Seuchenbringer-Goliath
-			}
-			QuestReward:
-			{
-				Description: 20 Seuchenzellkanister
-			}
-			DetailedDescription: Eine von Nanoviren umgebaute Bienenkönigin — tödlich und mit gefährlicher Seuche beladen.
-		}
-		PlanteraQuest:
-		{
-			DisplayName: Plantera
-			Description: Besiege Plantera
-			QuestObjective:
-			{
-				Description: Besiege Plantera
-			}
-			QuestReward:
-			{
-				Description: 50 Chlorophyt-Erz
-			}
-			DetailedDescription: Tief im Dschungel schläft eine riesige Menschenfresserblume. Zerbrich die Knospe und stelle dich dem Zorn des Dschungels.
-		}
-		SkeletronQuest:
-		{
-			DisplayName: Skeletron
-			Description: Besiege Skeletron
-			QuestObjective:
-			{
-				Description: Besiege Skeletron
-			}
-			QuestReward:
-			{
-				Description: 50 Knochen
-			}
-			DetailedDescription: Nur wenn du den verfluchten Alten besiegst, kannst du sicher den Dungeon erkunden.
-		}
-		SlimeGodQuest:
-		{
-			DisplayName: Schleim-Gott
-			Description: Besiege den Schleim-Gott
-			QuestObjective:
-			{
-				Description: Besiege den Schleim-Gott
-			}
-			QuestReward:
-			{
-				Description: 1000 Gel
-			}
-			DetailedDescription: Der Gipfel der Schleimart — ein uralter, gieriger Gott. Hüte dich vor kombinierten Angriffen seiner Avatare.
-		}
-		WallofFleshQuest:
-		{
-			DisplayName: Fleischwand
-			Description: Besiege die Fleischwand
-			QuestObjective:
-			{
-				Description: Besiege die Fleischwand
-			}
-			QuestReward:
-			{
-				Description: Hammer der Macht
-			}
-			DetailedDescription: Der Torwächter der Welt. Wirf die Führervoodoopuppe ins Lava und beginne den Hardmode.
-		}
-		CeaselessVoidQuest:
-		{
-			DisplayName: Endlose Leere
-			Description: Besiege die Endlose Leere
-			QuestObjective:
-			{
-				Description: Besiege die Endlose Leere
-			}
-			QuestReward:
-			{
-				Description: 5 Dunkle Plasma
-			}
-			DetailedDescription: Einer der Wächter des Götterverschlingers — ein Spiegel der Leere aus einer anderen Dimension.
-		}
-		DevourerofGodsQuest:
-		{
-			DisplayName: Götterverschlinger
-			Description: Besiege den Götterverschlinger
-			QuestObjective:
-			{
-				Description: Besiege den Götterverschlinger
-			}
-			QuestReward:
-			{
-				Description: 30 Kosmilitbarren
-			}
-			DetailedDescription: Eine kosmische Schlange, die alles Göttliche verschlingen will. Kämpfe in der Leere — lass dich nicht fressen.
-		}
-		DragonfollyQuest:
-		{
-			DisplayName: Drachen-Torheit
-			Description: Besiege die Drachen-Torheit
-			QuestObjective:
-			{
-				Description: Besiege die Drachen-Torheit
-			}
-			QuestReward:
-			{
-				Description: 10 strahlende Federn
-			}
-			DetailedDescription: Ein gescheiterter Yharon-Klon — ein wahnsinniger, elektrisierter Pseudo-Drache.
-		}
-		ExoMechsQuest:
-		{
-			DisplayName: Exo-Mechs
-			Description: Besiege die Exo-Mechs
-			QuestObjective:
-			{
-				Description: Besiege die Exo-Mechs
-			}
-			QuestReward:
-			{
-				Description: 20 Exo-Prismen
-			}
-			DetailedDescription: Draedons Meisterwerke — der Gipfel terranischer Technologie. Überlebe diese perfekte Vorstellung.
-		}
-		OldDukeQuest:
-		{
-			DisplayName: Alter Herzog
-			Description: Besiege den Alten Herzog
-			QuestObjective:
-			{
-				Description: Besiege den Alten Herzog
-			}
-			QuestReward:
-			{
-				Description: 20 korrodierte Fossilien
-			}
-			DetailedDescription: Der uralte Herrscher der Schwefelsee-Tiefen — Mutation und Macht in einem. Hüte dich vor giftigem Dampf.
-		}
-		PolterghastQuest:
-		{
-			DisplayName: Poltergeist
-			Description: Besiege den Poltergeist
-			QuestObjective:
-			{
-				Description: Besiege den Poltergeist
-			}
-			QuestReward:
-			{
-				Description: 10 ruiniöse Seelen
-			}
-			DetailedDescription: Ein Monster aus den im Dungeon gestorbenen Seelen. Besänftige ihren Zorn.
-		}
-		PrimordialWyrmQuest:
-		{
-			DisplayName: Urwyrm
-			Description: Besiege den Urwyrm
-			QuestObjective:
-			{
-				Description: Besiege den Urwyrm
-			}
-			QuestReward:
-			{
-				Description: Halibut-Kanone
-			}
-			DetailedDescription: Der Wächter des tiefsten Abgrunds — älter als die Götter. Störe ihn nur bei Bedarf.
-		}
-		ProfanedGuardiansQuest:
-		{
-			DisplayName: Geschändete Wächter
-			Description: Besiege die Geschändeten Wächter
-			QuestObjective:
-			{
-				Description: Besiege die Geschändeten Wächter
-			}
-			QuestReward:
-			{
-				Description: 3 unheilige Essenz
-			}
-			DetailedDescription: Loyale Wächter der geschändeten Göttin. Besiege sie, um ihre Verteidigung zu schwächen.
-		}
-		ProvidenceQuest:
-		{
-			DisplayName: Providenz, die geschändete Göttin
-			Description: Besiege Providenz
-			QuestObjective:
-			{
-				Description: Besiege Providenz
-			}
-			QuestReward:
-			{
-				Description: 20 göttliche Geoden
-			}
-			DetailedDescription: Die Göttin heiligen Feuers und der Reinigung. Fordere sie im Heiligen Land oder der Unterwelt heraus — aber hüte dich vor dem heiligen Brand.
-		}
-		SignusQuest:
-		{
-			DisplayName: Signus, Gesandter des Verschlingers
-			Description: Besiege Signus
-			QuestObjective:
-			{
-				Description: Besiege Signus
-			}
-			QuestReward:
-			{
-				Description: 5 verdrehtes Nether
-			}
-			DetailedDescription: Einer der Wächter des Götterverschlingers — ein formloser Assassine, ein Geist der Leere.
-		}
-		StormWeaverQuest:
-		{
-			DisplayName: Sturmflechter
-			Description: Besiege den Sturmflechter
-			QuestObjective:
-			{
-				Description: Besiege den Sturmflechter
-			}
-			QuestReward:
-			{
-				Description: 5 gepanzerte Schalen
-			}
-			DetailedDescription: Einer der Wächter des Götterverschlingers — ein Himmelswurm, der von Gewittern und Blitzen lebt.
-		}
-		SupremeCalamitasQuest:
-		{
-			DisplayName: Oberste Calamitas
-			Description: Besiege die Oberste Calamitas
-			QuestObjective:
-			{
-				Description: Besiege die Oberste Calamitas
-			}
-			QuestReward:
-			{
-				Description: 20 Asche der Vernichtung
-			}
-			DetailedDescription: Die legendäre Schwefelfeuer-Hexe. Ende deiner Reise — oder ein neuer Anfang? Bereite dich auf echtes Bullet-Hell vor.
-		}
-		YharonQuest:
-		{
-			DisplayName: Yharon, Drache der Wiedergeburt
-			Description: Besiege Yharon
-			QuestObjective:
-			{
-				Description: Besiege Yharon
-			}
-			QuestReward:
-			{
-				Description: 20 Auric-Tesla-Barren
-			}
-			DetailedDescription: Der loyale Gefährte des Tyrannen — ein Drache mit phönixartiger Wiedergeburt. Eine Prüfung der Seele.
-		}
-		BatteryQuest:
-		{
-			DisplayName: Energiespeicher
-			Description: Stelle eine Thermobatterie her
-			QuestObjective:
-			{
-				Description: Erhalte eine Thermobatterie
-			}
-			QuestReward:
-			{
-				Description: 50 Kabel
-			}
-			DetailedDescription: Strom muss gespeichert werden. Batterien sind der erste Schritt zu einem stabilen Netz.
-		}
-		HydroelectricQuest:
-		{
-			DisplayName: Saubere Energie
-			Description: Stelle einen Wasserkraftgenerator her
-			QuestObjective:
-			{
-				Description: Erhalte einen Wasserkraftgenerator
-			}
-			QuestReward:
-			{
-				Description: Wassereimer
-			}
-			DetailedDescription: Nutze fließendes Wasser für Strom — sauber und nachhaltig.
-		}
-		IndustrialStartQuest:
-		{
-			DisplayName: Industrielle Revolution
-			Description: Stelle einen Windgenerator her
-			QuestObjective:
-			{
-				Description: Erhalte einen Windgenerator
-			}
-			QuestReward:
-			{
-				Description: 10 Eisenbarren
-			}
-			DetailedDescription: Der erste Schritt zur Automatisierung. Wind treibt deine Maschinen an und befreit deine Hände.
-		}
-		ItemFilterQuest:
-		{
-			DisplayName: Logistik-Sortierung
-			Description: Stelle einen Itemfilter her
-			QuestObjective:
-			{
-				Description: Erhalte einen Itemfilter
-			}
-			QuestReward:
-			{
-				Description: 2 Truhen
-			}
-			DetailedDescription: Automatisierte Linien brauchen Ordnung. Filter steuern den Gegenstandsfluss präzise.
-		}
-		MiningMachineQuest:
-		{
-			DisplayName: Automatisiertes Graben
-			Description: Stelle eine Mining-Maschine her
-			QuestObjective:
-			{
-				Description: Erhalte eine Mining-Maschine
-			}
-			QuestReward:
-			{
-				Description: 5 Spelunker-Tränke
-			}
-			DetailedDescription: Schluss mit mühsamem Handabbau. Diese Maschine frisst Erzadern mit erstaunlicher Effizienz.
-		}
-		MiningMachineIIQuest:
-		{
-			DisplayName: Tiefbohrung
-			Description: Stelle eine Mining-Maschine MK2 her
-			QuestObjective:
-			{
-				Description: Erhalte eine Mining-Maschine MK2
-			}
-			QuestReward:
-			{
-				Description: 5 Bergbau-Tränke
-			}
-			DetailedDescription: Ein verstärkter Kern bringt unvergleichliche Geschwindigkeit.
-		}
-		PipelineQuest:
-		{
-			DisplayName: Energieübertragung
-			Description: Stelle universelle Energieleitungen her
-			QuestObjective:
-			{
-				Description: Erhalte universelle Energieleitungen
-			}
-			QuestReward:
-			{
-				Description: 20 universelle Energieleitungen
-			}
-			DetailedDescription: Die Adern zwischen Generatoren und Maschinen. Ohne sie ist Strom nur stehendes Wasser.
-		}
-		TeslaTowerQuest:
-		{
-			DisplayName: Magnetsturm-Turm
-			Description: Stelle einen Tesla-Turm her
-			QuestObjective:
-			{
-				Description: Erhalte einen Tesla-Turm
-			}
-			QuestReward:
-			{
-				Description: 20 fragwürdige Beschichtung
-			}
-			DetailedDescription: Draedons Technologie-Kristallisation. Kabelloses Stromnetz — revolutioniert deine Verkabelung.
-		}
-		ThermalPowerQuest:
-		{
-			DisplayName: Zeit zu brennen
-			Description: Stelle einen Wärmegenerator her
-			QuestObjective:
-			{
-				Description: Erhalte einen Wärmegenerator
-			}
-			QuestReward:
-			{
-				Description: 50 Kohle
-			}
-			DetailedDescription: Verbrenne Brennstoff für viel Strom. Nicht umweltfreundlich, aber früh am zuverlässigsten.
-		}
-		AnnihilatingUniverseQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte „Universum der Vernichtung"
-			}
-			QuestReward:
-			{
-				Description: 5 Endlosbarren
-			}
-			DisplayName: Universum der Vernichtung
-			Description: Erhalte „Universum der Vernichtung"
-			DetailedDescription: Galaxienkraft auf der Sehne. Zerstört Dimensionen — der ultimative Beweis für einen Jäger.
-		}
-		AriaofTheCosmosQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte „Aria des Kosmos"
-			}
-			QuestReward:
-			{
-				Description: 20 Endlosbarren
-			}
-			DisplayName: Aria des Kosmos
-			Description: Erhalte „Aria des Kosmos"
-			DetailedDescription: Spiele die Symphonie der Sterne. Beschwört Schwarze Löcher und Quasare — Feinde verschwinden im Kosmosgesang.
-		}
-		DarkMatterCompressorQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Dunkle-Materie-Kompressor
-			}
-			QuestReward:
-			{
-				Description: 10 Dunkle-Materie-Kugeln
-			}
-			DisplayName: Dunkle-Materie-Kompressor
-			Description: Erhalte Dunkle-Materie-Kompressor
-			DetailedDescription: Manipuliere das rätselhafteste Materium. Komprimiert Dunkle Materie zu Energiekugeln für fortgeschrittenes Crafting.
-		}
-		InfiniteIngotQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Endlosbarren
-			}
-			QuestReward:
-			{
-				Description: 2 Endlosbarren
-			}
-			DisplayName: Endlosbarren
-			Description: Schmiede Endlosbarren
-			DetailedDescription: Ein Metall jenseits des Erhaltungssatzes — Grundstein ultimativer Macht mit endlosen Möglichkeiten.
-		}
-		InfinitePickQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Endlos-Spitzhacke
-			}
-			QuestReward:
-			{
-				Description: 5 Endlosbarren
-			}
-			DisplayName: Endlos-Spitzhacke
-			Description: Erhalte Endlos-Spitzhacke
-			DetailedDescription: Nichts stoppt diese Spitzhacke — selbst Grundgestein der Welt.
-		}
-		InfiniteToiletQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Endlos-Toilette
-			}
-			QuestReward:
-			{
-				Description: 1 Endlosbarren
-			}
-			DisplayName: Endlos-Toilette
-			Description: Erhalte Endlos-Toilette
-			DetailedDescription: Der Thron der Götter. Absurd — und doch höchste Autorität.
-		}
-		InfinityCatalystQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Endlos-Katalysator
-			}
-			QuestReward:
-			{
-				Description: 1 Endlosbarren
-			}
-			DisplayName: Endlos-Katalysator
-			Description: Erhalte Endlos-Katalysator
-			DetailedDescription: Schlüsselmedium der Endlosreaktion — Materie zirkuliert zwischen Vernichtung und Wiedergeburt.
-		}
-		NeutronBowQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Neutronenbogen
-			}
-			QuestReward:
-			{
-				Description: 2 Neutronensternbarren
-			}
-			DisplayName: Neutronenbogen
-			Description: Erhalte Neutronenbogen
-			DetailedDescription: Aus Neutronenstern-Kernfragmenten. Jeder Pfeil trägt die Schwerkraft eines kollabierenden Sterns.
-		}
-		NeutronGlaiveQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Neutronengleve
-			}
-			QuestReward:
-			{
-				Description: 2 Neutronensternbarren
-			}
-			DisplayName: Neutronengleve
-			Description: Erhalte Neutronengleve
-			DetailedDescription: Unglaubliche Dichte. Keine Rüstung hält dem Hieb stand.
-		}
-		NeutronGunQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Neutronengewehr
-			}
-			QuestReward:
-			{
-				Description: 2 Neutronensternbarren
-			}
-			DisplayName: Neutronengewehr
-			Description: Erhalte Neutronengewehr
-			DetailedDescription: Schießt Mikro-Neutronenströme — kaum vom Widerstand beeinflusst.
-		}
-		NeutronScytheQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Neutronensense
-			}
-			QuestReward:
-			{
-				Description: 2 Neutronensternbarren
-			}
-			DisplayName: Neutronensense
-			Description: Erhalte Neutronensense
-			DetailedDescription: Die Sense des Schnitters — reißt Raum auf wie Weizen.
-		}
-		NeutronStarIngotQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Neutronensternbarren
-			}
-			QuestReward:
-			{
-				Description: 5 Neutronensternbarren
-			}
-			DisplayName: Neutronensternbarren
-			Description: Erhalte Neutronensternbarren
-			DetailedDescription: Eines der dichtesten Materialien — summt von Gravitationswellen.
-		}
-		NeutronWandQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Neutronenstab
-			}
-			QuestReward:
-			{
-				Description: 2 Neutronensternbarren
-			}
-			DisplayName: Neutronenstab
-			Description: Erhalte Neutronenstab
-			DetailedDescription: Kontrolliert Schwerkraft — verdreht Raum-Zeit und zermalmt Feinde.
-		}
-		PandemoniumQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte „Pandämonium"
-			}
-			QuestReward:
-			{
-				Description: 20 Endlosbarren
-			}
-			DisplayName: Pandämonium
-			Description: Erhalte „Pandämonium"
-			DetailedDescription: Ultimative Waffe aus unzähligen Seelen und Calamity-Kraft — Schlüssel zu Hölle und Abgrund.
-		}
-		RockQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Fels
-			}
-			QuestReward:
-			{
-				Description: 5 Fels
-			}
-			DisplayName: Fels
-			Description: Erhalte Fels
-			DetailedDescription: Ein scheinbar gewöhnlicher Stein, Zeuge unzähliger Boss-Rush-Zyklen — Symbol ewiger Ausdauer.
-		}
-		TerminusQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Terminus
-			}
-			QuestReward:
-			{
-				Description: Große Menge Blutkugeln
-			}
-			DisplayName: Terminus
-			Description: Erhalte Terminus
-			DetailedDescription: Schlüssel zum Boss-Rush. Blicke in den Stein und stelle dich der stärksten Wesen der Welt.
-		}
-		TransmutationOfMatterQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Materie-Transmutator
-			}
-			QuestReward:
-			{
-				Description: 10 Endlosbarren
-			}
-			DisplayName: Materie-Transmutator
-			Description: Erhalte Materie-Transmutator
-			DetailedDescription: Ultimative Alchemie — bricht Äquivalenz, wandelt Materie willkürlich oder erschafft sie.
-		}
-		HeavenfallLongbowQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Himmlischer Sturm
-			}
-			QuestReward:
-			{
-				Description: 5 Endlosbarren
-			}
-			DisplayName: Himmlischer Sturm
-			Description: Erhalte Himmlischer Sturm
-			DetailedDescription: Ein Langbogen, der Götter erlegte — kehrt zurück.
-		}
-		SpearOfLonginusQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Lanze des Longinus
-			}
-			QuestReward:
-			{
-				Description: 5 Endlosbarren
-			}
-			DisplayName: Lanze des Longinus
-			Description: Erhalte Lanze des Longinus
-			DetailedDescription: Die heilige Lanze, die ein Gott durchbohrte — durchdringt alle Felder. Selbst die Kausalität weicht ihr.
-		}
-		DragonsWordQuest:
-		{
-			QuestObjective:
-			{
-				Description: Erhalte Drachenwort
-			}
-			QuestReward:
-			{
-				Description: 5 Endlosbarren
-			}
-			DisplayName: Drachenwort
-			Description: Erhalte Drachenwort
-			DetailedDescription: Ein Drache weint nur einmal im Leben — im Moment des Todes.
-		}
-		RockQuestII:
-		{
-			QuestObjective:
-			{
-				Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf Fels
-			}
-			QuestReward:
-			{
-				Description: 5 Fels
-			}
-			DisplayName: Kreislauf der Eroberung
-			Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf Fels
-			DetailedDescription: Das Symbol eines wahren Kriegers.
-		}
-		AdventurerQuests:
-		{
-			DisplayName: Abenteurer
-			Description: Die Welt gehört mir!
-			QuestObjective:
-			{
-				Description: Klicke zum Abholen
-			}
-			QuestReward:
-			{
-				Description: Hermes-Stiefel
-			}
-			DetailedDescription: Eine Reise von tausend Meilen beginnt mit einem Schritt. Miss die weite Welt mit diesen Stiefeln.
-		}
-		ExploreDungeon:
-		{
-			DisplayName: Düsterer Dungeon
-			Description: Entdecke den Dungeon-Eingang
-			QuestObjective:
-			{
-				Description: Erreiche den Dungeon
-			}
-			QuestReward:
-			{
-				Description: Gefahrensinn-Trank
-			}
-			DetailedDescription: Hinter verfluchten Mauern lauern Geheimnisse und Gefahren. Nur die Mutigsten betreten dieses Reich der Toten.
-		}
-		ExploreHell:
-		{
-			DisplayName: Abgrund der Unterwelt
-			Description: Steige in die Unterwelt hinab
-			QuestObjective:
-			{
-				Description: Erreiche die Unterwelt
-			}
-			QuestReward:
-			{
-				Description: Obsidianhaut-Trank
-			}
-			DetailedDescription: In den Tiefen fließen Lavaflüsse — Heimat der Dämonen, Quelle von Obsidian und Höllenstein. Pass auf!
-		}
-		ExploreJungle:
-		{
-			DisplayName: Dschungel-Expedition
-			Description: Erkunde das Dschungel-Biom
-			QuestObjective:
-			{
-				Description: Erreiche den Dschungel
-			}
-			QuestReward:
-			{
-				Description: Beschwörungs-Trank
-			}
-			DetailedDescription: Ein lebendiges, gefährliches grünes Labyrinth — Tempel und tödliche Bienenschwärme im Dickicht.
-		}
-		ExploreOcean:
-		{
-			DisplayName: Weltende
-			Description: Erreiche das Ozean-Biom
-			QuestObjective:
-			{
-				Description: Erreiche den Ozean
-			}
-			QuestReward:
-			{
-				Description: Kiemen-Trank
-			}
-			DetailedDescription: Am Rand des Kontinents treffen Himmel und Meer. Unter dem Blau liegen Wracks und Ungeheuer.
-		}
-		ExploreSnow:
-		{
-			DisplayName: Gefrorenes Ödland
-			Description: Erkunde das Schnee-Biom
-			QuestObjective:
-			{
-				Description: Erreiche das Schnee-Biom
-			}
-			QuestReward:
-			{
-				Description: Wärme-Trank
-			}
-			DetailedDescription: Ewiger Permafrost. Beißender Wind — hier existiert Leben hartnäckig.
-		}
-		ExploreSpace:
-		{
-			DisplayName: Sternenmeer
-			Description: Fliege ins All
-			QuestObjective:
-			{
-				Description: Erreiche den Weltraum
-			}
-			QuestReward:
-			{
-				Description: Federfall-Trank
-			}
-			DetailedDescription: Befreie dich von der Schwerkraft und berühre die Sterne. Nur hoch genug siehst du die ganze Welt.
-		}
-		HellLabSchematic:
-		{
-			DisplayName: Höllen-Bauplan
-			Description: Finde den verschlüsselten Bauplan im Draedon-Labor der Unterwelt
-			QuestObjective:
-			{
-				Description: Erhalte Höllen-Bauplan
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					Plating: Fragwürdige Beschichtung
-					Circuitry: Geheimnisvolle Schaltkreise
-					Fireblossom: Feuerblüte
-				}
-			}
-			DetailedDescription: Draedon nutzte Geothermie in der Unterwelt. Finde den Bauplan für neue Waffentechnologie.
-		}
-		IceLabSchematic:
-		{
-			DisplayName: Polar-Code
-			Description: Finde den verschlüsselten Bauplan im Draedon-Labor der Schneelandschaft
-			QuestObjective:
-			{
-				Description: Erhalte Eis-Bauplan
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					Plating: Fragwürdige Beschichtung
-					Circuitry: Geheimnisvolle Schaltkreise
-					Shiverthorn: Zitterdorn
-				}
-			}
-			DetailedDescription: Niedrige Temperaturen bewahren Präzisionsinstrumente. Finde die versiegelte Polar-Technologie.
-		}
-		JungleLabSchematic:
-		{
-			DisplayName: Dschungel-Entwurf
-			Description: Finde den verschlüsselten Bauplan im Draedon-Labor des Dschungels
-			QuestObjective:
-			{
-				Description: Erhalte Dschungel-Bauplan
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					Plating: Fragwürdige Beschichtung
-					Circuitry: Geheimnisvolle Schaltkreise
-					Moonglow: Mondglanz
-				}
-			}
-			DetailedDescription: Der Dschungel verbirgt Draedons Biolabor — Seuchen und Nanoviren. Finde die gefährliche Wahrheit.
-		}
-		PlanetoidLabSchematic:
-		{
-			DisplayName: Exo-Rätsel
-			Description: Finde den verschlüsselten Bauplan im Draedon-Labor auf dem Planetoiden
-			QuestObjective:
-			{
-				Description: Erhalte Planetoiden-Bauplan
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					Plating: Fragwürdige Beschichtung
-					Circuitry: Geheimnisvolle Schaltkreise
-					FallenStar: Sternschnuppe
-				}
-			}
-			DetailedDescription: In der Mikrogravitation schwebt ein Labor — frühe Exo-Mech-Entwürfe.
-		}
-		SunkenSeaLabSchematic:
-		{
-			DisplayName: Versunkenes Meer
-			Description: Finde den verschlüsselten Bauplan im Draedon-Labor des Versunkenen Meeres
-			QuestObjective:
-			{
-				Description: Erhalte Versunkenes-Meer-Bauplan
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					Plating: Fragwürdige Beschichtung
-					Circuitry: Geheimnisvolle Schaltkreise
-					Waterleaf: Wasserblatt
-				}
-			}
-			DetailedDescription: In diesem ruhigen Unterwassermeer hinterließ Draedon Prismenergie-Forschung. Tauche und hole die Daten.
-		}
-		AquaticScourgeQuest:
-		{
-			DisplayName: Aquatische Plage
-			Description: Besiege die Aquatische Plage
-			QuestObjective:
-			{
-				Description: Besiege die Aquatische Plage
-			}
-			QuestReward:
-			{
-				Description: Korrodierte Fossilien
-			}
-			DetailedDescription: Einst ein friedliches Meeresungeheuer — verdreht durch die Schwefelsee-Toxizität. Hüte dich vor Stößen und Giftwolken.
-		}
-		QueenSlimeQuest:
-		{
-			DisplayName: Schleimkönigin
-			Description: Besiege die Schleimkönigin
-			QuestObjective:
-			{
-				Description: Besiege die Schleimkönigin
-			}
-			QuestReward:
-			{
-				Description: 10 Seelen des Lichts
-			}
-			DetailedDescription: Die Kristallkaiserin des Heiligen Landes — agiler und tödlicher als ihr Gemahl. Bereite dich auf prächtiges Bullet-Hell vor.
-		}
-		BuildHouse:
-		{
-			DisplayName: Baumeister
-			Description: Baue ein geeignetes Haus
-			QuestObjective:
-			{
-				Description: Baue ein gültiges Haus
-			}
-			QuestReward:
-			{
-				Description: Holz
-			}
-			DetailedDescription: Jeder braucht Zuflucht. Mit Möbeln, Licht und Wänden dienen dir NPCs.
-		}
-		CollectEvilOres:
-		{
-			DisplayName: Böse Erze
-			Description: Sammle böse Erze
-			QuestObjective:
-			{
-				Description: Sammle Dämonit- oder Purpurerz
-			}
-			QuestReward:
-			{
-				Description: Fackeln
-			}
-			DetailedDescription: Unheilvolle Erze aus den Wunden der Welt — essenziell für mächtige Ausrüstung.
-		}
-		CollectFallenStars:
-		{
-			DisplayName: Sternensammler
-			Description: Sammle Sternschnuppen
-			QuestObjective:
-			{
-				Description: Sammle Sternschnuppen
-			}
-			QuestReward:
-			{
-				Description: Kleiner Manatrank
-			}
-			DetailedDescription: Tränen des Nachthimmels — erhöhen Mana und dienen als Munition oder Magiematerial.
-		}
-		CollectGems:
-		{
-			DisplayName: Edelsteinsammler
-			Description: Sammle verschiedene Edelsteine
-			QuestObjective:
-			{
-				Description: Sammle 5 verschiedene Edelsteine
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					$parentVal: Glanz-Trank
-					Diamond: Diamant
-				}
-			}
-			DetailedDescription: Funkelnde Kristalle im Gestein — wichtig für Stäbe und Enterhaken. Regenbogen aus Farben.
-		}
-		CollectHerbs:
-		{
-			DisplayName: Kräuterlehrling
-			Description: Sammle verschiedene Kräuter
-			QuestObjective:
-			{
-				Description: Sammle 3 verschiedene Kräuter
-			}
-			QuestReward:
-			{
-				Description: Flaschenwasser
-			}
-			DetailedDescription: Grundlage der Alchemie. Wüste, Schnee, Unterwelt — lerne sie zu erkennen.
-		}
-		CollectOres:
-		{
-			DisplayName: Erzsammlung
-			Description: Sammle Grunderze
-			QuestObjective:
-			{
-				Description:
-				{
-					Iron: Sammle Eisen- oder Bleierz
-					Copper: Sammle Kupfer- oder Zinnerz
-				}
-			}
-			QuestReward:
-			{
-				Description: Rückruf-Trank
-			}
-			DetailedDescription: Abbau ist Überleben. Kupfer und Eisen sind der Ausstieg aus der Steinzeit.
-		}
-		DeepExplorer:
-		{
-			DisplayName: Tiefenforscher
-			Description: Erkunde alle Hauptbiome
-			QuestObjective:
-			{
-				Description: Schließe alle Erkundungsaufträge ab
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					$parentVal: GPS
-					Gold: Goldmünzen
-				}
-			}
-			DetailedDescription: Von den Wolken bis zur Unterwelt — die ganze Welt liegt zu deinen Füßen.
-		}
-		ExploreCaverns:
-		{
-			DisplayName: Höhlentiefen
-			Description: Erkunde tiefere Höhlenschichten
-			QuestObjective:
-			{
-				Description: Erreiche die Höhlenschicht
-			}
-			QuestReward:
-			{
-				Description: Spelunker-Trank
-			}
-			DetailedDescription: Kein Sonnenlicht — nur Dunkelheit und Unbekanntes. Lava und reichere Erze. Der Abgrund starrt zurück.
-		}
-		ExploreCorruption:
-		{
-			DisplayName: Die Verderbnis
-			Description: Erkunde Verderbnis oder Purpur
-			QuestObjective:
-			{
-				Description: Betrete Verderbnis oder Purpur
-			}
-			QuestReward:
-			{
-				Description: Kampf-Trank
-			}
-			DetailedDescription: Krankes Land — violette Verderbnis oder purpurnes Fleisch. Nur im Versteck der Bestie gibt es Schattenschuppen.
-		}
-		ExploreDesert:
-		{
-			DisplayName: Glühende Wüste
-			Description: Betrete das Wüsten-Biom
-			QuestObjective:
-			{
-				Description: Erreiche die Wüste
-			}
-			QuestReward:
-			{
-				Description: Wasserlauf-Trank
-			}
-			DetailedDescription: Goldener Sand, Fossilien und Ameisenlöwen. Nimm Wasser mit — die Trockenheit tötet.
-		}
-		ExploreFloatingIsland:
-		{
-			DisplayName: Schwebende Inseln
-			Description: Finde schwebende Inseln am Himmel
-			QuestObjective:
-			{
-				Description: Erreiche eine schwebende Insel
-			}
-			QuestReward:
-			{
-				Description: Gravitations-Trank
-			}
-			DetailedDescription: Über den Wolken Schätze alter Zivilisationen. Suche Gravitationsanomalien oder baue einen Turm.
-		}
-		ExploreGlowingMushroom:
-		{
-			DisplayName: Leuchtende Pilze
-			Description: Finde das leuchtende Pilz-Biom
-			QuestObjective:
-			{
-				Description: Erreiche das Pilz-Biom
-			}
-			QuestReward:
-			{
-				Description: Nachteulen-Trank
-			}
-			DetailedDescription: Psychedelisches Untergrund-Ökosystem — blaues Leuchten, Heimat des Trüffelmanns.
-		}
-		ExploreUnderground:
-		{
-			DisplayName: Untergrund-Expedition
-			Description: Erkunde unterirdische Höhlen
-			QuestObjective:
-			{
-				Description: Erreiche den Untergrund
-			}
-			QuestReward:
-			{
-				Description: Bergbau-Trank
-			}
-			DetailedDescription: Oberfläche reicht nicht. Wahres Abenteuer beginnt darunter — nimm Fackeln mit.
-		}
-		FindLifeCrystal:
-		{
-			DisplayName: Lebensquelle
-			Description: Finde einen Lebenskristall
-			QuestObjective:
-			{
-				Description: Finde einen Lebenskristall
-			}
-			QuestReward:
-			{
-				Description: Kleiner Heiltrank
-			}
-			DetailedDescription: Roter Kristall voller Lebenskraft — stärkt dauerhaft deinen Körper.
-		}
-		FindShadowOrb:
-		{
-			DisplayName: Kern des Bösen
-			Description: Finde Schattenkugel oder Purpurherz tief im bösen Biom
-			QuestObjective:
-			{
-				Description: Zerstöre Schattenkugel oder Purpurherz
-			}
-			QuestReward:
-			{
-				Description:
-				{
-					$parentVal: Dynamit
-					Bomb: Bombe
-				}
-			}
-			DetailedDescription: Tief in der Kluft pulsiert Verderben. Drei Zerstörungen wecken Schreckliches.
-		}
-		FirstPotion:
-		{
-			DisplayName: Alchemie-Grundlagen
-			Description: Braue deinen ersten Trank
-			QuestObjective:
-			{
-				Description: Braue einen beliebigen Trank
-			}
-			QuestReward:
-			{
-				Description: Kleiner Manatrank
-			}
-			DetailedDescription: Leere Flasche auf den Tisch — einfache Alchemie. Richtige Zutaten, kein Zauber.
-		}
-		NPCVillage:
-		{
-			DisplayName: Blühendes Dorf
-			Description: Locke mehrere NPCs an
-			QuestObjective:
-			{
-				Description: Habe 5 NPCs
-			}
-			QuestReward:
-			{
-				Description: Goldmünzen
-			}
-			DetailedDescription: Allein in der Wildnis ist einsam. Baue eine Gemeinschaft — sie werden deine Stütze.
-		}
-		QueenBeeQuest:
-		{
-			DisplayName: Bienenkönigin
-			Description: Besiege die Bienenkönigin
-			QuestObjective:
-			{
-				Description: Besiege die Bienenkönigin
-			}
-			DetailedDescription: Im Dschungel-Untergrund erzürnt das Zerbrechen der Larve den Schwarm. Antigift und Vorsicht vor Stichen.
-		}
-		CollectorQuest:
-		{
-			DisplayName: Sammelassistent
-			Description: Erhalte den Sammler
-			QuestObjective:
-			{
-				Description: Erhalte den Sammler
-			}
-			QuestReward:
-			{
-				Description: 2 Truhen
-			}
-			DetailedDescription: Kein Bücken mehr — sammelt Drops automatisch. Kern der Logistik-Automatisierung.
-		}
-		LumberjackQuest:
-		{
-			DisplayName: Holzzeit
-			Description: Erhalte den Holzfäller
-			QuestObjective:
-			{
-				Description: Erhalte den Holzfäller
-			}
-			DetailedDescription: Holz ist Industrie-Basis. Diese Maschine automatisiert deinen Forst mit Strom.
-		}
-		LifeWeaverQuest:
-		{
-			DisplayName: Aufforstung
-			Description: Erhalte den Baumpflanzer
-			QuestObjective:
-			{
-				Description: Erhalte den Baumpflanzer
-			}
-			DetailedDescription: Setzlinge präzise pflanzen — letztes Puzzleteil für vollautomatischen Forst.
-		}
-		IncineratorQuest:
-		{
-			DisplayName: Elektrisches Schmelzen
-			Description: Stelle einen elektrischen Verbrennungsofen her
-			QuestObjective:
-			{
-				Description: Erhalte einen elektrischen Verbrennungsofen
-			}
-			DetailedDescription: Hochspannungsbögen verdoppeln die Erzausbeute — Schlüssel zur Industrialisierung.
-		}
-		ItemPipelineQuest:
-		{
-			DisplayName: Logistiksystem
-			Description: Stelle eine Itemleitung her
-			QuestObjective:
-			{
-				Description: Erhalte eine Itemleitung
-			}
-			QuestReward:
-			{
-				Description: 2 Truhen
-			}
-			DetailedDescription: Leitungen sind Industrieadern — Gegenstände fließen automatisch.
-		}
-		ThrowerQuest:
-		{
-			DisplayName: Wurfassistent
-			Description: Stelle einen Werfer her
-			QuestObjective:
-			{
-				Description: Erhalte einen Werfer
-			}
-			QuestReward:
-			{
-				Description: 2 Truhen
-			}
-			DetailedDescription: Wirft Items aus dem Netz — für Automatisierung oder als Abfallauslass.
-		}
+QuestNode: {
+	FirstQuest: {
+		DisplayName: Willkommen in der Welt von Calamity!
+		Description: Der Beginn der Reise
+		DetailedDescription: Jede Legende beginnt klein. Hol dir deine Startausrüstung und bereite dich auf eine Welt voller Götter und Monster vor.
+		QuestObjective.Description: Klicke, um Startgegenstände abzuholen
+		QuestReward.Description: Starter-Abenteuerpaket
+	}
+
+	MiningQuest: {
+		DisplayName: Mining-Grundlagen
+		Description: Erhalte zehn {0}
+		DetailedDescription: Unter der Erde liegt unendlicher Reichtum. Zuerst brauchen wir Grundmetalle für Werkzeuge.
+		QuestObjective.Description: Sammle zehn {0}
+
+		QuestReward: {
+			Description: Fünf {0}
+			Description2: Eine {0}
+		}
+	}
+
+	MiningQuestII: {
+		DisplayName: Eisenzeit
+		Description: Sammle fünfzig {0}
+		QuestObjective.Description: Sammle fünfzig {0}
+
+		QuestReward: {
+			Description: Fünfzig {0}
+			Description2: Eine {0}
+		}
+
+		DetailedDescription: Kupfer ist zu weich — wir brauchen härtere Metalle. Grabe tiefer nach Eisenerz.
+	}
+
+	MiningQuestIII: {
+		DisplayName: Goldrausch
+		Description: Sammle hundert {0}
+		QuestObjective.Description: Sammle hundert {0}
+
+		QuestReward: {
+			Description: Hundert {0}
+			Description2: Eine {0}
+		}
+
+		DetailedDescription: Gold ist nicht nur Währung — es leitet Magie gut und ist formbar. Weicher als Eisen, aber wichtig für fortgeschrittene Ausrüstung.
+	}
+
+	BrimstoneElementalQuest: {
+		DisplayName: Schwefelfeuer-Elementar
+		Description: Besiege den Schwefelfeuer-Elementar
+		QuestObjective.Description: Besiege den Schwefelfeuer-Elementar
+		QuestReward.Description: 10 Seelen der Nacht
+		DetailedDescription: In den Ruinen der Schwefelfeuerklippe erwecke und besiege den schlummernden Elementargeist. Hüte dich vor ihrem Bullet-Hell.
+	}
+
+	CalamitasCloneQuest: {
+		DisplayName: Calamitas-Klon
+		Description: Besiege den Calamitas-Klon
+		QuestObjective.Description: Besiege den Calamitas-Klon
+		QuestReward.Description: 10 Calamity-Staub
+		DetailedDescription: Ein Klon voller Hass und Zerstörungswut. Besiege ihn und beweise, dass du der wahren Hexe gewachsen bist.
+	}
+
+	CrabulonQuest: {
+		DisplayName: Crabulon
+		Description: Besiege Crabulon
+		QuestObjective.Description: Besiege Crabulon
+		QuestReward.Description: 50 leuchtende Pilze
+		DetailedDescription: Im leuchtenden Pilz-Untergrund lauert eine von Pilzen befallene Riesenkrabbe. Ihre Sporen sind äußerst gefährlich.
+	}
+
+	CryogenQuest: {
+		DisplayName: Kryogen
+		Description: Besiege Kryogen
+		QuestObjective.Description: Besiege Kryogen
+		QuestReward.Description: 10 Seelen des Lichts
+		DetailedDescription: Der einstige Erzmagier des Kosmos liegt in ewigem Eis gefangen. Befreie und besiege ihn.
+	}
+
+	DesertScourgeQuest: {
+		DisplayName: Wüstenplage
+		Description: Besiege die Wüstenplage
+		QuestObjective.Description: Besiege die Wüstenplage
+		QuestReward.Description: 10 Siegesscherben
+		DetailedDescription: Der einstige Herrscher der Meere ringt in der ausgetrockneten Wüste um Luft. Hüte dich vor seinen gewaltigen Kiefern und Dienern.
+	}
+
+	EaterofWorldsQuest: {
+		DisplayName: Weltenfresser / Gehirn von Cthulhu
+		Description: Besiege den Boss der Verderbnis oder Purpur
+		QuestObjective.Description: Besiege den Weltenfresser oder das Gehirn von Cthulhu
+		QuestReward.Description: 20 Schattenschuppen / Gewebeproben
+		DetailedDescription: Das Böse breitet sich aus. Dringe in die Wunden der Welt vor und beseitige den Riesenwurm oder das verderbte Gehirn.
+	}
+
+	EyeofCthulhuQuest: {
+		DisplayName: Auge von Cthulhu
+		Description: Besiege das Auge von Cthulhu
+		QuestObjective.Description: Besiege das Auge von Cthulhu
+		QuestReward.Description: 20 Dämonit- / Purpurerz
+		DetailedDescription: Sobald du den bösen Blick spürst, erscheint es. Deine erste echte Prüfung der Stärke.
+	}
+
+	GolemQuest: {
+		DisplayName: Golem
+		Description: Besiege den Golem
+		QuestObjective.Description: Besiege den Golem
+		QuestReward.Description: 10 Käferpanzer
+		DetailedDescription: Tief im Dschungeltempel thront eine uralte Kriegsmaschine. Hüte dich vor Lasern und schweren Schlägen.
+	}
+
+	HiveMindQuest: {
+		DisplayName: Der Hive Mind / Die Perforatoren
+		Description: Besiege den wahren Gott des bösen Bioms
+		QuestObjective.Description: Besiege den Hive Mind oder die Perforatoren
+		QuestReward.Description: 10 Dämonitbarren / Purpurbarren
+		DetailedDescription: Sie sind die Verkörperung des Bewusstseins von Verderbnis und Purpur. Ohne sie gibt es keinen Frieden.
+	}
+
+	KingSlimeQuest: {
+		DisplayName: Schleimkönig
+		Description: Besiege den Schleimkönig
+		QuestObjective.Description: Besiege den Schleimkönig
+		QuestReward.Description: 5 Goldmünzen
+		DetailedDescription: Der Herrscher aller Glibberwesen. Er wirkt komisch — lass dich von der Größe nicht zerquetschen.
+	}
+
+	LunaticCultistQuest: {
+		DisplayName: Lunatischer Kultist
+		Description: Besiege den lunatischen Kultisten
+		QuestObjective.Description: Besiege den lunatischen Kultisten
+		QuestReward.Description: 5 Sonnenfragmente
+		DetailedDescription: Am Dungeon-Eingang versuchen fanatische Kultisten, das Ende herauf- oder abzubeschwören. Stoppe ihr Ritual.
+	}
+
+	MechanicalBossesQuest: {
+		DisplayName: Mechanische Bosse
+		Description: Besiege alle mechanischen Bosse
+		QuestObjective.Description: Besiege alle mechanischen Bosse
+		QuestReward.Description: 20 geweihte Barren
+		DetailedDescription: Draedons frühe Schöpfungen, die Cthulhus Organe nachahmen. Nur ihr Fall lässt die Welt neu erblühen.
+	}
+
+	MoonLordQuest: {
+		DisplayName: Mondherr
+		Description: Besiege den Mondherrn
+		QuestObjective.Description: Besiege den Mondherrn
+		QuestReward.Description: Mondherr-Trophäe
+		DetailedDescription: Der Drahtzieher hinter allem — der Schrecken auf der Mondrückseite. Beende diesen langen Albtraum.
+	}
+
+	PlaguebringerGoliathQuest: {
+		DisplayName: Seuchenbringer-Goliath
+		Description: Besiege den Seuchenbringer-Goliath
+		QuestObjective.Description: Besiege den Seuchenbringer-Goliath
+		QuestReward.Description: 20 Seuchenzellkanister
+		DetailedDescription: Eine von Nanoviren umgebaute Bienenkönigin — tödlich und mit gefährlicher Seuche beladen.
+	}
+
+	PlanteraQuest: {
+		DisplayName: Plantera
+		Description: Besiege Plantera
+		QuestObjective.Description: Besiege Plantera
+		QuestReward.Description: 50 Chlorophyt-Erz
+		DetailedDescription: Tief im Dschungel schläft eine riesige Menschenfresserblume. Zerbrich die Knospe und stelle dich dem Zorn des Dschungels.
+	}
+
+	SkeletronQuest: {
+		DisplayName: Skeletron
+		Description: Besiege Skeletron
+		QuestObjective.Description: Besiege Skeletron
+		QuestReward.Description: 50 Knochen
+		DetailedDescription: Nur wenn du den verfluchten Alten besiegst, kannst du sicher den Dungeon erkunden.
+	}
+
+	SlimeGodQuest: {
+		DisplayName: Schleim-Gott
+		Description: Besiege den Schleim-Gott
+		QuestObjective.Description: Besiege den Schleim-Gott
+		QuestReward.Description: 1000 Gel
+		DetailedDescription: Der Gipfel der Schleimart — ein uralter, gieriger Gott. Hüte dich vor kombinierten Angriffen seiner Avatare.
+	}
+
+	WallofFleshQuest: {
+		DisplayName: Fleischwand
+		Description: Besiege die Fleischwand
+		QuestObjective.Description: Besiege die Fleischwand
+		QuestReward.Description: Hammer der Macht
+		DetailedDescription: Der Torwächter der Welt. Wirf die Führervoodoopuppe ins Lava und beginne den Hardmode.
+	}
+
+	CeaselessVoidQuest: {
+		DisplayName: Endlose Leere
+		Description: Besiege die Endlose Leere
+		QuestObjective.Description: Besiege die Endlose Leere
+		QuestReward.Description: 5 Dunkle Plasma
+		DetailedDescription: Einer der Wächter des Götterverschlingers — ein Spiegel der Leere aus einer anderen Dimension.
+	}
+
+	DevourerofGodsQuest: {
+		DisplayName: Götterverschlinger
+		Description: Besiege den Götterverschlinger
+		QuestObjective.Description: Besiege den Götterverschlinger
+		QuestReward.Description: 30 Kosmilitbarren
+		DetailedDescription: Eine kosmische Schlange, die alles Göttliche verschlingen will. Kämpfe in der Leere — lass dich nicht fressen.
+	}
+
+	DragonfollyQuest: {
+		DisplayName: Drachen-Torheit
+		Description: Besiege die Drachen-Torheit
+		QuestObjective.Description: Besiege die Drachen-Torheit
+		QuestReward.Description: 10 strahlende Federn
+		DetailedDescription: Ein gescheiterter Yharon-Klon — ein wahnsinniger, elektrisierter Pseudo-Drache.
+	}
+
+	ExoMechsQuest: {
+		DisplayName: Exo-Mechs
+		Description: Besiege die Exo-Mechs
+		QuestObjective.Description: Besiege die Exo-Mechs
+		QuestReward.Description: 20 Exo-Prismen
+		DetailedDescription: Draedons Meisterwerke — der Gipfel terranischer Technologie. Überlebe diese perfekte Vorstellung.
+	}
+
+	OldDukeQuest: {
+		DisplayName: Alter Herzog
+		Description: Besiege den Alten Herzog
+		QuestObjective.Description: Besiege den Alten Herzog
+		QuestReward.Description: 20 korrodierte Fossilien
+		DetailedDescription: Der uralte Herrscher der Schwefelsee-Tiefen — Mutation und Macht in einem. Hüte dich vor giftigem Dampf.
+	}
+
+	PolterghastQuest: {
+		DisplayName: Poltergeist
+		Description: Besiege den Poltergeist
+		QuestObjective.Description: Besiege den Poltergeist
+		QuestReward.Description: 10 ruiniöse Seelen
+		DetailedDescription: Ein Monster aus den im Dungeon gestorbenen Seelen. Besänftige ihren Zorn.
+	}
+
+	PrimordialWyrmQuest: {
+		DisplayName: Urwyrm
+		Description: Besiege den Urwyrm
+		QuestObjective.Description: Besiege den Urwyrm
+		QuestReward.Description: Halibut-Kanone
+		DetailedDescription: Der Wächter des tiefsten Abgrunds — älter als die Götter. Störe ihn nur bei Bedarf.
+	}
+
+	ProfanedGuardiansQuest: {
+		DisplayName: Geschändete Wächter
+		Description: Besiege die Geschändeten Wächter
+		QuestObjective.Description: Besiege die Geschändeten Wächter
+		QuestReward.Description: 3 unheilige Essenz
+		DetailedDescription: Loyale Wächter der geschändeten Göttin. Besiege sie, um ihre Verteidigung zu schwächen.
+	}
+
+	ProvidenceQuest: {
+		DisplayName: Providenz, die geschändete Göttin
+		Description: Besiege Providenz
+		QuestObjective.Description: Besiege Providenz
+		QuestReward.Description: 20 göttliche Geoden
+		DetailedDescription: Die Göttin heiligen Feuers und der Reinigung. Fordere sie im Heiligen Land oder der Unterwelt heraus — aber hüte dich vor dem heiligen Brand.
+	}
+
+	SignusQuest: {
+		DisplayName: Signus, Gesandter des Verschlingers
+		Description: Besiege Signus
+		QuestObjective.Description: Besiege Signus
+		QuestReward.Description: 5 verdrehtes Nether
+		DetailedDescription: Einer der Wächter des Götterverschlingers — ein formloser Assassine, ein Geist der Leere.
+	}
+
+	StormWeaverQuest: {
+		DisplayName: Sturmflechter
+		Description: Besiege den Sturmflechter
+		QuestObjective.Description: Besiege den Sturmflechter
+		QuestReward.Description: 5 gepanzerte Schalen
+		DetailedDescription: Einer der Wächter des Götterverschlingers — ein Himmelswurm, der von Gewittern und Blitzen lebt.
+	}
+
+	SupremeCalamitasQuest: {
+		DisplayName: Oberste Calamitas
+		Description: Besiege die Oberste Calamitas
+		QuestObjective.Description: Besiege die Oberste Calamitas
+		QuestReward.Description: 20 Asche der Vernichtung
+		DetailedDescription: Die legendäre Schwefelfeuer-Hexe. Ende deiner Reise — oder ein neuer Anfang? Bereite dich auf echtes Bullet-Hell vor.
+	}
+
+	YharonQuest: {
+		DisplayName: Yharon, Drache der Wiedergeburt
+		Description: Besiege Yharon
+		QuestObjective.Description: Besiege Yharon
+		QuestReward.Description: 20 Auric-Tesla-Barren
+		DetailedDescription: Der loyale Gefährte des Tyrannen — ein Drache mit phönixartiger Wiedergeburt. Eine Prüfung der Seele.
+	}
+
+	BatteryQuest: {
+		DisplayName: Energiespeicher
+		Description: Stelle eine Thermobatterie her
+		QuestObjective.Description: Erhalte eine Thermobatterie
+		QuestReward.Description: 50 Kabel
+		DetailedDescription: Strom muss gespeichert werden. Batterien sind der erste Schritt zu einem stabilen Netz.
+	}
+
+	HydroelectricQuest: {
+		DisplayName: Saubere Energie
+		Description: Stelle einen Wasserkraftgenerator her
+		QuestObjective.Description: Erhalte einen Wasserkraftgenerator
+		QuestReward.Description: Wassereimer
+		DetailedDescription: Nutze fließendes Wasser für Strom — sauber und nachhaltig.
+	}
+
+	IndustrialStartQuest: {
+		DisplayName: Industrielle Revolution
+		Description: Stelle einen Windgenerator her
+		QuestObjective.Description: Erhalte einen Windgenerator
+		QuestReward.Description: 10 Eisenbarren
+		DetailedDescription: Der erste Schritt zur Automatisierung. Wind treibt deine Maschinen an und befreit deine Hände.
+	}
+
+	ItemFilterQuest: {
+		DisplayName: Logistik-Sortierung
+		Description: Stelle einen Itemfilter her
+		QuestObjective.Description: Erhalte einen Itemfilter
+		QuestReward.Description: 2 Truhen
+		DetailedDescription: Automatisierte Linien brauchen Ordnung. Filter steuern den Gegenstandsfluss präzise.
+	}
+
+	MiningMachineQuest: {
+		DisplayName: Automatisiertes Graben
+		Description: Stelle eine Mining-Maschine her
+		QuestObjective.Description: Erhalte eine Mining-Maschine
+		QuestReward.Description: 5 Spelunker-Tränke
+		DetailedDescription: Schluss mit mühsamem Handabbau. Diese Maschine frisst Erzadern mit erstaunlicher Effizienz.
+	}
+
+	MiningMachineIIQuest: {
+		DisplayName: Tiefbohrung
+		Description: Stelle eine Mining-Maschine MK2 her
+		QuestObjective.Description: Erhalte eine Mining-Maschine MK2
+		QuestReward.Description: 5 Bergbau-Tränke
+		DetailedDescription: Ein verstärkter Kern bringt unvergleichliche Geschwindigkeit.
+	}
+
+	PipelineQuest: {
+		DisplayName: Energieübertragung
+		Description: Stelle universelle Energieleitungen her
+		QuestObjective.Description: Erhalte universelle Energieleitungen
+		QuestReward.Description: 20 universelle Energieleitungen
+		DetailedDescription: Die Adern zwischen Generatoren und Maschinen. Ohne sie ist Strom nur stehendes Wasser.
+	}
+
+	TeslaTowerQuest: {
+		DisplayName: Magnetsturm-Turm
+		Description: Stelle einen Tesla-Turm her
+		QuestObjective.Description: Erhalte einen Tesla-Turm
+		QuestReward.Description: 20 fragwürdige Beschichtung
+		DetailedDescription: Draedons Technologie-Kristallisation. Kabelloses Stromnetz — revolutioniert deine Verkabelung.
+	}
+
+	ThermalPowerQuest: {
+		DisplayName: Zeit zu brennen
+		Description: Stelle einen Wärmegenerator her
+		QuestObjective.Description: Erhalte einen Wärmegenerator
+		QuestReward.Description: 50 Kohle
+		DetailedDescription: Verbrenne Brennstoff für viel Strom. Nicht umweltfreundlich, aber früh am zuverlässigsten.
+	}
+
+	AnnihilatingUniverseQuest: {
+		QuestObjective.Description: Erhalte „Universum der Vernichtung"
+		QuestReward.Description: 5 Endlosbarren
+		DisplayName: Universum der Vernichtung
+		Description: Erhalte „Universum der Vernichtung"
+		DetailedDescription: Galaxienkraft auf der Sehne. Zerstört Dimensionen — der ultimative Beweis für einen Jäger.
+	}
+
+	AriaofTheCosmosQuest: {
+		QuestObjective.Description: Erhalte „Aria des Kosmos"
+		QuestReward.Description: 20 Endlosbarren
+		DisplayName: Aria des Kosmos
+		Description: Erhalte „Aria des Kosmos"
+		DetailedDescription: Spiele die Symphonie der Sterne. Beschwört Schwarze Löcher und Quasare — Feinde verschwinden im Kosmosgesang.
+	}
+
+	DarkMatterCompressorQuest: {
+		QuestObjective.Description: Erhalte Dunkle-Materie-Kompressor
+		QuestReward.Description: 10 Dunkle-Materie-Kugeln
+		DisplayName: Dunkle-Materie-Kompressor
+		Description: Erhalte Dunkle-Materie-Kompressor
+		DetailedDescription: Manipuliere das rätselhafteste Materium. Komprimiert Dunkle Materie zu Energiekugeln für fortgeschrittenes Crafting.
+	}
+
+	InfiniteIngotQuest: {
+		QuestObjective.Description: Erhalte Endlosbarren
+		QuestReward.Description: 2 Endlosbarren
+		DisplayName: Endlosbarren
+		Description: Schmiede Endlosbarren
+		DetailedDescription: Ein Metall jenseits des Erhaltungssatzes — Grundstein ultimativer Macht mit endlosen Möglichkeiten.
+	}
+
+	InfinitePickQuest: {
+		QuestObjective.Description: Erhalte Endlos-Spitzhacke
+		QuestReward.Description: 5 Endlosbarren
+		DisplayName: Endlos-Spitzhacke
+		Description: Erhalte Endlos-Spitzhacke
+		DetailedDescription: Nichts stoppt diese Spitzhacke — selbst Grundgestein der Welt.
+	}
+
+	InfiniteToiletQuest: {
+		QuestObjective.Description: Erhalte Endlos-Toilette
+		QuestReward.Description: 1 Endlosbarren
+		DisplayName: Endlos-Toilette
+		Description: Erhalte Endlos-Toilette
+		DetailedDescription: Der Thron der Götter. Absurd — und doch höchste Autorität.
+	}
+
+	InfinityCatalystQuest: {
+		QuestObjective.Description: Erhalte Endlos-Katalysator
+		QuestReward.Description: 1 Endlosbarren
+		DisplayName: Endlos-Katalysator
+		Description: Erhalte Endlos-Katalysator
+		DetailedDescription: Schlüsselmedium der Endlosreaktion — Materie zirkuliert zwischen Vernichtung und Wiedergeburt.
+	}
+
+	NeutronBowQuest: {
+		QuestObjective.Description: Erhalte Neutronenbogen
+		QuestReward.Description: 2 Neutronensternbarren
+		DisplayName: Neutronenbogen
+		Description: Erhalte Neutronenbogen
+		DetailedDescription: Aus Neutronenstern-Kernfragmenten. Jeder Pfeil trägt die Schwerkraft eines kollabierenden Sterns.
+	}
+
+	NeutronGlaiveQuest: {
+		QuestObjective.Description: Erhalte Neutronengleve
+		QuestReward.Description: 2 Neutronensternbarren
+		DisplayName: Neutronengleve
+		Description: Erhalte Neutronengleve
+		DetailedDescription: Unglaubliche Dichte. Keine Rüstung hält dem Hieb stand.
+	}
+
+	NeutronGunQuest: {
+		QuestObjective.Description: Erhalte Neutronengewehr
+		QuestReward.Description: 2 Neutronensternbarren
+		DisplayName: Neutronengewehr
+		Description: Erhalte Neutronengewehr
+		DetailedDescription: Schießt Mikro-Neutronenströme — kaum vom Widerstand beeinflusst.
+	}
+
+	NeutronScytheQuest: {
+		QuestObjective.Description: Erhalte Neutronensense
+		QuestReward.Description: 2 Neutronensternbarren
+		DisplayName: Neutronensense
+		Description: Erhalte Neutronensense
+		DetailedDescription: Die Sense des Schnitters — reißt Raum auf wie Weizen.
+	}
+
+	NeutronStarIngotQuest: {
+		QuestObjective.Description: Erhalte Neutronensternbarren
+		QuestReward.Description: 5 Neutronensternbarren
+		DisplayName: Neutronensternbarren
+		Description: Erhalte Neutronensternbarren
+		DetailedDescription: Eines der dichtesten Materialien — summt von Gravitationswellen.
+	}
+
+	NeutronWandQuest: {
+		QuestObjective.Description: Erhalte Neutronenstab
+		QuestReward.Description: 2 Neutronensternbarren
+		DisplayName: Neutronenstab
+		Description: Erhalte Neutronenstab
+		DetailedDescription: Kontrolliert Schwerkraft — verdreht Raum-Zeit und zermalmt Feinde.
+	}
+
+	PandemoniumQuest: {
+		QuestObjective.Description: Erhalte „Pandämonium"
+		QuestReward.Description: 20 Endlosbarren
+		DisplayName: Pandämonium
+		Description: Erhalte „Pandämonium"
+		DetailedDescription: Ultimative Waffe aus unzähligen Seelen und Calamity-Kraft — Schlüssel zu Hölle und Abgrund.
+	}
+
+	RockQuest: {
+		QuestObjective.Description: Erhalte Fels
+		QuestReward.Description: 5 Fels
+		DisplayName: Fels
+		Description: Erhalte Fels
+		DetailedDescription: Ein scheinbar gewöhnlicher Stein, Zeuge unzähliger Boss-Rush-Zyklen — Symbol ewiger Ausdauer.
+	}
+
+	TerminusQuest: {
+		QuestObjective.Description: Erhalte Terminus
+		QuestReward.Description: Große Menge Blutkugeln
+		DisplayName: Terminus
+		Description: Erhalte Terminus
+		DetailedDescription: Schlüssel zum Boss-Rush. Blicke in den Stein und stelle dich der stärksten Wesen der Welt.
+	}
+
+	TransmutationOfMatterQuest: {
+		QuestObjective.Description: Erhalte Materie-Transmutator
+		QuestReward.Description: 10 Endlosbarren
+		DisplayName: Materie-Transmutator
+		Description: Erhalte Materie-Transmutator
+		DetailedDescription: Ultimative Alchemie — bricht Äquivalenz, wandelt Materie willkürlich oder erschafft sie.
+	}
+
+	HeavenfallLongbowQuest: {
+		QuestObjective.Description: Erhalte Himmlischer Sturm
+		QuestReward.Description: 5 Endlosbarren
+		DisplayName: Himmlischer Sturm
+		Description: Erhalte Himmlischer Sturm
+		DetailedDescription: Ein Langbogen, der Götter erlegte — kehrt zurück.
+	}
+
+	SpearOfLonginusQuest: {
+		QuestObjective.Description: Erhalte Lanze des Longinus
+		QuestReward.Description: 5 Endlosbarren
+		DisplayName: Lanze des Longinus
+		Description: Erhalte Lanze des Longinus
+		DetailedDescription: Die heilige Lanze, die ein Gott durchbohrte — durchdringt alle Felder. Selbst die Kausalität weicht ihr.
+	}
+
+	DragonsWordQuest: {
+		QuestObjective.Description: Erhalte Drachenwort
+		QuestReward.Description: 5 Endlosbarren
+		DisplayName: Drachenwort
+		Description: Erhalte Drachenwort
+		DetailedDescription: Ein Drache weint nur einmal im Leben — im Moment des Todes.
+	}
+
+	RockQuestII: {
+		QuestObjective.Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf Fels
+		QuestReward.Description: 5 Fels
+		DisplayName: Kreislauf der Eroberung
+		Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf Fels
+		DetailedDescription: Das Symbol eines wahren Kriegers.
+	}
+
+	AdventurerQuests: {
+		DisplayName: Abenteurer
+		Description: Die Welt gehört mir!
+		QuestObjective.Description: Klicke zum Abholen
+		QuestReward.Description: Hermes-Stiefel
+		DetailedDescription: Eine Reise von tausend Meilen beginnt mit einem Schritt. Miss die weite Welt mit diesen Stiefeln.
+	}
+
+	ExploreDungeon: {
+		DisplayName: Düsterer Dungeon
+		Description: Entdecke den Dungeon-Eingang
+		QuestObjective.Description: Erreiche den Dungeon
+		QuestReward.Description: Gefahrensinn-Trank
+		DetailedDescription: Hinter verfluchten Mauern lauern Geheimnisse und Gefahren. Nur die Mutigsten betreten dieses Reich der Toten.
+	}
+
+	ExploreHell: {
+		DisplayName: Abgrund der Unterwelt
+		Description: Steige in die Unterwelt hinab
+		QuestObjective.Description: Erreiche die Unterwelt
+		QuestReward.Description: Obsidianhaut-Trank
+		DetailedDescription: In den Tiefen fließen Lavaflüsse — Heimat der Dämonen, Quelle von Obsidian und Höllenstein. Pass auf!
+	}
+
+	ExploreJungle: {
+		DisplayName: Dschungel-Expedition
+		Description: Erkunde das Dschungel-Biom
+		QuestObjective.Description: Erreiche den Dschungel
+		QuestReward.Description: Beschwörungs-Trank
+		DetailedDescription: Ein lebendiges, gefährliches grünes Labyrinth — Tempel und tödliche Bienenschwärme im Dickicht.
+	}
+
+	ExploreOcean: {
+		DisplayName: Weltende
+		Description: Erreiche das Ozean-Biom
+		QuestObjective.Description: Erreiche den Ozean
+		QuestReward.Description: Kiemen-Trank
+		DetailedDescription: Am Rand des Kontinents treffen Himmel und Meer. Unter dem Blau liegen Wracks und Ungeheuer.
+	}
+
+	ExploreSnow: {
+		DisplayName: Gefrorenes Ödland
+		Description: Erkunde das Schnee-Biom
+		QuestObjective.Description: Erreiche das Schnee-Biom
+		QuestReward.Description: Wärme-Trank
+		DetailedDescription: Ewiger Permafrost. Beißender Wind — hier existiert Leben hartnäckig.
+	}
+
+	ExploreSpace: {
+		DisplayName: Sternenmeer
+		Description: Fliege ins All
+		QuestObjective.Description: Erreiche den Weltraum
+		QuestReward.Description: Federfall-Trank
+		DetailedDescription: Befreie dich von der Schwerkraft und berühre die Sterne. Nur hoch genug siehst du die ganze Welt.
+	}
+
+	HellLabSchematic: {
+		DisplayName: Höllen-Bauplan
+		Description: Finde den verschlüsselten Bauplan im Draedon-Labor der Unterwelt
+		QuestObjective.Description: Erhalte Höllen-Bauplan
+
+		QuestReward: {
+			Description: {
+				Plating: Fragwürdige Beschichtung
+				Circuitry: Geheimnisvolle Schaltkreise
+				Fireblossom: Feuerblüte
+			}
+		}
+
+		DetailedDescription: Draedon nutzte Geothermie in der Unterwelt. Finde den Bauplan für neue Waffentechnologie.
+	}
+
+	IceLabSchematic: {
+		DisplayName: Polar-Code
+		Description: Finde den verschlüsselten Bauplan im Draedon-Labor der Schneelandschaft
+		QuestObjective.Description: Erhalte Eis-Bauplan
+
+		QuestReward: {
+			Description: {
+				Plating: Fragwürdige Beschichtung
+				Circuitry: Geheimnisvolle Schaltkreise
+				Shiverthorn: Zitterdorn
+			}
+		}
+
+		DetailedDescription: Niedrige Temperaturen bewahren Präzisionsinstrumente. Finde die versiegelte Polar-Technologie.
+	}
+
+	JungleLabSchematic: {
+		DisplayName: Dschungel-Entwurf
+		Description: Finde den verschlüsselten Bauplan im Draedon-Labor des Dschungels
+		QuestObjective.Description: Erhalte Dschungel-Bauplan
+
+		QuestReward: {
+			Description: {
+				Plating: Fragwürdige Beschichtung
+				Circuitry: Geheimnisvolle Schaltkreise
+				Moonglow: Mondglanz
+			}
+		}
+
+		DetailedDescription: Der Dschungel verbirgt Draedons Biolabor — Seuchen und Nanoviren. Finde die gefährliche Wahrheit.
+	}
+
+	PlanetoidLabSchematic: {
+		DisplayName: Exo-Rätsel
+		Description: Finde den verschlüsselten Bauplan im Draedon-Labor auf dem Planetoiden
+		QuestObjective.Description: Erhalte Planetoiden-Bauplan
+
+		QuestReward: {
+			Description: {
+				Plating: Fragwürdige Beschichtung
+				Circuitry: Geheimnisvolle Schaltkreise
+				FallenStar: Sternschnuppe
+			}
+		}
+
+		DetailedDescription: In der Mikrogravitation schwebt ein Labor — frühe Exo-Mech-Entwürfe.
+	}
+
+	SunkenSeaLabSchematic: {
+		DisplayName: Versunkenes Meer
+		Description: Finde den verschlüsselten Bauplan im Draedon-Labor des Versunkenen Meeres
+		QuestObjective.Description: Erhalte Versunkenes-Meer-Bauplan
+
+		QuestReward: {
+			Description: {
+				Plating: Fragwürdige Beschichtung
+				Circuitry: Geheimnisvolle Schaltkreise
+				Waterleaf: Wasserblatt
+			}
+		}
+
+		DetailedDescription: In diesem ruhigen Unterwassermeer hinterließ Draedon Prismenergie-Forschung. Tauche und hole die Daten.
+	}
+
+	AquaticScourgeQuest: {
+		DisplayName: Aquatische Plage
+		Description: Besiege die Aquatische Plage
+		QuestObjective.Description: Besiege die Aquatische Plage
+		QuestReward.Description: Korrodierte Fossilien
+		DetailedDescription: Einst ein friedliches Meeresungeheuer — verdreht durch die Schwefelsee-Toxizität. Hüte dich vor Stößen und Giftwolken.
+	}
+
+	QueenSlimeQuest: {
+		DisplayName: Schleimkönigin
+		Description: Besiege die Schleimkönigin
+		QuestObjective.Description: Besiege die Schleimkönigin
+		QuestReward.Description: 10 Seelen des Lichts
+		DetailedDescription: Die Kristallkaiserin des Heiligen Landes — agiler und tödlicher als ihr Gemahl. Bereite dich auf prächtiges Bullet-Hell vor.
+	}
+
+	BuildHouse: {
+		DisplayName: Baumeister
+		Description: Baue ein geeignetes Haus
+		QuestObjective.Description: Baue ein gültiges Haus
+		QuestReward.Description: Holz
+		DetailedDescription: Jeder braucht Zuflucht. Mit Möbeln, Licht und Wänden dienen dir NPCs.
+	}
+
+	CollectEvilOres: {
+		DisplayName: Böse Erze
+		Description: Sammle böse Erze
+		QuestObjective.Description: Sammle Dämonit- oder Purpurerz
+		QuestReward.Description: Fackeln
+		DetailedDescription: Unheilvolle Erze aus den Wunden der Welt — essenziell für mächtige Ausrüstung.
+	}
+
+	CollectFallenStars: {
+		DisplayName: Sternensammler
+		Description: Sammle Sternschnuppen
+		QuestObjective.Description: Sammle Sternschnuppen
+		QuestReward.Description: Kleiner Manatrank
+		DetailedDescription: Tränen des Nachthimmels — erhöhen Mana und dienen als Munition oder Magiematerial.
+	}
+
+	CollectGems: {
+		DisplayName: Edelsteinsammler
+		Description: Sammle verschiedene Edelsteine
+		QuestObjective.Description: Sammle 5 verschiedene Edelsteine
+
+		QuestReward: {
+			Description: {
+				$parentVal: Glanz-Trank
+				Diamond: Diamant
+			}
+		}
+
+		DetailedDescription: Funkelnde Kristalle im Gestein — wichtig für Stäbe und Enterhaken. Regenbogen aus Farben.
+	}
+
+	CollectHerbs: {
+		DisplayName: Kräuterlehrling
+		Description: Sammle verschiedene Kräuter
+		QuestObjective.Description: Sammle 3 verschiedene Kräuter
+		QuestReward.Description: Flaschenwasser
+		DetailedDescription: Grundlage der Alchemie. Wüste, Schnee, Unterwelt — lerne sie zu erkennen.
+	}
+
+	CollectOres: {
+		DisplayName: Erzsammlung
+		Description: Sammle Grunderze
+
+		QuestObjective: {
+			Description: {
+				Iron: Sammle Eisen- oder Bleierz
+				Copper: Sammle Kupfer- oder Zinnerz
+			}
+		}
+
+		QuestReward.Description: Rückruf-Trank
+		DetailedDescription: Abbau ist Überleben. Kupfer und Eisen sind der Ausstieg aus der Steinzeit.
+	}
+
+	DeepExplorer: {
+		DisplayName: Tiefenforscher
+		Description: Erkunde alle Hauptbiome
+		QuestObjective.Description: Schließe alle Erkundungsaufträge ab
+
+		QuestReward: {
+			Description: {
+				$parentVal: GPS
+				Gold: Goldmünzen
+			}
+		}
+
+		DetailedDescription: Von den Wolken bis zur Unterwelt — die ganze Welt liegt zu deinen Füßen.
+	}
+
+	ExploreCaverns: {
+		DisplayName: Höhlentiefen
+		Description: Erkunde tiefere Höhlenschichten
+		QuestObjective.Description: Erreiche die Höhlenschicht
+		QuestReward.Description: Spelunker-Trank
+		DetailedDescription: Kein Sonnenlicht — nur Dunkelheit und Unbekanntes. Lava und reichere Erze. Der Abgrund starrt zurück.
+	}
+
+	ExploreCorruption: {
+		DisplayName: Die Verderbnis
+		Description: Erkunde Verderbnis oder Purpur
+		QuestObjective.Description: Betrete Verderbnis oder Purpur
+		QuestReward.Description: Kampf-Trank
+		DetailedDescription: Krankes Land — violette Verderbnis oder purpurnes Fleisch. Nur im Versteck der Bestie gibt es Schattenschuppen.
+	}
+
+	ExploreDesert: {
+		DisplayName: Glühende Wüste
+		Description: Betrete das Wüsten-Biom
+		QuestObjective.Description: Erreiche die Wüste
+		QuestReward.Description: Wasserlauf-Trank
+		DetailedDescription: Goldener Sand, Fossilien und Ameisenlöwen. Nimm Wasser mit — die Trockenheit tötet.
+	}
+
+	ExploreFloatingIsland: {
+		DisplayName: Schwebende Inseln
+		Description: Finde schwebende Inseln am Himmel
+		QuestObjective.Description: Erreiche eine schwebende Insel
+		QuestReward.Description: Gravitations-Trank
+		DetailedDescription: Über den Wolken Schätze alter Zivilisationen. Suche Gravitationsanomalien oder baue einen Turm.
+	}
+
+	ExploreGlowingMushroom: {
+		DisplayName: Leuchtende Pilze
+		Description: Finde das leuchtende Pilz-Biom
+		QuestObjective.Description: Erreiche das Pilz-Biom
+		QuestReward.Description: Nachteulen-Trank
+		DetailedDescription: Psychedelisches Untergrund-Ökosystem — blaues Leuchten, Heimat des Trüffelmanns.
+	}
+
+	ExploreUnderground: {
+		DisplayName: Untergrund-Expedition
+		Description: Erkunde unterirdische Höhlen
+		QuestObjective.Description: Erreiche den Untergrund
+		QuestReward.Description: Bergbau-Trank
+		DetailedDescription: Oberfläche reicht nicht. Wahres Abenteuer beginnt darunter — nimm Fackeln mit.
+	}
+
+	FindLifeCrystal: {
+		DisplayName: Lebensquelle
+		Description: Finde einen Lebenskristall
+		QuestObjective.Description: Finde einen Lebenskristall
+		QuestReward.Description: Kleiner Heiltrank
+		DetailedDescription: Roter Kristall voller Lebenskraft — stärkt dauerhaft deinen Körper.
+	}
+
+	FindShadowOrb: {
+		DisplayName: Kern des Bösen
+		Description: Finde Schattenkugel oder Purpurherz tief im bösen Biom
+		QuestObjective.Description: Zerstöre Schattenkugel oder Purpurherz
+
+		QuestReward: {
+			Description: {
+				$parentVal: Dynamit
+				Bomb: Bombe
+			}
+		}
+
+		DetailedDescription: Tief in der Kluft pulsiert Verderben. Drei Zerstörungen wecken Schreckliches.
+	}
+
+	FirstPotion: {
+		DisplayName: Alchemie-Grundlagen
+		Description: Braue deinen ersten Trank
+		QuestObjective.Description: Braue einen beliebigen Trank
+		QuestReward.Description: Kleiner Manatrank
+		DetailedDescription: Leere Flasche auf den Tisch — einfache Alchemie. Richtige Zutaten, kein Zauber.
+	}
+
+	NPCVillage: {
+		DisplayName: Blühendes Dorf
+		Description: Locke mehrere NPCs an
+		QuestObjective.Description: Habe 5 NPCs
+		QuestReward.Description: Goldmünzen
+		DetailedDescription: Allein in der Wildnis ist einsam. Baue eine Gemeinschaft — sie werden deine Stütze.
+	}
+
+	QueenBeeQuest: {
+		DisplayName: Bienenkönigin
+		Description: Besiege die Bienenkönigin
+		QuestObjective.Description: Besiege die Bienenkönigin
+		DetailedDescription: Im Dschungel-Untergrund erzürnt das Zerbrechen der Larve den Schwarm. Antigift und Vorsicht vor Stichen.
+	}
+
+	CollectorQuest: {
+		DisplayName: Sammelassistent
+		Description: Erhalte den Sammler
+		QuestObjective.Description: Erhalte den Sammler
+		QuestReward.Description: 2 Truhen
+		DetailedDescription: Kein Bücken mehr — sammelt Drops automatisch. Kern der Logistik-Automatisierung.
+	}
+
+	LumberjackQuest: {
+		DisplayName: Holzzeit
+		Description: Erhalte den Holzfäller
+		QuestObjective.Description: Erhalte den Holzfäller
+		DetailedDescription: Holz ist Industrie-Basis. Diese Maschine automatisiert deinen Forst mit Strom.
+	}
+
+	LifeWeaverQuest: {
+		DisplayName: Aufforstung
+		Description: Erhalte den Baumpflanzer
+		QuestObjective.Description: Erhalte den Baumpflanzer
+		DetailedDescription: Setzlinge präzise pflanzen — letztes Puzzleteil für vollautomatischen Forst.
+	}
+
+	IncineratorQuest: {
+		DisplayName: Elektrisches Schmelzen
+		Description: Stelle einen elektrischen Verbrennungsofen her
+		QuestObjective.Description: Erhalte einen elektrischen Verbrennungsofen
+		DetailedDescription: Hochspannungsbögen verdoppeln die Erzausbeute — Schlüssel zur Industrialisierung.
+	}
+
+	ItemPipelineQuest: {
+		DisplayName: Logistiksystem
+		Description: Stelle eine Itemleitung her
+		QuestObjective.Description: Erhalte eine Itemleitung
+		QuestReward.Description: 2 Truhen
+		DetailedDescription: Leitungen sind Industrieadern — Gegenstände fließen automatisch.
+	}
+
+	ThrowerQuest: {
+		DisplayName: Wurfassistent
+		Description: Stelle einen Werfer her
+		QuestObjective.Description: Erhalte einen Werfer
+		QuestReward.Description: 2 Truhen
+		DetailedDescription: Wirft Items aus dem Netz — für Automatisierung oder als Abfallauslass.
 	}
 }

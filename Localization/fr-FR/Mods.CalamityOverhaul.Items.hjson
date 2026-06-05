@@ -1632,19 +1632,19 @@ Elysium: {
 	CelestialMeteorText: Météorite céleste
 	SealStarsText: Cinquième étoile Sixième étoile Septième étoile
 	HorsemenFullText: Les Quatre Cavaliers sont réunis
-	HorsemanArrivalText: "Le Cavalier de {0} descend"
+	HorsemanArrivalText: Le Cavalier de {0} descend
 	DiscipleJoinedText: "{0} a rejoint"
 	JudasBetrayalText: Trahison de Judas !
 	JudasDeathReasonText: "{0} a été trahi par Judas"
 	DiscipleMartyrText: "{0} a été martyrisé"
-	MartyrdomPowerText: "Énergie de martyre {0}/11"
-	Tooltip_DiscipleCountText: "Disciples actuels : {0}/12"
+	MartyrdomPowerText: Énergie de martyre {0}/11
+	Tooltip_DiscipleCountText: Disciples actuels : {0}/12
 	Tooltip_NoDisciplesText: Aucun disciple ne vous suit encore
-	Tooltip_MartyrdomPowerText: "Énergie de martyre : {0} {1}/11"
-	Tooltip_RevelationReadyText: "Appuyez sur Q — Jean sera martyrisé, l'Apocalypse commence"
-	Tooltip_JudgmentActiveText: "Jugement des trois derniers sceaux en cours, attendez la conclusion"
-	Tooltip_RevelationActiveText: "Apocalypse active Q:Météorite R:Jugement RMB:Cavaliers {0}/4"
-	Tooltip_JudasWarningText: "Attention : la trahison de Judas rôde à vos côtés"
+	Tooltip_MartyrdomPowerText: Énergie de martyre : {0} {1}/11
+	Tooltip_RevelationReadyText: Appuyez sur Q — Jean sera martyrisé, l'Apocalypse commence
+	Tooltip_JudgmentActiveText: Jugement des trois derniers sceaux en cours, attendez la conclusion
+	Tooltip_RevelationActiveText: Apocalypse active Q:Météorite R:Jugement RMB:Cavaliers {0}/4
+	Tooltip_JudasWarningText: Attention : la trahison de Judas rôde à vos côtés
 }
 
 SandevistansItem: {
@@ -1701,7 +1701,7 @@ OmniElectricFoot: {
 		Survolez la section Saut chargé dans le radial cybernétique pour charger, puis relâchez pour bondir
 		Un saut pleinement chargé peut atteindre plus du double de la hauteur d'un saut normal
 		'''
-	SkillHint: "Survolez le radial {0} pour charger le saut"
+	SkillHint: Survolez le radial {0} pour charger le saut
 	SkillName: Saut chargé
 	SkillDesc:
 		'''
@@ -1753,7 +1753,7 @@ SelfHackCrystal: {
 		Compétence cybernétique : dépensez du RAM pour effacer instantanément tous les débuffs
 		et gagner une brève invulnérabilité — une issue des situations mortelles
 		'''
-	SkillHint: "Déclenchez l'auto-piratage depuis le radial {0}, dépensez du RAM pour purger les débuffs"
+	SkillHint: Déclenchez l'auto-piratage depuis le radial {0}, dépensez du RAM pour purger les débuffs
 	SkillName: Protocole d'auto-piratage
 	SkillDesc:
 		'''
@@ -2506,8 +2506,26 @@ CWRItem: {
 		Pour lever cette restriction, réentrez dans le monde.
 		'''
 	ItemLegendOnMouseLang: Appuyez sur [Maj] pour écouter l'histoire...
+
+	CWRItem: {
+		// TemperatureText: Combustion Temperature
+		// InternalStoredEnergy: Stored Energy
+		// DeathModeItemText: Death Mode
+		/* LegendItemUpgradeDisable:
+			'''
+			This legendary weapon cannot be upgraded in the current world.
+			Re-enter the world to lift this restriction.
+			''' */
+		// ItemLegendOnMouseLang: Press 'Shift' to hear its story...
+	}
 }
 
 RMagicConch: {
 	DontUseMagicConch: Une créature puissante vous observe...
+
+	RMagicConch: {
+		// DontUseMagicConch: You're being watched by a powerful creature...
+		// DisplayName: Magic Conch
+		// Tooltip: Listen closely and you'll hear the ocean
+	}
 }

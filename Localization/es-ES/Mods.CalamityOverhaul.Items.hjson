@@ -249,6 +249,12 @@ SpectralMatter: {
 
 InfiniteToiletItem: {
 	OnlyZenithCondition: Solo en el mundo Zenith
+
+	InfiniteToiletItem: {
+		// OnlyZenithCondition: Only in Zenith World
+		// DisplayName: Infinite Toilet Item
+		// Tooltip: ""
+	}
 }
 
 StormGoddessSpear: {
@@ -729,7 +735,7 @@ CalSelfPortrait: {
 		Una fotografía olvidada
 		[legend]
 		'''
-	Legend: "¿Qué más quieres ver? :)"
+	Legend: ¿Qué más quieres ver? :)
 }
 
 WUTIVSelfPortrait: {
@@ -1443,7 +1449,7 @@ PQCD: {
 		"En teoría puede emitir una orden de exterminio, pero parece que la autorización es insuficiente"
 		'''
 	NeedSignalTowersText: ¡Enlace de entrelazamiento cuántico incompleto! Requiere desplegar las {0} torres de señal.
-	SignalTowerProgressText: "Progreso de despliegue de torres de señal: {0}/{1}"
+	SignalTowerProgressText: Progreso de despliegue de torres de señal: {0}/{1}
 }
 
 Unsunghero: {
@@ -1653,19 +1659,19 @@ Elysium: {
 	CelestialMeteorText: Meteoro celestial
 	SealStarsText: Quinta estrella Sexta estrella Séptima estrella
 	HorsemenFullText: Los cuatro jinetes ya están reunidos
-	HorsemanArrivalText: "Desciende el jinete de {0}"
+	HorsemanArrivalText: Desciende el jinete de {0}
 	DiscipleJoinedText: "{0} se ha unido"
 	JudasBetrayalText: ¡La traición de Judas!
 	JudasDeathReasonText: "{0} fue traicionado por Judas"
 	DiscipleMartyrText: "{0} ha sido martirizado"
 	MartyrdomPowerText: Martirio {0}/11
-	Tooltip_DiscipleCountText: "Discípulos actuales: {0}/12"
+	Tooltip_DiscipleCountText: Discípulos actuales: {0}/12
 	Tooltip_NoDisciplesText: Aún no hay discípulos siguiéndote
-	Tooltip_MartyrdomPowerText: "Martirio: {0} {1}/11"
+	Tooltip_MartyrdomPowerText: Martirio: {0} {1}/11
 	Tooltip_RevelationReadyText: Pulsa Q — Juan será martirizado, comienza el Apocalipsis
 	Tooltip_JudgmentActiveText: Juicio de los últimos tres sellos en curso
-	Tooltip_RevelationActiveText: "Apocalipsis activo Q:Meteoro R:Juicio de sellos Clic der.:Jinetes {0}/4"
-	Tooltip_JudasWarningText: "Advertencia: la traición de Judas acecha a tu lado"
+	Tooltip_RevelationActiveText: Apocalipsis activo Q:Meteoro R:Juicio de sellos Clic der.:Jinetes {0}/4
+	Tooltip_JudasWarningText: Advertencia: la traición de Judas acecha a tu lado
 }
 
 SandevistansItem: {
@@ -1815,202 +1821,127 @@ Mewtwo: {
 
 RapidBarrelModule: {
 	DisplayName: Cañón de disparo rápido
-	Tooltip:
-		'''
-		Un resorte de retroceso ultralargo produce pulsos ardientes a costa de estabilidad y potencia por disparo
-		'''
+	Tooltip: Un resorte de retroceso ultralargo produce pulsos ardientes a costa de estabilidad y potencia por disparo
 }
 
 FocusBarrelModule: {
 	DisplayName: Cañón de concentración
-	Tooltip:
-		'''
-		Fuerza a los tres rayos con seguimiento a converger en un único golpe concentrado y catastrófico
-		'''
+	Tooltip: Fuerza a los tres rayos con seguimiento a converger en un único golpe concentrado y catastrófico
 }
 
 PrecisionOpticModule: {
 	DisplayName: Mira de precisión
-	Tooltip:
-		'''
-		La puntería asistida por láser elimina toda la dispersión y otorga probabilidad de crítico adicional
-		'''
+	Tooltip: La puntería asistida por láser elimina toda la dispersión y otorga probabilidad de crítico adicional
 }
 
 OverloadCoreModule: {
 	DisplayName: Núcleo de sobrecarga
-	Tooltip:
-		'''
-		Sustituye el búfer por una lógica de ciclo más rápida: la esfera carga antes y sale con más fuerza
-		'''
+	Tooltip: Sustituye el búfer por una lógica de ciclo más rápida: la esfera carga antes y sale con más fuerza
 }
 
 SteadyStockModule: {
 	DisplayName: Culata estabilizadora
-	Tooltip:
-		'''
-		Una culata pesada compuesta absorbe el retroceso, cambiando algo de cadencia por daño extra por disparo
-		'''
+	Tooltip: Una culata pesada compuesta absorbe el retroceso, cambiando algo de cadencia por daño extra por disparo
 }
 
 HarmonyGripModule: {
 	DisplayName: Empuñadura armónica
-	Tooltip:
-		'''
-		La empuñadura bioconductora canaliza el maná por el cuerpo y reduce drásticamente su coste
-		'''
+	Tooltip: La empuñadura bioconductora canaliza el maná por el cuerpo y reduce drásticamente su coste
 }
 
 ResonanceFrameModule: {
 	DisplayName: Armazón de resonancia
-	Tooltip:
-		'''
-		El armazón de armónicos apilados vierte un rayo extra, intensificando la andanada
-		'''
+	Tooltip: El armazón de armónicos apilados vierte un rayo extra, intensificando la andanada
 }
 
 AdaptiveOpticModule: {
 	DisplayName: Mira adaptativa
-	Tooltip:
-		'''
-		Algoritmos de enlace neural corrigen la trayectoria continuamente para que cada rayo impacte con rapidez y precisión
-		'''
+	Tooltip: Algoritmos de enlace neural corrigen la trayectoria continuamente para que cada rayo impacte con rapidez y precisión
 }
 
 AssaultStockModule: {
 	DisplayName: Culata de asalto
-	Tooltip:
-		'''
-		Un soporte asistido por adrenalina dispara con mayor agresividad; la potencia sube, pero también el coste de maná
-		'''
+	Tooltip: Un soporte asistido por adrenalina dispara con mayor agresividad; la potencia sube, pero también el coste de maná
 }
 
 BalancedGripModule: {
 	DisplayName: Empuñadura equilibrada
-	Tooltip:
-		'''
-		La redistribución del peso mejora ligeramente cadencia, daño y estabilidad por igual
-		'''
+	Tooltip: La redistribución del peso mejora ligeramente cadencia, daño y estabilidad por igual
 }
 
 CapacitorBankModule: {
 	DisplayName: Banco de condensadores
-	Tooltip:
-		'''
-		Una pila densa de condensadores llena la esfera en ciclos mucho más cortos, pero amortigua su energía de salida
-		'''
+	Tooltip: Una pila densa de condensadores llena la esfera en ciclos mucho más cortos, pero amortigua su energía de salida
 }
 
 CrystalGripModule: {
 	DisplayName: Empuñadura de cristal
-	Tooltip:
-		'''
-		El dieléctrico de cristal sintético resuena con el usuario, reduce el maná y aumenta el crítico, pero ralentiza la carga
-		'''
+	Tooltip: El dieléctrico de cristal sintético resuena con el usuario, reduce el maná y aumenta el crítico, pero ralentiza la carga
 }
 
 EfficientGripModule: {
 	DisplayName: Empuñadura eficiente
-	Tooltip:
-		'''
-		Una empuñadura ergonómica de grado industrial optimiza a la vez el consumo energético y el ritmo de disparo
-		'''
+	Tooltip: Una empuñadura ergonómica de grado industrial optimiza a la vez el consumo energético y el ritmo de disparo
 }
 
 HeavyBarrelModule: {
 	DisplayName: Cañón pesado
-	Tooltip:
-		'''
-		El estriado reforzado aplasta la dispersión y la cadencia; cada disparo se convierte en un golpe contundente
-		'''
+	Tooltip: El estriado reforzado aplasta la dispersión y la cadencia; cada disparo se convierte en un golpe contundente
 }
 
 HighVoltageCoreModule: {
 	DisplayName: Núcleo de alto voltaje
-	Tooltip:
-		'''
-		El voltaje de salida se eleva y amplifica todo el daño, incluido el de rayos fusionados, a cambio de más maná
-		'''
+	Tooltip: El voltaje de salida se eleva y amplifica todo el daño, incluido el de rayos fusionados, a cambio de más maná
 }
 
 HoloOpticModule: {
 	DisplayName: Mira holográfica
-	Tooltip:
-		'''
-		La retícula holográfica fija el punto de impacto, reduce mucho la dispersión y acelera el gatillo con un ligero sobrecoste de maná
-		'''
+	Tooltip: La retícula holográfica fija el punto de impacto, reduce mucho la dispersión y acelera el gatillo con un ligero sobrecoste de maná
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Cañón hipersónico
-	Tooltip:
-		'''
-		La cámara de choque sónico empuja los rayos a velocidad extrema, pero el seguimiento fino ya no puede seguir el ritmo
-		'''
+	Tooltip: La cámara de choque sónico empuja los rayos a velocidad extrema, pero el seguimiento fino ya no puede seguir el ritmo
 }
 
 KineticDamperModule: {
 	DisplayName: Culata amortiguadora cinética
-	Tooltip:
-		'''
-		El amortiguador líquido absorbe el retroceso, casi elimina la dispersión y aporta un ligero bonus de crítico
-		'''
+	Tooltip: El amortiguador líquido absorbe el retroceso, casi elimina la dispersión y aporta un ligero bonus de crítico
 }
 
 LightStockModule: {
 	DisplayName: Culata ligera
-	Tooltip:
-		'''
-		El armazón de fibra de carbono aumenta mucho la cadencia a costa leve de estabilidad y potencia por disparo
-		'''
+	Tooltip: El armazón de fibra de carbono aumenta mucho la cadencia a costa leve de estabilidad y potencia por disparo
 }
 
 MultiCellFrameModule: {
 	DisplayName: Armazón multicelda
-	Tooltip:
-		'''
-		Las celdas de refrigeración en paralelo disparan dos rayos a la vez: más cobertura, menos daño por rayo
-		'''
+	Tooltip: Las celdas de refrigeración en paralelo disparan dos rayos a la vez: más cobertura, menos daño por rayo
 }
 
 PlasmaInjectorModule: {
 	DisplayName: Inyector de plasma
-	Tooltip:
-		'''
-		La inyección de plasma de alta entalpía amplifica la velocidad de la esfera y el daño fusionado; la carga es algo más lenta
-		'''
+	Tooltip: La inyección de plasma de alta entalpía amplifica la velocidad de la esfera y el daño fusionado; la carga es algo más lenta
 }
 
 QuantumFrameModule: {
 	DisplayName: Armazón cuántico
-	Tooltip:
-		'''
-		Los circuitos de dirección cuántica hacen que los rayos giren con más inteligencia y las esferas vuelen más rápido, con un ligero aumento de maná
-		'''
+	Tooltip: Los circuitos de dirección cuántica hacen que los rayos giren con más inteligencia y las esferas vuelen más rápido, con un ligero aumento de maná
 }
 
 ScattershotBarrelModule: {
 	DisplayName: Cañón de perdigones
-	Tooltip:
-		'''
-		La boca fracturada divide cada disparo en una ráfaga de rayos: cobertura enorme, daño por rayo muy reducido
-		'''
+	Tooltip: La boca fracturada divide cada disparo en una ráfaga de rayos: cobertura enorme, daño por rayo muy reducido
 }
 
 ThermalOpticModule: {
 	DisplayName: Mira térmica
-	Tooltip:
-		'''
-		El bloqueo infrarrojo hace que los rayos se aferren al objetivo, con ganancias de precisión y crítico
-		'''
+	Tooltip: El bloqueo infrarrojo hace que los rayos se aferren al objetivo, con ganancias de precisión y crítico
 }
 
 VolatileFrameModule: {
 	DisplayName: Armazón inestable
-	Tooltip:
-		'''
-		La red de refrigeración sobrecargada exprime un rayo y crítico extra, pero el maná y la dispersión se disparan
-		'''
+	Tooltip: La red de refrigeración sobrecargada exprime un rayo y crítico extra, pero el maná y la dispersión se disparan
 }
 
 NovaBarrelModule: {
@@ -2070,10 +2001,7 @@ GravityFrameModule: {
 
 LaserBarrelModule: {
 	DisplayName: Cañón láser de prisma
-	Tooltip:
-		'''
-		Convierte el clic izquierdo en un haz láser de prisma continuo que sigue el cursor, con enorme coste de maná y potencia limitada
-		'''
+	Tooltip: Convierte el clic izquierdo en un haz láser de prisma continuo que sigue el cursor, con enorme coste de maná y potencia limitada
 }
 
 OscillatorBarrelModule: {
@@ -2141,10 +2069,7 @@ ScrambleFieldModule: {
 
 BraceStockModule: {
 	DisplayName: Culata de soporte
-	Tooltip:
-		'''
-		Un soporte estabilizador pesado elimina toda la dispersión y extiende el alcance del rayo, cambiando algo de cadencia por precisión extrema
-		'''
+	Tooltip: Un soporte estabilizador pesado elimina toda la dispersión y extiende el alcance del rayo, cambiando algo de cadencia por precisión extrema
 }
 
 LaunchStockModule: {
@@ -2277,10 +2202,7 @@ DarkMatterCoreModule: {
 
 ErgonomicStockModule: {
 	DisplayName: Culata ergonómica
-	Tooltip:
-		'''
-		El diseño ergonómico de precisión reduce sustancialmente el coste de maná con ligeras mejoras de cadencia y precisión
-		'''
+	Tooltip: El diseño ergonómico de precisión reduce sustancialmente el coste de maná con ligeras mejoras de cadencia y precisión
 }
 
 ExtenderStockModule: {
@@ -2493,10 +2415,7 @@ ZoomOpticModule: {
 
 PingOpticModule: {
 	DisplayName: Mira de marcado
-	Tooltip:
-		'''
-		El sistema de señalización marca a los objetivos golpeados con Marca de muerte y aporta cierta probabilidad de crítico
-		'''
+	Tooltip: El sistema de señalización marca a los objetivos golpeados con Marca de muerte y aporta cierta probabilidad de crítico
 }
 
 CapacitorPulseModule: {
@@ -2617,8 +2536,26 @@ CWRItem: {
 		Para levantar esta restricción, vuelve a entrar al mundo.
 		'''
 	ItemLegendOnMouseLang: Pulsa [Shift] para escuchar la historia...
+
+	CWRItem: {
+		// TemperatureText: Combustion Temperature
+		// InternalStoredEnergy: Stored Energy
+		// DeathModeItemText: Death Mode
+		/* LegendItemUpgradeDisable:
+			'''
+			This legendary weapon cannot be upgraded in the current world.
+			Re-enter the world to lift this restriction.
+			''' */
+		// ItemLegendOnMouseLang: Press 'Shift' to hear its story...
+	}
 }
 
 RMagicConch: {
 	DontUseMagicConch: Una criatura poderosa te está observando...
+
+	RMagicConch: {
+		// DontUseMagicConch: You're being watched by a powerful creature...
+		// DisplayName: Magic Conch
+		// Tooltip: Listen closely and you'll hear the ocean
+	}
 }

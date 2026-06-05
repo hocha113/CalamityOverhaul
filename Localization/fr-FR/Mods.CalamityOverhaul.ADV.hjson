@@ -316,7 +316,7 @@ SupCalVictory: {
 }
 
 PallbearerQuestUI: {
-	QuestTitle: "Commission : Chasse à la Déesse profanée"
+	QuestTitle: Commission : Chasse à la Déesse profanée
 	QuestDesc: Vaincre la Déesse profanée uniquement avec le Porteur de cercueil.
 	AcceptText: Accepter
 	DeclineText: Refuser
@@ -361,7 +361,7 @@ FishoilQuestScenario: {
 }
 
 FishoilQuestUI: {
-	TitleText: "Collecte : Poissons"
+	TitleText: Collecte : Poissons
 	DescText: Déposez assez de poissons et je les raffinerai en une bouteille d'huile.
 	SubmitHint: Cliquer pour déposer/retirer
 	DeclineText: Refuser
@@ -371,7 +371,7 @@ FishoilQuestUI: {
 }
 
 DoGQuestUI: {
-	QuestTitle: "Commission : Le Dévoreur des dieux"
+	QuestTitle: Commission : Le Dévoreur des dieux
 	QuestDesc: Vaincre le Dévoreur des dieux avec le Sculpteur de cœur.
 	AcceptText: Accepter
 	DeclineText: Refuser
@@ -402,7 +402,7 @@ SupCalYharonQuestReward: {
 }
 
 YharonQuestUI: {
-	QuestTitle: "Commission : Le Dragon de l'incinération"
+	QuestTitle: Commission : Le Dragon de l'incinération
 	QuestDesc: Tuer Yharon, le Dragon de l'incinération, avec la Machette oni.
 	AcceptText: Accepter
 	DeclineText: Refuser
@@ -410,15 +410,15 @@ YharonQuestUI: {
 
 SupCalQuestLine: {
 	QuestCategory: Sorcière du Soufre
-	PallbearerTitle: "Commission : Chasse à la Déesse profanée"
+	PallbearerTitle: Commission : Chasse à la Déesse profanée
 	PallbearerSummary: Vaincre la Déesse profanée avec le Porteur de cercueil. Contribution : 80 %
-	DoGTitle: "Commission : Chasse au Dévoreur des dieux"
+	DoGTitle: Commission : Chasse au Dévoreur des dieux
 	DoGSummary: Vaincre le Dévoreur des dieux avec le Sculpteur de cœur. Contribution : 80 %
-	YharonTitle: "Commission : Chasse au Dragon de l'incinération"
+	YharonTitle: Commission : Chasse au Dragon de l'incinération
 	YharonSummary: Tuer Yharon avec la Machette oni. Contribution : 75 %
 	TrackerSummonHint: Cible absente — invoquez {0}
-	TrackerContribution: "Contribution d'arme : {0:0%}"
-	TrackerRequired: "Requis : {0:0%}"
+	TrackerContribution: Contribution d'arme : {0:0%}
+	TrackerRequired: Requis : {0:0%}
 }
 
 HelensInterference: {
@@ -658,7 +658,7 @@ EternalBlazingNow: {
 		FarewellLine11: Allez, petit poisson.
 	}
 
-	AchievementTitle: "Fin BE : La présent éternellement brûlant"
+	AchievementTitle: Fin BE : La présent éternellement brûlant
 	AchievementTooltip: Le passé est consumé par le feu ; un corps aberrant touche l'éternité.
 }
 
@@ -1037,7 +1037,7 @@ FishoilSubmitScenario: {
 	StatusSuspended: Suspendue
 	StatusCompleted: Terminée
 	StatusSubmittable: Prête à remettre
-	StatusCollectingFormat: "Collecte ({0}/{1})"
+	StatusCollectingFormat: Collecte ({0}/{1})
 	NotEnoughResponse: Hm ? Pas assez de poissons. Allez en pêcher et revenez.
 	AlreadyCompletedResponse: Je vous ai déjà donné l'huile. Pour plus, attendez la prochaine fois.
 	SubmitButtonLabel: Remettre les poissons

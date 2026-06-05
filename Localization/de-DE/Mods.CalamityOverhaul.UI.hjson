@@ -14,7 +14,7 @@ LegendUpgradeConfirmUI: {
 	ConfirmText: Upgrade bestätigen
 	CancelText: Abbrechen
 	Success: "[ITEM] wurde auf Level [LEVEL] aufgewertet"
-	QueueIndicator: "Noch {0} legendäre Waffen zur Bestätigung ausstehend"
+	QueueIndicator: Noch {0} legendäre Waffen zur Bestätigung ausstehend
 	TrustText: Dieser Welt vertrauen
 	TrustSuccess: "[ITEM] hat dieser Welt vertraut und synchronisiert ab jetzt automatisch"
 }
@@ -303,9 +303,9 @@ MartyrdomBarUI: {
 	SlotLabel_10: Si
 	SlotLabel_11: Ju
 	RevelationJudgingText: Offenbarung — Letzte drei Siegel aktiv
-	RevelationStatusText: "Offenbarung Reiter {0}/4 Q:Meteorit R:Richterspruch"
+	RevelationStatusText: Offenbarung Reiter {0}/4 Q:Meteorit R:Richterspruch
 	RevelationReadyText: Drücke Q — Offenbarung bereit
-	MartyrdomPowerText: "Märtyrertum {0}/11"
+	MartyrdomPowerText: Märtyrertum {0}/11
 }
 
 MenuModify.OverhaulSettingsButtonText: Overhaul-Einstellungen
@@ -419,9 +419,9 @@ QuestManagerUI: {
 	EmptyHintText: Keine Aufträge verfügbar...
 	TrackHintText: "[Rechtsklick] Verfolgen/Aufheben"
 	SuspendHintText: "[Mittelklick] Aussetzen/Wiederaufnehmen"
-	OpenHintText: "Drücke [L], um die Auftragsverwaltung zu öffnen"
+	OpenHintText: Drücke [L], um die Auftragsverwaltung zu öffnen
 	HeaderStatusTag: ◈ AKTIV
-	FooterStatsFormat: "GESAMT: {0} | AKTIV: {1}"
+	FooterStatsFormat: GESAMT: {0} | AKTIV: {1}
 	ExpandHintText: "[Linksklick] Details ein-/ausklappen"
 	EntryStatusActive: Laufend
 	EntryStatusTracked: Verfolgt
@@ -432,7 +432,7 @@ QuestManagerUI: {
 
 CyberwareUI: {
 	TitleText: Cyberware
-	StatusText: "Systemstatus: Betrieb"
+	StatusText: Systemstatus: Betrieb
 	SlotSelectedText: "[ Ausgewählt ]"
 	SlotEmptyText: Leer
 	Slot_FrontalCortex: Frontalcortex
@@ -501,11 +501,11 @@ HackTime: {
 	SystemOnline: SYSTEM ONLINE
 	MemoryWiped: ???
 	Cyberpsychosis: KYBERPSYCHOSE
-	RamRefund: "+{0} RAM"
+	RamRefund: +{0} RAM
 	ActiveText: AKTIV
-	ActivePct: "AKTIV {0}%"
+	ActivePct: AKTIV {0}%
 	Complete: ABGESCHLOSSEN
-	UploadingPct: "UPLOADING {0}%"
+	UploadingPct: UPLOADING {0}%
 	CatLethal: TÖDLICH
 	CatControl: KONTROLLE
 	CatCovert: VERDECKT
@@ -608,7 +608,7 @@ HackTime: {
 	WraithScanName: BEZEICHNUNG
 	WraithScanNameValue: Unbekannter Geist
 	WraithScanType: Paranormale Entität
-	WraithScanThreat: "Nicht bewertbar ERR://-∞"
+	WraithScanThreat: Nicht bewertbar ERR://-∞
 	WraithScanStatus: Status
 	WraithScanStatusStalking: Heimliche Jagd
 	WraithScanStatusWatched: Beobachtet
@@ -652,12 +652,12 @@ DecryptionStrings: {
 	DecryptionPanelSubtitleBreaching: Eindringen läuft
 	DecryptionPanelSubtitleDataFlood: Datenflut-Injektion
 	DecryptionPanelSubtitleMessage: Dekodierte Signalwiedergabe
-	DecryptionPanelTerminalId: "TERM-ID ▸ {0}"
-	DecryptionPanelCoordinate: "ΔPOS ▸ {0}, {1}"
+	DecryptionPanelTerminalId: TERM-ID ▸ {0}
+	DecryptionPanelCoordinate: ΔPOS ▸ {0}, {1}
 	DecryptionPanelSignalLock: Signalfestigkeit
 	DecryptionPanelSignalLockValue: "{0}%"
 	DecryptionPanelFooter: "[ESC] Trennen    [Linksklick] Interagieren    [?] Hilfe"
-	DecryptionPanelHintLocked: "Signalebene von verschlüsseltem Raster umschlossen. Drücke [Leertaste] oder klicke [Breach starten], um die Eingabesequenz zu öffnen."
+	DecryptionPanelHintLocked: Signalebene von verschlüsseltem Raster umschlossen. Drücke [Leertaste] oder klicke [Breach starten], um die Eingabesequenz zu öffnen.
 	DecryptionPanelHintBreaching: Klicke Matrixzellen der Reihe nach, um die Zielsequenz zu füllen.
 	DecryptionPanelHintDataFlood: Protokollkanal geöffnet, Datenflut wird injiziert...
 	DecryptionPanelHintMessage: Dekodierung abgeschlossen — abgefangenes Fragment unten.
@@ -667,13 +667,13 @@ DecryptionStrings: {
 	DecryptionPanelStatusBreaching: BREACHING
 	DecryptionPanelStatusDataFlood: INJECTING
 	DecryptionPanelStatusMessage: DECODED
-	BreachBuffer: "Puffer {0}/{1}"
+	BreachBuffer: Puffer {0}/{1}
 	BreachTargets: Zielsequenz
 	BreachTimer: Restzeit
-	BreachAxisRow: "Zeilenbedingung ▸ Zeile {0}"
-	BreachAxisCol: "Spaltenbedingung ▸ Spalte {0}"
-	BreachCooldown: "Protokoll-Reset in {0:0.0}s"
-	BreachAttempt: "Versuch #{0}"
+	BreachAxisRow: Zeilenbedingung ▸ Zeile {0}
+	BreachAxisCol: Spaltenbedingung ▸ Spalte {0}
+	BreachCooldown: Protokoll-Reset in {0:0.0}s
+	BreachAttempt: Versuch #{0}
 	BreachRestart: ⟳ Wiederholen
 }
 
@@ -721,8 +721,8 @@ SHPCUI: {
 	Cyber_Skill_Freeze_Name: Domänen-Freeze
 	Cyber_Skill_Freeze_Desc: Fixiert alle feindlichen Einheiten in der Domäne.
 	Cyber_DrainHeader: RAM-Verbrauch
-	Cyber_DrainPerSec: "-{0}/s"
-	Cyber_SustainTime: "Hält ~{0}s"
+	Cyber_DrainPerSec: -{0}/s
+	Cyber_SustainTime: Hält ~{0}s
 	Cyber_SustainInfinite: Hält ∞
 	Modify_Title: Waffenmodifikation
 	Modify_Subtitle: Waffenverstärkung
@@ -733,8 +733,8 @@ SHPCUI: {
 	Modify_Equipped: Ausgerüstet
 	Modify_NoMatch: Keine passenden Module im Inventar
 	Modify_Close: Schließen
-	Modify_InstallSlot: "Installieren · {0}"
-	Modify_Current: "Aktuell: {0}"
+	Modify_InstallSlot: Installieren · {0}
+	Modify_Current: Aktuell: {0}
 	Modify_Slot_Barrel: Lauf
 	Modify_Slot_Optic: Visier
 	Modify_Slot_Power: Energie
@@ -807,14 +807,14 @@ AbandonedPortalStrings: {
 	StartRepair: ▷ Selbstreparatur starten
 	Teleport: ▷ Teleport starten
 	Close: ✕ Schließen
-	ProgressFormat: "Reparaturfortschritt {0}%"
+	ProgressFormat: Reparaturfortschritt {0}%
 	StatusBroken: STATUS  ▌ OFFLINE
 	StatusRepairing: STATUS  ▌ KALIBRIERUNG
 	StatusRepaired: STATUS  ▌ ONLINE
 	DiagnosticHeader: "[DIAG]"
-	DiagnosticBroken: "ERR-0xC4: Positionierungsring gebrochen / Hauptstromkreis getrennt"
-	DiagnosticRepairing: "INFO: Nano-Schweiß-Array synchronisiert… Portalbasis nicht bewegen"
-	DiagnosticRepaired: "OK: Alle Subsysteme online / Koordinatenanalyse bereit"
+	DiagnosticBroken: ERR-0xC4: Positionierungsring gebrochen / Hauptstromkreis getrennt
+	DiagnosticRepairing: INFO: Nano-Schweiß-Array synchronisiert… Portalbasis nicht bewegen
+	DiagnosticRepaired: OK: Alle Subsysteme online / Koordinatenanalyse bereit
 }
 
 SupertableUI: {
@@ -860,4 +860,19 @@ CWRPlayer: {
 		'''
 	HellfireExplosionDeathReason: "{0} wurde in den Flammen der Unterwelt zu Asche"
 	SoulfireExplosionDeathReason: "{0}s Seele stieg in den Flammen auf"
+
+	CWRPlayer: {
+		/* Error_HookFailure:
+			'''
+			A hook has failed. Close the game and re-enter to restore normal play.
+			If the issue persists, export your log and contact the mod developer.
+			''' */
+		/* OnEnterWorld_ImproveGameWarning:
+			'''
+			[Quality of Terraria] is installed, but your version is out of date.
+			For stable gameplay, update [Quality of Terraria] to at least 1.7.1.7.
+			''' */
+		// HellfireExplosionDeathReason: "{0} was reduced to ash in the fires of the Underworld"
+		// SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
+	}
 }

@@ -880,6 +880,6 @@ CWRPlayer: {
 			versão do [Quality of Terraria Mod] seja pelo menos 1.7.1.7.
 			'''
 		HellfireExplosionDeathReason: "{0} foi reduzido a cinzas nas chamas do Submundo"
-		SoulfireExplosionDeathReason: "A alma de {0} ascendeu em chamas"
+		SoulfireExplosionDeathReason: A alma de {0} ascendeu em chamas
 	}
 }
