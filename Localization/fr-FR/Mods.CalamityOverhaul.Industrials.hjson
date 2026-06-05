@@ -1,13 +1,13 @@
 ElectricMinRocket: {
 	EnergyShortage: Énergie insuffisante
-	// DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
-	// Tooltip: ""
+	DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
+	Tooltip: ""
 }
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Batterie épuisée
-	// DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
-	// Tooltip: ""
+	DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
+	Tooltip: ""
 }
 
 WGGWildernessTP.WindGrivenDiscovery1: Ces machines éoliennes vous fascinent — vous songez à en fabriquer quelques-unes...

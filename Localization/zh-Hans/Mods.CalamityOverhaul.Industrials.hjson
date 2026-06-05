@@ -1,13 +1,13 @@
 ElectricMinRocket: {
 	EnergyShortage: 电力不足
-	// DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
-	// Tooltip: ""
+	DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
+	Tooltip: ""
 }
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: 电量耗尽
-	// DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
-	// Tooltip: ""
+	DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
+	Tooltip: ""
 }
 
 WGGWildernessTP.WindGrivenDiscovery1: 你觉得这种随风而动的机械很有趣，寻思自己也得整几个...

@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -247,9 +247,9 @@ InfiniteToiletItem: {
 	OnlyZenithCondition: 仅在天顶世界
 
 	InfiniteToiletItem: {
-		// OnlyZenithCondition: 仅在天顶世界
-		// DisplayName: Infinite Toilet Item
-		// Tooltip: ""
+		OnlyZenithCondition: 仅在天顶世界
+		DisplayName: Infinite Toilet Item
+		Tooltip: ""
 	}
 }
 

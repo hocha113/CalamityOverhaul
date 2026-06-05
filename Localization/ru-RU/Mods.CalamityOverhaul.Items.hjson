@@ -2544,15 +2544,15 @@
 		ItemLegendOnMouseLang: Нажмите 'Shift', чтобы прослушать историю...
 
 		CWRItem: {
-			// TemperatureText: Температура сгорания
-			// InternalStoredEnergy: Запас энергии
-			// DeathModeItemText: Режим Смерти
-			/* LegendItemUpgradeDisable:
+			TemperatureText: Температура сгорания
+			InternalStoredEnergy: Запас энергии
+			DeathModeItemText: Режим Смерти
+			LegendItemUpgradeDisable:
 				'''
 				Улучшение этого легендарного оружия отключено в текущем мире
 				Если требуется снять это ограничение, пожалуйста, перезайдите в мир
-				''' */
-			// ItemLegendOnMouseLang: Нажмите 'Shift', чтобы прослушать историю...
+				'''
+			ItemLegendOnMouseLang: Нажмите 'Shift', чтобы прослушать историю...
 		}
 	}
 	RMagicConch:
@@ -2560,9 +2560,9 @@
 		DontUseMagicConch: За тобой наблюдает могущественное существо...
 
 		RMagicConch: {
-			// DontUseMagicConch: За тобой наблюдает могущественное существо...
-			// DisplayName: Волшебная раковина
-			// Tooltip: Прислушайся — услышишь шум океана
+			DontUseMagicConch: За тобой наблюдает могущественное существо...
+			DisplayName: Волшебная раковина
+			Tooltip: Прислушайся — услышишь шум океана
 		}
 	}
 }

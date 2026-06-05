@@ -865,17 +865,17 @@ CWRPlayer: {
 	SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
 
 	CWRPlayer: {
-		/* Error_HookFailure:
+		Error_HookFailure:
 			'''
 			A hook has failed. Close the game and re-enter to restore normal play.
 			If the issue persists, export your log and contact the mod developer.
-			''' */
-		/* OnEnterWorld_ImproveGameWarning:
+			'''
+		OnEnterWorld_ImproveGameWarning:
 			'''
 			[Quality of Terraria] is installed, but your version is out of date.
 			For stable gameplay, update [Quality of Terraria] to at least 1.7.1.7.
-			''' */
-		// HellfireExplosionDeathReason: "{0} was reduced to ash in the fires of the Underworld"
-		// SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
+			'''
+		HellfireExplosionDeathReason: "{0} was reduced to ash in the fires of the Underworld"
+		SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
 	}
 }

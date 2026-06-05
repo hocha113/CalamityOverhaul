@@ -246,9 +246,9 @@ InfiniteToiletItem: {
 	OnlyZenithCondition: Only in Zenith World
 
 	InfiniteToiletItem: {
-		// OnlyZenithCondition: Only in Zenith World
-		// DisplayName: Infinite Toilet Item
-		// Tooltip: ""
+		OnlyZenithCondition: Only in Zenith World
+		DisplayName: Infinite Toilet Item
+		Tooltip: ""
 	}
 }
 
@@ -2552,15 +2552,15 @@ CWRItem: {
 	ItemLegendOnMouseLang: Press 'Shift' to hear its story...
 
 	CWRItem: {
-		// TemperatureText: Combustion Temperature
-		// InternalStoredEnergy: Stored Energy
-		// DeathModeItemText: Death Mode
-		/* LegendItemUpgradeDisable:
+		TemperatureText: Combustion Temperature
+		InternalStoredEnergy: Stored Energy
+		DeathModeItemText: Death Mode
+		LegendItemUpgradeDisable:
 			'''
 			This legendary weapon cannot be upgraded in the current world.
 			Re-enter the world to lift this restriction.
-			''' */
-		// ItemLegendOnMouseLang: Press 'Shift' to hear its story...
+			'''
+		ItemLegendOnMouseLang: Press 'Shift' to hear its story...
 	}
 }
 
@@ -2568,8 +2568,8 @@ RMagicConch: {
 	DontUseMagicConch: You're being watched by a powerful creature...
 
 	RMagicConch: {
-		// DontUseMagicConch: You're being watched by a powerful creature...
-		// DisplayName: Magic Conch
-		// Tooltip: Listen closely and you'll hear the ocean
+		DontUseMagicConch: You're being watched by a powerful creature...
+		DisplayName: Magic Conch
+		Tooltip: Listen closely and you'll hear the ocean
 	}
 }
