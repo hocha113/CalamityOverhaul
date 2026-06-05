@@ -247,8 +247,8 @@ InfiniteToiletItem: {
 	OnlyZenithCondition: Uniquement dans le monde de Zenith
 
 	InfiniteToiletItem: {
-		OnlyZenithCondition: 仅在天顶世界
-		DisplayName: Infinite Toilet Item
+		OnlyZenithCondition: Uniquement dans le monde de Zenith
+		DisplayName: Toilettes infinies
 		Tooltip: ""
 	}
 }

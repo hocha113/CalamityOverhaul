@@ -1,12 +1,12 @@
 ElectricMinRocket: {
 	EnergyShortage: Énergie insuffisante
-	DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
+	DisplayName: Minifusée Électrique
 	Tooltip: ""
 }
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Batterie épuisée
-	DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
+	DisplayName: Tisseuse de Vie Sauvage
 	Tooltip: ""
 }
 

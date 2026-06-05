@@ -1,12 +1,12 @@
 ElectricMinRocket: {
 	EnergyShortage: 电力不足
-	DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
+	DisplayName: 电动迷你火箭
 	Tooltip: ""
 }
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: 电量耗尽
-	DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
+	DisplayName: 荒野中的植树者
 	Tooltip: ""
 }
 

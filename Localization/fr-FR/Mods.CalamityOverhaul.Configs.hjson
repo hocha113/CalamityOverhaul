@@ -25,15 +25,15 @@ CWRServerConfig: {
 	}
 
 	DomainConciseDisplay: {
-		Label: Domain Minimal Display
-		Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
+		Label: Affichage minimal du domaine
+		Tooltip: Désactivé par défaut. Lorsqu'activé, la plupart des effets visuels du domaine seront masqués.
 	}
 
 	Headers: {
 		CWRSystem: Paramètres du système de grande réparation
 		CWRWeapon: Paramètres d'armes de grande réparation
 		CWRUI: Paramètres d'interface utilisateur de grande réparation
-		CWRWorldGen: World Gen Configs
+		CWRWorldGen: Paramètres de génération du monde
 	}
 
 	LensEasing: {

@@ -248,7 +248,7 @@ InfiniteToiletItem: {
 
 	InfiniteToiletItem: {
 		OnlyZenithCondition: 仅在天顶世界
-		DisplayName: Infinite Toilet Item
+		DisplayName: 无限马桶
 		Tooltip: ""
 	}
 }

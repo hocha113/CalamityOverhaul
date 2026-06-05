@@ -1,12 +1,12 @@
 ElectricMinRocket: {
 	EnergyShortage: Energy Shortage
-	DisplayName: Mods.CalamityOverhaul.Industrials.ElectricMinRocket.DisplayName
+	DisplayName: Electric Mini Rocket
 	Tooltip: ""
 }
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Battery Runs Out
-	DisplayName: Mods.CalamityOverhaul.Industrials.WGGLifeWeaver.DisplayName
+	DisplayName: Wilderness Life Weaver
 	Tooltip: ""
 }
 
