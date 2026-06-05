@@ -232,7 +232,7 @@ MuraText: {
 		'''
 }
 
-// TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
+TrialBlockedHint: Следующее испытание станет доступно после включения соответствующего контента.
 
 HalibutTrialQuestLine: {
 	QuestCategory: Легенда о Палтусе
@@ -252,8 +252,8 @@ HalibutTrialQuestLine: {
 	Trial_11: Градус повышается
 	Trial_12: Вершина творения
 	Trial_13: Возвращение в море
-	// TrackerBrief: Target：{0}
-	BossRushTargetName: Босс-раш
+	TrackerBrief: Цель: {0}
+	BossRushTargetName: Битва Завершения
 	EventActiveFormat: "{0}: идет"
 }
 
@@ -261,17 +261,17 @@ MurasamaTrialQuestLine: {
 	QuestCategory: Мурамаса: Испытания
 	TrackerWaiting: Цель отсутствует, ожидание призыва...
 	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Тень в песках
-	Trial_1: Охота в песчаном море
+	Trial_0: Первый удар по слизи
+	Trial_1: Тень в песках
 	Trial_2: Вторженец
 	Trial_3: Очищение от порчи
 	Trial_4: Паразитическая угроза
-	Trial_5: Бог скверны из геля
-	Trial_6: Прорыв Темницы
+	Trial_5: Прорыв Темницы
+	Trial_6: Бог скверны из геля
 	Trial_7: Путь в Преисподнюю
-	Trial_8: Оковы ледяной пустоши
-	Trial_9: Зачистка Бездны
-	Trial_10: Очищающее серное пламя
+	Trial_8: Зачистка Бездны
+	Trial_9: Очищающее серное пламя
+	Trial_10: Оковы ледяной пустоши
 	Trial_11: Стальные шестерни
 	Trial_12: Уничтожение двух очей
 	Trial_13: Механический череп-владыка
@@ -299,16 +299,16 @@ MurasamaTrialQuestLine: {
 		Я хочу видеть, как твой клинок танцует в плоти ксеносов!
 		'''
 	TrialSummary_4: Искаженные земли всё ещё пульсируют, словно сердце. Паразиты из плоти продолжают шевелиться, а гнилостные опухоли всё ещё мыслят. Иди и изгони их окончательно!
-	TrialSummary_5: Чувствуешь? Это зловонное разложение, сочащееся гелем.\nПолностью очисти этот омерзительный сгусток.
-	TrialSummary_6:
+	TrialSummary_5:
 		'''
 		Проклятие у входа в Темницу ослабло. Я чувствую, как псионная энергия шевелится в глубинах, смешиваясь с воплями, стонами и шепотом...
 		Раздроби этот огромный череп.
 		'''
+	TrialSummary_6: Чувствуешь? Это зловонное разложение, сочащееся гелем.\nПолностью очисти этот омерзительный сгусток.
 	TrialSummary_7: Спустись в Преисподнюю. Та печать из плоти, нависшая над лавой — это наша дверь в новую эру.\nРазорви её на части.
-	TrialSummary_8: В суровых северных землях сковано ледяное создание.\nРазбей его вдребезги, прежде чем оно окончательно освободится.
-	TrialSummary_9: Отродье Серного моря мешает нам искать сокровища Бездны. Положи конец его блужданиям и пожиранию.
-	TrialSummary_10: Еретическое пламя серного посланника в глубинах лавы мозолит глаза. Иди и потуши его.
+	TrialSummary_8: Отродье Серного моря мешает нам искать сокровища Бездны. Положи конец его блужданиям и пожиранию.
+	TrialSummary_9: Еретическое пламя серного посланника в глубинах лавы мозолит глаза. Иди и потуши его.
+	TrialSummary_10: В суровых северных землях сковано ледяное создание.\nРазбей его вдребезги, прежде чем оно окончательно освободится.
 	TrialSummary_11: Гигантский стальный червь преградил нам путь. Поруби его на куски.
 	TrialSummary_12: Эти механические глаза взирают на нас свысока — пронзи их своим клинком.
 	TrialSummary_13: Повелитель скелетов нацепил стальную броню в надежде остановить нас? Раздроби этот металлический череп.
@@ -347,8 +347,8 @@ MurasamaTrialQuestLine: {
 		Наш путь завоеваний уже не остановить. Разбей броню демонического змея, скрывающегося в черной Бездне.
 		Используй Камень Завершения и вступи в финальную битву с этой тварью.
 		'''
-	// TrackerBrief: Target：{0}
-	BossRushTargetName: Босс-раш
+	TrackerBrief: Цель: {0}
+	BossRushTargetName: Битва Завершения
 	EventActiveFormat: "{0}: идет"
 }
 
@@ -488,8 +488,8 @@ SHPCTrialQuestLine: {
 		Хозяин, поверженные ранее враги объединились в коалицию и готовятся к генеральному наступлению.
 		Пожалуйста, подготовьтесь. Я буду непрерывно мониторить поле боя, чтобы помочь вам покончить с ними за один раз.
 		'''
-	// TrackerBrief: Target：{0}
-	BossRushTargetName: Босс-раш
+	TrackerBrief: Цель: {0}
+	BossRushTargetName: Битва Завершения
 	EventActiveFormat: "{0}: идет"
 }
 
@@ -533,24 +533,24 @@ SHPCSlotName: {
 }
 
 MoldProcessingUI: {
-	// Title: MOLD PROCESSING
-	// Subtitle: DECOMPOSE · REFORGE
-	// TabWorkbench: WORKBENCH
-	// TabCodex: CODEX
-	// Decompose: DECOMPOSE
-	// Reforge: REFORGE
-	// ClearPin: CLEAR PIN
-	// RandomMode: RANDOM · UNDISCOVERED FIRST
-	// PinnedMode: PINNED FROM CODEX
-	// CostLine: COST: {0}
-	// HaveLine: HAVE: {0}
-	// UnknownName: ??????
-	// ProgressFormat: "{0}/{1}"
-	// ShardSuffix: SHARDS
-	// EmptyCandidates: "// no compatible modules in inventory"
-	// CloseHint: ESC TO CLOSE
-	// DecomposeHint: Click a module to decompose it
-	// CodexHint: Click a discovered mold to pin it as reforge target
-	// Discovered: DISCOVERED
-	// PinnedTag: PINNED
+	Title: ОБРАБОТКА ФОРМ
+	Subtitle: РАЗБОР · ПЕРЕКОВКА
+	TabWorkbench: ВЕРСТАК
+	TabCodex: КОДЕКС
+	Decompose: РАЗОБРАТЬ
+	Reforge: ПЕРЕКОВАТЬ
+	ClearPin: СНЯТЬ ЗАКРЕПЛЕНИЕ
+	RandomMode: СЛУЧАЙНО · СНАЧАЛА НЕОТКРЫТЫЕ
+	PinnedMode: ЗАКРЕПЛЕНО ИЗ КОДЕКСА
+	CostLine: РАСХОД: {0}
+	HaveLine: ЕСТЬ: {0}
+	UnknownName: ??????
+	ProgressFormat: "{0}/{1}"
+	ShardSuffix: ОСКОЛКИ
+	EmptyCandidates: "// в инвентаре нет совместимых модулей"
+	CloseHint: ESC — ЗАКРЫТЬ
+	DecomposeHint: Нажмите на модуль в списке, чтобы разобрать его
+	CodexHint: Нажмите на открытую форму, чтобы закрепить её как цель перековки
+	Discovered: ОТКРЫТО
+	PinnedTag: ЗАКРЕПЛЕНО
 }

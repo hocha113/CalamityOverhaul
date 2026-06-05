@@ -25,7 +25,7 @@ HalibutText: {
 
 	DomainUI: {
 		TitleText: Dominio Abissal
-		ExtraEyeTitleText: Tier X
+		ExtraEyeTitleText: A  Decima  Camada
 		CrashedLabelText: Sistema Travado
 		EyeDesc1:
 			'''
@@ -195,7 +195,7 @@ MuraText: {
 	Subtest_Text10: Aquela bruxa que se jogou no caos tem uma irmã clone deformada. Mate aquela xeno, e ofereca seu sangue e fogo a lamina.
 }
 
-// TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
+TrialBlockedHint: A proxima provacao exige que o conteudo relevante esteja ativado antes de comecar.
 
 HalibutTrialQuestLine: {
 	QuestCategory: Lenda de Halibut
@@ -216,7 +216,7 @@ HalibutTrialQuestLine: {
 	Trial_12: Pinaculo da Criacao
 	Trial_13: De Volta ao Mar
 	TrackerBrief: Alvo：{0}
-	BossRushTargetName: Boss Rush
+	BossRushTargetName: Batalha do Terminus
 	EventActiveFormat: "{0}: ativo"
 }
 
@@ -224,17 +224,17 @@ MurasamaTrialQuestLine: {
 	QuestCategory: Lamina Demoníaca Murasama · Provações
 	TrackerWaiting: Alvo ausente, aguardando invocacao...
 	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Fantasma do Deserto
-	Trial_1: Caca no Mar de Areia
+	Trial_0: Primeiro Corte Visgoso
+	Trial_1: Fantasma do Deserto
 	Trial_2: Invasor
 	Trial_3: Purga da Corrupcao
 	Trial_4: Ameaca Parasitaria
-	Trial_5: Profanador Gelatinoso
-	Trial_6: Violacao da Masmorra
+	Trial_5: Violacao da Masmorra
+	Trial_6: Profanador Gelatinoso
 	Trial_7: Caminho para o Submundo
-	Trial_8: Grilhões da Tundra
-	Trial_9: Limpeza Abissal
-	Trial_10: Chama Purificadora de Enxofre
+	Trial_8: Limpeza Abissal
+	Trial_9: Chama Purificadora de Enxofre
+	Trial_10: Grilhoes da Tundra
 	Trial_11: Engrenagens de Aco
 	Trial_12: Aniquilacao dos Olhos Gemeos
 	Trial_13: Craneo Rei Mecanico
@@ -262,16 +262,16 @@ MurasamaTrialQuestLine: {
 		Quero ver sua lamina dancar pela carne xeno!
 		'''
 	TrialSummary_4: A terra corrompida ainda pulsa como um coracao. Os parasitas de carne ainda estao ativos; os tumores corrompidos ainda estao pensando. Va bani-los completamente!
-	TrialSummary_5: Voce sente? Aquela corrupção fétida que cheira a gel.\nPurifique este agregado imundo completamente.
-	TrialSummary_6:
+	TrialSummary_5:
 		'''
 		A maldicao na entrada da masmorra se soltou. Sinto energia psiquica se agitando em suas profundezas, misturada com gritos, lamentacoes, sussurros...
 		Estilhaçe aquele craneo gigante.
 		'''
+	TrialSummary_6: Voce sente? Aquela corrupcao fetida que cheira a gel.\nPurifique este agregado imundo completamente.
 	TrialSummary_7: Pise no Submundo. Aquela parede de carne que se estende sobre a lava—essa e a nossa porta para a proxima era.\nRasgue-a.
-	TrialSummary_8: No frio amargo das regioes norteiras jaz uma criacao selada de gelo e neve.\nEsmague-a antes que ela se dessole completamente.
-	TrialSummary_9: O excluído do Mar Sulfuroso bloqueia nossa busca pelos tesouros do abismo. Va acabar com sua devoracao e vagar.
-	TrialSummary_10: O fogo heretico daquela Emissaria de Enxofre nas profundezas da lava e uma desgraça. Va extingui-lo.
+	TrialSummary_8: O excluido do Mar Sulfuroso bloqueia nossa busca pelos tesouros do abismo. Va acabar com sua devoracao e vagar.
+	TrialSummary_9: O fogo heretico daquela Emissaria de Enxofre nas profundezas da lava e uma desgraca. Va extingui-lo.
+	TrialSummary_10: No frio amargo das regioes norteiras jaz uma criacao selada de gelo e neve.\nEsmague-a antes que ela se dessole completamente.
 	TrialSummary_11: Um verme de aco massivo esta no caminho da nossa cruzada. Pique-o em pedacos.
 	TrialSummary_12: Aqueles olhos mecanicos nos olham de cima—fure-os com sua lamina.
 	TrialSummary_13: O senhor esqueleto vestiu armadura de aco pensando que poderia nos parar? Estilhaçe aquele craneo de metal.
@@ -311,7 +311,7 @@ MurasamaTrialQuestLine: {
 		Use o Terminus e envolva-se na batalha final decisiva com o xeno.
 		'''
 	TrackerBrief: Alvo：{0}
-	BossRushTargetName: Boss Rush
+	BossRushTargetName: Batalha do Terminus
 	EventActiveFormat: "{0}: ativo"
 }
 
@@ -452,7 +452,7 @@ SHPCTrialQuestLine: {
 		Por favor, esteja preparado. Monitorarei o campo de batalha durante todo o tempo e ajudarei a resolver isto de uma vez por todas.
 		'''
 	TrackerBrief: Alvo：{0}
-	BossRushTargetName: Boss Rush
+	BossRushTargetName: Batalha do Terminus
 	EventActiveFormat: "{0}: ativo"
 }
 

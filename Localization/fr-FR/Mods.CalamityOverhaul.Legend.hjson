@@ -179,8 +179,17 @@ MuraText: {
 		Cela déclenchera une tempête subspatiale, mais nous n'avons pas le choix. 
 		Recrue, écrivez un chapitre grandiose pour le voyage !
 		'''
-	Subtest_Text1: Un immense ver d'acier bloque notre chemin. Déchirez-le en morceaux.
-	Subtest_Text2: Je peux sentir deux regards nous observer. Allez vous en occuper.
+	Subtest_Text1:
+		'''
+		Les falaises de soufre me manquent, et leur forge ardente. Va affronter leur gardien.
+		Je sens deux regards posés sur nous. Va t'en occuper.
+		'''
+	Subtest_Text2:
+		'''
+		Une prison dans le rempart de glace véritable. Un puissant psyker y est enchaîné. Libère-le ; il sera un grand atout pour reconquérir Terra.
+		Une bataille décisive approche. Ces tas de ferraille comptent s'unir pour nous arrêter.
+		Dis-leur par la lame et le sang que notre croisade écrasera toute hérésie xeno et intelligence abominable.
+		'''
 	// World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
 	// Subtest_Text4: In the jungle, someone's former clumsy creation still wanders. As a failure, it should rightfully be just a pile of scrap metal.
 	// Subtest_Text5: A shell of interwoven flesh, the resentful wraith of an ancient battlefield, a ceaselessly destructive golem. It destroys all things, and we shall destroy it.

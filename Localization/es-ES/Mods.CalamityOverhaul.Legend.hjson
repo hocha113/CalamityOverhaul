@@ -179,8 +179,17 @@ MuraText: {
 		Esto desatará una tormenta de subespacio, pero no tenemos otra opción. 
 		¡Recluta, escribe un capítulo grandioso para el viaje!
 		'''
-	Subtest_Text1: Un enorme gusano de acero bloquea nuestro camino. Despedázalo.
-	Subtest_Text2: Puedo sentir dos miradas observándonos. Ve y ocúpate de ellas.
+	Subtest_Text1:
+		'''
+		Echo de menos el temple ardiente de los Riscos de Azufre. Ve a enfrentarte a su guardián.
+		Puedo sentir dos miradas observándonos. Ve y ocúpate de ellas.
+		'''
+	Subtest_Text2:
+		'''
+		Una prisión dentro del verdadero baluarte de hielo. Allí encierran a un poderoso psíquico. Libéralo; será de gran ayuda para recuperar Terra.
+		Se acerca una batalla decisiva. Esos montones de chatarra planean unirse para detenernos.
+		Díselo con espada y sangre: el avance de nuestra cruzada aplastará toda herejía xeno y abominable inteligencia.
+		'''
 	// World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
 	// Subtest_Text4: In the jungle, someone's former clumsy creation still wanders. As a failure, it should rightfully be just a pile of scrap metal.
 	// Subtest_Text5: A shell of interwoven flesh, the resentful wraith of an ancient battlefield, a ceaselessly destructive golem. It destroys all things, and we shall destroy it.

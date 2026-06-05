@@ -25,7 +25,7 @@
 
 	DomainUI: {
 		TitleText: Abyssal Domain
-		ExtraEyeTitleText: Tier X
+		ExtraEyeTitleText: The  Tenth  Layer
 		CrashedLabelText: System Crashed
 		EyeDesc1:
 			'''
@@ -216,7 +216,7 @@ HalibutTrialQuestLine: {
 	Trial_12: Pinnacle of Creation
 	Trial_13: Back to the Sea
 	TrackerBrief: Target：{0}
-	BossRushTargetName: Boss Rush
+	BossRushTargetName: Battle of Terminus
 	EventActiveFormat: "{0}: active"
 }
 
@@ -224,17 +224,17 @@ MurasamaTrialQuestLine: {
 	QuestCategory: Demon Blade Murasama · Trials
 	TrackerWaiting: Target is absent, awaiting summons...
 	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Desert Phantom
-	Trial_1: Sand Sea Hunt
+	Trial_0: Sludge First Cut
+	Trial_1: Desert Phantom
 	Trial_2: Invader
 	Trial_3: Corruption Purge
 	Trial_4: Parasitic Threat
-	Trial_5: Gelatinous Defiler
-	Trial_6: Dungeon Breach
+	Trial_5: Dungeon Breach
+	Trial_6: Gelatinous Defiler
 	Trial_7: Path to the Underworld
-	Trial_8: Tundra Shackles
-	Trial_9: Abyssal Cleansing
-	Trial_10: Brimstone Purging Flame
+	Trial_8: Abyssal Cleansing
+	Trial_9: Brimstone Purging Flame
+	Trial_10: Tundra Shackles
 	Trial_11: Steel Gears
 	Trial_12: Twin Eye Annihilation
 	Trial_13: Mechanical King Skull
@@ -262,16 +262,16 @@ MurasamaTrialQuestLine: {
 		I want to see your blade dance through xenos flesh!
 		'''
 	TrialSummary_4: The corrupted earth still throbs like a heart. The flesh parasites are still active; the corrupted tumors are still thinking. Go banish them entirely!
-	TrialSummary_5: Do you feel it? That foul corruption reeking of gel.\nPurify this filthy aggregate completely.
-	TrialSummary_6:
+	TrialSummary_5:
 		'''
 		The curse at the dungeon entrance has loosened. I feel psychic energy stirring in its depths, mixed with screams, wails, whispers...
 		Shatter that giant skull.
 		'''
+	TrialSummary_6: Do you feel it? That foul corruption reeking of gel.\nPurify this filthy aggregate completely.
 	TrialSummary_7: Step into the Underworld. That wall of flesh spanning the lava—that is our door to the next era.\nTear it apart.
-	TrialSummary_8: In the bitter cold of the northern reaches lies a sealed creation of ice and snow.\nCrush it before it can fully unseal.
-	TrialSummary_9: The outcast of the Sulphurous Sea blocks our quest for the treasures of the abyss. Go end its devouring and wandering.
-	TrialSummary_10: The heretical fire of that Brimstone Emissary deep in the lava is an eyesore. Go extinguish it.
+	TrialSummary_8: The outcast of the Sulphurous Sea blocks our quest for the treasures of the abyss. Go end its devouring and wandering.
+	TrialSummary_9: The heretical fire of that Brimstone Emissary deep in the lava is an eyesore. Go extinguish it.
+	TrialSummary_10: In the bitter cold of the northern reaches lies a sealed creation of ice and snow.\nCrush it before it can fully unseal.
 	TrialSummary_11: A massive steel worm stands in the way of our crusade. Chop it into pieces.
 	TrialSummary_12: Those mechanical eyes look down on us—pierce them with your blade.
 	TrialSummary_13: The skeleton lord donned steel armor thinking it could stop us? Shatter that metal skull.
@@ -311,7 +311,7 @@ MurasamaTrialQuestLine: {
 		Use the Terminus and engage in the final decisive battle with the xeno.
 		'''
 	TrackerBrief: Target：{0}
-	BossRushTargetName: Boss Rush
+	BossRushTargetName: Battle of Terminus
 	EventActiveFormat: "{0}: active"
 }
 
@@ -452,7 +452,7 @@ SHPCTrialQuestLine: {
 		Please be prepared. I will monitor the battlefield throughout and assist you in settling this once and for all.
 		'''
 	TrackerBrief: Target：{0}
-	BossRushTargetName: Boss Rush
+	BossRushTargetName: Battle of Terminus
 	EventActiveFormat: "{0}: active"
 }
 

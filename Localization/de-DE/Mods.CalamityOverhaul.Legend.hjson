@@ -179,8 +179,17 @@ MuraText: {
 		Dies wird einen Subraumsturm auslösen, aber wir haben keine Wahl. 
 		Rekrut, schreibe ein großartiges Kapitel für die Reise!
 		'''
-	Subtest_Text1: Ein gewaltiger Stahlwurm blockiert unseren Weg. Zerreiß ihn in Stücke.
-	Subtest_Text2: Ich spüre zwei Blicke, die uns beobachten. Geh und kümmere dich um sie.
+	Subtest_Text1:
+		'''
+		Ich vermisse die feurige Härtung der Schwefelfelsen. Geh und triff ihren Wächter.
+		Ich spüre zwei Blicke, die uns beobachten. Geh und kümmere dich um sie.
+		'''
+	Subtest_Text2:
+		'''
+		Ein Gefängnis in der wahren Eisbarriere. Dort wird ein mächtiger Psioniker festgehalten. Befreie ihn; er wird eine große Hilfe bei der Rückeroberung Terras sein.
+		Eine entscheidende Schlacht naht. Diese Schrotthaufen wollen sich vereinen, um uns zu stoppen.
+		Sag ihnen mit Klinge und Blut, dass unser Kreuzzug alle Xenos, Ketzerei und abscheuliche Intelligenz zermalmen wird.
+		'''
 	// World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
 	// Subtest_Text4: In the jungle, someone's former clumsy creation still wanders. As a failure, it should rightfully be just a pile of scrap metal.
 	// Subtest_Text5: A shell of interwoven flesh, the resentful wraith of an ancient battlefield, a ceaselessly destructive golem. It destroys all things, and we shall destroy it.
