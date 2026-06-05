@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
 using System;
 using Terraria;
