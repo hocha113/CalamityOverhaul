@@ -504,8 +504,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         , null, Color.BlueViolet * 0.75f, snap.ItemRotation, gunOrigin, HalibutOverride.ItemScale
                         , player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 }
-            }
-            finally {
+            } finally {
                 player.position = origPosition;
                 player.velocity = origVelocity;
                 player.direction = origDirection;

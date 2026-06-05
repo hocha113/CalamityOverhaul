@@ -1,5 +1,5 @@
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

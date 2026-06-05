@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
+﻿using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

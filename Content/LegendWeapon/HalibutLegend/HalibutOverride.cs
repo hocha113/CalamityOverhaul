@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.OtherMods.Wikithis;
 using InnoVault.GameSystem;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;

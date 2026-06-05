@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;

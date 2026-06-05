@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.OtherMods.InfernumMode;
+﻿using CalamityOverhaul.OtherMods.InfernumMode;
 using Terraria.GameContent.ItemDropRules;
 
 namespace CalamityOverhaul.Content.Items.Modifys.ModifyBag

@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using InnoVault.GameSystem;
-using Microsoft.Xna.Framework;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend

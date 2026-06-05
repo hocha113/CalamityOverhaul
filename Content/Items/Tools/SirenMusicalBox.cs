@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;

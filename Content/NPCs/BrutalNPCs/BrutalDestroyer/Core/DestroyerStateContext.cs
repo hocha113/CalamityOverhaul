@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using InnoVault.StateMachines;
+﻿using InnoVault.StateMachines;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
