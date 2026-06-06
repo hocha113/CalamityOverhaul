@@ -2531,104 +2531,104 @@ RMagicConch: {
 }
 
 GraniteTome: {
-	// DisplayName: Granite Tome
-	/* Tooltip:
+	DisplayName: Grimoire de granite
+	Tooltip:
 		'''
-		Conjures a slow, homing orb of granite energy
-		Shatters into seeking crystal shards on impact
-		''' */
+		Invoque une orbe lente et autoguidée d'énergie de granite
+		Se brise en éclats de cristal chercheurs à l'impact
+		'''
 }
 
 GraniteFlower: {
-	// DisplayName: Granite Bloom
-	/* Tooltip:
+	DisplayName: Fleur de granite
+	Tooltip:
 		'''
-		Fires a crystal seed that blossoms into a lingering energy flower
-		The bloom pulses several times, spraying crystal petals all around
-		''' */
+		Tire une graine de cristal qui éclot en une fleur d'énergie persistante
+		La fleur pulse plusieurs fois, projetant des pétales de cristal tout autour
+		'''
 }
 
 GraniteThrowingKnife: {
-	// DisplayName: Granite Throwing Knife
-	/* Tooltip:
+	DisplayName: Couteau de lancer en granite
+	Tooltip:
 		'''
-		Throws a piercing knife trailing crystalline energy
-		Shatters into crystal shards on its last hit or against terrain
-		''' */
+		Lance un couteau perforant laissant une traînée d'énergie cristalline
+		Se brise en éclats de cristal lors de son dernier coup ou contre le terrain
+		'''
 }
 
 GraniteWalkingBoots: {
-	// DisplayName: Granite Walking Boots
-	/* Tooltip:
+	DisplayName: Bottes de marche en granite
+	Tooltip:
 		'''
-		Greatly increases running speed and acceleration
-		Crackles with blue sparks at full speed
-		''' */
+		Augmente grandement la vitesse de course et l'accélération
+		Crépite d'étincelles bleues à pleine vitesse
+		'''
 }
 
 MarbleClub: {
-	// DisplayName: Marble Club
-	/* Tooltip:
+	DisplayName: Massue de marbre
+	Tooltip:
 		'''
-		A slow, heavy swing with crushing knockback
-		May petrify foes, briefly slowing them
-		The first hit of each swing unleashes a marble shockwave
-		''' */
+		Un coup lent et lourd au recul écrasant
+		Peut pétrifier les ennemis, les ralentissant brièvement
+		Le premier impact de chaque attaque déclenche une onde de choc de marbre
+		'''
 }
 
 MarbleHuntingKnife: {
-	// DisplayName: Marble Hunting Knife
-	/* Tooltip:
+	DisplayName: Couteau de chasse en marbre
+	Tooltip:
 		'''
-		Swift slashing strikes
-		Every third strike is a wider finisher that sprays marble shards
-		''' */
+		Frappes tranchantes rapides
+		Chaque troisième frappe est une attaque finale plus large qui projette des éclats de marbre
+		'''
 }
 
 MarbleDisc: {
-	// DisplayName: Marble Discus
-	/* Tooltip:
+	DisplayName: Disque de marbre
+	Tooltip:
 		'''
-		Hurls a spinning discus that ricochets between foes and walls
-		Then curves back to your hand; up to two may fly at once
-		''' */
+		Projette un disque tournoyant qui ricoche entre les ennemis et les murs
+		Puis revient en courbe dans votre main ; jusqu'à deux peuvent voler à la fois
+		'''
 }
 
 MarblePebble: {
-	// DisplayName: Marble Pebble
-	/* Tooltip:
+	DisplayName: Caillou de marbre
+	Tooltip:
 		'''
-		An endless sling stone, swift and prone to critical hits
-		Deals far greater damage to foes with high maximum life
-		Bounces once off the ground
-		''' */
+		Une pierre de fronde inépuisable, rapide et sujette aux coups critiques
+		Inflige bien plus de dégâts aux ennemis ayant beaucoup de vie maximale
+		Rebondit une fois sur le sol
+		'''
 }
 
 MarbleShield: {
-	// DisplayName: Marble Aegis
-	/* Tooltip:
+	DisplayName: Égide de marbre
+	Tooltip:
 		'''
-		Increases defense and knockback resistance
-		Maintains a regenerating stone guard that absorbs an incoming hit, bursting into shards
-		Brace for a perfect block that reflects projectiles
-		''' */
+		Augmente la défense et la résistance au recul
+		Maintient une garde de pierre régénérante qui absorbe un coup entrant en éclatant en fragments
+		Préparez-vous à un blocage parfait qui renvoie les projectiles
+		'''
 }
 
 MarbleBalloon: {
-	// DisplayName: Marble Balloon
-	/* Tooltip:
+	DisplayName: Ballon de marbre
+	Tooltip:
 		'''
-		Increases jump height and grants a heavy second jump
-		Press Down while airborne to slam down, releasing a shockwave on landing
-		Negates fall damage
-		''' */
+		Augmente la hauteur de saut et accorde un lourd second saut
+		Appuyez sur Bas en l'air pour s'écraser au sol, libérant une onde de choc à l'atterrissage
+		Annule les dégâts de chute
+		'''
 }
 
 MarbleinaBottle: {
-	// DisplayName: Marble in a Bottle
-	/* Tooltip:
+	DisplayName: Marbre en bouteille
+	Tooltip:
 		'''
-		Double-tap a direction to roll forward in a stone dash
-		Grants brief invulnerability while dashing
-		''' */
+		Appuyez deux fois sur une direction pour rouler en avant dans une ruée de pierre
+		Accorde une brève invulnérabilité pendant la ruée
+		'''
 }

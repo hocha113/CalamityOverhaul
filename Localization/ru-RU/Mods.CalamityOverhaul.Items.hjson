@@ -2570,104 +2570,104 @@ RMagicConch: {
 }
 
 GraniteTome: {
-	// DisplayName: Granite Tome
-	/* Tooltip:
+	DisplayName: Гранитный том
+	Tooltip:
 		'''
-		Conjures a slow, homing orb of granite energy
-		Shatters into seeking crystal shards on impact
-		''' */
+		Призывает медленную самонаводящуюся сферу гранитной энергии
+		При ударе рассыпается на самонаводящиеся кристальные осколки
+		'''
 }
 
 GraniteFlower: {
-	// DisplayName: Granite Bloom
-	/* Tooltip:
+	DisplayName: Гранитный цветок
+	Tooltip:
 		'''
-		Fires a crystal seed that blossoms into a lingering energy flower
-		The bloom pulses several times, spraying crystal petals all around
-		''' */
+		Выпускает кристальное семя, которое распускается в долговечный энергетический цветок
+		Цветок несколько раз пульсирует, разбрасывая вокруг кристальные лепестки
+		'''
 }
 
 GraniteThrowingKnife: {
-	// DisplayName: Granite Throwing Knife
-	/* Tooltip:
+	DisplayName: Гранитный метательный нож
+	Tooltip:
 		'''
-		Throws a piercing knife trailing crystalline energy
-		Shatters into crystal shards on its last hit or against terrain
-		''' */
+		Метает пронзающий нож, оставляющий след кристаллической энергии
+		Рассыпается на кристальные осколки при последнем попадании или о рельеф
+		'''
 }
 
 GraniteWalkingBoots: {
-	// DisplayName: Granite Walking Boots
-	/* Tooltip:
+	DisplayName: Гранитные сапоги-скороходы
+	Tooltip:
 		'''
-		Greatly increases running speed and acceleration
-		Crackles with blue sparks at full speed
-		''' */
+		Значительно повышает скорость бега и ускорение
+		На полной скорости потрескивает синими искрами
+		'''
 }
 
 MarbleClub: {
-	// DisplayName: Marble Club
-	/* Tooltip:
+	DisplayName: Мраморная дубина
+	Tooltip:
 		'''
-		A slow, heavy swing with crushing knockback
-		May petrify foes, briefly slowing them
-		The first hit of each swing unleashes a marble shockwave
-		''' */
+		Медленный, тяжёлый замах с сокрушительным отбрасыванием
+		Может обращать врагов в камень, ненадолго замедляя их
+		Первое попадание каждого замаха высвобождает мраморную ударную волну
+		'''
 }
 
 MarbleHuntingKnife: {
-	// DisplayName: Marble Hunting Knife
-	/* Tooltip:
+	DisplayName: Мраморный охотничий нож
+	Tooltip:
 		'''
-		Swift slashing strikes
-		Every third strike is a wider finisher that sprays marble shards
-		''' */
+		Стремительные режущие удары
+		Каждый третий удар — более широкий завершающий взмах, разбрасывающий мраморные осколки
+		'''
 }
 
 MarbleDisc: {
-	// DisplayName: Marble Discus
-	/* Tooltip:
+	DisplayName: Мраморный диск
+	Tooltip:
 		'''
-		Hurls a spinning discus that ricochets between foes and walls
-		Then curves back to your hand; up to two may fly at once
-		''' */
+		Метает вращающийся диск, рикошетящий между врагами и стенами
+		Затем по дуге возвращается в руку; одновременно могут лететь до двух
+		'''
 }
 
 MarblePebble: {
-	// DisplayName: Marble Pebble
-	/* Tooltip:
+	DisplayName: Мраморный камешек
+	Tooltip:
 		'''
-		An endless sling stone, swift and prone to critical hits
-		Deals far greater damage to foes with high maximum life
-		Bounces once off the ground
-		''' */
+		Бесконечный камень для пращи, быстрый и склонный к критическим ударам
+		Наносит гораздо больше урона врагам с высоким запасом здоровья
+		Один раз отскакивает от земли
+		'''
 }
 
 MarbleShield: {
-	// DisplayName: Marble Aegis
-	/* Tooltip:
+	DisplayName: Мраморная эгида
+	Tooltip:
 		'''
-		Increases defense and knockback resistance
-		Maintains a regenerating stone guard that absorbs an incoming hit, bursting into shards
-		Brace for a perfect block that reflects projectiles
-		''' */
+		Повышает защиту и сопротивление отбрасыванию
+		Поддерживает восстанавливающийся каменный щит, который поглощает входящий удар, разлетаясь на осколки
+		Приготовьтесь к идеальному блоку, отражающему снаряды
+		'''
 }
 
 MarbleBalloon: {
-	// DisplayName: Marble Balloon
-	/* Tooltip:
+	DisplayName: Мраморный шар
+	Tooltip:
 		'''
-		Increases jump height and grants a heavy second jump
-		Press Down while airborne to slam down, releasing a shockwave on landing
-		Negates fall damage
-		''' */
+		Увеличивает высоту прыжка и даёт тяжёлый второй прыжок
+		Нажмите «вниз» в воздухе, чтобы рухнуть вниз и при приземлении выпустить ударную волну
+		Сводит на нет урон от падения
+		'''
 }
 
 MarbleinaBottle: {
-	// DisplayName: Marble in a Bottle
-	/* Tooltip:
+	DisplayName: Мрамор в бутылке
+	Tooltip:
 		'''
-		Double-tap a direction to roll forward in a stone dash
-		Grants brief invulnerability while dashing
-		''' */
+		Дважды нажмите направление, чтобы рвануть вперёд каменным рывком
+		Даёт кратковременную неуязвимость во время рывка
+		'''
 }
