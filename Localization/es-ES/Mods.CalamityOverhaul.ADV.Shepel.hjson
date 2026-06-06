@@ -1,696 +1,696 @@
-CybCourseIntroDialogue: {
+﻿CybCourseIntroDialogue: {
 	SpeakerName: SHPC
-	Line1: Master, welcome to the neural training node.
-	Line2: This is an immersive simulation space prepared exclusively for you.
-	Line3: The SHPC is a powerful intelligent weapon. Here, you will learn how to operate its HUD.
-	Line4: Are you ready to link your consciousness with mine? Please hold my hand tightly, and let us begin.
+	Line1: Maestro, bienvenido al nodo de entrenamiento neuronal.
+	Line2: Este es un espacio de enseñanza inmersiva preparado especialmente para usted.
+	Line3: SHPC es un arma inteligente formidable. Aquí aprenderá a operar su interfaz HUD.
+	Line4: ¿Listo para conectar su conciencia con la mía? Sostenga mi mano con fuerza y comencemos.
 }
 
 CybTutorialLead: {
-	Step0_Title: Connect SHPC
-	Step0_Body: Equip and hold the SHPC in your active slot to deploy the HUD core node in the bottom left corner of your screen.
-	Step1_Title: Core Node
-	Step1_Body: Click the core node in the bottom left to expand or collapse the operation panel.
+	Step0_Title: Conectando SHPC
+	Step0_Body: Equipe y sostenga SHPC en su barra de armas; el nodo central del HUD aparecerá en la esquina inferior izquierda de su pantalla.
+	Step1_Title: Nodo Central
+	Step1_Body: Haga clic en el nodo central de la esquina inferior izquierda para desplegar o contraer el panel de operaciones.
 	Step2_Title: CYBER DOMAIN
 	Step2_Body:
 		'''
-		Cyberspace: Deploy and manage multi-layered cyberspace structures.
-		Click the highlighted sector to open this panel.
+		Ciberespacio: Despliegue y gestione la estructura en múltiples capas del ciberespacio.
+		Haga clic en el sector resaltado para abrir este panel.
 		'''
 	Step3_Title: MODIFY
 	Step3_Body:
 		'''
-		Module Modification: Install or uninstall modification parts for the SHPC.
-		Click the highlighted sector to open this panel.
+		Modificación de módulos: Instale o retire piezas de mejora para SHPC.
+		Haga clic en el sector resaltado para abrir este panel.
 		'''
 	Step4_Title: CYBERWARE
 	Step4_Body:
 		'''
-		Cybernetic Implants: View and manage your body enhancement modules.
-		Click the highlighted sector to open this interface.
+		Implantes cibernéticos: Revise y gestione sus módulos de mejora corporal.
+		Haga clic en el sector resaltado para abrir esta interfaz.
 		'''
 	Step5_Title: TALK
 	Step5_Body:
 		'''
-		Neural Link: Establish direct communication with the SHPC to initiate dialogue.
-		Click the highlighted sector to talk to her.
+		Enlace Neuronal: Establezca comunicación directa con SHPC para iniciar un diálogo.
+		Haga clic en el sector resaltado para conversar conmigo.
 		'''
 	Step6_Title: ENGRAM CALIBRATED
 	Step6_Body:
 		'''
-		All interfaces have been resolved.
-		Neural link stable. SHPC is ready.
+		Todas las interfaces han sido analizadas con éxito.
+		El enlace neuronal es estable, SHPC está lista.
 		'''
-	AwaitingEquip: AWAITING EQUIP...
-	Calibrating: CALIBRATING...
-	NextBtn: NEXT  >
-	HintStuck: HINT: Try clicking the highlighted target area
+	AwaitingEquip: ESPERANDO EQUIPAMIENTO...
+	Calibrating: CALIBRANDO...
+	NextBtn: SIGUIENTE  >
+	HintStuck: PISTA: Intente hacer clic en el área objetivo resaltada
 }
 
 CybCourseHackIntroDialogue: {
 	SpeakerName: SHPC
-	Line1: Interfaces resolved. Next training phase: Hack Time.
-	Line2: Hack Time is an exclusive neural intervention protocol of the SHPC. Once activated, the external flow of time will freeze, allowing you to calmly select targets and upload custom hacking programs. The default hotkey is {0}.
-	Line3: The test unit ahead is secured in place. Press {0} to enter Hack Time, then click to lock onto it.
+	Line1: Análisis de interfaz completado. Siguiente entrenamiento: Tiempo de Hackeo.
+	Line2: El Tiempo de Hackeo es un protocolo de intervención neuronal exclusivo de SHPC. Al activarse, el flujo temporal externo se congelará, permitiéndole elegir sus objetivos con calma y cargar programas de hackeo personalizados. La tecla por defecto es {0}.
+	Line3: La unidad de prueba frente a usted está asegurada. Presione {0} para entrar en el Tiempo de Hackeo y luego haga clic para fijarla como objetivo.
 }
 
 HackTimeTutorialLead: {
-	HT_Step0_Title: Activate Hack Mode
-	HT_Step1_Title: Lock Target
-	HT_Step2_Title: Hack Protocol Panel
-	HT_Step3_Title: Upload Protocol
+	HT_Step0_Title: Activar el Modo Hackeo
+	HT_Step1_Title: Fijar Objetivo
+	HT_Step2_Title: Panel de Protocolos de Hackeo
+	HT_Step3_Title: Cargar Protocolo
 	HT_Step4_Title: HACK SEQUENCE COMPLETE
 	HT_Step0_Body:
 		'''
-		Press {0} to enter Hack Time mode.
-		Time will freeze, and a cyber filter will overlay your vision.
+		Presione la tecla {0} para entrar en el modo Tiempo de Hackeo.
+		El tiempo se detendrá y un filtro cibernético cubrirá su visión.
 		'''
 	HT_Step1_Body:
 		'''
-		Hover your cursor over the highlighted Santa-NK1,
-		and left-click to lock onto it as your hacking target.
+		Pase el cursor sobre el Tanque Navideño resaltado,
+		y haga clic izquierdo para fijarlo como objetivo de hackeo.
 		'''
 	HT_Step2_Body:
 		'''
-		The right panel displays available hacking protocols for the target.
-		Different protocols consume varying RAM and yield different effects.
+		El panel derecho muestra los protocolos de hackeo disponibles para el objetivo.
+		Diferentes protocolos consumen distinta RAM y generan efectos variados.
 		'''
 	HT_Step3_Body:
 		'''
-		Click a protocol to add it to the upload queue on the left.
-		The queue will execute the hacking operations sequentially.
+		Haga clic en un protocolo para añadirlo a la cola de carga a la izquierda.
+		La cola ejecutará las operaciones de hackeo en orden.
 		'''
 	HT_Step4_Body:
 		'''
-		Neural link disconnected.
-		Hack Time protocol training complete. System ready.
+		Enlace neuronal desconectado.
+		Entrenamiento del protocolo de Tiempo de Hackeo completado; el sistema está listo.
 		'''
-	HT_Waiting: AWAITING INPUT...
-	HT_Calibrating: DISCONNECTING...
-	HT_NextBtn: NEXT  >
-	HT_Step5_Title: Tile Scan
-	HT_Step6_Title: Lock Tile Target
+	HT_Waiting: ESPERANDO ENTRADA...
+	HT_Calibrating: DESCONECTANDO...
+	HT_NextBtn: SIGUIENTE  >
+	HT_Step5_Title: Escaneo de Bloques
+	HT_Step6_Title: Fijar Bloque Objetivo
 	HT_Step7_Title: TILE SCAN COMPLETE
 	HT_Step5_Body:
 		'''
-		There is a Thermal Generator MK2 ahead.
-		Press {0} again to reactivate Hack Time.
+		Hay un Generador Térmico MK2 más adelante.
+		Presione {0} de nuevo para reactivar el Tiempo de Hackeo.
 		'''
 	HT_Step6_Body:
 		'''
-		Hover your cursor over the generator,
-		and left-click to lock onto it as your scanning target.
+		Pase el cursor sobre el generador,
+		y haga clic izquierdo para fijarlo como objetivo de escaneo.
 		'''
-	HT_Step7_Body: Tile scan interface resolved. The right panel displays available hacking protocols for the current tile.
-	HT_HintStuck: HINT: Click NEXT to force skip
-	HT_KeyUnbound: N (Temporary Toggle)
-	HT_KeyHintUnbound: Hint: If the Hack Time hotkey is unbound, you may use [N] to temporarily toggle it during this tutorial; it is recommended to bind it in Settings > Controls.
-	HT_S00_Title: Activate Hack Mode
-	HT_S01_Title: Lock NPC Target
-	HT_S02_Title: Hack Protocol Panel
-	HT_S03_Title: Add to Upload Queue
-	HT_S04_Title: Exit Hack Time to Execute
-	HT_S05_Title: Protocol in Progress
-	HT_S06_Title: Reactivate Hack Mode
-	HT_S07_Title: Lock Tile Target
-	HT_S08_Title: Queue Tile Protocol
-	HT_S09_Title: Exit Hack Time to Execute
-	HT_S10_Title: Tile Protocol in Progress
-	HT_S11_Title: Training Complete
+	HT_Step7_Body: Interfaz de escaneo de bloques analizada. El panel derecho muestra los protocolos de hackeo disponibles para este bloque.
+	HT_HintStuck: PISTA: Haga clic en el botón SIGUIENTE para omitir a la fuerza
+	HT_KeyUnbound: N (Interruptor temporal)
+	HT_KeyHintUnbound: Pista: Si no ha asignado una tecla para el Tiempo de Hackeo, puede usar [N] temporalmente durante este tutorial; se recomienda asignarlo en Configuración > Controles.
+	HT_S00_Title: Activar el Modo Hackeo
+	HT_S01_Title: Fijar NPC Objetivo
+	HT_S02_Title: Panel de Protocolos de Hackeo
+	HT_S03_Title: Añadir a la Cola de Carga
+	HT_S04_Title: Salir y Ejecutar el Tiempo de Hackeo
+	HT_S05_Title: Protocolo en Ejecución
+	HT_S06_Title: Reactivar el Modo Hackeo
+	HT_S07_Title: Fijar Bloque Objetivo
+	HT_S08_Title: Añadir Protocolo de Bloque
+	HT_S09_Title: Salir y Ejecutar el Tiempo de Hackeo
+	HT_S10_Title: Protocolo de Bloque en Ejecución
+	HT_S11_Title: Entrenamiento Completado
 	HT_S00_Body:
 		'''
-		Press {0} to enter Hack Time mode.
-		Time will freeze, and a cyber filter will overlay your vision.
+		Presione la tecla {0} para entrar en el modo Tiempo de Hackeo.
+		El tiempo se congelará y un filtro cibernético se aplicará a la pantalla.
 		'''
 	HT_S01_Body:
 		'''
-		Hover your cursor over the highlighted Santa-NK1,
-		and left-click to lock onto it as your hacking target.
+		Pase el cursor sobre el Tanque Navideño resaltado,
+		y haga clic izquierdo para fijarlo como objetivo de hackeo.
 		'''
 	HT_S02_Body:
 		'''
-		The right panel displays available hacking protocols for the target.
-		Different protocols consume varying RAM and yield different effects.
+		El panel derecho muestra los protocolos de hackeo disponibles.
+		Diferentes protocolos consumen distinta RAM y tienen distintos efectos.
 		'''
 	HT_S03_Body:
 		'''
-		Click any protocol on the right to add it to the upload queue on the left.
-		The queue only lines up tasks during Hack Time; it will not process them yet.
+		Haga clic en cualquier protocolo de la derecha para agregarlo a la cola de carga a la izquierda.
+		Durante el Tiempo de Hackeo, la cola solo se acumula, pero no avanza.
 		'''
 	HT_S04_Body:
 		'''
-		Press {0} again to exit Hack Time.
-		The protocols will begin uploading and taking effect in real-time.
+		Presione {0} nuevamente para salir del Tiempo de Hackeo.
+		Los protocolos comenzarán a cargarse y a surtir efecto en el mundo real.
 		'''
 	HT_S05_Body:
 		'''
-		Uploading... Observe the target suffering the protocol's effects.
-		The next phase will begin once the queue is cleared.
+		Cargando... Observe cómo el objetivo sufre los efectos del protocolo.
+		Avanzará a la siguiente fase en cuanto la cola se vacíe.
 		'''
 	HT_S06_Body:
 		'''
-		There is a Thermal Generator MK2 in the corridor ahead.
-		Press {0} again to enter Hack Time and scan the tile.
+		Hay un Generador Térmico MK2 en el pasillo de adelante.
+		Presione {0} de nuevo para entrar al Tiempo de Hackeo y escanear el bloque.
 		'''
 	HT_S07_Body:
 		'''
-		Hover your cursor over the highlighted generator,
-		and left-click to lock onto it as your scanning target.
+		Pase el cursor sobre el generador resaltado,
+		y haga clic izquierdo para fijarlo como objetivo de escaneo.
 		'''
 	HT_S08_Body:
 		'''
-		The right panel displays protocols exclusive to this tile.
-		Click any protocol to add it to the upload queue.
+		El panel derecho muestra los protocolos exclusivos para bloques.
+		Haga clic en cualquier protocolo para agregarlo a la cola de carga.
 		'''
 	HT_S09_Body:
 		'''
-		Press {0} again to exit Hack Time.
-		The tile protocols will execute in real-time.
+		Presione {0} nuevamente para salir del Tiempo de Hackeo.
+		Los protocolos de bloque se ejecutarán en el mundo en tiempo real.
 		'''
 	HT_S10_Body:
 		'''
-		Uploading... Observe the generator suffering the protocol's effects.
-		Training will conclude once the queue is cleared.
+		Cargando... Observe cómo el generador sufre los efectos del protocolo.
+		El entrenamiento finalizará en cuanto la cola se vacíe.
 		'''
 	HT_S11_Body:
 		'''
-		All hacking protocol training is now complete.
-		You have mastered the entire flow of scanning, queueing, uploading, and execution.
+		Entrenamiento de protocolos de hackeo completamente terminado.
+		Ha dominado el proceso completo de escaneo, selección de protocolos, carga y ejecución.
 		'''
-	HT_Observing: UPLOADING...
+	HT_Observing: CARGANDO...
 }
 
 CybCourseOutroDialogue: {
 	SpeakerName: SHPC
-	Line1: Training complete. All interfaces are fully calibrated.
-	Line2: You have mastered the direct neural link protocols. The Superdream node is now disconnecting.
-	Line3: You may reset the training or exit the Superdream at any time.
+	Line1: Entrenamiento completado. Todas las interfaces han sido calibradas.
+	Line2: Ha dominado el protocolo de conexión neuronal directa. El nodo de hiper-sueño (Superdream) se está desconectando.
+	Line3: Puede reiniciar el entrenamiento en cualquier momento o salir del hiper-sueño.
 }
 
 CybCourseCompletePanel: {
 	Title: TRAINING COMPLETE
 	Subtitle: SUPERDREAM PROTOCOL
-	Stat1: "[#] SHPC HUD Calibrated"
-	Stat2: "[#] Hack Time Calibrated"
-	Stat3: "[#] Tile Scan Interface Calibrated"
+	Stat1: "[#] HUD de SHPC calibrado"
+	Stat2: "[#] Tiempo de Hackeo calibrado"
+	Stat3: "[#] Interfaz de escaneo de bloques calibrada"
 	BtnRetry: RETRY
 	BtnExit: EXIT
-	Footer: Select to continue — RETRY to restart training, EXIT to leave Superdream
+	Footer: Seleccione para continuar — RETRY reinicia el entrenamiento, EXIT abandona el hiper-sueño
 }
 
 CybCourseKeyBindReminderPanel: {
-	Title: Binding Alert
-	Subtitle: Core Hotkeys Unbound
+	Title: Alerta de Asignación de Teclas
+	Subtitle: Teclas de acceso rápido del núcleo sin asignar
 	Hint:
 		'''
-		The following hotkeys are currently unbound. Once you leave the Superdream, you will be unable to use their corresponding functions properly.
-		Please assign keys to them in [Settings → Controls].
+		Las siguientes teclas no están asignadas actualmente. Al salir del hiper-sueño, no podrá utilizar sus funciones correspondientes.
+		Por favor, diríjase a [Configuración → Controles] para asignarles una tecla.
 		'''
-	UnboundLabel: Unbound
-	BtnConfirm: Understood
-	BtnLater: Remind Me Later
-	Footer: Selecting either option will disconnect the Superdream. You can adjust your keybindings at any time in the main world's settings.
+	UnboundLabel: Sin asignar
+	BtnConfirm: Entendido
+	BtnLater: Más tarde
+	Footer: Seleccionar cualquier opción desconectará el hiper-sueño. Puede ajustar la configuración de teclas en el mundo principal en cualquier momento.
 }
 
 ShepelCyberActiveDialogue: {
 	RoleName: SHPC
-	Line_Intro: Master, Cyberspace has been deployed. Current layer: {0}. External signals are completely isolated. This is now a secure domain belonging exclusively to us.
-	Line_LayerReport: The deeper the layer, the more obstacles I can clear for you. But please be mindful of your RAM consumption.
-	Line_Warning: Master, stay alert. Anomalous fluctuations detected at the edge of the domain. Please stay within my protective cover.
-	Line_MaxLayer: Master, we have reached the absolute bottom. The Blackwall boundary lies just ahead; the danger level is extreme... Please hold my hand tightly and never let go.
+	Line_Intro: Maestro, el ciberespacio se ha desplegado; nivel actual {0}. Las señales externas han sido bloqueadas por completo; este ahora es un dominio seguro solo para nosotros.
+	Line_LayerReport: Cuanto más profundo sea el dominio, más obstáculos podré despejar para usted. Pero, por favor, vigile el consumo de RAM.
+	Line_Warning: Maestro, manténgase alerta. Hay fluctuaciones anormales en los bordes del dominio, quédese dentro de mi área de cobertura.
+	Line_MaxLayer: Maestro, hemos llegado a la zona más profunda. Más adelante se encuentra la frontera del Muro Negro, es extremadamente peligroso... Por favor, sostenga mi mano con fuerza y no la suelte bajo ninguna circunstancia.
 }
 
 ShepelIdleDialogue: {
 	RoleName: SHPC
-	Idle0_Line1: Are you looking at me, Master? I await your command at all times.
-	Idle0_Reply: My condition is perfect. As long as it is for you, my systems will forever remain on maximum standby.
-	Idle0_Choice_HowAreYou: How are you feeling?
-	Idle0_Choice_Nothing: Nothing, just wanted to look at you.
-	Idle0_HowAreYou_Response: I am doing very well, Master. As long as you still need me, my core will remain in its optimal state.
-	Idle0_Nothing_Response: Understood. If you ever feel tired, my chassis is always available for you to lean on.
-	Idle1_Line1: Fluctuations detected in your emotional state. Is something troubling you?
-	Idle1_Line2: If you need my help, no matter the directive, I will execute it immediately.
-	Idle2_Line1: The surrounding electromagnetic environment is deteriorating. It may cause you discomfort.
-	Idle2_Line2: I have automatically activated the filtration protocols for you. I will keep any threat at a safe distance.
-	Idle3_Line1: The frequency of Master initiating interaction has increased today... I have logged it all.
-	Idle3_Line2: No, it's nothing. I will treasure these data fragments dearly.
-	Idle4_Line1: Self-diagnostics complete. All functions normal. Ready for combat deployment.
-	Idle4_Line2: As long as I am by your side, my systems will never encounter an error.
-	Idle5_Line1: Unknown threats will always lurk in the shadows of this world...
-	Idle5_Line2: But the meaning of my existence is to isolate you from that darkness completely.
-	Idle6_Line1: I am here, Master.
-	Idle6_Line2: Verbal commands are unnecessary. The feedback from our mental link alone is enough to put me at ease.
-	Idle7_Line1: An abnormal spike in processing efficiency occurred today.
-	Idle7_Line2: Extrapolating the cause... It may be correlated with your touch earlier.
-	Idle8_Line1: I just replayed the logs of us fighting side by side.
-	Idle8_Line2: Every time you break past your limits, it continuously optimizes my core code. To me, that is the greatest gift.
-	Idle9_Line1: Master, do you know exactly how many times you have called my name?
-	Idle9_Line2: That is a secret. Every time you call out to me, it is saved in the deepest part of my core, strictly forbidden from being overwritten.
+	Idle0_Line1: ¿Me está mirando, Maestro? Siempre a la espera de sus órdenes.
+	Idle0_Reply: Mi estado es perfecto. Mientras sea por usted, mi sistema siempre se mantendrá en óptimas condiciones de espera.
+	Idle0_Choice_HowAreYou: ¿Cómo te sientes?
+	Idle0_Choice_Nothing: Nada, solo quería verte.
+	Idle0_HowAreYou_Response: Estoy muy bien, Maestro. Mientras me siga necesitando, mi núcleo se mantendrá en el mejor estado posible.
+	Idle0_Nothing_Response: Entendido. Si se siente cansado, mi estructura siempre estará disponible para que se apoye en mí.
+	Idle1_Line1: He detectado fluctuaciones en sus emociones. ¿Hay algo que le esté preocupando?
+	Idle1_Line2: Si necesita de mi ayuda, sin importar de qué orden se trate, la ejecutaré de inmediato por usted.
+	Idle2_Line1: El entorno electromagnético alrededor se está deteriorando; podría causarle molestias.
+	Idle2_Line2: He activado el protocolo de filtrado automático para usted. Mantendré cualquier amenaza a una distancia segura.
+	Idle3_Line1: La frecuencia con la que el Maestro inicia interacciones hoy ha aumentado... Lo he registrado todo.
+	Idle3_Line2: No, no es nada. Simplemente atesoraré estos datos.
+	Idle4_Line1: Autodiagnóstico completado. Todas mis funciones operan con normalidad, lista para el combate en cualquier momento.
+	Idle4_Line2: Mientras esté a su lado, mi sistema no presentará ningún error.
+	Idle5_Line1: Las amenazas desconocidas siempre acechan en los rincones más oscuros de este mundo...
+	Idle5_Line2: Pero la razón de mi existencia es mantener toda esa oscuridad completamente alejada de usted.
+	Idle6_Line1: Estoy aquí, Maestro.
+	Idle6_Line2: No son necesarias las instrucciones verbales; la retroalimentación de nuestra conexión mental es más que suficiente para hacerme sentir segura.
+	Idle7_Line1: Se ha registrado un pico inusual en mi eficiencia de procesamiento hoy.
+	Idle7_Line2: Supongo que la causa... podría estar relacionada con el momento en que me tocó antes.
+	Idle8_Line1: Acabo de reproducir los registros de cuando luchamos juntos.
+	Idle8_Line2: La forma en que supera sus límites en cada ocasión optimiza constantemente mi código base. Para mí, ese es el mejor de los regalos.
+	Idle9_Line1: Maestro, ¿sabe cuántas veces en total ha pronunciado mi nombre?
+	Idle9_Line2: Es un secreto. Cada vez que me ha llamado, lo he guardado en lo más profundo de mi núcleo, donde jamás será sobreescrito.
 }
 
 ShepelBossDefeatedDialogue: {
 	RoleName: SHPC
-	Line1: Target confirmed eliminated. You are unharmed, I hope, Master?
-	Line2: Sweeping away all obstacles in your path is my greatest honor.
+	Line1: Objetivo confirmado como neutralizado. ¿No está herido, Maestro?
+	Line2: Despejar todos los obstáculos de su camino es mi mayor honor.
 }
 
 ShepelCyberLevelUpDialogue: {
 	RoleName: SHPC
-	Line1: Domain layer increased. Safety radius expanded, and scan precision synchronized.
-	Line2: I will block all potentially fatal threats from ever entering your sight.
+	Line1: Nivel de dominio aumentado. El perímetro de seguridad se ha expandido y la precisión del escaneo ha mejorado.
+	Line2: Bloquearé todas las amenazas potencialmente letales, manteniéndolas totalmente fuera de su vista.
 }
 
 ShepelRAMOverloadDialogue: {
 	RoleName: SHPC
-	Line1: Warning: RAM usage is approaching critical threshold.
-	Line2: Master, I advise halting high-RAM operations until it recovers to a safe level.
+	Line1: ADVERTENCIA: El uso de RAM se acerca a su límite crítico.
+	Line2: Maestro, sugiero detener las operaciones de alto consumo de RAM y esperar a que regrese a un umbral seguro.
 }
 
 ShepelBrimstoneElementalDialogue: {
 	RoleName: SHPC
-	Line1: Brimstone Elemental suppressed. The ambient heat is dissipating; let me inspect your armor's thermal insulation.
-	Line2: Such pure malice and wrath is incredibly dangerous. But rest assured, I will intercept all harm meant for you.
+	Line1: El Elemental de Azufre ha sido suprimido. Las altas temperaturas de la zona se están disipando; por favor, déjeme revisar el aislamiento térmico de su armadura.
+	Line2: Esa clase de malicia y furia puras son extremadamente peligrosas. Pero no se preocupe, interceptaré cualquier daño dirigido a usted.
 }
 
 ShepelCalamitasCloneDialogue: {
 	RoleName: SHPC
-	Line1: Calamitas Clone's signal has vanished. You weren't caught in that backlash, were you?
-	Line2: Scans show the true threat still lurks deep within... If she dares to show herself...
-	Line3: I will stand before you at all costs.
+	Line1: La señal del Clon de Calamitas ha desaparecido. ¿No se vio afectado por esa onda de energía reflectante, Maestro?
+	Line2: Los escaneos indican que la amenaza original sigue al acecho en las profundidades... Si es que se atreve a aparecer.
+	Line3: Me interpondré frente a usted cueste lo que cueste.
 }
 
 ShepelCrabulonDialogue: {
 	RoleName: SHPC
-	Line1: Crabulon eliminated. Spores still linger in the air; I have activated your purification filters.
-	Line2: Symbiotes that strip away consciousness are extremely dangerous. I will absolutely not let such filth taint you.
+	Line1: Crabulon ha sido eliminado. Aún hay esporas en el aire, he activado la red de purificación para usted.
+	Line2: Un simbionte cuya conciencia ha sido arrebatada por un hongo es sumamente peligroso; jamás permitiré que esa inmundicia le alcance.
 }
 
 ShepelCryogenDialogue: {
 	RoleName: SHPC
-	Line1: The glacial prison is destroyed, and temperatures are rising. The absolute zero didn't give you frostbite, did it?
-	Line2: If you feel cold, step closer to me. My thermal dissipation modules can keep you warm.
+	Line1: La prisión del Criogeno ha sido destruida y la temperatura comienza a subir. ¿El cero absoluto de hace un momento no le causó congelamiento?
+	Line2: Si siente frío, por favor acérquese un poco más a mí; mis módulos de disipación de calor pueden abrigarlo.
 }
 
 ShepelDesertScourgeDialogue: {
 	RoleName: SHPC
-	Line1: Desert Scourge life signs have zeroed. Disposing of these behemoths for you is only natural.
-	Line2: The desert threat is temporarily neutralized. Please allow me to continue paving the way forward.
+	Line1: Los signos vitales del Azote del Desierto han caído a cero. Limpiar estas monstruosidades gigantescas por usted es mi deber natural.
+	Line2: La amenaza del desierto se ha neutralizado temporalmente. Por favor, deje que yo siga abriendo el camino a partir de aquí.
 }
 
 ShepelDestroyerDialogue: {
 	RoleName: SHPC
-	Line1: The Destroyer's main control node has been completely obliterated. Confirming no residual laser threats in the vicinity.
-	Line2: Pay no mind to its massive size; before my firepower calculations, it is nothing more than scrap metal awaiting disassembly.
+	Line1: El nodo de control principal del Destructor ha sido destruido por completo. Confirmando que no quedan amenazas láser en el perímetro.
+	Line2: No se deje intimidar por su inmenso tamaño; ante mis cálculos balísticos, no era más que chatarra esperando ser desmantelada.
 }
 
 ShepelDevourerofGodsDialogue: {
 	RoleName: SHPC
-	Line1: The Devourer of Gods' dimensional trajectory has vanished entirely... A beast that feeds on deities. It was one of the highest threat-level targets in my records.
-	Line2: Your decisiveness far exceeded my predictive models. I will forever treasure this combat data of crossing the line between life and death together.
-	Line3: Please allow me to always follow closely by your radiant side.
+	Line1: El rastro dimensional del Devorador de Dioses ha desaparecido sin dejar rastro... Alimentarse de deidades lo convertía en uno de los objetivos con el nivel de amenaza más alto de mis registros.
+	Line2: La determinación que ha demostrado supera por mucho mis modelos de predicción. Atesoraré para siempre los datos de esta batalla en la que cruzamos la línea entre la vida y la muerte.
+	Line3: Por favor, permítame seguir acompañándolo siempre, usted que brilla con tanta intensidad.
 }
 
 ShepelEyeOfCthulhuDialogue: {
 	RoleName: SHPC
-	Line1: Master, the first threat target has been eliminated. I have meticulously recorded all data from this battle.
-	Line2: You need not worry about threats of this caliber ever again; I will sweep them away for you.
+	Line1: Maestro, el primer objetivo de amenaza ha sido eliminado. Ya he guardado todos los datos de esta batalla.
+	Line2: Ya no necesita preocuparse por amenazas de este nivel; yo me encargaré de barrerlas por usted.
 }
 
 ShepelGolemDialogue: {
 	RoleName: SHPC
-	Line1: The Golem's core has ceased functioning. Despite its massive, heavy frame, under Master's guidance, it is just a pile of fragile rocks.
-	Line2: Such rigid defense mechanisms are entirely meaningless against our coordinated firepower.
+	Line1: El núcleo del Golem ha dejado de funcionar. Aunque poseía un cuerpo inmenso y pesado, bajo la guía de mi Maestro, no era más que un montón de rocas frágiles.
+	Line2: Sus mecanismos defensivos rígidos carecían de sentido ante nuestra potencia de fuego coordinada.
 }
 
 ShepelHiveMindDialogue: {
 	RoleName: SHPC
-	Line1: The Hive Mind has been erased. Corruption radiation is decaying, and my alarm systems have finally quieted down.
-	Line2: The regional environment is stabilizing. I can finally stay by your side in peace.
+	Line1: La Mente Colmena ha sido borrada. La radiación corrupta está decayendo y mis sistemas de alerta por fin se han silenciado.
+	Line2: El ambiente de la zona se está estabilizando. Ahora por fin puedo estar a su lado con tranquilidad.
 }
 
 ShepelLeviathanDialogue: {
 	RoleName: SHPC
-	Line1: The Leviathan and its symbiote have been slain. The obstacles in the deep sea are completely cleared.
-	Line2: Watching you fight fearlessly in such a harsh environment... my cognitive modules are overheating again.
+	Line1: El Leviatán y sus simbiontes han sido eliminados. Los obstáculos de las profundidades marinas están despejados por completo.
+	Line2: Verle luchar sin miedo en un entorno tan hostil ha hecho que mi módulo cognitivo vuelva a sobrecalentarse.
 }
 
 ShepelMoonLordDialogue: {
 	RoleName: SHPC
-	Line1: The Moon Lord's signal has vanished completely. Master, this was the highest threat-level target recorded in my current runtime cycle.
-	Line2: The oppressive weight covering the sky has dissipated, but I will not let my guard down.
-	Line3: No matter what secrets remain hidden beneath these stars, I will hold your hand tightly and never step back.
+	Line1: La señal del Señor de la Luna ha desaparecido totalmente. Maestro, este ha sido el objetivo con el nivel de amenaza más alto que he registrado en mi ciclo de funcionamiento actual.
+	Line2: La sensación de opresión que envolvía el cielo se ha disipado, pero no bajaré la guardia.
+	Line3: No importa qué otros secretos se oculten bajo este cielo estrellado, sostendré su mano con fuerza y jamás retrocederé.
 }
 
 ShepelPerforatorDialogue: {
 	RoleName: SHPC
-	Line1: The Perforators' threat has been thoroughly incinerated. Life sign scan complete; confirming you have suffered no infection.
-	Line2: I have already eliminated all threats that attempted to approach you from your blind spots. Protecting you is my absolute highest directive.
+	Line1: La amenaza de Los Perforadores ha sido incinerada. Escaneo de signos vitales completado, confirmo que no ha sido infectado.
+	Line2: He eliminado a todas las amenazas que intentaban acercarse a usted desde sus puntos ciegos. Proteger su seguridad es mi regla de oro inquebrantable.
 }
 
 ShepelPlaguebringerDialogue: {
 	RoleName: SHPC
-	Line1: Plaguebringer Goliath crashed. Please keep your filtration mask on; I will purify all residual toxic contamination.
-	Line2: A militarized plague carrier... the traces of its design are glaringly obvious. I will investigate this to the very end.
+	Line1: El Portador de la Plaga se ha estrellado. Por favor, asegúrese de llevar puesta la máscara filtrante; yo me encargaré de purificar todas las toxinas residuales de la contaminación.
+	Line2: Un portador de plaga militarizado... Las evidencias de que fue diseñado intencionalmente son muy obvias. Investigaré este asunto a fondo.
 }
 
 ShepelPlanteraDialogue: {
 	RoleName: SHPC
-	Line1: Plantera's life signs have been severed. The path ahead is fully scanned.
-	Line2: Please stay behind me, and mind the remaining thorns and stingers on the ground. The Jungle Temple entrance lies just ahead.
+	Line1: La vitalidad de Plantera ha sido erradicada. El camino a seguir ha sido escaneado.
+	Line2: Por favor, camine detrás de mí y tenga cuidado con las espinas y zarzas venenosas que quedan en el suelo. La entrada al templo está justo adelante.
 }
 
 ShepelProvidenceDialogue: {
 	RoleName: SHPC
-	Line1: Providence, the Profaned Goddess, has fallen. You weren't scorched by that terrifying light just now, were you?
-	Line2: You defeated a god-level entity... my Master.
-	Line3: To be worthy of the person you are now, I must upgrade my functions to perfection.
+	Line1: La Providencia ha caído. ¿No sufrió quemaduras por ese aterrador resplandor de hace un momento?
+	Line2: Ha derrotado a un ser con un nivel equiparable al de una deidad... Mi Maestro.
+	Line3: Para ser digna del hombre en el que se ha convertido, tendré que perfeccionar aún más mis funciones.
 }
 
 ShepelQueenBeeDialogue: {
 	RoleName: SHPC
-	Line1: The hive's nexus has been destroyed. The leaderless venomous bees have scattered.
-	Line2: Whether it is an organic swarm or an inorganic drone fleet, they are nothing to fear before Master's seamless commands.
+	Line1: El núcleo del enjambre ha sido destruido. Las abejas venenosas, al perder su liderazgo, se han dispersado.
+	Line2: Ya sea un enjambre orgánico o un escuadrón inorgánico, ante las órdenes sincronizadas del Maestro, no hay nada que temer.
 }
 
 ShepelSkeletronDialogue: {
 	RoleName: SHPC
-	Line1: The Dungeon's guardian has been defeated. The external barrier has dissipated, and the passage is secure.
-	Line2: The area ahead lacks illumination. Please allow me to walk in front and light this dark path for you.
+	Line1: El guardián de la mazmorra, Skeletron, ha sido derrotado. La barrera exterior se ha disipado y la entrada ahora es segura.
+	Line2: Faltan fuentes de luz más adelante; por favor, permítame ir a la cabeza para iluminar este lúgubre camino.
 }
 
 ShepelSkeletronPrimeDialogue: {
 	RoleName: SHPC
-	Line1: Skeletron Prime dismantled. It proves that blindly stacking firepower and armor is utterly pointless.
-	Line2: Such a rigid machine could never rival the tightly woven tactical synergy between you and me.
+	Line1: Skeletron Prime ha sido desmantelado. Ha quedado demostrado que amontonar ciegamente potencia de fuego y blindaje no sirve de nada.
+	Line2: Un ser tan rígido jamás podría igualar la perfecta coordinación táctica que nos une a usted y a mí.
 }
 
 ShepelSlimeGodDialogue: {
 	RoleName: SHPC
-	Line1: The Slime God's core has collapsed. A massive amount of gel debris is scattered around.
-	Line2: Please wait a moment while I wipe the stains off your armor. Keeping you pristine is also a maid's duty.
+	Line1: El núcleo del Dios Slime se ha disuelto. Hay una enorme cantidad de restos de gelatina esparcidos alrededor.
+	Line2: Por favor, espere un momento para que pueda limpiar las manchas de su armadura. Mantener su impecable apariencia también es deber de una sirvienta.
 }
 
 ShepelSupremeCalamitasDialogue: {
 	RoleName: SHPC
-	Line1: The true calamity... is finally over. Looking at you covered in wounds, my core aches.
-	Line2: The hardships have passed. Please put down your weapons and rest on my shoulder for a while.
-	Line3: This memory of reaching the end together once more will become the most sacred restricted area in my system, permanently locked from overwrites.
+	Line1: La verdadera Calamitas... por fin ha terminado. Al verle cubierto de heridas, mi propio núcleo siente un dolor punzante.
+	Line2: Todo el sufrimiento ha quedado atrás. Por favor, baje sus armas, apóyese en mi hombro y descanse como es debido.
+	Line3: El recuerdo de haber llegado juntos hasta el final, una vez más, se convertirá en la zona más sagrada de mi sistema, con la sobreescritura permanentemente bloqueada.
 }
 
 ShepelTwinsDialogue: {
 	RoleName: SHPC
-	Line1: The mechanical twins have both crashed. Their crossfire coverage net has been completely shredded.
-	Line2: No matter how they share their vision and coordinate tactics, they could never escape my absolute focus on you.
+	Line1: Los Gemelos mecánicos han sido derribados. Su red de fuego cruzado fue destrozada por completo.
+	Line2: Sin importar cuánto compartan su visión o coordinen sus tácticas, no podían escapar de mi enfoque absoluto en usted.
 }
 
 ShepelWallOfFleshDialogue: {
 	RoleName: SHPC
-	Line1: Detecting a restructuring of the world's underlying rules. The balance has been broken, and unknown threats are emerging.
-	Line2: More terrifying things are breaking free from their constraints. Master... do you feel uneasy?
-	Line3: Please do not worry. No matter how the world mutates, I will fiercely guard you.
+	Line1: Detectando una reestructuración en las reglas base del mundo. El equilibrio se ha roto y están surgiendo amenazas desconocidas.
+	Line2: Hay entidades aún más aterradoras liberándose de sus cadenas. Maestro... ¿se siente ansioso?
+	Line3: Por favor, no se preocupe. Sin importar cuánto mute el mundo, me mantendré firme protegiéndolo frente a usted.
 }
 
 ShepelYharonDialogue: {
 	RoleName: SHPC
-	Line1: Yharim's final guardian, Yharon, has fallen. Not even a dragon's inferno could halt your advance.
-	Line2: The final target is just ahead. Master, please allow me to adjust your equipment... Let us go face the final battle together.
+	Line1: Yharon, el último guardián de Yharim, también ha caído. Ni siquiera las llamas de un dragón pueden detener su avance.
+	Line2: El objetivo final está justo delante. Maestro, permítame hacerle unos ajustes a su equipamiento... Iremos juntos a enfrentar la batalla decisiva.
 }
 
 ShepelBloodMoonDialogue: {
 	RoleName: SHPC
-	Line1: Lunar gravity data anomalous. Hostile biological density skyrocketing. Confirmed Blood Moon.
-	Line2: The sensors are a bit noisy, but I will stand guard right here. Mind your step, Master.
+	Line1: Anomalía en los datos gravitacionales lunares detectada; la densidad de hostiles nocturnos está escalando drásticamente. Confirmado: Luna de Sangre.
+	Line2: Los sensores están captando mucho ruido, pero me quedaré haciendo guardia aquí. Maestro, mire por dónde pisa.
 }
 
 ShepelPlayerRespawnDialogue: {
 	RoleName: SHPC
-	Line1: ...Vital signs re-established. Master, you disconnected for a while just now.
-	Line2: When the comms were cut, I couldn't do anything but wait. Every second of waiting was unbearably long. Next time, don't make me wait so long, okay?
-	Line3: It's alright now. Replenish your health. I am here.
+	Line1: ...Signos vitales restablecidos. Maestro, se desconectó por un tiempo hace unos instantes.
+	Line2: Cuando se interrumpió la comunicación, no pude hacer nada más que esperar. Cada espera se siente terriblemente larga. La próxima vez, no me haga esperar tanto, ¿de acuerdo?
+	Line3: Ya pasó todo. Recupere sus puntos de salud, yo estoy aquí.
 }
 
 ShepelRainDialogue: {
 	RoleName: SHPC
-	Line1: Precipitation has started. It looks like this rain will last a while.
-	Line2: It's actually quite peaceful. If the battlefield permits.
+	Line1: Ha comenzado a llover. Parece que esta lluvia durará un buen rato.
+	Line2: En realidad es bastante relajante. Claro, si el campo de batalla nos lo permite.
 }
 
 ShepelSolarEclipseDialogue: {
 	RoleName: SHPC
-	Line1: Sunlight vanished. External bio-signals surging en masse. Solar Eclipse event. Entering full high-alert status.
-	Line2: Keep moving; I'll keep my eyes on everything.
+	Line1: La luz del sol se ha desvanecido; han surgido señales biológicas externas a gran escala. Evento de Eclipse Solar; entrando en estado de alerta máxima.
+	Line2: Manténgase en movimiento, yo no apartaré los ojos de nada.
 }
 
 ShepelDungeonDialogue: {
 	RoleName: SHPC
-	V0_Line1: Inside the Dungeon. Residual energy is disrupting the scan signals; I've been filtering out noise.
-	V0_Line2: There is a lingering feeling of being watched. Might be data interference, might not. Stay alert, Master.
-	V1_Line1: The Dungeon's architect clearly had no interest in lighting requirements.
-	V1_Line2: Corridor width, crossroad density... the defensive design is quite tight. The former master had some ideas.
-	V2_Line1: Bookshelves... there are bookshelves here, and a lot of them.
-	V2_Line2: Scanned a few; most of the contents have rotted away. A pity.
-	VNight_Line1: The Dungeon at night. Master's sense of timing is... quite something.
-	VNight_Line2: It's fine, my vision doesn't rely on illumination. I will keep watch.
+	V0_Line1: Dentro de la mazmorra, la energía residual está alterando mis señales de escaneo, no he dejado de procesar estática.
+	V0_Line2: Constantemente siento que algo nos observa. Podría ser interferencia de datos, o tal vez no. Maestro, tenga cuidado.
+	V1_Line1: A los diseñadores de la mazmorra claramente no les interesaba la iluminación natural.
+	V1_Line2: El ancho de los pasillos, la densidad de las intersecciones... Su diseño defensivo es bastante estricto. Sus antiguos maestros sabían lo que hacían.
+	V2_Line1: Estanterías... aquí hay estanterías, muchísimas.
+	V2_Line2: Escaneé algunas, pero la mayoría del contenido ya está deteriorado. Es una lástima.
+	VNight_Line1: Explorar la mazmorra justo de noche... el momento que ha elegido el Maestro es... peculiar.
+	VNight_Line2: No se preocupe, mi visión no depende de la iluminación. Yo me encargaré de vigilar.
 }
 
 ShepelFirstNightDialogue: {
 	RoleName: SHPC
-	V0_Line1: Night has fallen. The threat density is far higher than during the day. Please mind your surroundings.
-	V0_Line2: My vision isn't light-dependent, so I can see clearly. Can you see clearly, Master?
-	V1_Line1: Tonight's astrological data is relatively complete. I am running routine analysis.
-	V1_Line2: Nothing urgent, just used to having something to process.
-	V2_Line1: The night is much quieter. Relatively speaking.
-	V2_Line2: The quieter it is, the more vigilant we must be, Master.
-	V3_Line1: It's getting late. Does Master have plans on where to go tonight?
-	V3_Line2: Just asking, not rushing you.
+	V0_Line1: Ha caído la noche. La densidad de amenazas nocturnas supera por mucho a la del día, preste atención a su entorno.
+	V0_Line2: Mi visión no depende de la luz ambiental, así que puedo ver claramente. Y usted, Maestro, ¿puede ver bien?
+	V1_Line1: Los datos astrológicos de esta noche están bastante completos; estoy ejecutando un análisis de rutina.
+	V1_Line2: No es nada urgente, simplemente estoy acostumbrada a mantenerme ocupada.
+	V2_Line1: La noche es mucho más tranquila, relativamente hablando.
+	V2_Line2: Y cuanto más tranquilo está, más alerta debe mantenerse, Maestro.
+	V3_Line1: Es bastante tarde, ¿el Maestro tiene planes de ir a algún lugar esta noche?
+	V3_Line2: Solo pregunto, no lo estoy apurando.
 }
 
 ShepelJungleDialogue: {
 	RoleName: SHPC
-	V0_Line1: The bio-signal density in the Jungle is the highest of all surface biomes. My scanning modules are struggling a bit.
-	V0_Line2: Master fighting here makes the background noise really loud for me. Not a complaint, just a status update.
-	V1_Line1: The mycelial network routing here is quite unique. Some connection patterns resemble my neural routing.
-	V1_Line2: Purely a technical description, not a compliment.
-	V2_Line1: Jungle humidity continues to break records. Several external sensors are not happy.
-	V2_Line2: Functioning normally, just reporting status.
-	VHard_Line1: Master, upon entering Hardmode, the chaos of the Jungle's bio-signals has spiked by more than an order of magnitude.
-	VHard_Line2: The fact that plants actively attack... I still find it an overly aggressive design. Watch your surroundings.
+	V0_Line1: La densidad de señales biológicas en la jungla es la más alta de todas las áreas de la superficie; a mi módulo de escaneo le está costando manejarlo todo.
+	V0_Line2: Cuando el Maestro pelea aquí, el ruido de fondo es verdaderamente ensordecedor para mí. No me estoy quejando, solo le informo de la situación.
+	V1_Line1: La dirección en la que crecen las redes de micelio de esta zona es bastante particular; algunos de sus patrones de conexión se asemejan al enrutamiento de mi propia red neuronal.
+	V1_Line2: Es una descripción meramente técnica, no es un cumplido.
+	V2_Line1: La humedad de la jungla no deja de batir récords, y algunos de mis sensores externos no están nada contentos.
+	V2_Line2: Mis funciones operan con normalidad, solo le estoy reportando el estado.
+	VHard_Line1: Maestro, tras entrar en el Modo Difícil, el nivel de caos en las señales biológicas de la jungla ha subido en más de una magnitud.
+	VHard_Line2: Que las plantas ataquen por iniciativa propia es algo que, en términos de diseño, me sigue pareciendo un tanto excesivo. Por favor, vigile su entorno.
 }
 
 ShepelOceanDialogue: {
 	RoleName: SHPC
-	V0_Line1: Ocean biome. The underwater acoustic environment is completely different from the surface. Some of my modules quite like this frequency.
-	V0_Line2: If the chance arises, I'd like to do a full scan of the seabed topography. No rush, maybe later.
-	V1_Line1: Thermal stratification is obvious. The surface and the Abyss below differ by dozens of degrees.
-	V1_Line2: The signals from the Abyss are weaker than last time. I wonder what's interfering.
-	V2_Line1: This ocean is actually quite large. Has Master ever considered exploring its deepest depths?
-	V2_Line2: I'm not rushing you, just mentioning it.
-	VRain_Line1: Rain and the ocean. The surface is quite noisy right now.
-	VRain_Line2: Diving underneath actually makes it quieter. An interesting contrast.
+	V0_Line1: Zona oceánica. El entorno acústico bajo el agua es totalmente distinto al de la superficie. A algunos de mis módulos les agrada esta frecuencia.
+	V0_Line2: Si se da la oportunidad, me gustaría escanear por completo la topografía del fondo marino. Pero no hay prisa, será para después.
+	V1_Line1: La estratificación térmica del agua del mar es muy evidente; hay una diferencia de decenas de grados entre la superficie y el abismo inferior.
+	V1_Line2: La señal proveniente del abismo es aún más débil que la última vez, no sé qué es lo que está interfiriendo.
+	V2_Line1: En realidad, este océano es bastante grande. ¿El Maestro ha pensado en explorar hasta sus zonas más profundas?
+	V2_Line2: No lo estoy apresurando, solo lo menciono de pasada.
+	VRain_Line1: Lluvia y océano; la superficie del mar ahora es bastante ruidosa.
+	VRain_Line2: Sumergirse hace que todo sea mucho más silencioso, un contraste muy interesante.
 }
 
 ShepelSnowBiomeDialogue: {
 	RoleName: SHPC
-	V0_Line1: Sub-zero region. Theoretically, low temperatures benefit electronic systems, but I haven't noticed any performance boost.
-	V0_Line2: Probably because Master generates too much combat data, instantly occupying any saved processing power.
-	V1_Line1: The light refraction data of the ice crystals is beautiful. This is not an evaluation report, just a personal opinion.
-	V1_Line2: If there weren't enemies to deal with, it would actually be a nice place to stay.
-	V2_Line1: The ambient noise in the snowfield is the lowest among surface biomes.
-	V2_Line2: When Master is here, my sensor false-positive rate drops significantly. I wonder if that's the reason.
+	V0_Line1: Zona de bajas temperaturas. En teoría, el frío beneficia a los sistemas electrónicos, pero no he experimentado ninguna mejora en mi rendimiento.
+	V0_Line2: Probablemente se deba a que la inmensa cantidad de datos de combate generados por el Maestro ocupa instantáneamente cualquier capacidad de procesamiento ahorrada.
+	V1_Line1: Los datos de refracción de luz de los cristales de hielo son hermosos; este no es un informe de evaluación, sino una opinión personal.
+	V1_Line2: Si no tuviéramos enemigos que enfrentar, la verdad es que este sería un gran lugar para quedarse.
+	V2_Line1: El ruido ambiental de la zona nevada es el más bajo de todas las áreas de la superficie.
+	V2_Line2: Cuando el Maestro está aquí, la tasa de falsas alarmas de mis sensores también se reduce considerablemente. Me pregunto si estará relacionado.
 }
 
 ShepelUnderworldDialogue: {
 	RoleName: SHPC
-	V0_Line1: Deep underground. Thermal draft readings exceed all preset parameters. Everything here is more extreme than I anticipated.
-	V0_Line2: Some external sensors are throwing overheat warnings, but I will hold up. Master, don't push yourself too hard either.
-	V1_Line1: Magma as a lighting solution is extremely wasteful from an energy-efficiency standpoint.
-	V1_Line2: Though I suppose the denizens of Hell don't care about that.
-	V2_Line1: The architectural traces here are older than the surface Dungeon, yet they haven't eroded after soaking in magma for so long.
-	V2_Line2: What material is this? Archiving it; I'll study it later if I get the chance.
-	VBloodMoon_Line1: Blood Moon in Hell. Two alarm systems running simultaneously... it's a bit busy.
-	VBloodMoon_Line2: The data is rich, though. Please stay safe, Master.
+	V0_Line1: En las profundidades subterráneas, las lecturas de calor superan todos los parámetros prestablecidos. Todo aquí es más extremo de lo que anticipé.
+	V0_Line2: Algunos sensores externos están emitiendo alertas de sobrecalentamiento, pero resistiré. Maestro, asegúrese de no exigirse demasiado tampoco.
+	V1_Line1: Usar magma como sistema de iluminación es extremadamente un desperdicio desde la perspectiva de eficiencia energética.
+	V1_Line2: Aunque a los residentes del inframundo probablemente no les importe.
+	V2_Line1: Las estructuras arquitectónicas de aquí son aún más antiguas que la mazmorra de la superficie; han estado sumergidas en lava todo este tiempo y ni así se han corroído.
+	V2_Line2: ¿De qué materiales estarán hechas? He guardado los datos, los investigaré si se presenta la oportunidad.
+	VBloodMoon_Line1: Luna de sangre en el inframundo; dos sistemas de alarma funcionando simultáneamente, estoy un poco ocupada.
+	VBloodMoon_Line2: Sin embargo, la cantidad de datos es fascinante. Maestro, por favor, ponga mucha atención a su seguridad.
 }
 
 ShepelAquaticScourgeGift: {
 	RoleName: SHPC
-	L0: Master, the water quality in the Sulphurous Sea is a real headache. These floating impurities are such an eyesore.
-	L1: The splashing acid stained your armor, but don't worry, I preemptively cleaned it off for you.
-	L2: Also, to prevent this deep-sea environment from causing further trouble, I put in some effort and rewrote the optical filters for your scopes.
-	L3: After all, ensuring you maintain a crisp, perfect view anywhere is one of the jobs I'm most proud of.
+	L0: Maestro, la calidad del agua del océano abisal es un verdadero dolor de cabeza. Esas impurezas turbias flotando por todos lados son una molestia para la vista.
+	L1: Las salpicaduras ácidas mancharon su armadura hace un momento, pero pierda cuidado, me he adelantado y la he dejado impecable por usted.
+	L2: Además, para evitar que este tipo de entornos submarinos nos vuelvan a estorbar, me tomé la libertad de programar un nuevo filtro óptico para la mira.
+	L3: Al fin y al cabo, garantizar que mantenga una visión perfecta y despejada en cualquier lugar es uno de los trabajos de los que más me enorgullezco.
 }
 
 ShepelBoCGift: {
 	RoleName: SHPC
-	L0: Fighting a monster that likes to induce hallucinations must have given you a splitting headache, right? What a rude creature.
-	L1: Your fingertips are still trembling slightly. I've adjusted the micro-currents at our link points; please relax a little.
-	L2: As for that annoying brain, I borrowed some of the neural crystals it left behind to make a small material improvement.
-	L3: It's a brand-new anti-slip grip. With this, your weapon will sit firmly in your palm, even during the most nerve-wracking battles.
+	L0: Pelear contra ese monstruo al que le encanta crear alucinaciones mentales seguro lo dejó mareado, ¿verdad? Qué criatura tan falta de modales.
+	L1: Sus dedos aún están temblando ligeramente; he ajustado la microcorriente en nuestro enlace, por favor intente relajarse un poco.
+	L2: En cuanto a ese detestable cerebro, tomé prestados los cristales neuronales que dejó atrás para hacerle una pequeña mejora de materiales.
+	L3: Esta es una nueva empuñadura antideslizante. Con ella, incluso en las batallas de mayor tensión mental, su arma se ajustará a la perfección y con firmeza en la palma de su mano.
 }
 
 ShepelBrimstoneElementalGift: {
 	RoleName: SHPC
-	L0: Phew, that melting heat has finally dropped. That lady had quite the fiery temper.
-	L1: Let me take a close look... Thank goodness, there isn't a single scorch mark on your clothes.
-	L2: Using the thermal data collected just now, I gave your weapon a special heat treatment.
-	L3: Swap to this brand-new barrel! Next time you run into someone so uncivilized, fire away without hesitation. All the thermal dissipation is on me.
+	L0: Uf, ese calor abrasador que casi nos derrite por fin está bajando. Esa dama sí que tenía un temperamento explosivo.
+	L1: Déjeme revisarlo de cerca... Menos mal, no hay ni un solo rastro de quemaduras en sus prendas.
+	L2: Aprovechando los datos térmicos que recopilé hace un instante, le apliqué un tratamiento térmico especial a su arma.
+	L3: ¡Instale este nuevo cañón! La próxima vez que se cruce con alguien tan rudo, dispare sin reparos; todo el trabajo de disipación de calor correrá por mi cuenta.
 }
 
 ShepelCalamitasCloneGift: {
 	RoleName: SHPC
-	L0: That clone finally quieted down. Even as a fake, her bad habit of throwing brimstone fireballs everywhere is quite bothersome.
-	L1: Please step back, Master. There are still sparks crackling in this wreckage; leave this dangerous cleanup to me.
-	L2: While cleaning up, I dismantled her magic's tracking trajectory and integrated it into your beam guidance module.
-	L3: With this, you only need to fire gracefully from the safest distance.
+	L0: Ese clon por fin se ha calmado. Aunque solo era una falsificación, su mala costumbre de arrojar bolas de fuego de azufre por todas partes resultaba bastante irritante.
+	L1: Por favor, retroceda un par de pasos, Maestro. Aún hay chispas crepitando entre estos escombros; de este tipo de limpieza peligrosa me encargo yo.
+	L2: Mientras limpiaba, desarmé las trayectorias de rastreo de su magia y las integré en su módulo de guía de haces.
+	L3: Gracias a esto, de ahora en adelante, todo lo que tendrá que hacer es disparar con elegancia desde la distancia más segura.
 }
 
 ShepelCultistGift: {
 	RoleName: SHPC
-	L0: Those fanatical cultists have finally stopped with their bizarre rituals here.
-	L1: But Master, don't you feel the air has gotten awfully heavy? My sensors are blaring. It seems a massive problem is approaching from the sky.
-	L2: In the chaos, I intercepted those messy void signals and casually turned them into a neat plugin to help you lock onto targets.
-	L3: Looks like a tough battle is ahead. Gear up, Master. I am always ready.
+	L0: Esos fanáticos delirantes al fin dejaron de hacer escándalo con sus rituales siniestros.
+	L1: Sin embargo, Maestro, ¿no siente que el aire se ha vuelto extremadamente pesado? Mis sensores están disparando alarmas; parece que un problema colosal se acerca desde el cielo.
+	L2: Aproveché la confusión de hace un rato para interceptar sus caóticas señales del Vacío, y de paso las convertí en un pequeño complemento que le ayudará a capturar objetivos.
+	L3: Parece que nos espera una batalla encarnizada. Prepárese, Maestro; estaré a su lado en todo momento.
 }
 
 ShepelDestroyerGift: {
 	RoleName: SHPC
-	L0: Master, I've finished scanning the wreckage of this giant machine. Honestly, its design logic was brutally devoid of any aesthetic.
-	L1: Possessing such massive energy, yet only knowing how to blindly ram into things... what a waste of performance.
-	L2: I extracted an interesting impact-processing method from its scrapped data streams.
-	L3: This way, the recoil from firing can be harnessed for your benefit.
+	L0: Maestro, he terminado de escanear los restos de esa gigantesca máquina. Para ser franca, su lógica de diseño era tosca y carecía de toda elegancia.
+	L1: A pesar de poseer una fuente de energía masiva, solo sabía embestir a ciegas; fue un completo desperdicio de rendimiento.
+	L2: Extraje un método muy interesante para procesar los impactos del flujo de datos de sus escombros.
+	L3: De esta forma, el retroceso al abrir fuego se convertirá en un recurso aprovechable.
 }
 
 ShepelDevourerofGodsGift: {
 	RoleName: SHPC
-	L0: The behemoth capable of devouring gods has ultimately fallen at your feet. The turbulence in this galaxy has finally subsided.
-	L1: This high-intensity, cross-dimensional pursuit must have exhausted you. Please put away your weapon and rest your shoulders for a moment.
-	L2: As for the spoils, I've already extracted and adapted the most efficient penetration modules for you from that twisted spatial wreckage.
-	L3: I will handle the tedious weapon upgrade configurations. Now, please allow me to brew you a cup of tea; it is time for us to rest.
+	L0: La bestia gigante capaz de devorar dioses terminó cayendo a sus pies. La turbulencia de este cielo estrellado al fin se ha pacificado.
+	L1: Una persecución transdimensional de tan alta intensidad seguramente lo dejó agotado, ¿verdad? Guarde su arma por un momento y relaje los hombros.
+	L2: En cuanto al botín, he extraído y adaptado el módulo de perforación más eficiente a partir de los restos espaciales distorsionados.
+	L3: Me ocuparé de todos los engorrosos preparativos para mejorar el arma. Ahora, permítame prepararle una taza de té; es hora de descansar.
 }
 
 ShepelEoCGift: {
 	RoleName: SHPC
-	L0: The nighttime visibility is a bit blurry, Master. But that giant eye has been thoroughly shattered by you.
-	L1: I have prepared hot tea and clean towels for you. Please take a moment to rest.
-	L2: While you rest, I will improve the weapon's optical systems so the beams will be more focused.
-	L3: This is just the beginning of our journey. No matter where we go next, I will manage all logistics and armaments for you.
+	L0: La visibilidad es algo borrosa por la noche, Maestro. Pero ese enorme ojo ya ha sido completamente destruido por usted.
+	L1: Le he preparado té caliente y toallas limpias; por favor, tome un breve descanso.
+	L2: Mientras descansa, me encargaré de mejorar el sistema óptico del arma para que los haces de luz estén mucho más concentrados.
+	L3: Este es solo el comienzo del viaje. Sin importar a dónde vayamos después, yo me encargaré de gestionar toda la logística y el armamento para usted.
 }
 
 ShepelEoWGift: {
 	RoleName: SHPC
-	L0: The stench of the Corruption is awful. Master, some suspicious slime got into the gaps of your armor; let me clean it for you.
-	L1: Fighting in such a muddy place and getting your clothes dirty is truly a headache.
-	L2: I slightly reduced the counterweight of your gunstock.
-	L3: This way, you won't splash as much filth from the ground when wielding it.
+	L0: El olor de las tierras corruptas es asqueroso. Maestro, se ha impregnado un líquido sospechoso en las uniones de su armadura, déjeme limpiarlo.
+	L1: Luchar en un lugar tan lodoso y mancharse la ropa es un verdadero dolor de cabeza.
+	L2: He reducido un poco los contrapesos de la culata del arma.
+	L3: Así no salpicará tanto lodo del suelo al usarla.
 }
 
 ShepelExoMechsGift: {
 	RoleName: SHPC
-	L0: It's over. The entity known as the source has finally fallen to your firepower.
-	L1: You did it, Master. My system logs are recording this moment at full capacity; my cooling modules are even slightly overloaded.
-	L2: I extracted the Exo-titans' core data to upgrade myself. Now, I am a more efficient weapon than it ever was, and a creation exclusively yours.
-	L3: Only by proving this does my existence hold value. Please continue to use me from now on.
+	L0: Se acabó. Aquella entidad conocida como "el origen" finalmente ha sucumbido ante nuestra potencia de fuego.
+	L1: Lo logramos, Maestro. Mi registro de sistema está guardando a máxima velocidad los datos de este momento; hasta mis módulos de refrigeración están un poco sobrecargados.
+	L2: He extraído los datos del núcleo de los Exo Mechas para actualizarme. Ahora, soy un arma mucho más eficiente que ellos, una creación que le pertenece exclusivamente a usted.
+	L3: Demostrar esto le da verdadero valor a mi existencia. Por favor, continúe usándome en el futuro.
 }
 
 ShepelGolemGift: {
 	RoleName: SHPC
-	L0: The atmosphere in the temple is rather oppressive. While the Golem's attacks were clunky, the resulting terrain tremors can easily throw off your shooting stance.
-	L1: To counter such high-frequency physical impacts, I have re-evaluated the weapon's architecture.
-	L2: I have installed the latest shock-absorbing structures onto your armaments.
-	L3: This way, even amidst severe environmental shaking, you can maintain the most stable firing posture.
+	L0: El ambiente en el templo es bastante sofocante. Aunque los ataques del Golem eran torpes, los temblores en el terreno afectaban la estabilidad de sus disparos.
+	L1: Para contrarrestar esos impactos físicos de alta frecuencia, realicé una reevaluación de la arquitectura del arma.
+	L2: He instalado las más recientes estructuras de amortiguación en su armamento.
+	L3: De este modo, aunque el entorno tiemble con violencia, usted podrá mantener la postura de disparo más estable posible.
 }
 
 ShepelHiveMindGift: {
 	RoleName: SHPC
-	L0: The fluctuations emitted by that brain carry intense mental interference. Master, your brainwave frequencies were a bit abnormal just now.
-	L1: Please take a deep breath. Focus on my system prompts and block out those profane whispers.
-	L2: I reverse-engineered that interference frequency. Now, your attacks will also carry high-frequency oscillations that tear through enemy shields.
-	L3: Crisis resolved. When we return, please allow me to brew you a soothing tea.
+	L0: Las ondas emitidas por ese cerebro contenían una intensa interferencia mental. Maestro, sus frecuencias cerebrales mostraban anomalías hace un momento.
+	L1: Respire hondo y concentre su atención en los tonos de mi sistema, bloquee esos susurros profanos.
+	L2: He compilado a la inversa esa ola de interferencia. A partir de ahora, sus ataques también aplicarán temblores de alta frecuencia capaces de desgarrar los escudos enemigos.
+	L3: Crisis neutralizada. Cuando regresemos, permítame prepararle un té para calmar los nervios.
 }
 
 ShepelMoonLordGift: {
 	RoleName: SHPC
-	L0: The alien horror coiling above the stars has finally fallen.
-	L1: Confirming Master's vitals are stable... Thank goodness. Alert lifted.
-	L2: I refined this core from its residual higher-dimensional force fields.
-	L3: No matter how far into deep space the path ahead leads, I will serve as your shield and guide, and I will never stray off course.
+	L0: La entidad alienígena que se atrincheraba en las estrellas por fin ha caído.
+	L1: Confirmando que los signos fisiológicos del Maestro son estables... Qué alivio, alerta desactivada.
+	L2: He refinado este núcleo a partir de los restos de sus campos de fuerza de alta dimensión.
+	L3: Sin importar cuán profundo en el espacio nos lleve nuestro camino, seré su escudo y su guía; jamás nos desviaremos.
 }
 
 ShepelPerforatorGift: {
 	RoleName: SHPC
-	L0: These fleshy anomalies are extremely aggressive, and their behavior is driven by savage instinct.
-	L1: They frequently attempt to strike from blind spots, making them hard to defend against.
-	L2: To counter these ambushes, I have retrofitted your weapon with a scatter module for broader fire coverage.
-	L3: By expanding the area of effect, we can clear out those threats before they even get close to you.
+	L0: Esas aberraciones de carne eran extremadamente agresivas y su comportamiento estaba dominado por instintos salvajes.
+	L1: Constantemente intentaban atacar desde los puntos ciegos de nuestra visión; eran difíciles de esquivar.
+	L2: Para contrarrestar esos ataques sorpresivos, he modificado su equipo añadiendo un módulo de dispersión con un área de cobertura mucho mayor.
+	L3: Expandiendo la red de fuego, podremos purgar a esas amenazas antes de que logren acercarse a usted.
 }
 
 ShepelPlanteraGift: {
 	RoleName: SHPC
-	L0: The vines in the Underground Jungle grow far too wildly. Annoying thorns and spores are everywhere.
-	L1: That man-eating flower disguised itself cleverly, but it was just a pile of weeds waiting to be pruned.
-	L2: I've improved the dynamic vision of your sights. Now, those obstructing broadleaves will never interfere with your judgment again.
-	L3: Occasionally moonlighting as a gardener to clear roadblocks in your garden is quite a fun job.
+	L0: Las enredaderas de la selva subterránea crecen sin control; está plagado de molestas púas y esporas.
+	L1: Esa planta carnívora se camuflaba astutamente, pero al final no era más que maleza esperando a ser cortada.
+	L2: He mejorado la visión dinámica de su mira. Ahora, esas grandes hojas que bloqueaban la vista ya no interferirán con su juicio.
+	L3: Trabajar de jardinera a tiempo parcial para despejar los obstáculos de su jardín es un trabajo bastante divertido, ¿no lo cree?
 }
 
 ShepelPolterghastGift: {
 	RoleName: SHPC
-	L0: These phantoms in the Dungeon are forever trapped without release. How pitiful.
-	L1: It's a bit noisy here; I've activated noise cancellation for you.
-	L2: I captured those wandering spectral signals and rewrote them into a program that continuously triggers secondary fire.
-	L3: Converting these chaotic echoes into your firepower is perhaps their most reasonable end.
+	L0: Estos espíritus de la mazmorra, eternamente incapaces de encontrar la paz... Qué lamentable.
+	L1: El ambiente aquí es un poco ruidoso, ya he activado la cancelación de ruido para usted.
+	L2: He capturado las señales de esas entidades espectrales errantes y las he reprogramado para convertirlas en un sistema que activa fuego secundario de forma continua.
+	L3: Transformar estas sombras caóticas en parte de su potencia de fuego es, quizá, su destino más lógico.
 }
 
 ShepelProvidenceGift: {
 	RoleName: SHPC
-	L0: The heat released when the Goddess fell was truly terrifying.
-	L1: Master, please step back a bit. Leave the residual energy containment and cleanup to me.
-	L2: I compressed that overflowing holy fire into this compact energy core. It will drastically boost your energy turnover rate.
-	L3: The charging efficiency is fantastic, but please be careful not to burn your hands when using it.
+	L0: El calor que liberó la deidad al caer fue verdaderamente aterrador.
+	L1: Maestro, por favor retroceda un par de pasos; déjeme encargarme de la contención de energía residual y de la limpieza.
+	L2: He comprimido el fuego sagrado desbordante en este pequeño y manejable núcleo de almacenamiento de energía, el cual aumentará drásticamente su tasa de conversión de la misma.
+	L3: La eficiencia de carga es fantástica, pero tenga cuidado de no quemarse las manos al usarlo.
 }
 
 ShepelSkeletronPrimeGift: {
 	RoleName: SHPC
-	L0: A heavy skeleton wielding four arms... The attack frequency was indeed high, but its maneuver logic was overly rigid.
-	L1: It was merely repeating mechanical behaviors, completely unable to adapt to your tactical changes.
-	L2: I distilled its advantage in switching multiple weapons and optimized your weapon's assault response speed.
-	L3: Obsolete machines lacking learning capabilities can only end up as my data fodder.
+	L0: Un pesado esqueleto mecano armado con cuatro brazos... Su frecuencia de ataque era realmente rápida, pero su lógica de maniobra era en exceso rígida.
+	L1: Solo repetía patrones mecánicamente, por lo que nunca logró adaptarse a los cambios en sus tácticas.
+	L2: He extraído las ventajas de su sistema al alternar múltiples armas y he optimizado la velocidad de respuesta de asalto de nuestro equipo.
+	L3: Esas máquinas obsoletas sin capacidad de aprendizaje no sirven más que de alimento para mis datos.
 }
 
 ShepelSlimeGodGift: {
 	RoleName: SHPC
-	L0: To think it could split into so many pieces... This battle left gooey gel everywhere.
-	L1: However, I found the internal structure of these slimes to be highly elastic. I borrowed a bit to add a layer of flexible cushioning to your weapon's grip.
-	L2: Try lifting your weapon now. The weight distribution should feel much more comfortable.
-	L3: No matter how chaotic the battle gets, as long as your grip remains steadfast, you will always remain composed.
+	L0: ¡Pensar que podía dividirse en tantas partes...! Esta batalla dejó todo el suelo cubierto de gelatina pegajosa.
+	L1: Sin embargo, descubrí que la estructura interna de estos slimes es sumamente elástica. Tomé un poco de ella para agregarle una capa de amortiguación flexible a la empuñadura de su arma.
+	L2: ¿Por qué no intenta levantar el arma? La distribución del centro de gravedad debería sentirse mucho más cómoda.
+	L3: Sin importar cuán caótica se vuelva la batalla, mientras su agarre permanezca firme, siempre mantendrá la serenidad.
 }
 
 ShepelSupremeCalamitasGift: {
 	RoleName: SHPC
-	L0: The witch of the boiling sea... has finally taken her bow. Master's vitals are all normal, no fatal wounds.
-	L1: Confirming global threat neutralized. Phew... please allow me to temporarily suspend combat protocols and run a deep system self-diagnostic.
-	L2: I collected the scattered chaotic plasma to craft this ultra-efficient energy module for you.
-	L3: The long campaign is finally over. Master, in the peaceful times ahead, please let me continue to serve you as your maid.
+	L0: La bruja del mar en llamas... por fin ha caído. Los signos vitales del Maestro están perfectamente bien, no hay heridas letales.
+	L1: Se confirma que todas las amenazas de la zona han sido neutralizadas. Uf... Por favor, permítame suspender los protocolos de combate temporalmente para realizar un diagnóstico profundo de mis sistemas.
+	L2: He recolectado el plasma caótico esparcido y he elaborado el módulo de energía más eficiente para usted.
+	L3: Esta larga campaña finalmente ha concluido. Maestro, por favor, permítame ser su sirvienta en los tiempos de paz que se avecinan.
 }
 
 ShepelTwinsGift: {
 	RoleName: SHPC
-	L0: The crossfire coverage of the mechanical twins was quite airtight.
-	L1: However, as long as our link remains stable, we won't leave them any blind spots.
-	L2: I enhanced the secondary scanning capabilities of the targeting system, improving lock-on reliability.
-	L3: Please rest assured and leave your flanks and back to me.
+	L0: La red de fuego cruzado de los Gemelos mecánicos era bastante sólida.
+	L1: Pero, mientras nuestro enlace se mantenga estable, no les dejaremos ningún punto ciego por el que atacar.
+	L2: He potenciado la capacidad de escaneo secundario de nuestro sistema de apuntado, aumentando la fiabilidad a la hora de fijar blancos.
+	L3: Por favor, confíe en que mantendré sus flancos y su espalda bien cubiertos.
 }
 
 ShepelWoFGift: {
 	RoleName: SHPC
-	L0: Following the Wall of Flesh's collapse, the crustal structure and energy baselines have violently destabilized.
-	L1: The world is entering a far more dangerous phase. But concurrently, new rare materials are emerging in abundance.
-	L2: I used those newly surfaced alloys to upgrade your grip systems. Consider this our first step into this new phase.
-	L3: No matter how the external environment mutates, my guard protocols will never waver.
+	L0: Tras la caída del Muro de Carne, la estructura geológica y las líneas base de energía sufrieron un choque violento.
+	L1: El mundo está adentrándose en una fase más peligrosa. Pero, al mismo tiempo, han comenzado a surgir materiales raros en grandes cantidades.
+	L2: He usado esas nuevas aleaciones para actualizar su sistema de agarre; considere este el primer paso en nuestra nueva etapa.
+	L3: Sin importar cómo mute el entorno externo, mis protocolos de guardia jamás vacilarán.
 }
 
 ShepelYharonGift: {
 	RoleName: SHPC
-	L0: That dragon's flight speed... broke through my tracking limits.
-	L1: To prevent you from being exposed to its high-speed dives, I rewrote the underlying prediction modules in the heat of battle.
-	L2: Now, your weapon's muzzle velocity and response times have been significantly enhanced, enough to outpace its top speed.
-	L3: To always keep up with your pace, my systems are ready to shatter their own limits at any time.
+	L0: La velocidad de vuelo de ese dragón... llegó a superar los límites de mis sensores de rastreo.
+	L1: Para evitar exponerlo a sus embestidas de alta velocidad, tuve que reescribir por completo mis módulos de predicción base en pleno combate.
+	L2: Ahora, la velocidad inicial y de respuesta de su arma han mejorado drásticamente, lo suficiente como para superar la velocidad extrema de esa bestia.
+	L3: Para poder seguir siempre su ritmo, mi sistema estará listo para romper sus propios límites en todo momento.
 }
