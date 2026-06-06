@@ -1,17 +1,13 @@
-﻿MurasamaHeld.DisplayName: 分子斩切
+MurasamaHeld.DisplayName: 分子斩切
 MuraTriggerDash.DisplayName: 分子斩切
 MuraBreakerSlash.DisplayName: 升龙半月
 MuraExecutionCut.DisplayName: 次元斩·终
 MuraExecutionCutOnSpan.DisplayName: 次元斩·始
 MuraGroundSmash.DisplayName: 落樱
 EndSkillEffectStart.DisplayName: 次元斩·始
-EndSkillMakeDamage.DisplayName: 次元斩·终
 RebelBladeFlyAttcke.DisplayName: 叛逆之刃
 RebelBladeOrb.DisplayName: 恶魔光球
 RebelBladeBack.DisplayName: 叛逆之刃
-RebelBladeSlash.DisplayName: 叛逆之刃
-DevilsDevastationHeld.DisplayName: 魔王刃
-CollectorArm.DisplayName: 采集者机械臂
 ElectricMinRocketHeld.DisplayName: 微型电弧火箭
 TeslaBallByAttack.DisplayName: 特斯拉感应球
 TeslaBallByGuard.DisplayName: 特斯拉防御球
@@ -36,8 +32,6 @@ WastelandFangProj.DisplayName: 荒原獠牙
 WeaverBeam.DisplayName: 织怨者光束
 WeaverExplode.DisplayName: 怨念爆发
 WeaverGrievancesDash.DisplayName: 织怨者冲锋
-MedicalBoxHeld.DisplayName: 战地医疗站
-MedicalBoxProj.DisplayName: 医疗胶囊
 DestroyerGrenade.DisplayName: 毁灭者榴弹
 DicoriaRay.DisplayName: 双子射线
 FungiAmmo.DisplayName: 真菌弹药
@@ -50,24 +44,14 @@ RocketSkeletonFriendly.DisplayName: 骷髅火箭
 RocketSkeleton.DisplayName: 骷髅火箭
 SporeBurst.DisplayName: 孢子爆发
 CommandersClawThrow.DisplayName: 指挥官飞爪
-GeminisTributeAlt.DisplayName: 双生礼赞
-GeminisTributeEXHeld.DisplayName: 双生礼赞EX
-GeminisTributeHeld.DisplayName: 双生礼赞
-PunisherGrenadeRogue.DisplayName: 惩罚者榴弹
 SandDaggerThrow.DisplayName: 沙之飞匕
 SeasonalKunaiProj.DisplayName: 四季苦无
-SeasonalKunaiThrowable.DisplayName: 四季苦无
 SporeBoboRogue.DisplayName: 孢子波波
 SporeburstPouchThrow.DisplayName: 孢子爆发袋
 WraithKunaiProj.DisplayName: 怨灵苦无
-WraithKunaiThrowable.DisplayName: 怨灵苦无
 DestroyerBody.DisplayName: 毁灭者
 DestroyerHead.DisplayName: 毁灭者
 DestroyerTail.DisplayName: 毁灭者
-ForgedLasEXhProjectile.DisplayName: 锻造魔鞭EX
-ForgedLashProjectile.DisplayName: 锻造魔鞭
-ForgedLasOrb.DisplayName: 锻造魔球
-DraedonsRemoteSpawn.DisplayName: 星流巨械信标
 FungalFeedProj.DisplayName: 真菌食粮
 CannonFishSwarmHitbox.DisplayName: 炮鱼集群
 ClonePlayer.DisplayName: 残影分身
@@ -121,22 +105,8 @@ SpiralStarProjectile.DisplayName: 螺旋星
 WaterZombie.DisplayName: 水鬼
 OceanCurrent.DisplayName: 洋流
 PowerSoundEgg.DisplayName: 律动之卵
-PhaseEnergySphere.DisplayName: 相位能量球
-PhaseLaser.DisplayName: 相位激光
-EarlierSwordHeld.DisplayName: 源初之剑
 CrabulonFriendHitbox.DisplayName: 蟹波菇孢子
-ArmourPiercerBoxProj.DisplayName: 穿甲弹箱
-ArmourPiercerHeld.DisplayName: 穿甲弹发射器
-DragonBreathBoxProj.DisplayName: 龙息弹箱
-DragonBreathHeld.DisplayName: 龙息弹发射器
-HghExplosiveHeld.DisplayName: 高爆弹发射器
-HghExplosiveProj.DisplayName: 高爆弹
-NapalmBombBox.DisplayName: 凝固汽油弹箱
-NapalmBombHeld.DisplayName: 凝固汽油弹发射器
-SuccessfullyDeployedEffct.DisplayName: 部署成功
-SpawnLaserEffect.DisplayName: 激光生成
 Fireball.DisplayName: 火球
-Laser.DisplayName: 激光
 CrossPrediction.DisplayName: 十字预判
 DeadLaser.DisplayName: 寂灭激光
 Mechanicalworm.DisplayName: 机械蠕虫
@@ -144,185 +114,54 @@ Probe.DisplayName: 探测器
 SetPosingStarm.DisplayName: 星位风暴
 Hit.DisplayName: 冲击
 SpwanTextProj.DisplayName: 显现之言
-AetherOrb.DisplayName: 以太球
 DragonsWordCut.DisplayName: 龙言之刃·斩
 DragonsWordMouse.DisplayName: 龙言之刃
 DragonsWordProj.DisplayName: 龙言之刃
-FateCluster.DisplayName: 命运星团
-HatredFire.DisplayName: 憎恶之火
-MagicStar.DisplayName: 魔法星
 NeutronMagchStar.DisplayName: 中子星
 NeutronWandExplode.DisplayName: 中子魔杖爆破
-PhaseBlasting.DisplayName: 相位爆破
-WaningMoonLight.DisplayName: 残月之光
-AbominateHookScythe.DisplayName: 憎恶钩镰
-AbominateSpirit.DisplayName: 憎恶之魂
-AegisBladeGuardian.DisplayName: 神盾之刃
-AirBomb.DisplayName: 空气炸弹
-AnarchyBeam.DisplayName: 无政府光束
-AstralBall.DisplayName: 星界幻球
-AstralPikeBeam.DisplayName: 星界长枪光束
-BalefulBall.DisplayName: 灾厄法球
-BalefulSickle.DisplayName: 灾厄镰刀
-BlazingFireball.DisplayName: 炽烈火球
-BrimstoneSwordBall.DisplayName: 硫磺火剑气
-BrinyBaronOrb.DisplayName: 渊海男爵珠
-DarkIceBomb.DisplayName: 暗冰炸弹
-TheEndSun.DisplayName: 终焉之阳
-DeathLaserSpwan.DisplayName: 死亡激光
-DeathLaser.DisplayName: 死亡激光
-EXDemonBlast.DisplayName: 欢愉之戟
-EXDemonBlastAlt.DisplayName: 绯红魔王戟
-EXOathblade.DisplayName: 痛苦之轮回
 DivineSourceBeam.DisplayName: 神源光束
 DivineSourceBladeProjectile.DisplayName: 神源之刃
-DragonRageFireOrb.DisplayName: 龙怒火球
 DragonsScaleGreatswordBeam.DisplayName: 龙鳞大剑光束
 SporeCloud.DisplayName: 孢子云
-EarthenBall.DisplayName: 撼地者之球
-MeleeFossilShard.DisplayName: 化石碎片
-EnforcerFlame.DisplayName: 执法者烈焰
-ExcelsusBomb.DisplayName: 天使炸弹
-Feathers.DisplayName: 羽毛
-BalefulHarvesterHeldThrow.DisplayName: 灾厄收割者
-DeathsAscensionBreakSwing.DisplayName: 死亡升腾
-DeathsAscensionThrowable.DisplayName: 死亡升腾
-GiantBansheeScythe.DisplayName: 巨型报丧妖镰
-LifehuntScytheThrowable.DisplayName: 噬魂镰
-PhasebladeHeld.DisplayName: 相位剑
-WraithBeam.DisplayName: 怨灵光束
-HolyColliderExFire.DisplayName: 神圣对撞机EX
-HyperBlade.DisplayName: 亥伯龙之刃
-JudgementBeam.DisplayName: 审判光束
 EXNeutronExplode.DisplayName: 中子爆破EX
 NeutronExplode.DisplayName: 中子爆破
 NeutronGlaiveBeam.DisplayName: 中子战刃
 NeutronGlaiveHeldAlt.DisplayName: 中子战刃·派生
 NeutronsOrb.DisplayName: 中子球
-OrderbringerGuardian.DisplayName: 秩序使者
-OrderbringerWhiteOrbs.DisplayName: 秩序之球
-PercussionCosmicSpiritBomb.DisplayName: 寰宇冲击弹
-EXGauntlet.DisplayName: 动力拳铠EX
-GauntletDerive.DisplayName: 动力拳铠·派生
-GauntletInAltShoot.DisplayName: 动力拳铠
-GouldBee.DisplayName: 镀金蜜蜂
-PlagueBee.DisplayName: 瘟疫蜂
-PlagueBeeWave.DisplayName: 瘟疫蜂群
-FadingGloryBeam.DisplayName: 逝光之束
-FadingGloryRapier.DisplayName: 逝光刺剑
-GladiusBeam.DisplayName: 角斗士之辉
-GladiusRapier.DisplayName: 角斗士刺剑
-GrandGuardianBeam.DisplayName: 至尊卫士之辉
-GrandGuardianRapier.DisplayName: 至尊卫士刺剑
-LucreciaRapier.DisplayName: 卢克雷齐亚
-MajesticGuardBeam.DisplayName: 王权卫士之辉
-MajesticGuardRapier.DisplayName: 王权卫士刺剑
-SemberDarkMasterClone.DisplayName: 黑暗大师残影
-TheDarkMasterRapier.DisplayName: 黑暗大师
-RulingPrism.DisplayName: 统御棱镜
-RulingPrismCore.DisplayName: 统御棱镜核心
-SickleLife.DisplayName: 镰刀之魂
-SoulSeekerSkull.DisplayName: 觅魂者之颅
-SoulSeeker.DisplayName: 觅魂者
 LigSpark.DisplayName: 电光
 SparkBall.DisplayName: 电光球
 SparkLightning.DisplayName: 电光之雷
-SpiritFlame.DisplayName: 英灵之火
-StellarStrikerBeam.DisplayName: 恒星打击者光束
 StormArc.DisplayName: 风暴电弧
 StormLightning.DisplayName: 风暴之雷
-SunlightBlades.DisplayName: 太阳光刃
-TerrorExplode.DisplayName: 恐惧爆破
-AnimosityOnSpan.DisplayName: 憎恶具现
 CelestialDevourer.DisplayName: 天神吞噬者
 CelestialObliterationArrow.DisplayName: 天神湮灭箭
 CosmicEddies.DisplayName: 宇宙涡流
 DivineDevourerIllusionBody.DisplayName: 神明吞噬者幻影
 DivineDevourerIllusionHead.DisplayName: 神明吞噬者幻影
 DivineDevourerIllusionTail.DisplayName: 神明吞噬者幻影
-ArcNovaDiffuserOnSpan.DisplayName: 电弧新星
-BarracudaProj.DisplayName: 梭鱼
-BarrenOrb.DisplayName: 贫瘠法球
-BloodVerdict.DisplayName: 鲜血裁决
-BMGBullet.DisplayName: B.M.G.子弹
-BMGFIRE.DisplayName: B.M.G.子弹
-BMGFIRE2.DisplayName: B.M.G.子弹
 Crystal.DisplayName: 水晶
-CursedDartRemake.DisplayName: 诅咒吹箭
-DeadWave.DisplayName: 死亡波纹
-DeepSeaSharks.DisplayName: 深海鲨鱼
-EarthRocketOnSpan.DisplayName: 撼地火箭
-ElectrosphereLauncherOrb.DisplayName: 电光球
-EnergyBlast.DisplayName: 能量冲击
 ExtremeColdHail.DisplayName: 极寒冰雹
-FetidEmesisOnSpan.DisplayName: 恶臭呕吐
-GraniteBullet.DisplayName: 花岗岩弹
-GunCasing.DisplayName: 弹壳
 HeavenRainbowImpact.DisplayName: 天堂虹冲击
 InfiniteArrow.DisplayName: 无尽之箭
 InfiniteRune.DisplayName: 无尽符文
 ParadiseArrow.DisplayName: 天堂之箭
 VientianePunishment.DisplayName: 万象天罚
-MonsoonOnSpan.DisplayName: 季风
 IceExplosionFriend.DisplayName: 冰爆
-IceOrb.DisplayName: 冰球
 IceParclose.DisplayName: 冰之帷幕
 IceSoulOrb.DisplayName: 冰魂球
-LostSoulBullet.DisplayName: 失落之魂弹
-MarbleBullet.DisplayName: 大理石弹
 EXNeutronArrow.DisplayName: 中子箭EX
 EXNeutronExplosionRanged.DisplayName: 中子爆破EX
 NeutronArrow.DisplayName: 中子箭
 NeutronExplosionRanged.DisplayName: 中子爆破
 NeutronLaser.DisplayName: 中子激光
 NeutronBullet.DisplayName: 中子弹
-NurgleArrow.DisplayName: 纳垢之箭
-NurgleBee.DisplayName: 纳垢蜂
-NurgleSoul.DisplayName: 纳垢之魂
-NurgleTheOfBall.DisplayName: 纳垢之球
-RVoidTentacle.DisplayName: 虚空触手
-SandnadoOnSpan.DisplayName: 沙龙卷
-SepticSkewerProj.DisplayName: 腐败穿刺
-SniperRifleOnSpan.DisplayName: 狙击
 SnowQuayBall.DisplayName: 雪堤球
-SporeBombOnSpan.DisplayName: 孢子炸弹
-SporeBombs.DisplayName: 孢子炸弹
-StakeHmmod.DisplayName: 圣桩
-TarragonArrow.DisplayName: 龙蒿箭
-TarragonArrowOnSpan.DisplayName: 龙蒿箭
-TheArrowPunishment.DisplayName: 惩戒之箭
-TheCurseArchdemon.DisplayName: 大恶魔诅咒
-TheMaelstromSharkOnSpan.DisplayName: 大漩涡鲨
-TheMaelstromTheArrow.DisplayName: 大漩涡之箭
-Tornado.DisplayName: 龙卷风
-TsunamiOnSpan.DisplayName: 海啸
-TungstenBulletProj.DisplayName: 钨金弹
-TyphoonOnSpan.DisplayName: 台风
-VoidragonOrb.DisplayName: 虚空龙珠
-XenopopperProj.DisplayName: 异星泡泡
-CosmicCalamityProjectile.DisplayName: 宇宙灾厄
-CosmicCalamityRay.DisplayName: 宇宙灾厄射线
-FrostcrushValariHeld.DisplayName: 碎霜回旋刃
 NeutronScytheExplosion.DisplayName: 中子爆破
 NeutronScytheHeld.DisplayName: 中子镰
-EnchantedBoomerangHeld.DisplayName: 附魔回旋镖
-FlamarangHeld.DisplayName: 炽焰回旋镖
-ShroomerangHeld.DisplayName: 蘑菇回旋镖
-SpearHeld.DisplayName: 长矛
-WoodenBoomerangHeld.DisplayName: 木制回旋镖
 Godslight.DisplayName: 神之光
 LonginusHeld.DisplayName: 朗基努斯之枪
 LonginusThrow.DisplayName: 朗基努斯之枪
 PilgrimsFury.DisplayName: 朝圣者之怒
-RWaveSkipperProjectile.DisplayName: 破浪者
-Spindrift.DisplayName: 浪花
-BloodBall.DisplayName: 鲜血之球
-BloodBlast.DisplayName: 鲜血爆破
-BloodflareSouls.DisplayName: 血炎之魂
-CosmicFire.DisplayName: 宇宙之火
-Ieaf.DisplayName: 叶刃
-AllhallowsGoldWhipProjectile.DisplayName: 万圣金鞭
-ATrail.DisplayName: 轨迹
 AzureDragonRageProjectile.DisplayName: 苍龙之怒
 BleedingScourgeProjectile.DisplayName: 血腥灾祸
 ElementWhipProjectile.DisplayName: 元素之鞭
@@ -330,25 +169,8 @@ GhostFireWhipProjectile.DisplayName: 幽灵火鞭
 WhiplashGalacticaProjectile.DisplayName: 银河之鞭
 WTrail.DisplayName: 轨迹
 InfiniteEnmgs.DisplayName: 无尽能量
-InfiniteIngotTileProj.DisplayName: 无尽锭
 InfinitePickProj.DisplayName: 无尽镐
 SpanDMBall.DisplayName: 暗物质球
-BansheeHookHeldAlt.DisplayName: 报丧妖钩·派生
-EarthenPikeAlt.DisplayName: 撼地者长枪·派生
-EntropicClaymoreProj.DisplayName: 熵增巨刃
-EssenceEnergy.DisplayName: 精华能量
-EssencePlunder.DisplayName: 精华掠夺
-EXOathblade2.DisplayName: 痛苦之轮回
-GuardOfLife.DisplayName: 生命守护
-GuardOfLifeCore.DisplayName: 生命守护核心
-RageKillerImpact.DisplayName: 狂怒杀手
-SolsticeHomeBeam.DisplayName: 至日归巢光束
-SoulSearchScythe.DisplayName: 觅魂镰
-BloodAmmoBolt.DisplayName: 鲜血弹药
-BananarangHeld.DisplayName: 香蕉回旋镖
-IceBoomerangHeld.DisplayName: 冰雪回旋镖
-TrimarangHeld.DisplayName: 三叶回旋镖
-DeathSickleThrowable.DisplayName: 死亡镰刀
 CthulhuEye.DisplayName: 克苏鲁之眼
 JewelFragmentProjectile.DisplayName: 宝石碎片
 JewelGemProjectile.DisplayName: 宝石之星
@@ -400,7 +222,6 @@ StormGoddess.DisplayName: 风暴女神
 JusticeUnveiledCross.DisplayName: 正义显现
 AncientStormLightning.DisplayName: 远古风暴闪电
 AncientStormArc.DisplayName: 远古风暴闪电珠
-TerrorSpirit.DisplayName: 惊惧怨灵
 AccretionDisk.DisplayName: 吸积盘
 FlattenedAccretionDisk.DisplayName: 吸积盘
 GammaRayBeam.DisplayName: 伽马射线
@@ -419,73 +240,10 @@ MuraSlashArc.DisplayName: 次元斩
 MuraSlashLine.DisplayName: 次元斩
 WGGLumberjackSaw.DisplayName: 生锈动力锯
 WGGLifeWeaverAcorn.DisplayName: 橡子
-Andrew.DisplayName: 安德烈
-
-Bartholomew: {
-	DisplayName: 巴多罗买
-	TruthRevealText: 真言揭示
-}
-
-ElysiumHeld.DisplayName: 天国极乐
-
-James: {
-	DisplayName: 雅各
-	ThunderChainText: 雷霆连锁 x{0}
-}
-
-John.DisplayName: 约翰
-
-JudasIscariot: {
-	DisplayName: 加略人犹大
-	OminousText_0: 三十银币...
-	OminousText_1: 背叛...
-	OminousText_2: 亲吻...
-	OminousText_3: 绞刑架...
-}
-
-Jude: {
-	DisplayName: 犹大
-	HealingMiracleText: 治愈奇迹
-	GuardianMiracleText: 守护奇迹
-	JudgmentMiracleText: 审判奇迹
-	JudgmentStandbyText: 审判待命
-	SwiftMiracleText: 迅捷奇迹
-	ManaMiracleText: 魔力奇迹
-}
-
-Lesser: {
-	DisplayName: 小雅各
-	DivineHealText: 神圣治愈 +{0}
-}
-
-Matthew: {
-	DisplayName: 马太
-	WealthBlessingText: 财富祝福 x{0}
-}
-
-Philip.DisplayName: 腓力
-
-SimonPeter: {
-	DisplayName: 西门彼得
-	RockShieldText: 磐石之盾 -{0}%
-}
-
-SnakeConversionWave.DisplayName: 化蛇波动
-
-Thomas: {
-	DisplayName: 多马
-	VerifyEnhancedText: 验证强化!
-	DoubtVerifyText: 怀疑验证!
-}
-
-Zealot.DisplayName: 奋锐者
-JudgmentLightning.DisplayName: 审判之雷
-HolySerpent.DisplayName: 神圣巨蛇
 GammaRayBurst.DisplayName: 伽马射线暴
 QuantumLeapProj.DisplayName: 量子跃迁
 SingularityBlackHole.DisplayName: 奇点黑洞
 SupernovaExplosion.DisplayName: 超新星爆发
-StarfuryFallingStar.DisplayName: 星怒落星
 SpawnOldDukeWannaToFight.DisplayName: 生成老公爵切磋
 MachineTesla.DisplayName: 特斯拉机型
 CyberGlitchBoltProj.DisplayName: 赛博故障电矢
@@ -495,22 +253,6 @@ CyberChargeOrbProj.DisplayName: 赛博充能球
 CyberDetonationProj.DisplayName: 赛博爆破
 SHPCChargeHeldProj.DisplayName: SHPC 蓄能场
 CyberFreezeWaveProj.DisplayName: 赛博冷冻波
-RevelationStar.DisplayName: 启示之星
-RevelationDomain.DisplayName: 启示领域
-DivineThunderStrike.DisplayName: 神圣雷击
-ApocalypseHorseman.DisplayName: 天启骑士
-RevelationMeteorImpact.DisplayName: 启示流星撞击
-RevelationMeteorStrike.DisplayName: 启示流星打击
-
-RevelationSealJudgment: {
-	Seal5Text: 第五印
-	Seal6Text: 第六印
-	Seal7Text: 第七印
-	WorldJudgmentText: 世界审判
-	DisplayName: 启示封印审判
-}
-
-VoidPortal.DisplayName: 虚空传送门
 StarshipComet.DisplayName: 星舰彗星
 StarshipCometOrb.DisplayName: 星舰彗星球
 StarshipMaxRateRing.DisplayName: 星舰极限能环
@@ -520,9 +262,6 @@ StarshipMicroStar.DisplayName: 星舰微型恒星
 StarshipPlanet.DisplayName: 星舰行星
 StarshipPlasmaBolt.DisplayName: 星舰等离子弹
 StarshipWingman.DisplayName: 星舰僚机
-VoidArrivalPortal.DisplayName: 虚空降临门
-GatlinBullet.DisplayName: 加特林弹丸
-GatlinImpactBurst.DisplayName: 加特林击中爆发
 CyberReformProj.DisplayName: 赛博重构弹
 CyberRiftSlashProj.DisplayName: 赛博裂隙斩
 CyberRestartProj.DisplayName: 赛博重启
@@ -531,9 +270,6 @@ MimicPhantom.DisplayName: 拟态幻影
 CyberExecutionBoltProj.DisplayName: 故障天雷
 CyberPrismLaserProj.DisplayName: 赛博激光
 CyberDataArcProj.DisplayName: 赛博数据电弧
-KingSlimeCrownBeamProj.DisplayName: 史莱姆王王冠光束
-KingSlimeRoyalGelDropletProj.DisplayName: 史莱姆王皇家凝胶液滴
-KingSlimeShockwaveProj.DisplayName: 史莱姆王冲击波
 CryoCoreParclose.DisplayName: 冰核屏障
 CyberCascadeNodeProj.DisplayName: 联级节点
 SHPCCoralAnchorProj.DisplayName: 珊瑚重锚

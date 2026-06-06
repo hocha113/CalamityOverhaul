@@ -1,4 +1,4 @@
-﻿MurasamaHeld.DisplayName: Murasama
+MurasamaHeld.DisplayName: Murasama
 MuraTriggerDash.DisplayName: Murasama
 MuraBreakerSlash.DisplayName: Crescent Moon Slash
 MuraExecutionCut.DisplayName: Dimensional Severance - Finale
@@ -240,8 +240,6 @@ MuraSlashArc.DisplayName: Mura Slash Arc
 MuraSlashLine.DisplayName: Mura Slash Line
 WGGLumberjackSaw.DisplayName: Lumberjack Saw
 WGGLifeWeaverAcorn.DisplayName: Acorn
-
-
 GammaRayBurst.DisplayName: Gamma Ray Burst
 QuantumLeapProj.DisplayName: Quantum Leap
 SingularityBlackHole.DisplayName: Singularity Black Hole
@@ -255,7 +253,6 @@ CyberChargeOrbProj.DisplayName: Cyber Charge Orb
 CyberDetonationProj.DisplayName: Cyber Detonation
 SHPCChargeHeldProj.DisplayName: SHPC Static Charge
 CyberFreezeWaveProj.DisplayName: Cyber Freeze Wave
-
 StarshipComet.DisplayName: Starship Comet
 StarshipCometOrb.DisplayName: Starship Comet Orb
 StarshipMaxRateRing.DisplayName: Starship Max-Rate Ring

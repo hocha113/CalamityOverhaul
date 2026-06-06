@@ -5,13 +5,9 @@ MuraExecutionCut.DisplayName: Разрез измерения: Конец
 MuraExecutionCutOnSpan.DisplayName: Разрез измерения: Начало
 MuraGroundSmash.DisplayName: Падающая сакура
 EndSkillEffectStart.DisplayName: Разрез измерения: Начало
-EndSkillMakeDamage.DisplayName: Разрез измерения: Конец
 RebelBladeFlyAttcke.DisplayName: Клинок мятежника
 RebelBladeOrb.DisplayName: Демоническая сфера
 RebelBladeBack.DisplayName: Клинок мятежника
-RebelBladeSlash.DisplayName: Клинок мятежника
-DevilsDevastationHeld.DisplayName: Клинок Владыки демонов
-CollectorArm.DisplayName: Механическая рука собирателя
 ElectricMinRocketHeld.DisplayName: Микро-дуговая ракета
 TeslaBallByAttack.DisplayName: Индукционная сфера Теслы
 TeslaBallByGuard.DisplayName: Защитная сфера Теслы
@@ -36,8 +32,6 @@ WastelandFangProj.DisplayName: Клык пустоши
 WeaverBeam.DisplayName: Луч Ткача
 WeaverExplode.DisplayName: Взрыв обиды
 WeaverGrievancesDash.DisplayName: Рывок Ткача
-MedicalBoxHeld.DisplayName: Полевой медпункт
-MedicalBoxProj.DisplayName: Медицинская капсула
 DestroyerGrenade.DisplayName: Граната Уничтожителя
 DicoriaRay.DisplayName: Луч Близнецов
 FungiAmmo.DisplayName: Грибные боеприпасы
@@ -50,24 +44,14 @@ RocketSkeletonFriendly.DisplayName: Скелетная ракета
 RocketSkeleton.DisplayName: Скелетная ракета
 SporeBurst.DisplayName: Споровый взрыв
 CommandersClawThrow.DisplayName: Коготь командира
-GeminisTributeAlt.DisplayName: Подношение Близнецов (Вар.)
-GeminisTributeEXHeld.DisplayName: Подношение Близнецов EX
-GeminisTributeHeld.DisplayName: Подношение Близнецов
-PunisherGrenadeRogue.DisplayName: Граната Карателя
 SandDaggerThrow.DisplayName: Песчаный кинжал
 SeasonalKunaiProj.DisplayName: Сезонный кунай
-SeasonalKunaiThrowable.DisplayName: Сезонный кунай
 SporeBoboRogue.DisplayName: Споровый Бобо
 SporeburstPouchThrow.DisplayName: Мешочек спорового взрыва
 WraithKunaiProj.DisplayName: Призрачный кунай
-WraithKunaiThrowable.DisplayName: Призрачный кунай
 DestroyerBody.DisplayName: Уничтожитель
 DestroyerHead.DisplayName: Уничтожитель
 DestroyerTail.DisplayName: Уничтожитель
-ForgedLasEXhProjectile.DisplayName: Кованая плеть EX
-ForgedLashProjectile.DisplayName: Кованая плеть
-ForgedLasOrb.DisplayName: Кованая сфера
-DraedonsRemoteSpawn.DisplayName: Маяк Экзо-механизмов
 FungalFeedProj.DisplayName: Грибной корм
 CannonFishSwarmHitbox.DisplayName: Стая рыб-пушек
 ClonePlayer.DisplayName: Призрачный двойник
@@ -121,22 +105,8 @@ SpiralStarProjectile.DisplayName: Спиральная звезда
 WaterZombie.DisplayName: Водяной зомби
 OceanCurrent.DisplayName: Океаническое течение
 PowerSoundEgg.DisplayName: Яйцо ритма
-PhaseEnergySphere.DisplayName: Фазовая энергетическая сфера
-PhaseLaser.DisplayName: Фазовый лазер
-EarlierSwordHeld.DisplayName: Изначальный меч
 CrabulonFriendHitbox.DisplayName: Спора крабового гриба
-ArmourPiercerBoxProj.DisplayName: Ящик бронебойных снарядов
-ArmourPiercerHeld.DisplayName: Бронебойная пусковая установка
-DragonBreathBoxProj.DisplayName: Ящик снарядов дыхания дракона
-DragonBreathHeld.DisplayName: Пусковая установка дыхания дракона
-HghExplosiveHeld.DisplayName: Фугасная пусковая установка
-HghExplosiveProj.DisplayName: Фугасный снаряд
-NapalmBombBox.DisplayName: Ящик с напалмом
-NapalmBombHeld.DisplayName: Напалмовая пусковая установка
-SuccessfullyDeployedEffct.DisplayName: Развертывание успешно
-SpawnLaserEffect.DisplayName: Генерация лазера
 Fireball.DisplayName: Огненный шар
-Laser.DisplayName: Лазер
 CrossPrediction.DisplayName: Перекрестное предсказание
 DeadLaser.DisplayName: Мертвый лазер
 Mechanicalworm.DisplayName: Механический червь
@@ -144,185 +114,54 @@ Probe.DisplayName: Зонд
 SetPosingStarm.DisplayName: Звездный шторм
 Hit.DisplayName: Удар
 SpwanTextProj.DisplayName: Слово проявления
-AetherOrb.DisplayName: Сфера эфира
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез
 DragonsWordMouse.DisplayName: Клинок драконьего слова
 DragonsWordProj.DisplayName: Клинок драконьего слова
-FateCluster.DisplayName: Скопление судьбы
-HatredFire.DisplayName: Огонь ненависти
-MagicStar.DisplayName: Магическая звезда
 NeutronMagchStar.DisplayName: Нейтронная звезда
 NeutronWandExplode.DisplayName: Нейтронный взрыв
-PhaseBlasting.DisplayName: Фазовый взрыв
-WaningMoonLight.DisplayName: Свет убывающей луны
-AbominateHookScythe.DisplayName: Крюк-коса мерзости
-AbominateSpirit.DisplayName: Дух мерзости
-AegisBladeGuardian.DisplayName: Клинок Эгиды
-AirBomb.DisplayName: Воздушная бомба
-AnarchyBeam.DisplayName: Луч анархии
-AstralBall.DisplayName: Астральная сфера
-AstralPikeBeam.DisplayName: Луч астральной пики
-BalefulBall.DisplayName: Гибельная сфера
-BalefulSickle.DisplayName: Гибельный серп
-BlazingFireball.DisplayName: Пылающий шар
-BrimstoneSwordBall.DisplayName: Меч серного огня
-BrinyBaronOrb.DisplayName: Сфера Соленого барона
-DarkIceBomb.DisplayName: Темная ледяная бомба
-TheEndSun.DisplayName: Солнце конца
-DeathLaserSpwan.DisplayName: Лазер смерти
-DeathLaser.DisplayName: Лазер смерти
-EXDemonBlast.DisplayName: Алебарда наслаждения
-EXDemonBlastAlt.DisplayName: Алебарда Алого Короля Демонов
-EXOathblade.DisplayName: Цикл страданий
 DivineSourceBeam.DisplayName: Луч божественного истока
 DivineSourceBladeProjectile.DisplayName: Клинок божественного истока
-DragonRageFireOrb.DisplayName: Огненный шар ярости дракона
 DragonsScaleGreatswordBeam.DisplayName: Луч драконьего двуручника
 SporeCloud.DisplayName: Споровое облако
-EarthenBall.DisplayName: Земляной шар
-MeleeFossilShard.DisplayName: Окаменелый осколок
-EnforcerFlame.DisplayName: Пламя вершителя правосудия
-ExcelsusBomb.DisplayName: Бомба возвышения
-Feathers.DisplayName: Перья
-BalefulHarvesterHeldThrow.DisplayName: Гибельный жнец
-DeathsAscensionBreakSwing.DisplayName: Вознесение смерти
-DeathsAscensionThrowable.DisplayName: Вознесение смерти
-GiantBansheeScythe.DisplayName: Гигантская коса банши
-LifehuntScytheThrowable.DisplayName: Коса охоты на жизнь
-PhasebladeHeld.DisplayName: Фазовый меч
-WraithBeam.DisplayName: Луч призрака
-HolyColliderExFire.DisplayName: Святой коллайдер EX
-HyperBlade.DisplayName: Клинок Гипериона
-JudgementBeam.DisplayName: Луч правосудия
 EXNeutronExplode.DisplayName: Нейтронный взрыв EX
 NeutronExplode.DisplayName: Нейтронный взрыв
 NeutronGlaiveBeam.DisplayName: Нейтронная глефа
 NeutronGlaiveHeldAlt.DisplayName: Нейтронная глефа (Вар.)
 NeutronsOrb.DisplayName: Нейтронная сфера
-OrderbringerGuardian.DisplayName: Несущий порядок
-OrderbringerWhiteOrbs.DisplayName: Сфера порядка
-PercussionCosmicSpiritBomb.DisplayName: Космическая ударная бомба
-EXGauntlet.DisplayName: Силовая перчатка EX
-GauntletDerive.DisplayName: Силовая перчатка (Производная)
-GauntletInAltShoot.DisplayName: Силовая перчатка
-GouldBee.DisplayName: Позолоченная пчела
-PlagueBee.DisplayName: Чумная пчела
-PlagueBeeWave.DisplayName: Рой чумных пчел
-FadingGloryBeam.DisplayName: Луч угасающей славы
-FadingGloryRapier.DisplayName: Рапира угасающей славы
-GladiusBeam.DisplayName: Сияние гладиатора
-GladiusRapier.DisplayName: Рапира гладиатора
-GrandGuardianBeam.DisplayName: Сияние великого защитника
-GrandGuardianRapier.DisplayName: Рапира великого защитника
-LucreciaRapier.DisplayName: Лукреция
-MajesticGuardBeam.DisplayName: Сияние величественного стража
-MajesticGuardRapier.DisplayName: Рапира величественного стража
-SemberDarkMasterClone.DisplayName: Тень темного мастера
-TheDarkMasterRapier.DisplayName: Темный мастер
-RulingPrism.DisplayName: Господствующая призма
-RulingPrismCore.DisplayName: Ядро господствующей призмы
-SickleLife.DisplayName: Душа косы
-SoulSeekerSkull.DisplayName: Череп искателя душ
-SoulSeeker.DisplayName: Искатель душ
 LigSpark.DisplayName: Искра
 SparkBall.DisplayName: Искровая сфера
 SparkLightning.DisplayName: Искровая молния
-SpiritFlame.DisplayName: Огонь духов
-StellarStrikerBeam.DisplayName: Луч звездного ударника
 StormArc.DisplayName: Дуга шторма
 StormLightning.DisplayName: Молния шторма
-SunlightBlades.DisplayName: Клинок солнечного света
-TerrorExplode.DisplayName: Взрыв ужаса
-AnimosityOnSpan.DisplayName: Воплощение враждебности
 CelestialDevourer.DisplayName: Божественный пожиратель
 CelestialObliterationArrow.DisplayName: Стрела божественного уничтожения
 CosmicEddies.DisplayName: Космические вихри
 DivineDevourerIllusionBody.DisplayName: Фантом Божественного пожирателя
 DivineDevourerIllusionHead.DisplayName: Фантом Божественного пожирателя
 DivineDevourerIllusionTail.DisplayName: Фантом Божественного пожирателя
-ArcNovaDiffuserOnSpan.DisplayName: Дуговая сверхновая
-BarracudaProj.DisplayName: Барракуда
-BarrenOrb.DisplayName: Бесплодная сфера
-BloodVerdict.DisplayName: Кровавый вердикт
-BMGBullet.DisplayName: Пуля B.M.G.
-BMGFIRE.DisplayName: Пуля B.M.G.
-BMGFIRE2.DisplayName: Пуля B.M.G.
 Crystal.DisplayName: Кристалл
-CursedDartRemake.DisplayName: Проклятый дротик
-DeadWave.DisplayName: Волна смерти
-DeepSeaSharks.DisplayName: Глубоководная акула
-EarthRocketOnSpan.DisplayName: Земляная ракета
-ElectrosphereLauncherOrb.DisplayName: Электросфера
-EnergyBlast.DisplayName: Энергетический взрыв
 ExtremeColdHail.DisplayName: Град лютой стужи
-FetidEmesisOnSpan.DisplayName: Зловонная рвота
-GraniteBullet.DisplayName: Гранитная пуля
-GunCasing.DisplayName: Гильза
 HeavenRainbowImpact.DisplayName: Небесный радужный удар
 InfiniteArrow.DisplayName: Бесконечная стрела
 InfiniteRune.DisplayName: Бесконечная руна
 ParadiseArrow.DisplayName: Райская стрела
 VientianePunishment.DisplayName: Вселенская кара
-MonsoonOnSpan.DisplayName: Муссон
 IceExplosionFriend.DisplayName: Ледяной взрыв
-IceOrb.DisplayName: Ледяная сфера
 IceParclose.DisplayName: Ледяная завеса
 IceSoulOrb.DisplayName: Ледяная сфера души
-LostSoulBullet.DisplayName: Пуля потерянной души
-MarbleBullet.DisplayName: Мраморная пуля
 EXNeutronArrow.DisplayName: Нейтронная стрела EX
 EXNeutronExplosionRanged.DisplayName: Нейтронный взрыв EX
 NeutronArrow.DisplayName: Нейтронная стрела
 NeutronExplosionRanged.DisplayName: Нейтронный взрыв
 NeutronLaser.DisplayName: Нейтронный лазер
 NeutronBullet.DisplayName: Нейтронная пуля
-NurgleArrow.DisplayName: Стрела Нургла
-NurgleBee.DisplayName: Пчела Нургла
-NurgleSoul.DisplayName: Душа Нургла
-NurgleTheOfBall.DisplayName: Сфера Нургла
-RVoidTentacle.DisplayName: Щупальце пустоты
-SandnadoOnSpan.DisplayName: Песчаный торнадо
-SepticSkewerProj.DisplayName: Гнилостный вертел
-SniperRifleOnSpan.DisplayName: Снайперский выстрел
 SnowQuayBall.DisplayName: Снежный шар
-SporeBombOnSpan.DisplayName: Споровая бомба
-SporeBombs.DisplayName: Споровая бомба
-StakeHmmod.DisplayName: Святой кол
-TarragonArrow.DisplayName: Эстрагоновая стрела
-TarragonArrowOnSpan.DisplayName: Эстрагоновая стрела
-TheArrowPunishment.DisplayName: Стрела наказания
-TheCurseArchdemon.DisplayName: Проклятие архидемона
-TheMaelstromSharkOnSpan.DisplayName: Акула водоворота
-TheMaelstromTheArrow.DisplayName: Стрела водоворота
-Tornado.DisplayName: Торнадо
-TsunamiOnSpan.DisplayName: Цунами
-TungstenBulletProj.DisplayName: Вольфрамовая пуля
-TyphoonOnSpan.DisplayName: Тайфун
-VoidragonOrb.DisplayName: Сфера дракона пустоты
-XenopopperProj.DisplayName: Ксено-пузырь
-CosmicCalamityProjectile.DisplayName: Космическое бедствие
-CosmicCalamityRay.DisplayName: Луч космического бедствия
-FrostcrushValariHeld.DisplayName: Морозный валари
 NeutronScytheExplosion.DisplayName: Нейтронный взрыв
 NeutronScytheHeld.DisplayName: Нейтронная коса
-EnchantedBoomerangHeld.DisplayName: Зачарованный бумеран
-FlamarangHeld.DisplayName: Огнеранг
-ShroomerangHeld.DisplayName: Гриборанг
-SpearHeld.DisplayName: Копье
-WoodenBoomerangHeld.DisplayName: Деревянный бумеран
 Godslight.DisplayName: Божественный свет
 LonginusHeld.DisplayName: Копье Лонгина
 LonginusThrow.DisplayName: Копье Лонгина
 PilgrimsFury.DisplayName: Ярость пилигрима
-RWaveSkipperProjectile.DisplayName: Волнорез
-Spindrift.DisplayName: Морские брызги
-BloodBall.DisplayName: Кровавый шар
-BloodBlast.DisplayName: Кровавый взрыв
-BloodflareSouls.DisplayName: Души кровавого пламени
-CosmicFire.DisplayName: Космический огонь
-Ieaf.DisplayName: Лист
-AllhallowsGoldWhipProjectile.DisplayName: Золотой хлыст всех святых
-ATrail.DisplayName: След
 AzureDragonRageProjectile.DisplayName: Ярость лазурного дракона
 BleedingScourgeProjectile.DisplayName: Кровавая плеть
 ElementWhipProjectile.DisplayName: Элементальный хлыст
@@ -330,25 +169,8 @@ GhostFireWhipProjectile.DisplayName: Хлыст призрачного огня
 WhiplashGalacticaProjectile.DisplayName: Галактический хлыст
 WTrail.DisplayName: След
 InfiniteEnmgs.DisplayName: Бесконечная энергия
-InfiniteIngotTileProj.DisplayName: Бесконечный слиток
 InfinitePickProj.DisplayName: Бесконечная кирка
 SpanDMBall.DisplayName: Сфера темной материи
-BansheeHookHeldAlt.DisplayName: Крюк банши (Вар.)
-EarthenPikeAlt.DisplayName: Земляная пика (Вар.)
-EntropicClaymoreProj.DisplayName: Энтропийный клеймор
-EssenceEnergy.DisplayName: Энергия эссенции
-EssencePlunder.DisplayName: Похищение эссенции
-EXOathblade2.DisplayName: Цикл страданий
-GuardOfLife.DisplayName: Страж жизни
-GuardOfLifeCore.DisplayName: Ядро стража жизни
-RageKillerImpact.DisplayName: Удар яростного убийцы
-SolsticeHomeBeam.DisplayName: Самонаводящийся луч солнцестояния
-SoulSearchScythe.DisplayName: Коса поиска душ
-BloodAmmoBolt.DisplayName: Снаряд кровавых боеприпасов
-BananarangHeld.DisplayName: Бананоранг
-IceBoomerangHeld.DisplayName: Ледяной бумеран
-TrimarangHeld.DisplayName: Тримаранг
-DeathSickleThrowable.DisplayName: Коса смерти
 CthulhuEye.DisplayName: Глаз Ктулху
 JewelFragmentProjectile.DisplayName: Осколок драгоценного камня
 JewelGemProjectile.DisplayName: Драгоценная звезда
@@ -400,7 +222,6 @@ StormGoddess.DisplayName: Богиня штормов
 JusticeUnveiledCross.DisplayName: Явленная справедливость
 AncientStormLightning.DisplayName: Молния древнего шторма
 AncientStormArc.DisplayName: Сфера молнии древнего шторма
-TerrorSpirit.DisplayName: Призрак ужаса
 AccretionDisk.DisplayName: Аккреционный диск
 FlattenedAccretionDisk.DisplayName: Аккреционный диск
 GammaRayBeam.DisplayName: Гамма-луч
@@ -419,73 +240,10 @@ MuraSlashArc.DisplayName: Разрез измерения
 MuraSlashLine.DisplayName: Разрез измерения
 WGGLumberjackSaw.DisplayName: Ржавая цепная пила
 WGGLifeWeaverAcorn.DisplayName: Желудь
-Andrew.DisplayName: Андрей
-
-Bartholomew: {
-	DisplayName: Варфоломей
-	TruthRevealText: Откровение истины
-}
-
-ElysiumHeld.DisplayName: Элизиум
-
-James: {
-	DisplayName: Иаков
-	ThunderChainText: Цепь грома x{0}
-}
-
-John.DisplayName: Иоанн
-
-JudasIscariot: {
-	DisplayName: Иуда Искариот
-	OminousText_0: Тридцать сребреников...
-	OminousText_1: Предательство...
-	OminousText_2: Поцелуй...
-	OminousText_3: Виселица...
-}
-
-Jude: {
-	DisplayName: Иуда
-	HealingMiracleText: Чудо исцеления
-	GuardianMiracleText: Чудо защиты
-	JudgmentMiracleText: Чудо суда
-	JudgmentStandbyText: Суд в ожидании
-	SwiftMiracleText: Чудо стремительности
-	ManaMiracleText: Чудо маны
-}
-
-Lesser: {
-	DisplayName: Иаков Младший
-	DivineHealText: Божественное исцеление +{0}
-}
-
-Matthew: {
-	DisplayName: Матфей
-	WealthBlessingText: Благословение богатства x{0}
-}
-
-Philip.DisplayName: Филипп
-
-SimonPeter: {
-	DisplayName: Симон Петр
-	RockShieldText: Щит скалы -{0}%
-}
-
-SnakeConversionWave.DisplayName: Змеиная волна
-
-Thomas: {
-	DisplayName: Фома
-	VerifyEnhancedText: Усиленная проверка!
-	DoubtVerifyText: Проверка сомнения!
-}
-
-Zealot.DisplayName: Симон Зилот
-JudgmentLightning.DisplayName: Молния суда
-HolySerpent.DisplayName: Священный змей
 GammaRayBurst.DisplayName: Гамма-всплеск
 QuantumLeapProj.DisplayName: Квантовый скачок
 SingularityBlackHole.DisplayName: Сингулярность черной дыры
 SupernovaExplosion.DisplayName: Взрыв сверхновой
-StarfuryFallingStar.DisplayName: Падающая звезда Звездной ярости
 SpawnOldDukeWannaToFight.DisplayName: Поединок со Старым герцогом
 MachineTesla.DisplayName: Машина Тесла
 CyberGlitchBoltProj.DisplayName: Кибер-болт глюка
@@ -495,22 +253,6 @@ CyberChargeOrbProj.DisplayName: Кибер-сфера заряда
 CyberDetonationProj.DisplayName: Кибер-детонация
 SHPCChargeHeldProj.DisplayName: Поле заряда SHPC
 CyberFreezeWaveProj.DisplayName: Кибер-волна холода
-RevelationStar.DisplayName: Звезда откровения
-RevelationDomain.DisplayName: Домен откровения
-DivineThunderStrike.DisplayName: Божественная молния
-ApocalypseHorseman.DisplayName: Всадник Апокалипсиса
-RevelationMeteorImpact.DisplayName: Удар метеора откровения
-RevelationMeteorStrike.DisplayName: Метеорный удар откровения
-
-RevelationSealJudgment: {
-	Seal5Text: Пятая печать
-	Seal6Text: Шестая печать
-	Seal7Text: Седьмая печать
-	WorldJudgmentText: Суд мира
-	DisplayName: Печать суда откровения
-}
-
-VoidPortal.DisplayName: Портал Пустоты
 StarshipComet.DisplayName: Комета звездолёта
 StarshipCometOrb.DisplayName: Сфера кометы звездолёта
 StarshipMaxRateRing.DisplayName: Кольцо предельной мощности
@@ -520,9 +262,6 @@ StarshipMicroStar.DisplayName: Микрозвезда звездолёта
 StarshipPlanet.DisplayName: Планета звездолёта
 StarshipPlasmaBolt.DisplayName: Плазменный болт звездолёта
 StarshipWingman.DisplayName: Крылатый звездолёт
-VoidArrivalPortal.DisplayName: Портал прибытия Пустоты
-GatlinBullet.DisplayName: Пуля Гатлинга
-GatlinImpactBurst.DisplayName: Взрыв попадания Гатлинга
 CyberReformProj.DisplayName: Кибер-реконструкция
 CyberRiftSlashProj.DisplayName: Кибер-разрез разлома
 CyberRestartProj.DisplayName: Кибер-перезагрузка
@@ -531,9 +270,6 @@ MimicPhantom.DisplayName: Фантом-мимик
 CyberExecutionBoltProj.DisplayName: Гроза сбоя
 CyberPrismLaserProj.DisplayName: Кибер-лазер
 CyberDataArcProj.DisplayName: Кибер-дуга данных
-KingSlimeCrownBeamProj.DisplayName: Луч короны короля слизней
-KingSlimeRoyalGelDropletProj.DisplayName: Капля королевского геля
-KingSlimeShockwaveProj.DisplayName: Ударная волна короля слизней
 CryoCoreParclose.DisplayName: Криоядерный барьер
 CyberCascadeNodeProj.DisplayName: Каскадный узел
 SHPCCoralAnchorProj.DisplayName: Коралловый якорь
