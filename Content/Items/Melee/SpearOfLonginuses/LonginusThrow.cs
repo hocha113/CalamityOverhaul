@@ -120,12 +120,6 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                         hasGSignTarget = npc;
                     }
                 }
-                if (hasGSignTarget != null) {
-                    for (int i = 0; i < 13; i++) {
-                        Vector2 vr = (MathHelper.TwoPi / 13 * i).ToRotationVector2() * 23;
-                        Projectile.NewProjectile(Projectile.FromObjectGetParent(), spanPos, vr, ModContent.ProjectileType<SoulSeeker>(), Projectile.damage, 0, Projectile.owner, hasGSignTarget.whoAmI);
-                    }
-                }
             }
         }
 
