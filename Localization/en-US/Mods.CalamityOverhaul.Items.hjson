@@ -2573,3 +2573,106 @@ RMagicConch: {
 		Tooltip: Listen closely and you'll hear the ocean
 	}
 }
+
+GraniteTome: {
+	DisplayName: Granite Tome
+	Tooltip:
+		'''
+		Conjures a slow, homing orb of granite energy
+		Shatters into seeking crystal shards on impact
+		'''
+}
+
+GraniteFlower: {
+	DisplayName: Granite Bloom
+	Tooltip:
+		'''
+		Fires a crystal seed that blossoms into a lingering energy flower
+		The bloom pulses several times, spraying crystal petals all around
+		'''
+}
+
+GraniteThrowingKnife: {
+	DisplayName: Granite Throwing Knife
+	Tooltip:
+		'''
+		Throws a piercing knife trailing crystalline energy
+		Shatters into crystal shards on its last hit or against terrain
+		'''
+}
+
+GraniteWalkingBoots: {
+	DisplayName: Granite Walking Boots
+	Tooltip:
+		'''
+		Greatly increases running speed and acceleration
+		Crackles with blue sparks at full speed
+		'''
+}
+
+MarbleClub: {
+	DisplayName: Marble Club
+	Tooltip:
+		'''
+		A slow, heavy swing with crushing knockback
+		May petrify foes, briefly slowing them
+		The first hit of each swing unleashes a marble shockwave
+		'''
+}
+
+MarbleHuntingKnife: {
+	DisplayName: Marble Hunting Knife
+	Tooltip:
+		'''
+		Swift slashing strikes
+		Every third strike is a wider finisher that sprays marble shards
+		'''
+}
+
+MarbleDisc: {
+	DisplayName: Marble Discus
+	Tooltip:
+		'''
+		Hurls a spinning discus that ricochets between foes and walls
+		Then curves back to your hand; up to two may fly at once
+		'''
+}
+
+MarblePebble: {
+	DisplayName: Marble Pebble
+	Tooltip:
+		'''
+		An endless sling stone, swift and prone to critical hits
+		Deals far greater damage to foes with high maximum life
+		Bounces once off the ground
+		'''
+}
+
+MarbleShield: {
+	DisplayName: Marble Aegis
+	Tooltip:
+		'''
+		Increases defense and knockback resistance
+		Maintains a regenerating stone guard that absorbs an incoming hit, bursting into shards
+		Brace for a perfect block that reflects projectiles
+		'''
+}
+
+MarbleBalloon: {
+	DisplayName: Marble Balloon
+	Tooltip:
+		'''
+		Increases jump height and grants a heavy second jump
+		Press Down while airborne to slam down, releasing a shockwave on landing
+		Negates fall damage
+		'''
+}
+
+MarbleinaBottle: {
+	DisplayName: Marble in a Bottle
+	Tooltip:
+		'''
+		Double-tap a direction to roll forward in a stone dash
+		Grants brief invulnerability while dashing
+		'''
+}

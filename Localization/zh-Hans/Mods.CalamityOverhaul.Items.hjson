@@ -2539,3 +2539,106 @@ RMagicConch: {
 		Tooltip: 仔细听，你会听到海洋的声音
 	}
 }
+
+GraniteTome: {
+	DisplayName: 花岗岩魔典
+	Tooltip:
+		'''
+		吟咏吐出一枚缓慢追踪的花岗能量球
+		命中后碎裂为四散追击的水晶碎片
+		'''
+}
+
+GraniteFlower: {
+	DisplayName: 花岗之花
+	Tooltip:
+		'''
+		射出一枚水晶种子，飞行片刻后绽放成停留的能量花
+		花体数次脉冲，向四周喷射水晶花瓣
+		'''
+}
+
+GraniteThrowingKnife: {
+	DisplayName: 花岗飞刀
+	Tooltip:
+		'''
+		掷出可穿透的飞刀，拖曳蓝色水晶能量
+		末段命中或撞击地形时碎裂为水晶碎片
+		'''
+}
+
+GraniteWalkingBoots: {
+	DisplayName: 花岗行走靴
+	Tooltip:
+		'''
+		大幅提升跑速与加速度
+		全速奔跑时脚下迸发蓝色电火花
+		'''
+}
+
+MarbleClub: {
+	DisplayName: 大理石巨棍
+	Tooltip:
+		'''
+		缓慢而沉重的大力挥击，击退极强
+		有几率使敌人石化减速
+		每次挥击的首段命中会掀起大理石冲击波
+		'''
+}
+
+MarbleHuntingKnife: {
+	DisplayName: 大理石猎刀
+	Tooltip:
+		'''
+		迅捷的连续挥斩
+		每第三击为更宽的终结斩，向前迸射大理石碎片
+		'''
+}
+
+MarbleDisc: {
+	DisplayName: 大理石飞盘
+	Tooltip:
+		'''
+		掷出旋转的飞盘，在敌人与墙壁间弹射
+		随后回旋归手，最多可同时存在两枚
+		'''
+}
+
+MarblePebble: {
+	DisplayName: 大理石卵石
+	Tooltip:
+		'''
+		可无限使用的投石，迅捷且易于暴击
+		对生命上限越高的敌人造成越高的额外伤害
+		撞地后弹射一次
+		'''
+}
+
+MarbleShield: {
+	DisplayName: 大理石战盾
+	Tooltip:
+		'''
+		提升防御与抗击退
+		维持可再生的石卫护盾，吸收一次伤害并碎裂迸射碎片
+		举盾完美格挡，并反弹来袭弹幕
+		'''
+}
+
+MarbleBalloon: {
+	DisplayName: 大理石气球
+	Tooltip:
+		'''
+		提升跳跃高度，并额外赋予一段沉重的二段跳
+		空中按↓砸向地面，落地掀起冲击波
+		免疫摔落伤害
+		'''
+}
+
+MarbleinaBottle: {
+	DisplayName: 瓶中大理石
+	Tooltip:
+		'''
+		双击方向键向前滚动冲刺
+		冲刺期间获得短暂无敌
+		'''
+}
