@@ -1,8 +1,9 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -93,7 +94,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
                 ReflectNearbyProjectiles();
             }
             if (Equipped && Player.whoAmI == Main.myPlayer
-                && Player.CountProjectilesOfID<MarbleAegisRing>() == 0) {
+                && Player.ownedProjectileCounts[ModContent.ProjectileType<MarbleAegisRing>()] == 0) {
                 Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
                     , ModContent.ProjectileType<MarbleAegisRing>(), 0, 0, Player.whoAmI);
             }
@@ -175,7 +176,6 @@ namespace CalamityOverhaul.Content.Items.Marbles
             Projectile.timeLeft = 2;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.hide = true;
         }
 
         public override void AI() {
@@ -189,11 +189,12 @@ namespace CalamityOverhaul.Content.Items.Marbles
             Projectile.Center = Owner.GetPlayerStabilityCenter();
             Time += 1f;
 
-            float target = mp.HideVisual ? 0f : (mp.Blocking ? 1.3f : (mp.BarrierReady ? 0.85f : 0.28f));
-            mp.RingAlpha = MathHelper.Lerp(mp.RingAlpha, target, 0.12f);
+            //常态也保持清晰可见，让玩家随时知道护盾在运作；蓄能就绪更亮，破碎充能中转暗
+            float target = mp.HideVisual ? 0f : (mp.Blocking ? 1.5f : (mp.BarrierReady ? 1f : 0.5f));
+            mp.RingAlpha = MathHelper.Lerp(mp.RingAlpha, target, 0.14f);
 
-            if (mp.RingAlpha > 0.4f) {
-                Lighting.AddLight(Projectile.Center, GraniteMarbleVFX.MarbleGold.ToVector3() * 0.4f * mp.RingAlpha);
+            if (mp.RingAlpha > 0.2f) {
+                Lighting.AddLight(Projectile.Center, GraniteMarbleVFX.MarbleGold.ToVector3() * 0.5f * mp.RingAlpha);
             }
         }
 
@@ -211,20 +212,28 @@ namespace CalamityOverhaul.Content.Items.Marbles
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Texture2D star = CWRAsset.StarTexture.Value;
 
-            Color gold = GraniteMarbleVFX.MarbleGold; gold.A = 0;
-            Color core = GraniteMarbleVFX.MarbleCore; core.A = 0;
+            //就绪=金白，充能中=偏冷暗，让护盾状态一眼可辨
+            Color gold = (mp.BarrierReady || mp.Blocking) ? GraniteMarbleVFX.MarbleGold : GraniteMarbleVFX.MarbleCore;
+            Color core = GraniteMarbleVFX.MarbleCore;
+            float pulse = 0.85f + (float)Math.Sin(Time * 0.12f) * 0.15f;
+            float radius = 62f + (mp.Blocking ? 12f : 0f);
 
-            float radius = 58f + (mp.Blocking ? 6f : 0f);
-            spriteBatch.Draw(ring, center, null, gold * 0.4f * alpha, Time * 0.02f, ring.Size() / 2f
+            //外圈扩散环（两层叠加增强存在感）
+            spriteBatch.Draw(ring, center, null, gold * 0.85f * alpha * pulse, Time * 0.02f, ring.Size() / 2f
                 , (radius * 2f) / ring.Width, SpriteEffects.None, 0f);
+            spriteBatch.Draw(ring, center, null, core * 0.45f * alpha, -Time * 0.015f, ring.Size() / 2f
+                , (radius * 1.7f) / ring.Width, SpriteEffects.None, 0f);
 
+            //环绕的大理石碎片：柔光 + 十字耀斑
             int shards = 6;
             float spin = Time * 0.03f;
             for (int i = 0; i < shards; i++) {
                 float a = spin + MathHelper.TwoPi / shards * i;
                 Vector2 pos = center + a.ToRotationVector2() * radius;
-                spriteBatch.Draw(glow, pos, null, gold * 0.6f * alpha, 0f, glow.Size() / 2f, 0.45f * alpha, SpriteEffects.None, 0f);
-                spriteBatch.Draw(star, pos, null, core * 0.7f * alpha, a, star.Size() / 2f, 0.08f * alpha, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, pos, null, gold * 0.9f * alpha, 0f, glow.Size() / 2f
+                    , 0.7f * alpha * pulse, SpriteEffects.None, 0f);
+                spriteBatch.Draw(star, pos, null, core * alpha, a, star.Size() / 2f
+                    , 0.16f * alpha, SpriteEffects.None, 0f);
             }
         }
     }

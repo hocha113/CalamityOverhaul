@@ -2,7 +2,6 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
-using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -47,16 +46,15 @@ namespace CalamityOverhaul.Content.Items.Marbles
         }
     }
 
-    internal class MarbleDiscProj : BaseHeldProj, IPrimitiveDrawable
+    internal class MarbleDiscProj : BaseHeldProj, IAdditiveDrawable
     {
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleDisc";
         private const int MaxBounce = 3;
-        private Trail Trail;
 
         //ai[0]: 0=掷出, 1=回旋；localAI[0]=弹射计数；ai[1]=飞行计时
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailingMode[Type] = 2;
-            ProjectileID.Sets.TrailCacheLength[Type] = 12;
+            ProjectileID.Sets.TrailCacheLength[Type] = 10;
         }
 
         public override void SetDefaults() {
@@ -153,49 +151,49 @@ namespace CalamityOverhaul.Content.Items.Marbles
             return best;
         }
 
-        public float GetWidthFunc(float c) {
-            float p = c > 0.5f ? 1f - c : c;
-            return p * 2f * Projectile.scale * Projectile.width * 0.9f;
-        }
-
-        public Color GetColorFunc(Vector2 _) => GraniteMarbleVFX.MarbleGold * Projectile.Opacity;
-
         public override bool PreDraw(ref Color lightColor) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 origin = tex.Size() / 2f;
+            //旋转残影：逐帧采样历史位置/角度，单帧精灵叠绘，规避带状拖尾在急转弯时的顶点崩坏
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) {
                     continue;
                 }
                 Vector2 dpos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
                 float fade = 1f - i / (float)Projectile.oldPos.Length;
-                Color c = GraniteMarbleVFX.MarbleCore * fade * 0.3f; c.A = 0;
-                Main.EntitySpriteDraw(tex, dpos, null, c, Projectile.oldRot[i], origin, Projectile.scale * fade, SpriteEffects.None, 0);
+                Color c = GraniteMarbleVFX.MarbleCore * fade * 0.35f;
+                c.A = 0;
+                Main.EntitySpriteDraw(tex, dpos, null, c, Projectile.oldRot[i], origin
+                    , Projectile.scale * fade, SpriteEffects.None, 0);
             }
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor)
                 , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
 
-        void IPrimitiveDrawable.DrawPrimitives() {
-            if (Projectile.oldPos == null || Projectile.oldPos.Length == 0) {
-                return;
-            }
-            Vector2[] positions = new Vector2[Projectile.oldPos.Length];
-            for (int i = 0; i < positions.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) {
-                    Projectile.oldPos[i] = Projectile.Center;
-                }
-                positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
-            }
-            Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
-            Trail.TrailPositions = positions;
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D star = CWRAsset.StarTexture.Value;
+            Color gold = GraniteMarbleVFX.MarbleGold;
+            gold.A = 0;
+            Color core = GraniteMarbleVFX.MarbleCore;
+            core.A = 0;
 
-            Effect effect = EffectLoader.GradientTrail.Value;
-            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.MarbleBar, CWRConstant.Masking + "MotionTrail3");
-            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-            Trail?.DrawTrail(effect);
-            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            //历史位置的柔光残影（点状叠加，无网格顶点）
+            for (int i = 1; i < Projectile.oldPos.Length; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                Vector2 dpos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                float fade = 1f - i / (float)Projectile.oldPos.Length;
+                spriteBatch.Draw(glow, dpos, null, gold * fade * 0.4f, 0f, glow.Size() / 2f
+                    , 0.35f * fade, SpriteEffects.None, 0f);
+            }
+
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            spriteBatch.Draw(glow, pos, null, gold * 0.7f, 0f, glow.Size() / 2f, 0.5f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(star, pos, null, core * 0.8f, Projectile.rotation, star.Size() / 2f
+                , 0.13f, SpriteEffects.None, 0f);
         }
     }
 }

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -42,33 +42,40 @@ namespace CalamityOverhaul.Content.Items.Marbles
         private bool canDoubleJump;
         private bool slamming;
         private bool prevJump;
+        private int slamTimer;
 
         private const float DoubleJumpStrength = 8.2f;
         private const float SlamSpeed = 19f;
+        //砸地保险计时：即便迟迟未检测到落地，也强制结束下砸，杜绝"卡在下砸态"
+        private const int MaxSlamTime = 90;
 
         public override void ResetEffects() => Equipped = false;
 
         public override void PreUpdateMovement() {
-            bool grounded = Player.velocity.Y == 0f && !Player.mount.Active;
-
-            if (grounded) {
-                canDoubleJump = true;
-                if (slamming) {
-                    OnSlamLand();
-                    slamming = false;
-                }
-            }
-
             if (!Equipped) {
                 slamming = false;
+                slamTimer = 0;
                 prevJump = Player.controlJump;
                 return;
+            }
+
+            bool grounded = Player.velocity.Y < 1f && !Player.mount.Active;
+            if (grounded) {
+                canDoubleJump = true;
+            }
+
+            //落地判定优先于一切：着地或保险超时即结束下砸并触发落地效果
+            if (slamming && (grounded || slamTimer > MaxSlamTime)) {
+                OnSlamLand();
+                slamming = false;
+                slamTimer = 0;
+                canDoubleJump = true;
             }
 
             bool jumpPressed = Player.controlJump && !prevJump;
 
             //沉重二段跳
-            if (!grounded && jumpPressed && canDoubleJump && !slamming && Player.jump == 0) {
+            if (!slamming && !grounded && jumpPressed && canDoubleJump && Player.jump == 0) {
                 canDoubleJump = false;
                 Player.velocity.Y = -DoubleJumpStrength;
                 if (!VaultUtils.isServer) {
@@ -80,12 +87,17 @@ namespace CalamityOverhaul.Content.Items.Marbles
                 }
             }
 
-            //空中按↓砸地
-            if (!grounded && Player.controlDown && !slamming && Player.velocity.Y > -2f) {
+            //空中按↓开始砸地
+            if (!slamming && !grounded && Player.controlDown && Player.velocity.Y > -2f) {
                 slamming = true;
+                slamTimer = 0;
             }
+
+            //砸地中：强制下坠并清除"按↓"输入，避免穿过平台导致永远落不了地
             if (slamming) {
+                slamTimer++;
                 Player.velocity.Y = SlamSpeed;
+                Player.controlDown = false;
                 if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                     PRTLoader.NewParticle<PRT_Smoke>(Player.Center, Vector2.UnitY * -1f
                         , GraniteMarbleVFX.MarbleDust, 0.4f).Configure(16, 0.6f, 0.05f);

@@ -1,7 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -42,10 +41,13 @@ namespace CalamityOverhaul.Content.Items.Marbles
         private int dashCooldown;
         private int rightTapTimer;
         private int leftTapTimer;
+        //自行维护按键边沿，避免依赖 release* 标志在不同时序下的不确定性
+        private bool prevRight;
+        private bool prevLeft;
 
         private const int DashDuration = 18;
         private const int DashCooldownTime = 45;
-        private const float DashVelocity = 11.5f;
+        private const float DashVelocity = 12.5f;
 
         public override void ResetEffects() => Equipped = false;
 
@@ -60,21 +62,26 @@ namespace CalamityOverhaul.Content.Items.Marbles
                 leftTapTimer--;
             }
 
-            if (Equipped && dashTimer <= 0 && dashCooldown <= 0) {
-                if (Player.controlRight && Player.releaseRight) {
+            //自维护的"刚按下"边沿
+            bool rightPressed = Player.controlRight && !prevRight;
+            bool leftPressed = Player.controlLeft && !prevLeft;
+
+            if (Equipped && dashTimer <= 0 && dashCooldown <= 0 && Player.whoAmI == Main.myPlayer
+                && !Player.mount.Active && !Player.pulley) {
+                if (rightPressed) {
                     if (rightTapTimer > 0) {
                         StartDash(1);
                     }
                     else {
-                        rightTapTimer = 14;
+                        rightTapTimer = 15;
                     }
                 }
-                if (Player.controlLeft && Player.releaseLeft) {
+                if (leftPressed) {
                     if (leftTapTimer > 0) {
                         StartDash(-1);
                     }
                     else {
-                        leftTapTimer = 14;
+                        leftTapTimer = 15;
                     }
                 }
             }
@@ -82,8 +89,10 @@ namespace CalamityOverhaul.Content.Items.Marbles
             if (dashTimer > 0) {
                 dashTimer--;
                 float t = dashTimer / (float)DashDuration;
-                Player.velocity.X = dashDir * DashVelocity * (0.4f + 0.6f * t);
-                if (Math.Abs(Player.velocity.Y) < 0.1f || Player.velocity.Y > 0f) {
+                Player.velocity.X = dashDir * DashVelocity * (0.45f + 0.55f * t);
+                //关键：进入"冲刺"运动态，绕过水平摩擦/最大速度钳制，否则速度会被当帧抹平
+                Player.eocDash = dashTimer;
+                if (Player.velocity.Y > 0f) {
                     Player.velocity.Y *= 0.9f;
                 }
                 Player.GivePlayerImmuneState(4);
@@ -98,6 +107,9 @@ namespace CalamityOverhaul.Content.Items.Marbles
                     }
                 }
             }
+
+            prevRight = Player.controlRight;
+            prevLeft = Player.controlLeft;
         }
 
         private void StartDash(int dir) {
@@ -107,6 +119,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
             rightTapTimer = 0;
             leftTapTimer = 0;
             Player.velocity.X = dir * DashVelocity;
+            Player.eocDash = dashTimer;
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item34 with { Pitch = 0.2f, Volume = 0.7f }, Player.Center);
                 for (int i = 0; i < 8; i++) {
