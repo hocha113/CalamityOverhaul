@@ -77,7 +77,6 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                 chineseUrls.Add($"{WikiBaseUrl}/cn/{pathSegment}/");
             }
 
-            //SHPC、村正本体为灾厄物品 ID，不在 ModItem 枚举中
             AddLegendWeaponUrls(englishIds, englishUrls, chineseIds, chineseUrls, SHPCOverride.ID, "legend/shpc");
             AddLegendWeaponUrls(englishIds, englishUrls, chineseIds, chineseUrls, MurasamaOverride.ID, "legend/murasama");
             AddLegendWeaponUrls(englishIds, englishUrls, chineseIds, chineseUrls, HalibutOverride.ID, "legend/halibut");
