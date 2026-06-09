@@ -511,7 +511,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             if (Player.TryGetOverride(out PlayerDeath deathOverride)) {
-                deathOverride.MusicHasEnded = true;
+                deathOverride.Doomed = true;
             }
 
             Player.immune = false;

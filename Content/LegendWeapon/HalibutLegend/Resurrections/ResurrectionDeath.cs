@@ -376,7 +376,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             );
 
             if (Player.TryGetOverride<PlayerDeath>(out var sirenDeath)) {
-                sirenDeath.MusicHasEnded = true;
+                sirenDeath.Doomed = true;
             }
             //杀死玩家
             Player.KillMe(damageSource, Player.statLife + 1, 0, false);

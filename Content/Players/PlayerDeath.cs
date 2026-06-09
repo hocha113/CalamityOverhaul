@@ -8,15 +8,15 @@ namespace CalamityOverhaul.Content.Players
 {
     internal class PlayerDeath : PlayerOverride
     {
-        public bool MusicHasEnded;
+        public bool Doomed { get; set; }
 
         public override void ResetEffects() {
-            MusicHasEnded = false;
+            Doomed = false;
         }
 
         public override bool? On_PreKill(double damage, int hitDirection, bool pvp,
             ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
-            if (MusicHasEnded) {
+            if (Doomed) {
                 return true;
             }
 
