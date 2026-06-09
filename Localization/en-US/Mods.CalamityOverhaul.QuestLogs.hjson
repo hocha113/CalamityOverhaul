@@ -186,7 +186,7 @@ QuestNode: {
 		Description: Defeat the Wall of Flesh
 		QuestObjective.Description: Defeat the Wall of Flesh
 		QuestReward.Description: Pwnhammer
-		DetailedDescription: The gatekeeper of the world. Throw the Guide Voodoo Doll into the lava to release the world's ancient spirits and begin Hardmode.
+		DetailedDescription: The gatekeeper of the world. Throw the Guide Voodoo Doll into the lava to release this world's ancient deity and begin Hardmode.
 	}
 
 	CeaselessVoidQuest: {
@@ -337,7 +337,7 @@ QuestNode: {
 		DisplayName: Deep Core Drilling
 		Description: Craft a Mining Machine MK2
 		QuestObjective.Description: Obtain a Mining Machine MK2
-		QuestReward.Description: 5 Mining Potions
+		QuestReward.Description: 5 Spelunker Potions
 		DetailedDescription: Its reinforced power core offers unparalleled speed.
 	}
 
@@ -478,10 +478,10 @@ QuestNode: {
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Obtain Rock
-		QuestReward.Description: 5 Rocks
-		DisplayName: Rock
-		Description: Obtain Rock
+		QuestObjective.Description: Obtain Ancient Eternal Stone
+		QuestReward.Description: 5 Ancient Eternal Stones
+		DisplayName: Ancient Eternal Stone
+		Description: Obtain Ancient Eternal Stone
 		DetailedDescription: A seemingly ordinary stone, yet it has witnessed the cycle of countless Boss Rushes. It is a symbol of eternal perseverance.
 	}
 
@@ -502,10 +502,10 @@ QuestNode: {
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Obtain Heavenly Gale
+		QuestObjective.Description: Obtain Infinite Bow
 		QuestReward.Description: 5 Infinite Ingots
-		DisplayName: Heavenly Gale
-		Description: Obtain Heavenly Gale
+		DisplayName: Infinite Bow
+		Description: Obtain Infinite Bow
 		DetailedDescription: A longbow that has shot down gods. Now it shall reappear in the world.
 	}
 
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Clear Boss Rush 5 times, obtain 5 Rocks
-		QuestReward.Description: 5 Rocks
+		QuestObjective.Description: Clear Boss Rush 5 times, obtain 5 Ancient Eternal Stones
+		QuestReward.Description: 5 Ancient Eternal Stones
 		DisplayName: Cycle of Conquest
-		Description: Clear Boss Rush 5 times, obtain 5 Rocks
+		Description: Clear Boss Rush 5 times, obtain 5 Ancient Eternal Stones
 		DetailedDescription: The symbol of a true warrior
 	}
 
@@ -873,8 +873,8 @@ QuestNode: {
 
 	LifeWeaverQuest: {
 		DisplayName: Reforestation
-		Description: Obtain the Life Weaver
-		QuestObjective.Description: Obtain the Life Weaver
+		Description: Obtain the Tree Planter
+		QuestObjective.Description: Obtain the Tree Planter
 		DetailedDescription: Forest regeneration is usually a slow process. This machine uses power to precisely plant saplings, quickly restoring life to barren lands. It is the final piece of the puzzle for building a fully automated, sustainable tree farm.
 	}
 

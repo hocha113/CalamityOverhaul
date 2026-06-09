@@ -1,7 +1,7 @@
 ModifyCrabulon: {
 	CrouchText: Await
 	CrouchAltText: Follow
-	MountHoverText: Left-Click To Mount Saddle
+	MountHoverText: Left-Click To Equip Saddle
 	RideHoverText: Right-Click To Ride
 	ChangeSaddleText: Left-Click To Change Saddle
 	DismountText: Right-Click To Dismount

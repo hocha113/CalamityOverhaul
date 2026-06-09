@@ -249,7 +249,7 @@ HalibutTrialQuestLine: {
 		'''
 	TextDictionary_Content_4:
 		'''
-		Do you know how inanimate objects come to life? I once built a massive underwater machine that could launch nuclear warheads made of bubbles
+		Do you know how inanimate objects come to life? I once built a massive underwater machine that could launch missiles made of bubbles
 		and countless thermonuclear torpedoes. I used it to hunt gigantic creatures living 10,000 meters below the sea—until I met...
 		Oh, I digress. I think we'll soon have four mechanical friends visiting us, so we should be prepared.
 		Also, there's a mutated giant sea worm in the polluted waters above the Abyss. It used to be a gatekeeper at the Sulphurous Sea University.
@@ -269,8 +269,6 @@ HalibutTrialQuestLine: {
 		I enjoy archaeological digs. Last time I was wandering through the Jungle, I saw a massive ruin.
 		We should now have the key to open the door to that ruin. Let's go check it out.
 		Inside, there's an ancient machine waiting for us to power it up, just like a remote control for an air conditioner.
-		Besides that, there's an alien plague spreading on the surface, infecting the land and most inorganic objects.
-		Every night, a tormented mining machine roams around, long since infected. Let's put it out of its misery.
 		'''
 	TextDictionary_Content_7:
 		'''
@@ -339,7 +337,7 @@ MurasamaTrialQuestLine: {
 	Trial_26: Chaos Judgment
 	Trial_27: Primordial Return
 	TrialSummary_0: Prove yourself to me, recruit.\nThat slimy blue blob is a good place to start.\nHandle it.
-	TrialSummary_1: The siren remnants beneath the sand sea still roam.\nTrack it down and end it.
+	TrialSummary_1: The remnants of the sea scourge beneath the sands still roam.\nTrack it down and end it.
 	TrialSummary_2: The moon hangs high in the night. Let's go burst that giant eyeball flying around up there, and make that false god permanently blind.
 	TrialSummary_3:
 		'''
@@ -383,7 +381,7 @@ MurasamaTrialQuestLine: {
 		'''
 	TrialSummary_25:
 		'''
-		That heretic of the mechanical church firmly believes his Exo Mechs surpass the power of gods.
+		That heretic of the mechanical church firmly believes his Exo Titans surpass the power of gods.
 		Such a belief is utterly absurd. Let us return those Titans to their natural state—a pile of scrap metal.
 		'''
 	TrialSummary_26:

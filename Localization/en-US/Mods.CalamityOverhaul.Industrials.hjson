@@ -6,7 +6,7 @@ ElectricMinRocket: {
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Battery Runs Out
-	DisplayName: Wilderness Life Weaver
+	DisplayName: Wilderness Tree Planter
 	Tooltip: ""
 }
 

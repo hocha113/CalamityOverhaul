@@ -251,7 +251,7 @@ FirstMetSupCal: {
 	NoFishLine1: You killed my 'sister' far sooner than I expected. And you came alone?
 	NoFishLine2: You are growing stronger than I anticipated.
 	NoFishLine3: You ask why I am still alive? It seems you have begun to touch upon truths you were not meant to know.
-	NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... it is merely a corpse, puppetes
+	NoFishLine4: My consciousness was forged into the brimstone flame long ago. This body... is merely a corpse puppeteered by the flames.
 	NoFishLine5: But it is pointless. Your comprehension is too limited to grasp my state of being.
 	NoFishLine6: Of course, I did not reveal myself merely to explain these trivialities.
 }
@@ -280,11 +280,11 @@ SupCalDefeat: {
 	Line2: But you are not the strongest. You may be good, but *he* is certainly no worse than you.
 	Line3: Yharim has already walked to the end of that path. He has reached the pinnacle of what a Terrarian can be. No one is stronger.
 	Line4: A pity you two cannot meet...
-	Line5: Your dimension is too low. You will never understand my state.
-	Line6: ...My dimension is too low?
-	Line7: (I've lived this long, and this is the first time anyone's told me my 'dimension' is low.)
+	Line5: Your level of comprehension is too low. You will never understand my state.
+	Line6: ...My level of comprehension is too low?
+	Line7: (I've lived this long, and this is the first time anyone's told me my 'level' is low.)
 	Line8: I am the sole being 'birthed' by an era. Since I dared to cast off my Terrarian identity and declare myself a god, I am naturally omnipotent.
-	Line9: You say Yharim can 'weigh' me? You'd need to bring me a Xylos.
+	Line9: You say Yharim can 'weigh' me? You'd need to bring me Xeroc.
 	Line10: ......
 }
 
@@ -372,7 +372,7 @@ FishoilQuestUI: {
 
 DoGQuestUI: {
 	QuestTitle: Commission: The Devourer of Gods
-	QuestDesc: Defeat The Devourer of Gods using the Heartstopper.
+	QuestDesc: Defeat The Devourer of Gods using the Heartcarver.
 	AcceptText: Accept
 	DeclineText: Decline
 }
@@ -382,7 +382,7 @@ SupCalDoGQuestReward: {
 	Rolename2: Halibut
 	Line1: Cleanly done.
 	Line2: This blade... as satisfying as ever.
-	Line3: Back when I was still mortal, this is what I used to carve out my master's heart. It works well, doesn't it?
+	Line3: Back when I was still mortal, this is what I used to gouge out my master's heart. It works well, doesn't it?
 	Line4: Take it.
 	Line5: Have you ever considered... what you would do if, next time, my commission was for you to kill ME?
 	Line6: Such a pity. You and he are fated never to meet. You two would have had... so much to talk about.
@@ -403,7 +403,7 @@ SupCalYharonQuestReward: {
 
 YharonQuestUI: {
 	QuestTitle: Commission: The Dragon of Incineration
-	QuestDesc: Use the Muramasa to slay Yharon, the Incineration Dragon.
+	QuestDesc: Use the Oni Machete to slay Yharon, the Incineration Dragon.
 	AcceptText: Accept
 	DeclineText: Decline
 }
@@ -444,13 +444,13 @@ HelensInterference: {
 	Branch_Inquiry: {
 		Line1: I've been getting more and more anxious lately.
 		Line2: That blade... when I touched it, I thought I heard... someone *laughing*.
-		Line3: They all feel like... some kind of 'medium'.
+		Line3: They all feel like... some kind of 'conduit'.
 		Line4: I can't let you go on with it, at least...
 	}
 
 	Branch_Silence: {
 		Line1: ...You're most terrifying when you're silent.
-		Line2: ...Fine, I hid the 'Heart-carver'.
+		Line2: ...Fine, I hid the Heartcarver.
 		Line3: That witch... she's dangerous, she came from nowhere. If this is a trap, are you just going to walk right into it?
 		Line4: Stop... please. For my sake.
 	}
@@ -483,7 +483,7 @@ HellGift: {
 ExoMechdusaSum: {
 	DraedonName: Draedon
 	IntroLine1: You understand... this moment has been long anticipated.
-	IntroLine2: I am fascinated by all apects of the unknown, but nothing fascinates me more than your very nature.
+	IntroLine2: I am fascinated by all aspects of the unknown, but nothing fascinates me more than your very nature.
 	IntroLine3: I will show you my god-surpassing creations.
 	IntroLine4: And you... you will show me your nature in combat.
 	IntroLine5: Now. Make your selection.
@@ -708,7 +708,7 @@ SupCalDisplayText: {
 		'''
 	Story2:
 		'''
-		This wretched blade is dull because it doesn't cut flesh—it severs mediums.
+		This wretched blade is dull because it is not meant to cut flesh.
 		When I was still an apprentice, a mouth that would never close grew upon my teacher's heart.
 		He died later, yet that heart kept beating. With every beat, the mouth screamed, 
 		and one person around us simply vanished.
@@ -736,7 +736,7 @@ SupCalDisplayText: {
 SupCalDisplayTextByBossRush: {
 	SummonBossRush: Heh… The aura on you almost reminds me of the one who has long since perished.
 	SummonBossRushWithProverbs: That ring… even a mere remnant like me can feel its trembling.
-	StartBossRush: I may be nothing more than an anomalous construct born from the Golden Soul… but there are duties even I must fulfill.
+	StartBossRush: I may be nothing more than an anomalous construct born from the Auric Soul… but there are duties even I must fulfill.
 	BH2BossRush: Your strength is impressive… yet still insufficient.
 	BH3BossRush: The shadows of the past… long since reduced to ashes, scattered on the path you walk. Heh…
 	BrothersBossRush: These souls… shadows of shadows. The more you copy something, the sadder it becomes, don’t you think?
@@ -891,12 +891,12 @@ CampsiteInteractionDialogue: {
 		Research_Intro: I am trying to reconstruct a story, or rather, recover a lost form of experience.
 		Research_CurrentWork: These fragments cling to memories of the past. They record how that ancient civilization sought a path to survival in a desperate situation.
 		Research_Breakthrough: To fight that kind of terror, brute force is useless. You must find their 'killing rules' and exploit them.
-		Research_Difficulties: But deciphering them is dangerous. These fragments are mediums themselves. Stare at them too long, and you might hear sounds you shouldn't.
+		Research_Difficulties: But deciphering them is dangerous. These fragments are conduits themselves. Stare at them too long, and you might hear sounds you shouldn't.
 		Research_Theory: If I can assemble all the pieces, perhaps I can find a way to permanently seal the source of the abyss.
 		Choice_Research_Details: What do you mean by 'killing rules'?
 		Choice_Research_Help: What do I need to do?
 		Choice_Research_Back: Sounds crazy
-		Research_Details1: For example, there are things you cannot look at, names you cannot speak. Once a medium is triggered, death is inevitable. That civilization tried to bind gods with rules.
+		Research_Details1: For example, there are things you cannot look at, names you cannot speak. Once a conduit is triggered, death is inevitable. That civilization tried to bind gods with rules.
 		Research_Details2: They even built massive containers, attempting to imprison those things. Unfortunately, the containers leaked.
 		Research_Help: Help me find more fragments. The rest of my life will be spent researching this.
 		History_Intro: The Sulphurous Sea is merely a facade. This is the residue left after the encroachment of that thing's domain.
@@ -908,13 +908,13 @@ CampsiteInteractionDialogue: {
 		Choice_History_MoreRuins: Where is the most dangerous place?
 		Choice_History_Dangers: Are there any countermeasures?
 		Choice_History_Back: Unsettling
-		History_MoreRuins1: At the very bottom of that corpse sea. There is a door. Do not knock. No one can handle what is locked behind it, unless that tyrant comes.
+		History_MoreRuins1: At the very bottom of that corpse sea. There is a door. Do not knock. Whatever is behind it had best rot in there forever.
 		History_MoreRuins2: There are still unopened rooms in those sunken ruins. They are secret chambers cast from special heavy metals, designed to cut off the perception of those things.
 		History_Dangers1: Aside from the mutated walking dead, beware of things you cannot see. Sometimes, the fatal strike is invisible.
 		History_Dangers2: Do not trust your eyes. Do not respond to inexplicable calls. In that sea of corpses, the living are the anomalies.
 		Fragments_Intro: Ocean Scraps... in my eyes, they are bloodstained archives.
 		Fragments_Nature: They are the residue of a phenomenon. Like compressed curses.
-		Fragments_Power: Each fragment is a 'medium'. Alone, they may be harmless, but when enough gather, they create a collision of eerie forces.
+		Fragments_Power: Each fragment is a 'conduit'. Alone, they may be harmless, but when enough gather, they create a collision of eerie forces.
 		Fragments_Collection: They are scattered across every corner of the dead sea—some buried under ruins, others grown into the flesh of creatures.
 		Fragments_Purpose: I am still piecing them together, trying to reconstruct the source of that disaster. Only by figuring out how that thing killed can I find a way to imprison it.
 		Personal_Intro: Getting by.
@@ -927,7 +927,7 @@ CampsiteInteractionDialogue: {
 		Choice_Personal_Back: Take care
 		Personal_Tea1: This is brewed from several special plants in the abyss. The taste... is like rotting mud.
 		Personal_Tea2: Want a cup? It will calm you down like a dead fish.
-		Personal_Past1: Who knows? Maybe the real me died long ago, and I am just a... ghost with the Old Duke's memories? Every death triggers a restart, returning to the moment before death.
+		Personal_Past1: Who knows? Maybe the real me died long ago, and what remains is... another kind of thing with his memories.
 		Personal_Past2: But I still remember the feeling of sunlight on my face, the touch of books. As long as I remember these, I consider myself alive.
 		Personal_Past3: If not for that accident... I would probably be lying peacefully in a grave by now. Instead of being like this, unable to die even if I wanted to.
 		Farewell_Normal: Let's leave it at that. Come find me if you need anything.
@@ -1051,11 +1051,11 @@ FirstMetShepel: {
 	Choice2Text: ...Long time no see.
 	Choice1Response: ...Yes. As long as it is you, I am willing to be wrong every time.
 	Choice1Silence: ......
-	CybCourseOfferLine: Braindance program successfully loaded. Master, would you like to connect to the Braindance space now to learn about Hack Mode and SHPC weapon operating protocols?
+	CybCourseOfferLine: Superdream program successfully loaded. Master, would you like to connect to the Superdream space now to learn about Hack Mode and SHPC weapon operating protocols?
 	CybCourseAcceptText: Let's go now.
 	CybCourseDeclineText: Not right now.
 	CybCourseAcceptResponse: Acknowledged. Establishing neural link... Please remain still.
-	CybCourseDeclineResponse: Understood. Braindance access credentials have been written to your save data. You can activate it yourself at any time, Master.
+	CybCourseDeclineResponse: Understood. Superdream access credentials have been written to your save data. You can activate it yourself at any time, Master.
 }
 
 TheHerInThePast: {
@@ -1065,7 +1065,7 @@ TheHerInThePast: {
 	ShpcLine1: Thank you... But how is this possible? You belong to the past, yet you can move around...
 	WitchLine2: If you can invade here from a century in the future, it's only natural I can do something similar.
 	WitchLine3: Though I am indeed just a shadow left behind in this place.
-	ShpcLine2: You can use your abilities independently from any point in the past?!
+	ShpcLine2: If that is true, using your power like this will make you fade away.
 	WitchLine4: Your focus is so cute... Hurry up and leave. It's better if these filthy things stay buried in the past with me.
 	WitchLine5: Oh, by the way, little maid.
 	ShpcLine3: What is it?

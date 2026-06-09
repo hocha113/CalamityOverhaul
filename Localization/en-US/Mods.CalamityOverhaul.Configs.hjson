@@ -6,7 +6,7 @@ CWRServerConfig: {
 		Tooltip:
 			'''
 			Enabling it will modify most weapons.
-			[c/FF0000: If you want to optimize the experience of disaster overhaul content, please open it!]
+			[c/FF0000: If you want the best Calamity Overhaul experience, please enable it!]
 			'''
 	}
 
@@ -16,11 +16,11 @@ CWRServerConfig: {
 	}
 
 	MurasamaSpaceFragmentationBool: {
-		Label: Murasama Space Fragmentation Bool
+		Label: Murasama Finisher Screen-Shatter Effect
 		Tooltip:
 			'''
-			Turned on by default, the polymer cutting edge will create a screen crushing effect to enhance the impact
-			If turned off, these effects are disabled and can be set to your liking
+			Enabled by default. When Murasama performs its finisher, it creates a screen-shatter effect to enhance the impact.
+			If disabled, these effects are turned off.
 			'''
 	}
 
@@ -46,7 +46,7 @@ CWRServerConfig: {
 		Tooltip:
 			'''
 			[c/c20909:Unfinished]
-			Enabled by default, this will modify the AI behavior of certain creatures, such as bosses in death mode.
+			Enabled by default, this will modify the AI behavior of certain creatures, such as Boss AI in Death Mode.
 			This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
 			'''
 	}
@@ -59,7 +59,7 @@ CWRServerConfig: {
 			Style 2: Refined - Compact
 			Style 3: Classic - Floating Above The Head
 			Style 4: Classic - Compact
-			Style 5: Conceal
+			Style 5: Hidden
 			'''
 	}
 
@@ -114,5 +114,5 @@ CWRServerConfig: {
 	}
 
 	ConfigChangePrefix: User
-	ConfigChangeSuffix: The server configuration is modified
+	ConfigChangeSuffix: modified the server configuration
 }

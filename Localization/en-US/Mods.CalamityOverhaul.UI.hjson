@@ -155,7 +155,7 @@ QuestLog: {
 	NightModeText: Night Mode
 	ResetViewText: Reset View
 	SunModeText: Daytime Mode
-	LauncherHoverText: Left-Click Toggle, Right-Click Drag
+	LauncherHoverText: Left-click to interact, right-click to drag
 	QuestManagerText: Commission
 }
 
@@ -714,7 +714,7 @@ SHPCUI: {
 	Cyber_LayerBaseFooter: Foundation layer — establishes the domain field.
 	Cyber_SkillUnlocked: "[#] UNLOCKED"
 	Cyber_SkillLocked: "[X] Requires Layer {0}"
-	Cyber_KeyUnbound: ?
+	Cyber_KeyUnbound: Unbound
 	Cyber_Skill_Teleport_Name: RIFT TELEPORT
 	Cyber_Skill_Teleport_Desc: Deconstructs the chassis into a data stream to transmit to the target location, recomposing its physical form under the cover of the Blackwall protocol.
 	Cyber_Skill_Restart_Name: SYSTEM REBOOT
@@ -823,15 +823,15 @@ AbandonedPortalStrings: {
 SupertableUI: {
 	RecipeViewLabel: View recipe
 	RecipeEmptyLabel: nothing
-	PlacementMonitorOff: Close display monitor
-	PlacementMonitorOn: Open display monitor
-	QuickPlaceMaterials: Quick placement material
-	QuickTakeMaterials: Quick access to material
+	PlacementMonitorOff: Turn Off Placement Monitor
+	PlacementMonitorOn: Turn On Placement Monitor
+	QuickPlaceMaterials: Quick Place Materials
+	QuickTakeMaterials: Quick Take Materials
 }
 
 ArrowHolderUI: {
-	MarkArrowHint: Left Click On The Marked Arrow
-	UnmarkArrowHint: Right Click Untag
+	MarkArrowHint: Left-click to mark an arrow
+	UnmarkArrowHint: Right-click to unmark an arrow
 }
 
 BulletinBoardUI: {
@@ -863,19 +863,4 @@ CWRPlayer: {
 		'''
 	HellfireExplosionDeathReason: "{0} was reduced to ash in the fires of the Underworld"
 	SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
-
-	CWRPlayer: {
-		Error_HookFailure:
-			'''
-			A hook has failed. Close the game and re-enter to restore normal play.
-			If the issue persists, export your log and contact the mod developer.
-			'''
-		OnEnterWorld_ImproveGameWarning:
-			'''
-			[Quality of Terraria] is installed, but your version is out of date.
-			For stable gameplay, update [Quality of Terraria] to at least 1.7.1.7.
-			'''
-		HellfireExplosionDeathReason: "{0} was reduced to ash in the fires of the Underworld"
-		SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
-	}
 }

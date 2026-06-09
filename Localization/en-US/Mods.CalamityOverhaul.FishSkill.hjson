@@ -210,8 +210,8 @@ FishCat: {
 	DisplayName: Bouncing Catfish
 	Tooltip:
 		'''
-		Right-Toss a cluster of bouncing, gravity-affected Catfish.
-		They meow on each bounce and explode on contact or after a short time.
+		Right-click to toss a cluster of bouncing, gravity-affected Catfish.
+		They meow on each bounce and explode on contact with enemies or after a short time.
 		'''
 	Studied: This fish seems to have a particular fondness for honey.
 }
@@ -327,8 +327,8 @@ FishScorpio: {
 	DisplayName: Sand Scorpion Sentinel
 	Tooltip:
 		'''
-		Summon the ground-moving scorpion sentinels
-		Launch the salamon rolls at the enemy
+		While firing, summon scorpion sentries that move along the ground.
+		The sentries fire sand tornadoes at enemies.
 		'''
 	Studied: Its entire body is filled with sand.
 }

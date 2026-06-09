@@ -96,11 +96,8 @@ AnnihilatingUniverse: {
 	DisplayName: Annihilating Universe
 	Tooltip:
 		'''
-		Wooden Arrows turn into a spread of Cosmic Bolts. 
-		Hitting an enemy causes Galaxy Rifts to attack other foes and leaves behind a star close to death, eventually imploding.
-		Right click to summon Projections of the Devourer that grow stronger and bigger over time. 
-		Letting go of right click fires the portal used to home in on enemies before eventually dying out.
-		[c/9C27B0:The End is Nigh.]
+		Arrows leave a brilliant star at the impact point after hitting an enemy
+		Right-click to destroy enemies with the Devourer's power
 		'''
 }
 
@@ -277,8 +274,12 @@ StormGoddessSpear: {
 }
 
 DragonsScaleGreatsword: {
-	DisplayName: Dragonseaweed Greatblade
-	Tooltip: Swings a mighty sword that summons poisonous clouds that weakly home into enemies.
+	DisplayName: Dragon Kelp Greatblade
+	Tooltip:
+		'''
+		Fires a spiraling chlorophyte blade beam that bursts into toxic algae clouds on hit
+		True melee strikes create many toxic algae clouds
+		'''
 }
 
 CosmicCalamity: {
@@ -393,8 +394,7 @@ AmmoBoxFire: {
 	DisplayName: Burning Ammo Box
 	Tooltip:
 		'''
-		Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
-		let the special ammunition to fill the magazine
+		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
 		Special ammo can be overlaid with the original bullet effect
 		It makes the warhead highly flammable and explodes when it hits the target
 		"This isn't cod."
@@ -405,8 +405,7 @@ ArmourPiercerBox: {
 	DisplayName: Armour Piercer Box
 	Tooltip:
 		'''
-		Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
-		let the special ammunition to fill the magazine
+		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
 		Special ammo can be overlaid with the original bullet effect
 		Coat the ammunition with tungsten gold to increase the bullet's armor breaking ability, ignoring the target's 75% armor
 		"Even so, don't try to shoot down a tank with a pistol."
@@ -417,8 +416,7 @@ HighExplosiveBox: {
 	DisplayName: High Explosive Box
 	Tooltip:
 		'''
-		Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
-		let the special ammunition to fill the magazine
+		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
 		Special ammo can be overlaid with the original bullet effect
 		Turn the warhead into a high-explosive projectile, firing a violent explosion when the bullet hits the target
 		"Blow them all up!"
@@ -429,8 +427,7 @@ DragonBreathBox: {
 	DisplayName: Dragon Breath Box
 	Tooltip:
 		'''
-		Long press to deploy, after deployment is complete, hold the firearm to right click the magazine, 
-		let the special ammunition to fill the magazine
+		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
 		Special ammo can be overlaid with the original bullet effect
 		A combination of magic and technology, bullets hit their targets and explode into a jet of metal, causing damage to a wide range of enemies
 		"This is the dragon's saliva. Do you want to believe it?"
@@ -597,11 +594,12 @@ SnowQuayMK2: {
 }
 
 HghExplosiveBox: {
-	DisplayName: Hgh Explosive Box
+	DisplayName: High Explosive Ammo Box
 	Tooltip:
 		'''
 		Hold to deploy. Once deployed, right-click the ammo box with a firearm to load special ammunition into the magazine.
 		Special ammo can stack effects with regular bullets.
+		The warhead contains high explosives, creating a small explosion on hit.
 		"Blow them all to the skies!"
 		'''
 }
@@ -1135,8 +1133,9 @@ Collector: {
 	DisplayName: Collector
 	Tooltip:
 		'''
-		Automatically pick up the fallen objects around and place them in the nearest box
+		Consumes power to pick up nearby drops and place them in the nearest box
 		It won't work if there are no boxes around
+		Right-click the Collector while holding an item to mark it so it only collects that item type
 		'''
 	Text1: Excessive Quantity!
 	Text2: There are no boxes around!
@@ -1206,8 +1205,7 @@ SporeBubbleBlaster: {
 	DisplayName: Spore Bubble Blaster
 	Tooltip:
 		'''
-		Sprays a stream of spore particles
-		Causes only 50% damage during the day
+		Sprays a stream of spore airflow
 		'''
 }
 
@@ -1244,7 +1242,7 @@ MushroomSaddle: {
 		Left-click the Sporecrab while holding the saddle to equip it
 		Right-click an equipped Sporecrab to ride
 		'''
-	UseCombat: Can only be applied to crabulon
+	UseCombat: Can only be equipped on a Sporecrab
 }
 
 SporeboundRoller: {
@@ -1583,7 +1581,7 @@ Lumberjack: {
 LifeWeaver: {
 	NoValidPositionText: No valid planting spots nearby!
 	NoEnergyText: Insufficient power!
-	DisplayName: Life Weaver
+	DisplayName: Tree Planter
 	Tooltip: Consumes power to plant trees nearby
 }
 
@@ -1593,7 +1591,7 @@ WGGLumberjack: {
 }
 
 WGGLifeWeaver: {
-	DisplayName: Wilderness Life Weaver
+	DisplayName: Wilderness Tree Planter
 	Tooltip: ""
 }
 
@@ -1688,8 +1686,8 @@ Elysium: {
 }
 
 SandevistansItem: {
-	DisplayName: Sandevistans Item
-	Tooltip: Militech Sandevistan Mk.5 — Slows perceived time by 70% for 3.5 seconds. Cooldown 15s.
+	DisplayName: Sandevistan Mk5
+	Tooltip: Slows perceived time by 70% for 5 seconds. Cooldown: 15 seconds.
 }
 
 Sandevistan: {
@@ -1828,8 +1826,8 @@ RamRecoveryUpgradeChip: {
 }
 
 Mewtwo: {
-	DisplayName: Braindance Chip
-	Tooltip: Use to enter a braindance
+	DisplayName: Superdream Chip
+	Tooltip: Use to enter the Superdream
 }
 
 RapidBarrelModule: {
@@ -2014,15 +2012,15 @@ GravityFrameModule: {
 
 LaserBarrelModule: {
 	DisplayName: Prism Laser Barrel
-	Tooltip: Replaces left-click with a continuous prism laser column that tracks the cursor
+	Tooltip: Converts the merged beam into a continuous prism laser column, at the cost of massive mana consumption and limited output power
 }
 
 OscillatorBarrelModule: {
 	DisplayName: Oscillator Laser Barrel
 	Tooltip:
 		'''
-		An embedded pulse capacitor detonates a micro-explosion at the beam tip every 45 frames
-		Direct damage is slightly reduced and mana cost increases, but area bursts cover the continuous-fire gap
+		An embedded pulse capacitor detonates an energy pulse at the beam endpoint every 30 frames
+		Direct damage is slightly reduced, but area bursts and lower mana cost compensate for sustained fire
 		'''
 }
 
@@ -2181,7 +2179,7 @@ SniperOpticModule: {
 		'''
 		Magnetic collimators dramatically increase projectile speed, range, and single-hit damage
 		At the cost of greatly reduced fire rate and near-zero homing
-		Best paired with the Focus Barrel for extreme long-range strikes
+		Best paired with the Hypersonic Barrel for extreme long-range strikes
 		'''
 }
 
@@ -2286,7 +2284,7 @@ OverkillFrameModule: {
 	DisplayName: Overkill Frame
 	Tooltip:
 		'''
-		An overkill-sensing circuit stacks one Overkill charge per kill, up to 10; each stack adds 3% damage
+		An overkill-sensing circuit stacks one Overkill charge per kill, up to 15; each stack adds 2% damage
 		Stacks decay over time — the faster you slay, the stronger you become
 		'''
 }
@@ -2485,7 +2483,7 @@ BulwarkStockModule: {
 	Tooltip:
 		'''
 		Holding the SHPC grants modest damage reduction
-		The reinforced posture slightly slows charge time and bumps mana cost
+		The reinforced posture slightly slows charge time and reduces mana cost
 		'''
 }
 
@@ -2494,7 +2492,7 @@ CombatGripModule: {
 	Tooltip:
 		'''
 		Killing blows with beams or laser stack "Combat" charges (max 5)
-		Each stack grants +6% attack speed and +2% damage; charges decay between fights
+		Each stack grants +4% attack speed and +2% damage; charges decay between fights
 		'''
 }
 

@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     internal sealed class SHPCMagmaVentProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
-        private const int Lifetime = 150;
+        private const int Lifetime = 120;
         private const int PulseInterval = 30;
 
         public override void SetDefaults() {
@@ -68,6 +68,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool ShouldUpdatePosition() => false;
 
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.72f;
+            }
+        }
+
+        public override bool? CanHitNPC(NPC target) {
+            Projectile.damage = ((int)(Projectile.damage * 0.96f));
+            return null;
+        }
+
         public override void AI() {
             if (Projectile.localAI[0] > 0f) {
                 Projectile.localAI[0]--;
@@ -84,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (nearLava && Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 6 == 0) {
                 PRTLoader.NewParticle<PRT_LavaFire>(
                     Projectile.Center + new Vector2(Main.rand.NextFloat(-22f, 22f), Main.rand.NextFloat(-4f, 6f)),
-                    new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-3.2f, -1.2f)),
+                    new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-3.6f, -0.8f)),
                     Color.White, Main.rand.NextFloat(0.6f, 1.0f))?.SetLifetime(28, 50);
             }
             float pulse = Projectile.localAI[0] / 9f;
