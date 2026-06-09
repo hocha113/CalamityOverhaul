@@ -865,4 +865,21 @@ CWRPlayer: {
 		'''
 	HellfireExplosionDeathReason: "{0} foi reduzido a cinzas nas chamas do Submundo"
 	SoulfireExplosionDeathReason: A alma de {0} ascendeu em chamas
+
+	CWRPlayer: {
+		Error_HookFailure:
+			'''
+			Um hook falhou. Feche o jogo e entre novamente para restaurar o funcionamento normal.
+			Se o problema persistir, exporte o log e entre em contato com o desenvolvedor do mod.
+			'''
+		OnEnterWorld_ImproveGameWarning:
+			'''
+			Foi detectado que você instalou o [Quality of Terraria Mod],
+			mas sua versão do [Quality of Terraria Mod] está desatualizada.
+			Para garantir que o jogo funcione corretamente, certifique-se de que sua
+			versão do [Quality of Terraria Mod] seja pelo menos 1.7.1.7.
+			'''
+		HellfireExplosionDeathReason: "{0} foi reduzido a cinzas nas chamas do Submundo"
+		SoulfireExplosionDeathReason: A alma de {0} ascendeu em chamas
+	}
 }

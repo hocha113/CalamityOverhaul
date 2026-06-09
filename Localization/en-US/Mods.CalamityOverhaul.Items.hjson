@@ -1203,10 +1203,7 @@ ItemFilter: {
 
 SporeBubbleBlaster: {
 	DisplayName: Spore Bubble Blaster
-	Tooltip:
-		'''
-		Sprays a stream of spore airflow
-		'''
+	Tooltip: Sprays a stream of spore airflow
 }
 
 TomeofFungalDecay: {

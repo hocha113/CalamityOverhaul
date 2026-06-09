@@ -16,7 +16,7 @@ LegendUpgradeConfirmUI: {
 	Success: "[ITEM] ha sido mejorado al nivel [LEVEL]"
 	QueueIndicator: Quedan {0} armas legendarias por confirmar
 	TrustText: Confiar en este mundo
-	TrustSuccess: "Se ha marcado este mundo como de confianza para [ITEM]; se sincronizará automáticamente a partir de ahora"
+	TrustSuccess: Se ha marcado este mundo como de confianza para [ITEM]; se sincronizará automáticamente a partir de ahora
 }
 
 QuestTracker: {

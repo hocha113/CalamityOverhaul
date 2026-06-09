@@ -83,12 +83,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (Projectile.localAI[0] > 0f) {
                 Projectile.localAI[0]--;
             }
+            if (!VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 220)) {
+                return;
+            }
             int age = Lifetime - Projectile.timeLeft;
             Tile tile = Framing.GetTileSafely(Projectile.Center.ToTileCoordinates());
             bool nearLava = Projectile.Center.Y / 16f > Main.UnderworldLayer
                 || (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Lava);
             int interval = nearLava ? 20 : PulseInterval;
-            if (age % interval == 0 && age > 0) {
+            if (Main.rand.NextBool(interval) && age > 0) {
                 EruptionPulse(nearLava);
             }
             //岩浆环境下持续吐烟与火星，强化"喷口活着"的视觉
@@ -132,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (nearLava) {
                 SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.4f, Pitch = -0.4f }, Projectile.Center);
             }
-            SHPCNaturalFx.Shake(3.5f);
+            //SHPCNaturalFx.Shake(3.5f);
         }
 
         public override bool? CanDamage() => Projectile.localAI[0] > 0f;
