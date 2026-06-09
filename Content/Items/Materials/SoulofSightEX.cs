@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 CreateRecipe().
                     AddIngredient(ItemID.SoulofSight, 5).
                     AddIngredient(CWRID.Item_AscendantSpiritEssence).
+                    AddTile(TileID.LunarCraftingStation).
                     Register();
             }
         }
