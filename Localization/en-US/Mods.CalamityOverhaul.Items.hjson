@@ -336,9 +336,10 @@ ElementMuzzleBrake: {
 	DisplayName: Element Muzzle Brake
 	Tooltip:
 		'''
-		Reduces recoil and chamber pressure by 65%
-		Reduces ranged damage by 5%
-		Increases ranged critical hit rate by 15%
+		Increases ranged damage by 12%
+		Increases ranged critical strike chance by 15%
+		Increases ranged firing speed by 12%
+		Enemies have a harder time detecting you
 		'''
 }
 
@@ -370,9 +371,10 @@ PrecisionMuzzleBrake: {
 	DisplayName: Precision Muzzle Brake
 	Tooltip:
 		'''
-		Reduces recoil and chamber pressure by 55%
-		Reduces ranged damage by 10%
-		Increases ranged critical hit rate by 10%
+		Increases ranged damage by 8%
+		Increases ranged critical strike chance by 10%
+		Increases ranged firing speed by 8%
+		Enemies have a harder time detecting you
 		'''
 }
 
@@ -380,9 +382,10 @@ SimpleMuzzleBrake: {
 	DisplayName: Simple Muzzle Brake
 	Tooltip:
 		'''
-		Reduces recoil and chamber pressure by 40%
-		Reduces ranged damage by 15%
-		Increases ranged critical hit rate by 5%
+		Increases ranged damage by 5%
+		Increases ranged critical strike chance by 5%
+		Increases ranged firing speed by 5%
+		Enemies have a harder time detecting you
 		'''
 }
 

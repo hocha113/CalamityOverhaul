@@ -42,10 +42,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public bool SetArmRotBool = true;
         /// <summary>
-        /// 枪械是否受到应力缩放，默认为<see langword="true"/>
-        /// </summary>
-        public bool PressureWhetherIncrease = true;
-        /// <summary>
         /// 是否启用后坐力枪体反向制推效果，默认为<see langword="false"/>
         /// </summary>
         protected bool EnableRecoilRetroEffect;
@@ -155,10 +151,6 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public virtual bool WalkDetection => Owner.velocity.Y == 0 && Math.Abs(Owner.velocity.X) > 0;
         /// <summary>
-        /// 应力缩放系数
-        /// </summary>
-        public float OwnerPressureIncrease => PressureWhetherIncrease ? Owner.CWR().PressureIncrease : 1;
-        /// <summary>
         /// 快速的获取该枪械是否正在进行开火尝试，包括左键或者右键的情况
         /// </summary>
         public override bool CanFire => (DownLeft || DownRight && !onFire && CanRightClick && SafeMousetStart) && SafeMouseInterfaceValue;
@@ -237,7 +229,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// 制造枪压效果，这个函数只应该由弹幕主人调用
         /// </summary>
         public virtual void CreateRecoil() {
-            OffsetRot += GunPressure * OwnerPressureIncrease;
+            OffsetRot += GunPressure;
         }
         /// <summary>
         /// 在枪械的更新周期中的最后被调用，用于复原一些数据

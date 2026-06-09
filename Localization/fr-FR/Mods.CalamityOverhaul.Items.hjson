@@ -336,9 +336,10 @@ ElementMuzzleBrake: {
 	DisplayName: Silencieux Élémentaire
 	Tooltip:
 		'''
-		Réduit de 65% le recul et la pression à la bouche
-		Réduit les dégâts à distance de 5%
-		Augmente le taux de critique à distance de 15%
+		Augmente les dégâts à distance de 12%
+		Augmente les chances de coup critique à distance de 15%
+		Augmente la vitesse d'attaque à distance de 12%
+		Les ennemis ont plus de mal à vous détecter
 		'''
 }
 
@@ -346,7 +347,6 @@ EyeOfSingularity: {
 	DisplayName: Stabilisateur d'État de Neutron Star
 	Tooltip:
 		'''
-		Annule complètement le recul et la pression à la bouche
 		Augmente les dégâts à distance de 100%
 		Augmente le taux de critique à distance de 100%
 		Améliore considérablement la balistique à distance
@@ -357,9 +357,10 @@ PrecisionMuzzleBrake: {
 	DisplayName: Silencieux de Haute Précision
 	Tooltip:
 		'''
-		Réduit de 55% le recul et la pression à la bouche
-		Réduit les dégâts à distance de 10%
-		Augmente le taux de critique à distance de 10%
+		Augmente les dégâts à distance de 8%
+		Augmente les chances de coup critique à distance de 10%
+		Augmente la vitesse d'attaque à distance de 8%
+		Les ennemis ont plus de mal à vous détecter
 		'''
 }
 
@@ -367,9 +368,10 @@ SimpleMuzzleBrake: {
 	DisplayName: Silencieux Simple
 	Tooltip:
 		'''
-		Réduit de 40% le recul et la pression à la bouche
-		Réduit les dégâts à distance de 15%
-		Augmente le taux de critique à distance de 5%
+		Augmente les dégâts à distance de 5%
+		Augmente les chances de coup critique à distance de 5%
+		Augmente la vitesse d'attaque à distance de 5%
+		Les ennemis ont plus de mal à vous détecter
 		'''
 }
 

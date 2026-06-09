@@ -186,7 +186,7 @@ QuestNode: {
 		Description: Derrota al Muro de carne
 		QuestObjective.Description: Derrota al Muro de carne
 		QuestReward.Description: Martillo pwn
-		DetailedDescription: El guardián del mundo; arroja el muñeco vudú del guía a la lava para abrir el modo difícil.
+		DetailedDescription: El guardián del mundo. Arroja el muñeco vudú del guía a la lava para liberar a la antigua deidad de este mundo y abrir el modo difícil.
 	}
 
 	CeaselessVoidQuest: {
@@ -478,11 +478,11 @@ QuestNode: {
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Obtén roca eterna
-		QuestReward.Description: 5 rocas eternas
-		DisplayName: Roca eterna
-		Description: Obtén roca eterna
-		DetailedDescription: Una piedra común que ha visto innumerables ciclos de boss rush; símbolo de perseverancia.
+		QuestObjective.Description: Obtén piedra eternita antigua
+		QuestReward.Description: 5 piedras eternita antiguas
+		DisplayName: Piedra eternita antigua
+		Description: Obtén piedra eternita antigua
+		DetailedDescription: Una piedra aparentemente común que ha visto innumerables ciclos del desafío final; símbolo de perseverancia eterna.
 	}
 
 	TerminusQuest: {
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Completa el boss rush cinco veces y obtén al menos cinco rocas eternas
-		QuestReward.Description: 5 rocas eternas
+		QuestObjective.Description: Completa el boss rush cinco veces y obtén al menos cinco piedras eternita antiguas
+		QuestReward.Description: 5 piedras eternita antiguas
 		DisplayName: Ciclo de conquista
-		Description: Completa el boss rush cinco veces y obtén al menos cinco rocas eternas
+		Description: Completa el boss rush cinco veces y obtén al menos cinco piedras eternita antiguas
 		DetailedDescription: Símbolo del verdadero guerrero
 	}
 

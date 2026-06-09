@@ -15,11 +15,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
-            CWRPlayer modplayer = player.CWR();
-            modplayer.LoadMuzzleBrakeLevel = 3;
-            modplayer.PressureIncrease -= 0.65f;
-            player.GetDamage<RangedDamageClass>() -= 0.05f;
+            player.GetDamage<RangedDamageClass>() += 0.12f;
             player.GetCritChance<RangedDamageClass>() += 15f;
+            player.GetAttackSpeed<RangedDamageClass>() += 0.12f;
             player.aggro -= 600;
         }
 

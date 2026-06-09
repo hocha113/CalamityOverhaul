@@ -56,14 +56,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool HasOverhaulTheBibleBook;
         /// <summary>
-        /// 装备的制动器等级，0则不装备
-        /// </summary>
-        public int LoadMuzzleBrakeLevel;
-        /// <summary>
-        /// 应力缩放
-        /// </summary>
-        public float PressureIncrease;
-        /// <summary>
         /// 摄像头位置额外矫正值
         /// </summary>
         public Vector2 OffsetScreenPos;
@@ -235,8 +227,6 @@ namespace CalamityOverhaul.Content
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
             cwr.HasOverhaulTheBibleBook = HasOverhaulTheBibleBook;
-            cwr.LoadMuzzleBrakeLevel = LoadMuzzleBrakeLevel;
-            cwr.PressureIncrease = PressureIncrease;
             cwr.OffsetScreenPos = OffsetScreenPos;
             cwr.ScreenShakeValue = ScreenShakeValue;
             cwr.ThermalGenerationActiveTime = ThermalGenerationActiveTime;
@@ -296,8 +286,6 @@ namespace CalamityOverhaul.Content
 
         private void Reset() {
             OffsetScreenPos = Vector2.Zero;
-            LoadMuzzleBrakeLevel = 0;
-            PressureIncrease = 1;
             HeldStyle = -1;
             IsUnsunghero = false;
             InFoodStallChair = false;

@@ -196,7 +196,7 @@ DarkMatterBall: {
 }
 
 NeutronStarIngot: {
-	DisplayName: Bastón de Neutrones de Materia Superdensa
+	DisplayName: Lingote de estrella de neutrones
 	Tooltip: El peso de todo, concentrado en la yema de los dedos.
 }
 
@@ -210,7 +210,7 @@ DawnshatterAzure: {
 	Tooltip:
 		'''
 		Lanza sombras de la corona solar, invocando llamas explosivas al golpear a los enemigos.
-		Mantén presionado el clic derecho para cargar la pistola.
+		Mantén clic derecho para embestir con el arma alzada.
 		El fuego purifica el alma, despojando a tus enemigos por completo.
 		'''
 }
@@ -251,9 +251,9 @@ InfiniteToiletItem: {
 	OnlyZenithCondition: Solo en el mundo Zenith
 
 	InfiniteToiletItem: {
-		// OnlyZenithCondition: Only in Zenith World
-		// DisplayName: Infinite Toilet Item
-		// Tooltip: ""
+		OnlyZenithCondition: Solo en el mundo Zenith
+		DisplayName: Retrete infinito
+		Tooltip: ""
 	}
 }
 
@@ -262,35 +262,28 @@ StormGoddessSpear: {
 	Tooltip:
 		'''
 		Lanza un beso de tormenta con arcos eléctricos destructivos.
+		Al empuñarla, invoca el alma remanente de la Diosa de la Tormenta para ayudarte en combate.
 		[legend]
 		'''
 	Legend:
 		'''
-		En la oscura dimensión de Terraria, la antigua diosa guerrera Elina ha caído en un caos y desesperación infinitos, 
-		convirtiéndose en la diosa de la tormenta que todos susurran.
-		Una vez fue una guerrera invencible en el continente, su valentía y agudeza eran como rayos que dominaban un cielo sereno.
-		Sin embargo, la sombra del destino se extendió bajo sus pies. 
-		En la última batalla entre la luz y la oscuridad, el cielo se desplomó y la oscuridad devoró la luz.
-		La diosa de la tormenta sufrió las atrocidades de los dioses supremos. 
-		La arrogante deidad le arrebató a sus compañeros y seres queridos, destruyendo todo lo que había protegido.
-		Los pecados del dios supremo hicieron que dudara de la justicia que había venerado, llevándola a un abismo de caída implacable.
-		A medida que las cenizas de la guerra se dispersaban, Elina regresó a Terraria, pero ya no era la guerrera valiente de antes.
-		El dolor en su interior y la desesperación infinita la llevaron a abandonar su fe elevada, buscando una nueva fuente de poder.
-		En un ritual sangriento, obtuvo la bendición prohibida que tanto deseaba. Una infinita fuerza surgió, pero a costa de la caída eterna de su alma.
-		Ahora, la diosa de la tormenta se ha convertido en un símbolo de la oscuridad en Terraria, 
-		su armadura incrustada con obsidiana tan oscura como el cielo nocturno, 
-		y sus ojos destilan un brillo de caída, agitando caos y odio hacia el continente.
-		Su hoja brilla como el trueno en la noche, con arcos eléctricos de destrucción danzando a su alrededor. Ya no lucha por la justicia, 
-		sino que se ha convertido en una fuerza oscura que destruye todo a su paso.
-		A pesar de que todavía posee las habilidades y técnicas de combate de antaño, 
-		en este momento se ha convertido en el enemigo público de Terraria, sufriendo el desprecio infinito de todos.
-		La diosa de la tormenta ha emprendido un camino solitario y caído, vagando en la oscuridad. 
-		Su propia existencia es una burla a la gloria pasada de Terraria, convirtiéndose en una tormenta que devora toda esperanza.
+		Alina, la hoja más afilada que Terra haya conocido.
+		Su fe era inquebrantable, su combate implacable. Polvo de hierro en la lanza de plata, cabello al viento. La espada del trueno aullaba al pasar.
+		Sin embargo, incluso la hoja más afilada se quiebra y se desmorona; la fe solo encontró la indiferencia de los dioses.
+		Cuando el Supremo dictó sentencia, sus compañeros, su linaje, sus juramentos y su gloria se convirtieron en cenizas.
+		Con sus propios ojos vio cómo la llamada justicia pisoteaba todo... sangre y lágrimas... polvo... cómo en nombre del orden se ejecutaba la destrucción más vil.
+		Dioses... Alina ya no mira a los dioses.
+		Retrocedió al abismo, se destruyó a sí misma y dejó que un poder antiguo y prohibido devorara su alma.
+		La armadura de Alina se fundió en un cuerpo de hierro de las profundidades.
+		Nubes antiguas, sol ensangrentado y el pasado se entrelazaron; la mirada de sus compañeros... y de su linaje al morir... Alina... todo había terminado.
+		Ya no era la Alina de antaño, la diosa de la guerra que protegía Terra.
+		Su furia regresó como una tempestad, arrastrando a los insectos del campo de batalla; su trueno partió cielo y nubes, hendió tronos y tierra.
+		La diosa de la tormenta Alina trajo sin piedad destrucción y venganza.
 		'''
 }
 
 DragonsScaleGreatsword: {
-	DisplayName: Espada Grande de Escamas de Dragón
+	DisplayName: Gran hoja de alga dracónica
 	Tooltip:
 		'''
 		Genera un ataque en espiral de energía de algas verdes, que al impactar al objetivo explota en varias nubes de algas tóxicas.
@@ -347,20 +340,34 @@ ElementMuzzleBrake: {
 	DisplayName: Frenos de Boca Elementales
 	Tooltip:
 		'''
-		Reduce el retroceso y la presión del cañón en un 65%
-		Reduce el daño a distancia en un 5%
-		Aumenta la tasa de crítico a distancia en un 15%
+		Aumenta el daño a distancia en un 12%
+		Aumenta la probabilidad de crítico a distancia en un 15%
+		Aumenta la velocidad de ataque a distancia en un 12%
+		A los enemigos les costará más detectarte
 		'''
 }
 
 EyeOfSingularity: {
-	DisplayName: Freno de Boca de Estado Neutro
+	DisplayName: Horizonte de singularidad
 	Tooltip:
 		'''
-		Compensa completamente el retroceso y la presión del cañón
 		Aumenta el daño a distancia en un 100%
 		Aumenta la tasa de crítico a distancia en un 100%
-		Gran aumento en los proyectiles a distancia
+		Aumenta la cadencia de disparo a distancia en un 100% y ya no consume munición
+		Eleva el multiplicador de daño crítico de todas las armas a distancia al 500%
+		Tus proyectiles a distancia rasgan el espacio y, al impactar, crean microagujeros negros que atraen y despedazan a los enemigos cercanos
+		Al permanecer inmóvil, entras en estado de horizonte de sucesos:
+		  Te vuelves invisible e inmune a todo daño de contacto
+		  Al disparar, liberas ráfagas de rayos gamma adicionales que persiguen enemigos
+		Obtienes Salto cuántico: pulsa [KEY] para teletransportarte al cursor y eliminar proyectiles enemigos en el trayecto
+		Clic derecho para activar el Protocolo de colapso:
+		  Consume todo tu maná; durante los siguientes 10 segundos, todos tus ataques a distancia ignoran los frames de invulnerabilidad y fuerzan golpes críticos
+		  Enfriamiento: 60 segundos
+		Si recibes un golpe mortal, te conviertes en una supernova, infliges enorme daño en área y te reconstruyes en una posición segura tras 3 segundos
+		Este efecto tiene 60 segundos de enfriamiento
+		[c/33ff33:"El dios dragón dormido se conecta a tus nervios y deconstruye la lógica basal de las almas mecánicas"]
+		[c/ffaa00:"La constelación codiciosa devora el fuego de tus armas y absorbe el último calor de las estrellas moribundas"]
+		[c/00ffff:"El dios invisible de la muerte se vuelve tu sombra y siega el destino inevitable que iguala a todos los seres"]
 		'''
 }
 
@@ -368,9 +375,10 @@ PrecisionMuzzleBrake: {
 	DisplayName: Freno de Boca de Alta Precisión
 	Tooltip:
 		'''
-		Reduce el retroceso y la presión del cañón en un 55%
-		Reduce el daño a distancia en un 10%
-		Aumenta la tasa de crítico a distancia en un 10%
+		Aumenta el daño a distancia en un 8%
+		Aumenta la probabilidad de crítico a distancia en un 10%
+		Aumenta la velocidad de ataque a distancia en un 8%
+		A los enemigos les costará más detectarte
 		'''
 }
 
@@ -378,9 +386,10 @@ SimpleMuzzleBrake: {
 	DisplayName: Freno de Boca Simple
 	Tooltip:
 		'''
-		Reduce el retroceso y la presión del cañón en un 40%
-		Reduce el daño a distancia en un 15%
-		Aumenta la tasa de crítico a distancia en un 5%
+		Aumenta el daño a distancia en un 5%
+		Aumenta la probabilidad de crítico a distancia en un 5%
+		Aumenta la velocidad de ataque a distancia en un 5%
+		A los enemigos les costará más detectarte
 		'''
 }
 
@@ -391,6 +400,7 @@ AmmoBoxFire: {
 		Mantén presionado para desplegar, después de desplegar, mantén la munición en la caja, haz clic derecho en la caja de munición para cargar municiones especiales en el cargador del arma
 		Las municiones especiales se pueden combinar con el efecto de las balas originales
 		Hace que las balas sean extremadamente inflamables, causando explosiones al impactar
+		"Esto no es COD"
 		'''
 }
 
@@ -423,7 +433,7 @@ DragonBreathBox: {
 		Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
 		La munición especial puede combinarse con el efecto de las balas originales.
 		Una combinación de magia y tecnología; las balas explotan al impactar, causando un chorro metálico que daña a muchos enemigos.
-		"¿Crees que es la saliva de ese dragón?"
+		"Es la saliva de ese dragón, si quieres creerlo."
 		'''
 }
 
@@ -444,7 +454,7 @@ AvalancheM60: {
 		Usa bolas de nieve como munición.
 		Dispara una gran cantidad de bolas de nieve; el poder aumenta a medida que disminuye la munición.
 		Cada 20 disparos, entra en un estallido de sobrecarga, causando una pequeña avalancha.
-		"¡Rápido, vamos a una guerra de bolas de nieve!"
+		"Denji, vamos a jugar una guerra de bolas de nieve."
 		'''
 }
 
@@ -538,7 +548,7 @@ FadingGlory: {
 }
 
 NeutronScythe: {
-	DisplayName: Mensajero Planetario
+	DisplayName: Heraldo del agujero negro
 	Tooltip:
 		'''
 		Una guadaña de neutrones que gira a gran velocidad, lanza rayos gamma a los enemigos cercanos y deja puntos de detonación por distorsión a lo largo de su trayectoria
@@ -592,7 +602,7 @@ HghExplosiveBox: {
 		Mantén presionado para desplegar, después de desplegar, 
 		sostén el arma y haz clic derecho en la caja de munición para cargar munición especial en el cargador del arma
 		La munición especial puede combinarse con los efectos de las balas originales
-		La cabeza contendrá explosivos de alto poder, causando una pequeña explosión al impactar en el objetivo
+		La ojiva contendrá explosivos de alto poder, causando una pequeña explosión al impactar en el objetivo
 		"¡Hazlos volar!"
 		'''
 }
@@ -2529,7 +2539,7 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Temperatura de combustión
 	InternalStoredEnergy: Energía almacenada
-	DeathModeItemText: Objeto de modo muerte
+	DeathModeItemText: Objeto de Modo Muerte
 	LegendItemUpgradeDisable:
 		'''
 		Esta arma legendaria ha sido configurada para no poder mejorarse en el mundo actual.
@@ -2538,15 +2548,15 @@ CWRItem: {
 	ItemLegendOnMouseLang: Pulsa [Shift] para escuchar la historia...
 
 	CWRItem: {
-		// TemperatureText: Combustion Temperature
-		// InternalStoredEnergy: Stored Energy
-		// DeathModeItemText: Death Mode
-		/* LegendItemUpgradeDisable:
+		TemperatureText: Temperatura de combustión
+		InternalStoredEnergy: Energía almacenada
+		DeathModeItemText: Modo Muerte
+		LegendItemUpgradeDisable:
 			'''
-			This legendary weapon cannot be upgraded in the current world.
-			Re-enter the world to lift this restriction.
-			''' */
-		// ItemLegendOnMouseLang: Press 'Shift' to hear its story...
+			Esta arma legendaria ha sido configurada para no poder mejorarse en el mundo actual.
+			Para levantar esta restricción, vuelve a entrar al mundo.
+			'''
+		ItemLegendOnMouseLang: Pulsa [Shift] para escuchar la historia...
 	}
 }
 
@@ -2554,9 +2564,9 @@ RMagicConch: {
 	DontUseMagicConch: Una criatura poderosa te está observando...
 
 	RMagicConch: {
-		// DontUseMagicConch: You're being watched by a powerful creature...
-		// DisplayName: Magic Conch
-		// Tooltip: Listen closely and you'll hear the ocean
+		DontUseMagicConch: Una criatura poderosa te está observando...
+		DisplayName: Caracola mágica
+		Tooltip: Escucha con atención y oirás el océano
 	}
 }
 

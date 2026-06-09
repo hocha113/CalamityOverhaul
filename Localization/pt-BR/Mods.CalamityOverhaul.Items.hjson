@@ -351,9 +351,9 @@ ElementMuzzleBrake: {
 	DisplayName: Estabilizador Elemental
 	Tooltip:
 		'''
-		Reduz o recuo e a pressao da camara em 65%
-		Reduz o dano de longo alcance em 5%
-		Aumenta a taxa de acerto critico de longo alcance em 15%
+		Aumenta o dano de longo alcance em 12%
+		Aumenta a chance de acerto critico de longo alcance em 15%
+		Aumenta a velocidade de ataque de longo alcance em 12%
 		Os inimigos terao mais dificuldade em detectar voce
 		'''
 }
@@ -386,9 +386,9 @@ PrecisionMuzzleBrake: {
 	DisplayName: Estabilizador de Alta Precisao
 	Tooltip:
 		'''
-		Reduz o recuo e a pressao da camara em 55%
-		Reduz o dano de longo alcance em 10%
-		Aumenta a taxa de acerto critico de longo alcance em 10%
+		Aumenta o dano de longo alcance em 8%
+		Aumenta a chance de acerto critico de longo alcance em 10%
+		Aumenta a velocidade de ataque de longo alcance em 8%
 		Os inimigos terao mais dificuldade em detectar voce
 		'''
 }
@@ -397,9 +397,9 @@ SimpleMuzzleBrake: {
 	DisplayName: Estabilizador Simples
 	Tooltip:
 		'''
-		Reduz o recuo e a pressao da camara em 40%
-		Reduz o dano de longo alcance em 15%
-		Aumenta a taxa de acerto critico de longo alcance em 5%
+		Aumenta o dano de longo alcance em 5%
+		Aumenta a chance de acerto critico de longo alcance em 5%
+		Aumenta a velocidade de ataque de longo alcance em 5%
 		Os inimigos terao mais dificuldade em detectar voce
 		'''
 }

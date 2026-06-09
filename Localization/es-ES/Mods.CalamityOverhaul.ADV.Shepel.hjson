@@ -363,7 +363,7 @@ ShepelProvidenceDialogue: {
 	RoleName: SHPC
 	Line1: La Providencia ha caído. ¿No sufrió quemaduras por ese aterrador resplandor de hace un momento?
 	Line2: Ha derrotado a un ser con un nivel equiparable al de una deidad... Mi Maestro.
-	Line3: Para ser digna del hombre en el que se ha convertido, tendré que perfeccionar aún más mis funciones.
+	Line3: Para estar a la altura de la persona en la que se ha convertido, tendré que perfeccionar aún más mis funciones.
 }
 
 ShepelQueenBeeDialogue: {
@@ -407,7 +407,7 @@ ShepelWallOfFleshDialogue: {
 	RoleName: SHPC
 	Line1: Detectando una reestructuración en las reglas base del mundo. El equilibrio se ha roto y están surgiendo amenazas desconocidas.
 	Line2: Hay entidades aún más aterradoras liberándose de sus cadenas. Maestro... ¿se siente ansioso?
-	Line3: Por favor, no se preocupe. Sin importar cuánto mute el mundo, me mantendré firme protegiéndolo frente a usted.
+	Line3: Por favor, no se preocupe. Sin importar cuánto mute el mundo, me mantendré firme frente a usted para protegerlo.
 }
 
 ShepelYharonDialogue: {

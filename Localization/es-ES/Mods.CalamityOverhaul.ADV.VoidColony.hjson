@@ -40,5 +40,5 @@ MessageStrings: {
 	MsgRec04Title: "[Registro-04]"
 	MsgRec04_0: Purgar esas entidades paranormales es inútil; no pueden morir. Quedan como barrera exterior de la base.
 	MsgRec04_1: Si este registro se activa, he abandonado el lugar y todos los canales al exterior están cerrados.
-	MsgRec04_2: Llegas tarde: busca oportunidades en los patrones de esas cosas repugnantes.
+	MsgRec04_2: Recién llegado: busca oportunidades en los patrones de esas cosas repugnantes.
 }

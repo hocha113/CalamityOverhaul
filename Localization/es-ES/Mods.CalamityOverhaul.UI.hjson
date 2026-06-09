@@ -16,7 +16,7 @@ LegendUpgradeConfirmUI: {
 	Success: "[ITEM] ha sido mejorado al nivel [LEVEL]"
 	QueueIndicator: Quedan {0} armas legendarias por confirmar
 	TrustText: Confiar en este mundo
-	TrustSuccess: "[ITEM] ha confiado en este mundo y se sincronizará automáticamente a partir de ahora"
+	TrustSuccess: "Se ha marcado este mundo como de confianza para [ITEM]; se sincronizará automáticamente a partir de ahora"
 }
 
 QuestTracker: {
@@ -415,17 +415,17 @@ QuestManagerUI: {
 	CategoryAll: Todas
 	CategoryActive: En curso
 	CategoryCompleted: Completadas
-	CategorySuspended: Archivadas
+	CategorySuspended: Suspendidas
 	EmptyHintText: No hay misiones disponibles...
 	TrackHintText: "[Clic derecho] Seguir/Dejar de seguir"
-	SuspendHintText: "[Clic central] Archivar/Reanudar"
+	SuspendHintText: "[Clic central] Suspender/Reanudar"
 	OpenHintText: Pulsa [L] para abrir la gestión de misiones
 	HeaderStatusTag: ◈ EN CURSO
 	FooterStatsFormat: TOTAL: {0} | EN CURSO: {1}
 	ExpandHintText: "[Clic izquierdo] Expandir/Contraer detalles"
 	EntryStatusActive: En curso
 	EntryStatusTracked: Seguida
-	EntryStatusSuspended: Archivada
+	EntryStatusSuspended: Suspendida
 	EntryStatusCompleted: Completada
 	EntryStatusFailed: Fallida
 }
@@ -458,7 +458,7 @@ EntrustManagerNotification: {
 	LabelNewQuest: Nuevo encargo
 	LabelTracked: Seguido
 	LabelUntracked: Sin seguimiento
-	LabelSuspended: Archivado
+	LabelSuspended: Suspendido
 	LabelUnsuspended: Reanudado
 	LabelCompleted: Encargo completado
 }
@@ -547,7 +547,7 @@ HackTime: {
 	ProjectileScanHostile: PROYECTIL HOSTIL
 	ProjectileScanFriendly: PROYECTIL ALIADO
 	ProjectileScanNeutral: PROYECTIL NEUTRAL
-	ProjectileScanMinion: PROYECTIL DE SÚBITO
+	ProjectileScanMinion: PROYECTIL DE SÚBDITO
 	ProjectileScanSentry: PROYECTIL DE CENTINELA
 	ProjectileScanTrap: PROYECTIL DE TRAMPA
 	ProjectileScanInfinite: INFINITO
@@ -693,8 +693,8 @@ SHPCUI: {
 	Config_Title: Ajustes del sistema
 	Config_Subtitle: CONFIG
 	Config_Description: Ajustar opciones de asistencia y parámetros de visualización
-	State_On: Sí
-	State_Off: No
+	State_On: Activado
+	State_Off: Desactivado
 	State_Layer: C
 	Cyber_PanelTitle: Dominio cibernético
 	Cyber_PanelSubtitle: BLACKWALL ACCESS
@@ -762,7 +762,7 @@ EntrustManagerLead: {
 	TextRightClickAction: " →  Seguir encargo"
 	TextRightClickDesc: "     El rastreador izquierdo mostrará el progreso de forma continua"
 	TextMiddleClickLabel: Clic central en un encargo
-	TextMiddleClickAction: " →  Archivar encargo"
+	TextMiddleClickAction: " →  Suspender encargo"
 	TextMiddleClickDesc: "     Oculta el encargo temporalmente del rastreador"
 	TextStyleButtonTitle: Botón de estilo
 	TextStyleButtonLabel: Clic izquierdo en el botón superior
@@ -779,11 +779,11 @@ EntrustManagerLead: {
 	TextTrackerIntroLine2: Mantén clic izquierdo para arrastrar y ajustar la posición vertical
 	TextTrackerIntroLine3: Al abrir el gestor de encargos, el rastreador se repliega automáticamente
 	TextTrackerIntroNextBtn: Siguiente
-	TextSuspendIntroTitle: Archivar encargos que no te interesan
+	TextSuspendIntroTitle: Suspender encargos que no te interesan
 	TextSuspendIntroHintLabel: Clic central en un encargo
-	TextSuspendIntroHintAction: " →  Archivar encargo"
-	TextSuspendIntroDesc1: "     Los encargos archivados no aparecen en el rastreador izquierdo"
-	TextSuspendIntroDesc2: "     Encuéntralos en la pestaña Archivados para reanudar el seguimiento"
+	TextSuspendIntroHintAction: " →  Suspender encargo"
+	TextSuspendIntroDesc1: "     Los encargos suspendidos no aparecen en el rastreador izquierdo"
+	TextSuspendIntroDesc2: "     Encuéntralos en la pestaña Suspendidas para reanudar el seguimiento"
 }
 
 CyberwareSkillRadialUI: {
@@ -812,7 +812,7 @@ AbandonedPortalStrings: {
 	StatusRepairing: ESTADO  ▌ CALIBRANDO
 	StatusRepaired: ESTADO  ▌ EN LÍNEA
 	DiagnosticHeader: "[DIAG]"
-	DiagnosticBroken: ERR-0xC4: Anillo de posicionamiento fracturado / Bucle de energía principal desconectado
+	DiagnosticBroken: ERR-0xC4: Anillo de posicionamiento fracturado / Circuito principal de energía desconectado
 	DiagnosticRepairing: INFO: Matriz de soldadura nano sincronizando... No muevas la base del portal
 	DiagnosticRepaired: OK: Todos los subsistemas en línea / Análisis de coordenadas listo
 }
@@ -820,21 +820,21 @@ AbandonedPortalStrings: {
 SupertableUI: {
 	RecipeViewLabel: Ver recetas
 	RecipeEmptyLabel: Ninguno
-	PlacementMonitorOff: Cerrar la supervisión de colocación
-	PlacementMonitorOn: Abrir la supervisión de colocación
+	PlacementMonitorOff: Desactivar monitor de colocación
+	PlacementMonitorOn: Activar monitor de colocación
 	QuickPlaceMaterials: Colocar materiales rápidamente
 	QuickTakeMaterials: Recoger materiales rápidamente
 }
 
 ArrowHolderUI: {
-	MarkArrowHint: Clic izquierdo en la flecha marcada
+	MarkArrowHint: Clic izquierdo para marcar la flecha
 	UnmarkArrowHint: Clic derecho para quitar marca
 }
 
 BulletinBoardUI: {
 	MenuHoverLabel: Ir al repositorio de código abierto del mod :)
 	WikiLabel: Mod Wiki
-	FeedbackLabel: Retroalimentación de problemas
+	FeedbackLabel: Informar de un problema
 	LogLabel: Ver registro
 	AcknowledgmentLabel: Lista de agradecimientos
 }
@@ -862,17 +862,17 @@ CWRPlayer: {
 	SoulfireExplosionDeathReason: "{0} ascendió en llamas"
 
 	CWRPlayer: {
-		/* Error_HookFailure:
+		Error_HookFailure:
 			'''
-			A hook has failed. Close the game and re-enter to restore normal play.
-			If the issue persists, export your log and contact the mod developer.
-			''' */
-		/* OnEnterWorld_ImproveGameWarning:
+			Un gancho ha fallado. Para que el juego funcione con normalidad, cierra el juego y vuelve a entrar.
+			Si eso no resuelve el problema, lleva el registro exportado a un desarrollador del mod.
 			'''
-			[Quality of Terraria] is installed, but your version is out of date.
-			For stable gameplay, update [Quality of Terraria] to at least 1.7.1.7.
-			''' */
-		// HellfireExplosionDeathReason: "{0} was reduced to ash in the fires of the Underworld"
-		// SoulfireExplosionDeathReason: "{0}'s soul ascended in flame"
+		OnEnterWorld_ImproveGameWarning:
+			'''
+			[Quality of Terraria] está instalado, pero tu versión está desactualizada.
+			Para un juego estable, actualiza [Quality of Terraria] al menos a la versión 1.7.1.7.
+			'''
+		HellfireExplosionDeathReason: "{0} se redujo a cenizas en el fuego del Inframundo"
+		SoulfireExplosionDeathReason: "{0} ascendió en llamas"
 	}
 }

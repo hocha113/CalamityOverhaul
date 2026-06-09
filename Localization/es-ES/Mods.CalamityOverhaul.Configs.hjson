@@ -2,7 +2,7 @@ CWRServerConfig: {
 	DisplayName: Configuración de contenido
 
 	WeaponOverhaul: {
-		Label: Reforma de armas
+		Label: Overhaul de armas
 		Tooltip:
 			'''
 			Al activarlo, se modificarán la mayoría de las armas.
@@ -30,10 +30,10 @@ CWRServerConfig: {
 	}
 
 	Headers: {
-		CWRSystem: Ajustes del sistema de reforma
-		CWRWeapon: Ajustes de armas de reforma
-		CWRUI: Ajustes de interfaz de reforma
-		CWRWorldGen: Ajustes de estructuras de reforma
+		CWRSystem: Ajustes del sistema Overhaul
+		CWRWeapon: Ajustes de armas Overhaul
+		CWRUI: Ajustes de interfaz Overhaul
+		CWRWorldGen: Ajustes de estructuras Overhaul
 	}
 
 	LensEasing: {
@@ -46,7 +46,7 @@ CWRServerConfig: {
 		Tooltip:
 			'''
 			[c/c20909:Incompleto]
-			Activado por defecto, modifica la IA de algunas criaturas, como la de los jefes del módulo de muerte.
+			Activado por defecto, modifica la IA de algunas criaturas, como la de los jefes en Modo Muerte.
 			Esto puede aumentar drásticamente la dificultad del juego; se puede elegir desactivarlo según las preferencias personales.
 			'''
 	}

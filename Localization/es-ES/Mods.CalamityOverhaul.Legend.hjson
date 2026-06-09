@@ -177,7 +177,7 @@ HalibutText: {
 }
 
 MurasamaOverride: {
-	World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
+	World_Text0: Mundo mejorado anteriormente: <{0}> | Nivel registrado: <{1}>
 	Text0: Desbloqueado
 	Text1: No desbloqueada. Debes superar la prueba [Unhook]
 	Text_Lang_0: Prueba:
@@ -352,7 +352,7 @@ MurasamaTrialQuestLine: {
 	TrialSummary_8: El marginado del Mar de Azufre bloquea nuestra búsqueda de los tesoros del abismo. Acaba con su voracidad y su deambular.
 	TrialSummary_9: El fuego hereje del Emisario de Azufre en las profundidades de la lava es una afrenta. Apágalo.
 	TrialSummary_10: En el frío del norte yace una creación de hielo y nieve sellada.\nDestrúyela antes de que se desate por completo.
-	TrialSummary_11: Un gusano de acero gigante bloquea nuestra cruzada. Corta en pedazos.
+	TrialSummary_11: Un gusano de acero gigante bloquea nuestra cruzada. Córtalo en pedazos.
 	TrialSummary_12: Esos ojos mecánicos nos miran desde arriba — traspásalos con tu hoja.
 	TrialSummary_13: ¿El señor esqueleto creyó que la armadura de acero nos detendría? Destroza ese cráneo metálico.
 	TrialSummary_14: Esa bruja que se entregó al caos tiene una hermana clon deforme. Mata a esa xeno y ofrece su sangre y fuego a la hoja.
@@ -424,7 +424,7 @@ SHPCTrialQuestLine: {
 	TrialSummary_0:
 		'''
 		Maestro, el primer objetivo es ese ojo gigante flotante.
-		Por favor, derrota. Necesito datos completos de sus mecanismos antigravitatorios.
+		Por favor, derrótelo. Necesito datos completos de sus mecanismos antigravitatorios.
 		'''
 	TrialSummary_1:
 		'''
@@ -469,7 +469,7 @@ SHPCTrialQuestLine: {
 	TrialSummary_9:
 		'''
 		El último objetivo mecánico lleva el cráneo de un antiguo rey.
-		Maestro, destroza. Cuando este protocolo de invasión mecánica quede cerrado, haré el análisis final.
+		Maestro, destrúyalo. Cuando este protocolo de invasión mecánica quede cerrado, haré el análisis final.
 		'''
 	TrialSummary_10:
 		'''

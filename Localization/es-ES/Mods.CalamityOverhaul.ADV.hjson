@@ -240,7 +240,7 @@ FirstMetSupCal: {
 	Line5: ¿Eh?! Je... que alguien, o algún pez, me reconozca; sois curiosos.
 	Line6: ...¿Por qué sigues viva? Recuerdo que la Bruja del Azufre murió el siglo pasado.
 	Line7: Qué pez tan curioso. Mi conciencia se fundió con el fuego de azufre hace tiempo; este cuerpo es solo un cadáver movido por las llamas.
-	Line8: ...¿Mente viva en cuerpo inhumano, caminando por un medio? ¡Te has convertido en una aberración!
+	Line8: ...¿Una conciencia viva en un cuerpo inhumano, caminando por el mundo mediante un receptáculo? ¡Te has convertido en una aberración!
 	Line9: Tu nivel es demasiado bajo para entender mi estado actual.
 	Line10: Además, no vine por eso...
 	QuestionLine: Entonces, ¿cuál es tu elección?
@@ -283,7 +283,7 @@ SupCalDefeat: {
 	Line5: Tu nivel es demasiado bajo; nunca entenderás mi estado.
 	Line6: ...¿Mi nivel es demasiado bajo?
 	Line7: (Tras tantos años, es la primera vez que me dicen que mi nivel es bajo.)
-	Line8: Soy el único que engendró una era; al abandonar la identidad terrariana y proclamarme diosa, soy omnipotente.
+	Line8: Soy la única existencia engendrada por una era; al abandonar la identidad terrariana y proclamarme diosa, soy omnipotente.
 	Line9: ¿Dices que Yharim puede pesarme? Habría que traer a Xylos.
 	Line10: ......
 }
@@ -330,7 +330,7 @@ SupCalQuestReward: {
 	Line3: Me has quitado un problema de encima.
 	Line4: Como recompensa, esto es tuyo.
 	Line5: Y esta hoja; llévala y acaba con ese gusano; la paga será aún mejor.
-	Line6: Le he impregnado parte de mi presencia de azufre; te facilitará el trabajo.
+	Line6: He imbuido en ella una parte de mi manifestación sobrenatural de fuego sulfuroso; te facilitará el trabajo.
 	Line7: ......
 }
 
@@ -403,7 +403,7 @@ SupCalYharonQuestReward: {
 
 YharonQuestUI: {
 	QuestTitle: Encargo: el dragón incinerador
-	QuestDesc: Usa la Máscara oni para matar al dragón incinerador
+	QuestDesc: Derrota al dragón incinerador usando el Machete oni
 	AcceptText: Aceptar
 	DeclineText: Rechazar
 }
@@ -444,7 +444,7 @@ HelensInterference: {
 	Branch_Inquiry: {
 		Line1: Cada vez estoy más inquieto.
 		Line2: Esa hoja... al tocarla creí oír... risas.
-		Line3: Todo parece algún tipo de «objeto medio».
+		Line3: Todo parece... algún tipo de artefacto canalizador.
 		Line4: No puedo dejarte seguir con eso, al menos...
 	}
 
@@ -701,17 +701,17 @@ SupCalDisplayText: {
 		La madera de la ballesta viene de un ataúd negro enterrado cien años; huele a tierra y no se va.
 		Allí abajo servía para contener un horror que ni yo dominaba.
 		Contra eso, destruir no sirve: no se pueden matar.
-		Dispara la cuña, clámalos al suelo y vuelve a silenciarlos.
+		Dispara las cuñas, clávalos al suelo y devuélvelos al silencio.
 		¿Por qué lanzar primero la ballesta?
 		Si el invitado no huele a féretro, ¿cómo sabrá el ataúd a quién recoger?
 		'''
 	Story2:
 		'''
-		Esta hoja está desafilada porque no corta carne, corta medios.
+		Esta hoja maltrecha está desafilada porque no está hecha para cortar carne.
 		Cuando era aprendiz, en el corazón de mi maestro creció una boca que no cerraba.
 		Murió, pero el corazón siguió latiendo; a cada latido gritaba y alguien desaparecía.
 		Para vivir tuve que arrancárselo antes del siguiente latido.
-		Aún ansía oír de nuevo el sonido de un corazón siendo esculpido.
+		Aún ansía oír de nuevo el sonido de un corazón siendo arrancado.
 		'''
 	Story3:
 		'''
@@ -1046,7 +1046,7 @@ FirstMetShepel: {
 	Choice2Text: ...Cuánto tiempo.
 	Choice1Response: ...Sí; si es usted, me equivocaré las veces que haga falta.
 	Choice1Silence: ......
-	CybCourseOfferLine: Programa de superdream cargado. ¿Desea conectarse ahora al espacio superdream para aprender el modo hacker y el protocolo de armas SHPC?
+	CybCourseOfferLine: Programa de neuroensueño cargado. ¿Desea conectarse ahora al espacio de neuroensueño para aprender Hack Time y los protocolos de armas SHPC?
 	CybCourseAcceptText: Ahora mismo
 	CybCourseDeclineText: Ahora no
 	CybCourseAcceptResponse: Recibido; estableciendo enlace neural... Permanezca quieto.

@@ -343,9 +343,9 @@ ElementMuzzleBrake: {
 	DisplayName: Elementarer Mündungsstabilisator
 	Tooltip:
 		'''
-		Reduziert Rückstoß und Patronendruck um 65%
-		Verringert Fernschaden um 5%
+		Erhöht Fernschaden um 12%
 		Erhöht kritische Trefferchance auf Distanz um 15%
+		Erhöht Fernkampf-Feuerrate um 12%
 		Gegner entdecken dich schwerer
 		'''
 }
@@ -378,9 +378,9 @@ PrecisionMuzzleBrake: {
 	DisplayName: Hochpräziser Mündungsstabilisator
 	Tooltip:
 		'''
-		Reduziert Rückstoß und Patronendruck um 55%
-		Verringert Fernschaden um 10%
+		Erhöht Fernschaden um 8%
 		Erhöht kritische Trefferchance auf Distanz um 10%
+		Erhöht Fernkampf-Feuerrate um 8%
 		Gegner entdecken dich schwerer
 		'''
 }
@@ -389,9 +389,9 @@ SimpleMuzzleBrake: {
 	DisplayName: Einfacher Mündungsstabilisator
 	Tooltip:
 		'''
-		Reduziert Rückstoß und Patronendruck um 40%
-		Verringert Fernschaden um 15%
+		Erhöht Fernschaden um 5%
 		Erhöht kritische Trefferchance auf Distanz um 5%
+		Erhöht Fernkampf-Feuerrate um 5%
 		Gegner entdecken dich schwerer
 		'''
 }
