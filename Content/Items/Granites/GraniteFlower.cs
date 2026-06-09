@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Granites
     {
         public override void SetDefaults() {
             Item.width = Item.height = 38;
-            Item.damage = 20;
+            Item.damage = 16;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 12;
             Item.useTime = Item.useAnimation = 32;
@@ -115,9 +115,8 @@ namespace CalamityOverhaul.Content.Items.Granites
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             Vector2 pos = Projectile.Center - Main.screenPosition;
             float rot = Projectile.rotation + MathHelper.PiOver4;
-            SpriteEffects fx = Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             Main.EntitySpriteDraw(tex, pos, null, Projectile.GetAlpha(lightColor), rot
-                , tex.Size() / 2f, Projectile.scale, fx, 0);
+                , tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }
@@ -260,7 +259,7 @@ namespace CalamityOverhaul.Content.Items.Granites
             }
 
             if (Projectile.IsOwnedByLocalPlayer()) {
-                int petals = 8;
+                int petals = 3;
                 float baseRot = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < petals; i++) {
                     Vector2 v = (baseRot + MathHelper.TwoPi / petals * i).ToRotationVector2() * Main.rand.NextFloat(7f, 10f);

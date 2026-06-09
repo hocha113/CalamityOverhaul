@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Items.Granites
     {
         public override void SetDefaults() {
             Item.width = Item.height = 34;
-            Item.damage = 17;
+            Item.damage = 20;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 7;
             Item.useTime = Item.useAnimation = 26;
@@ -271,13 +271,13 @@ namespace CalamityOverhaul.Content.Items.Granites
             Projectile.width = Projectile.height = 12;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Magic;
-            Projectile.penetrate = 2;
+            Projectile.penetrate = 1;
             Projectile.timeLeft = 55;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.MaxUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
