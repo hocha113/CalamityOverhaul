@@ -10,7 +10,7 @@ HellburnBuff: {
 
 VoidErosion: {
 	DisplayName: Erosao do Vazio
-	Description: O nada esta te consumindo
+	Description: O vazio esta consumindo voce pouco a pouco
 }
 
 DestroyerSummonBuff: {
@@ -20,7 +20,7 @@ DestroyerSummonBuff: {
 
 FrenziedMachineSoul: {
 	DisplayName: Alma de Maquina Enfurecida
-	Description: O Espirito da Maquina esta radiante!
+	Description: O Espirito da Maquina esta em extase!
 }
 
 FishoilBuff: {

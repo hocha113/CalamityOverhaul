@@ -186,7 +186,7 @@ QuestNode: {
 		Description: Derrote a Parede de Carne
 		QuestObjective.Description: Derrote a Parede de Carne
 		QuestReward.Description: Martelo do Herói
-		DetailedDescription: O porteiro do mundo. Jogue a Boneca Vodu do Guia na lava para libertar os espiritos antigos do mundo e comecar o Modo Dificil.
+		DetailedDescription: O porteiro do mundo. Jogue a Boneca Vodu do Guia na lava para libertar os deuses antigos do mundo e comecar o Modo Dificil.
 	}
 
 	CeaselessVoidQuest: {
@@ -418,7 +418,7 @@ QuestNode: {
 		QuestReward.Description: 1 Lingote Infinito
 		DisplayName: Catalisador do Infinito
 		Description: Obtenha Catalisador do Infinito
-		DetailedDescription: O meio chave para iniciar a reacao infinita. Permite que a materia ciclize entre aniquilacao e renascimento, gerando energia imensa.
+		DetailedDescription: O catalisador-chave para iniciar a reacao infinita. Permite que a materia circule entre aniquilacao e renascimento, gerando energia imensa.
 	}
 
 	NeutronBowQuest: {
@@ -478,10 +478,10 @@ QuestNode: {
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Obtenha Rocha
-		QuestReward.Description: 5 Rochas
-		DisplayName: Rocha
-		Description: Obtenha Rocha
+		QuestObjective.Description: Obtenha Pedra Eternita Antiga
+		QuestReward.Description: 5 Pedras Eternita Antigas
+		DisplayName: Pedra Eternita Antiga
+		Description: Obtenha Pedra Eternita Antiga
 		DetailedDescription: Uma pedra aparentemente comum, mas que testemunhou o ciclo de inumeros Boss Rushes. E um simbolo de perseveranca eterna.
 	}
 
@@ -502,10 +502,10 @@ QuestNode: {
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Obtenha Vendaval Celestial
+		QuestObjective.Description: Obtenha Arco Infinito
 		QuestReward.Description: 5 Lingotes Infinitos
-		DisplayName: Vendaval Celestial
-		Description: Obtenha Vendaval Celestial
+		DisplayName: Arco Infinito
+		Description: Obtenha Arco Infinito
 		DetailedDescription: Um arco longo que derrubou deuses. Agora reaparecera no mundo.
 	}
 
@@ -514,7 +514,7 @@ QuestNode: {
 		QuestReward.Description: 5 Lingotes Infinitos
 		DisplayName: Lanca de Longinus
 		Description: Obtenha Lanca de Longinus
-		DetailedDescription: A lendaria lancas sagrada que perfurou uma divindade, possuindo o poder de penetrar todos os campos e barreiras absolutas. Quando lancada, ate as leis da causalidade abrem caminho para ela.
+		DetailedDescription: A lendaria lanca sagrada que perfurou uma divindade possui o poder de atravessar todos os campos e barreiras absolutas. Quando lancada, ate as leis da causalidade abrem caminho para ela.
 	}
 
 	DragonsWordQuest: {
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Complete o Boss Rush 5 vezes, obtenha 5 Rochas
-		QuestReward.Description: 5 Rochas
+		QuestObjective.Description: Complete o Boss Rush 5 vezes, obtenha 5 Pedras Eternita Antigas
+		QuestReward.Description: 5 Pedras Eternita Antigas
 		DisplayName: Ciclo da Conquista
-		Description: Complete o Boss Rush 5 vezes, obtenha 5 Rochas
+		Description: Complete o Boss Rush 5 vezes, obtenha 5 Pedras Eternita Antigas
 		DetailedDescription: O simbolo de um verdadeiro guerreiro
 	}
 
@@ -873,8 +873,8 @@ QuestNode: {
 
 	LifeWeaverQuest: {
 		DisplayName: Reflorestamento
-		Description: Obtenha o Tecedor da Vida
-		QuestObjective.Description: Obtenha o Tecedor da Vida
+		Description: Obtenha o Plantador de Arvores
+		QuestObjective.Description: Obtenha o Plantador de Arvores
 		DetailedDescription: A regeneracao florestal e geralmente um processo lento. Esta maquina usa energia para plantar mudas com precisão, restaurando rapidamente a vida a terras devastadas. E a peca final do quebra-cabeca para construir uma fazenda de arvores totalmente automatizada e sustentavel.
 	}
 

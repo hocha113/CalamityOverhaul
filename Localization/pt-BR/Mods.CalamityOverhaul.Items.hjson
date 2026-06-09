@@ -185,7 +185,7 @@ InfinitePick: {
 	Tooltip:
 		'''
 		Clique direito e destrua tudo o que tocar
-		Pressione [TECLA] para mudar o modo
+		Pressione [KEY] para mudar o modo
 		'Voce pode sentir que as proprias terras de Terraria tremem de medo sempre que voce a segura.'
 		'''
 }
@@ -370,7 +370,7 @@ EyeOfSingularity: {
 		Enquanto parado, voce entra no estado de Horizonte de Eventos:
 		  - Concede invisibilidade e imunidade a todo dano de contato
 		  - Ataques liberam Rajadas adicionais de Raio Gama que rastreiam inimigos
-		Concede a habilidade de Salto Quantico; pressione [TECLA] para teleportar para o cursor, apagando projeteis inimigos ao longo do caminho
+		Concede a habilidade de Salto Quantico; pressione [KEY] para teleportar para o cursor, apagando projeteis inimigos ao longo do caminho
 		Clique direito para ativar o 'Protocolo de Colapso':
 		  - Consome todo o mana para fazer todos os ataques de longo alcance ignorarem quadros de invencibilidade e forcarem acertos criticos por 10 segundos
 		  - 60 segundos de recarga
@@ -408,8 +408,7 @@ AmmoBoxFire: {
 	DisplayName: Caixa de Municao Incendiaria
 	Tooltip:
 		'''
-		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
-		deixe a municao especial encher o carregador
+		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
 		A municao especial pode ser sobreposta ao efeito da bala original
 		Torna a ogiva altamente inflamavel e explode quando atinge o alvo
 		"Isso nao e COD."
@@ -420,10 +419,9 @@ ArmourPiercerBox: {
 	DisplayName: Caixa Perfuradora de Armaduras
 	Tooltip:
 		'''
-		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
-		deixe a municao especial encher o carregador
+		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
 		A municao especial pode ser sobreposta ao efeito da bala original
-		Reveste a municao com ouro de tungstenio para aumentar a capacidade de perfuracao de armadura da bala, ignorando 75% da armadura do alvo
+		Reveste a municao com uma camada de tungstenio para aumentar a capacidade de perfuracao de armadura da bala, ignorando 75% da armadura do alvo
 		"Mesmo assim, nao tente derrubar um tanque com uma pistola."
 		'''
 }
@@ -432,8 +430,7 @@ HighExplosiveBox: {
 	DisplayName: Caixa de Alta Explosividade
 	Tooltip:
 		'''
-		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
-		deixe a municao especial encher o carregador
+		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
 		A municao especial pode ser sobreposta ao efeito da bala original
 		Transforma a ogiva em um projetil de alta explosividade, disparando uma explosao violenta quando a bala atinge o alvo
 		"Exploda todos eles!"
@@ -444,8 +441,7 @@ DragonBreathBox: {
 	DisplayName: Caixa de Sopro do Dragao
 	Tooltip:
 		'''
-		Mantenha pressionado para implantar, apos a implantacao estar completa, segure a arma de fogo e clique com o botao direito no carregador,
-		deixe a municao especial encher o carregador
+		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
 		A municao especial pode ser sobreposta ao efeito da bala original
 		Uma combinacao de magia e tecnologia, balas atingem seus alvos e explodem em um jato de metal, causando dano a uma ampla gama de inimigos
 		"Isso e a saliva do dragao. Voce quer acreditar?"
@@ -659,8 +655,8 @@ Starship: {
 		'''
 		Disparo continuo acumula calor, aumentando a cadencia ao longo do tempo
 		Clique direito consome municao e carrega um projetil cometa; o proximo tiro causa dano massivo e aplica Hiper-Desintegracao
-		No pico de calor, dois cacas de escolta voam ao lado disparando raios estelares homing; planetas sao arremessados periodicamente de tras de voce
-		Soltar o gatilho libera o finale: 14 meteoros homing que ignoram defesa e uma micro-galaxia chovem no cursor
+		No pico de calor, dois cacas de escolta voam ao lado disparando raios estelares teleguiados; planetas sao arremessados periodicamente de tras de voce
+		Soltar o gatilho libera o final: 14 meteoros teleguiados que ignoram defesa e uma micro-galaxia chovem no cursor
 		'''
 }
 
@@ -1060,7 +1056,7 @@ EmblemOfDread: {
 		Todos os ataques corpo a corpo infligem a desvantagem 'Erosao do Vazio'
 		Ataques corpo a corpo verdadeiros tem uma chance de apagar instantaneamente inimigos com menos de 250.000 HP
 		Mover-se em altas velocidades deixa pontos de dobra em seu caminho, causando dano extremo aos inimigos
-		Concede a habilidade de usar Investida Gravitacional; pressione [TECLA] para investir uma longa distancia e liberar raios gravitacionais massivos
+		Concede a habilidade de usar Investida Gravitacional; pressione [KEY] para investir uma longa distancia e liberar raios gravitacionais massivos
 		Se voce receber dano fatal, voce imediatamente recupera toda a vida e ganha um Escudo Gravitacional (60 segundos de recarga)
 		Inimigos tem mais probabilidade de alvejar voce
 		[c/d94fff:"Um anjo santificado velha seu olhar, sussurrando mentiras eternas e sacarinas"]
@@ -1336,7 +1332,7 @@ SirenMusicalBox: {
 }
 
 Heartcarver: {
-	DisplayName: Esculpidor de Coracoes
+	DisplayName: Escavador de Coracoes
 	Tooltip:
 		'''
 		Gera tres adagas rituais adicionais para girar ao redor do jogador.
@@ -1586,7 +1582,7 @@ Lumberjack: {
 LifeWeaver: {
 	NoValidPositionText: Nenhum local de plantio valido proximo!
 	NoEnergyText: Energia insuficiente!
-	DisplayName: Tecedor da Vida
+	DisplayName: Plantador de Arvores
 	Tooltip: Consome energia para plantar arvores nas proximidades
 }
 
@@ -1596,7 +1592,7 @@ WGGLumberjack: {
 }
 
 WGGLifeWeaver: {
-	DisplayName: Tecedor da Vida do Ermo
+	DisplayName: Plantador de Arvores do Ermo
 	Tooltip: ""
 }
 
@@ -2340,7 +2336,7 @@ LifebloomBarrelModule: {
 }
 
 MagmaVentBarrelModule: {
-	DisplayName: Cano Respiradero de Magma
+	DisplayName: Cano de Respiradouro de Magma
 	Tooltip:
 		'''
 		Acertos e feixes expirados deixam respiradouros de magma de curta duracao que periodicamente entram em erupcao em colunas de calor verticais

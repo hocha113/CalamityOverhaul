@@ -187,7 +187,7 @@ TileNameFallback: {
 	CorruptThorns: Espinhos Corrompidos
 	Candle: Vela
 	Chandelier: Candelabro
-	JackOLantern: Jaca Abobora
+	JackOLantern: Abobora-lanterna
 	Present: Presente
 	Meteorite: Meteorito
 	GrayBrick: Tijolo Cinza
@@ -234,11 +234,11 @@ TileNameFallback: {
 	Bed: Cama
 	Cactus: Cacto
 	Coral: Coral
-	ImmatureHerb: Erba Imatura
-	MatureHerb: Erba Madura
-	BloomingHerb: Erba em Flor
+	ImmatureHerb: Erva Imatura
+	MatureHerb: Erva Madura
+	BloomingHerb: Erva em Flor
 	Tombstone: Lapide
-	Loom: Teares
+	Loom: Tear
 	Piano: Piano
 	Dresser: Comoda
 	Bench: Banco

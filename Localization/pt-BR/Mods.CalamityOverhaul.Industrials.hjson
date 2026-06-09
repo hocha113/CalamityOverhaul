@@ -13,7 +13,7 @@ ElectricMinRocket: {
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Bateria Esgotada
-	DisplayName: Tecedor da Vida do Ermo
+	DisplayName: Plantador de Arvores do Ermo
 	Tooltip: ""
 }
 

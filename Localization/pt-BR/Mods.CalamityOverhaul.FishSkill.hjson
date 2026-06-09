@@ -62,7 +62,7 @@ FishDemonicHell: {
 }
 
 FishDynamite: {
-	DisplayName: Peixe Dinamite
+	DisplayName: Torpedo Cintilante
 	Tooltip:
 		'''
 		Clique direito para arremessar um Peixe Dinamite, que e afetado pela gravidade.
@@ -113,7 +113,7 @@ FishHunger: {
 }
 
 FishBat: {
-	DisplayName: Eco Fantasma
+	DisplayName: Corrente Fantasma de Morcegos
 	Tooltip:
 		'''
 		Clique direito para se transformar em um enxame de morcegos para uma investida rapida.

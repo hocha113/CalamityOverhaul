@@ -343,7 +343,7 @@ MurasamaTrialQuestLine: {
 		'''
 		Os restos de falsos deuses contaminam as terras de Terra. Va libertar os continentes corrompidos.
 		Pique o cerebro daquele falso deus em pedacos, pique aquele verme roxo!
-		Quero ver sua lamina dancar pela carne xeno!
+		Quero ver sua lamina dancar pela carne alienigena!
 		'''
 	TrialSummary_4: A terra corrompida ainda pulsa como um coracao. Os parasitas de carne ainda estao ativos; os tumores corrompidos ainda estao pensando. Va bani-los completamente!
 	TrialSummary_5:
@@ -359,7 +359,7 @@ MurasamaTrialQuestLine: {
 	TrialSummary_11: Um verme de aco massivo esta no caminho da nossa cruzada. Pique-o em pedacos.
 	TrialSummary_12: Aqueles olhos mecanicos nos olham de cima—fure-os com sua lamina.
 	TrialSummary_13: O senhor esqueleto vestiu armadura de aco pensando que poderia nos parar? Estilhaçe aquele craneo de metal.
-	TrialSummary_14: Aquela bruxa que se jogou no caos tem uma irmã clone deformada. Mate aquela xeno, e ofereca seu sangue e fogo a lamina.
+	TrialSummary_14: Aquela bruxa que se jogou no caos tem uma irmã clone deformada. Mate aquela alienigena, e ofereca seu sangue e fogo a lamina.
 	TrialSummary_15: A planta louca no fundo da selva enlouqueceu. Use sua lamina para acabar com este crescimento descontrolado.
 	TrialSummary_16: A raça tola dos Lihzahrd so sabe adorar estas pedras teimosas. Vamos esmaga-la em po e destruir sua fe.
 	TrialSummary_17: Em meio ao vapor e gás tóxico está uma abelha-máquina híbrida. Abata aquela coisa imunda.
@@ -375,7 +375,7 @@ MurasamaTrialQuestLine: {
 	TrialSummary_23: Aquela serpente cosmica arrogante esta se agitando atras do veu do mundo. Acabe com suas ambicoes.
 	TrialSummary_24:
 		'''
-		O Dragao da Selva, o ultimo descendente draconico aurico de Terra. Ele e muito diferente de outros xenos e merece nosso respeito.
+		O Dragao da Selva, o ultimo descendente draconico aurico de Terra. Ele e muito diferente de outros alienigenas e merece nosso respeito.
 		No entanto, agora precisamos que ele morra mais uma vez para despoja-lo de sua Alma Aurica.
 		Estes materiais serao usados para forjar um conjunto de equipamentos extremamente superior.
 		'''
@@ -392,7 +392,7 @@ MurasamaTrialQuestLine: {
 	TrialSummary_27:
 		'''
 		Nosso caminho de conquista ja e imparavel. Estilhaçe a armadura do dragao demoniaco sob o abismo negro.
-		Use o Terminus e envolva-se na batalha final decisiva com o xeno.
+		Use o Terminus e envolva-se na batalha final decisiva com o alienigena.
 		'''
 	TrackerBrief: Alvo: {0}
 	BossRushTargetName: Batalha do Terminus

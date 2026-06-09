@@ -6,7 +6,7 @@ CWRServerConfig: {
 		Tooltip:
 			'''
 			Ativar isso modificara a maioria das armas.
-			[c/FF0000: Se voce quer otimizar a experiencia do conteudo da reformulacao de desastres, por favor ative!]
+			[c/FF0000: Se voce quer otimizar a experiencia do conteudo de Overhaul, por favor ative!]
 			'''
 	}
 
@@ -30,10 +30,10 @@ CWRServerConfig: {
 	}
 
 	Headers: {
-		CWRSystem: Configuracoes do Sistema
-		CWRWeapon: Configuracoes de Armas
-		CWRUI: Configuracoes da UI
-		CWRWorldGen: Configuracoes de Geracao de Mundo
+		CWRSystem: Configuracoes do Sistema de Overhaul
+		CWRWeapon: Configuracoes de Armas de Overhaul
+		CWRUI: Configuracoes da UI de Overhaul
+		CWRWorldGen: Configuracoes de Geracao de Mundo de Overhaul
 	}
 
 	LensEasing: {
@@ -46,7 +46,7 @@ CWRServerConfig: {
 		Tooltip:
 			'''
 			[c/c20909:Incompleto]
-			Ativado por padrao, isso modificara o comportamento de IA de certas criaturas, como chefes no modo morte.
+			Ativado por padrao, isso modificara o comportamento de IA de certas criaturas, como chefes no Modo Morte.
 			Isso pode aumentar significativamente a dificuldade do jogo, entao voce pode optar por desativar com base na sua preferencia pessoal.
 			'''
 	}

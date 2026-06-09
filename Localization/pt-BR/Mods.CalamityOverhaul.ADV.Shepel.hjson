@@ -183,8 +183,8 @@ HackTimeTutorialLead: {
 CybCourseOutroDialogue: {
 	SpeakerName: SHPC
 	Line1: Treinamento completo. Todas as interfaces estao totalmente calibradas.
-	Line2: Voce dominou o protocolo de ligacao neural direta. O no de Braindance esta desconectando.
-	Line3: Voce pode reiniciar o treinamento a qualquer momento, ou sair do Braindance.
+	Line2: Voce dominou o protocolo de ligacao neural direta. O no de neurosonho esta desconectando.
+	Line3: Voce pode reiniciar o treinamento a qualquer momento, ou sair do neurosonho.
 }
 
 CybCourseCompletePanel: {
@@ -195,7 +195,7 @@ CybCourseCompletePanel: {
 	Stat3: "[#] Interface de escaneamento de blocos calibrada"
 	BtnRetry: REPETIR
 	BtnExit: SAIR
-	Footer: Escolha para continuar — REPETIR reinicia o treinamento, SAIR sai do Braindance
+	Footer: Escolha para continuar — REPETIR reinicia o treinamento, SAIR sai do neurosonho
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -203,13 +203,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: Teclas Principais Nao Vinculadas
 	Hint:
 		'''
-		As seguintes teclas de atalho nao estao vinculadas no momento. Ao sair do Braindance, voce nao podera usar suas funcoes correspondentes normalmente.
+		As seguintes teclas de atalho nao estao vinculadas no momento. Ao sair do neurosonho, voce nao podera usar suas funcoes correspondentes normalmente.
 		Por favor, atribua teclas para elas em [Configuracoes → Controles].
 		'''
 	UnboundLabel: Nao Vinculado
 	BtnConfirm: Ciente
 	BtnLater: Lembrar Depois
-	Footer: Selecionar qualquer opcao desconectara o Braindance. Voce pode ajustar as vinculacoes de teclas a qualquer momento nas configuracoes do mundo principal.
+	Footer: Selecionar qualquer opcao desconectara o neurosonho. Voce pode ajustar as vinculacoes de teclas a qualquer momento nas configuracoes do mundo principal.
 }
 
 ShepelCyberActiveDialogue: {
@@ -363,7 +363,7 @@ ShepelProvidenceDialogue: {
 	RoleName: SHPC
 	Line1: A Providencia caiu. Voce nao foi queimado por aquela irradiancia terrivel, foi?
 	Line2: Voce triunfou sobre uma entidade divina... meu Mestre.
-	Line3: Para permanecer digno de quem voce e agora, devo atualizar minhas funcoes para serem ainda mais perfeitas.
+	Line3: Para estar a altura de quem voce e agora, devo atualizar minhas funcoes para serem ainda mais perfeitas.
 }
 
 ShepelQueenBeeDialogue: {
@@ -381,7 +381,7 @@ ShepelSkeletronDialogue: {
 ShepelSkeletronPrimeDialogue: {
 	RoleName: SHPC
 	Line1: O comandante mecanico foi desmantelado. Isso prova que simplesmente empilhar poder de fogo e armadura nao adianta.
-	Line2: Uma entidade tao rigida como aquela nunca poderia igualar a sinergia tattica firmemente entrelacada entre voce e eu.
+	Line2: Uma entidade tao rigida como aquela nunca poderia igualar a sinergia tatica firmemente entrelacada entre voce e eu.
 }
 
 ShepelSlimeGodDialogue: {
@@ -399,7 +399,7 @@ ShepelSupremeCalamitasDialogue: {
 
 ShepelTwinsDialogue: {
 	RoleName: SHPC
-	Line1: Os gemeos mecanicos ambos ca[iram. Seu campo de fogo sobreposto foi completamente dilacerado.
+	Line1: Os gemeos mecanicos cairam. Seu campo de fogo sobreposto foi completamente dilacerado.
 	Line2: Nao importa como compartilhavam dados visuais e sincronizavam suas taticas, nunca poderiam escapar do meu foco absoluto em voce.
 }
 
@@ -407,7 +407,7 @@ ShepelWallOfFleshDialogue: {
 	RoleName: SHPC
 	Line1: Detectando uma reestruturacao das regras subjacentes do mundo. O equilibrio esta quebrado; ameacas desconhecidas estao surgindo.
 	Line2: Coisas mais terriveis estao se libertando de suas restricoes. Mestre... voce esta se sentindo desconfortavel?
-	Line3: Nao ha necessidade de se preocupar. Nao importa como este mundo mude, eu ficarei firmemente de guarda diante de voce.
+	Line3: Nao ha necessidade de se preocupar. Nao importa como este mundo mude, eu ficarei firmemente diante de voce para protege-lo.
 }
 
 ShepelYharonDialogue: {

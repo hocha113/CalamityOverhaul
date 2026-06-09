@@ -2,9 +2,9 @@ MurasamaHeld.DisplayName: Corte Molecular
 MuraTriggerDash.DisplayName: Corte Molecular
 MuraBreakerSlash.DisplayName: Corte da Lua Crescente
 MuraExecutionCut.DisplayName: Cessacao Dimensional - Final
-MuraExecutionCutOnSpan.DisplayName: Cessacao Dimensional - Genesis
+MuraExecutionCutOnSpan.DisplayName: Cessacao Dimensional - Genese
 MuraGroundSmash.DisplayName: Cerejeira em Queda
-EndSkillEffectStart.DisplayName: Cessacao Dimensional - Genesis
+EndSkillEffectStart.DisplayName: Cessacao Dimensional - Genese
 RebelBladeFlyAttcke.DisplayName: Lamina Rebelde
 RebelBladeOrb.DisplayName: Orbe Demonico
 RebelBladeBack.DisplayName: Lamina Rebelde
@@ -55,12 +55,12 @@ DestroyerTail.DisplayName: O Destruidor
 FungalFeedProj.DisplayName: Alimento Fungico
 CannonFishSwarmHitbox.DisplayName: Saraivada de Peixes Canhao
 ClonePlayer.DisplayName: Eu Eco
-FishTeleportProj.DisplayName: Teletransporte de Peixe
-RestartEffectProj.DisplayName: Reinicio de Causalidade
+FishTeleportProj.DisplayName: Teletransporte do Cardume
+RestartEffectProj.DisplayName: Reconstrucao Causal
 SeaDomainProj.DisplayName: Dominio das Mares
 SuperpositionCannon.DisplayName: Canhao de Superposicao
-SuperpositionProj.DisplayName: Singularidade Quantica
-YourLevelIsTooLowProj.DisplayName: Aura de Poder Esmagador
+SuperpositionProj.DisplayName: Singularidade de Superposicao
+YourLevelIsTooLowProj.DisplayName: Supressao de Nivel
 AmanitaExplosiveMushroom.DisplayName: Amanita Explosiva
 AmanitaHomingSpore.DisplayName: Esporo de Amanita Homing
 AmanitaLightningSpore.DisplayName: Esporo de Amanita Relampago
@@ -77,7 +77,7 @@ DirtBall.DisplayName: Bola de Terra
 DirtFishFollower.DisplayName: Peixe de Terra
 DrizzleFirePillar.DisplayName: Pilar de Fogo Drizzle
 DrizzleFishHolder.DisplayName: Peixe Drizzle
-DrizzleSpawnEffect.DisplayName: Inovocao Drizzle
+DrizzleSpawnEffect.DisplayName: Invocacao Drizzle
 DynamiteExplosionEffect.DisplayName: Explosao de Peixe Dinamite
 DynamiteFishProjectile.DisplayName: Peixe Dinamite
 FallingPenguin.DisplayName: Pinguim Caindo
@@ -100,7 +100,7 @@ SlimeGelOrb.DisplayName: Orbe de Gel de Slime
 SoulEaterBite.DisplayName: Devorador de Almas
 SparklingFishHolder.DisplayName: Peixe Cintilante
 SparklingRay.DisplayName: Raio Cintilante
-SparklingSpawnEffect.DisplayName: Inovocao Cintilante
+SparklingSpawnEffect.DisplayName: Invocacao Cintilante
 SpiralStarProjectile.DisplayName: Estrela Espiral
 WaterZombie.DisplayName: Zombie Afogado
 OceanCurrent.DisplayName: Corrente Oceanica
@@ -111,7 +111,7 @@ CrossPrediction.DisplayName: Predicao Cruzada
 DeadLaser.DisplayName: Laser da Morte
 Mechanicalworm.DisplayName: Verme Mecanico
 Probe.DisplayName: Sonda
-SetPosingStarm.DisplayName: Estrela Posante
+SetPosingStarm.DisplayName: Tempestade Estelar
 Hit.DisplayName: Impacto
 SpwanTextProj.DisplayName: Texto Manifestado
 DragonsWordCut.DisplayName: Corte da Palavra do Dragao
@@ -121,7 +121,7 @@ NeutronMagchStar.DisplayName: Estrela de Neutrons
 NeutronWandExplode.DisplayName: Explosao da Varinha de Neutrons
 DivineSourceBeam.DisplayName: Raio da Fonte Divina
 DivineSourceBladeProjectile.DisplayName: Lamina da Fonte Divina
-DragonsScaleGreatswordBeam.DisplayName: Raio da Grande Espada de Escama de Dragao
+DragonsScaleGreatswordBeam.DisplayName: Raio da Grande Espada de Alga Draconica
 SporeCloud.DisplayName: Nuvem de Esporos
 EXNeutronExplode.DisplayName: Explosao de Neutrons EX
 NeutronExplode.DisplayName: Explosao de Neutrons
@@ -186,7 +186,7 @@ FishoilDrinkEffect.DisplayName: Surto de Vitalidade
 MiniWhiteWyvern.DisplayName: Mini Wyvern Branco
 WhiteWyvernTailController.DisplayName: Cauda do Wyvern Branco
 ScorpionSentry.DisplayName: Sentinela Escorpiao
-HeartcarverDagger.DisplayName: Adaga do Esculpidor de Coracoes
+HeartcarverDagger.DisplayName: Adaga do Escavador de Coracoes
 OniHandExplode.DisplayName: Explosao da Mao Oni
 OniHandMinion.DisplayName: Mao Oni
 OniFireBall.DisplayName: Bola de Fogo Oni
@@ -208,7 +208,7 @@ TropicalBarracudaProjectile.DisplayName: Barracuda Tropical
 NeonTetraLightProjectile.DisplayName: Luz do Tetra Neon
 BrimfishSpitterProjectile.DisplayName: Cuspe do Brimfish
 BrimstoneFlameProjectile.DisplayName: Chama de Enxofre
-DoubleCodProjectile.DisplayName: Bacalhau Geme
+DoubleCodProjectile.DisplayName: Bacalhau Gemeo
 FrostMinnowSpitterProjectile.DisplayName: Cuspe do Peixinho de Gelo
 FrostSnowflakeProjectile.DisplayName: Floco de Gelo
 PandemoniumCircle.DisplayName: Sigilo do Pandemonio
@@ -216,7 +216,7 @@ PandemoniumQSkill.DisplayName: Golpe do Pandemonio
 PandemoniumFirePillar.DisplayName: Pilar de Chamas do Pandemonio
 PandemoniumRSkill.DisplayName: Julgamento do Pandemonio
 JusticeCrossMark.DisplayName: Marca da Cruz da Justica
-HeartcarverDash.DisplayName: Investida do Esculpidor de Coracoes
+HeartcarverDash.DisplayName: Investida do Escavador de Coracoes
 ProverbsCircle.DisplayName: Circulo do Proverbio
 StormGoddess.DisplayName: Deusa da Tempestade
 JusticeUnveiledCross.DisplayName: Cruz da Justica Revelada
@@ -276,7 +276,7 @@ SHPCCoralAnchorProj.DisplayName: Ancore de Coral SHPC
 SHPCCumulusNodeProj.DisplayName: No Cumulus SHPC
 SHPCFrostfernLineProj.DisplayName: Linha de Samambaia de Gelo SHPC
 SHPCHiveDroneProj.DisplayName: Drone da Colmeia SHPC
-SHPCMagmaVentProj.DisplayName: Respiradero de Magma SHPC
+SHPCMagmaVentProj.DisplayName: Respiradouro de Magma SHPC
 SHPCMoondewPrismProj.DisplayName: Prisma de Orvalho Lunar SHPC
 SHPCMossPatchProj.DisplayName: Mancha de Musgo SHPC
 SHPCObsidianShardProj.DisplayName: Fragmento de Obsidiana SHPC

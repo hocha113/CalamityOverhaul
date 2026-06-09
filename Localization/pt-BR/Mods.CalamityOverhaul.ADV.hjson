@@ -4,7 +4,7 @@ FirstMet: {
 	Line0: Senhor... sua tecnica de pesca... deixa a desejar.
 	Line1: Pode me chamar de Dr. Halibut.
 	Line2: Ou, apenas Halibut esta bom.
-	Line3: Gracias ao seu anzol, fui puxado daquela agua silenciosa e morta.
+	Line3: Gracas ao seu anzol, fui puxado daquela agua silenciosa e morta.
 	Line4: Se nao fosse por voce, eu provavelmente ficaria adormecido para sempre, ate realmente morrer.
 	Line5: Este peixe deveria ser sua pescaria. Agora, e um presente para marcar nosso encontro.
 	Line6: ......
@@ -240,7 +240,7 @@ FirstMetSupCal: {
 	Line5: Hah?! Heh... Quem diria que alguem... ou algum*peixe*... realmente me reconhece. Voce e divertido, admito.
 	Line6: ...Mas por que voce esta viva? Eu me lembro distintamente que a Bruxa de Enxofre morreu... no seculo passado.
 	Line7: Um peixe interessante, de fato. Minha consciencia foi forjada na chama de enxofre ha muito tempo. Este corpo... e meramente um cadaver, fantocheado pelas chamas.
-	Line8: ...Uma mente viva em um corpo inumano, ligada ao mundo por um meio... Voce se tornou... uma aberracao?!
+	Line8: ...Uma mente viva em um corpo inumano, ligada ao mundo por um canalizador... Voce se tornou... uma aberracao?!
 	Line9: Sua compreensao e limitada demais. Voce nao poderia entender meu estado de ser.
 	Line10: Alem disso, nao e por isso que estou aqui...
 	QuestionLine: Bem... qual e a sua escolha?
@@ -251,7 +251,7 @@ FirstMetSupCal: {
 	NoFishLine1: Voce matou minha 'irma' muito antes do que eu esperava. E veio sozinho?
 	NoFishLine2: Voce esta ficando mais forte do que eu antecipava.
 	NoFishLine3: Voce pergunta por que ainda estou viva? Parece que voce comecou a tocar em verdades que nao deveria saber.
-	NoFishLine4: Minha consciencia foi forjada na chama de enxofre ha muito tempo. Este corpo... e meramente um cadaver, fantoche
+	NoFishLine4: Minha consciencia foi forjada na chama de enxofre ha muito tempo. Este corpo... e meramente um cadaver, fantocheado pelas chamas.
 	NoFishLine5: Mas e inutil. Sua compreensao e limitada demais para entender meu estado de ser.
 	NoFishLine6: Claro, nao me revelei meramente para explicar essas trivialidades.
 }
@@ -372,7 +372,7 @@ FishoilQuestUI: {
 
 DoGQuestUI: {
 	QuestTitle: Comissao: O Devorador de Deuses
-	QuestDesc: Derrote O Devorador de Deuses usando o Escultor de Coracoes.
+	QuestDesc: Derrote O Devorador de Deuses usando o Escavador de Coracoes.
 	AcceptText: Aceitar
 	DeclineText: Recusar
 }
@@ -382,7 +382,7 @@ SupCalDoGQuestReward: {
 	Rolename2: Halibut
 	Line1: Feito de forma limpa.
 	Line2: Esta lamina... tao satisfatoria como sempre.
-	Line3: Quando eu ainda era mortal, foi com isso que esculpi o coracao do meu mestre. Funciona bem, nao funciona?
+	Line3: Quando eu ainda era mortal, foi com isso que arranquei o coracao do meu mestre. Funciona bem, nao funciona?
 	Line4: Pegue.
 	Line5: Voce ja considerou... o que faria se, da proxima vez, minha comissao fosse para voce matar A MIM?
 	Line6: Que pena. Voce e ele estao fadados a nunca se encontrar. Voces dois teriam... tanto para conversar.
@@ -413,9 +413,9 @@ SupCalQuestLine: {
 	PallbearerTitle: Comissao: Cace a Deusa Profanada
 	PallbearerSummary: Derrote a Deusa Profanada usando a Pallbearer. 80% de contribuicao necessaria.
 	DoGTitle: Comissao: Cace o Devorador de Deuses
-	DoGSummary: Derrote o Devorador de Deuses usando o Heartcarver. 80% de contribuicao necessaria.
+	DoGSummary: Derrote o Devorador de Deuses usando o Escavador de Coracoes. 80% de contribuicao necessaria.
 	YharonTitle: Comissao: Cace o Dragao da Incineracao
-	YharonSummary: Mate Yharon usando o Oni Machete. 75% de contribuicao necessaria.
+	YharonSummary: Mate Yharon usando o Machete Oni. 75% de contribuicao necessaria.
 	TrackerSummonHint: Alvo ausente — invoque {0}
 	TrackerContribution: Contribuicao da arma: {0:0%}
 	TrackerRequired: Necessario: {0:0%}
@@ -444,13 +444,13 @@ HelensInterference: {
 	Branch_Inquiry: {
 		Line1: Tenho ficado cada vez mais ansioso ultimamente.
 		Line2: Aquela lamina... quando a toquei, pensei ter ouvido... alguem *rindo*.
-		Line3: Todas elas parecem... algum tipo de 'meio'.
+		Line3: Todas elas parecem... algum tipo de 'conduto'.
 		Line4: Eu nao posso deixar voce continuar com isso, pelo menos...
 	}
 
 	Branch_Silence: {
 		Line1: ...Voce e mais terrivel quando fica em silencio.
-		Line2: ...Tudo bem, escondi o 'Heart-carver'.
+		Line2: ...Tudo bem, escondi o 'Escavador de Coracoes'.
 		Line3: Aquela bruxa... ela e perigosa, veio do nada. Se isso e uma armadilha, voce vai simplesmente cair nela?
 		Line4: Pare... por favor. Por mim.
 	}
@@ -708,7 +708,7 @@ SupCalDisplayText: {
 		'''
 	Story2:
 		'''
-		Esta lamina miseravel e cega porque nao corta carne - ela corta meios.
+		Esta lamina miseravel e cega porque nao corta carne - ela corta condutos.
 		Quando eu ainda era aprendiz, uma boca que nunca fechava cresceu no coracao do meu mestre.
 		Ele morreu depois, mas aquele coracao continuou batendo. A cada batida, a boca gritava,
 		e uma pessoa ao nosso redor simplesmente desaparecia.
@@ -825,7 +825,7 @@ FirstMetOldDuke: {
 	OldDukeName: Velho Duque
 	HelenName: Halibut
 	L0: ......
-	L1: Embainhe sua sede de sangue, jovem. Nao ha necessidade de sacar armas no momento em que nos encontramos.
+	L1: Embainhe sua sede de sangue, jovem aventureiro. Nao ha necessidade de sacar armas no momento em que nos encontramos.
 	L2: Sou velho. Estou cansado de tais jogos violentos.
 	L3: Podemos cooperar.
 	L4: Estou coletando algo especial: Fragmentos do Oceano.
@@ -890,13 +890,13 @@ CampsiteInteractionDialogue: {
 		Past_Reflection: So quero guardar este mar. Se aquelas coisas tentarem sair do abismo, esse sera o momento em que arriscarei a resurreição total e a morte para dete-las.
 		Research_Intro: Estou tentando reconstruir uma historia, ou melhor, recuperar uma forma perdida de experiencia.
 		Research_CurrentWork: Estes fragmentos retêm memorias do passado. Eles registram como aquela civilizacao antiga buscou um caminho para a sobrevivencia em uma situacao desesperadora.
-		Research_Breakthrough: Para lutar contra esse tipo de terror, forca bruta e inutil. Voce deve encontrar suas 'regras de matar' e explora-las.
-		Research_Difficulties: Mas decifra-los e perigoso. Estes fragmentos sao eles proprios meios. Olhe para eles por muito tempo, e voce pode ouvir sons que nao deveria.
+		Research_Breakthrough: Para lutar contra esse tipo de terror, forca bruta e inutil. Voce deve encontrar suas 'regras de execucao' e explora-las.
+		Research_Difficulties: Mas decifra-los e perigoso. Estes fragmentos sao eles proprios condutos. Olhe para eles por muito tempo, e voce pode ouvir sons que nao deveria.
 		Research_Theory: Se eu conseguir montar todas as pecas, talvez possa encontrar uma maneira de selar permanentemente a fonte do abismo.
-		Choice_Research_Details: O que quer dizer com 'regras de matar'?
+		Choice_Research_Details: O que quer dizer com 'regras de execucao'?
 		Choice_Research_Help: O que preciso fazer?
 		Choice_Research_Back: Parece loucura
-		Research_Details1: Por exemplo, ha coisas que voce nao pode olhar, nomes que nao pode pronunciar. Uma vez que um meio e ativado, a morte e inevitavel. Aquela civilizacao tentou prender deuses com regras.
+		Research_Details1: Por exemplo, ha coisas que voce nao pode olhar, nomes que nao pode pronunciar. Uma vez que um conduto e ativado, a morte e inevitavel. Aquela civilizacao tentou prender deuses com regras.
 		Research_Details2: Eles ate construiram grandes recipientes, tentando aprisionar aquelas coisas. Infelizmente, os recipientes vazaram.
 		Research_Help: Ajude-me a encontrar mais fragmentos. O resto da minha vida sera gasto pesquisando isso.
 		History_Intro: O Mar Sulfuroso e meramente uma fachada. Este e o residuo deixado apos a invasão do dominio daquela coisa.
@@ -914,7 +914,7 @@ CampsiteInteractionDialogue: {
 		History_Dangers2: Nao confie em seus olhos. Nao responda a chamados inexplicaveis. Naquele mar de cadaveres, os vivos sao as anomalias.
 		Fragments_Intro: Fragmentos do Oceano... aos meus olhos, sao arquivos manchados de sangue.
 		Fragments_Nature: Sao o residuo de um fenomeno. Como maldicoes comprimidas.
-		Fragments_Power: Cada fragmento e um 'meio'. Sozinho, pode ser inofensivo, mas quando suficientes se juntam, criam uma colisao de forcas estranhas.
+		Fragments_Power: Cada fragmento e um 'conduto'. Sozinho, pode ser inofensivo, mas quando suficientes se juntam, criam uma colisao de forcas estranhas.
 		Fragments_Collection: Eles estao espalhados por cada canto do mar morto—alguns enterrados sob ruinas, outros crescidos na carne de criaturas.
 		Fragments_Purpose: Ainda estou juntando as pecas, tentando reconstruir a fonte daquele desastre. So descobrindo como aquela coisa matou posso encontrar uma maneira de aprisiona-la.
 		Personal_Intro: Indo vivendo.
@@ -1051,11 +1051,11 @@ FirstMetShepel: {
 	Choice2Text: ...Quanto tempo sem ver.
 	Choice1Response: ...Sim. Desde que seja voce, estou disposta a errar toda vez.
 	Choice1Silence: ......
-	CybCourseOfferLine: Programa Braindance carregado com sucesso. Mestre, gostaria de conectar-se ao espaco Braindance agora para aprender sobre o Modo de Invasao e os protocolos de operacao da arma SHPC?
+	CybCourseOfferLine: Programa de neurosonho carregado com sucesso. Mestre, gostaria de conectar-se ao espaco de neurosonho agora para aprender sobre o Modo de Invasao e os protocolos de operacao da arma SHPC?
 	CybCourseAcceptText: Vamos agora.
 	CybCourseDeclineText: Agora nao.
 	CybCourseAcceptResponse: Reconhecido. Estabelecendo ligacao neural... Por favor, permaneca parado.
-	CybCourseDeclineResponse: Entendido. As credenciais de acesso ao Braindance foram gravadas em seus dados de salvamento. Voce pode ativa-lo a qualquer momento, Mestre.
+	CybCourseDeclineResponse: Entendido. As credenciais de acesso ao neurosonho foram gravadas em seus dados de salvamento. Voce pode ativa-lo a qualquer momento, Mestre.
 }
 
 TheHerInThePast: {
