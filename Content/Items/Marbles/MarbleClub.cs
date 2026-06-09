@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient(ItemID.MarbleBlock, 25)
+                .AddIngredient(ItemID.Marble, 25)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 12)
                 .AddTile(TileID.Anvils)
                 .Register();

@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             //蓄力音效：从开始蓄力即播放，pitch 随蓄力比例递增，超驱时额外升调+抖动
             if (chargeTime == 1 && Main.netMode != NetmodeID.Server) {
-                SoundStyle chargeSound = "CalamityMod/Sounds/Item/NorfleetRecharge".GetSound();
+                SoundStyle chargeSound = "CalamityMod/Sounds/Item/NorfleetRecharge".GetSound(SoundID.Item15);
                 chargeSoundSlot = SoundEngine.PlaySound(chargeSound with { Volume = 0.8f, Pitch = -0.6f }, Projectile.Center);
             }
             if (SoundEngine.TryGetActiveSound(chargeSoundSlot, out var activeChargeSound)) {
@@ -396,7 +396,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     Vector2 vel = Main.rand.NextVector2CircularEdge(6f + od * 6f, 6f + od * 6f);
                     PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel + Projectile.velocity * 0.3f, launchMain, Main.rand.NextFloat(0.8f, 1.5f + od * 0.5f)).Configure(launchEdge, Main.rand.Next(20, 35));
                 }
-                SoundEngine.PlaySound("CalamityMod/Sounds/Item/NorfleetFire".GetSound() with { Pitch = -0.62f, Volume = 0.85f }, Projectile.Center);
+                SoundStyle fireSound = "CalamityMod/Sounds/Item/NorfleetFire".GetSound(SoundID.Item45);
+                SoundEngine.PlaySound(fireSound with { Pitch = -0.62f, Volume = 0.85f }, Projectile.Center);
             }
 
             Projectile.netUpdate = true;

@@ -906,11 +906,14 @@ namespace CalamityOverhaul
 
         public static void SetDownedCalamitas(bool value) => SetDownedProp(downedCalamitasProp, value);
 
-        public static SoundStyle GetSound(this string path) {
+        public static SoundStyle GetSound(this string path, SoundStyle backupSound = default) {
             if (ModContent.HasAsset(path)) {
                 return new SoundStyle(path);
             }
-            return CWRSound.None;
+            if (backupSound == default) {
+                backupSound = CWRSound.None;
+            }
+            return backupSound;
         }
 
         public static bool GetDownedThanatos() => GetDownedProp(downedThanatosProp);

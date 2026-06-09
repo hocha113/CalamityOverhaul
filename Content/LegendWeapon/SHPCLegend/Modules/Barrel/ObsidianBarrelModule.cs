@@ -67,6 +67,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
             return false;
         }
+
+        /// <summary>
+        /// 统一生成"派生赛博光束"：自动打上 IsDerived 防止再触发链跳/分裂/折射等二次派生，
+        /// 仅在弹幕拥有者侧生成。各模块的折射/折返/预判射击共用此入口，避免重复样板。
+        /// </summary>
+        public static void SpawnDerivedBeam(Projectile src, Vector2 pos, Vector2 vel, int damage, float homing, float lifeMul, int theme = -1) {
+            if (src.owner != Main.myPlayer) return;
+            int t = theme < 0 ? Main.rand.Next(3) : theme;
+            int idx = Projectile.NewProjectile(src.GetSource_FromThis(), pos, vel,
+                ModContent.ProjectileType<CyberTraceBeamProj>(), Math.Max(damage, 1), 0f, src.owner, ai0: t);
+            if (idx >= 0 && idx < Main.maxProjectiles) {
+                Main.projectile[idx].ai[1] = homing;
+                if (Main.projectile[idx].ModProjectile is CyberTraceBeamProj beam) {
+                    beam.IsDerived = true;
+                    beam.LifeMul = lifeMul;
+                }
+            }
+        }
     }
 
     /// <summary>

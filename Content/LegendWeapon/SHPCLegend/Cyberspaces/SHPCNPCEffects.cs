@@ -42,6 +42,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>蜂巢信息素标记</summary>
         public int PheromoneTime;
         public int PheromoneOwner = Main.maxPlayers;
+        /// <summary>高压标记（高压核心）：层数 + 剩余帧数 + 归属玩家</summary>
+        public int HighVoltageStacks;
+        public int HighVoltageTime;
+        public int HighVoltageOwner = Main.maxPlayers;
+        /// <summary>等离子种子（等离子注入器）：剩余帧数 + 归属玩家</summary>
+        public int PlasmaSeedTime;
+        public int PlasmaSeedOwner = Main.maxPlayers;
+        /// <summary>热成像热量（热成像瞄具）：层数 + 剩余帧数 + 归属玩家</summary>
+        public int ThermalHeatStacks;
+        public int ThermalHeatTime;
+        public int ThermalHeatOwner = Main.maxPlayers;
 
         private static bool _shaderActive;
 
@@ -83,6 +94,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public void ApplyPheromone(int duration, int owner) {
             PheromoneTime = Math.Max(PheromoneTime, duration);
             PheromoneOwner = owner;
+        }
+
+        /// <summary>
+        /// 施加一层高压标记，返回叠加后的层数。换主人时层数清零，避免跨玩家共享充能
+        /// </summary>
+        public int ApplyHighVoltage(int duration, int owner) {
+            if (HighVoltageOwner != owner) {
+                HighVoltageStacks = 0;
+            }
+            HighVoltageOwner = owner;
+            HighVoltageTime = Math.Max(HighVoltageTime, duration);
+            HighVoltageStacks++;
+            return HighVoltageStacks;
+        }
+
+        public void ResetHighVoltage() {
+            HighVoltageStacks = 0;
+            HighVoltageTime = 0;
+            HighVoltageOwner = Main.maxPlayers;
+        }
+
+        /// <summary>施加等离子种子，仅在更长时长时刷新</summary>
+        public void ApplyPlasmaSeed(int duration, int owner) {
+            PlasmaSeedTime = Math.Max(PlasmaSeedTime, duration);
+            PlasmaSeedOwner = owner;
+        }
+
+        /// <summary>
+        /// 施加一层热成像热量，返回叠加后的层数。换主人时层数清零
+        /// </summary>
+        public int ApplyThermalHeat(int duration, int owner) {
+            if (ThermalHeatOwner != owner) {
+                ThermalHeatStacks = 0;
+            }
+            ThermalHeatOwner = owner;
+            ThermalHeatTime = Math.Max(ThermalHeatTime, duration);
+            ThermalHeatStacks++;
+            return ThermalHeatStacks;
+        }
+
+        public void ResetThermalHeat() {
+            ThermalHeatStacks = 0;
+            ThermalHeatTime = 0;
+            ThermalHeatOwner = Main.maxPlayers;
+        }
+
+        /// <summary>收集范围内携带指定主人等离子种子的敌人</summary>
+        public static List<NPC> CollectPlasmaSeedTargets(int owner, Vector2 center, float range, int maxCount) {
+            List<NPC> targets = [];
+            float rangeSq = range * range;
+            for (int i = 0; i < Main.maxNPCs && targets.Count < maxCount; i++) {
+                NPC npc = Main.npc[i];
+                if (!npc.active || npc.friendly || npc.dontTakeDamage) continue;
+                if (Vector2.DistanceSquared(npc.Center, center) > rangeSq) continue;
+                if (!npc.TryGetGlobalNPC(out SHPCNPCEffects eff)) continue;
+                if (eff.PlasmaSeedTime <= 0 || eff.PlasmaSeedOwner != owner) continue;
+                targets.Add(npc);
+            }
+            return targets;
         }
 
         public static void BurstObsidian(NPC npc, int owner, int damage) {
@@ -199,6 +269,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             if (PheromoneTime > 0) {
                 PheromoneTime--;
+            }
+
+            if (HighVoltageTime > 0) {
+                HighVoltageTime--;
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(5)) {
+                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.45f, npc.height * 0.45f);
+                    Vector2 vel = Main.rand.NextVector2CircularEdge(1.6f, 1.6f);
+                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, vel, new Color(150, 215, 255), Main.rand.NextFloat(0.4f, 1.0f)).Configure(new Color(60, 130, 255), Main.rand.Next(8, 16));
+                }
+            }
+            else {
+                HighVoltageStacks = 0;
+                HighVoltageOwner = Main.maxPlayers;
+            }
+
+            if (PlasmaSeedTime > 0) {
+                PlasmaSeedTime--;
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(4)) {
+                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f);
+                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, new Vector2(0f, Main.rand.NextFloat(-1.4f, -0.3f)), new Color(255, 120, 230), Main.rand.NextFloat(0.4f, 0.95f)).Configure(new Color(180, 30, 160), Main.rand.Next(10, 22));
+                }
+            }
+            else {
+                PlasmaSeedOwner = Main.maxPlayers;
+            }
+
+            if (ThermalHeatTime > 0) {
+                ThermalHeatTime--;
+                if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(4)) {
+                    Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f);
+                    //越热越红，上升的热气
+                    float h = Math.Min(ThermalHeatStacks / 6f, 1f);
+                    Color hot = Color.Lerp(new Color(255, 200, 90), new Color(255, 70, 40), h);
+                    PRTLoader.NewParticle<PRT_CyberSquare>(pos, new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(-1.6f, -0.4f)), hot, Main.rand.NextFloat(0.4f, 0.9f)).Configure(new Color(200, 60, 20), Main.rand.Next(10, 20));
+                }
+            }
+            else {
+                ThermalHeatStacks = 0;
+                ThermalHeatOwner = Main.maxPlayers;
             }
             return true;
         }

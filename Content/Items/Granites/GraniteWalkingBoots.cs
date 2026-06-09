@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Granites
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient(ItemID.GraniteBlock, 16)
+                .AddIngredient(ItemID.Granite, 16)
                 .AddIngredient(ItemID.Aglet)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 6)
                 .AddTile(TileID.Anvils)

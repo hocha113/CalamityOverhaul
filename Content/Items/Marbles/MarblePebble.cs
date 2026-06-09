@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient(ItemID.MarbleBlock, 8)
+                .AddIngredient(ItemID.Marble, 8)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 3)
                 .AddTile(TileID.Anvils)
                 .Register();

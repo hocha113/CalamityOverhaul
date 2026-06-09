@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient(ItemID.MarbleBlock, 16)
+                .AddIngredient(ItemID.Marble, 16)
                 .AddIngredient(ItemID.ShinyRedBalloon)
                 .AddTile(TileID.Anvils)
                 .Register();

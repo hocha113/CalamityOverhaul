@@ -1831,7 +1831,12 @@ Mewtwo: {
 
 RapidBarrelModule: {
 	DisplayName: Rapid Barrel
-	Tooltip: Hyper-extended recoil spring delivers searing pulses at the cost of stability and per-shot power
+	Tooltip:
+		'''
+		Sustained fire builds barrel heat, with shimmer rising from the muzzle
+		At high heat beams vent cooling sparks to the sides, turning overheat into extra fan suppression
+		Greatly raises fire rate at the cost of stability and per-shot power
+		'''
 }
 
 FocusBarrelModule: {
@@ -1841,22 +1846,41 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: Precision Optic
-	Tooltip: Laser-assisted aiming eliminates all spread and grants additional crit chance
+	Tooltip:
+		'''
+		Consecutive hits on one target complete a zeroing; the next hit fires a high-pierce lance instead of homing
+		If another freshly-zeroed target still lives, the lance threads a second line between the twins
+		Eliminates all spread and grants extra crit throughout
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: Overload Core
-	Tooltip: Replaces the buffer with a faster cycling logic, charging the orb faster and launching it harder
+	Tooltip:
+		'''
+		Charging rapidly builds heat: low heat fires a quick small blast, high heat leaks holy flame in flight and detonates harder
+		Holding a fully-charged orb starts a meltdown countdown, releasing a dangerous ring blast around you early
+		Charges faster and launches harder
+		'''
 }
 
 SteadyStockModule: {
 	DisplayName: Steady Stock
-	Tooltip: Composite heavy stock absorbs recoil, trading some fire rate for extra damage per shot
+	Tooltip:
+		'''
+		Standing still briefly deploys a virtual bipod, trading fire rate for heavier shots
+		While braced and firing it periodically releases calibration waves for steady area suppression
+		'''
 }
 
 HarmonyGripModule: {
 	DisplayName: Harmony Grip
-	Tooltip: Bio-conductive grip channels mana through the body, drastically reducing mana cost
+	Tooltip:
+		'''
+		Bio-conductive grip channels mana through the body, drastically reducing mana cost
+		Consecutive hits build a heartbeat; on the fourth beat a resonance window opens
+		During the window a beam hit bursts a tuning-fork wave, or launching the orb releases a large resonant pulse
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1866,62 +1890,119 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: Adaptive Optic
-	Tooltip: Neural-link algorithms continuously correct trajectory, locking each beam tighter onto its target
+	Tooltip:
+		'''
+		Repeatedly hitting one target builds an adaptive lock, steadily raising homing and crit
+		When the locked target moves fast, a brief reticle drops at its predicted spot and fires forking lead-shots at it
+		The longer you stay on one target, the sharper the correction
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: Assault Stock
-	Tooltip: Adrenaline-assisted bracing cycles the weapon more aggressively, raising firepower at higher mana cost
+	Tooltip:
+		'''
+		Consecutive hits build suppression; filling it auto-deploys a shoulder assault drone that fires on its own
+		Or launch the orb to dump current suppression into a longer-lasting drone
+		Sustained firepower rises at the cost of higher mana
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: Balanced Grip
-	Tooltip: Re-tuned weight distribution gives a small all-around boost to fire rate, damage and stability
+	Tooltip:
+		'''
+		Dual red/blue core: beam hits lean blue, orb detonations lean red
+		When the poles settle near balance they reach equilibrium, summoning a pair of sparks to flank the target
+		Alternating left and right click keeps the balance
+		'''
 }
 
 CapacitorBankModule: {
 	DisplayName: Capacitor Bank
-	Tooltip: Dense capacitor stack tops the orb off in a much shorter cycle, but dampens its launch energy
+	Tooltip:
+		'''
+		Charging the orb banks overflow energy into capacitors: faster charge, but dampened launch energy
+		Afterward beam hits discharge cell by cell, bursting small capacitor pulses on the target
+		'''
 }
 
 CrystalGripModule: {
 	DisplayName: Crystal Grip
-	Tooltip: Synthetic crystal dielectric resonates with the user, trimming mana cost and boosting crit, but slowing charge
+	Tooltip:
+		'''
+		Critical hits crystallize weak-point facets on the field; passing beams refract off them toward nearby foes
+		Detonating the orb shatters facets near the blast into a burst of crystal shards
+		Trims mana cost and boosts crit, but slows charging
+		'''
 }
 
 EfficientGripModule: {
 	DisplayName: Efficient Grip
-	Tooltip: Engineering-grade ergonomic grip refines both energy draw and trigger cadence
+	Tooltip:
+		'''
+		Hits siphon residual energy from foes into motes that fly back and refund a little mana
+		Combined with leaner draw and cadence, sustained fire becomes nearly self-sufficient
+		'''
 }
 
 HeavyBarrelModule: {
 	DisplayName: Heavy Barrel
-	Tooltip: Reinforced rifling crushes spread and cadence, turning every shot into a heavy strike
+	Tooltip:
+		'''
+		Very low fire rate buys heavy single shots with crushed spread
+		Each beam bursts a heavy shock ring at the end of its flight, extending the punch into an area hit
+		'''
 }
 
 HighVoltageCoreModule: {
 	DisplayName: High Voltage Core
-	Tooltip: Output voltage is pushed up the scale, amplifying both raw and merged-beam damage at extra mana cost
+	Tooltip:
+		'''
+		Output voltage is pushed up the scale, stacking high-voltage marks on hit
+		At full charge an overvoltage break erupts, arcing to nearby foes and electrifying them in a chain
+		The steep mana cost is the price of unleashing the current
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: Holo Optic
-	Tooltip: Holographic reticle locks the impact point, slashing spread and accelerating the trigger at slight mana overhead
+	Tooltip:
+		'''
+		Firing rhythmically projects holographic reticles near the cursor
+		A beam hit ricochets to the nearest reticle, then fires a short beam from it at another foe for bending crossfire
+		Slashes spread and quickens the trigger at slight mana overhead
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Hypersonic Barrel
-	Tooltip: Sonic-shock chamber pushes beams to extreme velocity, but fine homing can no longer keep up
+	Tooltip:
+		'''
+		Beams are accelerated into a straight-line dash; their endpoint detonates into a delayed sonic boom that adds a narrow line of damage along the path
+		If the hit lands far enough away, the endpoint also bursts a cone-shaped mach shock
+		The price of raw speed and fire rate is nearly abandoned homing and slightly lower per-shot power
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: Kinetic Damper Stock
-	Tooltip: Liquid damper swallows recoil, all but eliminating spread and granting a small crit edge
+	Tooltip:
+		'''
+		Standing still banks damping charge; taking knockback bursts it into a ring of counter shards
+		Detonating the orb instead raises a kinetic barrier in front of you that shatters forward into counter fragments
+		All but eliminates spread and grants a small crit edge, with slightly lower fire rate
+		'''
 }
 
 LightStockModule: {
 	DisplayName: Light Stock
-	Tooltip: Carbon-composite frame greatly increases fire rate at a mild cost to stability and per-shot power
+	Tooltip:
+		'''
+		The faster you move, the more readily beams and orbs fling off skim sub-beams that sweep the area
+		Sustained fast movement chains the sub-beams into pursuit, ideal for strafing long-bodied foes up close
+		Greatly raises fire rate at a mild cost to stability and per-shot power
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1931,12 +2012,22 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: Plasma Injector
-	Tooltip: High-enthalpy plasma injection vastly amplifies orb velocity and merged-beam damage, charging slightly slower
+	Tooltip:
+		'''
+		The orb sprays plasma needles to its flanks in flight, injecting seeds into anything they hit
+		Striking a seeded foe with a beam or laser, or detonating the orb nearby, collapses the seed into a searing plasma bloom
+		The more you inject, the fuller the bloom
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: Quantum Frame
-	Tooltip: Quantum steering circuits make beams turn smarter and orbs fly faster at slightly elevated mana cost
+	Tooltip:
+		'''
+		Beam hits leave quantum echo nodes on the field
+		Detonating the orb collapses every node toward the blast, each firing a derived beam before vanishing
+		Beams turn smarter and orbs fly faster at slightly elevated mana cost
+		'''
 }
 
 ScattershotBarrelModule: {
@@ -1946,7 +2037,11 @@ ScattershotBarrelModule: {
 
 ThermalOpticModule: {
 	DisplayName: Thermal Optic
-	Tooltip: Infrared lock makes beams cling to their target, doubling down with both precision and crit gains
+	Tooltip:
+		'''
+		Infrared lock makes beams cling to their target while stacking heat on every hit
+		Once heat maxes out the target suffers a heat-spot rupture, spewing searing shock all around
+		'''
 }
 
 VolatileFrameModule: {
@@ -2079,7 +2174,12 @@ ScrambleFieldModule: {
 
 BraceStockModule: {
 	DisplayName: Brace Stock
-	Tooltip: A heavy stabilizer brace eliminates all spread and extends beam range, trading a little fire rate for pinpoint accuracy
+	Tooltip:
+		'''
+		Eliminates all spread and extends beam range, trading fire rate for pinpoint accuracy
+		Launching the orb stakes an anchor at the muzzle, drawing a stabilizer line back to you
+		Foes along the line are restrained and slowed, and the anchor pulses suppression periodically
+		'''
 }
 
 LaunchStockModule: {
@@ -2176,9 +2276,9 @@ SniperOpticModule: {
 	DisplayName: Sniper Optic
 	Tooltip:
 		'''
-		Magnetic collimators dramatically increase projectile speed, range, and single-hit damage
-		At the cost of greatly reduced fire rate and near-zero homing
-		Best paired with the Focus Barrel for extreme long-range strikes
+		Greatly raises projectile speed and range at the cost of homing and fire rate
+		The farther the target you hit, the more an aiming ring builds; a full ring makes the next far hit fire a piercing lance
+		Point-blank hits build nothing, forcing you to open the distance for long-range picks
 		'''
 }
 
@@ -2212,15 +2312,21 @@ DarkMatterCoreModule: {
 
 ErgonomicStockModule: {
 	DisplayName: Ergonomic Stock
-	Tooltip: Precision ergonomic design substantially lowers mana cost with minor gains to fire rate and accuracy
+	Tooltip:
+		'''
+		Direction changes, dashes, and jumps open a brief fluid window from the fast movement
+		Beams fired during it curve along your motion and trail streaks of light
+		It also substantially lowers mana cost with minor fire rate and accuracy gains
+		'''
 }
 
 ExtenderStockModule: {
 	DisplayName: Extender Stock
 	Tooltip:
 		'''
-		An extended rail grants beams greater range and flight speed at minimal damage cost
-		Stack with the Sniper Optic for extreme long-range coverage
+		Greatly extends beam range and launch speed
+		Beams that expire naturally leave a relay node at their end; later beams passing by are relayed onward another stretch
+		Carrying firepower leg by leg to far greater distances
 		'''
 }
 

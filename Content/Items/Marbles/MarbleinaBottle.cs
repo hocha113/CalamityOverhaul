@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
 
         public override void AddRecipes() {
             CreateRecipe()
-                .AddIngredient(ItemID.MarbleBlock, 14)
+                .AddIngredient(ItemID.Marble, 14)
                 .AddIngredient(ItemID.Bottle)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 5)
                 .AddTile(TileID.Anvils)
