@@ -127,6 +127,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         ToggleRequest,
         ForceStopRequest,
         SyncSession,
+        SyncPlayerCurse,
     }
 
     /// <summary>
@@ -194,7 +195,13 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         internal static bool IsBoxPlaying(Point16 position) => active && boxPosition == position;
 
-        internal static bool IsPlayerCursed(Player player) => active && player != null && player.active && !player.dead;
+        internal static bool IsPlayerCursed(Player player) {
+            if (player == null || !player.active || player.dead) {
+                return false;
+            }
+
+            return active || player.GetModPlayer<SirenMusicalBoxPlayer>().HasActiveCurse;
+        }
 
         internal static bool TryGetCurrentSession(out Point16 position, out Vector2 center) {
             position = boxPosition;
@@ -239,6 +246,9 @@ namespace CalamityOverhaul.Content.Items.Tools
                     break;
                 case SirenMusicalBoxPacket.SyncSession:
                     ReceiveSessionSync(reader);
+                    break;
+                case SirenMusicalBoxPacket.SyncPlayerCurse:
+                    SirenMusicalBoxPlayer.ReceiveCurseSync(reader, whoAmI);
                     break;
             }
         }
@@ -386,6 +396,12 @@ namespace CalamityOverhaul.Content.Items.Tools
             return sirenMusicSlot;
         }
 
+        internal static void ApplySirenMusic() {
+            if (!Main.dedServ) {
+                Main.newMusic = Main.musicBox2 = GetSirenMusicSlot();
+            }
+        }
+
         private static void SyncSession(bool playStopEffects = false, Vector2 stopEffectCenter = default, int toClient = -1, int ignoreClient = -1) {
             if (Main.netMode == NetmodeID.SinglePlayer) {
                 return;
@@ -438,14 +454,27 @@ namespace CalamityOverhaul.Content.Items.Tools
     internal class SirenMusicalBoxPlayer : ModPlayer
     {
         public const int MusicDuration = 60 * 23;
+        private const int CurseResolveDeathWindow = 15;
 
         public bool IsCursed;
         public bool HasSirenMusicalBox;
 
         private int particleTimer;
         private bool deathTriggered;
+        private bool curseActive;
+        private bool curseResolvingDeath;
+        private int curseTimer;
+        private int curseResolveTimer;
+
+        private bool syncedCurseActive;
+        private bool syncedCurseResolvingDeath;
+        private int syncedCurseTimerBucket;
+
+        internal bool HasActiveCurse => curseActive && Player != null && Player.active && !Player.dead;
+        internal float CurseTimerRatio => MathHelper.Clamp(curseTimer / (float)MusicDuration, 0f, 1f);
 
         public override void PreUpdate() {
+            AttachWorldCurse();
             IsCursed = SirenMusicalSystem.IsPlayerCursed(Player);
         }
 
@@ -456,13 +485,19 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            if (SirenMusicalSystem.ResolveDeath && Player.whoAmI == Main.myPlayer && !deathTriggered) {
+            UpdateMindCurse();
+
+            if (curseResolvingDeath && Player.whoAmI == Main.myPlayer && !deathTriggered) {
                 deathTriggered = true;
                 ExecuteDeath();
             }
 
             if (Main.dedServ) {
                 return;
+            }
+
+            if (Player.whoAmI == Main.myPlayer) {
+                SirenMusicalSystem.ApplySirenMusic();
             }
 
             particleTimer++;
@@ -474,16 +509,80 @@ namespace CalamityOverhaul.Content.Items.Tools
         public override void OnRespawn() {
             IsCursed = false;
             deathTriggered = false;
+            ClearCurse();
+        }
+
+        public override void OnEnterWorld() {
+            if (curseActive && Main.netMode == NetmodeID.MultiplayerClient) {
+                SendCurseSync(Player);
+            }
         }
 
         public override void SaveData(TagCompound tag) {
             tag["HasSirenMusicalBox"] = HasSirenMusicalBox;
+
+            if (!curseActive) {
+                return;
+            }
+
+            tag["SirenMusicalBoxCurseActive"] = curseActive;
+            tag["SirenMusicalBoxCurseResolvingDeath"] = curseResolvingDeath;
+            tag["SirenMusicalBoxCurseTimer"] = curseTimer;
+            tag["SirenMusicalBoxCurseResolveTimer"] = curseResolveTimer;
         }
 
         public override void LoadData(TagCompound tag) {
             if (tag.TryGet("HasSirenMusicalBox", out bool value)) {
                 HasSirenMusicalBox = value;
             }
+
+            curseActive = tag.TryGet("SirenMusicalBoxCurseActive", out bool savedCurseActive) && savedCurseActive;
+            curseResolvingDeath = false;
+            curseTimer = 0;
+            curseResolveTimer = 0;
+            deathTriggered = false;
+
+            if (!curseActive) {
+                return;
+            }
+
+            if (tag.TryGet("SirenMusicalBoxCurseTimer", out int savedCurseTimer)) {
+                curseTimer = Math.Clamp(savedCurseTimer, 0, MusicDuration);
+            }
+            if (tag.TryGet("SirenMusicalBoxCurseResolvingDeath", out bool savedResolvingDeath)) {
+                curseResolvingDeath = savedResolvingDeath;
+            }
+            if (tag.TryGet("SirenMusicalBoxCurseResolveTimer", out int savedResolveTimer)) {
+                curseResolveTimer = savedResolveTimer;
+            }
+
+            if (curseTimer >= MusicDuration) {
+                BeginCurseResolveDeath();
+            }
+            else if (curseResolvingDeath) {
+                curseResolveTimer = Math.Clamp(curseResolveTimer, 1, CurseResolveDeathWindow);
+            }
+        }
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
+            SendCurseSync(Player, toWho, fromWho);
+        }
+
+        public override void SendClientChanges(ModPlayer clientPlayer) {
+            SirenMusicalBoxPlayer clone = (SirenMusicalBoxPlayer)clientPlayer;
+            int timerBucket = curseTimer / 60;
+            if (clone.syncedCurseActive != curseActive
+                || clone.syncedCurseResolvingDeath != curseResolvingDeath
+                || clone.syncedCurseTimerBucket != timerBucket) {
+                SendCurseSync(Player);
+            }
+        }
+
+        public override void CopyClientState(ModPlayer targetCopy) {
+            SirenMusicalBoxPlayer clone = (SirenMusicalBoxPlayer)targetCopy;
+            clone.syncedCurseActive = curseActive;
+            clone.syncedCurseResolvingDeath = curseResolvingDeath;
+            clone.syncedCurseTimerBucket = curseTimer / 60;
         }
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn,
@@ -503,7 +602,83 @@ namespace CalamityOverhaul.Content.Items.Tools
             HasSirenMusicalBox = true;
         }
 
-        internal static void StopAllMusicBoxes() => SirenMusicalSystem.RequestForceStop();
+        internal static void StopAllMusicBoxes(Player player = null) {
+            SirenMusicalSystem.RequestForceStop();
+            Player target = player ?? Main.LocalPlayer;
+            if (target != null && target.active && target.TryGetModPlayer(out SirenMusicalBoxPlayer sirenPlayer)) {
+                sirenPlayer.ClearCurse(sync: true);
+            }
+        }
+
+        internal static void ReceiveCurseSync(BinaryReader reader, int whoAmI) {
+            int playerIndex = reader.ReadByte();
+            bool active = reader.ReadBoolean();
+            bool resolvingDeath = reader.ReadBoolean();
+            int timer = reader.ReadInt32();
+            int resolveTimer = reader.ReadInt32();
+
+            if (Main.netMode == NetmodeID.Server && playerIndex != whoAmI) {
+                return;
+            }
+
+            if (playerIndex < 0 || playerIndex >= Main.maxPlayers) {
+                return;
+            }
+
+            Player player = Main.player[playerIndex];
+            if (player == null || !player.active) {
+                return;
+            }
+
+            player.GetModPlayer<SirenMusicalBoxPlayer>().ApplyCurseSync(active, resolvingDeath, timer, resolveTimer);
+
+            if (Main.netMode == NetmodeID.Server) {
+                SendCurseSync(player, -1, whoAmI);
+            }
+        }
+
+        private void AttachWorldCurse() {
+            if (Player.dead || !SirenMusicalSystem.Active) {
+                return;
+            }
+
+            curseActive = true;
+            curseTimer = Math.Max(curseTimer, SirenMusicalSystem.MusicTimer);
+
+            if (SirenMusicalSystem.ResolveDeath) {
+                BeginCurseResolveDeath();
+            }
+        }
+
+        private void UpdateMindCurse() {
+            if (!curseActive || Player.dead) {
+                return;
+            }
+
+            if (curseResolvingDeath) {
+                curseResolveTimer = Math.Max(curseResolveTimer - 1, 1);
+                return;
+            }
+
+            curseTimer++;
+            if (SirenMusicalSystem.Active) {
+                curseTimer = Math.Max(curseTimer, SirenMusicalSystem.MusicTimer);
+            }
+
+            if (curseTimer >= MusicDuration) {
+                curseTimer = MusicDuration;
+                BeginCurseResolveDeath();
+            }
+        }
+
+        private void BeginCurseResolveDeath() {
+            if (!curseActive) {
+                curseActive = true;
+            }
+
+            curseResolvingDeath = true;
+            curseResolveTimer = CurseResolveDeathWindow;
+        }
 
         private void ExecuteDeath() {
             if (Player.dead) {
@@ -529,6 +704,51 @@ namespace CalamityOverhaul.Content.Items.Tools
                 SirenMusicalBox.DeathText.ToNetworkText(Player.name)
             );
             Player.KillMe(damageSource, Player.statLifeMax2 * 10, 0, false);
+            ClearCurse(sync: true);
+        }
+
+        private void ApplyCurseSync(bool active, bool resolvingDeath, int timer, int resolveTimer) {
+            if (!active) {
+                ClearCurse();
+                return;
+            }
+
+            int syncedTimer = Math.Clamp(timer, 0, MusicDuration);
+            curseTimer = curseActive ? Math.Max(curseTimer, syncedTimer) : syncedTimer;
+            curseActive = true;
+            curseResolvingDeath = resolvingDeath || curseTimer >= MusicDuration;
+            curseResolveTimer = curseResolvingDeath
+                ? Math.Clamp(resolveTimer, 1, CurseResolveDeathWindow)
+                : 0;
+        }
+
+        private void ClearCurse(bool sync = false) {
+            curseActive = false;
+            curseResolvingDeath = false;
+            curseTimer = 0;
+            curseResolveTimer = 0;
+            particleTimer = 0;
+
+            if (sync) {
+                SendCurseSync(Player);
+            }
+        }
+
+        private static void SendCurseSync(Player player, int toWho = -1, int fromWho = -1) {
+            if (Main.netMode == NetmodeID.SinglePlayer || player == null || !player.active) {
+                return;
+            }
+
+            SirenMusicalBoxPlayer sirenPlayer = player.GetModPlayer<SirenMusicalBoxPlayer>();
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.SirenMusicalBoxToggle);
+            packet.Write((byte)SirenMusicalBoxPacket.SyncPlayerCurse);
+            packet.Write((byte)player.whoAmI);
+            packet.Write(sirenPlayer.curseActive);
+            packet.Write(sirenPlayer.curseResolvingDeath);
+            packet.Write(sirenPlayer.curseTimer);
+            packet.Write(sirenPlayer.curseResolveTimer);
+            packet.Send(toWho, fromWho);
         }
     }
 
@@ -539,7 +759,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            float timerRatio = SirenMusicalSystem.MusicTimer / (float)SirenMusicalBoxPlayer.MusicDuration;
+            float timerRatio = player.GetModPlayer<SirenMusicalBoxPlayer>().CurseTimerRatio;
 
             for (int layer = 0; layer < 2; layer++) {
                 float baseAngle = Main.GlobalTimeWrappedHourly * (2f + layer * 0.5f);
