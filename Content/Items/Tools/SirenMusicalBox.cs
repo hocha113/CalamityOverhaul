@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
@@ -434,34 +435,6 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    internal class SirenMusicalBoxPlayerDeath : PlayerOverride
-    {
-        public bool MusicHasEnded;
-
-        public override void ResetEffects() {
-            MusicHasEnded = false;
-        }
-
-        public override bool? On_PreKill(double damage, int hitDirection, bool pvp,
-            ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
-            if (MusicHasEnded) {
-                return true;
-            }
-
-            if (Player.GetModPlayer<SirenMusicalBoxPlayer>().IsCursed) {
-                if (Player.TryGetOverride(out HalibutPlayer halibutPlayer)
-                    && halibutPlayer.ResurrectionSystem.Ratio == 1f) {
-                    return true;
-                }
-
-                Player.statLife = Math.Clamp(Player.statLife, 1, Player.statLifeMax2);
-                return false;
-            }
-
-            return null;
-        }
-    }
-
     internal class SirenMusicalBoxPlayer : ModPlayer
     {
         public const int MusicDuration = 60 * 23;
@@ -537,7 +510,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            if (Player.TryGetOverride(out SirenMusicalBoxPlayerDeath deathOverride)) {
+            if (Player.TryGetOverride(out PlayerDeath deathOverride)) {
                 deathOverride.MusicHasEnded = true;
             }
 

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Players;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -374,7 +375,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 DeathText.ToNetworkText(Player.name)
             );
 
-            if (Player.TryGetOverride<SirenMusicalBoxPlayerDeath>(out var sirenDeath)) {
+            if (Player.TryGetOverride<PlayerDeath>(out var sirenDeath)) {
                 sirenDeath.MusicHasEnded = true;
             }
             //杀死玩家

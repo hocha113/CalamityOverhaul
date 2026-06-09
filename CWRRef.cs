@@ -8,6 +8,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
+using CalamityOverhaul.Content.Players;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -1339,11 +1340,11 @@ namespace CalamityOverhaul
         }
 
         public static void On_KillPlayer_Hook(Action<ModPlayer> orig, ModPlayer modPlayer) {
-            if (modPlayer?.Player?.TryGetOverride<SirenMusicalBoxPlayerDeath>(out var sirenMusicalBoxPlayerDeath) == true) {
+            if (modPlayer?.Player?.TryGetOverride<PlayerDeath>(out var playerDeath) == true) {
                 bool pvp = false;
                 bool playSound = false;
                 PlayerDeathReason damageSource = null;
-                if (sirenMusicalBoxPlayerDeath.On_PreKill(9999, 1, false, ref pvp, ref playSound, ref damageSource) == false) {
+                if (playerDeath.On_PreKill(9999, 1, false, ref pvp, ref playSound, ref damageSource) == false) {
                     return;
                 }
             }

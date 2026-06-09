@@ -7,13 +7,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Players
 {
-    internal class RippersPlayer : PlayerOverride, ICWRLoader
+    internal class PlayerRippers : PlayerOverride, ICWRLoader
     {
         public static List<int> noRippersProj = [];
-
-        public static RippersPlayer Instance;
         void ICWRLoader.SetupData() {
-            Instance = this;
             noRippersProj = [
                 ModContent.ProjectileType<MuraExecutionCut>(),
                 ModContent.ProjectileType<StormGoddessSpearHeld>(),
@@ -23,7 +20,6 @@ namespace CalamityOverhaul.Content.Players
         }
 
         void ICWRLoader.UnLoadData() {
-            Instance = null;
             noRippersProj?.Clear();
         }
 
