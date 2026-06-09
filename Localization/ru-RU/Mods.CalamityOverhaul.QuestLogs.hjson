@@ -222,9 +222,9 @@ QuestNode: {
 	}
 
 	OldDukeQuest: {
-		DisplayName: Старый герцог
-		Description: Победить Старого герцога
-		QuestObjective.Description: Победить Старого герцога
+		DisplayName: Наследный герцог Серного моря
+		Description: Победить наследного герцога Серного моря
+		QuestObjective.Description: Победить наследного герцога Серного моря
 		QuestReward.Description: 20 разъеденных ископаемых
 		DetailedDescription: Древний владыка глубин Сернистого моря, сочетание мутации и силы. Остерегайтесь его ядовитого пара.
 	}
@@ -233,7 +233,7 @@ QuestNode: {
 		DisplayName: Полтергаст
 		Description: Победить Полтергаста
 		QuestObjective.Description: Победить Полтергаста
-		QuestReward.Description: 10 эктоплазмы
+		QuestReward.Description: 10 душ фантомного цветка
 		DetailedDescription: Монстр, созданный из скопления душ, погибших в Темнице. Усмирите их гнев.
 	}
 
@@ -502,10 +502,10 @@ QuestNode: {
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Получить Длинный лук Небесного падения
+		QuestObjective.Description: Получить Лук Бесконечности
 		QuestReward.Description: 5 бесконечных слитков
-		DisplayName: Длинный лук Небесного падения
-		Description: Получить Длинный лук Небесного падения
+		DisplayName: Лук Бесконечности
+		Description: Получить Лук Бесконечности
 		DetailedDescription: Длинный лук, когда-то сразивший богов. Теперь он снова явлен миру.
 	}
 
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Пройти Босс Раш 5 раз, получив более 5 древних вечных камней
+		QuestObjective.Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
 		QuestReward.Description: 5 древних вечных камней
 		DisplayName: Цикл войны
-		Description: Пройти Босс Раш 5 раз, получив более 5 древних вечных камней
+		Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
 		DetailedDescription: Символ истинного воина.
 	}
 

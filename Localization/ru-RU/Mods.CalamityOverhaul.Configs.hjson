@@ -1,5 +1,5 @@
 CWRServerConfig: {
-	DisplayName: Конфигурация контента
+	DisplayName: Настройки контента
 
 	WeaponOverhaul: {
 		Label: Переработка оружия
@@ -107,7 +107,7 @@ CWRServerConfig: {
 	}
 
 	GenJunkmanBase: {
-		Label: Генерация базы Старьевщика
+		Label: Генерация базы мусорщиков
 		Tooltip: Создает укрепленную базу мусорщиков в пустошах или под землей.
 	}
 
@@ -117,10 +117,10 @@ CWRServerConfig: {
 	}
 
 	GenSylvanOutpost: {
-		Label: Генерация лесного аванпоста
+		Label: Генерация лесной заставы
 		Tooltip: Создает деревянные посты эльфов или лесных стражей в глубине чащи.
 	}
 
 	ConfigChangePrefix: Пользователь
-	ConfigChangeSuffix: Конфигурация сервера была изменена
+	ConfigChangeSuffix: изменил(а) настройки сервера
 }

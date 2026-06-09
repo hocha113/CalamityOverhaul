@@ -249,7 +249,7 @@ ThrowerUI: {
 SHPCSoulSelectUI: {
 	TitleText: Ядро Души
 	SoulNameLight: Свет
-	SoulNameNight: Ночь
+	SoulNameNight: Тень
 	SoulNameFlight: Полет
 	SoulNameMight: Могущество
 	SoulNameSight: Прозрение
@@ -468,7 +468,7 @@ HackTime: {
 	Done: Готово
 	Queued: В очереди
 	UploadingText: Загрузка...
-	BreachReady: Протокол взлома готов
+	BreachReady: Протокол прорыва готов
 	UploadComplete: >> Загрузка завершена <<
 	UploadQueue: Очередь загрузки
 	TargetLocked: Цель захвачена
@@ -654,7 +654,7 @@ DecryptionStrings: {
 	DecryptionPanelSubtitleMessage: Воспроизведение декодированного сигнала
 	DecryptionPanelTerminalId: TERM-ID ▸ {0}
 	DecryptionPanelCoordinate: ΔPOS ▸ {0}, {1}
-	DecryptionPanelSignalLock: Мощность сигнала
+	DecryptionPanelSignalLock: Сила блокировки сигнала
 	DecryptionPanelSignalLockValue: "{0}%"
 	DecryptionPanelFooter: "[ESC] Отключиться    [ЛКМ] Взаимодействовать    [?] Помощь"
 	DecryptionPanelHintLocked: Сигнальный слой закрыт зашифрованной сеткой. Нажмите [Пробел] или [Начать взлом], чтобы ввести последовательность.

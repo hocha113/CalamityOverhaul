@@ -186,7 +186,7 @@ FishoilDrinkEffect.DisplayName: Прилив жизненных сил
 MiniWhiteWyvern.DisplayName: Хвост белой виверны
 WhiteWyvernTailController.DisplayName: Хвост белой виверны
 ScorpionSentry.DisplayName: Страж-скорпион
-HeartcarverDagger.DisplayName: Ритуальный кинжал
+HeartcarverDagger.DisplayName: Кинжал Карвера сердец
 OniHandExplode.DisplayName: Взрыв руки демона
 OniHandMinion.DisplayName: Рука демона
 OniFireBall.DisplayName: Огонь руки демона
@@ -214,9 +214,9 @@ FrostSnowflakeProjectile.DisplayName: Морозная снежинка
 PandemoniumCircle.DisplayName: Круг Пандемониума
 PandemoniumQSkill.DisplayName: Завершение Пандемониума
 PandemoniumFirePillar.DisplayName: Огненный столб Пандемониума
-PandemoniumRSkill.DisplayName: Супер-завершение Пандемониума
+PandemoniumRSkill.DisplayName: Конец Пандемониума
 JusticeCrossMark.DisplayName: Вердикт правосудия
-HeartcarverDash.DisplayName: Пронзающий сердце рывок
+HeartcarverDash.DisplayName: Рывок Карвера сердец
 ProverbsCircle.DisplayName: Руна серного огня
 StormGoddess.DisplayName: Богиня штормов
 JusticeUnveiledCross.DisplayName: Явленная справедливость

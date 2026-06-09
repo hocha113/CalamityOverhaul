@@ -14,8 +14,8 @@ VoidErosion: {
 }
 
 DestroyerSummonBuff: {
-	DisplayName: Разрушитель
-	Description: Мини-Разрушитель будет следовать за вами в бою
+	DisplayName: Уничтожитель
+	Description: Мини-Уничтожитель будет следовать за вами в бою
 }
 
 FrenziedMachineSoul: {

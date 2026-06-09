@@ -50,7 +50,7 @@ Resurrections: {
 
 QuickHack: {
 	SynapseBurn: {
-		DisplayName: Плавление синапсов
+		DisplayName: Сжигание синапсов
 		Description: Перегружает нейронные синапсы цели, нанося продолжительный термический урон.
 	}
 
@@ -70,7 +70,7 @@ QuickHack: {
 	}
 
 	OpticOverload: {
-		DisplayName: Сбой оптики
+		DisplayName: Перегрузка зрения
 		Description: Ослепляет цель, лишая ее возможности воспринимать окружение.
 	}
 
@@ -80,7 +80,7 @@ QuickHack: {
 	}
 
 	Contagion: {
-		DisplayName: Заражение
+		DisplayName: Распространение
 		Description: Внедряет самовоспроизводящуюся вредоносную программу, распространяющуюся на ближайшие цели.
 	}
 
@@ -90,7 +90,7 @@ QuickHack: {
 	}
 
 	TilePhase: {
-		DisplayName: Протокол сдвига
+		DisplayName: Протокол фазирования
 		Description: Искажает физические свойства блока, делая его бестелесным на некоторое время.
 	}
 
@@ -120,7 +120,7 @@ QuickHack: {
 	}
 
 	SystemHalt: {
-		DisplayName: Сбой системы
+		DisplayName: Зависание
 		Description: Заставляет цель ненадолго замереть и прекратить любые действия.
 	}
 
