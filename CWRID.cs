@@ -75,6 +75,7 @@ namespace CalamityOverhaul
         public static int Item_PurifiedGel => Get();
         public static int Item_VulcaniteLance => Get();
         public static int Item_Brimlance => Get();
+        public static int Item_AscendantSpiritEssence => Get();
         public static int Item_ContinentalGreatbow => Get();
         public static int Item_BrimstoneFury => Get();
         public static int Item_Helstorm => Get();

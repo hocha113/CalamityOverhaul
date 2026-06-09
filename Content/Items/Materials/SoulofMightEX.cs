@@ -22,5 +22,14 @@ namespace CalamityOverhaul.Content.Items.Materials
             Item.useAnimation = Item.useTime = 15;
             Item.useStyle = ItemUseStyleID.HoldUp;
         }
+
+        public override void AddRecipes() {
+            if (CWRID.Item_AscendantSpiritEssence > 0) {
+                CreateRecipe().
+                    AddIngredient(ItemID.SoulofMight, 5).
+                    AddIngredient(CWRID.Item_AscendantSpiritEssence).
+                    Register();
+            }
+        }
     }
 }
