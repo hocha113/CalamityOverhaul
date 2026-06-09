@@ -165,7 +165,7 @@ TileNameFallback: {
 	ClosedDoor: Дверь
 	OpenDoor: Дверь
 	Heart: Хрустальное сердце
-	Bottle: Банка
+	Bottle: Бутылка
 	Table: Стол
 	Chair: Стул
 	Anvil: Наковальня
@@ -207,7 +207,7 @@ TileNameFallback: {
 	Vine: Лоза
 	Sand: Песок
 	Glass: Стекло
-	Sign: Знак
+	Sign: Табличка
 	Obsidian: Обсидиан
 	Ash: Пепел
 	Hellstone: Адский камень
@@ -234,9 +234,9 @@ TileNameFallback: {
 	Bed: Кровать
 	Cactus: Кактус
 	Coral: Коралл
-	ImmatureHerb: Росток травы
-	MatureHerb: Созревшая трава
-	BloomingHerb: Цветущая трава
+	ImmatureHerb: Незрелое травяное растение
+	MatureHerb: Созревшее травяное растение
+	BloomingHerb: Цветущее травяное растение
 	Tombstone: Надгробие
 	Loom: Ткацкий станок
 	Piano: Пианино

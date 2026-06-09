@@ -14,7 +14,7 @@ ElectricMinRocket: {
 
 WGGLifeWeaver: {
 	TurretBatteryDepleted: Батарея разряжена
-	DisplayName: Ткач жизни пустошей
+	DisplayName: Сажатель деревьев пустошей
 	Tooltip: ""
 }
 

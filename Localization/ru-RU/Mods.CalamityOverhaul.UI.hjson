@@ -51,7 +51,7 @@ ExoMechdusaSumRender: {
 }
 
 CQETConstructorTP: {
-	GuideText_NeedBlocks: Требуется {0} экзо-пластин
+	GuideText_NeedBlocks: Требуется {0} блоков звездного потока
 	GuideText_Ready: Готово!
 	GuideText_GroundIncomplete: Неровная поверхность!
 }
@@ -835,7 +835,7 @@ BulletinBoardUI: {
 	MenuHoverLabel: Перейти к репозиторию мода :)
 	WikiLabel: Wiki мода
 	FeedbackLabel: Обратная связь
-	LogLabel: Список изменений
+	LogLabel: Просмотреть лог
 	AcknowledgmentLabel: Особая благодарность
 }
 
@@ -851,20 +851,9 @@ CWRPlayer: {
 	Error_HookFailure: Один из хуков вышел из строя. Закройте игру и запустите её снова, чтобы восстановить нормальную работу. Если проблема не исчезнет, приложите экспортированный лог и обратитесь к разработчику мода
 	OnEnterWorld_ImproveGameWarning:
 		'''
-		Обнаружено, что у вас установлен мод [Лучший Terraria], но его версия устарела.
-		Для стабильной работы игры обновите [Лучший Terraria] до версии не ниже 1.7.1.7.
+		Обнаружено, что у вас установлен мод [ImproveGame], но его версия устарела.
+		Для стабильной работы игры обновите [ImproveGame] до версии не ниже 1.7.1.7.
 		'''
 	HellfireExplosionDeathReason: "{0} сгорел в адском пламени"
 	SoulfireExplosionDeathReason: "{0} — душа воспламенилась"
-
-	CWRPlayer: {
-		Error_HookFailure: Один из хуков вышел из строя. Закройте игру и запустите её снова, чтобы восстановить нормальную работу. Если проблема не исчезнет, приложите экспортированный лог и обратитесь к разработчику мода
-		OnEnterWorld_ImproveGameWarning:
-			'''
-			Обнаружено, что у вас установлен мод [Лучший Terraria], но его версия устарела.
-			Для стабильной работы игры обновите [Лучший Terraria] до версии не ниже 1.7.1.7.
-			'''
-		HellfireExplosionDeathReason: "{0} сгорел в адском пламени"
-		SoulfireExplosionDeathReason: "{0} — душа воспламенилась"
-	}
 }
