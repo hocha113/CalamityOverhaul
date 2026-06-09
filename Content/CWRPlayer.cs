@@ -223,6 +223,9 @@ namespace CalamityOverhaul.Content
         /// 抬棺人下一发弩箭的伤害倍率，默认为1
         /// </summary>
         public float PallbearerNextArrowDamageMult = 1;
+
+        [Obsolete("已经过时，目前保留仅用作外部联动兼容")]
+        public float PressureIncrease;
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
