@@ -150,7 +150,7 @@ FishHoney: {
 	Tooltip:
 		'''
 		Rechtsklick: Beschwöre einen Schwarm umkreisender Bienen.
-		Bei Feindkontakt greifen sie aktiv an.
+		Sobald sie Feinde entdecken, greifen sie aktiv an.
 		'''
 	Studied: Aus irgendeinem Grund hat er Angst vor Welsen.
 }
@@ -181,7 +181,7 @@ FishCursed: {
 	Tooltip:
 		'''
 		Beim Schießen werden verfluchte Flammen gestreut.
-		Sie fallen unter Anti-Schwerkraft nach unten.
+		Nach dem Abschuss fallen sie entgegen der Schwerkraft.
 		'''
 	Studied: Er verbrennt die Angel gar nicht!?
 }
@@ -388,7 +388,7 @@ FishCrimsonTiger: {
 	Tooltip:
 		'''
 		Rechtsklick: Beschwöre Purpur-Tigerfische, die dir folgen.
-		Bei Feindkontakt greifen sie aktiv an.
+		Sobald sie Feinde entdecken, greifen sie aktiv an.
 		'''
 	Studied: Sie wirken ziemlich aggressiv.
 }

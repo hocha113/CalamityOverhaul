@@ -121,7 +121,7 @@ NeutronMagchStar.DisplayName: Neutronenstern
 NeutronWandExplode.DisplayName: Neutronenstab-Explosion
 DivineSourceBeam.DisplayName: Göttlicher Quellstrahl
 DivineSourceBladeProjectile.DisplayName: Göttliche Quellklinge
-DragonsScaleGreatswordBeam.DisplayName: Drachenschuppen-Großschwertstrahl
+DragonsScaleGreatswordBeam.DisplayName: Drachentang-Großklingenstrahl
 SporeCloud.DisplayName: Sporenwolke
 EXNeutronExplode.DisplayName: Neutronenexplosion EX
 NeutronExplode.DisplayName: Neutronenexplosion
@@ -276,7 +276,7 @@ SHPCCoralAnchorProj.DisplayName: Korallenanker
 SHPCCumulusNodeProj.DisplayName: Kumulusknoten
 SHPCFrostfernLineProj.DisplayName: Frostfarnstrahl
 SHPCHiveDroneProj.DisplayName: Schwarmdrohne
-SHPCMagmaVentProj.DisplayName: Magmaventil
+SHPCMagmaVentProj.DisplayName: Magmaschlot
 SHPCMoondewPrismProj.DisplayName: Mondtau-Prisma
 SHPCMossPatchProj.DisplayName: Moospolster
 SHPCObsidianShardProj.DisplayName: Obsidiansplitter

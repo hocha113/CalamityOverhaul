@@ -1,14 +1,7 @@
 ElectricMinRocket: {
 	EnergyShortage: Energiemangel
 	DisplayName: Elektrische Minirakete
-	Tooltip:
-		'''
-		Rechtsklick zum Benutzen der Rakete, oder auf den Boden legen und Rechtsklick zum Start des Flugs
-		In der Luft mit Links-/Rechts-Pfeiltasten steuern
-		Gedrückte Abwärtspfeiltaste für langsames Sinken; Flug verbraucht nach und nach Strom
-		Leertaste unterbricht den Flug
-		„Sowjetische Herstellung, robust und zuverlässig – sie hätte fast den Mond erreicht“
-		'''
+	Tooltip: ""
 }
 
 WGGLifeWeaver: {

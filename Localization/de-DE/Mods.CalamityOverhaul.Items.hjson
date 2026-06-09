@@ -18,6 +18,7 @@ ElementWhip: {
 	DisplayName: Elementarpeitsche
 	Tooltip:
 		'''
+		{$CommonItemTooltip.Whips}
 		Verbrennt Feinde mit elementarem Feuer
 		"Die Urkraft von Terra durchdringt zusammen mit den Elementen des Universums die Welt"
 		'''
@@ -43,7 +44,11 @@ TheLuxirSoulArtifact: {
 
 AzureDragonRage: {
 	DisplayName: Zorn des Azurdrachen
-	Tooltip: Hat einen starken Duft von frischem Gras
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		Verströmt einen kräftigen Duft nach frischem Gras
+		'''
 }
 
 BleedingScourge: {
@@ -55,7 +60,8 @@ GhostFireWhip: {
 	DisplayName: Geisterfeuerpeitsche
 	Tooltip:
 		'''
-		Ein sehr langer Peitsche, gefertigt aus der Wut der Geister im Kerker
+		{$CommonItemTooltip.Whips}
+		Eine sehr lange Peitsche, gewoben aus dem Zorn der Geister im Kerker
 		[c/d4bc75:Reine Leidenschaft aus der Hölle ermutigt dich, herauszufinden, wer dich ungerecht behandelt hat]
 		'''
 }
@@ -80,13 +86,13 @@ FoodStallChair: {
 }
 
 Arbiter: {
-	DisplayName: Schlichter
+	DisplayName: Verdammnisrichter
 	Tooltip:
 		'''
 		Linksklick gedrückt halten, um die Axt des Urteils aufzuladen und zu heben
 		Loslassen, um nach unten zu schlagen und eine bodennahe Feuerwelle zu beiden Seiten auszubreiten
 		Längeres Aufladen erhöht Reichweite und Stärke der Flammen
-		"Das Urteil steigt aus den Flammen herab"
+		"Das Urteil steigt aus dem Feuer empor"
 		'''
 }
 
@@ -193,7 +199,7 @@ DarkMatterBall: {
 }
 
 NeutronStarIngot: {
-	DisplayName: Neutronensternverdichter
+	DisplayName: Neutronensternbarren
 	Tooltip: Das Gewicht des Universums in deinen Fingerspitzen
 }
 
@@ -280,7 +286,7 @@ StormGoddessSpear: {
 }
 
 DragonsScaleGreatsword: {
-	DisplayName: Drachenschuppen-Großschwert
+	DisplayName: Drachentang-Großklinge
 	Tooltip:
 		'''
 		Schießt spiralförmige Algenklingen ab, die beim Aufprall in Giftwolken explodieren
@@ -334,43 +340,59 @@ BarrenBow: {
 }
 
 ElementMuzzleBrake: {
-	DisplayName: Elementarer Schalldämpfer
+	DisplayName: Elementarer Mündungsstabilisator
 	Tooltip:
 		'''
 		Reduziert Rückstoß und Patronendruck um 65%
 		Verringert Fernschaden um 5%
 		Erhöht kritische Trefferchance auf Distanz um 15%
+		Gegner entdecken dich schwerer
 		'''
 }
 
 EyeOfSingularity: {
-	DisplayName: Neutronenstern-Stabilisator
+	DisplayName: Singularitätshorizont
 	Tooltip:
 		'''
-		Neutralisiert vollständig Rückstoß und Patronendruck
 		Erhöht Fernschaden um 100%
 		Erhöht kritische Trefferchance auf Distanz um 100%
-		Verbessert erheblich Fernprojektile
+		Erhöht Fernkampf-Feuerrate um 100% und verbraucht keine Munition mehr
+		Erhöht den kritischen Schadensmultiplikator aller Fernkampfwaffen auf 500%
+		Deine Fernkampfprojektile zerreißen den Raum und erzeugen bei Treffern Miniatur-Schwarze-Löcher, die nahe Gegner anziehen und zermahlen
+		Im Stillstand trittst du in den Ereignishorizont-Zustand ein:
+		  Unsichtbar und immun gegen jeden Kontaktschaden
+		  Beim Schießen werden zusätzlich zielsuchende Gammastrahlen-Ausbrüche freigesetzt
+		Erhält Quantenversatz: Drücke [KEY], um zur Cursorposition zu teleportieren und feindliche Projektile auf dem Weg zu löschen
+		Rechtsklick aktiviert das Kollapsprotokoll:
+		  Verbraucht sämtliches Mana; für die nächsten 10 Sekunden ignorieren alle Fernkampfangriffe Immunitätsframes und erzwingen kritische Treffer
+		  Abklingzeit: 60 Sekunden
+		Bei einem tödlichen Treffer wirst du zu einer Supernova, verursachst extremen Flächenschaden und setzt dich nach 3 Sekunden an sicherer Position wieder zusammen
+		Dieser Effekt hat 60 Sekunden Abklingzeit
+		[c/33ff33:"Der schlafende Drachengott koppelt sich an deine Nerven und dekonstruiert die Grundlogik der Maschinenseelen"]
+		[c/ffaa00:"Das gierige Sternbild verschlingt dein Mündungsfeuer und saugt die letzte Restwärme erlöschender Sterne auf"]
+		[c/00ffff:"Der unsichtbare Todesgott wird zu deinem Schatten und erntet das unausweichliche Schicksal, das alle Wesen gleichmacht"]
 		'''
 }
 
 PrecisionMuzzleBrake: {
-	DisplayName: Hochpräziser Schalldämpfer
+	DisplayName: Hochpräziser Mündungsstabilisator
 	Tooltip:
 		'''
 		Reduziert Rückstoß und Patronendruck um 55%
 		Verringert Fernschaden um 10%
 		Erhöht kritische Trefferchance auf Distanz um 10%
+		Gegner entdecken dich schwerer
 		'''
 }
 
 SimpleMuzzleBrake: {
-	DisplayName: Einfacher Schalldämpfer
+	DisplayName: Einfacher Mündungsstabilisator
 	Tooltip:
 		'''
 		Reduziert Rückstoß und Patronendruck um 40%
 		Verringert Fernschaden um 15%
 		Erhöht kritische Trefferchance auf Distanz um 5%
+		Gegner entdecken dich schwerer
 		'''
 }
 
@@ -434,7 +456,7 @@ AvalancheM60: {
 		Verwendet Schneebälle als Munition
 		Feuert eine große Menge Schneebälle ab; die Feuerkraft steigt mit abnehmender Munition
 		Alle 20 Schüsse löst eine Überlastexplosion aus, die eine kleine Lawine erzeugt
-		"Elisabeth, lass uns Schneeballschlacht machen"
+		"Denji, lass uns eine Schneeballschlacht machen"
 		'''
 }
 
@@ -453,8 +475,9 @@ DarkFrostSolstice: {
 	Tooltip:
 		'''
 		Verwendet Schneebälle als Munition
-		Feuert Hagel und polare Feuer ab
-		Alle 20 Schüsse löst eine Überlastexplosion aus, ruft göttliche Winterstürme am Mauszeiger hervor
+		Feuert Hagel und Polarflammen ab
+		Angriffe können Gegner einfrieren
+		Alle 20 Schüsse löst eine Überlastexplosion aus und erzeugt am Cursor eine gewaltige Eissäule
 		'''
 }
 
@@ -572,6 +595,7 @@ HghExplosiveBox: {
 		Zum Bereitstellen gedrückt halten. Nach dem Einsatz mit einer Waffe das 
 		Munitionslager mit einem Rechtsklick anklicken, um spezielle Munition ins Magazin zu laden.
 		Spezialmunition kann mit der Wirkung von normalen Kugeln kombiniert werden.
+		Die Geschossspitzen enthalten hochexplosiven Sprengstoff und erzeugen beim Treffer eine kleine Explosion.
 		"Schieß sie in den Himmel!"
 		'''
 }
@@ -727,7 +751,7 @@ HandmadeDoll: {
 }
 
 Snowblindness: {
-	DisplayName: Schneemonster
+	DisplayName: Schneeblindheit
 	Tooltip:
 		'''
 		Hochfrequentes Abschießen von Schneebällen und eisigen Strahlen
@@ -741,6 +765,7 @@ WhiplashGalactica: {
 	DisplayName: Galaktische Peitsche
 	Tooltip:
 		'''
+		{$CommonItemTooltip.Whips}
 		Bei einem Treffer wird der Feind markiert und kosmische Feuerbälle werden abgeschossen
 		"Die Wirbelsäule der kosmischen Riesenschlange, gefüllt mit kosmischer Energie, leitet den Zorn des Universums"
 		'''
@@ -1623,7 +1648,7 @@ Elysium: {
 	CelestialMeteorText: Himmelsmeteorit
 	SealStarsText: Fünfter Stern Sechster Stern Siebter Stern
 	HorsemenFullText: Alle vier Reiter versammelt
-	HorsemanArrivalText: Ritter des {0} erscheint
+	HorsemanArrivalText: Reiter des {0} erscheint
 	DiscipleJoinedText: "{0} ist beigetreten"
 	JudasBetrayalText: Judas' Verrat!
 	JudasDeathReasonText: "{0} wurde von Judas verraten"
@@ -1647,7 +1672,7 @@ Sandevistan: {
 	SkillName: Zeitverzögerung · Sandevistan
 	SkillDesc:
 		'''
-		Verlangsamt die wahrgenommene Zeit stark – du bewegst und handelst in scheinbarer Zeitlupe
+		Verlangsamt die wahrgenommene Zeit stark – du bewegst dich und greifst mit vervielfachter Geschwindigkeit an
 		Die Reserve leert sich im Betrieb und schaltet automatisch ab; danach natürliche Regeneration
 		Im Radial erneut wählen zum manuellen Ausschalten
 		'''
@@ -1947,7 +1972,7 @@ SwarmGripModule: {
 	Tooltip:
 		'''
 		Neuralnetz-Griff entlässt beim Detonieren stark zielsuchende Mikrokugeln
-		Kugelgeschwindigkeit und Mana-Verbrauch steigen als Gegenleistung
+		Die Anfangsgeschwindigkeit der Kugel sinkt, der Mana-Verbrauch steigt als Gegenleistung
 		'''
 }
 
@@ -2447,7 +2472,7 @@ TempestGripModule: {
 	Tooltip:
 		'''
 		Nach mehreren Treffern „Sturmausbruch“ – mehrere Lichtbögen um den letzten Einschlag
-		Einzelschaden und Mana leicht erhöht, rhythmisches Flächenräumen
+		Einzelschaden sinkt leicht, der Mana-Verbrauch steigt, dafür entsteht rhythmisches Flächenräumen
 		'''
 }
 
@@ -2499,15 +2524,15 @@ CWRItem: {
 	ItemLegendOnMouseLang: Halte [Shift] gedrückt, um die Geschichte zu hören...
 
 	CWRItem: {
-		// TemperatureText: Combustion Temperature
-		// InternalStoredEnergy: Stored Energy
-		// DeathModeItemText: Death Mode
-		/* LegendItemUpgradeDisable:
+		TemperatureText: Verbrennungstemperatur
+		InternalStoredEnergy: Gespeicherte Energie
+		DeathModeItemText: Todesmodus
+		LegendItemUpgradeDisable:
 			'''
-			This legendary weapon cannot be upgraded in the current world.
-			Re-enter the world to lift this restriction.
-			''' */
-		// ItemLegendOnMouseLang: Press 'Shift' to hear its story...
+			Diese legendäre Waffe kann in der aktuellen Welt nicht aufgewertet werden.
+			Betrete die Welt erneut, um diese Einschränkung aufzuheben.
+			'''
+		ItemLegendOnMouseLang: Halte [Shift] gedrückt, um die Geschichte zu hören...
 	}
 }
 
@@ -2515,9 +2540,9 @@ RMagicConch: {
 	DontUseMagicConch: Du wirst von einer mächtigen Kreatur beobachtet...
 
 	RMagicConch: {
-		// DontUseMagicConch: You're being watched by a powerful creature...
-		// DisplayName: Magic Conch
-		// Tooltip: Listen closely and you'll hear the ocean
+		DontUseMagicConch: Du wirst von einer mächtigen Kreatur beobachtet...
+		DisplayName: Magische Muschel
+		Tooltip: Hör genau hin, dann hörst du das Meer
 	}
 }
 

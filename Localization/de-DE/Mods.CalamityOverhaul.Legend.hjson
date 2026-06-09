@@ -115,7 +115,7 @@ HalibutText: {
 		EyeDesc9:
 			'''
 			Neun ist die Grenzzahl. Neun Augen bilden über deinem Kopf einen scheinbaren Abgrundring.
-			Der letzte Rest Menschlichkeit wurde vom Meer abgespült; was hier steht, ist eine Hülle, die ein endloses Leichenschiff trägt.
+			Der letzte Rest Menschlichkeit wurde vom Meer abgespült; was hier steht, ist eine Hülle, die ein endloses Leichenmeer trägt.
 			[Line]
 			Drücke [Halibut_Domain], um die Domäne zu öffnen oder zu schließen.
 			Drücke [Halibut_Teleport], um dich innerhalb der Domäne zu teleportieren.
@@ -155,7 +155,7 @@ HalibutText: {
 		Phase2: Du hörst Gezeiten, die nicht existieren; deine Extremitäten werden kalt.
 		Phase3: Die Halluzinationen nehmen zu. Der Druck der Tiefsee lastet auf Augen und Herz.
 		Phase4: Die Logik der Realität bricht zusammen; etwas Unheimliches und Kaltes schreibt dein Dasein um.
-		Phase5: Der Wendepunkt ist überschritten. Die Menschlichkeit verblasst — du wirst Teil des Leichenschiffs.
+		Phase5: Der Wendepunkt ist überschritten. Die Menschlichkeit verblasst — du wirst Teil dieses Leichenmeers.
 		Trend1: Fast stillstehend
 		Trend2: Langsames Einsickern
 		Trend3: Anhaltendes Aufsteigen

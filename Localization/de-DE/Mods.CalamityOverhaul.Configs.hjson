@@ -2,11 +2,11 @@ CWRServerConfig: {
 	DisplayName: Inhalts-Einstellungen
 
 	WeaponOverhaul: {
-		Label: Waffen Überholung
+		Label: Waffen-Overhaul
 		Tooltip:
 			'''
 			Durch Aktivierung werden die meisten Waffen geändert.
-			[c/FF0000:wenn Sie die optimale Erfahrung des Katastrophe-Overhaul-Inhalts wünschen, aktivieren Sie es bitte!]
+			[c/FF0000:Aktiviere diese Option, wenn du das Calamity-Overhaul-Erlebnis möglichst vollständig erleben möchtest!]
 			'''
 	}
 
@@ -30,10 +30,10 @@ CWRServerConfig: {
 	}
 
 	Headers: {
-		CWRSystem: Großreparatursystemeinstellungen
-		CWRWeapon: Großreparaturwaffeneinstellungen
-		CWRUI: Großreparatur-UI-Einstellungen
-		CWRWorldGen: Großreparatur-Struktureinstellungen
+		CWRSystem: Overhaul-Systemeinstellungen
+		CWRWeapon: Overhaul-Waffeneinstellungen
+		CWRUI: Overhaul-UI-Einstellungen
+		CWRWorldGen: Overhaul-Struktureinstellungen
 	}
 
 	LensEasing: {
@@ -59,7 +59,7 @@ CWRServerConfig: {
 			Stil 2: Verfeinert - Kompakt
 			Stil 3: Klassisch - Schwebend über dem Kopf
 			Stil 4: Klassisch - Kompakt
-			Stil 5: Conceal
+			Stil 5: Verborgen
 			'''
 	}
 

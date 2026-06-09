@@ -186,7 +186,7 @@ QuestNode: {
 		Description: Besiege die Fleischwand
 		QuestObjective.Description: Besiege die Fleischwand
 		QuestReward.Description: Hammer der Macht
-		DetailedDescription: Der Torwächter der Welt. Wirf die Führervoodoopuppe ins Lava und beginne den Hardmode.
+		DetailedDescription: Der Torwächter der Welt. Wirf die Voodoopuppe des Guides in die Lava, entfessle die uralte Gottheit dieser Welt und eröffne den Hardmode.
 	}
 
 	CeaselessVoidQuest: {
@@ -478,10 +478,10 @@ QuestNode: {
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Erhalte Fels
-		QuestReward.Description: 5 Fels
-		DisplayName: Fels
-		Description: Erhalte Fels
+		QuestObjective.Description: Erhalte uralte Ewigkeitssteine
+		QuestReward.Description: 5 uralte Ewigkeitssteine
+		DisplayName: Uralter Ewigkeitsstein
+		Description: Erhalte uralte Ewigkeitssteine
 		DetailedDescription: Ein scheinbar gewöhnlicher Stein, Zeuge unzähliger Boss-Rush-Zyklen — Symbol ewiger Ausdauer.
 	}
 
@@ -502,10 +502,10 @@ QuestNode: {
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Erhalte Himmlischer Sturm
+		QuestObjective.Description: Erhalte Endlosbogen
 		QuestReward.Description: 5 Endlosbarren
-		DisplayName: Himmlischer Sturm
-		Description: Erhalte Himmlischer Sturm
+		DisplayName: Endlosbogen
+		Description: Erhalte Endlosbogen
 		DetailedDescription: Ein Langbogen, der Götter erlegte — kehrt zurück.
 	}
 
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf Fels
-		QuestReward.Description: 5 Fels
+		QuestObjective.Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf uralte Ewigkeitssteine
+		QuestReward.Description: 5 uralte Ewigkeitssteine
 		DisplayName: Kreislauf der Eroberung
-		Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf Fels
+		Description: Schließe Boss-Rush fünfmal ab und erhalte mindestens fünf uralte Ewigkeitssteine
 		DetailedDescription: Das Symbol eines wahren Kriegers.
 	}
 

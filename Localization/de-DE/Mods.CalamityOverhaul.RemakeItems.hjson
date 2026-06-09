@@ -3,7 +3,7 @@ ModifyChargingStationItem: {
 	Tooltip:
 		'''
 		Nutzt Strom, um elektrische Geräte aufzuladen
-		Batterien können hineingelegt werden, um Strom zu speichern
+		Batterien können eingelegt werden, um Energie einzuspeisen
 		Kann an Rohrleitungen angeschlossen werden, um Strom zu übertragen
 		Rechtsklick auf den Block mit einem aufladbaren Item in der Hand, um es schnell einzulegen
 		Umschalt + Rechtsklick, um Items herauszunehmen

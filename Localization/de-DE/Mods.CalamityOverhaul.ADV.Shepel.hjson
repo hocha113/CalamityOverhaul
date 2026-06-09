@@ -1,9 +1,9 @@
 CybCourseIntroDialogue: {
 	SpeakerName: SHPC
 	Line1: Meister, willkommen im neuronalen Trainingsknoten.
-	Line2: Dies ist ein immersiver Lernraum, exklusiv für dich vorbereitet.
-	Line3: Die SHPC ist eine mächtige intelligente Waffe. Hier lernst du, ihr HUD zu bedienen.
-	Line4: Bereit, dein Bewusstsein mit meinem zu verbinden? Halte meine Hand fest — wir beginnen.
+	Line2: Dies ist ein immersiver Lernraum, exklusiv für Sie vorbereitet.
+	Line3: Die SHPC ist eine mächtige intelligente Waffe. Hier lernen Sie, ihr HUD zu bedienen.
+	Line4: Sind Sie bereit, Ihr Bewusstsein mit meinem zu verbinden? Halten Sie meine Hand fest — wir beginnen.
 }
 
 CybTutorialLead: {
@@ -665,7 +665,7 @@ ShepelSlimeGodGift: {
 
 ShepelSupremeCalamitasGift: {
 	RoleName: SHPC
-	L0: Die Hexe des kochenden Meeres … hat endlich den Vorhang fallen lassen. Alle Vitalsignale normal, keine tödlichen Wunden.
+	L0: Die Hexe, die das Meer verbrannte … ist endlich gefallen. Alle Vitalsignale normal, keine tödlichen Wunden.
 	L1: Globale Bedrohung neutralisiert. Puh … erlauben Sie mir, Kampfprotokolle vorübergehend auszusetzen und eine Tiefen-Selbstdiagnose auszuführen.
 	L2: Aus dem verstreuten chaotischen Plasma habe ich dieses hocheffiziente Energiemodul für Sie gefertigt.
 	L3: Der lange Feldzug ist vorbei. Meister, in den friedlichen Tagen danach — lassen Sie mich weiter als Maid dienen.

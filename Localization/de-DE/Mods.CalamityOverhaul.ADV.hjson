@@ -240,8 +240,8 @@ FirstMetSupCal: {
 	Line5: Ha?! Heh … dass jemand … oder irgendein*Fisch* … mich erkennt. Ihr seid amüsant, das gebe ich zu.
 	Line6: …Aber warum leben Sie? Ich erinnere mich deutlich – die Schwefelfeuer-Hexe starb … im letzten Jahrhundert.
 	Line7: Ein interessanter Fisch. Mein Bewusstsein wurde längst ins Schwefelfeuer geschmiedet. Dieser Körper … nur eine Leiche, die die Flammen steuern.
-	Line8: …Ein lebendiger Geist in einem unmenschlichen Gefäß, durch ein Medium an die Welt gebunden … Sie seid eine … Aberration?!
-	Line9: Ihre Ebene ist zu niedrig. Sie könnt meinen Zustand unmöglich begreifen.
+	Line8: …Ein lebendiges Bewusstsein in einem unmenschlichen Gefäß, durch ein Medium an die Welt gebunden … Sie sind zu einer … Anomalie geworden?!
+	Line9: Ihre Ebene ist zu niedrig. Sie können meinen Zustand unmöglich begreifen.
 	Line10: Außerdem bin ich nicht deswegen hier …
 	QuestionLine: Nun … was ist Ihre Wahl?
 	Choice1Text: (Waffe ziehen)
@@ -283,7 +283,7 @@ SupCalDefeat: {
 	Line5: Eure Ebene ist zu niedrig. Ihr werdet meinen Zustand nie begreifen.
 	Line6: …Meine Ebene ist zu niedrig?
 	Line7: (So lange gelebt – und zum ersten Mal heißt es, meine ‚Ebene‘ sei niedrig.)
-	Line8: Ich bin das einzige Wesen, das eine Ära ‚gebar‘. Seit ich es wagte, meine terrarianische Identität abzulegen und mich zum Gott zu erklären, bin ich natürlich allmächtig.
+	Line8: Ich bin das Einzige, das von einer ganzen Ära hervorgebracht wurde. Seit ich es wagte, meine terrarianische Identität abzulegen und mich selbst zum Gott zu erklären, bin ich natürlich allmächtig.
 	Line9: Yharim könne mich ‚wägen‘? Dafür bräuchte es einen Xylos.
 	Line10: ......
 }
@@ -618,9 +618,9 @@ EternalBlazingNow: {
 	Line1: Sie machen Witze …
 	Line2: Die Gestalten der Vergangenheit sind verschwunden … versiegelt dieses Feuer die Vergangenheit?!
 	Line3: Diese Hexe … ihre Kraft ist wahrlich keine gewöhnliche Magie.
-	Line4: Hielt sie im Kampf zurück? Egal. Selbst gegen solche Macht bin ich sicher, euch alle noch einmal töten zu können.
+	Line4: Aber selbst im Kampf gegen eine solche Macht bin ich zuversichtlich, dich noch einmal sterben zu lassen.
 	Line5: Ich kann nicht sterben … aber … es reicht fast.
-	Line6: Ihr habt gut geleistet … Vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, von dem er sprach – der Wartende wert.
+	Line6: Ihr habt gut geleistet … Vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, von dem er sprach und auf das zu warten sich gelohnt hat.
 	Line7: Also … habe ich eine letzte Bitte an euch.
 	Line8: Solange in Vergangenheit und Gegenwart dieser Welt eine Glut Schwefelfeuer glimmt, werde ‚ich‘ nicht untergehen.
 	Line9: Doch mein Bewusstsein … in diesem endlosen Feuermeer … wird allmählich aufgerieben.
@@ -908,7 +908,7 @@ CampsiteInteractionDialogue: {
 		Choice_History_MoreRuins: Wo ist es am gefährlichsten?
 		Choice_History_Dangers: Gibt es Gegenmaßnahmen?
 		Choice_History_Back: Beunruhigend
-		History_MoreRuins1: Ganz unten in diesem Leichenmeer. Dort ist eine Tür. Klopf nicht. Was dahinter liegt, verkraftet niemand – außer jener Tyrann käme.
+		History_MoreRuins1: Ganz unten in diesem Leichenmeer. Dort ist eine Tür. Klopf nicht an. Was hinter ihr liegt, sollte am besten für immer darin verrotten.
 		History_MoreRuins2: In den versunkenen Ruinen gibt es noch ungeöffnete Räume. Geheime Kammern aus schwerem Spezialmetall, um die Wahrnehmung jener Dinge abzuschneiden.
 		History_Dangers1: Neben mutierten Untoten: Hüte dich vor dem Unsichtbaren. Manchmal ist der tödliche Schlag unsichtbar.
 		History_Dangers2: Vertrau deinen Augen nicht. Antworte nicht auf unerklärliche Rufe. In diesem Leichenmeer sind Lebende die Anomalie.
@@ -927,7 +927,7 @@ CampsiteInteractionDialogue: {
 		Choice_Personal_Back: Pass auf dich auf
 		Personal_Tea1: Gebrüht aus mehreren Spezialpflanzen im Abgrund. Der Geschmack … wie faulender Schlamm.
 		Personal_Tea2: Willst du eine Tasse? Sie beruhigt dich wie ein toter Fisch.
-		Personal_Past1: Wer weiß? Vielleicht starb der echte Ich längst, und ich bin nur ein … Gespenst mit Erinnerungen des Alten Herzogs?
+		Personal_Past1: Wer weiß? Vielleicht ist mein wahres Ich längst gestorben, und was jetzt hier ist, ist nur … etwas anderes mit seinen Erinnerungen.
 		Personal_Past2: Doch ich erinnere mich noch an Sonnenlicht im Gesicht, an Bücher in der Hand. Solange ich das kann, halte ich mich für lebendig.
 		Personal_Past3: Ohne jenen Unfall läge ich wohl friedlich im Grab – statt so zu sein, dass selbst Sterben wollen unmöglich ist.
 		Farewell_Normal: Damit genug. Komm, wenn du etwas brauchst.
@@ -1063,7 +1063,7 @@ TheHerInThePast: {
 	RolenameSHPC: SHPC
 	WitchLine1: Von diesem Dreck verfolgt zu werden ist unangenehm. Gut, dass ich Sie erwischt habe.
 	ShpcLine1: Danke … aber wie ist das möglich? Sie gehören der Vergangenheit an und können sich doch bewegen …
-	WitchLine2: Wenn ihr aus hundert Jahren Zukunft hier eindringen könnt, kann ich Natürliches ähnliches tun.
+	WitchLine2: Wenn ihr aus hundert Jahren Zukunft hier eindringen könnt, kann ich natürlich etwas Ähnliches tun.
 	WitchLine3: Allerdings habt ihr recht – ich bin nur ein Schatten, der hier zurückblieb.
 	ShpcLine2: Nutzen Sie Ihre Kräfte so – werden Sie nicht zerfallen?
 	WitchLine4: Euer Fokus ist lieblich naiv. Geht schnell. Dieser Dreck soll mit mir in der Vergangenheit begraben bleiben.
@@ -1079,7 +1079,7 @@ EternalBlazingNowNoHelen: {
 	Rolename2: Schwefelfeuer-Hexe
 	Line1: ……Seit langem ist niemand so weit gekommen.
 	Line2: Ich werde nicht sterben … aber es reicht fast.
-	Line3: Ihr habt gut geleistet … vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, das er erwähnte – der Wartende wert.
+	Line3: Ihr habt gut geleistet … vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, von dem er sprach und auf das zu warten sich gelohnt hat.
 	Line4: Deshalb habe ich eine letzte Bitte an euch.
 	Line5: Solange in Vergangenheit und Gegenwart dieser Welt eine Glut Schwefelfeuer glimmt, werde ‚ich‘ nicht untergehen.
 	Line6: Doch mein Bewusstsein wird in diesem endlosen Feuermeer allmählich aufgerieben.
