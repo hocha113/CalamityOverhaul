@@ -192,7 +192,7 @@ DarkMatterBall: {
 }
 
 NeutronStarIngot: {
-	DisplayName: Bâton de Matière Noire
+	DisplayName: Lingot d'étoile à neutrons
 	Tooltip: Le poids de toute chose, agrégé à la pointe des doigts
 }
 
@@ -258,6 +258,7 @@ StormGoddessSpear: {
 	Tooltip:
 		'''
 		Lance un baiser de tempête avec des arcs destructeurs
+		Lorsqu'elle est tenue, invoque le vestige de la Déesse de la tempête pour combattre à vos côtés
 		[legend]
 		'''
 	Legend:
@@ -279,7 +280,7 @@ StormGoddessSpear: {
 }
 
 DragonsScaleGreatsword: {
-	DisplayName: Grande Épée des Écailles de Dragon
+	DisplayName: Grande lame d'algue draconique
 	Tooltip:
 		'''
 		Libère une lame spirale d'algues vertes, explosant en un nuage de poison après avoir touché la cible
@@ -293,7 +294,7 @@ CosmicCalamity: {
 }
 
 SpearOfLonginus: {
-	DisplayName: Lance de Gangarus
+	DisplayName: Lance de Longinus
 	Tooltip:
 		'''
 		Tant que la lance est en main, une croix sacrée apparaît sous vos pieds et se remplit d'énergie divine
@@ -333,7 +334,7 @@ BarrenBow: {
 }
 
 ElementMuzzleBrake: {
-	DisplayName: Silencieux Élémentaire
+	DisplayName: Stabilisateur élémentaire
 	Tooltip:
 		'''
 		Augmente les dégâts à distance de 12%
@@ -344,17 +345,31 @@ ElementMuzzleBrake: {
 }
 
 EyeOfSingularity: {
-	DisplayName: Stabilisateur d'État de Neutron Star
+	DisplayName: Horizon de singularité
 	Tooltip:
 		'''
 		Augmente les dégâts à distance de 100%
 		Augmente le taux de critique à distance de 100%
-		Améliore considérablement la balistique à distance
+		Augmente la vitesse de tir à distance de 100% et ne consomme plus de munitions
+		Porte le multiplicateur de dégâts critiques de toutes les armes à distance à 500%
+		Vos projectiles à distance déchirent l'espace et créent à l'impact des micro-trous noirs qui attirent et broient les ennemis proches
+		En restant immobile, vous entrez dans l'état d'horizon des événements :
+		  Vous devenez invisible et immunisé contre tous les dégâts de contact
+		  En tirant, vous libérez des sursauts gamma supplémentaires qui traquent les ennemis
+		Vous obtenez le Saut quantique : appuyez sur [KEY] pour vous téléporter au curseur et supprimer les projectiles ennemis sur le trajet
+		Clic droit pour activer le Protocole d'effondrement :
+		  Consomme tout votre mana ; pendant les 10 prochaines secondes, toutes vos attaques à distance ignorent les frames d'invulnérabilité et infligent toujours des coups critiques
+		  Temps de recharge : 60 secondes
+		Si vous subissez un coup mortel, vous devenez une supernova, infligez d'énormes dégâts de zone, puis vous vous reconstituez en lieu sûr après 3 secondes
+		Cet effet a 60 secondes de recharge
+		[c/33ff33:"Le dieu-dragon endormi se connecte à vos nerfs et déconstruit la logique profonde de l'âme des machines"]
+		[c/ffaa00:"La constellation avide dévore les flammes de vos armes et absorbe la dernière chaleur des étoiles mourantes"]
+		[c/00ffff:"Le dieu invisible de la mort devient votre ombre et moissonne le destin fatal qui égalise tous les êtres"]
 		'''
 }
 
 PrecisionMuzzleBrake: {
-	DisplayName: Silencieux de Haute Précision
+	DisplayName: Stabilisateur haute précision
 	Tooltip:
 		'''
 		Augmente les dégâts à distance de 8%
@@ -365,7 +380,7 @@ PrecisionMuzzleBrake: {
 }
 
 SimpleMuzzleBrake: {
-	DisplayName: Silencieux Simple
+	DisplayName: Stabilisateur simple
 	Tooltip:
 		'''
 		Augmente les dégâts à distance de 5%
@@ -435,7 +450,7 @@ AvalancheM60: {
 		Utilise des boules de neige comme munitions
 		Tire une grande quantité de boules de neige, la puissance de feu augmente avec la diminution des munitions
 		Tous les 20 tirs, entre en état de surchauffe pour créer une petite avalanche
-		"Électre, jouons à la bataille de boules de neige !"
+		"Denji, faisons une bataille de boules de neige !"
 		'''
 }
 
@@ -454,8 +469,8 @@ DarkFrostSolstice: {
 	Tooltip:
 		'''
 		Utilise des boules de neige comme munitions
-		Tire de la grêle et du feu polaire
-		Tous les 20 tirs, entre en état de surchauffe pour invoquer une divinité hivernale à la position du curseur
+		Tire de la grêle et des feux spectraux polaires ; les attaques ont une chance de geler les ennemis
+		Tous les 20 tirs, entre en état de surchauffe pour générer une immense colonne de glace à la position du curseur
 		'''
 }
 
@@ -522,7 +537,7 @@ FadingGlory: {
 }
 
 NeutronScythe: {
-	DisplayName: Messager de Planète
+	DisplayName: Messager du trou noir
 	Tooltip:
 		'''
 		Une faux à neutrons en rotation à grande vitesse qui tire des rayons gamma sur les ennemis proches et laisse des points de détonation par distorsion le long de sa trajectoire
@@ -569,12 +584,13 @@ SnowQuayMK2: {
 }
 
 HghExplosiveBox: {
-	DisplayName: Boîte Explosive
+	DisplayName: Boîte de munitions hautement explosives
 	Tooltip:
 		'''
 		Maintenez pour déployer. Une fois déployé, faites un clic droit sur la boîte de 
 		munitions en tenant une arme à feu pour charger des munitions spéciales dans le chargeur.
 		Les munitions spéciales peuvent cumuler leurs effets avec les balles normales.
+		Les ogives contiennent des explosifs puissants et provoquent une petite explosion à l'impact.
 		"Faites-les exploser jusqu'au ciel !"
 		'''
 }
@@ -2501,7 +2517,7 @@ ArchiveFrameModule: {
 CWRItem: {
 	TemperatureText: Température de combustion
 	InternalStoredEnergy: Énergie stockée
-	DeathModeItemText: Objet mode Mort
+	DeathModeItemText: Objet du Mode Mort
 	LegendItemUpgradeDisable:
 		'''
 		Cette arme légendaire a été désactivée pour les améliorations dans ce monde.
@@ -2510,15 +2526,15 @@ CWRItem: {
 	ItemLegendOnMouseLang: Appuyez sur [Maj] pour écouter l'histoire...
 
 	CWRItem: {
-		// TemperatureText: Combustion Temperature
-		// InternalStoredEnergy: Stored Energy
-		// DeathModeItemText: Death Mode
-		/* LegendItemUpgradeDisable:
+		TemperatureText: Température de combustion
+		InternalStoredEnergy: Énergie stockée
+		DeathModeItemText: Objet du Mode Mort
+		LegendItemUpgradeDisable:
 			'''
-			This legendary weapon cannot be upgraded in the current world.
-			Re-enter the world to lift this restriction.
-			''' */
-		// ItemLegendOnMouseLang: Press 'Shift' to hear its story...
+			Cette arme légendaire a été désactivée pour les améliorations dans ce monde.
+			Pour lever cette restriction, réentrez dans le monde.
+			'''
+		ItemLegendOnMouseLang: Appuyez sur [Maj] pour écouter l'histoire...
 	}
 }
 
@@ -2526,9 +2542,9 @@ RMagicConch: {
 	DontUseMagicConch: Une créature puissante vous observe...
 
 	RMagicConch: {
-		// DontUseMagicConch: You're being watched by a powerful creature...
-		// DisplayName: Magic Conch
-		// Tooltip: Listen closely and you'll hear the ocean
+		DontUseMagicConch: Une créature puissante vous observe...
+		DisplayName: Conque magique
+		Tooltip: Écoutez attentivement, vous entendrez l'océan
 	}
 }
 

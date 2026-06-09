@@ -382,7 +382,7 @@ SupCalDoGQuestReward: {
 	Rolename2: Halibut
 	Line1: Proprement fait.
 	Line2: Cette lame… satisfaisante comme toujours.
-	Line3: Quand j'étais encore mortelle, c'est avec ça que j'ai sculpté le cœur de mon maître. Ça fonctionne bien, non ?
+	Line3: Quand j'étais encore mortelle, c'est avec cette lame que j'ai arraché le cœur de mon maître de mes propres mains. Elle fonctionne bien, non ?
 	Line4: Prenez-la.
 	Line5: Avez-vous déjà pensé… à ce que vous feriez si, la prochaine fois, ma commission était de me tuer *moi* ?
 	Line6: Dommage. Vous et lui ne vous rencontrerez jamais. Vous auriez eu tant à vous dire.
@@ -702,18 +702,18 @@ SupCalDisplayText: {
 		Il pue une odeur de terre qu'on ne peut pas laver.
 		Là-bas, il servait à réprimer une horreur que même moi j'avais du mal à gérer.
 		Contre de telles choses, la pure destruction est vaine. On ne peut pas les tuer.
-		Tirez le coin. Clouez-les à la terre et forcez-les au silence.
+		Tirez le pieu. Clouez-les au sol et forcez-les à retomber dans le silence.
 		Pourquoi lancer l'arbalète en premier ?
 		Hah… Si l'invité n'est pas imprégné de l'odeur du cercueil, comment saura-t-il qui aller chercher ?
 		'''
 	Story2:
 		'''
-		Cette lame misérable est émoussée parce qu'elle ne coupe pas la chair — elle tranche les médiums.
+		Cette lame misérable est émoussée parce qu'elle n'est pas faite pour couper la chair.
 		Quand j'étais encore apprentie, une bouche qui ne se fermait jamais poussa sur le cœur de mon maître.
 		Il mourut plus tard, mais ce cœur battait encore. À chaque battement, la bouche hurlait,
 		et quelqu'un autour de nous disparaissait simplement.
 		Pour survivre, j'ai dû arracher ce cœur avant le prochain battement.
-		Encore aujourd'hui, il a faim d'entendre à nouveau le son d'un cœur sculpté.
+		Encore aujourd'hui, il a faim d'entendre à nouveau le son d'un cœur arraché.
 		'''
 	Story3:
 		'''
@@ -825,7 +825,7 @@ FirstMetOldDuke: {
 	OldDukeName: Vieux Duc
 	HelenName: Halibut
 	L0: ......
-	L1: Range ta soif de sang, jeune homme. Pas besoin de dégainer dès la première rencontre.
+	L1: Range ta soif de sang, jeune aventurier. Pas besoin de dégainer dès la première rencontre.
 	L2: Je suis vieux. J'ai assez de ces jeux violents.
 	L3: Nous pouvons coopérer.
 	L4: Je collectionne quelque chose de spécial : des Fragments océaniques.
@@ -908,7 +908,7 @@ CampsiteInteractionDialogue: {
 		Choice_History_MoreRuins: Où est-ce le plus dangereux ?
 		Choice_History_Dangers: Y a-t-il des contre-mesures ?
 		Choice_History_Back: Inquiétant
-		History_MoreRuins1: Tout au fond de cette mer de cadavres. Il y a une porte. Ne frappe pas. Personne ne peut supporter ce qui est derrière — sauf si ce tyran vient.
+		History_MoreRuins1: Tout au fond de cette mer de cadavres. Il y a une porte. Ne frappe pas. Ce qui se trouve derrière ferait mieux d'y pourrir à jamais.
 		History_MoreRuins2: Dans les ruines englouties, des salles restent closes. Chambres secrètes en métal lourd spécial, pour couper la perception de ces choses.
 		History_Dangers1: Outre les morts-vivants mutés : méfie-toi de l'invisible. Parfois, le coup fatal est invisible.
 		History_Dangers2: Ne fais pas confiance à tes yeux. Ne réponds pas aux appels inexplicables. Dans cette mer de cadavres, les vivants sont l'anomalie.
@@ -931,7 +931,7 @@ CampsiteInteractionDialogue: {
 		Personal_Past2: Mais je me souviens encore du soleil sur le visage, des livres entre les mains. Tant que je m'en souviens, je me considère vivant.
 		Personal_Past3: Sans cet accident, je reposerais paisiblement dans une tombe — au lieu d'être incapable de mourir même en le voulant.
 		Farewell_Normal: Assez pour aujourd'hui. Reviens si tu as besoin de quelque chose.
-		Farewell_Friendly: Prudence, jeune homme. Dans ce monde, une fin paisible est un luxe.
+		Farewell_Friendly: Prudence, jeune aventurier. Dans ce monde, une fin paisible est un luxe.
 	}
 }
 
@@ -1051,11 +1051,11 @@ FirstMetShepel: {
 	Choice2Text: …Longtemps sans nouvelles.
 	Choice1Response: …Oui. Tant que c'est vous, je veux bien me tromper à chaque fois.
 	Choice1Silence: ......
-	CybCourseOfferLine: Programme Superdream chargé avec succès. Maître, voulez-vous entrer maintenant dans l'espace Superdream pour apprendre le mode Hack et les protocoles d'armes SHPC ?
+	CybCourseOfferLine: Programme de neuro-rêve chargé avec succès. Maître, voulez-vous entrer maintenant dans l'espace de neuro-rêve pour apprendre le mode Hack et les protocoles d'armes SHPC ?
 	CybCourseAcceptText: Allons-y maintenant.
 	CybCourseDeclineText: Pas maintenant.
 	CybCourseAcceptResponse: Compris. Connexion neuronale en cours… Restez immobile.
-	CybCourseDeclineResponse: Compris. Les identifiants Superdream ont été écrits dans votre sauvegarde. Vous pouvez l'activer vous-même à tout moment, Maître.
+	CybCourseDeclineResponse: Compris. Les identifiants de neuro-rêve ont été écrits dans votre sauvegarde. Vous pouvez l'activer vous-même à tout moment, Maître.
 }
 
 TheHerInThePast: {

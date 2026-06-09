@@ -186,7 +186,7 @@ QuestNode: {
 		Description: Vaincre le Mur de chair
 		QuestObjective.Description: Vaincre le Mur de chair
 		QuestReward.Description: Marteau divin
-		DetailedDescription: Le gardien du monde. Jette la poupée vaudou du guide dans la lave pour libérer les anciens esprits et déclencher le mode Difficile.
+		DetailedDescription: Le gardien du monde. Jette la poupée vaudou du guide dans la lave pour libérer les anciens dieux de ce monde et déclencher le mode Difficile.
 	}
 
 	CeaselessVoidQuest: {
@@ -478,11 +478,11 @@ QuestNode: {
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Obtenir la Pierre
-		QuestReward.Description: Cinq pierres
-		DisplayName: Pierre
-		Description: Obtenir la Pierre
-		DetailedDescription: Une pierre en apparence ordinaire, témoin d'innombrables cycles de Boss Rush. Symbole d'une persévérance éternelle.
+		QuestObjective.Description: Obtenir l'ancienne pierre d'éternité
+		QuestReward.Description: Cinq anciennes pierres d'éternité
+		DisplayName: Ancienne pierre d'éternité
+		Description: Obtenir l'ancienne pierre d'éternité
+		DetailedDescription: Une pierre en apparence ordinaire, témoin d'innombrables cycles de fin du monde. Symbole d'une persévérance éternelle.
 	}
 
 	TerminusQuest: {
@@ -502,10 +502,10 @@ QuestNode: {
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Obtenir la Brise céleste
+		QuestObjective.Description: Obtenir l'Arc infini
 		QuestReward.Description: Cinq lingots infinis
-		DisplayName: Brise céleste
-		Description: Obtenir la Brise céleste
+		DisplayName: Arc infini
+		Description: Obtenir l'Arc infini
 		DetailedDescription: Un arc long qui a abattu des dieux. Il refait surface dans ce monde.
 	}
 
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Terminer le Boss Rush cinq fois et obtenir au moins cinq pierres
-		QuestReward.Description: Cinq pierres
+		QuestObjective.Description: Terminer le Boss Rush cinq fois et obtenir au moins cinq anciennes pierres d'éternité
+		QuestReward.Description: Cinq anciennes pierres d'éternité
 		DisplayName: Cycle de conquête
-		Description: Terminer le Boss Rush cinq fois et obtenir au moins cinq pierres
+		Description: Terminer le Boss Rush cinq fois et obtenir au moins cinq anciennes pierres d'éternité
 		DetailedDescription: Le symbole d'un vrai guerrier.
 	}
 

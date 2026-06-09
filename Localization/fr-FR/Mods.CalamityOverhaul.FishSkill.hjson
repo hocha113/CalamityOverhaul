@@ -166,11 +166,11 @@ Fishotroning: {
 }
 
 FishIchorn: {
-	DisplayName: Érosion de goudron
+	DisplayName: Érosion d'ichor
 	Tooltip:
 		'''
-		Lorsque vous tirez, des jets de goudron sont dispersés.
-		À l'impact, la cible est affectée par le goudron.
+		Lorsque vous tirez, des jets d'ichor sont dispersés.
+		À l'impact, la cible subit l'effet Ichor.
 		'''
 	Studied: La salive de ce poisson est très utile !
 }

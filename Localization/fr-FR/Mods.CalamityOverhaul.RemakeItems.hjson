@@ -3,8 +3,8 @@ ModifyChargingStationItem: {
 	Tooltip:
 		'''
 		Utilise l'électricité pour charger les appareils
-		Les batteries peuvent y stocker de l'énergie
-		Peut être reliée à des conduites
+		On peut y insérer des batteries pour les charger en électricité
+		Peut être reliée à des conduites pour le transfert d'électricité
 		Clic droit avec un objet rechargeable pour l'insérer rapidement
 		Maj + clic droit pour récupérer les objets
 		'''

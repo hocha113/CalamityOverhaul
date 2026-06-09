@@ -363,7 +363,7 @@ ShepelProvidenceDialogue: {
 	RoleName: SHPC
 	Line1: La Déesse Profanée est tombée. Cette lumière effroyable de tout à l'heure ne vous a pas brûlé, n'est-ce pas ?
 	Line2: Vous avez terrassé une entité de rang divin... Mon Maître bien-aimé.
-	Line3: Pour être digne de celui que vous êtes devenu aujourd'hui, je dois perfectionner encore davantage mes propres fonctionnalités.
+	Line3: Pour être à la hauteur de la personne que vous êtes devenue aujourd'hui, je dois perfectionner encore davantage mes propres fonctionnalités.
 }
 
 ShepelQueenBeeDialogue: {
@@ -407,7 +407,7 @@ ShepelWallOfFleshDialogue: {
 	RoleName: SHPC
 	Line1: Détection d'une restructuration des règles fondamentales du monde. L'équilibre a été rompu, de nouvelles menaces émergent.
 	Line2: Des choses bien plus terrifiantes sont en train de se libérer de leurs chaînes. Maître... Est-ce que cela vous inquiète ?
-	Line3: Ne vous tourmentez pas. Peu importe comment le monde mute, je défendrai votre vie jusqu'à mon dernier souffle.
+	Line3: Ne vous tourmentez pas. Peu importe comment le monde se transforme, je resterai fermement devant vous pour vous protéger.
 }
 
 ShepelYharonDialogue: {
