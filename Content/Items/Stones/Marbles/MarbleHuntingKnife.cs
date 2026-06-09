@@ -9,7 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石猎刀：快速的交替连斩，每第三击为更宽的终结斩，向前迸射大理石碎片

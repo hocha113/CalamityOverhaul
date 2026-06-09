@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石飞盘：旋转掷出，在敌人 / 墙壁间弹射数次后回旋归手，可同时存在两枚

@@ -7,7 +7,7 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石气球：提升跳跃高度并额外赋予一段沉重二段跳；空中按↓砸地，落地产生大理石冲击波

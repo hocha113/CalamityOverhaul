@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Granites
+namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
     /// <summary>
     /// 花岗飞刀：穿透并拖出蓝色能量缎带，末段 / 撞地碎裂为水晶碎片

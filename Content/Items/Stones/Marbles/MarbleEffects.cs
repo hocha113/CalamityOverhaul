@@ -6,7 +6,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石冲击波：落点 / 砸地处快速扩张的环状冲击，命中范围内敌人一次

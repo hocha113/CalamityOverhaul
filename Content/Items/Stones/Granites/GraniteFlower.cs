@@ -12,7 +12,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Granites
+namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
     /// <summary>
     /// 花岗之花：射出水晶种子，飞行一段后绽放成停留的能量花，数次脉冲向四周喷射花瓣碎片

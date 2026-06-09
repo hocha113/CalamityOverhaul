@@ -5,7 +5,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 瓶中大理石：双击方向进行水平滚动冲刺，冲刺期间获得无敌帧并拖出灰白石化残影

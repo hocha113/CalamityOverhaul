@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Granites
+namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
     /// <summary>
     /// 花岗行走靴：显著提升跑速与加速度，全速奔跑时脚下迸发蓝色电火花残影

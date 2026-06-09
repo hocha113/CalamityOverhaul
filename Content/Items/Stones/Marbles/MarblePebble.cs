@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石卵石：无限使用的极快投石，对生命上限越高的敌人造成越多额外伤害，撞地弹射一次

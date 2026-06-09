@@ -10,7 +10,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石战盾：+防御 + 抗击退；维护可再生的"石卫"护盾吸收伤害，破碎迸射碎片；
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.Items.Marbles
             Time += 1f;
 
             //常态也保持清晰可见，让玩家随时知道护盾在运作；蓄能就绪更亮，破碎充能中转暗
-            float target = mp.HideVisual ? 0f : (mp.Blocking ? 1.5f : (mp.BarrierReady ? 1f : 0.5f));
+            float target = mp.HideVisual ? 0f : mp.Blocking ? 1.5f : mp.BarrierReady ? 1f : 0.5f;
             mp.RingAlpha = MathHelper.Lerp(mp.RingAlpha, target, 0.14f);
 
             if (mp.RingAlpha > 0.2f) {
@@ -213,16 +213,16 @@ namespace CalamityOverhaul.Content.Items.Marbles
             Texture2D star = CWRAsset.StarTexture.Value;
 
             //就绪=金白，充能中=偏冷暗，让护盾状态一眼可辨
-            Color gold = (mp.BarrierReady || mp.Blocking) ? GraniteMarbleVFX.MarbleGold : GraniteMarbleVFX.MarbleCore;
+            Color gold = mp.BarrierReady || mp.Blocking ? GraniteMarbleVFX.MarbleGold : GraniteMarbleVFX.MarbleCore;
             Color core = GraniteMarbleVFX.MarbleCore;
             float pulse = 0.85f + (float)Math.Sin(Time * 0.12f) * 0.15f;
             float radius = 62f + (mp.Blocking ? 12f : 0f);
 
             //外圈扩散环（两层叠加增强存在感）
             spriteBatch.Draw(ring, center, null, gold * 0.85f * alpha * pulse, Time * 0.02f, ring.Size() / 2f
-                , (radius * 2f) / ring.Width, SpriteEffects.None, 0f);
+                , radius * 2f / ring.Width, SpriteEffects.None, 0f);
             spriteBatch.Draw(ring, center, null, core * 0.45f * alpha, -Time * 0.015f, ring.Size() / 2f
-                , (radius * 1.7f) / ring.Width, SpriteEffects.None, 0f);
+                , radius * 1.7f / ring.Width, SpriteEffects.None, 0f);
 
             //环绕的大理石碎片：柔光 + 十字耀斑
             int shards = 6;

@@ -11,7 +11,7 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Items.Marbles
+namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
     /// 大理石巨棍：缓慢沉重的过顶猛砸，命中有几率石化减速，砸落瞬间在落点迸发冲击波 + 尘土 + 屏震

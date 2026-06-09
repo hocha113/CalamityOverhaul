@@ -1,8 +1,8 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace CalamityOverhaul.Content.Items
+namespace CalamityOverhaul.Content.Items.Stones
 {
     /// <summary>
     /// 花岗岩 / 大理石两套装备共用的视觉常量与底层 VFX 助手
@@ -11,8 +11,8 @@ namespace CalamityOverhaul.Content.Items
     internal static class GraniteMarbleVFX
     {
         //资源所在目录（贴图与 .cs 同放在 Content 下，默认自动加载）
-        public const string GraniteTex = "CalamityOverhaul/Content/Items/Granites/";
-        public const string MarbleTex = "CalamityOverhaul/Content/Items/Marbles/";
+        public const string GraniteTex = "CalamityOverhaul/Content/Items/Stones/Granites/";
+        public const string MarbleTex = "CalamityOverhaul/Content/Items/Stones/Marbles/";
 
         //渐变色条：花岗岩用冰蓝水晶能量，大理石用古典金白
         public static readonly string GraniteBar = CWRConstant.ColorBar + "AbsoluteZero_Bar";
