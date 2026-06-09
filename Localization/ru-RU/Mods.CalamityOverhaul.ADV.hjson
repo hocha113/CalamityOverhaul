@@ -591,13 +591,13 @@ DraedonQuestLine: {
 }
 
 AbyssQuestLine: {
-	QuestCategory: Старый Герцог
-	CampsiteTitle: Бездна Зовёт
-	CampsiteSummary: Найти и поговорить со Старым Герцогом
+	QuestCategory: Старый герцог
+	CampsiteTitle: Бездна зовёт
+	CampsiteSummary: Найти и поговорить со Старым герцогом
 	CampsiteObjective: Цель
-	CampsiteLocation: Идти к лагерю Старого Герцога
+	CampsiteLocation: Идти к лагерю Старого герцога
 	CampsiteDistance: Расстояние
-	CampsiteInteract: Поговорить со Старым Герцогом
+	CampsiteInteract: Поговорить со Старым герцогом
 	CampsiteComplete: Задание выполнено!
 	CampsiteHoldHint: Держите Океанические Фрагменты чтобы видеть направление
 	FragmentTitle: Бездна Зовёт

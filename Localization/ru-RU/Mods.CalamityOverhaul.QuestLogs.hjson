@@ -222,11 +222,11 @@ QuestNode: {
 	}
 
 	OldDukeQuest: {
-		DisplayName: Наследный герцог Серного моря
-		Description: Победить наследного герцога Серного моря
-		QuestObjective.Description: Победить наследного герцога Серного моря
+		DisplayName: Герцог-реликт Серного моря
+		Description: Победить герцога-реликта Серного моря
+		QuestObjective.Description: Победить герцога-реликта Серного моря
 		QuestReward.Description: 20 разъеденных ископаемых
-		DetailedDescription: Древний владыка глубин Сернистого моря, сочетание мутации и силы. Остерегайтесь его ядовитого пара.
+		DetailedDescription: Древний владыка глубин Серного моря, сочетание мутации и силы. Остерегайтесь его ядовитого пара.
 	}
 
 	PolterghastQuest: {
