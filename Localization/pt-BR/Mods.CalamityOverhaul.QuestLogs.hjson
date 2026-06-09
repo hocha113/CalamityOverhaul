@@ -54,9 +54,9 @@ QuestNode: {
 	}
 
 	CalamitasCloneQuest: {
-		DisplayName: A Clone da Calamitas
-		Description: Derrote a Clone da Calamitas
-		QuestObjective.Description: Derrote a Clone da Calamitas
+		DisplayName: Clone da Calamitas
+		Description: Derrote o Clone da Calamitas
+		QuestObjective.Description: Derrote o Clone da Calamitas
 		QuestReward.Description: 10 Poeira Calamitosa
 		DetailedDescription: Uma clone cheia de odio e desejo de destruicao. Derrote-a para provar que voce e digno de enfrentar a verdadeira Bruxa.
 	}
@@ -110,9 +110,9 @@ QuestNode: {
 	}
 
 	HiveMindQuest: {
-		DisplayName: A Mente Colmeia / Os Perfuradores
+		DisplayName: A Colmeia Mental / Os Perfuradores
 		Description: Derrote o verdadeiro deus do bioma maligno
-		QuestObjective.Description: Derrote A Mente Colmeia ou Os Perfuradores
+		QuestObjective.Description: Derrote A Colmeia Mental ou Os Perfuradores
 		QuestReward.Description: 10 Barras de Demonite / Crimtane
 		DetailedDescription: Eles sao as manifestacoes fisicas da consciencia da Corrupcao e do Carmesim. Se nao forem destruidos, esta terra nunca conhecera a paz.
 	}
@@ -150,9 +150,9 @@ QuestNode: {
 	}
 
 	PlaguebringerGoliathQuest: {
-		DisplayName: O Goliath Pestifero
-		Description: Derrote O Goliath Pestifero
-		QuestObjective.Description: Derrote O Goliath Pestifero
+		DisplayName: A Pestífera Goliarda
+		Description: Derrote a Pestífera Goliarda
+		QuestObjective.Description: Derrote a Pestífera Goliarda
 		QuestReward.Description: 20 Cilindros de Celulas de Peste
 		DetailedDescription: Uma Abelha Rainha modificada por maquinario de nano-virus. Nao e apenas mortal, mas tambem carrega uma peste perigosa.
 	}
@@ -190,17 +190,17 @@ QuestNode: {
 	}
 
 	CeaselessVoidQuest: {
-		DisplayName: Vazio Infindavel
-		Description: Derrote o Vazio Infindavel
-		QuestObjective.Description: Derrote o Vazio Infindavel
+		DisplayName: Vazio Incessante
+		Description: Derrote o Vazio Incessante
+		QuestObjective.Description: Derrote o Vazio Incessante
 		QuestReward.Description: 5 Plasma Escuro
 		DetailedDescription: Um dos Sentinela do Devorador, um espelho do nada de outra dimensao.
 	}
 
 	DevourerofGodsQuest: {
 		DisplayName: O Devorador de Deuses
-		Description: Derrote O Devorador de Deuses
-		QuestObjective.Description: Derrote O Devorador de Deuses
+		Description: Derrote o Devorador de Deuses
+		QuestObjective.Description: Derrote o Devorador de Deuses
 		QuestReward.Description: 30 Barras de Cosmilite
 		DetailedDescription: Uma serpente cosmica que anseia devorar toda a divindade. Duelo no vazio, e nao deixe que ela o consuma.
 	}
@@ -223,8 +223,8 @@ QuestNode: {
 
 	OldDukeQuest: {
 		DisplayName: O Velho Duque
-		Description: Derrote O Velho Duque
-		QuestObjective.Description: Derrote O Velho Duque
+		Description: Derrote o Velho Duque
+		QuestObjective.Description: Derrote o Velho Duque
 		QuestReward.Description: 20 Fosseis Corroídos
 		DetailedDescription: O antigo senhor das profundezas do Mar Sulfuroso, uma combinacao de mutacao e poder. Cuidado com seu vapor toxico.
 	}
@@ -278,9 +278,9 @@ QuestNode: {
 	}
 
 	SupremeCalamitasQuest: {
-		DisplayName: Calamitas Suprema
-		Description: Derrote Calamitas Suprema
-		QuestObjective.Description: Derrote Calamitas Suprema
+		DisplayName: Calamitas, a Bruxa Suprema
+		Description: Derrote Calamitas, a Bruxa Suprema
+		QuestObjective.Description: Derrote Calamitas, a Bruxa Suprema
 		QuestReward.Description: 20 Cinzas da Aniquilacao
 		DetailedDescription: A lendaria Bruxa de Enxofre. Este e o fim da sua jornada, ou talvez um novo comeco? Prepare-se para o verdadeiro inferno de projeteis.
 	}

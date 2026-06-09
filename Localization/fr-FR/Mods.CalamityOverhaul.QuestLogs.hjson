@@ -54,9 +54,9 @@ QuestNode: {
 	}
 
 	CalamitasCloneQuest: {
-		DisplayName: Ombre de Calamitas
-		Description: Vaincre l'Ombre de Calamitas
-		QuestObjective.Description: Vaincre l'Ombre de Calamitas
+		DisplayName: Clone de Calamitas
+		Description: Vaincre le Clone de Calamitas
+		QuestObjective.Description: Vaincre le Clone de Calamitas
 		QuestReward.Description: 10 Poussières de Calamity
 		DetailedDescription: Un clone empli de haine et de soif de destruction. Vaincs-le pour prouver que tu mérites d'affronter la vraie sorcière.
 	}
@@ -150,9 +150,9 @@ QuestNode: {
 	}
 
 	PlaguebringerGoliathQuest: {
-		DisplayName: Goliath porte-peste
-		Description: Vaincre le Goliath porte-peste
-		QuestObjective.Description: Vaincre le Goliath porte-peste
+		DisplayName: La Goliath Porte-peste
+		Description: Vaincre la Goliath Porte-peste
+		QuestObjective.Description: Vaincre la Goliath Porte-peste
 		QuestReward.Description: 20 Fioles de cellules de peste
 		DetailedDescription: Une reine des abeilles modifiée par un virus nanomécanique. Mortelle, et porteuse d'une peste redoutable.
 	}
@@ -190,9 +190,9 @@ QuestNode: {
 	}
 
 	CeaselessVoidQuest: {
-		DisplayName: Vide incessant
-		Description: Vaincre le Vide incessant
-		QuestObjective.Description: Vaincre le Vide incessant
+		DisplayName: Vide Incessant
+		Description: Vaincre le Vide Incessant
+		QuestObjective.Description: Vaincre le Vide Incessant
 		QuestReward.Description: 5 Plasma sombre
 		DetailedDescription: L'un des sentinelles du Dévoreur des Dieux, un miroir du néant venu d'une autre dimension.
 	}
@@ -222,7 +222,7 @@ QuestNode: {
 	}
 
 	OldDukeQuest: {
-		DisplayName: Vieux Duc
+		DisplayName: Le Vieux Duc
 		Description: Vaincre le Vieux Duc
 		QuestObjective.Description: Vaincre le Vieux Duc
 		QuestReward.Description: 20 Fossiles corrodés
@@ -262,7 +262,7 @@ QuestNode: {
 	}
 
 	SignusQuest: {
-		DisplayName: Signus
+		DisplayName: Signus, Émissaire du Dévoreur
 		Description: Vaincre Signus
 		QuestObjective.Description: Vaincre Signus
 		QuestReward.Description: 5 Nethers tordus
@@ -278,11 +278,11 @@ QuestNode: {
 	}
 
 	SupremeCalamitasQuest: {
-		DisplayName: Calamitas suprême
-		Description: Vaincre Calamitas suprême
-		QuestObjective.Description: Vaincre Calamitas suprême
+		DisplayName: Calamitas, la Sorcière Suprême
+		Description: Vaincre Calamitas, la Sorcière Suprême
+		QuestObjective.Description: Vaincre Calamitas, la Sorcière Suprême
 		QuestReward.Description: 20 Cendres d'annihilation
-		DetailedDescription: La légendaire Sorcière du Soufre. La fin de ton voyage, ou un nouveau départ ? Prépare-toi au vrai bullet hell.
+		DetailedDescription: La légendaire Sorcière du Soufre. La fin de ton voyage, ou un nouveau départ ? Prépare-toi au vrai enfer de projectiles.
 	}
 
 	YharonQuest: {
@@ -337,7 +337,7 @@ QuestNode: {
 		DisplayName: Forage profond
 		Description: Fabriquer une machine de minage MK2
 		QuestObjective.Description: Obtenir une machine de minage MK2
-		QuestReward.Description: 5 Potions de minage
+		QuestReward.Description: 5 Potions de spéléologie
 		DetailedDescription: Un noyau renforcé offre une vitesse d'extraction inégalée.
 	}
 

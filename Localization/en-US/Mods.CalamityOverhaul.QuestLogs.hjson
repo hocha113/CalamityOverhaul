@@ -54,7 +54,7 @@ QuestNode: {
 	}
 
 	CalamitasCloneQuest: {
-		DisplayName: The Calamitas Clone
+		DisplayName: Calamitas Clone
 		Description: Defeat the Calamitas Clone
 		QuestObjective.Description: Defeat the Calamitas Clone
 		QuestReward.Description: 10 Calamitous Dust
@@ -278,9 +278,9 @@ QuestNode: {
 	}
 
 	SupremeCalamitasQuest: {
-		DisplayName: Supreme Calamitas
-		Description: Defeat Supreme Calamitas
-		QuestObjective.Description: Defeat Supreme Calamitas
+		DisplayName: Supreme Witch, Calamitas
+		Description: Defeat Supreme Witch, Calamitas
+		QuestObjective.Description: Defeat Supreme Witch, Calamitas
 		QuestReward.Description: 20 Ashes of Annihilation
 		DetailedDescription: The legendary Brimstone Witch. This is the end of your journey, or perhaps a new beginning? Prepare yourself for true bullet hell.
 	}

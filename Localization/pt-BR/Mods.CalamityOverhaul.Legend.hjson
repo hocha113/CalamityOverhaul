@@ -413,7 +413,7 @@ SHPCTrialQuestLine: {
 	Trial_7: Verme Mecanico
 	Trial_8: Desmontagem dos Olhos Gemeos
 	Trial_9: Craneo de Aco
-	Trial_10: Clone da Calamidade
+	Trial_10: Clone da Calamitas
 	Trial_11: Levantamento Ecologico
 	Trial_12: Tecnologia Antiga
 	Trial_13: Coordenadas Interestelares
@@ -581,11 +581,11 @@ SHPCSlotName: {
 
 MoldProcessingUI: {
 	Title: PROCESSAMENTO DE MOLDES
-	Subtitle: DECOMPOR · REFUNDIR
+	Subtitle: DECOMPOR · REFORJAR
 	TabWorkbench: BANCADA
 	TabCodex: CODEX
 	Decompose: DECOMPOR
-	Reforge: REFUNDIR
+	Reforge: REFORJAR
 	ClearPin: LIMPAR MARCAÇÃO
 	RandomMode: ALEATORIO · NAO DESCOBERTO PRIMEIRO
 	PinnedMode: MARCADO DO CODEX
@@ -597,7 +597,7 @@ MoldProcessingUI: {
 	EmptyCandidates: "// nenhum modulo compativel no inventario"
 	CloseHint: ESC PARA FECHAR
 	DecomposeHint: Clique em um modulo para decompo-lo
-	CodexHint: Clique em um molde descoberto para fixa-lo como alvo de refundicao
+	CodexHint: Clique em um molde descoberto para fixa-lo como alvo de reforjamento
 	Discovered: DESCOBERTO
 	PinnedTag: FIXADO
 }

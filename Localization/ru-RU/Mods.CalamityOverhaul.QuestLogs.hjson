@@ -54,7 +54,7 @@ QuestNode: {
 	}
 
 	CalamitasCloneQuest: {
-		DisplayName: Тень Каламитас
+		DisplayName: Клон Каламитас
 		Description: Победить Клона Каламитас
 		QuestObjective.Description: Победить Клона Каламитас
 		QuestReward.Description: 10 пыльцы бедствия
@@ -150,9 +150,9 @@ QuestNode: {
 	}
 
 	PlaguebringerGoliathQuest: {
-		DisplayName: Разносчица чумы Голиаф
-		Description: Победить Разносчицу чумы Голиаф
-		QuestObjective.Description: Победить Разносчицу чумы Голиаф
+		DisplayName: Предвестница чумы, Голиаф
+		Description: Победить Предвестницу чумы, Голиаф
+		QuestObjective.Description: Победить Предвестницу чумы, Голиаф
 		QuestReward.Description: 20 канистр с чумной клеткой
 		DetailedDescription: Королева пчел, модифицированная нановирусом. Она не только смертоносна, но и переносит опасную чуму.
 	}

@@ -10,7 +10,7 @@ MoldProcessingTable: {
 		'''
 		Clique direito para abrir a Mesa de Processamento de Moldes
 		Desconstruir: Derrete partes de modificacao excedentes em fragmentos
-		Refundir: Consome fragmentos para produzir novos moldes; pode travar alvos especificos no indice
+		Reforjar: Consome fragmentos para produzir novos moldes; pode travar alvos especificos no indice
 		'''
 }
 

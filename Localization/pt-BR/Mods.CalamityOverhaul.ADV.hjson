@@ -162,7 +162,7 @@ PerforatorGift: {
 
 PlaguebringerGift: {
 	R1: Halibut
-	L0: A Pestifera... uma abelha mecanica carregando uma arma biologica. Quem projetou isso? Um verdadeiro bastardo, ousando escravizar abelhas.
+	L0: A Pestífera Goliarda... uma abelha mecanica carregando uma arma biologica. Quem projetou isso? Um verdadeiro bastardo, ousando escravizar abelhas.
 	L1: Um virus nao se importa com certo ou errado. So quer sobreviver. Como nos, apenas mais direto.
 	L2: Um Jewel-fish. Infectado e miraculosamente recuperado. Seu sistema imunologico e mais experiente do que voce.
 	L3: Dizem que comer aumenta a resistencia. Parece outra maneira de dizer 'o que nao te mata te fortalece.'
@@ -372,7 +372,7 @@ FishoilQuestUI: {
 
 DoGQuestUI: {
 	QuestTitle: Comissao: O Devorador de Deuses
-	QuestDesc: Derrote O Devorador de Deuses usando o Escavador de Coracoes.
+	QuestDesc: Derrote o Devorador de Deuses usando o Escavador de Coracoes.
 	AcceptText: Aceitar
 	DeclineText: Recusar
 }

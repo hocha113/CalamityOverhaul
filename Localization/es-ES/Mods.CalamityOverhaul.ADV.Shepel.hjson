@@ -324,7 +324,7 @@ ShepelGolemDialogue: {
 
 ShepelHiveMindDialogue: {
 	RoleName: SHPC
-	Line1: La Mente Colmena ha sido borrada. La radiación corrupta está decayendo y mis sistemas de alerta por fin se han silenciado.
+	Line1: La Mente de la Colmena ha sido borrada. La radiación corrupta está decayendo y mis sistemas de alerta por fin se han silenciado.
 	Line2: El ambiente de la zona se está estabilizando. Ahora por fin puedo estar a su lado con tranquilidad.
 }
 
@@ -349,7 +349,7 @@ ShepelPerforatorDialogue: {
 
 ShepelPlaguebringerDialogue: {
 	RoleName: SHPC
-	Line1: El Portador de la Plaga se ha estrellado. Por favor, asegúrese de llevar puesta la máscara filtrante; yo me encargaré de purificar todas las toxinas residuales de la contaminación.
+	Line1: La Goliat Traeplagas se ha estrellado. Por favor, asegúrese de llevar puesta la máscara filtrante; yo me encargaré de purificar todas las toxinas residuales de la contaminación.
 	Line2: Un portador de plaga militarizado... Las evidencias de que fue diseñado intencionalmente son muy obvias. Investigaré este asunto a fondo.
 }
 
@@ -681,7 +681,7 @@ ShepelTwinsGift: {
 
 ShepelWoFGift: {
 	RoleName: SHPC
-	L0: Tras la caída del Muro de Carne, la estructura geológica y las líneas base de energía sufrieron un choque violento.
+	L0: Tras la caída de Muro carnoso, la estructura geológica y las líneas base de energía sufrieron un choque violento.
 	L1: El mundo está adentrándose en una fase más peligrosa. Pero, al mismo tiempo, han comenzado a surgir materiales raros en grandes cantidades.
 	L2: He usado esas nuevas aleaciones para actualizar su sistema de agarre; considere este el primer paso en nuestra nueva etapa.
 	L3: Sin importar cómo mute el entorno externo, mis protocolos de guardia jamás vacilarán.

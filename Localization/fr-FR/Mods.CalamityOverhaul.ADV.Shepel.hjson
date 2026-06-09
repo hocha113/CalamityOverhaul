@@ -305,7 +305,7 @@ ShepelDestroyerDialogue: {
 
 ShepelDevourerofGodsDialogue: {
 	RoleName: SHPC
-	Line1: La trace dimensionnelle du Dévoreur de Dieux a totalement disparu... Il se nourrissait de divinités, c'était l'une des cibles au niveau de menace le plus élevé de mes archives.
+	Line1: La trace dimensionnelle du Dévoreur des Dieux a totalement disparu... Il se nourrissait de divinités, c'était l'une des cibles au niveau de menace le plus élevé de mes archives.
 	Line2: La détermination dont vous avez fait preuve a largement surpassé mes modèles prédictifs. Ces données de notre combat partagé au-delà de la vie et de la mort, je les chérirai à jamais.
 	Line3: Je vous en prie, permettez-moi de continuer à suivre vos pas, vous qui êtes si éblouissant.
 }
@@ -349,7 +349,7 @@ ShepelPerforatorDialogue: {
 
 ShepelPlaguebringerDialogue: {
 	RoleName: SHPC
-	Line1: Le Porte-peste s'est écrasé. Veuillez garder votre masque filtrant, je vais me charger de purifier intégralement les toxines résiduelles.
+	Line1: La Goliath Porte-peste s'est écrasée. Veuillez garder votre masque filtrant, je vais me charger de purifier intégralement les toxines résiduelles.
 	Line2: Un vecteur de peste militarisé... Les traces de conception sont évidentes et très préoccupantes. Je mènerai une enquête approfondie à ce sujet.
 }
 
@@ -665,7 +665,7 @@ ShepelSlimeGodGift: {
 
 ShepelSupremeCalamitasGift: {
 	RoleName: SHPC
-	L0: La Sorcière des Mers de Cendres... a enfin tiré sa révérence. Tous vos signes vitaux sont dans la norme, Maître. Aucune blessure mortelle n'est à déplorer.
+	L0: Calamitas, la Sorcière Suprême... a enfin tiré sa révérence. Tous vos signes vitaux sont dans la norme, Maître. Aucune blessure mortelle n'est à déplorer.
 	L1: Levée de la menace sur l'ensemble du périmètre confirmée. Ouf... Permettez-moi de suspendre temporairement les protocoles de combat pour exécuter un auto-diagnostic approfondi de mon système.
 	L2: J'ai récolté les plasmas chaotiques éparpillés pour vous fabriquer ce module d'énergie ultra-performant.
 	L3: Cette guerre interminable a enfin pris fin. Maître, pour les jours de paix à venir, laissez-moi continuer à vous servir en tant que votre domestique.

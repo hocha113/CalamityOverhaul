@@ -91,7 +91,7 @@ CalamitasCloneGift: {
 CrabulonGift: {
 	R1: Halibut
 	L0: Ese ser... ¿seta? ¿Es sabiduría o instinto bajo el sombrero?
-	L1: ¿Sabías que la micelios puede transmitir información? Quizá pedía ayuda a los suyos.
+	L1: ¿Sabías que la micelia puede transmitir información? Quizá pedía ayuda a los suyos.
 	L2: Un pez hongo; lo atrapé entre las esporas que despedía.
 	L3: Tranquilo, las esporas no convierten a un humano en hongo... probablemente.
 	L4: Si de pronto quieres echar raíces en un sitio húmedo y oscuro, avísame.
@@ -162,7 +162,7 @@ PerforatorGift: {
 
 PlaguebringerGift: {
 	R1: Halibut
-	L0: El Portador de la Peste... una abeja mecánica con arma biológica; quien diseñó esto es un canalla por esclavizar abejas.
+	L0: La Goliat Traeplagas... una abeja mecánica con arma biológica; quien diseñó esto es un canalla por esclavizar abejas.
 	L1: Un virus no distingue el bien del mal; solo quiere sobrevivir, como nosotros, pero más directo.
 	L2: Un pez joya, infectado y curado milagrosamente; su sistema inmune tiene más historias que tú.
 	L3: Dicen que comerlo refuerza las defensas; otra forma de decir «lo que no te mata te hace más fuerte».
@@ -591,13 +591,13 @@ DraedonQuestLine: {
 }
 
 AbyssQuestLine: {
-	QuestCategory: Viejo Duque
+	QuestCategory: El Viejo Duque
 	CampsiteTitle: El Abismo Llama
-	CampsiteSummary: Encuentra y habla con el Viejo Duque
+	CampsiteSummary: Encuentra y habla con El Viejo Duque
 	CampsiteObjective: Objetivo
-	CampsiteLocation: Ir al campamento del Viejo Duque
+	CampsiteLocation: Ir al campamento de El Viejo Duque
 	CampsiteDistance: Distancia
-	CampsiteInteract: Hablar con el Viejo Duque
+	CampsiteInteract: Hablar con El Viejo Duque
 	CampsiteComplete: ¡Misión completada!
 	CampsiteHoldHint: Sostén Fragmentos Oceánicos para ver la dirección
 	FragmentTitle: El Abismo Llama
@@ -817,7 +817,7 @@ DyeProtest: {
 GiveBlazingBud.MessageText: Las brasas arden y susurran al viento; una flor extraña cae en tus manos…
 
 FirstMetOldDuke: {
-	OldDukeName: Viejo Duque
+	OldDukeName: El Viejo Duque
 	HelenName: Halibut
 	L0: ......
 	L1: Guarda el filo, muchacho; no hace falta desenvainar al primer encuentro.
@@ -844,11 +844,11 @@ OldDukeCampsite: {
 		GreetingText: ¿Eh? Hola...
 	}
 
-	OldDukeCampsite.TitleText: Campamento del Viejo Duque
+	OldDukeCampsite.TitleText: Campamento de El Viejo Duque
 }
 
 CampsiteInteractionDialogue: {
-	OldDukeName: Viejo Duque
+	OldDukeName: El Viejo Duque
 	GreetingLine: ¿Qué necesitas?
 	Choice1Text: Vine a comerciar
 	Choice2Text: Traje lo que pediste
@@ -866,7 +866,7 @@ CampsiteInteractionDialogue: {
 	Choice4_R3: Usarme de piedra de afilar no es sabio...
 
 	CampsiteChatDialogue: {
-		OldDukeName: Viejo Duque
+		OldDukeName: El Viejo Duque
 		GreetingLine: ¿De qué quieres hablar?
 		Choice_BackToMain: Cambiar de tema
 		Choice_EndConversation: Eso es todo
@@ -931,7 +931,7 @@ CampsiteInteractionDialogue: {
 }
 
 FirstCampsiteDialogue: {
-	OldDukeName: Viejo Duque
+	OldDukeName: El Viejo Duque
 	L0: Has venido.
 	L1: Llevo años recolectando estos fragmentos.
 	L2: Son peculiares; no parecen evolución natural, sino algo que «invadió» este mundo.
@@ -942,7 +942,7 @@ FirstCampsiteDialogue: {
 }
 
 ComeCampsiteFindMe: {
-	OldDukeName: Viejo Duque
+	OldDukeName: El Viejo Duque
 	B1: ...Pasa a tomar té cuando puedas.
 	C1: Tengo un asunto contigo
 	C2: Solo pescaba por diversión...
@@ -1046,7 +1046,7 @@ FirstMetShepel: {
 	Choice2Text: ...Cuánto tiempo.
 	Choice1Response: ...Sí; si es usted, me equivocaré las veces que haga falta.
 	Choice1Silence: ......
-	CybCourseOfferLine: Programa de neuroensueño cargado. ¿Desea conectarse ahora al espacio de neuroensueño para aprender Hack Time y los protocolos de armas SHPC?
+	CybCourseOfferLine: Programa de neuroensueño cargado. ¿Desea conectarse ahora al espacio de neuroensueño para aprender Tiempo de Hackeo y los protocolos de armas SHPC?
 	CybCourseAcceptText: Ahora mismo
 	CybCourseDeclineText: Ahora no
 	CybCourseAcceptResponse: Recibido; estableciendo enlace neural... Permanezca quieto.

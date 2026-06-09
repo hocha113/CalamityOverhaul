@@ -305,7 +305,7 @@ MartyrdomBarUI: {
 	SlotLabel_9: Td
 	SlotLabel_10: Si
 	SlotLabel_11: Ju
-	RevelationJudgingText: Revelation Last Three Seals in progress
+	RevelationJudgingText: Last Three Seals judgment in progress
 	RevelationStatusText: Revelation Horsemen {0}/4 Q:Meteor R:Judgment
 	RevelationReadyText: Press Q — Revelation ready
 	MartyrdomPowerText: Martyrdom {0}/11

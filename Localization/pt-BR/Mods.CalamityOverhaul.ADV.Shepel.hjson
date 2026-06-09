@@ -274,7 +274,7 @@ ShepelBrimstoneElementalDialogue: {
 
 ShepelCalamitasCloneDialogue: {
 	RoleName: SHPC
-	Line1: O sinal da Clone da Calamitas desapareceu. Voce nao foi pego naquela onda de energia refletiva, foi, Mestre?
+	Line1: O sinal do Clone da Calamitas desapareceu. Voce nao foi pego naquela onda de energia refletiva, foi, Mestre?
 	Line2: Escaneamentos indicam que a verdadeira ameaca ainda esta nas profundezas... Se ela ousar se mostrar.
 	Line3: Eu me colocarei diante de voce a qualquer custo.
 }
@@ -324,7 +324,7 @@ ShepelGolemDialogue: {
 
 ShepelHiveMindDialogue: {
 	RoleName: SHPC
-	Line1: A Mente Colmeia foi exterminada. A radiacao da Corrupcao esta decaindo e meus sistemas de alarme finalmente estao quietos.
+	Line1: A Colmeia Mental foi exterminada. A radiacao da Corrupcao esta decaindo e meus sistemas de alarme finalmente estao quietos.
 	Line2: O ambiente regional esta se estabilizando. Finalmente posso ficar ao seu lado em paz.
 }
 
@@ -343,13 +343,13 @@ ShepelMoonLordDialogue: {
 
 ShepelPerforatorDialogue: {
 	RoleName: SHPC
-	Line1: A ameaca da Colmeia Perfuradora foi incinerada. Escaneamento de sinais vitais completo; confirmando que voce nao sofreu infeccoes.
+	Line1: A ameaca dos Perfuradores foi incinerada. Escaneamento de sinais vitais completo; confirmando que voce nao sofreu infeccoes.
 	Line2: Quaisquer ameacas tentando se aproximar de voce por pontos cegos foram totalmente eliminadas. Proteger sua seguranca e minha diretiva maxima.
 }
 
 ShepelPlaguebringerDialogue: {
 	RoleName: SHPC
-	Line1: O Goliath Pestifero caiu. Por favor, mantenha sua mascara de filtragem; purificarei toda a contaminacao toxica residual.
+	Line1: A Pestífera Goliarda caiu. Por favor, mantenha sua mascara de filtragem; purificarei toda a contaminacao toxica residual.
 	Line2: Um portador de praga militarizado... Os vestigios de design proposital sao gritantes. Investigarei este assunto ate o fim.
 }
 
@@ -392,7 +392,7 @@ ShepelSlimeGodDialogue: {
 
 ShepelSupremeCalamitasDialogue: {
 	RoleName: SHPC
-	Line1: A verdadeira Calamidade... finalmente acabou. Olhando para seu corpo marcado, meu nucleo doi.
+	Line1: Calamitas, a Bruxa Suprema... finalmente acabou. Olhando para seu corpo marcado, meu nucleo doi.
 	Line2: Todo o sofrimento passou. Por favor, abaixe sua arma e descanse contra meu ombro por um tempo.
 	Line3: Esta memoria de chegarmos juntos ao fim mais uma vez se tornara o setor restrito mais sagrado do meu sistema, permanentemente travado contra sobrescrita.
 }

@@ -46,17 +46,17 @@ QuestNode: {
 	}
 
 	BrimstoneElementalQuest: {
-		DisplayName: Elemental de azufre
+		DisplayName: Elemental de Azufre
 		Description: Derrota al elemental de azufre
 		QuestObjective.Description: Derrota al elemental de azufre
 		QuestReward.Description: 10 almas de la noche
-		DetailedDescription: En las ruinas del risco de azufre, despierta y vence al espíritu elemental dormido; cuidado con su bullet hell.
+		DetailedDescription: En las ruinas del risco de azufre, despierta y vence al espíritu elemental dormido; cuidado con su infierno de proyectiles.
 	}
 
 	CalamitasCloneQuest: {
 		DisplayName: Clon de Calamitas
-		Description: Derrota al clon de Calamitas
-		QuestObjective.Description: Derrota al clon de Calamitas
+		Description: Derrota al Clon de Calamitas
+		QuestObjective.Description: Derrota al Clon de Calamitas
 		QuestReward.Description: 10 polvo calamitoso
 		DetailedDescription: Un clon lleno de odio y destrucción; véncelo para demostrar que mereces enfrentar a la verdadera bruja.
 	}
@@ -70,9 +70,9 @@ QuestNode: {
 	}
 
 	CryogenQuest: {
-		DisplayName: Cryogen
-		Description: Derrota a Cryogen
-		QuestObjective.Description: Derrota a Cryogen
+		DisplayName: Criógeno
+		Description: Derrota a Criógeno
+		QuestObjective.Description: Derrota a Criógeno
 		QuestReward.Description: 10 almas de luz
 		DetailedDescription: El antiguo archimago del cosmos está sellado en hielo eterno; libéralo y véncelo.
 	}
@@ -110,9 +110,9 @@ QuestNode: {
 	}
 
 	HiveMindQuest: {
-		DisplayName: Mente colmena / Perforadores
+		DisplayName: La Mente de la Colmena / Los Perforadores
 		Description: Derrota al dios del bioma maligno
-		QuestObjective.Description: Derrota a la Mente colmena o a los Perforadores
+		QuestObjective.Description: Derrota a La Mente de la Colmena o a Los Perforadores
 		QuestReward.Description: 10 lingotes de demonita / carmesita
 		DetailedDescription: Son la conciencia de la Corrupción y el Carmesí hecha carne; si no caen, la tierra no tendrá paz.
 	}
@@ -150,9 +150,9 @@ QuestNode: {
 	}
 
 	PlaguebringerGoliathQuest: {
-		DisplayName: Goliat portador de la peste
-		Description: Derrota al Goliat portador de la peste
-		QuestObjective.Description: Derrota al Goliat portador de la peste
+		DisplayName: La Goliat Traeplagas
+		Description: Derrota a La Goliat Traeplagas
+		QuestObjective.Description: Derrota a La Goliat Traeplagas
 		QuestReward.Description: 20 frascos de células de peste
 		DetailedDescription: Una abeja reina modificada por nanovirus; mortal y cargada de peste.
 	}
@@ -182,19 +182,19 @@ QuestNode: {
 	}
 
 	WallofFleshQuest: {
-		DisplayName: Muro de carne
-		Description: Derrota al Muro de carne
-		QuestObjective.Description: Derrota al Muro de carne
-		QuestReward.Description: Martillo pwn
+		DisplayName: Muro carnoso
+		Description: Derrota a Muro carnoso
+		QuestObjective.Description: Derrota a Muro carnoso
+		QuestReward.Description: Martillo pwnhammer
 		DetailedDescription: El guardián del mundo. Arroja el muñeco vudú del guía a la lava para liberar a la antigua deidad de este mundo y abrir el modo difícil.
 	}
 
 	CeaselessVoidQuest: {
-		DisplayName: Vacío incesante
-		Description: Derrota al vacío incesante
-		QuestObjective.Description: Derrota al vacío incesante
+		DisplayName: Vacío Perpetuo
+		Description: Derrota a Vacío Perpetuo
+		QuestObjective.Description: Derrota a Vacío Perpetuo
 		QuestReward.Description: 5 plasma oscuro
-		DetailedDescription: Centinela del Devorador, espejo del vacío de otra dimensión.
+		DetailedDescription: Centinela del Devorador de Dioses, espejo del vacío de otra dimensión.
 	}
 
 	DevourerofGodsQuest: {
@@ -214,17 +214,17 @@ QuestNode: {
 	}
 
 	ExoMechsQuest: {
-		DisplayName: Mecánicas estelares
-		Description: Derrota a las mecánicas estelares
-		QuestObjective.Description: Derrota a las mecánicas estelares
+		DisplayName: Exo Mecánicos
+		Description: Derrota a los Exo Mecánicos
+		QuestObjective.Description: Derrota a los Exo Mecánicos
 		QuestReward.Description: 20 prismas estelares
 		DetailedDescription: Las obras maestras de Draedon, cénit de la tecnología terrariana; sobrevive a la función perfecta.
 	}
 
 	OldDukeQuest: {
-		DisplayName: Viejo Duque
-		Description: Derrota al Viejo Duque
-		QuestObjective.Description: Derrota al Viejo Duque
+		DisplayName: El Viejo Duque
+		Description: Derrota a El Viejo Duque
+		QuestObjective.Description: Derrota a El Viejo Duque
 		QuestReward.Description: 20 fósiles corroídos
 		DetailedDescription: El antiguo señor de las profundidades del Mar de Azufre; cuidado con su vapor tóxico.
 	}
@@ -262,11 +262,11 @@ QuestNode: {
 	}
 
 	SignusQuest: {
-		DisplayName: Signus, enviado del Devorador
+		DisplayName: Signus, Enviado del Devorador
 		Description: Derrota a Signus
 		QuestObjective.Description: Derrota a Signus
 		QuestReward.Description: 5 vacío retorcido
-		DetailedDescription: Centinela del Devorador, asesino sin forma, fantasma del vacío.
+		DetailedDescription: Centinela del Devorador de Dioses, asesino sin forma, fantasma del vacío.
 	}
 
 	StormWeaverQuest: {
@@ -274,7 +274,7 @@ QuestNode: {
 		Description: Derrota al tejedor de tormentas
 		QuestObjective.Description: Derrota al tejedor de tormentas
 		QuestReward.Description: 5 caparazones blindados
-		DetailedDescription: Centinela del Devorador, gusano del cielo que se alimenta de rayos.
+		DetailedDescription: Centinela del Devorador de Dioses, gusano del cielo que se alimenta de rayos.
 	}
 
 	SupremeCalamitasQuest: {
@@ -282,7 +282,7 @@ QuestNode: {
 		Description: Derrota a Calamitas Suprema
 		QuestObjective.Description: Derrota a Calamitas Suprema
 		QuestReward.Description: 20 cenizas de aniquilación
-		DetailedDescription: La legendaria Bruja del Azufre; ¿fin del viaje o nuevo comienzo? Prepárate para el bullet hell.
+		DetailedDescription: La legendaria Bruja del Azufre; ¿fin del viaje o nuevo comienzo? Prepárate para el infierno de proyectiles.
 	}
 
 	YharonQuest: {
@@ -526,10 +526,10 @@ QuestNode: {
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Completa el boss rush cinco veces y obtén al menos cinco piedras eternita antiguas
+		QuestObjective.Description: Completa la oleada de jefes cinco veces y obtén al menos cinco piedras eternita antiguas
 		QuestReward.Description: 5 piedras eternita antiguas
 		DisplayName: Ciclo de conquista
-		Description: Completa el boss rush cinco veces y obtén al menos cinco piedras eternita antiguas
+		Description: Completa la oleada de jefes cinco veces y obtén al menos cinco piedras eternita antiguas
 		DetailedDescription: Símbolo del verdadero guerrero
 	}
 

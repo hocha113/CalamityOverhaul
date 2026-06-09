@@ -268,7 +268,7 @@ ShepelRAMOverloadDialogue: {
 
 ShepelBrimstoneElementalDialogue: {
 	RoleName: SHPC
-	Line1: Schwefelfeuer-Elementar unterdrückt. Die Umgebungstemperatur sinkt — ich prüfe gleich die Wärmedämmung Ihrer Rüstung.
+	Line1: Schwefelelementar unterdrückt. Die Umgebungstemperatur sinkt — ich prüfe gleich die Wärmedämmung Ihrer Rüstung.
 	Line2: Solch reine Bosheit und Wut ist äußerst gefährlich. Doch seien Sie unbesorgt — jede Ihnen geltende Bedrohung halte ich ab.
 }
 
@@ -305,7 +305,7 @@ ShepelDestroyerDialogue: {
 
 ShepelDevourerofGodsDialogue: {
 	RoleName: SHPC
-	Line1: Die Dimensionsspur des Götterverschlingers ist vollständig verschwunden … Ein Wesen, das Götter frisst — eines der höchsten Bedrohungsziele in meinen Aufzeichnungen.
+	Line1: Die Dimensionsspur des Verschlingers der Götter ist vollständig verschwunden … Ein Wesen, das Götter frisst — eines der höchsten Bedrohungsziele in meinen Aufzeichnungen.
 	Line2: Ihre Entschlossenheit übertraf meine Prognosemodelle bei weitem. Diese gemeinsame Kampfdaten jenseits von Leben und Tod bewahre ich für immer.
 	Line3: Erlauben Sie mir, stets an Ihrer strahlenden Seite zu bleiben.
 }
@@ -324,7 +324,7 @@ ShepelGolemDialogue: {
 
 ShepelHiveMindDialogue: {
 	RoleName: SHPC
-	Line1: Der Hive Mind ist ausgelöscht. Verderbnisstrahlung schwächt ab, meine Alarmsysteme beruhigen sich endlich.
+	Line1: Der Schwarmgeist ist ausgelöscht. Verderbnisstrahlung schwächt ab, meine Alarmsysteme beruhigen sich endlich.
 	Line2: Die Region stabilisiert sich. Endlich kann ich ungestört an Ihrer Seite bleiben.
 }
 

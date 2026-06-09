@@ -108,7 +108,7 @@ CryogenGift: {
 
 DevourerOfGodsGift: {
 	R1: Halibut
-	L0: Le Dévoreur des dieux… un serpent cosmique qui dîne de divinités. Son appétit est aussi infini que son ambition.
+	L0: Le Dévoreur des Dieux… un serpent cosmique qui dîne de divinités. Son appétit est aussi infini que son ambition.
 	L1: On dit : qui regarde l'abîme, l'abîme le regarde. Mais celui-ci ne se contente pas de regarder — il veut vous en collation.
 	L2: Un tétra néon. Il a flotté hors d'une faille du vide. La lumière qu'il émet ne vient pas de cette dimension.
 	L3: Le regarder force le cerveau à saisir des couleurs qu'il ne devrait pas. Une expérience… unique.
@@ -371,8 +371,8 @@ FishoilQuestUI: {
 }
 
 DoGQuestUI: {
-	QuestTitle: Commission : Le Dévoreur des dieux
-	QuestDesc: Vaincre le Dévoreur des dieux avec le Sculpteur de cœur.
+	QuestTitle: Commission : Le Dévoreur des Dieux
+	QuestDesc: Vaincre le Dévoreur des Dieux avec le Sculpteur de cœur.
 	AcceptText: Accepter
 	DeclineText: Refuser
 }
@@ -412,8 +412,8 @@ SupCalQuestLine: {
 	QuestCategory: Sorcière du Soufre
 	PallbearerTitle: Commission : Chasse à la Déesse profanée
 	PallbearerSummary: Vaincre la Déesse profanée avec le Porteur de cercueil. Contribution : 80 %
-	DoGTitle: Commission : Chasse au Dévoreur des dieux
-	DoGSummary: Vaincre le Dévoreur des dieux avec le Sculpteur de cœur. Contribution : 80 %
+	DoGTitle: Commission : Chasse au Dévoreur des Dieux
+	DoGSummary: Vaincre le Dévoreur des Dieux avec le Sculpteur de cœur. Contribution : 80 %
 	YharonTitle: Commission : Chasse au Dragon de l'incinération
 	YharonSummary: Tuer Yharon avec la Machette oni. Contribution : 75 %
 	TrackerSummonHint: Cible absente — invoquez {0}
@@ -591,7 +591,7 @@ DraedonQuestLine: {
 }
 
 AbyssQuestLine: {
-	QuestCategory: Vieux Duc
+	QuestCategory: Le Vieux Duc
 	CampsiteTitle: L'Abîme Appelle
 	CampsiteSummary: Trouver et parler au Vieux Duc
 	CampsiteObjective: Objectif
@@ -822,7 +822,7 @@ DyeProtest: {
 GiveBlazingBud.MessageText: Les braises brûlantes murmurent dans le vent, et une étrange fleur dérive dans vos mains…
 
 FirstMetOldDuke: {
-	OldDukeName: Vieux Duc
+	OldDukeName: Le Vieux Duc
 	HelenName: Halibut
 	L0: ......
 	L1: Range ta soif de sang, jeune aventurier. Pas besoin de dégainer dès la première rencontre.
@@ -853,7 +853,7 @@ OldDukeCampsite: {
 }
 
 CampsiteInteractionDialogue: {
-	OldDukeName: Vieux Duc
+	OldDukeName: Le Vieux Duc
 	GreetingLine: Que veux-tu ?
 	Choice1Text: Je suis là pour commercer.
 	Choice2Text: J'ai ce que tu voulais.
@@ -871,7 +871,7 @@ CampsiteInteractionDialogue: {
 	Choice4_R3: Me prendre comme pierre à aiguiser n'est pas sage…
 
 	CampsiteChatDialogue: {
-		OldDukeName: Vieux Duc
+		OldDukeName: Le Vieux Duc
 		GreetingLine: Tu veux bavarder ?
 		Choice_BackToMain: Changer de sujet
 		Choice_EndConversation: C'est tout
@@ -936,7 +936,7 @@ CampsiteInteractionDialogue: {
 }
 
 FirstCampsiteDialogue: {
-	OldDukeName: Vieux Duc
+	OldDukeName: Le Vieux Duc
 	L0: Tu es là.
 	L1: Je collectionne ces fragments depuis des années.
 	L2: Ils sont… singuliers. Pas comme une évolution naturelle, plutôt des objets étrangers qui ont « envahi » ce monde.
@@ -947,7 +947,7 @@ FirstCampsiteDialogue: {
 }
 
 ComeCampsiteFindMe: {
-	OldDukeName: Vieux Duc
+	OldDukeName: Le Vieux Duc
 	B1: …Passe prendre le thé quand tu as le temps.
 	C1: J'ai affaire avec toi.
 	C2: Je pêchais juste pour m'amuser…

@@ -46,9 +46,9 @@ QuestNode: {
 	}
 
 	BrimstoneElementalQuest: {
-		DisplayName: Schwefelfeuer-Elementar
-		Description: Besiege den Schwefelfeuer-Elementar
-		QuestObjective.Description: Besiege den Schwefelfeuer-Elementar
+		DisplayName: Schwefelelementar
+		Description: Besiege den Schwefelelementar
+		QuestObjective.Description: Besiege den Schwefelelementar
 		QuestReward.Description: 10 Seelen der Nacht
 		DetailedDescription: In den Ruinen der Schwefelfeuerklippe erwecke und besiege den schlummernden Elementargeist. Hüte dich vor ihrem Bullet-Hell.
 	}
@@ -110,9 +110,9 @@ QuestNode: {
 	}
 
 	HiveMindQuest: {
-		DisplayName: Der Hive Mind / Die Perforatoren
+		DisplayName: Der Schwarmgeist / Die Perforatoren
 		Description: Besiege den wahren Gott des bösen Bioms
-		QuestObjective.Description: Besiege den Hive Mind oder die Perforatoren
+		QuestObjective.Description: Besiege den Schwarmgeist oder die Perforatoren
 		QuestReward.Description: 10 Dämonitbarren / Purpurbarren
 		DetailedDescription: Sie sind die Verkörperung des Bewusstseins von Verderbnis und Purpur. Ohne sie gibt es keinen Frieden.
 	}
@@ -190,17 +190,17 @@ QuestNode: {
 	}
 
 	CeaselessVoidQuest: {
-		DisplayName: Endlose Leere
-		Description: Besiege die Endlose Leere
-		QuestObjective.Description: Besiege die Endlose Leere
+		DisplayName: Unendliche Leere
+		Description: Besiege die Unendliche Leere
+		QuestObjective.Description: Besiege die Unendliche Leere
 		QuestReward.Description: 5 Dunkle Plasma
-		DetailedDescription: Einer der Wächter des Götterverschlingers — ein Spiegel der Leere aus einer anderen Dimension.
+		DetailedDescription: Einer der Wächter des Verschlingers der Götter — ein Spiegel der Leere aus einer anderen Dimension.
 	}
 
 	DevourerofGodsQuest: {
-		DisplayName: Götterverschlinger
-		Description: Besiege den Götterverschlinger
-		QuestObjective.Description: Besiege den Götterverschlinger
+		DisplayName: Der Verschlinger der Götter
+		Description: Besiege den Verschlinger der Götter
+		QuestObjective.Description: Besiege den Verschlinger der Götter
 		QuestReward.Description: 30 Kosmilitbarren
 		DetailedDescription: Eine kosmische Schlange, die alles Göttliche verschlingen will. Kämpfe in der Leere — lass dich nicht fressen.
 	}
@@ -230,9 +230,9 @@ QuestNode: {
 	}
 
 	PolterghastQuest: {
-		DisplayName: Poltergeist
-		Description: Besiege den Poltergeist
-		QuestObjective.Description: Besiege den Poltergeist
+		DisplayName: Polterghast
+		Description: Besiege den Polterghast
+		QuestObjective.Description: Besiege den Polterghast
 		QuestReward.Description: 10 ruiniöse Seelen
 		DetailedDescription: Ein Monster aus den im Dungeon gestorbenen Seelen. Besänftige ihren Zorn.
 	}
@@ -262,11 +262,11 @@ QuestNode: {
 	}
 
 	SignusQuest: {
-		DisplayName: Signus, Gesandter des Verschlingers
+		DisplayName: Signus, Gesandter des Verschlingers der Götter
 		Description: Besiege Signus
 		QuestObjective.Description: Besiege Signus
 		QuestReward.Description: 5 verdrehtes Nether
-		DetailedDescription: Einer der Wächter des Götterverschlingers — ein formloser Assassine, ein Geist der Leere.
+		DetailedDescription: Einer der Wächter des Verschlingers der Götter — ein formloser Assassine, ein Geist der Leere.
 	}
 
 	StormWeaverQuest: {
@@ -274,13 +274,13 @@ QuestNode: {
 		Description: Besiege den Sturmflechter
 		QuestObjective.Description: Besiege den Sturmflechter
 		QuestReward.Description: 5 gepanzerte Schalen
-		DetailedDescription: Einer der Wächter des Götterverschlingers — ein Himmelswurm, der von Gewittern und Blitzen lebt.
+		DetailedDescription: Einer der Wächter des Verschlingers der Götter — ein Himmelswurm, der von Gewittern und Blitzen lebt.
 	}
 
 	SupremeCalamitasQuest: {
-		DisplayName: Oberste Calamitas
-		Description: Besiege die Oberste Calamitas
-		QuestObjective.Description: Besiege die Oberste Calamitas
+		DisplayName: Oberhexe Calamitas
+		Description: Besiege Oberhexe Calamitas
+		QuestObjective.Description: Besiege Oberhexe Calamitas
 		QuestReward.Description: 20 Asche der Vernichtung
 		DetailedDescription: Die legendäre Schwefelfeuer-Hexe. Ende deiner Reise — oder ein neuer Anfang? Bereite dich auf echtes Bullet-Hell vor.
 	}

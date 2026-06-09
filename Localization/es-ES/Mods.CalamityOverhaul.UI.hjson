@@ -129,7 +129,7 @@ SulfseaDialogueBox: {
 }
 
 OldDukeShopUI: {
-	TitleText: Tienda del Viejo Duque
+	TitleText: Tienda de El Viejo Duque
 	CurrencyName: Fragmentos Oceánicos
 	HintTooltip: Desplazar/Arrastrar barra
 }

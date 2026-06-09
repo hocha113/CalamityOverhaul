@@ -361,7 +361,7 @@ EyeOfSingularity: {
 		  Al disparar, liberas ráfagas de rayos gamma adicionales que persiguen enemigos
 		Obtienes Salto cuántico: pulsa [KEY] para teletransportarte al cursor y eliminar proyectiles enemigos en el trayecto
 		Clic derecho para activar el Protocolo de colapso:
-		  Consume todo tu maná; durante los siguientes 10 segundos, todos tus ataques a distancia ignoran los frames de invulnerabilidad y fuerzan golpes críticos
+		  Consume todo tu maná; durante los siguientes 10 segundos, todos tus ataques a distancia ignoran los fotogramas de invulnerabilidad y fuerzan golpes críticos
 		  Enfriamiento: 60 segundos
 		Si recibes un golpe mortal, te conviertes en una supernova, infliges enorme daño en área y te reconstruyes en una posición segura tras 3 segundos
 		Este efecto tiene 60 segundos de enfriamiento
@@ -757,7 +757,7 @@ HandmadeDoll: {
 	DisplayName: Muñeca cosida a mano
 	Tooltip:
 		'''
-		Úsala en el Inframundo para invocar el Muro de Carnes
+		Úsala en el Inframundo para invocar a Muro carnoso
 		Si el Guía está vivo, será sacrificado al usarla
 		"Hecha a mano, y el Guía no lo sabe"
 		'''
@@ -1364,13 +1364,13 @@ Proverbs: {
 	Tooltip:
 		'''
 		Genera una pequeña runa de azufre detrás de ti
-		Otorga inmunidad a la mayoría de debuffs de fuego
+		Otorga inmunidad a la mayoría de efectos negativos de fuego
 		La mayoría de tus ataques infligen la maldición Marchito
 		[Content]
 		'''
 	L1:
 		'''
-		Inflige el doble de daño a la Bruja de azufre;
+		Inflige el doble de daño a la Bruja del Azufre;
 		sus ataques pueden golpearte de forma crítica
 		'''
 	L2:
@@ -1486,7 +1486,7 @@ AriaofTheCosmos: {
 
 Oceanfragments: {
 	DisplayName: Fragmentos oceánicos
-	Tooltip: Un amuleto misterioso. Al Viejo Duque podría interesarle.
+	Tooltip: Un amuleto misterioso. A El Viejo Duque podría interesarle.
 }
 
 OceanRaiders: {
@@ -1507,7 +1507,7 @@ OldDuchest: {
 	Tooltip:
 		'''
 		Un cofre de capacidad inmensa
-		"El antiguo cofre del Viejo Duque; si está cerca, quizá arroje algo dentro."
+		"El antiguo cofre de El Viejo Duque; si está cerca, quizá arroje algo dentro."
 		'''
 }
 
@@ -1789,15 +1789,15 @@ SelfHackCrystal: {
 		Cibernética de red de alto nivel en la ranura del sistema operativo.
 		Redirige la interfaz de hackeo de vuelta al portador.
 		Otorga permanentemente velocidad adicional de recuperación de RAM.
-		Habilidad cibernética: gasta RAM para eliminar al instante todos los debuffs
+		Habilidad cibernética: gasta RAM para eliminar al instante todos los efectos negativos
 		y obtener breve invulnerabilidad: una ventana para escapar de situaciones letales.
 		'''
-	SkillHint: Activa el autohackeo desde el radial {0} para purgar debuffs con RAM
+	SkillHint: Activa el autohackeo desde el radial {0} para purgar efectos negativos con RAM
 	SkillName: Protocolo de autohackeo
 	SkillDesc:
 		'''
 		Redirige la interfaz de hackeo hacia ti mismo para una limpieza de emergencia.
-		Gasta 3 RAM para eliminar al instante todos los debuffs y otorga ~1,5 s de invulnerabilidad.
+		Gasta 3 RAM para eliminar al instante todos los efectos negativos y otorga ~1,5 s de invulnerabilidad.
 		Enfriamiento de 12 s; se atenúa automáticamente si no hay RAM suficiente o sigue en enfriamiento.
 		'''
 }
