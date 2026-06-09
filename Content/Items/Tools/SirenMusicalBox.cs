@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Players;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameSystem;
@@ -29,6 +28,10 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void SetStaticDefaults() {
             DeathText = this.GetLocalization(nameof(DeathText), () => "{0}在未知的袭击下化作腐尸");
+        }
+
+        public override void Unload() {
+            DeathText = null;
         }
 
         public override void SetDefaults() {
@@ -61,7 +64,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             Main.tileWaterDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
             AddMapEntry(new Color(139, 0, 139), VaultUtils.GetLocalizedItemName<SirenMusicalBox>());
-            AnimationFrameHeight = 36;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
             TileObjectData.newTile.Width = Width;
@@ -224,8 +226,8 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         internal static void RequestForceStop() {
-            if (Main.netMode == NetmodeID.SinglePlayer) {
-                StopSession(playStopEffects: true, sync: false);
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                StopSession(playStopEffects: true, sync: Main.netMode == NetmodeID.Server);
                 return;
             }
 
@@ -293,10 +295,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
+            // 会话激活后所有存活玩家均被视为诅咒，无法通过再次右键关闭；需等待音乐结束或外部解救
             if (active) {
-                if (boxPosition == position) {
-                    StopSession(playStopEffects: true, sync: true);
-                }
                 return;
             }
 
@@ -441,6 +441,9 @@ namespace CalamityOverhaul.Content.Items.Tools
                 if (playStopEffects && wasActive) {
                     SpawnStopEffects(stopEffectCenter == default ? previousCenter : stopEffectCenter);
                 }
+            }
+            else if (!wasActive && !Main.dedServ) {
+                SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.3f }, boxCenter);
             }
         }
 
@@ -587,7 +590,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn,
             ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
-            if (attempt.inHoney || attempt.inLava) {
+            if (attempt.inHoney || attempt.inLava || npcSpawn > 0) {
                 return;
             }
 
@@ -864,8 +867,6 @@ namespace CalamityOverhaul.Content.Items.Tools
             boxTP = null;
             return false;
         }
-
-        internal static void RequestToggle(Point16 position) => SirenMusicalSystem.RequestToggle(position);
 
         internal static void HandleTogglePacket(BinaryReader reader, int whoAmI) => SirenMusicalSystem.HandlePacket(reader, whoAmI);
 
