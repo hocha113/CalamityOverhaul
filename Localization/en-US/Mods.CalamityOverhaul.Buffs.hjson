@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: Hyper Disintegration
 	Description: Let the goal disintegrate from within
 }
+
+TemporalStasis: {
+	DisplayName: Temporal Stasis
+	Description: Time freezes around it
+}
+
+GravitationalCollapse: {
+	DisplayName: Gravitational Collapse
+	Description: Dragged into the abyss by its own weight
+}

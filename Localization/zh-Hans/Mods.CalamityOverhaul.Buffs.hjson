@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: 超位崩解
 	Description: 让目标从内部崩解
 }
+
+TemporalStasis: {
+	DisplayName: 时停
+	Description: 时间在其周身凝固
+}
+
+GravitationalCollapse: {
+	DisplayName: 引力坍缩
+	Description: 被自身的重量拖入深渊
+}

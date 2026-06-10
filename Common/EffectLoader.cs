@@ -108,5 +108,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCSonicBoom { get; set; }
         public static Asset<Effect> SHPCJudgmentRay { get; set; }
         public static Asset<Effect> SHPCHoloLattice { get; set; }
+        public static Asset<Effect> ArcaneRift { get; set; }
+        public static Asset<Effect> ArcaneHighDimension { get; set; }
+        public static Asset<Effect> ArcaneRealityTremor { get; set; }
     }
 }

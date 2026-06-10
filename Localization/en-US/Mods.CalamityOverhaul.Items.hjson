@@ -350,6 +350,35 @@ EyeOfSingularity: {
 		'''
 }
 
+ArcaneThroneOfEternity: {
+	DisplayName: Arcane Throne of Eternity
+	Tooltip:
+		'''
+		Increases magic damage by 100%
+		Increases magic critical strike chance by 100%
+		Increases magic attack speed by 100%
+		Increases maximum mana by 1000; mana regeneration is greatly boosted and never interrupted
+		All magic projectiles gain infinite piercing
+		Your magic attacks tear through the veil of reality, opening continuously erupting Arcane Rifts on impact
+		All magic attacks inflict a random forbidden curse:
+		  Void Erosion, Temporal Stasis, Soul Burning, Gravitational Collapse, or Hyper Disintegration
+		While above 90% mana, you enter the 'Omniscience' state:
+		  All magic projectiles automatically home in on enemies, and critical damage multiplier rises to 1000%
+		Grants the ability of Truth Leap; press [KEY] to tear open space and enter a higher dimension:
+		  Become immune to all damage and move freely for a short time, unleashing a devastating Reality Tremor upon leaving
+		  30 second cooldown
+		Right-click to activate 'Root Calculation':
+		  For the next 10 seconds, every magic attack simultaneously releases 5 mirrored spells
+		  60 second cooldown
+		If you receive fatal damage, time rewinds to your state from 5 seconds ago, restoring your life, mana and position
+		This effect has a 60 second cooldown
+		Enemies are more likely to target you
+		[c/b84dff:"A nameless sage peels open your skull, inscribing forgotten truths beyond the stars"]
+		[c/ffdd66:"The Lord of Flux plucks the warp and weft of fate, treating reality as an unfinished draft"]
+		[c/66ffff:"The corpse upon the golden throne gazes at you, having long forgotten what death is"]
+		'''
+}
+
 PrecisionMuzzleBrake: {
 	DisplayName: Precision Muzzle Brake
 	Tooltip:
