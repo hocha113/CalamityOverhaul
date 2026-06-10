@@ -153,9 +153,20 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <param name="knockback">击退</param>
         /// <param name="consume">是否实际消耗一颗弹药</param>
         /// <returns>背包中是否还有可用弹药</returns>
-        protected bool PickSnowAmmo(out int damage, out float knockback, bool consume = true) {
+        protected bool PickSnowAmmo(out int damage, out float knockback, bool consume = true)
+            => PickSnowAmmo(out _, out damage, out knockback, consume);
+
+        /// <summary>
+        /// 拾取雪球弹药并获取弹药加成后的伤害数据，同时给出弹药对应的弹幕类型
+        /// </summary>
+        /// <param name="projToShoot">弹药对应的弹幕类型</param>
+        /// <param name="damage">含武器与弹药加成的伤害</param>
+        /// <param name="knockback">击退</param>
+        /// <param name="consume">是否实际消耗一颗弹药</param>
+        /// <returns>背包中是否还有可用弹药</returns>
+        protected bool PickSnowAmmo(out int projToShoot, out int damage, out float knockback, bool consume = true) {
             AmmoConsumeContext = consume;
-            bool hasAmmo = Owner.PickAmmo(Item, out _, out _, out damage, out knockback, out _, !consume);
+            bool hasAmmo = Owner.PickAmmo(Item, out projToShoot, out _, out damage, out knockback, out _, !consume);
             AmmoConsumeContext = false;
             return hasAmmo;
         }

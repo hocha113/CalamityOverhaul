@@ -484,13 +484,10 @@ DarkFrostSolstice: {
 	DisplayName: Dark Frost Solstice
 	Tooltip:
 		'''
-		Use snowballs as ammunition
-		Hold left-click to sweep; the barrel spins ever faster the longer you fire
-		At high spin, periodically casts out hunting frost souls
-		Sustained fire at full spin builds up divinity
-		Once filled, the next shot calls down the Solstice Judgment—
-		a polar pillar of light at your cursor, erupting the earth into ice lances and frostbursts
-		"On the shortest day, the divinity opened its eyes"
+		Use snowballs as ammunition.
+		Firing hail and polar flames,
+		Every 20 shots triggers an overdrive surge,
+		Summoning wintry divinity at the mouse cursor.
 		'''
 }
 
