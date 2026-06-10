@@ -37,10 +37,10 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private const float HeldScale = 0.95f;
         private static float FullReach => (TipPixel - GripPixel).Length() * HeldScale;
 
-        private const float RaiseBack = 2.35f;
-        private const float Follow = 1.25f;
-        private const float TotalSweep = RaiseBack + Follow;
-        private const int FanSegments = 44;
+        private static float RaiseBack => 2.35f;
+        private static float Follow => 1.25f;
+        private static float TotalSweep => RaiseBack + Follow;
+        private static int FanSegments => 44;
 
         private static readonly Color LeadColor = new(255, 245, 205);
         private static readonly Color GoldColor = new(255, 200, 80);
@@ -387,7 +387,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Player owner = Main.player[Projectile.owner];
             DrawArcFan(sb, owner);
             DrawBlade(sb, owner);
-            DrawChargeAccents(sb, owner);
             return false;
         }
 
@@ -483,10 +482,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 return;
             }
 
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
             float alpha = fanFade * (0.35f + slashProgress * 0.45f);
             Vector2 arcCenter = owner.Center + mainAngle.ToRotationVector2() * (mainReach * 0.6f);
             Color c = GoldColor * alpha;
@@ -497,10 +492,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             c2.A = 0;
             sb.Draw(wave, arcCenter - Main.screenPosition, null, c2,
                 mainAngle + swingDir * 0.35f, wave.Size() / 2f, new Vector2(0.45f, 0.10f), SpriteEffects.None, 0f);
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         private void ComputeBladeDrawXform(Player owner, Texture2D tex, float angle,
@@ -589,62 +580,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             ComputeBladeDrawXform(owner, tex, mainAngle, out Vector2 origin, out float rot, out SpriteEffects flip);
             sb.Draw(tex, handPos - Main.screenPosition, null, bladeCol, rot, origin, HeldScale, flip, 0f);
-        }
-
-        private void DrawChargeAccents(SpriteBatch sb, Player owner) {
-            int phase = CurrentPhase;
-            float flash = flashTimer / 12f;
-            bool charging = phase == PhaseRaise || phase == PhaseHold;
-            if (!charging && flash <= 0.02f) {
-                return;
-            }
-
-            Texture2D glowTex = DivineSourceBladeFX.SoftGlow;
-            Texture2D starTex = DivineSourceBladeFX.BlankStar;
-            if (glowTex == null || starTex == null) {
-                return;
-            }
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            float chargeT = phase == PhaseRaise ? Timer / (float)RaiseDur : 1f;
-            float pulse = 0.5f + 0.5f * MathF.Sin(Timer * 0.7f);
-
-            if (charging) {
-                Color tipGlow = new Color(255, 215, 120) * (0.25f + 0.35f * chargeT + 0.12f * pulse);
-                tipGlow.A = 0;
-                sb.Draw(glowTex, mainTip - Main.screenPosition, null, tipGlow, 0f,
-                    glowTex.Size() / 2f, 0.55f + 0.3f * chargeT, SpriteEffects.None, 0f);
-
-                Vector2 mid = Vector2.Lerp(owner.Center, mainTip, 0.55f);
-                Color midGlow = new Color(255, 195, 90) * (0.18f * chargeT + 0.06f * pulse);
-                midGlow.A = 0;
-                sb.Draw(glowTex, mid - Main.screenPosition, null, midGlow, 0f,
-                    glowTex.Size() / 2f, 0.9f, SpriteEffects.None, 0f);
-            }
-
-            if (flash > 0.02f) {
-                Vector2 mid = Vector2.Lerp(owner.Center, mainTip, 0.62f);
-                float starScale = 0.65f * (1f - flash) + 0.25f;
-
-                Color starCol = FlashWhite * (flash * 0.95f);
-                starCol.A = 0;
-                sb.Draw(starTex, mid - Main.screenPosition, null, starCol, mainAngle,
-                    starTex.Size() / 2f, starScale, SpriteEffects.None, 0f);
-                sb.Draw(starTex, mid - Main.screenPosition, null, starCol * 0.7f, mainAngle + MathHelper.PiOver4,
-                    starTex.Size() / 2f, starScale * 0.6f, SpriteEffects.None, 0f);
-
-                Color burstGlow = new Color(255, 230, 160) * (flash * 0.55f);
-                burstGlow.A = 0;
-                sb.Draw(glowTex, mid - Main.screenPosition, null, burstGlow, 0f,
-                    glowTex.Size() / 2f, 1.6f * (1.2f - flash * 0.5f), SpriteEffects.None, 0f);
-            }
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }
