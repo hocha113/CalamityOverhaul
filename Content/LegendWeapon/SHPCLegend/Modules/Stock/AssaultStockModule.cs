@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -41,8 +42,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     }
 
     /// <summary>
-    /// 悬浮炮臂：悬停在玩家肩侧的机械炮荚，炮口始终跟随光标。
-    /// 侦测到玩家击发主武器的瞬间，左右臂交替射出协战镖弹
+    /// 悬浮炮臂：悬停在玩家肩侧的微缩 SHPC 复制体，炮口始终跟随光标。
+    /// 侦测到玩家击发主武器的瞬间，左右臂交替射出协战光弹。
+    /// 改件被卸下时立即自毁
     /// </summary>
     internal sealed class SHPCAssaultArmProj : ModProjectile, IAdditiveDrawable
     {
@@ -51,6 +53,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         private static readonly Color ArmMain = new(255, 160, 80);
         private static readonly Color ArmEdge = new(180, 70, 20);
         private static readonly Color ArmCore = new(255, 235, 200);
+        //本体贴图缩放：SHPC 原图 152x70，缩小为肩侧炮荚尺寸
+        private const float BodyScale = 0.42f;
 
         private int Side => (int)Projectile.ai[0];
         private float aimRotation;
@@ -73,7 +77,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
             if (owner == null || !owner.active || owner.dead
-                || owner.HeldItem == null || owner.HeldItem.type != SHPCOverride.ID) {
+                || owner.HeldItem == null || owner.HeldItem.type != SHPCOverride.ID
+                || !SHPCModificationSystem.HasModule<AssaultStockModule>(owner)) {
                 Projectile.Kill();
                 return;
             }
@@ -121,39 +126,61 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
+        public override void OnKill(int timeLeft) {
+            if (Main.netMode == NetmodeID.Server) return;
+            //回收时的解体闪光，避免凭空消失
+            for (int i = 0; i < 8; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
+                    Main.rand.NextVector2Circular(3f, 3f),
+                    ArmMain, Main.rand.NextFloat(0.4f, 0.8f)).Configure(true, Main.rand.Next(8, 14));
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            //本体直接复用 SHPC 武器贴图的微缩版，避免像素拼合的潦草感
+            Texture2D body = TextureAssets.Item[SHPCOverride.ID].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition
+                + aimRotation.ToRotationVector2() * -recoil * 5f;
+            //武器贴图默认朝右，瞄向左侧时垂直翻转避免倒持
+            SpriteEffects flip = MathF.Cos(aimRotation) < 0f
+                ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            Color bodyColor = Color.Lerp(lightColor, Color.White, 0.45f);
+            Main.EntitySpriteDraw(body, drawPos, null, bodyColor, aimRotation,
+                body.Size() * 0.5f, BodyScale, flip);
+            return false;
+        }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (white == null) return;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Vector2 recoilOffset = aimRotation.ToRotationVector2() * -recoil * 5f;
-            drawPos += recoilOffset;
+            Texture2D star = CWRAsset.StarTexture_White?.Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition
+                + aimRotation.ToRotationVector2() * -recoil * 5f;
 
-            //荚体辉光
+            //机身环境辉光
             if (glow != null) {
-                spriteBatch.Draw(glow, drawPos, null, ArmEdge * 0.55f, 0f,
-                    glow.Size() * 0.5f, 0.62f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, drawPos, null, ArmEdge * 0.45f, 0f,
+                    glow.Size() * 0.5f, 0.8f, SpriteEffects.None, 0f);
             }
-            //炮荚本体：旋转 45° 的菱形装甲块
-            spriteBatch.Draw(white, drawPos, null, ArmEdge * 0.95f,
-                aimRotation + MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(15f, 15f), SpriteEffects.None, 0f);
-            spriteBatch.Draw(white, drawPos, null, ArmMain,
-                aimRotation + MathHelper.PiOver4, new Vector2(0.5f, 0.5f), new Vector2(10f, 10f), SpriteEffects.None, 0f);
-            //炮管：指向光标的亮线
-            Vector2 barrelDir = aimRotation.ToRotationVector2();
-            spriteBatch.Draw(white, drawPos + barrelDir * 10f, null, ArmCore,
-                aimRotation, new Vector2(0f, 0.5f), new Vector2(13f, 3f), SpriteEffects.None, 0f);
-            //核心指示灯：随充能闪烁
-            float blink = 0.7f + 0.3f * MathF.Sin((float)Main.timeForVisualEffects * 0.2f + Side * 2.6f);
-            spriteBatch.Draw(white, drawPos, null, ArmCore * blink,
-                0f, new Vector2(0.5f, 0.5f), new Vector2(4f, 4f), SpriteEffects.None, 0f);
+            //炮口充能指示：随相位闪烁的小型十字耀斑
+            float blink = 0.55f + 0.45f * MathF.Sin((float)Main.timeForVisualEffects * 0.2f + Side * 2.6f);
+            Vector2 muzzlePos = drawPos + aimRotation.ToRotationVector2() * (76f * BodyScale);
+            if (star != null) {
+                spriteBatch.Draw(star, muzzlePos, null, ArmCore * (blink * 0.85f),
+                    aimRotation, star.Size() * 0.5f, 0.07f + recoil * 0.05f, SpriteEffects.None, 0f);
+            }
+            if (glow != null) {
+                spriteBatch.Draw(glow, muzzlePos, null, ArmMain * blink, 0f,
+                    glow.Size() * 0.5f, 0.3f + recoil * 0.25f, SpriteEffects.None, 0f);
+                //尾部悬浮推进器光点
+                Vector2 thrusterPos = drawPos - aimRotation.ToRotationVector2() * (70f * BodyScale);
+                spriteBatch.Draw(glow, thrusterPos, null, ArmEdge * (0.5f + 0.2f * blink), 0f,
+                    glow.Size() * 0.5f, 0.35f, SpriteEffects.None, 0f);
+            }
         }
     }
 
     /// <summary>
-    /// 协战镖弹：炮臂射出的高速能量镖，带短拖尾与微量追踪
+    /// 协战光弹：炮臂射出的高速光弹，彗尾光锥 + 残影拖尾，带微量追踪
     /// </summary>
     internal sealed class SHPCArmBoltProj : ModProjectile, IAdditiveDrawable
     {
@@ -161,6 +188,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         private static readonly Color BoltMain = new(255, 170, 90);
         private static readonly Color BoltEdge = new(200, 80, 25);
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 10;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -183,11 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.035f);
             }
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, BoltMain.ToVector3() * 0.25f);
-            if (Main.netMode != NetmodeID.Server && Main.rand.NextBool(3)) {
-                PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, -Projectile.velocity * 0.1f,
-                    BoltMain, Main.rand.NextFloat(0.25f, 0.5f)).Configure(BoltEdge, Main.rand.Next(6, 12));
-            }
+            Lighting.AddLight(Projectile.Center, BoltMain.ToVector3() * 0.4f);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
@@ -203,19 +231,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override bool PreDraw(ref Color lightColor) => false;
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D shot = CWRAsset.LightShot?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
+            Texture2D star = CWRAsset.StarTexture_White?.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+
+            //残影链：沿历史位置布置渐隐光点，形成连续能量尾
             if (glow != null) {
-                spriteBatch.Draw(glow, drawPos, null, BoltEdge * 0.5f, 0f,
-                    glow.Size() * 0.5f, 0.35f, SpriteEffects.None, 0f);
+                for (int i = 1; i < Projectile.oldPos.Length; i++) {
+                    if (Projectile.oldPos[i] == Vector2.Zero) break;
+                    float fade = 1f - i / (float)Projectile.oldPos.Length;
+                    Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                    spriteBatch.Draw(glow, trailPos, null,
+                        Color.Lerp(BoltEdge, BoltMain, fade) * (fade * 0.45f), 0f,
+                        glow.Size() * 0.5f, 0.22f * fade + 0.05f, SpriteEffects.None, 0f);
+                }
             }
-            if (white != null) {
-                //拉长的镖体
-                spriteBatch.Draw(white, drawPos, null, BoltMain,
-                    Projectile.rotation, new Vector2(0.5f, 0.5f), new Vector2(14f, 3f), SpriteEffects.None, 0f);
-                spriteBatch.Draw(white, drawPos, null, Color.White * 0.9f,
-                    Projectile.rotation, new Vector2(0.5f, 0.5f), new Vector2(8f, 1.6f), SpriteEffects.None, 0f);
+            //彗尾光锥：箭头端锚定在弹头，尾迹向后发散
+            if (shot != null) {
+                Vector2 tipOrigin = new(shot.Width, shot.Height * 0.5f);
+                spriteBatch.Draw(shot, drawPos, null, BoltMain * 0.9f,
+                    Projectile.rotation, tipOrigin, new Vector2(0.42f, 0.13f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(shot, drawPos, null, Color.White * 0.75f,
+                    Projectile.rotation, tipOrigin, new Vector2(0.26f, 0.07f), SpriteEffects.None, 0f);
+            }
+            //弹头：光晕 + 十字星芒高光
+            if (glow != null) {
+                spriteBatch.Draw(glow, drawPos, null, BoltMain * 0.85f, 0f,
+                    glow.Size() * 0.5f, 0.32f, SpriteEffects.None, 0f);
+            }
+            if (star != null) {
+                float twinkle = 0.8f + 0.2f * MathF.Sin((float)Main.timeForVisualEffects * 0.35f + Projectile.whoAmI);
+                spriteBatch.Draw(star, drawPos, null, Color.White * (0.85f * twinkle),
+                    Projectile.rotation, star.Size() * 0.5f, 0.05f, SpriteEffects.None, 0f);
             }
         }
     }

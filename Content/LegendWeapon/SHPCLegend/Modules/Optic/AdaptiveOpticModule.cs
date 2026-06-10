@@ -135,7 +135,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
             if (owner == null || !owner.active || owner.dead
-                || owner.HeldItem == null || owner.HeldItem.type != SHPCOverride.ID) {
+                || owner.HeldItem == null || owner.HeldItem.type != SHPCOverride.ID
+                || !SHPCModificationSystem.HasModule<AdaptiveOpticModule>(owner)) {
                 Projectile.Kill();
                 return;
             }

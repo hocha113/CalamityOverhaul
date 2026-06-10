@@ -4,8 +4,9 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
     /// <summary>
-    /// 超杀机匣：击杀目标时叠加超杀层数（最多10层），每层+3%伤害
-    /// 层数通过 OnPlayerUpdate 逐帧衰减，打得越快越强
+    /// 超杀机匣：击杀目标时叠加超杀层数（最多15层），每层+2%伤害
+    /// 层数衰减与卸件清零统一由 <see cref="SHPCPlayer.PostUpdate"/> 托管，
+    /// 保证改件卸下后增伤不会残留
     /// </summary>
     internal sealed class OverkillFrameModule : SHPCModuleItem
     {
@@ -21,17 +22,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             SHPCPlayer sp = SHPCPlayer.Get(Main.player[beam.Projectile.owner]);
             sp.OverkillStacks = System.Math.Min(sp.OverkillStacks + 1, 15);
             sp.OverkillTimer = 240;
-        }
-
-        public override void OnPlayerUpdate(Player player) {
-            SHPCPlayer sp = SHPCPlayer.Get(player);
-            if (sp.OverkillStacks <= 0) return;
-            if (sp.OverkillTimer > 0) {
-                sp.OverkillTimer--;
-                return;
-            }
-            sp.OverkillStacks--;
-            sp.OverkillTimer = 150;
         }
     }
 }

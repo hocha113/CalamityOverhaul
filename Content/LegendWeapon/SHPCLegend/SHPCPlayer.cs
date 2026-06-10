@@ -167,6 +167,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void PostUpdate() {
             SHPCModificationSystem.ForEachModule(Player, mod => mod.OnPlayerUpdate(Player));
+            UpdateOverkillStacks();
+        }
+
+        //超杀层数的衰减与清理放在 ModPlayer 中托管而不是模块钩子里，
+        //否则卸下超杀机匣后钩子停止运行，层数会被永久冻结并持续提供增伤
+        private void UpdateOverkillStacks() {
+            if (OverkillStacks <= 0) {
+                return;
+            }
+            if (!SHPCModificationSystem.HasModule<Modules.Frame.OverkillFrameModule>(Player)) {
+                OverkillStacks = 0;
+                OverkillTimer = 0;
+                return;
+            }
+            if (OverkillTimer > 0) {
+                OverkillTimer--;
+                return;
+            }
+            OverkillStacks--;
+            OverkillTimer = 150;
         }
 
         public override void SaveData(TagCompound tag) {
