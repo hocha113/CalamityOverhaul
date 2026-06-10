@@ -119,8 +119,8 @@ DragonsWordMouse.DisplayName: Drachenwort
 DragonsWordProj.DisplayName: Drachenwort
 NeutronMagchStar.DisplayName: Neutronenstern
 NeutronWandExplode.DisplayName: Neutronenstab-Explosion
-DivineSourceBeam.DisplayName: Göttlicher Quellstrahl
-DivineSourceBladeProjectile.DisplayName: Göttliche Quellklinge
+DivineSourceWaveProjectile.DisplayName: Göttliche Quellsichelwelle
+DivineSourceHitFXProjectile.DisplayName: Göttlicher Quelltreffer
 DragonsScaleGreatswordBeam.DisplayName: Drachentang-Großklingenstrahl
 SporeCloud.DisplayName: Sporenwolke
 EXNeutronExplode.DisplayName: Neutronenexplosion EX
@@ -240,10 +240,7 @@ AriaQSkillMiniDisk.DisplayName: Sternenring-Wächter
 SulfuricacidExplosion.DisplayName: Schwefelsäure-Explosion
 DawnshatterFireball.DisplayName: Morgendämmerungsfeuer
 TransferItemProj.DisplayName: Items in Übertragung
-// SolsticeJudgment.DisplayName: Solstice Judgment
-// SolsticeNova.DisplayName: Polar Night Nova
-// SolsticeBolt.DisplayName: Solstice Bolt
-// SolsticeSoul.DisplayName: Frost Soul Crystal
+// Crystal.DisplayName: Crystal
 MuraDimensionSlash.DisplayName: Dimensionsschnitt
 MuraSlashArc.DisplayName: Dimensionsschnitt
 MuraSlashLine.DisplayName: Dimensionsschnitt

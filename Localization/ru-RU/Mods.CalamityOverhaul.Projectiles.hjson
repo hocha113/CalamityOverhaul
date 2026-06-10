@@ -119,8 +119,8 @@ DragonsWordMouse.DisplayName: Клинок драконьего слова
 DragonsWordProj.DisplayName: Клинок драконьего слова
 NeutronMagchStar.DisplayName: Нейтронная звезда
 NeutronWandExplode.DisplayName: Нейтронный взрыв
-DivineSourceBeam.DisplayName: Луч божественного истока
-DivineSourceBladeProjectile.DisplayName: Клинок божественного истока
+DivineSourceWaveProjectile.DisplayName: Полумесячная волна божественного истока
+DivineSourceHitFXProjectile.DisplayName: Удар божественного истока
 DragonsScaleGreatswordBeam.DisplayName: Луч клинка драконьих водорослей
 SporeCloud.DisplayName: Споровое облако
 EXNeutronExplode.DisplayName: Нейтронный взрыв EX
@@ -240,10 +240,7 @@ AriaQSkillMiniDisk.DisplayName: Страж звездного кольца
 SulfuricacidExplosion.DisplayName: Взрыв серной кислоты
 DawnshatterFireball.DisplayName: Огонь рассвета
 TransferItemProj.DisplayName: Перемещаемый предмет
-// SolsticeJudgment.DisplayName: Solstice Judgment
-// SolsticeNova.DisplayName: Polar Night Nova
-// SolsticeBolt.DisplayName: Solstice Bolt
-// SolsticeSoul.DisplayName: Frost Soul Crystal
+// Crystal.DisplayName: Crystal
 MuraDimensionSlash.DisplayName: Разрез измерения
 MuraSlashArc.DisplayName: Разрез измерения
 MuraSlashLine.DisplayName: Разрез измерения

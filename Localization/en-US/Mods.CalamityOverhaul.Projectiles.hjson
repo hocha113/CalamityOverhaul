@@ -1,4 +1,4 @@
-MurasamaHeld.DisplayName: Murasama
+﻿MurasamaHeld.DisplayName: Murasama
 MuraTriggerDash.DisplayName: Murasama
 MuraBreakerSlash.DisplayName: Crescent Moon Slash
 MuraExecutionCut.DisplayName: Dimensional Severance - Finale
@@ -119,8 +119,8 @@ DragonsWordMouse.DisplayName: Dragon's Word
 DragonsWordProj.DisplayName: Dragon's Word
 NeutronMagchStar.DisplayName: Neutron Star
 NeutronWandExplode.DisplayName: Neutron Wand Explosion
-DivineSourceBeam.DisplayName: Divine Source Beam
-DivineSourceBladeProjectile.DisplayName: Divine Source Blade
+DivineSourceWaveProjectile.DisplayName: Divine Source Crescent Wave
+DivineSourceHitFXProjectile.DisplayName: Divine Source Impact
 DragonsScaleGreatswordBeam.DisplayName: Dragon Kelp Greatblade Beam
 SporeCloud.DisplayName: Spore Cloud
 EXNeutronExplode.DisplayName: Neutron Explosion EX

@@ -121,5 +121,9 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GlacierSpike { get; set; }
         public static Asset<Effect> FrostAurora { get; set; }
         public static Asset<Effect> FrostJudgment { get; set; }
+        public static Asset<Effect> DivineSourceBladeGlow { get; set; }
+        public static Asset<Effect> DivineSourceArc { get; set; }
+        public static Asset<Effect> DivineSourceCrescent { get; set; }
+        public static Asset<Effect> DivineSourceImpact { get; set; }
     }
 }

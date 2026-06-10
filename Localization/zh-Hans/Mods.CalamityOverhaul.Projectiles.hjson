@@ -119,8 +119,8 @@ DragonsWordMouse.DisplayName: 龙言之刃
 DragonsWordProj.DisplayName: 龙言之刃
 NeutronMagchStar.DisplayName: 中子星
 NeutronWandExplode.DisplayName: 中子魔杖爆破
-DivineSourceBeam.DisplayName: 神源光束
-DivineSourceBladeProjectile.DisplayName: 神源之刃
+DivineSourceWaveProjectile.DisplayName: 神源之刃·新月剑气
+DivineSourceHitFXProjectile.DisplayName: 神源之刃·命中
 DragonsScaleGreatswordBeam.DisplayName: 龙鳞大剑光束
 SporeCloud.DisplayName: 孢子云
 EXNeutronExplode.DisplayName: 中子爆破EX

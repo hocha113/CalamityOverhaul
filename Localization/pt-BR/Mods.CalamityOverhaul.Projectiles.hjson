@@ -119,8 +119,8 @@ DragonsWordMouse.DisplayName: Palavra do Dragao
 DragonsWordProj.DisplayName: Palavra do Dragao
 NeutronMagchStar.DisplayName: Estrela de Neutrons
 NeutronWandExplode.DisplayName: Explosao da Varinha de Neutrons
-DivineSourceBeam.DisplayName: Raio da Fonte Divina
-DivineSourceBladeProjectile.DisplayName: Lamina da Fonte Divina
+DivineSourceWaveProjectile.DisplayName: Onda Crescente da Fonte Divina
+DivineSourceHitFXProjectile.DisplayName: Impacto da Fonte Divina
 DragonsScaleGreatswordBeam.DisplayName: Raio da Grande Espada de Alga Draconica
 SporeCloud.DisplayName: Nuvem de Esporos
 EXNeutronExplode.DisplayName: Explosao de Neutrons EX
@@ -240,10 +240,7 @@ AriaQSkillMiniDisk.DisplayName: Mini Disco da Habilidade Q da Aria
 SulfuricacidExplosion.DisplayName: Explosao de Acido Sulfurico
 DawnshatterFireball.DisplayName: Bola de Fogo do Amanhecer Estilhaçado
 TransferItemProj.DisplayName: Itens em Transito
-// SolsticeJudgment.DisplayName: Solstice Judgment
-// SolsticeNova.DisplayName: Polar Night Nova
-// SolsticeBolt.DisplayName: Solstice Bolt
-// SolsticeSoul.DisplayName: Frost Soul Crystal
+// Crystal.DisplayName: Crystal
 MuraDimensionSlash.DisplayName: Corte Dimensional Mura
 MuraSlashArc.DisplayName: Arco de Corte Mura
 MuraSlashLine.DisplayName: Linha de Corte Mura

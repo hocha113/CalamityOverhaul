@@ -57,7 +57,8 @@ DivineSourceBlade: {
 	DisplayName: 金源灭却刃
 	Tooltip:
 		'''
-		挥舞金源之力
+		悬浮在背后的神圣黄金巨剑
+		举剑蓄力 → 重斩横扫 → 轰出巨型新月剑气波
 		"生命不息"
 		'''
 }
