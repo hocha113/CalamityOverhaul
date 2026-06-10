@@ -1843,12 +1843,20 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: Otica de Precisao
-	Tooltip: Mira assistida por laser elimina toda a dispersao e concede chance de crit adicional
+	Tooltip:
+		'''
+		Julgamento calibrado: elimina toda a dispersão; acertos consecutivos sem errar acumulam calibração
+		Com dez cargas, dispara um raio de julgamento perfurante com crítico garantido — errar zera a calibração
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: Nucleo de Sobrecarga
-	Tooltip: Substitui o buffer por uma logica de ciclo mais rapido, carregando o orbe mais rapidamente e lancando-o com mais forca
+	Tooltip:
+		'''
+		Remove a trava do orbe: continue carregando além do máximo para sobrecarregar — até o dobro de dano e explosão maior
+		Segure além da linha vermelha e o núcleo estoura: você é arremessado e metade da sua mana queima
+		'''
 }
 
 SteadyStockModule: {
@@ -1858,7 +1866,11 @@ SteadyStockModule: {
 
 HarmonyGripModule: {
 	DisplayName: Empunhadura Harmonia
-	Tooltip: Empunhadura biocondutora canaliza mana atraves do corpo, reduzindo drasticamente o custo de mana
+	Tooltip:
+		'''
+		A biocondução reduz o custo de mana; a mana derramada nos acertos se condensa em névoas ressonantes
+		As névoas flutuam até você — coletá-las devolve mana e acumula Harmonia, aumentando a cadência (máx. 5)
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1868,17 +1880,29 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: Otica Adaptativa
-	Tooltip: Algoritmos de link neural corrigem continuamente a trajetoria, travando cada feixe mais firmemente em seu alvo
+	Tooltip:
+		'''
+		Controle de tiro preditivo: analisa o movimento do alvo e projeta um marcador holográfico de interceptação
+		Os feixes desviam para antecipar o tiro; acertar alvos em movimento adiciona golpes adaptativos
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: Coronha de Assalto
-	Tooltip: Suporte assistido por adrenalina cicla a arma mais agressivamente, aumentando o poder de fogo a um custo de mana mais alto
+	Tooltip:
+		'''
+		A coronha integra dois módulos de combate: ao empunhar a arma, dois braços-canhão flutuantes surgem nos seus ombros
+		Os braços sincronizam com seu gatilho e disparam dardos de apoio alternadamente a cada tiro
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: Empunhadura Balanceada
-	Tooltip: Distribuicao de peso reajustada da um pequeno impulso geral a cadencia de tiro, dano e estabilidade
+	Tooltip:
+		'''
+		Protocolo de equilíbrio duplo: acertos de feixe acumulam Yang, orbes de energia acumulam Yin
+		Enquanto as duas cargas estiverem equilibradas, dano, cadência e eficiência de mana aumentam
+		'''
 }
 
 CapacitorBankModule: {
@@ -1888,7 +1912,11 @@ CapacitorBankModule: {
 
 CrystalGripModule: {
 	DisplayName: Empunhadura de Cristal
-	Tooltip: Dieletrico de cristal sintetico ressoa com o usuario, reduzindo o custo de mana e aumentando o crit, mas atrasando a carga
+	Tooltip:
+		'''
+		O cristal sintético economiza mana e melhora o crítico; impactos críticos se refratam em matéria:
+		estilhaços de cristal explodem do alvo em arcos balísticos e se curvam para inimigos próximos
+		'''
 }
 
 EfficientGripModule: {
@@ -1903,27 +1931,47 @@ HeavyBarrelModule: {
 
 HighVoltageCoreModule: {
 	DisplayName: Nucleo de Alta Voltagem
-	Tooltip: A voltagem de saida e aumentada na escala, amplificando tanto o dano bruto quanto o do feixe mesclado a um custo de mana extra
+	Tooltip:
+		'''
+		Um capacitor de alta tensão carrega a cada acerto
+		Com carga cheia, seu próximo acerto descarrega um arco perfurante que atravessa tudo no caminho
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: Otica Holografica
-	Tooltip: Mira holografica trava o ponto de impacto, reduzindo drasticamente a dispersao e acelerando o gatilho com uma pequena sobrecarga de mana
+	Tooltip:
+		'''
+		Projetor de treliça tática: implanta periodicamente uma grade holográfica no cursor durante o combate
+		Projéteis inimigos que a tocam se dissolvem; seus feixes ao atravessá-la são recalibrados — mais fortes e remirados
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Cano Hipersonico
-	Tooltip: Camara de choque sonico empurra os feixes a velocidade extrema, mas o homing fino nao consegue mais acompanhar
+	Tooltip:
+		'''
+		O raiamento ramjet faz os feixes acelerarem em voo; romper a barreira do som detona um anel de choque Mach
+		Além da barreira, os feixes ficam incandescentes: mais dano, mais perfuração e trilha de condensação
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: Coronha Amortecedora Cinetica
-	Tooltip: Amortecedor liquido engole o recuo, quase eliminando a dispersao e concedendo uma pequena vantagem de crit
+	Tooltip:
+		'''
+		Amortecedores hidráulicos armazenam o recuo dos seus acertos como reserva cinética; acima da metade você fica imune a empurrões
+		Ao sofrer dano, toda a reserva explode numa onda sísmica de contra-ataque que arremessa os inimigos
+		'''
 }
 
 LightStockModule: {
 	DisplayName: Coronha Leve
-	Tooltip: Quadro de composto de carbono aumenta muito a cadencia de tiro a um custo moderado de estabilidade e poder por tiro
+	Tooltip:
+		'''
+		A estrutura leve segmentada aumenta a cadência e transforma cada feixe principal em uma corrente de luz rastejante:
+		dois elos seguem a trajetória do feixe, cada um causando seu próprio dano
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1933,12 +1981,20 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: Injetor de Plasma
-	Tooltip: Injecao de plasma de alta entalpia amplifica muito a velocidade do orbe e o dano do feixe mesclado, carregando ligeiramente mais devagar
+	Tooltip:
+		'''
+		Injeta plasma de alta entalpia no orbe: sua detonação deixa um sol de plasma em miniatura
+		O sol queima tudo por perto e açoita periodicamente o inimigo mais próximo com erupções solares
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: Quadro Quantico
-	Tooltip: Circuitos de direcao quantica fazem os feixes virarem de forma mais inteligente e os orbes voarem mais rapido a um custo de mana ligeiramente elevado
+	Tooltip:
+		'''
+		Protocolo de emaranhamento: acertar dois alvos diferentes em sequência os emaranha quanticamente por alguns segundos
+		O dano em um é parcialmente copiado ao outro; quando um morre, o vínculo colapsa e descarrega o eco acumulado no sobrevivente
+		'''
 }
 
 ScattershotBarrelModule: {

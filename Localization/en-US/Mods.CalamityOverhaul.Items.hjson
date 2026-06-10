@@ -1839,12 +1839,20 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: Precision Optic
-	Tooltip: Laser-assisted aiming eliminates all spread and grants additional crit chance
+	Tooltip:
+		'''
+		Calibrated Judgment: eliminates all spread; consecutive hits without a miss build calibration
+		At ten stacks, fires a guaranteed-crit piercing judgment ray — missing a beam resets calibration
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: Overload Core
-	Tooltip: Replaces the buffer with a faster cycling logic, charging the orb faster and launching it harder
+	Tooltip:
+		'''
+		Removes the orb's safety lock: keep charging past full to overload it — up to double damage and a wider blast
+		Hold past the red line and the core ruptures in your hands, knocking you back and burning half your mana
+		'''
 }
 
 SteadyStockModule: {
@@ -1854,7 +1862,11 @@ SteadyStockModule: {
 
 HarmonyGripModule: {
 	DisplayName: Harmony Grip
-	Tooltip: Bio-conductive grip channels mana through the body, drastically reducing mana cost
+	Tooltip:
+		'''
+		Bio-conduction lowers mana cost; mana spilled on hit condenses into resonant wisps across the battlefield
+		Wisps drift back to you — collecting one restores mana and stacks Harmonics for attack speed (up to 5)
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1864,17 +1876,29 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: Adaptive Optic
-	Tooltip: Neural-link algorithms continuously correct trajectory, locking each beam tighter onto its target
+	Tooltip:
+		'''
+		Predictive fire control: analyzes target motion and projects a holographic lead marker at the intercept point
+		Beams automatically deflect to lead their shots; hits against moving targets trigger bonus adaptive strikes
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: Assault Stock
-	Tooltip: Adrenaline-assisted bracing cycles the weapon more aggressively, raising firepower at higher mana cost
+	Tooltip:
+		'''
+		Twin combat pods are built into the stock: while wielding the weapon, a pair of hovering gun-arms deploys at your shoulders
+		The arms sync with your trigger, alternating rapid support bolts with every shot you fire
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: Balanced Grip
-	Tooltip: Re-tuned weight distribution gives a small all-around boost to fire rate, damage and stability
+	Tooltip:
+		'''
+		Twin Equilibrium Protocol: beam hits build Yang charge, charge orbs build Yin charge
+		While both charges stay in balance the scales align — damage, fire rate and mana efficiency all rise
+		'''
 }
 
 CapacitorBankModule: {
@@ -1884,7 +1908,11 @@ CapacitorBankModule: {
 
 CrystalGripModule: {
 	DisplayName: Crystal Grip
-	Tooltip: Synthetic crystal dielectric resonates with the user, trimming mana cost and boosting crit, but slowing charge
+	Tooltip:
+		'''
+		Synthetic crystal dielectric trims mana cost and boosts crit; critical impacts refract into matter —
+		shards burst from the target in ballistic arcs, then curve toward nearby foes under lattice gravity
+		'''
 }
 
 EfficientGripModule: {
@@ -1899,27 +1927,47 @@ HeavyBarrelModule: {
 
 HighVoltageCoreModule: {
 	DisplayName: High Voltage Core
-	Tooltip: Output voltage is pushed up the scale, amplifying both raw and merged-beam damage at extra mana cost
+	Tooltip:
+		'''
+		A high-voltage capacitor charges with every hit
+		At full charge, your next hit discharges a piercing arc from your body through everything in its path
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: Holo Optic
-	Tooltip: Holographic reticle locks the impact point, slashing spread and accelerating the trigger at slight mana overhead
+	Tooltip:
+		'''
+		Tactical lattice projector: periodically deploys a holographic lattice at your cursor while fighting
+		Hostile projectiles touching it dissolve; your beams passing through are recalibrated — empowered and re-aimed
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Hypersonic Barrel
-	Tooltip: Sonic-shock chamber pushes beams to extreme velocity, but fine homing can no longer keep up
+	Tooltip:
+		'''
+		Ramjet rifling makes beams accelerate in flight; breaking the sound barrier detonates a mach-ring shockwave
+		Past the barrier, beams go white-hot: bonus damage, extra pierce and a vapor condensation trail
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: Kinetic Damper Stock
-	Tooltip: Liquid damper swallows recoil, all but eliminating spread and granting a small crit edge
+	Tooltip:
+		'''
+		Hydraulic dampers store recoil from your hits as kinetic reserve; above half reserve you cannot be knocked back
+		The moment you take damage, the full reserve erupts as a seismic counter-wave that blasts enemies away
+		'''
 }
 
 LightStockModule: {
 	DisplayName: Light Stock
-	Tooltip: Carbon-composite frame greatly increases fire rate at a mild cost to stability and per-shot power
+	Tooltip:
+		'''
+		Segmented lightweight frame raises fire rate and turns every main beam into a crawling light-chain —
+		two chain segments trail along the beam's path, each dealing its own damage
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1929,12 +1977,20 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: Plasma Injector
-	Tooltip: High-enthalpy plasma injection vastly amplifies orb velocity and merged-beam damage, charging slightly slower
+	Tooltip:
+		'''
+		Injects high-enthalpy plasma into the orb: its detonation leaves behind a miniature plasma sun
+		The sun scorches everything nearby and periodically lashes the closest enemy with solar flares
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: Quantum Frame
-	Tooltip: Quantum steering circuits make beams turn smarter and orbs fly faster at slightly elevated mana cost
+	Tooltip:
+		'''
+		Entanglement protocol: hitting two different targets in succession quantum-entangles them for a few seconds
+		Damage dealt to either is partially copied to the other; when one dies, the link collapses and slams the accumulated echo into the survivor
+		'''
 }
 
 ScattershotBarrelModule: {

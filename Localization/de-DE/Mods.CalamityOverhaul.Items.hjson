@@ -1818,12 +1818,20 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: Präzisionsvisier
-	Tooltip: Laserunterstütztes Zielen eliminiert Streuung vollständig und gewährt zusätzliche Krit-Chance
+	Tooltip:
+		'''
+		Kalibriertes Urteil: keinerlei Streuung; aufeinanderfolgende Treffer ohne Fehlschuss bauen Kalibrierung auf
+		Bei zehn Stapeln feuert ein durchschlagender Richtstrahl mit garantiertem Kritischen — ein Fehlschuss setzt alles zurück
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: Überlastungskern
-	Tooltip: Schnellere Zykluslogik statt Puffer – Energiekugel lädt schneller und fliegt heftiger
+	Tooltip:
+		'''
+		Entfernt die Sicherung der Energiekugel: Lade über das Maximum hinaus — bis zu doppelter Schaden und größere Explosion
+		Hältst du über die rote Linie hinaus, birst der Kern: Rückstoß und die Hälfte deines Manas verbrennt
+		'''
 }
 
 SteadyStockModule: {
@@ -1833,7 +1841,11 @@ SteadyStockModule: {
 
 HarmonyGripModule: {
 	DisplayName: Harmoniegriff
-	Tooltip: Bioleitfähiger Griff leitet Mana durch den Körper und senkt den Mana-Verbrauch drastisch
+	Tooltip:
+		'''
+		Bioleitung senkt die Manakosten; bei Treffern verströmtes Mana kondensiert zu Resonanznebeln auf dem Schlachtfeld
+		Die Nebel schweben zu dir zurück — beim Aufsammeln erhältst du Mana und Harmonie-Stapel für Angriffstempo (max. 5)
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1843,17 +1855,29 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: Adaptives Visier
-	Tooltip: Neuralverknüpfte Algorithmen korrigieren fortlaufend die Flugbahn, damit jeder Strahl schnell und präzise sein Ziel trifft
+	Tooltip:
+		'''
+		Prädiktive Feuerleitung: analysiert Zielbewegungen und projiziert ein Holo-Vorhaltezeichen am Abfangpunkt
+		Strahlen lenken automatisch vor; Treffer gegen bewegliche Ziele lösen zusätzliche Adaptivschläge aus
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: Sturmschaft
-	Tooltip: Adrenalin-gestützte Spannhalterung löst in aggressiverer Haltung aus; Feuerkraft steigt, Energieverbrauch nimmt zu
+	Tooltip:
+		'''
+		Im Schaft stecken zwei Gefechtsmodule: beim Führen der Waffe entfalten sich zwei schwebende Geschützarme an deinen Schultern
+		Die Arme synchronisieren sich mit deinem Abzug und feuern abwechselnd schnelle Stützgeschosse
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: Ausgewogener Griff
-	Tooltip: Neu verteiltes Gewicht verstärkt Feuerrate, Schaden und Stabilität in allen Bereichen geringfügig
+	Tooltip:
+		'''
+		Zwillingsgleichgewicht: Strahlentreffer laden Yang auf, Energiekugeln laden Yin auf
+		Bleiben beide Ladungen im Gleichgewicht, steigen Schaden, Feuerrate und Mana-Effizienz deutlich
+		'''
 }
 
 CapacitorBankModule: {
@@ -1863,7 +1887,11 @@ CapacitorBankModule: {
 
 CrystalGripModule: {
 	DisplayName: Kristallgriff
-	Tooltip: Synthetisches Kristallmedium schwingt mit dem Nutzer mit, senkt Mana-Verbrauch und erhöht Krit-Chance, verlangsamt aber das Aufladen
+	Tooltip:
+		'''
+		Synthetischer Kristall senkt Manakosten und erhöht Kritisches; kritische Treffer brechen sich zu Materie —
+		Kristallsplitter bersten aus dem Ziel, fliegen in Bögen und werden von der Gitterschwerkraft naher Feinde eingefangen
+		'''
 }
 
 EfficientGripModule: {
@@ -1878,27 +1906,47 @@ HeavyBarrelModule: {
 
 HighVoltageCoreModule: {
 	DisplayName: Hochspannungskern
-	Tooltip: Angehobene Ausgangsspannung verstärkt allen Schaden und Fokusschlag deutlich, auf Kosten von Mana
+	Tooltip:
+		'''
+		Ein Hochspannungskondensator lädt sich mit jedem Treffer auf
+		Bei voller Ladung entlädt dein nächster Treffer einen durchschlagenden Lichtbogen durch alles auf seiner Bahn
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: Hologrammvisier
-	Tooltip: Holografisches Fadenkreuz fixiert den Einschlag, drückt Streuung stark und beschleunigt den Abzug bei leicht erhöhtem Mana-Verbrauch
+	Tooltip:
+		'''
+		Taktischer Gitterprojektor: entfaltet im Kampf regelmäßig ein Hologitter an deinem Cursor
+		Feindliche Geschosse lösen sich daran auf; eigene Strahlen werden beim Durchflug kalibriert — verstärkt und neu ausgerichtet
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Hyperschall-Lauf
-	Tooltip: Schallstoßkammer beschleunigt Strahlen auf Grenzgeschwindigkeit, feine Zielverfolgung kann nicht mehr mithalten
+	Tooltip:
+		'''
+		Staustrahl-Züge lassen Strahlen im Flug beschleunigen; beim Durchbrechen der Schallmauer detoniert ein Mach-Ring
+		Jenseits der Mauer glühen Strahlen weiß: mehr Schaden, mehr Durchschlag und eine Kondensspur
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: Kinetische Dämpfungsschaft
-	Tooltip: Flüssigkeitsdämpfer schluckt Rückstoß, Streuung nahezu null und leichter Krit-Bonus
+	Tooltip:
+		'''
+		Hydraulikdämpfer speichern den Rückstoß deiner Treffer als kinetische Reserve; über halber Reserve bist du immun gegen Rückstoß
+		Erleidest du Schaden, entlädt sich die gesamte Reserve als seismische Konterwelle, die Feinde fortbläst
+		'''
 }
 
 LightStockModule: {
 	DisplayName: Leichtschaft
-	Tooltip: Kohlefasergerüst beschleunigt Feuerrate deutlich, Stabilität und Einzelschuss leicht reduziert
+	Tooltip:
+		'''
+		Segmentierter Leichtbaurahmen erhöht die Feuerrate und macht jeden Hauptstrahl zur kriechenden Lichtkette —
+		zwei Kettenglieder folgen der Strahlbahn und verursachen jeweils eigenen Schaden
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1908,12 +1956,20 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: Plasmainjektor
-	Tooltip: Hochenthalpie-Plasmainjektion verstärkt Kugelgeschwindigkeit und Fokusschlag stark, Aufladen etwas langsamer
+	Tooltip:
+		'''
+		Injiziert hochenthalpisches Plasma in die Kugel: ihre Detonation hinterlässt eine Miniatur-Plasmasonne
+		Die Sonne versengt alles in ihrer Nähe und peitscht den nächsten Feind regelmäßig mit Sonneneruptionen
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: Quantenrahmen
-	Tooltip: Quantenlenkschaltkreise lassen Strahlen schlauer abbiegen und Kugeln schneller fliegen, Mana leicht erhöht
+	Tooltip:
+		'''
+		Verschränkungsprotokoll: triffst du nacheinander zwei verschiedene Ziele, werden sie für einige Sekunden quantenverschränkt
+		Schaden an einem wird teilweise auf das andere kopiert; stirbt eines, kollabiert die Verbindung und schleudert das angesammelte Echo in den Überlebenden
+		'''
 }
 
 ScattershotBarrelModule: {

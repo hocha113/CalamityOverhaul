@@ -127,6 +127,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             set => Projectile.ai[0] = (float)value;
         }
 
+        /// <summary>当前蓄力比例 0~1，供改件钩子读取（超载核心等需要感知满蓄时机）</summary>
+        public float ChargeRatio => chargeRatio;
+
+        /// <summary>是否仍处于蓄力阶段</summary>
+        public bool IsCharging => State == OrbState.Charging;
+
         /// <summary>
         /// 关联的手持弹幕索引（ai[1]），用于蓄力阶段定位枪口
         /// </summary>

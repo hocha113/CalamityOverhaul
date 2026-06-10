@@ -150,6 +150,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         #endregion
 
+        /// <summary>
+        /// 由改件钩子调用：强制改写光束的飞行方向（同时同步 velocity 朝向），
+        /// flyAngle 是私有自管理字段，外部直接改 velocity 会在下一帧被覆盖
+        /// </summary>
+        public void SetFlightDirection(Vector2 dir) {
+            if (dir == Vector2.Zero) return;
+            flyAngle = dir.ToRotation();
+            float speed = Projectile.velocity.Length();
+            Projectile.velocity = flyAngle.ToRotationVector2() * speed;
+        }
+
+        /// <summary>当前飞行方向单位向量，供改件钩子读取</summary>
+        public Vector2 FlightDirection => flyAngle.ToRotationVector2();
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TrailCacheLen;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;

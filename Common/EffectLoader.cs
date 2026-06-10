@@ -103,5 +103,10 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CybCourseLoading { get; set; }
         public static Asset<Effect> CybCourseEntryReveal { get; set; }
         public static Asset<Effect> VoidColonyLoading { get; set; }
+        public static Asset<Effect> SHPCVoltArc { get; set; }
+        public static Asset<Effect> SHPCPlasmaSun { get; set; }
+        public static Asset<Effect> SHPCSonicBoom { get; set; }
+        public static Asset<Effect> SHPCJudgmentRay { get; set; }
+        public static Asset<Effect> SHPCHoloLattice { get; set; }
     }
 }

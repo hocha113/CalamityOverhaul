@@ -1820,12 +1820,20 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: Optique de précision
-	Tooltip: Visée assistée par laser éliminant toute dispersion et accordant un bonus de critique
+	Tooltip:
+		'''
+		Jugement calibré : supprime toute dispersion ; les coups consécutifs sans raté accumulent la calibration
+		À dix charges, tire un rayon du jugement perforant à critique garanti — un raté remet la calibration à zéro
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: Noyau de surcharge
-	Tooltip: Remplace le tampon par une logique de cycle plus rapide ; l'orbe se charge plus vite et part plus fort
+	Tooltip:
+		'''
+		Retire la sécurité de l'orbe : continuez de charger au-delà du maximum — jusqu'à dégâts doublés et explosion élargie
+		Au-delà de la ligne rouge, le cœur éclate : vous êtes projeté et la moitié de votre mana brûle
+		'''
 }
 
 SteadyStockModule: {
@@ -1835,7 +1843,11 @@ SteadyStockModule: {
 
 HarmonyGripModule: {
 	DisplayName: Poignée harmonique
-	Tooltip: Poignée bio-conductrice canalise le mana dans le corps et réduit fortement sa consommation
+	Tooltip:
+		'''
+		La bio-conduction réduit le coût en mana ; le mana libéré à l'impact se condense en brumes résonantes
+		Les brumes dérivent vers vous — les ramasser rend du mana et cumule Harmonie, accélérant la cadence (max. 5)
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1845,17 +1857,29 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: Optique adaptative
-	Tooltip: Algorithmes à liaison neuronale corrigeant en continu la trajectoire pour verrouiller chaque faisceau sur sa cible
+	Tooltip:
+		'''
+		Conduite de tir prédictive : analyse le mouvement des cibles et projette un marqueur holographique d'interception
+		Les rayons dévient pour anticiper ; toucher une cible en mouvement déclenche des frappes adaptatives bonus
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: Crosse d'assaut
-	Tooltip: Support à adrénaline déclenchant des cycles plus agressifs ; la puissance de feu augmente au prix d'un mana accru
+	Tooltip:
+		'''
+		La crosse intègre deux modules de combat : en maniant l'arme, deux bras-canons flottants se déploient à vos épaules
+		Les bras se synchronisent avec votre détente et tirent en alternance des fléchettes de soutien
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: Poignée équilibrée
-	Tooltip: Redistribution du poids offrant un léger bonus global à cadence, dégâts et stabilité
+	Tooltip:
+		'''
+		Protocole d'équilibre jumeau : les rayons accumulent le Yang, les orbes accumulent le Yin
+		Tant que les deux charges restent équilibrées, dégâts, cadence et efficacité de mana augmentent
+		'''
 }
 
 CapacitorBankModule: {
@@ -1865,7 +1889,11 @@ CapacitorBankModule: {
 
 CrystalGripModule: {
 	DisplayName: Poignée cristalline
-	Tooltip: Diélectrique cristallin synthétique en résonance avec l'utilisateur ; moins de mana et plus de critique, mais charge plus lente
+	Tooltip:
+		'''
+		Le cristal synthétique économise le mana et améliore les critiques ; les impacts critiques se réfractent en matière :
+		des éclats jaillissent de la cible en arcs balistiques puis s'incurvent vers les ennemis proches
+		'''
 }
 
 EfficientGripModule: {
@@ -1880,27 +1908,47 @@ HeavyBarrelModule: {
 
 HighVoltageCoreModule: {
 	DisplayName: Noyau haute tension
-	Tooltip: Tension de sortie relevée amplifiant dégâts bruts et faisceau fusionné, au prix d'un mana supplémentaire
+	Tooltip:
+		'''
+		Un condensateur haute tension se charge à chaque coup
+		À pleine charge, votre prochain coup décharge un arc perforant qui traverse tout sur sa trajectoire
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: Optique holographique
-	Tooltip: Réticule holographique verrouillant le point d'impact, réduisant la dispersion et accélérant le tir avec un léger surcoût en mana
+	Tooltip:
+		'''
+		Projecteur de treillis tactique : déploie périodiquement une grille holographique au curseur pendant le combat
+		Les projectiles ennemis s'y dissolvent ; vos rayons qui la traversent sont recalibrés — renforcés et réalignés
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Canon hypersonique
-	Tooltip: Chambre à onde de choc poussant les faisceaux à vitesse extrême, mais le suivi fin ne suit plus
+	Tooltip:
+		'''
+		Les rayures statoréacteur font accélérer les rayons en vol ; franchir le mur du son détone un anneau de Mach
+		Au-delà du mur, les rayons chauffent à blanc : dégâts accrus, perforation bonus et traînée de condensation
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: Crosse amortisseuse cinétique
-	Tooltip: Amortisseur liquide absorbant le recul, dispersion quasi nulle et léger bonus de critique
+	Tooltip:
+		'''
+		Les amortisseurs hydrauliques stockent le recul de vos coups en réserve cinétique ; au-delà de la moitié, vous êtes insensible au recul
+		Quand vous subissez des dégâts, toute la réserve éclate en onde sismique de riposte qui repousse les ennemis
+		'''
 }
 
 LightStockModule: {
 	DisplayName: Crosse légère
-	Tooltip: Châssis en fibre de carbone accélérant nettement la cadence, au détriment léger de stabilité et puissance par tir
+	Tooltip:
+		'''
+		Le châssis léger segmenté augmente la cadence et change chaque rayon principal en chaîne de lumière rampante :
+		deux maillons suivent la trajectoire du rayon, chacun infligeant ses propres dégâts
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1910,12 +1958,20 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: Injecteur de plasma
-	Tooltip: Injection de plasma à haute enthalpie amplifiant vitesse de l'orbe et dégâts fusionnés, charge légèrement ralentie
+	Tooltip:
+		'''
+		Injecte du plasma à haute enthalpie dans l'orbe : sa détonation laisse un soleil de plasma miniature
+		Le soleil calcine les environs et fouette périodiquement l'ennemi le plus proche d'éruptions solaires
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: Châssis quantique
-	Tooltip: Circuits de pilotage quantique rendant les faisceaux plus intelligents et l'orbe plus rapide, avec un mana légèrement accru
+	Tooltip:
+		'''
+		Protocole d'intrication : toucher deux cibles différentes d'affilée les intrique quantiquement quelques secondes
+		Les dégâts subis par l'une sont en partie copiés sur l'autre ; à la mort de l'une, le lien s'effondre et projette l'écho accumulé dans la survivante
+		'''
 }
 
 ScattershotBarrelModule: {

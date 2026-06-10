@@ -1841,12 +1841,20 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: Mira de precisión
-	Tooltip: La puntería asistida por láser elimina toda la dispersión y otorga probabilidad de crítico adicional
+	Tooltip:
+		'''
+		Juicio calibrado: elimina toda la dispersión; impactos consecutivos sin fallar acumulan calibración
+		Con diez cargas dispara un rayo de juicio perforante con crítico garantizado; fallar reinicia la calibración
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: Núcleo de sobrecarga
-	Tooltip: Sustituye el búfer por una lógica de ciclo más rápida: la esfera carga antes y sale con más fuerza
+	Tooltip:
+		'''
+		Quita el seguro del orbe: sigue cargando tras el máximo para sobrecargarlo — hasta doble daño y mayor explosión
+		Si aguantas más allá de la línea roja, el núcleo revienta: te empuja y quema la mitad de tu maná
+		'''
 }
 
 SteadyStockModule: {
@@ -1856,7 +1864,11 @@ SteadyStockModule: {
 
 HarmonyGripModule: {
 	DisplayName: Empuñadura armónica
-	Tooltip: La empuñadura bioconductora canaliza el maná por el cuerpo y reduce drásticamente su coste
+	Tooltip:
+		'''
+		La bioconducción reduce el coste de maná; el maná derramado al golpear se condensa en brumas resonantes
+		Las brumas flotan hacia ti: recogerlas devuelve maná y acumula Armonía que aumenta la cadencia (máx. 5)
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1866,17 +1878,29 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: Mira adaptativa
-	Tooltip: Algoritmos de enlace neural corrigen la trayectoria continuamente para que cada rayo impacte con rapidez y precisión
+	Tooltip:
+		'''
+		Control de tiro predictivo: analiza el movimiento del objetivo y proyecta un marcador holográfico de intercepción
+		Los rayos se desvían para anticipar el tiro; golpear objetivos en movimiento añade impactos adaptativos
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: Culata de asalto
-	Tooltip: Un soporte asistido por adrenalina dispara con mayor agresividad; la potencia sube, pero también el coste de maná
+	Tooltip:
+		'''
+		La culata integra dos módulos de combate: al empuñar el arma se despliegan dos brazos artillados flotantes en tus hombros
+		Los brazos se sincronizan con tu gatillo y disparan dardos de apoyo alternándose con cada disparo
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: Empuñadura equilibrada
-	Tooltip: La redistribución del peso mejora ligeramente cadencia, daño y estabilidad por igual
+	Tooltip:
+		'''
+		Protocolo de equilibrio gemelo: los rayos acumulan carga Yang, los orbes acumulan carga Yin
+		Mientras ambas cargas estén equilibradas, aumentan el daño, la cadencia y la eficiencia de maná
+		'''
 }
 
 CapacitorBankModule: {
@@ -1886,7 +1910,11 @@ CapacitorBankModule: {
 
 CrystalGripModule: {
 	DisplayName: Empuñadura de cristal
-	Tooltip: El dieléctrico de cristal sintético resuena con el usuario, reduce el maná y aumenta el crítico, pero ralentiza la carga
+	Tooltip:
+		'''
+		El cristal sintético ahorra maná y mejora el crítico; los impactos críticos se refractan en materia:
+		esquirlas de cristal estallan del objetivo en arcos balísticos y se curvan hacia enemigos cercanos
+		'''
 }
 
 EfficientGripModule: {
@@ -1901,27 +1929,47 @@ HeavyBarrelModule: {
 
 HighVoltageCoreModule: {
 	DisplayName: Núcleo de alto voltaje
-	Tooltip: El voltaje de salida se eleva y amplifica todo el daño, incluido el de rayos fusionados, a cambio de más maná
+	Tooltip:
+		'''
+		Un condensador de alto voltaje se carga con cada impacto
+		Con carga completa, tu siguiente impacto descarga un arco perforante que atraviesa todo en su trayectoria
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: Mira holográfica
-	Tooltip: La retícula holográfica fija el punto de impacto, reduce mucho la dispersión y acelera el gatillo con un ligero sobrecoste de maná
+	Tooltip:
+		'''
+		Proyector de retícula táctica: despliega periódicamente una rejilla holográfica en tu cursor durante el combate
+		Los proyectiles enemigos que la tocan se disuelven; tus rayos al cruzarla se recalibran: más daño y nueva puntería
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: Cañón hipersónico
-	Tooltip: La cámara de choque sónico empuja los rayos a velocidad extrema, pero el seguimiento fino ya no puede seguir el ritmo
+	Tooltip:
+		'''
+		El estriado estatorreactor acelera los rayos en vuelo; romper la barrera del sonido detona un anillo de choque Mach
+		Tras la barrera, los rayos se ponen al rojo blanco: más daño, más perforación y estela de condensación
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: Culata amortiguadora cinética
-	Tooltip: El amortiguador líquido absorbe el retroceso, casi elimina la dispersión y aporta un ligero bonus de crítico
+	Tooltip:
+		'''
+		Los amortiguadores hidráulicos almacenan el retroceso de tus impactos como reserva cinética; sobre media reserva eres inmune al empuje
+		Al recibir daño, toda la reserva estalla en una onda sísmica de contraataque que aparta a los enemigos
+		'''
 }
 
 LightStockModule: {
 	DisplayName: Culata ligera
-	Tooltip: El armazón de fibra de carbono aumenta mucho la cadencia a costa leve de estabilidad y potencia por disparo
+	Tooltip:
+		'''
+		El armazón ligero segmentado aumenta la cadencia y convierte cada rayo principal en una cadena de luz reptante:
+		dos eslabones siguen la trayectoria del rayo, cada uno con su propio daño
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1931,12 +1979,20 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: Inyector de plasma
-	Tooltip: La inyección de plasma de alta entalpía amplifica la velocidad de la esfera y el daño fusionado; la carga es algo más lenta
+	Tooltip:
+		'''
+		Inyecta plasma de alta entalpía en el orbe: su detonación deja un sol de plasma en miniatura
+		El sol abrasa todo lo cercano y azota periódicamente al enemigo más próximo con erupciones solares
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: Armazón cuántico
-	Tooltip: Los circuitos de dirección cuántica hacen que los rayos giren con más inteligencia y las esferas vuelen más rápido, con un ligero aumento de maná
+	Tooltip:
+		'''
+		Protocolo de entrelazamiento: golpear dos objetivos distintos seguidos los entrelaza cuánticamente unos segundos
+		El daño a uno se copia en parte al otro; si uno muere, el vínculo colapsa y descarga el eco acumulado en el superviviente
+		'''
 }
 
 ScattershotBarrelModule: {

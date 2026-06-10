@@ -1812,12 +1812,20 @@ FocusBarrelModule: {
 
 PrecisionOpticModule: {
 	DisplayName: 精密瞄具
-	Tooltip: 激光辅助瞄准消除全部弹道散布，并提供额外暴击机率
+	Tooltip:
+		'''
+		校准裁决系统：散布完全归零；连续命中且不脱靶累积校准值
+		集满十层后自动射出一道必定暴击的贯穿裁决射线，脱靶则校准清零
+		'''
 }
 
 OverloadCoreModule: {
 	DisplayName: 超载核心
-	Tooltip: 以更快的循环逻辑取代缓冲，使能量球蓄力更快、飞行更迅猛
+	Tooltip:
+		'''
+		解除能量球的安全锁：蓄满后继续蓄力进入圣能过载，伤害最高翻倍、爆炸更广
+		但越过红线仍不松手，核心将当场炸膛——反冲击退并烧毁一半法力
+		'''
 }
 
 SteadyStockModule: {
@@ -1827,7 +1835,11 @@ SteadyStockModule: {
 
 HarmonyGripModule: {
 	DisplayName: 谐振握把
-	Tooltip: 生物电感传导握把以人体导通法力，大幅压低魔力消耗
+	Tooltip:
+		'''
+		生物电传导降低法力消耗；命中时溢出的法力凝成谐振灵雾散落战场
+		灵雾缓缓飘向你，拾取后返还法力并叠加谐鸣层数提升攻速（最多五层）
+		'''
 }
 
 ResonanceFrameModule: {
@@ -1837,17 +1849,29 @@ ResonanceFrameModule: {
 
 AdaptiveOpticModule: {
 	DisplayName: 自适应瞄具
-	Tooltip: 神经联动算法持续修正弹道，使每束光能快速而精准的命中目标
+	Tooltip:
+		'''
+		预测火控系统：解析目标运动轨迹并在预测拦截点投射全息标线
+		光束自动偏转打出提前量，命中正在移动的目标时追加适应打击
+		'''
 }
 
 AssaultStockModule: {
 	DisplayName: 突击枪托
-	Tooltip: 肾上腺素辅助应力支架以更激进的姿态触发，火力上扬但耗能加剧
+	Tooltip:
+		'''
+		托内嵌入双联协战模块：持握武器时在两肩展开一对悬浮炮臂
+		炮臂与你的每次射击同步，交替速射协战镖弹
+		'''
 }
 
 BalancedGripModule: {
 	DisplayName: 平衡握把
-	Tooltip: 配重重新分布，全方位小幅强化射速、伤害与稳定性
+	Tooltip:
+		'''
+		双衡协议：左键命中积累阳衡，右键能量球积累阴衡
+		双衡彼此接近时进入天平态，伤害、攻速与法力效率全面提升
+		'''
 }
 
 CapacitorBankModule: {
@@ -1857,7 +1881,11 @@ CapacitorBankModule: {
 
 CrystalGripModule: {
 	DisplayName: 水晶握把
-	Tooltip: 合成水晶介质共振手感，节流法力消耗并提升暴击，但拖慢蓄力节奏
+	Tooltip:
+		'''
+		合成水晶介质节流法力并提升暴击；暴击的冲击波会被折射成实体——
+		从目标体内迸出水晶棱片，呈抛物线飞溅并被附近敌人的晶格引力捕获
+		'''
 }
 
 EfficientGripModule: {
@@ -1872,27 +1900,47 @@ HeavyBarrelModule: {
 
 HighVoltageCoreModule: {
 	DisplayName: 高压核心
-	Tooltip: 跃升输出电压，所有伤害与聚束打击都被显著推高，代价是法力开销
+	Tooltip:
+		'''
+		武器内置高压电容：每次命中为电容充压
+		蓄满后下一次命中将以你为电极放出贯穿电弧，轰击直线上的所有敌人
+		'''
 }
 
 HoloOpticModule: {
 	DisplayName: 全息瞄具
-	Tooltip: 全息标线锁定弹着点，散布大幅压低、扣动节奏更快，能耗略微上扬
+	Tooltip:
+		'''
+		战术光栅投影仪：交战中周期性在光标处展开一面全息光栅
+		敌方弹幕触栅即被消解；己方光束穿栅会被校准——增伤并直指最近敌人
+		'''
 }
 
 HypersonicBarrelModule: {
 	DisplayName: 超音速枪管
-	Tooltip: 声爆膛压将光束加速到极限速度，但难以再做精细追踪
+	Tooltip:
+		'''
+		冲压增速膛线让光束持续加速；突破音障的瞬间炸开一圈音爆冲击
+		破障后的光束进入白热态：伤害提升、穿透增强、拖出蒸汽凝结尾
+		'''
 }
 
 KineticDamperModule: {
 	DisplayName: 动能阻尼托
-	Tooltip: 液态阻尼器吞食后坐力，散布几近归零并提供少量暴击
+	Tooltip:
+		'''
+		液压阻尼器把后坐力封存为动能储备，储备过半时免疫击退
+		受到伤害的瞬间，全部储备化为一圈震地反击波轰开周围敌人
+		'''
 }
 
 LightStockModule: {
 	DisplayName: 轻量枪托
-	Tooltip: 碳纤复合骨架显著加快射速，但稳定性与单发威力轻度下滑
+	Tooltip:
+		'''
+		分节减重设计加快射速，并使每束主光束化作蠕行光链——
+		光束身后拖带两节沿其轨迹爬行、独立判定伤害的光链子节
+		'''
 }
 
 MultiCellFrameModule: {
@@ -1902,12 +1950,20 @@ MultiCellFrameModule: {
 
 PlasmaInjectorModule: {
 	DisplayName: 等离子注入器
-	Tooltip: 高焓等离子注入显著放大能量球速度与聚束伤害，蓄力略慢
+	Tooltip:
+		'''
+		向能量球注入高焓等离子：引爆后在爆心凝聚出一颗等离子残阳
+		残阳持续灼烧周围敌人，并周期性喷出日珥火舌追打最近的目标
+		'''
 }
 
 QuantumFrameModule: {
 	DisplayName: 量子机匣
-	Tooltip: 量子定向回路让光束更聪明地拐弯，能量球也更快，魔力小幅升高
+	Tooltip:
+		'''
+		纠缠观测协议：先后命中两个不同目标会使其量子纠缠数秒
+		期间任一方受到的伤害会部分复制给另一方；一方死亡时纠缠坍缩，将累积的复制伤害轰入幸存者
+		'''
 }
 
 ScattershotBarrelModule: {
