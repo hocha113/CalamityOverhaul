@@ -139,7 +139,9 @@ CosmicEddies.DisplayName: Kosmische Wirbel
 DivineDevourerIllusionBody.DisplayName: Göttlicher Verschlinger-Phantom
 DivineDevourerIllusionHead.DisplayName: Göttlicher Verschlinger-Phantom
 DivineDevourerIllusionTail.DisplayName: Göttlicher Verschlinger-Phantom
-Crystal.DisplayName: Kristall
+// GlacialShell.DisplayName: Glacial Shell
+// GlacierSpikeProj.DisplayName: Glacier Spike
+// GlacierWave.DisplayName: Glacial Surge
 ExtremeColdHail.DisplayName: Eiskalter Hagel
 HeavenRainbowImpact.DisplayName: Himmelregenbogen-Einschlag
 InfiniteArrow.DisplayName: Unendlicher Pfeil
@@ -148,14 +150,19 @@ ParadiseArrow.DisplayName: Himmelspfeil
 VientianePunishment.DisplayName: Strafe der Myriaden
 IceExplosionFriend.DisplayName: Eisexplosion
 IceParclose.DisplayName: Eisvorhang
-IceSoulOrb.DisplayName: Eisseelenkugel
+// FrostGlimmer.DisplayName: Frost Glimmer
+// AuroraCurtain.DisplayName: Aurora Curtain
+// AuroraLance.DisplayName: Frost Lance
 EXNeutronArrow.DisplayName: Neutronenpfeil EX
 EXNeutronExplosionRanged.DisplayName: Neutronenexplosion EX
 NeutronArrow.DisplayName: Neutronenpfeil
 NeutronExplosionRanged.DisplayName: Neutronenexplosion
 NeutronLaser.DisplayName: Neutronenlaser
 NeutronBullet.DisplayName: Neutronengeschoss
-SnowQuayBall.DisplayName: Schneewehr-Kugel
+// SnowQuayFlake.DisplayName: Snow Stream
+// SnowQuayPackedBall.DisplayName: Packed Snowball
+// SnowQuayShard.DisplayName: Ice Shard
+// IcicleNail.DisplayName: Icicle Nail
 NeutronScytheExplosion.DisplayName: Neutronenexplosion
 NeutronScytheHeld.DisplayName: Neutronensense
 Godslight.DisplayName: Göttliches Licht
@@ -233,8 +240,8 @@ AriaQSkillMiniDisk.DisplayName: Sternenring-Wächter
 SulfuricacidExplosion.DisplayName: Schwefelsäure-Explosion
 DawnshatterFireball.DisplayName: Morgendämmerungsfeuer
 TransferItemProj.DisplayName: Items in Übertragung
-FrostBlizzardField.DisplayName: Frostblizzard-Feld
-FrostNovaOrb.DisplayName: Frostnova
+// SolsticeJudgment.DisplayName: Solstice Judgment
+// SolsticeNova.DisplayName: Polar Night Nova
 MuraDimensionSlash.DisplayName: Dimensionsschnitt
 MuraSlashArc.DisplayName: Dimensionsschnitt
 MuraSlashLine.DisplayName: Dimensionsschnitt
@@ -334,3 +341,5 @@ DuneStalkerHeadProj.DisplayName: Wüstenhaken
 // SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
 // SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
 // SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
+// BarrenArc.DisplayName: Barren Arc
+// BarrenPulseProj.DisplayName: Barren Pulse Proj

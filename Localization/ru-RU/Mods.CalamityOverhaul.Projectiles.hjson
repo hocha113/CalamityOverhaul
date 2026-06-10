@@ -139,7 +139,9 @@ CosmicEddies.DisplayName: Космические вихри
 DivineDevourerIllusionBody.DisplayName: Фантом Божественного пожирателя
 DivineDevourerIllusionHead.DisplayName: Фантом Божественного пожирателя
 DivineDevourerIllusionTail.DisplayName: Фантом Божественного пожирателя
-Crystal.DisplayName: Кристалл
+// GlacialShell.DisplayName: Glacial Shell
+// GlacierSpikeProj.DisplayName: Glacier Spike
+// GlacierWave.DisplayName: Glacial Surge
 ExtremeColdHail.DisplayName: Град лютой стужи
 HeavenRainbowImpact.DisplayName: Небесный радужный удар
 InfiniteArrow.DisplayName: Бесконечная стрела
@@ -148,14 +150,19 @@ ParadiseArrow.DisplayName: Райская стрела
 VientianePunishment.DisplayName: Вселенская кара
 IceExplosionFriend.DisplayName: Ледяной взрыв
 IceParclose.DisplayName: Ледяная завеса
-IceSoulOrb.DisplayName: Ледяная сфера души
+// FrostGlimmer.DisplayName: Frost Glimmer
+// AuroraCurtain.DisplayName: Aurora Curtain
+// AuroraLance.DisplayName: Frost Lance
 EXNeutronArrow.DisplayName: Нейтронная стрела EX
 EXNeutronExplosionRanged.DisplayName: Нейтронный взрыв EX
 NeutronArrow.DisplayName: Нейтронная стрела
 NeutronExplosionRanged.DisplayName: Нейтронный взрыв
 NeutronLaser.DisplayName: Нейтронный лазер
 NeutronBullet.DisplayName: Нейтронная пуля
-SnowQuayBall.DisplayName: Снежный шар
+// SnowQuayFlake.DisplayName: Snow Stream
+// SnowQuayPackedBall.DisplayName: Packed Snowball
+// SnowQuayShard.DisplayName: Ice Shard
+// IcicleNail.DisplayName: Icicle Nail
 NeutronScytheExplosion.DisplayName: Нейтронный взрыв
 NeutronScytheHeld.DisplayName: Нейтронная коса
 Godslight.DisplayName: Божественный свет
@@ -233,8 +240,8 @@ AriaQSkillMiniDisk.DisplayName: Страж звездного кольца
 SulfuricacidExplosion.DisplayName: Взрыв серной кислоты
 DawnshatterFireball.DisplayName: Огонь рассвета
 TransferItemProj.DisplayName: Перемещаемый предмет
-FrostBlizzardField.DisplayName: Морозная вьюга
-FrostNovaOrb.DisplayName: Ледяная новая
+// SolsticeJudgment.DisplayName: Solstice Judgment
+// SolsticeNova.DisplayName: Polar Night Nova
 MuraDimensionSlash.DisplayName: Разрез измерения
 MuraSlashArc.DisplayName: Разрез измерения
 MuraSlashLine.DisplayName: Разрез измерения
@@ -334,3 +341,5 @@ DuneStalkerHeadProj.DisplayName: Крюк пустынного охотника
 // SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
 // SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
 // SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
+// BarrenArc.DisplayName: Barren Arc
+// BarrenPulseProj.DisplayName: Barren Pulse Proj

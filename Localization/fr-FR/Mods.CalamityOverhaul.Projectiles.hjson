@@ -139,7 +139,9 @@ CosmicEddies.DisplayName: Tourbillons cosmiques
 DivineDevourerIllusionBody.DisplayName: Illusion du Dévoreur des Dieux
 DivineDevourerIllusionHead.DisplayName: Illusion du Dévoreur des Dieux
 DivineDevourerIllusionTail.DisplayName: Illusion du Dévoreur des Dieux
-Crystal.DisplayName: Cristal
+// GlacialShell.DisplayName: Glacial Shell
+// GlacierSpikeProj.DisplayName: Glacier Spike
+// GlacierWave.DisplayName: Glacial Surge
 ExtremeColdHail.DisplayName: Grêle glaciale
 HeavenRainbowImpact.DisplayName: Impact de l'arc-en-ciel céleste
 InfiniteArrow.DisplayName: Flèche infinie
@@ -148,14 +150,19 @@ ParadiseArrow.DisplayName: Flèche du paradis
 VientianePunishment.DisplayName: Châtiment des myriades
 IceExplosionFriend.DisplayName: Explosion de glace
 IceParclose.DisplayName: Voile de glace
-IceSoulOrb.DisplayName: Orbe d'âme de glace
+// FrostGlimmer.DisplayName: Frost Glimmer
+// AuroraCurtain.DisplayName: Aurora Curtain
+// AuroraLance.DisplayName: Frost Lance
 EXNeutronArrow.DisplayName: Flèche à neutrons EX
 EXNeutronExplosionRanged.DisplayName: Explosion à neutrons EX
 NeutronArrow.DisplayName: Flèche à neutrons
 NeutronExplosionRanged.DisplayName: Explosion à neutrons
 NeutronLaser.DisplayName: Laser à neutrons
 NeutronBullet.DisplayName: Balle à neutrons
-SnowQuayBall.DisplayName: Orbe de digue de neige
+// SnowQuayFlake.DisplayName: Snow Stream
+// SnowQuayPackedBall.DisplayName: Packed Snowball
+// SnowQuayShard.DisplayName: Ice Shard
+// IcicleNail.DisplayName: Icicle Nail
 NeutronScytheExplosion.DisplayName: Explosion à neutrons
 NeutronScytheHeld.DisplayName: Faux à neutrons
 Godslight.DisplayName: Lumière divine
@@ -233,8 +240,8 @@ AriaQSkillMiniDisk.DisplayName: Garde de l'anneau stellaire
 SulfuricacidExplosion.DisplayName: Explosion d'acide sulfurique
 DawnshatterFireball.DisplayName: Feu de l'aube
 TransferItemProj.DisplayName: Objets en transit
-FrostBlizzardField.DisplayName: Champ de blizzard
-FrostNovaOrb.DisplayName: Nova de givre
+// SolsticeJudgment.DisplayName: Solstice Judgment
+// SolsticeNova.DisplayName: Polar Night Nova
 MuraDimensionSlash.DisplayName: Coupe dimensionnelle
 MuraSlashArc.DisplayName: Coupe dimensionnelle
 MuraSlashLine.DisplayName: Coupe dimensionnelle
@@ -334,3 +341,5 @@ DuneStalkerHeadProj.DisplayName: Croc des dunes
 // SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
 // SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
 // SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
+// BarrenArc.DisplayName: Barren Arc
+// BarrenPulseProj.DisplayName: Barren Pulse Proj

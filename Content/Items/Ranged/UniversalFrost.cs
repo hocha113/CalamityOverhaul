@@ -1,38 +1,69 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    //万象霜天
+    /// <summary>
+    /// 万象霜天
+    /// <br/>左键: 高速连发霜辉弹，每一发都为霜穹蓄能
+    /// <br/>右键: 蓄能满后在光标上空展开极光霜幕，幕下降下霜光贯击
+    /// </summary>
     internal class UniversalFrost : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "UniversalFrost";
+        /// <summary>霜穹蓄能 0~<see cref="MaxCharge"/>，跨使用持久</summary>
+        internal float AuroraCharge;
+        internal const float MaxCharge = 100f;
+        /// <summary>蓄满提示只播一次的标记</summary>
+        internal bool ChargeCueDone;
+        /// <summary>弹药节流计数，跨使用持久，每2发消耗1颗雪球</summary>
+        internal int GlimmerAmmoThrottle;
+
         public override void SetDefaults() {
-            Item.damage = 188;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 96;
             Item.height = 38;
-            Item.useTime = Item.useAnimation = 3;
+            Item.damage = 190;
+            Item.useTime = Item.useAnimation = 5;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.channel = true;
             Item.knockBack = 2.5f;
-            Item.value = Item.buyPrice(0, 32, 0, 0);
-            Item.rare = CWRID.Rarity_CosmicPurple;
-            Item.UseSound = CWRSound.Gun_Snowblindness_Shoot with { Volume = 0.35f };
+            Item.value = Terraria.Item.buyPrice(0, 32, 0, 0);
+            Item.rare = ItemRarityID.Purple;
             Item.autoReuse = true;
-            Item.shoot = ProjectileID.Bullet;
-            Item.shootSpeed = 32f;
+            Item.shoot = ModContent.ProjectileType<UniversalFrostHeld>();
+            Item.shootSpeed = 24f;
             Item.crit = 12;
             Item.useAmmo = AmmoID.Snowball;
-            Item.SetHeldProj<UniversalFrostHeld>();
+        }
+
+        public override bool AltFunctionUse(Player player) => true;
+
+        //物品使用本身不消耗雪球，由手持弹幕按速射节奏自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseSnowCannonHeld.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player) {
+            if (player.ownedProjectileCounts[Item.shoot] > 0) {
+                return false;
+            }
+            //蓄能不满时右键无法展开霜幕
+            return player.altFunctionUse != 2 || AuroraCharge >= MaxCharge;
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
+            , Vector2 velocity, int type, int damage, float knockback) {
+            //使用瞬间生成手持弹幕，它会自己接管开火逻辑，松开按键后自动销毁
+            Projectile.NewProjectile(source, player.MountedCenter, velocity, Item.shoot, damage, knockback, player.whoAmI);
+            return false;
         }
 
         public override void AddRecipes() {
@@ -54,489 +85,397 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class UniversalFrostHeld : BaseGun
+    /// <summary>
+    /// 万象霜天手持弹幕
+    /// <br/>帧0-3: 开火循环, 帧4: 待机
+    /// </summary>
+    internal class UniversalFrostHeld : BaseSnowCannonHeld
     {
         public override string Texture => CWRConstant.Item_Ranged + "UniversalFrostHeld";
-        public override int TargetID => ModContent.ItemType<UniversalFrost>();
-        private int fireIndex2;
-        private int onFireTime;
-        private int onFireTime2;
-        private int blizzardFieldTimer;
-        private int fireRateValue = 18;
-        public override void SetRangedProperty() {
-            GunPressure = 0;
-            HandIdleDistanceX = 42;
-            HandIdleDistanceY = 0;
-            HandFireDistanceX = 40;
-            HandFireDistanceY = -4;
-            AngleFirearmRest = 12;
-            ShootPosNorlLengValue = 0;
-            ShootPosToMouLengValue = 32;
-            RecoilRetroForceMagnitude = 6;
-            EnableRecoilRetroEffect = true;
-            SpwanGunDustData.dustID1 = 76;
-            SpwanGunDustData.dustID2 = 149;
-            SpwanGunDustData.dustID3 = 76;
-        }
+        public override int TargetItemID => ModContent.ItemType<UniversalFrost>();
+        protected override int FrameCount => 5;
+        protected override float BarrelLength => 50f;
+        protected override float MuzzleNormalOffset => 3f;
+        protected override float HoldDistance => 22f;
 
-        public override void PostInOwner() {
-            if (onFire) {
+        /// <summary>开火动画余辉</summary>
+        private int fireAnimTime;
+
+        private UniversalFrost WeaponItem => Item.ModItem as UniversalFrost;
+        //开火动画播完之前不销毁
+        protected override bool PendingWork => fireAnimTime > 0;
+
+        protected override void UpdateGun() {
+            if (fireAnimTime > 0) {
+                fireAnimTime--;
                 VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
             }
             else {
                 Projectile.frame = 4;
             }
 
-            if (onFireTime2 > 0) {
-                onFireTime2--;
-            }
-
-            if (onFireTime > 0) {
-                SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (70 - onFireTime) * 0.18f, MaxInstances = 15, Volume = 0.25f + onFireTime * 0.008f }, Projectile.Center);
-                if (onFireTime % 12 == 0) {
-                    SpawnGunFireDust(ShootPos, ShootVelocity, splNum: 3.5f, dustID1: 76, dustID2: 149, dustID3: 76);
-                    onFireTime2 = 10;
-                }
-                if (onFireTime2 > 0) {
-                    VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
-                }
-                else {
-                    Projectile.frame = 4;
-                }
-
-                OffsetPos += VaultUtils.RandVr(10f);
-                onFireTime--;
-            }
-            else {
-                if (fireRateValue > 35) {
-                    fireRateValue = 12;
-                }
-            }
-
-            if (blizzardFieldTimer > 0) {
-                blizzardFieldTimer--;
-            }
-        }
-
-        public override void FiringShoot() {
-            _ = UpdateConsumeAmmo();
-            for (int i = 0; i < 35; i++) {
-                Vector2 vr = ShootVelocity.RotateRandom(0.08f) * Main.rand.NextFloat(0.8f, 1.15f);
-                int index2 = Dust.NewDust(ShootPos, 1, 1, DustID.BlueCrystalShard, vr.X, vr.Y, 0, default, 1.2f);
-                Main.dust[index2].noGravity = true;
-            }
-
-            if (onFireTime > 0) {
-                GunPressure = 0.8f;
-                ControlForce = 0.12f;
-                RecoilRetroForceMagnitude = 18;
-                RecoilOffsetRecoverValue = 0.88f;
-
-                SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.6f, Volume = 0.35f });
-
-                for (int i = 0; i < 12; i++) {
-                    Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.15f) * Main.rand.NextFloat(0.8f, 1.15f)
-                    , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
-                    proj.scale += Main.rand.NextFloat(0.35f);
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = -1;
-                    if (Main.rand.NextBool(2)) {
-                        Projectile proj2 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.08f) * Main.rand.NextFloat(0.8f, 1.15f)
-                        , CWRID.Proj_FlurrystormIceChunk, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                        proj2.extraUpdates += 3;
+            //蓄满提示
+            if (WeaponItem.AuroraCharge >= UniversalFrost.MaxCharge && !WeaponItem.ChargeCueDone) {
+                WeaponItem.ChargeCueDone = true;
+                SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.4f, Volume = 0.9f }, Projectile.Center);
+                if (!Main.dedServ) {
+                    for (int i = 0; i < 18; i++) {
+                        Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch
+                            , Main.rand.NextVector2CircularEdge(3f, 3f), 0, default, 1.5f);
+                        d.noGravity = true;
                     }
                 }
+            }
 
-                Vector2 targetPos = Main.MouseWorld;
-
-                PunchCameraModifier modifier = new PunchCameraModifier(targetPos, (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2(), 25f, 8f, 25, 1200f, FullName);
-                Main.instance.CameraModifiers.Add(modifier);
-
-                for (int i = 0; i < 150; i++) {
-                    Vector2 offset = new Vector2(0, i * 18);
-                    if (Framing.GetTileSafely(targetPos + offset).HasSolidTile()) {
-                        targetPos += offset;
-                        break;
-                    }
-                }
-
-                for (int i = 0; i < 45; i++) {
-                    Projectile.NewProjectile(Source, targetPos + new Vector2(0, i * -10), new Vector2(0, -15).RotatedByRandom(0.25f) * Main.rand.NextFloat(0.5f, 6f)
-                    , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage / 5, WeaponKnockback, Owner.whoAmI, 0);
-                }
-
-                for (int i = 0; i < 40; i++) {
-                    Vector2 velocity = new Vector2(Main.rand.NextFloat(-4, 4), -4);
-                    Projectile proj = Projectile.NewProjectileDirect(Owner.GetShootState().Source
-                    , targetPos + new Vector2(Main.rand.Next(-20, 20), Main.rand.Next(-80, 0)) + new Vector2(0, i * -20 + 80)
-                    , velocity, ProjectileID.DeerclopsIceSpike, 28, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.9f, 1.2f) + i * 0.06f);
-                    proj.rotation = velocity.ToRotation();
-                    proj.hostile = false;
-                    proj.friendly = true;
-                    proj.penetrate = -1;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 18;
-                    proj.light = 0.85f;
-                }
-
-                if (blizzardFieldTimer <= 0) {
-                    Projectile blizzardField = Projectile.NewProjectileDirect(Source, targetPos, Vector2.Zero
-                        , ModContent.ProjectileType<FrostBlizzardField>(), WeaponDamage / 3, 0, Owner.whoAmI);
-                    blizzardField.usesLocalNPCImmunity = true;
-                    blizzardField.localNPCHitCooldown = 15;
-                    blizzardFieldTimer = 180;
-                }
-
-                ShootCoolingValue = 18;
-                fireRateValue = 6;
+            if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
 
-            GunPressure = 0;
-            RecoilRetroForceMagnitude = 6;
-            RecoilOffsetRecoverValue = 0.5f;
-
-            fireIndex++;
-
-            if (fireIndex > 1) {
-                if (fireRateValue > 5) {
-                    fireRateValue--;
-                }
-                fireIndex = 0;
+            if (FireKeyLeft && cooldown <= 0) {
+                FireGlimmer();
             }
 
-            for (int i = 0; i < 4; i++) {
-                Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.08f)
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                proj.extraUpdates += 1;
-                proj.usesLocalNPCImmunity = true;
-                proj.localNPCHitCooldown = -1;
-                if (Main.rand.NextBool(2)) {
-                    proj.damage /= 3;
-                }
-                if (Main.rand.NextBool(4) && fireRateValue <= 12) {
-                    proj.scale += Main.rand.NextFloat(0.4f);
-                }
-                if (Main.rand.NextBool(3) && fireRateValue <= 8) {
-                    proj.extraUpdates += 1;
-                    proj.penetrate += 6;
-                }
-            }
-
-            Projectile frostNova = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity / 2.2f
-                , ModContent.ProjectileType<FrostNovaOrb>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, 0);
-            frostNova.rotation = frostNova.velocity.ToRotation() + MathHelper.PiOver2;
-
-            if (fireRateValue <= 6) {
-                fireIndex2++;
-                if (fireIndex2 > 25) {
-                    fireRateValue = 60;
-                    onFireTime += 70;
-                    fireIndex2 = 0;
-                }
+            if (FireKeyRight && WeaponItem.AuroraCharge >= UniversalFrost.MaxCharge && cooldown <= 0) {
+                DeployAurora();
             }
         }
 
-        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
-            Main.EntitySpriteDraw(TextureValue, drawPos, TextureValue.GetRectangle(Projectile.frame, 5), lightColor
-                , Projectile.rotation, VaultUtils.GetOrig(TextureValue, 5), Projectile.scale
-                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        /// <summary>速射霜辉弹</summary>
+        private void FireGlimmer() {
+            //每2发消耗1颗雪球，节流计数存放在物品上跨使用持久
+            bool consume = ++WeaponItem.GlimmerAmmoThrottle >= 2;
+            if (consume) {
+                WeaponItem.GlimmerAmmoThrottle = 0;
+            }
+            if (!PickSnowAmmo(out int damage, out float knockback, consume)) {
+                return;
+            }
+
+            cooldown = 5;
+            fireAnimTime = 8;
+            recoil = 2.5f;
+
+            if (WeaponItem.AuroraCharge < UniversalFrost.MaxCharge) {
+                WeaponItem.AuroraCharge += 10f;
+            }
+
+            SoundEngine.PlaySound(CWRSound.Gun_Snowblindness_Shoot with {
+                Volume = 0.2f,
+                Pitch = 0.1f + WeaponItem.AuroraCharge / UniversalFrost.MaxCharge * 0.2f,
+                MaxInstances = 8
+            }, Projectile.Center);
+
+            if (!Main.dedServ) {
+                for (int i = 0; i < 4; i++) {
+                    Dust d = Dust.NewDustPerfect(MuzzlePos, DustID.IceTorch
+                        , GunForward.RotatedByRandom(0.25f) * Main.rand.NextFloat(2f, 6f), 0, default, 1.1f);
+                    d.noGravity = true;
+                }
+            }
+
+            Vector2 velocity = GunForward.RotatedByRandom(0.045f) * 24f;
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), MuzzlePos, velocity
+                , ModContent.ProjectileType<FrostGlimmer>(), damage, knockback, Owner.whoAmI);
+            NetUpdate();
+        }
+
+        /// <summary>展开极光霜幕</summary>
+        private void DeployAurora() {
+            WeaponItem.AuroraCharge = 0;
+            WeaponItem.ChargeCueDone = false;
+            cooldown = 6;
+            recoil = 6f;
+
+            SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.5f, Volume = 1f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Item120 with { Pitch = -0.2f, Volume = 0.8f }, Owner.Center);
+
+            //幕体悬在光标上空
+            Vector2 deployPos = InMousePos + new Vector2(0, -160);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), deployPos, Vector2.Zero
+                , ModContent.ProjectileType<AuroraCurtain>(), Owner.GetWeaponDamage(Item), 2f, Owner.whoAmI);
+            NetUpdate();
+        }
+
+        public override void PostDraw(Color lightColor) {
+            //蓄能渐亮的枪身辉光
+            float charge01 = WeaponItem.AuroraCharge / UniversalFrost.MaxCharge;
+            if (charge01 <= 0.05f) {
+                return;
+            }
+            Texture2D tex = TextureValue;
+            SpriteEffects fx = DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float pulse = 0.75f + 0.25f * MathF.Sin(Main.GlobalTimeWrappedHourly * 6f);
+            Color glow = new Color(110, 220, 255, 0) * (charge01 * 0.55f * pulse);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, tex.GetRectangle(Projectile.frame, FrameCount)
+                , glow, Projectile.rotation, tex.GetOrig(FrameCount), Projectile.scale * 1.04f, fx, 0);
         }
     }
 
-    internal class FrostBlizzardField : ModProjectile
+    /// <summary>
+    /// 霜辉弹——高速飞行的霜光星屑，飞行途中轻微追踪
+    /// </summary>
+    internal class FrostGlimmer : ModProjectile
     {
-        public override string Texture => CWRConstant.Masking + "Fog";
-        private float pulsePhase;
-        private float expansionProgress;
-        private const int MaxRadius = 320;
-        private const int ExpandDuration = 25;
-        private const int SustainDuration = 140;
-        private const int FadeDuration = 20;
+        public override string Texture => CWRConstant.Placeholder;
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 9;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
 
         public override void SetDefaults() {
-            Projectile.width = MaxRadius * 2;
-            Projectile.height = MaxRadius * 2;
+            Projectile.width = Projectile.height = 14;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 200;
+            Projectile.extraUpdates = 1;
+            Projectile.light = 0.3f;
+        }
+
+        public override void AI() {
+            Projectile.rotation += 0.3f;
+            //短暂直飞后开始弱追踪
+            if (++Projectile.ai[0] > 30) {
+                NPC target = Projectile.Center.FindClosestNPC(420, false, true);
+                if (target != null) {
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity
+                        , Projectile.Center.To(target.Center).UnitVector() * Projectile.velocity.Length(), 0.045f);
+                }
+            }
+            if (Main.rand.NextBool(3)) {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch
+                    , -Projectile.velocity * 0.1f, 0, default, 0.95f);
+                d.noGravity = true;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.Frostburn2, 180);
+
+        public override void OnKill(int timeLeft) {
+            for (int i = 0; i < 6; i++) {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.BlueCrystalShard
+                    , Main.rand.NextVector2Circular(3f, 3f), 0, default, 1.2f);
+                d.noGravity = true;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D star = CWRAsset.StarTexture.Value;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D snow = TextureAssets.Item[ItemID.Snowball].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+
+            //星屑残尾
+            for (int k = Projectile.oldPos.Length - 1; k > 0; k--) {
+                if (Projectile.oldPos[k] == Vector2.Zero) {
+                    continue;
+                }
+                Vector2 trailPos = Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition;
+                float factor = 1f - k / (float)Projectile.oldPos.Length;
+                Color trailColor = new Color(100, 200, 255, 0) * (0.4f * factor);
+                Main.EntitySpriteDraw(glow, trailPos, null, trailColor, 0f, glow.GetOrig()
+                    , 0.5f * factor, SpriteEffects.None, 0);
+            }
+            Main.EntitySpriteDraw(star, drawPos, null, new Color(200, 240, 255, 0), Projectile.rotation
+                , star.GetOrig(), 0.12f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, drawPos, null, new Color(120, 210, 255, 0) * 0.9f, 0f
+                , glow.GetOrig(), 0.7f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(snow, drawPos, null, new Color(120, 210, 255, 0) * 0.9f, 0f
+                , snow.GetOrig(), 1f, SpriteEffects.None, 0);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 极光霜幕——由 FrostAurora.fx 渲染的天空光幕
+    /// <br/>悬空展开，周期性向幕下的敌人降下霜光贯击，幕区内的敌人持续受霜灼
+    /// </summary>
+    internal class AuroraCurtain : ModProjectile, IPrimitiveDrawable
+    {
+        public override string Texture => CWRConstant.Placeholder;
+
+        private const float CurtainWidth = 720f;
+        private const float CurtainHeight = 300f;
+        private const int LifeTime = 360;
+        private const int FadeInTime = 25;
+        private const int FadeOutTime = 35;
+
+        private float FadeIn => MathHelper.Clamp((LifeTime - Projectile.timeLeft) / (float)FadeInTime, 0f, 1f);
+        private float FadeOut => MathHelper.Clamp(Projectile.timeLeft / (float)FadeOutTime, 0f, 1f);
+        private float Visibility => FadeIn * FadeOut;
+
+        public override void SetDefaults() {
+            Projectile.width = (int)CurtainWidth;
+            Projectile.height = (int)CurtainHeight;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = ExpandDuration + SustainDuration + FadeDuration;
+            Projectile.timeLeft = LifeTime;
             Projectile.hide = true;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
-            Projectile.ArmorPenetration = 15;
         }
+
+        public override bool? CanDamage() => false;
 
         public override void AI() {
-            int totalTime = ExpandDuration + SustainDuration + FadeDuration;
-            int currentPhase = totalTime - Projectile.timeLeft;
-
-            if (currentPhase < ExpandDuration) {
-                expansionProgress = currentPhase / (float)ExpandDuration;
-            }
-            else if (currentPhase < ExpandDuration + SustainDuration) {
-                expansionProgress = 1f;
-            }
-            else {
-                int fadeTime = currentPhase - ExpandDuration - SustainDuration;
-                expansionProgress = 1f - (fadeTime / (float)FadeDuration);
-            }
-
-            Projectile.scale = expansionProgress;
-            pulsePhase += 0.1f;
-
-            if (Main.rand.NextBool(2) && expansionProgress > 0.3f) {
-                Vector2 randomPos = Projectile.Center + Main.rand.NextVector2Circular(MaxRadius * expansionProgress, MaxRadius * expansionProgress);
-                Dust snow = Dust.NewDustPerfect(randomPos, DustID.SnowflakeIce
-                    , new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(1f, 4f)), 0, default, Main.rand.NextFloat(2f, 3.5f));
+            //幕下飘雪
+            if (!Main.dedServ && Visibility > 0.3f && Main.rand.NextBool(2)) {
+                Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-0.45f, 0.45f) * CurtainWidth
+                    , Main.rand.NextFloat(-0.2f, 0.5f) * CurtainHeight);
+                Dust snow = Dust.NewDustPerfect(pos, DustID.SnowflakeIce
+                    , new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(1f, 2.5f)), 120, default, Main.rand.NextFloat(1f, 1.8f));
                 snow.noGravity = true;
             }
 
-            if (Main.rand.NextBool(3) && expansionProgress > 0.5f) {
-                Vector2 randomPos = Projectile.Center + Main.rand.NextVector2Circular(MaxRadius * expansionProgress * 0.8f, MaxRadius * expansionProgress * 0.8f);
-                Dust frost = Dust.NewDustPerfect(randomPos, DustID.IceTorch
-                    , Main.rand.NextVector2Circular(3f, 3f), 0, new Color(200, 230, 255), Main.rand.NextFloat(1.5f, 2.5f));
-                frost.noGravity = true;
+            Lighting.AddLight(Projectile.Center, 0.3f * Visibility, 0.7f * Visibility, 0.8f * Visibility);
+
+            if (Visibility < 0.6f) {
+                return;
             }
 
-            float pulse = (float)Math.Sin(pulsePhase) * 0.3f + 0.7f;
-            float lightRadius = MaxRadius * expansionProgress * 0.5f;
-            Lighting.AddLight(Projectile.Center, 0.4f * pulse * expansionProgress, 0.7f * pulse * expansionProgress, 1.0f * pulse * expansionProgress);
+            //周期性贯击：从幕体上挑选位置打向幕下的敌人
+            if (++Projectile.ai[0] >= 4 && Main.myPlayer == Projectile.owner) {
+                Projectile.ai[0] = 0;
+                NPC target = FindLanceTarget();
+                if (target != null) {
+                    Vector2 spawnPos = new Vector2(
+                        MathHelper.Clamp(target.Center.X + Main.rand.NextFloat(-30f, 30f)
+                            , Projectile.Center.X - CurtainWidth * 0.45f, Projectile.Center.X + CurtainWidth * 0.45f)
+                        , Projectile.Center.Y + Main.rand.NextFloat(-40f, 40f));
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), spawnPos, new Vector2(0, 14f)
+                        , ModContent.ProjectileType<AuroraLance>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                    Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation();
+                    SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.5f, Pitch = 0.3f, MaxInstances = 6 }, spawnPos);
+                }
+            }
 
-            if (currentPhase == ExpandDuration) {
-                SoundEngine.PlaySound(SoundID.Item30 with { Volume = 0.6f, Pitch = -0.4f }, Projectile.Center);
+            //幕区内的敌人持续霜灼
+            if (Main.GameUpdateCount % 30 == 0) {
+                foreach (NPC npc in Main.ActiveNPCs) {
+                    if (!npc.friendly && !npc.dontTakeDamage && InCurtainZone(npc.Center)) {
+                        npc.AddBuff(BuffID.Frostburn2, 120);
+                    }
+                }
             }
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Frostburn2, 300);
-            if (Main.rand.NextBool(3)) {
-                target.AddBuff(BuffID.Chilled, 180);
-            }
+        /// <summary>判断坐标是否处于幕体正下方的压制区</summary>
+        private bool InCurtainZone(Vector2 pos) {
+            return Math.Abs(pos.X - Projectile.Center.X) < CurtainWidth * 0.5f
+                && pos.Y > Projectile.Center.Y - CurtainHeight * 0.5f
+                && pos.Y < Projectile.Center.Y + 900f;
         }
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            float currentRadius = MaxRadius * expansionProgress;
-            return VaultUtils.CircleIntersectsRectangle(Projectile.Center, currentRadius, targetHitbox);
+        /// <summary>在压制区内随机选择一个可被追击的敌人</summary>
+        private NPC FindLanceTarget() {
+            NPC best = null;
+            int seen = 0;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy(Projectile) || !InCurtainZone(npc.Center)) {
+                    continue;
+                }
+                seen++;
+                if (Main.rand.NextBool(seen)) {
+                    best = npc;
+                }
+            }
+            return best;
         }
 
-        public override bool? CanDamage() {
-            int currentPhase = (ExpandDuration + SustainDuration + FadeDuration) - Projectile.timeLeft;
-            if (currentPhase < ExpandDuration) {
-                return false;
-            }
-            if (currentPhase >= ExpandDuration + SustainDuration) {
-                return false;
-            }
-            return null;
-        }
+        public override bool PreDraw(ref Color lightColor) => false;
 
-        public override void OnKill(int timeLeft) {
-            for (int i = 0; i < 80; i++) {
-                Vector2 randomVelocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust frost = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch, randomVelocity, 0
-                    , new Color(200, 230, 255), Main.rand.NextFloat(2f, 3.5f));
-                frost.noGravity = true;
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect effect = EffectLoader.FrostAurora?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null || Visibility <= 0.02f) {
+                return;
             }
 
-            for (int i = 0; i < 60; i++) {
-                Dust snow = Dust.NewDustPerfect(Projectile.Center, DustID.SnowflakeIce
-                    , Main.rand.NextVector2Circular(7f, 7f), 0, default, Main.rand.NextFloat(2.5f, 4f));
-                snow.noGravity = true;
+            Vector2 c = Projectile.Center;
+            float halfW = CurtainWidth * 0.5f * (0.6f + FadeIn * 0.4f);
+            float halfH = CurtainHeight * 0.5f;
+
+            var quad = new VertexPositionColorTexture[4];
+            quad[0] = new VertexPositionColorTexture((c + new Vector2(-halfW, -halfH)).ToVector3(), Color.White, new Vector2(0, 0));
+            quad[1] = new VertexPositionColorTexture((c + new Vector2(halfW, -halfH)).ToVector3(), Color.White, new Vector2(1, 0));
+            quad[2] = new VertexPositionColorTexture((c + new Vector2(-halfW, halfH)).ToVector3(), Color.White, new Vector2(0, 1));
+            quad[3] = new VertexPositionColorTexture((c + new Vector2(halfW, halfH)).ToVector3(), Color.White, new Vector2(1, 1));
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uFade"]?.SetValue(Visibility);
+            effect.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.37f % 10f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, quad, 0, 2);
             }
 
-            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = -0.5f }, Projectile.Center);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            if (expansionProgress < 0.01f) {
-                return false;
-            }
-
-            Texture2D texture = TextureAssets.Projectile[Type].Value;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Vector2 origin = texture.Size() * 0.5f;
-            float alpha = expansionProgress * 0.9f;
-
-            if (expansionProgress > 0.85f) {
-                alpha = 1f - ((expansionProgress - 0.85f) / 0.15f) * 0.3f;
-            }
-
-            Vector2 scale = new Vector2(MaxRadius * 2, MaxRadius * 2) / texture.Size() * expansionProgress;
-
-            Color drawColor = new Color(150, 210, 240) * alpha * 0.8f;
-            Main.EntitySpriteDraw(texture, drawPosition, null, drawColor, pulsePhase * 0.5f, origin, scale, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(texture, drawPosition, null, drawColor, -pulsePhase * 0.5f, origin, scale, SpriteEffects.None, 0);
-
-            Color innerColor = new Color(180, 230, 255) * alpha * 0.6f;
-            Main.EntitySpriteDraw(texture, drawPosition, null, innerColor, pulsePhase * 0.8f, origin, scale * 0.8f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(texture, drawPosition, null, innerColor, -pulsePhase * 0.8f, origin, scale * 0.8f, SpriteEffects.None, 0);
-
-            float pulse = (float)Math.Sin(pulsePhase * 1.5f) * 0.3f + 0.7f;
-            Color coreColor = new Color(200, 240, 255) * alpha * pulse * 0.5f;
-            Main.EntitySpriteDraw(texture, drawPosition, null, coreColor, pulsePhase, origin, scale * 0.5f, SpriteEffects.None, 0);
-
-            return false;
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
         }
     }
 
-    internal class FrostNovaOrb : ModProjectile
+    /// <summary>
+    /// 霜光贯击——从极光幕降下的纵向光矛
+    /// </summary>
+    internal class AuroraLance : ModProjectile
     {
-        public override string Texture => CWRConstant.Projectile_Ranged + "Crystal";
-        private float glowIntensity;
-        private float rotationSpeed;
-        public override void SetStaticDefaults() {
-            Main.projFrames[Projectile.type] = 4;
-        }
+        public override string Texture => CWRConstant.Placeholder;
+
         public override void SetDefaults() {
-            Projectile.width = 28;
-            Projectile.height = 28;
-            Projectile.penetrate = 2;
-            Projectile.timeLeft = 200;
-            Projectile.usesIDStaticNPCImmunity = true;
-            Projectile.idStaticNPCHitCooldown = 12;
-            Projectile.MaxUpdates = 2;
+            Projectile.width = 16;
+            Projectile.height = 42;
             Projectile.friendly = true;
-            rotationSpeed = Main.rand.NextFloat(-0.3f, 0.3f);
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.penetrate = 3;
+            Projectile.timeLeft = 120;
+            Projectile.extraUpdates = 2;
+            Projectile.light = 0.4f;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
         }
 
         public override void AI() {
-            VaultUtils.ClockFrame(ref Projectile.frame, 5, 4);
-            Projectile.rotation += rotationSpeed;
-            glowIntensity = 0.5f + (float)Math.Sin(Projectile.ai[0] * 0.15f) * 0.5f;
-
-            if (Projectile.ai[1] > 0) {
-                NPC target = Projectile.Center.FindClosestNPC(800, false, true);
-                if (target != null) {
-                    float distance = target.Center.Distance(Projectile.Center);
-                    if (distance > 150) {
-                        Projectile.SmoothHomingBehavior(target.Center, 1.2f, 0.28f);
-                    }
-                    else {
-                        Projectile.ChasingBehavior(target.Center, Projectile.velocity.Length());
-                    }
-                }
-            }
-
+            Projectile.rotation = Projectile.velocity.ToRotation();
             if (Main.rand.NextBool(3)) {
-                Vector2 dspeed = -Projectile.velocity * 0.5f;
-                int dust = Dust.NewDust(Projectile.Center, 1, 1, DustID.BlueCrystalShard, dspeed.X, dspeed.Y, 100, default, 1.8f);
-                Main.dust[dust].noGravity = true;
-            }
-
-            if (Main.rand.NextBool(5)) {
-                Dust snow = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
-                    , DustID.SnowflakeIce, 0, 0, 100, default, Main.rand.NextFloat(1.5f, 2.5f));
-                snow.velocity = -Projectile.velocity * 0.3f;
-                snow.noGravity = true;
-            }
-
-            Lighting.AddLight(Projectile.Center, 0.5f * glowIntensity, 0.8f * glowIntensity, 1.2f * glowIntensity);
-
-            Projectile.ai[0]++;
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Frostburn2, 240);
-            Projectile.penetrate--;
-            if (Projectile.penetrate <= 0) {
-                ExplodeEffect();
+                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
+                    , DustID.IceTorch, -Projectile.velocity * 0.05f, 0, default, 1.1f);
+                d.noGravity = true;
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            if (Projectile.ai[1] == 0) {
-                Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
-                SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.2f, Volume = 0.5f }, Projectile.position);
-
-                if (Projectile.velocity.X != oldVelocity.X) {
-                    Projectile.velocity.X = -oldVelocity.X * 1.8f;
-                }
-                if (Projectile.velocity.Y != oldVelocity.Y) {
-                    Projectile.velocity.Y = -oldVelocity.Y * 1.8f;
-                }
-
-                for (int i = 0; i < 4; i++) {
-                    Vector2 velocity = new Vector2(Main.rand.NextFloat(-4, 4), -4);
-                    Projectile proj = Projectile.NewProjectileDirect(Main.player[Projectile.owner].GetShootState().Source
-                    , Projectile.Bottom + new Vector2(Main.rand.Next(-20, 20), 0), velocity
-                    , ProjectileID.DeerclopsIceSpike, 28, 0f, Main.myPlayer, 0f, Main.rand.NextFloat(0.85f, 1.15f));
-                    proj.rotation = velocity.ToRotation();
-                    proj.hostile = false;
-                    proj.friendly = true;
-                    proj.penetrate = -1;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = 25;
-                    proj.light = 0.8f;
-                }
-            }
-            Projectile.ai[1]++;
-            return false;
-        }
-
-        private void ExplodeEffect() {
-            SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.2f, Volume = 0.7f }, Projectile.Center);
-
-            for (int i = 0; i < 60; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(12f, 12f);
-                Dust frost = Dust.NewDustPerfect(Projectile.Center, DustID.BlueCrystalShard, velocity, 0, default, Main.rand.NextFloat(2f, 3.5f));
-                frost.noGravity = true;
-                frost.fadeIn = 1.5f;
-            }
-
-            for (int i = 0; i < 40; i++) {
-                Dust snow = Dust.NewDustPerfect(Projectile.Center, DustID.SnowflakeIce
-                    , Main.rand.NextVector2Circular(10f, 10f), 0, default, Main.rand.NextFloat(2.5f, 4f));
-                snow.noGravity = true;
-            }
-
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f;
-                Vector2 velocity = angle.ToRotationVector2() * 8f;
-                Projectile proj = Projectile.NewProjectileDirect(Main.player[Projectile.owner].GetShootState().Source
-                    , Projectile.Center, velocity, ProjectileID.FrostBeam, Projectile.damage, 2f, Projectile.owner);
-                proj.hostile = false;
-                proj.friendly = true;
-                proj.DamageType = DamageClass.Ranged;
-                proj.usesLocalNPCImmunity = true;
-                proj.localNPCHitCooldown = -1;
-                proj.ArmorPenetration = 30;
-            }
-        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.Frostburn2, 240);
 
         public override void OnKill(int timeLeft) {
-            if (timeLeft > 0) {
-                ExplodeEffect();
+            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.45f, Pitch = 0.1f, MaxInstances = 6 }, Projectile.Center);
+            for (int i = 0; i < 10; i++) {
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.BlueCrystalShard
+                    , new Vector2(Main.rand.NextFloat(-3f, 3f), -Main.rand.NextFloat(1f, 4f)), 0, default, 1.3f);
+                d.noGravity = true;
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D value = TextureAssets.Projectile[Type].Value;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Rectangle frame = value.GetRectangle(Projectile.frame, 4);
-            Vector2 origin = frame.Size() / 2f;
+            Texture2D shot = CWRAsset.LightShot.Value;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            for (int i = 0; i < 3; i++) {
-                float glowScale = Projectile.scale * (1.15f + i * 0.2f);
-                float glowAlpha = glowIntensity * (1f - i * 0.3f) * 0.8f;
-                Main.EntitySpriteDraw(value, drawPosition, frame, new Color(100, 200, 255, 0) * glowAlpha
-                    , Projectile.rotation, origin, glowScale, SpriteEffects.None, 0);
-            }
-
-            Color mainColor = Color.Lerp(lightColor, new Color(200, 230, 255), glowIntensity * 0.8f);
-            Main.EntitySpriteDraw(value, drawPosition, frame, mainColor
-                , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
-
-            Main.EntitySpriteDraw(value, drawPosition, frame, new Color(220, 240, 255, 0) * glowIntensity * 0.9f
-                , Projectile.rotation, origin, Projectile.scale * 1.2f, SpriteEffects.None, 0);
-
-            if (glowIntensity > 0.7f) {
-                Main.EntitySpriteDraw(value, drawPosition, frame, Color.White * glowIntensity * 0.7f
-                    , Projectile.rotation, origin, Projectile.scale * 0.9f, SpriteEffects.None, 0);
-            }
-
+            //光矛主体：箭头状光束贴图顺速度方向拉伸
+            Main.EntitySpriteDraw(shot, drawPos, null, new Color(140, 220, 255, 0) * 0.9f
+                , Projectile.rotation, shot.GetOrig(), new Vector2(0.8f, 0.22f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(shot, drawPos, null, new Color(220, 250, 255, 0) * 0.8f
+                , Projectile.rotation, shot.GetOrig(), new Vector2(0.55f, 0.12f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, drawPos, null, new Color(150, 230, 255, 0) * 0.7f
+                , 0f, glow.GetOrig(), 0.8f, SpriteEffects.None, 0);
             return false;
         }
     }

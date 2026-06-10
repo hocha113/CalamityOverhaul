@@ -139,7 +139,9 @@ CosmicEddies.DisplayName: Cosmic Eddy
 DivineDevourerIllusionBody.DisplayName: Divine Devourer Illusion
 DivineDevourerIllusionHead.DisplayName: Divine Devourer Illusion
 DivineDevourerIllusionTail.DisplayName: Divine Devourer Illusion
-Crystal.DisplayName: Crystal
+GlacialShell.DisplayName: Glacial Shell
+GlacierSpikeProj.DisplayName: Glacier Spike
+GlacierWave.DisplayName: Glacial Surge
 ExtremeColdHail.DisplayName: Extreme Cold Hail
 HeavenRainbowImpact.DisplayName: Heavenly Rainbow Impact
 InfiniteArrow.DisplayName: Infinite Arrow
@@ -148,14 +150,19 @@ ParadiseArrow.DisplayName: Paradise Arrow
 VientianePunishment.DisplayName: Vientiane's Punishment
 IceExplosionFriend.DisplayName: Ice Explosion
 IceParclose.DisplayName: Ice Parclose
-IceSoulOrb.DisplayName: Ice Soul Orb
+FrostGlimmer.DisplayName: Frost Glimmer
+AuroraCurtain.DisplayName: Aurora Curtain
+AuroraLance.DisplayName: Frost Lance
 EXNeutronArrow.DisplayName: Neutron Arrow EX
 EXNeutronExplosionRanged.DisplayName: Ranged Neutron Explosion EX
 NeutronArrow.DisplayName: Neutron Arrow
 NeutronExplosionRanged.DisplayName: Ranged Neutron Explosion
 NeutronLaser.DisplayName: Neutron Laser
 NeutronBullet.DisplayName: Neutron Bullet
-SnowQuayBall.DisplayName: Snow Quay
+SnowQuayFlake.DisplayName: Snow Stream
+SnowQuayPackedBall.DisplayName: Packed Snowball
+SnowQuayShard.DisplayName: Ice Shard
+IcicleNail.DisplayName: Icicle Nail
 NeutronScytheExplosion.DisplayName: Neutron Explosion
 NeutronScytheHeld.DisplayName: Neutron Scythe
 Godslight.DisplayName: God's Light
@@ -233,8 +240,8 @@ AriaQSkillMiniDisk.DisplayName: Aria Q Skill Mini Disk
 SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 DawnshatterFireball.DisplayName: Dawnshatter Fireball
 TransferItemProj.DisplayName: Items In Transit
-FrostBlizzardField.DisplayName: Frost Blizzard Field
-FrostNovaOrb.DisplayName: Frost Nova Orb
+SolsticeJudgment.DisplayName: Solstice Judgment
+SolsticeNova.DisplayName: Polar Night Nova
 MuraDimensionSlash.DisplayName: Mura Dimension Slash
 MuraSlashArc.DisplayName: Mura Slash Arc
 MuraSlashLine.DisplayName: Mura Slash Line
@@ -334,3 +341,5 @@ SHPCArmBoltProj.DisplayName: S H P C Arm Bolt Proj
 SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
 SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
 SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
+BarrenArc.DisplayName: Barren Arc
+BarrenPulseProj.DisplayName: Barren Pulse Proj

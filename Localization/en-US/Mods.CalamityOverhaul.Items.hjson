@@ -472,12 +472,11 @@ CrystalDimming: {
 	DisplayName: Crystal Dimming
 	Tooltip:
 		'''
-		Use snowballs as ammunition.
-		Launching frigid hail and snowballs,
-		Ice crystals rebound rapidly upon hitting walls,
-		Then track down enemies.
-		Every 20 shots triggers an overdrive surge,
-		Summoning a massive ice pillar at the mouse cursor.
+		Use snowballs as ammunition
+		Fires crystal shells that raise glacier spikes from the ground at the point of impact
+		Spikes grow taller when raised near existing crystal clusters
+		Right-click unleashes a glacial surge, raising an ever-taller ridge of ice along the terrain
+		"The earth remembers every frost"
 		'''
 }
 
@@ -485,10 +484,12 @@ DarkFrostSolstice: {
 	DisplayName: Dark Frost Solstice
 	Tooltip:
 		'''
-		Use snowballs as ammunition.
-		Firing hail and polar flames,
-		Every 20 shots triggers an overdrive surge,
-		Summoning wintry divinity at the mouse cursor.
+		Use snowballs as ammunition
+		Hold left-click to channel snow pressure into the solstice core, charging through three tiers
+		Release to unleash the Solstice Judgment, a piercing beam of divine frost
+		A fully charged judgment blooms into a solstice corona on impact
+		Right-click triggers a polar night nova, a freezing pulse centered on yourself
+		"On the shortest day, the divinity opened its eyes"
 		'''
 }
 
@@ -497,7 +498,10 @@ SnowQuay: {
 	Tooltip:
 		'''
 		Use snowballs as ammunition
-		A large-caliber snow cannon, firing ice and snow mixed shells
+		Hold left-click to blow a dense stream of snow at your enemies
+		Blowing snow builds up pressure in the packing chamber
+		Release left-click with enough pressure to launch a packed snowball shell
+		"Winter's joy begins with a snowblower"
 		'''
 }
 
@@ -599,8 +603,10 @@ SnowQuayMK2: {
 	Tooltip:
 		'''
 		Use snowballs as ammunition
-		A large-caliber snow cannon that fires ice and snow mixed shells
-		No preheating is required to fire
+		A military refit with a cryo-compressor that casts snowballs into high-velocity icicles
+		Left-click fires three-round bursts; the final round is a heavy spike that bursts into crystals
+		Right-click vents an overpressure scatter of short-ranged icicles
+		"The second-generation Snow Viper no longer needs preheating"
 		'''
 }
 
@@ -1550,13 +1556,11 @@ UniversalFrost: {
 	DisplayName: Universal Frost
 	Tooltip:
 		'''
-		Uses Snowballs as ammo
-		Fires hailstones and frigid nova orbs
-		The orbs bounce, home in on enemies, and release frost beams upon explosion
-		Continuous firing accumulates ice energy
-		When fully charged, the next attack unleashes the Glacial Age
-		The Glacial Age summons a massive array of icicles and a blizzard field at the cursor position
-		"When all creation falls into silence, only eternal frost shall blanket the world"
+		Use snowballs as ammunition
+		Left-click rapidly fires frost glimmers, each shot charging the frost dome
+		Once fully charged, right-click unfurls an aurora curtain above the cursor
+		The curtain rains frost lances upon enemies beneath it
+		"When all creation falls silent, only the aurora still flows across the sky"
 		'''
 }
 

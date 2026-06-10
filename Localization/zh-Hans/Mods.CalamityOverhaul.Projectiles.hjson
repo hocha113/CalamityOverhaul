@@ -139,7 +139,9 @@ CosmicEddies.DisplayName: 宇宙涡流
 DivineDevourerIllusionBody.DisplayName: 神明吞噬者幻影
 DivineDevourerIllusionHead.DisplayName: 神明吞噬者幻影
 DivineDevourerIllusionTail.DisplayName: 神明吞噬者幻影
-Crystal.DisplayName: 水晶
+GlacialShell.DisplayName: 冰晶炮弹
+GlacierSpikeProj.DisplayName: 冰川晶柱
+GlacierWave.DisplayName: 冰河推进波
 ExtremeColdHail.DisplayName: 极寒冰雹
 HeavenRainbowImpact.DisplayName: 天堂虹冲击
 InfiniteArrow.DisplayName: 无尽之箭
@@ -148,14 +150,19 @@ ParadiseArrow.DisplayName: 天堂之箭
 VientianePunishment.DisplayName: 万象天罚
 IceExplosionFriend.DisplayName: 冰爆
 IceParclose.DisplayName: 冰之帷幕
-IceSoulOrb.DisplayName: 冰魂球
+FrostGlimmer.DisplayName: 霜辉弹
+AuroraCurtain.DisplayName: 极光霜幕
+AuroraLance.DisplayName: 霜光贯击
 EXNeutronArrow.DisplayName: 中子箭EX
 EXNeutronExplosionRanged.DisplayName: 中子爆破EX
 NeutronArrow.DisplayName: 中子箭
 NeutronExplosionRanged.DisplayName: 中子爆破
 NeutronLaser.DisplayName: 中子激光
 NeutronBullet.DisplayName: 中子弹
-SnowQuayBall.DisplayName: 雪堤球
+SnowQuayFlake.DisplayName: 鼓风雪流
+SnowQuayPackedBall.DisplayName: 压实雪球
+SnowQuayShard.DisplayName: 冰碴
+IcicleNail.DisplayName: 冰锥钉
 NeutronScytheExplosion.DisplayName: 中子爆破
 NeutronScytheHeld.DisplayName: 中子镰
 Godslight.DisplayName: 神之光
@@ -233,8 +240,8 @@ AriaQSkillMiniDisk.DisplayName: 星环护卫
 SulfuricacidExplosion.DisplayName: 硫酸爆炸
 DawnshatterFireball.DisplayName: 黎明之火
 TransferItemProj.DisplayName: 转移中的物品
-FrostBlizzardField.DisplayName: 寒霜暴风雪
-FrostNovaOrb.DisplayName: 冰霜新星
+SolsticeJudgment.DisplayName: 冬至审判
+SolsticeNova.DisplayName: 极夜新星
 MuraDimensionSlash.DisplayName: 次元斩
 MuraSlashArc.DisplayName: 次元斩
 MuraSlashLine.DisplayName: 次元斩
@@ -334,3 +341,5 @@ DuneStalkerHeadProj.DisplayName: 荒漠钩头
 // SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
 // SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
 // SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
+// BarrenArc.DisplayName: Barren Arc
+// BarrenPulseProj.DisplayName: Barren Pulse Proj

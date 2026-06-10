@@ -139,7 +139,9 @@ CosmicEddies.DisplayName: Remolinos cósmicos
 DivineDevourerIllusionBody.DisplayName: Fantasma del devorador de dioses
 DivineDevourerIllusionHead.DisplayName: Fantasma del devorador de dioses
 DivineDevourerIllusionTail.DisplayName: Fantasma del devorador de dioses
-Crystal.DisplayName: Cristal
+// GlacialShell.DisplayName: Glacial Shell
+// GlacierSpikeProj.DisplayName: Glacier Spike
+// GlacierWave.DisplayName: Glacial Surge
 ExtremeColdHail.DisplayName: Granizo gélido
 HeavenRainbowImpact.DisplayName: Impacto del arcoíris celestial
 InfiniteArrow.DisplayName: Flecha infinita
@@ -148,14 +150,19 @@ ParadiseArrow.DisplayName: Flecha del paraíso
 VientianePunishment.DisplayName: Castigo de los diez mil fenómenos
 IceExplosionFriend.DisplayName: Explosión de hielo
 IceParclose.DisplayName: Cortina de hielo
-IceSoulOrb.DisplayName: Orbe de alma helada
+// FrostGlimmer.DisplayName: Frost Glimmer
+// AuroraCurtain.DisplayName: Aurora Curtain
+// AuroraLance.DisplayName: Frost Lance
 EXNeutronArrow.DisplayName: Flecha de neutrones EX
 EXNeutronExplosionRanged.DisplayName: Explosión de neutrones EX
 NeutronArrow.DisplayName: Flecha de neutrones
 NeutronExplosionRanged.DisplayName: Explosión de neutrones
 NeutronLaser.DisplayName: Láser de neutrones
 NeutronBullet.DisplayName: Proyectil de neutrones
-SnowQuayBall.DisplayName: Orbe del dique de nieve
+// SnowQuayFlake.DisplayName: Snow Stream
+// SnowQuayPackedBall.DisplayName: Packed Snowball
+// SnowQuayShard.DisplayName: Ice Shard
+// IcicleNail.DisplayName: Icicle Nail
 NeutronScytheExplosion.DisplayName: Explosión de neutrones
 NeutronScytheHeld.DisplayName: Guadaña de neutrones
 Godslight.DisplayName: Luz divina
@@ -233,8 +240,8 @@ AriaQSkillMiniDisk.DisplayName: Guardián del anillo estelar
 SulfuricacidExplosion.DisplayName: Explosión de ácido sulfúrico
 DawnshatterFireball.DisplayName: Fuego del alba
 TransferItemProj.DisplayName: Objeto en tránsito
-FrostBlizzardField.DisplayName: Campo de ventisca helada
-FrostNovaOrb.DisplayName: Nova de escarcha
+// SolsticeJudgment.DisplayName: Solstice Judgment
+// SolsticeNova.DisplayName: Polar Night Nova
 MuraDimensionSlash.DisplayName: Corte dimensional
 MuraSlashArc.DisplayName: Corte dimensional
 MuraSlashLine.DisplayName: Corte dimensional
@@ -334,3 +341,5 @@ DuneStalkerHeadProj.DisplayName: Gancho del acechador de dunas
 // SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
 // SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
 // SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
+// BarrenArc.DisplayName: Barren Arc
+// BarrenPulseProj.DisplayName: Barren Pulse Proj
