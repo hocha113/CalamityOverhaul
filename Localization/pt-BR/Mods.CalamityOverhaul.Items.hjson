@@ -55,11 +55,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Lamina Aniquiladora da Fonte Divina
-	Tooltip:
-		'''
-		Brandir o poder da fonte divina
-		"A vida nunca cessa"
-		'''
+	Tooltip: "A vida nunca cessa"
 }
 
 FoodStallChair: {

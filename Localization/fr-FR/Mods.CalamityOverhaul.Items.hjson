@@ -49,11 +49,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Lame de Source Divine
-	Tooltip:
-		'''
-		Balancer pour libérer la puissance de la source divine
-		"La vie continue"
-		'''
+	Tooltip: "La vie continue"
 }
 
 FoodStallChair: {

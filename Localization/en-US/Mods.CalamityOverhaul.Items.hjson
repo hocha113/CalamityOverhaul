@@ -45,7 +45,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Divine Source Blade
-	Tooltip: Swinging causes a high velocity blade that slashes the first enemy it pierces through into ribbons.
+	Tooltip: "Life never ceases"
 }
 
 FoodStallChair: {
