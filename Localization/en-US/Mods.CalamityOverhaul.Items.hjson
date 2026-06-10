@@ -630,7 +630,8 @@ WeaverGrievances: {
 	Tooltip:
 		'''
 		Unleash a large number of claws of Evil spirits and have special effects in hell and dungeon environments
-		Right-click and roll in the direction of the cursor. Hitting an enemy during the roll will give the player an invincible frame
+		Swings follow a three-hit combo, the third unleashing a sweeping whirlwind finisher
+		Right-click and roll in the direction of the cursor as a wheel of vengeful souls. Hitting an enemy during the roll will give the player an invincible frame
 		A close roll would be considered a perfect dodge
 		[legend]
 		'''

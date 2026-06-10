@@ -17,6 +17,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> NeutronWarp { get; set; }
         public static Asset<Effect> PrimeHalo { get; set; }
         public static Asset<Effect> DestroyerThermalOutline { get; set; }
+        public static Asset<Effect> DestroyerSlash { get; set; }
+        public static Asset<Effect> DestroyerBeam { get; set; }
         public static Asset<Effect> TwinsEyeOverlay { get; set; }
         public static Asset<Effect> KnifeRendering { get; set; }
         public static Asset<Effect> KnifeDistortion { get; set; }
@@ -111,5 +113,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> ArcaneRift { get; set; }
         public static Asset<Effect> ArcaneHighDimension { get; set; }
         public static Asset<Effect> ArcaneRealityTremor { get; set; }
+        public static Asset<Effect> WeaverSlashTrail { get; set; }
+        public static Asset<Effect> WeaverWraith { get; set; }
+        public static Asset<Effect> WeaverSoulVortex { get; set; }
     }
 }
