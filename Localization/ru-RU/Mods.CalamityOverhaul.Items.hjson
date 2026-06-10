@@ -55,7 +55,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Клинок золотого источника
-	Tooltip: "Жизнь неугасима"
+	Tooltip: Жизнь неугасима
 }
 
 FoodStallChair: {

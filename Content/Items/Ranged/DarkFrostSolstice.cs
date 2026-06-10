@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
             //使用瞬间生成手持弹幕，它会自己接管扫射逻辑，松开按键后自动销毁
-            Projectile.NewProjectile(source, player.MountedCenter, velocity, type, damage, knockback, player.whoAmI);
+            Projectile.NewProjectile(source, player.MountedCenter, velocity, Item.shoot, damage, knockback, player.whoAmI);
             return false;
         }
 

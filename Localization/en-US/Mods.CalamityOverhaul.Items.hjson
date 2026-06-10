@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -45,7 +45,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Divine Source Blade
-	Tooltip: "Life never ceases"
+	Tooltip: Life never ceases
 }
 
 FoodStallChair: {

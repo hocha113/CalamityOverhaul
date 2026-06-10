@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -55,7 +55,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: 金源灭却刃
-	Tooltip: "生命不息"
+	Tooltip: 生命不息
 }
 
 FoodStallChair: {

@@ -55,7 +55,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Cuchilla Aniquiladora de Oro
-	Tooltip: "La vida nunca cesa"
+	Tooltip: La vida nunca cesa
 }
 
 FoodStallChair: {

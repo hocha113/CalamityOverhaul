@@ -55,7 +55,7 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Göttliche Energie-Klinge
-	Tooltip: "Das Leben endet nie"
+	Tooltip: Das Leben endet nie
 }
 
 FoodStallChair: {
