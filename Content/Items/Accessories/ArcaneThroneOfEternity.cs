@@ -533,9 +533,6 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //魔力恢复永不间断
-            Player.manaRegenDelay = 0;
-
             //全知状态判定
             Omniscience = Player.statManaMax2 > 0 && Player.statMana >= (int)(Player.statManaMax2 * 0.9f);
 

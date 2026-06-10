@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: Hyper-désintégration
 	Description: Fait s'effondrer la cible de l'intérieur
 }
+
+TemporalStasis: {
+	DisplayName: Stase temporelle
+	Description: Le temps se fige autour de la cible
+}
+
+GravitationalCollapse: {
+	DisplayName: Effondrement gravitationnel
+	Description: Entraîné dans l'abîme par son propre poids
+}

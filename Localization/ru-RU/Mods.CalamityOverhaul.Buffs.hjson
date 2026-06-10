@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: Гипердезинтеграция
 	Description: Разрушает цель изнутри
 }
+
+TemporalStasis: {
+	DisplayName: Временной стазис
+	Description: Время застывает вокруг цели
+}
+
+GravitationalCollapse: {
+	DisplayName: Гравитационный коллапс
+	Description: Утаскивает в бездну собственным весом
+}

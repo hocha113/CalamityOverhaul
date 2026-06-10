@@ -350,6 +350,35 @@ EyeOfSingularity: {
 		'''
 }
 
+ArcaneThroneOfEternity: {
+	DisplayName: Trône arcanique de l'éternité
+	Tooltip:
+		'''
+		Augmente les dégâts magiques de 100 %
+		Augmente les chances de coup critique magique de 100 %
+		Augmente la vitesse d'attaque magique de 100 %
+		Augmente le mana maximum de 1000 ; la régénération de mana est fortement accélérée et ne s'interrompt jamais
+		Tous les projectiles magiques obtiennent une pénétration infinie
+		Vos attaques magiques déchirent le voile de la réalité et ouvrent des Failles arcaniques en éruption continue à l'impact
+		Toutes les attaques magiques infligent une malédiction interdite aléatoire :
+		  Érosion du Vide, Stase temporelle, Feu de l'âme, Effondrement gravitationnel ou Hyper-désintégration
+		Au-dessus de 90 % de mana, vous entrez dans l'état « Omniscience » :
+		  Tous les projectiles magiques verrouillent automatiquement les ennemis et le multiplicateur de dégâts critiques monte à 1000 %
+		Accorde le Saut de Vérité ; appuyez sur [KEY] pour déchirer l'espace et entrer dans une dimension supérieure :
+		  Immunité totale aux dégâts et déplacement libre pendant un court instant ; en sortant, vous déclenchez un Tremblement de Réalité dévastateur
+		  Temps de recharge : 30 secondes
+		Clic droit pour activer « Calcul des Racines » :
+		  Pendant les 10 prochaines secondes, chaque attaque magique libère simultanément 5 sorts miroirs
+		  Temps de recharge : 60 secondes
+		Si vous subissez des dégâts mortels, le temps revient à votre état d'il y a 5 secondes, restaurant vie, mana et position
+		Cet effet a un temps de recharge de 60 secondes
+		Les ennemis vous ciblent plus facilement
+		[c/b84dff:"Un sage sans nom ouvre votre crâne et inscrit des vérités oubliées au-delà des étoiles"]
+		[c/ffdd66:"Le Seigneur du Changement tire la chaîne et la trame du destin, traitant la réalité comme un brouillon inachevé"]
+		[c/66ffff:"Le cadavre sur le trône doré vous observe — il a depuis longtemps oublié ce qu'est la mort"]
+		'''
+}
+
 PrecisionMuzzleBrake: {
 	DisplayName: Stabilisateur haute précision
 	Tooltip:

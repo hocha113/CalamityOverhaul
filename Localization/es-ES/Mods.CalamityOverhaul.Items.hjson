@@ -353,6 +353,35 @@ EyeOfSingularity: {
 		'''
 }
 
+ArcaneThroneOfEternity: {
+	DisplayName: Trono arcano de la eternidad
+	Tooltip:
+		'''
+		Aumenta el daño mágico un 100 %
+		Aumenta la probabilidad de crítico mágico un 100 %
+		Aumenta la velocidad de ataque mágico un 100 %
+		Aumenta el maná máximo en 1000; la regeneración de maná es muy alta y nunca se interrumpe
+		Todos los proyectiles mágicos obtienen penetración infinita
+		Tus ataques mágicos desgarran el velo de la realidad y abren Grietas Arcanas en erupción continua al impactar
+		Todos los ataques mágicos infligen una maldición prohibida aleatoria:
+		  Erosión del Vacío, Estasis temporal, Fuego del alma, Colapso gravitacional o Hiperdesintegración
+		Con más del 90 % de maná, entras en el estado «Omnisciencia»:
+		  Todos los proyectiles mágicos persiguen automáticamente a los enemigos y el multiplicador de daño crítico sube al 1000 %
+		Obtienes Salto de la Verdad; pulsa [KEY] para rasgar el espacio y entrar en una dimensión superior:
+		  Inmunidad total al daño y movimiento libre durante un breve periodo; al salir, desatas un devastador Temblor de la Realidad
+		  Tiempo de reutilización: 30 segundos
+		Clic derecho para activar «Cálculo de la Raíz»:
+		  Durante los próximos 10 segundos, cada ataque mágico libera simultáneamente 5 hechizos espejo
+		  Tiempo de reutilización: 60 segundos
+		Si recibes un golpe mortal, el tiempo retrocede a tu estado de hace 5 segundos, restaurando vida, maná y posición
+		Este efecto tiene 60 segundos de reutilización
+		Los enemigos tienen más probabilidades de atacarte
+		[c/b84dff:"Un sabio sin nombre abre tu cráneo e inscribe verdades olvidadas más allá de las estrellas"]
+		[c/ffdd66:"El Señor del Cambio tira del urdimbre y la trama del destino, tratando la realidad como un borrador inacabado"]
+		[c/66ffff:"El cadáver sobre el trono dorado te observa; hace tiempo que olvidó qué es la muerte"]
+		'''
+}
+
 PrecisionMuzzleBrake: {
 	DisplayName: Freno de Boca de Alta Precisión
 	Tooltip:

@@ -356,6 +356,35 @@ EyeOfSingularity: {
 		'''
 }
 
+ArcaneThroneOfEternity: {
+	DisplayName: Thron der arkanen Ewigkeit
+	Tooltip:
+		'''
+		Erhöht Magieschaden um 100%
+		Erhöht kritische Magietrefferchance um 100%
+		Erhöht Magieangriffsgeschwindigkeit um 100%
+		Erhöht das maximale Mana um 1000; Manaregeneration ist stark erhöht und wird nie unterbrochen
+		Alle Magieprojektile erhalten unendliche Durchdringung
+		Deine Magieangriffe zerreißen den Schleier der Realität und reißen bei Treffern kontinuierlich ausbrechende Arkane Risse auf
+		Alle Magieangriffe fügen einen zufälligen verbotenen Fluch zu:
+		  Leererosion, Zeitstillstand, Seelenbrennen, Gravitationskollaps oder Hyper-Disintegration
+		Bei über 90 % Mana trittst du in den Zustand „Allwissenheit“ ein:
+		  Alle Magieprojektile verfolgen automatisch Gegner, und der kritische Schadensmultiplikator steigt auf 1000 %
+		Erhält Wahrheitssprung: Drücke [KEY], um den Raum zu zerreißen und eine höhere Dimension zu betreten
+		  Kurzzeitig immun gegen allen Schaden und frei beweglich; beim Verlassen entfesselst du ein verheerendes Realitätsbeben
+		  Abklingzeit: 30 Sekunden
+		Rechtsklick aktiviert Wurzelberechnung:
+		  Für die nächsten 10 Sekunden setzt jeder Magieangriff gleichzeitig 5 gespiegelte Zauber frei
+		  Abklingzeit: 60 Sekunden
+		Bei tödlichem Schaden spulst du die Zeit auf deinen Zustand vor 5 Sekunden zurück und stellst Leben, Mana und Position wieder her
+		Dieser Effekt hat 60 Sekunden Abklingzeit
+		Gegner nehmen eher Ziel auf dich
+		[c/b84dff:"Ein namenloser Weiser spaltet deinen Schädel und schreibt vergessene Wahrheiten jenseits der Sterne"]
+		[c/ffdd66:"Der Herr des Wandels zupft am Kettfaden des Schicksals und betrachtet die Realität als unvollendeten Entwurf"]
+		[c/66ffff:"Die Leiche auf dem goldenen Thron blickt dich an — sie hat längst vergessen, was Tod ist"]
+		'''
+}
+
 PrecisionMuzzleBrake: {
 	DisplayName: Hochpräziser Mündungsstabilisator
 	Tooltip:

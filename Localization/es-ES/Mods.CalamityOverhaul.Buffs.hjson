@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: Hiperdesintegración
 	Description: Desintegra al objetivo desde dentro
 }
+
+TemporalStasis: {
+	DisplayName: Estasis temporal
+	Description: El tiempo se congela a su alrededor
+}
+
+GravitationalCollapse: {
+	DisplayName: Colapso gravitacional
+	Description: Arrastrado al abismo por su propio peso
+}

@@ -364,6 +364,35 @@ EyeOfSingularity: {
 		'''
 }
 
+ArcaneThroneOfEternity: {
+	DisplayName: Trono Arcano da Eternidade
+	Tooltip:
+		'''
+		Aumenta o dano magico em 100%
+		Aumenta a chance de acerto critico magico em 100%
+		Aumenta a velocidade de ataque magico em 100%
+		Aumenta a mana maxima em 1000; a regeneracao de mana e muito alta e nunca e interrompida
+		Todos os projeteis magicos ganham penetracao infinita
+		Seus ataques magicos rasgam o veu da realidade, abrindo Fendas Arcanas em erupcao continua ao acertar
+		Todos os ataques magicos aplicam uma maldicao proibida aleatoria:
+		  Erosao do Vazio, Estase Temporal, Alma Ardente, Colapso Gravitacional ou Hiper Desintegracao
+		Com mais de 90% de mana, voce entra no estado «Onisciencia»:
+		  Todos os projeteis magicos rastreiam inimigos automaticamente e o multiplicador de dano critico sobe para 1000%
+		Concede Salto da Verdade; pressione [KEY] para rasgar o espaco e entrar em uma dimensao superior:
+		  Imunidade total a dano e movimento livre por um curto periodo; ao sair, libera um devastador Tremor da Realidade
+		  Tempo de recarga: 30 segundos
+		Clique direito para ativar «Calculo da Raiz»:
+		  Nos proximos 10 segundos, cada ataque magico libera simultaneamente 5 feiticos espelhados
+		  Tempo de recarga: 60 segundos
+		Se receber dano fatal, o tempo retrocede ao seu estado de 5 segundos atras, restaurando vida, mana e posicao
+		Este efeito tem 60 segundos de recarga
+		Inimigos tem mais chance de mirar em voce
+		[c/b84dff:"Um sabio sem nome abre seu cranio e inscreve verdades esquecidas alem das estrelas"]
+		[c/ffdd66:"O Senhor da Mutacao puxa a urdidura e a trama do destino, tratando a realidade como um rascunho inacabado"]
+		[c/66ffff:"O cadaver no trono dourado olha para voce — ha muito esqueceu o que e a morte"]
+		'''
+}
+
 PrecisionMuzzleBrake: {
 	DisplayName: Estabilizador de Alta Precisao
 	Tooltip:

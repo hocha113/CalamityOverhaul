@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: Hiper Desintegracao
 	Description: Faz o alvo se desintegrar de dentro para fora
 }
+
+TemporalStasis: {
+	DisplayName: Estase Temporal
+	Description: O tempo congela ao redor dela
+}
+
+GravitationalCollapse: {
+	DisplayName: Colapso Gravitacional
+	Description: Arrastado para o abismo pelo proprio peso
+}

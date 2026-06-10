@@ -32,3 +32,13 @@ HyperDisintegration: {
 	DisplayName: Hyper-Disintegration
 	Description: Lass das Ziel von innen zerfallen
 }
+
+TemporalStasis: {
+	DisplayName: Zeitstillstand
+	Description: Die Zeit erstarrt um sie herum
+}
+
+GravitationalCollapse: {
+	DisplayName: Gravitationskollaps
+	Description: In den Abgrund gezogen durch das eigene Gewicht
+}
