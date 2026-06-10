@@ -242,6 +242,8 @@ DawnshatterFireball.DisplayName: Morgendämmerungsfeuer
 TransferItemProj.DisplayName: Items in Übertragung
 // SolsticeJudgment.DisplayName: Solstice Judgment
 // SolsticeNova.DisplayName: Polar Night Nova
+// SolsticeBolt.DisplayName: Solstice Bolt
+// SolsticeSoul.DisplayName: Frost Soul Crystal
 MuraDimensionSlash.DisplayName: Dimensionsschnitt
 MuraSlashArc.DisplayName: Dimensionsschnitt
 MuraSlashLine.DisplayName: Dimensionsschnitt

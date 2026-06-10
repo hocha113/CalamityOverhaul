@@ -242,6 +242,8 @@ DawnshatterFireball.DisplayName: Feu de l'aube
 TransferItemProj.DisplayName: Objets en transit
 // SolsticeJudgment.DisplayName: Solstice Judgment
 // SolsticeNova.DisplayName: Polar Night Nova
+// SolsticeBolt.DisplayName: Solstice Bolt
+// SolsticeSoul.DisplayName: Frost Soul Crystal
 MuraDimensionSlash.DisplayName: Coupe dimensionnelle
 MuraSlashArc.DisplayName: Coupe dimensionnelle
 MuraSlashLine.DisplayName: Coupe dimensionnelle

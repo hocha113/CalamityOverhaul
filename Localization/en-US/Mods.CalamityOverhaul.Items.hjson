@@ -485,10 +485,11 @@ DarkFrostSolstice: {
 	Tooltip:
 		'''
 		Use snowballs as ammunition
-		Hold left-click to channel snow pressure into the solstice core, charging through three tiers
-		Release to unleash the Solstice Judgment, a piercing beam of divine frost
-		A fully charged judgment blooms into a solstice corona on impact
-		Right-click triggers a polar night nova, a freezing pulse centered on yourself
+		Hold left-click to sweep; the barrel spins ever faster the longer you fire
+		At high spin, periodically casts out hunting frost souls
+		Sustained fire at full spin builds up divinity
+		Once filled, the next shot calls down the Solstice Judgment—
+		a polar pillar of light at your cursor, erupting the earth into ice lances and frostbursts
 		"On the shortest day, the divinity opened its eyes"
 		'''
 }

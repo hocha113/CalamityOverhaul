@@ -242,6 +242,8 @@ DawnshatterFireball.DisplayName: Fuego del alba
 TransferItemProj.DisplayName: Objeto en tránsito
 // SolsticeJudgment.DisplayName: Solstice Judgment
 // SolsticeNova.DisplayName: Polar Night Nova
+// SolsticeBolt.DisplayName: Solstice Bolt
+// SolsticeSoul.DisplayName: Frost Soul Crystal
 MuraDimensionSlash.DisplayName: Corte dimensional
 MuraSlashArc.DisplayName: Corte dimensional
 MuraSlashLine.DisplayName: Corte dimensional

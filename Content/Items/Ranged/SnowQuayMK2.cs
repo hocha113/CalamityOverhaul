@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override int TargetItemID => ModContent.ItemType<SnowQuayMK2>();
         protected override float BarrelLength => 46f;
         protected override float MuzzleNormalOffset => 6f;
-        protected override float HoldDistance => 60f;
+        protected override float HoldDistance => 50f;
 
         /// <summary>当前点射还剩几发</summary>
         private int burstLeft;

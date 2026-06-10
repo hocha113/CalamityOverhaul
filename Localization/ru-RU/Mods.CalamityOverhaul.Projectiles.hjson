@@ -242,6 +242,8 @@ DawnshatterFireball.DisplayName: Огонь рассвета
 TransferItemProj.DisplayName: Перемещаемый предмет
 // SolsticeJudgment.DisplayName: Solstice Judgment
 // SolsticeNova.DisplayName: Polar Night Nova
+// SolsticeBolt.DisplayName: Solstice Bolt
+// SolsticeSoul.DisplayName: Frost Soul Crystal
 MuraDimensionSlash.DisplayName: Разрез измерения
 MuraSlashArc.DisplayName: Разрез измерения
 MuraSlashLine.DisplayName: Разрез измерения

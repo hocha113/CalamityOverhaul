@@ -242,6 +242,8 @@ DawnshatterFireball.DisplayName: Bola de Fogo do Amanhecer Estilhaçado
 TransferItemProj.DisplayName: Itens em Transito
 // SolsticeJudgment.DisplayName: Solstice Judgment
 // SolsticeNova.DisplayName: Polar Night Nova
+// SolsticeBolt.DisplayName: Solstice Bolt
+// SolsticeSoul.DisplayName: Frost Soul Crystal
 MuraDimensionSlash.DisplayName: Corte Dimensional Mura
 MuraSlashArc.DisplayName: Arco de Corte Mura
 MuraSlashLine.DisplayName: Linha de Corte Mura
