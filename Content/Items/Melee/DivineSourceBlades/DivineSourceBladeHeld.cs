@@ -196,9 +196,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private void HandlePhaseEvents(Player owner, int phase) {
             if (Timer == RaiseDur + 1) {
                 flashTimer = 12;
-                SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.25f, Volume = 0.9f }, owner.Center);
-                SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.55f, Volume = 0.45f }, owner.Center);
-
                 if (!Main.dedServ) {
                     Vector2 mid = Vector2.Lerp(owner.Center, mainTip, 0.65f);
                     for (int i = 0; i < 18; i++) {
@@ -347,8 +344,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.3f, Volume = 0.6f }, target.Center);
-            SpawnTerratomereSlash(target.whoAmI);
-
             if (Projectile.owner == Main.myPlayer) {
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromAI(),
@@ -361,25 +356,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            SpawnTerratomereSlash(target.whoAmI);
-        }
-
-        private void SpawnTerratomereSlash(int targetWhoAmI) {
-            if (Projectile.numHits != 0 || !CWRRef.Has || Projectile.owner != Main.myPlayer) {
-                return;
-            }
-
-            int proj = Projectile.NewProjectile(
-                Projectile.GetSource_FromAI(),
-                Projectile.Center,
-                Vector2.Zero,
-                CWRID.Proj_TerratomereSlashCreator,
-                Projectile.damage / 3,
-                0,
-                Projectile.owner,
-                targetWhoAmI,
-                Main.rand.NextFloat(MathHelper.TwoPi));
-            Main.projectile[proj].timeLeft = 30;
+            //
         }
 
         public override bool PreDraw(ref Color lightColor) {

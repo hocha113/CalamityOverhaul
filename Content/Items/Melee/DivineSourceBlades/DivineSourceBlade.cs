@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         public override void SetDefaults() {
             Item.width = 100;
             Item.height = 164;
-            Item.damage = 560;
+            Item.damage = 1560;
             Item.DamageType = DamageClass.Melee;
             Item.useAnimation = Item.useTime = 52;
             Item.useStyle = ItemUseStyleID.Swing;

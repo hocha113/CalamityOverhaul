@@ -215,6 +215,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            Projectile.damage = ((int)(Projectile.damage * 0.7f));
+
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.4f, Volume = 0.55f }, target.Center);
 
             if (!Main.dedServ) {
@@ -226,20 +228,6 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     dust.noGravity = true;
                     dust.fadeIn = 1.1f;
                 }
-            }
-
-            if (Projectile.numHits == 0 && CWRRef.Has && Projectile.owner == Main.myPlayer) {
-                int proj = Projectile.NewProjectile(
-                    Projectile.GetSource_FromAI(),
-                    target.Center,
-                    Vector2.Zero,
-                    CWRID.Proj_TerratomereSlashCreator,
-                    Projectile.damage,
-                    0,
-                    Projectile.owner,
-                    target.whoAmI,
-                    Main.rand.NextFloat(MathHelper.TwoPi));
-                Main.projectile[proj].timeLeft = 30;
             }
 
             if (Projectile.owner == Main.myPlayer) {
