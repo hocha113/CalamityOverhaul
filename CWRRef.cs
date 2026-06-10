@@ -97,6 +97,7 @@ namespace CalamityOverhaul
         private static MemberInfo calPlayer_rageGainCooldown_M;
         private static MemberInfo calPlayer_rageCombatFrames_M;
         private static MemberInfo calPlayer_adrenalinePauseTimer_M;
+        private static MemberInfo calPlayer_externalDefenseDamageImmunity_M;
 
         private static MemberInfo calItem_ChargeRatio_M;
         private static MemberInfo calItem_MaxCharge_M;
@@ -393,6 +394,7 @@ namespace CalamityOverhaul
             calPlayer_rageGainCooldown_M = FindMember(calPlayerType, "rageGainCooldown");
             calPlayer_rageCombatFrames_M = FindMember(calPlayerType, "rageCombatFrames");
             calPlayer_adrenalinePauseTimer_M = FindMember(calPlayerType, "adrenalinePauseTimer");
+            calPlayer_externalDefenseDamageImmunity_M = FindMember(calPlayerType, "externalDefenseDamageImmunity");
 
             calItem_ChargeRatio_M = FindMember(calItemType, "ChargeRatio");
             calItem_MaxCharge_M = FindMember(calItemType, "MaxCharge");
@@ -479,6 +481,7 @@ namespace CalamityOverhaul
             calPlayer_rageGainCooldown_M = null;
             calPlayer_rageCombatFrames_M = null;
             calPlayer_adrenalinePauseTimer_M = null;
+            calPlayer_externalDefenseDamageImmunity_M = null;
 
             calItem_ChargeRatio_M = null;
             calItem_MaxCharge_M = null;
@@ -1061,6 +1064,14 @@ namespace CalamityOverhaul
                 return;
             }
             SetMember(calPlayer_infiniteFlight_M, cp, value);
+        }
+
+        public static void SetPlayerDefenseDamageImmunity(this Player player, bool value) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_externalDefenseDamageImmunity_M == null) {
+                return;
+            }
+            SetMember(calPlayer_externalDefenseDamageImmunity_M, cp, value);
         }
 
         public static void OldDukeOnKill(NPC npc) {

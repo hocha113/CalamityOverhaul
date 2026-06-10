@@ -42,6 +42,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             player.GetModPlayer<EmblemOfDreadPlayer>().Alive = true;
+            player.SetPlayerDefenseDamageImmunity(true);
             player.dashType = 0;
             player.SetPlayerDashID(string.Empty);
             player.GetDamage<MeleeDamageClass>() += 1f;
