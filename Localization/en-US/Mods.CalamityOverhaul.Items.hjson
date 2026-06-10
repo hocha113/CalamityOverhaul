@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -17,24 +17,6 @@ MoldProcessingTable: {
 ElementWhip: {
 	DisplayName: Element Whip
 	Tooltip: A Whip infused with the energy of the Moon and the Elements.
-}
-
-TheRelicLuxor: {
-	DisplayName: The Relic Luxor
-	Tooltip:
-		'''
-		Searing psychic power will accompany you in every attack, and the God of Glory is with you
-		[tips]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: The Luxir Soul Artifact
-	Tooltip:
-		'''
-		Both God and immortality acknowledge your glory
-		[tips]
-		'''
 }
 
 AzureDragonRage: {

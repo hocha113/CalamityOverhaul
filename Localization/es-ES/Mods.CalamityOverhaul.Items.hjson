@@ -24,24 +24,6 @@ ElementWhip: {
 		'''
 }
 
-TheRelicLuxor: {
-	DisplayName: Reliquia de Luxor
-	Tooltip:
-		'''
-		El poder espiritual ardiente te acompañará en cada ataque; el dios de la luz está contigo.
-		[tips]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: Artefacto del Alma de Luxor
-	Tooltip:
-		'''
-		Tanto dioses como inmortales reconocen tu gloria.
-		[tips]
-		'''
-}
-
 AzureDragonRage: {
 	DisplayName: Ira del dragón azul
 	Tooltip:

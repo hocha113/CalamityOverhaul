@@ -24,24 +24,6 @@ ElementWhip: {
 		'''
 }
 
-TheRelicLuxor: {
-	DisplayName: Святая реликвия луксора
-	Tooltip:
-		'''
-		Жгучая духовная сила будет сопровождать каждую твою атаку, и Бог Сияния будет с тобой
-		[tips]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: Святой дух луксора
-	Tooltip:
-		'''
-		Будь то Бог или бессмертие, признайте свою славу
-		[tips]
-		'''
-}
-
 AzureDragonRage: {
 	DisplayName: Ярость Цин Луна
 	Tooltip:

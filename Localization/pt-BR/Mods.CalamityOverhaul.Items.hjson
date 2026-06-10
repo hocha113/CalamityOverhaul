@@ -24,24 +24,6 @@ ElementWhip: {
 		'''
 }
 
-TheRelicLuxor: {
-	DisplayName: A Reliquia Luxor
-	Tooltip:
-		'''
-		Poder psiquico abrasador acompanhara cada um de seus ataques, e o Deus da Gloria esta com voce
-		[tips]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: O Artefato da Alma Luxir
-	Tooltip:
-		'''
-		Ambos Deus e a imortalidade reconhecem sua gloria
-		[tips]
-		'''
-}
-
 AzureDragonRage: {
 	DisplayName: Furia do Dragao Azure
 	Tooltip:

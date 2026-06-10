@@ -24,24 +24,6 @@ ElementWhip: {
 		'''
 }
 
-TheRelicLuxor: {
-	DisplayName: Luxors Relikt
-	Tooltip:
-		'''
-		Brennende spirituelle Kraft begleitet jeden deiner Angriffe, der Gott des strahlenden Reiches ist mit dir
-		[tips]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: Luxors Seelenartefakt
-	Tooltip:
-		'''
-		Sowohl Götter als auch Unsterbliche erkennen deine Ehre an
-		[tips]
-		'''
-}
-
 AzureDragonRage: {
 	DisplayName: Zorn des Azurdrachen
 	Tooltip:

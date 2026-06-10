@@ -1,4 +1,4 @@
-﻿SHPCModTooltipDraw: {
+SHPCModTooltipDraw: {
 	InstalledHeader: 已安装模块
 	NoModules: 无
 	BonusHeader: 当前模块总加成
@@ -21,24 +21,6 @@ ElementWhip: {
 		{$CommonItemTooltip.Whips}
 		让敌人被元素之火灼烧
 		"泰拉的本源连同宇宙的元素一同贯穿世界"
-		'''
-}
-
-TheRelicLuxor: {
-	DisplayName: 卢克索的圣物
-	Tooltip:
-		'''
-		灼热的灵力将伴随你的每一次攻击，耀界之神与你同在
-		[tips]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: 卢克索的灵魂圣器
-	Tooltip:
-		'''
-		无论是神还是不朽，皆承认你的荣耀
-		[tips]
 		'''
 }
 

@@ -23,24 +23,6 @@ ElementWhip: {
 		'''
 }
 
-TheRelicLuxor: {
-	DisplayName: Relique de Luxor
-	Tooltip:
-		'''
-		La puissance brûlante accompagne chaque attaque, avec le dieu du rayonnement à tes côtés
-		[conseils]
-		'''
-}
-
-TheLuxirSoulArtifact: {
-	DisplayName: Artéfact de l'Âme de Luxir
-	Tooltip:
-		'''
-		Que ce soit un dieu ou un immortel, tous reconnaissent ta gloire
-		[conseils]
-		'''
-}
-
 AzureDragonRage: {
 	DisplayName: Rage du Dragon Azur
 	Tooltip: Il y a une forte odeur d'herbe verte
