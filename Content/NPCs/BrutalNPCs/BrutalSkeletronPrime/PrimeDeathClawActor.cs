@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -66,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 aimTarget;
             switch (phase) {
                 case PrimeDeathPhase.Summon: {
-                    float p = EaseOut((t - HeadPrimeAI.PhaseFakeDeathEnd) / (float)(HeadPrimeAI.PhaseSummonEnd - HeadPrimeAI.PhaseFakeDeathEnd));
+                    float p = EaseOut((t - PrimeDeathState.PhaseFakeDeathEnd) / (float)(PrimeDeathState.PhaseSummonEnd - PrimeDeathState.PhaseFakeDeathEnd));
                     clawPos = Vector2.Lerp(head.Center, standby, p);
                     aimTarget = head.Center + (clawPos - head.Center) * 2f;
                     clawFrame = 0;
@@ -74,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
                 case PrimeDeathPhase.Lunge: {
                     //迅猛扑出：EaseOut 让钳子瞬间窜向玩家，临近再急停咬合
-                    float p = EaseOut((t - HeadPrimeAI.PhaseSummonEnd) / (float)(HeadPrimeAI.PhaseLungeEnd - HeadPrimeAI.PhaseSummonEnd));
+                    float p = EaseOut((t - PrimeDeathState.PhaseSummonEnd) / (float)(PrimeDeathState.PhaseLungeEnd - PrimeDeathState.PhaseSummonEnd));
                     clawPos = Vector2.Lerp(standby, grabPoint, p);
                     aimTarget = targetCenter;
                     clawFrame = p > 0.55f ? 1 : 0;
@@ -91,13 +92,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     break;
                 }
                 case PrimeDeathPhase.Finale: {
-                    float p = (t - HeadPrimeAI.PhaseRoarEnd) / (float)(HeadPrimeAI.PhaseFinaleEnd - HeadPrimeAI.PhaseRoarEnd);
+                    float p = (t - PrimeDeathState.PhaseRoarEnd) / (float)(PrimeDeathState.PhaseFinaleEnd - PrimeDeathState.PhaseRoarEnd);
                     Vector2 outward = new Vector2(side, -0.35f).SafeNormalize(Vector2.UnitX * side);
                     clawPos = grabPoint + outward * p * 280f;
                     aimTarget = clawPos + outward;
                     clawFrame = 1;
                     alpha = MathHelper.Clamp(1f - p * 1.2f, 0f, 1f);
-                    if (!finaleBurst && t == HeadPrimeAI.PhaseRoarEnd) {
+                    if (!finaleBurst && t == PrimeDeathState.PhaseRoarEnd) {
                         finaleBurst = true;
                         SpawnClawShatter(clawPos);
                     }

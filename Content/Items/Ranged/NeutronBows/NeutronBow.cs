@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Melee.Neutrons;
+using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;

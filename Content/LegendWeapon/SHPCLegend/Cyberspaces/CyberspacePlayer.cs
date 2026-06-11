@@ -615,6 +615,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             copy._snapRestartCollapse = RestartCollapse;
         }
 
+        /// <summary>
+        /// 玩家加入时的全量状态同步：<see cref="SendClientChanges"/> 只在状态变化时发包，
+        /// 中途加入 / 重连的玩家若收不到这份初始快照，会永远认为该领域未激活，
+        /// 导致其本机的 <see cref="IsInsideDomain"/> 恒为 false，进而把所有冻结条目立即快进到解冻段
+        /// </summary>
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
+            ModPacket packet = CWRMod.Instance.GetPacket();
+            packet.Write((byte)CWRMessageType.CyberspaceStateSync);
+            packet.Write((byte)Player.whoAmI);
+            packet.Write(Active);
+            packet.Write((byte)CurrentLayer);
+            packet.Write(RestartCollapse);
+            packet.Send(toWho, fromWho);
+        }
+
         public override void SendClientChanges(ModPlayer clientPlayer) {
             if (VaultUtils.isSinglePlayer) return;
 

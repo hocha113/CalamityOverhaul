@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -100,8 +101,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         dragStarted = true;
                         dragStartPos = Player.Center;
                     }
-                    float p = (headAI.DeathTimer - HeadPrimeAI.PhaseLungeEnd)
-                        / (float)(HeadPrimeAI.PhaseDragEnd - HeadPrimeAI.PhaseLungeEnd);
+                    float p = (headAI.DeathTimer - PrimeDeathState.PhaseLungeEnd)
+                        / (float)(PrimeDeathState.PhaseDragEnd - PrimeDeathState.PhaseLungeEnd);
                     p = MathHelper.SmoothStep(0f, 1f, MathHelper.Clamp(p, 0f, 1f));
                     LockPlayerAt(Vector2.Lerp(dragStartPos, lift, p));
                     break;
@@ -112,7 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
                 case PrimeDeathPhase.Finale: {
                     //终爆瞬间将玩家掀飞释放
-                    if (headAI.DeathTimer == HeadPrimeAI.PhaseRoarEnd) {
+                    if (headAI.DeathTimer == PrimeDeathState.PhaseRoarEnd) {
                         Vector2 knock = (Player.Center - head.Center).SafeNormalize(Vector2.UnitY) * 24f;
                         Player.velocity = knock;
                     }
@@ -163,19 +164,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                     camera.ZoomLerpSpeed = 0.05f;
                     break;
                 case PrimeDeathPhase.Drag:
-                    camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.5f);
+                    camera.FocusTarget = head.Center + new Vector2(0f, PrimeDeathState.DeathLiftDistance * 0.5f);
                     camera.TargetZoom = 1.8f;
                     camera.PositionLerpSpeed = 0.08f;
                     camera.ZoomLerpSpeed = 0.055f;
                     break;
                 case PrimeDeathPhase.Roar:
-                    camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.45f);
+                    camera.FocusTarget = head.Center + new Vector2(0f, PrimeDeathState.DeathLiftDistance * 0.45f);
                     camera.TargetZoom = 2.1f;
                     camera.PositionLerpSpeed = 0.1f;
                     camera.ZoomLerpSpeed = 0.07f;
                     break;
                 case PrimeDeathPhase.Finale:
-                    camera.FocusTarget = head.Center + new Vector2(0f, HeadPrimeAI.DeathLiftDistance * 0.25f);
+                    camera.FocusTarget = head.Center + new Vector2(0f, PrimeDeathState.DeathLiftDistance * 0.25f);
                     camera.TargetZoom = 1.4f;
                     camera.PositionLerpSpeed = 0.06f;
                     camera.ZoomLerpSpeed = 0.05f;

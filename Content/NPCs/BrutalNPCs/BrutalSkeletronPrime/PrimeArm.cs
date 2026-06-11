@@ -5,6 +5,11 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
+    /// <summary>
+    /// 机械臂控制器基类：维护与头部的从属关系、驱动各自的状态机、
+    /// 响应头部状态（编队收拢/环绕、转阶段殉爆、狂暴期退场）。
+    /// 具体攻击行为全部由 <see cref="States.Arms"/> 下的状态类实现
+    /// </summary>
     internal abstract class PrimeArm : CWRNPCOverride
     {
         internal bool bossRush;
@@ -17,20 +22,34 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal NPC head;
         internal Player player;
         internal int frame;
-        internal bool dontAttack;
-        internal PrimeArmStateContext armStateContext;
+        internal PrimeArmStateContext armContext;
         internal VaultStateMachine<PrimeArmStateContext> armStateMachine;
+
+        /// <summary>初始状态工厂</summary>
+        protected abstract PrimeArmStateBase CreateInitialState();
+        /// <summary>转阶段殉爆延迟（帧）——四肢按各自延迟依次爆裂，形成演出节拍</summary>
+        protected abstract int DetonationDelay { get; }
+        /// <summary>环绕编队的角位索引（0~3）</summary>
+        protected abstract int FormationIndex { get; }
+
         public sealed override bool? CanCWROverride() {
             return null;
         }
 
         public sealed override void SetProperty() {
+            armContext = null;
+            armStateMachine = null;
         }
 
         public override bool AI() {
             if (CWRWorld.CanTimeFrozen()) {
                 CWRNpc.DoTimeFrozen(npc);
                 return false;
+            }
+
+            //Mechdusa（机械混合体）形态交还原版AI
+            if (NPC.IsMechQueenUp) {
+                return true;
             }
 
             bossRush = CWRRef.GetBossRushActive();
@@ -40,6 +59,114 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             player = Main.player[npc.target];
             npc.spriteDirection = -(int)npc.ai[PrimeAiSlots.ArmSide];
             npc.damage = 0;
+            npc.dontTakeDamage = false;
+
+            RegisterWorldIndex();
+            HeadPrimeAI.FindPlayer(npc);
+            HeadPrimeAI.CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
+
+            if (!HeadPrimeAI.DontReform()) {
+                npc.aiStyle = -1;
+            }
+
+            //头部已不在：机械臂立即失能坠毁（服务端单点决策，避免客户端凭空消失后被同步回来）
+            if (!head.active || head.type != NPCID.SkeletronPrime) {
+                KillSelfOnServer();
+                return false;
+            }
+
+            //机械臂全程免疫所有 debuff
+            for (int i = 0; i < npc.buffImmune.Length; i++) {
+                npc.buffImmune[i] = true;
+            }
+
+            EnsureStateMachine();
+            UpdateContext();
+
+            PrimeStateIndex headState = HeadPrimeAI.GetStateIndex(head);
+            int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
+
+            //头部进入狂暴/死亡演出：四肢不应再存在（转阶段演出漏网的兜底）
+            if (headPhase >= PrimePhase.Rage) {
+                KillSelfOnServer();
+                return false;
+            }
+
+            //转阶段：收拢编队，按各自延迟依次殉爆
+            if (headState == PrimeStateIndex.PhaseTransition) {
+                RunDetonationSequence();
+                return false;
+            }
+
+            //头部脱战离场：跟随退场
+            if (headState == PrimeStateIndex.Despawn && npc.timeLeft > 10) {
+                npc.timeLeft = 10;
+            }
+
+            //编队接管：风暴期收拢 / 冲撞与白昼狂暴期环绕成旋转护盾
+            if (HandleFormationOverride(headState)) {
+                return false;
+            }
+
+            //生成宽限计时
+            ai[0]++;
+            armContext.DontAttack = ai[0] < PrimeAiSlots.ArmSpawnGraceFrames;
+
+            UpdateVisualDecay();
+            ArmPreUpdate();
+            armStateMachine.Update();
+            ArmPostUpdate();
+            return false;
+        }
+
+        /// <summary>状态机更新前的控制器逻辑（距离安全网、专属视觉驱动等）</summary>
+        protected virtual void ArmPreUpdate() { }
+
+        /// <summary>状态机更新后的控制器逻辑（帧动画等）</summary>
+        protected virtual void ArmPostUpdate() { }
+
+        #region 状态机维护
+
+        private void EnsureStateMachine() {
+            armContext ??= new PrimeArmStateContext {
+                Npc = npc,
+                Owner = this
+            };
+
+            if (armStateMachine != null) {
+                return;
+            }
+
+            armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armContext, aiSlot: PrimeAiSlots.ArmStateSlot);
+
+            //客户端中途加入时从同步槽恢复服务端当前状态
+            IVaultState<PrimeArmStateContext> syncedState = null;
+            int syncedStateId = (int)npc.ai[PrimeAiSlots.ArmStateSlot];
+            if (VaultUtils.isClient && syncedStateId > 0) {
+                syncedState = VaultStateRegistry<PrimeArmStateContext>.Create(syncedStateId);
+            }
+            armStateMachine.SetInitialState(syncedState ?? CreateInitialState());
+        }
+
+        private void UpdateContext() {
+            armContext.Npc = npc;
+            armContext.Head = head;
+            armContext.Target = player;
+            armContext.Owner = this;
+            armContext.BossRush = bossRush;
+            armContext.MasterMode = masterMode;
+            armContext.Death = death;
+            armContext.ViceAlive = viceAlive;
+            armContext.CannonAlive = cannonAlive;
+            armContext.SawAlive = sawAlive;
+            armContext.LaserAlive = laserAlive;
+        }
+
+        #endregion
+
+        #region 头部联动
+
+        private void RegisterWorldIndex() {
             if (npc.type == NPCID.PrimeLaser) {
                 CWRWorld.primeLaser = npc.whoAmI;
             }
@@ -52,73 +179,101 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             else if (npc.type == NPCID.PrimeVice) {
                 CWRWorld.primeVice = npc.whoAmI;
             }
-            HeadPrimeAI.FindPlayer(npc);
-            HeadPrimeAI.CheakDead(npc, head);
-            HeadPrimeAI.CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
-            if (!HeadPrimeAI.DontReform()) {
-                npc.aiStyle = -1;
-            }
-            npc.dontTakeDamage = false;
-            if (HeadPrimeAI.SetArmRot(npc, head, npc.type)) {
+        }
+
+        /// <summary>
+        /// 编队接管：
+        /// <list type="bullet">
+        /// <item>毁灭者领域存在或头部传送恢复期 → 收拢为贴身十字编队</item>
+        /// <item>头部冲撞或白昼狂暴 → 拉开为高速旋转护盾编队</item>
+        /// </list>
+        /// </summary>
+        private bool HandleFormationOverride(PrimeStateIndex headState) {
+            bool fold = HeadPrimeAI.setPosingStarmCount > 0
+                || headState == PrimeStateIndex.TeleportRecover;
+            bool spin = headState is PrimeStateIndex.SpinDash or PrimeStateIndex.RageDash or PrimeStateIndex.DayEnrage;
+
+            if (!fold && !spin) {
                 return false;
             }
 
-            if (PrimeFacts.IsDeathPerformance(head) || head.ai[PrimeAiSlots.HeadMainState] == 3 || head.ai[PrimeAiSlots.HeadAttackState] == 2f) {
-                //手臂的"被头部消灭"必须服务端单点决策，否则客户端单方面 active=false
-                //会让该手臂在客户端凭空消失，但服务端继续保留并不停同步回来，造成抖动
-                if (!VaultUtils.isClient) {
-                    npc.life = 0;
-                    npc.HitEffect();
-                    npc.active = false;
-                    npc.netUpdate = true;
-                }
-                return false;
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            npc.velocity = Vector2.Zero;
+
+            if (fold) {
+                float rot = MathHelper.TwoPi / 4 * FormationIndex + head.rotation;
+                Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width;
+                npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.2f);
+                npc.rotation = head.Center.To(npc.Center).ToRotation() - MathHelper.PiOver2;
             }
-
-            return ArmBehavior();
-        }
-
-        internal void EnsureArmStateMachine(IVaultState<PrimeArmStateContext> initialState) {
-            armStateContext ??= new PrimeArmStateContext {
-                Npc = npc,
-                Owner = this
-            };
-
-            UpdateArmStateContext();
-
-            if (armStateMachine != null) {
-                return;
+            else {
+                HeadPrimeAI headOverride = head.GetOverride<HeadPrimeAI>();
+                float rot = headOverride.ai[PrimeAiSlots.OverrideOrbitClock] * 0.2f + MathHelper.TwoPi / 4 * FormationIndex;
+                Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width * 2;
+                float origRot = head.Center.To(npc.Center).ToRotation();
+                npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.5f);
+                npc.rotation = origRot - MathHelper.PiOver2;
             }
-
-            armStateMachine = new NpcStateMachine<PrimeArmStateContext>(armStateContext, aiSlot: PrimeAiSlots.ArmState);
-            IVaultState<PrimeArmStateContext> syncedState = null;
-            int syncedStateId = (int)npc.ai[PrimeAiSlots.ArmState];
-            if (VaultUtils.isClient && syncedStateId > 0) {
-                syncedState = VaultStateRegistry<PrimeArmStateContext>.Create(syncedStateId);
-            }
-            armStateMachine.SetInitialState(syncedState ?? initialState);
-        }
-
-        internal void UpdateArmStateContext() {
-            if (armStateContext == null) {
-                return;
-            }
-            armStateContext.Npc = npc;
-            armStateContext.Head = head;
-            armStateContext.Target = player;
-            armStateContext.Owner = this;
-            armStateContext.BossRush = bossRush;
-            armStateContext.MasterMode = masterMode;
-            armStateContext.Death = death;
-            armStateContext.ViceAlive = viceAlive;
-            armStateContext.CannonAlive = cannonAlive;
-            armStateContext.SawAlive = sawAlive;
-            armStateContext.LaserAlive = laserAlive;
-            armStateContext.DontAttack = dontAttack;
-        }
-
-        public virtual bool ArmBehavior() {
             return true;
+        }
+
+        /// <summary>转阶段殉爆：收拢贴身编队，预热火花，按延迟自爆</summary>
+        private void RunDetonationSequence() {
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            npc.velocity = Vector2.Zero;
+
+            float rot = MathHelper.TwoPi / 4 * FormationIndex + head.rotation;
+            Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width;
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.25f);
+            npc.rotation = head.Center.To(npc.Center).ToRotation() - MathHelper.PiOver2;
+
+            //殉爆倒计时（localAI 本地推进，两端各自走完一致的节拍）
+            npc.localAI[2]++;
+
+            //临爆前的窜火预兆
+            if (!VaultUtils.isServer && npc.localAI[2] > DetonationDelay - 14 && Main.GameUpdateCount % 2 == 0) {
+                Dust dust = Dust.NewDustDirect(npc.position, npc.width, npc.height,
+                    DustID.FireworkFountain_Red, 0, 0, 100, Color.OrangeRed, Main.rand.NextFloat(1.2f, 2f));
+                dust.noGravity = true;
+            }
+
+            if (npc.localAI[2] >= DetonationDelay && !VaultUtils.isClient) {
+                npc.life = 0;
+                npc.HitEffect();
+                npc.active = false;
+                npc.netUpdate = true;
+            }
+        }
+
+        private void KillSelfOnServer() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            npc.life = 0;
+            npc.HitEffect();
+            npc.active = false;
+            npc.netUpdate = true;
+        }
+
+        #endregion
+
+        /// <summary>共享视觉衰减：后坐力回落与硝烟</summary>
+        private void UpdateVisualDecay() {
+            armContext.RecoilIntensity *= 0.88f;
+            if (armContext.RecoilIntensity < 0.1f) {
+                armContext.RecoilIntensity = 0f;
+            }
+
+            if (!VaultUtils.isServer && armContext.RecoilIntensity > 2f && Main.rand.NextBool(2)) {
+                Vector2 smokePos = npc.Center + armContext.AimDirection * 45f;
+                Vector2 smokeVel = armContext.AimDirection * Main.rand.NextFloat(1f, 3f) + Main.rand.NextVector2Circular(1, 1);
+                Dust dust = Dust.NewDustDirect(smokePos, 1, 1, DustID.Smoke, smokeVel.X, smokeVel.Y,
+                    100, default, Main.rand.NextFloat(1.2f, 2.0f));
+                dust.noGravity = false;
+                dust.velocity *= 0.8f;
+            }
         }
     }
 }

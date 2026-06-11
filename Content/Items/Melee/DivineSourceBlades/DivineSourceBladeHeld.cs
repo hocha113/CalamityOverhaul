@@ -15,17 +15,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
-    /// 神源之刃 —— 四段挥砍弹幕（举剑蓄力 → 重斩横扫 → 新月剑气波）
+    /// 神源之刃 —— 三段连击挥砍弹幕：
+    /// 第一段快斩、第二段反向回斩（出招迅捷干脆），
+    /// 第三段举剑蓄力后轰出大斩切，并释放巨型新月剑气
     /// </summary>
     internal class DivineSourceBladeHeld : BaseHeldProj
     {
         public override string Texture => DivineSourceBladeFX.BladeTexture;
-
-        private const int RaiseDur = 20;
-        private const int HoldDur = 6;
-        private const int SlashDur = 8;
-        private const int RecoverDur = 18;
-        private const int TotalDur = RaiseDur + HoldDur + SlashDur + RecoverDur;
 
         private const int PhaseRaise = 0;
         private const int PhaseHold = 1;
@@ -35,12 +31,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private static readonly Vector2 GripPixel = DivineSourceBladeFX.GripPixel;
         private static readonly Vector2 TipPixel = DivineSourceBladeFX.TipPixel;
         private const float HeldScale = 0.95f;
-        private static float FullReach => (TipPixel - GripPixel).Length() * HeldScale;
-
-        private static float RaiseBack => 2.35f;
-        private static float Follow => 1.25f;
-        private static float TotalSweep => RaiseBack + Follow;
-        private static int FanSegments => 44;
+        private static float BaseReach => (TipPixel - GripPixel).Length() * HeldScale;
 
         private static readonly Color LeadColor = new(255, 245, 205);
         private static readonly Color GoldColor = new(255, 200, 80);
@@ -49,6 +40,18 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private static readonly Color OutlineGold = new(255, 225, 140);
         private static readonly Color EnergyGold = new(255, 200, 90);
         private static readonly Color FlashWhite = new(255, 248, 220);
+
+        //阶段时长与挥砍几何参数，InitStage 按连击段位写入
+        private int raiseDur = 6;
+        private int holdDur = 2;
+        private int slashDur = 6;
+        private int recoverDur = 7;
+        private int totalDur = 21;
+        private float raiseBack = 2.2f;
+        private float follow = 1.25f;
+        private float reachScale = 1f;
+        private float slashEasePow = 2.6f;
+        private int fanSegments = 42;
 
         private float baseAngle;
         private float swingDir;
@@ -61,6 +64,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         private int flashTimer;
         private bool waveSpawned;
         private bool slashSoundPlayed;
+        //大斩切命中时的顿帧（冻结姿态数帧，强化打击感）
+        private int hitstopTimer;
+        private bool hitstopApplied;
+
+        /// <summary>连击段位：0 快斩、1 回斩、2 大斩切</summary>
+        private int ComboStage => (int)Projectile.ai[0];
+        private bool IsHeavy => ComboStage >= 2;
 
         private int Timer {
             get => (int)Projectile.localAI[0];
@@ -69,15 +79,17 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         private int CurrentPhase {
             get {
-                if (Timer <= RaiseDur) return PhaseRaise;
-                if (Timer <= RaiseDur + HoldDur) return PhaseHold;
-                if (Timer <= RaiseDur + HoldDur + SlashDur) return PhaseSlash;
+                if (Timer <= raiseDur) return PhaseRaise;
+                if (Timer <= raiseDur + holdDur) return PhaseHold;
+                if (Timer <= raiseDur + holdDur + slashDur) return PhaseSlash;
                 return PhaseRecover;
             }
         }
 
-        private float ArcStart => baseAngle - swingDir * RaiseBack;
-        private float ArcEnd => baseAngle + swingDir * Follow;
+        private float FullReach => BaseReach * reachScale;
+        private float TotalSweep => raiseBack + follow;
+        private float ArcStart => baseAngle - swingDir * raiseBack;
+        private float ArcEnd => baseAngle + swingDir * follow;
 
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DivineSourceBlade>();
 
@@ -88,12 +100,51 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = TotalDur + 10;
+            Projectile.timeLeft = 80;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.ownerHitCheck = true;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 40;
+        }
+
+        private void InitStage(Player owner) {
+            baseAngle = Projectile.velocity.ToRotation();
+            float cos = MathF.Cos(baseAngle);
+            float facing = MathF.Abs(cos) < 0.05f ? owner.direction : MathF.Sign(cos);
+
+            if (IsHeavy) {
+                raiseDur = 12;
+                holdDur = 4;
+                slashDur = 7;
+                recoverDur = 14;
+                raiseBack = 2.7f;
+                follow = 1.45f;
+                reachScale = 1.18f;
+                slashEasePow = 4.2f;
+                fanSegments = 54;
+                swingDir = facing;
+                SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.7f, Volume = 0.6f }, owner.Center);
+            }
+            else {
+                raiseDur = 6;
+                holdDur = 2;
+                slashDur = 6;
+                recoverDur = 7;
+                raiseBack = 2.2f;
+                follow = 1.25f;
+                reachScale = 1f;
+                slashEasePow = 2.6f;
+                fanSegments = 42;
+                //第二段反向回斩，形成左右交替的连击观感
+                swingDir = ComboStage == 1 ? -facing : facing;
+                SoundEngine.PlaySound(SoundID.Item1 with {
+                    Pitch = 0.15f + ComboStage * 0.18f, Volume = 0.5f
+                }, owner.Center);
+            }
+
+            totalDur = raiseDur + holdDur + slashDur + recoverDur;
+            Projectile.velocity = Vector2.Zero;
         }
 
         public override void AI() {
@@ -103,14 +154,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             }
 
             if (Timer == 0) {
-                baseAngle = Projectile.velocity.ToRotation();
-                float cos = MathF.Cos(baseAngle);
-                swingDir = MathF.Abs(cos) < 0.05f ? Owner.direction : MathF.Sign(cos);
-                Projectile.velocity = Vector2.Zero;
-                SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.7f, Volume = 0.55f }, Owner.Center);
+                InitStage(Owner);
             }
 
-            Timer++;
+            if (hitstopTimer > 0) {
+                hitstopTimer--;
+            }
+            else {
+                Timer++;
+            }
             if (flashTimer > 0) {
                 flashTimer--;
             }
@@ -139,7 +191,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             HandleParticles(Owner, phase);
             HandleLight(phase);
 
-            if (Timer >= TotalDur) {
+            if (Timer >= totalDur) {
                 Projectile.Kill();
             }
         }
@@ -150,9 +202,9 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             switch (phase) {
                 case PhaseRaise: {
-                    float p = Timer / (float)RaiseDur;
+                    float p = Timer / (float)raiseDur;
                     float eased = EaseOutCubic(p);
-                    float liftFrom = arcStart + swingDir * 1.5f;
+                    float liftFrom = arcStart + swingDir * (raiseBack * 0.75f);
                     mainAngle = MathHelper.Lerp(liftFrom, arcStart, eased);
                     mainReach = FullReach * MathHelper.Lerp(0.50f, 0.92f, eased);
                     sweepT = 0f;
@@ -160,18 +212,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     break;
                 }
                 case PhaseHold: {
-                    float p = (Timer - RaiseDur) / (float)HoldDur;
+                    float p = (Timer - raiseDur) / (float)holdDur;
                     float eased = EaseOutQuad(p);
                     mainAngle = MathHelper.Lerp(arcStart, heldAngle, eased);
+                    if (IsHeavy) {
+                        //蓄力时剑身微颤，强化张力
+                        mainAngle += swingDir * 0.018f * MathF.Sin(Timer * 1.7f);
+                    }
                     mainReach = FullReach * MathHelper.Lerp(0.92f, 0.97f, eased);
                     sweepT = 0f;
                     slashProgress = 0f;
                     break;
                 }
                 case PhaseSlash: {
-                    float p = (Timer - RaiseDur - HoldDur) / (float)SlashDur;
+                    float p = (Timer - raiseDur - holdDur) / (float)slashDur;
                     slashProgress = p;
-                    float eased = 1f - MathF.Pow(1f - p, 2.6f);
+                    float eased = 1f - MathF.Pow(1f - p, slashEasePow);
                     mainAngle = MathHelper.Lerp(heldAngle, ArcEnd, eased);
                     float reachT = MathF.Sin(p * MathHelper.Pi);
                     mainReach = FullReach * MathHelper.Lerp(0.97f, 1.0f, reachT);
@@ -179,13 +235,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     break;
                 }
                 default: {
-                    float q = (Timer - RaiseDur - HoldDur - SlashDur) / (float)RecoverDur;
+                    float q = (Timer - raiseDur - holdDur - slashDur) / (float)recoverDur;
                     float settle = EaseOutQuad(Math.Min(1f, q * 1.8f));
                     mainAngle = ArcEnd + swingDir * 0.20f * settle;
                     mainReach = FullReach * MathHelper.Lerp(0.97f, 0.78f, EaseInQuad(q));
                     slashProgress = 1f;
                     sweepT = 1f;
-                    fanFade = MathHelper.Clamp(1f - (Timer - RaiseDur - HoldDur - SlashDur) / 14f, 0f, 1f);
+                    float fadeDur = MathF.Max(6f, recoverDur * 0.7f);
+                    fanFade = MathHelper.Clamp(1f - (Timer - raiseDur - holdDur - slashDur) / fadeDur, 0f, 1f);
                     break;
                 }
             }
@@ -194,53 +251,63 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         private void HandlePhaseEvents(Player owner, int phase) {
-            if (Timer == RaiseDur + 1) {
+            //大斩切蓄力完成的瞬间
+            if (IsHeavy && Timer == raiseDur + 1) {
                 flashTimer = 12;
-                if (!Main.dedServ) {
-                    Vector2 mid = Vector2.Lerp(owner.Center, mainTip, 0.65f);
-                    for (int i = 0; i < 18; i++) {
-                        float ang = MathHelper.TwoPi * i / 18f;
-                        Dust dust = Dust.NewDustPerfect(mid, DustID.GoldFlame);
-                        dust.velocity = ang.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
-                        dust.scale = Main.rand.NextFloat(1.0f, 1.6f);
-                        dust.noGravity = true;
-                    }
-                }
             }
 
             if (phase == PhaseSlash && !slashSoundPlayed) {
                 slashSoundPlayed = true;
-                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.35f, Volume = 1.0f }, owner.Center);
-                SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.4f, Volume = 0.7f }, owner.Center);
+                if (IsHeavy) {
+                    flashTimer = 10;
+                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.5f, Volume = 1.2f }, owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.45f, Volume = 0.85f }, owner.Center);
+                }
+                else {
+                    SoundEngine.PlaySound(SoundID.Item71 with {
+                        Pitch = 0.1f + ComboStage * 0.18f, Volume = 0.9f
+                    }, owner.Center);
+                }
 
                 if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
                     Vector2 punchDir = (baseAngle + swingDir * MathHelper.PiOver2).ToRotationVector2();
+                    float strength = IsHeavy ? 9f : 3.5f;
+                    int frames = IsHeavy ? 12 : 6;
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                        owner.Center, punchDir, 4.5f, 8f, 9, 1100f, FullName));
+                        owner.Center, punchDir, strength, 8f, frames, 1100f, FullName));
                 }
             }
 
-            if (!waveSpawned && phase == PhaseSlash && slashProgress >= 0.93f) {
+            if (!waveSpawned && phase == PhaseSlash && slashProgress >= 0.9f) {
                 waveSpawned = true;
-                SoundEngine.PlaySound(SoundID.Item73 with { Pitch = -0.40f, Volume = 1.0f }, owner.Center);
-                SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.35f, Volume = 0.5f }, owner.Center);
+                Vector2 dir = baseAngle.ToRotationVector2();
 
-                if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
-                    Vector2 dir = baseAngle.ToRotationVector2();
-                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                        owner.Center, dir, 6f, 7f, 10, 1300f, FullName));
+                if (IsHeavy) {
+                    SoundEngine.PlaySound(SoundID.Item73 with { Pitch = -0.5f, Volume = 1.2f }, owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.1f, Volume = 0.9f }, owner.Center);
+
+                    if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+                        Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                            owner.Center, dir, 10f, 7f, 13, 1300f, FullName));
+                    }
+                }
+                else {
+                    SoundEngine.PlaySound(SoundID.Item73 with { Pitch = 0.25f, Volume = 0.6f }, owner.Center);
                 }
 
                 if (Projectile.owner == Main.myPlayer) {
-                    Vector2 dir = baseAngle.ToRotationVector2();
+                    float waveScale = IsHeavy ? 1.85f : 0.95f;
+                    float dmgMul = IsHeavy ? 2.4f : 0.85f;
+                    float speed = IsHeavy ? 23f : 16f;
                     Projectile.NewProjectile(
                         Projectile.GetSource_FromAI(),
                         owner.Center + dir * 46f,
-                        dir * 18f,
+                        dir * speed,
                         ModContent.ProjectileType<DivineSourceWaveProjectile>(),
-                        (int)(Projectile.damage * 1.6f),
-                        Projectile.knockBack * 1.25f,
+                        (int)(Projectile.damage * dmgMul),
+                        Projectile.knockBack * (IsHeavy ? 1.5f : 1f),
                         owner.whoAmI,
+                        ai0: waveScale,
                         ai1: swingDir);
                 }
             }
@@ -254,7 +321,19 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             switch (phase) {
                 case PhaseRaise:
                 case PhaseHold: {
-                    float chargeT = phase == PhaseHold ? 1f : Timer / (float)RaiseDur;
+                    if (!IsHeavy) {
+                        //快斩起手极短，只点缀少量金尘
+                        if (Main.rand.NextBool(2)) {
+                            Vector2 at = Vector2.Lerp(owner.Center, mainTip, Main.rand.NextFloat(0.4f, 1f));
+                            Dust dust = Dust.NewDustPerfect(at, DustID.GoldFlame);
+                            dust.velocity = new Vector2(0, -Main.rand.NextFloat(0.4f, 1.2f));
+                            dust.scale = Main.rand.NextFloat(0.6f, 1.0f);
+                            dust.noGravity = true;
+                        }
+                        break;
+                    }
+
+                    float chargeT = phase == PhaseHold ? 1f : Timer / (float)raiseDur;
                     int count = phase == PhaseHold ? 4 : (Main.rand.NextBool(2) ? 2 : 1);
                     for (int i = 0; i < count; i++) {
                         float t = Main.rand.NextFloat(0.25f, 1.0f);
@@ -265,22 +344,26 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                         dust.scale = Main.rand.NextFloat(0.7f, 1.25f) * (0.5f + chargeT * 0.6f);
                         dust.noGravity = true;
                     }
-                    if (Main.rand.NextBool(3)) {
-                        Vector2 at = Vector2.Lerp(owner.Center, mainTip, Main.rand.NextFloat(0.4f, 1f));
-                        Dust dust = Dust.NewDustPerfect(at, DustID.GoldCoin);
-                        dust.velocity = Vector2.Zero;
-                        dust.scale = Main.rand.NextFloat(0.5f, 0.9f) * chargeT;
+
+                    //能量向剑身汇聚，营造蓄力吸入感
+                    if (Main.rand.NextBool(2)) {
+                        Vector2 anchor = Vector2.Lerp(owner.Center, mainTip, Main.rand.NextFloat(0.45f, 0.95f));
+                        Vector2 offset = Main.rand.NextVector2CircularEdge(70f, 70f);
+                        Dust dust = Dust.NewDustPerfect(anchor + offset, DustID.GoldCoin);
+                        dust.velocity = -offset * 0.09f;
+                        dust.scale = Main.rand.NextFloat(0.6f, 1.0f) * chargeT;
                         dust.noGravity = true;
                     }
                     break;
                 }
                 case PhaseSlash: {
                     Vector2 sweepVel = (mainAngle + swingDir * MathHelper.PiOver2).ToRotationVector2();
-                    for (int i = 0; i < 3; i++) {
+                    int count = IsHeavy ? 4 : 2;
+                    for (int i = 0; i < count; i++) {
                         Vector2 at = Vector2.Lerp(owner.Center, mainTip, Main.rand.NextFloat(0.45f, 1.0f));
                         Dust dust = Dust.NewDustPerfect(at, DustID.GoldFlame);
                         dust.velocity = sweepVel * Main.rand.NextFloat(3f, 8f) + Main.rand.NextVector2Circular(1f, 1f);
-                        dust.scale = Main.rand.NextFloat(0.9f, 1.5f);
+                        dust.scale = Main.rand.NextFloat(0.9f, 1.5f) * (IsHeavy ? 1.15f : 1f);
                         dust.noGravity = true;
                     }
                     if (Main.rand.NextBool(2)) {
@@ -307,21 +390,22 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         private void HandleLight(int phase) {
             float flash = flashTimer / 12f;
+            float heavyMul = IsHeavy ? 1.25f : 1f;
             switch (phase) {
                 case PhaseRaise: {
-                    float p = Timer / (float)RaiseDur;
-                    Lighting.AddLight(mainTip, new Vector3(0.7f, 0.55f, 0.22f) * (0.3f + p * 0.5f));
+                    float p = Timer / (float)raiseDur;
+                    Lighting.AddLight(mainTip, new Vector3(0.7f, 0.55f, 0.22f) * (0.3f + p * 0.5f) * heavyMul);
                     break;
                 }
                 case PhaseHold:
-                    Lighting.AddLight(mainTip, new Vector3(0.95f, 0.8f, 0.4f) * (0.8f + flash * 0.6f));
+                    Lighting.AddLight(mainTip, new Vector3(0.95f, 0.8f, 0.4f) * (0.8f + flash * 0.6f) * heavyMul);
                     break;
                 case PhaseSlash:
                     Lighting.AddLight(Vector2.Lerp(Main.player[Projectile.owner].Center, mainTip, 0.6f),
-                        new Vector3(1.0f, 0.78f, 0.32f));
+                        new Vector3(1.0f, 0.78f, 0.32f) * heavyMul);
                     break;
                 default:
-                    Lighting.AddLight(mainTip, new Vector3(0.6f, 0.46f, 0.2f) * fanFade);
+                    Lighting.AddLight(mainTip, new Vector3(0.6f, 0.46f, 0.2f) * fanFade * heavyMul);
                     break;
             }
         }
@@ -337,13 +421,32 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
             Player owner = Main.player[Projectile.owner];
             float collisionPoint = 0f;
+            float width = IsHeavy ? 56f : 44f;
             return Collision.CheckAABBvLineCollision(
                 targetHitbox.TopLeft(), targetHitbox.Size(),
-                owner.Center, mainTip, 48f, ref collisionPoint);
+                owner.Center, mainTip, width, ref collisionPoint);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            //快斩轻、回斩轻、大斩切重，强化三段落差
+            modifiers.SourceDamage *= IsHeavy ? 1.8f : 0.8f;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.3f, Volume = 0.6f }, target.Center);
+            //大斩切命中瞬间顿帧，并补一记震屏
+            if (IsHeavy && CurrentPhase == PhaseSlash && !hitstopApplied) {
+                hitstopApplied = true;
+                hitstopTimer = 4;
+                if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+                    Vector2 dir = (target.Center - Main.player[Projectile.owner].Center).SafeNormalize(Vector2.UnitX);
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                        target.Center, dir, 5f, 9f, 7, 900f, FullName));
+                }
+            }
+
+            SoundEngine.PlaySound(SoundID.Item71 with {
+                Pitch = IsHeavy ? 0.0f : 0.35f, Volume = IsHeavy ? 0.8f : 0.55f
+            }, target.Center);
             if (Projectile.owner == Main.myPlayer) {
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromAI(),
@@ -351,7 +454,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     Vector2.Zero,
                     ModContent.ProjectileType<DivineSourceHitFXProjectile>(),
                     0, 0f, Projectile.owner,
-                    ai0: 0.7f);
+                    ai0: IsHeavy ? 1f : 0.5f);
             }
         }
 
@@ -378,7 +481,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 return;
             }
 
-            int segs = Math.Max(8, (int)(FanSegments * sweepT) + 2);
+            int segs = Math.Max(8, (int)(fanSegments * sweepT) + 2);
             var verts = new ColoredVertex[segs * 2];
             var inds = new short[(segs - 1) * 6];
 
@@ -428,8 +531,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             effect.Parameters["TotalTime"]?.SetValue((float)Main.GameUpdateCount / 60f);
             effect.Parameters["SweepT"]?.SetValue(sweepT);
             effect.Parameters["FadeOut"]?.SetValue(fanFade);
-            effect.Parameters["HeatBoost"]?.SetValue(1.15f + slashProgress * 0.55f);
-            effect.Parameters["RimIntensity"]?.SetValue(1.25f);
+            effect.Parameters["HeatBoost"]?.SetValue((IsHeavy ? 1.3f : 1.1f) + slashProgress * (IsHeavy ? 0.7f : 0.45f));
+            effect.Parameters["RimIntensity"]?.SetValue(IsHeavy ? 1.45f : 1.15f);
             effect.Parameters["LeadColor"]?.SetValue(LeadColor.ToVector4());
             effect.Parameters["GoldColor"]?.SetValue(GoldColor.ToVector4());
             effect.Parameters["AmberColor"]?.SetValue(AmberColor.ToVector4());
@@ -497,9 +600,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             float flash = flashTimer / 12f;
 
             float glowStrength = phase switch {
-                PhaseRaise => 0.35f + 0.55f * (Timer / (float)RaiseDur),
-                PhaseHold => 0.95f,
-                PhaseSlash => 1.05f,
+                PhaseRaise => IsHeavy
+                    ? 0.35f + 0.6f * (Timer / (float)raiseDur)
+                    : 0.55f,
+                PhaseHold => IsHeavy
+                    ? 1.0f + 0.1f * MathF.Sin(Timer * 0.6f)
+                    : 0.7f,
+                PhaseSlash => IsHeavy ? 1.15f : 0.95f,
                 _ => MathHelper.Lerp(0.25f, 0.9f, fanFade),
             };
 
@@ -547,11 +654,14 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Vector2 handPos, Color bladeCol) {
 
             if (phase == PhaseSlash && slashProgress > 0.1f) {
-                for (int g = 2; g >= 1; g--) {
-                    float ghostAngle = mainAngle - swingDir * 0.20f * g;
+                int ghostCount = IsHeavy ? 3 : 2;
+                float ghostSpacing = IsHeavy ? 0.24f : 0.19f;
+                for (int g = ghostCount; g >= 1; g--) {
+                    float ghostAngle = mainAngle - swingDir * ghostSpacing * g;
                     ComputeBladeDrawXform(owner, tex, ghostAngle, out Vector2 gOrigin, out float gRot, out SpriteEffects gFlip);
-                    Color ghostCol = bladeCol * (g == 1 ? 0.40f : 0.18f);
-                    sb.Draw(tex, handPos - Main.screenPosition, null, ghostCol, gRot, gOrigin, HeldScale, gFlip, 0f);
+                    float ghostAlpha = g switch { 1 => 0.40f, 2 => 0.18f, _ => 0.08f };
+                    sb.Draw(tex, handPos - Main.screenPosition, null, bladeCol * ghostAlpha,
+                        gRot, gOrigin, HeldScale, gFlip, 0f);
                 }
             }
 

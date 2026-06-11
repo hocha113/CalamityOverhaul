@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             bool lowBloodVolume = lifeRog < 0.7f;
             bool skeletronPrimeIsDead = !skeletronPrime.Alives();
             bool skeletronPrimeInDeathPerformance = !skeletronPrimeIsDead && PrimeFacts.IsDeathPerformance(skeletronPrime);
-            bool skeletronPrimeIsTwo = skeletronPrimeIsDead ? false : skeletronPrime.ai[PrimeAiSlots.HeadMainState] == 3;
+            bool skeletronPrimeIsTwo = !skeletronPrimeIsDead && skeletronPrime.ai[PrimeAiSlots.HeadPhase] == PrimePhase.Rage;
             bool isSpawnFirstStage = Ai[11] == 1;
             bool isSpawnFirstStageFromeExeunt = false;
 
@@ -102,7 +102,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Npc.HitSound = SoundID.NPCHit4;
             }
 
-            if (skeletronPrimeIsDead || skeletronPrimeInDeathPerformance || skeletronPrime?.ai[PrimeAiSlots.HeadAttackState] == 3 || lowBloodVolume || isSpawnFirstStageFromeExeunt) {
+            bool skeletronPrimeDespawning = !skeletronPrimeIsDead && HeadPrimeAI.IsDespawnState(skeletronPrime);
+            if (skeletronPrimeIsDead || skeletronPrimeInDeathPerformance || skeletronPrimeDespawning || lowBloodVolume || isSpawnFirstStageFromeExeunt) {
                 ExecuteExit(skeletronPrime, isSpazmatism, lowBloodVolume, isSpawnFirstStageFromeExeunt);
                 return false;
             }
@@ -111,10 +112,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 toPoint = skeletronPrime.Center;
             Npc.damage = Npc.defDamage;
             HeadPrimeAI headPrime = skeletronPrime.GetOverride<HeadPrimeAI>();
-            bool skeletronPrimeInSprint = skeletronPrime.ai[PrimeAiSlots.HeadAttackState] == 1;
-            bool LaserWall = headPrime.ai[PrimeAiSlots.OverrideTwoStageSubState] == 2;
+            bool skeletronPrimeInSprint = HeadPrimeAI.IsDashState(skeletronPrime);
+            bool LaserWall = HeadPrimeAI.IsLaserWallState(skeletronPrime);
             bool isDestroyer = HeadPrimeAI.setPosingStarmCount > 0;
-            bool isIdle = headPrime.ai[PrimeAiSlots.OverrideIdleTeleportTimer] > 0;
+            bool isIdle = headPrime.ai[PrimeAiSlots.OverrideTeleportTimer] > 0;
 
             if (isIdle) {
                 toPoint = skeletronPrime.Center + new Vector2(isSpazmatism ? 50 : -50, -100);
@@ -178,7 +179,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                         VaultUtils.Text(TwinsAIController.Spazmatism_Text4.Value, TwinsAIController.TextColor2);
                     }
                 }
-                else if (skeletronPrime?.ai[1] == 3) {
+                else if (skeletronPrime.Alives() && HeadPrimeAI.IsDespawnState(skeletronPrime)) {
                     VaultUtils.Text(TwinsAIController.Spazmatism_Text5.Value, TwinsAIController.TextColor2);
                 }
                 else if (isSpawnFirstStageFromeExeunt) {

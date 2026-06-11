@@ -1,395 +1,51 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using CalamityOverhaul.OtherMods.InfernumMode;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
+    /// <summary>
+    /// 火箭炮控制器：行为见 <see cref="CannonBombardState"/> / <see cref="CannonSpreadState"/>
+    /// </summary>
     internal class PrimeCannonAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeCannon;
-        public override bool CanLoad() => true;
         public override bool? CheckDead() => true;
 
-        internal const int SingleShotStateId = 200;
-        internal const int SpreadShotStateId = 201;
+        protected override PrimeArmStateBase CreateInitialState() => new CannonBombardState();
+        protected override int DetonationDelay => 20;
+        protected override int FormationIndex => 1;
 
-        #region 常量与变量
-        private float recoilIntensity = 0f;
-        private Vector2 aimDirection = Vector2.Zero;
-        private bool isFiring = false;
-        #endregion
-
-        #region AI主循环
-        public override bool ArmBehavior() {
-            ai[0]++;
-            dontAttack = ai[0] < PrimeAiSlots.ArmSpawnGraceFrames;
-
-            //更新后坐力效果
-            UpdateRecoilEffects();
-
-            //移动控制
-            Movement();
-
-            EnsureArmStateMachine(new CannonSingleShotState());
-            UpdateArmStateContext();
-
-            if (laserAlive) {
-                bool shouldSingleShot = Main.npc[CWRWorld.primeLaser].ai[2] == PrimeLaserAI.RapidFireStateId;
-                ChangeCannonState(shouldSingleShot);
-            }
-            armStateMachine.Update();
-
-            //跟随炮弹旋转
+        protected override void ArmPreUpdate() {
+            //跟随自己打出的制导炮弹旋转，呈现"目送弹药"的细节
             if (FindPrimeCannonOnSpan(out Projectile primeCannonOnSpan)) {
                 npc.rotation = primeCannonOnSpan.rotation - MathHelper.PiOver2;
-            }
-
-            return false;
-        }
-        #endregion
-
-        #region 状态行为
-        private void State_SingleShot() {
-            //检查头部状态
-            if (head.ai[1] == 3f && npc.timeLeft > 10) {
-                npc.timeLeft = 10;
-            }
-
-            //平滑瞄准
-            SmoothAimAtPlayer(0.2f);
-
-            if (!VaultUtils.isClient && !dontAttack) {
-                npc.localAI[0] += 1f + CalculateChargeBonus();
-
-                float fireCannonCooldown = 120f;
-                if (death) fireCannonCooldown -= 20;
-                if (masterMode) fireCannonCooldown -= 20;
-                if (bossRush) fireCannonCooldown = 60;
-
-                if (npc.localAI[0] >= fireCannonCooldown) {
-                    FireSingleRocket();
-                    npc.localAI[0] = 0f;
-                    npc.TargetClosest();
-                    npc.netUpdate = true;
-                }
-            }
-        }
-
-        private void State_SpreadShot() {
-            //瞄准玩家
-            SmoothAimAtPlayer(0.2f);
-
-            if (!VaultUtils.isClient && !dontAttack) {
-                npc.localAI[0] += 1f + CalculateChargeBonus() * 0.5f;
-
-                if (npc.localAI[0] >= 180f) {
-                    FireSpreadRockets();
-                    npc.localAI[0] = 0f;
-                    npc.TargetClosest();
-                    npc.netUpdate = true;
-                }
-            }
-        }
-        #endregion
-
-        #region 攻击函数
-        private void FireSingleRocket() {
-            npc.TargetClosest();
-            int type = ProjectileID.RocketSkeleton;
-            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
-            float rocketSpeed = 10f;
-
-            Vector2 rocketVelocity = aimDirection * rocketSpeed;
-            Vector2 spawnPos = npc.Center + aimDirection * 40f;
-
-            if (death && masterMode || bossRush || InfernumRef.InfernumModeOpenState) {
-                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                    spawnPos, rocketVelocity,
-                    ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                    Main.myPlayer, npc.whoAmI, npc.target, 0);
-
-                int cooldown = (int)(120f * 0.8f);
-                if (masterMode) cooldown -= 20;
-                if (cooldown > 60) cooldown = 60;
-                Main.projectile[proj].timeLeft = cooldown;
-            }
-            else {
-                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                    spawnPos, rocketVelocity, type, damage, 0f, Main.myPlayer, npc.target, 2f);
-                Main.projectile[proj].timeLeft = 600;
-            }
-
-            //后坐力效果
-            ApplyRecoil(12f);
-
-            //发射音效
-            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.9f, Pitch = -0.2f }, npc.Center);
-
-            //发射粒子
-            SpawnFireParticles(1);
-        }
-
-        private void FireSpreadRockets() {
-            ai[0] = 0;
-            npc.TargetClosest();
-            int type = ProjectileID.RocketSkeleton;
-            int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, type));
-            float rocketSpeed = 10f;
-
-            Vector2 baseVelocity = aimDirection * rocketSpeed;
-            int numProj = bossRush ? 5 : 3;
-            float rotation = MathHelper.ToRadians(bossRush ? 15 : 9);
-
-            for (int i = 0; i < numProj; i++) {
-                float rotOffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
-                Vector2 perturbedSpeed = baseVelocity.RotatedBy(rotOffset);
-                Vector2 spawnPos = npc.Center + aimDirection * 40f;
-
-                if (CWRRef.GetDeathMode() || bossRush || InfernumRef.InfernumModeOpenState) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        spawnPos, perturbedSpeed,
-                        ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                        Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
-                }
-                else {
-                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        spawnPos, perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
-                    Main.projectile[proj].timeLeft = 600;
-                }
-            }
-
-            //更大的后坐力
-            ApplyRecoil(18f);
-
-            //扩散发射音效
-            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.0f, Pitch = 0f }, npc.Center);
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.6f, Pitch = 0.4f }, npc.Center);
-
-            //大量发射粒子
-            SpawnFireParticles(numProj);
-        }
-        #endregion
-
-        #region 辅助函数
-        private void Movement() {
-            float acceleration = bossRush ? 0.6f : death ? (masterMode ? 0.375f : 0.3f) : (masterMode ? 0.3125f : 0.25f);
-            float accelerationMult = 1f;
-
-            if (!laserAlive) {
-                acceleration += 0.025f;
-                accelerationMult += 0.5f;
-            }
-            if (!viceAlive) acceleration += 0.025f;
-            if (!sawAlive) acceleration += 0.025f;
-            if (masterMode) acceleration *= accelerationMult;
-
-            //后坐力影响移动
-            if (recoilIntensity > 0.5f) {
-                npc.velocity -= aimDirection * (recoilIntensity * 0.3f);
-            }
-
-            float topVelocity = acceleration * 100f;
-            float deceleration = masterMode ? 0.6f : 0.8f;
-
-            //Y轴控制
-            if (npc.position.Y > head.position.Y - 130f) {
-                if (npc.velocity.Y > 0f) npc.velocity.Y *= deceleration;
-                npc.velocity.Y -= acceleration;
-                if (npc.velocity.Y > topVelocity) npc.velocity.Y = topVelocity;
-            }
-            else if (npc.position.Y < head.position.Y - 170f) {
-                if (npc.velocity.Y < 0f) npc.velocity.Y *= deceleration;
-                npc.velocity.Y += acceleration;
-                if (npc.velocity.Y < -topVelocity) npc.velocity.Y = -topVelocity;
-            }
-
-            //X轴控制
-            if (npc.Center.X > head.Center.X + 160f) {
-                if (npc.velocity.X > 0f) npc.velocity.X *= deceleration;
-                npc.velocity.X -= acceleration;
-                if (npc.velocity.X > topVelocity) npc.velocity.X = topVelocity;
-            }
-            if (npc.Center.X < head.Center.X + 200f) {
-                if (npc.velocity.X < 0f) npc.velocity.X *= deceleration;
-                npc.velocity.X += acceleration;
-                if (npc.velocity.X < -topVelocity) npc.velocity.X = -topVelocity;
-            }
-        }
-
-        private void SmoothAimAtPlayer(float smoothness) {
-            Vector2 toPlayer = player.Center - npc.Center;
-            aimDirection = Vector2.Lerp(aimDirection, Vector2.Normalize(toPlayer), smoothness);
-            if (aimDirection == Vector2.Zero) aimDirection = Vector2.UnitX;
-
-            float targetRotation = aimDirection.ToRotation() - MathHelper.PiOver2;
-
-            //后坐力抖动改为基于 GameUpdateCount 的确定性正弦波——
-            //保持视觉效果的同时彻底移除 Main.rand，确保两端 npc.rotation 一致
-            if (recoilIntensity > 1f) {
-                float deterministicJitter = (float)System.Math.Sin(Main.GameUpdateCount * 0.83f + npc.whoAmI) * 0.1f;
-                targetRotation += deterministicJitter * (recoilIntensity / 10f);
-            }
-
-            npc.rotation = MathHelper.Lerp(npc.rotation, targetRotation, smoothness);
-        }
-
-        private void ApplyRecoil(float intensity) {
-            recoilIntensity = intensity;
-            npc.velocity -= aimDirection * intensity * 0.5f;
-            isFiring = true;
-        }
-
-        private void UpdateRecoilEffects() {
-            //后坐力衰减
-            recoilIntensity *= 0.88f;
-
-            if (recoilIntensity < 0.1f) {
-                recoilIntensity = 0f;
-                isFiring = false;
-            }
-
-            //烟雾效果
-            if (recoilIntensity > 2f && Main.rand.NextBool(2)) {
-                Vector2 smokePos = npc.Center + aimDirection * 45f;
-                Vector2 smokeVel = aimDirection * Main.rand.NextFloat(1f, 3f) + Main.rand.NextVector2Circular(1, 1);
-                Dust dust = Dust.NewDustDirect(smokePos, 1, 1, DustID.Smoke, smokeVel.X, smokeVel.Y, 100, default, Main.rand.NextFloat(1.2f, 2.0f));
-                dust.noGravity = false;
-                dust.velocity *= 0.8f;
-            }
-        }
-
-        private void SpawnFireParticles(int count) {
-            for (int i = 0; i < count * 8; i++) {
-                Vector2 particlePos = npc.Center + aimDirection * 50f;
-                Vector2 particleVel = aimDirection.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f, 8f);
-
-                int dustType = Main.rand.Next(new int[] { DustID.Torch, DustID.Smoke, DustID.Flare });
-                Dust dust = Dust.NewDustDirect(particlePos, 1, 1, dustType, particleVel.X, particleVel.Y, 100, default, Main.rand.NextFloat(1.5f, 2.5f));
-                dust.noGravity = dustType != DustID.Smoke;
-                dust.velocity *= 0.9f;
-            }
-
-            //爆炸闪光
-            for (int i = 0; i < count * 5; i++) {
-                Vector2 sparkPos = npc.Center + aimDirection * 45f;
-                Vector2 sparkVel = aimDirection.RotatedByRandom(0.5f) * Main.rand.NextFloat(4f, 10f);
-                Dust spark = Dust.NewDustDirect(sparkPos, 1, 1, DustID.FireworkFountain_Red, sparkVel.X, sparkVel.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.0f, 1.8f));
-                spark.noGravity = true;
-                spark.fadeIn = 1.2f;
-            }
-        }
-
-        private float CalculateChargeBonus() {
-            return PrimeDirector.GetMissingLimbChargeBonus(
-                laserAlive,
-                viceAlive,
-                sawAlive,
-                PrimeDirector.MissingHeavyLimbChargeBonus
-            );
-        }
-
-        private float GetTimeMult() {
-            float timeMult = 1f;
-            if (!laserAlive) timeMult *= 1.882075f;
-            if (!viceAlive) timeMult *= 1.882075f;
-            if (!sawAlive) timeMult *= 1.882075f;
-            return timeMult;
-        }
-
-        private void ChangeCannonState(bool singleShot) {
-            bool alreadyInState = singleShot
-                ? armStateMachine?.CurrentState is CannonSingleShotState
-                : armStateMachine?.CurrentState is CannonSpreadShotState;
-            if (alreadyInState) {
-                return;
-            }
-
-            PrimeArmActions.ResetLocalCooldown(npc);
-            PrimeArmActions.ResetSharedTimer(npc);
-            PrimeArmActions.ChangeState(armStateMachine, singleShot ? new CannonSingleShotState() : new CannonSpreadShotState(), npc, sync: false);
-            if (!VaultUtils.isClient) {
-                npc.TargetClosest();
-                npc.netUpdate = true;
-            }
-        }
-
-        private void UpdateSingleShotMode() {
-            if (laserAlive) {
-                return;
-            }
-
-            npc.ai[3] += 1f + CalculateChargeBonus();
-            if (npc.ai[3] >= (masterMode ? 200f : 800f)) {
-                ChangeCannonState(singleShot: false);
-            }
-        }
-
-        private void UpdateSpreadShotMode() {
-            if (laserAlive) {
-                return;
-            }
-
-            npc.ai[3] += 1f + CalculateChargeBonus() * 0.5f;
-            float timeLimit = 120f * GetTimeMult();
-            if (npc.ai[3] >= timeLimit) {
-                ChangeCannonState(singleShot: true);
-            }
-        }
-
-        [InnoVault.StateMachines.VaultState(SingleShotStateId, typeof(PrimeArmStateContext))]
-        public sealed class CannonSingleShotState : PrimeArmStateBase
-        {
-            public override int StateId => SingleShotStateId;
-
-            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
-                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
-                PrimeCannonAI cannon = (PrimeCannonAI)ctx.Owner;
-                cannon.UpdateSingleShotMode();
-                cannon.State_SingleShot();
-                return null;
-            }
-        }
-
-        [InnoVault.StateMachines.VaultState(SpreadShotStateId, typeof(PrimeArmStateContext))]
-        public sealed class CannonSpreadShotState : PrimeArmStateBase
-        {
-            public override int StateId => SpreadShotStateId;
-
-            public override InnoVault.StateMachines.IVaultState<PrimeArmStateContext> OnUpdate(
-                InnoVault.StateMachines.VaultStateMachine<PrimeArmStateContext> machine, PrimeArmStateContext ctx) {
-                PrimeCannonAI cannon = (PrimeCannonAI)ctx.Owner;
-                cannon.UpdateSpreadShotMode();
-                cannon.State_SpreadShot();
-                return null;
             }
         }
 
         private bool FindPrimeCannonOnSpan(out Projectile projectile) {
             projectile = null;
             int type = ModContent.ProjectileType<PrimeCannonOnSpan>();
-
             foreach (var proj in Main.ActiveProjectiles) {
-                if (proj.type != type) continue;
-
+                if (proj.type != type) {
+                    continue;
+                }
                 if (proj.ai[0] == npc.whoAmI && proj.ai[2] == 0) {
                     projectile = proj;
                     return true;
                 }
             }
-
             return false;
         }
-        #endregion
 
         #region 绘制
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform()) {
+            if (HeadPrimeAI.DontReform() || NPC.IsMechQueenUp) {
                 return true;
             }
 
@@ -397,19 +53,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             HeadPrimeAI.DrawArm(spriteBatch, npc, screenPos);
             Texture2D mainValue = HeadPrimeAI.BSPCannon.Value;
-            Texture2D mainValue2 = HeadPrimeAI.BSPCannonGlow.Value;
+            Texture2D glowValue = HeadPrimeAI.BSPCannonGlow.Value;
 
-            //添加后坐力偏移
+            float recoil = armContext?.RecoilIntensity ?? 0f;
+            Vector2 aimDirection = armContext?.AimDirection ?? Vector2.UnitX;
+
+            //后坐力抖动偏移
             Vector2 recoilOffset = Vector2.Zero;
-            if (recoilIntensity > 1f) {
-                recoilOffset = -aimDirection * (recoilIntensity * 2f);
-                recoilOffset += Main.rand.NextVector2Circular(recoilIntensity * 0.5f, recoilIntensity * 0.5f);
+            if (recoil > 1f) {
+                recoilOffset = -aimDirection * (recoil * 2f);
+                recoilOffset += Main.rand.NextVector2Circular(recoil * 0.5f, recoil * 0.5f);
             }
 
             Vector2 drawPos = npc.Center - Main.screenPosition + recoilOffset;
 
             //机械热感滤镜——和头部共用 head.whoAmI 状态
-            int controllerId = (int)npc.ai[1];
+            int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             Rectangle cannonRect = mainValue.Bounds;
             Vector2 cannonOrigin = mainValue.Size() / 2;
             SpriteEffects cannonFx = dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
@@ -425,21 +84,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
 
-            //发光效果（发射时增强）
-            float glowIntensity = isFiring ? MathHelper.Clamp(1.0f + recoilIntensity * 0.1f, 1.0f, 1.5f) : 1.0f;
+            //发光层（开火时炽热增强）
+            bool isFiring = recoil > 0.5f;
+            float glowIntensity = isFiring ? MathHelper.Clamp(1.0f + recoil * 0.1f, 1.0f, 1.5f) : 1.0f;
             Color glowColor = Color.White * glowIntensity;
             if (isFiring) {
-                glowColor = Color.Lerp(Color.White, Color.OrangeRed, recoilIntensity / 15f) * glowIntensity;
+                glowColor = Color.Lerp(Color.White, Color.OrangeRed, recoil / 15f) * glowIntensity;
             }
 
-            Main.EntitySpriteDraw(mainValue2, drawPos, null, glowColor,
-                npc.rotation, mainValue.Size() / 2, npc.scale,
-                dir ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            Main.EntitySpriteDraw(glowValue, drawPos, null, glowColor,
+                npc.rotation, cannonOrigin, npc.scale, cannonFx, 0);
 
             return false;
         }
 
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform();
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform() && !NPC.IsMechQueenUp;
         #endregion
     }
 }

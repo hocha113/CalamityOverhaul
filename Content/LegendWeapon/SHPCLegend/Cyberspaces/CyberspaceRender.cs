@@ -1,8 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -30,22 +26,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private static Asset<Texture2D> softGlow;
 
         public override void UpdateBySystem(int index) {
+            //逻辑推进已移至 CyberspaceSystem（ModSystem.PostUpdateEverything）——
+            //RenderHandle 的更新钩子不会在专用服务器上运行，冻结/放逐等需要服务端权威推进的逻辑不能挂在这里
+            //此处仅在回到主菜单时兜底清理客户端残留状态（主菜单中 PostUpdateEverything 不再运行）
             if (Main.gameMenu) {
-                Cyberspace.Reset();
-                CyberBanish.Reset();
-                CyberBossExecution.Reset();
-                CyberDomainFreeze.Reset();
-                CyberTeleport.Reset();
-                CyberRestart.Reset();
-                return;
+                CyberspaceSystem.ResetAll();
             }
-
-            Cyberspace.Update();
-            CyberBanish.Update();
-            CyberBossExecution.Update();
-            CyberDomainFreeze.Update();
-            CyberTeleport.Update();
-            CyberRestart.Update();
         }
 
         public override void DrawNPCsOverTiles(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {

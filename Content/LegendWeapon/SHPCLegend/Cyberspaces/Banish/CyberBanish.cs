@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
     /// <br/>多人语义：本地玩家发起后，先在本机决定哪些 NPC 进入放逐，再通过
     /// <see cref="CWRMessageType.CyberBanishStart"/> 把名单广播给其它客户端 / 服务端，
     /// 让所有端共享相同的放逐列表（视觉滤镜 + 抹除 / Boss 雷击逻辑一致）
+    /// <br/>计时推进由 <see cref="CyberspaceSystem"/> 驱动——客户端与服务端都会每帧调用 <see cref="Update"/>，
+    /// 最终抹除以服务端为权威（服务端置 active=false 并 SyncNPC），发起者本地抹除仅作即时预测
     /// </summary>
     internal class CyberBanish : ICWRLoader
     {
@@ -95,15 +97,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             }
 
             //收集本次受影响的所有 NPC 索引（命中目标 + 同组成员），统一给一份种子
-            List<(int idx, float seed)> entries = new();
-            entries.Add((hitIndex, Main.rand.NextFloat()));
+            //冻结锚点坐标也一并收集并随包广播，保证所有端的放逐演出钉在同一位置
+            List<(int idx, float seed, Vector2 center)> entries = new();
+            entries.Add((hitIndex, Main.rand.NextFloat(), hitNpc.Center));
             NPC root = Main.npc[hitIndex];
             NpcGroupHelper.CollectGroupIndices(root, banishGroupBuffer);
             for (int i = 0; i < banishGroupBuffer.Count; i++) {
                 int memberIdx = banishGroupBuffer[i];
                 if (memberIdx == hitIndex) continue;
                 if (IsBanishing(memberIdx)) continue;
-                entries.Add((memberIdx, Main.rand.NextFloat()));
+                entries.Add((memberIdx, Main.rand.NextFloat(), Main.npc[memberIdx].Center));
             }
             banishGroupBuffer.Clear();
 
@@ -158,8 +161,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 
         /// <summary>
         /// 把名单写入本机的 ActiveBanishments，并冻住每个 NPC 的速度 + 播放放逐起手音效
+        /// <br/>冻结锚点使用包内统一坐标，保证所有端的放逐演出钉在同一位置
         /// </summary>
-        private static void ApplyBanishBatch(int ownerWho, bool isBoss, List<(int idx, float seed)> entries) {
+        private static void ApplyBanishBatch(int ownerWho, bool isBoss, List<(int idx, float seed, Vector2 center)> entries) {
             for (int i = 0; i < entries.Count; i++) {
                 int idx = entries[i].idx;
                 if (idx < 0 || idx >= Main.maxNPCs) continue;
@@ -171,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     NpcIndex = idx,
                     Timer = 0,
                     OriginalScale = npc.scale,
-                    FreezePosition = npc.Center,
+                    FreezePosition = entries[i].center,
                     Seed = entries[i].seed,
                     IsBoss = isBoss,
                     OwnerWho = ownerWho,
@@ -188,7 +192,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         private static void BroadcastStart(int ownerWho, bool isBoss,
-            List<(int idx, float seed)> entries, int ignoreClient) {
+            List<(int idx, float seed, Vector2 center)> entries, int ignoreClient) {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.CyberBanishStart);
             packet.Write((byte)ownerWho);
@@ -197,6 +201,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             for (int i = 0; i < entries.Count; i++) {
                 packet.Write((ushort)entries[i].idx);
                 packet.Write(entries[i].seed);
+                packet.Write(entries[i].center.X);
+                packet.Write(entries[i].center.Y);
             }
             packet.Send(-1, ignoreClient);
         }
@@ -208,11 +214,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             int ownerWho = reader.ReadByte();
             bool isBoss = reader.ReadBoolean();
             int count = reader.ReadUInt16();
-            List<(int idx, float seed)> entries = new(count);
+            List<(int idx, float seed, Vector2 center)> entries = new(count);
             for (int i = 0; i < count; i++) {
                 int idx = reader.ReadUInt16();
                 float seed = reader.ReadSingle();
-                entries.Add((idx, seed));
+                Vector2 center = new(reader.ReadSingle(), reader.ReadSingle());
+                entries.Add((idx, seed, center));
             }
 
             ApplyBanishBatch(ownerWho, isBoss, entries);

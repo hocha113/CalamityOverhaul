@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using InnoVault.PRT;
@@ -106,8 +107,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override void OnKill(int timeLeft) {
             NPC boss = Main.npc[(int)Projectile.ai[1]];
-            //如果ai1为3说明是正在消失，这个时候就不要再tp过来了
-            if (boss.type == NPCID.SkeletronPrime && boss.active && boss.ai[1] != 3) {
+            //头部正在脱战离场时就不要再tp过来了
+            if (boss.type == NPCID.SkeletronPrime && boss.active && !HeadPrimeAI.IsDespawnState(boss)) {
                 SoundEngine.PlaySound(SoundID.Item78 with { Pitch = 1.24f });
 
                 boss.Center = Projectile.Center;
@@ -155,9 +156,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                     }
 
                     //这些逻辑不可以在客户端上调用，以确保运行结果唯一且不会混乱
+                    //写入传送恢复计时，头部主控制器据此切入 PrimeTeleportRecoverState
                     HeadPrimeAI pCOverride = boss.GetOverride<HeadPrimeAI>();
-                    pCOverride.ai[4] = 0;
-                    pCOverride.ai[10] = 180;
+                    pCOverride.ai[PrimeAiSlots.OverrideTeleportTimer] = 180;
                     pCOverride.NetAIWorkSend = true;
                 }
             }

@@ -19,6 +19,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
     /// <br/>多人语义：本地玩家发起后，先在本机决定哪些 NPC/弹幕进入冻结，
     /// 再通过 <see cref="CWRMessageType.CyberDomainFreezeStart"/> 把名单广播给其它客户端及服务端，
     /// 让所有客户端都进入相同的冻结状态（视觉滤镜 + AI 拦截一致），并由服务端真正阻断 NPC 行为
+    /// <br/>NPC 用 whoAmI 索引同步（各端一致），弹幕用 (owner, identity) 对同步（弹幕索引各端不一致）；
+    /// 冻结锚点坐标随包广播，保证所有端钉在同一位置
+    /// <br/>计时推进由 <see cref="CyberspaceSystem"/> 驱动——客户端与服务端都会每帧调用 <see cref="Update"/>
     /// <br/>冻结时生成黑墙风格能量波扩散演出
     /// <br/>被冻结的实体带有故障滤镜 + 六角能量网格覆盖效果
     /// </summary>
@@ -128,9 +131,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             float effectiveRadius = cp.Radius * cp.ExpandProgress;
             float radiusSq = effectiveRadius * effectiveRadius;
 
-            //先在本地计算所有应被冻结的 NPC / 弹幕索引和种子，再统一应用 + 广播
+            //先在本地计算所有应被冻结的 NPC / 弹幕索引、种子和冻结锚点位置，再统一应用 + 广播
+            //冻结位置随包广播：各端 NPC 位置因延迟略有差异，统一钉在发起端看到的坐标，解冻时不会跳变
             //同组（蠕虫等多节实体）视为整体一并冻结
-            List<(int idx, float seed)> npcEntries = new();
+            List<(int idx, float seed, Vector2 center)> npcEntries = new();
             HashSet<int> processedGroups = new HashSet<int>();
             for (int i = 0; i < Main.maxNPCs; i++) {
                 NPC npc = Main.npc[i];
@@ -148,11 +152,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 NpcGroupHelper.ForEachGroupMember(npc, member => {
                     int idx = member.whoAmI;
                     if (IsNPCFrozen(idx) || CyberBanish.IsBanishing(idx)) return;
-                    npcEntries.Add((idx, Main.rand.NextFloat()));
+                    npcEntries.Add((idx, Main.rand.NextFloat(), member.Center));
                 });
             }
 
-            List<(int idx, float seed)> projEntries = new();
+            List<(int idx, float seed, Vector2 center)> projEntries = new();
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
                 if (!proj.active) continue;
@@ -164,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 float dy = proj.Center.Y - domainCenter.Y;
                 if (dx * dx + dy * dy > radiusSq) continue;
 
-                projEntries.Add((i, Main.rand.NextFloat()));
+                projEntries.Add((i, Main.rand.NextFloat(), proj.Center));
             }
 
             //本机先把这批冻结记录入 list（让本地立刻看到效果），再广播给其它端
@@ -178,16 +182,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
 
             //广播给其它客户端 / 服务端
+            //弹幕不能用 whoAmI 裸索引跨端传递——不同端的弹幕槽位分配互不一致，
+            //必须用 (owner, identity) 对在远端重新解析出本地索引
             if (Main.netMode != NetmodeID.SinglePlayer) {
-                BroadcastStart(owner.whoAmI, npcEntries, projEntries, ignoreClient: -1);
+                List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs = new(projEntries.Count);
+                for (int i = 0; i < projEntries.Count; i++) {
+                    Projectile proj = Main.projectile[projEntries[i].idx];
+                    projPairs.Add(((byte)proj.owner, proj.identity, projEntries[i].seed, projEntries[i].center));
+                }
+                BroadcastStart(owner.whoAmI, npcEntries, projPairs, ignoreClient: -1);
             }
         }
 
         /// <summary>
         /// 把名单写入本机的 FrozenNPCs / FrozenProjectiles，并冻住实体的速度
+        /// <br/>冻结锚点使用包内统一坐标，保证所有端钉在同一位置
         /// </summary>
         private static void ApplyFreezeBatch(int ownerWho,
-            List<(int idx, float seed)> npcEntries, List<(int idx, float seed)> projEntries) {
+            List<(int idx, float seed, Vector2 center)> npcEntries,
+            List<(int idx, float seed, Vector2 center)> projEntries) {
             for (int i = 0; i < npcEntries.Count; i++) {
                 int idx = npcEntries[i].idx;
                 if (idx < 0 || idx >= Main.maxNPCs) continue;
@@ -198,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
-                    FreezePosition = npc.Center,
+                    FreezePosition = npcEntries[i].center,
                     Seed = npcEntries[i].seed,
                     FreezeVelocity = npc.velocity,
                     OwnerWho = ownerWho,
@@ -215,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     EntityIndex = idx,
                     Timer = 0,
                     Duration = DefaultFreezeDuration,
-                    FreezePosition = proj.Center,
+                    FreezePosition = projEntries[i].center,
                     Seed = projEntries[i].seed,
                     FreezeVelocity = proj.velocity,
                     OwnerWho = ownerWho,
@@ -225,7 +238,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
 
         private static void BroadcastStart(int ownerWho,
-            List<(int idx, float seed)> npcEntries, List<(int idx, float seed)> projEntries,
+            List<(int idx, float seed, Vector2 center)> npcEntries,
+            List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs,
             int ignoreClient) {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.CyberDomainFreezeStart);
@@ -234,13 +248,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             for (int i = 0; i < npcEntries.Count; i++) {
                 packet.Write((ushort)npcEntries[i].idx);
                 packet.Write(npcEntries[i].seed);
+                packet.Write(npcEntries[i].center.X);
+                packet.Write(npcEntries[i].center.Y);
             }
-            packet.Write((ushort)projEntries.Count);
-            for (int i = 0; i < projEntries.Count; i++) {
-                packet.Write((ushort)projEntries[i].idx);
-                packet.Write(projEntries[i].seed);
+            packet.Write((ushort)projPairs.Count);
+            for (int i = 0; i < projPairs.Count; i++) {
+                packet.Write(projPairs[i].projOwner);
+                packet.Write(projPairs[i].projIdentity);
+                packet.Write(projPairs[i].seed);
+                packet.Write(projPairs[i].center.X);
+                packet.Write(projPairs[i].center.Y);
             }
             packet.Send(-1, ignoreClient);
+        }
+
+        /// <summary>
+        /// 按 (owner, identity) 在本机弹幕数组中解析出对应槽位，找不到返回 -1
+        /// </summary>
+        private static int FindProjectileIndex(int projOwner, int projIdentity) {
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == projOwner && proj.identity == projIdentity) {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         /// <summary>
@@ -249,25 +281,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         internal static void HandleNetStart(BinaryReader reader, int whoAmI) {
             int ownerWho = reader.ReadByte();
             int npcCount = reader.ReadUInt16();
-            List<(int idx, float seed)> npcEntries = new(npcCount);
+            List<(int idx, float seed, Vector2 center)> npcEntries = new(npcCount);
             for (int i = 0; i < npcCount; i++) {
                 int idx = reader.ReadUInt16();
                 float seed = reader.ReadSingle();
-                npcEntries.Add((idx, seed));
+                Vector2 center = new(reader.ReadSingle(), reader.ReadSingle());
+                npcEntries.Add((idx, seed, center));
             }
             int projCount = reader.ReadUInt16();
-            List<(int idx, float seed)> projEntries = new(projCount);
+            List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs = new(projCount);
             for (int i = 0; i < projCount; i++) {
-                int idx = reader.ReadUInt16();
+                byte projOwner = reader.ReadByte();
+                int projIdentity = reader.ReadInt32();
                 float seed = reader.ReadSingle();
-                projEntries.Add((idx, seed));
+                Vector2 center = new(reader.ReadSingle(), reader.ReadSingle());
+                projPairs.Add((projOwner, projIdentity, seed, center));
+            }
+
+            //把 (owner, identity) 对解析回本机的弹幕索引；本端尚未同步到的弹幕直接跳过
+            List<(int idx, float seed, Vector2 center)> projEntries = new(projPairs.Count);
+            for (int i = 0; i < projPairs.Count; i++) {
+                int idx = FindProjectileIndex(projPairs[i].projOwner, projPairs[i].projIdentity);
+                if (idx < 0) continue;
+                projEntries.Add((idx, projPairs[i].seed, projPairs[i].center));
             }
 
             ApplyFreezeBatch(ownerWho, npcEntries, projEntries);
 
             //服务端转发给除发送者外的其它客户端，让所有客户端共享同一份冻结名单
+            //注意转发的是原始 (owner, identity) 对，而不是本机解析后的索引
             if (VaultUtils.isServer) {
-                BroadcastStart(ownerWho, npcEntries, projEntries, ignoreClient: whoAmI);
+                BroadcastStart(ownerWho, npcEntries, projPairs, ignoreClient: whoAmI);
             }
         }
 
@@ -307,9 +351,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     CyberDomainFreezeParticles.SpawnFreezeParticles(npc, entry.Progress, entry.Seed);
                 }
 
-                //解冻动画（最后15%时间）
+                //解冻动画（最后15%时间）；位置抖动属于演出，服务端保持精确钉死
                 float progress = entry.Progress;
-                if (progress > 0.85f) {
+                if (progress > 0.85f && !Main.dedServ) {
                     float thawPhase = (progress - 0.85f) / 0.15f;
                     //逐渐恢复一点速度抖动表示即将解冻
                     float jitter = thawPhase * 2f;

@@ -55,7 +55,12 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: 金源灭却刃
-	Tooltip: 生命不息
+	Tooltip:
+		'''
+		挥出两段迅捷连斩，再以一记蓄力大斩切收尾
+		大斩切将轰出巨大无比的金色新月剑气
+		"生命不息"
+		'''
 }
 
 FoodStallChair: {
@@ -259,8 +264,10 @@ DragonsScaleGreatsword: {
 	DisplayName: 龙藻巨刃
 	Tooltip:
 		'''
-		发生螺旋绿藻剑气，击中目标后炸成数团毒藻雾
+		挥砍遵循三段连击，第三段释放更具龙威的终结重斩
+		挥砍释放螺旋绿藻剑气，击中目标后炸成数团毒藻雾
 		真近战攻击会生成大量毒藻雾
+		右键召唤翠龙之魂撕咬光标方向的敌人，沿途散播毒藻雾
 		'''
 }
 

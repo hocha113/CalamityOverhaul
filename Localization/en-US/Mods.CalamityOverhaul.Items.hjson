@@ -45,7 +45,12 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Divine Source Blade
-	Tooltip: Life never ceases
+	Tooltip:
+		'''
+		Chains two swift slashes into a charged heavy cleave
+		The heavy cleave unleashes a colossal golden crescent of sword energy
+		"Life never ceases"
+		'''
 }
 
 FoodStallChair: {
@@ -259,8 +264,10 @@ DragonsScaleGreatsword: {
 	DisplayName: Dragon Kelp Greatblade
 	Tooltip:
 		'''
-		Fires a spiraling chlorophyte blade beam that bursts into toxic algae clouds on hit
+		Swings follow a three-hit combo, the third unleashing a mightier draconic finisher
+		Swings release spiraling kelp blade beams that burst into toxic algae clouds on hit
 		True melee strikes create many toxic algae clouds
+		Right-click to summon a verdant dragon soul that hunts toward the cursor, scattering toxic algae clouds along its path
 		'''
 }
 

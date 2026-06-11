@@ -11,7 +11,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
-    /// 神源之刃 —— 新月剑气波
+    /// 神源之刃 —— 新月剑气波。
+    /// ai[0] 为尺寸倍率（0 视作 1），大斩切释放的巨型剑气存活更久、衰减更慢
     /// </summary>
     internal class DivineSourceWaveProjectile : ModProjectile
     {
@@ -31,14 +32,18 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 
         private float traveled;
         private float swingDir = 1f;
+        private int lifetime = Lifetime;
 
-        private int Age => Lifetime - Projectile.timeLeft;
-        private float LifeT => MathHelper.Clamp(Age / (float)Lifetime, 0f, 1f);
+        private float SizeMul => Projectile.ai[0] > 0.05f ? Projectile.ai[0] : 1f;
+        private bool IsGiant => SizeMul >= 1.3f;
+
+        private int Age => lifetime - Projectile.timeLeft;
+        private float LifeT => MathHelper.Clamp(Age / (float)lifetime, 0f, 1f);
 
         private float WaveScale {
             get {
                 float burst = 1f - MathF.Pow(1f - Math.Min(1f, Age / 12f), 3f);
-                return 0.55f + 0.45f * burst + 0.32f * LifeT;
+                return (0.55f + 0.45f * burst + 0.32f * LifeT) * SizeMul;
             }
         }
 
@@ -78,15 +83,16 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 return;
             }
 
+            float dustMul = MathF.Min(SizeMul, 1.7f);
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-            for (int i = 0; i < 26; i++) {
-                Vector2 vel = forward.RotatedByRandom(0.85) * Main.rand.NextFloat(3f, 11f);
+            for (int i = 0; i < (int)(26 * dustMul); i++) {
+                Vector2 vel = forward.RotatedByRandom(0.85) * Main.rand.NextFloat(3f, 11f) * dustMul;
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldFlame, vel);
                 dust.scale = Main.rand.NextFloat(1.1f, 1.9f);
                 dust.noGravity = true;
                 dust.fadeIn = 1.2f;
             }
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < (int)(10 * dustMul); i++) {
                 Vector2 vel = forward.RotatedByRandom(1.6) * Main.rand.NextFloat(2f, 6f);
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel);
                 dust.scale = Main.rand.NextFloat(1.3f, 2.0f);
@@ -95,6 +101,13 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void AI() {
+            //首帧按尺寸倍率重设寿命（在 AI 中而非 OnSpawn，保证多人模式各端一致）
+            if (Projectile.localAI[0] == 0f) {
+                Projectile.localAI[0] = 1f;
+                lifetime = (int)(Lifetime * MathHelper.Clamp(SizeMul, 0.68f, 1.38f));
+                Projectile.timeLeft = lifetime;
+            }
+
             Projectile.rotation = Projectile.velocity.ToRotation();
             traveled += Projectile.velocity.Length();
             Projectile.velocity *= SpeedDecay;
@@ -105,7 +118,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             if (!Main.dedServ) {
                 Vector2 backDir = -Projectile.velocity.SafeNormalize(Vector2.UnitX);
 
-                for (int i = 0; i < 2; i++) {
+                int trailDust = IsGiant ? 4 : 2;
+                for (int i = 0; i < trailDust; i++) {
                     float theta = Main.rand.NextFloat(-0.85f, 0.85f) * ArcHalf;
                     float thick = MaxThick(outerR) * ThickProfile(theta);
                     Vector2 at = Projectile.Center
@@ -215,9 +229,12 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Projectile.damage = ((int)(Projectile.damage * 0.7f));
+            //巨型剑气贯穿衰减更慢，强化大斩切的压迫感
+            Projectile.damage = (int)(Projectile.damage * (IsGiant ? 0.85f : 0.7f));
 
-            SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.4f, Volume = 0.55f }, target.Center);
+            SoundEngine.PlaySound(SoundID.Item14 with {
+                Pitch = IsGiant ? 0.1f : 0.4f, Volume = IsGiant ? 0.75f : 0.55f
+            }, target.Center);
 
             if (!Main.dedServ) {
                 Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
@@ -237,7 +254,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                     Vector2.Zero,
                     ModContent.ProjectileType<DivineSourceHitFXProjectile>(),
                     0, 0f, Projectile.owner,
-                    ai0: 1f);
+                    ai0: IsGiant ? 1.2f : 0.7f);
             }
         }
 
@@ -294,8 +311,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             effect.Parameters["WorldViewProjection"]?.SetValue(view * projection);
             effect.Parameters["TotalTime"]?.SetValue((float)Main.GameUpdateCount / 60f);
             effect.Parameters["Dissolve"]?.SetValue(Dissolve);
-            effect.Parameters["RimIntensity"]?.SetValue(1.8f);
-            effect.Parameters["StreakStrength"]?.SetValue(0.65f);
+            effect.Parameters["RimIntensity"]?.SetValue(IsGiant ? 2.1f : 1.8f);
+            effect.Parameters["StreakStrength"]?.SetValue(IsGiant ? 0.8f : 0.65f);
             effect.Parameters["FlowOffset"]?.SetValue(traveled / 480f);
             effect.Parameters["RimColor"]?.SetValue(RimColor.ToVector4());
             effect.Parameters["GoldColor"]?.SetValue(GoldColor.ToVector4());
