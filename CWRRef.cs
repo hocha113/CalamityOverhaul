@@ -1,10 +1,4 @@
-﻿using CalamityMod;
-using CalamityMod.Balancing;
-using CalamityMod.CalPlayer;
-using CalamityMod.CustomRecipes;
-using CalamityMod.UI;
-using CalamityMod.World;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
@@ -12,10 +6,12 @@ using CalamityOverhaul.Content.Players;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
@@ -45,13 +41,13 @@ namespace CalamityOverhaul
         }
         private static bool? _has = null;
 
-        private static float dummyFloat;
         private static Type DownedBossSystemType;
 
         #region 反射缓存：Calamity 静态状态
         // CalamityWorld
         private static FieldInfo calWorld_death_Field;
         private static FieldInfo calWorld_revenge_Field;
+        private static FieldInfo calWorld_DraedonMechToSummon_Field;
         // BossRushEvent
         private static MemberInfo bossRush_Active_M;
         // AcidRainEvent
@@ -64,6 +60,10 @@ namespace CalamityOverhaul
         private static PropertyInfo calConfig_EarlyHardmodeRework_Prop;
         // CalamityGlobalNPC 静态方法
         private static MethodInfo calNPC_SetNewBossJustDowned_Method;
+        // ArsenalTierGatedRecipe
+        private static MethodInfo arsenalRecipe_ConstructCondition_Method;
+        // BalancingConstants.UniversalStealthStrikeDamageFactor（double类型的可变静态字段，Hook内实时读取）
+        private static FieldInfo balancing_StealthFactor_Field;
         // DamageClasses
         private static DamageClass trueMeleeDamageClass;
         private static DamageClass trueMeleeNoSpeedDamageClass;
@@ -98,15 +98,39 @@ namespace CalamityOverhaul
         private static MemberInfo calPlayer_rageCombatFrames_M;
         private static MemberInfo calPlayer_adrenalinePauseTimer_M;
         private static MemberInfo calPlayer_externalDefenseDamageImmunity_M;
+        private static MemberInfo calPlayer_rogueStealth_M;
+        private static MemberInfo calPlayer_rogueStealthMax_M;
+        private static MemberInfo calPlayer_stealthUIAlpha_M;
+        private static MemberInfo calPlayer_wearingRogueArmor_M;
+        private static MemberInfo calPlayer_stealthDamage_M;
+        private static MethodInfo calPlayer_StealthStrikeAvailable_Method;
 
         private static MemberInfo calItem_ChargeRatio_M;
+        private static MemberInfo calItem_Charge_M;
         private static MemberInfo calItem_MaxCharge_M;
         private static MemberInfo calItem_UsesCharge_M;
+        private static MemberInfo calItem_AppliedEnchantment_M;
 
         private static MemberInfo calNPC_DR_M;
 
         private static MemberInfo calProj_timesPierced_M;
         private static MemberInfo calProj_conditionalHomingRange_M;
+        #endregion
+
+        #region 反射缓存：灾厄附魔（炼铸）系统
+        private static MethodInfo enchantManager_GetValidEnchantments_Method;
+        private static MemberInfo enchantManager_ClearEnchantment_M;
+        private static MemberInfo enchantManager_ItemUpgradeRelationship_M;
+        private static MemberInfo enchant_Name_M;
+        private static MemberInfo enchant_Description_M;
+        private static MemberInfo enchant_IconTexturePath_M;
+        private static MemberInfo enchant_CreationEffect_M;
+        #endregion
+
+        #region 反射缓存：BossHealthBarManager
+        private static MemberInfo bossBar_Bars_M;
+        private static MethodInfo bossHPUI_Draw_Method;
+        private static int bossHPUI_VerticalOffsetPerBar;
         #endregion
 
         #region 反射通用助手
@@ -276,6 +300,7 @@ namespace CalamityOverhaul
             LoadCalamityStaticState(mod);
             LoadCalamityModNPCs(mod);
             LoadCalamityGlobalTemplates();
+            LoadEnchantmentSystem(mod);
         }
 
         private static void LoadBossFlags(Mod mod) {
@@ -324,7 +349,14 @@ namespace CalamityOverhaul
             if (calWorld != null) {
                 calWorld_death_Field = GetField(calWorld, "death", PublicStaticFlags);
                 calWorld_revenge_Field = GetField(calWorld, "revenge", PublicStaticFlags);
+                calWorld_DraedonMechToSummon_Field = GetField(calWorld, "DraedonMechToSummon", PublicStaticFlags);
             }
+
+            Type arsenalRecipe = GetModType(mod, "CalamityMod.CustomRecipes.ArsenalTierGatedRecipe");
+            arsenalRecipe_ConstructCondition_Method = GetMethod(arsenalRecipe, "ConstructRecipeCondition", PublicStaticFlags);
+
+            Type balancingConstants = GetModType(mod, "CalamityMod.Balancing.BalancingConstants");
+            balancing_StealthFactor_Field = GetField(balancingConstants, "UniversalStealthStrikeDamageFactor", PublicStaticFlags);
 
             Type bossRush = GetModType(mod, "CalamityMod.Events.BossRushEvent");
             bossRush_Active_M = GetFieldOrProperty(bossRush, "BossRushActive", PublicStaticFlags);
@@ -395,15 +427,40 @@ namespace CalamityOverhaul
             calPlayer_rageCombatFrames_M = FindMember(calPlayerType, "rageCombatFrames");
             calPlayer_adrenalinePauseTimer_M = FindMember(calPlayerType, "adrenalinePauseTimer");
             calPlayer_externalDefenseDamageImmunity_M = FindMember(calPlayerType, "externalDefenseDamageImmunity");
+            calPlayer_rogueStealth_M = FindMember(calPlayerType, "rogueStealth");
+            calPlayer_rogueStealthMax_M = FindMember(calPlayerType, "rogueStealthMax");
+            calPlayer_stealthUIAlpha_M = FindMember(calPlayerType, "stealthUIAlpha");
+            calPlayer_wearingRogueArmor_M = FindMember(calPlayerType, "wearingRogueArmor");
+            calPlayer_stealthDamage_M = FindMember(calPlayerType, "stealthDamage");
+            calPlayer_StealthStrikeAvailable_Method = GetMethod(calPlayerType, "StealthStrikeAvailable", PublicInstanceFlags);
 
             calItem_ChargeRatio_M = FindMember(calItemType, "ChargeRatio");
+            calItem_Charge_M = FindMember(calItemType, "Charge");
             calItem_MaxCharge_M = FindMember(calItemType, "MaxCharge");
             calItem_UsesCharge_M = FindMember(calItemType, "UsesCharge");
+            calItem_AppliedEnchantment_M = FindMember(calItemType, "AppliedEnchantment");
 
             calNPC_DR_M = FindMember(calNPCType, "DR");
 
             calProj_timesPierced_M = FindMember(calProjType, "timesPierced");
             calProj_conditionalHomingRange_M = FindMember(calProjType, "conditionalHomingRange");
+        }
+
+        private static void LoadEnchantmentSystem(Mod mod) {
+            Type enchantManagerType = GetModType(mod, "CalamityMod.UI.CalamitasEnchants.EnchantmentManager");
+            if (enchantManagerType != null) {
+                enchantManager_GetValidEnchantments_Method = GetMethod(enchantManagerType, "GetValidEnchantmentsForItem", PublicStaticFlags);
+                enchantManager_ClearEnchantment_M = GetFieldOrProperty(enchantManagerType, "ClearEnchantment", PublicStaticFlags);
+                enchantManager_ItemUpgradeRelationship_M = GetFieldOrProperty(enchantManagerType, "ItemUpgradeRelationship", PublicStaticFlags);
+            }
+
+            Type enchantType = GetModType(mod, "CalamityMod.UI.CalamitasEnchants.Enchantment");
+            if (enchantType != null) {
+                enchant_Name_M = GetFieldOrProperty(enchantType, "Name", AnyInstanceFlags);
+                enchant_Description_M = GetFieldOrProperty(enchantType, "Description", AnyInstanceFlags);
+                enchant_IconTexturePath_M = GetFieldOrProperty(enchantType, "IconTexturePath", AnyInstanceFlags);
+                enchant_CreationEffect_M = GetFieldOrProperty(enchantType, "CreationEffect", AnyInstanceFlags);
+            }
         }
 
         internal static void UnLoad() {
@@ -447,6 +504,9 @@ namespace CalamityOverhaul
 
             calWorld_death_Field = null;
             calWorld_revenge_Field = null;
+            calWorld_DraedonMechToSummon_Field = null;
+            arsenalRecipe_ConstructCondition_Method = null;
+            balancing_StealthFactor_Field = null;
             bossRush_Active_M = null;
             acidRain_Ongoing_M = null;
             acidRain_KillPoints_Field = null;
@@ -482,18 +542,36 @@ namespace CalamityOverhaul
             calPlayer_rageCombatFrames_M = null;
             calPlayer_adrenalinePauseTimer_M = null;
             calPlayer_externalDefenseDamageImmunity_M = null;
+            calPlayer_rogueStealth_M = null;
+            calPlayer_rogueStealthMax_M = null;
+            calPlayer_stealthUIAlpha_M = null;
+            calPlayer_wearingRogueArmor_M = null;
+            calPlayer_stealthDamage_M = null;
+            calPlayer_StealthStrikeAvailable_Method = null;
 
             calItem_ChargeRatio_M = null;
+            calItem_Charge_M = null;
             calItem_MaxCharge_M = null;
             calItem_UsesCharge_M = null;
+            calItem_AppliedEnchantment_M = null;
 
             calNPC_DR_M = null;
 
             calProj_timesPierced_M = null;
             calProj_conditionalHomingRange_M = null;
 
+            enchantManager_GetValidEnchantments_Method = null;
+            enchantManager_ClearEnchantment_M = null;
+            enchantManager_ItemUpgradeRelationship_M = null;
+            enchant_Name_M = null;
+            enchant_Description_M = null;
+            enchant_IconTexturePath_M = null;
+            enchant_CreationEffect_M = null;
+
             BossHealthBarManager_Draw_Method = null;
             calamityUtils_GetReworkedReforge_Method = null;
+            bossBar_Bars_M = null;
+            bossHPUI_Draw_Method = null;
         }
 
         private static bool GetDownedProp(PropertyInfo prop) => prop != null && (bool)prop.GetValue(null);
@@ -782,22 +860,27 @@ namespace CalamityOverhaul
 
         public static void UpdateRogueStealth(Player player) {
             if (!Has) return;
-            UpdateRogueStealthInner(player);
-        }
-        [CWRJITEnabled]
-        private static void UpdateRogueStealthInner(Player player) {
+            ModPlayer calPlayer = GetCalPlayer(player);
+            if (calPlayer == null) {
+                return;
+            }
             bool noAvailable = false;
-            CalamityPlayer calPlayer = player.Calamity();
             if (CWRMod.Instance.narakuEye != null) {
                 noAvailable = (bool)CWRMod.Instance.narakuEye.Call(player);
-                if (calPlayer.StealthStrikeAvailable()) {
+                if (calPlayer_StealthStrikeAvailable_Method != null
+                    && (bool)calPlayer_StealthStrikeAvailable_Method.Invoke(calPlayer, null)) {
                     noAvailable = false;
                 }
             }
             if (!noAvailable) {
-                calPlayer.rogueStealth = 0;
-                if (calPlayer.stealthUIAlpha > 0.02f) {
-                    calPlayer.stealthUIAlpha -= 0.02f;
+                if (calPlayer_rogueStealth_M != null) {
+                    SetMember(calPlayer_rogueStealth_M, calPlayer, 0f);
+                }
+                if (calPlayer_stealthUIAlpha_M != null) {
+                    float alpha = (float)GetMember(calPlayer_stealthUIAlpha_M, calPlayer);
+                    if (alpha > 0.02f) {
+                        SetMember(calPlayer_stealthUIAlpha_M, calPlayer, alpha - 0.02f);
+                    }
                 }
             }
         }
@@ -812,11 +895,16 @@ namespace CalamityOverhaul
             if (!Has) {
                 return;
             }
-            SummonExoInner(exoType, player);
-        }
-        [CWRJITEnabled]
-        public static void SummonExoInner(int exoType, Player player) {
-            CalamityWorld.DraedonMechToSummon = (ExoMech)exoType;
+            //写入 CalamityWorld.DraedonMechToSummon（枚举字段，使用 Enum.ToObject 转换）
+            if (calWorld_DraedonMechToSummon_Field != null) {
+                try {
+                    calWorld_DraedonMechToSummon_Field.SetValue(null
+                        , Enum.ToObject(calWorld_DraedonMechToSummon_Field.FieldType, exoType));
+                } catch (Exception ex) {
+                    LogReflectionException("DraedonMechToSummon", ex);
+                    return;
+                }
+            }
             if (VaultUtils.isClient) {//客户端发送网络数据到服务器
                 //通过反射直接调用 ExoMechSelectionPacket.Send()
                 var calMod = ModLoader.GetMod("CalamityMod");
@@ -828,26 +916,51 @@ namespace CalamityOverhaul
                 sendMethod.Invoke(null, [/* toClient */ -1, /* ignoreClient */ -1]);
                 return;
             }
-            switch (CalamityWorld.DraedonMechToSummon) {
-                case ExoMech.Destroyer:
+            //枚举值与灾厄 ExoMech 一致：1=Destroyer(塔纳托斯) 2=Prime(阿瑞斯) 3=Twins(双子)
+            switch (exoType) {
+                case 1:
                     Vector2 thanatosSpawnPosition = player.Center + Vector2.UnitY * 2100f;
-                    NPC thanatos = CalamityUtils.SpawnBossBetter(thanatosSpawnPosition, CWRID.NPC_ThanatosHead);
+                    NPC thanatos = SpawnBoss(thanatosSpawnPosition, CWRID.NPC_ThanatosHead);
                     if (thanatos != null)
-                        thanatos.velocity = thanatos.SafeDirectionTo(player.Center) * 40f;
+                        thanatos.velocity = thanatos.Center.To(player.Center).UnitVector() * 40f;
                     break;
 
-                case ExoMech.Prime:
+                case 2:
                     Vector2 aresSpawnPosition = player.Center - Vector2.UnitY * 1400f;
-                    CalamityUtils.SpawnBossBetter(aresSpawnPosition, CWRID.NPC_AresBody);
+                    SpawnBoss(aresSpawnPosition, CWRID.NPC_AresBody);
                     break;
 
-                case ExoMech.Twins:
+                case 3:
                     Vector2 artemisSpawnPosition = player.Center + new Vector2(-1100f, -1600f);
                     Vector2 apolloSpawnPosition = player.Center + new Vector2(1100f, -1600f);
-                    CalamityUtils.SpawnBossBetter(artemisSpawnPosition, CWRID.NPC_Artemis);
-                    CalamityUtils.SpawnBossBetter(apolloSpawnPosition, CWRID.NPC_Apollo);
+                    SpawnBoss(artemisSpawnPosition, CWRID.NPC_Artemis);
+                    SpawnBoss(apolloSpawnPosition, CWRID.NPC_Apollo);
                     break;
             }
+        }
+
+        /// <summary>
+        /// 在指定世界坐标生成Boss并同步，行为等价于灾厄的SpawnBossBetter，独立实现以避免类型引用
+        /// </summary>
+        private static NPC SpawnBoss(Vector2 spawnPos, int npcType) {
+            if (npcType <= NPCID.None || VaultUtils.isClient) {
+                return null;
+            }
+            int closestPlayer = Player.FindClosest(spawnPos, 1, 1);
+            int index = NPC.NewNPC(NPC.GetBossSpawnSource(closestPlayer), (int)spawnPos.X, (int)spawnPos.Y, npcType, 1);
+            if (index == Main.maxNPCs) {
+                return null;
+            }
+            NPC boss = Main.npc[index];
+            boss.timeLeft *= 20;
+            if (VaultUtils.isServer) {
+                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, index);
+                ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", boss.GetTypeNetName()), new Color(175, 75, 255));
+            }
+            else {
+                Main.NewText(Language.GetTextValue("Announcement.HasAwoken", boss.TypeName), 175, 75, 255);
+            }
+            return boss;
         }
 
         public static void SetDraedonDefeatTimer(NPC npc, float value) {
@@ -1094,14 +1207,21 @@ namespace CalamityOverhaul
             }
         }
 
-        public static ref float RefItemCharge(this Item item) {
-            if (!Has) {
-                return ref dummyFloat;
+        public static float GetItemCharge(this Item item) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_Charge_M == null) {
+                return 0f;
             }
-            return ref RefItemChargeInner(item);
+            return (float)GetMember(calItem_Charge_M, cgi);
         }
-        [CWRJITEnabled]
-        private static ref float RefItemChargeInner(Item item) => ref item.Calamity().Charge;
+
+        public static void SetItemCharge(this Item item, float value) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_Charge_M == null) {
+                return;
+            }
+            SetMember(calItem_Charge_M, cgi, value);
+        }
 
         public static float GetItemMaxCharge(this Item item) {
             GlobalItem cgi = GetCalItem(item);
@@ -1111,14 +1231,13 @@ namespace CalamityOverhaul
             return (float)GetMember(calItem_MaxCharge_M, cgi);
         }
 
-        public static ref float RefItemMaxCharge(this Item item) {
-            if (!Has) {
-                return ref dummyFloat;
+        public static void SetItemMaxCharge(this Item item, float value) {
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null || calItem_MaxCharge_M == null) {
+                return;
             }
-            return ref RefItemMaxChargeInner(item);
+            SetMember(calItem_MaxCharge_M, cgi, value);
         }
-        [CWRJITEnabled]
-        private static ref float RefItemMaxChargeInner(Item item) => ref item.Calamity().MaxCharge;
 
         public static bool GetItemUsesCharge(this Item item) {
             GlobalItem cgi = GetCalItem(item);
@@ -1137,14 +1256,13 @@ namespace CalamityOverhaul
             return value;
         }
 
-        public static ref float RefPlayerRogueStealthMax(this Player player) {
-            if (!Has) {
-                return ref dummyFloat;
+        public static void AddPlayerRogueStealthMax(this Player player, float add) {
+            ModPlayer cp = GetCalPlayer(player);
+            if (cp == null || calPlayer_rogueStealthMax_M == null) {
+                return;
             }
-            return ref RefPlayerRogueStealthMaxInner(player);
+            SetMember(calPlayer_rogueStealthMax_M, cp, (float)GetMember(calPlayer_rogueStealthMax_M, cp) + add);
         }
-        [CWRJITEnabled]
-        private static ref float RefPlayerRogueStealthMaxInner(Player player) => ref player.Calamity().rogueStealthMax;
 
         public static bool GetPlayerZoneSulphur(this Player player) {
             ModPlayer cp = GetCalPlayer(player);
@@ -1180,10 +1298,23 @@ namespace CalamityOverhaul
 
         public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) {
             condition = null;
-            return Has ? ConstructRecipeConditionInner(tier, out condition) : null;
+            if (!Has) {
+                return null;
+            }
+            if (arsenalRecipe_ConstructCondition_Method != null) {
+                try {
+                    object[] args = [tier, null];
+                    LocalizedText text = (LocalizedText)arsenalRecipe_ConstructCondition_Method.Invoke(null, args);
+                    condition = (Func<bool>)args[1];
+                    return text;
+                } catch (Exception ex) {
+                    LogReflectionException(nameof(ConstructRecipeCondition), ex);
+                }
+            }
+            //反射失败时退化为恒真条件，保证配方仍可注册
+            condition = () => true;
+            return LocalizedText.Empty;
         }
-        [CWRJITEnabled]
-        private static LocalizedText ConstructRecipeConditionInner(int tier, out Func<bool> condition) => ArsenalTierGatedRecipe.ConstructRecipeCondition(tier, out condition);
 
         #region 炼铸系统包装器
         /// <summary>
@@ -1231,27 +1362,43 @@ namespace CalamityOverhaul
                 => !(left == right);
         }
 
+        //反射调用 EnchantmentManager.GetValidEnchantmentsForItem，返回装箱后的附魔对象序列
+        private static IEnumerable GetRawEnchantmentsForItem(Item item) {
+            if (enchantManager_GetValidEnchantments_Method == null) {
+                return null;
+            }
+            try {
+                return enchantManager_GetValidEnchantments_Method.Invoke(null, [item]) as IEnumerable;
+            } catch (Exception ex) {
+                LogReflectionException("GetValidEnchantmentsForItem", ex);
+                return null;
+            }
+        }
+
         /// <summary>
         /// 获取物品的有效附魔列表
         /// </summary>
         public static List<EnchantmentWrapper> GetValidEnchantmentsForItem(Item item) {
-            if (!Has || item == null || item.IsAir)
-                return new List<EnchantmentWrapper>();
-            return GetValidEnchantmentsForItemInner(item);
-        }
-        [CWRJITEnabled]
-        private static List<EnchantmentWrapper> GetValidEnchantmentsForItemInner(Item item) {
             var result = new List<EnchantmentWrapper>();
-            var enchantments = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.GetValidEnchantmentsForItem(item);
+            if (!Has || item == null || item.IsAir) {
+                return result;
+            }
+            IEnumerable enchantments = GetRawEnchantmentsForItem(item);
+            if (enchantments == null || enchant_Name_M == null || enchant_Description_M == null || enchant_IconTexturePath_M == null) {
+                return result;
+            }
+
+            object clearEnchantment = enchantManager_ClearEnchantment_M != null
+                ? GetMember(enchantManager_ClearEnchantment_M, null) : null;
 
             int id = 0;
-            foreach (var enchantment in enchantments) {
+            foreach (object enchantment in enchantments) {
                 result.Add(new EnchantmentWrapper {
-                    Name = enchantment.Name,
-                    Description = enchantment.Description,
-                    IconTexturePath = enchantment.IconTexturePath,
+                    Name = GetMember(enchant_Name_M, enchantment) as LocalizedText,
+                    Description = GetMember(enchant_Description_M, enchantment) as LocalizedText,
+                    IconTexturePath = GetMember(enchant_IconTexturePath_M, enchantment) as string,
                     InternalId = id++,
-                    IsClearEnchantment = enchantment.Equals(CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ClearEnchantment)
+                    IsClearEnchantment = enchantment.Equals(clearEnchantment)
                 });
             }
 
@@ -1262,42 +1409,62 @@ namespace CalamityOverhaul
         /// 应用附魔到物品
         /// </summary>
         public static void ApplyEnchantmentToItem(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect = null) {
-            if (!Has || item == null || item.IsAir)
+            if (!Has || item == null || item.IsAir || calItem_AppliedEnchantment_M == null) {
                 return;
-            ApplyEnchantmentToItemInner(item, wrapper, creationEffect);
-        }
-        [CWRJITEnabled]
-        private static void ApplyEnchantmentToItemInner(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect) {
+            }
+
             int oldPrefix = item.prefix;
             item.SetDefaults(item.type);
             item.Prefix(oldPrefix);
 
-            if (wrapper.IsClearEnchantment) {
-                item.Calamity().AppliedEnchantment = null;
-                item.Prefix(oldPrefix);
+            GlobalItem cgi = GetCalItem(item);
+            if (cgi == null) {
+                return;
             }
-            else {
-                //通过Name和Description重新匹配Enchantment
-                var allEnchantments = CalamityMod.UI.CalamitasEnchants.EnchantmentManager.GetValidEnchantmentsForItem(item);
-                CalamityMod.UI.CalamitasEnchants.Enchantment? targetEnchant = null;
 
-                foreach (var ench in allEnchantments) {
-                    if (ench.Name.Value == wrapper.Name.Value && ench.Description.Value == wrapper.Description.Value) {
-                        targetEnchant = ench;
-                        break;
-                    }
+            if (wrapper.IsClearEnchantment) {
+                SetMember(calItem_AppliedEnchantment_M, cgi, null);
+                item.Prefix(oldPrefix);
+                return;
+            }
+
+            //通过Name和Description重新匹配Enchantment
+            IEnumerable allEnchantments = GetRawEnchantmentsForItem(item);
+            if (allEnchantments == null || enchant_Name_M == null || enchant_Description_M == null) {
+                return;
+            }
+
+            object targetEnchant = null;
+            foreach (object ench in allEnchantments) {
+                LocalizedText name = GetMember(enchant_Name_M, ench) as LocalizedText;
+                LocalizedText description = GetMember(enchant_Description_M, ench) as LocalizedText;
+                if (name?.Value == wrapper.Name?.Value && description?.Value == wrapper.Description?.Value) {
+                    targetEnchant = ench;
+                    break;
+                }
+            }
+
+            if (targetEnchant == null) {
+                return;
+            }
+
+            try {
+                //装箱的Enchantment可直接赋给Enchantment?成员，反射会自动包装Nullable
+                SetMember(calItem_AppliedEnchantment_M, cgi, targetEnchant);
+                creationEffect?.Invoke(item);
+                if (enchant_CreationEffect_M != null
+                    && GetMember(enchant_CreationEffect_M, targetEnchant) is Action<Item> enchantCreation) {
+                    enchantCreation.Invoke(item);
                 }
 
-                if (targetEnchant.HasValue) {
-                    item.Calamity().AppliedEnchantment = targetEnchant.Value;
-                    creationEffect?.Invoke(item);
-                    targetEnchant.Value.CreationEffect?.Invoke(item);
-
-                    if (CalamityMod.UI.CalamitasEnchants.EnchantmentManager.ItemUpgradeRelationship.TryGetValue(item.type, out var newID)) {
-                        item.SetDefaults(newID);
-                        item.Prefix(oldPrefix);
-                    }
+                if (enchantManager_ItemUpgradeRelationship_M != null
+                    && GetMember(enchantManager_ItemUpgradeRelationship_M, null) is IDictionary upgradeRelationship
+                    && upgradeRelationship.Contains(item.type)) {
+                    item.SetDefaults((int)upgradeRelationship[item.type]);
+                    item.Prefix(oldPrefix);
                 }
+            } catch (Exception ex) {
+                LogReflectionException(nameof(ApplyEnchantmentToItem), ex);
             }
         }
         #endregion
@@ -1309,14 +1476,23 @@ namespace CalamityOverhaul
 
         internal static void LoadComders() {
             Mod mod = CWRMod.Instance?.calamity;
-            if (mod == null) {
+            if (mod == null || !Has) {
                 return;
             }
             try {
                 //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
                 Type bossHealthBarManagerType = GetModType(mod, "CalamityMod.UI.BossHealthBarManager");
                 BossHealthBarManager_Draw_Method = GetMethod(bossHealthBarManagerType, "Draw", PublicInstanceFlags);
-                if (BossHealthBarManager_Draw_Method != null) {
+                Type bossHPUIType = GetModType(mod, "CalamityMod.UI.BossHealthBarManager+BossHPUI");
+                if (bossHealthBarManagerType != null && bossHPUIType != null) {
+                    bossBar_Bars_M = GetFieldOrProperty(bossHealthBarManagerType, "Bars", PublicStaticFlags);
+                    bossHPUI_Draw_Method = GetMethod(bossHPUIType, "Draw", PublicInstanceFlags);
+                    FieldInfo verticalOffsetField = GetField(bossHPUIType, "VerticalOffsetPerBar", PublicStaticFlags);
+                    if (verticalOffsetField != null) {
+                        bossHPUI_VerticalOffsetPerBar = (int)verticalOffsetField.GetValue(null);
+                    }
+                }
+                if (BossHealthBarManager_Draw_Method != null && bossBar_Bars_M != null && bossHPUI_Draw_Method != null) {
                     VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
                 }
 
@@ -1341,10 +1517,10 @@ namespace CalamityOverhaul
                     VaultHook.Add(method, On_KillPlayer_Hook);
                 }
 
-                //OnProvideStealthStatBonusesHook 的签名携带 CalamityPlayer 类型，
-                //一旦在此处通过 method group 转换得到 Delegate，JIT 必须解析 CalamityPlayer，
-                //所以把这一段挪到独立的 [CWRJITEnabled] 方法里，确保 Calamity 未安装时整个 LoadComders 仍可被 JIT
-                HookProvideStealthStatBonuses(mod);
+                MethodInfo provideStealthMethod = GetMethod(playerType, "ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
+                if (provideStealthMethod != null) {
+                    VaultHook.Add(provideStealthMethod, OnProvideStealthStatBonusesHook);
+                }
             } catch (Exception ex) {
                 LogReflectionException(nameof(LoadComders), ex);
             }
@@ -1362,17 +1538,12 @@ namespace CalamityOverhaul
             orig.Invoke(modPlayer);
         }
 
-        [CWRJITEnabled]
-        private static void HookProvideStealthStatBonuses(Mod mod) {
-            Type calPlayerType = calPlayerTemplate?.GetType() ?? GetModType(mod, "CalamityMod.CalPlayer.CalamityPlayer");
-            MethodInfo provideStealthMethod = GetMethod(calPlayerType, "ProvideStealthStatBonuses", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (provideStealthMethod != null) {
-                VaultHook.Add(provideStealthMethod, OnProvideStealthStatBonusesHook);
-            }
-        }
-
-        [CWRJITEnabled]
         private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
+            //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
+            if (GetMember(bossBar_Bars_M, null) is not IEnumerable bars || bossHPUI_Draw_Method == null) {
+                orig.Invoke(obj, spriteBatch, currentBar, info);
+                return;
+            }
             int startHeight = 100;
             int x = Main.screenWidth - 420;
             int y = Main.screenHeight - startHeight;
@@ -1382,10 +1553,9 @@ namespace CalamityOverhaul
             Vector2 modifyPos = MuraChargeUI.Instance.ModifyBossHealthBarManagerPositon(x, y);
             x = (int)modifyPos.X;
             y = (int)modifyPos.Y;
-            //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
-            foreach (BossHealthBarManager.BossHPUI ui in BossHealthBarManager.Bars) {
-                ui.Draw(spriteBatch, x, y);
-                y -= BossHealthBarManager.BossHPUI.VerticalOffsetPerBar;
+            foreach (object ui in bars) {
+                bossHPUI_Draw_Method.Invoke(ui, [spriteBatch, x, y]);
+                y -= bossHPUI_VerticalOffsetPerBar;
             }
         }
 
@@ -1410,23 +1580,31 @@ namespace CalamityOverhaul
             orig.Invoke(key, color);
         }
 
-        [CWRJITEnabled]
-        private static void OnProvideStealthStatBonusesHook(Action<CalamityPlayer> orig, CalamityPlayer calamityPlayer) {
-            if (calamityPlayer.Player.CWR().IsUnsunghero) {
-                if (!calamityPlayer.wearingRogueArmor || calamityPlayer.rogueStealthMax <= 0) {
+        private static void OnProvideStealthStatBonusesHook(On_ProvideStealthStatBonuses_Dalegate orig, ModPlayer calamityPlayer) {
+            Player player = calamityPlayer?.Player;
+            if (player != null && player.CWR().IsUnsunghero
+                && calPlayer_wearingRogueArmor_M != null && calPlayer_rogueStealthMax_M != null
+                && calPlayer_rogueStealth_M != null && calPlayer_stealthDamage_M != null
+                && balancing_StealthFactor_Field != null) {
+                if (!(bool)GetMember(calPlayer_wearingRogueArmor_M, calamityPlayer)
+                    || (float)GetMember(calPlayer_rogueStealthMax_M, calamityPlayer) <= 0) {
                     return;
                 }
 
-                Item item = calamityPlayer.Player.GetItem();
+                Item item = player.GetItem();
                 int realUseTime = Math.Max(item.useTime, item.useAnimation);
                 double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
                 //直接使用固定的基础时间，固定为 4 秒
                 double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
 
-                double stealthAddedDamage = calamityPlayer.rogueStealth * BalancingConstants.UniversalStealthStrikeDamageFactor * useTimeFactor * stealthGenFactor;
-                calamityPlayer.stealthDamage += (float)stealthAddedDamage;
+                float rogueStealth = (float)GetMember(calPlayer_rogueStealth_M, calamityPlayer);
+                //灾厄源码中该字段为double类型（=0.42），用Convert兼容未来可能的类型变动
+                double stealthStrikeFactor = Convert.ToDouble(balancing_StealthFactor_Field.GetValue(null));
+                double stealthAddedDamage = rogueStealth * stealthStrikeFactor * useTimeFactor * stealthGenFactor;
+                SetMember(calPlayer_stealthDamage_M, calamityPlayer
+                    , (float)GetMember(calPlayer_stealthDamage_M, calamityPlayer) + (float)stealthAddedDamage);
 
-                calamityPlayer.Player.aggro -= (int)(calamityPlayer.rogueStealth * 300f);
+                player.aggro -= (int)(rogueStealth * 300f);
 
                 return;
             }

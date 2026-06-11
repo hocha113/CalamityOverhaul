@@ -1,11 +1,9 @@
 ﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
-using MagicStorage;
-using MagicStorage.Common.Systems;
-using MagicStorage.Components;
-using MagicStorage.UI.States;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
@@ -15,333 +13,616 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.OtherMods.MagicStorage
 {
-    internal class MSRef
+    /// <summary>
+    /// MagicStorage的弱引用访问层，不持有任何MagicStorage的编译期类型。
+    /// 所有成员在加载期反射定位一次，并编译为表达式树委托，调用开销接近直接调用且无装箱，
+    /// 模式与<see cref="CWRRef"/>一致
+    /// </summary>
+    internal static class MSRef
     {
-        internal static bool Has => CWRMod.Instance.magicStorage != null && CWRMod.Instance.magicStorage.Version >= new Version(0, 7, 0, 11);
-        private static FieldInfo _selectedRecipeField;
-        internal static FieldInfo SelectedRecipeField {
-            get {
-                if (!Has) {
-                    return null;
-                }
-
-                _selectedRecipeField ??= typeof(CraftingGUI).GetField("selectedRecipe", BindingFlags.Static | BindingFlags.NonPublic);
-                return _selectedRecipeField;
-            }
-        }
-        //缓存反射字段，避免每帧查找造成的严重卡顿
-        private static FieldInfo _recipePanelField;
-        internal static FieldInfo RecipePanelField {
-            get {
-                if (!Has) {
-                    return null;
-                }
-                _recipePanelField ??= typeof(CraftingUIState).GetField("recipePanel", BindingFlags.Instance | BindingFlags.NonPublic);
-                return _recipePanelField;
-            }
-        }
-        private static MethodInfo _depositItemMethod;
-        [JITWhenModsEnabled("MagicStorage")]
-        internal static MethodInfo DepositItemMethod {
-            get {
-                if (!Has) {
-                    return null;
-                }
-                _depositItemMethod ??= typeof(TEStorageHeart).GetMethod("DepositItem");
-                return _depositItemMethod;
-            }
-        }
-        private static int oldSelectedItemType;
         /// <summary>
-        /// 从TileEntity获取关联的StorageHeart（支持RemoteAccess、StorageAccess等）
+        /// 兼容的最低MagicStorage版本
         /// </summary>
-        [JITWhenModsEnabled("MagicStorage")]
-        private static TEStorageHeart GetHeartFromTileEntity(TileEntity te) {
-            if (te == null) return null;
+        internal static Version TargetVersion => new(0, 7, 0, 11);
+        /// <summary>
+        /// MagicStorage是否存在、版本兼容且核心访问委托可用
+        /// </summary>
+        internal static bool Has { get; private set; }
 
-            //情况1：直接就是 StorageHeart
-            if (te is TEStorageHeart heart) {
-                return heart;
+        #region 编译委托缓存
+        //类型缓存，用于调用前的实例类型守卫，防止编译委托内部的强制转换抛出异常
+        private static Type storageComponentType;
+        private static Type storageHeartType;
+        private static Type craftingUIStateType;
+        //TEStorageComponent.GetHeart()是虚方法，经基类编译的委托同样走虚分派，
+        //可覆盖StorageHeart、RemoteAccess、StorageAccess、CraftingAccess等所有组件
+        private static Func<object, object> getHeartFunc;
+        //TEStorageHeart成员
+        private static Func<object, IEnumerable> getStorageUnitsFunc;
+        private static Func<object, IEnumerable<Item>> getStoredItemsFunc;
+        private static Action<object, Item> depositItemFunc;
+        private static Func<object, Item, bool, Item> withdrawFunc;
+        //TEAbstractStorageUnit成员，处于逐单元遍历的热路径上
+        private static Func<object, bool> unitInactiveFunc;
+        private static Func<object, bool> unitIsFullFunc;
+        private static Func<object, Item, bool> unitHasSpaceInStackForFunc;
+        //StoragePlayer模板与成员，实例通过player.GetModPlayer(template)获取
+        private static ModPlayer storagePlayerTemplate;
+        private static Func<ModPlayer, object> getStorageHeartFunc;
+        private static Func<ModPlayer, object> getCraftingAccessFunc;
+        //TECraftingAccess.stations
+        private static Func<object, List<Item>> craftingStationsFunc;
+        //SecuritySystem与MagicUI的静态方法
+        private static Func<Player, int, bool> canPlayerAccessFunc;
+        private static Func<bool> isCraftingUIOpenFunc;
+        //制作界面UI成员，缺失时仅联动定位/配方同步降级，不影响存储功能
+        private static Func<object> craftingUIFunc;
+        private static Func<Recipe> selectedRecipeFunc;
+        private static Func<object, object> recipePanelFunc;
+        #endregion
+
+        #region 加载与卸载
+        internal static void Load() {
+            Has = false;
+            linkageBroken = false;
+            linkageFailureCount = 0;
+
+            Mod mod = CWRMod.Instance.magicStorage;
+            if (mod == null || mod.Version < TargetVersion) {
+                return;
             }
 
-            //情况2：是 TEStorageCenter 的子类（RemoteAccess、StorageAccess、CraftingAccess等）
-            //它们都有 GetHeart() 方法
-            if (te is TEStorageCenter center) {
-                return center.GetHeart();
-            }
+            const BindingFlags Pub = BindingFlags.Public | BindingFlags.Instance;
+            const BindingFlags PubStatic = BindingFlags.Public | BindingFlags.Static;
+            const BindingFlags AnyStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+            const BindingFlags AnyInstance = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            return null;
+            storageComponentType = GetModType(mod, "MagicStorage.Components.TEStorageComponent");
+            storageHeartType = GetModType(mod, "MagicStorage.Components.TEStorageHeart");
+            craftingUIStateType = GetModType(mod, "MagicStorage.UI.States.CraftingUIState");
+            Type unitType = GetModType(mod, "MagicStorage.Components.TEAbstractStorageUnit");
+            Type craftingAccessType = GetModType(mod, "MagicStorage.Components.TECraftingAccess");
+            Type securityType = GetModType(mod, "MagicStorage.Common.Systems.SecuritySystem");
+            Type magicUIType = GetModType(mod, "MagicStorage.Common.Systems.MagicUI");
+            Type craftingGUIType = GetModType(mod, "MagicStorage.CraftingGUI");
+
+            getHeartFunc = Compile<Func<object, object>>(
+                GetMethod(storageComponentType, "GetHeart", Pub), "TEStorageComponent.GetHeart");
+            getStorageUnitsFunc = Compile<Func<object, IEnumerable>>(
+                GetMethod(storageHeartType, "GetStorageUnits", Pub), "TEStorageHeart.GetStorageUnits");
+            getStoredItemsFunc = Compile<Func<object, IEnumerable<Item>>>(
+                GetMethod(storageHeartType, "GetStoredItems", Pub), "TEStorageHeart.GetStoredItems");
+            depositItemFunc = Compile<Action<object, Item>>(
+                GetMethod(storageHeartType, "DepositItem", Pub), "TEStorageHeart.DepositItem");
+            withdrawFunc = Compile<Func<object, Item, bool, Item>>(
+                GetMethod(storageHeartType, "Withdraw", Pub), "TEStorageHeart.Withdraw");
+
+            unitInactiveFunc = Compile<Func<object, bool>>(
+                GetProperty(unitType, "Inactive", Pub), "TEAbstractStorageUnit.Inactive");
+            unitIsFullFunc = Compile<Func<object, bool>>(
+                GetProperty(unitType, "IsFull", Pub), "TEAbstractStorageUnit.IsFull");
+            unitHasSpaceInStackForFunc = Compile<Func<object, Item, bool>>(
+                GetMethod(unitType, "HasSpaceInStackFor", Pub), "TEAbstractStorageUnit.HasSpaceInStackFor");
+
+            if (!ModContent.TryFind(mod.Name, "StoragePlayer", out storagePlayerTemplate)) {
+                CWRUtils.LogFailedLoad("StoragePlayer", "MagicStorage.StoragePlayer");
+            }
+            Type storagePlayerType = storagePlayerTemplate?.GetType();
+            getStorageHeartFunc = Compile<Func<ModPlayer, object>>(
+                GetMethod(storagePlayerType, "GetStorageHeart", Pub), "StoragePlayer.GetStorageHeart");
+            getCraftingAccessFunc = Compile<Func<ModPlayer, object>>(
+                GetMethod(storagePlayerType, "GetCraftingAccess", Pub), "StoragePlayer.GetCraftingAccess");
+
+            craftingStationsFunc = Compile<Func<object, List<Item>>>(
+                GetField(craftingAccessType, "stations", Pub), "TECraftingAccess.stations");
+
+            canPlayerAccessFunc = Compile<Func<Player, int, bool>>(
+                GetMethod(securityType, "CanPlayerAccessImmediately", PubStatic), "SecuritySystem.CanPlayerAccessImmediately");
+            isCraftingUIOpenFunc = Compile<Func<bool>>(
+                GetMethod(magicUIType, "IsCraftingUIOpen", PubStatic), "MagicUI.IsCraftingUIOpen");
+
+            craftingUIFunc = Compile<Func<object>>(
+                GetField(magicUIType, "craftingUI", AnyStatic), "MagicUI.craftingUI");
+            selectedRecipeFunc = Compile<Func<Recipe>>(
+                GetField(craftingGUIType, "selectedRecipe", AnyStatic), "CraftingGUI.selectedRecipe");
+            recipePanelFunc = Compile<Func<object, object>>(
+                GetField(craftingUIStateType, "recipePanel", AnyInstance), "CraftingUIState.recipePanel");
+
+            //核心存储能力齐备才视为可用，UI相关委托缺失时由各自方法自行降级
+            Has = storageComponentType != null
+                && storageHeartType != null
+                && getHeartFunc != null
+                && getStorageUnitsFunc != null
+                && getStoredItemsFunc != null
+                && depositItemFunc != null
+                && withdrawFunc != null
+                && unitInactiveFunc != null
+                && unitIsFullFunc != null
+                && unitHasSpaceInStackForFunc != null
+                && storagePlayerTemplate != null
+                && getStorageHeartFunc != null
+                && getCraftingAccessFunc != null
+                && craftingStationsFunc != null
+                && canPlayerAccessFunc != null
+                && isCraftingUIOpenFunc != null;
+        }
+
+        internal static void Unload() {
+            Has = false;
+            storageComponentType = null;
+            storageHeartType = null;
+            craftingUIStateType = null;
+            getHeartFunc = null;
+            getStorageUnitsFunc = null;
+            getStoredItemsFunc = null;
+            depositItemFunc = null;
+            withdrawFunc = null;
+            unitInactiveFunc = null;
+            unitIsFullFunc = null;
+            unitHasSpaceInStackForFunc = null;
+            storagePlayerTemplate = null;
+            getStorageHeartFunc = null;
+            getCraftingAccessFunc = null;
+            craftingStationsFunc = null;
+            canPlayerAccessFunc = null;
+            isCraftingUIOpenFunc = null;
+            craftingUIFunc = null;
+            selectedRecipeFunc = null;
+            recipePanelFunc = null;
+            loggedFailures.Clear();
+            oldSelectedItemType = ItemID.None;
+            craftingUIWasOpen = false;
+            hasSupertableStation = false;
+            linkageBroken = false;
+            linkageFailureCount = 0;
+        }
+
+        private static Type GetModType(Mod mod, string fullName) {
+            Type type = mod.Code.GetType(fullName);
+            if (type == null) {
+                CWRUtils.LogFailedLoad(fullName, fullName);
+            }
+            return type;
+        }
+
+        private static MethodInfo GetMethod(Type type, string name, BindingFlags flags) {
+            if (type == null) {
+                return null;
+            }
+            MethodInfo method = type.GetMethod(name, flags);
+            if (method == null) {
+                CWRUtils.LogFailedLoad(name, $"{type.FullName}.{name}");
+            }
+            return method;
+        }
+
+        private static FieldInfo GetField(Type type, string name, BindingFlags flags) {
+            if (type == null) {
+                return null;
+            }
+            FieldInfo field = type.GetField(name, flags);
+            if (field == null) {
+                CWRUtils.LogFailedLoad(name, $"{type.FullName}.{name}");
+            }
+            return field;
+        }
+
+        private static PropertyInfo GetProperty(Type type, string name, BindingFlags flags) {
+            if (type == null) {
+                return null;
+            }
+            PropertyInfo property = type.GetProperty(name, flags);
+            if (property == null) {
+                CWRUtils.LogFailedLoad(name, $"{type.FullName}.{name}");
+            }
+            return property;
         }
 
         /// <summary>
-        /// 检查存储核心是否有空间存放物品
+        /// 把反射成员编译成指定签名的委托：
+        /// 委托参数与成员签名间自动插入类型转换（首个参数视为实例，静态成员除外），
+        /// 调用开销接近直接调用且没有Invoke的参数数组分配与装箱
         /// </summary>
-        [JITWhenModsEnabled("MagicStorage")]
-        private static bool CheckHeartHasSpace(TEStorageHeart heart, Item item) {
-            if (heart == null) return false;
+        private static TDelegate Compile<TDelegate>(MemberInfo member, string context) where TDelegate : Delegate {
+            if (member == null) {
+                return null;
+            }
+            try {
+                MethodInfo invoke = typeof(TDelegate).GetMethod("Invoke");
+                ParameterInfo[] delegateParams = invoke.GetParameters();
+                ParameterExpression[] parameters = new ParameterExpression[delegateParams.Length];
+                for (int i = 0; i < delegateParams.Length; i++) {
+                    parameters[i] = Expression.Parameter(delegateParams[i].ParameterType);
+                }
 
-            // 检查安全系统权限
-            if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1))
+                Expression body;
+                if (member is MethodInfo method) {
+                    Expression instance = null;
+                    int argOffset = 0;
+                    if (!method.IsStatic) {
+                        instance = Expression.Convert(parameters[0], method.DeclaringType);
+                        argOffset = 1;
+                    }
+                    ParameterInfo[] methodParams = method.GetParameters();
+                    Expression[] args = new Expression[methodParams.Length];
+                    for (int i = 0; i < methodParams.Length; i++) {
+                        args[i] = Expression.Convert(parameters[i + argOffset], methodParams[i].ParameterType);
+                    }
+                    body = Expression.Call(instance, method, args);
+                }
+                else if (member is PropertyInfo property) {
+                    Expression instance = property.GetMethod.IsStatic
+                        ? null : Expression.Convert(parameters[0], property.DeclaringType);
+                    body = Expression.Property(instance, property);
+                }
+                else if (member is FieldInfo field) {
+                    Expression instance = field.IsStatic
+                        ? null : Expression.Convert(parameters[0], field.DeclaringType);
+                    body = Expression.Field(instance, field);
+                }
+                else {
+                    return null;
+                }
+
+                if (invoke.ReturnType != typeof(void) && body.Type != invoke.ReturnType) {
+                    body = Expression.Convert(body, invoke.ReturnType);
+                }
+                return Expression.Lambda<TDelegate>(body, parameters).Compile();
+            } catch (Exception ex) {
+                CWRMod.Instance.Logger.Warn($"MSRef: failed to compile accessor for {context}: {ex.Message}");
+                return null;
+            }
+        }
+
+        //一次性异常日志，防止每帧/每tick刷屏
+        private static readonly HashSet<string> loggedFailures = [];
+        private static void LogException(string context, Exception ex) {
+            string key = $"{context}|{ex.GetType().Name}";
+            if (loggedFailures.Add(key)) {
+                CWRMod.Instance.Logger.Warn($"MSRef failed at {context}: {ex.GetType().Name}: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region 存储核心访问
+        /// <summary>
+        /// 从TileEntity获取关联的StorageHeart，
+        /// 通过基类虚方法分派支持StorageHeart、RemoteAccess、StorageAccess、CraftingAccess等全部组件
+        /// </summary>
+        internal static object GetHeartFromTileEntity(TileEntity te) {
+            if (!Has || te == null || !storageComponentType.IsInstanceOfType(te)) {
+                return null;
+            }
+            try {
+                return getHeartFunc(te);
+            } catch (Exception ex) {
+                LogException(nameof(GetHeartFromTileEntity), ex);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 检查存储核心是否有空间存放物品，item传null时只检查是否存在未满的存储单元
+        /// </summary>
+        internal static bool HeartHasSpace(object heart, Item item) {
+            if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart)) {
                 return false;
-
-            // 检查存储核心是否还有容量
-            foreach (var unit in heart.GetStorageUnits()) {
-                if (!unit.Inactive && (unit.HasSpaceInStackFor(item) || !unit.IsFull)) {
-                    return true;
+            }
+            //检查安全系统权限
+            if (!canPlayerAccessFunc(Main.LocalPlayer, -1)) {
+                return false;
+            }
+            try {
+                foreach (object unit in getStorageUnitsFunc(heart)) {
+                    if (unitInactiveFunc(unit)) {
+                        continue;
+                    }
+                    if (!unitIsFullFunc(unit)) {
+                        return true;
+                    }
+                    if (item != null && unitHasSpaceInStackForFunc(unit, item)) {
+                        return true;
+                    }
                 }
+            } catch (Exception ex) {
+                LogException(nameof(HeartHasSpace), ex);
             }
             return false;
         }
 
-        [JITWhenModsEnabled("MagicStorage")]
+        /// <summary>
+        /// 在指定范围内查找有空间的MagicStorage存储核心（包括各类远程端口），找不到返回null
+        /// </summary>
         internal static object FindMagicStorage(Item item, Point16 position, int maxFindChestMode) {
             if (!Has) {
                 return null;
             }
 
             int range = maxFindChestMode / 16;
-
-            //在一定范围内查找 Magic Storage 的存储核心（包括远程端口）
             for (int x = position.X - range; x <= position.X + range; x++) {
                 for (int y = position.Y - range; y <= position.Y + range; y++) {
-                    if (!WorldGen.InWorld(x, y))
+                    if (!WorldGen.InWorld(x, y)) {
                         continue;
-
-                    Point16 checkPos = new Point16(x, y);
-                    if (!TileEntity.ByPosition.TryGetValue(checkPos, out TileEntity te))
+                    }
+                    if (!TileEntity.ByPosition.TryGetValue(new Point16(x, y), out TileEntity te)) {
                         continue;
-
-                    //尝试获取关联的StorageHeart（支持直接StorageHeart和各种Access端口）
-                    TEStorageHeart heart = GetHeartFromTileEntity(te);
-                    if (heart != null && CheckHeartHasSpace(heart, item)) {
+                    }
+                    object heart = GetHeartFromTileEntity(te);
+                    if (heart != null && HeartHasSpace(heart, item)) {
                         return heart;
                     }
                 }
             }
-
-            return null;
-        }
-
-        [JITWhenModsEnabled("MagicStorage")]
-        internal static object GetMagicStorage(Item item, Point16 position) {
-            if (!Has) {
-                return null;
-            }
-
-            if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te))
-                return null;
-
-            //尝试获取关联的StorageHeart（支持直接StorageHeart和各种Access端口）
-            TEStorageHeart heart = GetHeartFromTileEntity(te);
-            if (heart != null && CheckHeartHasSpace(heart, item)) {
-                return heart;
-            }
-
             return null;
         }
 
         /// <summary>
-        /// 从存储核心取出物品
+        /// 获取指定位置处关联的、有空间的存储核心，没有则返回null
         /// </summary>
-        [JITWhenModsEnabled("MagicStorage")]
-        internal static Item WithdrawFromHeart(object storageHeart, int itemType, int count) {
-            if (storageHeart is not TEStorageHeart heart) {
-                return new Item();
+        internal static object GetMagicStorage(Item item, Point16 position) {
+            if (!Has || !TileEntity.ByPosition.TryGetValue(position, out TileEntity te)) {
+                return null;
             }
-
-            //检查安全系统权限
-            if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1)) {
-                return new Item();
+            object heart = GetHeartFromTileEntity(te);
+            if (heart != null && HeartHasSpace(heart, item)) {
+                return heart;
             }
+            return null;
+        }
 
-            //创建要取出的物品
+        /// <summary>
+        /// 向存储核心存入物品，成功调用返回true（剩余数量语义由调用方处理）
+        /// </summary>
+        internal static bool DepositIntoHeart(object heart, Item item) {
+            if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart) || item == null || item.IsAir) {
+                return false;
+            }
+            try {
+                depositItemFunc(heart, item);
+                return true;
+            } catch (Exception ex) {
+                LogException(nameof(DepositIntoHeart), ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 从存储核心取出指定类型与数量的物品
+        /// </summary>
+        internal static Item WithdrawFromHeart(object heart, int itemType, int count) {
             Item toWithdraw = new Item();
             toWithdraw.SetDefaults(itemType);
             toWithdraw.stack = count;
-
-            //调用 Withdraw 方法
-            //Withdraw(Item item, bool keepOneIfFavorite) 返回取出的物品
-            Item withdrawn = heart.Withdraw(toWithdraw, false);
-            return withdrawn ?? new Item();
+            return WithdrawFromHeart(heart, toWithdraw);
         }
 
         /// <summary>
-        /// 从存储核心取出指定物品（使用Item参数）
+        /// 从存储核心取出指定物品
         /// </summary>
-        [JITWhenModsEnabled("MagicStorage")]
-        internal static Item WithdrawFromHeart(object storageHeart, Item toWithdraw) {
-            if (storageHeart is not TEStorageHeart heart) {
+        internal static Item WithdrawFromHeart(object heart, Item toWithdraw) {
+            if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart)) {
                 return new Item();
             }
-
             //检查安全系统权限
-            if (!SecuritySystem.CanPlayerAccessImmediately(Main.LocalPlayer, -1)) {
+            if (!canPlayerAccessFunc(Main.LocalPlayer, -1)) {
                 return new Item();
             }
-
-            //调用 Withdraw 方法
-            Item withdrawn = heart.Withdraw(toWithdraw, false);
-            return withdrawn ?? new Item();
-        }
-
-        [JITWhenModsEnabled("MagicStorage")]
-        public static IEnumerable<Item> GetStoredItems() {
-            StoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<StoragePlayer>();
-            TEStorageHeart heart = storagePlayer.GetStorageHeart();
-
-            if (heart != null) {
-                return heart.GetStoredItems();
+            try {
+                return withdrawFunc(heart, toWithdraw, false) ?? new Item();
+            } catch (Exception ex) {
+                LogException(nameof(WithdrawFromHeart), ex);
+                return new Item();
             }
-
-            return [];
         }
 
-        [JITWhenModsEnabled("MagicStorage")]
-        public static long GetItemCount(int itemType) {
-            var items = GetStoredItems();
-            long count = 0;
+        /// <summary>
+        /// 枚举指定存储核心内的物品
+        /// </summary>
+        internal static IEnumerable<Item> GetStoredItems(object heart) {
+            if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart)) {
+                return [];
+            }
+            try {
+                return getStoredItemsFunc(heart) ?? [];
+            } catch (Exception ex) {
+                LogException(nameof(GetStoredItems), ex);
+                return [];
+            }
+        }
 
-            foreach (var item in items) {
+        /// <summary>
+        /// 枚举本地玩家当前连接的存储核心内的物品
+        /// </summary>
+        public static IEnumerable<Item> GetStoredItems() => GetStoredItems(GetLocalPlayerHeart());
+
+        /// <summary>
+        /// 统计指定存储核心内某类型物品的总数
+        /// </summary>
+        internal static long GetItemCount(object heart, int itemType) {
+            long count = 0;
+            foreach (Item item in GetStoredItems(heart)) {
                 if (item.type == itemType) {
                     count += item.stack;
                 }
             }
-
             return count;
         }
 
-        [JITWhenModsEnabled("MagicStorage")]
-        internal static List<Item> GetCraftingAccessItems(Player player) {
-            //获取当前玩家的 MagicStorage 玩家实例
-            StoragePlayer storagePlayer = player.GetModPlayer<StoragePlayer>();
-
-            //获取当前连接的制作核心实体
-            TECraftingAccess craftingAccess = storagePlayer.GetCraftingAccess();
-
-            return craftingAccess.stations;
-        }
-
-        [JITWhenModsEnabled("MagicStorage")]
-        public static bool TryGetCraftingPagePosition(out Vector2 position, out CalculatedStyle dimensions) {
-            position = Vector2.Zero;
-            dimensions = default;
-
-            if (!MagicUI.IsCraftingUIOpen() || MagicUI.craftingUI == null)
-                return false;
-
-            CraftingUIState craftingUI = (CraftingUIState)MagicUI.craftingUI;
-            UIElement recipePanel = (UIElement)RecipePanelField.GetValue(craftingUI);
-
-            if (recipePanel != null) {
-                dimensions = recipePanel.GetDimensions();
-                position = new Vector2(dimensions.X + dimensions.Width, dimensions.Y);
-                return true;
+        /// <summary>
+        /// 获取本地玩家当前连接的存储核心，没有连接返回null
+        /// </summary>
+        private static object GetLocalPlayerHeart() {
+            if (!Has) {
+                return null;
             }
-
-            return false;
+            try {
+                return getStorageHeartFunc(Main.LocalPlayer.GetModPlayer(storagePlayerTemplate));
+            } catch (Exception ex) {
+                LogException(nameof(GetLocalPlayerHeart), ex);
+                return null;
+            }
         }
 
         /// <summary>
-        /// 获取 Magic Storage 制作界面当前选中的配方
+        /// 获取玩家当前连接的制作核心的制作站列表，未连接返回null
         /// </summary>
-        [JITWhenModsEnabled("MagicStorage")]
-        public static Recipe GetSelectedRecipe() {
-            if (!MagicUI.IsCraftingUIOpen())
-                return null;
-
-            if (SelectedRecipeField == null)
-                return null;
-
-            try {
-                //因为是静态字段，第一个参数传 null
-                return (Recipe)SelectedRecipeField.GetValue(null);
-            } catch {
+        private static List<Item> GetCraftingStations(Player player) {
+            if (!Has) {
                 return null;
             }
+            object craftingAccess = getCraftingAccessFunc(player.GetModPlayer(storagePlayerTemplate));
+            if (craftingAccess == null) {
+                return null;
+            }
+            return craftingStationsFunc(craftingAccess);
+        }
+        #endregion
+
+        #region 制作界面访问
+        /// <summary>
+        /// 魔法存储的制作界面当前是否打开
+        /// </summary>
+        public static bool IsCraftingUIOpen() => Has && isCraftingUIOpenFunc();
+
+        /// <summary>
+        /// 获取魔法存储制作界面当前选中的配方，不可用时返回null
+        /// </summary>
+        public static Recipe GetSelectedRecipe() {
+            if (!Has || selectedRecipeFunc == null || !isCraftingUIOpenFunc()) {
+                return null;
+            }
+            return selectedRecipeFunc();
         }
 
         /// <summary>
         /// 获取当前选中配方的结果物品
         /// </summary>
-        public static Item GetSelectedRecipeResultItem() {
-            if (!Has) {
-                return null;
-            }
-            Recipe recipe = GetSelectedRecipe();
-            return recipe?.createItem;
-        }
+        public static Item GetSelectedRecipeResultItem() => GetSelectedRecipe()?.createItem;
 
         /// <summary>
-        /// 获取当前选中配方的结果物品类型 ID
+        /// 获取魔法存储制作界面配方面板右侧的锚点位置，用于联动UI的摆放
         /// </summary>
-        public static int GetSelectedRecipeResultItemType() {
-            if (!Has) {
-                return ItemID.None;
-            }
-            var resultItem = GetSelectedRecipeResultItem();
-            return resultItem?.type ?? 0;
-        }
+        public static bool TryGetCraftingPagePosition(out Vector2 position, out CalculatedStyle dimensions) {
+            position = Vector2.Zero;
+            dimensions = default;
 
-        [JITWhenModsEnabled("MagicStorage")]
-        private static bool IsCraftingUIOpen() => MagicUI.IsCraftingUIOpen();
-        public static bool SafeIsCraftingUIOpen() {
-            if (!Has) {
+            if (!Has || craftingUIFunc == null || recipePanelFunc == null || !isCraftingUIOpenFunc()) {
                 return false;
             }
-            return IsCraftingUIOpen();
+
+            object craftingUI = craftingUIFunc();
+            if (craftingUI == null || !craftingUIStateType.IsInstanceOfType(craftingUI)) {
+                return false;
+            }
+            if (recipePanelFunc(craftingUI) is not UIElement recipePanel) {
+                return false;
+            }
+
+            dimensions = recipePanel.GetDimensions();
+            position = new Vector2(dimensions.X + dimensions.Width, dimensions.Y);
+            return true;
         }
+        #endregion
+
+        #region 终焉工作台联动
+        private static int oldSelectedItemType;
+        private static bool craftingUIWasOpen;
+        private static bool hasSupertableStation;
+        private static uint nextStationScanTime;
+        //制作站列表的扫描间隔（帧），降低每帧反射遍历的开销
+        private const uint StationScanInterval = 12;
+        //联动逻辑连续异常达到上限后本次会话内熔断，避免每帧抛异常拖垮游戏
+        private static bool linkageBroken;
+        private static int linkageFailureCount;
+        private const int MaxLinkageFailures = 3;
 
         internal static void UpdateUI() {
-            if (!Has) {
+            if (!Has || linkageBroken || Main.gameMenu) {
+                return;
+            }
+            try {
+                UpdateUIInner();
+                linkageFailureCount = 0;
+            } catch (Exception ex) {
+                LogException(nameof(UpdateUI), ex);
+                if (++linkageFailureCount >= MaxLinkageFailures) {
+                    linkageBroken = true;
+                    CWRMod.Instance.Logger.Warn("MSRef: Supertable-MagicStorage UI linkage disabled for this session after repeated failures");
+                    //熔断时收起因联动打开的UI，避免残留
+                    if (SupertableUI.Instance != null && SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
+                        SupertableUI.Instance.Active = false;
+                    }
+                }
+            }
+        }
+
+        private static void UpdateUIInner() {
+            bool magicStorageOpen = isCraftingUIOpenFunc();
+            if (!magicStorageOpen) {
+                if (craftingUIWasOpen) {
+                    craftingUIWasOpen = false;
+                    hasSupertableStation = false;
+                    oldSelectedItemType = ItemID.None;
+                }
+                //如果魔法存储界面关闭了，且UI是因为联动打开的（TramTP为null），则关闭
+                if (SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
+                    SupertableUI.Instance.Active = false;
+                }
                 return;
             }
 
-            //检查魔法存储的制作界面是否打开
-            bool magicStorageOpen = SafeIsCraftingUIOpen();
+            //界面刚打开或到达扫描间隔时才重扫制作站列表，结果缓存到下次扫描
+            if (!craftingUIWasOpen || Main.GameUpdateCount >= nextStationScanTime) {
+                craftingUIWasOpen = true;
+                nextStationScanTime = Main.GameUpdateCount + StationScanInterval;
+                hasSupertableStation = ScanSupertableStation();
+            }
 
-            if (magicStorageOpen) {
-                //获取当前制作站列表
-                List<Item> stations = GetCraftingAccessItems(Main.LocalPlayer);
-                bool hasSupertable = false;
-                int targetType = ModContent.ItemType<TransmutationOfMatterItem>();
-
-                foreach (var item in stations) {
-                    if (item.type == targetType) {
-                        hasSupertable = true;
-                        break;
+            if (hasSupertableStation) {
+                //如果终焉工作台UI没打开，则打开它
+                if (!SupertableUI.Instance.Active) {
+                    SupertableUI.TramTP = null;
+                    SupertableUI.Instance.Active = true;
+                    if (TryGetCraftingPagePosition(out Vector2 pos, out _)) {
+                        SupertableUI.Instance.DrawPosition = pos;
                     }
+                    oldSelectedItemType = ItemID.None;//强制一次配方同步
+                }
+                //如果已经打开，并且来自某个实体，先关闭，防止污染数据
+                else {
+                    SupertableUI.TramTP?.CloseUI(Main.LocalPlayer);
                 }
 
-                if (hasSupertable) {
-                    //如果终焉工作台UI没打开，则打开它
-                    if (!SupertableUI.Instance.Active) {
-                        SupertableUI.TramTP = null;
-                        SupertableUI.Instance.Active = true;
-                        if (TryGetCraftingPagePosition(out var pos, out var dimensions)) {
-                            SupertableUI.Instance.DrawPosition = pos;
-                        }
-                    }
-                    //如果已经打开，并且来自某个实体，先关闭，防止污染数据
-                    else {
-                        SupertableUI.TramTP?.CloseUI(Main.LocalPlayer);
-                    }
-
-                    //同步配方选择
-                    SelectedCrafting();
-                }
-                else if (SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
-                    //如果不包含终焉工作台，且UI是因为联动打开的（TramTP为null），则关闭
-                    SupertableUI.Instance.Active = false;
-                }
+                //同步配方选择
+                SyncSelectedRecipe();
             }
             else if (SupertableUI.Instance.Active && SupertableUI.TramTP == null) {
-                //如果魔法存储界面关闭了，且UI是因为联动打开的，则关闭
+                //如果不包含终焉工作台，且UI是因为联动打开的，则关闭
                 SupertableUI.Instance.Active = false;
             }
         }
 
-        private static void SelectedCrafting() {
-            //同步配方选择
+        /// <summary>
+        /// 检查当前连接的制作核心是否放入了终焉物质转换仪
+        /// </summary>
+        private static bool ScanSupertableStation() {
+            List<Item> stations = GetCraftingStations(Main.LocalPlayer);
+            if (stations == null) {
+                return false;
+            }
+            int targetType = ModContent.ItemType<TransmutationOfMatterItem>();
+            for (int i = 0; i < stations.Count; i++) {
+                if (stations[i].type == targetType) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 将魔法存储制作界面选中的配方同步到终焉工作台
+        /// </summary>
+        private static void SyncSelectedRecipe() {
             if (!SupertableUI.Instance.Active) {
                 return;
             }
@@ -373,6 +654,13 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             }
             oldSelectedItemType = selectedItem.type;
         }
+        #endregion
+    }
+
+    internal class MSRefLoader : ICWRLoader
+    {
+        void ICWRLoader.LoadData() => MSRef.Load();
+        void ICWRLoader.UnLoadData() => MSRef.Unload();
     }
 
     internal class MSRefSystem : ModSystem

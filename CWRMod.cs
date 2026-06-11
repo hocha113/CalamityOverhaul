@@ -81,9 +81,8 @@ namespace CalamityOverhaul
         public override void Load() {
             FindMod();
 
-            if (CWRRef.Has) {
-                ModGanged.Load();
-            }
+            //跨Mod兼容Hook不再依赖灾厄类型，无灾厄时同样需要加载，灾厄专属部分在LoadComders内部自行守卫
+            ModGanged.Load();
 
             CWRRef.Load();
             ILoaders = VaultUtils.GetDerivedInstances<ICWRLoader>();

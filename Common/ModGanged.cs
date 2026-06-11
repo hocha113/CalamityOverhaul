@@ -10,7 +10,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
 using Terraria.ModLoader.Core;
 using Terraria.Utilities;
 using static CalamityOverhaul.CWRUtils;
@@ -20,8 +19,7 @@ namespace CalamityOverhaul.Common
     /// <summary>
     /// 跨Mod兼容性Hook管理器，负责对其他Mod的方法进行Hook以实现兼容性处理
     /// </summary>
-    [CWRJITEnabled]
-    internal class ModGanged : ICWRLoader
+    internal class ModGanged
     {
         #region 委托类型
         public delegate void On_PostAI_Dalegate(object obj, Projectile projectile);
@@ -31,10 +29,7 @@ namespace CalamityOverhaul.Common
         public delegate bool On_OnSpawnEnchCanAffectProjectile_Dalegate(Projectile projectile, bool allowMinions);
         public delegate void On_BossHealthBarManager_Draw_Dalegate(object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info);
         public delegate int On_GetReworkedReforge_Dalegate(Item item, UnifiedRandom rand, int currentPrefix);
-        #endregion
-
-        #region MagicStorage 反射缓存
-        private static FieldInfo _msRecursionCraftingDepthField;
+        public delegate void On_ProvideStealthStatBonuses_Dalegate(ModPlayer calamityPlayer);
         #endregion
 
         #region 加载入口
@@ -45,12 +40,7 @@ namespace CalamityOverhaul.Common
             HookTerrariaOverhaul();
             HookFargowiltasSouls();
             HookCoolerItemVisualEffect();
-            LoadMagicStorageReflection();
             CWRRef.LoadComders();
-        }
-
-        void ICWRLoader.UnLoadData() {
-            _msRecursionCraftingDepthField = null;
         }
         #endregion
 
@@ -191,25 +181,6 @@ namespace CalamityOverhaul.Common
         }
         #endregion
 
-        #region MagicStorage
-        private static void LoadMagicStorageReflection() {
-            Mod mod = CWRMod.Instance.magicStorage;
-            if (mod == null) {
-                LogModNotLoaded("MagicStorage");
-                return;
-            }
-
-            Type configType = GetTargetTypeInStringKey(GetModTypes(mod), "MagicStorageConfig");
-            if (configType == null) {
-                LogFailedLoad("MagicStorageConfig", "MagicStorage.MagicStorageConfig");
-                return;
-            }
-
-            _msRecursionCraftingDepthField = configType
-                .GetField("recursionCraftingDepth", BindingFlags.Public | BindingFlags.Instance);
-        }
-        #endregion
-
         #region Hook回调方法
 
         /// <summary>
@@ -261,27 +232,6 @@ namespace CalamityOverhaul.Common
 
             bool shouldApply = ShouldApplyHeldOverride(heldItem, player);
             return orig.Invoke(player, item) && shouldApply;
-        }
-
-        #endregion
-
-        #region 公共查询方法
-
-        /// <summary>
-        /// 查询MagicStorage的递归合成深度是否已配置
-        /// </summary>
-        internal static bool HasMagicStorageRecursionCraftingDepth() {
-            if (CWRMod.Instance.magicStorage == null || _msRecursionCraftingDepthField == null) {
-                return false;
-            }
-
-            try {
-                var modConfig = CWRMod.Instance.magicStorage.Find<ModConfig>("MagicStorageConfig");
-                int depth = (int)_msRecursionCraftingDepthField.GetValue(modConfig);
-                return depth != 0;
-            } catch {
-                return false;
-            }
         }
 
         #endregion

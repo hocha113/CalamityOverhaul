@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            if (!handItem.GetItemUsesCharge() || handItem.RefItemCharge() >= handItem.GetItemMaxCharge()) {
+            if (!handItem.GetItemUsesCharge() || handItem.GetItemCharge() >= handItem.GetItemMaxCharge()) {
                 return;
             }
 
@@ -715,9 +715,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
             float singleCharge = 0.1f;
             Item handItem = Owner.GetItem();
             if (handItem.type > ItemID.None) {
-                if (handItem.GetItemUsesCharge() && handItem.RefItemCharge() < handItem.GetItemMaxCharge()) {
-                    handItem.RefItemCharge() += singleCharge;
-                    handItem.RefItemCharge() = MathHelper.Clamp(handItem.RefItemCharge(), 0, handItem.GetItemMaxCharge());
+                if (handItem.GetItemUsesCharge() && handItem.GetItemCharge() < handItem.GetItemMaxCharge()) {
+                    handItem.SetItemCharge(MathHelper.Clamp(handItem.GetItemCharge() + singleCharge, 0, handItem.GetItemMaxCharge()));
                 }
             }
         }

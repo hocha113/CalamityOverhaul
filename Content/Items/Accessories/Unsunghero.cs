@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             player.CWR().IsUnsunghero = true;
-            player.RefPlayerRogueStealthMax() += 0.1f;
+            player.AddPlayerRogueStealthMax(0.1f);
         }
     }
 }

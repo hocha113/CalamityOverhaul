@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             }
 
             if (item.GetItemUsesCharge()) {
-                ueValue = item.RefItemCharge();
+                ueValue = item.GetItemCharge();
                 maxUEValue = item.GetItemMaxCharge();
                 return true;
             }
@@ -204,22 +204,24 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
                 return;
             }
             if (ItemIsCharge(Item, out float ueValue, out float maxValue)) {
-                float value = 0;
-                ref float setUE = ref value;
                 if (Item.CWR().StorageUE) {
-                    setUE = ref Item.CWR().UEValue;
+                    ref float setUE = ref Item.CWR().UEValue;
+                    if (ueValue < maxValue) {
+                        setUE += 0.1f;
+                        MachineData.UEvalue -= 0.1f;
+                        SpawnDust();
+                    }
+                    setUE = MathHelper.Clamp(setUE, 0, maxValue);
                 }
                 else {
-                    setUE = ref Item.RefItemCharge();
+                    float charge = Item.GetItemCharge();
+                    if (ueValue < maxValue) {
+                        charge += 0.1f;
+                        MachineData.UEvalue -= 0.1f;
+                        SpawnDust();
+                    }
+                    Item.SetItemCharge(MathHelper.Clamp(charge, 0, maxValue));
                 }
-
-                if (ueValue < maxValue) {
-                    setUE += 0.1f;
-                    MachineData.UEvalue -= 0.1f;
-                    SpawnDust();
-                }
-
-                setUE = MathHelper.Clamp(setUE, 0, maxValue);
             }
         }
 

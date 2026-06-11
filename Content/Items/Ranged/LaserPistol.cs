@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ProjectileID.MiniRetinaLaser;
             Item.SetHeldProj<LaserPistolHeld>();
             Item.SetItemUsesCharge(true);
-            Item.RefItemMaxCharge() = 40;
+            Item.SetItemMaxCharge(40);
         }
 
         public override void AddRecipes() {
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override bool CanSpanProj() {
-            if (Item.RefItemCharge() <= 0) {
+            if (Item.GetItemCharge() <= 0) {
                 return false;
             }
             return base.CanSpanProj();
@@ -80,8 +80,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void PostShootEverthing() {
-            Item.RefItemCharge() -= 0.12f;
-            Item.RefItemCharge() = MathHelper.Clamp(Item.RefItemCharge(), 0, Item.GetItemMaxCharge());
+            Item.SetItemCharge(MathHelper.Clamp(Item.GetItemCharge() - 0.12f, 0, Item.GetItemMaxCharge()));
         }
     }
 }

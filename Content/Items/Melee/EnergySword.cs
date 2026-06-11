@@ -25,16 +25,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = ItemRarityID.Green;
             Item.shoot = ProjectileID.MiniRetinaLaser;
             Item.shootSpeed = 12f;
-            Item.SetKnifeHeld<EnergySwordHeld>();
             Item.SetItemUsesCharge(true);
-            Item.RefItemMaxCharge() = 40;
+            Item.SetItemMaxCharge(40);
+            Item.SetKnifeHeld<EnergySwordHeld>();
         }
 
         public override bool CanUseItem(Player player) {
-            Item.RefItemCharge() -= 0.12f;
-            if (Item.RefItemCharge() < 0) {
-                Item.RefItemCharge() = 0;
+            float charge = Item.GetItemCharge() - 0.12f;
+            if (charge < 0) {
+                charge = 0;
             }
+            Item.SetItemCharge(charge);
             return base.CanUseItem(player);
         }
 
@@ -74,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void Shoot() {
-            if (Item.RefItemCharge() < 0.2f) {
+            if (Item.GetItemCharge() < 0.2f) {
                 return;
             }
 
