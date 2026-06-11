@@ -81,7 +81,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ctx.Npc.velocity = velocity;
         }
 
-        /// <summary>平滑瞄准玩家，更新 <see cref="PrimeArmStateContext.AimDirection"/> 与 npc.rotation</summary>
+        /// <summary>
+        /// 伺服式转角：以受限角速度逼近目标角度（经 WrapAngle 取最短弧），
+        /// 呈现机械舵机的匀速步进质感，同时杜绝"绕远路转一整圈"的视觉事故。
+        /// <para>朝向约定：四肢贴图默认垂悬（作用端朝下），指向角度 θ 时 rotation = θ - PiOver2</para>
+        /// </summary>
+        protected static void ServoRotate(NPC npc, float targetRotation, float maxStep) {
+            float diff = MathHelper.WrapAngle(targetRotation - npc.rotation);
+            npc.rotation += MathHelper.Clamp(diff, -maxStep, maxStep);
+        }
+
+        /// <summary>伺服指向某个世界坐标</summary>
+        protected static void ServoAimAt(NPC npc, Vector2 worldTarget, float maxStep) {
+            float targetRotation = (worldTarget - npc.Center).ToRotation() - MathHelper.PiOver2;
+            ServoRotate(npc, targetRotation, maxStep);
+        }
+
+        /// <summary>平滑瞄准玩家，更新 <see cref="PrimeArmStateContext.AimDirection"/> 与 npc.rotation（伺服步进）</summary>
         protected static void SmoothAim(PrimeArmStateContext ctx, float smoothness) {
             NPC npc = ctx.Npc;
             Vector2 toPlayer = ctx.Target.Center - npc.Center;
@@ -96,7 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
                 float jitter = (float)System.Math.Sin(Main.GameUpdateCount * 0.83f + npc.whoAmI) * 0.1f;
                 targetRotation += jitter * (ctx.RecoilIntensity / 10f);
             }
-            npc.rotation = MathHelper.Lerp(npc.rotation, targetRotation, smoothness);
+            ServoRotate(npc, targetRotation, smoothness * 1.2f);
         }
 
         /// <summary>

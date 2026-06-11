@@ -22,13 +22,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         /// <summary>殉爆窗口长度，机械臂的自毁延迟都安排在该窗口内</summary>
         internal const int DetonationWindow = 80;
 
-        private int healDuration;
-        private int healPerFrame;
         private bool healStarted;
 
         public override void OnEnter(PrimeStateContext context) {
             base.OnEnter(context);
             healStarted = false;
+
+            //进入转阶段立刻挂出狂暴阶段标记（与旧版 KillArm 语义一致）：
+            //  1. 期间召唤的双子读到 ai[0]==Rage，会以"三阶段随从"身份入场，
+            //     而不是被误判成一阶段随从后因头部血量过低立即撤离
+            //  2. 全局裁决要求 phase==Armed 才能进入转阶段，天然防止重复触发
+            context.Npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Rage;
+
             if (!VaultUtils.isClient) {
                 context.Npc.TargetClosest();
                 context.Npc.netUpdate = true;
@@ -61,7 +66,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (Timer >= totalDuration) {
                 npc.dontTakeDamage = false;
                 npc.damage = npc.defDamage * 2;
-                npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Rage;
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                 }
@@ -108,32 +112,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void UpdateOverloadReboot(PrimeStateContext context) {
             NPC npc = context.Npc;
             int healTime = Timer - DetonationWindow;
+            int healDuration = HealDuration(context);
+            bool fullHeal = context.DeathMode && !context.BossRush;
 
             if (!healStarted) {
                 healStarted = true;
-                healDuration = HealDuration(context);
-                bool fullHeal = context.DeathMode && !context.BossRush;
-                healPerFrame = fullHeal ? System.Math.Max((npc.lifeMax - npc.life) / healDuration, 0) : 0;
-
-                if (!VaultUtils.isServer && healPerFrame > 0) {
+                if (!VaultUtils.isServer && fullHeal) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
             }
 
             //死亡模式召回双子魔眼协同狂暴阶段
-            if (healTime == 10 && context.DeathMode && !context.BossRush && !VaultUtils.isClient) {
+            if (healTime == 10 && fullHeal && !VaultUtils.isClient) {
                 context.Owner.SpawnEye();
             }
 
-            if (healPerFrame > 0) {
-                if (npc.life >= npc.lifeMax) {
-                    npc.life = npc.lifeMax;
-                }
-                else {
-                    npc.life += healPerFrame;
+            if (fullHeal) {
+                //按"剩余缺口/剩余帧数"动态补血，规避整数除法误差，保证窗口结束时恰好满血
+                int remainingFrames = System.Math.Max(healDuration - healTime, 1);
+                int missing = npc.lifeMax - npc.life;
+                if (missing > 0) {
+                    int addNum = System.Math.Max(missing / remainingFrames, 1);
+                    npc.life = System.Math.Min(npc.life + addNum, npc.lifeMax);
                     Lighting.AddLight(npc.Center, Color.White.ToVector3());
                     if (healTime % 4 == 0) {
-                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, healPerFrame);
+                        CombatText.NewText(npc.Hitbox, CombatText.HealLife, addNum);
                     }
                 }
             }

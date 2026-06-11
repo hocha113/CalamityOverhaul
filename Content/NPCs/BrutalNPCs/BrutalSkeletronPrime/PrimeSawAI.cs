@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,7 +39,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         protected override void ArmPostUpdate() {
-            if (Main.GameUpdateCount % 5 == 0 && ++frame > 1) {
+            //锯片转速由帧动画表现：转得越快帧切得越快——机体本身不再整体自旋
+            int interval = (int)MathHelper.Clamp(9f - armContext.SpinSpeed * 7f, 2f, 9f);
+            if (Main.GameUpdateCount % interval == 0 && ++frame > 1) {
                 frame = 0;
             }
         }
@@ -58,13 +60,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 sawOrigin = VaultUtils.GetOrig(mainValue, 2);
             float spinSpeed = armContext?.SpinSpeed ?? 0f;
 
-            //旋转拖尾（在滤镜之前——拖尾本身柔和，不需要套描边）
-            if (spinSpeed > 0.4f) {
-                for (int i = 0; i < 3; i++) {
-                    float trailRot = drawRot - (i + 1) * spinSpeed * 0.3f;
-                    Color trailColor = drawColor * (0.3f - i * 0.1f);
-                    Main.EntitySpriteDraw(mainValue, sawDrawPos, sawRect,
-                        trailColor, trailRot, sawOrigin, npc.scale, SpriteEffects.None, 0);
+            //高速运动残影（在滤镜之前——残影本身柔和，不需要套描边）：
+            //沿速度反方向拖出位置残像，而不是旋转鬼影——机体不自旋，残影也不该转
+            if (npc.velocity.LengthSquared() > 36f) {
+                Vector2 velDir = npc.velocity * 0.45f;
+                for (int i = 1; i <= 3; i++) {
+                    Color trailColor = drawColor * (0.32f - i * 0.09f);
+                    Main.EntitySpriteDraw(mainValue, sawDrawPos - velDir * i, sawRect,
+                        trailColor, drawRot, sawOrigin, npc.scale, SpriteEffects.None, 0);
                 }
             }
 

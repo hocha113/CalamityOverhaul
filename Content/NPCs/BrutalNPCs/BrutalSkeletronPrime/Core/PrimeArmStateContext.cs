@@ -42,6 +42,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public float TargetSpinSpeed { get; set; }
         /// <summary>钳爪冲击反馈强度</summary>
         public float ImpactIntensity { get; set; }
+        /// <summary>钳口是否张开（驱动钳爪帧动画：蓄力/突刺时张开，命中/待机时闭合）</summary>
+        public bool ClawOpen { get; set; }
         /// <summary>激光蓄力进度 0~1（发光层渐变用）</summary>
         public float ChargeGlow { get; set; }
         /// <summary>出招轮换计数器（确定性轮换代替随机）</summary>

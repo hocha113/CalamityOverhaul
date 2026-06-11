@@ -5,9 +5,19 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
+    //================================================================
+    // 钳爪手设计准则（机械感）：
+    //  1. 机体永不整体打转——所有转向走 ServoRotate 伺服步进，
+    //     朝向约定与死亡演出钳子 Actor 一致：指向 θ 时 rotation = θ - PiOver2
+    //  2. 突刺是"液压活塞"：蓄力期回缩绷紧 → 一次性硬咬合朝向 → 刚性直线打出，
+    //     飞行途中绝不转体
+    //  3. 钳口开合（ctx.ClawOpen 驱动 2 帧贴图）参与演出：
+    //     蓄力/扑击张开，命中/待机闭合，咔哒作响
+    //================================================================
+
     /// <summary>
-    /// 钳爪待机：弹簧物理悬浮在头部下侧，充能满后按
-    /// "三连击 → 蓄力重锤 → 蓄力重锤"的确定性序列出招（死亡模式只出重锤）
+    /// 钳爪待机：液压浮沉悬停在头部下侧、钳口闭合缓速跟踪玩家，
+    /// 充能满后按"三连击 → 蓄力重锤 → 蓄力重锤"的确定性序列出招（死亡模式只出重锤）
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceIdle, typeof(PrimeArmStateContext))]
     internal class ViceIdleState : PrimeArmStateBase
@@ -18,12 +28,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
+            ctx.ClawOpen = false;
 
-            Vector2 idleAnchor = ctx.Head.Center + new Vector2(-150f * ctx.Side, 250f);
+            //液压浮沉：锚点带确定性正弦起伏，呈现悬吊机械的呼吸感
+            float bob = (float)System.Math.Sin((Main.GameUpdateCount + npc.whoAmI * 37) * 0.045f) * 10f;
+            Vector2 idleAnchor = ctx.Head.Center + new Vector2(-150f * ctx.Side, 250f + bob);
             SpringMove(ctx, idleAnchor, 0.7f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
 
-            Vector2 toTarget = idleAnchor - npc.Center;
-            npc.rotation = toTarget.ToRotation() + MathHelper.PiOver2;
+            //钳口缓速咬向玩家方位
+            ServoAimAt(npc, ctx.Target.Center, 0.03f);
 
             float chargeRate = ctx.MasterMode ? 2f : 1f;
             if (ctx.Death) {
@@ -50,7 +63,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 钳爪后撤蓄力：拉开距离绷紧机械臂，蓄势完成后猛扑
+    /// 钳爪后撤蓄力：活塞回缩——拉开距离绷紧机械臂，钳口张开伺服锁定玩家，
+    /// 尾段反向蹬缩积蓄压力，下一刻就是刚性突刺
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceWindUp, typeof(PrimeArmStateContext))]
     internal class ViceWindUpState : PrimeArmStateBase
@@ -59,15 +73,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.ViceWindUp;
 
         private const float WindUpDistance = 280f;
+        /// <summary>突刺前的活塞回缩帧数</summary>
+        private const int CoilFrames = 5;
+
+        private int WindUpDuration(PrimeArmStateContext ctx) => ctx.Death ? 16 : (ctx.MasterMode ? 21 : 26);
 
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
+            ctx.ClawOpen = true;
 
             Vector2 directionToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
-            Vector2 windUpPos = ctx.Target.Center - directionToPlayer * WindUpDistance;
-            SpringMove(ctx, windUpPos, 1.3f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
-            npc.rotation = directionToPlayer.ToRotation() + MathHelper.PiOver2;
+            int duration = WindUpDuration(ctx);
+
+            if (Timer < duration - CoilFrames) {
+                //后撤到出手位，钳口伺服锁定
+                Vector2 windUpPos = ctx.Target.Center - directionToPlayer * WindUpDistance;
+                SpringMove(ctx, windUpPos, 1.3f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
+                ServoAimAt(npc, ctx.Target.Center, 0.1f);
+            }
+            else {
+                //活塞回缩：反向蹬缩绷满压力，朝向冻结
+                Vector2 vel = ctx.SpringVelocity * 0.7f - directionToPlayer * 1.6f;
+                ctx.SpringVelocity = vel;
+                npc.velocity = vel;
+            }
 
             if (!VaultUtils.isServer) {
                 if (Timer % 5 == 0) {
@@ -83,8 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             }
 
             Timer++;
-            int windUpDuration = ctx.Death ? 15 : (ctx.MasterMode ? 20 : 25);
-            if (Timer >= windUpDuration && !VaultUtils.isClient) {
+            if (Timer >= duration && !VaultUtils.isClient) {
                 return new ViceStrikeState();
             }
             return null;
@@ -92,7 +121,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 钳爪猛扑：直线高速突刺，命中瞬间迸发冲击波反馈
+    /// 钳爪刚性突刺：出手瞬间朝向硬咬合，直线高速打出、飞行全程不转体，
+    /// 命中瞬间钳口轰然闭合并迸发冲击波
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceStrike, typeof(PrimeArmStateContext))]
     internal class ViceStrikeState : PrimeArmStateBase
@@ -114,6 +144,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * chargeVelocity;
             ctx.SpringVelocity = velocity;
             npc.velocity = velocity;
+            //出手瞬间朝向一次性硬咬合——液压活塞式的干脆击发
+            npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;
+            ctx.ClawOpen = true;
+
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
             }
@@ -128,7 +162,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
             npc.velocity = ctx.SpringVelocity * 0.95f;
             ctx.SpringVelocity = npc.velocity;
-            npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+            //飞行全程朝向锁死：刚性直线突刺
 
             if (!VaultUtils.isServer && Timer % 2 == 0) {
                 Vector2 trailPos = npc.Center + Main.rand.NextVector2Circular(30, 30);
@@ -152,6 +186,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
         private static void OnImpact(PrimeArmStateContext ctx) {
             ctx.ImpactIntensity = 8f;
+            ctx.ClawOpen = false;//钳口轰然闭合
             if (VaultUtils.isServer) {
                 return;
             }
@@ -179,7 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 钳爪收势：突刺减速回稳，返回待机位重新装填
+    /// 钳爪收势：突刺减速回稳，钳口闭合、机体伺服回正，返回待机位重新装填
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceRecovery, typeof(PrimeArmStateContext))]
     internal class ViceRecoveryState : PrimeArmStateBase
@@ -190,13 +225,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
+            ctx.ClawOpen = false;
 
             Vector2 returnAnchor = ctx.Head.Center + new Vector2(-180f * ctx.Side, 240f);
             SpringMove(ctx, returnAnchor, 0.9f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
 
-            Vector2 toTarget = returnAnchor - npc.Center;
-            float targetRot = toTarget.ToRotation() + MathHelper.PiOver2;
-            npc.rotation = MathHelper.Lerp(npc.rotation, targetRot, 0.15f);
+            //伺服回正到自然垂悬
+            ServoRotate(npc, 0f, 0.08f);
 
             Timer++;
             int recoveryDuration = ctx.MasterMode ? 30 : 40;
@@ -209,8 +244,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 钳爪三连击：刺击 → 横扫 → 重锤的递进连段，
-    /// 每一击的蓄力与节奏都不同，压迫感层层加码
+    /// 钳爪三连击：刺击 → 横扫 → 重锤的递进连段。
+    /// 每一击都是"伺服锁定 → 刚性打出"的活塞节拍，钳口随出招开合
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceCombo, typeof(PrimeArmStateContext))]
     internal class ViceComboState : PrimeArmStateBase
@@ -219,10 +254,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.ViceCombo;
 
         private int stageTimer;
+        private bool stageLaunched;
 
         public override void OnEnter(PrimeArmStateContext ctx) {
             base.OnEnter(ctx);
             stageTimer = 0;
+            stageLaunched = false;
         }
 
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
@@ -245,6 +282,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             if (stageTimer >= comboInterval) {
                 Counter++;
                 stageTimer = 0;
+                stageLaunched = false;
                 if (Counter >= 3 && !VaultUtils.isClient) {
                     return new ViceRecoveryState();
                 }
@@ -252,29 +290,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return null;
         }
 
-        /// <summary>第一击：快速刺击</summary>
+        /// <summary>第一击：快速刺击——短促锁定后直线打出</summary>
         private void ExecuteJab(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = (int)(npc.defDamage * 0.8f);
 
-            Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
             if (stageTimer < 10) {
+                //就位 + 伺服锁定，钳口张开
+                ctx.ClawOpen = true;
+                Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
                 SpringMove(ctx, ctx.Target.Center - dirToPlayer * 180f, 1.2f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
+                ServoAimAt(npc, ctx.Target.Center, 0.16f);
             }
             else {
-                float speed = 18f + (ctx.Death ? 6f : 0f);
-                Vector2 velocity = dirToPlayer * speed;
-                ctx.SpringVelocity = velocity;
-                npc.velocity = velocity;
+                if (!stageLaunched) {
+                    stageLaunched = true;
+                    float speed = 18f + (ctx.Death ? 6f : 0f);
+                    Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * speed;
+                    ctx.SpringVelocity = velocity;
+                    npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;//硬咬合
+                }
+                //刚性刺出：朝向锁死
+                npc.velocity = ctx.SpringVelocity;
                 SpawnTrail(ctx, 3);
             }
-            npc.rotation = dirToPlayer.ToRotation() + MathHelper.PiOver2;
         }
 
-        /// <summary>第二击：弧线横扫</summary>
+        /// <summary>第二击：弧线横扫——伺服朝向跟随扫掠切线</summary>
         private void ExecuteSweep(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
+            ctx.ClawOpen = true;
 
             Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
             float sweepAngle = MathHelper.Pi * 0.6f;
@@ -282,7 +328,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
             Vector2 sweepDir = dirToPlayer.RotatedBy(-sweepAngle / 2f + sweepAngle * progress);
             SpringMove(ctx, ctx.Target.Center + sweepDir * 150f, 1.5f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
-            npc.rotation = sweepDir.ToRotation() + MathHelper.PiOver2;
+
+            //钳口伺服咬住扫掠圆心的玩家
+            ServoAimAt(npc, ctx.Target.Center, 0.2f);
 
             if (!VaultUtils.isServer && stageTimer % 2 == 0) {
                 Dust dust = Dust.NewDustDirect(npc.Center, npc.width, npc.height, DustID.SteampunkSteam,
@@ -291,25 +339,30 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             }
         }
 
-        /// <summary>第三击：大幅后撤 + 重锤冲锋</summary>
+        /// <summary>第三击：大幅后撤蓄压 + 重锤冲锋——最重的一拍</summary>
         private void ExecuteHeavy(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = (int)(npc.defDamage * 1.5f);
 
-            Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
             if (stageTimer < 15) {
+                //大幅后撤蓄压，钳口张到最大、伺服死锁
+                ctx.ClawOpen = true;
+                Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
                 SpringMove(ctx, ctx.Target.Center - dirToPlayer * 320f, 1.0f, stiffness: 0.18f, damping: 0.82f, maxSpeed: 28f);
-            }
-            else if (stageTimer == 15) {
-                float chargeSpeed = 28f + (ctx.Death ? 8f : 0f);
-                Vector2 velocity = dirToPlayer * chargeSpeed;
-                ctx.SpringVelocity = velocity;
-                npc.velocity = velocity;
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f, Pitch = -0.2f }, npc.Center);
-                }
+                ServoAimAt(npc, ctx.Target.Center, 0.14f);
             }
             else {
+                if (!stageLaunched) {
+                    stageLaunched = true;
+                    float chargeSpeed = 28f + (ctx.Death ? 8f : 0f);
+                    Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * chargeSpeed;
+                    ctx.SpringVelocity = velocity;
+                    npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;//硬咬合
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.0f, Pitch = -0.2f }, npc.Center);
+                    }
+                }
+                //刚性重锤：朝向锁死
                 npc.velocity = ctx.SpringVelocity * 0.96f;
                 ctx.SpringVelocity = npc.velocity;
                 if (!VaultUtils.isServer && stageTimer % 2 == 0) {
@@ -320,7 +373,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                     }
                 }
             }
-            npc.rotation = dirToPlayer.ToRotation() + MathHelper.PiOver2;
         }
 
         private void SpawnTrail(PrimeArmStateContext ctx, int interval) {
@@ -336,7 +388,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 钳爪远程归队：飞得太远时全速折返头部
+    /// 钳爪远程归队：飞得太远时全速折返头部，机体伺服回正
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceReturn, typeof(PrimeArmStateContext))]
     internal class ViceReturnState : PrimeArmStateBase
@@ -347,12 +399,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
+            ctx.ClawOpen = false;
 
             AnchoredFollow(ctx, 20f, -20f, -20f, 20f);
             ctx.SpringVelocity = npc.velocity;
 
-            Vector2 toHead = ctx.Head.Center - npc.Center;
-            npc.rotation = toHead.ToRotation() + MathHelper.PiOver2;
+            //伺服回正到自然垂悬
+            ServoRotate(npc, 0f, 0.08f);
 
             Timer++;
             if (Timer > 30 && IdleAnchorDistance(ctx) < 400f && !VaultUtils.isClient) {

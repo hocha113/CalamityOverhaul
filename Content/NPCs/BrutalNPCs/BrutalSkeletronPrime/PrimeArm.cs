@@ -86,15 +86,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             PrimeStateIndex headState = HeadPrimeAI.GetStateIndex(head);
             int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
 
-            //头部进入狂暴/死亡演出：四肢不应再存在（转阶段演出漏网的兜底）
-            if (headPhase >= PrimePhase.Rage) {
-                KillSelfOnServer();
+            //转阶段：收拢编队，按各自延迟依次殉爆。
+            //必须先于狂暴击杀兜底判定——转阶段一进入就会挂出 Rage 标记
+            if (headState == PrimeStateIndex.PhaseTransition) {
+                RunDetonationSequence();
                 return false;
             }
 
-            //转阶段：收拢编队，按各自延迟依次殉爆
-            if (headState == PrimeStateIndex.PhaseTransition) {
-                RunDetonationSequence();
+            //头部进入狂暴/死亡演出：四肢不应再存在（转阶段演出漏网的兜底）
+            if (headPhase >= PrimePhase.Rage) {
+                KillSelfOnServer();
                 return false;
             }
 

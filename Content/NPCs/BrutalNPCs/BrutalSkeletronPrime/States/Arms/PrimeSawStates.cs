@@ -5,8 +5,17 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
+    //================================================================
+    // 电锯手设计准则（机械感）：
+    //  1. 机体永不整体自旋——锯臂不是圆形形体，"旋转"只属于锯片，
+    //     由帧动画转速（ctx.SpinSpeed 驱动帧间隔）与音效表现
+    //  2. 所有转向都走 ServoRotate 伺服步进：匀角速度、最短弧，
+    //     像舵机一样咬合到位，不再有插值甩头与跨 ±π 的鬼畜回旋
+    //  3. 出招遵循"追踪 → 锁定（定格预警拍）→ 刚性突进"的节拍
+    //================================================================
+
     /// <summary>
-    /// 电锯待机：锯片低速空转，弹簧物理悬浮在头部下侧，
+    /// 电锯待机：炮塔式缓速跟踪玩家，锯片低速空转，
     /// 充能满后按"连冲 → 环绕 → 钻击"的确定性序列出招
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawIdle, typeof(PrimeArmStateContext))]
@@ -18,13 +27,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
-            ctx.TargetSpinSpeed = 0.05f;
+            ctx.TargetSpinSpeed = 0.12f;
 
             Vector2 idleAnchor = ctx.Head.Center + new Vector2(-125f * ctx.Side, 290f);
             SpringMove(ctx, idleAnchor, 0.65f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
 
-            Vector2 toTarget = idleAnchor - npc.Center;
-            npc.rotation = MathHelper.Lerp(npc.rotation, toTarget.ToRotation() + MathHelper.PiOver2, 0.1f);
+            //炮塔式缓速锁敌——锯头始终缓缓咬向玩家方位
+            ServoAimAt(npc, ctx.Target.Center, 0.035f);
 
             //充能（失去同伴后加速）
             float chargeRate = ctx.MasterMode ? 2f : 1f;
@@ -55,13 +64,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 电锯狂转蓄势：锯片急速旋转，逼近玩家侧翼蓄势，给出明确的冲刺预告
+    /// 电锯狂转蓄势：逼近玩家侧翼、锯片转速拉满，
+    /// 尾段进入"锁定拍"——机体急停、锯头死死咬住玩家方位，下一刻就是突进
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawSpinUp, typeof(PrimeArmStateContext))]
     internal class SawSpinUpState : PrimeArmStateBase
     {
         public override string StateName => "SawSpinUp";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.SawSpinUp;
+
+        /// <summary>突进前的锁定定格帧数</summary>
+        private const int LockFrames = 8;
 
         private bool playedSpinSound;
 
@@ -70,15 +83,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             playedSpinSound = false;
         }
 
+        private int SpinUpDuration(PrimeArmStateContext ctx) => ctx.Death ? 22 : (ctx.MasterMode ? 27 : 36);
+
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
-            ctx.TargetSpinSpeed = 0.8f;
+            ctx.TargetSpinSpeed = 1.0f;
 
-            //逼近至玩家近侧
-            Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
-            SpringMove(ctx, ctx.Target.Center - dirToPlayer * 200f, 1.1f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
-            npc.rotation += ctx.SpinSpeed * 2f;
+            int duration = SpinUpDuration(ctx);
+            bool locking = Timer >= duration - LockFrames;
+
+            if (!locking) {
+                //逼近至玩家近侧，锯头伺服追踪
+                Vector2 dirToPlayer = npc.Center.DirectionTo(ctx.Target.Center);
+                SpringMove(ctx, ctx.Target.Center - dirToPlayer * 200f, 1.1f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
+                ServoAimAt(npc, ctx.Target.Center, 0.09f);
+            }
+            else {
+                //锁定拍：机体急停、朝向冻结——给玩家明确的"它要来了"读招窗口
+                Vector2 vel = ctx.SpringVelocity * 0.78f;
+                ctx.SpringVelocity = vel;
+                npc.velocity = vel;
+            }
 
             if (!VaultUtils.isServer && Timer % 3 == 0) {
                 Vector2 particlePos = npc.Center + Main.rand.NextVector2Circular(35, 35);
@@ -88,14 +114,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 dust.noGravity = true;
             }
 
-            if (Timer == 15 && !playedSpinSound && !VaultUtils.isServer) {
+            if (Timer == 12 && !playedSpinSound && !VaultUtils.isServer) {
                 playedSpinSound = true;
                 SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.7f, Pitch = -0.2f }, npc.Center);
             }
 
             Timer++;
-            int spinUpDuration = ctx.Death ? 20 : (ctx.MasterMode ? 25 : 35);
-            if (Timer >= spinUpDuration && !VaultUtils.isClient) {
+            if (Timer >= duration && !VaultUtils.isClient) {
                 return new SawDashState();
             }
             return null;
@@ -103,8 +128,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 电锯冲刺连段：高速锯切突进，命中或飞远后短暂回正再次突进，
-    /// 同伴越少连段越长
+    /// 电锯冲刺连段：刚性锯切突进——突进瞬间朝向硬咬合到运动方向并全程锁死，
+    /// 段间短促回正再瞄，同伴越少连段越长
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawDash, typeof(PrimeArmStateContext))]
     internal class SawDashState : PrimeArmStateBase
@@ -159,6 +184,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * dashSpeed;
             ctx.SpringVelocity = velocity;
             npc.velocity = velocity;
+            //突进瞬间朝向一次性硬咬合到运动方向——干脆利落的机械换位，而非缓慢转身
+            npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;
             if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
             }
@@ -170,9 +197,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void UpdateDash(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
-            ctx.TargetSpinSpeed = 1.2f;
+            ctx.TargetSpinSpeed = 1.4f;
             npc.velocity = ctx.SpringVelocity;
-            npc.rotation = ctx.SpringVelocity.ToRotation() - MathHelper.PiOver2;
+            //突进全程朝向锁死：刚性直线锯切，绝不空中转体
 
             //锯切尾迹
             if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
@@ -194,13 +221,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void UpdateReAim(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = 0;
-            ctx.TargetSpinSpeed = 0.8f;
+            ctx.TargetSpinSpeed = 1.0f;
 
-            //短促回正，再次锁定
-            Vector2 vel = ctx.SpringVelocity * 0.88f;
+            //短促回正：急刹 + 伺服再锁定
+            Vector2 vel = ctx.SpringVelocity * 0.85f;
             ctx.SpringVelocity = vel;
             npc.velocity = vel;
-            npc.rotation += ctx.SpinSpeed * 2f;
+            ServoAimAt(npc, ctx.Target.Center, 0.14f);
 
             if (phaseTimer >= 16 && Counter < MaxDashes(ctx)) {
                 if (!VaultUtils.isClient) {
@@ -214,7 +241,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 电锯环绕绞杀：以玩家为轴心快速环绕收紧，封锁走位空间
+    /// 电锯环绕绞杀：以玩家为轴心快速环绕收紧，
+    /// 锯头全程伺服咬向圆心的玩家——侧移压迫而非自身打转
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawOrbit, typeof(PrimeArmStateContext))]
     internal class SawOrbitState : PrimeArmStateBase
@@ -234,14 +262,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
-            ctx.TargetSpinSpeed = 0.5f;
+            ctx.TargetSpinSpeed = 0.8f;
 
             orbitAngle += (ctx.MasterMode ? 0.12f : 0.09f) * (ctx.Death ? 1.5f : 1f);
             orbitRadius = MathHelper.Lerp(orbitRadius, 180f, 0.05f);
 
             Vector2 orbitTarget = ctx.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
             SpringMove(ctx, orbitTarget, 1.4f, stiffness: 0.16f, damping: 0.84f, maxSpeed: 30f);
-            npc.rotation = ctx.SpringVelocity.ToRotation() - MathHelper.PiOver2;
+
+            //环绕时锯头始终咬住圆心的玩家
+            ServoAimAt(npc, ctx.Target.Center, 0.18f);
 
             if (!VaultUtils.isServer) {
                 if (Timer % 4 == 0) {
@@ -265,7 +295,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 电锯钻击追猎：持续预判追击玩家落点，受击会被打断节奏提前收势
+    /// 电锯钻击追猎：持续预判追击玩家落点，锯头刚性对齐前进方向，
+    /// 受击会被打断节奏提前收势
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawDrill, typeof(PrimeArmStateContext))]
     internal class SawDrillState : PrimeArmStateBase
@@ -278,7 +309,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
-            ctx.TargetSpinSpeed = 1.0f;
+            ctx.TargetSpinSpeed = 1.2f;
 
             //预判追击
             Vector2 predictedPos = ctx.Target.Center + ctx.Target.velocity * 10f;
@@ -296,7 +327,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 velocity = Vector2.Lerp(ctx.SpringVelocity, targetVel, acceleration);
             ctx.SpringVelocity = velocity;
             npc.velocity = velocity;
-            npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;
+
+            //锯头快步伺服对齐前进方向——钻头永远朝前
+            if (velocity.LengthSquared() > 1f) {
+                ServoRotate(npc, velocity.ToRotation() - MathHelper.PiOver2, 0.25f);
+            }
 
             if (!VaultUtils.isServer && Timer % 2 == 0) {
                 for (int i = 0; i < 2; i++) {
@@ -320,7 +355,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 电锯收势归位：锯片减速，返回头部附近重新整备
+    /// 电锯收势归位：锯片降速，机体伺服回正到自然垂悬姿态，返回头部附近整备
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawRecovery, typeof(PrimeArmStateContext))]
     internal class SawRecoveryState : PrimeArmStateBase
@@ -336,8 +371,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             AnchoredFollow(ctx, 20f, -20f, -20f, 20f);
             ctx.SpringVelocity = npc.velocity;
 
-            Vector2 toHead = ctx.Head.Center - npc.Center;
-            npc.rotation = MathHelper.Lerp(npc.rotation, toHead.ToRotation() + MathHelper.PiOver2, 0.08f);
+            //伺服回正到自然垂悬
+            ServoRotate(npc, 0f, 0.06f);
 
             Timer++;
             if (Timer > 30 && IdleAnchorDistance(ctx) < 400f && !VaultUtils.isClient) {

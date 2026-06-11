@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,9 +35,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         protected override void ArmPostUpdate() {
-            if (Main.GameUpdateCount % 10 == 0 && ++frame > 1) {
-                frame = 0;
-            }
+            //钳口开合由状态驱动（蓄力/突刺张开，命中/待机闭合），不再无意义地循环播帧
+            //帧约定与死亡演出钳子 Actor 一致：0=张开 1=闭合
+            frame = armContext.ClawOpen ? 0 : 1;
         }
 
         #region 绘制
