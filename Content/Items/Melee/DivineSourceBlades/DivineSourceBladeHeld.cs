@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             float outerR = mainReach * 1.04f;
             float innerR = mainReach * 0.30f;
             Vector2 center = owner.Center;
-            float arcStart = ArcStart;
+            float arcStart = ArcStart + swingDir * 0.3f;//加上 swingDir * 0.3f 让这个刀光和刀背衔接起来
 
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)(segs - 1);
