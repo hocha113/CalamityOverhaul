@@ -37,6 +37,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         TwinsCombinedAttack = 20,
         //死亡演出（每只眼睛独立播放）
         TwinsDeath = 21,
+        //合击体系
+        TwinsCrossDash = 22,
+        TwinsTetherSweep = 23,
+        TwinsScissorRay = 24,
     }
 
     /// <summary>

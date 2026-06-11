@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
@@ -206,9 +208,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
-                    npc.Center,
+                    npc.Center + currentDir * 40f,
                     currentDir * LaserSpeed,
-                    ProjectileID.DeathLaser,
+                    ModContent.ProjectileType<RetinazerLaser>(),
                     20,
                     0f,
                     Main.myPlayer

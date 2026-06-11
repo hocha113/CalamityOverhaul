@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
-using System;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,8 +10,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
     /// <summary>
-    /// 魔焰眼二阶段影分身冲刺状态
-    /// 产生多个残影同时向玩家冲刺
+    /// 魔焰眼二阶段残影连冲状态：
+    /// 蓄力后进行连续三段变向弧线冲刺，每段衔接处急停甩头并爆出残影与火弹扇，
+    /// 强调速度感与机械蛮力
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismShadowDash, typeof(TwinsStateContext))]
     internal class SpazmatismShadowDashState : TwinsStateBase
@@ -19,47 +21,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismShadowDash;
 
         /// <summary>
-        /// 聚集阶段
+        /// 蓄力聚集阶段时长
         /// </summary>
-        private int GatherPhase => Context.IsDeathMode ? 30 : 40;
+        private int GatherPhase => Context.IsDeathMode ? 38 : 46;
 
         /// <summary>
-        /// 分身生成阶段
+        /// 每段全速冲刺时长
         /// </summary>
-        private int SplitPhase => Context.IsDeathMode ? 25 : 30;
+        private int SegmentDashTime => Context.IsDeathMode ? 20 : 24;
 
         /// <summary>
-        /// 蓄力阶段
+        /// 每段急停甩头时长
         /// </summary>
-        private int ChargePhase => Context.IsDeathMode ? 28 : 35;
+        private int SegmentWhipTime => Context.IsDeathMode ? 9 : 11;
 
         /// <summary>
-        /// 冲刺阶段
+        /// 冲刺段数
         /// </summary>
-        private int DashPhase => Context.IsDeathMode ? 40 : 45;
+        private int SegmentCount => Context.IsDeathMode ? 4 : 3;
 
         /// <summary>
-        /// 恢复阶段
+        /// 恢复阶段时长
         /// </summary>
-        private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
+        private int RecoveryPhase => Context.IsDeathMode ? 20 : 26;
 
-        /// <summary>
-        /// 总时长
-        /// </summary>
-        private int TotalDuration => GatherPhase + SplitPhase + ChargePhase + DashPhase + RecoveryPhase;
+        private int SegmentTime => SegmentDashTime + SegmentWhipTime;
+        private int TotalDuration => GatherPhase + SegmentCount * SegmentTime + RecoveryPhase;
 
-        /// <summary>
-        /// 分身数量
-        /// </summary>
-        private int ShadowCount => Context.IsDeathMode ? 4 : 3;
+        private float DashSpeed => Context.IsDeathMode ? 30f : 26f;
 
         private TwinsStateContext Context;
-        private Vector2[] shadowPositions;
-        private Vector2[] shadowDirections;
-        private Vector2 centerPoint;
-        private float dashSpeed;
-        private bool hasDashed;
         private int comboStep;
+        private int lastSegment = -1;
 
         public SpazmatismShadowDashState() : this(0) {
         }
@@ -71,10 +64,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
             Context = context;
-            shadowPositions = new Vector2[ShadowCount];
-            shadowDirections = new Vector2[ShadowCount];
-            dashSpeed = Context.IsDeathMode ? 26f : 22f;
-            hasDashed = false;
+            lastSegment = -1;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -88,23 +78,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             Timer++;
 
-            //阶段1: 聚集能量
             if (Timer <= GatherPhase) {
                 ExecuteGatherPhase(npc, player);
             }
-            //阶段2: 分身生成
-            else if (Timer <= GatherPhase + SplitPhase) {
-                ExecuteSplitPhase(npc, player);
+            else if (Timer <= GatherPhase + SegmentCount * SegmentTime) {
+                ExecuteDashSegments(npc, player);
             }
-            //阶段3: 蓄力
-            else if (Timer <= GatherPhase + SplitPhase + ChargePhase) {
-                ExecuteChargePhase(npc, player);
-            }
-            //阶段4: 冲刺
-            else if (Timer <= GatherPhase + SplitPhase + ChargePhase + DashPhase) {
-                ExecuteDashPhase(npc, player);
-            }
-            //阶段5: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
@@ -122,233 +101,119 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         }
 
         /// <summary>
-        /// 聚集阶段
+        /// 蓄力聚集阶段：弹簧悬停在玩家斜上方，能量内聚
         /// </summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
-            //移动到玩家附近
-            Vector2 targetPos = player.Center + new Vector2(0, -300);
-            MoveTo(npc, targetPos, 14f, 0.1f);
+            Vector2 targetPos = player.Center + new Vector2(npc.Center.X < player.Center.X ? -380 : 380, -260);
+            TwinsMotion.SpringHover(npc, targetPos, 0.018f, 0.09f);
             FaceTarget(npc, player.Center);
 
-            //设置蓄力状态
-            context.SetChargeState(8, progress * 0.3f);
+            //设置蓄力状态(影分身预警)
+            Context.SetChargeState(8, progress);
 
-            //聚集火焰粒子
-            if (!VaultUtils.isServer && Timer % 2 == 0) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float dist = 80f - progress * 40f;
-                Vector2 dustPos = npc.Center + angle.ToRotationVector2() * dist;
-                Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.SolarFlare, 0, 0, 100, default, 1.5f + progress);
-                dust.noGravity = true;
-                dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * 5f;
+            //能量内聚
+            if (Timer % 2 == 0) {
+                TwinsMotion.ChargeGatherFX(npc.Center, true, progress, 110f);
             }
 
             //聚集音效
-            if (Timer == 1) {
+            if (Timer == 1 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.3f, Volume = 0.8f }, npc.Center);
             }
+
+            //蓄力完成闪光
+            if (Timer == GatherPhase - 2 && !VaultUtils.isServer) {
+                PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, TwinsMotion.SpazColor, 0.2f)?
+                    .Configure(Vector2.One, 0f, 1.2f, 14);
+                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.3f }, npc.Center);
+            }
         }
 
         /// <summary>
-        /// 分身生成阶段
+        /// 三段变向弧线冲刺：每段起步瞬间爆发，全速段微弧追踪，
+        /// 衔接处急停甩头+残影爆发+火弹扇
         /// </summary>
-        private void ExecuteSplitPhase(NPC npc, Player player) {
+        private void ExecuteDashSegments(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
-            float progress = phaseTimer / (float)SplitPhase;
+            int segment = (phaseTimer - 1) / SegmentTime;
+            int inSegment = (phaseTimer - 1) % SegmentTime;
 
-            //记录中心点
-            centerPoint = player.Center;
+            //新冲刺段起步:瞬时变向爆发
+            if (segment != lastSegment) {
+                lastSegment = segment;
+                Context.ResetChargeState();
 
-            //减速悬停
-            npc.velocity *= 0.9f;
-            FaceTarget(npc, player.Center);
-
-            //计算分身位置(围绕玩家)
-            float baseRadius = 400f;
-            for (int i = 0; i < ShadowCount; i++) {
-                float angle = MathHelper.TwoPi / ShadowCount * i + MathHelper.PiOver2;
-                shadowPositions[i] = centerPoint + angle.ToRotationVector2() * baseRadius;
-                shadowDirections[i] = (centerPoint - shadowPositions[i]).SafeNormalize(Vector2.Zero);
-            }
-
-            //本体移动到第一个分身位置
-            Vector2 mainPos = shadowPositions[0];
-            npc.Center = Vector2.Lerp(npc.Center, mainPos, progress * 0.15f);
-
-            //设置蓄力状态
-            context.SetChargeState(8, 0.3f + progress * 0.3f);
-
-            //分身生成特效
-            if (!VaultUtils.isServer) {
-                int showCount = (int)(progress * ShadowCount) + 1;
-                showCount = Math.Min(showCount, ShadowCount);
-
-                for (int i = 0; i < showCount; i++) {
-                    if (phaseTimer % 3 == 0) {
-                        Vector2 pos = shadowPositions[i];
-                        //分身位置粒子
-                        for (int j = 0; j < 3; j++) {
-                            Dust dust = Dust.NewDustDirect(pos + Main.rand.NextVector2Circular(20, 20), 1, 1, DustID.SolarFlare, 0, 0, 150, default, 1.2f);
-                            dust.noGravity = true;
-                            dust.velocity = Main.rand.NextVector2Circular(2, 2);
-                        }
-                    }
-                }
-
-                //分身出现音效
-                if (phaseTimer == 1) {
-                    SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0.2f }, npc.Center);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
-        private void ExecuteChargePhase(NPC npc, Player player) {
-            int phaseTimer = Timer - GatherPhase - SplitPhase;
-            float progress = phaseTimer / (float)ChargePhase;
-
-            //锁定位置
-            npc.Center = shadowPositions[0];
-            npc.velocity = Vector2.Zero;
-
-            //面向中心
-            npc.rotation = shadowDirections[0].ToRotation() - MathHelper.PiOver2;
-
-            //设置蓄力状态
-            context.SetChargeState(8, 0.6f + progress * 0.4f);
-
-            //所有分身蓄力特效
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < ShadowCount; i++) {
-                    Vector2 pos = shadowPositions[i];
-                    Vector2 dir = shadowDirections[i];
-
-                    //能量聚集
-                    if (phaseTimer % 2 == 0) {
-                        float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                        float dist = 50f - progress * 30f;
-                        Vector2 dustPos = pos + angle.ToRotationVector2() * dist;
-                        Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.SolarFlare, 0, 0, 100, default, 1.4f);
-                        dust.noGravity = true;
-                        dust.velocity = (pos - dustPos).SafeNormalize(Vector2.Zero) * 4f;
-                    }
-
-                    //冲刺预警线
-                    if (phaseTimer % 3 == 0 && progress > 0.3f) {
-                        float lineDist = 30f + (progress - 0.3f) / 0.7f * 150f;
-                        Vector2 linePos = pos + dir * lineDist;
-                        Dust dust = Dust.NewDustDirect(linePos, 1, 1, DustID.Torch, 0, 0, 100, default, 1.3f);
-                        dust.noGravity = true;
-                        dust.velocity = dir * 3f;
-                    }
-                }
-
-                //蓄力完成闪光
-                if (phaseTimer == ChargePhase - 3) {
-                    for (int i = 0; i < ShadowCount; i++) {
-                        Vector2 pos = shadowPositions[i];
-                        for (int j = 0; j < 10; j++) {
-                            float angle = MathHelper.TwoPi / 10f * j;
-                            Vector2 vel = angle.ToRotationVector2() * 5f;
-                            Dust dust = Dust.NewDustDirect(pos, 1, 1, DustID.SolarFlare, vel.X, vel.Y, 0, default, 2f);
-                            dust.noGravity = true;
-                        }
-                    }
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.3f }, npc.Center);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 冲刺阶段
-        /// </summary>
-        private void ExecuteDashPhase(NPC npc, Player player) {
-            int phaseTimer = Timer - GatherPhase - SplitPhase - ChargePhase;
-            float progress = phaseTimer / (float)DashPhase;
-
-            //停止蓄力特效
-            context.ResetChargeState();
-
-            //本体冲刺
-            if (!hasDashed) {
-                hasDashed = true;
-                npc.velocity = shadowDirections[0] * dashSpeed;
-                //冲刺时启用碰撞伤害
+                Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, DashSpeed, 0.55f);
+                Vector2 dir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
+                TwinsMotion.DashLaunch(npc, dir, DashSpeed, spazTheme: true, boomStrength: 1.1f);
                 EnableContactDamage(npc);
 
-                //所有分身发射火球
-                if (!VaultUtils.isClient) {
-                    for (int i = 1; i < ShadowCount; i++) {
-                        Vector2 pos = shadowPositions[i];
-                        Vector2 dir = shadowDirections[i];
-
-                        //发射多发火球模拟分身冲刺
-                        for (int j = 0; j < 5; j++) {
-                            float delay = j * 0.15f;
-                            Vector2 shootVel = dir * (dashSpeed - j * 2f);
-                            Projectile.NewProjectile(
-                                npc.GetSource_FromAI(),
-                                pos + dir * (j * 30f),
-                                shootVel,
-                                ModContent.ProjectileType<Fireball>(),
-                                35,
-                                0f,
-                                Main.myPlayer
-                            );
-                        }
-                    }
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.2f + segment * 0.08f, Volume = 1.1f }, npc.Center);
                 }
-
-                SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.2f, Volume = 1.2f }, npc.Center);
             }
 
-            //本体朝向速度方向
-            FaceVelocity(npc);
+            if (inSegment < SegmentDashTime) {
+                //全速段:弧线追踪
+                float speed = npc.velocity.Length();
+                TwinsMotion.CurveChase(npc, player.Center, speed, 0.02f);
+                FaceVelocity(npc);
+                Context.PushDashVisuals(1f, 1f);
 
-            //逐渐减速
-            if (phaseTimer > DashPhase / 2) {
-                npc.velocity *= 0.96f;
+                //炽热残影拖尾
+                if (!VaultUtils.isServer) {
+                    PRTLoader.NewParticle<PRT_TwinsSpark>(
+                        npc.Center - npc.velocity.SafeNormalize(Vector2.Zero) * 32f + Main.rand.NextVector2Circular(13, 13),
+                        -npc.velocity * 0.16f, Color.White, Main.rand.NextFloat(1.1f, 1.8f))?.Configure(16, 1);
+                }
             }
+            else {
+                //甩头段
+                DisableContactDamage(npc);
+                TwinsMotion.BrakeAndWhip(npc, player.Center, 0.74f, 0.36f);
+                Context.PushDashVisuals(0.4f, 0.8f);
 
-            //分身冲刺轨迹特效
-            if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
-                for (int i = 0; i < ShadowCount; i++) {
-                    Vector2 pos = shadowPositions[i] + shadowDirections[i] * (phaseTimer * dashSpeed * 0.8f);
-                    Vector2 dir = shadowDirections[i];
+                //甩头瞬间:残影爆发+向后火弹扇
+                if (inSegment == SegmentDashTime) {
+                    if (!VaultUtils.isServer) {
+                        //残影爆发环
+                        PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, TwinsMotion.SpazColor, 0.18f)?
+                            .Configure(Vector2.One, 0f, 0.9f, 12);
+                        for (int i = 0; i < 12; i++) {
+                            PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center,
+                                VaultUtils.RandVr(5, 12), Color.White, Main.rand.NextFloat(1.2f, 2f))?.Configure(18, 1);
+                        }
+                        TwinsMotion.Shake(npc.Center, 3.5f, 7);
+                    }
 
-                    //火焰轨迹
-                    for (int j = 0; j < 3; j++) {
-                        Vector2 dustPos = pos + Main.rand.NextVector2Circular(15, 15);
-                        Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.SolarFlare, -dir.X * 3, -dir.Y * 3, 100, default, 1.5f);
-                        dust.noGravity = true;
+                    //向身后扇形抛出火球，封锁折返路线
+                    if (!VaultUtils.isClient) {
+                        Vector2 backDir = -npc.velocity.SafeNormalize(Vector2.UnitY);
+                        for (int i = -1; i <= 1; i++) {
+                            Vector2 vel = backDir.RotatedBy(i * 0.42f) * 7.5f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
+                                ModContent.ProjectileType<Fireball>(), 30, 0f, Main.myPlayer);
+                        }
                     }
                 }
             }
         }
 
         /// <summary>
-        /// 恢复阶段
+        /// 恢复阶段：减速面向玩家，残余火星
         /// </summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
-            //恢复阶段禁用碰撞伤害
             DisableContactDamage(npc);
-
-            //逐渐恢复
             npc.velocity *= 0.92f;
             FaceTarget(npc, player.Center);
 
-            //残余火焰粒子
             if (!VaultUtils.isServer && Timer % 4 == 0) {
-                Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(20, 20), 1, 1, DustID.SolarFlare, 0, -2, 100, default, 0.9f);
-                dust.noGravity = true;
+                PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + Main.rand.NextVector2Circular(20, 20),
+                    new Vector2(0, -2f), Color.White, 0.9f)?.Configure(14, 1);
             }
         }
-
-        private TwinsStateContext context => Context;
 
         public override void OnExit(TwinsStateContext context) {
             base.OnExit(context);

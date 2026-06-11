@@ -267,7 +267,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>
         /// 全局转移裁决（仅服务端/单人端驱动，客户端经状态槽同步）。
-        /// 优先级：死亡演出 > 白昼狂暴 > 金币枪狂怒 > 转阶段 > 传送恢复
+        /// 优先级：死亡演出 > 转阶段 > 白昼狂暴 > 金币枪狂怒 > 传送恢复
         /// </summary>
         private void EvaluateGlobalTransitions() {
             if (VaultUtils.isClient || stateMachine?.CurrentState == null) {
@@ -283,16 +283,26 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 stateMachine.ChangeState(new PrimeDeathState());
                 return;
             }
-            if (current is PrimeDeathState or PrimeDespawnState or PrimeIntroState) {
+            if (current is PrimeDeathState or PrimeDespawnState or PrimeIntroState or PrimePhaseTransitionState) {
+                return;
+            }
+
+            //转阶段：武装阶段生命过半或四肢被全歼，必定触发。
+            //不限定来源状态（毁灭者领域存续期间除外），优先级高于白昼狂暴/金币狂怒，
+            //保证阶段推进在任何战斗路径下都不会被卡住
+            if (phase == PrimePhase.Armed && stateContext.StormCount == 0
+                && (npc.life < npc.lifeMax / 2 || stateContext.NoArm)
+                && current is not PrimeMechStormState) {
+                stateMachine.ChangeState(new PrimePhaseTransitionState());
                 return;
             }
 
             //白昼狂暴
-            if (Main.IsItDay() && current is not PrimeDayEnrageState and not PrimePhaseTransitionState) {
+            if (Main.IsItDay() && current is not PrimeDayEnrageState) {
                 stateMachine.ChangeState(new PrimeDayEnrageState());
                 return;
             }
-            if (current is PrimeDayEnrageState or PrimePhaseTransitionState) {
+            if (current is PrimeDayEnrageState) {
                 return;
             }
 
@@ -302,14 +312,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
             if (current is PrimeCoinGunFuryState) {
-                return;
-            }
-
-            //转阶段：武装阶段生命过半或四肢被全歼
-            if (phase == PrimePhase.Armed && stateContext.StormCount == 0
-                && (npc.life < npc.lifeMax / 2 || stateContext.NoArm)
-                && current is PrimeCommandHoverState or PrimeSpinDashState) {
-                stateMachine.ChangeState(new PrimePhaseTransitionState());
                 return;
             }
 
@@ -511,15 +513,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        internal void SpawnEye() {
-            if (stateContext.BossRush || NPC.IsMechQueenUp) {
-                return;
-            }
-
+        /// <summary>
+        /// 服务端清场并召唤双子魔眼。
+        /// 返回 <see langword="true"/> 表示已处理完毕（含按规则不需要召唤的情形：客户端、Boss急速、Mechdusa），
+        /// 返回 <see langword="false"/> 表示本次尝试失败（如未找到锚点玩家），调用方应在后续帧重试
+        /// </summary>
+        internal bool SpawnEye() {
             //清场+生成 在客户端单跑会导致双子在客户端"被关掉"而服务端继续存在，
             //从而引发客户端不可见、状态错位等问题。整体改为服务端单点决策。
             if (VaultUtils.isClient) {
-                return;
+                return true;
+            }
+            //直接查询全局状态而不依赖 stateContext 的刷新时序，保证任何调用时机都稳定
+            if (CWRRef.GetBossRushActive() || NPC.IsMechQueenUp) {
+                return true;
+            }
+
+            //锚点玩家：优先当前目标，失效时回退到最近玩家
+            Player anchor = null;
+            if (npc.target >= 0 && npc.target < Main.maxPlayers && Main.player[npc.target].Alives()) {
+                anchor = Main.player[npc.target];
+            }
+            else if (npc.Center.TryFindClosestPlayer(out var findPlayer)) {
+                anchor = findPlayer;
+            }
+            if (anchor == null) {
+                return false;
             }
 
             foreach (var findN in Main.ActiveNPCs) {//在召唤前先清除所有已经有了的眼睛
@@ -529,10 +548,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            if (npc.Center.TryFindClosestPlayer(out var findPlayer)) {
-                VaultUtils.TrySpawnBossWithNet(findPlayer, NPCID.Retinazer, false);
-                VaultUtils.TrySpawnBossWithNet(findPlayer, NPCID.Spazmatism, false);
-            }
+            VaultUtils.TrySpawnBossWithNet(anchor, NPCID.Retinazer, false);
+            VaultUtils.TrySpawnBossWithNet(anchor, NPCID.Spazmatism, false);
+            return true;
         }
 
         internal void SpawnArm(int limit = 0) {

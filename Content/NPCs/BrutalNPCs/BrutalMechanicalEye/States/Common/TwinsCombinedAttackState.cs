@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,8 +12,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
     /// <summary>
-    /// 双子魔眼合击状态
-    /// 魔焰眼和激光眼同步进行碰撞合击
+    /// 双子超新星对撞合击：
+    /// 双眼集合对位→电荷蓄力→全速对撞，在碰撞点引发真正的超新星爆炸——
+    /// 多层冲击环、机械殉爆光团、强震屏，并炸出橙红/青紫双色交错弹幕环
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCombinedAttack, typeof(TwinsStateContext))]
     internal class TwinsCombinedAttackState : TwinsStateBase
@@ -19,50 +22,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override string StateName => "TwinsCombinedAttack";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsCombinedAttack;
 
-        /// <summary>
-        /// 集合阶段
-        /// </summary>
         private const int GatherPhase = 50;
-
-        /// <summary>
-        /// 对位阶段
-        /// </summary>
-        private const int AlignPhase = 40;
-
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
-        private const int ChargePhase = 60;
-
-        /// <summary>
-        /// 碰撞阶段
-        /// </summary>
+        private const int AlignPhase = 36;
+        private int ChargePhase => Context.IsDeathMode ? 52 : 62;
         private const int CollisionPhase = 30;
-
-        /// <summary>
-        /// 爆发阶段
-        /// </summary>
-        private const int BurstPhase = 40;
-
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        private const int BurstPhase = 42;
         private const int RecoveryPhase = 35;
+        private const int MaxPartnerWait = 120;
 
-        /// <summary>
-        /// 总时长
-        /// </summary>
-        private const int TotalDuration = GatherPhase + AlignPhase + ChargePhase + CollisionPhase + BurstPhase + RecoveryPhase;
+        private int TotalDuration => GatherPhase + AlignPhase + ChargePhase + CollisionPhase + BurstPhase + RecoveryPhase;
 
         private TwinsStateContext Context;
         private NPC partnerNpc;
         private Vector2 collisionPoint;
-        private Vector2 myStartPos;
-        private Vector2 partnerStartPos;
         private bool hasCollided;
         private bool hasBurst;
         private float chargeSpeed;
         private int comboStep;
+        private int partnerWait;
 
         public TwinsCombinedAttackState() : this(0) {
         }
@@ -76,23 +53,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             Context = context;
             hasCollided = false;
             hasBurst = false;
-            chargeSpeed = 20f;
+            chargeSpeed = context.IsDeathMode ? 26f : 23f;
+            partnerWait = 0;
 
             //寻找另一只眼睛
-            FindPartner(context);
-        }
-
-        /// <summary>
-        /// 寻找配对的眼睛
-        /// </summary>
-        private void FindPartner(TwinsStateContext context) {
-            int partnerType = context.IsSpazmatism ? NPCID.Retinazer : NPCID.Spazmatism;
-            foreach (var n in Main.npc) {
-                if (n.active && n.type == partnerType) {
-                    partnerNpc = n;
-                    break;
-                }
-            }
+            partnerNpc = TwinsStateContext.GetPartnerNpc(context.Npc.type);
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -101,6 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             //如果没有找到伙伴，直接返回普通状态
             if (partnerNpc == null || !partnerNpc.active) {
+                TwinsStateContext.ClearComboSignal();
                 return GetDefaultState();
             }
 
@@ -109,6 +75,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             //阶段1: 集合
             if (Timer <= GatherPhase) {
                 ExecuteGatherPhase(npc, player);
+
+                //集合末尾标记就绪，等待双方都集合完成再同拍对撞
+                if (Timer == GatherPhase) {
+                    TwinsStateContext.MarkComboReady(context.IsSpazmatism);
+                    if (!TwinsStateContext.BothComboReady && partnerWait < MaxPartnerWait) {
+                        Timer--;
+                        partnerWait++;
+                    }
+                }
             }
             //阶段2: 对位
             else if (Timer <= GatherPhase + AlignPhase) {
@@ -144,7 +119,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         /// </summary>
         private ITwinsState GetDefaultState() {
             if (Context.IsSpazmatism) {
-                return new Spazmatism.SpazmatismFlameChaseState(comboStep);
+                return new SpazmatismFlameChaseState(comboStep);
             }
             else {
                 return new RetinazerVerticalBarrageState(comboStep);
@@ -152,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         }
 
         /// <summary>
-        /// 集合阶段
+        /// 集合阶段：弹簧飞抵玩家两侧
         /// </summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
@@ -163,22 +138,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             //移动到玩家两侧
             float sideOffset = Context.IsSpazmatism ? -500f : 500f;
             Vector2 targetPos = player.Center + new Vector2(sideOffset, 0);
-            MoveTo(npc, targetPos, 16f, 0.1f);
+            TwinsMotion.SpringHover(npc, targetPos, 0.022f, 0.105f);
             FaceTarget(npc, player.Center);
 
             //设置蓄力状态
-            context.SetChargeState(10, progress * 0.2f);
+            Context.SetChargeState(10, progress * 0.2f);
 
             //集合粒子
-            if (!VaultUtils.isServer && Timer % 3 == 0) {
-                int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
-                Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(20, 20), 1, 1, dustType, 0, 0, 100, default, 1.2f);
-                dust.noGravity = true;
+            if (Timer % 3 == 0) {
+                TwinsMotion.ChargeGatherFX(npc.Center, Context.IsSpazmatism, progress * 0.4f, 60f);
             }
         }
 
         /// <summary>
-        /// 对位阶段
+        /// 对位阶段：精确对位并相互校准
         /// </summary>
         private void ExecuteAlignPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
@@ -190,80 +163,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             //精确对位
             float sideOffset = Context.IsSpazmatism ? -450f : 450f;
             Vector2 targetPos = player.Center + new Vector2(sideOffset, 0);
-            npc.Center = Vector2.Lerp(npc.Center, targetPos, 0.08f);
-            npc.velocity *= 0.9f;
+            npc.Center = Vector2.Lerp(npc.Center, targetPos, 0.1f);
+            npc.velocity *= 0.88f;
 
             //面向碰撞点
             FaceTarget(npc, collisionPoint);
 
-            //记录起始位置
-            myStartPos = npc.Center;
-            if (partnerNpc != null) {
-                partnerStartPos = partnerNpc.Center;
-            }
-
             //设置蓄力状态
-            context.SetChargeState(10, 0.2f + progress * 0.2f);
+            Context.SetChargeState(10, 0.2f + progress * 0.2f);
 
-            //对位连接线粒子
-            if (!VaultUtils.isServer && phaseTimer % 3 == 0 && partnerNpc != null) {
-                Vector2 midPoint = (npc.Center + partnerNpc.Center) / 2f;
-                int dustType = DustID.Electric;
-                Dust dust = Dust.NewDustDirect(midPoint + Main.rand.NextVector2Circular(30, 30), 1, 1, dustType, 0, 0, 100, default, 1f);
-                dust.noGravity = true;
-                dust.velocity = Vector2.Zero;
+            //双眼之间的电荷预兆
+            if (!VaultUtils.isServer && phaseTimer % 4 == 0 && partnerNpc != null) {
+                Vector2 linkPos = Vector2.Lerp(npc.Center, partnerNpc.Center, Main.rand.NextFloat());
+                PRTLoader.NewParticle<PRT_TwinsSpark>(linkPos + Main.rand.NextVector2Circular(16, 16),
+                    Main.rand.NextVector2Circular(1.5f, 1.5f), Color.White, Main.rand.NextFloat(0.8f, 1.2f))?.Configure(14, 0);
             }
         }
 
         /// <summary>
-        /// 蓄力阶段
+        /// 蓄力阶段：锁定绷紧，能量内聚到极限
         /// </summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - AlignPhase;
             float progress = phaseTimer / (float)ChargePhase;
 
-            //锁定位置
+            //锁定位置，末段绷紧颤抖
             npc.velocity = Vector2.Zero;
+            if (progress > 0.6f && !VaultUtils.isServer) {
+                npc.position += Main.rand.NextVector2Circular(2f, 2f) * progress;
+            }
             FaceTarget(npc, collisionPoint);
 
             //设置蓄力状态
-            context.SetChargeState(10, 0.4f + progress * 0.6f);
+            Context.SetChargeState(10, 0.4f + progress * 0.6f);
 
-            //强力蓄力特效
             if (!VaultUtils.isServer) {
-                int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
-
-                //能量聚集
+                //能量内聚(密度随进度提升)
                 if (phaseTimer % 2 == 0) {
-                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    float dist = 80f - progress * 50f;
-                    Vector2 dustPos = npc.Center + angle.ToRotationVector2() * dist;
-                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1, dustType, 0, 0, 100, default, 1.5f + progress);
-                    dust.noGravity = true;
-                    dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (5f + progress * 4f);
+                    TwinsMotion.ChargeGatherFX(npc.Center, Context.IsSpazmatism, progress, 100f);
                 }
 
-                //冲刺预警线
+                //冲刺预警线火花
                 if (phaseTimer % 3 == 0 && progress > 0.3f) {
                     Vector2 toCollision = (collisionPoint - npc.Center).SafeNormalize(Vector2.Zero);
-                    float lineDist = 50f + (progress - 0.3f) / 0.7f * 200f;
-                    Vector2 linePos = npc.Center + toCollision * lineDist;
-                    Dust dust = Dust.NewDustDirect(linePos, 1, 1, dustType, 0, 0, 100, default, 1.3f);
-                    dust.noGravity = true;
-                    dust.velocity = toCollision * 3f;
-                }
-
-                //双眼之间的能量连接
-                if (phaseTimer % 4 == 0 && partnerNpc != null && progress > 0.5f) {
-                    int linkPoints = 8;
-                    for (int i = 0; i < linkPoints; i++) {
-                        float t = i / (float)(linkPoints - 1);
-                        Vector2 linkPos = Vector2.Lerp(npc.Center, partnerNpc.Center, t);
-                        linkPos += Main.rand.NextVector2Circular(10, 10);
-                        Dust dust = Dust.NewDustDirect(linkPos, 1, 1, DustID.Electric, 0, 0, 100, default, 1.2f);
-                        dust.noGravity = true;
-                        dust.velocity = Vector2.Zero;
-                    }
+                    float lineDist = 50f + (progress - 0.3f) / 0.7f * 240f;
+                    PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + toCollision * lineDist,
+                        toCollision * 3f, Color.White, 1.1f)?.Configure(13, Context.IsSpazmatism ? 1 : 0);
                 }
 
                 //蓄力音效
@@ -271,59 +216,54 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                     SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0f, Volume = 0.9f }, npc.Center);
                 }
 
-                //蓄力完成
+                //蓄力完成:闪光环+咆哮
                 if (phaseTimer == ChargePhase - 3) {
-                    for (int i = 0; i < 15; i++) {
-                        float angle = MathHelper.TwoPi / 15f * i;
-                        Vector2 vel = angle.ToRotationVector2() * 6f;
-                        Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, dustType, vel.X, vel.Y, 0, default, 2f);
-                        dust.noGravity = true;
-                    }
+                    Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
+                    PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, themeColor, 0.16f)?
+                        .Configure(Vector2.One, 0f, 0.85f, 12);
                     SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.2f }, npc.Center);
                 }
             }
         }
 
         /// <summary>
-        /// 碰撞阶段
+        /// 碰撞阶段：音爆起步全速对撞，接近碰撞点保持高速(撞击感)
         /// </summary>
         private void ExecuteCollisionPhase(NPC npc, Player player) {
-            int phaseTimer = Timer - GatherPhase - AlignPhase - ChargePhase;
-            float progress = phaseTimer / (float)CollisionPhase;
-
             //停止蓄力特效
-            context.ResetChargeState();
+            Context.ResetChargeState();
 
             //向碰撞点冲刺
             if (!hasCollided) {
                 Vector2 toCollision = (collisionPoint - npc.Center).SafeNormalize(Vector2.Zero);
-                npc.velocity = toCollision * chargeSpeed;
+                TwinsMotion.DashLaunch(npc, toCollision, chargeSpeed, Context.IsSpazmatism, 1.2f);
                 hasCollided = true;
-
-                SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.1f, Volume = 1.2f }, npc.Center);
             }
+
+            //每帧启用碰撞伤害(控制器每帧会重置激光眼的伤害)
+            EnableContactDamage(npc);
 
             //朝向速度方向
             FaceVelocity(npc);
+            Context.PushDashVisuals(1f, 1f);
 
             //冲刺轨迹
-            if (!VaultUtils.isServer) {
-                int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
-                for (int i = 0; i < 3; i++) {
-                    Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(15, 15), 1, 1, dustType, -npc.velocity.X * 0.2f, -npc.velocity.Y * 0.2f, 100, default, 1.5f);
-                    dust.noGravity = true;
-                }
+            if (!VaultUtils.isServer && Timer % 2 == 0) {
+                PRTLoader.NewParticle<PRT_TwinsSpark>(
+                    npc.Center - npc.velocity.SafeNormalize(Vector2.Zero) * 28f + Main.rand.NextVector2Circular(13, 13),
+                    -npc.velocity * 0.16f, Color.White, Main.rand.NextFloat(1.1f, 1.7f))?
+                    .Configure(15, Context.IsSpazmatism ? 1 : 0);
             }
 
-            //接近碰撞点时减速
+            //临近碰撞点急刹(保留冲击姿态)
             float distToCollision = Vector2.Distance(npc.Center, collisionPoint);
-            if (distToCollision < 100f) {
-                npc.velocity *= 0.9f;
+            if (distToCollision < 90f) {
+                npc.velocity *= 0.82f;
             }
         }
 
         /// <summary>
-        /// 爆发阶段
+        /// 爆发阶段：超新星爆炸——殉爆光团+多层冲击环+双色交错弹幕环
         /// </summary>
         private void ExecuteBurstPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - AlignPhase - ChargePhase - CollisionPhase;
@@ -333,82 +273,88 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (!hasBurst) {
                 hasBurst = true;
 
-                //停止移动
+                //停止移动并关闭碰撞伤害
                 npc.velocity = Vector2.Zero;
+                DisableContactDamage(npc);
 
-                //发射弹幕
+                //超新星屏幕扭曲冲击波(由魔焰眼单侧生成，双色混合主题)
+                if (Context.IsSpazmatism && !VaultUtils.isClient) {
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), collisionPoint, Vector2.Zero,
+                        ModContent.ProjectileType<TwinsSupernovaBlast>(), 0, 0f, Main.myPlayer, 2f, 2f);
+                }
+
+                //各自发射本色弹幕环，相互交错形成双色超新星
                 if (!VaultUtils.isClient) {
-                    int projectileCount = 12;
-                    int projType = Context.IsSpazmatism ? ModContent.ProjectileType<Fireball>() : ModContent.ProjectileType<DeadLaser>();
-                    float baseSpeed = 8f;
+                    int projectileCount = 9;
+                    int projType = Context.IsSpazmatism
+                        ? ModContent.ProjectileType<Fireball>()
+                        : ModContent.ProjectileType<RetinazerLaser>();
+                    float baseSpeed = Context.IsSpazmatism ? 7.5f : 9f;
+                    //魔焰眼取偶数相位，激光眼取奇数相位，错开交叠
+                    float phaseOffset = Context.IsSpazmatism ? 0f : MathHelper.Pi / projectileCount;
 
                     for (int i = 0; i < projectileCount; i++) {
-                        float angle = MathHelper.TwoPi / projectileCount * i;
+                        float angle = MathHelper.TwoPi / projectileCount * i + phaseOffset;
                         Vector2 vel = angle.ToRotationVector2() * baseSpeed;
-                        Projectile.NewProjectile(
-                            npc.GetSource_FromAI(),
-                            collisionPoint,
-                            vel,
-                            projType,
-                            40,
-                            0f,
-                            Main.myPlayer
-                        );
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), collisionPoint, vel,
+                            projType, 38, 0f, Main.myPlayer);
                     }
 
-                    //第二波稍慢的弹幕
+                    //第二波慢速余焰(再错开半相位)
                     for (int i = 0; i < projectileCount / 2; i++) {
-                        float angle = MathHelper.TwoPi / (projectileCount / 2) * i + MathHelper.Pi / projectileCount;
-                        Vector2 vel = angle.ToRotationVector2() * (baseSpeed * 0.6f);
-                        Projectile.NewProjectile(
-                            npc.GetSource_FromAI(),
-                            collisionPoint,
-                            vel,
-                            projType,
-                            35,
-                            0f,
-                            Main.myPlayer
-                        );
+                        float angle = MathHelper.TwoPi / (projectileCount / 2) * i + phaseOffset + MathHelper.Pi / projectileCount * 0.5f;
+                        Vector2 vel = angle.ToRotationVector2() * (baseSpeed * 0.55f);
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), collisionPoint, vel,
+                            projType, 33, 0f, Main.myPlayer);
                     }
                 }
 
-                //爆发特效
+                //超新星爆炸演出(双方都会执行，叠加出更厚的爆炸，但音效只播一次由魔焰眼负责)
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.5f }, collisionPoint);
+                    Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
 
-                    //巨大的爆发粒子
-                    for (int i = 0; i < 60; i++) {
-                        float angle = MathHelper.TwoPi / 60f * i;
-                        Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 16f);
-                        int dustType = Main.rand.NextBool() ? DustID.SolarFlare : DustID.Vortex;
-                        Dust dust = Dust.NewDustDirect(collisionPoint, 1, 1, dustType, vel.X, vel.Y, 0, default, 2.5f);
-                        dust.noGravity = true;
+                    //殉爆光团核心
+                    PRTLoader.NewParticle<PRT_MechExplosion>(collisionPoint, Vector2.Zero, themeColor, 2.6f)?
+                        .Configure(36, themeColor);
+
+                    //多层错相冲击环
+                    PRTLoader.NewParticle<PRT_DWave>(collisionPoint, Vector2.Zero, themeColor, 0.3f)?
+                        .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 2.1f, 24);
+                    PRTLoader.NewParticle<PRT_DWave>(collisionPoint, Vector2.Zero, Color.White * 0.85f, 0.18f)?
+                        .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 1.3f, 18);
+
+                    //放射状能量火花
+                    for (int i = 0; i < 22; i++) {
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(collisionPoint, VaultUtils.RandVr(6, 16),
+                            Color.White, Main.rand.NextFloat(1.4f, 2.4f))?.Configure(24, Context.IsSpazmatism ? 1 : 0);
                     }
 
-                    //电弧粒子
-                    for (int i = 0; i < 30; i++) {
-                        Vector2 vel = Main.rand.NextVector2Circular(12, 12);
-                        Dust dust = Dust.NewDustDirect(collisionPoint, 1, 1, DustID.Electric, vel.X, vel.Y, 0, default, 1.8f);
-                        dust.noGravity = true;
+                    //烟尘余波
+                    for (int i = 0; i < 6; i++) {
+                        PRTLoader.NewParticle<PRT_Smoke>(collisionPoint + Main.rand.NextVector2Circular(30, 30),
+                            VaultUtils.RandVr(2, 5), themeColor * 0.6f, Main.rand.NextFloat(1f, 1.6f))?
+                            .Configure(40, 0.55f, 0.03f, true, 0f);
+                    }
+
+                    if (Context.IsSpazmatism) {
+                        SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.5f }, collisionPoint);
+                        SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion with { Pitch = -0.4f, Volume = 1.2f }, collisionPoint);
+                        TwinsMotion.Shake(collisionPoint, 13f, 26);
                     }
                 }
             }
 
-            //后退
+            //反冲后退(被爆炸冲击波推开)
             Vector2 retreatDir = (npc.Center - collisionPoint).SafeNormalize(Vector2.Zero);
-            npc.velocity = retreatDir * (8f * (1f - progress));
+            npc.velocity = retreatDir * 11f * (1f - CWRUtils.EaseOutQuad(progress));
+            FaceTarget(npc, collisionPoint);
+            Context.PushDashVisuals(0.4f * (1f - progress), 0.5f);
 
-            //后续波动粒子
-            if (!VaultUtils.isServer && phaseTimer % 3 == 0) {
-                float waveRadius = 50f + progress * 200f;
-                int wavePoints = 12;
-                for (int i = 0; i < wavePoints; i++) {
-                    float angle = MathHelper.TwoPi / wavePoints * i + progress * MathHelper.Pi;
-                    Vector2 wavePos = collisionPoint + angle.ToRotationVector2() * waveRadius;
-                    int dustType = Main.rand.NextBool() ? DustID.SolarFlare : DustID.Vortex;
-                    Dust dust = Dust.NewDustDirect(wavePos, 1, 1, dustType, 0, 0, 100, default, 1.3f * (1f - progress));
-                    dust.noGravity = true;
-                }
+            //后续扩散涟漪
+            if (!VaultUtils.isServer && phaseTimer % 8 == 0 && progress < 0.7f && Context.IsSpazmatism) {
+                PRTLoader.NewParticle<PRT_DWave>(collisionPoint, Vector2.Zero,
+                    Color.Lerp(TwinsMotion.SpazColor, TwinsMotion.RetinColor, Main.rand.NextFloat()) * 0.6f, 0.4f)?
+                    .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 1.6f, 20);
             }
         }
 
@@ -422,12 +368,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             //残余粒子
             if (!VaultUtils.isServer && Timer % 5 == 0) {
-                int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
-                Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(20, 20), 1, 1, dustType, 0, -2, 100, default, 0.8f);
-                dust.noGravity = true;
+                PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + Main.rand.NextVector2Circular(20, 20),
+                    new Vector2(0, -2f), Color.White, 0.85f)?.Configure(14, Context.IsSpazmatism ? 1 : 0);
             }
         }
 
-        private TwinsStateContext context => Context;
+        public override void OnExit(TwinsStateContext context) {
+            base.OnExit(context);
+            DisableContactDamage(context.Npc);
+            TwinsStateContext.ClearComboSignal();
+        }
     }
 }

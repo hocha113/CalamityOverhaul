@@ -16,7 +16,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         /// <summary>
         /// 连击索引计数器
         /// </summary>
-        private static int comboIndex = 0;
+        private int comboIndex;
+        /// <summary>
+        /// 连击重置计时器，过久未攻击则回到第一段
+        /// </summary>
+        private int comboResetTimer;
 
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
@@ -58,6 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //循环连击计数
             comboIndex = (comboIndex + 1) % 3;
+            comboResetTimer = 75;
 
             return false;
         }
@@ -85,6 +90,10 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void HoldItem(Player player) {
+            if (comboResetTimer > 0 && --comboResetTimer == 0) {
+                comboIndex = 0;
+            }
+
             //在手持时添加微弱的电光效果（白蓝色）
             if (Main.rand.NextBool(20)) {
                 Vector2 dustPos = player.Center + Main.rand.NextVector2Circular(30, 30);

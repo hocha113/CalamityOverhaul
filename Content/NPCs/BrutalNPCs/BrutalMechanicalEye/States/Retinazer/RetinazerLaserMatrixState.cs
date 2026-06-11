@@ -1,8 +1,12 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
@@ -161,12 +165,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 pointsToShow = Math.Min(pointsToShow, MatrixPointCount);
 
                 for (int i = 0; i < pointsToShow; i++) {
+                    //节点首次显形:涟漪标记
+                    if (phaseTimer == (int)(i * DeployPhase / (float)MatrixPointCount) + 1) {
+                        PRTLoader.NewParticle<PRT_DWave>(matrixPoints[i], Vector2.Zero, TwinsMotion.RetinColor, 0.1f)?
+                            .Configure(Vector2.One, 0f, 0.55f, 14);
+                        SoundEngine.PlaySound(SoundID.Item94 with { Pitch = 0.3f + i * 0.08f, Volume = 0.6f }, matrixPoints[i]);
+                    }
+
                     if (phaseTimer % 3 == 0) {
-                        //矩阵点粒子
+                        //矩阵节点能量标记
                         Vector2 pointPos = matrixPoints[i];
-                        Dust dust = Dust.NewDustDirect(pointPos + Main.rand.NextVector2Circular(10, 10), 1, 1, DustID.Vortex, 0, 0, 100, default, 1.5f);
-                        dust.noGravity = true;
-                        dust.velocity = Vector2.Zero;
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(pointPos + Main.rand.NextVector2Circular(12, 12),
+                            Main.rand.NextVector2Circular(1f, 1f), Color.White, Main.rand.NextFloat(1f, 1.5f))?.Configure(14, 0);
 
                         //连接线粒子
                         Vector2 toCenter = (centerPoint - pointPos).SafeNormalize(Vector2.Zero);
@@ -176,11 +186,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         lineDust.noGravity = true;
                         lineDust.velocity = toCenter * 2f;
                     }
-                }
-
-                //部署音效
-                if (phaseTimer == 1) {
-                    SoundEngine.PlaySound(SoundID.Item94 with { Pitch = 0.3f, Volume = 0.7f }, npc.Center);
                 }
             }
 
@@ -268,18 +273,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                             npc.GetSource_FromAI(),
                             pointPos,
                             toCenter * LaserSpeed,
-                            ProjectileID.DeathLaser,
+                            ModContent.ProjectileType<RetinazerLaser>(),
                             28,
                             0f,
                             Main.myPlayer
                         );
 
-                        //额外发射穿透激光
+                        //额外发射慢速穿透激光
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
                             pointPos,
                             toCenter * (LaserSpeed * 0.7f),
-                            ProjectileID.DeathLaser,
+                            ModContent.ProjectileType<RetinazerLaser>(),
                             24,
                             0f,
                             Main.myPlayer
@@ -287,18 +292,21 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     }
                 }
 
-                //发射特效
+                //发射特效:每个节点迸发火花与涟漪
                 if (!VaultUtils.isServer) {
                     for (int i = 0; i < MatrixPointCount; i++) {
                         Vector2 pointPos = matrixPoints[i];
                         Vector2 toCenter = (centerPoint - pointPos).SafeNormalize(Vector2.Zero);
 
-                        for (int j = 0; j < 10; j++) {
-                            Vector2 dustVel = toCenter.RotatedBy((Main.rand.NextFloat() - 0.5f) * 0.4f) * Main.rand.NextFloat(6f, 12f);
-                            Dust dust = Dust.NewDustDirect(pointPos, 1, 1, DustID.Vortex, dustVel.X, dustVel.Y, 0, default, 1.5f);
-                            dust.noGravity = true;
+                        PRTLoader.NewParticle<PRT_DWave>(pointPos, Vector2.Zero, TwinsMotion.RetinColor, 0.12f)?
+                            .Configure(new Vector2(1.3f, 0.7f), toCenter.ToRotation() + MathHelper.PiOver2, 0.6f, 12);
+                        for (int j = 0; j < 7; j++) {
+                            PRTLoader.NewParticle<PRT_TwinsSpark>(pointPos,
+                                toCenter.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(5f, 10f),
+                                Color.White, Main.rand.NextFloat(1f, 1.6f))?.Configure(16, 0);
                         }
                     }
+                    TwinsMotion.Shake(centerPoint, 4f, 10);
                 }
             }
 

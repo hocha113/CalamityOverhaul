@@ -1,9 +1,10 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -24,7 +25,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// <summary>
         /// 连击索引：在三段刺击之间循环，越靠后能量越强
         /// </summary>
-        private static int comboIndex = 0;
+        private int comboIndex;
         /// <summary>
         /// 连击重置计时器，超过这个时间没有再次攻击就重置连击
         /// </summary>
@@ -99,26 +100,32 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     /// <summary>
     /// 寰宇灾厄长矛的持握弹幕
+    /// <br/>三段渐强刺击: 轻刺 → 重刺 → 终结刺，刺击顶点释放月牙能量冲击波
     /// </summary>
-    internal class CosmicCalamityHeld : BaseKnife
+    internal class CosmicCalamityHeld : BaseHeldProj
     {
-        public override int TargetID => ModContent.ItemType<CosmicCalamity>();
-        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "AstralBlade_Bar";
+        public override string Texture => CWRConstant.Item_Melee + "CosmicCalamity";
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<CosmicCalamity>();
 
-        /// <summary>
-        /// 当前连击阶段：0=轻刺，1=重刺，2=终结刺
-        /// </summary>
-        private int comboStage;
-        /// <summary>
-        /// 是否已经生成过本次刺击对应的月牙冲击波
-        /// </summary>
-        private bool waveSpawned;
+        /// <summary>当前连击阶段：0=轻刺，1=重刺，2=终结刺</summary>
+        private int ComboStage => (int)Projectile.ai[0] % 3;
+
+        private bool IsFinisher => ComboStage == 2;
+
+        //阶段时长（逻辑帧，受攻速缩放）
+        private float WindupTime => 4f + ComboStage * 1.5f;
+        private float StabTime => 7f + ComboStage;
+        private float RecoverTime => 8f;
+        private float TotalTime => WindupTime + StabTime + RecoverTime;
+        //刺击顶点的突出距离，阶段越深扎得越远
+        private float StabReach => 96f + ComboStage * 26f;
+        //矛刃判定长度（从持握点向矛尖延伸）
+        private const float BladeLength = 130f;
 
         /// <summary>
         /// 获取本次连击对应的冲击波威力倍率
         /// </summary>
-        private float WaveDamageMul => comboStage switch {
+        private float WaveDamageMul => ComboStage switch {
             0 => 0.55f,
             1 => 0.75f,
             2 => 1.10f,
@@ -133,102 +140,179 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static readonly Color BaseEdge = new(40, 14, 90);
         private static readonly Color BaseAccent = new(255, 90, 200);
 
-        public override void SetKnifeProperty() {
-            AnimationMaxFrme = 1;
+        private float elapsed;
+        private float speedMul = 1f;
+        private Vector2 stabUnit;
+        /// <summary>当前持出距离</summary>
+        private float holdout;
+        private bool waveSpawned;
+        private readonly HashSet<int> hitNPCs = [];
+
+        public override void SetDefaults() {
             Projectile.width = Projectile.height = 96;
-            canDrawSlashTrail = true;
-            drawTrailHighlight = true;
-            distanceToOwner = 26;
-            drawTrailBtommWidth = 30;
-            drawTrailTopWidth = 90;
-            drawTrailCount = 12;
-            Length = 78;
-            Projectile.scale = 1f;
-            ShootSpeed = 22f;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 8 * UpdateRate;
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.ownerHitCheck = true;
+            Projectile.timeLeft = 60;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
+            Projectile.CWR().PierceResist = true;
         }
 
-        public override void KnifeInitialize() {
-            comboStage = (int)Projectile.ai[0] % 3;
-            waveSpawned = false;
+        public override bool ShouldUpdatePosition() => false;
+
+        public override bool? CanDamage() => elapsed >= WindupTime && elapsed <= WindupTime + StabTime + 1f;
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (CanDamage() != true) {
+                return false;
+            }
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + stabUnit * (holdout + BladeLength);
+            float collisionPoint = 0f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , hand, tip, 34f, ref collisionPoint);
         }
 
-        public override bool PreSwingAI() {
-            //不同阶段刺击参数：阶段越深、距离越长、生命越长
-            float initialLen = 90f + comboStage * 18f;
-            int lifetime = 22 + comboStage * 4;
-            int maxLen = 220 + comboStage * 36;
-            int minLen = 80 + comboStage * 10;
-            float denom = 460f - comboStage * 50f;
+        public override void Initialize() {
+            stabUnit = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
+            Owner.direction = Math.Sign(stabUnit.X) == 0 ? Owner.direction : Math.Sign(stabUnit.X);
 
-            StabBehavior(
-                initialLength: initialLen,
-                lifetime: lifetime,
-                scaleFactorDenominator: denom,
-                minLength: minLen,
-                maxLength: maxLen,
-                canDrawSlashTrail: true
-            );
+            speedMul = Owner.GetWeaponAttackSpeed(Item);
+            if (speedMul <= 0f) {
+                speedMul = 1f;
+            }
 
-            if (Time == 1) {
+            if (!VaultUtils.isServer) {
                 SpawnChargeUpParticles();
             }
-
-            //刺击中段持续吐出能量粒子，像星屑撒下
-            if (Time % UpdateRate == 0 && Time < lifetime * UpdateRate * 0.7f && !VaultUtils.isServer) {
-                SpawnContinuousParticles();
-            }
-
-            return false;
         }
 
-        public override void Shoot() {
-            if (waveSpawned) {
+        public override void AI() {
+            if (Item.type != ModContent.ItemType<CosmicCalamity>()) {
+                Projectile.Kill();
                 return;
             }
-            waveSpawned = true;
+            if (elapsed >= TotalTime) {
+                Projectile.Kill();
+                return;
+            }
 
+            float stabEnd = WindupTime + StabTime;
+
+            if (elapsed < WindupTime) {
+                //回拉蓄力
+                float t = elapsed / WindupTime;
+                holdout = MathHelper.Lerp(16f, -22f, MathF.Sin(t * MathHelper.PiOver2));
+            }
+            else if (elapsed < stabEnd) {
+                //渐强突刺
+                float t = (elapsed - WindupTime) / StabTime;
+                float eased = 1f - MathF.Pow(1f - t, 3.8f + ComboStage * 0.3f);
+                holdout = MathHelper.Lerp(-22f, StabReach, eased);
+
+                if (!waveSpawned && t >= 0.45f) {
+                    waveSpawned = true;
+                    FireCrescentWave();
+                }
+
+                //刺击中段持续吐出能量粒子，像星屑撒下
+                if (!VaultUtils.isServer && t < 0.75f) {
+                    SpawnContinuousParticles();
+                }
+            }
+            else {
+                //收矛
+                float t = (elapsed - stabEnd) / RecoverTime;
+                holdout = MathHelper.Lerp(StabReach, 10f, t * t * (3f - 2f * t));
+            }
+
+            UpdatePlayerPose();
+
+            //矛尖光照（轻柔的紫光）
+            Vector2 lightAt = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.85f);
+            Lighting.AddLight(lightAt, 0.45f, 0.25f, 0.85f);
+
+            //每两帧在矛尖位置喷出星屑
+            if (!VaultUtils.isServer && elapsed % 2f < speedMul) {
+                Vector2 tip = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.9f);
+                Vector2 vel = Main.rand.NextVector2Circular(2f, 2f) + stabUnit * Main.rand.NextFloat(0.5f, 1.8f);
+                Color c = Color.Lerp(BaseCore, BaseMid, Main.rand.NextFloat());
+                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(4f, 4f), vel,
+                    c, Main.rand.NextFloat(0.5f, 1f)).Configure(Main.rand.Next(10, 18), opacity: 0.4f, squishStrenght: 1.3f, _entity: Owner, _followingRateRatio: 0.6f);
+            }
+
+            elapsed += speedMul;
+        }
+
+        private void FireCrescentWave() {
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
 
             int waveType = ModContent.ProjectileType<CosmicCrescentWave>();
-            Vector2 dir = ShootVelocity.SafeNormalize(Vector2.UnitX);
-            Vector2 spawnPos = ShootSpanPos + dir * 14f;
+            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.7f);
             //冲击波本身飞行较慢，让"月牙"成为可被看到的表演而非一闪即逝
-            float waveSpeed = 6.5f + comboStage * 1.4f;
+            float waveSpeed = 6.5f + ComboStage * 1.4f;
             int waveDamage = (int)(Projectile.damage * WaveDamageMul);
 
             Projectile.NewProjectile(
-                Source,
+                Owner.GetSource_ItemUse(Item),
                 spawnPos,
-                dir * waveSpeed,
+                stabUnit * waveSpeed,
                 waveType,
                 waveDamage,
                 Projectile.knockBack * 0.8f,
                 Owner.whoAmI,
-                ai0: comboStage,
+                ai0: ComboStage,
                 ai1: Main.rand.NextFloat(1000f)
             );
 
             //终结刺额外播放一次重音 + 屏幕震动反馈
-            if (comboStage == 2) {
-                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 0.55f, Pitch = -0.25f }, ShootSpanPos);
+            if (IsFinisher) {
+                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 0.55f, Pitch = -0.25f }, spawnPos);
                 if (CWRServerConfig.Instance.ScreenVibration) {
                     Main.instance.CameraModifiers.Add(new PunchCameraModifier(
-                        Owner.Center, dir, 4.5f, 6f, 8, 500f, FullName));
+                        Owner.Center, stabUnit, 4.5f, 6f, 8, 500f, FullName));
                 }
             }
         }
 
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+        private void UpdatePlayerPose() {
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.itemTime = Owner.itemAnimation = 2;
+            Owner.itemRotation = (stabUnit * Owner.direction).ToRotation();
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, stabUnit.ToRotation() - MathHelper.PiOver2);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.5f);
+            Projectile.rotation = stabUnit.ToRotation();
+            Projectile.timeLeft = 60;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.HitDirectionOverride = stabUnit.X > 0 ? 1 : -1;
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.425f;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //转发物品命中钩子，维持装备与饰品的近战联动
+            if (hitNPCs.Add(target.whoAmI)) {
+                ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
+                NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
+                PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
+            }
+
             //命中粒子：颗粒大小受连击阶段影响
             if (VaultUtils.isServer) {
                 return;
             }
 
-            int sparkCount = 6 + comboStage * 3;
+            int sparkCount = 6 + ComboStage * 3;
             for (int i = 0; i < sparkCount; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(7f, 7f);
                 Color sparkColor = Color.Lerp(BaseCore, BaseAccent, Main.rand.NextFloat());
@@ -248,28 +332,9 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        public override void MeleeEffect() {
-            //每两帧在矛尖位置喷出星屑
-            if (Time % (2 * UpdateRate) == 0 && !VaultUtils.isServer) {
-                Vector2 tip = Projectile.Center + safeInSwingUnit * Length * 0.95f;
-                Vector2 vel = Main.rand.NextVector2Circular(2f, 2f) + safeInSwingUnit * Main.rand.NextFloat(0.5f, 1.8f);
-                Color c = Color.Lerp(BaseCore, BaseMid, Main.rand.NextFloat());
-                PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(4f, 4f), vel,
-                    c, Main.rand.NextFloat(0.5f, 1f)).Configure(Main.rand.Next(10, 18), opacity: 0.4f, squishStrenght: 1.3f, _entity: Owner, _followingRateRatio: 0.6f);
-            }
-
-            //矛尖光照（轻柔的紫光）
-            Vector2 lightAt = Projectile.Center + safeInSwingUnit * Length * 0.8f;
-            Lighting.AddLight(lightAt, 0.45f, 0.25f, 0.85f);
-        }
-
         private void SpawnChargeUpParticles() {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            Vector2 origin = Owner.Center + safeInSwingUnit * 30f;
-            int count = 8 + comboStage * 4;
+            Vector2 origin = Owner.Center + stabUnit * 30f;
+            int count = 8 + ComboStage * 4;
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.1f, 0.1f);
                 float radius = Main.rand.NextFloat(34f, 56f);
@@ -282,10 +347,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SpawnContinuousParticles() {
-            Vector2 tip = Projectile.Center + safeInSwingUnit * Length * 0.85f;
+            Vector2 tip = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.85f);
             //深紫到亮蓝的两个粒子流
             if (Main.rand.NextBool(2)) {
-                Vector2 vel = -safeInSwingUnit * Main.rand.NextFloat(1.2f, 3.4f)
+                Vector2 vel = -stabUnit * Main.rand.NextFloat(1.2f, 3.4f)
                               + Main.rand.NextVector2Circular(1.6f, 1.6f);
                 PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(6f, 6f), vel,
                     Color.Lerp(BaseMid, BaseEdge, Main.rand.NextFloat()) * 0.95f,
@@ -293,30 +358,59 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             if (Main.rand.NextBool(3)) {
                 PRTLoader.NewParticle<PRT_Light>(tip + Main.rand.NextVector2Circular(3f, 3f),
-                    -safeInSwingUnit * 1.2f + Main.rand.NextVector2Circular(0.8f, 0.8f),
+                    -stabUnit * 1.2f + Main.rand.NextVector2Circular(0.8f, 0.8f),
                     Color.Lerp(BaseCore, BaseAccent, Main.rand.NextFloat()) * 0.85f,
                     Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(10, 18), opacity: 0.35f, squishStrenght: 1.2f);
             }
         }
 
-        public override void PostDrawSwing(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawPos
-            , Rectangle rectangle, Color color, float roting, Vector2 drawOrigin, float scale, SpriteEffects spriteEffects) {
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D tex = TextureValue;
+            Vector2 origin = tex.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            //贴图矛尖指向右上，刺击时沿刺击方向旋转
+            float rot = Projectile.rotation + MathHelper.PiOver4;
+            SpriteEffects effect = SpriteEffects.None;
+            if (Owner.direction < 0) {
+                rot += MathHelper.PiOver2;
+                effect = SpriteEffects.FlipHorizontally;
+            }
+
+            //突刺阶段的残影
+            if (CanDamage() == true) {
+                for (int i = 1; i <= 3; i++) {
+                    float ghostHoldout = holdout - i * 16f;
+                    if (ghostHoldout < -20f) {
+                        continue;
+                    }
+                    Vector2 pos = hand + stabUnit * (ghostHoldout + BladeLength * 0.5f) - Main.screenPosition;
+                    Color trailColor = BaseMid * (0.32f * (1f - i / 4f));
+                    trailColor.A = 0;
+                    Main.EntitySpriteDraw(tex, pos, null, trailColor, rot, origin, Projectile.scale, effect, 0);
+                }
+            }
+
+            //矛体本体
+            Vector2 drawPos = hand + stabUnit * (holdout + BladeLength * 0.5f) - Main.screenPosition;
+            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, rot, origin, Projectile.scale, effect, 0);
+
             //多层宇宙紫光晕，营造"能量饱和"的厚重感
-            float pulse = 0.5f + 0.5f * MathF.Sin(Time * 0.35f + comboStage);
+            float pulse = 0.5f + 0.5f * MathF.Sin(elapsed * 0.35f + ComboStage);
             for (int i = 0; i < 4; i++) {
                 float alpha = 0.30f - i * 0.06f;
                 if (alpha <= 0f) {
                     continue;
                 }
-                float layerScale = scale * (1f + i * 0.025f);
+                float layerScale = Projectile.scale * (1f + i * 0.025f);
                 Color glow = i switch {
                     0 => new Color(180, 110, 255, 0),
                     1 => new Color(120, 180, 255, 0),
                     2 => new Color(255, 90, 200, 0),
                     _ => new Color(220, 220, 255, 0)
                 } * (alpha * (0.55f + pulse * 0.45f));
-                spriteBatch.Draw(texture, drawPos, rectangle, glow, roting, drawOrigin, layerScale, spriteEffects, 0);
+                Main.EntitySpriteDraw(tex, drawPos, null, glow, rot, origin, layerScale, effect, 0);
             }
+            return false;
         }
     }
 

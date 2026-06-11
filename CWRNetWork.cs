@@ -50,6 +50,7 @@ namespace CalamityOverhaul
         CyberBanishStart,
         CyberBossExecutionStart,
         HackProtocolApply,
+        CrabulonRecall,
     }
 
     public static class CWRNetWork

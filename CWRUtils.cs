@@ -417,32 +417,6 @@ namespace CalamityOverhaul
             .AddOnCraftCallback(CWRCrafted.SpawnAction);
 
         /// <summary>
-        /// 用于将一个武器设置为手持刀剑类，这个函数若要正确设置物品的近战属性，需要让其在初始化函数中最后调用
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item"></param>
-        /// <param name="dontStopOrigShoot"></param>
-        public static void SetKnifeHeld<T>(this Item item, bool dontStopOrigShoot = false) where T : ModProjectile {
-            if (item.shoot == ProjectileID.None || !item.noUseGraphic
-                || item.DamageType == CWRRef.GetTrueMeleeDamageClass()
-                || item.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass()) {
-                ItemOverride.ItemMeleePrefixDic[item.type] = true;
-            }
-            item.noMelee = true;
-            item.noUseGraphic = true;
-            item.CWR().IsShootCountCorlUse = true;
-            item.CWR().IsHeldSwing = true;
-            item.CWR().IsHeldSwingDontStopOrigShoot = dontStopOrigShoot;
-            item.CWR().SetHeldSwingOrigShootID = item.shoot;//提前存储一下射弹值
-            item.CWR().WeaponInSetKnifeHeld = true;
-            item.shoot = ModContent.ProjectileType<T>();
-            if (item.shootSpeed <= 0) {
-                //不能让速度模长为0，这会让向量失去方向的性质，从而影响一些刀剑的方向判定
-                item.shootSpeed = 0.0001f;
-            }
-        }
-
-        /// <summary>
         /// 快捷的将一个物品实例设置为手持对象
         /// </summary>
         /// <typeparam name="T"></typeparam>

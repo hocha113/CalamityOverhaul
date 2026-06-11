@@ -1,8 +1,12 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
@@ -258,7 +262,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (6f + progress * 5f);
             }
 
-            //两眼之间的能量流动
+            //两眼之间的高压电弧流动
             if (!VaultUtils.isServer && phaseTimer % 2 == 0 && partnerNpc != null && partnerNpc.active) {
                 float t = Main.rand.NextFloat();
                 Vector2 linePos = Vector2.Lerp(npc.Center, partnerNpc.Center, t);
@@ -266,9 +270,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 if (!Context.IsSpazmatism) {
                     flowDir = -flowDir;
                 }
-                int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
-                Dust dust = Dust.NewDustDirect(linePos, 1, 1, dustType, flowDir.X * 4, flowDir.Y * 4, 100, default, 1.3f);
-                dust.noGravity = true;
+                //沿连线奔涌的能量束(带垂直抖动模拟电弧)
+                Vector2 perp = flowDir.RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(t * 14f + Main.GlobalTimeWrappedHourly * 10f) * 9f;
+                PRTLoader.NewParticle<PRT_TwinsSpark>(linePos + perp, flowDir * 6f,
+                    Color.White, Main.rand.NextFloat(1f, 1.6f) * (0.7f + progress * 0.5f))?
+                    .Configure(12, Context.IsSpazmatism ? 1 : 0);
+            }
+
+            //节拍式蓄力震感
+            if (phaseTimer % 16 == 0 && !VaultUtils.isServer) {
+                TwinsMotion.Shake(npc.Center, 1.5f + progress * 3f, 8);
             }
 
             //蓄力音效
@@ -287,7 +298,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             //跟随玩家
             originalPosition += player.velocity;
 
-            //爆发瞬间
+            //爆发瞬间:同步咆哮+殉爆光团+多层冲击环+强震屏
             if (!hasBurst) {
                 hasBurst = true;
 
@@ -295,24 +306,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.3f }, npc.Center);
                 SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.2f }, npc.Center);
 
-                //产生爆发粒子
+                //屏幕扭曲冲击波(由魔焰眼单侧生成，双色混合主题)
+                if (Context.IsSpazmatism && !VaultUtils.isClient) {
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
+                        ModContent.ProjectileType<TwinsSupernovaBlast>(), 0, 0f, Main.myPlayer, 1f, 2f);
+                }
+
                 if (!VaultUtils.isServer) {
+                    Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
+
+                    //过载能量光团
+                    PRTLoader.NewParticle<PRT_MechExplosion>(npc.Center, Vector2.Zero, themeColor, 1.8f)?
+                        .Configure(30, themeColor);
+
+                    //双层错相冲击环
+                    PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, themeColor, 0.25f)?
+                        .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 1.7f, 22);
+                    PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, Color.White * 0.8f, 0.15f)?
+                        .Configure(Vector2.One, Main.rand.NextFloat(MathHelper.TwoPi), 1f, 16);
+
+                    //放射状能量火花
+                    for (int i = 0; i < 18; i++) {
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center, VaultUtils.RandVr(7, 16),
+                            Color.White, Main.rand.NextFloat(1.3f, 2.2f))?.Configure(22, Context.IsSpazmatism ? 1 : 0);
+                    }
+
+                    //经典爆发尘埃打底
                     int dustType = Context.IsSpazmatism ? DustID.SolarFlare : DustID.Vortex;
-                    for (int i = 0; i < 60; i++) {
-                        float angle = MathHelper.TwoPi / 60f * i;
+                    for (int i = 0; i < 40; i++) {
+                        float angle = MathHelper.TwoPi / 40f * i;
                         Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 20f);
                         Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, dustType, vel.X, vel.Y, 100, default, 2.5f);
                         dust.noGravity = true;
                     }
 
-                    //环形光波
-                    for (int i = 0; i < 40; i++) {
-                        float angle = MathHelper.TwoPi / 40f * i;
-                        Vector2 vel = angle.ToRotationVector2() * 25f;
-                        int glowDust = Context.IsSpazmatism ? DustID.Torch : DustID.PurpleTorch;
-                        Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, glowDust, vel.X, vel.Y, 0, default, 3f);
-                        dust.noGravity = true;
-                        dust.fadeIn = 1.5f;
+                    //强震屏(只由魔焰眼触发一次，避免双倍震动)
+                    if (Context.IsSpazmatism) {
+                        TwinsMotion.Shake(npc.Center, 11f, 24);
                     }
                 }
 

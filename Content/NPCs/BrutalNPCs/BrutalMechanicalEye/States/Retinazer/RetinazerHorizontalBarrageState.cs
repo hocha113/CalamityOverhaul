@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
@@ -42,32 +44,31 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 return new RetinazerSoloRageState();
             }
 
-            //计算目标位置，在玩家上方
-            Vector2 targetPos = player.Center + new Vector2(0, -400);
-
-            //保持X轴对齐
-            float xDiff = player.Center.X - npc.Center.X;
-            npc.velocity.X = MathHelper.Lerp(npc.velocity.X, xDiff * 0.1f, 0.1f);
-            npc.velocity.Y = MathHelper.Lerp(npc.velocity.Y, (targetPos.Y - npc.Center.Y) * 0.05f, 0.1f);
+            //弹簧悬停在玩家上方，保持X轴跟随
+            Vector2 targetPos = player.Center + new Vector2(0, -400) + TwinsMotion.BreathingOffset(seed: 3.6f, 10f);
+            TwinsMotion.SpringHover(npc, targetPos, 0.016f, 0.09f);
 
             FaceTarget(npc, player.Center);
 
             Timer++;
 
-            //发射激光
+            //发射预判激光
             if (Timer % RapidFireRate == 0) {
+                Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, 48f, 0.45f);
+                Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
                 if (!VaultUtils.isClient) {
-                    Vector2 shootVel = GetDirectionToTarget(context) * 16f;
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
-                        npc.Center,
-                        shootVel,
-                        ProjectileID.DeathLaser,
+                        npc.Center + shootDir * 38f,
+                        shootDir * 16f,
+                        ModContent.ProjectileType<RetinazerLaser>(),
                         24,
                         0f,
                         Main.myPlayer
                     );
                 }
+                //后坐力
+                npc.velocity -= shootDir * 4f;
                 SoundEngine.PlaySound(SoundID.Item12, npc.Center);
             }
 

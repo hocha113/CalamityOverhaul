@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,8 +36,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const float Phase5AerialTimerValue = AerialPhaseThreshold;
         private const float Phase4AerialTimerValue = AerialPhaseThreshold * 0.5f;
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
-        private float bodyCount;
+        protected float bodyCount;
         private bool IsBodyAlt => bodyCount % 2 == 0;
+        /// <summary>本节在整条蠕虫上的位置比例（0=贴近头部, 1=尾部），用于充能波读取</summary>
+        protected virtual float BodyFraction => MathHelper.Clamp(bodyCount / DestroyerHeadAI.BodyCount, 0f, 1f);
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
         private bool Phase2 => LifeRatio < (CWRWorld.Death ? 0.4f : 0.25f);
@@ -187,9 +190,37 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //冲刺！冲刺！冲刺！冲！冲！冲！
             Move(segmentVelocity);
 
+            //高速运动时沿途甩出火花 + 充能波动态光照（纯客户端视觉，屏幕外自动剔除）
+            if (!VaultUtils.isServer) {
+                float segSpeed = (npc.position - npc.oldPosition).Length();
+                if (segSpeed > 26f && Main.rand.NextBool(9)) {
+                    DestroyerMotionFX.SpawnSegmentSpeedSparks(npc, MathHelper.Clamp(segSpeed / 50f, 0.5f, 1.3f));
+                }
+                float lightWave = DestroyerChargeWave.Read(npc.realLife, BodyFraction);
+                if (lightWave > 0.05f) {
+                    Lighting.AddLight(npc.Center, DestroyerMotionFX.HotOrange.ToVector3() * lightWave);
+                }
+            }
+
             DestroyerHeadAI.ForcedNetUpdating(npc);
             time++;
             return false;
+        }
+
+        /// <summary>
+        /// 读取头部共享视觉状态并叠加本节位置上的充能波，返回最终滤镜参数
+        /// </summary>
+        protected (MechBossVisualMode mode, float intensity, float progress) ReadSegmentVisual(int controllerId, out float wave) {
+            var (mode, intensity, progress) = MechBossVisualState.Read(controllerId);
+            wave = DestroyerChargeWave.Read(controllerId, BodyFraction);
+            if (wave > 0.01f) {
+                if (mode == MechBossVisualMode.Idle) {
+                    mode = MechBossVisualMode.Warning;
+                }
+                intensity = Math.Max(intensity, wave);
+                progress = Math.Max(progress, wave);
+            }
+            return (mode, intensity, progress);
         }
 
         //提取方法，避免重复遍历
@@ -577,13 +608,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 Vector2 drawPos = npc.Center - Main.screenPosition;
                 Vector2 origin = rectangle.Size() / 2;
 
-                //外圈描边光环——夜晚时也能看清整条蠕虫的走向，读取头部 (npc.realLife) 共享状态
+                //读取头部共享状态并叠加本节充能波——"电流沿躯体奔跑"的可见波
                 int controllerId = (int)npc.realLife;
-                MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, value, drawPos, rectangle,
-                    npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, controllerId);
+                var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
+
+                //外圈描边光环——夜晚时也能看清整条蠕虫的走向
+                MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
+                    npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
+                    visMode, visIntensity, visProgress);
 
                 //本体套机械热感着色器（传入当前帧UV范围，避免4帧贴图邻域采样跨帧）
-                bool shaderApplied = MechBossThermalRenderer.BeginThermalShaderByController(spriteBatch, value, rectangle, controllerId, seed);
+                bool shaderApplied = MechBossThermalRenderer.BeginThermalShader(spriteBatch, value, rectangle,
+                    visMode, visIntensity, visProgress, seed);
                 spriteBatch.Draw(value, drawPos, rectangle, drawColor,
                     npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
                 if (shaderApplied) {
@@ -593,6 +629,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 //发光层独立绘制以保留原始自发光
                 spriteBatch.Draw(value2, drawPos, rectangle, Color.White,
                     npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
+
+                //充能波白热叠加：波峰处体节亮起（A=0 即加法叠色）
+                if (wave > 0.05f) {
+                    Color hot = new Color(255, 165, 75, 0) * wave;
+                    spriteBatch.Draw(value2, drawPos, rectangle, hot,
+                        npc.rotation + MathHelper.Pi, origin, npc.scale * 1.04f, SpriteEffects.None, 0);
+                    spriteBatch.Draw(value, drawPos, rectangle, hot * 0.55f,
+                        npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
+                }
             }
 
             return false;

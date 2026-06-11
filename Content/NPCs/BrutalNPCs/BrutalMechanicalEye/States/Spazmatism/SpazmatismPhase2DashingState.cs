@@ -1,10 +1,13 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
     /// <summary>
-    /// 魔焰眼二阶段冲刺中状态
+    /// 魔焰眼二阶段冲刺中状态：
+    /// 更快的弧线追踪冲刺与更猛的急停甩头
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismPhase2Dashing, typeof(TwinsStateContext))]
     internal class SpazmatismPhase2DashingState : TwinsStateBase
@@ -12,7 +15,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismPhase2Dashing";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismPhase2Dashing;
 
-        private const int DashDuration = 30;
+        private const int FullSpeedTime = 24;
+        private const int BrakeTime = 10;
+        private const int DashDuration = FullSpeedTime + BrakeTime;
 
         private int currentDashCount;
         private int maxDashCount;
@@ -35,20 +40,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
             NPC npc = context.Npc;
+            Player player = context.Target;
 
             //检测独眼狂暴模式触发
             if (context.SoloRageJustTriggered) {
                 return new SpazmatismSoloRageState();
             }
 
-            //朝向速度方向
-            FaceVelocity(npc);
-
             Timer++;
+
+            if (Timer <= FullSpeedTime) {
+                //全速段:微弧追踪
+                float speed = npc.velocity.Length();
+                TwinsMotion.CurveChase(npc, player.Center, speed, 0.016f);
+                FaceVelocity(npc);
+                context.PushDashVisuals(1f, 1f);
+
+                //炽热拖尾
+                if (!VaultUtils.isServer) {
+                    PRTLoader.NewParticle<PRT_TwinsSpark>(
+                        npc.Center - npc.velocity.SafeNormalize(Vector2.Zero) * 34f + Main.rand.NextVector2Circular(14, 14),
+                        -npc.velocity * 0.18f, Color.White, Main.rand.NextFloat(1.1f, 1.8f))?.Configure(15, 1);
+                }
+            }
+            else {
+                //急停甩头
+                DisableContactDamage(npc);
+                TwinsMotion.BrakeAndWhip(npc, player.Center, 0.76f, 0.34f);
+                context.PushDashVisuals(0.35f, 0.65f);
+            }
 
             //冲刺结束
             if (Timer >= DashDuration) {
-                npc.velocity *= 0.4f;
                 currentDashCount++;
 
                 if (currentDashCount >= maxDashCount) {

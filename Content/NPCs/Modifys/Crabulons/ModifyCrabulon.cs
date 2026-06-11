@@ -58,6 +58,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public bool hoverNPC;
         internal int DyeItemID;
         internal float dontTurnTo;
+        //世界加载时主人可能尚未连入，记录名字待其上线后认领
+        internal string pendingOwnerName = string.Empty;
 
         //内部状态
         internal bool rightPressed;
@@ -91,28 +93,45 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public override void SetProperty() {
             Physics = new CrabulonPhysics(npc, this);
-            MountSystem = new CrabulonMountSystem(npc, this, Physics);
+            MountSystem = new CrabulonMountSystem(npc, this);
             Behavior = new CrabulonBehavior(npc, this, Physics);
             Networking = new CrabulonNetworking(this);
             Animation = new CrabulonAnimation(npc, this, Physics);
             Renderer = new CrabulonRenderer(npc, this);
         }
 
-        //投喂逻辑
-        public void Feed(Projectile projectile) {
-            DyeItemID = projectile.CWR().DyeItemID;
+        //投喂统一入口，依据当前驯服状态分流
+        public void ApplyFeed(Player feeder, int dyeItemID) {
+            if (FeedValue > 0f) {
+                FeedTamed();
+            }
+            else {
+                Feed(feeder, dyeItemID);
+            }
+        }
+
+        //投喂逻辑（初次驯服）
+        public void Feed(Player feeder, int dyeItemID) {
+            DyeItemID = dyeItemID;
             npc.lifeMax = Main.masterMode ? CrabulonConstants.LifeMaxMaster : CrabulonConstants.LifeMaxNormal;
             npc.life = (int)MathHelper.Clamp(npc.life, 0, npc.lifeMax);
-            Owner = Main.player[projectile.owner];
+            Owner = feeder;
+            pendingOwnerName = string.Empty;
             npc.friendly = true;
             npc.npcSlots = 0;
             FeedValue += CrabulonConstants.FeedValuePerFeed;
             ai[8] = CrabulonConstants.DigestTime;
             npc.ai[0] = npc.ai[1] = npc.ai[2] = 0f;
+            //驯服瞬间可能正处于灾厄AI的穿墙跳跃阶段，必须复位物理标志，否则会一路沉入地底
+            npc.noGravity = false;
+            npc.noTileCollide = false;
+            if (!VaultUtils.isClient) {
+                npc.netUpdate = true;
+            }
         }
 
         //对已驯服的菌生蟹投喂
-        public void FeedTamed(Projectile projectile) {
+        public void FeedTamed() {
             float maxFeed = CrabulonConstants.MaxFeedValue;
             if (FeedValue >= maxFeed) {
                 //饱食度已满，回复少量血量
@@ -135,16 +154,27 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 SaddleItem.SpwanItem(npc.FromObjectGetParent(), npc.Hitbox);
                 SaddleItem = new Item();
             }
-            if (Mount) {
-                CloseMount();
+            if (Mount || MountACrabulon) {
+                MountSystem.ForceDismount();
             }
             FeedValue = 0f;
             Owner = null;
+            pendingOwnerName = string.Empty;
             Crouch = false;
             Mount = false;
             MountACrabulon = false;
             DontMount = 0;
             DyeItemID = 0;
+            ApplyStateFields();
+            npc.netUpdate = true;
+        }
+
+        //依据已同步的核心状态应用派生的NPC字段，网络接收后必须调用以保持各端行为一致
+        internal void ApplyStateFields() {
+            if (FeedValue > 0f) {
+                SetFeedState();
+                return;
+            }
             npc.friendly = false;
             npc.boss = true;
             npc.damage = npc.defDamage;
@@ -152,7 +182,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             if (CrabulonPlayer != null) {
                 CrabulonPlayer.IsMount = false;
             }
-            npc.netUpdate = true;
         }
 
         //设置驯服状态
@@ -174,14 +203,21 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         }
 
         //网络同步方法
-        public void SendFeedPacket(int projIdentity) => Networking.SendFeedPacket(projIdentity);
-        public void SendNetWork() => Networking.SendNetworkPacket();
-        public static void ReceiveFeedPacket(BinaryReader reader, int whoAmI) => CrabulonNetworking.ReceiveFeedPacket(reader, whoAmI);
-        public static void ReceiveNetWork(BinaryReader reader, int whoAmI) => CrabulonNetworking.ReceiveNetworkData(reader, whoAmI);
+        //状态同步统一走InnoVault的NPCOverride通道：
+        //客户端调用SendNetworkData上报并由服务器转发，服务器设置NetOtherWorkSend主动推送，
+        //进入世界时的全量同步也会经过OtherNetWorkSend/Receive，后加入的玩家不会再丢失驯服状态
+        public void SendNetWork() {
+            if (VaultUtils.isClient) {
+                SendNetworkData();
+            }
+            else if (VaultUtils.isServer) {
+                NetOtherWorkSend = true;
+            }
+        }
         internal static void NetHandle(CWRMessageType type, BinaryReader reader, int whoAmI) => CrabulonNetworking.HandleNetworkMessage(type, reader, whoAmI);
 
-        public override void OtherNetWorkSend(ModPacket netMessage) { }
-        public override void OtherNetWorkReceive(BinaryReader reader) { }
+        public override void OtherNetWorkSend(ModPacket netMessage) => Networking.WriteData(netMessage);
+        public override void OtherNetWorkReceive(BinaryReader reader) => Networking.ReadData(reader);
 
         //数据保存与加载
         public override void SaveData(TagCompound tag) {
@@ -220,17 +256,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 DyeItemID = tag.GetInt("i");
             }
             if (tag.ContainsKey("j")) {
-                string playerName = tag.GetString("j");
-                foreach (var p in Main.player) {
-                    if (p.name == playerName) {
-                        Owner = p;
-                        break;
-                    }
-                }
+                pendingOwnerName = tag.GetString("j");
+                TryResolvePendingOwner();
             }
             if (tag.ContainsKey("k")) {
                 SaddleItem = ItemIO.Load(tag.Get<TagCompound>("k"));
             }
+
+            //骑乘是会话内状态，加载存档后必须重置，玩家重新上马即可
+            Mount = false;
+            MountACrabulon = false;
 
             SetFeedState();
         }
@@ -255,9 +290,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
 
             FeedValue = 0f;
-            if (CrabulonPlayer != null) {
-                CrabulonPlayer.IsMount = false;
-            }
+            MountSystem.ForceDismount();
 
             return null;
         }
@@ -284,6 +317,24 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         //帧动画
         public override bool FindFrame(int frameHeight) => Animation.UpdateFrame(frameHeight);
 
+        //主人重新连入后按名字认领，认领成功后由服务器推送给所有客户端
+        internal void TryResolvePendingOwner() {
+            if (VaultUtils.isClient || Owner.Alives() || string.IsNullOrEmpty(pendingOwnerName)) {
+                return;
+            }
+            foreach (var p in Main.ActivePlayers) {
+                if (p.name != pendingOwnerName) {
+                    continue;
+                }
+                Owner = p;
+                pendingOwnerName = string.Empty;
+                if (VaultUtils.isServer) {
+                    NetOtherWorkSend = true;
+                }
+                break;
+            }
+        }
+
         //主AI逻辑
         public override bool AI() {
             if (FeedValue <= 0f) {
@@ -291,8 +342,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
 
             SetFeedState();
+            TryResolvePendingOwner();
 
             if (!Owner.Alives()) {
+                //主人失效（死亡、退出）时本端立即解除骑乘，避免蟹保持无主的吸附状态
+                if (Mount || MountACrabulon) {
+                    MountSystem.ForceDismount();
+                }
                 npc.velocity.X *= 0.9f;
                 npc.ai[0] = 0f;
                 return false;

@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -8,8 +10,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
     /// <summary>
-    /// 激光眼二阶段聚焦光束状态
-    /// 持续追踪玩家位置，在发射前一刻锁定方向
+    /// 激光眼二阶段死亡射线扫射状态：
+    /// 就位→锁定蓄力(准心预警)→释放持续性宽死亡射线并以受限角速度追踪玩家→过热硬直。
+    /// 射线方向由npc.rotation驱动，玩家须持续走位摆脱切割
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerFocusedBeam, typeof(TwinsStateContext))]
     internal class RetinazerFocusedBeamState : TwinsStateBase
@@ -17,49 +20,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerFocusedBeam";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerFocusedBeam;
 
-        /// <summary>
-        /// 锁定阶段
-        /// </summary>
-        private int LockPhase => Context.IsDeathMode ? 32 : 40;
+        private int ApproachPhase => Context.IsDeathMode ? 26 : 32;
+        private int ChargePhase => Context.IsDeathMode ? 48 : 58;
+        private int BeamPhase => Context.IsDeathMode ? 105 : 95;
+        private const int RecoveryPhase = 38;
+
+        private int TotalDuration => ApproachPhase + ChargePhase + BeamPhase + RecoveryPhase;
 
         /// <summary>
-        /// 蓄力阶段
+        /// 射线追踪角速度(弧度/帧)——刻意限制，确保可以被跑动摆脱
         /// </summary>
-        private int ChargePhase => Context.IsDeathMode ? 40 : 50;
-
-        /// <summary>
-        /// 发射阶段
-        /// </summary>
-        private int FirePhase => Context.IsDeathMode ? 65 : 60;
-
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
-        private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
-
-        /// <summary>
-        /// 总时长
-        /// </summary>
-        private int TotalDuration => LockPhase + ChargePhase + FirePhase + RecoveryPhase;
-
-        /// <summary>
-        /// 蓄力阶段最后多少帧开始锁定方向不再追踪
-        /// </summary>
-        private int FinalLockFrames => Context.IsDeathMode ? 6 : 8;
-
-        /// <summary>
-        /// 激光发射间隔
-        /// </summary>
-        private int FireInterval => Context.IsDeathMode ? 7 : 8;
+        private float TrackTurnRate => Context.IsDeathMode ? 0.019f : 0.014f;
 
         private TwinsStateContext Context;
-        private Vector2 currentDirection;
-        private Vector2 finalLockedDirection;
-        private bool hasPlayedChargeSound;
-        private bool hasPlayedFireSound;
-        private bool isDirectionLocked;
         private int comboStep;
-        private int fireCount;
+        private Vector2 anchorPos;
+        private bool anchorLocked;
+        private bool beamFired;
 
         public RetinazerFocusedBeamState() : this(0) {
         }
@@ -71,12 +48,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
             Context = context;
-            hasPlayedChargeSound = false;
-            hasPlayedFireSound = false;
-            isDirectionLocked = false;
-            currentDirection = Vector2.Zero;
-            finalLockedDirection = Vector2.Zero;
-            fireCount = 0;
+            anchorLocked = false;
+            beamFired = false;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -85,19 +58,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             Timer++;
 
-            //阶段1: 锁定目标
-            if (Timer <= LockPhase) {
-                ExecuteLockPhase(npc, player);
+            if (Timer <= ApproachPhase) {
+                ExecuteApproachPhase(npc, player);
             }
-            //阶段2: 蓄力
-            else if (Timer <= LockPhase + ChargePhase) {
+            else if (Timer <= ApproachPhase + ChargePhase) {
                 ExecuteChargePhase(npc, player);
             }
-            //阶段3: 发射
-            else if (Timer <= LockPhase + ChargePhase + FirePhase) {
-                ExecuteFirePhase(npc, player);
+            else if (Timer <= ApproachPhase + ChargePhase + BeamPhase) {
+                ExecuteBeamPhase(npc, player);
             }
-            //阶段4: 恢复
             else {
                 ExecuteRecoveryPhase(npc, player);
             }
@@ -115,197 +84,118 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         }
 
         /// <summary>
-        /// 锁定阶段
+        /// 就位阶段：弹簧飞抵玩家斜上方射击位
         /// </summary>
-        private void ExecuteLockPhase(NPC npc, Player player) {
-            float progress = Timer / (float)LockPhase;
+        private void ExecuteApproachPhase(NPC npc, Player player) {
+            float progress = Timer / (float)ApproachPhase;
 
-            //快速移动到玩家侧面
-            Vector2 targetPos = player.Center + new Vector2(npc.Center.X < player.Center.X ? -350 : 350, -100);
-            MoveTo(npc, targetPos, 14f, 0.15f);
-
-            //持续追踪玩家，更新当前方向
-            currentDirection = GetDirectionToTarget(Context);
+            float side = npc.Center.X < player.Center.X ? -1f : 1f;
+            Vector2 targetPos = player.Center + new Vector2(side * 400f, -260f);
+            TwinsMotion.SpringHover(npc, targetPos, 0.022f, 0.1f);
             FaceTarget(npc, player.Center);
 
-            //预警特效
-            context.SetChargeState(6, progress * 0.3f);
-
-            //锁定指示粒子
-            if (!VaultUtils.isServer && Timer % 4 == 0) {
-                Vector2 dustPos = npc.Center + currentDirection * 40f;
-                Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.Vortex, 0, 0, 100, default, 1.2f);
-                dust.noGravity = true;
-                dust.velocity = currentDirection * 3f;
-            }
+            Context.SetChargeState(6, progress * 0.25f);
         }
 
         /// <summary>
-        /// 蓄力阶段
+        /// 锁定蓄力阶段：准心预警，机体绷紧颤抖，能量向瞳孔汇聚
         /// </summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
-            int phaseTimer = Timer - LockPhase;
+            int phaseTimer = Timer - ApproachPhase;
             float progress = phaseTimer / (float)ChargePhase;
 
-            //计算是否到达最终锁定时间
-            int remainingFrames = ChargePhase - phaseTimer;
-            bool shouldLockNow = remainingFrames <= FinalLockFrames;
-
-            if (!isDirectionLocked) {
-                if (shouldLockNow) {
-                    //最终锁定方向
-                    isDirectionLocked = true;
-                    finalLockedDirection = GetDirectionToTarget(Context);
-
-                    //锁定时的视觉提示
-                    if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.5f, Volume = 0.6f }, npc.Center);
-                        for (int i = 0; i < 10; i++) {
-                            Vector2 dustVel = finalLockedDirection.RotatedBy((Main.rand.NextFloat() - 0.5f) * 0.5f) * Main.rand.NextFloat(4f, 8f);
-                            Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.Vortex, dustVel.X, dustVel.Y, 0, default, 1.8f);
-                            dust.noGravity = true;
-                        }
-                    }
-                }
-                else {
-                    //持续追踪玩家，更新当前方向
-                    currentDirection = GetDirectionToTarget(Context);
-                }
-            }
-
-            //使用当前有效的方向
-            Vector2 activeDirection = isDirectionLocked ? finalLockedDirection : currentDirection;
-
-            //减速但保持一定的追踪能力
-            npc.velocity *= 0.92f;
-
-            //更新朝向
-            npc.rotation = activeDirection.ToRotation() - MathHelper.PiOver2;
-
-            //设置蓄力状态
-            context.SetChargeState(6, 0.3f + progress * 0.7f);
-
-            //蓄力音效
-            if (!hasPlayedChargeSound) {
-                hasPlayedChargeSound = true;
-                SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.2f }, npc.Center);
-            }
-
-            //能量聚集粒子
-            if (!VaultUtils.isServer) {
-                //从四周聚集的粒子
-                if (phaseTimer % 2 == 0) {
-                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    float dist = 80f - progress * 50f;
-                    Vector2 dustPos = npc.Center + angle.ToRotationVector2() * dist;
-                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.Vortex, 0, 0, 100, default, 1.5f + progress);
-                    dust.noGravity = true;
-                    dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (5f + progress * 4f);
-                }
-
-                //发射方向的能量线 - 使用当前方向
-                if (phaseTimer % 3 == 0 && progress > 0.3f) {
-                    float lineDist = 50f + progress * 100f;
-                    Vector2 dustPos = npc.Center + activeDirection * lineDist;
-                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.PurpleTorch, 0, 0, 100, default, 1.8f);
-                    dust.noGravity = true;
-                    dust.velocity = activeDirection * 2f;
-                }
-
-                //蓄力完成时的闪光
-                if (phaseTimer == ChargePhase - 5) {
-                    for (int i = 0; i < 15; i++) {
-                        float angle = MathHelper.TwoPi / 15f * i;
-                        Vector2 vel = angle.ToRotationVector2() * 6f;
-                        Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.Vortex, vel.X, vel.Y, 0, default, 2f);
-                        dust.noGravity = true;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 发射阶段
-        /// </summary>
-        private void ExecuteFirePhase(NPC npc, Player player) {
-            int phaseTimer = Timer - LockPhase - ChargePhase;
-            float progress = phaseTimer / (float)FirePhase;
-
-            //停止蓄力特效
-            context.ResetChargeState();
-
-            //使用最终锁定的方向
-            Vector2 fireDirection = finalLockedDirection;
-
-            //保持锁定方向
-            npc.rotation = fireDirection.ToRotation() - MathHelper.PiOver2;
-
-            //后坐力效果
-            if (phaseTimer < 10) {
-                npc.velocity = -fireDirection * (10f - phaseTimer);
-            }
-            else {
-                npc.velocity *= 0.95f;
-            }
-
-            //发射音效
-            if (!hasPlayedFireSound) {
-                hasPlayedFireSound = true;
-                SoundEngine.PlaySound(SoundID.Item33 with { Pitch = -0.2f, Volume = 1.2f }, npc.Center);
-            }
-
-            //持续发射激光
-            if (phaseTimer % FireInterval == 0 && !VaultUtils.isClient) {
-                //固定扇形散射，基于发射计数确定角度
-                float maxScatter = 0.1f;
-                int totalShots = FirePhase / FireInterval;
-                float scatter = totalShots > 1 ? MathHelper.Lerp(-maxScatter / 2f, maxScatter / 2f, fireCount / (float)(totalShots - 1)) : 0f;
-                Vector2 shootDir = fireDirection.RotatedBy(scatter);
-                fireCount++;
-
-                Projectile.NewProjectile(
-                    npc.GetSource_FromAI(),
-                    npc.Center,
-                    shootDir * 14f,
-                    ModContent.ProjectileType<DeadLaser>(),
-                    32,
-                    0f,
-                    Main.myPlayer
-                );
-
-                //发射时的粒子
+            //锁定锚点
+            if (!anchorLocked) {
+                anchorLocked = true;
+                anchorPos = npc.Center;
                 if (!VaultUtils.isServer) {
-                    for (int i = 0; i < 3; i++) {
-                        Vector2 dustVel = shootDir.RotatedBy((Main.rand.NextFloat() - 0.5f) * 0.3f) * 8f;
-                        Dust dust = Dust.NewDustDirect(npc.Center + shootDir * 30f, 1, 1, DustID.Vortex, dustVel.X, dustVel.Y, 0, default, 1.5f);
-                        dust.noGravity = true;
-                    }
+                    SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.35f, Volume = 0.9f }, npc.Center);
                 }
             }
 
-            //持续的发射轨迹粒子
-            if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
-                Vector2 dustPos = npc.Center + fireDirection * (40f + phaseTimer * 3f);
-                Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.PurpleTorch, fireDirection.X * 5, fireDirection.Y * 5, 100, default, 1.2f);
-                dust.noGravity = true;
+            TwinsMotion.SpringHover(npc, anchorPos, 0.045f, 0.2f);
+            if (progress > 0.55f && !VaultUtils.isServer) {
+                npc.position += Main.rand.NextVector2Circular(2f, 2f) * progress;
+            }
+
+            //持续瞄准玩家
+            FaceTarget(npc, player.Center);
+
+            Context.SetChargeState(6, 0.25f + progress * 0.75f);
+
+            //能量向瞳孔汇聚
+            if (phaseTimer % 2 == 0) {
+                Vector2 muzzle = npc.Center + (npc.rotation + MathHelper.PiOver2).ToRotationVector2() * 46f;
+                TwinsMotion.ChargeGatherFX(muzzle, false, progress, 90f);
+            }
+
+            //蓄力完成预告:收束闪光
+            if (phaseTimer == ChargePhase - 4 && !VaultUtils.isServer) {
+                PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, TwinsMotion.RetinColor, 0.18f)?
+                    .Configure(Vector2.One, 0f, 0.9f, 12);
+                SoundEngine.PlaySound(SoundID.Item92 with { Pitch = 0.3f, Volume = 1f }, npc.Center);
             }
         }
 
         /// <summary>
-        /// 恢复阶段
+        /// 射线阶段：释放死亡射线，受限角速度追踪玩家，机体承受持续后坐
+        /// </summary>
+        private void ExecuteBeamPhase(NPC npc, Player player) {
+            int phaseTimer = Timer - ApproachPhase - ChargePhase;
+
+            Context.ResetChargeState();
+
+            //发射死亡射线
+            if (!beamFired) {
+                beamFired = true;
+                if (!VaultUtils.isClient) {
+                    int damage = Context.IsDeathMode ? 50 : 44;
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
+                        ModContent.ProjectileType<RetinazerDeathRay>(), damage, 0f, Main.myPlayer,
+                        npc.whoAmI, BeamPhase + 4, 0f);
+                    //开火瞬间的屏幕扭曲冲击波
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
+                        ModContent.ProjectileType<TwinsSupernovaBlast>(), 0, 0f, Main.myPlayer, 1f, 0f);
+                }
+                if (!VaultUtils.isServer) {
+                    TwinsMotion.Shake(npc.Center, 8f, 16);
+                }
+            }
+
+            //受限角速度追踪玩家(rotation驱动射线方向)
+            float targetDirRot = (player.Center - npc.Center).ToRotation();
+            TwinsMotion.RotateToward(npc, targetDirRot, TrackTurnRate);
+
+            //射线后坐:机体被缓缓推离射线方向
+            Vector2 beamDir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
+            npc.velocity = npc.velocity * 0.9f - beamDir * 0.55f;
+            if (npc.velocity.Length() > 6f) {
+                npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * 6f;
+            }
+            Context.PushDashVisuals(0.3f, 0.4f);
+
+            //持续震感
+            if (phaseTimer % 14 == 0 && !VaultUtils.isServer) {
+                TwinsMotion.Shake(npc.Center, 1.8f, 6);
+            }
+        }
+
+        /// <summary>
+        /// 过热硬直阶段：射线收束后排气下沉，给予输出窗口
         /// </summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
-            //逐渐恢复面向玩家
-            FaceTarget(npc, player.Center);
-            npc.velocity *= 0.95f;
+            int phaseTimer = Timer - ApproachPhase - ChargePhase - BeamPhase;
 
-            //残余粒子
-            if (!VaultUtils.isServer && Timer % 5 == 0) {
-                Dust dust = Dust.NewDustDirect(npc.Center + Main.rand.NextVector2Circular(20, 20), 1, 1, DustID.Vortex, 0, -1, 100, default, 0.8f);
-                dust.noGravity = true;
+            npc.velocity *= 0.9f;
+            npc.velocity.Y += 0.1f;
+            FaceTarget(npc, player.Center);
+
+            //过热排气
+            if (!VaultUtils.isServer && phaseTimer % 5 == 0) {
+                PRTLoader.NewParticle<PRT_Smoke>(npc.Center + Main.rand.NextVector2Circular(22, 22),
+                    new Vector2(0, -1.4f) + Main.rand.NextVector2Circular(0.7f, 0.7f),
+                    TwinsMotion.RetinColor * 0.45f, Main.rand.NextFloat(0.6f, 1f))?.Configure(32, 0.45f, 0.02f, false, 0f);
             }
         }
-
-        private TwinsStateContext context => Context;
     }
 }

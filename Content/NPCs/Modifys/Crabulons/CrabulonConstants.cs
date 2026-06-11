@@ -48,7 +48,8 @@
         public const float BaseSpeed = 6f;
         public const float MinSpeed = 3f;
         public const float MaxSpeed = 30f;
-        public const float Friction = 0.85f;
+        public const float MountRunSlowdown = 0.5f;
+        public const float MountClimbSpeed = 10f;
         public const float MountJumpMultiplier = -3.6f;
         public const float MinMountJump = -30f;
         public const float MaxMountJump = -3f;

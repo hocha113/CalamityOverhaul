@@ -59,7 +59,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         }
 
         /// <summary>
-        /// 固定出招序列：连冲 → 环形爆发 → 连冲 → 弹幕墙（高难）/环形爆发
+        /// 固定出招序列：连冲 → 环形爆发 → 连冲 → 弹幕墙。
+        /// 全难度共享同一套招式池，难度只影响数值密度
         /// </summary>
         private IPrimeState ChooseNextAttack(PrimeStateContext context) {
             int index = context.RageAttackIndex % 4;
@@ -69,9 +70,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 0 => new PrimeRageDashState(),
                 1 => new PrimeRadialBurstState(),
                 2 => new PrimeRageDashState(),
-                _ => (context.DeathMode || context.BossRush || Main.masterMode)
-                    ? new PrimeLaserWallState()
-                    : new PrimeRadialBurstState(),
+                _ => new PrimeLaserWallState(),
             };
         }
 
@@ -98,25 +97,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 HeadPrimeAI.SpanFireLerterDustEffect(npc, 73);
             }
             else {
-                int numProj = context.BossRush ? 5 : 3;
+                //制导炮弹（带瞄准线预警）全难度统一使用，难度只影响弹数与张角
+                int numProj = context.BossRush ? 5 : (context.DeathMode ? 4 : 3);
                 float rotation = MathHelper.ToRadians(context.BossRush ? 15 : 9);
                 Vector2 baseVelocity = (target.Center - npc.Center).SafeNormalize(Vector2.UnitY) * 10f;
 
                 for (int i = 0; i < numProj; i++) {
                     float rotOffset = MathHelper.Lerp(-rotation, rotation, i / (float)(numProj - 1));
                     Vector2 perturbedSpeed = baseVelocity.RotatedBy(rotOffset);
-                    if ((context.DeathMode && Main.masterMode) || context.BossRush) {
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed,
-                            ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                            Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
-                    }
-                    else {
-                        SoundEngine.PlaySound(SoundID.Item62, npc.Center);
-                        int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                            npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f,
-                            perturbedSpeed, ProjectileID.RocketSkeleton, damage, 0f, Main.myPlayer, npc.target, 2f);
-                        Main.projectile[proj].timeLeft = 600;
-                    }
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed,
+                        ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
+                        Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
                 }
             }
         }

@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -74,6 +76,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //清除狂暴触发标记
             context.SoloRageJustTriggered = false;
+
+            //狂暴觉醒演出:能量自四周向眼体倒灌
+            if (!VaultUtils.isServer) {
+                NPC npc = context.Npc;
+                for (int i = 0; i < 26; i++) {
+                    Vector2 spawnPos = npc.Center + Main.rand.NextVector2CircularEdge(220f, 220f);
+                    PRTLoader.NewParticle<PRT_TwinsSpark>(spawnPos, (npc.Center - spawnPos) * 0.07f,
+                        Color.White, Main.rand.NextFloat(1.2f, 2f))?.Configure(28, 0);
+                }
+                PRTLoader.NewParticle<PRT_DWave>(npc.Center, Vector2.Zero, TwinsMotion.RetinColor, 1.1f)?
+                    .Configure(Vector2.One, 0f, 0.15f, 22);
+                TwinsMotion.Shake(npc.Center, 7f, 16);
+            }
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -99,13 +114,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                     break;
             }
 
-            //持续产生狂暴粒子效果
+            //持续产生狂暴粒子效果:暴怒余温电火花
             if (!VaultUtils.isServer && Timer % 3 == 0) {
-                Dust dust = Dust.NewDustDirect(
+                PRTLoader.NewParticle<PRT_TwinsSpark>(
                     npc.Center + Main.rand.NextVector2Circular(30, 30),
-                    1, 1, DustID.Vortex, 0, 0, 100, default, 1.5f);
-                dust.noGravity = true;
-                dust.velocity = Main.rand.NextVector2Circular(3, 3);
+                    Main.rand.NextVector2Circular(2.5f, 2.5f) - new Vector2(0, 1.2f),
+                    Color.White, Main.rand.NextFloat(0.8f, 1.3f))?.Configure(16, 0);
             }
 
             //独眼狂暴模式不会自动切换出去
@@ -155,15 +169,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 }
             }
 
-            //快速移动保持在玩家侧面
-            Vector2 hoverPos = player.Center + new Vector2(npc.Center.X < player.Center.X ? -350 : 350, -150);
-            MoveTo(npc, hoverPos, 14f, 0.1f);
+            //弹簧游走保持在玩家侧面
+            Vector2 hoverPos = player.Center
+                + new Vector2(npc.Center.X < player.Center.X ? -350 : 350, -150)
+                + TwinsMotion.BreathingOffset(seed: 5.3f, 12f);
+            TwinsMotion.SpringHover(npc, hoverPos, 0.016f, 0.09f);
             FaceTarget(npc, player.Center);
 
             //快速发射激光
             if (modeTimer % LaserStormFireRate == 0) {
+                Vector2 toPlayer = GetDirectionToTarget(Context);
                 if (!VaultUtils.isClient) {
-                    Vector2 toPlayer = GetDirectionToTarget(Context);
                     //基于计时器的确定性散射
                     int shotIndex = modeTimer / LaserStormFireRate;
                     float scatter = MathHelper.Lerp(-0.075f, 0.075f, (shotIndex % 10) / 9f);
@@ -171,39 +187,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
-                        npc.Center,
+                        npc.Center + shootDir * 38f,
                         shootDir * LaserSpeed,
-                        ProjectileID.DeathLaser,
+                        ModContent.ProjectileType<RetinazerLaser>(),
                         22,
                         0f,
                         Main.myPlayer
                     );
 
-                    //每隔几发发射一个强力激光
+                    //每隔几发发射一个强化激光
                     if (modeTimer % (LaserStormFireRate * 4) == 0) {
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
-                            npc.Center,
+                            npc.Center + toPlayer * 38f,
                             toPlayer * (LaserSpeed * 0.8f),
-                            ModContent.ProjectileType<DeadLaser>(),
+                            ModContent.ProjectileType<RetinazerLaser>(),
                             34,
                             0f,
-                            Main.myPlayer
+                            Main.myPlayer,
+                            0f,
+                            1f
                         );
                     }
                 }
 
+                //每发后坐力
+                npc.velocity -= toPlayer * 2.8f;
+
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.2f, Volume = 0.6f }, npc.Center);
+                    for (int i = 0; i < 2; i++) {
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + toPlayer * 40f,
+                            toPlayer.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(3f, 5f),
+                            Color.White, Main.rand.NextFloat(0.8f, 1.2f))?.Configure(12, 0);
+                    }
                 }
-            }
-
-            //发射粒子
-            if (!VaultUtils.isServer && modeTimer % 2 == 0) {
-                Vector2 toPlayer = GetDirectionToTarget(Context);
-                Dust dust = Dust.NewDustDirect(npc.Center + toPlayer * 35f, 1, 1, DustID.Vortex,
-                    toPlayer.X * 5, toPlayer.Y * 5, 0, default, 1.2f);
-                dust.noGravity = true;
             }
 
             if (modeTimer >= LaserStormDuration) {
@@ -277,10 +295,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                             npc.GetSource_FromAI(),
                             npc.Center,
                             beamDir * LaserSpeed,
-                            ModContent.ProjectileType<DeadLaser>(),
+                            ModContent.ProjectileType<RetinazerLaser>(),
                             32,
                             0f,
-                            Main.myPlayer
+                            Main.myPlayer,
+                            0f,
+                            1f
                         );
                     }
                 }
@@ -332,39 +352,42 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             MoveTo(npc, targetPos, 16f, 0.12f);
             FaceTarget(npc, player.Center);
 
-            //持续发射激光
+            //持续发射预判激光
             int fireRate = Context.IsDeathMode ? 13 : 15;
             if (modeTimer % fireRate == 0) {
+                Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, LaserSpeed * 3f, 0.45f);
+                Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
                 if (!VaultUtils.isClient) {
-                    Vector2 toPlayer = GetDirectionToTarget(Context);
-
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
-                        npc.Center,
-                        toPlayer * LaserSpeed,
-                        ProjectileID.DeathLaser,
+                        npc.Center + shootDir * 38f,
+                        shootDir * LaserSpeed,
+                        ModContent.ProjectileType<RetinazerLaser>(),
                         22,
                         0f,
                         Main.myPlayer
                     );
                 }
+                npc.velocity -= shootDir * 2.2f;
 
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.1f, Volume = 0.7f }, npc.Center);
                 }
             }
 
-            //间歇性发射强力激光
+            //间歇性发射强化激光
             if (modeTimer % 35 == 0 && !VaultUtils.isClient) {
                 Vector2 toPlayer = GetDirectionToTarget(Context);
                 Projectile.NewProjectile(
                     npc.GetSource_FromAI(),
-                    npc.Center,
+                    npc.Center + toPlayer * 38f,
                     toPlayer * (LaserSpeed * 0.8f),
-                    ModContent.ProjectileType<DeadLaser>(),
+                    ModContent.ProjectileType<RetinazerLaser>(),
                     34,
                     0f,
-                    Main.myPlayer
+                    Main.myPlayer,
+                    0f,
+                    1f
                 );
             }
 
@@ -492,17 +515,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         Vector2 pointPos = matrixPoints[i];
                         Vector2 toCenter = (player.Center - pointPos).SafeNormalize(Vector2.Zero);
 
-                        //发射多发激光
+                        //发射多发激光(首发强化)
                         for (int j = 0; j < 2; j++) {
                             float speedMult = 1f - j * 0.3f;
                             Projectile.NewProjectile(
                                 npc.GetSource_FromAI(),
                                 pointPos,
                                 toCenter * (LaserSpeed * speedMult),
-                                j == 0 ? ModContent.ProjectileType<DeadLaser>() : ProjectileID.DeathLaser,
+                                ModContent.ProjectileType<RetinazerLaser>(),
                                 j == 0 ? 32 : 24,
                                 0f,
-                                Main.myPlayer
+                                Main.myPlayer,
+                                0f,
+                                j == 0 ? 1f : 0f
                             );
                         }
                     }

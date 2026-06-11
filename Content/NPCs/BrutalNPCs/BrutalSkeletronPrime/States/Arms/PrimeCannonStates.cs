@@ -1,7 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using CalamityOverhaul.OtherMods.InfernumMode;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -97,24 +95,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void FireSingleRocket(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.TargetClosest();
-            int type = ProjectileID.RocketSkeleton;
-            int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, type));
+            int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
 
             Vector2 rocketVelocity = ctx.AimDirection * 10f;
             Vector2 spawnPos = npc.Center + ctx.AimDirection * 40f;
 
-            if ((ctx.Death && ctx.MasterMode) || ctx.BossRush || InfernumRef.InfernumModeOpenState) {
-                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                    spawnPos, rocketVelocity,
-                    ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                    Main.myPlayer, npc.whoAmI, npc.target, 0);
-                Main.projectile[proj].timeLeft = 60;
-            }
-            else {
-                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                    spawnPos, rocketVelocity, type, damage, 0f, Main.myPlayer, npc.target, 2f);
-                Main.projectile[proj].timeLeft = 600;
-            }
+            //制导炮弹（带瞄准线预警）全难度统一使用，难度只影响预警时长
+            int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
+                spawnPos, rocketVelocity,
+                ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
+                Main.myPlayer, npc.whoAmI, npc.target, 0);
+            Main.projectile[proj].timeLeft = (ctx.Death && ctx.MasterMode) || ctx.BossRush ? 60 : 80;
 
             ctx.ApplyRecoil(12f);
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.9f, Pitch = -0.2f }, npc.Center);
@@ -171,11 +162,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void FireSpreadRockets(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.TargetClosest();
-            int type = ProjectileID.RocketSkeleton;
-            int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, type));
+            int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
 
             Vector2 baseVelocity = ctx.AimDirection * 10f;
-            int numProj = ctx.BossRush ? 5 : 3;
+            //制导炮弹全难度统一使用，难度只影响弹数与张角
+            int numProj = ctx.BossRush ? 5 : (ctx.Death ? 4 : 3);
             float rotation = MathHelper.ToRadians(ctx.BossRush ? 15 : 9);
 
             for (int i = 0; i < numProj; i++) {
@@ -183,17 +174,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 Vector2 perturbedSpeed = baseVelocity.RotatedBy(rotOffset);
                 Vector2 spawnPos = npc.Center + ctx.AimDirection * 40f;
 
-                if (ctx.Death || ctx.BossRush || InfernumRef.InfernumModeOpenState) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        spawnPos, perturbedSpeed,
-                        ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                        Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
-                }
-                else {
-                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        spawnPos, perturbedSpeed, type, damage, 0f, Main.myPlayer, npc.target, 2f);
-                    Main.projectile[proj].timeLeft = 600;
-                }
+                Projectile.NewProjectile(npc.GetSource_FromAI(),
+                    spawnPos, perturbedSpeed,
+                    ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
+                    Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
             }
 
             ctx.ApplyRecoil(18f);

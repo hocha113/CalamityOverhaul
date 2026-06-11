@@ -45,6 +45,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (context.IsDeathMode) probeCount += 4;
 
             probeIndices = new int[probeCount];
+            //客户端不执行SpawnProbes，必须以-1初始化避免误驱动 Main.npc[0]
+            Array.Fill(probeIndices, -1);
             //阵型类型由服务端决定并通过ai[3]同步
             if (!VaultUtils.isClient) {
                 formationType = Main.rand.Next(3);
@@ -177,6 +179,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private void ExecuteFirePhase(DestroyerStateContext context) {
             Player player = context.Target;
             context.SetChargeState(4, 0.7f + (Timer - FormationPhase) / (float)(FirePhase - FormationPhase) * 0.3f);
+
+            //锁定瞬间：相邻探针间拉起电弧连线，勾勒出阵型轮廓（纯演出）
+            if (Timer == FormationPhase + 2 && !VaultUtils.isClient) {
+                int arcType = ModContent.ProjectileType<Projectiles.Boss.Destroyer.DestroyerArc>();
+                for (int i = 0; i < probeCount; i++) {
+                    int a = probeIndices[i];
+                    int b = probeIndices[(i + 1) % probeCount];
+                    if (a < 0 || b < 0 || a == b) continue;
+                    NPC npcA = Main.npc[a];
+                    NPC npcB = Main.npc[b];
+                    if (!npcA.active || npcA.type != NPCID.Probe
+                        || !npcB.active || npcB.type != NPCID.Probe) continue;
+                    Projectile.NewProjectile(context.Npc.GetSource_FromAI(), npcA.Center, Vector2.Zero,
+                        arcType, 0, 0f, Main.myPlayer, a, b);
+                }
+            }
 
             //探针锁定并发射
             if (!probesFired && Timer == FormationPhase + 10) {

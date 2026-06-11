@@ -2,25 +2,24 @@
 using System;
 using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Shaders;
-using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     /// <summary>
-    /// 菌生蟹骑乘系统
+    /// 菌生蟹骑乘系统。
+    /// 多人同步模型：骑乘期间运动权威是骑手玩家（走原版玩家同步管线，60帧平滑），
+    /// 蟹在所有端每帧吸附到骑手锚点上，自身不再进行任何物理模拟，
+    /// 因此各端的蟹位置都是同一条已同步数据流（骑手位置）的纯函数，不会发散。
+    /// 骑手的运动接管见<see cref="CrabulonMountPlayer"/>
     /// </summary>
     internal class CrabulonMountSystem
     {
         private readonly NPC npc;
         private readonly ModifyCrabulon owner;
-        private readonly CrabulonPhysics physics;
 
-        public CrabulonMountSystem(NPC npc, ModifyCrabulon owner, CrabulonPhysics physics) {
+        public CrabulonMountSystem(NPC npc, ModifyCrabulon owner) {
             this.npc = npc;
             this.owner = owner;
-            this.physics = physics;
         }
 
         //获取骑乘位置
@@ -29,18 +28,43 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return npc.Top + new Vector2(0, yOffset);
         }
 
-        //关闭骑乘状态
+        //骑乘时蟹箱体的左上角位置，以骑手为锚点（npc.Top对齐骑手中心）
+        public static Vector2 GetAttachedBoxPosition(Player rider, NPC npc) {
+            return rider.Center - new Vector2(npc.width / 2f, 0f);
+        }
+
+        //本端解除骑乘状态，不发包，用于网络通知和异常兜底
+        public void ForceDismount() {
+            bool wasMount = owner.Mount || owner.MountACrabulon;
+            owner.Mount = false;
+            owner.MountACrabulon = false;
+            owner.localAI[5] = 0f;
+            //恢复蟹的物理模拟
+            npc.noGravity = false;
+            npc.noTileCollide = false;
+            if (wasMount) {
+                owner.DontMount = CrabulonConstants.DismountCooldown;
+            }
+            if (owner.CrabulonPlayer != null) {
+                owner.CrabulonPlayer.IsMount = false;
+                owner.CrabulonPlayer.MountCrabulon = null;
+            }
+        }
+
+        //主动下马，骑手端发起并广播
         public void Dismount() {
-            if (!owner.Owner.Alives()) {
-                return;
+            bool isRider = owner.Owner.Alives() && owner.Owner.whoAmI == Main.myPlayer;
+
+            if (isRider) {
+                owner.Owner.fullRotation = 0;
+                owner.Owner.velocity.Y -= 5;//只允许骑手端修改自己的速度
             }
 
-            owner.Mount = false;
-            owner.DontMount = CrabulonConstants.DismountCooldown;
-            owner.MountACrabulon = false;
-            owner.Owner.fullRotation = 0;
-            owner.Owner.velocity.Y -= 5;
-            owner.SendNetWork();
+            ForceDismount();
+
+            if (isRider) {
+                owner.SendNetWork();
+            }
         }
 
         //处理骑乘AI
@@ -53,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return HandleMountRequest();
             }
 
-            return HandleMountedMovement();
+            return HandleMountedAttach();
         }
 
         //处理上马请求
@@ -63,21 +87,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.CrabulonPlayer.IsMount = false;
             }
 
-            if (!ShouldStartMount() && !owner.MountACrabulon) {
-                return true;
-            }
-
-            if (VaultUtils.isSinglePlayer) {
+            //上马只由骑手端发起，其余端通过状态同步得知
+            if (ShouldStartMount()) {
                 owner.MountACrabulon = true;
                 owner.SendNetWork();
-            }
-            else if (VaultUtils.isClient) {
-                ShowMultiplayerWarning();
+                PlayMountSound();
             }
 
-            PlayMountSound();
-
-            if (owner.MountACrabulon) {
+            //吸附动画只在骑手端推进，完成后广播Mount状态，避免各端用不同位置各自判定完成时机
+            if (owner.MountACrabulon && owner.Owner.whoAmI == Main.myPlayer) {
                 ProcessMountAnimation();
             }
 
@@ -89,19 +107,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return owner.Owner.whoAmI == Main.myPlayer
                 && owner.SaddleItem.Alives()
                 && owner.DontMount <= 0
+                && !owner.MountACrabulon
                 && owner.hoverNPC
                 && owner.rightPressed;
-        }
-
-        //显示多人游戏警告
-        private void ShowMultiplayerWarning() {
-            CombatText text = Main.combatText[CombatText.NewText(
-                owner.Owner.Hitbox,
-                Color.GreenYellow,
-                ModifyCrabulon.DontDismountText.Value
-            )];
-            text.text = ModifyCrabulon.DontDismountText.Value;
-            text.lifeTime = 320;
         }
 
         //播放上马音效
@@ -116,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }, owner.Owner.Center);
         }
 
-        //处理上马动画
+        //处理上马吸附动画（仅骑手端，操作的是本地玩家自身，天然客户端权威）
         private void ProcessMountAnimation() {
             owner.Owner.RemoveAllGrapplingHooks();
             owner.Owner.mount.Dismount(owner.Owner);
@@ -129,34 +137,31 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.Owner.CWR().PendingDashRotSpeedMode = 0.06f;
             owner.Owner.CWR().PendingDashVelocity = owner.Owner.velocity;
 
-            if (++owner.ai[5] > CrabulonConstants.MountTimeout || toMount.Length() < owner.Owner.width) {
+            if (++owner.localAI[5] > CrabulonConstants.MountTimeout || toMount.Length() < owner.Owner.width) {
                 CompleteMountProcess();
             }
         }
 
         //完成上马流程
         private void CompleteMountProcess() {
-            owner.ai[5] = 0f;
+            owner.localAI[5] = 0f;
             owner.Mount = true;
             owner.MountACrabulon = false;
+            owner.Owner.velocity = Vector2.Zero;
 
             if (owner.CrabulonPlayer != null) {
                 owner.CrabulonPlayer.MountCrabulon = owner;
             }
 
-            if (owner.Owner.whoAmI == Main.myPlayer) {
-                owner.SendNetWork();
-            }
-
-            npc.netUpdate = true;//强制更新NPC
+            owner.SendNetWork();
         }
 
-        //处理骑乘状态下的移动
-        private bool HandleMountedMovement() {
+        //骑乘状态：蟹在所有端吸附到骑手身上
+        private bool HandleMountedAttach() {
             //鞍具被移除时自动下马
             if (!owner.SaddleItem.Alives()) {
                 Dismount();
-                return true;
+                return false;
             }
 
             if (owner.CrabulonPlayer != null) {
@@ -165,18 +170,20 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.CrabulonPlayer.IsMount = true;
             }
 
-            owner.Owner.RemoveAllGrapplingHooks();
-            owner.Owner.mount.Dismount(owner.Owner);
-            owner.Owner.Center = GetMountPosition();
-            owner.Owner.fallStart2 = owner.Owner.fallStart = (int)(owner.Owner.position.Y / 16f);
+            //蟹不参与任何物理：穿墙防卡由骑手侧的箱体约束保证（CrabulonMountPlayer）
+            npc.noGravity = true;
+            npc.noTileCollide = true;
 
+            //通过velocity吸附到骑手锚点，引擎积分后位置精确贴合，
+            //velocity同时天然等于本帧位移（即骑手速度），动画系统可直接复用
+            Vector2 targetPos = GetAttachedBoxPosition(owner.Owner, npc);
+            npc.velocity = targetPos - npc.position;
+
+            //起身动画残留帧
             if (owner.ai[9] > 0) {
                 owner.ai[9]--;
-                npc.ai[0] = 0f;
-                return false;
             }
 
-            ProcessMountedInput();
             UpdateMountAnimation();
 
             if (CheckDismountInput()) {
@@ -186,170 +193,22 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //处理骑乘输入
-        private void ProcessMountedInput() {
-            float accel = CrabulonConstants.BaseAcceleration + owner.Owner.runAcceleration;
-            float maxSpeed = CalculateMaxSpeed();
-            float friction = CrabulonConstants.Friction;
-
-            Vector2 input = GetPlayerInput();
-            owner.Owner.velocity = Vector2.Zero;
-
-            HandleDownPlatform();
-            HandleJump(maxSpeed);
-            HandleHorizontalMovement(input.X, accel, maxSpeed, friction);
-
-            JumpFloorEffect();
-            physics.AutoStepClimbing();
-        }
-
-        //计算最大速度
-        private float CalculateMaxSpeed() {
-            return MathHelper.Clamp(
-                CrabulonConstants.BaseSpeed * owner.Owner.moveSpeed * owner.Owner.maxRunSpeed / 6f,
-                CrabulonConstants.MinSpeed,
-                CrabulonConstants.MaxSpeed
-            );
-        }
-
-        //获取玩家输入
-        private Vector2 GetPlayerInput() {
-            Vector2 input = Vector2.Zero;
-            if (owner.Owner.controlRight) input.X += 1f;
-            if (owner.Owner.controlLeft) input.X -= 1f;
-            return input;
-        }
-
-        //处理下平台
-        private void HandleDownPlatform() {
-            if (!owner.Owner.controlDown || Collision.SolidCollision(npc.position, npc.width, npc.height + 20)) {
-                return;
-            }
-            if (!owner.Owner.controlJump) {
-                npc.velocity.Y += 0.2f;
-                if (npc.velocity.Y < 12) {
-                    npc.velocity.Y = 12;
-                }
-            }
-        }
-
-        //处理跳跃
-        private void HandleJump(float maxSpeed) {
-            if (owner.Owner.controlJump && npc.collideY) {
-                npc.velocity.Y = MathHelper.Clamp(
-                    maxSpeed * CrabulonConstants.MountJumpMultiplier,
-                    CrabulonConstants.MinMountJump,
-                    CrabulonConstants.MaxMountJump
-                );
-            }
-        }
-
-        //处理横向移动
-        private void HandleHorizontalMovement(float inputX, float accel, float maxSpeed, float friction) {
-            if (inputX != 0f) {
-                npc.velocity.X = MathHelper.Clamp(npc.velocity.X + inputX * accel, -maxSpeed, maxSpeed);
-            }
-            else {
-                npc.velocity.X *= friction;
-                if (Math.Abs(npc.velocity.X) < 0.1f) {
-                    npc.velocity.X = 0f;
-                }
-            }
-        }
-
-        //更新骑乘动画
+        //更新骑乘动画，输入源是骑手速度（各端均已平滑同步）
         private void UpdateMountAnimation() {
-            npc.ai[0] = Math.Abs(npc.velocity.X) > 0.1f ? 1f : 0f;
-            if (Math.Abs(npc.velocity.Y) > 1f) {
+            float horizontalSpeed = owner.Owner.velocity.X;
+            npc.ai[0] = Math.Abs(horizontalSpeed) > 0.1f ? 1f : 0f;
+            if (Math.Abs(owner.Owner.velocity.Y) > 1f) {
                 npc.ai[0] = 3f;
             }
 
-            if (physics.JumpHeightSetFrame > 0) {
-                npc.ai[0] = 1f;
-            }
-
-            if (owner.dontTurnTo <= 0f) {
-                npc.spriteDirection = npc.direction = Math.Sign(npc.velocity.X);
+            if (owner.dontTurnTo <= 0f && horizontalSpeed != 0f) {
+                npc.spriteDirection = npc.direction = Math.Sign(horizontalSpeed);
             }
         }
 
         //检查下马输入
         private bool CheckDismountInput() {
             return owner.Owner.whoAmI == Main.myPlayer && owner.hoverNPC && owner.rightPressed;
-        }
-
-        //落地冲击效果
-        private void JumpFloorEffect() {
-            if (!npc.collideY) {
-                owner.ai[3] += Math.Abs(npc.velocity.Y);
-                if (npc.velocity.Y < 0) {
-                    owner.ai[3] = 0;
-                    owner.ai[4] = 0;
-                }
-                if (owner.ai[3] > owner.ai[4] && npc.velocity.Y > 0) {
-                    owner.ai[4] = owner.ai[3];
-                }
-                npc.netUpdate = true;
-                return;
-            }
-
-            if (npc.oldVelocity.Y > 2f && owner.ai[4] > CrabulonConstants.MinImpactDistance) {
-                CreateImpactEffects(owner.ai[4]);
-            }
-
-            owner.ai[3] = 0;
-            owner.ai[4] = 0;
-            npc.netUpdate = true;//强制更新NPC
-        }
-
-        //创建冲击效果
-        private void CreateImpactEffects(float impactStrength) {
-            float volume = CrabulonConstants.ImpactSoundVolume + Math.Min(
-                impactStrength / CrabulonConstants.ImpactVolumeMultiplier,
-                0.5f
-            );
-            SoundEngine.PlaySound(SoundID.Item14 with { Volume = volume }, npc.Center);
-
-            int dustCount = (int)MathHelper.Clamp(
-                impactStrength / CrabulonConstants.ImpactDustDivisor,
-                CrabulonConstants.MinDustCount,
-                CrabulonConstants.MaxDustCount
-            );
-
-            for (int i = 0; i < dustCount; i++) {
-                CreateImpactDust(impactStrength);
-            }
-
-            if (owner.Owner.whoAmI == Main.myPlayer) {
-                CreateImpactProjectile(impactStrength);
-            }
-        }
-
-        //创建冲击粒子
-        private void CreateImpactDust(float impactStrength) {
-            Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
-            int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
-            Main.dust[dust].velocity *= 0.5f;
-            Main.dust[dust].velocity.Y *= impactStrength / Main.rand.NextFloat(160, 230);
-            Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(owner.DyeItemID);
-        }
-
-        //创建冲击弹幕
-        private void CreateImpactProjectile(float impactStrength) {
-            float multiplicative = owner.Owner.GetDamage(DamageClass.Generic).Multiplicative;
-            int baseDmg = CrabulonConstants.BaseDamage + (int)(impactStrength / CrabulonConstants.DamagePerImpact);
-            baseDmg = (int)(baseDmg * multiplicative);
-
-            Projectile.NewProjectile(
-                npc.FromObjectGetParent(),
-                npc.Center,
-                Vector2.Zero,
-                ModContent.ProjectileType<CrabulonFriendHitbox>(),
-                baseDmg,
-                CrabulonConstants.ImpactKnockback,
-                owner.Owner.whoAmI,
-                npc.whoAmI
-            );
         }
     }
 }

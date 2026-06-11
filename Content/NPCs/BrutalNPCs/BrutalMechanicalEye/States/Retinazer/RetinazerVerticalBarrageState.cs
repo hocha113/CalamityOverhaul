@@ -1,14 +1,17 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
     /// <summary>
-    /// 激光眼二阶段垂直弹幕状态
-    /// 在玩家侧面发射激光弹幕
+    /// 激光眼二阶段游走点射状态：
+    /// 弹簧侧翼游走，三连点射预判激光，二阶段套路锚点
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerVerticalBarrage, typeof(TwinsStateContext))]
     internal class RetinazerVerticalBarrageState : TwinsStateBase
@@ -17,27 +20,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerVerticalBarrage;
 
         /// <summary>
-        /// 二阶段固定招式套路(有搭档时):
-        /// 垂直弹幕→精准狙击→水平弹幕→聚焦光束→激光矩阵→合击→(循环)
+        /// 二阶段固定招式套路(有搭档时)：
+        /// 游走点射→精准狙击→磁暴链锁→死亡射线扫射→超新星对撞→激光矩阵→大招/交叉冲刺→(循环)
         /// 
-        /// 设计与魔焰眼配合:
-        /// 激光眼:垂直弹幕(远程压制) ←→ 魔焰眼:喷火追击(近战突进)
-        /// 激光眼:精准狙击(爆发输出) ←→ 魔焰眼:二阶冲刺(高速突袭)
-        /// 激光眼:水平弹幕(封锁空间) ←→ 魔焰眼:影分身冲刺(多方向压制)
-        /// 激光眼:聚焦光束(定点打击) ←→ 魔焰眼:喷火追击(持续追击)
-        /// 激光眼:激光矩阵(区域封锁) ←→ 魔焰眼:火焰风暴(区域控制)
-        /// 激光眼:合击(联合爆发)     ←→ 魔焰眼:合击(联合爆发)
+        /// 与魔焰眼的配合(combo索引对齐，合击节点1/3/5双眼同步)：
+        /// 激光眼:精准狙击(爆发输出)   ←→ 魔焰眼:二阶冲刺(高速突袭)
+        /// 激光眼:磁暴链锁(合击)       ←→ 魔焰眼:磁暴链锁(合击)
+        /// 激光眼:死亡射线扫射(区域切割)←→ 魔焰眼:残影连冲(多段突进)
+        /// 激光眼:超新星对撞(合击)     ←→ 魔焰眼:超新星对撞(合击)
+        /// 激光眼:激光矩阵(区域封锁)   ←→ 魔焰眼:火焰风暴(区域控制)
+        /// 激光眼:大招/交叉冲刺(合击)  ←→ 魔焰眼:大招/交叉冲刺(合击)
         /// 
-        /// 二阶段固定招式套路(独眼时):
-        /// 垂直弹幕→精准狙击→水平弹幕→聚焦光束→激光矩阵→精准狙击→(循环)
+        /// 二阶段固定招式套路(独眼时)：
+        /// 游走点射→精准狙击→水平弹幕→死亡射线扫射→激光矩阵→精准狙击→(循环)
         /// </summary>
         private static readonly string[] ComboSequenceWithPartner =
         [
             "PrecisionSniper",
-            "HorizontalBarrage",
+            "TetherSweep",
             "FocusedBeam",
+            "Supernova",
             "LaserMatrix",
-            "CombinedAttack"
+            "Ultimate"
         ];
 
         private static readonly string[] ComboSequenceSolo =
@@ -50,11 +54,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         ];
 
         private int Duration => Context.IsDeathMode ? 110 : 140;
-        private int RapidFireRate => Context.IsDeathMode ? 15 : 18;
+        private int BurstRate => Context.IsDeathMode ? 34 : 42;
         private float LaserSpeed => Context.IsDeathMode ? 17f : 15f;
+        private const int BurstShots = 3;
+        private const int BurstInterval = 5;
 
         private TwinsStateContext Context;
         private int comboStep;
+        private int burstRemaining;
+        private int burstTimer;
+        private int shootCooldown;
 
         /// <param name="currentComboStep">二阶段固定招式循环的当前步骤索引</param>
         public RetinazerVerticalBarrageState() : this(0) {
@@ -67,6 +76,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override void OnEnter(TwinsStateContext context) {
             base.OnEnter(context);
             Context = context;
+            burstRemaining = 0;
+            burstTimer = 0;
+            shootCooldown = 0;
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {
@@ -78,37 +90,62 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 return new RetinazerSoloRageState();
             }
 
-            //计算目标位置，在玩家侧面
-            Vector2 targetPos = player.Center + new Vector2(npc.Center.X < player.Center.X ? -400 : 400, 0);
+            //锚点状态:响应搭档发出的合击信号，立即跟进合击
+            ITwinsState comboFollow = TwinsComboCoordinator.TryFollowSignal(context);
+            if (comboFollow != null) {
+                return comboFollow;
+            }
 
-            //保持Y轴对齐
-            float yDiff = player.Center.Y - npc.Center.Y;
-            npc.velocity.Y = MathHelper.Lerp(npc.velocity.Y, yDiff * 0.1f, 0.1f);
-            npc.velocity.X = MathHelper.Lerp(npc.velocity.X, (targetPos.X - npc.Center.X) * 0.05f, 0.1f);
-
+            //弹簧侧翼游走:占位玩家侧面并带纵向呼吸
+            Vector2 targetPos = player.Center
+                + new Vector2(npc.Center.X < player.Center.X ? -420 : 420, 0)
+                + TwinsMotion.BreathingOffset(seed: 2.9f, 18f);
+            TwinsMotion.SpringHover(npc, targetPos, 0.015f, 0.085f);
             FaceTarget(npc, player.Center);
 
             Timer++;
 
-            //发射激光
-            if (Timer % RapidFireRate == 0) {
+            //触发三连点射
+            if (++shootCooldown >= BurstRate && burstRemaining <= 0) {
+                burstRemaining = BurstShots;
+                burstTimer = 0;
+                shootCooldown = 0;
+            }
+
+            if (burstRemaining > 0 && ++burstTimer >= BurstInterval) {
+                burstTimer = 0;
+                burstRemaining--;
+
+                Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, LaserSpeed * 3f, 0.5f);
+                Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
+
                 if (!VaultUtils.isClient) {
-                    Vector2 shootVel = GetDirectionToTarget(context) * LaserSpeed;
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
-                        npc.Center,
-                        shootVel,
-                        ProjectileID.DeathLaser,
+                        npc.Center + shootDir * 38f,
+                        shootDir * LaserSpeed,
+                        ModContent.ProjectileType<RetinazerLaser>(),
                         24,
                         0f,
                         Main.myPlayer
                     );
                 }
-                SoundEngine.PlaySound(SoundID.Item12, npc.Center);
+
+                //后坐力与喷口闪光
+                npc.velocity -= shootDir * 4.5f;
+                Context.PushDashVisuals(0.2f, 0.25f);
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item12 with { Pitch = 0.25f, Volume = 0.8f }, npc.Center);
+                    for (int i = 0; i < 3; i++) {
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + shootDir * 42f,
+                            shootDir.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(3f, 6f),
+                            Color.White, Main.rand.NextFloat(0.8f, 1.3f))?.Configure(12, 0);
+                    }
+                }
             }
 
             //按固定套路切换到下一招式
-            if (Timer >= Duration) {
+            if (Timer >= Duration && burstRemaining <= 0) {
                 //独眼模式下切换到狂暴状态
                 if (context.IsSoloRageMode) {
                     return new RetinazerSoloRageState();
@@ -134,7 +171,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                 "HorizontalBarrage" => new RetinazerHorizontalBarrageState(nextStep),
                 "FocusedBeam" => new RetinazerFocusedBeamState(nextStep),
                 "LaserMatrix" => new RetinazerLaserMatrixState(nextStep),
-                "CombinedAttack" => new TwinsCombinedAttackState(nextStep),
+                "TetherSweep" => TwinsComboCoordinator.InitiateCombo(Context, TwinsStateIndex.TwinsTetherSweep, nextStep),
+                "Supernova" => TwinsComboCoordinator.InitiateCombo(Context, TwinsStateIndex.TwinsCombinedAttack, nextStep),
+                "Ultimate" => TwinsComboCoordinator.InitiateUltimateOrCrossDash(Context, nextStep),
                 _ => new RetinazerPrecisionSniperState(0, nextStep)
             };
         }

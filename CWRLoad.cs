@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.RangedModify.Core;
 using System;
 using System.Collections.Generic;
@@ -119,14 +118,6 @@ namespace CalamityOverhaul
         /// 墙体对应掉落物的词典
         /// </summary>
         public static Dictionary<int, int> WallToItem { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否是一个手持挥舞类武器
-        /// </summary>
-        internal static Dictionary<int, bool> ItemIsHeldSwing { get; private set; } = [];
-        /// <summary>
-        /// 该手持挥舞类武器否是不阻断原射击方式
-        /// </summary>
-        internal static Dictionary<int, bool> ItemIsHeldSwingDontStopOrigShoot { get; private set; } = [];
         /// <summary>
         /// 该物品是否是一把枪械
         /// </summary>
@@ -304,8 +295,6 @@ namespace CalamityOverhaul
         private static void SetupItemData() {
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = ContentSamples.ItemsByType[itemType];
-                ItemIsHeldSwing[itemType] = false;
-                ItemIsHeldSwingDontStopOrigShoot[itemType] = false;
                 ItemIsGun[itemType] = false;
                 ItemIsShotgun[itemType] = false;
                 ItemIsCrossBow[itemType] = false;
@@ -336,25 +325,7 @@ namespace CalamityOverhaul
                     ItemAutoloadingOmigaSnyRecipe[itemType] = cwrItem.AutoloadingOmigaSnyRecipe;
                 }
 
-                ItemIsHeldSwing[itemType] = cwrItem.IsHeldSwing;
-                ItemIsHeldSwingDontStopOrigShoot[itemType] = cwrItem.IsHeldSwingDontStopOrigShoot;
-
-                if (cwrItem.IsHeldSwing) {
-                    ValidateSwingInitialization(item, cwrItem);
-                }
-
                 PopulateRangedData(itemType, cwrItem);
-            }
-        }
-
-        private static void ValidateSwingInitialization(Item item, CWRItem cwrItem) {
-            Projectile shootProj = new Projectile();
-            shootProj.SetDefaults(item.shoot);
-            if (shootProj.ModProjectile is BaseSwing swing && !cwrItem.WeaponInSetKnifeHeld) {
-                throw new InvalidOperationException(
-                    $"The Sword is not initialized correctly：{item} by {swing})。" +
-                    $"Please check that the initialization function is called correctly. " +
-                    $"SetKnifeHeld must be used to set the BaseSwing item");
             }
         }
 
@@ -423,8 +394,6 @@ namespace CalamityOverhaul
         public static void UnLoad() {
             TileToItem?.Clear();
             WallToItem?.Clear();
-            ItemIsHeldSwing?.Clear();
-            ItemIsHeldSwingDontStopOrigShoot?.Clear();
             ItemIsGun?.Clear();
             ItemIsShotgun?.Clear();
             ItemIsBow?.Clear();

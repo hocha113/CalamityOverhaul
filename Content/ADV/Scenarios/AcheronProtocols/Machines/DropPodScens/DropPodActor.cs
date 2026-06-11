@@ -382,7 +382,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             flameTrail ??= new Trail(flameTrailPoints, GetFlameTrailWidth, GetFlameTrailColor);
             flameTrail.TrailPositions = flameTrailPoints;
 
-            //切换到顶点绘制模式——与BaseSwing.DrawSlashTrail、DestroyerRenderHelper一致的模式
+            //切换到顶点绘制模式——与DestroyerRenderHelper一致的模式
             spriteBatch.End();
 
             Effect effect = EffectLoader.DropPodFlame.Value;

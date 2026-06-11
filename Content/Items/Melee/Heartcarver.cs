@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
 using CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts;
-using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -27,6 +26,11 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class Heartcarver : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
+
+        /// <summary>四段连击计数: 三连刺 + 终结斩</summary>
+        private int comboCounter;
+        /// <summary>连击重置计时器，过久未刺击则回到第一段</summary>
+        private int comboResetTimer;
 
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
@@ -83,15 +87,25 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override bool AltFunctionUse(Player player) => true;
 
+        public override void HoldItem(Player player) {
+            if (comboResetTimer > 0 && --comboResetTimer == 0) {
+                comboCounter = 0;
+            }
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 Projectile.NewProjectile(source, position, velocity.SafeNormalize(Vector2.Zero),
                     ModContent.ProjectileType<HeartcarverDash>(), (int)(damage * 1.5f), knockback * 2f, player.whoAmI);
+                comboCounter = 0;//冲刺重置连击
                 return false;
             }
 
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            int combo = comboCounter % 4;
+            comboCounter++;
+            comboResetTimer = 60;
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, combo);
             return false;
         }
     }
@@ -99,47 +113,111 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 刻心者短剑的手持弹幕 — 三连刺+终结斩连击系统
     /// </summary>
-    internal class HeartcarverHeld : BaseKnife
+    internal class HeartcarverHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
-        public override int TargetID => ModContent.ItemType<Heartcarver>();
-        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail3";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "Red_Bar";
-        private static int stabCounter = 0;
-        private static int comboStep = 0;
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Heartcarver>();
 
-        public override void SetKnifeProperty() {
+        /// <summary>连击索引: 0~2=三连刺 3=终结斩</summary>
+        private ref float ComboIndex => ref Projectile.ai[0];
+
+        private bool IsFinisher => ComboIndex >= 3f;
+
+        //阶段时长（逻辑帧，受攻速缩放）
+        private float WindupTime => IsFinisher ? 8f : 3f;
+        private float StabTime => IsFinisher ? 6f : 5f;
+        private float RecoverTime => IsFinisher ? 8f : 6f;
+        private float TotalTime => WindupTime + StabTime + RecoverTime;
+        //刺击顶点的突出距离，逐刺递增
+        private float StabReach => IsFinisher ? 52f : 32f + ComboIndex * 2f;
+        //刀刃判定长度
+        private const float BladeLength = 46f;
+
+        private float elapsed;
+        private float speedMul = 1f;
+        private Vector2 stabUnit;
+        /// <summary>当前持出距离</summary>
+        private float holdout;
+        private bool stabSoundPlayed;
+        private bool daggersFired;
+        private readonly HashSet<int> hitNPCs = [];
+
+        public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Generic;
-            Projectile.width = Projectile.height = 66;
-            canDrawSlashTrail = false;
-            SwingData.baseSwingSpeed = 5.5f;
-            Length = 45;
-            drawTrailTopWidth = 30;
-            drawTrailBtommWidth = 10;
+            Projectile.width = Projectile.height = 36;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.ownerHitCheck = true;
+            Projectile.timeLeft = 60;
             Projectile.ArmorPenetration = 32767;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
+            Projectile.CWR().PierceResist = true;
         }
 
-        public override void KnifeInitialize() {
-            if (++comboStep > 3) {
-                comboStep = 0;
+        public override bool ShouldUpdatePosition() => false;
+
+        public override bool? CanDamage() => elapsed >= WindupTime && elapsed <= WindupTime + StabTime + 1f;
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (CanDamage() != true) {
+                return false;
+            }
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + stabUnit * (holdout + BladeLength) * Projectile.scale;
+            float collisionPoint = 0f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , hand, tip, 26f, ref collisionPoint);
+        }
+
+        public override void Initialize() {
+            stabUnit = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
+            Owner.direction = Math.Sign(stabUnit.X) == 0 ? Owner.direction : Math.Sign(stabUnit.X);
+
+            speedMul = Owner.GetWeaponAttackSpeed(Item);
+            if (speedMul <= 0f) {
+                speedMul = 1f;
+            }
+
+            if (IsFinisher) {
+                Projectile.damage = (int)(Projectile.damage * 1.25f);
+                Projectile.scale = 1.15f;
             }
         }
 
-        public override bool PreSwingAI() {
+        public override void AI() {
+            if (Item.type != ModContent.ItemType<Heartcarver>()) {
+                Projectile.Kill();
+                return;
+            }
+            if (elapsed >= TotalTime) {
+                Projectile.Kill();
+                return;
+            }
+
             //右键冲刺突击行为，这样防止右键被左键硬控
             if (DownRight && Owner.CountProjectilesOfID<HeartcarverDash>() == 0
                 && Owner.CountProjectilesOfID<HeartcarverAlt>() == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 ShootState shootState = Owner.GetShootState();
-                Projectile.NewProjectile(shootState.Source, Owner.Center, ShootVelocity.SafeNormalize(Vector2.Zero),
+                Projectile.NewProjectile(shootState.Source, Owner.Center, stabUnit,
                     ModContent.ProjectileType<HeartcarverDash>(), (int)(shootState.WeaponDamage * 1.5f)
                     , shootState.WeaponKnockback * 2f, Owner.whoAmI);
                 Projectile.Kill();
-                return false;
+                return;
             }
 
-            if (comboStep == 3) {
+            float stabEnd = WindupTime + StabTime;
+
+            if (elapsed < WindupTime) {
+                //回拉蓄力
+                float t = elapsed / WindupTime;
+                holdout = MathHelper.Lerp(10f, -8f, MathF.Sin(t * MathHelper.PiOver2));
+
                 //终结斩蓄力阶段的血色能量粒子
-                if (Time < maxSwingTime * 0.3f && Time % 2 == 0) {
+                if (IsFinisher && !VaultUtils.isServer && elapsed % 2f < speedMul) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float dist = Main.rand.NextFloat(60f, 120f);
                     Vector2 spawnPos = Owner.Center + angle.ToRotationVector2() * dist;
@@ -147,93 +225,156 @@ namespace CalamityOverhaul.Content.Items.Melee
                     PRTLoader.NewParticle<PRT_SparkAlpha>(spawnPos, vel, Color.Lerp(Color.Red, Color.DarkRed, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(10, 18));
                 }
             }
+            else if (elapsed < stabEnd) {
+                //迅捷突刺
+                float t = (elapsed - WindupTime) / StabTime;
+                float eased = 1f - MathF.Pow(1f - t, 3.6f);
+                holdout = MathHelper.Lerp(-8f, StabReach, eased);
 
-            //普通三连刺 — 逐刺加速加距
-            float speedBonus = 1f + comboStep * 0.15f;
-            float lengthBonus = comboStep * 8f;
+                if (!stabSoundPlayed) {
+                    stabSoundPlayed = true;
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item1 with {
+                            Pitch = ComboIndex * 0.15f,
+                            Volume = 0.9f + ComboIndex * 0.1f
+                        }, Projectile.Center);
+                    }
+                }
 
-            StabBehavior(
-                initialLength: 35,
-                lifetime: (int)(maxSwingTime / speedBonus),
-                scaleFactorDenominator: 380f - comboStep * 30f,
-                minLength: (int)(25 + lengthBonus),
-                maxLength: (int)(50 + lengthBonus),
-                canDrawSlashTrail: false
-            );
+                if (!daggersFired && t >= 0.5f) {
+                    daggersFired = true;
+                    FireDaggers();
+                }
 
-            if (Time == 1) {
-                SoundEngine.PlaySound(SoundID.Item1 with {
-                    Pitch = comboStep * 0.15f,
-                    Volume = 0.9f + comboStep * 0.1f
-                }, Projectile.Center);
+                //连刺加速时的血色拖尾
+                if (ComboIndex >= 1f && !VaultUtils.isServer && Main.rand.NextBool(2)) {
+                    Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(14f, 14f);
+                    Dust trail = Dust.NewDustPerfect(dustPos, DustID.Blood,
+                        -stabUnit * Main.rand.NextFloat(2f, 5f), 100, default, 1.2f + ComboIndex * 0.3f);
+                    trail.noGravity = true;
+                }
+            }
+            else {
+                //收刀
+                float t = (elapsed - stabEnd) / RecoverTime;
+                holdout = MathHelper.Lerp(StabReach, 12f, t * t * (3f - 2f * t));
             }
 
-            //连刺加速时的拖尾粒子
-            if (comboStep >= 1 && Time % 3 == 0) {
-                Vector2 dustPos = Projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
-                Dust trail = Dust.NewDustPerfect(dustPos, DustID.Blood,
-                    -ShootVelocity * 0.3f, 100, default, 1.2f + comboStep * 0.3f);
-                trail.noGravity = true;
-            }
-
-            return false;
+            SetDirection();
+            UpdatePlayerPose();
+            elapsed += speedMul;
         }
 
-        public override void Shoot() {
-            int daggerType = ModContent.ProjectileType<HeartcarverDagger>();
-            if (stabCounter > 3) {
-                stabCounter = 0;
-            }
-
-            //终结斩：生成2把匕首 + 屏幕微震
-            if (comboStep == 3) {
-                int spawnCount = Math.Min(2, 3 - Owner.ownedProjectileCounts[daggerType]);
-                for (int i = 0; i < spawnCount; i++) {
-                    Projectile.NewProjectile(
-                        Source, ShootSpanPos, Vector2.Zero,
-                        daggerType, (int)(Projectile.damage * 1.2f), Projectile.knockBack,
-                        Owner.whoAmI, ai0: stabCounter
-                    );
-                    stabCounter++;
-                }
+        private void FireDaggers() {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
 
-            //普通刺击
-            if (Owner.ownedProjectileCounts[daggerType] < 3) {
+            int daggerType = ModContent.ProjectileType<HeartcarverDagger>();
+            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + stabUnit * holdout;
+            int owned = Owner.ownedProjectileCounts[daggerType];
+
+            //终结斩：生成2把匕首；普通刺击：1把，环绕上限3把
+            int spawnCount = IsFinisher ? Math.Min(2, 3 - owned) : (owned < 3 ? 1 : 0);
+            float damageMul = IsFinisher ? 1.2f : 1f;
+            for (int i = 0; i < spawnCount; i++) {
                 Projectile.NewProjectile(
-                    Source, ShootSpanPos, Vector2.Zero,
-                    daggerType, Projectile.damage, Projectile.knockBack,
-                    Owner.whoAmI, ai0: stabCounter
+                    Owner.GetSource_ItemUse(Item), spawnPos, Vector2.Zero,
+                    daggerType, (int)(Projectile.damage * damageMul), Projectile.knockBack,
+                    Owner.whoAmI, ai0: owned + i
                 );
-                stabCounter++;
             }
         }
 
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.Bleeding, 180 + comboStep * 60);
+        private void UpdatePlayerPose() {
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.itemTime = Owner.itemAnimation = 2;
+            Owner.itemRotation = (stabUnit * Owner.direction).ToRotation();
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, stabUnit.ToRotation() - MathHelper.PiOver2);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.5f);
+            Projectile.rotation = stabUnit.ToRotation();
+            Projectile.timeLeft = 60;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.HitDirectionOverride = stabUnit.X > 0 ? 1 : -1;
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.425f;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //转发物品命中钩子，维持装备与饰品的近战联动
+            if (hitNPCs.Add(target.whoAmI)) {
+                ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
+                NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
+                PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
+            }
+
+            target.AddBuff(BuffID.Bleeding, 180 + (int)ComboIndex * 60);
 
             //终结斩命中：强力打击反馈
-            if (comboStep == 3 && Projectile.numHits <= 1) {
+            if (IsFinisher && Projectile.numHits <= 1) {
                 SoundEngine.PlaySound(SoundID.NPCHit18 with {
                     Volume = 0.8f,
                     Pitch = 0.4f
                 }, target.Center);
 
-                for (int i = 0; i < 20; i++) {
-                    Vector2 vel = Main.rand.NextVector2Circular(10f, 10f);
-                    Dust hitDust = Dust.NewDustPerfect(
-                        target.Center, DustID.Blood, vel, 100, default,
-                        Main.rand.NextFloat(1.8f, 2.8f)
-                    );
-                    hitDust.noGravity = true;
-                    hitDust.fadeIn = 1.3f;
-                }
+                if (!VaultUtils.isServer) {
+                    for (int i = 0; i < 20; i++) {
+                        Vector2 vel = Main.rand.NextVector2Circular(10f, 10f);
+                        Dust hitDust = Dust.NewDustPerfect(
+                            target.Center, DustID.Blood, vel, 100, default,
+                            Main.rand.NextFloat(1.8f, 2.8f)
+                        );
+                        hitDust.noGravity = true;
+                        hitDust.fadeIn = 1.3f;
+                    }
 
-                for (int i = 0; i < 6; i++) {
-                    PRTLoader.NewParticle<PRT_SparkAlpha>(target.Center, Main.rand.NextVector2Circular(10f, 10f), Color.Lerp(Color.Red, Color.Crimson, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(12, 20));
+                    for (int i = 0; i < 6; i++) {
+                        PRTLoader.NewParticle<PRT_SparkAlpha>(target.Center, Main.rand.NextVector2Circular(10f, 10f), Color.Lerp(Color.Red, Color.Crimson, Main.rand.NextFloat()), Main.rand.NextFloat(1.5f, 2.5f)).Configure(false, Main.rand.Next(12, 20));
+                    }
                 }
             }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D tex = TextureValue;
+            Vector2 origin = tex.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            //贴图刀尖指向右上，刺击时沿刺击方向旋转
+            float rot = Projectile.rotation + MathHelper.PiOver4;
+            SpriteEffects effect = SpriteEffects.None;
+            if (Owner.direction < 0) {
+                rot += MathHelper.PiOver2;
+                effect = SpriteEffects.FlipHorizontally;
+            }
+
+            //突刺阶段的残影
+            if (CanDamage() == true) {
+                for (int i = 1; i <= 3; i++) {
+                    float ghostHoldout = holdout - i * 9f;
+                    if (ghostHoldout < 0f) {
+                        continue;
+                    }
+                    Vector2 pos = hand + stabUnit * ghostHoldout - Main.screenPosition;
+                    Color trailColor = new Color(220, 50, 50) * (0.3f * (1f - i / 4f));
+                    trailColor.A = 0;
+                    Main.EntitySpriteDraw(tex, pos, null, trailColor, rot, origin, Projectile.scale, effect, 0);
+                }
+            }
+
+            //刀身本体
+            Vector2 drawPos = hand + stabUnit * holdout - Main.screenPosition;
+            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, rot, origin, Projectile.scale, effect, 0);
+
+            //终结斩的血色辉光层
+            if (IsFinisher) {
+                Color glow = new Color(255, 60, 60) * 0.45f;
+                glow.A = 0;
+                Main.EntitySpriteDraw(tex, drawPos, null, glow, rot, origin, Projectile.scale * 1.08f, effect, 0);
+            }
+            return false;
         }
     }
 

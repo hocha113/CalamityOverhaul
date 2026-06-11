@@ -278,10 +278,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //停止蓄力特效
             context.ResetChargeState();
 
-            //风暴开始音效
+            //风暴开始:音爆入轨
             if (!hasStartedStorm) {
                 hasStartedStorm = true;
                 SoundEngine.PlaySound(SoundID.Item74 with { Pitch = -0.2f, Volume = 1.3f }, npc.Center);
+                Vector2 launchTangent = (stormRotation + MathHelper.PiOver2).ToRotationVector2();
+                TwinsMotion.SonicBoom(npc.Center, launchTangent, spazTheme: true, strength: 1.1f);
             }
 
             //更新风暴中心缓慢跟随玩家
@@ -291,6 +293,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             stormRotation += RotSpeed;
             Vector2 orbitPos = stormCenter + stormRotation.ToRotationVector2() * stormRadius;
             npc.Center = Vector2.Lerp(npc.Center, orbitPos, 0.15f);
+            Context.PushDashVisuals(0.45f, 0.6f);
 
             //面向运动方向
             Vector2 tangent = (stormRotation + MathHelper.PiOver2).ToRotationVector2();

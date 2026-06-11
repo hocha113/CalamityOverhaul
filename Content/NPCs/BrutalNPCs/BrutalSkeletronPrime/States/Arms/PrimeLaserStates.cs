@@ -34,9 +34,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 ctx.Npc.TargetClosest();
                 ctx.Npc.netUpdate = true;
 
+                //全难度共享完整出招轮换，死亡模式只通过充能速度与弹速体现强度
                 int cycle = ctx.AttackCycle;
                 ctx.AttackCycle = (cycle + 1) % 3;
-                if (cycle == 0 || ctx.Death) {
+                if (cycle == 0) {
                     return new LaserChargedShotState();
                 }
                 if (cycle == 1) {
@@ -97,20 +98,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         private void FireLaser(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.TargetClosest();
-            float laserSpeed = (ctx.BossRush ? 5f : 4f) * (1f + Counter * 0.1f);
-            int type = ProjectileID.DeathLaser;
+            //定制激光全难度统一使用，死亡模式弹速放缓（DeadLaser 自带加速，慢出膛更具压迫层次）
+            float laserSpeed = (ctx.BossRush ? 5f : 4f) * (1f + Counter * 0.1f) * (ctx.Death ? 0.65f : 0.8f);
+            int type = ModContent.ProjectileType<DeadLaser>();
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, type));
 
             HeadPrimeAI.SpanFireLerterDustEffect(npc, 3);
 
             Vector2 laserVelocity = ctx.AimDirection * laserSpeed;
             Vector2 spawnPos = npc.Center + ctx.AimDirection * 100f;
-
-            if (ctx.Death) {
-                type = ModContent.ProjectileType<DeadLaser>();
-                damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, type));
-                laserVelocity *= 0.65f;
-            }
 
             Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, laserVelocity, type, damage, 0f, Main.myPlayer, 1f, 0f);
         }
@@ -191,7 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
         private void FireChargedLaser(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
-            int type = ctx.Death ? ModContent.ProjectileType<DeadLaser>() : ProjectileID.DeathLaser;
+            int type = ModContent.ProjectileType<DeadLaser>();
             int damage = ScaleDamage(npc.defDamage / 2);
 
             float laserSpeed = ctx.Death ? 12f : 15f;
@@ -201,15 +197,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             //主炮
             Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, laserVelocity, type, damage, 0f, Main.myPlayer, 1f, 0f);
 
-            //高难附带扇形散射
-            if (ctx.MasterMode || ctx.Death) {
-                for (int i = -2; i <= 2; i++) {
-                    if (i == 0) {
-                        continue;
-                    }
-                    Vector2 spreadVel = laserVelocity.RotatedBy(i * 0.12f) * 0.8f;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, spreadVel, type, damage, 0f, Main.myPlayer, 1f, 0f);
+            //扇形散射全难度可见，难度只影响散射对数
+            int spreadPairs = (ctx.MasterMode || ctx.Death) ? 2 : 1;
+            for (int i = -spreadPairs; i <= spreadPairs; i++) {
+                if (i == 0) {
+                    continue;
                 }
+                Vector2 spreadVel = laserVelocity.RotatedBy(i * 0.12f) * 0.8f;
+                Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, spreadVel, type, damage, 0f, Main.myPlayer, 1f, 0f);
             }
 
             HeadPrimeAI.SpanFireLerterDustEffect(npc, 33);
@@ -243,8 +238,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 激光环弹幕：炮体自旋扫场，周期性放出全向激光环（高难为锁定扇面），
-    /// 同伴越少持续越久
+    /// 激光环弹幕：炮体自旋扫场，周期性放出全向激光环
+    /// （死亡模式/Infernum 额外叠加锁定扇面），同伴越少持续越久
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserRing, typeof(PrimeArmStateContext))]
     internal class LaserRingState : PrimeArmStateBase
@@ -292,10 +287,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
         private void FireLaserRing(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
-            int totalProjectiles = ctx.BossRush ? 22 : (ctx.MasterMode ? 13 : 10);
+            //全向激光环全难度统一释放，难度只影响环密度
+            int totalProjectiles = ctx.BossRush ? 22 : (ctx.Death ? 16 : (ctx.MasterMode ? 13 : 10));
             float radians = MathHelper.TwoPi / totalProjectiles;
-            int type = ProjectileID.DeathLaser;
-            int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, type));
+            int ringType = ProjectileID.DeathLaser;
+            int ringDamage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ringType));
 
             float velocity = 3f;
             double angleA = radians * 0.5;
@@ -304,43 +300,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             bool normalRotation = ctx.AttackCycle % 2 == 0;
             Vector2 spinningPoint = normalRotation ? new Vector2(0f, -velocity) : new Vector2(-laserVelocityX, -velocity);
 
-            if (ctx.Death) {
-                totalProjectiles = ctx.BossRush ? 12 : 6;
-                radians = MathHelper.TwoPi / totalProjectiles;
+            for (int k = 0; k < totalProjectiles; k++) {
+                Vector2 fireDirection = spinningPoint.RotatedBy(radians * k);
+                int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
+                    npc.Center + fireDirection.SafeNormalize(Vector2.UnitY) * 100f,
+                    fireDirection, ringType, ringDamage, 0f, Main.myPlayer, 1f, 0f);
+                Main.projectile[proj].timeLeft = 900;
+            }
 
-                if (InfernumRef.InfernumModeOpenState) {
-                    for (int j = 0; j < 5; j++) {
-                        for (int k = 0; k < totalProjectiles; k++) {
-                            float speedMode = (ctx.BossRush ? 1.7f : 1.55f) + j * (ctx.BossRush ? 0.35f : 0.3f);
-                            Vector2 fireDirection = spinningPoint.RotatedBy(radians * k);
-                            Projectile.NewProjectile(npc.GetSource_FromAI(),
-                                npc.Center + fireDirection.SafeNormalize(Vector2.UnitY) * 100f,
-                                fireDirection * speedMode, ModContent.ProjectileType<DeadLaser>(),
-                                damage, 0f, Main.myPlayer, 1f, 0f);
-                        }
-                    }
-                }
-                else {
-                    Vector2 toTarget = npc.Center.To(ctx.Target.Center).UnitVector();
-                    for (int i = 0; i < 3; i++) {
-                        int index = i - 1;
-                        Vector2 fireDirection = spinningPoint.RotatedBy(index * 0.12f);
-                        Vector2 ver = toTarget.RotatedBy(index * 0.12f) * 3;
-                        Projectile.NewProjectile(npc.GetSource_FromAI(),
-                            npc.Center + fireDirection.SafeNormalize(Vector2.UnitY) * 100f,
-                            ver, ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
-                    }
+            //死亡模式 / Infernum 在环之上追加锁定扇面——数值层面的强度叠加而非内容替换
+            if (ctx.Death || InfernumRef.InfernumModeOpenState) {
+                int fanType = ModContent.ProjectileType<DeadLaser>();
+                int fanDamage = ScaleDamage(CWRRef.GetProjectileDamage(npc, fanType));
+                Vector2 toTarget = npc.Center.To(ctx.Target.Center).UnitVector();
+                int fanCount = InfernumRef.InfernumModeOpenState ? 5 : 3;
+                for (int i = 0; i < fanCount; i++) {
+                    int index = i - fanCount / 2;
+                    Vector2 ver = toTarget.RotatedBy(index * 0.12f) * 3;
+                    Projectile.NewProjectile(npc.GetSource_FromAI(),
+                        npc.Center + ver.SafeNormalize(Vector2.UnitY) * 100f,
+                        ver, fanType, fanDamage, 0f, Main.myPlayer, 1f, 0f);
                 }
                 HeadPrimeAI.SpanFireLerterDustEffect(npc, 33);
-            }
-            else {
-                for (int k = 0; k < totalProjectiles; k++) {
-                    Vector2 fireDirection = spinningPoint.RotatedBy(radians * k);
-                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        npc.Center + fireDirection.SafeNormalize(Vector2.UnitY) * 100f,
-                        fireDirection, type, damage, 0f, Main.myPlayer, 1f, 0f);
-                    Main.projectile[proj].timeLeft = 900;
-                }
             }
         }
     }

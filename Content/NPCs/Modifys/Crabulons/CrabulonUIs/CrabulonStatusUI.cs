@@ -244,16 +244,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private void OnRecall() {
             if (modify == null || !modify.npc.Alives() || !modify.Owner.Alives()) return;
 
-            SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.6f, Pitch = 0.3f });
-            modify.npc.Center = player.Center + new Vector2(0, CrabulonConstants.TeleportSpawnHeight);
-            modify.npc.netUpdate = true;
-
-            for (int i = 0; i < 60; i++) {
-                Vector2 dustPos = modify.npc.Bottom + new Vector2(Main.rand.NextFloat(-modify.npc.width, modify.npc.width), 0);
-                int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
-                Main.dust[dust].velocity *= 0.5f;
-                Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
-            }
+            //位置修改必须由服务器权威执行，否则客户端的修改会在下次NPC同步时被拉回去
+            modify.Networking.SendRecallRequest();
         }
 
         private void OnSaddleInteract() {
@@ -291,6 +283,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 
             string name = modify.npc.GivenOrTypeName;
             modify.ReleaseTame();
+            modify.SendNetWork();//放生必须广播，否则其余端仍认为蟹处于驯服状态
             SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = -0.3f });
 
             string message = string.Format(ModifyCrabulon.ReleasedText.Value, name);

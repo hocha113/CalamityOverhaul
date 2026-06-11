@@ -52,7 +52,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
         }
 
+        void ICWRLoader.UnLoadData() => DestroyerMotionFX.Unload();
+
         public override void SetProperty() {
+            //头部位置缓存用于高速运动光带拖尾
+            NPCID.Sets.TrailingMode[npc.type] = 1;
+            NPCID.Sets.TrailCacheLength[npc.type] = 24;
             InitializeStateContext();
         }
 
@@ -98,6 +103,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             FindTarget();
             UpdateStateContext();
             CheckDeathPerformanceTrigger();
+
+            //摆动/演出标志每帧由状态重新声明，未声明的帧自动归零
+            stateContext.SlitherStrength = 0f;
 
             //更新状态机
             stateMachine?.Update();
@@ -215,27 +223,43 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
+        /// <summary>
+        /// 航向转向运动模型：维护"航向角+标量速度"而非直接Lerp速度向量。
+        /// <br/>- 角速度限幅且随速度衰减：高速时只能划出大弧线、低速时才能急转弯，产生重量与惯性感；
+        /// <br/>- 速度向目标速度做指数趋近，转向误差大时自动收油门（入弯减速、出弯加速）；
+        /// <br/>- 可叠加蛇形摆动：在航向上加正弦扰动，蠕虫呈现"游动"姿态而不是匀速漂移。
+        /// </summary>
         private void UpdateMovement() {
-            Vector2 direction = stateContext.TargetPosition - npc.Center;
-            float distance = direction.Length();
-            if (distance > 0.01f) {
-                direction.Normalize();
+            Vector2 toTarget = stateContext.TargetPosition - npc.Center;
+            float distance = toTarget.Length();
+            if (distance < 0.01f) {
+                return;
             }
 
-            float spd = stateContext.MoveSpeed;
-            float turn = stateContext.TurnSpeed;
+            float desiredHeading = toTarget.ToRotation();
+            float currentSpeed = npc.velocity.Length();
+            float currentHeading = currentSpeed > 0.01f ? npc.velocity.ToRotation() : desiredHeading;
 
-            if (npc.velocity.Length() < spd) {
-                npc.velocity += direction * (spd / 20f);
+            //转向率：TurnSpeed（约0.2~1.5）换算为弧度/帧，并按当前速度衰减——越快越难转
+            float speedFactor = MathHelper.Clamp(currentSpeed / 32f, 0f, 1f);
+            float maxTurn = stateContext.TurnSpeed / 20f * MathHelper.Lerp(1.7f, 0.6f, speedFactor);
+            float newHeading = currentHeading.AngleTowards(desiredHeading, maxTurn);
+
+            //转向误差越大油门越小：入弯收油、出弯全速，模拟真实载具过弯
+            float headingError = Math.Abs(MathHelper.WrapAngle(desiredHeading - newHeading));
+            float throttle = MathHelper.Lerp(1f, 0.55f, MathHelper.Clamp(headingError / MathHelper.Pi, 0f, 1f));
+            float targetSpeed = stateContext.MoveSpeed * throttle;
+            currentSpeed = MathHelper.Lerp(currentSpeed, targetSpeed, stateContext.AccelRate);
+
+            //蛇形摆动：航向角上的正弦扰动，幅度随速度增强（高速游动摆幅更明显）
+            float slither = stateContext.SlitherStrength;
+            if (slither > 0.01f) {
+                stateContext.SlitherPhase += 0.055f + currentSpeed * 0.0012f;
+                float wave = (float)Math.Sin(stateContext.SlitherPhase);
+                newHeading += wave * 0.24f * slither * MathHelper.Lerp(0.45f, 1f, speedFactor);
             }
 
-            Vector2 desiredVelocity = direction * spd;
-            npc.velocity = Vector2.Lerp(npc.velocity, desiredVelocity, turn / 20f);
-
-            if (npc.velocity.Length() > spd) {
-                npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * spd;
-            }
-
+            npc.velocity = newHeading.ToRotationVector2() * currentSpeed;
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
@@ -273,8 +297,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float visIntensity = 0.65f;//常态保持较明显的红橙描边以解决"夜晚看不清"问题
             float visProgress = 0f;
 
+            //轨道绞杀演出：蓄能撤离=警告脉冲 / 高速俯冲=白热 / 破土回场=低强度散热
+            if (stateContext.OrbitalVisual == 2) {
+                visMode = MechBossVisualMode.Dashing;
+                visIntensity = 1f;
+                visProgress = 1f;
+            }
+            else if (stateContext.OrbitalVisual == 1) {
+                visMode = MechBossVisualMode.Warning;
+                visIntensity = 0.9f;
+                visProgress = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f);
+            }
+            else if (stateContext.OrbitalVisual == 3) {
+                visIntensity = 0.5f;
+            }
             //冲刺中——白热高速效果
-            if (stateMachine?.CurrentState is DestroyerDashingState) {
+            else if (stateMachine?.CurrentState is DestroyerDashingState) {
                 visMode = MechBossVisualMode.Dashing;
                 visIntensity = 1f;
                 visProgress = 1f;
@@ -322,17 +360,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //蓄力特效
             DestroyerRenderHelper.DrawChargeEffect(spriteBatch, stateContext);
 
-            //冲刺残影
-            if (stateMachine?.CurrentState is DestroyerDashingState) {
-                DestroyerRenderHelper.DrawDashTrail(spriteBatch, npc, texture, frameRec, origin, screenPos);
+            //高速光带拖尾：速度驱动，冲刺/俯冲时自动出现（替代旧的逐帧贴图残影）
+            float trailIntensity = MathHelper.Clamp((npc.velocity.Length() - 16f) / 30f, 0f, 1f);
+            DestroyerMotionFX.DrawHeadTrail(npc, trailIntensity);
+
+            //读取共享视觉状态并叠加头部位置充能波
+            var (visMode, visIntensity, visProgress) = MechBossVisualState.Read(npc.whoAmI);
+            float wave = DestroyerChargeWave.Read(npc.whoAmI, 0f);
+            if (wave > 0.01f) {
+                if (visMode == MechBossVisualMode.Idle) {
+                    visMode = MechBossVisualMode.Warning;
+                }
+                visIntensity = Math.Max(visIntensity, wave);
+                visProgress = Math.Max(visProgress, wave);
             }
 
             //外圈8方向描边光环——确保夜晚远距离也能看清Boss轮廓
-            MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, texture, mainPos, frameRec,
-                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, npc.whoAmI);
+            MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, texture, mainPos, frameRec,
+                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
+                visMode, visIntensity, visProgress);
 
             //本体绘制套上机械热感着色器（传入当前帧UV范围，避免4帧贴图邻域采样跨帧）
-            bool shaderApplied = MechBossThermalRenderer.BeginThermalShaderByController(spriteBatch, texture, frameRec, npc.whoAmI, seed: 0f);
+            bool shaderApplied = MechBossThermalRenderer.BeginThermalShader(spriteBatch, texture, frameRec,
+                visMode, visIntensity, visProgress, seed: 0f);
 
             spriteBatch.Draw(texture, mainPos, frameRec, drawColor,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
@@ -344,6 +394,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //发光层独立绘制——保留原有自发光效果不被滤镜覆盖
             spriteBatch.Draw(Head_Glow.Value, mainPos, glowRec, Color.White,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
+
+            //充能波白热叠加
+            if (wave > 0.05f) {
+                Color hot = new Color(255, 165, 75, 0) * wave;
+                spriteBatch.Draw(Head_Glow.Value, mainPos, glowRec, hot,
+                    npc.rotation + MathHelper.Pi, origin, npc.scale * 1.04f, SpriteEffects.None, 0f);
+            }
 
             return false;
         }

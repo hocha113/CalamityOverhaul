@@ -37,6 +37,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (npc.ai[3] == -1f) {
                 npc.timeLeft = 600;
                 Lighting.AddLight(npc.Center, Color.Red.ToVector3() * npc.scale);
+
+                //到位定格闪光：飞行速度跨过阈值落位的瞬间触发一次（纯客户端）
+                if (!VaultUtils.isServer) {
+                    if (npc.velocity.Length() > 6f) {
+                        npc.localAI[2] = 1f;
+                    }
+                    else if (npc.localAI[2] == 1f) {
+                        npc.localAI[2] = 2f;
+                        PRTLoader.NewParticle<PRT_StarPulseRing>(npc.Center, Vector2.Zero,
+                            new Color(255, 90, 110), 0.05f).Configure(0.05f, 0.5f, 18);
+                        for (int i = 0; i < 4; i++) {
+                            PRTLoader.NewParticle<PRT_Spark>(npc.Center,
+                                Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 6f),
+                                new Color(255, 120, 130), Main.rand.NextFloat(0.6f, 1f))
+                                .Configure(true, Main.rand.Next(10, 16));
+                        }
+                        SoundEngine.PlaySound(SoundID.Item25 with { Volume = 0.5f, Pitch = 0.4f, MaxInstances = 5 }, npc.Center);
+                    }
+                }
                 return false;
             }
 

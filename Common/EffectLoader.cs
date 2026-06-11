@@ -19,9 +19,11 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DestroyerThermalOutline { get; set; }
         public static Asset<Effect> DestroyerSlash { get; set; }
         public static Asset<Effect> DestroyerBeam { get; set; }
+        public static Asset<Effect> DestroyerHeatWake { get; set; }
+        public static Asset<Effect> DestroyerTelegraph { get; set; }
         public static Asset<Effect> TwinsEyeOverlay { get; set; }
-        public static Asset<Effect> KnifeRendering { get; set; }
-        public static Asset<Effect> KnifeDistortion { get; set; }
+        public static Asset<Effect> TwinsDeathRayBeam { get; set; }
+        public static Asset<Effect> TwinsChargeVortex { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }

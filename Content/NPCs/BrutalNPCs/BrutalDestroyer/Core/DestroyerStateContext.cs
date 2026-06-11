@@ -24,6 +24,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         /// 是否跳过常规运动（冲刺等需要直接控制速度的状态设为true）
         /// </summary>
         public bool SkipDefaultMovement { get; set; }
+        /// <summary>
+        /// 蛇形摆动强度 0~1：在航向上叠加正弦摆动，让蠕虫"游动"而非"漂移"。
+        /// 每帧由状态重新声明（头部AI在状态机更新前清零），巡航类状态设为1
+        /// </summary>
+        public float SlitherStrength { get; set; }
+        /// <summary>蛇形摆动相位累计（仅视觉/运动手感，轻微跨端漂移可被位置同步纠正）</summary>
+        public float SlitherPhase { get; set; }
+        /// <summary>
+        /// 速度趋近率（每帧向目标速度的指数趋近系数），状态可调。
+        /// 较低=重型机械的迟缓惯性，较高=灵敏响应
+        /// </summary>
+        public float AccelRate { get; set; } = 0.055f;
         #endregion
 
         #region 战斗状态
@@ -49,6 +61,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         /// 冲刺方向（用于瞄准线绘制）
         /// </summary>
         public Vector2 DashDirection { get; set; }
+        /// <summary>
+        /// 轨道绞杀演出模式: 0=无 1=蓄能撤离 2=高速俯冲 3=破土回场（影响热感滤镜与体节火花）
+        /// </summary>
+        public int OrbitalVisual { get; set; }
         #endregion
 
         #region 动画数据

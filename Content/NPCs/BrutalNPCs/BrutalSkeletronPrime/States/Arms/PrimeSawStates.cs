@@ -49,9 +49,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 npc.TargetClosest();
                 npc.netUpdate = true;
 
+                //全难度共享完整出招轮换，死亡模式只通过充能与速度数值体现强度
                 int cycle = ctx.AttackCycle;
                 ctx.AttackCycle = (cycle + 1) % 3;
-                if (cycle == 0 || ctx.Death) {
+                if (cycle == 0) {
                     return new SawSpinUpState();
                 }
                 if (cycle == 1) {

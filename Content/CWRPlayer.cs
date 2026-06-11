@@ -124,10 +124,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int InspectOmigaTime;
         /// <summary>
-        /// 挥舞索引，一般被刀具所使用
-        /// </summary>
-        public int SwingIndex;
-        /// <summary>
         /// 是否站在平台上，如果该值大于0，则会出现无重力的效果
         /// </summary>
         public int ReceivingPlatformTime;
@@ -246,7 +242,6 @@ namespace CalamityOverhaul.Content
             cwr.TramTPContrType = TramTPContrType;
             cwr.CompressorContrType = CompressorContrType;
             cwr.InspectOmigaTime = InspectOmigaTime;
-            cwr.SwingIndex = SwingIndex;
             cwr.ReceivingPlatformTime = ReceivingPlatformTime;
             cwr.DontSwitchWeaponTime = DontSwitchWeaponTime;
             cwr.DontHasSemberDarkMasterCloneTime = DontHasSemberDarkMasterCloneTime;
@@ -276,7 +271,6 @@ namespace CalamityOverhaul.Content
         public override ModPlayer Clone(Player newEntity) => CloneCWRPlayer((CWRPlayer)base.Clone(newEntity));
 
         public override void Initialize() {
-            SwingIndex = 0;
             TramTPContrType = 0;
             ReceivingPlatformTime = 0;
             DontUseItemTime = 0;
@@ -583,11 +577,8 @@ namespace CalamityOverhaul.Content
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
-                foreach (var n in Main.ActiveNPCs) {
-                    if (n.boss && n.type == CWRID.NPC_Crabulon && n.TryGetOverride<ModifyCrabulon>(out var modify)) {
-                        modify.CloseMount();
-                    }
-                }
+                //玩家死亡时若正在骑乘则立即下马，骑手端的下马会自动广播
+                crabulonPlayer.MountCrabulon?.CloseMount();
                 crabulonPlayer.IsMount = false;
                 ModifyCrabulon.mountPlayerHeldProj = -1;
                 crabulonPlayer.MountCrabulon = null;

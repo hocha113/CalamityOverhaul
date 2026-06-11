@@ -31,6 +31,56 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             Phase2Triggered = false;
             Phase2TriggerSource = 0;
             Phase2TransitionTimer = 0;
+            ComboSignal = -1;
+            ComboSharedStep = 0;
+            ComboReadyMask = 0;
+        }
+
+        /// <summary>
+        /// 当前请求的合击状态索引(<see cref="TwinsStateIndex"/>)，-1表示无合击请求。
+        /// 先到达合击节点的眼睛发起请求并直接进入合击；另一只眼在锚点状态察觉信号后立即跟进，
+        /// 合击状态的集合阶段会等待双方到齐，取代旧的"步数巧合同步"
+        /// </summary>
+        public static int ComboSignal { get; set; } = -1;
+
+        /// <summary>
+        /// 合击共享的连招步数，保证双方退出合击后停留在同一套路进度
+        /// </summary>
+        public static int ComboSharedStep { get; set; }
+
+        /// <summary>
+        /// 合击就绪掩码：bit0=魔焰眼集合完成，bit1=激光眼集合完成。
+        /// 双方都就绪后合击才同步推进，确保对撞/夹剪等动作完全同拍
+        /// </summary>
+        public static int ComboReadyMask { get; set; }
+
+        /// <summary>
+        /// 标记本眼已完成合击集合
+        /// </summary>
+        public static void MarkComboReady(bool isSpazmatism) => ComboReadyMask |= isSpazmatism ? 1 : 2;
+
+        /// <summary>
+        /// 双眼是否都已完成合击集合
+        /// </summary>
+        public static bool BothComboReady => (ComboReadyMask & 3) == 3;
+
+        /// <summary>
+        /// 发起合击请求(不覆盖已有请求)
+        /// </summary>
+        public static void RequestCombo(TwinsStateIndex stateIndex, int comboStep) {
+            if (ComboSignal == -1) {
+                ComboSignal = (int)stateIndex;
+                ComboSharedStep = comboStep;
+                ComboReadyMask = 0;
+            }
+        }
+
+        /// <summary>
+        /// 清除合击请求(合击状态退出时调用)
+        /// </summary>
+        public static void ClearComboSignal() {
+            ComboSignal = -1;
+            ComboReadyMask = 0;
         }
 
         /// <summary>
@@ -134,6 +184,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 帧计数器
         /// </summary>
         public int FrameCount { get; set; }
+        #endregion
+
+        #region 冲刺视觉数据
+        /// <summary>
+        /// 速度拉伸强度(0~1)，渲染层据此对本体做沿速度方向的squash&amp;stretch。
+        /// 状态推高数值，控制器每帧自动衰减
+        /// </summary>
+        public float DashStretch { get; set; }
+        /// <summary>
+        /// 残影增强(0~1)，渲染层据此提升残影密度与亮度。
+        /// 状态推高数值，控制器每帧自动衰减
+        /// </summary>
+        public float AfterimageBoost { get; set; }
+
+        /// <summary>
+        /// 每帧衰减冲刺视觉数据(控制器调用)
+        /// </summary>
+        public void DecayDashVisuals() {
+            DashStretch *= 0.88f;
+            AfterimageBoost *= 0.93f;
+            if (DashStretch < 0.01f) {
+                DashStretch = 0f;
+            }
+            if (AfterimageBoost < 0.01f) {
+                AfterimageBoost = 0f;
+            }
+        }
+
+        /// <summary>
+        /// 推高冲刺视觉强度
+        /// </summary>
+        public void PushDashVisuals(float stretch, float afterimage) {
+            if (stretch > DashStretch) {
+                DashStretch = stretch;
+            }
+            if (afterimage > AfterimageBoost) {
+                AfterimageBoost = afterimage;
+            }
+        }
         #endregion
 
         /// <summary>

@@ -1,6 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
-using CalamityOverhaul.OtherMods.InfernumMode;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -76,10 +75,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void FireRing(PrimeStateContext context) {
             NPC npc = context.Npc;
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
-            float ringCount = context.DeathMode ? 13 : 9;
-            if (context.BossRush) {
-                ringCount = 15;
-            }
+            //制导炮弹全难度统一使用，难度只影响环密度
+            float ringCount = context.BossRush ? 15 : (context.DeathMode ? 13 : (Main.masterMode ? 11 : 9));
 
             Vector2 baseVelocity = (context.Target.Center - npc.Center).SafeNormalize(Vector2.UnitY) * 10f;
             //奇偶脉冲错相半个间隔，叠出交错的弹幕网
@@ -88,17 +85,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             for (int i = 0; i < ringCount; i++) {
                 float rotOffset = MathHelper.TwoPi / ringCount * i + phaseOffset;
                 Vector2 perturbedSpeed = baseVelocity.RotatedBy(rotOffset);
-                if ((context.DeathMode && Main.masterMode) || context.BossRush || InfernumRef.InfernumModeOpenState) {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed,
-                        ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                        Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
-                }
-                else {
-                    int proj = Projectile.NewProjectile(npc.GetSource_FromAI(),
-                        npc.Center + perturbedSpeed.SafeNormalize(Vector2.UnitY) * 40f,
-                        perturbedSpeed, ProjectileID.RocketSkeleton, damage, 0f, Main.myPlayer, npc.target, 2f);
-                    Main.projectile[proj].timeLeft = 600;
-                }
+                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, perturbedSpeed,
+                    ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
+                    Main.myPlayer, npc.whoAmI, npc.target, rotOffset);
             }
         }
     }

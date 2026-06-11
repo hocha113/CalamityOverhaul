@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         ProbeMatrix = 7,
         Despawn = 8,
         Death = 9,
+        /// <summary>大招：轨道绞杀（撤离高空→交叉俯冲→终结贯穿）</summary>
+        OrbitalStrike = 10,
     }
 
     /// <summary>

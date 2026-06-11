@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 
     /// <summary>
     /// 钳爪待机：液压浮沉悬停在头部下侧、钳口闭合缓速跟踪玩家，
-    /// 充能满后按"三连击 → 蓄力重锤 → 蓄力重锤"的确定性序列出招（死亡模式只出重锤）
+    /// 充能满后按"三连击 → 蓄力重锤 → 蓄力重锤"的确定性序列出招
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceIdle, typeof(PrimeArmStateContext))]
     internal class ViceIdleState : PrimeArmStateBase
@@ -51,9 +51,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 npc.TargetClosest();
                 npc.netUpdate = true;
 
+                //全难度共享完整出招轮换：三连击与蓄力重锤交替，
+                //死亡模式只通过蓄力速度与突刺数值体现强度
                 int cycle = ctx.AttackCycle;
                 ctx.AttackCycle = (cycle + 1) % 3;
-                if (cycle == 0 && !ctx.Death) {
+                if (cycle == 0) {
                     return new ViceComboState();
                 }
                 return new ViceWindUpState();

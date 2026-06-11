@@ -1,13 +1,18 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
+using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
     /// <summary>
-    /// 包围状态：加速旋转+半径收缩，体节激光密度递增
+    /// 合围电牢：加速旋转+半径收缩，收缩后期体节间拉起横贯圆环的高温电弧（纯演出），
+    /// 体节朝内发射等离子弹；收口停顿时全环白热闪烁后接冲刺
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Encircle, typeof(DestroyerStateContext))]
     internal class DestroyerEncircleState : DestroyerStateBase
@@ -19,6 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private static int TightenPauseDuration => 40;
         private static float MinRadius => 800f;
         private static float MaxRadius => 1080f;
+        private const int MaxCageArcs = 7;
 
         private bool tightenPause;
 
@@ -37,11 +43,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             Timer++;
 
-            //收缩到最紧后短暂停顿
+            //收缩到最紧后短暂停顿：全环白热闪烁，宣告即将贯穿
             if (tightenPause) {
                 npc.velocity *= 0.96f;
                 Counter++;
                 context.SetChargeState(3, 1f);
+
+                float flash = 0.5f + 0.5f * (float)Math.Sin(Counter * 0.55f);
+                DestroyerChargeWave.Push(npc.whoAmI, 0f, 1f, 0.4f + 0.6f * flash, fullBody: true);
+
+                if (Counter == 1) {
+                    SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.3f, Volume = 1f }, npc.Center);
+                    //收口瞬间电弧齐鸣
+                    if (!VaultUtils.isClient) {
+                        for (int i = 0; i < 4; i++) {
+                            SpawnCageArc(context);
+                        }
+                    }
+                }
 
                 if (Counter >= TightenPauseDuration) {
                     return new DestroyerDashPrepareState();
@@ -67,7 +86,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             SetMovement(context, orbitTarget, speed, turnSpeed);
             context.SetChargeState(3, shrinkProgress);
 
-            //体节激光，降低密度避免无法躲避
+            //收缩后期拉起电弧牢笼（纯演出威慑，伤害仍来自可见弹幕）
+            if (!VaultUtils.isClient && shrinkProgress > 0.45f && Timer % 9 == 0) {
+                SpawnCageArc(context);
+            }
+
+            //体节弹幕，降低密度避免无法躲避
             int baseFireChance = CWRWorld.Death ? 130 : 180;
             int fireChance = (int)(baseFireChance * (1f - easeOut * 0.5f));
             fireChance = Math.Max(fireChance, 40);
@@ -75,7 +99,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             if (Timer > 60 && Timer % 8 == 0 && context.BodySegments.Count > 0) {
                 foreach (var segment in context.BodySegments) {
                     if (segment.active && Main.rand.NextBool(fireChance)) {
-                        FireEncircleLaser(context, segment);
+                        FireEncircleBolt(context, segment);
                     }
                 }
             }
@@ -89,13 +113,47 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return null;
         }
 
-        private static void FireEncircleLaser(DestroyerStateContext context, NPC source) {
-            if (VaultUtils.isClient) return;
+        /// <summary>
+        /// 在圆环上选取相距约1/3周长的两节体节拉一道电弧（服务端调用，受存量上限约束）
+        /// </summary>
+        private static void SpawnCageArc(DestroyerStateContext context) {
+            var segments = context.BodySegments;
+            if (segments.Count < 12) {
+                return;
+            }
+
+            int arcType = ModContent.ProjectileType<DestroyerArc>();
+            int alive = 0;
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type == arcType) {
+                    alive++;
+                }
+            }
+            if (alive >= MaxCageArcs) {
+                return;
+            }
+
+            int i = Main.rand.Next(segments.Count);
+            int j = (i + segments.Count / 3 + Main.rand.Next(-3, 4) + segments.Count) % segments.Count;
+            NPC a = segments[i];
+            NPC b = segments[j];
+            if (!a.active || !b.active || a.whoAmI == b.whoAmI) {
+                return;
+            }
+
+            Projectile.NewProjectile(context.Npc.GetSource_FromAI(), a.Center, Vector2.Zero,
+                arcType, 0, 0f, Main.myPlayer, a.whoAmI, b.whoAmI);
+        }
+
+        private static void FireEncircleBolt(DestroyerStateContext context, NPC source) {
+            if (VaultUtils.isClient) {
+                return;
+            }
             float speed = CWRWorld.Death ? 6f : 4f;
             Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
             int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.4f);
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,
-                ProjectileID.DeathLaser, damage, 0f, Main.myPlayer, ai2: context.Npc.target);
+                ModContent.ProjectileType<DestroyerBolt>(), damage, 0f, Main.myPlayer, 1, 0);
         }
     }
 }

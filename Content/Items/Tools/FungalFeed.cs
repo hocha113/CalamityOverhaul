@@ -83,13 +83,9 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            if (modifyCrabulon.FeedValue > 0f) {
-                modifyCrabulon.FeedTamed(Projectile);
-            }
-            else {
-                modifyCrabulon.Feed(Projectile);
-            }
-            modifyCrabulon.SendFeedPacket(Projectile.identity);
+            int dyeItemID = Projectile.CWR().DyeItemID;
+            modifyCrabulon.ApplyFeed(Main.player[Projectile.owner], dyeItemID);
+            modifyCrabulon.Networking.SendFeedPacket(Projectile.owner, dyeItemID);
         }
 
         public override bool? CanHitNPC(NPC target) {

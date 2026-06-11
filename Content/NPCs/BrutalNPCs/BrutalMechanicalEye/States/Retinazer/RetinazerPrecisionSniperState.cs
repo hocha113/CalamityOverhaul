@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -57,29 +59,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
             //蓄力阶段
             if (Timer < ChargeTime) {
-                //产生聚集的激光粒子
-                if (!VaultUtils.isServer && Timer % 2 == 0) {
-                    float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    float dist = 100f - (Timer / (float)ChargeTime) * 60f;
-                    Vector2 dustPos = npc.Center + angle.ToRotationVector2() * dist;
-                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.PurpleTorch, 0, 0, 100, default, 1.8f);
-                    dust.noGravity = true;
-                    dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * 5f;
+                float progress = Timer / (float)ChargeTime;
+
+                //能量内聚
+                if (Timer % 2 == 0) {
+                    TwinsMotion.ChargeGatherFX(npc.Center, false, progress, 100f);
+                }
+
+                //末段绷紧颤抖
+                if (progress > 0.75f && !VaultUtils.isServer) {
+                    npc.position += Main.rand.NextVector2Circular(1.8f, 1.8f);
                 }
 
                 //警告线特效
                 if (!VaultUtils.isServer && Timer % 10 == 0 && Timer > 20) {
                     Vector2 toPlayer = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
                     for (int i = 0; i < 8; i++) {
-                        Vector2 dustPos = npc.Center + toPlayer * (50 + i * 40);
-                        Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.RedTorch, 0, 0, 150, default, 1.2f);
-                        dust.noGravity = true;
-                        dust.velocity = Vector2.Zero;
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + toPlayer * (60 + i * 44),
+                            toPlayer * 1.5f, Color.White, 0.9f)?.Configure(14, 0);
                     }
                 }
             }
             else if (Timer == ChargeTime) {
-                //发射扇形激光
+                //发射扇形强化激光
                 context.ResetChargeState();
 
                 if (!VaultUtils.isClient) {
@@ -91,20 +93,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
                         Vector2 shootVel = toPlayer.RotatedBy(angle) * BaseSpeed;
                         Projectile.NewProjectile(
                             npc.GetSource_FromAI(),
-                            npc.Center,
+                            npc.Center + toPlayer * 40f,
                             shootVel,
-                            ModContent.ProjectileType<DeadLaser>(),
+                            ModContent.ProjectileType<RetinazerLaser>(),
                             38,
                             0f,
-                            Main.myPlayer
+                            Main.myPlayer,
+                            0f,
+                            1f//强化弹标记
                         );
                     }
                 }
 
                 SoundEngine.PlaySound(SoundID.Item33, npc.Center);
 
-                //后坐力
-                npc.velocity = -(npc.rotation + MathHelper.PiOver2).ToRotationVector2() * 12f;
+                //强力后坐:机体猛地向后弹开+音爆余波
+                Vector2 muzzleDir = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
+                npc.velocity = -muzzleDir * 14f;
+                Context.PushDashVisuals(0.7f, 0.8f);
+                if (!VaultUtils.isServer) {
+                    PRTLoader.NewParticle<PRT_DWave>(npc.Center + muzzleDir * 40f, muzzleDir * 2f, TwinsMotion.RetinColor, 0.18f)?
+                        .Configure(new Vector2(1.4f, 0.6f), muzzleDir.ToRotation() + MathHelper.PiOver2, 0.85f, 13);
+                    TwinsMotion.Shake(npc.Center, 4.5f, 9);
+                }
             }
 
             //恢复阶段结束

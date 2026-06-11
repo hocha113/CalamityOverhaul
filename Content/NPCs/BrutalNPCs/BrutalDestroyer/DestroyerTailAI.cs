@@ -33,12 +33,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Vector2 origin = rectangle.Size() / 2;
             float seed = (npc.whoAmI % 64) / 64f;
 
-            //尾巴halo/着色器——读取头部 (npc.realLife) 共享视觉状态，整条蠕虫保持一致
+            //尾巴halo/着色器——读取头部 (npc.realLife) 共享视觉状态并叠加尾端充能波
             int controllerId = (int)npc.realLife;
-            MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, value, drawPos, rectangle,
-                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, controllerId);
+            var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
+            MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
+                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
+                visMode, visIntensity, visProgress);
 
-            bool shaderApplied = MechBossThermalRenderer.BeginThermalShaderByController(spriteBatch, value, rectangle, controllerId, seed);
+            bool shaderApplied = MechBossThermalRenderer.BeginThermalShader(spriteBatch, value, rectangle,
+                visMode, visIntensity, visProgress, seed);
             spriteBatch.Draw(value, drawPos, rectangle, drawColor,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
             if (shaderApplied) {
@@ -48,6 +51,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Texture2D value2 = Tail_Glow.Value;
             spriteBatch.Draw(value2, drawPos, rectangle, Color.White,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
+
+            //充能波白热叠加
+            if (wave > 0.05f) {
+                Color hot = new Color(255, 165, 75, 0) * wave;
+                spriteBatch.Draw(value2, drawPos, rectangle, hot,
+                    npc.rotation + MathHelper.Pi, origin, npc.scale * 1.04f, SpriteEffects.None, 0);
+            }
             return false;
         }
 

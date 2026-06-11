@@ -93,14 +93,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float ConsumeUseUE;
         /// <summary>
-        /// 用于存储一个手持挥舞类的原生射弹ID
-        /// </summary>
-        public int SetHeldSwingOrigShootID;
-        /// <summary>
-        /// 表示这个物品是否经过了<see cref="CWRUtils.SetKnifeHeld{T}(Item, bool)"/>的设置
-        /// </summary>
-        public bool WeaponInSetKnifeHeld;
-        /// <summary>
         /// 这个物品所属的终焉合成内容，这决定了它的物品简介是否绘制终焉合成表格
         /// </summary>
         public string[] OmigaSnyContent;
@@ -112,18 +104,6 @@ namespace CalamityOverhaul.Content
         /// 被传奇武器所使用，用于保存一些数据
         /// </summary>
         public LegendData LegendData;
-        /// <summary>
-        /// 是否被抛射物控制使用，优先级高于<see cref="hasHeldNoCanUseBool"/>，且不受<see cref="heldProjType"/>影响
-        /// </summary>
-        public bool IsShootCountCorlUse;
-        /// <summary>
-        /// 该物品是否是一个手持挥舞类，一般由<see cref="CWRUtils.SetKnifeHeld{T}(Item)"/>来设置，如果为<see langword="true"/>，那么就会阻断原方法的发射逻辑
-        /// </summary>
-        public bool IsHeldSwing;
-        /// <summary>
-        /// 对于手持挥舞来说，是否不阻断原射击方式
-        /// </summary>
-        public bool IsHeldSwingDontStopOrigShoot;
         /// <summary>
         /// 是否是死亡模式专属物品
         /// </summary>
@@ -155,7 +135,6 @@ namespace CalamityOverhaul.Content
         public CWRItem CloneCWRItem(CWRItem cwr) {
             cwr.ai = ai;
             cwr.isHeldItem = isHeldItem;
-            cwr.IsHeldSwing = IsHeldSwing;
             cwr.heldProjType = heldProjType;
             cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
             cwr.InventoryTimer = InventoryTimer;
@@ -163,7 +142,6 @@ namespace CalamityOverhaul.Content
             cwr.UEValue = UEValue;
             cwr.ConsumeUseUE = ConsumeUseUE;
             cwr.OmigaSnyContent = OmigaSnyContent;
-            cwr.IsShootCountCorlUse = IsShootCountCorlUse;
             cwr.LegendData = LegendData;
             cwr.DyeItemID = DyeItemID;
             cwr.LegacyItemTranslationID = LegacyItemTranslationID;
@@ -285,9 +263,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override bool CanUseItem(Item item, Player player) {
-            if (IsShootCountCorlUse) {
-                return player.ownedProjectileCounts[item.shoot] <= 0;
-            }
             if (heldProjType > 0 && hasHeldNoCanUseBool) {
                 return false;
             }

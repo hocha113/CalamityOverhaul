@@ -74,6 +74,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         //检查鼠标悬停
         private void CheckHover() {
+            if (Main.dedServ) {
+                return;//服务器上没有鼠标，悬停判定只在本地客户端有意义
+            }
             owner.hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (owner.hoverNPC) {
                 Item item = Main.LocalPlayer.GetItem();
@@ -167,24 +170,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //执行传送
+        //执行传送：位置修改只在权威端进行，客户端通过NPC同步获得新位置，特效由广播触发
         private void PerformTeleport() {
             owner.ai[6] = 0;
-            npc.Center = owner.Owner.Center + new Vector2(0, CrabulonConstants.TeleportSpawnHeight);
-            SoundEngine.PlaySound(SoundID.Item8, npc.Center);
-
-            for (int i = 0; i < CrabulonConstants.TeleportEffectCount; i++) {
-                CreateTeleportDust();
+            if (VaultUtils.isClient) {
+                return;
             }
-        }
-
-        //创建传送粒子
-        private void CreateTeleportDust() {
-            Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
-            int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
-            Main.dust[dust].velocity *= 0.5f;
-            Main.dust[dust].velocity.Y *= 300f / Main.rand.NextFloat(160, 230);
-            Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(owner.DyeItemID);
+            npc.Center = owner.Owner.Center + new Vector2(0, CrabulonConstants.TeleportSpawnHeight);
+            npc.netUpdate = true;
+            owner.Networking.BroadcastTeleportEffect();
         }
 
         //处理跟随或攻击行为

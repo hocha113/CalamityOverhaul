@@ -440,6 +440,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             stateContext.IsSecondPhase = IsSecondPhase();
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
 
+            //冲刺视觉数据自动衰减(状态只负责推高)
+            stateContext.DecayDashVisuals();
+
             //检测独眼狂暴模式(另一只眼睛死亡)
             CheckSoloRageMode();
         }
@@ -748,13 +751,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //绘制蓄力特效
             TwinsRenderHelper.DrawChargeEffect(spriteBatch, stateContext);
 
-            //绘制本体（内部会读取上面推送的状态自动叠加描边/警告/冲刺滤镜）
+            //绘制本体（内部会读取上面推送的状态自动叠加描边/警告/冲刺滤镜，
+            //并根据上下文执行速度拉伸与残影增强）
             TwinsRenderHelper.DrawNpcBody(
                 spriteBatch,
                 npc,
                 mainTexture,
                 stateContext.FrameIndex,
-                npc.rotation
+                npc.rotation,
+                stateContext
             );
 
             return false;
@@ -781,10 +786,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return;
             }
 
-            //冲刺态优先级最高
+            //冲刺态优先级最高(具体冲刺状态或任何把冲刺视觉推满的状态，如合击冲撞)
             if (stateMachine?.CurrentState is SpazmatismDashingState
                 || stateMachine?.CurrentState is SpazmatismPhase2DashingState
-                || stateMachine?.CurrentState is SpazmatismShadowDashState) {
+                || stateMachine?.CurrentState is SpazmatismShadowDashState
+                || stateContext.DashStretch > 0.6f) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Dashing, 1f, 1f);
                 return;
             }

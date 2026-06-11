@@ -24,7 +24,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 return true;
             }
 
-            if (!npc.collideY) {
+            //骑乘吸附期间蟹不参与碰撞，collideY恒为false，落地状态以骑手为准
+            bool grounded = npc.collideY;
+            if (owner.Mount && owner.Owner.Alives()) {
+                grounded = owner.Owner.velocity.Y == 0f;
+            }
+
+            if (!grounded) {
                 UpdateAirFrames(frameHeight);
             }
             else {

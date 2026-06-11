@@ -1,18 +1,20 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
-using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -20,6 +22,12 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class NeutronGlaive : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
+
+        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        private int comboCounter;
+        /// <summary>连击重置计时器，过久未挥砍则回到第一段</summary>
+        private int comboResetTimer;
+
         public override void SetStaticDefaults() {
             ItemID.Sets.AnimatesAsSoul[Type] = true;
             Main.RegisterItemAnimation(Type, new DrawAnimationVertical(5, 16));
@@ -33,18 +41,20 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.useAnimation = Item.useTime = 13;
             Item.scale = 1;
             Item.useTurn = true;
-            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
+            Item.noUseGraphic = true;
             Item.knockBack = 7.5f;
             Item.UseSound = SoundID.Item60;
             Item.autoReuse = true;
             Item.value = Item.buyPrice(13, 53, 75, 0);
             Item.rare = ItemRarityID.Red;
             Item.crit = 8;
-            Item.shoot = ModContent.ProjectileType<NeutronGlaiveBeam>();
+            Item.shoot = ModContent.ProjectileType<NeutronGlaiveHeld>();
             Item.shootSpeed = 18f;
-            Item.SetKnifeHeld<NeutronGlaiveHeld>(true);
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGlaive;
+            //noMelee 武器需要手动允许近战词缀
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
 
         public override bool CanUseItem(Player player) {
@@ -52,94 +62,308 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (player.altFunctionUse == 2) {
                 Item.UseSound = SoundID.AbigailAttack;
             }
-            return player.ownedProjectileCounts[ModContent.ProjectileType<NeutronGlaiveHeldAlt>()] == 0;
+            return player.ownedProjectileCounts[ModContent.ProjectileType<NeutronGlaiveHeldAlt>()] == 0
+                && player.ownedProjectileCounts[ModContent.ProjectileType<NeutronGlaiveHeld>()] == 0;
         }
 
         public override bool AltFunctionUse(Player player) {
             return true;
         }
 
+        public override void HoldItem(Player player) {
+            if (comboResetTimer > 0 && --comboResetTimer == 0) {
+                comboCounter = 0;
+            }
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<NeutronGlaiveHeldAlt>(), damage, knockback, player.whoAmI);
+                comboCounter = 0;//中子洪流重置连击
                 return false;
             }
-            return base.Shoot(player, source, position, velocity, type, damage, knockback);
+
+            int combo = comboCounter % 3;
+            float swingDir = comboCounter % 2 == 0 ? 1f : -1f;
+            comboCounter++;
+            comboResetTimer = 60;
+            Projectile.NewProjectile(source, player.Center, velocity, type
+                , damage, knockback, player.whoAmI, combo, swingDir);
+            return false;
         }
     }
 
-    internal class NeutronGlaiveHeld : BaseKnife, IWarpDrawable
+    /// <summary>
+    /// 中子偃月刀手持弹幕
+    /// <br/>三段连击: 横扫 → 反手回扫 → 回环重劈，挥砍中段射出中子光束，首次命中引发中子爆轰
+    /// </summary>
+    internal class NeutronGlaiveHeld : BaseHeldProj, IWarpDrawable
     {
-        public override int TargetID => ModContent.ItemType<NeutronGlaive>();
-        public override void SetKnifeProperty() {
-            ShootSpeed = 18;
-            AnimationMaxFrme = 16;
+        public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<NeutronGlaive>();
+
+        private const int FrameCount = 16;
+
+        /// <summary>连击索引: 0=横扫 1=反手回扫 2=回环重劈</summary>
+        private ref float ComboIndex => ref Projectile.ai[0];
+        /// <summary>挥砍方向符号 ±1</summary>
+        private ref float SwingDirAi => ref Projectile.ai[1];
+
+        private bool IsFinisher => ComboIndex >= 2f;
+
+        //阶段时长（逻辑帧，受攻速缩放）
+        private float WindupTime => IsFinisher ? 10f : 7f;
+        private float SlashTime => IsFinisher ? 18f : 13f;
+        private float RecoverTime => 8f;
+        private float TotalTime => WindupTime + SlashTime + RecoverTime;
+        //挥砍弧度：终结技近乎一整圈的回环
+        private float SwingArc => IsFinisher ? 5.9f : 3.6f;
+        //刀尖距离持握点的长度
+        private float BladeReach => IsFinisher ? 180f : 165f;
+
+        private static readonly Color NeutronViolet = new(138, 80, 255);
+        private static readonly Color NeutronBlue = new(120, 180, 255);
+
+        private float elapsed;
+        private float speedMul = 1f;
+        private int lockedDirection = 1;
+        private int swingSign = 1;
+        private float startAngle;
+        private float endAngle;
+        private float currentRotation;
+        private float lastRotation;
+        private bool slashSoundPlayed;
+        private bool beamFired;
+        private readonly HashSet<int> hitNPCs = [];
+
+        public override void SetDefaults() {
             Projectile.width = Projectile.height = 66;
-            canDrawSlashTrail = true;
-            distanceToOwner = 20;
-            drawTrailBtommWidth = 50;
-            drawTrailTopWidth = 20;
-            drawTrailCount = 16;
-            Length = 120;
-            Projectile.scale = 1.25f;
-            SwingData.starArg = 80;
-            SwingData.baseSwingSpeed = 5.4f;
-            SwingData.ler1_UpLengthSengs = 0.1f;
-            SwingData.minClampLength = 120;
-            SwingData.maxClampLength = 130;
-            SwingData.ler1_UpSizeSengs = 0.056f;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.ownerHitCheck = true;
+            Projectile.timeLeft = 90;
+            Projectile.scale = 1.45f;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
+            Projectile.CWR().PierceResist = true;
         }
 
-        public override void Shoot() {
-            int type = ModContent.ProjectileType<NeutronGlaiveBeam>();
-            Projectile.NewProjectile(Source, ShootSpanPos, ShootVelocity
-                , type, Projectile.damage, Projectile.knockBack, Projectile.owner);
+        public override bool ShouldUpdatePosition() => false;
+
+        public override bool? CanDamage() => elapsed >= WindupTime && elapsed <= WindupTime + SlashTime + 1f;
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (CanDamage() != true) {
+                return false;
+            }
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + currentRotation.ToRotationVector2() * BladeReach;
+            float collisionPoint = 0f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , hand, tip, 52f, ref collisionPoint);
         }
 
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.numHits == 0) {
-                Projectile.NewProjectile(Source, target.Center, Vector2.Zero
-                , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0);
+        public override void Initialize() {
+            swingSign = Math.Sign(SwingDirAi);
+            if (swingSign == 0) {
+                swingSign = 1;
             }
 
+            lockedDirection = Math.Sign(Projectile.velocity.X);
+            if (lockedDirection == 0) {
+                lockedDirection = Owner.direction;
+            }
+            Owner.direction = lockedDirection;
+
+            speedMul = Owner.GetWeaponAttackSpeed(Item);
+            if (speedMul <= 0f) {
+                speedMul = 1f;
+            }
+
+            float baseAngle = Projectile.velocity.ToRotation();
+            startAngle = baseAngle - swingSign * SwingArc * 0.5f;
+            endAngle = baseAngle + swingSign * SwingArc * 0.5f;
+            currentRotation = lastRotation = startAngle;
+
+            if (IsFinisher) {
+                Projectile.damage = (int)(Projectile.damage * 1.35f);
+                Projectile.scale = 1.55f;
+            }
+        }
+
+        public override void AI() {
+            if (Item.type != ModContent.ItemType<NeutronGlaive>()) {
+                Projectile.Kill();
+                return;
+            }
+            if (elapsed >= TotalTime) {
+                Projectile.Kill();
+                return;
+            }
+
+            lastRotation = currentRotation;
+            float slashEnd = WindupTime + SlashTime;
+
+            if (elapsed < WindupTime) {
+                //长柄武器的大幅度蓄力回拉
+                float t = elapsed / WindupTime;
+                currentRotation = startAngle - swingSign * 0.3f * MathF.Sin(t * MathHelper.PiOver2);
+            }
+            else if (elapsed < slashEnd) {
+                //ease-out 重斩
+                float t = (elapsed - WindupTime) / SlashTime;
+                float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.4f : 3.6f);
+                currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
+
+                if (!slashSoundPlayed) {
+                    slashSoundPlayed = true;
+                    if (!VaultUtils.isServer && IsFinisher) {
+                        SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.85f, Pitch = -0.3f }, Owner.Center);
+                    }
+                }
+
+                if (!beamFired && t >= 0.3f) {
+                    beamFired = true;
+                    FireBeam();
+                }
+
+                //刃锋星屑
+                if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
+                    Vector2 along = Owner.GetPlayerStabilityCenter()
+                        + currentRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.55f, BladeReach);
+                    Vector2 tangent = currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2);
+                    PRTLoader.NewParticle<PRT_HeavenfallStar>(along, tangent * Main.rand.NextFloat(1.5f, 4f)
+                        , Color.Lerp(NeutronViolet, NeutronBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.4f)).Configure(false, 14);
+                }
+            }
+            else {
+                //收势
+                currentRotation = endAngle;
+            }
+
+            UpdatePlayerPose();
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, FrameCount - 1);
+            Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
+                , NeutronViolet.ToVector3() * 0.7f);
+            elapsed += speedMul;
+        }
+
+        private void FireBeam() {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+            Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + UnitToMouseV * BladeReach * 0.5f;
+            Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spawnPos, UnitToMouseV * Item.shootSpeed
+                , ModContent.ProjectileType<NeutronGlaiveBeam>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+        }
+
+        private void UpdatePlayerPose() {
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.direction = lockedDirection;
+            Owner.itemTime = Owner.itemAnimation = 2;
+            Owner.itemRotation = currentRotation;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, currentRotation - MathHelper.PiOver2);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.5f;
+            Projectile.timeLeft = 90;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.HitDirectionOverride = currentRotation.ToRotationVector2().X > 0 ? 1 : -1;
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.425f;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //转发物品命中钩子，维持装备与饰品的近战联动
+            if (hitNPCs.Add(target.whoAmI)) {
+                ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
+                NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
+                PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
+            }
+
+            if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, Vector2.Zero
+                    , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0, Owner.whoAmI);
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            if (Projectile.numHits == 0) {
-                Projectile.NewProjectile(Source, target.Center, Vector2.Zero
-                , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0);
+            if (Projectile.numHits == 0 && Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), target.Center, Vector2.Zero
+                    , ModContent.ProjectileType<NeutronExplode>(), Projectile.damage / 2, 0, Owner.whoAmI);
             }
+        }
 
+        public override bool PreDraw(ref Color lightColor) {
+            //本体在 DrawCustom 的扭曲豁免层绘制，这里只画挥砍残影
+            if (CanDamage() != true) {
+                return false;
+            }
+            Texture2D tex = TextureValue;
+            Rectangle rect = tex.GetRectangle(Projectile.frame, FrameCount);
+            Vector2 origin = rect.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float dist = BladeReach * 0.5f;
+            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+
+            for (int i = 1; i <= 3; i++) {
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
+                Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
+                Color trailColor = NeutronViolet * (0.32f * (1f - i / 4f));
+                trailColor.A = 0;
+                Main.EntitySpriteDraw(tex, pos, rect, trailColor, rot + rotOffset, origin
+                    , Projectile.scale, effect, 0);
+            }
+            return false;
         }
 
         bool IWarpDrawable.CanDrawCustom() => true;
 
         bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
-        void IWarpDrawable.Warp() => WarpDraw();
-
-        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
-            Texture2D texture = TextureValue;
-            Rectangle rect = texture.GetRectangle(Projectile.frame, AnimationMaxFrme);
-            Vector2 drawOrigin = rect.Size() / 2;
-            SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-
-            Vector2 offsetOwnerPos = safeInSwingUnit.GetNormalVector() * unitOffsetDrawZkMode * Projectile.spriteDirection;
-            float drawRoting = Projectile.rotation;
-            if (Projectile.spriteDirection == -1) {
-                drawRoting += MathHelper.Pi;
+        void IWarpDrawable.Warp() {
+            //挥砍期间沿刃锋路径绘制热扭曲
+            if (CanDamage() != true) {
+                return;
             }
-
-            Vector2 drawPosValue = Projectile.Center - RodingToVer(toProjCoreMode, (Projectile.Center - Owner.Center).ToRotation()) + offsetOwnerPos;
-            Color color = Color.White;
-
-            Vector2 trueDrawPos = drawPosValue - Main.screenPosition + Vector2.UnitY * Projectile.gfxOffY;
-
-            Main.EntitySpriteDraw(texture, trueDrawPos, new Rectangle?(rect)
-                , color, drawRoting, drawOrigin, Projectile.scale * MeleeSize, effects, 0);
+            Texture2D warpTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle");
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Color warpColor = new Color(45, 45, 45) * 0.5f;
+            for (int i = 0; i < 4; i++) {
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
+                Vector2 pos = hand + rot.ToRotationVector2() * BladeReach * 0.75f - Main.screenPosition;
+                Main.spriteBatch.Draw(warpTex, pos, null, warpColor, rot
+                    , warpTex.Size() / 2, 0.32f, SpriteEffects.None, 0f);
+            }
         }
 
-        public override void DrawSwing(SpriteBatch spriteBatch, Color lightColor) { }
+        void IWarpDrawable.DrawCustom(SpriteBatch spriteBatch) {
+            Texture2D tex = TextureValue;
+            Rectangle rect = tex.GetRectangle(Projectile.frame, FrameCount);
+            Vector2 origin = rect.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float dist = BladeReach * 0.5f;
+            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+
+            Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
+            spriteBatch.Draw(tex, drawPos, rect, Color.White, currentRotation + rotOffset, origin
+                , Projectile.scale, effect, 0);
+
+            //终结回环的能量辉光层
+            if (IsFinisher && CanDamage() == true) {
+                Color glow = NeutronBlue * 0.4f;
+                glow.A = 0;
+                spriteBatch.Draw(tex, drawPos, rect, glow, currentRotation + rotOffset, origin
+                    , Projectile.scale * 1.04f, effect, 0);
+            }
+        }
     }
 
     internal class NeutronGlaiveBeam : ModProjectile, IWarpDrawable, ICWRLoader

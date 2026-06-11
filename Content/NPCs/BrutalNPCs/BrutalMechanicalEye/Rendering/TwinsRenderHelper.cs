@@ -28,8 +28,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             //根据蓄力类型选择颜色
             Color chargeColor = GetChargeColor(context.ChargeType);
 
-            //开启叠加混合模式
             spriteBatch.End();
+
+            //能量汇聚涡(着色器):所有蓄力的公共基底层，螺旋臂向心卷吸
+            DrawChargeVortex(spriteBatch, context, chargeColor);
+
+            //开启叠加混合模式
             spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.Additive,
@@ -91,6 +95,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DrawSyncPhaseTransitionEffect(context, chargeColor);
             }
 
+            //如果是磁暴链锁蓄力，绘制双眼链锁预警线
+            if (context.ChargeType == 12 && context.ChargeProgress > 0.15f) {
+                DrawTetherSweepWarning(context, chargeColor);
+            }
+
+            //如果是剪刀死光蓄力，绘制射线轨迹预警
+            if (context.ChargeType == 13 && context.ChargeProgress > 0.15f) {
+                DrawScissorRayWarning(context, chargeColor);
+            }
+
             //恢复正常混合模式
             spriteBatch.End();
             spriteBatch.Begin(
@@ -102,6 +116,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 null,
                 Main.GameViewMatrix.TransformationMatrix
             );
+        }
+
+        /// <summary>
+        /// 着色器能量汇聚涡：以眼睛为中心的极坐标螺旋吸入场，
+        /// 随蓄力进度收紧增亮。着色器缺失时静默跳过(其余贴图层仍在)
+        /// </summary>
+        private static void DrawChargeVortex(SpriteBatch spriteBatch, TwinsStateContext context, Color chargeColor) {
+            if (CalamityOverhaul.Common.EffectLoader.TwinsChargeVortex?.Value == null) {
+                return;
+            }
+
+            Effect shader = CalamityOverhaul.Common.EffectLoader.TwinsChargeVortex.Value;
+            shader.Parameters["uColor"]?.SetValue(chargeColor.ToVector3());
+            shader.Parameters["uSecondaryColor"]?.SetValue(Color.Lerp(chargeColor, Color.White, 0.55f).ToVector3());
+            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["uProgress"]?.SetValue(MathHelper.Clamp(context.ChargeProgress, 0f, 1f));
+            shader.Parameters["uIntensity"]?.SetValue(0.45f + context.ChargeProgress * 0.75f);
+            shader.Parameters["uOpacity"]?.SetValue(1f);
+            shader.Parameters["uImage1"]?.SetValue(CWRAsset.Extra_193.Value);
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            shader.CurrentTechnique.Passes[0].Apply();
+
+            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            const float size = 380f;
+            spriteBatch.Draw(quad, context.Npc.Center - Main.screenPosition, null, Color.White,
+                0f, quad.Size() / 2f, new Vector2(size / quad.Width, size / quad.Height), SpriteEffects.None, 0f);
+
+            spriteBatch.End();
         }
 
         private static Color GetChargeColor(int chargeType) {
@@ -117,8 +161,61 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 9 => Color.Orange,
                 10 => Color.Lerp(Color.OrangeRed, Color.Cyan, 0.5f),
                 11 => Color.Lerp(Color.OrangeRed, Color.BlueViolet, 0.5f),
+                12 => new Color(140, 215, 255),
+                13 => Color.Lerp(new Color(255, 110, 35), new Color(120, 200, 255), 0.5f),
                 _ => Color.White
             };
+        }
+
+        /// <summary>
+        /// 磁暴链锁预警：双眼之间的脉冲虚线，提示链锁危险区
+        /// </summary>
+        private static void DrawTetherSweepWarning(TwinsStateContext context, Color baseColor) {
+            NPC partner = TwinsStateContext.GetPartnerNpc(context.Npc.type);
+            if (partner == null || !partner.active) {
+                return;
+            }
+
+            Texture2D lineTex = CWRAsset.LightShot.Value;
+            Vector2 start = context.Npc.Center;
+            Vector2 end = partner.Center;
+            Vector2 dir = (end - start).SafeNormalize(Vector2.Zero);
+            float totalDist = Vector2.Distance(start, end);
+            float pulse = 0.7f + 0.3f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 14f);
+
+            int segments = (int)(totalDist / 46f);
+            for (int i = 0; i < segments; i++) {
+                float t = (i + (Main.GlobalTimeWrappedHourly * 2f % 1f)) / segments;
+                if (t > 1f) {
+                    continue;
+                }
+                Vector2 segPos = Vector2.Lerp(start, end, t) - Main.screenPosition;
+                float alpha = context.ChargeProgress * 0.65f * pulse;
+                Main.EntitySpriteDraw(lineTex, segPos, null, baseColor * alpha,
+                    dir.ToRotation(), new Vector2(0, lineTex.Height / 2f),
+                    new Vector2(0.16f, 0.22f), SpriteEffects.None, 0);
+            }
+        }
+
+        /// <summary>
+        /// 剪刀死光预警：沿当前瞄准方向的长虚线射线轨迹
+        /// </summary>
+        private static void DrawScissorRayWarning(TwinsStateContext context, Color baseColor) {
+            Texture2D lineTex = CWRAsset.LightShot.Value;
+            Vector2 rayDir = (context.Npc.rotation + MathHelper.PiOver2).ToRotationVector2();
+            float rayLength = 1500f * context.ChargeProgress;
+            float pulse = 0.65f + 0.35f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 16f);
+
+            int segments = (int)(rayLength / 52f);
+            for (int i = 0; i < segments; i++) {
+                float t = i / (float)segments;
+                Vector2 segPos = context.Npc.Center + rayDir * rayLength * t - Main.screenPosition;
+                float alpha = (1f - t * 0.6f) * context.ChargeProgress * 0.7f * pulse;
+                float scale = 0.34f - t * 0.12f;
+                Main.EntitySpriteDraw(lineTex, segPos, null, baseColor * alpha,
+                    rayDir.ToRotation(), new Vector2(0, lineTex.Height / 2f),
+                    new Vector2(scale, scale * 0.6f), SpriteEffects.None, 0);
+            }
         }
 
         private static void DrawGlowEffect(Texture2D glowTex, Vector2 drawPos, Color color, float progress) {
@@ -908,31 +1005,52 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
         /// 绘制NPC本体和拖尾
         /// <br/>本体外圈会根据 <see cref="MechBossVisualState"/> 当前状态自动叠加
         /// 机械热感描边/警告/冲刺滤镜，与毁灭者、机械骷髅王共用一套视觉语言。
+        /// <br/>冲刺时根据 <see cref="TwinsStateContext.DashStretch"/> 做沿运动轴的squash&amp;stretch，
+        /// 根据 <see cref="TwinsStateContext.AfterimageBoost"/> 提升残影密度与亮度
         /// </summary>
         public static void DrawNpcBody(
             SpriteBatch spriteBatch,
             NPC npc,
             Texture2D texture,
             int frameIndex,
-            float rotation
+            float rotation,
+            TwinsStateContext context = null
         ) {
             Rectangle frame = texture.Frame(1, 4, 0, frameIndex);
             Vector2 origin = frame.Size() / 2f;
             SpriteEffects effects = npc.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
             float drawRotation = rotation + MathHelper.PiOver2;
 
+            float dashStretch = context?.DashStretch ?? 0f;
+            float afterimageBoost = context?.AfterimageBoost ?? 0f;
+
+            //速度拉伸:沿面朝轴(冲刺时即运动轴)拉长、横向压扁，幅度跟随速度
+            float speedFactor = MathHelper.Clamp(npc.velocity.Length() / 30f, 0f, 1f);
+            float stretchAmount = dashStretch * speedFactor;
+            Vector2 scaleVec = new Vector2(
+                npc.scale * (1f - stretchAmount * 0.16f),
+                npc.scale * (1f + stretchAmount * 0.34f)
+            );
+
             //绘制拖尾残影（不套滤镜，让残影保持柔和不抢主体）
+            //冲刺时残影更亮更密，并附带主题色泛光
+            Color afterimageTint = Color.White;
+            if (afterimageBoost > 0.01f && context != null) {
+                Color theme = context.IsSpazmatism ? new Color(255, 110, 35) : new Color(120, 200, 255);
+                afterimageTint = Color.Lerp(Color.White, theme, afterimageBoost * 0.45f);
+            }
+            float baseTrailOpacity = 0.2f + afterimageBoost * 0.3f;
             for (int i = 0; i < npc.oldPos.Length; i++) {
-                float trailOpacity = 0.2f * (1f - (float)i / npc.oldPos.Length);
+                float trailOpacity = baseTrailOpacity * (1f - (float)i / npc.oldPos.Length);
                 Vector2 drawPos = npc.oldPos[i] + npc.Size / 2f - Main.screenPosition;
                 Main.EntitySpriteDraw(
                     texture,
                     drawPos,
                     frame,
-                    Color.White * trailOpacity,
+                    afterimageTint * trailOpacity,
                     drawRotation,
                     origin,
-                    npc.scale,
+                    scaleVec,
                     effects,
                     0
                 );
@@ -957,7 +1075,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 Color.White,
                 drawRotation,
                 origin,
-                npc.scale,
+                scaleVec,
                 effects,
                 0f
             );

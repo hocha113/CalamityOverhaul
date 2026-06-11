@@ -6,7 +6,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
     /// <summary>
-    /// 魔焰眼一阶段冲刺准备状态
+    /// 魔焰眼一阶段冲刺准备状态：
+    /// 弹簧式后撤蓄力(拉弓感)→方向锁定→瞬时爆发起步
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismDashPrepare, typeof(TwinsStateContext))]
     internal class SpazmatismDashPrepareState : TwinsStateBase
@@ -16,11 +17,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         private int ChargeTime => Context.IsDeathMode ? 35 : 45;
         private int MaxDashCount => Context.IsDeathMode ? 3 : 2;
-        private float DashSpeed => Context.IsDeathMode ? 28f : 24f;
+        private float DashSpeed => Context.IsDeathMode ? 30f : 26f;
 
         private TwinsStateContext Context;
         private int currentDashCount;
         private int comboStep;
+        private Vector2 lockedDirection;
 
         public SpazmatismDashPrepareState() : this(0, 0) {
         }
@@ -38,35 +40,53 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override ITwinsState OnUpdate(TwinsStateContext context) {
             NPC npc = context.Npc;
             Player player = context.Target;
+            float progress = Timer / (float)ChargeTime;
 
-            //减速并面向玩家
-            npc.velocity *= 0.9f;
+            //弹簧式后撤蓄力:前70%缓慢后撤拉开距离(拉弓)，末段绷紧定身
+            Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
+            if (progress < 0.7f) {
+                float pull = CWRUtils.EaseInQuad(progress / 0.7f);
+                npc.velocity = npc.velocity * 0.86f + awayDir * pull * 4.2f;
+            }
+            else {
+                //绷紧:急刹+轻微颤抖，蓄势待发
+                npc.velocity *= 0.72f;
+                if (!VaultUtils.isServer) {
+                    npc.position += Main.rand.NextVector2Circular(1.6f, 1.6f);
+                }
+            }
             FaceTarget(npc, player.Center);
 
             //设置蓄力特效
-            context.SetChargeState(1, Timer / (float)ChargeTime);
+            context.SetChargeState(1, progress);
 
-            //蓄力期间产生火焰粒子
+            //能量内聚粒子
+            if (Timer % 3 == 0) {
+                TwinsMotion.ChargeGatherFX(npc.Center, true, progress, 80f);
+            }
             if (Timer % 5 == 0 && !VaultUtils.isServer) {
-                for (int i = 0; i < 3; i++) {
-                    Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(30, 30);
-                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.Torch, 0, 0, 100, default, 1.5f);
-                    dust.noGravity = true;
-                    dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * 3f;
-                }
+                Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(30, 30);
+                Dust dust = Dust.NewDustDirect(dustPos, 1, 1, DustID.Torch, 0, 0, 100, default, 1.5f);
+                dust.noGravity = true;
+                dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * 3f;
             }
 
             Timer++;
 
-            //蓄力完成，开始冲刺
+            //蓄力完成，瞬时爆发起步
             if (Timer >= ChargeTime) {
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                 }
                 context.ResetChargeState();
 
-                //设置冲刺速度
-                npc.velocity = GetDirectionToTarget(context) * DashSpeed;
+                //轻微预判玩家走位
+                Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, DashSpeed, 0.5f);
+                lockedDirection = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
+
+                //瞬时加速到峰值+音爆演出
+                TwinsMotion.DashLaunch(npc, lockedDirection, DashSpeed, spazTheme: true);
+                context.PushDashVisuals(1f, 1f);
                 npc.netUpdate = true;
                 return new SpazmatismDashingState(currentDashCount, MaxDashCount, comboStep);
             }

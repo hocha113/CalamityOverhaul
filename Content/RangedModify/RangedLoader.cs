@@ -86,20 +86,12 @@ namespace CalamityOverhaul.Content.RangedModify
                 return false;
             }
 
-            if (!CWRLoad.ItemIsHeldSwing[item.type]) {//手持挥舞类的物品不能直接调用gItem的Shoot，所以这里判断一下
-                foreach (var g in ItemRebuildLoader.ItemLoader_Shoot_Hook.Enumerate(item)) {
-                    rest = g.Shoot(item, player, source, position, velocity, type, damage, knockback);
-                }
+            foreach (var g in ItemRebuildLoader.ItemLoader_Shoot_Hook.Enumerate(item)) {
+                rest = g.Shoot(item, player, source, position, velocity, type, damage, knockback);
             }
 
             rest = ItemRebuildLoader.ProcessRemakeAction(item, (inds)
                 => inds.Shoot(item, player, source, position, velocity, type, damage, knockback));
-
-            if ((!rest.HasValue || rest.Value)
-                && CWRLoad.ItemIsHeldSwing[item.type] && !CWRLoad.ItemIsHeldSwingDontStopOrigShoot[item.type]) {
-                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-                return false;
-            }
 
             if (rest.HasValue) {
                 return rest.Value;

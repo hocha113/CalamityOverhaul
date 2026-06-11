@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public DestroyerPatrolState() {
         }
 
-        private int PatrolDuration(DestroyerStateContext ctx) => ctx.IsEnraged ? 240 : 300;
+        private int PatrolDuration(DestroyerStateContext ctx) => ctx.IsEnraged ? 200 : 250;
 
         public override IDestroyerState OnUpdate(DestroyerStateContext context) {
             NPC npc = context.Npc;
@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             float turnSpeed = MathHelper.Lerp(0.2f, 0.5f, accelProgress);
 
             SetMovement(context, player.Center + new Vector2(offsetX, offsetY), speed, turnSpeed);
+            //巡航蛇形摆动：机械蠕虫"游动"姿态
+            context.SlitherStrength = 1f;
 
             Timer++;
 
@@ -49,19 +51,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         private IDestroyerState ChooseNextAttack(DestroyerStateContext context) {
             //固定出招循环顺序
-            //普通: 激光弹幕 → 包围 → 冲刺 → 探针阵列
-            //激怒: 激光弹幕 → 冲刺 → 包围 → 冲刺 → 探针阵列
+            //普通: 侧舷齐射 → 合围电牢(→冲刺) → 蛇形连突 → 探针矩阵 → 轨道绞杀
+            //激怒: 轨道绞杀打头阵（50%转阶段后第一招即大招），随后高压循环
             IDestroyerState[] normalSequence = [
                 new DestroyerLaserBarrageState(),
                 new DestroyerEncircleState(),
                 new DestroyerDashPrepareState(),
-                new DestroyerProbeMatrixState()
+                new DestroyerProbeMatrixState(),
+                new DestroyerOrbitalStrikeState()
             ];
             IDestroyerState[] enragedSequence = [
+                new DestroyerOrbitalStrikeState(),
                 new DestroyerLaserBarrageState(),
                 new DestroyerDashPrepareState(),
                 new DestroyerEncircleState(),
-                new DestroyerDashPrepareState(),
                 new DestroyerProbeMatrixState()
             ];
 

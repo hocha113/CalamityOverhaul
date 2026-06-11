@@ -1,5 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -8,7 +10,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
     /// <summary>
-    /// 魔焰眼一阶段悬停射击状态
+    /// 魔焰眼一阶段悬停射击状态：
+    /// 弹簧悬停带呼吸浮动，预判射击火球并产生后坐力位移
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismHoverShoot, typeof(TwinsStateContext))]
     internal class SpazmatismHoverShootState : TwinsStateBase
@@ -17,15 +20,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismHoverShoot;
 
         private int ShootRate => Context.IsDeathMode ? 60 : 80;
-        private float MoveSpeed => Context.IsDeathMode ? 14f : 12f;
         private int MaxShootCount => Context.IsDeathMode ? 2 : 3;
 
         private TwinsStateContext Context;
         private int comboStep;
 
         /// <summary>
-        /// 一阶段固定招式套路: 悬停射击→火焰漩涡→悬停射击→冲刺准备，循环往复
-        /// comboStep 为偶数时进入火焰漩涡，奇数时进入冲刺准备
+        /// 一阶段固定招式套路: 悬停射击→火焰漩涡→悬停射击→冲刺准备，循环往复，
+        /// 每完成一轮(comboStep%4==3)与激光眼同步进行交叉冲刺合击
         /// </summary>
         public SpazmatismHoverShootState() : this(0) {
         }
@@ -43,29 +45,50 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //计算悬停位置，在玩家侧边
-            Vector2 hoverTarget = player.Center + new Vector2(npc.Center.X < player.Center.X ? -400 : 400, -200);
-            MoveTo(npc, hoverTarget, MoveSpeed, 0.05f);
+            //锚点状态:响应搭档发出的合击信号
+            ITwinsState comboFollow = TwinsComboCoordinator.TryFollowSignal(context);
+            if (comboFollow != null) {
+                return comboFollow;
+            }
+
+            //弹簧悬停在玩家侧边，带呼吸浮动
+            Vector2 hoverTarget = player.Center
+                + new Vector2(npc.Center.X < player.Center.X ? -400 : 400, -200)
+                + TwinsMotion.BreathingOffset(seed: 1.7f);
+            TwinsMotion.SpringHover(npc, hoverTarget, 0.013f, 0.08f);
             FaceTarget(npc, player.Center);
 
             Timer++;
             if (Timer >= ShootRate) {
-                //发射火球
+                //预判射击火球
+                float shootSpeed = Context.IsDeathMode ? 14f : 12f;
+                Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, shootSpeed * 2f, 0.5f);
+                Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);
+
                 if (!VaultUtils.isClient) {
-                    float shootSpeed = Context.IsDeathMode ? 14f : 12f;
-                    Vector2 shootVel = GetDirectionToTarget(context) * shootSpeed;
                     Projectile.NewProjectile(
                         npc.GetSource_FromAI(),
-                        npc.Center,
-                        shootVel,
+                        npc.Center + shootDir * 36f,
+                        shootDir * shootSpeed,
                         ModContent.ProjectileType<Fireball>(),
                         30,
                         0f,
                         Main.myPlayer
                     );
                 }
+
+                //后坐力位移:开火瞬间被火球推回
+                npc.velocity -= shootDir * 7f;
+                context.PushDashVisuals(0.25f, 0.3f);
+
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item34, npc.Center);
+                    //喷口闪光
+                    for (int i = 0; i < 5; i++) {
+                        PRTLoader.NewParticle<PRT_TwinsSpark>(npc.Center + shootDir * 40f,
+                            shootDir.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(3f, 7f),
+                            Color.White, Main.rand.NextFloat(1f, 1.5f))?.Configure(14, 1);
+                    }
                 }
                 Timer = 0;
                 Counter++;
@@ -73,6 +96,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
             //射击次数后按固定套路切换状态
             if (Counter >= MaxShootCount) {
+                //每轮套路末尾与激光眼同步交叉冲刺
+                if (comboStep % 4 == 3 && TwinsStateContext.GetPartnerNpc(npc.type).Alives()) {
+                    return TwinsComboCoordinator.InitiateCombo(context, TwinsStateIndex.TwinsCrossDash, comboStep + 1);
+                }
                 //固定交替: 火焰漩涡 → 冲刺准备 → 火焰漩涡 → 冲刺准备...
                 if (comboStep % 2 == 0) {
                     return new SpazmatismFireVortexState(comboStep + 1);

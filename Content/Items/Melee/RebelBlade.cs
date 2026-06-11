@@ -1,16 +1,18 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.MeleeModify.Core;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameSystem;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
@@ -21,6 +23,12 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class RebelBlade : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "RebelBlade";
+
+        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        private int comboCounter;
+        /// <summary>连击重置计时器，过久未挥砍则回到第一段</summary>
+        private int comboResetTimer;
+
         public override void SetDefaults() {
             Item.width = Item.height = 54;
             Item.shootSpeed = 9;
@@ -31,21 +39,31 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.knockBack = 6;
             Item.value = Item.buyPrice(0, 83, 55, 0);
             Item.rare = ItemRarityID.Lime;
-            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = null;
             Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
-            Item.shoot = ModContent.ProjectileType<RebelBladeFlyAttcke>();
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.shoot = ModContent.ProjectileType<RebelBladeHeld>();
             Item.useTurn = true;
             Item.autoReuse = true;
             Item.CWR().isHeldItem = true;
-            Item.SetKnifeHeld<RebelBladeHeld>(true);
+            //noMelee 武器需要手动允许近战词缀
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
 
         public override void UseStyle(Player player, Rectangle heldItemFrame) => player.itemLocation = player.GetPlayerStabilityCenter();
 
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0;
+        public override bool CanUseItem(Player player) {
+            return player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeFlyAttcke>()] == 0
+                && player.ownedProjectileCounts[ModContent.ProjectileType<RebelBladeHeld>()] == 0;
+        }
 
         public override void HoldItem(Player player) {
+            if (comboResetTimer > 0 && --comboResetTimer == 0) {
+                comboCounter = 0;
+            }
+
             if (Main.myPlayer != player.whoAmI || player.PressKey()) {
                 return;
             }
@@ -77,9 +95,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (player.altFunctionUse == 2) {
                 SoundEngine.PlaySound(SoundID.Item1, position);
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RebelBladeFlyAttcke>(), (int)(damage * 0.6f), knockback, player.whoAmI);
+                comboCounter = 0;//飞刃攻击重置连击
                 return false;
             }
-            return true;
+
+            int combo = comboCounter % 3;
+            float swingDir = comboCounter % 2 == 0 ? 1f : -1f;
+            comboCounter++;
+            comboResetTimer = 75;
+            Projectile.NewProjectile(source, player.Center, velocity, type
+                , damage, knockback, player.whoAmI, combo, swingDir);
+            return false;
         }
 
         public override void AddRecipes() {
@@ -93,48 +119,200 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class RebelBladeHeld : BaseKnife
+    /// <summary>
+    /// 叛逆之刃手持弹幕
+    /// <br/>三段连击: 正手斩 → 反手斩 → 终结回旋斩，命中目标析出叛逆能量球
+    /// </summary>
+    internal class RebelBladeHeld : BaseHeldProj
     {
-        public override int TargetID => ModContent.ItemType<RebelBlade>();
-        public override string trailTexturePath => CWRConstant.Masking + "MotionTrail2";
-        public override string gradientTexturePath => CWRConstant.ColorBar + "RebelBlade_Bar";
-        public override void SetKnifeProperty() {
-            canDrawSlashTrail = true;
-            distanceToOwner = -20;
-            drawTrailBtommWidth = 110;
-            drawTrailTopWidth = 130;
-            drawTrailCount = 6;
-            Length = 200;
-            unitOffsetDrawZkMode = 0;
-            Projectile.width = Projectile.height = 186;
-            distanceToOwner = -60;
-            SwingData.starArg = 30;
-            SwingData.ler1_UpLengthSengs = 0.05f;
-            SwingData.minClampLength = 200;
-            SwingData.maxClampLength = 210;
-            SwingData.ler1_UpSizeSengs = 0.016f;
-            SwingData.baseSwingSpeed = 4.2f;
-            SwingAIType = SwingAITypeEnum.UpAndDown;
-            ShootSpeed = 12;
+        public override string Texture => CWRConstant.Item_Melee + "RebelBlade";
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<RebelBlade>();
+
+        /// <summary>连击索引: 0=正手斩 1=反手斩 2=终结回旋斩</summary>
+        private ref float ComboIndex => ref Projectile.ai[0];
+        /// <summary>挥砍方向符号 ±1</summary>
+        private ref float SwingDirAi => ref Projectile.ai[1];
+
+        private bool IsFinisher => ComboIndex >= 2f;
+
+        //阶段时长（逻辑帧，受攻速缩放）
+        private float WindupTime => IsFinisher ? 9f : 6f;
+        private float SlashTime => IsFinisher ? 17f : 12f;
+        private float RecoverTime => 8f;
+        private float TotalTime => WindupTime + SlashTime + RecoverTime;
+        //挥砍弧度：终结技近乎一整圈的回旋
+        private float SwingArc => IsFinisher ? 5.7f : 3.5f;
+        //刀尖距离持握点的长度
+        private float BladeReach => IsFinisher ? 215f : 195f;
+
+        private static readonly Color RebelBlue = new(80, 140, 255);
+        private static readonly Color RebelCyan = new(150, 220, 255);
+
+        private float elapsed;
+        private float speedMul = 1f;
+        private int lockedDirection = 1;
+        private int swingSign = 1;
+        private float startAngle;
+        private float endAngle;
+        private float currentRotation;
+        private float lastRotation;
+        private bool slashSoundPlayed;
+        private readonly HashSet<int> hitNPCs = [];
+
+        public override void SetDefaults() {
+            Projectile.width = Projectile.height = 64;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+            Projectile.ownerHitCheck = true;
+            Projectile.timeLeft = 90;
+            Projectile.CWR().NotSubjectToSpecialEffects = true;
+            Projectile.CWR().PierceResist = true;
         }
 
-        public override bool PreInOwner() {
-            ExecuteAdaptiveSwing(
-            phase0SwingSpeed: -0.4f,
-            phase1SwingSpeed: 3.4f,
-            phase2SwingSpeed: 7f,
-            swingSound: SoundID.Item71 with { Pitch = -0.6f });
-            return base.PreInOwner();
+        public override bool ShouldUpdatePosition() => false;
+
+        public override bool? CanDamage() => elapsed >= WindupTime && elapsed <= WindupTime + SlashTime + 1f;
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (CanDamage() != true) {
+                return false;
+            }
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + currentRotation.ToRotationVector2() * BladeReach * Projectile.scale;
+            float collisionPoint = 0f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                , hand, tip, 56f, ref collisionPoint);
         }
 
-        public override void MeleeEffect() {
-            Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height
-                , DustID.FireworkFountain_Blue, 0, 0, 55);
-            dust.noGravity = true;
+        public override void Initialize() {
+            //真近战伤害类型继承自物品
+            Projectile.DamageType = Item.DamageType;
+
+            swingSign = Math.Sign(SwingDirAi);
+            if (swingSign == 0) {
+                swingSign = 1;
+            }
+
+            lockedDirection = Math.Sign(Projectile.velocity.X);
+            if (lockedDirection == 0) {
+                lockedDirection = Owner.direction;
+            }
+            Owner.direction = lockedDirection;
+
+            speedMul = Owner.GetWeaponAttackSpeed(Item);
+            if (speedMul <= 0f) {
+                speedMul = 1f;
+            }
+
+            float baseAngle = Projectile.velocity.ToRotation();
+            startAngle = baseAngle - swingSign * SwingArc * 0.5f;
+            endAngle = baseAngle + swingSign * SwingArc * 0.5f;
+            currentRotation = lastRotation = startAngle;
+
+            if (IsFinisher) {
+                Projectile.damage = (int)(Projectile.damage * 1.3f);
+                Projectile.scale = 1.1f;
+            }
         }
 
-        public override void KnifeHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (target.FromWormBodysRandomSet(5)) {
+        public override void AI() {
+            if (Item.type != ModContent.ItemType<RebelBlade>()) {
+                Projectile.Kill();
+                return;
+            }
+            if (elapsed >= TotalTime) {
+                Projectile.Kill();
+                return;
+            }
+
+            lastRotation = currentRotation;
+            float slashEnd = WindupTime + SlashTime;
+
+            if (elapsed < WindupTime) {
+                //蓄力回拉
+                float t = elapsed / WindupTime;
+                currentRotation = startAngle - swingSign * 0.24f * MathF.Sin(t * MathHelper.PiOver2);
+            }
+            else if (elapsed < slashEnd) {
+                //ease-out 重斩
+                float t = (elapsed - WindupTime) / SlashTime;
+                float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.4f : 3.4f);
+                currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
+
+                if (!slashSoundPlayed) {
+                    slashSoundPlayed = true;
+                    if (!VaultUtils.isServer) {
+                        SoundEngine.PlaySound(SoundID.Item71 with {
+                            Pitch = -0.6f + ComboIndex * 0.15f
+                        }, Owner.Center);
+                        if (IsFinisher) {
+                            SoundEngine.PlaySound(SoundID.Item60 with { Volume = 0.5f, Pitch = -0.2f }, Owner.Center);
+                        }
+                    }
+                }
+
+                //刀刃蓝色能量尘
+                if (!VaultUtils.isServer) {
+                    Vector2 along = Owner.GetPlayerStabilityCenter()
+                        + currentRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.45f, BladeReach);
+                    Dust dust = Dust.NewDustPerfect(along, DustID.FireworkFountain_Blue
+                        , currentRotation.ToRotationVector2().RotatedBy(swingSign * MathHelper.PiOver2) * Main.rand.NextFloat(1f, 4f), 55);
+                    dust.noGravity = true;
+                }
+            }
+            else {
+                //收势
+                currentRotation = endAngle;
+            }
+
+            UpdatePlayerPose();
+            Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
+                , RebelBlue.ToVector3() * 0.6f);
+            elapsed += speedMul;
+        }
+
+        private void UpdatePlayerPose() {
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.direction = lockedDirection;
+            Owner.itemTime = Owner.itemAnimation = 2;
+            Owner.itemRotation = currentRotation;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, currentRotation - MathHelper.PiOver2);
+            Projectile.Center = Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.5f;
+            Projectile.timeLeft = 90;
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            modifiers.HitDirectionOverride = currentRotation.ToRotationVector2().X > 0 ? 1 : -1;
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.85f;
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //转发物品命中钩子，维持装备与饰品的真近战联动
+            if (hitNPCs.Add(target.whoAmI)) {
+                ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
+                NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
+                PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
+            }
+
+            if (!VaultUtils.isServer) {
+                for (int i = 0; i < (IsFinisher ? 6 : 3); i++) {
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center, Main.rand.NextVector2Circular(6f, 6f)
+                        , Color.Lerp(RebelBlue, RebelCyan, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.3f)).Configure(false, 12);
+                }
+            }
+
+            SpawnOrbs(target);
+        }
+
+        private void SpawnOrbs(NPC target) {
+            if (!Projectile.IsOwnedByLocalPlayer() || target.FromWormBodysRandomSet(5)) {
                 return;
             }
 
@@ -143,10 +321,11 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            for (int i = 0; i < 3; i++) {
+            int count = IsFinisher ? 4 : 3;
+            for (int i = 0; i < count; i++) {
                 Vector2 spwanPos = target.position + new Vector2(target.width * Main.rand.NextFloat(), target.height * Main.rand.NextFloat());
-                Projectile.NewProjectile(Source, spwanPos, Vector2.Zero
-                    , ModContent.ProjectileType<RebelBladeOrb>(), Item.damage / 5, 0, Owner.whoAmI);
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spwanPos, Vector2.Zero
+                    , type, Item.damage / 5, 0, Owner.whoAmI);
                 Owner.ownedProjectileCounts[type]++;
             }
         }
@@ -154,9 +333,46 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
             for (int i = 0; i < 3; i++) {
                 Vector2 spwanPos = target.position + new Vector2(target.width * Main.rand.NextFloat(), target.height * Main.rand.NextFloat());
-                Projectile.NewProjectile(Source, spwanPos, Vector2.Zero
+                Projectile.NewProjectile(Owner.GetSource_ItemUse(Item), spwanPos, Vector2.Zero
                     , ModContent.ProjectileType<RebelBladeOrb>(), Item.damage / 5, 0, Owner.whoAmI);
             }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D tex = TextureValue;
+            Vector2 origin = tex.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float dist = BladeReach * 0.5f * Projectile.scale;
+
+            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)
+            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+
+            //挥砍残影
+            if (CanDamage() == true) {
+                for (int i = 1; i <= 3; i++) {
+                    float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 4f);
+                    Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
+                    Color trailColor = RebelBlue * (0.35f * (1f - i / 4f));
+                    trailColor.A = 0;
+                    Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
+                        , Projectile.scale, effect, 0);
+                }
+            }
+
+            //刀身本体
+            Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
+            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, currentRotation + rotOffset, origin
+                , Projectile.scale, effect, 0);
+
+            //终结回旋斩的能量辉光层
+            if (IsFinisher && CanDamage() == true) {
+                Color glow = RebelCyan * 0.4f;
+                glow.A = 0;
+                Main.EntitySpriteDraw(tex, drawPos, null, glow, currentRotation + rotOffset, origin
+                    , Projectile.scale * 1.05f, effect, 0);
+            }
+            return false;
         }
     }
 

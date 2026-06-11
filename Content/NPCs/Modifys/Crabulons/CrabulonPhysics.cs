@@ -217,6 +217,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         //卡入方块检测和修正
         public void CheckAndFixStuckPosition() {
+            //骑乘吸附期间位置由骑手决定，不允许修正逻辑与之打架
+            if (owner.Mount) {
+                stuckCheckTimer = 0;
+                lastValidPosition = npc.position;
+                return;
+            }
+
             stuckCheckTimer++;
 
             if (stuckCheckTimer < StuckCheckInterval) {
@@ -284,10 +291,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         //检测是否应该穿过平台
         public bool? ShouldFallThroughPlatforms() {
-            //骑乘模式下按S键穿过平台
-            if (owner.Mount && owner.Owner.Alives() && owner.Owner.holdDownCardinalTimer[0] > 2) {
-                if (npc.velocity.Y == 0)
-                    npc.position.Y += 1f;
+            //骑乘模式下蟹不参与碰撞（吸附在骑手身上），平台穿越由骑手侧处理
+            if (owner.Mount) {
                 return true;
             }
 
