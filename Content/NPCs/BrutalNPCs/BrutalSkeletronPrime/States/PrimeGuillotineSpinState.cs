@@ -36,29 +36,36 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             NPC npc = context.Npc;
             context.FrameMode = 2;
 
+            //注意：Timer++ 必须在所有分支的公共路径上执行。
+            //此前预警分支提前 return 跳过了自增，Timer 永远为 0，
+            //状态卡死在预警段且无运动控制——boss 带着残速无限漂移。
             if (Timer < Telegraph) {
                 npc.damage = 0;
+                //预警期缓刹，消化进入状态时的惯性残速
+                npc.velocity *= 0.9f;
+                LeanTowards(npc, context.Target.Center);
                 context.SetChargeState(1, Timer / (float)Telegraph);
                 if (!VaultUtils.isClient && Timer == 1) {
                     PrimeTelegraphLine.SpawnRing(context.Npc, context.Target.Center, OrbitRadiusStart, Telegraph);
                 }
-                return null;
             }
+            else {
+                orbitRadius = MathHelper.Lerp(OrbitRadiusStart, OrbitRadiusEnd, (Timer - Telegraph) / (float)SpinFrames);
+                orbitAngle += Main.masterMode ? 0.09f : 0.07f;
+                Vector2 targetPos = context.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
+                //软切入：前 15 帧趋近系数渐升，避免入轨第一帧产生巨大瞬时速度撞击玩家
+                float approach = MathHelper.Clamp((Timer - Telegraph) / 15f, 0.3f, 1f) * 0.22f;
+                npc.velocity = (targetPos - npc.Center) * approach;
+                float speed = npc.velocity.Length();
+                npc.damage = speed > PrimeDirector.DashContactSpeedThreshold ? npc.defDamage * 2 : 0;
+                SpinRotation(npc, 0.38f);
 
-            orbitRadius = MathHelper.Lerp(OrbitRadiusStart, OrbitRadiusEnd, (Timer - Telegraph) / (float)SpinFrames);
-            orbitAngle += Main.masterMode ? 0.09f : 0.07f;
-            Vector2 targetPos = context.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
-            npc.velocity = (targetPos - npc.Center) * 0.22f;
-            float speed = npc.velocity.Length();
-            npc.damage = speed > PrimeDirector.DashContactSpeedThreshold ? npc.defDamage * 2 : 0;
-            SpinRotation(npc, 0.38f);
-
-            if (!VaultUtils.isClient && Timer % 22 == 0) {
-                SpawnSawBlade(context, orbitRadius);
-            }
-
-            if (!VaultUtils.isServer && Timer == Telegraph + 4) {
-                SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.9f, Pitch = -0.1f }, npc.Center);
+                if (!VaultUtils.isClient && Timer % 22 == 0) {
+                    SpawnSawBlade(context, orbitRadius);
+                }
+                if (!VaultUtils.isServer && Timer == Telegraph + 4) {
+                    SoundEngine.PlaySound(SoundID.Item22 with { Volume = 0.9f, Pitch = -0.1f }, npc.Center);
+                }
             }
 
             Timer++;
