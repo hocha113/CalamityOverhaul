@@ -167,7 +167,7 @@ ExtraMain: {
 	MusicText: MUSIK
 	StaffText: TEAM
 	BackText: ZURÜCK
-	LockedText: ???
+	LockedText: GESPERRT
 }
 
 QuestWorldConfirmUI: {
@@ -488,7 +488,7 @@ HackTime: {
 	SystemBreach: SYSTEMEINDRINGUNG
 	Rebooting: NEUSTART...
 	SystemOnline: SYSTEM ONLINE
-	MemoryWiped: ???
+	MemoryWiped: GEDÄCHTNIS GELÖSCHT
 	Cyberpsychosis: KYBERPSYCHOSE
 	RamRefund: +{0} RAM
 	ActiveText: AKTIV

@@ -167,7 +167,7 @@ ExtraMain: {
 	MusicText: Музыка
 	StaffText: Создатели
 	BackText: Назад
-	LockedText: ???
+	LockedText: Заблокировано
 }
 
 QuestWorldConfirmUI: {
@@ -488,7 +488,7 @@ HackTime: {
 	SystemBreach: Взлом системы
 	Rebooting: Перезагрузка...
 	SystemOnline: Система в сети
-	MemoryWiped: ???
+	MemoryWiped: ПАМЯТЬ СТЁРТА
 	Cyberpsychosis: Киберпсихоз
 	RamRefund: +{0} RAM
 	ActiveText: Активно

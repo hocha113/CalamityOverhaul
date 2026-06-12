@@ -167,7 +167,7 @@ ExtraMain: {
 	MusicText: 音乐
 	StaffText: 制作人员
 	BackText: 返回
-	LockedText: ???
+	LockedText: 未解锁
 }
 
 QuestWorldConfirmUI: {
@@ -488,7 +488,7 @@ HackTime: {
 	SystemBreach: 系统入侵
 	Rebooting: 重启中...
 	SystemOnline: 系统上线
-	MemoryWiped: ???
+	MemoryWiped: 记忆清除
 	Cyberpsychosis: 赛博精神病
 	RamRefund: +{0} RAM
 	ActiveText: 生效中

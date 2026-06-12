@@ -16,7 +16,7 @@ ModifyCrabulon: {
 }
 
 ModifyTruffle: {
-	SleepName: ???
+	SleepName: Schlafender Trüffel
 	ButtonText: Aufwecken
 	Chat0:
 		'''

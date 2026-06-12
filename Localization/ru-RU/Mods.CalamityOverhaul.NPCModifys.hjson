@@ -16,7 +16,7 @@
 }
 
 ModifyTruffle: {
-	SleepName: ???
+	SleepName: Спящий трюфель
 	ButtonText: Разбудить
 	Chat0:
 		'''

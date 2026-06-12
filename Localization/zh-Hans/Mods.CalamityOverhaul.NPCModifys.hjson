@@ -16,7 +16,7 @@
 }
 
 ModifyTruffle: {
-	SleepName: ???
+	SleepName: 沉睡的松露人
 	ButtonText: 叫醒
 	Chat0:
 		'''
