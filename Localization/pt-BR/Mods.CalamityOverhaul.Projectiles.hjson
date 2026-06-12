@@ -111,6 +111,8 @@ DeadLaser.DisplayName: Laser da Morte
 PrimeTelegraphLine.DisplayName: Marcador de aviso do Prime
 PrimeArcChainProj.DisplayName: Corrente iônica
 PrimeSkullBeamProj.DisplayName: Raio do canhão craniano
+// PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
+// PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
 Hit.DisplayName: Impacto
 SpwanTextProj.DisplayName: Texto Manifestado
 DragonsWordCut.DisplayName: Corte da Palavra do Dragao

@@ -8,8 +8,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>
-    /// 颅骨主炮（&lt;35% 扣留招）：90 帧蓄力（汇聚 → 72% 静默）→ 锁定瞄准 + 扇形预告
-    /// → <see cref="PrimeSkullBeamProj"/> 巨型光束横扫，全场最华丽一招。
+    /// 颅骨主炮（二阶段固定杀招）：90 帧蓄力（汇聚 → 72% 静默）→ 锁定瞄准 + 起点预告
+    /// → <see cref="PrimeSkullBeamProj"/> 巨型光束横扫大半圈，全场最华丽一招。
     /// <para>完整充能语法：粒子密度 ∝ √进度、72% 处声画双静默、静默拍后瞬间释放。</para>
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.SkullCannon, typeof(PrimeStateContext))]
@@ -22,10 +22,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         /// <summary>蓄力末段提前锁定瞄准的帧数（锁定后玩家走位不再被跟踪——公平阀）</summary>
         internal static int LockLead => 24;
         internal static int SilenceFrames => 6;
-        /// <summary>扫射半弧（大师模式）</summary>
-        internal static float ArcHalfMaster => 0.62f;
-        /// <summary>扫射半弧（普通/专家）</summary>
-        internal static float ArcHalfNormal => 0.55f;
+        /// <summary>扫射半弧（大师模式）：全弧 ≈ 252°，转一个大半圈</summary>
+        internal static float ArcHalfMaster => 2.2f;
+        /// <summary>扫射半弧（普通/专家）：全弧 ≈ 218°</summary>
+        internal static float ArcHalfNormal => 1.9f;
 
         private int TotalFrames => ChargeFrames + SilenceFrames + PrimeSkullBeamProj.TotalLife + 8;
 
@@ -53,8 +53,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 FireBeam(context);
             }
             else {
-                //扫射期：沿瞄准中轴缓慢反向后坐（mass is reaction）
-                Vector2 recoil = -aimAngle.ToRotationVector2() * 1.4f;
+                //扫射期：机体沿光束当前角度反向缓慢后坐，随扫射转动（mass is reaction）
+                float sweepSpeed = arcHalf * 2f / PrimeSkullBeamProj.SweepFrames;
+                float sweepT = MathHelper.Clamp(
+                    Timer - (ChargeFrames + SilenceFrames) - PrimeSkullBeamProj.ExpandTime,
+                    0f, PrimeSkullBeamProj.SweepFrames);
+                float beamAngle = aimAngle - arcHalf + sweepSpeed * sweepT;
+                Vector2 recoil = -beamAngle.ToRotationVector2() * 1.2f;
                 npc.velocity = Vector2.Lerp(npc.velocity, recoil, 0.06f);
             }
 
@@ -77,8 +82,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             else if (Timer == ChargeFrames - LockLead) {
                 arcHalf = context.MasterMode ? ArcHalfMaster : ArcHalfNormal;
                 if (!VaultUtils.isClient) {
-                    PrimeTelegraphLine.SpawnFan(npc, npc.Center, aimAngle,
-                        arcHalf + 0.05f, LockLead + SilenceFrames);
+                    //大半圈的弧无法用单个扇形如实预告：改为"起点射线 + 起始扇区"，
+                    //告知光束出生位置与旋转方向，后续走位靠光束本身的慢角速度阅读
+                    float startAngle = aimAngle - arcHalf;
+                    PrimeTelegraphLine.SpawnLine(npc, npc.Center, startAngle, LockLead + SilenceFrames);
+                    PrimeTelegraphLine.SpawnFan(npc, npc.Center, startAngle + 0.5f,
+                        0.55f, LockLead + SilenceFrames);
                     npc.netUpdate = true;
                 }
                 if (!VaultUtils.isServer) {

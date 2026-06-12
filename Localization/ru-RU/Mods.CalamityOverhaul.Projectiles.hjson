@@ -111,6 +111,8 @@ DeadLaser.DisplayName: Мертвый лазер
 PrimeTelegraphLine.DisplayName: Прицельная метка Прайма
 PrimeArcChainProj.DisplayName: Ионная цепь
 PrimeSkullBeamProj.DisplayName: Луч черепной пушки
+// PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
+// PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
 Hit.DisplayName: Удар
 SpwanTextProj.DisplayName: Слово проявления
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез

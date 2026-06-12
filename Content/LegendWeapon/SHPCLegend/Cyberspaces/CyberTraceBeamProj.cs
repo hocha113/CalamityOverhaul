@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>
     /// 赛博追踪能量光束弹幕
     /// <br/>Cyberspace 系统的攻击手段 —— 带微追踪的拖尾能量光束
-    /// <br/>蓝/黄/青三种随机颜色主题，光球头部，方形科幻粒子拖尾
+    /// <br/>等离子家族三阶随机主题（青/电蓝/幻紫，同一色系既有变化又不混杂），光球头部，方形科幻粒子拖尾
     /// <br/>使用 <see cref="Trail"/> 条带 + CyberTraceBeam.fx 着色器渲染
     /// </summary>
     internal class CyberTraceBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
@@ -50,30 +50,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             public Vector3 AuraVec => Aura.ToVector3();
         }
 
+        //等离子家族三阶：青→电蓝→幻紫，统一明度与饱和曲线，
+        //同一色系内渐变保证一轮三发颜色相邻而不混杂
         private static readonly ColorTheme[] Themes = {
-            //蓝色主题
+            //等离子青
             new() {
-                Core = new Color(100, 180, 255),
-                Glow = new Color(30, 100, 230),
-                Aura = new Color(10, 40, 120),
-                ParticleMain = new Color(80, 160, 255),
-                ParticleEdge = new Color(30, 80, 200),
+                Core = new Color(110, 255, 235),
+                Glow = new Color(25, 200, 185),
+                Aura = new Color(8, 95, 95),
+                ParticleMain = new Color(85, 240, 220),
+                ParticleEdge = new Color(20, 165, 155),
             },
-            //黄色主题
+            //电蓝
             new() {
-                Core = new Color(255, 220, 80),
-                Glow = new Color(230, 170, 30),
-                Aura = new Color(150, 100, 15),
-                ParticleMain = new Color(255, 200, 60),
-                ParticleEdge = new Color(200, 150, 20),
+                Core = new Color(120, 190, 255),
+                Glow = new Color(40, 115, 235),
+                Aura = new Color(12, 48, 120),
+                ParticleMain = new Color(95, 165, 255),
+                ParticleEdge = new Color(35, 90, 205),
             },
-            //青色主题
+            //幻紫
             new() {
-                Core = new Color(80, 255, 230),
-                Glow = new Color(20, 200, 180),
-                Aura = new Color(10, 120, 110),
-                ParticleMain = new Color(60, 240, 210),
-                ParticleEdge = new Color(15, 170, 150),
+                Core = new Color(190, 150, 255),
+                Glow = new Color(125, 65, 235),
+                Aura = new Color(55, 20, 115),
+                ParticleMain = new Color(170, 130, 255),
+                ParticleEdge = new Color(110, 55, 205),
             },
         };
 

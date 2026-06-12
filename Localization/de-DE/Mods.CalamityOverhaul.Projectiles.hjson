@@ -111,6 +111,8 @@ DeadLaser.DisplayName: Todeslaser
 PrimeTelegraphLine.DisplayName: Prime-Zielmarkierung
 PrimeArcChainProj.DisplayName: Ionenfessel
 PrimeSkullBeamProj.DisplayName: Schädelkanonenstrahl
+// PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
+// PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
 Hit.DisplayName: Einschlag
 SpwanTextProj.DisplayName: Manifestierender Text
 DragonsWordCut.DisplayName: Drachenwort-Schnitt

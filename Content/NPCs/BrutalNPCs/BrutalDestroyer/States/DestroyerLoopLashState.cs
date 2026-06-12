@@ -81,7 +81,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
                 lungeFired = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.3f, Volume = 1f }, npc.Center);
+                //ForceRoar：突入/贯穿两声间隔短于Roar采样时长，普通Roar会因IgnoreNew上限丢失
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.3f, Volume = 1f }, npc.Center);
                 DestroyerMotionFX.SpawnDashBurst(npc.Center, lungeDir);
                 DestroyerMotionFX.CameraPunch(npc.Center, 6f, 14, "DestroyerLashLunge", lungeDir);
                 if (!VaultUtils.isClient) {
@@ -122,7 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = exitDir * ExitSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.45f, Volume = 1.05f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.45f, Volume = 1.05f }, npc.Center);
                 if (!VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + exitDir * 80f, Vector2.Zero,
                         ModContent.ProjectileType<DestroyerShockwave>(), 0, 0f, Main.myPlayer, 0);

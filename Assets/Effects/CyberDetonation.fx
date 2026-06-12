@@ -167,10 +167,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         finalColor += coreColor * blockOn * od * blockZone * (0.4 + detonBurst * 0.8);
         alpha += blockOn * od * blockZone * 0.12;
 
-        // G-3. 扫描线干扰（环及内部）
+        // G-3. 扫描线干扰（环及内部，用环色降低亮度叠加）
         float scanD = frac(dist * 60.0 + uTime * 3.0);
         scanD = step(0.93, scanD);
-        finalColor += coreColor * scanD * od * 0.6;
+        finalColor += ringColor * scanD * od * 0.4;
 
         // G-4. 角向撕裂带（随机扇形黑带）
         float tearA = floor(normAngle * 12.0);
@@ -178,9 +178,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float tearOn = step(0.88 - detonBurst * 0.15, tearH) * od;
         finalColor *= 1.0 - tearOn * 0.5;
 
-        // G-5. 全局亮度暴走
+        // G-5. 全局闪烁（幅度收敛，避免爆炸瞬间整屏暴闪）
         float flickG = hash21(float2(floor(uTime * 20.0), 7.7));
-        float flickAmt = detonBurst * (flickG - 0.3) * 2.5 * od;
+        float flickAmt = detonBurst * (flickG - 0.3) * 1.2 * od;
         finalColor *= 1.0 + flickAmt;
 
         // G-6. alpha增强

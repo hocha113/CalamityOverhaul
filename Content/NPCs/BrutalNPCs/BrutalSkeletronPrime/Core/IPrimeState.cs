@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         Death = 13,
         /// <summary>断头台旋杀：大半径圆周锯刃收紧</summary>
         GuillotineSpin = 14,
-        /// <summary>颅骨主炮：低血量扣留巨型光束横扫</summary>
+        /// <summary>颅骨主炮：二阶段固定杀招，巨型光束横扫大半圈</summary>
         SkullCannon = 15,
         /// <summary>十字绞杀：四臂合体对角封位</summary>
         CrossExecute = 16,

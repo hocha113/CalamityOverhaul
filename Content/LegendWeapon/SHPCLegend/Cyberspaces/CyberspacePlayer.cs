@@ -110,6 +110,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         /// <summary>
+        /// 视觉层级（1~<see cref="Cyberspace.MaxLayerCount"/> 连续值），
+        /// 由当前有效外半径相对各层完整半径插值得出
+        /// <br/>单环边界设计依赖此值：升降层形变过程中边界环的样式（厚度/色温/装饰层）随半径连续渐变，
+        /// 而不是跟随 <see cref="CurrentLayer"/> 突变；远端玩家亦可由本地模拟的 layerExpand 直接推出，无需额外同步
+        /// </summary>
+        public float VisualTier {
+            get {
+                float r = EffectiveOuterRadius;
+                float prev = Cyberspace.GetLayerRadius(0);
+                if (r <= prev) {
+                    return 1f;
+                }
+                for (int i = 1; i < Cyberspace.MaxLayerCount; i++) {
+                    float cur = Cyberspace.GetLayerRadius(i);
+                    if (r <= cur) {
+                        return i + (r - prev) / (cur - prev);
+                    }
+                    prev = cur;
+                }
+                return Cyberspace.MaxLayerCount;
+            }
+        }
+
+        /// <summary>
         /// 着色器累计时间
         /// </summary>
         public float EffectTime { get; private set; }
@@ -495,7 +519,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.NewProjectile(source, center, Vector2.Zero,
                 ModContent.ProjectileType<CyberShockwaveProj>(), 0, 0, Player.whoAmI);
 
-            int boltCount = Main.rand.Next(6, 9);
+            //闪电数量收敛，激活演出重点交给冲击波与边界环展开
+            int boltCount = Main.rand.Next(5, 7);
             float baseAngle = Main.rand.NextFloat() * MathHelper.TwoPi;
             for (int i = 0; i < boltCount; i++) {
                 float angle = baseAngle + MathHelper.TwoPi * i / boltCount
@@ -513,10 +538,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             IEntitySource source = Player.GetSource_FromThis();
             Vector2 center = Player.Center;
 
+            //冲击波从旧层边界扫掠到新层边界，与单环边界的连续形变同步，读作"领域生长"
+            float sweepStart = oldLayer >= 1 ? Cyberspace.GetLayerRadius(oldLayer - 1) : 0f;
+            float sweepEnd = Cyberspace.GetLayerRadius(newLayer - 1);
             Projectile.NewProjectile(source, center, Vector2.Zero,
-                ModContent.ProjectileType<CyberShockwaveProj>(), 0, 0, Player.whoAmI);
+                ModContent.ProjectileType<CyberShockwaveProj>(), 0, 0, Player.whoAmI,
+                ai0: sweepStart, ai1: sweepEnd);
 
-            int boltCount = Main.rand.Next(4 + newLayer * 2, 7 + newLayer * 2);
+            //闪电数量随层级温和递增，不再翻倍堆叠
+            int boltCount = Main.rand.Next(3 + newLayer, 6 + newLayer);
             float baseAngle = Main.rand.NextFloat() * MathHelper.TwoPi;
             for (int i = 0; i < boltCount; i++) {
                 float angle = baseAngle + MathHelper.TwoPi * i / boltCount

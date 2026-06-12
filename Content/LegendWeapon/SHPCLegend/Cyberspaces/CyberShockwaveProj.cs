@@ -9,6 +9,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>
     /// 赛博空间领域展开冲击波弹幕
     /// <br/>在领域激活瞬间生成，以"弹幕主人"的领域中心为原点向外扩散的深红色数字冲击环
+    /// <br/>升层时通过 ai[0]/ai[1] 携带起止半径，让冲击波从旧层边界扫掠到新层边界，
+    /// 配合单环边界的连续形变强化"领域生长"叙事；激活时不传参，保持从中心扩散
     /// <br/>多人语义：必须按 <see cref="Projectile.owner"/> 取该玩家的 <see cref="CyberspacePlayer"/>，
     /// 否则远端客户端会错把本地玩家当成中心，让冲击波跑错位置
     /// </summary>
@@ -18,6 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         private const int Lifetime = 38;
         private float maxDrawRadius;
+        private float startRadius;
 
         public override void SetDefaults() {
             Projectile.width = 2;
@@ -36,15 +39,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (cp != null) {
                 Projectile.Center = cp.DomainCenter;
                 if (Projectile.localAI[0] == 0f) {
-                    maxDrawRadius = cp.Radius * 1.1f;
+                    InitRadii(cp.Radius);
                     Projectile.localAI[0] = 1f;
                 }
             }
             else if (Projectile.localAI[0] == 0f) {
                 //极端兜底：拿不到主人时退到 BaseRadius，至少保证视觉不闪
-                maxDrawRadius = Cyberspace.BaseRadius * 1.1f;
+                InitRadii(Cyberspace.BaseRadius);
                 Projectile.localAI[0] = 1f;
             }
+        }
+
+        /// <summary>
+        /// ai[0]=扫掠起始半径，ai[1]=扫掠终点半径（均为世界像素）；
+        /// 未设置（==0）时退回"从中心扩散到领域目标半径"的激活演出
+        /// </summary>
+        private void InitRadii(float fallbackRadius) {
+            startRadius = MathF.Max(Projectile.ai[0], 0f);
+            float endRadius = Projectile.ai[1] > 1f ? Projectile.ai[1] : fallbackRadius;
+            if (endRadius < startRadius + 1f) {
+                endRadius = startRadius + 1f;
+            }
+            maxDrawRadius = endRadius * 1.1f;
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -57,8 +73,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;
-            //快速起步的缓出曲线
-            float ringProgress = 1f - MathF.Pow(1f - t, 2.8f);
+            //快速起步的缓出曲线；带起始半径时从旧边界出发向新边界扫掠
+            float eased = 1f - MathF.Pow(1f - t, 2.8f);
+            float startFrac = maxDrawRadius > 0f ? MathHelper.Clamp(startRadius / maxDrawRadius, 0f, 1f) : 0f;
+            float ringProgress = MathHelper.Lerp(startFrac, 1f, eased);
             float fadeAlpha;
             if (t < 0.55f)
                 fadeAlpha = MathHelper.SmoothStep(0f, 1f, t / 0.2f);

@@ -225,7 +225,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = diveDir * DiveSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.35f, Volume = 1f }, player.Center);
+                //ForceRoar：避免被上一声未播完的Roar按IgnoreNew上限吞掉（详见DiveStrike同处注释）
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1f }, player.Center);
                 //俯冲瞬间天空闪雷
                 MachineEffect.TriggerSkyFlash(lineCenter, 1f);
                 if (!VaultUtils.isClient) {
@@ -309,7 +310,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = Vector2.UnitY * (DiveSpeed(context) + 14f);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.5f, Volume = 1.1f }, player.Center);
+                //ForceRoar：终结贯穿是全场最重的一声，绝不能被实例上限吞掉
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.5f, Volume = 1.1f }, player.Center);
                 //终结贯穿释放：最强一道闪雷劈向冲击点
                 MachineEffect.TriggerSkyFlash(impactPoint, 1f);
                 if (!VaultUtils.isClient) {

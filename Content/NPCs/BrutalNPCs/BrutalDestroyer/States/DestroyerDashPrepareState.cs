@@ -94,7 +94,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.netUpdate = true;
 
                 if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.2f }, npc.Center);
+                    //ForceRoar：连突间隔(~1.3s)短于Roar采样时长(~2s)，普通Roar因IgnoreNew上限会整声丢失
+                    SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.2f }, npc.Center);
                     DestroyerMotionFX.SpawnDashBurst(npc.Center, dashDirection);
                     DestroyerMotionFX.CameraPunch(npc.Center, 6f, 14, "DestroyerDash", dashDirection);
                 }

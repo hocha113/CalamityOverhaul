@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
 {
     /// <summary>
     /// 激光炮蓄势瞄准：跟随头部左侧悬浮，缓慢锁定玩家充能，
-    /// 充能满后按"蓄力炮 → 激光环 → 速射"的确定性序列出招
+    /// 充能满后按"热射线横扫 → 三连点射 → 蓄力热射线 → 速射"的确定性序列出招
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserAim, typeof(PrimeArmStateContext))]
     internal class LaserAimState : PrimeArmStateBase
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     }
 
     /// <summary>
-    /// 激光炮蓄力重炮：锁定 → 充能汇聚 → 轰出高速主炮（高难附带扇形散射），
+    /// 激光炮蓄力重炮：锁定 → 充能汇聚 → 轰出贯穿热射线光束并持续后坐，
     /// 充能进度通过发光层与粒子完全可读
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserChargedShot, typeof(PrimeArmStateContext))]
@@ -127,6 +127,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserChargedShot;
 
         internal static float ChargeTime => 45f;
+        /// <summary>开火后的保持帧数（覆盖光束 10+42+12 的完整生命）</summary>
+        internal static int HoldTime => 75;
         private float chargeProgress;
         private bool hasFired;
 
@@ -165,8 +167,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 if (!hasFired) {
                     hasFired = true;
                     if (!VaultUtils.isClient) {
-                        FireChargedLaser(ctx);
-                        ctx.ApplyRecoil(12f);
+                        FireHeatRay(ctx);
+                        ctx.ApplyRecoil(18f);
                     }
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item33 with { Volume = 1.2f, Pitch = -0.3f }, npc.Center);
@@ -174,9 +176,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 }
 
                 chargeProgress++;
-                ctx.ChargeGlow = MathHelper.Clamp(2f - (chargeProgress - ChargeTime) / 15f, 0f, 1f);
+                ctx.ChargeGlow = MathHelper.Clamp(2f - (chargeProgress - ChargeTime) / 30f, 0f, 1f);
 
-                if (chargeProgress >= ChargeTime + 30 && !VaultUtils.isClient) {
+                //光束持续期的反推：重武器的质量反馈
+                if (chargeProgress < ChargeTime + 52) {
+                    npc.velocity -= ctx.AimDirection * 0.25f;
+                }
+
+                if (chargeProgress >= ChargeTime + HoldTime && !VaultUtils.isClient) {
                     return new LaserAimState();
                 }
             }
@@ -189,34 +196,23 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             ctx.ChargeGlow = 0f;
         }
 
-        private void FireChargedLaser(PrimeArmStateContext ctx) {
+        /// <summary>蓄力的回报是一道贯穿热射线，而非普攻弹幕</summary>
+        private static void FireHeatRay(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
-            int type = ModContent.ProjectileType<DeadLaser>();
-            int damage = ScaleDamage(npc.defDamage / 2);
+            int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser) * 1.1f));
+            float aimAngle = ctx.AimDirection.ToRotation();
 
-            float laserSpeed = ctx.Death ? 12f : 15f;
-            Vector2 laserVelocity = ctx.AimDirection * laserSpeed;
-            Vector2 spawnPos = npc.Center + ctx.AimDirection * 100f;
-
-            //主炮
-            Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, laserVelocity, type, damage, 0f, Main.myPlayer, 1f, 0f);
-
-            //扇形散射全难度可见，难度只影响散射对数
-            int spreadPairs = (ctx.MasterMode || ctx.Death) ? 2 : 1;
-            for (int i = -spreadPairs; i <= spreadPairs; i++) {
-                if (i == 0) {
-                    continue;
-                }
-                Vector2 spreadVel = laserVelocity.RotatedBy(i * 0.12f) * 0.8f;
-                Projectile.NewProjectile(npc.GetSource_FromAI(), spawnPos, spreadVel, type, damage, 0f, Main.myPlayer, 1f, 0f);
-            }
+            Projectile.NewProjectile(npc.GetSource_FromAI(),
+                npc.Center + ctx.AimDirection * PrimeArmHeatRayProj.MuzzleOffset, Vector2.Zero,
+                ModContent.ProjectileType<PrimeArmHeatRayProj>(), damage, 0f, Main.myPlayer,
+                npc.whoAmI, aimAngle, 0f);
 
             HeadPrimeAI.SpanFireLerterDustEffect(npc, 33);
 
             for (int i = 0; i < 50; i++) {
                 Vector2 particleVel = Main.rand.NextVector2Circular(10f, 10f);
                 Dust dust = Dust.NewDustDirect(npc.Center, 1, 1, DustID.FireworkFountain_Red,
-                    particleVel.X, particleVel.Y, 100, Color.Cyan, Main.rand.NextFloat(1.5f, 2.5f));
+                    particleVel.X, particleVel.Y, 100, Color.OrangeRed, Main.rand.NextFloat(1.5f, 2.5f));
                 dust.noGravity = true;
                 dust.fadeIn = 1.5f;
             }
@@ -330,12 +326,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>短光束横扫：90 帧预警线 → 扫射</summary>
+    /// <summary>
+    /// 热射线横扫：90 帧扇形预警（炮口同步压向起始角蓄势）→
+    /// 热射线光束沿预警扇形匀速扫过，炮体跟随光束转动并持续后坐
+    /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserSweep, typeof(PrimeArmStateContext))]
     internal class LaserSweepState : PrimeArmStateBase
     {
         public override string StateName => "LaserSweep";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserSweep;
+
+        internal static float SweepHalfArc => 0.42f;
 
         private float sweepStart;
         private bool fired;
@@ -345,36 +346,59 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             sweepStart = (ctx.Target.Center - ctx.Npc.Center).ToRotation();
             fired = false;
             if (!VaultUtils.isClient) {
-                PrimeTelegraphLine.SpawnFan(ctx.Npc, ctx.Npc.Center, sweepStart, 0.42f, PrimeDirector.BeamTelegraphFrames);
+                PrimeTelegraphLine.SpawnFan(ctx.Npc, ctx.Npc.Center, sweepStart, SweepHalfArc, PrimeDirector.BeamTelegraphFrames);
             }
         }
 
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             LaserAimState.Follow(ctx);
-            ctx.ChargeGlow = MathHelper.Clamp(Timer / (float)PrimeDirector.BeamTelegraphFrames, 0f, 1f);
+
+            if (Timer < PrimeDirector.BeamTelegraphFrames) {
+                ctx.ChargeGlow = Timer / (float)PrimeDirector.BeamTelegraphFrames;
+                //预警期炮口缓缓压到扫射起始角，蓄势姿态与扇形预告对齐
+                ServoRotate(ctx.Npc, sweepStart - SweepHalfArc - MathHelper.PiOver2, 0.06f);
+            }
+            else {
+                //扫射期：炮体跟随光束当前角度转动（确定性公式，两端一致）
+                float sweepSpeed = SweepHalfArc * 2f / PrimeArmHeatRayProj.SweepSustain;
+                float sweepT = MathHelper.Clamp(Timer - PrimeDirector.BeamTelegraphFrames - 10,
+                    0, PrimeArmHeatRayProj.SweepSustain);
+                float beamAngle = sweepStart - SweepHalfArc + sweepSpeed * sweepT;
+                ServoRotate(ctx.Npc, beamAngle - MathHelper.PiOver2, 0.1f);
+                ctx.AimDirection = beamAngle.ToRotationVector2();
+                ctx.ChargeGlow = MathHelper.Clamp(1.4f - (Timer - PrimeDirector.BeamTelegraphFrames) / 60f, 0f, 1f);
+            }
 
             if (Timer >= PrimeDirector.BeamTelegraphFrames && !fired && !VaultUtils.isClient && !ctx.DontAttack) {
                 fired = true;
-                FireSweep(ctx);
+                FireSweepBeam(ctx);
                 ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
             }
 
             Timer++;
-            if (Timer >= PrimeDirector.BeamTelegraphFrames + 30 && !VaultUtils.isClient) {
+            if (Timer >= PrimeDirector.BeamTelegraphFrames + 100 && !VaultUtils.isClient) {
                 return new LaserAimState();
             }
             return null;
         }
 
-        private void FireSweep(PrimeArmStateContext ctx) {
-            int type = ModContent.ProjectileType<DeadLaser>();
-            int damage = ScaleDamage(CWRRef.GetProjectileDamage(ctx.Npc, type));
-            for (int i = -3; i <= 3; i++) {
-                Vector2 vel = (sweepStart + MathHelper.ToRadians(8f) * i).ToRotationVector2() * 7f;
-                Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), ctx.Npc.Center + vel * 60f, vel,
-                    type, damage, 0f, Main.myPlayer, 1f, 0f);
-            }
-            HeadPrimeAI.SpanFireLerterDustEffect(ctx.Npc, 20);
+        public override void OnExit(PrimeArmStateContext ctx) {
+            ctx.ChargeGlow = 0f;
+        }
+
+        /// <summary>预警的兑现是一道沿扇形扫过的热射线，而非普攻弹幕</summary>
+        private void FireSweepBeam(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser) * 1.05f));
+            float startAngle = sweepStart - SweepHalfArc;
+            float sweepSpeed = SweepHalfArc * 2f / PrimeArmHeatRayProj.SweepSustain;
+
+            Projectile.NewProjectile(npc.GetSource_FromAI(),
+                npc.Center + startAngle.ToRotationVector2() * PrimeArmHeatRayProj.MuzzleOffset, Vector2.Zero,
+                ModContent.ProjectileType<PrimeArmHeatRayProj>(), damage, 0f, Main.myPlayer,
+                npc.whoAmI, startAngle, sweepSpeed);
+
+            HeadPrimeAI.SpanFireLerterDustEffect(npc, 20);
         }
     }
 

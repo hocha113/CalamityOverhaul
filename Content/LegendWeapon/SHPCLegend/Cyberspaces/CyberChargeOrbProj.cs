@@ -597,15 +597,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Color.Lerp(ChargeAura, FullAura, chargeRatio), ODAura, od);
 
             float pulse = 0.92f + 0.08f * MathF.Sin((float)Main.timeForVisualEffects * 0.12f + chargeRatio * 5f);
-            //超驱时脉冲剧烈抽搐
-            pulse += od * 0.25f * MathF.Sin((float)Main.timeForVisualEffects * 0.45f);
-            pulse += od * glitchBurstIntensity * 0.2f * MathF.Sin((float)Main.timeForVisualEffects * 1.2f);
+            //超驱时脉冲抽搐（幅度收敛，避免高频晃眼）
+            pulse += od * 0.18f * MathF.Sin((float)Main.timeForVisualEffects * 0.45f);
+            pulse += od * glitchBurstIntensity * 0.15f * MathF.Sin((float)Main.timeForVisualEffects * 1.2f);
             float alpha = fadeAlpha * pulse;
             Vector2 glowOrigin = glow.Size() * 0.5f;
 
-            //外层柔和bloom（超驱时巨大炽热光晕）
-            float outerScale = (orbDiameterPx / glow.Width) * (2.5f + od * 2.5f);
-            Color outerColor = currentAura * alpha * (0.2f + od * 0.4f);
+            //外层柔和bloom：尺寸与亮度收敛，灼热感交给色相而非光团体积
+            float outerScale = (orbDiameterPx / glow.Width) * (2.2f + od * 1.6f);
+            Color outerColor = currentAura * alpha * (0.18f + od * 0.30f);
             spriteBatch.Draw(glow, drawPos, null, outerColor, 0f,
                 glowOrigin, outerScale, SpriteEffects.None, 0f);
 

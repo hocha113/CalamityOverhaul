@@ -246,7 +246,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = aimedDir * AimedSpeed;
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.35f, Volume = 1.1f }, player.Center);
+                //ForceRoar：避免被开幕咆哮的余音按IgnoreNew上限吞掉
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1.1f }, player.Center);
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
                 }

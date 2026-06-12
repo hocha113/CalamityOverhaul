@@ -1,7 +1,9 @@
 // ============================================================================
-// CyberBoundaryRing.fx — 赛博空间领域常驻边界环
-// 从CyberShockwave特化而来，仅保留外环+外侧碎片拖尾
-// 去除内侧压缩波余波，避免与CyberspaceField全屏着色器叠加冲突
+// CyberBoundaryRing.fx — 赛博空间领域常驻边界环（单环版）
+// 任意时刻只渲染一圈有效边界：火纹主环 + 外侧火舌，全部装饰只向外发散
+// 层级样式由 layerTier (1~3 连续) 驱动：
+//   T1 细沉稳深绯红环 / T2 +外侧热浪光弦、色温升高 / T3 +旋转分段弧线、炽热琥珀亮边
+// 内侧硬切保证领域内部视野纯净，升降层形变期间样式随 layerTier 连续渐变
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,6 +13,7 @@ float uTime;
 float ringProgress;     //环在归一化空间中的位置
 float ringThickness;    //环厚度（归一化）
 float fadeAlpha;        //整体淡出 0~1
+float layerTier;        //视觉层级 1~3（连续插值）
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -19,47 +22,66 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318;
 
-    // ---- 噪声扰动环边缘 ----
-    float n1 = tex2D(noiseTex, float2(normAngle * 4.0 + uTime * 3.0, ringProgress * 2.0)).r;
-    float n2 = tex2D(noiseTex, float2(normAngle * 7.0 - uTime * 2.0, ringProgress + 0.5)).g;
-    float noiseDisp = (n1 * 0.6 + n2 * 0.4 - 0.5) * 0.07;
+    float tier = clamp(layerTier, 1.0, 3.0);
+    float t2 = saturate(tier - 1.0);    //T2 装饰成分
+    float t3 = saturate(tier - 2.0);    //T3 装饰成分
+
+    // ---- 火纹噪声：扰动环边缘，活跃度随层级提升 ----
+    float noiseSpeed = 1.2 + tier * 0.6;
+    float n1 = tex2D(noiseTex, float2(normAngle * 4.0 + uTime * noiseSpeed * 0.45, 0.15 + uTime * 0.02)).r;
+    float n2 = tex2D(noiseTex, float2(normAngle * 7.0 - uTime * noiseSpeed * 0.30, 0.55)).g;
+    float noiseDisp = (n1 * 0.6 + n2 * 0.4 - 0.5) * (0.040 + 0.018 * t2 + 0.014 * t3);
 
     float adjDist = dist + noiseDisp;
+    float signedOut = adjDist - ringProgress;   //>0 在环外侧
 
-    // ---- 主环形遮罩（纯外环，无内侧增亮）----
-    float ringDist = abs(adjDist - ringProgress);
-    float ringMask = 1.0 - smoothstep(0.0, ringThickness, ringDist);
-
-    // ---- 外侧数字碎片拖尾 ----
-    float trailing = smoothstep(ringProgress + ringThickness * 2.0, ringProgress, adjDist);
-    trailing *= trailing;
-    float trailNoise = tex2D(noiseTex, float2(normAngle * 16.0 + uTime * 1.5, dist * 3.0)).r;
-    trailing *= step(0.42, trailNoise) * 0.5;
-
-    // ---- 内侧硬切：完全丢弃环内像素 ----
-    float innerCut = smoothstep(ringProgress - ringThickness * 0.3, ringProgress, adjDist);
+    // ---- 主环遮罩 ----
+    float ringMask = 1.0 - smoothstep(0.0, ringThickness, abs(signedOut));
+    //内侧硬切：环内侧快速消失，领域内部不留任何残光
+    float innerCut = smoothstep(-ringThickness * 0.30, 0.0, signedOut);
     ringMask *= innerCut;
 
-    // ---- 颜色 ----
-    float3 coreRed   = float3(0.85, 0.08, 0.06);
-    float3 hotEdge   = float3(1.0, 0.50, 0.30);
-    float3 darkTrail = float3(0.45, 0.025, 0.035);
+    // ---- 层级色板：层级越高色温越热 ----
+    float3 coreRed = lerp(float3(0.78, 0.10, 0.07), float3(0.95, 0.24, 0.09), t2);
+    coreRed = lerp(coreRed, float3(1.0, 0.46, 0.15), t3);
+    float3 hotEdge = lerp(float3(1.0, 0.42, 0.22), float3(1.0, 0.68, 0.36), saturate((tier - 1.0) * 0.5));
+    float3 emberDark = float3(0.42, 0.03, 0.04);
 
-    float brightness = ringMask * 0.7;
-    float3 ringColor = lerp(coreRed, hotEdge, ringMask * 0.35) * brightness;
+    // ---- 主环着色：内缘核心红 → 外缘热边 ----
+    float edgeBlend = saturate(signedOut / max(ringThickness, 0.0001));
+    float3 ringColor = lerp(coreRed, hotEdge, edgeBlend * 0.6) * (ringMask * 0.85);
 
-    //环上微观数字纹理
-    float gridA = frac(normAngle * 48.0);
-    float gridR = frac(dist * 28.0);
-    float grid = smoothstep(0.03, 0.0, min(gridA, 1.0 - gridA));
-    grid += smoothstep(0.015, 0.0, min(gridR, 1.0 - gridR));
-    grid = saturate(grid);
-    ringColor += float3(0.22, 0.035, 0.02) * grid * ringMask * 0.25;
+    //环上微观数字刻纹（保留赛博身份，密度收敛）
+    float gridA = frac(normAngle * 36.0);
+    float gridMask = smoothstep(0.035, 0.0, min(gridA, 1.0 - gridA));
+    ringColor += float3(0.25, 0.05, 0.03) * gridMask * ringMask * 0.22;
 
-    float3 trailColor = darkTrail * trailing;
+    // ---- 外侧火舌：径向流动条纹，由环向外渐隐 ----
+    float tongueZone = saturate(signedOut / (ringThickness * 3.0));
+    float tongueFade = (1.0 - tongueZone) * (1.0 - tongueZone);
+    float tongueNoise = tex2D(noiseTex,
+        float2(normAngle * 12.0 + uTime * 0.25, adjDist * 3.0 - uTime * (0.55 + 0.35 * t2))).r;
+    float tongue = smoothstep(0.52, 0.80, tongueNoise) * tongueFade * step(0.0, signedOut);
+    float3 tongueColor = lerp(emberDark, coreRed, tongueFade) * tongue * (0.55 + 0.25 * t2);
 
-    float3 finalColor = (ringColor + trailColor) * fadeAlpha;
-    float alpha = saturate(brightness + trailing * 0.6) * fadeAlpha;
+    // ---- T2：热浪光弦（贴主环外侧的细亮线，非独立圆圈）----
+    float bandCenter = ringThickness * 1.30;
+    float bandMask = 1.0 - smoothstep(0.0, ringThickness * 0.30, abs(signedOut - bandCenter));
+    bandMask *= 0.72 + 0.28 * sin(uTime * 2.0 + normAngle * 25.1327);
+    bandMask *= t2;
+    float3 bandColor = hotEdge * bandMask * 0.40;
+
+    // ---- T3：旋转分段科技弧线 ----
+    float arcCenter = ringThickness * 2.1;
+    float arcMask = 1.0 - smoothstep(0.0, ringThickness * 0.20, abs(signedOut - arcCenter));
+    float arcPhase = frac(normAngle * 6.0 - uTime * 0.09);
+    float arcSeg = smoothstep(0.04, 0.10, arcPhase) * smoothstep(0.60, 0.52, arcPhase);
+    arcMask *= arcSeg * t3;
+    float3 arcColor = float3(1.0, 0.60, 0.28) * arcMask * 0.55;
+
+    // ---- 合成 ----
+    float3 finalColor = (ringColor + tongueColor + bandColor + arcColor) * fadeAlpha;
+    float alpha = saturate(ringMask * 0.80 + tongue * 0.35 + bandMask * 0.25 + arcMask * 0.35) * fadeAlpha;
 
     return float4(finalColor * alpha, alpha) * vertexColor;
 }

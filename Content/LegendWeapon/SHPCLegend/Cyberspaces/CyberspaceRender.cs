@@ -152,6 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["expandProgress"]?.SetValue(primary.ExpandProgress);
             shader.Parameters["dimStrength"]?.SetValue(Cyberspace.DimStrength);
             shader.Parameters["motionFade"]?.SetValue(primary.MotionFade);
+            shader.Parameters["layerTier"]?.SetValue(primary.VisualTier);
             Vector2 domainCenter = primary.DomainCenter;
             float effectiveRadius = primary.Radius * primary.ExpandProgress;
             shader.Parameters["setPoint"]?.SetValue(domainCenter);
@@ -203,7 +204,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (maxAlpha <= 0f) return;
 
             float baseMul = 1f - maxMotion * 0.50f;
-            float detailMul = 1f - maxMotion * 0.65f;
 
             Color dimColor = new Color(22, 0, 0) * (maxAlpha * Cyberspace.DimStrength * 0.55f * baseMul);
 
@@ -222,29 +222,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 float motion = MathHelper.Clamp(cp.MotionFade, 0f, 1f);
                 float perBaseMul = 1f - motion * 0.50f;
                 float perDetailMul = 1f - motion * 0.65f;
-                for (int layer = 0; layer < cp.RenderLayerCount; layer++) {
-                    float expand = cp.GetLayerExpand(layer);
-                    if (expand < 0.08f) continue;
-                    DrawLowQualityLayerGrid(spriteBatch, pixel, cp, layer, expand, alpha, perBaseMul, perDetailMul);
-                }
+                //单环设计：只画最外层有效边界对应的一张栅格，避免多层网格叠加压暗画面
+                DrawLowQualityFieldGrid(spriteBatch, pixel, cp, alpha, perBaseMul, perDetailMul);
             }
 
             spriteBatch.End();
         }
 
-        private static void DrawLowQualityLayerGrid(SpriteBatch spriteBatch, Texture2D pixel,
-            CyberspacePlayer cp, int layer, float expand, float alpha, float baseMul, float detailMul) {
+        private static void DrawLowQualityFieldGrid(SpriteBatch spriteBatch, Texture2D pixel,
+            CyberspacePlayer cp, float alpha, float baseMul, float detailMul) {
 
             Vector2 center = cp.DomainCenter;
-            float radius = Cyberspace.GetLayerRadius(layer) * expand;
+            float radius = cp.EffectiveOuterRadius;
             float gridSize = Cyberspace.GridSize;
             if (radius < gridSize * 2f) return;
 
             float time = cp.EffectTime;
-            float layerMult = 0.65f + layer * 0.18f;
+            float tier = cp.VisualTier;
+            float tierMult = 0.65f + (tier - 1f) * 0.18f;
             //网格骨架按 baseMul 中度淡化，节点闪烁属花纹按 detailMul 强淡化
-            Color lineColor = new Color(220, 35, 22) * (alpha * 0.13f * layerMult * baseMul);
-            Color nodeColor = GetLayerGlowColor(layer, alpha * 0.28f * layerMult * detailMul);
+            Color lineColor = new Color(220, 35, 22) * (alpha * 0.13f * tierMult * baseMul);
+            Color nodeColor = GetTierGlowColor(tier, alpha * 0.28f * tierMult * detailMul);
 
             int minX = (int)MathF.Floor((center.X - radius) / gridSize);
             int maxX = (int)MathF.Ceiling((center.X + radius) / gridSize);
@@ -273,7 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             for (int gx = minX; gx <= maxX; gx++) {
                 for (int gy = minY; gy <= maxY; gy++) {
-                    if ((gx + gy + layer) % 5 != 0) continue;
+                    if ((gx + gy) % 5 != 0) continue;
 
                     Vector2 world = new(gx * gridSize, gy * gridSize);
                     if (Vector2.DistanceSquared(world, center) > radius * radius) continue;
@@ -289,18 +287,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D glowTex = softGlow?.Value;
             if (glowTex == null || cp.Intensity < 0.01f) return;
 
-            //逐层绘制边缘光晕（包含收缩中的层）
-            for (int layer = 0; layer < cp.RenderLayerCount; layer++) {
-                float expand = cp.GetLayerExpand(layer);
-                if (expand < 0.1f) continue;
-                DrawSingleEdgeGlowRing(spriteBatch, glowTex, cp, layer, expand);
-            }
+            //单环设计：光晕格只环绕最外层有效边界，与边界环位置一致
+            DrawSingleEdgeGlowRing(spriteBatch, glowTex, cp, cp.EffectiveOuterRadius);
         }
 
         private static void DrawSingleEdgeGlowRing(SpriteBatch spriteBatch, Texture2D glowTex,
-            CyberspacePlayer cp, int layer, float expand) {
+            CyberspacePlayer cp, float r) {
             Vector2 center = cp.DomainCenter;
-            float r = Cyberspace.GetLayerRadius(layer) * expand;
             float gs = Cyberspace.GridSize;
             float time = cp.EffectTime;
             float effectIntensity = cp.Intensity;
@@ -308,6 +301,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             float glowMotionMul = 1f - MathHelper.Clamp(cp.MotionFade, 0f, 1f) * 0.60f;
 
             if (r < gs * 2) return;
+
+            float tier = cp.VisualTier;
+            float tierMult = 1f + (tier - 1f) * 0.25f;
 
             int numSteps = Math.Clamp((int)(MathHelper.TwoPi * r / (gs * 0.6f)), 48, 280);
             float prevSnapX = float.NaN;
@@ -344,30 +340,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                     screenY < -margin || screenY > screenH + margin) continue;
 
                 float cellHash = MathF.Abs(MathF.Sin(snapX * 0.137f + snapY * 0.251f));
-                float pulse = 0.3f + 0.7f * MathF.Sin(time * 1.8f + cellHash * MathF.PI * 2f);
+                //脉动频率较旧版略放缓，减轻边界格的高频闪烁感
+                float pulse = 0.3f + 0.7f * MathF.Sin(time * 1.5f + cellHash * MathF.PI * 2f);
                 pulse = MathF.Max(pulse, 0f);
-                //外层亮度递增
-                float layerMult = 1f + layer * 0.25f;
-                float alpha = pulse * effectIntensity * 0.4f * layerMult * glowMotionMul;
+                float alpha = pulse * effectIntensity * 0.4f * tierMult * glowMotionMul;
 
-                Color glowColor = GetLayerGlowColor(layer, alpha);
+                Color glowColor = GetTierGlowColor(tier, alpha);
 
                 spriteBatch.Draw(glowTex, new Vector2(screenX, screenY), null, glowColor,
                     0f, glowOrigin, glowScale, SpriteEffects.None, 0f);
             }
         }
 
-        private static Color GetLayerGlowColor(int layer, float alpha) {
-            return layer switch {
-                0 => new Color(0.80f * alpha, 0.05f * alpha, 0.04f * alpha, 0f),
-                1 => new Color(0.90f * alpha, 0.10f * alpha, 0.06f * alpha, 0f),
-                _ => new Color(1.0f * alpha, 0.18f * alpha, 0.08f * alpha, 0f),
-            };
+        /// <summary>
+        /// 按连续视觉层级插值的边界光晕色：层级越高色温越热
+        /// </summary>
+        private static Color GetTierGlowColor(float tier, float alpha) {
+            Vector3 t1 = new(0.80f, 0.05f, 0.04f);
+            Vector3 t2 = new(0.90f, 0.10f, 0.06f);
+            Vector3 t3 = new(1.0f, 0.18f, 0.08f);
+            Vector3 c = tier <= 2f
+                ? Vector3.Lerp(t1, t2, MathHelper.Clamp(tier - 1f, 0f, 1f))
+                : Vector3.Lerp(t2, t3, MathHelper.Clamp(tier - 2f, 0f, 1f));
+            return new Color(c.X * alpha, c.Y * alpha, c.Z * alpha, 0f);
         }
 
         /// <summary>
-        /// 在指定领域的每层边界绘制常驻边界环——使用专用 CyberBoundaryRing 着色器
-        /// <br/>逐层绘制，呼吸脉动带层间时间偏移，颜色随层数递升
+        /// 在领域最外层有效边界绘制单一常驻边界环——使用专用 CyberBoundaryRing 着色器
+        /// <br/>单环设计：任意时刻只有一圈火纹，位置取 <see cref="CyberspacePlayer.EffectiveOuterRadius"/>，
+        /// 升降层时环沿半径连续滑动（读作"领域生长/收缩"）；层级身份由 layerTier 驱动的
+        /// 厚度/色温/装饰层样式表达，不再为每一层各画一圈遮挡战斗视野
         /// </summary>
         private static void DrawBoundaryShockwaveRing(SpriteBatch spriteBatch, CyberspacePlayer cp) {
             Effect shader = EffectLoader.CyberBoundaryRing?.Value;
@@ -376,12 +378,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (CWRAsset.Extra_193?.Value == null) return;
             if (cp.Intensity < 0.02f) return;
 
+            float effectiveRadius = cp.EffectiveOuterRadius;
+            if (effectiveRadius < Cyberspace.GridSize * 4f) return;
+
             Texture2D canvas = CWRAsset.Placeholder_White.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
-            Vector2 center = cp.DomainCenter;
-            Vector2 drawPos = center - Main.screenPosition;
+            Vector2 drawPos = cp.DomainCenter - Main.screenPosition;
             //边界环属于骨架级显示，移动时中度淡化以削弱晃眼感
             float ringMotionMul = 1f - MathHelper.Clamp(cp.MotionFade, 0f, 1f) * 0.38f;
+
+            float tier = cp.VisualTier;
+            float tierFrac = (tier - 1f) / (Cyberspace.MaxLayerCount - 1f);
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive,
                 SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
@@ -389,41 +396,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Main.graphics.GraphicsDevice.Textures[1] = noise;
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
-            for (int layer = 0; layer < cp.RenderLayerCount; layer++) {
-                float expand = cp.GetLayerExpand(layer);
-                if (expand < 0.3f) continue;
+            float time = cp.EffectTime * 0.75f;
+            //四边形外侧留 45% 余量给火舌/热浪光弦/分段弧线，环本体精确落在有效边界上，
+            //与全屏着色器的领域边缘、边缘光晕格三者重合为同一道边界
+            float quadHalf = effectiveRadius * 1.45f;
+            float ringPos = effectiveRadius / quadHalf;
+            float thickness = 0.085f + tierFrac * 0.022f + 0.007f * MathF.Sin(time * 0.7f + 1.2f);
 
-                float time = cp.EffectTime * 0.75f;
-                float layerRadius = Cyberspace.GetLayerRadius(layer);
-                float effectiveRadius = layerRadius * expand;
-                float quadHalf = effectiveRadius * 1.1f;
-                float ringPos = effectiveRadius / quadHalf;
-                float thickness = 0.15f + 0.012f * MathF.Sin(time * 0.8f + 1.2f + layer * 2.1f);
+            //owner 偏移让多个玩家的领域呼吸相位错开
+            float ownerPhase = cp.Player.whoAmI * 1.37f;
+            shader.Parameters["uTime"]?.SetValue(time + ownerPhase);
+            shader.Parameters["ringProgress"]?.SetValue(ringPos);
+            shader.Parameters["ringThickness"]?.SetValue(thickness);
+            shader.Parameters["fadeAlpha"]?.SetValue(cp.Intensity * ringMotionMul);
+            shader.Parameters["layerTier"]?.SetValue(tier);
+            shader.CurrentTechnique.Passes[0].Apply();
 
-                //每层用不同的时间偏移，避免同步呼吸；附加 owner 偏移，让多个玩家的领域呼吸相位也错开
-                float ownerPhase = cp.Player.whoAmI * 1.37f;
-                shader.Parameters["uTime"]?.SetValue(time + layer * 7.3f + ownerPhase);
-                shader.Parameters["ringProgress"]?.SetValue(ringPos);
-                shader.Parameters["ringThickness"]?.SetValue(thickness);
-                shader.Parameters["fadeAlpha"]?.SetValue(cp.Intensity * ringMotionMul);
-                shader.CurrentTechnique.Passes[0].Apply();
-
-                float drawDiameter = quadHalf * 2f * 0.8f;
-                Color ringTint = GetLayerRingTint(layer);
-                spriteBatch.Draw(canvas, drawPos, null, ringTint,
-                    0f, canvas.Size() * 0.5f, new Vector2(drawDiameter, drawDiameter),
-                    SpriteEffects.None, 0f);
-            }
+            float drawDiameter = quadHalf * 2f;
+            Color ringTint = GetTierRingTint(tier);
+            spriteBatch.Draw(canvas, drawPos, null, ringTint,
+                0f, canvas.Size() * 0.5f, new Vector2(drawDiameter, drawDiameter),
+                SpriteEffects.None, 0f);
 
             spriteBatch.End();
         }
 
-        private static Color GetLayerRingTint(int layer) {
-            return layer switch {
-                0 => new Color(1f, 0.80f, 0.65f),
-                1 => new Color(1f, 0.65f, 0.50f),
-                _ => new Color(1f, 0.50f, 0.35f),
-            };
+        /// <summary>
+        /// 按连续视觉层级插值的边界环整体染色：层级越高越偏炽热
+        /// </summary>
+        private static Color GetTierRingTint(float tier) {
+            Vector3 t1 = new(1f, 0.82f, 0.68f);
+            Vector3 t2 = new(1f, 0.68f, 0.52f);
+            Vector3 t3 = new(1f, 0.54f, 0.38f);
+            Vector3 c = tier <= 2f
+                ? Vector3.Lerp(t1, t2, MathHelper.Clamp(tier - 1f, 0f, 1f))
+                : Vector3.Lerp(t2, t3, MathHelper.Clamp(tier - 2f, 0f, 1f));
+            return new Color(c.X, c.Y, c.Z);
         }
 
         /// <summary>

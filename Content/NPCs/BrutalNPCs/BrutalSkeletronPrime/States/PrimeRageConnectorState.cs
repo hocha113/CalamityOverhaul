@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>
     /// 狂暴 connector：60~90 帧换弹/排气演出，作为招式间标点。
-    /// 上半场出招表；&lt;35% 解锁 SkullCannon 入表。
+    /// SkullCannon 为二阶段固定杀招（第 3 手）；&lt;35% 后表尾追加第二发，频率随绝望升级。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.RageConnector, typeof(PrimeStateContext))]
     internal class PrimeRageConnectorState : PrimeStateBase
@@ -45,16 +45,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
         private static IPrimeState ChooseNextAttack(PrimeStateContext context) {
             bool lowHp = context.Npc.life < context.Npc.lifeMax * 0.35f;
-            int index = context.RageAttackIndex % (lowHp ? 6 : 5);
+            int index = context.RageAttackIndex % 6;
             context.RageAttackIndex++;
 
             return index switch {
                 0 => new PrimeRageDashState(),
                 1 => new PrimeIonOverloadState(),
-                2 => new PrimeGuillotineSpinState(),
-                3 => new PrimeRageDashState(),
+                2 => new PrimeSkullCannonState(),
+                3 => new PrimeGuillotineSpinState(),
                 4 => new PrimeRocketCurtainState(),
-                _ => new PrimeSkullCannonState(),
+                _ => lowHp ? new PrimeSkullCannonState() : new PrimeRageDashState(),
             };
         }
 

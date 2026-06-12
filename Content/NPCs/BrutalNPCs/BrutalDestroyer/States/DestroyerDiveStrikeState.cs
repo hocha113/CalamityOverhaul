@@ -143,7 +143,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = diveDir * DiveSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.35f, Volume = 1f }, player.Center);
+                //ForceRoar：Roar 上限1实例且 IgnoreNew，趟次间隔(~1.7s)短于采样时长(~2s)，
+                //普通 Roar 会被上一声未播完的咆哮（含远处近乎无声的进场吼）整声吞掉
+                SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1f }, player.Center);
                 //俯冲瞬间天空如闪雷亮起，电弧落点对准贯穿线中心
                 MachineEffect.TriggerSkyFlash(lineCenter, 1f);
                 if (!VaultUtils.isClient) {

@@ -27,18 +27,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private const float MaxRange = 1600f;
         private const float BeamHitWidth = 18f;
 
-        //激光专属配色：赛博紫罗兰
-        private static readonly Vector3 LaserCoreVec = new Color(220, 160, 255).ToVector3();
-        private static readonly Vector3 LaserGlowVec = new Color(140, 60, 220).ToVector3();
-        private static readonly Vector3 LaserAuraVec = new Color(60, 20, 120).ToVector3();
+        //激光专属配色：与主光束等离子家族的"幻紫"主题精确对齐
+        private static readonly Vector3 LaserCoreVec = new Color(190, 150, 255).ToVector3();
+        private static readonly Vector3 LaserGlowVec = new Color(125, 65, 235).ToVector3();
+        private static readonly Vector3 LaserAuraVec = new Color(55, 20, 115).ToVector3();
 
         //超驱配色（与 CyberTraceBeamProj 保持一致，高温红炽）
         private static readonly Vector3 OdCoreVec = new Color(255, 255, 220).ToVector3();
         private static readonly Vector3 OdGlowVec = new Color(255, 40, 15).ToVector3();
         private static readonly Vector3 OdAuraVec = new Color(200, 10, 0).ToVector3();
 
-        private static readonly Color LaserParticleMain = new Color(200, 140, 255);
-        private static readonly Color LaserParticleEdge = new Color(120, 40, 220);
+        private static readonly Color LaserParticleMain = new Color(170, 130, 255);
+        private static readonly Color LaserParticleEdge = new Color(110, 55, 205);
         private static readonly Color OdParticleMain = new Color(255, 200, 50);
         private static readonly Color OdParticleEdge = new Color(255, 30, 5);
 
@@ -132,11 +132,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (overdriveAmount < 0.005f) overdriveAmount = 0f;
 
             //每帧重置颜色主题，允许 OnLaserAI 钩子按需覆写
-            ThemeCore = new Color(220, 160, 255);
-            ThemeGlow = new Color(140, 60, 220);
-            ThemeAura = new Color(60, 20, 120);
-            ThemeParticleMain = new Color(200, 140, 255);
-            ThemeParticleEdge = new Color(120, 40, 220);
+            ThemeCore = new Color(190, 150, 255);
+            ThemeGlow = new Color(125, 65, 235);
+            ThemeAura = new Color(55, 20, 115);
+            ThemeParticleMain = new Color(170, 130, 255);
+            ThemeParticleEdge = new Color(110, 55, 205);
 
             //动态光照
             float intensity = fadeAlpha * (0.7f + overdriveAmount * 0.6f);

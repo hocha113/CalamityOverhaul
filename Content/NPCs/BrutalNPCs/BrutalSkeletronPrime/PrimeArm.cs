@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
 using InnoVault.StateMachines;
 using Terraria;
 using Terraria.ID;
@@ -12,6 +13,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     /// </summary>
     internal abstract class PrimeArm : CWRNPCOverride
     {
+        /// <summary>十字绞杀封位锚点（头部正式进入绞杀状态的瞬间冻结，与预警线对齐）</summary>
+        private Vector2 crossAnchor;
+        private bool crossAnchorLatched;
         internal bool bossRush;
         internal bool masterMode;
         internal bool death;
@@ -188,14 +192,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool HandleFormationOverride(PrimeStateIndex headState) {
             PrimeCommandKind command = HeadPrimeAI.GetActiveCommand(head);
 
+            bool crossActive = headState == PrimeStateIndex.CrossExecute || command == PrimeCommandKind.CrossExecute;
+            if (!crossActive) {
+                crossAnchorLatched = false;
+            }
+
             if (headState == PrimeStateIndex.TetherSpin) {
                 return ApplyTetherFormation();
             }
             if (headState == PrimeStateIndex.BarrageCommand) {
                 return ApplyBarrageFormation();
             }
-            if (headState == PrimeStateIndex.CrossExecute || command == PrimeCommandKind.CrossExecute) {
-                return ApplyCrossFormation();
+            if (crossActive) {
+                return ApplyCrossFormation(headState);
             }
 
             bool spin = headState is PrimeStateIndex.SpinDash or PrimeStateIndex.RageDash or PrimeStateIndex.DayEnrage;
@@ -245,18 +254,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        private bool ApplyCrossFormation() {
+        /// <summary>
+        /// 十字绞杀封位：指令预热期跟踪玩家收拢；头部正式进入绞杀状态的瞬间冻结锚点
+        /// （与预警线/热射线对齐），此后各臂钉死在封位上沿射线向心瞄准
+        /// </summary>
+        private bool ApplyCrossFormation(PrimeStateIndex headState) {
             npc.dontTakeDamage = true;
             npc.damage = 0;
-            Vector2 offset = FormationIndex switch {
-                0 => new Vector2(-320f, 0f),
-                1 => new Vector2(320f, 0f),
-                2 => new Vector2(0f, -280f),
-                _ => new Vector2(0f, 280f),
-            };
-            Vector2 toPoint = player.Center + offset;
-            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.14f);
-            npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+
+            if (headState == PrimeStateIndex.CrossExecute) {
+                if (!crossAnchorLatched) {
+                    crossAnchor = player.Center;
+                    crossAnchorLatched = true;
+                }
+            }
+            else {
+                crossAnchorLatched = false;
+            }
+
+            Vector2 center = crossAnchorLatched ? crossAnchor : player.Center;
+            Vector2 toPoint = center + PrimeCrossExecuteState.ArmSlots[FormationIndex];
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, crossAnchorLatched ? 0.2f : 0.14f);
+            npc.rotation = (center - npc.Center).ToRotation() - MathHelper.PiOver2;
             return true;
         }
 

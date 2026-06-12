@@ -111,6 +111,8 @@ DeadLaser.DisplayName: Death Laser
 PrimeTelegraphLine.DisplayName: Prime Telegraph
 PrimeArcChainProj.DisplayName: Ion Tether
 PrimeSkullBeamProj.DisplayName: Skull Cannon Beam
+PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
+PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
 Hit.DisplayName: Impact
 SpwanTextProj.DisplayName: Manifesting Text
 DragonsWordCut.DisplayName: Dragon's Word Slash

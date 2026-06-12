@@ -110,7 +110,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float core = 1.0 - smoothstep(0.0, coreWidth, rCrossDist);
     //幂次提高一点，让核心边缘更柔和，避免硬白色块
     core = pow(saturate(core), 1.35);
-    float corePulse = 0.85 + 0.15 * sin(uTime * 18.0 + rAlong * 40.0);
+    //核心脉动放缓减幅：光束主体亮度更稳，减少高频抖闪
+    float corePulse = 0.90 + 0.10 * sin(uTime * 12.0 + rAlong * 30.0);
     //超驱时脉冲幅度降低（0.5→0.2），避免亮度暴走
     corePulse += od * 0.2 * sin(uTime * 50.0 + rAlong * 80.0);
     core *= corePulse;
@@ -132,38 +133,38 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     outerFade *= (1.0 + od * 0.4);             //1.5→0.4，外层不再翻倍叠加
 
     // ============================================================
-    // D. 纵向能量流纹 —— 沿光束方向的流动条纹（超驱加成降低）
+    // D. 纵向能量流纹 —— 沿光束方向的流动条纹（更连贯更柔）
     // ============================================================
-    float streamSpeed = 4.0 + od * 10.0;
+    float streamSpeed = 3.2 + od * 10.0;
     float streamUV1 = frac(rAlong * 10.0 - uTime * streamSpeed);
     float stream1 = smoothstep(0.0, 0.06, streamUV1) * smoothstep(0.22, 0.10, streamUV1);
     float streamUV2 = frac(rAlong * 16.0 - uTime * (streamSpeed + 2.5) + 0.33);
     float stream2 = smoothstep(0.0, 0.04, streamUV2) * smoothstep(0.15, 0.07, streamUV2);
-    float streams = (stream1 + stream2 * 0.6) * (1.0 - rCrossDist * 0.7) * 0.35;
+    float streams = (stream1 + stream2 * 0.6) * (1.0 - rCrossDist * 0.7) * 0.28;
     streams *= lerp(1.0, 0.2, distFromHead);
     streams *= (1.0 + od * 0.5);               //1.5→0.5，流纹强度温和增长
 
     // ============================================================
-    // E. 微弱数字网格 —— 赛博科幻质感
+    // E. 微弱数字网格 —— 赛博科幻质感（闪烁降密）
     // ============================================================
     float gridX = frac(rAlong * 30.0);
     float gridY = frac(rCross * 6.0);
     float gridLine = step(gridX, 0.04) + step(gridY, 0.06);
     gridLine = saturate(gridLine);
     float cellID = floor(rAlong * 30.0) + floor(rCross * 6.0) * 37.0;
-    float cellFlicker = hash21(float2(cellID, floor(uTime * 5.0)));
+    float cellFlicker = hash21(float2(cellID, floor(uTime * 4.0)));
     // 超驱时网格更多闪烁
-    float gridThreshold = 0.75 - od * 0.3;
-    gridLine *= step(gridThreshold, cellFlicker) * (0.15 + od * 0.4);
+    float gridThreshold = 0.80 - od * 0.3;
+    gridLine *= step(gridThreshold, cellFlicker) * (0.10 + od * 0.35);
     gridLine *= (1.0 - rCrossDist * 0.6);
     gridLine *= lerp(0.8, 0.1, distFromHead);
 
     // ============================================================
-    // F. 头部光球 —— 圆形高亮辐射
+    // F. 头部光球 —— 圆形高亮辐射（脉动放缓）
     // ============================================================
     float headOrb = 1.0 - smoothstep(0.0, 0.05, rAlong);
     headOrb *= (1.0 - rCrossDist * 0.6);
-    float orbPulse = 0.8 + 0.2 * sin(uTime * 12.0);
+    float orbPulse = 0.85 + 0.15 * sin(uTime * 9.0);
     headOrb *= orbPulse;
     float headGlow = 1.0 - smoothstep(0.02, 0.12, rAlong);
     headGlow *= (1.0 - rCrossDist * 0.8) * 0.4;
@@ -175,9 +176,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float edgeMask = 1.0 - smoothstep(0.45 - edgeNoise, 0.92, rCrossDist);
 
     // ============================================================
-    // H. 尾端渐隐 —— 拖尾末端平滑消失
+    // H. 尾端渐隐 —— 拖尾末端平滑消失（提前起始，尾部收得更干净）
     // ============================================================
-    float tailFade = 1.0 - smoothstep(0.7, 1.0, rAlong);
+    float tailFade = 1.0 - smoothstep(0.62, 1.0, rAlong);
 
     // ============================================================
     // 颜色合成 —— 优化亮度：减少纯白叠加，让主题色辨识度更高

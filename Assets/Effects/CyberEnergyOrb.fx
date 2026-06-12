@@ -123,24 +123,23 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     }
     
     // ============================================================
-    // C. 菲涅尔边缘辉光 —— 边缘高亮环（超驱加成大幅降低）
+    // C. 菲涅尔边缘辉光 —— 边缘高亮环（更干净的细环）
     // ============================================================
     float fresnelInner = 1.0 - smoothstep(0.15, 0.30, dist);
     float fresnelRing = smoothstep(0.20, 0.28, dist) * (1.0 - smoothstep(0.28, 0.35, dist));
-    //3.0→1.0：菲涅尔环不再翻三倍，避免边缘也跟着过曝
-    float3 fresnelColor = effGlow * fresnelRing * (1.5 + od * 1.0);
+    float3 fresnelColor = effGlow * fresnelRing * (1.25 + od * 0.8);
     
     // ============================================================
-    // D. 数字脉冲纹 —— 赛博科幻质感
+    // D. 数字脉冲纹 —— 赛博科幻质感（放缓减幅）
     // ============================================================
-    float pulseSpeed = 6.0 + od * 12.0;
-    float ringPulse = sin(dist * 40.0 - uTime * pulseSpeed) * 0.5 + 0.5;
+    float pulseSpeed = 5.0 + od * 10.0;
+    float ringPulse = sin(dist * 32.0 - uTime * pulseSpeed) * 0.5 + 0.5;
     ringPulse = pow(ringPulse, 8.0);
-    ringPulse *= smoothstep(0.32, 0.10, dist) * (0.15 + od * 0.3);
+    ringPulse *= smoothstep(0.32, 0.10, dist) * (0.11 + od * 0.25);
     
-    float rayAngle = frac(angle * 2.546 + uTime * (0.5 + od * 0.6));
+    float rayAngle = frac(angle * 2.546 + uTime * (0.35 + od * 0.5));
     float rays = pow(abs(sin(rayAngle * 3.14159 * 6.0)), 20.0);
-    rays *= smoothstep(0.30, 0.15, dist) * (0.1 + od * 0.25);
+    rays *= smoothstep(0.30, 0.15, dist) * (0.07 + od * 0.2);
     
     // ============================================================
     // E. 表面明暗变化 —— 伪3D球体光照
