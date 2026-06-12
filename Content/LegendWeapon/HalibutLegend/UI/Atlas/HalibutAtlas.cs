@@ -114,9 +114,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 图鉴内容区（页眉之下的全部区域）
+        /// 图鉴内容区（页眉之下的全部区域），基于UI空间屏幕尺寸
         /// </summary>
-        private static Rectangle ContentArea => new(0, 64, Main.screenWidth, Main.screenHeight - 64);
+        private static Rectangle ContentArea => new(0, 64,
+            (int)HalibutTheme.UIScreenW, (int)HalibutTheme.UIScreenH - 64);
 
         public override void Update() {
             float a = OpenProgress;
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             int navY = 76;
             navSeaRect = new Rectangle(18, navY, 118, 30);
             navEyesRect = new Rectangle(18, navY + 38, 118, 30);
-            closeRect = new Rectangle(Main.screenWidth - 46, 14, 32, 32);
+            closeRect = new Rectangle((int)HalibutTheme.UIScreenW - 46, 14, 32, 32);
             for (int t = 0; t < HalibutTheme.AtlasTierCount; t++) {
                 tierChipRects[t] = new Rectangle(18, navY + 100 + t * 32, 118, 26);
             }
@@ -205,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             float depth = view == AtlasView.Sea ? Sea.Depth : 0.86f;
             float scrollPx = view == AtlasView.Sea ? Sea.ScrollPx : 0f;
             HalibutRenderer.DrawAtlasBackground(sb,
-                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), a * 0.97f,
+                new Rectangle(0, 0, (int)HalibutTheme.UIScreenW, (int)HalibutTheme.UIScreenH), a * 0.97f,
                 depth, agitation, scrollPx);
 
             Rectangle content = ContentArea;
@@ -231,14 +232,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private void DrawHeader(SpriteBatch sb, HalibutSave save, HalibutPlayer hp, float a, float time) {
             float slide = CWRUtils.EaseOutCubic(headerSlide);
             float y = MathHelper.Lerp(-40f, 16f, slide);
-            //标题
-            HalibutRenderer.DrawGlowText(sb, TitleText.Value, new Vector2(24f, y),
+            //标题（左侧菱标 + 呼吸光点）
+            float breath = HalibutTheme.Breath(time, 2.3f, 1.8f);
+            HalibutRenderer.DrawDiamond(sb, new Vector2(16f, y + 13f), 4.6f,
+                HalibutTheme.Glow * ((0.5f + breath * 0.3f) * a));
+            HalibutRenderer.DrawDiamond(sb, new Vector2(16f, y + 13f), 2.4f,
+                HalibutTheme.Caustic * ((0.7f + breath * 0.3f) * a));
+            HalibutRenderer.DrawGlowText(sb, TitleText.Value, new Vector2(28f, y),
                 HalibutTheme.Text * a, HalibutTheme.Glow * (0.45f * a), 1.12f, 1.6f);
-            //页眉分割线
+            //页眉分割线：起点菱饰 + 渐隐主线 + 近端次级hairline
             Vector2 lineL = new(16f, y + 40f);
-            Vector2 lineR = new(Main.screenWidth - 16f, y + 40f);
-            HalibutRenderer.DrawGradientLine(sb, lineL, lineR,
+            Vector2 lineR = new(HalibutTheme.UIScreenW - 16f, y + 40f);
+            HalibutRenderer.DrawDiamond(sb, lineL + new Vector2(1f, 0f), 3f, HalibutTheme.Caustic * (0.8f * a));
+            HalibutRenderer.DrawGradientLine(sb, lineL + new Vector2(6f, 0f), lineR,
                 HalibutTheme.Glow * (0.55f * a), HalibutTheme.Glow * (0.04f * a), 1.3f);
+            HalibutRenderer.DrawGradientLine(sb, lineL + new Vector2(6f, 3f), lineL + new Vector2(220f, 3f),
+                HalibutTheme.Glow * (0.28f * a), HalibutTheme.Glow * (0.01f * a), 1f);
 
             //右侧状态：解锁计数 / 领域层数 / 复苏
             int unlockedCount = save.unlocked.Count;
@@ -251,13 +260,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             var font = Terraria.GameContent.FontAssets.MouseText.Value;
             float w = font.MeasureString(state).X * 0.8f;
             Color stateCol = agitationColor(hp);
-            HalibutRenderer.DrawGlowText(sb, state, new Vector2(Main.screenWidth - w - 64f, y + 8f),
+            HalibutRenderer.DrawGlowText(sb, state, new Vector2(HalibutTheme.UIScreenW - w - 64f, y + 8f),
                 stateCol * a, HalibutTheme.Deep * (0.5f * a), 0.8f);
 
             //操作提示（海域视图）
             if (view == AtlasView.Sea) {
                 HalibutRenderer.DrawGlowTextCentered(sb, DragHint.Value,
-                    new Vector2(Main.screenWidth * 0.5f, y + 30f),
+                    new Vector2(HalibutTheme.UIScreenW * 0.5f, y + 56f),
                     HalibutTheme.TextDim * (0.75f * a), HalibutTheme.Deep * (0.4f * a), 0.7f);
             }
         }
@@ -275,42 +284,93 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
         private void DrawNav(SpriteBatch sb, float a) {
             Vector2 mouse = MousePosition;
-            DrawNavButton(sb, navSeaRect, NavSea.Value, view == AtlasView.Sea,
-                navSeaRect.Contains(mouse.ToPoint()), a);
-            DrawNavButton(sb, navEyesRect, NavEyes.Value, view == AtlasView.Eyes,
-                navEyesRect.Contains(mouse.ToPoint()), a);
+            float time = Main.GlobalTimeWrappedHourly;
+            DrawNavTab(sb, navSeaRect, NavSea.Value, view == AtlasView.Sea,
+                navSeaRect.Contains(mouse.ToPoint()), a, time);
+            DrawNavTab(sb, navEyesRect, NavEyes.Value, view == AtlasView.Eyes,
+                navEyesRect.Contains(mouse.ToPoint()), a, time);
 
             if (view == AtlasView.Sea) {
+                //深度带导航：标尺刻度样式（菱标 + 文本 + 延伸线），去盒子化
                 for (int t = 0; t < HalibutTheme.AtlasTierCount; t++) {
                     Rectangle rect = tierChipRects[t];
                     bool hovered = rect.Contains(mouse.ToPoint());
                     Color tierCol = HalibutTheme.TierColor(t);
                     float litT = MathHelper.Clamp(1f - MathF.Abs(Sea.Depth * (HalibutTheme.AtlasTierCount - 1) - t), 0f, 1f);
-                    Texture2D px = HalibutRenderer.Pixel;
-                    sb.Draw(px, rect, new Rectangle(0, 0, 1, 1),
-                        Color.Lerp(HalibutTheme.Deep, HalibutTheme.Mid, litT * 0.6f + (hovered ? 0.3f : 0f)) * (0.82f * a));
-                    HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.X, rect.Bottom),
-                        2f, tierCol * ((0.5f + litT * 0.5f) * a));
-                    HalibutRenderer.DrawGlowText(sb, TierName(t), new Vector2(rect.X + 9f, rect.Y + 3f),
-                        Color.Lerp(HalibutTheme.TextDim, tierCol, 0.4f + litT * 0.6f) * a,
-                        tierCol * (0.25f * a), 0.68f);
+                    float hi = MathF.Max(litT, hovered ? 0.7f : 0f);
+
+                    Vector2 mark = new(rect.X + 7f, rect.Center.Y);
+                    //垂直连线（刻度之间的标尺干线）
+                    if (t < HalibutTheme.AtlasTierCount - 1) {
+                        HalibutRenderer.DrawLine(sb, mark + new Vector2(0f, 6f),
+                            new Vector2(mark.X, tierChipRects[t + 1].Center.Y - 6f),
+                            1f, HalibutTheme.Teal * (0.4f * a));
+                    }
+                    //菱形刻度标
+                    HalibutRenderer.DrawDiamond(sb, mark, 5.6f, tierCol * (0.3f * a));
+                    HalibutRenderer.DrawDiamond(sb, mark, 3.2f + hi * 1.4f,
+                        Color.Lerp(tierCol * 0.65f, HalibutTheme.Caustic, hi * 0.5f) * ((0.55f + hi * 0.45f) * a));
+                    //当前深度的呼吸光环
+                    if (litT > 0.4f) {
+                        float breath = HalibutTheme.Breath(time, t, 2.6f);
+                        HalibutRenderer.DrawRing(sb, mark, 7f + breath * 2f, 1f,
+                            tierCol * (litT * (0.35f + breath * 0.2f) * a));
+                    }
+                    //文本与底部延伸线
+                    HalibutRenderer.DrawGlowText(sb, TierName(t), new Vector2(rect.X + 18f, rect.Y + 3f),
+                        Color.Lerp(HalibutTheme.TextDim, tierCol, 0.35f + hi * 0.65f) * a,
+                        tierCol * ((0.15f + hi * 0.2f) * a), 0.68f);
+                    if (hi > 0.05f) {
+                        HalibutRenderer.DrawGradientLine(sb, new Vector2(rect.X + 18f, rect.Bottom - 3f),
+                            new Vector2(rect.X + 18f + 86f * hi, rect.Bottom - 3f),
+                            tierCol * (hi * 0.8f * a), tierCol * (0.02f * a), 1f);
+                    }
                 }
             }
         }
 
-        private static void DrawNavButton(SpriteBatch sb, Rectangle rect, string text,
-            bool selected, bool hovered, float a) {
-            Texture2D px = HalibutRenderer.Pixel;
-            float hi = selected ? 1f : hovered ? 0.55f : 0f;
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1),
-                Color.Lerp(HalibutTheme.Deep, HalibutTheme.Mid, hi) * (0.88f * a));
+        /// <summary>
+        /// 导航页签：左侧菱标竖纹 + 文本 + 底部进度线，激活时端点游光
+        /// </summary>
+        private static void DrawNavTab(SpriteBatch sb, Rectangle rect, string text,
+            bool selected, bool hovered, float a, float time) {
+            float hi = selected ? 1f : hovered ? 0.5f : 0f;
             Color edge = Color.Lerp(HalibutTheme.Teal, HalibutTheme.GlowHi, hi);
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), 1.1f, edge * (0.8f * a));
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), 1.1f, edge * (0.55f * a));
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.X, rect.Bottom), 2f, edge * a);
-            HalibutRenderer.DrawGlowText(sb, text, new Vector2(rect.X + 12f, rect.Y + 4f),
+
+            //左缘标识：双竖线 + 菱形顶饰
+            Vector2 barTop = new(rect.X + 4f, rect.Y + 3f);
+            Vector2 barBot = new(rect.X + 4f, rect.Bottom - 3f);
+            HalibutRenderer.DrawLine(sb, barTop, barBot, 2f, edge * ((0.55f + hi * 0.45f) * a));
+            HalibutRenderer.DrawLine(sb, barTop + new Vector2(3.4f, 2f), barBot + new Vector2(3.4f, -2f),
+                1f, edge * ((0.25f + hi * 0.3f) * a));
+            HalibutRenderer.DrawDiamond(sb, new Vector2(rect.X + 4f, rect.Y + 1f), 2.6f,
+                HalibutTheme.Caustic * ((0.4f + hi * 0.6f) * a));
+
+            //横向渐隐底衬（用粗渐变线代替矩形填充，避免盒子感）
+            Vector2 bandL = new(rect.X + 9f, rect.Center.Y);
+            Vector2 bandR = new(rect.Right, rect.Center.Y);
+            HalibutRenderer.DrawGradientLine(sb, bandL, bandR,
+                Color.Lerp(HalibutTheme.Deep, HalibutTheme.Mid, hi) * (0.75f * a),
+                HalibutTheme.Deep * (0.03f * a), rect.Height - 4f);
+
+            //文本
+            HalibutRenderer.DrawGlowText(sb, text, new Vector2(rect.X + 15f, rect.Y + 4f),
                 Color.Lerp(HalibutTheme.TextDim, HalibutTheme.Text, 0.4f + hi * 0.6f) * a,
                 HalibutTheme.Glow * (hi * 0.35f * a), 0.8f);
+
+            //底部进度线：选中满长，悬停半长；选中时末端游光点
+            if (hi > 0.05f) {
+                float len = (rect.Width - 18f) * (selected ? 1f : 0.45f);
+                Vector2 lineL = new(rect.X + 15f, rect.Bottom - 1f);
+                HalibutRenderer.DrawGradientLine(sb, lineL, lineL + new Vector2(len, 0f),
+                    edge * (hi * 0.9f * a), edge * (0.05f * a), 1.2f);
+                if (selected) {
+                    float runT = (time * 0.6f) % 1f;
+                    Vector2 runPos = lineL + new Vector2(len * runT, 0f);
+                    HalibutRenderer.DrawDisc(sb, runPos, 1.6f, 1.4f,
+                        HalibutTheme.Caustic * ((1f - runT) * 0.9f * a));
+                }
+            }
         }
 
         private void DrawCloseButton(SpriteBatch sb, float a, float time) {

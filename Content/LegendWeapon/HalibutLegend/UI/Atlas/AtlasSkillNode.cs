@@ -13,7 +13,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         public readonly FishSkill Skill;
         public readonly int Tier;
         /// <summary>
-        /// 在海域布局空间中的基准位置（未应用滚动偏移）
+        /// 在海域布局空间中的基准位置：
+        /// X 为相对屏幕中线的偏移（实时换算，UI缩放/分辨率变化时无需重建），Y 为绝对深度
         /// </summary>
         public Vector2 LayoutPos;
         /// <summary>
@@ -38,13 +39,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         /// <summary>
-        /// 当前帧的屏幕位置（布局位置 + 滚动 + 漂浮）
+        /// 当前帧的屏幕位置（中线实时换算 + 布局位置 + 滚动 + 漂浮）
         /// </summary>
         public Vector2 ScreenPos(float scroll, float time) {
             Vector2 drift = new(
                 MathF.Sin(time * 0.7f + DriftSeed) * 4f,
                 MathF.Sin(time * 0.52f + DriftSeed * 1.7f) * 5f);
-            return LayoutPos + drift - new Vector2(0f, scroll);
+            return new Vector2(HalibutTheme.UIScreenW * 0.5f + LayoutPos.X, LayoutPos.Y)
+                + drift - new Vector2(0f, scroll);
         }
 
         public void TriggerIgnite() => Ignite = 1f;

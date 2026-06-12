@@ -137,17 +137,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public bool OnStartClone;
         #endregion
 
-        #region 海域领域技能数据
+        #region 海洋领域技能数据
         /// <summary>
-        /// 海域领域是否激活
+        /// 海洋领域是否激活
         /// </summary>
         public bool SeaDomainActive { get; set; }
         /// <summary>
-        /// 海域领域触发冷却
+        /// 海洋领域触发冷却
         /// </summary>
         public int SeaDomainToggleCD { get; set; }
         /// <summary>
-        /// 海域领域层数（1-10）
+        /// 海洋领域层数（1-10）
         /// </summary>
         public int SeaDomainLayers { get; set; } = 1;
         /// <summary>
@@ -399,7 +399,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
             if (CloneFishToggleCD > 0) CloneFishToggleCD--;
 
-            //海域领域冷却
+            //海洋领域冷却
             if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
 
             //重启技能冷却
@@ -459,7 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 UI.Atlas.HalibutAtlas.Instance.Toggle();
             }
 
-            //海域领域激活检测，不要在服务器上访问按键
+            //海洋领域激活检测，不要在服务器上访问按键
             //骇客时间激活期间禁止使用领域技能以及切换领域状态
             if (Content.HackTimes.HackTime.Active) {
                 //后续领域相关的 JustPressed 全部跳过

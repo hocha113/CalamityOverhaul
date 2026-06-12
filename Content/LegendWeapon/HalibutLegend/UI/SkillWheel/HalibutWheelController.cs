@@ -87,8 +87,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 return;
             }
             Time += 1f / 60f;
-            ScreenAnchor = new Vector2(Main.screenWidth * 0.5f,
-                Main.screenHeight * HalibutTheme.WheelAnchorYRatio);
+            //PostUpdate运行在逻辑帧（非UI层），必须使用UI空间换算
+            ScreenAnchor = new Vector2(HalibutTheme.UIScreenW * 0.5f,
+                HalibutTheme.UIScreenH * HalibutTheme.WheelAnchorYRatio);
 
             if (!CanWheelBeShown()) {
                 if (IsOpen || OpenProgress > 0.01f) {
@@ -317,7 +318,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             if (sectors.Count <= 0) {
                 return -1;
             }
-            Vector2 offset = new Vector2(Main.mouseX, Main.mouseY) - ScreenAnchor;
+            Vector2 offset = HalibutTheme.UIMouse - ScreenAnchor;
             float dist = offset.Length();
             if (dist < HalibutTheme.WheelDeadZoneR) {
                 return -1;//死区内 = 不选择

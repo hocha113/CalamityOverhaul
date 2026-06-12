@@ -102,10 +102,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private int hoverSatellite = -1;
 
         /// <summary>
-        /// HUD锚点（主环圆心）
+        /// HUD锚点（主环圆心），基于UI空间屏幕尺寸，不受缩放语境影响
         /// </summary>
         public static Vector2 Anchor => new(HalibutTheme.HudAnchorOffset.X,
-            Main.screenHeight + HalibutTheme.HudAnchorOffset.Y);
+            HalibutTheme.UIScreenH + HalibutTheme.HudAnchorOffset.Y);
 
         /// <summary>
         /// 复苏深度计的中心位置

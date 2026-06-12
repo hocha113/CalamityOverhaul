@@ -173,6 +173,170 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         #region 装饰元素
         /// <summary>
+        /// 旋转45°的菱形饰
+        /// </summary>
+        public static void DrawDiamond(SpriteBatch sb, Vector2 center, float size, Color color) {
+            sb.Draw(Pixel, center, new Rectangle(0, 0, 1, 1), color, MathHelper.PiOver4,
+                new Vector2(0.5f, 0.5f), new Vector2(size, size), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>
+        /// 计算矩形的切角八边形路径（顺时针，从上边左端开始，共8个顶点）
+        /// </summary>
+        public static void ChamferPath(Rectangle rect, float chamfer, Span<Vector2> path) {
+            float c = MathF.Min(chamfer, MathF.Min(rect.Width, rect.Height) * 0.4f);
+            path[0] = new Vector2(rect.Left + c, rect.Top);
+            path[1] = new Vector2(rect.Right - c, rect.Top);
+            path[2] = new Vector2(rect.Right, rect.Top + c);
+            path[3] = new Vector2(rect.Right, rect.Bottom - c);
+            path[4] = new Vector2(rect.Right - c, rect.Bottom);
+            path[5] = new Vector2(rect.Left + c, rect.Bottom);
+            path[6] = new Vector2(rect.Left, rect.Bottom - c);
+            path[7] = new Vector2(rect.Left, rect.Top + c);
+        }
+
+        /// <summary>
+        /// 深渊纹章饰框：切角八边形双层描边 + 角须 + 顶缘菱饰 + 周界游光
+        /// 用于信息面板与详情卡，取代呆板的矩形单线框
+        /// </summary>
+        /// <param name="sb">画布</param>
+        /// <param name="rect">框体区域</param>
+        /// <param name="color">主描边色</param>
+        /// <param name="alpha">整体透明度</param>
+        /// <param name="time">动画时间</param>
+        /// <param name="chamfer">切角尺寸</param>
+        public static void DrawOrnateFrame(SpriteBatch sb, Rectangle rect, Color color,
+            float alpha, float time, float chamfer = 12f) {
+            Span<Vector2> path = stackalloc Vector2[8];
+            ChamferPath(rect, chamfer, path);
+
+            //主描边
+            for (int i = 0; i < 8; i++) {
+                DrawLine(sb, path[i], path[(i + 1) % 8], 1.3f, color * (0.9f * alpha));
+            }
+            //内缩次级hairline
+            Rectangle inner = rect;
+            inner.Inflate(-4, -4);
+            if (inner.Width > 8 && inner.Height > 8) {
+                Span<Vector2> innerPath = stackalloc Vector2[8];
+                ChamferPath(inner, chamfer - 3f, innerPath);
+                for (int i = 0; i < 8; i++) {
+                    DrawLine(sb, innerPath[i], innerPath[(i + 1) % 8], 1f, color * (0.30f * alpha));
+                }
+            }
+
+            //角须：沿四个切角向外延伸的短斜线 + 端点光点
+            Span<Vector2> diagDirs = [
+                new Vector2(-0.7071f, -0.7071f), new Vector2(0.7071f, -0.7071f),
+                new Vector2(0.7071f, 0.7071f), new Vector2(-0.7071f, 0.7071f),
+            ];
+            Span<Vector2> cornerMids = [
+                (path[7] + path[0]) * 0.5f, (path[1] + path[2]) * 0.5f,
+                (path[3] + path[4]) * 0.5f, (path[5] + path[6]) * 0.5f,
+            ];
+            for (int i = 0; i < 4; i++) {
+                Vector2 start = cornerMids[i] + diagDirs[i] * 2f;
+                Vector2 end = cornerMids[i] + diagDirs[i] * 9f;
+                DrawLine(sb, start, end, 1.2f, color * (0.85f * alpha));
+                DrawDisc(sb, end, 1.4f, 1.2f, HalibutTheme.Caustic * (0.8f * alpha));
+            }
+
+            //顶缘中点菱饰 + 两侧渐隐延伸线
+            Vector2 topMid = new(rect.Center.X, rect.Top);
+            float breath = HalibutTheme.Breath(time, rect.X * 0.13f, 2.4f);
+            DrawDiamond(sb, topMid, 3.4f + breath * 0.8f, HalibutTheme.Caustic * ((0.7f + breath * 0.3f) * alpha));
+            DrawDiamond(sb, topMid, 5.6f, color * (0.35f * alpha));
+            float wing = MathF.Min(26f, rect.Width * 0.2f);
+            DrawGradientLine(sb, topMid + new Vector2(-7f, 0f), topMid + new Vector2(-7f - wing, 0f),
+                color * (0.8f * alpha), color * (0.02f * alpha), 1f);
+            DrawGradientLine(sb, topMid + new Vector2(7f, 0f), topMid + new Vector2(7f + wing, 0f),
+                color * (0.8f * alpha), color * (0.02f * alpha), 1f);
+
+            //周界游光：亮点沿八边形路径循环游走，带短尾迹
+            float perimeter = 0f;
+            Span<float> segLen = stackalloc float[8];
+            for (int i = 0; i < 8; i++) {
+                segLen[i] = Vector2.Distance(path[i], path[(i + 1) % 8]);
+                perimeter += segLen[i];
+            }
+            if (perimeter > 8f) {
+                float speed = MathF.Max(perimeter * 0.10f, 26f);
+                for (int trail = 0; trail < 4; trail++) {
+                    float dist = (time * speed - trail * 5f) % perimeter;
+                    if (dist < 0f) {
+                        dist += perimeter;
+                    }
+                    Vector2 pos = PointOnPath(path, segLen, dist);
+                    float fade = 1f - trail / 4f;
+                    if (trail == 0) {
+                        DrawSoftGlow(sb, pos, 6.5f, HalibutTheme.Caustic * (0.55f * alpha));
+                    }
+                    DrawDisc(sb, pos, 1.5f * fade, 1.2f, HalibutTheme.Caustic * (fade * 0.85f * alpha));
+                }
+            }
+        }
+
+        private static Vector2 PointOnPath(Span<Vector2> path, Span<float> segLen, float dist) {
+            for (int i = 0; i < 8; i++) {
+                if (dist <= segLen[i]) {
+                    return Vector2.Lerp(path[i], path[(i + 1) % 8], segLen[i] < 0.01f ? 0f : dist / segLen[i]);
+                }
+                dist -= segLen[i];
+            }
+            return path[0];
+        }
+
+        /// <summary>
+        /// 胶囊形按钮：两端圆弧 + 上下双线 + 悬停扫光 + 激活端点呼吸光点
+        /// 取代矩形盒子按钮
+        /// </summary>
+        public static void DrawCapsuleButton(SpriteBatch sb, Rectangle rect, string text,
+            Color accent, bool hovered, bool active, float alpha, float time) {
+            Vector2 lCap = new(rect.X + rect.Height * 0.5f, rect.Center.Y);
+            Vector2 rCap = new(rect.Right - rect.Height * 0.5f, rect.Center.Y);
+            float radius = rect.Height * 0.5f;
+            float hi = active ? 1f : hovered ? 0.6f : 0f;
+
+            //底色填充（中段矩形 + 两端圆盘）
+            Color fill = Color.Lerp(HalibutTheme.Deep, HalibutTheme.Mid, hi * 0.7f) * (0.88f * alpha);
+            sb.Draw(Pixel, new Rectangle((int)lCap.X, rect.Y, (int)(rCap.X - lCap.X), rect.Height),
+                new Rectangle(0, 0, 1, 1), fill);
+            DrawArc(sb, lCap, 0f, radius, MathHelper.PiOver2, MathHelper.Pi * 1.5f, fill);
+            DrawArc(sb, rCap, 0f, radius, -MathHelper.PiOver2, MathHelper.PiOver2, fill);
+
+            //上下双线 + 两端圆弧描边
+            Color border = Color.Lerp(accent * 0.65f, accent, hi);
+            DrawLine(sb, new Vector2(lCap.X, rect.Y), new Vector2(rCap.X, rect.Y), 1.2f, border * alpha);
+            DrawLine(sb, new Vector2(lCap.X, rect.Bottom), new Vector2(rCap.X, rect.Bottom), 1.2f, border * (0.65f * alpha));
+            DrawArcStroke(sb, lCap, radius, MathHelper.PiOver2, MathHelper.Pi * 1.5f, 1.1f, border * alpha);
+            DrawArcStroke(sb, rCap, radius, -MathHelper.PiOver2, MathHelper.PiOver2, 1.1f, border * alpha);
+
+            //悬停扫光：一道斜光带从左往右循环
+            if (hi > 0.05f) {
+                float scanT = (time * 0.8f) % 1.3f;
+                float scanX = MathHelper.Lerp(rect.X - 8f, rect.Right + 8f, scanT / 1.3f);
+                if (scanX > rect.X && scanX < rect.Right) {
+                    DrawLine(sb, new Vector2(scanX - 4f, rect.Bottom - 2f), new Vector2(scanX + 4f, rect.Y + 2f),
+                        2f, HalibutTheme.Caustic * (hi * 0.22f * alpha));
+                }
+            }
+
+            //激活态：两端呼吸光点
+            if (active) {
+                float breath = HalibutTheme.Breath(time, rect.X * 0.07f, 3f);
+                DrawDisc(sb, lCap - new Vector2(radius + 4f, 0f), 1.7f + breath * 0.8f, 1.4f,
+                    accent * ((0.6f + breath * 0.4f) * alpha));
+                DrawDisc(sb, rCap + new Vector2(radius + 4f, 0f), 1.7f + breath * 0.8f, 1.4f,
+                    accent * ((0.6f + breath * 0.4f) * alpha));
+            }
+
+            //文字
+            DrawGlowTextCentered(sb, text, rect.Center.ToVector2() + new Vector2(0f, -1f),
+                Color.Lerp(HalibutTheme.Text, accent, 0.4f + hi * 0.6f) * alpha,
+                accent * ((0.2f + hi * 0.25f) * alpha), 0.76f);
+        }
+
+        /// <summary>
         /// 八芒星装饰
         /// </summary>
         public static void DrawStar(SpriteBatch sb, Vector2 position, float size, Color color) {
@@ -462,11 +626,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float panelH = pad * 1.6f + titleHeight + dividerBlock + drawLines * lineH;
 
             Vector2 panelPos = cursor + new Vector2(18f, -panelH - 10f);
-            panelPos.X = MathHelper.Clamp(panelPos.X, 8f, Main.screenWidth - panelW - 8f);
-            panelPos.Y = MathHelper.Clamp(panelPos.Y, 8f, Main.screenHeight - panelH - 8f);
+            panelPos.X = MathHelper.Clamp(panelPos.X, 8f, HalibutTheme.UIScreenW - panelW - 8f);
+            panelPos.Y = MathHelper.Clamp(panelPos.Y, 8f, HalibutTheme.UIScreenH - panelH - 8f);
             Rectangle rect = new((int)panelPos.X, (int)panelPos.Y, (int)panelW, (int)panelH);
+            float time = Main.GlobalTimeWrappedHourly;
 
             DrawSeaPanel(sb, rect, alpha, 0.6f, 0f, 0.6f);
+            //纹章饰框：框色取标题色与主题冷光的混合
+            Color frameCol = Color.Lerp(titleColor, HalibutTheme.Glow, 0.45f);
+            DrawOrnateFrame(sb, rect, frameCol, alpha * 0.9f, time, 11f);
 
             float y = rect.Y + pad * 0.7f;
             if (!string.IsNullOrEmpty(title)) {
@@ -479,8 +647,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 }
                 y += titleHeight;
                 if (drawLines > 0) {
-                    DrawGradientLine(sb, new Vector2(rect.X + pad, y), new Vector2(rect.Right - pad, y),
-                        titleColor * (alpha * 0.75f), titleColor * (alpha * 0.06f), 1.2f);
+                    //标题分隔：左实右虚的渐隐线 + 起点菱饰
+                    Vector2 divL = new(rect.X + pad, y);
+                    DrawDiamond(sb, divL + new Vector2(1.5f, 0f), 2.6f, HalibutTheme.Caustic * (0.85f * alpha));
+                    DrawGradientLine(sb, divL + new Vector2(6f, 0f), new Vector2(rect.Right - pad, y),
+                        titleColor * (alpha * 0.75f), titleColor * (alpha * 0.04f), 1.2f);
                     y += dividerBlock;
                 }
             }
@@ -493,11 +664,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Utils.DrawBorderString(sb, line, new Vector2(rect.X + pad, y), HalibutTheme.Text * alpha, bodyScale);
                 y += lineH;
             }
-
-            //角落星芒点缀
-            float starTime = Main.GlobalTimeWrappedHourly * 3f;
-            float s1 = (MathF.Sin(starTime) * 0.5f + 0.5f) * alpha;
-            DrawStar(sb, new Vector2(rect.Right - 13, rect.Y + 11), 3.6f, HalibutTheme.Glow * s1);
         }
         #endregion
     }

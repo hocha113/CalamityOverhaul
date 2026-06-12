@@ -80,8 +80,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             float y = FirstBandY;
             int currentTier = -1;
             int columnIndex = 0;
-            float screenCenterX = Main.screenWidth * 0.5f;
-            float startX = screenCenterX - (HalibutTheme.AtlasNodeColumns - 1) * HalibutTheme.AtlasNodeSpacingX * 0.5f;
+            //X使用相对屏幕中线的偏移，绘制时实时换算，保证UI缩放中途变化也不偏移
+            float startX = -(HalibutTheme.AtlasNodeColumns - 1) * HalibutTheme.AtlasNodeSpacingX * 0.5f;
             foreach (FishSkill skill in all) {
                 int tier = AtlasTierMap.GetTier(skill);
                 if (tier != currentTier) {
@@ -145,8 +145,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 return;
             }
             //镜头下潜到新节点
-            scrollTarget = node.LayoutPos.Y - Main.screenHeight * 0.42f;
-            Vector2 targetScreen = new(node.LayoutPos.X, node.LayoutPos.Y - scrollTarget + lastContentArea.Y);
+            scrollTarget = node.LayoutPos.Y - HalibutTheme.UIScreenH * 0.42f;
+            Vector2 targetScreen = new(HalibutTheme.UIScreenW * 0.5f + node.LayoutPos.X,
+                node.LayoutPos.Y - scrollTarget + lastContentArea.Y);
             particles.SpawnFlyingIcon(skill.Icon, Altar.ScreenCenter, targetScreen, () => {
                 node.TriggerIgnite();
                 particles.SpawnRingPulse(targetScreen, HalibutTheme.Caustic, 60f, 3.5f);
@@ -174,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             Depth = maxScroll > 1f ? MathHelper.Clamp(scroll / maxScroll, 0f, 1f) : 0f;
 
             //祭坛
-            Altar.ScreenCenter = new Vector2(Main.screenWidth * 0.5f, contentArea.Y + AltarLayoutY - scroll);
+            Altar.ScreenCenter = new Vector2(HalibutTheme.UIScreenW * 0.5f, contentArea.Y + AltarLayoutY - scroll);
             bool altarVisible = Altar.ScreenCenter.Y > contentArea.Y - 60f;
             Altar.Update(save, inputAvailable && altarVisible);
 
@@ -519,6 +520,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             Color tierCol = HalibutTheme.TierColor(selectedNode.Tier);
 
             HalibutRenderer.DrawSeaPanel(sb, detailRect, alpha, 0.45f + selectedNode.Tier * 0.15f, 0f, 0.55f);
+            HalibutRenderer.DrawOrnateFrame(sb, detailRect,
+                Color.Lerp(tierCol, HalibutTheme.Glow, 0.35f), alpha * 0.9f, time, 13f);
 
             float pad = 16f;
             float x = detailRect.X + pad;
@@ -550,7 +553,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 new Vector2(x + 58f, y + 28f), tierCol * (0.85f * alpha), tierCol * (0.25f * alpha), 0.7f);
 
             y += 62f;
-            HalibutRenderer.DrawGradientLine(sb, new Vector2(x, y), new Vector2(detailRect.Right - pad, y),
+            HalibutRenderer.DrawDiamond(sb, new Vector2(x + 1.5f, y), 2.6f, HalibutTheme.Caustic * (0.85f * alpha));
+            HalibutRenderer.DrawGradientLine(sb, new Vector2(x + 6f, y), new Vector2(detailRect.Right - pad, y),
                 tierCol * (0.75f * alpha), tierCol * (0.06f * alpha), 1.2f);
             y += 10f;
 
@@ -591,31 +595,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 selectBtnHover = selectBtnRect.Contains(mouse.ToPoint());
 
                 bool equipped = save.loadout.Contains(skill);
-                DrawButton(sb, equipBtnRect, equipped ? HalibutAtlas.UnequipBtn.Value : HalibutAtlas.EquipBtn.Value,
-                    equipped ? HalibutTheme.TextDim : HalibutTheme.Glow, equipBtnHover, alpha);
+                HalibutRenderer.DrawCapsuleButton(sb, equipBtnRect,
+                    equipped ? HalibutAtlas.UnequipBtn.Value : HalibutAtlas.EquipBtn.Value,
+                    equipped ? HalibutTheme.TextDim : HalibutTheme.Glow, equipBtnHover, equipped, alpha, time);
                 bool isCurrent = save.FishSkill == skill;
-                DrawButton(sb, selectBtnRect, isCurrent ? HalibutAtlas.SelectedTag.Value : HalibutAtlas.SelectBtn.Value,
-                    isCurrent ? HalibutTheme.Accent : HalibutTheme.GlowHi, selectBtnHover && !isCurrent, alpha);
+                HalibutRenderer.DrawCapsuleButton(sb, selectBtnRect,
+                    isCurrent ? HalibutAtlas.SelectedTag.Value : HalibutAtlas.SelectBtn.Value,
+                    isCurrent ? HalibutTheme.Accent : HalibutTheme.GlowHi, selectBtnHover && !isCurrent, isCurrent, alpha, time);
             }
             else {
                 equipBtnRect = selectBtnRect = Rectangle.Empty;
             }
-        }
-
-        private static void DrawButton(SpriteBatch sb, Rectangle rect, string text, Color color,
-            bool hovered, float alpha) {
-            Texture2D px = HalibutRenderer.Pixel;
-            float hi = hovered ? 1f : 0f;
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1),
-                Color.Lerp(HalibutTheme.Deep, HalibutTheme.Mid, hi) * (0.9f * alpha));
-            Color border = Color.Lerp(color * 0.7f, color, hi);
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.Right, rect.Y), 1.2f, border * alpha);
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Bottom), new Vector2(rect.Right, rect.Bottom), 1.2f, border * (0.7f * alpha));
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.X, rect.Y), new Vector2(rect.X, rect.Bottom), 1.2f, border * (0.85f * alpha));
-            HalibutRenderer.DrawLine(sb, new Vector2(rect.Right, rect.Y), new Vector2(rect.Right, rect.Bottom), 1.2f, border * (0.85f * alpha));
-            HalibutRenderer.DrawGlowTextCentered(sb, text, rect.Center.ToVector2() + new Vector2(0f, -1f),
-                Color.Lerp(HalibutTheme.Text, color, 0.5f + hi * 0.5f) * alpha,
-                color * (0.3f * alpha), 0.76f);
         }
     }
 }

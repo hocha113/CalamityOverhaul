@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         /// 注册本地化（由 <see cref="HalibutAtlas.SetStaticDefaults"/> 调用一次）
         /// </summary>
         public static void RegisterLocalization() {
-            TitleText = Language.GetOrRegister(LegacyKey + "TitleText", () => "海域领域");
+            TitleText = Language.GetOrRegister(LegacyKey + "TitleText", () => "海洋领域");
             ExtraEyeTitleText = Language.GetOrRegister(LegacyKey + "ExtraEyeTitleText", () => "第 十 层");
             CrashedLabelText = Language.GetOrRegister(LegacyKey + "CrashedLabelText", () => "已死机");
             LayerTitleFormat = Language.GetOrRegister(LegacyKey + "LayerTitleFormat", () => "第 {0} 层");

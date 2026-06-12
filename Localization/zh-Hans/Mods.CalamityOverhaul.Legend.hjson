@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -56,7 +56,7 @@ HalibutText: {
 	}
 
 	DomainUI: {
-		TitleText: 海域领域
+		TitleText: 海洋领域
 		ExtraEyeTitleText: 第 十 层
 		CrashedLabelText: 已死机
 		EyeDesc1:

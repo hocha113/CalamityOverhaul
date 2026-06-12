@@ -1,3 +1,6 @@
+using Terraria;
+using Terraria.GameInput;
+
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
@@ -7,6 +10,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     /// </summary>
     internal static class HalibutTheme
     {
+        #region UI空间坐标（与调用语境无关）
+        //UIHandle 的 Update/Draw 运行在 InterfaceScaleType.UI 层内，此时 Main.screenWidth 已被
+        //除以 UIScale；但 ModPlayer.PostUpdate 等逻辑帧里它是原始后台缓冲尺寸。
+        //任何跨语境的布局计算都必须使用下面这组换算，禁止直接读 Main.screenWidth/Height
+        /// <summary>
+        /// UI空间下的屏幕宽度（任何调用语境下取值一致）
+        /// </summary>
+        public static float UIScreenW => PlayerInput.RealScreenWidth / Main.UIScale;
+        /// <summary>
+        /// UI空间下的屏幕高度（任何调用语境下取值一致）
+        /// </summary>
+        public static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
+        /// <summary>
+        /// UI空间下的屏幕尺寸
+        /// </summary>
+        public static Vector2 UIScreenSize => new(UIScreenW, UIScreenH);
+        /// <summary>
+        /// UI空间下的鼠标位置（任何调用语境下取值一致）
+        /// </summary>
+        public static Vector2 UIMouse => new Vector2(PlayerInput.MouseX, PlayerInput.MouseY) / Main.UIScale;
+        #endregion
+
         //基底色，由深到浅
         public static readonly Color Void = new(1, 3, 6);
         public static readonly Color Deep = new(3, 10, 15);

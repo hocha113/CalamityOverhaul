@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 return;
             }
 
-            Vector2 center = new(Main.screenWidth * 0.5f, Main.screenHeight * HalibutTheme.WheelAnchorYRatio);
+            Vector2 center = new(HalibutTheme.UIScreenW * 0.5f, HalibutTheme.UIScreenH * HalibutTheme.WheelAnchorYRatio);
             ctrl.SetScreenAnchor(center);
             float time = ctrl.Time;
             float ease = CWRUtils.EaseOutBack(a);
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
         private static void DrawWaterVeil(SpriteBatch sb, Vector2 center, float a) {
             Texture2D px = HalibutRenderer.Pixel;
             //全屏压暗
-            sb.Draw(px, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+            sb.Draw(px, new Rectangle(0, 0, (int)HalibutTheme.UIScreenW + 1, (int)HalibutTheme.UIScreenH + 1),
                 new Rectangle(0, 0, 1, 1), HalibutTheme.Void * (0.62f * a));
             //中心冷光晕，反向提亮轮盘区域
             HalibutRenderer.DrawSoftGlow(sb, center, HalibutTheme.WheelOuterR * 2.1f,

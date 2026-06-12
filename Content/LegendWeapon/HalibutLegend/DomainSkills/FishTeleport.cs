@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Vector2 toMouse = mouseWorld - player.Center;
             float distance = toMouse.Length();
 
-            //检查是否在海域领域内
+            //检查是否在海洋领域内
             var hp = player.GetOverride<HalibutPlayer>();
             if (hp.SeaDomainActive) {
                 //查找领域弹幕
