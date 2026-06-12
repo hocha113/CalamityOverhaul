@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,8 +16,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class RaiderGun : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "RaiderGun";
-        public static bool Dash;
-        public static int DontDashTime;
         public const int DashCooling = 120;
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
@@ -27,34 +26,53 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useTime = 12;
             Item.useAnimation = 12;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 12;
-            Item.UseSound = SoundID.Item36 with { Volume = 0.7f };
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 1, 60, 10);
-            Item.SetHeldProj<RaiderGunHeld>();
             Item.CWR().DeathModeItem = true;
-            Dash = false;
         }
 
-        public override void HoldItem(Player player) {
-            if (DontDashTime > 0) {
-                DontDashTime--;
-            }
-        }
+        //右键用于冲刺
+        public override bool AltFunctionUse(Player player) => true;
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunHeld>()] == 0
+            && player.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunDash>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<RaiderGunHeld>(player, source);
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            if (!(DontDashTime <= 0f)) {//这是一个通用的进度条绘制，用于判断充能进度
-                Texture2D barBG = CWRAsset.GenericBarBack.Value;
-                Texture2D barFG = CWRAsset.GenericBarFront.Value;
-                float barScale = 2f;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                float yOffset = 60f;
-                Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(DontDashTime / (float)DashCooling * barFG.Width), barFG.Height);
-                Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
-                spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
-                spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
+            DrawDashCooldownBar(spriteBatch, position, frame, scale);
+        }
+
+        /// <summary>
+        /// 通用的冲刺冷却进度条绘制
+        /// </summary>
+        internal static void DrawDashCooldownBar(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, float scale) {
+            int cooldown = Main.LocalPlayer.CWR().RaiderGunDashCooldown;
+            if (cooldown <= 0) {
+                return;
             }
+            Texture2D barBG = CWRAsset.GenericBarBack.Value;
+            Texture2D barFG = CWRAsset.GenericBarFront.Value;
+            float barScale = 2f;
+            Vector2 barOrigin = barBG.Size() * 0.5f;
+            float yOffset = 60f;
+            Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
+            Rectangle frameCrop = new Rectangle(0, 0, (int)(cooldown / (float)DashCooling * barFG.Width), barFG.Height);
+            Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
+            spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
+            spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
         }
     }
 
@@ -70,35 +88,34 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useTime = 4;
             Item.useAnimation = 4;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = SoundID.Item36 with { Volume = 0.7f };
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 12, 60, 10);
-            Item.SetHeldProj<RaiderGunEXHeld>();
             Item.CWR().DeathModeItem = true;
         }
 
-        public override void HoldItem(Player player) {
-            //与基础版本共享冲刺冷却
-            if (RaiderGun.DontDashTime > 0) {
-                RaiderGun.DontDashTime--;
-            }
-        }
+        //右键用于冲刺
+        public override bool AltFunctionUse(Player player) => true;
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunEXHeld>()] == 0
+            && player.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunDash>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<RaiderGunEXHeld>(player, source);
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) {
-            //绘制通用的冲刺冷却进度条
-            if (!(RaiderGun.DontDashTime <= 0f)) {
-                Texture2D barBG = CWRAsset.GenericBarBack.Value;
-                Texture2D barFG = CWRAsset.GenericBarFront.Value;
-                float barScale = 2f;
-                Vector2 barOrigin = barBG.Size() * 0.5f;
-                float yOffset = 60f;
-                Vector2 drawPos = position + Vector2.UnitY * scale * (frame.Height - yOffset);
-                Rectangle frameCrop = new Rectangle(0, 0, (int)(RaiderGun.DontDashTime / (float)RaiderGun.DashCooling * barFG.Width), barFG.Height);
-                Color color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.6f % 1f, 1f, 0.75f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.1f);
-                spriteBatch.Draw(barBG, drawPos, null, color, 0f, barOrigin, scale * barScale, 0, 0f);
-                spriteBatch.Draw(barFG, drawPos, frameCrop, color * 0.8f, 0f, barOrigin, scale * barScale, 0, 0f);
-            }
+            //与基础版本共享冲刺冷却进度条
+            RaiderGun.DrawDashCooldownBar(spriteBatch, position, frame, scale);
         }
 
         public override void AddRecipes() {
@@ -110,203 +127,200 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class RaiderGunHeld : BaseGun
+    internal class RaiderGunHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "RaiderGun";
         public override int TargetID => ModContent.ItemType<RaiderGun>();
-        public override void SetRangedProperty() {
+        public override bool CanRightClick => true;
+        public override SoundStyle? ShootSound => SoundID.Item36 with { Volume = 0.7f };
+        private bool DashAlive => Owner.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunDash>()] != 0;
+        public override void SetGunProperty() {
             GunPressure = 0.1f;
             ControlForce = 0.02f;
             HandIdleDistanceX = 26;
             HandIdleDistanceY = 2;
             HandFireDistanceX = 26;
             HandFireDistanceY = -2;
-            ShootPosNorlLengValue = -4;
-            ShootPosToMouLengValue = 8;
+            MuzzleForwardOffset = 8;
+            MuzzleNormalOffset = -4;
             RecoilRetroForceMagnitude = 8;
             RecoilOffsetRecoverValue = 0.8f;
-            EnableRecoilRetroEffect = true;
-            CanRightClick = true;
         }
 
-        public override void SetShootAttribute() {
-            if (onFireR) {
-                SoundEngine.PlaySound(CWRSound.Dash, Owner.Center);
-                CanCreateSpawnGunDust = false;
-                FiringDefaultSound = false;
-            }
-            else {
-                if (RaiderGun.Dash) {
-                    Item.UseSound = "CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound();
-                    GunPressure = 0.2f;
-                    ControlForce = 0.02f;
+        public override void AI() {
+            UpdateHeldPose(CanFire);
+
+            if (FireCooldown <= 0 && !DashAlive) {
+                if (WantsFireLeft && HasAmmo && CanFireNormally()) {
+                    FireLeft();
+                    SetFireCooldown();
                 }
-                if (AmmoTypes == ProjectileID.Bullet) {
-                    AmmoTypes = ProjectileID.BulletHighVelocity;
+                else if (WantsFireRight && Owner.CWR().RaiderGunDashCooldown <= 0) {
+                    FireRight();
+                    SetFireCooldown();
                 }
             }
+            Time++;
         }
 
-        public override void PostShootEverthing() {
-            CanCreateSpawnGunDust = true;
-            FiringDefaultSound = true;
-            Item.UseSound = SoundID.Item36;
-            GunPressure = 0.1f;
-            ControlForce = 0.02f;
+        /// <summary>
+        /// 附近存在尚未引爆的毁灭者榴弹时暂缓普通射击
+        /// </summary>
+        private bool CanFireNormally() {
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type != ModContent.ProjectileType<DestroyerGrenade>() || proj.owner != Owner.whoAmI) {
+                    continue;
+                }
+                if (proj.DistanceSQ(Owner.Center) < 1200 * 1200) {
+                    return false;
+                }
+            }
+            return true;
         }
 
-        public override void FiringShoot() {
-            if (RaiderGun.Dash) {
-                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                    , ModContent.ProjectileType<DestroyerGrenade>()
-                , WeaponDamage * 2, WeaponKnockback, Owner.whoAmI);
-                RaiderGun.Dash = false;
+        private void FireLeft() {
+            SnapToAimPose();
+            CreateFireLight();
+            CWRPlayer modPlayer = Owner.CWR();
+
+            //冲刺结束后的强化射击：发射一枚追踪榴弹
+            if (modPlayer.RaiderGunDashReady) {
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound(), Projectile.Center);
+                RecoilPitch += 0.2f;
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
+                        , ModContent.ProjectileType<DestroyerGrenade>()
+                        , WeaponDamage * 2, WeaponKnockback, Owner.whoAmI);
+                }
+                modPlayer.RaiderGunDashReady = false;
                 return;
             }
 
-            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            _ = UpdateConsumeAmmo();
-        }
-
-        public override bool CanSpanProj() {
-            if (onFireR) {
-                return RaiderGun.DontDashTime <= 0;
+            PlayShootSound();
+            CreateRecoil();
+            SpawnGunFireDust();
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                int shootType = AmmoTypes == ProjectileID.Bullet ? ProjectileID.BulletHighVelocity : AmmoTypes;
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                    , shootType, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
             }
-            if (onFire) {
-                foreach (var proj in Main.ActiveProjectiles) {
-                    if (proj.type != ModContent.ProjectileType<DestroyerGrenade>() || proj.owner != Owner.whoAmI) {
-                        continue;
-                    }
-                    if (proj.DistanceSQ(Owner.Center) < 1200 * 1200) {
-                        return false;
-                    }
-                }
+            ConsumeAmmo();
+        }
+
+        private void FireRight() {
+            SoundEngine.PlaySound(CWRSound.Dash, Owner.Center);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                float _swingDir = Owner.Center.X + ShootVelocity.X > Owner.position.X ? 1 : -1;
+                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity, ModContent.ProjectileType<RaiderGunDash>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, ai1: _swingDir);
             }
-            return base.CanSpanProj();
-        }
-
-        public override bool CanUseGun() {
-            return Owner.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunDash>()] == 0;
-        }
-
-        public override void FiringShootR() {
-            float _swingDir = Owner.Center.X + ShootVelocity.X > Owner.position.X ? 1 : -1;
-            Projectile.NewProjectile(Source, Owner.Center, ShootVelocity, ModContent.ProjectileType<RaiderGunDash>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, ai1: _swingDir);
         }
     }
 
-    internal class RaiderGunEXHeld : BaseGun
+    internal class RaiderGunEXHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "RaiderGunEX";
         public override int TargetID => ModContent.ItemType<RaiderGunEX>();
-        public override void SetRangedProperty() {
+        public override bool CanRightClick => true;
+        public override SoundStyle? ShootSound => SoundID.Item36 with { Volume = 0.7f };
+        private bool DashAlive => Owner.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunDash>()] != 0;
+        public override void SetGunProperty() {
             GunPressure = 0.06f;
             ControlForce = 0.02f;
             HandIdleDistanceX = 26;
             HandIdleDistanceY = 2;
             HandFireDistanceX = 26;
             HandFireDistanceY = -2;
-            ShootPosNorlLengValue = -4;
-            ShootPosToMouLengValue = 8;
+            MuzzleForwardOffset = 8;
+            MuzzleNormalOffset = -4;
             RecoilRetroForceMagnitude = 8;
             RecoilOffsetRecoverValue = 0.8f;
-            EnableRecoilRetroEffect = true;
-            CanCreateSpawnGunDust = false;
-            CanRightClick = true;//使其可以右键冲刺
         }
 
-        public override void SetShootAttribute() {
-            if (onFireR) {
-                SoundEngine.PlaySound(CWRSound.Dash, Owner.Center);
-                CanCreateSpawnGunDust = false;
-                FiringDefaultSound = false;
-            }
-            else {
-                if (RaiderGun.Dash) {
-                    Item.UseSound = "CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound();
-                    GunPressure = 0.3f;
-                    ControlForce = 0.05f;
+        public override void AI() {
+            UpdateHeldPose(CanFire);
+
+            if (FireCooldown <= 0 && !DashAlive) {
+                if (WantsFireLeft && HasAmmo && CanFireNormally()) {
+                    FireLeft();
+                    SetFireCooldown();
                 }
-                if (AmmoTypes == ProjectileID.Bullet) {
-                    AmmoTypes = ProjectileID.BulletHighVelocity;
+                else if (WantsFireRight && Owner.CWR().RaiderGunDashCooldown <= 0) {
+                    FireRight();
+                    SetFireCooldown();
                 }
             }
+            Time++;
         }
 
-        public override void PostShootEverthing() {
-            CanCreateSpawnGunDust = true;
-            FiringDefaultSound = true;
-            Item.UseSound = SoundID.Item36;
-            GunPressure = 0.06f;
-            ControlForce = 0.02f;
+        /// <summary>
+        /// 常规射击时限制毁灭者榴弹的数量，防止过多堆积
+        /// </summary>
+        private bool CanFireNormally() {
+            int grenadeCount = 0;
+            foreach (var proj in Main.ActiveProjectiles) {
+                if (proj.type == ModContent.ProjectileType<DestroyerGrenade>() && proj.owner == Owner.whoAmI) {
+                    grenadeCount++;
+                }
+            }
+            return grenadeCount <= 20;
         }
 
-        public override void FiringShoot() {
-            //冲刺后的强化射击
-            if (RaiderGun.Dash) {
+        private void FireLeft() {
+            SnapToAimPose();
+            CreateFireLight();
+            CWRPlayer modPlayer = Owner.CWR();
+
+            //冲刺后的强化射击：一次性发射5枚毁灭者榴弹
+            if (modPlayer.RaiderGunDashReady) {
+                SoundEngine.PlaySound("CalamityMod/Sounds/Item/ScorchedEarthShot3".GetSound(), Projectile.Center);
                 SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.8f }, Owner.Center);
-                //一次性发射5枚毁灭者榴弹
-                for (int i = 0; i < 5; i++) {
-                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedByRandom(0.25f)
-                        , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1);
+                RecoilPitch += 0.3f;
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    for (int i = 0; i < 5; i++) {
+                        Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedByRandom(0.25f)
+                            , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1);
+                    }
                 }
-                RaiderGun.Dash = false;
+                modPlayer.RaiderGunDashReady = false;
                 return;
             }
 
             //常规射击
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ProjectileID.BulletHighVelocity;
-            }
-            Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedByRandom(0.1f)
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI);
-            _ = UpdateConsumeAmmo();
+            PlayShootSound();
+            CreateRecoil();
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                int shootType = AmmoTypes == ProjectileID.Bullet ? ProjectileID.BulletHighVelocity : AmmoTypes;
+                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedByRandom(0.1f)
+                        , shootType, WeaponDamage, WeaponKnockback, Owner.whoAmI);
 
-            fireIndex++;
-            if (fireIndex > 3) {
-                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy(-0.2f)
-                    , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1);
-                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy(0.2f)
-                    , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1);
+                if (fireIndex + 1 > 3) {
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy(-0.2f)
+                        , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1);
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity.RotatedBy(0.2f)
+                        , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 2, WeaponKnockback, Owner.whoAmI, 1);
+                }
+
+                if (Main.rand.NextBool(9)) {
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
+                        , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 3, WeaponKnockback, Owner.whoAmI);
+                }
+            }
+
+            if (++fireIndex > 3) {
                 fireIndex = 0;
             }
-
-            if (Main.rand.NextBool(9)) {
-                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                    , ModContent.ProjectileType<DestroyerGrenade>(), WeaponDamage * 3, WeaponKnockback, Owner.whoAmI);
-            }
+            ConsumeAmmo();
         }
 
-        public override bool CanSpanProj() {
-            if (onFireR) {
-                return RaiderGun.DontDashTime <= 0;
-            }
-            //常规射击时，限制毁灭者榴弹的数量，防止过多堆积
-            if (onFire) {
-                int grenadeCount = 0;
-                foreach (var proj in Main.ActiveProjectiles) {
-                    if (proj.type == ModContent.ProjectileType<DestroyerGrenade>() && proj.owner == Owner.whoAmI) {
-                        grenadeCount++;
-                    }
-                }
-                if (grenadeCount > 20) {
-                    return false;
-                }
-            }
-            return base.CanSpanProj();
-        }
-
-        public override bool CanUseGun() {
-            //正在冲刺时无法使用
-            return Owner.ownedProjectileCounts[ModContent.ProjectileType<RaiderGunDash>()] == 0;
-        }
-
-        public override void FiringShootR() {
+        private void FireRight() {
             //右键冲刺逻辑
-            float _swingDir = Owner.Center.X + ShootVelocity.X > Owner.position.X ? 1 : -1;
-            Projectile.NewProjectile(Source, Owner.Center, ShootVelocity, ModContent.ProjectileType<RaiderGunDash>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, ai1: _swingDir);
+            SoundEngine.PlaySound(CWRSound.Dash, Owner.Center);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                float _swingDir = Owner.Center.X + ShootVelocity.X > Owner.position.X ? 1 : -1;
+                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity, ModContent.ProjectileType<RaiderGunDash>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, ai1: _swingDir);
+            }
         }
     }
 
@@ -533,9 +547,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnKill(int timeLeft) {
-            //冲刺结束，准备强化射击\n            SoundEngine.PlaySound(CWRSound.Gun_Clipout, Owner.Center);\n            RaiderGun.Dash = true;
-            RaiderGun.DontDashTime += RaiderGun.DashCooling;
+            //冲刺结束，强化射击就绪，进入冲刺冷却
+            SoundEngine.PlaySound(CWRSound.Gun_Clipout, Owner.Center);
             CWRPlayer modPlayer = Owner.CWR();
+            modPlayer.RaiderGunDashReady = true;
+            modPlayer.RaiderGunDashCooldown += RaiderGun.DashCooling;
             modPlayer.IsRotatingDuringDash = false;
             modPlayer.RotationResetCounter = 15;
             modPlayer.DashCooldownCounter = 35;

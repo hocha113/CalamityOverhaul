@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,10 +17,24 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CloneDefaults(CWRID.Item_Onyxia);
             Item.damage = 62;
             Item.useAmmo = AmmoID.Snowball;
-            Item.UseSound = SoundID.Item36 with { Pitch = 0.2f };
-            Item.SetHeldProj<AvalancheM60Held>();
+            Item.shoot = ProjectileID.Bullet;
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.value = Item.buyPrice(0, 4, 75, 0);
         }
+
+        //物品使用本身不消耗雪球，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<AvalancheM60Held>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<AvalancheM60Held>(player, source);
 
         public override void AddRecipes() {
             if (!CWRRef.Has) {
@@ -42,28 +57,37 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class AvalancheM60Held : BaseGun
+    internal class AvalancheM60Held : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "AvalancheM60Held";
         public override int TargetID => ModContent.ItemType<AvalancheM60>();
+        public override SoundStyle? ShootSound => SoundID.Item36 with { Pitch = 0.2f };
+        /// <summary>过热爆发的剩余帧数</summary>
         private int onFireTime;
+        /// <summary>爆发期间的帧动画维持计时</summary>
         private int onFireTime2;
+        /// <summary>持续射击的热度（数值越低射得越久），用于解锁强化弹与过热爆发</summary>
         private int fireRateValue = 20;
-        public override void SetRangedProperty() {
+        //过热爆发未结束时枪体不要消失
+        public override bool StayAlive() => onFireTime > 0;
+        public override void SetGunProperty() {
             GunPressure = 0;
             HandIdleDistanceX = 54;
             HandIdleDistanceY = -4;
             HandFireDistanceX = 55;
             HandFireDistanceY = -8;
             AngleFirearmRest = -6;
-            ShootPosNorlLengValue = 0;
-            ShootPosToMouLengValue = 18;
+            MuzzleForwardOffset = 18;
+            MuzzleNormalOffset = 0;
             RecoilRetroForceMagnitude = 5;
-            EnableRecoilRetroEffect = true;
         }
 
-        public override void PostInOwner() {
-            if (onFire) {
+        public override void AI() {
+            bool firing = WantsFireLeft && HasAmmo;
+            UpdateHeldPose(firing);
+
+            //帧动画
+            if (firing) {
                 VaultUtils.ClockFrame(ref Projectile.frame, 2, 3);
             }
             else {
@@ -74,6 +98,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 onFireTime2--;
             }
 
+            //过热爆发期间的演出：呼啸声、喷雪、枪体狂震
             if (onFireTime > 0) {
                 SoundEngine.PlaySound(SoundID.Item23 with { Pitch = (60 - onFireTime) * 0.15f, MaxInstances = 13, Volume = 0.2f + (60 - onFireTime) * 0.006f }, Projectile.Center);
                 if (onFireTime % 15 == 0) {
@@ -87,22 +112,25 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     Projectile.frame = 4;
                 }
 
-                OffsetPos += VaultUtils.RandVr(8f);
+                RecoilOffset += VaultUtils.RandVr(8f);
                 onFireTime--;
             }
-            else {
-                if (fireRateValue > 30) {
-                    fireRateValue = 15;
-                }
+            else if (fireRateValue > 30) {
+                fireRateValue = 15;
             }
+
+            if (firing && FireCooldown <= 0) {
+                Fire();
+            }
+            Time++;
         }
 
-        public override void HanderSpwanDust() {
-            SpawnGunFireDust(ShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
-        }
+        private void Fire() {
+            SnapToAimPose();
+            CreateFireLight();
+            ConsumeAmmo();
 
-        public override void FiringShoot() {
-            _ = UpdateConsumeAmmo();
+            //过热爆发期间的暴风雪扫射
             if (onFireTime > 0) {
                 GunPressure = 0.6f;
                 ControlForce = 0.1f;
@@ -110,27 +138,33 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 RecoilOffsetRecoverValue = 0.85f;
 
                 SoundEngine.PlaySound(CWRSound.Gun_50CAL_Shoot with { Pitch = -0.5f, Volume = 0.3f });
+                CreateRecoil();
 
-                for (int i = 0; i < 18; i++) {
-                    Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.75f, 1.12f)
-                    , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
-                    proj.scale += Main.rand.NextFloat(0.3f);
-                    if (Main.rand.NextBool(2)) {
-                        Projectile proj2 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f)
-                    , CWRID.Proj_FlurrystormIceChunk, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                        proj2.extraUpdates += 2;
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    for (int i = 0; i < 18; i++) {
+                        Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.75f, 1.12f)
+                        , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
+                        proj.scale += Main.rand.NextFloat(0.3f);
+                        proj.netUpdate = true;
+                        if (Main.rand.NextBool(2)) {
+                            Projectile proj2 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.75f, 1.12f)
+                        , CWRID.Proj_FlurrystormIceChunk, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                            proj2.extraUpdates += 2;
+                            proj2.netUpdate = true;
+                        }
+                    }
+                    for (int i = 0; i < 33; i++) {
+                        Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.15f, 1.12f)
+                        , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage / 6, WeaponKnockback, Owner.whoAmI, 0);
                     }
                 }
-                for (int i = 0; i < 33; i++) {
-                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.15f, 1.12f)
-                    , ModContent.ProjectileType<IceExplosionFriend>(), WeaponDamage / 6, WeaponKnockback, Owner.whoAmI, 0);
-                }
 
-                ShootCoolingValue = 15;
+                FireCooldown = 15;
                 fireRateValue = 8;
                 return;
             }
 
+            //常规射击
             GunPressure = 0;
             RecoilRetroForceMagnitude = 5;
             RecoilOffsetRecoverValue = 0.5f;
@@ -139,26 +173,38 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 fireRateValue--;
             }
 
-            for (int i = 0; i < 3; i++) {
-                Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
-                    , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
-                proj.extraUpdates += 1;
-                if (Main.rand.NextBool(2)) {
-                    proj.damage /= 3;
-                }
-                if (Main.rand.NextBool(4) && fireRateValue <= 15) {
-                    proj.scale += Main.rand.NextFloat(0.35f);
-                }
-                if (Main.rand.NextBool(3) && fireRateValue <= 10) {
+            PlayShootSound();
+            CreateRecoil();
+            SpawnGunFireDust(ShootPos, ShootVelocity, splNum: 3, dustID1: 76, dustID2: 149, dustID3: 76);
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                for (int i = 0; i < 3; i++) {
+                    Projectile proj = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity.RotatedByRandom(0.12f) * Main.rand.NextFloat(0.7f, 1.1f)
+                        , AmmoTypes, WeaponDamage / 2, WeaponKnockback, Owner.whoAmI, 0);
                     proj.extraUpdates += 1;
-                    proj.penetrate += 5;
-                    proj.usesLocalNPCImmunity = true;
-                    proj.localNPCHitCooldown = -1;
+                    if (Main.rand.NextBool(2)) {
+                        proj.damage /= 3;
+                    }
+                    if (Main.rand.NextBool(4) && fireRateValue <= 15) {
+                        proj.scale += Main.rand.NextFloat(0.35f);
+                    }
+                    if (Main.rand.NextBool(3) && fireRateValue <= 10) {
+                        proj.extraUpdates += 1;
+                        proj.penetrate += 5;
+                        proj.usesLocalNPCImmunity = true;
+                        proj.localNPCHitCooldown = -1;
+                    }
+                    proj.netUpdate = true;
                 }
+
+                Projectile proj3 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity, ModContent.ProjectileType<ExtremeColdHail>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ShootVelocity.Y);
+                proj3.rotation = proj3.velocity.ToRotation() + MathHelper.PiOver2;
+                proj3.netUpdate = true;
             }
 
-            Projectile proj3 = Projectile.NewProjectileDirect(Source, ShootPos, ShootVelocity, ModContent.ProjectileType<ExtremeColdHail>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0, ShootVelocity.Y);
-            proj3.rotation = proj3.velocity.ToRotation() + MathHelper.PiOver2;
+            SetFireCooldown();
+
+            //持续压制足够久后触发过热爆发
             if (fireRateValue <= 8) {
                 fireIndex++;
                 if (fireIndex > 20) {

@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using Terraria.ModLoader;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -9,11 +10,11 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>
-    /// 转阶段演出：生命过半后机体过载——四条机械臂依次殉爆（由机械臂侧按各自延迟自毁），
-    /// 警报与连环爆炸中头部升至高空，注能修复装甲并召回双子魔眼，
+    /// 转阶段演出：机体过载——四条机械臂依次殉爆（由机械臂侧按各自延迟自毁），
+    /// 警报与连环爆炸中头部升至高空，注能修复装甲，
     /// 最后一声咆哮宣告狂暴阶段（<see cref="PrimePhase.Rage"/>）开始。
-    /// <para>稳定性约定：回血与双子召唤<b>无条件执行</b>，不依赖任何难度判定；
-    /// 双子召唤失败会逐帧重试；回血在窗口结束时硬性补满兜底。</para>
+    /// <para>稳定性约定：回血<b>无条件执行</b>，不依赖任何难度判定；
+    /// 回血在窗口结束时硬性补满兜底。</para>
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.PhaseTransition, typeof(PrimeStateContext))]
     internal class PrimePhaseTransitionState : PrimeStateBase
@@ -23,29 +24,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
         /// <summary>殉爆窗口长度，机械臂的自毁延迟都安排在该窗口内</summary>
         internal const int DetonationWindow = 80;
-        /// <summary>开始尝试召唤双子的重启帧</summary>
-        private const int EyeSummonTick = 10;
 
         private bool healStarted;
-        private bool eyesSummoned;
 
         public override void OnEnter(PrimeStateContext context) {
             base.OnEnter(context);
             healStarted = false;
-            eyesSummoned = false;
 
-            //进入转阶段立刻挂出狂暴阶段标记（与旧版 KillArm 语义一致）：
-            //  1. 期间召唤的双子读到 ai[0]==Rage，会以"三阶段随从"身份入场，
-            //     而不是被误判成一阶段随从后因头部血量过低立即撤离
-            //  2. 全局裁决要求 phase==Armed 才能进入转阶段，天然防止重复触发
+            //进入转阶段立刻挂出狂暴阶段标记：
+            //全局裁决要求 phase==Armed 才能进入转阶段，天然防止重复触发
             context.Npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Rage;
-
-            //清掉残留的传送恢复计时，避免转阶段结束后又被拽进一次无意义的整备
-            context.TeleportTimer = 0;
 
             if (!VaultUtils.isClient) {
                 context.Npc.TargetClosest();
                 context.Npc.netUpdate = true;
+                for (int i = 0; i < Main.maxProjectiles; i++) {
+                    Projectile p = Main.projectile[i];
+                    if (p.active && p.hostile) {
+                        p.Kill();
+                    }
+                }
+            }
+            if (!VaultUtils.isServer) {
+                PrimeScreenEffects.PushShockRing(context.Npc.Center, 0.7f, 0.4f, 20);
             }
         }
 
@@ -76,11 +77,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             Timer++;
             if (Timer >= totalDuration) {
-                //兜底：无论中途发生什么，离开转阶段时必定满血、双子召唤至少尝试过一次
+                //兜底：无论中途发生什么，离开转阶段时必定满血
                 npc.life = npc.lifeMax;
-                if (!eyesSummoned && !VaultUtils.isClient) {
-                    eyesSummoned = context.Owner.SpawnEye();
-                }
 
                 npc.dontTakeDamage = false;
                 npc.damage = npc.defDamage * 2;
@@ -88,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     SoundEngine.PlaySound(SoundID.Roar, npc.Center);
                 }
                 if (!VaultUtils.isClient) {
-                    return new PrimeRageHoverState();
+                    return new PrimeRageConnectorState();
                 }
             }
             return null;
@@ -126,7 +124,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, new Color(255, 120, 50).ToVector3() * 0.9f);
         }
 
-        /// <summary>过载重启：注能回血并召回双子魔眼——全难度无条件执行</summary>
+        /// <summary>过载重启：注能回血——全难度无条件执行</summary>
         private void UpdateOverloadReboot(PrimeStateContext context) {
             NPC npc = context.Npc;
             int healTime = Timer - DetonationWindow;
@@ -137,12 +135,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
-            }
-
-            //召回双子魔眼协同狂暴阶段：到点后逐帧重试直到成功
-            //（SpawnEye 内部自行处理 Boss急速/Mechdusa/客户端的跳过规则）
-            if (!eyesSummoned && healTime >= EyeSummonTick && !VaultUtils.isClient) {
-                eyesSummoned = context.Owner.SpawnEye();
             }
 
             //按"剩余缺口/剩余帧数"动态补血，规避整数除法误差，保证窗口结束时恰好满血

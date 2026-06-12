@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,6 +18,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             Item.useTime = 4;
             Item.useAnimation = 4;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ModContent.ProjectileType<StarshipHeld>();
             Item.shootSpeed = 18f;
             Item.knockBack = 2.5f;
             Item.noMelee = true;
@@ -25,8 +28,20 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             Item.UseSound = null;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(1, 80, 0, 0);
-            Item.SetHeldProj<StarshipHeld>();
         }
+
+        //右键用于装填彗星特殊弹
+        public override bool AltFunctionUse(Player player) => true;
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火与装填时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<StarshipHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<StarshipHeld>(player, source);
 
         public override void AddRecipes() {
             if (CWRRef.Has && CWRID.Item_Starmada > 0 && CWRID.Item_ShadowspecBar > 0) {

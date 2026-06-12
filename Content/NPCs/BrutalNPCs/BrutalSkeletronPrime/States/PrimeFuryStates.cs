@@ -35,8 +35,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (!Main.IsItDay() && !VaultUtils.isClient) {
                 npc.damage = npc.defDamage;
                 return npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage
-                    ? new PrimeRageHoverState()
-                    : new PrimeCommandHoverState();
+                    ? new PrimeRageConnectorState()
+                    : new PrimeCommandSequenceState();
             }
             return null;
         }
@@ -92,8 +92,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (!IsProvoking(context.Target) && !VaultUtils.isClient) {
                 npc.damage = npc.defDamage;
                 return npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage
-                    ? new PrimeRageHoverState()
-                    : new PrimeCommandHoverState();
+                    ? new PrimeRageConnectorState()
+                    : new PrimeCommandSequenceState();
             }
             return null;
         }

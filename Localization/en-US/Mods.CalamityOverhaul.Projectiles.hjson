@@ -107,11 +107,8 @@ OceanCurrent.DisplayName: Ocean Current
 PowerSoundEgg.DisplayName: Resonant Egg
 CrabulonFriendHitbox.DisplayName: Crabulon Spore
 Fireball.DisplayName: Fireball
-CrossPrediction.DisplayName: Cross Prediction
 DeadLaser.DisplayName: Death Laser
-Mechanicalworm.DisplayName: Mechanical Worm
-Probe.DisplayName: Probe
-SetPosingStarm.DisplayName: Posing Starm
+PrimeTelegraphLine.DisplayName: Prime Telegraph
 Hit.DisplayName: Impact
 SpwanTextProj.DisplayName: Manifesting Text
 DragonsWordCut.DisplayName: Dragon's Word Slash

@@ -18,8 +18,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         ProbeMatrix = 7,
         Despawn = 8,
         Death = 9,
-        /// <summary>大招：轨道绞杀（撤离高空→交叉俯冲→终结贯穿）</summary>
+        /// <summary>低血量大招：轨道绞杀（撤离高空→交叉俯冲→终结贯穿）</summary>
         OrbitalStrike = 10,
+        /// <summary>普攻：俯冲贯穿（短整备+2~3趟预警线俯冲，无撤离静默幕）</summary>
+        DiveStrike = 11,
+        /// <summary>普攻：钻地伏击（入土潜行→地表尘迹→喷发预警→破土直射）</summary>
+        BurrowAmbush = 12,
+        /// <summary>普攻：回旋绞杀（迟滞后撤→突入→环绕绞索→环心贯穿冲出）</summary>
+        LoopLash = 13,
     }
 
     /// <summary>

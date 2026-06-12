@@ -252,15 +252,39 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
         }
 
         /// <summary>
-        /// 相机冲击震动（遵守屏幕震动设置，服务端跳过）
+        /// 相机冲击震动（遵守屏幕震动设置，服务端跳过）。
+        /// <paramref name="direction"/> 指定震动主轴（如冲刺/俯冲向量），缺省为随机方向
         /// </summary>
-        public static void CameraPunch(Vector2 pos, float strength, int frames, string uniqueId = "DestroyerMotion") {
+        public static void CameraPunch(Vector2 pos, float strength, int frames,
+            string uniqueId = "DestroyerMotion", Vector2? direction = null) {
             if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
                 return;
             }
-            PunchCameraModifier modifier = new PunchCameraModifier(pos, Main.rand.NextVector2Unit(),
+            Vector2 dir = direction.HasValue
+                ? direction.Value.SafeNormalize(Vector2.UnitY)
+                : Main.rand.NextVector2Unit();
+            PunchCameraModifier modifier = new PunchCameraModifier(pos, dir,
                 strength, 8f, frames, 2800f, uniqueId);
             Main.instance.CameraModifiers.Add(modifier);
+        }
+
+        /// <summary>
+        /// 自给定位置向下寻找首个实体地表，找不到时回退到下方400像素（钻地/贯穿落点共用）
+        /// </summary>
+        public static Vector2 FindGroundBelow(Vector2 from) {
+            int tileX = (int)(from.X / 16f);
+            int tileY = Math.Max((int)(from.Y / 16f), 10);
+            for (int i = 0; i < 70; i++) {
+                int y = tileY + i;
+                if (y >= Main.maxTilesY - 10) {
+                    break;
+                }
+                Tile tile = Framing.GetTileSafely(tileX, y);
+                if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
+                    return new Vector2(from.X, y * 16f);
+                }
+            }
+            return from + new Vector2(0, 400f);
         }
 
         /// <summary>

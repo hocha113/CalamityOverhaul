@@ -49,40 +49,40 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             int chargeTime = ChargeTime(context);
             float progress = Math.Min(Timer / (float)chargeTime, 1f);
 
-            //对准
+            //对准：转向率随蓄力进度衰减——后撤的同时可见地"锁线"
             dashDirection = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
-            FaceTarget(npc, player.Center, 0.18f);
+            FaceTarget(npc, player.Center, MathHelper.Lerp(0.26f, 0.05f, progress));
 
-            //S形盘蛇后撤：沿反方向退开并左右摆动，身体随头部压缩出蓄势弯
-            float coil = (float)Math.Sin(progress * MathHelper.Pi);
-            Vector2 back = -dashDirection;
-            Vector2 lateral = dashDirection.RotatedBy(MathHelper.PiOver2)
-                * (float)Math.Sin(progress * MathHelper.TwoPi) * 0.65f;
-            Vector2 desired = (back + lateral).SafeNormalize(Vector2.Zero) * (9f + 9f * coil);
-            npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.12f);
+            //迟滞后撤：前70%近乎悬停（轻微漂离），pow(t,8)末段猛然吸气式后缩
+            float reel = (float)Math.Pow(progress, 8) * 30f;
+            Vector2 desired = -dashDirection * (1.6f + reel);
+            npc.velocity = Vector2.Lerp(npc.velocity, desired, 0.22f);
 
             //蓄力进度 + 瞄准线（DestroyerRenderHelper本地绘制）
             context.SetChargeState(1, progress);
             context.DashDirection = dashDirection;
 
+            //下颚：蓄力期弹性张开威吓，释放前12帧猛然咬合
+            context.JawCommand = Timer > chargeTime - 12 ? 2 : 1;
+
             //充能波从尾部涌向头部：能量向头部汇聚
             DestroyerChargeWave.Push(npc.whoAmI, 1f - progress, 0.22f, 0.35f + 0.65f * progress);
 
-            //蓄力粒子（仅客户端）
-            if (!VaultUtils.isServer && Timer % 3 == 0) {
-                for (int i = 0; i < (int)(progress * 5) + 1; i++) {
-                    Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(46, 46);
-                    Dust dust = Dust.NewDustDirect(dustPos, 1, 1,
-                        DustID.FireworkFountain_Red, 0, 0, 100, default, 1.5f + progress);
-                    dust.noGravity = true;
-                    dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (2f + progress * 4f);
+            //蓄力粒子与震动在72%进度硬切——临爆静默，"吸气后才有尖叫"
+            if (progress < 0.72f && !VaultUtils.isServer) {
+                if (Timer % 3 == 0) {
+                    for (int i = 0; i < (int)(progress * 5) + 1; i++) {
+                        Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(46, 46);
+                        Dust dust = Dust.NewDustDirect(dustPos, 1, 1,
+                            DustID.FireworkFountain_Red, 0, 0, 100, default, 1.5f + progress);
+                        dust.noGravity = true;
+                        dust.velocity = (npc.Center - dustPos).SafeNormalize(Vector2.Zero) * (2f + progress * 4f);
+                    }
                 }
-            }
-
-            //蓄力后期震动（仅客户端视觉效果，不影响实际位置）
-            if (progress > 0.65f && !VaultUtils.isServer) {
-                float shakeMagnitude = (progress - 0.65f) * 5f;
-                npc.position += Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude);
+                if (progress > 0.4f) {
+                    float shakeMagnitude = (progress - 0.4f) * 5f;
+                    npc.position += Main.rand.NextVector2Circular(shakeMagnitude, shakeMagnitude);
+                }
             }
 
             Timer++;

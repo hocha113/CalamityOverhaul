@@ -43,6 +43,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         public bool IsDeathMode { get; set; }
         //固定出招顺序的当前索引
         public int AttackPhaseIndex { get; set; }
+        /// <summary>激怒出招环是否已启动（首次过50%血量时归零出招索引，保证激怒首招为轨道绞杀）</summary>
+        public bool EnrageCycleStarted { get; set; }
         /// <summary>
         /// 死亡演出是否已经播放完毕。<see cref="States.DestroyerDeathState"/> 在演出结束时置为 true，
         /// 头部 AI 的 CheckDead 据此放行真正的死亡（之前一律锁血拦截）。
@@ -72,6 +74,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         public int GlowFrame { get; set; }
         public bool OpenMouth { get; set; }
         public int DontOpenMouthTime { get; set; }
+        /// <summary>
+        /// 下颚指令（每帧由状态重新声明，头部AI在状态机更新前清零）：
+        /// 0=自动（按距离/朝向判定） 1=强制张开（蓄力威吓） 2=猛然咬合（释放前12帧）
+        /// </summary>
+        public int JawCommand { get; set; }
         #endregion
 
         public void ResetChargeState() {

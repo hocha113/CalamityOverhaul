@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 npc.timeLeft = 10;
             }
 
-            //编队接管：风暴期收拢 / 冲撞与白昼狂暴期环绕成旋转护盾
+            //编队接管：冲撞与白昼狂暴期环绕成旋转护盾
             if (HandleFormationOverride(headState)) {
                 return false;
             }
@@ -183,39 +183,75 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         /// <summary>
-        /// 编队接管：
-        /// <list type="bullet">
-        /// <item>毁灭者领域存在或头部传送恢复期 → 收拢为贴身十字编队</item>
-        /// <item>头部冲撞或白昼狂暴 → 拉开为高速旋转护盾编队</item>
-        /// </list>
+        /// 编队接管：头部冲撞或白昼狂暴 → 拉开为高速旋转护盾编队
         /// </summary>
         private bool HandleFormationOverride(PrimeStateIndex headState) {
-            bool fold = HeadPrimeAI.setPosingStarmCount > 0
-                || headState == PrimeStateIndex.TeleportRecover;
-            bool spin = headState is PrimeStateIndex.SpinDash or PrimeStateIndex.RageDash or PrimeStateIndex.DayEnrage;
+            PrimeCommandKind command = HeadPrimeAI.GetActiveCommand(head);
 
-            if (!fold && !spin) {
+            if (headState == PrimeStateIndex.TetherSpin) {
+                return ApplyTetherFormation();
+            }
+            if (headState == PrimeStateIndex.BarrageCommand) {
+                return ApplyBarrageFormation();
+            }
+            if (headState == PrimeStateIndex.CrossExecute || command == PrimeCommandKind.CrossExecute) {
+                return ApplyCrossFormation();
+            }
+
+            bool spin = headState is PrimeStateIndex.SpinDash or PrimeStateIndex.RageDash or PrimeStateIndex.DayEnrage;
+            if (!spin) {
                 return false;
             }
 
+            return ApplyOrbitFormation(head.width * 2, 0.5f);
+        }
+
+        private bool ApplyOrbitFormation(float radius, float lerp) {
             npc.dontTakeDamage = true;
             npc.damage = 0;
             npc.velocity = Vector2.Zero;
+            HeadPrimeAI headOverride = head.GetOverride<HeadPrimeAI>();
+            float rot = headOverride.ai[PrimeAiSlots.OverrideOrbitClock] * 0.2f + MathHelper.TwoPi / 4 * FormationIndex;
+            Vector2 toPoint = head.Center + rot.ToRotationVector2() * radius;
+            float origRot = head.Center.To(npc.Center).ToRotation();
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, lerp);
+            npc.rotation = origRot - MathHelper.PiOver2;
+            return true;
+        }
 
-            if (fold) {
-                float rot = MathHelper.TwoPi / 4 * FormationIndex + head.rotation;
-                Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width;
-                npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.2f);
-                npc.rotation = head.Center.To(npc.Center).ToRotation() - MathHelper.PiOver2;
-            }
-            else {
-                HeadPrimeAI headOverride = head.GetOverride<HeadPrimeAI>();
-                float rot = headOverride.ai[PrimeAiSlots.OverrideOrbitClock] * 0.2f + MathHelper.TwoPi / 4 * FormationIndex;
-                Vector2 toPoint = head.Center + rot.ToRotationVector2() * head.width * 2;
-                float origRot = head.Center.To(npc.Center).ToRotation();
-                npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.5f);
-                npc.rotation = origRot - MathHelper.PiOver2;
-            }
+        private bool ApplyTetherFormation() {
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            npc.velocity = Vector2.Zero;
+            float rot = MathHelper.TwoPi / 4 * FormationIndex + head.rotation;
+            Vector2 corner = head.Center + rot.ToRotationVector2() * 280f;
+            npc.Center = Vector2.Lerp(npc.Center, corner, 0.18f);
+            npc.rotation = head.Center.To(npc.Center).ToRotation() - MathHelper.PiOver2;
+            return true;
+        }
+
+        private bool ApplyBarrageFormation() {
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            float offset = (FormationIndex - 1.5f) * 70f;
+            Vector2 toPoint = head.Center + new Vector2(offset, 90f);
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.22f);
+            npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
+            return true;
+        }
+
+        private bool ApplyCrossFormation() {
+            npc.dontTakeDamage = true;
+            npc.damage = 0;
+            Vector2 offset = FormationIndex switch {
+                0 => new Vector2(-320f, 0f),
+                1 => new Vector2(320f, 0f),
+                2 => new Vector2(0f, -280f),
+                _ => new Vector2(0f, 280f),
+            };
+            Vector2 toPoint = player.Center + offset;
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.14f);
+            npc.rotation = (player.Center - npc.Center).ToRotation() - MathHelper.PiOver2;
             return true;
         }
 

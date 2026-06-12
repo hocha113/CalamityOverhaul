@@ -1,8 +1,9 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -26,47 +27,70 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.knockBack = 3.5f;
             Item.shoot = ModContent.ProjectileType<SandSmallTornado>();
             Item.shootSpeed = 9;
-            Item.UseSound = SoundID.Item20;
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Blue;
             Item.value = Item.buyPrice(0, 0, 80, 15);
-            Item.SetHeldProj<MelodyTheSandHeld>();
         }
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<MelodyTheSandHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<MelodyTheSandHeld>(player, source);
     }
 
-    internal class MelodyTheSandHeld : BaseMagicGun
+    internal class MelodyTheSandHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
         public override int TargetID => ModContent.ItemType<MelodyTheSand>();
-        public override void SetMagicProperty() {
+        /// <summary>开火后的余韵进度，用于让法器在出手后短暂胀大发光</summary>
+        private int glowPulse;
+        public override void SetGunProperty() {
+            Projectile.DamageType = DamageClass.Magic;
             HandFireDistanceX = 18;
             HandFireDistanceY = 0;
-            ShootPosNorlLengValue = -8;
-            ShootPosToMouLengValue = 10;
+            MuzzleForwardOffset = 10;
+            MuzzleNormalOffset = -8;
             GunPressure = 0;
             ControlForce = 0.05f;
-            RecoilRetroForceMagnitude = 0;
             RecoilOffsetRecoverValue = 0.6f;
-            EnableRecoilRetroEffect = true;
-            FiringDefaultSound = false;
-            CanCreateSpawnGunDust = false;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
+            AlwaysAimPose = true;
         }
 
-        public override void PreInOwner() {
-            if (fireIndex > 0) {
-                fireIndex--;
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (glowPulse > 0) {
+                glowPulse--;
             }
+            if (CanFire) {
+                HoldManaRegenDelay();
+            }
+
+            if (WantsFireLeft && FireCooldown <= 0 && PayMana()) {
+                Fire();
+                SetFireCooldown();
+            }
+            Time++;
         }
 
-        public override void FiringShoot() {
-            SoundStyle baseSound = SoundID.Item20;
-            SoundEngine.PlaySound(baseSound with { Pitch = -0.2f, Volume = 0.85f }, Projectile.Center);
+        private void Fire() {
+            glowPulse = 24;
+            SnapToAimPose();
+            SoundEngine.PlaySound(SoundID.Item20 with { Pitch = -0.2f, Volume = 0.85f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item34 with { Pitch = 0.35f, Volume = 0.35f }, Projectile.Center);
+            CreateFireLight();
 
             Vector2 vel = ShootVelocity;
-            Projectile.NewProjectile(Source, ShootPos, vel
-                , ModContent.ProjectileType<SandSmallTornado>()
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Source, ShootPos, vel
+                    , ModContent.ProjectileType<SandSmallTornado>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            }
 
             //枪口卷起的细沙与金光
             for (int i = 0; i < 10; i++) {
@@ -77,13 +101,11 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        public override void SetShootAttribute() => fireIndex = 24;
-
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Color color = Color.Gold;
             color.A = 0;
-            float slp = 1 + 0.012f * fireIndex;
+            float slp = 1 + 0.012f * glowPulse;
             Main.EntitySpriteDraw(TextureValue, drawPos, null, color * 0.45f
                 , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);

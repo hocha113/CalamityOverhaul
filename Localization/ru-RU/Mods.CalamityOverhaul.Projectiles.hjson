@@ -107,11 +107,8 @@ OceanCurrent.DisplayName: Океаническое течение
 PowerSoundEgg.DisplayName: Яйцо ритма
 CrabulonFriendHitbox.DisplayName: Спора крабового гриба
 Fireball.DisplayName: Огненный шар
-CrossPrediction.DisplayName: Перекрестное предсказание
 DeadLaser.DisplayName: Мертвый лазер
-Mechanicalworm.DisplayName: Механический червь
-Probe.DisplayName: Зонд
-SetPosingStarm.DisplayName: Звездный шторм
+// PrimeTelegraphLine.DisplayName: Prime Telegraph
 Hit.DisplayName: Удар
 SpwanTextProj.DisplayName: Слово проявления
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез

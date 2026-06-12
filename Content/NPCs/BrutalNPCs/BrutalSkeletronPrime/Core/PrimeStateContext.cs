@@ -24,9 +24,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public bool SawAlive { get; set; }
         public bool LaserAlive { get; set; }
         public bool NoArm => !CannonAlive && !ViceAlive && !SawAlive && !LaserAlive;
-        public bool NoEye { get; set; }
-        /// <summary>场上 SetPosingStarm（毁灭者协奏领域）数量</summary>
-        public int StormCount { get; set; }
         #endregion
 
         #region 出招编排
@@ -65,8 +62,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         /// <summary>编队旋转时钟（头部每帧自增，供机械臂环绕编队取角）</summary>
         public ref float OrbitClock => ref Owner.ai[PrimeAiSlots.OverrideOrbitClock];
-        /// <summary>传送恢复计时（由 SetPosingStarm.OnKill 写入）</summary>
-        public ref float TeleportTimer => ref Owner.ai[PrimeAiSlots.OverrideTeleportTimer];
 
         public void ResetChargeState() {
             IsCharging = false;

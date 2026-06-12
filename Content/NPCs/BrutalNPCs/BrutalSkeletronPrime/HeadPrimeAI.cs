@@ -41,8 +41,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         /// <summary>目标失效判定距离</summary>
         private const int MaxFindDistance = 6000;
 
-        /// <summary>场上 SetPosingStarm（毁灭者协奏领域）数量，每帧刷新</summary>
-        internal static int setPosingStarmCount;
         /// <summary>当前正在进行死亡演出的头部 whoAmI（供运镜/玩家锁定快速查询），无则为 -1</summary>
         internal static int ActivePerformanceHead = -1;
 
@@ -189,7 +187,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.reflectsProjectiles = false;
             npc.dontTakeDamage = false;
 
-            CountStormProjectiles();
             FindTarget();
             UpdateStateContext();
             EvaluateGlobalTransitions();
@@ -211,16 +208,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             return false;
-        }
-
-        private void CountStormProjectiles() {
-            setPosingStarmCount = 0;
-            int typeSetPosingStarm = ModContent.ProjectileType<SetPosingStarm>();
-            foreach (var value in Main.ActiveProjectiles) {
-                if (value.type == typeSetPosingStarm) {
-                    setPosingStarmCount++;
-                }
-            }
         }
 
         private void FindTarget() {
@@ -255,8 +242,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             stateContext.BossRush = CWRRef.GetBossRushActive();
             stateContext.DeathMode = CWRRef.GetDeathMode() || stateContext.BossRush;
             stateContext.MasterMode = Main.masterMode || stateContext.BossRush;
-            stateContext.StormCount = setPosingStarmCount;
-            stateContext.NoEye = !NPC.AnyNPCs(NPCID.Retinazer) && !NPC.AnyNPCs(NPCID.Spazmatism);
 
             CheakRam(out bool cannonAlive, out bool viceAlive, out bool sawAlive, out bool laserAlive);
             stateContext.CannonAlive = cannonAlive;
@@ -267,7 +252,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>
         /// 全局转移裁决（仅服务端/单人端驱动，客户端经状态槽同步）。
-        /// 优先级：死亡演出 > 转阶段 > 白昼狂暴 > 金币枪狂怒 > 传送恢复
+        /// 优先级：死亡演出 > 转阶段 > 白昼狂暴 > 金币枪狂怒
         /// </summary>
         private void EvaluateGlobalTransitions() {
             if (VaultUtils.isClient || stateMachine?.CurrentState == null) {
@@ -287,12 +272,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            //转阶段：武装阶段生命过半或四肢被全歼，必定触发。
-            //不限定来源状态（毁灭者领域存续期间除外），优先级高于白昼狂暴/金币狂怒，
-            //保证阶段推进在任何战斗路径下都不会被卡住
-            if (phase == PrimePhase.Armed && stateContext.StormCount == 0
-                && (npc.life < npc.lifeMax / 2 || stateContext.NoArm)
-                && current is not PrimeMechStormState) {
+            //转阶段：武装阶段生命 ≤55% 或存活臂 ≤1，必定触发。
+            if (phase == PrimePhase.Armed && ShouldPhaseTransition()) {
                 stateMachine.ChangeState(new PrimePhaseTransitionState());
                 return;
             }
@@ -309,15 +290,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //金币枪狂怒
             if (PrimeCoinGunFuryState.IsProvoking(targetPlayer) && current is not PrimeCoinGunFuryState) {
                 stateMachine.ChangeState(new PrimeCoinGunFuryState());
-                return;
-            }
-            if (current is PrimeCoinGunFuryState) {
-                return;
-            }
-
-            //传送恢复（由 SetPosingStarm.OnKill 写入计时）
-            if (ai[PrimeAiSlots.OverrideTeleportTimer] > 0 && current is not PrimeTeleportRecoverState) {
-                stateMachine.ChangeState(new PrimeTeleportRecoverState());
             }
         }
 
@@ -349,14 +321,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            //登场或传送恢复期间不施加滤镜，保持原始演出
-            if (current is PrimeIntroState or PrimeTeleportRecoverState
+            //登场期间不施加滤镜，保持原始演出
+            if (current is PrimeIntroState
                 || npc.ai[PrimeAiSlots.HeadPhase] <= PrimePhase.Intro) {
                 return;
             }
 
             //冲撞突进——白热高速
-            if (current is PrimeDashStateBase && npc.velocity.LengthSquared() > 12f * 12f) {
+            if (current is PrimeSpinDashState or PrimeRageDashState && npc.velocity.LengthSquared() > 12f * 12f) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Dashing, 1f, 1f);
                 return;
             }
@@ -396,25 +368,29 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return (PrimeStateIndex)(int)head.ai[PrimeAiSlots.HeadStateSlot];
         }
 
-        /// <summary>头部是否处于冲撞类状态（双子据此进入协同压制）</summary>
-        internal static bool IsDashState(NPC head) {
-            return GetStateIndex(head) is PrimeStateIndex.SpinDash or PrimeStateIndex.RageDash;
-        }
-
         /// <summary>头部是否正在脱战离场</summary>
         internal static bool IsDespawnState(NPC head) {
             return GetStateIndex(head) == PrimeStateIndex.Despawn;
         }
 
-        /// <summary>头部是否正在释放弹幕墙（双子据此退至侧翼高位）</summary>
-        internal static bool IsLaserWallState(NPC head) {
-            return GetStateIndex(head) == PrimeStateIndex.LaserWall;
-        }
-
         /// <summary>四肢是否处于收拢/环绕编队（机械臂连接件改用紧凑绘制）</summary>
         internal static bool InCompactFormation(NPC head) {
             return GetStateIndex(head) is PrimeStateIndex.SpinDash or PrimeStateIndex.RageDash
-                or PrimeStateIndex.DayEnrage or PrimeStateIndex.TeleportRecover or PrimeStateIndex.PhaseTransition;
+                or PrimeStateIndex.BarrageCommand or PrimeStateIndex.TetherSpin
+                or PrimeStateIndex.DayEnrage or PrimeStateIndex.PhaseTransition;
+        }
+
+        internal static PrimeCommandKind GetActiveCommand(NPC head) {
+            if (head == null || !head.active) {
+                return PrimeCommandKind.None;
+            }
+            return (PrimeCommandKind)(int)head.ai[PrimeAiSlots.HeadCommandSlot];
+        }
+
+        private bool ShouldPhaseTransition() {
+            int aliveArms = (stateContext.CannonAlive ? 1 : 0) + (stateContext.ViceAlive ? 1 : 0)
+                + (stateContext.SawAlive ? 1 : 0) + (stateContext.LaserAlive ? 1 : 0);
+            return npc.life <= npc.lifeMax * 0.45f || aliveArms <= 1;
         }
 
         internal static bool DontReform() {
@@ -511,46 +487,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 int dust = Dust.NewDust(npc.Center + VaultUtils.RandVr(0, npc.width), 1, 1, DustID.FireworkFountain_Red, dustV.X, dustV.Y);
                 Main.dust[dust].scale = Main.rand.NextFloat(1, 6);
             }
-        }
-
-        /// <summary>
-        /// 服务端清场并召唤双子魔眼。
-        /// 返回 <see langword="true"/> 表示已处理完毕（含按规则不需要召唤的情形：客户端、Boss急速、Mechdusa），
-        /// 返回 <see langword="false"/> 表示本次尝试失败（如未找到锚点玩家），调用方应在后续帧重试
-        /// </summary>
-        internal bool SpawnEye() {
-            //清场+生成 在客户端单跑会导致双子在客户端"被关掉"而服务端继续存在，
-            //从而引发客户端不可见、状态错位等问题。整体改为服务端单点决策。
-            if (VaultUtils.isClient) {
-                return true;
-            }
-            //直接查询全局状态而不依赖 stateContext 的刷新时序，保证任何调用时机都稳定
-            if (CWRRef.GetBossRushActive() || NPC.IsMechQueenUp) {
-                return true;
-            }
-
-            //锚点玩家：优先当前目标，失效时回退到最近玩家
-            Player anchor = null;
-            if (npc.target >= 0 && npc.target < Main.maxPlayers && Main.player[npc.target].Alives()) {
-                anchor = Main.player[npc.target];
-            }
-            else if (npc.Center.TryFindClosestPlayer(out var findPlayer)) {
-                anchor = findPlayer;
-            }
-            if (anchor == null) {
-                return false;
-            }
-
-            foreach (var findN in Main.ActiveNPCs) {//在召唤前先清除所有已经有了的眼睛
-                if (findN.type == NPCID.Retinazer || findN.type == NPCID.Spazmatism) {
-                    findN.active = false;
-                    findN.netUpdate = true;
-                }
-            }
-
-            VaultUtils.TrySpawnBossWithNet(anchor, NPCID.Retinazer, false);
-            VaultUtils.TrySpawnBossWithNet(anchor, NPCID.Spazmatism, false);
-            return true;
         }
 
         internal void SpawnArm(int limit = 0) {
@@ -700,12 +636,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Rectangle rectangle = mainValue.GetRectangle(frame, 12);
             Vector2 orig = rectangle.Size() / 2;
 
-            //运动残影
-            float sengs = 0.2f;
+            //运动残影（狂暴阶段拉伸更强，模拟镜像幻影）
+            bool ragePhase = npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage;
+            float stretch = ragePhase ? MathHelper.Clamp(npc.velocity.Length() / 24f, 0.2f, 0.85f) : 0.2f;
+            float sengs = stretch;
             for (int i = 0; i < npc.oldPos.Length; i++) {
                 Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
-                Main.EntitySpriteDraw(mainValue, drawOldPos, rectangle, Color.White * sengs
-                    , npc.rotation, orig, npc.scale * (0.8f + sengs), SpriteEffects.None, 0);
+                Color trailColor = ragePhase
+                    ? Color.Lerp(Color.White, new Color(255, 120, 60), stretch) * sengs
+                    : Color.White * sengs;
+                float scale = npc.scale * (0.8f + sengs * (ragePhase ? 0.35f : 0f));
+                Main.EntitySpriteDraw(mainValue, drawOldPos, rectangle, trailColor,
+                    npc.rotation, orig, scale, SpriteEffects.None, 0);
                 sengs *= 0.8f;
             }
 
@@ -727,39 +669,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Main.EntitySpriteDraw(glowValue, mainPos, rectangle
                 , Color.White, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
 
-            //狂暴独战期的镜像幻影——以玩家为对称轴的三重残像，逼近时逐渐显形
-            if (targetPlayer != null && stateContext != null && stateContext.NoEye
-                && npc.ai[PrimeAiSlots.HeadPhase] == PrimePhase.Rage) {
-                Vector2 toD = targetPlayer.Center.To(npc.Center);
-                Vector2 origpos = targetPlayer.Center - Main.screenPosition;
-                float alp = toD.Length() / 400f;
-                if (alp > 1) {
-                    alp = 1;
-                }
-                Vector2 drawPos1 = new Vector2(-toD.X, toD.Y) + origpos;
-                Main.EntitySpriteDraw(mainValue, drawPos1, rectangle
-                , drawColor * alp, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
-                Vector2 drawPos2 = new Vector2(-toD.X, -toD.Y) + origpos;
-                Main.EntitySpriteDraw(mainValue, drawPos2, rectangle
-                , drawColor * alp, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
-                Vector2 drawPos3 = new Vector2(toD.X, -toD.Y) + origpos;
-                Main.EntitySpriteDraw(mainValue, drawPos3, rectangle
-                , drawColor * alp, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
-            }
-
             return false;
         }
 
         /// <summary>
         /// 机械臂连接件绘制：常态为两段式骨架连杆；
-        /// 编队收拢/环绕时改用紧凑机械臂贴图；毁灭者领域存在时完全隐藏
+        /// 编队收拢/环绕时改用紧凑机械臂贴图
         /// </summary>
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
             NPC head = Main.npc[(int)rCurrentNPC.ai[PrimeAiSlots.ArmHeadIndex]];
-
-            if (setPosingStarmCount > 0) {
-                return;
-            }
 
             if (InCompactFormation(head)) {
                 float rCurrentNPCRotation = rCurrentNPC.rotation;

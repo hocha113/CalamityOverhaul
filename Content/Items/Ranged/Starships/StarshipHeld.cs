@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -9,12 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.Starships
 {
-    internal class StarshipHeld : BaseGun
+    internal class StarshipHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "Starship";
         public override int TargetID => ModContent.ItemType<Starship>();
+        public override bool CanRightClick => true;
 
-        //预热帧数，在开火键按下后需要蓄力这么多帧才开始正式射击
+        //预热帧数，扣下扳机后需要蓄力这么多帧才开始正式射击
         private const int WarmupTime = 30;
         //爆热累积到1所需的开火帧数
         private const float HeatAccumTicks = 450f;
@@ -26,49 +28,75 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
         private const int PlanetSpawnInterval = 45;
 
         private float heat;
+        private float warmup;
         private bool reachedMax;
-        private bool wasOnFire;
+        private bool wasFiring;
         private bool cometLoaded;
-        private bool rightPressedLast;
+        private bool oldDownRight;
         private int plasmaFireTimer;
         private int microStarTimer;
         private int planetTimer;
         private int maxRateRingTick;
         private int wingmenSpawnedTick;
 
-        public override void SetRangedProperty() {
+        /// <summary>本帧是否处于实际开火状态</summary>
+        private bool Firing => WantsFireLeft && HasAmmo;
+
+        //已装填彗星或处于最高射速状态时不要自毁，等待结算（终幕在松手的下一帧触发）
+        public override bool StayAlive() => cometLoaded || reachedMax;
+
+        public override void SetGunProperty() {
             GunPressure = 0.05f;
             ControlForce = 0.012f;
             HandIdleDistanceX = 36;
             HandIdleDistanceY = -2;
             HandFireDistanceX = 42;
             HandFireDistanceY = -6;
-            ShootPosNorlLengValue = -2;
-            ShootPosToMouLengValue = 40;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanCreateSpawnGunDust = false;
-            CanCreateRecoilBool = false;
-            FiringDefaultSound = false;
-            EnableRecoilRetroEffect = true;
+            MuzzleForwardOffset = 40;
+            MuzzleNormalOffset = -2;
+            AlwaysAimPose = true;
             RecoilRetroForceMagnitude = 1.2f;
             RecoilOffsetRecoverValue = 0.35f;
             FireLight = 1.2f;
         }
 
-        public override void PreInOwner() {
-            bool isFiring = onFire;
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.Write(heat);
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            heat = reader.ReadSingle();
+        }
+
+        public override BitsByte SendBitsByte(BitsByte flags) {
+            flags = base.SendBitsByte(flags);
+            flags[3] = cometLoaded;
+            flags[4] = reachedMax;
+            return flags;
+        }
+
+        public override void ReceiveBitsByte(BitsByte flags) {
+            base.ReceiveBitsByte(flags);
+            cometLoaded = flags[3];
+            reachedMax = flags[4];
+        }
+
+        public override void AI() {
+            UpdateHeldPose(CanFire);
+
+            bool firing = Firing;
 
             //右键装填彗星特殊弹（按下边沿触发）
-            bool rightPressed = DownRight;
-            if (rightPressed && !rightPressedLast && HaveAmmo && !cometLoaded) {
+            if (DownRight && !oldDownRight && HasAmmo && !cometLoaded) {
                 cometLoaded = true;
                 SoundEngine.PlaySound(CWRSound.Gun_Clipin with { Pitch = 0.3f, Volume = 0.9f }, Projectile.Center);
-                _ = UpdateConsumeAmmo();
+                ConsumeAmmo();
+                NetUpdate();
             }
-            rightPressedLast = rightPressed;
+            oldDownRight = DownRight;
 
             //热度变化
-            if (isFiring) {
+            if (firing) {
                 heat = Math.Min(1f, heat + 1f / HeatAccumTicks);
             }
             else {
@@ -76,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             }
 
             //初次到达最高射速的演出
-            if (isFiring && heat >= 1f && !reachedMax) {
+            if (firing && heat >= 1f && !reachedMax) {
                 reachedMax = true;
                 maxRateRingTick = 0;
                 wingmenSpawnedTick = 0;
@@ -84,61 +112,49 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
                 SoundEngine.PlaySound(CWRSound.DeploymentSound with { Volume = 1.1f, Pitch = -0.1f }, Projectile.Center);
                 SpawnMaxRateRing();
                 SpawnWingmen();
+                NetUpdate();
             }
 
             if (reachedMax) {
                 maxRateRingTick++;
             }
 
-            //释放扳机触发终幕
-            if (wasOnFire && !isFiring && reachedMax) {
+            //松开扳机触发终幕
+            if (wasFiring && !firing && reachedMax) {
                 TriggerFinale();
                 ResetState();
             }
-            else if (!isFiring && !reachedMax && Time > 6) {
-                //普通松手时轻微降热即可
-            }
+            wasFiring = firing;
 
-            wasOnFire = isFiring;
-        }
-
-        public override bool PreFiringShoot() => false;
-        public override bool CanSpanProj() => HaveAmmo;
-        public override void SpanProj() { }//完全交由 PostInOwner 调度开火节奏
-
-        public override void PostInOwner() {
-            if (!HaveAmmo) {
+            if (!firing) {
+                warmup = 0;
+                Time++;
                 return;
             }
 
-            if (!onFire) {
-                return;
-            }
-
-            if (Time < WarmupTime) {
+            //每次扣下扳机都需要重新预热
+            if (warmup < WarmupTime) {
+                warmup++;
                 PlayWarmupEffects();
+                Time++;
                 return;
             }
 
             int fireInterval = (int)MathHelper.Lerp(MaxFireInterval, MinFireInterval, heat);
             int microInterval = (int)MathHelper.Lerp(12, 3, heat);
 
-            plasmaFireTimer--;
-            microStarTimer--;
-
-            if (plasmaFireTimer <= 0) {
+            if (--plasmaFireTimer <= 0) {
                 plasmaFireTimer = fireInterval;
                 FirePlasmaVolley();
             }
 
-            if (microStarTimer <= 0) {
+            if (--microStarTimer <= 0) {
                 microStarTimer = microInterval;
                 FireMicroStars();
             }
 
             if (reachedMax) {
-                planetTimer--;
-                if (planetTimer <= 0) {
+                if (--planetTimer <= 0) {
                     planetTimer = PlanetSpawnInterval;
                     SpawnPlanetBehind();
                 }
@@ -149,31 +165,33 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
                     SpawnWingmen();
                 }
             }
+
+            Time++;
         }
 
         private void FirePlasmaVolley() {
-            HanderPlaySound();
+            PlayShootSound();
+            CreateRecoil();
+            CreateFireLight();
             Lighting.AddLight(ShootPos, 0.6f, 0.4f, 1.0f);
 
-            if (!Projectile.IsOwnedByLocalPlayer()) {
-                _ = UpdateConsumeAmmo();
+            if (cometLoaded) {
+                cometLoaded = false;
+                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.1f, Pitch = -0.3f }, Projectile.Center);
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.015f) * 1.3f
+                        , ModContent.ProjectileType<StarshipComet>()
+                        , WeaponDamage * 6, WeaponKnockback * 3f, Owner.whoAmI);
+                }
                 return;
             }
 
-            Vector2 vel = ShootVelocity.RotatedByRandom(0.015f);
-            if (cometLoaded) {
-                cometLoaded = false;
-                Projectile.NewProjectile(Source, ShootPos, vel * 1.3f
-                    , ModContent.ProjectileType<StarshipComet>()
-                    , WeaponDamage * 6, WeaponKnockback * 3f, Owner.whoAmI);
-                SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.1f, Pitch = -0.3f }, Projectile.Center);
-            }
-            else {
-                Projectile.NewProjectile(Source, ShootPos, vel
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity.RotatedByRandom(0.015f)
                     , ModContent.ProjectileType<StarshipPlasmaBolt>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI);
-                _ = UpdateConsumeAmmo();
             }
+            ConsumeAmmo();
         }
 
         private void FireMicroStars() {
@@ -194,7 +212,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
                 , Math.Max(1, WeaponDamage / 3), WeaponKnockback * 0.3f, Owner.whoAmI);
         }
 
-        public override void HanderPlaySound() {
+        public override void PlayShootSound() {
             float pitch = MathHelper.Lerp(-0.25f, 0.25f, heat);
             SoundEngine.PlaySound(CWRSound.Gun_SMG_Shoot with {
                 Pitch = pitch,
@@ -204,8 +222,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
         }
 
         private void PlayWarmupEffects() {
-            if (Time % 5 == 0) {
-                SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.7f + Time / WarmupTime * 0.6f, Volume = 0.45f }, Projectile.Center);
+            if (warmup % 5 == 0) {
+                SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.7f + warmup / WarmupTime * 0.6f, Volume = 0.45f }, Projectile.Center);
             }
 
             for (int i = 0; i < 2; i++) {
@@ -255,11 +273,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
         }
 
         private void TriggerFinale() {
+            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
+
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-
-            SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
 
             Vector2 target = Main.MouseWorld;
             int meteorCount = 14;
@@ -285,6 +303,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             planetTimer = 0;
             maxRateRingTick = 0;
             cometLoaded = false;
+            NetUpdate();
         }
 
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
@@ -305,7 +324,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
                 , Projectile.rotation + offsetRot, tex.Size() / 2, Projectile.scale
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
 
-            //达到最高射速时的外发光
+            //热度上升时的外发光
             if (heat > 0.05f) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 Color glowColor = Color.Lerp(new Color(90, 140, 255, 0), new Color(255, 180, 80, 0), heat) * heat * 0.55f;
@@ -313,13 +332,11 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
                     , Projectile.rotation + offsetRot, glow.Size() * 0.5f
                     , new Vector2(tex.Width / 60f, 1.4f) * Projectile.scale, SpriteEffects.None, 0);
             }
-        }
 
-        public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
             //枪口充能光点
-            if (onFire && Time > 0) {
+            if (Firing && warmup > 0) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
-                float intensity = Math.Min(1f, Time / WarmupTime) * (0.5f + heat * 0.6f);
+                float intensity = Math.Min(1f, warmup / WarmupTime) * (0.5f + heat * 0.6f);
                 Vector2 muzzle = ShootPos - Main.screenPosition;
                 Color col = Color.Lerp(new Color(140, 180, 255, 0), new Color(255, 210, 140, 0), heat) * intensity;
                 Main.EntitySpriteDraw(glow, muzzle, null, col, 0f

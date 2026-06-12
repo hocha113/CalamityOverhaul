@@ -1,5 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
+using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -51,14 +53,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 npc.TargetClosest();
                 npc.netUpdate = true;
 
-                //全难度共享完整出招轮换：三连击与蓄力重锤交替，
-                //死亡模式只通过蓄力速度与突刺数值体现强度
-                int cycle = ctx.AttackCycle;
-                ctx.AttackCycle = (cycle + 1) % 3;
-                if (cycle == 0) {
-                    return new ViceComboState();
+                if (HeadPrimeAI.GetActiveCommand(ctx.Head) == PrimeCommandKind.PhysicalAssault) {
+                    return new ViceTripleLungeState();
                 }
-                return new ViceWindUpState();
+
+                int cycle = ctx.AttackCycle;
+                ctx.AttackCycle = (cycle + 1) % 4;
+                return cycle switch {
+                    0 => new ViceTripleLungeState(),
+                    1 => new ViceClapWaveState(),
+                    2 => new ViceComboState(),
+                    _ => new ViceWindUpState(),
+                };
             }
             return null;
         }
@@ -412,6 +418,84 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Timer++;
             if (Timer > 30 && IdleAnchorDistance(ctx) < 400f && !VaultUtils.isClient) {
                 return new ViceIdleState();
+            }
+            return null;
+        }
+    }
+
+    /// <summary>anticipation-snap 三连突刺</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceTripleLunge, typeof(PrimeArmStateContext))]
+    internal class ViceTripleLungeState : PrimeArmStateBase
+    {
+        public override string StateName => "ViceTripleLunge";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.ViceTripleLunge;
+
+        private int phaseTimer;
+        private int lungeIndex;
+        private Vector2 lungeDir;
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            ctx.ClawOpen = phaseTimer < 12;
+
+            if (phaseTimer < 20) {
+                npc.damage = 0;
+                float t = phaseTimer / 20f;
+                float ease = 1f - (float)System.Math.Pow(1f - t, 3);
+                lungeDir = (ctx.Target.Center - npc.Center).SafeNormalize(Vector2.UnitY);
+                npc.velocity = -lungeDir * ease * 4f;
+            }
+            else if (phaseTimer < 30) {
+                npc.velocity = lungeDir * 22f;
+                npc.damage = npc.defDamage * 2;
+                ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
+            }
+            else {
+                npc.velocity *= 0.8f;
+                npc.damage = 0;
+                if (phaseTimer >= 42) {
+                    phaseTimer = 0;
+                    lungeIndex++;
+                }
+            }
+
+            phaseTimer++;
+            Timer++;
+            if (lungeIndex >= 3 && phaseTimer > 10 && !VaultUtils.isClient) {
+                return new ViceRecoveryState();
+            }
+            return null;
+        }
+    }
+
+    /// <summary>钳口闭合冲击波</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceClapWave, typeof(PrimeArmStateContext))]
+    internal class ViceClapWaveState : PrimeArmStateBase
+    {
+        public override string StateName => "ViceClapWave";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.ViceClapWave;
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            SpringMove(ctx, ctx.Head.Center + new Vector2(-120f * ctx.Side, 220f), 0.8f);
+            ctx.ClawOpen = Timer < 24;
+
+            if (Timer == 24 && !VaultUtils.isClient && !ctx.DontAttack) {
+                int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
+                for (int i = -2; i <= 2; i++) {
+                    Vector2 vel = ctx.AimDirection.RotatedBy(i * 0.22f) * 8f;
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + vel * 30f, vel,
+                        ModContent.ProjectileType<DeadLaser>(), damage, 0f, Main.myPlayer, 1f, 0f);
+                }
+                ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
+                if (!VaultUtils.isServer) {
+                    PrimeScreenEffects.PushShockRing(npc.Center, 0.6f, 0.8f, 10);
+                }
+            }
+
+            Timer++;
+            if (Timer > 50 && !VaultUtils.isClient) {
+                return new ViceRecoveryState();
             }
             return null;
         }

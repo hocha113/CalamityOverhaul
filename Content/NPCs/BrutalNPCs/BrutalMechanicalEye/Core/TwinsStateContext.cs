@@ -125,10 +125,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 
         #region 状态标记
         /// <summary>
-        /// 是否处于随从模式
-        /// </summary>
-        public bool IsAccompanyMode { get; set; }
-        /// <summary>
         /// 是否处于二阶段
         /// </summary>
         public bool IsSecondPhase { get; set; }

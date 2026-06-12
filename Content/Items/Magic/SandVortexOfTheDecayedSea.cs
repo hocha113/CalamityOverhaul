@@ -1,9 +1,10 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -29,65 +30,62 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.knockBack = 4.5f;
             Item.shoot = ModContent.ProjectileType<DecayedSeaVortex>();
             Item.shootSpeed = 1;
-            Item.UseSound = SoundID.NPCDeath13;
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(1, 62, 0, 5);
-            Item.SetHeldProj<SandVortexOfTheDecayedSeaHeld>();
         }
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<SandVortexOfTheDecayedSeaHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<SandVortexOfTheDecayedSeaHeld>(player, source);
     }
 
-    internal class SandVortexOfTheDecayedSeaHeld : BaseMagicGun
+    internal class SandVortexOfTheDecayedSeaHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
         public override int TargetID => ModContent.ItemType<SandVortexOfTheDecayedSea>();
-        public override void SetMagicProperty() {
-            InOwner_HandState_AlwaysSetInFireRoding = true;
+        /// <summary>开火后的余韵进度，用于让法器在出手后短暂胀大发光</summary>
+        private int glowPulse;
+        public override void SetGunProperty() {
+            Projectile.DamageType = DamageClass.Magic;
+            AlwaysAimPose = true;
         }
 
-        public override void PreInOwner() {
-            if (fireIndex > 0) {
-                fireIndex--;
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (glowPulse > 0) {
+                glowPulse--;
             }
+            if (CanFire) {
+                HoldManaRegenDelay();
+            }
+
+            if (WantsFireLeft && FireCooldown <= 0 && PayMana()) {
+                Fire();
+                SetFireCooldown();
+            }
+            Time++;
         }
 
-        public override void FiringShoot() {
+        private void Fire() {
+            glowPulse = 36;
+            SnapToAimPose();
             SoundEngine.PlaySound(SoundID.NPCDeath13 with { Pitch = -0.35f, Volume = 0.85f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item84 with { Pitch = -0.4f, Volume = 0.7f }, InMousePos);
 
-            int vortexType = ModContent.ProjectileType<DecayedSeaVortex>();
-            //Projectile existing = null;
-            //for (int i = 0; i < Main.maxProjectiles; i++) {
-            //    Projectile p = Main.projectile[i];
-            //    if (p.active && p.owner == Owner.whoAmI && p.type == vortexType) {
-            //        existing = p;
-            //        break;
-            //    }
-            //}
-
-            //if (existing != null) {
-            //    //已有漩涡，刷新持续时间并更新当前伤害参数，避免触发结束爆裂
-            //    if (existing.ModProjectile is DecayedSeaVortex dsv) {
-            //        dsv.SuppressDeathBurst = false;
-            //    }
-            //    existing.timeLeft = Math.Max(existing.timeLeft, DecayedSeaVortex.RefreshDuration);
-            //    existing.damage = WeaponDamage;
-            //    existing.knockBack = WeaponKnockback;
-            //    existing.position = InMousePos - existing.Size / 2f;
-            //    existing.netUpdate = true;
-
-            //    //刷新时也来一波视觉
-            //    for (int i = 0; i < 14; i++) {
-            //        Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
-            //        int dustType = Main.rand.NextBool(2) ? CWRID.Dust_SulphurousSeaAcid : DustID.Gold;
-            //        int d = Dust.NewDust(InMousePos, 1, 1, dustType, vel.X, vel.Y, 100, default, 1.2f);
-            //        Main.dust[d].noGravity = true;
-            //    }
-            //    return;
-            //}
-
-            //生成新漩涡
-            Projectile.NewProjectile(Source, InMousePos, Vector2.Zero, vortexType
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                //在光标处生成新漩涡
+                Projectile.NewProjectile(Source, InMousePos, Vector2.Zero
+                    , ModContent.ProjectileType<DecayedSeaVortex>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            }
 
             for (int i = 0; i < 24; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 7f);
@@ -97,17 +95,16 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        public override void SetShootAttribute() => fireIndex = 36;
-
-        public override bool PreGunDraw(Vector2 drawPos, ref Color lightColor) {
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            //出手余韵的发光残影
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Color color = Color.GreenYellow;
             color.A = 0;
-            float slp = 1 + 0.014f * fireIndex;
+            float slp = 1 + 0.014f * glowPulse;
             Main.EntitySpriteDraw(TextureValue, drawPos, null, color
                 , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
-            return true;
+            base.GunDraw(drawPos, ref lightColor);
         }
     }
 

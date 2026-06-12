@@ -35,29 +35,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
     {
         public string LocalizationCategory => "BrutalNPCs";
 
-        public static LocalizedText Spazmatism_Text1 { get; private set; }
-        public static LocalizedText Spazmatism_Text2 { get; private set; }
-        public static LocalizedText Spazmatism_Text3 { get; private set; }
-        public static LocalizedText Spazmatism_Text4 { get; private set; }
-        public static LocalizedText Spazmatism_Text5 { get; private set; }
-        public static LocalizedText Spazmatism_Text6 { get; private set; }
-        public static LocalizedText Spazmatism_Text7 { get; private set; }
-
-        public override void SetStaticDefaults() {
-            Spazmatism_Text1 = this.GetLocalization(nameof(Spazmatism_Text1),
-                () => "EUX_001部署成功，行为写入:协同PCZ_001终结目标");
-            Spazmatism_Text2 = this.GetLocalization(nameof(Spazmatism_Text2),
-                () => "EUX_002部署成功，行为写入:协同PCZ_001终结目标");
-            Spazmatism_Text3 = this.GetLocalization(nameof(Spazmatism_Text3),
-                () => "EUX_001主结构受损，尝试从战场撤离...");
-            Spazmatism_Text4 = this.GetLocalization(nameof(Spazmatism_Text4),
-                () => "EUX_002主结构受损，尝试从战场撤离...");
-            Spazmatism_Text5 = this.GetLocalization(nameof(Spazmatism_Text5), () => "目标已被终结");
-            Spazmatism_Text6 = this.GetLocalization(nameof(Spazmatism_Text6), () => "正在撤离...");
-            Spazmatism_Text7 = this.GetLocalization(nameof(Spazmatism_Text7),
-                () => "任务失败，尝试从战场撤离...");
-        }
-
         #region 常量与枚举
 
         /// <summary>
@@ -87,8 +64,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             Flee = 4
         }
 
-        private const int AccompanySpawnStage = 11;
-
         /// <summary>
         /// 进入死亡演出的血量阈值（与毁灭者一致，濒死时触发独立殉爆演出）
         /// </summary>
@@ -117,19 +92,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         protected TwinsStateContext stateContext;
 
         /// <summary>
-        /// 随从模式AI处理器
-        /// </summary>
-        protected TwinsAccompanyHandler accompanyHandler;
-
-        /// <summary>
         /// 目标玩家
         /// </summary>
         protected Player player;
-
-        /// <summary>
-        /// 是否为随从模式
-        /// </summary>
-        protected bool accompany;
 
         public static Color TextColor1 => new(155, 215, 215);
         public static Color TextColor2 => new(200, 54, 91);
@@ -197,28 +162,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //重置同步数据(只在魔焰眼生成时重置，因为它通常先生成)
             if (npc.type == NPCID.Spazmatism) {
                 TwinsStateContext.ResetSyncData();
-                //清理上一场战斗残留的撤离去重表，确保新一场战斗的撤离台词可以再次触发
-                TwinsAccompanyHandler.ResetExitState();
-            }
-
-            //检测随从模式
-            accompany = false;
-            foreach (var n in Main.npc) {
-                if (!n.active) {
-                    continue;
-                }
-                if (n.type == NPCID.SkeletronPrime) {
-                    accompany = true;
-                }
-            }
-
-            if (accompany) {
-                ai[AccompanySpawnStage] = 0;
-                NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
-                if (skeletronPrime.Alives()) {
-                    ai[AccompanySpawnStage] = skeletronPrime.ai[0] != 3 ? 1 : 0;
-                }
-                npc.life = npc.lifeMax = (int)(npc.lifeMax * 0.8f);
             }
 
             //初始化状态上下文
@@ -232,13 +175,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             stateContext = new TwinsStateContext {
                 Npc = npc,
                 Ai = ai,
-                IsAccompanyMode = accompany,
                 IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive(),
                 IsSpazmatism = npc.type == NPCID.Spazmatism
             };
 
             stateMachine = new NpcStateMachine<TwinsStateContext>(stateContext, aiSlot: 1);
-            accompanyHandler = new TwinsAccompanyHandler(stateContext);
         }
 
         #endregion
@@ -295,18 +236,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 工具方法
 
         /// <summary>
-        /// 设置眼睛的位置和旋转(用于随从模式)
-        /// </summary>
-        public static void SetEyeValue(NPC eye, Player player, Vector2 toPoint, Vector2 toTarget) {
-            float targetRotation = toTarget.ToRotation() - MathHelper.PiOver2;
-            eye.damage = 0;
-            eye.position += player.velocity;
-            eye.Center = Vector2.Lerp(eye.Center, toPoint, 0.1f);
-            eye.velocity = toTarget.UnitVector() * 0.01f;
-            eye.EntityToRot(targetRotation, 0.2f);
-        }
-
-        /// <summary>
         /// 查找目标玩家
         /// </summary>
         private void FindPlayer() {
@@ -321,14 +250,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         /// 是否进入二阶段
         /// </summary>
         internal bool IsSecondPhase() {
-            if (accompany) {
-                NPC skeletronPrime = CWRUtils.FindNPCFromeType(NPCID.SkeletronPrime);
-                if (skeletronPrime == null || !skeletronPrime.active) {
-                    return false;
-                }
-                return skeletronPrime.ai[0] == 3;
-            }
-
             //如果还在登场演出阶段，绝对不进入二阶段
             bool isInDebut = (PrimaryAIState)ai[0] == PrimaryAIState.Debut || (PrimaryAIState)ai[0] == PrimaryAIState.Initialization;
             if (isInDebut) {
@@ -409,15 +330,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //濒死检测：触发独立死亡演出(每只眼睛各自播放)
             CheckDeathPerformanceTrigger();
 
-            bool reset;
-            if (accompany) {
-                reset = accompanyHandler.Update(IsSecondPhase, ExecuteDebutSequence);
-            }
-            else {
-                reset = ProtogenesisAI();
-            }
-
-            return reset;
+            return ProtogenesisAI();
         }
 
         /// <summary>
@@ -494,10 +407,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         /// <summary>
         /// 濒死检测：当血量降到阈值且处于正式战斗阶段时，强制进入独立死亡演出。
-        /// 仅服务端/单人端驱动；随从模式、登场、逃跑、转阶段无敌期间均不触发。
+        /// 仅服务端/单人端驱动；登场、逃跑、转阶段无敌期间均不触发。
         /// </summary>
         private void CheckDeathPerformanceTrigger() {
-            if (VaultUtils.isClient || accompany) {
+            if (VaultUtils.isClient) {
                 return;
             }
             if (stateMachine == null || stateContext == null) {
@@ -670,7 +583,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             else {
                 toPoint = player.Center + new Vector2(npc.type == NPCID.Spazmatism ? -500 : 500, -500);
 
-                if (ai[1] == 90 && !VaultUtils.isServer && !accompany) {
+                if (ai[1] == 90 && !VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
 
@@ -688,7 +601,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
 
             if (ai[1] > 180) {
-                if (!VaultUtils.isServer && !accompany) {
+                if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.SpawnArmMgs, Main.LocalPlayer.Center);
                 }
                 npc.dontTakeDamage = false;
@@ -711,8 +624,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 其他覆写
 
         public override bool? CheckDead() {
-            //随从模式或上下文缺失：保持原版死亡行为
-            if (accompany || stateContext == null) {
+            //上下文缺失：保持原版死亡行为
+            if (stateContext == null) {
                 npc.dontTakeDamage = false;
                 return true;
             }

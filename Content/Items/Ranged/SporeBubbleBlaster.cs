@@ -18,77 +18,93 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.width = Item.height = 32;
             Item.damage = 16;
             Item.DamageType = DamageClass.Ranged;
-            Item.useAnimation = 60;
-            Item.useTime = 2;
-            Item.useLimitPerAnimation = 10;
+            Item.useAnimation = Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.rare = ItemRarityID.Orange;
             Item.value = 600;
             Item.shootSpeed = 12;
             Item.shoot = ModContent.ProjectileType<SporeBobo>();
-            Item.UseSound = CWRSound.SporeBubble;
-            Item.SetHeldProj<SporeBubbleBlasterHeld>();
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
         }
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<SporeBubbleBlasterHeld>()] == 0;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
-            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            Vector2 orgVelocity = velocity;
-            velocity *= Main.rand.NextFloat(0.8f, 1f);
-            velocity = velocity.RotatedByRandom(0.12f);
-            Vector2 targetPos = position + orgVelocity * 300;
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, targetPos.X, targetPos.Y);
-            return false;
-        }
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<SporeBubbleBlasterHeld>(player, source);
     }
 
-    internal class SporeBubbleBlasterHeld : BaseGun
+    internal class SporeBubbleBlasterHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "SporeBubbleBlasterHeld";
         public override int TargetID => ModContent.ItemType<SporeBubbleBlaster>();
+        public override SoundStyle? ShootSound => CWRSound.SporeBubble;
+        //单次点射的发数与节奏
+        private const int BurstCount = 10;
+        private const int ShotInterval = 2;
+        private const int BurstCooldown = 32;
         private int frame;
         private int frameConter;
-        private bool OnFire;
-        public override void SetRangedProperty() {
-            FiringDefaultSound = false;
-            CanCreateSpawnGunDust = false;
+        public override void SetGunProperty() {
             Onehanded = true;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
+            AlwaysAimPose = true;
         }
-        public override void PostInOwner() {
-            if (CanFire) {
-                if (ShootCoolingValue < 4 && ++frameConter > 2) {
+
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            //点射期间的喷口帧动画
+            if (WantsFireLeft && FireCooldown < 4) {
+                if (++frameConter > 2) {
                     if (++frame > 2) {
                         frame = 0;
                     }
                     frameConter = 0;
                 }
-                return;
-            }
-            if (!OnFire) {
-                frame = 0;
-                Item.useTime = 32;
-                ShootCoolingValue = 32;
-            }
-            OnFire = true;
-        }
-        public override bool PreFiringShoot() {
-            if (fireIndex == 0 || OnFire) {
-                SoundEngine.PlaySound(Item.UseSound, ShootPos);
-                OnFire = false;
-            }
-            if (++fireIndex < 10) {
-                Item.useTime = 2;
             }
             else {
                 frame = 0;
-                fireIndex = 0;
-                Item.useTime = 32;
             }
-            return true;
+
+            if (WantsFireLeft && FireCooldown <= 0) {
+                Fire();
+            }
+            Time++;
         }
-        public override void FiringShoot() {
-            OrigItemShoot();
+
+        private void Fire() {
+            //每轮点射开始时播放一次音效
+            if (fireIndex == 0) {
+                PlayShootSound();
+            }
+
+            SnapToAimPose();
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                //孢子泡泡带少量散布，并奔向远处的标记点
+                Vector2 orgVelocity = ShootVelocity;
+                Vector2 velocity = orgVelocity * Main.rand.NextFloat(0.8f, 1f);
+                velocity = velocity.RotatedByRandom(0.12f);
+                Vector2 targetPos = ShootPos + orgVelocity * 300;
+                Projectile.NewProjectile(Source, ShootPos, velocity
+                    , ModContent.ProjectileType<SporeBobo>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, targetPos.X, targetPos.Y);
+            }
+
+            //打满一轮后进入较长的换气冷却
+            if (++fireIndex >= BurstCount) {
+                fireIndex = 0;
+                frame = 0;
+                FireCooldown = BurstCooldown;
+            }
+            else {
+                FireCooldown = ShotInterval;
+            }
         }
+
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Rectangle rectangle = TextureValue.GetRectangle(frame, 3);

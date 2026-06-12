@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -17,30 +18,64 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CloneDefaults(ItemID.Revolver);
             Item.damage = 18;
             Item.shoot = ModContent.ProjectileType<FungiAmmo>();
-            Item.SetHeldProj<FungalRevolverHeld>();
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
+            Item.UseSound = null;//开火音效由手持弹幕负责
         }
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<FungalRevolverHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<FungalRevolverHeld>(player, source);
     }
 
-    internal class FungalRevolverHeld : BaseGun
+    internal class FungalRevolverHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "FungalRevolver";
         public override int TargetID => ModContent.ItemType<FungalRevolver>();
-        public override void SetRangedProperty() {
+        public override SoundStyle? ShootSound => SoundID.Item41;
+        public override void SetGunProperty() {
             HandIdleDistanceX = 18;
             HandIdleDistanceY = 3;
             HandFireDistanceX = 18;
             HandFireDistanceY = -2;
-            ShootPosNorlLengValue = -5;
-            ShootPosToMouLengValue = 10;
+            MuzzleForwardOffset = 10;
+            MuzzleNormalOffset = -5;
             GunPressure = 0.1f;
             ControlForce = 0.05f;
-            CanCreateSpawnGunDust = false;
             Onehanded = true;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            ForcedConversionTargetAmmoFunc = () => AmmoTypes == ProjectileID.Bullet;
-            ToTargetAmmo = ModContent.ProjectileType<FungiAmmo>();
+            AlwaysAimPose = true;
         }
 
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (WantsFireLeft && FireCooldown <= 0 && HasAmmo) {
+                Fire();
+                SetFireCooldown();
+            }
+            Time++;
+        }
+
+        private void Fire() {
+            SnapToAimPose();
+            PlayShootSound();
+            CreateRecoil();
+            CreateFireLight();
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                //普通子弹会被转化为孢子弹
+                int shootType = AmmoTypes == ProjectileID.Bullet ? ModContent.ProjectileType<FungiAmmo>() : AmmoTypes;
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                    , shootType, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            }
+            ConsumeAmmo();
+        }
     }
 
     public class FungiAmmo : ModProjectile

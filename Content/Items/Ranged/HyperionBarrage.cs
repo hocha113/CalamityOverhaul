@@ -8,6 +8,7 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,13 +29,26 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useTime = 80;
             Item.useAnimation = 80;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = SoundID.Item15 with { Pitch = -0.2f };
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 2, 60, 10);
-            Item.SetHeldProj<HyperionBarrageHeld>();
             Item.CWR().DeathModeItem = true;
         }
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<HyperionBarrageHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<HyperionBarrageHeld>(player, source);
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, float rotation, float scale, int whoAmI) {
@@ -57,12 +71,25 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useTime = 60;
             Item.useAnimation = 60;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = SoundID.Item15 with { Pitch = -0.2f };
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 8, 60, 10);
-            Item.SetHeldProj<HyperionBarrageEXHeld>();
         }
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<HyperionBarrageEXHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<HyperionBarrageEXHeld>(player, source);
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, float rotation, float scale, int whoAmI) {
@@ -79,62 +106,99 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class HyperionBarrageHeld : BaseGun
+    internal class HyperionBarrageHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrage";
-        public override string GlowTexPath => CWRConstant.Item_Ranged + "HyperionBarrageGlow";
+        public override Asset<Texture2D> GlowAsset => HyperionBarrage.Glow;
         public override int TargetID => ModContent.ItemType<HyperionBarrage>();
-        public override void SetRangedProperty() {
+        public override SoundStyle? ShootSound => SoundID.Item15 with { Pitch = -0.2f };
+        public override void SetGunProperty() {
             GunPressure = 0;
             ControlForce = 0;
             HandIdleDistanceX = 26;
             HandIdleDistanceY = 2;
             HandFireDistanceX = 26;
             HandFireDistanceY = -2;
-            ShootPosNorlLengValue = -4;
-            ShootPosToMouLengValue = 8;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanCreateSpawnGunDust = false;
+            MuzzleForwardOffset = 8;
+            MuzzleNormalOffset = -4;
+            AlwaysAimPose = true;
         }
 
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                    , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
-            if (++fireIndex > 3) {
-                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                    , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, -0.1f);
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (WantsFireLeft && FireCooldown <= 0 && HasAmmo) {
+                Fire();
+                SetFireCooldown();
+            }
+            Time++;
+        }
+
+        private void Fire() {
+            SnapToAimPose();
+            PlayShootSound();
+            CreateFireLight();
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
                         , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, 0.1f);
+                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
+                if (fireIndex + 1 > 3) {
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
+                        , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
+                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, -0.1f);
+                    Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
+                            , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
+                            , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, 0.1f);
+                }
+            }
+
+            if (++fireIndex > 3) {
                 fireIndex = 0;
             }
+            ConsumeAmmo();
         }
     }
 
-    internal class HyperionBarrageEXHeld : BaseGun
+    internal class HyperionBarrageEXHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "HyperionBarrageEX";
-        public override string GlowTexPath => CWRConstant.Item_Ranged + "HyperionBarrageEXGlow";
+        public override Asset<Texture2D> GlowAsset => HyperionBarrageEX.Glow;
         public override int TargetID => ModContent.ItemType<HyperionBarrageEX>();
-        public override void SetRangedProperty() {
+        public override SoundStyle? ShootSound => SoundID.Item15 with { Pitch = -0.2f };
+        public override void SetGunProperty() {
             GunPressure = 0;
             ControlForce = 0;
             HandIdleDistanceX = 26;
             HandIdleDistanceY = 2;
             HandFireDistanceX = 26;
             HandFireDistanceY = -2;
-            ShootPosNorlLengValue = -4;
-            ShootPosToMouLengValue = 8;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanCreateSpawnGunDust = false;
+            MuzzleForwardOffset = 8;
+            MuzzleNormalOffset = -4;
+            AlwaysAimPose = true;
         }
 
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
-                    , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
-                    , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, 0, 1);
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (WantsFireLeft && FireCooldown <= 0 && HasAmmo) {
+                Fire();
+                SetFireCooldown();
+            }
+            Time++;
+        }
+
+        private void Fire() {
+            SnapToAimPose();
+            PlayShootSound();
+            CreateFireLight();
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Projectile.NewProjectile(Source, Owner.Center, ShootVelocity
+                        , ModContent.ProjectileType<PrimeCannonOnSpanFriendly>()
+                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity, 0, 1);
+            }
+            ConsumeAmmo();
         }
     }
 

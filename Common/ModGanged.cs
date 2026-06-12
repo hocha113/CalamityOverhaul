@@ -200,6 +200,9 @@ namespace CalamityOverhaul.Common
             if (projectile.hide && projectile.ModProjectile is BaseHeldRanged ranged && !ranged.CanFire) {
                 return;
             }
+            if (projectile.hide && projectile.ModProjectile is BaseHeldGun heldGun && !heldGun.CanFire) {
+                return;
+            }
             orig.Invoke(instance, projectile);
         }
 
@@ -260,12 +263,10 @@ namespace CalamityOverhaul.Common
             CWRItem ritem = heldItem.CWR();
             bool hasHeldProj = ritem.heldProjType > 0;
 
-            // 如果物品有手持弹幕且当前正在手持显示，则不让其他Mod绘制
-            if (ritem.hasHeldNoCanUseBool && hasHeldProj) {
-                CWRPlayer modPlayer = drawPlayer.CWR();
-                if (modPlayer.TryGetInds_BaseHeldRanged(out BaseHeldRanged ranged) && ranged.OnHandheldDisplayBool) {
-                    return false;
-                }
+            // 当前正在手持显示武器弹幕时（无论新旧绑定模式），不让其他Mod绘制
+            CWRPlayer modPlayer = drawPlayer.CWR();
+            if (modPlayer.HeldWeaponInDisplay()) {
+                return false;
             }
 
             bool isHeld = ritem.isHeldItem || hasHeldProj;
@@ -283,11 +284,9 @@ namespace CalamityOverhaul.Common
                 return false;
             }
 
-            if (ritem.hasHeldNoCanUseBool && ritem.heldProjType > 0) {
-                CWRPlayer modPlayer = player.CWR();
-                if (modPlayer.TryGetInds_BaseHeldRanged(out BaseHeldRanged ranged) && ranged.OnHandheldDisplayBool) {
-                    return false;
-                }
+            //新一代手持武器弹幕活跃期间同样屏蔽覆盖逻辑
+            if (player.CWR().HeldWeaponInDisplay()) {
+                return false;
             }
 
             return true;

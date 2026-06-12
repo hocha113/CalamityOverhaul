@@ -1,8 +1,9 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Magic;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,38 +11,67 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
 {
-    internal class NeutronWandHeld : BaseMagicGun
+    internal class NeutronWandHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         public override int TargetID => ModContent.ItemType<NeutronWand>();
+        public override bool CanRightClick => true;
+        /// <summary>右键蓄力进度，0到1，蓄满后开始倾泻中子湮灭柱</summary>
         private float colers;
+        /// <summary>右键按下的边沿检测</summary>
         private bool colers2;
+        /// <summary>湮灭柱阵列的落点锚，缓慢追随光标</summary>
         private Vector2 firePos;
-        public override void SetMagicProperty() {
+        private bool rightHolding;
+        //蓄力尚未散尽时法杖不要消失，让能量环优雅地衰减
+        public override bool StayAlive() => colers > 0;
+        public override void SetGunProperty() {
+            Projectile.DamageType = DamageClass.Magic;
             HandIdleDistanceX = 52;
             HandIdleDistanceY = -20;
             HandFireDistanceX = 52;
             GunPressure = 0;
             ControlForce = 0;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
+            AlwaysAimPose = true;
             Onehanded = true;
             ArmRotSengsBackNoFireOffset = -20;
-            ShootPosToMouLengValue = 20;
-            CanRightClick = true;
+            MuzzleForwardOffset = 20;
         }
 
-        public override void PostInOwner() {
-            if (onFireR) {
+        public override void NetHeldSend(BinaryWriter writer) {
+            writer.Write(colers);
+            writer.WriteVector2(firePos);
+        }
+
+        public override void NetHeldReceive(BinaryReader reader) {
+            colers = reader.ReadSingle();
+            firePos = reader.ReadVector2();
+        }
+
+        public override void AI() {
+            VaultUtils.ClockFrame(ref Projectile.frame, 5, 11);
+            rightHolding = WantsFireRight;
+            UpdateHeldPose(CanFire);
+
+            if (CanFire) {
+                HoldManaRegenDelay();
+            }
+
+            if (rightHolding) {
+                //按下右键的瞬间锚定落点并开始蓄力
                 if (!colers2) {
                     colers2 = true;
                     if (colers <= 0) {
-                        firePos = ToMouse + Owner.GetPlayerStabilityCenter();
+                        firePos = InMousePos;
                     }
                     SoundEngine.PlaySound(SoundID.Item77, Projectile.Center);
                 }
                 if (colers < 1f) {
-                    ShootCoolingValue = 2;
                     colers += 0.01f;
+                }
+                else if (FireCooldown <= 0 && PayMana()) {
+                    FireRight();
+                    SetFireCooldown();
                 }
             }
             else {
@@ -50,39 +80,46 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
                 }
                 fireIndex = 0;
                 colers2 = false;
+
+                if (WantsFireLeft && FireCooldown <= 0 && PayMana()) {
+                    FireLeft();
+                    SetFireCooldown();
+                }
             }
 
-            firePos = Vector2.Lerp(firePos, ToMouse + Owner.GetPlayerStabilityCenter(), 0.1f);
-            VaultUtils.ClockFrame(ref Projectile.frame, 5, 11);
+            firePos = Vector2.Lerp(firePos, InMousePos, 0.1f);
+            Time++;
         }
 
-        public override void HanderPlaySound() {
-            if (onFire) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.6f }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.Item88 with { Pitch = -0.6f }, Projectile.Center);
-            }
-            else if (onFireR) {
-                SoundStyle sound = Item.UseSound.Value;
-                SoundEngine.PlaySound(sound with { Pitch = -0.1f + fireIndex * 0.15f }, Projectile.Center);
+        private void FireLeft() {
+            SnapToAimPose();
+            SoundEngine.PlaySound(SoundID.Item4 with { Pitch = -0.6f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item88 with { Pitch = -0.6f }, Projectile.Center);
+            CreateFireLight();
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                for (int i = 0; i < 4; i++) {
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity * (0.6f + i * 0.1f)
+                    , ModContent.ProjectileType<NeutronMagchStar>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                }
             }
         }
 
-        public override void FiringShoot() {
-            for (int i = 0; i < 4; i++) {
-                Projectile.NewProjectile(Source, ShootPos, ShootVelocity * (0.6f + i * 0.1f)
-                , ModContent.ProjectileType<NeutronMagchStar>(), WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-            }
-        }
+        private void FireRight() {
+            SnapToAimPose();
+            SoundEngine.PlaySound(SoundID.NPCDeath56 with { Pitch = -0.1f + fireIndex * 0.15f }, Projectile.Center);
 
-        public override void FiringShootR() {
-            int newdamage = (int)(WeaponDamage * (1 + fireIndex * 0.15f));
-            for (int i = 0; i < 3; i++) {
-                Vector2 shootPos = firePos;
-                shootPos.X += (i - 1) * fireIndex * 30;
-                shootPos.Y += Main.rand.Next(-113, 33);
-                Projectile.NewProjectile(Source, shootPos, new Vector2(0, 1)
-                , ModContent.ProjectileType<NeutronWandExplode>(), newdamage, WeaponKnockback, Owner.whoAmI, 0);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                int newdamage = (int)(WeaponDamage * (1 + fireIndex * 0.15f));
+                for (int i = 0; i < 3; i++) {
+                    Vector2 shootPos = firePos;
+                    shootPos.X += (i - 1) * fireIndex * 30;
+                    shootPos.Y += Main.rand.Next(-113, 33);
+                    Projectile.NewProjectile(Source, shootPos, new Vector2(0, 1)
+                    , ModContent.ProjectileType<NeutronWandExplode>(), newdamage, WeaponKnockback, Owner.whoAmI, 0);
+                }
             }
+
             if (++fireIndex > 3) {
                 fireIndex = 0;
             }
@@ -111,7 +148,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
             effect.Parameters["uColor"].SetValue(Color.White.ToVector3());
             effect.Parameters["uOpacity"].SetValue(uOpacity);
-            effect.Parameters["set"].SetValue(set && onFireR);
+            effect.Parameters["set"].SetValue(set && rightHolding);
             effect.CurrentTechnique.Passes[0].Apply();
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default

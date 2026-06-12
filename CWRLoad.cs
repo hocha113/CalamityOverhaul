@@ -327,6 +327,25 @@ namespace CalamityOverhaul
 
                 PopulateRangedData(itemType, cwrItem);
             }
+
+            PopulateHeldGunData();
+        }
+
+        /// <summary>
+        /// 新一代手持武器不再使用 heldProjType 绑定，改为扫描 <see cref="BaseHeldGun"/> 子类按 TargetID 反向登记
+        /// </summary>
+        private static void PopulateHeldGunData() {
+            foreach (BaseHeldGun heldGun in VaultUtils.GetDerivedInstances<BaseHeldGun>()) {
+                int itemType = heldGun.TargetID;
+                if (itemType <= ItemID.None || itemType >= ItemLoader.ItemCount) {
+                    continue;
+                }
+                ItemIsGun[itemType] = true;
+                ItemIsCrossBow[itemType] = heldGun.IsCrossbow;
+                ItemIsGunAndMustConsumeAmmunition[itemType] = heldGun.MustConsumeAmmunition;
+                ItemIsRanged[itemType] = true;
+                ItemIsRangedAndCanRightClickFire[itemType] = heldGun.CanRightClick;
+            }
         }
 
         private static void PopulateRangedData(int itemType, CWRItem cwrItem) {

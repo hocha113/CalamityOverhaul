@@ -14,9 +14,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         LaserRapidFire = 101,
         LaserChargedShot = 102,
         LaserRing = 103,
+        LaserSweep = 104,
+        LaserTriShot = 105,
         //火箭炮 200+
         CannonBombard = 200,
         CannonSpread = 201,
+        CannonMortar = 202,
+        CannonDirect = 203,
         //电锯 300+
         SawIdle = 300,
         SawSpinUp = 301,
@@ -24,6 +28,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         SawOrbit = 303,
         SawDrill = 304,
         SawRecovery = 305,
+        SawBoomerang = 306,
+        SawGroundCut = 307,
         //钳爪 400+
         ViceIdle = 400,
         ViceWindUp = 401,
@@ -31,6 +37,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         ViceRecovery = 403,
         ViceCombo = 404,
         ViceReturn = 405,
+        ViceTripleLunge = 406,
+        ViceClapWave = 407,
     }
 
     /// <summary>

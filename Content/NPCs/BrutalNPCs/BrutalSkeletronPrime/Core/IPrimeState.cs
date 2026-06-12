@@ -10,24 +10,24 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
     {
         /// <summary>登场演出：自深渊升起、注能回血、再生四肢</summary>
         Intro = 0,
-        /// <summary>指挥悬停：武装阶段常态，头部压阵、四肢输出</summary>
-        CommandHover = 1,
-        /// <summary>旋转冲撞：武装阶段的连段突进</summary>
+        /// <summary>指挥序列：武装阶段 hub，短悬停后按固定表分发指令/招式</summary>
+        CommandSequence = 1,
+        /// <summary>旋转冲撞：武装阶段连段突进</summary>
         SpinDash = 2,
-        /// <summary>机械风暴：召唤毁灭者协奏弹幕领域</summary>
-        MechStorm = 3,
-        /// <summary>传送恢复：风暴结束传送后的短暂整备</summary>
-        TeleportRecover = 4,
+        /// <summary>火力阵：四臂收拢波浪齐射</summary>
+        BarrageCommand = 3,
+        /// <summary>电弧链锁：四臂飞散十字旋转收紧</summary>
+        TetherSpin = 4,
         /// <summary>转阶段：四肢依次殉爆、机体过载重启</summary>
         PhaseTransition = 5,
-        /// <summary>狂暴悬停：三阶段常态，头颅弹幕压制</summary>
-        RageHover = 6,
-        /// <summary>狂暴冲撞：三阶段高速连冲</summary>
+        /// <summary>狂暴 connector：换弹/排气段落标点</summary>
+        RageConnector = 6,
+        /// <summary>狂暴冲撞：闪现贯穿三连</summary>
         RageDash = 7,
-        /// <summary>环形爆发：全向弹幕脉冲</summary>
-        RadialBurst = 8,
-        /// <summary>弹幕墙：自下而上与侧向的火箭洪流</summary>
-        LaserWall = 9,
+        /// <summary>离子过载：充能后三波带缺口全向弹环</summary>
+        IonOverload = 8,
+        /// <summary>火箭帷幕：两侧火箭墙向中线折叠</summary>
+        RocketCurtain = 9,
         /// <summary>白昼狂暴</summary>
         DayEnrage = 10,
         /// <summary>金币枪狂怒</summary>
@@ -36,6 +36,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         Despawn = 12,
         /// <summary>死亡演出</summary>
         Death = 13,
+        /// <summary>断头台旋杀：大半径圆周锯刃收紧</summary>
+        GuillotineSpin = 14,
+        /// <summary>颅骨主炮：低血量扣留巨型光束横扫</summary>
+        SkullCannon = 15,
+        /// <summary>十字绞杀：四臂合体对角封位</summary>
+        CrossExecute = 16,
+        /// <summary>战术指令执行窗口（广播四臂后衔接下一招）</summary>
+        CommandExecute = 17,
     }
 
     /// <summary>

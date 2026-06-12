@@ -3,8 +3,8 @@
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
     /// <summary>
-    /// 机械骷髅王宏观阶段标记，写入 <c>npc.ai[0]</c>（原版自动同步），供外部系统读取：
-    /// <see cref="TwinsAccompanyHandler"/>、<see cref="PrimeFacts.IsDeathPerformance"/>、双子随从生成判定等
+    /// 机械骷髅王宏观阶段标记，写入 <c>npc.ai[0]</c>（原版自动同步），
+    /// 供外部系统读取：<see cref="PrimeFacts.IsDeathPerformance"/> 等
     /// </summary>
     internal static class PrimePhase
     {
@@ -32,7 +32,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
     /// <para>头部（NPCOverride <c>ai[]</c>）：</para>
     /// <list type="bullet">
     /// <item><c>ai[9]</c> —— 编队旋转时钟（每帧自增，机械臂环绕编队共用）</item>
-    /// <item><c>ai[10]</c> —— 传送恢复计时（由 <see cref="Projectiles.Boss.SkeletronPrime.SetPosingStarm"/> 杀死时写入 180）</item>
     /// </list>
     /// <para>机械臂（<c>npc.ai[]</c>）：</para>
     /// <list type="bullet">
@@ -45,11 +44,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
     internal static class PrimeAiSlots
     {
         public const int HeadPhase = 0;
+        /// <summary>向四臂广播的战术指令（<see cref="PrimeCommandKind"/>）</summary>
+        public const int HeadCommandSlot = 1;
         public const int HeadStateSlot = 2;
         public const int HeadMechQueenFlag = 3;
 
         public const int OverrideOrbitClock = 9;
-        public const int OverrideTeleportTimer = 10;
 
         public const int ArmSide = 0;
         public const int ArmHeadIndex = 1;

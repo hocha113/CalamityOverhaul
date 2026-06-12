@@ -35,15 +35,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 ctx.Npc.netUpdate = true;
 
                 //全难度共享完整出招轮换，死亡模式只通过充能速度与弹速体现强度
+                PrimeCommandKind cmd = HeadPrimeAI.GetActiveCommand(ctx.Head);
+                if (cmd == PrimeCommandKind.FireSuppression) {
+                    return new LaserSweepState();
+                }
+
                 int cycle = ctx.AttackCycle;
-                ctx.AttackCycle = (cycle + 1) % 3;
-                if (cycle == 0) {
-                    return new LaserChargedShotState();
-                }
-                if (cycle == 1) {
-                    return new LaserRingState();
-                }
-                return new LaserRapidFireState();
+                ctx.AttackCycle = (cycle + 1) % 4;
+                return cycle switch {
+                    0 => new LaserSweepState(),
+                    1 => new LaserTriShotState(),
+                    2 => new LaserChargedShotState(),
+                    _ => new LaserRapidFireState(),
+                };
             }
             return null;
         }
@@ -265,7 +269,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             rotationSpeed = MathHelper.Lerp(rotationSpeed, scanSpeed, 0.1f);
             npc.rotation += rotationSpeed * ctx.Side;
 
-            if (!VaultUtils.isClient && !ctx.DontAttack && HeadPrimeAI.setPosingStarmCount == 0) {
+            if (!VaultUtils.isClient && !ctx.DontAttack) {
                 float rate = 1f + ctx.MissingPartnerCount * 0.5f;
                 fireCooldown += (int)rate;
                 if (fireCooldown >= 90) {
@@ -323,6 +327,89 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 }
                 HeadPrimeAI.SpanFireLerterDustEffect(npc, 33);
             }
+        }
+    }
+
+    /// <summary>短光束横扫：90 帧预警线 → 扫射</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserSweep, typeof(PrimeArmStateContext))]
+    internal class LaserSweepState : PrimeArmStateBase
+    {
+        public override string StateName => "LaserSweep";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserSweep;
+
+        private float sweepStart;
+        private bool fired;
+
+        public override void OnEnter(PrimeArmStateContext ctx) {
+            base.OnEnter(ctx);
+            sweepStart = (ctx.Target.Center - ctx.Npc.Center).ToRotation();
+            fired = false;
+            if (!VaultUtils.isClient) {
+                PrimeTelegraphLine.SpawnFan(ctx.Npc.Center, sweepStart, 0.1f, 0.9f, PrimeDirector.BeamTelegraphFrames);
+            }
+        }
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            LaserAimState.Follow(ctx);
+            ctx.ChargeGlow = MathHelper.Clamp(Timer / (float)PrimeDirector.BeamTelegraphFrames, 0f, 1f);
+
+            if (Timer >= PrimeDirector.BeamTelegraphFrames && !fired && !VaultUtils.isClient && !ctx.DontAttack) {
+                fired = true;
+                FireSweep(ctx);
+                ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
+            }
+
+            Timer++;
+            if (Timer >= PrimeDirector.BeamTelegraphFrames + 30 && !VaultUtils.isClient) {
+                return new LaserAimState();
+            }
+            return null;
+        }
+
+        private void FireSweep(PrimeArmStateContext ctx) {
+            int type = ModContent.ProjectileType<DeadLaser>();
+            int damage = ScaleDamage(CWRRef.GetProjectileDamage(ctx.Npc, type));
+            for (int i = -3; i <= 3; i++) {
+                Vector2 vel = (sweepStart + MathHelper.ToRadians(8f) * i).ToRotationVector2() * 7f;
+                Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), ctx.Npc.Center + vel * 60f, vel,
+                    type, damage, 0f, Main.myPlayer, 1f, 0f);
+            }
+            HeadPrimeAI.SpanFireLerterDustEffect(ctx.Npc, 20);
+        }
+    }
+
+    /// <summary>三连预判点射</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserTriShot, typeof(PrimeArmStateContext))]
+    internal class LaserTriShotState : PrimeArmStateBase
+    {
+        public override string StateName => "LaserTriShot";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserTriShot;
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            LaserAimState.Follow(ctx);
+            SmoothAim(ctx, 0.12f);
+
+            if (!VaultUtils.isClient && !ctx.DontAttack && Timer % 28 == 0 && Counter < 3) {
+                Vector2 predict = ctx.Target.Center + ctx.Target.velocity * (12f + Counter * 4f);
+                ctx.AimDirection = (predict - ctx.Npc.Center).SafeNormalize(Vector2.UnitY);
+                FireShot(ctx);
+                ctx.ApplyRecoil(PrimeDirector.FireRecoil);
+                Counter++;
+            }
+
+            Timer++;
+            if (Counter >= 3 && Timer > 40 && !VaultUtils.isClient) {
+                return new LaserAimState();
+            }
+            return null;
+        }
+
+        private static void FireShot(PrimeArmStateContext ctx) {
+            int type = ModContent.ProjectileType<DeadLaser>();
+            int damage = ScaleDamage(CWRRef.GetProjectileDamage(ctx.Npc, type));
+            Vector2 vel = ctx.AimDirection * 5.5f;
+            Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), ctx.Npc.Center + ctx.AimDirection * 90f, vel,
+                type, damage, 0f, Main.myPlayer, 1f, 0f);
         }
     }
 }

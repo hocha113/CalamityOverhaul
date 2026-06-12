@@ -212,6 +212,14 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int CustomCooldownCounter;
         /// <summary>
+        /// 掠袭者系列：冲刺结束后的强化射击是否就绪
+        /// </summary>
+        public bool RaiderGunDashReady;
+        /// <summary>
+        /// 掠袭者系列共享的冲刺冷却（帧），每帧减一直至归零
+        /// </summary>
+        public int RaiderGunDashCooldown;
+        /// <summary>
         /// 大于0时不能使用物品，该值每帧减一直至归零
         /// </summary>
         public int DontUseItemTime;
@@ -263,6 +271,8 @@ namespace CalamityOverhaul.Content
             cwr.RotationResetCounter = RotationResetCounter;
             cwr.RotationResetDuration = RotationResetDuration;
             cwr.CustomCooldownCounter = CustomCooldownCounter;
+            cwr.RaiderGunDashReady = RaiderGunDashReady;
+            cwr.RaiderGunDashCooldown = RaiderGunDashCooldown;
             cwr.DontUseItemTime = DontUseItemTime;
             cwr.PallbearerNextArrowDamageMult = PallbearerNextArrowDamageMult;
             return cwr;
@@ -412,6 +422,10 @@ namespace CalamityOverhaul.Content
 
             if (CustomCooldownCounter > 0) {
                 CustomCooldownCounter--;
+            }
+
+            if (RaiderGunDashCooldown > 0) {
+                RaiderGunDashCooldown--;
             }
 
             if (ReceivingPlatformTime > 0) {
@@ -614,26 +628,22 @@ namespace CalamityOverhaul.Content
         /// <summary>
         /// 获取玩家所手持的BaseHeldRanged实例
         /// </summary>
-        /// <param name="baseGun"></param>
-        /// <returns>如果玩家没有手持BaseGun或者发生了其他非法情况，返回<see langword="false"/></returns>
+        /// <param name="baseranged"></param>
+        /// <returns>如果玩家没有手持BaseHeldRanged或者发生了其他非法情况，返回<see langword="false"/></returns>
         internal bool TryGetInds_BaseHeldRanged(out BaseHeldRanged baseranged) {
             return TryGetHeldProjInds(out baseranged);
         }
         /// <summary>
-        /// 获取玩家所手持的<see cref="BaseGun"/>实例
+        /// 玩家手持的武器弹幕当前是否处于手持展示状态，兼容新旧两代手持基类
         /// </summary>
-        /// <param name="baseGun"></param>
-        /// <returns>如果玩家没有手持<see cref="BaseGun"/>或者发生了其他非法情况，返回<see langword="false"/></returns>
-        internal bool TryGetInds_BaseGun(out BaseGun baseGun) {
-            return TryGetHeldProjInds(out baseGun);
-        }
-        /// <summary>
-        /// 获取玩家所手持的<see cref="BaseBow"/>实例
-        /// </summary>
-        /// <param name="baseGun"></param>
-        /// <returns>如果玩家没有手持<see cref="BaseBow"/>或者发生了其他非法情况，返回<see langword="false"/></returns>
-        internal bool TryGetInds_BaseBow(out BaseBow baseBow) {
-            return TryGetHeldProjInds(out baseBow);
+        internal bool HeldWeaponInDisplay() {
+            if (TryGetHeldProjInds(out BaseHeldRanged ranged) && ranged.OnHandheldDisplayBool) {
+                return true;
+            }
+            if (TryGetHeldProjInds(out BaseHeldGun heldGun) && heldGun.OnHandheldDisplayBool) {
+                return true;
+            }
+            return false;
         }
     }
 }

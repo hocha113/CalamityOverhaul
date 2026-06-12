@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static int iconIndex;
         internal static int iconIndex_Void;
 
-        internal const int StretchTime = 360;
         internal const int BodyCount = 60;
         /// <summary>
         /// 头部生命值低于该值时进入死亡演出阶段

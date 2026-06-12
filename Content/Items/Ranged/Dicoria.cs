@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,13 +29,26 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useTime = 18;
             Item.useAnimation = 18;
             Item.useAmmo = AmmoID.Bullet;
+            Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 10;
-            Item.UseSound = CWRSound.Gun_50CAL_Shoot with { Volume = 0.6f };
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 1, 60, 10);
-            Item.SetHeldProj<DicoriaHeld>();
             Item.CWR().DeathModeItem = true;
         }
+
+        //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
+        public override bool CanConsumeAmmo(Item ammo, Player player) => BaseHeldGun.AmmoConsumeContext;
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<DicoriaHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<DicoriaHeld>(player, source);
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor
             , Color alphaColor, float rotation, float scale, int whoAmI) {
@@ -42,70 +57,81 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    internal class DicoriaHeld : BaseGun
+    internal class DicoriaHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Ranged + "Dicoria";
-        public override string GlowTexPath => CWRConstant.Item_Ranged + "DicoriaGlow";
+        public override Asset<Texture2D> GlowAsset => Dicoria.Glow;
         public override int TargetID => ModContent.ItemType<Dicoria>();
-        public override void SetRangedProperty() {
+        public override SoundStyle? ShootSound => CWRSound.Gun_50CAL_Shoot with { Volume = 0.6f };
+        /// <summary>每打满一个弹巢循环后，下一发转为发射射线</summary>
+        private bool RayShot => fireIndex > 6;
+        private bool RayAlive => Owner.ownedProjectileCounts[ModContent.ProjectileType<DicoriaRay>()] != 0;
+
+        //射线持续期间枪体不能消失，需要为射线提供锚点
+        public override bool StayAlive() => RayAlive;
+        public override void SetGunProperty() {
             GunPressure = 0.1f;
             ControlForce = 0.02f;
             HandIdleDistanceX = 26;
             HandIdleDistanceY = -4;
             HandFireDistanceX = 30;
             HandFireDistanceY = -8;
-            ShootPosNorlLengValue = -16;
-            ShootPosToMouLengValue = 2;
+            MuzzleForwardOffset = 2;
+            MuzzleNormalOffset = -16;
             RecoilRetroForceMagnitude = 12;
             RecoilOffsetRecoverValue = 0.9f;
-            EnableRecoilRetroEffect = true;
-            CanCreateSpawnGunDust = false;
         }
 
-        public override void SetShootAttribute() {
-            InOwner_HandState_AlwaysSetInFireRoding = false;
-            ShootPosNorlLengValue = -16;
-            if (++fireIndex > 6) {
-                GunPressure = 0;
-                ControlForce = 0;
-                ShootPosNorlLengValue = 4;
-                InOwner_HandState_AlwaysSetInFireRoding = true;
-                AmmoTypes = ModContent.ProjectileType<DicoriaRay>();
-                Item.UseSound = SoundID.Item69;
+        public override void AI() {
+            bool rayAlive = RayAlive;
+            //射线持续期间保持瞄准姿势并把枪口对齐射线出口
+            AlwaysAimPose = rayAlive;
+            MuzzleNormalOffset = rayAlive ? 4 : -16;
+            UpdateHeldPose(WantsFireLeft);
+
+            if (!rayAlive && WantsFireLeft && FireCooldown <= 0 && HasAmmo) {
+                Fire();
+                SetFireCooldown();
             }
+            Time++;
         }
 
-        public override void PostShootEverthing() {
-            GunPressure = 0.1f;
-            ControlForce = 0.02f;
-            Item.UseSound = CWRSound.Gun_50CAL_Shoot with { Volume = 0.6f };
-            if (fireIndex > 6) {
-                fireIndex = 0;
+        private void Fire() {
+            fireIndex++;
+            bool rayShot = RayShot;
+            if (rayShot) {
+                MuzzleNormalOffset = 4;
             }
-        }
+            SnapToAimPose();
+            CreateFireLight();
 
-        public override bool CanSpanProj() {
-            if (Owner.ownedProjectileCounts[ModContent.ProjectileType<DicoriaRay>()] != 0) {
-                return false;
-            }
-            return base.CanSpanProj();
-        }
-
-        public override void FiringShoot() {
-            if (AmmoTypes == ProjectileID.Bullet) {
-                AmmoTypes = ProjectileID.BulletHighVelocity;
-            }
-            if (fireIndex > 6) {
-                Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
+            if (rayShot) {
+                SoundEngine.PlaySound(SoundID.Item69, Projectile.Center);
             }
             else {
-                Projectile.NewProjectile(Source, ShootPos, ShootVelocity / 2
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
-                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                    , AmmoTypes, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                PlayShootSound();
+                CreateRecoil();
             }
-            _ = UpdateConsumeAmmo();
+
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                int shootType = AmmoTypes == ProjectileID.Bullet ? ProjectileID.BulletHighVelocity : AmmoTypes;
+                if (rayShot) {
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                        , ModContent.ProjectileType<DicoriaRay>()
+                        , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
+                }
+                else {
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity / 2
+                        , shootType, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                    Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                        , shootType, WeaponDamage, WeaponKnockback, Owner.whoAmI, 0);
+                }
+            }
+
+            if (rayShot) {
+                fireIndex = 0;
+            }
+            ConsumeAmmo();
         }
     }
 
@@ -137,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void AI() {
             homeProj = Main.projectile.FindByIdentity((int)Projectile.ai[0]);
-            if (homeProj.Alives() && homeProj.ModProjectile is BaseGun gun) {
+            if (homeProj.Alives() && homeProj.ModProjectile is DicoriaHeld gun) {
                 Projectile.Center = gun.ShootPos;
                 Projectile.rotation = homeProj.rotation;
             }

@@ -10,13 +10,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
     /// <summary>
-    /// 大招「轨道绞杀」三幕演出：
+    /// 低血量大招「轨道绞杀」三幕演出（普攻版俯冲见 <see cref="DestroyerDiveStrikeState"/>）：
     /// <br/>1. 撤离：咆哮 + 全身充能波循环加速，整条蠕虫以最大冲量飞出屏幕顶部，短暂静默蓄势；
-    /// <br/>2. 交叉俯冲：每趟先给出贯穿屏幕的对角预警线，随后整条蠕虫沿线以极高速贯穿战场，
-    ///    左右交替形成X交叉轨迹，入场带音爆扭曲环；
-    /// <br/>3. 终结贯穿：玩家头顶垂直警告光柱（更长预警），蠕虫自天垂直贯穿砸入大地，
-    ///    巨型冲击 + 碎屑喷泉，随后破土回场进入散热惩罚窗口。
-    /// <br/>所有难度完整播放演出，Death/激怒只调整俯冲速度与趟数等数值。
+    /// <br/>2. 交叉俯冲 2 趟：贯穿屏幕的对角预警线 + 极高速贯穿，左右交替成X，入场带音爆扭曲环；
+    /// <br/>3. 终结贯穿：玩家头顶垂直警告光柱（更长预警），蠕虫自天垂直贯穿砸入大地——
+    ///    全场唯一的最大冲击演出，随后破土回场进入散热惩罚窗口。
+    /// <br/>所有难度完整播放演出，Death 只调整俯冲速度等数值。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.OrbitalStrike, typeof(DestroyerStateContext))]
     internal class DestroyerOrbitalStrikeState : DestroyerStateBase
@@ -25,8 +24,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.OrbitalStrike;
 
         #region 演出节奏常量
-        private const int AscendEnd = 90;
-        private const int SilenceEnd = 146;
+        private const int AscendEnd = 60;
+        private const int SilenceEnd = 100;
         private const int TelegraphTime = 42;
         private const int DiveTime = 54;
         private const int GapTime = 16;
@@ -37,9 +36,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private const int ReturnTime = 150;
         #endregion
 
-        private int PassCount(DestroyerStateContext ctx) => ctx.IsEnraged ? 4 : 3;
+        private int PassCount(DestroyerStateContext ctx) => 2;
         private float DiveSpeed(DestroyerStateContext ctx)
-            => (ctx.IsEnraged ? 82f : 74f) + (ctx.IsDeathMode ? 10f : 0f);
+            => 82f + (ctx.IsDeathMode ? 10f : 0f);
 
         //以下字段均由 Timer 与同步的 npc.ai[3] 确定性推导，各端独立计算
         private Vector2 lineCenter;
@@ -168,7 +167,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             SetMovement(context, player.Center + new Vector2(0, -2600f), 30f, 0.8f);
 
             //远处轰鸣 + 持续低强度震动，制造"暴风雨前"的压迫感
-            if (Timer == SilenceEnd - 40) {
+            if (Timer == SilenceEnd - 30) {
                 SoundEngine.PlaySound(SoundID.Thunder with { Volume = 0.8f, Pitch = -0.7f }, player.Center);
             }
             if (Timer % 24 == 0) {
@@ -243,7 +242,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                         Projectile.NewProjectile(npc.GetSource_FromAI(), lineCenter, Vector2.Zero,
                             ModContent.ProjectileType<DestroyerShockwave>(), 0, 0f, Main.myPlayer, 1);
                     }
-                    DestroyerMotionFX.CameraPunch(lineCenter, 7f, 16, "DestroyerOrbitalPass");
+                    DestroyerMotionFX.CameraPunch(lineCenter, 7f, 16, "DestroyerOrbitalPass", diveDir);
                 }
                 return;
             }
@@ -300,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 if (lockedX == 0f) {
                     lockedX = player.Center.X;
                 }
-                impactPoint = FindGroundBelow(new Vector2(lockedX, player.Center.Y));
+                impactPoint = DestroyerMotionFX.FindGroundBelow(new Vector2(lockedX, player.Center.Y));
                 npc.Center = new Vector2(lockedX, player.Center.Y - 2700f);
                 npc.velocity = Vector2.UnitY * (DiveSpeed(context) + 14f);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
@@ -323,7 +322,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                         ModContent.ProjectileType<DestroyerShockwave>(), 0, 0f, Main.myPlayer, 2);
                 }
                 DestroyerMotionFX.SpawnImpactBlast(impactPoint, 1.6f);
-                DestroyerMotionFX.CameraPunch(impactPoint, 16f, 32, "DestroyerOrbitalImpact");
+                DestroyerMotionFX.CameraPunch(impactPoint, 16f, 32, "DestroyerOrbitalImpact", Vector2.UnitY);
                 DestroyerChargeWave.Push(npc.whoAmI, 0f, 1f, 1f, fullBody: true);
             }
 
@@ -354,7 +353,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<DestroyerShockwave>(), 0, 0f, Main.myPlayer, 0);
                 }
-                DestroyerMotionFX.CameraPunch(npc.Center, 6f, 14, "DestroyerOrbitalEmerge");
+                DestroyerMotionFX.CameraPunch(npc.Center, 6f, 14, "DestroyerOrbitalEmerge", -Vector2.UnitY);
                 SoundEngine.PlaySound(SoundID.WormDig with { Volume = 1f, Pitch = -0.2f }, npc.Center);
             }
 
@@ -370,29 +369,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     smoke?.Configure(Main.rand.Next(35, 60), 0.55f * (1f - progress), Main.rand.NextFloat(-0.04f, 0.04f));
                 }
             }
-        }
-
-        #endregion
-
-        #region 工具
-
-        /// <summary>
-        /// 自给定位置向下寻找首个实体地表，找不到时回退到下方400像素
-        /// </summary>
-        private static Vector2 FindGroundBelow(Vector2 from) {
-            int tileX = (int)(from.X / 16f);
-            int tileY = Math.Max((int)(from.Y / 16f), 10);
-            for (int i = 0; i < 70; i++) {
-                int y = tileY + i;
-                if (y >= Main.maxTilesY - 10) {
-                    break;
-                }
-                Tile tile = Framing.GetTileSafely(tileX, y);
-                if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType]) {
-                    return new Vector2(from.X, y * 16f);
-                }
-            }
-            return from + new Vector2(0, 400f);
         }
 
         #endregion

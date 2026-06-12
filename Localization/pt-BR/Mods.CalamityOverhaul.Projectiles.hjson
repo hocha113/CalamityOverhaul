@@ -107,11 +107,8 @@ OceanCurrent.DisplayName: Corrente Oceanica
 PowerSoundEgg.DisplayName: Ovo Ressonante
 CrabulonFriendHitbox.DisplayName: Esporo de Crabulon
 Fireball.DisplayName: Bola de Fogo
-CrossPrediction.DisplayName: Predicao Cruzada
 DeadLaser.DisplayName: Laser da Morte
-Mechanicalworm.DisplayName: Verme Mecanico
-Probe.DisplayName: Sonda
-SetPosingStarm.DisplayName: Tempestade Estelar
+// PrimeTelegraphLine.DisplayName: Prime Telegraph
 Hit.DisplayName: Impacto
 SpwanTextProj.DisplayName: Texto Manifestado
 DragonsWordCut.DisplayName: Corte da Palavra do Dragao

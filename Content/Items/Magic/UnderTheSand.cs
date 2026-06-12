@@ -1,8 +1,9 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
+﻿using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,11 +28,20 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.knockBack = 2.5f;
             Item.shoot = ModContent.ProjectileType<UnderTheSandSurge>();
             Item.shootSpeed = 8;
-            Item.UseSound = SoundID.Item20;
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Green;
             Item.value = Item.buyPrice(0, 0, 50, 15);
-            Item.SetHeldProj<UnderTheSandHeld>();
         }
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<UnderTheSandHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<UnderTheSandHeld>(player, source);
 
         public override void AddRecipes() {
             if (CWRRef.Has) {
@@ -46,42 +56,59 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    internal class UnderTheSandHeld : BaseMagicGun
+    internal class UnderTheSandHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Magic + "UnderTheSand";
         public override int TargetID => ModContent.ItemType<UnderTheSand>();
-        public override void SetMagicProperty() {
+        /// <summary>开火后的余韵进度，用于让法器在出手后短暂胀大发光</summary>
+        private int glowPulse;
+        public override void SetGunProperty() {
+            Projectile.DamageType = DamageClass.Magic;
             HandFireDistanceX = 18;
             HandFireDistanceY = 0;
-            ShootPosNorlLengValue = -6;
-            ShootPosToMouLengValue = 8;
+            MuzzleForwardOffset = 8;
+            MuzzleNormalOffset = -6;
             GunPressure = 0.18f;
             ControlForce = 0.05f;
             RecoilRetroForceMagnitude = 10;
             RecoilOffsetRecoverValue = 0.6f;
-            EnableRecoilRetroEffect = true;
-            FiringDefaultSound = false;
-            CanCreateSpawnGunDust = false;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
+            AlwaysAimPose = true;
         }
 
-        public override void PreInOwner() {
-            if (fireIndex > 0) {
-                fireIndex--;
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (glowPulse > 0) {
+                glowPulse--;
             }
+            if (CanFire) {
+                HoldManaRegenDelay();
+            }
+
+            if (WantsFireLeft && FireCooldown <= 0 && PayMana()) {
+                Fire();
+                SetFireCooldown();
+            }
+            Time++;
         }
 
-        public override void FiringShoot() {
+        private void Fire() {
+            glowPulse = 22;
+            SnapToAimPose();
             SoundEngine.PlaySound(SoundID.Item20 with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
+            CreateRecoil();
+            CreateFireLight();
 
-            //沿射击方向以微小扇形喷出两枚沙之涌动
-            int surgeType = ModContent.ProjectileType<UnderTheSandSurge>();
-            const int surgeCount = 2;
-            for (int i = 0; i < surgeCount; i++) {
-                float spread = (i - (surgeCount - 1) / 2f) * 0.16f;
-                Vector2 vel = ShootVelocity.RotatedBy(spread) * Main.rand.NextFloat(0.95f, 1.1f);
-                Projectile.NewProjectile(Source, ShootPos, vel
-                    , surgeType, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                //沿射击方向以微小扇形喷出两枚沙之涌动
+                int surgeType = ModContent.ProjectileType<UnderTheSandSurge>();
+                const int surgeCount = 2;
+                for (int i = 0; i < surgeCount; i++) {
+                    float spread = (i - (surgeCount - 1) / 2f) * 0.16f;
+                    Vector2 vel = ShootVelocity.RotatedBy(spread) * Main.rand.NextFloat(0.95f, 1.1f);
+                    Projectile.NewProjectile(Source, ShootPos, vel
+                        , surgeType, WeaponDamage, WeaponKnockback, Owner.whoAmI);
+                }
             }
 
             //枪口卷起一道环形沙环作为开火反馈
@@ -94,13 +121,11 @@ namespace CalamityOverhaul.Content.Items.Magic
             }
         }
 
-        public override void SetShootAttribute() => fireIndex = 22;
-
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
             Color color = Color.Goldenrod;
             color.A = 0;
-            float slp = 1 + 0.012f * fireIndex;
+            float slp = 1 + 0.012f * glowPulse;
             Main.EntitySpriteDraw(TextureValue, drawPos, null, color * 0.4f
                 , Projectile.rotation + offsetRot, TextureValue.Size() / 2, Projectile.scale * slp
                 , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);

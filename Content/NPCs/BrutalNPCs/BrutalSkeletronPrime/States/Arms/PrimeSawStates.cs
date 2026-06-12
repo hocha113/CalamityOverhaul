@@ -1,5 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
+using Terraria.ModLoader;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -49,16 +51,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 npc.TargetClosest();
                 npc.netUpdate = true;
 
-                //全难度共享完整出招轮换，死亡模式只通过充能与速度数值体现强度
+                if (HeadPrimeAI.GetActiveCommand(ctx.Head) == PrimeCommandKind.PhysicalAssault) {
+                    return new SawGroundCutState();
+                }
+
                 int cycle = ctx.AttackCycle;
-                ctx.AttackCycle = (cycle + 1) % 3;
-                if (cycle == 0) {
-                    return new SawSpinUpState();
-                }
-                if (cycle == 1) {
-                    return new SawOrbitState();
-                }
-                return new SawDrillState();
+                ctx.AttackCycle = (cycle + 1) % 4;
+                return cycle switch {
+                    0 => new SawBoomerangState(),
+                    1 => new SawSpinUpState(),
+                    2 => new SawGroundCutState(),
+                    _ => new SawDrillState(),
+                };
             }
             return null;
         }
@@ -378,6 +382,86 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Timer++;
             if (Timer > 30 && IdleAnchorDistance(ctx) < 400f && !VaultUtils.isClient) {
                 return new SawIdleState();
+            }
+            return null;
+        }
+    }
+
+    /// <summary>回旋掷锯：锯片飞出-折返</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawBoomerang, typeof(PrimeArmStateContext))]
+    internal class SawBoomerangState : PrimeArmStateBase
+    {
+        public override string StateName => "SawBoomerang";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.SawBoomerang;
+
+        private Vector2 launchDir;
+        private bool returning;
+
+        public override void OnEnter(PrimeArmStateContext ctx) {
+            base.OnEnter(ctx);
+            launchDir = (ctx.Target.Center - ctx.Npc.Center).SafeNormalize(Vector2.UnitY);
+            returning = false;
+        }
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            ctx.TargetSpinSpeed = 0.35f;
+            if (!returning) {
+                npc.velocity = launchDir * 16f;
+                npc.damage = npc.defDamage;
+                if (Vector2.Distance(npc.Center, ctx.Target.Center) < 120f || Timer > 24) {
+                    returning = true;
+                    launchDir = -launchDir;
+                    Timer = 0;
+                }
+            }
+            else {
+                npc.velocity = (ctx.Head.Center - npc.Center).SafeNormalize(Vector2.UnitY) * 14f;
+                npc.damage = 0;
+                if (Vector2.Distance(npc.Center, ctx.Head.Center) < 160f) {
+                    return new SawRecoveryState();
+                }
+            }
+            Timer++;
+            return null;
+        }
+    }
+
+    /// <summary>贴地锯切冲锋：地面火花线 telegraph</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawGroundCut, typeof(PrimeArmStateContext))]
+    internal class SawGroundCutState : PrimeArmStateBase
+    {
+        public override string StateName => "SawGroundCut";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.SawGroundCut;
+
+        public override void OnEnter(PrimeArmStateContext ctx) {
+            base.OnEnter(ctx);
+            if (!VaultUtils.isClient) {
+                Vector2 dir = (ctx.Target.Center - ctx.Npc.Center).SafeNormalize(Vector2.UnitX);
+                PrimeTelegraphLine.SpawnLine(ctx.Npc.Center, dir, 0.1f, 0.9f, PrimeDirector.DashTelegraphFrames);
+            }
+        }
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            NPC npc = ctx.Npc;
+            ctx.TargetSpinSpeed = 0.4f;
+            if (Timer < PrimeDirector.DashTelegraphFrames) {
+                npc.damage = 0;
+                ServoAimAt(npc, ctx.Target.Center, 0.08f);
+            }
+            else if (Timer == PrimeDirector.DashTelegraphFrames) {
+                Vector2 dash = (ctx.Target.Center - npc.Center).SafeNormalize(Vector2.UnitX) * 18f;
+                npc.velocity = dash;
+                npc.damage = npc.defDamage * 2;
+                ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
+            }
+            else {
+                npc.velocity *= 0.88f;
+            }
+
+            Timer++;
+            if (Timer > PrimeDirector.DashTelegraphFrames + 28 && !VaultUtils.isClient) {
+                return new SawRecoveryState();
             }
             return null;
         }

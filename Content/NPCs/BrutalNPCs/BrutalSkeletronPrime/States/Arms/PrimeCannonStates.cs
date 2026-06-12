@@ -47,6 +47,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 }
             }
 
+            if (!VaultUtils.isClient && !ctx.DontAttack
+                && HeadPrimeAI.GetActiveCommand(ctx.Head) == PrimeCommandKind.FireSuppression
+                && Vector2.Distance(ctx.Npc.Center, ctx.Target.Center) >= 350f) {
+                return new CannonMortarState();
+            }
+
             Timer++;
             return EvaluateModeSwitch(ctx, wantSpreadWhenFree: true);
         }
@@ -183,6 +189,74 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             ctx.ApplyRecoil(18f);
             SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.0f }, npc.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.6f, Pitch = 0.4f }, npc.Center);
+        }
+    }
+
+    /// <summary>抛物线迫击炮：落点圆圈预告，最小开火距离 350px</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonMortar, typeof(PrimeArmStateContext))]
+    internal class CannonMortarState : PrimeArmStateBase
+    {
+        public override string StateName => "CannonMortar";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.CannonMortar;
+
+        private Vector2 impactPoint;
+
+        public override void OnEnter(PrimeArmStateContext ctx) {
+            base.OnEnter(ctx);
+            impactPoint = ctx.Target.Center + ctx.Target.velocity * 18f;
+            if (!VaultUtils.isClient) {
+                PrimeTelegraphLine.SpawnRing(impactPoint, 0.2f, 0.85f, 50);
+            }
+        }
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            CannonBombardState.Follow(ctx);
+            SmoothAim(ctx, 0.1f);
+            if (Timer == 50 && !VaultUtils.isClient && !ctx.DontAttack) {
+                FireMortar(ctx);
+                ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
+            }
+            Timer++;
+            if (Timer > 70 && !VaultUtils.isClient) {
+                return new CannonBombardState();
+            }
+            return null;
+        }
+
+        private void FireMortar(PrimeArmStateContext ctx) {
+            Vector2 to = impactPoint - ctx.Npc.Center;
+            Vector2 vel = to.SafeNormalize(Vector2.UnitY) * 11f + new Vector2(0f, -4f);
+            int damage = ScaleDamage(CWRRef.GetProjectileDamage(ctx.Npc, ProjectileID.RocketSkeleton));
+            Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), ctx.Npc.Center, vel,
+                ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
+                Main.myPlayer, ctx.Npc.whoAmI, ctx.Npc.target, 0f);
+        }
+    }
+
+    /// <summary>直射火箭幕</summary>
+    [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonDirect, typeof(PrimeArmStateContext))]
+    internal class CannonDirectState : PrimeArmStateBase
+    {
+        public override string StateName => "CannonDirect";
+        public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.CannonDirect;
+
+        public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
+            CannonBombardState.Follow(ctx);
+            SmoothAim(ctx, 0.18f);
+            if (!VaultUtils.isClient && !ctx.DontAttack && Timer % 16 == 0 && Counter < 6) {
+                int damage = ScaleDamage(CWRRef.GetProjectileDamage(ctx.Npc, ProjectileID.RocketSkeleton));
+                Vector2 vel = ctx.AimDirection * 12f * MathHelper.Lerp(PrimeDirector.ProjectileWarmupStart, 1f, Counter / 5f);
+                Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), ctx.Npc.Center + ctx.AimDirection * 40f, vel,
+                    ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
+                    Main.myPlayer, ctx.Npc.whoAmI, ctx.Npc.target, 0f);
+                ctx.ApplyRecoil(PrimeDirector.FireRecoil);
+                Counter++;
+            }
+            Timer++;
+            if (Counter >= 6 && !VaultUtils.isClient) {
+                return new CannonBombardState();
+            }
+            return null;
         }
     }
 }

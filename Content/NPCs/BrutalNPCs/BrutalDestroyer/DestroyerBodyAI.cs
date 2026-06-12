@@ -44,10 +44,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private bool StartFlightPhase => LifeRatio < 0.5f;
         private bool Phase2 => LifeRatio < (CWRWorld.Death ? 0.4f : 0.25f);
         private bool Phase3 => LifeRatio < (CWRWorld.Death ? 0.2f : 0.1f);
-        private bool HasSpawnDR => ai[1] < DestroyerHeadAI.StretchTime && ai[1] > 60f;
         private bool IncreaseSpeed => Vector2.Distance(Target.Center, npc.Center) > 4000;
         private bool IncreaseSpeedMore => Vector2.Distance(Target.Center, npc.Center) > 6000;
-        private bool FlyAtTarget => (ai[3] >= AerialPhaseThreshold && StartFlightPhase) || HasSpawnDR;
+        private bool FlyAtTarget => ai[3] >= AerialPhaseThreshold && StartFlightPhase;
         private NPC SegmentNPC => Main.npc[(int)npc.ai[1]];
         private float enrageScale;
         private int noFlyZoneBoxHeight;
@@ -568,11 +567,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 //我们希望无尽伤害类型不会受到其他代码的减伤影响，所以，如果是无尽伤害，那么就阻止后面所有代码的执行
                 return false;
             }
-            if (time < DestroyerHeadAI.StretchTime) {
-                modifiers.FinalDamage /= 100f;
-                modifiers.SetMaxDamage(82);
-                return false;
-            }
+            //出场减伤已随龙车开场移除：体节从破土帧起完全可击杀，无敌期由开场位移演出取代
             modifiers.FinalDamage /= 2f;
             return false;
         }
@@ -595,49 +590,38 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             //每节体节用一个稳定但不同的种子（whoAmI），让脉冲扫描带相位错开
             float seed = (npc.whoAmI % 64) / 64f;
 
-            if (time < DestroyerHeadAI.StretchTime) {
-                value = Body_Stingless.Value;
-                Vector2 stinglessPos = npc.Center - Main.screenPosition;
-                Vector2 stinglessOrigin = value.Size() / 2;
+            Vector2 drawPos = npc.Center - Main.screenPosition;
+            Vector2 origin = rectangle.Size() / 2;
 
-                //出场期间不绘制halo和着色器，避免和缩进特效冲突
-                spriteBatch.Draw(value, stinglessPos, null, drawColor,
-                    npc.rotation + MathHelper.Pi, stinglessOrigin, npc.scale, SpriteEffects.None, 0);
+            //读取头部共享状态并叠加本节充能波——"电流沿躯体奔跑"的可见波
+            int controllerId = (int)npc.realLife;
+            var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
+
+            //外圈描边光环——夜晚时也能看清整条蠕虫的走向
+            MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
+                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
+                visMode, visIntensity, visProgress);
+
+            //本体套机械热感着色器（传入当前帧UV范围，避免4帧贴图邻域采样跨帧）
+            bool shaderApplied = MechBossThermalRenderer.BeginThermalShader(spriteBatch, value, rectangle,
+                visMode, visIntensity, visProgress, seed);
+            spriteBatch.Draw(value, drawPos, rectangle, drawColor,
+                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
+            if (shaderApplied) {
+                MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
-            else {
-                Vector2 drawPos = npc.Center - Main.screenPosition;
-                Vector2 origin = rectangle.Size() / 2;
 
-                //读取头部共享状态并叠加本节充能波——"电流沿躯体奔跑"的可见波
-                int controllerId = (int)npc.realLife;
-                var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
+            //发光层独立绘制以保留原始自发光
+            spriteBatch.Draw(value2, drawPos, rectangle, Color.White,
+                npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
 
-                //外圈描边光环——夜晚时也能看清整条蠕虫的走向
-                MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
-                    npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
-                    visMode, visIntensity, visProgress);
-
-                //本体套机械热感着色器（传入当前帧UV范围，避免4帧贴图邻域采样跨帧）
-                bool shaderApplied = MechBossThermalRenderer.BeginThermalShader(spriteBatch, value, rectangle,
-                    visMode, visIntensity, visProgress, seed);
-                spriteBatch.Draw(value, drawPos, rectangle, drawColor,
+            //充能波白热叠加：波峰处体节亮起（A=0 即加法叠色）
+            if (wave > 0.05f) {
+                Color hot = new Color(255, 165, 75, 0) * wave;
+                spriteBatch.Draw(value2, drawPos, rectangle, hot,
+                    npc.rotation + MathHelper.Pi, origin, npc.scale * 1.04f, SpriteEffects.None, 0);
+                spriteBatch.Draw(value, drawPos, rectangle, hot * 0.55f,
                     npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
-                if (shaderApplied) {
-                    MechBossThermalRenderer.EndThermalShader(spriteBatch);
-                }
-
-                //发光层独立绘制以保留原始自发光
-                spriteBatch.Draw(value2, drawPos, rectangle, Color.White,
-                    npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
-
-                //充能波白热叠加：波峰处体节亮起（A=0 即加法叠色）
-                if (wave > 0.05f) {
-                    Color hot = new Color(255, 165, 75, 0) * wave;
-                    spriteBatch.Draw(value2, drawPos, rectangle, hot,
-                        npc.rotation + MathHelper.Pi, origin, npc.scale * 1.04f, SpriteEffects.None, 0);
-                    spriteBatch.Draw(value, drawPos, rectangle, hot * 0.55f,
-                        npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0);
-                }
             }
 
             return false;

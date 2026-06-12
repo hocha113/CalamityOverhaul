@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
     /// 登场演出：以 1 点生命自玩家脚下深处升起，悬至高空注能回血，
     /// 嗡鸣声中再生四条机械臂后正式参战。
     /// <para>位置推进全程两端确定性 Lerp，不依赖 netUpdate 强同步；
-    /// 生成类副作用（双子、机械臂）仅服务端执行。</para>
+    /// 生成类副作用（机械臂）仅服务端执行。</para>
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Intro, typeof(PrimeStateContext))]
     internal class PrimeIntroState : PrimeStateBase
@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 npc.life = 1;
                 npc.Center = target.Center + new Vector2(0, 1200);
                 if (!VaultUtils.isClient) {
-                    context.Owner.SpawnEye();
                     npc.netUpdate = true;//仅首次定位同步一次精确坐标
                 }
             }
@@ -83,7 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 npc.damage = npc.defDamage;
                 npc.ai[PrimeAiSlots.HeadPhase] = PrimePhase.Armed;
                 if (!VaultUtils.isClient) {
-                    return new PrimeCommandHoverState();
+                    return new PrimeCommandSequenceState();
                 }
             }
             return null;

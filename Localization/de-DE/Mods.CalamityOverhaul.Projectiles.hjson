@@ -107,11 +107,8 @@ OceanCurrent.DisplayName: Meeresströmung
 PowerSoundEgg.DisplayName: Resonanz-Ei
 CrabulonFriendHitbox.DisplayName: Crabulon-Spore
 Fireball.DisplayName: Feuerball
-CrossPrediction.DisplayName: Kreuzvorhersage
 DeadLaser.DisplayName: Todeslaser
-Mechanicalworm.DisplayName: Mechanischer Wurm
-Probe.DisplayName: Sonde
-SetPosingStarm.DisplayName: Sternensturm
+// PrimeTelegraphLine.DisplayName: Prime Telegraph
 Hit.DisplayName: Einschlag
 SpwanTextProj.DisplayName: Manifestierender Text
 DragonsWordCut.DisplayName: Drachenwort-Schnitt

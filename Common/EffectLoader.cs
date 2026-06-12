@@ -16,6 +16,14 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> NeutronRing { get; set; }
         public static Asset<Effect> NeutronWarp { get; set; }
         public static Asset<Effect> PrimeHalo { get; set; }
+        public static Asset<Effect> PrimeTelegraph { get; set; }
+        public static Asset<Effect> PrimeSkullBeam { get; set; }
+        public static Asset<Effect> PrimeArcChain { get; set; }
+        public static Asset<Effect> PrimeChargeVortex { get; set; }
+        public static Asset<Effect> PrimeShockRing { get; set; }
+        public static Asset<Effect> PrimeImpactFrame { get; set; }
+        public static Asset<Effect> PrimeHeatWake { get; set; }
+        public static Asset<Effect> PrimeAfterimage { get; set; }
         public static Asset<Effect> DestroyerThermalOutline { get; set; }
         public static Asset<Effect> DestroyerSlash { get; set; }
         public static Asset<Effect> DestroyerBeam { get; set; }

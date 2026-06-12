@@ -492,6 +492,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
 
             PrimeDeathPerformancePlayer.RequestShake(26f, 45);
+            PrimeScreenEffects.PushImpactFrame(1f, 30);
         }
 
         #endregion
