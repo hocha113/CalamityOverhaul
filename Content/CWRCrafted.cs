@@ -87,42 +87,50 @@ namespace CalamityOverhaul.Content
             }
             //添加风暴长矛的合成
             {
-                Recipe.Create(ItemID.ThunderSpear)
-                .AddIngredient(ItemID.Spear)
-                .AddIngredient(CWRID.Item_StormlionMandible, 5)
-                .AddTile(TileID.Anvils)
-                .Register();
-                Recipe.Create(ItemID.ThunderSpear)
-                    .AddIngredient(ItemID.Trident)
+                if (CWRID.Item_StormlionMandible > 0) {
+                    Recipe.Create(ItemID.ThunderSpear)
+                    .AddIngredient(ItemID.Spear)
                     .AddIngredient(CWRID.Item_StormlionMandible, 5)
                     .AddTile(TileID.Anvils)
                     .Register();
+                    Recipe.Create(ItemID.ThunderSpear)
+                        .AddIngredient(ItemID.Trident)
+                        .AddIngredient(CWRID.Item_StormlionMandible, 5)
+                        .AddTile(TileID.Anvils)
+                        .Register();
+                }
             }
             //添加闪光皇后鱼的配方
             {
-                Recipe.Create(CWRID.Item_SparklingEmpress)
-                    .AddRecipeGroup(FishGroup)
-                    .AddIngredient(CWRID.Item_SeaPrism, 15)
-                    .AddIngredient(CWRID.Item_PearlShard, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
+                if (CWRID.Item_SparklingEmpress > 0 && CWRID.Item_SeaPrism > 0 && CWRID.Item_PearlShard > 0) {
+                    Recipe.Create(CWRID.Item_SparklingEmpress)
+                        .AddRecipeGroup(FishGroup)
+                        .AddIngredient(CWRID.Item_SeaPrism, 15)
+                        .AddIngredient(CWRID.Item_PearlShard, 5)
+                        .AddTile(TileID.Anvils)
+                        .Register();
+                }
             }
             //添加硫火鱼的配方
             {
-                Recipe.Create(CWRID.Item_DragoonDrizzlefish)
-                    .AddRecipeGroup(FishGroup)
-                    .AddIngredient(ItemID.Hellstone, 15)
-                    .AddIngredient(CWRID.Item_PearlShard, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
+                if (CWRID.Item_DragoonDrizzlefish > 0 && CWRID.Item_PearlShard > 0) {
+                    Recipe.Create(CWRID.Item_DragoonDrizzlefish)
+                        .AddRecipeGroup(FishGroup)
+                        .AddIngredient(ItemID.Hellstone, 15)
+                        .AddIngredient(CWRID.Item_PearlShard, 5)
+                        .AddTile(TileID.Anvils)
+                        .Register();
+                }
             }
             //添加卢克索礼物的合成
             {
-                Recipe.Create(CWRID.Item_LuxorsGift)
-                    .AddIngredient(ItemID.FossilOre, 5)
-                    .AddIngredient(CWRID.Item_PearlShard, 12)
-                    .AddTile(TileID.Anvils)
-                    .Register();
+                if (CWRID.Item_LuxorsGift > 0 && CWRID.Item_PearlShard > 0) {
+                    Recipe.Create(CWRID.Item_LuxorsGift)
+                        .AddIngredient(ItemID.FossilOre, 5)
+                        .AddIngredient(CWRID.Item_PearlShard, 12)
+                        .AddTile(TileID.Anvils)
+                        .Register();
+                }
             }
             //添加雪球炮的合成
             {
@@ -135,36 +143,48 @@ namespace CalamityOverhaul.Content
             }
             //添加魔影系列的合成
             {
-                //诘责
-                Recipe.Create(CWRID.Item_Condemnation)
-                    .AddIngredient(ItemID.HallowedRepeater)
-                    .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
-                    .AddTile(CWRID.Tile_DraedonsForge)
-                    .Register();
-                //狞桀
-                Recipe.Create(CWRID.Item_Vehemence)
-                    .AddIngredient(CWRID.Item_ValkyrieRay)
-                    .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
-                    .AddTile(CWRID.Tile_DraedonsForge)
-                    .Register();
-                //恣睢
-                Recipe.Create(CWRID.Item_Violence)
-                    .AddIngredient(ItemID.Gungnir)
-                    .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
-                    .AddTile(CWRID.Tile_DraedonsForge)
-                    .Register();
-                //恂戒
-                Recipe.Create(CWRID.Item_Vigilance)
-                    .AddIngredient(CWRID.Item_DeathstareRod)
-                    .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
-                    .AddTile(CWRID.Tile_DraedonsForge)
-                    .Register();
-                //异端
-                Recipe.Create(CWRID.Item_Heresy)
-                    .AddIngredient(ItemID.WaterBolt)
-                    .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
-                    .AddTile(CWRID.Tile_DraedonsForge)
-                    .Register();
+                if (CWRID.Tile_DraedonsForge > 0 && CWRID.Item_AshesofAnnihilation > 0) {
+                    //诘责
+                    if (CWRID.Item_Condemnation > 0) {
+                        Recipe.Create(CWRID.Item_Condemnation)
+                            .AddIngredient(ItemID.HallowedRepeater)
+                            .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
+                            .AddTile(CWRID.Tile_DraedonsForge)
+                            .Register();
+                    }
+                    //狞桀
+                    if (CWRID.Item_Vehemence > 0 && CWRID.Item_ValkyrieRay > 0) {
+                        Recipe.Create(CWRID.Item_Vehemence)
+                            .AddIngredient(CWRID.Item_ValkyrieRay)
+                            .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
+                            .AddTile(CWRID.Tile_DraedonsForge)
+                            .Register();
+                    }
+                    //恣睢
+                    if (CWRID.Item_Violence > 0) {
+                        Recipe.Create(CWRID.Item_Violence)
+                            .AddIngredient(ItemID.Gungnir)
+                            .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
+                            .AddTile(CWRID.Tile_DraedonsForge)
+                            .Register();
+                    }
+                    //恂戒
+                    if (CWRID.Item_Vigilance > 0 && CWRID.Item_DeathstareRod > 0) {
+                        Recipe.Create(CWRID.Item_Vigilance)
+                            .AddIngredient(CWRID.Item_DeathstareRod)
+                            .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
+                            .AddTile(CWRID.Tile_DraedonsForge)
+                            .Register();
+                    }
+                    //异端
+                    if (CWRID.Item_Heresy > 0) {
+                        Recipe.Create(CWRID.Item_Heresy)
+                            .AddIngredient(ItemID.WaterBolt)
+                            .AddIngredient(CWRID.Item_AshesofAnnihilation, 12)
+                            .AddTile(CWRID.Tile_DraedonsForge)
+                            .Register();
+                    }
+                }
             }
             //添加水矢的合成
             {
@@ -226,16 +246,8 @@ namespace CalamityOverhaul.Content
         }
 
         public override void AddRecipes() {
-            {//添加终焉合成内容
-                if (CWRRef.Has) {
-                    SetOmigaSnyRecipes();
-                }
-            }
-            {//添加配方的操作
-                if (CWRRef.Has) {
-                    AddResultContent();
-                }
-            }
+            SetOmigaSnyRecipes();
+            AddResultContent();
         }
 
         public override void PostAddRecipes() {
@@ -244,9 +256,7 @@ namespace CalamityOverhaul.Content
                 if (CWRServerConfig.Instance.QuestLog) {
                     Main.recipe[i].AddOnCraftCallback(QLPlayer.CraftedItem);
                 }
-                if (CWRRef.Has) {
-                    ModifyResultContent(Main.recipe[i]);
-                }
+                ModifyResultContent(Main.recipe[i]);
             }
         }
 

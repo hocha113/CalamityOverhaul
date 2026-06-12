@@ -67,21 +67,23 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe().
-                AddIngredient<CrystalDimming>().
-                AddIngredient(ItemID.LunarBar, 8).
-                AddTile(TileID.LunarCraftingStation).
-                Register();
-                return;
-            }
-            _ = CreateRecipe().
+            if (CWRID.Item_CosmiliteBar > 0 && CWRID.Item_EndothermicEnergy > 0
+                && CWRID.Item_EssenceofEleum > 0 && CWRID.Tile_CosmicAnvil > 0) {
+                _ = CreateRecipe().
                 AddIngredient<CrystalDimming>().
                 AddIngredient(CWRID.Item_CosmiliteBar, 5).
                 AddIngredient(CWRID.Item_EndothermicEnergy, 20).
                 AddIngredient(CWRID.Item_EssenceofEleum, 3).
                 AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<CrystalDimming>().
+                AddIngredient(ItemID.LunarBar, 8).
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+            }
         }
     }
 

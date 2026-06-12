@@ -58,10 +58,8 @@ namespace CalamityOverhaul.Content.Items.Materials
 
         public static int QFD(int num) => (int)(num * QFH);
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                return;
-            }
-            CreateRecipe()
+            if (CWRID.Item_Rock > 0 && CWRID.Item_MiracleFruit > 0) {
+                CreateRecipe()
                 .AddIngredient(CWRID.Item_Rock, 1)
                 .AddIngredient(CWRID.Item_MiracleFruit, QFD(5))
                 .AddIngredient(CWRID.Item_ExoPrism, QFD(5))
@@ -89,6 +87,7 @@ namespace CalamityOverhaul.Content.Items.Materials
                 .AddIngredient(ItemID.SoulofLight, QFD(50))
                 .AddTile(TileType<DarkMatterCompressor>())
                 .Register();
+            }
         }
     }
 }

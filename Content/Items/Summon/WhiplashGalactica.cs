@@ -24,18 +24,19 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient(ItemID.LunarBar, 5)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-                return;
-            }
-            _ = CreateRecipe()
+            if (CWRID.Item_CosmiliteBar > 0 && CWRID.Tile_CosmicAnvil > 0) {
+                _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
                 .AddIngredient(CWRID.Item_CosmiliteBar, 5)
                 .AddTile(CWRID.Tile_CosmicAnvil)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+            }
         }
     }
 }

@@ -50,6 +50,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public abstract override string StateName { get; }
         public abstract PrimeArmStateIndex StateIndex { get; }
 
+        /// <summary>
+        /// 是否为"蓄力已可见"的收尾攻击序列（预警环/扇形/光束已经写在场上）。
+        /// 为 true 时头部的编队接管会延后到本状态自然结束，保证预警必定兑现，
+        /// 不被冲刺/编队在时序上硬切（电弧风车例外，见 <see cref="PrimeArm"/>）
+        /// </summary>
+        public virtual bool BlocksFormationOverride => false;
+
         public virtual void OnEnter(PrimeArmStateContext context) {
             Timer = 0;
             Counter = 0;

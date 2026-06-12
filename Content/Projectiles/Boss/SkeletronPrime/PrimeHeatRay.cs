@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
     /// <summary>
     /// 激光炮臂热射线：锚定在激光炮炮口，蓄力重炮（ai[2]=0 定向轰击）
-    /// 与横扫（ai[2]≠0 匀速扫射）两用，炮臂阵亡时快速收束。
+    /// 与横扫（ai[2]≠0 匀速扫射）两用，炮臂阵亡或被切出发射状态时快速收束。
     /// </summary>
     internal class PrimeArmHeatRayProj : PrimeHeatRayBase
     {
@@ -256,7 +256,23 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         protected override bool HostValid() {
             NPC arm = Host;
-            return arm.Alives() && arm.type == NPCID.PrimeLaser;
+            if (!arm.Alives() || arm.type != NPCID.PrimeLaser) {
+                return false;
+            }
+            //出生宽限：客户端可能先收到弹幕、后收到 ai 槽更新，给同步留余量
+            if (Timer < 8) {
+                return true;
+            }
+            //炮臂被切出发射状态（电弧风车硬性接管取消等）→ 光束随之收束
+            int armState = (int)arm.ai[PrimeAiSlots.ArmStateSlot];
+            if (armState != (int)PrimeArmStateIndex.LaserSweep
+                && armState != (int)PrimeArmStateIndex.LaserChargedShot) {
+                return false;
+            }
+            //头部转阶段殉爆演出会无条件收走四肢，光束不应继续灼烧
+            NPC head = CWRUtils.GetNPCInstance((int)arm.ai[PrimeAiSlots.ArmHeadIndex]);
+            return !(head.Alives() && head.type == NPCID.SkeletronPrime
+                && (int)head.ai[PrimeAiSlots.HeadStateSlot] == (int)PrimeStateIndex.PhaseTransition);
         }
 
         protected override void UpdateAnchor() {

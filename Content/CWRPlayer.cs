@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content
                 VaultUtils.Text(hookDownText1, Color.Red);
             }
 
-            if (!CWRRef.Has) {
+            if (!CWRRef.VersionMatched) {
                 string text = Language.GetTextValue("Mods.CalamityOverhaul.UI.CompatibilityAlert.ContentText");
                 SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
             }

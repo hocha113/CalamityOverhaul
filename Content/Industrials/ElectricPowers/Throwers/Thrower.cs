@@ -48,7 +48,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
+                CreateRecipe()
+                .AddIngredient(CWRID.Item_DubiousPlating, 8)
+                .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+                .AddIngredient(ItemID.IronBow, 1)
+                .AddTile(TileID.Anvils)
+                .Register();
+                CreateRecipe()
+                .AddIngredient(CWRID.Item_DubiousPlating, 8)
+                .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
+                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
+                .AddIngredient(ItemID.LeadBow, 1)
+                .AddTile(TileID.Anvils)
+                .Register();
+            }
+            else {
                 CreateRecipe()
                     .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
                     .AddIngredient(ItemID.IronBow, 1)
@@ -59,22 +75,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                     .AddIngredient(ItemID.LeadBow, 1)
                     .AddTile(TileID.Anvils)
                     .Register();
-                return;
             }
-            CreateRecipe()
-                .AddIngredient(CWRID.Item_DubiousPlating, 8)
-                .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
-                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                .AddIngredient(ItemID.IronBow, 1)
-                .AddTile(TileID.Anvils)
-                .Register();
-            CreateRecipe()
-                .AddIngredient(CWRID.Item_DubiousPlating, 8)
-                .AddIngredient(CWRID.Item_MysteriousCircuitry, 6)
-                .AddRecipeGroup(CWRCrafted.TinBarGroup, 10)
-                .AddIngredient(ItemID.LeadBow, 1)
-                .AddTile(TileID.Anvils)
-                .Register();
         }
     }
 }

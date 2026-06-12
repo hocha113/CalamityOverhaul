@@ -347,6 +347,17 @@ namespace CalamityOverhaul
         public readonly static int ItemGroup_RogueWeapon = 570;//盗贼武器物品组ID，因为这个比较特殊，就不通过反射加载了，直接写上readonly
         #endregion
 
+        #region ID有效性
+
+        public static bool IsValid(int id) => id > 0;
+
+        /// <summary>
+        /// 可疑镀层与神秘电路板是否均已成功解析（工业化灾厄材料配方分支）
+        /// </summary>
+        public static bool DubiousCircuitryAvailable => Item_DubiousPlating > 0 && Item_MysteriousCircuitry > 0;
+
+        #endregion
+
         #region 保底加载
 
         /// <summary>
@@ -450,7 +461,7 @@ namespace CalamityOverhaul
                 return result;
             }
             else {
-                if (CWRRef.Has) {
+                if (ModLoader.TryGetMod("CalamityMod", out _)) {
                     //如果没找到，可能是因为模组还没加载完，或者ID真的错了
                     ModLoader.GetMod("CalamityOverhaul").Logger.Warn($"[CWRID] Failed to find {name} in CalamityMod. It might be too early to access, or the ID is incorrect.");
                 }

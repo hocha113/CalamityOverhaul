@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (CWRRef.Has)
+            if (CWRID.Item_CosmiliteBar > 0 && CWRID.Tile_CosmicAnvil > 0)
                 CreateRecipe().AddIngredient(CWRID.Item_CosmiliteBar, 12).AddTile(CWRID.Tile_CosmicAnvil).Register();
         }
     }

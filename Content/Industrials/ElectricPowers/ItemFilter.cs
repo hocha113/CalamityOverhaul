@@ -276,23 +276,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                    AddRecipeGroup(RecipeGroupID.IronBar, 5).
-                    AddIngredient(ItemID.Chest, 4).
-                    AddTile(TileID.Anvils).
-                    Register();
-                return;
-            }
-            CreateRecipe().
                 AddRecipeGroup(RecipeGroupID.IronBar, 5).
                 AddIngredient(ItemID.Chest, 4).
                 AddIngredient(CWRID.Item_DubiousPlating, 2).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 2).
                 AddTile(TileID.Anvils).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                    AddRecipeGroup(RecipeGroupID.IronBar, 5).
+                    AddIngredient(ItemID.Chest, 4).
+                    AddTile(TileID.Anvils).
+                    Register();
+            }
+        }    }
 
     internal class ItemFilterSlot : UIHandle
     {

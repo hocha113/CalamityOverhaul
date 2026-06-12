@@ -75,23 +75,23 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 2).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 4).
                 AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
                 AddRecipeGroup(CWRCrafted.GoldBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 2).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+        }    }
 
     /// <summary>
     /// 能量剑手持弹幕

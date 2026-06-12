@@ -56,17 +56,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddIngredient<WindGrivenGenerator>().
-                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
-                AddCondition(WindGrivenRecipeCondition(out var condition2), condition2).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient<WindGrivenGenerator>().
                 AddIngredient(CWRID.Item_DubiousPlating, 20).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
@@ -75,8 +66,17 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
                 AddCondition(WindGrivenRecipeCondition(out var condition), condition).
                 AddTile(TileID.MythrilAnvil).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<WindGrivenGenerator>().
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 15).
+                AddCondition(WindGrivenRecipeCondition(out var condition2), condition2).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+            }
+        }    }
 
     internal class WindGrivenGeneratorMK2Tile : BaseGeneratorTile
     {

@@ -192,12 +192,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>抛物线迫击炮：落点圆圈预告，最小开火距离 350px</summary>
+    /// <summary>
+    /// 抛物线迫击炮：落点圆圈预告（持续到弹着瞬间）→ 重型榴弹真实抛物线必中环心，
+    /// 引爆为恰好覆盖预警环的火球——蓄力预警的兑现是大爆炸而非普攻火箭。最小开火距离 350px
+    /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonMortar, typeof(PrimeArmStateContext))]
     internal class CannonMortarState : PrimeArmStateBase
     {
         public override string StateName => "CannonMortar";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.CannonMortar;
+        //落点预警环已经写在场上：打完这一发再随编队走，蓄力不被头部冲刺/编队硬切
+        public override bool BlocksFormationOverride => true;
+
+        internal static int TelegraphFrames => 50;
 
         private Vector2 impactPoint;
 
@@ -205,31 +212,45 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             base.OnEnter(ctx);
             impactPoint = ctx.Target.Center + ctx.Target.velocity * 18f;
             if (!VaultUtils.isClient) {
-                PrimeTelegraphLine.SpawnRing(ctx.Npc, impactPoint, 110f, 50);
+                //预警环一直亮到弹着：充能填满的瞬间就是爆炸落地的瞬间
+                PrimeTelegraphLine.SpawnRing(ctx.Npc, impactPoint, PrimeMortarShellProj.BlastDiameter / 2f,
+                    TelegraphFrames + PrimeMortarShellProj.FlightFrames);
             }
         }
 
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             CannonBombardState.Follow(ctx);
-            SmoothAim(ctx, 0.1f);
-            if (Timer == 50 && !VaultUtils.isClient && !ctx.DontAttack) {
+
+            //炮管压向弹道出膛方向（高抛仰角），而非直指玩家——姿态即弹道预告
+            Vector2 launchDir = PrimeMortarShellProj.SolveLaunchVelocity(ctx.Npc.Center, impactPoint,
+                PrimeMortarShellProj.FlightFrames).SafeNormalize(Vector2.UnitY);
+            ctx.AimDirection = Vector2.Lerp(ctx.AimDirection, launchDir, 0.15f);
+            ServoRotate(ctx.Npc, launchDir.ToRotation() - MathHelper.PiOver2, 0.12f);
+
+            if (Timer == TelegraphFrames && !VaultUtils.isClient && !ctx.DontAttack) {
                 FireMortar(ctx);
                 ctx.ApplyRecoil(PrimeDirector.HeavyRecoil);
             }
             Timer++;
-            if (Timer > 70 && !VaultUtils.isClient) {
+            if (Timer > TelegraphFrames + 20 && !VaultUtils.isClient) {
                 return new CannonBombardState();
             }
             return null;
         }
 
+        /// <summary>蓄力预警的兑现：重型榴弹按弹道学反解初速，必中预警环心</summary>
         private void FireMortar(PrimeArmStateContext ctx) {
-            Vector2 to = impactPoint - ctx.Npc.Center;
-            Vector2 vel = to.SafeNormalize(Vector2.UnitY) * 11f + new Vector2(0f, -4f);
-            int damage = ScaleDamage(CWRRef.GetProjectileDamage(ctx.Npc, ProjectileID.RocketSkeleton));
-            Projectile.NewProjectile(ctx.Npc.GetSource_FromAI(), ctx.Npc.Center, vel,
-                ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                Main.myPlayer, ctx.Npc.whoAmI, ctx.Npc.target, 0f);
+            NPC npc = ctx.Npc;
+            int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton) * 1.25f));
+            Vector2 vel = PrimeMortarShellProj.SolveLaunchVelocity(npc.Center, impactPoint,
+                PrimeMortarShellProj.FlightFrames);
+
+            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
+                ModContent.ProjectileType<PrimeMortarShellProj>(), damage, 0f,
+                Main.myPlayer, impactPoint.X, impactPoint.Y, PrimeMortarShellProj.FlightFrames);
+
+            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.05f, Pitch = -0.4f }, npc.Center);
+            HeadPrimeAI.SpanFireLerterDustEffect(npc, 15);
         }
     }
 

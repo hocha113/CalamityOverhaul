@@ -64,21 +64,22 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe().
-                AddIngredient<SnowQuay>().
-                AddIngredient(ItemID.IceBlock, 1000).
-                AddTile(TileID.IceMachine).
-                Register();
-                return;
-            }
-            _ = CreateRecipe().
+            if (CWRID.Item_CryonicBar > 0 && CWRID.Item_EssenceofEleum > 0) {
+                _ = CreateRecipe().
                 AddIngredient<SnowQuay>().
                 AddIngredient(CWRID.Item_CryonicBar, 5).
                 AddIngredient(CWRID.Item_EssenceofEleum, 5).
                 AddIngredient(ItemID.IceBlock, 1000).
                 AddTile(TileID.IceMachine).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<SnowQuay>().
+                AddIngredient(ItemID.IceBlock, 1000).
+                AddTile(TileID.IceMachine).
+                Register();
+            }
         }
     }
 

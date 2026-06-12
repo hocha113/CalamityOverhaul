@@ -38,16 +38,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 10).
-                AddIngredient(ItemID.Sawmill).
-                AddIngredient(ItemID.Chain, 5).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 10).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 12).
                 AddRecipeGroup(RecipeGroupID.IronBar, 10).
@@ -55,6 +47,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 AddIngredient(ItemID.Chain, 5).
                 AddTile(TileID.Anvils).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(RecipeGroupID.IronBar, 10).
+                AddIngredient(ItemID.Sawmill).
+                AddIngredient(ItemID.Chain, 5).
+                AddTile(TileID.Anvils).
+                Register();
+            }
         }
     }
 }

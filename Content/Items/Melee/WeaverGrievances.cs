@@ -112,10 +112,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                return;
-            }
-            CreateRecipe()
+            if (CWRID.Item_TerrorBlade > 0 && CWRID.Item_Necroplasm > 0 && CWRID.Item_RuinousSoul > 0) {
+                CreateRecipe()
                 .AddIngredient(CWRID.Item_TerrorBlade)
                 .AddIngredient(CWRID.Item_BansheeHook)
                 .AddIngredient(CWRID.Item_GhoulishGouger)
@@ -128,6 +126,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 .AddIngredient(CWRID.Item_RuinousSoul, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
+            }
         }
     }
 

@@ -28,20 +28,21 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient<SimpleMuzzleBrake>()
-                .AddIngredient(ItemID.HallowedBar, 5)
-                .AddTile(TileID.MythrilAnvil)
-                .Register();
-                return;
-            }
-            _ = CreateRecipe()
+            if (CWRID.Item_PlasmaDriveCore > 0) {
+                _ = CreateRecipe()
                 .AddIngredient<SimpleMuzzleBrake>()
                 .AddIngredient(CWRID.Item_PlasmaDriveCore)
                 .AddIngredient(ItemID.HallowedBar, 5)
                 .AddTile(TileID.MythrilAnvil)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient<SimpleMuzzleBrake>()
+                .AddIngredient(ItemID.HallowedBar, 5)
+                .AddTile(TileID.MythrilAnvil)
+                .Register();
+            }
         }
     }
 }

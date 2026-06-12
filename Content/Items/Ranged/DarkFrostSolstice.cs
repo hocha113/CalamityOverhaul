@@ -59,21 +59,23 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe().
-                AddIngredient<UniversalFrost>().
-                AddIngredient(ItemID.LunarBar, 5).
-                AddTile(TileID.LunarCraftingStation).
-                Register();
-                return;
-            }
-            _ = CreateRecipe().
+            if (CWRID.Item_Kingsbane > 0 && CWRID.Item_ShadowspecBar > 0
+                && CWRID.Item_EndothermicEnergy > 0 && CWRID.Tile_DraedonsForge > 0) {
+                _ = CreateRecipe().
                 AddIngredient<UniversalFrost>().
                 AddIngredient(CWRID.Item_Kingsbane).
                 AddIngredient(CWRID.Item_ShadowspecBar, 5).
                 AddIngredient(CWRID.Item_EndothermicEnergy, 10).
                 AddTile(CWRID.Tile_DraedonsForge).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<UniversalFrost>().
+                AddIngredient(ItemID.LunarBar, 5).
+                AddTile(TileID.LunarCraftingStation).
+                Register();
+            }
         }
     }
 

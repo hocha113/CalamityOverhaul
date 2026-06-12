@@ -22,19 +22,20 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient(ItemID.LunarBar, 5)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-                return;
-            }
-            _ = CreateRecipe()
+            if (CWRID.Item_BloodstoneCore > 0 && CWRID.Item_RuinousSoul > 0) {
+                _ = CreateRecipe()
                 .AddIngredient(ModContent.ItemType<ElementWhip>())
                 .AddIngredient(CWRID.Item_BloodstoneCore, 15)
                 .AddIngredient(CWRID.Item_RuinousSoul, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+            }
         }
     }
 }

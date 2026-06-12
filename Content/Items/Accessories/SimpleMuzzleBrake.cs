@@ -28,19 +28,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddRecipeGroup(CWRCrafted.GoldBarGroup, 5)
-                .AddTile(TileID.Anvils)
-                .Register();
-                return;
-            }
-            _ = CreateRecipe()
+            if (CWRID.Item_EnergyCore > 0 && CWRID.Item_WulfrumMetalScrap > 0 && CWRID.Item_DubiousPlating > 0) {
+                _ = CreateRecipe()
                 .AddIngredient(CWRID.Item_EnergyCore, 2)
                 .AddIngredient(CWRID.Item_WulfrumMetalScrap, 5)
                 .AddIngredient(CWRID.Item_DubiousPlating, 5)
                 .AddTile(TileID.Anvils)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddRecipeGroup(CWRCrafted.GoldBarGroup, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+            }
         }
     }
 }

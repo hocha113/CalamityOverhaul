@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private string wrappedContent;
         private float panelHeight;
 
-        public override bool Active => VaultLoad.LoadenContent && !CWRRef.Has;
+        public override bool Active => VaultLoad.LoadenContent && !CWRRef.VersionMatched;
         //在大多数情况下不需要兼容提醒，很多时候可能会让用户感到被弹窗骚扰了，或者觉得你事多，所以默默做好兼容情况下的内容即可
         public override bool IsLoadingEnabled(Mod mod) => false;
 
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void Update() {
-            if (CWRRef.Has) {
+            if (CWRRef.VersionMatched) {
                 return;
             }
 

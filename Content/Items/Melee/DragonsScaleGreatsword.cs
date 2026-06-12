@@ -82,15 +82,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                return;
-            }
-            CreateRecipe().
+            if (CWRID.Item_PerennialBar > 0 && CWRID.Item_UelibloomBar > 0) {
+                CreateRecipe().
                 AddIngredient(CWRID.Item_PerennialBar, 15).
                 AddIngredient(CWRID.Item_UelibloomBar, 15).
                 AddIngredient(ItemID.ChlorophyteBar, 15).
                 AddTile(TileID.LunarCraftingStation).
                 Register();
+            }
         }
     }
 

@@ -27,19 +27,32 @@ namespace CalamityOverhaul
     internal static class CWRRef
     {
         /// <summary>
-        /// Calamity Mod的目标版本，只有当安装了这个版本的Calamity Mod时才会启用相关功能
+        /// Calamity Mod的目标适配版本，版本不一致时仅用于触发<see cref="VersionMatched"/>相关的兼容性提示，
+        /// 不作为功能开关，功能可用性由各反射成员的空值防护自行决定
         /// </summary>
         public static Version TargetCalamityVersion => new(2, 1, 2);
         /// <summary>
-        /// 是否安装了指定版本的Calamity Mod
+        /// 是否安装了Calamity Mod，不校验版本。
+        /// 反射访问自身具备成员级空值防护与异常记录，调用方不应再用版本匹配做一刀切
         /// </summary>
         public static bool Has {
             get {
-                _has ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == TargetCalamityVersion;
+                _has ??= ModLoader.TryGetMod("CalamityMod", out _);
                 return _has.Value;
             }
         }
         private static bool? _has = null;
+        /// <summary>
+        /// 安装的Calamity Mod版本是否与<see cref="TargetCalamityVersion"/>完全一致，
+        /// 仅用于兼容性提醒等提示性内容，不要用它来开关具体功能
+        /// </summary>
+        public static bool VersionMatched {
+            get {
+                _versionMatched ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == TargetCalamityVersion;
+                return _versionMatched.Value;
+            }
+        }
+        private static bool? _versionMatched = null;
 
         private static Type DownedBossSystemType;
 
@@ -465,6 +478,7 @@ namespace CalamityOverhaul
 
         internal static void UnLoad() {
             _has = null;
+            _versionMatched = null;
             loggedReflectionFailures.Clear();
             DownedBossSystemType = null;
             downedDesertScourgeProp = null;
@@ -859,7 +873,6 @@ namespace CalamityOverhaul
         }
 
         public static void UpdateRogueStealth(Player player) {
-            if (!Has) return;
             ModPlayer calPlayer = GetCalPlayer(player);
             if (calPlayer == null) {
                 return;
@@ -907,7 +920,7 @@ namespace CalamityOverhaul
             }
             if (VaultUtils.isClient) {//客户端发送网络数据到服务器
                 //通过反射直接调用 ExoMechSelectionPacket.Send()
-                var calMod = ModLoader.GetMod("CalamityMod");
+                var calMod = CWRMod.Instance.calamity;
                 var packetType = GetModType(calMod, "CalamityMod.Packets.ExoMechSelectionPacket");
                 var sendMethod = GetMethod(packetType, "Send", PublicStaticFlags);
                 if (sendMethod == null) {
@@ -1297,21 +1310,19 @@ namespace CalamityOverhaul
         }
 
         public static LocalizedText ConstructRecipeCondition(int tier, out Func<bool> condition) {
-            condition = null;
-            if (!Has) {
-                return null;
-            }
             if (arsenalRecipe_ConstructCondition_Method != null) {
                 try {
                     object[] args = [tier, null];
                     LocalizedText text = (LocalizedText)arsenalRecipe_ConstructCondition_Method.Invoke(null, args);
                     condition = (Func<bool>)args[1];
-                    return text;
+                    if (text != null && condition != null) {
+                        return text;
+                    }
                 } catch (Exception ex) {
                     LogReflectionException(nameof(ConstructRecipeCondition), ex);
                 }
             }
-            //反射失败时退化为恒真条件，保证配方仍可注册
+            //灾厄缺失或反射失败时退化为恒真条件，保证配方注册不会因null条件而崩溃
             condition = () => true;
             return LocalizedText.Empty;
         }
@@ -1380,7 +1391,7 @@ namespace CalamityOverhaul
         /// </summary>
         public static List<EnchantmentWrapper> GetValidEnchantmentsForItem(Item item) {
             var result = new List<EnchantmentWrapper>();
-            if (!Has || item == null || item.IsAir) {
+            if (item == null || item.IsAir) {
                 return result;
             }
             IEnumerable enchantments = GetRawEnchantmentsForItem(item);
@@ -1409,7 +1420,7 @@ namespace CalamityOverhaul
         /// 应用附魔到物品
         /// </summary>
         public static void ApplyEnchantmentToItem(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect = null) {
-            if (!Has || item == null || item.IsAir || calItem_AppliedEnchantment_M == null) {
+            if (item == null || item.IsAir || calItem_AppliedEnchantment_M == null) {
                 return;
             }
 
@@ -1476,7 +1487,7 @@ namespace CalamityOverhaul
 
         internal static void LoadComders() {
             Mod mod = CWRMod.Instance?.calamity;
-            if (mod == null || !Has) {
+            if (mod == null) {
                 return;
             }
             try {

@@ -31,16 +31,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddIngredient(ItemID.Glass, 50).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient(ItemID.Glass, 50).
@@ -48,8 +40,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
                 AddTile(TileID.Anvils).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddIngredient(ItemID.Glass, 50).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 5).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+        }    }
 
     internal class ThermalBatteryTile : ModTile
     {

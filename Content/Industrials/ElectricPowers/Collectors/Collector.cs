@@ -41,23 +41,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
-                AddIngredient(ItemID.Hook, 3).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 20).
                 AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
                 AddIngredient(ItemID.Hook, 3).
                 AddTile(TileID.Anvils).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 8).
+                AddIngredient(ItemID.Hook, 3).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+        }    }
 
     internal class CollectorTile : ModTile
     {

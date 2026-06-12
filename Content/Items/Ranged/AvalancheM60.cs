@@ -37,16 +37,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             => BaseHeldGun.SpawnHeldProj<AvalancheM60Held>(player, source);
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe().
-                AddIngredient<SnowQuayMK2>().
-                AddIngredient(ItemID.ShroomiteBar, 3).
-                AddIngredient(ItemID.BeetleHusk, 5).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-                return;
-            }
-            _ = CreateRecipe().
+            if (CWRID.Item_CryonicBar > 0 && CWRID.Item_EssenceofEleum > 0) {
+                _ = CreateRecipe().
                 AddIngredient<SnowQuayMK2>().
                 AddIngredient(ItemID.ShroomiteBar, 3).
                 AddIngredient(CWRID.Item_CryonicBar, 3).
@@ -54,6 +46,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 AddIngredient(ItemID.BeetleHusk, 5).
                 AddTile(TileID.MythrilAnvil).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<SnowQuayMK2>().
+                AddIngredient(ItemID.ShroomiteBar, 3).
+                AddIngredient(ItemID.BeetleHusk, 5).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+            }
         }
     }
 

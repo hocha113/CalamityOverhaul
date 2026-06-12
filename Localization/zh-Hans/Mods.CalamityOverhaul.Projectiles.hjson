@@ -38,6 +38,7 @@ FungiAmmo.DisplayName: 真菌弹药
 PallbearerArrow.DisplayName: 护柩者之箭
 PrimeCannonOnSpanFriendly.DisplayName: 机械巨炮·齐射
 PrimeCannonOnSpan.DisplayName: 机械巨炮·齐射
+PrimeSeekerMissile.DisplayName: 寻热微型导弹
 PunisherGrenade.DisplayName: 惩罚者榴弹
 RaiderGunDash.DisplayName: 掠夺者冲锋
 RocketSkeletonFriendly.DisplayName: 骷髅火箭
@@ -113,6 +114,7 @@ PrimeArcChainProj.DisplayName: 离子锁链
 PrimeSkullBeamProj.DisplayName: 颅骨主炮光束
 PrimeCrossBeamProj.DisplayName: 十字绞杀热射线
 PrimeArmHeatRayProj.DisplayName: 机械骷髅王热射线
+PrimeMortarShellProj.DisplayName: 机械骷髅王重型榴弹
 Hit.DisplayName: 冲击
 SpwanTextProj.DisplayName: 显现之言
 DragonsWordCut.DisplayName: 龙言之刃·斩

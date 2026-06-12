@@ -38,6 +38,7 @@ FungiAmmo.DisplayName: Fungal Round
 PallbearerArrow.DisplayName: Pallbearer Arrow
 PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon Salvo
 PrimeCannonOnSpan.DisplayName: Prime Cannon Salvo
+PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
 PunisherGrenade.DisplayName: Punisher Grenade
 RaiderGunDash.DisplayName: Raider's Dash
 RocketSkeletonFriendly.DisplayName: Skeletal Rocket
@@ -113,6 +114,7 @@ PrimeArcChainProj.DisplayName: Ion Tether
 PrimeSkullBeamProj.DisplayName: Skull Cannon Beam
 PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
 PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
+PrimeMortarShellProj.DisplayName: Prime Mortar Shell
 Hit.DisplayName: Impact
 SpwanTextProj.DisplayName: Manifesting Text
 DragonsWordCut.DisplayName: Dragon's Word Slash

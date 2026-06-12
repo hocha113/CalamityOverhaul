@@ -35,18 +35,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddIngredient<Hydroelectric>().
-                AddIngredient(ItemID.InletPump).
-                AddIngredient(ItemID.OutletPump).
-                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient<Hydroelectric>().
                 AddIngredient(ItemID.InletPump).
                 AddIngredient(ItemID.OutletPump).
@@ -56,8 +46,18 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
                 AddTile(TileID.MythrilAnvil).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<Hydroelectric>().
+                AddIngredient(ItemID.InletPump).
+                AddIngredient(ItemID.OutletPump).
+                AddRecipeGroup(CWRCrafted.MythrilBarGroup, 5).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 15).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+            }
+        }    }
 
     internal class HydroelectricMK2Tile : BaseGeneratorTile
     {

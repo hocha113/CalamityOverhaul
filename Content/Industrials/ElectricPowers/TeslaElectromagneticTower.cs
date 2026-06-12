@@ -44,19 +44,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable
+                && CWRID.Item_AerialiteBar > 0
+                && CWRID.Item_StormlionMandible > 0) {
                 CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
-                AddTile(TileID.Anvils).
-                Register();
-
-                CreateRecipe().
-                AddIngredient<TeslaElectromagneticTowerAttackMode>().
-                Register();
-                return;
-            }
-
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient(CWRID.Item_AerialiteBar, 10).
@@ -64,6 +55,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 AddCondition(CWRRef.ConstructRecipeCondition(1, out Func<bool> condition), condition).
                 AddTile(TileID.Anvils).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
+                AddTile(TileID.Anvils).
+                Register();
+            }
 
             CreateRecipe().
                 AddIngredient<TeslaElectromagneticTowerAttackMode>().
@@ -94,19 +92,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable
+                && CWRID.Item_AerialiteBar > 0
+                && CWRID.Item_StormlionMandible > 0) {
                 CreateRecipe().
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
-                AddTile(TileID.Anvils).
-                Register();
-
-                CreateRecipe().
-                AddIngredient<TeslaElectromagneticTower>().
-                Register();
-                return;
-            }
-
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddIngredient(CWRID.Item_AerialiteBar, 10).
@@ -114,6 +103,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 AddCondition(CWRRef.ConstructRecipeCondition(1, out Func<bool> condition), condition).
                 AddTile(TileID.Anvils).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
+                AddTile(TileID.Anvils).
+                Register();
+            }
 
             CreateRecipe().
                 AddIngredient<TeslaElectromagneticTower>().

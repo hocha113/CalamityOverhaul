@@ -51,19 +51,20 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe(333)
-                .AddIngredient(ItemID.LunarBar, 30)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-                return;
-            }
-            CreateRecipe(333).
+            if (CWRID.Item_LifeAlloy > 0 && CWRID.Item_AstralBar > 0 && CWRID.Item_GalacticaSingularity > 0) {
+                CreateRecipe(333).
                 AddIngredient(CWRID.Item_LifeAlloy).
                 AddIngredient(CWRID.Item_AstralBar).
                 AddIngredient(CWRID.Item_GalacticaSingularity).
                 AddTile(TileID.LunarCraftingStation).
                 Register();
+            }
+            else {
+                CreateRecipe(333)
+                .AddIngredient(ItemID.LunarBar, 30)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+            }
         }
     }
 

@@ -29,14 +29,10 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.Item_DarkPlasma > 0 && CWRID.Item_StaticRefiner > 0
+                && CWRID.Item_ProfanedCrucible > 0 && CWRID.Item_PlagueInfuser > 0
+                && CWRID.Item_MonolithAmalgam > 0 && CWRID.Item_VoidCondenser > 0) {
                 CreateRecipe()
-                .AddIngredient(ItemID.LunarBar, 5)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-                return;
-            }
-            CreateRecipe()
                 .AddIngredient(CWRID.Item_DarkPlasma, 5)//暗物质
                 .AddIngredient(CWRID.Item_StaticRefiner)
                 .AddIngredient(CWRID.Item_ProfanedCrucible)
@@ -44,6 +40,13 @@ namespace CalamityOverhaul.Content.Items.Placeable
                 .AddIngredient(CWRID.Item_MonolithAmalgam)
                 .AddIngredient(CWRID.Item_VoidCondenser)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+            }
         }
     }
 }

@@ -39,23 +39,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddIngredient<MiningMachine>().
-                AddRecipeGroup(CWRCrafted.AdamantiteBarGroup, 25).
-                AddTile(TileID.MythrilAnvil).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient<MiningMachine>().
                 AddRecipeGroup(CWRCrafted.AdamantiteBarGroup, 25).
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddTile(TileID.MythrilAnvil).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddIngredient<MiningMachine>().
+                AddRecipeGroup(CWRCrafted.AdamantiteBarGroup, 25).
+                AddTile(TileID.MythrilAnvil).
+                Register();
+            }
+        }    }
 
     internal class MiningMachineMk2Tile : ModTile
     {

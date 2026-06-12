@@ -22,16 +22,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe(333)
-                    .AddRecipeGroup(RecipeGroupID.IronBar, 5)
-                    .AddIngredient(ItemID.Chest, 2)
-                    .AddIngredient(ItemID.Glass, 5)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-                return;
-            }
-            CreateRecipe(333)
                 .AddIngredient(CWRID.Item_DubiousPlating, 5)
                 .AddIngredient(CWRID.Item_MysteriousCircuitry, 5)
                 .AddRecipeGroup(RecipeGroupID.IronBar, 5)
@@ -39,8 +31,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 .AddIngredient(ItemID.Glass, 5)
                 .AddTile(TileID.Anvils)
                 .Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe(333)
+                    .AddRecipeGroup(RecipeGroupID.IronBar, 5)
+                    .AddIngredient(ItemID.Chest, 2)
+                    .AddIngredient(ItemID.Glass, 5)
+                    .AddTile(TileID.Anvils)
+                    .Register();
+            }
+        }    }
 
     /// <summary>
     /// 物流管道物块

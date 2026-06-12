@@ -37,7 +37,24 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
+                CreateRecipe().
+                AddIngredient(CWRID.Item_DubiousPlating, 10).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+                AddIngredient(ItemID.Lens, 4).
+                AddTile(TileID.Anvils).
+                Register();
+
+                CreateRecipe().
+                AddIngredient(CWRID.Item_DubiousPlating, 10).
+                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
+                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
+                AddIngredient(ItemID.Ruby, 1).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+            else {
                 CreateRecipe().
                     AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
                     AddIngredient(ItemID.Lens, 4).
@@ -49,24 +66,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
                     AddIngredient(ItemID.Ruby, 1).
                     AddTile(TileID.Anvils).
                     Register();
-                return;
             }
-
-            CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(ItemID.Lens, 4).
-                AddTile(TileID.Anvils).
-                Register();
-
-            CreateRecipe().
-                AddIngredient(CWRID.Item_DubiousPlating, 10).
-                AddIngredient(CWRID.Item_MysteriousCircuitry, 10).
-                AddRecipeGroup(CWRCrafted.GoldBarGroup, 8).
-                AddIngredient(ItemID.Ruby, 1).
-                AddTile(TileID.Anvils).
-                Register();
         }
     }
 

@@ -56,22 +56,23 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.Item_LunarianBow > 0) {
                 CreateRecipe()
-                .AddIngredient(ItemID.LightShard, 2)
-                .AddIngredient(ItemID.AntlionMandible, 5)
-                .AddIngredient(ItemID.HellwingBow)
-                .AddTile(TileID.Anvils)
-                .Register();
-                return;
-            }
-            CreateRecipe()
                 .AddIngredient(ItemID.LightShard, 2)
                 .AddIngredient(ItemID.AntlionMandible, 5)
                 .AddIngredient(ItemID.HellwingBow)
                 .AddIngredient(CWRID.Item_LunarianBow)
                 .AddTile(TileID.Anvils)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient(ItemID.LightShard, 2)
+                .AddIngredient(ItemID.AntlionMandible, 5)
+                .AddIngredient(ItemID.HellwingBow)
+                .AddTile(TileID.Anvils)
+                .Register();
+            }
         }
     }
 

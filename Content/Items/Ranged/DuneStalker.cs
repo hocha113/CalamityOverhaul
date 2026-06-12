@@ -50,17 +50,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AddRecipes() {
-            if (CWRRef.Has) {
-                return;
-            }
-            CreateRecipe()
+            if (CWRID.NPC_DesertScourgeHead <= 0) {
+                CreateRecipe()
                 .AddIngredient(ItemID.AntlionMandible, 8)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 8)
                 .AddIngredient(ItemID.SandBlock, 12)
                 .AddTile(TileID.Anvils)
                 .Register();
-        }
-    }
+            }
+        }    }
 
     /// <summary>
     /// 荒漠猎行者的手持弹幕，负责跟随玩家瞄准、播放开火动画、生成枪头与处理收回指令

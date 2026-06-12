@@ -64,15 +64,15 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 10;
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                return;
-            }
-            CreateRecipe().
+            if (CWRID.Item_AuricBar > 0 && CWRID.Item_Terratomere > 0
+                && CWRID.Item_Excelsus > 0 && CWRID.Tile_CosmicAnvil > 0) {
+                CreateRecipe().
                 AddIngredient(CWRID.Item_AuricBar, 5).
                 AddIngredient(CWRID.Item_Terratomere).
                 AddIngredient(CWRID.Item_Excelsus).
                 AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
+            }
         }
     }
 }

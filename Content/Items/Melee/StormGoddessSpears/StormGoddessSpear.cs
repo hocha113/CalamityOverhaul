@@ -72,21 +72,22 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.Item_StormRuler > 0 && CWRID.Item_StormlionMandible > 0) {
                 CreateRecipe()
-                .AddIngredient(ItemID.ThunderSpear)
-                .AddIngredient(ItemID.LunarBar, 15)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-                return;
-            }
-            CreateRecipe()
                 .AddIngredient(ItemID.ThunderSpear)
                 .AddIngredient(CWRID.Item_StormRuler)
                 .AddIngredient(CWRID.Item_StormlionMandible, 5)
                 .AddIngredient(ItemID.LunarBar, 15)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient(ItemID.ThunderSpear)
+                .AddIngredient(ItemID.LunarBar, 15)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+            }
         }
 
         public override void HoldItem(Player player) {

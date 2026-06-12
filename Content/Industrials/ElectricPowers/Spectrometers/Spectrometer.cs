@@ -35,22 +35,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
             Item.CWR().ConsumeUseUE = 800;
         }
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddIngredient(ItemID.DyeVat).
-                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(ItemID.DyeVat).
                 AddIngredient(CWRID.Item_DubiousPlating, 15).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 15).
                 AddTile(TileID.Anvils).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddIngredient(ItemID.DyeVat).
+                AddRecipeGroup(CWRCrafted.TungstenBarGroup, 15).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+        }    }
 
     internal class SpectrometerTile : ModTile
     {

@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>
-    /// 火力阵：头部升高位，四臂收拢成炮台阵列，波浪齐射带滚动缺口。
+    /// 火力阵：头部升高位，四臂收拢成炮台阵列，波浪上抛寻热微导弹，带滚动缺口。
     /// </summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.BarrageCommand, typeof(PrimeStateContext))]
     internal class PrimeBarrageCommandState : PrimeStateBase
@@ -50,13 +50,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private static void FireWave(PrimeStateContext context, int armSlot, int timer) {
             NPC npc = context.Npc;
             int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
-            float warmup = MathHelper.Lerp(PrimeDirector.ProjectileWarmupStart, 1f, timer / 60f);
-            Vector2 dir = DirectionToTarget(context).RotatedBy((armSlot - 1.5f) * 0.18f);
-            float speed = 9f * warmup;
+            float warmup = MathHelper.Clamp(MathHelper.Lerp(PrimeDirector.ProjectileWarmupStart, 1f, timer / 60f), 0f, 1f);
 
-            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + dir * 80f, dir * speed,
-                ModContent.ProjectileType<PrimeCannonOnSpan>(), damage, 0f,
-                Main.myPlayer, npc.whoAmI, npc.target, armSlot * 0.12f);
+            //从四联炮台阵位（与 PrimeArm.ApplyBarrageFormation 对齐）向上扇形抛射，
+            //导弹自身完成滞空→错相点火→俯冲微追踪
+            Vector2 muzzle = npc.Center + new Vector2((armSlot - 1.5f) * 70f, 90f);
+            Vector2 vel = (-Vector2.UnitY).RotatedBy((armSlot - 1.5f) * 0.34f + Main.rand.NextFloat(-0.07f, 0.07f))
+                * 3.8f * warmup;
+
+            Projectile.NewProjectile(npc.GetSource_FromAI(), muzzle, vel,
+                ModContent.ProjectileType<PrimeSeekerMissile>(), damage, 0f,
+                Main.myPlayer, npc.target, timer + armSlot * 5);
         }
     }
 }

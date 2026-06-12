@@ -38,17 +38,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (CWRRef.Has) {
-                return;
-            }
-            CreateRecipe()
+            if (CWRID.NPC_DesertScourgeHead <= 0) {
+                CreateRecipe()
                 .AddIngredient(ItemID.AntlionMandible, 8)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 8)
                 .AddIngredient(ItemID.SandBlock, 10)
                 .AddTile(TileID.Anvils)
                 .Register();
-        }
-    }
+            }
+        }    }
 
     /// <summary>
     /// 沙之飞匕实体

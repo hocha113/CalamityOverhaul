@@ -34,16 +34,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 8).
-                AddIngredient(ItemID.Acorn, 10).
-                AddIngredient(ItemID.Wood, 20).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 6).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 8).
                 AddRecipeGroup(RecipeGroupID.IronBar, 8).
@@ -51,6 +43,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 AddIngredient(ItemID.Wood, 20).
                 AddTile(TileID.Anvils).
                 Register();
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(RecipeGroupID.IronBar, 8).
+                AddIngredient(ItemID.Acorn, 10).
+                AddIngredient(ItemID.Wood, 20).
+                AddTile(TileID.Anvils).
+                Register();
+            }
         }
     }
 }

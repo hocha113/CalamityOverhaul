@@ -30,13 +30,12 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                return;
-            }
-            _ = CreateRecipe().
+            if (CWRID.Item_CosmiliteBar > 0 && CWRID.Tile_CosmicAnvil > 0) {
+                _ = CreateRecipe().
                 AddIngredient(CWRID.Item_CosmiliteBar, 10).
                 AddTile(CWRID.Tile_CosmicAnvil).
                 Register();
+            }
         }
     }
 

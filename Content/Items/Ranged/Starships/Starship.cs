@@ -44,7 +44,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
             => BaseHeldGun.SpawnHeldProj<StarshipHeld>(player, source);
 
         public override void AddRecipes() {
-            if (CWRRef.Has && CWRID.Item_Starmada > 0 && CWRID.Item_ShadowspecBar > 0) {
+            if (CWRID.Item_Starmada > 0 && CWRID.Item_ShadowspecBar > 0
+                && CWRID.Item_Rock > 0 && CWRID.Tile_DraedonsForge > 0) {
                 CreateRecipe().AddIngredient(CWRID.Item_Starmada).AddIngredient(CWRID.Item_ShadowspecBar, 5).AddIngredient(CWRID.Item_Rock).AddTile(CWRID.Tile_DraedonsForge).Register();
             }
         }

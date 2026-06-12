@@ -37,23 +37,23 @@ namespace CalamityOverhaul.Content.Items.Ranged
             => BaseHeldGun.SpawnHeldProj<LaserPistolHeld>(player, source);
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe().
-                AddRecipeGroup(RecipeGroupID.IronBar, 2).
-                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
-                AddTile(TileID.Anvils).
-                Register();
-                return;
-            }
-            CreateRecipe().
                 AddIngredient(CWRID.Item_DubiousPlating, 5).
                 AddIngredient(CWRID.Item_MysteriousCircuitry, 4).
                 AddRecipeGroup(RecipeGroupID.IronBar, 2).
                 AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
                 AddTile(TileID.Anvils).
                 Register();
-        }
-    }
+            }
+            else {
+                CreateRecipe().
+                AddRecipeGroup(RecipeGroupID.IronBar, 2).
+                AddRecipeGroup(CWRCrafted.TinBarGroup, 2).
+                AddTile(TileID.Anvils).
+                Register();
+            }
+        }    }
 
     internal class LaserPistolHeld : BaseHeldGun
     {

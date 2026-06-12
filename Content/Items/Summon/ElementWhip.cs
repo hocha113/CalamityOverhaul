@@ -22,20 +22,21 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
-                CreateRecipe()
-                .AddIngredient(ItemID.LunarBar, 5)
-                .AddTile(TileID.LunarCraftingStation)
-                .Register();
-                return;
-            }
-            _ = CreateRecipe()
+            if (CWRID.Item_LifeAlloy > 0 && CWRID.Item_GalacticaSingularity > 0) {
+                _ = CreateRecipe()
                 .AddIngredient(ItemID.RainbowWhip)
                 .AddIngredient(ItemID.LunarBar, 5)
                 .AddIngredient(CWRID.Item_LifeAlloy, 5)
                 .AddIngredient(CWRID.Item_GalacticaSingularity, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                .AddIngredient(ItemID.LunarBar, 5)
+                .AddTile(TileID.LunarCraftingStation)
+                .Register();
+            }
         }
     }
 }

@@ -26,17 +26,18 @@ namespace CalamityOverhaul.Content.Items.Placeable
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.Item_ExoPrism > 0 && CWRID.Tile_DraedonsForge > 0) {
+                CreateRecipe(10)
+                .AddIngredient(CWRID.Item_ExoPrism, 80)
+                .AddTile(CWRID.Tile_DraedonsForge)
+                .Register();
+            }
+            else {
                 CreateRecipe()
                 .AddIngredient(ItemID.LunarBar, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
-                return;
             }
-            CreateRecipe(10)
-                .AddIngredient(CWRID.Item_ExoPrism, 80)
-                .AddTile(CWRID.Tile_DraedonsForge)
-                .Register();
         }
     }
 

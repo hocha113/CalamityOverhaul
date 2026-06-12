@@ -28,17 +28,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         public override void AddRecipes() {
-            if (!CWRRef.Has) {
+            if (CWRID.DubiousCircuitryAvailable) {
                 CreateRecipe()
-                    .AddIngredient(ItemID.Furnace)
-                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 20)
-                    .AddRecipeGroup(RecipeGroupID.IronBar, 15)
-                    .AddRecipeGroup(CWRCrafted.GoldBarGroup, 15)
-                    .AddTile(TileID.Anvils)
-                    .Register();
-                return;
-            }
-            CreateRecipe()
                 .AddIngredient(ItemID.Furnace)
                 .AddRecipeGroup(CWRCrafted.TinBarGroup, 20)
                 .AddRecipeGroup(RecipeGroupID.IronBar, 15)
@@ -47,6 +38,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
                 .AddIngredient(CWRID.Item_MysteriousCircuitry, 8)
                 .AddTile(TileID.Anvils)
                 .Register();
+            }
+            else {
+                CreateRecipe()
+                    .AddIngredient(ItemID.Furnace)
+                    .AddRecipeGroup(CWRCrafted.TinBarGroup, 20)
+                    .AddRecipeGroup(RecipeGroupID.IronBar, 15)
+                    .AddRecipeGroup(CWRCrafted.GoldBarGroup, 15)
+                    .AddTile(TileID.Anvils)
+                    .Register();
+            }
         }
     }
 }

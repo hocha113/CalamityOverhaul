@@ -44,17 +44,15 @@ namespace CalamityOverhaul.Content.Items.Magic
             => BaseHeldGun.SpawnHeldProj<UnderTheSandHeld>(player, source);
 
         public override void AddRecipes() {
-            if (CWRRef.Has) {
-                return;
-            }
-            CreateRecipe()
+            if (CWRID.NPC_DesertScourgeHead <= 0) {
+                CreateRecipe()
                 .AddIngredient(ItemID.AntlionMandible, 8)
                 .AddIngredient(ItemID.FallenStar, 4)
                 .AddIngredient(ItemID.SandBlock, 12)
                 .AddTile(TileID.Anvils)
                 .Register();
-        }
-    }
+            }
+        }    }
 
     internal class UnderTheSandHeld : BaseHeldGun
     {
