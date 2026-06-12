@@ -170,17 +170,6 @@ ExtraMain: {
 	LockedText: ???
 }
 
-CompatibilityAlert: {
-	TitleText: Mode de compatibilité actif
-	ContentText:
-		'''
-		Des conflits de version ou des mods manquants ont été détectés. Certaines fonctionnalités sont désactivées ou dégradées.
-		Si cela est intentionnel, ignorez cet avertissement.
-		Si cela est dû à une version obsolète, veuillez attendre une mise à jour du mod.
-		L'équipe de développement publie généralement des correctifs de compatibilité dans les 12 heures.
-		'''
-}
-
 QuestWorldConfirmUI: {
 	TitleText: Confirmation de vérification de quête
 	DescText:

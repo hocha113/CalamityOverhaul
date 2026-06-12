@@ -170,17 +170,6 @@ ExtraMain: {
 	LockedText: ???
 }
 
-CompatibilityAlert: {
-	TitleText: Kompatibilitätsmodus aktiv
-	ContentText:
-		'''
-		Hauptinhalte fehlen oder Versionskonflikte erkannt. Einige Funktionen wurden automatisch deaktiviert oder herabgestuft.
-		Wenn dies beabsichtigt ist, ignoriere diese Warnung.
-		Wenn dies auf veraltete Versionen zurückzuführen ist, warte bitte auf ein Mod-Update.
-		Das Entwicklerteam veröffentlicht Kompatibilitätspatches normalerweise innerhalb von 12 Stunden.
-		'''
-}
-
 QuestWorldConfirmUI: {
 	TitleText: Quest-Prüfung bestätigen
 	DescText:
