@@ -118,6 +118,10 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> WeaverSlashTrail { get; set; }
         public static Asset<Effect> WeaverWraith { get; set; }
         public static Asset<Effect> WeaverSoulVortex { get; set; }
+        public static Asset<Effect> EnergySlashTrail { get; set; }
+        public static Asset<Effect> RebelSlashTrail { get; set; }
+        public static Asset<Effect> NeutronSlashTrail { get; set; }
+        public static Asset<Effect> StormSlashTrail { get; set; }
         public static Asset<Effect> DragonSlashTrail { get; set; }
         public static Asset<Effect> DragonSoulSerpent { get; set; }
         public static Asset<Effect> DragonSporeBeam { get; set; }

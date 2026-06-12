@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +16,9 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
     /// <summary>
     /// 风暴女神之矛的持握弹幕
     /// <br/>三段连击: 快速突刺 → 横扫 → 上挑，每段释放不同形态的风暴闪电
+    /// <br/>横扫/上挑的电弧刀光由 StormSlashTrail.fx 渲染
     /// </summary>
-    internal class StormGoddessSpearHeld : BaseHeldProj
+    internal class StormGoddessSpearHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Projectile_Melee + "StormGoddessSpearProj";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<StormGoddessSpear>();
@@ -57,7 +59,14 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private float lastRotation;
         private bool swingSoundPlayed;
         private bool hasSpawnedLightning;
+        private float trailFade;
         private readonly HashSet<int> hitNPCs = [];
+
+        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑（仅横扫/上挑段使用）
+        private const int TrailMax = 56;
+        private const int TrailSubdiv = 4;
+        private readonly float[] trailRot = new float[TrailMax];
+        private int trailCount;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 50;
@@ -182,19 +191,38 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 //蓄力回拉
                 float t = elapsed / WindupTime;
                 currentRotation = startAngle - swingSign * 0.22f * MathF.Sin(t * MathHelper.PiOver2);
+                trailFade = 0f;
             }
             else if (elapsed < activeEnd) {
                 //ease-out 扫击
                 float t = (elapsed - WindupTime) / ActiveTime;
                 float eased = 1f - MathF.Pow(1f - t, ComboCounter == 2 ? 4.2f : 3.5f);
                 currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
+                trailFade = 1f;
+                PushTrailSamples();
 
                 PlaySwingSound();
                 TryFireLightning(t, 0.4f);
             }
             else {
-                //收势
+                //收势：矛停住，电弧收缩渐隐
+                float t = (elapsed - activeEnd) / RecoverTime;
                 currentRotation = endAngle;
+                trailFade = 1f - t;
+                PushTrailSamples();
+            }
+        }
+
+        private void PushTrailSamples() {
+            for (int s = TrailSubdiv - 1; s >= 0; s--) {
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, s / (float)TrailSubdiv);
+                for (int i = Math.Min(trailCount, TrailMax - 1); i > 0; i--) {
+                    trailRot[i] = trailRot[i - 1];
+                }
+                trailRot[0] = rot;
+                if (trailCount < TrailMax) {
+                    trailCount++;
+                }
             }
         }
 
@@ -495,6 +523,50 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             Vector2 drawPos = hand + bladeUnit * holdout - Main.screenPosition;
             Main.EntitySpriteDraw(tex, drawPos, rect, lightColor, rot, origin, Projectile.scale, effect, 0);
             return false;
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (IsThrust || trailCount < 3 || trailFade <= 0.02f) {
+                return;
+            }
+            Effect effect = EffectLoader.StormSlashTrail?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+
+            var bars = new VertexPositionColorTexture[trailCount * 2];
+            Vector2 center = Owner.GetPlayerStabilityCenter();
+            //与绘制几何对齐：矛体中心在 holdout 处，矛尖视觉上延伸约半张贴图对角线
+            float outer = holdout + 142f;
+            float inner = 56f;
+            for (int i = 0; i < trailCount; i++) {
+                float factor = 1f - i / (float)trailCount;
+                Vector2 dir = trailRot[i].ToRotationVector2();
+                bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
+                    , Color.White, new Vector2(factor, 0f));
+                bars[i * 2 + 1] = new VertexPositionColorTexture((center + dir * inner).ToVector3()
+                    , Color.White, new Vector2(factor, 1f));
+            }
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uFade"]?.SetValue(trailFade);
+            effect.Parameters["uHeat"]?.SetValue(ComboCounter == 2 ? 1f : 0.45f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars, 0, bars.Length - 2);
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
         }
     }
 }

@@ -122,8 +122,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 叛逆之刃手持弹幕
     /// <br/>三段连击: 正手斩 → 反手斩 → 终结回旋斩，命中目标析出叛逆能量球
+    /// <br/>刀光由 RebelSlashTrail.fx 渲染，终结回旋斩时撕裂与星火增强
     /// </summary>
-    internal class RebelBladeHeld : BaseHeldProj
+    internal class RebelBladeHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "RebelBlade";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<RebelBlade>();
@@ -157,7 +158,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float currentRotation;
         private float lastRotation;
         private bool slashSoundPlayed;
+        private float trailFade;
         private readonly HashSet<int> hitNPCs = [];
+
+        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        private const int TrailMax = 64;
+        private const int TrailSubdiv = 4;
+        private readonly float[] trailRot = new float[TrailMax];
+        private int trailCount;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 64;
@@ -237,12 +245,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                 //蓄力回拉
                 float t = elapsed / WindupTime;
                 currentRotation = startAngle - swingSign * 0.24f * MathF.Sin(t * MathHelper.PiOver2);
+                trailFade = 0f;
             }
             else if (elapsed < slashEnd) {
                 //ease-out 重斩
                 float t = (elapsed - WindupTime) / SlashTime;
                 float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.4f : 3.4f);
                 currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
+                trailFade = 1f;
+                PushTrailSamples();
 
                 if (!slashSoundPlayed) {
                     slashSoundPlayed = true;
@@ -266,14 +277,30 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势
+                //收势：刀停住，弧光收缩渐隐
+                float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
+                trailFade = 1f - t;
+                PushTrailSamples();
             }
 
             UpdatePlayerPose();
             Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
                 , RebelBlue.ToVector3() * 0.6f);
             elapsed += speedMul;
+        }
+
+        private void PushTrailSamples() {
+            for (int s = TrailSubdiv - 1; s >= 0; s--) {
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, s / (float)TrailSubdiv);
+                for (int i = Math.Min(trailCount, TrailMax - 1); i > 0; i--) {
+                    trailRot[i] = trailRot[i - 1];
+                }
+                trailRot[0] = rot;
+                if (trailCount < TrailMax) {
+                    trailCount++;
+                }
+            }
         }
 
         private void UpdatePlayerPose() {
@@ -373,6 +400,50 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , Projectile.scale * 1.05f, effect, 0);
             }
             return false;
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (trailCount < 3 || trailFade <= 0.02f) {
+                return;
+            }
+            Effect effect = EffectLoader.RebelSlashTrail?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+
+            var bars = new VertexPositionColorTexture[trailCount * 2];
+            Vector2 center = Owner.GetPlayerStabilityCenter();
+            //贴图较大(196x200)，视觉刀尖在 reach*0.5 + 半对角 ≈ reach + 40，刀光外缘取中间值贴合刃口
+            float outer = (BladeReach + 28f) * Projectile.scale;
+            float inner = BladeReach * 0.30f;
+            for (int i = 0; i < trailCount; i++) {
+                float factor = 1f - i / (float)trailCount;
+                Vector2 dir = trailRot[i].ToRotationVector2();
+                bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
+                    , Color.White, new Vector2(factor, 0f));
+                bars[i * 2 + 1] = new VertexPositionColorTexture((center + dir * inner).ToVector3()
+                    , Color.White, new Vector2(factor, 1f));
+            }
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uFade"]?.SetValue(trailFade);
+            effect.Parameters["uHeat"]?.SetValue(IsFinisher ? 1f : 0.35f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars, 0, bars.Length - 2);
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
         }
     }
 

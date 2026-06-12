@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
@@ -95,8 +96,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>
     /// 能量剑手持弹幕
     /// <br/>三段连击: 正手斩 → 反手斩 → 能量重斩，挥砍中段若充能足够则射出能量光束
+    /// <br/>刀光由 EnergySlashTrail.fx 渲染，亮度随充能变化
     /// </summary>
-    internal class EnergySwordHeld : BaseHeldProj
+    internal class EnergySwordHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "EnergySword";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<EnergySword>();
@@ -131,7 +133,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float lastRotation;
         private bool slashSoundPlayed;
         private bool beamFired;
+        private float trailFade;
         private readonly HashSet<int> hitNPCs = [];
+
+        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        private const int TrailMax = 48;
+        private const int TrailSubdiv = 4;
+        private readonly float[] trailRot = new float[TrailMax];
+        private int trailCount;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 46;
@@ -208,12 +217,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                 //蓄力回拉
                 float t = elapsed / WindupTime;
                 currentRotation = startAngle - swingSign * 0.2f * MathF.Sin(t * MathHelper.PiOver2);
+                trailFade = 0f;
             }
             else if (elapsed < slashEnd) {
                 //ease-out 斩击
                 float t = (elapsed - WindupTime) / SlashTime;
                 float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4f : 3.2f);
                 currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
+                trailFade = 1f;
+                PushTrailSamples();
 
                 if (!slashSoundPlayed) {
                     slashSoundPlayed = true;
@@ -242,14 +254,30 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势
+                //收势：刀停住，弧光收缩渐隐
+                float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
+                trailFade = 1f - t;
+                PushTrailSamples();
             }
 
             UpdatePlayerPose();
             Lighting.AddLight(Owner.GetPlayerStabilityCenter() + currentRotation.ToRotationVector2() * BladeReach * 0.7f
                 , EnergyRed.ToVector3() * (0.25f + ChargeRatio * 0.4f));
             elapsed += speedMul;
+        }
+
+        private void PushTrailSamples() {
+            for (int s = TrailSubdiv - 1; s >= 0; s--) {
+                float rot = MathHelper.Lerp(currentRotation, lastRotation, s / (float)TrailSubdiv);
+                for (int i = Math.Min(trailCount, TrailMax - 1); i > 0; i--) {
+                    trailRot[i] = trailRot[i - 1];
+                }
+                trailRot[0] = rot;
+                if (trailCount < TrailMax) {
+                    trailCount++;
+                }
+            }
         }
 
         /// <summary>充能比例 0~1，用于光效强度</summary>
@@ -343,6 +371,49 @@ namespace CalamityOverhaul.Content.Items.Melee
             Main.EntitySpriteDraw(tex, drawPos, null, glow, currentRotation + rotOffset, origin
                 , Projectile.scale * 1.06f, effect, 0);
             return false;
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (trailCount < 3 || trailFade <= 0.02f) {
+                return;
+            }
+            Effect effect = EffectLoader.EnergySlashTrail?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
+            }
+
+            var bars = new VertexPositionColorTexture[trailCount * 2];
+            Vector2 center = Owner.GetPlayerStabilityCenter();
+            float outer = (BladeReach + 8f) * Projectile.scale;
+            float inner = BladeReach * 0.35f * Projectile.scale;
+            for (int i = 0; i < trailCount; i++) {
+                float factor = 1f - i / (float)trailCount;
+                Vector2 dir = trailRot[i].ToRotationVector2();
+                bars[i * 2] = new VertexPositionColorTexture((center + dir * outer).ToVector3()
+                    , Color.White, new Vector2(factor, 0f));
+                bars[i * 2 + 1] = new VertexPositionColorTexture((center + dir * inner).ToVector3()
+                    , Color.White, new Vector2(factor, 1f));
+            }
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uFade"]?.SetValue(trailFade);
+            effect.Parameters["uHeat"]?.SetValue(MathHelper.Clamp(ChargeRatio * 0.85f + (IsFinisher ? 0.3f : 0f), 0f, 1f));
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, bars, 0, bars.Length - 2);
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
         }
     }
 }
