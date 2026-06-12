@@ -223,9 +223,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             npc.dontTakeDamage = true;
             npc.damage = 0;
             npc.velocity = Vector2.Zero;
-            //TetherSpin 期间头部把收紧半径广播在指令槽（300→175），未广播/异常值时取默认
+            //TetherSpin 期间头部把收紧半径广播在指令槽（720→420），未广播/异常值时取默认
             float radius = head.ai[PrimeAiSlots.HeadCommandSlot];
-            if (radius < 100f || radius > 420f) {
+            if (radius < 100f || radius > 900f) {
                 radius = 280f;
             }
             float rot = MathHelper.TwoPi / 4 * FormationIndex + head.rotation;

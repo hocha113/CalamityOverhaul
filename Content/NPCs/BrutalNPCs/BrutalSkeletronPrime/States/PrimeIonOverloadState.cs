@@ -16,11 +16,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "IonOverload";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.IonOverload;
 
-        private const int ChargeFrames = 72;
-        private const int SilenceFrames = 8;
-        private const int BurstInterval = 42;
-        private const int MaxBursts = 3;
-        private const float GapAngle = 0.55f;
+        internal static int ChargeFrames => 72;
+        internal static int SilenceFrames => 8;
+        internal static int BurstInterval => 42;
+        internal static int MaxBursts => 3;
+        internal static float GapAngle => 0.55f;
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
             NPC npc = context.Npc;

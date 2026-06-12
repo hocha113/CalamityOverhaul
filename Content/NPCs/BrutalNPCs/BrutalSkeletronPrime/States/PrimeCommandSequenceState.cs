@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "CommandSequence";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.CommandSequence;
 
-        private const int TelegraphLead = 30;
+        internal static int TelegraphLead => 30;
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
             NPC npc = context.Npc;

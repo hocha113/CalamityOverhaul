@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override string StateName => "LaserChargedShot";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserChargedShot;
 
-        private const float ChargeTime = 45f;
+        internal static float ChargeTime => 45f;
         private float chargeProgress;
         private bool hasFired;
 

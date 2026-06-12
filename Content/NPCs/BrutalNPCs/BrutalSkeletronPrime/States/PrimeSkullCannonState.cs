@@ -18,10 +18,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "SkullCannon";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.SkullCannon;
 
-        private const int ChargeFrames = 90;
+        internal static int ChargeFrames => 90;
         /// <summary>蓄力末段提前锁定瞄准的帧数（锁定后玩家走位不再被跟踪——公平阀）</summary>
-        private const int LockLead = 24;
-        private const int SilenceFrames = 6;
+        internal static int LockLead => 24;
+        internal static int SilenceFrames => 6;
+        /// <summary>扫射半弧（大师模式）</summary>
+        internal static float ArcHalfMaster => 0.62f;
+        /// <summary>扫射半弧（普通/专家）</summary>
+        internal static float ArcHalfNormal => 0.55f;
 
         private int TotalFrames => ChargeFrames + SilenceFrames + PrimeSkullBeamProj.TotalLife + 8;
 
@@ -71,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 aimAngle = DirectionToTarget(context).ToRotation();
             }
             else if (Timer == ChargeFrames - LockLead) {
-                arcHalf = context.MasterMode ? 0.62f : 0.55f;
+                arcHalf = context.MasterMode ? ArcHalfMaster : ArcHalfNormal;
                 if (!VaultUtils.isClient) {
                     PrimeTelegraphLine.SpawnFan(npc, npc.Center, aimAngle,
                         arcHalf + 0.05f, LockLead + SilenceFrames);

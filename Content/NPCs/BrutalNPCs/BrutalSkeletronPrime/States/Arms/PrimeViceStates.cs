@@ -80,9 +80,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override string StateName => "ViceWindUp";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.ViceWindUp;
 
-        private const float WindUpDistance = 280f;
+        internal static float WindUpDistance => 280f;
         /// <summary>突刺前的活塞回缩帧数</summary>
-        private const int CoilFrames = 5;
+        internal static int CoilFrames => 5;
 
         private int WindUpDuration(PrimeArmStateContext ctx) => ctx.Death ? 16 : (ctx.MasterMode ? 21 : 26);
 

@@ -8,9 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>
-    /// 武装阶段大招：四臂飞散四角，头-臂之间拉起带伤害判定的电弧链锁
-    /// （<see cref="PrimeArcChainProj"/>），十字结构旋转收紧逼玩家穿缝，
-    /// 结束时中心脉冲弹环 + 屏幕冲击波。
+    /// 武装阶段大招——电弧风车：四臂飞散到屏幕级半径，头-臂之间拉起
+    /// 带伤害判定的电弧链锁（<see cref="PrimeArcChainProj"/>），十字结构缓慢旋转并收紧。
+    /// 玩家像躲风车一样在链间扇区里跟着转（或贴中心内圈站桩），结束时中心脉冲弹环 + 冲击波。
     /// <para>收紧半径经头部 <c>npc.ai[1]</c>（<see cref="PrimeAiSlots.HeadCommandSlot"/>）广播，
     /// 机械臂编队代码读取后同步收拢；退出时必须清零防止污染指令通道。</para>
     /// </summary>
@@ -20,40 +20,51 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "TetherSpin";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.TetherSpin;
 
-        private const int Telegraph = 36;
-        internal const int SpinDuration = 180;
-        private const int Total = Telegraph + SpinDuration + 24;
+        /// <summary>预警帧数（环形预告 + 四臂飞散到位）</summary>
+        internal static int TelegraphFrames => 40;
+        /// <summary>风车旋转持续帧数</summary>
+        internal static int SpinDuration => 240;
+        /// <summary>终结脉冲后的收势帧数</summary>
+        internal static int WindDownFrames => 24;
 
-        /// <summary>链锁初始半径（与预警环一致）</summary>
-        private const float ChainRadiusStart = 300f;
+        /// <summary>链锁初始半径（屏幕级笼罩，约 45 格）</summary>
+        internal static float ChainRadiusStart => 720f;
         /// <summary>收紧终点半径</summary>
-        private const float ChainRadiusEnd = 175f;
+        internal static float ChainRadiusEnd => 420f;
+        /// <summary>基础角速度（弧度/帧）——风车慢转，玩家跟着扇区走即可</summary>
+        internal static float SpinRateBase => 0.018f;
+        /// <summary>随收紧进度追加的角速度</summary>
+        internal static float SpinRateGain => 0.012f;
+        /// <summary>头部压向玩家的跟随强度（刻意缓慢：风车中心稳定，玩家绕轴跑）</summary>
+        internal static float FollowAccel => 0.03f;
+
+        private static int Total => TelegraphFrames + SpinDuration + WindDownFrames;
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
             NPC npc = context.Npc;
             npc.damage = 0;
             context.FrameMode = 0;
 
-            //十字中心缓慢压向玩家：玩家必须持续移动穿缝，但低跟随系数保证可以拉开
-            Vector2 anchor = context.Target.Center + new Vector2(0, -120);
-            npc.velocity = Vector2.Lerp(npc.velocity, (anchor - npc.Center) * 0.035f, 0.12f);
+            //风车中心缓慢压向玩家：足够慢，玩家在链间扇区跟着转就能躲
+            Vector2 anchor = context.Target.Center;
+            npc.velocity = Vector2.Lerp(npc.velocity, (anchor - npc.Center) * FollowAccel, 0.1f);
 
-            float progress = MathHelper.Clamp((Timer - Telegraph) / (float)SpinDuration, 0f, 1f);
-            //十字旋转随收紧加速
-            npc.rotation += 0.02f + progress * 0.055f;
+            float progress = MathHelper.Clamp((Timer - TelegraphFrames) / (float)SpinDuration, 0f, 1f);
+            //缓慢风车旋转，收紧末期微微加速
+            npc.rotation += SpinRateBase + progress * SpinRateGain;
 
-            if (Timer < Telegraph) {
-                context.SetChargeState(1, Timer / (float)Telegraph);
+            if (Timer < TelegraphFrames) {
+                context.SetChargeState(1, Timer / (float)TelegraphFrames);
                 if (!VaultUtils.isClient && Timer == 1) {
-                    PrimeTelegraphLine.SpawnRing(npc, npc.Center, ChainRadiusStart, Telegraph);
+                    PrimeTelegraphLine.SpawnRing(npc, npc.Center, ChainRadiusStart, TelegraphFrames);
                 }
             }
-            else if (Timer == Telegraph) {
+            else if (Timer == TelegraphFrames) {
                 if (!VaultUtils.isClient) {
                     SpawnChains(context);
                 }
             }
-            else if (Timer < Telegraph + SpinDuration) {
+            else if (Timer < TelegraphFrames + SpinDuration) {
                 context.SetChargeState(1, 0.4f + progress * 0.5f);
                 //向机械臂广播收紧半径
                 npc.ai[PrimeAiSlots.HeadCommandSlot] = MathHelper.Lerp(ChainRadiusStart, ChainRadiusEnd, progress);
@@ -66,7 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     dust.velocity = (npc.Center - sparkPos) * 0.06f;
                 }
             }
-            else if (Timer == Telegraph + SpinDuration) {
+            else if (Timer == TelegraphFrames + SpinDuration) {
                 //终结脉冲：链锁同时熄灭（弹幕侧按 timeLeft 自然到期），中心炸出一圈制导弹
                 npc.ai[PrimeAiSlots.HeadCommandSlot] = 0f;
                 if (!VaultUtils.isClient) {

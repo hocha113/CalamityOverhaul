@@ -16,8 +16,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "BarrageCommand";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.BarrageCommand;
 
-        private const int Duration = 150;
-        private const int GapPeriod = 11;
+        internal static int Duration => 150;
+        internal static int GapPeriod => 11;
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
             NPC npc = context.Npc;

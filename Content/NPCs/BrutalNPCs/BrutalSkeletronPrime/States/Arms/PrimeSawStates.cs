@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.SawSpinUp;
 
         /// <summary>突进前的锁定定格帧数</summary>
-        private const int LockFrames = 8;
+        internal static int LockFrames => 8;
 
         private bool playedSpinSound;
 

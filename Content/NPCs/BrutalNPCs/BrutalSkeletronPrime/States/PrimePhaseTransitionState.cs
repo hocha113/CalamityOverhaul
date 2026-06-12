@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override PrimeStateIndex StateIndex => PrimeStateIndex.PhaseTransition;
 
         /// <summary>殉爆窗口长度，机械臂的自毁延迟都安排在该窗口内</summary>
-        internal const int DetonationWindow = 80;
+        internal static int DetonationWindow => 80;
 
         private bool healStarted;
 

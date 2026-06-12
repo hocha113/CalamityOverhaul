@@ -17,10 +17,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "Intro";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.Intro;
 
-        private const int RiseEnd = 60;          //自下方升起
-        private const int HealStart = 90;        //开始注能回血
-        private const int ArmSpawnTick = 180;    //再生机械臂
-        private const int IntroEnd = 220;
+        internal static int RiseEnd => 60;          //自下方升起
+        internal static int HealStart => 90;        //开始注能回血
+        internal static int ArmSpawnTick => 180;    //再生机械臂
+        internal static int IntroEnd => 220;
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
             NPC npc = context.Npc;

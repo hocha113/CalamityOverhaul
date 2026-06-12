@@ -18,10 +18,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     {
         public override string Texture => CWRConstant.Placeholder2;
 
-        private const float LineLength = 1150f;
-        private const float LineWidth = 64f;
-        private const float FanRadius = 880f;
-        private const float DefaultFanHalfAngle = 0.45f;
+        internal static float LineLength => 1150f;
+        internal static float LineWidth => 64f;
+        internal static float FanRadius => 880f;
+        internal static float DefaultFanHalfAngle => 0.45f;
 
         private int Mode => (int)Projectile.ai[0];
         private float FanHalfAngle {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["uProgress"]?.SetValue(Progress);
-            shader.Parameters["uIntensity"]?.SetValue(0.85f);
+            shader.Parameters["uIntensity"]?.SetValue(1f);
             shader.Parameters["uMode"]?.SetValue((float)Mode);
             shader.Parameters["uFanAngle"]?.SetValue(FanHalfAngle);
             shader.CurrentTechnique.Passes[0].Apply();

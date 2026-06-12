@@ -16,15 +16,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "GuillotineSpin";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.GuillotineSpin;
 
-        private const int Telegraph = 36;
-        private const int SpinFrames = 200;
+        internal static int Telegraph => 36;
+        internal static int SpinFrames => 200;
+        /// <summary>圆周起始半径</summary>
+        internal static float OrbitRadiusStart => 420f;
+        /// <summary>圆周收紧终点半径</summary>
+        internal static float OrbitRadiusEnd => 180f;
+
         private float orbitAngle;
         private float orbitRadius;
 
         public override void OnEnter(PrimeStateContext context) {
             base.OnEnter(context);
             orbitAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-            orbitRadius = 420f;
+            orbitRadius = OrbitRadiusStart;
         }
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
@@ -35,12 +40,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 npc.damage = 0;
                 context.SetChargeState(1, Timer / (float)Telegraph);
                 if (!VaultUtils.isClient && Timer == 1) {
-                    PrimeTelegraphLine.SpawnRing(context.Npc, context.Target.Center, 420f, Telegraph);
+                    PrimeTelegraphLine.SpawnRing(context.Npc, context.Target.Center, OrbitRadiusStart, Telegraph);
                 }
                 return null;
             }
 
-            orbitRadius = MathHelper.Lerp(420f, 180f, (Timer - Telegraph) / (float)SpinFrames);
+            orbitRadius = MathHelper.Lerp(OrbitRadiusStart, OrbitRadiusEnd, (Timer - Telegraph) / (float)SpinFrames);
             orbitAngle += Main.masterMode ? 0.09f : 0.07f;
             Vector2 targetPos = context.Target.Center + orbitAngle.ToRotationVector2() * orbitRadius;
             npc.velocity = (targetPos - npc.Center) * 0.22f;

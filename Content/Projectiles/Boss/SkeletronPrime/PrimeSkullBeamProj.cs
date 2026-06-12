@@ -25,13 +25,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     {
         public override string Texture => CWRConstant.Placeholder2;
 
-        internal const int ExpandTime = 16;
-        internal const int SweepFrames = 90;
-        internal const int CollapseTime = 14;
-        internal const int TotalLife = ExpandTime + SweepFrames + CollapseTime;
+        internal static int ExpandTime => 16;
+        internal static int SweepFrames => 90;
+        internal static int CollapseTime => 14;
+        internal static int TotalLife => ExpandTime + SweepFrames + CollapseTime;
 
-        private const float MaxBeamLength = 2600f;
-        private const float MaxWidth = 64f;
+        private static float MaxBeamLength => 2600f;
+        private static float MaxWidth => 64f;
 
         private ref float Timer => ref Projectile.localAI[0];
         private NPC Head => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);

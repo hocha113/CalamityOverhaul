@@ -15,11 +15,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
     /// <summary>
-    /// 机械骷髅王电弧链锁：在头部与一条机械臂之间维持一道带伤害判定的高压电弧束带（TetherSpin 大招）。
+    /// 机械骷髅王电弧链锁：在头部与一条机械臂之间维持一道带伤害判定的高压电弧束带
+    /// （TetherSpin 电弧风车的扇叶）。
     /// <br/>ai[0] = 机械臂 NPC 的 whoAmI
     /// <br/>ai[1] = 头部 NPC 的 whoAmI
     /// <br/>ai[2] = 总持续时间（帧）
-    /// <br/>前 30 帧为预警（细弱无伤害）；头/臂失效或头部脱离 TetherSpin 状态时快速消散。
+    /// <br/>前 <see cref="WarmupTime"/> 帧为预警（细弱无伤害）；
+    /// 头/臂失效或头部脱离 TetherSpin 状态时快速消散。
     /// </summary>
     internal class PrimeArcChainProj : ModProjectile
     {
@@ -28,9 +30,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]
         private static Asset<Texture2D> ThunderTex = null;
 
-        private const int WarmupTime = 30;
-        private const int FadeTime = 12;
-        private const int ArcPointCount = 14;
+        /// <summary>预警帧数：链先以细弱形态拉起，给玩家定位扇区的时间</summary>
+        internal static int WarmupTime => 30;
+        /// <summary>消散帧数</summary>
+        internal static int FadeTime => 12;
+        /// <summary>电弧路径采样点数</summary>
+        internal static int ArcPointCount => 14;
+        /// <summary>碰撞宽度 px（满功率时）</summary>
+        internal static float HitWidth => 32f;
 
         private ref float Timer => ref Projectile.localAI[0];
         private NPC Arm => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
@@ -39,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         private ThunderTrail mainTrail;
         private ThunderTrail coreTrail;
-        private float power; //0~1 当前功率
+        private float power; //0~1 当前功率（展开/收束曲线）
 
         /// <summary>特斯拉橙金——区别于双子的青蓝电弧</summary>
         internal static Color ArcColor => new(255, 168, 64);
@@ -180,7 +187,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
             float p = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                head.Center, arm.Center, 32f * power, ref p);
+                head.Center, arm.Center, HitWidth * power, ref p);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {

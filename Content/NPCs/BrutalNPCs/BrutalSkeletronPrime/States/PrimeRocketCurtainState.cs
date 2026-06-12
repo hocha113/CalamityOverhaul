@@ -16,10 +16,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "RocketCurtain";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.RocketCurtain;
 
-        private const int Telegraph = 36;
-        private const int Duration = 150;
-        private const int Spacing = 180;
-        private const int GapRoll = 9;
+        internal static int Telegraph => 36;
+        internal static int Duration => 150;
+        internal static int Spacing => 180;
+        internal static int GapRoll => 9;
 
         private bool wallsSpawned;
 

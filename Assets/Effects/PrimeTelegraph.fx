@@ -37,10 +37,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float dash = step(frac(coords.x * 14.0 - uTime * 5.0), 0.55) * 0.14;
         //进度填充：0→uProgress 一段更亮，前端带一粒光点
         float fill = 1.0 - smoothstep(uProgress - 0.02, uProgress + 0.02, coords.x);
-        float head = exp(-pow((coords.x - uProgress) * 26.0, 2.0)) * 1.3;
+        float head = exp(-pow((coords.x - uProgress) * 26.0, 2.0)) * 1.4;
         //根部增强、末端微衰减
         float rootBoost = 1.0 + (1.0 - smoothstep(0.0, 0.2, coords.x)) * 0.5;
-        a = (core * (0.20 + 0.55 * fill + dash) + rail * 0.4 + head * core) * rootBoost;
+        a = (core * (0.32 + 0.65 * fill + dash) + rail * 0.5 + head * core) * rootBoost;
     }
     else if (uMode < 1.5)
     {

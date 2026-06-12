@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override string StateName => "CrossExecute";
         public override PrimeStateIndex StateIndex => PrimeStateIndex.CrossExecute;
 
-        private const int Telegraph = 36;
-        private const int Execute = 90;
-        private const int Total = Telegraph + Execute + 20;
+        internal static int Telegraph => 36;
+        internal static int Execute => 90;
+        private static int Total => Telegraph + Execute + 20;
 
         public override void OnEnter(PrimeStateContext context) {
             base.OnEnter(context);
