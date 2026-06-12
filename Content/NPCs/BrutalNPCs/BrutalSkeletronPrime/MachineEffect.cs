@@ -40,7 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     ///<summary>
     ///机械工业天空：全程序化着色器天空（锈红工业战争夜空——熔炉地平线、
     ///天穹齿轮剪影、滚动阴云、探照灯与上升余烬），并实时响应机械Boss行为——
-    ///冲刺/俯冲瞬间天空如闪雷亮起、蓄力时地平线警报呼吸、死亡演出时全屏过载电涌
+    ///冲刺/俯冲瞬间天空如闪雷亮起、蓄力时地平线警报呼吸、死亡演出时天空过载电涌。
+    ///所有响应只发生在天空背景内，不触碰世界照明与全屏滤镜
     ///</summary>
     internal class MachineSky : CustomSky, ICWRLoader
     {
@@ -60,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             SkyManager.Instance[Name] = this;
 
-            //暗红工业滤镜（运行时随闪电/警告/过载动态调节）
+            //暗红工业滤镜（保持恒定，行为响应只发生在天空背景着色器内）
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.15f, 0.08f, 0.08f)
                 .UseOpacity(0.4f), EffectPriority.High);
@@ -93,40 +94,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            //平滑跟随聚合目标；闪电为瞬时脉冲 + 指数衰减
+            //平滑跟随聚合目标；闪电为瞬时脉冲 + 快速指数衰减
             warn = MathHelper.Lerp(warn, MachineEffect.SkyWarnTarget, 0.10f);
             overload = MathHelper.Lerp(overload, MachineEffect.SkyOverloadTarget, 0.08f);
             if (MachineEffect.ConsumeSkyFlash(out float newFlashX)) {
                 flash = 1f;
                 flashX = newFlashX;
             }
-            flash *= 0.88f;
+            flash *= 0.82f;
             if (flash < 0.012f) {
                 flash = 0f;
             }
-
-            UpdateSceneFilter();
-        }
-
-        //动态调节全屏滤镜：常态暗红压抑；闪电瞬间整屏提亮泛蓝；过载时向红色警报脉动
-        private void UpdateSceneFilter() {
-            Filter filter = Filters.Scene[Name];
-            ScreenShaderData shaderData = filter?.GetShader();
-            if (shaderData == null) {
-                return;
-            }
-
-            Vector3 filterColor = new Vector3(0.15f, 0.08f, 0.08f);
-            if (overload > 0.01f) {
-                float pulse = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 16f);
-                filterColor = Vector3.Lerp(filterColor, new Vector3(0.42f, 0.06f, 0.03f), overload * (0.3f + 0.4f * pulse));
-            }
-            if (flash > 0.01f) {
-                filterColor = Vector3.Lerp(filterColor, new Vector3(0.80f, 0.88f, 1.05f), flash * 0.85f);
-            }
-
-            shaderData.UseColor(filterColor.X, filterColor.Y, filterColor.Z);
-            shaderData.UseOpacity(0.4f + warn * 0.05f - flash * 0.06f);
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
@@ -174,25 +152,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override Color OnTileColor(Color inColor) {
+            //仅保留恒定的暗红工业调，闪电等行为响应不介入世界照明，避免不自然的全图亮度跳变
             if (intensity <= 0.1f) {
                 return inColor;
             }
 
-            //暗红工业调
             Color tintedColor = new Color(
                 (int)(inColor.R * 0.95f),
                 (int)(inColor.G * 0.6f),
                 (int)(inColor.B * 0.6f),
                 inColor.A
             );
-            Color result = Color.Lerp(inColor, tintedColor, intensity * 0.35f);
-
-            //闪电瞬间整个世界被蓝白电光照亮
-            if (flash > 0.01f) {
-                Color litColor = new Color(205, 220, 255, inColor.A);
-                result = Color.Lerp(result, litColor, flash * 0.5f * intensity);
-            }
-            return result;
+            return Color.Lerp(inColor, tintedColor, intensity * 0.35f);
         }
     }
 

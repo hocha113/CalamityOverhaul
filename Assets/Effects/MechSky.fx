@@ -10,7 +10,7 @@
 //   5. 探照灯光束 ×2（自地平线扫掠，警告时染红增强）
 //   6. 上升余烬火星（双层视差）
 //   7. 警告地平线脉冲（uWarn：蓄力警报呼吸）
-//   8. 闪电（uFlash/uFlashX：全天瞬亮 + 云层背光 + 程序化分叉电弧劈下）
+//   8. 闪电（uFlash/uFlashX：以电弧为中心的局部辉光 + 云层背光 + 分叉电弧劈下）
 //   9. 过载电涌（uOverload：横向撕裂带 + 全屏快速明暗抖动）
 // ============================================================================
 
@@ -239,14 +239,17 @@ float4 PSMechSky(float2 uv : TEXCOORD0) : COLOR0
     col += float3(0.335, 0.050, 0.020) * horizon * uWarn * (0.35 + 0.65 * breath);
 
     // ================================================================
-    // Layer 8 — 闪电：冲刺/俯冲瞬间全天如闪雷亮起
-    // 全屏蓝白增亮 + 云层背光 + 在 uFlashX 处劈下程序化分叉电弧
+    // Layer 8 — 闪电：冲刺/俯冲瞬间天空如闪雷亮起
+    // 以电弧为中心的局部辉光（近亮远暗、高空亮近地弱），
+    // 云层被背光照透是主角，避免全屏均匀爆白晃眼
     // ================================================================
     if (uFlash > 0.003) {
-        // 全天瞬亮（蓝白电光），云层被背光照透
-        col += float3(0.42, 0.50, 0.62) * uFlash * 0.50;
-        col += float3(0.30, 0.36, 0.50) * cloud * uFlash * 0.80;
-        col *= 1.0 + uFlash * 0.30;
+        float dxl = (uv.x - uFlashX) * uAspectRatio;
+        float localGlow = exp(-dxl * dxl * 1.4);
+        float lightAmt = uFlash * lerp(0.22, 1.0, localGlow) * lerp(1.0, 0.45, uv.y);
+        col += float3(0.30, 0.36, 0.46) * lightAmt * 0.42;
+        col += float3(0.26, 0.32, 0.46) * cloud * lightAmt * 0.85;
+        col *= 1.0 + lightAmt * 0.14;
 
         // 电弧本体只在闪电前段可见，余辉阶段先行消失
         float boltVis = smoothstep(0.30, 0.72, uFlash);
@@ -263,7 +266,7 @@ float4 PSMechSky(float2 uv : TEXCOORD0) : COLOR0
             float core = exp(-dxp * dxp * 26000.0);
             float glow = exp(-dxp * dxp * 900.0);
             float vmask = smoothstep(hitY + 0.02, hitY - 0.02, uv.y);
-            col += float3(0.75, 0.85, 1.05) * (core * 1.60 + glow * 0.35) * vmask * boltVis;
+            col += float3(0.75, 0.85, 1.05) * (core * 1.30 + glow * 0.28) * vmask * boltVis;
 
             // 两条斜出分支，向下衰减
             [unroll]
@@ -281,7 +284,7 @@ float4 PSMechSky(float2 uv : TEXCOORD0) : COLOR0
 
             // 击中点光球
             float2 hd = float2((uv.x - bx) * uAspectRatio, uv.y - hitY);
-            col += float3(0.70, 0.80, 1.00) * exp(-dot(hd, hd) * 220.0) * boltVis * 0.90;
+            col += float3(0.70, 0.80, 1.00) * exp(-dot(hd, hd) * 220.0) * boltVis * 0.70;
         }
     }
 
