@@ -17,8 +17,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public override Vector2 HoldOrigin => new Vector2(-56, 10) * SHPCOverride.ItemScale;
         /// <summary>开火后坐力最大回退距离（随武器缩放）</summary>
         public override float RecoilStrength => 8f * SHPCOverride.ItemScale;
-        /// <summary>与 Terraria Overhaul 持握样式冲突时让位</summary>
-        public override bool Active(Item item, Player player) => CWRMod.Instance.terrariaOverhaul == null;
         /// <summary>右键蓄力分支不走本持握动画</summary>
         public override bool ShouldAnimate(Item item, Player player) => player.altFunctionUse != 2;
         /// <summary>激光持续模式下不产生后坐力，保持照射稳定</summary>
