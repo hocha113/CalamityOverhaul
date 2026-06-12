@@ -9,7 +9,7 @@
 		[i:CalamityOverhaul/HalibutItem]:
 		Este peixe foi pesquisado.
 		'''
-	DisplayName: Halibut
+	DisplayName: Linguado-gigante
 	Tooltip:
 		'''
 		Converte balas de mosquete em um fluxo de Corrente Oceanica
@@ -219,7 +219,7 @@ LegendUpgradeManagerSystem: {
 TrialBlockedHint: A proxima provacao exige que o conteudo relevante esteja ativado antes de comecar.
 
 HalibutTrialQuestLine: {
-	QuestCategory: Lenda de Halibut
+	QuestCategory: Lenda do Linguado-gigante
 	TrackerWaiting: Alvo ausente, aguardando invocacao...
 	TrackerFighting: "{0}: {1:0%}"
 	Trial_0: Aperitivo

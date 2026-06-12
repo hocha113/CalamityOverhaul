@@ -18,14 +18,19 @@ ElementWhip: {
 	DisplayName: Fouet Élémentaire
 	Tooltip:
 		'''
-		Brûler les ennemis avec le feu élémentaire
-		"L'essence de Terraria coule à travers le monde avec les éléments cosmiques"
+		{$CommonItemTooltip.Whips}
+		Brûle les ennemis avec le feu élémentaire
+		"L'essence primordiale de Terra traverse le monde avec les éléments du cosmos"
 		'''
 }
 
 AzureDragonRage: {
 	DisplayName: Rage du Dragon Azur
-	Tooltip: Il y a une forte odeur d'herbe verte
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		Dégage une forte odeur d'herbe fraîche
+		'''
 }
 
 BleedingScourge: {
@@ -37,8 +42,9 @@ GhostFireWhip: {
 	DisplayName: Fouet de Feu de Fantôme
 	Tooltip:
 		'''
+		{$CommonItemTooltip.Whips}
 		Un long fouet tissé avec la rage des âmes injustement emprisonnées dans les donjons
-		[c/d4bc75:Un feu pur émane de l'enfer, vous encourageant à découvrir qui vous a trahi]
+		[c/d4bc75:Une passion pure émane des enfers, vous encourageant à découvrir qui vous a trahi]
 		'''
 }
 
@@ -49,12 +55,17 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Lame de Source Divine
-	Tooltip: La vie continue
+	Tooltip:
+		'''
+		Enchaîne deux entailles rapides en un lourd coup chargé
+		Le lourd coup libère un croissant doré colossal d'énergie tranchante
+		"La vie ne s'arrête jamais"
+		'''
 }
 
 FoodStallChair: {
 	DisplayName: Chaise de Stand de Nourriture
-	Tooltip: ""
+	Tooltip: JE SUIS LA CHAISE QUI APPROCHE !
 }
 
 Arbiter: {
@@ -261,8 +272,10 @@ DragonsScaleGreatsword: {
 	DisplayName: Grande lame d'algue draconique
 	Tooltip:
 		'''
-		Libère une lame spirale d'algues vertes, explosant en un nuage de poison après avoir touché la cible
-		Les attaques de mêlée génèrent une quantité massive de nuages de poison
+		Les coups suivent un combo en trois frappes ; la troisième déclenche un finish draconique plus puissant
+		Les coups libèrent des vagues d'algues en spirale qui explosent en nuages toxiques à l'impact
+		Les attaques de mêlée véritables génèrent de nombreux nuages d'algues toxiques
+		Clic droit invoque une âme draconique émeraude qui fond sur le curseur, semant des nuages toxiques sur son passage
 		'''
 }
 
@@ -441,7 +454,7 @@ DragonBreathBox: {
 }
 
 HalibutItem: {
-	DisplayName: Halibut
+	DisplayName: Flétan
 	Tooltip: ""
 }
 
@@ -466,8 +479,10 @@ CrystalDimming: {
 	Tooltip:
 		'''
 		Utilise des boules de neige comme munitions
-		Tire de la grêle extrêmement froide et des boules de neige, les cristaux rebondissent rapidement après avoir frappé un mur, puis traquent les ennemis
-		Tous les 20 tirs, entre en état de surchauffe pour générer une grande colonne de glace à la position du curseur
+		Tire des obus de cristal qui font jaillir des pics glaciaires du sol au point d'impact
+		Les pics poussent plus haut près de grappes de cristaux déjà existantes
+		Clic droit libère une vague glaciaire qui soulève une crête de glace de plus en plus haute le long du terrain
+		"La terre se souvient de chaque gel"
 		'''
 }
 
@@ -486,7 +501,10 @@ SnowQuay: {
 	Tooltip:
 		'''
 		Utilise des boules de neige comme munitions
-		Un canon à neige de gros calibre, tirant des obus mixtes de glace et de neige
+		Maintenir clic gauche pour souffler un flux dense de neige sur les ennemis
+		Le soufflage accumule la pression dans la chambre de compactage
+		Relâcher clic gauche avec assez de pression pour lancer une boule de neige compactée
+		"La joie de l'hiver commence avec une souffleuse à neige"
 		'''
 }
 
@@ -584,9 +602,11 @@ SnowQuayMK2: {
 	DisplayName: Snow Quay MK2
 	Tooltip:
 		'''
-		Utilisez des boules de neige comme munitions
-		Un gros canon à neige qui tire des obus mélangés de glace et de neige
-		Aucune préchauffe n'est requise pour tirer
+		Utilise des boules de neige comme munitions
+		Refonte militaire avec compresseur cryogénique qui moule les boules de neige en carabes à haute vélocité
+		Clic gauche tire des rafales de trois coups ; le dernier est un carabe lourd qui éclate en cristaux à l'impact
+		Clic droit libère une dispersion de carabes à courte portée par surpression
+		"La seconde génération de M16 Neigeux n'a plus besoin de préchauffage"
 		'''
 }
 
@@ -766,8 +786,9 @@ WhiplashGalactica: {
 	DisplayName: Fouet de la Galaxie
 	Tooltip:
 		'''
-		Marquer la mort après avoir frappé un ennemi, puis lancer des boules de feu cosmiques
-		"L'épine dorsale de ce serpent cosmique, remplie d'énergie cosmique, guide la colère cosmique"
+		{$CommonItemTooltip.Whips}
+		Marque les ennemis pour la mort au coup et lance des boules de feu cosmiques
+		"L'épine dorsale du serpent cosmique, remplie d'énergie cosmique, guide la colère de l'univers"
 		'''
 }
 
@@ -1529,12 +1550,10 @@ UniversalFrost: {
 	Tooltip:
 		'''
 		Utilise les boules de neige comme munitions
-		Tire des grêlons et des orbes nova glacials
-		Les orbes rebondissent, traquent les ennemis et libèrent des rayons de givre à l'explosion
-		Le tir continu accumule de l'énergie glaciale
-		À pleine charge, la prochaine attaque déclenche l'Âge glaciaire
-		L'Âge glaciaire invoque un immense champ de stalactites et de blizzard à la position du curseur
-		"Quand toute création retombe dans le silence, seul le givre éternel recouvrira le monde"
+		Clic gauche tire rapidement des éclats de givre ; chaque tir charge la coupole glaciale
+		À pleine charge, clic droit déploie un voile auroral de givre au-dessus du curseur
+		Le voile fait pleuvoir des lances de givre sur les ennemis en dessous
+		"Quand toute création retombe dans le silence, seule l'aurore continue de couler dans le ciel"
 		'''
 }
 

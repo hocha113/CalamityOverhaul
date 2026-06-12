@@ -55,7 +55,12 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Cuchilla Aniquiladora de Oro
-	Tooltip: La vida nunca cesa
+	Tooltip:
+		'''
+		Encadena dos tajos rápidos en un corte pesado cargado
+		El corte pesado desata una colosal media luna dorada de energía de espada
+		"La vida nunca cesa"
+		'''
 }
 
 FoodStallChair: {
@@ -264,8 +269,10 @@ DragonsScaleGreatsword: {
 	DisplayName: Gran hoja de alga dracónica
 	Tooltip:
 		'''
-		Genera un ataque en espiral de energía de algas verdes, que al impactar al objetivo explota en varias nubes de algas tóxicas.
-		Un ataque cuerpo a cuerpo verdadero generará una gran cantidad de nubes de algas tóxicas.
+		Los golpes siguen un combo de tres ataques; el tercero desata un remate draconico más poderoso
+		Los golpes liberan ondas espirales de algas que explotan en nubes de algas tóxicas al impactar
+		Un ataque cuerpo a cuerpo verdadero genera muchas nubes de algas tóxicas
+		Clic derecho invoca un alma draconica esmeralda que carga hacia el cursor, esparciendo nubes tóxicas a su paso
 		'''
 }
 
@@ -469,9 +476,11 @@ CrystalDimming: {
 	DisplayName: Era de Hielo
 	Tooltip:
 		'''
-		Usa bolas de nieve como munición.
-		Dispara granizo helado y bolas de nieve; los cristales rebotan rápidamente al impactar contra las paredes, persiguiendo a los enemigos.
-		Cada 20 disparos, entra en un estallido de sobrecarga, generando un gran pilar de hielo en la posición del mouse.
+		Usa bolas de nieve como munición
+		Dispara proyectiles de cristal que levantan picos glaciares del suelo en el punto de impacto
+		Los picos crecen más alto cerca de grupos de cristales ya existentes
+		Clic derecho libera una ola glacial que levanta una cresta de hielo cada vez más alta a lo largo del terreno
+		"La tierra recuerda cada helada"
 		'''
 }
 
@@ -489,8 +498,11 @@ SnowQuay: {
 	DisplayName: Víbora de Nieve
 	Tooltip:
 		'''
-		Usa bolas de nieve como munición.
-		Una gran pieza de artillería de nieve que lanza proyectiles de nieve mezclados.
+		Usa bolas de nieve como munición
+		Mantén clic izquierdo para soplar una densa corriente de nieve contra los enemigos
+		Al soplar se acumula presión en la cámara de compactación
+		Suelta clic izquierdo con suficiente presión para lanzar una bola de nieve compactada
+		"La alegría del invierno empieza con una sopladora de nieve"
 		'''
 }
 
@@ -597,8 +609,10 @@ SnowQuayMK2: {
 	Tooltip:
 		'''
 		Utiliza bolas de nieve como munición
-		Un gran cañón de nieve que lanza proyectiles de mezcla de hielo y nieve
-		No se requiere precalentamiento para disparar
+		Refit militar con compresor criogénico que funde bolas de nieve en carámbanos de alta velocidad
+		Clic izquierdo dispara ráfagas de tres tiros; el último es un carámbano pesado que estalla en cristales al impactar
+		Clic derecho libera una dispersión de carámbanos de corto alcance por sobrepresión
+		"La Víbora de Nieve de segunda generación ya no necesita precalentamiento"
 		'''
 }
 
@@ -785,8 +799,9 @@ WhiplashGalactica: {
 	DisplayName: Latigazo Galáctico
 	Tooltip:
 		'''
-		Marca a los enemigos con una muerte y lanza bolas de fuego cósmico.
-		"La columna de la gran serpiente del cosmos, llena de energía cósmica, guía la ira del universo."
+		{$CommonItemTooltip.Whips}
+		Marca a los enemigos con muerte al golpear y lanza bolas de fuego cósmico
+		"La columna de la gran serpiente del cosmos, llena de energía cósmica, guía la ira del universo"
 		'''
 }
 
@@ -1549,11 +1564,10 @@ UniversalFrost: {
 	Tooltip:
 		'''
 		Usa bolas de nieve como munición
-		Dispara granizo y esferas de nova gélida; las esferas rebotan, persiguen enemigos y liberan rayos de escarcha al explotar
-		El fuego continuo acumula energía helada
-		Al llenarse, el siguiente ataque desata la Edad Glacial
-		La Edad Glacial invoca un enorme conjunto de carámbanos y un campo de ventisca en la posición del cursor
-		«Cuando todo el universo caiga en silencio, solo la escarcha eterna cubrirá el mundo»
+		Clic izquierdo dispara rápidamente destellos de escarcha; cada disparo carga la cúpula glacial
+		Al llenarse, clic derecho despliega un telón auroral de escarcha sobre el cursor
+		El telón hace llover lanzas de escarcha sobre los enemigos debajo
+		«Cuando toda la creación cae en silencio, solo la aurora sigue fluyendo en el cielo»
 		'''
 }
 

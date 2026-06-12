@@ -215,7 +215,7 @@ LegendUpgradeManagerSystem: {
 TrialBlockedHint: La siguiente prueba requiere que el contenido correspondiente esté activado.
 
 HalibutTrialQuestLine: {
-	QuestCategory: Leyenda del halibut
+	QuestCategory: Leyenda del fletán
 	TrackerWaiting: Objetivo ausente, esperando invocación...
 	TrackerFighting: "{0}: {1:0%}"
 	Trial_0: Entrante

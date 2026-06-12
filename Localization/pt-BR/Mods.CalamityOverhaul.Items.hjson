@@ -55,7 +55,12 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Lamina Aniquiladora da Fonte Divina
-	Tooltip: A vida nunca cessa
+	Tooltip:
+		'''
+		Encadeia dois golpes rapidos em um corte pesado carregado
+		O corte pesado libera uma colossal meia-lua dourada de energia de espada
+		"A vida nunca cessa"
+		'''
 }
 
 FoodStallChair: {
@@ -269,8 +274,10 @@ DragonsScaleGreatsword: {
 	DisplayName: Espada Grande de Alga Draconica
 	Tooltip:
 		'''
-		Dispara ondas de espada de algas verdes em espiral; ao acertar, explodem em varias nuvens de algas venenosas
+		Os golpes seguem um combo de tres ataques; o terceiro libera um finalizador draconico mais poderoso
+		Os golpes liberam ondas espirais de algas que explodem em nuvens toxicas ao acertar
 		Ataques corpo a corpo verdadeiros geram muitas nuvens de algas venenosas
+		Clique direito invoca uma alma draconica esmeralda que avanca em direcao ao cursor, espalhando nuvens toxicas pelo caminho
 		'''
 }
 
@@ -481,8 +488,10 @@ CrystalDimming: {
 	Tooltip:
 		'''
 		Usa bolas de neve como municao
-		Lanca granizo glacial e bolas de neve; cristais de gelo ricocheteiam rapidamente ao bater nas paredes e entao rastreiam inimigos
-		A cada 20 disparos, entra em sobrecarga e gera um pilar de gelo colossal no cursor
+		Dispara projeteis de cristal que erguem picos glaciais do chao no ponto de impacto
+		Os picos crescem mais alto perto de aglomerados de cristais ja existentes
+		Clique direito libera uma onda glacial que levanta uma crista de gelo cada vez mais alta ao longo do terreno
+		"A terra lembra de cada geada"
 		'''
 }
 
@@ -501,7 +510,10 @@ SnowQuay: {
 	Tooltip:
 		'''
 		Usa bolas de neve como municao
-		Um canhao de neve de grande calibre que dispara projeteis mistos de gelo e neve
+		Segure o botao esquerdo para soprar um fluxo denso de neve contra os inimigos
+		Enquanto sopra, acumula pressao na camara de compactacao
+		Solte o botao esquerdo com pressao suficiente para lancar uma bola de neve compactada
+		"A alegria do inverno comeca com um soprador de neve"
 		'''
 }
 
@@ -599,8 +611,10 @@ SnowQuayMK2: {
 	Tooltip:
 		'''
 		Usa bolas de neve como municao
-		Um canhao de neve de grande calibre que dispara projeteis mistos de gelo e neve
-		Nao e mais necessario pre-aquecer para disparar
+		Retifica militar com compressor criogenico que molda bolas de neve em estacas de gelo de alta velocidade
+		Botao esquerdo dispara rajadas de tres tiros; o ultimo e uma estaca pesada que estoura em cristais ao acertar
+		Botao direito libera uma dispersao de estacas de curto alcance por sobrepressao
+		"A Naja da Neve de segunda geracao nao precisa mais de pre-aquecimento"
 		'''
 }
 
@@ -784,8 +798,9 @@ WhiplashGalactica: {
 	DisplayName: Chicote Galactico
 	Tooltip:
 		'''
-		Marca inimigos ao atingir e dispara bolas de fogo cosmicas
-		"A espinha da serpente cosmica, repleta de energia celestial, guiando a furia do universo"
+		{$CommonItemTooltip.Whips}
+		Marca inimigos para a morte ao acertar e dispara bolas de fogo cosmicas
+		"A espinha da serpente cosmica, repleta de energia cosmica, guiando a furia do universo"
 		'''
 }
 
@@ -1210,11 +1225,7 @@ ItemFilter: {
 
 SporeBubbleBlaster: {
 	DisplayName: Lançador de Bolhas de Esporos
-	Tooltip:
-		'''
-		Pulveriza um fluxo de particulas de esporos
-		Causa apenas 50% de dano durante o dia
-		'''
+	Tooltip: Pulveriza um fluxo de corrente de esporos
 }
 
 TomeofFungalDecay: {
@@ -1549,13 +1560,11 @@ UniversalFrost: {
 	DisplayName: Geada Universal
 	Tooltip:
 		'''
-		Usa Bolas de Neve como municao
-		Dispara granizo e orbes de nova glacial
-		Os orbes quicam, rastreiam inimigos e liberam raios de gelo ao explodir
-		Disparo continuo acumula energia de gelo
-		Quando totalmente carregado, o proximo ataque libera a Era Glacial
-		A Era Glacial invoca uma matriz massiva de estalactites e um campo de nevasca na posicao do cursor
-		"Quando toda a criacao cair em silencio, apenas a geada eterna cobrira o mundo"
+		Usa bolas de neve como municao
+		Clique esquerdo dispara rapidamente brilhos de geada; cada tiro carrega a cupula gelada
+		Quando totalmente carregado, clique direito desdobra um veu auroral de geada acima do cursor
+		O veu faz chover lancas de geada sobre os inimigos abaixo
+		"Quando toda a criacao cair em silencio, apenas a aurora ainda flui no ceu"
 		'''
 }
 
@@ -2490,11 +2499,7 @@ ZoomOpticModule: {
 
 PingOpticModule: {
 	DisplayName: Otica Ping
-	Tooltip:
-		'''
-		Sistema de pintor de sinal carimba Marcao de Morte em cada alvo atingido, amplificando todo o dano recebido
-		Bonus de homing, crit e dispersao mais apertada completam o kit de mira
-		'''
+	Tooltip: O sistema de sinalizacao aplica Marcado para a Morte ao acertar e concede chance critica adicional
 }
 
 CapacitorPulseModule: {

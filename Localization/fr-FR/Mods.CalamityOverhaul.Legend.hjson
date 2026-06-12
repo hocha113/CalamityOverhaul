@@ -9,7 +9,7 @@
 		[i:CalamityOverhaul/HalibutItem]:
 		Ce poisson a été étudié.
 		'''
-	DisplayName: Halibut
+	DisplayName: Grand flétan
 	Tooltip:
 		'''
 		Convertit les balles de mousquet en projectiles océaniques
@@ -215,7 +215,7 @@ LegendUpgradeManagerSystem: {
 TrialBlockedHint: La prochaine épreuve nécessite l'activation du contenu correspondant.
 
 HalibutTrialQuestLine: {
-	QuestCategory: Légende du Halibut
+	QuestCategory: Légende du flétan
 	TrackerWaiting: Cible absente, en attente d'invocation...
 	TrackerFighting: "{0}: {1:0%}"
 	Trial_0: Apéritif

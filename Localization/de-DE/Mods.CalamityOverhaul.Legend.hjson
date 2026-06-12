@@ -9,7 +9,7 @@
 		[i:CalamityOverhaul/HalibutItem]:
 		Dieser Fisch wurde erforscht.
 		'''
-	DisplayName: Halibut
+	DisplayName: Großer Heilbutt
 	Tooltip:
 		'''
 		Verwandelt Gewehrkugeln in Meeresgeschosse
@@ -215,7 +215,7 @@ LegendUpgradeManagerSystem: {
 TrialBlockedHint: Die nächste Prüfung erfordert, dass der entsprechende Inhalt aktiviert ist.
 
 HalibutTrialQuestLine: {
-	QuestCategory: Halibut-Legende
+	QuestCategory: Heilbutt-Legende
 	TrackerWaiting: Ziel nicht anwesend — warte auf Beschwörung...
 	TrackerFighting: "{0}: {1:0%}"
 	Trial_0: Vorspeise

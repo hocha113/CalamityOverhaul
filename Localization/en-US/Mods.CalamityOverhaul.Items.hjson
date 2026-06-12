@@ -16,25 +16,35 @@ MoldProcessingTable: {
 
 ElementWhip: {
 	DisplayName: Element Whip
-	Tooltip: A Whip infused with the energy of the Moon and the Elements.
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		Sets enemies ablaze with elemental fire
+		"Terra's primordial essence pierces the world alongside the elements of the cosmos"
+		'''
 }
 
 AzureDragonRage: {
 	DisplayName: Azure Dragon Rage
-	Tooltip: Smells like freshly cut albeit musty grass.
+	Tooltip:
+		'''
+		{$CommonItemTooltip.Whips}
+		Carries a thick scent of fresh grass
+		'''
 }
 
 BleedingScourge: {
 	DisplayName: Bleeding Scourge
-	Tooltip: Hitting an enemy with this whip causing blood to rain down from the sky before bursting on the enemy below, tagging it for minions.
+	Tooltip: Marks enemies for death on hit and calls down a rain of blood
 }
 
 GhostFireWhip: {
 	DisplayName: Ghost Fire Whip
 	Tooltip:
 		'''
-		An Extremely long whip, formed from fury of the restless dungeon spirits.
-		[c/d4bc75:Pure Zealousy Eminates from the base, encouraging you to seek out who wronged you.]
+		{$CommonItemTooltip.Whips}
+		An extremely long whip woven from the fury of restless dungeon spirits
+		[c/d4bc75:Pure passion radiates from the depths of hell, urging you to find who wronged you]
 		'''
 }
 
@@ -92,9 +102,9 @@ HeavenfallLongbow: {
 	DisplayName: Heavenfall Longbow
 	Tooltip:
 		'''
-		Fires out Pure Primordial Rainbow Light to completely annihiliate your foes in brilliance.
-		Right click will have the Primordial light rain down on your foes, exploding in pure magnifience.
-		Press [KEY] to start the Vientiane Trial when at max power.
+		Fires endless arrows; terminal rainbow energy follows shortly after
+		Right-click calls heaven's arrows down from the sky
+		After charging, press [KEY] to unleash the Myriad Judgment
 		[legend]
 		'''
 	Legend:
@@ -798,8 +808,9 @@ WhiplashGalactica: {
 	DisplayName: Galactic Whiplash
 	Tooltip:
 		'''
-		Marks enemies upon hit and fires cosmic fireballs
-		"The spine of the cosmic serpent, brimming with celestial energy, guiding the fury of the universe"
+		{$CommonItemTooltip.Whips}
+		Marks enemies for death on hit and launches cosmic fireballs
+		"The spine of the cosmic serpent, brimming with cosmic energy, guiding the universe's wrath"
 		'''
 }
 
@@ -2500,11 +2511,7 @@ ZoomOpticModule: {
 
 PingOpticModule: {
 	DisplayName: Ping Optic
-	Tooltip:
-		'''
-		Signal-painter system stamps Marked-for-Death on every target struck, amplifying all incoming damage
-		Bonus homing, crit, and tighter spread complete the targeting kit
-		'''
+	Tooltip: The signal-painter system applies Marked for Death on hit and grants bonus crit chance
 }
 
 CapacitorPulseModule: {

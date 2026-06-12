@@ -10,10 +10,10 @@ CyberFreeze_Key.DisplayName: Cyberespace : geler
 CyberwareSkill_Key.DisplayName: Cyberware : déclencher la compétence active
 CyberwareRadial_Key.DisplayName: Cyberware : ouvrir le menu radial
 VoidTimeShift_Key.DisplayName: Invasion temporelle du Vide
-Halibut_Clone.DisplayName: Halibut : invasion du moi passé
-Halibut_Superposition.DisplayName: Halibut : superposition
-Halibut_Skill_L.DisplayName: Halibut : changer compétence gauche
-Halibut_Skill_R.DisplayName: Halibut : changer compétence droite
+Halibut_Clone.DisplayName: Flétan : invasion du moi passé
+Halibut_Superposition.DisplayName: Flétan : superposition
+Halibut_Skill_L.DisplayName: Flétan : changer compétence gauche
+Halibut_Skill_R.DisplayName: Flétan : changer compétence droite
 Murasama_TriggerKey.DisplayName: Murasama : touche de déclenchement
 Murasama_DownKey.DisplayName: Murasama : frappe descendante
 WeponSkill_Q.DisplayName: Arme : compétence gauche

@@ -55,7 +55,12 @@ AllhallowsGoldWhip: {
 
 DivineSourceBlade: {
 	DisplayName: Göttliche Energie-Klinge
-	Tooltip: Das Leben endet nie
+	Tooltip:
+		'''
+		Verkettet zwei schnelle Hiebe zu einem aufgeladenen schweren Spalt-Hieb
+		Der schwere Hieb entfesselt eine kolossale goldene Sichel aus Schwertenergie
+		"Das Leben endet nie"
+		'''
 }
 
 FoodStallChair: {
@@ -267,8 +272,10 @@ DragonsScaleGreatsword: {
 	DisplayName: Drachentang-Großklinge
 	Tooltip:
 		'''
-		Schießt spiralförmige Algenklingen ab, die beim Aufprall in Giftwolken explodieren
-		Echter Nahkampfangriff erzeugt viele Giftwolken
+		Schwünge folgen einer Drei-Hit-Kombo; der dritte Hieb entfesselt einen mächtigeren drakonischen Finisher
+		Schwünge senden spiralförmige Tangklingenwellen aus, die beim Treffer in giftige Algenwolken explodieren
+		Echter Nahkampf erzeugt viele giftige Algenwolken
+		Rechtsklick beschwört eine smaragdgrüne Drachenseele, die zum Cursor jagt und unterwegs giftige Algenwolken streut
 		'''
 }
 
@@ -447,7 +454,7 @@ DragonBreathBox: {
 }
 
 HalibutItem: {
-	DisplayName: Halibut
+	DisplayName: Heilbutt
 	Tooltip: ""
 }
 
@@ -472,8 +479,10 @@ CrystalDimming: {
 	Tooltip:
 		'''
 		Verwendet Schneebälle als Munition
-		Feuert eiskalten Hagel und Schneebälle ab; Eiskristalle prallen nach dem Aufprall an Wänden ab und verfolgen dann Feinde
-		Alle 20 Schüsse löst eine Überlastexplosion aus, erzeugt einen riesigen Eisbalken am Mauszeiger
+		Feuert Kristallgeschosse ab, die am Einschlagpunkt Gletschersäulen aus dem Boden emporsteigen lassen
+		Säulen wachsen höher, wenn sie in der Nähe bestehender Kristallcluster auftauchen
+		Rechtsklick entfesselt eine Gletscherwelle, die entlang des Geländes einen stetig wachsenden Eisgrat auftürmt
+		"Die Erde erinnert sich an jeden Frost"
 		'''
 }
 
@@ -493,7 +502,10 @@ SnowQuay: {
 	Tooltip:
 		'''
 		Verwendet Schneebälle als Munition
-		Eine großkalibrige Schneekanone, feuert gemischte Eis- und Schneegeschosse ab
+		Linksklick gedrückt halten, um einen dichten Schneestrom auf Feinde zu blasen
+		Beim Blasen sammelt sich Druck in der Verdichtungskammer
+		Linksklick loslassen mit genügend Druck, um eine verdichtete Schneekugel abzufeuern
+		"Der Winterspaß beginnt mit einem Schneepustgerät"
 		'''
 }
 
@@ -589,9 +601,11 @@ SnowQuayMK2: {
 	DisplayName: Snow Quay MK2
 	Tooltip:
 		'''
-		Verwende Schneebälle als Munition
-		Eine großkalibrige Schneekanone, die gemischte Eis- und Schneeshells abfeuert
-		Zum Abfeuern ist keine Vorheizung erforderlich
+		Verwendet Schneebälle als Munition
+		Eine militärische Umrüstung mit Kryo-Kompressor, der Schneebälle in hochgeschwindige Eiszapfen presst
+		Linksklick feuert Drei-Schuss-Bursts; die letzte Kugel ist ein schwerer Zapfen, der beim Treffer in Kristalle zerspringt
+		Rechtsklick entlädt einen Überdruck-Streuschuss kurzreichweitiger Eiszapfen
+		„Die Schneequay der zweiten Generation braucht kein Vorheizen mehr“
 		'''
 }
 
@@ -1529,10 +1543,10 @@ UniversalFrost: {
 	Tooltip:
 		'''
 		Verwendet Schneebälle als Munition
-		Feuert Hagel und eiskalte Nova-Kugeln; Kugeln prallen, verfolgen und explodieren mit Froststrahlen
-		Dauerfeuer sammelt Eisenergie; bei Voll ladung nächster Schuss löst Eiszeit aus
-		Eiszeit beschwört am Cursor gewaltige Eiszapfen und Blizzard
-		„Wenn alles verstummt, bleibt nur ewiger Frost“
+		Linksklick feuert schnell Frostglanzgeschosse; jeder Treffer lädt die Frostkuppel auf
+		Bei voller Ladung entfaltet Rechtsklick am Cursor eine Aurora-Frostdecke
+		Die Decke regnet Frostlanzen auf Feinde darunter
+		„Wenn alles verstummt, fließt nur noch das Aurora am Himmel“
 		'''
 }
 
