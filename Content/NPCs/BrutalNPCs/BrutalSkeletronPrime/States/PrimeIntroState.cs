@@ -52,6 +52,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     SoundEngine.PlaySound(CWRSound.MechanicalFullBloodFlow, Main.LocalPlayer.Center);
                 }
                 if (Timer > HealStart) {
+                    //注能回血窗口挂出充能状态：登场演出叠加汇聚涡（仅视觉，热感滤镜在 Intro 期不生效）
+                    context.SetChargeState(3, MathHelper.Clamp(
+                        (Timer - HealStart) / (float)(IntroEnd - HealStart), 0f, 1f));
                     int addNum = (int)(npc.lifeMax / 80f);
                     if (npc.life >= npc.lifeMax) {
                         npc.life = npc.lifeMax;

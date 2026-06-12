@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     {
         public override string StateName => "Despawn";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Despawn;
+        /// <summary>脱战下潜不受回归瞬移阀干预</summary>
+        public override bool AllowFarSnap => false;
 
         public DestroyerDespawnState() {
         }
@@ -57,6 +59,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     {
         public override string StateName => "Death";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.Death;
+        /// <summary>死亡演出全程静止，回归瞬移阀不介入</summary>
+        public override bool AllowFarSnap => false;
 
         //演出节奏（单位：帧，60帧/秒）
         private const int PreludeTime = 50;   //急停 + 关节漏火花

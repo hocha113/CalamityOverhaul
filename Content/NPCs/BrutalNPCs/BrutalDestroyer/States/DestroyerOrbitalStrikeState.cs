@@ -22,6 +22,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     {
         public override string StateName => "OrbitalStrike";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.OrbitalStrike;
+        /// <summary>大招自带高空/地下走位，回归瞬移阀不介入</summary>
+        public override bool AllowFarSnap => false;
 
         #region 演出节奏常量
         private const int AscendEnd = 60;

@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     {
         public override string StateName => "DiveStrike";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.DiveStrike;
+        /// <summary>俯冲自带高空瞬移走位，回归瞬移阀不介入</summary>
+        public override bool AllowFarSnap => false;
 
         #region 节奏常量
         private const int RepositionTime = 36;

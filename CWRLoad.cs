@@ -324,15 +324,13 @@ namespace CalamityOverhaul
                     ItemIDToOmigaSnyContent[itemType] = snyOmig;
                     ItemAutoloadingOmigaSnyRecipe[itemType] = cwrItem.AutoloadingOmigaSnyRecipe;
                 }
-
-                PopulateRangedData(itemType, cwrItem);
             }
 
             PopulateHeldGunData();
         }
 
         /// <summary>
-        /// 新一代手持武器不再使用 heldProjType 绑定，改为扫描 <see cref="BaseHeldGun"/> 子类按 TargetID 反向登记
+        /// 手持武器不使用 heldProjType 绑定，扫描 <see cref="BaseHeldGun"/> 子类按 TargetID 反向登记
         /// </summary>
         private static void PopulateHeldGunData() {
             foreach (BaseHeldGun heldGun in VaultUtils.GetDerivedInstances<BaseHeldGun>()) {
@@ -345,33 +343,6 @@ namespace CalamityOverhaul
                 ItemIsGunAndMustConsumeAmmunition[itemType] = heldGun.MustConsumeAmmunition;
                 ItemIsRanged[itemType] = true;
                 ItemIsRangedAndCanRightClickFire[itemType] = heldGun.CanRightClick;
-            }
-        }
-
-        private static void PopulateRangedData(int itemType, CWRItem cwrItem) {
-            int heldProjType = cwrItem.heldProjType;
-            if (heldProjType <= 0) {
-                return;
-            }
-
-            Projectile heldProj = new Projectile();
-            heldProj.SetDefaults(heldProjType);
-            if (heldProj.ModProjectile == null) {
-                return;
-            }
-
-            if (heldProj.ModProjectile is BaseGun gun) {
-                ItemIsGun[itemType] = true;
-                ItemIsCrossBow[itemType] = gun.IsCrossbow;
-                ItemIsGunAndMustConsumeAmmunition[itemType] = gun.MustConsumeAmmunition;
-            }
-            if (heldProj.ModProjectile is BaseBow bow) {
-                ItemIsBow[itemType] = true;
-                ItemIsBowAndArrowNum[itemType] = bow.BowArrowDrawNum;
-            }
-            if (heldProj.ModProjectile is BaseHeldRanged ranged) {
-                ItemIsRanged[itemType] = true;
-                ItemIsRangedAndCanRightClickFire[itemType] = ranged.CanRightClick;
             }
         }
 

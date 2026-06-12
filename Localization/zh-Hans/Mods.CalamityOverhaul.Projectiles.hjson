@@ -109,6 +109,8 @@ CrabulonFriendHitbox.DisplayName: 蟹波菇孢子
 Fireball.DisplayName: 火球
 DeadLaser.DisplayName: 寂灭激光
 PrimeTelegraphLine.DisplayName: 机械骷髅王预警线
+PrimeArcChainProj.DisplayName: 离子锁链
+PrimeSkullBeamProj.DisplayName: 颅骨主炮光束
 Hit.DisplayName: 冲击
 SpwanTextProj.DisplayName: 显现之言
 DragonsWordCut.DisplayName: 龙言之刃·斩

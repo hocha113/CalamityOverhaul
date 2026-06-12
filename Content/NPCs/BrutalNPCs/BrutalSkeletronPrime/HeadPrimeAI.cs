@@ -636,20 +636,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Rectangle rectangle = mainValue.GetRectangle(frame, 12);
             Vector2 orig = rectangle.Size() / 2;
 
-            //运动残影（狂暴阶段拉伸更强，模拟镜像幻影）
-            bool ragePhase = npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage;
-            float stretch = ragePhase ? MathHelper.Clamp(npc.velocity.Length() / 24f, 0.2f, 0.85f) : 0.2f;
-            float sengs = stretch;
-            for (int i = 0; i < npc.oldPos.Length; i++) {
-                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
-                Color trailColor = ragePhase
-                    ? Color.Lerp(Color.White, new Color(255, 120, 60), stretch) * sengs
-                    : Color.White * sengs;
-                float scale = npc.scale * (0.8f + sengs * (ragePhase ? 0.35f : 0f));
-                Main.EntitySpriteDraw(mainValue, drawOldPos, rectangle, trailColor,
-                    npc.rotation, orig, scale, SpriteEffects.None, 0);
-                sengs *= 0.8f;
-            }
+            //充能漩涡（过载/环形充能）：画在残影与本体之下
+            DrawChargeVortex(spriteBatch);
+
+            //速度门控热残影
+            DrawAfterimages(spriteBatch, mainValue, rectangle, orig);
 
             //外圈8方向描边光环——夜晚远距离也能看清骷髅王轮廓
             Vector2 mainPos = npc.Center - Main.screenPosition;
@@ -670,6 +661,100 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 , Color.White, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
 
             return false;
+        }
+
+        /// <summary>
+        /// 充能漩涡：极坐标螺旋吸入场叠加齿轮辐条，随 <see cref="PrimeStateContext.ChargeProgress"/> 收紧增亮。
+        /// 只在过载（ChargeType 2）与环形/光束充能（ChargeType 3）时显示；
+        /// 冲撞蓄力（ChargeType 1）由机械热感滤镜表达，不叠加漩涡。
+        /// </summary>
+        private void DrawChargeVortex(SpriteBatch spriteBatch) {
+            if (stateContext == null || !stateContext.IsCharging
+                || stateContext.ChargeProgress <= 0.01f || stateContext.ChargeType < 2) {
+                return;
+            }
+            Effect shader = EffectLoader.PrimeChargeVortex?.Value;
+            if (shader == null) {
+                return;
+            }
+
+            Color main = stateContext.ChargeType == 2 ? new Color(255, 150, 40) : new Color(255, 70, 22);
+            float progress = MathHelper.Clamp(stateContext.ChargeProgress, 0f, 1f);
+            shader.Parameters["uColor"]?.SetValue(main.ToVector3());
+            shader.Parameters["uSecondaryColor"]?.SetValue(Color.Lerp(main, Color.White, 0.55f).ToVector3());
+            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["uProgress"]?.SetValue(progress);
+            shader.Parameters["uIntensity"]?.SetValue(0.45f + progress * 0.75f);
+            shader.Parameters["uOpacity"]?.SetValue(1f);
+            shader.Parameters["uImage1"]?.SetValue(CWRAsset.Extra_193.Value);
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            shader.CurrentTechnique.Passes[0].Apply();
+
+            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            float size = 360f + 220f * progress;
+            spriteBatch.Draw(quad, npc.Center - Main.screenPosition, null, Color.White, 0f,
+                quad.Size() / 2f, new Vector2(size / quad.Width, size / quad.Height), SpriteEffects.None, 0f);
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        /// <summary>
+        /// 速度门控热残影：高速时 oldPos 链经 PrimeAfterimage 着色器绘制成
+        /// 噪声溶蚀+白热→深红衰变的余烬拖影；着色器缺失时退回平涂残影。
+        /// </summary>
+        private void DrawAfterimages(SpriteBatch spriteBatch, Texture2D mainValue, Rectangle rectangle, Vector2 orig) {
+            float speed = npc.velocity.Length();
+            bool ragePhase = npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage;
+            float heat = MathHelper.Clamp((speed - 5f) / 16f, 0f, 1f);
+            if (ragePhase) {
+                heat = Math.Max(heat, 0.35f);
+            }
+            if (heat <= 0.05f) {
+                return;
+            }
+
+            Effect shader = EffectLoader.PrimeAfterimage?.Value;
+            if (shader == null) {
+                DrawAfterimagesFallback(mainValue, rectangle, orig, ragePhase, heat);
+                return;
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+            int count = npc.oldPos.Length;
+            for (int i = 1; i < count; i++) {
+                shader.Parameters["uFade"]?.SetValue(i / (float)count);
+                shader.Parameters["uHeat"]?.SetValue(heat);
+                shader.Parameters["uSeed"]?.SetValue(npc.whoAmI % 8 / 8f + i * 0.13f);
+                shader.CurrentTechnique.Passes[0].Apply();
+                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                spriteBatch.Draw(mainValue, drawOldPos, rectangle, Color.White,
+                    npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        private void DrawAfterimagesFallback(Texture2D mainValue, Rectangle rectangle, Vector2 orig, bool ragePhase, float heat) {
+            float sengs = 0.2f + heat * 0.3f;
+            for (int i = 0; i < npc.oldPos.Length; i++) {
+                Vector2 drawOldPos = npc.oldPos[i] + npc.Size / 2 - Main.screenPosition;
+                Color trailColor = ragePhase
+                    ? Color.Lerp(Color.White, new Color(255, 120, 60), heat) * sengs
+                    : Color.White * sengs;
+                Main.EntitySpriteDraw(mainValue, drawOldPos, rectangle, trailColor,
+                    npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
+                sengs *= 0.8f;
+            }
         }
 
         /// <summary>

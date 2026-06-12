@@ -1,4 +1,4 @@
-﻿using InnoVault.StateMachines;
+using InnoVault.StateMachines;
 using Terraria;
 using Terraria.ID;
 

@@ -417,17 +417,6 @@ namespace CalamityOverhaul
             .AddOnCraftCallback(CWRCrafted.SpawnAction);
 
         /// <summary>
-        /// 快捷的将一个物品实例设置为手持对象
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item"></param>
-        public static void SetHeldProj<T>(this Item item) where T : ModProjectile {
-            item.noUseGraphic = true;
-            item.CWR().hasHeldNoCanUseBool = true;
-            item.CWR().heldProjType = ModContent.ProjectileType<T>();
-        }
-
-        /// <summary>
         /// 赋予玩家无敌状态，这个函数与<see cref="Player.SetImmuneTimeForAllTypes(int)"/>类似
         /// </summary>
         /// <param name="player">要赋予无敌状态的玩家</param>

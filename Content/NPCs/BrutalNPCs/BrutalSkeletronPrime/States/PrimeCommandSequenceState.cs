@@ -53,8 +53,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
         private static void BroadcastTelegraph(PrimeStateContext context) {
             int step = context.AttackPhaseIndex % 7;
-            Vector2 dir = DirectionToTarget(context);
-            PrimeTelegraphLine.SpawnLine(context.Npc.Center, dir, 0.2f, 0.85f, PrimeDirector.DashTelegraphFrames);
+
+            //冲撞步打方向线，其余步在头部打一圈"指令下达"扫描环
+            if (step is 1 or 5) {
+                PrimeTelegraphLine.SpawnLine(context.Npc, context.Npc.Center,
+                    DirectionToTarget(context).ToRotation(), TelegraphLead);
+            }
+            else {
+                PrimeTelegraphLine.SpawnRing(context.Npc, context.Npc.Center, 200f, TelegraphLead);
+            }
 
             PrimeCommandKind cmd = step switch {
                 0 => PrimeCommandKind.PhysicalAssault,

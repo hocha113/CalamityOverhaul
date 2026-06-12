@@ -14,27 +14,12 @@ namespace CalamityOverhaul.Content.RangedModify
     public class RangedLoader : ICWRLoader
     {
         public delegate Item On_ChooseAmmo_Delegate(object obj, Item weapon);
-        public static List<GlobalRanged> GlobalRangeds { get; private set; } = [];
-        public static Dictionary<Type, Asset<Texture2D>> TypeToGlowAsset { get; private set; } = [];
         void ICWRLoader.LoadData() {
-            GlobalRangeds = VaultUtils.GetDerivedInstances<GlobalRanged>();
             MethodBase chooseAmmoMethod = typeof(Player).GetMethod("ChooseAmmo", BindingFlags.Public | BindingFlags.Instance);
             VaultHook.Add(chooseAmmoMethod, OnChooseAmmoHook);
             ItemRebuildLoader.PreShootEvent += PreShootHook;
         }
-        void ICWRLoader.LoadAsset() {
-            var indss = VaultUtils.GetDerivedInstances<BaseHeldRanged>();
-            TypeToGlowAsset = [];
-            foreach (var ranged in indss) {
-                if (ranged.GlowTexPath != "") {
-                    TypeToGlowAsset.Add(ranged.GetType(), CWRUtils.GetT2DAsset(ranged.GlowTexPath));
-                }
-            }
-            indss.Clear();
-        }
         void ICWRLoader.UnLoadData() {
-            GlobalRangeds?.Clear();
-            TypeToGlowAsset?.Clear();
             ItemRebuildLoader.PreShootEvent -= PreShootHook;
         }
 

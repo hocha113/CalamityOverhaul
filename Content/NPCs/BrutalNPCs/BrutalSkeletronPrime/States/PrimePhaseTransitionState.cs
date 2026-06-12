@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
             }
             if (!VaultUtils.isServer) {
-                PrimeScreenEffects.PushShockRing(context.Npc.Center, 0.7f, 0.4f, 20);
+                PrimeScreenEffects.PushShockRing(context.Npc.Center, 0.75f, 520f);
             }
         }
 

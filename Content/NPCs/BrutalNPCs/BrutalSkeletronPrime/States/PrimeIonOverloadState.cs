@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     FireGapRing(context, Counter);
                     Counter++;
                     if (!VaultUtils.isServer && Counter == 1) {
-                        PrimeScreenEffects.PushShockRing(npc.Center, 0.85f, 0.6f);
+                        PrimeScreenEffects.PushShockRing(npc.Center, 0.85f, 560f);
                         SoundEngine.PlaySound(SoundID.Item62 with { Volume = 1.1f, Pitch = -0.15f }, npc.Center);
                     }
                 }
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             float warmup = MathHelper.Lerp(PrimeDirector.ProjectileWarmupStart, 1f, wave / (float)MaxBursts);
 
             if (!VaultUtils.isClient && wave == 0) {
-                PrimeTelegraphLine.SpawnRing(npc.Center, 0.8f, 0.9f, 24);
+                PrimeTelegraphLine.SpawnRing(npc, npc.Center, 260f, 24);
             }
 
             for (int i = 0; i < count; i++) {

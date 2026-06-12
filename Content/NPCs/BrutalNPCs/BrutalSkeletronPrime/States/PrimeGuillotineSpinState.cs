@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 npc.damage = 0;
                 context.SetChargeState(1, Timer / (float)Telegraph);
                 if (!VaultUtils.isClient && Timer == 1) {
-                    PrimeTelegraphLine.SpawnRing(context.Target.Center, 0.2f, 0.85f, Telegraph);
+                    PrimeTelegraphLine.SpawnRing(context.Npc, context.Target.Center, 420f, Telegraph);
                 }
                 return null;
             }

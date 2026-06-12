@@ -1,27 +1,71 @@
-sampler uImage0 : register(s0);
-texture uNoise;
-sampler2D noiseTex = sampler_state { texture = <uNoise>; magfilter = LINEAR; minfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
-float uTime;
-float uProgress;
-float uIntensity;
+// ============================================================================
+// PrimeArcChain.fx —— 臂-头电弧链锁束带（TetherSpin 大招）
+// 作为 ThunderTrail 电弧的体积底层：噪声扰动的能量束 + 行进光珠 + 端点锚光。
+// 四边形约定：uv.x = 沿链（0 头部 → 1 机械臂），uv.y = 横向（0.5 中心）。
+// 输出预乘 alpha，配合 BlendState.Additive 使用。
+// ============================================================================
 
-float4 ArcChainPS(float2 uv : TEXCOORD0) : COLOR0
+sampler uImage0 : register(s0);
+sampler uImage1 : register(s1); //Extra_193 噪声
+
+float3 uColor;          //主题色（特斯拉橙金）
+float3 uSecondaryColor; //高光色
+float uTime;
+float uIntensity;
+float uProgress;        //功率 0~1：预警期细弱 → 全功率
+float uSeed;            //链实例区分
+
+struct VertexShaderOutput
 {
-    float2 p = uv * 2.0 - 1.0;
-    float cross = min(abs(p.x), abs(p.y));
-    float pulse = frac(cross * 8.0 - uTime * 6.0);
-    float bolt = smoothstep(0.35, 0.5, pulse) * smoothstep(0.65, 0.5, pulse);
-    float n = tex2D(noiseTex, p * 3.0 + uTime * 0.5).r;
-    float mask = exp(-cross * cross * 12.0) * (0.5 + 0.5 * n);
-    float3 col = lerp(float3(0.4, 0.7, 1.0), float3(1.0, 1.0, 1.0), bolt);
-    float a = mask * bolt * uIntensity * uProgress;
-    return float4(col * a, a);
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR0;
+    float2 TexCoords : TEXCOORD0;
+};
+
+float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
+{
+    float2 uv = input.TexCoords;
+    float along = uv.x;
+    float lat = (uv.y - 0.5) * 2.0;
+
+    //=== 中轴噪声摆动（两端固定锚点，中段游走）===
+    float envelope = sin(along * 3.14159);
+    float n1 = tex2D(uImage1, float2(along * 2.4 - uTime * 1.8, uSeed * 0.37)).r - 0.5;
+    float n2 = tex2D(uImage1, float2(along * 5.2 + uTime * 2.5, uSeed * 0.61 + 0.5)).g - 0.5;
+    float yOffset = (n1 * 0.55 + n2 * 0.30) * envelope * uProgress;
+
+    float d = abs(lat - yOffset);
+
+    //=== 分层束带 ===
+    float core = exp(-d * d * 46.0) * 1.25;
+    float halo = exp(-d * d * 7.0) * 0.40;
+
+    //=== 行进光珠（能量从头部泵向机械臂）===
+    float beadPhase = frac(along * 2.6 - uTime * 2.4 + uSeed * 0.5);
+    float bead = smoothstep(0.40, 0.50, beadPhase) * smoothstep(0.62, 0.50, beadPhase);
+    bead *= exp(-d * d * 20.0) * 1.3;
+
+    //=== 端点锚光（连接处常亮）===
+    float anchorA = 1.0 - smoothstep(0.0, 0.10, along);
+    float anchorB = 1.0 - smoothstep(0.0, 0.10, 1.0 - along);
+    float anchor = (anchorA + anchorB) * exp(-d * d * 9.0) * 0.8;
+
+    //=== 高频闪烁（电气不稳定感）===
+    float flick = 0.85 + 0.15 * sin(uTime * 27.0 + uSeed * 6.28 + along * 14.0);
+
+    float intensity = (core + halo + bead + anchor) * flick * uIntensity * uProgress;
+
+    float3 col = lerp(uColor, uSecondaryColor, saturate(core * 0.7 + bead * 0.5));
+    col += float3(1.0, 1.0, 1.0) * pow(saturate(1.0 - d * 3.0), 9.0) * 0.5 * uProgress;
+    col *= input.Color.rgb;
+
+    return float4(col * intensity, saturate(intensity) * input.Color.a);
 }
 
 technique Technique1
 {
     pass PrimeArcChainPass
     {
-        PixelShader = compile ps_3_0 ArcChainPS();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }

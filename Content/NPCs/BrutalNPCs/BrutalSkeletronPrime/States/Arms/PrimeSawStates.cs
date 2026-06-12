@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             base.OnEnter(ctx);
             if (!VaultUtils.isClient) {
                 Vector2 dir = (ctx.Target.Center - ctx.Npc.Center).SafeNormalize(Vector2.UnitX);
-                PrimeTelegraphLine.SpawnLine(ctx.Npc.Center, dir, 0.1f, 0.9f, PrimeDirector.DashTelegraphFrames);
+                PrimeTelegraphLine.SpawnLine(ctx.Npc, ctx.Npc.Center, dir.ToRotation(), PrimeDirector.DashTelegraphFrames);
             }
         }
 

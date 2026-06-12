@@ -48,6 +48,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         public abstract override string StateName { get; }
         public abstract DestroyerStateIndex StateIndex { get; }
 
+        /// <summary>
+        /// 是否允许"远距回归瞬移阀"介入：当头部远离玩家超过阈值时瞬移到视野边缘回场，
+        /// 防止Boss在屏幕外盘旋打弹幕。自带高空/地下走位的状态（俯冲、轨道绞杀、钻地）应关闭
+        /// </summary>
+        public virtual bool AllowFarSnap => true;
+
         public virtual void OnEnter(DestroyerStateContext context) {
             Timer = 0;
             Counter = 0;

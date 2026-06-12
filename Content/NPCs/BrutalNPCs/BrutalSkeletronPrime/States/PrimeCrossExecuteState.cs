@@ -35,9 +35,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             if (Timer < Telegraph) {
                 context.SetChargeState(1, Timer / (float)Telegraph);
-                if (!VaultUtils.isClient && Timer == Telegraph - 1) {
-                    PrimeTelegraphLine.SpawnFan(npc.Center, 0f, 1f, 0.95f, Telegraph);
-                    PrimeTelegraphLine.SpawnFan(npc.Center, MathHelper.PiOver2, 1f, 0.95f, Telegraph);
+                //四条冲锋走廊预警：以玩家为中心的十字（左右钳形+上下封位），对角缝隙可走
+                if (!VaultUtils.isClient && Timer == 1) {
+                    for (int i = 0; i < 4; i++) {
+                        PrimeTelegraphLine.SpawnLine(npc, context.Target.Center, MathHelper.PiOver2 * i, Telegraph);
+                    }
                 }
             }
             else if (Timer == Telegraph && !VaultUtils.isServer) {

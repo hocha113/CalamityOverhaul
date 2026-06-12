@@ -1,12 +1,14 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,12 +29,21 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 20;
             Item.shoot = ModContent.ProjectileType<CommandersRay>();
             Item.shootSpeed = 10;
-            Item.UseSound = SoundID.Item68;
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Pink;
             Item.value = Item.buyPrice(0, 1, 60, 10);
-            Item.SetHeldProj<CommandersStaffHeld>();
             Item.CWR().DeathModeItem = true;
         }
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<CommandersStaffHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<CommandersStaffHeld>(player, source);
     }
 
     internal class CommandersStaffEX : ModItem
@@ -49,11 +60,20 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 20;
             Item.shoot = ModContent.ProjectileType<CommandersRay>();
             Item.shootSpeed = 10;
-            Item.UseSound = SoundID.Item68;
+            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
             Item.rare = ItemRarityID.Red;
             Item.value = Item.buyPrice(0, 8, 60, 10);
-            Item.SetHeldProj<CommandersStaffEXHeld>();
         }
+
+        public override bool CanUseItem(Player player)
+            => player.ownedProjectileCounts[ModContent.ProjectileType<CommandersStaffEXHeld>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+            => BaseHeldGun.SpawnHeldProj<CommandersStaffEXHeld>(player, source);
 
         public override void AddRecipes() {
             CreateRecipe().
@@ -64,25 +84,79 @@ namespace CalamityOverhaul.Content.Items.Magic
         }
     }
 
-    internal class CommandersStaffHeld : BaseMagicStaff<CommandersStaff>
+    /// <summary>
+    /// 指挥官法杖的共同持握行为：单手45°持杖指向鼠标，从杖尖放出指挥射线
+    /// </summary>
+    internal abstract class BaseCommandersStaffHeld : BaseHeldGun
+    {
+        public override SoundStyle? ShootSound => SoundID.Item68;
+        public sealed override void SetGunProperty() {
+            Projectile.DamageType = DamageClass.Magic;
+            HandFireDistanceX = 0;
+            HandFireDistanceY = 0;
+            MuzzleForwardOffset = 90;
+            GunPressure = 0;
+            ControlForce = 0;
+            Onehanded = true;
+            AlwaysAimPose = true;
+        }
+
+        public override void AI() {
+            UpdateHeldPose(WantsFireLeft);
+
+            if (CanFire) {
+                HoldManaRegenDelay();
+            }
+
+            if (WantsFireLeft && FireCooldown <= 0 && PayMana()) {
+                SnapToAimPose();
+                PlayShootSound();
+                CreateFireLight();
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    FireRay();
+                }
+                SetFireCooldown();
+            }
+            Time++;
+        }
+
+        /// <summary>
+        /// 放出指挥射线，仅在弹幕主人端调用
+        /// </summary>
+        public abstract void FireRay();
+
+        //法杖持握绘制：原点设在握把端，旋转角附加45°，让杖体从手中向外延伸
+        public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
+            float rot = DirSign > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
+            float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);
+            Vector2 orig = DirSign > 0 ? new Vector2(0, TextureValue.Height) : new Vector2(0, 0);
+            Main.EntitySpriteDraw(TextureValue, drawPos, null, lightColor
+                , Projectile.rotation + offsetRot + rot, orig, Projectile.scale
+                , DirSign > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+        }
+    }
+
+    internal class CommandersStaffHeld : BaseCommandersStaffHeld
     {
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffHeld";
-        public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
-        public override void FiringShoot() {
-            Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
+        public override int TargetID => ModContent.ItemType<CommandersStaff>();
+        public override void FireRay() {
+            Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                , ModContent.ProjectileType<CommandersRay>()
                 , WeaponDamage, WeaponKnockback, Owner.whoAmI, Projectile.identity);
         }
     }
 
-    internal class CommandersStaffEXHeld : BaseMagicStaff<CommandersStaffEX>
+    internal class CommandersStaffEXHeld : BaseCommandersStaffHeld
     {
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffEXHeld";
-        public override void PostSetRangedProperty() => ShootPosToMouLengValue = 90;
-        public override void FiringShoot() {
+        public override int TargetID => ModContent.ItemType<CommandersStaffEX>();
+        public override void FireRay() {
             for (int i = 0; i < 5; i++) {
-                int proj = Projectile.NewProjectile(Source, ShootPos, ShootVelocity, AmmoTypes
-                , WeaponDamage, WeaponKnockback, Owner.whoAmI, ai0: Projectile.identity, ai1: (-2 + i) * 0.01f, ai2: 1);
-                Main.projectile[proj].netUpdate = true;
+                Projectile.NewProjectile(Source, ShootPos, ShootVelocity
+                    , ModContent.ProjectileType<CommandersRay>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI
+                    , ai0: Projectile.identity, ai1: (-2 + i) * 0.01f, ai2: 1);
             }
         }
     }

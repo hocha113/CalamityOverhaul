@@ -108,7 +108,9 @@ PowerSoundEgg.DisplayName: Œuf résonant
 CrabulonFriendHitbox.DisplayName: Spore de Crabulon
 Fireball.DisplayName: Boule de feu
 DeadLaser.DisplayName: Laser mortel
-// PrimeTelegraphLine.DisplayName: Prime Telegraph
+PrimeTelegraphLine.DisplayName: Marqueur d'avertissement de Prime
+PrimeArcChainProj.DisplayName: Chaîne ionique
+PrimeSkullBeamProj.DisplayName: Rayon du canon crânien
 Hit.DisplayName: Impact
 SpwanTextProj.DisplayName: Parole manifestée
 DragonsWordCut.DisplayName: Lame du Mot du Dragon

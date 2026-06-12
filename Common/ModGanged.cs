@@ -197,9 +197,6 @@ namespace CalamityOverhaul.Common
         /// FargowiltasSouls弹幕PostAI Hook，阻止隐藏的手持弹幕被FGS处理
         /// </summary>
         private static void On_FGS_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
-            if (projectile.hide && projectile.ModProjectile is BaseHeldRanged ranged && !ranged.CanFire) {
-                return;
-            }
             if (projectile.hide && projectile.ModProjectile is BaseHeldGun heldGun && !heldGun.CanFire) {
                 return;
             }

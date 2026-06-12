@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     {
         public override string StateName => "BurrowAmbush";
         public override DestroyerStateIndex StateIndex => DestroyerStateIndex.BurrowAmbush;
+        /// <summary>钻地伏击自带地下走位，回归瞬移阀不介入</summary>
+        public override bool AllowFarSnap => false;
 
         #region 节奏常量
         private const int WarnTime = 40;

@@ -626,24 +626,10 @@ namespace CalamityOverhaul.Content
             return false;
         }
         /// <summary>
-        /// 获取玩家所手持的BaseHeldRanged实例
-        /// </summary>
-        /// <param name="baseranged"></param>
-        /// <returns>如果玩家没有手持BaseHeldRanged或者发生了其他非法情况，返回<see langword="false"/></returns>
-        internal bool TryGetInds_BaseHeldRanged(out BaseHeldRanged baseranged) {
-            return TryGetHeldProjInds(out baseranged);
-        }
-        /// <summary>
-        /// 玩家手持的武器弹幕当前是否处于手持展示状态，兼容新旧两代手持基类
+        /// 玩家手持的武器弹幕当前是否处于手持展示状态
         /// </summary>
         internal bool HeldWeaponInDisplay() {
-            if (TryGetHeldProjInds(out BaseHeldRanged ranged) && ranged.OnHandheldDisplayBool) {
-                return true;
-            }
-            if (TryGetHeldProjInds(out BaseHeldGun heldGun) && heldGun.OnHandheldDisplayBool) {
-                return true;
-            }
-            return false;
+            return TryGetHeldProjInds(out BaseHeldGun heldGun) && heldGun.OnHandheldDisplayBool;
         }
     }
 }

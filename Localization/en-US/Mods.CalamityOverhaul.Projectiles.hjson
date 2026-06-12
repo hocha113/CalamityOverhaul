@@ -109,6 +109,8 @@ CrabulonFriendHitbox.DisplayName: Crabulon Spore
 Fireball.DisplayName: Fireball
 DeadLaser.DisplayName: Death Laser
 PrimeTelegraphLine.DisplayName: Prime Telegraph
+PrimeArcChainProj.DisplayName: Ion Tether
+PrimeSkullBeamProj.DisplayName: Skull Cannon Beam
 Hit.DisplayName: Impact
 SpwanTextProj.DisplayName: Manifesting Text
 DragonsWordCut.DisplayName: Dragon's Word Slash

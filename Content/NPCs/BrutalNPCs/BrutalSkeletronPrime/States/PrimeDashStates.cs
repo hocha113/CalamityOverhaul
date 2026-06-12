@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.velocity = Vector2.Lerp(npc.velocity, -aim * (4f + windup * 6f), 0.14f);
 
             if (!VaultUtils.isClient && phaseTimer == 1) {
-                PrimeTelegraphLine.SpawnLine(npc.Center, aim, 0.1f, 0.9f, PrimeDirector.DashTelegraphFrames);
+                PrimeTelegraphLine.SpawnLine(npc, npc.Center, aim.ToRotation(), PrimeDirector.DashTelegraphFrames);
             }
             if (phaseTimer == 4 && !VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Volume = Counter == 0 ? 1f : 0.65f }, npc.Center);
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (context.BossRush) speed *= 1.3f;
             npc.velocity = aim * speed;
             if (!VaultUtils.isServer) {
-                PrimeScreenEffects.PushHeatWake(npc.Center, 1f, 1f);
+                PrimeScreenEffects.PushHeatWake(npc.Center, npc.velocity.ToRotation(), 1f);
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound() with { Pitch = 1.18f, Volume = 0.75f }, npc.Center);
             }
         }
@@ -94,8 +94,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             SpinRotation(npc, 0.34f);
             npc.velocity *= 0.65f;
 
-            if (!VaultUtils.isServer && phaseTimer % 2 == 0) {
-                PrimeScreenEffects.PushHeatWake(npc.Center, MathHelper.Clamp(speed / 20f, 0.3f, 1f), 0.8f);
+            if (!VaultUtils.isServer) {
+                PrimeScreenEffects.PushHeatWake(npc.Center, npc.velocity.ToRotation(),
+                    MathHelper.Clamp(speed / 20f, 0.3f, 1f));
             }
 
             if (phaseTimer >= DashActive) {
@@ -164,7 +165,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.velocity *= 0.9f;
 
             if (!VaultUtils.isClient && phaseTimer == 1) {
-                PrimeTelegraphLine.SpawnLine(npc.Center, dashDir, 0.15f, 0.95f, PrimeDirector.DashTelegraphFrames);
+                PrimeTelegraphLine.SpawnLine(npc, npc.Center, dashDir.ToRotation(), PrimeDirector.DashTelegraphFrames);
             }
             if (phaseTimer >= PrimeDirector.DashTelegraphFrames) {
                 phase = 1;
@@ -203,7 +204,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             SpinRotation(npc, 0.42f);
 
             if (!VaultUtils.isServer) {
-                PrimeScreenEffects.PushHeatWake(npc.Center, 1f, 1f);
+                PrimeScreenEffects.PushHeatWake(npc.Center, npc.velocity.ToRotation(), 1f);
             }
 
             bool outOfBounds = Vector2.Distance(npc.Center, context.Target.Center) > 900f

@@ -34,6 +34,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             if (Timer < Telegraph) {
                 context.SetChargeState(3, Timer / (float)Telegraph);
+                //两面火箭墙的起飞走廊预警（自下方两翼向中线折叠）
+                if (!VaultUtils.isClient && Timer == 1) {
+                    Vector2 velL = new(4.5f, -5.5f);
+                    Vector2 velR = new(-4.5f, -5.5f);
+                    PrimeTelegraphLine.SpawnLine(npc, context.Target.Center + new Vector2(-360f, 400f),
+                        velL.ToRotation(), Telegraph);
+                    PrimeTelegraphLine.SpawnLine(npc, context.Target.Center + new Vector2(360f, 400f),
+                        velR.ToRotation(), Telegraph);
+                }
             }
             else if (!wallsSpawned && !VaultUtils.isClient) {
                 SpawnWalls(context);

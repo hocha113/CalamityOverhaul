@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             base.OnEnter(ctx);
             impactPoint = ctx.Target.Center + ctx.Target.velocity * 18f;
             if (!VaultUtils.isClient) {
-                PrimeTelegraphLine.SpawnRing(impactPoint, 0.2f, 0.85f, 50);
+                PrimeTelegraphLine.SpawnRing(ctx.Npc, impactPoint, 110f, 50);
             }
         }
 

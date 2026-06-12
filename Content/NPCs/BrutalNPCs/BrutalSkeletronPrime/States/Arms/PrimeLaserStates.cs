@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             sweepStart = (ctx.Target.Center - ctx.Npc.Center).ToRotation();
             fired = false;
             if (!VaultUtils.isClient) {
-                PrimeTelegraphLine.SpawnFan(ctx.Npc.Center, sweepStart, 0.1f, 0.9f, PrimeDirector.BeamTelegraphFrames);
+                PrimeTelegraphLine.SpawnFan(ctx.Npc, ctx.Npc.Center, sweepStart, 0.42f, PrimeDirector.BeamTelegraphFrames);
             }
         }
 

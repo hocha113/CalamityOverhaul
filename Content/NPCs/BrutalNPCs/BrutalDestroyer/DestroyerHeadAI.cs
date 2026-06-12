@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private VaultStateMachine<DestroyerStateContext> stateMachine;
         private DestroyerStateContext stateContext;
         private Player targetPlayer;
+        /// <summary>远距滞留计时：头部远离玩家超过阈值的持续帧数，达到上限触发回归瞬移阀</summary>
+        private int farTimer;
 
         #endregion
 
@@ -103,8 +105,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             UpdateStateContext();
             CheckDeathPerformanceTrigger();
 
-            //摆动/演出标志每帧由状态重新声明，未声明的帧自动归零
+            //摆动/演出/下颚标志每帧由状态重新声明，未声明的帧自动归零
             stateContext.SlitherStrength = 0f;
+            stateContext.JawCommand = 0;
 
             //更新状态机
             stateMachine?.Update();
@@ -113,6 +116,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (!stateContext.SkipDefaultMovement) {
                 UpdateMovement();
             }
+
+            //远距回归瞬移阀：防止Boss在玩家屏幕外盘旋打弹幕
+            UpdateFarReturnValve();
 
             HandleMouth();
             UpdateVisuals();
@@ -248,7 +254,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float headingError = Math.Abs(MathHelper.WrapAngle(desiredHeading - newHeading));
             float throttle = MathHelper.Lerp(1f, 0.55f, MathHelper.Clamp(headingError / MathHelper.Pi, 0f, 1f));
             float targetSpeed = stateContext.MoveSpeed * throttle;
-            currentSpeed = MathHelper.Lerp(currentSpeed, targetSpeed, stateContext.AccelRate);
+            float accelRate = stateContext.AccelRate;
+
+            //远距回归加速：目标点远在视野外时无视状态给定的低速全力归位，
+            //消灭"招式收尾后慢吞吞飞回来"的脱屏死时间
+            if (distance > 1400f) {
+                float catchUp = Math.Min(distance / 55f, 62f);
+                targetSpeed = Math.Max(targetSpeed, catchUp);
+                accelRate = Math.Max(accelRate, 0.085f);
+            }
+
+            currentSpeed = MathHelper.Lerp(currentSpeed, targetSpeed, accelRate);
 
             //蛇形摆动：航向角上的正弦扰动，幅度随速度增强（高速游动摆幅更明显）
             float slither = stateContext.SlitherStrength;
@@ -262,24 +278,74 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
+        /// <summary>
+        /// 远距回归瞬移阀（PACING："teleport-loops instead of fly-backs"）：
+        /// 头部持续远离玩家超过阈值时，瞬移到玩家视野边缘并掉头回场，
+        /// 杜绝"Boss在屏幕外盘旋发射弹幕、玩家以为脱战"的体验问题。
+        /// 自带高空/地下走位的状态通过 <see cref="DestroyerStateBase.AllowFarSnap"/> 关闭该阀
+        /// </summary>
+        private void UpdateFarReturnValve() {
+            if (stateMachine?.CurrentState is not DestroyerStateBase state || !state.AllowFarSnap) {
+                farTimer = 0;
+                return;
+            }
+            if (!targetPlayer.Alives()) {
+                farTimer = 0;
+                return;
+            }
+
+            float dist = npc.Distance(targetPlayer.Center);
+            if (dist <= 2600f) {
+                farTimer = 0;
+                return;
+            }
+
+            if (++farTimer < 30) {
+                return;
+            }
+            farTimer = 0;
+
+            //瞬移到玩家同侧的视野边缘，保持速度大小、调头朝向玩家——体节链同帧在屏幕外重整
+            Vector2 dir = (npc.Center - targetPlayer.Center).SafeNormalize(-Vector2.UnitY);
+            npc.Center = targetPlayer.Center + dir * 1250f;
+            float speed = Math.Max(npc.velocity.Length(), 26f);
+            npc.velocity = -dir * speed;
+            npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
+            npc.netUpdate = true;
+        }
+
         private void HandleMouth() {
             int gf = stateContext.GlowFrame;
             VaultUtils.ClockFrame(ref gf, 5, 3);
             stateContext.GlowFrame = gf;
 
-            float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(targetPlayer.Center).UnitVector());
-            float dist = npc.Distance(targetPlayer.Center);
-
-            if (dist < 800 && dotProduct > 0.8f) {
-                if (stateContext.DontOpenMouthTime <= 0) stateContext.OpenMouth = true;
+            if (stateContext.JawCommand == 1) {
+                //强制威吓张口（蓄力/俯冲中），无视冷却
+                stateContext.OpenMouth = true;
+            }
+            else if (stateContext.JawCommand == 2) {
+                //猛然咬合：双倍速度合拢并短暂禁止重新张口——释放前的"吸气"
+                stateContext.OpenMouth = false;
+                if (stateContext.Frame > 0) stateContext.Frame--;
+                stateContext.DontOpenMouthTime = Math.Max(stateContext.DontOpenMouthTime, 10);
             }
             else {
-                stateContext.OpenMouth = false;
+                float dotProduct = Vector2.Dot(npc.velocity.UnitVector(), npc.Center.To(targetPlayer.Center).UnitVector());
+                float dist = npc.Distance(targetPlayer.Center);
+
+                if (dist < 800 && dotProduct > 0.8f) {
+                    if (stateContext.DontOpenMouthTime <= 0) stateContext.OpenMouth = true;
+                }
+                else {
+                    stateContext.OpenMouth = false;
+                }
             }
 
             if (stateContext.OpenMouth) {
                 if (stateContext.Frame < 3) stateContext.Frame++;
-                stateContext.DontOpenMouthTime = 60;
+                if (stateContext.JawCommand != 1) {
+                    stateContext.DontOpenMouthTime = 60;
+                }
             }
             else {
                 if (stateContext.Frame > 0) stateContext.Frame--;

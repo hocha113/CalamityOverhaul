@@ -1,7 +1,7 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Projectiles.Weapons.Magic.Core;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -10,210 +10,105 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
     /// <summary>
-    /// 寰宇咏叹调手持弹幕
+    /// 寰宇咏叹调手持弹幕：左键蓄力凝聚吸积盘并掷出，右键蓄力展开压扁吸积盘领域
+    /// <para>Q/R技能挂在物品 <see cref="AriaofTheCosmos.HoldItem"/> 上，不依赖本弹幕存活</para>
     /// </summary>
-    internal class AriaofTheCosmosHeld : BaseMagicGun
+    internal class AriaofTheCosmosHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
         public override int TargetID => ModContent.ItemType<AriaofTheCosmos>();
+        public override bool CanRightClick => true;
 
-        //左键相关
+        //蓄力阶段分界
+        private const int Stage1 = 60;
+        private const int Stage2 = 120;
+        private const int MaxChargeTime = 180;
+        private const int MinChargeTime = 30;
+
+        //左键蓄力状态（按键状态已被基类同步，各端本地累积即可驱动表现）
         private int chargeTime;
-        private int maxChargeTime = 180;
-        private int minChargeTime = 30;
         private float chargeProgress;
         private int accretionDiskIndex = -1;
         private bool isCharging;
-        private bool hasReleasedAttack;
-
-        //右键相关
-        private int chargeTimeR;
-        private int maxChargeTimeR = 180;
-        private int minChargeTimeR = 30;
-        private float chargeProgressR;
-        private int flattenedDiskIndex = -1;
-        private bool isChargingR;
-        private bool hasReleasedAttackR;
-
-        //蓄力阶段
-        private const int Stage1 = 60;
-        private const int Stage2 = 120;
-        private const int Stage3 = 180;
-
-        //视觉效果参数
         private float particleTimer;
         private Color currentGlowColor;
 
-        //右键视觉效果参数
+        //右键蓄力状态
+        private int chargeTimeR;
+        private float chargeProgressR;
+        private int flattenedDiskIndex = -1;
+        private bool isChargingR;
         private float particleTimerR;
         private Color currentGlowColorR;
 
-        //技能相关
-        private int qSkillCooldown;
-        private int rSkillCooldown;
-        private const int QSkillMaxCooldown = 120;  //2秒冷却
-        private const int RSkillMaxCooldown = 180;  //3秒冷却
+        //蓄力进行中不要自毁，松开按键的下一帧由释放逻辑收尾
+        public override bool StayAlive() => isCharging || isChargingR;
 
-        public override void SetMagicProperty() {
+        public override void SetGunProperty() {
+            Projectile.DamageType = DamageClass.Magic;
             HandFireDistanceX = 25;
             HandFireDistanceY = -8;
-            ShootPosNorlLengValue = 0;
-            ShootPosToMouLengValue = 30;
-            CanCreateSpawnGunDust = false;
-            ControlForce = 0;
+            MuzzleForwardOffset = 30;
             GunPressure = 0;
-            EnableRecoilRetroEffect = false;
-            InOwner_HandState_AlwaysSetInFireRoding = true;
-            CanRightClick = true;
+            ControlForce = 0;
+            AlwaysAimPose = true;
         }
 
-        public override void PostInOwner() {
-            //技能冷却更新
-            if (qSkillCooldown > 0) {
-                qSkillCooldown--;
-            }
-            if (rSkillCooldown > 0) {
-                rSkillCooldown--;
-            }
+        public override void AI() {
+            UpdateHeldPose(CanFire);
 
-            //Q技能检测
-            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.WeponSkill_Q.JustPressed && qSkillCooldown <= 0) {
-                if (Owner.CountProjectilesOfID<AriaQSkill>() == 0) {
-                    int qSkillIndex = Projectile.NewProjectile(
-                        Source,
-                        Owner.Center,
-                        Vector2.Zero,
-                        ModContent.ProjectileType<AriaQSkill>(),
-                        WeaponDamage,
-                        WeaponKnockback,
-                        Owner.whoAmI
-                    );
-
-                    if (qSkillIndex >= 0) {
-                        qSkillCooldown = QSkillMaxCooldown;
-
-                        //消耗魔力
-                        int manaCost = Item.mana * 2;
-                        Owner.statMana -= manaCost;
-                        if (Owner.statMana < 0) {
-                            Owner.statMana = 0;
-                        }
-
-                        //播放激活音效
-                        SoundEngine.PlaySound(SoundID.Item109 with {
-                            Volume = 0.8f,
-                            Pitch = 0.3f
-                        }, Projectile.Center);
-                    }
-                }
-            }
-
-            //R技能检测
-            if (Projectile.IsOwnedByLocalPlayer() && CWRKeySystem.WeponSkill_R.JustPressed && rSkillCooldown <= 0) {
-                if (Owner.CountProjectilesOfID<AriaRSkill>() == 0) {
-                    int rSkillIndex = Projectile.NewProjectile(
-                        Source,
-                        Owner.Center,
-                        Vector2.Zero,
-                        ModContent.ProjectileType<AriaRSkill>(),
-                        (int)(WeaponDamage * 1.5f),
-                        WeaponKnockback * 1.5f,
-                        Owner.whoAmI
-                    );
-
-                    if (rSkillIndex >= 0) {
-                        rSkillCooldown = RSkillMaxCooldown;
-
-                        //消耗魔力
-                        int manaCost = Item.mana * 3;
-                        Owner.statMana -= manaCost;
-                        if (Owner.statMana < 0) {
-                            Owner.statMana = 0;
-                        }
-
-                        //播放激活音效
-                        SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with {
-                            Volume = 0.9f,
-                            Pitch = -0.3f
-                        }, Projectile.Center);
-                    }
-                }
-            }
-
-            //左键逻辑
-            if (onFire && !hasReleasedAttack) {
+            //左键蓄力
+            if (WantsFireLeft) {
                 isCharging = true;
-                chargeTime++;
-
-                if (chargeTime > maxChargeTime) {
-                    chargeTime = maxChargeTime;
-                }
-
-                chargeProgress = MathHelper.Clamp(chargeTime / (float)maxChargeTime, 0f, 1f);
+                chargeTime = Math.Min(chargeTime + 1, MaxChargeTime);
+                chargeProgress = chargeTime / (float)MaxChargeTime;
                 UpdateChargeEffects();
                 UpdateAccretionDisk();
                 PlayChargeSound();
             }
-            else if (!onFire && isCharging) {
+            else if (isCharging) {
                 ReleaseAttack();
-                hasReleasedAttack = true;
-                isCharging = false;
-            }
-            else if (!onFire && !onFireR) {
                 ResetCharge();
             }
 
-            //右键逻辑
-            if (onFireR && !hasReleasedAttackR) {
+            //右键蓄力
+            if (WantsFireRight) {
                 isChargingR = true;
-                chargeTimeR++;
-
-                if (chargeTimeR > maxChargeTimeR) {
-                    chargeTimeR = maxChargeTimeR;
-                }
-
-                chargeProgressR = MathHelper.Clamp(chargeTimeR / (float)maxChargeTimeR, 0f, 1f);
+                chargeTimeR = Math.Min(chargeTimeR + 1, MaxChargeTime);
+                chargeProgressR = chargeTimeR / (float)MaxChargeTime;
                 UpdateChargeEffectsR();
                 UpdateFlattenedDisk();
                 PlayChargeSoundR();
             }
-            else if (!onFireR && isChargingR) {
+            else if (isChargingR) {
                 ReleaseAttackR();
-                hasReleasedAttackR = true;
-                isChargingR = false;
-            }
-            else if (!onFireR && !onFire) {
                 ResetChargeR();
             }
+
+            Time++;
         }
 
+        #region 左键：吸积盘
         private void UpdateChargeEffects() {
-            //根据蓄力阶段改变颜色
+            //根据蓄力阶段改变颜色：黄橙 → 橙红 → 深红紫
             if (chargeTime < Stage1) {
-                //第一阶段 - 黄橙色
                 currentGlowColor = Color.Lerp(Color.Orange, Color.Yellow, chargeProgress * 3f);
             }
             else if (chargeTime < Stage2) {
-                //第二阶段 - 橙红色
-                float stage2Progress = (chargeTime - Stage1) / (float)(Stage2 - Stage1);
-                currentGlowColor = Color.Lerp(Color.Yellow, Color.OrangeRed, stage2Progress);
+                currentGlowColor = Color.Lerp(Color.Yellow, Color.OrangeRed, (chargeTime - Stage1) / (float)(Stage2 - Stage1));
             }
             else {
-                //第三阶段 - 深红紫色
-                float stage3Progress = (chargeTime - Stage2) / (float)(Stage3 - Stage2);
-                currentGlowColor = Color.Lerp(Color.OrangeRed, Color.Purple, stage3Progress);
+                currentGlowColor = Color.Lerp(Color.OrangeRed, Color.Purple, (chargeTime - Stage2) / (float)(MaxChargeTime - Stage2));
             }
 
-            //生成蓄力粒子
             particleTimer++;
-            if (particleTimer >= (5 - chargeProgress * 3)) {
+            if (particleTimer >= 5 - chargeProgress * 3) {
                 SpawnChargeParticles();
                 particleTimer = 0;
             }
 
-            //屏幕效果
             if (chargeTime >= Stage2) {
-                Owner.GetModPlayer<CWRPlayer>().GetScreenShake(chargeProgress * 2f);
+                Owner.CWR().GetScreenShake(chargeProgress * 2f);
             }
         }
 
@@ -241,16 +136,13 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void SpawnEnergyRing() {
-            int segments = 32;
+            const int segments = 32;
             float radius = 20 + chargeProgress * 40;
 
             for (int i = 0; i < segments; i++) {
                 float angle = MathHelper.TwoPi * i / segments;
                 Vector2 offset = angle.ToRotationVector2() * radius;
-                Vector2 particlePos = ShootPos + offset;
-                Vector2 particleVel = Vector2.Zero;
-
-                Dust dust = Dust.NewDustPerfect(particlePos, DustID.Sandnado, particleVel, 100,
+                Dust dust = Dust.NewDustPerfect(ShootPos + offset, DustID.Sandnado, Vector2.Zero, 100,
                     currentGlowColor * 0.6f, Main.rand.NextFloat(1.2f, 1.8f));
                 dust.noGravity = true;
                 dust.velocity = offset.SafeNormalize(Vector2.Zero) * 2f;
@@ -258,47 +150,35 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void UpdateAccretionDisk() {
-            //如果吸积盘还没生成或已经死亡，创建新的
-            if (accretionDiskIndex == -1 || !Main.projectile[accretionDiskIndex].active
-                || Main.projectile[accretionDiskIndex].type != ModContent.ProjectileType<AccretionDisk>()) {
-
-                accretionDiskIndex = Projectile.NewProjectile(
-                    Source,
-                    ShootPos,
-                    Vector2.Zero,
-                    ModContent.ProjectileType<AccretionDisk>(),
-                    Owner.GetShootState().WeaponDamage * 2,
-                    Owner.GetShootState().WeaponKnockback,
-                    Owner.whoAmI
-                );
+            //吸积盘弹幕只能由主人端生成和操控，远端经由弹幕自身的网络同步呈现
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
             }
 
-            //更新吸积盘位置和参数
+            if (accretionDiskIndex == -1 || !Main.projectile[accretionDiskIndex].active
+                || Main.projectile[accretionDiskIndex].type != ModContent.ProjectileType<AccretionDisk>()) {
+                accretionDiskIndex = Projectile.NewProjectile(Source, ShootPos, Vector2.Zero
+                    , ModContent.ProjectileType<AccretionDisk>()
+                    , WeaponDamage * 2, WeaponKnockback, Owner.whoAmI);
+            }
+
             if (accretionDiskIndex >= 0 && Main.projectile[accretionDiskIndex].active) {
                 Projectile disk = Main.projectile[accretionDiskIndex];
                 disk.Center = ShootPos;
-                disk.timeLeft = 10; //保持存活
+                disk.timeLeft = 10;//保持存活
 
                 if (disk.ModProjectile is AccretionDisk accretionDisk) {
-                    //根据蓄力进度调整参数
-                    float sizeScale = MathHelper.Lerp(0.3f, 2.5f, chargeProgress);
-                    disk.scale = sizeScale;
-
-                    //调整旋转速度
+                    //根据蓄力进度调整吸积盘的形态参数
+                    disk.scale = MathHelper.Lerp(0.3f, 2.5f, chargeProgress);
                     accretionDisk.RotationSpeed = MathHelper.Lerp(0.5f, 3f, chargeProgress);
-
-                    //调整半径
                     accretionDisk.InnerRadius = MathHelper.Lerp(0.25f, 0.15f, chargeProgress);
                     accretionDisk.OuterRadius = MathHelper.Lerp(0.7f, 0.9f, chargeProgress);
-
-                    //让吸积盘在蓄力时不透明
                     disk.alpha = 0;
                 }
             }
         }
 
         private void PlayChargeSound() {
-            //在特定阶段播放音效
             if (chargeTime == 1) {
                 SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
             }
@@ -311,63 +191,39 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void ReleaseAttack() {
-            if (chargeTime < minChargeTime) {
-                //蓄力不足，不发射
-                ResetCharge();
+            //蓄力不足，不发射
+            if (chargeTime < MinChargeTime) {
                 return;
             }
 
-            //计算伤害倍率
-            float damageMultiplier = MathHelper.Lerp(1f, 3.5f, chargeProgress);
-            int finalDamage = (int)(WeaponDamage * damageMultiplier);
+            PlayReleaseSound();
+            SpawnReleaseEffect();
+            Owner.CWR().GetScreenShake(5f + chargeProgress * 10f);
 
-            //将吸积盘转换为攻击弹幕
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+
+            //将吸积盘转换为掷出的攻击弹幕
             if (accretionDiskIndex >= 0 && Main.projectile[accretionDiskIndex].active) {
                 Projectile disk = Main.projectile[accretionDiskIndex];
-
-                if (disk.ModProjectile is AccretionDisk accretionDisk) {
-                    //设置攻击参数
-                    disk.damage = finalDamage;
+                if (disk.ModProjectile is AccretionDisk) {
+                    float damageMultiplier = MathHelper.Lerp(1f, 3.5f, chargeProgress);
+                    disk.damage = (int)(WeaponDamage * damageMultiplier);
                     disk.knockBack = WeaponKnockback * (1f + chargeProgress);
                     disk.friendly = true;
-
-                    //设置生命时间
-                    disk.timeLeft = (int)(120 + chargeProgress * 180); //2-5秒
-
-                    //给予初始速度，朝向鼠标
-                    Vector2 velocity = (InMousePos - disk.Center).SafeNormalize(Vector2.Zero) * (8f + chargeProgress * 12f);
-                    disk.velocity = velocity;
-
-                    //启用碰撞
+                    disk.timeLeft = (int)(120 + chargeProgress * 180);//2-5秒
+                    disk.velocity = (InMousePos - disk.Center).SafeNormalize(Vector2.Zero) * (8f + chargeProgress * 12f);
                     disk.tileCollide = false;
-
-                    //让吸积盘慢慢消失
                     disk.alpha = 50;
+                    disk.netUpdate = true;
                 }
             }
 
-            //播放释放音效
-            PlayReleaseSound();
-
-            //生成释放特效
-            SpawnReleaseEffect();
-
-            //后坐力
+            //掷出的反作用力与魔力支付
             Owner.velocity -= ShootVelocity.SafeNormalize(Vector2.Zero) * (3f + chargeProgress * 5f);
-
-            //屏幕震动
-            Owner.GetModPlayer<CWRPlayer>().GetScreenShake(5f + chargeProgress * 10f);
-
-            //消耗魔力
-            int manaCost = (int)(Item.mana * (1f + chargeProgress));
-            Owner.statMana -= manaCost;
-            if (Owner.statMana < 0) {
-                Owner.statMana = 0;
-            }
-
-            //重置状态
-            chargeTime = 0;
-            accretionDiskIndex = -1;
+            Owner.statMana = Math.Max(Owner.statMana - (int)(Item.mana * (1f + chargeProgress)), 0);
+            HoldManaRegenDelay();
         }
 
         private void PlayReleaseSound() {
@@ -402,38 +258,40 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             chargeTime = 0;
             chargeProgress = 0;
             particleTimer = 0;
-            hasReleasedAttack = false;
+            isCharging = false;
 
-            //清理吸积盘
-            if (accretionDiskIndex >= 0 && Main.projectile[accretionDiskIndex].active) {
+            //清理未掷出的吸积盘（已掷出的盘 timeLeft 已被重设，不会被误杀）
+            if (Projectile.IsOwnedByLocalPlayer()
+                && accretionDiskIndex >= 0 && Main.projectile[accretionDiskIndex].active
+                && Main.projectile[accretionDiskIndex].type == ModContent.ProjectileType<AccretionDisk>()
+                && !Main.projectile[accretionDiskIndex].friendly) {
                 Main.projectile[accretionDiskIndex].Kill();
             }
             accretionDiskIndex = -1;
         }
+        #endregion
 
-        //右键蓄力相关方法
+        #region 右键：压扁吸积盘
         private void UpdateChargeEffectsR() {
-            //右键使用蓝色系
+            //右键使用蓝色系：青 → 深蓝 → 紫
             if (chargeTimeR < Stage1) {
                 currentGlowColorR = Color.Lerp(Color.Cyan, Color.DeepSkyBlue, chargeProgressR * 3f);
             }
             else if (chargeTimeR < Stage2) {
-                float stage2Progress = (chargeTimeR - Stage1) / (float)(Stage2 - Stage1);
-                currentGlowColorR = Color.Lerp(Color.DeepSkyBlue, Color.Blue, stage2Progress);
+                currentGlowColorR = Color.Lerp(Color.DeepSkyBlue, Color.Blue, (chargeTimeR - Stage1) / (float)(Stage2 - Stage1));
             }
             else {
-                float stage3Progress = (chargeTimeR - Stage2) / (float)(Stage3 - Stage2);
-                currentGlowColorR = Color.Lerp(Color.Blue, Color.Purple, stage3Progress);
+                currentGlowColorR = Color.Lerp(Color.Blue, Color.Purple, (chargeTimeR - Stage2) / (float)(MaxChargeTime - Stage2));
             }
 
             particleTimerR++;
-            if (particleTimerR >= (5 - chargeProgressR * 3)) {
+            if (particleTimerR >= 5 - chargeProgressR * 3) {
                 SpawnChargeParticlesR();
                 particleTimerR = 0;
             }
 
             if (chargeTimeR >= Stage2) {
-                Owner.GetModPlayer<CWRPlayer>().GetScreenShake(chargeProgressR * 1.5f);
+                Owner.CWR().GetScreenShake(chargeProgressR * 1.5f);
             }
         }
 
@@ -447,7 +305,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 Vector2 particlePos = ShootPos + Main.rand.NextVector2Circular(30, 30);
                 Vector2 particleVel = (ShootPos - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
 
-                //使用高级粒子系统 - 蓝色系
                 PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, currentGlowColorR * 0.9f, Main.rand.NextFloat(0.4f, 0.8f)).Configure(Main.rand.Next(15, 25), Main.rand.NextFloat(-0.15f, 0.15f), false, Main.rand.NextFloat(0.15f, 0.25f));
             }
 
@@ -457,33 +314,28 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void SpawnEnergyRingR() {
-            int segments = 32;
+            const int segments = 32;
             float radius = 20 + chargeProgressR * 40;
 
             for (int i = 0; i < segments; i++) {
                 float angle = MathHelper.TwoPi * i / segments;
                 Vector2 offset = angle.ToRotationVector2() * radius;
-                Vector2 particlePos = ShootPos + offset;
                 Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2f;
 
-                //使用高级粒子创建能量环 - 蓝色系
-                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, currentGlowColorR * 0.7f, Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(20, 30), Main.rand.NextFloat(-0.2f, 0.2f), false, Main.rand.NextFloat(0.18f, 0.28f));
+                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(ShootPos + offset, particleVel, currentGlowColorR * 0.7f, Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(20, 30), Main.rand.NextFloat(-0.2f, 0.2f), false, Main.rand.NextFloat(0.18f, 0.28f));
             }
         }
 
         private void UpdateFlattenedDisk() {
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+
             if (flattenedDiskIndex == -1 || !Main.projectile[flattenedDiskIndex].active
                 || Main.projectile[flattenedDiskIndex].type != ModContent.ProjectileType<FlattenedAccretionDisk>()) {
-
-                flattenedDiskIndex = Projectile.NewProjectile(
-                    Source,
-                    ShootPos,
-                    Vector2.Zero,
-                    ModContent.ProjectileType<FlattenedAccretionDisk>(),
-                    Owner.GetShootState().WeaponDamage,
-                    Owner.GetShootState().WeaponKnockback,
-                    Owner.whoAmI
-                );
+                flattenedDiskIndex = Projectile.NewProjectile(Source, ShootPos, Vector2.Zero
+                    , ModContent.ProjectileType<FlattenedAccretionDisk>()
+                    , WeaponDamage, WeaponKnockback, Owner.whoAmI);
             }
 
             if (flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active) {
@@ -493,8 +345,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 disk.rotation = ToMouseA;
 
                 if (disk.ModProjectile is FlattenedAccretionDisk flattenedDisk) {
-                    float sizeScale = MathHelper.Lerp(0.3f, 2.0f, chargeProgressR);
-                    disk.scale = sizeScale;
+                    disk.scale = MathHelper.Lerp(0.3f, 2.0f, chargeProgressR);
                     flattenedDisk.RotationSpeed = MathHelper.Lerp(0.8f, 2.5f, chargeProgressR);
                     flattenedDisk.FlattenAngle = MathHelper.Lerp(0.8f, 0.5f, chargeProgressR);
                     flattenedDisk.ChargeProgress = chargeProgressR;
@@ -516,34 +367,20 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void ReleaseAttackR() {
-            if (chargeTimeR < minChargeTimeR) {
-                ResetChargeR();
+            if (chargeTimeR < MinChargeTime) {
                 return;
             }
 
-            //清理压扁吸积盘
-            if (flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active) {
-                Main.projectile[flattenedDiskIndex].Kill();
-            }
-
-            //播放释放音效
             PlayReleaseSoundR();
-
-            //生成释放特效
             SpawnReleaseEffectR();
+            Owner.CWR().GetScreenShake(3f + chargeProgressR * 8f);
 
-            //屏幕震动
-            Owner.GetModPlayer<CWRPlayer>().GetScreenShake(3f + chargeProgressR * 8f);
-
-            //消耗魔力
-            int manaCost = (int)(Item.mana * 0.8f * (1f + chargeProgressR * 0.5f));
-            Owner.statMana -= manaCost;
-            if (Owner.statMana < 0) {
-                Owner.statMana = 0;
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
             }
 
-            chargeTimeR = 0;
-            flattenedDiskIndex = -1;
+            Owner.statMana = Math.Max(Owner.statMana - (int)(Item.mana * 0.8f * (1f + chargeProgressR * 0.5f)), 0);
+            HoldManaRegenDelay();
         }
 
         private void PlayReleaseSoundR() {
@@ -568,26 +405,23 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             for (int i = 0; i < particleCount; i++) {
                 float angle = MathHelper.TwoPi * i / particleCount;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 12f + chargeProgressR * 8f);
-                velocity.Y *= 0.6f; //保持压扁效果
+                velocity.Y *= 0.6f;//保持压扁视觉
 
-                //使用高级粒子创建释放爆发效果
                 PRTLoader.NewParticle<PRT_AccretionDiskImpact>(ShootPos, velocity, currentGlowColorR, Main.rand.NextFloat(0.6f, 1.2f)).Configure(Main.rand.Next(25, 40), Main.rand.NextFloat(-0.3f, 0.3f), true, Main.rand.NextFloat(0.2f, 0.35f));
             }
 
             //生成扁平冲击波
             for (int i = 0; i < 2; i++) {
-                int segments = 48;
+                const int segments = 48;
                 float radius = 30f + i * 40f + chargeProgressR * 40f;
 
                 for (int j = 0; j < segments; j++) {
                     float angle = MathHelper.TwoPi * j / segments;
                     Vector2 offset = angle.ToRotationVector2() * radius;
                     offset.Y *= 0.6f;
-                    Vector2 particlePos = ShootPos + offset;
                     Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2.5f;
 
-                    //扁平冲击波粒子
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, currentGlowColorR * 0.6f, Main.rand.NextFloat(0.7f, 1.3f)).Configure(Main.rand.Next(30, 45), Main.rand.NextFloat(-0.25f, 0.25f), false, Main.rand.NextFloat(0.22f, 0.32f));
+                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(ShootPos + offset, particleVel, currentGlowColorR * 0.6f, Main.rand.NextFloat(0.7f, 1.3f)).Configure(Main.rand.Next(30, 45), Main.rand.NextFloat(-0.25f, 0.25f), false, Main.rand.NextFloat(0.22f, 0.32f));
                 }
             }
         }
@@ -596,25 +430,17 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             chargeTimeR = 0;
             chargeProgressR = 0;
             particleTimerR = 0;
-            hasReleasedAttackR = false;
+            isChargingR = false;
 
-            if (flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active) {
+            //压扁吸积盘只在蓄力期间存在，结束时直接清理
+            if (Projectile.IsOwnedByLocalPlayer()
+                && flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active
+                && Main.projectile[flattenedDiskIndex].type == ModContent.ProjectileType<FlattenedAccretionDisk>()) {
                 Main.projectile[flattenedDiskIndex].Kill();
             }
             flattenedDiskIndex = -1;
         }
-
-        public override void FiringShoot() {
-            //蓄力武器不使用默认射击
-        }
-
-        public override void FiringShootR() {
-            //右键蓄力武器不使用默认射击
-        }
-
-        public override void PostGunDraw(Vector2 drawPos, ref Color lightColor) {
-            base.PostGunDraw(drawPos, ref lightColor);
-        }
+        #endregion
 
         public override void OnKill(int timeLeft) {
             ResetCharge();

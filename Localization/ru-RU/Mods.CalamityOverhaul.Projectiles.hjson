@@ -108,7 +108,9 @@ PowerSoundEgg.DisplayName: Яйцо ритма
 CrabulonFriendHitbox.DisplayName: Спора крабового гриба
 Fireball.DisplayName: Огненный шар
 DeadLaser.DisplayName: Мертвый лазер
-// PrimeTelegraphLine.DisplayName: Prime Telegraph
+PrimeTelegraphLine.DisplayName: Прицельная метка Прайма
+PrimeArcChainProj.DisplayName: Ионная цепь
+PrimeSkullBeamProj.DisplayName: Луч черепной пушки
 Hit.DisplayName: Удар
 SpwanTextProj.DisplayName: Слово проявления
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез

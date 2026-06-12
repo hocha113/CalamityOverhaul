@@ -39,10 +39,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             NPC npc = context.Npc;
             Player player = context.Target;
 
-            //冲量衰减：峰值速度指数回落到巡航冲刺速度
+            //释放初段复利加速（×1.02/f，冲刺持续升级感），随后指数回落到巡航冲刺速度
             float cruiseSpeed = DestroyerDashPrepareState.DashSpeed(context);
             float speed = npc.velocity.Length();
-            speed = MathHelper.Lerp(speed, cruiseSpeed, 0.045f);
+            if (Timer < 8) {
+                speed *= 1.02f;
+            }
+            else {
+                speed = MathHelper.Lerp(speed, cruiseSpeed, 0.045f);
+            }
 
             //受限转向率追踪：高速大弧线，无法原地急转，公平且有力量感
             float maxTurn = (context.IsEnraged ? 0.011f : 0.007f) + (context.IsDeathMode ? 0.003f : 0f);
@@ -128,8 +133,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             if (Timer < DriftTime) {
-                //硬刹车漂移弧：速度向量边旋转边衰减，像重型机车甩尾
-                npc.velocity = npc.velocity.RotatedBy(driftSign * 0.05f) * 0.93f;
+                //硬刹车漂移弧：三层阶梯刹车 + 速度向量旋转，重型机体的长弧甩尾停驻
+                float spd = npc.velocity.Length();
+                float brake = spd > 40f ? 0.92f : spd > 25f ? 0.94f : 0.96f;
+                npc.velocity = npc.velocity.RotatedBy(driftSign * 0.05f) * brake;
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
 
                 if (!VaultUtils.isServer && Timer % 2 == 0) {

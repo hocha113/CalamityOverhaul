@@ -123,6 +123,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
 
             int idx = Math.Clamp((int)(phase * (count - 1)), 0, count - 1);
+
+            //公平阀：头部远在玩家视野外时只推进波形不开火，避免"屏幕外射来弹幕"
+            if (context.Npc.Distance(context.Target.Center) > 1900f) {
+                lastFiredIndex = idx;
+                return;
+            }
+
             if (lastFiredIndex < 0) {
                 lastFiredIndex = idx;
                 return;

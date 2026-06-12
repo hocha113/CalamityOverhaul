@@ -108,7 +108,9 @@ PowerSoundEgg.DisplayName: Resonanz-Ei
 CrabulonFriendHitbox.DisplayName: Crabulon-Spore
 Fireball.DisplayName: Feuerball
 DeadLaser.DisplayName: Todeslaser
-// PrimeTelegraphLine.DisplayName: Prime Telegraph
+PrimeTelegraphLine.DisplayName: Prime-Zielmarkierung
+PrimeArcChainProj.DisplayName: Ionenfessel
+PrimeSkullBeamProj.DisplayName: Schädelkanonenstrahl
 Hit.DisplayName: Einschlag
 SpwanTextProj.DisplayName: Manifestierender Text
 DragonsWordCut.DisplayName: Drachenwort-Schnitt
