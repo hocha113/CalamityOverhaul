@@ -64,19 +64,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 context.AttackPhaseIndex = 0;
             }
 
-            //手工编排的强弱交替环（PACING §2）：压力↔呼吸刻意交替、重招永不相邻
-            //P1: 俯冲贯穿(爆发) → 侧舷齐射(走位压制) → 蛇形连突(压力) → 钻地伏击(爆发)
-            //    → 探针矩阵(呼吸/区域) → 合围电牢(围困→冲刺)
             IDestroyerState[] normalSequence = [
                 new DestroyerDiveStrikeState(),
+                new DestroyerEncircleState(),
                 new DestroyerLaserBarrageState(),
                 new DestroyerDashPrepareState(),
                 new DestroyerBurrowAmbushState(),
                 new DestroyerProbeMatrixState(),
-                new DestroyerEncircleState()
             ];
-            //P2: 轨道绞杀(终结版) → 双向齐射 → 回旋绞杀(近身爆发) → 钻地伏击
-            //    → 蛇形连突 → 俯冲贯穿 → 探针矩阵 → 合围电牢
+
             IDestroyerState[] enragedSequence = [
                 new DestroyerOrbitalStrikeState(),
                 new DestroyerLaserBarrageState(),
@@ -85,7 +81,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 new DestroyerDashPrepareState(),
                 new DestroyerDiveStrikeState(),
                 new DestroyerProbeMatrixState(),
-                new DestroyerEncircleState()
+                new DestroyerEncircleState(),
             ];
 
             IDestroyerState[] sequence = context.IsEnraged ? enragedSequence : normalSequence;
