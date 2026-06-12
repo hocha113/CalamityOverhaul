@@ -71,16 +71,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 center = uResolution * 0.5;
     float2 halfSize = innerSize * 0.5;
 
-    //切角八边形SDF：矩形 ∩ 45°切角，比圆角矩形更具构造感
-    float2 dd = abs(pixelPos - center) - halfSize;
-    float cornerR = 2.0;
-    float boxSDF = length(max(dd, 0.0)) + min(max(dd.x, dd.y), 0.0) - cornerR;
-    float chamfer = clamp(min(halfSize.x, halfSize.y) * 0.28, 8.0, 15.0);
-    float2 ad = abs(pixelPos - center);
-    float diagSDF = (ad.x + ad.y - (halfSize.x + halfSize.y - chamfer)) * 0.70710678;
-    float panelSDF = max(boxSDF, diagSDF);
-    //角部接近度：用于切角处的强调亮化
-    float cornerNear = saturate(1.0 - abs(diagSDF - boxSDF) * 0.12);
+    //大圆角矩形SDF：柔和的水滴质感轮廓
+    float cornerR = clamp(min(halfSize.x, halfSize.y) * 0.22, 7.0, 13.0);
+    float2 dd = abs(pixelPos - center) - halfSize + cornerR;
+    float panelSDF = length(max(dd, 0.0)) + min(max(dd.x, dd.y), 0.0) - cornerR;
 
     float edgeAlpha = 1.0 - smoothstep(-1.0, 2.0, panelSDF);
     if (panelSDF > edgePad + 5.0) return float4(0, 0, 0, 0);
@@ -147,25 +141,20 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         bg = lerp(bg, bg * float3(1.10, 0.85, 0.85), uAgitation * 0.4);
     }
 
-    //7 双层描边：外侧1px硬亮线 + 间隔 + 内侧柔光带，营造精工感
+    //7 柔和双层描边：细亮缘线 + 内侧柔光带，水膜质感
     float innerDist = max(-panelSDF, 0.0);
-    float rimPulse = 0.80 + sin(t * 1.1) * 0.20;
+    float rimPulse = 0.82 + sin(t * 1.0) * 0.18;
     float3 rimCol = lerp(COL_GLOW, COL_DANGER, uAgitation * 0.55);
-    //外侧硬线（紧贴边缘）
-    float rimHard = 1.0 - smoothstep(0.6, 1.8, abs(innerDist - 1.0));
-    bg += rimCol * rimHard * 0.55 * rimPulse;
-    //间隔暗槽
-    float rimGap = 1.0 - smoothstep(0.8, 2.2, abs(innerDist - 3.2));
-    bg *= 1.0 - rimGap * 0.30;
+    //缘线（柔化的细线，不做硬1px）
+    float rimHard = 1.0 - smoothstep(0.4, 2.6, abs(innerDist - 1.2));
+    bg += rimCol * rimHard * 0.38 * rimPulse;
     //内侧柔光带
-    float rimSoft = exp(-(innerDist - 5.5) * (innerDist - 5.5) * 0.10);
-    bg += rimCol * rimSoft * 0.22 * rimPulse;
-    bg += midCol * exp(-innerDist * 0.13) * 0.40 * rimPulse;
-    //切角处的角部强调：靠近八边形折角的边缘更亮
-    bg += COL_CAUSTIC * rimHard * cornerNear * 0.35;
-    //边缘水纹微光
-    float ripple = sin(uv.x * 7.0 - uv.y * 5.0 + t * 0.9) * 0.5 + 0.5;
-    bg += COL_CAUSTIC * rimSoft * ripple * 0.10;
+    float rimSoft = exp(-(innerDist - 5.0) * (innerDist - 5.0) * 0.07);
+    bg += rimCol * rimSoft * 0.16 * rimPulse;
+    bg += midCol * exp(-innerDist * 0.12) * 0.40 * rimPulse;
+    //边缘水纹微光：缓慢游移的波纹增辉
+    float ripple = sin(uv.x * 5.0 - uv.y * 4.0 + t * 0.8) * 0.5 + 0.5;
+    bg += COL_CAUSTIC * rimSoft * ripple * 0.08;
 
     //7.5 顶缘高光扫带：缓慢左右游移的微弱亮带，强化"水面透光"质感
     float topBand = exp(-innerDist * 0.30) * smoothstep(0.35, 0.0, uv.y);

@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private const int EyeQuadSize = 96;
         private const float EyeR = 44f;
         //技能徽章
-        private static Vector2 BadgeOffset => new(48f, 42f);
+        private static Vector2 BadgeOffset => new(0, 42f);
         private const float BadgeR = 13.5f;
         //层数菱标弧
         private const float PipArcR = 56f;

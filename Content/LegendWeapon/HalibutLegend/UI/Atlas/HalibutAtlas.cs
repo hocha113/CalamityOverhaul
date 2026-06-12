@@ -1,4 +1,5 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -19,6 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
     {
         public string LocalizationCategory => "Legend.HalibutText";
         public static HalibutAtlas Instance => UIHandleLoader.GetUIHandleOfType<HalibutAtlas>();
+
+        //WorldFreezeSystem 的 reason 标签，统一通过它叠加/释放冻结
+        private const string FreezeReason = "HalibutAtlas";
 
         #region 本地化
         public static LocalizedText TitleText { get; private set; }
@@ -103,6 +107,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             view = AtlasView.Sea;
             headerSlide = 0f;
             Sea.Rebuild(player.GetModPlayer<HalibutSave>());
+            if (VaultUtils.isSinglePlayer) {
+                WorldFreezeSystem.Activate(FreezeReason);
+            }
+        }
+
+        protected override void OnClose() {
+            if (VaultUtils.isSinglePlayer) {
+                WorldFreezeSystem.Deactivate(FreezeReason);
+            }
         }
 
         private static void OnStudyCompletedGlobal(FishSkill skill) {
@@ -232,22 +245,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private void DrawHeader(SpriteBatch sb, HalibutSave save, HalibutPlayer hp, float a, float time) {
             float slide = CWRUtils.EaseOutCubic(headerSlide);
             float y = MathHelper.Lerp(-40f, 16f, slide);
-            //标题（左侧菱标 + 呼吸光点）
+            //标题（左侧珍珠标）
             float breath = HalibutTheme.Breath(time, 2.3f, 1.8f);
-            HalibutRenderer.DrawDiamond(sb, new Vector2(16f, y + 13f), 4.6f,
-                HalibutTheme.Glow * ((0.5f + breath * 0.3f) * a));
-            HalibutRenderer.DrawDiamond(sb, new Vector2(16f, y + 13f), 2.4f,
-                HalibutTheme.Caustic * ((0.7f + breath * 0.3f) * a));
+            HalibutRenderer.DrawPearl(sb, new Vector2(16f, y + 13f), 2.8f,
+                HalibutTheme.Glow, (0.7f + breath * 0.3f) * a);
             HalibutRenderer.DrawGlowText(sb, TitleText.Value, new Vector2(28f, y),
                 HalibutTheme.Text * a, HalibutTheme.Glow * (0.45f * a), 1.12f, 1.6f);
-            //页眉分割线：起点菱饰 + 渐隐主线 + 近端次级hairline
+            //页眉分割线：起点珍珠 + 渐隐主线 + 近端次级hairline
             Vector2 lineL = new(16f, y + 40f);
             Vector2 lineR = new(HalibutTheme.UIScreenW - 16f, y + 40f);
-            HalibutRenderer.DrawDiamond(sb, lineL + new Vector2(1f, 0f), 3f, HalibutTheme.Caustic * (0.8f * a));
+            HalibutRenderer.DrawPearl(sb, lineL + new Vector2(1f, 0f), 1.9f, HalibutTheme.Caustic, 0.8f * a);
             HalibutRenderer.DrawGradientLine(sb, lineL + new Vector2(6f, 0f), lineR,
-                HalibutTheme.Glow * (0.55f * a), HalibutTheme.Glow * (0.04f * a), 1.3f);
+                HalibutTheme.Glow * (0.50f * a), HalibutTheme.Glow * (0.04f * a), 1.3f);
             HalibutRenderer.DrawGradientLine(sb, lineL + new Vector2(6f, 3f), lineL + new Vector2(220f, 3f),
-                HalibutTheme.Glow * (0.28f * a), HalibutTheme.Glow * (0.01f * a), 1f);
+                HalibutTheme.Glow * (0.24f * a), HalibutTheme.Glow * (0.01f * a), 1f);
 
             //右侧状态：解锁计数 / 领域层数 / 复苏
             int unlockedCount = save.unlocked.Count;
@@ -259,19 +270,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
             var font = Terraria.GameContent.FontAssets.MouseText.Value;
             float w = font.MeasureString(state).X * 0.8f;
-            Color stateCol = agitationColor(hp);
+            Color stateCol = AgitationColor(hp);
             HalibutRenderer.DrawGlowText(sb, state, new Vector2(HalibutTheme.UIScreenW - w - 64f, y + 8f),
                 stateCol * a, HalibutTheme.Deep * (0.5f * a), 0.8f);
 
-            //操作提示（海域视图）
+            //操作提示（海域视图）：下潜过程中向上滑出让位
             if (view == AtlasView.Sea) {
-                HalibutRenderer.DrawGlowTextCentered(sb, DragHint.Value,
-                    new Vector2(HalibutTheme.UIScreenW * 0.5f, y + 56f),
-                    HalibutTheme.TextDim * (0.75f * a), HalibutTheme.Deep * (0.4f * a), 0.7f);
+                float hide = Sea.ChromeHide;
+                float hintA = (0.75f - hide * 0.75f) * a;
+                if (hintA > 0.02f) {
+                    HalibutRenderer.DrawGlowTextCentered(sb, DragHint.Value,
+                        new Vector2(HalibutTheme.UIScreenW * 0.5f, y + 56f - hide * 26f),
+                        HalibutTheme.TextDim * hintA, HalibutTheme.Deep * (0.4f * hintA), 0.7f);
+                }
             }
         }
 
-        private static Color agitationColor(HalibutPlayer hp) {
+        private static Color AgitationColor(HalibutPlayer hp) {
             float ratio = hp?.ResurrectionSystem?.Ratio ?? 0f;
             if (ratio >= 0.9f) {
                 return HalibutTheme.Danger;
@@ -306,10 +321,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                             new Vector2(mark.X, tierChipRects[t + 1].Center.Y - 6f),
                             1f, HalibutTheme.Teal * (0.4f * a));
                     }
-                    //菱形刻度标
-                    HalibutRenderer.DrawDiamond(sb, mark, 5.6f, tierCol * (0.3f * a));
-                    HalibutRenderer.DrawDiamond(sb, mark, 3.2f + hi * 1.4f,
-                        Color.Lerp(tierCol * 0.65f, HalibutTheme.Caustic, hi * 0.5f) * ((0.55f + hi * 0.45f) * a));
+                    //珍珠刻度标
+                    HalibutRenderer.DrawPearl(sb, mark, 2.2f + hi * 1f,
+                        Color.Lerp(tierCol * 0.8f, HalibutTheme.Caustic, hi * 0.4f), (0.6f + hi * 0.4f) * a);
                     //当前深度的呼吸光环
                     if (litT > 0.4f) {
                         float breath = HalibutTheme.Breath(time, t, 2.6f);
@@ -337,14 +351,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             float hi = selected ? 1f : hovered ? 0.5f : 0f;
             Color edge = Color.Lerp(HalibutTheme.Teal, HalibutTheme.GlowHi, hi);
 
-            //左缘标识：双竖线 + 菱形顶饰
+            //左缘标识：双竖线 + 珍珠顶饰
             Vector2 barTop = new(rect.X + 4f, rect.Y + 3f);
             Vector2 barBot = new(rect.X + 4f, rect.Bottom - 3f);
             HalibutRenderer.DrawLine(sb, barTop, barBot, 2f, edge * ((0.55f + hi * 0.45f) * a));
             HalibutRenderer.DrawLine(sb, barTop + new Vector2(3.4f, 2f), barBot + new Vector2(3.4f, -2f),
                 1f, edge * ((0.25f + hi * 0.3f) * a));
-            HalibutRenderer.DrawDiamond(sb, new Vector2(rect.X + 4f, rect.Y + 1f), 2.6f,
-                HalibutTheme.Caustic * ((0.4f + hi * 0.6f) * a));
+            HalibutRenderer.DrawPearl(sb, new Vector2(rect.X + 4f, rect.Y + 1f), 1.7f,
+                HalibutTheme.Caustic, (0.4f + hi * 0.6f) * a);
 
             //横向渐隐底衬（用粗渐变线代替矩形填充，避免盒子感）
             Vector2 bandL = new(rect.X + 9f, rect.Center.Y);

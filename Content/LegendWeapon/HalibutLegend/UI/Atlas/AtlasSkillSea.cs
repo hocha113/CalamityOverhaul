@@ -55,6 +55,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         //最近一帧的内容区域，供异步回调换算屏幕坐标
         private Rectangle lastContentArea = new(0, 64, 1920, 1016);
 
+        //滚动避让：下潜过程中顶部提示与底部装备坞自动让位
+        private float chromeHide;
+        private int scrollIdleTimer = 60;
+
+        /// <summary>
+        /// 边缘挂件的隐藏程度 0显示-1隐藏（滚动时上升），页眉提示等共享此值
+        /// </summary>
+        public float ChromeHide => chromeHide;
+
         /// <summary>
         /// 当前下潜深度（0海面-1渊底），驱动背景着色器
         /// </summary>
@@ -168,11 +177,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 if (delta != 0) {
                     scrollTarget -= MathF.Sign(delta) * 96f;
                     Main.LocalPlayer.CWR().DontSwitchWeaponTime = 5;
+                    scrollIdleTimer = 0;
                 }
             }
             scrollTarget = MathHelper.Clamp(scrollTarget, 0f, maxScroll);
             scroll = MathHelper.Lerp(scroll, scrollTarget, 0.16f);
             Depth = maxScroll > 1f ? MathHelper.Clamp(scroll / maxScroll, 0f, 1f) : 0f;
+
+            //滚动避让：下潜进行中收起边缘挂件，停稳或有交互意图时归位
+            if (MathF.Abs(scroll - scrollTarget) > 2f) {
+                scrollIdleTimer = 0;
+            }
+            else if (scrollIdleTimer < 600) {
+                scrollIdleTimer++;
+            }
+            bool wantHide = scrollIdleTimer < 26;
+            if (draggingSkill != null || Main.MouseScreen.Y > contentArea.Bottom - 150f) {
+                wantHide = false;//拖拽中或光标靠近底部 = 玩家需要装备坞
+            }
+            chromeHide = MathHelper.Lerp(chromeHide, wantHide ? 1f : 0f, 0.10f);
 
             //祭坛
             Altar.ScreenCenter = new Vector2(HalibutTheme.UIScreenW * 0.5f, contentArea.Y + AltarLayoutY - scroll);
@@ -227,11 +250,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 node.UpdateState(node == hoveredNode);
             }
 
-            //装备坞命中
+            //装备坞命中（收起时不可交互）
             dockHoverIndex = -1;
-            for (int i = 0; i < HalibutTheme.DockSlotCount; i++) {
-                if (Vector2.Distance(mouse, DockSlotPos(contentArea, i)) < HalibutTheme.DockSlotR + 4f) {
-                    dockHoverIndex = i;
+            if (chromeHide < 0.5f) {
+                for (int i = 0; i < HalibutTheme.DockSlotCount; i++) {
+                    if (Vector2.Distance(mouse, DockSlotPos(contentArea, i)) < HalibutTheme.DockSlotR + 4f) {
+                        dockHoverIndex = i;
+                    }
                 }
             }
 
@@ -272,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
             //拖拽释放
             if (draggingSkill != null && !Main.mouseLeft) {
-                bool overDockArea = mouse.Y > contentArea.Bottom - DockHeight - 26f;
+                bool overDockArea = mouse.Y > contentArea.Bottom - DockHeight - 44f;
                 if (dockHoverIndex >= 0 || overDockArea) {
                     int targetSlot = dockHoverIndex >= 0 ? dockHoverIndex : save.loadout.Count;
                     if (save.loadout.Contains(draggingSkill)) {
@@ -349,13 +374,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
         }
 
-        private static Vector2 DockSlotPos(Rectangle contentArea, int index) {
+        /// <summary>
+        /// 滚动避让导致的装备坞下沉偏移
+        /// </summary>
+        private float DockHideOffset => CWRUtils.EaseInCubic(chromeHide) * 92f;
+
+        private Vector2 DockSlotPos(Rectangle contentArea, int index) {
             float spacing = HalibutTheme.DockSlotR * 2f + 9f;
             float startX = contentArea.Center.X - (HalibutTheme.DockSlotCount - 1) * spacing * 0.5f;
             //轻微的弧形下垂，像挂在缆绳上
             float t = index / (float)(HalibutTheme.DockSlotCount - 1);
             float sag = MathF.Sin(t * MathHelper.Pi) * 7f;
-            return new Vector2(startX + index * spacing, contentArea.Bottom - DockHeight * 0.5f + sag);
+            return new Vector2(startX + index * spacing,
+                contentArea.Bottom - DockHeight * 0.5f - 16f + sag + DockHideOffset);
         }
 
         public void Draw(SpriteBatch sb, Rectangle contentArea, HalibutSave save, float alpha) {
@@ -390,8 +421,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 bool equipped = save.loadout.Contains(node.Skill);
                 bool selected = save.FishSkill == node.Skill;
                 float nodeAlpha = alpha;
-                //装备坞区域附近淡出，避免与坞重叠
-                float dockTop = contentArea.Bottom - DockHeight - 22f;
+                //装备坞区域附近淡出，避免与坞重叠（坞收起时淡出带跟着下移）
+                float dockTop = contentArea.Bottom - DockHeight - 38f + DockHideOffset;
                 if (pos.Y > dockTop) {
                     nodeAlpha *= MathHelper.Clamp(1f - (pos.Y - dockTop) / 50f, 0f, 1f);
                 }
@@ -449,9 +480,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         private void DrawDock(SpriteBatch sb, Rectangle contentArea, HalibutSave save, float alpha, float time) {
-            //坞背景带
-            Rectangle dockRect = new(contentArea.X + 60, (int)(contentArea.Bottom - DockHeight - 14f),
-                contentArea.Width - 120, (int)DockHeight);
+            //滚动避让：收起时整体下沉淡出
+            alpha *= 1f - chromeHide;
+            if (alpha < 0.02f) {
+                return;
+            }
             //缆绳：贯穿所有槽位的弧线
             Vector2 prev = Vector2.Zero;
             for (int i = 0; i < HalibutTheme.DockSlotCount; i++) {
@@ -463,6 +496,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
 
             //标签
+            float labelY = contentArea.Bottom - DockHeight - 36f + DockHideOffset;
             Color labelCol = loadoutFullFlash > 0.01f
                 ? Color.Lerp(HalibutTheme.TextDim, HalibutTheme.Danger, MathF.Sin(loadoutFullFlash * MathHelper.Pi))
                 : HalibutTheme.TextDim;
@@ -471,7 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 label = HalibutAtlas.LoadoutFullHint.Value;
             }
             HalibutRenderer.DrawGlowTextCentered(sb, label,
-                new Vector2(contentArea.Center.X, dockRect.Y - 6f),
+                new Vector2(contentArea.Center.X, labelY),
                 labelCol * alpha, HalibutTheme.Deep * (0.4f * alpha), 0.74f);
 
             //槽位
@@ -553,9 +587,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 new Vector2(x + 58f, y + 28f), tierCol * (0.85f * alpha), tierCol * (0.25f * alpha), 0.7f);
 
             y += 62f;
-            HalibutRenderer.DrawDiamond(sb, new Vector2(x + 1.5f, y), 2.6f, HalibutTheme.Caustic * (0.85f * alpha));
+            HalibutRenderer.DrawPearl(sb, new Vector2(x + 1.5f, y), 1.8f, HalibutTheme.Caustic, 0.85f * alpha);
             HalibutRenderer.DrawGradientLine(sb, new Vector2(x + 6f, y), new Vector2(detailRect.Right - pad, y),
-                tierCol * (0.75f * alpha), tierCol * (0.06f * alpha), 1.2f);
+                tierCol * (0.7f * alpha), tierCol * (0.06f * alpha), 1.2f);
             y += 10f;
 
             //描述正文
