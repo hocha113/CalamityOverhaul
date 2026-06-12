@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -33,6 +34,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
+            //冲刺启动帧天空闪雷（连冲每段各闪一次，亮度低于俯冲）
+            MachineEffect.TriggerSkyFlash(context.Npc.Center, 0.7f);
         }
 
         public override IDestroyerState OnUpdate(DestroyerStateContext context) {

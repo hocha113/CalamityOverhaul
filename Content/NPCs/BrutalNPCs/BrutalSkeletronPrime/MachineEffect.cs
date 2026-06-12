@@ -97,8 +97,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //平滑跟随聚合目标；闪电为瞬时脉冲 + 快速指数衰减
             warn = MathHelper.Lerp(warn, MachineEffect.SkyWarnTarget, 0.10f);
             overload = MathHelper.Lerp(overload, MachineEffect.SkyOverloadTarget, 0.08f);
-            if (MachineEffect.ConsumeSkyFlash(out float newFlashX)) {
-                flash = 1f;
+            if (MachineEffect.ConsumeSkyFlash(out float newFlashX, out float newStrength)) {
+                flash = Math.Max(flash, newStrength);
                 flashX = newFlashX;
             }
             flash *= 0.82f;
@@ -168,8 +168,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     }
 
     ///<summary>
-    ///机械场景效果管理器：负责激活判定、网络同步与音乐，
-    ///并聚合机械Boss的 <see cref="MechBossVisualState"/> 行为状态驱动天空响应
+    ///机械场景效果管理器：负责激活判定、网络同步与音乐，并承接天空行为响应——
+    ///闪电由各Boss在AI关键帧主动调用 <see cref="TriggerSkyFlash"/>，
+    ///警报/过载由 <see cref="MechBossVisualState.Push"/> 每帧顺带转发聚合，均无需遍历NPC
     ///</summary>
     internal class MachineEffect : ModSystem
     {
@@ -254,18 +255,41 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             IsActive = true;
         }
 
-        #region 天空行为聚合
-        /// <summary>蓄力警告聚合目标：所有在场机械Boss中最强的警告强度，驱动天空地平线警报</summary>
+        #region 天空行为响应
+        /// <summary>蓄力警告聚合目标：本帧所有机械Boss中最强的警告强度，驱动天空地平线警报</summary>
         public static float SkyWarnTarget { get; private set; }
         /// <summary>死亡过载聚合目标：任一机械Boss进入死亡演出时为1，驱动天空过载电涌</summary>
         public static float SkyOverloadTarget { get; private set; }
-        private static readonly Dictionary<int, MechBossVisualMode> prevVisualModes = new();
+        private static float warnAccum;
+        private static float overloadAccum;
         private static bool skyFlashPending;
         private static float skyFlashX = 0.5f;
+        private static float skyFlashStrength = 1f;
+
+        /// <summary>
+        /// 机械Boss在AI关键帧（俯冲/冲刺释放等）主动呼唤一次天空闪电。
+        /// <paramref name="worldPosition"/> 决定电弧在天幕上的落点，
+        /// <paramref name="strength"/> 决定亮度（1=主角级俯冲，0.6~0.8=常规冲刺）。
+        /// 仅客户端生效，服务端调用为空操作
+        /// </summary>
+        public static void TriggerSkyFlash(Vector2 worldPosition, float strength = 1f) {
+            if (VaultUtils.isServer || !IsActive) {
+                return;
+            }
+            strength = MathHelper.Clamp(strength, 0f, 1f);
+            if (skyFlashPending && strength < skyFlashStrength) {
+                return;//同帧多Boss齐闪时保留最强的一次
+            }
+            skyFlashPending = true;
+            skyFlashStrength = strength;
+            skyFlashX = MathHelper.Clamp(
+                (worldPosition.X - Main.screenPosition.X) / Main.screenWidth, 0.12f, 0.88f);
+        }
 
         /// <summary>消费一次天空闪电触发（由 <see cref="MachineSky.Update"/> 调用）</summary>
-        public static bool ConsumeSkyFlash(out float screenX) {
+        public static bool ConsumeSkyFlash(out float screenX, out float strength) {
             screenX = skyFlashX;
+            strength = skyFlashStrength;
             if (!skyFlashPending) {
                 return false;
             }
@@ -273,54 +297,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        private static bool IsMechBoss(int type) =>
-            type == NPCID.TheDestroyer || type == NPCID.SkeletronPrime
-            || type == NPCID.Retinazer || type == NPCID.Spazmatism;
-
-        //轮询机械Boss的视觉状态（零侵入，不改Boss AI）：
-        //Dashing上升沿（毁灭者俯冲/连冲、机械骷髅王旋冲、双子冲刺）→ 触发天空闪电；
-        //Warning强度 → 地平线警报呼吸；
-        //死亡演出（Warning且intensity≥0.99，常规蓄力最高0.95）→ 全屏过载电涌
-        private static void UpdateSkyBossResponse() {
-            if (VaultUtils.isServer) {
+        /// <summary>
+        /// 由 <see cref="MechBossVisualState.Push"/> 每帧顺带转发Boss视觉状态，
+        /// 聚合驱动天空警报/过载（取本帧最大值），无需遍历NPC。
+        /// 死亡演出以 Warning 且 intensity≥0.99 为特征值（常规蓄力最高0.95）
+        /// </summary>
+        internal static void ReportSkyMood(MechBossVisualMode mode, float intensity, float progress) {
+            if (VaultUtils.isServer || mode != MechBossVisualMode.Warning) {
                 return;
             }
-            if (!IsActive) {
-                if (prevVisualModes.Count > 0) {
-                    prevVisualModes.Clear();
-                }
-                SkyWarnTarget = 0f;
-                SkyOverloadTarget = 0f;
-                skyFlashPending = false;
-                return;
+            warnAccum = Math.Max(warnAccum, intensity * progress);
+            if (intensity >= 0.99f) {
+                overloadAccum = 1f;
             }
+        }
 
-            float warnMax = 0f;
-            float overloadMax = 0f;
-            foreach (var npc in Main.ActiveNPCs) {
-                if (!IsMechBoss(npc.type)) {
-                    continue;
-                }
-
-                var (mode, visIntensity, progress) = MechBossVisualState.Read(npc.whoAmI);
-
-                prevVisualModes.TryGetValue(npc.whoAmI, out MechBossVisualMode prevMode);
-                if (mode == MechBossVisualMode.Dashing && prevMode != MechBossVisualMode.Dashing) {
-                    skyFlashPending = true;
-                    skyFlashX = MathHelper.Clamp(
-                        (npc.Center.X - Main.screenPosition.X) / Main.screenWidth, 0.12f, 0.88f);
-                }
-                prevVisualModes[npc.whoAmI] = mode;
-
-                if (mode == MechBossVisualMode.Warning) {
-                    warnMax = Math.Max(warnMax, visIntensity * progress);
-                    if (visIntensity >= 0.99f) {
-                        overloadMax = 1f;
-                    }
-                }
-            }
-            SkyWarnTarget = warnMax;
-            SkyOverloadTarget = overloadMax;
+        //每帧末闩锁提交本帧聚合值并清零；Boss死亡或离场停止推送时自然归零
+        private static void LatchSkyMood() {
+            SkyWarnTarget = warnAccum;
+            SkyOverloadTarget = overloadAccum;
+            warnAccum = 0f;
+            overloadAccum = 0f;
         }
         #endregion
 
@@ -331,7 +328,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 Start();
             }
 
-            UpdateSkyBossResponse();
+            LatchSkyMood();
 
             if (!Cek()) {
                 dompMusicWindown = false;

@@ -118,6 +118,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (!VaultUtils.isServer) {
                 PrimeScreenEffects.PushHeatWake(npc.Center, npc.velocity.ToRotation(), 1f);
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound() with { Pitch = 1.18f, Volume = 0.75f }, npc.Center);
+                //冲撞释放帧天空闪雷
+                MachineEffect.TriggerSkyFlash(npc.Center, 0.8f);
             }
         }
 
@@ -301,9 +303,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
             npc.velocity = dashDir * speed;
 
-            //贯穿起步：爆发音 + 热浪
+            //贯穿起步：爆发音 + 热浪 + 天空闪雷
             if (phaseTimer == AppearFreezeFrames && !VaultUtils.isServer) {
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/ExoMechs/AresEnraged".GetSound() with { Pitch = 1.1f, Volume = 0.8f }, npc.Center);
+                MachineEffect.TriggerSkyFlash(npc.Center, 0.8f);
             }
 
             float vel = npc.velocity.Length();

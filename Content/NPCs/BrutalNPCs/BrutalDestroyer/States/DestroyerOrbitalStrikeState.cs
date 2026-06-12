@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using System;
 using Terraria;
@@ -225,6 +226,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.35f, Volume = 1f }, player.Center);
+                //俯冲瞬间天空闪雷
+                MachineEffect.TriggerSkyFlash(lineCenter, 1f);
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
                 }
@@ -307,6 +310,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
                 SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.5f, Volume = 1.1f }, player.Center);
+                //终结贯穿释放：最强一道闪雷劈向冲击点
+                MachineEffect.TriggerSkyFlash(impactPoint, 1f);
                 if (!VaultUtils.isClient) {
                     DestroyerHeatWakeProj.EnsureForHead(npc);
                 }

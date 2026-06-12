@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -36,6 +37,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             base.OnEnter(context);
             //冲刺状态启用碰撞伤害
             EnableContactDamage(context.Npc);
+            //冲刺启动帧天空闪雷
+            MachineEffect.TriggerSkyFlash(context.Npc.Center, 0.6f);
         }
 
         public override ITwinsState OnUpdate(TwinsStateContext context) {

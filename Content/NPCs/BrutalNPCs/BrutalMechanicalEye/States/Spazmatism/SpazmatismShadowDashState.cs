@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using InnoVault.PRT;
@@ -152,6 +153,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item74 with { Pitch = 0.2f + segment * 0.08f, Volume = 1.1f }, npc.Center);
+                    //每段残影冲刺起步天空闪雷
+                    MachineEffect.TriggerSkyFlash(npc.Center, 0.6f);
                 }
             }
 

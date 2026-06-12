@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
@@ -163,6 +164,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (!hasLaunched) {
                 hasLaunched = true;
                 TwinsMotion.DashLaunch(npc, lockedDirection, DashSpeed, Context.IsSpazmatism, 1.15f);
+                //十字合击同步释放：天空闪雷劈向交点（双眼同帧触发时自动只保留一次）
+                MachineEffect.TriggerSkyFlash(crossPoint, 0.75f);
             }
 
             //每帧启用碰撞伤害(控制器每帧会重置激光眼的伤害)

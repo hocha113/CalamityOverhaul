@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using System.Collections.Generic;
 using Terraria;
 
@@ -26,12 +27,16 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
         /// 推送某个控制器（一般是Boss头部NPC）的视觉状态
         /// </summary>
         public static void Push(int controllerNpcId, MechBossVisualMode mode, float intensity, float progress = 0f) {
+            intensity = MathHelper.Clamp(intensity, 0f, 1f);
+            progress = MathHelper.Clamp(progress, 0f, 1f);
             _states[controllerNpcId] = new Entry {
                 Mode = mode,
-                Intensity = MathHelper.Clamp(intensity, 0f, 1f),
-                Progress = MathHelper.Clamp(progress, 0f, 1f),
+                Intensity = intensity,
+                Progress = progress,
                 Frame = Main.GameUpdateCount,
             };
+            //顺带转发给机械氛围天空做警报/过载聚合，免去天空侧每帧遍历NPC
+            MachineEffect.ReportSkyMood(mode, intensity, progress);
         }
 
         /// <summary>
