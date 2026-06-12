@@ -38,6 +38,7 @@ FungiAmmo.DisplayName: Projetil Fungico
 PallbearerArrow.DisplayName: Flecha do Portador do Caixao
 PrimeCannonOnSpanFriendly.DisplayName: Saraivada do Canhao Prime
 PrimeCannonOnSpan.DisplayName: Saraivada do Canhao Prime
+// PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
 PunisherGrenade.DisplayName: Granada do Punitivo
 RaiderGunDash.DisplayName: Investida do Saqueador
 RocketSkeletonFriendly.DisplayName: Esqueleto Foguete
@@ -113,6 +114,7 @@ PrimeArcChainProj.DisplayName: Corrente iônica
 PrimeSkullBeamProj.DisplayName: Raio do canhão craniano
 // PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
 // PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
+// PrimeMortarShellProj.DisplayName: Prime Mortar Shell
 Hit.DisplayName: Impacto
 SpwanTextProj.DisplayName: Texto Manifestado
 DragonsWordCut.DisplayName: Corte da Palavra do Dragao

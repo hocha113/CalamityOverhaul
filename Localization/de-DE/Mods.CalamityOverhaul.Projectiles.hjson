@@ -38,6 +38,7 @@ FungiAmmo.DisplayName: Pilzmunition
 PallbearerArrow.DisplayName: Sargträger-Pfeil
 PrimeCannonOnSpanFriendly.DisplayName: Primärkanone · Salve
 PrimeCannonOnSpan.DisplayName: Primärkanone · Salve
+// PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
 PunisherGrenade.DisplayName: Bestrafergranate
 RaiderGunDash.DisplayName: Plünderer-Sturm
 RocketSkeletonFriendly.DisplayName: Skelett-Rakete
@@ -113,6 +114,7 @@ PrimeArcChainProj.DisplayName: Ionenfessel
 PrimeSkullBeamProj.DisplayName: Schädelkanonenstrahl
 // PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
 // PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
+// PrimeMortarShellProj.DisplayName: Prime Mortar Shell
 Hit.DisplayName: Einschlag
 SpwanTextProj.DisplayName: Manifestierender Text
 DragonsWordCut.DisplayName: Drachenwort-Schnitt

@@ -38,6 +38,7 @@ FungiAmmo.DisplayName: Грибные боеприпасы
 PallbearerArrow.DisplayName: Стрела гробовщика
 PrimeCannonOnSpanFriendly.DisplayName: Механическая пушка: Залп
 PrimeCannonOnSpan.DisplayName: Механическая пушка: Залп
+// PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
 PunisherGrenade.DisplayName: Граната Карателя
 RaiderGunDash.DisplayName: Рывок Налетчика
 RocketSkeletonFriendly.DisplayName: Скелетная ракета
@@ -113,6 +114,7 @@ PrimeArcChainProj.DisplayName: Ионная цепь
 PrimeSkullBeamProj.DisplayName: Луч черепной пушки
 // PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
 // PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
+// PrimeMortarShellProj.DisplayName: Prime Mortar Shell
 Hit.DisplayName: Удар
 SpwanTextProj.DisplayName: Слово проявления
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез

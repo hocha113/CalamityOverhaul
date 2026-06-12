@@ -38,6 +38,7 @@ FungiAmmo.DisplayName: Munition fongique
 PallbearerArrow.DisplayName: Flèche du porteur de cercueil
 PrimeCannonOnSpanFriendly.DisplayName: Canon principal · Salve
 PrimeCannonOnSpan.DisplayName: Canon principal · Salve
+// PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
 PunisherGrenade.DisplayName: Grenade du punisseur
 RaiderGunDash.DisplayName: Charge du pillard
 RocketSkeletonFriendly.DisplayName: Roquette squelette
@@ -113,6 +114,7 @@ PrimeArcChainProj.DisplayName: Chaîne ionique
 PrimeSkullBeamProj.DisplayName: Rayon du canon crânien
 // PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
 // PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
+// PrimeMortarShellProj.DisplayName: Prime Mortar Shell
 Hit.DisplayName: Impact
 SpwanTextProj.DisplayName: Parole manifestée
 DragonsWordCut.DisplayName: Lame du Mot du Dragon
