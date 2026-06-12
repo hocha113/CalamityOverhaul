@@ -1,6 +1,6 @@
 QuestLog_Key.DisplayName: Quest Log: Toggle Main Interface
 QuestManager_Key.DisplayName: Quest Manager: Toggle Management Panel
-Legend_UIControl.DisplayName: Toggle Legendary Weapon HUD
+Legend_UIControl.DisplayName: Halibut: Toggle Abyssal Atlas
 Legend_Domain.DisplayName: Domain Expansion
 Legend_Teleport.DisplayName: Domain Teleport
 Legend_Restart.DisplayName: Self-Restart
@@ -14,6 +14,7 @@ Halibut_Clone.DisplayName: Halibut: Past Self Invasion
 Halibut_Superposition.DisplayName: Halibut: Superposition
 Halibut_Skill_L.DisplayName: Halibut: Switch Skill Left
 Halibut_Skill_R.DisplayName: Halibut: Switch Skill Right
+Halibut_SkillWheel.DisplayName: Halibut: Hold to open skill wheel
 Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
 Murasama_DownKey.DisplayName: Murasama: Downward Strike
 WeponSkill_Q.DisplayName: Weapon: Left Skill Key

@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
             //检查是否已经解锁所有技能
             int totalSkills = FishSkill.UnlockFishs.Count;
-            if (save.unlockSkills.Count >= totalSkills) {
+            if (save.unlocked.Count >= totalSkills) {
                 SoundEngine.PlaySound(SoundID.MenuClose);
                 string text = Text1.Value;
                 CombatText.NewText(player.Hitbox, new Color(100, 200, 255), text, true);
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             foreach (var skill in allSkills) {
                 //跳过已解锁的技能
-                if (save.unlockSkills.Contains(skill)) {
+                if (save.IsUnlocked(skill)) {
                     continue;
                 }
 
@@ -346,11 +346,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             foreach (var skill in unlockedSkills) {
-                if (!save.unlockSkills.Contains(skill)) {
-                    save.unlockSkills.Add(skill);
-                    SkillSlot newSlot = HalibutUIPanel.AddSkillSlot(skill, 1f);
-                    save.halibutUISkillSlots.Add(newSlot);
-                }
+                save.UnlockSkill(skill);
             }
 
             //触发复苏系统提升

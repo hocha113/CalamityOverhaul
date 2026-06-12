@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -19,12 +19,40 @@
 }
 
 HalibutText: {
-	SkillSlot: {
-		Hover1: Clic gauche : Sélectionner
-		Hover2: Clic droit : Épingler
-		Hover3: Molette : Défiler
-		Hover4: Maintenir : Glisser
-		Hover5: Touche W : Ranger dans la bibliothèque
+	HalibutAtlas: {
+		// TitleText: A B Y S S A L  A T L A S
+		// NavSea: Skill Sea
+		// NavEyes: Domain Eyes
+		// TierName0: Shallows · Sunlit Zone
+		// TierName1: Open Sea · Twilight Zone
+		// TierName2: Deep Sea · Midnight Zone
+		// TierName3: Abyss · Lightless Zone
+		// DockLabel: Loadout {0} / {1} · Click to select
+		// LockedNodeName: Unknown Silhouette
+		// LockedNodeHint: Research {0} at the Research Altar to light up this skill
+		// EquipBtn: Equip
+		// UnequipBtn: Remove
+		// SelectBtn: Select
+		// SelectedTag: Active
+		// LoadoutFullHint: Loadout is full
+		// UnlockFishLine: Research source: {0}
+		// AltarTitle: Research Altar
+		// AltarHint: Click the altar while holding a researchable fish to place it. The matching skill will light up in the sea once research completes.
+		// DragHint: Hold and drag skills into the loadout · Scroll to dive
+		// LayerStateFormat: Domain Layer {0}
+		// UnlockCountFormat: Lit {0} / {1}
+	}
+
+	HalibutSkillWheel: {
+		// ReleaseHint: Release {0} to confirm
+		// CancelHint: Right-click to cancel
+		// NoSelection: No skill selected
+	}
+
+	HalibutHud: {
+		// OpenAtlasHint: Left-click or {0} to open the Abyssal Atlas, {1} to summon the skill wheel
+		// DomainLayerFormat: Domain layers {0} / 10
+		// StudyingLabel: Researching
 	}
 
 	DomainUI: {
@@ -162,17 +190,6 @@ HalibutText: {
 		Trend4: Infusion violente
 		Trend5: Effondrement instantané
 		SummaryFormat: Diagnostic actuel : {0} [Tendance d'érosion : {1}]
-	}
-
-	SkillLibraryUI: {
-		TitleText: Bibliothèque de compétences
-		EmptyText:
-			'''
-			La bibliothèque de compétences est vide.
-			Appuyez sur [W] sur une compétence pour la ranger.
-			'''
-		HintAddToList: "[W] Ajouter à la liste"
-		HintRemoveFromList: "[W] Ranger dans la bibliothèque"
 	}
 }
 

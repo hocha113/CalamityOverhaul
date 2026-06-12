@@ -66,9 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 return resurrectionSystem != null && resurrectionSystem.Ratio >= 0.7f;
             },
             OnStarted = (save, player) => {
-                if (!HalibutUIHead.Instance.Open) {
-                    HalibutUIHead.Instance.Open = true;
-                }
+                LegendWeapon.HalibutLegend.UI.Atlas.HalibutAtlas.Instance?.Open();
                 player.GetOverride<HalibutPlayer>().CloseEyes();
             },
             BlockedBy = ScenarioBlockers.Boss | ScenarioBlockers.ActiveScenario,

@@ -44,6 +44,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 研究什么鱼才能得到这个技能？
         /// </summary>
         public virtual int UnlockFishID => ItemID.None;
+        /// <summary>
+        /// 深渊图鉴中的深度带：0浅滩、1远洋、2深海、3深渊
+        /// <br/>返回-1表示未手动指定，由图鉴的内置分配表（或解锁鱼的稀有度回退规则）决定
+        /// </summary>
+        public virtual int AtlasTier => -1;
         protected override void VaultRegister() {
             Instances.Add(this);
             TypeToID[GetType()] = Instances.Count;

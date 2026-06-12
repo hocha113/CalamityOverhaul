@@ -66,6 +66,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SeaDomainField { get; set; }
         public static Asset<Effect> OceanCurrentTrail { get; set; }
         public static Asset<Effect> OceanWaterBlob { get; set; }
+        public static Asset<Effect> HalibutPanel { get; set; }
+        public static Asset<Effect> HalibutAtlasBg { get; set; }
         public static Asset<Effect> ElysiumHalo { get; set; }
         public static Asset<Effect> ElysiumStaff { get; set; }
         public static Asset<Effect> SerpentTrail { get; set; }

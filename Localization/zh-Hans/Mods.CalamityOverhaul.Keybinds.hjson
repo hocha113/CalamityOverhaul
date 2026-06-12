@@ -1,6 +1,6 @@
 QuestLog_Key.DisplayName: 任务书:开关主界面
 QuestManager_Key.DisplayName: 委托任务:开关管理面板
-Legend_UIControl.DisplayName: 开关传奇武器HUD
+Legend_UIControl.DisplayName: 大比目鱼:开关深渊图鉴
 Legend_Domain.DisplayName: 领域展开
 Legend_Teleport.DisplayName: 领域传送
 Legend_Restart.DisplayName: 重启自身
@@ -14,6 +14,7 @@ Halibut_Clone.DisplayName: 大比目鱼:过去身入侵
 Halibut_Superposition.DisplayName: 大比目鱼:叠加
 Halibut_Skill_L.DisplayName: 大比目鱼:向左切换技能
 Halibut_Skill_R.DisplayName: 大比目鱼:向右切换技能
+Halibut_SkillWheel.DisplayName: 大比目鱼:按住打开技能轮盘
 Murasama_TriggerKey.DisplayName: 鬼妖村正:扳机键
 Murasama_DownKey.DisplayName: 鬼妖村正:下砸
 WeponSkill_Q.DisplayName: 武器:左技能键

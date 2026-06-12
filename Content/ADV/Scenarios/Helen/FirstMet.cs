@@ -103,9 +103,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename2.Value, Line19.Value);
             Add(Rolename2.Value, Line20.Value);
             Add(Rolename2.Value, Line21.Value, onComplete: () => {
-                if (!HalibutUIHead.Instance.Open) {
-                    HalibutUIHead.Instance.Open = true;//打开比目鱼UI以便展示
-                }
+                LegendWeapon.HalibutLegend.UI.Atlas.HalibutAtlas.Instance?.Open();//打开深渊图鉴以便展示
             });
         }
 

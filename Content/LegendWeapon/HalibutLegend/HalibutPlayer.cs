@@ -254,20 +254,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return 0;
             }
 
+            //第十眼的存在条件失效时强制熄灭（外圈不满九眼或不再满足时代唯一）
+            if (save.ExtraEyeActive && (save.activationSequence.Count < 9 || !TheOnlyBornOfAnEra())) {
+                save.ExtraEyeActive = false;
+            }
+
             int baseCount = 0;
             foreach (var eye in save.activationSequence) {
                 if (eye.IsActive) {
                     baseCount++;
                 }
             }
-
-            //检查第十眼（额外之眼）
-            if (save.activationSequence.Count >= 9 && TheOnlyBornOfAnEra()) {
-                //第十眼的激活状态需要从DomainUI获取（因为它是UI专属的额外眼睛）
-                //但核心计数逻辑在这里，UI只负责显示
-                if (DomainUI.Instance?.IsExtraEyeActive == true) {
-                    baseCount++;
-                }
+            if (save.ExtraEyeActive) {
+                baseCount++;
             }
 
             return baseCount;
@@ -304,7 +303,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             //第十眼的复苏贡献
-            if (DomainUI.Instance?.IsExtraEyeActive == true) {
+            if (save.ExtraEyeActive) {
                 bool crashed = 10 <= crashLevel;
                 if (crashed) {
                     rate += CrashedEyeSideEffectRate;
@@ -451,22 +450,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             if (IsInteractionLockedTime > 0) {
-                IsInteractionLockedTime--;
-                if (!DomainUI.Instance.IsInteractionLocked) {
-                    DomainUI.Instance.IsInteractionLocked = true;
-                }
-            }
-            else {
-                if (DomainUI.Instance.IsInteractionLocked) {
-                    DomainUI.Instance.IsInteractionLocked = false;
-                }
+                IsInteractionLockedTime--;//交互锁定的视觉表现由UI层直接读取本计时器
             }
 
             YourLevelIsTooLow.TryAutoActivate(Player);
 
-            if (CWRKeySystem.Legend_UIControl.JustPressed && HalibutUIHead.Instance != null && HalibutUIHead.Instance.Active) {
-                SoundEngine.PlaySound(CWRSound.ButtonZero);
-                HalibutUIHead.Instance.Open = !HalibutUIHead.Instance.Open;
+            if (CWRKeySystem.Legend_UIControl.JustPressed && UI.Atlas.HalibutAtlas.Instance != null) {
+                UI.Atlas.HalibutAtlas.Instance.Toggle();
             }
 
             //海域领域激活检测，不要在服务器上访问按键

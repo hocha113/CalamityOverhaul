@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -19,12 +19,40 @@
 }
 
 HalibutText: {
-	SkillSlot: {
-		Hover1: 左键: 选择
-		Hover2: 右键: 置顶
-		Hover3: 滚轮: 滚动
-		Hover4: 长按: 拖拽
-		Hover5: W键: 收入库中
+	HalibutAtlas: {
+		TitleText: 深 渊 图 鉴
+		NavSea: 技能海域
+		NavEyes: 领域之眼
+		TierName0: 浅滩 · 浮光层
+		TierName1: 远洋 · 微光层
+		TierName2: 深海 · 弱光层
+		TierName3: 深渊 · 无光层
+		DockLabel: 装备栏 {0} / {1} · 点击选用
+		LockedNodeName: 未知的鱼影
+		LockedNodeHint: 在研究祭坛中研究 {0} 后点亮此技能
+		EquipBtn: 装 备
+		UnequipBtn: 卸 下
+		SelectBtn: 选 用
+		SelectedTag: 当 前
+		LoadoutFullHint: 装备栏已满
+		UnlockFishLine: 研究来源：{0}
+		AltarTitle: 研究祭坛
+		AltarHint: 手持一条可研究的鱼点击祭坛放入，研究完成后对应技能将在海域中点亮
+		DragHint: 长按拖拽技能到装备栏 · 滚轮下潜
+		LayerStateFormat: 领域 {0} 层
+		UnlockCountFormat: 已点亮 {0} / {1}
+	}
+
+	HalibutSkillWheel: {
+		ReleaseHint: 松开 {0} 选定技能
+		CancelHint: 右键取消
+		NoSelection: 未选定技能
+	}
+
+	HalibutHud: {
+		OpenAtlasHint: 左键或 {0} 打开深渊图鉴，{1} 呼出技能轮盘
+		DomainLayerFormat: 领域层数 {0} / 10
+		StudyingLabel: 研究中
 	}
 
 	DomainUI: {
@@ -162,17 +190,6 @@ HalibutText: {
 		Trend4: 剧烈灌注
 		Trend5: 瞬间崩坏
 		SummaryFormat: 当前诊断：{0} [侵蚀态势：{1}]
-	}
-
-	SkillLibraryUI: {
-		TitleText: 技能库
-		EmptyText:
-			'''
-			技能库为空
-			在技能上按[W]可收纳技能
-			'''
-		HintAddToList: "[W]加入列表"
-		HintRemoveFromList: "[W]收入库中"
 	}
 }
 

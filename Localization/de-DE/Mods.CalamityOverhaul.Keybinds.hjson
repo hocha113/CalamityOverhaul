@@ -14,6 +14,7 @@ Halibut_Clone.DisplayName: Heilbutt: Vergangenheits-Ich-Invasion
 Halibut_Superposition.DisplayName: Heilbutt: Superposition
 Halibut_Skill_L.DisplayName: Heilbutt: Fähigkeit nach links wechseln
 Halibut_Skill_R.DisplayName: Heilbutt: Fähigkeit nach rechts wechseln
+// Halibut_SkillWheel.DisplayName: Halibut: Hold to open skill wheel
 Murasama_TriggerKey.DisplayName: Murasama: Auslösetaste
 Murasama_DownKey.DisplayName: Murasama: Hinunterstoßen
 WeponSkill_Q.DisplayName: Waffe: Linke Fähigkeitstaste

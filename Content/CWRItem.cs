@@ -414,7 +414,7 @@ namespace CalamityOverhaul.Content
                 tooltips.Add(line);
             }
 
-            HalibutUIPanel.FishSkillTooltip(item, tooltips);
+            HalibutSkillTips.FishSkillTooltip(item, tooltips);
 
             if (item.CWR().LegendData != null && item.CWR().LegendData.DontUpgradeName == SaveWorld.WorldFullName) {
                 var line = new TooltipLine(CWRMod.Instance, "LegendItemUpgradeDisable", LegendItemUpgradeDisable.Value);
