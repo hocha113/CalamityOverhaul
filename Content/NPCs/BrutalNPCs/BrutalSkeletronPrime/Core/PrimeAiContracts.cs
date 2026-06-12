@@ -90,6 +90,32 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             );
         }
 
+        /// <summary>
+        /// 该机械臂状态是否为"蓄力已可见"的收尾攻击序列（预警环/扇形/光束已写在场上，必须兑现）。
+        /// 单一事实源，两处共用：<see cref="PrimeArm"/> 据此延后编队入列；
+        /// 指挥/指令状态据此推迟冲撞与编队类招式的发动（头部等臂兑现完再动身）
+        /// </summary>
+        public static bool IsCommittedArmState(int armStateIndex) {
+            return armStateIndex == (int)PrimeArmStateIndex.CannonMortar
+                || armStateIndex == (int)PrimeArmStateIndex.LaserSweep
+                || armStateIndex == (int)PrimeArmStateIndex.LaserChargedShot;
+        }
+
+        /// <summary>是否仍有存活机械臂处于收尾蓄力攻击中（基于同步槽判定，两端一致）</summary>
+        public static bool AnyArmCommitted() {
+            int[] arms = [CWRWorld.primeCannon, CWRWorld.primeVice, CWRWorld.primeSaw, CWRWorld.primeLaser];
+            foreach (int index in arms) {
+                if (index < 0 || index >= Main.maxNPCs) {
+                    continue;
+                }
+                NPC arm = Main.npc[index];
+                if (arm.active && IsCommittedArmState((int)arm.ai[PrimeAiSlots.ArmStateSlot])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static bool IsDeathPerformance(NPC head) {
             return head != null && head.active && head.ai[PrimeAiSlots.HeadPhase] == PrimePhase.DeathShow;
         }

@@ -125,8 +125,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     {
         public override string StateName => "LaserChargedShot";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserChargedShot;
-        //充能粒子与光束已经写在场上：蓄力→轰击完整走完再随编队走
-        public override bool BlocksFormationOverride => true;
 
         internal static float ChargeTime => 45f;
         /// <summary>开火后的保持帧数（覆盖光束 10+42+12 的完整生命）</summary>
@@ -337,8 +335,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     {
         public override string StateName => "LaserSweep";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.LaserSweep;
-        //扇形预警与扫射光束已经写在场上：预警必须兑现，不被编队硬切
-        public override bool BlocksFormationOverride => true;
 
         internal static float SweepHalfArc => 0.42f;
 

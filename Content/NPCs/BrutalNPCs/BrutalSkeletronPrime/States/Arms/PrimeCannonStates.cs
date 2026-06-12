@@ -201,8 +201,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
     {
         public override string StateName => "CannonMortar";
         public override PrimeArmStateIndex StateIndex => PrimeArmStateIndex.CannonMortar;
-        //落点预警环已经写在场上：打完这一发再随编队走，蓄力不被头部冲刺/编队硬切
-        public override bool BlocksFormationOverride => true;
 
         internal static int TelegraphFrames => 50;
 

@@ -188,8 +188,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>
         /// 编队接管：头部冲撞或白昼狂暴 → 拉开为高速旋转护盾编队。
-        /// <para>"蓄力已可见"的收尾攻击（<see cref="PrimeArmStateBase.BlocksFormationOverride"/>）
-        /// 不被硬切：该臂先兑现这一手再延后入列，消解头部冲刺与机械臂蓄力的时序冲突。
+        /// <para>"蓄力已可见"的收尾攻击（<see cref="PrimeFacts.IsCommittedArmState"/>）
+        /// 不被硬切：该臂先兑现这一手再延后入列（头部调度侧也会等待，见指挥状态），
+        /// 消解头部冲刺与机械臂蓄力的时序冲突。
         /// 唯一例外是电弧风车——链锁必须立即拉起，改为把蓄力干净取消回基态。</para>
         /// </summary>
         private bool HandleFormationOverride(PrimeStateIndex headState) {
@@ -200,8 +201,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 crossAnchorLatched = false;
             }
 
-            bool committed = armStateMachine?.CurrentState is PrimeArmStateBase current
-                && current.BlocksFormationOverride;
+            bool committed = PrimeFacts.IsCommittedArmState((int)npc.ai[PrimeAiSlots.ArmStateSlot]);
 
             if (headState == PrimeStateIndex.TetherSpin) {
                 //电弧风车 40 帧内就要拉链就位，等不了收尾：干净取消蓄力（走 OnExit 清理）
