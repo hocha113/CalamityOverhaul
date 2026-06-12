@@ -482,7 +482,7 @@ HackTime: {
 	ThreatHigh: ALTA
 	ThreatModerate: MODERADA
 	ThreatLow: BAIXA
-	DefLabel: DEF
+	DefLabel: DEFESA
 	DmgLabel: DANO
 	KbResLabel: RES.REP
 	Breach: VIOLACAO
@@ -507,7 +507,7 @@ HackTime: {
 	TileScanClass: CLASSE
 	TileScanSize: TAMANHO
 	TileScanHardness: DUREZA
-	TileScanStatus: STATUS
+	TileScanStatus: ESTADO
 	TileScanCrafting: ESTACAO DE FABRICACAO
 	TileScanContainer: RECIPIENTE
 	TileScanLight: FONTE DE LUZ
@@ -522,7 +522,7 @@ HackTime: {
 	TileScanActive: ATIVO
 	TileScanInactive: INATIVO
 	TileScanSealed: SELADO
-	TileScanOnline: ONLINE
+	TileScanOnline: EM LINHA
 	TileScanIntact: INTACTO
 	TileScanMisc: DIVERSOS
 	TileScanMiscPile: PILHA DIVERSA
@@ -595,12 +595,12 @@ HackTime: {
 	WaterScanContainmentOpen: CORPO ABERTO
 	WaterScanStatusStill: PARADO
 	WaterScanStatusFlowing: FLUINDO
-	CatParanormal: Paranormal
+	CatParanormal: PARANORMAL
 	WraithScanName: Designacao
 	WraithScanNameValue: Espectro Desconhecido
 	WraithScanType: Entidade Paranormal
 	WraithScanThreat: Inavaliavel ERR://-∞
-	WraithScanStatus: Status
+	WraithScanStatus: ESTADO
 	WraithScanStatusStalking: Espreitando Furtivamente
 	WraithScanStatusWatched: Sendo Observado
 	WraithScanStatusHalt: Paralisado
@@ -621,7 +621,7 @@ HackTime: {
 	TurretScanPhaseCooldown: Resfriamento
 	TurretScanPhaseLocking: Travando
 	TurretScanCircuit: Status do Circuito
-	TurretScanCircuitOnline: Online
+	TurretScanCircuitOnline: EM LINHA
 	TurretScanCircuitShorted: Em Curto-Circuito
 	TurretScanCircuitOverload: Paralisado por Sobrecarga
 	SignalTowerScanName: Torre de Sinal do Vazio

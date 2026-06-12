@@ -456,13 +456,13 @@ HackTime: {
 	Locked: GESPERRT
 	Done: FERTIG
 	Queued: IN WARTESCHLANGE
-	UploadingText: UPLOADING...
-	BreachReady: BREACH PROTOCOL · READY
-	UploadComplete: >> UPLOAD COMPLETE <<
-	UploadQueue: UPLOAD QUEUE
-	TargetLocked: TARGET LOCKED
+	UploadingText: HOCHLADEN...
+	BreachReady: EINDRINGPROTOKOLL · BEREIT
+	UploadComplete: >> UPLOAD ABGESCHLOSSEN <<
+	UploadQueue: UPLOAD-WARTESCHLANGE
+	TargetLocked: ZIEL FIXIERT
 	HpFormat: HP {0}%
-	Protocols: "[{0} PROTOCOLS]"
+	Protocols: "[{0} PROTOKOLLE]"
 	RamDepleted: !! RAM ERSCHÖPFT !!
 	LowRam: ! WENIG RAM !
 	Scanning: SCANNE...
@@ -481,27 +481,27 @@ HackTime: {
 	ThreatModerate: MITTEL
 	ThreatLow: NIEDRIG
 	DefLabel: ABW
-	DmgLabel: DMG
-	KbResLabel: KB.RES
+	DmgLabel: SCHADEN
+	KbResLabel: RÜCKSTOß-RES
 	Breach: EINDRINGEN
 	InitBreach: EINDRINGEN INITIALISIEREN
 	SystemBreach: SYSTEMEINDRINGUNG
 	Rebooting: NEUSTART...
-	SystemOnline: SYSTEM ONLINE
+	SystemOnline: SYSTEM BEREIT
 	MemoryWiped: GEDÄCHTNIS GELÖSCHT
 	Cyberpsychosis: KYBERPSYCHOSE
 	RamRefund: +{0} RAM
 	ActiveText: AKTIV
 	ActivePct: AKTIV {0}%
 	Complete: ABGESCHLOSSEN
-	UploadingPct: UPLOADING {0}%
+	UploadingPct: HOCHLADEN {0}%
 	CatLethal: TÖDLICH
 	CatControl: KONTROLLE
 	CatCovert: VERDECKT
 	CatContagion: ANSTECKUNG
 	CatUnknown: UNBEKANNT
 	CatTileManip: BLOCK-MANIP
-	TileScanName: NAME
+	TileScanName: BEZEICHNUNG
 	TileScanClass: KLASSE
 	TileScanSize: GRÖSSE
 	TileScanHardness: HÄRTE
@@ -524,7 +524,7 @@ HackTime: {
 	TileScanIntact: INTAKT
 	TileScanMisc: SONSTIGES
 	TileScanMiscPile: MISCHHALDE
-	ProjectileScanName: NAME
+	ProjectileScanName: BEZEICHNUNG
 	ProjectileScanClass: KLASSE
 	ProjectileScanSpeed: GESCHW.
 	ProjectileScanKnockback: RÜCKSTOß
@@ -532,7 +532,7 @@ HackTime: {
 	ProjectileScanTimeLeft: RESTZEIT
 	ProjectileScanOwner: QUELLE
 	ProjectileScanAI: KI
-	ProjectileScanPosition: POSITION
+	ProjectileScanPosition: KOORDINATE
 	ProjectileScanHostile: FEINDLICHES PROJEKTIL
 	ProjectileScanFriendly: FREUNDLICHES PROJEKTIL
 	ProjectileScanNeutral: NEUTRALES PROJEKTIL
@@ -541,7 +541,7 @@ HackTime: {
 	ProjectileScanTrap: FALLEN-PROJEKTIL
 	ProjectileScanInfinite: UNENDLICH
 	ProjectileScanOwnerWorld: WELT/UMGEBUNG
-	ItemScanName: NAME
+	ItemScanName: BEZEICHNUNG
 	ItemScanClass: KLASSE
 	ItemScanStack: STAPEL
 	ItemScanValue: WERT
@@ -550,7 +550,7 @@ HackTime: {
 	ItemScanUtility: NUTZEN
 	ItemScanPrefix: PRÄFIX
 	ItemScanTypeId: TYP-ID
-	ItemScanPosition: POSITION
+	ItemScanPosition: KOORDINATE
 	ItemScanWeapon: WAFFE
 	ItemScanTool: WERKZEUG
 	ItemScanArmor: RÜSTUNG
@@ -598,7 +598,7 @@ HackTime: {
 	WraithScanNameValue: Unbekannter Geist
 	WraithScanType: Paranormale Entität
 	WraithScanThreat: Nicht bewertbar ERR://-∞
-	WraithScanStatus: Status
+	WraithScanStatus: STATUS
 	WraithScanStatusStalking: Heimliche Jagd
 	WraithScanStatusWatched: Beobachtet
 	WraithScanStatusHalt: Angehalten
@@ -608,7 +608,7 @@ HackTime: {
 	WraithScanIntegrityValue: 0x??% beschädigt
 	WraithScanOrigin: Herkunft
 	WraithScanOriginValue: Eintrag nicht gefunden
-	TurretScanName: Codename
+	TurretScanName: DECKNAME
 	TurretScanLaserName: Leere · Hauptgeschütz-Array
 	TurretScanGatlinName: Leere · Gatling-Turm
 	TurretScanType: Automatische Verteidigung
@@ -619,14 +619,14 @@ HackTime: {
 	TurretScanPhaseCooldown: Abkühlung
 	TurretScanPhaseLocking: Zielerfassung
 	TurretScanCircuit: Schaltkreis
-	TurretScanCircuitOnline: Online
+	TurretScanCircuitOnline: ONLINE
 	TurretScanCircuitShorted: Kurzschluss
 	TurretScanCircuitOverload: Überlast-Lähmung
 	SignalTowerScanName: Leere · Signalturm
 	SignalTowerScanType: Weitbereichs-Kernmaschine
 	SignalTowerScanThreat: Strategisches Asset
 	SignalTowerScanStatus: Turmstatus
-	SignalTowerScanStatusOnline: Online — Sendebereit
+	SignalTowerScanStatusOnline: ONLINE — SENDEBEREIT
 	SignalTowerScanStatusBroadcasting: Sendet
 	SignalTowerScanStatusElectrified: Restladung
 	SignalTowerScanProtocol: Verfügbare Protokolle

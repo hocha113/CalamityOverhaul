@@ -467,7 +467,7 @@ HackTime: {
 	LowRam: ! RAM FAIBLE !
 	Scanning: ANALYSE...
 	AnalysisComplete: ANALYSE TERMINÉE
-	TypeLabel: TYPE
+	TypeLabel: TYP
 	BossClass: CLASSE BOSS
 	EliteUnit: UNITÉ ÉLITE
 	HostileEntity: ENTITÉ HOSTILE
@@ -498,7 +498,7 @@ HackTime: {
 	CatLethal: LÉTAL
 	CatControl: CONTRÔLE
 	CatCovert: FURTIF
-	CatContagion: CONTAGION
+	CatContagion: PROPAGATION
 	CatUnknown: INCONNU
 	CatTileManip: MANIP. BLOCS
 	TileScanName: NOM
@@ -510,7 +510,7 @@ HackTime: {
 	TileScanContainer: CONTENEUR
 	TileScanLight: SOURCE DE LUMIÈRE
 	TileScanFurniture: MEUBLE
-	TileScanBlock: STRUCTURE
+	TileScanBlock: BLOC
 	TileScanDungeon: MATÉRIAU DU DONJON
 	TileScanLihzahrd: TECH LIHZAHRD
 	TileScanHardnessExtreme: EXTRÊME
@@ -521,7 +521,7 @@ HackTime: {
 	TileScanInactive: INACTIF
 	TileScanSealed: SCELLÉ
 	TileScanOnline: EN LIGNE
-	TileScanIntact: INTACT
+	TileScanIntact: INTÉGRITÉ
 	TileScanMisc: DIVERS
 	TileScanMiscPile: PILE DIVERS
 	ProjectileScanName: NOM
@@ -530,9 +530,9 @@ HackTime: {
 	ProjectileScanKnockback: RECUL
 	ProjectileScanPenetrate: PÉNÉTRATION
 	ProjectileScanTimeLeft: TEMPS RESTANT
-	ProjectileScanOwner: SOURCE
+	ProjectileScanOwner: ORIGINE
 	ProjectileScanAI: IA
-	ProjectileScanPosition: POSITION
+	ProjectileScanPosition: COORD.
 	ProjectileScanHostile: PROJECTILE HOSTILE
 	ProjectileScanFriendly: PROJECTILE ALLIÉ
 	ProjectileScanNeutral: PROJECTILE NEUTRE
@@ -550,7 +550,7 @@ HackTime: {
 	ItemScanUtility: UTILITÉ
 	ItemScanPrefix: PRÉFIXE
 	ItemScanTypeId: ID TYPE
-	ItemScanPosition: POSITION
+	ItemScanPosition: COORD.
 	ItemScanWeapon: ARME
 	ItemScanTool: OUTIL
 	ItemScanArmor: ARMURE
@@ -593,7 +593,7 @@ HackTime: {
 	WaterScanContainmentOpen: MASSE OUVERTE
 	WaterScanStatusStill: IMMOBILE
 	WaterScanStatusFlowing: EN COURS
-	CatParanormal: Paranormal
+	CatParanormal: PARANORMAL
 	WraithScanName: Désignation
 	WraithScanNameValue: Spectre inconnu
 	WraithScanType: Entité paranormale
