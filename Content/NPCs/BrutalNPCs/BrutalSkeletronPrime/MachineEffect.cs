@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -37,7 +38,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     }
 
     ///<summary>
-    ///机械工业天空效果
+    ///机械工业天空：全程序化着色器天空（锈红工业战争夜空——熔炉地平线、
+    ///天穹齿轮剪影、滚动阴云、探照灯与上升余烬），并实时响应机械Boss行为——
+    ///冲刺/俯冲瞬间天空如闪雷亮起、蓄力时地平线警报呼吸、死亡演出时全屏过载电涌
     ///</summary>
     internal class MachineSky : CustomSky, ICWRLoader
     {
@@ -45,15 +48,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         private bool active;
         private float intensity;
 
-        //机械齿轮转动效果
-        private float gearRotation = 0f;
-        private float gearSpeed = 0.5f;
-
-        //电路闪烁效果
-        private float circuitFlicker = 0f;
-
-        //全局机械脉动
-        private float mechanicalPulse = 0f;
+        //Boss行为响应通道（目标值由 MachineEffect 每帧聚合）
+        private float warn;          //蓄力警告 0-1
+        private float overload;      //死亡过载 0-1
+        private float flash;         //闪电强度，触发后指数衰减
+        private float flashX = 0.5f; //闪电屏幕x位置（兼作电弧形状种子）
 
         void ICWRLoader.LoadData() {
             if (VaultUtils.isServer) {
@@ -61,39 +60,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
             SkyManager.Instance[Name] = this;
 
-            //创建暗红工业滤镜
+            //暗红工业滤镜（运行时随闪电/警告/过载动态调节）
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
-                .UseColor(0.15f, 0.08f, 0.08f)//暗红工业调
+                .UseColor(0.15f, 0.08f, 0.08f)
                 .UseOpacity(0.4f), EffectPriority.High);
         }
 
-        public override void Activate(Vector2 position, params object[] args) {
-            active = true;
-            intensity = 0f;
-            gearRotation = 0f;
-        }
+        public override void Activate(Vector2 position, params object[] args) => active = true;
 
-        public override void Deactivate(params object[] args) {
-            active = false;
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
-            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
-                return;
-            }
-            if (maxDepth >= float.MaxValue && minDepth < float.MaxValue) {
-                //暗红机械背景
-                Color bgColor = new Color(18, 10, 10);
-                spriteBatch.Draw(
-                    VaultAsset.placeholder2.Value,
-                    new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
-                    bgColor * intensity * 0.64f
-                );
-            }
-
-            //绘制电路火花
-            DrawCircuitSparks(spriteBatch);
-        }
+        public override void Deactivate(params object[] args) => active = false;
 
         public override bool IsActive() => active || intensity > 0;
 
@@ -105,7 +80,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         public override void Update(GameTime gameTime) {
             _ = MachineEffect.Cek();
 
-            //强度变化
+            //强度淡入淡出
             if (MachineEffect.IsActive) {
                 if (intensity < 1f) {
                     intensity += 0.02f;
@@ -118,60 +93,112 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            gearRotation += gearSpeed * 0.016f;
-            if (gearRotation > MathHelper.TwoPi) {
-                gearRotation -= MathHelper.TwoPi;
+            //平滑跟随聚合目标；闪电为瞬时脉冲 + 指数衰减
+            warn = MathHelper.Lerp(warn, MachineEffect.SkyWarnTarget, 0.10f);
+            overload = MathHelper.Lerp(overload, MachineEffect.SkyOverloadTarget, 0.08f);
+            if (MachineEffect.ConsumeSkyFlash(out float newFlashX)) {
+                flash = 1f;
+                flashX = newFlashX;
+            }
+            flash *= 0.88f;
+            if (flash < 0.012f) {
+                flash = 0f;
             }
 
-            mechanicalPulse += 0.04f;
-            if (mechanicalPulse > MathHelper.TwoPi) {
-                mechanicalPulse -= MathHelper.TwoPi;
+            UpdateSceneFilter();
+        }
+
+        //动态调节全屏滤镜：常态暗红压抑；闪电瞬间整屏提亮泛蓝；过载时向红色警报脉动
+        private void UpdateSceneFilter() {
+            Filter filter = Filters.Scene[Name];
+            ScreenShaderData shaderData = filter?.GetShader();
+            if (shaderData == null) {
+                return;
             }
 
-            //更新电路闪烁
-            circuitFlicker = (float)Math.Sin(mechanicalPulse * 1.2f) * 0.3f + 0.4f;
+            Vector3 filterColor = new Vector3(0.15f, 0.08f, 0.08f);
+            if (overload > 0.01f) {
+                float pulse = 0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 16f);
+                filterColor = Vector3.Lerp(filterColor, new Vector3(0.42f, 0.06f, 0.03f), overload * (0.3f + 0.4f * pulse));
+            }
+            if (flash > 0.01f) {
+                filterColor = Vector3.Lerp(filterColor, new Vector3(0.80f, 0.88f, 1.05f), flash * 0.85f);
+            }
+
+            shaderData.UseColor(filterColor.X, filterColor.Y, filterColor.Z);
+            shaderData.UseOpacity(0.4f + warn * 0.05f - flash * 0.06f);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
+            if (intensity <= 0.01f || VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
+                return;
+            }
+            if (maxDepth < 0 || minDepth >= 0) {
+                return;
+            }
+
+            Effect shader = EffectLoader.MechSky?.Value;
+            if (shader == null) {
+                //着色器缺失时回退为纯色叠加，氛围不至于完全丢失
+                spriteBatch.Draw(
+                    VaultAsset.placeholder2.Value,
+                    new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                    new Color(18, 10, 10) * (intensity * 0.64f)
+                );
+                return;
+            }
+
+            GraphicsDevice gd = Main.instance.GraphicsDevice;
+            int vpW = gd.Viewport.Width;
+            int vpH = gd.Viewport.Height;
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
+
+            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["uIntensity"]?.SetValue(intensity);
+            shader.Parameters["uAspectRatio"]?.SetValue(vpW / (float)vpH);
+            shader.Parameters["uWarn"]?.SetValue(warn);
+            shader.Parameters["uFlash"]?.SetValue(flash);
+            shader.Parameters["uFlashX"]?.SetValue(flashX);
+            shader.Parameters["uOverload"]?.SetValue(overload);
+            shader.CurrentTechnique.Passes[0].Apply();
+
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, new Rectangle(0, 0, vpW, vpH), Color.White);
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
+                null, Main.BackgroundViewMatrix.TransformationMatrix);
         }
 
         public override Color OnTileColor(Color inColor) {
-            //应用暗红工业调
-            if (intensity > 0.1f) {
-                float mechR = 0.95f;
-                float mechG = 0.6f;
-                float mechB = 0.6f;
-
-                Color tintedColor = new Color(
-                    (int)(inColor.R * mechR),
-                    (int)(inColor.G * mechG),
-                    (int)(inColor.B * mechB),
-                    inColor.A
-                );
-
-                return Color.Lerp(inColor, tintedColor, intensity * 0.35f);
+            if (intensity <= 0.1f) {
+                return inColor;
             }
-            return inColor;
-        }
 
-        private void DrawCircuitSparks(SpriteBatch sb) {
-            //电路火花效果
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            int sparkCount = (int)(30 * circuitFlicker * intensity);
+            //暗红工业调
+            Color tintedColor = new Color(
+                (int)(inColor.R * 0.95f),
+                (int)(inColor.G * 0.6f),
+                (int)(inColor.B * 0.6f),
+                inColor.A
+            );
+            Color result = Color.Lerp(inColor, tintedColor, intensity * 0.35f);
 
-            for (int i = 0; i < sparkCount; i++) {
-                int x = Main.rand.Next(Main.screenWidth);
-                int y = Main.rand.Next(Main.screenHeight);
-                int size = Main.rand.Next(2, 4);
-                float sparkAlpha = Main.rand.NextFloat(0.3f, 0.7f);
-
-                Color sparkColor = new Color(255, 150, 120);
-                sb.Draw(pixel,
-                    new Rectangle(x, y, size, size),
-                    sparkColor * (sparkAlpha * circuitFlicker * intensity));
+            //闪电瞬间整个世界被蓝白电光照亮
+            if (flash > 0.01f) {
+                Color litColor = new Color(205, 220, 255, inColor.A);
+                result = Color.Lerp(result, litColor, flash * 0.5f * intensity);
             }
+            return result;
         }
     }
 
     ///<summary>
-    ///机械场景效果管理器
+    ///机械场景效果管理器：负责激活判定、网络同步与音乐，
+    ///并聚合机械Boss的 <see cref="MechBossVisualState"/> 行为状态驱动天空响应
     ///</summary>
     internal class MachineEffect : ModSystem
     {
@@ -256,12 +283,84 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             IsActive = true;
         }
 
+        #region 天空行为聚合
+        /// <summary>蓄力警告聚合目标：所有在场机械Boss中最强的警告强度，驱动天空地平线警报</summary>
+        public static float SkyWarnTarget { get; private set; }
+        /// <summary>死亡过载聚合目标：任一机械Boss进入死亡演出时为1，驱动天空过载电涌</summary>
+        public static float SkyOverloadTarget { get; private set; }
+        private static readonly Dictionary<int, MechBossVisualMode> prevVisualModes = new();
+        private static bool skyFlashPending;
+        private static float skyFlashX = 0.5f;
+
+        /// <summary>消费一次天空闪电触发（由 <see cref="MachineSky.Update"/> 调用）</summary>
+        public static bool ConsumeSkyFlash(out float screenX) {
+            screenX = skyFlashX;
+            if (!skyFlashPending) {
+                return false;
+            }
+            skyFlashPending = false;
+            return true;
+        }
+
+        private static bool IsMechBoss(int type) =>
+            type == NPCID.TheDestroyer || type == NPCID.SkeletronPrime
+            || type == NPCID.Retinazer || type == NPCID.Spazmatism;
+
+        //轮询机械Boss的视觉状态（零侵入，不改Boss AI）：
+        //Dashing上升沿（毁灭者俯冲/连冲、机械骷髅王旋冲、双子冲刺）→ 触发天空闪电；
+        //Warning强度 → 地平线警报呼吸；
+        //死亡演出（Warning且intensity≥0.99，常规蓄力最高0.95）→ 全屏过载电涌
+        private static void UpdateSkyBossResponse() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            if (!IsActive) {
+                if (prevVisualModes.Count > 0) {
+                    prevVisualModes.Clear();
+                }
+                SkyWarnTarget = 0f;
+                SkyOverloadTarget = 0f;
+                skyFlashPending = false;
+                return;
+            }
+
+            float warnMax = 0f;
+            float overloadMax = 0f;
+            foreach (var npc in Main.ActiveNPCs) {
+                if (!IsMechBoss(npc.type)) {
+                    continue;
+                }
+
+                var (mode, visIntensity, progress) = MechBossVisualState.Read(npc.whoAmI);
+
+                prevVisualModes.TryGetValue(npc.whoAmI, out MechBossVisualMode prevMode);
+                if (mode == MechBossVisualMode.Dashing && prevMode != MechBossVisualMode.Dashing) {
+                    skyFlashPending = true;
+                    skyFlashX = MathHelper.Clamp(
+                        (npc.Center.X - Main.screenPosition.X) / Main.screenWidth, 0.12f, 0.88f);
+                }
+                prevVisualModes[npc.whoAmI] = mode;
+
+                if (mode == MechBossVisualMode.Warning) {
+                    warnMax = Math.Max(warnMax, visIntensity * progress);
+                    if (visIntensity >= 0.99f) {
+                        overloadMax = 1f;
+                    }
+                }
+            }
+            SkyWarnTarget = warnMax;
+            SkyOverloadTarget = overloadMax;
+        }
+        #endregion
+
         private static bool dompMusicWindown;
 
         public override void PostUpdateEverything() {
             if (!Main.gameMenu) {
                 Start();
             }
+
+            UpdateSkyBossResponse();
 
             if (!Cek()) {
                 dompMusicWindown = false;

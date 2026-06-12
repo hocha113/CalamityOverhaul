@@ -32,6 +32,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> TwinsEyeOverlay { get; set; }
         public static Asset<Effect> TwinsDeathRayBeam { get; set; }
         public static Asset<Effect> TwinsChargeVortex { get; set; }
+        public static Asset<Effect> MechSky { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
