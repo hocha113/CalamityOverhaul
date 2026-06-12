@@ -348,11 +348,6 @@ namespace CalamityOverhaul.Content
                 VaultUtils.Text(hookDownText1, Color.Red);
             }
 
-            if (!CWRRef.VersionMatched) {
-                string text = Language.GetTextValue("Mods.CalamityOverhaul.UI.CompatibilityAlert.ContentText");
-                SpwanTextProj.New(Player, () => VaultUtils.Text(text, Color.GreenYellow), 240);
-            }
-
             if (!ImproveRef.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
                 string improvGameText = OnEnterWorld_ImproveGameWarning.Value;
                 SpwanTextProj.New(Player, () => VaultUtils.Text(improvGameText, Color.Red), 210);

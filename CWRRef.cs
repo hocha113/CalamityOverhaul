@@ -27,11 +27,6 @@ namespace CalamityOverhaul
     internal static class CWRRef
     {
         /// <summary>
-        /// Calamity Mod的目标适配版本，版本不一致时仅用于触发<see cref="VersionMatched"/>相关的兼容性提示，
-        /// 不作为功能开关，功能可用性由各反射成员的空值防护自行决定
-        /// </summary>
-        public static Version TargetCalamityVersion => new(2, 1, 2);
-        /// <summary>
         /// 是否安装了Calamity Mod，不校验版本。
         /// 反射访问自身具备成员级空值防护与异常记录，调用方不应再用版本匹配做一刀切
         /// </summary>
@@ -42,17 +37,6 @@ namespace CalamityOverhaul
             }
         }
         private static bool? _has = null;
-        /// <summary>
-        /// 安装的Calamity Mod版本是否与<see cref="TargetCalamityVersion"/>完全一致，
-        /// 仅用于兼容性提醒等提示性内容，不要用它来开关具体功能
-        /// </summary>
-        public static bool VersionMatched {
-            get {
-                _versionMatched ??= ModLoader.TryGetMod("CalamityMod", out Mod mod) && mod.Version == TargetCalamityVersion;
-                return _versionMatched.Value;
-            }
-        }
-        private static bool? _versionMatched = null;
 
         private static Type DownedBossSystemType;
 
@@ -478,7 +462,6 @@ namespace CalamityOverhaul
 
         internal static void UnLoad() {
             _has = null;
-            _versionMatched = null;
             loggedReflectionFailures.Clear();
             DownedBossSystemType = null;
             downedDesertScourgeProp = null;
