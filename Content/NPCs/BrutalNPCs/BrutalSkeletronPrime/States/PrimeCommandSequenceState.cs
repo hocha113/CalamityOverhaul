@@ -54,13 +54,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private static void BroadcastTelegraph(PrimeStateContext context) {
             int step = context.AttackPhaseIndex % 7;
 
-            //冲撞步打方向线，其余步在头部打一圈"指令下达"扫描环
+            //只有冲撞步需要空间预警（方向线）；
+            //指令步的预告由机体充能热感表达，不放置无躲避语义的视觉
             if (step is 1 or 5) {
                 PrimeTelegraphLine.SpawnLine(context.Npc, context.Npc.Center,
                     DirectionToTarget(context).ToRotation(), TelegraphLead);
-            }
-            else {
-                PrimeTelegraphLine.SpawnRing(context.Npc, context.Npc.Center, 200f, TelegraphLead);
             }
 
             PrimeCommandKind cmd = step switch {

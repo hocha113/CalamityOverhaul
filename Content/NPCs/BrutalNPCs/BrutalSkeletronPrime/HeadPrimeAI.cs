@@ -773,9 +773,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 drawPos -= Main.screenPosition;
                 spriteBatch.Draw(BSPRAM.Value, drawPos, drawRec, color7, rCurrentNPCRotation, drawOrig, 1f, SpriteEffects.None, 0f);
                 spriteBatch.Draw(BSPRAMGlow.Value, drawPos, drawRec, Color.White, rCurrentNPCRotation, drawOrig, 1f, SpriteEffects.None, 0f);
-
-                int num24 = Dust.NewDust(rCurrentNPC.Center, 10, 10, DustID.FireworkFountain_Red, 0, 0, 0, Color.Gold, 0.5f);
-                Main.dust[num24].noGravity = false;
                 return;
             }
 

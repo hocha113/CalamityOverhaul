@@ -13,13 +13,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     /// <br/>ai[0] = 模式 + 扇形半角编码（mode = 整数部分 0线/1扇/2环；小数部分×10 = 扇形半角弧度）
     /// <br/>ai[1] = 旋转（线/扇，弧度）或 半径（环，像素）
     /// <br/>ai[2] = 总时长（帧）；充能进度由 timeLeft 推导，各端确定性动画无需额外同步
+    /// <para>渲染约定：线模式（冲刺预判）为纯贴图多层绘制，不经过任何着色器；
+    /// 扇/环模式经 <c>PrimeTelegraph.fx</c> 的两个独立 technique 显式选择——
+    /// 严禁回到"单着色器 + uniform 模式分支"的写法（MojoShader 分支翻译不可靠，
+    /// 曾把环形代码画上线形面片渲染出莫名的细长椭圆）。</para>
     /// </summary>
     internal class PrimeTelegraphLine : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder2;
 
         internal static float LineLength => 1150f;
-        internal static float LineWidth => 64f;
         internal static float FanRadius => 880f;
         internal static float DefaultFanHalfAngle => 0.45f;
 
@@ -54,10 +57,90 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            switch (Mode) {
+                case 0:
+                    DrawDashTelegraph();
+                    break;
+                case 1:
+                    DrawShaderQuad("FanTech", FanQuad());
+                    break;
+                default:
+                    DrawShaderQuad("RingTech", RingQuad());
+                    break;
+            }
+            return false;
+        }
+
+        #region 线模式：冲刺预判（纯贴图，零着色器依赖）
+
+        /// <summary>
+        /// 冲刺预判警戒线：全长暗红基线指示弹道 + 充能亮段自根部推进 +
+        /// 前端光点 + 根部辉光；临发射 20% 整体白热化。
+        /// 充能段长度 = 进度 × 全长，玩家直读"亮段推满 = 起跳"。
+        /// </summary>
+        private void DrawDashTelegraph() {
+            Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 origin = new(0f, line.Height / 2f);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float rot = Projectile.ai[1];
+            float progress = Progress;
+            float pulse = 0.85f + 0.15f * (float)System.Math.Sin(Main.GlobalTimeWrappedHourly * 9f + Projectile.whoAmI * 0.7f);
+
+            //临发射白热化（最后 20%）
+            float flash = MathHelper.Clamp((progress - 0.8f) / 0.2f, 0f, 1f);
+            Color baseCol = Color.Lerp(new Color(255, 40, 15), new Color(255, 200, 110), flash) with { A = 0 };
+            Color hotCol = Color.Lerp(new Color(255, 150, 40), Color.White, flash) with { A = 0 };
+
+            float lenScale = LineLength / line.Width;
+
+            //层1：全长基线——细、常亮，先把弹道方向交代清楚
+            Main.EntitySpriteDraw(line, drawPos, null, baseCol * (0.5f * pulse),
+                rot, origin, new Vector2(lenScale, 0.22f), SpriteEffects.None, 0);
+
+            //层2：充能亮段——源矩形按进度裁剪，自根部向末端推进
+            if (progress > 0.02f) {
+                Rectangle chargeSrc = new(0, 0, (int)(line.Width * progress), line.Height);
+                Main.EntitySpriteDraw(line, drawPos, chargeSrc, hotCol * 0.9f,
+                    rot, origin, new Vector2(lenScale, 0.42f * pulse), SpriteEffects.None, 0);
+            }
+
+            //层3：充能前端光点
+            Vector2 tip = drawPos + rot.ToRotationVector2() * LineLength * progress;
+            Main.EntitySpriteDraw(glow, tip, null, hotCol * 0.9f,
+                0f, glow.Size() / 2f, 0.55f + 0.3f * flash, SpriteEffects.None, 0);
+
+            //层4：根部枪口辉光
+            Main.EntitySpriteDraw(glow, drawPos, null, baseCol * 0.8f,
+                0f, glow.Size() / 2f, 0.7f * pulse, SpriteEffects.None, 0);
+        }
+
+        #endregion
+
+        #region 扇/环模式：独立 technique 着色器面片
+
+        private readonly record struct QuadInfo(Vector2 Origin, Vector2 Scale, float Rotation);
+
+        private QuadInfo FanQuad() {
+            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            //quad 高度 = 2×长度，保证着色器角度计算等比
+            return new QuadInfo(new Vector2(0f, quad.Height / 2f),
+                new Vector2(FanRadius / quad.Width, FanRadius * 2f / quad.Height), Projectile.ai[1]);
+        }
+
+        private QuadInfo RingQuad() {
+            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            //边长 = 半径×2.6：主环在 r=0.77（恰为请求半径），外侧留收缩圈空间
+            float size = Projectile.ai[1] * 2.6f;
+            return new QuadInfo(quad.Size() / 2f,
+                new Vector2(size / quad.Width, size / quad.Height), 0f);
+        }
+
+        private void DrawShaderQuad(string technique, QuadInfo info) {
             Effect shader = EffectLoader.PrimeTelegraph?.Value;
             if (shader == null) {
                 DrawFallback();
-                return false;
+                return;
             }
 
             SpriteBatch sb = Main.spriteBatch;
@@ -65,45 +148,23 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
+            shader.CurrentTechnique = shader.Techniques[technique];
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             shader.Parameters["uProgress"]?.SetValue(Progress);
             shader.Parameters["uIntensity"]?.SetValue(1f);
-            shader.Parameters["uMode"]?.SetValue((float)Mode);
             shader.Parameters["uFanAngle"]?.SetValue(FanHalfAngle);
             shader.CurrentTechnique.Passes[0].Apply();
 
             Texture2D quad = CWRAsset.Placeholder_White.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-
-            switch (Mode) {
-                case 0: //线：origin 在左端中点，沿 ai[1] 方向延伸
-                    sb.Draw(quad, drawPos, null, Color.White, Projectile.ai[1],
-                        new Vector2(0f, quad.Height / 2f),
-                        new Vector2(LineLength / quad.Width, LineWidth / quad.Height),
-                        SpriteEffects.None, 0f);
-                    break;
-                case 1: //扇：顶点在左端中点；quad 高度=2×长度保证着色器角度等比
-                    sb.Draw(quad, drawPos, null, Color.White, Projectile.ai[1],
-                        new Vector2(0f, quad.Height / 2f),
-                        new Vector2(FanRadius / quad.Width, FanRadius * 2f / quad.Height),
-                        SpriteEffects.None, 0f);
-                    break;
-                default: //环：中心对齐，边长=直径×1.05
-                    float size = Projectile.ai[1] * 2.1f;
-                    sb.Draw(quad, drawPos, null, Color.White, 0f,
-                        quad.Size() / 2f,
-                        new Vector2(size / quad.Width, size / quad.Height),
-                        SpriteEffects.None, 0f);
-                    break;
-            }
+            sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White,
+                info.Rotation, info.Origin, info.Scale, SpriteEffects.None, 0f);
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            return false;
         }
 
-        /// <summary>着色器缺失时的贴图兜底：拉伸激光线 / 扩散圆环</summary>
+        /// <summary>着色器缺失时的贴图兜底（仅扇/环模式需要）</summary>
         private void DrawFallback() {
             float alpha = 0.3f + 0.5f * Progress;
             Color color = new Color(255, 60, 20, 0) * alpha;
@@ -118,18 +179,14 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
             Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
             Vector2 origin = new(0f, line.Height / 2f);
-            float length = Mode == 0 ? LineLength : FanRadius;
-            if (Mode == 1) {
-                //扇形兜底：画两条边界线
-                Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color,
-                    Projectile.ai[1] - FanHalfAngle, origin, new Vector2(length / line.Width, 0.16f), SpriteEffects.None, 0);
-                Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color,
-                    Projectile.ai[1] + FanHalfAngle, origin, new Vector2(length / line.Width, 0.16f), SpriteEffects.None, 0);
-                return;
-            }
+            //扇形兜底：画两条边界线
             Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color,
-                Projectile.ai[1], origin, new Vector2(length / line.Width, 0.3f), SpriteEffects.None, 0);
+                Projectile.ai[1] - FanHalfAngle, origin, new Vector2(FanRadius / line.Width, 0.16f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color,
+                Projectile.ai[1] + FanHalfAngle, origin, new Vector2(FanRadius / line.Width, 0.16f), SpriteEffects.None, 0);
         }
+
+        #endregion
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs,
             List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);

@@ -74,10 +74,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             float gapCenter = wave * GapAngle + Main.rand.NextFloat(-0.1f, 0.1f);
             float warmup = MathHelper.Lerp(PrimeDirector.ProjectileWarmupStart, 1f, wave / (float)MaxBursts);
 
-            if (!VaultUtils.isClient && wave == 0) {
-                PrimeTelegraphLine.SpawnRing(npc, npc.Center, 260f, 24);
-            }
-
             for (int i = 0; i < count; i++) {
                 float ang = MathHelper.TwoPi / count * i;
                 float rel = MathHelper.WrapAngle(ang - gapCenter);
