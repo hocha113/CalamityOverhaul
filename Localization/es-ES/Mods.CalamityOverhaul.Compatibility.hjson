@@ -1,6 +1,0 @@
-HighFPSRef.DisableMotionInterpolationMessage:
-	'''
-	Se ha detectado que tienes activada la función HighFPSSupport: [Suavizado de movimiento].
-	Se ha desactivado automáticamente para garantizar la estabilidad de algunos efectos visuales del mod.
-	Para asegurarte de que el cambio surta efecto, te recomendamos encarecidamente desactivarla manualmente y mantenerla desactivada.
-	'''

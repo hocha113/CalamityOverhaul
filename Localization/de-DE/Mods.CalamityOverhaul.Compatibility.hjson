@@ -1,8 +1,0 @@
-HighFPSRef.DisableMotionInterpolationMessage:
-	'''
-	Es wurde erkannt, dass du die HighFPSSupport-Funktion [Bewegungsglättung] aktiviert hast.
-	Um die Stabilität bestimmter visueller Effekte des Mods zu gewährleisten,
-	wurde diese Funktion automatisch für dich deaktiviert.
-	Damit die Änderung wirksam wird,
-	wird dringend empfohlen, diese Funktion manuell umzuschalten und ausgeschaltet zu lassen.
-	'''

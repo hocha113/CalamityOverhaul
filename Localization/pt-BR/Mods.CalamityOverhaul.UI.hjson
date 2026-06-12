@@ -320,16 +320,6 @@ OverhaulSettingsUI: {
 	DensityEverywhereText: Em toda parte
 	ResetDefaultText: Redefinir para Padrao
 	DensityTooltipText: Densidade de Geracao de Estrutura
-	CompatibilitySettingsText: Configuracoes de Compatibilidade
-	CompatibilityFooterHintText: Essas opcoes sao usadas para resolver problemas de compatibilidade com outros mods.
-	CompatHighFPSLabelText: Desativar automaticamente a Suavizacao de Movimento do HighFPSSupport
-	CompatHighFPSTooltipText:
-		'''
-		A funcionalidade de suavizacao de movimento do HighFPSSupport causa desalinhamento severo em algumas exibicoes de armas empunhadas e ejetos de capsulas.
-		Ativar esta opcao desligara automaticamente essa funcionalidade ao entrar no mundo para garantir o desempenho visual correto.
-		[c/FF6666:Desativar esta opcao nao e recomendado, a menos que voce aceite explicitamente os problemas visuais e entenda a causa.]
-		'''
-	CompatHighFPSNotInstalledText: "[c/888888:(O mod HighFPSSupport nao esta instalado no momento; esta opcao nao tem efeito.)]"
 }
 
 OverhaulSettingsButton.OverhaulSettingsButtonText: Configuracoes do Overhaul

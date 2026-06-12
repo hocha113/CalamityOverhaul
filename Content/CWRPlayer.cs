@@ -8,7 +8,6 @@ using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.Projectiles.Others;
 using CalamityOverhaul.Content.RangedModify;
 using CalamityOverhaul.Content.RangedModify.Core;
-using CalamityOverhaul.OtherMods.HighFPSSupport;
 using CalamityOverhaul.OtherMods.ImproveGame;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.GameSystem;
@@ -361,8 +360,6 @@ namespace CalamityOverhaul.Content
             //进入世界时把 RAM 重置为满（基础值已在 LoadData 中读取）
 
             SpearOfLonginus.ZenithWorldAsset();
-
-            HighFPSRef.DisableMotionInterpolation();
 
             LegendData.ResetInventory(Player);
 

@@ -49,7 +49,6 @@ namespace CalamityOverhaul
         internal Mod ddmod = null;
         internal Mod coralite = null;
         internal Mod bossChecklist = null;
-        internal Mod highFPSSupport = null;
         internal Mod calamityEntropy = null;
         internal Mod fargowiltasCrossmod = null;
         internal Mod luminance = null;
@@ -133,7 +132,6 @@ namespace CalamityOverhaul
             ddmod = null;
             coralite = null;
             bossChecklist = null;
-            highFPSSupport = null;
             calamityEntropy = null;
             fargowiltasCrossmod = null;
             luminance = null;
@@ -167,7 +165,6 @@ namespace CalamityOverhaul
             ModLoader.TryGetMod("DDmod", out ddmod);
             ModLoader.TryGetMod("Coralite", out coralite);
             ModLoader.TryGetMod("BossChecklist", out bossChecklist);
-            ModLoader.TryGetMod("HighFPSSupport", out highFPSSupport);
             ModLoader.TryGetMod("CalamityEntropy", out calamityEntropy);
             ModLoader.TryGetMod("FargowiltasCrossmod", out fargowiltasCrossmod);
             ModLoader.TryGetMod("Luminance", out luminance);

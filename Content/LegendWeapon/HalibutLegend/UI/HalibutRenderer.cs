@@ -548,6 +548,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
+        /// 公开的着色器四边形绘制入口，供HUD等模块以自定义参数绘制效果quad
+        /// </summary>
+        public static void DrawEffectQuad(SpriteBatch sb, Effect effect, Rectangle dest) {
+            ShaderQuad(sb, effect, dest);
+        }
+
+        /// <summary>
         /// 着色器全参数四边形绘制：切换到Immediate模式应用效果后恢复Deferred
         /// </summary>
         private static void ShaderQuad(SpriteBatch sb, Effect effect, Rectangle dest) {

@@ -235,6 +235,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             SkillRender.SwitchingSkill = skill;
             SkillRender.SwitchAnimProgress = 0f;
             SkillRender.SwitchAnimTimer = 0;
+            HalibutHud.Instance?.NotifySkillSwitched();//深渊之眼眨眼 + 徽章闪光
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.45f, Volume = 0.6f });
         }
 

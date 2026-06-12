@@ -1,6 +1,0 @@
-HighFPSRef.DisableMotionInterpolationMessage:
-	'''
-	La fonction HighFPSSupport : [Fluidification du mouvement] a été détectée comme activée.
-	Elle a été automatiquement désactivée pour garantir la stabilité de certains effets visuels du mod.
-	Pour vous assurer que le changement prend effet, nous vous recommandons vivement de la désactiver manuellement et de la laisser désactivée.
-	'''

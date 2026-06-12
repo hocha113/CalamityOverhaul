@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,10 +13,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 比目鱼常驻HUD状态簇（屏幕左下角，手持时显示）：
-    /// 当前技能主环（冷却扫掠）+ 复苏深度压力计 + 领域层数点阵 +
-    /// 领域技能冷却卫星环 + 研究进度弧
-    /// 全程序化绘制，无任何面板纹理
+    /// 比目鱼常驻HUD（屏幕左下角，手持时显示）
+    /// 核心是一只着色器驱动的"深渊之眼"（HalibutHudEye.fx）：
+    /// 注视光标、随机眨眼、领域层数染色虹膜、死机故障红化、冷却薄翳、就绪闪光；
+    /// 复苏状态为着色器流体压力柱（HalibutHudGauge.fx）：液面波动、气泡、阈值蚀刻、临界沸腾
+    /// 外围辅以技能徽章、层数菱标弧、领域技能冷却卫星环与研究进度弧
     /// </summary>
     [VaultLoaden(CWRConstant.UI + "Halibut/FishSkill")]
     internal class HalibutHud : UIHandle, ILocalizedModType
@@ -85,35 +86,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
+        #region 几何常量
+        //眼睛着色器quad边长与可视半径
+        private const int EyeQuadSize = 96;
+        private const float EyeR = 44f;
+        //技能徽章
+        private static Vector2 BadgeOffset => new(48f, 42f);
+        private const float BadgeR = 13.5f;
+        //层数菱标弧
+        private const float PipArcR = 56f;
+        //流体压力柱
+        private const int GaugeW = 30;
+        private const int GaugeH = 106;
+        #endregion
+
         //出现进度
         private float appear;
-        //复苏计的平滑显示值与抖动
+        //复苏显示
         private float displayRatio;
         private float gaugeShake;
         private float gaugeFlash;
-        //卫星冷却的最大值跟踪与抖动
+        //眼睛状态
+        private float blinkPhase = 1f;     //>=1表示不在眨眼过程中
+        private int nextBlinkTimer = 180;
+        private float eyeOpen = 1f;        //平滑睁眼量
+        private Vector2 pupilOffset;       //平滑注视偏移
+        private float dilate;              //平滑扩张量
+        private float readyFlash;          //冷却结束闪光
+        private float prevCooldownRatio;
+        private float badgeFlash;          //切换技能时徽章闪光
+        //卫星冷却
         private readonly Dictionary<int, int> maxCooldown = [];
         private readonly float[] satelliteShake = new float[3];
-        //粒子池（复苏提升的飞行光粒等）
+        //粒子
         private readonly HalibutUIParticlePool particles = new(70);
-        //悬停状态
+        //悬停
         private bool hoverCore;
         private bool hoverGauge;
         private int hoverSatellite = -1;
 
         /// <summary>
-        /// HUD锚点（主环圆心），基于UI空间屏幕尺寸，不受缩放语境影响
+        /// HUD锚点（深渊之眼圆心），基于UI空间屏幕尺寸，不受缩放语境影响
         /// </summary>
         public static Vector2 Anchor => new(HalibutTheme.HudAnchorOffset.X,
             HalibutTheme.UIScreenH + HalibutTheme.HudAnchorOffset.Y);
 
         /// <summary>
-        /// 复苏深度计的中心位置
+        /// 复苏压力柱中心
         /// </summary>
-        public static Vector2 GaugeCenter => Anchor + new Vector2(52f, 0f);
+        public static Vector2 GaugeCenter => Anchor + new Vector2(64f, -4f);
 
         /// <summary>
-        /// 研究完成等时刻触发的复苏计强化反馈：从指定位置放出若干光粒飞向深度计
+        /// 研究完成等时刻的复苏计强化反馈：光粒飞向压力柱
         /// </summary>
         public void TriggerGaugeImprove(Vector2 from, int count) {
             count = Math.Clamp(count, 1, 20);
@@ -124,6 +148,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             particles.SpawnRingPulse(GaugeCenter, HalibutTheme.Glow, 60f, 4f);
         }
 
+        /// <summary>
+        /// 技能切换通知：眼睛眨一下并点亮徽章
+        /// </summary>
+        public void NotifySkillSwitched() {
+            if (blinkPhase >= 1f) {
+                blinkPhase = 0f;
+            }
+            badgeFlash = 1f;
+        }
+
         public override void Update() {
             appear = MathHelper.Clamp(appear + 0.08f, 0f, 1f);
             particles.Update();
@@ -131,19 +165,107 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (!player.TryGetOverride<HalibutPlayer>(out var hp)) {
                 return;
             }
+            var save = player.GetModPlayer<HalibutSave>();
 
-            //复苏显示值平滑
+            //复苏显示值平滑与抖动
             float ratio = hp.ResurrectionSystem?.Ratio ?? 0f;
             displayRatio = MathHelper.Lerp(displayRatio, ratio, 0.12f);
-
-            //危险抖动
-            float targetShake = ratio >= 0.9f ? 2.6f : ratio >= 0.7f ? 1.2f : 0f;
+            float targetShake = ratio >= 0.9f ? 2.6f : ratio >= 0.7f ? 1.1f : 0f;
             gaugeShake = MathHelper.Lerp(gaugeShake, targetShake, 0.15f);
             if (gaugeFlash > 0f) {
-                gaugeFlash = MathF.Max(gaugeFlash - 0.04f, 0f);
+                gaugeFlash = MathF.Max(gaugeFlash - 0.035f, 0f);
             }
 
-            //卫星按键反馈：冷却中尝试使用 → 抖动
+            UpdateEyeState(save, hp, ratio);
+            UpdateSatellites(hp);
+
+            //命中区域
+            Vector2 anchor = Anchor;
+            Size = new Vector2(170f, 150f);
+            DrawPosition = anchor - new Vector2(EyeR + 14f, 84f);
+            UIHitBox = DrawPosition.GetRectangle(Size);
+
+            float atlasOpen = HalibutAtlas.Instance?.OpenProgress ?? 0f;
+            if (atlasOpen > 0.4f) {
+                hoverCore = hoverGauge = false;
+                hoverSatellite = -1;
+                return;
+            }
+
+            Vector2 mouse = MousePosition;
+            hoverCore = Vector2.Distance(mouse, anchor) < EyeR
+                || Vector2.Distance(mouse, anchor + BadgeOffset) < BadgeR + 3f;
+            Vector2 gaugeCenter = GaugeCenter;
+            Rectangle gaugeRect = new((int)(gaugeCenter.X - GaugeW * 0.5f - 4f),
+                (int)(gaugeCenter.Y - GaugeH * 0.5f - 5f), GaugeW + 8, GaugeH + 10);
+            hoverGauge = gaugeRect.Contains(mouse.ToPoint());
+
+            hoverSatellite = -1;
+            for (int i = 0; i < 3; i++) {
+                if (Vector2.Distance(mouse, SatellitePos(i)) < HalibutTheme.HudSatelliteR + 3f) {
+                    hoverSatellite = i;
+                }
+            }
+
+            if (hoverCore || hoverGauge || hoverSatellite >= 0) {
+                player.mouseInterface = true;
+            }
+
+            //点击眼睛打开图鉴
+            if (hoverCore && keyLeftPressState == KeyPressState.Pressed) {
+                SoundEngine.PlaySound(CWRSound.ButtonZero);
+                HalibutAtlas.Instance?.Open();
+            }
+        }
+
+        private void UpdateEyeState(HalibutSave save, HalibutPlayer hp, float ratio) {
+            //眨眼调度：随机间隔触发，眨眼过程 blinkPhase 0→1
+            if (blinkPhase >= 1f) {
+                nextBlinkTimer--;
+                if (nextBlinkTimer <= 0) {
+                    blinkPhase = 0f;
+                    nextBlinkTimer = Main.rand.Next(240, 560);
+                    //偶尔连眨两次
+                    if (Main.rand.NextBool(4)) {
+                        nextBlinkTimer = 26;
+                    }
+                }
+            }
+            else {
+                blinkPhase = MathF.Min(blinkPhase + 0.085f, 1f);
+            }
+            //睁眼量：眨眼过程是一个迅速闭合再张开的三角波
+            float blinkOpen = blinkPhase >= 1f ? 1f : MathF.Abs(blinkPhase * 2f - 1f);
+            //复苏临界时眼睛圆睁
+            float openTarget = MathF.Min(blinkOpen + ratio * 0.1f, 1.05f);
+            eyeOpen = MathHelper.Lerp(eyeOpen, openTarget, 0.5f);
+
+            //注视：朝向光标的轻微偏移
+            Vector2 toMouse = MousePosition - Anchor;
+            float len = toMouse.Length();
+            Vector2 gazeTarget = len > 4f ? toMouse / len * MathF.Min(len * 0.06f, 4.5f) : Vector2.Zero;
+            pupilOffset = Vector2.Lerp(pupilOffset, gazeTarget, 0.12f);
+
+            //扩张：基础呼吸 + 躁动 + 悬停 + 就绪瞬间
+            FishSkill skill = save.FishSkill;
+            float cd = skill?.CooldownRatio ?? 0f;
+            if (prevCooldownRatio > 0.02f && cd <= 0.001f) {
+                readyFlash = 1f;//冷却结束：闪光 + 瞳孔骤张
+            }
+            prevCooldownRatio = cd;
+            if (readyFlash > 0f) {
+                readyFlash = MathF.Max(readyFlash - 0.045f, 0f);
+            }
+            if (badgeFlash > 0f) {
+                badgeFlash = MathF.Max(badgeFlash - 0.05f, 0f);
+            }
+            float breath = HalibutTheme.Breath(Main.GlobalTimeWrappedHourly, 0.7f, 1.6f);
+            float dilateTarget = 0.12f + breath * 0.10f + ratio * 0.42f
+                + (hoverCore ? 0.14f : 0f) + readyFlash * 0.5f;
+            dilate = MathHelper.Lerp(dilate, MathHelper.Clamp(dilateTarget, 0f, 1f), 0.15f);
+        }
+
+        private void UpdateSatellites(HalibutPlayer hp) {
             if (hp.RestartFishCooldown > 0 && CWRKeySystem.Legend_Restart.JustPressed) {
                 satelliteShake[0] = 1f;
             }
@@ -159,48 +281,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     satelliteShake[i] = 0f;
                 }
             }
-
-            //命中区域
-            Vector2 anchor = Anchor;
-            Size = new Vector2(150f, 130f);
-            DrawPosition = anchor - new Vector2(HalibutTheme.HudCoreRingR + 10f, 70f);
-            UIHitBox = DrawPosition.GetRectangle(Size);
-
-            float atlasOpen = HalibutAtlas.Instance?.OpenProgress ?? 0f;
-            if (atlasOpen > 0.4f) {
-                hoverCore = hoverGauge = false;
-                hoverSatellite = -1;
-                return;
-            }
-
-            Vector2 mouse = MousePosition;
-            hoverCore = Vector2.Distance(mouse, anchor) < HalibutTheme.HudCoreRingR + 4f;
-            Vector2 gaugeCenter = GaugeCenter;
-            Rectangle gaugeRect = new((int)(gaugeCenter.X - 11f), (int)(gaugeCenter.Y - HalibutTheme.HudGaugeHeight * 0.5f - 6f),
-                22, (int)HalibutTheme.HudGaugeHeight + 12);
-            hoverGauge = gaugeRect.Contains(mouse.ToPoint());
-
-            hoverSatellite = -1;
-            for (int i = 0; i < 3; i++) {
-                if (Vector2.Distance(mouse, SatellitePos(i)) < HalibutTheme.HudSatelliteR + 3f) {
-                    hoverSatellite = i;
-                }
-            }
-
-            if (hoverCore || hoverGauge || hoverSatellite >= 0) {
-                player.mouseInterface = true;
-            }
-
-            //点击主环打开图鉴
-            if (hoverCore && keyLeftPressState == KeyPressState.Pressed) {
-                SoundEngine.PlaySound(CWRSound.ButtonZero);
-                HalibutAtlas.Instance?.Open();
-            }
         }
 
         private static Vector2 SatellitePos(int index) {
-            return Anchor + new Vector2(-6f + index * (HalibutTheme.HudSatelliteR * 2f + 8f),
-                -HalibutTheme.HudCoreRingR - 26f);
+            return Anchor + new Vector2(-16f + index * (HalibutTheme.HudSatelliteR * 2f + 7f), -70f);
         }
 
         public override void Draw(SpriteBatch sb) {
@@ -209,15 +293,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (a < 0.01f) {
                 return;
             }
-            var save = player.GetModPlayer<HalibutSave>();
             if (!player.TryGetOverride<HalibutPlayer>(out var hp)) {
                 return;
             }
+            var save = player.GetModPlayer<HalibutSave>();
             float time = Main.GlobalTimeWrappedHourly;
             Vector2 anchor = Anchor;
+            int crashLevel = hp.CrashesLevel();
+            int activeLayers = save.ActiveEyeCount;
 
-            DrawCoreRing(sb, anchor, save, a, time);
-            DrawDomainPips(sb, anchor, save, hp, a, time);
+            DrawAbyssalEye(sb, anchor, save, hp, activeLayers, crashLevel, a);
+            DrawSkillBadge(sb, anchor, save, a, time);
+            DrawDomainPips(sb, anchor, activeLayers, crashLevel, a, time);
             DrawGauge(sb, hp, a, time);
             DrawSatellites(sb, hp, a, time);
             DrawStudyArc(sb, anchor, save, a);
@@ -245,120 +332,144 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private void DrawCoreRing(SpriteBatch sb, Vector2 anchor, HalibutSave save, float a, float time) {
-            float breath = HalibutTheme.Breath(time, 0.7f);
-            //底盘与外环
-            HalibutRenderer.DrawDisc(sb, anchor, HalibutTheme.HudCoreR, 5f, HalibutTheme.Deep * (0.92f * a));
-            Color ringCol = Color.Lerp(HalibutTheme.Glow, HalibutTheme.GlowHi, breath * 0.5f + (hoverCore ? 0.4f : 0f));
-            HalibutRenderer.DrawRing(sb, anchor, HalibutTheme.HudCoreRingR, 1.6f,
-                ringCol * ((0.55f + breath * 0.25f) * a));
-            //缓转刻度
-            float markRot = time * 0.35f;
-            for (int i = 0; i < 4; i++) {
-                float a0 = markRot + i * MathHelper.PiOver2;
-                HalibutRenderer.DrawArcStroke(sb, anchor, HalibutTheme.HudCoreRingR + 4f,
-                    a0, a0 + 0.4f, 1.1f, HalibutTheme.Teal * (0.6f * a));
-            }
-
-            //技能图标 + 冷却扫掠
+        #region 深渊之眼
+        private void DrawAbyssalEye(SpriteBatch sb, Vector2 anchor, HalibutSave save,
+            HalibutPlayer hp, int activeLayers, int crashLevel, float a) {
             FishSkill skill = save.FishSkill;
+            float cd = skill?.CooldownRatio ?? 0f;
+            Effect effect = EffectLoader.HalibutHudEye?.Value;
+            if (effect == null) {
+                DrawEyeFallback(sb, anchor, skill, cd, a);
+                return;
+            }
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uAlpha"]?.SetValue(a);
+            effect.Parameters["uResolution"]?.SetValue(new Vector2(EyeQuadSize, EyeQuadSize));
+            effect.Parameters["uPupilOffset"]?.SetValue(pupilOffset);
+            effect.Parameters["uDilate"]?.SetValue(dilate);
+            effect.Parameters["uBlink"]?.SetValue(MathHelper.Clamp(eyeOpen, 0f, 1f));
+            effect.Parameters["uLayers"]?.SetValue(activeLayers / 10f);
+            effect.Parameters["uCrash"]?.SetValue(MathHelper.Clamp(crashLevel / 10f, 0f, 1f));
+            effect.Parameters["uCooldown"]?.SetValue(MathHelper.Clamp(cd, 0f, 1f));
+            effect.Parameters["uAgitation"]?.SetValue(MathHelper.Clamp(displayRatio, 0f, 1f));
+            effect.Parameters["uReadyFlash"]?.SetValue(readyFlash);
+            Rectangle dest = new((int)(anchor.X - EyeQuadSize * 0.5f), (int)(anchor.Y - EyeQuadSize * 0.5f),
+                EyeQuadSize, EyeQuadSize);
+            HalibutRenderer.DrawEffectQuad(sb, effect, dest);
+        }
+
+        /// <summary>
+        /// 着色器缺失时的CPU回退：简单的环 + 图标
+        /// </summary>
+        private void DrawEyeFallback(SpriteBatch sb, Vector2 anchor, FishSkill skill, float cd, float a) {
+            float time = Main.GlobalTimeWrappedHourly;
+            float breath = HalibutTheme.Breath(time, 0.7f);
+            HalibutRenderer.DrawDisc(sb, anchor, HalibutTheme.HudCoreR, 5f, HalibutTheme.Deep * (0.92f * a));
+            HalibutRenderer.DrawRing(sb, anchor, HalibutTheme.HudCoreRingR, 1.6f,
+                HalibutTheme.Glow * ((0.55f + breath * 0.25f) * a));
             if (skill?.Icon != null) {
                 float scale = 36f / MathF.Max(skill.Icon.Width, skill.Icon.Height);
                 sb.Draw(skill.Icon, anchor, null, Color.White * a, 0f,
                     skill.Icon.Size() * 0.5f, scale, SpriteEffects.None, 0f);
-                HalibutRenderer.DrawCooldownSweep(sb, anchor, HalibutTheme.HudCoreR - 1f,
-                    skill.CooldownRatio, a);
-            }
-            else {
-                //未选定技能时显示武器本体
-                Main.instance.LoadItem(HalibutOverride.ID);
-                Texture2D weapon = Terraria.GameContent.TextureAssets.Item[HalibutOverride.ID].Value;
-                float scale = 34f / MathF.Max(weapon.Width, weapon.Height);
-                sb.Draw(weapon, anchor, null, Color.White * (0.85f * a), 0f,
-                    weapon.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                HalibutRenderer.DrawCooldownSweep(sb, anchor, HalibutTheme.HudCoreR - 1f, cd, a);
             }
         }
 
-        private static void DrawDomainPips(SpriteBatch sb, Vector2 anchor, HalibutSave save,
-            HalibutPlayer hp, float a, float time) {
-            int active = save.ActiveEyeCount;
-            int crashLevel = hp.CrashesLevel();
+        /// <summary>
+        /// 当前技能徽章：眼睛右下方的小环图标
+        /// </summary>
+        private void DrawSkillBadge(SpriteBatch sb, Vector2 anchor, HalibutSave save, float a, float time) {
+            FishSkill skill = save.FishSkill;
+            if (skill?.Icon == null) {
+                return;
+            }
+            Vector2 pos = anchor + BadgeOffset;
+            float flash = badgeFlash;
+            HalibutRenderer.DrawDisc(sb, pos, BadgeR - 1f, 3f, HalibutTheme.Deep * (0.94f * a));
+            Color ringCol = Color.Lerp(HalibutTheme.Glow, HalibutTheme.Caustic, flash);
+            HalibutRenderer.DrawRing(sb, pos, BadgeR, 1.3f, ringCol * ((0.7f + flash * 0.3f) * a));
+            //切换闪光环
+            if (flash > 0.02f) {
+                HalibutRenderer.DrawRing(sb, pos, BadgeR + (1f - flash) * 10f, 1.2f,
+                    HalibutTheme.Caustic * (flash * 0.8f * a));
+            }
+            float scale = (BadgeR * 2f - 7f) / MathF.Max(skill.Icon.Width, skill.Icon.Height);
+            sb.Draw(skill.Icon, pos, null, Color.White * a, 0f,
+                skill.Icon.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+            if (skill.CooldownRatio > 0.01f) {
+                HalibutRenderer.DrawCooldownSweep(sb, pos, BadgeR - 2f, skill.CooldownRatio, a);
+                int seconds = (int)MathF.Ceiling(skill.Cooldown / 60f);
+                HalibutRenderer.DrawGlowTextCentered(sb, seconds.ToString(), pos + new Vector2(0f, BadgeR + 9f),
+                    HalibutTheme.Text * (0.9f * a), HalibutTheme.Deep * (0.5f * a), 0.66f);
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// 领域层数菱标弧（左上象限），死机层闪红
+        /// </summary>
+        private static void DrawDomainPips(SpriteBatch sb, Vector2 anchor, int active,
+            int crashLevel, float a, float time) {
             const int total = 10;
-            //在主环左上方排出一道点阵弧
-            float aStart = MathHelper.Pi * 0.78f;
+            float aStart = MathHelper.Pi * 0.84f;
             float aEnd = MathHelper.Pi * 1.46f;
-            float radius = HalibutTheme.HudCoreRingR + 11f;
+            //引导弧线
+            HalibutRenderer.DrawArcStroke(sb, anchor, PipArcR, aStart, aEnd, 0.8f,
+                HalibutTheme.Teal * (0.30f * a));
             for (int i = 0; i < total; i++) {
-                float t = total <= 1 ? 0f : i / (float)(total - 1);
-                Vector2 pos = anchor + HalibutRenderer.AngleDir(MathHelper.Lerp(aStart, aEnd, t)) * radius;
+                float t = i / (float)(total - 1);
+                Vector2 pos = anchor + HalibutRenderer.AngleDir(MathHelper.Lerp(aStart, aEnd, t)) * PipArcR;
                 bool lit = i < active;
                 bool crashed = lit && (i + 1) <= crashLevel;
-                Color col;
-                float size;
                 if (!lit) {
-                    col = HalibutTheme.Disabled * (0.45f * a);
-                    size = 1.6f;
+                    HalibutRenderer.DrawDiamond(sb, pos, 2.4f, HalibutTheme.Disabled * (0.45f * a));
+                    continue;
                 }
-                else if (crashed) {
+                if (crashed) {
                     float flick = HalibutTheme.Breath(time, i, 5f);
-                    col = Color.Lerp(HalibutTheme.DangerDim, HalibutTheme.Danger, flick) * a;
-                    size = 2.3f;
+                    HalibutRenderer.DrawDiamond(sb, pos, 3.8f,
+                        Color.Lerp(HalibutTheme.DangerDim, HalibutTheme.Danger, flick) * a);
                 }
                 else {
                     float breath = HalibutTheme.Breath(time, i * 0.6f, 2.5f);
-                    col = Color.Lerp(HalibutTheme.Glow, HalibutTheme.GlowHi, breath) * a;
-                    size = 2.3f;
+                    HalibutRenderer.DrawDiamond(sb, pos, 4.6f, HalibutTheme.Glow * (0.30f * a));
+                    HalibutRenderer.DrawDiamond(sb, pos, 3f,
+                        Color.Lerp(HalibutTheme.Glow, HalibutTheme.Caustic, breath) * a);
                 }
-                HalibutRenderer.DrawDisc(sb, pos, size, 1.6f, col);
             }
         }
 
+        #region 复苏压力柱
         private void DrawGauge(SpriteBatch sb, HalibutPlayer hp, float a, float time) {
             Vector2 center = GaugeCenter;
-            //危险抖动
             if (gaugeShake > 0.05f) {
                 center += new Vector2(MathF.Sin(time * 38f) * gaugeShake, MathF.Cos(time * 29f) * gaugeShake * 0.5f);
             }
-            float h = HalibutTheme.HudGaugeHeight;
-            float w = HalibutTheme.HudGaugeWidth;
-            Vector2 top = center + new Vector2(0f, -h * 0.5f);
-            Vector2 bottom = center + new Vector2(0f, h * 0.5f);
-
-            //背槽
-            HalibutRenderer.DrawLine(sb, top, bottom, w + 4f, HalibutTheme.Void * (0.7f * a));
-            HalibutRenderer.DrawLine(sb, top, bottom, w + 2f, HalibutTheme.Deep * (0.9f * a));
-
-            //填充（自下而上）
             float ratio = MathHelper.Clamp(displayRatio, 0f, 1f);
-            if (ratio > 0.005f) {
-                Vector2 fillTop = bottom + new Vector2(0f, -h * ratio);
-                Color fillCol = GaugeColor(ratio);
-                HalibutRenderer.DrawLine(sb, fillTop, bottom, w, fillCol * (0.92f * a));
-                //液面亮线与辉光
-                HalibutRenderer.DrawLine(sb, fillTop + new Vector2(-w * 0.8f, 0f), fillTop + new Vector2(w * 0.8f, 0f),
-                    1.6f, HalibutTheme.Caustic * (0.85f * a));
-                HalibutRenderer.DrawSoftGlow(sb, fillTop, 9f + gaugeFlash * 8f, fillCol * ((0.5f + gaugeFlash * 0.4f) * a));
-            }
+            float danger = MathHelper.Clamp((ratio - 0.5f) / 0.45f, 0f, 1f);
+            float rate = MathHelper.Clamp((hp.ResurrectionSystem?.ResurrectionRate ?? 0f) / 0.09f, 0f, 1f);
 
-            //阈值刻度（70% / 90%）
-            foreach (float th in stackalloc float[] { 0.7f, 0.9f }) {
-                Vector2 tick = bottom + new Vector2(0f, -h * th);
-                Color tickCol = th >= 0.9f ? HalibutTheme.Danger : HalibutTheme.Accent;
-                HalibutRenderer.DrawLine(sb, tick + new Vector2(-w, 0f), tick + new Vector2(w + 2f, 0f),
-                    1.1f, tickCol * (0.75f * a));
-            }
+            Effect effect = EffectLoader.HalibutHudGauge?.Value;
+            effect.Parameters["uTime"]?.SetValue(time);
+            effect.Parameters["uAlpha"]?.SetValue(a);
+            effect.Parameters["uResolution"]?.SetValue(new Vector2(GaugeW, GaugeH));
+            effect.Parameters["uFill"]?.SetValue(ratio);
+            effect.Parameters["uDanger"]?.SetValue(danger);
+            effect.Parameters["uRate"]?.SetValue(rate);
+            effect.Parameters["uFlash"]?.SetValue(gaugeFlash);
+            Rectangle dest = new((int)(center.X - GaugeW * 0.5f), (int)(center.Y - GaugeH * 0.5f), GaugeW, GaugeH);
+            HalibutRenderer.DrawEffectQuad(sb, effect, dest);
 
-            //外缘描边
-            HalibutRenderer.DrawLine(sb, top + new Vector2(-w * 0.5f - 2f, 0f), bottom + new Vector2(-w * 0.5f - 2f, 0f),
-                1f, HalibutTheme.Teal * (0.6f * a));
-            HalibutRenderer.DrawLine(sb, top + new Vector2(w * 0.5f + 2f, 0f), bottom + new Vector2(w * 0.5f + 2f, 0f),
-                1f, HalibutTheme.Teal * (0.6f * a));
-
-            //临界警告：脉动红环
+            //临界警告：外侧脉动红环
             if (ratio >= 0.9f) {
                 float pulse = HalibutTheme.Breath(time, 3f, 6f);
-                HalibutRenderer.DrawRing(sb, center, 16f + pulse * 5f, 1.3f,
-                    HalibutTheme.Danger * ((0.5f - pulse * 0.3f) * a));
+                HalibutRenderer.DrawRing(sb, center, 22f + pulse * 6f, 1.3f,
+                    HalibutTheme.Danger * ((0.45f - pulse * 0.25f) * a));
+            }
+            //强化反馈闪光环
+            if (gaugeFlash > 0.02f) {
+                HalibutRenderer.DrawSoftGlow(sb, center, 26f + gaugeFlash * 10f,
+                    HalibutTheme.Glow * (gaugeFlash * 0.4f * a));
             }
         }
 
@@ -375,6 +486,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             return Color.Lerp(new Color(50, 150, 255), new Color(100, 200, 255), ratio / 0.4f);
         }
+        #endregion
 
         private void DrawSatellites(SpriteBatch sb, HalibutPlayer hp, float a, float time) {
             Span<int> cooldowns = [hp.RestartFishCooldown, hp.SuperpositionCooldown, hp.FishTeleportCooldown];
@@ -401,7 +513,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 Color iconCol = Color.White * ((hovered ? 1f : 0.82f) * a);
                 sb.Draw(icons[i], pos, null, iconCol, 0f, icons[i].Size() * 0.5f, scale, SpriteEffects.None, 0f);
                 HalibutRenderer.DrawCooldownSweep(sb, pos, HalibutTheme.HudSatelliteR - 1f, remain, a);
-                //剩余进度环
                 float aStart = -MathHelper.PiOver2;
                 HalibutRenderer.DrawArcStroke(sb, pos, HalibutTheme.HudSatelliteR + 1.5f,
                     aStart, aStart + MathHelper.TwoPi * (1f - remain), 1.3f,
@@ -414,14 +525,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
             float progress = MathHelper.Clamp(save.StudyTimer / (float)save.StudyDuration, 0f, 1f);
-            float aStart = MathHelper.Pi * 0.25f;
-            float radius = HalibutTheme.HudCoreRingR + 11f;
+            float aStart = MathHelper.Pi * 0.10f;
             //背景弧
-            HalibutRenderer.DrawArcStroke(sb, anchor, radius, aStart, aStart + MathHelper.PiOver2,
-                1.6f, HalibutTheme.Teal * (0.5f * a));
-            //进度弧
-            HalibutRenderer.DrawArcStroke(sb, anchor, radius, aStart, aStart + MathHelper.PiOver2 * progress,
-                2f, HalibutTheme.Accent * (0.9f * a));
+            HalibutRenderer.DrawArcStroke(sb, anchor, PipArcR, aStart, aStart + MathHelper.PiOver2,
+                1.4f, HalibutTheme.Teal * (0.45f * a));
+            //进度弧 + 前端光点
+            float aEnd = aStart + MathHelper.PiOver2 * progress;
+            HalibutRenderer.DrawArcStroke(sb, anchor, PipArcR, aStart, aEnd,
+                1.9f, HalibutTheme.Accent * (0.9f * a));
+            HalibutRenderer.DrawDisc(sb, anchor + HalibutRenderer.AngleDir(aEnd) * PipArcR, 1.8f, 1.4f,
+                HalibutTheme.Caustic * (0.9f * a));
         }
 
         private void DrawGaugeTooltip(SpriteBatch sb, HalibutPlayer hp, float a) {
