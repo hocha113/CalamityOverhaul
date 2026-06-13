@@ -197,8 +197,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         }
 
         private static void DrawEyelid(SpriteBatch sb) {
-            int w = Main.screenWidth;
-            int h = Main.screenHeight;
+            GraphicsDevice gd = sb.GraphicsDevice;
+            //用真实后备缓冲尺寸：相机拉近时 Main.screenWidth 会随之缩小，但界面层绘制在整个窗口上，
+            //必须以 Viewport 为准才能全屏覆盖（这是之前只盖住左上角的根因）
+            int w = gd.Viewport.Width;
+            int h = gd.Viewport.Height;
             float close = MathHelper.Clamp(EyelidValue, 0f, 1f);
             float glow = MathHelper.Clamp(GlowValue, 0f, 1f);
 
@@ -208,7 +211,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
             Effect shader = EffectLoader.VictorEyelidTransition?.Value;
 
-            //用单位矩阵接管，保证全屏精确覆盖（不受 UI 缩放影响）
+            //以像素空间（单位矩阵）接管，精确覆盖整个后备缓冲
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
@@ -229,20 +232,25 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-            //全黑阶段叠加"手术进行中"提示
+            //提示文字：同样在像素空间（单位矩阵）绘制，保证基于真实屏幕居中
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             if (close > 0.9f) {
                 const string txt = "SURGERY IN PROGRESS";
-                const float scale = 0.7f;
+                const float scale = 1f;
                 Vector2 size = FontAssets.MouseText.Value.MeasureString(txt) * scale;
                 float pulse = 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.12);
-                Color c = new Color(255, 60, 60) * (0.5f + 0.5f * pulse);
+                Color c = new Color(255, 70, 70) * (0.55f + 0.45f * pulse);
                 Utils.DrawBorderString(sb, txt, new Vector2(w / 2f - size.X / 2f, h * 0.6f), c, scale);
-                sb.Draw(px, new Rectangle((int)(w / 2f - 150), (int)(h * 0.6f + size.Y + 6), 300, 1),
-                    new Color(255, 60, 60) * (pulse * 0.5f));
+                sb.Draw(px, new Rectangle((int)(w / 2f - 170), (int)(h * 0.6f + size.Y + 8), 340, 2),
+                    new Color(255, 70, 70) * (pulse * 0.5f));
             }
+            sb.End();
+
+            //还原到界面层默认状态，匹配后续层 / 鼠标绘制约定
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
         #endregion
