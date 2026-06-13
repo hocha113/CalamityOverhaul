@@ -191,6 +191,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
         public override bool PreDraw(ref Color lightColor) => false;
 
+        /// <summary>光柱几何向后延伸进头部内的距离，把四边形硬切边藏进头雕下面</summary>
+        private float MuzzleBackBleed => beamWidth * 0.38f + 58f;
+
         void IPrimitiveDrawable.DrawPrimitives() {
             if (beamWidth <= 1f || beamLength <= 10f) {
                 return;
@@ -216,13 +219,17 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
             Vector2 tip = mouth + dir * beamLength;
+            //近端向后 bleed 进头部，避免口器处出现垂直于光束的硬切边
+            float backBleed = MuzzleBackBleed;
+            Vector2 origin = mouth - dir * backBleed;
             //视觉宽度大于碰撞宽度，着色器边缘撕裂与电弧需要余量
             float halfW = beamWidth * (ex ? 2.5f : 2.1f);
 
             //uv.x: 1=口器(头部光球) → 0=末端(淡出)；uv.y: 0~1 横截面
+            //origin 顶点用 0.96 略降强度，藏在头雕下；口器方向仍由 headFlare 主导
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
-            verts[0] = new VertexPositionColorTexture((mouth + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));
-            verts[1] = new VertexPositionColorTexture((mouth - perp * halfW).ToVector3(), Color.White, new Vector2(1f, 1f));
+            verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(0.96f, 0f));
+            verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(0.96f, 1f));
             verts[2] = new VertexPositionColorTexture((tip + perp * halfW).ToVector3(), Color.White, new Vector2(0f, 0f));
             verts[3] = new VertexPositionColorTexture((tip - perp * halfW).ToVector3(), Color.White, new Vector2(0f, 1f));
 
@@ -249,20 +256,21 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
         /// <summary>外覆熔焰浊浪宽晕 + 推进光球脉冲 + 口器多层聚能光球 / 十字星闪（兼任着色器缺失兜底）</summary>
         private void DrawAdditiveDressing(float opacity, bool ex) {
-            SpriteBatch sb = Main.spriteBatch;
             Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
             Texture2D glow = CWRAsset.DiffusionCircle.Value;
             Texture2D star = CWRAsset.StarTexture.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float rot = Projectile.rotation;
             Vector2 dir = rot.ToRotationVector2();
+            float backBleed = MuzzleBackBleed;
+            //贴图起点后移，与着色器 quad 一致，消除 MaskLaserLine 在口器处的平直切口
+            Vector2 drawPos = Projectile.Center - Main.screenPosition - dir * backBleed;
             float flicker = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 40f);
 
             Color blood = ThemeBlood;
             Color amber = ThemeGlow;
             Color core = Color.White;
             Vector2 lineOrigin = new(0, line.Height / 2f);
-            float lenScale = beamLength / line.Width;
+            float lenScale = (beamLength + backBleed) / line.Width;
 
             //外覆熔焰浊浪：宽幅低透红晕，撑起"巨柱"体量
             Main.EntitySpriteDraw(line, drawPos, null, blood * (0.5f * opacity), rot, lineOrigin,
@@ -271,25 +279,37 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 new Vector2(lenScale, beamWidth / line.Height * 3f), SpriteEffects.None, 0);
 
             //推进能量脉冲：数颗光球自口器奔向末端
+            Vector2 screenMouth = Projectile.Center - Main.screenPosition;
             const int pulses = 4;
             for (int i = 0; i < pulses; i++) {
                 float along = (Main.GlobalTimeWrappedHourly * 0.9f + i / (float)pulses) % 1f;
-                Vector2 pPos = drawPos + dir * beamLength * along;
+                Vector2 pPos = screenMouth + dir * beamLength * along;
                 float pScale = beamWidth / MaxWidth * (0.5f + 0.5f * (float)Math.Sin(along * MathHelper.Pi));
                 Main.EntitySpriteDraw(glow, pPos, null, amber * (0.7f * opacity), 0f, glow.Size() / 2f,
                     pScale * (ex ? 1.5f : 1.1f) * 0.3f, SpriteEffects.None, 0);
             }
 
-            //口器辉光：多层呼吸光球 + 十字星闪
+            //口器辉光：多层呼吸光球 + 十字星闪（覆盖接缝）
             float muzzleScale = beamWidth / MaxWidth;
-            Main.EntitySpriteDraw(glow, drawPos, null, blood * (0.95f * opacity), 0f, glow.Size() / 2f,
+            Main.EntitySpriteDraw(glow, screenMouth, null, blood * (0.95f * opacity), 0f, glow.Size() / 2f,
                 muzzleScale * (ex ? 3f : 2.4f) * flicker, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, drawPos, null, amber * opacity, 0f, glow.Size() / 2f,
+            Main.EntitySpriteDraw(glow, screenMouth, null, amber * opacity, 0f, glow.Size() / 2f,
                 muzzleScale * 1.4f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(glow, drawPos, null, core * opacity, 0f, glow.Size() / 2f,
+            Main.EntitySpriteDraw(glow, screenMouth, null, core * opacity, 0f, glow.Size() / 2f,
                 muzzleScale * 0.85f, SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(star, drawPos, null, amber * (0.9f * opacity), Main.GlobalTimeWrappedHourly * 3.2f,
+            Main.EntitySpriteDraw(star, screenMouth, null, amber * (0.9f * opacity), Main.GlobalTimeWrappedHourly * 3.2f,
                 star.Size() / 2f, muzzleScale * 0.8f * flicker, SpriteEffects.None, 0);
+
+            //头部中心桥接辉光：把 bleed 段与头雕熔成一体，彻底吃掉近端硬边
+            NPC head = Head;
+            if (head.Alives()) {
+                Vector2 headPos = head.Center - Main.screenPosition;
+                float bridge = muzzleScale * (ex ? 2.6f : 2.1f);
+                Main.EntitySpriteDraw(glow, headPos, null, blood * (0.55f * opacity), 0f, glow.Size() / 2f,
+                    bridge, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, headPos, null, core * (0.35f * opacity), 0f, glow.Size() / 2f,
+                    bridge * 0.45f, SpriteEffects.None, 0);
+            }
         }
     }
 }

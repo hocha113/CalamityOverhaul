@@ -1,0 +1,19 @@
+Victor: {
+	DisplayName: Victor
+	Bestiary: A ripperdoc washed up on these shores, hauling a whole body's worth of cybernetic implants on his back. They say he can trade anyone's flesh for steel and current - so long as you can pay the price.
+	TalkHint: Talk to Victor
+	Name0: Victor
+	Name1: Vic
+	Name2: Doc V
+
+	TownNPCMood: {
+		Content: 我很满足。
+		NoHome: 我讨厌没有家。
+		FarFromHome: 我离家太远了。
+		LoveSpace: 我非常喜欢有这么大的空间。
+		DislikeCrowded: 我不喜欢这么拥挤。
+		HateCrowded: 我讨厌这么拥挤。
+		LikeNPC_Princess: 我喜欢 {NPCName}。
+		Princess_LovesNPC: 我喜欢 {NPCName}。
+	}
+}

@@ -428,6 +428,22 @@ CyberwareUI: {
 	Slot_NervousSystem: 神经系统
 }
 
+VictorTalkUI: {
+	SpeakerName: 维克托
+	Greet0: 又有新客人了？进来吧，别让门口的穿堂风把你的零件吹散了。
+	Greet1: 想要更强的身体？钢铁不会背叛你，只有你的钱包会。
+	Greet2: 我见过太多用血肉硬扛子弹的家伙，如今他们都只活在我手术台的记忆里了。
+	Greet3: 大脑、眼睛、四肢……只要你出得起价，没有我换不了的部件。
+	ClinicButtonText: 义体诊所
+	ChatButtonText: 闲聊
+	LeaveButtonText: 离开
+}
+
+VictorClinicUI: {
+	TitleText: 维克托诊所
+	StatusText: 义体医生在线 —— 选择一个部位
+}
+
 SHPCDialogueBox: {
 	ContinueHint: 继续
 	FastHint: 加速

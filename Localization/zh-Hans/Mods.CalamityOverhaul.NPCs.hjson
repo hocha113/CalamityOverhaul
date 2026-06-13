@@ -1,0 +1,19 @@
+Victor: {
+	DisplayName: 维克托
+	Bestiary: 一位流落至此的义体医生，背上扛着够拼出一整副躯体的赛博改造件。据说他能把任何人的血肉换成钢铁与电流——只要你付得起价。
+	TalkHint: 与维克托交谈
+	Name0: 维克托
+	Name1: 维克
+	Name2: V 医生
+
+	TownNPCMood: {
+		// Content: 我很满足。
+		// NoHome: 我讨厌没有家。
+		// FarFromHome: 我离家太远了。
+		// LoveSpace: 我非常喜欢有这么大的空间。
+		// DislikeCrowded: 我不喜欢这么拥挤。
+		// HateCrowded: 我讨厌这么拥挤。
+		// LikeNPC_Princess: 我喜欢 {NPCName}。
+		// Princess_LovesNPC: 我喜欢 {NPCName}。
+	}
+}
