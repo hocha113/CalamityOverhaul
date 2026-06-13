@@ -416,6 +416,8 @@ CyberwareUI: {
 	StatusText: STATUS DO SISTEMA: OPERACIONAL
 	SlotSelectedText: "[ SELECIONADO ]"
 	SlotEmptyText: VAZIO
+	ClinicRequiredTitle: CYBERWARE BLOQUEADO
+	ClinicRequiredDesc: Só um médico cibernético pode instalar implantes. Procure o Victor.
 	Slot_FrontalCortex: CORTEX FRONTAL
 	Slot_OcularSystem: SISTEMA OCULAR
 	Slot_LeftArm: BRAÇO ESQUERDO
@@ -431,20 +433,20 @@ CyberwareUI: {
 }
 
 VictorTalkUI: {
-	// SpeakerName: VICTOR
-	// Greet0: Another customer? Come in, before the draft scatters your spare parts.
-	// Greet1: Want a stronger body? Steel never betrays you - only your wallet does.
-	// Greet2: I have seen too many fools soak up bullets with flesh. Now they only live on in my memory... and on my operating table.
-	// Greet3: Brain, eyes, limbs - if the price is right, there is nothing I cannot replace.
-	// ClinicButtonText: Cyberware Clinic
-	// ChatButtonText: Small Talk
-	// LeaveButtonText: Leave
+	SpeakerName: VICTOR
+	Greet0: Mais um cliente? Entre, antes que a corrente de ar espalhe suas peças.
+	Greet1: Quer um corpo mais forte? O aço nunca te trai; só a sua carteira faz isso.
+	Greet2: Já vi tolos demais aguentando balas com a carne. Agora eles só vivem na minha memória... e na minha mesa de cirurgia.
+	Greet3: Cérebro, olhos, membros: se o preço for justo, não há nada que eu não possa substituir.
+	ClinicButtonText: Clínica cibernética
+	ChatButtonText: Conversar
+	LeaveButtonText: Sair
 }
 
 VictorClinicUI: {
-	// TitleText: VICTOR'S CLINIC
-	// StatusText: RIPPERDOC ONLINE - SELECT A LIMB
-	// GuideText: Select a body part to view, swap and buy its cyberware.
+	TitleText: CLÍNICA DO VICTOR
+	StatusText: MÉDICO CIBERNÉTICO ONLINE - ESCOLHA UM MEMBRO
+	GuideText: Escolha uma parte do corpo para ver, trocar e comprar seus implantes.
 }
 
 SHPCDialogueBox: {

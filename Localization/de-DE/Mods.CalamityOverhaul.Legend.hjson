@@ -51,7 +51,7 @@ HalibutText: {
 	}
 
 	HalibutSkillWheel: {
-		ReleaseHint: {0} loslassen zum Bestätigen
+		ReleaseHint: "{0} loslassen zum Bestätigen"
 		CancelHint: Rechtsklick zum Abbrechen
 		NoSelection: Keine Fähigkeit ausgewählt
 	}
