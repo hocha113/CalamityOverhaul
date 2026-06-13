@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，克苏鲁之脑的神经晶体在高速感知方面有异乎寻常的性能。");
-            L1 = this.GetLocalization(nameof(L1), () => "那些晶体的传导率……我研究了一会儿，然后用相似的材料配比做了个新握把。");
-            L2 = this.GetLocalization(nameof(L2), () => "水晶握把模组，拿着。使用SHPC时握持手感会有明显改善。");
-            L3 = this.GetLocalization(nameof(L3), () => "说实话，那颗大脑让我研究得有点入神。数据太有趣了。");
+            L0 = this.GetLocalization(nameof(L0), () => "和那种喜欢在脑子里制造幻觉的怪物交手，一定让您头晕脑胀了吧？真是个不讲礼貌的家伙。");
+            L1 = this.GetLocalization(nameof(L1), () => "您的指尖还在轻微地发抖呢，已经为您调整了链接处的微电流，请稍微放松一下吧。");
+            L2 = this.GetLocalization(nameof(L2), () => "至于那颗讨厌的大脑，我借用了它遗留下来的神经结晶，做了一点小小的材质改良。");
+            L3 = this.GetLocalization(nameof(L3), () => "这是一个全新的防滑握把。有了它，哪怕是在精神紧绷的战斗中，武器也能安安稳稳地贴合您的掌心。");
         }
 
         protected override void Build() {

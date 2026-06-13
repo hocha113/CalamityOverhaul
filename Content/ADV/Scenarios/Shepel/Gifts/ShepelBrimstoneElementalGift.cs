@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，硫磺火元素的核心温度超出了我所有传感器的量程上限。");
-            L1 = this.GetLocalization(nameof(L1), () => "我不得不用间接推算的方式重建了它的热量分布模型，然后把这份数据烧进了一个枪管参数包里。");
-            L2 = this.GetLocalization(nameof(L2), () => "焦化枪管模组。光束在命中时会附带额外的热能爆发效果。");
-            L3 = this.GetLocalization(nameof(L3), () => "高热研究容易让人上头，但我控制住了。");
+            L0 = this.GetLocalization(nameof(L0), () => "呼，那种快要把人烤化的高温终于降下来了。这个女士的脾气可真是火爆。");
+            L1 = this.GetLocalization(nameof(L1), () => "让我仔细看看……万幸，您的衣角连一丝被烧焦的痕迹都没有。");
+            L2 = this.GetLocalization(nameof(L2), () => "趁着刚才收集到的受热数据，我给您的武器做了一次特别的热处理。");
+            L3 = this.GetLocalization(nameof(L3), () => "换上这根全新的枪管吧！下次再遇到粗鲁的家伙，请毫无顾忌地开火，所有的散热工作都包在我身上。");
         }
 
         protected override void Build() {

@@ -28,10 +28,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "检测到量子纠缠节点已建立，信号强度稳定");
-            Line2 = this.GetLocalization(nameof(Line2), () => "很好，第一座信号塔已经开始运作。继续部署剩余的节点");
-            Line3 = this.GetLocalization(nameof(Line3), () => "当网络完成后，我将能够更精确地定位和监控整个星系的能量波动");
-            Line4 = this.GetLocalization(nameof(Line4), () => "保持这个速度，很快我们就能建立完整的通讯网络");
+            Line1 = this.GetLocalization(nameof(Line1), () => "新的量子纠缠节点运行平稳，信号稳定");
+            Line2 = this.GetLocalization(nameof(Line2), () => "很好，这是网络的第一步。继续部署剩余的信号塔");
+            Line3 = this.GetLocalization(nameof(Line3), () => "当节点数量达到标准时，我将能够对更大范围进行精确观测");
+            Line4 = this.GetLocalization(nameof(Line4), () => "继续保持你的效率");
         }
 
         protected override void OnScenarioStart() {

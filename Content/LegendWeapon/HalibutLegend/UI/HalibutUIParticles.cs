@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                         break;
                     }
                     case HalibutParticleKind.RingPulse: {
-                        float eased = CWRUtils.EaseOutCubic(lifeT);
+                        float eased = VaultUtils.EaseOutCubic(lifeT);
                         float radius = p.Scale * eased;
                         float alpha = (1f - eased) * 0.8f * globalAlpha;
                         HalibutRenderer.DrawRing(sb, p.Position, radius,
@@ -278,8 +278,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                     return false;
                 }
                 life++;
-                float t = CWRUtils.EaseOutCubic(MathHelper.Clamp(life / (float)MaxLife, 0f, 1f));
-                Position = CWRUtils.CubicBezier(t, start, control1, control2, end);
+                float t = VaultUtils.EaseOutCubic(MathHelper.Clamp(life / (float)MaxLife, 0f, 1f));
+                Position = VaultUtils.CubicBezier(t, start, control1, control2, end);
                 rotation += rotSpeed;
                 return life >= MaxLife;
             }

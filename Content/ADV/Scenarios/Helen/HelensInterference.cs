@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 
             public override void SetStaticDefaults() {
                 Line1 = this.GetLocalization(nameof(Line1), () => "我最近愈发不安");
-                Line2 = this.GetLocalization(nameof(Line2), () => "那把刀，我碰到它的时候，像是听到了......有人在窃笑 ");
+                Line2 = this.GetLocalization(nameof(Line2), () => "那把刀，我碰到它的时候，像是听到了......有人在窃笑");
                 Line3 = this.GetLocalization(nameof(Line3), () => "它们都像是......某种'媒介物品'");
                 Line4 = this.GetLocalization(nameof(Line4), () => "我不能让你带着它走下去，至少......");
             }

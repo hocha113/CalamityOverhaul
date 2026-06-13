@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             HelenName = this.GetLocalization(nameof(HelenName), () => "比目鱼");
 
             L0 = this.GetLocalization(nameof(L0), () => "......");
-            L1 = this.GetLocalization(nameof(L1), () => "没必要一见面就拔刀相向");
-            L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，不想打架");
+            L1 = this.GetLocalization(nameof(L1), () => "收起杀气吧，后生。没必要一见面就兵戎相见");
+            L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，那套打打杀杀的把戏，我已经厌倦了");
             L3 = this.GetLocalization(nameof(L3), () => "我们可以合作");
-            L4 = this.GetLocalization(nameof(L4), () => "我一直在收集海洋残片");
-            L5 = this.GetLocalization(nameof(L5), () => "如果你可以帮我找来更多，我会给予相应的报酬");
+            L4 = this.GetLocalization(nameof(L4), () => "我正在搜集一种特殊的东西，海洋残片");
+            L5 = this.GetLocalization(nameof(L5), () => "如果你能替我找来更多，我会让你觉得物超所值");
             L6 = this.GetLocalization(nameof(L6), () => "这是一份样本");
 
             B1 = this.GetLocalization(nameof(B1), () => "你改主意了吗？");
@@ -71,8 +71,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             C3 = this.GetLocalization(nameof(C3), () => "拒绝合作并拔出武器");
 
             C1Response = this.GetLocalization(nameof(C1Response), () => "很好，希望我们能有一个愉快的合作");
-            C2Response = this.GetLocalization(nameof(C2Response), () => "......那我就先离开了，如果你改变主意，随时可以再来找我");
-            C3Response = this.GetLocalization(nameof(C3Response), () => "......看来你执意如此，那就让我来称量称量你吧");
+            C2Response = this.GetLocalization(nameof(C2Response), () => "......那我就先离开了，如果你想通了，随时欢迎");
+            C3Response = this.GetLocalization(nameof(C3Response), () => "......既然你执意如此，那就让我来称量称量你吧");
         }
 
         protected override void OnScenarioStart() {

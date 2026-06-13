@@ -347,10 +347,10 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             }
 
             // 面板实际宽度
-            float actualPanelWidth = MathHelper.Lerp(PanelWidth, 40f, CWRUtils.EaseInOutCubic(collapseProgress));
+            float actualPanelWidth = MathHelper.Lerp(PanelWidth, 40f, VaultUtils.EaseInOutCubic(collapseProgress));
 
             // UI 位置
-            float offsetX = MathHelper.Lerp(-PanelWidth - 50f, ScreenX, CWRUtils.EaseOutCubic(slideProgress));
+            float offsetX = MathHelper.Lerp(-PanelWidth - 50f, ScreenX, VaultUtils.EaseOutCubic(slideProgress));
             DrawPosition = new Vector2(offsetX, ScreenY);
             Size = new Vector2(actualPanelWidth, currentPanelHeight);
             UIHitBox = DrawPosition.GetRectangle((int)actualPanelWidth, (int)currentPanelHeight);
@@ -403,7 +403,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             // 按钮 X 过渡
             float expandedX = DrawPosition.X + PanelWidth - buttonSize - 10;
             float collapsedX = DrawPosition.X + 10;
-            float buttonX = MathHelper.Lerp(expandedX, collapsedX, CWRUtils.EaseInOutCubic(buttonPositionProgress));
+            float buttonX = MathHelper.Lerp(expandedX, collapsedX, VaultUtils.EaseInOutCubic(buttonPositionProgress));
 
             int buttonY = (int)(DrawPosition.Y + 8);
 
@@ -553,7 +553,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             // 折叠时跳过内容
             if (collapseProgress < 0.99f) {
-                float contentAlpha = alpha * (1f - CWRUtils.EaseInOutCubic(collapseProgress));
+                float contentAlpha = alpha * (1f - VaultUtils.EaseInOutCubic(collapseProgress));
                 DrawContent(spriteBatch, contentAlpha);
             }
         }

@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，石巨人的物理冲击数据相当可观——高质量、高频率、低精度，标准的暴力覆盖策略。");
-            L1 = this.GetLocalization(nameof(L1), () => "我把那些冲击波形数据做成了一套动能阻尼参数，实际上是在用它的重击对抗它自己。");
-            L2 = this.GetLocalization(nameof(L2), () => "动能阻尼模组，这个模组降低了受击后的姿态扰动，主人的射击窗口会更稳定。");
-            L3 = this.GetLocalization(nameof(L3), () => "巨型机器人的存在意义之一就是提供充足的冲击波形样本。");
+            L0 = this.GetLocalization(nameof(L0), () => "神庙里的环境有些压抑。石巨人的攻击虽然笨重，但引发的地形震荡容易破坏射击平衡。");
+            L1 = this.GetLocalization(nameof(L1), () => "为了应对这种高频的物理冲击，我对武器架构进行了重新评估。");
+            L2 = this.GetLocalization(nameof(L2), () => "我为您的武装加装了最新的减震结构。");
+            L3 = this.GetLocalization(nameof(L3), () => "这样即使在剧烈的环境晃动中，您也能保持最稳定的射击姿态。");
         }
 
         protected override void Build() {

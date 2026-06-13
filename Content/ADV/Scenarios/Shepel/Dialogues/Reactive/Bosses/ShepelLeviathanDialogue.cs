@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "海洋巨型生物群已撤离。体型数据超出了我预设的海洋威胁参数上限，已即时调整了。");
+                () => "利维坦及其共生体已被击杀。深海的阻碍已彻底清除。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "主人，您适应未知环境的速度让我的预测模型一直在更新，这已经快成常态了。");
+                () => "看着您在如此恶劣的环境下毫不畏惧的战斗，我的心智模块再度发热了。");
         }
 
         protected override void Build() {

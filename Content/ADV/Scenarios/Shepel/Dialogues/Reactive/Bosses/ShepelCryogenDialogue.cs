@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "冷冻封印已突破。我的热成像传感器显示区域温度驾升，已回到正常范围。");
+                () => "极寒监牢已摧毁，温度正在回升。刚才的绝对零度没有冻伤您吧？");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "那股持续的绝对零度干扰终于消失了。我的某些传感器模块在它附近一直运行不稳定。总算舒服了。");
+                () => "如果感到寒冷，请靠近我一些，我的散热模块可以为您取暖。");
         }
 
         protected override void Build() {

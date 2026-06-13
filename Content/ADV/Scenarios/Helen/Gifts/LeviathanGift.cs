@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "海洋的暴君……和那个总是跟着她的小跟班。有些友谊超越了物种，也超越了理智");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？最深的海沟里住着的不是恐惧，而是孤独。它们只是在寻找陪伴");
+            L1 = this.GetLocalization(nameof(L1), () => "我觉得最深的海沟里住着的不是恐惧，而是孤独。它们只是在寻找陪伴");
             L2 = this.GetLocalization(nameof(L2), () => "热带梭鱼，从深海漩涡里捞出来的。它看起来很普通，但这正是最可疑的地方");
             L3 = this.GetLocalization(nameof(L3), () => "越是平凡的外表，越是隐藏着不平凡的过去");
             L4 = this.GetLocalization(nameof(L4), () => "就像我们一样");

@@ -45,13 +45,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "啊……终于结束了");
-            Line2 = this.GetLocalization(nameof(Line2), () => "那条龙，对我来说曾经是极少数值得尊敬的生物");
-            Line3 = this.GetLocalization(nameof(Line3), () => "它知道自己会死，却仍然选择站在那里......即时是'焚烧重启'又如何，下次活过来的也只是复制体");
-            Line4 = this.GetLocalization(nameof(Line4), () => "可惜，它擅长服从，而你擅长……活下来");
-            Line5 = this.GetLocalization(nameof(Line5), () => "拿着。金源锭。曾被叫做‘炼狱之金’，是凡人手中能触碰的极限力量");
+            Line1 = this.GetLocalization(nameof(Line1), () => "啊......终于结束了");
+            Line2 = this.GetLocalization(nameof(Line2), () => "对我来说......那条龙，是极少数值得尊敬的生物");
+            Line3 = this.GetLocalization(nameof(Line3), () => "明知自己会死，却仍然选择站在那里......即使借助金源魄来重启，归来的也只是复制体");
+            Line4 = this.GetLocalization(nameof(Line4), () => "可惜，它擅长服从，而你擅长......嗯，活下来？");
+            Line5 = this.GetLocalization(nameof(Line5), () => "拿着。金源锭。曾被叫做‘炼狱之金’，是凡人所能触碰的力量极限");
             Line6 = this.GetLocalization(nameof(Line6), () => "接下来，轮到我了");
-            Line7 = this.GetLocalization(nameof(Line7), () => "你在开什么玩笑……？");
+            Line7 = this.GetLocalization(nameof(Line7), () => "你在开什么玩笑......？");
         }
 
         protected override void OnScenarioStart() {

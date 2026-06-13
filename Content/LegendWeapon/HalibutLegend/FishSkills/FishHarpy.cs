@@ -317,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
-            float easeProgress = CWRUtils.EaseOutSine(progress);
+            float easeProgress = VaultUtils.EaseOutSine(progress);
 
             Vector2 driftOffset = new Vector2(
                 (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + floatPhase) * 15f * (1f - easeProgress),
@@ -387,7 +387,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void OrbitingPhaseAI(Player owner) {
             float timeProgress = MathHelper.Clamp(StateTimer / 60f, 0f, 1f);
 
-            float speedProgress = CWRUtils.EaseInOutQuad(timeProgress);
+            float speedProgress = VaultUtils.EaseInOutQuad(timeProgress);
             orbitSpeed = MathHelper.Lerp(0.03f, MaxOrbitSpeed, speedProgress);
 
             float radiusScale = MathHelper.Lerp(1f, 0.92f, MathHelper.Clamp(speedProgress, 0f, 1f));

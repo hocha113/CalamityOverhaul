@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "灾厄克隆体：终止。主人请注意，扫描确认，这只是个副本。");
+                () => "灾厄克隆体的信号已消失。主人没有被这股反射能量波及吧？");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "原体的信号仍然存在，位置更深，威胁等级远超这个复刻版本。如果说这只是预演……");
+                () => "扫描显示本体的威胁依然潜伏在深处……如果她敢出现。");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "我已将真正的灾厄列为最高优先监控目标。主人，请保持警惕。");
+                () => "我会不惜一切代价挡在您身前。");
         }
 
         protected override void Build() {

@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "生物聚合体核心摧毁。无中枢、无边界、无固定形态，这东西把我所有的威胁模型都打乱了。");
+                () => "史莱姆之神的核心已溃散。周围散落着大量的凝胶残骸。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "比任何我预测过的架构都更混乱。但主人还是将它彻底击碎了。");
+                () => "请稍微等一下，让我为您清理掉护甲上沾染的污渍，保持您的整洁也是女仆的职责。");
         }
 
         protected override void Build() {

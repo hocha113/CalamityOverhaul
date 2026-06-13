@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "瘟疫传播核心摧毁。污染等级正在快速下降，空气净化已经开始了。");
+                () => "瘟疫使者已坠毁。请戴好过滤面具，残存的毒素污染将由我来全数净化。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "军事化瘟疫载体，背后像是有人刻意设计过的。这件事我记下来了，之后要深查一下。");
+                () => "军事化的瘟疫载体……背后的设计痕迹十分严重。这件事我会深查到底。");
         }
 
         protected override void Build() {

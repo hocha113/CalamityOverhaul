@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
         private const int CollapseTime = 16;
 
         private ref float Timer => ref Projectile.localAI[0];
-        private NPC Owner => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
+        private NPC Owner => ((int)Projectile.ai[0]).TryGetNPC(out NPC n) ? n : null;
         private int Duration => (int)Projectile.ai[1];
         private bool FlameTheme => Projectile.ai[2] == 1f;
 
@@ -80,12 +80,12 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
-                beamWidth = MathHelper.Lerp(2f, MaxWidth, CWRUtils.EaseOutCubic(t));
-                beamLength = MathHelper.Lerp(0f, MaxBeamLength, CWRUtils.EaseOutQuad(t));
+                beamWidth = MathHelper.Lerp(2f, MaxWidth, VaultUtils.EaseOutCubic(t));
+                beamLength = MathHelper.Lerp(0f, MaxBeamLength, VaultUtils.EaseOutQuad(t));
             }
             else if (Timer >= collapseStart) {
                 float t = (Timer - collapseStart) / CollapseTime;
-                beamWidth = MathHelper.Lerp(MaxWidth, 0f, CWRUtils.EaseInQuad(t));
+                beamWidth = MathHelper.Lerp(MaxWidth, 0f, VaultUtils.EaseInQuad(t));
                 beamLength = MaxBeamLength;
             }
             else {

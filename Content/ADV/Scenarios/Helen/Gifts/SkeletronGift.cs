@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             L1 = this.GetLocalization(nameof(L1), () => "那东西的颅骨结构，让我想起一只失控的意念聚合体");
             L2 = this.GetLocalization(nameof(L2), () => "让我枪管冷却一下，我刚才从这周围捡到了一条鱼");
             L3 = this.GetLocalization(nameof(L3), () => "你看，这是‘骷髅王鱼’，据说它体内的磷质能让夜钓的人思考人生");
-            L4 = this.GetLocalization(nameof(L4), () => "走吧，前面还有更抽象的骨头在等着你");
+            L4 = this.GetLocalization(nameof(L4), () => "走吧，前面还有更抽象的骨头在等着我们");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);

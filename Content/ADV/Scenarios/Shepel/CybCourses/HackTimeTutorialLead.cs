@@ -96,10 +96,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             _textCalibrating = this.GetLocalization("HT_Calibrating", () => "DISCONNECTING...");
             _textObserving = this.GetLocalization("HT_Observing", () => "UPLOADING...");
             _textNextBtn = this.GetLocalization("HT_NextBtn", () => "NEXT  >");
-            _textHintStuck = this.GetLocalization("HT_HintStuck", () => "// HINT: 点击 NEXT 按钮可强制跳过");
+            _textHintStuck = this.GetLocalization("HT_HintStuck", () => "HINT: 点击 NEXT 按钮可强制跳过");
             _textKeyUnbound = this.GetLocalization("HT_KeyUnbound", () => "N（临时开关）");
             _textKeyHintUnbound = this.GetLocalization("HT_KeyHintUnbound",
-                () => "// 提示：未绑定骇客时间快捷键时，本教程内可用 [N] 临时开关；建议在 设置 > 控制 中绑定。");
+                () => "提示：未绑定骇客时间快捷键时，本教程内可用 [N] 临时开关；建议在 设置 > 控制 中绑定。");
         }
 
         //返回当前骇客时间快捷键的显示字符串，未绑定时返回带括号的提示文本

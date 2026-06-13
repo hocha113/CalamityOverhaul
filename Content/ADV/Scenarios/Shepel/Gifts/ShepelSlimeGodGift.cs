@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，史莱姆之神的凝胶体有一种非常均匀的内部应力分布结构——它是真的。");
-            L1 = this.GetLocalization(nameof(L1), () => "我利用这个特性重新设计了握把的力学平衡方案，让SHPC在快速转向时稳定性更高。");
-            L2 = this.GetLocalization(nameof(L2), () => "平衡握把模组。任何方向的操作响应都会更一致一些。");
-            L3 = this.GetLocalization(nameof(L3), () => "没想到一坨凝胶能给我这么多启发。记录在案了。");
+            L0 = this.GetLocalization(nameof(L0), () => "居然能分裂成这么多块……这场战斗弄得满地都是黏糊糊的凝胶。");
+            L1 = this.GetLocalization(nameof(L1), () => "不过，我发现这些史莱姆的内部结构非常有弹性。我借用了一点，给您的武器握把加了一层柔性缓冲。");
+            L2 = this.GetLocalization(nameof(L2), () => "您再试着举起武器看看？重心的分布应该变得更舒服了。");
+            L3 = this.GetLocalization(nameof(L3), () => "哪怕战况再怎么混乱，只要手感依旧稳固，您就能永远保持从容。");
         }
 
         protected override void Build() {

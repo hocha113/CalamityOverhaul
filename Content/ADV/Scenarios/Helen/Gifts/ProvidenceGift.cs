@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "亵渎天神……一个由信仰和火焰构成的矛盾体。她守护的是什么？还是只是在燃烧？");
-            L1 = this.GetLocalization(nameof(L1), () => "你刚才熄灭的不仅是圣火，还有一个纪元的余烬");
+            L0 = this.GetLocalization(nameof(L0), () => "亵渎天神……一个由信仰和火焰构成的矛盾体。挺可怜的");
+            L1 = this.GetLocalization(nameof(L1), () => "我们刚才熄灭的不仅是圣火，还有一个纪元的余烬");
             L2 = this.GetLocalization(nameof(L2), () => "恶魔地狱鱼，从她的灰烬中重生的。它的温度永远保持在'刚好不会烫伤你'的程度");
-            L3 = this.GetLocalization(nameof(L3), () => "这种精确控制让我怀疑，也许她只是想被理解");
+            L3 = this.GetLocalization(nameof(L3), () => "这种精确控制让我怀疑，也许它只是想被理解");
             L4 = this.GetLocalization(nameof(L4), () => "不过理解和战争之间的界限，只是一次攻击的距离");
         }
         protected override void Build() {

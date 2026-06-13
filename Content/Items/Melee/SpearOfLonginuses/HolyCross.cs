@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                 ? 1f
                 : MathHelper.Clamp(longinus.HolyEnergy / (float)SpearOfLonginus.HolyEnergyMax, 0f, 1f);
 
-            float appear = CWRUtils.EaseOutBack(spawnProgress);
+            float appear = VaultUtils.EaseOutBack(spawnProgress);
             float pulse = 1f + (float)Math.Sin(pulsePhase) * 0.06f;
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;

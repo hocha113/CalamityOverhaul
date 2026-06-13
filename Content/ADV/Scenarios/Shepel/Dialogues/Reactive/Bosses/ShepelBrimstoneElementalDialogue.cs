@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "硫磺元素体中和完毕。热辐射来源消除，区域温度恢复稳定范围。");
+                () => "硫磺火元素已被镇压。区域高温正在消散，请让我为您检查一下护甲的隔热层。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "那种古老的愤怒……很难以数据来衡量。它更像一种意志，而不是简单的攻击行为。令人深思。");
+                () => "这种纯粹的恶意与愤怒十分危险。但请放心，我会将所有的伤害都拦截下来。");
         }
 
         protected override void Build() {

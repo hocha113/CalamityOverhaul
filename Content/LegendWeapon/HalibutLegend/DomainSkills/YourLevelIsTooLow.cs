@@ -581,7 +581,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
             else if (progress < 0.85f) {
                 float p = (progress - 0.6f) / 0.25f;
-                orbitRadius = MathHelper.Lerp(340f, 60f, CWRUtils.EaseOutCubic(p));
+                orbitRadius = MathHelper.Lerp(340f, 60f, VaultUtils.EaseOutCubic(p));
                 spiralAngle += 0.18f * timeWarpFactor * (1f + p);
                 Alpha = 1f;
                 if (!burstSpawned && p > 0.3f) { //临近核心喷洒震荡尘粒
@@ -692,7 +692,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (progress < 0.28f) {
                 float p = progress / 0.28f;
                 Intensity = p;
-                Scale = MathHelper.Lerp(0f, 5f, CWRUtils.EaseOutBack(p)); //缩小初始规模
+                Scale = MathHelper.Lerp(0f, 5f, VaultUtils.EaseOutBack(p)); //缩小初始规模
             }
             else {
                 float p = (progress - 0.28f) / 0.72f;

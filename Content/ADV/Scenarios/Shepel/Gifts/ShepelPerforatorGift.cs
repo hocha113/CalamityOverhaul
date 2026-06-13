@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，血肉宿主的穿刺轨迹模型非常具有参考性——多点同步侵入，路径之间的夹角经过精密计算。");
-            L1 = this.GetLocalization(nameof(L1), () => "我把这种弹道分布逻辑集成进了一个枪管配置里。");
-            L2 = this.GetLocalization(nameof(L2), () => "散射枪管模组，拿着。单次射击可以分裂出多束光束覆盖较宽的范围。");
-            L3 = this.GetLocalization(nameof(L3), () => "它的侵略性设计思路……我研究时保持了一点距离。");
+            L0 = this.GetLocalization(nameof(L0), () => "这种血肉异形的侵略性极强，行为也充满了野蛮的本能。");
+            L1 = this.GetLocalization(nameof(L1), () => "它们经常尝试从视野死角发动攻击，防不胜防。");
+            L2 = this.GetLocalization(nameof(L2), () => "为了反制这种突袭，我为您改装了火力网更广阔的散射模块。");
+            L3 = this.GetLocalization(nameof(L3), () => "扩大火力覆盖面积，就能在那些威胁靠近您之前提前完成清理。");
         }
 
         protected override void Build() {

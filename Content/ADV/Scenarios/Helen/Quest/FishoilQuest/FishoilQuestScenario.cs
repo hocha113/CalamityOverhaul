@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         public override void SetStaticDefaults() {
             Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
             Line0 = this.GetLocalization(nameof(Line0), () => "你最近好像捕到了不少普通的鱼");
-            Line1 = this.GetLocalization(nameof(Line1), () => "给我一批做实验,我可以提炼一瓶新鲜的鱼油");
+            Line1 = this.GetLocalization(nameof(Line1), () => "给我一些做实验，我可以提炼出一瓶新鲜的鱼油");
             Line2 = this.GetLocalization(nameof(Line2), () => "过程不难但很枯燥");
             Line3 = this.GetLocalization(nameof(Line3), () => "鱼油很有潜力,比你想的更有用");
             Line4 = this.GetLocalization(nameof(Line4), () => "愿意吗?");

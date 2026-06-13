@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
 
-            float reveal = CWRUtils.EaseOutCubic(galaxyRevealProgress);
+            float reveal = VaultUtils.EaseOutCubic(galaxyRevealProgress);
             float galaxyAlpha = alpha * reveal;
 
             DrawGalaxyCore(sb, center, galaxyAlpha);
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                             //阶段2：缩小并消失
                             float fadeT = MathF.Min(star.ExtinctionStageTimer / ExtinctionFadeDuration, 1f);
                             starColor = Color.Lerp(new Color(255, 50, 30), new Color(80, 20, 15), fadeT);
-                            float shrink = 1f - CWRUtils.EaseInCubic(fadeT);
+                            float shrink = 1f - VaultUtils.EaseInCubic(fadeT);
                             drawSize *= shrink;
                             finalBrightness *= shrink;
                             if (drawSize < 0.05f) continue;
@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                     case 2:
                         float fadeT = MathF.Min(terraExtinctionStageTimer / ExtinctionFadeDuration, 1f);
                         terraColor = Color.Lerp(new Color(255, 60, 40), new Color(80, 20, 15), fadeT);
-                        drawScale = 1f - CWRUtils.EaseInCubic(fadeT);
+                        drawScale = 1f - VaultUtils.EaseInCubic(fadeT);
                         markerAlpha *= drawScale;
                         if (drawScale < 0.05f) return;
                         break;

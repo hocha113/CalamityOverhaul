@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         #region 绘制
 
         private static void DrawAndroidProfile(SpriteBatch sb, Vector2 center, Rectangle panelRect, float alpha) {
-            float revealAlpha = alpha * CWRUtils.EaseOutCubic(androidRevealProgress);
+            float revealAlpha = alpha * VaultUtils.EaseOutCubic(androidRevealProgress);
 
             //面板内部区域（留出标题栏和边框）
             int marginH = 40;
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 
             Color techColor = new Color(50, 140, 200);
             float pulse = MathF.Sin(hologramFlicker * 2f) * 0.12f + 0.88f;
-            float reveal = CWRUtils.EaseOutCubic(androidRevealProgress);
+            float reveal = VaultUtils.EaseOutCubic(androidRevealProgress);
 
             //边线展开动画（以中心向外伸展）
             float lineWidth = rect.Width * reveal;
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             float pulse = MathF.Sin(hologramFlicker * 2.5f) * 0.15f + 0.85f;
 
             //非常细淡的虚线
-            float reveal = CWRUtils.EaseOutCubic(androidRevealProgress);
+            float reveal = VaultUtils.EaseOutCubic(androidRevealProgress);
             float lineH = portraitZoneHeight * reveal;
             float lineY = contentRect.Y + (portraitZoneHeight - lineH) * 0.5f;
 
@@ -204,7 +204,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             string name, float revealProgress, float alpha, bool isLeft) {
             if (revealProgress <= 0.01f) return;
 
-            float cardAlpha = alpha * CWRUtils.EaseOutCubic(revealProgress);
+            float cardAlpha = alpha * VaultUtils.EaseOutCubic(revealProgress);
 
             //半透明背景
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             );
 
             //出场动画：从侧方滑入（左侧角色从左滑入，右侧从右滑入）
-            float slideOffset = (1f - CWRUtils.EaseOutCubic(reveal)) * 50f;
+            float slideOffset = (1f - VaultUtils.EaseOutCubic(reveal)) * 50f;
             drawPos.X += isLeft ? -slideOffset : slideOffset;
 
             float portraitAlpha = alpha * MathHelper.Clamp(reveal * 2f, 0f, 1f);

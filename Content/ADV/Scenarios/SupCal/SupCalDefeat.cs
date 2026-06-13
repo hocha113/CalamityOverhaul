@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
-            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "[Name] & 比目鱼");
+            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼&[Name]");
             Line1 = this.GetLocalization(nameof(Line1), () => "你竟然已经到达这种地步了吗......呵，是我技不如人了");
             Line2 = this.GetLocalization(nameof(Line2), () => "但你并非最强，你或许很不错，但那个人绝对不会比你差");
             Line3 = this.GetLocalization(nameof(Line3), () => "亚利姆已经走到了那条道路的尽头，到达了泰拉人的极致，没人会比他强");

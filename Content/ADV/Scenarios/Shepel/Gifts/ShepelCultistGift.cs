@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，那群信徒在仪式中产生了大量虚空信号——不是普通的能量波动，而是某种协议层面的干扰。");
-            L1 = this.GetLocalization(nameof(L1), () => "我捕获了其中的稳定分量，重新编码成了SHPC的机匣扩展接口。");
-            L2 = this.GetLocalization(nameof(L2), () => "幽灵机匣模组，它让SHPC获得了一种通过虚空媒介投影的辅助攻击能力。");
-            L3 = this.GetLocalization(nameof(L3), () => "信徒的目的我不了解，但这些信号留下来了，被我用掉了。");
+            L0 = this.GetLocalization(nameof(L0), () => "那些神神叨叨的信徒可算消停了，在这里搞些诡异的仪式。");
+            L1 = this.GetLocalization(nameof(L1), () => "不过主人，您觉不觉得空气变得非常沉闷？我的传感器也在报警，好像有什么了不得的大麻烦正在从天上靠近。");
+            L2 = this.GetLocalization(nameof(L2), () => "刚才我趁乱截获了那些乱七八糟的虚空信号，顺手把它改成了一个能帮您捕捉目标的小插件。");
+            L3 = this.GetLocalization(nameof(L3), () => "看来接下来有一场硬仗要打，准备做好准备，主人，我随时都在。");
         }
 
         protected override void Build() {

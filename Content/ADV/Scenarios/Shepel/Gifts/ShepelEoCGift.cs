@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，我在战斗过程中记录了克苏鲁之眼的光学追踪数据。");
-            L1 = this.GetLocalization(nameof(L1), () => "它用于锁定目标的晶体结构很有参考价值，我花了点时间将其转化成了SHPC的射击优化方案。");
-            L2 = this.GetLocalization(nameof(L2), () => "拿着，这是激光枪管模组。它会让光束在命中目标前维持更高的聚焦精度。");
-            L3 = this.GetLocalization(nameof(L3), () => "算是初期试炼的一点纪念物。");
+            L0 = this.GetLocalization(nameof(L0), () => "夜晚的视线有些模糊呢，主人。不过那只巨大的眼睛已经被您彻底击碎了。");
+            L1 = this.GetLocalization(nameof(L1), () => "我已经为您准备好了热茶和干净的毛巾，请稍作休整。");
+            L2 = this.GetLocalization(nameof(L2), () => "在您休息时，我会对武器的光学系统进行改进，光束会更加聚拢。");
+            L3 = this.GetLocalization(nameof(L3), () => "这只是旅途的开始。无论接下来去哪，我都会为您打理好一切后勤与武装。");
         }
 
         protected override void Build() {

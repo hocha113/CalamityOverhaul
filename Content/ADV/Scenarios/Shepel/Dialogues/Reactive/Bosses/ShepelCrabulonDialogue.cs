@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "蘑荇蟹确认消灯。有意思的是，它的神经系统已经被菌丝网络部分取代，形成了一种外来寄生式的群体意识。");
+                () => "菌生蟹已清理。空气中残留着孢子，已为您开启净化滤网。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "拿活体生物当底层网络，确实是个有趣的研究对象。不过主人就不必亲身体验了。");
+                () => "被真菌剥夺意识的共生体极其危险，我绝对不会让这些污秽沾染到您半分。");
         }
 
         protected override void Build() {

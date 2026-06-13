@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
         private const int ArcPointCount = 14;
 
         private ref float Timer => ref Projectile.localAI[0];
-        private NPC EyeA => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
-        private NPC EyeB => CWRUtils.GetNPCInstance((int)Projectile.ai[1]);
+        private NPC EyeA => ((int)Projectile.ai[0]).TryGetNPC(out NPC n) ? n : null;
+        private NPC EyeB => ((int)Projectile.ai[1]).TryGetNPC(out NPC n) ? n : null;
         private int Duration => (int)Projectile.ai[2];
 
         private ThunderTrail mainTrail;
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
             }
             else {
                 float t = MathHelper.Clamp((Timer - WarmupTime) / 12f, 0f, 1f);
-                power = MathHelper.Lerp(0.25f, 1f, CWRUtils.EaseOutCubic(t));
+                power = MathHelper.Lerp(0.25f, 1f, VaultUtils.EaseOutCubic(t));
             }
 
             //全功率瞬间的爆鸣

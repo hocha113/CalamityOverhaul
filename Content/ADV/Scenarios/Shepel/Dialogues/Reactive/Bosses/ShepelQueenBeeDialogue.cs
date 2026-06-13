@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "蜂后清除完毕。整个蜂群失去了指挥核心，威胁已解除。");
+                () => "蜂群的中枢已被摧毁。失去指挥的毒蜂已经溃散。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "有机群体的协同行为挺有意思，某种程度上和分布式网络架构有点像。");
+                () => "无论是有机的蜂群还是无机的机群，在主人的默契指令面前，都不足为惧。");
         }
 
         protected override void Build() {

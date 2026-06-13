@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         //蓄力积蓄能量
         private void UpdateCharging() {
-            chargeProgress = CWRUtils.EaseOutCubic(phaseTimer / (float)ChargeDuration);
+            chargeProgress = VaultUtils.EaseOutCubic(phaseTimer / (float)ChargeDuration);
             dashDirection = Projectile.velocity.SafeNormalize(Vector2.Zero);
 
             //长枪前方蓄力
@@ -230,10 +230,10 @@ namespace CalamityOverhaul.Content.Items.Melee
             //先加速后减速曲线
             float speedCurve;
             if (dashProgress < 0.3f) {
-                speedCurve = CWRUtils.EaseOutCubic(dashProgress / 0.3f);
+                speedCurve = VaultUtils.EaseOutCubic(dashProgress / 0.3f);
             }
             else {
-                speedCurve = 1f - CWRUtils.EaseInQuad((dashProgress - 0.3f) / 0.7f) * 0.4f;
+                speedCurve = 1f - VaultUtils.EaseInQuad((dashProgress - 0.3f) / 0.7f) * 0.4f;
             }
 
             float dashSpeed = MaxDashSpeed * speedCurve;
@@ -307,7 +307,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         //恢复阶段
         private void UpdateRecovery() {
             float recoveryProgress = phaseTimer / (float)RecoveryDuration;
-            float pullbackDistance = MathHelper.Lerp(80f, 45f, CWRUtils.EaseInQuad(recoveryProgress));
+            float pullbackDistance = MathHelper.Lerp(80f, 45f, VaultUtils.EaseInQuad(recoveryProgress));
             Projectile.Center = Owner.MountedCenter + dashDirection * pullbackDistance;
 
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -848,7 +848,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float thrustProgress;
             if (progress < 0.35f) {
                 //前35%爆发前刺
-                thrustProgress = CWRUtils.EaseOutExpo(progress / 0.35f);
+                thrustProgress = VaultUtils.EaseOutExpo(progress / 0.35f);
             }
             else if (progress < 0.6f) {
                 //中25%短暂停顿
@@ -856,7 +856,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
             else {
                 //后40%快速回收
-                thrustProgress = 1f - CWRUtils.EaseInCubic((progress - 0.6f) / 0.4f);
+                thrustProgress = 1f - VaultUtils.EaseInCubic((progress - 0.6f) / 0.4f);
             }
 
             //连击段调刺距

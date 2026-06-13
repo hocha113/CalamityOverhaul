@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             Stat3 = this.GetLocalization(nameof(Stat3), () => "[#] 物块扫描接口校准完毕");
             BtnRetry = this.GetLocalization(nameof(BtnRetry), () => "RETRY");
             BtnExit = this.GetLocalization(nameof(BtnExit), () => "EXIT");
-            Footer = this.GetLocalization(nameof(Footer), () => "// 选择以继续 — RETRY 重启训练，EXIT 离开超梦");
+            Footer = this.GetLocalization(nameof(Footer), () => "选择以继续 — RETRY 重启训练，EXIT 离开超梦");
         }
 
         //面板尺寸：比教程卡片更大、居中显示

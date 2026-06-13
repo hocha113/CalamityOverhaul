@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //短促后撤蓄力，末段绷紧颤抖
             Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
             if (progress < 0.6f) {
-                float pull = CWRUtils.EaseInQuad(progress / 0.6f);
+                float pull = VaultUtils.EaseInQuad(progress / 0.6f);
                 npc.velocity = npc.velocity * 0.84f + awayDir * pull * 5f;
             }
             else {

@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "主人，目标已确认消灭。战斗数据已同步至档案库。");
+                () => "目标已确认肃清。主人没有受伤吧？");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "您的战斗表现值得称赞。随时待命。");
+                () => "为您扫除前方的一切障碍，是我最大的荣幸。");
         }
 
         protected override void Build() {

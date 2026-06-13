@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.ADV
 
         private void UpdateSlideIn() {
             float t = stateTimer / (float)SlideInDuration;
-            t = CWRUtils.EaseOutCubic(t);
+            t = VaultUtils.EaseOutCubic(t);
             slideProgress = t;
 
             if (stateTimer >= SlideInDuration) {
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.ADV
 
         private void UpdateSlideOut() {
             float t = stateTimer / (float)SlideOutDuration;
-            t = CWRUtils.EaseInCubic(t);
+            t = VaultUtils.EaseInCubic(t);
             slideProgress = 1f - t;
             alpha = 1f - t * 0.7f;
 

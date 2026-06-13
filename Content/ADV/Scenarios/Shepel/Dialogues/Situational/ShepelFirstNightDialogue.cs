@@ -23,21 +23,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Situational
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             V0_Line1 = this.GetLocalization(nameof(V0_Line1),
-                () => "夜幕落下了，夜间的威胁密度比白天高，注意周围。");
+                () => "夜幕落下了，夜间的威胁密度远超白天，请注意周围。");
             V0_Line2 = this.GetLocalization(nameof(V0_Line2),
-                () => "我的视野不依赖光照，我看得到。主人怎么样，看得清吗？");
+                () => "我的视野不依赖光照，我看得清。主人呢，看得清吗？");
             V1_Line1 = this.GetLocalization(nameof(V1_Line1),
-                () => "今晚的星象数据比较完整，我在跑例行分析。");
+                () => "今晚的星象数据比较完整，我正在运行例行分析。");
             V1_Line2 = this.GetLocalization(nameof(V1_Line2),
                 () => "没什么要紧的，只是习惯了有事做。");
             V2_Line1 = this.GetLocalization(nameof(V2_Line1),
-                () => "晚上安静很多，相对的。");
+                () => "夜晚安静了许多，相对的。");
             V2_Line2 = this.GetLocalization(nameof(V2_Line2),
-                () => "越安静的时候越要警惕，主人。");
+                () => "越安静的时候越需要警惕，主人。");
             V3_Line1 = this.GetLocalization(nameof(V3_Line1),
                 () => "都这么晚了，主人有计划今晚去哪吗。");
             V3_Line2 = this.GetLocalization(nameof(V3_Line2),
-                () => "问一句，不是催。");
+                () => "只是问问，不是催。");
         }
 
         protected override bool CheckConditions(Player player, ADVSave save)

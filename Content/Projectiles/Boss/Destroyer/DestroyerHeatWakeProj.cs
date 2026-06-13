@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
         }
 
         public override void AI() {
-            NPC head = CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
+            ((int)Projectile.ai[0]).TryGetNPC(out NPC head);
             if (!head.Alives() || head.type != NPCID.TheDestroyer) {
                 Projectile.Kill();
                 return;

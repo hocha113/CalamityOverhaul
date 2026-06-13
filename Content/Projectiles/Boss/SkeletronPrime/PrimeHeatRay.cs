@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         internal int TotalLife => ExpandTime + SustainFrames + CollapseTime;
 
         protected ref float Timer => ref Projectile.localAI[0];
-        protected NPC Host => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
+        protected NPC Host => ((int)Projectile.ai[0]).TryGetNPC(out NPC n) ? n : null;
 
         protected float beamWidth;
         protected float beamLength;
@@ -82,12 +82,12 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             float collapseStart = TotalLife - CollapseTime;
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
-                beamWidth = MathHelper.Lerp(2f, MaxWidth, CWRUtils.EaseOutCubic(t));
-                beamLength = MathHelper.Lerp(0f, MaxLength, CWRUtils.EaseOutQuad(t));
+                beamWidth = MathHelper.Lerp(2f, MaxWidth, VaultUtils.EaseOutCubic(t));
+                beamLength = MathHelper.Lerp(0f, MaxLength, VaultUtils.EaseOutQuad(t));
             }
             else if (Timer >= collapseStart) {
                 float t = (Timer - collapseStart) / CollapseTime;
-                beamWidth = MathHelper.Lerp(MaxWidth, 0f, CWRUtils.EaseInQuad(t));
+                beamWidth = MathHelper.Lerp(MaxWidth, 0f, VaultUtils.EaseInQuad(t));
                 beamLength = MaxLength;
             }
             else {
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 return false;
             }
             //头部转阶段殉爆演出会无条件收走四肢，光束不应继续灼烧
-            NPC head = CWRUtils.GetNPCInstance((int)arm.ai[PrimeAiSlots.ArmHeadIndex]);
+            ((int)arm.ai[PrimeAiSlots.ArmHeadIndex]).TryGetNPC(out NPC head);
             return !(head.Alives() && head.type == NPCID.SkeletronPrime
                 && (int)head.ai[PrimeAiSlots.HeadStateSlot] == (int)PrimeStateIndex.PhaseTransition);
         }

@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "沙漠莓虫已清除。体型确实庞大，但攻击模式太重复了，不难应对。");
+                () => "荒漠灾虫的生命体征已归零。为您清理掉这些庞然大物，是理所应当的。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "移动模式我已经记下来了。主人，沙漠这边的威胁过去了，前方的挑战才刚刚开始。");
+                () => "沙漠的威胁暂时解除，前方的路，请继续交给我来开辟。");
         }
 
         protected override void Build() {

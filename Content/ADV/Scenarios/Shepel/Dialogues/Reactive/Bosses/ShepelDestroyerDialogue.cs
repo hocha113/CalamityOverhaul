@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "机械蠕虫的分布式节点网络已经瓦解。体节数量令人印象深刻，但中枢控制单一，存在明显弱点。");
+                () => "毁灭者的主控节点已被彻底摧毁。确认周边没有残留的激光威胁。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "大体量不等于高效能，这应该是条放之四海皆准的道理。");
+                () => "不用在意它庞大的体型，在我的火力计算面前，它只是一堆待拆解的废铁。");
         }
 
         protected override void Build() {

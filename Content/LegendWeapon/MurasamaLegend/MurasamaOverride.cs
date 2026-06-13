@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
             int onDamage = GetOnDamage(item);
-            CWRUtils.ModifyLegendWeaponDamageFunc(item, onDamage, GetStartDamage, ref damage);
+            VaultUtils.ApplyWeaponDamageScaling(item, onDamage, GetStartDamage, ref damage);
             float meleeSpeedRoad = player.GetWeaponAttackSpeed(item);
             float SpeedToMelee = 1f + (float)Math.Log(meleeSpeedRoad) * 0.48f;
             damage *= SpeedToMelee;
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
-            => CWRUtils.ModifyLegendWeaponKnockbackFunc(item, GetOnKnockback(item), GetStartKnockback, ref knockback);
+            => VaultUtils.ApplyWeaponKnockbackScaling(item, GetOnKnockback(item), GetStartKnockback, ref knockback);
 
         public override bool? On_ModifyWeaponCrit(Item item, Player player, ref float crit) {
             crit += GetOnCrit(item);

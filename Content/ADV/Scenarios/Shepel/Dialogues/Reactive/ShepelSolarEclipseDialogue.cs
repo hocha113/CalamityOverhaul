@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "日照中断，外来生物信号大规模涌现。日食事件，全线进入高戒备。");
+                () => "日光消失，外界生物信号大规模涌现。日食事件，全线进入高戒备状态。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "保持移动，我来盯着。");
+                () => "保持移动，我会盯住一切。");
         }
 
         protected override void Build() {

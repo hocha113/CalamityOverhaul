@@ -292,8 +292,8 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float progress = Time / 60f;
-            float scale = CWRUtils.EaseOutCubic(Math.Min(progress * 2f, 1f)) * 4f;
-            float alpha = 1f - CWRUtils.EaseInQuad(progress);
+            float scale = VaultUtils.EaseOutCubic(Math.Min(progress * 2f, 1f)) * 4f;
+            float alpha = 1f - VaultUtils.EaseInQuad(progress);
             Color coreColor = Color.Lerp(Color.White, Color.OrangeRed, progress) * alpha;
             coreColor.A = 0;
             spriteBatch.Draw(glowTex, drawPos, null, coreColor, 0

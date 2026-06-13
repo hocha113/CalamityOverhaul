@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         private static float Hash01(float seed) => (seed * 0.6180339887f) % 1f;
 
         public override void AI() {
-            Player target = CWRUtils.GetPlayerInstance((int)TargetIndex);
+            ((int)TargetIndex).TryGetPlayer(out Player target);
             float hash = Hash01(Seed);
             float weavePhase = hash * MathHelper.TwoPi;
             int ignite = IgniteTick;

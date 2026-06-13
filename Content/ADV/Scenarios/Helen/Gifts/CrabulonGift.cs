@@ -21,9 +21,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "那团蘑菇状的……生物？它的菌盖下藏着的究竟是智慧还是本能");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗，蘑菇的菌丝网络可以传递信息。也许它刚才在向同伴求救");
-            L2 = this.GetLocalization(nameof(L2), () => "这是蘑菇鱼，从它身上散发出的孢子里提取的");
-            L3 = this.GetLocalization(nameof(L3), () => "别担心，这些孢子不会让你变成菌类……大概");
+            L1 = this.GetLocalization(nameof(L1), () => "你知道吗，蘑菇的菌丝网络可以传递信息，也许它刚才在向同伴求救");
+            L2 = this.GetLocalization(nameof(L2), () => "这是蘑菇鱼，混在从它身上散发出的孢子里，我好不容易逮到的");
+            L3 = this.GetLocalization(nameof(L3), () => "别担心，这些孢子不会让人类变成菌类……大概");
             L4 = this.GetLocalization(nameof(L4), () => "不过如果你突然想在阴暗潮湿的地方扎根，记得告诉我");
         }
         protected override void Build() {

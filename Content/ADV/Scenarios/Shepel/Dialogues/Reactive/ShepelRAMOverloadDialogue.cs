@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "主人，RAM容量已触达临界值。");
+                () => "警告：RAM占用率已逼近临界值。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "建议暂停高消耗操作，等待系统自动恢复。");
+                () => "主人，建议停止RAM高消耗操作，等待恢复到安全阈值。");
         }
 
         protected override void Build() {

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一个由腐败构成的集体意识……真是让人不适的概念");
+            L0 = this.GetLocalization(nameof(L0), () => "一个由腐败构成的集体意识……真是恶心的概念");
             L1 = this.GetLocalization(nameof(L1), () => "它的思维方式一定很特别，无数腐烂的碎片拼凑成一个扭曲的整体");
             L2 = this.GetLocalization(nameof(L2), () => "给，腐烂鱼。从那堆腐肉里捞出来的，别问我怎么做到的");
             L3 = this.GetLocalization(nameof(L3), () => "虽然闻起来像是被遗忘在阳光下三天的海鲜");

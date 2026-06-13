@@ -21,9 +21,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "你的动作被那只巨眼拖成了慢镜头……我还以为你在刻意摆造型");
-            L1 = this.GetLocalization(nameof(L1), () => "恭喜，你已经进入‘被注视的阶段’。这意味着……更多戏剧性的麻烦");
-            L2 = this.GetLocalization(nameof(L2), () => "拿着，这是克苏鲁鱼。它和同名的神话一样，不太讲逻辑");
-            L3 = this.GetLocalization(nameof(L3), () => "小心使用，它会让你误以为自己开眼了。其实那不过是血液里多了点兴奋剂");
+            L1 = this.GetLocalization(nameof(L1), () => "我们已经进入‘被注视的阶段’。这意味着更多麻烦");
+            L2 = this.GetLocalization(nameof(L2), () => "我从眼睛的大嘴里找到了这个，拿着，这是克苏鲁鱼。它和同名的神话一样......不太讲逻辑");
+            L3 = this.GetLocalization(nameof(L3), () => "小心收好，它会让你误以为自己开眼了。其实那不过是血液里多了点兴奋剂");
             L4 = this.GetLocalization(nameof(L4), () => "我很好奇你会不会开始对月亮眨眼");
         }
         protected override void Build() {

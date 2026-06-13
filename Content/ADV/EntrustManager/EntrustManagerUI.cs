@@ -724,7 +724,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
         private Rectangle GetPanelRect() {
             int panelH = Main.screenHeight - PanelTopMargin - PanelBottomMargin;
-            float eased = CWRUtils.EaseOutCubic(MathHelper.Clamp(openProgress, 0f, 1f));
+            float eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(openProgress, 0f, 1f));
             int panelX = (int)MathHelper.Lerp(-PanelWidth - 20f, 0f, eased);
 
             // 打开/关闭时的轻微抖动

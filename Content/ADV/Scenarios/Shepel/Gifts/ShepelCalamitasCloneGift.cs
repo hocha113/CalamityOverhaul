@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，灾厄克隆体的能量性质非常特殊——不是完全的灾厄能量，而是一种反射式的镜像干扰场。");
-            L1 = this.GetLocalization(nameof(L1), () => "这种反射特性对于枪管设计很有参考价值，我整理成了一个光束导向配置。");
-            L2 = this.GetLocalization(nameof(L2), () => "反射枪管模组，光束在命中后有几率产生反弹效果。");
-            L3 = this.GetLocalization(nameof(L3), () => "克隆体的数据用途比原体更多，某种程度上反而更有价值。");
+            L0 = this.GetLocalization(nameof(L0), () => "那个克隆体终于消停了。虽然只是赝品，但她到处乱丢硫磺火球的坏习惯，还是挺让人头疼的。");
+            L1 = this.GetLocalization(nameof(L1), () => "请您先退后几步，主人。地上这些残骸里还有一些火星在噼啪作响，这种危险的清扫工作交给我就好。");
+            L2 = this.GetLocalization(nameof(L2), () => "趁着打扫的功夫，我把她那种魔法的追踪轨迹拆解了一下，塞进了您的光束导向模块里。");
+            L3 = this.GetLocalization(nameof(L3), () => "有了它，以后您只需要站在最安全的距离外优雅地开火就好。");
         }
 
         protected override void Build() {

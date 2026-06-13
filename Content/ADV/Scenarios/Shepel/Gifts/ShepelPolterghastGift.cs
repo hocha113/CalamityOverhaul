@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，噬魂幽花的能量体在消散前发出了一段极为复杂的递归信号，类似无限嵌套的循环协议。");
-            L1 = this.GetLocalization(nameof(L1), () => "我花了一些时间才把这段信号完整解码，然后将其转化成了一个机匣扩展算法。");
-            L2 = this.GetLocalization(nameof(L2), () => "递归机匣模组，它让SHPC的攻击序列在特定条件下能够触发次级连锁反应。");
-            L3 = this.GetLocalization(nameof(L3), () => "幽灵的'思考方式'比我预期的更具逻辑性。有些出乎意料。");
+            L0 = this.GetLocalization(nameof(L0), () => "地牢里的这些幽魂，一直无法解脱，真是可悲。");
+            L1 = this.GetLocalization(nameof(L1), () => "这里的环境有些嘈杂，我已经为您开启了噪音过滤。");
+            L2 = this.GetLocalization(nameof(L2), () => "我捕捉了那些游荡的灵体信号，将其改写成了能连续触发次级火力的程序。");
+            L3 = this.GetLocalization(nameof(L3), () => "将这些无序的残影转化为您的火力，或许是它们最合理的归宿。");
         }
 
         protected override void Build() {

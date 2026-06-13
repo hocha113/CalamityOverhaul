@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             if (Life < StartDelay) return;
 
             float progress = (Life - StartDelay) / MaxLife;
-            Radius = MathHelper.Lerp(0f, MaxRadius, CWRUtils.EaseOutQuad(progress));
+            Radius = MathHelper.Lerp(0f, MaxRadius, VaultUtils.EaseOutQuad(progress));
         }
 
         public bool ShouldRemove() => Life >= MaxLife + StartDelay;

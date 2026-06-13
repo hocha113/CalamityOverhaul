@@ -20,8 +20,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "它让我想起家乡那些不太友好的邻居，不过它倒是挺友善的，它在我曾经任职的硫磺海大学里担任过保安队长，经常和我打招呼");
-            L1 = this.GetLocalization(nameof(L1), () => "硫酸海是个有趣的地方，那里的生物都在问同一个问题：'为什么我还活着？'");
+            L0 = this.GetLocalization(nameof(L0), () => "它让我想起家乡那些不太友好的邻居，不过它倒是挺友善的，它曾经在硫磺海大学里担任过保安队长，经常和我打招呼");
+            L1 = this.GetLocalization(nameof(L1), () => "硫磺海是个有趣的地方，那里的生物都在问同一个问题：'为什么我还活着？'");
             L2 = this.GetLocalization(nameof(L2), () => "棱镜鱼，它的鳞片能折射出你从未见过的颜色。主要是因为它们不该存在");
             L3 = this.GetLocalization(nameof(L3), () => "盯着它看会让你的视觉系统重启，有点像强制更新，但更痛苦");
             L4 = this.GetLocalization(nameof(L4), () => "最好在光线暗淡的地方使用，不然感觉会像嗑了似的");

@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，双子的镜像追踪协议非常精妙——两套系统相互校正、协同锁定，几乎不存在盲区。");
-            L1 = this.GetLocalization(nameof(L1), () => "我把这个双重反馈逻辑迁移进了一个光学模组里，让SHPC能对已命中目标进行二次扫描确认。");
-            L2 = this.GetLocalization(nameof(L2), () => "回声光学模组，命中后会有轻微的信号反弹效果。");
-            L3 = this.GetLocalization(nameof(L3), () => "两只眼睛的数据比一只要丰富得多。");
+            L0 = this.GetLocalization(nameof(L0), () => "机械双子眼的交叉火力覆盖相当严密。");
+            L1 = this.GetLocalization(nameof(L1), () => "不过，只要我们的链接保持稳定，就不会给它们留下任何死角。");
+            L2 = this.GetLocalization(nameof(L2), () => "我强化了瞄准系统的二次扫描能力，提升了锁定的可靠性。");
+            L3 = this.GetLocalization(nameof(L3), () => "请放心把侧翼和背后交给我。");
         }
 
         protected override bool AdditionalConditions(ADVSave save, Player player) {

@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "主人，首个威胁目标已清除。这场战斗的数据我都记录好了。");
+                () => "主人，首个威胁目标已被清除。这场战斗的数据我都记录好了。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "这种级别的威胁以后不用放在心上了。请继续前进，更大的目标还在前面等着。");
+                () => "这种级别的威胁以后无需再放在心上，我将为主人扫除。");
         }
 
         protected override void Build() {

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
 
             //使用缓动函数实现滑入动画（从右侧滑入，与Draedon的左侧不同）
-            float slideOffset = (1f - CWRUtils.EaseOutCubic(animation.PanelSlideProgress)) * 200f;
+            float slideOffset = (1f - VaultUtils.EaseOutCubic(animation.PanelSlideProgress)) * 200f;
 
             return new Vector2(
                 screenCenter.X - 580f / 2f + slideOffset,

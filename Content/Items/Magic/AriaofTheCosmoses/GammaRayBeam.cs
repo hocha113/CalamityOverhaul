@@ -63,14 +63,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             if (lifeRatio < 0.1f) {
                 //快速展开阶段
                 float expandProgress = lifeRatio / 0.15f;
-                beamWidth = MathHelper.Lerp(4f, maxBeamWidth, CWRUtils.EaseOutCubic(expandProgress));
-                beamLength = MathHelper.Lerp(0f, maxBeamLength, CWRUtils.EaseOutQuad(expandProgress));
+                beamWidth = MathHelper.Lerp(4f, maxBeamWidth, VaultUtils.EaseOutCubic(expandProgress));
+                beamLength = MathHelper.Lerp(0f, maxBeamLength, VaultUtils.EaseOutQuad(expandProgress));
                 coreIntensity = MathHelper.Lerp(0.5f, 1.5f, expandProgress);
             }
             else if (lifeRatio > 0.9f) {
                 //收缩消失阶段
                 float collapseProgress = (lifeRatio - 0.85f) / 0.15f;
-                beamWidth = MathHelper.Lerp(maxBeamWidth, 4f, CWRUtils.EaseInQuad(collapseProgress));
+                beamWidth = MathHelper.Lerp(maxBeamWidth, 4f, VaultUtils.EaseInQuad(collapseProgress));
                 coreIntensity = MathHelper.Lerp(1.5f, 0f, collapseProgress);
             }
             else {

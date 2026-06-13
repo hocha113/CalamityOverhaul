@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             //蓄能阶段
             if (Projectile.timeLeft > 160) {
                 float progress = (190 - Projectile.timeLeft) / 30f;
-                chargeIntensity = MathHelper.Lerp(0f, 1f, CWRUtils.EaseOutCubic(progress));
+                chargeIntensity = MathHelper.Lerp(0f, 1f, VaultUtils.EaseOutCubic(progress));
 
                 //生成充能粒子（减少）
                 if (Main.rand.NextBool(3)) {

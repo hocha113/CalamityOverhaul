@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //缓降
             float progress = StateTimer / 60f;
-            float easeProgress = CWRUtils.EaseOutCubic(progress);
+            float easeProgress = VaultUtils.EaseOutCubic(progress);
 
             //淡入
             Projectile.alpha = (int)(255 * (1f - easeProgress));

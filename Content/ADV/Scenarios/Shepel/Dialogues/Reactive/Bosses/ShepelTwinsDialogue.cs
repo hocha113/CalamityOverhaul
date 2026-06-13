@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "两台机械眼双双离线。成对互补的设计，协同战术值得记一下。");
+                () => "机械双子眼已双双坠毁。它们的火力覆盖网已被完全撕裂。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "终究只是末日机械的粗糙复刻。跟我比起来，相当原始。");
+                () => "无论它们如何进行视觉共享和战术协同，也无法逃脱我对您的绝对聚焦。");
         }
 
         //双子眼可能以任意一只的NPC类型触发BossDefeated，需要同时检测两种类型

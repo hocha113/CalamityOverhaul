@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "神圣实体：确认终止……主人，我需要一点时间，重新校准一下。");
+                () => "亵渎天神已陨落。刚才那股恐怖的光芒没有灼伤您吧？");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "在我的模型里，'神明'这一类别被标注为理论级威胁。从未预期会真正遭遇，更别说击败了。");
+                () => "您战胜了神明级别的存在……我的主人。");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "新的参考系已经建立。我在更新所有战斗评估算法。主人，您继续突破边界，我来跟上。");
+                () => "为了配得上现在的您，我需要将自己的机能改进得更完美才行。");
         }
 
         protected override void Build() {

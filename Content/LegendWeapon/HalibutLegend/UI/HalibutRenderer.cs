@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 prev = p0;
             for (int i = 1; i <= segments; i++) {
                 float t = i / (float)segments;
-                Vector2 cur = CWRUtils.CubicBezier(t, p0, p1, p2, p3);
+                Vector2 cur = VaultUtils.CubicBezier(t, p0, p1, p2, p3);
                 DrawLine(sb, prev, cur, thickness + 2.4f, color * 0.18f);
                 DrawLine(sb, prev, cur, thickness, color);
                 prev = cur;

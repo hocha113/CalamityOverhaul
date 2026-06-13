@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             Projectile.Center = startPos + new Vector2(0, -30 * easeProgress);
-            targetRotation = MathHelper.TwoPi * 2f * CWRUtils.EaseOutCubic(progress);
+            targetRotation = MathHelper.TwoPi * 2f * VaultUtils.EaseOutCubic(progress);
             scaleMultiplier = easeProgress;
             glowIntensity = MathHelper.Lerp(0f, 1.2f, progress); //更亮
 
@@ -319,9 +319,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //飞行阶段
         private void FlyingPhaseAI() {
             float progress = StateTimer / FlyDuration;
-            float easeProgress = CWRUtils.EaseInOutCubic(progress);
+            float easeProgress = VaultUtils.EaseInOutCubic(progress);
 
-            Vector2 newPos = CWRUtils.CubicBezier(easeProgress, bezierP0, bezierP1, bezierP2, bezierP3);
+            Vector2 newPos = VaultUtils.CubicBezier(easeProgress, bezierP0, bezierP1, bezierP2, bezierP3);
 
             Vector2 velocity = newPos - Projectile.Center;
             if (velocity.LengthSquared() > 0.1f) {
@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //敲击阶段
         private void StrikingPhaseAI() {
             float progress = StateTimer / StrikeDuration;
-            float easeProgress = CWRUtils.EaseInCubic(progress);
+            float easeProgress = VaultUtils.EaseInCubic(progress);
 
             Projectile.Center = Vector2.Lerp(strikeStartPos, strikeEndPos, easeProgress);
 
@@ -471,7 +471,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //返回阶段
         private void ReturningPhaseAI() {
             float progress = StateTimer / ReturnDuration;
-            float easeProgress = CWRUtils.EaseInOutQuad(progress);
+            float easeProgress = VaultUtils.EaseInOutQuad(progress);
 
             Vector2 returnTarget = Owner.Center + new Vector2(0, -120);
             Projectile.Center = Vector2.Lerp(Projectile.Center, returnTarget, easeProgress * 0.12f);
@@ -493,7 +493,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //消失阶段
         private void DisappearingPhaseAI() {
             float progress = StateTimer / DisappearDuration;
-            float easeProgress = CWRUtils.EaseInCubic(progress);
+            float easeProgress = VaultUtils.EaseInCubic(progress);
 
             targetRotation += 0.2f * (1f - progress);
             Projectile.alpha = (int)(255 * easeProgress);

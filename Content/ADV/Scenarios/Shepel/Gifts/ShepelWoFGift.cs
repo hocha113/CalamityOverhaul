@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，壁障崩解后，世界底层规则发生了根本性的重构，有大量新材料随之浮现。");
-            L1 = this.GetLocalization(nameof(L1), () => "我利用这次机会对SHPC的握持系统进行了一次全面升级，使用了几种之前根本无法获取的合金材料。");
-            L2 = this.GetLocalization(nameof(L2), () => "谐振握把模组，这是困难模式门槛的解锁奖励之一。性能全面高于之前版本。");
-            L3 = this.GetLocalization(nameof(L3), () => "世界改变了，我们也需要跟上它的节奏。");
+            L0 = this.GetLocalization(nameof(L0), () => "肉墙倒塌后，地壳结构和能量基线都发生了剧烈的震荡。");
+            L1 = this.GetLocalization(nameof(L1), () => "世界正在进入一个更危险的阶段。但同时，新的稀有材料也开始大量涌现。");
+            L2 = this.GetLocalization(nameof(L2), () => "我用那些新出现的合金为您升级了握持系统，这算是我们跨入新阶段的第一步。");
+            L3 = this.GetLocalization(nameof(L3), () => "无论外部环境发生怎样的异变，我的护卫协议永远不会动摇。");
         }
 
         protected override void Build() {

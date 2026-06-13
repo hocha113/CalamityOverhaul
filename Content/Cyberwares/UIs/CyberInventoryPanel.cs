@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             //左/右槽位决定侧栏展开方向
             bool isLeftSlot = boundSlot >= 0 && boundSlot < 6;
-            float easedProgress = CWRUtils.EaseOutCubic(Math.Clamp(openProgress, 0, 1));
+            float easedProgress = VaultUtils.EaseOutCubic(Math.Clamp(openProgress, 0, 1));
             float actualWidth = PanelWidth * easedProgress;
 
             if (isLeftSlot) {

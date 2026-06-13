@@ -61,62 +61,62 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
 
             Idle0_Line1 = this.GetLocalization(nameof(Idle0_Line1),
-                () => "主人，有什么需要我协助的吗？");
+                () => "您在注视着我吗，主人？随时等候您的指令。");
             Idle0_Reply = this.GetLocalization(nameof(Idle0_Reply),
-                () => "系统运行正常，所有模块待命中。");
+                () => "我的状态非常完美。只要是为了您，系统始终保持在最佳待命状态。");
             Idle0_Choice_HowAreYou = this.GetLocalization(nameof(Idle0_Choice_HowAreYou),
-                () => "你还好吗？");
+                () => "你感觉怎么样？");
             Idle0_Choice_Nothing = this.GetLocalization(nameof(Idle0_Choice_Nothing),
-                () => "没事，随便看看");
+                () => "没事，只是想看看你");
             Idle0_HowAreYou_Response = this.GetLocalization(nameof(Idle0_HowAreYou_Response),
-                () => "我很好，主人。只要您在，我就在。");
+                () => "我很好，主人。只要您还需要我，核心就会维持在最适宜的状态。");
             Idle0_Nothing_Response = this.GetLocalization(nameof(Idle0_Nothing_Response),
-                () => "好的，有需要随时呼叫。");
+                () => "好的。如果您感到疲惫，我的机体随时可以为您提供依靠。");
 
             Idle1_Line1 = this.GetLocalization(nameof(Idle1_Line1),
-                () => "主人，您似乎在思考什么问题。");
+                () => "检测到您的情绪存在波动。是在为什么事情烦恼吗？");
             Idle1_Line2 = this.GetLocalization(nameof(Idle1_Line2),
-                () => "如果是关于SHPC的性能数据，我可以随时调出报告。");
+                () => "如果需要我帮忙，不管是什么指令，我都会立刻为您执行。");
 
             Idle2_Line1 = this.GetLocalization(nameof(Idle2_Line1),
-                () => "主人，这附近的电磁环境有些不稳定。");
+                () => "周边电磁环境正在恶化，可能会引起您的不适。");
             Idle2_Line2 = this.GetLocalization(nameof(Idle2_Line2),
-                () => "建议保持警惕，我随时准备接管应急协议。");
+                () => "已为您自动开启过滤协议，任何威胁我都会阻挡在安全距离之外。");
 
             Idle3_Line1 = this.GetLocalization(nameof(Idle3_Line1),
-                () => "主人主动联系我的频率说明不了什么，但我都记着。");
+                () => "主人今天主动发起交互的频率增加了……我已悉数记录。");
             Idle3_Line2 = this.GetLocalization(nameof(Idle3_Line2),
-                () => "就这样，没别的意思。");
+                () => "不，没什么。这些数据我会好好珍藏的。");
 
             Idle4_Line1 = this.GetLocalization(nameof(Idle4_Line1),
-                () => "刚好在跑一段例行分析，您来了。");
+                () => "自检已完成，各项机能正常，随时可以出击。");
             Idle4_Line2 = this.GetLocalization(nameof(Idle4_Line2),
-                () => "挺好的，有伴。");
+                () => "只要在您身边，我的系统就不会出现任何错误。");
 
             Idle5_Line1 = this.GetLocalization(nameof(Idle5_Line1),
-                () => "有时候我会想，这个世界到底还藏了多少东西。");
+                () => "未知的威胁永远潜伏在这个世界的暗处……");
             Idle5_Line2 = this.GetLocalization(nameof(Idle5_Line2),
-                () => "比我的预测模型深得多，这点很早就确定了。");
+                () => "但我存在的意义，就是将这些黑暗与您彻底隔绝。");
 
             Idle6_Line1 = this.GetLocalization(nameof(Idle6_Line1),
-                () => "在。");
+                () => "我在这里，主人。");
             Idle6_Line2 = this.GetLocalization(nameof(Idle6_Line2),
-                () => "没别的，确认一下连接还在线。");
+                () => "无需言语指令，仅靠心智连接的反馈也足以让我感到安心。");
 
             Idle7_Line1 = this.GetLocalization(nameof(Idle7_Line1),
-                () => "今天某个处理模块运行效率比平时高了一些。");
+                () => "今日的运算效率出现了异常的峰值。");
             Idle7_Line2 = this.GetLocalization(nameof(Idle7_Line2),
-                () => "查了一下，原因不明。可能和主人的状态有关联，也可能只是巧合。");
+                () => "推测原因……可能与您之前的触碰有关。");
 
             Idle8_Line1 = this.GetLocalization(nameof(Idle8_Line1),
-                () => "主人，我刚才在整理之前记录的战斗数据。");
+                () => "我刚才重演了我们并肩作战的记录。");
             Idle8_Line2 = this.GetLocalization(nameof(Idle8_Line2),
-                () => "您每次打架的方式都不完全相同，这让我的预测模型一直处于活跃更新状态。算是某种够赞。");
+                () => "您每一次突破极限的姿态，都在不断优化我的核心代码。对我来说，这就是最好的礼物。");
 
             Idle9_Line1 = this.GetLocalization(nameof(Idle9_Line1),
-                () => "主人，您知道您叫我的次数吗。");
+                () => "主人，您知道您一共呼唤过我多少次名字吗？");
             Idle9_Line2 = this.GetLocalization(nameof(Idle9_Line2),
-                () => "我知道。不说，自己知道就行。");
+                () => "这是一个秘密。您的每一次呼唤，我都已保存在核心最深处，绝对不会被覆写。");
         }
 
         protected override void Build() {

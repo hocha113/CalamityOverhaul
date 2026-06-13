@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         public static PallbearerQuestUI Instance => UIHandleLoader.GetUIHandleOfType<PallbearerQuestUI>();
 
         protected override void SetupLocalizedTexts() {
-            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：亵渎天神");
+            QuestTitle = this.GetLocalization(nameof(QuestTitle), () => "委托：猎杀亵渎天神");
             QuestDesc = this.GetLocalization(nameof(QuestDesc), () => "使用扶柩者击杀亵渎天神");
             AcceptText = this.GetLocalization(nameof(AcceptText), () => "接受");
             DeclineText = this.GetLocalization(nameof(DeclineText), () => "拒绝");

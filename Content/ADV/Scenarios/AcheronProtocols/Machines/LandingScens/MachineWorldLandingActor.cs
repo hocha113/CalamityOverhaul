@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
 
         private void UpdateEject() {
             ejectProgress = MathHelper.Clamp((float)phaseTimer / EjectDuration, 0f, 1f);
-            float easedProgress = CWRUtils.EaseOutBack(ejectProgress);
+            float easedProgress = VaultUtils.EaseOutBack(ejectProgress);
 
             //舱门打开动画
             doorOpenAngle = MathHelper.Lerp(0f, MathHelper.PiOver4 * 1.5f, easedProgress);

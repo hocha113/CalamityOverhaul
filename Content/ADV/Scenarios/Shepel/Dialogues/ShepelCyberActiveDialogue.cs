@@ -28,13 +28,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line_Intro = this.GetLocalization(nameof(Line_Intro),
-                () => "领域已激活，主人。当前层级 {0}，外部信号已完全隔离。");
+                () => "主人，赛博空间已展开，当前层级 {0}。外部信号已被完全隔绝，这里现在是只属于我们的安全领域。");
             Line_LayerReport = this.GetLocalization(nameof(Line_LayerReport),
-                () => "领域越深，可干预的目标范围越广，但能量消耗也成倍增加。请注意RAM余量。");
+                () => "领域越深，我能为您清除的阻碍就越多。但请留意RAM的消耗。");
             Line_Warning = this.GetLocalization(nameof(Line_Warning),
-                () => "检测到领域边界有波动迹象，建议提高警惕。");
+                () => "主人请警戒，领域边缘出现异常波动，请保持在我的掩护范围内。");
             Line_MaxLayer = this.GetLocalization(nameof(Line_MaxLayer),
-                () => "主人，当前已处于最深层级。此处的规则已与外界完全分离，请谨慎行动。");
+                () => "主人，我们已抵达最深处。前方即是黑墙边界，危险性极高……请握紧我的手，千万不要松开。");
         }
 
         protected override bool CheckConditions(Player player, ADVSave save) => Cyberspace.Active;

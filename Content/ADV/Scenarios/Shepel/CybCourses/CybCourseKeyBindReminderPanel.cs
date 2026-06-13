@@ -32,15 +32,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         public static LocalizedText Footer { get; private set; }
 
         public override void SetStaticDefaults() {
-            Title = this.GetLocalization(nameof(Title), () => "BIND ALERT");
-            Subtitle = this.GetLocalization(nameof(Subtitle), () => "未绑定的核心快捷键");
+            Title = this.GetLocalization(nameof(Title), () => "绑定警报");
+            Subtitle = this.GetLocalization(nameof(Subtitle), () => "核心快捷键未绑定");
             Hint = this.GetLocalization(nameof(Hint), ()
-                => "以下快捷键尚未绑定，离开超梦后将无法正常使用对应功能。\n请前往 [设置 → 控件] 中为它们指定按键。");
+                => @"以下快捷键当前未绑定。离开超梦后，您将无法正常使用其对应的功能。
+请前往 [设置 → 控制] 中为它们分配按键。");
             UnboundLabel = this.GetLocalization(nameof(UnboundLabel), () => "未绑定");
-            BtnConfirm = this.GetLocalization(nameof(BtnConfirm), () => "我已知晓");
+            BtnConfirm = this.GetLocalization(nameof(BtnConfirm), () => "已知悉");
             BtnLater = this.GetLocalization(nameof(BtnLater), () => "稍后处理");
             Footer = this.GetLocalization(nameof(Footer), ()
-                => "// 任意选项都将断开超梦连接，绑定可在主世界设置中随时调整");
+                => "选择任意选项都将断开超梦连接。您可以随时在主世界的设置中调整按键绑定。");
         }
 
         //面板尺寸

@@ -33,8 +33,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest.FindFrag
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
 
             L0 = this.GetLocalization(nameof(L0), () => "你来了");
-            L1 = this.GetLocalization(nameof(L1), () => "我收集这些残片已经很久了");
-            L2 = this.GetLocalization(nameof(L2), () => "这些残片很诡异，它们总像是...入侵进这个世界的产物");
+            L1 = this.GetLocalization(nameof(L1), () => "我收集这些残片，已经有些年头了");
+            L2 = this.GetLocalization(nameof(L2), () => "它们很……诡异。不像是自然演化的产物，倒像是某种“入侵”进这个世界的异物");
             L3 = this.GetLocalization(nameof(L3), () => "我希望你能明白我的意思，我的直觉告诉我它们本应是无形之物，只是选择了某种可以被泰拉生物理解的形态");
             L4 = this.GetLocalization(nameof(L4), () => "总之...我想要解读它们，但数量还不够");
             L5 = this.GetLocalization(nameof(L5), () => "我希望你能帮我收集足够多的海洋残片");

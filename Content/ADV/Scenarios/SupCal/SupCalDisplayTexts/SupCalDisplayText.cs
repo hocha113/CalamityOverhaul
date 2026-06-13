@@ -140,10 +140,24 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts
             Acceptance1Text = this.GetLocalization(nameof(Acceptance1Text), () => "这是我百年来最开心的一天……");
             Acceptance2Text = this.GetLocalization(nameof(Acceptance2Text), () => "或许，你真的能终结这个该死的时代");
 
-            Story1 = this.GetLocalization(nameof(Story1), () => "Story");
-            Story2 = this.GetLocalization(nameof(Story2), () => "Story");
-            Story3 = this.GetLocalization(nameof(Story3), () => "Story");
-            Story4 = this.GetLocalization(nameof(Story4), () => "Story");
+            Story1 = this.GetLocalization(nameof(Story1), () => @"弩身的木料来自一口埋在地下百年的漆黑棺材，有股洗不掉的土腥味。
+在那下面，它用于压制我也难以处理的恐怖。
+面对那些东西，单纯的毁灭毫无意义，它们杀不死。
+射出楔子，把它们钉死在地上，使其重新沉寂。
+至于为什么要先把弩扔过去？
+嗯……不先让棺椁的气息沾染客人，这口棺材怎么知道该收殓谁呢？");
+            Story2 = this.GetLocalization(nameof(Story2), () => @"这破刀很钝，因为它不是用来割肉的。
+在我还是学徒的时候，老师的心脏上长了张怎么也闭不上的嘴。
+他后来死了，那颗心却还在跳，每跳一次，嘴尖叫一次，周围的人就少一个。
+为了活命，我必须在他下一次心跳之前，把心脏挖出来。
+现在的它，相当渴望再听到那剜心的声音。");
+            Story3 = this.GetLocalization(nameof(Story3), () => @"刀里面掺了大量的黄金，外面缠着硫火，为了锁住刀刃上那六只不安分的鬼手。
+这三个蠢货生前把彼此肢解，再拼接在一起，以此来延缓自身的复苏，
+结果变成了一团只会掐人的鬼物。
+握紧了哦，一旦硫磺火的压制失效，它们第一个捏断的就是拿刀人的脖子。
+这是它们所剩不多的本能。");
+            Story4 = this.GetLocalization(nameof(Story4), () => @"凡人以为这是魔法，但我称之为借用。
+这本书里，每一页都封存着曾让整座城邦陷入死寂的恐怖。");
         }
 
         public override void SetStaticDefaults() {

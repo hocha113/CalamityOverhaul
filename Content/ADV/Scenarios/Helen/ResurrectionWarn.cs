@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
             Line0 = this.GetLocalization(nameof(Line0), () => "等等，你感觉到了吗？");
             Line1 = this.GetLocalization(nameof(Line1), () => "复苏状态正在接近危险临界点");
-            Line2 = this.GetLocalization(nameof(Line2), () => "我必须警告你，这不是闹着玩的");
+            Line2 = this.GetLocalization(nameof(Line2), () => "这不是闹着玩的");
             Line3 = this.GetLocalization(nameof(Line3), () => "当完全复苏时......后果会很严重");
             Line4 = this.GetLocalization(nameof(Line4), () => "那将会是被深渊吞噬的结局");
             Line5 = this.GetLocalization(nameof(Line5), () => "我体内那些眼睛，每睁开一个，复苏速度就会加快");

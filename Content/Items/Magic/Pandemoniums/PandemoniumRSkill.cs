@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         private void StartupPhase() {
             float progress = Timer / 60f;
-            intensity = CWRUtils.EaseOutCubic(progress);
+            intensity = VaultUtils.EaseOutCubic(progress);
             currentRadius = MaxCircleRadius * intensity;
 
             //符文环淡入
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         private void EndPhase() {
             float progress = (Timer - 240f) / 60f;
-            intensity = 1f - CWRUtils.EaseInCubic(progress);
+            intensity = 1f - VaultUtils.EaseInCubic(progress);
             currentRadius = MaxCircleRadius * intensity;
 
             //符文环淡出

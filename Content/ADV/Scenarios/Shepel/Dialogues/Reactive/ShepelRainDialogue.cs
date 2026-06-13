@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "降水检测到，这场雨看起来会持续一段时间。");
+                () => "开始降水了，这场雨看起来会持续一阵子。");
             Line2 = this.GetLocalization(nameof(Line2),
                 () => "其实还挺安静的。如果战场允许的话。");
         }

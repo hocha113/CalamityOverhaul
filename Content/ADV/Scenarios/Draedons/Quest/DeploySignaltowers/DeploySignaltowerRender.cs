@@ -696,7 +696,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Vector2 screenPos = GetImageScreenPos();
 
             //计算缩放
-            float easedScale = CWRUtils.EaseOutBack(imageScaleProgress);
+            float easedScale = VaultUtils.EaseOutBack(imageScaleProgress);
             float scale = MathHelper.Lerp(ImageBaseScale, ImageMaxScale, easedScale);
 
             //计算透明度

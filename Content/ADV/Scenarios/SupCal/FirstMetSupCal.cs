@@ -64,11 +64,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             //有比目鱼版本
             Line1 = this.GetLocalization(nameof(Line1), () => "没想到你这么快就杀掉了我的'妹妹'");
             Line2 = this.GetLocalization(nameof(Line2), () => "你的成长速度确实有些快了");
-            Line3 = this.GetLocalization(nameof(Line3), () => "你是......我对你有印象");
-            Line4 = this.GetLocalization(nameof(Line4), () => "你是那个焚烧掉了一半海域的女巫");
+            Line3 = this.GetLocalization(nameof(Line3), () => "我对你有印象......你是...");
+            Line4 = this.GetLocalization(nameof(Line4), () => "焚烧了一半海域的硫火女巫？！");
             Line5 = this.GetLocalization(nameof(Line5), () => "哈?!呵呵，竟然有人...或者鱼认得我，你们倒也算有趣");
-            Line6 = this.GetLocalization(nameof(Line6), () => "......你，为什么还活着?我记得你在上世纪就已经死了");
-            Line7 = this.GetLocalization(nameof(Line7), () => "呵呵呵，连这事都有听说过吗?和你这条有趣的鱼解释一下也无妨，" +
+            Line6 = this.GetLocalization(nameof(Line6), () => "......你为什么还活着?我明明记得硫火女巫在上世纪.....就已经死了");
+            Line7 = this.GetLocalization(nameof(Line7), () => "真是一条有趣的鱼。我的意识早已熔铸进硫磺火中，这幅躯体......只不过是被火焰操控的尸体罢了" +
             "我的意识早已经熔铸进硫磺火中，这具躯体只不过是被火焰操纵的尸体");
             Line8 = this.GetLocalization(nameof(Line8), () => "......活人的意识，非人的躯体，依靠媒介行走世间，你成为了异类?!");
             Line9 = this.GetLocalization(nameof(Line9), () => "你的层次太低，理解不了我现在的状态");
@@ -77,10 +77,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             //无比目鱼版本
             NoFishLine1 = this.GetLocalization(nameof(NoFishLine1), () => "没想到你这么快就杀掉了我的'妹妹'，独自一人来的？");
             NoFishLine2 = this.GetLocalization(nameof(NoFishLine2), () => "你的成长速度比我预期的要快");
-            NoFishLine3 = this.GetLocalization(nameof(NoFishLine3), () => "看来你已经开始触碰那些不该知道的东西");
-            NoFishLine4 = this.GetLocalization(nameof(NoFishLine4), () => "我的意识早已熔铸进硫磺火，这具躯体只是被火焰驱动的尸体");
-            NoFishLine5 = this.GetLocalization(nameof(NoFishLine5), () => "不过，你的层次太低，无法理解我现在的状态");
-            NoFishLine6 = this.GetLocalization(nameof(NoFishLine6), () => "我现身也不是为了解释这些的");
+            NoFishLine3 = this.GetLocalization(nameof(NoFishLine3), () => "问我为什么还活着？看来你已经开始触碰那些不该知道的东西");
+            NoFishLine4 = this.GetLocalization(nameof(NoFishLine4), () => "我的意识早已熔入硫磺之火，这幅躯体......只不过是被火焰操控的尸体罢了");
+            NoFishLine5 = this.GetLocalization(nameof(NoFishLine5), () => "不过说了也无用，你的层次太低，无法理解我现在的状态");
+            NoFishLine6 = this.GetLocalization(nameof(NoFishLine6), () => "当然，我现身也不是为了解释这些的");
 
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "那么，你的选择是？");
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(拔出武器)");

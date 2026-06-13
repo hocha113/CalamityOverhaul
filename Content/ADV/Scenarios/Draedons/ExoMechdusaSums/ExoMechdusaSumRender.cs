@@ -323,7 +323,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             Vector2 worldPos = player.Center + mainIconOffset;
             Vector2 screenPos = worldPos - Main.screenPosition;
 
-            float easedScale = CWRUtils.EaseOutBack(mainIconScale);
+            float easedScale = VaultUtils.EaseOutBack(mainIconScale);
             float scale = MathHelper.Lerp(MainIconBaseScale, MainIconMaxScale, easedScale);
             float alpha = mainIconFade * 0.85f;
             Color iconColor = GetIconColor(currentMainIcon);
@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 Vector2 worldPos = player.Center + sideOffsets[i];
                 Vector2 screenPos = worldPos - Main.screenPosition;
 
-                float easedScale = CWRUtils.EaseOutBack(sideIconScale[i]);
+                float easedScale = VaultUtils.EaseOutBack(sideIconScale[i]);
                 float scale = MathHelper.Lerp(SideIconBaseScale, SideIconMaxScale, easedScale);
                 float alpha = sideIconFade[i];
                 Color iconColor = GetIconColor(iconIndex);

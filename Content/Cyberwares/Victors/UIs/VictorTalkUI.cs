@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             const int barH = 214;
             int x = (Main.screenWidth - barW) / 2;
 
-            float ease = CWRUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
+            float ease = VaultUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
             int baseY = Main.screenHeight - barH - 28;
             int y = baseY + (int)((1f - ease) * (barH + 44));
             barRect = new Rectangle(x, y, barW, barH);

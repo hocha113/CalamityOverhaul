@@ -975,7 +975,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 endAngle = MathHelper.Pi - endAngle;
             }
 
-            float swingAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutCubic(progress));
+            float swingAngle = MathHelper.Lerp(startAngle, endAngle, VaultUtils.EaseInOutCubic(progress));
 
             Vector2 swingOffset = new Vector2(
                 (float)Math.Cos(swingAngle) * 250f,
@@ -1008,7 +1008,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 slamStart = attackTargetPos + new Vector2(0, -250f);
             Vector2 slamEnd = attackTargetPos + new Vector2(0, 50f);
 
-            float easeProgress = CWRUtils.EaseInCubic(progress);
+            float easeProgress = VaultUtils.EaseInCubic(progress);
             Projectile.Center = Vector2.Lerp(slamStart, slamEnd, easeProgress);
 
             Projectile.velocity = Vector2.Lerp(
@@ -1045,7 +1045,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 (startAngle, endAngle) = (MathHelper.Pi - endAngle, MathHelper.Pi - startAngle);
             }
 
-            float sweepAngle = MathHelper.Lerp(startAngle, endAngle, CWRUtils.EaseInOutQuad(progress));
+            float sweepAngle = MathHelper.Lerp(startAngle, endAngle, VaultUtils.EaseInOutQuad(progress));
 
             float radius = 220f;
             Vector2 sweepOffset = new Vector2(
@@ -1089,7 +1089,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             else if (StateTimer < adjustedDuration * 0.7f) {
                 //中40%前冲投掷
                 float throwProgress = (StateTimer - adjustedDuration * 0.3f) / (adjustedDuration * 0.4f);
-                float easeProgress = CWRUtils.EaseOutCubic(throwProgress);
+                float easeProgress = VaultUtils.EaseOutCubic(throwProgress);
 
                 //手臂快速向前冲
                 Vector2 currentPos = Vector2.Lerp(throwStartPos, throwEndPos, easeProgress);

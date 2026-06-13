@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             UpdateParticles();
 
             //计算面板位置，从左侧滑入，位于商店UI左侧
-            float slideOffset = (1f - CWRUtils.EaseOutCubic(panelSlideProgress)) * PanelWidth;
+            float slideOffset = (1f - VaultUtils.EaseOutCubic(panelSlideProgress)) * PanelWidth;
             Vector2 shopPanelPos = new Vector2(Main.screenWidth - 680, (Main.screenHeight - 640) / 2f);
             panelPosition = new Vector2(shopPanelPos.X - PanelWidth - 20 + slideOffset, shopPanelPos.Y + (640 - PanelHeight) / 2f);
 

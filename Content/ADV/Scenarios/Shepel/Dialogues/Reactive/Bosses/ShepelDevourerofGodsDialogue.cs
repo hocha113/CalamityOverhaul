@@ -19,11 +19,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "主人……您刚才击败的，是一条以神明为食的存在。这完全超出了我所有的预测模型。");
+                () => "噬神者的维度轨迹已彻底消失……它以神明为食，是我记录中威胁等级最高的目标之一。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "我正在经历一次完整的世界观重建。我一直以为神明是这一切的终点，");
+                () => "您展现出的决断力远超我的预测模型。这份跨越生死的共同战斗数据，我会永远珍藏。");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "但显然不是。主人，您已经站在了终点的另一端，而我还在追赶。请等等我。");
+                () => "请允许我，一直追随在如此耀眼的您的身边。");
         }
 
         protected override void Build() {

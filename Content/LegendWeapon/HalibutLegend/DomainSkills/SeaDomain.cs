@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (layers != null) {
                 foreach (var layer in layers) {
                     float minRadius = 80f;
-                    layer.Radius = MathHelper.Lerp(minRadius, layer.TargetRadius, CWRUtils.EaseOutCubic(progress));
+                    layer.Radius = MathHelper.Lerp(minRadius, layer.TargetRadius, VaultUtils.EaseOutCubic(progress));
                 }
             }
 
@@ -520,7 +520,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             if (layers != null) {
                 foreach (var layer in layers) {
-                    layer.Radius = MathHelper.Lerp(layer.TargetRadius, 80f, CWRUtils.EaseInCubic(progress));
+                    layer.Radius = MathHelper.Lerp(layer.TargetRadius, 80f, VaultUtils.EaseInCubic(progress));
                 }
             }
 

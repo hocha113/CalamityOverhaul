@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //缩放动画
             if (lifeProgress < 0.1f) {
-                scale = CWRUtils.EaseOutBack(lifeProgress / 0.1f) * 1f;
+                scale = VaultUtils.EaseOutBack(lifeProgress / 0.1f) * 1f;
             }
             else if (lifeProgress > 0.85f) {
                 scale = MathHelper.Lerp(1f, 0.6f, (lifeProgress - 0.85f) / 0.15f);
@@ -678,7 +678,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public void Update() {
             Life++;
             float progress = Life / MaxLife;
-            Radius = CWRUtils.EaseOutCubic(progress) * MaxRadius;
+            Radius = VaultUtils.EaseOutCubic(progress) * MaxRadius;
         }
 
         public bool ShouldRemove() => Life >= MaxLife;

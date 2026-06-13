@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                 //阶段0: 快速膨胀
                 burstPhase = 0;
                 float expandProgress = progress / 0.2f;
-                Scale = MathHelper.Lerp(Scale * 0.3f, maxPulseScale, CWRUtils.EaseOutCubic(expandProgress));
+                Scale = MathHelper.Lerp(Scale * 0.3f, maxPulseScale, VaultUtils.EaseOutCubic(expandProgress));
                 Opacity = expandProgress;
             }
             else if (progress < 0.4f) {

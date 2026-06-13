@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             //缓动扫射:由外向内夹剪，起末速度低、中段加速
             float side = Context.IsSpazmatism ? 1f : -1f;
-            float eased = CWRUtils.EaseInOutQuad(progress);
+            float eased = VaultUtils.EaseInOutQuad(progress);
             float currentSpread = MathHelper.Lerp(StartSpread, EndSpread, eased);
             float targetAngle = MathHelper.PiOver2 + side * currentSpread;
             //rotation直接驱动(射线锚定读取npc.rotation)

@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         /// 计算面板位置
         /// </summary>
         public Vector2 CalculatePanelPosition() {
-            float slideOffset = (1f - CWRUtils.EaseOutCubic(animation.PanelSlideProgress)) * PanelWidth;
+            float slideOffset = (1f - VaultUtils.EaseOutCubic(animation.PanelSlideProgress)) * PanelWidth;
             return new Vector2(Main.screenWidth - PanelWidth + slideOffset,
                 (Main.screenHeight - PanelHeight) / 2f);
         }

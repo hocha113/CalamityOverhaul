@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             Vector2 center = new(HalibutTheme.UIScreenW * 0.5f, HalibutTheme.UIScreenH * HalibutTheme.WheelAnchorYRatio);
             ctrl.SetScreenAnchor(center);
             float time = ctrl.Time;
-            float ease = CWRUtils.EaseOutBack(a);
+            float ease = VaultUtils.EaseOutBack(a);
 
             //1 全屏暗化
             DrawWaterVeil(sb, center, a);

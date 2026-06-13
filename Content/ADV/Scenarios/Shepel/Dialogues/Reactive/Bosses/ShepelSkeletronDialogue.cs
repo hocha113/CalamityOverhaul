@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "地牢古守卫已清除。外部安全屏障解除，通道正式开放。");
+                () => "地牢的守护者已被击败。外部屏障消散，通道已经安全了。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "这类古代防御系统的内部可能仍有残留协议在运行。主人请保持警惕。");
+                () => "前方区域缺乏照明，请允许我走在前面，为您照亮这条幽暗的道路。");
         }
 
         protected override void Build() {

@@ -960,7 +960,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             float progress = StateTimer / ChargeDuration;
 
             //最高旋转速度
-            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.55f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
+            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.55f, MaxOrbitSpeed, VaultUtils.EaseInOutQuad(progress));
 
             //半径收缩向玩家
             float shrinkFactor = 1f - progress * 0.6f;

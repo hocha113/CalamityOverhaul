@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
             //EaseOutCubic 冲刺
-            float easeProgress = CWRUtils.EaseOutCubic(progress);
+            float easeProgress = VaultUtils.EaseOutCubic(progress);
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.4f);
 
             //提前开始旋转
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = StateTimer / OrbitDuration;
 
             //加速旋转（使用EaseInQuad）
-            float speedProgress = CWRUtils.EaseInQuad(progress);
+            float speedProgress = VaultUtils.EaseInQuad(progress);
             orbitSpeed = MathHelper.Lerp(0.05f, MaxOrbitSpeed * 0.6f, speedProgress);
 
             //半径脉冲
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float progress = StateTimer / ChargeDuration;
 
             //达到最高旋转速度
-            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
+            orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, VaultUtils.EaseInOutQuad(progress));
 
             //半径震荡
             float radiusOscillation = (float)Math.Sin(StateTimer * 0.5f) * 15f * progress;

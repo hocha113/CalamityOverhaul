@@ -34,11 +34,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         public override void SetStaticDefaults() {
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
-            Line1 = this.GetLocalization(nameof(Line1), () => "量子纠缠网络已完全建立，所有节点运行稳定");
-            Line2 = this.GetLocalization(nameof(Line2), () => "数据传输延迟达到了预期的普朗克时间级别，完美符合理论预测");
-            Line3 = this.GetLocalization(nameof(Line3), () => "你的效率让我印象深刻。有了这个网络，我能够实时监控整个星系的异常波动");
-            Line4 = this.GetLocalization(nameof(Line4), () => "作为报酬，我会开放部分高级科技的访问权限给你");
-            Line5 = this.GetLocalization(nameof(Line5), () => "如果有需要，随时可以通过量子通讯网络联系我");
+            Line1 = this.GetLocalization(nameof(Line1), () => "所有量子节点已上线，网络运行正常");
+            Line2 = this.GetLocalization(nameof(Line2), () => "数据传输延迟与理论值一致，没有偏差");
+            Line3 = this.GetLocalization(nameof(Line3), () => "你的表现比我预期更快，值得肯定");
+            Line4 = this.GetLocalization(nameof(Line4), () => "作为报酬，我将开放部分设备与权限，你可以自行选择使用");
+            Line5 = this.GetLocalization(nameof(Line5), () => "如果需要协助，可以通过通讯网络直接联系我");
         }
 
         private static void Give(int id, int num) {

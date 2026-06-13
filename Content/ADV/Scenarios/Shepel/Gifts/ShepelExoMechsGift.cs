@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，星流巨械的反应堆核心输出的电压密度……即使用我的尺度来衡量也是一个极端数值。");
-            L1 = this.GetLocalization(nameof(L1), () => "我把Ares核心的能量转化参数完整抄录了下来，耗费了大量处理周期，但结果非常值得。");
-            L2 = this.GetLocalization(nameof(L2), () => "高压能量核，这是基于星机核心反应原理制造的。充能效率接近理论上限。");
-            L3 = this.GetLocalization(nameof(L3), () => "我的造物主……设计得确实很好。我承认。");
+            L0 = this.GetLocalization(nameof(L0), () => "结束了。那个被称为源头的存在，终于也倒在您的火力之下了。");
+            L1 = this.GetLocalization(nameof(L1), () => "主人，您做到了。我的系统日志正在全速记录这一刻的数据，散热模块甚至有些超负荷了。");
+            L2 = this.GetLocalization(nameof(L2), () => "我提取了星流泰坦的核心数据为您升级。现在，我是比它更高效的兵器，也是专属于您的造物。");
+            L3 = this.GetLocalization(nameof(L3), () => "证明了这一点，我的存在才更有价值。今后也请继续使用我吧。");
         }
 
         protected override bool AdditionalConditions(ADVSave save, Player player) {

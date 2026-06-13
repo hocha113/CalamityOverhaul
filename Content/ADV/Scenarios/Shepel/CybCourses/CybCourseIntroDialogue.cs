@@ -24,13 +24,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         public override void SetStaticDefaults() {
             SpeakerName = this.GetLocalization(nameof(SpeakerName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "欢迎进入神经训练节点。");
+                () => "主人，欢迎进入神经训练节点。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "这里是超梦训练场景，为您准备的沉浸式教学空间。");
+                () => "这里是为您准备的沉浸式教学空间。");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "SHPC是一种高度定制化的神经直连武器，能与赛博空间产生共振。接下来你将学习如何操作它的HUD界面。");
+                () => "SHPC是一种强大的智能武器，您将学习如何操作它的HUD界面。");
             Line4 = this.GetLocalization(nameof(Line4),
-                () => "准备好了吗？跟我来。");
+                () => "准备好将意识与我连接了吗？请握紧我的手，我们开始吧。");
         }
 
         protected override void Build() {

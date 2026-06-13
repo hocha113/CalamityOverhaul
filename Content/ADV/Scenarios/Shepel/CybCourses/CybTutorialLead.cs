@@ -53,15 +53,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             _stepBodies = new[] {
                 this.GetLocalization("Step0_Body", () => "将SHPC装备至武器栏并持握，HUD核心节点即会出现在屏幕左下角。"),
                 this.GetLocalization("Step1_Body", () => "点击左下角的核心节点可展开或收起操作面板。"),
-                this.GetLocalization("Step2_Body", () => "网域 — 部署并管理多层赛博空间层叠结构。\n点击高亮的扇区即可锁定该面板。"),
-                this.GetLocalization("Step3_Body", () => "改造 — 为SHPC安装或拆卸改造零件。\n点击高亮的扇区即可锁定该面板。"),
-                this.GetLocalization("Step4_Body", () => "赛博改装 — 查看并管理你的机体增强模块。\n点击高亮的扇区即可打开义体界面。"),
-                this.GetLocalization("Step5_Body", () => "神经链路 — 与SHPC建立直连通讯，开启对话。\n点击高亮的扇区即可开启对话。"),
+                this.GetLocalization("Step2_Body", () => @"赛博空间:部署并管理多层赛博空间层叠结构。
+点击高亮的扇区即可打开该面板。"),
+                this.GetLocalization("Step3_Body", () => @"模块改装:为SHPC安装或拆卸改造零件。
+点击高亮的扇区即可打开该面板。"),
+                this.GetLocalization("Step4_Body", () => @"义体植入:查看并管理你的身体增强模块。
+点击高亮的扇区即可打开该界面。"),
+                this.GetLocalization("Step5_Body", () => @"神经链路:与SHPC建立直连通讯，开启对话。
+点击高亮的扇区即可与其对话。"),
                 this.GetLocalization("Step6_Body", () => "所有接口已解析完毕。\n神经链路稳定，SHPC已就绪。"),
             };
             _textCalibrating = this.GetLocalization("Calibrating", () => "CALIBRATING...");
             _textNextBtn = this.GetLocalization("NextBtn", () => "NEXT  >");
-            _textHintStuck = this.GetLocalization("HintStuck", () => "// HINT: 试着点击高亮的目标区域");
+            _textHintStuck = this.GetLocalization("HintStuck", () => "HINT: 试着点击高亮的目标区域");
         }
 
         private const int CardW = 310;

@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
             }
 
             //使用缓动函数实现平滑的出现效果
-            float appearEase = CWRUtils.EaseOutBack(spawnProgress);
+            float appearEase = VaultUtils.EaseOutBack(spawnProgress);
 
             //旋转效果 - 根据索引添加相位差
             rotation += 0.06f + crossIndex * 0.01f;

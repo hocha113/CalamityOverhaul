@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "丛林的防御核心突破了。这株植物用有机神经网络的方式覆盖了整片生物群落，很罕见的形式。");
+                () => "世纪之花的生机已被切断。前方的道路已扫描完毕。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "防线撤除，丛林深处的路现在通了。前方路线我来扫描。");
+                () => "请跟在我的身后，小心脚下残存的毒刺和荆棘。神庙的入口就在前方。");
         }
 
         protected override void Build() {

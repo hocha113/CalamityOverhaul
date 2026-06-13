@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             //弹簧式后撤蓄力:前70%缓慢后撤拉开距离(拉弓)，末段绷紧定身
             Vector2 awayDir = (npc.Center - player.Center).SafeNormalize(Vector2.UnitY);
             if (progress < 0.7f) {
-                float pull = CWRUtils.EaseInQuad(progress / 0.7f);
+                float pull = VaultUtils.EaseInQuad(progress / 0.7f);
                 npc.velocity = npc.velocity * 0.86f + awayDir * pull * 4.2f;
             }
             else {

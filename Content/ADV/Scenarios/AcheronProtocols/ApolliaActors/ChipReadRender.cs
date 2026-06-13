@@ -219,7 +219,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         private static void DrawPanel(SpriteBatch sb, Vector2 pos, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            float ease = CWRUtils.EaseOutCubic(fadeProgress);
+            float ease = VaultUtils.EaseOutCubic(fadeProgress);
             float w = PanelWidth * ease;
             float h = PanelHeight * ease;
 
@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 
         private static void DrawScanLine(SpriteBatch sb, Vector2 pos, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            float ease = CWRUtils.EaseOutCubic(fadeProgress);
+            float ease = VaultUtils.EaseOutCubic(fadeProgress);
             float h = PanelHeight * ease;
             float w = PanelWidth * ease;
 
@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 
         private static void DrawDataLines(SpriteBatch sb, Vector2 pos, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float ease = CWRUtils.EaseOutCubic(fadeProgress);
+            float ease = VaultUtils.EaseOutCubic(fadeProgress);
             float w = PanelWidth * ease;
             float h = PanelHeight * ease;
             float startY = pos.Y - h / 2 + 26;
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 
         private static void DrawProgressBar(SpriteBatch sb, Vector2 pos, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
-            float ease = CWRUtils.EaseOutCubic(fadeProgress);
+            float ease = VaultUtils.EaseOutCubic(fadeProgress);
             float w = PanelWidth * ease;
             float h = PanelHeight * ease;
 

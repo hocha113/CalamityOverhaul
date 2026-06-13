@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             Line1 = this.GetLocalization(nameof(Line1),
                 () => "训练完成。所有接口均已完成校准。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "你已掌握神经直连协议，超梦节点正在脱钩。");
+                () => "您已掌握神经直连协议，超梦节点正在脱钩。");
             Line3 = this.GetLocalization(nameof(Line3),
                 () => "随时可重置训练，或退出超梦。");
         }

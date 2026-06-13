@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 int age = Duration - Projectile.timeLeft;
                 float opening = Math.Clamp(age / 16f, 0f, 1f);
                 float closing = Math.Clamp(Projectile.timeLeft / 20f, 0f, 1f);
-                return CWRUtils.EaseOutCubic(opening) * closing;
+                return VaultUtils.EaseOutCubic(opening) * closing;
             }
         }
 
@@ -348,7 +348,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool ShouldUpdatePosition() => false;
 
         /// <summary>冲击波扩张进度 0~1</summary>
-        public float Progress => CWRUtils.EaseOutCubic(Time / (float)Lifetime);
+        public float Progress => VaultUtils.EaseOutCubic(Time / (float)Lifetime);
         /// <summary>当前冲击波前沿半径</summary>
         public float CurrentRadius => MaxRadius * Progress;
 
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Texture2D canvas = CWRAsset.Placeholder_White?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
 
-            float fadeAlpha = 1f - CWRUtils.EaseInQuad(Time / (float)Lifetime);
+            float fadeAlpha = 1f - VaultUtils.EaseInQuad(Time / (float)Lifetime);
 
             if (shader == null || canvas == null || noise == null) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;

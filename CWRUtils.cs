@@ -129,30 +129,6 @@ namespace CalamityOverhaul
         /// <summary>是否蠕虫体节</summary>
         public static bool IsWormBody(this NPC npc) => CWRLoad.WormBodys.Contains(npc.type);
 
-        /// <summary>按索引取 Player，非法或未存活返回 null</summary>
-        public static Player GetPlayerInstance(int playerIndex) {
-            if (playerIndex.ValidateIndex(Main.player)) {
-                Player player = Main.player[playerIndex];
-
-                return player.Alives() ? player : null;
-            }
-            else {
-                return null;
-            }
-        }
-
-        /// <summary>按索引取 NPC，非法或未存活返回 null</summary>
-        public static NPC GetNPCInstance(int npcIndex) {
-            if (npcIndex.ValidateIndex(Main.npc)) {
-                NPC npc = Main.npc[npcIndex];
-
-                return npc.Alives() ? npc : null;
-            }
-            else {
-                return null;
-            }
-        }
-
         /// <summary>鞭类弹幕路径控制点</summary>
         public static List<Vector2> GetWhipControlPoints(this Projectile projectile) {
             List<Vector2> list = [];
@@ -181,13 +157,7 @@ namespace CalamityOverhaul
             dust.velocity = -Projectile.velocity * velocityMult;
         }
 
-        public static void EntityToRot(this NPC entity, float toRot, float rotSpeed) => entity.rotation = ToRot(entity.rotation, toRot, rotSpeed);
-
-        public static float ToRot(float setRot, float toRot, float rotSpeed) {
-            setRot = MathHelper.WrapAngle(setRot);
-            float diff = MathHelper.WrapAngle(toRot - setRot);
-            return setRot + MathHelper.Clamp(diff, -rotSpeed, rotSpeed);
-        }
+        public static void EntityToRot(this NPC entity, float toRot, float rotSpeed) => entity.rotation = entity.rotation.RotTowards(toRot, rotSpeed);
 
         /// <summary>弹幕旋转插值逼近目标角</summary>
         public static void EntityToRot(this Projectile entity, float targetRot, float rotSpeed) {
@@ -308,22 +278,6 @@ namespace CalamityOverhaul
         /// <summary>灾厄物品 type ID</summary>
         public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
 
-        public static void ModifyLegendWeaponDamageFunc(Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
-            float oldMultiplicative = damage.Multiplicative;
-            damage *= GetOnDamage / (float)GetStartDamage;
-            damage /= oldMultiplicative;
-            // SD 优先级不可靠，回缩到 item.damage 再乘前缀
-            damage *= GetStartDamage / (float)item.damage;
-            damage *= item.GetPrefixState().damageMult;
-        }
-
-        public static void ModifyLegendWeaponKnockbackFunc(Item item, float GetOnKnockback, float GetStartKnockback, ref StatModifier Knockback) {
-            Knockback *= GetOnKnockback / (float)GetStartKnockback;
-            // SD 优先级不可靠，回缩到 item.knockBack 再乘前缀
-            Knockback *= GetStartKnockback / item.knockBack;
-            Knockback *= item.GetPrefixState().knockbackMult;
-        }
-
         public static NPC FindNPCFromeType(int type) {
             NPC npc = null;
             foreach (var n in Main.npc) {
@@ -340,16 +294,6 @@ namespace CalamityOverhaul
         public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) =>
              recipe.AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => { amount = 0; })
             .AddOnCraftCallback(CWRCrafted.SpawnAction);
-
-        /// <summary>赋予玩家无敌，类似 <see cref="Player.SetImmuneTimeForAllTypes(int)"/></summary>
-        public static void GivePlayerImmuneState(this Player player, int time, bool blink = false) {
-            player.immuneNoBlink = !blink;
-            player.immune = true;
-            player.immuneTime = time;
-            for (int k = 0; k < player.hurtCooldowns.Length; k++) {
-                player.hurtCooldowns[k] = player.immuneTime;
-            }
-        }
 
         /// <summary>用宿主本地化文本替换原版 Tooltip 行</summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
@@ -509,97 +453,12 @@ namespace CalamityOverhaul
         #endregion
 
         #region MathUtils
-        /// <summary>指数缓出</summary>
-        public static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
-
         /// <summary>弹性缓出</summary>
         public static float EaseOutElastic(float t) {
             const float c4 = (2f * MathHelper.Pi) / 3f;
             return t == 0f ? 0f
                 : t == 1f ? 1f
                 : (float)(Math.Pow(2, -10 * t) * Math.Sin((t * 10 - 0.75) * c4) + 1);
-        }
-
-        /// <summary>三次缓出</summary>
-        public static float EaseOutCubic(float t) {
-            t = MathHelper.Clamp(t, 0, 1);
-            t = 1 - (float)Math.Pow(1 - t, 3);
-            return t;
-        }
-
-        /// <summary>三次缓出简化版</summary>
-        public static float EaseOut(float t) {
-            return 1f - (float)Math.Pow(1f - t, 3f);
-        }
-
-        /// <summary>二次缓入</summary>
-        public static float EaseInQuad(float t) => t * t;
-
-        /// <summary>二次缓出</summary>
-        public static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
-
-        /// <summary>反向缓入缓出(带回弹)</summary>
-        public static float EaseInOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c2 = c1 * 1.525f;
-            t = MathHelper.Clamp(t, 0, 1);
-            return t < 0.5f
-                ? (float)(Math.Pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2f
-                : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
-        }
-
-        /// <summary>反向缓出(超调回弹)</summary>
-        public static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
-        }
-
-        /// <summary>三次缓入缓出</summary>
-        public static float EaseInOutCubic(float t) {
-            return t < 0.5f
-                ? 4f * t * t * t
-                : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
-        }
-
-        /// <summary>三次缓入</summary>
-        public static float EaseInCubic(float t) {
-            return t * t * t;
-        }
-
-        /// <summary>二次缓入缓出</summary>
-        public static float EaseInOutQuad(float t) {
-            return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
-        }
-
-        /// <summary>二次贝塞尔曲线</summary>
-        public static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t) {
-            float u = 1f - t;
-            return u * u * a + 2f * u * t * b + t * t * c;
-        }
-
-        /// <summary>三次贝塞尔曲线</summary>
-        public static Vector2 CubicBezier(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) {
-            float u = 1f - t;
-            float tt = t * t;
-            float uu = u * u;
-            float uuu = uu * u;
-            float ttt = tt * t;
-            Vector2 p = uuu * p0;
-            p += 3f * uu * t * p1;
-            p += 3f * u * tt * p2;
-            p += ttt * p3;
-            return p;
-        }
-
-        /// <summary>正弦缓出</summary>
-        public static float EaseOutSine(float t) {
-            return (float)Math.Sin(t * MathHelper.PiOver2);
-        }
-
-        /// <summary>数组索引是否合法</summary>
-        public static bool ValidateIndex(this int index, Array array) {
-            return index >= 0 && index < array.Length;
         }
         #endregion
 

@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 glitchIntensity = MathHelper.Lerp(0.3f, 0.1f, extinctionProgress / 0.3f);
             }
 
-            extinctionWaveRadius = GalaxyRadius * CWRUtils.EaseOutCubic(extinctionProgress) * 0.9f;
+            extinctionWaveRadius = GalaxyRadius * VaultUtils.EaseOutCubic(extinctionProgress) * 0.9f;
             MarkStarsForExtinction();
         }
 

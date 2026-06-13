@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             kortoZoomProgress = MathF.Min(kortoZoomProgress + 0.006f, 1f);
             phaseProgress = kortoZoomProgress;
 
-            float ease = CWRUtils.EaseInOutCubic(kortoZoomProgress);
+            float ease = VaultUtils.EaseInOutCubic(kortoZoomProgress);
 
             //缩放：从1x到5x
             kortoZoomScale = MathHelper.Lerp(1f, 5f, ease);
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 
             //科尔托标记在缩放超过60%后开始出现
             float markerFade = MathHelper.Clamp((kortoZoomProgress - 0.6f) / 0.3f, 0f, 1f);
-            kortoMarkerAlpha = CWRUtils.EaseOutCubic(markerFade);
+            kortoMarkerAlpha = VaultUtils.EaseOutCubic(markerFade);
 
             //缩放过程中逐渐降低glitch
             glitchIntensity = MathHelper.Lerp(glitchIntensity, 0.01f, 0.05f);
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             //应用缩放和偏移
             Vector2 zoomCenter = center + kortoZoomOffset * kortoZoomScale;
 
-            float reveal = CWRUtils.EaseOutCubic(galaxyRevealProgress);
+            float reveal = VaultUtils.EaseOutCubic(galaxyRevealProgress);
             float galaxyAlpha = alpha * reveal;
 
             //缩放后的银河核心
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 //灭绝后恒星保持暗色
                 if (star.ExtinctionMarked && star.ExtinctionStage >= 2) {
                     float fadeT = MathF.Min(star.ExtinctionStageTimer / ExtinctionFadeDuration, 1f);
-                    float shrink = 1f - CWRUtils.EaseInCubic(fadeT);
+                    float shrink = 1f - VaultUtils.EaseInCubic(fadeT);
                     drawSize *= shrink;
                     finalBrightness *= shrink;
                     if (drawSize < 0.05f) continue;
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         /// 绘制行星链正视图：恒星 + 6颗行星的轨道 + 标记第三行星
         /// </summary>
         private static void DrawKortoPlanetView(SpriteBatch sb, Vector2 center, float alpha) {
-            float viewAlpha = alpha * CWRUtils.EaseOutCubic(kortoPlanetTransition);
+            float viewAlpha = alpha * VaultUtils.EaseOutCubic(kortoPlanetTransition);
             if (viewAlpha < 0.01f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;

@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，世界吞噬者的体节里有一种特殊的蠕动纤维，密度低但抗剪切性能极强。");
-            L1 = this.GetLocalization(nameof(L1), () => "我提取了足量样本进行分析，然后用类似原理重新设计了枪托的承力结构。");
-            L2 = this.GetLocalization(nameof(L2), () => "这是轻量枪托模组，重量降低了但耐用性没有减损。");
-            L3 = this.GetLocalization(nameof(L3), () => "虫子的价值通常不在它的外表。");
+            L0 = this.GetLocalization(nameof(L0), () => "腐化地的气味真是难闻。主人，您的装甲缝隙里沾到了一些可疑的黏液，让我为您清理干净。");
+            L1 = this.GetLocalization(nameof(L1), () => "在这种泥泞的地方作战，弄脏衣服真是让人头疼。");
+            L2 = this.GetLocalization(nameof(L2), () => "我把枪托的配重稍微调轻了一些。");
+            L3 = this.GetLocalization(nameof(L3), () => "这样您使用时就不那么容易溅起地上的污泥了。");
         }
 
         protected override void Build() {

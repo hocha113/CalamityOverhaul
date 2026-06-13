@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，月球领主的核心包含一种极其罕见的能量形态——近乎奇点密度的压缩力场。");
-            L1 = this.GetLocalization(nameof(L1), () => "我在战后的扫描中采集到了足够的样本进行分析。整理成这个能量核心花了不少计算资源。");
-            L2 = this.GetLocalization(nameof(L2), () => "奇点能量核，这是迄今为止我为SHPC制作的单件性能上限最高的核心模组。");
-            L3 = this.GetLocalization(nameof(L3), () => "月亮背面的秘密已经被主人知晓了。接下来的目标……我在更新参数。");
+            L0 = this.GetLocalization(nameof(L0), () => "盘踞在星空之上的异形终于陨落了。");
+            L1 = this.GetLocalization(nameof(L1), () => "确认主人生理体征平稳……太好了，警报解除。");
+            L2 = this.GetLocalization(nameof(L2), () => "我从它残余的高维力场中提炼出了这个核心。");
+            L3 = this.GetLocalization(nameof(L3), () => "无论前方的道路通向多远的深空，我都会作为您的护盾与向导，绝不偏航。");
         }
 
         protected override void Build() {

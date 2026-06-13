@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Renders
 
                 float t = ring.Age / (float)ring.Life;
                 //环半径 easeOut 扩张，强度随寿命衰减
-                float radiusPx = ring.MaxRadiusPx * CWRUtils.EaseOutCubic(t);
+                float radiusPx = ring.MaxRadiusPx * VaultUtils.EaseOutCubic(t);
                 float strength = ring.Intensity * (1f - t) * (1f - t);
                 Vector2 centerUV = WorldToScreenUV(ring.WorldCenter);
 

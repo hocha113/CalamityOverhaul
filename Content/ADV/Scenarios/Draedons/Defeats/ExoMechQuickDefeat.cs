@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
             DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //快速战败对话：表现出对玩家压倒性实力的惊讶
-            QuickDefeatLine1 = this.GetLocalization(nameof(QuickDefeatLine1), () => "……这个时间远低于我的预测模型");
+            QuickDefeatLine1 = this.GetLocalization(nameof(QuickDefeatLine1), () => "......这个时间远低于我的预测模型");
             QuickDefeatLine2 = this.GetLocalization(nameof(QuickDefeatLine2), () => "看来我低估了你当前的战斗效率");
             QuickDefeatLine3 = this.GetLocalization(nameof(QuickDefeatLine3), () => "或许是时候考虑更激进的设计方案了");
         }

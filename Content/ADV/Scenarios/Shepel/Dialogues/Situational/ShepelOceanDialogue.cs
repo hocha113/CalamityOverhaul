@@ -21,11 +21,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Situational
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             V0_Line1 = this.GetLocalization(nameof(V0_Line1),
-                () => "海洋区域，水下声学环境和地表差很多。我的某些模块挺喜欢这个频率的。");
+                () => "海洋区域。水下的声学环境与地表截然不同。我的某些模块挺喜欢这个频率的。");
             V0_Line2 = this.GetLocalization(nameof(V0_Line2),
-                () => "如果有机会，想完整扫描一次海底地形。不着急，以后再说。");
+                () => "如果有机会，我想完整扫描一次海底地形。不着急，以后再说。");
             V1_Line1 = this.GetLocalization(nameof(V1_Line1),
-                () => "海水的温度分层很明显，表层和下方的深渊差了几十度。");
+                () => "海水的温度分层很明显，表层和下方的深渊相差几十度。");
             V1_Line2 = this.GetLocalization(nameof(V1_Line2),
                 () => "深渊方向的信号比上次又弱了一些，不知道是什么在干扰。");
             V2_Line1 = this.GetLocalization(nameof(V2_Line1),

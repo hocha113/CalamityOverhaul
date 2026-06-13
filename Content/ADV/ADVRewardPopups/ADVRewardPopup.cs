@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
 
                         // 使用缓动函数平滑过渡
-                        float easeProgress = CWRUtils.EaseOutCubic(positionTransitionProgress);
+                        float easeProgress = VaultUtils.EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
                         return currentDisplayPosition;
                     }
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                         positionTransitionProgress += PositionTransitionSpeed;
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
 
-                        float easeProgress = CWRUtils.EaseOutCubic(positionTransitionProgress);
+                        float easeProgress = VaultUtils.EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
                         return currentDisplayPosition;
                     }

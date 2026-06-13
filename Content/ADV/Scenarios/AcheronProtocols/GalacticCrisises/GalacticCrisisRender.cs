@@ -324,20 +324,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         #region 绘制调度
 
         private static Rectangle GetPanelRect() {
-            float ease = CWRUtils.EaseOutCubic(panelExpandProgress);
+            float ease = VaultUtils.EaseOutCubic(panelExpandProgress);
             float w = MathHelper.Lerp(BasePanelWidth, ExpandedPanelWidth, ease);
             float h = MathHelper.Lerp(BasePanelHeight, ExpandedPanelHeight, ease);
 
             //科尔托行星视图：从扩展尺寸进一步变宽变矮
             if (kortoPanelExpandProgress > 0.01f) {
-                float kortoEase = CWRUtils.EaseInOutCubic(kortoPanelExpandProgress);
+                float kortoEase = VaultUtils.EaseInOutCubic(kortoPanelExpandProgress);
                 w = MathHelper.Lerp(w, KortoPanelWidth, kortoEase);
                 h = MathHelper.Lerp(h, KortoPanelHeight, kortoEase);
             }
 
             //战术人形档案：独立面板尺寸
             if (androidPanelExpandProgress > 0.01f) {
-                float androidEase = CWRUtils.EaseInOutCubic(androidPanelExpandProgress);
+                float androidEase = VaultUtils.EaseInOutCubic(androidPanelExpandProgress);
                 w = MathHelper.Lerp(w, AndroidPanelWidth, androidEase);
                 h = MathHelper.Lerp(h, AndroidPanelHeight, androidEase);
             }

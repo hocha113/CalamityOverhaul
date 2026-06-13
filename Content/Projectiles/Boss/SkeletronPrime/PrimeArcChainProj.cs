@@ -38,8 +38,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         internal static float HitWidth => 32f;
 
         private ref float Timer => ref Projectile.localAI[0];
-        private NPC Arm => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
-        private NPC Head => CWRUtils.GetNPCInstance((int)Projectile.ai[1]);
+        private NPC Arm => ((int)Projectile.ai[0]).TryGetNPC(out NPC n) ? n : null;
+        private NPC Head => ((int)Projectile.ai[1]).TryGetNPC(out NPC n) ? n : null;
         private int Duration => (int)Projectile.ai[2];
 
         private ThunderTrail mainTrail;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
             else {
                 float t = MathHelper.Clamp((Timer - WarmupTime) / 12f, 0f, 1f);
-                power = MathHelper.Lerp(0.25f, 1f, CWRUtils.EaseOutCubic(t));
+                power = MathHelper.Lerp(0.25f, 1f, VaultUtils.EaseOutCubic(t));
             }
 
             //全功率瞬间的爆鸣

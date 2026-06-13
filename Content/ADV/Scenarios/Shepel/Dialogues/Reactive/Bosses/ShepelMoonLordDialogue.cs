@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "古代实体确认终止。主人，那是我迄今记录过的最高威胁等级目标。");
+                () => "月亮领主的信号已经彻底消失。主人，这是我当前运行周期里记录过的最高威胁等级目标。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "星空的电磁辐射正在逐渐稳定。我的系统也全面恢复了正常。");
+                () => "笼罩在天空的压迫感消散了，但我不会放松警惕。");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "干得漂亮。不过要提醒主人一句，这个世界还有更深的层次，我正在更新参数。");
+                () => "无论这片星空下还隐藏着什么秘密，我都会紧握您的手，绝不退缩。");
         }
 
         protected override void Build() {

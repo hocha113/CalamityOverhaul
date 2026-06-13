@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             //反冲后退(被爆炸冲击波推开)
             Vector2 retreatDir = (npc.Center - collisionPoint).SafeNormalize(Vector2.Zero);
-            npc.velocity = retreatDir * 11f * (1f - CWRUtils.EaseOutQuad(progress));
+            npc.velocity = retreatDir * 11f * (1f - VaultUtils.EaseOutQuad(progress));
             FaceTarget(npc, collisionPoint);
             Context.PushDashVisuals(0.4f * (1f - progress), 0.5f);
 

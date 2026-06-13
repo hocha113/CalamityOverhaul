@@ -1,0 +1,305 @@
+MODIFIED FILES
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelBrimstoneElementalDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelCalamitasCloneDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelCrabulonDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelCryogenDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelDesertScourgeDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelDestroyerDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelDevourerofGodsDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelEyeOfCthulhuDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelGolemDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelHiveMindDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelLeviathanDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelMoonLordDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelPerforatorDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelPlaguebringerDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelPlanteraDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelProvidenceDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelQueenBeeDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelSkeletronDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelSkeletronPrimeDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelSlimeGodDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelSupremeCalamitasDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelTwinsDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelWallOfFleshDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\Bosses\ShepelYharonDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelBloodMoonDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelBossDefeatedDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelCyberLevelUpDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelPlayerRespawnDialogue.cs	1
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelRAMOverloadDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelRainDialogue.cs	1
+Content\ADV\Scenarios\Shepel\Dialogues\Reactive\ShepelSolarEclipseDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Situational\ShepelDungeonDialogue.cs	5
+Content\ADV\Scenarios\Shepel\Dialogues\Situational\ShepelFirstNightDialogue.cs	6
+Content\ADV\Scenarios\Shepel\Dialogues\Situational\ShepelJungleDialogue.cs	5
+Content\ADV\Scenarios\Shepel\Dialogues\Situational\ShepelOceanDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Dialogues\Situational\ShepelSnowBiomeDialogue.cs	2
+Content\ADV\Scenarios\Shepel\Dialogues\Situational\ShepelUnderworldDialogue.cs	3
+Content\ADV\Scenarios\Shepel\Gifts\ShepelAquaticScourgeGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelBoCGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelBrimstoneElementalGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelCalamitasCloneGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelCultistGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelDestroyerGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelDevourerofGodsGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelEoCGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelEoWGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelExoMechsGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelGolemGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelHiveMindGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelMoonLordGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelPerforatorGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelPlanteraGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelPolterghastGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelProvidenceGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelSkeletronPrimeGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelSlimeGodGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelSupremeCalamitasGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelTwinsGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelWoFGift.cs	4
+Content\ADV\Scenarios\Shepel\Gifts\ShepelYharonGift.cs	4
+
+TOTAL	60	182
+
+CODE WITHOUT HJSON
+ADV.CQETConstructor.UseConstructionBlueprint
+ADV.ConstructionBlueprintQET.L1
+ADV.ConstructionBlueprintQET.L2
+ADV.ConstructionBlueprintUI.CloseHint
+ADV.ConstructionBlueprintUI.CraftingStation
+ADV.ConstructionBlueprintUI.MaterialsRequired
+ADV.ConstructionBlueprintUI.UITitle
+ADV.DialogueBoxBase.ContinueHint
+ADV.DialogueBoxBase.FastHint
+ADV.MermanRod.Text1
+ADV.MusicInfo.NowPlaying
+ADV.OceanRaiders.NoEnergyText
+ADV.OceanRaiders.NoWaterText
+ADV.OceanRaiders.WorkingText
+ADV.OldDuchest.StorageText
+ADV.PQCD.NeedSignalTowersText
+ADV.PQCD.SignalTowerProgressText
+ADV.RewardEntry.ClickOrWaitToContinue
+ADV.RewardEntry.ClickToContinue
+ADV.RewardEntry.ClickToReceive
+NPCModifys.ModifyOldDuke.LeavingDiveText
+UI.ApolliaHeroPanelUI.CmdAggressive
+UI.ApolliaHeroPanelUI.CmdDefensive
+UI.ApolliaHeroPanelUI.CmdFollow
+UI.ApolliaHeroPanelUI.CmdHold
+UI.ApolliaHeroPanelUI.CommandLabel
+UI.ApolliaHeroPanelUI.DamageLabel
+UI.ApolliaHeroPanelUI.DefenseLabel
+UI.ApolliaHeroPanelUI.HPLabel
+UI.ApolliaHeroPanelUI.TitleText
+UI.CQETConstructorTP.GuideText_GroundIncomplete
+UI.CQETConstructorTP.GuideText_NeedBlocks
+UI.CQETConstructorTP.GuideText_Ready
+UI.DraedonCallUI.CallButtonText
+UI.DraedonCallUI.CallingText
+UI.DraedonCallUI.ConnectedText
+UI.DraedonCallUI.ConnectingText
+UI.DraedonCallUI.DisabledButtonText
+UI.DraedonCallUI.DisabledReasonText
+UI.DraedonCallUI.TitleText
+UI.DraedonCallUI.TitleTextDisabled
+UI.DraedonIncomingCall.AnswerHint
+UI.DraedonIncomingCall.ChannelPrefix
+UI.DraedonIncomingCall.ConnectingLabel
+UI.DraedonIncomingCall.EndLabel
+UI.DraedonIncomingCall.IncomingLabel
+UI.DraedonIncomingCall.NextLabel
+UI.DraedonIncomingCall.TimerLabel
+UI.DraedonIncomingCall.UnknownCaller
+UI.EnchantUI.CollapseHint
+UI.EnchantUI.EnchantTitle
+UI.EnchantUI.ExpandHint
+UI.EntrustManagerLead.TextConfirmBtn
+UI.EntrustManagerLead.TextKeyPromptBindHint
+UI.EntrustManagerLead.TextKeyPromptBound
+UI.EntrustManagerLead.TextKeyPromptConfirmBtn
+UI.EntrustManagerLead.TextKeyPromptDefaultKey
+UI.EntrustManagerLead.TextKeyPromptWarnTitle
+UI.EntrustManagerLead.TextMiddleClickAction
+UI.EntrustManagerLead.TextMiddleClickDesc
+UI.EntrustManagerLead.TextMiddleClickLabel
+UI.EntrustManagerLead.TextPanelIntroTitle
+UI.EntrustManagerLead.TextRightClickAction
+UI.EntrustManagerLead.TextRightClickDesc
+UI.EntrustManagerLead.TextRightClickLabel
+UI.EntrustManagerLead.TextStyleButtonAction
+UI.EntrustManagerLead.TextStyleButtonDesc
+UI.EntrustManagerLead.TextStyleButtonLabel
+UI.EntrustManagerLead.TextStyleButtonTitle
+UI.EntrustManagerLead.TextSuspendIntroDesc1
+UI.EntrustManagerLead.TextSuspendIntroDesc2
+UI.EntrustManagerLead.TextSuspendIntroHintAction
+UI.EntrustManagerLead.TextSuspendIntroHintLabel
+UI.EntrustManagerLead.TextSuspendIntroTitle
+UI.EntrustManagerLead.TextTrackPromptDesc
+UI.EntrustManagerLead.TextTrackPromptHintAction
+UI.EntrustManagerLead.TextTrackPromptHintLabel
+UI.EntrustManagerLead.TextTrackPromptNextBtn
+UI.EntrustManagerLead.TextTrackPromptTitle
+UI.EntrustManagerLead.TextTrackerIntroLine1
+UI.EntrustManagerLead.TextTrackerIntroLine2
+UI.EntrustManagerLead.TextTrackerIntroLine3
+UI.EntrustManagerLead.TextTrackerIntroNextBtn
+UI.EntrustManagerLead.TextTrackerIntroTitle
+UI.EntrustManagerNotification.LabelCompleted
+UI.EntrustManagerNotification.LabelNewQuest
+UI.EntrustManagerNotification.LabelSuspended
+UI.EntrustManagerNotification.LabelTracked
+UI.EntrustManagerNotification.LabelUnsuspended
+UI.EntrustManagerNotification.LabelUntracked
+UI.ExoMechdusaSumRender.AresDescription
+UI.ExoMechdusaSumRender.ArtemisApolloDescription
+UI.ExoMechdusaSumRender.ThanatosDescription
+UI.GalacticCrisisRender.AndroidApolaName
+UI.GalacticCrisisRender.AndroidArtisName
+UI.GalacticCrisisRender.AndroidClassLabel
+UI.GalacticCrisisRender.AndroidCodename
+UI.GalacticCrisisRender.AndroidStatusLabel
+UI.GalacticCrisisRender.AndroidStatusLost
+UI.GalacticCrisisRender.ExtinctionProtocolWarning
+UI.GalacticCrisisRender.HeaderAndroidProfile
+UI.GalacticCrisisRender.HeaderGalacticStrategicMap
+UI.GalacticCrisisRender.HeaderKortoSystemOverview
+UI.GalacticCrisisRender.HeaderStellarNavigation
+UI.GalacticCrisisRender.KortoClassTerrestrial
+UI.GalacticCrisisRender.KortoIIILabel
+UI.GalacticCrisisRender.KortoPlanetCountInfo
+UI.GalacticCrisisRender.KortoPrimaryObjective
+UI.GalacticCrisisRender.KortoStarLabel
+UI.GalacticCrisisRender.KortoStatusCompromised
+UI.GalacticCrisisRender.KortoSystemLabel
+UI.GalacticCrisisRender.KortoTargetLocked
+UI.GalacticCrisisRender.KortoThreatCritical
+UI.GalacticCrisisRender.MarkerTerra
+UI.OceanRaidersUI.StorageText
+UI.OceanRaidersUI.TitleText
+UI.OldDuchestUI.StorageText
+UI.OldDuchestUI.TitleText
+UI.OldDukeShopUI.CurrencyName
+UI.OldDukeShopUI.HintTooltip
+UI.OldDukeShopUI.TitleText
+UI.QuestManagerUI.CategoryActive
+UI.QuestManagerUI.CategoryAll
+UI.QuestManagerUI.CategoryCompleted
+UI.QuestManagerUI.CategorySuspended
+UI.QuestManagerUI.EmptyHintText
+UI.QuestManagerUI.EntryStatusActive
+UI.QuestManagerUI.EntryStatusCompleted
+UI.QuestManagerUI.EntryStatusFailed
+UI.QuestManagerUI.EntryStatusSuspended
+UI.QuestManagerUI.EntryStatusTracked
+UI.QuestManagerUI.ExpandHintText
+UI.QuestManagerUI.FooterStatsFormat
+UI.QuestManagerUI.HeaderStatusTag
+UI.QuestManagerUI.OpenHintText
+UI.QuestManagerUI.SuspendHintText
+UI.QuestManagerUI.TitleText
+UI.QuestManagerUI.TrackHintText
+UI.QuestTracker.DamageTrackerSystem.FailureReasonInsufficientDamage
+UI.QuestTracker.DamageTrackerSystem.FailureReasonWrongWeapon
+UI.QuestTracker.DamageTrackerSystem.QuestCompletedPrefix
+UI.QuestTracker.DamageTrackerSystem.QuestFailedPrefix
+UI.QuestTracker.DamageTrackerSystem.SuccessDamageContribution
+UI.SignalTowerTargetRenderer.AllCompletedText
+UI.SignalTowerTargetRenderer.InRangeText
+UI.SignalTowerTargetRenderer.TargetCompletedText
+UI.TransitionScene.Hint0
+UI.TransitionScene.Hint1
+UI.TransitionScene.Hint2
+UI.TransitionScene.Hint3
+UI.TransitionScene.Hint4
+UI.TransitionScene.Hint5
+UI.TransitionScene.Hint6
+UI.TransitionScene.Hint7
+UI.TransitionScene.Hint8
+UI.TransitionScene.Hint9
+UI.TransitionScene.InitializingText
+UI.TransitionScene.LoadingText
+
+HJSON WITHOUT CODE
+ADV.ADVRewardPopup.ClickOrWaitToContinue
+ADV.ADVRewardPopup.ClickToContinue
+ADV.ADVRewardPopup.ClickToReceive
+ADV.FishoilQuestUI.CompletedText
+ADV.FishoilQuestUI.DeclineText
+ADV.FishoilQuestUI.DescText
+ADV.FishoilQuestUI.QuickPutText
+ADV.FishoilQuestUI.RewardText
+ADV.FishoilQuestUI.SubmitHint
+ADV.FishoilQuestUI.TitleText
+ADV.MusicToast.NowPlaying
+ADV.Shepel.CybTutorialLead.AwaitingEquip
+ADV.Shepel.HackTimeTutorialLead.HT_Step0_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step0_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step1_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step1_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step2_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step2_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step3_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step3_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step4_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step4_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step5_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step5_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step6_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step6_Title
+ADV.Shepel.HackTimeTutorialLead.HT_Step7_Body
+ADV.Shepel.HackTimeTutorialLead.HT_Step7_Title
+ADV.TheHerInThePast.RolenameSHPC
+ADV.TheHerInThePast.RolenameWitch
+ADV.TheHerInThePast.ShpcLine1
+ADV.TheHerInThePast.ShpcLine2
+ADV.TheHerInThePast.ShpcLine3
+ADV.TheHerInThePast.ShpcLine4
+ADV.TheHerInThePast.WitchLine1
+ADV.TheHerInThePast.WitchLine2
+ADV.TheHerInThePast.WitchLine3
+ADV.TheHerInThePast.WitchLine4
+ADV.TheHerInThePast.WitchLine5
+ADV.TheHerInThePast.WitchLine6
+ADV.TheHerInThePast.WitchLine7
+ADV.VoidColony.MessageStrings.MsgAccess
+ADV.VoidColony.MessageStrings.MsgBody0
+ADV.VoidColony.MessageStrings.MsgBody1
+ADV.VoidColony.MessageStrings.MsgBody2
+ADV.VoidColony.MessageStrings.MsgBody3
+ADV.VoidColony.MessageStrings.MsgBody4
+ADV.VoidColony.MessageStrings.MsgCloseHint
+ADV.VoidColony.MessageStrings.MsgFragment
+ADV.VoidColony.MessageStrings.MsgHeader
+ADV.VoidColony.MessageStrings.MsgRec01Title
+ADV.VoidColony.MessageStrings.MsgRec01_0
+ADV.VoidColony.MessageStrings.MsgRec01_1
+ADV.VoidColony.MessageStrings.MsgRec01_2
+ADV.VoidColony.MessageStrings.MsgRec02Title
+ADV.VoidColony.MessageStrings.MsgRec02_0
+ADV.VoidColony.MessageStrings.MsgRec02_1
+ADV.VoidColony.MessageStrings.MsgRec02_2
+ADV.VoidColony.MessageStrings.MsgRec02_3
+ADV.VoidColony.MessageStrings.MsgRec03Title
+ADV.VoidColony.MessageStrings.MsgRec03_0
+ADV.VoidColony.MessageStrings.MsgRec03_1
+ADV.VoidColony.MessageStrings.MsgRec03_2
+ADV.VoidColony.MessageStrings.MsgRec03_3
+ADV.VoidColony.MessageStrings.MsgRec04Title
+ADV.VoidColony.MessageStrings.MsgRec04_0
+ADV.VoidColony.MessageStrings.MsgRec04_1
+ADV.VoidColony.MessageStrings.MsgRec04_2
+ADV.VoidColony.MessageStrings.MsgSignature
+ADV.VoidColony.MessageStrings.MsgSkipHint
+ADV.VoidColony.MessageStrings.MsgSrcArchive
+ADV.VoidColony.MessageStrings.MsgSrcSignal
+ADV.VoidColony.MessageStrings.MsgSrcSystem
+ADV.VoidColony.MessageStrings.MsgStatus
+ADV.VoidColony.VoidTimeShiftLead.TextBindHint
+ADV.VoidColony.VoidTimeShiftLead.TextBound
+ADV.VoidColony.VoidTimeShiftLead.TextConfirm
+ADV.VoidColony.VoidTimeShiftLead.TextTitle
+ADV.VoidColony.VoidTimeShiftLead.TextUnboundDefault
+ADV.VoidColony.VoidTimeShiftLead.TextUnboundWarn

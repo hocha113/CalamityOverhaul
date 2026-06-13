@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "腐化蜂巢意志体已清除。区域暗物质浓度正在回落至安全阈值。");
+                () => "腐巢意志已被抹除。腐化辐射正在衰减，我的警报系统也终于安静下来了。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "这类腐化型生物的感知辐射一直让我的探测系统频繁触发警报。现在终于清净了。");
+                () => "区域环境正在恢复稳定，现在终于可以安心地待在您身边了。");
         }
 
         protected override void Build() {

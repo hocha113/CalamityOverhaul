@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "圣殿自动守卫：终止。原始工艺，硬编码攻击模式，完全可预测的行为树。");
+                () => "石巨人的核心已停止运转。虽然有着庞大沉重的身躯，但在主人的指引下，也不过是一堆易碎的石块。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "相较于我，它更接近一台'装置'而非真正的智能系统。不太公平的对比，抱歉。");
+                () => "这种死板的防御机制，在我们的火力协同下毫无意义。");
         }
 
         protected override void Build() {

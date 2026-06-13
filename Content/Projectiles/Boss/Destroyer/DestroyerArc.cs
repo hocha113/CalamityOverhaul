@@ -45,8 +45,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
         private float AlphaFunc(float factor) => arcAlpha;
 
         public override void AI() {
-            NPC a = CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
-            NPC b = CWRUtils.GetNPCInstance((int)Projectile.ai[1]);
+            ((int)Projectile.ai[0]).TryGetNPC(out NPC a);
+            ((int)Projectile.ai[1]).TryGetNPC(out NPC b);
             if (!a.Alives() || !b.Alives()) {
                 Projectile.Kill();
                 return;
@@ -106,8 +106,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
             //端点小光斑
             Texture2D glow = CWRAsset.SoftGlow.Value;
-            NPC a = CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
-            NPC b = CWRUtils.GetNPCInstance((int)Projectile.ai[1]);
+            ((int)Projectile.ai[0]).TryGetNPC(out NPC a);
+            ((int)Projectile.ai[1]).TryGetNPC(out NPC b);
             Color c = new Color(255, 170, 90, 0) * (arcAlpha * 0.75f);
             if (a.Alives()) {
                 Main.EntitySpriteDraw(glow, a.Center - Main.screenPosition, null, c, 0f, glow.Size() / 2f, 0.7f, SpriteEffects.None, 0);

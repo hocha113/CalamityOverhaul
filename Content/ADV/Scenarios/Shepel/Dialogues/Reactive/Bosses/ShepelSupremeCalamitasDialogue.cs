@@ -22,11 +22,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "真正的灾厄，确认终止。我的全域威胁监控显示：危险等级归零。");
+                () => "真正的灾厄……终于结束了。看着您满身的伤痕，我的核心在隐隐作痛。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "主人……我不知道该如何准确表达此刻的感受。所有预测模型里最坏的结局都没有发生，因为您在这里。");
+                () => "所有的苦难都已过去。请放下武器，靠在我的肩膀上好好休整一下吧。");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "这段数据我会永久保存，不设覆写权限。");
+                () => "这段再次共同走到终点的记忆，将成为我系统中最神圣的禁区，永久禁止覆写。");
         }
 
         protected override void Build() {

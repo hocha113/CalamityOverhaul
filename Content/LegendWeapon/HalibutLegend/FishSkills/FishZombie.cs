@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.alpha = (int)((1f - alpha) * 255f);
 
             //缩放效果（从小到正常）
-            scale = MathHelper.Lerp(0.5f, 1f, CWRUtils.EaseOutBack(emergeProgress));
+            scale = MathHelper.Lerp(0.5f, 1f, VaultUtils.EaseOutBack(emergeProgress));
 
             //地面粒子效果强度
             groundEffectIntensity = MathHelper.Lerp(1f, 0f, emergeProgress);

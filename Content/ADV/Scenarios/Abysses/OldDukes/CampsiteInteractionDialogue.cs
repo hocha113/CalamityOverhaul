@@ -78,8 +78,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
             B1 = this.GetLocalization(nameof(B1), () => "我未来几天会把全部时间花在解读这些残片上，完成了之后我会通知你的");
             Choice4_R1 = this.GetLocalization(nameof(Choice4_R1), () => "我虽然老了，但年轻时候的技巧可还没落下");
-            Choice4_R2 = this.GetLocalization(nameof(Choice4_R2), () => "那就来吧");
-            Choice4_R3 = this.GetLocalization(nameof(Choice4_R3), () => "你找我练习战斗技巧并不是个明智的举动...");
+            Choice4_R2 = this.GetLocalization(nameof(Choice4_R2), () => "那就让我看看，你最近有没有长进");
+            Choice4_R3 = this.GetLocalization(nameof(Choice4_R3), () => "把我当磨刀石并不是个明智的举动...");
         }
 
         protected override void Build() {

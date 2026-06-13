@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
 
             bool isLeftSlot = boundSlot is >= 0 and < 6;
-            float eased = CWRUtils.EaseOutCubic(Math.Clamp(openProgress, 0f, 1f));
+            float eased = VaultUtils.EaseOutCubic(Math.Clamp(openProgress, 0f, 1f));
             float actualWidth = PanelWidth * eased;
             panelRect = isLeftSlot
                 ? new Rectangle((int)(mainPanelRect.X - actualWidth - 8), mainPanelRect.Y, (int)actualWidth, mainPanelRect.Height)

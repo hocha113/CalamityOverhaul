@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             if (openAnim < 0.01f) {
                 return;
             }
-            float a = alpha * CWRUtils.EaseOutCubic(MathHelper.Clamp(openAnim, 0f, 1f));
+            float a = alpha * VaultUtils.EaseOutCubic(MathHelper.Clamp(openAnim, 0f, 1f));
 
             //全屏压暗遮罩，聚焦面板
             sb.Draw(HalibutRenderer.Pixel,

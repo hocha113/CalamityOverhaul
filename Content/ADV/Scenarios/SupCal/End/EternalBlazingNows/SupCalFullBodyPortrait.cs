@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             float t = burnProgress / BurnDuration;
 
             //燃烧从底部向上推进
-            burnHeight = CWRUtils.EaseInOutQuad(t);
+            burnHeight = VaultUtils.EaseInOutQuad(t);
 
             //生成火焰粒子
             particleSpawnTimer++;
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             UpdateFireParticles();
 
             //整体透明度：立绘在燃烧过程中逐渐消失
-            CurrentFade = 1f - CWRUtils.EaseInCubic(t * 0.8f);
+            CurrentFade = 1f - VaultUtils.EaseInCubic(t * 0.8f);
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
                 //淡出
                 float lifeRatio = particle.Life / particle.MaxLife;
-                particle.Alpha = 1f - CWRUtils.EaseInQuad(lifeRatio);
+                particle.Alpha = 1f - VaultUtils.EaseInQuad(lifeRatio);
             }
         }
 

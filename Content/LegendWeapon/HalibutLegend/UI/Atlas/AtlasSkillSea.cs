@@ -380,7 +380,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         /// <summary>
         /// 滚动避让导致的装备坞下沉偏移
         /// </summary>
-        private float DockHideOffset => CWRUtils.EaseInCubic(chromeHide) * 92f;
+        private float DockHideOffset => VaultUtils.EaseInCubic(chromeHide) * 92f;
 
         private Vector2 DockSlotPos(Rectangle contentArea, int index) {
             float spacing = HalibutTheme.DockSlotR * 2f + 9f;

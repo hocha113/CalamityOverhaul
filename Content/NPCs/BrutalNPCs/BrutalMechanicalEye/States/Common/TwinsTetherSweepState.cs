@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 int distFromEdge = Math.Min(phaseTimer, SweepPhase - phaseTimer);
                 int rampDist = Math.Min(distFromEdge, distFromReverse - ReversePause / 2);
                 float ramp = MathHelper.Clamp(rampDist / 40f, 0f, 1f);
-                speedScale = CWRUtils.EaseInOutQuad(ramp);
+                speedScale = VaultUtils.EaseInOutQuad(ramp);
             }
 
             float direction = phaseTimer < half ? 1f : -1f;
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
             //轨道中心缓慢追随玩家，半径随进度收缩
             orbitCenter = Vector2.Lerp(orbitCenter, player.Center, 0.012f);
-            float radius = MathHelper.Lerp(StartRadius, EndRadius, CWRUtils.EaseInOutQuad(progress));
+            float radius = MathHelper.Lerp(StartRadius, EndRadius, VaultUtils.EaseInOutQuad(progress));
 
             float baseAngle = Context.IsSpazmatism ? MathHelper.Pi : 0f;
             float myAngle = baseAngle + sweepAngleAccum;

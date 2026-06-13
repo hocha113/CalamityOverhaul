@@ -87,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             //法阵扩展阶段 (0-30帧)
             if (ExpandTimer <= 30f) {
                 float progress = ExpandTimer / 30f;
-                circleRadius = CWRUtils.EaseOutCubic(progress) * 200f;
+                circleRadius = VaultUtils.EaseOutCubic(progress) * 200f;
                 circleAlpha = progress;
             }
             else {

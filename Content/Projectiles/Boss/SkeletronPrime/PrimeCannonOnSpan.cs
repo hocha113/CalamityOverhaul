@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         public override void AI() {
-            NPC npc = CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
+            ((int)Projectile.ai[0]).TryGetNPC(out NPC npc);
             if (Projectile.localAI[0] == 0) {
                 if (npc.Alives()) {
                     formeNPC = true;
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 scaleIndex = 1;
             }
             else {
-                Player player = CWRUtils.GetPlayerInstance((int)Projectile.ai[1]);
+                ((int)Projectile.ai[1]).TryGetPlayer(out Player player);
                 if (player.Alives()) {
                     Vector2 toSet = Projectile.Center.To(player.Center);
                     Projectile.EntityToRot(toSet.ToRotation() + Projectile.ai[2], 0.03f);

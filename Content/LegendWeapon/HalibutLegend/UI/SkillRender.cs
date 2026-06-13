@@ -67,14 +67,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //淡入+上升
                 float t = SwitchAnimProgress / fadeInEnd;
                 cachedAlpha = t;
-                cachedScale = MathHelper.Lerp(0.5f, 1.5f, CWRUtils.EaseOutBack(t));
-                cachedYOffset = MathHelper.Lerp(-20f, 0f, CWRUtils.EaseOutCubic(t));
+                cachedScale = MathHelper.Lerp(0.5f, 1.5f, VaultUtils.EaseOutBack(t));
+                cachedYOffset = MathHelper.Lerp(-20f, 0f, VaultUtils.EaseOutCubic(t));
 
                 //名称动画 - 稍微延迟，从下方飞入
                 float nameT = Math.Max(0, (t - 0.3f) / 0.7f);
-                cachedNameAlpha = CWRUtils.EaseOutCubic(nameT);
-                cachedNameScale = MathHelper.Lerp(0.3f, 1f, CWRUtils.EaseOutBack(nameT));
-                cachedNameYOffset = MathHelper.Lerp(30f, 0f, CWRUtils.EaseOutCubic(nameT));
+                cachedNameAlpha = VaultUtils.EaseOutCubic(nameT);
+                cachedNameScale = MathHelper.Lerp(0.3f, 1f, VaultUtils.EaseOutBack(nameT));
+                cachedNameYOffset = MathHelper.Lerp(30f, 0f, VaultUtils.EaseOutCubic(nameT));
             }
             else if (SwitchAnimProgress < holdEnd) {
                 //悬停
@@ -93,13 +93,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 //淡出+上升
                 float t = (SwitchAnimProgress - holdEnd) / (fadeOutEnd - holdEnd);
                 cachedAlpha = 1f - t;
-                cachedScale = MathHelper.Lerp(1.5f, 2f, CWRUtils.EaseInCubic(t));
-                cachedYOffset = MathHelper.Lerp(0f, 20f, CWRUtils.EaseInCubic(t));
+                cachedScale = MathHelper.Lerp(1.5f, 2f, VaultUtils.EaseInCubic(t));
+                cachedYOffset = MathHelper.Lerp(0f, 20f, VaultUtils.EaseInCubic(t));
 
                 //名称动画 - 淡出并上升
-                cachedNameAlpha = MathHelper.Lerp(1f, 0f, CWRUtils.EaseInCubic(t));
-                cachedNameScale = MathHelper.Lerp(1f, 1.3f, CWRUtils.EaseInCubic(t));
-                cachedNameYOffset = MathHelper.Lerp(0f, -15f, CWRUtils.EaseInCubic(t));
+                cachedNameAlpha = MathHelper.Lerp(1f, 0f, VaultUtils.EaseInCubic(t));
+                cachedNameScale = MathHelper.Lerp(1f, 1.3f, VaultUtils.EaseInCubic(t));
+                cachedNameYOffset = MathHelper.Lerp(0f, -15f, VaultUtils.EaseInCubic(t));
             }
 
             //计算光环旋转

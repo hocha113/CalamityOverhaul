@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
             //更新光环
             float progress = Timer / GatherDuration;
-            auraRadius = MathHelper.Lerp(0f, 400f, CWRUtils.EaseOutCubic(progress));
+            auraRadius = MathHelper.Lerp(0f, 400f, VaultUtils.EaseOutCubic(progress));
             auraIntensity = MathHelper.Lerp(0f, 1f, progress);
 
             //生成环境粒子
@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             float progress = Timer / AbsorbDuration;
 
             //光环收缩
-            auraRadius = MathHelper.Lerp(400f, 0f, CWRUtils.EaseInCubic(progress));
+            auraRadius = MathHelper.Lerp(400f, 0f, VaultUtils.EaseInCubic(progress));
             auraIntensity = MathHelper.Lerp(1f, 0.3f, progress);
 
             //强化的吸收粒子
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             Vector2 control1 = StartPosition + new Vector2(0, -200f);
             Vector2 control2 = mid + new Vector2(Main.rand.NextFloat(-100f, 100f), -300f);
 
-            Position = CWRUtils.CubicBezier(Progress, StartPosition, control1, control2, targetPos);
+            Position = VaultUtils.CubicBezier(Progress, StartPosition, control1, control2, targetPos);
 
             //旋转
             Rotation += 0.05f;

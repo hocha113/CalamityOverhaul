@@ -1263,7 +1263,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (progress <= 0f) {
                 return Rectangle.Empty;
             }
-            float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
+            float eased = closing ? VaultUtils.EaseInCubic(progress) : VaultUtils.EaseOutBack(progress);
             float width = ScaledPanelWidth;
             float height = ScaledPanelHeight;
             Vector2 panelOrigin = new(width / 2f, height);
@@ -1523,7 +1523,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             float switchEase = speakerSwitchProgress;
             if (switchEase < 1f) {
-                switchEase = CWRUtils.EaseOutCubic(switchEase);
+                switchEase = VaultUtils.EaseOutCubic(switchEase);
             }
 
             float portraitAppearScale = MathHelper.Lerp(PortraitScaleMin, PortraitScaleMax, switchEase);
@@ -2251,7 +2251,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (progress <= 0f) {
                 return;
             }
-            float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
+            float eased = closing ? VaultUtils.EaseInCubic(progress) : VaultUtils.EaseOutBack(progress);
             float width = ScaledPanelWidth;
             float height = ScaledPanelHeight;
             Vector2 panelOrigin = new(width / 2f, height);

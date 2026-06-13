@@ -837,7 +837,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             int tier = (int)CurrentTier;
 
             //计算过渡效果
-            float transitionEase = CWRUtils.EaseOutCubic(tierTransitionProgress);
+            float transitionEase = VaultUtils.EaseOutCubic(tierTransitionProgress);
 
             //绘制着色器领域
             DrawBrimstoneDomainShader(sb, center, time, tier, transitionEase);

@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return false;
         }
         public override bool On_ModifyWeaponDamage(Item item, Player player, ref StatModifier damage) {
-            CWRUtils.ModifyLegendWeaponDamageFunc(item, GetOnDamage(item), GetStartDamage, ref damage);
+            VaultUtils.ApplyWeaponDamageScaling(item, GetOnDamage(item), GetStartDamage, ref damage);
             return false;
         }
 

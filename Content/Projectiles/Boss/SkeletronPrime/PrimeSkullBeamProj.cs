@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         private static float MaxWidth => 64f;
 
         private ref float Timer => ref Projectile.localAI[0];
-        private NPC Head => CWRUtils.GetNPCInstance((int)Projectile.ai[0]);
+        private NPC Head => ((int)Projectile.ai[0]).TryGetNPC(out NPC n) ? n : null;
 
         private float beamWidth;
         private float beamLength;
@@ -80,12 +80,12 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             float collapseStart = TotalLife - CollapseTime;
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
-                beamWidth = MathHelper.Lerp(3f, MaxWidth, CWRUtils.EaseOutCubic(t));
-                beamLength = MathHelper.Lerp(0f, MaxBeamLength, CWRUtils.EaseOutQuad(t));
+                beamWidth = MathHelper.Lerp(3f, MaxWidth, VaultUtils.EaseOutCubic(t));
+                beamLength = MathHelper.Lerp(0f, MaxBeamLength, VaultUtils.EaseOutQuad(t));
             }
             else if (Timer >= collapseStart) {
                 float t = (Timer - collapseStart) / CollapseTime;
-                beamWidth = MathHelper.Lerp(MaxWidth, 0f, CWRUtils.EaseInQuad(t));
+                beamWidth = MathHelper.Lerp(MaxWidth, 0f, VaultUtils.EaseInQuad(t));
                 beamLength = MaxBeamLength;
             }
             else {

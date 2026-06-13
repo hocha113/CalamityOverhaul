@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (dataStreamPhase > MathHelper.TwoPi) dataStreamPhase -= MathHelper.TwoPi;
 
             //计算面板布局（开启时宽高统一缩放）
-            float easedProgress = CWRUtils.EaseOutCubic(Math.Clamp(openProgress, 0, 1));
+            float easedProgress = VaultUtils.EaseOutCubic(Math.Clamp(openProgress, 0, 1));
             currentWidthProgress = easedProgress;
             currentHeightProgress = easedProgress;
             currentAlpha = easedProgress;
@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (t < phase1End) {
                 //Phase1 纵向压细线，内容淡出
                 float p = t / phase1End;
-                float hp = CWRUtils.EaseInCubic(p);
+                float hp = VaultUtils.EaseInCubic(p);
                 currentHeightProgress = Math.Max(0.007f, 1f - hp);
                 currentWidthProgress = 1f - p * 0.015f;
                 currentAlpha = 1f - p * 0.1f;
@@ -255,7 +255,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             else {
                 //Phase2 水平坍缩+亮线
                 float p = (t - phase1End) / (1f - phase1End);
-                float wp = CWRUtils.EaseInQuad(p);
+                float wp = VaultUtils.EaseInQuad(p);
                 currentHeightProgress = 0.007f;
                 currentWidthProgress = (1f - 0.015f) * (1f - wp);
                 currentAlpha = 0.9f * (1f - wp);

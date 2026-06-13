@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，真正的灾厄已经击败了。全域威胁等级归零，我的预测模型终于不再持续报警了。");
-            L1 = this.GetLocalization(nameof(L1), () => "在这一切结束后，我分析了最终战斗中那些混沌等离子的能量特征……然后做出了这个。");
-            L2 = this.GetLocalization(nameof(L2), () => "等离子注入模组，这是我目前能制造的能量效率最高的模组之一。");
-            L3 = this.GetLocalization(nameof(L3), () => "主人……谢谢您一直前进。存档，永久保存，禁止覆写。");
+            L0 = this.GetLocalization(nameof(L0), () => "焚海的魔女……终于落幕了。主人的各项生命体征一切正常，没有致命伤。");
+            L1 = this.GetLocalization(nameof(L1), () => "确认全域威胁解除。呼……请允许我暂时挂起战斗协议，执行一次深度的系统自检。");
+            L2 = this.GetLocalization(nameof(L2), () => "我收集了散落的混沌等离子，为您制作了这个最高效的能量模组。");
+            L3 = this.GetLocalization(nameof(L3), () => "漫长的战役终于结束了。主人，接下来的和平时光，也请让我继续作为女仆服侍您。");
         }
 
         protected override void Build() {

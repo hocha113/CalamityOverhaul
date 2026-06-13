@@ -497,12 +497,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
                 //阶段划分：爆发 -> 滑行延伸 -> 减速准备回程
                 float launchT = MathHelper.Clamp(Time / (float)LaunchPhaseFrames, 0f, 1f);
-                float launchSpeedFactor = CWRUtils.EaseOutCubic(launchT); //爆发上升
+                float launchSpeedFactor = VaultUtils.EaseOutCubic(launchT); //爆发上升
                 float currentLaunchSpeed = MathHelper.Lerp(BaseSpeed, PeakLaunchSpeed, launchSpeedFactor);
 
                 float cruisePhase = MathHelper.Clamp((Time - LaunchPhaseFrames) / (TotalThrowFrames - LaunchPhaseFrames), 0f, 1f);
-                float cruiseEase = CWRUtils.EaseOutQuad(cruisePhase);
-                float distanceFactor = CWRUtils.EaseOutExpo(ThrowProgress);
+                float cruiseEase = VaultUtils.EaseOutQuad(cruisePhase);
+                float distanceFactor = VaultUtils.EaseOutExpo(ThrowProgress);
 
                 //弧线偏移：以到鼠标方向法线做侧向偏移（力量感：外抛弧）
                 Vector2 lateral = toMouseDir.RotatedBy(MathHelper.PiOver2 * Owner.direction);
@@ -522,7 +522,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
             else { //Returning
                 ReturnProgress = MathHelper.Clamp(ReturnProgress + 0.022f, 0f, 1f);
-                float ease = CWRUtils.EaseInQuad(ReturnProgress) * 0.35f + CWRUtils.EaseInOutBack(ReturnProgress) * 0.65f;
+                float ease = VaultUtils.EaseInQuad(ReturnProgress) * 0.35f + VaultUtils.EaseInOutBack(ReturnProgress) * 0.65f;
                 float speed = MathHelper.Lerp(BaseSpeed * 0.5f, ReturnMaxSpeed, ease);
                 Vector2 desiredVel = centerToPlayer.SafeNormalize(Vector2.Zero) * speed;
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.30f + 0.25f * (1f - ReturnProgress));

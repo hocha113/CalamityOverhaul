@@ -70,14 +70,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑......");
             Line2 = this.GetLocalization(nameof(Line2), () => "过去的身影都消失了......这些火......是在封锁过去？！");
-            Line3 = this.GetLocalization(nameof(Line3), () => "这火从过去一直燃烧到现在......这个女巫......她的力量果然不是普通的魔法");
-            Line4 = this.GetLocalization(nameof(Line4), () => "刚才的战斗一直在隐藏吗，不过就算是这种力量的对抗，我也有信心再让你死一遍");
+            Line3 = this.GetLocalization(nameof(Line3), () => "这个女巫......她的力量果然不是普通的魔法");
+            Line4 = this.GetLocalization(nameof(Line4), () => "不过就算是这种力量的对抗，我也有信心再让你死一遍");
             Line5 = this.GetLocalization(nameof(Line5), () => "我不会死......不过，也差不多了");
             Line6 = this.GetLocalization(nameof(Line6), () => "你们做得很好......或许，你们真的是他口中那个值得等待的“时代唯一”");
             Line7 = this.GetLocalization(nameof(Line7), () => "所以，我有最后一件事，想拜托你们");
             Line8 = this.GetLocalization(nameof(Line8), () => "只要这世间的过去与现在，还存有一缕硫磺火，“我”就不会消亡");
             Line9 = this.GetLocalization(nameof(Line9), () => "可我的意识，却会在这无尽的火海中被逐渐磨灭");
-            Line10 = this.GetLocalization(nameof(Line10), () => "如果没有遇到你们，我最多还能撑三十年");
+            Line10 = this.GetLocalization(nameof(Line10), () => "我最多还能撑三十年");
             Line11 = this.GetLocalization(nameof(Line11), () => "......所以，你想让他接替你？");
             Line12 = this.GetLocalization(nameof(Line12), () => "没错，这是唯一的办法");
             Line13 = this.GetLocalization(nameof(Line13), () => "当我的意识彻底消散，整个世界都会被焚尽");

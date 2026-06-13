@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             R2 = this.GetLocalization(nameof(R2), () => "???");
-            L0 = this.GetLocalization(nameof(L0), () => "我差点以为脸要被埋进巢里舀一口");
+            L0 = this.GetLocalization(nameof(L0), () => "我差点以为脸要被埋进蜂蜜里了");
             L1 = this.GetLocalization(nameof(L1), () => "不过，我刚才从地上堆积的蜂蜜里摸到了一条鱼");
             L2 = this.GetLocalization(nameof(L2), () => "给，新鲜还热乎的蜂蜜鱼");
             L3 = this.GetLocalization(nameof(L3), () => "我觉得它非常适合做糖醋鲤鱼");

@@ -43,31 +43,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts
 
         private void LoadLocalization() {
             //召唤文本
-            SummonBossRush = this.GetLocalization(nameof(SummonBossRush), () => "呵……你身上的气息和记忆，让我想起了早已死去的那个人");
-            SummonBossRushWithProverbs = this.GetLocalization(nameof(SummonBossRushWithProverbs), () => "那枚戒指……连我这样的残影，也能感到它的颤动呢");
+            SummonBossRush = this.GetLocalization(nameof(SummonBossRush), () => "……你身上的气息和记忆，让我想起了早已死去的那个人");
+            SummonBossRushWithProverbs = this.GetLocalization(nameof(SummonBossRushWithProverbs), () => "那枚戒指，连我这样的残影，也感到了它的颤动呢");
 
             //开始文本
-            StartBossRush = this.GetLocalization(nameof(StartBossRush), () => "我不过是金源魄的灵异产物……但有的事情，我也必须完成");
+            StartBossRush = this.GetLocalization(nameof(StartBossRush), () => "我不过是金源魄的灵异产物，但有的事情，我也必须完成");
 
             //阶段文本
-            BH2BossRush = this.GetLocalization(nameof(BH2BossRush), () => "你的实力确实不差……但还不够");
-            BH3BossRush = this.GetLocalization(nameof(BH3BossRush), () => "真正的她……早已化作灰烬，随风散在你走过的道路上，呵呵……");
+            BH2BossRush = this.GetLocalization(nameof(BH2BossRush), () => "你的实力确实不差，但还不够");
+            BH3BossRush = this.GetLocalization(nameof(BH3BossRush), () => "往日之影……早已化作灰烬，随风散在你走过的道路上，呵呵……");
             BrothersBossRush = this.GetLocalization(nameof(BrothersBossRush), () => "这些灵魂……是影子的影子。越是复制，越显得悲哀，不是吗？");
-            Phase2BossRush = this.GetLocalization(nameof(Phase2BossRush), () => "即便是被复制的生命……也有需要拼尽全力的理由");
-            BH4BossRush = this.GetLocalization(nameof(BH4BossRush), () => "站住！让我好好称量一下你……到底能否承担一个时代重量！");
-            SeekerRingBossRush = this.GetLocalization(nameof(SeekerRingBossRush), () => "你的力量……与她记忆中的那个人太相似了，是巧合，还是命运？");
-            BH5BossRush = this.GetLocalization(nameof(BH5BossRush), () => "作为灵异产物，我被创造，就是为了迎接今日这场战斗");
-            Sepulcher2BossRush = this.GetLocalization(nameof(Sepulcher2BossRush), () => "最后的试炼就在此刻……让我看看，你是否有资格替她继续前行");
+            Phase2BossRush = this.GetLocalization(nameof(Phase2BossRush), () => "即便是被复制的生命，也有需要拼尽全力的理由");
+            BH4BossRush = this.GetLocalization(nameof(BH4BossRush), () => "站住！");
+            SeekerRingBossRush = this.GetLocalization(nameof(SeekerRingBossRush), () => "你的力量，与她记忆中的那个人太相似了，是巧合吗？");
+            BH5BossRush = this.GetLocalization(nameof(BH5BossRush), () => "我的存在，就是为了迎接今日这场战斗");
+            Sepulcher2BossRush = this.GetLocalization(nameof(Sepulcher2BossRush), () => "最后的试炼就在此刻");
 
             //濒死文本
             Desperation1BossRush = this.GetLocalization(nameof(Desperation1BossRush), () => "即使只是残片……");
-            Desperation2BossRush = this.GetLocalization(nameof(Desperation2BossRush), () => "别以为胜利已定……");
-            Desperation3BossRush = this.GetLocalization(nameof(Desperation3BossRush), () => "呵……影子的寿命，本就脆弱到可笑吗……");
+            Desperation2BossRush = this.GetLocalization(nameof(Desperation2BossRush), () => "别以为胜利已定");
+            Desperation3BossRush = this.GetLocalization(nameof(Desperation3BossRush), () => "呵……影子的寿命，本就脆弱到可笑……");
             Desperation4BossRush = this.GetLocalization(nameof(Desperation4BossRush), () => "你赢了……但她的道路，还远远没有结束");
 
             //战败文本
             Acceptance1BossRush = this.GetLocalization(nameof(Acceptance1BossRush), () => "这大概，就是我的最终归宿吧");
-            Acceptance2BossRush = this.GetLocalization(nameof(Acceptance2BossRush), () => "若是她在此……");
+            Acceptance2BossRush = this.GetLocalization(nameof(Acceptance2BossRush), () => "祝你好运，杂鱼");
         }
 
         public override void SetStaticDefaults() {

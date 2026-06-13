@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             Owner.position.Y -= 0.5f;
 
             //蓄力强度增长
-            ChargeIntensity = CWRUtils.EaseOutCubic(progress);
+            ChargeIntensity = VaultUtils.EaseOutCubic(progress);
             auraIntensity = ChargeIntensity;
             swordGlowIntensity = ChargeIntensity * 1.2f;
 
@@ -677,7 +677,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         public void Update() {
             Life++;
             float progress = Life / (float)MaxLife;
-            Radius = MathHelper.Lerp(0f, MaxRadius, CWRUtils.EaseOutQuad(progress));
+            Radius = MathHelper.Lerp(0f, MaxRadius, VaultUtils.EaseOutQuad(progress));
         }
 
         public bool ShouldRemove() => Life >= MaxLife;

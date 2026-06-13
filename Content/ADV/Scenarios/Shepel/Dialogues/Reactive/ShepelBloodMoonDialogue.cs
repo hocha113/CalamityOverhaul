@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "月球引潮力数据异常，夜间敌意生物密度骤升。血月，确认。");
+                () => "月球引力数据异常，夜间敌对生物密度急剧攀升。已确认为血月。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "传感器有些嘈杂，不过我一直在。注意脚下，主人。");
+                () => "传感器有些嘈杂，但我会一直守在此处。主人，留意脚下。");
         }
 
         protected override void Build() {

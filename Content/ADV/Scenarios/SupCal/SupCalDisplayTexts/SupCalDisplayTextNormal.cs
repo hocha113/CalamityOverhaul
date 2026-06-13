@@ -71,61 +71,61 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts
             //初始化本地化文本 - 使用原版台词作为占位符
 
             //召唤文本
-            SummonText = this.GetLocalization(nameof(SummonText), () => "你享受地狱之旅么？");
-            SummonRematchText = this.GetLocalization(nameof(SummonRematchText), () => "如果你想感受一下四级烫伤的话，你可算是找对人了");
+            SummonText = this.GetLocalization(nameof(SummonText), () => "这硫磺火海……即便是厉鬼也会感到灼痛吧？");
+            SummonRematchText = this.GetLocalization(nameof(SummonRematchText), () => "证明给我看，给我活下去");
 
             //开始文本
-            StartText = this.GetLocalization(nameof(StartText), () => "真奇怪，你应该已经死了才对……");
-            StartRematchText = this.GetLocalization(nameof(StartRematchText), () => "他日若你魂销魄散，你会介意我将你的骨头和血肉融入我的造物中吗？");
+            StartText = this.GetLocalization(nameof(StartText), () => "凡人的躯壳在高温下总是如此脆弱……或者，你能给我点惊喜？");
+            StartRematchText = this.GetLocalization(nameof(StartRematchText), () => "还没被烧尽吗？那便再来一次，直到把你锻造成钢，或者化为灰");
 
             //BH2阶段文本
-            BH2Text = this.GetLocalization(nameof(BH2Text), () => "距离你上次勉强才击败我的克隆体也没过多久那玩意就是个失败品，不是么？");
-            BH2RematchText = this.GetLocalization(nameof(BH2RematchText), () => "你离胜利还差得远着呢");
+            BH2Text = this.GetLocalization(nameof(BH2Text), () => "还没有在烈火中崩溃……你比我想象的要耐烧");
+            BH2RematchText = this.GetLocalization(nameof(BH2RematchText), () => "我承认你有些胆量，但你的水准还差得远着呢");
 
             //BH3阶段文本
-            BH3Text = this.GetLocalization(nameof(BH3Text), () => "你驾驭着强大的力量，但你使用这股力量只为了自己的私欲");
-            BH3RematchText = this.GetLocalization(nameof(BH3RematchText), () => "自我上一次能在如此有趣的靶子假人身上测试我的魔法，已经过了很久了");
+            BH3Text = this.GetLocalization(nameof(BH3Text), () => "你跨越千里寻来，就为了让这副皮囊感受痛楚？");
+            BH3RematchText = this.GetLocalization(nameof(BH3RematchText), () => "上一次降下这种灾厄，已经是上个世纪的事了，你也要试试么？");
 
             //Brothers阶段文本
-            BrothersText = this.GetLocalization(nameof(BrothersText), () => "你想见见我的家人吗？听上去挺可怕，不是么？");
-            BrothersRematchText = this.GetLocalization(nameof(BrothersRematchText), () => "只是单有过去形态的空壳罢了，或许在其中依然残存他们的些许灵魂也说不定");
+            BrothersText = this.GetLocalization(nameof(BrothersText), () => "他们曾为了那条路燃尽了一切……现在，让这些灰烬来称量你吧");
+            BrothersRematchText = this.GetLocalization(nameof(BrothersRematchText), () => "或许只是些许灵魂的空壳罢了，但对付你轻而易举");
 
             //Phase2阶段文本
-            Phase2Text = this.GetLocalization(nameof(Phase2Text), () => "你将痛不欲生");
+            Phase2Text = this.GetLocalization(nameof(Phase2Text), () => "接下来……火焰将不再受控。别死得太快");
             Phase2RematchText = this.GetLocalization(nameof(Phase2RematchText), () => "再一次，我们开始吧");
 
             //BH4阶段文本
-            BH4Text = this.GetLocalization(nameof(BH4Text), () => "别想着逃跑只要你还活着，痛苦就不会离你而去");
-            BH4RematchText = this.GetLocalization(nameof(BH4RematchText), () => "我挺好奇，自我们第一次交手后，你曾否在梦魇中见到过这些？");
+            BH4Text = this.GetLocalization(nameof(BH4Text), () => "别想着逃出我的手心!");
+            BH4RematchText = this.GetLocalization(nameof(BH4RematchText), () => "我很好奇，我们的第一次交手，是否让你长了记性？");
 
             //SeekerRing阶段文本
-            SeekerRingText = this.GetLocalization(nameof(SeekerRingText), () => "一个后起之人，只识杀戮与偷窃，但却以此得到力量我想想，这让我想起了谁……？");
-            SeekerRingRematchText = this.GetLocalization(nameof(SeekerRingRematchText), () => "起码你的技术没有退步");
+            SeekerRingText = this.GetLocalization(nameof(SeekerRingText), () => "你是怎么躲开的？情况不应该这样……给我停下!");
+            SeekerRingRematchText = this.GetLocalization(nameof(SeekerRingRematchText), () => "起码我的眼光没有看错……");
 
             //BH5阶段文本
-            BH5Text = this.GetLocalization(nameof(BH5Text), () => "这场战斗的输赢对你而言毫无意义！那你又有什么理由干涉这一切！");
+            BH5Text = this.GetLocalization(nameof(BH5Text), () => "我承认刚刚的战斗只不过是小打小闹，现在我将全力以赴！");
             BH5RematchText = this.GetLocalization(nameof(BH5RematchText), () => "这难道不令人激动么？");
 
             //Sepulcher2阶段文本
-            Sepulcher2Text = this.GetLocalization(nameof(Sepulcher2Text), () => "我们两人里只有一个可以活下来，但如果那个人是你，这一切还有什么意义？!");
-            Sepulcher2RematchText = this.GetLocalization(nameof(Sepulcher2RematchText), () => "注意一下，那个会自己爬的坟墓来了，这是最后一次");
+            Sepulcher2Text = this.GetLocalization(nameof(Sepulcher2Text), () => "如果我们之中只有一个人可以活下来，你觉得我会希望是谁？");
+            Sepulcher2RematchText = this.GetLocalization(nameof(Sepulcher2RematchText), () => "注意了，那个会自己爬的坟墓来了……它正渴望着新的住客");
 
             //Desperation阶段文本
             Desperation1Text = this.GetLocalization(nameof(Desperation1Text), () => "给我停下！");
-            Desperation2Text = this.GetLocalization(nameof(Desperation2Text), () => "如果我在这里失败，我就再无未来可言");
-            Desperation3Text = this.GetLocalization(nameof(Desperation3Text), () => "一旦你战胜了我，你就只剩下一条道路");
-            Desperation4Text = this.GetLocalization(nameof(Desperation4Text), () => "而那条道路……同样也无未来可言");
+            Desperation2Text = this.GetLocalization(nameof(Desperation2Text), () => "如果我在这里失败，那又有什么意义！");
+            Desperation3Text = this.GetLocalization(nameof(Desperation3Text), () => "你的路已经有人走到了尽头，那是一条死路……你凭什么认为你能不同？！");
+            Desperation4Text = this.GetLocalization(nameof(Desperation4Text), () => "若你只是重复他的疯狂，最终也不过是这些余烬中的一捧新灰罢了！");
 
             //Acceptance阶段文本
-            Acceptance1Text = this.GetLocalization(nameof(Acceptance1Text), () => "哪怕他抛弃了一切，他的力量也不会消失");
-            Acceptance2Text = this.GetLocalization(nameof(Acceptance2Text), () => "我已没有余力去怨恨他了，对你也是如此……");
-            Acceptance3Text = this.GetLocalization(nameof(Acceptance3Text), () => "现在，一切都取决于你");
+            Acceptance1Text = this.GetLocalization(nameof(Acceptance1Text), () => "我把自己烧成了这副非人的模样，只为寻找那一线生机");
+            Acceptance2Text = this.GetLocalization(nameof(Acceptance2Text), () => "唉……我已没有余力站起来了……");
+            Acceptance3Text = this.GetLocalization(nameof(Acceptance3Text), () => "若你成为我这般异类……或许真的能开辟出……我也未曾见过的未来");
 
             //Rematch Desperation阶段文本
-            Desperation1RematchText = this.GetLocalization(nameof(Desperation1RematchText), () => "了不起的表现，我认可你的胜利");
-            Desperation2RematchText = this.GetLocalization(nameof(Desperation2RematchText), () => "毫无疑问，你会遇见比我更加强大的敌人");
-            Desperation3RematchText = this.GetLocalization(nameof(Desperation3RematchText), () => "我相信你不会犯下和他一样的错误");
-            Desperation4RematchText = this.GetLocalization(nameof(Desperation4RematchText), () => "至于你的未来会变成什么样子，我很期待");
+            Desperation1RematchText = this.GetLocalization(nameof(Desperation1RematchText), () => "了不起的表现，你发挥的很好");
+            Desperation2RematchText = this.GetLocalization(nameof(Desperation2RematchText), () => "毫无疑问，你的实力每时每刻都在增长");
+            Desperation3RematchText = this.GetLocalization(nameof(Desperation3RematchText), () => "我多么希望你不会重蹈我们的覆辙");
+            Desperation4RematchText = this.GetLocalization(nameof(Desperation4RematchText), () => "如果你能走出一条新的路，一切都还有希望");
         }
 
         public override void SetStaticDefaults() {

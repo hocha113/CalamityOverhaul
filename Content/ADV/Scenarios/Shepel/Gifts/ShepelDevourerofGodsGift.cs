@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，噬神者……那条东西的运动轨迹跨越了多个维度，我的追踪模型在战斗中途完全失效了。");
-            L1 = this.GetLocalization(nameof(L1), () => "事后我重建了那段跨维度弹道数据，把其中的量子穿透特性做成了一个机匣模组。");
-            L2 = this.GetLocalization(nameof(L2), () => "量子穿透机匣，它赋予了SHPC光束有限的相位穿透能力。");
-            L3 = this.GetLocalization(nameof(L3), () => "数据量……远超正常上限。已完成整理，但处理时间比预期长了很多。");
+            L0 = this.GetLocalization(nameof(L0), () => "能够吞噬神明的巨兽，最终也只是倒在了您的脚下。这片星空的动荡总算是平息了。");
+            L1 = this.GetLocalization(nameof(L1), () => "这种高强度的跨维度追击战，一定让您感到疲惫了吧？请先收起武器，稍微放松一下肩膀。");
+            L2 = this.GetLocalization(nameof(L2), () => "至于战利品，我已经从那些扭曲的空间残骸中，为您提取并适配好了最高效的穿透模组。");
+            L3 = this.GetLocalization(nameof(L3), () => "繁杂的武器升级配置我会处理妥当的。现在，请允许我为您准备一杯茶，我们该休息了。");
         }
 
         protected override void Build() {

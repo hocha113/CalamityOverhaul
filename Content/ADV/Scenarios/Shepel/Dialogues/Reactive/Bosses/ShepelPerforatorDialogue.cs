@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "感染蜂巢摧毁。这批血肉穿刺群体协同起来有点像莓虫，但侵略性强多了。");
+                () => "血肉宿主的威胁已被彻底烧毁。生命体征扫描完毕，确认您没有受到感染。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "生物感染源移除完毕。主人，伤口状态扫描已完成，一切正常，请放心。");
+                () => "那些试图从死角靠近您的威胁，已经被我全部清除了。保护您的安全，是我存在的最高铁则。");
         }
 
         protected override void Build() {

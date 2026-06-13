@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "一团被冰冻的灵魂......温度低到连时间都想躺下来休息");
-            L1 = this.GetLocalization(nameof(L1), () => "你知道吗？寒冷的尽头并非死亡，是一种永恒的静止");
+            L0 = this.GetLocalization(nameof(L0), () => "一团被冰冻的灵魂......");
+            L1 = this.GetLocalization(nameof(L1), () => "在深渊的档案馆里，这种低温通常被用来给那些疯子保鲜");
             L2 = this.GetLocalization(nameof(L2), () => "霜鲦鱼，从冰晶碎片里解冻出来的。它还保持着被冻结时的姿态");
             L3 = this.GetLocalization(nameof(L3), () => "据说吃了它会让你的血液降温，思维变得异常清醒");
-            L4 = this.GetLocalization(nameof(L4), () => "不过别多吃，除非你真的想成为一个冰雕");
+            L4 = this.GetLocalization(nameof(L4), () => "吃多了或许会成为一个冰雕");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);

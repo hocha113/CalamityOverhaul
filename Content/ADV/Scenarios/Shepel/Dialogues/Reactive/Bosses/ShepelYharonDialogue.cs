@@ -17,9 +17,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "Yharim最后的守护者，亚伦龙，已经倒下了。我感应到某种远距离的连接正在断裂。");
+                () => "亚利姆最后的守护者，犽戎，也已陨落。哪怕是龙的烈焰，也无法阻挡您的脚步。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "无论那位传说中的暴君此刻身在何处，他也应该知晓了。主人，请做好最后的准备。");
+                () => "最后的目标就在前方了。主人，请允许我为您整理一下装备……我们一起去迎接最后的决战。");
         }
 
         protected override void Build() {

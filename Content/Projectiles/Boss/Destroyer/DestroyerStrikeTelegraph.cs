@@ -60,13 +60,13 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             }
 
             //锚定到NPC
-            NPC anchor = AnchorNpc >= 0 ? CWRUtils.GetNPCInstance(AnchorNpc) : null;
+            NPC anchor = AnchorNpc.TryGetNPC(out NPC a) ? a : null;
             if (anchor.Alives()) {
                 Projectile.Center = anchor.Center;
             }
 
             //追踪目标
-            Player player = TrackPlayer >= 0 ? CWRUtils.GetPlayerInstance(TrackPlayer) : null;
+            Player player = TrackPlayer.TryGetPlayer(out Player p) ? p : null;
             if (!Locked && player.Alives()) {
                 if (Mode == 1) {
                     float targetRot = (player.Center - Projectile.Center).ToRotation();

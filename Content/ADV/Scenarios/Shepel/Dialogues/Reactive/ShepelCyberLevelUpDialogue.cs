@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "领域层级跃升，主人。干扰范围已扩大。");
+                () => "领域层级提升。安全范围已扩大，扫描精度同步上升。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "新层级的协议正在初始化，预计完成时间：即刻。");
+                () => "我会将所有潜在的致命威胁，统统阻挡在您的视线之外。");
         }
 
         protected override void Build() {

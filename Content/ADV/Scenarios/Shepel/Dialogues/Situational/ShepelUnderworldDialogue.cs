@@ -29,13 +29,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Situational
             V1_Line2 = this.GetLocalization(nameof(V1_Line2),
                 () => "不过地狱的居民大概不关心这个。");
             V2_Line1 = this.GetLocalization(nameof(V2_Line1),
-                () => "这里的建筑痕迹比地表的地牢还要古老，岩浆里泡了这么久也没被侵蚀。");
+                () => "这里的建筑痕迹比地表的地牢还要古老，在岩浆里泡了这么久也没被侵蚀。");
             V2_Line2 = this.GetLocalization(nameof(V2_Line2),
-                () => "用的是什么材料，存档一下，以后有机会研究。");
+                () => "用的是什么材料？存档一下，以后有机会研究。");
             VBloodMoon_Line1 = this.GetLocalization(nameof(VBloodMoon_Line1),
                 () => "血月加地狱，两套警报系统同时运行，有点忙。");
             VBloodMoon_Line2 = this.GetLocalization(nameof(VBloodMoon_Line2),
-                () => "不过数据倒是很丰富。主人注意安全。");
+                () => "不过数据倒是很丰富。主人请多注意安全。");
         }
 
         protected override bool CheckConditions(Player player, ADVSave save)

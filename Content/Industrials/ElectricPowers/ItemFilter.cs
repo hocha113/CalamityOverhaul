@@ -593,7 +593,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     sengs = Math.Max(sengs - 0.18f, 0f);
 
                     //缩放动画
-                    scaleAnimation = CWRUtils.EaseInCubic(sengs);
+                    scaleAnimation = VaultUtils.EaseInCubic(sengs);
                 }
 
                 if (sengs == 0f) {

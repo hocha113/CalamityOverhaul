@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，世纪之花的有机神经网络令我着迷——它能在毫秒内根据威胁方位重新分配感知资源。");
-            L1 = this.GetLocalization(nameof(L1), () => "我花了相当长的时间尝试数字复现这个自适应机制。结果做成了这个瞄准镜。");
-            L2 = this.GetLocalization(nameof(L2), () => "自适应光学模组，它会根据战斗状态动态调整光束的聚焦参数。");
-            L3 = this.GetLocalization(nameof(L3), () => "生物算法在某些地方确实比机械算法更有效率。我记下来了。");
+            L0 = this.GetLocalization(nameof(L0), () => "地下丛林里的藤蔓长得太放肆了，到处都是恼人的倒刺和孢子。");
+            L1 = this.GetLocalization(nameof(L1), () => "那朵食人花伪装得很巧妙，但也不过是一堆等待清理的杂草而已。");
+            L2 = this.GetLocalization(nameof(L2), () => "我改进了瞄具的动态视觉。这下子，那些挡视线的阔叶就再也无法干扰您的判断了。");
+            L3 = this.GetLocalization(nameof(L3), () => "偶尔兼职一下园丁，为您扫清花园里的路障，也是很有趣的工作呢。");
         }
 
         protected override void Build() {

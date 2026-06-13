@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "机械化地牢守卫，原型的强化版本。四臂联动控制系统，有一定战术深度。");
+                () => "机械统帅已被拆解。事实证明，单纯堆砌火力和护甲毫无意义。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "已被主人压制。升级再多，根基的缺陷终究无法掩盖。");
+                () => "它那种死板的家伙，永远无法匹敌您与我之间紧密相连的战术配合。");
         }
 
         protected override void Build() {

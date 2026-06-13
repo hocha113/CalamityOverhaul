@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
             //快速飞向目标位置
-            float easeProgress = CWRUtils.EaseOutCubic(progress);
+            float easeProgress = VaultUtils.EaseOutCubic(progress);
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.5f);
 
             orbitAngle = targetAngle;

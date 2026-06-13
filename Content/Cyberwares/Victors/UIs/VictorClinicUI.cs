@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 dataStreamPhase -= MathHelper.TwoPi;
             }
 
-            float eased = CWRUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
+            float eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
             currentAlpha = eased;
             currentContentAlpha = eased;
 

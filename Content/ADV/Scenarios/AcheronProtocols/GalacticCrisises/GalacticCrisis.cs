@@ -73,19 +73,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.GalacticCrisis
             CrisisIntro2 = this.GetLocalization(nameof(CrisisIntro2),
                 () => "这是正在吞噬银河旋臂的阴影");
             CrisisIntro3 = this.GetLocalization(nameof(CrisisIntro3),
-                () => "它们是星际生态的终结者，虫族。为了阻挡，我已经消耗了数以十万计的星流泰坦");
+                () => "这些阴影由虫群组成。在此之前，我已投入数以百万计的星流泰坦尝试阻截");
             CrisisIntro4 = this.GetLocalization(nameof(CrisisIntro4),
                 () => "数据表明，这是一场必输的拉锯战。它们无穷无尽，而我的资源终将耗尽");
             CrisisIntro5 = this.GetLocalization(nameof(CrisisIntro5),
                 () => "因此，我制定了唯一胜率超过0%的方案");
             CrisisIntro6 = this.GetLocalization(nameof(CrisisIntro6),
-                () => "我将引爆银河系外环至中环带所有宜居星球的地核");
+                () => "引爆从银河外环至中环带，所有星球的地核");
             CrisisIntro7 = this.GetLocalization(nameof(CrisisIntro7),
-                () => "将这数万光年的区域变成毫无生物质的死域，迫使虫群因能量损耗过大而转向临近的仙女座星系");
+                () => "通过将这数万光年化作绝对的死域，切断虫群的补给链，迫使它们因极高的航行损耗而转向临近的河系");
             CrisisIntro8 = this.GetLocalization(nameof(CrisisIntro8),
                 () => "饥饿是宇宙中最强大的驱动力，也最容易被算计。如果我将银河系的资源降低到临界点以下，对于虫群而言，银河系就只是一口空棺材");
             CrisisIntro9 = this.GetLocalization(nameof(CrisisIntro9),
-                () => "泰拉也在清理名单之中。但这不要紧，我会为你提供一艘星际飞船，你的本质不应在这里熄灭");
+                () => "泰拉亦在焦土名单之列。但作为特异点，你的本质不应在此熄灭，我会为你提供撤离的星舰");
 
             //玩家选择拒绝/寻找其他方法
             ChoiceRefuse = this.GetLocalization(nameof(ChoiceRefuse),
@@ -105,11 +105,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.GalacticCrisis
 
             //阶段三：科尔托星系与战术人形登场
             MissionBrief1 = this.GetLocalization(nameof(MissionBrief1),
-                () => "目标是科尔托星系。那里已经沦陷，但虫群并未将其彻底消化");
+                () => "目标是科尔托星系。那里已经沦陷，但虫群尚未将其彻底消化");
             MissionBrief2 = this.GetLocalization(nameof(MissionBrief2),
-                () => "那里的第三行星的地核中，正在生成高纯度的星流矿脉");
+                () => "在其第三行星的地幔中，正在生成极高纯度的星流矿脉");
             MissionBrief3 = this.GetLocalization(nameof(MissionBrief3),
-                () => "决不能让虫族得到它。一旦它们进化出利用星流物质的能力，众神也足以被它们撕碎");
+                () => "决不能让虫族得到它。一旦它们进化出利用星流物质的能力，银河内的局势将变得无法控制");
             MissionBrief4 = this.GetLocalization(nameof(MissionBrief4),
                 () => "你做的很简单，突破虫海，抵达地核，引爆矿脉，彻底摧毁那颗星球");
             MissionBrief5 = this.GetLocalization(nameof(MissionBrief5),
@@ -117,11 +117,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.GalacticCrisis
 
             //战术人形登场（展示机娘立绘的关键节点）
             AndroidReveal1 = this.GetLocalization(nameof(AndroidReveal1),
-                () => "在你之前，我已经派遣了一组先遣队，前往执行此任务");
+                () => "在你之前，我已向该坐标投送了一支先遣队");
             AndroidReveal2 = this.GetLocalization(nameof(AndroidReveal2),
-                () => "她们是基于我的最新技术构建的战术人形，阿蒂丝 与 阿波拉");
+                () => "她们是基于我的最新技术构建的战术人形，阿尔蒂斯 与 阿波利娅");
             AndroidReveal3 = this.GetLocalization(nameof(AndroidReveal3),
-                () => "她们的能力远超旧式机甲，但在科尔托III号星降落后不久，我便失去了她们的信号");
+                () => "她们拥有远超旧式机甲的机动性与逻辑处理能力，但在科尔托III号星降落后不久，我便失去了她们的信号");
             AndroidReveal4 = this.GetLocalization(nameof(AndroidReveal4),
                 () => "最后的数据显示她们仍有生命体征反应，但处于极度危险之中");
             MissionObjective = this.GetLocalization(nameof(MissionObjective),

@@ -259,7 +259,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
 
             float progress = Timer / GatherDuration;
-            auraRadius = MathHelper.Lerp(0f, 300f, CWRUtils.EaseOutCubic(progress));
+            auraRadius = MathHelper.Lerp(0f, 300f, VaultUtils.EaseOutCubic(progress));
             auraIntensity = MathHelper.Lerp(0f, 1f, progress);
 
             if (Timer % 2 == 0) {
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         private void ResetPhaseAI(Player owner) {
             float progress = Timer / ResetDuration;
 
-            auraRadius = MathHelper.Lerp(150f, 0f, CWRUtils.EaseInCubic(progress));
+            auraRadius = MathHelper.Lerp(150f, 0f, VaultUtils.EaseInCubic(progress));
             auraIntensity = MathHelper.Lerp(1.5f, 0.4f, progress);
 
             if (Timer % 1 == 0) {

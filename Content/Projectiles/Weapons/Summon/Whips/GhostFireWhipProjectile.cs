@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
         public override bool PreAI() {
             if (whipPoints.Count - 2 >= 0 && whipPoints.Count - 2 < whipPoints.Count) {
                 Vector2 pos = whipPoints[whipPoints.Count - 2];
-                Player owners = CWRUtils.GetPlayerInstance(Projectile.owner);
+                Projectile.owner.TryGetPlayer(out Player owners);
                 if (owners != null) {
                     float lengs = owners.Center.To(pos).Length();
                     if (lengs > 60) {

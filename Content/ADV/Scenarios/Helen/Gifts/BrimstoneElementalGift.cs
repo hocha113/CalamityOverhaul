@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
         public static LocalizedText L4 { get; private set; }
         public override void SetStaticDefaults() {
             R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            L0 = this.GetLocalization(nameof(L0), () => "硫磺与火焰的化身，她的存在就是一场燃烧的演讲，不过我们还是成功让她闭嘴了");
-            L1 = this.GetLocalization(nameof(L1), () => "有些元素不是被创造的，而是从世界的裂缝中渗出来的愤怒");
-            L2 = this.GetLocalization(nameof(L2), () => "黑曜鱼，熔岩冷却的瞬间凝固产物。它的鳞片比仇恨还要坚硬");
-            L3 = this.GetLocalization(nameof(L3), () => "小心，它可能会在你手里自燃，不是物理上的，而是概念上的");
-            L4 = this.GetLocalization(nameof(L4), () => "毕竟有些愤怒是会传染的");
+            L0 = this.GetLocalization(nameof(L0), () => "她往那里一站就像一场燃烧的演讲，幸好我们成功让她闭嘴了");
+            L1 = this.GetLocalization(nameof(L1), () => "有些元素不是被创造的，而是从世界的裂缝中渗出来的古怪玩意儿");
+            L2 = this.GetLocalization(nameof(L2), () => "黑曜石鱼，熔岩冷却的瞬间凝固产物。它的鳞片比地狱里纠缠的仇恨还要坚硬");
+            L3 = this.GetLocalization(nameof(L3), () => "小心它在你手里自燃，情绪意义上的");
+            L4 = this.GetLocalization(nameof(L4), () => "毕竟愤怒是会传染的");
         }
         protected override void Build() {
             DialogueBoxBase.RegisterPortrait(R1.Value, ADVAsset.HelenADV);

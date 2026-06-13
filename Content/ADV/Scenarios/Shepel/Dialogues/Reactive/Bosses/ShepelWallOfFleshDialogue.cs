@@ -20,11 +20,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues.Reactive.Bosse
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
-                () => "主人，我检测到全域能量基线发生了剧变。整个世界的底层规则正在重构。");
+                () => "检测到世界底层规则正在重构。平衡已被打破，未知的威胁正在涌现。");
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "先前的平衡已打破，新的威胁体系已经就位。我的威胁预测模型需要全面升级。");
+                () => "有更多可怕的东西正在挣脱束缚。主人……您会感到不安吗？");
             Line3 = this.GetLocalization(nameof(Line3),
-                () => "但这也意味着更多的可能。我切换到高戒备模式，随时监控一切异常。");
+                () => "请不必忧虑。无论世界如何异变，我都会死死守在您的身前。");
         }
 
         protected override void Build() {

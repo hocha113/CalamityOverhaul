@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         }
 
         private void DrawHeader(SpriteBatch sb, HalibutSave save, HalibutPlayer hp, float a, float time) {
-            float slide = CWRUtils.EaseOutCubic(headerSlide);
+            float slide = VaultUtils.EaseOutCubic(headerSlide);
             float y = MathHelper.Lerp(-40f, 16f, slide);
             //标题（左侧珍珠标）
             float breath = HalibutTheme.Breath(time, 2.3f, 1.8f);

@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (phase == 0) {//Spawning扩散阶段
                         float spawnProgress = swarmCtrl.PhaseTimer / 25f;
                         currentPos = Vector2.Lerp(centerPoint, centerPoint + targetOffset,
-                            CWRUtils.EaseOutCubic(spawnProgress));
+                            VaultUtils.EaseOutCubic(spawnProgress));
                     }
                     else if (phase == 1) {//Hovering悬浮阶段
                         Vector2 basePos = centerPoint + targetOffset;
@@ -392,7 +392,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         float convergeProgress = swarmCtrl.ConvergenceProgress;
                         Vector2 startPos = centerPoint + targetOffset;
                         currentPos = Vector2.Lerp(startPos, centerPoint,
-                            CWRUtils.EaseInCubic(convergeProgress));
+                            VaultUtils.EaseInCubic(convergeProgress));
                     }
                     else {//Exploding爆炸阶段
                         currentPos = centerPoint;

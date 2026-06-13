@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         }
 
         private Rectangle GetWidgetRect(int index) {
-            float eased = CWRUtils.EaseOutCubic(MathHelper.Clamp(slideProgress, 0f, 1f));
+            float eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(slideProgress, 0f, 1f));
             int w = GetWidgetWidth(index);
             int x = (int)MathHelper.Lerp(-w - 10f, WidgetMarginLeft, eased);
 
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 int? compactH = entry.TrackerStyle?.GetIdleCompactHeight(entry);
                 if (compactH.HasValue) {
                     float cv = entry.TrackerStyle?.GetCompactVisibility(entry) ?? 1f;
-                    cv = CWRUtils.EaseOutCubic(MathHelper.Clamp(cv, 0f, 1f));
+                    cv = VaultUtils.EaseOutCubic(MathHelper.Clamp(cv, 0f, 1f));
                     x = (int)MathHelper.Lerp(-w - 10f, x, cv);
                 }
             }
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             int h = GetWidgetHeight(index);
 
             // 折叠时高度缩到标题行
-            float collapse = CWRUtils.EaseInOutCubic(MathHelper.Clamp(collapseProgress, 0f, 1f));
+            float collapse = VaultUtils.EaseInOutCubic(MathHelper.Clamp(collapseProgress, 0f, 1f));
             int collapsedH = 24;
             h = (int)MathHelper.Lerp(h, collapsedH, collapse);
 

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
                 () => "接口解析完毕。下一项训练：骇客时间。");
             //{0}处会在Build时替换为玩家当前绑定的骇客时间快捷键
             Line2 = this.GetLocalization(nameof(Line2),
-                () => "骇客时间是SHPC专属的神经干预协议。激活后，外部时间流将冻结，你可以从容选择目标并上传定制骇入程序。默认按键是 {0}。");
+                () => "骇客时间是SHPC专属的神经干预协议。激活后，外部时间流将冻结，您可以从容选择目标并上传定制骇入程序。默认按键是 {0}。");
             Line3 = this.GetLocalization(nameof(Line3),
                 () => "前方的测试单元已固定就位。按下 {0} 进入骇客时间，然后点击锁定它。");
         }

@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，亵渎天神倒下的那一刻，有一种远超我量程的能量释放涌入了整个区域的数据流。");
-            L1 = this.GetLocalization(nameof(L1), () => "我花了相当长的时间对那段数据进行脱敏处理，才将其中可用的部分提炼出来。");
-            L2 = this.GetLocalization(nameof(L2), () => "过载能量核，它让SHPC的充能上限大幅提升，代价是热量管理压力也随之增加。");
-            L3 = this.GetLocalization(nameof(L3), () => "神明级能量数据，归档完毕。新的参考系已经建立。");
+            L0 = this.GetLocalization(nameof(L0), () => "天神倒下时释放的热量真是恐怖。");
+            L1 = this.GetLocalization(nameof(L1), () => "主人，请稍微退后几步，剩下的能量收尾和清扫工作请交给我。");
+            L2 = this.GetLocalization(nameof(L2), () => "我将那股四溢的圣火压缩成了这枚小巧的蓄能核心，它能大幅提升您的能量周转率。");
+            L3 = this.GetLocalization(nameof(L3), () => "充能效率非常棒，不过使用时请当心烫手。");
         }
 
         protected override void Build() {

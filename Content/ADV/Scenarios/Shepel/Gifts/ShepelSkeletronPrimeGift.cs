@@ -20,10 +20,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，机械骷髅王在多武装切换时的射频节奏我研究了很久——快速部署、即时火力转换。");
-            L1 = this.GetLocalization(nameof(L1), () => "这种攻击节奏的数学模型比我预想的复杂。最终我把它简化成了一个枪托配置包。");
-            L2 = this.GetLocalization(nameof(L2), () => "突袭枪托模组，攻击速度和快速交战表现都有改善。");
-            L3 = this.GetLocalization(nameof(L3), () => "旧王的骷髅身上居然藏着这么多工程奥秘。");
+            L0 = this.GetLocalization(nameof(L0), () => "挥舞着四条手臂的重型骨架……攻击频率确实很快，但机动逻辑过于死板。");
+            L1 = this.GetLocalization(nameof(L1), () => "它只是在机械地重复行为，根本无法适应您的战术变化。");
+            L2 = this.GetLocalization(nameof(L2), () => "我提炼了它在切换多种武器时的优势，为您优化了武器的突击响应速度。");
+            L3 = this.GetLocalization(nameof(L3), () => "缺乏学习能力的旧式机械，只能沦为我的数据养料。");
         }
 
         protected override void Build() {

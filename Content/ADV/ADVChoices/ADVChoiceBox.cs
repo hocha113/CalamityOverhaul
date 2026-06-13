@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
             // 更新面板矩形
             float progress = closing ? 1f - hideProgress : showProgress;
-            float eased = closing ? CWRUtils.EaseInCubic(progress) : CWRUtils.EaseOutBack(progress);
+            float eased = closing ? VaultUtils.EaseInCubic(progress) : VaultUtils.EaseOutBack(progress);
 
             Vector2 drawPos = anchorPosition - new Vector2(panelSize.X / 2f, panelSize.Y / 2f);
             drawPos.Y += (1f - eased) * 60f;

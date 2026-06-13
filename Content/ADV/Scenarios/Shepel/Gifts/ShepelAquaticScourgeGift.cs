@@ -19,10 +19,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 
         public override void SetStaticDefaults() {
             RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
-            L0 = this.GetLocalization(nameof(L0), () => "主人，深海的光学环境与地表截然不同，折射率、散射模式、能见度阈值全都需要重新标定。");
-            L1 = this.GetLocalization(nameof(L1), () => "我在追踪渊海灾虫的过程中积累了大量水下光学参数。这些数据最终形成了这个模组。");
-            L2 = this.GetLocalization(nameof(L2), () => "全息光学模组，它会在SHPC的瞄准界面叠加一层实时环境光折射补偿。");
-            L3 = this.GetLocalization(nameof(L3), () => "深海战斗的数据价值高于预期，值得的。");
+            L0 = this.GetLocalization(nameof(L0), () => "主人，渊海的水质可真让人头疼。这些飘来飘去的浑浊杂质，实在是太碍眼了。");
+            L1 = this.GetLocalization(nameof(L1), () => "刚才飞溅的酸液弄脏了您的装甲，不过请放心，我已经抢先一步为您清理得干干净净了。");
+            L2 = this.GetLocalization(nameof(L2), () => "另外，为了不让这些深海环境再来捣乱，我稍微花了一点心思，给瞄准镜重新写了一套光学滤镜。");
+            L3 = this.GetLocalization(nameof(L3), () => "毕竟，让您在任何地方都能保持清爽完美的视野，是我最引以为傲的工作之一呢。");
         }
 
         protected override void Build() {

@@ -25,10 +25,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         public override void SetStaticDefaults() {
             OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
-            B1 = this.GetLocalization(nameof(B1), () => "有事就来营地找我");
+            B1 = this.GetLocalization(nameof(B1), () => "……有空就来喝杯茶吧");
             B1_NO = this.GetLocalization(nameof(B1_NO), () => "你先找来我这里吧，认一下路");
-            C1 = this.GetLocalization(nameof(C1), () => "有事");
-            C2 = this.GetLocalization(nameof(C2), () => "我只是钓来玩玩");
+            C1 = this.GetLocalization(nameof(C1), () => "有正事找你");
+            C2 = this.GetLocalization(nameof(C2), () => "我只是想钓着玩玩……");
         }
 
         protected override void Build() {
