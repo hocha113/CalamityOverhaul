@@ -46,9 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         CommandExecute = 17,
     }
 
-    /// <summary>
-    /// 机械骷髅王头部状态接口
-    /// </summary>
+    /// <summary>头部状态接口</summary>
     internal interface IPrimeState : IVaultState<PrimeStateContext>
     {
         PrimeStateIndex StateIndex { get; }
@@ -57,9 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         void OnExit(PrimeStateContext context);
     }
 
-    /// <summary>
-    /// 机械骷髅王头部状态基类
-    /// </summary>
+    /// <summary>头部状态基类</summary>
     internal abstract class PrimeStateBase : VaultState<PrimeStateContext>, IPrimeState
     {
         public override int StateId => (int)StateIndex;
@@ -91,9 +87,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         #region 工具方法
 
-        /// <summary>
-        /// 经典分轴悬停：垂直方向稳定在玩家上方 [vOffset, vThreshold] 区间，水平方向贴近玩家 ±100
-        /// </summary>
+        /// <summary>分轴悬停，垂直 vOffset~vThreshold，水平 ±100</summary>
         protected static void HoverMovement(PrimeStateContext ctx, float vAccel, float vMax,
             float hAccel, float hMax, float decel, int vOffset, int vThreshold) {
             NPC npc = ctx.Npc;

@@ -41,9 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         ViceClapWave = 407,
     }
 
-    /// <summary>
-    /// 机械臂状态基类，提供弹簧物理、瞄准、分轴跟随等共享行为
-    /// </summary>
+    /// <summary>机械臂状态基类，弹簧/瞄准/跟随工具</summary>
     internal abstract class PrimeArmStateBase : VaultState<PrimeArmStateContext>, IVaultState<PrimeArmStateContext>
     {
         public override int StateId => (int)StateIndex;
@@ -73,9 +71,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         #region 工具方法
 
-        /// <summary>
-        /// 弹簧物理移动：刚度+阻尼+限速，速度状态保存在 <see cref="PrimeArmStateContext.SpringVelocity"/> 以跨状态延续
-        /// </summary>
+        /// <summary>弹簧移动，速度存 <see cref="PrimeArmStateContext.SpringVelocity"/> 跨状态延续</summary>
         protected static void SpringMove(PrimeArmStateContext ctx, Vector2 target, float speedMult,
             float stiffness = 0.17f, float damping = 0.83f, float maxSpeed = 29f) {
             Vector2 toTarget = target - ctx.Npc.Center;
@@ -89,11 +85,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ctx.Npc.velocity = velocity;
         }
 
-        /// <summary>
-        /// 伺服式转角：以受限角速度逼近目标角度（经 WrapAngle 取最短弧），
-        /// 呈现机械舵机的匀速步进质感，同时杜绝"绕远路转一整圈"的视觉事故。
-        /// <para>朝向约定：四肢贴图默认垂悬（作用端朝下），指向角度 θ 时 rotation = θ - PiOver2</para>
-        /// </summary>
+        /// <summary>伺服转角，WrapAngle 最短弧匀速步进</summary>
+        /// <para>贴图垂悬：rotation = θ - PiOver2</para>
         protected static void ServoRotate(NPC npc, float targetRotation, float maxStep) {
             float diff = MathHelper.WrapAngle(targetRotation - npc.rotation);
             npc.rotation += MathHelper.Clamp(diff, -maxStep, maxStep);
@@ -123,9 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ServoRotate(npc, targetRotation, smoothness * 1.2f);
         }
 
-        /// <summary>
-        /// 分轴跟随头部锚点（火炮/激光炮的悬浮跟随）
-        /// </summary>
+        /// <summary>分轴跟随头部锚点，火炮/激光悬浮</summary>
         protected static void AnchoredFollow(PrimeArmStateContext ctx, float anchorYTop, float anchorYBottom,
             float anchorXLeft, float anchorXRight) {
             NPC npc = ctx.Npc;
@@ -191,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             }
         }
 
-        /// <summary>到本臂理想待机锚点的距离（用于"飞太远拉回来"的安全网）</summary>
+        /// <summary>到待机锚点距离，拉回过远用</summary>
         protected static float IdleAnchorDistance(PrimeArmStateContext ctx) {
             Vector2 anchor = ctx.Head.Center + new Vector2(-200f * ctx.Side, 230f - ctx.Head.height * 0.5f);
             return ctx.Npc.Distance(anchor);

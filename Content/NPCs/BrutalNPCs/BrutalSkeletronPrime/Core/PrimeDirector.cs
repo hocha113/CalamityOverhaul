@@ -1,10 +1,7 @@
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械骷髅王战斗调参中心。
-    /// <para>全部使用静态属性而非 const：const 会被编译期内联，热重载改值不生效；
-    /// 属性每次求值，改完重载立即可调。</para>
-    /// </summary>
+    /// <summary>战斗调参中心</summary>
+    /// <para>静态属性非 const，热重载可改</para>
     internal static class PrimeDirector
     {
         /// <summary>冲撞/闪现类预警帧数</summary>
@@ -26,11 +23,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         /// <summary>重击后坐 px/帧</summary>
         public static float HeavyRecoil => 35f;
 
+        /// <summary>每缺一臂充能加速</summary>
         public static float MissingLimbChargeBonus => 0.5f;
+        /// <summary>重炮/激光缺臂额外加速</summary>
         public static float MissingHeavyLimbChargeBonus => 1f;
+        /// <summary>死亡模式充能倍率</summary>
         public static float DeathChargeMultiplier => 2f;
+        /// <summary>普通/专家臂充能阈值，帧</summary>
         public static int NormalArmChargeThreshold => 180;
+        /// <summary>大师臂充能阈值，帧</summary>
         public static int MasterArmChargeThreshold => 120;
+        /// <summary>死亡模式臂充能阈值，帧</summary>
         public static int DeathArmChargeThreshold => 60;
 
         public static int GetArmChargeThreshold(bool masterMode, bool death) {

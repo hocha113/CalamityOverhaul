@@ -20,27 +20,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public const int DeathShow = 4;
     }
 
-    /// <summary>
-    /// 机械骷髅王 AI 槽位契约。
-    /// <para>头部（SkeletronPrime 本体 <c>npc.ai[]</c>）：</para>
+    /// <summary>机械骷髅王 ai[] 槽位契约</summary>
+    /// <para>头部 SkeletronPrime <c>npc.ai[]</c>：</para>
     /// <list type="bullet">
-    /// <item><c>ai[0]</c> —— 宏观阶段（<see cref="PrimePhase"/>）</item>
-    /// <item><c>ai[1]</c> —— 保留未用</item>
-    /// <item><c>ai[2]</c> —— 状态机同步槽（<see cref="PrimeStateIndex"/>，由 NpcStateMachine 写入）</item>
-    /// <item><c>ai[3]</c> —— 原版 Mechdusa（机械混合体）标记，禁止占用</item>
+    /// <item><c>ai[0]</c>：宏观阶段 <see cref="PrimePhase"/></item>
+    /// <item><c>ai[1]</c>：战术指令 <see cref="PrimeCommandKind"/>（见 HeadCommandSlot）</item>
+    /// <item><c>ai[2]</c>：状态机槽 <see cref="PrimeStateIndex"/></item>
+    /// <item><c>ai[3]</c>：原版 Mechdusa 标记，禁止占用</item>
     /// </list>
-    /// <para>头部（NPCOverride <c>ai[]</c>）：</para>
+    /// <para>头部 NPCOverride <c>ai[]</c>：</para>
     /// <list type="bullet">
-    /// <item><c>ai[9]</c> —— 编队旋转时钟（每帧自增，机械臂环绕编队共用）</item>
+    /// <item><c>ai[9]</c>：编队旋转时钟，机械臂环绕共用</item>
     /// </list>
-    /// <para>机械臂（<c>npc.ai[]</c>）：</para>
+    /// <para>机械臂 <c>npc.ai[]</c>：</para>
     /// <list type="bullet">
-    /// <item><c>ai[0]</c> —— 原版臂侧 (-1/1)</item>
-    /// <item><c>ai[1]</c> —— 头部 whoAmI</item>
-    /// <item><c>ai[2]</c> —— 状态机同步槽（<see cref="PrimeArmStateIndex"/>）</item>
-    /// <item><c>ai[3]</c> —— 蓄力计时（两端按相同公式确定性自增）</item>
+    /// <item><c>ai[0]</c>：臂侧 -1/1</item>
+    /// <item><c>ai[1]</c>：头部 whoAmI</item>
+    /// <item><c>ai[2]</c>：状态机槽 <see cref="PrimeArmStateIndex"/></item>
+    /// <item><c>ai[3]</c>：蓄力计时，两端确定性自增</item>
     /// </list>
-    /// </summary>
     internal static class PrimeAiSlots
     {
         public const int HeadPhase = 0;
@@ -90,11 +88,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             );
         }
 
-        /// <summary>
-        /// 该机械臂状态是否为"蓄力已可见"的收尾攻击序列（预警环/扇形/光束已写在场上，必须兑现）。
-        /// 单一事实源，两处共用：<see cref="PrimeArm"/> 据此延后编队入列；
-        /// 指挥/指令状态据此推迟冲撞与编队类招式的发动（头部等臂兑现完再动身）
-        /// </summary>
+        /// <summary>收尾蓄力已可见，预警须兑现；<see cref="PrimeArm"/> 延后编队，头部推迟冲撞类招式</summary>
         public static bool IsCommittedArmState(int armStateIndex) {
             return armStateIndex == (int)PrimeArmStateIndex.CannonMortar
                 || armStateIndex == (int)PrimeArmStateIndex.LaserSweep

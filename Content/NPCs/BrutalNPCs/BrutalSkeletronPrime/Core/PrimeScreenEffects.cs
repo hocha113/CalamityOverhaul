@@ -1,11 +1,8 @@
 ﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械骷髅王全屏后处理效果的运行时状态（仅客户端视觉，无网络同步）。
-    /// <para>三类效果各占独立通道、互不覆盖：
-    /// 冲击波环（最多 <see cref="MaxRings"/> 个并发）、冲击帧（单实例）、冲刺热浪（推高-自衰减）。</para>
-    /// <para>状态侧调用 Push*；<see cref="Renders.PrimeScreenEffectRender"/> 每帧调用 <see cref="Update"/> 衰减并消费。</para>
-    /// </summary>
+    /// <summary>机械骷髅王全屏后处理，仅客户端</summary>
+    /// <para>三通道：冲击波环 <see cref="MaxRings"/>、冲击帧单实例、冲刺热浪</para>
+    /// <para>Push* 写入；<see cref="Renders.PrimeScreenEffectRender"/> 调 <see cref="Update"/> 衰减</para>
     internal static class PrimeScreenEffects
     {
         internal const int MaxRings = 3;

@@ -5,12 +5,8 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 登场演出：以 1 点生命自玩家脚下深处升起，悬至高空注能回血，
-    /// 嗡鸣声中再生四条机械臂后正式参战。
-    /// <para>位置推进全程两端确定性 Lerp，不依赖 netUpdate 强同步；
-    /// 生成类副作用（机械臂）仅服务端执行。</para>
-    /// </summary>
+    /// <summary>登场演出，1 血升起注能回血再生四臂</summary>
+    /// <para>Lerp 两端确定性；机械臂生成仅服务端</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Intro, typeof(PrimeStateContext))]
     internal class PrimeIntroState : PrimeStateBase
     {

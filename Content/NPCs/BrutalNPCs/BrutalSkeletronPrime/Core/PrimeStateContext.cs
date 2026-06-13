@@ -4,9 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械骷髅王头部状态上下文，存储状态机运行所需的共享数据
-    /// </summary>
+    /// <summary>头部状态上下文</summary>
     internal class PrimeStateContext : INpcStateContext
     {
         #region 核心引用
@@ -31,10 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public int AttackPhaseIndex { get; set; }
         /// <summary>狂暴阶段固定出招序列索引</summary>
         public int RageAttackIndex { get; set; }
-        /// <summary>
-        /// 死亡演出是否已经播放完毕。<see cref="States.PrimeDeathState"/> 在演出结束时置为 true，
-        /// <see cref="HeadPrimeAI.CheckDead"/> 据此放行真正的死亡（之前一律锁血拦截）
-        /// </summary>
+        /// <summary>死亡演出已完；<see cref="HeadPrimeAI.CheckDead"/> 据此放行真死，此前锁血</summary>
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>由金币枪狂怒进入脱战时为 true，离场时播放嘲讽台词</summary>
         public bool DespawnFromCoinFury { get; set; }

@@ -3,9 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械臂状态上下文。四条机械臂各持一份实例，状态写入、控制器绘制读取
-    /// </summary>
+    /// <summary>机械臂状态上下文，每臂一份</summary>
     internal class PrimeArmStateContext : INpcStateContext
     {
         #region 核心引用
@@ -50,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public int AttackCycle { get; set; }
         #endregion
 
-        /// <summary>仍存活的同伴臂数量缺额（0~3），用于"失去同伴后狂暴化"的数值提升</summary>
+        /// <summary>同伴缺失数 0~3，狂暴化乘算用</summary>
         public int MissingPartnerCount {
             get {
                 int missing = 0;

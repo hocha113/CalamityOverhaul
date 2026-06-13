@@ -4,16 +4,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 机械骷髅王死亡演出运镜——基于 InnoVault 演出时间轴 <see cref="CutsceneClip{TSubject}"/> 实现。
-    /// <para>以死亡演出头部 NPC 作为演出主体，时间轴严格对齐 <see cref="PrimeDeathState"/> 的阶段常量：
-    /// 镜头始终聚焦头部及其正下方（玩家最终被举到此处），缩放单调推进至怒吼顶点、仅终爆才拉开看全景，
-    /// 杜绝中途回拉的"呼吸感"；全程锁定本地玩家操作（围观这场处决）。</para>
-    /// <para>屏幕震动由 <see cref="PrimeDeathPerformancePlayer.RequestShake"/> 按演出事件请求，转交本演出叠加。</para>
-    /// </summary>
+    /// <summary>死亡演出运镜，<see cref="CutsceneClip{TSubject}"/> 对齐 <see cref="PrimeDeathState"/> 阶段帧</summary>
+    /// <para>聚焦头部正下方，缩放单调推至怒吼、终爆才拉开；全程 InputLock</para>
+    /// <para>震动经 <see cref="PrimeDeathPerformancePlayer.RequestShake"/> 叠加</para>
     internal sealed class PrimeDeathCutscene : CutsceneClip<NPC>
     {
-        //死亡演出运镜优先级——高于普通演出，处决过场不应被其它运镜打断
+        //死亡演出运镜优先级，高于普通演出
         public override int Priority => 100;
 
         public override bool CanPlay(Player player, NPC subject)
@@ -22,8 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         protected override void BuildTimeline(CutsceneTimeline timeline) {
             timeline.Duration = PrimeDeathState.PhaseFinaleEnd;
 
-            //聚焦点始终围绕头部及其正下方，不去追远处玩家，避免镜头来回甩动；
-            //偏移随阶段单调下移（玩家被逐步举到头部正前方），由运镜运行时平滑插值吸收突变
+            //聚焦头部正下方，偏移随阶段单调下移
             timeline
                 .Add(CameraFocusTrack.Follow(0, PrimeDeathState.PhaseFakeDeathEnd,
                     HeadCenter, new Vector2(0f, 0f), 0.045f))
