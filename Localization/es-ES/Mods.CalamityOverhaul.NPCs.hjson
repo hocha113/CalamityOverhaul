@@ -1,17 +1,17 @@
 Victor: {
-	// DisplayName: Victor
-	// Bestiary: A ripperdoc washed up on these shores, hauling a whole body's worth of cybernetic implants on his back. They say he can trade anyone's flesh for steel and current - so long as you can pay the price.
-	// TalkHint: Talk to Victor
-	// Name0: Victor
+	DisplayName: Médico cibernético
+	Bestiary: Un médico cibernético que llegó a estas tierras, cargando en la espalda suficientes implantes cibernéticos para armar un cuerpo entero. Dicen que puede cambiar la carne de cualquiera por acero y corriente eléctrica, siempre que puedas pagar el precio.
+	TalkHint: Hablar con Víctor
+	Name0: Víctor
 
 	TownNPCMood: {
-		// Content: 我很满足。
-		// NoHome: 我讨厌没有家。
-		// FarFromHome: 我离家太远了。
-		// LoveSpace: 我非常喜欢有这么大的空间。
-		// DislikeCrowded: 我不喜欢这么拥挤。
-		// HateCrowded: 我讨厌这么拥挤。
-		// LikeNPC_Princess: 我喜欢 {NPCName}。
-		// Princess_LovesNPC: 我喜欢 {NPCName}。
+		Content: Estoy satisfecho.
+		NoHome: Odio no tener hogar.
+		FarFromHome: Estoy demasiado lejos de casa.
+		LoveSpace: Me encanta tener tanto espacio.
+		DislikeCrowded: No me gusta que esté tan lleno.
+		HateCrowded: Odio que esté tan lleno.
+		LikeNPC_Princess: Me gusta {NPCName}.
+		Princess_LovesNPC: Me gusta {NPCName}.
 	}
 }
