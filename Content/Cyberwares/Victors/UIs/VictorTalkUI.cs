@@ -15,8 +15,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
     /// <summary>
     /// Victor 的交流界面：右键 Victor 打开。
-    /// <br/>采用贴底的赛博对话条（不遮挡主视野），复用 <see cref="EffectLoader.CyberwarePanel"/> 着色器背景，
-    /// 左侧 Victor 立绘、中部打字机台词、右侧功能选项（义体诊所 / 闲聊 / 离开）
+    /// <br/>贴底赛博对话条（不遮挡主视野），复用 <see cref="EffectLoader.CyberwarePanel"/> 着色器背景，
+    /// 左侧全息立绘、中部姓名 + 打字机台词、右侧命令行式功能选项（义体诊所 / 闲聊 / 离开）
     /// </summary>
     internal class VictorTalkUI : UIHandle, ILocalizedModType
     {
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         private static Asset<Texture2D> portraitAsset;
 
         private string currentDialogue = string.Empty;
-        private float revealed;//打字机已显示字符数
+        private float revealed;
         private int totalChars;
 
         private Rectangle barRect;
@@ -65,6 +65,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         private Rectangle leaveBtnRect;
         private Rectangle closeBtnRect;
         private bool clinicHover, chatHover, leaveHover, closeHover;
+        private float clinicT, chatT, leaveT;
 
         private readonly CyberPanelRenderer panelRenderer = new();
 
@@ -80,32 +81,31 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         private bool FullyRevealed => revealed >= totalChars;
 
         private void Layout() {
-            int barW = (int)MathHelper.Clamp(Main.screenWidth - 120, 640, 1180);
-            const int barH = 196;
+            int barW = (int)MathHelper.Clamp(Main.screenWidth - 120, 760, 1240);
+            const int barH = 214;
             int x = (Main.screenWidth - barW) / 2;
 
-            //贴底滑入
             float ease = CWRUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
-            int baseY = Main.screenHeight - barH - 30;
-            int y = baseY + (int)((1f - ease) * (barH + 40));
+            int baseY = Main.screenHeight - barH - 28;
+            int y = baseY + (int)((1f - ease) * (barH + 44));
             barRect = new Rectangle(x, y, barW, barH);
 
-            const int pad = 16;
-            int portW = (int)((barH - pad * 2) * 0.72f);
-            portraitRect = new Rectangle(barRect.X + pad, barRect.Y + pad, portW, barH - pad * 2);
+            const int pad = 18;
+            int portH = barH - pad * 2;
+            int portW = (int)(portH * 0.74f);
+            portraitRect = new Rectangle(barRect.X + pad, barRect.Y + pad, portW, portH);
 
-            const int choiceW = 268;
-            const int choiceH = 44;
-            const int choiceGap = 10;
+            const int choiceW = 330;
             int choiceX = barRect.Right - pad - choiceW;
-            int choiceBlockH = choiceH * 3 + choiceGap * 2;
-            int choiceY = barRect.Y + (barH - choiceBlockH) / 2;
-            clinicBtnRect = new Rectangle(choiceX, choiceY, choiceW, choiceH);
-            chatBtnRect = new Rectangle(choiceX, choiceY + choiceH + choiceGap, choiceW, choiceH);
-            leaveBtnRect = new Rectangle(choiceX, choiceY + (choiceH + choiceGap) * 2, choiceW, choiceH);
+            const int rowH = 58;
+            int blockH = rowH * 3;
+            int rowY = barRect.Y + (barH - blockH) / 2;
+            clinicBtnRect = new Rectangle(choiceX, rowY, choiceW, rowH);
+            chatBtnRect = new Rectangle(choiceX, rowY + rowH, choiceW, rowH);
+            leaveBtnRect = new Rectangle(choiceX, rowY + rowH * 2, choiceW, rowH);
 
-            int textX = portraitRect.Right + 20;
-            textRect = new Rectangle(textX, barRect.Y + pad, choiceX - 18 - textX, barH - pad * 2);
+            int textX = portraitRect.Right + 28;
+            textRect = new Rectangle(textX, barRect.Y + pad, choiceX - 18 - textX, portH);
 
             closeBtnRect = CyberPanelRenderer.GetCloseButtonRect(barRect);
         }
@@ -119,14 +119,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
 
-            //推进打字机
             if (!FullyRevealed) {
                 revealed += 0.9f;
             }
 
             if (barRect.Contains(MousePoint)) {
                 player.mouseInterface = true;
-                //点击对话条空白处直接显示完整台词
                 if (keyLeftPressState == KeyPressState.Pressed && !FullyRevealed
                     && !clinicBtnRect.Contains(MousePoint) && !chatBtnRect.Contains(MousePoint)
                     && !leaveBtnRect.Contains(MousePoint) && !closeBtnRect.Contains(MousePoint)) {
@@ -143,22 +141,29 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 }
             }
 
-            if (HandleButton(clinicBtnRect, ref clinicHover)) {
+            UpdateHover(clinicBtnRect, ref clinicHover, ref clinicT);
+            UpdateHover(chatBtnRect, ref chatHover, ref chatT);
+            UpdateHover(leaveBtnRect, ref leaveHover, ref leaveT);
+
+            if (clinicHover && keyLeftPressState == KeyPressState.Pressed) {
+                Click();
                 Close();
                 VictorClinicUI.Instance.Open();
                 return;
             }
-            if (HandleButton(chatBtnRect, ref chatHover)) {
-                PickDialogue();//换一句台词
+            if (chatHover && keyLeftPressState == KeyPressState.Pressed) {
+                Click();
+                PickDialogue();
                 return;
             }
-            if (HandleButton(leaveBtnRect, ref leaveHover)) {
+            if (leaveHover && keyLeftPressState == KeyPressState.Pressed) {
+                Click();
                 Close();
                 return;
             }
         }
 
-        private bool HandleButton(Rectangle rect, ref bool hover) {
+        private void UpdateHover(Rectangle rect, ref bool hover, ref float t) {
             bool now = rect.Contains(MousePoint);
             if (now && !hover) {
                 SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.4f });
@@ -166,13 +171,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             hover = now;
             if (now) {
                 player.mouseInterface = true;
-                if (keyLeftPressState == KeyPressState.Pressed) {
-                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
-                    return true;
-                }
             }
-            return false;
+            t = MathHelper.Clamp(t + (now ? 0.18f : -0.18f), 0f, 1f);
         }
+
+        private static void Click() => SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.3f });
 
         public override void Draw(SpriteBatch spriteBatch) {
             if (!IsOpen && OpenProgress.Current <= 0.001f) {
@@ -181,72 +184,73 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             Layout();
             float alpha = MathHelper.Clamp(OpenProgress.Current, 0f, 1f);
 
-            //赛博红面板着色器背景（轻量模式），其内部自行处理 End/Begin 并留下 PointClamp 批次
             CyberPanelRenderer.DrawShaderBackground(spriteBatch, alpha * 0.97f, barRect, Vector2.Zero, 0f, mode: 1);
             CyberPanelRenderer.DrawFrameDecor(spriteBatch, alpha, barRect, GlobalTimer);
 
             Texture2D px = CWRAsset.Placeholder_White.Value;
-            DrawPortrait(spriteBatch, px, alpha);
-            DrawDialogue(spriteBatch, alpha);
 
-            DrawChoice(spriteBatch, px, clinicBtnRect, ClinicButtonText.Value, clinicHover, alpha, CyberwareTheme.Accent);
-            DrawChoice(spriteBatch, px, chatBtnRect, ChatButtonText.Value, chatHover, alpha, CyberwareTheme.AccentCyan);
-            DrawChoice(spriteBatch, px, leaveBtnRect, LeaveButtonText.Value, leaveHover, alpha, CyberwareTheme.TextDim);
+            DrawPortrait(spriteBatch, px, alpha);
+            VictorUIStyle.DrawVDivider(spriteBatch, portraitRect.Right + 13, barRect.Y + 14, barRect.Bottom - 14, CyberwareTheme.Accent * (alpha * 0.5f));
+            DrawTextBlock(spriteBatch, px, alpha);
+            VictorUIStyle.DrawVDivider(spriteBatch, clinicBtnRect.X - 14, barRect.Y + 14, barRect.Bottom - 14, CyberwareTheme.Accent * (alpha * 0.4f));
+
+            DrawChoiceRow(spriteBatch, clinicBtnRect, ClinicButtonText.Value, clinicT, alpha, CyberwareTheme.Accent);
+            DrawChoiceRow(spriteBatch, chatBtnRect, ChatButtonText.Value, chatT, alpha, CyberwareTheme.AccentCyan);
+            DrawChoiceRow(spriteBatch, leaveBtnRect, LeaveButtonText.Value, leaveT, alpha, CyberwareTheme.AccentGold);
 
             panelRenderer.DrawCloseButton(spriteBatch, alpha, barRect, closeHover);
         }
 
         private void DrawPortrait(SpriteBatch sb, Texture2D px, float alpha) {
-            //立绘内嵌框
-            sb.Draw(px, portraitRect, CyberwareTheme.SectionBg * (alpha * 0.92f));
-            DrawRectBorder(sb, px, portraitRect, CyberwareTheme.Accent * (alpha * 0.5f), 1);
+            VictorUIStyle.DrawHoloFrame(sb, portraitRect, CyberwareTheme.Accent, alpha, GlobalTimer);
 
             portraitAsset ??= ModContent.Request<Texture2D>(
                 "CalamityOverhaul/Content/Cyberwares/Victors/Victor", AssetRequestMode.ImmediateLoad);
             Texture2D tex = portraitAsset?.Value;
             if (tex != null) {
                 int frameH = tex.Height / Victor.FrameCount;
-                Rectangle src = new(0, 0, tex.Width, frameH);//站立帧
-                float sc = Math.Min((portraitRect.Width - 18f) / src.Width, (portraitRect.Height - 18f) / src.Height);
-                //脚部对齐底框，整体上抬一点
-                Vector2 anchor = new(portraitRect.Center.X, portraitRect.Bottom - 8);
-                sb.Draw(tex, anchor, src, Color.White * alpha, 0f,
-                    new Vector2(src.Width / 2f, src.Height), sc, SpriteEffects.None, 0f);
+                Rectangle src = new(0, 0, tex.Width, frameH);
+                float sc = Math.Min((portraitRect.Width - 20f) / src.Width, (portraitRect.Height - 22f) / src.Height);
+                Vector2 anchor = new(portraitRect.Center.X, portraitRect.Bottom - 10);
+                sb.Draw(tex, anchor, src, Color.White * alpha, 0f, new Vector2(src.Width / 2f, src.Height), sc, SpriteEffects.None, 0f);
             }
-
-            //名牌
-            string name = SpeakerName.Value;
-            float ns = 0.5f * CyberwareTheme.FontScale;
-            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(name) * ns;
-            Vector2 namePos = new(portraitRect.X, portraitRect.Y - 2);
-            sb.Draw(px, new Rectangle((int)namePos.X - 4, (int)namePos.Y, (int)nameSize.X + 12, (int)nameSize.Y + 2),
-                CyberwareTheme.BgPanel * (alpha * 0.7f));
-            sb.Draw(px, new Rectangle((int)namePos.X - 4, (int)namePos.Y, 3, (int)nameSize.Y + 2), CyberwareTheme.Accent * alpha);
-            Utils.DrawBorderString(sb, name, namePos + new Vector2(4, 1), CyberwareTheme.Accent * alpha, ns);
         }
 
-        private void DrawDialogue(SpriteBatch sb, float alpha) {
+        private void DrawTextBlock(SpriteBatch sb, Texture2D px, float alpha) {
+            //姓名抬头
+            string name = SpeakerName.Value;
+            float nameScale = 0.82f * CyberwareTheme.FontScale;
+            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(name) * nameScale;
+            float nameY = textRect.Y + 2f;
+            sb.Draw(px, new Rectangle(textRect.X, (int)nameY + 3, 4, (int)nameSize.Y - 4), CyberwareTheme.Accent * alpha);
+            Utils.DrawBorderString(sb, name, new Vector2(textRect.X + 12, nameY), CyberwareTheme.Accent * alpha, nameScale);
+            int divY = (int)(nameY + nameSize.Y + 6f);
+            VictorUIStyle.DrawHDivider(sb, textRect.X, textRect.Right, divY, CyberwareTheme.Accent * (alpha * 0.5f));
+
             if (string.IsNullOrEmpty(currentDialogue)) {
                 totalChars = 0;
                 return;
             }
 
-            float ds = 0.46f * CyberwareTheme.FontScale;
-            string[] lines = Utils.WordwrapString(currentDialogue, FontAssets.MouseText.Value,
-                (int)(textRect.Width / ds), 10, out _);
-
-            //统计总字符（用于打字机与"已完成"判定）
+            float ds = 0.62f * CyberwareTheme.FontScale;
+            string[] lines = Utils.WordwrapString(currentDialogue, FontAssets.MouseText.Value, (int)(textRect.Width / ds), 8, out _);
             int total = 0;
+            int lineCount = 0;
             foreach (string l in lines) {
                 if (!string.IsNullOrEmpty(l)) {
                     total += l.Length;
+                    lineCount++;
                 }
             }
             totalChars = total;
 
+            float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * ds + 7f;
+            float areaTop = divY + 12f;
+            float blockH = lineCount * lineH;
+            float y = areaTop + Math.Max(0f, (textRect.Bottom - areaTop - blockH) / 2f);
+
             int budget = (int)revealed;
-            float lineHeight = FontAssets.MouseText.Value.MeasureString("A").Y * ds + 6f;
-            float y = textRect.Y + 4f;
+            float lastY = y;
             foreach (string line in lines) {
                 if (string.IsNullOrEmpty(line)) {
                     continue;
@@ -258,40 +262,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 string seg = take >= line.Length ? line : line[..take];
                 Utils.DrawBorderString(sb, seg, new Vector2(textRect.X, y), CyberwareTheme.TextBright * alpha, ds);
                 budget -= line.Length;
-                y += lineHeight;
+                lastY = y;
+                y += lineH;
             }
 
-            //打字机光标
             if (!FullyRevealed && (int)(GlobalTimer * 2.5f) % 2 == 0) {
-                Utils.DrawBorderString(sb, "_", new Vector2(textRect.X, y - lineHeight + 2f), CyberwareTheme.Accent * alpha, ds);
+                Utils.DrawBorderString(sb, "▌", new Vector2(textRect.X + 2, lastY + lineH * 0.05f), CyberwareTheme.Accent * alpha, ds);
             }
         }
 
-        private static void DrawChoice(SpriteBatch sb, Texture2D px, Rectangle rect, string text, bool hover, float alpha, Color accent) {
-            float hv = hover ? 1f : 0f;
-            Color bg = Color.Lerp(CyberwareTheme.SlotInnerBg, accent, 0.06f + 0.22f * hv) * alpha;
-            sb.Draw(px, rect, bg);
-            Color border = Color.Lerp(CyberwareTheme.SlotBorder, accent, 0.25f + 0.7f * hv) * alpha;
-            DrawRectBorder(sb, px, rect, border, hover ? 2 : 1);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, hover ? 4 : 2, rect.Height), accent * (alpha * (0.5f + 0.5f * hv)));
-
-            float scale = 0.44f * CyberwareTheme.FontScale;
+        private static void DrawChoiceRow(SpriteBatch sb, Rectangle rect, string text, float hoverT, float alpha, Color accent) {
+            int slide = VictorUIStyle.DrawCommandRow(sb, rect, accent, hoverT, alpha);
+            float scale = 0.6f * CyberwareTheme.FontScale;
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text) * scale;
-            Vector2 pos = new(rect.X + 18, rect.Y + (rect.Height - size.Y) / 2f);
-            Color tc = Color.Lerp(CyberwareTheme.TextNormal, CyberwareTheme.TextBright, 0.4f + 0.6f * hv) * alpha;
-            Utils.DrawBorderString(sb, text, pos, tc, scale);
-
-            //右侧箭头提示
-            if (hover) {
-                Utils.DrawBorderString(sb, ">", new Vector2(rect.Right - 22, rect.Y + (rect.Height - size.Y) / 2f), accent * alpha, scale);
-            }
-        }
-
-        private static void DrawRectBorder(SpriteBatch sb, Texture2D px, Rectangle r, Color c, int t) {
-            sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, t), c);
-            sb.Draw(px, new Rectangle(r.X, r.Bottom - t, r.Width, t), c);
-            sb.Draw(px, new Rectangle(r.X, r.Y, t, r.Height), c);
-            sb.Draw(px, new Rectangle(r.Right - t, r.Y, t, r.Height), c);
+            float ty = rect.Y + (rect.Height - size.Y) / 2f;
+            Color tc = Color.Lerp(CyberwareTheme.TextNormal, CyberwareTheme.TextBright, 0.45f + 0.55f * hoverT) * alpha;
+            Utils.DrawBorderString(sb, text, new Vector2(rect.X + 20 + slide, ty), tc, scale);
+            Utils.DrawBorderString(sb, ">", new Vector2(rect.Right - 26 - hoverT * 4f, ty), accent * (alpha * (0.35f + 0.65f * hoverT)), scale);
         }
     }
 }

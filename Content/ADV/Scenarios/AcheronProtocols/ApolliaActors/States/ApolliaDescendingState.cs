@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InnoVault.Cinematics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -34,9 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
 
             //启动尾焰系统——降落全程拖尾
             actor.JetTrailActive = true;
-
-            //启动运镜——参数由 CutsceneCamera.UpdateFocus 每帧自动推导
-            actor.Camera.Start(targetPos, posLerp: 0.03f, zoom: 1f, zoomLerp: 0.02f);
+            //登场运镜由 ApolliaCutscene 驱动，已在 ApolliaActor.StartLandingCutscene 中本地播放
         }
 
         public IApolliaState Update(ApolliaActor actor) {
@@ -161,8 +160,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.7f, Pitch = 0.1f }, actor.Center);
             SoundEngine.PlaySound(SoundID.Item70 with { Volume = 0.5f, Pitch = -0.3f }, actor.Center);
 
-            //屏幕震动——使用运镜系统内置震动，运镜锁定期间生效
-            actor.Camera.Shake(new Vector2(0, 1), intensity: 8f, decay: 0.88f, duration: 25);
+            //着陆震动——叠加到当前 InnoVault 登场运镜上
+            if (CutsceneDirector.CurrentClip is ApolliaCutscene) {
+                CutsceneDirector.Shake(new Vector2(0, 1), 8f, 0.88f, 25);
+            }
 
             if (!VaultUtils.isServer) {
                 Vector2 footPos = actor.Center + new Vector2(0, 20);

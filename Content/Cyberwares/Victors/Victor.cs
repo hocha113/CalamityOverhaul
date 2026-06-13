@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
-using Microsoft.Xna.Framework;
+using CalamityOverhaul.Content.HackTimes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -72,7 +72,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         }
 
         //克苏鲁之眼被击败后，Victor 才会在有空房时入住
-        public override bool CanTownNPCSpawn(int numTownNPCs) => NPC.downedBoss1;
+        public override bool CanTownNPCSpawn(int numTownNPCs) {
+            foreach (var p in Main.ActivePlayers) {
+                if (HackTimeAccess.CanUse(p)) {
+                    return true;
+                }
+            }
+            return NPC.downedBoss1;
+        }
 
         public override List<string> SetNPCNameList() => [
             Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name0"),
@@ -157,10 +164,32 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             local.cursorItemIconID = ItemID.None;
             local.cursorItemIconText = Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.TalkHint");
 
-            if (Main.mouseRight && Main.mouseRightRelease && !VictorTalkUI.Instance.IsOpen) {
+            if (Main.mouseRight && Main.mouseRightRelease && !VictorTalkUI.Instance.IsOpen
+                && !VictorClinicUI.Instance.IsOpen && !VictorSurgery.Active) {
                 Main.mouseRightRelease = false;
+                VictorSession.Bind(NPC.whoAmI);
                 VictorTalkUI.Instance.Open();
                 SoundEngine.PlaySound(SoundID.MenuOpen);
+            }
+        }
+
+        /// <summary>
+        /// 交互/手术期间定身并面向玩家：在原版 Passive AI 之后归零水平速度、锁定面向，避免开界面时仍乱走。
+        /// <br/>以单机/主机为准（被交互实例的本地覆盖），多人非主机可能被服务器同步轻微拉回
+        /// </summary>
+        public override void PostAI() {
+            if (Main.dedServ || VictorSession.BoundWhoAmI != NPC.whoAmI) {
+                return;
+            }
+            if (!VictorSession.IsUIActive && !VictorSurgery.Active) {
+                return;
+            }
+
+            NPC.velocity.X = 0f;
+            Player local = Main.LocalPlayer;
+            if (local != null && local.active) {
+                //贴图默认朝左：玩家在左→朝左(spriteDirection=-1)，玩家在右→朝右(=1)
+                NPC.direction = NPC.spriteDirection = local.Center.X < NPC.Center.X ? -1 : 1;
             }
         }
     }

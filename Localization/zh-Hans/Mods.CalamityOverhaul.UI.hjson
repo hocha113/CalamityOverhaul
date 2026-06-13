@@ -442,6 +442,7 @@ VictorTalkUI: {
 VictorClinicUI: {
 	TitleText: 维克托诊所
 	StatusText: 义体医生在线 —— 选择一个部位
+	GuideText: 选择一个身体部位，查看、更换并购买对应的义体。
 }
 
 SHPCDialogueBox: {

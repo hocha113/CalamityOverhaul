@@ -95,6 +95,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> CyberwareRadialPanel { get; set; }
         public static Asset<Effect> CyberwarePanel { get; set; }
         public static Asset<Effect> CyberwareBulletTime { get; set; }
+        public static Asset<Effect> VictorEyelidTransition { get; set; }
         public static Asset<Effect> ThermalPanel { get; set; }
         public static Asset<Effect> ThermalBar { get; set; }
         public static Asset<Effect> ThermalHeatHaze { get; set; }

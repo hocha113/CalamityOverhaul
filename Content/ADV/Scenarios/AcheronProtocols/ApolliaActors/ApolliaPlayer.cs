@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargoyles;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.LandingScens;
 using InnoVault.Actors;
+using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -11,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
     /// <summary>
     /// 管理阿波利娅演出的生命周期：
     /// 1. 检测着陆完成 → 延迟生成 ApolliaActor
-    /// 2. 在 ModifyScreenPosition 中驱动 <see cref="CutsceneCamera"/>
+    /// 2. 登场运镜交由 <see cref="ApolliaCutscene"/>（InnoVault 演出系统）按 Actor 状态自动表现
     /// </summary>
     internal class ApolliaPlayer : ModPlayer
     {
@@ -114,15 +115,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             }
         }
 
-        public override void ModifyScreenPosition() {
-            ApolliaActor actor = GetApolliaActor();
-            if (actor == null) return;
-
-            //运镜参数由Camera自身根据Actor状态推导
-            actor.Camera.UpdateFocus(actor, Player);
-            actor.Camera.Apply();
-        }
-
         private void SpawnApollia() {
             int index = ActorLoader.NewActor<ApolliaActor>(Vector2.Zero, Vector2.Zero);
             if (index >= 0 && index < ActorLoader.MaxActorCount
@@ -159,9 +151,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         internal void ActivateHeroPanel() {
             HeroPanelActivated = true;
 
-            //平滑关闭运镜
-            ApolliaActor actor = GetApolliaActor();
-            actor?.Camera.Stop();
+            //平滑关闭登场运镜
+            if (CutsceneDirector.CurrentClip is ApolliaCutscene) {
+                CutsceneDirector.Stop();
+            }
 
             if (ApolliaHeroPanelUI.Instance != null) {
                 ApolliaHeroPanelUI.Instance.Unlocked = true;

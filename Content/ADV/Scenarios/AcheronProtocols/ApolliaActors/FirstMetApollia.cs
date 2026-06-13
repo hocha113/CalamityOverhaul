@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
+using InnoVault.Cinematics;
 using System;
 using Terraria;
 using Terraria.Localization;
@@ -106,8 +107,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         private static void ShakeScreen() {
-            if (Main.LocalPlayer?.TryGetModPlayer(out ApolliaPlayer ap) != true) return;
-            ap.GetApolliaActor()?.Camera.Shake(Vector2.Zero, 30f, 0.88f, 20);
+            //质问发怒时的震屏——叠加到当前 InnoVault 登场运镜上
+            if (CutsceneDirector.CurrentClip is ApolliaCutscene) {
+                CutsceneDirector.Shake(Vector2.Zero, 30f, 0.88f, 20);
+            }
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.Players;
+using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -64,6 +65,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 屏幕震动强度
         /// </summary>
         private float screenShakeIntensity = 0f;
+
+        /// <summary>供 <see cref="ResurrectionDeathCutscene"/> 逐帧读取的当前屏幕震动强度</summary>
+        internal float ShakeIntensity => screenShakeIntensity;
 
         /// <summary>
         /// 深渊效果粒子列表
@@ -189,6 +193,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 WarningCombatText.Value, dramatic: true, dot: false);
             for (int i = 0; i < 30; i++) {
                 SpawnAbyssParticle(Player.Center, large: true);
+            }
+
+            //本地播放 InnoVault 死亡演出运镜（镜头跟随 + 屏幕震动统一交由演出表现）
+            if (Player.whoAmI == Main.myPlayer) {
+                CutsceneDirector.Play<ResurrectionDeathCutscene, ResurrectionDeath>(this, Player, restartSameClip: false);
             }
         }
 
@@ -456,6 +465,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 Player.noItems = false;
                 Player.noBuilding = false;
             }
+
+            //结束 InnoVault 死亡演出运镜（平滑恢复镜头）
+            if (Player.whoAmI == Main.myPlayer && CutsceneDirector.CurrentClip is ResurrectionDeathCutscene) {
+                CutsceneDirector.Stop();
+            }
         }
         #endregion
 
@@ -562,17 +576,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region 渲染效果
-        public override void ModifyScreenPosition() {
-            //应用屏幕震动
-            if (screenShakeIntensity > 0.1f) {
-                Main.screenPosition += new Vector2(
-                    Main.rand.NextFloat(-screenShakeIntensity, screenShakeIntensity),
-                    Main.rand.NextFloat(-screenShakeIntensity, screenShakeIntensity)
-                );
-                screenShakeIntensity *= 0.95f;
-            }
-        }
-
         public override void PostUpdate() {
             //应用玩家透明度
             if (playerAlphaMultiplier < 1f) {

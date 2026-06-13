@@ -444,6 +444,7 @@ VictorTalkUI: {
 VictorClinicUI: {
 	TitleText: VICTOR'S CLINIC
 	StatusText: RIPPERDOC ONLINE - SELECT A LIMB
+	GuideText: Select a body part to view, swap and buy its cyberware.
 }
 
 SHPCDialogueBox: {

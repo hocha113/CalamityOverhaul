@@ -1,4 +1,5 @@
 ﻿using InnoVault.Actors;
+using InnoVault.Cinematics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -37,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         /// <summary>摄像机下摇完成的帧</summary>
         private const int PanDownEnd = 820;
         /// <summary>安全上限——防止无限等待</summary>
-        private const int CutsceneHardLimit = 1200;
+        internal const int CutsceneHardLimit = 1200;
 
         #endregion
 
@@ -61,8 +62,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         #region 运行时状态
 
         private static bool cutsceneActive;
-        /// <summary>镜头平滑归位阶段——游戏对象已清理，镜头仍在过渡中</summary>
-        private static bool isExiting;
         private static int timer;
         private static Vector2 cutsceneOrigin;
         private static Vector2 cameraOffset;
@@ -71,6 +70,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
 
         /// <summary>过场演出是否正在进行</summary>
         internal static bool IsActive => cutsceneActive;
+
+        /// <summary>供 <see cref="GargoyleSwarmCutscene"/> 读取的镜头焦点（演出起点 + 运镜偏移）</summary>
+        internal static Vector2 CameraFocus => cutsceneOrigin + cameraOffset;
+
+        /// <summary>供 <see cref="GargoyleSwarmCutscene"/> 读取的镜头缩放</summary>
+        internal static float CameraZoom => currentZoom;
 
         #endregion
 
@@ -91,6 +96,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
 
             float skyY = cutsceneOrigin.Y - PanDistance;
             GargoyleBoids.InitializeStreams(skyY, StreamSpread);
+
+            //本地播放 InnoVault 过场：镜头位置/缩放/输入锁定/平滑归位由 GargoyleSwarmCutscene 接管
+            CutsceneDirector.Play<GargoyleSwarmCutscene>(restartSameClip: false);
         }
 
         /// <summary>
@@ -99,11 +107,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         internal static void StopCutscene() {
             if (!cutsceneActive) return;
             cutsceneActive = false;
-            isExiting = true;
             timer = 0;
             totalSpawned = 0;
             GargoyleBoids.Reset();
             KillAllGargoyles();
+
+            //平滑收尾：镜头归位与输入解锁交由 InnoVault 完成
+            if (CutsceneDirector.CurrentClip is GargoyleSwarmCutscene) {
+                CutsceneDirector.Stop();
+            }
         }
 
         /// <summary>
@@ -111,11 +123,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         /// </summary>
         private static void FullStop() {
             cutsceneActive = false;
-            isExiting = false;
             timer = 0;
             totalSpawned = 0;
             cameraOffset = Vector2.Zero;
             currentZoom = 1f;
+
+            //紧急退出（离开子世界等）：立即清空 InnoVault 演出状态
+            if (CutsceneDirector.CurrentClip is GargoyleSwarmCutscene) {
+                CutsceneDirector.Reset();
+            }
         }
 
         #endregion
@@ -123,21 +139,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         #region 每帧逻辑
 
         public override void PostUpdate() {
-            //安全退出：离开子世界时强制硬停（异常情况，不做平滑）
-            if (!MachineWorld.Active && (cutsceneActive || isExiting)) {
+            //安全退出：离开子世界时强制硬停（异常情况）
+            if (!MachineWorld.Active && cutsceneActive) {
                 FullStop();
-                return;
-            }
-
-            //──── 平滑归位阶段 ────
-            if (isExiting) {
-                cameraOffset.X = MathHelper.Lerp(cameraOffset.X, 0f, 0.06f);
-                cameraOffset.Y = MathHelper.Lerp(cameraOffset.Y, 0f, 0.06f);
-                currentZoom = MathHelper.Lerp(currentZoom, 1f, 0.05f);
-                //偏移和缩放均已足够接近目标值时完全退出
-                if (cameraOffset.LengthSquared() < 0.5f && MathF.Abs(currentZoom - 1f) < 0.008f) {
-                    FullStop();
-                }
                 return;
             }
 
@@ -175,18 +179,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                 }
             }
 
-            //锁定玩家操作
-            LockPlayerControls();
-        }
-
-        public override void ModifyScreenPosition() {
-            if (!cutsceneActive && !isExiting) return;
-
-            //叠加运镜偏移
-            Main.screenPosition += cameraOffset;
-
-            //缩放
-            Main.GameZoomTarget = currentZoom;
+            //锁定玩家位移（控制输入屏蔽由演出的 InputLockTrack 负责）
+            Player.velocity = Vector2.Zero;
         }
 
         #endregion
@@ -323,17 +317,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         #endregion
 
         #region 辅助
-
-        private void LockPlayerControls() {
-            Player.controlLeft = false;
-            Player.controlRight = false;
-            Player.controlUp = false;
-            Player.controlDown = false;
-            Player.controlJump = false;
-            Player.controlUseItem = false;
-            Player.controlUseTile = false;
-            Player.velocity = Vector2.Zero;
-        }
 
         private static float EaseInOutCubic(float t) {
             return t < 0.5f

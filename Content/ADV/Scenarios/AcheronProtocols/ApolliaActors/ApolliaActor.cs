@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines;
 using InnoVault.Actors;
+using InnoVault.Cinematics;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
     /// <summary>
     /// 阿波利娅角色Actor——通过 <see cref="IApolliaState"/> 驱动行为，
-    /// 运镜由 <see cref="CutsceneCamera"/> 管理并在 <see cref="ApolliaPlayer"/> 中应用
+    /// 运镜由 <see cref="ApolliaCutscene"/>（InnoVault 演出系统）按 Actor 状态自动表现
     /// </summary>
     internal class ApolliaActor : Actor
     {
@@ -35,9 +36,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         #endregion
 
         #region 公开属性——供状态类读写
-
-        /// <summary>运镜系统实例——由 <see cref="ApolliaPlayer"/> 读取并在ModifyScreenPosition中应用</summary>
-        internal CutsceneCamera Camera { get; } = new();
 
         /// <summary>当前动画帧索引 (0=站立, 1~10=行走)</summary>
         internal int FrameIndex;
@@ -104,7 +102,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             Velocity = Vector2.Zero;
             OnGround = false;
             UseJumpTexture = false;
-            Camera.Reset();
 
             if (ADVAsset.ApolliaActor != null) {
                 FrameWidth = ADVAsset.ApolliaActor.Width;
@@ -123,11 +120,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             Vector2 groundPos = FindGroundPosition(rawTarget);
 
             TransitionTo(new ApolliaDescendingState(groundPos));
+
+            //本地播放 InnoVault 登场运镜，镜头参数由 ApolliaCutscene 按 Actor 状态推导
+            CutsceneDirector.Play<ApolliaCutscene, ApolliaActor>(this, restartSameClip: false);
         }
 
         public override void AI() {
             if (!MachineWorld.Active) {
-                Camera.Reset();
+                if (CutsceneDirector.CurrentClip is ApolliaCutscene) {
+                    CutsceneDirector.Stop();
+                }
                 ActorLoader.KillActor(WhoAmI);
                 return;
             }

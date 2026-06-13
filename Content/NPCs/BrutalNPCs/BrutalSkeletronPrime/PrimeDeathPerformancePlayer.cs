@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
+using InnoVault.Cinematics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,79 +8,30 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>
-    /// 机械骷髅王死亡演出的运镜与玩家控制层。
+    /// 机械骷髅王死亡演出的玩家控制层。
     /// <list type="bullet">
-    /// <item>所有玩家本地通过 <see cref="CutsceneCamera"/> 将镜头锁定到演出（围观这场处决）。</item>
+    /// <item>运镜（镜头锁定/缩放/输入锁定）交由 InnoVault 演出系统 <see cref="PrimeDeathCutscene"/> 表现，
+    /// 本类只负责在演出开始/结束时本地播放、停止该过场（各客户端独立围观这场处决）。</item>
     /// <item>仅被抓的目标玩家在拖拽/举起阶段被强制锁定到头部正前方，终爆瞬间被掀飞释放。</item>
-    /// <item>屏幕震动经 <see cref="RequestShake"/> 由头部演出逻辑请求，统一交由运镜叠加。</item>
+    /// <item>屏幕震动经 <see cref="RequestShake"/> 由头部演出逻辑请求，统一转交当前演出叠加。</item>
     /// </list>
     /// </summary>
     internal class PrimeDeathPerformancePlayer : ModPlayer
     {
-        private readonly CutsceneCamera camera = new();
-        private const int CameraReleaseTime = 55;
-
         //拖拽起点缓存（被抓玩家本地）
         private bool dragStarted;
         private Vector2 dragStartPos;
-        private int cameraReleaseTimer;
-        private bool cameraOwned;
-        private float restoreZoomTarget = 1f;
 
-        //震动请求（本地，由 ModifyScreenPosition 消费）
-        private static float pendingShakeIntensity;
-        private static int pendingShakeDuration;
-
-        /// <summary>由头部演出逻辑请求一次屏幕震动（本地，受屏幕震动设置约束）</summary>
+        /// <summary>由头部演出逻辑请求一次屏幕震动（本地，受屏幕震动设置约束，仅死亡演出运镜期间生效）</summary>
         internal static void RequestShake(float intensity, int duration) {
             if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
                 return;
             }
-            //保留更强的请求，避免弱震动覆盖强震动
-            if (intensity > pendingShakeIntensity) {
-                pendingShakeIntensity = intensity;
-                pendingShakeDuration = duration;
-            }
-        }
-
-        public override void ModifyScreenPosition() {
-            if (Player.whoAmI != Main.myPlayer) {
+            //震动统一叠加到死亡演出运镜上；非该演出期间（含被更高优先级演出抢占）直接忽略
+            if (CutsceneDirector.CurrentClip is not PrimeDeathCutscene) {
                 return;
             }
-
-            HeadPrimeAI headAI = FindPerformanceHead(out NPC head);
-            if (headAI != null && head != null) {
-                if (!cameraOwned) {
-                    cameraOwned = true;
-                    restoreZoomTarget = Main.GameZoomTarget;
-                    camera.Start(head.Center, 0.06f, 1.4f, 0.04f);
-                }
-                cameraReleaseTimer = 0;
-                if (!camera.Active) {
-                    camera.Start(head.Center, 0.06f, 1.4f, 0.04f);
-                }
-                ConfigureCamera(headAI, head);
-
-                if (pendingShakeIntensity > 0.5f) {
-                    camera.Shake(Vector2.Zero, pendingShakeIntensity, 0.9f, pendingShakeDuration);
-                    pendingShakeIntensity = 0f;
-                    pendingShakeDuration = 0;
-                }
-                camera.Apply();
-            }
-            else {
-                pendingShakeIntensity = 0f;
-                pendingShakeDuration = 0;
-
-                //没有拿到 Prime 死亡演出的相机所有权时，绝不能调用 Apply；
-                //Apply 会写 Main.GameZoomTarget，从而污染其它完全不相关的场景缩放。
-                if (!cameraOwned) {
-                    camera.Reset();
-                    return;
-                }
-
-                ReleaseOwnedCamera();
-            }
+            CutsceneDirector.Shake(Vector2.Zero, intensity, 0.9f, duration);
         }
 
         public override void PostUpdate() {
@@ -89,6 +40,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
 
             HeadPrimeAI headAI = FindPerformanceHead(out NPC head);
+
+            //演出开始时本地播放过场运镜，头部消失/演出结束时平滑收尾
+            UpdateCutscene(headAI, head);
+
             if (headAI == null || head == null || Player.whoAmI != headAI.DeathTargetIndex) {
                 dragStarted = false;
                 return;
@@ -127,6 +82,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
+        /// <summary>本地播放/停止 InnoVault 死亡演出过场，运镜全部由 <see cref="PrimeDeathCutscene"/> 时间轴驱动</summary>
+        private static void UpdateCutscene(HeadPrimeAI headAI, NPC head) {
+            bool playing = CutsceneDirector.CurrentClip is PrimeDeathCutscene;
+            if (headAI != null && head != null) {
+                //已在播放时 restartSameClip:false 会直接复用，不会每帧重启
+                if (!playing) {
+                    CutsceneDirector.Play<PrimeDeathCutscene, NPC>(head, restartSameClip: false);
+                }
+            }
+            else if (playing) {
+                CutsceneDirector.Stop();
+            }
+        }
+
         private void LockPlayerAt(Vector2 center) {
             Player.Center = center;
             Player.velocity = Vector2.Zero;
@@ -136,76 +105,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Player.immune = true;
             if (Player.immuneTime < 2) {
                 Player.immuneTime = 2;
-            }
-        }
-
-        private void ConfigureCamera(HeadPrimeAI headAI, NPC head) {
-            camera.LockPlayerControls = true;
-
-            //聚焦点始终围绕头部及其正下方（玩家最终被举到此处），不去追远处玩家，避免镜头来回甩动；
-            //缩放单调推进至怒吼顶点，仅终爆才拉开看全景——杜绝中途回拉的"呼吸感"
-            switch (headAI.CurrentDeathPhase) {
-                case PrimeDeathPhase.FakeDeath:
-                    camera.FocusTarget = head.Center;
-                    camera.TargetZoom = 1.3f;
-                    camera.PositionLerpSpeed = 0.045f;
-                    camera.ZoomLerpSpeed = 0.03f;
-                    break;
-                case PrimeDeathPhase.Summon:
-                    camera.FocusTarget = head.Center + new Vector2(0f, 20f);
-                    camera.TargetZoom = 1.45f;
-                    camera.PositionLerpSpeed = 0.05f;
-                    camera.ZoomLerpSpeed = 0.045f;
-                    break;
-                case PrimeDeathPhase.Lunge:
-                    camera.FocusTarget = head.Center + new Vector2(0f, 45f);
-                    camera.TargetZoom = 1.6f;
-                    camera.PositionLerpSpeed = 0.07f;
-                    camera.ZoomLerpSpeed = 0.05f;
-                    break;
-                case PrimeDeathPhase.Drag:
-                    camera.FocusTarget = head.Center + new Vector2(0f, PrimeDeathState.DeathLiftDistance * 0.5f);
-                    camera.TargetZoom = 1.8f;
-                    camera.PositionLerpSpeed = 0.08f;
-                    camera.ZoomLerpSpeed = 0.055f;
-                    break;
-                case PrimeDeathPhase.Roar:
-                    camera.FocusTarget = head.Center + new Vector2(0f, PrimeDeathState.DeathLiftDistance * 0.45f);
-                    camera.TargetZoom = 2.1f;
-                    camera.PositionLerpSpeed = 0.1f;
-                    camera.ZoomLerpSpeed = 0.07f;
-                    break;
-                case PrimeDeathPhase.Finale:
-                    camera.FocusTarget = head.Center + new Vector2(0f, PrimeDeathState.DeathLiftDistance * 0.25f);
-                    camera.TargetZoom = 1.4f;
-                    camera.PositionLerpSpeed = 0.06f;
-                    camera.ZoomLerpSpeed = 0.05f;
-                    break;
-            }
-        }
-
-        private void ReleaseOwnedCamera() {
-            if (cameraReleaseTimer <= 0) {
-                cameraReleaseTimer = CameraReleaseTime;
-            }
-
-            if (!camera.Active) {
-                camera.Start(Player.Center, 0.065f, restoreZoomTarget, 0.045f);
-            }
-
-            camera.LockPlayerControls = false;
-            camera.FocusTarget = Player.Center;
-            camera.TargetZoom = restoreZoomTarget;
-            camera.PositionLerpSpeed = 0.065f;
-            camera.ZoomLerpSpeed = 0.045f;
-            camera.Apply();
-
-            cameraReleaseTimer--;
-            if (cameraReleaseTimer <= 0 || MathHelper.Distance(Main.GameZoomTarget, restoreZoomTarget) < 0.01f) {
-                Main.GameZoomTarget = restoreZoomTarget;
-                camera.Reset();
-                cameraOwned = false;
-                cameraReleaseTimer = 0;
             }
         }
 
