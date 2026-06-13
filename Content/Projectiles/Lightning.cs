@@ -1,4 +1,4 @@
-﻿using InnoVault.Trails;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -86,6 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles
         /// 宽度函数(强度×位置)
         public virtual float GetLightningWidth(float factor) {
             //Sin 曲线控宽，主干中部略粗
+            float curve = MathF.Sin(factor * MathHelper.Pi);
             float shapeFactor = curve * (0.6f + 0.4f * MathF.Sin(factor * MathHelper.Pi * 0.5f));
             return ThunderWidth * shapeFactor * Intensity;
         }
