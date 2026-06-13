@@ -20,39 +20,46 @@ HalibutOverride: {
 
 HalibutText: {
 	HalibutAtlas: {
-		// TitleText: A B Y S S A L  A T L A S
-		// NavSea: Skill Sea
-		// NavEyes: Domain Eyes
-		// TierName0: Shallows · Sunlit Zone
-		// TierName1: Open Sea · Twilight Zone
-		// TierName2: Deep Sea · Midnight Zone
-		// TierName3: Abyss · Lightless Zone
-		// DockLabel: Loadout {0} / {1} · Click to select
-		// LockedNodeName: Unknown Silhouette
-		// LockedNodeHint: Research {0} at the Research Altar to light up this skill
-		// EquipBtn: Equip
-		// UnequipBtn: Remove
-		// SelectBtn: Select
-		// SelectedTag: Active
-		// LoadoutFullHint: Loadout is full
-		// UnlockFishLine: Research source: {0}
-		// AltarTitle: Research Altar
-		// AltarHint: Click the altar while holding a researchable fish to place it. The matching skill will light up in the sea once research completes.
-		// DragHint: Hold and drag skills into the loadout · Scroll to dive
-		// LayerStateFormat: Domain Layer {0}
-		// UnlockCountFormat: Lit {0} / {1}
+		TitleText: A B Y S S T A L
+		NavSea: Fähigkeitsmeer
+		NavEyes: Domänenaugen
+		TierName0: Flachwasser · Lichtzone
+		TierName1: Offenes Meer · Dämmerzone
+		TierName2: Tiefsee · Mitternachtszone
+		TierName3: Abgrund · Lichtlose Zone
+		DockLabel: Ausrüstung {0} / {1} · Klicken zum Auswählen
+		LockedNodeName: Unbekannte Silhouette
+		LockedNodeHint: Erforsche {0} am Forschungsaltar, um diese Fähigkeit freizuschalten
+		EquipBtn: Ausrüsten
+		UnequipBtn: Entfernen
+		SelectBtn: Auswählen
+		SelectedTag: Aktiv
+		LoadoutFullHint: Ausrüstung ist voll
+		UnlockFishLine: Erforschungsquelle: {0}
+		AltarTitle: Forschungsaltar
+		AltarHint: Klicke auf den Altar, um einen erforschbaren Fisch aus dem Inventar zum Studium auszuwählen.
+		StudyPickerTitle: Zum Studium einlegen
+		StudyPickerCount: Erforschbare Fische · {0}
+		StudyPickerHint: Klicke auf einen Fisch, um ihn in den Altar zum Studium zu legen
+		StudyPickerEmpty: Keine erforschbaren Fische im Inventar
+		StudyPlaceHint: Klicken, um in den Forschungsaltar zu legen
+		StudyingFormat: Wird erforscht: {0}
+		StudyReclaim: Zurücknehmen
+		DragHint: Halten und Fähigkeiten in die Ausrüstung ziehen · Scrollen zum Abtauchen
+		LayerStateFormat: Domänenschicht {0}
+		UnlockCountFormat: Erleuchtet {0} / {1}
 	}
 
 	HalibutSkillWheel: {
-		// ReleaseHint: Release {0} to confirm
-		// CancelHint: Right-click to cancel
-		// NoSelection: No skill selected
+		ReleaseHint: {0} loslassen zum Bestätigen
+		CancelHint: Rechtsklick zum Abbrechen
+		NoSelection: Keine Fähigkeit ausgewählt
 	}
 
 	HalibutHud: {
-		// OpenAtlasHint: Left-click or {0} to open the Abyssal Atlas, {1} to summon the skill wheel
-		// DomainLayerFormat: Domain layers {0} / 10
-		// StudyingLabel: Researching
+		OpenAtlasHint: Linksklick oder {0} öffnet den Abgrund-Atlas, {1} ruft das Fähigkeitsrad auf
+		DomainLayerFormat: Domänenschichten {0} / 10
+		StudyingLabel: Wird erforscht
 	}
 
 	DomainUI: {

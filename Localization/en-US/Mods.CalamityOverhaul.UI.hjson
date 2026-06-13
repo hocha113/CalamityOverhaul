@@ -416,6 +416,8 @@ CyberwareUI: {
 	StatusText: SYSTEM STATUS: OPERATIONAL
 	SlotSelectedText: "[ SELECTED ]"
 	SlotEmptyText: EMPTY
+	ClinicRequiredTitle: CYBERWARE LOCKED
+	ClinicRequiredDesc: Only a ripperdoc can install implants. Visit Victor.
 	Slot_FrontalCortex: FRONTAL CORTEX
 	Slot_OcularSystem: OCULAR SYSTEM
 	Slot_LeftArm: LEFT ARM

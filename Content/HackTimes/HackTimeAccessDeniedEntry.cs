@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
@@ -14,6 +15,17 @@ namespace CalamityOverhaul.Content.HackTimes
     /// </summary>
     internal class HackTimeAccessDeniedEntry : NotificationEntry
     {
+        private readonly LocalizedText titleOverride;
+        private readonly LocalizedText descOverride;
+
+        public HackTimeAccessDeniedEntry() { }
+
+        /// <summary>使用自定义标题/描述复用该红色警示弹窗（例如普通义体界面提醒前往义体医生）</summary>
+        public HackTimeAccessDeniedEntry(LocalizedText title, LocalizedText desc) {
+            titleOverride = title;
+            descOverride = desc;
+        }
+
         public override float Width => 320f;
         public override float Height => 70f;
         public override int SlideTime => 22;
@@ -76,8 +88,8 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //标题与描述
             float textX = sepX + 10;
-            string title = HackTime.AccessDeniedTitle?.Value ?? "ACCESS DENIED";
-            string desc = HackTime.AccessDeniedDesc?.Value ?? "";
+            string title = (titleOverride ?? HackTime.AccessDeniedTitle)?.Value ?? "ACCESS DENIED";
+            string desc = (descOverride ?? HackTime.AccessDeniedDesc)?.Value ?? "";
 
             //标题：渐入 + 微脉冲色
             float titleAlpha = MathHelper.Clamp((LifeTimer - 4) / 10f, 0f, 1f);

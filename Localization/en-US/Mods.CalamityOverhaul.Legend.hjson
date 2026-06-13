@@ -37,7 +37,14 @@ HalibutText: {
 		LoadoutFullHint: Loadout is full
 		UnlockFishLine: Research source: {0}
 		AltarTitle: Research Altar
-		AltarHint: Click the altar while holding a researchable fish to place it. The matching skill will light up in the sea once research completes.
+		AltarHint: Click the altar to pick a researchable fish from your inventory to study.
+		StudyPickerTitle: Commit to Research
+		StudyPickerCount: Researchable Fish · {0}
+		StudyPickerHint: Click a fish to place it into the altar for research
+		StudyPickerEmpty: No researchable fish in your inventory
+		StudyPlaceHint: Click to place into the Research Altar
+		StudyingFormat: Researching: {0}
+		StudyReclaim: Reclaim
 		DragHint: Hold and drag skills into the loadout · Scroll to dive
 		LayerStateFormat: Domain Layer {0}
 		UnlockCountFormat: Lit {0} / {1}

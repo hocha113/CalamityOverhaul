@@ -20,39 +20,46 @@ HalibutOverride: {
 
 HalibutText: {
 	HalibutAtlas: {
-		// TitleText: A B Y S S A L  A T L A S
-		// NavSea: Skill Sea
-		// NavEyes: Domain Eyes
-		// TierName0: Shallows · Sunlit Zone
-		// TierName1: Open Sea · Twilight Zone
-		// TierName2: Deep Sea · Midnight Zone
-		// TierName3: Abyss · Lightless Zone
-		// DockLabel: Loadout {0} / {1} · Click to select
-		// LockedNodeName: Unknown Silhouette
-		// LockedNodeHint: Research {0} at the Research Altar to light up this skill
-		// EquipBtn: Equip
-		// UnequipBtn: Remove
-		// SelectBtn: Select
-		// SelectedTag: Active
-		// LoadoutFullHint: Loadout is full
-		// UnlockFishLine: Research source: {0}
-		// AltarTitle: Research Altar
-		// AltarHint: Click the altar while holding a researchable fish to place it. The matching skill will light up in the sea once research completes.
-		// DragHint: Hold and drag skills into the loadout · Scroll to dive
-		// LayerStateFormat: Domain Layer {0}
-		// UnlockCountFormat: Lit {0} / {1}
+		TitleText: A T L A S  A B I S A L
+		NavSea: Mar de habilidades
+		NavEyes: Ojos del dominio
+		TierName0: Bajíos · Zona iluminada
+		TierName1: Alta mar · Zona crepuscular
+		TierName2: Mar profundo · Zona de medianoche
+		TierName3: Abismo · Zona sin luz
+		DockLabel: Equipamiento {0} / {1} · Clic para seleccionar
+		LockedNodeName: Silueta desconocida
+		LockedNodeHint: Investiga {0} en el altar de investigación para iluminar esta habilidad
+		EquipBtn: Equipar
+		UnequipBtn: Quitar
+		SelectBtn: Seleccionar
+		SelectedTag: Activo
+		LoadoutFullHint: El equipamiento está lleno
+		UnlockFishLine: Fuente de investigación: {0}
+		AltarTitle: Altar de investigación
+		AltarHint: Haz clic en el altar para elegir un pez investigable de tu inventario.
+		StudyPickerTitle: Enviar a investigación
+		StudyPickerCount: Peces investigables · {0}
+		StudyPickerHint: Haz clic en un pez para colocarlo en el altar e investigarlo
+		StudyPickerEmpty: No hay peces investigables en tu inventario
+		StudyPlaceHint: Clic para colocar en el altar de investigación
+		StudyingFormat: Investigando: {0}
+		StudyReclaim: Recuperar
+		DragHint: Mantén y arrastra habilidades al equipamiento · Rueda para descender
+		LayerStateFormat: Capa del dominio {0}
+		UnlockCountFormat: Iluminado {0} / {1}
 	}
 
 	HalibutSkillWheel: {
-		// ReleaseHint: Release {0} to confirm
-		// CancelHint: Right-click to cancel
-		// NoSelection: No skill selected
+		ReleaseHint: Suelta {0} para confirmar
+		CancelHint: Clic derecho para cancelar
+		NoSelection: Ninguna habilidad seleccionada
 	}
 
 	HalibutHud: {
-		// OpenAtlasHint: Left-click or {0} to open the Abyssal Atlas, {1} to summon the skill wheel
-		// DomainLayerFormat: Domain layers {0} / 10
-		// StudyingLabel: Researching
+		OpenAtlasHint: Clic izquierdo o {0} para abrir el Atlas abisal, {1} para invocar la rueda de habilidades
+		DomainLayerFormat: Capas del dominio {0} / 10
+		StudyingLabel: Investigando
 	}
 
 	DomainUI: {

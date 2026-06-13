@@ -20,39 +20,46 @@ HalibutOverride: {
 
 HalibutText: {
 	HalibutAtlas: {
-		// TitleText: A B Y S S A L  A T L A S
-		// NavSea: Skill Sea
-		// NavEyes: Domain Eyes
-		// TierName0: Shallows · Sunlit Zone
-		// TierName1: Open Sea · Twilight Zone
-		// TierName2: Deep Sea · Midnight Zone
-		// TierName3: Abyss · Lightless Zone
-		// DockLabel: Loadout {0} / {1} · Click to select
-		// LockedNodeName: Unknown Silhouette
-		// LockedNodeHint: Research {0} at the Research Altar to light up this skill
-		// EquipBtn: Equip
-		// UnequipBtn: Remove
-		// SelectBtn: Select
-		// SelectedTag: Active
-		// LoadoutFullHint: Loadout is full
-		// UnlockFishLine: Research source: {0}
-		// AltarTitle: Research Altar
-		// AltarHint: Click the altar while holding a researchable fish to place it. The matching skill will light up in the sea once research completes.
-		// DragHint: Hold and drag skills into the loadout · Scroll to dive
-		// LayerStateFormat: Domain Layer {0}
-		// UnlockCountFormat: Lit {0} / {1}
+		TitleText: A T L A S  A B Y S S A L
+		NavSea: Mer des compétences
+		NavEyes: Yeux du domaine
+		TierName0: Bas-fonds · Zone éclairée
+		TierName1: Haute mer · Zone crépusculaire
+		TierName2: Mer profonde · Zone de minuit
+		TierName3: Abîme · Zone sans lumière
+		DockLabel: Équipement {0} / {1} · Cliquer pour sélectionner
+		LockedNodeName: Silhouette inconnue
+		LockedNodeHint: Étudiez {0} à l'autel de recherche pour éclairer cette compétence
+		EquipBtn: Équiper
+		UnequipBtn: Retirer
+		SelectBtn: Sélectionner
+		SelectedTag: Actif
+		LoadoutFullHint: L'équipement est plein
+		UnlockFishLine: Source de recherche : {0}
+		AltarTitle: Autel de recherche
+		AltarHint: Cliquez sur l'autel pour choisir un poisson étudiable dans votre inventaire.
+		StudyPickerTitle: Soumettre à l'étude
+		StudyPickerCount: Poissons étudiables · {0}
+		StudyPickerHint: Cliquez sur un poisson pour le placer dans l'autel et l'étudier
+		StudyPickerEmpty: Aucun poisson étudiable dans votre inventaire
+		StudyPlaceHint: Cliquer pour placer sur l'autel de recherche
+		StudyingFormat: Étude en cours : {0}
+		StudyReclaim: Récupérer
+		DragHint: Maintenez et faites glisser les compétences vers l'équipement · Molette pour plonger
+		LayerStateFormat: Couche du domaine {0}
+		UnlockCountFormat: Éclairé {0} / {1}
 	}
 
 	HalibutSkillWheel: {
-		// ReleaseHint: Release {0} to confirm
-		// CancelHint: Right-click to cancel
-		// NoSelection: No skill selected
+		ReleaseHint: Relâchez {0} pour confirmer
+		CancelHint: Clic droit pour annuler
+		NoSelection: Aucune compétence sélectionnée
 	}
 
 	HalibutHud: {
-		// OpenAtlasHint: Left-click or {0} to open the Abyssal Atlas, {1} to summon the skill wheel
-		// DomainLayerFormat: Domain layers {0} / 10
-		// StudyingLabel: Researching
+		OpenAtlasHint: Clic gauche ou {0} pour ouvrir l'Atlas abyssal, {1} pour invoquer la roue des compétences
+		DomainLayerFormat: Couches du domaine {0} / 10
+		StudyingLabel: Étude en cours
 	}
 
 	DomainUI: {

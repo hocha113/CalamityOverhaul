@@ -20,39 +20,46 @@ HalibutOverride: {
 
 HalibutText: {
 	HalibutAtlas: {
-		// TitleText: A B Y S S A L  A T L A S
-		// NavSea: Skill Sea
-		// NavEyes: Domain Eyes
-		// TierName0: Shallows · Sunlit Zone
-		// TierName1: Open Sea · Twilight Zone
-		// TierName2: Deep Sea · Midnight Zone
-		// TierName3: Abyss · Lightless Zone
-		// DockLabel: Loadout {0} / {1} · Click to select
-		// LockedNodeName: Unknown Silhouette
-		// LockedNodeHint: Research {0} at the Research Altar to light up this skill
-		// EquipBtn: Equip
-		// UnequipBtn: Remove
-		// SelectBtn: Select
-		// SelectedTag: Active
-		// LoadoutFullHint: Loadout is full
-		// UnlockFishLine: Research source: {0}
-		// AltarTitle: Research Altar
-		// AltarHint: Click the altar while holding a researchable fish to place it. The matching skill will light up in the sea once research completes.
-		// DragHint: Hold and drag skills into the loadout · Scroll to dive
-		// LayerStateFormat: Domain Layer {0}
-		// UnlockCountFormat: Lit {0} / {1}
+		TitleText: А Б И С С К И Й  А Т Л А С
+		NavSea: Море навыков
+		NavEyes: Очи домена
+		TierName0: Мелководье · Световая зона
+		TierName1: Открытое море · Сумеречная зона
+		TierName2: Глубоководье · Полночная зона
+		TierName3: Бездна · Безсветная зона
+		DockLabel: Снаряжение {0} / {1} · Нажмите для выбора
+		LockedNodeName: Неизвестный силуэт
+		LockedNodeHint: Исследуйте {0} на алтаре исследования, чтобы открыть этот навык
+		EquipBtn: Экипировать
+		UnequipBtn: Снять
+		SelectBtn: Выбрать
+		SelectedTag: Активно
+		LoadoutFullHint: Снаряжение заполнено
+		UnlockFishLine: Источник исследования: {0}
+		AltarTitle: Алтарь исследования
+		AltarHint: Нажмите на алтарь, чтобы выбрать исследуемую рыбу из инвентаря.
+		StudyPickerTitle: Отправить на исследование
+		StudyPickerCount: Исследуемая рыба · {0}
+		StudyPickerHint: Нажмите на рыбу, чтобы поместить её на алтарь для исследования
+		StudyPickerEmpty: В инвентаре нет исследуемой рыбы
+		StudyPlaceHint: Нажмите, чтобы поместить на алтарь исследования
+		StudyingFormat: Исследуется: {0}
+		StudyReclaim: Вернуть
+		DragHint: Удерживайте и перетаскивайте навыки в снаряжение · Колёсико для погружения
+		LayerStateFormat: Слой домена {0}
+		UnlockCountFormat: Освещено {0} / {1}
 	}
 
 	HalibutSkillWheel: {
-		// ReleaseHint: Release {0} to confirm
-		// CancelHint: Right-click to cancel
-		// NoSelection: No skill selected
+		ReleaseHint: Отпустите {0} для подтверждения
+		CancelHint: ПКМ для отмены
+		NoSelection: Навык не выбран
 	}
 
 	HalibutHud: {
-		// OpenAtlasHint: Left-click or {0} to open the Abyssal Atlas, {1} to summon the skill wheel
-		// DomainLayerFormat: Domain layers {0} / 10
-		// StudyingLabel: Researching
+		OpenAtlasHint: ЛКМ или {0} — открыть Бездонный атлас, {1} — вызвать колесо навыков
+		DomainLayerFormat: Слои домена {0} / 10
+		StudyingLabel: Исследование
 	}
 
 	DomainUI: {

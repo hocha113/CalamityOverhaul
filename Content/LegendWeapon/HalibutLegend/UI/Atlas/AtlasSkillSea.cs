@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
             //滚动
             float maxScroll = MathF.Max(0f, totalHeight - contentArea.Height + DockHeight);
-            if (inputAvailable && contentArea.Contains(Main.MouseScreen.ToPoint())) {
+            if (inputAvailable && !Altar.PanelOpen && contentArea.Contains(Main.MouseScreen.ToPoint())) {
                 int delta = PlayerInput.ScrollWheelDeltaForUI;
                 if (delta != 0) {
                     scrollTarget -= MathF.Sign(delta) * 96f;
@@ -197,10 +197,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
             chromeHide = MathHelper.Lerp(chromeHide, wantHide ? 1f : 0f, 0.10f);
 
-            //祭坛
+            //祭坛（含次级选鱼面板）
             Altar.ScreenCenter = new Vector2(HalibutTheme.UIScreenW * 0.5f, contentArea.Y + AltarLayoutY - scroll);
             bool altarVisible = Altar.ScreenCenter.Y > contentArea.Y - 60f;
-            Altar.Update(save, inputAvailable && altarVisible);
+            Altar.Update(contentArea, save, inputAvailable && (altarVisible || Altar.PanelOpen));
+            //面板打开时清掉海域选中/拖拽，避免详情卡与拖拽幽灵透出到面板之下
+            if (Altar.PanelOpen) {
+                selectedNode = null;
+                draggingSkill = null;
+            }
 
             //环境粒子：浅层气泡、深层海雪
             ambientTimer++;
@@ -216,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
             float time = Main.GlobalTimeWrappedHourly;
             Vector2 mouse = Main.MouseScreen;
-            bool mouseFree = inputAvailable && !Altar.Hovered;
+            bool mouseFree = inputAvailable && !Altar.Hovered && !Altar.PanelOpen;
 
             //详情卡区域（先于节点计算，避免点击穿透）
             bool detailOpen = selectedNode != null;
@@ -252,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
             //装备坞命中（收起时不可交互）
             dockHoverIndex = -1;
-            if (chromeHide < 0.5f) {
+            if (chromeHide < 0.5f && !Altar.PanelOpen) {
                 for (int i = 0; i < HalibutTheme.DockSlotCount; i++) {
                     if (Vector2.Distance(mouse, DockSlotPos(contentArea, i)) < HalibutTheme.DockSlotR + 4f) {
                         dockHoverIndex = i;
@@ -260,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 }
             }
 
-            HandleMouseInput(contentArea, save, mouse, inputAvailable);
+            HandleMouseInput(contentArea, save, mouse, inputAvailable && !Altar.PanelOpen);
 
             if (loadoutFullFlash > 0f) {
                 loadoutFullFlash = MathF.Max(loadoutFullFlash - 0.02f, 0f);
@@ -464,6 +469,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 HalibutRenderer.DrawCursorPanel(sb, Main.MouseScreen, HalibutAtlas.LockedNodeName.Value,
                     HalibutTheme.TextDim, string.Format(HalibutAtlas.LockedNodeHint.Value, fishName), alpha);
             }
+
+            //次级选鱼面板（绘制在最上层，含全屏聚焦遮罩）
+            Altar.DrawPanel(sb, contentArea, save, alpha, time);
         }
 
         private void DrawDepthRuler(SpriteBatch sb, Rectangle contentArea, float alpha) {

@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         public static LocalizedText SlotSelectedText { get; private set; }
         public static LocalizedText SlotEmptyText { get; private set; }
 
+        //普通义体界面（SHPC 打开的只读版本）尝试更换时弹出的"请前往义体医生"提醒文案
+        public static LocalizedText ClinicRequiredTitle { get; private set; }
+        public static LocalizedText ClinicRequiredDesc { get; private set; }
+
         //按顺序对应CyberSlotRenderer.Definitions的12个槽位
         private static LocalizedText[] slotLabelTexts;
 
@@ -35,6 +39,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             StatusText = this.GetLocalization(nameof(StatusText), () => "SYSTEM STATUS: OPERATIONAL");
             SlotSelectedText = this.GetLocalization(nameof(SlotSelectedText), () => "[ SELECTED ]");
             SlotEmptyText = this.GetLocalization(nameof(SlotEmptyText), () => "EMPTY");
+            ClinicRequiredTitle = this.GetLocalization(nameof(ClinicRequiredTitle), () => "CYBERWARE LOCKED");
+            ClinicRequiredDesc = this.GetLocalization(nameof(ClinicRequiredDesc), () => "Only a ripperdoc can install implants. Visit Victor.");
 
             slotLabelTexts = [
                 this.GetLocalization("Slot_FrontalCortex", () => "FRONTAL CORTEX"),

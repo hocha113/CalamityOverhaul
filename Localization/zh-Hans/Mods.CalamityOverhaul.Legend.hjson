@@ -37,7 +37,14 @@ HalibutText: {
 		LoadoutFullHint: 装备栏已满
 		UnlockFishLine: 研究来源：{0}
 		AltarTitle: 研究祭坛
-		AltarHint: 手持一条可研究的鱼点击祭坛放入，研究完成后对应技能将在海域中点亮
+		AltarHint: 点击祭坛，从背包中选择一条可研究的鱼投入研究
+		StudyPickerTitle: 投入研究
+		StudyPickerCount: 可研究的鱼 · {0} 种
+		StudyPickerHint: 点击一条鱼将其投入祭坛研究
+		StudyPickerEmpty: 背包中没有可研究的鱼
+		StudyPlaceHint: 点击投入研究祭坛
+		StudyingFormat: 正在研究：{0}
+		StudyReclaim: 取 回
 		DragHint: 长按拖拽技能到装备栏 · 滚轮下潜
 		LayerStateFormat: 领域 {0} 层
 		UnlockCountFormat: 已点亮 {0} / {1}

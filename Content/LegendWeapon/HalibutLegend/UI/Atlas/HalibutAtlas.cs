@@ -40,6 +40,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         public static LocalizedText UnlockFishLine { get; private set; }
         public static LocalizedText AltarTitle { get; private set; }
         public static LocalizedText AltarHint { get; private set; }
+        public static LocalizedText StudyPickerTitle { get; private set; }
+        public static LocalizedText StudyPickerCount { get; private set; }
+        public static LocalizedText StudyPickerHint { get; private set; }
+        public static LocalizedText StudyPickerEmpty { get; private set; }
+        public static LocalizedText StudyPlaceHint { get; private set; }
+        public static LocalizedText StudyingFormat { get; private set; }
+        public static LocalizedText StudyReclaim { get; private set; }
         public static LocalizedText DragHint { get; private set; }
         public static LocalizedText LayerStateFormat { get; private set; }
         public static LocalizedText UnlockCountFormat { get; private set; }
@@ -67,7 +74,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             LoadoutFullHint = this.GetLocalization(nameof(LoadoutFullHint), () => "装备栏已满");
             UnlockFishLine = this.GetLocalization(nameof(UnlockFishLine), () => "研究来源：{0}");
             AltarTitle = this.GetLocalization(nameof(AltarTitle), () => "研究祭坛");
-            AltarHint = this.GetLocalization(nameof(AltarHint), () => "手持一条可研究的鱼点击祭坛放入，研究完成后对应技能将在海域中点亮");
+            AltarHint = this.GetLocalization(nameof(AltarHint), () => "点击祭坛，从背包中选择一条可研究的鱼投入研究");
+            StudyPickerTitle = this.GetLocalization(nameof(StudyPickerTitle), () => "投入研究");
+            StudyPickerCount = this.GetLocalization(nameof(StudyPickerCount), () => "可研究的鱼 · {0} 种");
+            StudyPickerHint = this.GetLocalization(nameof(StudyPickerHint), () => "点击一条鱼将其投入祭坛研究");
+            StudyPickerEmpty = this.GetLocalization(nameof(StudyPickerEmpty), () => "背包中没有可研究的鱼");
+            StudyPlaceHint = this.GetLocalization(nameof(StudyPlaceHint), () => "点击投入研究祭坛");
+            StudyingFormat = this.GetLocalization(nameof(StudyingFormat), () => "正在研究：{0}");
+            StudyReclaim = this.GetLocalization(nameof(StudyReclaim), () => "取 回");
             DragHint = this.GetLocalization(nameof(DragHint), () => "长按拖拽技能到装备栏 · 滚轮下潜");
             LayerStateFormat = this.GetLocalization(nameof(LayerStateFormat), () => "领域 {0} 层");
             UnlockCountFormat = this.GetLocalization(nameof(UnlockCountFormat), () => "已点亮 {0} / {1}");
@@ -107,6 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             view = AtlasView.Sea;
             headerSlide = 0f;
             Sea.Rebuild(player.GetModPlayer<HalibutSave>());
+            Sea.Altar.ResetPanel();
             if (VaultUtils.isSinglePlayer) {
                 WorldFreezeSystem.Activate(FreezeReason);
             }
@@ -175,6 +190,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 }
                 else if (navEyesRect.Contains(mouse.ToPoint()) && view != AtlasView.Eyes) {
                     view = AtlasView.Eyes;
+                    Sea.Altar.ResetPanel();
                     SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.1f });
                 }
                 else if (view == AtlasView.Sea) {

@@ -25,22 +25,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private int dissolveTimer;
 
         /// <summary>
+        /// 次级选鱼面板：点击祭坛弹出，列出背包中可研究的鱼供投入研究
+        /// </summary>
+        public readonly AtlasFishStudyPanel Panel = new();
+
+        /// <summary>
         /// 当前帧的屏幕中心位置，由海域每帧写入
         /// </summary>
         public Vector2 ScreenCenter { get; set; }
 
         public bool Hovered { get; private set; }
 
-        public void Update(HalibutSave save, bool inputAvailable) {
-            particles.Update();
-            Hovered = inputAvailable &&
-                Vector2.Distance(Main.MouseScreen, ScreenCenter) < Radius + 12f;
-            hover = MathHelper.Lerp(hover, Hovered ? 1f : 0f, 0.15f);
-            if (rejectFlash > 0f) {
-                rejectFlash = MathF.Max(rejectFlash - 0.04f, 0f);
-            }
+        /// <summary>
+        /// 选鱼面板是否打开（打开时海域应让出全部交互）
+        /// </summary>
+        public bool PanelOpen => Panel.IsOpen;
 
-            //研究中持续冒出被溶解的光粒
+        public void Update(Rectangle contentArea, HalibutSave save, bool inputAvailable) {
+            particles.Update();
+
+            //研究中持续冒出被溶解的光粒（无论面板是否打开都推进）
             if (save.IsStudying) {
                 dissolveTimer++;
                 if (dissolveTimer % 6 == 0) {
@@ -49,13 +53,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                         HalibutTheme.Glow, 0.8f);
                 }
             }
+            if (rejectFlash > 0f) {
+                rejectFlash = MathF.Max(rejectFlash - 0.04f, 0f);
+            }
+
+            //次级选鱼面板优先吃输入；打开时祭坛本体不再响应悬停/点击
+            Panel.Update(contentArea, save, inputAvailable);
+            if (Panel.IsOpen) {
+                Hovered = false;
+                hover = MathHelper.Lerp(hover, 0f, 0.15f);
+                return;
+            }
+
+            Hovered = inputAvailable &&
+                Vector2.Distance(Main.MouseScreen, ScreenCenter) < Radius + 12f;
+            hover = MathHelper.Lerp(hover, Hovered ? 1f : 0f, 0.15f);
 
             if (!Hovered) {
                 return;
             }
             Main.LocalPlayer.mouseInterface = true;
 
-            //悬浮显示祭坛内物品
+            //悬浮显示祭坛内正在研究的鱼
             if (save.StudyItem.Alives()) {
                 Main.HoverItem = save.StudyItem.Clone();
                 Main.hoverItemName = save.StudyItem.Name;
@@ -64,41 +83,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             if (!(Main.mouseLeft && Main.mouseLeftRelease)) {
                 return;
             }
+            //点击祭坛 = 打开选鱼面板（全屏停时间关背包，无法用鼠标手持鱼放入）
             Main.mouseLeftRelease = false;
-            HandleClick(save);
+            Panel.Open(save);
         }
 
-        private void HandleClick(HalibutSave save) {
-            Item mouseItem = Main.mouseItem;
-            bool mouseEmpty = !mouseItem.Alives() || mouseItem.type <= ItemID.None;
+        /// <summary>
+        /// 静默重置选鱼面板（切换图鉴视图 / 重新打开图鉴时调用）
+        /// </summary>
+        public void ResetPanel() => Panel.Reset();
 
-            //取出：祭坛有物品且鼠标为空
-            if (!mouseEmpty && save.CanStudy(mouseItem)) {
-                //放入新的研究对象
-                SoundEngine.PlaySound(SoundID.Grab);
-                save.StudyItem = mouseItem.Clone();
-                save.StudyItem.stack = 1;
-                mouseItem.stack--;
-                if (mouseItem.stack <= 0) {
-                    mouseItem.TurnToAir();
-                }
-                save.IsStudying = true;
-                save.StudyTimer = 0;
-                particles.SpawnRingPulse(ScreenCenter, HalibutTheme.Glow, 56f, 3f);
-                return;
-            }
-            if (mouseEmpty && save.StudyItem.Alives() && save.StudyItem.type > ItemID.None) {
-                //取回（中断研究）
-                SoundEngine.PlaySound(SoundID.Grab);
-                Main.mouseItem = save.StudyItem.Clone();
-                save.StudyItem.TurnToAir();
-                save.IsStudying = false;
-                save.StudyTimer = 0;
-                return;
-            }
-            //无效操作（不可研究 / 已研究过）
-            SoundEngine.PlaySound(CWRSound.ButtonZero);
-            rejectFlash = 1f;
+        /// <summary>
+        /// 在所有海域元素之上绘制选鱼面板，由海域在 Draw 末尾调用
+        /// </summary>
+        public void DrawPanel(SpriteBatch sb, Rectangle contentArea, HalibutSave save, float alpha, float time) {
+            Panel.Draw(sb, contentArea, save, alpha, time);
         }
 
         public void Draw(SpriteBatch sb, HalibutSave save, float alpha, float time) {

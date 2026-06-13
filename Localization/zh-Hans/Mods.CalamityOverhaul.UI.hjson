@@ -414,6 +414,8 @@ CyberwareUI: {
 	StatusText: 系统状态：运行中
 	SlotSelectedText: "[ 已选择 ]"
 	SlotEmptyText: 空置
+	ClinicRequiredTitle: 义体已锁定
+	ClinicRequiredDesc: 义体只能由义体医生安装，请前往维克托处接受手术。
 	Slot_FrontalCortex: 额叶皮层
 	Slot_OcularSystem: 视觉系统
 	Slot_LeftArm: 左臂

@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.UIs.NotificationPopup;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -67,6 +69,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         private int oldScrollWheelValue;
 
         /// <summary>
+        /// "请前往义体医生"提醒弹窗的节流冷却，避免连点刷屏
+        /// </summary>
+        private int reminderCooldown;
+
+        /// <summary>
         /// 本帧是否发生了装备/卸载操作
         /// </summary>
         public bool ActionThisFrame { get; private set; }
@@ -123,6 +130,9 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// </summary>
         public void Update(Rectangle mainPanelRect, int selectedSlot, CyberwarePlayer cyberPlayer) {
             ActionThisFrame = false;
+            if (reminderCooldown > 0) {
+                reminderCooldown--;
+            }
 
             // 同步绑定状态
             if (selectedSlot != boundSlot) {
@@ -259,8 +269,9 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 );
                 if (unequipRect.Contains((int)mouse.X, (int)mouse.Y)) {
                     hoveredItemRow = -2; // 特殊值表示悬停在卸载区
+                    //普通义体界面仅供查看：点击改为提醒前往义体医生处手术
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
-                        DoUnequip(cyberPlayer);
+                        NotifyClinicRequired();
                     }
                     // 记录悬停义体用于自定义Tooltip
                     Item equipped = cyberPlayer.EquippedCyberwares[boundSlot];
@@ -297,51 +308,27 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                         hoveredCyberItem = item;
                     }
 
-                    // 左键点击装备
+                    // 普通义体界面仅供查看：点击改为提醒前往义体医生处手术
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
-                        DoEquip(cyberPlayer, i);
+                        NotifyClinicRequired();
                     }
                     break;
                 }
             }
         }
 
-        private void DoEquip(CyberwarePlayer cyberPlayer, int listIndex) {
-            if (listIndex < 0 || listIndex >= compatibleItems.Count) return;
-            int invIndex = compatibleItems[listIndex];
-            Player player = Main.LocalPlayer;
-
-            if (invIndex < 0 || invIndex >= player.inventory.Length) return;
-            Item item = player.inventory[invIndex];
-            if (item == null || item.IsAir) return;
-            if (!cyberPlayer.CanEquip(item, boundSlot)) return;
-
-            // 卸载旧义体（如有），归还到背包
-            Item oldItem = cyberPlayer.Unequip(boundSlot);
-            if (oldItem != null && !oldItem.IsAir) {
-                player.QuickSpawnItem(player.GetSource_Misc("CyberwareUnequip"), oldItem, oldItem.stack);
+        /// <summary>
+        /// 普通义体界面已改为只读：尝试安装/卸载时弹出提醒，引导玩家前往义体医生 Victor 处手术。
+        /// <br/>真正的装备/卸载只在 Victor 诊所（<see cref="Victors.UIs.VictorClinicPanel"/>）经手术完成
+        /// </summary>
+        private void NotifyClinicRequired() {
+            if (reminderCooldown > 0) {
+                return;
             }
-
-            // 装备新义体（内部会Clone）
-            cyberPlayer.Equip(item, boundSlot);
-
-            // 从背包消耗原物品
-            item.TurnToAir();
-
-            // 刷新列表
-            RefreshItems(cyberPlayer);
-            ActionThisFrame = true;
-        }
-
-        private void DoUnequip(CyberwarePlayer cyberPlayer) {
-            Player player = Main.LocalPlayer;
-
-            Item oldItem = cyberPlayer.Unequip(boundSlot);
-            if (oldItem != null && !oldItem.IsAir) {
-                player.QuickSpawnItem(player.GetSource_Misc("CyberwareUnequip"), oldItem, oldItem.stack);
-            }
-
-            RefreshItems(cyberPlayer);
+            reminderCooldown = 40;
+            //复用骇客时间的红色警示弹窗样式，替换为"前往义体医生"文案（弹窗自带提示音效）
+            NotificationPopupSystem.Add(new HackTimeAccessDeniedEntry(
+                CyberwareUI.ClinicRequiredTitle, CyberwareUI.ClinicRequiredDesc));
             ActionThisFrame = true;
         }
 
@@ -449,8 +436,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 new Vector2(eqRect.X + 44, eqRect.Y + 4),
                 CyberwareTheme.TextBright * alpha, 0.48f * CyberwareTheme.FontScale);
 
-            // 卸载提示
-            string hint = isHoveredUnequip ? "> UNINSTALL <" : "CLICK TO UNINSTALL";
+            // 卸载提示：普通界面只读，引导前往义体医生
+            string hint = isHoveredUnequip ? "> SEE RIPPERDOC <" : "VISIT VICTOR TO SWAP";
             Color hintColor = isHoveredUnequip ? CyberwareTheme.Accent : CyberwareTheme.TextDim;
             Utils.DrawBorderString(sb, hint,
                 new Vector2(eqRect.X + 44, eqRect.Y + 28),
