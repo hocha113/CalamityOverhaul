@@ -8,18 +8,18 @@ Biomes: {
 	}
 
 	MachineBiome: {
-		DisplayName: Machine Biome
-		TownNPCDialogueName: the Machine Biome
+		DisplayName: 机械生物群系
+		TownNPCDialogueName: 机械生物群系
 	}
 
 	DropPodBiome: {
-		DisplayName: Drop Pod Biome
-		TownNPCDialogueName: the Drop Pod Biome
+		DisplayName: 空降舱生物群系
+		TownNPCDialogueName: 空降舱生物群系
 	}
 
 	VoidColonyBiome: {
-		DisplayName: Void Colony Biome
-		TownNPCDialogueName: the Void Colony Biome
+		DisplayName: 虚空殖民地生物群系
+		TownNPCDialogueName: 虚空殖民地生物群系
 	}
 }
 

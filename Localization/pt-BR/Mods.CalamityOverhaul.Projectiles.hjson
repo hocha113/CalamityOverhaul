@@ -38,7 +38,7 @@ FungiAmmo.DisplayName: Projetil Fungico
 PallbearerArrow.DisplayName: Flecha do Portador do Caixao
 PrimeCannonOnSpanFriendly.DisplayName: Saraivada do Canhao Prime
 PrimeCannonOnSpan.DisplayName: Saraivada do Canhao Prime
-// PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
+PrimeSeekerMissile.DisplayName: Micromisseil Buscador de Calor
 PunisherGrenade.DisplayName: Granada do Punitivo
 RaiderGunDash.DisplayName: Investida do Saqueador
 RocketSkeletonFriendly.DisplayName: Esqueleto Foguete
@@ -112,9 +112,9 @@ DeadLaser.DisplayName: Laser da Morte
 PrimeTelegraphLine.DisplayName: Marcador de aviso do Prime
 PrimeArcChainProj.DisplayName: Corrente iônica
 PrimeSkullBeamProj.DisplayName: Raio do canhão craniano
-// PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
-// PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
-// PrimeMortarShellProj.DisplayName: Prime Mortar Shell
+PrimeCrossBeamProj.DisplayName: Raio Termico de Execucao Cruzada
+PrimeArmHeatRayProj.DisplayName: Raio Termico do Prime
+PrimeMortarShellProj.DisplayName: Granada de Morteiro do Prime
 Hit.DisplayName: Impacto
 SpwanTextProj.DisplayName: Texto Manifestado
 DragonsWordCut.DisplayName: Corte da Palavra do Dragao
@@ -125,7 +125,7 @@ NeutronWandExplode.DisplayName: Explosao da Varinha de Neutrons
 DivineSourceWaveProjectile.DisplayName: Onda Crescente da Fonte Divina
 DivineSourceHitFXProjectile.DisplayName: Impacto da Fonte Divina
 DragonsScaleGreatswordBeam.DisplayName: Raio da Grande Espada de Alga Draconica
-// DragonSoulSerpent.DisplayName: Verdant Dragon Soul
+DragonSoulSerpent.DisplayName: Alma do Dragao Verdejante
 SporeCloud.DisplayName: Nuvem de Esporos
 EXNeutronExplode.DisplayName: Explosao de Neutrons EX
 NeutronExplode.DisplayName: Explosao de Neutrons
@@ -143,9 +143,9 @@ CosmicEddies.DisplayName: Redemoinho Cosmico
 DivineDevourerIllusionBody.DisplayName: Ilusao do Devorador Divino
 DivineDevourerIllusionHead.DisplayName: Ilusao do Devorador Divino
 DivineDevourerIllusionTail.DisplayName: Ilusao do Devorador Divino
-// GlacialShell.DisplayName: Glacial Shell
-// GlacierSpikeProj.DisplayName: Glacier Spike
-// GlacierWave.DisplayName: Glacial Surge
+GlacialShell.DisplayName: Projetil Glacial
+GlacierSpikeProj.DisplayName: Espinhaco Glacial
+GlacierWave.DisplayName: Onda Glacial
 ExtremeColdHail.DisplayName: Granizo Extremo Frio
 HeavenRainbowImpact.DisplayName: Impacto do Arco-Iris Celestial
 InfiniteArrow.DisplayName: Flecha Infinita
@@ -154,19 +154,19 @@ ParadiseArrow.DisplayName: Flecha do Paraiso
 VientianePunishment.DisplayName: Castigo de Vientiane
 IceExplosionFriend.DisplayName: Explosao de Gelo
 IceParclose.DisplayName: Parclose de Gelo
-// FrostGlimmer.DisplayName: Frost Glimmer
-// AuroraCurtain.DisplayName: Aurora Curtain
-// AuroraLance.DisplayName: Frost Lance
+FrostGlimmer.DisplayName: Brilho Gelido
+AuroraCurtain.DisplayName: Cortina Auroral
+AuroraLance.DisplayName: Lanca Gelida
 EXNeutronArrow.DisplayName: Flecha de Neutrons EX
 EXNeutronExplosionRanged.DisplayName: Explosao de Neutrons de Longo Alcance EX
 NeutronArrow.DisplayName: Flecha de Neutrons
 NeutronExplosionRanged.DisplayName: Explosao de Neutrons de Longo Alcance
 NeutronLaser.DisplayName: Laser de Neutrons
 NeutronBullet.DisplayName: Projetil de Neutrons
-// SnowQuayFlake.DisplayName: Snow Stream
-// SnowQuayPackedBall.DisplayName: Packed Snowball
-// SnowQuayShard.DisplayName: Ice Shard
-// IcicleNail.DisplayName: Icicle Nail
+SnowQuayFlake.DisplayName: Corrente de Neve
+SnowQuayPackedBall.DisplayName: Bola de Neve Compactada
+SnowQuayShard.DisplayName: Fragmento de Gelo
+IcicleNail.DisplayName: Prego de Gelo
 NeutronScytheExplosion.DisplayName: Explosão de Nêutrons
 NeutronScytheHeld.DisplayName: Foice de Neutrons
 Godslight.DisplayName: Luz Divina
@@ -244,7 +244,7 @@ AriaQSkillMiniDisk.DisplayName: Mini Disco da Habilidade Q da Aria
 SulfuricacidExplosion.DisplayName: Explosao de Acido Sulfurico
 DawnshatterFireball.DisplayName: Bola de Fogo do Amanhecer Estilhaçado
 TransferItemProj.DisplayName: Itens em Transito
-// Crystal.DisplayName: Crystal
+Crystal.DisplayName: Cristal
 MuraDimensionSlash.DisplayName: Corte Dimensional Mura
 MuraSlashArc.DisplayName: Arco de Corte Mura
 MuraSlashLine.DisplayName: Linha de Corte Mura
@@ -303,57 +303,57 @@ ArbiterHeld.DisplayName: Sentenciador
 ArbiterShockwave.DisplayName: Onda de Choque
 CloudwalkingHeld.DisplayName: Caminhante das Nuvens
 DuneStalkerHeadProj.DisplayName: Gancho do Perseguidor das Dunas
-// GraniteBloom.DisplayName: Granite Bloom
-// GraniteCrystalShard.DisplayName: Granite Crystal Shard
-// GraniteEnergyOrb.DisplayName: Granite Energy Orb
-// GraniteFlowerHeld.DisplayName: Granite Flower Held
-// GraniteFlowerSeed.DisplayName: Granite Flower Seed
-// GraniteThrowingKnifeProj.DisplayName: Granite Throwing Knife Proj
-// GraniteTomeHeld.DisplayName: Granite Tome Held
-// MarbleAegisRing.DisplayName: Marble Aegis Ring
-// MarbleClubHeld.DisplayName: Marble Club Held
-// MarbleDiscProj.DisplayName: Marble Disc Proj
-// MarbleHuntingKnifeHeld.DisplayName: Marble Hunting Knife Held
-// MarblePebbleProj.DisplayName: Marble Pebble Proj
-// MarbleShard.DisplayName: Marble Shard
-// MarbleShockwave.DisplayName: Marble Shockwave
-// SHPCSonicBoomProj.DisplayName: S H P C Sonic Boom Proj
-// SHPCQuantumNodeProj.DisplayName: S H P C Quantum Node Proj
-// SHPCBalanceSparkProj.DisplayName: S H P C Balance Spark Proj
-// SHPCCrystalFacetProj.DisplayName: S H P C Crystal Facet Proj
-// SHPCHarmonyPulseProj.DisplayName: S H P C Harmony Pulse Proj
-// SHPCHoloDecoyProj.DisplayName: S H P C Holo Decoy Proj
-// SHPCPrecisionLanceProj.DisplayName: S H P C Precision Lance Proj
-// SHPCPredictiveReticleProj.DisplayName: S H P C Predictive Reticle Proj
-// SHPCPlasmaBloomProj.DisplayName: S H P C Plasma Bloom Proj
-// SHPCPlasmaNeedleProj.DisplayName: S H P C Plasma Needle Proj
-// SHPCVoltArcProj.DisplayName: S H P C Volt Arc Proj
-// SHPCAssaultDroneProj.DisplayName: S H P C Assault Drone Proj
-// SHPCBraceAnchorProj.DisplayName: S H P C Brace Anchor Proj
-// SHPCKineticBarrierProj.DisplayName: S H P C Kinetic Barrier Proj
-// SHPCRelayNodeProj.DisplayName: S H P C Relay Node Proj
-// SHPCQuantumLinkProj.DisplayName: S H P C Quantum Link Proj
-// SHPCCrystalShardProj.DisplayName: S H P C Crystal Shard Proj
-// SHPCHarmonyWispProj.DisplayName: S H P C Harmony Wisp Proj
-// SHPCAdaptiveReticleProj.DisplayName: S H P C Adaptive Reticle Proj
-// SHPCHoloLatticeProj.DisplayName: S H P C Holo Lattice Proj
-// SHPCJudgmentRayProj.DisplayName: S H P C Judgment Ray Proj
-// SHPCPlasmaSunProj.DisplayName: S H P C Plasma Sun Proj
-// SHPCSolarFlareProj.DisplayName: S H P C Solar Flare Proj
-// SHPCArmBoltProj.DisplayName: S H P C Arm Bolt Proj
-// SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
-// SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
-// SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
-// BarrenArc.DisplayName: Barren Arc
-// BarrenPulseProj.DisplayName: Barren Pulse Proj
-// DestroyerArc.DisplayName: Destroyer Arc
-// DestroyerBolt.DisplayName: Destroyer Bolt
-// DestroyerHeatWakeProj.DisplayName: Destroyer Heat Wake Proj
-// DestroyerShockwave.DisplayName: Destroyer Shockwave
-// DestroyerStrikeTelegraph.DisplayName: Destroyer Strike Telegraph
-// CursedFlameJet.DisplayName: Cursed Flame Jet
-// RetinazerDeathRay.DisplayName: Retinazer Death Ray
-// RetinazerLaser.DisplayName: Retinazer Laser
-// TwinsSupernovaBlast.DisplayName: Twins Supernova Blast
-// TwinsTetherArc.DisplayName: Twins Tether Arc
-// DestroyerMawBeamProj.DisplayName: Destroyer Maw Beam Proj
+GraniteBloom.DisplayName: Floracao de Granito
+GraniteCrystalShard.DisplayName: Fragmento de Cristal de Granito
+GraniteEnergyOrb.DisplayName: Orbe de Energia de Granito
+GraniteFlowerHeld.DisplayName: Flor de Granito
+GraniteFlowerSeed.DisplayName: Semente de Cristal de Granito
+GraniteThrowingKnifeProj.DisplayName: Faca Arremessavel de Granito
+GraniteTomeHeld.DisplayName: Tomo de Granito
+MarbleAegisRing.DisplayName: Anel de Egide de Marmore
+MarbleClubHeld.DisplayName: Clava de Marmore
+MarbleDiscProj.DisplayName: Disco de Marmore
+MarbleHuntingKnifeHeld.DisplayName: Faca de Caca de Marmore
+MarblePebbleProj.DisplayName: Seixo de Marmore
+MarbleShard.DisplayName: Fragmento de Marmore
+MarbleShockwave.DisplayName: Onda de Choque de Marmore
+SHPCSonicBoomProj.DisplayName: Estrondo Sonico SHPC
+SHPCQuantumNodeProj.DisplayName: No Quantico SHPC
+SHPCBalanceSparkProj.DisplayName: Faisca de Equilibrio SHPC
+SHPCCrystalFacetProj.DisplayName: Faceta de Cristal SHPC
+SHPCHarmonyPulseProj.DisplayName: Pulso Harmonico SHPC
+SHPCHoloDecoyProj.DisplayName: Isca Holografica SHPC
+SHPCPrecisionLanceProj.DisplayName: Lanca de Precisao SHPC
+SHPCPredictiveReticleProj.DisplayName: Mira Preditiva SHPC
+SHPCPlasmaBloomProj.DisplayName: Floracao de Plasma SHPC
+SHPCPlasmaNeedleProj.DisplayName: Agulha de Plasma SHPC
+SHPCVoltArcProj.DisplayName: Arco Volt SHPC
+SHPCAssaultDroneProj.DisplayName: Drone de Assalto SHPC
+SHPCBraceAnchorProj.DisplayName: Ancora de Suporte SHPC
+SHPCKineticBarrierProj.DisplayName: Barreira Cinetica SHPC
+SHPCRelayNodeProj.DisplayName: No de Rele SHPC
+SHPCQuantumLinkProj.DisplayName: Elo Quantico SHPC
+SHPCCrystalShardProj.DisplayName: Fragmento de Cristal SHPC
+SHPCHarmonyWispProj.DisplayName: Fogo-folha Harmonico SHPC
+SHPCAdaptiveReticleProj.DisplayName: Mira Adaptativa SHPC
+SHPCHoloLatticeProj.DisplayName: Malha Holografica SHPC
+SHPCJudgmentRayProj.DisplayName: Raio do Julgamento SHPC
+SHPCPlasmaSunProj.DisplayName: Sol de Plasma SHPC
+SHPCSolarFlareProj.DisplayName: Erupcao Solar SHPC
+SHPCArmBoltProj.DisplayName: Raio de Braco SHPC
+SHPCAssaultArmProj.DisplayName: Braco de Assalto SHPC
+SHPCBeamSegmentProj.DisplayName: Segmento de Raio SHPC
+SHPCSeismicCounterProj.DisplayName: Contra-ataque Sismico SHPC
+BarrenArc.DisplayName: Arco do Esteril
+BarrenPulseProj.DisplayName: Pulso do Esteril
+DestroyerArc.DisplayName: Arco do Destruidor
+DestroyerBolt.DisplayName: Raio do Destruidor
+DestroyerHeatWakeProj.DisplayName: Esteira Termica do Destruidor
+DestroyerShockwave.DisplayName: Onda de Choque do Destruidor
+DestroyerStrikeTelegraph.DisplayName: Aviso de Assalto do Destruidor
+CursedFlameJet.DisplayName: Jato de Chamas Amaldicoadas
+RetinazerDeathRay.DisplayName: Raio da Morte do Retinazer
+RetinazerLaser.DisplayName: Laser do Retinazer
+TwinsSupernovaBlast.DisplayName: Supernova dos Gemeos
+TwinsTetherArc.DisplayName: Arco de Ancoragem dos Gemeos
+DestroyerMawBeamProj.DisplayName: Raio da Mandibula do Destruidor

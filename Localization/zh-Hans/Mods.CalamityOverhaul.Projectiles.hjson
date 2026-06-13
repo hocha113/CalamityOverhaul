@@ -303,57 +303,57 @@ ArbiterHeld.DisplayName: 断罪师
 ArbiterShockwave.DisplayName: 震荡波
 CloudwalkingHeld.DisplayName: 云端漫步
 DuneStalkerHeadProj.DisplayName: 荒漠钩头
-// GraniteBloom.DisplayName: Granite Bloom
-// GraniteCrystalShard.DisplayName: Granite Crystal Shard
-// GraniteEnergyOrb.DisplayName: Granite Energy Orb
-// GraniteFlowerHeld.DisplayName: Granite Flower Held
-// GraniteFlowerSeed.DisplayName: Granite Flower Seed
-// GraniteThrowingKnifeProj.DisplayName: Granite Throwing Knife Proj
-// GraniteTomeHeld.DisplayName: Granite Tome Held
-// MarbleAegisRing.DisplayName: Marble Aegis Ring
-// MarbleClubHeld.DisplayName: Marble Club Held
-// MarbleDiscProj.DisplayName: Marble Disc Proj
-// MarbleHuntingKnifeHeld.DisplayName: Marble Hunting Knife Held
-// MarblePebbleProj.DisplayName: Marble Pebble Proj
-// MarbleShard.DisplayName: Marble Shard
-// MarbleShockwave.DisplayName: Marble Shockwave
-// SHPCSonicBoomProj.DisplayName: S H P C Sonic Boom Proj
-// SHPCQuantumNodeProj.DisplayName: S H P C Quantum Node Proj
-// SHPCBalanceSparkProj.DisplayName: S H P C Balance Spark Proj
-// SHPCCrystalFacetProj.DisplayName: S H P C Crystal Facet Proj
-// SHPCHarmonyPulseProj.DisplayName: S H P C Harmony Pulse Proj
-// SHPCHoloDecoyProj.DisplayName: S H P C Holo Decoy Proj
-// SHPCPrecisionLanceProj.DisplayName: S H P C Precision Lance Proj
-// SHPCPredictiveReticleProj.DisplayName: S H P C Predictive Reticle Proj
-// SHPCPlasmaBloomProj.DisplayName: S H P C Plasma Bloom Proj
-// SHPCPlasmaNeedleProj.DisplayName: S H P C Plasma Needle Proj
-// SHPCVoltArcProj.DisplayName: S H P C Volt Arc Proj
-// SHPCAssaultDroneProj.DisplayName: S H P C Assault Drone Proj
-// SHPCBraceAnchorProj.DisplayName: S H P C Brace Anchor Proj
-// SHPCKineticBarrierProj.DisplayName: S H P C Kinetic Barrier Proj
-// SHPCRelayNodeProj.DisplayName: S H P C Relay Node Proj
-// SHPCQuantumLinkProj.DisplayName: S H P C Quantum Link Proj
-// SHPCCrystalShardProj.DisplayName: S H P C Crystal Shard Proj
-// SHPCHarmonyWispProj.DisplayName: S H P C Harmony Wisp Proj
-// SHPCAdaptiveReticleProj.DisplayName: S H P C Adaptive Reticle Proj
-// SHPCHoloLatticeProj.DisplayName: S H P C Holo Lattice Proj
-// SHPCJudgmentRayProj.DisplayName: S H P C Judgment Ray Proj
-// SHPCPlasmaSunProj.DisplayName: S H P C Plasma Sun Proj
-// SHPCSolarFlareProj.DisplayName: S H P C Solar Flare Proj
-// SHPCArmBoltProj.DisplayName: S H P C Arm Bolt Proj
-// SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
-// SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
-// SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
-// BarrenArc.DisplayName: Barren Arc
-// BarrenPulseProj.DisplayName: Barren Pulse Proj
-// DestroyerArc.DisplayName: Destroyer Arc
-// DestroyerBolt.DisplayName: Destroyer Bolt
-// DestroyerHeatWakeProj.DisplayName: Destroyer Heat Wake Proj
-// DestroyerShockwave.DisplayName: Destroyer Shockwave
-// DestroyerStrikeTelegraph.DisplayName: Destroyer Strike Telegraph
-// CursedFlameJet.DisplayName: Cursed Flame Jet
-// RetinazerDeathRay.DisplayName: Retinazer Death Ray
-// RetinazerLaser.DisplayName: Retinazer Laser
-// TwinsSupernovaBlast.DisplayName: Twins Supernova Blast
-// TwinsTetherArc.DisplayName: Twins Tether Arc
-// DestroyerMawBeamProj.DisplayName: Destroyer Maw Beam Proj
+GraniteBloom.DisplayName: 花岗绽放
+GraniteCrystalShard.DisplayName: 花岗晶碎片
+GraniteEnergyOrb.DisplayName: 花岗能量球
+GraniteFlowerHeld.DisplayName: 花岗之花
+GraniteFlowerSeed.DisplayName: 花岗晶种
+GraniteThrowingKnifeProj.DisplayName: 花岗飞刀
+GraniteTomeHeld.DisplayName: 花岗岩魔典
+MarbleAegisRing.DisplayName: 大理石神盾环
+MarbleClubHeld.DisplayName: 大理石巨棍
+MarbleDiscProj.DisplayName: 大理石飞盘
+MarbleHuntingKnifeHeld.DisplayName: 大理石猎刀
+MarblePebbleProj.DisplayName: 大理石卵石
+MarbleShard.DisplayName: 大理石碎片
+MarbleShockwave.DisplayName: 大理石冲击波
+SHPCSonicBoomProj.DisplayName: SHPC 音爆
+SHPCQuantumNodeProj.DisplayName: SHPC 量子节点
+SHPCBalanceSparkProj.DisplayName: SHPC 平衡火花
+SHPCCrystalFacetProj.DisplayName: SHPC 水晶切面
+SHPCHarmonyPulseProj.DisplayName: SHPC 谐振脉冲
+SHPCHoloDecoyProj.DisplayName: SHPC 全息诱饵
+SHPCPrecisionLanceProj.DisplayName: SHPC 精准长矛
+SHPCPredictiveReticleProj.DisplayName: SHPC 预测准星
+SHPCPlasmaBloomProj.DisplayName: SHPC 等离子绽放
+SHPCPlasmaNeedleProj.DisplayName: SHPC 等离子针
+SHPCVoltArcProj.DisplayName: SHPC 伏特电弧
+SHPCAssaultDroneProj.DisplayName: SHPC 突击无人机
+SHPCBraceAnchorProj.DisplayName: SHPC 支撑锚点
+SHPCKineticBarrierProj.DisplayName: SHPC 动能屏障
+SHPCRelayNodeProj.DisplayName: SHPC 中继节点
+SHPCQuantumLinkProj.DisplayName: SHPC 量子链接
+SHPCCrystalShardProj.DisplayName: SHPC 水晶碎片
+SHPCHarmonyWispProj.DisplayName: SHPC 谐振灵火
+SHPCAdaptiveReticleProj.DisplayName: SHPC 自适应准星
+SHPCHoloLatticeProj.DisplayName: SHPC 全息晶格
+SHPCJudgmentRayProj.DisplayName: SHPC 审判射线
+SHPCPlasmaSunProj.DisplayName: SHPC 等离子日核
+SHPCSolarFlareProj.DisplayName: SHPC 太阳耀斑
+SHPCArmBoltProj.DisplayName: SHPC 臂载电矢
+SHPCAssaultArmProj.DisplayName: SHPC 突击臂
+SHPCBeamSegmentProj.DisplayName: SHPC 光束段
+SHPCSeismicCounterProj.DisplayName: SHPC 震击反击
+BarrenArc.DisplayName: 荒原电弧
+BarrenPulseProj.DisplayName: 荒原脉冲
+DestroyerArc.DisplayName: 毁灭者电弧
+DestroyerBolt.DisplayName: 毁灭者电矢
+DestroyerHeatWakeProj.DisplayName: 毁灭者热浪尾迹
+DestroyerShockwave.DisplayName: 毁灭者冲击波
+DestroyerStrikeTelegraph.DisplayName: 毁灭者突击预警
+CursedFlameJet.DisplayName: 诅咒焰喷射
+RetinazerDeathRay.DisplayName: 激光眼死光
+RetinazerLaser.DisplayName: 激光眼激光
+TwinsSupernovaBlast.DisplayName: 双子超新星爆发
+TwinsTetherArc.DisplayName: 双子束缚电弧
+DestroyerMawBeamProj.DisplayName: 毁灭者巨口光束

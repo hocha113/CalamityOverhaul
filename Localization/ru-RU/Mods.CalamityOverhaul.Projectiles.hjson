@@ -38,7 +38,7 @@ FungiAmmo.DisplayName: Грибные боеприпасы
 PallbearerArrow.DisplayName: Стрела гробовщика
 PrimeCannonOnSpanFriendly.DisplayName: Механическая пушка: Залп
 PrimeCannonOnSpan.DisplayName: Механическая пушка: Залп
-// PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
+PrimeSeekerMissile.DisplayName: Микроракета с тепловым наведением
 PunisherGrenade.DisplayName: Граната Карателя
 RaiderGunDash.DisplayName: Рывок Налетчика
 RocketSkeletonFriendly.DisplayName: Скелетная ракета
@@ -112,9 +112,9 @@ DeadLaser.DisplayName: Мертвый лазер
 PrimeTelegraphLine.DisplayName: Прицельная метка Прайма
 PrimeArcChainProj.DisplayName: Ионная цепь
 PrimeSkullBeamProj.DisplayName: Луч черепной пушки
-// PrimeCrossBeamProj.DisplayName: Cross Execution Heat Ray
-// PrimeArmHeatRayProj.DisplayName: Prime Heat Ray
-// PrimeMortarShellProj.DisplayName: Prime Mortar Shell
+PrimeCrossBeamProj.DisplayName: Тепловой луч крестовой казни
+PrimeArmHeatRayProj.DisplayName: Тепловой луч Прайма
+PrimeMortarShellProj.DisplayName: Миномётный снаряд Прайма
 Hit.DisplayName: Удар
 SpwanTextProj.DisplayName: Слово проявления
 DragonsWordCut.DisplayName: Клинок драконьего слова: Разрез
@@ -125,7 +125,7 @@ NeutronWandExplode.DisplayName: Нейтронный взрыв
 DivineSourceWaveProjectile.DisplayName: Полумесячная волна божественного истока
 DivineSourceHitFXProjectile.DisplayName: Удар божественного истока
 DragonsScaleGreatswordBeam.DisplayName: Луч клинка драконьих водорослей
-// DragonSoulSerpent.DisplayName: Verdant Dragon Soul
+DragonSoulSerpent.DisplayName: Душа изумрудного дракона
 SporeCloud.DisplayName: Споровое облако
 EXNeutronExplode.DisplayName: Нейтронный взрыв EX
 NeutronExplode.DisplayName: Нейтронный взрыв
@@ -143,9 +143,9 @@ CosmicEddies.DisplayName: Космические вихри
 DivineDevourerIllusionBody.DisplayName: Фантом Божественного пожирателя
 DivineDevourerIllusionHead.DisplayName: Фантом Божественного пожирателя
 DivineDevourerIllusionTail.DisplayName: Фантом Божественного пожирателя
-// GlacialShell.DisplayName: Glacial Shell
-// GlacierSpikeProj.DisplayName: Glacier Spike
-// GlacierWave.DisplayName: Glacial Surge
+GlacialShell.DisplayName: Ледяной снаряд
+GlacierSpikeProj.DisplayName: Ледниковый шип
+GlacierWave.DisplayName: Ледниковая волна
 ExtremeColdHail.DisplayName: Град лютой стужи
 HeavenRainbowImpact.DisplayName: Небесный радужный удар
 InfiniteArrow.DisplayName: Бесконечная стрела
@@ -154,19 +154,19 @@ ParadiseArrow.DisplayName: Райская стрела
 VientianePunishment.DisplayName: Вселенская кара
 IceExplosionFriend.DisplayName: Ледяной взрыв
 IceParclose.DisplayName: Ледяная завеса
-// FrostGlimmer.DisplayName: Frost Glimmer
-// AuroraCurtain.DisplayName: Aurora Curtain
-// AuroraLance.DisplayName: Frost Lance
+FrostGlimmer.DisplayName: Морозное мерцание
+AuroraCurtain.DisplayName: Авроральная завеса
+AuroraLance.DisplayName: Ледяное копьё
 EXNeutronArrow.DisplayName: Нейтронная стрела EX
 EXNeutronExplosionRanged.DisplayName: Нейтронный взрыв EX
 NeutronArrow.DisplayName: Нейтронная стрела
 NeutronExplosionRanged.DisplayName: Нейтронный взрыв
 NeutronLaser.DisplayName: Нейтронный лазер
 NeutronBullet.DisplayName: Нейтронная пуля
-// SnowQuayFlake.DisplayName: Snow Stream
-// SnowQuayPackedBall.DisplayName: Packed Snowball
-// SnowQuayShard.DisplayName: Ice Shard
-// IcicleNail.DisplayName: Icicle Nail
+SnowQuayFlake.DisplayName: Снежный поток
+SnowQuayPackedBall.DisplayName: Спрессованный снежок
+SnowQuayShard.DisplayName: Ледяная крошка
+IcicleNail.DisplayName: Сосулькный гвоздь
 NeutronScytheExplosion.DisplayName: Нейтронный взрыв
 NeutronScytheHeld.DisplayName: Нейтронная коса
 Godslight.DisplayName: Божественный свет
@@ -244,7 +244,7 @@ AriaQSkillMiniDisk.DisplayName: Страж звездного кольца
 SulfuricacidExplosion.DisplayName: Взрыв серной кислоты
 DawnshatterFireball.DisplayName: Огонь рассвета
 TransferItemProj.DisplayName: Перемещаемый предмет
-// Crystal.DisplayName: Crystal
+Crystal.DisplayName: Кристалл
 MuraDimensionSlash.DisplayName: Разрез измерения
 MuraSlashArc.DisplayName: Разрез измерения
 MuraSlashLine.DisplayName: Разрез измерения
@@ -303,57 +303,57 @@ ArbiterHeld.DisplayName: Судия
 ArbiterShockwave.DisplayName: Ударная волна
 CloudwalkingHeld.DisplayName: Облачный странник
 DuneStalkerHeadProj.DisplayName: Крюк пустынного охотника
-// GraniteBloom.DisplayName: Granite Bloom
-// GraniteCrystalShard.DisplayName: Granite Crystal Shard
-// GraniteEnergyOrb.DisplayName: Granite Energy Orb
-// GraniteFlowerHeld.DisplayName: Granite Flower Held
-// GraniteFlowerSeed.DisplayName: Granite Flower Seed
-// GraniteThrowingKnifeProj.DisplayName: Granite Throwing Knife Proj
-// GraniteTomeHeld.DisplayName: Granite Tome Held
-// MarbleAegisRing.DisplayName: Marble Aegis Ring
-// MarbleClubHeld.DisplayName: Marble Club Held
-// MarbleDiscProj.DisplayName: Marble Disc Proj
-// MarbleHuntingKnifeHeld.DisplayName: Marble Hunting Knife Held
-// MarblePebbleProj.DisplayName: Marble Pebble Proj
-// MarbleShard.DisplayName: Marble Shard
-// MarbleShockwave.DisplayName: Marble Shockwave
-// SHPCSonicBoomProj.DisplayName: S H P C Sonic Boom Proj
-// SHPCQuantumNodeProj.DisplayName: S H P C Quantum Node Proj
-// SHPCBalanceSparkProj.DisplayName: S H P C Balance Spark Proj
-// SHPCCrystalFacetProj.DisplayName: S H P C Crystal Facet Proj
-// SHPCHarmonyPulseProj.DisplayName: S H P C Harmony Pulse Proj
-// SHPCHoloDecoyProj.DisplayName: S H P C Holo Decoy Proj
-// SHPCPrecisionLanceProj.DisplayName: S H P C Precision Lance Proj
-// SHPCPredictiveReticleProj.DisplayName: S H P C Predictive Reticle Proj
-// SHPCPlasmaBloomProj.DisplayName: S H P C Plasma Bloom Proj
-// SHPCPlasmaNeedleProj.DisplayName: S H P C Plasma Needle Proj
-// SHPCVoltArcProj.DisplayName: S H P C Volt Arc Proj
-// SHPCAssaultDroneProj.DisplayName: S H P C Assault Drone Proj
-// SHPCBraceAnchorProj.DisplayName: S H P C Brace Anchor Proj
-// SHPCKineticBarrierProj.DisplayName: S H P C Kinetic Barrier Proj
-// SHPCRelayNodeProj.DisplayName: S H P C Relay Node Proj
-// SHPCQuantumLinkProj.DisplayName: S H P C Quantum Link Proj
-// SHPCCrystalShardProj.DisplayName: S H P C Crystal Shard Proj
-// SHPCHarmonyWispProj.DisplayName: S H P C Harmony Wisp Proj
-// SHPCAdaptiveReticleProj.DisplayName: S H P C Adaptive Reticle Proj
-// SHPCHoloLatticeProj.DisplayName: S H P C Holo Lattice Proj
-// SHPCJudgmentRayProj.DisplayName: S H P C Judgment Ray Proj
-// SHPCPlasmaSunProj.DisplayName: S H P C Plasma Sun Proj
-// SHPCSolarFlareProj.DisplayName: S H P C Solar Flare Proj
-// SHPCArmBoltProj.DisplayName: S H P C Arm Bolt Proj
-// SHPCAssaultArmProj.DisplayName: S H P C Assault Arm Proj
-// SHPCBeamSegmentProj.DisplayName: S H P C Beam Segment Proj
-// SHPCSeismicCounterProj.DisplayName: S H P C Seismic Counter Proj
-// BarrenArc.DisplayName: Barren Arc
-// BarrenPulseProj.DisplayName: Barren Pulse Proj
-// DestroyerArc.DisplayName: Destroyer Arc
-// DestroyerBolt.DisplayName: Destroyer Bolt
-// DestroyerHeatWakeProj.DisplayName: Destroyer Heat Wake Proj
-// DestroyerShockwave.DisplayName: Destroyer Shockwave
-// DestroyerStrikeTelegraph.DisplayName: Destroyer Strike Telegraph
-// CursedFlameJet.DisplayName: Cursed Flame Jet
-// RetinazerDeathRay.DisplayName: Retinazer Death Ray
-// RetinazerLaser.DisplayName: Retinazer Laser
-// TwinsSupernovaBlast.DisplayName: Twins Supernova Blast
-// TwinsTetherArc.DisplayName: Twins Tether Arc
-// DestroyerMawBeamProj.DisplayName: Destroyer Maw Beam Proj
+GraniteBloom.DisplayName: Гранитное цветение
+GraniteCrystalShard.DisplayName: Гранитный кристальный осколок
+GraniteEnergyOrb.DisplayName: Гранитная энергетическая сфера
+GraniteFlowerHeld.DisplayName: Гранитный цветок
+GraniteFlowerSeed.DisplayName: Гранитное кристальное семя
+GraniteThrowingKnifeProj.DisplayName: Гранитный метательный нож
+GraniteTomeHeld.DisplayName: Гранитный фолиант
+MarbleAegisRing.DisplayName: Мраморное кольцо эгиды
+MarbleClubHeld.DisplayName: Мраморная дубина
+MarbleDiscProj.DisplayName: Мраморный диск
+MarbleHuntingKnifeHeld.DisplayName: Мраморный охотничий нож
+MarblePebbleProj.DisplayName: Мраморная галька
+MarbleShard.DisplayName: Мраморный осколок
+MarbleShockwave.DisplayName: Мраморная ударная волна
+SHPCSonicBoomProj.DisplayName: Звуковой удар SHPC
+SHPCQuantumNodeProj.DisplayName: Квантовый узел SHPC
+SHPCBalanceSparkProj.DisplayName: Искра равновесия SHPC
+SHPCCrystalFacetProj.DisplayName: Кристальная грань SHPC
+SHPCHarmonyPulseProj.DisplayName: Гармонический импульс SHPC
+SHPCHoloDecoyProj.DisplayName: Голографическая приманка SHPC
+SHPCPrecisionLanceProj.DisplayName: Точное копьё SHPC
+SHPCPredictiveReticleProj.DisplayName: Предиктивная сетка SHPC
+SHPCPlasmaBloomProj.DisplayName: Плазменное цветение SHPC
+SHPCPlasmaNeedleProj.DisplayName: Плазменная игла SHPC
+SHPCVoltArcProj.DisplayName: Вольтовая дуга SHPC
+SHPCAssaultDroneProj.DisplayName: Штурмовой дрон SHPC
+SHPCBraceAnchorProj.DisplayName: Опорный якорь SHPC
+SHPCKineticBarrierProj.DisplayName: Кинетический барьер SHPC
+SHPCRelayNodeProj.DisplayName: Релейный узел SHPC
+SHPCQuantumLinkProj.DisplayName: Квантовая связь SHPC
+SHPCCrystalShardProj.DisplayName: Кристальный осколок SHPC
+SHPCHarmonyWispProj.DisplayName: Гармоническое болотное огонько SHPC
+SHPCAdaptiveReticleProj.DisplayName: Адаптивная сетка SHPC
+SHPCHoloLatticeProj.DisplayName: Голографическая решётка SHPC
+SHPCJudgmentRayProj.DisplayName: Луч суда SHPC
+SHPCPlasmaSunProj.DisplayName: Плазменное солнце SHPC
+SHPCSolarFlareProj.DisplayName: Солнечная вспышка SHPC
+SHPCArmBoltProj.DisplayName: Рукавной разряд SHPC
+SHPCAssaultArmProj.DisplayName: Штурмовая рука SHPC
+SHPCBeamSegmentProj.DisplayName: Сегмент луча SHPC
+SHPCSeismicCounterProj.DisplayName: Сейсмический контрудар SHPC
+BarrenArc.DisplayName: Дуга пустоши
+BarrenPulseProj.DisplayName: Импульс пустоши
+DestroyerArc.DisplayName: Дуга Уничтожителя
+DestroyerBolt.DisplayName: Разряд Уничтожителя
+DestroyerHeatWakeProj.DisplayName: Тепловой след Уничтожителя
+DestroyerShockwave.DisplayName: Ударная волна Уничтожителя
+DestroyerStrikeTelegraph.DisplayName: Предупреждение об ударе Уничтожителя
+CursedFlameJet.DisplayName: Струя проклятого пламени
+RetinazerDeathRay.DisplayName: Смертельный луч Ретиназера
+RetinazerLaser.DisplayName: Лазер Ретиназера
+TwinsSupernovaBlast.DisplayName: Сверхновая Близнецов
+TwinsTetherArc.DisplayName: Дуга привязки Близнецов
+DestroyerMawBeamProj.DisplayName: Луч пасти Уничтожителя

@@ -14,7 +14,7 @@ Halibut_Clone.DisplayName: Flétan : invasion du moi passé
 Halibut_Superposition.DisplayName: Flétan : superposition
 Halibut_Skill_L.DisplayName: Flétan : changer compétence gauche
 Halibut_Skill_R.DisplayName: Flétan : changer compétence droite
-// Halibut_SkillWheel.DisplayName: Halibut: Hold to open skill wheel
+Halibut_SkillWheel.DisplayName: Flétan : maintenir pour ouvrir la roue de compétences
 Murasama_TriggerKey.DisplayName: Murasama : touche de déclenchement
 Murasama_DownKey.DisplayName: Murasama : frappe descendante
 WeponSkill_Q.DisplayName: Arme : compétence gauche
