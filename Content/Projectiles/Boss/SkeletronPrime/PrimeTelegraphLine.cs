@@ -207,6 +207,20 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             ApplyDuration(id, duration);
         }
 
+        internal static void SpawnLine(NPC owner, Vector2 center, float rotation, int duration, bool fower) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
+                ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
+                0f, rotation, duration);
+            if (fower && id.TryGetProjectile(out var proj)) {
+                proj.localAI[0] = owner.whoAmI;
+                proj.localAI[1] = owner.type;
+            }
+            ApplyDuration(id, duration);
+        }
+
         /// <summary>生成扇形预警（顶点在 center，朝向 rotation，半角 halfAngle）</summary>
         internal static void SpawnFan(NPC owner, Vector2 center, float rotation, float halfAngle, int duration) {
             if (VaultUtils.isClient) {
