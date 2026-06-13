@@ -44,7 +44,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 .AddTile(TileID.Anvils)
                 .Register();
             }
-        }    }
+        }
+    }
 
     internal class WastelandFangProj : BaseHeldProj
     {

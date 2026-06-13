@@ -40,7 +40,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     .AddTile(TileID.Anvils)
                     .Register();
             }
-        }    }
+        }
+    }
 
     /// <summary>
     /// 物流管道物块

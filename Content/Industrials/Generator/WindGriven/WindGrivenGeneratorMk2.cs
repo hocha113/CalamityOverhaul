@@ -76,7 +76,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
                 AddTile(TileID.MythrilAnvil).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class WindGrivenGeneratorMK2Tile : BaseGeneratorTile
     {

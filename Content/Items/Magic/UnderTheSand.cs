@@ -52,7 +52,8 @@ namespace CalamityOverhaul.Content.Items.Magic
                 .AddTile(TileID.Anvils)
                 .Register();
             }
-        }    }
+        }
+    }
 
     internal class UnderTheSandHeld : BaseHeldGun
     {

@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

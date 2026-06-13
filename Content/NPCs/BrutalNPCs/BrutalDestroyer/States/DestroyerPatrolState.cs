@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             IDestroyerState[] normalSequence = [
                 new DestroyerLaserBarrageState(),
                 new DestroyerDiveStrikeState(),
-                
+
                 new DestroyerEncircleState(),
                 new DestroyerDashPrepareState(),
                 new DestroyerBurrowAmbushState(),

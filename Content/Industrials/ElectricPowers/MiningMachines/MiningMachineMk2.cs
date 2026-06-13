@@ -55,7 +55,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
                 AddTile(TileID.MythrilAnvil).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class MiningMachineMk2Tile : ModTile
     {

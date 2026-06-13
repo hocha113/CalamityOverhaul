@@ -1,9 +1,9 @@
-﻿using System;
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -139,7 +139,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 //第二段反向回斩，形成左右交替的连击观感
                 swingDir = ComboStage == 1 ? -facing : facing;
                 SoundEngine.PlaySound(SoundID.Item1 with {
-                    Pitch = 0.15f + ComboStage * 0.18f, Volume = 0.5f
+                    Pitch = 0.15f + ComboStage * 0.18f,
+                    Volume = 0.5f
                 }, owner.Center);
             }
 
@@ -265,7 +266,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
                 }
                 else {
                     SoundEngine.PlaySound(SoundID.Item71 with {
-                        Pitch = 0.1f + ComboStage * 0.18f, Volume = 0.9f
+                        Pitch = 0.1f + ComboStage * 0.18f,
+                        Volume = 0.9f
                     }, owner.Center);
                 }
 
@@ -445,7 +447,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             }
 
             SoundEngine.PlaySound(SoundID.Item71 with {
-                Pitch = IsHeavy ? 0.0f : 0.35f, Volume = IsHeavy ? 0.8f : 0.55f
+                Pitch = IsHeavy ? 0.0f : 0.35f,
+                Volume = IsHeavy ? 0.8f : 0.55f
             }, target.Center);
             if (Projectile.owner == Main.myPlayer) {
                 Projectile.NewProjectile(

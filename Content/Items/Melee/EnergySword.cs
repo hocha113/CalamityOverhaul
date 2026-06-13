@@ -91,7 +91,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     /// <summary>
     /// 能量剑手持弹幕

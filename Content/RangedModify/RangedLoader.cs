@@ -1,9 +1,4 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
-using InnoVault.GameSystem;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using System;
-using System.Collections.Generic;
+﻿using InnoVault.GameSystem;
 using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;

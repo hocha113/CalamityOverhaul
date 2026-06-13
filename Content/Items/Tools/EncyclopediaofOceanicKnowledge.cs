@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

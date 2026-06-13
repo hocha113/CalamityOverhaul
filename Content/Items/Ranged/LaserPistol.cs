@@ -53,7 +53,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class LaserPistolHeld : BaseHeldGun
     {

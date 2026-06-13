@@ -292,7 +292,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     AddTile(TileID.Anvils).
                     Register();
             }
-        }    }
+        }
+    }
 
     internal class ItemFilterSlot : UIHandle
     {

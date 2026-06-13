@@ -1,6 +1,6 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;

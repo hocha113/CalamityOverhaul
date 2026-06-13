@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;

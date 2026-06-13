@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Cyberwares.UIs;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.Cyberwares.UIs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

@@ -58,7 +58,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 .AddTile(TileID.Anvils)
                 .Register();
             }
-        }    }
+        }
+    }
 
     /// <summary>
     /// 荒漠猎行者的手持弹幕，负责跟随玩家瞄准、播放开火动画、生成枪头与处理收回指令

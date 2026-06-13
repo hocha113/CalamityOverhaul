@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.TimeFreezes;
+﻿using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -860,8 +860,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                         mirror.netUpdate = true;
                     }
                 }
-            }
-            finally {
+            } finally {
                 spawningMirrors = false;
             }
         }

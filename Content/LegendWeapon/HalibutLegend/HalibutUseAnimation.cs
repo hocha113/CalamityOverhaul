@@ -1,5 +1,4 @@
 ﻿using InnoVault.GameSystem;
-using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {

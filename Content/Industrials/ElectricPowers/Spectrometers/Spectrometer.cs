@@ -50,7 +50,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class SpectrometerTile : ModTile
     {

@@ -49,7 +49,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class ThermalBatteryTile : ModTile
     {

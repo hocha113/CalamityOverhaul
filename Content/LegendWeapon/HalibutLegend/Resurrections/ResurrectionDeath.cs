@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.Players;
+﻿using CalamityOverhaul.Content.Players;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using System;

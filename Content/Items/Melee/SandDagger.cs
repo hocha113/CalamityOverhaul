@@ -46,7 +46,8 @@ namespace CalamityOverhaul.Content.Items.Melee
                 .AddTile(TileID.Anvils)
                 .Register();
             }
-        }    }
+        }
+    }
 
     /// <summary>
     /// 沙之飞匕实体

@@ -6,7 +6,6 @@ using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.StateMachines;

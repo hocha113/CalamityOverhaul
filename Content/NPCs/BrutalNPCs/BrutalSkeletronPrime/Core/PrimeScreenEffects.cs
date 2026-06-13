@@ -1,7 +1,4 @@
-using Microsoft.Xna.Framework;
-using Terraria;
-
-namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
+﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
     /// <summary>
     /// 机械骷髅王全屏后处理效果的运行时状态（仅客户端视觉，无网络同步）。

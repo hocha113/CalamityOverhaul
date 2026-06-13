@@ -57,7 +57,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
                 AddTile(TileID.MythrilAnvil).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class HydroelectricMK2Tile : BaseGeneratorTile
     {

@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     DestroyerHeadAI.SpawnBodySegments(npc);
                     DestroyerHeatWakeProj.EnsureForHead(npc);
                 }
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.25f}, player.Center);
+                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.25f }, player.Center);
             }
 
             //幕二：第一趟贯穿（偏移线，体节在高速位移中展开）
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 //头部移到地下待命位（远离玩家武器射程，预兆期间不可见）
                 npc.Center = player.Center + new Vector2(side * 420f, 1700f);
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.65f}, player.Center);
+                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.65f }, player.Center);
             }
 
             //确定第一趟贯穿线：破土点偏移玩家约260px（公平阀——开场不打脸），自地下对角向上

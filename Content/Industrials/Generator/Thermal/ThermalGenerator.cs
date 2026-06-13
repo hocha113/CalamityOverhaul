@@ -51,7 +51,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class ThermalGeneratorTile : BaseGeneratorTile
     {

@@ -5,7 +5,6 @@ using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;

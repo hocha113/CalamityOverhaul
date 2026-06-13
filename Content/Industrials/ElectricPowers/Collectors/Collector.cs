@@ -57,7 +57,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     internal class CollectorTile : ModTile
     {

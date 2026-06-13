@@ -57,7 +57,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 AddTile(TileID.Anvils).
                 Register();
             }
-        }    }
+        }
+    }
 
     /// <summary>
     /// 合并后的通用能源管道图块

@@ -3,14 +3,12 @@ using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using InnoVault.GameSystem;
 using InnoVault.VaultNetworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 

@@ -1,7 +1,6 @@
-﻿using System;
-using CalamityOverhaul.Common;
-using InnoVault.Trails;
+﻿using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -233,7 +232,8 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
             Projectile.damage = (int)(Projectile.damage * (IsGiant ? 0.85f : 0.7f));
 
             SoundEngine.PlaySound(SoundID.Item14 with {
-                Pitch = IsGiant ? 0.1f : 0.4f, Volume = IsGiant ? 0.75f : 0.55f
+                Pitch = IsGiant ? 0.1f : 0.4f,
+                Volume = IsGiant ? 0.75f : 0.55f
             }, target.Center);
 
             if (!Main.dedServ) {
