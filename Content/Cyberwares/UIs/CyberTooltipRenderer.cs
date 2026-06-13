@@ -43,8 +43,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float smallScale = 0.60f;
             float descScale = 0.56f;
 
-            Vector2 nameSize = MeasureString(name, textScale);
-            Vector2 slotSize = MeasureString(slotName, smallScale);
+            Vector2 nameSize = CWRUtils.MeasureText(name, textScale);
+            Vector2 slotSize = CWRUtils.MeasureText(slotName, smallScale);
 
             // 计算描述文本行，先按换行符分段再调用官方换行接口
             var descLineList = new System.Collections.Generic.List<string>();
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float contentWidth = Math.Max(nameSize.X + IconSize + Padding, 200f);
             contentWidth = Math.Max(contentWidth, slotSize.X + 80f);
             foreach (string line in descLines) {
-                contentWidth = Math.Max(contentWidth, MeasureString(line, descScale).X);
+                contentWidth = Math.Max(contentWidth, CWRUtils.MeasureText(line, descScale).X);
             }
             contentWidth += Padding * 2;
 
@@ -165,17 +165,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 }
             }
         }
-
-        /// <summary>
-        /// 测量文字尺寸（近似，基于FontAssets.MouseText）
-        /// </summary>
-        private static Vector2 MeasureString(string text, float scale) {
-            if (string.IsNullOrEmpty(text)) return Vector2.Zero;
-            var font = FontAssets.MouseText?.Value;
-            if (font == null) return new Vector2(text.Length * 8 * scale, 16 * scale);
-            return font.MeasureString(text) * scale;
-        }
-
 
     }
 }
