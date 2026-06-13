@@ -197,17 +197,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         #region 生成助手（服务端裁决，netImportant 同步到客户端）
 
         /// <summary>生成方向线预警（自 center 沿 rotation 延伸）</summary>
-        internal static void SpawnLine(NPC owner, Vector2 center, float rotation, int duration) {
-            if (VaultUtils.isClient) {
-                return;
-            }
-            int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
-                ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
-                0f, rotation, duration);
-            ApplyDuration(id, duration);
-        }
-
-        internal static void SpawnLine(NPC owner, Vector2 center, float rotation, int duration, bool fower) {
+        internal static void SpawnLine(NPC owner, Vector2 center, float rotation, int duration, bool fower = false) {
             if (VaultUtils.isClient) {
                 return;
             }
@@ -222,18 +212,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         /// <summary>生成扇形预警（顶点在 center，朝向 rotation，半角 halfAngle）</summary>
-        internal static void SpawnFan(NPC owner, Vector2 center, float rotation, float halfAngle, int duration) {
-            if (VaultUtils.isClient) {
-                return;
-            }
-            float encoded = 1f + MathHelper.Clamp(halfAngle, 0.05f, 1.4f) / 10f;
-            int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
-                ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
-                encoded, rotation, duration);
-            ApplyDuration(id, duration);
-        }
-
-        internal static void SpawnFan(NPC owner, Vector2 center, float rotation, float halfAngle, int duration, bool fower) {
+        internal static void SpawnFan(NPC owner, Vector2 center, float rotation, float halfAngle, int duration, bool fower = false) {
             if (VaultUtils.isClient) {
                 return;
             }
@@ -249,17 +228,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         /// <summary>生成圆环预警（中心 center，半径 radiusPx）</summary>
-        internal static void SpawnRing(NPC owner, Vector2 center, float radiusPx, int duration) {
-            if (VaultUtils.isClient) {
-                return;
-            }
-            int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
-                ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
-                2f, radiusPx, duration);
-            ApplyDuration(id, duration);
-        }
-
-        internal static void SpawnRing(NPC owner, Vector2 center, float radiusPx, int duration, bool fower) {
+        internal static void SpawnRing(NPC owner, Vector2 center, float radiusPx, int duration, bool fower = false) {
             if (VaultUtils.isClient) {
                 return;
             }

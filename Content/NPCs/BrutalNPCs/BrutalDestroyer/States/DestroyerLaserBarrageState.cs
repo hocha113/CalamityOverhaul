@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
@@ -271,8 +271,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             int teleDuration = LockLead + Silence + 2;
             //大半弧无法用单扇形如实预告：起点射线 + 起始扇区告知出生位置与旋转方向（内部仅服务端生成、同步）
-            PrimeTelegraphLine.SpawnLine(npc, npc.Center, startAngle, teleDuration);
-            PrimeTelegraphLine.SpawnFan(npc, npc.Center, startAngle + 0.5f * side, 0.5f, teleDuration, true);
+            PrimeTelegraphLine.SpawnLine(npc, npc.Center, startAngle, teleDuration, true);
 
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.6f, Volume = 1f }, npc.Center);
