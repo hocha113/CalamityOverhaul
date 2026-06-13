@@ -119,7 +119,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             UpdateVisualDecay();
             ArmPreUpdate();
+
+            //客户端：臂独立攻击状态会追逐未同步玩家，移动副作用只用于视觉
+            //权威运动学交由服务端同步 + 引擎按速度外推(编队/殉爆收敛于已同步的 head，不经此路径)
+            bool clientShadow = VaultUtils.isClient;
+            Vector2 savedPos = npc.position;
+            Vector2 savedVel = npc.velocity;
+
             armStateMachine.Update();
+
+            if (clientShadow) {
+                npc.position = savedPos;
+                npc.velocity = savedVel;
+            }
+
             ArmPostUpdate();
             return false;
         }

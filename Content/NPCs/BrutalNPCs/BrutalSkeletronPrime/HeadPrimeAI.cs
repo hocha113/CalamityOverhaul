@@ -190,7 +190,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             UpdateStateContext();
             EvaluateGlobalTransitions();
 
+            //客户端：状态机的移动副作用只用于视觉，不得污染权威运动学
+            //位置/速度交由服务端同步 + 引擎按速度外推(dead reckoning)，消除本地追逐造成的抽动
+            bool clientShadow = VaultUtils.isClient;
+            Vector2 savedPos = npc.position;
+            Vector2 savedVel = npc.velocity;
+
             stateMachine.Update();
+
+            if (clientShadow) {
+                npc.position = savedPos;
+                npc.velocity = savedVel;
+            }
 
             //Boss急速模式：四肢健在时为头部缓慢供血
             if (stateContext.BossRush && npc.life < npc.lifeMax - 20) {
