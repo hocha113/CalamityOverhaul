@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 //点火俯冲：朝玩家周围的散布点强转向调头，爆发加速
                 if (target.Alives()) {
                     Vector2 aim = target.Center + new Vector2((hash - 0.5f) * 360f, 0f);
-                    Projectile.SmoothHomingBehavior(aim, 1f, 0.105f);
+                    Projectile.SmoothHomingBehavior(aim, 1f, 0.065f);
                 }
                 float diveSpeed = MathF.Min(Projectile.velocity.Length() * 1.05f + 0.1f, maxSpeed * 0.85f);
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitY) * diveSpeed;

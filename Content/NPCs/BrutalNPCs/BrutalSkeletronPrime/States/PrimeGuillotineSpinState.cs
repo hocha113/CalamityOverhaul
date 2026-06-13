@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal static int Telegraph => 36;
         internal static int SpinFrames => 200;
         /// <summary>圆周起始半径</summary>
-        internal static float OrbitRadiusStart => 420f;
+        internal static float OrbitRadiusStart => 620f;
         /// <summary>圆周收紧终点半径</summary>
-        internal static float OrbitRadiusEnd => 180f;
+        internal static float OrbitRadiusEnd => 380f;
 
         private float orbitAngle;
         private float orbitRadius;

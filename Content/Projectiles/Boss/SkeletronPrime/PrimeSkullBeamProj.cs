@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         public override string Texture => CWRConstant.Placeholder2;
 
         internal static int ExpandTime => 16;
-        internal static int SweepFrames => 150;
+        internal static int SweepFrames => 160;
         internal static int CollapseTime => 14;
         internal static int TotalLife => ExpandTime + SweepFrames + CollapseTime;
 
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             }
 
             if (Timer == 0 && !VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.35f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.35f, MaxInstances = 3 }, Projectile.Center);
             }
 
             //扫射角：展开期定格起始角 → 匀速横扫 → 收束期定格末角

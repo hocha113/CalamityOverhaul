@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         /// <summary>终结脉冲后的收势帧数</summary>
         internal static int WindDownFrames => 24;
 
-        /// <summary>链锁初始半径（屏幕级笼罩，约 45 格）</summary>
-        internal static float ChainRadiusStart => 720f;
+        /// <summary>链锁初始半径</summary>
+        internal static float ChainRadiusStart => 1020f;
         /// <summary>收紧终点半径</summary>
         internal static float ChainRadiusEnd => 420f;
         /// <summary>基础角速度（弧度/帧）——风车慢转，玩家跟着扇区走即可</summary>
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             if (Timer < TelegraphFrames) {
                 context.SetChargeState(1, Timer / (float)TelegraphFrames);
                 if (!VaultUtils.isClient && Timer == 1) {
-                    PrimeTelegraphLine.SpawnRing(npc, npc.Center, ChainRadiusStart, TelegraphFrames);
+                    PrimeTelegraphLine.SpawnRing(npc, npc.Center, ChainRadiusStart, TelegraphFrames, true);
                 }
             }
             else if (Timer == TelegraphFrames) {

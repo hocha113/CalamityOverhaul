@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -59,11 +59,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         }
 
         private void Movement(PrimeStateContext context) {
-            float vAccel = Main.masterMode ? 0.055f : 0.045f;
-            float vMax = Main.masterMode ? 5.5f : 4.5f;
-            float hAccel = Main.masterMode ? 0.13f : 0.11f;
-            float hMax = Main.masterMode ? 11f : 10f;
-            float decel = Main.masterMode ? 0.94f : 0.96f;
+            float vAccel = Main.masterMode ? 0.045f : 0.04f;
+            float vMax = Main.masterMode ? 4.5f : 4f;
+            float hAccel = Main.masterMode ? 0.1f : 0.09f;
+            float hMax = Main.masterMode ? 10f : 9f;
+            float decel = Main.masterMode ? 0.9f : 0.8f;
             HoverMovement(context, vAccel, vMax, hAccel, hMax, decel, 150, 380);
         }
     }

@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                     DestroyerHeadAI.SpawnBodySegments(npc);
                     DestroyerHeatWakeProj.EnsureForHead(npc);
                 }
-                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.25f }, player.Center);
+                SoundEngine.PlaySound(SoundID.Roar with { Pitch = 0.1f, Volume = 1.25f}, player.Center);
             }
 
             //幕二：第一趟贯穿（偏移线，体节在高速位移中展开）
@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 //头部移到地下待命位（远离玩家武器射程，预兆期间不可见）
                 npc.Center = player.Center + new Vector2(side * 420f, 1700f);
                 npc.netUpdate = true;
-                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.65f }, player.Center);
+                SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.65f}, player.Center);
             }
 
             //确定第一趟贯穿线：破土点偏移玩家约260px（公平阀——开场不打脸），自地下对角向上
@@ -167,7 +167,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 if (Timer % 14 == 0) {
                     SoundEngine.PlaySound(SoundID.WormDig with {
                         Volume = 0.45f + ramp * 0.55f,
-                        Pitch = -0.6f + ramp * 0.45f
+                        Pitch = -0.6f + ramp * 0.45f,
+                        MaxInstances = 3
                     }, breachPoint);
                 }
                 Lighting.AddLight(breachPoint, DestroyerMotionFX.HotOrange.ToVector3() * ramp * 0.8f);
@@ -228,7 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                         ModContent.ProjectileType<DestroyerStrikeTelegraph>(), 0, 0f, Main.myPlayer,
                         -1, -1, DestroyerStrikeTelegraph.PackParams(0, TelegraphTime));
                 }
-                SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.2f, Volume = 0.85f }, player.Center);
+                SoundEngine.PlaySound(SoundID.Item15 with { Pitch = -0.2f, Volume = 0.85f, MaxInstances = 3 }, player.Center);
             }
 
             //预警期：头部远处缓行，末12帧下颚咬合
@@ -303,7 +304,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             if (Timer == AimedEnd + 1) {
                 context.RefreshBodySegments();
-                SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.35f, Volume = 0.8f }, npc.Center);
+                SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.35f, Volume = 0.8f, MaxInstances = 3 }, npc.Center);
             }
 
             //尖刺展开波：从头部扫向尾部，扫过的体节切换为带刺贴图

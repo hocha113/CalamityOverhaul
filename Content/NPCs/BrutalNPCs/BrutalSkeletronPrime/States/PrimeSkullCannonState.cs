@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
@@ -59,8 +59,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     Timer - (ChargeFrames + SilenceFrames) - PrimeSkullBeamProj.ExpandTime,
                     0f, PrimeSkullBeamProj.SweepFrames);
                 float beamAngle = aimAngle - arcHalf + sweepSpeed * sweepT;
-                Vector2 recoil = -beamAngle.ToRotationVector2() * 1.2f;
-                npc.velocity = Vector2.Lerp(npc.velocity, recoil, 0.06f);
+                Vector2 recoil = -beamAngle.ToRotationVector2() * 0.45f;
+                npc.velocity *= 0.88f;
+                npc.velocity = Vector2.Lerp(npc.velocity, recoil, 0.035f);
+                float maxSweepSpeed = 2f;
+                if (npc.velocity.Length() > maxSweepSpeed) {
+                    npc.velocity = npc.velocity.SafeNormalize(Vector2.Zero) * maxSweepSpeed;
+                }
             }
 
             Timer++;
@@ -87,7 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                     float startAngle = aimAngle - arcHalf;
                     PrimeTelegraphLine.SpawnLine(npc, npc.Center, startAngle, LockLead + SilenceFrames);
                     PrimeTelegraphLine.SpawnFan(npc, npc.Center, startAngle + 0.5f,
-                        0.55f, LockLead + SilenceFrames);
+                        0.55f, LockLead + SilenceFrames, true);
                     npc.netUpdate = true;
                 }
                 if (!VaultUtils.isServer) {

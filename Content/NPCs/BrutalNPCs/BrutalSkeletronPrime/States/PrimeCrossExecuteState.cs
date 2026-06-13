@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Terraria;
 using Terraria.Audio;
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.8f, Pitch = 0.3f }, npc.Center);
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.2f }, crossCenter);
+                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 1f, Pitch = -0.2f, MaxInstances = 3 }, crossCenter);
                 PrimeScreenEffects.PushShockRing(crossCenter, 0.9f, 620f);
                 PrimeDeathPerformancePlayer.RequestShake(8f, 12);
             }

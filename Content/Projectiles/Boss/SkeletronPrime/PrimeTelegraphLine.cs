@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -54,6 +54,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         public override void AI() {
             Lighting.AddLight(Projectile.Center, new Vector3(0.5f, 0.12f, 0.04f) * (0.4f + 0.6f * Progress));
+            if (Projectile.localAI[0] >= 0 && Projectile.localAI[0].TryGetNPC(out var npc) && npc.type == Projectile.localAI[1]) {
+                Projectile.Center = npc.Center;
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -216,6 +219,21 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             ApplyDuration(id, duration);
         }
 
+        internal static void SpawnFan(NPC owner, Vector2 center, float rotation, float halfAngle, int duration, bool fower) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            float encoded = 1f + MathHelper.Clamp(halfAngle, 0.05f, 1.4f) / 10f;
+            int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
+                ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
+                encoded, rotation, duration);
+            if (fower && id.TryGetProjectile(out var proj)) {
+                proj.localAI[0] = owner.whoAmI;
+                proj.localAI[1] = owner.type;
+            }
+            ApplyDuration(id, duration);
+        }
+
         /// <summary>生成圆环预警（中心 center，半径 radiusPx）</summary>
         internal static void SpawnRing(NPC owner, Vector2 center, float radiusPx, int duration) {
             if (VaultUtils.isClient) {
@@ -224,6 +242,20 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
                 ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
                 2f, radiusPx, duration);
+            ApplyDuration(id, duration);
+        }
+
+        internal static void SpawnRing(NPC owner, Vector2 center, float radiusPx, int duration, bool fower) {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            int id = Projectile.NewProjectile(owner.GetSource_FromAI(), center, Vector2.Zero,
+                ModContent.ProjectileType<PrimeTelegraphLine>(), 0, 0f, Main.myPlayer,
+                2f, radiusPx, duration);
+            if (fower && id.TryGetProjectile(out var proj)) {
+                proj.localAI[0] = owner.whoAmI;
+                proj.localAI[1] = owner.type;
+            }
             ApplyDuration(id, duration);
         }
 

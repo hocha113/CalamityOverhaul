@@ -1,10 +1,12 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
@@ -217,6 +219,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             phaseTimer++;
             Timer++;
+
+            if (!VaultUtils.isClient && npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage && Timer % 10 == 0 && phase == 2) {
+                int damage = ScaleDamage(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton));
+                Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, npc.To(context.Target.Center).UnitVector() * 6,
+                ModContent.ProjectileType<PrimeSeekerMissile>(), damage, 0f,
+                Main.myPlayer, npc.target, phaseTimer);
+            }
 
             int maxHits = 3 + (context.DeathMode ? 1 : 0);
             if (Counter >= maxHits && phase == 2 && phaseTimer > 6 && !VaultUtils.isClient) {

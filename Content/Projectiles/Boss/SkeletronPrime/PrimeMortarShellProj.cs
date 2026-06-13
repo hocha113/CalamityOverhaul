@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         /// <summary>标准飞行帧数（固定值使预警环时长可在发射前预解）</summary>
         internal static int FlightFrames => 55;
         /// <summary>爆炸判定直径（= 预警环直径，承诺即兑现，不多不少）</summary>
-        internal static int BlastDiameter => 220;
+        internal static int BlastDiameter => 620;
         internal static int BlastFrames => 12;
 
         private ref float Timer => ref Projectile.localAI[0];

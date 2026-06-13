@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
             }
 
             if (Timer == 0 && !VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.8f, Pitch = FlameTheme ? -0.25f : 0.1f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.8f, Pitch = FlameTheme ? -0.25f : 0.1f, MaxInstances = 3 }, Projectile.Center);
             }
 
             //锚定与朝向:跟随宿主旋转(状态机驱动npc.rotation完成扫射)

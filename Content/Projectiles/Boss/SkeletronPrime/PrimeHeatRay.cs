@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.PRTTypes;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         protected virtual Color ThemeColor => new(255, 86, 22);
         protected virtual Color ThemeGlow => new(255, 212, 120);
         /// <summary>出生音效；返回 null 时静默（由状态侧统一配乐）</summary>
-        protected virtual SoundStyle? BirthSound => SoundID.Zombie104 with { Volume = 0.75f, Pitch = 0.1f };
+        protected virtual SoundStyle? BirthSound => SoundID.Zombie104 with { Volume = 0.75f, Pitch = 0.1f, MaxInstances = 3 };
 
         internal int TotalLife => ExpandTime + SustainFrames + CollapseTime;
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using System;
@@ -346,7 +346,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             sweepStart = (ctx.Target.Center - ctx.Npc.Center).ToRotation();
             fired = false;
             if (!VaultUtils.isClient) {
-                PrimeTelegraphLine.SpawnFan(ctx.Npc, ctx.Npc.Center, sweepStart, SweepHalfArc, PrimeDirector.BeamTelegraphFrames);
+                PrimeTelegraphLine.SpawnFan(ctx.Npc, ctx.Npc.Center, sweepStart, SweepHalfArc, PrimeDirector.BeamTelegraphFrames, true);
             }
         }
 
