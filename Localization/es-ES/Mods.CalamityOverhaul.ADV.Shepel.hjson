@@ -188,13 +188,13 @@ CybCourseOutroDialogue: {
 }
 
 CybCourseCompletePanel: {
-	Title: TRAINING COMPLETE
-	Subtitle: SUPERDREAM PROTOCOL
+	Title: ENTRENAMIENTO COMPLETADO
+	Subtitle: PROTOCOLO SÚPER SUEÑO
 	Stat1: "[#] HUD de SHPC calibrado"
 	Stat2: "[#] Tiempo de Hackeo calibrado"
 	Stat3: "[#] Interfaz de escaneo de bloques calibrada"
-	BtnRetry: RETRY
-	BtnExit: EXIT
+	BtnRetry: REINTENTAR
+	BtnExit: SALIR
 	Footer: Seleccione para continuar — RETRY reinicia el entrenamiento, EXIT abandona el hiper-sueño
 }
 

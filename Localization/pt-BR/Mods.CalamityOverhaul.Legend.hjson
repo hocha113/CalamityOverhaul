@@ -165,7 +165,7 @@ HalibutText: {
 			Pressione [Halibut_Superposition] para usar Golpe de Superposicao.
 			Segure o Clique Esquerdo para iniciar superposicao infinita e reinicio infinito.
 			'''
-		LayerTitleFormat: Tier {0}
+		LayerTitleFormat: Camada {0}
 	}
 
 	ResurrectionUI: {
@@ -562,7 +562,7 @@ SHPCModuleStat: {
 	Damage: "{0}% DANO"
 	Spread: "{0}% DISPERSAO"
 	BeamSpeed: "{0}% VEL. DO FEIXE"
-	Homing: "{0}% HOMING"
+	Homing: "{0}% RASTREAMENTO"
 	MergedDamage: "{0}% DANO MESCLADO"
 	ManaCost: "{0}% CUSTO DE MANA"
 	ChargeTime: "{0}% TEMPO DE CARGA"
@@ -570,7 +570,7 @@ SHPCModuleStat: {
 	BeamLife: "{0}% ALCANCE DO FEIXE"
 	ExplosionRadius: "{0}% RAIO DA EXPLOSAO"
 	BeamCount: "{0} FEIXE(S) / SARAIVADA"
-	Crit: "{0}% CRIT"
+	Crit: "{0}% CRITICO"
 	Pierce: "{0} PERFURACAO EXTRA"
 	Chain: "{0} SALTOS EM CADEIA"
 	Split: "{0} FEIXES DE DIVISAO NO FIM DA VIDA"
@@ -600,7 +600,7 @@ MoldProcessingUI: {
 	Title: PROCESSAMENTO DE MOLDES
 	Subtitle: DECOMPOR · REFORJAR
 	TabWorkbench: BANCADA
-	TabCodex: CODEX
+	TabCodex: Codice de Moldes
 	Decompose: DECOMPOR
 	Reforge: REFORJAR
 	ClearPin: LIMPAR MARCAÇÃO

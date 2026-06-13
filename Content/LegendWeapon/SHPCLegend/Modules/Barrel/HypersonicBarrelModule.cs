@@ -58,7 +58,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                     PRTLoader.NewParticle<PRT_Smoke>(
                         beam.Projectile.Center - beam.FlightDirection * 14f,
                         -beam.FlightDirection * 0.8f + Main.rand.NextVector2Circular(0.6f, 0.6f),
-                        new Color(255, 240, 220), Main.rand.NextFloat(0.25f, 0.5f));
+                        new Color(255, 240, 220), Main.rand.NextFloat(0.25f, 0.5f))
+                        .Configure(Main.rand.Next(22, 38), 0.65f, Main.rand.NextFloat(-0.03f, 0.03f));
                 }
                 return;
             }

@@ -98,7 +98,7 @@ Generator: {
 		FuelLabel: Combustivel
 		TemperatureLabel: Temperatura
 		PowerLabel: Energia
-		StatusLabel: Status:
+		StatusLabel: Estado:
 		ActiveText: Ativo
 		IdleText: Inativo
 		EfficiencyText: Eficiencia: {0}%
@@ -114,7 +114,7 @@ ChargingStationUI: {
 	BatterySlotLabel: Bateria
 	StationEnergyLabel: Energia da Estacao
 	ItemChargeLabel: Carga do Item
-	StatusLabel: Status:
+	StatusLabel: Estado:
 	ChargingText: Carregando
 	IdleText: Inativo
 	InsertItemHint: Insira item para carregar
@@ -199,7 +199,7 @@ Incinerator: {
 		OutputLabel: Saida
 		ProgressLabel: Progresso
 		PowerLabel: Energia
-		StatusLabel: Status:
+		StatusLabel: Estado:
 		SmeltingText: Incinerando
 		IdleText: Inativo
 		NoPowerText: Sem Energia
@@ -648,7 +648,7 @@ DecryptionStrings: {
 	DecryptionPanelStatusBreaching: VIOLANDO
 	DecryptionPanelStatusDataFlood: INJETANDO
 	DecryptionPanelStatusMessage: DECODIFICADO
-	BreachBuffer: Buffer {0}/{1}
+	BreachBuffer: Reserva {0}/{1}
 	BreachTargets: Sequencia Alvo
 	BreachTimer: Tempo Restante
 	BreachAxisRow: Restricao de Linha ▸ Linha {0}

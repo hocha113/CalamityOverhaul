@@ -566,7 +566,7 @@ SHPCModuleStat: {
 	BeamLife: "{0}% PORTÉE DU FAISCEAU"
 	ExplosionRadius: "{0}% RAYON D'EXPLOSION"
 	BeamCount: "{0} FAISCEAU(X) / SALVE"
-	Crit: "{0}% CRIT"
+	Crit: "{0}% critique"
 	Pierce: "{0} PÉNÉTRATION SUPPL."
 	Chain: "{0} SAUTS EN CHAÎNE"
 	Split: "{0} FAISCEAUX SECONDAIRES EN FIN DE VIE"
@@ -596,7 +596,7 @@ MoldProcessingUI: {
 	Title: TRAITEMENT DES MOULES
 	Subtitle: DÉCOMPOSER · REFORGER
 	TabWorkbench: ÉTABLI
-	TabCodex: CODEX
+	TabCodex: Codex des moules
 	Decompose: DÉCOMPOSER
 	Reforge: REFORGER
 	ClearPin: RETIRER L'ÉPINGLE
