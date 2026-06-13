@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.JawCommand = 1;//昂首蓄能，强制张开口器
 
             //昂首飞向玩家上方偏侧的高空阵位
-            Vector2 hover = player.Center + new Vector2(SideSign(npc) * 300f, -680f);
+            Vector2 hover = player.Center + new Vector2(SideSign(npc) * 300f, -380f);
             SetMovement(context, hover, 22f, 0.9f);
             context.AccelRate = 0.08f;
 

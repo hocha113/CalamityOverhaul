@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
     /// 外覆熔焰浊浪宽晕、沿束熔滴飞溅、口器多层聚能光球，与机械骷髅王橙色主炮形成红色差异化。
     /// 展开期不造成伤害（公平反应窗口），扫射角速度刻意压低，避免远端切向无解。</para>
     /// </summary>
-    internal class DestroyerMawBeamProj : ModProjectile, IPrimitiveDrawable
+    internal class DestroyerMawBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder2;
 
@@ -204,7 +204,10 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             if (effect != null && noise != null) {
                 DrawShaderBeam(effect, noise, opacity, ex);
             }
-            DrawAdditiveDressing(effect == null || noise == null, opacity, ex);
+        }
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), IsEnragedHost);
         }
 
         /// <summary>主光柱：DestroyerBeam.fx 在四边形 UV 内生成白热主轴 + 缠绕电弧 + 推进脉冲 + 头部光球</summary>
@@ -245,11 +248,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
         }
 
         /// <summary>外覆熔焰浊浪宽晕 + 推进光球脉冲 + 口器多层聚能光球 / 十字星闪（兼任着色器缺失兜底）</summary>
-        private void DrawAdditiveDressing(bool shaderMissing, float opacity, bool ex) {
+        private void DrawAdditiveDressing(float opacity, bool ex) {
             SpriteBatch sb = Main.spriteBatch;
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
             Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
             Texture2D glow = CWRAsset.DiffusionCircle.Value;
             Texture2D star = CWRAsset.StarTexture.Value;
@@ -269,11 +269,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 new Vector2(lenScale, beamWidth / line.Height * (ex ? 7f : 6f) * flicker), SpriteEffects.None, 0);
             Main.EntitySpriteDraw(line, drawPos, null, Color.Lerp(blood, amber, 0.5f) * (0.6f * opacity), rot, lineOrigin,
                 new Vector2(lenScale, beamWidth / line.Height * 3f), SpriteEffects.None, 0);
-            //着色器缺失时补一条白热核线
-            if (shaderMissing) {
-                Main.EntitySpriteDraw(line, drawPos, null, core * (0.95f * opacity), rot, lineOrigin,
-                    new Vector2(lenScale, beamWidth / line.Height * 1.2f * flicker), SpriteEffects.None, 0);
-            }
 
             //推进能量脉冲：数颗光球自口器奔向末端
             const int pulses = 4;
@@ -295,8 +290,6 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 muzzleScale * 0.85f, SpriteEffects.None, 0);
             Main.EntitySpriteDraw(star, drawPos, null, amber * (0.9f * opacity), Main.GlobalTimeWrappedHourly * 3.2f,
                 star.Size() / 2f, muzzleScale * 0.8f * flicker, SpriteEffects.None, 0);
-
-            sb.End();
         }
     }
 }
