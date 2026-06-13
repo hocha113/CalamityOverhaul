@@ -5,9 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares
 {
-    /// <summary>
-    /// 义体槽位分类，对应12个槽位
-    /// </summary>
+    /// <summary>义体槽位，对应 12 个装备位</summary>
     internal enum CyberwareSlotCategory
     {
         FrontalCortex,    // 0 额叶皮层
@@ -24,47 +22,33 @@ namespace CalamityOverhaul.Content.Cyberwares
         RightLeg,         // 11 右腿
     }
 
-    /// <summary>
-    /// 所有义体物品的基类
-    /// </summary>
+    /// <summary>义体物品基类</summary>
     internal abstract class BaseCyberware : ModItem
     {
-        /// <summary>
-        /// 该义体可装入的槽位类别
-        /// </summary>
+        /// <summary>可装入槽位类别</summary>
         public virtual CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.OperatingSystem;
 
-        /// <summary>
-        /// 该义体占用的容量
-        /// </summary>
+        /// <summary>占用容量</summary>
         public virtual int CapacityCost => 1;
 
-        /// <summary>
-        /// 义体装备时触发的效果（子类可覆写）
-        /// </summary>
+        /// <summary>装备时回调</summary>
         public virtual void OnEquip(Player player) { }
 
-        /// <summary>
-        /// 义体卸载时触发的效果（子类可覆写）
-        /// </summary>
+        /// <summary>卸载时回调</summary>
         public virtual void OnUnequip(Player player) { }
 
-        /// <summary>
-        /// 义体装备期间每帧更新（子类可覆写）
-        /// </summary>
+        /// <summary>装备期间每帧更新</summary>
         public virtual void UpdateEquipped(Player player) { }
 
         /// <summary>
-        /// 与原版 PostUpdateEquips 同期触发的统计加成入口
-        /// <br/>所有需要在装备阶段写入的属性（防御、击退抗性、移速等）请在此覆写
+        /// PostUpdateEquips 同期统计加成入口
+        /// <br/>防御/击退/移速等属性在此覆写
         /// </summary>
         public virtual void PostUpdateEquipped(Player player) { }
 
         /// <summary>
-        /// 该义体注册的主动技能描述符，null 表示不参与雷达技能选盘
-        /// <br/>建议返回一个 <c>static</c> 单例实例，雷达每帧都会查询此属性
-        /// <br/>技能的真实运行时状态请继续保留在各自的 ModPlayer / ModSystem 中，
-        /// 描述符仅负责为雷达提供元数据并接收触发回调
+        /// 主动技能描述符，null 不参与雷达
+        /// <br/>建议 static 单例；运行时状态留在 ModPlayer/ModSystem
         /// </summary>
         public virtual CyberwareSkillBase ActiveSkill => null;
 

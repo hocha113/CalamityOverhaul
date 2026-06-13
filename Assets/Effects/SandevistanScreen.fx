@@ -1,17 +1,16 @@
+// ============================================================================
+// SandevistanScreen.fx 沙德维斯坦全屏滤镜
+// 采样 uImage0 屏幕
+// ============================================================================
+
 sampler uImage0 : register(s0);
 
-//效果强度（0=无效果，1=完整效果）
-float intensity;
-//时间，用于神经脉冲呼吸动画
+float intensity;           //0~1
 float uTime;
-//色差偏移基准量
-float chromaticOffset;
-//暗角强度
-float vignetteStrength;
-//玩家在屏幕上的归一化坐标（0.5, 0.5 = 屏幕中央）
-float2 playerCenter;
-//径向模糊扩散强度
-float radialBlurStrength;
+float chromaticOffset;     //色差偏移基准
+float vignetteStrength;    //暗角强度
+float2 playerCenter;       //玩家屏幕归一化坐标
+float radialBlurStrength;  //径向模糊
 
 float4 SandevistanScreenPass(float2 coords : TEXCOORD0) : COLOR0
 {

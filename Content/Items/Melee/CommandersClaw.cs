@@ -12,11 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 统帅之钳 —— 战士的重型投掷长矛
-    /// 将装饰华丽的指挥官长矛掷向敌人，标枪保持枪尖朝向飞行方向
-    /// 命中时迸发金属火星与冲击波，并轻微震屏，撞墙后插入地面
-    /// </summary>
+    /// 统帅之钳 重型投掷长矛 命中火星冲击波 撞墙插入
     internal class CommandersClaw : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "CommandersClaw";
@@ -42,20 +38,16 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool CanUseItem(Player player) => true;
     }
 
-    /// <summary>
-    /// 统帅长矛实体
-    /// 阶段0: 飞行 —— 枪尖朝向速度方向，受轻微重力影响
-    /// 阶段1: 嵌入 —— 撞墙后插入地形或附着到 NPC 上，短暂保留视觉
-    /// </summary>
+    /// 统帅长矛 阶段0飞行枪尖朝速度 阶段1嵌入撞墙或贴NPC
     internal class CommandersClawThrow : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Melee + "CommandersClawThrow";
 
-        //阶段标记: 0 = 飞行, 1 = 嵌入静止
+        //阶段 0飞行 1嵌入
         private ref float Phase => ref Projectile.ai[0];
         //嵌入或飞行计时
         private ref float PhaseTimer => ref Projectile.ai[1];
-        //贴附到的 NPC 索引（嵌入阶段使用，-1 = 无）
+        //贴附NPC索引 嵌入用 -1无
         private ref float StuckNPC => ref Projectile.ai[2];
         //贴附时的相对偏移
         private ref float StuckOffsetX => ref Projectile.localAI[0];
@@ -111,10 +103,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void FlightPhase() {
-            //标枪经典: 枪尖始终朝向速度方向，纹理本身竖向 (枪尖朝上)，因此 +PiOver2
+            //枪尖朝速度 纹理竖向枪尖朝上 +PiOver2
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
-            //轻微重力下坠，起手 12 帧内不下坠保证投掷感
+            //起手12帧无重力保投掷感
             if (PhaseTimer > 12 && Projectile.velocity.Y < MaxFallSpeed) {
                 Projectile.velocity.Y += Gravity;
             }
@@ -185,7 +177,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //保持插入时枪尖朝向飞行方向
             Projectile.rotation = oldVelocity.ToRotation() + MathHelper.PiOver4;
-            //向墙内推进一点点，呈现真正"扎进"地形的视觉
+            //向墙内推进呈现扎入地形
             Projectile.Center += oldVelocity.SafeNormalize(Vector2.Zero) * 6f;
 
             EnterStuckPhase(null);
@@ -210,7 +202,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            //战士标枪的"重击"特性: 高伤害与击退加成
+            //战士标枪高伤害击退加成
             modifiers.SourceDamage *= 1.1f;
             modifiers.Knockback *= 1.2f;
         }

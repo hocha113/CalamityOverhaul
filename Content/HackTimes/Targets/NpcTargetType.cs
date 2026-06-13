@@ -3,10 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// NPC 目标种类工厂
-    /// <br/>NPC 体积通常压在物块上，因此具有最高的悬停优先级
-    /// </summary>
+    /// <summary>NPC 目标工厂，悬停优先级最高</summary>
     internal class NpcTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Npc;

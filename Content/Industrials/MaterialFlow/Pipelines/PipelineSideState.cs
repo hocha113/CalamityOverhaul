@@ -8,25 +8,19 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    /// <summary>
-    /// 管道侧面连接状态，处理连接检测、电力传输和绘制逻辑
-    /// </summary>
+    /// <summary>管道侧面连接状态，处理连接检测、电力传输与绘制</summary>
     internal class PipelineSideState(Point16 point16)
     {
         internal Point16 Position;
         internal readonly Point16 Offset = point16;
-        /// <summary>
-        /// 管道传输速率(UE/帧)，决定了整个电网的最大吞吐能力
-        /// </summary>
+        /// <summary>管道传输速率 UE/帧，决定电网吞吐上限</summary>
         internal const float TRANSFER_RATE = 10f;
         internal TileProcessor externalTP;
         internal UEPipelineTP coreTP;
         internal PipelineLinkType LinkType { get; private set; } = PipelineLinkType.None;
         internal bool canDraw;
 
-        /// <summary>
-        /// 更新连接状态并处理电力传输
-        /// </summary>
+        /// <summary>更新连接状态并传输电力</summary>
         public void UpdateConnectionState() {
             //重置状态
             externalTP = null;
@@ -41,7 +35,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
             if (!VaultUtils.SafeGetTopLeft(checkPos, out var topLeft)) return;
 
-            //使用TileProcessorLoader提供的O(1)字典查询
+            //TileProcessorLoader O(1) 查询
             if (!TileProcessorLoader.TP_Point_To_Instance.TryGetValue(topLeft, out externalTP)) return;
             if (externalTP == null || !externalTP.Active) {
                 externalTP = null;
@@ -66,9 +60,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             canDraw = LinkType != PipelineLinkType.None;
         }
 
-        /// <summary>
-        /// 处理与发电机的连接:始终从发电机抽取电力到管道
-        /// </summary>
+        /// <summary>发电机连接，从发电机抽取电力到管道</summary>
         private void HandleGeneratorConnection(BaseGeneratorTP generator) {
             if (generator.MachineData == null || coreTP.MachineData == null) return;
 
@@ -87,15 +79,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             LinkType = PipelineLinkType.Generator;
         }
 
-        /// <summary>
-        /// 处理与另一个管道的连接:基于压差均衡电力
-        /// </summary>
+        /// <summary>管道连接，基于压差均衡电力</summary>
         private void HandlePipelineConnection(BaseUEPipelineTP otherPipe) {
             if (otherPipe.MachineData == null || coreTP.MachineData == null) return;
 
             //管道之间基于压差均衡电力，传输量与压差成正比
             float diff = coreTP.MachineData.UEvalue - otherPipe.MachineData.UEvalue;
-            //压差越大传输越快，但不超过TRANSFER_RATE
+            //压差越大越快，上限 TRANSFER_RATE
             float transfer = Math.Min(TRANSFER_RATE, Math.Abs(diff) * 0.5f);
 
             if (diff > 0.1f) {
@@ -118,16 +108,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             LinkType = PipelineLinkType.Pipeline;
         }
 
-        /// <summary>
-        /// 处理与电池/用电器的连接:
-        /// - ReceivedEnergy=true(用电器/需要充能的设备): 管道始终向其供电
-        /// - ReceivedEnergy=false(储能电池): 双向压差传输，管道电力多则充电池，少则从电池取电
-        /// </summary>
+        /// <summary>电池/用电器连接，ReceivedEnergy 决定单向供电或双向压差</summary>
         private void HandleBatteryConnection(BaseBattery battery) {
             if (battery.MachineData == null || coreTP.MachineData == null) return;
 
             if (battery.ReceivedEnergy) {
-                //用电器类设备:始终从管道向其供电(单向)
+                //用电器：单向从管道供电
                 float available = coreTP.MachineData.UEvalue;
                 float deviceSpace = battery.MaxUEValue - battery.MachineData.UEvalue;
                 float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, deviceSpace));
@@ -138,14 +124,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
             else {
-                //储能电池:基于压差双向传输
-                //计算管道和电池的填充比例，用比例差决定方向和力度
+                //储能电池：比例差决定充放电方向
                 float pipeRatio = coreTP.MachineData.UEvalue / coreTP.MaxUEValue;
                 float batteryRatio = battery.MachineData.UEvalue / battery.MaxUEValue;
                 float ratioDiff = pipeRatio - batteryRatio;
 
                 if (ratioDiff > 0.05f) {
-                    //管道比例更高，向电池充电
+                    //管道比例高，向电池充电
                     float available = coreTP.MachineData.UEvalue;
                     float batterySpace = battery.MaxUEValue - battery.MachineData.UEvalue;
                     float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, batterySpace));
@@ -157,7 +142,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                     }
                 }
                 else if (ratioDiff < -0.05f) {
-                    //电池比例更高，从电池取电到管道
+                    //电池比例高，向管道取电
                     float available = battery.MachineData.UEvalue;
                     float pipeSpace = coreTP.MaxUEValue - coreTP.MachineData.UEvalue;
                     float transfer = Math.Min(TRANSFER_RATE, Math.Min(available, pipeSpace));
@@ -169,7 +154,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                     }
                 }
 
-                //储能电池有电时也标记网络为有电源(作为后备电源)
+                //储能电池有电时标记网络有电源
                 if (battery.MachineData.UEvalue > 0) {
                     coreTP.IsNetworkPowered = true;
                 }
@@ -178,13 +163,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             LinkType = PipelineLinkType.Battery;
         }
 
-        /// <summary>
-        /// 更新绘制状态
-        /// </summary>
+        /// <summary>更新绘制状态</summary>
         public void UpdateDrawState() {
             if (!canDraw || externalTP == null) return;
 
-            //如果另一个管道是拐角或十字，则不绘制连接臂避免穿帮
+            //拐角/十字/三通不绘制连接臂
             if (externalTP is UEPipelineTP otherPipe) {
                 if (otherPipe.Shape is PipelineShape.Cross or PipelineShape.Corner or PipelineShape.ThreeWay) {
                     canDraw = false;
@@ -192,9 +175,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>
-        /// 绘制连接臂
-        /// </summary>
+        /// <summary>绘制连接臂</summary>
         public void Draw(SpriteBatch spriteBatch) {
             if (coreTP?.MachineData == null || externalTP == null) return;
 

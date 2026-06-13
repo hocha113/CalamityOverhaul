@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>
-    /// 弹幕扫描数据实现
-    /// <br/>用于分析世界中的 Projectile 实体，不默认提供可上传协议
-    /// </summary>
+    /// <summary>弹幕扫描，默认不可骇入</summary>
     internal class ProjectileScannable : IHackTarget
     {
         public int ProjectileIndex { get; }

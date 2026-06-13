@@ -11,14 +11,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
 {
     /// <summary>
-    /// CSTM 视像义眼专属 HUD
-    /// <br/>仅在玩家装备本义眼且<b>未</b>手持 SHPC 时显示，避免与 <see cref="SHPCUI"/> 的左下能量核心叠绘
-    /// <br/>渲染内容刻意精简：
-    /// <list type="bullet">
-    ///   <item>左下小型"义眼核心"图标，作为该 RAM 弧条的来源标识</item>
-    ///   <item>复用 <see cref="SHPCRenderer.DrawRAMBar"/> 绘制 RAM 弧条，保持与 SHPC HUD 同款视觉</item>
-    /// </list>
-    /// 自身不存任何外部状态，仅缓存一份用于平滑插值的本地显示值
+    /// CSTM 视像义眼 HUD，左下 RAM 弧条+义眼核心
+    /// <br/>装备且未持 SHPC 时显示；复用 SHPCRenderer.DrawRAMBar
     /// </summary>
     internal class CstmVisualEyeHUD : UIHandle
     {
@@ -96,15 +90,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
                 ramDisplayValue, RamSystem.MaxRam, time, globalAlpha);
         }
 
-        /// <summary>
-        /// 与 SHPCUI 完全一致的核心位置，保证两套 HUD 在同一位置无缝切换
-        /// </summary>
+        /// <summary>与 SHPCUI 一致的核心位置</summary>
         private static Vector2 GetCorePosition() => new(96f, Main.screenHeight - 96f);
 
-        /// <summary>
-        /// 程序化绘制小型"义眼"核心：外环 + 巩膜盘 + 虹膜环 + 瞳孔
-        /// <br/>保持与 SHPC 主色一致的青色基调，但通过竖向瞳孔和扫描线明确区分两者来源
-        /// </summary>
+        /// <summary>程序化义眼核心：外环+巩膜+虹膜+竖瞳+扫描线</summary>
         private static void DrawEyeCore(SpriteBatch sb, Texture2D px, Vector2 center,
             float time, float globalAlpha) {
             //核心整体半径较 SHPC 的 CoreRingR 略小，让弧条视觉权重更明显

@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 延伸枪托：大幅延长光束射程与初速，配合狙击瞄具可实现超远程打击
-    /// </summary>
+    /// <summary>延伸枪托：大幅延长光束射程与初速</summary>
     internal sealed class ExtenderStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

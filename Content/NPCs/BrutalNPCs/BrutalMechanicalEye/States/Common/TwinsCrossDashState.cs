@@ -10,11 +10,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>
-    /// 双子交叉冲刺合击：
-    /// 魔焰眼与激光眼分别就位于玩家的水平/垂直两侧，同步蓄力后十字交叉冲刺，
-    /// 交点爆出涟漪冲击环。一阶段轻量合击，二阶段亦作为大招未解锁时的替补
-    /// </summary>
+    /// <summary>交叉冲刺合击：水平/垂直两侧十字冲，交点冲击环</summary>
+    /// <para>一阶段轻量合击；二阶段大招未解锁时替补</para>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCrossDash, typeof(TwinsStateContext))]
     internal class TwinsCrossDashState : TwinsStateBase
     {

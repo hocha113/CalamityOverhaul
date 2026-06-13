@@ -11,12 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 自适应瞄具：预测火控系统。持续解析光标附近目标的运动轨迹，
-    /// 在其「预测拦截点」投射全息标线；新发射的光束自动偏转打提前量，
-    /// 命中正在移动的目标时火控确认，追加 25% 适应打击
-    /// （世纪之花礼物 —— 猎杀移动猎物的丛林之眼）
-    /// </summary>
+    /// <summary>自适应瞄具：预测拦截点偏转光束首帧，移动目标 +25% 适应打击</summary>
     internal sealed class AdaptiveOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -107,10 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
     }
 
-    /// <summary>
-    /// 自适应全息标线：悬浮在锁定目标预测拦截点上的旋转括弧准星。
-    /// 纯视觉弹幕，无伤害；目标丢失或玩家收起武器时自动淡出消亡
-    /// </summary>
+    /// <summary>预测拦截点全息标线，纯视觉；失锁或收枪淡出</summary>
     internal sealed class SHPCAdaptiveReticleProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

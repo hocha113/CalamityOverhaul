@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 液体目标种类工厂
-    /// <br/>优先级低于物块，只有没有实体物块目标覆盖时才作为兜底分析对象
-    /// </summary>
+    /// <summary>液体目标工厂，无实体块时兜底</summary>
     internal class WaterTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Water;

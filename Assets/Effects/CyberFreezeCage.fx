@@ -1,8 +1,6 @@
 // ============================================================================
-// CyberFreezeCage.fx — 赛博冻结六角能量罩着色器
-// 在被冻结实体周围绘制圆形六角网格能量囚笼
-// 效果：六角网格骨架 + 能量脉冲闪烁 + 边缘辉光 + 数据流纹 + 形成/碎裂动画
-// 色调：暗红晶/黑墙风格 (偏冷红品红，与领域暖橙红区分)
+// CyberFreezeCage.fx 赛博冻结六角能量罩
+// 圆形六角囚笼+脉冲辉光；s0 白图；AlphaBlend
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +10,7 @@ float progress;      // 冻结进度 0(刚冻结)→1(即将解冻)
 float formProgress;  // 笼体形成进度 0→1 (前30帧快速完成)
 float seed;          // 每个实体独立随机种子
 
-// ---- 工具函数 ----
+// 工具函数
 
 float hash11(float p)
 {
@@ -62,16 +60,16 @@ float4 hexGrid(float2 uv)
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-    // ================================================================
+    // =
     // UV映射: [0,1] → [-1,1] 中心坐标系
-    // ================================================================
+    // =
     float2 uv = (coords - 0.5) * 2.0;
     float dist = length(uv);
     float angle = atan2(uv.y, uv.x);
 
-    // ================================================================
+    // =
     // 笼体边界
-    // ================================================================
+    // =
     float maxRadius = 0.82;
     float currentRadius = maxRadius * formProgress;
 
@@ -86,9 +84,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     if (dist > currentRadius + 0.22 && cageMask < 0.001)
         return float4(0, 0, 0, 0);
 
-    // ================================================================
+    // =
     // 六角网格生成
-    // ================================================================
+    // =
     float hexScale = 4.5;
     float2 hexUV = uv * hexScale;
     float4 hex = hexGrid(hexUV);
@@ -100,18 +98,18 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float edgeW = 0.13;
     float hexLine = 1.0 - smoothstep(edgeW - 0.04, edgeW + 0.01, hexEdge);
 
-    // ================================================================
+    // =
     // 色彩调板 (暗红晶/黑墙风格)
-    // ================================================================
+    // =
     float3 edgeCrimson  = float3(1.0, 0.12, 0.30);
     float3 edgeMaroon   = float3(0.70, 0.05, 0.20);
     float3 cageBaseDark = float3(0.18, 0.02, 0.07);
     float3 flashBright  = float3(1.0, 0.6, 0.55);
     float3 flowBright   = float3(1.0, 0.45, 0.45);
 
-    // ================================================================
+    // =
     // 格子可见性 —— 形成 / 碎裂动画
-    // ================================================================
+    // =
     float cellDistNorm = length(hexCtr) / (hexScale * maxRadius);
 
     // 形成: 从中心向外逐层展开
@@ -125,9 +123,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     float cellVisible = cellAppear * cellShatter;
 
-    // ================================================================
+    // =
     // 能量脉冲: 格子呼吸 + 随机闪烁
-    // ================================================================
+    // =
     float cellPhase = hash11(hexId * 73.1 + seed * 17.0) * 6.2832;
     float pulse = 0.35 + 0.65 * sin(uTime * 2.5 + cellPhase);
     pulse *= pulse;
@@ -136,24 +134,24 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float cellFlicker = step(0.72, hash11(hexId * 41.3 + flickerTime));
     float cellGlow = pulse * 0.5 + cellFlicker * 0.7;
 
-    // ================================================================
+    // =
     // 数据流纹: 沿六角边缘流动的亮线
-    // ================================================================
+    // =
     float flowSpeed = uTime * 2.5;
     float flowParam = frac(hexCtr.x * 0.37 + hexCtr.y * 0.53 + flowSpeed + seed);
     float flowPulse = smoothstep(0.0, 0.12, flowParam) * (1.0 - smoothstep(0.12, 0.30, flowParam));
     float dataFlow = hexLine * flowPulse * 2.5;
 
-    // ================================================================
+    // =
     // 合成六角网格颜色
-    // ================================================================
+    // =
     float3 gridColor = lerp(edgeMaroon, edgeCrimson, pulse) * hexLine * 1.5;
     float3 fillColor = cageBaseDark * (1.0 - hexLine) * cellGlow * 1.2;
     float3 flowColor = flowBright * dataFlow * 1.3;
 
-    // ================================================================
+    // =
     // 边缘辉光: 笼体边界内侧亮带 + 外散光晕
-    // ================================================================
+    // =
     float edgeGlowBand = smoothstep(currentRadius - 0.18, currentRadius - 0.01, dist)
                        * (1.0 - smoothstep(currentRadius - 0.01, currentRadius + 0.03, dist));
     float edgePulse = 0.55 + 0.45 * sin(uTime * 3.0 + angle * 2.5 + seed * 5.0);
@@ -164,16 +162,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float outerGlow = exp(-outerDist * 8.0) * step(0.001, outerDist) * formProgress;
     float3 outerGlowColor = edgeMaroon * outerGlow * 1.2 * edgePulse;
 
-    // ================================================================
+    // =
     // 格子形成时的闪白
-    // ================================================================
+    // =
     float formFlash = smoothstep(cellFormDelay - 0.01, cellFormDelay, formProgress)
                     * (1.0 - smoothstep(cellFormDelay, cellFormDelay + 0.1, formProgress));
     float3 flashColor = flashBright * formFlash * 0.5;
 
-    // ================================================================
+    // =
     // 最终合成
-    // ================================================================
+    // =
     float3 innerColor = (gridColor + fillColor + flowColor + edgeGlowInner + flashColor)
                         * cellVisible * cageMask;
     float3 finalColor = innerColor + outerGlowColor;

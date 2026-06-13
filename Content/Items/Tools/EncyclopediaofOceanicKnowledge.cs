@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 );
             }
 
-            //延迟解锁技能由特效弹幕处理
+            //延迟解锁由特效弹幕处理
             return true;
         }
 
@@ -131,9 +131,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// <summary>
-    /// 海洋知识百科全书使用特效弹幕
-    /// </summary>
+    /// 海洋百科使用特效弹幕
     internal class EncyclopediaEffect : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -219,9 +217,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        ///<summary>
-        ///汇聚阶段：所有技能图标从四周飞向玩家
-        ///</summary>
+        /// 汇聚：技能图标自四周飞向玩家
         private void GatherPhaseAI(Player owner) {
             //初始化飞行图标
             if (Timer == 1) {
@@ -255,9 +251,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        ///<summary>
-        ///吸收阶段：技能被吸入玩家体内
-        ///</summary>
+        /// 吸收：技能吸入玩家
         private void AbsorbPhaseAI(Player owner) {
             float progress = Timer / AbsorbDuration;
 
@@ -287,9 +281,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        ///<summary>
-        ///完成阶段：爆发式特效
-        ///</summary>
+        /// 完成：爆发特效
         private void CompletePhaseAI(Player owner) {
             float progress = Timer / CompleteDuration;
 
@@ -308,9 +300,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        ///<summary>
-        ///初始化飞行图标
-        ///</summary>
+        /// 初始化飞行图标
         private void InitializeFlyingIcons(Player owner) {
             if (!owner.TryGetModPlayer<HalibutSave>(out var save)) {
                 return;
@@ -336,9 +326,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        ///<summary>
-        ///解锁所有技能
-        ///</summary>
+        /// 解锁全部技能
         private void UnlockAllSkills(Player owner) {
             if (!owner.TryGetModPlayer<HalibutSave>(out var save)) {
                 return;
@@ -483,9 +471,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// <summary>
-    /// 飞行的技能图标实体
-    /// </summary>
+    /// 飞行技能图标实体
     internal class FlyingSkillIcon
     {
         public FishSkill Skill;
@@ -556,9 +542,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// <summary>
-    /// 海洋粒子效果
-    /// </summary>
+    /// 海洋粒子
     internal class OceanParticle
     {
         public enum ParticleType

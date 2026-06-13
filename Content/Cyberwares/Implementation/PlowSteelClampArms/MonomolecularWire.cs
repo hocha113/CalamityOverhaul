@@ -10,21 +10,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 {
     /// <summary>
-    /// 犁钢钳臂技能产生的高热单分子线弹幕
-    /// <br/>本质是一段从 <see cref="OwnerCenter"/> 到 <see cref="AnchorWorld"/> 的可视/可命中线段
-    /// <list type="bullet">
-    ///   <item>每帧重算线段几何，按 <see cref="PlowSteelClampArm.WireHitCooldown"/> 周期性对路径上的敌怪结算灼烧伤害</item>
-    ///   <item>线段上不断产生火花/发光粒子，模拟"灼热钨丝"质感</item>
-    ///   <item>没有击退，纯粹的持续性伤害判定，便于配合走位拉扯敌怪</item>
-    /// </list>
-    /// 两种形态：
-    /// <list type="bullet">
-    ///   <item><b>动态/长线模式</b>（<see cref="IsStatic"/> 为 false）：from 端始终跟随玩家，
-    ///         to 端钉在 <see cref="AnchorWorld"/>，是经典的"高刚性钳臂连接"形态</item>
-    ///   <item><b>静态/短线模式</b>（<see cref="IsStatic"/> 为 true）：from 与 to 均冻结于发射瞬间，
-    ///         形成空中绊线，玩家移动不影响线段位置；用于无锚点的随手布线</item>
-    /// </list>
-    /// 多人模式下锚点位置通过 ai[0]/ai[1] 同步，静态 from 端通过 SendExtraAI 同步
+    /// 高热单分子线弹幕，OwnerCenter 到 AnchorWorld 线段
+    /// <br/>动态模式（IsStatic=false）：from 跟随玩家；静态模式（IsStatic=true）：两端冻结
+    /// <br/>伤害周期 WireHitCooldown，无击退；锚点经 ai[0]/ai[1] 同步，静态 from 经 SendExtraAI
     /// </summary>
     [Autoload(true)]
     internal class MonomolecularWire : ModProjectile
@@ -33,9 +21,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         public override string Texture => CWRConstant.Placeholder;
 
-        /// <summary>
-        /// 锚点世界坐标（线段的 to 端），由生成时写入 ai[0] / ai[1]
-        /// </summary>
+        /// <summary>锚点世界坐标，ai[0]/ai[1]</summary>
         public Vector2 AnchorWorld {
             get => new(Projectile.ai[0], Projectile.ai[1]);
             set {
@@ -44,37 +30,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
         }
 
-        /// <summary>
-        /// 静态模式开关：
-        /// <list type="bullet">
-        ///   <item>true：from / to 都冻结，玩家移动不影响线段（"短线/绊线"）</item>
-        ///   <item>false：from 跟随玩家中心，to 固定在 <see cref="AnchorWorld"/>（"长线/钳臂"）</item>
-        /// </list>
-        /// </summary>
+        /// <summary>静态模式开关，ai[2]：true 两端冻结，false from 跟随玩家</summary>
         public bool IsStatic {
             get => Projectile.ai[2] > 0.5f;
             set => Projectile.ai[2] = value ? 1f : 0f;
         }
 
-        /// <summary>
-        /// 静态模式下的 from 端世界坐标快照
-        /// <br/>动态模式下此字段不参与计算，直接使用 <see cref="Player.Center"/>
-        /// </summary>
+        /// <summary>静态模式 from 端快照，经 SendExtraAI 同步</summary>
         public Vector2 StaticFromWorld { get; set; }
 
-        /// <summary>
-        /// 拥有者中心坐标缓存：动态模式下 = 玩家中心，静态模式下 = <see cref="StaticFromWorld"/>
-        /// </summary>
+        /// <summary>线段 from 端：动态=玩家中心，静态=StaticFromWorld</summary>
         public Vector2 OwnerCenter { get; private set; }
 
-        /// <summary>
-        /// 视觉/音效用的脉冲计时器，与实际伤害无关
-        /// </summary>
+        /// <summary>视觉脉冲计时，与伤害无关</summary>
         private int pulseTimer;
 
-        /// <summary>
-        /// 用于绘制时计算扫光位置的全局时间
-        /// </summary>
+        /// <summary>扫光绘制用全局时间</summary>
         private float visualTimer;
 
         public override void SetStaticDefaults() {
@@ -82,7 +53,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void SetDefaults() {
-            //极小的判定盒，真正的命中通过 Colliding 自定义实现
+            //极小判定盒，命中走 Colliding 线段距离
             Projectile.width = 4;
             Projectile.height = 4;
             Projectile.aiStyle = -1;
@@ -111,15 +82,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
 
             if (IsStatic) {
-                //静态模式：from 端固定在 StaticFromWorld，无需做距离/跟随处理
-                //首帧（接收端可能 StaticFromWorld 尚未到达）兜底：先用玩家中心，等 ExtraAI 到来后再覆盖
+                //首帧 ExtraAI 未到前兜底用玩家中心
                 if (StaticFromWorld == Vector2.Zero) {
                     StaticFromWorld = owner.Center;
                 }
                 OwnerCenter = StaticFromWorld;
             }
             else {
-                //动态模式：from 端跟随玩家；锚点过远立即断线（玩家逃跑或被击退）
+                //动态模式：锚点过远断线（1.4x MaxAnchorDistance）
                 if (Vector2.DistanceSquared(owner.Center, AnchorWorld)
                     > (PlowSteelClampArm.MaxAnchorDistance * 1.4f) * (PlowSteelClampArm.MaxAnchorDistance * 1.4f)) {
                     Projectile.Kill();
@@ -127,12 +97,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
                 }
                 OwnerCenter = owner.Center;
             }
-            //把弹幕中心固定在线段中点，便于原版的若干位置依赖逻辑（声音定位等）
+            //中心落在线段中点，便于音效定位
             Projectile.Center = (OwnerCenter + AnchorWorld) * 0.5f;
 
             visualTimer += 1f / 60f;
 
-            //pulseTimer 仅控制视觉脉冲与音效节奏，伤害节奏由 idStaticNPCHitCooldown 自然控制
+            //pulseTimer 控视觉节奏，伤害由 idStaticNPCHitCooldown 控制
             pulseTimer++;
             if (pulseTimer >= PlowSteelClampArm.WireHitCooldown) {
                 pulseTimer = 0;
@@ -151,12 +121,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>
-        /// 自定义命中：基于线段-AABB 的最短距离判定，让贯穿线段路径上的所有敌怪都能受影响
-        /// 实际的命中频率由 idStaticNPCHitCooldown 控制，玩家穿过线段会被自然地按周期烧灼
-        /// </summary>
+        /// <summary>线段-AABB 最短距离命中，阈值 8px</summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            //展开 AABB 后的线段最短距离 < 8 视为命中
+            //展开 AABB 后线段最短距离 < 8 视为命中
             float dist = SegmentRectDistance(OwnerCenter, AnchorWorld, targetHitbox);
             if (dist <= 8f) {
                 return true;
@@ -194,9 +161,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             SoundEngine.PlaySound(SoundID.Item56 with { Pitch = 0.2f, Volume = 0.45f }, Projectile.Center);
         }
 
-        /// <summary>
-        /// 沿线段每帧少量产生火花/发光粒子，强度随剩余时间衰减
-        /// </summary>
+        /// <summary>沿线段火花粒子，强度随剩余寿命衰减</summary>
         private void SpawnLineParticles() {
             float lifeFactor = MathHelper.Clamp((float)Projectile.timeLeft / MaxLifetime, 0f, 1f);
             //长度越长粒子越多，但有上限避免巨量粒子
@@ -219,9 +184,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
         }
 
-        /// <summary>
-        /// 寿命末尾的淡出散点
-        /// </summary>
+        /// <summary>寿命末尾淡出散点</summary>
         private void SpawnFadeParticles() {
             for (int i = 0; i < 4; i++) {
                 float t = Main.rand.NextFloat();
@@ -232,9 +195,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
         }
 
-        /// <summary>
-        /// 多层带光晕的线段绘制：底层柔光 + 主体橙色 + 内核高亮
-        /// </summary>
+        /// <summary>多层光晕线段绘制</summary>
         public override bool PreDraw(ref Color lightColor) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             if (px == null) {
@@ -291,9 +252,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         #region 几何工具
 
-        /// <summary>
-        /// 求点 P 到线段 [A, B] 的最近点
-        /// </summary>
+        /// <summary>点 P 到线段 AB 最近点</summary>
         public static Vector2 ClosestPointOnSegment(Vector2 a, Vector2 b, Vector2 p) {
             Vector2 ab = b - a;
             float lenSq = ab.LengthSquared();
@@ -304,10 +263,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             return a + ab * t;
         }
 
-        /// <summary>
-        /// 求线段 [A, B] 到指定 AABB 的最短距离（粗略而稳健）
-        /// 通过将矩形按 6 个采样点映射到线段最近点，取最小距离
-        /// </summary>
+        /// <summary>线段 AB 到 AABB 最短距离，6 点采样</summary>
         public static float SegmentRectDistance(Vector2 a, Vector2 b, Rectangle rect) {
             //取矩形的 4 个顶点 + 2 个对角中点作为采样
             Vector2 tl = new(rect.Left, rect.Top);
@@ -331,7 +287,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         public override void SendExtraAI(BinaryWriter writer) {
             writer.Write(pulseTimer);
-            //仅在静态模式下同步 from 端，避免对动态模式做无谓的带宽消耗
+            //静态模式才同步 from 端，省带宽
             if (IsStatic) {
                 writer.Write(StaticFromWorld.X);
                 writer.Write(StaticFromWorld.Y);

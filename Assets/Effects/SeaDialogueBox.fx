@@ -1,8 +1,6 @@
 // ============================================================================
-// SeaDialogueBox.fx 深海风格对话框专属着色器
-// 视觉重点:深渊纵向渐变 + 顶部下沉的体积光柱 + 缓慢横向波纹 +
-//          稀疏生物冷光斑 + 脉动青蓝内边
-// 设计原则:中央文字区压暗保持高可读性,氛围只在外围与底部生长
+// SeaDialogueBox.fx 深海风格对话框背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -10,8 +8,8 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution;
-float uEdgePad;
-float uAbyssPulse;
+float uEdgePad;      //面板内缩边距
+float uAbyssPulse;   //深渊脉动强度
 
 #define PI 3.14159265
 #define TAU 6.28318530

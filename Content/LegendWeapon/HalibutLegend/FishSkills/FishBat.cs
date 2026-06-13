@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             halibutPlayer.BatSwarmActive = true;
             halibutPlayer.BatSwarmTimer = 0;
 
-            //生成控制器弹幕（管理玩家飞行和技能状态）
+            //生成控制器弹幕（玩家飞行与技能时长）
             int controller = Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
                 player.Center,
@@ -202,9 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 蝙蝠群控制器 - 管理玩家飞行和技能状态
-    /// </summary>
+    /// <summary>蝙蝠群控制器，玩家飞行与技能时长</summary>
     internal class BatSwarmController : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -302,9 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 蝙蝠群仆从 - 围绕玩家飞行的蝙蝠
-    /// </summary>
+    /// <summary>蝙蝠群个体，环绕玩家的 boids</summary>
     internal class BatSwarmMinion : ModProjectile
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.CaveBat;
@@ -410,7 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 batRotation = Projectile.velocity.ToRotation();
             }
 
-            //模拟飞行的上下波动
+            //上下波动
             float wingWave = (float)Math.Sin(Main.GameUpdateCount * 0.2f + wingPhaseOffset) * 0.15f;
             Projectile.rotation = batRotation + wingWave;
 
@@ -427,9 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 蝙蝠群行为AI - 环绕玩家飞行
-        /// </summary>
+        /// <summary>环绕玩家的 boids AI</summary>
         private void BatSwarmAI() {
             //计算鱼群算法
             CalculateFlockingBehavior();
@@ -468,7 +462,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             totalForce += alignmentForce * 1.2f;
             totalForce += cohesionForce * 0.8f;
 
-            //3. 随机游动（增加自然感）
+            //3. 随机扰动
             wanderTimer++;
             if (wanderTimer > Main.rand.Next(20, 40)) {
                 wanderTimer = 0;
@@ -485,7 +479,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 totalForce += playerMoveDir * 1.5f;
             }
 
-            //5. 上下波动（模拟翅膀扇动）
+            //5. 垂直正弦波动
             float verticalWave = (float)Math.Sin(Main.GameUpdateCount * 0.15f + wingPhaseOffset) * 0.6f;
             totalForce.Y += verticalWave;
 
@@ -507,9 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 计算鱼群算法
-        /// </summary>
+        /// <summary>邻近蝙蝠分离/对齐/聚合</summary>
         private void CalculateFlockingBehavior() {
             separationForce = Vector2.Zero;
             alignmentForce = Vector2.Zero;

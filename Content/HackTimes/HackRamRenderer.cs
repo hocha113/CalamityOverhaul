@@ -7,12 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间RAM弧形资源HUD
-    /// <br/>以弧形分格条显示RAM状态，多层渲染营造赛博科技纵深感
-    /// <br/>进入骇客时间即显示，不依赖目标选中
-    /// <br/>弧线由大半径圆弧生成柔和曲率，分层绘制阴影、背景、填充、高光、装饰环
-    /// </summary>
+    /// <summary>骇客时间 RAM 弧形 HUD</summary>
     internal class HackRamRenderer
     {
         private float timer;
@@ -21,8 +16,8 @@ namespace CalamityOverhaul.Content.HackTimes
         //平滑显示RAM值（视觉过渡用）
         private float displayRam;
 
-        //===== 弧线几何常量 =====
-        //弧线内径（大半径产生柔和曲率，弧线呈穹顶拱形）
+        //弧线几何常量
+        //弧线内径
         private const float InnerR = 560f;
         //弧线厚度
         private const float ArcThick = 24f;
@@ -32,31 +27,27 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float TopY = 76f;
         //格间间隙弧度
         private const float CellGap = 0.007f;
-        //单格基准角度：让 8 格视觉上对应旧的 400px 跨度
+        //单格基准角度，8 格对应旧 400px 跨度
         //BaseCellAngle ≈ (asin(200/572)*2 - 7*CellGap)/8 ≈ 0.0826 rad
         private const float BaseCellAngle = 0.0826f;
-        //最大允许的总扫掠角（防止 HUD 在屏幕顶端横向溢出）
-        //≈ π/2，对应 ArcSpanPx ≈ 808px，足以容纳 16 格视觉拉伸
+        //最大总扫掠角，防顶端横向溢出
+        //≈ π/2，ArcSpanPx ≈ 808px，容纳 16 格拉伸
         private const float MaxTotalSweep = MathHelper.PiOver2;
 
-        //外围装饰环（刻度轨道）
+        //外围装饰环
         private const float DecoGap = 6f;
         private const float DecoR = OuterR + DecoGap;
-        //内侧装饰环（扫描轨道）
+        //内侧装饰环
         private const float InnerDecoGap = 5f;
         private const float InnerDecoR = InnerR - InnerDecoGap;
 
-        //===== 字体 =====
+        //字体
         private const float FTitle = 0.54f;
         private const float FValue = 0.64f;
         private const float FWarn = 0.50f;
         private const float FHex = 0.42f;
 
-        /// <summary>
-        /// 根据 maxRam 推导当前帧的弧线几何参数
-        /// <br/>常规情况下保持单格视觉宽度恒定，整体跨度随 maxRam 线性增长
-        /// <br/>超过软上限后反向收紧每格使整体跨度饱和
-        /// </summary>
+        /// <summary>按 maxRam 推导弧线几何，超软上限收紧单格</summary>
         private static void ComputeArcGeom(int maxRam,
             out float halfSweep, out float cellAngle, out float arcSpanPx) {
             float targetSweep = BaseCellAngle * maxRam + (maxRam - 1) * CellGap;
@@ -70,7 +61,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 cellAngle = (MaxTotalSweep - (maxRam - 1) * CellGap) / maxRam;
             }
             halfSweep = totalSweep * 0.5f;
-            //ArcSpanPx 由当前半扫掠角与中径反算，用于水平居中布局与 quad 大小
+            //ArcSpanPx 由半扫掠角与中径反算
             arcSpanPx = 2f * (InnerR + ArcThick * 0.5f) * MathF.Sin(halfSweep);
         }
 
@@ -97,23 +88,22 @@ namespace CalamityOverhaul.Content.HackTimes
             int maxRam = RamSystem.MaxRam;
             if (maxRam <= 0) return;
 
-            //弧线参数计算（随 maxRam 动态拉伸/收紧）
+            //弧线参数
             ComputeArcGeom(maxRam, out float halfSweep, out float cellAngle, out float arcSpanPx);
             float midAngle = -MathHelper.PiOver2; //正上方
             float aStart = midAngle - halfSweep;
             float totalSweep = halfSweep * 2f;
 
-            //弧线中心（在弧线正下方,使弧线呈穹顶拱形）
-            //水平居中于屏幕顶部中间偏上位置，作为整个骇客HUD的主焦点
+            //弧线中心
             float cx = Main.screenWidth * 0.5f;
             float flyOff = (1f - EaseOutCubic(flyInProgress)) * -50f;
             float cy = TopY + InnerR + flyOff;
             Vector2 center = new(cx, cy);
 
-            //阴影层(保留在quad下方绘制,便于整体浮起感)
+            //阴影层
             DrawShadow(sb, px, center, aStart, totalSweep, alpha);
 
-            //优先使用着色器渲染主弧带+装饰环
+            //着色器主弧带
             bool shaderOK = TryDrawShaderArc(sb, px, center, aStart, cellAngle,
                 totalSweep, arcSpanPx, maxRam, alpha);
 
@@ -126,32 +116,28 @@ namespace CalamityOverhaul.Content.HackTimes
                 DrawDataFlow(sb, center, aStart, totalSweep, alpha);
             }
 
-            //端点角标 + 标签文字(始终CPU绘制,文字更锐利)
+            //端点角标与标签
             DrawEndCaps(sb, px, center, aStart, totalSweep, alpha);
             DrawLabels(sb, center, alpha, maxRam);
         }
 
         #region 着色器渲染
 
-        //使用HackRamArc.fx绘制主弧带+内外装饰环
-        //通过单个quad把弧形几何、格子、扫描、故障等全部用GPU完成
+        //HackRamArc.fx 绘制主弧带与装饰环
         private bool TryDrawShaderArc(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float cellAngle, float totalSweep, float arcSpanPx, int maxRam, float alpha) {
             Effect effect = EffectLoader.HackRamArc?.Value;
             if (effect == null) return false;
 
-            //quad包围盒:覆盖外侧装饰环到内侧装饰环
+            //quad 包围盒
             float decoOuterR = OuterR + DecoGap;
             float decoInnerR = InnerR - InnerDecoGap;
-            //外侧刻度最长9px + 外侧漏光4px,内侧粒子可下探到decoInnerR-4
+            //外侧刻度 9px + 漏光 4px，内侧粒子下探 decoInnerR-4
             const float PadTop = 18f;
             const float PadBottom = 10f;
             const float PadSide = 30f;
 
-            //quad上下边界按顶角(最高点)计算,两侧按aStart点的y计算取最小
-            //简化:quad顶 = cy - (decoOuterR + PadTop)
-            //quad底 = cy - (decoInnerR * MathF.Cos(halfSweep)) + PadBottom
-            //但直接用简单估算即可,因为弧顶在正上方最靠上
+            //quad 边界估算，弧顶在正上方
             float qLeft = center.X - arcSpanPx * 0.5f - PadSide;
             float qTop = center.Y - decoOuterR - PadTop;
             float qRight = center.X + arcSpanPx * 0.5f + PadSide;
@@ -164,14 +150,14 @@ namespace CalamityOverhaul.Content.HackTimes
             Rectangle dest = new((int)qLeft, (int)qTop, qW, qH);
             Vector2 relCenter = new(center.X - qLeft, center.Y - qTop);
 
-            //低RAM警告强度(平滑)：组合自然低位 + 系统锁定/不足闪烁
+            //低 RAM 警告强度
             float lowRam = 0f;
             if (!HackTime.InfiniteHack) {
                 if (RamSystem.CurrentRam < 0.5f) lowRam = 1f;
                 else if (RamSystem.CurrentRam <= 2f)
                     lowRam = MathHelper.Clamp(1f - (RamSystem.CurrentRam - 0.5f) / 1.5f, 0f, 1f);
             }
-            //系统锁定/不足闪烁直接拉满故障色
+            //锁定/不足闪烁拉满故障色
             lowRam = MathF.Max(lowRam, RamSystem.GetWarningPulse());
 
             effect.Parameters["uTime"]?.SetValue(timer);
@@ -209,7 +195,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 阴影层
 
-        //整体弧形投影阴影，制造浮起感
+        //弧形投影阴影
         private void DrawShadow(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float totalSweep, float alpha) {
             Vector2 offset = new(3, 4);
@@ -221,7 +207,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 外围装饰环
 
-        //刻度轨道：薄弧线 + 大小刻度标记，增加仪表盘质感
+        //刻度轨道
         private void DrawOuterDecoRing(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float totalSweep, int maxRam, float cellAngle, float alpha) {
             float aEnd = aStart + totalSweep;
@@ -246,7 +232,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     thick, col * (alpha * 0.4f));
             }
 
-            //主刻度旁的微型数字标识（每隔2格标一个）
+            //主刻度数字，每 2 格
             for (int i = 0; i <= maxRam; i += 2) {
                 float a = aStart + i * (cellAngle + (i < maxRam ? CellGap : 0));
                 if (i == maxRam) a = aEnd;
@@ -264,7 +250,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region RAM格子
 
-        //逐格绘制：背景层 → 填充层(含内侧高光+外侧暗化) → 边框 → 辉光
+        //逐格绘制
         private void DrawCells(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float cellAngle, int maxRam, float alpha) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
@@ -274,11 +260,11 @@ namespace CalamityOverhaul.Content.HackTimes
                 float cEnd = cStart + cellAngle;
                 float fill = Math.Clamp(displayRam - i, 0f, 1f);
 
-                //--- 背景 ---
+                //背景
                 DrawArc(sb, px, center, InnerR, OuterR, cStart, cEnd,
                     HackTheme.BgSlot * (alpha * 0.85f));
 
-                //--- 填充 ---
+                //填充
                 if (fill > 0.01f) {
                     float fillEnd = cStart + cellAngle * fill;
 
@@ -290,16 +276,16 @@ namespace CalamityOverhaul.Content.HackTimes
                     DrawArc(sb, px, center, InnerR + 2, OuterR - 2, cStart, fillEnd,
                         fillBase * (alpha * 0.85f));
 
-                    //内侧高光弧（模拟从内部照射的光泽，增加厚度层次）
+                    //内侧高光弧
                     DrawArc(sb, px, center, InnerR + 2, InnerR + 6, cStart, fillEnd,
                         HackTheme.ProgressGlow * (alpha * 0.30f));
 
-                    //外侧暗化弧（压暗外缘，增加内凹感）
+                    //外侧暗化弧
                     DrawArc(sb, px, center, OuterR - 6, OuterR - 2, cStart, fillEnd,
                         HackTheme.BgDarkest * (alpha * 0.18f));
                 }
 
-                //--- 边框 ---
+                //边框
                 Color borderCol = fill >= 1f ? HackTheme.BorderBright : HackTheme.Border;
                 //内外弧线
                 DrawArc(sb, px, center, InnerR, InnerR + 1, cStart, cEnd,
@@ -312,7 +298,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 DrawRadialLine(sb, px, center, InnerR, OuterR, cEnd, 1.2f,
                     borderCol * (alpha * 0.35f));
 
-                //--- 满格辉光 ---
+                //满格辉光
                 if (fill >= 1f && glow != null) {
                     float midA = (cStart + cEnd) * 0.5f;
                     float midR = (InnerR + OuterR) * 0.5f;
@@ -329,7 +315,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 锁定倒计时填充
 
-        //系统锁定时用红色弧形填充显示剩余时长：满弧=刚锁定，清空=即将恢复
+        //锁定剩余时长红色弧
         private void DrawLockCountdownFill(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float cellAngle, int maxRam, float alpha) {
             float lockFill = RamSystem.LockRemainRatio;
@@ -364,7 +350,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 内侧装饰环
 
-        //内环：细弧线 + 扫描脉冲光（像雷达扫描般循环扫过内环）
+        //内环扫描脉冲
         private void DrawInnerDecoRing(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float totalSweep, float alpha) {
             float aEnd = aStart + totalSweep;
@@ -377,7 +363,7 @@ namespace CalamityOverhaul.Content.HackTimes
             DrawArc(sb, px, center, InnerDecoR - 5f, InnerDecoR - 3f, aStart, aEnd,
                 HackTheme.Border * (alpha * 0.32f));
 
-            //恢复速度小内环：以基础最快恢复速度为满环基准
+            //恢复速度小内环
             float recovery = RamSystem.RecoveryRateRatio;
             if (recovery > 0.001f) {
                 float fillEnd = MathHelper.Lerp(aStart, aEnd, recovery);
@@ -392,7 +378,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 }
             }
 
-            //扫描脉冲弧（沿内环周期扫过的亮带）
+            //扫描脉冲弧
             float scanT = timer * 0.3f % 1f;
             float scanAngle = aStart + scanT * totalSweep;
             float scanWidth = totalSweep * 0.12f;
@@ -404,7 +390,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     HackTheme.Accent * (alpha * 0.22f * fade));
             }
 
-            //内环上的微型呼吸脉冲点（沿弧间隔分布）
+            //内环呼吸脉冲点
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 int dots = 5;
@@ -424,7 +410,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 数据流粒子
 
-        //沿弧线流动的光点，增加"数据传输"视觉暗示
+        //沿弧线流动光点
         private void DrawDataFlow(SpriteBatch sb, Vector2 center,
             float aStart, float totalSweep, float alpha) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
@@ -447,7 +433,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 端点装饰
 
-        //弧线两端的L形技术角标，强化终止感
+        //弧线两端 L 形角标
         private void DrawEndCaps(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float totalSweep, float alpha) {
             float aEnd = aStart + totalSweep;
@@ -483,9 +469,9 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 标签文字
 
-        //在弧线内凹区域显示标题、数值读数、装饰性十六进制和低RAM警告
+        //内凹区标题与读数
         private void DrawLabels(SpriteBatch sb, Vector2 center, float alpha, int maxRam) {
-            //标签基准Y = 弧线内径顶点 + 偏移（位于弧线内凹空间中）
+            //标签基准 Y
             float baseY = center.Y - InnerR + InnerDecoGap + 12f;
 
             //标题
@@ -495,7 +481,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 new Vector2(center.X - titleSize.X * 0.5f, baseY),
                 HackTheme.Accent * (alpha * 0.55f), FTitle);
 
-            //数值读数（大号）
+            //数值读数
             string val = $"{RamSystem.DisplayCurrent}/{maxRam}";
             Vector2 valSize = FontAssets.MouseText.Value.MeasureString(val) * FValue;
             Color valColor = RamSystem.CurrentRam <= 2f && !HackTime.InfiniteHack
@@ -506,7 +492,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 new Vector2(center.X - valSize.X * 0.5f, baseY + 20),
                 valColor * (alpha * 0.85f), FValue);
 
-            //装饰性十六进制地址
+            //装饰十六进制
             string hex = $"0x{(int)(timer * 60) % 0xFFFF:X4}";
             Vector2 hexSize = FontAssets.MouseText.Value.MeasureString(hex) * FHex;
             Utils.DrawBorderString(sb, hex,
@@ -530,8 +516,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 弧线绘制工具
 
-        //用密集径向线段绘制填充弧形
-        //rIn/rOut: 内外半径，aStart/aEnd: 起止角度(弧度)
+        //径向线段填充弧形，rIn/rOut 内外径，aStart/aEnd 起止角
         private static void DrawArc(SpriteBatch sb, Texture2D px, Vector2 center,
             float rIn, float rOut, float aStart, float aEnd, Color color) {
             if (aEnd <= aStart) return;

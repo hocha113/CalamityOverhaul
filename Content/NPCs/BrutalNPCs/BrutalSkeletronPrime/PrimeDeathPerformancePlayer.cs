@@ -7,15 +7,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 机械骷髅王死亡演出的玩家控制层。
-    /// <list type="bullet">
-    /// <item>运镜（镜头锁定/缩放/输入锁定）交由 InnoVault 演出系统 <see cref="PrimeDeathCutscene"/> 表现，
-    /// 本类只负责在演出开始/结束时本地播放、停止该过场（各客户端独立围观这场处决）。</item>
-    /// <item>仅被抓的目标玩家在拖拽/举起阶段被强制锁定到头部正前方，终爆瞬间被掀飞释放。</item>
-    /// <item>屏幕震动经 <see cref="RequestShake"/> 由头部演出逻辑请求，统一转交当前演出叠加。</item>
-    /// </list>
-    /// </summary>
+    /// <summary>死亡演出玩家侧：过场启停与被抓玩家位移锁定</summary>
+    /// <para>运镜见 <see cref="PrimeDeathCutscene"/>；震动经 <see cref="RequestShake"/> 叠加到当前过场</para>
     internal class PrimeDeathPerformancePlayer : ModPlayer
     {
         //拖拽起点缓存（被抓玩家本地）
@@ -82,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>本地播放/停止 InnoVault 死亡演出过场，运镜全部由 <see cref="PrimeDeathCutscene"/> 时间轴驱动</summary>
+        /// <summary>本地启停 <see cref="PrimeDeathCutscene"/> 过场</summary>
         private static void UpdateCutscene(HeadPrimeAI headAI, NPC head) {
             bool playing = CutsceneDirector.CurrentClip is PrimeDeathCutscene;
             if (headAI != null && head != null) {

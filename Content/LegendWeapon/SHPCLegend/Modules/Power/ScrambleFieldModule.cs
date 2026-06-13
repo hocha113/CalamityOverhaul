@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 扰场核心：蓄力期间每隔40帧在球体周围触发微型冲击波
-    /// 通过 OnOrbCharging 钩子生成削弱版 CyberDetonationProj，蓄力阶段持续范围输出
-    /// </summary>
+    /// <summary>扰场核心：蓄力每 40 帧球周微型冲击波</summary>
     internal sealed class ScrambleFieldModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

@@ -8,13 +8,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 转阶段演出：机体过载——四条机械臂依次殉爆（由机械臂侧按各自延迟自毁），
-    /// 警报与连环爆炸中头部升至高空，注能修复装甲，
-    /// 最后一声咆哮宣告狂暴阶段（<see cref="PrimePhase.Rage"/>）开始。
-    /// <para>稳定性约定：回血<b>无条件执行</b>，不依赖任何难度判定；
-    /// 回血在窗口结束时硬性补满兜底。</para>
-    /// </summary>
+    /// <summary>转阶段演出：四臂殉爆、头部升空注能、切入 <see cref="PrimePhase.Rage"/></summary>
+    /// <para>回血全难度无条件，窗口结束硬性补满</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.PhaseTransition, typeof(PrimeStateContext))]
     internal class PrimePhaseTransitionState : PrimeStateBase
     {
@@ -123,7 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, new Color(255, 120, 50).ToVector3() * 0.9f);
         }
 
-        /// <summary>过载重启：注能回血——全难度无条件执行</summary>
+        /// <summary>过载重启：注能回血，全难度无条件</summary>
         private void UpdateOverloadReboot(PrimeStateContext context) {
             NPC npc = context.Npc;
             int healTime = Timer - DetonationWindow;

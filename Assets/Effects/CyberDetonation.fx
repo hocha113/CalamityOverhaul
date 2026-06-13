@@ -1,9 +1,6 @@
 // ============================================================================
-// CyberDetonation.fx — 赛博科技爆破着色器
-// 扩展冲击环 + 内部能量扭曲 + 六边形网格碎裂 + 数据流残影
-// 环形爆破：从中心向外扩展的多层科技感冲击波
-// 使用 SpriteBatch.Immediate + register(s0) + register(s1)
-// 支持领域超驱模式：高温红炽故障爆破
+// CyberDetonation.fx 赛博科技环形爆破
+// s0 基础 s1 噪声；SpriteBatch Immediate；支持超驱
 // ============================================================================
 
 sampler baseSamp : register(s0);
@@ -31,9 +28,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318; // 0~1
 
-    // ============================================================
+    // =
     // A. 主冲击环 —— 核心扩展环
-    // ============================================================
+    // =
     // 噪声扰动环边缘
     float n1 = tex2D(noiseSamp, float2(normAngle * 5.0 + uTime * 2.5, ringProgress * 3.0)).r;
     float n2 = tex2D(noiseSamp, float2(normAngle * 9.0 - uTime * 1.8, ringProgress + 0.7)).g;
@@ -48,17 +45,17 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     // 内侧压缩面更亮
     float innerBias = smoothstep(ringProgress, ringProgress - thickness * 0.7, adjDist);
 
-    // ============================================================
+    // =
     // B. 次级环 —— 稍领先主环的细线前驱波
-    // ============================================================
+    // =
     float precursorPos = ringProgress * 1.12 + 0.02;
     float precursorDist = abs(adjDist - precursorPos);
     float precursor = 1.0 - smoothstep(0.0, 0.015, precursorDist);
     precursor *= smoothstep(0.95, 0.7, ringProgress); // 后期衰减
 
-    // ============================================================
+    // =
     // C. 六边形网格碎裂 —— 科技感核心视觉
-    // ============================================================
+    // =
     // 六边形网格坐标
     float hexScale = 18.0;
     float2 hexUV = centered * hexScale;
@@ -82,31 +79,31 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float cellFlicker = step(0.6, hash21(hexID + floor(uTime * 8.0)));
     float cellFill = (1.0 - hexDist * 2.0) * cellFlicker * cellActivate * cellFade * gridZone * 0.2;
 
-    // ============================================================
+    // =
     // D. 内部能量扭曲残余 —— 环通过后的涟漪
-    // ============================================================
+    // =
     float innerZone = smoothstep(ringProgress - thickness, 0.0, adjDist);
     float ripple = sin((dist - ringProgress * 0.5) * 60.0 + uTime * 10.0) * 0.5 + 0.5;
     ripple = pow(ripple, 6.0) * innerZone * 0.12;
     ripple *= 1.0 - ringProgress; // 环扩大后涟漪减弱
 
-    // ============================================================
+    // =
     // E. 数据流拖尾 —— 环外侧的数字碎片
-    // ============================================================
+    // =
     float trailing = smoothstep(ringProgress + thickness * 2.5, ringProgress, adjDist);
     trailing *= trailing;
     float trailNoise = tex2D(noiseSamp, float2(normAngle * 20.0 + uTime * 1.2, dist * 4.0)).r;
     trailing *= step(0.45, trailNoise) * 0.4;
 
-    // ============================================================
+    // =
     // F. 中心闪光 —— 爆破瞬间的核心白闪
-    // ============================================================
+    // =
     float centerFlash = pow(saturate(1.0 - dist / 0.15), 3.0);
     centerFlash *= pow(saturate(1.0 - ringProgress / 0.25), 2.0); // 极早期迅速消退
 
-    // ============================================================
+    // =
     // 颜色合成
-    // ============================================================
+    // =
     float3 cWhite = float3(1.0, 0.98, 0.95);
 
     // 主环颜色：内侧偏核心色，外侧偏环色
@@ -141,9 +138,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     );
     alpha *= fadeAlpha;
 
-    // ============================================================
+    // =
     // G. 超驱故障叠加 —— 爆破的黑墙撕裂效果
-    // ============================================================
+    // =
     if (overdriveAmount > 0.01)
     {
         float od = overdriveAmount;

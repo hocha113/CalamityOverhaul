@@ -41,8 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Timer++;
 
             int duration = PatrolDuration(context);
-            //就位即提前出招（no dead waiting）：喘息底线过半且已回到轨道点附近就开打——
-            //同时保证出招永远从玩家视野内开始
+            //就位提前出招(no dead waiting)：喘息过半且回轨道点附近即开打，保证视野内起手
             bool positioned = Timer > duration * 0.55f
                 && npc.WithinRange(patrolTarget, 240f)
                 && npc.Distance(player.Center) < 1500f;

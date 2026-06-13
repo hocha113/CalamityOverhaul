@@ -1,28 +1,17 @@
 // ============================================================================
-// CyberwarePanel.fx —— 赛博义体管理面板专属背景着色器
-// 主题：深红黑底 + 静态红色数据网格 + 中央人体能量光场 + 内边柔光
-// 设计原则：刻意不使用横向扫描带、闪烁数据单元、CRT 行扫描等被用烂的 HUD 套路，
-//          靠静态点阵/方格细线 + 中央光场 + 边缘柔光建立科技感
-// 输入参数：
-//   uTime        累计时间
-//   uAlpha       全局不透明度
-//   uResolution  绘制矩形像素尺寸
-//   uEdgePad     面板内缩边距
-//   uBodyCenter  人体中心相对面板局部像素坐标（侧栏模式不使用）
-//   uBodyRadius  人体能量光场半径，<=1 时退化为无中央光场
-//   uMode        0=主面板（完整层）/ 1=侧栏（轻量层）
-// 渲染方式：sb.Begin(Immediate, AlphaBlend, ..., effect)
+// CyberwarePanel.fx 赛博义体管理面板背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float2 uResolution;
-float uEdgePad;
-float2 uBodyCenter;
-float uBodyRadius;
-float uMode;
+float2 uResolution;  //绘制矩形像素尺寸
+float uEdgePad;      //面板内缩边距
+float2 uBodyCenter;  //人体中心局部像素坐标，侧栏模式不用
+float uBodyRadius;   //人体能量光场半径，<=1 无中央光场
+float uMode;         //0主面板 1侧栏轻量层
 
 float hash11(float p) {
     p = frac(p * 0.1031);

@@ -17,18 +17,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 毁灭者之刃
-    /// <br/>三段连击的机械重剑：正手斩 → 反手斩 → 终结重斩
-    /// <br/>刀光由 DestroyerSlash.fx 渲染成分节装甲弧光，挥砍释放毁灭者光束
-    /// </summary>
+    /// 毁灭者之刃：三段连击机械重剑，DestroyerSlash.fx 刀光+光束
     internal class DestroyersBlade : ModItem, ICWRLoader
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBlade";
         [VaultLoaden(CWRConstant.Item_Melee + "DestroyersBladeGlow")]
         public static Asset<Texture2D> Glow = null;
 
-        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        /// 三段连击计数
         private static int comboCounter;
 
         public override void SetDefaults() {
@@ -70,17 +66,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 毁灭者之刃EX
-    /// <br/>更快更重的强化形态，终结斩释放五连光束扇面
-    /// </summary>
+    /// 毁灭者之刃 EX：更快更重，终结五连光束扇
     internal class DestroyersBladeEX : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
         [VaultLoaden(CWRConstant.Item_Melee + "DestroyersBladeEXGlow")]
         public static Asset<Texture2D> Glow = null;
 
-        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        /// 三段连击计数
         private static int comboCounter;
 
         public override void SetDefaults() {
@@ -130,29 +123,24 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 毁灭者之刃手持挥砍基类
-    /// <br/>三段连击: 正手斩 → 反手斩 → 终结重斩
-    /// <br/>刀光轨迹由 DestroyerSlash.fx 渲染：分节装甲 + 探测红灯 + 刃缘激光
-    /// <br/>挥砍中段沿刀刃方向释放 <see cref="DestroyersBeam"/>
-    /// </summary>
+    /// 毁灭者手持挥砍基类：三段连击+DestroyerSlash.fx+DestroyersBeam
     internal abstract class DestroyersBladeHeldBase : BaseHeldProj, IPrimitiveDrawable
     {
-        /// <summary>对应的物品ID</summary>
+        /// 对应物品ID
         protected abstract int TargetItemID { get; }
-        /// <summary>刀身辉光贴图</summary>
+        /// 刀身辉光贴图
         protected abstract Texture2D GlowTex { get; }
-        /// <summary>是否为EX形态：更快更大，光束更多，色板更炽白</summary>
+        /// EX形态(更快更大)
         protected virtual bool IsEX => false;
 
-        /// <summary>连击索引: 0=正手斩 1=反手斩 2=终结重斩</summary>
+        /// 连击索引 0正 1反 2终结
         private ref float ComboIndex => ref Projectile.ai[0];
-        /// <summary>挥砍方向符号 ±1</summary>
+        /// 挥砍方向 ±1
         private ref float SwingDirAi => ref Projectile.ai[1];
 
         protected bool IsFinisher => ComboIndex >= 2f;
 
-        //阶段时长（逻辑帧，受攻速缩放）
+        //阶段时长(逻辑帧，攻速缩放)
         private float WindupTime => (IsFinisher ? 8f : 5f) - (IsEX ? 1f : 0f);
         private float SlashTime => (IsFinisher ? 14f : 11f) - (IsEX ? 2f : 0f);
         private float RecoverTime => (IsFinisher ? 10f : 8f) - (IsEX ? 1f : 0f);
@@ -178,7 +166,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private bool beamsFired;
         private float trailFade;
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        //刀光轨迹缓存
         private const int TrailMax = 64;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -453,9 +441,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
     /// 毁灭者之刃手持挥砍
-    /// </summary>
     internal class DestroyersBladeHeld : DestroyersBladeHeldBase
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBlade";
@@ -464,9 +450,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         protected override Texture2D GlowTex => DestroyersBlade.Glow.Value;
     }
 
-    /// <summary>
-    /// 毁灭者之刃EX手持挥砍
-    /// </summary>
+    /// 毁灭者之刃 EX 手持挥砍
     internal class DestroyersBladeEXHeld : DestroyersBladeHeldBase
     {
         public override string Texture => CWRConstant.Item_Melee + "DestroyersBladeEX";
@@ -476,11 +460,8 @@ namespace CalamityOverhaul.Content.Items.Melee
         protected override bool IsEX => true;
     }
 
-    /// <summary>
-    /// 毁灭者光束
-    /// <br/>毁灭者式的红色死亡激光：白热主轴 + 缠绕电弧，由 DestroyerBeam.fx 渲染
-    /// <br/>ai[1]: 0=普通形态 1=EX形态（穿透更多、更宽更炽白）
-    /// </summary>
+    /// 毁灭者光束：白热主轴+电弧，DestroyerBeam.fx
+    /// ai[1] 0普通 1EX
     internal class DestroyersBeam : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

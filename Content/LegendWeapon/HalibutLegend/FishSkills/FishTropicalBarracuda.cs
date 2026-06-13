@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 热带梭鱼技能，生成穿梭屏幕的鱼群打击敌人
-    /// </summary>
+    /// <summary>热带梭鱼技能，边缘鱼群横穿屏幕</summary>
     internal class FishTropicalBarracuda : FishSkill
     {
         public override int UnlockFishID => ItemID.TropicalBarracuda;
@@ -404,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //白色高光（表现高速感）
+            //高光
             float highlightAlpha = 0.5f * (1f + (float)Math.Sin(swimWave) * 0.3f);
             sb.Draw(
                 fishTex,

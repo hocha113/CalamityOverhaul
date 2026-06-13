@@ -13,9 +13,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
     /// <summary>
-    /// Victor 的交流界面：右键 Victor 打开。
-    /// <br/>贴底赛博对话条（不遮挡主视野），复用 <see cref="EffectLoader.CyberwarePanel"/> 着色器背景，
-    /// 左侧全息立绘、中部姓名 + 打字机台词、右侧命令行式功能选项（义体诊所 / 闲聊 / 离开）
+    /// Victor 对话条，右键打开
+    /// <br/>贴底 CyberwarePanel 着色器；立绘/打字机/诊所·闲聊·离开
     /// </summary>
     internal class VictorTalkUI : UIHandle, ILocalizedModType
     {
@@ -27,7 +26,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         public override SoundStyle? OpenSound => SoundID.MenuOpen;
         public override SoundStyle? CloseSound => silentClose ? null : SoundID.MenuClose;
 
-        //切换到义体诊所时静默关闭，避免关闭音与诊所开启音重叠
+        //切诊所时静默关，免双音效叠
         private bool silentClose;
 
         #region 本地化
@@ -148,7 +147,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             UpdateHover(leaveBtnRect, ref leaveHover, ref leaveT);
 
             if (clinicHover && keyLeftPressState == KeyPressState.Pressed) {
-                //静默关闭对话框，只保留诊所开启音，避免两音重叠
+                //静默关对话，只留诊所 OpenSound
                 silentClose = true;
                 Close();
                 silentClose = false;
@@ -161,7 +160,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
             if (leaveHover && keyLeftPressState == KeyPressState.Pressed) {
-                //仅播放关闭音（由 CloseSound 触发）
+                //CloseSound 播关闭音
                 Close();
                 return;
             }
@@ -221,7 +220,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         }
 
         private void DrawTextBlock(SpriteBatch sb, Texture2D px, float alpha) {
-            //姓名抬头
             string name = SpeakerName.Value;
             float nameScale = 0.82f * CyberwareTheme.FontScale;
             Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(name) * nameScale;

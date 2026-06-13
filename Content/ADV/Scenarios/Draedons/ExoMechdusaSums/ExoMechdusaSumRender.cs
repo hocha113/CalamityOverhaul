@@ -14,9 +14,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
+    /// <summary>Exo Mechdusa 召唤 UI RenderHandle——机甲图标/乱码解码文本/悬停音效</summary>
     internal class ExoMechdusaSumRender : RenderHandle, ILocalizedModType
     {
-        //用于记录上次悬停的选项，避免重复播放音效
+        //上次悬停选项，防重复音效
         private static int lastHoveredChoice = -1;
 
         //三个机甲图标的悬停音效
@@ -113,9 +114,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 更新主图标动画状态
-        /// </summary>
+        /// <summary>主图标淡入淡出/缩放/光晕</summary>
         private static void UpdateMainIconAnimation() {
             mainIconRotation = 0f;
 
@@ -159,12 +158,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 更新侧边图标动画状态
-        /// </summary>
+        /// <summary>两侧副图标动画</summary>
         private static void UpdateSideIconsAnimation() {
             if (currentMainIcon < 0) {
-                //没有选中任何选项，淡出所有侧边图标
+            //无选中时淡出副图标
                 for (int i = 0; i < 2; i++) {
                     sideIconFade[i] = Math.Max(sideIconFade[i] - FadeSpeed * 1.5f, 0f);
                     sideIconScale[i] = Math.Max(sideIconScale[i] - ScaleSpeed * 1.2f, 0f);
@@ -180,9 +177,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 获取其他两个图标的索引
-        /// </summary>
+        /// <summary>除主选外两机甲索引</summary>
         private static int[] GetOtherIconIndices(int mainIndex) {
             List<int> indices = new List<int>();
             for (int i = 0; i < 3; i++) {
@@ -193,9 +188,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             return indices.ToArray();
         }
 
-        /// <summary>
-        /// 重置文本动画
-        /// </summary>
+        /// <summary>切换主图标时重置乱码文本状态</summary>
         private static void ResetTextAnimation() {
             textDecodeProgress = 0f;
             textFadeProgress = 0f;
@@ -211,9 +204,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 更新文本解码动画
-        /// </summary>
+        /// <summary>乱码解码进度推进</summary>
         private static void UpdateTextDecoding() {
             if (currentMainIcon < 0 || mainIconFade < 0.5f) {
                 return;
@@ -245,9 +236,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 更新解码文本（带乱码效果）
-        /// </summary>
+        /// <summary>按 charDecodeProgress 拼乱码/真字</summary>
         private static void UpdateDecodedText() {
             if (string.IsNullOrEmpty(targetText)) {
                 decodedText = "";
@@ -264,23 +253,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                 float charProgress = charDecodeProgress[i];
 
                 if (charProgress >= 0.9f) {
-                    //字符已完全解码，哈哈哈哈哈哈我看懂啦道爷我成啦哈哈哈哈哈哈哈哈哈
+                    //已解码
                     sb.Append(targetText[i]);
                 }
                 else if (charProgress > 0.1f) {
-                    //解码中，显示多层乱码效果
+                    //解码中乱码
                     if (charProgress > 0.7f) {
-                        //接近完成，偶尔显示真实字符，嘿你看得懂了吗，嘉登牌翻译器，用了都骂逼养的
+                        //接近完成，偶现真字
                         if (Main.rand.NextBool(3)) {
                             sb.Append(targetText[i]);
                         }
                         else {
-                            //使用相似度更高的乱码
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length / 2)]);
                         }
                     }
                     else if (charProgress > 0.4f) {
-                        //中期，使用中等密度乱码，偶尔显示真实字符，初具人形这块
+                        //中期乱码
                         if (Main.rand.NextBool(4)) {
                             sb.Append(targetText[i]);
                         }
@@ -289,7 +277,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                         }
                     }
                     else {
-                        //初期，完全随机乱码，偶尔空格，but，肯定还是看不懂滴
+                        //初期全随机乱码或空格
                         if (Main.rand.NextBool(2)) {
                             sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                         }
@@ -299,7 +287,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
                     }
                 }
                 else {
-                    //尚未开始解码，全是火星文噜噜噜噜
+                    //未开始，稀疏乱码
                     if (Main.rand.NextBool(4)) {
                         sb.Append(glitchChars[Main.rand.Next(glitchChars.Length)]);
                     }
@@ -312,9 +300,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             decodedText = sb.ToString();
         }
 
-        /// <summary>
-        /// 获取描述文本
-        /// </summary>
+        /// <summary>机甲 index → 描述本地化</summary>
         private static string GetDescriptionText(int index) {
             return index switch {
                 0 => AresDescription?.Value ?? "",
@@ -324,9 +310,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             };
         }
 
-        /// <summary>
-        /// 绘制主图标（顶部）
-        /// </summary>
+        /// <summary>顶部主机甲图标+扫描线+粒子</summary>
         private static void DrawMainIcon(SpriteBatch spriteBatch, Main main) {
             if (currentMainIcon < 0 || mainIconFade < 0.01f) return;
 
@@ -393,9 +377,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             DrawTechParticles(spriteBatch, screenPos);
         }
 
-        /// <summary>
-        /// 绘制侧边图标（左下和右下）
-        /// </summary>
+        /// <summary>左下/右下副图标</summary>
         private static void DrawSideIcons(SpriteBatch spriteBatch, Main main) {
             if (currentMainIcon < 0) return;
 
@@ -452,9 +434,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 绘制机甲描述文本
-        /// </summary>
+        /// <summary>乱码描述文本+背景/扫描/噪点</summary>
         private static void DrawMechDescription(SpriteBatch spriteBatch, Main main) {
             if (string.IsNullOrEmpty(decodedText) || textFadeProgress < 0.01f) {
                 return;
@@ -491,9 +471,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             Utils.DrawBorderString(spriteBatch, decodedText, textPos, textColor * alpha, textScale);
         }
 
-        /// <summary>
-        /// 绘制文本背景
-        /// </summary>
+        /// <summary>文本暗底+机甲色边框</summary>
         private static void DrawTextBackground(SpriteBatch sb, Vector2 pos, Vector2 size, float alpha, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -514,9 +492,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             sb.Draw(pixel, new Rectangle(bgRect.Right - 3, bgRect.Y, 3, bgRect.Height), edgeColor * 0.85f);
         }
 
-        /// <summary>
-        /// 绘制文本扫描线
-        /// </summary>
+        /// <summary>文本区扫描线</summary>
         private static void DrawTextScanLines(SpriteBatch sb, Vector2 pos, Vector2 size, float alpha, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -545,9 +521,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 绘制文本噪点效果
-        /// </summary>
+        /// <summary>文本区随机噪点</summary>
         private static void DrawTextNoise(SpriteBatch sb, Vector2 pos, Vector2 size, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -578,9 +552,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 绘制扫描线效果
-        /// </summary>
+        /// <summary>图标区扫描线</summary>
         private static void DrawScanLines(SpriteBatch spriteBatch, Vector2 center, Vector2 size, float alpha, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -609,9 +581,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 获取图标纹理
-        /// </summary>
+        /// <summary>index → 机甲头图标纹理</summary>
         private static Texture2D GetIconTexture(int index) {
             return index switch {
                 0 => HeadIcon_Ares,
@@ -621,9 +591,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             };
         }
 
-        /// <summary>
-        /// 获取图标颜色
-        /// </summary>
+        /// <summary>index → 机甲主题色</summary>
         private static Color GetIconColor(int index) {
             return index switch {
                 0 => new Color(255, 80, 80),
@@ -721,9 +689,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         }
         #endregion
 
-        /// <summary>
-        /// 注册悬停效果，管理音效和动画
-        /// </summary>
+        /// <summary>注册 ADVChoiceBox 悬停回调</summary>
         internal static void RegisterHoverEffects() {
             lastHoveredChoice = -1;
             currentMainIcon = -1;
@@ -741,11 +707,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             ADVChoiceBox.OnHoverChanged += OnChoiceHoverChanged;
         }
 
-        /// <summary>
-        /// 处理选项悬停变化
-        /// </summary>
+        /// <summary>悬停切换主图标+播 Calamity 悬停音</summary>
         private static void OnChoiceHoverChanged(object sender, ChoiceHoverEventArgs e) {
-            //如果悬停到新的启用选项上，避免重复触发
+            //新启用选项悬停，防重复触发
             if (e.CurrentIndex >= 0 && e.CurrentChoice != null && e.CurrentChoice.Enabled && e.CurrentIndex != lastHoveredChoice) {
                 lastHoveredChoice = e.CurrentIndex;
                 targetMainIcon = e.CurrentIndex;
@@ -795,9 +759,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 清理资源，当场景结束时调用
-        /// </summary>
+        /// <summary>场景结束解绑悬停</summary>
         internal static void Cleanup() {
             currentMainIcon = -1;
             targetMainIcon = -1;

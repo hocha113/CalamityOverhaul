@@ -1,23 +1,19 @@
-//=============================================================================
-// TwinsEyeOverlay.fx — 双子魔眼程序化着色器
-// 在 placeholder_white 画布上程序化生成一颗 360° 旋转的双子魔眼
-// 双 Technique：RetinazerEye(激光眼/青紫) 与 SpazmatismEye(魔焰眼/橙红)
-// 共用 PS — 通过 uEyeMode 切换瞳孔形态、虹膜花纹和血丝走向
-// ps_3_0
-//=============================================================================
+// ============================================================================
+// TwinsEyeOverlay.fx 双子魔眼程序化绘制
+// RetinazerEye/SpazmatismEye 两 Technique；ps_3_0
+// ============================================================================
 
-float uTime;          //全局时间，用于动画
-float uIntensity;     //整体亮度乘数(0..2)
-float uProgress;      //生命周期进度(0..1)，用于淡入淡出
-float uEyeMode;       //0=激光眼，1=魔焰眼
-float uPupilDilation; //瞳孔放大系数(0..1)，越大瞳孔越细
-float uBloodshot;     //血丝/电弧强度(0..1)
-float2 uPupilOffset;  //瞳孔偏移(-0.15..0.15)，造成"四处张望"效果
-float uRotation;      //眼睛整体旋转角
+float uTime;
+float uIntensity;     //0~2
+float uProgress;      //0~1 淡入淡出
+float uEyeMode;       //0激光眼 1魔焰眼
+float uPupilDilation; //0~1 越大瞳孔越细
+float uBloodshot;     //0~1 血丝/电弧
+float2 uPupilOffset;  //-0.15~0.15 瞳孔偏移
+float uRotation;      //整体旋转角
 
-//双子颜色配置
 float3 uIrisColor;    //虹膜主色
-float3 uPupilGlow;    //瞳孔深处的反光色
+float3 uPupilGlow;    //瞳孔反光色
 float3 uScleraColor;  //眼白底色(带机械金属感)
 
 #define PI  3.14159265

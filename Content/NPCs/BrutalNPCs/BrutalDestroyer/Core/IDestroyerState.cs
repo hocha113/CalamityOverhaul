@@ -3,9 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 {
-    /// <summary>
-    /// 毁灭者状态索引，用于网络同步
-    /// </summary>
+    /// <summary>毁灭者状态索引，写入 npc.ai[2] 网络同步</summary>
     internal enum DestroyerStateIndex : int
     {
         Intro = 0,
@@ -28,9 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         LoopLash = 13,
     }
 
-    /// <summary>
-    /// 毁灭者状态接口
-    /// </summary>
+    /// <summary>毁灭者状态接口</summary>
     internal interface IDestroyerState : IVaultState<DestroyerStateContext>
     {
         DestroyerStateIndex StateIndex { get; }
@@ -39,19 +35,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         void OnExit(DestroyerStateContext context);
     }
 
-    /// <summary>
-    /// 毁灭者状态基类
-    /// </summary>
+    /// <summary>毁灭者状态基类</summary>
     internal abstract class DestroyerStateBase : VaultState<DestroyerStateContext>, IDestroyerState
     {
         public override int StateId => (int)StateIndex;
         public abstract override string StateName { get; }
         public abstract DestroyerStateIndex StateIndex { get; }
 
-        /// <summary>
-        /// 是否允许"远距回归瞬移阀"介入：当头部远离玩家超过阈值时瞬移到视野边缘回场，
-        /// 防止Boss在屏幕外盘旋打弹幕。自带高空/地下走位的状态（俯冲、轨道绞杀、钻地）应关闭
-        /// </summary>
+        /// <summary>远距回归瞬移阀：头部远离玩家超阈值时瞬移到视野边缘；俯冲/钻地/轨道等状态应关闭</summary>
         public virtual bool AllowFarSnap => true;
 
         public virtual void OnEnter(DestroyerStateContext context) {
@@ -79,26 +70,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
 
         #region 工具方法
 
-        /// <summary>
-        /// 蠕虫式移动：设置目标点和速度参数，由主控制器的UpdateMovement统一执行
-        /// </summary>
+        /// <summary>蠕虫移动参数，由主控制器 UpdateMovement 消费</summary>
         protected void SetMovement(DestroyerStateContext context, Vector2 targetPos, float speed, float turnSpeed) {
             context.TargetPosition = targetPos;
             context.MoveSpeed = speed;
             context.TurnSpeed = turnSpeed;
         }
 
-        /// <summary>
-        /// 平滑转向对准目标
-        /// </summary>
+        /// <summary>平滑转向对准目标</summary>
         protected void FaceTarget(NPC npc, Vector2 target, float lerpFactor = 0.15f) {
             float targetAngle = (target - npc.Center).ToRotation() + MathHelper.PiOver2;
             npc.rotation = npc.rotation.AngleLerp(targetAngle, lerpFactor);
         }
 
-        /// <summary>
-        /// 获取到玩家的方向
-        /// </summary>
+        /// <summary>到玩家方向</summary>
         protected Vector2 DirectionToTarget(DestroyerStateContext context) {
             return (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.UnitY);
         }

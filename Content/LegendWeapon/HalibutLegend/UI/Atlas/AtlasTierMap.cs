@@ -5,9 +5,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 技能在深渊图鉴中的深度带分配：
-    /// 优先级为 <see cref="FishSkill.AtlasTier"/> 手动指定 → 本表 → 解锁鱼稀有度回退
-    /// 分带只影响图鉴展示位置，不影响任何玩法数值，按解锁鱼的获取环境与时期粗分
+    /// 图鉴深度带分配：AtlasTier → 本表 → 解锁鱼稀有度
+    /// 仅影响图鉴布局，不改玩法数值
     /// </summary>
     internal static class AtlasTierMap
     {

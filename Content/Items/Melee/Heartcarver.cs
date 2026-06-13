@@ -20,16 +20,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 刻心者
-    /// </summary>
+    /// 刻心者短剑
     internal class Heartcarver : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
 
-        /// <summary>四段连击计数: 三连刺 + 终结斩</summary>
+        /// 四段连击计数(三连刺+终结斩)
         private int comboCounter;
-        /// <summary>连击重置计时器，过久未刺击则回到第一段</summary>
+        /// 连击重置计时，过久回第一段
         private int comboResetTimer;
 
         public override void SetStaticDefaults() {
@@ -110,20 +108,18 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 刻心者短剑的手持弹幕 — 三连刺+终结斩连击系统
-    /// </summary>
+    /// 刻心者手持弹幕，三连刺+终结斩
     internal class HeartcarverHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Heartcarver>();
 
-        /// <summary>连击索引: 0~2=三连刺 3=终结斩</summary>
+        /// 连击索引 0~2刺 3终结斩
         private ref float ComboIndex => ref Projectile.ai[0];
 
         private bool IsFinisher => ComboIndex >= 3f;
 
-        //阶段时长（逻辑帧，受攻速缩放）
+        //阶段时长(逻辑帧，攻速缩放)
         private float WindupTime => IsFinisher ? 8f : 3f;
         private float StabTime => IsFinisher ? 6f : 5f;
         private float RecoverTime => IsFinisher ? 8f : 6f;
@@ -136,7 +132,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float elapsed;
         private float speedMul = 1f;
         private Vector2 stabUnit;
-        /// <summary>当前持出距离</summary>
+        /// 当前持出距离
         private float holdout;
         private bool stabSoundPlayed;
         private bool daggersFired;
@@ -198,7 +194,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 return;
             }
 
-            //右键冲刺突击行为，这样防止右键被左键硬控
+            //右键冲刺，避免被左键硬控
             if (DownRight && Owner.CountProjectilesOfID<HeartcarverDash>() == 0
                 && Owner.CountProjectilesOfID<HeartcarverAlt>() == 0 && Projectile.IsOwnedByLocalPlayer()) {
                 ShootState shootState = Owner.GetShootState();
@@ -443,14 +439,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 刻心者冲刺突击弹幕
-    /// </summary>
+    /// 刻心者冲刺突击
     internal class HeartcarverDash : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
 
-        //冲刺分为两阶段：前冲 + 回刺
+        //冲刺：前冲+回刺
         private const int ForwardDuration = 18;
         private const int ReturnDuration = 10;
         private const int TotalDuration = ForwardDuration + ReturnDuration;
@@ -568,7 +562,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private void UpdateForwardMovement() {
             float t = dashTimer / (float)ForwardDuration;
-            //使用三次贝塞尔曲线实现弧形冲刺轨迹
+            //贝塞尔弧形冲刺
             float easedT = t < 0.5f ? 4f * t * t * t : 1f - MathF.Pow(-2f * t + 2f, 3f) / 2f;
 
             //贝塞尔控制点：起点 → 弧形偏移控制点 → 终点
@@ -633,7 +627,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SpawnDashStartEffect() {
-            //定向锥形爆发（朝冲刺方向散开）
+            //锥形爆发(冲刺方向)
             for (int i = 0; i < 25; i++) {
                 float spread = Main.rand.NextFloat(-0.8f, 0.8f);
                 Vector2 velocity = dashDirection.RotatedBy(spread) * Main.rand.NextFloat(8f, 18f);
@@ -673,7 +667,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             target.AddBuff(BuffID.Bleeding, 300);
 
-            //定向血液飞溅（从冲刺方向扩散）
+            //血液飞溅(冲刺方向)
             Vector2 hitDir = (target.Center - Owner.Center).SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 18; i++) {
                 float spread = Main.rand.NextFloat(-1f, 1f);
@@ -732,7 +726,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = sourceRect.Size() / 2f;
             SpriteEffects spriteEffects = Projectile.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //绘制残影拖尾 — 颜色随阶段变化
+            //残影拖尾(色随阶段)
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
@@ -781,9 +775,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
     /// 刻心者环绕匕首
-    /// </summary>
     internal class HeartcarverDagger : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
@@ -807,7 +799,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private ref float DaggerIndex => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[2];
 
-        //环绕参数 — 椭圆轨道
+        //环绕椭圆轨道
         private float orbitRadiusX = 100f;
         private float orbitRadiusY = 55f;
         private float orbitAngle = 0f;
@@ -880,11 +872,11 @@ namespace CalamityOverhaul.Content.Items.Melee
                 0.9f * lightIntensity, 0.2f * lightIntensity, 0.2f * lightIntensity);
         }
 
-        //椭圆轨道位置计算（带倾斜面）
+            //椭圆轨道(倾斜伪3D)
         private Vector2 GetEllipseOrbitPos(Vector2 center, float angle, float radiusX, float radiusY, float tilt) {
             float x = MathF.Cos(angle) * radiusX;
             float y = MathF.Sin(angle) * radiusY;
-            //倾斜面旋转：绕X轴倾斜制造伪3D效果
+            //倾斜面绕 X 轴伪3D
             float tiltedY = y * MathF.Cos(tilt);
             return center + new Vector2(x, tiltedY).RotatedBy(tilt * 0.3f);
         }
@@ -898,12 +890,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void GatheringPhaseAI(Player owner) {
             float progress = StateTimer / GatherDuration;
 
-            //初始化每把匕首的轨道倾斜角（错开120度均匀分布）
+            //每把匕首倾斜错开
             orbitTiltAngle = MathHelper.PiOver4 + DaggerIndex * 0.4f;
             float targetAngle = MathHelper.TwoPi * DaggerIndex / 3f;
             Vector2 targetPos = GetEllipseOrbitPos(owner.Center, targetAngle, orbitRadiusX, orbitRadiusY, orbitTiltAngle);
 
-            //弹性缓出：快速逼近后减速
+            //弹性缓出逼近
             float easeProgress = 1f - MathF.Pow(1f - progress, 3f);
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.5f);
 
@@ -929,11 +921,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         private void OrbitingPhaseAI(Player owner) {
             float progress = StateTimer / OrbitDuration;
 
-            //加速旋转 — 使用缓入
+            //缓入加速旋转
             float speedProgress = progress * progress;
             orbitSpeed = MathHelper.Lerp(0.05f, MaxOrbitSpeed * 0.55f, speedProgress);
 
-            //椭圆半径呼吸效果
+            //椭圆半径呼吸
             float breathe = MathF.Sin(StateTimer * 0.2f) * 8f * progress;
             float currentRadiusX = orbitRadiusX + breathe;
             float currentRadiusY = orbitRadiusY + breathe * 0.5f;
@@ -970,7 +962,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //最高旋转速度
             orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.55f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
 
-            //半径急剧收缩 — 匕首向玩家集中
+            //半径收缩向玩家
             float shrinkFactor = 1f - progress * 0.6f;
             float oscillation = MathF.Sin(StateTimer * 0.7f) * 12f * (1f - progress);
             float currentRadiusX = orbitRadiusX * shrinkFactor + oscillation;
@@ -995,7 +987,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SpawnChargePulse();
             }
 
-            //所有匕首同时发射（不再错开）
+            //蓄力末齐射
             if (StateTimer >= ChargeDuration) {
                 LaunchToTarget(owner);
             }
@@ -1006,7 +998,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             Vector2 launchDir;
             if (target != null) {
-                //预判目标位置
+                //预判落点
                 float travelTime = Vector2.Distance(Projectile.Center, target.Center) / LaunchSpeed;
                 Vector2 predictedPos = target.Center + target.velocity * travelTime * 0.5f;
                 launchDir = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
@@ -1035,17 +1027,17 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void LaunchingPhaseAI(Player owner) {
-            //更激进的追踪
+            //强追踪
             NPC target = Projectile.Center.FindClosestNPC(1200);
             if (target != null && Projectile.numHits == 0) {
                 Projectile.SmoothHomingBehavior(target.Center, 1.03f, 0.12f);
             }
             else if (target != null) {
-                //击中后弱追踪，不会死板飞行
+                //命中后弱追踪
                 Projectile.SmoothHomingBehavior(target.Center, 1.005f, 0.03f);
             }
 
-            //速度维持（几乎不衰减）
+            //速度近不衰减
             float speed = Projectile.velocity.Length();
             if (speed < LaunchSpeed * 0.7f) {
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * LaunchSpeed * 0.7f;
@@ -1055,7 +1047,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             glowIntensity = 0.95f;
             daggerScale = 1.1f;
 
-            //匕首朝向运动方向
+            //朝向运动方向
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
             if (Main.rand.NextBool(2)) {
@@ -1112,7 +1104,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void SpawnLaunchBurst() {
-            //定向锥形爆发（朝发射方向）
+            //定向锥形爆发
             Vector2 launchDir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             for (int i = 0; i < 18; i++) {
                 float spread = Main.rand.NextFloat(-0.6f, 0.6f);
@@ -1143,7 +1135,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            //穿透地形，匕首不应被地形阻挡
+            //穿透地形
             return false;
         }
 
@@ -1230,7 +1222,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 drawScale, spriteEffects, 0
             );
 
-            //血红辉光覆盖层（蓄力/发射时）
+            //血红辉光(蓄力/发射)
             if ((State == DaggerState.Charging || State == DaggerState.Launching) && glowIntensity > 0.5f) {
                 float lightAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.6f;
                 sb.Draw(

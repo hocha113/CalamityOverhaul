@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博数据电弧弹幕，用于在两点之间绘制带颤动的电弧光带
-    /// <br/>由改件钩子主动 spawn，通过 ai[0]/ai[1] 编码终点偏移，对沿线的 NPC 造成一次性短促伤害
-    /// <br/>使用 <see cref="Trail"/> + CyberDataArc.fx 着色器渲染
-    /// </summary>
+    /// <summary>两点间颤动动电弧，改件 spawn；Trail+CyberDataArc.fx</summary>
     internal class CyberDataArcProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

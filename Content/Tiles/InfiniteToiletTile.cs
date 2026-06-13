@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Tiles
             player.noThrow = 2;
             player.mouseInterface = true;
             player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<InfiniteToiletItem>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
+            player.cursorItemIconID = ModContent.ItemType<InfiniteToiletItem>();//悬停显示对应物品图标
         }
 
         public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance);

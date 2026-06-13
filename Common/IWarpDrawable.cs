@@ -4,24 +4,14 @@ namespace CalamityOverhaul.Common
 {
     internal interface IWarpDrawable
     {
-        /// <summary>
-        /// 是否进行额外的自定义绘制，这层绘制不会被扭曲效果所影响
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>是否绘制不受扭曲影响的自定义层</summary>
         public bool CanDrawCustom() => false;
-        /// <summary>
-        /// 是否不使用蓝移效果，默认返回<see langword="false"/>
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>禁用蓝移，默认 false</summary>
         public bool DontUseBlueshiftEffect() => false;
-        /// <summary>
-        /// 一个额外的自定义绘制，这里的绘制内容不会被扭曲影响
-        /// </summary>
+        /// <summary>扭曲管道外的自定义绘制</summary>
         /// <param name="spriteBatch"></param>
         public void DrawCustom(SpriteBatch spriteBatch);
-        /// <summary>
-        /// 扭曲效果相关的操作
-        /// </summary>
+        /// <summary>扭曲采样源绘制</summary>
         public void Warp();
     }
 }

@@ -3,10 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 脱战离场：目标已死或脱离战场，机体悬停回能后闪光离场。
-    /// 机械臂检测到该状态会自行收拢倒计时退场。
-    /// </summary>
+    /// <summary>脱战离场：悬停回能后闪光消失；机械臂同步退场</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Despawn, typeof(PrimeStateContext))]
     internal class PrimeDespawnState : PrimeStateBase
     {
@@ -34,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             npc.velocity = Vector2.Zero;
             context.FrameMode = 0;
 
-            //回能充填——离场前的能量回收演出
+            //回能充填，离场前能量回收演出
             int addNum = (npc.lifeMax - npc.life) / DespawnTime;
             npc.life = System.Math.Min(npc.life + addNum, npc.lifeMax);
 

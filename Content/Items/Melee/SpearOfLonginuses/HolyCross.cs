@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
                     , glowTex.Size() / 2f, glowScale, SpriteEffects.None, 0);
             }
 
-            //绘制十字架（外框+内填）。先画整体的"空"色，再按 fill 从下向上覆盖"热"色
+            //十字架外框+内填：先空色，再按 fill 自下而上盖热色
             DrawCross(pixel, drawPos, dir, appear * pulse, emptyFillColor, frameColor, fillRatio: 0f, hotFillColor);
             DrawCross(pixel, drawPos, dir, appear * pulse, hotFillColor, frameColor, fillRatio: fill, hotFillColor);
 

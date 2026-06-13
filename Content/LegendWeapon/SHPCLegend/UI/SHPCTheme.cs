@@ -1,9 +1,6 @@
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
-    /// <summary>
-    /// SHPC启动HUD的统一配色与几何常量
-    /// 整体偏冷青色调，搭配少量暖色高亮表达激活/选中状态
-    /// </summary>
+    /// <summary>SHPC HUD 配色与几何常量</summary>
     internal static class SHPCTheme
     {
         //主色调，弧带与按钮的基础色

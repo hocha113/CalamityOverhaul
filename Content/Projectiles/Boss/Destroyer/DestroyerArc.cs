@@ -8,8 +8,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
     /// <summary>
-    /// 机械电弧：连接两个NPC（体节/探针）之间的高温电弧，纯演出无伤害。
-    /// 服务端生成同步，客户端用 <see cref="ThunderTrail"/> 绘制抖动闪电。
+    /// 机械电弧：连接两 NPC(体节/探针)高温电弧，纯演出无伤害
+    /// 服务端同步，客户端 <see cref="ThunderTrail"/> 绘抖动闪电
     /// <br/>ai[0]: 端点NPC A 索引
     /// <br/>ai[1]: 端点NPC B 索引
     /// </summary>

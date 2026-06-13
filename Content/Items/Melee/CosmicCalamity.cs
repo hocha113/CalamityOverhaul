@@ -15,20 +15,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
     /// 寰宇灾厄长矛
-    /// </summary>
     internal class CosmicCalamity : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "CosmicCalamity";
 
-        /// <summary>
-        /// 连击索引：在三段刺击之间循环，越靠后能量越强
-        /// </summary>
+        /// 连击索引(后段更强)
         private int comboIndex;
-        /// <summary>
-        /// 连击重置计时器，超过这个时间没有再次攻击就重置连击
-        /// </summary>
+        /// 连击重置计时
         private int comboResetTimer;
 
         public override void SetStaticDefaults() {
@@ -98,16 +92,13 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 寰宇灾厄长矛的持握弹幕
-    /// <br/>三段渐强刺击: 轻刺 → 重刺 → 终结刺，刺击顶点释放月牙能量冲击波
-    /// </summary>
+    /// 寰宇灾厄手持弹幕，三段渐强刺击+顶点月牙冲击波
     internal class CosmicCalamityHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "CosmicCalamity";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<CosmicCalamity>();
 
-        /// <summary>当前连击阶段：0=轻刺，1=重刺，2=终结刺</summary>
+        /// 连击阶段 0轻 1重 2终结
         private int ComboStage => (int)Projectile.ai[0] % 3;
 
         private bool IsFinisher => ComboStage == 2;
@@ -122,9 +113,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         //矛刃判定长度（从持握点向矛尖延伸）
         private const float BladeLength = 130f;
 
-        /// <summary>
-        /// 获取本次连击对应的冲击波威力倍率
-        /// </summary>
+        /// 本次连击冲击波威力倍率
         private float WaveDamageMul => ComboStage switch {
             0 => 0.55f,
             1 => 0.75f,
@@ -132,9 +121,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             _ => 0.55f
         };
 
-        /// <summary>
-        /// 三段连击共用的宇宙紫蓝色调，作为月牙能量的主色
-        /// </summary>
+        /// 宇宙紫蓝主色
         private static readonly Color BaseCore = new(220, 230, 255);
         private static readonly Color BaseMid = new(140, 90, 230);
         private static readonly Color BaseEdge = new(40, 14, 90);
@@ -143,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float elapsed;
         private float speedMul = 1f;
         private Vector2 stabUnit;
-        /// <summary>当前持出距离</summary>
+        /// 当前持距
         private float holdout;
         private bool waveSpawned;
         private readonly HashSet<int> hitNPCs = [];
@@ -256,7 +243,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             int waveType = ModContent.ProjectileType<CosmicCrescentWave>();
             Vector2 spawnPos = Owner.GetPlayerStabilityCenter() + stabUnit * (holdout + BladeLength * 0.7f);
-            //冲击波本身飞行较慢，让"月牙"成为可被看到的表演而非一闪即逝
+            //冲击波慢飞，月牙可读的演出时长
             float waveSpeed = 6.5f + ComboStage * 1.4f;
             int waveDamage = (int)(Projectile.damage * WaveDamageMul);
 
@@ -414,31 +401,21 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 寰宇灾厄长矛的月牙能量冲击波
-    /// </summary>
+    /// 寰宇灾厄月牙冲击波
     internal class CosmicCrescentWave : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<CosmicCalamity>();
 
-        /// <summary>
-        /// 三档阶段：0=轻刺月牙、1=重刺月牙、2=终结月牙（更大更耀眼）
-        /// </summary>
+        /// 阶段 0轻 1重 2终结
         private int Stage => (int)Projectile.ai[0] % 3;
-        /// <summary>
-        /// 为每个冲击波生成的独立噪声种子，避免视觉上完全重复
-        /// </summary>
+        /// 噪声种子
         private float Seed => Projectile.ai[1];
 
         private const int MaxLife = 60;
-        /// <summary>
-        /// 冲击波"基础半径"，会乘以阶段倍率 + 时间生长曲线
-        /// </summary>
+        /// 基础半径(×阶段倍率+生长曲线)
         private static readonly float[] StageBaseRadius = { 110f, 140f, 180f };
-        /// <summary>
-        /// 控制贴图深度（即 X 轴半宽 / Y 轴半宽 的比例）
-        /// </summary>
+        /// 深度比(X半宽/Y半宽)
         private const float DepthRatio = 1.05f;
 
         private float fadeAlpha;

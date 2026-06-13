@@ -96,9 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 全局弹幕钩子
-    /// </summary>
+    /// <summary>全局钩子，Halibut 攻击附加点燃</summary>
     internal class FishVariegatedLardGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {

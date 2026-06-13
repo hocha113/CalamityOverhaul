@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 炮台电路过载：向供电回路灌入反向电流，使炮台长时间彻底失效
-    /// 演出用途：在关键阶段让塔防沉默足够久，创造突破窗口
-    /// </summary>
+    /// <summary>炮台过载，长时间失效</summary>
     internal class TurretCircuitOverload : QuickHackDef
     {
         //失效帧数（大约12秒）
@@ -22,14 +19,14 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not IHackableTurret turret) return false;
-            //炮台权威状态变更只在施法端执行，远端依靠 Actor 自身的同步链路还原
+            //炮台权威状态仅施法端
             if (!HackTimeNetSync.IsRemoteApply) {
                 turret.ApplyCircuitOverload(DisableFrames, caster);
             }
             Vector2 center = turret.WorldCenter;
 
             if (!VaultUtils.isServer) {
-                //大范围电浆爆裂：外围紫红色+内核炽白
+                //电浆爆裂，外围紫红+内核白
                 for (int i = 0; i < 34; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(10f, 10f);
                     Color c = Color.Lerp(new Color(255, 120, 200), new Color(255, 240, 255), Main.rand.NextFloat());

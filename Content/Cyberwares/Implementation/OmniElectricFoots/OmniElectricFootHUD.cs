@@ -8,10 +8,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 {
     /// <summary>
-    /// 全向电动义足专属 HUD
-    /// <br/>在玩家头顶绘制一段半弧形蓄力指示器，结合电流粒子+扫光高亮反馈蓄力强度
-    /// <br/>显隐受 <see cref="OmniElectricFoot.GetEquipped"/> 与玩家自身存活状态共同约束，
-    /// 全屏 UI 打开时主动隐藏避免遮挡
+    /// 全向电动义足 HUD，头顶半弧蓄力条+电流粒子
+    /// <br/>装备且蓄力中或残余进度时显示，全屏 UI 打开隐藏
     /// </summary>
     internal class OmniElectricFootHUD : UIHandle
     {
@@ -102,9 +100,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        /// <summary>
-        /// 绘制弧形蓄力条本体，结构：底环（暗）+ 进度环（带浅色辉光）+ 顶端帽
-        /// </summary>
+        /// <summary>弧形蓄力条：底环+进度环+顶端帽</summary>
         private void DrawArcBar(SpriteBatch sb, Texture2D px, Vector2 center, float ratio, Color barCol) {
             const float radius = 26f;
             const float thickness = 4.2f;
@@ -147,9 +143,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             DrawBatteryGlyph(sb, px, center, ratio, barCol);
         }
 
-        /// <summary>
-        /// 蓄力期间从弧条向中心闪过的细小电弧，强度与蓄力进度同步
-        /// </summary>
+        /// <summary>蓄力电弧，强度随 ratio</summary>
         private void DrawElectricBolts(SpriteBatch sb, Texture2D px, Vector2 center, float ratio, Color barCol) {
             if (ratio < 0.05f) {
                 return;
@@ -170,9 +164,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        /// <summary>
-        /// 蓄满时从中心向外扩散的脉冲环，提供强烈的"已就绪"反馈
-        /// </summary>
+        /// <summary>蓄满脉冲环，约 0.8 秒一轮</summary>
         private void DrawFullPulseRing(SpriteBatch sb, Texture2D px, Vector2 center, float pulse) {
             //循环展开：每 0.8 秒一次
             float phase = (time * 1.25f) % 1f;
@@ -183,9 +175,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             DrawDot(sb, px, center, 9f, BarHotHi * (pulse * 0.3f));
         }
 
-        /// <summary>
-        /// 中心电池图标：底框 + 端子 + 内部填充随蓄力升降
-        /// </summary>
+        /// <summary>中心电池图标，填充随 ratio</summary>
         private static void DrawBatteryGlyph(SpriteBatch sb, Texture2D px, Vector2 center, float ratio, Color barCol) {
             const float bodyW = 9f;
             const float bodyH = 14f;

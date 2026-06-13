@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 灼烧激光枪管：激光命中NPC时施加持续灼烧debuff
-    /// 单次伤害较低但DoT填补输出缺口，通过 ScorchOnHit 字段消费
-    /// </summary>
+    /// <summary>灼烧激光枪管：激光命中上灼烧 debuff，靠 DoT 补输出</summary>
     internal sealed class ScorchBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;

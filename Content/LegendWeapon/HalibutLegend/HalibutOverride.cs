@@ -19,44 +19,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public static LocalizedText FishOnStudied { get; private set; }
 
         #region Data
-        /// <summary>
-        /// 目标ID
-        /// </summary>
+        /// <summary>HalibutItem 类型 ID</summary>
         public static int ID => ModContent.ItemType<HalibutItem>();
-        /// <summary>
-        /// 目标ID
-        /// </summary>
+        /// <summary>ItemOverride 目标 ID</summary>
         public override int TargetID => ID;
-        /// <summary>武器大小缩放，适当的缩放可以提升观感</summary>
+        /// <summary>武器缩放</summary>
         public static float ItemScale => 0.8f;
-        /// <summary>
-        /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
-        /// </summary>
+        /// <summary>各时期伤害表，请用 <see cref="GetOnDamage"/></summary>
         private static Dictionary<int, int> DamageDictionary = new Dictionary<int, int>();
-        /// <summary>
-        /// 每个时期阶段对应的额外暴击振幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
-        /// </summary>
+        /// <summary>各时期额外暴击表，请用 <see cref="GetOnCrit"/></summary>
         private static Dictionary<int, int> SetLevelCritDictionary = new Dictionary<int, int>();
-        /// <summary>
-        /// 获取开局的伤害
-        /// </summary>
+        /// <summary>开局伤害</summary>
         public static int GetStartDamage => DamageDictionary[0];
         #endregion
-        /// <summary>
-        /// 获取时期对应的伤害
-        /// </summary>
+        /// <summary>时期伤害</summary>
         public static int GetOnDamage(Item item) => DamageDictionary[HalibutData.GetLevel(item)];
         /// <summary>
         /// 计算伤害比例
         /// </summary>
         public static float GetSengsDamage(Item item) => GetOnDamage(item) / (float)GetStartDamage;
-        /// <summary>
-        /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="RangedDamageClass"/>相关的乘算伤害
-        /// </summary>
+        /// <summary>远程乘算伤害（RangedDamageClass）</summary>
         public static int ActualRangedDamage(Item item) => (int)(Main.LocalPlayer.GetTotalDamage<RangedDamageClass>().ApplyTo(GetOnDamage(item)));
-        /// <summary>
-        /// 获取时期对应的额外暴击
-        /// </summary>
+        /// <summary>时期额外暴击</summary>
         public static int GetOnCrit(Item item) => SetLevelCritDictionary[HalibutData.GetLevel(item)];
 
         public static void LoadWeaponData() {

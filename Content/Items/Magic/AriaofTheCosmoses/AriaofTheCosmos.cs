@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
     /// 寰宇咏叹调
-    /// </summary>
     internal class AriaofTheCosmos : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
@@ -33,9 +31,9 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             SupertableUI.ModCall_OtherRpsData_StringList.Add(FullItems);
         }
 
-        /// <summary>Q技能冷却计时，2秒</summary>
+        /// <summary>Q技能冷却(帧) 2秒</summary>
         public int QSkillCooldown;
-        /// <summary>R技能冷却计时，3秒</summary>
+        /// <summary>R技能冷却(帧) 3秒</summary>
         public int RSkillCooldown;
         private const int QSkillMaxCooldown = 120;
         private const int RSkillMaxCooldown = 180;
@@ -65,7 +63,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         //右键用于蓄力压扁吸积盘
         public override bool AltFunctionUse(Player player) => true;
 
-        //蓄力武器的魔力在释放与技能时手动扣除，物品使用本身不扣蓝
+        //蓄力武器魔力在释放与技能时手动扣除
         public override void ModifyManaCost(Player player, ref float reduce, ref float mult) => mult = 0f;
 
         public override bool CanUseItem(Player player)
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             => BaseHeldGun.SpawnHeldProj<AriaofTheCosmosHeld>(player, source);
 
         public override void HoldItem(Player player) {
-            //Q/R技能挂在物品持有上，不依赖手持弹幕存活，保证不开火时也能施放
+            //Q/R挂在物品持有上 不依赖手持弹幕
             if (QSkillCooldown > 0) {
                 QSkillCooldown--;
             }

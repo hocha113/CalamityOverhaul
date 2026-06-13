@@ -17,16 +17,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 怨念编织者
-    /// <br/>左键: 三段连击的怨魂大刀，挥砍释放怨灵之爪
-    /// <br/>右键: 向光标方向翻滚冲刺，化作怨魂风车
-    /// </summary>
+    /// 怨念编织者：三段怨魂大刀+右键怨魂冲刺
     internal class WeaverGrievances : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
 
-        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        /// 三段连击计数
         private static int comboCounter;
 
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
@@ -130,19 +126,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 怨念编织者手持大刀
-    /// <br/>三段连击: 正手大劈 → 反手回斩 → 终结回旋斩
-    /// <br/>刀光轨迹由 WeaverSlashTrail.fx 渲染，挥砍中段释放怨灵之爪
-    /// </summary>
+    /// 怨念编织者手持：三段连击+WeaverSlashTrail.fx+怨灵之爪
     internal class WeaverGrievancesHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<WeaverGrievances>()).DisplayName;
 
-        /// <summary>连击索引: 0=正手劈 1=反手斩 2=终结回旋斩</summary>
+        /// 连击索引 0正 1反 2终结
         private ref float ComboIndex => ref Projectile.ai[0];
-        /// <summary>挥砍方向符号 ±1</summary>
+        /// 挥砍方向 ±1
         private ref float SwingDirAi => ref Projectile.ai[1];
 
         private bool IsFinisher => ComboIndex >= 2f;
@@ -432,11 +424,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 怨念编织者冲刺——怨魂风车
-    /// <br/>玩家向光标方向翻滚，大刀绕身旋转成风车，周身卷起怨魂涡流
-    /// <br/>涡流由 WeaverSoulVortex.fx 渲染，风车环形刀光复用 WeaverSlashTrail.fx
-    /// </summary>
+    /// 怨念编织者冲刺：怨魂风车+WeaverSoulVortex.fx
     internal class WeaverGrievancesDash : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "WeaverGrievances";
@@ -730,11 +718,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 怨灵之爪——程序化怨魂弹幕
-    /// <br/>主体由 WeaverWraith.fx 程序化生成：圆首、撕裂飘尾、空洞双眼
-    /// <br/>飞出减速后转向回归玩家，回归阶段陷入狂怒（眼洞燃起红光）
-    /// </summary>
+    /// 怨灵之爪：WeaverWraith.fx 程序化怨魂弹幕
     internal class WeaverBeam : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

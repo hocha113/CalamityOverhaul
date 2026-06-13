@@ -1,20 +1,20 @@
+// ============================================================================
+// Crystal.fx 水晶宝石高光着色
+// s0 本体 s1 噪声；vs_2_0/ps_3_0
+// ============================================================================
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
-//缩放矩阵
-matrix transformMatrix;
-float2 basePos;
-float2 scale;
-//texture noiseTexture;
+matrix transformMatrix; //顶点变换
+float2 basePos;         //噪声采样原点(像素)
+float2 scale;           //噪声 UV 缩放
 float uTime;
-float lightRange;
-float lightLimit;
-float addC;
-//高光颜色
-float4 highlightC;
-//亮部颜色
-float4 brightC;
-//暗部颜色
-float4 darkC;
+float lightRange;     //高光扫描范围
+float lightLimit;     //亮度阈值
+float addC;             //底色叠加量
+float4 highlightC;    //高光色
+float4 brightC;       //亮部色
+float4 darkC;         //暗部色
 
 struct VertexShaderInput
 {

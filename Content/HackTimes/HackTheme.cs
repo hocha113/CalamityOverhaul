@@ -1,9 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间界面主题配色
-    /// <br/>黑墙风格，以深色为底，冷青色为主强调，暗青为辅助
-    /// </summary>
+    /// <summary>骇客时间主题配色</summary>
     internal static class HackTheme
     {
         //深色背景层级
@@ -18,15 +15,15 @@
         public static readonly Color BorderBright = new(50, 70, 80);
         public static readonly Color InnerShadow = new(3, 5, 8);
 
-        //主强调色（冷青）
+        //主强调色
         public static readonly Color Accent = new(0, 200, 210);
-        //副强调色（青绿）
+        //副强调色
         public static readonly Color AccentAlt = new(40, 180, 160);
-        //警告色（深红）
+        //警告色
         public static readonly Color Danger = new(220, 45, 45);
-        //上传中色（琥珀）
+        //上传中色
         public static readonly Color Uploading = new(200, 170, 40);
-        //蔓延色（紫色）
+        //蔓延色
         public static readonly Color Contagion = new(160, 40, 200);
 
         //文字层级

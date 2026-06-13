@@ -11,16 +11,13 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
-    /// <summary>
-    /// 赛博朋克2077风格斯安威斯坦冷却HUD
-    /// 四段式弧形环 + 色差分离 + 故障碎片 + 数据粒子 + 神经脉冲 + 扫描线
-    /// </summary>
+    /// <summary>斯安威斯坦冷却 HUD，四段弧环+故障/粒子/扫描</summary>
     internal class SandevistanHUD : UIHandle
     {
         public override bool Active {
             get {
                 if (Sandevistan.GetEquipped(Main.LocalPlayer) == null) return false;
-                //全屏UI打开时隐藏HUD
+                //全屏 UI / 骇客时间时隐藏
                 if (QuestLog.Instance?.visible == true) return false;
                 if (QuestManagerUI.Instance?.IsOpen == true) return false;
                 if (HackTime.Active || HackTime.Intensity > 0.5f) return false;
@@ -56,11 +53,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         private const float R_TickIn = 50f;
         private const float R_TickOut = 55f;
         private const int TickCount = 32;
-        //四段弧，每段之间2°间隙
+        //四段弧，段间 2° 间隙
         private const int SegCount = 4;
         private static readonly float GapRad = MathHelper.ToRadians(2f);
         private static readonly float SegAngle = (MathHelper.TwoPi - SegCount * GapRad) / SegCount;
-        //弧从顶部 (-PI/2) 顺时针
+        //弧起点 -PI/2 顺时针
         private const float ArcOrigin = -MathHelper.PiOver2;
 
         #endregion
@@ -111,7 +108,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
             if (scanAngle > MathHelper.TwoPi) scanAngle -= MathHelper.TwoPi;
 
-            //状态转换检测
+            //启停边沿闪光+故障
             if (active && !wasActive) {
                 transitionFlash = 1f;
                 neuralBurst = 1f;
@@ -270,7 +267,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 DrawArcGlowDots(sb, c, segStart, sweep, arcColor * (0.08f * pulse), 5);
             }
 
-            //临界值抖动（<20%）
+            //<20% 临界闪烁
             if (ratio < 0.2f) {
                 float flicker = MathF.Sin(timer * 30f) > 0.3f ? 1f : 0.3f;
                 float reSweep = ratio * SegAngle * SegCount;
@@ -516,7 +513,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
         #region 工具方法
 
-        //绘制弧线：用连续短线段近似
+        //弧线短线段近似
         private static void DrawArc(SpriteBatch sb, Texture2D px, Vector2 center,
             float radius, float startAngle, float sweepAngle, float thickness, Color color,
             int segments, Vector2 offset = default) {
@@ -539,7 +536,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        //用SoftGlow灰度图绘制真实的圆形柔光，scale是相对于原图(64x64)的缩放比
+        //SoftGlow 柔光，scale 相对 64×64 原图
         private static void DrawGlow(SpriteBatch sb, Vector2 pos, float scale, Color color) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null || scale < 0.01f) return;
@@ -588,7 +585,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return angle;
         }
 
-        //将角度归一化到 [0, TwoPi)
+        //角度归一化到 [0, TwoPi)
         private static float NormalizeAngle(float a) {
             a %= MathHelper.TwoPi;
             if (a < 0) a += MathHelper.TwoPi;

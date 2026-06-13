@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
-    /// <summary>
-    /// 火箭炮点射：跟随头部右侧悬浮，稳定节奏单发轰炸。
-    /// 与激光炮联动——激光炮速射时火箭炮收敛为点射，避免火力叠加失衡
-    /// </summary>
+    /// <summary>火箭炮点射：头侧悬浮单发；激光速射时收敛点射防火力叠加</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonBombard, typeof(PrimeArmStateContext))]
     internal class CannonBombardState : PrimeArmStateBase
     {
@@ -57,10 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return EvaluateModeSwitch(ctx, wantSpreadWhenFree: true);
         }
 
-        /// <summary>
-        /// 模式联动：激光炮存活时跟随其节奏（激光速射 → 点射，其余 → 散射）；
-        /// 激光炮阵亡后按计时自主切换
-        /// </summary>
+        /// <summary>激光存活时跟其节奏（速射→点射，其余→散射）；激光阵亡后计时切换</summary>
         private PrimeArmStateBase EvaluateModeSwitch(PrimeArmStateContext ctx, bool wantSpreadWhenFree) {
             if (VaultUtils.isClient) {
                 return null;
@@ -118,9 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 火箭炮扇形齐射：更长的装填换来一次三~五连的扇形火力覆盖，后坐力猛烈
-    /// </summary>
+    /// <summary>火箭扇形齐射：长装填换 3~5 连覆盖</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonSpread, typeof(PrimeArmStateContext))]
     internal class CannonSpreadState : PrimeArmStateBase
     {
@@ -192,10 +184,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 抛物线迫击炮：落点圆圈预告（持续到弹着瞬间）→ 重型榴弹真实抛物线必中环心，
-    /// 引爆为恰好覆盖预警环的火球——蓄力预警的兑现是大爆炸而非普攻火箭。最小开火距离 350px
-    /// </summary>
+    /// <summary>抛物线迫击：落点环预告→必中环心火球；最小距 350px</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.CannonMortar, typeof(PrimeArmStateContext))]
     internal class CannonMortarState : PrimeArmStateBase
     {
@@ -219,7 +208,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         public override PrimeArmStateBase OnUpdate(PrimeArmStateContext ctx) {
             CannonBombardState.Follow(ctx);
 
-            //炮管压向弹道出膛方向（高抛仰角），而非直指玩家——姿态即弹道预告
+            //炮管压向高抛出膛角，姿态即弹道预告
             Vector2 launchDir = PrimeMortarShellProj.SolveLaunchVelocity(ctx.Npc.Center, impactPoint,
                 PrimeMortarShellProj.FlightFrames).SafeNormalize(Vector2.UnitY);
             ctx.AimDirection = Vector2.Lerp(ctx.AimDirection, launchDir, 0.15f);
@@ -236,7 +225,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return null;
         }
 
-        /// <summary>蓄力预警的兑现：重型榴弹按弹道学反解初速，必中预警环心</summary>
+        /// <summary>弹道学反解初速，必中预警环心</summary>
         private void FireMortar(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.RocketSkeleton) * 1.25f));

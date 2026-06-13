@@ -6,12 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>
-    /// 赛博瞬移起点解构演出弹幕
-    /// <br/>玩家在起点被解构成像素数据块 → 沿 <see cref="CyberRiftSlashProj"/> 走廊离去
-    /// <br/>共用 CyberReform.fx，但 direction = -1：格子从轮廓位置向外飞散
-    /// <br/>与 <see cref="CyberReformProj"/> 形成"解构 → 传输 → 重组"三段式视觉闭环
-    /// </summary>
+    /// <summary>瞬移起点解构弹幕，direction=-1 离心飞散</summary>
     internal class CyberPixelDecomposeProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

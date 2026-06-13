@@ -10,9 +10,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    /// <summary>
-    /// 鱼技能基类，所有鱼技能都必须继承自这个类
-    /// </summary>
+    /// <summary>鱼技能基类</summary>
     public abstract class FishSkill : VaultType<FishSkill>, ILocalizedModType
     {
         public string LocalizationCategory => "FishSkill";
@@ -40,14 +38,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 技能冷却比例，1表示完全冷却，0表示刚使用完
         /// </summary>
         public float CooldownRatio => Cooldown / (float)DefaultCooldown;
-        /// <summary>
-        /// 研究什么鱼才能得到这个技能？
-        /// </summary>
+        /// <summary>解锁所需鱼物品 ID</summary>
         public virtual int UnlockFishID => ItemID.None;
-        /// <summary>
-        /// 深渊图鉴中的深度带：0浅滩、1远洋、2深海、3深渊
-        /// <br/>返回-1表示未手动指定，由图鉴的内置分配表（或解锁鱼的稀有度回退规则）决定
-        /// </summary>
+        /// <summary>图鉴深度带 0–3，-1 走分配表/稀有度回退</summary>
         public virtual int AtlasTier => -1;
         protected override void VaultRegister() {
             Instances.Add(this);
@@ -124,32 +117,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             return null;
         }
-        /// <summary>
-        /// 更新冷却时间，返回值表示是否继续更新
-        /// </summary>
-        /// <param name="halibutPlayer"></param>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <summary>冷却 tick，false 时停止递减</summary>
         public virtual bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             return true;
         }
-        /// <summary>
-        /// 这个技能是否处于激活状态
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <summary>是否为当前装备技能</summary>
         public virtual bool Active(Player player) {
             if (!player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return false;
             }
             return halibutPlayer.SkillID == ID && halibutPlayer.HeldHalibut;
         }
-        /// <summary>
-        /// 这个技能是否处于激活状态
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <summary>类型 T 是否为当前装备技能</summary>
         public static bool IsActive<T>(Player player) where T : FishSkill => GetT<T>().Active(player);
     }
 }

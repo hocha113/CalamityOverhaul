@@ -8,12 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 平衡握把：双衡协议。左键光束命中积累「阳衡」，右键能量球积累「阴衡」，
-    /// 双衡同时充盈且彼此接近时进入「天平态」：伤害+12%、攻速+10%、法力-10%，
-    /// 玩家周身浮现猩红与幽紫的双子环绕光辉（史莱姆之神双神意象）
-    /// 偏废任意一侧都会让天平倾覆 —— 奖励左右键交替的循环打法
-    /// </summary>
+    /// <summary>平衡握把：左键阳衡/右键阴衡，双衡均衡进天平态 +12% 伤 +10% 攻速 -10% 蓝</summary>
     internal sealed class BalancedGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

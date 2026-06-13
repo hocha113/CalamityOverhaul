@@ -11,10 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
-    /// 寰宇咏叹调Q技能，星环护卫
-    /// 召唤多个小型吸积盘环绕玩家，自动攻击敌人
-    /// </summary>
+    /// Q技能星环护卫 环绕小吸积盘自动攻击
     internal class AriaQSkill : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -239,9 +236,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
     }
 
-    /// <summary>
-    /// Q技能的环绕小吸积盘
-    /// </summary>
+    /// Q技能环绕小吸积盘
     internal class AriaQSkillDisk : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -259,7 +254,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private Color outerColor = new Color(220, 130, 60);
 
         private float attackCooldown;
-        private const float MaxAttackCooldown = 45f; //1.5秒攻击间隔
+        private const float MaxAttackCooldown = 45f; //1.5秒
         private float rotationSpeed = 2.5f;
 
         public override void SetDefaults() {
@@ -513,9 +508,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
     }
 
-    /// <summary>
-    /// Q技能发射的迷你追踪吸积盘
-    /// </summary>
+    /// Q技能迷你追踪吸积盘
     internal class AriaQSkillMiniDisk : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

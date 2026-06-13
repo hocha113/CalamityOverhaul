@@ -1,9 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 奇点核心：能量球飞行阶段持续向最近敌人偏转追踪
-    /// 通过 ShootContext.OrbFlyingAttract 字段，由 CyberChargeOrbProj 在飞行 AI 中消费
-    /// </summary>
+    /// <summary>奇点核心：球飞行偏转追踪最近敌人（OrbFlyingAttract）</summary>
     internal sealed class SingularityCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

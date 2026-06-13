@@ -6,10 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 相位机匣：追踪光束每90次AI调用（约30游戏帧）将自身传送到最近敌人附近
-    /// 通过 OnBeamAI 钩子修改 Projectile.Center 与 velocity 方向，彻底绕开障碍物追踪
-    /// </summary>
+    /// <summary>相位机匣：光束约 30 帧传送到最近敌人附近</summary>
     internal sealed class PhantomFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

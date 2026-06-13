@@ -9,8 +9,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
 {
     /// <summary>
-    /// 技能轮盘的可视层——纯绘制，状态全部从 <see cref="HalibutWheelController"/> 读取
-    /// 深海风格：暗化水幕 + 冷光弧扇区 + 中心比目鱼之核 + 上浮气泡
+    /// 技能轮盘可视层，状态读 <see cref="HalibutWheelController"/>
+    /// 全屏暗化 + 弧扇区 + 中心核 + 气泡
     /// </summary>
     internal class HalibutSkillWheel : UIHandle, ILocalizedModType
     {
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             float time = ctrl.Time;
             float ease = CWRUtils.EaseOutBack(a);
 
-            //1 水幕暗化：全屏深蓝压暗，中心留出可视区域
+            //1 全屏暗化
             DrawWaterVeil(sb, center, a);
 
             //2 底盘与装饰环
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             //全屏压暗
             sb.Draw(px, new Rectangle(0, 0, (int)HalibutTheme.UIScreenW + 1, (int)HalibutTheme.UIScreenH + 1),
                 new Rectangle(0, 0, 1, 1), HalibutTheme.Void * (0.62f * a));
-            //中心冷光晕，反向提亮轮盘区域
+            //中心提亮晕
             HalibutRenderer.DrawSoftGlow(sb, center, HalibutTheme.WheelOuterR * 2.1f,
                 HalibutTheme.Mid * (0.85f * a));
         }

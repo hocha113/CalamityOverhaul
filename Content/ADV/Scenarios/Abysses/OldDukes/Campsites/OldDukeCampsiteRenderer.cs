@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>
-    /// 老公爵营地渲染器
-    /// </summary>
+    /// <summary>老公爵营地 RenderHandle——实体/毒泡/交互提示</summary>
     internal class OldDukeCampsiteRenderer : RenderHandle, ILocalizedModType, IWorldInfo
     {
         public string LocalizationCategory => "ADV.OldDukeCampsite";
@@ -137,9 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Main.spriteBatch.End();
         }
 
-        /// <summary>
-        /// 绘制老公爵
-        /// </summary>
+        /// <summary>绘制老公爵 sprite</summary>
         private void DrawOldDuke(SpriteBatch sb, Vector2 screenPos) {
             if (OldDukeCampsite.OldDuke == null || oldDukeEntity == null) {
                 return;
@@ -193,9 +189,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
         }
 
-        /// <summary>
-        /// 绘制交互提示
-        /// </summary>
+        /// <summary>交互提示 UI</summary>
         private void DrawInteractPrompt(SpriteBatch sb, Vector2 screenPos) {
             float alpha = OldDukeCampsite.GetInteractPromptAlpha();
             if (alpha <= 0.01f) {
@@ -242,9 +236,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
                 new Color(150, 230, 180) * (alpha * iconPulse), 0.7f);
         }
 
-        /// <summary>
-        /// 生成毒泡粒子
-        /// </summary>
+        /// <summary>生成毒泡 PRT</summary>
         private void SpawnToxicBubble() {
             if (oldDukeEntity == null) {
                 return;
@@ -260,9 +252,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             toxicBubbles.Add(new ToxicBubblePRT(spawnPos));
         }
 
-        /// <summary>
-        /// 毒泡粒子
-        /// </summary>
+        /// <summary>毒泡粒子</summary>
         private class ToxicBubblePRT
         {
             public Vector2 Position;

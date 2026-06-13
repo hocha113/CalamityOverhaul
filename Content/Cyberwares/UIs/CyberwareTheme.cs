@@ -4,9 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    ///赛博义体界面的主题配色和通用绘制工具集
-    /// </summary>
+    /// <summary>义体界面主题色与绘制工具</summary>
     internal static class CyberwareTheme
     {
         #region 面板尺寸
@@ -16,13 +14,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         public const float SlotSize = 46f;
         public const float SlotPadding = 5f;
 
-        //字号缩放系数，与 SHPCModPanel.FontScale 对齐，统一系列 UI 字号节奏
+        //字号缩放，对齐 SHPCModPanel.FontScale
         public const float FontScale = 1.2f;
 
-        //shader 内框边距，与 ScissorTest 的 margin 对齐，便于 CPU 装饰与着色器内边线对齐
+        //shader 内框边距，对齐 Scissor margin
         public const float ShaderEdgePad = 4f;
 
-        //主面板中央人体能量光场半径（像素），随关闭动画 alpha 衰减归零
+        //中央人体光场半径，随关闭 alpha 衰减
         public const float BodyHaloRadius = 120f;
 
         #endregion
@@ -75,9 +73,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 绘制工具
 
-        /// <summary>
-        ///绘制一条指定粗细的直线
-        /// </summary>
+        /// <summary>绘制直线</summary>
         public static void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, float thickness, Color color) {
             Vector2 diff = end - start;
             float length = diff.Length();
@@ -86,9 +82,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        ///在像素网格坐标上填充一个矩形区域
-        /// </summary>
+        /// <summary>像素网格填充矩形</summary>
         public static void FillGridRect(SpriteBatch sb, Texture2D px, Vector2 offset, float scale,
             int gx, int gy, int gw, int gh, Color color, float breathe = 0f) {
             Rectangle rect = new(
@@ -100,9 +94,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), color);
         }
 
-        /// <summary>
-        ///计算折线路径上指定比例位置的世界坐标
-        /// </summary>
+        /// <summary>折线路径 t 处坐标</summary>
         public static Vector2 EvaluatePolyline(float t, Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
             float dAB = Vector2.Distance(a, b);
             float dBC = Vector2.Distance(b, c);

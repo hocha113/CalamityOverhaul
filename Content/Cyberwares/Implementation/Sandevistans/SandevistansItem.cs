@@ -4,8 +4,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>
-    /// 斯安威斯坦义体物品，也是所有斯安威斯坦型号的基类
-    /// 不同型号继承此类并覆写冷却参数即可自动接入冷却系统和HUD
+    /// 斯安威斯坦义体基类
+    /// <br/>子类覆写冷却参数即接入 HUD/系统
     /// </summary>
     internal class SandevistansItem : BaseCyberware
     {
@@ -15,19 +15,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
         public override CyberwareSkillBase ActiveSkill => SandevistanSkill.Instance;
 
-        /// <summary>
-        /// 最大冷却容量（帧数），决定可持续激活的总时长
-        /// </summary>
+        /// <summary>最大冷却帧，总可持续时长</summary>
         public virtual float MaxCooldownTime => 480f;
 
-        /// <summary>
-        /// 激活状态下每帧消耗的冷却值，值越大持续时间越短
-        /// </summary>
+        /// <summary>激活每帧消耗，越大越短</summary>
         public virtual float ConsumptionPerFrame => 1.5f;
 
-        /// <summary>
-        /// 未激活时每帧恢复的冷却值，值越大回复越快
-        /// </summary>
+        /// <summary>停用每帧恢复</summary>
         public virtual float RecoveryPerFrame => 0.8f;
 
         public override void OnEquip(Player player) {

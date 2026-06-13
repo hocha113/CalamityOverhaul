@@ -14,19 +14,19 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 {
     /// <summary>
-    /// 任务接受UI的通用基类，用于显示任务详情和接受/拒绝选项
+    /// 任务接受 UI 基类
     /// </summary>
     internal abstract class BaseQuestAcceptUI : UIHandle, ILocalizedModType
     {
         public abstract string LocalizationCategory { get; }
 
-        //本地化文本
+        // 本地化文本
         protected LocalizedText QuestTitle { get; set; }
         protected LocalizedText QuestDesc { get; set; }
         protected LocalizedText AcceptText { get; set; }
         protected LocalizedText DeclineText { get; set; }
 
-        //UI控制
+        // UI 控制
         protected float sengs;
         protected float contentFadeProgress;
         protected bool showingQuest;
@@ -35,24 +35,24 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected bool closing;
         protected float hideProgress;
 
-        //动画时间轴
+        // 动画时间轴
         protected float globalTime;
         protected float panelSlideOffset;
         protected float panelScaleAnim;
         protected float breatheAnim;
         protected float shimmerPhase;
 
-        //按钮动画
+        // 按钮动画
         protected float acceptHoverAnim;
         protected float declineHoverAnim;
         protected float acceptPressAnim;
         protected float declinePressAnim;
 
-        //粒子系统
+        // 粒子系统
         protected readonly List<EmberParticle> embers = [];
         protected float emberSpawnTimer;
 
-        //布局常量
+        // 布局常量
         protected const float PanelWidth = 380f;
         protected const float PanelHeight = 260f;
         protected const float Padding = 20f;
@@ -60,13 +60,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected const float ButtonWidth = 120f;
         protected const float CornerRadius = 10f;
 
-        //按钮
+        // 按钮矩形
         protected Rectangle acceptButtonRect;
         protected Rectangle declineButtonRect;
         protected bool hoveringAccept;
         protected bool hoveringDecline;
 
-        //浮游粒子结构
+        // 余烬粒子
         protected struct EmberParticle
         {
             public Vector2 Position;
@@ -80,22 +80,22 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 设置本地化文本，子类需要实现
+        /// 本地化，子类实现
         /// </summary>
         protected abstract void SetupLocalizedTexts();
 
         /// <summary>
-        /// 检查是否应该显示任务UI，子类需要实现
+        /// 是否显示，子类实现
         /// </summary>
         protected abstract bool ShouldShowQuest();
 
         /// <summary>
-        /// 当玩家接受任务时调用，子类需要实现
+        /// 接受回调
         /// </summary>
         protected abstract void OnQuestAccepted();
 
         /// <summary>
-        /// 当玩家拒绝任务时调用，子类需要实现
+        /// 拒绝回调
         /// </summary>
         protected abstract void OnQuestDeclined();
 
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         public override void Update() {
             globalTime += 0.016f;
 
-            //主面板展开动画(带弹性缓动)
+            // 面板展开
             float targetSengs = showingQuest && !closing ? 1f : 0f;
             float animSpeed = closing ? 0.22f : 0.18f;
             sengs += (targetSengs - sengs) * animSpeed;
@@ -155,18 +155,18 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 return;
             }
 
-            //面板滑入偏移
+            // 滑入偏移
             float targetSlide = showingQuest && !closing ? 0f : 50f;
             panelSlideOffset += (targetSlide - panelSlideOffset) * 0.14f;
 
-            //面板缩放(带微弱过冲)
+            // 面板缩放
             float targetScale = showingQuest && !closing ? 1f : 0.88f;
             panelScaleAnim += (targetScale - panelScaleAnim) * 0.1f;
             if (panelScaleAnim > 0.97f && targetScale == 1f) {
                 panelScaleAnim += (1.015f - panelScaleAnim) * 0.25f;
             }
 
-            //内容延迟淡入
+            // 内容淡入
             if (sengs > 0.5f && !closing) {
                 contentFadeProgress += (1f - contentFadeProgress) * 0.12f;
             }
@@ -175,20 +175,20 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             }
             contentFadeProgress = Math.Clamp(contentFadeProgress, 0f, 1f);
 
-            //呼吸律动
+            // 呼吸律动
             breatheAnim = MathF.Sin(globalTime * 1.8f) * 0.5f + 0.5f;
             shimmerPhase = globalTime * 2.2f;
 
-            //按钮悬停平滑过渡
+            // 按钮悬停
             float hoverSpeed = 0.14f;
             acceptHoverAnim += ((hoveringAccept ? 1f : 0f) - acceptHoverAnim) * hoverSpeed;
             declineHoverAnim += ((hoveringDecline ? 1f : 0f) - declineHoverAnim) * hoverSpeed;
 
-            //按钮按压衰减
+            // 按压衰减
             acceptPressAnim *= 0.85f;
             declinePressAnim *= 0.85f;
 
-            //关闭动画
+            // 关闭动画
             if (closing) {
                 hideProgress += 0.06f;
                 if (hideProgress >= 1f) {
@@ -198,10 +198,10 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //更新粒子
+            // 更新粒子
             UpdateEmbers();
 
-            //生成余烬粒子
+            // 生成余烬
             if (sengs > 0.3f && !closing) {
                 emberSpawnTimer += 1f;
                 if (emberSpawnTimer > 4f) {
@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //计算面板位置(屏幕居中，附带滑动偏移)
+            // 面板居中位置
             float scaledW = PanelWidth * panelScaleAnim;
             float scaledH = PanelHeight * panelScaleAnim;
             Vector2 panelCenter = new(Main.screenWidth / 2f, Main.screenHeight / 2f + panelSlideOffset);
@@ -223,11 +223,11 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 player.mouseInterface = true;
             }
 
-            //悬停检测
+            // 悬停检测
             hoveringAccept = acceptButtonRect.Contains(MouseHitBox) && contentFadeProgress > 0.5f;
             hoveringDecline = declineButtonRect.Contains(MouseHitBox) && contentFadeProgress > 0.5f;
 
-            //点击处理
+            // 点击处理
             if (keyLeftPressState == KeyPressState.Pressed && contentFadeProgress > 0.8f) {
                 if (hoveringAccept) {
                     acceptPressAnim = 1f;
@@ -286,16 +286,16 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 alpha *= 1f - hideProgress * hideProgress;
             }
 
-            //背景遮罩
+            // 背景遮罩
             DrawBackdrop(spriteBatch, alpha * 0.35f);
 
-            //主面板
+            // 主面板
             DrawPanel(spriteBatch, alpha);
 
-            //余烬粒子
+            // 余烬粒子
             DrawEmbers(spriteBatch, alpha);
 
-            //内容
+            // 内容
             if (contentFadeProgress > 0.01f) {
                 DrawContent(spriteBatch, alpha * contentFadeProgress);
             }
@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
         protected virtual void DrawBackdrop(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            //从面板中心向外辐射的暗色遮罩
+            // 径向暗色遮罩
             Vector2 center = DrawPosition + Size / 2f;
             int radius = (int)(Math.Max(Main.screenWidth, Main.screenHeight) * 0.6f);
             for (int i = 0; i < 60; i++) {
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                     (int)(center.Y - ringSize),
                     ringSize * 2, ringSize * 2
                 );
-                //用简化方式逐行绘制暗色叠加
+                // 逐行暗色叠加
                 spriteBatch.Draw(pixel, ring, new Rectangle(0, 0, 1, 1), Color.Black * ringAlpha * 0.04f);
             }
         }
@@ -331,7 +331,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 spriteBatch.Draw(pixel, e.Position, new Rectangle(0, 0, 1, 1), color, e.Rotation,
                     new Vector2(0.5f), new Vector2(size), SpriteEffects.None, 0f);
 
-                //外层光晕
+                // 外层光晕
                 Color glow = color * 0.25f;
                 spriteBatch.Draw(pixel, e.Position, new Rectangle(0, 0, 1, 1), glow, e.Rotation,
                     new Vector2(0.5f), new Vector2(size * 2.5f), SpriteEffects.None, 0f);
@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected virtual void DrawPanel(SpriteBatch spriteBatch, float alpha) {
             Rectangle panelRect = UIHitBox;
 
-            //多层柔和投影
+            // 多层投影
             for (int i = 4; i >= 1; i--) {
                 Rectangle shadow = panelRect;
                 shadow.Offset(i * 2, i * 3);
@@ -349,41 +349,41 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 DrawRoundedRect(spriteBatch, shadow, Color.Black * shadowAlpha, CornerRadius + i);
             }
 
-            //背景渐变(深红暗色调)
+            // 背景渐变
             Color bgTop = new Color(28, 18, 18);
             Color bgBottom = new Color(50, 28, 22);
             DrawGradientRoundedRect(spriteBatch, panelRect, bgTop * (alpha * 0.96f), bgBottom * (alpha * 0.96f), CornerRadius);
 
-            //脉冲叠加层
+            // 脉冲叠加
             float pulse = MathF.Sin(globalTime * 1.5f) * 0.5f + 0.5f;
             Color pulseColor = new Color(140, 50, 40) * (alpha * 0.08f * pulse);
             DrawRoundedRect(spriteBatch, panelRect, pulseColor, CornerRadius);
 
-            //内发光
+            // 内发光
             float innerIntensity = 0.12f + breatheAnim * 0.08f;
             DrawInnerGlow(spriteBatch, panelRect, new Color(200, 80, 40) * (alpha * innerIntensity), CornerRadius, 16);
 
-            //流光边框
+            // 流光边框
             DrawShimmerBorder(spriteBatch, panelRect, alpha);
 
-            //顶部高光条
+            // 顶部高光
             Rectangle highlight = new(panelRect.X + 16, panelRect.Y + 2, panelRect.Width - 32, 2);
             float hlAlpha = 0.35f + breatheAnim * 0.2f;
             DrawHorizontalGradient(spriteBatch, highlight,
                 Color.Transparent, new Color(255, 140, 80) * (alpha * hlAlpha), Color.Transparent);
 
-            //角落装饰
+            // 角落装饰
             DrawCornerOrnaments(spriteBatch, panelRect, alpha);
         }
 
         protected void DrawShimmerBorder(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //基础边框
+            // 基础边框
             Color baseColor = new Color(140, 60, 30) * (alpha * 0.75f);
             DrawRoundedRectBorder(spriteBatch, rect, baseColor, CornerRadius, 2);
 
-            //沿边框运动的流光
+            // 边框流光
             float shimmerPos = (shimmerPhase % 4f) / 4f;
             for (int i = 0; i < 2; i++) {
                 float offset = (shimmerPos + i * 0.5f) % 1f;
@@ -391,11 +391,11 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 float intensity = MathF.Sin(offset * MathHelper.Pi) * 0.75f;
                 Color shimmerColor = new Color(255, 140, 60) * (alpha * intensity);
 
-                //流光主体
+                // 流光主体
                 spriteBatch.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), shimmerColor,
                     0f, new Vector2(0.5f), new Vector2(7f, 3.5f), SpriteEffects.None, 0f);
 
-                //拖尾
+                // 拖尾
                 for (int j = 1; j <= 4; j++) {
                     float trailOff = (offset - j * 0.012f + 1f) % 1f;
                     Vector2 trailPos = GetPointOnRectPerimeter(rect, trailOff);
@@ -420,12 +420,12 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             ];
 
             for (int i = 0; i < 4; i++) {
-                //菱形核心
+                // 菱形核心
                 spriteBatch.Draw(pixel, corners[i], new Rectangle(0, 0, 1, 1), ornColor,
                     MathHelper.PiOver4 + globalTime * 0.08f, new Vector2(0.5f),
                     new Vector2(5f, 5f), SpriteEffects.None, 0f);
 
-                //四向光芒
+                // 四向光芒
                 for (int j = 0; j < 4; j++) {
                     float rayRot = j * MathHelper.PiOver2 + globalTime * 0.25f;
                     Vector2 rayDir = rayRot.ToRotationVector2();
@@ -443,11 +443,11 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             float descScale = 0.78f * scale;
             float maxTextWidth = Size.X - Padding * scale * 2;
 
-            //标题
+            // 标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale);
             List<string> titleLines = CWRUtils.WrapText(QuestTitle.Value, font, maxTextWidth, titleScale);
 
-            //标题光晕(呼吸律动)
+            // 标题光晕(呼吸律动)
             float titleGlowStr = 0.4f + breatheAnim * 0.5f;
             Color titleGlowColor = new Color(255, 120, 50) * (alpha * titleGlowStr * 0.35f);
             float currentY = titlePos.Y;
@@ -458,19 +458,19 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                     Vector2 offset = angle.ToRotationVector2() * (2.5f + breatheAnim * 1.5f);
                     Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, currentY) + offset, titleGlowColor, titleScale);
                 }
-                //标题主体
+                // 标题主体
                 Color titleColor = Color.Lerp(new Color(255, 230, 200), new Color(255, 160, 80), breatheAnim * 0.3f);
                 Utils.DrawBorderString(spriteBatch, line, new Vector2(titlePos.X, currentY), titleColor * alpha, titleScale);
                 currentY += font.MeasureString(line).Y * titleScale * 0.9f;
             }
 
-            //带流光的分割线
+            // 流光分割线
             float titleHeight = currentY - titlePos.Y;
             Vector2 divStart = titlePos + new Vector2(0, titleHeight + 6 * scale);
             Vector2 divEnd = divStart + new Vector2(maxTextWidth, 0);
             DrawAnimatedDivider(spriteBatch, divStart, divEnd, alpha);
 
-            //描述文本
+            // 描述文本
             Vector2 descPos = divStart + new Vector2(2 * scale, 14 * scale);
             string desc = QuestDesc.Value;
             string[] paragraphs = desc.Split('\n');
@@ -481,14 +481,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 List<string> wrappedLines = CWRUtils.WrapText(paragraph, font, maxTextWidth, descScale);
                 foreach (string line in wrappedLines) {
                     Vector2 linePos = new Vector2(descPos.X, currentY);
-                    //柔和阴影
+                    // 柔和阴影
                     Utils.DrawBorderString(spriteBatch, line, linePos + new Vector2(1, 1.5f), Color.Black * alpha * 0.4f, descScale);
                     Utils.DrawBorderString(spriteBatch, line, linePos, textColor, descScale);
                     currentY += font.MeasureString(line).Y * descScale * 0.9f;
                 }
             }
 
-            //按钮区域
+            // 按钮区域
             float buttonY = DrawPosition.Y + Size.Y - Padding * scale - ButtonHeight * scale;
             float buttonCenterX = DrawPosition.X + Size.X / 2f;
             float buttonSpacing = 14f * scale;
@@ -518,12 +518,12 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             float length = (end - start).Length();
             if (length < 1f) return;
 
-            //底层线条
+            // 底层线条
             Color baseColor = new Color(100, 50, 30) * (alpha * 0.55f);
             spriteBatch.Draw(pixel, start, new Rectangle(0, 0, 1, 1), baseColor, 0f,
                 Vector2.Zero, new Vector2(length, 1f), SpriteEffects.None, 0f);
 
-            //流光
+            // 流光
             float shimmerT = (globalTime * 0.5f) % 1f;
             Vector2 shimmerPos = Vector2.Lerp(start, end, shimmerT);
             Color shimmerColor = new Color(255, 140, 60, 0) * (alpha * 0.7f);
@@ -535,17 +535,17 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
         protected void DrawStyledButton(SpriteBatch spriteBatch, Rectangle rect, string text,
             float hoverAnim, float pressAnim, float alpha, bool isAccept, float scale) {
-            //按压偏移
+            // 按压偏移
             Rectangle drawRect = rect;
             if (pressAnim > 0.01f) {
                 drawRect.Y += (int)(pressAnim * 2f);
             }
 
-            //悬停膨胀
+            // 悬停膨胀
             int expand = (int)(hoverAnim * 3f);
             drawRect.Inflate(expand, expand / 2);
 
-            //背景渐变
+            // 按钮背景渐变
             Color bgTop, bgBottom;
             if (isAccept) {
                 bgTop = Color.Lerp(new Color(40, 55, 30), new Color(55, 75, 35), hoverAnim);
@@ -557,50 +557,50 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             }
             DrawGradientRoundedRect(spriteBatch, drawRect, bgTop * (alpha * 0.95f), bgBottom * (alpha * 0.95f), 6f);
 
-            //边框
+            // 边框
             Color borderColor = isAccept
                 ? Color.Lerp(new Color(80, 140, 60), new Color(140, 220, 100), hoverAnim)
                 : Color.Lerp(new Color(140, 70, 60), new Color(220, 120, 100), hoverAnim);
             DrawRoundedRectBorder(spriteBatch, drawRect, borderColor * alpha, 6f, 1 + (int)hoverAnim);
 
-            //悬停内发光
+            // 悬停内发光
             if (hoverAnim > 0.01f) {
                 Color innerGlow = (isAccept ? new Color(120, 200, 80) : new Color(200, 100, 80)) * (alpha * hoverAnim * 0.12f);
                 DrawInnerGlow(spriteBatch, drawRect, innerGlow, 6f, 8);
             }
 
-            //文字
+            // 文字
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.85f * scale;
             Vector2 textPos = drawRect.Center.ToVector2() - textSize / 2f + new Vector2(0, 2);
 
-            //文字阴影
+            // 文字阴影
             Utils.DrawBorderString(spriteBatch, text, textPos + new Vector2(1, 2),
                 Color.Black * (alpha * 0.45f), 0.85f * scale);
 
-            //文字主体
+            // 文字主体
             Color textColor = Color.Lerp(new Color(200, 190, 175), Color.White, hoverAnim);
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor * alpha, 0.85f * scale);
 
-            //悬停文字光晕
+            // 悬停文字光晕
             if (hoverAnim > 0.3f) {
                 Color textGlow = (isAccept ? new Color(140, 220, 100) : new Color(220, 140, 120)) * (alpha * (hoverAnim - 0.3f) * 0.4f);
                 Utils.DrawBorderString(spriteBatch, text, textPos, textGlow, 0.85f * scale);
             }
         }
 
-        #region 绘制辅助方法
+        #region 绘制辅助
 
         protected static void DrawRoundedRect(SpriteBatch sb, Rectangle rect, Color color, float radius) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
 
-            //中心
+            // 中心
             sb.Draw(pixel, new Rectangle(rect.X + r, rect.Y, rect.Width - r * 2, rect.Height), new Rectangle(0, 0, 1, 1), color);
-            //左右
+            // 左右
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y + r, r, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
             sb.Draw(pixel, new Rectangle(rect.Right - r, rect.Y + r, r, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
 
-            //四角
+            // 四角
             for (int i = 0; i < r; i++) {
                 float t = i / (float)r;
                 int cw = (int)(r * MathF.Sqrt(1f - (1f - t) * (1f - t)));
@@ -635,14 +635,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int r = (int)Math.Min(radius, Math.Min(rect.Width, rect.Height) / 2f);
 
-            //上下
+            // 上下
             sb.Draw(pixel, new Rectangle(rect.X + r, rect.Y, rect.Width - r * 2, thickness), new Rectangle(0, 0, 1, 1), color);
             sb.Draw(pixel, new Rectangle(rect.X + r, rect.Bottom - thickness, rect.Width - r * 2, thickness), new Rectangle(0, 0, 1, 1), color);
-            //左右
+            // 左右
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y + r, thickness, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
             sb.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y + r, thickness, rect.Height - r * 2), new Rectangle(0, 0, 1, 1), color);
 
-            //四角弧线
+            // 四角弧线
             DrawCornerArc(sb, new Vector2(rect.X + r, rect.Y + r), r, MathHelper.Pi, MathHelper.PiOver2, color, thickness);
             DrawCornerArc(sb, new Vector2(rect.Right - r, rect.Y + r), r, -MathHelper.PiOver2, MathHelper.PiOver2, color, thickness);
             DrawCornerArc(sb, new Vector2(rect.X + r, rect.Bottom - r), r, MathHelper.PiOver2, MathHelper.PiOver2, color, thickness);

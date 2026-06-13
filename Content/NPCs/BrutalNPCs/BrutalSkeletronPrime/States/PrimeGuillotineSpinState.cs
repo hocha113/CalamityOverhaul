@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 断头台旋杀：以玩家为圆心大半径快速圆周，沿途悬停锯刃，分段收紧逼玩家破圈。
-    /// </summary>
+    /// <summary>断头台旋杀：大半径圆周+悬停锯刃，分段收紧逼破圈</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.GuillotineSpin, typeof(PrimeStateContext))]
     internal class PrimeGuillotineSpinState : PrimeStateBase
     {
@@ -36,9 +34,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             NPC npc = context.Npc;
             context.FrameMode = 2;
 
-            //注意：Timer++ 必须在所有分支的公共路径上执行。
-            //此前预警分支提前 return 跳过了自增，Timer 永远为 0，
-            //状态卡死在预警段且无运动控制——boss 带着残速无限漂移。
+            //Timer++ 必须在公共路径；预警分支曾提前 return 致 Timer 永为 0，boss 残速漂移
             if (Timer < Telegraph) {
                 npc.damage = 0;
                 //预警期缓刹，消化进入状态时的惯性残速

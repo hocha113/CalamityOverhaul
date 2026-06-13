@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
     internal class BrimstoneChoiceBoxStyle : IChoiceBoxStyle
     {
         private float brimstoneFlameTimer = 0f;
-        //着色器专用单调递增时间
+        // 着色器专用单调递增时间
         private float shaderTime = 0f;
         private const int ShaderEdgePad = 14;
         private readonly List<BrimstoneEmber> brimstoneEmbers = new();
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             }
             if (shaderTime > 10000f) shaderTime -= 10000f;
 
-            //生成余烬粒子
+            // 生成余烬粒子
             brimstoneEmberTimer++;
             if (active && !closing && brimstoneEmberTimer >= 6 && brimstoneEmbers.Count < 20) {
                 brimstoneEmberTimer = 0;
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 brimstoneEmbers.Add(new BrimstoneEmber(startPos));
             }
 
-            //更新粒子
+            // 更新粒子
             for (int i = brimstoneEmbers.Count - 1; i >= 0; i--) {
                 if (brimstoneEmbers[i].Update(panelRect)) {
                     brimstoneEmbers.RemoveAt(i);
@@ -46,12 +46,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void Draw(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //绘制阴影
+            // 绘制阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(7, 9);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), new Color(20, 0, 0) * (alpha * 0.65f));
 
-            //专属着色器面板,降级时回退到原CPU堆叠
+            // 专属着色器面板,降级时回退到原CPU堆叠
             if (BrimstoneShaderPanel.Available) {
                 float pulse01 = (float)Math.Sin(brimstoneFlameTimer * 1.8f) * 0.5f + 0.5f;
                 BrimstoneShaderPanel.Draw(spriteBatch, panelRect, alpha * 0.97f, pulse01, shaderTime, ShaderEdgePad, Color.White);
@@ -60,21 +60,21 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 DrawFallbackPanel(spriteBatch, panelRect, alpha);
             }
 
-            //火焰边框
+            // 火焰边框
             Color flameEdge = GetEdgeColor(alpha);
             DrawBorder(spriteBatch, panelRect, flameEdge);
 
-            //绘制余烬粒子
+            // 绘制余烬粒子
             foreach (var ember in brimstoneEmbers) {
                 ember.Draw(spriteBatch, alpha * 0.9f);
             }
         }
 
-        //CPU降级面板:原版2D堆叠绘制
+        // CPU降级面板:原版2D堆叠绘制
         private void DrawFallbackPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //渐变背景 - 硫磺火深红色
+            // 渐变背景 - 硫磺火深红色
             int segments = 25;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -95,12 +95,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), finalColor);
             }
 
-            //火焰脉冲叠加
+            // 火焰脉冲叠加
             float pulseBrightness = (float)Math.Sin(brimstoneFlameTimer * 1.8f) * 0.5f + 0.5f;
             Color pulseOverlay = new Color(120, 25, 15) * (alpha * 0.25f * pulseBrightness);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
 
-            //绘制热浪扭曲效果
+            // 绘制热浪扭曲效果
             DrawBrimstoneHeatWaves(spriteBatch, panelRect, alpha * 0.75f);
         }
 

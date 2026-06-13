@@ -5,8 +5,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrains
 {
     /// <summary>
-    /// 拟态栖置副脑玩家组件
-    /// 维护四个幻象弹幕的生成、冷却以及受击触发的免疫与冲撞
+    /// 拟态副脑 ModPlayer，四幻象生成/冷却/FreeDodge
+    /// <br/>仅本机 RequestRespawnPhantoms，ai[0]=槽位索引
     /// </summary>
     internal class MimicPerchedAuxBrainPlayer : ModPlayer
     {
@@ -15,24 +15,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
         /// </summary>
         public const int PhantomCount = 4;
 
-        /// <summary>
-        /// 当前剩余冷却帧数，大于0时无法再次触发
-        /// </summary>
+        /// <summary>冷却剩余帧</summary>
         public int TriggerCooldownTimer;
 
-        /// <summary>
-        /// 幻象处于冲撞状态的剩余帧数，期间用于显示混乱视觉效果
-        /// </summary>
+        /// <summary>混乱视觉剩余帧，触发后 30</summary>
         public int ChaosVisualTimer;
 
-        /// <summary>
-        /// 上一帧是否装备，用于检测装备状态切换
-        /// </summary>
+        /// <summary>上帧是否装备，检测切换</summary>
         private bool wasEquippedLastFrame;
 
-        /// <summary>
-        /// 获取当前装备的拟态副脑实例，未装备返回null
-        /// </summary>
+        /// <summary>获取装备的拟态副脑，未装备 null</summary>
         public static MimicPerchedAuxBrain GetEquipped(Player player) {
             CyberwarePlayer cyberPlayer = player.GetModPlayer<CyberwarePlayer>();
             for (int i = 0; i < CyberwarePlayer.SlotCount; i++) {
@@ -43,9 +35,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             return null;
         }
 
-        /// <summary>
-        /// 检查指定玩家在场上是否已有指定槽位的幻象弹幕存活
-        /// </summary>
+        /// <summary>场上是否已有指定槽位幻象</summary>
         public static bool HasPhantom(Player player, int phantomSlot) {
             int type = ModContent.ProjectileType<MimicPhantom>();
             foreach (Projectile p in Main.ActiveProjectiles) {
@@ -56,9 +46,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             return false;
         }
 
-        /// <summary>
-        /// 清除该玩家的所有幻象弹幕
-        /// </summary>
+        /// <summary>清除该玩家全部幻象</summary>
         public static void ClearPhantoms(Player player) {
             int type = ModContent.ProjectileType<MimicPhantom>();
             foreach (Projectile p in Main.ActiveProjectiles) {
@@ -68,9 +56,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             }
         }
 
-        /// <summary>
-        /// 请求为该玩家补满四个幻象，缺失的会被重新生成
-        /// </summary>
+        /// <summary>补满缺失幻象，仅本机</summary>
         public static void RequestRespawnPhantoms(Player player) {
             if (player.whoAmI != Main.myPlayer) {
                 return;
@@ -162,9 +148,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             return true;
         }
 
-        /// <summary>
-        /// 是否仍有任何幻象存活
-        /// </summary>
+        /// <summary>是否仍有 Orbit 态幻象存活</summary>
         private bool AnyPhantomAlive() {
             int type = ModContent.ProjectileType<MimicPhantom>();
             foreach (Projectile p in Main.ActiveProjectiles) {
@@ -175,9 +159,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             return false;
         }
 
-        /// <summary>
-        /// 通知所有玩家拥有的幻象切换为冲撞模式
-        /// </summary>
+        /// <summary>命令 Orbit 幻象切换 Rush</summary>
         private void CommandPhantomsRush(Vector2 attackerCenter, int attackerNpcIndex, int phantomDamage) {
             int type = ModContent.ProjectileType<MimicPhantom>();
             foreach (Projectile p in Main.ActiveProjectiles) {

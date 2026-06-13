@@ -1,8 +1,7 @@
 // ============================================================================
-// BrimstoneDomain.fx — 硫磺火领域法阵着色器
-// 程序化地狱领域：硫火等离子漩涡 + 多层魔法阵 + 符文脉冲 + 暗焰涌动
-// 单次DrawCall渲染整个硫磺火法阵视觉效果，替代CPU侧灰度图叠加
-// 使用 SpriteBatch.Immediate + register(s0) + register(s1)
+// BrimstoneDomain.fx 硫磺火领域法阵
+// 采样 s0 + s1 噪声；Immediate AlphaBlend 全屏 quad
+// ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -29,7 +28,6 @@ float3 midColor;        //中层深红色
 float3 edgeColor;       //边缘暗红色
 float3 voidColor;       //虚空底色
 
-// ---- 辅助函数 ----
 #define PI 3.14159265
 #define TAU 6.28318530
 
@@ -96,7 +94,7 @@ float warpedFbm(float2 p, float time)
     return fbm(p + 4.0 * r, 4);
 }
 
-// ---- A. 硫火等离子漩涡 ----
+// A. 硫火等离子漩涡
 // 多层旋转火焰，带域扭曲的湍流效果
 float3 brimstonePlasma(float2 centered, float dist, float angle, float time, float tier)
 {
@@ -141,7 +139,7 @@ float3 brimstonePlasma(float2 centered, float dist, float angle, float time, flo
     return fireColor * fireMix;
 }
 
-// ---- B. 魔法阵环 ----
+// B. 魔法阵环
 // 多层同心圆环，带符文刻蚀纹理和脉冲辉光
 float magicCircleRing(float dist, float angle, float ringRadius, float time,
     float rotSpeed, float runeCount, float runeSize)
@@ -182,7 +180,7 @@ float magicCircleRing(float dist, float angle, float ringRadius, float time,
     return ring + glow * 0.6 + runePattern * 0.5;
 }
 
-// ---- C. 五芒星/六芒星几何 ----
+// C. 五芒星/六芒星几何
 // 程序化绘制旋转的魔法几何图形
 float starGeometry(float2 centered, float dist, float angle, float radius,
     int points, float rotation, float thickness)
@@ -224,7 +222,7 @@ float starGeometry(float2 centered, float dist, float angle, float radius,
     return saturate(result);
 }
 
-// ---- D. 符文光环带 ----
+// D. 符文光环带
 // 在特定半径上显示旋转的古代符文序列
 float runeArcBand(float dist, float angle, float bandRadius, float bandWidth,
     float time, float rotSpeed, float segCount)
@@ -295,7 +293,7 @@ float runeArcBand(float dist, float angle, float bandRadius, float bandWidth,
     return pattern * bandMask * flicker;
 }
 
-// ---- E. 硫火余烬上升效果 ----
+// E. 硫火余烬上升效果
 // 程序化上升的火星粒子
 float risingEmbers(float2 centered, float time, float tier)
 {
@@ -340,7 +338,7 @@ float risingEmbers(float2 centered, float time, float tier)
     return saturate(embers);
 }
 
-// ---- F. 暗焰脉冲波 ----
+// F. 暗焰脉冲波
 // 从中心向外扩展的暗能量波纹
 float darkPulseWave(float dist, float time, float tier)
 {
@@ -362,9 +360,7 @@ float darkPulseWave(float dist, float time, float tier)
     return saturate(waves);
 }
 
-// ============================================================
 // 主像素着色器
-// ============================================================
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 centered = coords * 2.0 - 1.0;
@@ -494,9 +490,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     outerDark = smoothstep(0.3, 0.7, outerDark) * 0.2;
     outerDark *= smoothstep(0.4, 0.85, dist); //仅外层显示
 
-    // ============================================================
+    // =
     // 颜色合成
-    // ============================================================
+    // =
     float3 finalColor = baseColor;
 
     //底层等离子火焰

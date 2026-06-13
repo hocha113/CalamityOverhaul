@@ -6,18 +6,14 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 病毒广播：向信号塔注入蠕虫代码，令其向四周发射一道赛博电磁冲击波
-    /// 广播半径极大，覆盖范围内的所有可骇入炮台会被长时间短路
-    /// 演出重心在于波前扩散的视觉冲击，协议本身由信号塔触发扩散Actor
-    /// </summary>
+    /// <summary>病毒广播，信号塔电磁冲击波短路炮台</summary>
     internal class VirusBroadcast : QuickHackDef
     {
-        //广播半径（px），保证能覆盖整个零号站点上下层
+        //广播半径 px，覆盖零号站点上下层
         private const float BroadcastRadiusPx = 6400f;
-        //广播扩散帧长，即波前从0扩到满半径的时间
+        //波前扩散帧长
         private const int BroadcastLifeFrames = 150;
-        //被命中炮台的短路帧数（约20秒）
+        //命中炮台短路帧数，约 20 秒
         private const int TurretDisableFrames = 60 * 20;
 
         public override void SetDefaults() {
@@ -29,7 +25,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not IHackableSignalTower tower) return false;
-            //信号塔权威广播只在施法端发起，远端依靠 Actor 自身的同步链路还原
+            //信号塔广播仅施法端，远端靠 Actor 同步
             if (!HackTimeNetSync.IsRemoteApply) {
                 tower.BeginVirusBroadcast(BroadcastRadiusPx, TurretDisableFrames, caster);
             }
@@ -49,8 +45,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 }
                 SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.8f, Pitch = 0.1f }, center);
             }
-            //具体的波前Actor由BeginVirusBroadcast内部负责Spawn（服务器或单机），
-            //避免客户端提前猜测半径/生命周期
+            //波前 Actor 由 BeginVirusBroadcast 内部 Spawn
             return true;
         }
 

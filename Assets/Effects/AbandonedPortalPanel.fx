@@ -1,15 +1,6 @@
 // ============================================================================
-// AbandonedPortalPanel.fx — 废墟传送门控制台面板着色器
-// 锈蚀工业金属底板 + 撕裂裂缝 + 故障CRT扫描 + 修复进度脉冲电路
-// + 危险条纹边框 + 全息扫掠 + 角落警示灯 + 状态调色
-//
-// uTime           : 全局动画时间（秒）
-// uAlpha          : 面板可见度 0~1
-// uResolution     : 面板尺寸（含EdgePad）
-// uEdgePad        : 边缘扩展像素，用于面板外发光
-// uRepair         : 修复进度 0~1
-// uState          : 0=损毁 / 1=修复中 / 2=已修复（用于颜色锁定）
-// uGlitch         : 故障强度 0~1，损毁/刚启动时为高
+// AbandonedPortalPanel.fx 废墟传送门控制台面板
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -17,10 +8,10 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution;
-float uEdgePad;
-float uRepair;
-float uState;
-float uGlitch;
+float uEdgePad;   //边缘扩展像素，面板外发光
+float uRepair;    //修复进度 0~1
+float uState;     //0损毁 1修复中 2已修复
+float uGlitch;    //故障强度 0~1
 
 // ─── 噪声 ───
 float hash11(float p) {

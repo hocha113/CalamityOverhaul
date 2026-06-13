@@ -16,18 +16,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 双生彼岸 — 双子魔眼飞镰
-    /// 左键: 交替投掷魔焰眼/激光眼飞镰，沿正弦波轨迹往返切割
-    /// 右键: 同时释放双镰，两镰交汇处生成融合魔眼对全场敌人发动同步攻击
-    /// </summary>
+    /// 双生彼岸双子魔眼飞镰
+    /// 左键交替投掷魔焰/激光飞镰，正弦波轨迹往返切割
+    /// 右键双镰齐发，交汇处生成融合魔眼同步攻击全场
     internal class GeminisTribute : ModItem
     {
         public override string Texture => CWRConstant.Item + "Melee/GeminisTribute";
 
-        /// <summary>
-        /// 下一次投掷使用哪只眼睛: 0=激光眼(Retinazer) 1=魔焰眼(Spazmatism)
-        /// </summary>
+        /// 下次投掷眼 0激光 1魔焰
         private static int nextEyeMode = 0;
 
         public override void SetStaticDefaults() { }
@@ -111,13 +107,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 双生彼岸飞镰主体弹幕
-    /// 阶段:
-    ///   0 (Outbound) 抛出阶段, 沿正弦波路径冲向鼠标方向
-    ///   1 (Hover)    悬停切割, 在敌人/远端附近来回振荡
-    ///   2 (Recall)   回收阶段, 加速返回玩家
-    /// </summary>
+    /// 双生彼岸飞镰：抛出/悬停/回收三阶段
     internal class GeminisTributeProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item + "Melee/GeminisTribute";
@@ -127,9 +117,9 @@ namespace CalamityOverhaul.Content.Items.Melee
         private static Asset<Texture2D> AltScythe = null;
 
         //AI 入参
-        /// <summary>0=激光眼 1=魔焰眼</summary>
+        /// 眼模式 0激光 1魔焰
         private ref float EyeMode => ref Projectile.ai[0];
-        /// <summary>0=普通投掷 1=融合连击</summary>
+        /// 0普通 1融合连击
         private ref float FusionFlag => ref Projectile.ai[1];
 
         //本地状态
@@ -453,9 +443,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>
-        /// 在飞镰中心绘制由 TwinsEyeOverlay shader 程序化生成的魔眼
-        /// </summary>
+        /// TwinsEyeOverlay 程序化魔眼
         private void DrawTwinsEye(SpriteBatch sb, Vector2 drawPos, int mode) {
             Effect shader = EffectLoader.TwinsEyeOverlay?.Value;
             Texture2D canvas = CWRAsset.Placeholder_White?.Value;
@@ -524,9 +512,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 双镰交汇时生成的融合魔眼 — 在敌人身上短暂寄生并向四周轰击双色脉冲
-    /// </summary>
+    /// 融合魔眼：双镰交汇寄生轰击
     internal class GeminisTributeFusion : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;

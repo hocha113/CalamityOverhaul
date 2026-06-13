@@ -19,12 +19,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
-    /// <summary>
-    /// SHPC启动HUD主入口
-    /// 屏幕左下角能量核心，点击后向右上方扇形展开多个交互按钮
-    /// 仅在玩家手持SHPC时显示，避让全屏UI
-    /// 全部使用程序化绘制，不依赖纹理资产
-    /// </summary>
+    /// <summary>SHPC HUD 主入口，左下扇形按钮，手持 SHPC 时显示</summary>
     internal class SHPCUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
@@ -220,9 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         public int PinnedModuleSlot => pinnedModuleSlot;
 
-        /// <summary>
-        /// 处理三级模块选择面板的左键点击
-        /// </summary>
+        /// <summary>三级模块选择面板左键</summary>
         private void HandleModuleSelectClick(Player owner) {
             if (pinnedModuleSlot < 0) {
                 return;
@@ -338,10 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 按钮初始化
 
-        /// <summary>
-        /// 首次进入或按需重建按钮配置
-        /// 当前为占位实现，等待具体功能接入后再细化
-        /// </summary>
+        /// <summary>按需重建按钮配置</summary>
         private void EnsureButtons() {
             if (buttons != null) {
                 return;

@@ -16,14 +16,14 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         public override string Texture => CWRConstant.Item_Magic + "NeutronWand";
         public override int TargetID => ModContent.ItemType<NeutronWand>();
         public override bool CanRightClick => true;
-        /// <summary>右键蓄力进度，0到1，蓄满后开始倾泻中子湮灭柱</summary>
+        /// <summary>右键蓄力 0~1，满后倾泻湮灭柱</summary>
         private float colers;
-        /// <summary>右键按下的边沿检测</summary>
+        /// <summary>右键按下边沿</summary>
         private bool colers2;
-        /// <summary>湮灭柱阵列的落点锚，缓慢追随光标</summary>
+        /// <summary>湮灭柱落点锚，缓跟光标</summary>
         private Vector2 firePos;
         private bool rightHolding;
-        //蓄力尚未散尽时法杖不要消失，让能量环优雅地衰减
+        //蓄力未散尽时保持存活，能量环衰减
         public override bool StayAlive() => colers > 0;
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
             }
 
             if (rightHolding) {
-                //按下右键的瞬间锚定落点并开始蓄力
+                //右键按下瞬间锚定落点并蓄力
                 if (!colers2) {
                     colers2 = true;
                     if (colers <= 0) {

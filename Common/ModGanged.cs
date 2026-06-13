@@ -16,9 +16,7 @@ using static CalamityOverhaul.CWRUtils;
 
 namespace CalamityOverhaul.Common
 {
-    /// <summary>
-    /// 跨Mod兼容性Hook管理器，负责对其他Mod的方法进行Hook以实现兼容性处理
-    /// </summary>
+    /// <summary>跨 Mod 兼容性 Hook 管理</summary>
     internal class ModGanged
     {
         #region 委托类型
@@ -45,9 +43,7 @@ namespace CalamityOverhaul.Common
         #endregion
 
         #region 反射Hook辅助方法
-        /// <summary>
-        /// 在Mod的类型集合中查找指定类名并获取其方法，然后注册Hook
-        /// </summary>
+        /// <summary>按类名在 Mod 类型集中找方法并 Hook</summary>
         private static bool TryHookMethod<TDelegate>(
             Mod mod, string typeName, string methodName,
             BindingFlags flags, TDelegate hookDelegate,
@@ -69,9 +65,7 @@ namespace CalamityOverhaul.Common
             return true;
         }
 
-        /// <summary>
-        /// 在已获取的类型集合中查找指定类名的方法，然后注册Hook
-        /// </summary>
+        /// <summary>在已有 Type[] 中按类名找方法并 Hook</summary>
         private static bool TryHookMethod<TDelegate>(
             Type[] types, string typeName, string methodName,
             BindingFlags flags, TDelegate hookDelegate,
@@ -183,9 +177,7 @@ namespace CalamityOverhaul.Common
 
         #region Hook回调方法
 
-        /// <summary>
-        /// 统一的武器手持绘制Hook，阻止CWR管理的手持武器被其他Mod重复绘制
-        /// </summary>
+        /// <summary>拦截其他 Mod 重复绘制 CWR 手持武器</summary>
         private static void On_DrawHeldHook(On_ModPlayerDraw_Dalegate orig, object obj, ref PlayerDrawSet drawInfo) {
             if (!ShouldDrawHeld(orig, drawInfo)) {
                 return;
@@ -193,9 +185,7 @@ namespace CalamityOverhaul.Common
             orig.Invoke(obj, ref drawInfo);
         }
 
-        /// <summary>
-        /// FargowiltasSouls弹幕PostAI Hook，阻止隐藏的手持弹幕被FGS处理
-        /// </summary>
+        /// <summary>FGS PostAI——跳过 hide 且不可开火的手持弹幕</summary>
         private static void On_FGS_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
             if (projectile.hide && projectile.ModProjectile is BaseHeldGun heldGun && !heldGun.CanFire) {
                 return;
@@ -203,23 +193,17 @@ namespace CalamityOverhaul.Common
             orig.Invoke(instance, projectile);
         }
 
-        /// <summary>
-        /// TerrariaOverhaul蓄力攻击Hook，阻止空物品触发蓄力攻击导致报错
-        /// </summary>
+        /// <summary>TrO 蓄力攻击——空物品直接拒绝</summary>
         private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
             return !item.IsAir && item.type != ItemID.None && orig.Invoke(obj, item, player);
         }
 
-        /// <summary>
-        /// FargowiltasSouls附魔效果Hook，阻止标记为不受特殊效果影响的弹幕被附魔处理
-        /// </summary>
+        /// <summary>FGS 附魔——<see cref="CWRProj.NotSubjectToSpecialEffects"/> 弹幕跳过</summary>
         private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
             return !projectile.CWR().NotSubjectToSpecialEffects && orig.Invoke(projectile, allowMinions);
         }
 
-        /// <summary>
-        /// TerrariaOverhaul强制使用动画Hook，阻止CWR管理的手持武器触发TrO的使用动画
-        /// </summary>
+        /// <summary>TrO ShouldForceUseAnim——CWR 手持武器不触发使用动画</summary>
         private static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
             if (item == null || item.type == ItemID.None) {
                 return orig.Invoke(player, item);
@@ -238,9 +222,7 @@ namespace CalamityOverhaul.Common
 
         #region 内部辅助方法
 
-        /// <summary>
-        /// 判断是否允许其他Mod绘制当前手持武器
-        /// </summary>
+        /// <summary>是否允许其他 Mod 绘制当前手持</summary>
         private static bool ShouldDrawHeld(On_ModPlayerDraw_Dalegate orig, PlayerDrawSet drawInfo) {
             if (orig == null) {
                 return false;
@@ -260,7 +242,7 @@ namespace CalamityOverhaul.Common
             CWRItem ritem = heldItem.CWR();
             bool hasHeldProj = ritem.heldProjType > 0;
 
-            // 当前正在手持显示武器弹幕时（无论新旧绑定模式），不让其他Mod绘制
+            //手持武器弹幕显示中时不让其他 Mod 重复绘制
             CWRPlayer modPlayer = drawPlayer.CWR();
             if (modPlayer.HeldWeaponInDisplay()) {
                 return false;
@@ -270,9 +252,7 @@ namespace CalamityOverhaul.Common
             return !isHeld;
         }
 
-        /// <summary>
-        /// 判断是否应该对手持武器应用覆盖逻辑（用于TerrariaOverhaul的ShouldForceUseAnim）
-        /// </summary>
+        /// <summary>TrO ShouldForceUseAnim 是否覆盖 CWR 手持武器</summary>
         private static bool ShouldApplyHeldOverride(Item heldItem, Player player) {
             CWRItem ritem = heldItem.CWR();
             bool isHeld = ritem.isHeldItem || ritem.heldProjType > 0;

@@ -46,15 +46,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 奥术裂隙，魔法弹幕命中时在现实帷幕上撕开的裂口，持续爆发造成范围伤害
-    /// </summary>
+    /// 奥术裂隙：魔法弹幕命中撕开的裂口，持续范围爆发
     public class ArcaneRiftProj : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
-        /// <summary> 总持续时间(帧) </summary>
+        /// <summary>总持续时间(帧)</summary>
         public const int Lifetime = 150;
-        /// <summary> 爆发脉冲周期(帧) </summary>
+        /// <summary>爆发脉冲周期(帧)</summary>
         public const int PulseCycle = 30;
 
         public override void SetDefaults() {
@@ -177,13 +175,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 真理跃迁，撕裂空间进入高维领域，期间免疫一切伤害，离开时释放现实震荡
-    /// </summary>
+    /// 真理跃迁：撕裂空间进高维领域，期间免疫伤害，离场释放现实震荡
     public class TruthLeapProj : BaseHeldProj, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
-        /// <summary> 领域持续时间(帧) </summary>
+        /// <summary>领域持续时间(帧)</summary>
         public const int Duration = 180;
         private float seed;
 
@@ -206,7 +202,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with { Pitch = -0.5f, Volume = 1.4f }, Owner.Center);
 
             if (!VaultUtils.isServer) {
-                //空间向内撕裂的入场特效
+                //空间向内撕裂入场特效
                 for (int i = 0; i < 26; i++) {
                     Vector2 offset = Main.rand.NextVector2CircularEdge(200f, 200f);
                     Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(4f, 9f);
@@ -216,7 +212,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        /// <summary> 领域展开进度 0~1 </summary>
+        /// <summary>领域展开进度 0~1</summary>
         public float SphereProgress {
             get {
                 int age = Duration - Projectile.timeLeft;
@@ -325,16 +321,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 现实震荡，离开高维领域或时间回溯时的扩张冲击波
-    /// <br/><see cref="Projectile.ai"/>[1]：样式，0为金紫现实震荡，1为青白时间回溯
-    /// </summary>
+    /// 现实震荡：离高维领域或时间回溯时的扩张冲击波
+    /// <br/><see cref="Projectile.ai"/>[1]：样式，0金紫现实震荡，1青白时间回溯
     public class RealityShockProj : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
-        /// <summary> 总持续时间(帧) </summary>
+        /// <summary>总持续时间(帧)</summary>
         public const int Lifetime = 75;
-        /// <summary> 冲击波最大半径(像素) </summary>
+        /// <summary>冲击波最大半径(像素)</summary>
         public const float MaxRadius = 560f;
         private int Time;
 
@@ -353,9 +347,9 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public bool CanDrawCustom() => false;
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary> 冲击波扩张进度 0~1 </summary>
+        /// <summary>冲击波扩张进度 0~1</summary>
         public float Progress => CWRUtils.EaseOutCubic(Time / (float)Lifetime);
-        /// <summary> 当前冲击波前沿半径 </summary>
+        /// <summary>当前冲击波前沿半径</summary>
         public float CurrentRadius => MaxRadius * Progress;
 
         private bool RewindStyle => Projectile.ai[1] == 1f;
@@ -458,28 +452,26 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 永恒奥秘之座玩家类，管理所有饰品机制
-    /// </summary>
+    /// 永恒奥秘之座玩家类
     internal class ArcaneThronePlayer : ModPlayer
     {
         public bool Alive;
-        /// <summary> 全知状态（魔力高于90%） </summary>
+        /// <summary>全知状态 魔力>90%</summary>
         public bool Omniscience;
-        /// <summary> 根源演算激活 </summary>
+        /// <summary>根源演算激活</summary>
         public bool RootCalcActive;
-        /// <summary> 根源演算剩余时间(帧) </summary>
+        /// <summary>根源演算剩余时间(帧)</summary>
         public int RootCalcTimer;
-        /// <summary> 根源演算冷却(帧) </summary>
+        /// <summary>根源演算冷却(帧)</summary>
         public int RootCalcCooldown;
-        /// <summary> 真理跃迁冷却(帧) </summary>
+        /// <summary>真理跃迁冷却(帧)</summary>
         public int TruthLeapCooldown;
-        /// <summary> 时间回溯冷却(帧) </summary>
+        /// <summary>时间回溯冷却(帧)</summary>
         public int RewindCooldown;
-        /// <summary> 奥术裂隙内部冷却(帧) </summary>
+        /// <summary>奥术裂隙内部冷却(帧)</summary>
         public int RiftSpawnCooldown;
 
-        //时间回溯快照环形缓冲区，每30帧采样一次，覆盖过去5秒
+        //时间回溯快照环形缓冲 30帧采样 覆盖5秒
         private const int SnapshotInterval = 30;
         private const int SnapshotCount = 10;
         private readonly Vector2[] snapPos = new Vector2[SnapshotCount];
@@ -574,7 +566,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //高维领域中：无重力自由移动
+            //高维领域无重力自由移动
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<TruthLeapProj>()] > 0) {
                 Player.gravity = 0f;
                 Vector2 dir = Vector2.Zero;
@@ -604,7 +596,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //真理跃迁，按下专属按键撕裂空间进入高维领域
+            //真理跃迁 专属键撕裂空间进高维领域
             if (CWRKeySystem.Accessory_Skills.JustPressed && TruthLeapCooldown <= 0
                 && Player.ownedProjectileCounts[ModContent.ProjectileType<TruthLeapProj>()] == 0
                 && Player.whoAmI == Main.myPlayer) {
@@ -613,7 +605,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 TruthLeapCooldown = 1800;
             }
 
-            //根源演算，手持魔法武器时右键激活
+            //根源演算 手持魔法武器右键激活
             if (Player.controlUseTile && Player.releaseUseItem
                 && !RootCalcActive && RootCalcCooldown <= 0
                 && Player.whoAmI == Main.myPlayer
@@ -635,9 +627,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        /// <summary>
-        /// 魔法弹幕命中时附加随机禁忌诅咒并撕开奥术裂隙，排除衍生弹幕防止级联
-        /// </summary>
+        /// 魔法弹幕命中附加禁忌诅咒并撕开裂隙 排除衍生弹幕防级联
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone) {
             if (!Alive) {
                 return;
@@ -656,7 +646,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             ApplyRandomCurse(target);
 
-            //命中时有概率在现实帷幕上撕开奥术裂隙，限制同时存在数量
+            //命中概率撕开裂隙 限制同时存在数
             if (RiftSpawnCooldown <= 0 && Main.rand.NextBool(4)
                 && Player.ownedProjectileCounts[riftType] < 4
                 && Player.whoAmI == Main.myPlayer) {
@@ -666,16 +656,14 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        /// <summary>
-        /// 附加五种禁忌诅咒之一：虚空侵蚀、时停、灵魂燃烧、引力坍缩、超位崩解
-        /// </summary>
+        /// 随机附加五种禁忌诅咒
         private static void ApplyRandomCurse(NPC target) {
             switch (Main.rand.Next(5)) {
                 case 0:
                     target.AddBuff(ModContent.BuffType<VoidErosion>(), 600);
                     break;
                 case 1:
-                    //时停对Boss与冻结免疫单位无效，退化为灵魂燃烧
+                    //时停对Boss/冻结免疫无效 退化为灵魂燃烧
                     if (!target.boss && !CWRLoad.NPCValue.ImmuneFrozen[target.type]) {
                         target.AddBuff(ModContent.BuffType<TemporalStasis>(), 75);
                     }
@@ -700,7 +688,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //全知状态下魔法暴击伤害倍率提升至1000%（默认200%加上额外800%）
+            //全知魔法暴击伤害+800%(总1000%)
             if (Omniscience && modifiers.DamageType.CountsAsClass<MagicDamageClass>()) {
                 modifiers.CritDamage += 8f;
             }
@@ -711,20 +699,20 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (Alive && RewindCooldown <= 0 && snapStored > 0) {
                 RewindCooldown = 3600;
 
-                //取出最旧的快照（约5秒之前）
+                //取最旧快照(约5秒前)
                 int idx = snapStored >= SnapshotCount ? snapHead : 0;
                 Vector2 rewindPos = snapPos[idx];
                 int rewindLife = Math.Clamp(snapLife[idx], (int)(Player.statLifeMax2 * 0.5f), Player.statLifeMax2);
                 int rewindMana = Math.Clamp(snapMana[idx], 0, Player.statManaMax2);
 
-                //回溯时刻的青白现实震荡，从致死位置炸开
+                //致死位置青白现实震荡
                 if (Player.whoAmI == Main.myPlayer) {
                     Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Center, Vector2.Zero
                         , ModContent.ProjectileType<RealityShockProj>(), 30000, 8f, Player.whoAmI, 0, 1f);
                 }
 
                 if (!VaultUtils.isServer) {
-                    //致死位置与回溯位置之间的时间残影粒子
+                    //致死与回溯位之间时间残影
                     int steps = (int)(Vector2.Distance(Player.Center, rewindPos) / 20f) + 1;
                     for (int i = 0; i < steps; i++) {
                         Vector2 pos = Vector2.Lerp(Player.Center, rewindPos, i / (float)steps);
@@ -733,7 +721,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     }
                 }
 
-                //时间回溯：恢复5秒前的生命、魔力与位置
+                //恢复5秒前生命魔力与位置
                 Player.statLife = rewindLife;
                 Player.statMana = rewindMana;
                 Player.Teleport(rewindPos, -1);
@@ -751,7 +739,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) {
-            //玩家真正死亡时重置所有冷却和状态
+            //死亡时重置冷却与状态
             RootCalcActive = false;
             RootCalcTimer = 0;
             RootCalcCooldown = 0;
@@ -765,13 +753,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 永恒奥秘之座全局弹幕，处理魔法弹幕的无限穿透、全知自动锁定与根源演算镜像复制
-    /// </summary>
+    /// 永恒奥秘之座全局弹幕 无限穿透/全知锁定/根源演算镜像
     internal class ArcaneEternityGlobalProj : GlobalProjectile
     {
         public override bool InstancePerEntity => true;
-        /// <summary> 是否为根源演算生成的镜像法术 </summary>
+        /// <summary>根源演算镜像法术</summary>
         public bool IsMirrorImage;
 
         //镜像复制递归保护与每帧预算

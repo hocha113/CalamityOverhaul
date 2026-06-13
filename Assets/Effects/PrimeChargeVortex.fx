@@ -1,8 +1,7 @@
 // ============================================================================
-// PrimeChargeVortex.fx —— 机械骷髅王充能漩涡（IonOverload / SkullCannon / 转阶段 / 登场注能共用）
-// 极坐标螺旋臂向心卷吸 + 收缩呼吸环 + 核心辉光，叠加旋转齿轮辐条体现机械身份。
-// 绘制在以头部为中心的方形面片上。参数协议与 TwinsChargeVortex 一致。
-// 输出预乘 alpha，配合 BlendState.Additive 使用。
+// PrimeChargeVortex.fx 充能漩涡
+// 头部中心方形面片；协议同 TwinsChargeVortex
+// Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

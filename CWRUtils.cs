@@ -23,10 +23,7 @@ namespace CalamityOverhaul
     public static class CWRUtils
     {
         #region System
-        /// <summary>
-        /// 一个额外的跳字方法，向游戏内打印对象的ToString内容
-        /// </summary>
-        /// <param name="obj"></param>
+        /// <summary>向游戏内打印对象 ToString</summary>
         public static void Domp(this object obj, Color color = default) {
             if (color == default) {
                 color = Color.White;
@@ -38,10 +35,7 @@ namespace CalamityOverhaul
             VaultUtils.Text(obj.ToString(), color);
         }
 
-        /// <summary>
-        /// 一个额外的跳字方法，向控制台面板打印对象的ToString内容，并自带换行
-        /// </summary>
-        /// <param name="obj"></param>
+        /// <summary>向控制台打印对象 ToString 并换行</summary>
         public static void DompInConsole(this object obj, bool outputLogger = true) {
             if (obj == null) {
                 Console.WriteLine("ERROR Is Null");
@@ -54,11 +48,7 @@ namespace CalamityOverhaul
             }
         }
 
-        /// //<summary>
-        /// //将 Item 数组的信息写入指定路径的文件中
-        /// //</summary>
-        /// //<param name="items">要导出的 Item 数组</param>
-        /// //<param name="path">写入文件的路径，默认为 "D:\\Mod_Resource\\input.cs"</param>
+        // 已注释：Item 数组导出到文件
         //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
         //  try {
         //      int columnIndex = 0;
@@ -129,34 +119,17 @@ namespace CalamityOverhaul
         public static void SetArrowRot(int proj) => Main.projectile[proj].rotation = Main.projectile[proj].velocity.ToRotation() + MathHelper.PiOver2;
         public static void SetArrowRot(this Projectile proj) => proj.rotation = proj.velocity.ToRotation() + MathHelper.PiOver2;
 
-        /// <summary>
-        /// 如果对象是一个蠕虫体节，那么按机会分母的倒数返回布尔值，如果输入5，那么会有4/5的概率返回<see langword="true"/>
-        /// </summary>
-        /// <param name="targetNPCType"></param>
-        /// <param name="randomCount"></param>
-        /// <returns></returns>
+        /// <summary>蠕虫体节按 1/randomCount 概率返回 true</summary>
         public static bool FromWormBodysRandomSet(int targetNPCType, int randomCount) {
             return CWRLoad.WormBodys.Contains(targetNPCType) && !Main.rand.NextBool(randomCount);
         }
-        /// <summary>
-        /// 如果对象是一个蠕虫体节，那么按机会分母的倒数返回布尔值，如果输入5，那么会有4/5的概率返回<see langword="true"/>
-        /// </summary>
-        /// <param name="targetNPCType"></param>
-        /// <param name="randomCount"></param>
-        /// <returns></returns>
+        /// <summary>蠕虫体节按 1/randomCount 概率返回 true</summary>
         public static bool FromWormBodysRandomSet(this NPC npc, int randomCount) => FromWormBodysRandomSet(npc.type, randomCount);
 
-        /// <summary>
-        /// 这个NPC是否属于一个蠕虫体节
-        /// </summary>
-        /// <param name="npc"></param>
-        /// <returns></returns>
+        /// <summary>是否蠕虫体节</summary>
         public static bool IsWormBody(this NPC npc) => CWRLoad.WormBodys.Contains(npc.type);
 
-        /// <summary>
-        /// 根据索引返回在player域中的player实例，同时考虑合法性校验
-        /// </summary>
-        /// <returns>当获取值非法时将返回 <see cref="null"/> </returns>
+        /// <summary>按索引取 Player，非法或未存活返回 null</summary>
         public static Player GetPlayerInstance(int playerIndex) {
             if (playerIndex.ValidateIndex(Main.player)) {
                 Player player = Main.player[playerIndex];
@@ -168,10 +141,7 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 根据索引返回在npc域中的npc实例，同时考虑合法性校验
-        /// </summary>
-        /// <returns>当获取值非法时将返回 <see cref="null"/> </returns>
+        /// <summary>按索引取 NPC，非法或未存活返回 null</summary>
         public static NPC GetNPCInstance(int npcIndex) {
             if (npcIndex.ValidateIndex(Main.npc)) {
                 NPC npc = Main.npc[npcIndex];
@@ -183,9 +153,7 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 获取鞭类弹幕的路径点集
-        /// </summary>
+        /// <summary>鞭类弹幕路径控制点</summary>
         public static List<Vector2> GetWhipControlPoints(this Projectile projectile) {
             List<Vector2> list = [];
             Projectile.FillWhipControlPoints(projectile, list);
@@ -221,19 +189,14 @@ namespace CalamityOverhaul
             return setRot + MathHelper.Clamp(diff, -rotSpeed, rotSpeed);
         }
 
-        /// <summary>
-        /// 处理实体的旋转行为
-        /// </summary>
+        /// <summary>弹幕旋转插值逼近目标角</summary>
         public static void EntityToRot(this Projectile entity, float targetRot, float rotSpeed) {
             entity.rotation = MathHelper.WrapAngle(entity.rotation);
             float diff = MathHelper.WrapAngle(targetRot - entity.rotation);
             entity.rotation += diff * rotSpeed;
         }
 
-        /// <summary>
-        /// 在必要的时候使用这个发送NPC基本数据
-        /// </summary>
-        /// <param name="npc"></param>
+        /// <summary>同步 NPC 位置与旋转</summary>
         public static void SendNPCbasicData(this NPC npc, int player = -1) {
             ModPacket modPacket = CWRMod.Instance.GetPacket();
             modPacket.Write((byte)CWRMessageType.NPCbasicData);
@@ -264,12 +227,7 @@ namespace CalamityOverhaul
             return mainRule.OnSuccess(rule, hideLootReport);
         }
 
-        /// <summary>
-        /// 查询指定物品数量
-        /// </summary>
-        /// <param name="items"></param>
-        /// <param name="itemTypes"></param>
-        /// <returns></returns>
+        /// <summary>统计物品列表中指定 type 总数量</summary>
         public static int InquireItem(this IList<Item> items, params HashSet<int> itemTypes) {
             int num = 0;
             foreach (var item in items.ToList()) {
@@ -283,13 +241,7 @@ namespace CalamityOverhaul
             return num;
         }
 
-        /// <summary>
-        /// 查询玩家拥有的指定物品数量
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="itemType"></param>
-        /// <param name="checkBank"></param>
-        /// <returns></returns>
+        /// <summary>统计玩家背包(可选银行)中指定物品数量</summary>
         public static int InquireItem(this Player player, int itemType, bool checkBank = false) {
             int num = player.inventory.InquireItem(itemType);
             if (checkBank) {
@@ -301,13 +253,7 @@ namespace CalamityOverhaul
             return num;
         }
 
-        /// <summary>
-        /// 查询玩家拥有的指定物品数量
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="checkBank"></param>
-        /// <param name="itemTypes"></param>
-        /// <returns></returns>
+        /// <summary>统计玩家背包(可选银行)中多 type 总数量</summary>
         public static int InquireItem(this Player player, bool checkBank, params HashSet<int> itemTypes) {
             int num = player.inventory.InquireItem(itemTypes);
             if (checkBank) {
@@ -319,12 +265,7 @@ namespace CalamityOverhaul
             return num;
         }
 
-        /// <summary>
-        /// 尝试获取玩家的ADV存档实例
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="save"></param>
-        /// <returns></returns>
+        /// <summary>尝试取玩家 ADV 存档</summary>
         internal static bool TryGetADVSave(this Player player, out ADVSave save) {
             save = null;
             if (player.TryGetModPlayer<ADVSavePlayer>(out var advSavePlayer)) {
@@ -334,12 +275,7 @@ namespace CalamityOverhaul
             return false;
         }
 
-        /// <summary>
-        /// 尝试获取玩家的HalibutPlayer实例
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="halibutPlayer"></param>
-        /// <returns></returns>
+        /// <summary>尝试取玩家 HalibutPlayer</summary>
         internal static bool TryGetHalibutPlayer(this Player player, out HalibutPlayer halibutPlayer) {
             halibutPlayer = null;
             if (player.TryGetOverride(out halibutPlayer)) {
@@ -348,11 +284,7 @@ namespace CalamityOverhaul
             return false;
         }
 
-        /// <summary>
-        /// 玩家是否拥有比目鱼传说武器
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <summary>玩家是否持有比目鱼传说武器</summary>
         internal static bool HasHalibut(this Player player) => player.TryGetHalibutPlayer(out var halibutPlayer) && halibutPlayer.HasHalubut;
 
         public static void SetItemLegendContentTops(ref List<TooltipLine> tooltips, string itemKey) {
@@ -370,32 +302,24 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 获取来自灾厄的物品名
-        /// </summary>
-        /// <param name="itemKey"></param>
-        /// <returns></returns>
+        /// <summary>灾厄物品 FullName 前缀</summary>
         public static string GetCalItem(string itemKey) => $"CalamityMod/{itemKey}";
 
-        /// <summary>
-        /// 获取来自灾厄的物品ID
-        /// </summary>
-        /// <param name="itemKey"></param>
-        /// <returns></returns>
+        /// <summary>灾厄物品 type ID</summary>
         public static int GetCalItemID(string itemKey) => VaultUtils.GetItemTypeFromFullName(GetCalItem(itemKey));
 
         public static void ModifyLegendWeaponDamageFunc(Item item, int GetOnDamage, int GetStartDamage, ref StatModifier damage) {
             float oldMultiplicative = damage.Multiplicative;
             damage *= GetOnDamage / (float)GetStartDamage;
             damage /= oldMultiplicative;
-            //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础伤害缩放保证一些情况不会发生
+            // SD 优先级不可靠，回缩到 item.damage 再乘前缀
             damage *= GetStartDamage / (float)item.damage;
             damage *= item.GetPrefixState().damageMult;
         }
 
         public static void ModifyLegendWeaponKnockbackFunc(Item item, float GetOnKnockback, float GetStartKnockback, ref StatModifier Knockback) {
             Knockback *= GetOnKnockback / (float)GetStartKnockback;
-            //首先，因为SD的运行优先级并不可靠，有的模组的修改在SD之后运行，比如炼狱模式，这个基础击退缩放保证一些情况不会发生
+            // SD 优先级不可靠，回缩到 item.knockBack 再乘前缀
             Knockback *= GetStartKnockback / item.knockBack;
             Knockback *= item.GetPrefixState().knockbackMult;
         }
@@ -417,11 +341,7 @@ namespace CalamityOverhaul
              recipe.AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => { amount = 0; })
             .AddOnCraftCallback(CWRCrafted.SpawnAction);
 
-        /// <summary>
-        /// 赋予玩家无敌状态，这个函数与<see cref="Player.SetImmuneTimeForAllTypes(int)"/>类似
-        /// </summary>
-        /// <param name="player">要赋予无敌状态的玩家</param>
-        /// <param name="blink">是否允许玩家在无敌状态下闪烁默认为 false</param>
+        /// <summary>赋予玩家无敌，类似 <see cref="Player.SetImmuneTimeForAllTypes(int)"/></summary>
         public static void GivePlayerImmuneState(this Player player, int time, bool blink = false) {
             player.immuneNoBlink = !blink;
             player.immune = true;
@@ -431,14 +351,12 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 快速修改一个物品的简介文本，从宿主类的本地化字段中拉取资源
-        /// </summary>
+        /// <summary>用宿主本地化文本替换原版 Tooltip 行</summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {
             List<TooltipLine> newTooltips = new(tooltips);
             List<TooltipLine> overTooltips = [];
             List<TooltipLine> prefixTooltips = [];
-            foreach (TooltipLine line in tooltips.ToList()) {//复制 tooltips 集合，以便在遍历时修改
+            foreach (TooltipLine line in tooltips.ToList()) {
                 for (int i = 0; i < 9; i++) {
                     if (line.Name == "Tooltip" + i) {
                         line.Hide();
@@ -457,8 +375,8 @@ namespace CalamityOverhaul
             TooltipLine newLine = new(mod, "CWRText", value.Value);
             newTooltips.Add(newLine);
             newTooltips.AddRange(overTooltips);
-            tooltips.Clear(); //清空原 tooltips 集合
-            tooltips.AddRange(newTooltips); //添加修改后的 newTooltips 集合
+            tooltips.Clear();
+            tooltips.AddRange(newTooltips);
             tooltips.AddRange(prefixTooltips);
         }
 
@@ -490,7 +408,7 @@ namespace CalamityOverhaul
                 string message = "ERROR: An Empty Transfer Occurred! The Value of Item.type is Zero!";
                 VaultUtils.Text(message, Color.Red);
                 CWRMod.Instance.Logger.Error(message);
-                //throw new InvalidOperationException(message); //明确终止执行，抛出异常              
+                // throw new InvalidOperationException(message);
                 return null;
             }
             return item.GetGlobalItem<CWRItem>();
@@ -591,16 +509,10 @@ namespace CalamityOverhaul
         #endregion
 
         #region MathUtils
-        /// <summary>
-        /// 指数缓出函数
-        /// 速度起初极快并迅速减缓，在接近结束时趋于平缓
-        /// 常用于需要强烈减速感的动画
-        /// </summary>
+        /// <summary>指数缓出</summary>
         public static float EaseOutExpo(float t) => t >= 1f ? 1f : 1f - (float)Math.Pow(2, -10 * t);
 
-        /// <summary>
-        /// 计算平滑的缓动函数
-        /// </summary>
+        /// <summary>弹性缓出</summary>
         public static float EaseOutElastic(float t) {
             const float c4 = (2f * MathHelper.Pi) / 3f;
             return t == 0f ? 0f
@@ -608,42 +520,25 @@ namespace CalamityOverhaul
                 : (float)(Math.Pow(2, -10 * t) * Math.Sin((t * 10 - 0.75) * c4) + 1);
         }
 
-        /// <summary>
-        /// 三次缓出函数
-        /// 起初快速加速，随后平滑减速
-        /// 常用于自然的物体停止效果
-        /// </summary>
+        /// <summary>三次缓出</summary>
         public static float EaseOutCubic(float t) {
             t = MathHelper.Clamp(t, 0, 1);
             t = 1 - (float)Math.Pow(1 - t, 3);
             return t;
         }
 
-        /// <summary>
-        /// 三次缓出函数的简化版
-        /// 功能等同于 EaseOutCubic
-        /// </summary>
+        /// <summary>三次缓出简化版</summary>
         public static float EaseOut(float t) {
             return 1f - (float)Math.Pow(1f - t, 3f);
         }
 
-        /// <summary>
-        /// 二次缓入函数
-        /// 从慢到快加速，适合平滑启动的动画
-        /// </summary>
+        /// <summary>二次缓入</summary>
         public static float EaseInQuad(float t) => t * t;
 
-        /// <summary>
-        /// 二次缓出函数
-        /// 从快到慢减速，适合平滑停止的动画
-        /// </summary>
+        /// <summary>二次缓出</summary>
         public static float EaseOutQuad(float t) => 1f - (1f - t) * (1f - t);
 
-        /// <summary>
-        /// 反向缓入缓出函数
-        /// 在开始和结束阶段略有“回弹”效果
-        /// 常用于强调弹性或动感的过渡
-        /// </summary>
+        /// <summary>反向缓入缓出(带回弹)</summary>
         public static float EaseInOutBack(float t) {
             const float c1 = 1.70158f;
             const float c2 = c1 * 1.525f;
@@ -653,60 +548,37 @@ namespace CalamityOverhaul
                 : (float)(Math.Pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2f;
         }
 
-        /// <summary>
-        /// 反向缓出函数
-        /// 在结束阶段会略微超出目标后反弹回终点
-        /// 常用于产生弹性离场的视觉效果
-        /// </summary>
+        /// <summary>反向缓出(超调回弹)</summary>
         public static float EaseOutBack(float t) {
             const float c1 = 1.70158f;
             const float c3 = c1 + 1f;
             return 1f + c3 * (float)Math.Pow(t - 1, 3) + c1 * (float)Math.Pow(t - 1, 2);
         }
 
-        /// <summary>
-        /// 三次缓入缓出函数
-        /// 前半段加速 后半段减速
-        /// 常用于平滑的镜像对称运动
-        /// </summary>
+        /// <summary>三次缓入缓出</summary>
         public static float EaseInOutCubic(float t) {
             return t < 0.5f
                 ? 4f * t * t * t
                 : 1f - (float)Math.Pow(-2f * t + 2f, 3) / 2f;
         }
 
-        /// <summary>
-        /// 三次缓入函数
-        /// 起始阶段缓慢 加速度随时间增加
-        /// </summary>
+        /// <summary>三次缓入</summary>
         public static float EaseInCubic(float t) {
             return t * t * t;
         }
 
-        /// <summary>
-        /// 二次缓入缓出函数
-        /// 前半部分加速 后半部分减速
-        /// 常用于平滑自然的过渡动画
-        /// </summary>
+        /// <summary>二次缓入缓出</summary>
         public static float EaseInOutQuad(float t) {
             return t < 0.5f ? 2f * t * t : 1f - (float)Math.Pow(-2f * t + 2f, 2) / 2f;
         }
 
-        /// <summary>
-        /// 二次贝塞尔曲线
-        /// 由三个控制点定义的平滑曲线
-        /// 用于简单插值或平滑路径计算
-        /// </summary>
+        /// <summary>二次贝塞尔曲线</summary>
         public static Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t) {
             float u = 1f - t;
             return u * u * a + 2f * u * t * b + t * t * c;
         }
 
-        /// <summary>
-        /// 三次贝塞尔曲线
-        /// 由四个控制点定义的高阶平滑曲线
-        /// 适用于复杂轨迹与自然运动插值
-        /// </summary>
+        /// <summary>三次贝塞尔曲线</summary>
         public static Vector2 CubicBezier(float t, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3) {
             float u = 1f - t;
             float tt = t * t;
@@ -720,46 +592,21 @@ namespace CalamityOverhaul
             return p;
         }
 
-        /// <summary>
-        /// 正弦缓出函数
-        /// 使用正弦曲线模拟平滑的停止运动
-        /// 常用于自然的轻缓收尾效果
-        /// </summary>
+        /// <summary>正弦缓出</summary>
         public static float EaseOutSine(float t) {
             return (float)Math.Sin(t * MathHelper.PiOver2);
         }
 
-        /// <summary>
-        /// 检测索引的合法性
-        /// </summary>
-        /// <returns>合法将返回 <see cref="true"/></returns>
+        /// <summary>数组索引是否合法</summary>
         public static bool ValidateIndex(this int index, Array array) {
             return index >= 0 && index < array.Length;
         }
         #endregion
 
         #region DrawUtils
-        /// <summary>
-        /// 获取指定路径的纹理实例 <see cref="Texture2D"/>
-        /// </summary>
-        /// <param name="texture">纹理路径（相对于模组内容目录的路径）</param>
-        /// <param name="immediateLoad">
-        /// 是否立即加载纹理：
-        /// <br>- <see langword="true"/>：同步加载纹理（适合需要立即使用的资源）</br>
-        /// <br>- <see langword="false"/>：异步加载纹理（提升加载性能，适合非紧急资源）</br>
-        /// </param>
-        /// <returns>返回加载的 Texture2D 实例</returns>
+        /// <summary>按路径取 Texture2D</summary>
         public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) => GetT2DAsset(texture, immediateLoad).Value;
-        /// <summary>
-        /// 获取指定路径的纹理资源（类型为 Asset&lt;Texture2D&gt;）
-        /// </summary>
-        /// <param name="texture">纹理路径（相对于模组内容目录的路径）</param>
-        /// <param name="immediateLoad">
-        /// 是否立即加载纹理：
-        /// <br>- <see langword="true"/>：同步加载纹理（适合需要立即使用的资源）</br>
-        /// <br>- <see langword="false"/>：异步加载纹理（提升加载性能，适合非紧急资源）</br>
-        /// </param>
-        /// <returns>返回加载的 Asset&lt;Texture2D&gt; 对象，包含纹理资源及其加载状态</returns>
+        /// <summary>按路径取 Asset&lt;Texture2D&gt;，immediateLoad 同步加载</summary>
         public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
             if (string.IsNullOrEmpty(texture) || !ModContent.HasAsset(texture)) {
                 return VaultAsset.placeholder3;
@@ -771,12 +618,7 @@ namespace CalamityOverhaul
         #endregion
 
         #region 文本排版
-        /// <summary>
-        /// CWR 统一的文本测量：对缺失字体提供保守兜底，避免空引用与零尺寸。
-        /// </summary>
-        /// <param name="text">待测量文本</param>
-        /// <param name="font">字体；为 null 时使用鼠标字体</param>
-        /// <param name="scale">绘制缩放，默认 1</param>
+        /// <summary>文本测量，字体缺失时保守兜底</summary>
         public static Vector2 MeasureText(string text, DynamicSpriteFont font, float scale = 1f) {
             if (string.IsNullOrEmpty(text)) {
                 return Vector2.Zero;
@@ -788,23 +630,11 @@ namespace CalamityOverhaul
             return font.MeasureString(text) * scale;
         }
 
-        /// <summary>
-        /// 使用默认鼠标字体测量文本尺寸。
-        /// </summary>
+        /// <summary>默认鼠标字体测量</summary>
         public static Vector2 MeasureText(string text, float scale = 1f)
             => MeasureText(text, Terraria.GameContent.FontAssets.MouseText?.Value, scale);
 
-        /// <summary>
-        /// CWR 统一的自动换行：CJK 感知，按宽度折行。取代分散的 <see cref="Utils.WordwrapString"/>
-        /// 调用与各处自写的折行循环，解决纯中文（无空格）因 <see cref="DynamicSpriteFont.MeasureString"/>
-        /// 对 CJK 字形测量不稳而整段不换行的问题。
-        /// </summary>
-        /// <param name="text">原始文本，允许包含 '\n' 强制换行</param>
-        /// <param name="font">字体；为 null 时使用鼠标字体</param>
-        /// <param name="maxWidth">可用像素宽度（绘制后的视觉宽度，内部会按 <paramref name="scale"/> 归一）</param>
-        /// <param name="scale">绘制缩放，默认 1</param>
-        /// <param name="maxLines">最多保留的行数，超出截断；默认不限制</param>
-        /// <param name="ellipsis">截断时是否在末行追加省略号</param>
+        /// <summary>CJK 感知自动换行，替代 Utils.WordwrapString</summary>
         public static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth
             , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false) {
             List<string> result = [];
@@ -817,7 +647,7 @@ namespace CalamityOverhaul
                 return result;
             }
 
-            //折行在未缩放空间内计算，因此把视觉宽度反算回字体原始测量空间
+            // 折行在未缩放空间内计算
             float effWidth = scale > 0f ? maxWidth / scale : maxWidth;
 
             string normalized = text.Replace("\r", string.Empty);
@@ -839,34 +669,24 @@ namespace CalamityOverhaul
             return result;
         }
 
-        /// <summary>
-        /// 使用默认鼠标字体的自动换行重载。
-        /// </summary>
+        /// <summary>默认鼠标字体换行</summary>
         public static List<string> WrapText(string text, float maxWidth
             , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false)
             => WrapText(text, Terraria.GameContent.FontAssets.MouseText?.Value, maxWidth, scale, maxLines, ellipsis);
 
-        /// <summary>
-        /// 自动换行并返回数组，便于替换返回 string[] 的 <see cref="Utils.WordwrapString"/> 调用点。
-        /// </summary>
+        /// <summary>换行结果转数组</summary>
         public static string[] WrapTextArray(string text, DynamicSpriteFont font, float maxWidth
             , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false)
             => [.. WrapText(text, font, maxWidth, scale, maxLines, ellipsis)];
 
-        /// <summary>
-        /// 与原版 <see cref="Utils.WordwrapString"/> 完全相同的签名，作为其 CJK 感知替代：
-        /// 直接把所有 <c>Utils.WordwrapString(text, font, maxWidth, maxLines, out _)</c> 改名为
-        /// <c>CWRUtils.WrapTextArray(...)</c> 即可，宽度按未缩放像素解释，行为保持一致。
-        /// </summary>
+        /// <summary>与 Utils.WordwrapString 同签名，CJK 感知替代</summary>
         public static string[] WrapTextArray(string text, DynamicSpriteFont font, float maxWidth, int maxLines, out int lineCount) {
             string[] arr = [.. WrapText(text, font, maxWidth, 1f, maxLines)];
             lineCount = arr.Length;
             return arr;
         }
 
-        /// <summary>
-        /// 自动换行并以 '\n' 连接为单串，便于直接交给绘制接口。
-        /// </summary>
+        /// <summary>换行后以换行符拼接</summary>
         public static string WrapTextJoin(string text, DynamicSpriteFont font, float maxWidth
             , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false)
             => string.Join('\n', WrapText(text, font, maxWidth, scale, maxLines, ellipsis));
@@ -883,11 +703,7 @@ namespace CalamityOverhaul
             return trimmed + dots;
         }
 
-        /// <summary>
-        /// 把单个段落（不含 '\n'）按宽度折行追加到 <paramref name="output"/>。
-        /// CJK 字符按"任意位置可换行"处理，拉丁词按词边界处理，并用稳健的字符宽度估算
-        /// 规避 <see cref="DynamicSpriteFont.MeasureString(string)"/> 对 CJK 字形偶发偏小的问题。
-        /// </summary>
+        /// <summary>单段落 CJK 感知折行</summary>
         private static void WrapBlockCJKAware(string text, DynamicSpriteFont font, float maxWidth, List<string> output) {
             if (string.IsNullOrEmpty(text)) {
                 output.Add(string.Empty);
@@ -898,7 +714,7 @@ namespace CalamityOverhaul
                 return;
             }
 
-            //稳定的 CJK 参考宽度：优先"汉"字测量，异常偏小时用字体高度近似（CJK 字形近方块）
+            // CJK 参考宽度，测量偏小时用字高近似
             float fontHeight = font.MeasureString("A").Y;
             if (fontHeight < 1f) {
                 fontHeight = 18f;
@@ -911,7 +727,7 @@ namespace CalamityOverhaul
 
             StringBuilder currentLine = new();
             float currentWidth = 0f;
-            //当前正在累计的拉丁单词在 currentLine 中的起始下标（-1 表示无拉丁单词在累积）
+            // 当前拉丁词在 currentLine 中的起始下标，-1 表示无
             int latinWordStart = -1;
             float latinWordWidth = 0f;
 
@@ -931,7 +747,7 @@ namespace CalamityOverhaul
 
                 bool needWrap = currentWidth + charWidth > maxWidth && currentLine.Length > 0;
                 if (needWrap) {
-                    //latinWordStart <= 0 表示当前行本身就是一个超宽拉丁单词，必须硬断字，否则会陷入死循环
+                    // 超宽拉丁词硬断，避免死循环
                     if (isCJK || isWhite || latinWordStart <= 0) {
                         output.Add(currentLine.ToString().TrimEnd(' '));
                         currentLine.Clear();
@@ -943,7 +759,7 @@ namespace CalamityOverhaul
                         }
                     }
                     else {
-                        //当前字符位于拉丁单词内部，把整个单词移到下一行
+                        // 整词移到下一行
                         string head = currentLine.ToString(0, latinWordStart).TrimEnd(' ');
                         string tail = currentLine.ToString(latinWordStart, currentLine.Length - latinWordStart);
                         output.Add(head);
@@ -977,18 +793,15 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 判断字符是否属于按"任意位置可换行"处理的 CJK 表意范围。
-        /// 覆盖 CJK 统一表意、扩展 A、平/片假名、谚文音节、全/半角形与 CJK 符号标点。
-        /// </summary>
+        /// <summary>CJK 表意字符判定</summary>
         private static bool IsCJKChar(char c) {
-            return c is >= '\u4E00' and <= '\u9FFF'   //CJK Unified Ideographs
-                or >= '\u3400' and <= '\u4DBF'        //CJK Extension A
-                or >= '\u3040' and <= '\u309F'        //Hiragana
-                or >= '\u30A0' and <= '\u30FF'        //Katakana
-                or >= '\uAC00' and <= '\uD7AF'        //Hangul Syllables
-                or >= '\uFF00' and <= '\uFFEF'        //全/半角形（含全角标点）
-                or >= '\u3000' and <= '\u303F';       //CJK Symbols and Punctuation
+            return c is >= '\u4E00' and <= '\u9FFF'
+                or >= '\u3400' and <= '\u4DBF'
+                or >= '\u3040' and <= '\u309F'
+                or >= '\u30A0' and <= '\u30FF'
+                or >= '\uAC00' and <= '\uD7AF'
+                or >= '\uFF00' and <= '\uFFEF'
+                or >= '\u3000' and <= '\u303F';
         }
         #endregion
     }

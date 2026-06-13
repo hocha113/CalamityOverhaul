@@ -14,13 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博蓄力能量球弹幕
-    /// <br/>右键持续蓄力，释放后直线高速飞行，命中后爆炸
-    /// <br/>蓄力阶段：固定在玩家前方，由小变大，黄金色→白青色过渡
-    /// <br/>飞行阶段：直线高速飞行，拖尾方形粒子
-    /// <br/>命中阶段：生成 CyberDetonationProj 爆破特效
-    /// </summary>
+    /// <summary>SHPC 右键蓄力球：蓄力/飞行/引爆 CyberDetonationProj</summary>
     internal class CyberChargeOrbProj : BaseHeldProj, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

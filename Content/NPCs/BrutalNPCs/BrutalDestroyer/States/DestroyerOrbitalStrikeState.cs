@@ -10,14 +10,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 低血量大招「轨道绞杀」三幕演出（普攻版俯冲见 <see cref="DestroyerDiveStrikeState"/>）：
-    /// <br/>1. 撤离：咆哮 + 全身充能波循环加速，整条蠕虫以最大冲量飞出屏幕顶部，短暂静默蓄势；
-    /// <br/>2. 交叉俯冲 2 趟：贯穿屏幕的对角预警线 + 极高速贯穿，左右交替成X，入场带音爆扭曲环；
-    /// <br/>3. 终结贯穿：玩家头顶垂直警告光柱（更长预警），蠕虫自天垂直贯穿砸入大地——
-    ///    全场唯一的最大冲击演出，随后破土回场进入散热惩罚窗口。
-    /// <br/>所有难度完整播放演出，Death 只调整俯冲速度等数值。
-    /// </summary>
+    /// <summary>低血量大招「轨道绞杀」：撤离→交叉俯冲2趟→垂直终结贯穿→回场散热</summary>
+    /// <para>普攻俯冲见 <see cref="DestroyerDiveStrikeState"/>；全难度完整演出，Death 只调数值</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.OrbitalStrike, typeof(DestroyerStateContext))]
     internal class DestroyerOrbitalStrikeState : DestroyerStateBase
     {
@@ -103,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return null;
             }
 
-            //幕三：终结贯穿——垂直预警
+            //幕三：终结贯穿，垂直预警
             if (Timer <= finalDiveStart) {
                 UpdateFinalTelegraph(context, Timer - divesEnd);
                 return null;

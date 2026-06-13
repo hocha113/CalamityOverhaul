@@ -4,10 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 掉落物目标种类工厂
-    /// <br/>优先级低于弹幕，高于物块和液体，便于扫描落在地面上的 Item 实体
-    /// </summary>
+    /// <summary>掉落物目标工厂</summary>
     internal class ItemTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Item;

@@ -4,10 +4,7 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 灵异 Actor 目标种类工厂（如乱码鬼）
-    /// <br/>过去视角下专属，悬停优先级仅次于 NPC
-    /// </summary>
+    /// <summary>灵异 Actor 目标工厂</summary>
     internal class WraithTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Wraith;

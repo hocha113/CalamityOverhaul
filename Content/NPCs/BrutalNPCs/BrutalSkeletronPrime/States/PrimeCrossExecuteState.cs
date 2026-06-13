@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 十字绞杀合体技：四臂十字封位 → 预警线充能 → 四道热射线自封位向心释放，
-    /// 沿警戒线灼烧成完整十字绞杀网，对角缝隙是唯一安全区。
-    /// </summary>
+    /// <summary>十字绞杀：四臂封位 → 预警充能 → 四道热射线向心，对角缝为安全区</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CrossExecute, typeof(PrimeStateContext))]
     internal class PrimeCrossExecuteState : PrimeStateBase
     {
@@ -26,7 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             new(-320f, 0f), new(320f, 0f), new(0f, -280f), new(0f, 280f),
         };
 
-        /// <summary>十字锚点：预警瞬间冻结——警戒线在哪，热射线就在哪</summary>
+        /// <summary>十字锚点：预警瞬间冻结，射线与警戒线对齐</summary>
         private Vector2 crossCenter;
 
         public override void OnEnter(PrimeStateContext context) {

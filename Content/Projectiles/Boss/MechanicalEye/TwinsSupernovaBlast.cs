@@ -11,8 +11,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
     /// <summary>
-    /// 双子冲击波：无伤害纯演出弹幕，经 <see cref="Renders.WarpEffectRender"/> 管线产生
-    /// 扩张的屏幕扭曲环，并补绘橙红/青紫双色反向旋转的可见冲击环。服务端生成保证多人可见。
+    /// 双子冲击波：无伤害纯演出，经 <see cref="Renders.WarpEffectRender"/> 扩张屏幕扭曲环
+    /// 补绘橙红/青紫双色反向旋转可见冲击环，服务端生成保证多人可见
     /// <br/>ai[0]: 尺寸档位 0=冲刺音爆 1=死光开火 2=超新星对撞
     /// <br/>ai[1]: 主题 0=激光眼青紫 1=魔焰眼橙红 2=双色混合
     /// </summary>

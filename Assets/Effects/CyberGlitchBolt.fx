@@ -1,7 +1,7 @@
 // ============================================================================
-// CyberGlitchBolt.fx — 赛博空间故障闪电着色器
-// 黑墙入侵故障线——沿折线路径的数字腐蚀裂缝
-// Trail条带渲染，配合CyberGlitchBoltProj使用
+// CyberGlitchBolt.fx 赛博空间故障闪电
+// Trail 条带 Additive
+// ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -59,43 +59,43 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float cross_ = uv.y;         //0=上边 1=下边
     float crossDist = abs(cross_ - 0.5) * 2.0; //0=中心 1=边缘
 
-    // ---- 可见区域遮罩 ----
+    // 可见区域遮罩
     float headMask = smoothstep(visibleEnd + 0.04, visibleEnd - 0.02, along);
     float tailMask = smoothstep(visibleStart - 0.02, visibleStart + 0.04, along);
     float visMask = headMask * tailMask;
     if (visMask < 0.001)
         return float4(0, 0, 0, 0);
 
-    // ---- 噪声采样 ----
+    // 噪声采样
     float n1 = tex2D(noiseSamp, frac(float2(along * 3.0 + uTime * 1.2, cross_ * 0.6 + glitchSeed))).r;
     float n2 = tex2D(noiseSamp, frac(float2(along * 7.0 - uTime * 2.0, cross_ * 1.3 + 0.37))).g;
     float n3 = tex2D(noiseSamp, frac(float2(along * 1.8 + uTime * 0.7, cross_ * 2.5 + 0.61))).b;
 
-    // ============================================================
+    // =
     // A. 核心裂缝——白热闪电芯（现实被撕裂的缝隙）
-    // ============================================================
+    // =
     float coreW = 0.10 + n1 * 0.06;
     float core = 1.0 - smoothstep(0.0, coreW, crossDist);
     core = pow(saturate(core), 1.3);
     float coreFlicker = 0.75 + 0.25 * sin(uTime * 22.0 + along * 50.0 + glitchSeed * 10.0);
     core *= coreFlicker;
 
-    // ============================================================
+    // =
     // B. 中层红色辉光
-    // ============================================================
+    // =
     float midW = 0.32 + n2 * 0.1;
     float mid = 1.0 - smoothstep(coreW * 0.5, midW, crossDist);
     mid *= 0.65;
 
-    // ============================================================
+    // =
     // C. 外层暗红光晕
-    // ============================================================
+    // =
     float outer = 1.0 - smoothstep(0.2, 1.0, crossDist);
     outer *= 0.3;
 
-    // ============================================================
+    // =
     // D. 数字故障方块——黑墙数据入侵的核心视觉
-    // ============================================================
+    // =
     //大方块层（低频闪烁——整块出现/消失的数据损坏区域）
     float bx = floor(along * 18.0 + glitchSeed * 5.0);
     float by = floor(cross_ * 4.0);
@@ -118,9 +118,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float subBlock = step(0.78, sHash) * sHash;
     subBlock *= (1.0 - crossDist * 0.6);
 
-    // ============================================================
+    // =
     // E. 水平数据条纹——故障撕裂横纹
-    // ============================================================
+    // =
     float stripIdx = floor(cross_ * 10.0);
     float stripTime = floor(uTime * 6.0);
     float stripHash = hash21(float2(stripIdx + stripTime * 3.7, glitchSeed * 19.0));
@@ -128,30 +128,30 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float stripNoise = tex2D(noiseSamp, frac(float2(along * 15.0 + uTime * 4.0, stripIdx * 0.17))).r;
     float strip = stripOn * smoothstep(0.30, 0.70, stripNoise) * (1.0 - crossDist * 0.4);
 
-    // ============================================================
+    // =
     // F. 纵向数据流纹——沿闪电方向的流动痕迹
-    // ============================================================
+    // =
     float streamUV = frac(along * 12.0 - uTime * 3.5 + glitchSeed * 4.0);
     float stream = smoothstep(0.0, 0.08, streamUV) * smoothstep(0.3, 0.12, streamUV);
     stream *= (1.0 - crossDist * 0.8) * 0.4;
 
-    // ============================================================
+    // =
     // G. 边缘腐蚀——噪声驱动的不规则撕裂边界
-    // ============================================================
+    // =
     float edgeNoise = n2 * 0.22 + n3 * 0.18;
     float edgeMask = 1.0 - smoothstep(0.50 - edgeNoise, 0.96, crossDist);
 
-    // ============================================================
+    // =
     // H. 尖端光斑——延伸前端的高亮
-    // ============================================================
+    // =
     float tipDist = abs(along - visibleEnd);
     float tipFlare = 1.0 - smoothstep(0.0, 0.06, tipDist);
     tipFlare *= (1.0 - crossDist * 0.7);
     tipFlare *= 0.4 + 0.6 * sin(uTime * 30.0 + glitchSeed * 7.0);
 
-    // ============================================================
+    // =
     // 颜色合成
-    // ============================================================
+    // =
     float3 cWhiteHot  = float3(1.0, 0.93, 0.85);
     float3 cBrightRed = float3(0.95, 0.10, 0.06);
     float3 cDarkRed   = float3(0.38, 0.025, 0.035);

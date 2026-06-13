@@ -13,8 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     internal class FishDynamite : FishSkill
     {
-        //使用反射加载灰度纹理，这个是一个光束纹理，大小高1024宽256，
-        //光束朝正上方，适合用来复合一些光束一类的特效或者爆炸的旋转光束演出
+        //1024×256 竖向光束灰度图，爆炸旋转光用
         [VaultLoaden(CWRConstant.Masking)]
         public static Texture2D LightBeam = null;
 
@@ -57,9 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 雷管鱼弹幕 - 滞留型接触爆炸物
-    /// </summary>
+    /// <summary>雷管鱼滞留爆炸弹幕</summary>
     internal class DynamiteFishProjectile : ModProjectile
     {
         [VaultLoaden(CWRConstant.Masking)]

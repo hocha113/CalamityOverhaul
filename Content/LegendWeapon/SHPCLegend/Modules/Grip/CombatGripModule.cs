@@ -5,11 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 战斗握把：每次击杀（光束/激光命中后目标 life&lt;=0）累积"战意"层数
-    /// 层数动态注入到 <see cref="ShootContext.AttackSpeedMul"/>，未触发时也不会回到中性
-    /// 通过 OnPlayerUpdate 计时衰减层数，避免对外部状态产生依赖
-    /// </summary>
+    /// <summary>战斗握把：击杀叠战意层，动态注入攻速/伤害，PostUpdate 衰减</summary>
     internal sealed class CombatGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

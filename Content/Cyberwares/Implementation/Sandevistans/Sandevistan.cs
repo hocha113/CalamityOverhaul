@@ -7,67 +7,48 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>
-    /// 斯安威斯坦技能核心管理器
-    /// 管理激活/冷却状态、残影生成节奏、屏幕效果强度
-    /// 冷却参数从装备的斯安威斯坦义体物品读取，支持不同型号
+    /// 斯安威斯坦核心 ModSystem
+    /// <br/>激活/冷却/残影/屏幕强度；参数读装备义体型号
     /// </summary>
     internal class Sandevistan : ModSystem
     {
-        /// <summary>
-        /// 技能是否处于激活状态
-        /// </summary>
+        /// <summary>时缓激活中</summary>
         public static bool IsActive { get; private set; }
 
-        /// <summary>
-        /// 屏幕后处理效果强度（0~1），带渐入渐出过渡
-        /// </summary>
+        /// <summary>屏幕后处理强度 0~1，渐入渐出</summary>
         public static float ScreenEffectIntensity { get; private set; }
 
-        /// <summary>
-        /// 当前冷却值，激活时消耗，未激活时恢复
-        /// </summary>
+        /// <summary>当前冷却，激活消耗/停用恢复</summary>
         public static float CurrentCooldown { get; set; }
 
-        /// <summary>
-        /// 最大冷却值，由装备的义体物品决定
-        /// </summary>
+        /// <summary>最大冷却，由装备义体决定</summary>
         public static float MaxCooldown { get; private set; }
 
-        /// <summary>
-        /// 每帧冷却消耗量
-        /// </summary>
+        /// <summary>每帧消耗量</summary>
         public static float ConsumptionRate { get; private set; }
 
-        /// <summary>
-        /// 每帧冷却恢复量
-        /// </summary>
+        /// <summary>每帧恢复量</summary>
         public static float RecoveryRate { get; private set; }
 
-        /// <summary>
-        /// 冷却值比例（0~1），供HUD使用
-        /// </summary>
+        /// <summary>冷却比例 0~1，HUD 用</summary>
         public static float CooldownRatio => MaxCooldown > 0 ? CurrentCooldown / MaxCooldown : 0f;
 
         private static int spawnTimer;
         private static bool wasActiveLastFrame;
-        //用于检测装备变化，首次装备或切换型号时初始化冷却
+        //装备变化检测，首次/换型号初始化冷却
         private static int trackedEquipType = -1;
-        //停用后恢复延迟计时器，防止反复按键卡加速
+        //停用后恢复延迟，防按键卡加速
         private static int recoveryDelay;
 
         private const float FadeInSpeed = 0.05f;
         private const float FadeOutSpeed = 0.01f;
-        //停用后需要等多少帧才能开始恢复冷却（2秒 = 120帧）
+        //停用后 120 帧才开始恢复
         private const int RecoveryDelayTicks = 120;
 
-        /// <summary>
-        /// 每隔多少帧生成一个残影（越小残影越密集）
-        /// </summary>
+        /// <summary>残影生成间隔帧，越小越密</summary>
         public const int SpawnInterval = 4;
 
-        /// <summary>
-        /// 获取玩家当前装备的斯安威斯坦义体，未装备返回null
-        /// </summary>
+        /// <summary>当前装备斯安威斯坦，无则 null</summary>
         public static SandevistansItem GetEquipped(Player player) {
             var cyberPlayer = player.GetModPlayer<CyberwarePlayer>();
             for (int i = 0; i < CyberwarePlayer.SlotCount; i++) {
@@ -78,29 +59,23 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return null;
         }
 
-        /// <summary>
-        /// 尝试激活斯安威斯坦
-        /// </summary>
+        /// <summary>尝试激活</summary>
         public static void TryActivate() {
             if (!IsActive && CurrentCooldown > 0) {
                 IsActive = true;
             }
         }
 
-        /// <summary>
-        /// 强制停用斯安威斯坦
-        /// </summary>
+        /// <summary>强制停用</summary>
         public static void ForceDeactivate() {
             IsActive = false;
         }
 
-        /// <summary>
-        /// 在玩家逻辑更新中调用，驱动整个斯安威斯坦系统
-        /// </summary>
+        /// <summary>每帧驱动冷却/音效/时缓/残影</summary>
         public static void Update(Player player) {
             SandevistansItem equipped = GetEquipped(player);
 
-            //没有装备斯安威斯坦时的处理
+            //未装备：清状态
             if (equipped == null) {
                 if (IsActive) {
                     IsActive = false;
@@ -118,7 +93,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             ConsumptionRate = equipped.ConsumptionPerFrame;
             RecoveryRate = equipped.RecoveryPerFrame;
 
-            //检测装备变化（包括游戏加载后首次检测），初始化冷却值
+            //装备变化或首次加载→满冷却
             if (equipped.Item.type != trackedEquipType) {
                 trackedEquipType = equipped.Item.type;
                 CurrentCooldown = MaxCooldown;
@@ -127,8 +102,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 }
             }
 
-            //技能输入由 CyberwareSkillRadialUI 通过 SandevistanSkill 桥接，
-            //本系统不再直接监听 CyberwareSkill_Key，避免与其他义体技能产生按键冲突
+            //输入走 SandevistanSkill 雷达桥接，不监听 CyberwareSkill_Key
 
             //冷却值消耗与恢复
             if (IsActive) {
@@ -137,11 +111,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                     CurrentCooldown = 0;
                     IsActive = false;
                 }
-                //激活期间重置恢复延迟
+                //激活期重置恢复延迟
                 recoveryDelay = RecoveryDelayTicks;
             }
             else {
-                //停用后需要等待延迟结束才能开始恢复
+                //延迟结束后才恢复
                 if (recoveryDelay > 0) {
                     recoveryDelay--;
                 }
@@ -150,13 +124,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 }
             }
 
-            //音效触发（基于状态变化边沿检测）
+            //边沿检测播启停音
             HandleSoundTransition();
 
             //屏幕效果渐变
             HandleScreenEffect();
 
-            //同步时缓系统
+            //同步 TimeGear 时缓
             SyncTimeSlow();
 
             wasActiveLastFrame = IsActive;
@@ -166,7 +140,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return;
             }
 
-            //玩家基本静止时不产生残影
+            //静止不产残影
             if (player.velocity.LengthSquared() < 1f) {
                 return;
             }
@@ -209,9 +183,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             Update(Main.LocalPlayer);
         }
 
-        /// <summary>
-        /// 在玩家当前位置生成一个残影实体
-        /// </summary>
+        /// <summary>生成一帧玩家残影 Actor</summary>
         public static void SpawnGhost(Player player) {
             if (Main.dedServ) {
                 return;

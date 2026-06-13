@@ -14,11 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 荒芜弓
-    /// <para>持续按住左键自动张弓放箭，箭矢死亡（命中敌人或撞击物块）时爆发荒芜电流</para>
-    /// <para>电流为连锁的沙金色闪电，可在附近敌人之间跳跃</para>
-    /// </summary>
+    /// 荒芜弓：按住左键自动张弓，箭亡时爆发连锁沙金电流
     internal class BarrenBow : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
@@ -42,12 +38,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<BarrenBowHeld>();
         }
 
-        //物品使用本身不消耗箭矢，由手持弹幕在实际放箭时自行拾取
+        //放箭时由手持弹幕拾取弹药，物品使用不扣箭
         public override bool CanConsumeAmmo(Item ammo, Player player) => BarrenBowHeld.AmmoConsumeContext;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
-            //使用瞬间生成手持弹幕，它会自己接管开火逻辑，松开按键且无残余追踪时自动销毁
+            //生成手持弹幕接管开火，松手无在途箭则自毁
             int heldType = ModContent.ProjectileType<BarrenBowHeld>();
             if (player.CountProjectilesOfID(heldType) <= 0) {
                 Projectile.NewProjectile(source, player.MountedCenter, Vector2.Zero, heldType, 0, 0, player.whoAmI);
@@ -76,23 +72,17 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 荒芜弓的手持弹幕，由 <see cref="BarrenBow.Shoot"/> 在使用瞬间生成，只在开火期间存活
-    /// <para>负责瞄准姿态、张弓动画、弓弦与搭箭绘制，并追踪射出的箭矢，在箭矢消亡处引爆荒芜电流</para>
-    /// <para>松开按键后若仍有箭矢在途，会以隐形守望状态短暂存活直到电流全部结算，不影响玩家任何交互</para>
-    /// </summary>
+    /// 荒芜弓手持弹幕：<see cref="BarrenBow.Shoot"/> 生成，开火期存活
+    /// 瞄准张弓、追踪箭矢，箭亡处引爆电流；松键后在途箭未结算时隐形守望
     internal class BarrenBowHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "BarrenBow";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<BarrenBow>();
 
-        /// <summary>
-        /// 弹药消耗上下文开关：物品使用本身不消耗箭矢（<see cref="BarrenBow.CanConsumeAmmo"/> 返回该值），
-        /// 只有手持弹幕实际放箭时才放行消耗
-        /// </summary>
+        /// <summary>弹药消耗门控，仅手持放箭时放行(<see cref="BarrenBow.CanConsumeAmmo"/>)</summary>
         internal static bool AmmoConsumeContext { get; private set; }
 
-        //弓弦在纹理上的锚点（像素坐标，纹理为56x78，弦为x=18~20的竖直线）
+        //弓弦锚点(纹理 56×78，弦 x=18~20)
         private static readonly Vector2 StringTopTex = new(18.5f, 21f);
         private static readonly Vector2 StringBottomTex = new(18.5f, 60f);
         /// <summary>张弓计时器，达到 <see cref="Item.useTime"/> 时放箭</summary>
@@ -140,7 +130,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Projectile.Kill();
                 return false;
             }
-            //松开按键或切换物品后，仅当还有在途箭矢需要结算电流时才以守望状态存活
+            //松键/切物后仅有在途箭待结算时守望存活
             if ((!DownLeft || !ItemValid) && trackedArrows.Count == 0) {
                 Projectile.Kill();
                 return false;
@@ -152,7 +142,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.timeLeft = 2;
 
             if (!Engaged) {
-                //守望状态：不接管玩家姿态、不绘制，仅维持箭矢追踪
+                //守望：不接管姿态/绘制，仅追踪箭矢
                 drawTimer = 0;
                 Projectile.Center = Owner.GetPlayerStabilityCenter();
                 UpdateTrackedArrows();
@@ -180,18 +170,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             UpdateTrackedArrows();
         }
 
-        /// <summary>
-        /// 更新弓的位置与旋转，使其紧贴玩家中心、指向鼠标
-        /// </summary>
+        /// 更新弓位旋转，贴玩家中心指向鼠标
         private void UpdatePose() {
             Projectile.rotation = ToMouseA;
             Owner.ChangeDir(ToMouse.X >= 0 ? 1 : -1);
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HoldDistance;
         }
 
-        /// <summary>
-        /// 设置玩家手臂：后手持弓指向瞄准方向，前手随张弓进度向后拉弦
-        /// </summary>
+        /// 后手持弓瞄准，前手随张弓进度拉弦
         private void UpdateArms() {
             float holdArmRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, holdArmRot);
@@ -212,9 +198,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Owner.itemAnimation = 2;
         }
 
-        /// <summary>
-        /// 张弓时在搭箭点积聚沙金色电火花
-        /// </summary>
+        /// 张弓搭箭点沙金电火花
         private void SpawnDrawDust() {
             if (Main.dedServ || DrawProgress < 0.5f || !Main.rand.NextBool(3)) {
                 return;
@@ -226,9 +210,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Lighting.AddLight(nock, new Vector3(0.45f, 0.36f, 0.12f) * DrawProgress);
         }
 
-        /// <summary>
-        /// 拾取并消耗一发箭矢弹药
-        /// </summary>
+        /// 拾取并消耗一发箭
         private bool PickArrow(out int shootType, out float speed, out int damage, out float knockback, out int usedAmmoItemId) {
             bool dontConsume = Owner.IsRangedAmmoFreeThisShot(new Item(ammoState.UseAmmoItemType));
             AmmoConsumeContext = true;
@@ -237,9 +219,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return hasAmmo;
         }
 
-        /// <summary>
-        /// 放箭：消耗弹药并射出箭矢，同时将其纳入荒芜电流的追踪列表
-        /// </summary>
+        /// 放箭并纳入电流追踪
         private void Fire() {
             SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
 
@@ -271,9 +251,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             NetUpdate();
         }
 
-        /// <summary>
-        /// 追踪已射出的箭矢，箭矢消亡时在其最后位置爆发荒芜电流
-        /// </summary>
+        /// 追踪箭矢，消亡处爆发荒芜电流
         private void UpdateTrackedArrows() {
             if (!Projectile.IsOwnedByLocalPlayer() || trackedArrows.Count == 0) {
                 return;
@@ -292,9 +270,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>
-        /// 在指定位置爆发荒芜电流：电涌冲击波 + 两道连锁电弧
-        /// </summary>
+        /// 指定位置爆发荒芜电流
         private void BurstBarrenCurrent(Vector2 pos, int damage) {
             SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.5f, Pitch = 0.25f, PitchVariance = 0.2f }, pos);
 

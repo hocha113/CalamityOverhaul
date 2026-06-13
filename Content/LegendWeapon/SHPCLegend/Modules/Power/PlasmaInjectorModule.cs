@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 等离子注入器：向能量球注入高焓等离子。能量球引爆后不再消散，
-    /// 而是在爆心凝聚出一颗「等离子残阳」—— 持续灼烧周围敌人，
-    /// 并周期性喷出日珥火舌追打最近的目标（至尊灾厄礼物 —— 硫磺残阳意象）
-    /// </summary>
+    /// <summary>等离子注入器：球爆后留等离子残阳灼烧+日珥追打</summary>
     internal sealed class PlasmaInjectorModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -45,11 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
     }
 
-    /// <summary>
-    /// 等离子残阳：驻留爆心的微型恒星，半径 110px 灼烧光环每 20 帧 tick 一次，
-    /// 每 45 帧向 480px 内最近敌人喷出一束日珥火舌；存活 5 秒后塌缩消散
-    /// 使用 SHPCPlasmaSun.fx 渲染湍流等离子球面与日冕
-    /// </summary>
+    /// <summary>等离子残阳，半径 110 灼烧+日珥；SHPCPlasmaSun.fx</summary>
     internal sealed class SHPCPlasmaSunProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -12,15 +12,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 自然元素枪管共享演出工具，集中管理屏幕震动入口与多层 Additive 晕绘制
-    /// 落在第一个使用方文件中，避免再开零散 helper 文件
-    /// </summary>
+    /// <summary>自然元素枪管共享 VFX：屏幕震、Additive 晕、owned 计数/近距节流</summary>
     internal static class SHPCNaturalFx
     {
-        /// <summary>
-        /// 在指定屏幕坐标多层叠加柔光纹理，从内层到外层在 inner→outer 之间按 t 渐变
-        /// </summary>
+        /// <summary>多层柔光叠加，inner→outer 按 t 渐变</summary>
         public static void GlowLayered(SpriteBatch sb, Texture2D tex, Vector2 screenPos,
             Color inner, Color outer, float scale, float rotation, int layers = 3) {
             if (tex == null) return;
@@ -33,9 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             }
         }
 
-        /// <summary>
-        /// 触发一次屏幕震动，仅作用于本地玩家；自动走 CWRPlayer.GetScreenShake 与服务器配置
-        /// </summary>
+        /// <summary>屏幕震动，仅本地玩家</summary>
         public static void Shake(float amount) {
             if (amount <= 0f || Main.netMode == NetmodeID.Server) return;
             Player p = Main.LocalPlayer;
@@ -43,9 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             if (p.TryGetModPlayer(out CWRPlayer cp)) cp.GetScreenShake(amount);
         }
 
-        /// <summary>
-        /// 统计指定主人当前活跃的某类型弹幕数量；自然枪管节流用
-        /// </summary>
+        /// <summary>统计主人某类型活跃弹幕数</summary>
         public static int CountOwned(int owner, int type) {
             int n = 0;
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -55,9 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             return n;
         }
 
-        /// <summary>
-        /// 在指定半径内是否已有同主同类型弹幕；用于"聚簇节流"避免同点重复生成
-        /// </summary>
+        /// <summary>半径内是否已有同主同类型弹幕</summary>
         public static bool HasOwnedNear(int owner, int type, Vector2 center, float radius) {
             float r2 = radius * radius;
             for (int i = 0; i < Main.maxProjectiles; i++) {
@@ -69,9 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 黑曜石枪管：命中叠加裂纹，满层碎裂为自动寻敌的火山玻璃碎片。
-    /// </summary>
+    /// <summary>黑曜石枪管：命中叠裂纹，满层碎裂为寻敌玻璃碎片</summary>
     internal sealed class ObsidianBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -105,9 +92,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 黑曜石碎片：带 Trail 拖尾与 Additive 头部辉光，命中触发小型脉冲爆破
-    /// </summary>
+    /// <summary>黑曜石碎片：Trail+Additive，命中小脉冲</summary>
     internal sealed class SHPCObsidianShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

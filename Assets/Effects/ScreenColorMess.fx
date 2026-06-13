@@ -1,7 +1,12 @@
-sampler uImage0 : register(s0);
-float offsetStrength;
+// ============================================================================
+// ScreenColorMess.fx RGB 色差分离
+// 采样 uImage0 屏幕；ps_3_0
+// ============================================================================
 
-//RGB错位分离，抄的风凌的，很简单，名字都不改
+sampler uImage0 : register(s0);
+float offsetStrength; //RGB 分离偏移量
+
+//RGB色差分离
 float4 TetradShiverShader(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);

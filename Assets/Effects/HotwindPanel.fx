@@ -1,9 +1,6 @@
 // ============================================================================
-// HotwindPanel.fx — 热风任务书面板着色器
-// 暖色金属底纹 + 锻造光泽纹理 + 热能脉冲脉络 + 浮雕深度边缘
-// + 热力扫描线 + 流苏光带 + 暗角 + 微粒烬火
-// AlphaBlend模式 —— shader控制alpha形状与动态效果
-// uNightMode混合：0=暖铜琥珀 1=冷钢月蓝
+// HotwindPanel.fx 热风任务书面板
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +9,7 @@ float uTime;
 float uAlpha;
 float2 uResolution;
 float uEdgePad;
-float uNightMode; // 0.0=暖色 1.0=冷色
+float uNightMode; //0暖铜琥珀 1冷钢月蓝
 
 // ─── 噪声工具 ───
 float hash11(float p) {

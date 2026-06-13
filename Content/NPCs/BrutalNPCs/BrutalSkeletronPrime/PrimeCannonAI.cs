@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 火箭炮控制器：行为见 <see cref="CannonBombardState"/> / <see cref="CannonSpreadState"/>
-    /// </summary>
+    /// <summary>火箭炮 NPCOverride；行为见 <see cref="CannonBombardState"/> / <see cref="CannonSpreadState"/></summary>
     internal class PrimeCannonAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeCannon;
@@ -67,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
             Vector2 drawPos = npc.Center - Main.screenPosition + recoilOffset;
 
-            //机械热感滤镜——和头部共用 head.whoAmI 状态
+            //机械热感滤镜，与头部共用 head.whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             Rectangle cannonRect = mainValue.Bounds;
             Vector2 cannonOrigin = mainValue.Size() / 2;

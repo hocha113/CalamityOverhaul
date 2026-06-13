@@ -32,9 +32,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         internal static int iconIndex_Void;
 
         internal const int BodyCount = 60;
-        /// <summary>
-        /// 头部生命值低于该值时进入死亡演出阶段
-        /// </summary>
+        /// <summary>头部 life 低于此值进入死亡演出</summary>
         internal const int DeathPerformanceTriggerLife = 10;
 
         private VaultStateMachine<DestroyerStateContext> stateMachine;
@@ -56,7 +54,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         void ICWRLoader.UnLoadData() => DestroyerMotionFX.Unload();
 
         public override void SetProperty() {
-            //头部位置缓存用于高速运动光带拖尾
+            //头部 oldPos 缓存，高速光带拖尾
             NPCID.Sets.TrailingMode[npc.type] = 1;
             NPCID.Sets.TrailCacheLength[npc.type] = 24;
             InitializeStateContext();
@@ -144,9 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        /// <summary>
-        /// 生命值低于阈值时切入死亡演出。仅服务端/单人端驱动状态转移，客户端经 npc.ai[2] 同步。
-        /// </summary>
+        /// <summary>生命≤阈值切死亡演出；服务端驱动，客户端经 npc.ai[2] 同步</summary>
         private void CheckDeathPerformanceTrigger() {
             if (VaultUtils.isClient || stateContext == null || stateMachine == null) {
                 return;
@@ -199,9 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        /// <summary>
-        /// 生成体节（供IntroState调用）
-        /// </summary>
+        /// <summary>生成体节（IntroState 调用）</summary>
         internal static void SpawnBodySegments(NPC headNpc) {
             int index = headNpc.whoAmI;
             int oldIndex;
@@ -228,12 +222,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        /// <summary>
-        /// 航向转向运动模型：维护"航向角+标量速度"而非直接Lerp速度向量。
-        /// <br/>- 角速度限幅且随速度衰减：高速时只能划出大弧线、低速时才能急转弯，产生重量与惯性感；
-        /// <br/>- 速度向目标速度做指数趋近，转向误差大时自动收油门（入弯减速、出弯加速）；
-        /// <br/>- 可叠加蛇形摆动：在航向上加正弦扰动，蠕虫呈现"游动"姿态而不是匀速漂移。
-        /// </summary>
+        /// <summary>航向+标量速度运动：角速度限幅、入弯收油、可叠蛇形摆动</summary>
         private void UpdateMovement() {
             Vector2 toTarget = stateContext.TargetPosition - npc.Center;
             float distance = toTarget.Length();
@@ -245,7 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             float currentSpeed = npc.velocity.Length();
             float currentHeading = currentSpeed > 0.01f ? npc.velocity.ToRotation() : desiredHeading;
 
-            //转向率：TurnSpeed（约0.2~1.5）换算为弧度/帧，并按当前速度衰减——越快越难转
+            //转向率随速度衰减，越快越难转
             float speedFactor = MathHelper.Clamp(currentSpeed / 32f, 0f, 1f);
             float maxTurn = stateContext.TurnSpeed / 20f * MathHelper.Lerp(1.7f, 0.6f, speedFactor);
             float newHeading = currentHeading.AngleTowards(desiredHeading, maxTurn);
@@ -278,12 +267,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        /// <summary>
-        /// 远距回归瞬移阀（PACING："teleport-loops instead of fly-backs"）：
-        /// 头部持续远离玩家超过阈值时，瞬移到玩家视野边缘并掉头回场，
-        /// 杜绝"Boss在屏幕外盘旋发射弹幕、玩家以为脱战"的体验问题。
-        /// 自带高空/地下走位的状态通过 <see cref="DestroyerStateBase.AllowFarSnap"/> 关闭该阀
-        /// </summary>
+        /// <summary>远距回归瞬移阀：持续远离时瞬移到视野边缘；<see cref="DestroyerStateBase.AllowFarSnap"/> 可关</summary>
         private void UpdateFarReturnValve() {
             if (stateMachine?.CurrentState is not DestroyerStateBase state || !state.AllowFarSnap) {
                 farTimer = 0;
@@ -305,7 +289,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
             farTimer = 0;
 
-            //瞬移到玩家同侧的视野边缘，保持速度大小、调头朝向玩家——体节链同帧在屏幕外重整
+            //瞬移到视野边缘，调头朝向玩家，体节链屏外重整
             Vector2 dir = (npc.Center - targetPlayer.Center).SafeNormalize(-Vector2.UnitY);
             npc.Center = targetPlayer.Center + dir * 1250f;
             float speed = Math.Max(npc.velocity.Length(), 26f);
@@ -324,7 +308,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 stateContext.OpenMouth = true;
             }
             else if (stateContext.JawCommand == 2) {
-                //猛然咬合：双倍速度合拢并短暂禁止重新张口——释放前的"吸气"
+                //猛然咬合：双倍合拢，短暂禁张口
                 stateContext.OpenMouth = false;
                 if (stateContext.Frame > 0) stateContext.Frame--;
                 stateContext.DontOpenMouthTime = Math.Max(stateContext.DontOpenMouthTime, 10);
@@ -376,19 +360,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             else if (stateContext.OrbitalVisual == 3) {
                 visIntensity = 0.5f;
             }
-            //冲刺中——白热高速效果
+            //冲刺中：白热高速
             else if (stateMachine?.CurrentState is DestroyerDashingState) {
                 visMode = MechBossVisualMode.Dashing;
                 visIntensity = 1f;
                 visProgress = 1f;
             }
-            //蓄力（冲刺/包围）——红黄警告
+            //蓄力（冲刺/包围）：红黄警告
             else if (stateContext.IsCharging && (stateContext.ChargeType == 1 || stateContext.ChargeType == 3)) {
                 visMode = MechBossVisualMode.Warning;
                 visIntensity = 0.85f;
                 visProgress = stateContext.ChargeProgress;
             }
-            //其他蓄力（激光弹幕、探针阵列）——同样使用警告滤镜，进度更柔
+            //其他蓄力（激光/探针）：警告滤镜，进度更柔
             else if (stateContext.IsCharging) {
                 visMode = MechBossVisualMode.Warning;
                 visIntensity = 0.75f;
@@ -399,7 +383,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 visIntensity = 0.8f;
             }
 
-            //死亡演出——整条蠕虫剧烈红黄过载脉冲，表现"严重故障"
+            //死亡演出：红黄过载脉冲
             if (stateMachine?.CurrentState is DestroyerDeathState) {
                 visMode = MechBossVisualMode.Warning;
                 visIntensity = 1f;
@@ -440,7 +424,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 visProgress = Math.Max(visProgress, wave);
             }
 
-            //外圈8方向描边光环——确保夜晚远距离也能看清Boss轮廓
+            //外圈8向描边，远距可读
             MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, texture, mainPos, frameRec,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
                 visMode, visIntensity, visProgress);
@@ -456,7 +440,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
 
-            //发光层独立绘制——保留原有自发光效果不被滤镜覆盖
+            //发光层独立绘制，自发光不受滤镜
             spriteBatch.Draw(Head_Glow.Value, mainPos, glowRec, Color.White,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None, 0f);
 
@@ -475,7 +459,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
         #endregion
 
-        #region 掉落物处理
+        #region 掉落
+
         public override void ModifyNPCLoot(NPC thisNPC, NPCLoot npcLoot) {
             IItemDropRuleCondition condition = new DropInDeathMode();
             LeadingConditionRule rule = new LeadingConditionRule(condition);
@@ -487,10 +472,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool CheckActive() => false;
 
-        /// <summary>
-        /// 死亡演出未结束前一律锁血拦截死亡；演出完毕后放行，触发正常掉落与击杀标记。
-        /// 同时作为高额伤害一击致死的兜底，确保必定播放死亡演出。
-        /// </summary>
+        /// <summary>演出未完锁血拦截；演出完毕放行掉落；秒杀也先锁血切死亡演出</summary>
         public override bool? CheckDead() {
             if (stateContext == null || stateContext.DeathPerformanceFinished) {
                 return true;

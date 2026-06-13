@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Projectiles.Others
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 120;
-            Projectile.alpha = 255; //初始不可见
+            Projectile.alpha = 255; //初始透明
         }
 
         public override void AI() {
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.Projectiles.Others
             if (Projectile.localAI[0] == 0) {
                 Projectile.localAI[0] = 1;
                 Projectile.alpha = 0;
-                //初始向上抛出
+                //初抛向上
                 Projectile.velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), -4f);
             }
 
@@ -39,11 +39,11 @@ namespace CalamityOverhaul.Content.Projectiles.Others
                 return;
             }
 
-            //加速飞向目标
+            //加速趋近目标
             float speed = Math.Min(dist / 5f, 20f);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget.SafeNormalize(Vector2.Zero) * speed, 0.1f);
 
-            //旋转效果
+            //自旋
             Projectile.rotation += 0.2f;
         }
 

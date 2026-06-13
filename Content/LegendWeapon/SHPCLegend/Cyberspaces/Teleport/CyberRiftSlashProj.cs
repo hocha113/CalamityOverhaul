@@ -7,12 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>
-    /// 赛博瞬移数据走廊弹幕
-    /// <br/>从起点直通终点的像素数据走廊——玩家被解构成数据沿此路径传输
-    /// <br/>使用 <see cref="Trail"/> + CyberRiftSlash.fx 渲染，整条走廊以黑墙像素格构成
-    /// <br/>路径主轴笔直，仅有极轻微的呼吸抖动以避免视觉死板，强化"传输管道"的稳定感
-    /// </summary>
+    /// <summary>瞬移数据走廊弹幕，Trail + CyberRiftSlash.fx</summary>
     internal class CyberRiftSlashProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -101,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
             Vector2 dir = axis / length;
             Vector2 perp = new(-dir.Y, dir.X);
 
-            //段数适中——太多反而把像素格扭弯
+            //段数适中，过多会扭弯像素格
             int segs = (int)MathHelper.Clamp(length / 60f, 8f, 18f);
             pointCount = segs + 1;
             points = new Vector2[pointCount];

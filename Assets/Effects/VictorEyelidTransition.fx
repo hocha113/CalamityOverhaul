@@ -1,20 +1,14 @@
 // ============================================================================
-// VictorEyelidTransition.fx —— Victor 手术过场"闭眼陷入黑暗 / 睁眼"全屏覆盖
-// 设计：上下眼睑带弧形软边合拢到全黑；睁眼瞬间中央一道手术灯横向眩光
-// 输入参数：
-//   uClose       眼睑闭合 0(全睁)→1(全黑)
-//   uGlow        睁眼手术灯眩光 0~1
-//   uTime        累计时间（秒）
-//   uResolution  屏幕像素尺寸
-// 渲染方式：sb.Begin(Immediate, AlphaBlend, ..., Matrix.Identity)，全屏单 quad
+// VictorEyelidTransition.fx Victor 手术过场闭眼/睁眼全屏覆盖
+// AlphaBlend 全屏单 quad，不采样贴图
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
-float uClose;
-float uGlow;
-float uTime;
-float2 uResolution;
+float uClose;        //眼睑闭合 0全睁→1全黑
+float uGlow;         //睁眼手术灯眩光 0~1
+float uTime;         //累计时间(秒)
+float2 uResolution;  //屏幕像素尺寸
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {

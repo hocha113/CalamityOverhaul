@@ -1,9 +1,14 @@
+// ============================================================================
+// DeductDraw.fx 矩形区域抠除绘制
+// 矩形内透明，其余采样 uImage0；ps_3_0
+// ============================================================================
+
 sampler uImage0 : register(s0);
-float2 topLeft;
-float width;
-float height;
-float4 drawColor;
-float2 textureSize; //传入的纹理尺寸（像素单位）
+float2 topLeft;       //矩形左上(像素)
+float width;          //矩形宽(像素)
+float height;         //矩形高(像素)
+float4 drawColor;     //区外乘色
+float2 textureSize;   //纹理像素尺寸
 
 float4 Function(float2 coords : TEXCOORD0) : COLOR0
 {

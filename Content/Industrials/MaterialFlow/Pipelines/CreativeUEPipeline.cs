@@ -15,15 +15,11 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    /// <summary>
-    /// 无限电力的创造管道物品
-    /// </summary>
+    /// <summary>创造模式无限电力管道物品</summary>
     internal class CreativeUEPipeline : BasePipelineItem
     {
-        //为了区分，你需要为这个物品创建一个新的贴图
         public override string Texture => CWRConstant.Asset + "MaterialFlow/CreativePipelineItem";
 
-        //将要放置的物块ID指向新的创造管道物块
         public override int CreateTileID => ModContent.TileType<CreativeUEPipelineTile>();
 
         public override void SetDefaults() {
@@ -33,9 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
     }
 
-    /// <summary>
-    /// 无限电力的创造管道物块
-    /// </summary>
+    /// <summary>创造模式无限电力管道图块</summary>
     internal class CreativeUEPipelineTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/CreativePipeline";
@@ -52,7 +46,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         public override bool CreateDust(int i, int j, ref int type) {
-            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.MagicMirror);//紫色的粒子效果
+            Dust.NewDust(new Vector2(i, j) * 16f, 16, 16, DustID.MagicMirror);//紫色粒子
             return false;
         }
 
@@ -61,9 +55,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
     }
 
-    /// <summary>
-    /// 无限电力的创造管道的逻辑核心
-    /// </summary>
+    /// <summary>创造管道 TP，恒满电</summary>
     [VaultLoaden(CWRConstant.Asset + "MaterialFlow/")]
     internal class CreativeUEPipelineTP : UEPipelineTP
     {
@@ -75,20 +67,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override int TargetTileID => ModContent.TileType<CreativeUEPipelineTile>();
         public override int TargetItem => ModContent.ItemType<CreativeUEPipeline>();
         public override Color BaseColor => Color.Purple;
-        /// <summary>
-        /// 重写机器更新逻辑
-        /// </summary>
+        /// <summary>恒满电，等同能量源</summary>
         public override void UpdateMachine() {
             base.UpdateMachine();
-            IsNetworkPowered = true;//无限能量，自身相当于一个能量源，所以始终有电，不受外部网络影响
+            IsNetworkPowered = true;
             if (MachineData != null) {
                 MachineData.UEvalue = MaxUEValue;
             }
         }
 
-        /// <summary>
-        /// 绘制连接臂的通用方法，使用创造模式贴图
-        /// </summary>
+        /// <summary>创造管道连接臂绘制</summary>
         private void DrawCreativeArm(PipelineSideState side, SpriteBatch spriteBatch, bool drawSide) {
             if (side.coreTP == null || side.externalTP == null) {
                 return;
@@ -99,11 +87,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Vector2 orig = PipelineCreativeChannel.Size() / 2;
 
             if (!drawSide) {
-                //使用创造管道的能量贴图 (紫色)
+                //创造管道能量层
                 spriteBatch.Draw(PipelineCreativeChannel.Value, drawPos + orig, null, BaseColor * (MachineData.UEvalue / 10f), drawRot, orig, 1, SpriteEffects.None, 0);
             }
             else {
-                //使用基础管道的侧边贴图来绘制光照和轮廓
+                //基础管道光照层
                 spriteBatch.Draw(PipelineChannelSide.Value, drawPos + orig, null, Lighting.GetColor(Position.ToPoint()), drawRot, orig, 1, SpriteEffects.None, 0);
             }
         }
@@ -131,7 +119,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
 
         internal void RenderDraw(SpriteBatch spriteBatch) {
-            //首先绘制连接到其他管道的连接臂
+            //管道间连接臂
             if (Shape != PipelineShape.Cross) {
                 foreach (var side in SideState) {
                     if (side.canDraw && side.LinkType == PipelineLinkType.Pipeline) {
@@ -142,7 +130,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             Color energyColor = BaseColor * (MachineData.UEvalue / 10f);
-            //根据基类计算出的形状，使用创造贴图进行绘制
+            //按形状用创造贴图绘制
             switch (Shape) {
                 case PipelineShape.Cross:
                     drawPos = CenterInWorld - Main.screenPosition;
@@ -176,19 +164,19 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         private readonly static List<CreativeUEPipelineTP> creativePipelines = [];
         private static int creativePipelineID;
         public override void SetStaticDefaults() => creativePipelineID = TileProcessorLoader.GetModuleID<CreativeUEPipelineTP>();
-        //在统一逻辑处理之前先保证集合被清空
+        //单例更新前清空列表
         public override bool PreSingleInstanceUpdate(TileProcessor tileProcessor) {
             if (tileProcessor.ID != creativePipelineID) {
-                return true;//只在上帝管道的单例上运行
+                return true;//仅创造管道单例
             }
 
             creativePipelines.Clear();
             return true;
         }
-        //在逻辑更新中统一处理管道实例的添加
+        //单例更新中收集实例
         public override void SingleInstanceUpdate(TileProcessor tileProcessor) {
             if (tileProcessor.ID != creativePipelineID) {
-                return;//只在上帝管道的单例上运行
+                return;//仅创造管道单例
             }
 
             for (int i = 0; i < TileProcessorLoader.TP_InWorld.Count; i++) {
@@ -204,7 +192,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 creativePipelines.Add(creativePipeline);
             }
         }
-        //渲染钩子放在这个位置，可以确保图层正确
+        //PreDraw 分层：能量臂在遮罩下
         public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
             if (creativePipelines.Count > 0) {
                 spriteBatch.End();
@@ -219,14 +207,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 
             return true;
         }
-        //渲染钩子放在这个位置，可以确保图层正确
+        //PostDraw 分层：本体与 StarsShader 合成
         public override void PostDrawEverything(SpriteBatch spriteBatch) => DoRender((tp) => tp.RenderDraw(spriteBatch), spriteBatch);
-        /// <summary>
-        /// 渲染上帝管道的RT效果
-        /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="graphicsDevice"></param>
-        /// <param name="screenSwap"></param>
+
+        /// <summary>RT 缓存 + StarsShader 合成，防丢屏</summary>
         internal static void DoRender(Action<CreativeUEPipelineTP> func, SpriteBatch spriteBatch) {
             if (creativePipelines.Count == 0) {
                 return;
@@ -243,41 +227,37 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
             RenderTarget2D screenSwap = RenderHandleLoader.ScreenSwap;
 
-            //切换到原版的中间屏幕上，缓存原始画面
+            //缓存 screenTarget 到 swap
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
 
-            //切换成中间屏幕，开始绘制特效
+            //RT 上绘制管道遮罩
             graphicsDevice.SetRenderTarget(screenSwap);
-            graphicsDevice.Clear(Color.Transparent); //改为透明，避免干扰
-            //世界画布常用的开启设置
+            graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
                 , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-            //管道中间的纹理在这里被绘制上去，用作后面着色器处理的根据
+            //遮罩供着色器采样
             foreach (var creativePipeline in creativePipelines) {
                 func.Invoke(creativePipeline);
             }
             spriteBatch.End();
 
-            //切换到最终的实际屏幕对象上，开始覆盖绘制，这里先清空准备后续的覆盖
+            //回写 screenTarget：底图 + shader
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
-            //这里先把先前缓存的原始画面绘制上来作为底图
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
 
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            //开始特效绘制，设置着色器处理中间屏幕上面的管道纹理
             StarsShader.CurrentTechnique.Passes[0].Apply();
             StarsShader.Parameters["m"].SetValue(0.08f);
             StarsShader.Parameters["n"].SetValue(0.01f);
-            StarsShader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly);//传入游戏时间
-            StarsShader.Parameters["worldSize"].SetValue(Main.ScreenSize.ToVector2());//传入屏幕分辨率
-            //绘制特效覆盖上底图
+            StarsShader.Parameters["uTime"].SetValue(Main.GlobalTimeWrappedHourly);
+            StarsShader.Parameters["worldSize"].SetValue(Main.ScreenSize.ToVector2());
             Main.spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
             Main.spriteBatch.End();
         }

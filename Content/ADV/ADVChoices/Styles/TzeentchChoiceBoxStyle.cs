@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -6,25 +6,25 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 {
     /// <summary>
-    /// 奸奇魔法风格 - 变化之神的炫彩扭曲样式
+    /// 奸奇魔法选项样式
     /// </summary>
     internal class TzeentchChoiceBoxStyle : IChoiceBoxStyle
     {
-        //奸奇魔法动画参数
-        private float warpTimer = 0f;          //现实扭曲计时器
-        private float changeFlux = 0f;         //变化涌动计时器
-        private float arcanePhase = 0f;        //奥术相位
-        private float colorShift = 0f;         //色彩变换
-        private float chaosRipple = 0f;        //混沌涟漪
+        // 动画参数
+        private float warpTimer = 0f;          // 现实扭曲计时器
+        private float changeFlux = 0f;         // 变化涌动计时器
+        private float arcanePhase = 0f;        // 奥术相位
+        private float colorShift = 0f;         // 色彩变换
+        private float chaosRipple = 0f;        // 混沌涟漪
 
-        //粒子系统
+        // 粒子系统
         private readonly List<WarpFlame> warpFlames = new();
         private int warpFlameSpawnTimer = 0;
         private readonly List<MysticOrb> mysticOrbs = new();
         private int orbSpawnTimer = 0;
 
         public void Update(Rectangle panelRect, bool active, bool closing) {
-            //奸奇的时间是扭曲的，速度不一
+            // 非匀速步进
             warpTimer += 0.062f + (float)Math.Sin(changeFlux * 0.3f) * 0.015f;
             changeFlux += 0.041f;
             arcanePhase += 0.038f + (float)Math.Cos(warpTimer * 0.5f) * 0.012f;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             if (colorShift > MathHelper.TwoPi) colorShift -= MathHelper.TwoPi;
             if (chaosRipple > MathHelper.TwoPi) chaosRipple -= MathHelper.TwoPi;
 
-            //扭曲火焰生成
+            // 扭曲火焰生成
             warpFlameSpawnTimer++;
             if (active && !closing && warpFlameSpawnTimer >= 8 && warpFlames.Count < 18) {
                 warpFlameSpawnTimer = 0;
@@ -46,14 +46,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 warpFlames.Add(new WarpFlame(startPos));
             }
 
-            //更新扭曲火焰
+            // 更新扭曲火焰
             for (int i = warpFlames.Count - 1; i >= 0; i--) {
                 if (warpFlames[i].Update(panelRect)) {
                     warpFlames.RemoveAt(i);
                 }
             }
 
-            //神秘法球生成
+            // 神秘法球生成
             orbSpawnTimer++;
             if (active && !closing && orbSpawnTimer >= 40 && mysticOrbs.Count < 6) {
                 orbSpawnTimer = 0;
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 mysticOrbs.Add(new MysticOrb(startPos));
             }
 
-            //更新法球
+            // 更新法球
             for (int i = mysticOrbs.Count - 1; i >= 0; i--) {
                 if (mysticOrbs[i].Update(panelRect)) {
                     mysticOrbs.RemoveAt(i);
@@ -75,14 +75,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void Draw(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //扭曲的阴影效果
+            // 扭曲的阴影效果
             Rectangle shadow = panelRect;
             shadow.Offset(8, 10);
             float shadowWarp = (float)Math.Sin(warpTimer * 1.5f) * 3f;
             shadow.Offset((int)shadowWarp, 0);
             spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1), new Color(20, 0, 40) * (alpha * 0.7f));
 
-            //炫彩渐变背景
+            // 炫彩渐变背景
             int segments = 35;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -91,14 +91,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //奸奇标志性的蓝紫粉色调
+                // 蓝紫粉配色
                 float colorPhase = colorShift + t * MathHelper.Pi;
                 Color tzeentchBlue = new Color(20, 50, 180);
                 Color tzeentchPurple = new Color(140, 40, 200);
                 Color tzeentchPink = new Color(255, 80, 200);
                 Color tzeentchCyan = new Color(80, 200, 255);
 
-                //变化之神的色彩永不固定
+                // 色相随相位漂移
                 float shift1 = (float)Math.Sin(colorPhase) * 0.5f + 0.5f;
                 float shift2 = (float)Math.Sin(colorPhase * 1.3f + changeFlux) * 0.5f + 0.5f;
                 float shift3 = (float)Math.Sin(colorPhase * 0.7f + arcanePhase) * 0.5f + 0.5f;
@@ -114,25 +114,25 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), finalColor);
             }
 
-            //变化脉冲叠加层
+            // 变化脉冲叠加层
             float changePulse = (float)Math.Sin(changeFlux * 2.1f) * 0.5f + 0.5f;
             Color pulseOverlay = new Color(160, 80, 255) * (alpha * 0.18f * changePulse);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), pulseOverlay);
 
-            //绘制现实扭曲波纹
+            // 绘制现实扭曲波纹
             DrawWarpRipples(spriteBatch, panelRect, alpha * 0.75f);
 
-            //内发光
+            // 内发光
             float arcanePulse = (float)Math.Sin(arcanePhase * 1.7f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-8, -8);
             Color arcaneGlow = Color.Lerp(new Color(100, 150, 255), new Color(200, 100, 255), arcanePulse);
             spriteBatch.Draw(pixel, inner, new Rectangle(0, 0, 1, 1), arcaneGlow * (alpha * 0.15f * arcanePulse));
 
-            //绘制奸奇魔法边框
+            // 魔法边框
             DrawTzeentchFrame(spriteBatch, panelRect, alpha);
 
-            //绘制粒子
+            // 绘制粒子
             foreach (var orb in mysticOrbs) {
                 orb.Draw(spriteBatch, alpha * 0.85f);
             }
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void DrawChoiceBackground(SpriteBatch spriteBatch, Rectangle choiceRect, bool enabled, float hoverProgress, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //魔法色彩背景
+            // 魔法色彩背景
             float colorPhase = colorShift + (choiceRect.Y * 0.01f);
             Color magicBg1 = Color.Lerp(new Color(30, 20, 80), new Color(60, 40, 120), hoverProgress);
             Color magicBg2 = Color.Lerp(new Color(80, 40, 120), new Color(120, 60, 160), hoverProgress);
@@ -154,12 +154,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 
             spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
-            //魔法边框
+            // 魔法边框
             if (enabled && hoverProgress > 0.01f) {
                 Color magicEdge = GetEdgeColor(alpha);
                 DrawChoiceBorder(spriteBatch, choiceRect, magicEdge * (hoverProgress * 0.7f));
 
-                //魔法流光效果
+                // 魔法流光效果
                 float flowPhase = warpTimer * 2f + choiceRect.Y * 0.02f;
                 float flowX = choiceRect.X + ((float)Math.Sin(flowPhase) * 0.5f + 0.5f) * choiceRect.Width;
                 Color flowColor = Color.Lerp(
@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         }
 
         public Color GetEdgeColor(float alpha) {
-            //变幻的魔法色彩边框
+            // 变幻的魔法色彩边框
             Color c1 = new Color(150, 100, 255);
             Color c2 = new Color(255, 150, 255);
             Color c3 = new Color(100, 200, 255);
@@ -192,7 +192,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         }
 
         public Color GetTextGlowColor(float alpha, float hoverProgress) {
-            //魔法文字光晕
+            // 魔法文字光晕
             Color glow1 = Color.Lerp(
                 new Color(150, 100, 255),
                 new Color(255, 150, 255),
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         }
 
         public void DrawTitleDecoration(SpriteBatch spriteBatch, Vector2 titlePos, string title, float alpha) {
-            //奸奇魔法文字光晕
+            // 文字光晕
             Color nameGlow1 = Color.Lerp(
                 new Color(150, 100, 255),
                 new Color(255, 150, 255),
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         }
 
         public void DrawDivider(SpriteBatch spriteBatch, Vector2 start, Vector2 end, float alpha) {
-            //魔法渐变分隔线
+            // 魔法渐变分隔线
             Color startColor = Color.Lerp(
                 new Color(150, 100, 255),
                 new Color(255, 150, 255),
@@ -266,7 +266,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 float t = i / (float)rippleCount;
                 float baseY = rect.Y + 20 + t * (rect.Height - 40);
 
-                //现实扭曲幅度
+                // 现实扭曲幅度
                 float amplitude = 6f + (float)Math.Sin((chaosRipple + t * 1.5f) * 2.8f) * 4f;
                 float thickness = 1.8f;
                 float phase = warpTimer * 2.5f + t * MathHelper.TwoPi;
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                     float localPhase = phase + progress * MathHelper.TwoPi * 2.3f;
                     float warpY = baseY + (float)Math.Sin(localPhase) * amplitude;
 
-                    //添加次级扭曲
+                    // 添加次级扭曲
                     warpY += (float)Math.Cos(localPhase * 1.7f + changeFlux) * (amplitude * 0.3f);
 
                     Vector2 point = new(rect.X + 12 + progress * (rect.Width - 24), warpY);
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                         if (len > 0.01f) {
                             float rot = diff.ToRotation();
 
-                            //变幻的色彩
+                            // 变幻的色彩
                             float colorPhase = colorShift + progress + t;
                             Color c1 = new Color(100, 150, 255);
                             Color c2 = new Color(200, 100, 255);
@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         private void DrawTzeentchFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //外框
+            // 外框
             Color c1 = new Color(150, 100, 255);
             Color c2 = new Color(255, 150, 255);
             Color c3 = new Color(100, 200, 255);
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 4, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
             sb.Draw(pixel, new Rectangle(rect.Right - 4, rect.Y, 4, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
-            //内框发光
+            // 内框发光
             Rectangle inner = rect;
             inner.Inflate(-7, -7);
             Color innerGlow = Color.Lerp(c2, c1, pulse) * (alpha * 0.25f * pulse);
@@ -335,7 +335,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
-            //角落魔法符号
+            // 角落魔法符号
             DrawTzeentchSymbol(sb, new Vector2(rect.X + 14, rect.Y + 14), alpha * 0.95f);
             DrawTzeentchSymbol(sb, new Vector2(rect.Right - 14, rect.Y + 14), alpha * 0.95f);
         }
@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float size = 7f;
 
-            //变化之神的符号
+            // 角落符号
             Color symbolColor = Color.Lerp(
                 new Color(200, 150, 255),
                 new Color(255, 150, 255),
@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                     new Vector2(0.5f, 0.5f), new Vector2(size * 1.4f, size * 0.35f), SpriteEffects.None, 0f);
             }
 
-            //中心点
+            // 中心点
             sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), symbolColor * 0.8f, 0f,
                 new Vector2(0.5f, 0.5f), new Vector2(size * 0.5f, size * 0.5f), SpriteEffects.None, 0f);
         }
@@ -428,7 +428,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 Life++;
                 float t = Life / MaxLife;
 
-                //扭曲的上升轨迹
+                // 扭曲的上升轨迹
                 Pos.Y -= RiseSpeed * (0.8f + (float)Math.Sin(t * MathHelper.Pi) * 0.4f);
                 Pos.X += (float)Math.Sin(Life * 0.08f + Seed) * Drift;
                 Rotation += RotationSpeed;
@@ -446,7 +446,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 float fade = (float)Math.Sin(t * Math.PI);
                 float scale = Size * (1f + (float)Math.Sin((Life + Seed * 25f) * 0.15f) * 0.2f);
 
-                //奸奇魔法火焰颜色：蓝紫粉混合
+                // 火焰蓝紫粉配色
                 Color c1 = new Color(100, 150, 255);
                 Color c2 = new Color(200, 100, 255);
                 Color c3 = new Color(255, 150, 255);
@@ -459,10 +459,10 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 
                 Color flameGlow = Color.Lerp(c2, c1, t) * (alpha * 0.5f * fade);
 
-                //外层光晕
+                // 外层光晕
                 sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), flameGlow, 0f,
                     new Vector2(0.5f, 0.5f), scale * 2.8f, SpriteEffects.None, 0f);
-                //内层核心
+                // 内层核心
                 sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), flameCore, Rotation,
                     new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
             }
@@ -492,14 +492,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 Life++;
                 Phase += 0.08f;
 
-                //法球漂浮
+                // 法球漂浮
                 Vector2 drift = new Vector2(
                     (float)Math.Sin(Phase + Seed) * 0.5f,
                     (float)Math.Cos(Phase * 1.5f + Seed * 1.4f) * 0.4f
                 );
                 Pos += Velocity + drift;
 
-                //边界反弹
+                // 边界反弹
                 if (Pos.X < bounds.X + 25f || Pos.X > bounds.Right - 25f) {
                     Velocity.X *= -0.8f;
                 }
@@ -520,7 +520,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 float pulse = (float)Math.Sin(Phase * 2f) * 0.5f + 0.5f;
                 float scale = Size * (0.7f + pulse * 0.5f);
 
-                //法球颜色
+                // 法球颜色
                 Color orbCore = Color.Lerp(
                     new Color(180, 150, 255),
                     new Color(255, 180, 255),
@@ -533,13 +533,13 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                     pulse
                 ) * (alpha * 0.4f * fade);
 
-                //外层光晕
+                // 外层光晕
                 sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), orbGlow, 0f,
                     new Vector2(0.5f, 0.5f), scale * 3.5f, SpriteEffects.None, 0f);
-                //内层核心
+                // 内层核心
                 sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), orbCore, 0f,
                     new Vector2(0.5f, 0.5f), scale * 1.5f, SpriteEffects.None, 0f);
-                //最内层
+                // 最内层
                 sb.Draw(pixel, Pos, new Rectangle(0, 0, 1, 1), Color.White * (alpha * 0.5f * fade), 0f,
                     new Vector2(0.5f, 0.5f), scale * 0.5f, SpriteEffects.None, 0f);
             }

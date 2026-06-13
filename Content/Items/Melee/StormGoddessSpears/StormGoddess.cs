@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
-    /// <summary>
-    /// 风暴女神
-    /// </summary>
+    /// 风暴女神召唤体
     internal class StormGoddess : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "StormGoddess";
@@ -40,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private ref float AnimationFrame => ref Projectile.localAI[0];
         private ref float GlowIntensity => ref Projectile.localAI[1];
 
-        //运动系统 - Boid算法参数
+        //Boid 运动参数
         private Vector2 velocity = Vector2.Zero;
         private Vector2 acceleration = Vector2.Zero;
         private Vector2 targetPosition = Vector2.Zero;
@@ -59,8 +57,8 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private float scale = 1f;
         private float rotation = 0f;
         private float targetRotation = 0f;
-        private int facingDirection = 1; //朝向：1=右，-1=左
-        private float directionSmoothTimer = 0f; //朝向平滑计时器
+        private int facingDirection = 1; //朝向 1右 -1左
+        private float directionSmoothTimer = 0f; //朝向平滑
 
         //攻击系统
         private NPC currentTarget = null;
@@ -72,7 +70,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private float particleTimer = 0f;
         private List<LightningPrepareEffect> lightningEffects = new List<LightningPrepareEffect>();
 
-        //内部类：闪电蓄力特效
+        //闪电蓄力特效
         private class LightningPrepareEffect
         {
             public Vector2 Position;
@@ -163,12 +161,10 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 状态AI
 
-        /// <summary>
         /// 出现状态
-        /// </summary>
         private void AppearingAI() {
             if (StateTimer == 1) {
-                //初始化位置：玩家上方
+                //初始化于玩家上方
                 Projectile.Center = Owner.Center + new Vector2(0, -400);
                 Projectile.alpha = 255;
                 scale = 0.5f;
@@ -178,7 +174,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.7f, Pitch = -0.3f }, Projectile.Center);
             }
 
-            //优雅下降
+            //缓降
             float progress = StateTimer / 60f;
             float easeProgress = CWRUtils.EaseOutCubic(progress);
 
@@ -208,15 +204,13 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
         /// 跟随状态
-        /// </summary>
         private void FollowingAI() {
-            //根据玩家朝向调整跟随位置，让女神更自然地跟随
+            //随玩家朝向调跟随位
             float offsetX = Owner.direction * 100;
             float offsetY = -100;
 
-            //如果女神在玩家后方，稍微调整位置让她能看到玩家
+            //后方前移便于看见玩家
             if (Owner.direction == 1 && Projectile.Center.X < Owner.Center.X ||
                 Owner.direction == -1 && Projectile.Center.X > Owner.Center.X) {
                 offsetX *= 0.5f; //减小距离
@@ -230,12 +224,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             float distance = desired.Length();
 
             if (distance < ArriveDistance) {
-                //到达行为：减速
+                //到达减速
                 float m = MathHelper.Clamp(distance / ArriveDistance, 0, 1);
                 desired = desired.SafeNormalize(Vector2.Zero) * MaxSpeed * m;
             }
             else {
-                //寻找行为：全速
+                //寻路全速
                 desired = desired.SafeNormalize(Vector2.Zero) * MaxSpeed;
             }
 
@@ -252,7 +246,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 }
             }
 
-            //轻微的环绕运动
+            //轻微环绕
             if (distance < 50f) {
                 State = GoddessState.Idle;
                 StateTimer = 0;
@@ -260,14 +254,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
         /// 待机状态
-        /// </summary>
         private void IdleAI() {
-            //环绕玩家，根据玩家朝向调整
+            //环绕玩家(随朝向)
             float orbitAngle = Main.GlobalTimeWrappedHourly * IdleOrbitSpeed;
 
-            //让女神在玩家面前环绕
+            //面前环绕
             float xOffset = MathF.Cos(orbitAngle) * IdleOrbitRadius * Owner.direction;
             float yOffset = MathF.Sin(orbitAngle) * 60 - 80;
 
@@ -301,9 +293,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 准备攻击状态 - 蓄力动画
-        /// </summary>
+        /// 准备攻击蓄力
         private void PrepareStrikeAI() {
             if (currentTarget == null || !currentTarget.active) {
                 State = GoddessState.Following;
@@ -357,9 +347,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
         /// 攻击状态
-        /// </summary>
         private void StrikingAI() {
             if (currentTarget == null || !currentTarget.active) {
                 State = GoddessState.Returning;
@@ -413,9 +401,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 返回状态，回到玩家身边
-        /// </summary>
+        /// 返回玩家身边
         private void ReturningAI() {
             targetPosition = Owner.Center + new Vector2(Owner.direction * 80, -100);
 
@@ -440,16 +426,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 运动系统
 
-        /// <summary>
         /// 应用力
-        /// </summary>
         private void ApplyForce(Vector2 force) {
             acceleration += force;
         }
 
-        /// <summary>
         /// 更新运动
-        /// </summary>
         private void UpdateMovement() {
             //更新速度
             velocity += acceleration;
@@ -471,9 +453,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             rotation = MathHelper.Lerp(rotation, targetRotation, 0.2f);
         }
 
-        /// <summary>
         /// 更新朝向
-        /// </summary>
         private void UpdateFacingDirection() {
             int desiredDirection = facingDirection;
 
@@ -481,44 +461,43 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 case GoddessState.Following:
                 case GoddessState.Idle:
                 case GoddessState.Returning:
-                    //跟随/待机/返回时，面向玩家
+                    //跟随时面向玩家
                     if (Projectile.Center.X < Owner.Center.X - 30f) {
-                        desiredDirection = 1; //玩家在右边，面向右
+                        desiredDirection = 1;
                     }
                     else if (Projectile.Center.X > Owner.Center.X + 30f) {
-                        desiredDirection = -1; //玩家在左边，面向左
+                        desiredDirection = -1;
                     }
                     break;
 
                 case GoddessState.PrepareStrike:
                 case GoddessState.Striking:
-                    //攻击时，面向目标
+                    //攻击时面向目标
                     if (currentTarget != null && currentTarget.active) {
                         if (Projectile.Center.X < currentTarget.Center.X) {
-                            desiredDirection = 1; //目标在右边
+                            desiredDirection = 1;
                         }
                         else {
-                            desiredDirection = -1; //目标在左边
+                            desiredDirection = -1;
                         }
                     }
                     break;
 
                 case GoddessState.Appearing:
-                    //出现时，面向玩家方向
+                    //出现时面向玩家
                     desiredDirection = Owner.direction;
                     break;
             }
 
-            //如果需要改变方向，添加平滑过渡
+            //延迟翻转防抖动(5帧)
             if (desiredDirection != facingDirection) {
                 directionSmoothTimer++;
 
-                //延迟翻转，避免频繁抖动（5帧后翻转）
                 if (directionSmoothTimer > 5) {
                     facingDirection = desiredDirection;
                     directionSmoothTimer = 0;
 
-                    //翻转时播放轻微音效
+                    //翻转轻音效
                     if (State != GoddessState.Appearing && !VaultUtils.isServer) {
                         SoundEngine.PlaySound(SoundID.Item1 with {
                             Volume = 0.1f,
@@ -531,13 +510,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 directionSmoothTimer = 0;
             }
 
-            //更新 Projectile.direction 供绘制使用
+            //同步 Projectile.direction 供绘制
             Projectile.direction = facingDirection;
         }
 
-        /// <summary>
-        /// 限制向量大小
-        /// </summary>
+        /// 向量限幅
         private Vector2 ClampMagnitude(Vector2 vector, float maxLength) {
             float length = vector.Length();
             if (length > maxLength) {
@@ -550,9 +527,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 攻击系统
 
-        /// <summary>
-        /// 是否应该攻击
-        /// </summary>
+        /// 是否应攻击
         private bool ShouldAttack() {
             if (EntropyCore.IsHeartOfStorm(Owner)) {
                 return true;//始终攻击
@@ -561,25 +536,21 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             return Owner.itemAnimation > 0 && Owner.HeldItem.type == ModContent.ItemType<StormGoddessSpear>();
         }
 
-        /// <summary>
-        /// 寻找最近的敌人
-        /// </summary>
+        /// 最近敌人
         private NPC FindNearestEnemy() {
             return Projectile.Center.FindClosestNPC(1600, true, true);
         }
 
-        /// <summary>
         /// 释放风暴闪电
-        /// </summary>
         private void ReleaseStormLightning() {
             if (currentTarget == null || !Projectile.IsOwnedByLocalPlayer()) return;
 
-            //主闪电（粗壮威猛）
+            //主闪电(加粗)
             Vector2 lightningStart = Projectile.Center + new Vector2(0, 30);
             Vector2 direction = (currentTarget.Center - lightningStart).SafeNormalize(Vector2.UnitY);
 
-            //女神闪电：ai2编码 = 颜色 + 2000（表示140%宽度 + 女神标记）
-            int goddessAI2 = 1 + 2400; //颜色1 + 240%(2.4倍宽度，包含1.3倍女神加成)
+            //女神闪电 ai2=颜色+2400(2.4倍宽+女神标记)
+            int goddessAI2 = 1 + 2400;
 
             float baseDmg = Owner.GetWeaponDamage(Owner.HeldItem);
             if (EntropyCore.IsHeartOfStorm(Owner)) {
@@ -604,7 +575,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 mainLightningProj.isGoddessLightning = true;
             }
 
-            //辅助闪电（设计感分布 - 螺旋下降）
+            //辅助闪电螺旋分布
             int extraCount = Main.rand.Next(3, 5);
             for (int i = 0; i < extraCount; i++) {
                 //螺旋分布，从外向内
@@ -621,7 +592,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 Vector2 extraTarget = currentTarget.Center + Main.rand.NextVector2Circular(60, 60);
                 Vector2 extraDir = (extraTarget - extraStart).SafeNormalize(Vector2.UnitY);
 
-                //女神辅助闪电：ai2 = 颜色 + 不追踪 + 较粗（180%）
+                //女神辅助闪电 ai2=颜色+不追踪+180%宽
                 int extraAI2 = 1 + 100 + 1800;
 
                 Projectile extraLightning = Projectile.NewProjectileDirect(
@@ -647,9 +618,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             SpawnThunderRingEffect();
         }
 
-        /// <summary>
-        /// 生成雷暴环绕特效
-        /// </summary>
+        /// 雷暴环绕特效
         private void SpawnThunderRingEffect() {
             if (VaultUtils.isServer || currentTarget == null) return;
 
@@ -682,9 +651,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 粒子特效
 
-        /// <summary>
-        /// 生成出现粒子
-        /// </summary>
+        /// 出现粒子
         private void SpawnAppearParticles() {
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(32, 32);
             Vector2 particleVel = Main.rand.NextVector2Circular(3f, 3f);
@@ -697,18 +664,14 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             ).Configure(Main.rand.Next(15, 25), opacity: 1.2f, squishStrenght: 1.8f, hueShift: 0f);
         }
 
-        /// <summary>
-        /// 生成待机粒子
-        /// </summary>
+        /// 待机粒子
         private void SpawnIdleParticles() {
             Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(40, 40);
 
             PRTLoader.NewParticle<PRT_Spark>(particlePos, Main.rand.NextVector2Circular(2f, 2f), new Color(200, 230, 255), 0.8f).Configure(false, Main.rand.Next(10, 20), Owner);
         }
 
-        /// <summary>
-        /// 生成蓄力粒子
-        /// </summary>
+        /// 蓄力粒子
         private void SpawnPrepareParticles() {
             //环绕粒子
             for (int i = 0; i < 2; i++) {
@@ -725,9 +688,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 生成攻击粒子
-        /// </summary>
+        /// 攻击粒子
         private void SpawnStrikeParticles() {
             for (int i = 0; i < 3; i++) {
                 Vector2 particlePos = Projectile.Center + Main.rand.NextVector2Circular(50, 50);
@@ -742,9 +703,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 创建闪电蓄力特效
-        /// </summary>
+        /// 闪电蓄力特效
         private void CreateLightningPrepareEffect() {
             if (currentTarget == null) return;
 
@@ -757,9 +716,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             });
         }
 
-        /// <summary>
         /// 更新闪电特效
-        /// </summary>
         private void UpdateLightningEffects() {
             for (int i = lightningEffects.Count - 1; i >= 0; i--) {
                 var effect = lightningEffects[i];
@@ -775,9 +732,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 动画系统
 
-        /// <summary>
         /// 更新动画
-        /// </summary>
         private void UpdateAnimation() {
             //更新帧
             AnimationFrame += animationSpeed;
@@ -803,9 +758,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 渲染
 
-        /// <summary>
         /// 更新特效
-        /// </summary>
         private void UpdateEffects() {
             //光源
             float lightIntensity = GlowIntensity * 0.8f;
@@ -871,9 +824,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             return false;
         }
 
-        /// <summary>
         /// 绘制残影
-        /// </summary>
         private void DrawAfterimages(SpriteBatch sb, Texture2D texture, Rectangle frameRect, Vector2 origin, Color lightColor, SpriteEffects spriteEffects) {
             for (int i = 1; i < Projectile.oldPos.Length && i < 8; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
@@ -896,9 +847,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
         /// 绘制闪电蓄力特效
-        /// </summary>
         private void DrawLightningPrepareEffects(SpriteBatch sb) {
             Texture2D glowTex = CWRAsset.StarTexture.Value;
 

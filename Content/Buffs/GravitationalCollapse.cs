@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Buffs
             npc.velocity *= 0.96f;
 
             if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
-                //自外向内坠落的粒子，体现吸入感
+                //外缘向内坠落粒子
                 Vector2 offset = Main.rand.NextVector2CircularEdge(npc.width, npc.height) * 1.5f;
                 Vector2 vel = -offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 4f);
                 PRTLoader.NewParticle<PRT_Spark>(npc.Center + offset, vel, Color.MediumPurple, Main.rand.NextFloat(0.5f, 1f)).Configure(false, 12);

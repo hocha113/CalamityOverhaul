@@ -4,10 +4,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.PrimePlasamas
 {
     /// <summary>
-    /// 原型等离子皮下护甲的玩家组件
-    /// <br/>原版玩家不存在直接的"击退抗性"字段，因此通过 <see cref="ModPlayer.ModifyHurt"/>
-    /// 在受击瞬间缩放 <c>modifiers.Knockback</c> 来达成与击退抗性等价的效果
-    /// <br/>装备状态自查，无需在装备/卸载事件中显式注册
+    /// 原型等离子 ModPlayer，ModifyHurt 缩放击退
+    /// <br/>modifiers.Knockback *= (1 - KnockbackResistanceBonus)，乘性叠加
     /// </summary>
     internal class PrimePlasamaPlayer : ModPlayer
     {

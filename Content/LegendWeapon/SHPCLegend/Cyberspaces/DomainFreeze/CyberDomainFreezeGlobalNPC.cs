@@ -7,11 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>
-    /// 赛博领域冻结NPC绘制拦截器
-    /// <br/>在PreDraw中切换SpriteBatch到Immediate模式并应用冻结故障+六角覆盖着色器
-    /// <br/>让原版绘制逻辑在着色器生效状态下执行，PostDraw中恢复
-    /// </summary>
+    /// <summary>冻结 NPC PreDraw 着色器</summary>
     internal class CyberDomainFreezeGlobalNPC : GlobalNPC
     {
         private static bool _shaderActive;
@@ -64,9 +60,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
         }
 
-        /// <summary>
-        /// 在被冻结实体周围绘制六角能量罩覆盖层（NPC和弹幕共用）
-        /// </summary>
+        /// <summary>冻结实体六角能量罩覆盖</summary>
         internal static void DrawCageOverlay(SpriteBatch spriteBatch, Vector2 worldCenter, Vector2 screenPos,
             float progress, float seed, int entityWidth, int entityHeight) {
             Effect cageShader = CyberDomainFreezeAssets.CyberFreezeCage;
@@ -120,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
 
         public override bool PreAI(NPC npc) {
-            //写在这里提醒自己，这个钩子的优先级不够高，导致可能无法很好的处理停滞效果等ai修改拦截，目前已经在PreAIByOverNPC函数中处理，由TimeFreezeEntities调用
+            //PreAI 优先级不足，停滞改由 PreAIByOverNPC 处理
             return true;
         }
 

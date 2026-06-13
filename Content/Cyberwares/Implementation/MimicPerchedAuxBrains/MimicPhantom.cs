@@ -8,9 +8,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrains
 {
     /// <summary>
-    /// 拟态副脑产生的幻象弹幕
-    /// 默认环绕主体飘行，触发后冲向袭击者并爆炸
-    /// 视觉上以玩家克隆形式呈现，带有诡谲色调
+    /// 拟态幻象弹幕，玩家克隆绘制
+    /// <br/>Orbit 环绕→Rush 冲撞→Explode 自爆；localAI[0]=状态，ai[0]=槽位
     /// </summary>
     internal class MimicPhantom : ModProjectile
     {
@@ -21,37 +20,25 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             Explode,
         }
 
-        /// <summary>
-        /// 幻象槽位索引(0~3)，决定环绕角度，存储于ai[0]
-        /// </summary>
+        /// <summary>槽位索引 0~3，ai[0]</summary>
         public int PhantomSlot => (int)Projectile.ai[0];
 
-        /// <summary>
-        /// 当前幻象状态，存储于localAI[0]，仅本地有效
-        /// </summary>
+        /// <summary>幻象状态，localAI[0] 仅本地</summary>
         public PhantomState State {
             get => (PhantomState)Projectile.localAI[0];
             set => Projectile.localAI[0] = (float)value;
         }
 
-        /// <summary>
-        /// 冲撞目标NPC索引，无目标时为-1
-        /// </summary>
+        /// <summary>冲撞目标 NPC，-1 无</summary>
         public int RushTargetNpc { get; private set; } = -1;
 
-        /// <summary>
-        /// 冲撞缓存终点位置
-        /// </summary>
+        /// <summary>冲撞终点缓存</summary>
         public Vector2 RushTargetPosition;
 
-        /// <summary>
-        /// 状态计时器
-        /// </summary>
+        /// <summary>状态计时</summary>
         public int StateTimer;
 
-        /// <summary>
-        /// 用于克隆绘制的复用Player实例
-        /// </summary>
+        /// <summary>克隆绘制复用 Player</summary>
         private static Player phantomDrawPlayer;
 
         public override string Texture => CWRConstant.Placeholder;
@@ -74,9 +61,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             Projectile.DamageType = DamageClass.Generic;
         }
 
-        /// <summary>
-        /// 根据槽位与时间相位计算环绕主体的偏移坐标
-        /// </summary>
+        /// <summary>槽位与时间计算椭圆轨道偏移</summary>
         public static Vector2 GetOrbitOffset(int slot, float time, float radius) {
             float baseAngle = MathHelper.TwoPi * slot / MimicPerchedAuxBrainPlayer.PhantomCount;
             float angle = baseAngle + time * 0.02f;
@@ -84,9 +69,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             return new Vector2((float)Math.Cos(angle) * radius, (float)Math.Sin(angle) * radius * 0.55f);
         }
 
-        /// <summary>
-        /// 切换为冲撞状态，目标位置可由NPC或固定坐标提供
-        /// </summary>
+        /// <summary>切换 Rush，伤害=敌怪攻击力换算</summary>
         public void BeginRush(Vector2 targetCenter, int targetNpcIndex, int damage) {
             State = PhantomState.Rush;
             RushTargetPosition = targetCenter;
@@ -127,9 +110,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             }
         }
 
-        /// <summary>
-        /// 环绕主体的飘行逻辑
-        /// </summary>
+        /// <summary>环绕飘行，Orbit 态 friendly=false</summary>
         private void UpdateOrbit(Player owner) {
             if (MimicPerchedAuxBrainPlayer.GetEquipped(owner) is not MimicPerchedAuxBrain equipped) {
                 Projectile.Kill();
@@ -151,9 +132,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             Projectile.damage = 0;
         }
 
-        /// <summary>
-        /// 冲向袭击者的逻辑
-        /// </summary>
+        /// <summary>冲向袭击者，距&lt;32 或 StateTimer&gt;90 引爆</summary>
         private void UpdateRush(Player owner) {
             //目标NPC仍存活时持续刷新目标位置
             if (RushTargetNpc >= 0 && RushTargetNpc < Main.maxNPCs) {
@@ -188,9 +167,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             }
         }
 
-        /// <summary>
-        /// 切换至爆炸阶段
-        /// </summary>
+        /// <summary>切换 Explode，扩张 160×160 判定盒</summary>
         private void EnterExplode() {
             State = PhantomState.Explode;
             StateTimer = 0;
@@ -218,9 +195,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             }
         }
 
-        /// <summary>
-        /// 爆炸阶段持续数帧用于命中检测，结束后销毁
-        /// </summary>
+        /// <summary>爆炸阶段 4 帧后销毁</summary>
         private void UpdateExplode() {
             if (StateTimer > 4) {
                 Projectile.Kill();

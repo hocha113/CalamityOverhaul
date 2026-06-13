@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 视觉过载：过载目标光学设备使其致盲
-    /// </summary>
+    /// <summary>视觉过载，致盲</summary>
     internal class OpticOverload : QuickHackDef
     {
         public override void SetDefaults() {
@@ -22,16 +20,16 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
             EmitApplyParticles(npc);
-            //群组扩散涉及向 HackEffectTracker 注册新效果，仅在施法端进行
+            //群组扩散仅施法端注册
             if (!HackTimeNetSync.IsRemoteApply) {
-                //群组扩散，光学过载会令蠕虫所有体节同时失明
+                //群组扩散至蠕虫体节
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitApplyParticles);
             }
             return true;
         }
 
-        //初始爆发粒子，抽出复用给群组成员
+        //初始爆发粒子，群组成员复用
         private static void EmitApplyParticles(NPC npc) {
             //明亮白色闪光爆发
             for (int i = 0; i < 12; i++) {

@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 诅咒火鱼技能，喷射诅咒火焰
-    /// </summary>
+    /// <summary>诅咒火鱼技能，周期喷射诅咒火焰</summary>
     internal class FishCursed : FishSkill
     {
         public override int UnlockFishID => ItemID.Cursedfish;
@@ -106,9 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 全局弹幕钩子，添加诅咒火焰效果
-    /// </summary>
+    /// <summary>全局钩子，为 Halibut 攻击附加诅咒火 debuff</summary>
     internal class FishCursedGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -228,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0.3f * lightIntensity);
         }
 
-        //燃烧状态AI
+        //燃烧 tick
         private void BurningPhaseAI() {
             //热力上升效果
             Projectile.velocity.Y += HeatRise * 0.5f;
@@ -270,7 +266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //消散状态AI
+        //消散 tick
         private void FadingPhaseAI() {
             //快速消散
             Projectile.alpha += 12;
@@ -687,7 +683,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0
                 );
 
-                //热力扭曲效果-额外光晕
+                //额外光晕
                 if (particle.HeatIntensity > 0.8f) {
                     Color heatColor = new Color(180, 255, 120) * particle.Opacity * 0.3f;
                     sb.Draw(

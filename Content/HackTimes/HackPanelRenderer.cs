@@ -7,61 +7,56 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇入面板渲染器(赛博朋克2077风格)
-    /// <br/>选中目标后协议条目从屏幕右侧依次飞入，无边框侧栏
-    /// <br/>叠加多层动画：CRT扫描线、色散分离、电路连接树、背景噪波等动态效果
-    /// <br/>基于UI锚点和屏幕坐标
-    /// </summary>
+    /// <summary>骇入面板渲染器，协议条目右侧飞入</summary>
     internal class HackPanelRenderer
     {
-        //每个槽位的飞入进度(0到1)
+        //槽位飞入进度 0..1
         private float[] slotFlyIn;
-        //每个槽位的悬停动画值
+        //槽位悬停动画
         private float[] slotHoverAnim;
-        //每个槽位的故障动画随机种子
+        //槽位故障种子
         private float[] slotGlitchSeed;
-        //各槽位的实际绘制矩形（用于悬停检测）
+        //槽位绘制矩形，悬停检测用
         private Rectangle[] slotRects;
-        //当前悬停的槽位索引
+        //悬停槽位索引
         private int hoveredSlot = -1;
-        //当前是否有悬停槽位（供外部查询）
+        //是否有悬停槽位
         public bool HasHoveredSlot => hoveredSlot >= 0;
-        //全局计时器
+        //全局计时
         private float timer;
         //是否显示
         private bool visible;
-        //上传队列渲染器引用
+        //上传队列引用
         internal HackQueueRenderer Queue;
-        //列表展开计时(秒)，Show()时重置
+        //列表展开计时，Show 时重置
         private float revealTime;
-        //全局故障带Y坐标（自顶向下扫描的横条，带色偏效果）
+        //故障带 Y 坐标
         private float glitchBandY;
-        //故障带冷却计时
+        //故障带冷却
         private float glitchBandCooldown;
-        //当前面板显示的目标类型
+        //当前目标类型
         private HackTargetKind currentTargetKind;
-        //过滤后的协议索引映射（面板槽位→QuickHackDef全局索引）
+        //槽位到协议全局索引映射
         private readonly List<int> filteredIndices = [];
-        //面板显示的协议数量（过滤后）
+        //过滤后协议数量
         private int displayCount;
 
-        //===== 条目排版常量 =====
+        //条目排版常量
         private const float ItemWidth = 420f;
         private const float ItemHeight = 78f;
         private const float ItemGap = 5f;
         private const float RightMargin = 36f;
-        //左侧斜切宽度（平行四边形的斜角效果）
+        //左侧斜切宽度
         private const float SlashWidth = 22f;
-        //电路连接树距离条目左边缘的偏移
+        //电路树左偏移
         private const float TrunkOffsetX = 56f;
-        //首个条目出现前的基础延迟(秒)
+        //首条目前延迟（秒）
         private const float BaseEntryDelay = 0.2f;
-        //每个条目之间的飞入间隔(秒)
+        //条目飞入间隔（秒）
         private const float EntryStagger = 0.07f;
-        //协议列表整体下移偏移，避免RAM弧形HUD遮挡
+        //列表下移，避让 RAM HUD
         private const float TopPadding = 60f;
-        //===== 字体尺寸 =====
+        //字体尺寸
         private static float FontName => 0.92f;
         private static float FontDesc => 0.74f;
         private static float FontIndex => 0.52f;
@@ -97,7 +92,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public void Hide() {
             visible = false;
             hoveredSlot = -1;
-            //队列生命周期已独立于面板，退出时不清空，由CWRWorld全局驱动上传和消费
+            //队列生命周期独立于面板，CWRWorld 全局驱动
         }
 
         public void CancelUpload() {
@@ -127,15 +122,15 @@ namespace CalamityOverhaul.Content.HackTimes
                 if (slotFlyIn[i] > 0.995f) slotFlyIn[i] = 1f;
             }
 
-            //故障带更新（自顶向下的快速横扫，带色偏效果）
+            //故障带下移
             glitchBandCooldown -= 0.016f;
             if (glitchBandCooldown <= 0f) {
-                glitchBandY += 600f * 0.016f; //匀速下移
+                glitchBandY += 600f * 0.016f; //匀速
                 float totalH = displayCount * (ItemHeight + ItemGap);
                 float startY = (Main.screenHeight - totalH) * 0.5f + TopPadding;
                 if (glitchBandY > startY + totalH + 50f) {
                     glitchBandY = startY - 50f;
-                    glitchBandCooldown = 2f + Main.rand.NextFloat() * 3f; //随机间隔
+                    glitchBandCooldown = 2f + Main.rand.NextFloat() * 3f; //随机冷却
                 }
             }
 
@@ -149,7 +144,7 @@ namespace CalamityOverhaul.Content.HackTimes
             for (int i = 0; i < slotRects.Length; i++) {
                 if (slotFlyIn[i] < 0.8f) continue;
                 if (slotRects[i].Contains(mx, my)) {
-                    //禁用状态的槽位不响应悬停
+                    //禁用槽位不响应悬停
                     int globalIdx = GetGlobalIndex(i);
                     var hack = QuickHackDef.GetByIndex(globalIdx);
                     var qs = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
@@ -169,7 +164,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //面板槽位索引→QuickHackDef全局索引
+        //槽位索引到协议全局索引
         private int GetGlobalIndex(int displaySlot) {
             if (displaySlot >= 0 && displaySlot < filteredIndices.Count)
                 return filteredIndices[displaySlot];
@@ -230,7 +225,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 背景噪波纹理
 
-        //在条目列表区域背后画微弱的水平噪波纹理，增加CRT质感
+        //背景水平噪波
         private void DrawAmbientNoise(SpriteBatch sb, Texture2D px, float alpha) {
             bool anyVisible = false;
             for (int i = 0; i < slotFlyIn.Length; i++) {
@@ -245,7 +240,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float regionH = totalH + 20f;
 
             float noiseAlpha = alpha * 0.025f;
-            //每隔几个像素画一条水平线，亮度随时间微变
+            //水平噪波线
             for (int dy = 0; dy < (int)regionH; dy += 3) {
                 float seed = dy * 0.73f + timer * 8f;
                 float brightness = MathF.Sin(seed) * 0.5f + 0.5f;
@@ -259,7 +254,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 故障色偏带
 
-        //自顶向下横扫的故障带，水平色偏+亮度异常
+        //故障色偏带
         private void DrawGlitchBand(SpriteBatch sb, Texture2D px, float alpha) {
             if (glitchBandCooldown > 0f) return;
 
@@ -268,7 +263,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float baseX = Main.screenWidth - RightMargin - ItemWidth - TrunkOffsetX - 10;
             float endX = Main.screenWidth - RightMargin + 5;
 
-            //主色偏带（主色条）
+            //主色偏带
             sb.Draw(px, new Rectangle((int)(baseX + 3), (int)glitchBandY, (int)(endX - baseX), (int)bandH),
                 new Rectangle(0, 0, 1, 1), HackTheme.Accent * bandAlpha);
             //偏移红色伪影
@@ -403,7 +398,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 float hover = slotHoverAnim[i];
                 float y = startY + i * (ItemHeight + ItemGap);
 
-                //禁用状态：RAM不足或该协议已在队列中，抑制悬停展开
+                //RAM不足或已入队则禁用
                 QueueSlotState queueState = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
                 bool slotDisabled = !RamSystem.CanAfford(hack.RamCost)
                     || queueState != QueueSlotState.None;
@@ -441,7 +436,7 @@ namespace CalamityOverhaul.Content.HackTimes
             bool isDisabled = !RamSystem.CanAfford(hack.RamCost)
                 || isUploading || isQueued;
 
-            //=== 背景（双层渐变） ===
+            //背景
             Color bgColor = Color.Lerp(HackTheme.BgSlot, HackTheme.BgSlotHover, hover * 0.6f);
             if (isDisabled) {
                 //禁用时背景压暗并带红色偏移
@@ -468,15 +463,15 @@ namespace CalamityOverhaul.Content.HackTimes
             //斜角遮罩
             DrawSlashCut(sb, px, rect, alpha);
 
-            //=== CRT扫描线叠加层 ===
+            //CRT 扫描线
             DrawCRTOverlay(sb, px, rect, alpha * 0.05f);
 
-            //=== 内部顶部线高光（模拟光泽） ===
+            //顶边高光
             Color highlightLine = Color.Lerp(HackTheme.Border, HackTheme.Accent, hover * 0.3f);
             sb.Draw(px, new Rectangle(rect.X + (int)SlashWidth + 4, rect.Y + 1, rect.Width - (int)SlashWidth - 8, 1),
                 new Rectangle(0, 0, 1, 1), highlightLine * (alpha * 0.18f));
 
-            //=== 左侧色条（加粗+呼吸脉动+辉光） ===
+            //左侧色条
             Color catColor = HackTheme.CategoryColor(hack.Category);
             //禁用时色条变为暗红/灰
             if (isDisabled) {
@@ -507,12 +502,12 @@ namespace CalamityOverhaul.Content.HackTimes
                     0, glow.Size() / 2, new Vector2(0.06f, rect.Height / 35f), SpriteEffects.None, 0);
             }
 
-            //=== 分类符号（色条旁的小标识符） ===
+            //分类符号
             string catSymbol = HackTheme.CategorySymbol(hack.Category);
             Color symColor = catColor * (alpha * (0.35f + hover * 0.3f));
             Utils.DrawBorderString(sb, catSymbol, new Vector2(barX + 8, rect.Y + rect.Height * 0.5f - 6), symColor, 0.40f);
 
-            //=== 扫描线（悬停/上传/排队中时横扫） ===
+            //扫描线
             if (hover > 0.1f || isUploading || isQueued || HackTime.InfiniteHack) {
                 float scanSpeed = HackTime.InfiniteHack ? 3.5f : isUploading ? 2.5f : 1.8f;
                 float scanAlpha = HackTime.InfiniteHack ? 0.35f : isUploading ? 0.3f : isQueued ? 0.15f : hover * 0.22f;
@@ -520,7 +515,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 DrawScanLine(sb, px, rect, scanPos, alpha * scanAlpha);
             }
 
-            //=== 边框层 ===
+            //边框
             Color borderCol;
             if (isDisabled) {
                 float rBrd = MathF.Sin(timer * 5f + index * 1.5f) * 0.2f + 0.8f;
@@ -549,12 +544,12 @@ namespace CalamityOverhaul.Content.HackTimes
             //斜边边线
             DrawSlashEdge(sb, px, rect, borderCol * (alpha * 0.5f));
 
-            //=== 悬停角标（四角L形加亮指示符） ===
+            //悬停角标
             if (hover > 0.15f) {
                 DrawCornerAccents(sb, px, rect, alpha * hover, catColor);
             }
 
-            //=== 悬停外发光 ===
+            //悬停外发光
             if (hover > 0.1f && glow != null) {
                 Color slotGlow = catColor * (alpha * hover * 0.06f);
                 slotGlow.A = 0;
@@ -563,7 +558,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     SpriteEffects.None, 0);
             }
 
-            //=== 编号 ===
+            //编号
             string idxStr = $"{index + 1:D2}";
             Color idxColor = isDisabled
                 ? HackTheme.Danger * (alpha * 0.25f)
@@ -571,7 +566,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Vector2 idxPos = new(rect.X + SlashWidth + 10, rect.Y + 10);
             Utils.DrawBorderString(sb, idxStr, idxPos, idxColor, FontIndex);
 
-            //=== 协议名称（带色散效果） ===
+            //协议名称
             float nameX = rect.X + SlashWidth + 48;
             float nameY = rect.Y + 8;
             Color nameColor;
@@ -600,7 +595,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2(nameX, nameY), nameColor * alpha, FontName);
 
-            //=== 名称下方分隔点线 ===
+            //名称下分隔点线
             float sepY = rect.Y + 38;
             Color sepColor = isDisabled ? HackTheme.Danger * (alpha * 0.1f)
                 : HackTheme.Border * (alpha * (0.15f + hover * 0.15f));
@@ -609,13 +604,12 @@ namespace CalamityOverhaul.Content.HackTimes
                     new Rectangle(0, 0, 1, 1), sepColor);
             }
 
-            //=== 效果描述（第二行渐淡文字，超宽自动换行） ===
+            //效果描述
             Vector2 descPos = new(rect.X + SlashWidth + 48, rect.Y + 44);
             Color descColor = isDisabled
                 ? HackTheme.TextNormal * 0.3f
                 : Color.Lerp(HackTheme.TextNormal, HackTheme.TextBright, 0.3f + hover * 0.4f);
-            //右侧数值/状态区域占用约95px，从描述起点到rect右侧内边距需扣除这部分防止压叠
-            //Utils.WordwrapString按已缩放前的像素宽度分行，所以传入maxWidth需要除以缩放
+            //描述区宽度需扣除右侧状态区，Wordwrap 用缩放前像素
             var descFont = FontAssets.MouseText.Value;
             int descWrapPx = Math.Max(32, (int)((rect.Right - descPos.X - 30f) / FontDesc));
             string[] descLines = CWRUtils.WrapTextArray(hack.Description.Value, descFont, descWrapPx, 2, out _);
@@ -627,9 +621,9 @@ namespace CalamityOverhaul.Content.HackTimes
                     descColor * (alpha * 0.85f), FontDesc);
             }
 
-            //=== 右侧状态区 ===
+            //右侧状态区
             if (isDisabled && !isUploading && !isQueued) {
-                //纯RAM不足的禁用——显示闪烁红色LOCKED和RAM消耗
+                //RAM不足禁用，显示 LOCKED
                 float lockPulse = MathF.Sin(timer * 5f + index) * 0.25f + 0.75f;
                 string lockStr = HackTime.Locked.Value;
                 Vector2 lockSize = FontAssets.MouseText.Value.MeasureString(lockStr) * 0.50f;
@@ -690,7 +684,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 Utils.DrawBorderString(sb, catLabel, clp, catColor * (alpha * 0.35f), 0.38f);
             }
 
-            //=== 上传时底部进度光条（会穿过条目底边） ===
+            //上传进度光条
             if (isUploading) {
                 int fillW = (int)(rect.Width * queueProgress);
                 sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, fillW, 2),
@@ -708,7 +702,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 视觉效果
 
-        //构建 RAM 成本显示文字，倍率超过 1.0x 时附加倍率标签
+        //RAM 成本文字，倍率>1 时附倍率标签
         private static string BuildRamLabel(QuickHackDef hack, int actualCost) {
             if (actualCost == hack.RamCost) return $"{actualCost} RAM";
             float mult = (float)actualCost / hack.RamCost;

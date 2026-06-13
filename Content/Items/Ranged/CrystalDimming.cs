@@ -10,17 +10,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 冰河时代
-    /// <br/>左键: 发射冰晶炮弹，命中处的大地上拔起冰川晶柱，晶柱在已有晶簇附近会长得更高
-    /// <br/>右键: 释放冰河推进波，沿地表掀起一整列不断增高的冰川山脊
-    /// </summary>
+    /// 冰河时代：左键冰晶炮+晶柱，右键冰河推进波
     internal class CrystalDimming : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimming";
-        /// <summary>左键炮击的就绪时间戳，跨使用持久</summary>
+        /// 左键炮击就绪时间戳
         internal uint ShellReadyTime;
-        /// <summary>右键冰河波的就绪时间戳，跨使用持久</summary>
+        /// 右键冰河波就绪时间戳
         internal uint WaveReadyTime;
 
         public override void SetDefaults() {
@@ -45,7 +41,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool AltFunctionUse(Player player) => true;
 
-        //物品使用本身不消耗雪球，由手持弹幕按炮击节奏自行拾取
+        //物品不耗雪球，手持弹幕按节奏拾取
         public override bool CanConsumeAmmo(Item ammo, Player player) => BaseSnowCannonHeld.AmmoConsumeContext;
 
         public override bool CanUseItem(Player player) {
@@ -83,10 +79,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 冰河时代手持弹幕
-    /// <br/>帧0-3: 开火循环, 帧4: 待机
-    /// </summary>
+    /// 冰河时代手持：帧0-3开火 帧4待机
     internal class CrystalDimmingHeld : BaseSnowCannonHeld
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimmingHeld";
@@ -96,7 +89,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         protected override float MuzzleNormalOffset => -8f;
         protected override float HoldDistance => 20f;
 
-        /// <summary>开火动画余辉计时</summary>
+        /// 开火余辉计时
         private int fireAnimTime;
 
         private CrystalDimming WeaponItem => Item.ModItem as CrystalDimming;
@@ -125,7 +118,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>发射冰晶炮弹</summary>
+        /// 发射冰晶炮弹
         private void FireShell() {
             if (!PickSnowAmmo(out int damage, out float knockback)) {
                 return;
@@ -152,7 +145,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             NetUpdate();
         }
 
-        /// <summary>右键释放冰河推进波</summary>
+        /// 右键冰河推进波
         private void FireGlacierWave() {
             if (!PickSnowAmmo(out int damage, out float knockback)) {
                 return;
@@ -178,9 +171,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 冰晶炮弹——命中处召唤冰川晶柱
-    /// </summary>
+    /// 冰晶炮弹，命中召唤晶柱
     internal class GlacialShell : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "Crystal";
@@ -257,11 +248,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 冰川晶柱——由 GlacierSpike.fx 程序化渲染的拔地冰柱
-    /// <br/>ai0: 渲染随机种子, ai1: 体积缩放
-    /// <br/>生成点即地表锚点，晶柱向上生长、停留、然后崩解
-    /// </summary>
+    /// 冰川晶柱：GlacierSpike.fx 程序化，ai0种子 ai1缩放
     internal class GlacierSpikeProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -272,14 +259,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private const int LifeTime = 110;
         private const int FadeTime = 25;
 
-        /// <summary>0~1 的生长进度（缓出曲线）</summary>
+        /// 生长进度 0~1
         private float Grow {
             get {
                 float t = MathHelper.Clamp((LifeTime - Projectile.timeLeft) / (float)GrowTime, 0f, 1f);
                 return 1f - MathF.Pow(1f - t, 3f);
             }
         }
-        /// <summary>消散透明度</summary>
+        /// 消散透明度
         private float Fade => MathHelper.Clamp(Projectile.timeLeft / (float)FadeTime, 0f, 1f);
         private float PillarHeight => 175f * ScaleF;
         private float PillarWidth => 72f * ScaleF;
@@ -296,7 +283,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.localNPCHitCooldown = 10;
         }
 
-        /// <summary>从指定位置向下探测地表，找到则返回地面坐标</summary>
+        /// 向下探测地表
         internal static bool TryFindGround(Vector2 from, int maxTiles, out Vector2 ground) {
             Point tile = from.ToTileCoordinates();
             for (int i = 0; i < maxTiles; i++) {
@@ -313,7 +300,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return false;
         }
 
-        /// <summary>统计某点附近现存的晶柱数量</summary>
+        /// 统计附近晶柱数
         internal static int CountNearbySpikes(Vector2 pos, float radius, int owner) {
             int count = 0;
             int type = ModContent.ProjectileType<GlacierSpikeProj>();
@@ -435,13 +422,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 冰河推进波——沿地表行进的隐形波前，所到之处拔起一列渐次增高的冰川山脊
-    /// </summary>
+    /// 冰河推进波：沿地表拔起渐高晶柱
     internal class GlacierWave : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
-        /// <summary>已拔起的晶柱数</summary>
+        /// 已拔起晶柱数
         private ref float SpikeCount => ref Projectile.ai[0];
         private const int MaxSpikes = 8;
 

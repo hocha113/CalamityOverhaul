@@ -12,28 +12,21 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 {
-    /// <summary>
-    /// 菌生蟹状态面板UI，荧光蘑菇自然风格
-    /// 包含：蹲下/跟随切换、远程呼叫、鞍具管理、血量与饱食度数据
-    /// </summary>
+    /// <summary>菌生蟹状态面板，荧光蘑菇风</summary>
     internal class CrabulonStatusUI : UIHandle
     {
-        //核心状态
         private ModifyCrabulon modify;
         private bool _shouldBeOpen;
         private float sengs;
 
-        //面板动画
         private float globalTime;
         private float breatheAnim;
         private float shimmerPhase;
         private float panelSlideOffset = 40f;
 
-        //粒子系统
         private readonly List<SporeParticle> sporeParticles = [];
         private float sporeSpawnTimer;
 
-        //按钮悬停动画
         private float crouchHoverAnim;
         private float recallHoverAnim;
         private float saddleHoverAnim;
@@ -43,7 +36,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private float saddlePressAnim;
         private float releasePressAnim;
 
-        //按钮区域
         private Rectangle crouchButtonRect;
         private Rectangle recallButtonRect;
         private Rectangle releaseButtonRect;
@@ -53,13 +45,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private bool hoveringRelease;
         private bool hoveringSaddle;
 
-        //血量条动画
         private float healthBarAnim;
         private float feedBarAnim;
         private int oldLife = -1;
         private float healthFlashTimer;
 
-        //布局常量
         private const float PanelWidth = 340f;
         private const float PanelHeight = 210f;
         private const float Padding = 14f;
@@ -69,7 +59,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private const float SaddleSlotSize = 44f;
         private const float CornerRadius = 10f;
 
-        //荧光蘑菇主题色
         private static readonly Color MushroomCyan = new(0, 200, 220);
         private static readonly Color MushroomBlue = new(30, 120, 200);
         private static readonly Color MushroomGreen = new(50, 210, 130);
@@ -79,7 +68,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private static readonly Color MushroomTextColor = new(180, 240, 255);
         private static readonly Color MushroomHighlight = new(100, 255, 220);
 
-        //孢子粒子结构
         private struct SporeParticle
         {
             public Vector2 Position;
@@ -151,7 +139,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             breatheAnim = MathF.Sin(globalTime * 1.8f) * 0.5f + 0.5f;
             shimmerPhase = globalTime * 1.5f;
 
-            //面板位置：屏幕底部居中偏下
             Vector2 panelCenter = new(Main.screenWidth / 2f, Main.screenHeight - PanelHeight / 2f - 30f + panelSlideOffset);
             DrawPosition = panelCenter - new Vector2(PanelWidth, PanelHeight) / 2f;
             Size = new Vector2(PanelWidth, PanelHeight);
@@ -162,7 +149,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 player.mouseInterface = true;
             }
 
-            //按钮区域计算
             float btnY = DrawPosition.Y + PanelHeight - Padding - ButtonHeight;
             float btnStartX = DrawPosition.X + Padding;
             float btnSpacing = 6f;
@@ -171,18 +157,15 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             recallButtonRect = new Rectangle((int)(btnStartX + ButtonWidth + btnSpacing), (int)btnY, (int)ButtonWidth, (int)ButtonHeight);
             releaseButtonRect = new Rectangle((int)(btnStartX + (ButtonWidth + btnSpacing) * 2), (int)btnY, (int)ButtonWidth, (int)ButtonHeight);
 
-            //鞍具槽位在右侧
             float saddleX = DrawPosition.X + PanelWidth - Padding - SaddleSlotSize;
             float saddleY = DrawPosition.Y + PanelHeight - Padding - SaddleSlotSize;
             saddleSlotRect = new Rectangle((int)saddleX, (int)saddleY, (int)SaddleSlotSize, (int)SaddleSlotSize);
 
-            //悬停检测
             hoveringCrouch = crouchButtonRect.Contains(MouseHitBox) && sengs > 0.5f;
             hoveringRecall = recallButtonRect.Contains(MouseHitBox) && sengs > 0.5f;
             hoveringRelease = releaseButtonRect.Contains(MouseHitBox) && sengs > 0.5f;
             hoveringSaddle = saddleSlotRect.Contains(MouseHitBox) && sengs > 0.5f;
 
-            //按钮悬停动画
             float hoverSpeed = 0.15f;
             crouchHoverAnim += ((hoveringCrouch ? 1f : 0f) - crouchHoverAnim) * hoverSpeed;
             recallHoverAnim += ((hoveringRecall ? 1f : 0f) - recallHoverAnim) * hoverSpeed;
@@ -193,7 +176,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             releasePressAnim *= 0.85f;
             saddlePressAnim *= 0.85f;
 
-            //血量条平滑
             if (modify != null && modify.npc.Alives()) {
                 float targetHealth = modify.npc.lifeMax > 0 ? (float)modify.npc.life / modify.npc.lifeMax : 0f;
                 healthBarAnim += (targetHealth - healthBarAnim) * 0.1f;
@@ -208,7 +190,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
             if (healthFlashTimer > 0) healthFlashTimer--;
 
-            //点击处理
             if (keyLeftPressState == KeyPressState.Pressed && sengs > 0.8f && modify != null) {
                 if (hoveringCrouch && !modify.Mount) {
                     crouchPressAnim = 1f;
@@ -230,7 +211,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 }
             }
 
-            //粒子更新
             UpdateSporeParticles();
             if (sengs > 0.3f && _shouldBeOpen) {
                 sporeSpawnTimer += 1f;
@@ -244,7 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         private void OnRecall() {
             if (modify == null || !modify.npc.Alives() || !modify.Owner.Alives()) return;
 
-            //位置修改必须由服务器权威执行，否则客户端的修改会在下次NPC同步时被拉回去
+            //召回须服务器权威移 NPC
             modify.Networking.SendRecallRequest();
         }
 
@@ -253,10 +233,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 
             Item heldItem = player.GetItem();
 
-            //手持鞍具→装上
+            //手持鞍具装上
             if (heldItem.type == ModContent.ItemType<MushroomSaddle>()) {
                 if (modify.SaddleItem.Alives()) {
-                    //交换：旧鞍具掉落
+                    //交换旧鞍掉落
                     VaultUtils.SpwanItem(modify.npc.FromObjectGetParent(), modify.npc.Top, new Vector2(32), modify.SaddleItem);
                     modify.SaddleItem.TurnToAir();
                 }
@@ -265,9 +245,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 SoundEngine.PlaySound(CWRSound.PutSaddle, player.Center);
                 modify.SendNetWork();
             }
-            //手上为空或非鞍具→卸鞍
+            //空手或非鞍具则卸鞍
             else if (modify.SaddleItem.Alives()) {
-                //如果正在骑乘，先下马
                 if (modify.Mount) {
                     modify.CloseMount();
                 }
@@ -283,7 +262,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 
             string name = modify.npc.GivenOrTypeName;
             modify.ReleaseTame();
-            modify.SendNetWork();//放生必须广播，否则其余端仍认为蟹处于驯服状态
+            modify.SendNetWork();//放生须广播
             SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = -0.3f });
 
             string message = string.Format(ModifyCrabulon.ReleasedText.Value, name);
@@ -695,9 +674,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 softGlow.Size() / 2f, new Vector2(0.15f, 0.04f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制鼠标悬浮时的提示信息
-        /// </summary>
+        /// <summary>鞍具悬停提示</summary>
         private void DrawHoverInfo(SpriteBatch spriteBatch, float alpha, float baseScale) {
             if (modify == null || !modify.hoverNPC) return;
             if (player.Alives() && player.CWR().IsRotatingDuringDash) return;

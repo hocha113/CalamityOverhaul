@@ -47,9 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
         }
 
-        /// <summary>
-        /// 注册一次"发现"事件，返回是否为首次（true 表示之前未发现）
-        /// </summary>
+        /// <summary>注册发现，true 为首次</summary>
         public bool RegisterDiscovered(int moduleType) {
             if (moduleType <= 0) {
                 return false;
@@ -58,10 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             return DiscoveredModules.Add(moduleType);
         }
 
-        /// <summary>
-        /// 钉选/取消钉选指定类别的固定重铸目标
-        /// moduleType = -1 时取消钉选；否则要求该 type 是合法的 SHPCModuleItem 且槽位匹配且在图鉴中
-        /// </summary>
+        /// <summary>钉选/取消固定重铸目标</summary>
         public bool TryPinReforge(SHPCSlotCategory cat, int moduleType) {
             PinnedReforgeTarget ??= new int[SHPCData.SlotCount];
             int idx = (int)cat;

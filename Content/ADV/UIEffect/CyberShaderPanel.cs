@@ -5,16 +5,14 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
     /// <summary>
-    /// SHPC赛博朋克风格面板着色器辅助绘制<br/>
-    /// 复用CyberPanel.fx,统一调用流程,失败时由调用方走CPU降级
+    /// SHPC 赛博面板着色器绘制，失败时由调用方 CPU 降级
     /// </summary>
     internal static class CyberShaderPanel
     {
         public static bool Available => EffectLoader.CyberPanel?.Value != null;
 
         /// <summary>
-        /// 在指定矩形内绘制SHPC风格面板
-        /// 调用前需保证当前SpriteBatch已开启,内部会切换到Immediate应用着色器,再恢复Deferred
+        /// 矩形内绘制 CyberPanel.fx 面板
         /// </summary>
         /// <param name="sb">当前已Begin的SpriteBatch</param>
         /// <param name="rect">面板包含边缘的矩形</param>

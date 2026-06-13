@@ -7,9 +7,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     /// <summary>
-    /// Victor 手术过场片段（基于 InnoVault Cinematics）。
-    /// <br/>主体为被交互的 Victor 的 whoAmI：镜头聚焦"Victor 与玩家中点"并拉近，全程锁输入；
-    /// 时间轴事件驱动眼睑开合，并在全黑关键帧真正执行换装
+    /// Victor 手术过场（InnoVault Cinematics）
+    /// <br/>主体为 Bound Victor whoAmI；镜头聚中点拉近、锁输入；时间轴驱动眼睑，帧 86 全黑换装
     /// </summary>
     internal class VictorSurgeryCutscene : CutsceneClip<int>
     {
@@ -31,24 +30,24 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             timeline.Duration = 210;
 
             timeline
-                //全程锁定移动/跳跃/使用/交互
+                //锁移动/跳跃/使用/交互 0-210
                 .Add(new InputLockTrack(0, 210, CutsceneInputLockFlags.All))
-                //聚焦 Victor 与玩家中点（略微上抬取景），平滑跟随
+                //镜头跟 Victor-玩家中点，上抬 -24
                 .Add(CameraFocusTrack.Midpoint(0, 210, VictorCenter, c => c.PlayerCenter, new Vector2(0f, -24f), 0.06f))
-                //入场拉近，收尾拉回
+                //变焦 1→1.42 帧 0-56，回拉 帧 165-210
                 .Add(new CameraZoomTrack(0, 56, 1f, 1.42f, 0.045f, CutsceneEase.CubicOut))
                 .Add(new CameraZoomTrack(165, 45, 1.42f, 1f, 0.05f, CutsceneEase.CubicOut))
-                //闭眼（赛博扫描低鸣，与义体界面同源）
+                //帧 46 闭眼，扫描音
                 .AddEvent(46, _ => {
                     VictorSurgery.EyelidTarget = 1f;
                     if (!VaultUtils.isServer) {
                         SoundEngine.PlaySound(CWRSound.Scanning with { Volume = 0.55f });
                     }
                 })
-                //全黑：执行换装 + 手术微震
+                //帧 86 全黑换装 + 微震
                 .Add(new CameraShakeTrack(86, Vector2.Zero, 9f, 0.85f, 16))
                 .AddEvent(86, _ => VictorSurgery.ApplyPendingOp())
-                //睁眼（手术灯眩光 + 义体通电/充能音）
+                //帧 140 睁眼眩光
                 .AddEvent(140, _ => {
                     VictorSurgery.EyelidTarget = 0f;
                     VictorSurgery.GlowValue = 1f;

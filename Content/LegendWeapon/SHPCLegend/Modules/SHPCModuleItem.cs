@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 {
-    /// <summary>
-    /// SHPC 改件物品基类，提供槽位类别声明、战利品生成声明与对 <see cref="ShootContext"/> 的修改入口
-    /// 子类只需覆写 <see cref="SlotCategory"/> 与 <see cref="Apply"/>
-    /// </summary>
+    /// <summary>SHPC 改件基类：槽位、Apply 改 ShootContext、生命周期钩子</summary>
     internal abstract class SHPCModuleItem : ModItem
     {
         public override string Texture => SlotCategory switch {
@@ -25,98 +22,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             _ => CWRConstant.Item_Tools + "Mewtwo",
         };
 
-        /// <summary>
-        /// 该改件能装入的槽位类别
-        /// </summary>
+        /// <summary>槽位类别</summary>
         public abstract SHPCSlotCategory SlotCategory { get; }
 
-        /// <summary>
-        /// 是否自动加入实验室安全箱的改件随机池；特殊或隐藏改件可覆写为 false。
-        /// </summary>
+        /// <summary>是否加入实验室安全箱随机池，默认 true</summary>
         public virtual bool CanGenerateInLabChest => true;
 
-        /// <summary>
-        /// 改件作用：修改传入的 <see cref="ShootContext"/>，对浮点倍率字段使用加算叠加（增量 += delta）
-        /// </summary>
+        /// <summary>改件 Apply，浮点倍率加算叠加</summary>
         public abstract void Apply(ref ShootContext ctx);
         #region 弹幕生命周期钩子
 
-        /// <summary>
-        /// 每帧追踪光束 AI 结束时调用，可附加持续视觉效果或状态修改
-        /// extraUpdates=2，每游戏刻被调用 3 次
-        /// </summary>
+        /// <summary>光束 AI 结束，extraUpdates=2 每刻 3 次</summary>
         public virtual void OnBeamAI(CyberTraceBeamProj beam) { }
 
-        /// <summary>
-        /// 追踪光束命中NPC后调用，仅在非服务端执行
-        /// 产生派生弹幕时需配合 beam.IsDerived 与 Projectile.owner == Main.myPlayer 判断
-        /// </summary>
+        /// <summary>光束命中 NPC，非服务端；派生需 IsDerived+myPlayer</summary>
         public virtual void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) { }
 
-        /// <summary>
-        /// 追踪光束消亡时调用，仅在非服务端执行
-        /// </summary>
+        /// <summary>光束消亡，非服务端</summary>
         public virtual void OnBeamKill(CyberTraceBeamProj beam, int timeLeft) { }
 
-        /// <summary>
-        /// 蓄力球每帧蓄力 AI 结束时调用
-        /// </summary>
+        /// <summary>蓄力球蓄力 AI 结束</summary>
         public virtual void OnOrbCharging(CyberChargeOrbProj orb, Player owner) { }
 
-        /// <summary>
-        /// 蓄力球发射瞬间调用（状态切换为飞行前）
-        /// </summary>
+        /// <summary>蓄力球发射瞬间</summary>
         public virtual void OnOrbLaunched(CyberChargeOrbProj orb) { }
 
-        /// <summary>
-        /// 蓄力球引爆时调用，仅在弹幕拥有者客户端执行
-        /// </summary>
+        /// <summary>蓄力球引爆，拥有者客户端</summary>
         public virtual void OnOrbDetonation(CyberChargeOrbProj orb) { }
 
-        /// <summary>
-        /// 蓄力球消亡时调用，服务端与客户端均触发
-        /// 纯视觉操作需自行判断 Main.netMode != NetmodeID.Server
-        /// </summary>
+        /// <summary>蓄力球消亡；视觉需判 netMode</summary>
         public virtual void OnOrbKill(CyberChargeOrbProj orb, int timeLeft) { }
 
-        /// <summary>
-        /// 能量球飞行阶段每帧 AI 结束时调用，可在飞行轨迹上做持续行为
-        /// 仅弹幕拥有者侧触发，产生弹幕需自行判断 Projectile.owner == Main.myPlayer
-        /// </summary>
+        /// <summary>球飞行 AI 结束，拥有者侧</summary>
         public virtual void OnOrbFlyingAI(CyberChargeOrbProj orb) { }
 
         //═════════════ 激光生命周期钩子 ═════════════
 
-        /// <summary>
-        /// 激光每帧 AI 结束时调用，可在光束上叠加持续效果
-        /// 持有时循环触发，松键即停
-        /// </summary>
+        /// <summary>激光 AI 结束，持键循环</summary>
         public virtual void OnLaserAI(CyberPrismLaserProj laser) { }
 
-        /// <summary>
-        /// 激光命中 NPC 后调用，仅在非服务端执行
-        /// 每次命中间隔由 localNPCHitCooldown 控制
-        /// </summary>
+        /// <summary>激光命中 NPC，非服务端</summary>
         public virtual void OnLaserHitNPC(CyberPrismLaserProj laser, NPC target, NPC.HitInfo hit, int damageDone) { }
 
-        /// <summary>
-        /// 激光熄灭时调用（玩家松键或切换武器），服务端与客户端均触发
-        /// 纯视觉操作需自行判断 Main.netMode != NetmodeID.Server
-        /// </summary>
+        /// <summary>激光熄灭；视觉需判 netMode</summary>
         public virtual void OnLaserKill(CyberPrismLaserProj laser) { }
 
-        /// <summary>
-        /// 每游戏帧玩家更新时调用，由 SHPCPlayer.PostUpdate 分发
-        /// 用于需要逐帧衰减或持续效果的改件逻辑
-        /// </summary>
+        /// <summary>玩家 PostUpdate 分发，逐帧衰减/持续效果</summary>
         public virtual void OnPlayerUpdate(Player player) { }
 
         #endregion
-        /// <summary>
-        /// 改件属性差值文字列表，自动对 <see cref="Apply"/> 前后的 <see cref="ShootContext"/> 做 diff
-        /// 数值来自代码，本地化只提供字段名模板（含 {0} 占位符）
-        /// 子类无需覆写此方法
-        /// </summary>
+        /// <summary>属性 diff 文案，子类勿覆写</summary>
         public virtual IEnumerable<(string text, bool isNeg)> GetStatLines() {
             ShootContext ctx = ShootContext.Default;
             Apply(ref ctx);
@@ -174,9 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             return (Language.GetTextValue($"Mods.CalamityOverhaul.Legend.SHPCModuleStat.{key}", $"{sign}{value}"), value < 0);
         }
 
-        /// <summary>
-        /// 槽位类别的对外颜色（与改件 Tag/侧栏色条共享），由 <see cref="MoldProcessingTables"/> 与改件物品自身共用
-        /// </summary>
+        /// <summary>槽位 UI 色，与 MoldProcessing 共用</summary>
         public static Color SlotCategoryColor(SHPCSlotCategory cat) => cat switch {
             SHPCSlotCategory.Barrel => new Color(255, 160, 60),
             SHPCSlotCategory.Optic => new Color(0, 200, 255),
@@ -213,15 +166,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             }
         }
 
-        /// <summary>
-        /// 赛博朋克滤镜识别色，用于<see cref="SHPCModuleRender"/>对图标做双调色与边缘霓虹描边
-        /// 缺省为青色，子类按风味自由覆写以做区分
-        /// </summary>
+        /// <summary>改件 TintColor，ModuleRender 双调+霓虹边</summary>
         public virtual Color TintColor => new(0, 220, 255);
 
-        /// <summary>
-        /// 滤镜强度，缺省1.0，可在子类中调低以保留更多原贴图特征
-        /// </summary>
+        /// <summary>滤镜强度，默认 1</summary>
         public virtual float TintIntensity => 1f;
 
         public override void SetDefaults() {

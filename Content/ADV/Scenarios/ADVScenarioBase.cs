@@ -17,8 +17,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         /// </summary>
         public virtual string Key => Name;
         /// <summary>
-        /// 声明式触发策略，由<see cref="ADVScenarioScheduler"/>统一评估。
-        /// 返回null表示该场景使用传统的<see cref="Update"/>手写逻辑
+        /// 声明式触发策略，由 <see cref="ADVScenarioScheduler"/> 评估
+        /// 返回 null 则走传统 <see cref="Update"/> 手写逻辑
         /// </summary>
         public ScenarioPolicy Policy { get; private set; }
         /// <summary>
@@ -67,10 +67,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         }
 
         /// <summary>
-        /// 重写此方法返回<see cref="ScenarioPolicy"/>来声明触发条件，
-        /// 由<see cref="ADVScenarioScheduler"/>统一调度。
-        /// 返回null（默认）表示不参与调度器的触发评估。
-        /// <see cref="Update"/>始终被调用，与Policy独立
+        /// 返回 <see cref="ScenarioPolicy"/> 声明触发条件
+        /// null 则不参与调度器评估，<see cref="Update"/> 仍每帧调用
         /// </summary>
         protected virtual ScenarioPolicy ConfigurePolicy() => null;
 
@@ -163,7 +161,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 StyleOverride = styleOverride,
                 Choices = choices,
                 ChoiceBoxStyle = choiceBoxStyle,
-                OnComplete = null//选项对话的完成由选项选择触发
+                OnComplete = null // 选项完成由选择触发
             };
             lines.Add(line);
         }
@@ -257,10 +255,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
             var timedConfig = new TimedDialogueConfig {
                 Duration = durationSeconds,
                 ShowProgressIndicator = true,
-                AllowManualAdvance = true, //允许玩家主动点击选项来推进
-                SkipOnFinishWhenExpired = true, //时间耗尽后跳过 OnFinish（避免重复弹出选项框）
+                AllowManualAdvance = true, // 允许玩家点击选项推进
+                SkipOnFinishWhenExpired = true, // 超时跳过 OnFinish，避免重复弹框
                 OnTimeExpired = onTimeExpired ?? (() => {
-                    //默认行为：随机选择一个选项
+                    // 默认随机选一选项
                     if (choices != null && choices.Count > 0) {
                         var randomChoice = choices[Terraria.Main.rand.Next(choices.Count)];
                         ADVChoiceBox.Hide();
@@ -275,7 +273,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 Choices = choices,
                 ChoiceBoxStyle = choiceBoxStyle,
                 TimedConfig = timedConfig,
-                OnComplete = null //选项对话的完成由选项选择触发
+                OnComplete = null // 选项完成由选择触发
             };
             lines.Add(line);
         }
@@ -297,7 +295,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 Choices = choices,
                 ChoiceBoxStyle = choiceBoxStyle,
                 TimedConfig = timedConfig,
-                OnComplete = null //选项对话的完成由选项选择触发
+                OnComplete = null // 选项完成由选择触发
             };
             lines.Add(line);
         }
@@ -319,13 +317,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         public DialogueLineBuilder Line(string speaker, string content) => new DialogueLineBuilder(this, speaker, content);
 
         public void Start() {
-            lines.Clear();//清空旧对话
-            Build();//每次开始都重新构建对话内容，方便自定义内容
+            lines.Clear(); // 清空旧对话
+            Build(); // 每次 Start 重新 Build
             if (lines.Count == 0) { Complete(); return; }
 
             OnScenarioStart();
 
-            //确定初始对话框
+            // 确定初始对话框
             DialogueBoxBase initialBox = null;
 
             if (DefaultDialogueStyle != null) {
@@ -333,51 +331,51 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                 if (initialBox != null) {
                     DialogueUIRegistry.SwitchDialogueBox(initialBox, transferQueue: false);
                 }
-                //设置解析器为默认样式
+                // 设置默认样式解析器
                 DialogueUIRegistry.SetResolver(DefaultDialogueStyle);
             }
 
             initialBox ??= DialogueUIRegistry.Current;
             initialBox.PreProcessor = PreProcessSegment;
 
-            //逐条处理对话，支持中途切换样式
+            // 逐条入队，支持中途换样式
             for (int i = 0; i < lines.Count; i++) {
                 var line = lines[i];
                 bool isLast = i == lines.Count - 1;
 
                 Action completeCallback = null;
 
-                //如果有选项，设置显示选项框的回调
+                // 有选项则挂显示回调
                 if (line.Choices != null && line.Choices.Count > 0) {
-                    //捕获当前行的选项框样式和定时配置
+                    // 捕获选项框样式与定时配置
                     ADVChoiceBox.ChoiceBoxStyle capturedStyle = line.ChoiceBoxStyle;
                     var capturedTimedConfig = line.TimedConfig;
                     var capturedChoices = line.Choices;
 
                     completeCallback = () => {
-                        //检查是否需要继承定时配置到选项框
+                        // 继承定时配置到选项框
                         if (capturedTimedConfig != null) {
-                            //从对话框获取剩余时间
+                            // 取对话框剩余帧数
                             var dialogueBox = DialogueUIRegistry.Current;
                             int remainingFrames = dialogueBox?.TimedRemainingFrames ?? 0;
 
                             if (remainingFrames > 0) {
-                                //创建选项框的定时配置，继承剩余时间
+                                // 选项框继承剩余时间
                                 var choiceTimedConfig = ChoiceBoxTimedConfig.FromRemainingFrames(
                                     remainingFrames,
                                     capturedTimedConfig.OnTimeExpired
                                 );
 
-                                //显示定时选项框
+                                // 定时选项框
                                 ADVChoiceBox.ShowTimed(capturedChoices, choiceTimedConfig, null, capturedStyle);
                             }
                             else {
-                                //没有剩余时间，直接显示普通选项框
+                                // 普通选项框
                                 ADVChoiceBox.Show(capturedChoices, null, capturedStyle);
                             }
                         }
                         else {
-                            //非定时对话，显示普通选项框
+                            // 普通选项框
                             ADVChoiceBox.Show(capturedChoices, null, capturedStyle);
                         }
                     };
@@ -391,22 +389,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                     };
                 }
 
-                //构建对话开始回调
+                // 构建 OnStart 回调
                 Action startCallback = null;
 
-                //如果这条对话有自定义样式，在播放前切换样式
+                // 播放前切换自定义样式
                 if (line.StyleOverride != null) {
                     var styleBox = line.StyleOverride.Invoke();
                     if (styleBox != null) {
                         startCallback = () => {
-                            //切换对话框样式并迁移状态
+                            // 切换样式并迁移状态
                             var oldBox = DialogueUIRegistry.Current;
                             if (oldBox != styleBox) {
                                 DialogueUIRegistry.SwitchDialogueBox(styleBox, transferQueue: true);
-                                //确保新对话框也设置预处理器
+                                // 新框也挂预处理器
                                 styleBox.PreProcessor = PreProcessSegment;
                             }
-                            //触发用户定义的 OnStart
+                            // 用户 OnStart
                             line.OnStart?.Invoke();
                         };
                     }
@@ -415,8 +413,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                     startCallback = line.OnStart;
                 }
 
-                //获取当前实际使用的对话框来入队(传递独立的立绘键)
-                //根据是否为定时对话选择不同的入队方法
+                // 按是否定时选择入队方法
                 if (line.IsTimed) {
                     initialBox.EnqueueTimedDialogue(line.Speaker, line.PortraitKey, line.Content, line.TimedConfig, completeCallback, startCallback);
                 }

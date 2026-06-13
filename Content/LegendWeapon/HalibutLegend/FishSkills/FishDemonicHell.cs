@@ -57,9 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 地狱法阵，充能并发射地狱炎爆
-    /// </summary>
+    /// <summary>地狱法阵，充能后发射炎爆</summary>
     internal class HellRitualCircle : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -263,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private static void DrawPentagram(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius,
             float thickness, Color col, float rot) {
-            //绘制五芒星（经典地狱符号）
+            //五芒星
             int points = 5;
             Vector2[] vertices = new Vector2[points * 2];
 
@@ -352,9 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 地狱炎爆弹幕：专业级多层次火焰球渲染
-    /// </summary>
+    /// <summary>地狱炎爆弹幕，多层火焰球</summary>
     internal class HellFireBlast : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -652,7 +648,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //旋转能量束（类似太阳耀斑）
+            //旋转能量束
             Texture2D pixel = CWRAsset.StarTexture.Value;
             for (int i = 0; i < 6; i++) {
                 float beamRotation = Projectile.rotation + time * 4f + i * MathHelper.TwoPi / 6f;

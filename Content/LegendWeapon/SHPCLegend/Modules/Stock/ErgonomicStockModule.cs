@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 人体工学枪托：大幅降低法力消耗，提升攻速与精准，持久输出的核心托架
-    /// </summary>
+    /// <summary>人体工学枪托：降蓝耗、提攻速与精准</summary>
     internal sealed class ErgonomicStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

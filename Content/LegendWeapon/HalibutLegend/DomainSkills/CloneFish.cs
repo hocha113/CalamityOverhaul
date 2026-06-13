@@ -598,12 +598,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
+    /// <summary>ClonePlayer RenderHandle，DrawBeforePlayers 绘克隆体与 Boid</summary>
     internal sealed class CloneFishRender : RenderHandle
     {
         private static readonly List<ClonePlayer> cloneBuffer = new(10);
 
+        /// <summary>权重 1.21，玩家层之前</summary>
         public override float Weight => 1.21f;
 
+        /// <summary>AlphaBlend 绘克隆玩家，Additive 绘 Boid 鱼群</summary>
         public override void DrawBeforePlayers(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             CollectClones();
             int cloneCount = cloneBuffer.Count;
@@ -645,6 +648,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
+        /// <summary>收集活跃 <see cref="ClonePlayer"/> 弹幕</summary>
         private static void CollectClones() {
             cloneBuffer.Clear();
             foreach (Projectile projectile in Main.ActiveProjectiles) {

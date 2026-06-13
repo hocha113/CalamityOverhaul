@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Common
         public static LocalizedText ConfigChangePrefix { get; private set; }
         public static LocalizedText ConfigChangeSuffix { get; private set; }
 
-        //提醒自己不要用懒加载
+        //Instance 勿懒加载
         public static CWRServerConfig Instance { get; private set; }
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
         [DefaultValue(true)]
-        public bool QuestLog { get; set; }//是否开启任务书系统
+        public bool QuestLog { get; set; }//任务书开关
 
         [BackgroundColor(35, 185, 78, 255)]
         [ReloadRequired]
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Common
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
-        public bool MurasamaSpaceFragmentationBool { get; set; }//鬼妖终结技碎屏效果
+        public bool MurasamaSpaceFragmentationBool { get; set; }//鬼妖终结技碎屏
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(false)]
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Common
         [SliderColor(224, 165, 56, 255)]
         [Range(1f, 2f)]
         [DefaultValue(1)]
-        public float DialogueBox_Scale_Value { get; set; }//对话框缩放比例
+        public float DialogueBox_Scale_Value { get; set; }//对话框缩放
 
         public override void OnLoaded() {
             Instance = this;

@@ -12,11 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 动能阻尼托：托内液压阻尼器把每次射击的后坐力封存为「动能储备」。
-    /// 储备过半时玩家免疫击退；受到伤害的瞬间，全部储备化为一圈震地反击波
-    /// 轰开周围敌人，储备越满反击越重（石巨人礼物 —— 以彼之道还施彼身）
-    /// </summary>
+    /// <summary>动能阻尼托：命中蓄动能，过半免击退，受击释震地反击</summary>
     internal sealed class KineticDamperModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -82,10 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>
-    /// 震地反击波：以玩家为中心扩张的环形冲击（25 帧扩满），
-    /// 仅在扩张波前处判定伤害并施加强击退；附带岩屑与热浪环演出
-    /// </summary>
+    /// <summary>震地反击环，扩张波前伤害+强击退</summary>
     internal sealed class SHPCSeismicCounterProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

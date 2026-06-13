@@ -3,7 +3,7 @@
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
-    /// 定时对话配置，用于设置有时间限制的对话回合
+    /// 定时对话配置
     /// </summary>
     public class TimedDialogueConfig
     {
@@ -18,25 +18,25 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         public bool ShowProgressIndicator { get; set; } = true;
 
         /// <summary>
-        /// 是否允许用户点击提前结束定时对话
-        /// 如果为 false，用户必须等待时间耗尽或通过其他方式（如选择选项）结束
+        /// 是否允许点击提前结束
+        /// false 须等超时或由选项结束
         /// </summary>
         public bool AllowManualAdvance { get; set; } = true;
 
         /// <summary>
-        /// 时间耗尽后是否跳过 OnFinish 回调
-        /// 对于带选项的定时对话，通常设置为 true，因为 OnTimeExpired 已经处理了选择逻辑
+        /// 超时是否跳过 OnFinish
+        /// 带选项定时对话通常 true，OnTimeExpired 已处理选择
         /// </summary>
         public bool SkipOnFinishWhenExpired { get; set; } = false;
 
         /// <summary>
-        /// 时间耗尽时的回调（在推进到下一条对话之前调用）
-        /// 可用于执行超时后的默认行为（如随机选择）
+        /// 超时回调（推进下一条前）
+        /// 可执行默认行为如随机选项
         /// </summary>
         public Action OnTimeExpired { get; set; }
 
         /// <summary>
-        /// 进度更新时的回调（参数为剩余时间比例 0~1）
+        /// 进度回调，参数为剩余时间比 0~1
         /// </summary>
         public Action<float> OnProgressUpdate { get; set; }
 
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         public static TimedDialogueConfig WithDuration(float durationSeconds) => new() { Duration = durationSeconds };
 
         /// <summary>
-        /// 创建仅倒计时的配置（用户不能手动跳过，必须等待或选择）
+        /// 仅倒计时，不可手动跳过
         /// </summary>
         /// <param name="durationSeconds">持续秒数</param>
         /// <param name="onExpired">时间耗尽回调</param>

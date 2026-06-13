@@ -9,34 +9,34 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
-    /// 特化的深海风格 GalGame 对话框
+    /// 深海风格对话框
     /// </summary>
     internal class SeaDialogueBox : DialogueBoxBase
     {
         public static SeaDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<SeaDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        //风格参数
+        // 风格参数
         private const float FixedWidth = 520f;
         private const int ShaderEdgePad = 16;
         protected override float PanelWidth => FixedWidth;
 
-        //背景动画参数
+        // 背景动画
         private float panelPulseTimer = 0f;
         private float scanTimer = 0f;
         private float wavePhase = 0f;
         private float abyssPulse = 0f;
-        //着色器专用单调递增时间,避免循环回绕造成噪声跳变
+        // 着色器单调时间，避免噪声跳变
         private float shaderTime = 0f;
 
-        //视觉粒子
+        // 粒子
         private readonly List<SeaStarPRT> starFx = [];
         private int starSpawnTimer = 0;
         private readonly List<BubblePRT> bubbles = [];
         private int bubbleSpawnTimer = 0;
         private const float BubbleSideMargin = 34f;
 
-        #region 样式配置重写
+        #region 样式配置
 
         protected override Color GetSilhouetteColor(ContentDrawContext ctx) => new Color(10, 30, 40) * 0.9f;
 
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 
         #endregion
 
-        #region 抽象方法实现
+        #region 绘制实现
 
         protected override void DrawPortraitFrame(ContentDrawContext ctx, Rectangle frameRect) {
             Texture2D vaule = VaultAsset.placeholder2.Value;

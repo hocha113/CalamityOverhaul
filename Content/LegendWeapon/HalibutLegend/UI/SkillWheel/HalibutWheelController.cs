@@ -24,14 +24,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
     }
 
     /// <summary>
-    /// 比目鱼技能轮盘的核心状态机（视觉层见 <see cref="HalibutSkillWheel"/>）
-    /// <list type="bullet">
-    ///   <item>按住 <see cref="CWRKeySystem.Halibut_SkillWheel"/> 开盘并进入子弹时间（单人），
-    ///         鼠标甩向扇区，松开按键即选定该技能；期间左键点击也可选定</item>
-    ///   <item>右键关闭轮盘不做任何改动；光标退回中心死区 = 不选择</item>
-    ///   <item><see cref="CWRKeySystem.Halibut_Skill_L"/> / <see cref="CWRKeySystem.Halibut_Skill_R"/>
-    ///         在轮盘关闭时仍可循环切换装备栏技能</item>
-    /// </list>
+    /// 技能轮盘状态机，视觉见 <see cref="HalibutSkillWheel"/>
+    /// 按住 Halibut_SkillWheel 开盘 + 子弹时间，松键或左键选定；右键关盘
+    /// Halibut_Skill_L/R 关盘时循环装备栏技能
     /// </summary>
     internal class HalibutWheelController : ModPlayer
     {

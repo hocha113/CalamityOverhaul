@@ -1,16 +1,8 @@
-// =====================================================================
-//  AurumBlade.fx
-//  真·黄金斩 —— 剑身黄金能量笼罩着色器
-//  - ps_3_0, 由 SpriteBatch (Immediate) 调用, s0 = 剑身贴图
-//
-//  功能:
-//      1) 内描边: 8 邻域 alpha 采样 → 贴图边缘内侧亮起金色能量描边
-//      2) 流动能量: 噪声沿刃方向(BladeDir, 贴图空间)流动 + 高频金丝
-//      3) FlashBoost: 举剑顶点的"闪烁一下" — 整剑被白金光瞬间点亮,
-//         边缘加成更强, 随业务侧参数衰减
-//      4) GlowStrength: 整体能量强度 (0 = 完全还原原贴图)
-//      5) reinhard-like 软限亮, 防止叠加过曝
-// =====================================================================
+// ============================================================================
+// DivineSourceBladeGlow.fx 真·黄金斩剑身能量笼罩
+// 采样 s0 剑身 + s1 噪声；Immediate AlphaBlend
+// ps_3_0
+// ============================================================================
 
 sampler2D MainSampler : register(s0);
 
@@ -25,15 +17,15 @@ sampler2D NoiseSampler = sampler_state
     MipFilter = Linear;
 };
 
-float TotalTime;        // 时间累积(秒)
-float GlowStrength;     // [0,1.5] 能量强度
-float FlashBoost;       // [0,1] 顶点闪光强度
-float2 TexelSize;       // (1/texW, 1/texH)
-float2 BladeDir;        // 贴图空间中刃的方向(单位向量, 用于能量流动)
+float TotalTime;        //时间(秒)
+float GlowStrength;     //0~1.5 能量强度
+float FlashBoost;       //0~1 顶点闪光
+float2 TexelSize;       //1/宽 1/高
+float2 BladeDir;        //贴图空间刃向单位向量
 
-float4 OutlineColor;    // 描边金 (255,225,140)
-float4 EnergyColor;     // 能量金 (255,200,90)
-float4 FlashColor;      // 闪光白金 (255,248,220)
+float4 OutlineColor;    //描边金
+float4 EnergyColor;     //能量金
+float4 FlashColor;      //闪光白金
 
 float4 MainPS(float4 vertexColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
@@ -43,7 +35,7 @@ float4 MainPS(float4 vertexColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
         discard;
     }
 
-    // ---- 1) 内描边: 8 邻域 alpha 最小值 ----
+    // 1) 内描边: 8 邻域 alpha 最小值
     float2 d = TexelSize * 1.6;
     float aL  = tex2D(MainSampler, uv + float2(-d.x,  0  )).a;
     float aR  = tex2D(MainSampler, uv + float2( d.x,  0  )).a;
@@ -59,7 +51,7 @@ float4 MainPS(float4 vertexColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
     float edgeMask = saturate(saturate(1.0 - minN) * src.a);
     edgeMask = pow(edgeMask, 0.6);
 
-    // ---- 2) 沿刃流动的金色能量 ----
+    // 2) 沿刃流动的金色能量
     float along = uv.x * BladeDir.x + uv.y * BladeDir.y;   // 沿刃标量坐标
     float cross = uv.x * -BladeDir.y + uv.y * BladeDir.x;  // 横刃标量坐标
 
@@ -73,7 +65,7 @@ float4 MainPS(float4 vertexColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
     float energy = saturate(thread * 0.6 + smoothstep(0.55, 0.95, n1 * 0.65 + n2 * 0.5) * 0.7);
     energy *= src.a * (0.5 + edgeMask * 0.6);
 
-    // ---- 3) 合成 ----
+    // 3) 合成
     float3 outCol = src.rgb;
 
     // 基础提亮(让金属在能量态自发光)
@@ -88,14 +80,14 @@ float4 MainPS(float4 vertexColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
     // 顶点闪光: 全刃白金点亮, 边缘更盛
     outCol += FlashColor.rgb * (0.45 + 0.75 * edgeMask) * FlashBoost;
 
-    // ---- 4) 软限亮 ----
+    // 4) 软限亮
     float maxC = max(max(outCol.r, outCol.g), outCol.b);
     if (maxC > 0.96)
     {
         outCol = outCol * ((0.96 + (maxC - 0.96) * 0.22) / maxC);
     }
 
-    // ---- 5) 顶点色调制 + 预乘 alpha ----
+    // 5) 顶点色调制 + 预乘 alpha
     outCol *= vertexColor.rgb;
     float alpha = src.a * vertexColor.a;
 

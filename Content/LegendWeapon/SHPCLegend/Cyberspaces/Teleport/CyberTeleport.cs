@@ -9,13 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>
-    /// 赛博瞬移系统 —— 状态管理器
-    /// <br/>领域内瞬移：玩家化作维度数据裂缝劈向光标，目标点以黑墙数据块聚拢重现
-    /// <br/>独立于 HackTime，仅在赛博空间激活且当前层 ≥ <see cref="RequiredLayer"/> 时可用
-    /// <br/>瞬移目标若超出领域有效半径会被 clamp 至边缘——只能在领域内移动
-    /// <br/>触发是瞬时动作：按下立刻传送 + 隐藏玩家 + 回放裂缝/重现演出，避免任何输入卡顿
-    /// </summary>
+    /// <summary>领域瞬移管理：光标 clamp 域内，隐藏+裂缝演出；层≥1</summary>
     internal class CyberTeleport : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();
@@ -49,9 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         private static int cooldownTimer;
         private static int hideTimer;
 
-        /// <summary>
-        /// 当前是否处于"演出隐藏期"——PlayerOverride 据此移除本玩家绘制
-        /// </summary>
+        /// <summary>演出隐藏期，PlayerOverride 移除绘制</summary>
         public static bool IsLocalPlayerHidden => hideTimer > 0;
 
         /// <summary>

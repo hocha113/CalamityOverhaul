@@ -1,7 +1,6 @@
 // ============================================================================
-// CyberBanishNPC.fx — 赛博放逐NPC着色器
-// 三阶段：故障闪烁 → 故障加剧+缩小 → 高光闪白消失
-// 风格：深红色故障扭曲，RGB通道撕裂，扫描线干扰，像素化分裂
+// CyberBanishNPC.fx 赛博放逐 NPC 滤镜
+// 采样 uImage0 NPC 贴图
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +11,7 @@ float intensity;       // 赛博空间效果强度
 float seed;            // 每个NPC独立的随机种子
 float2 texelSize;      // 1/texWidth, 1/texHeight
 
-// ---- 工具函数 ----
+// 工具函数
 
 float hash11(float p)
 {
@@ -31,9 +30,9 @@ float hash21(float2 p)
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-    // ================================================================
+    // =
     // 故障扭曲偏移计算
-    // ================================================================
+    // =
     float timeHash = floor(uTime * 12.0 + seed * 100.0);
     float glitchStrength = lerp(0.3, 1.0, progress);
 
@@ -60,9 +59,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     distorted.x += rowShift * glitchStrength;
     distorted += blockShift;
 
-    // ================================================================
+    // =
     // RGB通道分离采样
-    // ================================================================
+    // =
     float channelSplit = lerp(2.0, 12.0, progress * progress) * texelSize.x;
     // 各通道沿不同方向偏移
     float splitAngle = uTime * 3.0 + seed * 6.28;
@@ -83,9 +82,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     if (color.a < 0.01)
         return float4(0, 0, 0, 0);
 
-    // ================================================================
+    // =
     // 深红色滤镜（去饱和 + 红色偏移）
-    // ================================================================
+    // =
     float lum = dot(color.rgb, float3(0.299, 0.587, 0.114));
     float redFilterStr = lerp(0.3, 0.85, progress) * intensity;
 
@@ -96,24 +95,24 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float3 redTint = float3(lum * 1.4, lum * 0.3, lum * 0.25);
     filtered = lerp(filtered, redTint, redFilterStr);
 
-    // ================================================================
+    // =
     // 扫描线干扰
-    // ================================================================
+    // =
     float scanFreq = lerp(80.0, 200.0, progress);
     float scanLine = sin(coords.y * scanFreq + uTime * 15.0) * 0.5 + 0.5;
     scanLine = pow(scanLine, lerp(8.0, 3.0, progress));
     filtered -= scanLine * lerp(0.08, 0.2, progress);
 
-    // ================================================================
+    // =
     // 随机像素闪烁（数字噪点）
-    // ================================================================
+    // =
     float pixelNoise = hash21(coords * 500.0 + uTime * 10.0 + seed);
     float noiseStr = lerp(0.05, 0.25, progress);
     filtered += (pixelNoise - 0.5) * noiseStr;
 
-    // ================================================================
+    // =
     // 阶段三 (>0.85): 高光闪白 → 透明消失
-    // ================================================================
+    // =
     float fadePhase = smoothstep(0.85, 1.0, progress);
     if (fadePhase > 0.0)
     {
@@ -126,9 +125,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         color.a *= 1.0 - pow(fadePhase, 1.5);
     }
 
-    // ================================================================
+    // =
     // 边缘故障溢出光（NPC轮廓外围的红色数字残影）
-    // ================================================================
+    // =
     float edgeGlow = 0.0;
     float4 sampleUp    = tex2D(uImage0, coords + float2(0, -texelSize.y * 2.0));
     float4 sampleDown  = tex2D(uImage0, coords + float2(0,  texelSize.y * 2.0));
@@ -142,9 +141,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     filtered += float3(0.8, 0.1, 0.05) * edgeGlow;
 
-    // ================================================================
+    // =
     // 全局透明度闪烁（故障性质的整体明灭）
-    // ================================================================
+    // =
     float globalFlicker = 0.7 + 0.3 * sin(uTime * 8.0 + seed * 30.0);
     float blockFlicker = step(0.15, hash11(timeHash * 0.31 + seed)) > 0.0 ? 1.0 : 0.4;
     color.a *= globalFlicker * lerp(1.0, blockFlicker, progress);

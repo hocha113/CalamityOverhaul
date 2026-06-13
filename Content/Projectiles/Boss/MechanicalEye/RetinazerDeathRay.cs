@@ -11,11 +11,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
     /// <summary>
-    /// 双子魔眼持续性死亡射线：锚定在眼睛上，方向跟随NPC旋转(由AI状态驱动扫射)。
+    /// 双子魔眼持续性死亡射线：锚定眼睛，方向随 NPC 旋转(AI 驱动扫射)
     /// <br/>ai[0] = 宿主NPC的whoAmI
     /// <br/>ai[1] = 总持续时间(帧)
     /// <br/>ai[2] = 主题 0=激光眼青紫死光 1=魔焰眼烈焰射线
-    /// <br/>展开/收束有缓动，未完全展开时不造成伤害；宿主死亡时快速收束
+    /// <br/>展开/收束缓动，未完全展开无伤害；宿主死亡时快速收束
     /// </summary>
     internal class RetinazerDeathRay : ModProjectile
     {

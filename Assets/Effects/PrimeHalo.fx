@@ -1,3 +1,8 @@
+// ============================================================================
+// PrimeHalo.fx 机械骷髅王锚点光晕
+// 屏幕空间 quad；ps_3_0
+// ============================================================================
+
 float colorMult;
 float time;
 float radius;
@@ -5,11 +10,11 @@ float maxOpacity;
 
 float2 screenPosition;
 float2 screenSize;
-float2 anchorPoint;
+float2 anchorPoint;    //旋转锚点
 float2 playerPosition;
 
 float projTime;
-bool isVmos;
+bool isVmos;           //VMOS 阶段渐变色
 
 //平滑插值函数，避免硬边缘
 float InverseLerp(float a, float b, float t)

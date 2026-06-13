@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// R技能：万魔终焉，终极必杀
-    /// 在玩家周围生成巨型硫磺火法阵，召唤无数闪电和火球轰炸全屏敌人
-    /// </summary>
+    /// R技能万魔终焉 巨型硫磺火法阵+闪电火球全屏轰炸
     internal class PandemoniumRSkill : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -22,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private ref float Timer => ref Projectile.ai[1];
 
         //技能参数
-        private const int Duration = 300; //5秒持续时间
+        private const int Duration = 300; //5秒
         private const float MaxCircleRadius = 1200f;
         private float currentRadius = 0f;
 

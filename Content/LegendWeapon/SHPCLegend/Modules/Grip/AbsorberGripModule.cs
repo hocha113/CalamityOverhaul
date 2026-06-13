@@ -3,10 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 吸收握把：命中目标时按伤害比例返还少量蓝量，构成自循环的法力补给
-    /// 视觉用 <see cref="CombatText"/> 给玩家明确反馈，与 VampireGripModule 的回血形成补给二选一
-    /// </summary>
+    /// <summary>吸收握把：命中按伤害比例回蓝</summary>
     internal sealed class AbsorberGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

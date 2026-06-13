@@ -12,11 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 精密瞄具：校准裁决系统。散布完全归零；连续命中且不脱靶会累积「校准值」，
-    /// 集满 10 层后自动从枪口射出一道瞬发的「裁决射线」—— 必定暴击、贯穿直线上
-    /// 所有敌人；任何一束主光束脱靶都会清空校准（双子魔眼礼物 —— 激光眼的凝视）
-    /// </summary>
+    /// <summary>精密瞄具：零散布，连中 10 层射裁决射线必暴贯线，脱靶清零</summary>
     internal sealed class PrecisionOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -70,11 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
     }
 
-    /// <summary>
-    /// 裁决射线：瞬发狙击光束，长度沿弹道探测至障碍物（上限 1500px），
-    /// 前 8 帧具有伤害判定且必定暴击，整体存活 30 帧用于演出
-    /// 使用 SHPCJudgmentRay.fx 渲染白红弧芯、色散描边与裂解消散
-    /// </summary>
+    /// <summary>裁决射线，前 8 帧必暴贯线；SHPCJudgmentRay.fx</summary>
     internal sealed class SHPCJudgmentRayProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -1,16 +1,15 @@
-﻿using InnoVault.GameSystem;
+using InnoVault.GameSystem;
 using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
     /// <summary>
-    /// 主菜单相关的持久化数据管理
-    /// 用于保存跨世界的解锁状态(如立绘解锁)
+    /// 主菜单立绘存档
     /// </summary>
     internal class MenuSave : SaveMod
     {
-        //当前数据版本号(修改数据结构时递增此版本号)
+        // 数据结构版本戳
         private const int CurrentDataVersion = 1;
 
         /// <summary>
@@ -61,10 +60,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         public override void SaveData(TagCompound tag) {
-            //保存版本戳
+            // 保存版本戳
             tag["DataVersion"] = CurrentDataVersion;
 
-            //保存所有数据
+            // 保存所有数据
             tag["ADV_SupCal_EBN"] = ADV_SupCal_EBN;
             tag["SupCal_Expression"] = SupCal_Expression;
             tag["SupCal_LeftPortraitOffset"] = SupCal_LeftPortraitOffset;
@@ -76,18 +75,18 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         }
 
         public override void LoadData(TagCompound tag) {
-            //读取版本号
+            // 读取版本号
             if (!tag.TryGet("DataVersion", out int dataVersion)) {
-                dataVersion = 0; //旧版本存档没有版本戳,默认为0
+                dataVersion = 0; // 旧版本存档没有版本戳,默认为0
             }
 
-            //根据版本号进行数据迁移
+            // 根据版本号进行数据迁移
             MigrateData(tag, dataVersion);
 
-            //加载数据(始终使用最新格式)
+            // 加载数据(始终使用最新格式)
             LoadCurrentVersionData(tag);
 
-            //加载后立即同步到UI状态(如果UI已初始化)
+            // 加载后立即同步到UI状态(如果UI已初始化)
             if (ADV_SupCal_EBN) {
                 SupCalPortraitUI.Instance?.LoadSavedState();
                 HelenPortraitUI.Instance?.LoadSavedState();
@@ -155,7 +154,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 ADV_SupCal_EBN = true;
                 DoSave<MenuSave>();
 
-                //立即更新UI状态
+                // 立即更新UI状态
                 SupCalPortraitUI.Instance?.LoadSavedState();
                 HelenPortraitUI.Instance?.LoadSavedState();
             }
@@ -226,7 +225,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Helen_PortraitOffset = Vector2.Zero;
             DoSave<MenuSave>();
 
-            //立即同步到UI
+            // 立即同步到UI
             SupCalPortraitUI.Instance?.LoadSavedState();
             HelenPortraitUI.Instance?.LoadSavedState();
         }
@@ -238,7 +237,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             SupCal_Expression = 0;
             DoSave<MenuSave>();
 
-            //立即同步到UI
+            // 立即同步到UI
             SupCalPortraitUI.Instance?.LoadSavedState();
         }
 
@@ -250,7 +249,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             SupCal_RightPortraitScale = 0.85f;
             DoSave<MenuSave>();
 
-            //立即同步到UI
+            // 立即同步到UI
             SupCalPortraitUI.Instance?.LoadSavedState();
         }
     }

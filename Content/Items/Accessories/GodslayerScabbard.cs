@@ -8,13 +8,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Accessories
 {
-    //弑神者剑鞘饰品主类
+    /// 弑神者剑鞘饰品
     internal class GodslayerScabbard : ModItem
     {
         public override string Texture => CWRConstant.Item_Accessorie + "GodslayerScabbard";
-        //拔刀值上限180帧即3秒
+        //拔刀值上限(180帧≈3s)
         public const int MaxDrawCharge = 180;
-        //提供的无敌帧时间
+        //无敌帧时长(帧)
         public const int IFrameTime = 120;
 
         public override void SetDefaults() {
@@ -39,26 +39,26 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    //玩家效果类负责处理拔刀值积累和无敌帧效果
+    /// 拔刀值积累与无敌帧
     internal class GodslayerScabbardPlayer : ModPlayer
     {
-        //是否装备剑鞘
+        //已装备剑鞘
         public bool EquipScabbard;
-        //当前拔刀值0到MaxDrawCharge
+        //当前拔刀值[0,MaxDrawCharge]
         public int DrawCharge;
-        //拔刀值达标标志当拔刀值满时为true
+        //拔刀值已满
         public bool DrawChargeReady;
-        //无敌帧剩余时间
+        //无敌帧剩余
         private int iFrameTimer;
-        //充能完成后的视觉脉冲计时
+        //充能完成脉冲计时
         private int readyPulseTimer;
-        //触发无敌帧的视觉效果计时
+        //触发无敌视觉计时
         private int triggerEffectTimer;
-        //记录上一帧的攻击动画状态用于检测攻击结束
+        //上帧攻击动画状态
         private bool wasAttacking;
-        //记录本次攻击是否成功命中
+        //本挥是否命中
         private bool hasHitThisSwing;
-        //打空失败效果计时器
+        //打空失败效果计时
         private int missEffectTimer;
 
         public override void ResetEffects() {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override void PreUpdateMovement() {
             if (!EquipScabbard) {
-                //未装备时清空拔刀值
+                //未装备清空拔刀值
                 DrawCharge = 0;
                 DrawChargeReady = false;
                 readyPulseTimer = 0;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             Item heldItem = Player.HeldItem;
 
-            //检查是否手持近战武器
+            //手持近战判定
             bool isMeleeWeapon = heldItem != null && !heldItem.IsAir
                 && (heldItem.DamageType == DamageClass.Melee
                 || heldItem.DamageType == CWRRef.GetTrueMeleeDamageClass()
@@ -87,45 +87,45 @@ namespace CalamityOverhaul.Content.Items.Accessories
             bool isAttacking = Player.itemAnimation > 0;
             bool notAttacking = !isAttacking && Player.itemTime <= 0;
 
-            //检测攻击动画刚刚结束（从攻击状态变为非攻击状态）
+            //攻击动画刚结束
             if (wasAttacking && !isAttacking && DrawChargeReady && isMeleeWeapon) {
-                //攻击动画结束但没有命中敌人，触发打空惩罚
+                //挥空惩罚
                 if (!hasHitThisSwing) {
                     //清空蓄力
                     DrawCharge = 0;
                     DrawChargeReady = false;
                     readyPulseTimer = 0;
                     missEffectTimer = 20;
-                    //播放失败音效
+                    //失败音效
                     SoundEngine.PlaySound(SoundID.Item64 with { Pitch = -0.5f, Volume = 0.5f }, Player.Center);
-                    //生成失败特效
+                    //失败特效
                     SpawnMissEffect();
                 }
                 //重置命中标记
                 hasHitThisSwing = false;
             }
 
-            //更新攻击状态记录
+            //更新攻击状态
             wasAttacking = isAttacking;
 
             if (isMeleeWeapon && notAttacking) {
                 //积累拔刀值
                 if (DrawCharge < GodslayerScabbard.MaxDrawCharge) {
                     DrawCharge++;
-                    //满值时设置标志并播放音效
+                    //满值标志+音效
                     if (DrawCharge >= GodslayerScabbard.MaxDrawCharge && !DrawChargeReady) {
                         DrawChargeReady = true;
                         readyPulseTimer = 60;
-                        //播放充能完成音效
+                        //充能完成音效
                         SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.5f, Volume = 0.6f }, Player.Center);
                         SoundEngine.PlaySound(SoundID.Item29 with { Pitch = 0.3f, Volume = 0.5f }, Player.Center);
-                        //生成充能完成粒子效果
+                        //充能完成粒子
                         SpawnChargeReadyEffect();
                     }
                 }
             }
 
-            //更新充能完成的脉冲效果
+            //充能完成脉冲
             if (readyPulseTimer > 0) {
                 readyPulseTimer--;
                 if (readyPulseTimer % 8 == 0) {
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //如果蓄力完成，持续显示待机光环
+            //蓄力完成待机光环
             if (DrawChargeReady && Main.GameUpdateCount % 4 == 0) {
                 SpawnReadyAuraEffect();
             }
@@ -141,7 +141,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             //更新无敌帧计时器
             if (iFrameTimer > 0) {
                 iFrameTimer--;
-                //无敌帧期间生成保护光环粒子
+                //无敌期间保护光环
                 if (iFrameTimer % 2 == 0) {
                     SpawnProtectionAura();
                 }
@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //检查是否是近战伤害
+            //近战伤害判定
             bool isMeleeDamage = hit.DamageType == DamageClass.Melee
                 || hit.DamageType == CWRRef.GetTrueMeleeDamageClass()
                 || hit.DamageType == CWRRef.GetTrueMeleeNoSpeedDamageClass();
@@ -176,23 +176,23 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //标记本次攻击已命中
+            //标记本挥命中
             hasHitThisSwing = true;
 
             if (!DrawChargeReady) {
                 return;
             }
 
-            //蓄力完成且造成了近战伤害，触发无敌帧
+            //满蓄近战命中触发无敌
             Player.GivePlayerImmuneState(GodslayerScabbard.IFrameTime, true);
             iFrameTimer = GodslayerScabbard.IFrameTime;
             triggerEffectTimer = 30;
 
-            //播放拔刀音效
+            //拔刀音效
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.3f, Volume = 0.8f }, Player.Center);
             SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 0.2f, Volume = 0.7f }, Player.Center);
 
-            //生成拔刀特效
+            //拔刀特效
             SpawnDrawEffect(target.Center);
 
             //清空拔刀值
@@ -201,15 +201,15 @@ namespace CalamityOverhaul.Content.Items.Accessories
             readyPulseTimer = 0;
         }
 
-        //生成打空失败的粒子效果
+        //挥空失败粒子
         private void SpawnMissEffect() {
             if (VaultUtils.isServer) return;
 
-            //使用暗淡的颜色表示失败
+            //暗淡失败色
             Color missColor = new Color(100, 100, 150);
             Color darkBlue = new Color(40, 60, 100);
 
-            //向外扩散的暗淡粒子
+            //向外扩散暗淡粒
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        //生成打空后的拖尾效果
+        //挥空拖尾
         private void SpawnMissTrailEffect() {
             if (VaultUtils.isServer) return;
 
@@ -238,11 +238,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Main.dust[dust].noGravity = true;
         }
 
-        //生成充能完成的粒子效果
+        //充能完成粒子
         private void SpawnChargeReadyEffect() {
             if (VaultUtils.isServer) return;
 
-            //使用弑神者主题的深紫蓝色
+            //弑神者深紫蓝主题色
             Color godslayerBlue = new Color(80, 180, 255);
             Color godslayerPurple = new Color(160, 80, 255);
 
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 ).Configure(Main.rand.Next(25, 40), opacity: 1.5f, squishStrenght: 2.5f, hueShift: 0.02f);
             }
 
-            //扩散圆环效果
+            //扩散圆环
             for (int i = 0; i < 36; i++) {
                 float angle = MathHelper.TwoPi * i / 36f;
                 Vector2 pos = Player.Center + angle.ToRotationVector2() * 50f;
@@ -274,7 +274,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        //生成蓄力完成后的脉冲效果
+        //蓄力完成脉冲
         private void SpawnReadyPulseEffect() {
             if (VaultUtils.isServer) return;
 
@@ -290,7 +290,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        //生成待机光环效果
+        //待机光环
         private void SpawnReadyAuraEffect() {
             if (VaultUtils.isServer) return;
 
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Main.dust[dust].velocity = (Player.Center - pos).SafeNormalize(Vector2.Zero) * 0.5f;
         }
 
-        //生成拔刀瞬间的粒子效果（击中敌人时触发）
+        //拔刀命中粒子
         private void SpawnDrawEffect(Vector2 targetPos) {
             if (VaultUtils.isServer) return;
 
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 ).Configure(Main.rand.Next(20, 35), opacity: 1.2f, squishStrenght: 2f, hueShift: 0.01f);
             }
 
-            //向目标方向的剑气效果
+            //向目标剑气
             for (int i = 0; i < 12; i++) {
                 float t = i / 12f;
                 Vector2 pos = Vector2.Lerp(Player.Center, targetPos, t);
@@ -352,7 +352,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        //生成触发后的拖尾效果
+        //触发拖尾
         private void SpawnTriggerTrailEffect() {
             if (VaultUtils.isServer) return;
 
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        //生成保护光环粒子
+        //保护光环
         private void SpawnProtectionAura() {
             if (VaultUtils.isServer) return;
 
@@ -402,11 +402,11 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void PostUpdate() {
-            //绘制拔刀值充能光环
+            //拔刀值充能光环
             if (EquipScabbard && DrawCharge > 0 && !DrawChargeReady) {
                 float chargeRatio = DrawCharge / (float)GodslayerScabbard.MaxDrawCharge;
 
-                //根据充能进度调整粒子生成频率
+                //充能进度调粒子频率
                 int interval = (int)MathHelper.Lerp(15, 5, chargeRatio);
                 if (Main.GameUpdateCount % interval == 0) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -422,7 +422,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                     Main.dust[dust].velocity = (Player.Center - Main.dust[dust].position).SafeNormalize(Vector2.Zero) * (1f + chargeRatio * 2f);
                 }
 
-                //高充能时添加额外效果
+                //高充能额外光粒
                 if (chargeRatio > 0.7f && Main.GameUpdateCount % 8 == 0 && !VaultUtils.isServer) {
                     Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1f, 3f);
                     PRTLoader.NewParticle<PRT_Light>(

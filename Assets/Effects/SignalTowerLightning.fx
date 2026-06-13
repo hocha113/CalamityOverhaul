@@ -1,25 +1,16 @@
 // ============================================================================
-// SignalTowerLightning.fx  信号塔红色闪电着色器
-// 整道闪电完全由像素着色器程序生成，无需传入任何路径数据
-// 渲染层：顶视角一整个矩形画布（塔顶位于画布底部中点）
-// 参数：
-//   uTime         全局时间
-//   lifeProgress  生命进度 0~1，0=刚生 1=消亡
-//   intensity     总体亮度系数，外部可用于做脉冲/爆闪
-//   seed          实例随机种子，决定路径、支路、抖动
-//   texelSize     1/width, 1/height
-//   aspect        width / height，用于圆形冲击点在像素空间内保持正圆
-// 建议配合：BlendState.Additive 叠加，避免底层贴图被覆盖
+// SignalTowerLightning.fx 信号塔红色闪电
+// 程序生成，塔顶在画布底部中点；Additive 叠加
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
-float lifeProgress;
-float intensity;
-float seed;
-float2 texelSize;
-float aspect;
+float lifeProgress;  //生命 0~1，0刚生 1消亡
+float intensity;     //总体亮度，脉冲/爆闪
+float seed;          //实例随机种子
+float2 texelSize;    //1/宽 1/高
+float aspect;        //宽/高，冲击点保持正圆
 
 float hash11(float p)
 {

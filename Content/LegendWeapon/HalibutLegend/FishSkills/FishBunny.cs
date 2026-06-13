@@ -8,9 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 兔子鱼技能，丢出跳跃爆炸兔子鱼
-    /// </summary>
+    /// <summary>兔子鱼技能，抛射跳跃爆炸鱼</summary>
     internal class FishBunny : FishSkill
     {
         public override int UnlockFishID => ItemID.Bunnyfish;
@@ -96,9 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 兔子鱼跳跃弹幕，蹦蹦跳跳的很可爱的不是吗
-    /// </summary>
+    /// <summary>兔子鱼跳跃弹幕，落地/追击后爆炸</summary>
     internal class BunnyfishHopper : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Bunnyfish;

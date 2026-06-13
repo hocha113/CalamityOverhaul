@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 脉冲电容：蓄力期间每隔固定帧数从能量球身上释放一次微型脉冲爆破
-    /// 用实例计时器避免依赖 SHPCPlayer 等共享状态，仅本机弹幕拥有者侧执行 spawn
-    /// </summary>
+    /// <summary>脉冲电容：蓄力周期从球体释微型脉冲爆破</summary>
     internal sealed class CapacitorPulseModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

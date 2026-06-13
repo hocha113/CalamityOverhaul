@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查亵渎使徒是否被击败
+            //亵渎使徒击杀
             bool isDowned = InWorldBossPhase.Downed17.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查痴愚金龙是否被击败
+            //痴愚金龙击杀
             bool isDowned = InWorldBossPhase.Downed18.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查亵渎天神是否被击败
+            //亵渎天神击杀
             bool isDowned = InWorldBossPhase.Downed19.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查风暴编织者是否被击败
+            //风暴编织者击杀
             bool isDowned = InWorldBossPhase.Downed21.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查无尽虚空是否被击败
+            //无尽虚空击杀
             bool isDowned = InWorldBossPhase.Downed20.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -247,7 +247,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查西格纳斯是否被击败
+            //西格纳斯击杀
             bool isDowned = InWorldBossPhase.Downed22.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -293,7 +293,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查噬魂幽花是否被击败
+            //噬魂幽花击杀
             bool isDowned = InWorldBossPhase.Downed23.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -342,7 +342,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查硫海遗爵是否被击败
+            //硫海遗爵击杀
             bool isDowned = InWorldBossPhase.Downed26.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -389,7 +389,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查神明吞噬者是否被击败
+            //神明吞噬者击杀
             bool isDowned = InWorldBossPhase.Downed27.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -439,7 +439,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查丛林龙是否被击败
+            //丛林龙击杀
             bool isDowned = InWorldBossPhase.Downed28.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -492,7 +492,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查星流巨械是否被击败
+            //星流巨械击杀
             bool isDowned = InWorldBossPhase.Downed29.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查至尊灾厄是否被击败
+            //至尊灾厄击杀
             bool isDowned = InWorldBossPhase.Downed30.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
@@ -600,7 +600,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //检查始源妖龙是否被击败
+            //始源妖龙击杀
             bool isDowned = InWorldBossPhase.Downed31.Invoke();
             Objectives[0].CurrentProgress = isDowned ? 1 : 0;
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;

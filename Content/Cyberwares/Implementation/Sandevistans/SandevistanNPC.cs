@@ -3,10 +3,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
-    /// <summary>
-    /// 独立的GlobalNPC，专门处理斯安威斯坦时缓对NPC的影响。
-    /// 不侵入CWRNpc，由tModLoader自动加载和调度。
-    /// </summary>
+    /// <summary>GlobalNPC 时缓，不侵入 CWRNpc</summary>
     internal class SandevistanNPC : GlobalNPC
     {
         public override bool PreAI(NPC npc) {
@@ -18,7 +15,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             }
 
             int id = npc.whoAmI;
-            //时缓期间新出现的NPC，首次遇到时记录它的速度
+            //时缓中新 NPC 首次记入速度
             if (!SandevistanTimeSlow.NPCHasCache[id]) {
                 SandevistanTimeSlow.NPCCachedVelocities[id] = npc.velocity;
                 SandevistanTimeSlow.NPCHasCache[id] = true;
@@ -26,11 +23,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
             Vector2 slowVel = SandevistanTimeSlow.NPCCachedVelocities[id] * SandevistanTimeSlow.SlowFactor;
 
-            //维持NPC存活，冻结动画
+            //保活+冻动画
             npc.timeLeft++;
             npc.aiAction = 0;
             npc.frameCounter = 0;
-            //撤销本帧物理引擎造成的移动，按缓存速度的缩放值重新位移
+            //回滚本帧位移，按缓存速度缩放重设
             npc.position = npc.oldPosition + slowVel;
             npc.velocity = slowVel;
             npc.direction = npc.oldDirection;

@@ -17,16 +17,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 龙藻巨刃
-    /// <br/>左键: 三段连击的翠龙巨刃，挥砍释放螺旋绿藻剑气
-    /// <br/>右键: 召唤翠龙之魂撕咬光标方向的敌人，沿途散播毒藻雾
-    /// </summary>
+    /// 龙藻巨刃：三段连击+螺旋绿藻剑气，右键翠龙之魂
     internal class DragonsScaleGreatsword : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "DragonsScaleGreatsword";
 
-        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        /// 三段连击计数
         private static int comboCounter;
 
         public override void SetStaticDefaults() => ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
@@ -93,19 +89,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 龙藻巨刃手持大剑
-    /// <br/>三段连击: 正手大劈 → 反手回斩 → 龙威终结斩
-    /// <br/>刀光轨迹由 DragonSlashTrail.fx 渲染，挥砍中段释放螺旋绿藻剑气
-    /// </summary>
+    /// 龙藻巨刃手持：三段连击+DragonSlashTrail.fx+绿藻剑气
     internal class DragonsScaleGreatswordHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Item_Melee + "DragonsScaleGreatsword";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<DragonsScaleGreatsword>()).DisplayName;
 
-        /// <summary>连击索引: 0=正手劈 1=反手斩 2=终结斩</summary>
+        /// 连击索引 0正 1反 2终结
         private ref float ComboIndex => ref Projectile.ai[0];
-        /// <summary>挥砍方向符号 ±1</summary>
+        /// 挥砍方向 ±1
         private ref float SwingDirAi => ref Projectile.ai[1];
 
         private bool IsFinisher => ComboIndex >= 2f;
@@ -414,11 +406,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 螺旋绿藻剑气
-    /// <br/>主体由 DragonSporeBeam.fx 程序化生成：双股绿藻螺旋缠绕亮芯
-    /// <br/>击中目标或物块后炸成数团毒藻雾
-    /// </summary>
+    /// 螺旋绿藻剑气：DragonSporeBeam.fx，命中炸毒藻雾
     internal class DragonsScaleGreatswordBeam : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -544,12 +532,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 翠龙之魂——程序化蛟龙弹幕
-    /// <br/>主体由 DragonSoulSerpent.fx 程序化生成：龙首、后掠双角、背鳍棘刺、消散藻尾
-    /// <br/>蜿蜒游动并追猎附近的敌人，锁定猎物后陷入狂怒（金瞳燃起、张口咆哮）
-    /// <br/>沿途散播毒藻雾
-    /// </summary>
+    /// 翠龙之魂：DragonSoulSerpent.fx 蛟龙追猎+毒藻雾
     internal class DragonSoulSerpent : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -557,7 +540,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public static Color kelpColor2 => new Color(150, 235, 130);
 
         private ref float Time => ref Projectile.ai[0];
-        /// <summary>狂怒度 0~1，锁定猎物后攀升</summary>
+        /// 狂怒度 0~1
         private float rage;
 
         public override void SetStaticDefaults() {

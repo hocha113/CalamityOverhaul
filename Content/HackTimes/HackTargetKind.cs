@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇入协议支持的目标类型
-    /// <br/>使用Flags允许一个协议同时支持多种目标
-    /// </summary>
+    /// <summary>协议支持目标类型，Flags 可多选</summary>
     [Flags]
     internal enum HackTargetKind
     {
@@ -15,17 +12,17 @@ namespace CalamityOverhaul.Content.HackTimes
         Npc = 1,
         //物块目标
         Tile = 2,
-        //灵异目标（如乱码鬼等Actor类实体）
+        //灵异 Actor
         Wraith = 4,
-        //虚空聚落炮台等可被电路骇入的Actor机械
+        //可骇入炮台 Actor
         Turret = 8,
-        //虚空聚落信号塔等承担广播/扫描职能的核心Actor
+        //信号塔 Actor
         SignalTower = 16,
-        //弹幕目标（敌对/友方/陷阱等Projectile实体）
+        //弹幕实体
         Projectile = 32,
-        //液体目标（水、岩浆、蜂蜜、微光等）
+        //液体格子
         Water = 64,
-        //掉落物目标（世界中的Item实体）
+        //掉落物实体
         Item = 128,
     }
 }

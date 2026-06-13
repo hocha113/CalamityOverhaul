@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>
-    /// Boss执行会话管理
-    /// <br/>对Boss级目标启动后，会在持续时间内分波次召唤大量 <see cref="CyberExecutionBoltProj"/> 进行高伤打击
-    /// <br/>不会抹除Boss，伤害根据当前持有的SHPC面板与改件加成实时计算
-    /// </summary>
+    /// <summary>Boss 执行会话，分波召唤 CyberExecutionBoltProj</summary>
     internal class CyberBossExecution : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();
@@ -49,9 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             return false;
         }
 
-        /// <summary>
-        /// 判定NPC是否属于Boss级目标，包含直接boss、应被计为boss的类型，以及群组任一成员为boss的情况
-        /// </summary>
+        /// <summary>判定 Boss 级目标，含群组 realLife</summary>
         public static bool IsBossTier(NPC npc) {
             if (npc == null || !npc.active) return false;
             if (npc.boss) return true;
@@ -67,9 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             return false;
         }
 
-        /// <summary>
-        /// 启动Boss执行打击
-        /// </summary>
+        /// <summary>启动 Boss 执行打击</summary>
         public static void StartExecution(int npcIndex, Player owner) {
             if (npcIndex < 0 || npcIndex >= Main.maxNPCs) return;
             if (IsExecuting(npcIndex)) return;
@@ -99,9 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             }
         }
 
-        /// <summary>
-        /// 计算执行雷的单发伤害：取本地玩家库存中等级最高的SHPC，按面板*改件DamageMul再乘 <see cref="DamageMultiplier"/>
-        /// </summary>
+        /// <summary>单发伤害：最高级 SHPC 面板 × 改件 × DamageMultiplier</summary>
         private static int ResolveExecutionDamage(Player owner) {
             int baseDamage = SHPCOverride.GetStartDamage;
             if (owner != null) {
@@ -153,12 +143,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             }
         }
 
-        /// <summary>
-        /// 收到远端 Boss 执行启动广播：在本机也加入对应 ActiveExecutions 记录，
-        /// 让 IsExecuting 判定与放逐 / 冻结的过滤一致；仅发起者客户端会真正 spawn 雷击
-        /// <br/>当前 <see cref="CyberBanish.Update"/> 在所有端都会触发 <see cref="StartExecution"/>，
-        /// 因此该接口暂时不被实际使用，保留是为了对齐其它子系统的同步形态以备扩展
-        /// </summary>
+        /// <summary>远端 Boss 执行广播同步 ActiveExecutions</summary>
         internal static void HandleNetStart(BinaryReader reader, int whoAmI) {
             int npcIdx = reader.ReadUInt16();
             int ownerWho = reader.ReadByte();
@@ -175,9 +160,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             });
         }
 
-        /// <summary>
-        /// 按时间计划在Boss附近召唤天雷，雷间隔大致均匀但带轻微随机抖动以避免节奏机械
-        /// </summary>
+        /// <summary>按时间计划召唤天雷，带随机抖动</summary>
         private static void TickSpawnBolts(ExecutionEntry entry, NPC npc) {
             if (npc.realLife > 0) {
                 return;//排除子实体

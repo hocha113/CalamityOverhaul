@@ -6,10 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// SHPC 右键蓄力时的手持弹幕
-    /// <br/>负责绘制武器贴图、控制手臂动画、提供枪口位置
-    /// </summary>
+    /// <summary>SHPC 右键蓄力手持弹幕，绘制武器与枪口</summary>
     internal class SHPCChargeHeldProj : BaseHeldProj
     {
         /// <summary>后坐力最大后退距离（像素）</summary>
@@ -35,9 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>当前后坐力偏移量</summary>
         private float recoilOffset;
 
-        /// <summary>
-        /// 当前蓄力进度（0~1），由 <see cref="CyberChargeOrbProj"/> 每帧写入，驱动序列动画
-        /// </summary>
+        /// <summary>蓄力进度 0~1，由 CyberChargeOrbProj 写入</summary>
         public float ChargeProgress;
         /// <summary>满蓄循环动画计时器</summary>
         private int loopAnimTimer;
@@ -46,20 +41,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// <summary>本帧计算出的玩家前手世界坐标（握把锚点）</summary>
         private Vector2 handWorld;
 
-        /// <summary>
-        /// 握把锚点在单帧（152×70，朝右未翻转）内的像素坐标。
-        /// <br/>该像素会被钉在玩家前手的世界坐标上，武器绕此点旋转，可按需微调
-        /// </summary>
+        /// <summary>握把锚点像素（152×70 朝右）</summary>
         private static Vector2 GripPixel => new Vector2(50f, 46f);
-        /// <summary>
-        /// 枪口发射点在单帧内的像素坐标，弹体由此处生成，可按需微调
-        /// </summary>
+        /// <summary>枪口发射点像素坐标</summary>
         private static Vector2 MuzzlePixel => new Vector2(146f, 32f);
 
-        /// <summary>
-        /// 把单帧内的像素坐标变换到世界坐标，绘制与逻辑共用同一套变换，
-        /// 保证枪口、握把与实际绘制完全一致（含旋转、竖直翻转、后坐力回退）
-        /// </summary>
+        /// <summary>单帧像素坐标变换到世界坐标</summary>
         private Vector2 FramePointToWorld(Vector2 framePixel) {
             Vector2 rel = framePixel - GripPixel;
             if (Owner.direction < 0) {
@@ -70,9 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 + rel.RotatedBy(Projectile.rotation) * SHPCOverride.ItemScale;
         }
 
-        /// <summary>
-        /// 枪口世界坐标，供 CyberChargeOrbProj 查询
-        /// </summary>
+        /// <summary>枪口世界坐标</summary>
         public Vector2 TipPosition => FramePointToWorld(MuzzlePixel);
 
         public override void SetDefaults() {
@@ -89,9 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         public override bool? CanDamage() => false;
 
-        /// <summary>
-        /// 外部调用：触发后坐力动画，之后自动消亡
-        /// </summary>
+        /// <summary>触发后坐力并自动消亡</summary>
         public void TriggerRecoil() {
             if (recoiling) return;
             recoiling = true;
@@ -117,10 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             UpdateAnimationFrame();
         }
 
-        /// <summary>
-        /// 根据蓄力进度推进序列动画帧：
-        /// <br/>蓄力中 → 前 21 帧随进度递进；满蓄后 → 循环播放最后三帧
-        /// </summary>
+        /// <summary>蓄力递进前 21 帧，满蓄循环末三帧</summary>
         private void UpdateAnimationFrame() {
             if (ChargeProgress >= 1f) {
                 int loopFrames = ChargeFrameCount - ChargeProgressFrames;

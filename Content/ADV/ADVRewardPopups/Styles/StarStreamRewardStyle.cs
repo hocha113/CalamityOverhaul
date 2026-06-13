@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         public void DrawPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //深空渐变背景
+            // 深空渐变背景
             int segments = 30;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -59,18 +59,18 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), finalColor);
             }
 
-            //星云呼吸叠加
+            // 星云呼吸叠加
             float nebulaPulse = (float)Math.Sin(nebulaPulseTimer * 1.3f) * 0.5f + 0.5f;
             Color nebulaOverlay = new Color(30, 15, 50) * (alpha * 0.2f * nebulaPulse);
             spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), nebulaOverlay);
 
-            //星座网格
+            // 星座网格
             DrawConstellationGrid(spriteBatch, rect, alpha * 0.7f);
 
-            //极光光带
+            // 极光光带
             DrawAuroraStreaks(spriteBatch, rect, alpha * 0.6f);
 
-            //内部金色光晕
+            // 内部金色光晕
             float innerPulse = (float)Math.Sin(shimmerTimer * 1.1f) * 0.5f + 0.5f;
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
@@ -81,14 +81,14 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             Texture2D px = VaultAsset.placeholder2.Value;
             float pulse = (float)Math.Sin(shimmerTimer * 1.1f) * 0.5f + 0.5f;
 
-            //金色外框
+            // 金色外框
             Color outerEdge = Color.Lerp(new Color(180, 140, 50), new Color(240, 200, 100), pulse) * (alpha * (0.8f + hoverGlow * 0.3f));
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 3, rect.Width, 3), new Rectangle(0, 0, 1, 1), outerEdge * 0.7f);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
-            //内框金色光线
+            // 内框金色光线
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             Color innerGlow = new Color(255, 220, 120) * (alpha * (0.18f + hoverGlow * 0.5f) * pulse);
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             spriteBatch.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
             spriteBatch.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerGlow * 0.85f);
 
-            //顶部流光
+            // 顶部流光
             float flowT = (shimmerTimer * 0.8f) % 1f;
             int highlightW = 60;
             int highlightX = rect.X + (int)(flowT * (rect.Width - highlightW));
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 spriteBatch.Draw(px, new Rectangle(highlightX + dx, rect.Y, 1, 3), new Rectangle(0, 0, 1, 1), highlightColor * intensity);
             }
 
-            //角落四芒星
+            // 角落四芒星
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 12, rect.Y + 12), alpha * (0.95f + hoverGlow * 0.4f));
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 12, rect.Y + 12), alpha * (0.95f + hoverGlow * 0.4f));
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 12, rect.Bottom - 12), alpha * (0.6f + hoverGlow * 0.3f));

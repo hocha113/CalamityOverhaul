@@ -4,10 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>
-    /// 赛博领域冻结弹幕绘制拦截器
-    /// <br/>冻结弹幕的AI并应用冻结着色器效果
-    /// </summary>
+    /// <summary>冻结弹幕 PreDraw 着色器+PreAI 钉位</summary>
     internal class CyberDomainFreezeGlobalProj : GlobalProjectile
     {
         private static bool _shaderActive;

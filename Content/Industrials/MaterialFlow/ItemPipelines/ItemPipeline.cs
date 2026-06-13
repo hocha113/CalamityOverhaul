@@ -8,9 +8,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
-    /// <summary>
-    /// 物流管道物品
-    /// </summary>
+    /// <summary>物流管道物品</summary>
     internal class ItemPipeline : BasePipelineItem
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/ItemPipelineItem";
@@ -43,9 +41,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
     }
 
-    /// <summary>
-    /// 物流管道物块
-    /// </summary>
+    /// <summary>物流管道图块</summary>
     internal class ItemPipelineTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/Pipeline";

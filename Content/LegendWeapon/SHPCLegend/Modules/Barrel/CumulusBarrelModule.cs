@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 积云枪管：光束留下可被后续 SHPC 弹幕充能的云核，满能后降下雷雨。
-    /// </summary>
+    /// <summary>积云枪管：光束留可充能云核，满能降雷雨</summary>
     internal sealed class CumulusBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -51,14 +49,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 积云核心：用 9 张 Fog 椭圆叠出云团，DiffusionCircle 标识充能比例，满能时先导主闪电 + 3 道支线
-    /// </summary>
+    /// <summary>积云核心：Fog 叠云+充能环，满能主闪+3 支线</summary>
     internal sealed class SHPCCumulusNodeProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        //云块数量降到 5（原 9）— 视觉差异极小但绘制成本接近减半
+        //BlobCount 5 降绘制成本
         private const int BlobCount = 5;
         //PassiveCharge 扫描节流：每 8 帧才扫一次全弹幕表
         private const int ChargeScanInterval = 8;

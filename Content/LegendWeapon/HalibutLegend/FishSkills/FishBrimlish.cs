@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 硫磺火鱼技能，开火时召唤硫磺火鱼在身后喷射火焰
-    /// </summary>
+    /// <summary>硫磺火鱼技能，开火周期召唤身后喷火鱼</summary>
     internal class FishBrimlish : FishSkill
     {
         public override int UnlockFishID => CWRID.Item_Brimlish;
@@ -62,10 +60,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 硫磺火鱼喷射器弹幕
-    /// 多人模式下采用持有者权威 + 本地视觉镜像的策略：
-    /// 状态机推进、目标锁定、位置移动均由持有者执行，
-    /// 通过 ai 槽位与 SendExtraAI 同步关键状态给其它端。
+    /// 硫磺火鱼喷射弹幕
+    /// 持有者权威：状态机、锁定、位移在持有者端推进，ai + SendExtraAI 同步其它端
     /// </summary>
     internal class BrimfishSpitterProjectile : ModProjectile
     {

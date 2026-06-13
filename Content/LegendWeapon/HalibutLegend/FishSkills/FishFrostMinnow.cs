@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 寒霜鲦鱼技能，开火时周期性召唤并向敌人喷射雪花
-    /// </summary>
+    /// <summary>寒霜鲦鱼技能，周期召唤并喷射雪花</summary>
     internal class FishFrostMinnow : FishSkill
     {
         public override int UnlockFishID => ItemID.FrostMinnow;
@@ -225,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpawnChargeDust();
             }
 
-            //蓄力音效 - 寒冰凝聚
+                //蓄力音效
             if (StateTimer % 12 == 0) {
                 SoundEngine.PlaySound(SoundID.Item30 with {
                     Volume = 0.3f * progress,
@@ -298,7 +296,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity = 1f - progress;
             Projectile.scale = 1.2f - progress * 0.6f;
 
-            //化作冰雾消散
+            //淡出消散
             Projectile.velocity.Y -= 0.15f;
 
             if (StateTimer >= FadeDuration) {
@@ -500,7 +498,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            //消散效果 - 化作冰雾
+            //消散：冰雾粒子
             for (int i = 0; i < 40; i++) {
                 Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
                 Dust frost = Dust.NewDustPerfect(

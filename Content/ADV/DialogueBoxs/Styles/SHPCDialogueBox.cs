@@ -9,9 +9,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
-    /// SHPC专属赛博朋克2077风格对话框<br/>
-    /// 深色金属质感面板 + 斜切六角轮廓 + 霓虹数据流线 + 状态读出<br/>
-    /// Shader驱动面板背景（CRT扫描线/扫掠光带/暗角/微故障）
+    /// SHPC 赛博朋克风格对话框
     /// </summary>
     internal class SHPCDialogueBox : DialogueBoxBase
     {
@@ -21,15 +19,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         private const float FixedWidth = 540f;
         protected override float PanelWidth => FixedWidth;
 
-        //动画计时器
-        private float neonPulseTimer;      //霓虹呼吸脉冲
-        private float dataFlowTimer;       //数据流线流动
-        private float sweepTimer;          //shader扫掠光带时间
+        // 动画计时
+        private float neonPulseTimer;      // 霓虹脉冲
+        private float dataFlowTimer;       // 数据流
+        private float sweepTimer;          // 扫掠光带
 
-        //左侧数据流线（2条竖向霓虹流动线）
+        // 左侧数据流线
         private readonly float[] dataLinePhases = new float[2];
 
-        //四角状态文字
+        // 四角状态字
         private readonly string[] cornerStatus = ["LINK.OK", "SYS:RDY", "v2.07b", "SYNC.."];
         private int statusUpdateClock;
         private static readonly string[] StatusPool = [
@@ -38,14 +36,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             "IO:PASS", "CHK:OK", "MOD:RUN", "BUF:CLR", "SIG:99"
         ];
 
-        //粒子系统（精简数量）
+        // 粒子
         private readonly List<NeonMaidPRT> neonParticles = [];
         private int neonParticleSpawnTimer;
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int circuitNodeSpawnTimer;
         private const float SideMargin = 24f;
 
-        //六角溢出边距（shader控制alpha形状）
+        // 六角边距，shader 控 alpha
         private const int EdgePad = 20;
 
         //主色调常量（深暗紫底色 + 蓝色高光）

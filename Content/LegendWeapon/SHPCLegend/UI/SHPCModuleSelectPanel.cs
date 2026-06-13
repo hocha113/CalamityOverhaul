@@ -11,11 +11,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
-    /// <summary>
-    /// SHPC 三级模块面板
-    /// 列出玩家背包中与给定槽位类别匹配的改件，支持装备/卸载与自定义悬浮描述
-    /// 由 <see cref="SHPCUI"/> 在玩家点击 <see cref="SHPCModPanel"/> 槽位后驱动渲染
-    /// </summary>
+    /// <summary>三级改件选择面板，按槽位列背包候选</summary>
     internal static class SHPCModuleSelectPanel
     {
         private const float Scale = 1f;
@@ -53,9 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             public int HoveredRow;
         }
 
-        /// <summary>
-        /// 用于从 Layout 中得知当前候选物品列表（每帧重建以追踪背包变化）
-        /// </summary>
+        /// <summary>每帧重建候选列表缓冲</summary>
         private static readonly List<Item> _candidates = new();
 
         //列表滚动偏移（候选物品索引）

@@ -70,9 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 全局弹幕钩子，添加灵液感染效果
-    /// </summary>
+    /// <summary>全局钩子，Halibut 攻击附加灵液 debuff</summary>
     internal class FishIchornGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -105,9 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 灵液射流弹幕，这里搓一下液体物理模拟玩玩
-    /// </summary>
+    /// <summary>灵液射流弹幕，粒子+拖尾物理</summary>
     internal class IchorStream : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -189,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0.2f * lightIntensity);
         }
 
-        //射流状态AI
+        //射流 tick
         private void StreamingPhaseAI() {
             //应用重力
             Projectile.velocity.Y += Gravity * 0.3f;
@@ -226,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //溅射状态AI
+        //溅射 tick
         private void SplashingPhaseAI() {
             //快速消散
             Projectile.alpha += 15;
@@ -258,7 +254,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             liquidParticles.Add(particle);
         }
 
-        //生成液体拖尾粒子-模拟液体流动的连续性
+        //拖尾液滴
         private void SpawnTrailParticle() {
             //在射流后方生成连续的液滴
             Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 25f);
@@ -415,7 +411,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //创建真实的液体溅射效果
+        //溅射 burst
         private void CreateSplashEffect(Vector2 hitPosition, Vector2 impactVelocity) {
             //计算溅射方向
             Vector2 normal = -impactVelocity.SafeNormalize(Vector2.Zero);
@@ -562,7 +558,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //绘制液体拖尾粒子-创造液体流动感
+        //拖尾液滴绘制
         private void DrawTrailParticles() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.StarTexture_White.Value;
@@ -617,13 +613,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        //绘制液体粒子-使用高级混合和灰度图
+        //液滴粒子绘制
         private void DrawLiquidParticles() {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.StarTexture_White.Value;
             Texture2D maskTex = CWRAsset.LightShot.Value;
 
-            //使用加法混合模式增强液体发光效果
+            //加法混合
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -817,9 +813,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public bool IsSplash;
     }
 
-    /// <summary>
-    /// 灵液拖尾粒子数据结构-专门用于模拟液体流动
-    /// </summary>
+    /// <summary>灵液拖尾粒子</summary>
     internal struct IchorTrailParticle
     {
         public Vector2 Position;

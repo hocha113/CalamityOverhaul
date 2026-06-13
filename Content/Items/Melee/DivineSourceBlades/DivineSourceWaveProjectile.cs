@@ -10,8 +10,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
     /// <summary>
-    /// 神源之刃 —— 新月剑气波。
-    /// ai[0] 为尺寸倍率（0 视作 1），大斩切释放的巨型剑气存活更久、衰减更慢
+    /// 神源之刃新月剑气波
+    /// ai[0] 为尺寸倍率（0 视作 1），大斩切巨型剑气存活更久、衰减更慢
     /// </summary>
     internal class DivineSourceWaveProjectile : ModProjectile
     {

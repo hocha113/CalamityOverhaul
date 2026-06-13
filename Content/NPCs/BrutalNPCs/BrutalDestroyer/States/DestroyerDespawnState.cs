@@ -48,12 +48,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
     }
 
-    /// <summary>
-    /// 死亡演出状态：锁血、整条蠕虫停摆，躯体各处由疏到密地连环殉爆，
-    /// 最终头部巨型爆裂后才真正死亡。表现"庞大机械在严重故障与连环爆炸中解体"的演出。
-    /// <br/>状态切换与最终击杀由服务端驱动（经 npc.ai[2] 同步），
-    /// 所有爆炸粒子/音效/震动均在客户端本地生成，纯视觉，多人安全。
-    /// </summary>
+    /// <summary>死亡演出：锁血停摆，躯体由疏到密殉爆，头部终爆后真死</summary>
+    /// <para>切换与击杀服务端驱动(ai[2])；爆炸/音效/震动客户端本地，多人安全</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Death, typeof(DestroyerStateContext))]
     internal class DestroyerDeathState : DestroyerStateBase
     {
@@ -118,7 +114,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             KeepSegmentsHarmless(context);
             KeepProbesInDeathPerformance();
 
-            //探针殉爆：与演出计时同步，服务端/单人端负责真正击杀
+            //探针殉爆与演出计时同步，服务端/单人端执行击杀
             if (Timer < FinaleStart) {
                 UpdateProbeChainExplosions();
             }
@@ -126,7 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 ExplodeAllRemainingProbes(true);
             }
 
-            //演出视觉（在所有非服务端执行，确保单人与多人客户端都能看到）
+            //演出视觉：非服务端本地生成，单人/多人客户端均可见
             if (!VaultUtils.isServer) {
                 UpdatePerformanceVisuals(context);
             }
@@ -183,10 +179,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>
-        /// 对屏幕内的头部与各体节按概率生成爆炸，屏幕外的节点直接跳过（性能优化 + 把演出集中到可见区域）。
-        /// 返回实际生成的爆炸数量。
-        /// </summary>
+        /// <summary>屏幕内头/体节按概率爆炸，屏外跳过；返回实际爆炸数</summary>
         private static int SpawnBlastsOnVisibleSegments(DestroyerStateContext context, float perSegmentChance, float intensity) {
             if (VaultUtils.isServer) {
                 return 0;
@@ -337,10 +330,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>
-        /// 将所有现存探针切入死亡演出：僵直、锁血、排定殉爆时刻（ai[1]），不再立即清场。
-        /// ai[0]=0 表示尚未殉爆；ai[3]=ProbeDeathPerformanceMarker 供 ProbeAI 识别。
-        /// </summary>
+        /// <summary>现存探针切入死亡演出：僵直锁血，排定殉爆帧 ai[1]；ai[0]=0 未爆，ai[3]=Marker</summary>
         private static void PrepareProbesForDeathPerformance() {
             if (VaultUtils.isClient) {
                 return;
@@ -479,9 +469,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Main.instance.CameraModifiers.Add(modifier);
         }
 
-        /// <summary>
-        /// 判断世界坐标是否落在当前屏幕可见范围内（含一定外扩边距），用于跳过屏幕外的爆炸生成
-        /// </summary>
+        /// <summary>世界坐标是否在屏幕可见范围(含外扩边距)，屏外跳过爆炸</summary>
         private static bool OnScreen(Vector2 worldPos, float margin = 260f) {
             return worldPos.X > Main.screenPosition.X - margin
                 && worldPos.X < Main.screenPosition.X + Main.screenWidth + margin

@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 猫鱼技能类，右键丢出活泼跳跃的猫鱼
-    /// </summary>
+    /// <summary>猫鱼技能，右键抛射跳跃猫鱼</summary>
     internal class FishCat : FishSkill
     {
         public static SoundStyle Sound => CWRSound.Hajm with {
@@ -91,9 +89,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 猫鱼跳跃弹幕，模拟猫咪的灵活动作
-    /// </summary>
+    /// <summary>猫鱼跳跃弹幕，跳跃与扑击状态机</summary>
     internal class CatfishLeaper : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Catfish;

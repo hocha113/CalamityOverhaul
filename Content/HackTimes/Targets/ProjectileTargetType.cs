@@ -4,10 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 弹幕目标种类工厂
-    /// <br/>优先级低于 NPC / 灵异 Actor，高于物块，便于选中飞行中的危险弹幕
-    /// </summary>
+    /// <summary>弹幕目标工厂</summary>
     internal class ProjectileTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Projectile;

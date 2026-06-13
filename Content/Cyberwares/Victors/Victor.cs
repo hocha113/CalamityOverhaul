@@ -13,26 +13,21 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     /// <summary>
-    /// 义体医生 Victor —— 克苏鲁之眼被击败后到来的城镇NPC
-    /// <br/>仅复用原版城镇NPC的基础行走AI(<see cref="NPCAIStyleID.Passive"/>)与住房系统，
-    /// 交谈与义体诊所全部走完全自定义的 <see cref="VictorTalkUI"/> / <see cref="UIs.VictorClinicUI"/>
+    /// 义体医生 Victor，克苏鲁之眼击败后入住的城镇 NPC
+    /// <br/>行走/住房走 <see cref="NPCAIStyleID.Passive"/>；对话与诊所走 <see cref="VictorTalkUI"/> / <see cref="UIs.VictorClinicUI"/>
     /// </summary>
     internal class Victor : ModNPC
     {
-        /// <summary>
-        /// 与 Victor.png 一致的行走动画帧数，第 0 帧作为站立帧
-        /// </summary>
+        /// <summary>与 Victor.png 一致共 10 帧，第 0 帧站立</summary>
         public const int FrameCount = 10;
 
-        /// <summary>
-        /// 绘制时脚部相对碰撞箱底边的垂直微调（正值向下），用于让脚踩实地面
-        /// </summary>
+        /// <summary>绘制脚部垂直微调，正值向下贴地</summary>
         private const float DrawVerticalOffset = 2f;
 
         public override void SetStaticDefaults() {
             Main.npcFrameCount[Type] = FrameCount;
 
-            //城镇NPC通用集合：纯医生，不主动攻击，仅在危险时逃跑
+            //城镇 NPC 集合：危险时逃跑，不主动攻击
             NPCID.Sets.ExtraFramesCount[Type] = 0;
             NPCID.Sets.AttackFrameCount[Type] = 0;
             NPCID.Sets.DangerDetectRange[Type] = 200;
@@ -54,7 +49,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             NPC.friendly = true;
             NPC.width = 24;
             NPC.height = 46;
-            NPC.aiStyle = NPCAIStyleID.Passive;//原版城镇NPC行走 / 住房 / 逃跑AI
+            NPC.aiStyle = NPCAIStyleID.Passive;//Passive 行走/住房/逃跑
             NPC.damage = 10;
             NPC.defense = 52;
             NPC.lifeMax = 2250;
@@ -70,7 +65,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             ]);
         }
 
-        //克苏鲁之眼被击败后，Victor 才会在有空房时入住
+        //克苏鲁之眼击败后且有空房才入住
         public override bool CanTownNPCSpawn(int numTownNPCs) {
             foreach (var p in Main.ActivePlayers) {
                 if (HackTimeAccess.CanUse(p)) {
@@ -84,16 +79,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name0"),
         ];
 
-        //禁用原版聊天框，交互完全交给自定义的右键检测 + VictorTalkUI
+        //禁用原版聊天，交互走 VictorTalkUI 右键
         public override bool CanChat() => false;
 
         public override void FindFrame(int frameHeight) {
-            //朝向跟随面向 / 移动方向
+            //朝向跟 direction
             if (!NPC.IsABestiaryIconDummy && NPC.direction != 0) {
                 NPC.spriteDirection = NPC.direction;
             }
 
-            //图鉴里的展示木偶持续播放行走动画
+            //图鉴木偶循环行走 1..9 帧
             if (NPC.IsABestiaryIconDummy) {
                 NPC.frameCounter += 0.18f;
                 NPC.frameCounter %= FrameCount - 1;
@@ -101,22 +96,22 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 return;
             }
 
-            //静止 = 第 0 帧站立
+            //静止用第 0 帧
             if (Math.Abs(NPC.velocity.X) < 0.1f) {
                 NPC.frameCounter = 0;
                 NPC.frame.Y = 0;
                 return;
             }
 
-            //移动时在 1..9 帧间循环，速度越快帧推进越快
+            //移动 1..9 帧，速度越快推进越快
             NPC.frameCounter += Math.Abs(NPC.velocity.X) * 0.15f;
             NPC.frameCounter %= FrameCount - 1;
             NPC.frame.Y = (1 + (int)NPC.frameCounter) * frameHeight;
         }
 
         /// <summary>
-        /// 完全自定义绘制：手动处理贴图帧、朝向翻转、地面对齐、光照、落地软阴影与克制的赛博红边缘辉光。
-        /// <br/>返回 <see langword="false"/> 跳过原版城镇NPC绘制，避免错位、派对帽等默认装饰带来的观感问题
+        /// 自定义绘制：帧/翻转/地面对齐/光照/阴影/红边辉光
+        /// <br/>返回 false 跳过原版绘制，避免派对帽等装饰错位
         /// </summary>
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             Texture2D tex = TextureAssets.Npc[Type].Value;
@@ -126,20 +121,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
             int frameHeight = tex.Height / Main.npcFrameCount[Type];
             Rectangle source = new(0, NPC.frame.Y, tex.Width, frameHeight);
-            Vector2 origin = new(tex.Width / 2f, frameHeight);//底部中心：脚部贴合碰撞箱底边
+            Vector2 origin = new(tex.Width / 2f, frameHeight);//底部中心锚点
 
-            //贴图默认朝左，朝右移动时水平翻转
+            //贴图默认朝左，右移时水平翻转
             SpriteEffects effects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             Vector2 footPos = NPC.Bottom - screenPos + new Vector2(0f, NPC.gfxOffY + DrawVerticalOffset);
             Color light = NPC.GetAlpha(drawColor);
-            //本体
             spriteBatch.Draw(tex, footPos, source, light, NPC.rotation, origin, NPC.scale, effects, 0f);
             return false;
         }
 
         public override void AI() {
-            //移动 / 住房由 aiStyle=7 的原版逻辑自动驱动，这里只追加本地客户端的右键交互
+            //仅本地客户端追加右键交互
             if (Main.dedServ) {
                 return;
             }
@@ -155,7 +149,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 return;
             }
 
-            //悬停提示
+            //右键悬停提示
             local.noThrow = 2;
             local.cursorItemIconEnabled = true;
             local.cursorItemIconID = ItemID.None;
@@ -165,13 +159,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 && !VictorClinicUI.Instance.IsOpen && !VictorSurgery.Active) {
                 Main.mouseRightRelease = false;
                 VictorSession.Bind(NPC.whoAmI);
-                VictorTalkUI.Instance.Open();//开启音由 VictorTalkUI.OpenSound 播放，避免重复
+                VictorTalkUI.Instance.Open();//开启音由 OpenSound 播，避免重复
             }
         }
 
         /// <summary>
-        /// 交互/手术期间定身并面向玩家：在原版 Passive AI 之后归零水平速度、锁定面向，避免开界面时仍乱走。
-        /// <br/>以单机/主机为准（被交互实例的本地覆盖），多人非主机可能被服务器同步轻微拉回
+        /// 交互/手术期间定身面向玩家，Passive AI 后归零水平速度
+        /// <br/>单机/主机本地覆盖；多人非主机可能被服务器同步拉回
         /// </summary>
         public override void PostAI() {
             if (Main.dedServ || VictorSession.BoundWhoAmI != NPC.whoAmI) {
@@ -184,7 +178,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             NPC.velocity.X = 0f;
             Player local = Main.LocalPlayer;
             if (local != null && local.active) {
-                //贴图默认朝左：玩家在左→朝左(spriteDirection=-1)，玩家在右→朝右(=1)
+                //贴图默认朝左：玩家在左 spriteDirection=-1
                 NPC.direction = NPC.spriteDirection = local.Center.X < NPC.Center.X ? -1 : 1;
             }
         }

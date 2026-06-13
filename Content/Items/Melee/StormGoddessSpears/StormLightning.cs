@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
-    /// <summary>
-    /// 风暴女神之矛的主要闪电弹幕
-    /// </summary>
+    /// 风暴女神之矛主闪电弹幕
     internal class StormLightning : Lightning
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -30,19 +28,19 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         #endregion
 
         #region 自定义属性
-        /// <summary>闪电颜色风格（通过ai[2]传入）</summary>
+        /// 颜色风格(ai[2])
         private int ColorStyle => (int)Projectile.ai[2] % 100;
 
-        /// <summary>是否已产生冲击波</summary>
+        /// 已产冲击波
         private bool hasSpawnedShockwave = false;
 
-        /// <summary>是否禁用追踪（用于制造直线飞行效果）</summary>
+        /// 禁用追踪(直线)
         private bool disableHoming = false;
 
-        /// <summary>宽度缩放系数（从ai[2]解码）</summary>
+        /// 宽度缩放(ai[2]解码)
         private float widthScale = 1f;
 
-        /// <summary>是否是风暴女神发射的闪电（更强视觉效果）</summary>
+        /// 女神闪电(强视觉)
         public bool isGoddessLightning = false;
         #endregion
 
@@ -110,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //如果是女神闪电，增加额外的威力感
             if (isGoddessLightning) {
-                finalWidth *= 1.3f; //女神闪电额外增粗30%
+            //女神闪电额外增粗30%
             }
 
             return finalWidth;
@@ -197,9 +195,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 生成冲击粒子特效
-        /// </summary>
+        /// 冲击粒子
         private void SpawnImpactParticles() {
             Color particleColor = GetLightningColor(0.5f);
 
@@ -257,7 +253,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         protected override void UpdateStrikeMovement() {
             //如果禁用追踪，保持直线飞行
             if (disableHoming) {
-                //只添加轻微的自然抖动，不追踪目标
+                //直线飞行微抖动
                 float baseSpeed = Projectile.velocity.Length();
 
                 //极小的随机扰动（模拟闪电的自然抖动）
@@ -275,7 +271,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 return;
             }
 
-            //原有的追踪逻辑
+            //追踪逻辑
             float baseSpeed2 = Projectile.velocity.Length();
             float distance = Projectile.Center.Distance(TargetPosition);
 

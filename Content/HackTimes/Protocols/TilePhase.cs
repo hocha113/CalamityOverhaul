@@ -9,9 +9,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 虚化协议：篡改物块物理属性，使其在一段时间内变为虚体可穿透
-    /// </summary>
+    /// <summary>物块虚化协议</summary>
     internal class TilePhase : QuickHackDef
     {
         //虚化持续时间（帧，8秒）
@@ -58,7 +56,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                 originY = tileY - offY;
             }
 
-            //本端权威致动并广播；远端复刻仅做视觉表现，致动状态由 TileSquare 同步
+            //本端致动广播，远端 TileSquare 同步
             if (!HackTimeNetSync.IsRemoteApply) {
                 //致动整个物块对象
                 for (int dx = 0; dx < w; dx++) {

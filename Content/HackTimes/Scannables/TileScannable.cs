@@ -8,11 +8,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>
-    /// 物块扫描数据实现
-    /// <br/>扫描家具、工作站、容器等可交互物块的属性信息
-    /// <br/>同时承担 <see cref="IHackTarget"/> 抽象，把物块的"被骇入"行为下沉到本类
-    /// </summary>
+    /// <summary>物块扫描与 IHackTarget 实现</summary>
     internal class TileScannable : IHackTarget
     {
         //物块的格子坐标
@@ -114,7 +110,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
         }
 
         public bool ApplyHack(QuickHackDef hack, Player caster) {
-            //物块协议走效果追踪器，由其管理 OnApply→OnTick→OnRemove 生命周期
+            //物块协议走效果追踪器
             int casterIndex = caster?.whoAmI ?? Main.myPlayer;
             return HackEffectTracker.ApplyTileEffect(hack, tileX, tileY, casterIndex) != null;
         }
@@ -125,13 +121,9 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         #endregion
 
-        /// <summary>
-        /// 获取物块的显示名称
-        /// <br/>通过MapHelper将物块坐标转换为地图条目，再取本地化名称
-        /// </summary>
+        /// <summary>物块显示名，MapHelper 查表</summary>
         internal static string GetTileName(int x, int y, int type) {
-            //MapHelper.CreateMapTile内部处理了帧到样式的映射
-            //返回的MapTile.Type就是Lang.GetMapObjectName所需的查表索引
+            //MapHelper 帧到样式映射
             MapTile mapTile = MapHelper.CreateMapTile(x, y, 255);
             if (mapTile.Type > 0) {
                 string mapName = Lang.GetMapObjectName(mapTile.Type);
@@ -146,10 +138,10 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             }
 
             Tile tile = Main.tile[x, y];
-            //地图名失效后先走人工打表，避免掉落物名污染物块名
+            //地图名失效走打表
             if (TileNameFallbackRegistry.TryGetName(tile, type, out string fallbackName)) return fallbackName;
 
-            //无法解析出正常名称时，通过掉落物获取物品名作为兜底
+            //兜底用掉落物名
             int dropId = tile.GetTileDrop(x, y);
             if (dropId > 0) {
                 string itemName = VaultUtils.GetLocalizedItemName(dropId).Value;
@@ -177,9 +169,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return data != null && (data.Width > 1 || data.Height > 1);
         }
 
-        /// <summary>
-        /// 获取物块的分类文本
-        /// </summary>
+        /// <summary>物块分类文本</summary>
         internal static string GetTileClass(int type) {
             if (IsCraftingStation(type)) return HackTime.TileScanCrafting.Value;
             if (IsContainer(type)) return HackTime.TileScanContainer.Value;
@@ -188,9 +178,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTime.TileScanBlock.Value;
         }
 
-        /// <summary>
-        /// 获取物块分类对应的颜色
-        /// </summary>
+        /// <summary>物块分类颜色</summary>
         internal static Color GetTileClassColor(int type) {
             if (IsCraftingStation(type)) return HackTheme.Uploading;
             if (IsContainer(type)) return HackTheme.AccentAlt;
@@ -199,9 +187,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTheme.TextDim;
         }
 
-        /// <summary>
-        /// 获取物块硬度文本
-        /// </summary>
+        /// <summary>物块硬度文本</summary>
         private static string GetHardnessText(int type) {
             //地牢砖、丛林蜥蜴砖等需要特定工具
             if (Main.tileDungeon[type]) return HackTime.TileScanDungeon.Value;
@@ -216,13 +202,11 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTime.TileScanHardnessLow.Value;
         }
 
-        /// <summary>
-        /// 获取物块状态文本
-        /// </summary>
+        /// <summary>物块状态文本</summary>
         private static string GetStatusText(Tile tile, int type) {
             //火把、蜡烛等光源检查开关状态
             if (IsLightSource(type)) {
-                //物块帧X用于判断开关状态（不同物块可能不同，这里做通用处理）
+                //帧 X 判断开关
                 bool isOn = tile.TileFrameX < 66 || Main.tileFrameImportant[type] && tile.TileFrameX == 0;
                 return isOn ? HackTime.TileScanActive.Value : HackTime.TileScanInactive.Value;
             }
@@ -231,9 +215,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return HackTime.TileScanIntact.Value;
         }
 
-        /// <summary>
-        /// 获取状态对应的颜色
-        /// </summary>
+        /// <summary>状态颜色</summary>
         private static Color GetStatusColor(Tile tile, int type) {
             if (IsLightSource(type)) {
                 bool isOn = tile.TileFrameX < 66 || Main.tileFrameImportant[type] && tile.TileFrameX == 0;
@@ -290,9 +272,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 && !IsCraftingStation(type) && !IsContainer(type) && !IsLightSource(type);
         }
 
-        /// <summary>
-        /// 获取破坏物块所需的最低镐力
-        /// </summary>
+        /// <summary>最低镐力</summary>
         private static int GetMinPickPower(int type) {
             //利用原版的minPick检测数组
             if (type == TileID.Meteorite) return 50;
@@ -309,10 +289,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         #endregion
 
-        /// <summary>
-        /// 判断指定世界坐标处是否存在可扫描的物块
-        /// <br/>任何存在实体物块的格子均可扫描
-        /// </summary>
+        /// <summary>坐标处可扫描物块</summary>
         public static bool TryGetScannableTile(Vector2 worldPos, out int outX, out int outY) {
             outX = (int)(worldPos.X / 16f);
             outY = (int)(worldPos.Y / 16f);
@@ -325,10 +302,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return tile.HasTile;
         }
 
-        /// <summary>
-        /// 判断是否为树木 trunk 物块
-        /// <br/>树木由单列 trunk tile 组成，树冠和分枝由 TileDrawing 独立绘制
-        /// </summary>
+        /// <summary>树木 trunk 物块</summary>
         public static bool IsTreeTile(int type) {
             return type == TileID.Trees
                 || type == TileID.PalmTree
@@ -338,10 +312,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 || type == TileID.MushroomTrees;
         }
 
-        /// <summary>
-        /// 获取整棵树木的视觉包围盒
-        /// <br/>沿 trunk 向上/向下搜索完整 trunk 范围，再扩展树冠高度和分枝宽度
-        /// </summary>
+        /// <summary>整棵树视觉包围盒</summary>
         public static Rectangle GetTreeFullBounds(int x, int y, int type) {
             //向上找 trunk 顶（连续同类 HasTile）
             int topY = y;
@@ -357,7 +328,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 if (!t.HasTile || t.TileType != type) break;
                 botY++;
             }
-            //树冠向上扩展 5 格约 80px，分枝左右扩展 ~2.5 格约 40px
+            //树冠上扩 80px，分枝左右 40px
             const int canopyUp = 80;
             const int branchSide = 40;
             int px = x * 16 - branchSide;
@@ -367,11 +338,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return new Rectangle(px, py, w, h);
         }
 
-        /// <summary>
-        /// 获取物块对象在世界空间中的包围盒（像素坐标）
-        /// <br/>对于多格物块会尝试找到其左上角并计算完整尺寸
-        /// <br/>对于树木返回整棵树的视觉范围
-        /// </summary>
+        /// <summary>物块世界包围盒，多格与树木特殊处理</summary>
         public static Rectangle GetTileWorldBounds(int x, int y) {
             if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY)
                 return new Rectangle(x * 16, y * 16, 16, 16);

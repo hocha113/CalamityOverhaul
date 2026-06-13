@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 突击枪托：托内嵌入双联协战模块。持握 SHPC 时在玩家两肩展开一对
-    /// 「悬浮炮臂」，与玩家的每次射击同步交替速射协战镖弹（50% 武器伤害）
-    /// （机械骷髅王礼物 —— 多臂火力平台的余响）
-    /// </summary>
+    /// <summary>突击枪托：双肩悬浮炮臂，主武器射击时交替协战镖弹 50%</summary>
     internal sealed class AssaultStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -41,11 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>
-    /// 悬浮炮臂：悬停在玩家肩侧的微缩 SHPC 复制体，炮口始终跟随光标。
-    /// 侦测到玩家击发主武器的瞬间，左右臂交替射出协战光弹。
-    /// 改件被卸下时立即自毁
-    /// </summary>
+    /// <summary>悬浮炮臂：肩侧微缩 SHPC，击发瞬间交替协战；改件卸下自毁</summary>
     internal sealed class SHPCAssaultArmProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -14,9 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>
-    /// 任务系统世界切换确认UI，在检测到进入不同世界时弹出确认
-    /// </summary>
+    /// <summary>世界切换任务检测确认 UI</summary>
     internal class QuestWorldConfirmUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
@@ -64,12 +62,11 @@ namespace CalamityOverhaul.Content.QuestLogs
         private readonly List<FloatingParticle> particles = [];
         private float particleSpawnTimer;
 
-        //防误触：每次点击后短暂屏蔽再次点击，避免连击同一帧贯穿多个按钮
+        //防误触点击间隔
         private const int SwapDelayFrames = 12;
         private int swapDelay;
 
-        //布局常量(位置在屏幕上方，避免与LegendUpgradeConfirmUI重叠)
-        //三个按钮：Confirm / Skip / Trust，所以面板比原来略宽
+        //布局常量，屏幕上方避让 LegendUpgradeConfirmUI
         private const float PanelWidth = 540f;
         private const float PanelHeight = 230f;
         private const float Padding = 24f;
@@ -85,9 +82,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         private bool hoveringCancel;
         private bool hoveringTrust;
 
-        //待处理数据
-        //这些都是本地客户端独占的静态状态：OnEnterWorld 是本地玩家专属回调，
-        //每个客户端进程的 isPending 都互相独立，不会跨网络同步，多人模式下不会互相串流
+        //本地独占静态状态，不跨客户端同步
         private static string pendingWorldName;
         private static string pendingLastWorldName;
         private static int pendingOwnerWhoAmI = -1;
@@ -145,24 +140,13 @@ namespace CalamityOverhaul.Content.QuestLogs
             particles.Clear();
         }
 
-        /// <summary>
-        /// 请求显示世界切换确认UI
-        /// <para>
-        /// 严格的本地客户端校验：
-        /// <list type="bullet">
-        /// <item>服务端永远不会被打扰</item>
-        /// <item>只有本地玩家(<see cref="Main.myPlayer"/>)的 ModPlayer 触发才会入队</item>
-        /// <item>静态字段只在本地进程内共享，多人模式下不会跨客户端串流</item>
-        /// </list>
-        /// </para>
-        /// </summary>
+        /// <summary>请求显示世界切换确认，仅本地玩家</summary>
         public static void RequestConfirm(Player owner, string currentWorldName, string lastWorldName) {
-            //服务端永远不持有 UI 请求
+            //服务端不持有 UI 请求
             if (Main.netMode == NetmodeID.Server) {
                 return;
             }
-            //只有本地玩家自己的 OnEnterWorld 才会被尊重
-            //OnEnterWorld 在 tModLoader 中本身就是本地回调，这里加一道防御
+            //仅本地玩家 OnEnterWorld 触发
             if (owner == null || owner.whoAmI != Main.myPlayer) {
                 return;
             }
@@ -178,9 +162,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f, Pitch = 0.1f });
         }
 
-        /// <summary>
-        /// 取消待处理的请求
-        /// </summary>
+        /// <summary>取消待处理请求</summary>
         public static void CancelPending() {
             isPending = false;
             pendingWorldName = null;
@@ -204,7 +186,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
-            //面板滑入动画(从上方滑入)
+            //面板自上方滑入
             float targetSlide = isPending && !closing ? 0f : -60f;
             panelSlideOffset += (targetSlide - panelSlideOffset) * 0.15f;
 
@@ -225,7 +207,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
             contentFade = Math.Clamp(contentFade, 0f, 1f);
 
-            //动画
+            //呼吸与扫光
             breatheAnim = MathF.Sin(globalTime * 1.5f) * 0.5f + 0.5f;
             shimmerPhase = globalTime * 2f;
             iconFloatPhase += 0.04f;
@@ -283,12 +265,12 @@ namespace CalamityOverhaul.Content.QuestLogs
                 player.mouseInterface = true;
             }
 
-            //按钮位置在DrawContent中计算，这里只更新悬停检测
+            //悬停检测，布局在 DrawContent
             hoveringConfirm = confirmButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringTrust = trustButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
-            //点击处理(swapDelay 防止连击穿透)
+            //点击，swapDelay 防连击
             if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f && swapDelay == 0) {
                 if (hoveringConfirm) {
                     confirmPressAnim = 1f;
@@ -370,8 +352,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private void OnTrust() {
-            //把当前世界加入信任列表，并启用任务检测
-            //之后再进入这个世界会直接静默启用，不再弹窗
+            //信任世界并启用，再进静默不弹窗
             var qlPlayer = Main.LocalPlayer.GetModPlayer<QLPlayer>();
             qlPlayer.TrustCurrentQuestWorld();
             qlPlayer.EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
@@ -379,7 +360,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.7f, Pitch = 0.6f });
             CombatText.NewText(player.Hitbox, new Color(150, 220, 255), TrustedText.Value, true);
 
-            //"信任"操作生成更多偏蓝绿的庆祝粒子，与普通确认作视觉区分
+            //信任操作用偏蓝绿庆祝粒子
             for (int i = 0; i < 18; i++) {
                 SpawnTrustParticle();
             }
@@ -662,9 +643,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             DrawButton(spriteBatch, trustButtonRect, TrustText.Value, trustHoverAnim, trustPressAnim, alpha, ButtonStyle.Trust, scale);
         }
 
-        /// <summary>
-        /// 按钮配色主题
-        /// </summary>
+        /// <summary>按钮配色主题</summary>
         private enum ButtonStyle
         {
             Confirm,
@@ -909,14 +888,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         #endregion
     }
 
-    /// <summary>
-    /// 负责在世界生命周期事件中清理<see cref="QuestWorldConfirmUI"/>的全局静态状态
-    /// <para>
-    /// 之前 UI 的<c>isPending</c>等静态字段从未被显式清理。如果玩家在弹窗显示时
-    /// 直接 ESC 退出到主菜单，下次重新进入世界 <see cref="QuestWorldConfirmUI.RequestConfirm"/>
-    /// 会被静默丢弃(因为<c>isPending</c>仍是 true)，新的提示永远出不来
-    /// </para>
-    /// </summary>
+    /// <summary>世界卸载时清理 UI 静态状态，防 isPending 残留</summary>
     internal class QuestWorldConfirmUISystem : ModSystem
     {
         public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;

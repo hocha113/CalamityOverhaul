@@ -5,30 +5,22 @@ using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.ADV.EntrustManager
 {
-    /// <summary>
-    /// 任务条目状态
-    /// </summary>
+    /// <summary>任务条目状态</summary>
     internal enum QuestEntryStatus
     {
-        /// <summary>已激活——正在进行中的任务</summary>
+        /// <summary>正在进行</summary>
         Active,
-        /// <summary>已关注——玩家手动置顶的任务</summary>
+        /// <summary>玩家置顶</summary>
         Tracked,
-        /// <summary>已挂起——玩家暂时搁置的任务</summary>
+        /// <summary>暂时搁置</summary>
         Suspended,
-        /// <summary>已完成——任务目标已达成</summary>
+        /// <summary>目标已达成</summary>
         Completed,
-        /// <summary>已失败——任务失败</summary>
+        /// <summary>任务失败</summary>
         Failed,
     }
 
-    /// <summary>
-    /// 任务管理器中单条委托的数据模型，
-    /// 所有文本字段通过 <see cref="LocalizedText"/> 实现本地化，
-    /// 各任务线应继承此类并提供自定义的
-    /// <see cref="EntryStyle"/>、<see cref="TrackerStyle"/>，
-    /// 重写 <see cref="GetTrackerDetails"/> 和 <see cref="OnUpdate"/>
-    /// </summary>
+    /// <summary>委托管理器单条数据模型，文本字段走本地化</summary>
     internal class EntrustEntryData
     {
         #region 核心数据
@@ -42,21 +34,21 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         public LocalizedText SummaryText;
         /// <summary>所属任务线分类标签（本地化）</summary>
         public LocalizedText CategoryText;
-        /// <summary>进度文本（本地化），为null时不显示进度文本</summary>
+        /// <summary>进度文本，null 时不显示</summary>
         public LocalizedText ProgressLabel;
 
-        /// <summary>显示名称，运行时从 <see cref="TitleText"/> 解析</summary>
+        /// <summary>显示名称</summary>
         public string Title => TitleText?.Value ?? "";
-        /// <summary>任务简要描述，运行时从 <see cref="SummaryText"/> 解析，hjson未加引号字符串中的字面量 \n 会被规范化为真实换行符</summary>
+        /// <summary>简要描述，hjson 字面量 \n 规范化为换行</summary>
         public string Summary => SummaryText?.Value?.Replace("\\n", "\n") ?? "";
-        /// <summary>分类标签，运行时从 <see cref="CategoryText"/> 解析</summary>
+        /// <summary>分类标签</summary>
         public string Category => CategoryText?.Value ?? "";
-        /// <summary>进度文本，运行时从 <see cref="ProgressLabel"/> 解析，null表示无进度文本</summary>
+        /// <summary>进度文本，null 表示无</summary>
         public string ProgressText => ProgressLabel?.Value;
 
         /// <summary>当前状态</summary>
         public QuestEntryStatus Status;
-        /// <summary>从关注状态挂起时记录，用于恢复时回到关注而不是普通激活</summary>
+        /// <summary>从关注挂起时记录，恢复时回到关注</summary>
         public bool RestoreTrackedOnUnsuspend;
         /// <summary>进度 0~1</summary>
         public float Progress;
@@ -69,24 +61,23 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
         #region 展开状态（由QuestManagerUI管理）
 
-        /// <summary>条目在管理器列表中是否展开显示完整描述</summary>
+        /// <summary>
+        /// 列表中是否展开
+        /// </summary>
         public bool IsExpanded;
-        /// <summary>展开/折叠动画进度 0~1，由管理器每帧插值</summary>
+        /// <summary>
+        /// 展开动画 0~1
+        /// </summary>
         public float ExpandProgress;
 
         #endregion
 
         #region 样式系统
 
-        /// <summary>
-        /// 列表中的自定义显示样式，
-        /// 为null则使用 <see cref="IEntrustManagerStyle.DrawQuestEntry"/> 默认样式
-        /// </summary>
+        /// <summary>列表自定义样式，null 用默认绘制</summary>
         public IEntrustEntryStyle EntryStyle { get; set; }
 
-        /// <summary>
-        /// 追踪窗口的自定义显示样式，为null则使用默认样式
-        /// </summary>
+        /// <summary>追踪窗口自定义样式，null 用默认</summary>
         public IEntrustTrackerWidgetStyle TrackerStyle { get; set; }
 
         #endregion
@@ -94,55 +85,32 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         #region 追踪面板内容
 
         /// <summary>
-        /// 左侧追踪窗口的可见性检查委托——返回 false 时，
-        /// 即使本条目处于 <see cref="QuestEntryStatus.Tracked"/> 也不会显示在屏幕左侧的追踪栏里，
-        /// 但管理器主面板上的"已关注"状态仍然保留。<br/>
-        /// 典型用途：要求玩家手持指定武器/位于指定区域时才把追踪信息显露给玩家
+        /// 追踪可见性，false 不显示但保留关注
         /// </summary>
         public Func<bool> TrackerVisibilityCheck { get; set; }
 
-        /// <summary>
-        /// 是否在左侧追踪窗口中显示，默认转发到 <see cref="TrackerVisibilityCheck"/>，
-        /// 子类可重写以实现更复杂的显示策略
-        /// </summary>
+        /// <summary>是否在追踪窗口显示</summary>
         public virtual bool IsTrackerVisible() => TrackerVisibilityCheck?.Invoke() ?? true;
 
-        /// <summary>
-        /// 获取追踪面板中显示的详细内容行，
-        /// 默认返回Summary单行，子类可重写以提供多行内容
-        /// </summary>
+        /// <summary>追踪面板详细内容行</summary>
         public virtual List<string> GetTrackerDetails() {
             return [Summary];
         }
 
-        /// <summary>
-        /// 在追踪面板中绘制自定义内容区域，
-        /// 返回true表示完全接管内容绘制，
-        /// 返回false则使用默认文字加进度条布局
-        /// </summary>
+        /// <summary>追踪面板自定义绘制，true 表示完全接管</summary>
         public virtual bool DrawTrackerContent(SpriteBatch sb, Rectangle contentRect, float alpha) {
             return false;
         }
 
-        /// <summary>
-        /// 处理追踪窗口内的鼠标输入
-        /// 返回true表示本帧鼠标已被条目内的交互元素消费，
-        /// 此时追踪窗口应跳过拖拽起始判定，避免误触
-        /// </summary>
+        /// <summary>追踪窗口鼠标输入，true 表示已消费避免误触拖拽</summary>
         public virtual bool HandleTrackerInput(Rectangle widgetRect, Rectangle contentRect) {
             return false;
         }
 
-        /// <summary>
-        /// 条目希望追踪面板额外保留的高度，
-        /// 用于容纳按钮等不会出现在 GetTrackerDetails 中的可交互元素
-        /// </summary>
+        /// <summary>追踪面板额外高度，容纳按钮等交互元素</summary>
         public virtual int GetTrackerExtraHeight() => 0;
 
-        /// <summary>
-        /// 内容区顶部与分隔线之间的额外间距，默认为0，
-        /// 子类可重写以让描述文本与分隔线保持一定距离
-        /// </summary>
+        /// <summary>内容区顶部额外间距</summary>
         public virtual float GetTrackerContentTopPadding() => 0f;
 
         #endregion
@@ -152,13 +120,12 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         /// <summary>每帧更新数据，子类按需重写</summary>
         public virtual void OnUpdate() { }
 
-        /// <summary>状态变化时调用，子类可重写以触发音效或动画</summary>
+        /// <summary>
+        /// 状态变化回调
+        /// </summary>
         public virtual void OnStatusChanged(QuestEntryStatus oldStatus, QuestEntryStatus newStatus) { }
 
-        /// <summary>
-        /// 从挂起状态恢复为激活时调用的回调，
-        /// 注册者可设置此委托以同步存档标记（如清除拒绝标记、设置接受标记）
-        /// </summary>
+        /// <summary>从挂起恢复时回调，可同步存档标记</summary>
         public Action OnUnsuspended { get; set; }
 
         #endregion

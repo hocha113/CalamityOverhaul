@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
-    /// <summary>
-    /// 激光炮蓄势瞄准：跟随头部左侧悬浮，缓慢锁定玩家充能，
-    /// 充能满后按"热射线横扫 → 三连点射 → 蓄力热射线 → 速射"的确定性序列出招
-    /// </summary>
+    /// <summary>激光炮蓄势：头侧悬浮跟踪，充能后热射线横扫→三连→蓄力→速射轮换</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserAim, typeof(PrimeArmStateContext))]
     internal class LaserAimState : PrimeArmStateBase
     {
@@ -52,16 +49,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return null;
         }
 
-        /// <summary>激光炮的头侧悬浮跟随（带臂侧修正）</summary>
+        /// <summary>头侧悬浮跟随（含臂侧修正）</summary>
         internal static void Follow(PrimeArmStateContext ctx) {
             int side = ctx.Side;
             AnchoredFollow(ctx, -80f, -120f, -200f * side, -160f * side);
         }
     }
 
-    /// <summary>
-    /// 激光炮速射：快速追踪连射死亡激光，每发带后坐力，越打越快
-    /// </summary>
+    /// <summary>激光速射：追踪连射死亡激光，逐发后坐加速</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserRapidFire, typeof(PrimeArmStateContext))]
     internal class LaserRapidFireState : PrimeArmStateBase
     {
@@ -116,10 +111,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 激光炮蓄力重炮：锁定 → 充能汇聚 → 轰出贯穿热射线光束并持续后坐，
-    /// 充能进度通过发光层与粒子完全可读
-    /// </summary>
+    /// <summary>激光蓄力重炮：锁定汇聚后轰出贯穿热射线</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserChargedShot, typeof(PrimeArmStateContext))]
     internal class LaserChargedShotState : PrimeArmStateBase
     {
@@ -196,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             ctx.ChargeGlow = 0f;
         }
 
-        /// <summary>蓄力的回报是一道贯穿热射线，而非普攻弹幕</summary>
+        /// <summary>蓄力兑现为贯穿热射线，非普攻弹幕</summary>
         private static void FireHeatRay(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser) * 1.1f));
@@ -237,10 +229,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 激光环弹幕：炮体自旋扫场，周期性放出全向激光环
-    /// （死亡模式/Infernum 额外叠加锁定扇面），同伴越少持续越久
-    /// </summary>
+    /// <summary>激光环弹幕：炮体自旋放环；Death/Infernum 叠加锁定扇面</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserRing, typeof(PrimeArmStateContext))]
     internal class LaserRingState : PrimeArmStateBase
     {
@@ -308,7 +297,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
                 Main.projectile[proj].timeLeft = 900;
             }
 
-            //死亡模式 / Infernum 在环之上追加锁定扇面——数值层面的强度叠加而非内容替换
+            //Death/Infernum 环上追加锁定扇面，数值叠加强度
             if (ctx.Death || InfernumRef.InfernumModeOpenState) {
                 int fanType = ModContent.ProjectileType<DeadLaser>();
                 int fanDamage = ScaleDamage(CWRRef.GetProjectileDamage(npc, fanType));
@@ -326,10 +315,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 热射线横扫：90 帧扇形预警（炮口同步压向起始角蓄势）→
-    /// 热射线光束沿预警扇形匀速扫过，炮体跟随光束转动并持续后坐
-    /// </summary>
+    /// <summary>热射线横扫：90帧扇形预警 → 光束沿扇形匀速扫过</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.LaserSweep, typeof(PrimeArmStateContext))]
     internal class LaserSweepState : PrimeArmStateBase
     {
@@ -386,7 +372,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             ctx.ChargeGlow = 0f;
         }
 
-        /// <summary>预警的兑现是一道沿扇形扫过的热射线，而非普攻弹幕</summary>
+        /// <summary>预警兑现为扇形扫过的热射线</summary>
         private void FireSweepBeam(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             int damage = ScaleDamage((int)(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser) * 1.05f));

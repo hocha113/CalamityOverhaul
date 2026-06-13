@@ -6,9 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    //无限骇入弹窗风暴渲染器
-    //完全独立于HackQueueRenderer，在InfiniteHack模式下接管左侧绘制
-    //模拟系统被压垮的骇入瀑布——弹窗从队列区扩散到屏幕各处
+    //无限骇入弹窗风暴渲染
     internal class InfiniteHackRenderer
     {
         #region 弹窗数据
@@ -391,7 +389,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float barW = 260f;
             float barH = 10f;
 
-            //标题——闪烁渐显
+            //标题闪烁渐显
             float titleAlpha = Math.Min(t * 4f, 1f);
             float glitch = MathF.Sin(timer * 22f) * (1f + t * 3f);
             string title = HackTime.InitBreach.Value;

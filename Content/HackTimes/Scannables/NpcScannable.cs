@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>
-    /// NPC 扫描数据实现
-    /// <br/>同时承担 <see cref="IHackTarget"/> 抽象，把 NPC 的"被骇入"行为下沉到本类
-    /// </summary>
+    /// <summary>NPC 扫描与 IHackTarget 实现</summary>
     internal class NpcScannable : IHackTarget
     {
         public int NpcIndex { get; }
@@ -72,17 +69,16 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
                 colors[0] = HackTheme.TextBright;
             }
 
-            //THREAT
-            //相对威胁分：结合玩家当前生命/防御/减伤动态计算，避免毕业玩家对低阶Boss的误判
+            //THREAT，相对玩家生命/防御/减伤
             float relThreat = 0f;
             if (!IsNonCombatNpc(npc)) {
                 Player localPlayer = Main.LocalPlayer;
                 float playerDR = Math.Clamp(localPlayer.endurance, 0f, 0.99f);
-                //扣除玩家防御和减伤后NPC的有效单次伤害
+                //有效单次伤害
                 float effectiveDmg = Math.Max(1f, npc.damage - localPlayer.statDefense * 0.5f) * (1f - playerDR);
-                //每次攻击消耗玩家HP的比例（越高越危险）
+                //单次命中 HP 占比
                 float hitImpact = effectiveDmg / Math.Max(localPlayer.statLifeMax, 1);
-                //NPC血量与玩家血量的比值取对数，压缩千万级Boss的数值
+                //HP 比取 log2 压缩 Boss 数值
                 float hpRatio = (float)npc.lifeMax / Math.Max(localPlayer.statLifeMax, 1);
                 float durabilityIndex = MathF.Log2(1f + hpRatio);
                 //NPC自身防御系数
@@ -168,7 +164,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
         }
 
         public bool ApplyHack(QuickHackDef hack, Player caster) {
-            //NPC 协议走效果追踪器，由其管理 OnApply→OnTick→OnRemove 生命周期
+            //NPC 协议走效果追踪器
             int casterIndex = caster?.whoAmI ?? Main.myPlayer;
             return HackEffectTracker.ApplyNpcEffect(hack, NpcIndex, casterIndex) != null;
         }

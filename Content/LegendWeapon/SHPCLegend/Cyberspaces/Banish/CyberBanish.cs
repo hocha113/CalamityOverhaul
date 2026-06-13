@@ -11,16 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>
-    /// 赛博放逐系统 —— 状态管理器
-    /// <br/>将域内目标放逐到深层赛博空间：触发故障着色器 → 缩小高光消失 → 无声移除
-    /// <br/>独立于HackTime，只要赛博空间Active即可使用
-    /// <br/>多人语义：本地玩家发起后，先在本机决定哪些 NPC 进入放逐，再通过
-    /// <see cref="CWRMessageType.CyberBanishStart"/> 把名单广播给其它客户端 / 服务端，
-    /// 让所有端共享相同的放逐列表（视觉滤镜 + 抹除 / Boss 雷击逻辑一致）
-    /// <br/>计时推进由 <see cref="CyberspaceSystem"/> 驱动——客户端与服务端都会每帧调用 <see cref="Update"/>，
-    /// 最终抹除以服务端为权威（服务端置 active=false 并 SyncNPC），发起者本地抹除仅作即时预测
-    /// </summary>
+    /// <summary>领域放逐管理：故障滤镜→抹除；CyberspaceSystem 驱动 net 同步</summary>
     internal class CyberBanish : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();

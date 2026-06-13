@@ -7,26 +7,18 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间目标选择系统
-    /// <br/>处理按键切换、光标悬停检测和运镜缩放
-    /// <br/>点击选择逻辑由 HackTimeUI(UIHandle) 负责
-    /// <br/>悬停检测通过 <see cref="HackTargetType.DetectTopmostHover"/> 自动遍历所有注册的目标种类，无需在此维护按种类分支
-    /// </summary>
+    /// <summary>骇客时间目标选择与运镜</summary>
     internal class HackTimeTargeting : ModPlayer
     {
-        //是否正在接管缩放控制
+        //是否接管缩放
         private bool wasHackZoomActive;
-        //进入骇客时间前保存的原始缩放目标值
+        //进入前保存的缩放目标
         private float savedZoomTarget;
 
-        /// <summary>
-        /// 当前光标下的可骇入目标，null 表示无悬停
-        /// <br/>所有种类（NPC、物块、灵异、炮台、信号塔等）通过<see cref="IHackTarget"/>统一暴露
-        /// </summary>
+        /// <summary>光标下可骇入目标</summary>
         public static IHackTarget HoveredTarget { get; private set; }
 
-        //----- 兼容旧 API：从统一的 HoveredTarget 派生具体维度 -----
+        //兼容旧 API
 
         /// <summary>当前悬停的可扫描物块 X，无悬停物块时返回 -1</summary>
         public static int HoveredTileX => HoveredTarget is TileScannable t ? t.TileCoordX : -1;
@@ -39,7 +31,7 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>当前悬停的可骇入信号塔，无悬停信号塔时返回 null</summary>
         public static IHackableSignalTower HoveredSignalTower => HoveredTarget as IHackableSignalTower;
 
-        //避免按键连按时弹窗刷屏，按"约 0.6 秒"节流
+        //权限拒绝弹窗节流，约 0.6 秒
         private static int accessDeniedCooldown;
 
         public override void ProcessTriggers(Terraria.GameInput.TriggersSet triggersSet) {
@@ -53,13 +45,9 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 统一的"按键尝试切换骇客时间"入口
-        /// <br/>已激活时允许直接关闭，未激活时校验<see cref="HackTimeAccess"/>注册的条件
-        /// <br/>不满足条件时通过<see cref="NotificationPopupSystem"/>抛出警告弹窗，并按短冷却节流
-        /// </summary>
+        /// <summary>按键切换骇客时间，校验 HackTimeAccess</summary>
         public static void TryToggleHackTime(Player player) {
-            //已激活的退出动作放行，避免玩家因为掉装备等原因被锁死在骇客时间内
+            //已激活时允许退出
             if (HackTime.Active) {
                 HackTime.Toggle();
                 return;
@@ -70,7 +58,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
 
-            //权限不足时显示警告弹窗（按短冷却节流，避免重复按键造成弹窗堆积）
+            //权限不足弹窗，短冷却节流
             if (accessDeniedCooldown <= 0) {
                 NotificationPopupSystem.Add(new HackTimeAccessDeniedEntry());
                 accessDeniedCooldown = 36;
@@ -86,21 +74,17 @@ namespace CalamityOverhaul.Content.HackTimes
             UpdateHoverDetection();
         }
 
-        /// <summary>
-        /// 检测光标下方的可骇入目标，按目标种类工厂的<see cref="HackTargetType.HoverPriority"/>取最高优先级命中
-        /// </summary>
+        /// <summary>按 HoverPriority 检测悬停目标</summary>
         private void UpdateHoverDetection() {
             HoveredTarget = HackTargetType.DetectTopmostHover(Main.MouseWorld);
         }
 
-        /// <summary>
-        /// 在骇客时间中应用运镜偏移和缩放
-        /// </summary>
+        /// <summary>骇客时间运镜偏移与缩放</summary>
         public override void ModifyScreenPosition() {
             bool needControl = HackTime.Active || HackTime.Intensity >= 0.001f;
 
             if (!needControl) {
-                //完全退出后恢复原始缩放
+                //退出后恢复缩放
                 if (wasHackZoomActive) {
                     Main.GameZoomTarget = savedZoomTarget;
                     wasHackZoomActive = false;
@@ -108,7 +92,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
 
-            //首次进入时保存当前缩放
+            //首次进入保存缩放
             if (!wasHackZoomActive) {
                 savedZoomTarget = Main.GameZoomTarget;
                 wasHackZoomActive = true;
@@ -119,7 +103,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 Main.screenPosition += HackTime.CameraOffset;
             }
 
-            //用set而非add方式设置缩放，确保退出时能恢复
+            //set 缩放便于退出恢复
             float zoomBoost = HackTime.GetZoomBoost();
             Main.GameZoomTarget = MathHelper.Clamp(
                 savedZoomTarget + zoomBoost, 0.1f, 10f);

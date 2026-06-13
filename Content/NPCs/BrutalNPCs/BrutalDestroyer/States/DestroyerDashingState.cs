@@ -7,10 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 冲刺中状态：冲量峰值后指数衰减回巡航冲刺速度，受限转向率弧线追踪。
-    /// 高速时只能划大弧线，保证可躲的同时画出鞭击般的轨迹
-    /// </summary>
+    /// <summary>冲刺中：冲量峰值后指数衰减回巡航速，受限转向大弧追踪</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Dashing, typeof(DestroyerStateContext))]
     internal class DestroyerDashingState : DestroyerStateBase
     {
@@ -92,10 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         }
     }
 
-    /// <summary>
-    /// 冲刺冷却状态：硬刹车漂移弧 + 金属应力火花，随后回到玩家上方，
-    /// 决定继续连突还是回归巡空
-    /// </summary>
+    /// <summary>冲刺冷却：硬刹车漂移弧+应力火花，回玩家上方后连突或巡空</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DashCooldown, typeof(DestroyerStateContext))]
     internal class DestroyerDashCooldownState : DestroyerStateBase
     {

@@ -11,11 +11,10 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 研究祭坛的次级选鱼面板。
-    /// 深渊图鉴是近全屏界面，打开时会关闭背包并（单人）冻结时间，玩家无法把鱼拿到鼠标上再点祭坛放入；
-    /// 因此点击祭坛改为弹出本面板，列出背包中所有「可研究且尚未研究过」的鱼，
-    /// 点击任意一条即从背包扣除一只并投入祭坛开始研究；底部提供「取回」把研究中的鱼退回背包。
-    /// 纯本地运行时交互，与 <see cref="HalibutSave"/> 的研究状态直接读写，不涉及网络同步。
+    /// 研究祭坛选鱼次级面板
+    /// 图鉴近全屏且冻结背包交互，点击祭坛改为弹出本面板列出可研究鱼
+    /// 点选扣除一只投入祭坛，底部「取回」退回研究中物品
+    /// 本地读写 <see cref="HalibutSave"/>，无网络同步
     /// </summary>
     internal class AtlasFishStudyPanel
     {

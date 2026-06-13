@@ -1,30 +1,25 @@
 // ============================================================================
-// ElysiumStaff.fx — 天国极乐权杖特效着色器
-// 蓄力神圣光辉(DivineAura) + 神圣扩散环(SacredRing)
-// 对Placeholder_White画布应用, 全程序化渲染
+// ElysiumStaff.fx 天国极乐权杖特效
+// 采样 s0 Placeholder_White + s1 噪声，全程序化；AlphaBlend
 // ps_3_0
 // ============================================================================
 
 float uTime;
 float fadeAlpha;
-float3 warmGold;         // 暖金色调
-float3 brightGold;       // 亮金高光
-float3 holyWhite;        // 圣白
+float3 warmGold;         //暖金色调
+float3 brightGold;       //亮金高光
+float3 holyWhite;        //圣白
 
-// ---- DivineAura参数 ----
-float chargeRatio;       // 0-1 蓄力进度
-float auraRotation;      // 缓慢旋转角
+float chargeRatio;       //0~1 蓄力进度
+float auraRotation;      //神圣光辉缓慢旋转角
 
-// ---- SacredRing参数 ----
-float ringProgress;      // 0=刚生成 1=消散
-float3 ringColor;        // 环基本色
-float ringRotation;      // 环旋转角
+float ringProgress;      //0刚生成 1消散
+float3 ringColor;        //扩散环基本色
+float ringRotation;      //扩散环旋转角
 
-// ---- DivineBurst参数 ----
-float burstProgress;     // 0=刚释放 1=完全消散
-float burstIntensity;    // 爆发强度(受蓄力影响)
+float burstProgress;     //0刚释放 1完全消散
+float burstIntensity;    //爆发强度(受蓄力影响)
 
-// ---- 噪声纹理(s1) ----
 texture uNoiseTex;
 sampler noiseSamp : register(s1) = sampler_state
 {
@@ -54,10 +49,7 @@ struct PSInput
     float4 Color     : COLOR0;
 };
 
-// ============================================================================
-// DivineAura — 蓄力神圣光辉
-// 多层高斯辉光 + 十字架神光 + 同心光环 + 噪声日冕 + 曼陀罗纹饰
-// ============================================================================
+// DivineAura 蓄力神圣光辉
 float4 DivineAuraPS(PSInput input) : COLOR0
 {
     float2 uv  = input.TexCoords;
@@ -68,23 +60,23 @@ float4 DivineAuraPS(PSInput input) : COLOR0
     float3 col = 0;
     float  ch  = chargeRatio;
 
-    // ==============================
+    // =
     // 1. 多层径向基础辉光
-    // ==============================
+    // =
     //紧凑暖光核
     col += warmGold * exp(-dist * dist * 18.0) * 0.35 * ch;
     //广域微光
     col += warmGold * exp(-dist * dist * 5.0) * 0.08 * ch;
 
-    // ==============================
+    // =
     // 2. 炽白核心(双层)
-    // ==============================
+    // =
     col += holyWhite  * exp(-dist * dist * 280.0) * ch;
     col += brightGold * exp(-dist * dist * 80.0) * 0.4 * ch;
 
-    // ==============================
+    // =
     // 3. 十字架神光(主十字+副十字)
-    // ==============================
+    // =
     float cosR = cos(auraRotation);
     float sinR = sin(auraRotation);
     float2 rc  = float2(c.x * cosR - c.y * sinR,
@@ -104,9 +96,9 @@ float4 DivineAuraPS(PSInput input) : COLOR0
                    + exp(-r45.x * r45.x * 1000.0);
     col += warmGold * diagBeam * exp(-dist * 7.0) * 0.2 * ch;
 
-    // ==============================
+    // =
     // 4. 同心光环(随蓄力逐步显现)
-    // ==============================
+    // =
     //第一环
     float r1A = smoothstep(0.2, 0.35, ch);
     float r1R = 0.08 + ch * 0.08;
@@ -127,9 +119,9 @@ float4 DivineAuraPS(PSInput input) : COLOR0
     float r3P = 0.7 + 0.3 * sin(uTime * 2.0 + 2.0);
     col += warmGold * softRing(dist, r3R, 1500.0) * r3A * r3P * 0.35;
 
-    // ==============================
+    // =
     // 5. 噪声日冕能量场
-    // ==============================
+    // =
     float2 nUV1 = float2(dist * 5.0 + uTime * 0.12, ang * 0.318 + uTime * 0.08);
     float  n1   = tex2D(noiseSamp, frac(nUV1)).r;
     float2 nUV2 = float2(dist * 3.0 - uTime * 0.1, ang * 0.637 + 0.5);
@@ -139,9 +131,9 @@ float4 DivineAuraPS(PSInput input) : COLOR0
     float coronaMask = exp(-dist * dist * 10.0) * ch;
     col += lerp(warmGold, holyWhite, nBl * 0.5) * nBl * coronaMask * 0.35;
 
-    // ==============================
+    // =
     // 6. 神圣曼陀罗纹饰(高蓄力阶段)
-    // ==============================
+    // =
     float mA = smoothstep(0.55, 0.75, ch);
     if (mA > 0.01)
     {
@@ -163,26 +155,23 @@ float4 DivineAuraPS(PSInput input) : COLOR0
         col += warmGold * softRing(dist, iR, 5000.0) * mA * 0.2;
     }
 
-    // ==============================
+    // =
     // 7. 微光闪烁粒子
-    // ==============================
+    // =
     float2 shimUV = float2(ang * 2.5 + uTime * 0.05, dist * 15.0 - uTime * 0.1);
     float  shim   = pow(tex2D(noiseSamp, frac(shimUV)).b, 8.0);
     float  shimM  = smoothstep(0.42, 0.08, dist) * smoothstep(0.01, 0.05, dist);
     col += holyWhite * shim * shimM * 0.2 * ch;
 
-    // ==============================
+    // =
     // 边缘衰减
-    // ==============================
+    // =
     col *= (1.0 - smoothstep(0.38, 0.5, dist)) * fadeAlpha;
 
     return float4(col, 1.0);
 }
 
-// ============================================================================
-// SacredRing — 神圣扩散环
-// 锐利金线 + 内外辉光 + 四方十字标记 + 12点装饰 + 生命周期衰减
-// ============================================================================
+// SacredRing 神圣扩散环
 float4 SacredRingPS(PSInput input) : COLOR0
 {
     float2 uv  = input.TexCoords;
@@ -199,16 +188,16 @@ float4 SacredRingPS(PSInput input) : COLOR0
     //环的UV空间半径(从核心向外扩张)
     float rPos = 0.08 + t * 0.34;
 
-    // ==============================
+    // =
     // 1. 主环线(锐利+中层辉光+远层微光)
-    // ==============================
+    // =
     col += ringColor * softRing(dist, rPos, 4000.0) * 0.9;
     col += ringColor * softRing(dist, rPos, 300.0)  * 0.35;
     col += ringColor * softRing(dist, rPos, 60.0)   * 0.1;
 
-    // ==============================
+    // =
     // 2. 四方十字标记
-    // ==============================
+    // =
     float cAng    = ang - ringRotation;
     float s4      = frac(cAng / TAU * 4.0 + 0.5);
     float s4d     = abs(s4 - 0.5) * 2.0;
@@ -222,33 +211,30 @@ float4 SacredRingPS(PSInput input) : COLOR0
                  * smoothstep(rPos + 0.055, rPos + 0.005, dist);
     col += brightGold * crossMk * radExt * 0.6;
 
-    // ==============================
+    // =
     // 3. 12点装饰(纤细珠列)
-    // ==============================
+    // =
     float s12  = frac(cAng / TAU * 12.0 + 0.5);
     float s12d = abs(s12 - 0.5) * 2.0;
     float fili = exp(-s12d * s12d * 500.0);
     col += warmGold * fili * softRing(dist, rPos, 2000.0) * 0.3;
 
-    // ==============================
+    // =
     // 4. 内侧伴线 + 外侧伴线
-    // ==============================
+    // =
     col += warmGold * softRing(dist, rPos - 0.018, 8000.0) * 0.2;
     col += warmGold * softRing(dist, rPos + 0.012, 8000.0) * 0.15;
 
-    // ==============================
+    // =
     // 寿命衰减 + 外部裁切
-    // ==============================
+    // =
     col *= fade * fadeAlpha;
     col *= 1.0 - smoothstep(0.44, 0.5, dist);
 
     return float4(col, 1.0);
 }
 
-// ============================================================================
-// DivineBurst — 释放攻击爆发特效
-// 十字架神光急速展开 + 多层冲击光环 + 曼陀罗旋涡 + 圣白闪光衰减
-// ============================================================================
+// DivineBurst 释放攻击爆发
 float4 DivineBurstPS(PSInput input) : COLOR0
 {
     float2 uv  = input.TexCoords;
@@ -264,9 +250,9 @@ float4 DivineBurstPS(PSInput input) : COLOR0
     //总体衰减曲线：前期猛烈，后期迅速消散
     float masterFade = inv * inv * inv;
 
-    // ==============================
+    // =
     // 1. 中心微光点(克制的核心，不做大光球)
-    // ==============================
+    // =
     //极小的亮点，仅在最初一瞬可见
     float coreSize = 600.0 + t * 2000.0;
     float core = exp(-dist * dist * coreSize) * masterFade;
@@ -276,9 +262,9 @@ float4 DivineBurstPS(PSInput input) : COLOR0
     float warmCore = exp(-dist * dist * (200.0 + t * 300.0)) * masterFade;
     col += warmGold * warmCore * 0.12 * intensity;
 
-    // ==============================
+    // =
     // 2. 十字架光柱(主体视觉焦点)
-    // ==============================
+    // =
     float rot = auraRotation + t * 0.5;
     float cosR = cos(rot);
     float sinR = sin(rot);
@@ -310,9 +296,9 @@ float4 DivineBurstPS(PSInput input) : COLOR0
                    + exp(-r45.x * r45.x * (beamSharp * 2.0));
     col += warmGold * diagBeam * exp(-dist * (4.5 + t * 8.0)) * 0.25 * masterFade * intensity;
 
-    // ==============================
+    // =
     // 3. 冲击波光环(由内向外扩张)
-    // ==============================
+    // =
     //主冲击环
     float waveR1 = t * 0.42;
     float w1 = softRing(dist, waveR1, 4000.0 + t * 2000.0);
@@ -326,9 +312,9 @@ float4 DivineBurstPS(PSInput input) : COLOR0
     float w2 = softRing(dist, waveR2, 3000.0 + t2 * 1500.0);
     col += warmGold * w2 * 0.3 * (1.0 - t2) * (1.0 - t2) * intensity;
 
-    // ==============================
+    // =
     // 4. 曼陀罗圣纹(宗教纹饰主体)
-    // ==============================
+    // =
     //更早出现，持续更久
     float mA = smoothstep(0.0, 0.08, t) * smoothstep(0.85, 0.4, t) * intensity;
     if (mA > 0.01)
@@ -363,34 +349,30 @@ float4 DivineBurstPS(PSInput input) : COLOR0
         col += holyWhite * cross4 * softRing(dist, petalR, 1500.0) * mA * 0.3;
     }
 
-    // ==============================
+    // =
     // 5. 噪声能量碎片飞散
-    // ==============================
+    // =
     float2 nUV = float2(dist * 4.0 - t * 2.0, ang * 0.318 + uTime * 0.05);
     float  n = tex2D(noiseSamp, frac(nUV)).r;
     float  debrisMask = smoothstep(t * 0.4 - 0.05, t * 0.4, dist)
                       * smoothstep(t * 0.4 + 0.08, t * 0.4 + 0.02, dist);
     col += lerp(warmGold, holyWhite, n) * n * debrisMask * masterFade * 0.25 * intensity;
 
-    // ==============================
+    // =
     // 6. 外层余韵微光
-    // ==============================
+    // =
     float afterR = t * 0.44;
     float after = exp(-(dist - afterR) * (dist - afterR) * 50.0);
     col += warmGold * after * 0.1 * inv * intensity;
 
-    // ==============================
+    // =
     // 边缘裁切
-    // ==============================
+    // =
     col *= 1.0 - smoothstep(0.45, 0.5, dist);
     col *= fadeAlpha;
 
     return float4(col, 1.0);
 }
-
-// ============================================================================
-// Technique定义
-// ============================================================================
 
 technique DivineAura
 {

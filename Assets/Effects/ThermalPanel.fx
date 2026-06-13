@@ -1,9 +1,6 @@
 // ============================================================================
-// ThermalPanel.fx — 热力发电机面板着色器
-// 工业金属底板 + 热能反应渐变 + 锈蚀噪声纹理 + 扫描线
-// + 燃烧脉冲 + 热浪光效 + 暗角 + 角落标记
-// uTemperature: 温度比例 0~1，控制整体暖色偏移和热辉光
-// uBurnIntensity: 燃烧强度 0~1，控制火焰脉冲和底部光晕
+// ThermalPanel.fx 热力发电机面板
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,8 +9,8 @@ float uTime;
 float uAlpha;
 float2 uResolution;
 float uEdgePad;
-float uTemperature;
-float uBurnIntensity;
+float uTemperature;   //温度比例 0~1
+float uBurnIntensity; //燃烧强度 0~1
 
 // ─── 噪声工具 ───
 float hash21(float2 p) {

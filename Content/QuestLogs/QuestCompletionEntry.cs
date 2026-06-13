@@ -9,9 +9,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>
-    /// 任务书完成通知条目，豪华版带图标、光效、粒子的任务完成弹窗
-    /// </summary>
+    /// <summary>任务完成通知弹窗条目</summary>
     internal class QuestCompletionEntry : NotificationEntry
     {
         private readonly QuestNode node;

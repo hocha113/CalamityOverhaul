@@ -33,9 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         public override bool Active => Open || sengs > 0f;
         private float sengs;
         private NPC npc;
-        //用于检测生命值变化
         private int oldLife = -1;
-        //用于触发整体波浪抖动效果的计时器
         private float waveShakeTime;
 
         public override void OnEnterWorld() {
@@ -50,7 +48,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 if (sengs > 0f) {
                     sengs -= 0.1f;
                 }
-                oldLife = -1;//当UI不显示时重置生命值记录
+                oldLife = -1;
                 return;
             }
             else {
@@ -60,27 +58,23 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
 
             if (!npc.Alives()) {
-                oldLife = -1;//当找不到NPC时也重置
+                oldLife = -1;
                 return;
             }
 
-            //如果是第一次更新或者NPC刚刚切换，则初始化oldLife
             if (oldLife == -1) {
                 oldLife = npc.life;
             }
 
-            //检测到NPC受伤
             if (npc.life < oldLife) {
-                waveShakeTime = 40f;//启动一个持续40帧的波浪抖动效果
+                waveShakeTime = 40f;//受伤波浪 40 帧
             }
-            oldLife = npc.life;//更新生命值记录以备下一帧使用
+            oldLife = npc.life;
 
-            //波浪抖动计时器递减
             if (waveShakeTime > 0) {
                 waveShakeTime--;
             }
 
-            //判断NPC血量是否低于50%
             bool isLowHealth = npc.life < npc.lifeMax * 0.5f;
 
             Vector2 lifeSize = CrabulonLife.Life.Size();
@@ -102,8 +96,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 crabulonLive.DrawPosition.X += i % crabulonLiveLine * (lifeSize.X + liveMargin);
                 crabulonLive.DrawPosition.Y += i / crabulonLiveLine * (lifeSize.Y + liveMargin);
                 crabulonLive.sengs = sengs;
-                crabulonLive.waveShakeTime = waveShakeTime;//将波浪抖动计时器传递给每个生命单元
-                crabulonLive.isLowHealth = isLowHealth;//传递低血量状态
+                crabulonLive.waveShakeTime = waveShakeTime;
+                crabulonLive.isLowHealth = isLowHealth;
                 crabulonLive.Update();
             }
         }
@@ -134,67 +128,55 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         public static Asset<Texture2D> Life = null;
         public override LayersModeEnum LayersMode => LayersModeEnum.None;
 
-        public int lifeValue;//存储此生命单元当前拥有的生命值
-        public int index;    //此生命单元的索引
-        public NPC npc;      //关联的NPC
+        public int lifeValue;
+        public int index;
+        public NPC npc;
 
         internal float sengs;
-        internal float waveShakeTime; //从父级接收的波浪抖动计时器
-        internal bool isLowHealth;    //从父级接收的是否为低血量状态
+        internal float waveShakeTime;
+        internal bool isLowHealth;
 
-        //用于实现动态效果的私有字段
-        private float shakeTime;        //抖动效果的持续时间计时器
-        private float dynamicScale = 1f;    //用于“濒危”状态的动态缩放
-        private float dynamicRotation;  //用于抖动的动态旋转
-        private Vector2 damageShakeOffset = Vector2.Zero; //用于单个单元掉血抖动的动态位置偏移
-        private Vector2 waveShakeOffset = Vector2.Zero;   //用于整体波浪效果的动态位置偏移
+        private float shakeTime;
+        private float dynamicScale = 1f;
+        private float dynamicRotation;
+        private Vector2 damageShakeOffset = Vector2.Zero;
+        private Vector2 waveShakeOffset = Vector2.Zero;
 
         public override void Update() {
-            //确保我们有一个有效的NPC实例
             if (npc == null || !npc.active) {
                 return;
             }
 
-            //在更新开始时重置波浪偏移
             waveShakeOffset = Vector2.Zero;
 
-            //计算每个生命单元能代表的最大生命值
             int maxLifePerUnit = npc.lifeMax / CrabulonMountLifeBar.crabulonLiveCount;
-            if (maxLifePerUnit <= 0) { //避免除以零的错误
+            if (maxLifePerUnit <= 0) {
                 return;
             }
 
-            //计算当前帧此单元“应该”拥有的生命值
             int newLifeValue = (int)MathHelper.Clamp(npc.life - index * maxLifePerUnit, 0, maxLifePerUnit);
 
-            //实现掉血抖动效果
-            //如果新计算的生命值比上一帧的要低，说明掉血了
             if (newLifeValue < lifeValue) {
-                shakeTime = 20f;//启动一个持续20帧的抖动效果
+                shakeTime = 20f;
             }
 
-            //如果抖动计时器正在生效
             if (shakeTime > 0) {
                 shakeTime--;
-                float intensity = shakeTime / 20f;//抖动强度随时间衰减
-                                                  //生成随机的位置偏移和旋转
+                float intensity = shakeTime / 20f;
                 damageShakeOffset = Main.rand.NextVector2Circular(intensity * 4f, intensity * 4f);
                 dynamicRotation = Main.rand.NextFloat(-0.2f, 0.2f) * intensity;
             }
             else {
-                //效果结束后，恢复默认值
                 damageShakeOffset = Vector2.Zero;
                 dynamicRotation = 0f;
             }
 
-            //更新当前生命值，以便下一帧进行比较
             lifeValue = newLifeValue;
 
-            //实现受伤时从左到右的波浪抖动效果
-            float waveDelay = 1.5f;//每个单元之间的延迟帧数
+            float waveDelay = 1.5f;
             float timeAfterWaveReach = waveShakeTime - index * waveDelay;
             if (timeAfterWaveReach > 0) {
-                float maxIntensityTime = 10f;//波浪在每个单元上最强烈的持续时间
+                float maxIntensityTime = 10f;
                 float intensity = 1f - Math.Abs(timeAfterWaveReach - maxIntensityTime) / maxIntensityTime;
                 intensity = MathHelper.Clamp(intensity, 0f, 1f);
                 if (intensity > 0) {
@@ -203,26 +185,22 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 }
             }
 
-            //实现低血量时常驻的波浪颤抖效果
             if (isLowHealth) {
-                float pulseSpeed = 10f;//颤抖速度
-                float pulseAmplitude = 2.5f;//颤抖幅度
-                float delayFactor = 0.4f;//单元之间的相位延迟
+                float pulseSpeed = 10f;
+                float pulseAmplitude = 2.5f;
+                float delayFactor = 0.4f;
                 waveShakeOffset.Y += (float)Math.Sin(Main.GameUpdateCount * (pulseSpeed / 60f) + index * delayFactor) * pulseAmplitude;
             }
 
-            //实现濒危颤抖效果
             float lifePercent = (float)lifeValue / maxLifePerUnit;
 
-            //如果生命值在0%到35%之间，则触发效果
             if (lifePercent > 0 && lifePercent < 0.35f) {
-                float pulseSpeed = 12f;//颤抖速度
-                float pulseIntensity = 0.12f;//颤抖幅度
-                                             //使用正弦函数制造平滑的、循环的缩放动画
+                float pulseSpeed = 12f;
+                float pulseIntensity = 0.12f;
                 dynamicScale = 1f + (float)Math.Sin(Main.GameUpdateCount * (pulseSpeed / 60f)) * pulseIntensity;
             }
             else {
-                dynamicScale = 1f;//不在危险区域时，恢复默认大小
+                dynamicScale = 1f;
             }
         }
 
@@ -236,30 +214,23 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
                 return;
             }
 
-            //计算此单元的填充比例，用于决定基础大小和颜色
             float fillRatio = (float)lifeValue / maxLifePerUnit;
 
-            //如果生命完全耗尽，则不绘制
             if (fillRatio <= 0) {
                 return;
             }
 
-            //颜色会随着生命值降低而变暗
             Color drawColor = Color.White * fillRatio;
             drawColor.A = (byte)(255 * (0.2f + fillRatio * 0.8f));
 
-            //最终的绘制大小 = 基础大小 * 动态缩放
             float finalScale = 0.5f + fillRatio * dynamicScale * 0.5f;
-
-            //最终的绘制位置 = 基础位置 + 自身掉血抖动偏移 + 整体波浪抖动偏移
             Vector2 finalDrawPosition = DrawPosition + damageShakeOffset + waveShakeOffset;
 
-            //使用所有动态参数进行绘制
             spriteBatch.Draw(Life.Value, finalDrawPosition, null, drawColor * sengs, dynamicRotation, Life.Size() / 2, finalScale, SpriteEffects.None, 0);
         }
     }
 
-    internal class CrabulonFriendBossBar : ModBossBar//友好状态下隐藏Boss血条
+    internal class CrabulonFriendBossBar : ModBossBar//驯服态隐藏 Boss 血条
     {
         public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
             if (npc.TryGetOverride<ModifyCrabulon>(out var modifyCrabulon)) {

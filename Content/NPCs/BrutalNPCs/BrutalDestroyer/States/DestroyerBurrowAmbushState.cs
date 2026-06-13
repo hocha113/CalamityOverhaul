@@ -9,12 +9,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 钻地伏击：找回原版毁灭者的地底身份——
-    /// 俯角入土 → 地下潜行（地表沿头部X坐标持续喷尘+低鸣，玩家可追踪轨迹）→
-    /// 40帧喷发预警（汇聚尘 + t³震动爬升，喷发点在预警开始时锁定）→
-    /// 垂直破土直射 + 冲击环 + 碎屑喷泉 → 越顶拱弧再入地。普通2次喷发、激怒3次。
-    /// </summary>
+    /// <summary>钻地伏击：俯角入土→潜行(地表尘迹)→40帧预警→垂直破土→拱弧再入地</summary>
+    /// <para>普通2次喷发、激怒3次；喷发点预警开始时锁定</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.BurrowAmbush, typeof(DestroyerStateContext))]
     internal class DestroyerBurrowAmbushState : DestroyerStateBase
     {
@@ -147,7 +143,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             SetMovement(context, new Vector2(player.Center.X, groundY + 400f), StalkSpeed(context), 1.2f);
 
-            //地表尘迹：沿头部X坐标喷土 + 低鸣（可读性阀——玩家能追踪地下轨迹）
+            //地表尘迹：沿头部X喷土+低鸣(可读性阀，可追踪地下轨迹)
             if (!VaultUtils.isServer) {
                 Vector2 surface = DestroyerMotionFX.FindGroundBelow(new Vector2(npc.Center.X, groundY - 600f));
                 if (Timer % 2 == 0 && DestroyerMotionFX.OnScreen(surface)) {

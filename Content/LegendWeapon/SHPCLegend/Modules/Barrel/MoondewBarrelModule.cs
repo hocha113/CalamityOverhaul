@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 月露枪管：光束凝结露珠棱镜，后续光束触碰后被折射成短程派生束。
-    /// </summary>
+    /// <summary>月露枪管：光束凝露珠棱镜，后续束折射为短程派生束</summary>
     internal sealed class MoondewBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -47,9 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 月露棱镜
-    /// </summary>
+    /// <summary>月露棱镜弹幕</summary>
     internal sealed class SHPCMoondewPrismProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -1,46 +1,19 @@
 // ============================================================================
-// CyberwareRadialPanel.fx 义体技能雷达专属背板（v2 — 舒缓 HUD 美学）
-//
-// 设计转向（与 v1 的对比）：
-//   v1：六边形栅格 + 旋转辐条 + 周期拨码刻度 —— 强"数据网格"感，过于接近
-//      HackRamArc 的语言，玩家会误以为这是 RAM 的某种延伸 HUD
-//   v2：参考 SHPCCyberPanel 的"舒缓 HUD"思路 —— 用 FBM 软噪铺底、平滑的同心
-//      光晕、轻柔的脉冲环；中心采用"亮度梯度 iris"代替机械化的旋转辐条；
-//      外圈用平滑光晕环取代刻度。整体追求"接口面板"的克制感，而不是
-//      "数据芯片"的密集信息感
-//
-// 渲染范围：本 shader 只画"框架与底纹"——
-//   - 整个雷达圆盘的 FBM 软底（极低 alpha，作大气感铺垫）
-//   - 内/外缘的双层柔和发光环
-//   - 中心 iris：径向亮度梯度 + 三层向外扩散的脉冲环（无旋转辐条！）
-//   - 外圈大气光晕：缓慢周向波浪，提示"装置正在通电"，但不出现任何刻度
-//   - 入场扩散动画：从圆心向外揭开
-// 扇区填充、悬停高亮、图标、状态文字、悬停信息面板等动态内容继续由 CPU
-// 在本 shader 绘制完成之后叠加。
-//
-// 参数说明：
-//   uResolution     绘制 quad 的像素尺寸
-//   uCenter         雷达圆心在 quad 内的像素坐标
-//   uInnerR         扇区内弧半径
-//   uOuterR         扇区外弧半径
-//   uDeadZoneR      中心死区半径（iris 直径基准）
-//   uDecoOuterR     外圈大气光晕的最大半径
-//   uTime           动画驱动时间（秒）
-//   uAlpha          全局 alpha
-//   uOpenProgress   展开进度（0~1），驱动入场动画
+// CyberwareRadialPanel.fx 义体技能雷达背板
+// 仅框架底纹，扇区/图标由 CPU 叠加；AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float uOpenProgress;
-float2 uResolution;
-float2 uCenter;
-float uInnerR;
-float uOuterR;
-float uDeadZoneR;
-float uDecoOuterR;
+float uOpenProgress;  //展开进度 0~1 入场动画
+float2 uResolution;   //quad 像素尺寸
+float2 uCenter;       //雷达圆心局部像素坐标
+float uInnerR;        //扇区内弧半径
+float uOuterR;        //扇区外弧半径
+float uDeadZoneR;     //中心死区半径
+float uDecoOuterR;    //外圈光晕最大半径
 
 //------------------ 工具函数 ------------------
 

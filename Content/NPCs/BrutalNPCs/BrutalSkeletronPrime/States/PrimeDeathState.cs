@@ -8,35 +8,27 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 机械骷髅王死亡演出阶段
-    /// </summary>
+    /// <summary>死亡演出阶段枚举</summary>
     internal enum PrimeDeathPhase
     {
-        /// <summary>假死：头部停摆、身上连环爆炸后陷入沉寂，制造"和前两个机械Boss一样炸完就死"的错觉</summary>
+        /// <summary>假死连环爆炸后沉寂，误导以为已击杀</summary>
         FakeDeath,
-        /// <summary>再生钳子：低沉嗡鸣，头部两侧重新生成两只钳子机械臂</summary>
+        /// <summary>再生双钳，低沉嗡鸣</summary>
         Summon,
-        /// <summary>扑抓：双钳高速飞向目标玩家</summary>
+        /// <summary>双钳高速扑向目标玩家</summary>
         Lunge,
-        /// <summary>拖拽举起：抓住玩家拖到头部正前方举起</summary>
+        /// <summary>拖拽举起至头部正前方</summary>
         Drag,
-        /// <summary>怒吼：头部前倾怒吼、钳子夹紧蓄力</summary>
+        /// <summary>前倾怒吼，钳子夹紧蓄力</summary>
         Roar,
-        /// <summary>终爆：猛烈大爆炸，钳子炸碎，真正死亡</summary>
+        /// <summary>终爆真死，钳子崩碎</summary>
         Finale,
         /// <summary>演出结束</summary>
         Done
     }
 
-    /// <summary>
-    /// 机械骷髅王死亡演出——正式战斗阶段生命见底时触发。
-    /// <para>流程：假死爆炸（误导） → 再生双钳 → 扑抓玩家 → 拖拽举起 → 怒吼 → 终爆真死。</para>
-    /// <para>多人同步策略：演出主状态经状态机槽（npc.ai[2]）与阶段标记（npc.ai[0]==4）同步，
-    /// 各端检测到后本地确定性推进计时；钳子由 <see cref="PrimeDeathClawActor"/>（本地视觉 Actor）表现，
-    /// 其位置是"阶段+计时+头部位置+目标玩家位置"的纯函数；被抓玩家位置由其本地权威驱动，
-    /// 所有粒子/音效/运镜/震动均在客户端本地生成，彻底规避原生钳子手 NPC 的自毁与网络耦合。</para>
-    /// </summary>
+    /// <summary>正式战斗生命见底触发的死亡演出状态</summary>
+    /// <para>同步：主状态 npc.ai[2]+npc.ai[0]==4；钳子 <see cref="PrimeDeathClawActor"/> 纯函数；被抓玩家本地权威</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Death, typeof(PrimeStateContext))]
     internal class PrimeDeathState : PrimeStateBase
     {
@@ -48,8 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         /// <summary>玩家被举起时距头部中心的下方距离（骷髅头面朝下方，正好把玩家按在"脸"前）</summary>
         internal const float DeathLiftDistance = 210f;
 
-        //演出时间线（单位：帧，60帧/秒）——各阶段累计结束帧
-        //节奏遵循"慢(假死) → 快(召唤/扑抓) → 定格(拖拽/怒吼) → 爆发收尾(终爆)"
+        //演出时间线（帧，60fps）——各阶段累计结束帧
         internal const int PhaseFakeDeathEnd = 140; //假死爆炸(0-80) + 死寂(80-140)
         internal const int PhaseSummonEnd = 195;    //嗡鸣再生钳子(55f)
         internal const int PhaseLungeEnd = 240;     //双钳迅猛扑抓(45f，最快)
@@ -200,10 +191,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>
-        /// 头部朝向：骷髅头全程保持竖立，不再追踪玩家。
-        /// 故障感只通过小幅阻尼摇摆表现，避免出现"用下巴对准玩家"的怪异观感。
-        /// </summary>
+        /// <summary>头部竖立不追玩家，故障感靠阻尼摇摆</summary>
         private void UpdateHeadRotation(PrimeStateContext context, PrimeDeathPhase phase) {
             NPC npc = context.Npc;
 
@@ -245,7 +233,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 Lighting.AddLight(npc.Center, DeathWarmA.ToVector3() * 0.8f);
             }
             else {
-                //死寂——只剩残烟与零星电火花，营造"它已经死了"的假象
+                //死寂：残烟与零星电火花
                 if (Timer % 10 == 0) {
                     SpawnSparks(npc, npc.Center, 2, 3f);
                 }
@@ -256,7 +244,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                         Main.rand.NextFloat(0.7f, 1.1f)).Configure(Main.rand.Next(50, 80), 0.7f, Main.rand.NextFloat(-0.04f, 0.04f));
                 }
 
-                //死寂尾声的"惊醒"预兆——头部猛地一颤 + 低沉轰鸣，让随后的复活反转更具冲击力
+                //死寂尾声惊醒预兆：头部一颤+低沉轰鸣
                 if (Timer == PhaseFakeDeathEnd - 14 && !fakeDeathJolted) {
                     fakeDeathJolted = true;
                     headWobbleVel += 0.2f;
@@ -292,7 +280,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, DeathWarmA.ToVector3() * (1f + (Timer - PhaseFakeDeathEnd) / 60f));
         }
 
-        /// <summary>扑抓：双钳高速扑向玩家（钳子运动由 Actor 处理，这里负责音效/火花）</summary>
+        /// <summary>扑抓：钳子 Actor 驱动运动，此处播音效/火花</summary>
         private void UpdateLunge(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -309,7 +297,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>拖拽举起：钳子夹住玩家拖到头部正前方，玩家位置锁定由 <see cref="PrimeDeathPerformancePlayer"/> 处理</summary>
+        /// <summary>拖拽举起：玩家位移见 <see cref="PrimeDeathPerformancePlayer"/></summary>
         private void UpdateDrag(PrimeStateContext context) {
             NPC npc = context.Npc;
             Player target = GetDeathTarget(context);
@@ -372,7 +360,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 }
             }
             else {
-                //尘埃落定——爆炸止息，只余滚滚残烟缓缓散去，给真正的死亡一个喘息
+                //终爆余波渐疏后，残烟收尾
                 if (into % 6 == 0) {
                     Vector2 pos = npc.Center + Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f);
                     PRTLoader.NewParticle<PRT_Smoke>(pos, -Vector2.UnitY * Main.rand.NextFloat(0.8f, 2f),
@@ -405,9 +393,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>
-        /// 生成一团机械殉爆：爆炸光团（SoftGlow 叠加）+ 火花四溅 + 岩浆余烬 + 浓烟 + 动态光照 + 音效
-        /// </summary>
+        /// <summary>机械殉爆：光团+火花+余烬+浓烟+光照+音效</summary>
         private static void SpawnMechBlast(NPC npc, Vector2 pos, float scale, bool isFinale) {
             if (VaultUtils.isServer) {
                 return;

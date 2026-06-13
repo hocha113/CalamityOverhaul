@@ -1,17 +1,7 @@
 // ============================================================================
-// WitchBrimstoneDomain.fx — 硫火女巫留影鬼域
-// 沿用硫磺火领域的分层语言，但以一位残存女巫的个人签印替代规律冲击波
-// 组成：
-//   A 硫火等离子底色（warped湍流火焰）
-//   B 同心魔法阵环 + 符文刻蚀
-//   C 多层星形几何（外层多边形）
-//   D 可辨识符文光环带
-//   E 逆五芒星女巫签印（缓慢旋转，取代原darkPulseWave的节律冲击）
-//   F 硫火余烬粒子上升
-//   G 核心凝视漩涡 + 竖瞳
-//   H 环间电弧闪光
-//   I 外层暗能量涌动
-// 单DrawCall输出
+// WitchBrimstoneDomain.fx 硫火女巫留影鬼域
+// 采样 s0 + s1 噪声；Immediate AlphaBlend 全屏单 DrawCall
+// ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -28,20 +18,20 @@ sampler noiseSamp = sampler_state
 };
 
 float uTime;
-float fadeAlpha;
-float expandProgress;
-float dissolveProgress;
-float pulseIntensity;
+float fadeAlpha;        //整体透明度
+float expandProgress;   //法阵展开 0~1
+float dissolveProgress; //消散进度 0~1
+float pulseIntensity;   //脉冲强度
 
-float3 coreColor;
-float3 midColor;
-float3 edgeColor;
-float3 voidColor;
+float3 coreColor;       //核心色
+float3 midColor;        //中层色
+float3 edgeColor;       //边缘色
+float3 voidColor;       //虚空底色
 
 #define PI 3.14159265
 #define TAU 6.28318530
 
-//散列与噪声
+// 散列与噪声
 float hash11(float p)
 {
     p = frac(p * 0.1031);
@@ -69,7 +59,7 @@ float valueNoise(float2 p)
     return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
 }
 
-// ---- A 硫火等离子底色 ----
+// A 硫火等离子底色
 float3 brimstonePlasma(float2 centered, float dist, float angle, float time)
 {
     float normAngle = (angle + PI) / TAU;
@@ -105,7 +95,7 @@ float3 brimstonePlasma(float2 centered, float dist, float angle, float time)
     return fireColor * fireMix;
 }
 
-// ---- B 魔法阵环 ----
+// B 魔法阵环
 float magicCircleRing(float dist, float angle, float ringRadius, float time,
     float rotSpeed, float runeCount, float runeSize)
 {
@@ -135,7 +125,7 @@ float magicCircleRing(float dist, float angle, float ringRadius, float time,
     return ringLine + glow * 0.6 + runePattern * 0.5;
 }
 
-// ---- C 星形/多边形几何 ----
+// C 星形/多边形几何
 float starGeometry(float2 centered, float dist, float angle, float radius,
     int points, float rotation, float thickness)
 {
@@ -169,7 +159,7 @@ float starGeometry(float2 centered, float dist, float angle, float radius,
     return saturate(result);
 }
 
-// ---- D 符文光环带 ----
+// D 符文光环带
 float runeArcBand(float dist, float angle, float bandRadius, float bandWidth,
     float time, float rotSpeed, float segCount)
 {
@@ -224,7 +214,7 @@ float runeArcBand(float dist, float angle, float bandRadius, float bandWidth,
     return pattern * bandMask * flicker;
 }
 
-// ---- E 女巫签印（逆五芒星 + 外圈） ----
+// E 女巫签印（逆五芒星 + 外圈）
 //缓慢旋转的倒置五芒星作为女巫个人签印，替代darkPulseWave的节律冲击
 float witchSigil(float2 centered, float time, float expand)
 {
@@ -270,7 +260,7 @@ float witchSigil(float2 centered, float time, float expand)
     return saturate((ringLine * 0.7 + ringGlow * 0.4 + star + verts) * breath);
 }
 
-// ---- F 硫火余烬 ----
+// F 硫火余烬
 float risingEmbers(float2 centered, float time)
 {
     float embers = 0.0;
@@ -303,9 +293,7 @@ float risingEmbers(float2 centered, float time)
     return saturate(embers);
 }
 
-// ============================================================
 // 主像素着色
-// ============================================================
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 centered = coords * 2.0 - 1.0;

@@ -3,10 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
-    /// <summary>
-    /// 双子魔眼状态索引，用于网络同步
-    /// 魔焰眼和激光眼共用同一套索引
-    /// </summary>
+    /// <summary>双子魔眼状态索引，网络同步用；魔焰/激光眼共用</summary>
     internal enum TwinsStateIndex : int
     {
         //魔焰眼一阶段
@@ -43,15 +40,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         TwinsScissorRay = 24,
     }
 
-    /// <summary>
-    /// 双子魔眼状态接口
-    /// 定义状态的基本行为
-    /// </summary>
+    /// <summary>双子魔眼状态接口</summary>
     internal interface ITwinsState : IVaultState<TwinsStateContext>
     {
-        /// <summary>
-        /// 状态索引，用于网络同步
-        /// </summary>
+        /// <summary>状态索引，网络同步</summary>
         TwinsStateIndex StateIndex { get; }
 
         /// <summary>
@@ -71,10 +63,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         void OnExit(TwinsStateContext context);
     }
 
-    /// <summary>
-    /// 双子魔眼状态基类
-    /// 提供状态的通用实现
-    /// </summary>
+    /// <summary>双子魔眼状态基类</summary>
     internal abstract class TwinsStateBase : VaultState<TwinsStateContext>, ITwinsState
     {
         public override int StateId => (int)StateIndex;
@@ -141,16 +130,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             return (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.UnitY);
         }
 
-        /// <summary>
-        /// 启用碰撞伤害，用于冲刺等体术攻击
-        /// </summary>
+        /// <summary>启用接触伤害(冲刺等体术)</summary>
         protected void EnableContactDamage(NPC npc) {
             npc.damage = npc.defDamage;
         }
 
-        /// <summary>
-        /// 禁用碰撞伤害，用于非冲刺状态
-        /// </summary>
+        /// <summary>禁用接触伤害</summary>
         protected void DisableContactDamage(NPC npc) {
             npc.damage = 0;
         }

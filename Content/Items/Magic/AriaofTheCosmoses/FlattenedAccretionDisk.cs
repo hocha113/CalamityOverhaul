@@ -8,16 +8,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
-    /// 压扁的3D吸积盘
-    /// </summary>
+    /// 压扁3D吸积盘
     internal class FlattenedAccretionDisk : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
         //吸积盘参数
         public ref float RotationSpeed => ref Projectile.ai[0];
-        public ref float FlattenAngle => ref Projectile.ai[1]; //压扁角度，用于实现3D效果
+        public ref float FlattenAngle => ref Projectile.ai[1]; //压扁角度 3D效果
         public ref float ChargeProgress => ref Projectile.ai[2]; //蓄力进度
 
         private float time;
@@ -31,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private Color outerColor = new Color(100, 50, 150);  //外圈
 
         private int gammaRayTimer = 0;
-        private const int GammaRayInterval = 30; //伽马射线发射间隔
+        private const int GammaRayInterval = 30; //伽马射线间隔
 
         public override void SetStaticDefaults() {
             Main.projFrames[Type] = 1;

@@ -10,10 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 替死娃娃鱼技能：被动玩家受到伤害时，若技能冷却完成，
-    /// 取消这次伤害并把最终伤害转移到附近随机敌人
-    /// </summary>
+    /// <summary>替死娃娃鱼：受伤时冷却内将伤害转给附近敌人</summary>
     internal class FishVoodoo : FishSkill
     {
         public override int UnlockFishID => ItemID.GuideVoodooFish;
@@ -22,9 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HeldHalibut;//未装备暂停冷却
     }
 
-    /// <summary>
-    /// 监听玩家受伤并触发替死效果
-    /// </summary>
+    /// <summary>替死受伤监听</summary>
     internal class FishVoodooPlayer : ModPlayer
     {
         private const int UnlimitedLayersThreshold = 10; //>=10 层领域时无限替死
@@ -275,7 +270,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //高亮层
             Main.spriteBatch.Draw(tex, pos, rect, new Color(255, 200, 255, 0) * 0.6f, -Projectile.rotation * 0.7f, origin, scale * 1.05f, SpriteEffects.None, 0f);
 
-            //下方诅咒光束向下坠落的细线（营造能量）
+            //下方诅咒细线
             for (int i = 0; i < 3; i++) {
                 float lineRot = (i / 3f * MathHelper.TwoPi) + Main.GlobalTimeWrappedHourly * 3f;
                 Vector2 lineStart = pos + lineRot.ToRotationVector2() * 8f;

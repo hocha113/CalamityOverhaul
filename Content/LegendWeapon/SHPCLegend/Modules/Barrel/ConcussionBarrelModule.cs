@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 震荡膛口：连续命中累计计数，每达到阈值在最近一次命中处释放一次微型震荡环
-    /// 通过实例字段独立维护计数器，复用 <see cref="CyberDetonationProj"/> 表达冲击波
-    /// </summary>
+    /// <summary>震荡膛口：连中计次释微型震荡环，用 CyberDetonationProj</summary>
     internal sealed class ConcussionBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;

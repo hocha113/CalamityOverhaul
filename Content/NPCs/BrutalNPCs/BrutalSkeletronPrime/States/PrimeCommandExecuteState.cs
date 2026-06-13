@@ -5,11 +5,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 战术指令执行窗口：广播指令给四臂，结束后切入下一头部招式。
-    /// <para>窗口到时先撤销指令广播（四臂不再起手新的蓄力招，等待因此有上界），
-    /// 若仍有臂在收尾蓄力且下一手要接管编队（冲撞/火力阵），头部原地悬停等兑现完再动身。</para>
-    /// </summary>
+    /// <summary>战术指令执行窗口：广播四臂指令后衔接下一头部招式</summary>
+    /// <para>下一手收编队且有臂收尾蓄力时，头部悬停等预警兑现</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CommandExecute, typeof(PrimeStateContext))]
     internal class PrimeCommandExecuteState : PrimeStateBase
     {

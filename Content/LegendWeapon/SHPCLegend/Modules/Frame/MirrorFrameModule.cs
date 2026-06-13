@@ -6,10 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 镜像机匣：每束新光束生成时立即派生一束180°对称镜像
-    /// 用 HashSet 记录已处理的 whoAmI 确保只生成一次，OnBeamKill 清理
-    /// </summary>
+    /// <summary>镜像机匣：新光束派生 180° 对称镜像，HashSet 防重复</summary>
     internal sealed class MirrorFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

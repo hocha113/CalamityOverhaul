@@ -9,10 +9,7 @@ using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 玩家在不满足条件时尝试切换骇客时间触发的警告弹窗
-    /// <br/>红色警示系赛博风格，与<see cref="NotificationPopupSystem"/>共用滑入滑出动画与堆叠队列
-    /// </summary>
+    /// <summary>骇客时间条件不满足时的警告弹窗</summary>
     internal class HackTimeAccessDeniedEntry : NotificationEntry
     {
         private readonly LocalizedText titleOverride;
@@ -20,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         public HackTimeAccessDeniedEntry() { }
 
-        /// <summary>使用自定义标题/描述复用该红色警示弹窗（例如普通义体界面提醒前往义体医生）</summary>
+        /// <summary>自定义标题/描述复用警示弹窗</summary>
         public HackTimeAccessDeniedEntry(LocalizedText title, LocalizedText desc) {
             titleOverride = title;
             descOverride = desc;
@@ -74,7 +71,7 @@ namespace CalamityOverhaul.Content.HackTimes
             //右上角警告斜切
             DrawCornerCut(sb, px, r, alpha);
 
-            //垂直扫描线，强化"系统拒绝"氛围
+            //垂直扫描线
             DrawScanLine(sb, px, r, barW, alpha, animTime);
 
             //左侧警告三角图标
@@ -112,7 +109,7 @@ namespace CalamityOverhaul.Content.HackTimes
             //右上角小型数据指示灯
             DrawDataDots(sb, px, r, alpha, animTime);
 
-            //底部进度倒计时条，提示弹窗剩余时间
+            //底部倒计时条
             DrawCountdownBar(sb, px, r, alpha);
         }
 
@@ -159,7 +156,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>红色警告三角，中间一根感叹号</summary>
+        /// <summary>红色警告三角与感叹号</summary>
         private static void DrawWarningIcon(SpriteBatch sb, Texture2D px,
             int cx, int cy, float alpha, float pulse) {
             int radius = 11;
@@ -244,9 +241,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 描述文本自动换行绘制，按词/字裁剪以适应面板宽度
-        /// </summary>
+        /// <summary>描述文本自动换行绘制</summary>
         private static void DrawWrappedText(SpriteBatch sb, string text,
             Vector2 startPos, float maxWidth, float scale, Color color) {
             if (string.IsNullOrEmpty(text) || maxWidth <= 0f) {

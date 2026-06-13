@@ -38,9 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// </summary>
         public event Action<float, float> OnValueChanged;
 
-        /// <summary>
-        /// 复苏值达到最大值事件（危险！会导致玩家死亡）
-        /// </summary>
+        /// <summary>满值事件（触发死亡）</summary>
         public event Action OnMaxValueReached;
 
         /// <summary>
@@ -85,14 +83,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region 属性访问器
-        /// <summary>
-        /// 获取当前复苏值（只读）
-        /// </summary>
+        /// <summary>当前复苏值只读</summary>
         public float CurrentValue => currentValue;
 
-        /// <summary>
-        /// 获取或设置最大复苏值
-        /// </summary>
+        /// <summary>最大复苏值</summary>
         public float MaxValue {
             get => maxValue;
             set {
@@ -107,9 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
         }
 
-        /// <summary>
-        /// 获取或设置复苏速度
-        /// </summary>
+        /// <summary>复苏速度（每帧增量，0 为不自动增长）</summary>
         public float ResurrectionRate {
             get => resurrectionRate;
             set {
@@ -137,14 +129,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             }
         }
 
-        /// <summary>
-        /// 获取复苏进度比例（0-1）
-        /// </summary>
+        /// <summary>复苏进度 0-1</summary>
         public float Ratio => maxValue > 0 ? Math.Clamp(currentValue / maxValue, 0f, 1f) : 0f;
 
-        /// <summary>
-        /// 获取或设置系统启用状态
-        /// </summary>
+        /// <summary>系统开关</summary>
         public bool IsEnabled {
             get => isEnabled;
             set => isEnabled = value;
@@ -162,9 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region 网络同步
-        /// <summary>
-        /// 设置复苏速度但不触发网络同步，用于接收网络包或内部更新
-        /// </summary>
+        /// <summary>本地写复苏速度，不 net</summary>
         public void SetResurrectionRateNoSync(float value) {
             float oldRate = resurrectionRate;
             resurrectionRate = value;
@@ -189,9 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             modPacket.Send();
         }
 
-        /// <summary>
-        /// 处理复苏速度网络包
-        /// </summary>
+        /// <summary>复苏速度 net 包</summary>
         /// <param name="reader"></param>
         /// <param name="senderWhoAmI"></param>
         internal static void HandleResurrectionRate(BinaryReader reader, int senderWhoAmI) {
@@ -220,9 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region 核心方法
-        /// <summary>
-        /// 设置复苏值（直接设置）
-        /// </summary>
+        /// <summary>直接设复苏值</summary>
         /// <param name="value">目标值</param>
         /// <param name="triggerEvents">是否触发事件（默认true）</param>
         public void SetValue(float value, bool triggerEvents = true) {
@@ -285,10 +267,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             SetValue(maxValue, triggerEvents);
         }
 
-        /// <summary>
-        /// 更新系统（每帧调用）
-        /// 处理自动增长等逻辑
-        /// </summary>
+        /// <summary>系统 tick，含自动增长</summary>
         public void Update() {
             if (!isEnabled) {
                 return;
@@ -303,9 +282,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             CheckDangerZone();
         }
 
-        /// <summary>
-        /// 检查并触发危险区域事件
-        /// </summary>
+        /// <summary>危险区事件 tick</summary>
         private void CheckDangerZone() {
             float ratio = Ratio;
             bool isInDangerZone = ratio >= 0.7f;
@@ -426,9 +403,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region Utils
-        /// <summary>
-        /// 获取剩余值
-        /// </summary>
+        /// <summary>剩余复苏值</summary>
         public float GetRemainingValue() => maxValue - currentValue;
 
         /// <summary>
@@ -448,9 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             SetValue(maxValue * (percentage / 100f));
         }
 
-        /// <summary>
-        /// 获取百分比形式的复苏值
-        /// </summary>
+        /// <summary>复苏值百分比 0-100</summary>
         public float GetPercentage() => Ratio * 100f;
 
         /// <summary>

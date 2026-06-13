@@ -9,13 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 探针镭射阵状态：毁灭者咆哮后释放探针组成阵列，发射预判线镭射
-    /// 阶段1 (0~60帧): 咆哮+体节释放探针，毁灭者减速悬浮
-    /// 阶段2 (60~140帧): 探针飞向阵列位置（以目标为中心的圆环/十字），毁灭者缓慢盘旋
-    /// 阶段3 (140~200帧): 探针锁定目标，发射PrimeCannonOnSpan预判线
-    /// 阶段4 (200~260帧): 恢复期，探针散开消失，切换状态
-    /// </summary>
+    /// <summary>探针镭射阵：咆哮释探针→阵列就位→<see cref="PrimeCannonOnSpan"/> 齐射→恢复</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.ProbeMatrix, typeof(DestroyerStateContext))]
     internal class DestroyerProbeMatrixState : DestroyerStateBase
     {
@@ -240,9 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>
-        /// 计算探针在阵列中的位置
-        /// </summary>
+        /// <summary>阵列探针位点(圆环/十字/V字)</summary>
         private static Vector2 GetFormationPosition(Vector2 center, int index, int total, int type) {
             return type switch {
                 0 => GetCirclePosition(center, index, total),

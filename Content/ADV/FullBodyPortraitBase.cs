@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// 开始立绘演出——等待对话框展开完毕后自动淡入
+        /// 开始立绘演出，等待对话框展开后淡入
         /// </summary>
         public virtual void StartPerformance() {
             phaseProgress = 0f;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// 结束立绘演出——开始淡出
+        /// 结束立绘演出，开始淡出
         /// </summary>
         public virtual void EndPerformance() {
             if (currentPhase != PerformancePhase.Custom) {
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.ADV
 
             switch (currentPhase) {
                 case PerformancePhase.FadeIn:
-                    //等待对话框展开完毕再开始淡入计时
+                    // 等对话框展开后再计淡入
                     if (OwnerDialogue != null && OwnerDialogue.showProgress < 1f) break;
                     phaseProgress++;
                     if (phaseProgress >= FadeInDuration) {

@@ -1,26 +1,16 @@
 // ============================================================================
-// CybCourseEntryReveal.fx — 进入超梦世界的入场演出
-//
-// 概念：
-//   屏幕初始被深色赛博空间六角蜂窝完全覆盖（玩家"接入"前的网格未渲染态）。
-//   一道环形能量波由屏幕中心向外扩散，每经过一格六边形单元：
-//     ① 单元内部短暂被青-白能量点亮（核心 + 边线）
-//     ② 此后单元被"消解"为透明，让真实世界从中心向外逐渐显现。
-//   波前自身辉光成圈，并伴随一圈强度更高的"前沿环"。
-//
-// 输出：
-//   预乘 alpha (col*alpha, alpha)，与 BlendState.AlphaBlend 搭配。
-// 全程序化、无外部纹理依赖。
+// CybCourseEntryReveal.fx 超梦入场揭示
+// 中心向外六角消解波；AlphaBlend 预乘 alpha，全程序化
 // ============================================================================
 
 float uTime;
-float uReveal;        // 0=完全覆盖, 1=完全揭示, >1=进入消散尾声
+float uReveal;        //0完全覆盖 1完全揭示 >1消散尾声
 float uAspectRatio;
 
 #define TAU 6.28318530
 #define PI  3.14159265
 
-// ==================== Hash / Noise ====================
+// Hash / Noise
 
 float hash21(float2 p)
 {
@@ -41,7 +31,7 @@ float vnoise(float2 p)
     return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
 }
 
-// ==================== Hex Grid ====================
+// Hex Grid
 //
 // 用两套整数方格的 Voronoi 等价于六角网格：
 //   网格 A 中心：(i, j) * s
@@ -78,7 +68,7 @@ float hexEdgeDist(float2 p)
     return 0.86602540 - max(p.x * 0.86602540 + p.y * 0.5, p.y);
 }
 
-// ==================== Main ====================
+// Main
 
 float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
 {
@@ -89,7 +79,7 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     float2 p = uv - 0.5;
     p.x *= aspect;
 
-    // ---------------- 六角格采样 ----------------
+    // 六角格采样
     const float HEX_SCALE = 13.0;       // 屏幕高度方向约 13 行单元
     float2 cLocal, cId;
     hexCellInfo(p, HEX_SCALE, cLocal, cId);
@@ -105,7 +95,7 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     float rnd  = hash21(cId);
     float rnd2 = hash21(cId + float2(7.13, 1.71));
 
-    // ---------------- 波前推进 ----------------
+    // 波前推进
     float maxR = 0.5 * sqrt(aspect * aspect + 1.0);    // 屏幕角到中心的最大距离
     float waveR = uReveal * (maxR + 0.18);              // 略微超出确保边角清空
 
@@ -114,7 +104,7 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
                  + (rnd2 - 0.5) * 0.018 * sin(rnd2 * TAU + t * 0.7);
     float localT = waveR - cellR + jitter;
 
-    // ---------------- 颜色（覆盖态：暗赛博蜂窝） ----------------
+    // 颜色（覆盖态：暗赛博蜂窝）
     float3 col = float3(0.0, 0.0, 0.0);
 
     // 单元基色：极深蓝 → 微亮，按 rnd 略有差异
@@ -142,7 +132,7 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
 
     col = darkCell;
 
-    // ---------------- 波前能量层 ----------------
+    // 波前能量层
     // 每格在波到达瞬间被点亮：边线 → 内核 → 衰减
     float burnW = 0.060;
     float burn  = exp(-pow(localT / burnW, 2.0));
@@ -163,7 +153,7 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     crack = smoothstep(0.022, 0.0, crack);
     col += float3(0.50, 1.00, 1.10) * crack * burn * (0.60 + rnd * 0.4);
 
-    // ---------------- 波前主环 ----------------
+    // 波前主环
     // 全屏空间中以 waveR 为半径的高强度细环（横跨多格的整体波前）
     float pR = length(p);
     float ringDist = abs(pR - waveR);
@@ -184,7 +174,7 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     if (pR > waveR) col += float3(0.10, 0.30, 0.95) * chro * 0.30 * ringActive; // 前(尚未到的远端)
     else            col += float3(0.55, 1.05, 0.80) * chro * 0.20 * ringActive; // 后(已扫过的近端)
 
-    // ---------------- 中心余晕（仪式感） ----------------
+    // 中心余晕（仪式感）
     // 揭示开始的瞬间，从原点喷发一次柔光，随 reveal 衰减
     float burst = exp(-pR * 5.0) * exp(-uReveal * 2.4);
     col += float3(0.40, 0.95, 1.15) * burst * 0.70;
@@ -193,12 +183,12 @@ float4 PSCybCourseEntryReveal(float2 uv : TEXCOORD0) : COLOR0
     float boot = exp(-uReveal * 9.0);
     col += float3(0.05, 0.15, 0.28) * boot;
 
-    // ---------------- 体积雾抖动 ----------------
+    // 体积雾抖动
     // 微弱噪声层让覆盖区域呈现数字粒子感
     float n = vnoise(p * 6.0 + float2(t * 0.15, t * 0.08)) - 0.5;
     col += float3(0.04, 0.12, 0.20) * n * 0.18;
 
-    // ---------------- Alpha (覆盖态完全不透明，被波扫过后透明) ----------------
+    // Alpha (覆盖态完全不透明，被波扫过后透明)
     float fadeW = 0.075;
 
     // 基础 alpha：localT < 0 时为 1，> fadeW 时为 0

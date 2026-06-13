@@ -1,7 +1,7 @@
 // ============================================================================
-// CelestialDomain.fx — 天国领域着色器（高品质重写版）
-// 启示录阶段的神圣领域：体积光散射 + 域扭曲云雾 + 光之曼陀罗 + 以太光辉
-// 所有效果使用连续光场与高斯辉光，杜绝硬边几何
+// CelestialDomain.fx 天国领域
+// 采样 s0 + s1 噪声；Immediate AlphaBlend 全屏
+// ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -50,7 +50,7 @@ float hash21(float2 p)
     return frac((p3.x + p3.y) * p3.z);
 }
 
-// ---- A. 神圣以太 — 域扭曲的天国云雾 ----
+// 神圣以太云雾
 // 多层噪声纹理采样+UV扭曲，产生缓慢流动的天光云层
 float3 divineAether(float2 centered, float dist, float angle, float time, float expand)
 {
@@ -94,7 +94,7 @@ float3 divineAether(float2 centered, float dist, float angle, float time, float 
     return aetherColor * cloudMix * 0.5;
 }
 
-// ---- B. 体积光芒 — 从中心射出的柔和光柱 ----
+// 体积光芒
 // 噪声调制的径向光线，高斯截面，多频叠加
 float volumetricRays(float2 centered, float dist, float angle, float time, float expand)
 {
@@ -132,7 +132,7 @@ float volumetricRays(float2 centered, float dist, float angle, float time, float
     return saturate(rays);
 }
 
-// ---- C. 光之曼陀罗 — 神圣几何图案 ----
+// 光之曼陀罗
 // 高斯辉光线条构成的旋转圆形几何，取代硬边SDF
 float sacredMandala(float2 centered, float dist, float angle, float time, float expand)
 {
@@ -190,7 +190,7 @@ float sacredMandala(float2 centered, float dist, float angle, float time, float 
     return saturate(result);
 }
 
-// ---- D. 神圣光环 — 高斯辉光同心环 ----
+// 神圣光环
 float sacredHalos(float dist, float angle, float time, float expand)
 {
     float rings = 0.0;
@@ -223,7 +223,7 @@ float sacredHalos(float dist, float angle, float time, float expand)
     return saturate(rings);
 }
 
-// ---- E. 上升圣灵 — 柔和光点粒子系统 ----
+// 上升圣灵
 float risingSpirits(float2 centered, float time, float expand)
 {
     float spirits = 0.0;
@@ -263,7 +263,7 @@ float risingSpirits(float2 centered, float time, float expand)
     return saturate(spirits);
 }
 
-// ---- F. 边缘圣辉 — 领域边界的以太光晕 ----
+// 边缘圣辉
 float edgeAurora(float dist, float angle, float time, float expand)
 {
     float domainR = 0.42 * expand;
@@ -292,7 +292,7 @@ float edgeAurora(float dist, float angle, float time, float expand)
     return saturate(warpedGlow * 0.7 + edgeGlow * 0.3 + spike);
 }
 
-// ---- G. 七印圣光 — 围绕领域的柔和光源 ----
+// 七印圣光
 float3 sevenSeals(float2 centered, float time, float expand)
 {
     float3 sealLight = float3(0, 0, 0);
@@ -322,7 +322,7 @@ float3 sevenSeals(float2 centered, float time, float expand)
     return sealLight;
 }
 
-// ============== 主像素着色器 ==============
+// 主像素着色器
 float4 PSCelestialDomain(VSOutput input) : COLOR0
 {
     float2 uv = input.UV;

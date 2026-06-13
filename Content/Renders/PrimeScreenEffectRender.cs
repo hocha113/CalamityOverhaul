@@ -7,14 +7,12 @@ using Terraria;
 namespace CalamityOverhaul.Content.Renders
 {
     /// <summary>
-    /// 机械骷髅王全屏后处理渲染句柄：冲刺热浪扭曲 → 冲击波环（折射+色散）→ 终爆冲击帧，
-    /// 按序各做一次 <see cref="Main.screenTarget"/>/<paramref name="screenSwap"/> ping-pong。
-    /// 所有着色器都对屏幕做"采样-变换-回写"，无效果命中处保持透传，杜绝黑屏。
-    /// 效果状态由 <see cref="PrimeScreenEffects"/> 持有，本类每帧驱动其衰减。
+    /// 机械骷髅王全屏后处理——热浪扭曲、冲击环、终爆冲击帧，screenTarget/screenSwap ping-pong 回写
+    /// <br/>状态 <see cref="PrimeScreenEffects"/> 持有，本类每帧衰减驱动；无命中处透传防黑屏
     /// </summary>
     internal class PrimeScreenEffectRender : RenderHandle
     {
-        /// <summary>在火力发电机热浪(1.06)之后、屏幕扭曲合成(1.2)之前执行</summary>
+        /// <summary>权重 1.08，在热浪(1.06)与扭曲(1.2)之间</summary>
         public override float Weight => 1.08f;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
@@ -51,7 +49,7 @@ namespace CalamityOverhaul.Content.Renders
             return false;
         }
 
-        /// <summary>把当前屏幕拷到交换 RT，再带着指定着色器写回主屏 RT</summary>
+        /// <summary>拷屏到 screenSwap 再带着 shader 写回 screenTarget</summary>
         private static void PingPong(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap, Effect shader) {
             gd.SetRenderTarget(screenSwap);
             gd.Clear(Color.Transparent);
@@ -71,7 +69,7 @@ namespace CalamityOverhaul.Content.Renders
             Effect shader = EffectLoader.PrimeHeatWake.Value;
             Vector2 centerUV = WorldToScreenUV(PrimeScreenEffects.HeatWorldCenter);
 
-            //源完全离屏太远时跳过，避免无意义的全屏 pass
+            //源离屏过远时跳过全屏 pass
             if (centerUV.X < -0.5f || centerUV.X > 1.5f || centerUV.Y < -0.5f || centerUV.Y > 1.5f) {
                 return;
             }
@@ -98,7 +96,7 @@ namespace CalamityOverhaul.Content.Renders
                 }
 
                 float t = ring.Age / (float)ring.Life;
-                //环半径 easeOut 扩张，强度随生命衰减
+                //环半径 easeOut 扩张，强度随寿命衰减
                 float radiusPx = ring.MaxRadiusPx * CWRUtils.EaseOutCubic(t);
                 float strength = ring.Intensity * (1f - t) * (1f - t);
                 Vector2 centerUV = WorldToScreenUV(ring.WorldCenter);
@@ -132,7 +130,7 @@ namespace CalamityOverhaul.Content.Renders
             PingPong(sb, gd, screenSwap, shader);
         }
 
-        /// <summary>世界坐标 → 归一化屏幕 uv（考虑 GameViewMatrix.Zoom 的中心缩放）</summary>
+        /// <summary>世界坐标 → 归一化 uv（含 GameViewMatrix.Zoom）</summary>
         private static Vector2 WorldToScreenUV(Vector2 worldPos) {
             float screenW = Main.screenWidth;
             float screenH = Main.screenHeight;
@@ -149,7 +147,7 @@ namespace CalamityOverhaul.Content.Renders
             return new Vector2(screenPx.X / screenW, screenPx.Y / screenH);
         }
 
-        /// <summary>像素长度 → 以屏幕高度归一化的长度（与着色器距离场量纲一致）</summary>
+        /// <summary>像素长度 → 屏幕高度归一化（与着色器距离场量纲一致）</summary>
         private static float PixelsToHeightNorm(float pixels) {
             float zoomY = Main.GameViewMatrix.Zoom.Y;
             if (zoomY <= 0f) {

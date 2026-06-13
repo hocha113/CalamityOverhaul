@@ -18,34 +18,22 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         private readonly static Dictionary<string, QuestNode> _quests = [];
         public static IReadOnlyCollection<QuestNode> AllQuests => _quests.Values;
 
-        /// <summary>
-        /// 节点ID
-        /// </summary>
+        /// <summary>节点 ID</summary>
         public virtual string ID => Name;
 
-        /// <summary>
-        /// 节点名称
-        /// </summary>
+        /// <summary>节点名称</summary>
         public LocalizedText DisplayName { get; protected set; }
 
-        /// <summary>
-        /// 节点描述
-        /// </summary>
+        /// <summary>节点描述</summary>
         public LocalizedText Description { get; protected set; }
 
-        /// <summary>
-        /// 详细任务描述
-        /// </summary>
+        /// <summary>详细任务描述</summary>
         public LocalizedText DetailedDescription { get; protected set; }
 
-        /// <summary>
-        /// 节点在图表中的位置(相对于父节点)
-        /// </summary>
+        /// <summary>图表位置，相对父节点</summary>
         public Vector2 Position;
 
-        /// <summary>
-        /// 获取节点的绝对位置
-        /// </summary>
+        /// <summary>节点绝对位置</summary>
         public Vector2 CalculatedPosition {
             get {
                 if (ParentIDs.Count > 0) {
@@ -58,64 +46,40 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             }
         }
 
-        /// <summary>
-        /// 前置任务ID列表
-        /// </summary>
+        /// <summary>前置任务 ID 列表</summary>
         public List<string> ParentIDs = new();
 
-        /// <summary>
-        /// 子任务ID列表
-        /// </summary>
+        /// <summary>子任务 ID 列表</summary>
         public List<string> ChildIDs = new();
 
-        /// <summary>
-        /// 图标类型
-        /// </summary>
+        /// <summary>图标类型</summary>
         public QuestIconType IconType = QuestIconType.Texture;
 
-        /// <summary>
-        /// 图标纹理路径
-        /// </summary>
+        /// <summary>图标纹理路径</summary>
         public string IconTexturePath;
 
-        /// <summary>
-        /// 图标物品ID(当IconType为Item时使用)
-        /// </summary>
+        /// <summary>图标物品 ID，IconType 为 Item 时</summary>
         public int IconItemType;
 
-        /// <summary>
-        /// 图标NPC类型(当IconType为NPC时使用)
-        /// </summary>
+        /// <summary>图标 NPC 类型，IconType 为 NPC 时</summary>
         public int IconNPCType;
 
-        /// <summary>
-        /// 缓存的图标纹理
-        /// </summary>
+        /// <summary>缓存图标纹理</summary>
         private Asset<Texture2D> _iconTextureCache;
 
-        /// <summary>
-        /// 任务奖励列表
-        /// </summary>
+        /// <summary>任务奖励列表</summary>
         public List<QuestReward> Rewards = new();
 
-        /// <summary>
-        /// 任务目标列表
-        /// </summary>
+        /// <summary>任务目标列表</summary>
         public List<QuestObjective> Objectives = new();
 
-        /// <summary>
-        /// 任务类型
-        /// </summary>
+        /// <summary>任务类型</summary>
         public QuestType QuestType;
 
-        /// <summary>
-        /// 任务难度
-        /// </summary>
+        /// <summary>任务难度</summary>
         public QuestDifficulty Difficulty;
 
-        /// <summary>
-        /// 任务是否已完成
-        /// </summary>
+        /// <summary>是否已完成</summary>
         public bool IsCompleted {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsCompleted;
             set {
@@ -129,21 +93,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             }
         }
 
-        /// <summary>
-        /// 任务已完成但奖励尚未全部领取
-        /// </summary>
+        /// <summary>已完成但奖励未领完</summary>
         public bool HasUnclaimedRewards => IsCompleted && Rewards != null
             && Rewards.Count > 0 && Rewards.Exists(r => !r.Claimed);
 
-        /// <summary>
-        /// 任务已完成且奖励已全部领取
-        /// </summary>
+        /// <summary>已完成且奖励已领完</summary>
         public bool AllRewardsClaimed => IsCompleted && (Rewards == null
             || Rewards.Count == 0 || Rewards.TrueForAll(r => r.Claimed));
 
-        /// <summary>
-        /// 任务是否已解锁
-        /// </summary>
+        /// <summary>是否已解锁</summary>
         public bool IsUnlocked {
             get => Main.LocalPlayer.GetModPlayer<QLPlayer>().GetQuestData(ID).IsUnlocked;
             set {
@@ -162,38 +120,32 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
         public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
 
-        /// <summary>
-        /// 当任务完成时调用，注意尽量避免在此处修改任务状态，比如 <see cref="IsCompleted"/>
-        /// </summary>
+        /// <summary>任务完成回调，避免在此改<see cref="IsCompleted"/></summary>
         protected virtual void OnCompletion() {
-            //播放完成音效或提示
+            //播放完成通知
             if (Main.LocalPlayer.active) {
                 QuestNotificationSystem.AddNotification(this);
             }
 
             //尝试解锁子任务
             foreach (var quest in AllQuests) {
-                //如果是子任务，或者将当前任务作为前置的任务
+                //子任务或以本任务为前置的任务
                 if (ChildIDs.Contains(quest.ID) || quest.ParentIDs.Contains(ID)) {
                     quest.CheckUnlock();
                 }
             }
         }
 
-        /// <summary>
-        /// 当任务解锁时调用，注意尽量避免在此处修改任务状态，比如 <see cref="IsUnlocked"/>
-        /// </summary>
+        /// <summary>任务解锁回调，避免在此改<see cref="IsUnlocked"/></summary>
         protected virtual void OnUnlock() {
 
         }
 
-        /// <summary>
-        /// 检查是否满足解锁条件
-        /// </summary>
+        /// <summary>检查解锁条件</summary>
         public void CheckUnlock() {
             if (IsUnlocked) return;
 
-            // 检查所有前置任务是否完成
+            //检查前置任务是否全部完成
             bool allParentsCompleted = true;
             foreach (var parentID in ParentIDs) {
                 var parent = GetQuest(parentID);
@@ -208,9 +160,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             }
         }
 
-        /// <summary>
-        /// 获取任务图标纹理
-        /// </summary>
+        /// <summary>获取任务图标纹理</summary>
         public Texture2D GetIconTexture() {
             switch (IconType) {
                 case QuestIconType.Item:
@@ -240,9 +190,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             return VaultAsset.placeholder3.Value;
         }
 
-        /// <summary>
-        /// 获取图标源矩形(用于动画帧)
-        /// </summary>
+        /// <summary>图标源矩形，动画帧用</summary>
         public Rectangle? GetIconSourceRect(Texture2D texture) {
             if (texture == null) return null;
 
@@ -267,40 +215,30 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             return texture.Frame();
         }
 
-        /// <summary>
-        /// 设置物品图标
-        /// </summary>
+        /// <summary>设置物品图标</summary>
         public void SetItemIcon(int itemType) {
             IconType = QuestIconType.Item;
             IconItemType = itemType;
         }
 
-        /// <summary>
-        /// 设置NPC图标
-        /// </summary>
+        /// <summary>设置 NPC 图标</summary>
         public void SetNPCIcon(int npcType) {
             IconType = QuestIconType.NPC;
             IconNPCType = npcType;
         }
 
-        /// <summary>
-        /// 设置纹理图标
-        /// </summary>
+        /// <summary>设置纹理图标</summary>
         public void SetTextureIcon(string texturePath) {
             IconType = QuestIconType.Texture;
             IconTexturePath = texturePath;
         }
 
-        /// <summary>
-        /// 添加前置任务
-        /// </summary>
+        /// <summary>添加前置任务</summary>
         protected void AddParent<T>() where T : QuestNode {
             ParentIDs.Add(typeof(T).Name);
         }
 
-        /// <summary>
-        /// 添加子任务
-        /// </summary>
+        /// <summary>添加子任务</summary>
         protected void AddChild<T>() where T : QuestNode {
             ChildIDs.Add(typeof(T).Name);
         }
@@ -331,7 +269,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             DetailedDescription ??= this.GetLocalization(nameof(DetailedDescription), () => " ");
             InitializeRewards();
             for (int i = 0; i < Objectives.Count; i++) {
-                //如果没有指定目标物品，且任务图标为物品，则默认使用任务图标物品
+                //无目标物品且图标为物品时，默认用图标物品
                 if (Objectives[i].TargetItemID == 0 && IconType == QuestIconType.Item && IconItemType > 0) {
                     Objectives[i].TargetItemID = IconItemType;
                 }
@@ -340,21 +278,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             PostSetup();
         }
 
-        /// <summary>
-        /// 初始化奖励数据
-        /// </summary>
+        /// <summary>初始化奖励数据</summary>
         public void InitializeRewards() {
             for (int i = 0; i < Rewards.Count; i++) {
                 Rewards[i].Initialize(this, i);
             }
         }
 
-        /// <summary>
-        /// 添加奖励内容
-        /// </summary>
-        /// <param name="itemType"></param>
-        /// <param name="amount"></param>
-        /// <param name="text"></param>
+        /// <summary>添加奖励</summary>
         public void AddReward(int itemType, int amount = 1, LocalizedText text = null) {
             if (itemType <= ItemID.None || amount <= 0) {
                 return;
@@ -370,94 +301,49 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             InitializeRewards();
         }
 
-        /// <summary>
-        /// 在 <see cref="SetStaticDefaults"/> 之后调用，用于执行依赖于其他任务的初始化逻辑
-        /// </summary>
+        /// <summary>SetStaticDefaults 后调用，依赖其它任务的初始化</summary>
         public virtual void PostSetup() {
 
         }
 
-        /// <summary>
-        /// 每帧更新逻辑，用于检查任务完成条件，更新于玩家状态后
-        /// </summary>
+        /// <summary>每帧更新，检查完成条件</summary>
         public virtual void UpdateByPlayer() { }
 
-        /// <summary>
-        /// 玩家合成物品时调用
-        /// </summary>
-        /// <param name="recipe"></param>
-        /// <param name="item"></param>
-        /// <param name="consumedItems"></param>
-        /// <param name="destinationStack"></param>
+        /// <summary>玩家合成物品时调用</summary>
         public virtual void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) { }
 
-        /// <summary>
-        /// NPC死亡时调用
-        /// </summary>
+        /// <summary>NPC 死亡时调用</summary>
         public virtual void OnKillByNPC(NPC npc) { }
 
-        /// <summary>
-        /// 当玩家进入世界时调用，用于根据世界状态初始化任务
-        /// </summary>
+        /// <summary>玩家进入世界时调用</summary>
         public virtual void OnWorldEnter() { }
 
-        /// <summary>
-        /// 绘制节点内容，在节点图标之前调用
-        /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="drawPos"></param>
-        /// <param name="scale"></param>
-        /// <param name="isHovered"></param>
-        /// <param name="alpha"></param>
-        /// <returns></returns>
+        /// <summary>节点图标前绘制</summary>
         public virtual bool PreDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) { return true; }
 
-        /// <summary>
-        /// 绘制节点内容，在节点图标之后调用
-        /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="drawPos"></param>
-        /// <param name="scale"></param>
-        /// <param name="isHovered"></param>
-        /// <param name="alpha"></param>
+        /// <summary>节点图标后绘制</summary>
         public virtual void PostDraw(SpriteBatch spriteBatch, Vector2 drawPos, float scale, bool isHovered, float alpha) { }
     }
 
-    /// <summary>
-    /// 图标类型枚举
-    /// </summary>
+    /// <summary>图标类型</summary>
     public enum QuestIconType
     {
-        /// <summary>
-        /// 使用纹理文件
-        /// </summary>
+        /// <summary>纹理文件</summary>
         Texture,
-        /// <summary>
-        /// 使用物品图标
-        /// </summary>
+        /// <summary>物品图标</summary>
         Item,
-        /// <summary>
-        /// 使用NPC图标
-        /// </summary>
+        /// <summary>NPC 图标</summary>
         NPC
     }
 
-    /// <summary>
-    /// 任务奖励结构
-    /// </summary>
+    /// <summary>任务奖励</summary>
     public class QuestReward
     {
-        /// <summary>
-        /// 奖励物品ID
-        /// </summary>
+        /// <summary>奖励物品 ID</summary>
         public int ItemType;
-        /// <summary>
-        /// 奖励数量
-        /// </summary>
+        /// <summary>奖励数量</summary>
         public int Amount;
-        /// <summary>
-        /// 奖励描述
-        /// </summary>
+        /// <summary>奖励描述</summary>
         public LocalizedText Description;
 
         private QuestNode _node;
@@ -468,9 +354,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             _index = index;
         }
 
-        /// <summary>
-        /// 是否已领取
-        /// </summary>
+        /// <summary>是否已领取</summary>
         public bool Claimed {
             get {
                 if (_node == null) return false;
@@ -487,22 +371,14 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
     }
 
-    /// <summary>
-    /// 任务目标结构
-    /// </summary>
+    /// <summary>任务目标</summary>
     public class QuestObjective
     {
-        /// <summary>
-        /// 目标描述
-        /// </summary>
+        /// <summary>目标描述</summary>
         public LocalizedText Description;
-        /// <summary>
-        /// 所需进度
-        /// </summary>
+        /// <summary>所需进度</summary>
         public int RequiredProgress;
-        /// <summary>
-        /// 目标物品ID
-        /// </summary>
+        /// <summary>目标物品 ID</summary>
         public int TargetItemID;
 
         private QuestNode _node;
@@ -513,9 +389,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             _index = index;
         }
 
-        /// <summary>
-        /// 当前进度
-        /// </summary>
+        /// <summary>当前进度</summary>
         public int CurrentProgress {
             get {
                 if (_node == null) return 0;
@@ -531,15 +405,11 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             }
         }
 
-        /// <summary>
-        /// 是否已完成
-        /// </summary>
+        /// <summary>是否已完成</summary>
         public bool IsCompleted => CurrentProgress >= RequiredProgress;
     }
 
-    /// <summary>
-    /// 任务类型枚举
-    /// </summary>
+    /// <summary>任务类型</summary>
     public enum QuestType
     {
         Main,
@@ -548,9 +418,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         Achievement
     }
 
-    /// <summary>
-    /// 任务难度枚举
-    /// </summary>
+    /// <summary>任务难度</summary>
     public enum QuestDifficulty
     {
         Easy,

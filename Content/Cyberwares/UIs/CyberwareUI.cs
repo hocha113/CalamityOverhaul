@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    ///赛博朋克2077风格义体管理界面
-    ///深色科幻风格，中心为程序化像素人体，周围分布义体槽位
-    /// </summary>
+    /// <summary>义体管理界面，中心像素人体+周围槽位</summary>
     internal class CyberwareUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
@@ -24,14 +21,14 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         public static LocalizedText SlotSelectedText { get; private set; }
         public static LocalizedText SlotEmptyText { get; private set; }
 
-        //普通义体界面（SHPC 打开的只读版本）尝试更换时弹出的"请前往义体医生"提醒文案
+        //只读界面点击换装时"请找 Victor"提醒
         public static LocalizedText ClinicRequiredTitle { get; private set; }
         public static LocalizedText ClinicRequiredDesc { get; private set; }
 
-        //按顺序对应CyberSlotRenderer.Definitions的12个槽位
+        //对应 Definitions 12 槽位
         private static LocalizedText[] slotLabelTexts;
 
-        //缓存的槽位标签字符串数组，避免每帧重复取值
+        //槽位标签缓存
         private readonly string[] slotLabelCache = new string[12];
 
         public override void SetStaticDefaults() {
@@ -82,7 +79,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         private Vector2 panelCenter;
         private Vector2 bodyOrigin;
 
-        //每帧由动画逻辑计算的中间值，Draw直接使用
+        //动画中间值，Draw 直读
         private float currentWidthProgress;
         private float currentHeightProgress;
         private float currentAlpha;
@@ -98,9 +95,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         public override bool Active => isOpen || openProgress > 0.01f || isClosing;
 
-        /// <summary>
-        /// 获取指定槽位的本地化标签
-        /// </summary>
+        /// <summary>槽位本地化标签</summary>
         public string GetSlotLabel(int slotIndex) {
             if (slotIndex >= 0 && slotIndex < slotLabelCache.Length) {
                 return slotLabelCache[slotIndex];
@@ -112,9 +107,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共接口
 
-        /// <summary>
-        ///打开义体界面
-        /// </summary>
+        /// <summary>打开界面</summary>
         public void Open() {
             if (!isOpen) {
                 isOpen = true;
@@ -131,9 +124,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///关闭义体界面
-        /// </summary>
+        /// <summary>关闭界面</summary>
         public void Close() {
             if (isOpen) {
                 isOpen = false;
@@ -147,9 +138,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///切换义体界面的开关状态
-        /// </summary>
+        /// <summary>切换开关</summary>
         public void Toggle() {
             if (isOpen) Close();
             else Open();
@@ -231,9 +220,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///关闭动画：Phase1纵向压缩（CRT关机效果）→ Phase2水平收缩消失（科幻亮线坍缩）
-        /// </summary>
+        /// <summary>关闭动画：Phase1 纵向压缩→Phase2 水平坍缩</summary>
         private void UpdateCloseAnimation() {
             const float closeSpeed = 0.038f;
             const float phase1End = 0.6f;
@@ -241,7 +228,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float prevTimer = closeAnimTimer;
             closeAnimTimer = Math.Min(closeAnimTimer + closeSpeed, 1f);
 
-            //Phase1→Phase2过渡瞬间触发故障闪烁
+            //Phase1→2 过渡故障闪
             if (prevTimer < phase1End && closeAnimTimer >= phase1End) {
                 panelRenderer.TriggerGlitch(0.9f);
             }
@@ -256,7 +243,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float t = closeAnimTimer;
 
             if (t < phase1End) {
-                //Phase1：面板纵向压缩为细线，内容快速淡出
+                //Phase1 纵向压细线，内容淡出
                 float p = t / phase1End;
                 float hp = CWRUtils.EaseInCubic(p);
                 currentHeightProgress = Math.Max(0.007f, 1f - hp);
@@ -266,7 +253,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 closeLineGlow = p * 0.5f;
             }
             else {
-                //Phase2：细线水平坍缩+亮线闪烁消散
+                //Phase2 水平坍缩+亮线
                 float p = (t - phase1End) / (1f - phase1End);
                 float wp = CWRUtils.EaseInQuad(p);
                 currentHeightProgress = 0.007f;
@@ -309,12 +296,11 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             //刷新本地化缓存
             RefreshSlotLabelCache();
 
-            //主面板底层：shader 输出底色+网格+扫描带+CRT 行+中央人体光场+暗角+内边柔光
-            //bodyRadius 随关闭动画的 currentContentAlpha 衰减，让光场跟随内容一起淡出
+            //shader 底+人体光场，bodyR 随 contentAlpha 衰减
             Vector2 bodyLocalCenter = bodyOrigin - new Vector2(panelRect.X, panelRect.Y);
             float bodyR = CyberwareTheme.BodyHaloRadius * MathHelper.Clamp(currentContentAlpha, 0f, 1f);
             CyberPanelRenderer.DrawShaderBackground(spriteBatch, currentAlpha, panelRect, bodyLocalCenter, bodyR, mode: 0);
-            //CPU 端的几何感装饰：四角括号、顶部脉冲条、边脉冲移动亮点
+            //CPU 四角括号+顶脉冲
             CyberPanelRenderer.DrawFrameDecor(spriteBatch, currentAlpha, panelRect, globalTimer);
 
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
@@ -332,7 +318,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
                 DepthStencilState.None, rasterizerState, null, Main.UIScaleMatrix);
 
-            //内容层（人体、槽位、标题）—— 关闭时快速淡出
+            //内容层，关闭时淡出
             if (currentContentAlpha > 0.01f) {
                 bodyRenderer.DrawBody(spriteBatch, currentContentAlpha, bodyOrigin, globalTimer);
                 bodyRenderer.DrawNodes(spriteBatch, currentContentAlpha, bodyOrigin, slotRenderer.ComputeNodeStates());
@@ -355,12 +341,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             panelRenderer.DrawGlitchEffect(spriteBatch, currentAlpha, panelRect);
 
-            //关闭按钮——在ScissorTest之外绘制避免被裁剪
+            //关闭钮，Scissor 外绘
             if (currentContentAlpha > 0.01f) {
                 panelRenderer.DrawCloseButton(spriteBatch, currentContentAlpha, panelRect, closeButtonHovered);
             }
 
-            //义体选择背包面板——在ScissorTest之外绘制，因为侧面板在主面板外侧
+            //侧栏背包，Scissor 外绘
             if (currentContentAlpha > 0.01f) {
                 var cyberPlayer = player.GetModPlayer<CyberwarePlayer>();
                 inventoryPanel.Draw(spriteBatch, currentContentAlpha, cyberPlayer);
@@ -372,9 +358,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///绘制关闭动画的水平科幻光线（CRT关机风格的亮线坍缩）
-        /// </summary>
+        /// <summary>关闭动画水平亮线</summary>
         private void DrawCloseEffectLine(SpriteBatch spriteBatch) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;

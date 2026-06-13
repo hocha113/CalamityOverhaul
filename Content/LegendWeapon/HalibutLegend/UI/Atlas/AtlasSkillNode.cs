@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
-    /// <summary>
-    /// 深渊图鉴中漂浮的单个技能节点（视图模型）
-    /// 已解锁=点亮的冷光生物，未解锁=黑暗鱼影剪影
-    /// </summary>
+    /// <summary>图鉴技能节点视图模型</summary>
     internal class AtlasSkillNode
     {
         public readonly FishSkill Skill;
@@ -79,7 +76,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             float scale = baseScale * (1f + Hover * 0.22f + Ignite * 0.25f);
 
             if (unlocked) {
-                //生物冷光晕
+                //外晕
                 float breath = HalibutTheme.Breath(time, DriftSeed, 1.8f);
                 HalibutRenderer.DrawSoftGlow(sb, pos, 26f + breath * 5f + Hover * 10f,
                     tierCol * ((0.30f + breath * 0.12f + Hover * 0.25f) * alpha));
@@ -94,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 }
             }
             else {
-                //黑暗鱼影：剪影 + 暗环 + 问号
+                //未解锁：剪影 + 暗环 + 问号
                 HalibutRenderer.DrawRing(sb, pos, 20f + Hover * 3f, 1f,
                     HalibutTheme.Disabled * ((0.35f + Hover * 0.3f) * alpha));
                 sb.Draw(icon, pos, null, HalibutTheme.Void * (0.92f * alpha), 0f,

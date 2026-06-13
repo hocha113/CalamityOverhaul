@@ -7,9 +7,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
 {
     /// <summary>
-    /// 自骇水晶的雷达技能描述符 —— Instant 类
-    /// <br/>选中后立即触发一次自骇协议，消耗 RAM 清除所有 debuff 并附带短暂无敌
-    /// <br/>就绪状态同时要求冷却结束与 RAM 充足，雷达会按这两条件灰显扇区
+    /// 自骇水晶雷达技能，Instant 类
+    /// <br/>耗 RAM 清 debuff + 短暂无敌；IsReady 要求冷却结束且 RAM 充足
     /// </summary>
     internal sealed class SelfHackCrystalSkill : CyberwareSkillBase
     {

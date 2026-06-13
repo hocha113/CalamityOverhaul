@@ -1,13 +1,11 @@
 // ============================================================================
-// VoidColonyLoading.fx — 虚空聚落加载界面背景着色器
-// 亚空间穿越风格：深邃虚空底色 + 缓慢旋转能量云环 + 星辰 + 径向裂隙光晕
-// 视觉语言源自 VoidColonySky.fx，精简以适配加载界面低频帧率
-// 全程序化生成，无外部纹理依赖
+// VoidColonyLoading.fx 虚空聚落加载界面
+// 全程序化，无外部纹理
 // ============================================================================
 
 float uTime;
-float uProgress;      //0..1 加载进度，驱动进度环与进度条
-float uAspectRatio;   //屏幕宽高比 screenWidth/screenHeight
+float uProgress;      //0~1 加载进度
+float uAspectRatio;   //宽/高
 
 #define PI  3.14159265
 #define TAU 6.28318530
@@ -16,7 +14,7 @@ float uAspectRatio;   //屏幕宽高比 screenWidth/screenHeight
 #define RIFT_CORE  float3(0.82, 0.24, 0.06)
 #define RIFT_HOT   float3(1.00, 0.62, 0.18)
 
-// ======================== Hash / Noise ========================
+// Hash / Noise
 
 float hash11(float p)
 {
@@ -67,7 +65,7 @@ float fbm3(float2 p)
 float hLine(float y, float yCurr, float ht) { return smoothstep(ht, 0.0, abs(yCurr - y)); }
 float vLine(float x, float xCurr, float ht) { return smoothstep(ht, 0.0, abs(xCurr - x)); }
 
-// ======================== Star Field ========================
+// Star Field
 
 float starField(float2 uv, float scale, float time)
 {
@@ -85,25 +83,25 @@ float starField(float2 uv, float scale, float time)
     return star;
 }
 
-// ======================== Main ========================
+// Main
 
 float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
 {
     float t = uTime;
     float aspect = uAspectRatio;
 
-    // ============================================================
+    // =
     //Layer 0 — 深邃虚空底色（墨黑微带深紫血红，中心略亮）
-    // ============================================================
+    // =
     float2 vc = uv - 0.5;
     float vr = length(vc * float2(1.35, 1.0));
     float3 deep = float3(0.003, 0.001, 0.006);
     float3 midBg = float3(0.010, 0.003, 0.016);
     float3 col = lerp(midBg, deep, smoothstep(0.0, 0.95, vr));
 
-    // ============================================================
+    // =
     //Layer 1 — 极淡背景虚空雾（低频FBM缓慢流动，提供基底质感）
-    // ============================================================
+    // =
     {
         float2 nuv = uv * float2(1.8 * aspect, 1.8) + float2(t * 0.011, -t * 0.007);
         float n = fbm3(nuv);
@@ -111,9 +109,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
         col += fogTint * (n - 0.4) * 0.10;
     }
 
-    // ============================================================
+    // =
     //Layer 2 — 星辰（远景暗淡 + 近景稍亮，被亮区压制）
-    // ============================================================
+    // =
     float2 c = (uv - 0.5) * float2(aspect, 1.0);
     float dist = length(c);
     float angle = atan2(c.y, c.x);
@@ -124,9 +122,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
     col += float3(0.78, 0.82, 1.00) * starsFar * starMask;
     col += float3(1.00, 0.92, 0.80) * starsNear * starMask;
 
-    // ============================================================
+    // =
     //Layer 3 — 缓慢旋转能量云环（旋涡臂底板，低调）
-    // ============================================================
+    // =
     {
         float rot = t * 0.055;
         float arm1 = sin(angle * 3.0 - dist * 5.0 + rot) * 0.5 + 0.5;
@@ -139,9 +137,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
         col += float3(0.42, 0.07, 0.02) * ring * ring * 0.75;
     }
 
-    // ============================================================
+    // =
     //Layer 4 — 中央虚空燃烧核心（不规则形态，较 Sky 版更暗）
-    // ============================================================
+    // =
     {
         float pulse = 0.88 + 0.10 * sin(t * 3.4 + 0.55 * sin(t * 1.1));
         float2 fc = c * float2(1.50, 1.02);
@@ -163,9 +161,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
         col += float3(1.00, 0.88, 0.68) * flameWhite * 1.15 * pulse;
     }
 
-    // ============================================================
+    // =
     //Layer 5 — 中央进度环（12点起点顺时针填充，三环结构）
-    // ============================================================
+    // =
     {
         float a01 = (angle + PI) / TAU;
 
@@ -198,9 +196,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
         col += float3(0.22, 0.035, 0.015) * smoothstep(0.0009, 0.0, abs(dist - innerR)) * 0.50;
     }
 
-    // ============================================================
+    // =
     //Layer 6 — 底部进度条（轨道 + 填充段 + 前沿高亮）
-    // ============================================================
+    // =
     {
         float barY = 0.930;
         float barHalf = 0.0068;
@@ -219,9 +217,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
         col += RIFT_HOT * smoothstep(barHalf * 0.55, 0.0, barDist) * barLead * 1.05;
     }
 
-    // ============================================================
+    // =
     //Layer 7 — 四角L形装饰线框（深红，轻量）
-    // ============================================================
+    // =
     {
         float cS = 0.040, cT = 0.0018, cM = 0.022;
         float corner = 0.0;
@@ -236,9 +234,9 @@ float4 PSVoidColonyLoading(float2 uv : TEXCOORD0) : COLOR0
         col += RIFT_MID * saturate(corner) * 0.72;
     }
 
-    // ============================================================
+    // =
     //Post — 暗角压制 + Gamma校正 + 微胶片颗粒
-    // ============================================================
+    // =
     float vignette = smoothstep(1.35, 0.38, dist);
     vignette = max(vignette, 0.08);
     col *= vignette;

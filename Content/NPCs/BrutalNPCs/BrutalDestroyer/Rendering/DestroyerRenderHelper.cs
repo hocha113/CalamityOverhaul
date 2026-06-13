@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
-    /// <summary>
-    /// 毁灭者绘制辅助类（蓄力特效/残影专用；通用机械热感滤镜见 <see cref="Common.MechBossThermalRenderer"/>）
-    /// </summary>
+    /// <summary>毁灭者蓄力/残影绘制；热感滤镜见 <see cref="Common.MechBossThermalRenderer"/></summary>
     internal static class DestroyerRenderHelper
     {
         private static void BeginAdditive(SpriteBatch spriteBatch) {

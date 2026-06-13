@@ -26,10 +26,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    /// <summary>
-    /// 双子魔眼AI控制器
-    /// 使用状态机模式管理战斗行为
-    /// </summary>
+    /// <summary>双子魔眼 AI 控制器，状态机驱动战斗</summary>
     internal class TwinsAIController : CWRNPCOverride, ICWRLoader, ILocalizedModType
     {
         public string LocalizationCategory => "BrutalNPCs";
@@ -352,7 +349,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             stateContext.IsSecondPhase = IsSecondPhase();
             stateContext.IsDeathMode = CWRRef.GetDeathMode() || CWRRef.GetBossRushActive();
 
-            //冲刺视觉数据自动衰减(状态只负责推高)
+            //冲刺视觉每帧衰减(状态只推高)
             stateContext.DecayDashVisuals();
 
             //检测独眼狂暴模式(另一只眼睛死亡)
@@ -404,10 +401,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         #region 原生AI(独立战斗模式)
 
-        /// <summary>
-        /// 濒死检测：当血量降到阈值且处于正式战斗阶段时，强制进入独立死亡演出。
-        /// 仅服务端/单人端驱动；登场、逃跑、转阶段无敌期间均不触发。
-        /// </summary>
+        /// <summary>濒死切死亡演出；仅服务端/单人，登场/逃跑/转阶段无敌不触发</summary>
         private void CheckDeathPerformanceTrigger() {
             if (VaultUtils.isClient) {
                 return;
@@ -633,7 +627,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 npc.dontTakeDamage = false;
                 return true;
             }
-            //锁血并进入死亡演出，兜底高额伤害一击致死的情况，确保演出必定播放
+            //锁血进死亡演出，兜底一击致死也先播演出
             npc.life = 1;
             npc.dontTakeDamage = true;
             if (!VaultUtils.isClient && stateMachine != null && stateMachine.CurrentState is not TwinsDeathState) {
@@ -653,8 +647,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return true;
             }
 
-            //在绘制前推送当前眼睛的机械热感视觉状态——
-            //每只眼睛独立维护，确保两只眼睛能呈现不同状态（一个冲刺另一个常态）
+            //Draw 前推送本眼热感视觉(双眼独立，可不同态)
             PushThermalVisualState();
 
             //获取纹理
@@ -677,21 +670,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return false;
         }
 
-        /// <summary>
-        /// 根据当前状态机/蓄力状态推送机械热感视觉模式：
-        /// <list type="bullet">
-        /// <item>冲刺中（魔焰眼一/二阶段、影分身）→ Dashing 白热高速</item>
-        /// <item>蓄力中（任意攻击的预警阶段）→ Warning 红黄脉冲，强度跟随蓄力进度</item>
-        /// <item>独眼狂暴 → Idle 但强度提高，体现暴怒余温</item>
-        /// <item>常态 → 不推送，让画面保持干净，只在攻击瞬间发力</item>
-        /// </list>
-        /// </summary>
+        /// <summary>按状态机/蓄力推送热感模式：冲刺→Dashing，蓄力→Warning，独眼狂暴→Idle 加强</summary>
         private void PushThermalVisualState() {
             if (stateContext == null) {
                 return;
             }
 
-            //死亡演出——剧烈红黄过载脉冲，最高优先级
+            //死亡演出：红黄过载脉冲，最高优先级
             if (stateMachine?.CurrentState is TwinsDeathState) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, 1f,
                     0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 18f));
@@ -707,7 +692,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return;
             }
 
-            //蓄力态——所有蓄力类型都显示警告滤镜，进度跟随ChargeProgress
+            //蓄力态：警告滤镜，强度跟 ChargeProgress
             if (stateContext.IsCharging && stateContext.ChargeProgress > 0f) {
                 //冲刺蓄力（type 1, 8）的警告更强烈
                 bool isDashCharge = stateContext.ChargeType == 1
@@ -719,19 +704,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
                 return;
             }
 
-            //独眼狂暴模式——常态滤镜但强度提高，体现暴怒余温
+            //独眼狂暴：Idle 滤镜加强
             if (stateContext.IsSoloRageMode) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Idle, 0.55f, 0f);
                 return;
             }
 
-            //转阶段动画期间——保持警告色
+            //转阶段：保持警告色
             if (stateContext.IsInPhaseTransition) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, 0.7f, 0.5f);
                 return;
             }
 
-            //其余常态——不推送（让 Read 返回零强度），双子默认贴图明亮，无需常态滤镜
+            //常态不推送，Read 零强度
         }
 
         /// <summary>

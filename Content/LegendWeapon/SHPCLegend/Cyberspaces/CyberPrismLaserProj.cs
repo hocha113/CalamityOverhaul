@@ -14,11 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 棱镜激光枪管弹幕，持续跟随光标的静态光柱
-    /// 从枪口延伸至光标位置，复用 CyberTraceBeam.fx 与 Trail 系统渲染
-    /// 通过线段碰撞对路径上的敌人持续造成伤害
-    /// </summary>
+    /// <summary>棱镜激光，枪口至光标静态光柱，线段碰撞持续伤害</summary>
     internal class CyberPrismLaserProj : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

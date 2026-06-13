@@ -13,12 +13,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 荒漠猎行者
-    /// <para>一把链锁式远程武器，发射的并非弹药本身，而是一枚被锁链牵引的钩状枪头</para>
-    /// <para>左键发射枪头，命中或飞至最远距离后会自动回收</para>
-    /// <para>右键强制将正在外飞的枪头立刻拽回</para>
-    /// </summary>
+    /// 荒漠猎行者：链锁远程，发射锁链牵引钩头
+    /// 左键发射，命中或至最远距回收；右键强制拽回
     internal class DuneStalker : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "DuneStalker";
@@ -61,9 +57,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 荒漠猎行者的手持弹幕，负责跟随玩家瞄准、播放开火动画、生成枪头与处理收回指令
-    /// </summary>
+    /// 荒漠猎行者手持弹幕：瞄准、开火、生成钩头与收回
     internal class DuneStalkerHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "DuneStalker";
@@ -72,7 +66,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         /// <summary>开火冷却（射击间隔结束才能再次开火）</summary>
         private ref float FireCooldown => ref Projectile.ai[0];
-        /// <summary>开火反冲衰减，用于轻微的枪体抖动表现</summary>
+        /// <summary>开火反冲衰减，枪体抖动</summary>
         private ref float RecoilOffset => ref Projectile.ai[1];
         /// <summary>当前是否有任何一个枪头存活</summary>
         private bool HeadActive => Owner.ownedProjectileCounts[ModContent.ProjectileType<DuneStalkerHeadProj>()] > 0;
@@ -94,7 +88,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override bool? CanDamage() => false;
 
         public override bool PreUpdate() {
-            //没有持有目标物品时立即销毁
+            //失持目标物即销毁
             if (Item == null || Item.IsAir || Item.type != ModContent.ItemType<DuneStalker>()) {
                 Projectile.Kill();
                 return false;
@@ -111,14 +105,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void AI() {
-            //保持手持状态
+            //持握存活
             SetHeld();
             Projectile.timeLeft = 2;
 
-            //跟随玩家朝鼠标方向旋转
+            //跟鼠标旋转
             UpdateHoldPose();
 
-            //处理玩家手臂姿态
+            //手臂姿态
             UpdateOwnerArms();
 
             //开火冷却递减
@@ -136,15 +130,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
-            //左键：尝试发射枪头
+            //左键尝试发射
             if (DownLeft && !HeadActive && FireCooldown <= 0) {
                 FireHead();
             }
         }
 
-        /// <summary>
-        /// 更新枪体位置和旋转，使其紧贴玩家中心、指向鼠标
-        /// </summary>
+        /// 更新枪位与旋转，贴玩家中心指向鼠标
         private void UpdateHoldPose() {
             if (!HeadActive)
                 Projectile.rotation = ToMouseA;
@@ -153,10 +145,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 aimDir = new Vector2(Owner.direction, 0);
             }
 
-            //先确定玩家朝向，避免后续的角度计算使用过期方向
+            //先锁玩家朝向
             Owner.ChangeDir(aimDir.X >= 0 ? 1 : -1);
 
-            //开火时增加一点反冲的位移
+            //开火反冲位移
             float recoil = RecoilOffset;
             Vector2 holdCenter = Owner.GetPlayerStabilityCenter()
                 + aimDir * (20 - recoil)
@@ -164,27 +156,21 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             Projectile.Center = holdCenter;
 
-            //itemRotation 期望的是"相对玩家朝向"的角度，所以需要乘上 direction 进行镜像
+            //itemRotation 为相对玩家朝向角，乘 direction 镜像
             Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation * Owner.direction);
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
         }
 
-        /// <summary>
-        /// 设置玩家持枪的双手姿势
-        /// <para>注意：<see cref="Player.SetCompositeArmFront"/> 接收的旋转角是世界空间下的，
-        /// 0 表示手臂垂直向下，-PI/2 指向右，+PI/2 指向左；因此公式与玩家朝向无关，
-        /// 只需要按重力方向翻转 PI/2 的偏移</para>
-        /// </summary>
+        /// 持枪双手姿势
+        /// <see cref="Player.SetCompositeArmFront"/> 世界角：0 向下 ±PI/2 左右；与朝向无关，按重力翻 PI/2
         private void UpdateOwnerArms() {
             float armRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRot);
         }
 
-        /// <summary>
-        /// 获取枪口在世界中的位置（用于发射、绘制链条起点）
-        /// </summary>
+        /// 枪口世界坐标(发射/链起点)
         public Vector2 GetMuzzlePos() {
             float dirSign = DirSign;
             Vector2 forward = Projectile.rotation.ToRotationVector2();
@@ -192,9 +178,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return Projectile.Center + forward * 26f + normal * -4f;
         }
 
-        /// <summary>
-        /// 发射钩状枪头
-        /// </summary>
+        /// 发射钩头
         private void FireHead() {
             //消耗弹药，借弹药数据加成伤害与速度
             bool hasAmmo = Owner.PickAmmo(Item, out int _, out float speed, out int damage, out float knockback, out int _, false);
@@ -252,9 +236,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             NetUpdate();
         }
 
-        /// <summary>
-        /// 让所有外飞的枪头立刻进入收回阶段
-        /// </summary>
+        /// 外飞钩头全部进入收回
         private void RecallHeads() {
             int headType = ModContent.ProjectileType<DuneStalkerHeadProj>();
             bool anyRecalled = false;
@@ -282,9 +264,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 荒漠猎行者发射的链锁枪头，沿瞄准方向飞出后自动回收，途中持续命中敌人
-    /// </summary>
+    /// 链锁钩头：飞出后自动回收，途中持续命中
     internal class DuneStalkerHeadProj : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Ranged + "DuneStalkerHead";
@@ -330,9 +310,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private bool IsLaunching => State == 0f;
         private bool IsReturning => State == 1f;
 
-        /// <summary>
-        /// 外部强制收回接口，返回是否成功切换到回收阶段
-        /// </summary>
+        /// 强制收回，成功则切回收阶段
         public bool ForceRecall() {
             if (IsReturning) {
                 return false;
@@ -374,9 +352,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Lighting.AddLight(Projectile.Center, new Vector3(0.55f, 0.42f, 0.22f) * 0.5f);
         }
 
-        /// <summary>
-        /// 飞出阶段：保持初始速度，达到最大距离或最大时间时转入收回
-        /// </summary>
+        /// 飞出：保初速，达最大距/时转收回
         private void LaunchingAI(Vector2 anchor) {
             //略微的空气阻力，避免飞得过远难以收回
             Projectile.velocity *= 0.992f;
@@ -387,9 +363,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>
-        /// 回收阶段：朝玩家枪口加速直线返回，距离足够近时销毁
-        /// </summary>
+        /// 回收：朝枪口加速返回，近距销毁
         private void ReturningAI(Vector2 anchor) {
             Vector2 toAnchor = anchor - Projectile.Center;
             float distance = toAnchor.Length();
@@ -405,9 +379,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.35f);
         }
 
-        /// <summary>
-        /// 切换到回收阶段，并播放反馈音效
-        /// </summary>
+        /// 切回收阶段并播音效
         private void EnterReturning() {
             if (IsReturning) {
                 return;
@@ -421,9 +393,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>
-        /// 通过 <see cref="HeldOwnerWhoAmI"/> 查找绑定的手持弹幕枪口；若不存在则退化为玩家中心
-        /// </summary>
+        /// 经 <see cref="HeldOwnerWhoAmI"/> 取枪口，无则退化为玩家中心
         private Vector2 GetAnchorPosition() {
             int heldWhoAmI = (int)HeldOwnerWhoAmI;
             if (heldWhoAmI >= 0 && heldWhoAmI < Main.maxProjectiles) {
@@ -492,9 +462,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return false;
         }
 
-        /// <summary>
-        /// 绘制玩家枪口到枪头之间的锁链
-        /// </summary>
+        /// 绘制枪口到钩头的锁链
         private void DrawChain() {
             Texture2D chainTex = WastelandFangProj.chain.Value;
             Vector2 start = GetAnchorPosition();
@@ -524,9 +492,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>
-        /// 绘制枪头本体（含轻微残影）
-        /// </summary>
+        /// 绘制钩头(含轻残影)
         private void DrawHead(Color lightColor) {
             Texture2D tex = HeadTex?.Value ?? TextureAssets.Projectile[Type].Value;
             Vector2 origin = tex.Size() / 2f;

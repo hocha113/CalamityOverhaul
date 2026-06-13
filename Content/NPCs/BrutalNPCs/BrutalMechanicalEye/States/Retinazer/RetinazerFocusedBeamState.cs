@@ -9,11 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼二阶段死亡射线扫射状态：
-    /// 就位→锁定蓄力(准心预警)→释放持续性宽死亡射线并以受限角速度追踪玩家→过热硬直。
-    /// 射线方向由npc.rotation驱动，玩家须持续走位摆脱切割
-    /// </summary>
+    /// <summary>死亡射线扫射：就位→锁定蓄力→受限追踪宽射线→过热硬直</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerFocusedBeam, typeof(TwinsStateContext))]
     internal class RetinazerFocusedBeamState : TwinsStateBase
     {
@@ -27,9 +23,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
         private int TotalDuration => ApproachPhase + ChargePhase + BeamPhase + RecoveryPhase;
 
-        /// <summary>
-        /// 射线追踪角速度(弧度/帧)——刻意限制，确保可以被跑动摆脱
-        /// </summary>
+        /// <summary>射线追踪角速度(弧度/帧)，刻意压低(公平阀，可跑动摆脱)</summary>
         private float TrackTurnRate => Context.IsDeathMode ? 0.008f : 0.007f;
 
         private TwinsStateContext Context;

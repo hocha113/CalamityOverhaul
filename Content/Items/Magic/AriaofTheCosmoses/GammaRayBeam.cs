@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
     /// 伽马射线
-    /// </summary>
     internal class GammaRayBeam : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -89,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             //能量粒子特效
             SpawnEnergyParticles();
 
-            //伽马射线辐射光 - 紫蓝色调
+            //伽马射线辐射光 紫蓝
             Lighting.AddLight(Projectile.Center,
                 0.6f * coreIntensity,
                 0.35f * coreIntensity,
@@ -117,7 +115,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 return;
             }
 
-            //电离闪烁火花 - 沿光束方向散射
+            //电离闪烁火花 沿光束散射
             if (Main.rand.NextBool(4)) {
                 float along = Main.rand.NextFloat(0.1f, 0.9f);
                 Vector2 beamDir = Projectile.rotation.ToRotationVector2();
@@ -128,7 +126,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 PRTLoader.NewParticle<PRT_Spark>(sparkPos, sparkVel, Color.Lerp(new Color(180, 140, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)), Main.rand.NextFloat(0.6f, 1.1f)).Configure(false, Main.rand.Next(8, 15), Owner);
             }
 
-            //高能射线流线 - 紫蓝色调
+            //高能射线流线 紫蓝
             if (Main.rand.NextBool(5)) {
                 Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.2f, beamWidth * 0.2f);
                 Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
@@ -149,7 +147,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }, Projectile.Center);
 
             if (!VaultUtils.isServer) {
-                //电离散射 - 锐利紫蓝短线段从命中点放射
+                //电离散射 紫蓝短线段
                 for (int i = 0; i < 16; i++) {
                     float angle = MathHelper.TwoPi * i / 16f + Main.rand.NextFloat(-0.15f, 0.15f);
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
@@ -157,7 +155,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     PRTLoader.NewParticle<PRT_GammaIonize>(target.Center + Main.rand.NextVector2Circular(8f, 8f), velocity, Color.Lerp(new Color(160, 120, 255), Color.White, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.4f, 1.0f)).Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(MathHelper.TwoPi));
                 }
 
-                //伽马冲击残影 - 较大的Flashimpact动画
+                //伽马冲击残影 Flashimpact
                 for (int i = 0; i < 6; i++) {
                     float angle = MathHelper.TwoPi * i / 6f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
@@ -165,7 +163,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     PRTLoader.NewParticle<PRT_GammaImpact>(target.Center, velocity, Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.3f, 0.8f)).Configure(Main.rand.Next(15, 28), Main.rand.NextFloat(-0.2f, 0.2f), false, 0.3f);
                 }
 
-                //辐射光线 - 从命中点向外的高速光束
+                //辐射光线 命中点向外高速光束
                 float rand = Main.rand.NextFloat(MathHelper.TwoPi);
                 for (int i = 0; i < 10; i++) {
                     float angle = MathHelper.TwoPi * i / 10f + rand;
@@ -192,7 +190,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     Pitch = 0.5f
                 }, Projectile.Center);
 
-                //辐射残留电离线段 - 放射状散开
+                //辐射残留电离线段 放射散开
                 for (int i = 0; i < 18; i++) {
                     float angle = MathHelper.TwoPi * i / 18f;
                     Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 11f);
@@ -281,7 +279,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void DrawCoreHighlight(SpriteBatch sb) {
-            //绘制伽马射线核心发光层 - 紫蓝白色调
+            //绘制伽马核心发光层 紫蓝白
             Texture2D glowTexture = CWRAsset.StarTexture.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
@@ -289,7 +287,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 float scale = (beamWidth / glowTexture.Width) * (1.3f - i * 0.25f) * coreIntensity;
                 float a = (1f - i * 0.25f) * pulseIntensity;
 
-                //核心层：白紫 → 外层：蓝紫
+                //核心白紫 外层蓝紫
                 Color glowColor = Color.Lerp(
                     new Color(220, 190, 255),
                     new Color(100, 60, 220), i / 3f) * a;
@@ -307,7 +305,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                 );
             }
 
-            //切伦科夫辐射光晕层 - 薄蓝光
+            //切伦科夫辐射光晕 薄蓝光
             float cherenkovAlpha = pulseIntensity * 0.3f;
             float cherenkovScale = (beamWidth / glowTexture.Width) * 1.8f * coreIntensity;
             sb.Draw(

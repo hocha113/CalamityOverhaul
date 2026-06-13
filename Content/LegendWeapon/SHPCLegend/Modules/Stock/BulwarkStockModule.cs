@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 壁垒枪托：玩家手持 SHPC 时获得少量减伤，付出蓄力时长与法力消耗代价
-    /// 通过 OnPlayerUpdate 钩子在持有 SHPC 的帧上叠加 endurance，单帧自动重置不会留余
-    /// </summary>
+    /// <summary>壁垒枪托：持 SHPC 时少量减伤，PostUpdate 叠 endurance</summary>
     internal sealed class BulwarkStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

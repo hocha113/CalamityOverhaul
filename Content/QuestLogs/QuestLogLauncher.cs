@@ -8,9 +8,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.QuestLogs
 {
-    /// <summary>
-    /// 任务书启动图标
-    /// </summary>
+    /// <summary>任务书启动图标</summary>
     public class QuestLogLauncher
     {
         //图标位置和大小
@@ -30,11 +28,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             glowIntensity = 0f;
         }
 
-        /// <summary>
-        /// 更新图标状态
-        /// </summary>
-        /// <param name="position">图标位置</param>
-        /// <param name="isOpen">任务书是否打开</param>
+        /// <summary>更新图标状态</summary>
         public void Update(Vector2 position, bool isOpen) {
             //更新图标矩形
             int iconSize = 48;
@@ -59,11 +53,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             glowIntensity = MathHelper.Lerp(glowIntensity, targetGlow, 0.15f);
         }
 
-        /// <summary>
-        /// 绘制图标
-        /// </summary>
-        /// <param name="spriteBatch">绘制批次</param>
-        /// <param name="isOpen">任务书是否打开</param>
+        /// <summary>绘制图标</summary>
         public void Draw(SpriteBatch spriteBatch, bool isOpen) {
             if (QuestLog.QuestLogStart == null || QuestLog.QuestLogStart.Value == null) {
                 return;
@@ -71,10 +61,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             Texture2D iconTexture = QuestLog.QuestLogStart.Value;
 
-            //计算帧索引
-            //第0帧:关闭状态
-            //第1帧:打开状态
-            //第2帧:打开+悬停发光状态
+            //帧 0 关 / 1 开 / 2 开+悬停
             int frameIndex;
             if (!isOpen) {
                 frameIndex = 0;
@@ -127,7 +114,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         private void DrawNotificationBadge(SpriteBatch spriteBatch) {
-            //按任务节点计数，一个节点有未领取奖励则算一个
+            //未领取奖励节点计数
             int unclaimedCount = 0;
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.HasUnclaimedRewards) {
@@ -249,9 +236,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
 
-        /// <summary>
-        /// 播放点击音效
-        /// </summary>
+        /// <summary>播放点击音效</summary>
         public void PlayClickSound(bool isOpening) {
             SoundEngine.PlaySound(isOpening ? CWRSound.ButtonZero with { Pitch = 0.1f, Volume = 0.6f } : CWRSound.ButtonZero with { Pitch = -0.1f, Volume = 0.6f });
         }

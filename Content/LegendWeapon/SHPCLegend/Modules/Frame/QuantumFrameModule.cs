@@ -11,12 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 量子机匣：纠缠观测协议。先后命中两个不同目标会使其进入「量子纠缠」——
-    /// 两者之间浮现一条虚空量子丝线（持续 5 秒）：期间任一纠缠者受到的 SHPC
-    /// 伤害会按 35% 复制给另一方；任一方死亡时纠缠坍缩，把链接期间累积的
-    /// 复制伤害的一半一次性轰入幸存者（神明吞噬者礼物 —— 虚空中的超距作用）
-    /// </summary>
+    /// <summary>量子机匣：连击两目标纠缠 5s，35% 伤害互传，一方死亡半额轰入幸存者</summary>
     internal sealed class QuantumFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;
@@ -157,10 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
     }
 
-    /// <summary>
-    /// 量子丝线：连接两个纠缠目标的双股虚空螺旋，纯手绘 Additive 渲染。
-    /// 丝线本体对穿行其间的其他敌人造成轻微伤害；任一端失效即崩解
-    /// </summary>
+    /// <summary>量子丝线：双目标虚空螺旋 Additive，穿行伤；任一端失效崩解</summary>
     internal sealed class SHPCQuantumLinkProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

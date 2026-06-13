@@ -9,10 +9,8 @@ namespace CalamityOverhaul.Common
     internal static class RenderQualitySafety
     {
         /// <summary>
-        /// 检查 <see cref="Main.screenTarget"/> 当前是否为 GraphicsDevice 的活动渲染目标
-        /// <br/>切换水波质量等场景下，调用方挂的钩子时机可能并没有把 screenTarget 设为当前 RT，
-        /// 此时再用 <c>SetRenderTarget(Main.screenTarget); Clear</c> 强行写回会把本该进入 backbuffer 的画面顶替掉，
-        /// 导致整个屏幕和 UI 看起来消失。RT 管线类的特效在动手前应先用本方法兜底
+        /// <see cref="Main.screenTarget"/> 是否为当前活动 RT
+        /// <br/>钩子未绑 screenTarget 时强写会顶替 backbuffer 致全屏/UI 消失，RT 管线特效动手前先调本方法
         /// </summary>
         public static bool IsScreenTargetActive(GraphicsDevice graphicsDevice) {
             if (graphicsDevice == null) return false;

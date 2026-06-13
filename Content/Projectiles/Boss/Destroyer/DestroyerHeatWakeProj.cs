@@ -8,9 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
     /// <summary>
-    /// 热浪尾流载体：锚定毁灭者头部的无伤害VFX弹幕，速度越快尾流越长越强，
-    /// 经 <see cref="DestroyerMotionFX.DrawHeatWakeWarp"/> 在Warp管线中产生沿运动轨迹的方向性空气扭曲。
-    /// 慢速时自动淡出并自毁，同一头部最多存在一条（经 <see cref="EnsureForHead"/> 去重生成）。
+    /// 热浪尾流载体：锚定头部无伤害 VFX，速度越快尾流越长越强
+    /// 经 <see cref="DestroyerMotionFX.DrawHeatWakeWarp"/> 在 Warp 管线沿轨迹扭曲空气
+    /// 慢速淡出自毁，同头最多一条(<see cref="EnsureForHead"/> 去重)
     /// <br/>ai[0]: 头部NPC whoAmI
     /// </summary>
     internal class DestroyerHeatWakeProj : ModProjectile, IWarpDrawable

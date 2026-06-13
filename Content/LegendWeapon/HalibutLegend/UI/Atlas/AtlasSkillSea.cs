@@ -10,10 +10,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 技能海域：深渊图鉴的主场景
-    /// 全部技能化作生物冷光节点漂浮在一根纵向海水柱中，滚轮下潜，
-    /// 深度分四带（浅滩/远洋/深海/深渊）；顶部海面悬浮研究祭坛；
-    /// 底部装备坞承载至多十个技能并与轮盘联动
+    /// 技能海域图鉴主场景
+    /// 节点纵向四带排列、滚轮下潜；顶研究祭坛，底装备坞（至多十槽）
     /// </summary>
     internal class AtlasSkillSea
     {
@@ -65,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         public float ChromeHide => chromeHide;
 
         /// <summary>
-        /// 当前下潜深度（0海面-1渊底），驱动背景着色器
+        /// 当前下潜深度 0–1，驱动背景着色器
         /// </summary>
         public float Depth { get; private set; }
 
@@ -106,7 +104,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                     columnIndex = 0;
                 }
                 var node = new AtlasSkillNode(skill);
-                //错列排布，奇数行半格偏移，营造鱼群感
+                //奇数行半格偏移
                 int row = columnIndex / HalibutTheme.AtlasNodeColumns;
                 int col = columnIndex % HalibutTheme.AtlasNodeColumns;
                 float xJitter = (row % 2 == 1) ? HalibutTheme.AtlasNodeSpacingX * 0.5f : 0f;
@@ -207,7 +205,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 draggingSkill = null;
             }
 
-            //环境粒子：浅层气泡、深层海雪
+            //环境粒子（深度驱动）
             ambientTimer++;
             if (ambientTimer % 7 == 0) {
                 float x = Main.rand.NextFloat(contentArea.X + 40f, contentArea.Right - 40f);
@@ -387,7 +385,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private Vector2 DockSlotPos(Rectangle contentArea, int index) {
             float spacing = HalibutTheme.DockSlotR * 2f + 9f;
             float startX = contentArea.Center.X - (HalibutTheme.DockSlotCount - 1) * spacing * 0.5f;
-            //轻微的弧形下垂，像挂在缆绳上
+            //弧形下垂偏移
             float t = index / (float)(HalibutTheme.DockSlotCount - 1);
             float sag = MathF.Sin(t * MathHelper.Pi) * 7f;
             return new Vector2(startX + index * spacing,
@@ -470,7 +468,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                     HalibutTheme.TextDim, string.Format(HalibutAtlas.LockedNodeHint.Value, fishName), alpha);
             }
 
-            //次级选鱼面板（绘制在最上层，含全屏聚焦遮罩）
+            //次级选鱼面板（最上层，含全屏遮罩）
             Altar.DrawPanel(sb, contentArea, save, alpha, time);
         }
 
@@ -493,7 +491,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             if (alpha < 0.02f) {
                 return;
             }
-            //缆绳：贯穿所有槽位的弧线
+            //槽位连线弧
             Vector2 prev = Vector2.Zero;
             for (int i = 0; i < HalibutTheme.DockSlotCount; i++) {
                 Vector2 pos = DockSlotPos(contentArea, i);

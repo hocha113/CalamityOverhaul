@@ -7,9 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 记忆修改：植入虚假的记忆，令灵异目标短暂中断追杀行为或抑制其杀人规律
-    /// </summary>
+    /// <summary>虚假记忆，抑制灵异追杀</summary>
     internal class FalseMemory : QuickHackDef
     {
         public override void SetDefaults() {
@@ -21,7 +19,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not GlitchWraithActor wraith) return false;
-            //灵异 Actor 的权威状态变更只在施法端执行
+            //灵异权威状态仅施法端
             if (!HackTimeNetSync.IsRemoteApply) {
                 wraith.ApplyFalseMemory(60 * 15);
             }

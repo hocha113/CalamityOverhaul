@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 物块目标种类工厂
-    /// <br/>悬停优先级最低，作为兜底（无 NPC、灵异、信号塔、炮台时才检测物块）
-    /// </summary>
+    /// <summary>物块目标工厂，兜底最低优先级</summary>
     internal class TileTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Tile;

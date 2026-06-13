@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles
 {
-    /// <summary>
-    /// 闪电基类，提供闪电效果的基础功能
-    /// </summary>
+    /// 闪电基类
     public abstract class Lightning : ModProjectile
     {
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]
@@ -20,9 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public override string Texture => CWRConstant.Masking + "StarTexture";
 
         #region 状态枚举
-        /// <summary>
-        /// 闪电状态枚举
-        /// </summary>
+        /// 闪电状态
         public enum LightningState
         {
             Initializing = 0,  //初始化
@@ -71,7 +67,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public virtual float BranchLengthRatio => 0.5f;
         /// <summary>基础移动速度</summary>
         public virtual float BaseSpeed => 16f;
-        /// <summary>停留时间（帧数）- 真实闪电应持续可见</summary>
+        /// <summary>停留帧数</summary>
         public virtual int LingerTime => 25; //约0.4秒
         /// <summary>消失时间（帧数）</summary>
         public virtual int FadeTime => 15; //快速消失
@@ -84,48 +80,34 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 虚拟方法
-        /// <summary>
-        /// 获取闪电颜色
-        /// </summary>
+        /// 闪电颜色
         public virtual Color GetLightningColor(float factor) => new Color(103, 255, 255);
 
-        /// <summary>
-        /// 获取闪电宽度函数 - 根据强度和位置计算
-        /// </summary>
+        /// 宽度函数(强度×位置)
         public virtual float GetLightningWidth(float factor) {
-            //使用更平滑的曲线，避免过粗
-            float curve = MathF.Sin(factor * MathHelper.Pi);
-            //主干中部稍粗，两端细
+            //Sin 曲线控宽，主干中部略粗
             float shapeFactor = curve * (0.6f + 0.4f * MathF.Sin(factor * MathHelper.Pi * 0.5f));
             return ThunderWidth * shapeFactor * Intensity;
         }
 
-        /// <summary>
-        /// 获取透明度
-        /// </summary>
+        /// 透明度
         public virtual float GetAlpha(float factor) {
             if (factor < FadeValue)
                 return 0;
 
             float alpha = ThunderAlpha * (factor - FadeValue) / (1 - FadeValue);
 
-            //根据强度调整透明度
+            //强度调制 alpha
             return alpha * (0.7f + 0.3f * Intensity);
         }
 
-        /// <summary>
         /// 寻找目标位置
-        /// </summary>
         public abstract Vector2 FindTargetPosition();
 
-        /// <summary>
-        /// 劈击时的特效
-        /// </summary>
+        /// 劈击特效
         public virtual void OnStrike() { }
 
-        /// <summary>
-        /// 命中时的效果
-        /// </summary>
+        /// 命中效果
         public virtual void OnHit() { }
         #endregion
 
@@ -140,9 +122,7 @@ namespace CalamityOverhaul.Content.Projectiles
             SetLightningDefaults();
         }
 
-        /// <summary>
-        /// 设置闪电专用属性
-        /// </summary>
+        /// 闪电专用默认值
         public virtual void SetLightningDefaults() { }
         #endregion
 
@@ -178,9 +158,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
         /// 初始化劈击
-        /// </summary>
         protected virtual void InitializeStrike() {
             State = (float)LightningState.Striking;
             ThunderAlpha = 1f;
@@ -211,9 +189,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.netUpdate = true;
         }
 
-        /// <summary>
-        /// 更新劈击过程
-        /// </summary>
+        /// 更新劈击
         protected virtual void UpdateStrike() {
             Timer++;
 
@@ -232,15 +208,13 @@ namespace CalamityOverhaul.Content.Projectiles
             //更新轨迹
             UpdateTrails();
 
-            //优化的分叉生成：降低频率，更自然的分布
+            //降频分叉，分布更自然
             if (Timer % 12 == 0 && Main.rand.NextFloat() < BranchProbability && BranchTrails.Count < MaxBranches) {
                 CreateBranch();
             }
         }
 
-        /// <summary>
         /// 更新劈击移动
-        /// </summary>
         protected virtual void UpdateStrikeMovement() {
             float baseSpeed = Projectile.velocity.Length();
             float distance = Projectile.Center.Distance(TargetPosition);
@@ -253,7 +227,7 @@ namespace CalamityOverhaul.Content.Projectiles
             //角度插值
             float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.8f + 0.2f * trackingFactor);
 
-            //减小扰动，让轨迹更直
+            //压低扰动，轨迹更直
             float sinOffset = MathF.Sin(Timer * 0.35f) * 0.4f;
             newAngle += sinOffset;
 
@@ -269,9 +243,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.position += new Vector2(MathF.Sin(Timer * 0.25f), MathF.Cos(Timer * 0.2f)) * 1.2f;
         }
 
-        /// <summary>
         /// 更新轨迹
-        /// </summary>
         protected virtual void UpdateTrails() {
             if (MainTrail != null) {
                 TrailPoints.AddLast(Projectile.Center);
@@ -298,9 +270,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
-        /// 创建分叉 - 改进算法，更接近真实闪电
-        /// </summary>
+        /// 创建分叉
         protected virtual void CreateBranch() {
             if (LightningTexture == null || TrailPoints.Count < 5) return;
 
@@ -328,11 +298,9 @@ namespace CalamityOverhaul.Content.Projectiles
             Vector2 branchDirection = branchAngle.ToRotationVector2();
 
             for (int i = 0; i < branchLength; i++) {
-                //逐渐向下偏移（模拟重力影响）
+                //重力偏置
                 float progressFactor = i / (float)branchLength;
-                branchAngle += 0.05f * sideSign * (1f - progressFactor); //角度逐渐变化
-
-                //向下的轻微引力
+                branchAngle += 0.05f * sideSign * (1f - progressFactor);
                 float downwardBias = 0.1f * progressFactor;
                 branchDirection = branchAngle.ToRotationVector2();
                 branchDirection.Y += downwardBias;
@@ -371,9 +339,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
-        /// 开始停留阶段 - 持续可见，不闪烁
-        /// </summary>
+        /// 开始停留
         protected virtual void StartLinger() {
             State = (float)LightningState.Lingering;
             Timer = 0;
@@ -394,9 +360,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.netUpdate = true;
         }
 
-        /// <summary>
-        /// 更新停留阶段 - 真实闪电应持续可见，不闪烁
-        /// </summary>
+        /// 更新停留
         protected virtual void UpdateLinger() {
             Timer++;
 
@@ -409,7 +373,7 @@ namespace CalamityOverhaul.Content.Projectiles
                 branch.CanDraw = true;
             }
 
-            //轻微的形态变化（可选，模拟能量波动）
+            //能量波动
             if (Timer % 12 == 0 && Timer < LingerTime * 0.6f) {
                 MainTrail?.RandomThunder();
                 foreach (var branch in BranchTrails) {
@@ -422,18 +386,14 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// <summary>
-        /// 开始消失阶段
-        /// </summary>
+        /// 开始消失
         protected virtual void StartFade() {
             State = (float)LightningState.Fading;
             Timer = 0;
             Projectile.timeLeft = FadeTime + 10;
         }
 
-        /// <summary>
-        /// 更新消失阶段 - 快速淡出
-        /// </summary>
+        /// 更新淡出
         protected virtual void UpdateFade() {
             Timer++;
 
@@ -518,16 +478,12 @@ namespace CalamityOverhaul.Content.Projectiles
             return false;
         }
 
-        /// <summary>
         /// 绘制闪电核心
-        /// </summary>
         protected virtual void DrawLightningCore(Color lightColor) {
-            //可由子类重写以实现特定的核心绘制
+            //子类可重写
         }
 
-        /// <summary>
         /// 绘制轨迹
-        /// </summary>
         protected virtual void DrawTrails() {
             if (MainTrail != null && ((LightningState)State != LightningState.Striking || Timer >= 3)) {
                 MainTrail.DrawThunder(Main.instance.GraphicsDevice);
@@ -541,9 +497,7 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 工具方法
-        /// <summary>
         /// 平滑函数
-        /// </summary>
         public static float Smoother(int timer, int maxTime) {
             if (maxTime <= 0) return 1f;
             float factor = Math.Clamp((float)timer / maxTime, 0f, 1f);

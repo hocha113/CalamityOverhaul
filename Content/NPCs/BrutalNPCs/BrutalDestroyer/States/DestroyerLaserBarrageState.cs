@@ -13,13 +13,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 侧舷波次 → 炽核熔射：
-    /// <br/>1. 压缩版侧舷齐射——一道充能波沿躯体奔向头部，波峰扫过的体节朝侧舷喷等离子弹（单程，删掉旧的回扫尿点）；
-    /// <br/>2. 口吐光柱杀招——蠕虫昂首蓄能、锁定预警、静默吸气，随后口器喷出
-    /// <see cref="DestroyerMawBeamProj"/> 巨型红色熔射光柱，缓慢横扫半场。
-    /// <para>光柱扫射角速度刻意压低 + 展开期无伤害 + 锁定后停止跟踪（公平阀），避免远端切向无解。</para>
-    /// </summary>
+    /// <summary>侧舷波次→炽核熔射：充能波齐射+<see cref="DestroyerMawBeamProj"/> 慢扫光柱</summary>
+    /// <para>扫角速压低、展开无伤、锁定后停跟踪(公平阀)</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.LaserBarrage, typeof(DestroyerStateContext))]
     internal class DestroyerLaserBarrageState : DestroyerStateBase
     {
@@ -29,7 +24,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         #region 节奏常量
         private const int BarrageCharge = 26;
         private const int BeamWindup = 52;
-        /// <summary>蓄力末段提前锁定瞄准的帧数（锁定后不再跟踪玩家——公平阀）</summary>
+        /// <summary>蓄力末段锁定帧数(LockLead)；锁定后不再跟踪玩家(公平阀)</summary>
         private const int LockLead = 22;
         private const int Silence = 7;
         private const int Outro = 12;
@@ -103,7 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 context.SlitherStrength = 0.4f;
             }
 
-            //阶段1：压缩充能预热——一道波从尾部推向头部，不开火
+            //阶段1：充能预热，尾推头波，不开火
             if (Timer <= chargeEnd) {
                 float p = Timer / (float)chargeEnd;
                 context.SetChargeState(2, p * 0.6f);
@@ -122,25 +117,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 return null;
             }
 
-            //阶段3：口吐光柱蓄能——昂首飞向高空阵位、汇聚能量，末段锁定并打出预警
+            //阶段3：光柱蓄能，高空阵位，末段锁定+预警
             if (Timer <= windupEnd) {
                 UpdateBeamWindup(context, (int)Timer, barrageEnd, lockFrame);
                 return null;
             }
 
-            //阶段4：静默吸气——视觉骤停、机体微滞，转向起始角
+            //阶段4：静默吸气，微滞，转向起始角
             if (Timer <= silenceEnd) {
                 UpdateSilence(context);
                 return null;
             }
 
-            //阶段5：释放——口器喷出巨型熔射光柱
+            //阶段5：口器喷出熔射光柱
             if (Timer == fireFrame) {
                 FireBeam(context);
                 return null;
             }
 
-            //阶段6：缓慢横扫——头部锚定持位，口器朝向权威光束角随其转动
+            //阶段6：缓慢横扫，头部锚定，口器跟权威光束角
             if (Timer <= beamEnd) {
                 UpdateBeamSweep(context);
                 return null;
@@ -283,7 +278,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             NPC npc = context.Npc;
             context.SkipDefaultMovement = true;
             context.JawCommand = 1;
-            context.ResetChargeState();//充能视觉骤停——下一刻就是巨炮
+            context.ResetChargeState();//充能骤停，下一刻巨炮
             context.OrbitalVisual = 1;
             npc.damage = 0;
             npc.velocity *= 0.8f;

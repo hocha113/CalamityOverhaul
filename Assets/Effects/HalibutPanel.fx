@@ -1,9 +1,6 @@
 // ============================================================================
-// HalibutPanel.fx 比目鱼UI通用深海面板背板
-// 参数化的SDF圆角面板：深渊纵向渐变 + 流场扰动 + 底部焦散 + 浮游冷光粒 +
-// 脉动青蓝内边 + 中央内容压暗 + 复苏躁动红化
-// uDepth 控制基调深浅，uAgitation 控制深渊不安（复苏比例驱动），
-// uContentDim 控制中央压暗程度（文字密集面板调大保证可读性）
+// HalibutPanel.fx 比目鱼 UI 深海面板背板
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,9 +8,9 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution;
-float uDepth;
-float uAgitation;
-float uContentDim;
+float uDepth;       //基调深浅
+float uAgitation;   //深渊不安，复苏比例驱动
+float uContentDim;  //中央压暗，文字密集面板调大
 
 #define PI 3.14159265
 #define TAU 6.28318530

@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼一阶段悬停射击状态：
-    /// 弹簧悬停带呼吸浮动，预判射击火球并产生后坐力位移
-    /// </summary>
+    /// <summary>一阶段悬停射击：弹簧悬停+预判火球+后坐力</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismHoverShoot, typeof(TwinsStateContext))]
     internal class SpazmatismHoverShootState : TwinsStateBase
     {
@@ -25,10 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         private TwinsStateContext Context;
         private int comboStep;
 
-        /// <summary>
-        /// 一阶段固定招式套路: 悬停射击→火焰漩涡→悬停射击→冲刺准备，循环往复，
-        /// 每完成一轮(comboStep%4==3)与激光眼同步进行交叉冲刺合击
-        /// </summary>
+        /// <summary>一阶段套路：悬停→漩涡→悬停→ dash 准备；comboStep%4==3 交叉冲刺合击</summary>
         public SpazmatismHoverShootState() : this(0) {
         }
 

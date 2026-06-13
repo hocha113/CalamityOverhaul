@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼二阶段火焰风暴状态
-    /// 在玩家周围制造旋转的火焰风暴
-    /// </summary>
+    /// <summary>火焰风暴：上升→预警→蓄力→旋转火弹风暴</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFlameStorm, typeof(TwinsStateContext))]
     internal class SpazmatismFlameStormState : TwinsStateBase
     {
@@ -22,9 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         /// </summary>
         private int RisePhase => Context.IsDeathMode ? 35 : 45;
 
-        /// <summary>
-        /// 预警阶段 - 给玩家明确的逃离时间
-        /// </summary>
+        /// <summary>预警阶段</summary>
         private int WarningPhase => Context.IsDeathMode ? 40 : 50;
 
         /// <summary>

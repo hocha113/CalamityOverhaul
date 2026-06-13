@@ -1,8 +1,6 @@
 // ============================================================================
-// DropPodFlame.fx — 空降仓科幻能量尾焰着色器 (ps_3_0)
-// 高亮度等离子喷射：白蓝核心 → 青蓝中段 → 橙色消散
-// 多层FBM噪声 · 湍流UV扭曲 · 高斯核心光柱 · 能量脉冲
-// 配合InnoVault Trail条带渲染使用
+// DropPodFlame.fx 空降仓能量尾焰
+// Trail 条带；ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -43,7 +41,7 @@ PSInput VertexShaderFunction(VSInput v)
     return o;
 }
 
-// ---- FBM 噪声（4层叠加）ps_3_0 允许循环内纹理采样 ----
+// FBM 噪声 4 层
 float fbm(float2 uv)
 {
     float value = 0.0;
@@ -61,38 +59,36 @@ float fbm(float2 uv)
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
     float2 uv = input.TexCoords;
-    // uv.x: 0=喷口根部, 1=火焰远端
-    // uv.y: 0~1 横截面（0.5=中心）
+    // uv.x 0喷口 1远端；uv.y 0~1 横截面 0.5中心
     float progress = uv.x;
-    float crossDist = abs(uv.y - 0.5) * 2.0; // 0=中心, 1=边缘
+    float crossDist = abs(uv.y - 0.5) * 2.0;
 
-    // ---- 湍流UV扭曲——让火焰形态更有机 ----
+    // 湍流 UV 扭曲
     float2 turbUV = uv * float2(1.2, 2.5) + float2(-globalTime * 4.5, globalTime * 0.3);
     float turbulence = (fbm(turbUV) - 0.5) * 0.12 * progress;
     float2 distortedUV = uv + float2(turbulence, turbulence * 0.6);
 
-    // ---- 多层FBM噪声——营造丰富的等离子体翻滚质感 ----
+    // 多层 FBM 等离子翻滚
     float n1 = fbm(distortedUV * float2(1.0, 1.8) + float2(-globalTime * 4.0, 0.0));
     float n2 = fbm(distortedUV * float2(0.7, 2.5) + float2(-globalTime * 5.5, 0.4));
     float n3 = tex2D(noiseTex, distortedUV * float2(2.5, 4.0) + float2(-globalTime * 7.0, 0.15)).r;
     float combinedNoise = n1 * 0.45 + n2 * 0.35 + n3 * 0.20;
 
-    // ---- 横截面衰减：根部锐利、远端柔和 ----
+    // 横截面衰减
     float edgeSharpness = lerp(2.8, 1.0, progress);
     float edgeFade = pow(saturate(1.0 - crossDist), edgeSharpness);
 
-    // ---- 纵向衰减：能量沿尾焰渐消 ----
+    // 纵向衰减
     float tailFade = pow(saturate(1.0 - progress), 1.3);
 
-    // ---- 高斯核心光柱——中央较亮的等离子束 ----
+    // 高斯核心光柱
     float coreWidth = lerp(0.15, 0.03, progress);
     float coreBrightness = exp(-crossDist * crossDist / (coreWidth * coreWidth * 2.0));
 
-    // ---- 科幻能量配色 ----
-    float3 whiteCore  = float3(0.90, 0.93, 1.00);  // 淡蓝白核心
-    float3 blueInner  = float3(0.25, 0.65, 1.00);  // 亮青蓝
-    float3 cyanMid    = float3(0.08, 0.35, 0.85);  // 电光蓝
-    float3 warmOuter  = float3(0.80, 0.40, 0.10);  // 橙黄消散
+    float3 whiteCore  = float3(0.90, 0.93, 1.00);
+    float3 blueInner  = float3(0.25, 0.65, 1.00);
+    float3 cyanMid    = float3(0.08, 0.35, 0.85);
+    float3 warmOuter  = float3(0.80, 0.40, 0.10);
 
     // 纵向颜色分布
     float3 flameColor;
@@ -111,7 +107,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float3 centerTint = flameColor * 0.4 + blueInner * 0.6;
     flameColor = lerp(centerTint, flameColor, saturate(crossDist * 2.0));
 
-    // ---- 亮度组合 ----
+    // 亮度组合
     float baseBrightness = edgeFade * tailFade * combinedNoise;
     float coreGlow = coreBrightness * tailFade;
 
@@ -120,18 +116,18 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     // 能量脉动
     float pulse = 1.0 + sin(globalTime * 28.0 + progress * 12.0) * 0.06;
 
-    // ---- 能量丝缕——边缘的明亮细节 ----
+    // 能量丝缕——边缘的明亮细节
     float wispSample = tex2D(noiseTex, uv * float2(3.5, 7.0) + float2(-globalTime * 6.0, globalTime * 0.4)).r;
     float wispMask = smoothstep(0.62, 0.78, wispSample) * edgeFade * tailFade * 0.35;
 
-    // ---- 外层蓝色光晕——让边缘有柔和的辉光扩散 ----
+    // 外层蓝色光晕——让边缘有柔和的辉光扩散
     float haloFade = exp(-crossDist * crossDist / 0.32) * tailFade * 0.15;
     float3 haloColor = cyanMid * haloFade;
 
-    // ---- 核心色：不再用纯白，用偏蓝白的火焰色 ----
+    // 核心色：不再用纯白，用偏蓝白的火焰色
     float3 coreColor = lerp(whiteCore, blueInner, 0.3);
 
-    // ---- 最终合成——整体压低亮度，让颜色层次可见 ----
+    // 最终合成——整体压低亮度，让颜色层次可见
     float3 finalColor = flameColor * baseBrightness * 0.9 * heatBoost * pulse
                        + coreColor * coreGlow * 0.5 * heatBoost
                        + flameColor * wispMask * 0.6

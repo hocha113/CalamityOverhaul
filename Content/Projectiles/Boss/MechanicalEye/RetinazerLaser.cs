@@ -12,9 +12,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
     /// <summary>
-    /// 激光眼专属高速激光弹，全面替代原版<see cref="ProjectileID.DeathLaser"/>：
-    /// 青紫主题渐变拖尾 + 发光内核 + 命中迸发<see cref="PRT_TwinsSpark"/>。
-    /// ai[1] = 1 时为强化弹(狂暴/大招用)，更快更亮
+    /// 激光眼高速激光弹，替代原版<see cref="ProjectileID.DeathLaser"/>
+    /// 青紫渐变拖尾+发光内核+命中迸发<see cref="PRT_TwinsSpark"/>
+    /// ai[1]=1 强化弹(狂暴/大招)，更快更亮
     /// </summary>
     internal class RetinazerLaser : ModProjectile, IPrimitiveDrawable
     {

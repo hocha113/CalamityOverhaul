@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.EntrustManager;
@@ -16,15 +16,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
     /// </summary>
     internal class FishoilQuestScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        //触发控制
-        public static bool Spwand;//外部可置 true 来允许尝试触发
-        private static bool scenarioStarted;//已进入对话(等待玩家选择)
-        private static int spawnDelayTimer;//延迟计时器
+        // 触发控制
+        public static bool Spwand;; // 外部可置 true 来允许尝试触发
+        private static bool scenarioStarted;; // 已进入对话(等待玩家选择)
+        private static int spawnDelayTimer;; // 延迟计时器
 
-        //鱼类需求总量(所有候选鱼的总和达到此数量才会触发)
+        // 鱼类需求总量(所有候选鱼的总和达到此数量才会触发)
         private const int FishNeedThreshold = 10;
 
-        //可计入的普通鱼ID表
+        // 可计入的普通鱼ID表
         internal static readonly int[] CandidateFishTypes = [
             ItemID.Bass,
             ItemID.Trout,
@@ -34,10 +34,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             ItemID.NeonTetra,
             ItemID.Damselfish,
             ItemID.ArmoredCavefish,
-            ItemID.Hemopiranha,//血腥生态常见
-            ItemID.Ebonkoi,//腐化生态常见
-            ItemID.SpecularFish,//洞穴/地下水域常见
-            ItemID.Prismite//稀有
+            ItemID.Hemopiranha, // 血腥生态
+            ItemID.Ebonkoi, // 腐化生态
+            ItemID.SpecularFish, // 洞穴水域
+            ItemID.Prismite // 稀有
         ];
 
         public static LocalizedText Rolename { get; private set; }
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.Get<HalibutADVData>().FishoilQuestAccepted = true;
             }
-            //注册到委托管理系统
+            // 注册到委托管理系统
             RegisterQuestEntry();
             scenarioStarted = false;
             Complete();
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                 entry.Progress = 1f;
             }
             else if (!notify) {
-                //恢复路径：直接置为 Tracked，RegisterQuest 不会触发任何通知
+                // 恢复路径：直接置为 Tracked，RegisterQuest 不会触发任何通知
                 entry.Status = QuestEntryStatus.Tracked;
                 entry.IsNew = false;
             }
@@ -127,19 +127,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             var manager = QuestManagerUI.Instance;
             if (manager == null) return;
 
-            //未接受任务 → 确保条目不存在
+            // 未接受任务 → 确保条目不存在
             if (!save.Get<HalibutADVData>().FishoilQuestAccepted) {
                 manager.UnregisterQuest(FishoilQuestEntry.QuestKey);
                 return;
             }
 
-            //已接受 → 确保条目存在，notify: false 表示恢复路径，不弹"新委托"通知
+            // 已接受 → 确保条目存在，notify: false 表示恢复路径，不弹"新委托"通知
             bool completed = save.Get<HalibutADVData>().FishoilQuestCompleted;
             RegisterQuestEntry(completed, notify: false);
             var entry = manager.GetEntry(FishoilQuestEntry.QuestKey);
             if (entry == null) return;
 
-            //已完成 → 直接赋值恢复状态，避免 SetEntryStatus 触发"委托完成"通知
+            // 已完成 → 直接赋值恢复状态，避免 SetEntryStatus 触发"委托完成"通知
             if (completed && entry.Status != QuestEntryStatus.Completed) {
                 entry.Status = QuestEntryStatus.Completed;
                 entry.Progress = 1f;
@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         }
 
         public override void Update(ADVSave save, Player player) {
-            //同步委托管理器条目状态（参照 SupCalQuestLine.SyncQuest 模式）
+            // 同步委托管理器条目状态（参照 SupCalQuestLine.SyncQuest 模式）
             SyncQuestEntry(save);
 
             if (!NPC.downedQueenBee) {
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }
 
             int totalFishCount = 0;
-            //统计所有候选鱼的总数量
+            // 统计所有候选鱼的总数量
             for (int i = 0; i < player.inventory.Length; i++) {
                 Item item = player.inventory[i];
                 if (item != null && item.stack > 0 && CandidateFishTypes.Contains(item.type)) {
@@ -191,13 +191,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
             if (!Spwand) {
                 Spwand = true;
-                spawnDelayTimer = Main.rand.Next(60, 160);//随机延迟保证自然感
+                spawnDelayTimer = Main.rand.Next(60, 160);; // 随机延迟保证自然感
             }
             if (spawnDelayTimer > 0) {
                 spawnDelayTimer--;
                 return;
             }
-            //避免在不合适的时候触发
+            // 避免在不合适的时候触发
             if (VaultUtils.IsInvasion() || CWRWorld.HasBoss) {
                 return;
             }

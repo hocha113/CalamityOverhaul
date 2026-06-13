@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 苔藓枪管：光束铺设湿苔区域，右键能量球吸收苔痕扩大最终爆炸。
-    /// </summary>
+    /// <summary>苔藓枪管：光束铺湿苔，右键球吸收苔痕扩爆</summary>
     internal sealed class MossboundBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -82,9 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 湿苔斑
-    /// </summary>
+    /// <summary>湿苔斑弹幕</summary>
     internal sealed class SHPCMossPatchProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     internal class FishCloud : FishSkill
     {
         [VaultLoaden(CWRConstant.Masking)]
-        public static Texture2D Fog = null;//使用反射加载一个烟雾的灰度图，大小256*256，适合用于复合出云雾效果
+        public static Texture2D Fog = null;//256×256 灰度雾图，CPU 叠云用
 
         public override int UnlockFishID => ItemID.Cloudfish;
 
@@ -107,9 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private Vector2 targetPosition = Vector2.Zero;
 
-        /// <summary>
-        /// 云朵翻滚偏移数组 - 用于模拟云雾翻滚效果
-        /// </summary>
+        /// <summary>翻滚偏移数组</summary>
         private float[] cloudRollOffsets = new float[12];
 
         /// <summary>
@@ -117,9 +115,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// </summary>
         private float[] cloudRollSpeeds = new float[12];
 
-        /// <summary>
-        /// 玩家原始重力值（用于恢复）
-        /// </summary>
+        /// <summary>玩家原始重力（结束时恢复）</summary>
         private float originalGravity = 0f;
 
         /// <summary>
@@ -144,9 +140,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 初始化云鱼粒子
-        /// </summary>
+        /// <summary>初始化云鱼 boids</summary>
         private void InitializeCloudFish() {
             cloudFishParticles.Clear();
             for (int i = 0; i < CloudFishCount; i++) {
@@ -217,9 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 更新云朵翻滚效果
-        /// </summary>
+        /// <summary>翻滚偏移 tick</summary>
         private void UpdateCloudRolling() {
             for (int i = 0; i < cloudRollOffsets.Length; i++) {
                 cloudRollOffsets[i] += cloudRollSpeeds[i];
@@ -229,9 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 更新云鱼粒子（鱼群算法）
-        /// </summary>
+        /// <summary>云鱼 boids tick</summary>
         private void UpdateCloudFishParticles() {
             for (int i = 0; i < cloudFishParticles.Count; i++) {
                 CloudFishParticle fish = cloudFishParticles[i];
@@ -613,9 +603,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 更新云朵粒子
-        /// </summary>
+        /// <summary>云粒子 tick</summary>
         private void UpdateCloudParticles() {
             for (int i = cloudParticles.Count - 1; i >= 0; i--) {
                 CloudParticle particle = cloudParticles[i];
@@ -651,10 +639,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SpriteBatch sb = Main.spriteBatch;
             Vector2 center = Projectile.Center - Main.screenPosition;
 
-            //绘制主云体（扁平筋斗云形状）
+            //主云体
             DrawMainCloudBody(sb, center);
 
-            //绘制云朵粒子（翻滚效果）
+            //云粒子
             DrawCloudParticles(sb);
 
             //绘制速度拖尾效果
@@ -662,20 +650,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DrawSpeedTrail(sb, center);
             }
 
-            //绘制筋斗云黄金边缘效果
+            //顶缘金边
             if (Phase == 1) {
                 DrawGoldenEdges(sb, center);
             }
 
-            //绘制云鱼粒子（伴飞效果）
+            //伴飞云鱼
             DrawCloudFishParticles(sb);
 
             return false;
         }
 
-        /// <summary>
-        /// 绘制主云体（扁平椭圆形，多层翻滚）
-        /// </summary>
+        /// <summary>主云体：扁平椭圆多层叠加</summary>
         private void DrawMainCloudBody(SpriteBatch sb, Vector2 center) {
             //云朵主体由多个扁平椭圆云团组成
             int cloudSegments = 12;
@@ -743,15 +729,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 绘制云朵粒子（翻滚云雾效果）
-        /// </summary>
+        /// <summary>云粒子多层叠绘</summary>
         private void DrawCloudParticles(SpriteBatch sb) {
             foreach (var p in cloudParticles) {
                 Vector2 pos = p.Position - Main.screenPosition;
                 float baseAlpha = p.Alpha * cloudAlpha;
 
-                //多层绘制，模拟云的厚度和柔和感
+                //多层扁平叠绘
                 for (int layer = 0; layer < 3; layer++) {
                     float s = p.Scale * (1f + layer * 0.18f);
                     float a = baseAlpha * (0.55f - layer * 0.12f);
@@ -772,9 +756,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 绘制云鱼粒子（伴飞的云鱼群）
-        /// </summary>
+        /// <summary>伴飞云鱼群</summary>
         private void DrawCloudFishParticles(SpriteBatch sb) {
             //加载鱼的纹理
             Main.instance.LoadItem(ItemID.Cloudfish);
@@ -812,9 +794,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 绘制黄金边缘效果（筋斗云经典特征）
-        /// </summary>
+        /// <summary>顶缘金色描边</summary>
         private void DrawGoldenEdges(SpriteBatch sb, Vector2 center) {
             for (int i = 0; i < 8; i++) {
                 float angle = MathHelper.TwoPi * i / 8f + LifeTimer * 0.025f;
@@ -827,9 +807,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 绘制速度拖尾
-        /// </summary>
+        /// <summary>速度线拖尾</summary>
         private void DrawSpeedTrail(SpriteBatch sb, Vector2 center) {
             Vector2 dir = -Projectile.velocity.SafeNormalize(Vector2.Zero);
             for (int i = 1; i <= 6; i++) {

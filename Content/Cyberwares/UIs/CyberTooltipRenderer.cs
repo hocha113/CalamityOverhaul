@@ -6,10 +6,7 @@ using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    /// 赛博朋克风格的义体信息提示框渲染器
-    /// 替代原版Tooltip，与义体界面视觉风格统一
-    /// </summary>
+    /// <summary>义体自定义 Tooltip，替代原版</summary>
     internal static class CyberTooltipRenderer
     {
         private const float Padding = 10f;
@@ -19,9 +16,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         private static float scanPhase;
 
-        /// <summary>
-        /// 在鼠标附近绘制义体信息提示框
-        /// </summary>
+        /// <summary>鼠标旁绘制义体 Tooltip</summary>
         public static void DrawTooltip(SpriteBatch sb, Item item, Vector2 mousePos) {
             if (item == null || item.IsAir) return;
             if (item.ModItem is not BaseCyberware cyber) return;

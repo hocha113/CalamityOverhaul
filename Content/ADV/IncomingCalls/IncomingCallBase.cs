@@ -12,9 +12,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.IncomingCalls
 {
     /// <summary>
-    /// 来电对话系统基类——类似赛博朋克2077的来电通讯UI
-    /// 屏幕左侧滑入来电面板，显示联系人头像和振铃动画，
-    /// 接听后展开为通话面板，动态弹出台词
+    /// 来电 UI 基类——左侧滑入振铃面板，接听后展开通话
     /// </summary>
     internal abstract class IncomingCallBase : UIHandle
     {
@@ -280,7 +278,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         public virtual void AutoAnswer() {
             if (_state == IncomingCallState.Ringing || _state == IncomingCallState.Idle) {
                 if (_state == IncomingCallState.Idle) {
-                    //如果还没开始，先初始化
+                    // 未初始化则先初始化
                     slideProgress = 1f;
                 }
                 _state = IncomingCallState.Connecting;
@@ -295,7 +293,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         public virtual void HangUp() {
             if (_state == IncomingCallState.Idle || _state == IncomingCallState.Ending) return;
 
-            //触发剩余回调
+            // 触发剩余回调
             current?.OnFinish?.Invoke();
             while (queue.Count > 0) {
                 var seg = queue.Dequeue();
@@ -359,15 +357,15 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         }
 
         private void UpdateRinging() {
-            //面板滑入
+            // 面板滑入
             slideProgress = MathHelper.Lerp(slideProgress, 1f, SlideSpeed);
             if (slideProgress > 0.99f) slideProgress = 1f;
 
-            //振铃动画
+            // 振铃动画
             ringTimer += 0.05f;
             if (ringTimer > MathHelper.TwoPi) ringTimer -= MathHelper.TwoPi;
 
-            //振铃脉冲
+            // 振铃脉冲
             ringPulseSpawnTimer++;
             if (ringPulseSpawnTimer >= 30) {
                 ringPulseSpawnTimer = 0;
@@ -378,7 +376,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
                 if (ringPulses[i] >= 1f) ringPulses.RemoveAt(i);
             }
 
-            //振铃超时
+            // 振铃超时
             if (RingTimeout > 0) {
                 ringTimeoutCounter++;
                 if (ringTimeoutCounter >= RingTimeout) {
@@ -387,7 +385,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
                 }
             }
 
-            //点击接听
+            // 点击接听
             HandleRingingInput();
         }
 
@@ -405,7 +403,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             callDurationFrames++;
             contentFade = MathHelper.Lerp(contentFade, 1f, 0.1f);
 
-            //打字机
+            // 打字机
             if (!finishedCurrent && wrappedLines != null) {
                 typeTimer++;
                 if (typeTimer >= TypeInterval) {
@@ -419,7 +417,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
                 }
             }
 
-            //自动推进
+            // 自动推进
             if (finishedCurrent) {
                 int delay = current?.AutoAdvanceDelay ?? 0;
                 if (delay > 0) {
@@ -461,7 +459,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         protected virtual void HandleSpeakingInput() {
             if (IsMouseOverPanel() && Main.mouseLeft && Main.mouseLeftRelease) {
                 if (!finishedCurrent) {
-                    //加速显示
+                    // 加速显示
                     int totalChars = 0;
                     if (wrappedLines != null) {
                         foreach (var line in wrappedLines) totalChars += line.Length;
@@ -487,9 +485,9 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
 
         protected virtual void StartNextLine() {
             if (queue.Count == 0) {
-                //所有台词播完
+                // 台词播完
                 if (AutoHangUpDelay > 0) {
-                    //等待一段时间后自动挂断——在Update中检测
+                    // 延迟后自动挂断，在 Update 检测
                     finishedCurrent = true;
                     current = null;
                 }
@@ -531,14 +529,14 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             float maxWidth = SpeakingPanelWidth - Padding * 2 - PortraitSize - 20f;
             wrappedLines = CWRUtils.WrapTextArray(current.Content, font, (int)(maxWidth / TextScale), 10, out _);
 
-            //过滤空行
+            // 过滤空行
             List<string> valid = [];
             foreach (var line in wrappedLines) {
                 if (!string.IsNullOrEmpty(line)) valid.Add(line.TrimEnd('-', ' '));
             }
             wrappedLines = [.. valid];
 
-            //根据有效行数动态计算面板高度
+            // 按行数算面板高度
             float textHeight = valid.Count * LineSpacing;
             float totalHeight = SpeakingHeaderHeight + textHeight + SpeakingFooterHeight;
             computedSpeakingHeight = Math.Clamp(totalHeight, SpeakingPanelMinHeight, SpeakingPanelHeight);
@@ -577,12 +575,12 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         protected virtual void StyleUpdate() { }
 
         /// <summary>
-        /// 子类实现——绘制振铃状态面板
+        /// 子类绘制振铃面板
         /// </summary>
         protected abstract void DrawRingingPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha);
 
         /// <summary>
-        /// 子类实现——绘制通话状态面板
+        /// 子类绘制通话面板
         /// </summary>
         protected abstract void DrawSpeakingPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha);
 

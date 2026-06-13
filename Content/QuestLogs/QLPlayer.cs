@@ -13,27 +13,18 @@ namespace CalamityOverhaul.Content.QuestLogs
 {
     internal class QLPlayer : ModPlayer
     {
-        /// <summary>
-        /// 单个玩家最多记住的"信任任务世界"数量上限，避免列表无限增长
-        /// </summary>
+        /// <summary>信任任务世界上限，防列表无限增长</summary>
         private const int MaxTrustedQuestWorlds = 32;
 
         public Dictionary<string, QuestSaveData> QuestProgress = new();
 
-        /// <summary>
-        /// 上次检测任务的世界完整名称
-        /// </summary>
+        /// <summary>上次检测任务的世界完整名称</summary>
         public string LastWorldFullName = string.Empty;
 
-        /// <summary>
-        /// 在此世界中跳过任务检测(用于用户选择跳过后记录)
-        /// </summary>
+        /// <summary>本会话跳过任务检测的世界名</summary>
         public string DontCheckQuestInWorld = string.Empty;
 
-        /// <summary>
-        /// 玩家选择"信任此世界"的世界完整名字列表
-        /// <para>持久化到玩家档；进入这些世界时直接跳过弹窗、自动启用任务检测</para>
-        /// </summary>
+        /// <summary>信任任务世界列表，持久化到玩家档</summary>
         public List<string> TrustedQuestWorldFullNames = new();
 
         public override bool IsLoadingEnabled(Mod mod) => CWRServerConfig.Instance.QuestLog;
@@ -47,7 +38,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
                 tag["QuestProgress"] = questsTag;
 
-                //保存世界追踪数据
+                //保存世界追踪
                 if (!string.IsNullOrEmpty(LastWorldFullName)) {
                     tag["QL_LastWorldFullName"] = LastWorldFullName;
                 }
@@ -71,12 +62,12 @@ namespace CalamityOverhaul.Content.QuestLogs
                     }
                 }
 
-                //加载世界追踪数据
+                //加载世界追踪
                 LastWorldFullName = string.Empty;
                 if (tag.TryGet("QL_LastWorldFullName", out string lastWorld)) {
                     LastWorldFullName = lastWorld;
                 }
-                //跳过只表示本次会话，本次进世界不检测
+                //跳过仅本会话
                 DontCheckQuestInWorld = string.Empty;
                 TrustedQuestWorldFullNames = new List<string>();
                 if (tag.TryGet("QL_TrustedQuestWorlds", out List<string> trusted) && trusted != null) {
@@ -98,20 +89,16 @@ namespace CalamityOverhaul.Content.QuestLogs
             return QuestProgress[questID];
         }
 
-        /// <summary>
-        /// 检查是否应该在当前世界检测任务
-        /// </summary>
+        /// <summary>是否应在当前世界检测任务</summary>
         public bool ShouldCheckQuestInCurrentWorld() {
-            //如果用户选择了跳过当前世界的任务检测
+            //如果用户选择跳过
             if (DontCheckQuestInWorld == SaveWorld.WorldFullName) {
                 return false;
             }
             return true;
         }
 
-        /// <summary>
-        /// 当前世界是否在玩家的"信任任务世界"列表里
-        /// </summary>
+        /// <summary>当前世界是否在信任列表</summary>
         public bool IsCurrentQuestWorldTrusted() {
             if (TrustedQuestWorldFullNames == null || TrustedQuestWorldFullNames.Count == 0) {
                 return false;
@@ -120,9 +107,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             return !string.IsNullOrEmpty(current) && TrustedQuestWorldFullNames.Contains(current);
         }
 
-        /// <summary>
-        /// 把当前世界加入"信任任务世界"列表
-        /// </summary>
+        /// <summary>将当前世界加入信任列表</summary>
         public void TrustCurrentQuestWorld() {
             string current = SaveWorld.WorldFullName;
             if (string.IsNullOrEmpty(current)) {
@@ -132,16 +117,14 @@ namespace CalamityOverhaul.Content.QuestLogs
             if (TrustedQuestWorldFullNames.Contains(current)) {
                 return;
             }
-            //上限保护：超出时丢弃最早的一个
+            //上限保护，丢弃最早项
             if (TrustedQuestWorldFullNames.Count >= MaxTrustedQuestWorlds) {
                 TrustedQuestWorldFullNames.RemoveAt(0);
             }
             TrustedQuestWorldFullNames.Add(current);
         }
 
-        /// <summary>
-        /// 启用当前世界的任务检测，并记录当前世界为最新任务检测世界
-        /// </summary>
+        /// <summary>启用当前世界任务检测</summary>
         public void EnableQuestCheckInCurrentWorld(bool runWorldEnterChecks = false) {
             DontCheckQuestInWorld = string.Empty;
             LastWorldFullName = SaveWorld.WorldFullName;
@@ -151,15 +134,13 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
 
-        /// <summary>
-        /// 执行进入世界时需要跑的任务解锁/刷新逻辑
-        /// </summary>
+        /// <summary>进世界任务解锁与刷新</summary>
         public static void RunWorldEnterQuestChecks() {
             if (QuestNode.GetQuest<FirstQuest>() != null) {
                 QuestNode.GetQuest<FirstQuest>().IsUnlocked = true;
             }
 
-            //进服时检查一遍所有任务的解锁状态，防止因更新或存档问题导致的任务未解锁
+            //进服检查解锁状态
             foreach (var quest in QuestNode.AllQuests) {
                 quest.OnWorldEnter();
                 quest.CheckUnlock();
@@ -169,29 +150,27 @@ namespace CalamityOverhaul.Content.QuestLogs
         public override void OnEnterWorld() {
             string currentWorldFullName = SaveWorld.WorldFullName;
 
-            //子世界切换不视为跨世界，避免频繁弹出确认窗口
+            //子世界切换不算跨世界
             bool isSubWorld = SubWorldRef.AnyActiveSubWorld();
 
-            //信任世界：直接静默启用任务检测，跳过任何弹窗逻辑
-            //这样玩家在多个常驻世界之间跳转时，再也不会被问到任务检测的事
+            //信任世界静默启用检测
             if (!isSubWorld && IsCurrentQuestWorldTrusted()) {
                 EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
             }
-            //检测是否进入了不同的世界
+            //跨世界进入
             else if (!isSubWorld && !string.IsNullOrEmpty(LastWorldFullName) && LastWorldFullName != currentWorldFullName) {
-                //进入了不同的世界，重置跳过标记并弹出确认窗口
                 DontCheckQuestInWorld = string.Empty;
                 QuestWorldConfirmUI.RequestConfirm(Player, Main.worldName, LastWorldFullName);
                 return;
             }
             else if (string.IsNullOrEmpty(LastWorldFullName)) {
-                //首次进入，正常设置
+                //首次进入
                 EnableQuestCheckInCurrentWorld(runWorldEnterChecks: true);
             }
             else {
                 RunWorldEnterQuestChecks();
             }
-            //同一世界不需要重置，保持之前的选择
+            //同世界保持选择
         }
 
         public override void PostUpdate() {
@@ -199,17 +178,17 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
-            //如果用户跳过了当前世界的任务检测，则不更新任务
+            //跳过当前世界则不更新
             if (!ShouldCheckQuestInCurrentWorld()) {
                 return;
             }
 
-            //如果确认窗口正在显示，暂停任务更新
+            //确认窗显示时暂停更新
             if (QuestWorldConfirmUI.Instance != null && QuestWorldConfirmUI.Instance.Active) {
                 return;
             }
 
-            //每60帧检查一次未解锁的任务，防止漏掉
+            //每 60 帧检查未解锁
             bool checkUnlock = Main.GameUpdateCount % 60 == 0 && QuestLog.Instance.visible;
 
             foreach (var quest in QuestNode.AllQuests) {
@@ -224,7 +203,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public static void CraftedItem(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
-            //玩家合成物品时调用
+            //玩家合成时调用
             foreach (var quest in QuestNode.AllQuests) {
                 if (quest.IsUnlocked && !quest.IsCompleted) {
                     quest.CraftedItem(recipe, item, consumedItems, destinationStack);

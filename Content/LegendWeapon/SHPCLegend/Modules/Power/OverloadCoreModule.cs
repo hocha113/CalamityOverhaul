@@ -10,12 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 超载核心：解除能量球的安全锁。蓄满后继续按住右键进入「圣能过载」——
-    /// 90 帧内伤害最高再翻一倍、爆炸半径+35%；但越过红线继续超蓄 60 帧后
-    /// 核心失控，能量球当场炸膛：玩家被反冲击退并烧掉一半法力
-    /// （普罗维登斯礼物 —— 高风险高回报的圣火赌局）
-    /// </summary>
+    /// <summary>超载核心：球满后右键过载 90 帧增伤扩半径，超 60 帧炸膛反冲烧蓝</summary>
     internal sealed class OverloadCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -92,10 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
         }
 
-        /// <summary>
-        /// 炸膛：能量球在枪口失控爆裂。爆炸仍可伤敌（基准伤害），
-        /// 但玩家被反冲击退、法力烧毁一半 —— 贪婪的代价
-        /// </summary>
+        /// <summary>炸膛：球口爆裂仍伤敌，玩家击退且法力减半</summary>
         private void Rupture(CyberChargeOrbProj orb, Player owner) {
             ResetState();
             if (orb.Projectile.owner != Main.myPlayer) return;

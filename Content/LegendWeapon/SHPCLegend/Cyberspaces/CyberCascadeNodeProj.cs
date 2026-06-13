@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 级联节点：5次命中后在命中点悬停，周期性向最近敌人猎杀式射出光束
-    /// <br/>悬停约2秒，共触发5次猎杀；消亡时爆散橙金粒子
-    /// </summary>
+    /// <summary>级联节点：5 次命中后悬停周期性猎杀光束</summary>
     internal class CyberCascadeNodeProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

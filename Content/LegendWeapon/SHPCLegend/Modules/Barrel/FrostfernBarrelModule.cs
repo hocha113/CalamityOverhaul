@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 霜蕨枪管：命中后沿弹道背面抽出冰晶脉络，穿线目标共享寒霜。
-    /// </summary>
+    /// <summary>霜蕨枪管：命中沿弹道抽冰晶脉络，穿线共享寒霜</summary>
     internal sealed class FrostfernBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -38,9 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 霜蕨脉络：L-system 派生折线，每条分叉用 Trail + CyberDataArc shader 绘制
-    /// </summary>
+    /// <summary>霜蕨脉络：L-system 折线+Trail</summary>
     internal sealed class SHPCFrostfernLineProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

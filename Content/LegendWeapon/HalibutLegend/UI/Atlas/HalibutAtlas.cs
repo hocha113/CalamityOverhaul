@@ -11,9 +11,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 深渊图鉴：比目鱼的全量技能管理界面（近全屏沉浸式）
-    /// 左侧导航在「技能海域」与「领域之眼」两个场景间切换，
-    /// 背景由 HalibutAtlasBg.fx 程序生成，随下潜深度与复苏躁动变化
+    /// 比目鱼图鉴 UI：技能海域与领域之眼切换
+    /// 背景 HalibutAtlasBg.fx，随下潜深度与复苏躁动变化
     /// </summary>
     internal class HalibutAtlas : UIHandle, ILocalizedModType
     {
@@ -321,7 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 navEyesRect.Contains(mouse.ToPoint()), a, time);
 
             if (view == AtlasView.Sea) {
-                //深度带导航：标尺刻度样式（菱标 + 文本 + 延伸线），去盒子化
+                //深度带导航：菱标 + 文本 + 延伸线
                 for (int t = 0; t < HalibutTheme.AtlasTierCount; t++) {
                     Rectangle rect = tierChipRects[t];
                     bool hovered = rect.Contains(mouse.ToPoint());
@@ -358,9 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
         }
 
-        /// <summary>
-        /// 导航页签：左侧菱标竖纹 + 文本 + 底部进度线，激活时端点游光
-        /// </summary>
+        /// <summary>导航页签：左缘菱标 + 文本 + 底进度线</summary>
         private static void DrawNavTab(SpriteBatch sb, Rectangle rect, string text,
             bool selected, bool hovered, float a, float time) {
             float hi = selected ? 1f : hovered ? 0.5f : 0f;
@@ -375,7 +372,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             HalibutRenderer.DrawPearl(sb, new Vector2(rect.X + 4f, rect.Y + 1f), 1.7f,
                 HalibutTheme.Caustic, (0.4f + hi * 0.6f) * a);
 
-            //横向渐隐底衬（用粗渐变线代替矩形填充，避免盒子感）
+            //横向渐隐底衬
             Vector2 bandL = new(rect.X + 9f, rect.Center.Y);
             Vector2 bandR = new(rect.Right, rect.Center.Y);
             HalibutRenderer.DrawGradientLine(sb, bandL, bandR,

@@ -9,11 +9,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
-    /// <summary>
-    /// SHPC枪体改造面板
-    /// 中央悬浮SHPC物品纹理，数据分析线从枪体关键部位延伸连接六个改件插槽
-    /// 由 <see cref="SHPCUI"/> 在固定二级面板模式下调用（按钮索引1）
-    /// </summary>
+    /// <summary>枪体改造面板，六槽位连线布局</summary>
     internal static class SHPCModPanel
     {
         //空间布局缩放系数，面板/插槽偏移/枪体处于该系数下，略大以缓解拥挤感

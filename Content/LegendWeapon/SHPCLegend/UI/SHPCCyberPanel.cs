@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
-    /// <summary>
-    /// 赛博空间领域管理面板
-    /// 黑墙AI风格 深红色系 + 三段式领域指示环 + 故障层叠环 + 自定义着色器背景
-    /// 由 <see cref="SHPCUI"/> 在固定二级面板模式下调用
-    /// </summary>
+    /// <summary>赛博领域管理面板，三段指示环</summary>
     internal static class SHPCCyberPanel
     {
         //整体UI放大系数，所有尺寸字号都按此比例缩放，便于统一调节
@@ -62,10 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //段悬停时外径最大延展量
         private const float SegmentExpandMax = 14f * Scale;
 
-        /// <summary>
-        /// 面板内可点击控件枚举
-        /// Skill1/Skill2/Skill3 表示对应层的三级面板悬停区域，仅用于阻止面板收起
-        /// </summary>
+        /// <summary>命中枚举，Skill1~3 防面板收起</summary>
         public enum HitKind
         {
             None,
@@ -88,9 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //三段环各自的悬停延展进度，0=未悬停 1=完全延展，由 <see cref="UpdateHover"/> 平滑跟随
         private static readonly float[] segmentExpandAmt = new float[3];
 
-        /// <summary>
-        /// 三级技能面板单条技能定义
-        /// </summary>
+        /// <summary>三级技能条目定义</summary>
         private readonly struct SkillEntry
         {
             public readonly Func<string> Name;
@@ -107,10 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 取出某段对应的技能列表，目前每段最多一个技能
-        /// 数组为延迟初始化，确保本地化文本已就绪
-        /// </summary>
+        /// <summary>层对应技能列表，延迟初始化</summary>
         private static SkillEntry[] GetLayerSkills(int layer) {
             switch (layer) {
                 case 1:
@@ -147,9 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 根据扇区锚点与中线方向计算面板位置
-        /// </summary>
+        /// <summary>扇区锚点计算 Layout</summary>
         public static Layout Compute(Vector2 anchor, float midAngle, float panelAlpha) {
             Vector2 outDir = SHPCRenderer.AngleDir(midAngle);
             float slide = (1f - panelAlpha) * 14f;
@@ -171,9 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             };
         }
 
-        /// <summary>
-        /// 给定层数(1..3)取该段的角度区间
-        /// </summary>
+        /// <summary>层 1~3 段角度区间</summary>
         private static void GetSegmentAngles(int layer, out float a0, out float a1) {
             float per = MathHelper.TwoPi / 3f;
             float center = StartAngle + (layer - 1) * per + per * 0.5f;
@@ -181,11 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             a1 = center + per * 0.5f - SegmentGap * 0.5f;
         }
 
-        /// <summary>
-        /// 取得指定层(1..3)三级技能面板的屏幕矩形
-        /// 面板锁定于二级面板右侧，按层数纵向分布（上/中/下）
-        /// 高度依据该层技能数量自适应，确保多技能也能完整展开
-        /// </summary>
+        /// <summary>层三级技能面板矩形，高度自适应</summary>
         private static Rectangle GetSkillPanelRect(in Layout layout, int layer) {
             int x = layout.Panel.Right + (int)SkillPanelGapX;
             float ringY = layout.RingCenter.Y;
@@ -195,10 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return new Rectangle(x, y, (int)SkillPanelW, height);
         }
 
-        /// <summary>
-        /// 根据该层技能数量与描述文本实际换行行数动态计算面板高度
-        /// 无技能占位面板维持原始紧凑高度，多技能按描述行数逐条累加
-        /// </summary>
+        /// <summary>技能面板高度，按描述行数累加</summary>
         private static int ComputeSkillPanelHeight(int layer) {
             SkillEntry[] skills = GetLayerSkills(layer);
             if (skills.Length == 0) {
@@ -214,9 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return Math.Max(total, (int)SkillPanelH);
         }
 
-        /// <summary>
-        /// 计算单个技能条目的完整高度（含描述多行）
-        /// </summary>
+        /// <summary>单条技能高度含描述换行</summary>
         private static int ComputeSkillEntryHeight(DynamicSpriteFont font,
             SkillEntry entry, float descMaxW) {
             string desc = entry.Desc?.Invoke() ?? string.Empty;
@@ -227,9 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return SkillEntryFixedHeight + lines * SkillDescLineHeight;
         }
 
-        /// <summary>
-        /// 取得指定段编号(0..2) 对应的悬停延展进度
-        /// </summary>
+        /// <summary>段悬停延展进度 0~2</summary>
         public static float GetSegmentExpand(int segIdx) {
             if (segIdx < 0 || segIdx > 2) {
                 return 0f;
@@ -237,10 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return segmentExpandAmt[segIdx];
         }
 
-        /// <summary>
-        /// 命中测试
-        /// 优先级：开关按钮 → 三级面板（已展开）→ 三段环 → 无
-        /// </summary>
+        /// <summary>命中测试：开关→三级面板→三段环</summary>
         public static HitKind HitTest(in Layout layout, Vector2 mouse) {
             if (layout.Toggle.Contains((int)mouse.X, (int)mouse.Y)) {
                 return HitKind.Toggle;
@@ -274,11 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return HitKind.None;
         }
 
-        /// <summary>
-        /// 平滑更新各段悬停延展进度
-        /// 面板可见时调用，面板收起后会被传入 <see cref="HitKind.None"/>
-        /// 面板整体不可见时强制衰减为 0
-        /// </summary>
+        /// <summary>平滑更新段悬停延展</summary>
         public static void UpdateHover(HitKind hover, bool panelVisible) {
             for (int i = 0; i < 3; i++) {
                 bool isHover = panelVisible && (
@@ -294,9 +260,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 整体面板绘制
-        /// </summary>
+        /// <summary>整体面板绘制</summary>
         public static void Draw(SpriteBatch sb, Texture2D px, in Layout layout,
             float panelAlpha, float globalAlpha, HitKind hover) {
             if (panelAlpha < 0.02f) {
@@ -360,9 +324,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             DrawSkillPanels(sb, px, font, layout, panelAlpha, globalAlpha, time);
         }
 
-        /// <summary>
-        /// 使用CyberDomainPanel着色器绘制背景，失败则降级为纯色
-        /// </summary>
+        /// <summary>着色器背景，失败降级纯色</summary>
         private static void DrawShaderBackground(SpriteBatch sb, Texture2D px,
             Rectangle rect, float panelAlpha, float globalAlpha) {
             float a = panelAlpha * globalAlpha;
@@ -403,9 +365,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>
-        /// 绘制三段式领域指示环 + 中央心跳核心
-        /// </summary>
+        /// <summary>三段指示环+中央核心</summary>
         private static void DrawTriRing(SpriteBatch sb, Texture2D px,
             Vector2 center, float time, HitKind hover, float a) {
             //中央深色底盘
@@ -450,10 +410,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 new Color(205, 95, 90) * (0.85f * a), 0.35f * FontScale);
         }
 
-        /// <summary>
-        /// 绘制单段环
-        /// expandAmt 表示段位悬停延展进度，影响外径与额外辉光
-        /// </summary>
+        /// <summary>单段环，expandAmt 影响外径</summary>
         private static void DrawRingSegment(SpriteBatch sb, Texture2D px,
             Vector2 center, float a0, float a1, int layer,
             float litAmt, bool litFlag, bool hover, float expandAmt,
@@ -544,9 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             Utils.DrawBorderString(sb, s, textPos - sz * 0.5f, tc * a, 0.55f * FontScale);
         }
 
-        /// <summary>
-        /// 右侧状态文字栏，列出每层激活状态、RAM 消耗速度及当前可维持时长
-        /// </summary>
+        /// <summary>右侧状态栏：层/RAM/SUSTAIN</summary>
         private static void DrawStatusColumn(SpriteBatch sb, DynamicSpriteFont font,
             Rectangle panel, in Layout layout, float a) {
             float colX = layout.RingCenter.X + RingOuterR + 18f * Scale;
@@ -613,9 +568,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 底部开关按钮
-        /// </summary>
+        /// <summary>底部开关按钮</summary>
         private static void DrawToggleButton(SpriteBatch sb, Texture2D px,
             DynamicSpriteFont font, Rectangle r, bool hover, float a) {
             bool active = Cyberspace.Active;
@@ -645,9 +598,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 textCol * a, 0.60f * FontScale);
         }
 
-        /// <summary>
-        /// 三级技能面板：遍历每段，按延展进度淡入淡出绘制
-        /// </summary>
+        /// <summary>三级技能面板批量绘制</summary>
         private static void DrawSkillPanels(SpriteBatch sb, Texture2D px,
             DynamicSpriteFont font, in Layout layout,
             float panelAlpha, float globalAlpha, float time) {
@@ -663,10 +614,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 单个三级技能面板绘制
-        /// 由二级面板右侧滑出，附带连接弧线，背景使用半透明深色色板
-        /// </summary>
+        /// <summary>单层三级技能面板</summary>
         private static void DrawSkillPanel(SpriteBatch sb, Texture2D px,
             DynamicSpriteFont font, in Layout layout, Rectangle skillRect,
             int layer, float expandAmt, float panelAlpha, float globalAlpha, float time) {
@@ -786,9 +734,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 单条技能条目：左侧名称 + 描述（自动换行），右侧快捷键徽标，下方解锁状态
-        /// </summary>
+        /// <summary>单条技能：名称/描述/快捷键/解锁</summary>
         private static void DrawSkillEntry(SpriteBatch sb, Texture2D px,
             DynamicSpriteFont font, Rectangle panel, int entryY,
             SkillEntry entry, Color hot, float a) {
@@ -856,9 +802,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 statusCol * a, statusScale);
         }
 
-        /// <summary>
-        /// 估算给定文本按指定最大宽度换行后的行数
-        /// </summary>
+        /// <summary>换行行数估算</summary>
         private static int MeasureWrappedLineCount(DynamicSpriteFont font, string text,
             float scale, float maxWidth) {
             if (string.IsNullOrEmpty(text) || maxWidth <= 0f) {
@@ -871,17 +815,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return count <= 0 ? 1 : count;
         }
 
-        /// <summary>
-        /// 按宽度切分文本以适配最大宽度，统一走 CWRUtils.WrapText（CJK 感知）。
-        /// </summary>
+        /// <summary>CWRUtils.WrapText 换行</summary>
         private static System.Collections.Generic.IEnumerable<string> EnumerateWrappedLines(
             DynamicSpriteFont font, string text, float scale, float maxWidth) {
             return CWRUtils.WrapText(text, font, maxWidth, scale);
         }
 
-        /// <summary>
-        /// 简易文本宽度截断，超出 maxWidth 时尾部加省略号
-        /// </summary>
+        /// <summary>超宽文本尾部省略</summary>
         private static string TrimToWidth(DynamicSpriteFont font, string text,
             float scale, float maxWidth) {
             if (string.IsNullOrEmpty(text) || maxWidth <= 0f) {
@@ -899,9 +839,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return n <= 0 ? ellipsis : text[..n] + ellipsis;
         }
 
-        /// <summary>
-        /// 段位与三级面板之间的连接弧线，沿径向延伸到面板左边缘中点
-        /// </summary>
+        /// <summary>段与三级面板连接弧</summary>
         private static void DrawSkillConnector(SpriteBatch sb, Texture2D px,
             in Layout layout, int layer, Rectangle drawRect,
             float expandAmt, float baseAlpha, Color glow) {
@@ -926,10 +864,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             SHPCRenderer.DrawDisc(sb, px, segPoint, 1.8f, 1.4f, glow * (0.7f * a));
         }
 
-        /// <summary>
-        /// 处理面板控件点击效果
-        /// Skill1/2/3 仅作为悬停穿透判定，不响应点击
-        /// </summary>
+        /// <summary>面板点击；Skill1~3 不响应</summary>
         public static void HandleClick(HitKind hit, Player owner) {
             switch (hit) {
                 case HitKind.Toggle:

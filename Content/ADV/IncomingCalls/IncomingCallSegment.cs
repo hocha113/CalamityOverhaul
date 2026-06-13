@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         public Action OnFinish;
 
         /// <summary>
-        /// 自动推进延迟帧数（0 表示需要手动点击推进，>0 表示打字完成后自动等待N帧后推进）
+        /// 自动推进延迟帧，0 须手动点击，>0 打字后等待 N 帧
         /// </summary>
         public int AutoAdvanceDelay;
     }

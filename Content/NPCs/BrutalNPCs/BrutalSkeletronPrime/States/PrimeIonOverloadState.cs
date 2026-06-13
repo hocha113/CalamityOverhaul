@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 离子过载：汇聚充能 → 72% 静默 → 三波带缺口全向弹环 + 冲击波。
-    /// </summary>
+    /// <summary>离子过载：汇聚→72%静默→三波带缺口弹环+冲击波</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.IonOverload, typeof(PrimeStateContext))]
     internal class PrimeIonOverloadState : PrimeStateBase
     {

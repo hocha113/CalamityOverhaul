@@ -1,15 +1,14 @@
 // ============================================================================
-// WeaverWraith.fx —— 纠缠之怨怨魂着色器
-// 程序化绘制一只幽魂：圆首 + 渐细的撕裂飘尾 + 空洞双眼 + 嚎叫之口
-// quad 由 C# 端按速度方向旋转，+x 恒为运动方向（头部朝向）
-// uRage: 回归玩家阶段的狂怒度，眼洞将燃起红光、形体更亮
+// WeaverWraith.fx 纠缠之怨怨魂
+// +X 为运动方向(头部)；C# 按速度旋转 quad
+// ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
 float uTime;
 float uSeed;    //每只幽魂的随机种子
 float uFade;    //整体透明度 0~1
-float uRage;    //狂怒度 0~1
+float uRage;    //狂怒度 0~1，回归阶段眼洞红光
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state

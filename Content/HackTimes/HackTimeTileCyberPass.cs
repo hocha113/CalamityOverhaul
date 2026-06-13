@@ -9,25 +9,17 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间物块赛博滤镜 RT 渲染
-    /// <br/>由于物块绘制无 PreDraw/PostDraw 钩子无法像 NPC 那样直接套着色器
-    /// <br/>改用取巧办法：把选中/悬停物块按原始帧重绘到一张小 RT，以 RT 自然的透明像素作为轮廓掩码
-    /// <br/>再对 RT 套用 HackTimeNPCHighlight 着色器，加法合成回屏幕
-    /// <br/>支持多物块（如 3x2 的桌子选中一格会整体高亮）
-    /// </summary>
+    /// <summary>物块赛博滤镜 RT 渲染</summary>
     internal static class HackTimeTileCyberPass
     {
         //缓存 RT，随尺寸变化重建
         private static RenderTarget2D _rt;
-        //RT 的最大边长上限，防止异常包围盒申请过大纹理（树木可能很高故放宽到 512）
+        //RT 最大边长，树木可达 512
         private const int MaxRtSize = 512;
-        //包围盒外扩像素，给描边辉光留空间
+        //包围盒外扩，描边留空
         private const int EdgePadding = 6;
 
-        /// <summary>
-        /// 在 EndEntityDraw 内调用，入口处 SpriteBatch 未处于 Begin 状态
-        /// </summary>
+        /// <summary>EndEntityDraw 入口，SpriteBatch 未 Begin</summary>
         public static void Draw(SpriteBatch sb, GraphicsDevice gd) {
             float effectStr = HackTime.Intensity;
             if (effectStr < 0.02f) return;
@@ -35,7 +27,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Effect shader = HackTimeAssets.HackTimeNPCHighlight;
             if (shader == null) return;
 
-            ////优先绘制悬停（冷青），再绘制选中（红色），选中覆盖悬停
+            //悬停冷青，选中红色覆盖
             DrawPassForHovered(sb, gd, shader, effectStr);
             DrawPassForSelected(sb, gd, shader, effectStr);
         }
@@ -51,7 +43,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
             Rectangle bounds = TileScannable.GetTileWorldBounds(hx, hy);
 
-            //悬停物块若与选中物块为同一物体则跳过，避免重复描边
+            //悬停与选中同一物体则跳过
             if (HackTime.CurrentScanTarget is TileScannable sel) {
                 Vector2 c = sel.WorldCenter;
                 if (c.X >= bounds.X && c.X <= bounds.Right
@@ -72,14 +64,7 @@ namespace CalamityOverhaul.Content.HackTimes
             RenderAndComposite(sb, gd, shader, bounds, effectStr, isSelected: true);
         }
 
-        /// <summary>
-        /// 将包围盒范围内所有 HasTile 的物块重绘到 RT，套用着色器合成回屏幕
-        /// <br/>采用「备份-切RT-还原」swap 模式：
-        /// 在某些驱动/MonoGame 版本下，<see cref="EndEntityDraw"/> 阶段中途切换 RT 会导致
-        /// <see cref="Main.screenTarget"/> 内容丢失（即使声明 PreserveContents）；
-        /// 因此先把当前屏幕画面复制到 InnoVault 提供的全屏 ScreenSwap，做完小 RT 重绘后
-        /// 再把备份内容画回 screenTarget，以彻底规避 RT 切换丢内容问题
-        /// </summary>
+        /// <summary>物块重绘到小 RT，ScreenSwap 备份防丢屏</summary>
         private static void RenderAndComposite(SpriteBatch sb, GraphicsDevice gd, Effect shader,
             Rectangle worldBounds, float effectStr, bool isSelected) {
 
@@ -88,7 +73,7 @@ namespace CalamityOverhaul.Content.HackTimes
             int rtH = Math.Min(worldBounds.Height + EdgePadding * 2, MaxRtSize);
             if (rtW <= 0 || rtH <= 0) return;
 
-            //低级光照/低水波会改变原版屏幕 RT 链路，此时切换 screenTarget 可能清空 UI 或主画面
+            //低光照时走不切换 RT 回退
             if (RenderQualitySafety.NeedsScreenTargetFallback()) {
                 DrawDirectCompositeFallback(sb, worldBounds, effectStr, isSelected);
                 return;
@@ -100,16 +85,13 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
 
-            //水波质量从关/低切到中/高的过渡帧，EndEntityDraw 时机的活动 RT 也可能不是 screenTarget。
-            //这种情况下若强行执行下面的"切 RT - 重画"流程，最后那次 SetRenderTarget(Main.screenTarget); Clear
-            //会把本该写到 backbuffer 的画面与 UI 顶替为透明，表现就是整个画面"消失"。
-            //检测到这种情况立即走不触碰屏幕 RT 的回退路径
+            //活动 RT 非 screenTarget 时回退，防全屏消失
             if (!RenderQualitySafety.IsScreenTargetActive(gd)) {
                 DrawDirectCompositeFallback(sb, worldBounds, effectStr, isSelected);
                 return;
             }
 
-            //InnoVault 维护的全屏 swap RT，作为屏幕画面的备份载体
+            //ScreenSwap 全屏备份
             RenderTarget2D screenSwap = RenderHandleLoader.ScreenSwap;
             if (screenSwap == null || screenSwap.IsDisposed) {
                 DrawDirectCompositeFallback(sb, worldBounds, effectStr, isSelected);
@@ -119,19 +101,18 @@ namespace CalamityOverhaul.Content.HackTimes
             EnsureRT(gd, rtW, rtH);
             if (_rt == null || _rt.IsDisposed) return;
 
-            //保存进入时的 RT 绑定，无论是正常返回还是异常都要还原
+            //保存进入时 RT 绑定
             RenderTargetBinding[] previousTargets = gd.GetRenderTargets();
 
             try {
-                //阶段1：把当前 screenTarget 内容备份到 screenSwap
-                //（必须先于 _rt 切换，因为切到 _rt 之后再切回 screenTarget 内容就丢了）
+                //备份 screenTarget 到 screenSwap
                 gd.SetRenderTarget(screenSwap);
                 gd.Clear(Color.Transparent);
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
                 sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
                 sb.End();
 
-                //阶段2：按原始帧把物块重绘到小 RT，透明像素自然形成轮廓掩码
+                //物块重绘到小 RT
                 gd.SetRenderTarget(_rt);
                 gd.Clear(Color.Transparent);
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
@@ -139,15 +120,14 @@ namespace CalamityOverhaul.Content.HackTimes
                 RedrawTileRegion(sb, worldBounds);
                 sb.End();
 
-                //阶段3：切回 screenTarget，先清空再用备份还原原始画面
-                //这一步是修复黑屏的关键：切换 RT 后必须显式还原，不能依赖 PreserveContents
+                //还原 screenTarget 画面
                 gd.SetRenderTarget(Main.screenTarget);
                 gd.Clear(Color.Transparent);
                 sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
                 sb.Draw(screenSwap, Vector2.Zero, Color.White);
                 sb.End();
 
-                //阶段4：套着色器把小 RT 加法叠加到屏幕上，呈现赛博高亮效果
+                //着色器加法叠加小 RT
                 shader.Parameters["texelSize"]?.SetValue(new Vector2(1f / rtW, 1f / rtH));
                 shader.Parameters["intensity"]?.SetValue(effectStr);
                 shader.Parameters["isSelected"]?.SetValue(isSelected ? 1f : 0f);
@@ -164,21 +144,19 @@ namespace CalamityOverhaul.Content.HackTimes
                 sb.Draw(_rt, screenPos, Color.White);
                 sb.End();
 
-                //还原进入时的 RT 绑定，避免对后续渲染阶段产生副作用
+                //还原 RT 绑定
                 if (previousTargets != null && previousTargets.Length > 0
                     && previousTargets[0].RenderTarget != Main.screenTarget) {
                     gd.SetRenderTargets(previousTargets);
                 }
             } catch {
-                //出错时确保切回主屏 RT，避免后续绘制写到错误目标
+                //异常时切回主屏 RT
                 gd.SetRenderTarget(Main.screenTarget);
                 throw;
             }
         }
 
-        /// <summary>
-        /// 低性能模式备用路径：不触碰屏幕 RT，只用多次偏移绘制模拟轮廓辉光。
-        /// </summary>
+        /// <summary>低性能回退，偏移绘制模拟辉光</summary>
         private static void DrawDirectCompositeFallback(SpriteBatch sb, Rectangle worldBounds,
             float effectStr, bool isSelected) {
 
@@ -205,10 +183,7 @@ namespace CalamityOverhaul.Content.HackTimes
             sb.End();
         }
 
-        /// <summary>
-        /// 按原始 FrameX/FrameY 将包围盒范围内的物块重绘到当前 RT
-        /// <br/>RT 左上角对应包围盒左上角再偏移 EdgePadding 像素
-        /// </summary>
+        /// <summary>按 Frame 重绘物块到 RT</summary>
         private static void RedrawTileRegion(SpriteBatch sb, Rectangle worldBounds)
             => RedrawTileRegion(sb, worldBounds, new Vector2(EdgePadding, EdgePadding), Color.White);
 
@@ -231,24 +206,24 @@ namespace CalamityOverhaul.Content.HackTimes
                     Texture2D tex = TextureAssets.Tile[type]?.Value;
                     if (tex == null) continue;
 
-                    //树木 trunk 使用 20x20 源帧，且需要 -2 像素偏移对齐
+                    //树木 trunk 20x20 帧，-2 对齐
                     Vector2 dst = destinationOrigin + new Vector2(x * 16 - worldBounds.X, y * 16 - worldBounds.Y);
                     if (TileScannable.IsTreeTile(type)) {
                         Rectangle treeSrc = new(tile.TileFrameX, tile.TileFrameY, 20, 20);
                         Vector2 treeDst = dst + new Vector2(-2f, -2f);
                         sb.Draw(tex, treeDst, treeSrc, color);
-                        //在 trunk 顶部绘制树冠，在侧分枝位置绘制分枝
+                        //树冠与分枝
                         TryDrawTreeExtras(sb, type, x, y, dst, color);
                         continue;
                     }
 
-                    //计算源矩形尺寸，frameImportant 走 TileObjectData，其他按 16x16
+                    //frameImportant 走 TileObjectData
                     int srcW = 16;
                     int srcH = 16;
                     TileObjectData data = TileObjectData.GetTileData(type, 0);
                     if (data != null) {
                         srcW = data.CoordinateWidth;
-                        //在多格物件内定位当前格所属的行，以取正确的高度
+                        //多格物件定位子行高度
                         int subY = FindSubRow(data, tile.TileFrameY);
                         srcH = data.CoordinateHeights[subY];
                     }
@@ -259,12 +234,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 为树 trunk 在 RT 内补绘树冠和分枝
-        /// <br/>vanilla 编码：frameX=22 左分枝节点/树冠节点, frameX=44 右分枝节点
-        /// <br/>frameY>=198 且 frameX=22 时表示该 trunk 上方应绘制树冠
-        /// <br/>使用 TextureAssets.TreeTop[0] / TreeBranch[0]（Forest 风格），不完美但足够产生轮廓掩码
-        /// </summary>
+        /// <summary>树 trunk 补绘树冠分枝</summary>
         private static void TryDrawTreeExtras(SpriteBatch sb, int type, int tileX, int tileY,
             Vector2 tileDst, Color color) {
 
@@ -272,11 +242,11 @@ namespace CalamityOverhaul.Content.HackTimes
             int fx = tile.TileFrameX;
             int fy = tile.TileFrameY;
 
-            //树顶标记：该 trunk tile 记录了树顶，在其上方 64px 处绘制树冠
+            //frameX=22 且 frameY>=198 为树顶
             if (fx == 22 && fy >= 198) {
                 Texture2D topTex = SafeGetTexture(TextureAssets.TreeTop, type);
                 if (topTex != null) {
-                    //80x80 树冠，居中对齐 trunk（-32 像素），向上 -64 像素
+                    //80x80 树冠，-32 居中，上偏 -64
                     Rectangle topSrc = new(0, 0, 80, 80);
                     Vector2 topDst = tileDst + new Vector2(-32f, -64f);
                     sb.Draw(topTex, topDst, topSrc, color);
@@ -305,21 +275,15 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 从 TextureAssets 数组安全取纹理，index 0 作为默认样式
-        /// </summary>
+        /// <summary>安全取纹理数组 index 0</summary>
         private static Texture2D SafeGetTexture(ReLogic.Content.Asset<Texture2D>[] arr, int type) {
             if (arr == null || arr.Length == 0) return null;
-            //区分 Palm / 原版 Trees / 其他 vanity tree 不同索引规则过于繁琐
-            //统一用 index 0，足以形成轮廓掩码让着色器描边
+            //统一 index 0 形成轮廓掩码
             var asset = arr[0];
             return asset?.Value;
         }
 
-        /// <summary>
-        /// 根据 TileFrameY 反推当前格在多格物件中的子行索引
-        /// <br/>多格物件每行高度可能不同，需要逐行累加判断
-        /// </summary>
+        /// <summary>TileFrameY 反推多格子行索引</summary>
         private static int FindSubRow(TileObjectData data, int frameY) {
             int rows = data.Height;
             if (rows <= 1) return 0;
@@ -341,8 +305,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private static void EnsureRT(GraphicsDevice gd, int w, int h) {
             if (_rt != null && !_rt.IsDisposed && _rt.Width == w && _rt.Height == h) return;
             _rt?.Dispose();
-            //使用 PreserveContents（与 SandevistanGhostActor 等已稳定运行的 RT 通道保持一致），
-            //避免某些驱动下 DiscardContents 在切换回主 RT 时引起的画面被清空问题
+            //PreserveContents 防切回主 RT 清空
             _rt = new RenderTarget2D(gd, w, h, false, SurfaceFormat.Color,
                 DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }

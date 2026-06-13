@@ -12,10 +12,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
     /// <summary>
-    /// Victor 的义体诊所界面：在 <see cref="CyberwareUI"/> 的人体 + 槽位视图基础上，
-    /// 把"按部位查看/更换义体"与"按部位购买义体"整合到同一面板。
-    /// <br/>复用 <see cref="CyberBodyRenderer"/> / <see cref="CyberSlotRenderer"/> / <see cref="CyberPanelRenderer"/> 等渲染组件，
-    /// 侧栏换为 <see cref="VictorClinicPanel"/>（已安装 / 已拥有 / 在售）
+    /// Victor 义体诊所，CyberwareUI 人体槽位 + VictorClinicPanel 侧栏
+    /// <br/>槽位内查看/更换/购买三段合一
     /// </summary>
     internal class VictorClinicUI : UIHandle, ILocalizedModType
     {
@@ -27,10 +25,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         public override SoundStyle? OpenSound => SoundID.MenuOpen;
         public override SoundStyle? CloseSound => silentClose ? null : SoundID.MenuClose;
 
-        //切入手术过场时静默关闭，避免关闭音与过场音叠加
+        //过场切入时静默关
         private bool silentClose;
 
-        /// <summary>静默关闭（不播放关闭音），用于切入手术过场</summary>
+        /// <summary>静默关，过场不播 CloseSound</summary>
         public void CloseSilent() {
             silentClose = true;
             Close();
@@ -52,7 +50,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             StatusText = this.GetLocalization(nameof(StatusText), () => "RIPPERDOC ONLINE - SELECT A LIMB");
             GuideText = this.GetLocalization(nameof(GuideText), () => "Select a body part to view, swap and buy its cyberware.");
 
-            //槽位名称 / 选中 / 空 复用义体管理界面的既有翻译，避免重复维护
+            //槽位文案复用 CyberwareUI 翻译
             slotSelectedText = Language.GetText("Mods.CalamityOverhaul.UI.CyberwareUI.SlotSelectedText");
             slotEmptyText = Language.GetText("Mods.CalamityOverhaul.UI.CyberwareUI.SlotEmptyText");
             slotLabels = [
@@ -99,14 +97,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         #endregion
 
         protected override void OnClose() {
-            //关闭时收起侧栏选择，避免下次打开残留
+            //关时清 SelectedSlot 防残留
             slotRenderer.SelectedSlot = -1;
             clinicPanel.Unbind();
         }
 
-        /// <summary>
-        /// 打开诊所并直接选中指定槽位（手术完成后回到同一部位，便于连续操作）
-        /// </summary>
+        /// <summary>打开并选中 slot，手术后连续操作</summary>
         public void OpenAtSlot(int slot) {
             Open();
             if (slot >= 0 && slot < CyberwarePlayer.SlotCount) {
@@ -139,7 +135,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             bodyRenderer.Update();
             panelRenderer.Update();
 
-            //仅在完全打开时响应槽位点击，淡出阶段只推进动画
+            //仅 IsOpen 时响应槽位点击
             if (IsOpen && slotRenderer.UpdateInteraction(panelRect)) {
                 panelRenderer.TriggerGlitch(0.3f);
             }
@@ -154,7 +150,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
 
             if (!IsOpen) {
-                return;//淡出阶段不再处理关闭按钮 / 拦截输入
+                return;//淡出阶段跳过关闭/输入
             }
 
             Rectangle closeBtn = CyberPanelRenderer.GetCloseButtonRect(panelRect);
@@ -178,13 +174,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
             RefreshSlotLabelCache();
 
-            //主面板着色器底层（含中央人体光场）
+            //CyberwarePanel 底层 + 人体光场
             Vector2 bodyLocalCenter = bodyOrigin - new Vector2(panelRect.X, panelRect.Y);
             float bodyR = CyberwareTheme.BodyHaloRadius * MathHelper.Clamp(currentContentAlpha, 0f, 1f);
             CyberPanelRenderer.DrawShaderBackground(spriteBatch, currentAlpha, panelRect, bodyLocalCenter, bodyR, mode: 0);
             CyberPanelRenderer.DrawFrameDecor(spriteBatch, currentAlpha, panelRect, GlobalTimer);
 
-            //裁剪内容到面板内部
+            //Scissor 裁面板内
             RasterizerState rasterizer = new() { ScissorTestEnable = true };
             spriteBatch.End();
 
@@ -225,16 +221,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 CyberwarePlayer cyberPlayer = player.GetModPlayer<CyberwarePlayer>();
                 clinicPanel.Draw(spriteBatch, currentContentAlpha, cyberPlayer);
 
-                //未选择部位时的明确引导
+                //未选槽位绘引导卡
                 if (IsOpen && slotRenderer.SelectedSlot < 0) {
                     DrawSelectionGuide(spriteBatch, currentContentAlpha);
                 }
             }
         }
 
-        /// <summary>
-        /// 未选择槽位时，在面板右侧绘制一张全息引导卡，并用脉冲箭头指回人体槽位
-        /// </summary>
+        /// <summary>未选槽位时右侧全息引导卡 + 脉冲箭头</summary>
         private void DrawSelectionGuide(SpriteBatch sb, float alpha) {
             float pulse = 0.6f + 0.4f * MathF.Sin(GlobalTimer * 3f);
             const int w = 304;
@@ -242,12 +236,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             Rectangle card = new(panelRect.Right + 12, (int)(panelCenter.Y - h / 2f), w, h);
             VictorUIStyle.DrawHoloFrame(sb, card, CyberwareTheme.AccentCyan, alpha * 0.92f, GlobalTimer);
 
-            //指向人体槽位的脉冲箭头
+            //脉冲箭头指回人体槽位
             float ax = card.X - 10 - pulse * 8f;
             Utils.DrawBorderString(sb, "◄", new Vector2(ax, card.Center.Y - 14),
                 CyberwareTheme.AccentCyan * (alpha * pulse), 0.7f * CyberwareTheme.FontScale);
 
-            //标题
             string head = TitleText.Value;
             float hs = 0.5f * CyberwareTheme.FontScale;
             Vector2 hsz = FontAssets.MouseText.Value.MeasureString(head) * hs;
@@ -255,7 +248,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 CyberwareTheme.AccentCyan * alpha, hs);
             VictorUIStyle.DrawHDivider(sb, card.X + 16, card.Right - 16, card.Y + 38, CyberwareTheme.AccentCyan * (alpha * 0.5f));
 
-            //引导正文
             float gs = 0.46f * CyberwareTheme.FontScale;
             string[] lines = CWRUtils.WrapTextArray(GuideText.Value, FontAssets.MouseText.Value, w - 32, 4, out _);
             float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * gs + 6f;

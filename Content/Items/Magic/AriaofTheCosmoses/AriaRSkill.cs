@@ -11,16 +11,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
-    /// 寰宇咏叹调R技能，伽马射线爆
-    /// 向鼠标方向释放多道伽马射线束，造成大范围毁灭性伤害
-    /// </summary>
+    /// R技能伽马射线爆 鼠标方向多道射线束
     internal class AriaRSkill : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private const int ChargeTime = 60; //1秒蓄力
-        private const int FireTime = 90; //1.5秒持续时间
+        private const int ChargeTime = 60; //1秒
+        private const int FireTime = 90; //1.5秒
         private const int BeamCount = 9; //射线数量
 
         private List<int> beamIndices = new();
@@ -272,9 +269,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
     }
 
-    /// <summary>
-    /// R技能的伽马射线束
-    /// </summary>
+    /// R技能伽马射线束
     internal class AriaRSkillBeam : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
@@ -26,12 +26,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
     public class ChoiceHoverEventArgs : EventArgs
     {
         /// <summary>
-        /// 当前悬停的选项索引（-1表示无悬停）
+        /// 悬停索引，-1 为无
         /// </summary>
         public int CurrentIndex { get; }
 
         /// <summary>
-        /// 之前悬停的选项索引（-1表示无悬停）
+        /// 前次悬停索引，-1 为无
         /// </summary>
         public int PreviousIndex { get; }
 

@@ -50,181 +50,93 @@ namespace CalamityOverhaul.Content
         }
 
         #region Data
-        /// <summary>
-        /// 是否拥有大修宝典
-        /// </summary>
+        /// <summary>是否拥有大修宝典</summary>
         public bool HasOverhaulTheBibleBook;
-        /// <summary>
-        /// 摄像头位置额外矫正值
-        /// </summary>
+        /// <summary>摄像头位置额外矫正值</summary>
         public Vector2 OffsetScreenPos;
-        /// <summary>
-        /// 设置屏幕振动
-        /// </summary>
+        /// <summary>屏幕振动强度</summary>
         public float ScreenShakeValue;
-        /// <summary>
-        /// 火力发电活跃
-        /// </summary>
+        /// <summary>火力发电活跃帧数</summary>
         public int ThermalGenerationActiveTime;
-        /// <summary>
-        /// 是否开启超级合成台
-        /// </summary>
+        /// <summary>是否开启超级合成台</summary>
         public bool SupertableUIStartBool;
-        /// <summary>
-        /// 玩家是否坐在大排档塑料椅子之上
-        /// </summary>
+        /// <summary>是否坐在大排档塑料椅</summary>
         public bool InFoodStallChair;
-        /// <summary>
-        /// 玩家是否手持鬼妖
-        /// </summary>
+        /// <summary>是否手持鬼妖</summary>
         public bool HeldMurasamaBool;
-        /// <summary>
-        /// 玩家是否正在进行终结技
-        /// </summary>
+        /// <summary>是否正在进行终结技</summary>
         public bool EndSkillEffectStartBool;
-        /// <summary>
-        /// 该属性用于判断鼠标是否处于接口状态，这个和<see cref="Player.mouseInterface"/>作用相同
-        /// </summary>
+        /// <summary>同 <see cref="Player.mouseInterface"/> 的 UI 鼠标占用</summary>
         public bool UIMouseInterface => Player.mouseInterface;
-        /// <summary>
-        /// 是否了解了风力
-        /// </summary>
+        /// <summary>是否了解风力</summary>
         public bool UnderstandWindGriven;
-        /// <summary>
-        /// 是否了解了风力MK2
-        /// </summary>
+        /// <summary>是否了解风力 MK2</summary>
         public bool UnderstandWindGrivenMK2;
-        /// <summary>
-        /// 是否使用了电动火箭
-        /// </summary>
+        /// <summary>是否使用电动火箭</summary>
         public bool RideElectricMinRocket;
-        /// <summary>
-        /// 卸乘电动火箭的恢复周期
-        /// </summary>
+        /// <summary>卸乘电动火箭恢复周期(帧)</summary>
         public int RideElectricMinRocketRecoverStateTime;
-        /// <summary>
-        /// 手持状态
-        /// </summary>
+        /// <summary>手持状态</summary>
         public int HeldStyle;
-        /// <summary>
-        /// 升龙技充能
-        /// </summary>
+        /// <summary>升龙技充能</summary>
         public int RisingDragonCharged;
-        /// <summary>
-        /// Tramg归属
-        /// </summary>
+        /// <summary>Tram 归属</summary>
         public int TramTPContrType = -1;
-        /// <summary>
-        /// Compressor归属
-        /// </summary>
+        /// <summary>Compressor 归属</summary>
         public int CompressorContrType = -1;
-        /// <summary>
-        /// 欧米茄指示箭头计数器
-        /// </summary>
+        /// <summary>欧米茄指示箭头计数器</summary>
         public int InspectOmigaTime;
-        /// <summary>
-        /// 是否站在平台上，如果该值大于0，则会出现无重力的效果
-        /// </summary>
+        /// <summary>站平台帧数，&gt;0 时无重力</summary>
         public int ReceivingPlatformTime;
-        /// <summary>
-        /// 如果该时间大于0，则玩家不能切换武器，这个值每帧会自动减1
-        /// </summary>
+        /// <summary>禁切武器剩余帧数，每帧减一</summary>
         public int DontSwitchWeaponTime;
-        /// <summary>
-        /// 不能拥有暗影克隆体的时间，这个值每帧会自动减1
-        /// </summary>
+        /// <summary>禁暗影克隆体剩余帧数，每帧减一</summary>
         public int DontHasSemberDarkMasterCloneTime;
-        /// <summary>
-        /// 一个实时的绘制矫正值
-        /// </summary>
+        /// <summary>实时绘制位置矫正</summary>
         internal Vector2 SpecialDrawPositionOffset;
-        /// <summary>
-        /// 玩家位置变化量
-        /// </summary>
+        /// <summary>玩家位置变化量</summary>
         public Vector2 PlayerPositionChange;
-        /// <summary>
-        /// 上一帧的玩家位置变化量
-        /// </summary>
+        /// <summary>上一帧玩家位置变化量</summary>
         public Vector2 oldPlayerPositionChange;
-        /// <summary>
-        /// 是否有地狱炎爆debuff
-        /// </summary>
+        /// <summary>是否有地狱炎爆 debuff</summary>
         public bool HellfireExplosion;
-        /// <summary>
-        /// 是否有灵魂火debuff
-        /// </summary>
+        /// <summary>是否有灵魂火 debuff</summary>
         public bool SoulfireExplosion;
-        /// <summary>
-        /// 毁灭者之主
-        /// </summary>
+        /// <summary>毁灭者之主</summary>
         public bool DestroyerOwner;
-        /// <summary>
-        /// 是否穿戴英雄无冕
-        /// </summary>
+        /// <summary>是否穿戴英雄无冕</summary>
         public bool IsUnsunghero;
-        /// <summary>
-        /// 是否穿戴正义显现
-        /// </summary>
+        /// <summary>是否穿戴正义显现</summary>
         public bool IsJusticeUnveiled;
-        /// <summary>
-        /// 正义显现的触发机会次数
-        /// </summary>
+        /// <summary>正义显现触发机会次数</summary>
         public int JusticeUnveiledCharges;
-        /// <summary>
-        /// 正义显现的触发冷却
-        /// </summary>
+        /// <summary>正义显现触发冷却(帧)</summary>
         public int JusticeUnveiledCooldown;
-        /// <summary>
-        /// 存储待应用的冲刺速度向量，当其不为null时将在下一个帧应用
-        /// </summary>
+        /// <summary>待下帧应用的冲刺速度，非 null 时生效</summary>
         public Vector2? PendingDashVelocity { get; set; } = null;
-        /// <summary>
-        /// 翻滚时的旋转速度倍率
-        /// </summary>
+        /// <summary>翻滚旋转速度倍率</summary>
         public float PendingDashRotSpeedMode = 0.015f;
-        /// <summary>
-        /// 用于记录减速过程的计数器，表示减速剩余的帧数
-        /// </summary>
+        /// <summary>减速剩余帧数</summary>
         public float DecelerationCounter { get; set; }
-        /// <summary>
-        /// 指示玩家在冲刺过程中是否进行旋转
-        /// </summary>
+        /// <summary>冲刺中是否旋转</summary>
         public bool IsRotatingDuringDash { get; set; }
-        /// <summary>
-        /// 冲刺时的旋转方向，1为顺时针，-1为逆时针
-        /// </summary>
+        /// <summary>冲刺旋转方向，1 顺时针 -1 逆时针</summary>
         public float RotationDirection { get; set; } = 1f;
-        /// <summary>
-        /// 冲刺冷却计数器，用于记录冷却剩余的帧数
-        /// </summary>
+        /// <summary>冲刺冷却剩余帧数</summary>
         public float DashCooldownCounter { get; set; }
-        /// <summary>
-        /// 记录旋转复位过程的计数器，表示复位剩余的帧数
-        /// </summary>
+        /// <summary>旋转复位剩余帧数</summary>
         public float RotationResetCounter { get; set; }
-        /// <summary>
-        /// 旋转复位过程的持续时间（以帧为单位）
-        /// </summary>
+        /// <summary>旋转复位持续帧数</summary>
         public float RotationResetDuration { get; set; } = 15;
-        /// <summary>
-        /// 自定义冷却计数器，用于记录额外冷却的剩余帧数
-        /// </summary>
+        /// <summary>自定义冷却剩余帧数</summary>
         public int CustomCooldownCounter;
-        /// <summary>
-        /// 掠袭者系列：冲刺结束后的强化射击是否就绪
-        /// </summary>
+        /// <summary>掠袭者：冲刺后强化射击就绪</summary>
         public bool RaiderGunDashReady;
-        /// <summary>
-        /// 掠袭者系列共享的冲刺冷却（帧），每帧减一直至归零
-        /// </summary>
+        /// <summary>掠袭者共享冲刺冷却(帧)，每帧减一</summary>
         public int RaiderGunDashCooldown;
-        /// <summary>
-        /// 大于0时不能使用物品，该值每帧减一直至归零
-        /// </summary>
+        /// <summary>禁使用物品剩余帧数，每帧减一</summary>
         public int DontUseItemTime;
-        /// <summary>
-        /// 抬棺人下一发弩箭的伤害倍率，默认为1
-        /// </summary>
+        /// <summary>抬棺人下一发弩箭伤害倍率，默认 1</summary>
         public float PallbearerNextArrowDamageMult = 1;
 
         [Obsolete("已经过时，目前保留仅用作外部联动兼容")]
@@ -284,7 +196,7 @@ namespace CalamityOverhaul.Content
             ReceivingPlatformTime = 0;
             DontUseItemTime = 0;
             ThermalGenerationActiveTime = 0;
-            PallbearerNextArrowDamageMult = 1; //初始化
+            PallbearerNextArrowDamageMult = 1;
             Reset();
         }
 
@@ -330,7 +242,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostUpdateMiscEffects() {
-            if (Main.zenithWorld) {//在天顶世界中，怨念编织者会有特殊的粒子效果
+            if (Main.zenithWorld) {
                 if (Player.GetItem().type == ModContent.ItemType<WeaverGrievances>()) {
                     WeaverGrievances.SpwanInOwnerDust(Player);
                 }
@@ -339,7 +251,7 @@ namespace CalamityOverhaul.Content
 
         private void Information() {
             if (SubWorldRef.AnyActiveSubWorld()) {
-                return;//如果玩家处于子世界中，则不显示兼容性提示
+                return; // 子世界不弹兼容性提示
             }
 
             if (!VaultHook.CheckHookStatus(out int num)) {
@@ -357,13 +269,12 @@ namespace CalamityOverhaul.Content
         public override void OnEnterWorld() {
             Information();
 
-            //进入世界时把 RAM 重置为满（基础值已在 LoadData 中读取）
+            // 进世界 RAM 回满(LoadData 已读基础值)
 
             SpearOfLonginus.ZenithWorldAsset();
 
             LegendData.ResetInventory(Player);
 
-            //初始化位置信息
             oldPlayerPositionChange = Player.position;
             PlayerPositionChange = Vector2.Zero;
         }
@@ -476,9 +387,9 @@ namespace CalamityOverhaul.Content
             SpriteEffects spriteEffects = Player.direction == player.gravDir ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
-            SpecialDrawPositionOffset.Y -= 2 * player.gravDir;//乘以一个重力矫正，这是一个无视偏转的值，所以需要考虑重力方向
+            SpecialDrawPositionOffset.Y -= 2 * player.gravDir;
 
-            if (RideElectricMinRocket) {//添加小火箭相关的绘制
+            if (RideElectricMinRocket) {
                 drawPos.X = (int)(((int)player.position.X) - Main.screenPosition.X + (player.width / 2) - (9 * player.direction)) - 4f * player.direction + offsetPos.X;
                 drawPos.Y = (int)(((int)player.position.Y) - Main.screenPosition.Y + (player.height / 2) + 2f * player.gravDir - 8f * player.gravDir) + offsetPos.Y * player.gravDir;
                 drawPos.Y += SpecialDrawPositionOffset.Y;
@@ -544,10 +455,7 @@ namespace CalamityOverhaul.Content
                 ScreenShakeValue = MathHelper.Clamp(ScreenShakeValue - 0.185f, 0f, 20f);
             }
         }
-        /// <summary>
-        /// 设置屏幕震荡模长
-        /// </summary>
-        /// <param name="mode"></param>
+        /// <summary>设置屏幕震动强度</summary>
         public void GetScreenShake(float mode) {
             if (!CWRServerConfig.Instance.ScreenVibration) {
                 return;
@@ -583,7 +491,7 @@ namespace CalamityOverhaul.Content
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
-                //玩家死亡时若正在骑乘则立即下马，骑手端的下马会自动广播
+                // 死亡时立即下马，骑手端自动广播
                 crabulonPlayer.MountCrabulon?.CloseMount();
                 crabulonPlayer.IsMount = false;
                 ModifyCrabulon.mountPlayerHeldProj = -1;
@@ -593,18 +501,12 @@ namespace CalamityOverhaul.Content
             return true;
         }
 
-        /// <summary>
-        /// 尝试获取玩家当前持有的类型为 T 的投射物实例。
-        /// </summary>
-        /// <typeparam name="T">要获取的投射物实例的类型。</typeparam>
-        /// <param name="result">方法返回时，如果找到且成功获取到类型为 T 的投射物实例，则包含该实例；否则为 null。</param>
-        /// <returns>如果找到并成功获取到类型为 T 的投射物实例，则为 true；否则为 false。</returns>
+        /// <summary>取玩家当前隐藏的 held 弹幕实例</summary>
         internal bool TryGetHeldProjInds<T>(out T result) where T : class {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile p = Main.projectile[i];
-                //检查投射物是否处于激活状态，是否属于玩家所有，并且是否隐藏
                 if (!p.active || p.owner != Player.whoAmI || !p.hide) {
-                    continue; //如果当前投射物不符合条件，则跳过并检查下一个投射物
+                    continue;
                 }
                 if (p.ModProjectile as T != null) {
                     Player.heldProj = p.whoAmI;
@@ -617,9 +519,7 @@ namespace CalamityOverhaul.Content
             result = null;
             return false;
         }
-        /// <summary>
-        /// 玩家手持的武器弹幕当前是否处于手持展示状态
-        /// </summary>
+        /// <summary>手持武器弹幕是否处于展示态</summary>
         internal bool HeldWeaponInDisplay() {
             return TryGetHeldProjInds(out BaseHeldGun heldGun) && heldGun.OnHandheldDisplayBool;
         }

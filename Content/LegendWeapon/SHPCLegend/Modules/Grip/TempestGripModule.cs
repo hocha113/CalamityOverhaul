@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 风暴握把：每累计若干次命中触发一次"风暴爆发"，在最近一次命中处朝四周喷射多道电弧
-    /// 电弧由 <see cref="CyberDataArcProj"/> 渲染，伤害与视觉同时承担节奏感打击
-    /// </summary>
+    /// <summary>风暴握把：累计命中释多道 CyberDataArc 电弧</summary>
     internal sealed class TempestGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

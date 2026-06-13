@@ -5,17 +5,12 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 目标扫描信息面板渲染器
-    /// <br/>选中骇入目标后在右侧协议列表上方显示目标扫描分析数据
-    /// <br/>扫描进度条完成后，数据行逐行以打字机效果展开
-    /// <br/>CRT扫描线、色散抖动、角标括号等赛博科技感效果
-    /// </summary>
+    /// <summary>目标扫描信息面板渲染器</summary>
     internal class ScanInfoRenderer
     {
-        //上一帧的扫描目标引用，用于检测目标切换
+        //上一帧扫描目标
         private IScannable lastScanTarget;
-        //当前扫描目标的实际数据行数
+        //扫描目标数据行数
         private int currentDataRowCount;
         //扫描进度(0~1)
         private float scanProgress;
@@ -32,7 +27,7 @@ namespace CalamityOverhaul.Content.HackTimes
         //故障抖动强度
         private float glitchIntensity;
 
-        //===== 布局参数（可实时调整）=====
+        //布局参数
         public static float PanelWidth => 420f;
         public static float RowHeight => 22f;
         public static float HeaderHeight => 34f;
@@ -47,14 +42,14 @@ namespace CalamityOverhaul.Content.HackTimes
         public static float RowRevealInterval => 0.13f;
         //打字机速度(字符/帧)
         public static float TypewriterSpeed => 2.5f;
-        //固定数据行数（数组最大容量，绑定到数组长度，不能运行时修改）
+        //数据行数组容量
         private const int MaxDataRowCount = 10;
         //字体大小
         public static float FontHeader => 0.90f;
         public static float FontRow => 0.80f;
         public static float FontStatus => 0.80f;
         public static float FontNoise => 0.70f;
-        //面板纵向锚点偏移倍率（相对listTotalH），越大越偏下
+        //面板纵向锚点偏移倍率
         public static float PanelVerticalOffsetRatio => 0.12f;
 
         //缓存的扫描数据
@@ -103,7 +98,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     revealedRows = 0;
                     typewriterChar = 0f;
                     glitchIntensity = 1f;
-                    //通过IScannable接口构建扫描数据，不关心具体目标类型
+                    //IScannable 构建扫描数据
                     currentTarget?.BuildScanData(rowLabels, rowValues, rowColors);
                     statusText = HackTime.AnalysisComplete.Value;
                     statusColor = HackTheme.Accent;
@@ -149,13 +144,12 @@ namespace CalamityOverhaul.Content.HackTimes
             float alpha = HackTime.Intensity * flyInProgress;
             if (alpha < 0.01f) return;
 
-            //计算面板位置(协议列表下方，略微上靠避免下沉过低)
+            //面板位置
             int protocolCount = QuickHackDef.Count;
             float listTotalH = protocolCount * (78f + 5f) - 5f;
             float panelH = TopPad + HeaderHeight + SepHeight
                 + currentDataRowCount * RowHeight + SepHeight + StatusHeight + BottomPad;
             float baseX = Main.screenWidth / 2 - PanelWidth / 2;
-            //使用屏幕中线 + 固定偏移作为锚点，让分析框位于下半屏但不贴底
             float desiredTop = Main.screenHeight * 0.5f + listTotalH * PanelVerticalOffsetRatio;
             float panelTop = Math.Min(desiredTop, Main.screenHeight - panelH - 6f);
 
@@ -208,7 +202,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float curY = panelTop + TopPad;
             float textX = baseX + 14f;
 
-            //===== 标题 =====
+            //标题
             string header = "// SCAN ANALYSIS";
             int headerChars = scanProgress < 1f
                 ? (int)(header.Length * Math.Min(scanProgress * 2.5f, 1f))
@@ -227,11 +221,11 @@ namespace CalamityOverhaul.Content.HackTimes
 
             curY += HeaderHeight;
 
-            //===== 分隔线 =====
+            //分隔线
             DrawDashedLine(sb, px, baseX + 10, curY, PanelWidth - 20, alpha);
             curY += SepHeight;
 
-            //===== 扫描阶段 =====
+            //扫描阶段
             if (scanProgress < 1f) {
                 DrawScanPhase(sb, px, baseX, curY, alpha);
                 DrawScanLineOverlay(sb, px, panelRect, alpha);
@@ -239,14 +233,14 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
 
-            //===== 数据行 =====
+            //数据行
             for (int i = 0; i < currentDataRowCount; i++) {
                 if (i >= revealedRows) break;
                 DrawDataRow(sb, px, textX, curY, i, alpha);
                 curY += RowHeight;
             }
 
-            //===== 底部分隔与状态 =====
+            //底部分隔与状态
             if (revealedRows >= currentDataRowCount) {
                 DrawDashedLine(sb, px, baseX + 10, curY, PanelWidth - 20, alpha);
                 curY += SepHeight;
@@ -266,7 +260,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 内部绘制
 
-        //扫描阶段：进度条+状态文字+滚动数据噪声
+        //扫描阶段 UI
         private void DrawScanPhase(SpriteBatch sb, Texture2D px, float baseX, float curY, float alpha) {
             float barX = baseX + 14;
             float barW = PanelWidth - 28;
@@ -301,7 +295,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Utils.DrawBorderString(sb, scanText, new Vector2(baseX + 14, curY),
                 HackTheme.Uploading * (alpha * pulse), 0.60f);
 
-            //滚动数据噪声(模拟数据流)
+            //滚动数据噪声
             curY += 22f;
             string noise = $"0x{(int)(timer * 200) % 0xFFFFFF:X6}  "
                 + $"BUF:{(int)(timer * 80) % 999:D3}  "
@@ -310,7 +304,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 HackTheme.TextDim * (alpha * 0.3f), FontNoise);
         }
 
-        //单行数据渲染：标签+数值+打字机+色散+光标
+        //单行数据渲染
         private void DrawDataRow(SpriteBatch sb, Texture2D px, float textX, float curY, int i, float alpha) {
             bool isCurrent = i == revealedRows - 1;
             string label = rowLabels[i];

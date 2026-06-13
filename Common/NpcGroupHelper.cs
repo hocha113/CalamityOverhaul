@@ -5,18 +5,14 @@ using Terraria;
 namespace CalamityOverhaul.Common
 {
     /// <summary>
-    /// NPC 群组解析工具
-    /// <br/>用于把"多实体共享生命/同一 Boss 体"的一组 NPC 视为整体，比如蠕虫类 Boss 的头部体节尾巴
-    /// 月总核心和手部头部、毁灭者世界吞噬者这类既共享 <see cref="NPC.realLife"/>
-    /// 又通过预定义类型表关联的实体集合
-    /// <br/>该工具与具体玩法系统无关，可在骇客协议、技能 AOE、状态附加等任意场景下直接使用
+    /// 多实体 Boss 群组解析——共享 <see cref="NPC.realLife"/> 或体节类型表归一组
+    /// <br/>蠕虫头体尾、月总核心手、毁灭者/世界吞噬者等，骇客/AOE/状态附加均可直接调
     /// </summary>
     public static class NpcGroupHelper
     {
         /// <summary>
-        /// 获取一个 NPC 所属群组的"锚点"索引（通常是头部或主体）
-        /// <br/>当 <see cref="NPC.realLife"/> 指向一个有效活跃的 NPC 时返回该索引
-        /// 否则返回自身 <see cref="NPC.whoAmI"/>，单实体 NPC 自己就是锚点
+        /// 群组锚点索引（头/主体）
+        /// <br/><see cref="NPC.realLife"/> 有效活跃则返其索引，否则 <see cref="NPC.whoAmI"/>
         /// </summary>
         public static int GetAnchorIndex(NPC npc) {
             if (npc == null || !npc.active) {
@@ -30,8 +26,7 @@ namespace CalamityOverhaul.Common
         }
 
         /// <summary>
-        /// 判断两个 NPC 是否属于同一群组
-        /// <br/>判定条件：1) 共享同一 <see cref="GetAnchorIndex"/> 锚点 2) 类型同属预定义 Boss 体节列表
+        /// 两 NPC 是否同组——共享 <see cref="GetAnchorIndex"/> 锚点或同体节类型表
         /// </summary>
         public static bool IsSameGroup(NPC a, NPC b) {
             if (a == null || b == null || !a.active || !b.active) {
@@ -51,12 +46,11 @@ namespace CalamityOverhaul.Common
         }
 
         /// <summary>
-        /// 收集与 <paramref name="root"/> 同属一个群组的所有活跃 NPC，结果写入 <paramref name="output"/>
-        /// <br/>实现仅扫描一遍 <see cref="Main.npc"/>，不存在递归，规避无限调用
+        /// 单次扫描 <see cref="Main.npc"/> 收集与 <paramref name="root"/> 同组活跃 NPC 写入 <paramref name="output"/>，无递归
         /// </summary>
-        /// <param name="root">触发查询的成员，可以是头部也可以是任意体节</param>
-        /// <param name="output">外部传入的容器，用于复用避免分配</param>
-        /// <param name="clear">是否在写入前清空容器，默认 true</param>
+        /// <param name="root">任意体节或头部</param>
+        /// <param name="output">复用容器，避免分配</param>
+        /// <param name="clear">写入前清空，默认 true</param>
         public static void CollectGroup(NPC root, List<NPC> output, bool clear = true) {
             if (output == null) {
                 return;
@@ -82,9 +76,7 @@ namespace CalamityOverhaul.Common
             }
         }
 
-        /// <summary>
-        /// 收集群组成员的索引集合
-        /// </summary>
+        /// <summary>收集群组成员 whoAmI 索引</summary>
         public static void CollectGroupIndices(NPC root, List<int> output, bool clear = true) {
             if (output == null) {
                 return;
@@ -110,8 +102,7 @@ namespace CalamityOverhaul.Common
         }
 
         /// <summary>
-        /// 直接返回新分配的群组列表，便于一次性使用
-        /// 在热点路径上请使用 <see cref="CollectGroup(NPC, List{NPC}, bool)"/> 的复用版本
+        /// 新分配列表返回群组成员，热点路径用 <see cref="CollectGroup(NPC, List{NPC}, bool)"/> 复用版
         /// </summary>
         public static List<NPC> GetGroup(NPC root) {
             List<NPC> list = [];
@@ -119,9 +110,7 @@ namespace CalamityOverhaul.Common
             return list;
         }
 
-        /// <summary>
-        /// 对群组内所有成员执行操作，<paramref name="action"/> 不能为 null
-        /// </summary>
+        /// <summary>对群组内活跃成员执行 <paramref name="action"/>，不可 null</summary>
         public static void ForEachGroupMember(NPC root, Action<NPC> action) {
             if (action == null || root == null || !root.active) {
                 return;

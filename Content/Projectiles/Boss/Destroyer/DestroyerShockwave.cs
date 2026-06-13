@@ -11,8 +11,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
     /// <summary>
-    /// 音爆冲击环：无伤害纯演出弹幕，经 <see cref="Renders.WarpEffectRender"/> 管线产生
-    /// 扩张的屏幕扭曲环，叠加扩散圆环与火花。服务端生成以保证多人可见。
+    /// 音爆冲击环：无伤害纯演出，经 <see cref="Renders.WarpEffectRender"/> 扩张屏幕扭曲环
+    /// 叠加扩散圆环与火花，服务端生成保证多人可见
     /// <br/>ai[0]: 尺寸档位 0=冲刺音爆 1=俯冲音爆 2=终结冲击
     /// </summary>
     internal class DestroyerShockwave : ModProjectile, IWarpDrawable

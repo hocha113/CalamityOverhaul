@@ -8,39 +8,37 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
-    /// 嘉登数据终端风格对话框：不对称顶重点线 + 斜切头像框 + 虚线分割 + 四角十六进制读出<br/>
-    /// 区别于来电框（L角括号/均衡器/通话时长），定位为「研究终端数据输出」氛围
+    /// 嘉登终端风格对话框
     /// </summary>
     internal class DraedonDialogueBox : DialogueBoxBase
     {
         public static DraedonDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<DraedonDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        //风格参数
+        // 风格参数
         private const float FixedWidth = 540f;
         protected override float PanelWidth => FixedWidth;
 
-        // ── 动画计时器 ──────────────────────────────────────
-        private float circuitPulseTimer;   // 主脉冲（边框/发光呼吸）
-        private float hologramFlicker;     // 全息叠层闪烁
-        private float dataStreamTimer;     // 对角线纹理/虚线分割线流动
-        private float sweepTimer;          // 扫描线从上到下匀速扫描
-        private float glitchTimer;         // 偶发故障横条计数
+        // 动画计时
+        private float circuitPulseTimer;   // 边框/发光脉冲
+        private float hologramFlicker;     // 全息闪烁
+        private float dataStreamTimer;     // 虚线/纹理流动
+        private float sweepTimer;          // 扫描线
+        private float glitchTimer;         // 故障横条
 
-        // ── 四角十六进制读出 ─────────────────────────────
-        //   区别于来电框的信号格/均衡器，这里显示"数据地址"感的随机HEX
+        // 四角 HEX 读出
         private readonly string[] cornerHex = ["0x????", "0x????", "0x????", "0x????"];
         private int hexUpdateClock;
         private static readonly char[] HexChars = "0123456789ABCDEF".ToCharArray();
 
-        // ── 粒子（密度低于来电框，氛围沉稳） ───────────
+        // 粒子
         private readonly List<DraedonDataPRT> dataParticles = [];
         private int dataParticleSpawnTimer;
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int circuitNodeSpawnTimer;
         private const float TechSideMargin = 28f;
 
-        #region 样式配置重写
+        #region 样式配置
 
         protected override float PortraitScaleMin => 0.9f;
         protected override float TopNameOffsetBase => 12f;
@@ -60,14 +58,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         protected override Color GetSilhouetteColor(ContentDrawContext ctx)
             => new Color(20, 35, 55) * 0.85f;
 
-        // 文字行不做偏移——终端输出稳定整洁，区别于来电框扰码/抖动效果
+        // 文字行无偏移，终端输出稳定
         protected override Vector2 ApplyTextLineOffset(ContentDrawContext ctx, Vector2 basePosition, int lineIndex)
             => basePosition;
 
         protected override Color GetTextLineColor(ContentDrawContext ctx, int lineIndex)
             => Color.Lerp(new Color(205, 245, 255), Color.White, 0.2f) * ctx.ContentAlpha;
 
-        // 青绿色提示——异于来电框冰蓝，区分两者调色感
+        // 青绿提示色，区别于来电冰蓝
         protected override Color GetContinueHintColor(ContentDrawContext ctx, float blink)
             => new Color(0, 210, 185) * (blink * ctx.ContentAlpha);
 
@@ -76,7 +74,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 
         #endregion
 
-        #region 模板方法实现
+        #region 绘制实现
 
         /// <summary>
         /// 斜切头像框：右上角削角 + 底部左圆角电路迹线<br/>

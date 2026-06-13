@@ -17,9 +17,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    ///<summary>
-    ///抬棺人
-    ///</summary>
+    /// 抬棺人
     internal class Pallbearer : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
@@ -103,9 +101,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 抬棺人弩的手持弹幕，负责蓄力、装填和射击的动画逻辑
-    /// </summary>
+    /// 抬棺人弩手持弹幕：蓄力装填射击
     internal class PallbearerHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "PallbearerHeld";
@@ -117,7 +113,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Loading,        //装填箭矢
             Charged,        //蓄力完成(正在蓄力)
             Firing,         //发射
-            Throwing        //投掷弩本身 (未使用保留)
+            Throwing        //投掷弩(保留)
         }
 
         private CrossbowState State {
@@ -268,7 +264,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             bowstringPullback = 1f - fireProgress;
 
             if (StateTimer >= FireDuration) {
-                //直接回到 Idle，保证循环顺滑（移除随机投掷导致的不稳定节奏）
+                //回 Idle 保循环顺滑
                 State = CrossbowState.Idle;
                 StateTimer = 0;
                 ChargeLevel = 0f;
@@ -445,9 +441,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 抬棺人弩被投掷后的回旋镖形态，会旋转攻击敌人后返回玩家手中
-    /// </summary>
+    /// 投掷回旋镖形态，旋转攻击后回手
     internal class PallbearerBoomerang : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
@@ -455,7 +449,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private enum BoomerangState { Throwing, Returning }
         private BoomerangState State { get => (BoomerangState)Projectile.ai[0]; set { if (Projectile.ai[0] != (float)value) { Projectile.ai[0] = (float)value; Projectile.netUpdate = true; } } }
         private ref float Time => ref Projectile.ai[1];
-        private ref float ReturnProgress => ref Projectile.ai[2]; //修正：使用 ai[2] 而不是越界的 localAI[2]
+        private ref float ReturnProgress => ref Projectile.ai[2]; //用 ai[2] 非 localAI[2]
         private ref float SpinSpeed => ref Projectile.localAI[0];
         private ref float ThrowProgress => ref Projectile.localAI[1]; //0-1 飞出阶段进度
 
@@ -652,9 +646,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 抬棺人弩发射的强力箭矢
-    /// </summary>
+    /// 抬棺人弩蓄力箭矢
     internal class PallbearerArrow : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Ranged + "PallbearerArrow";

@@ -6,10 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 导体握把：增加链式跳跃次数与范围，命中时在击中点生成电弧粒子爆发
-    /// OnBeamHitNPC 钩子仅做视觉增强，无额外伤害，逻辑彻底去耦合
-    /// </summary>
+    /// <summary>导体握把：+链跳次数/范围，命中电弧粒子 VFX</summary>
     internal sealed class ConductorGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

@@ -10,18 +10,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间核心状态管理器
-    /// <br/>控制骇客模式的激活、目标选择、运镜和时间冻结
-    /// <br/>按键切换进入或退出，进入后世界冻结，屏幕叠加赛博科技感滤镜
-    /// </summary>
+    /// <summary>骇客时间核心状态，控制激活/目标/运镜/冻结</summary>
     internal class HackTime : ModSystem, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
 
         public override void Unload() {
             Reset();
-            //模组卸载时也要专门卸载条件注册，写在这里提醒自己
+            //卸载时清空访问条件注册
             HackTimeAccess.Reset();
         }
 
@@ -421,50 +417,31 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #endregion
 
-        /// <summary>
-        /// 骇客时间是否处于激活状态
-        /// </summary>
+        /// <summary>骇客时间是否激活</summary>
         public static bool Active { get; private set; }
-        /// <summary>
-        /// 屏幕效果强度(0到1)，用于着色器参数插值
-        /// </summary>
+        /// <summary>屏幕效果强度 0..1</summary>
         public static float Intensity { get; set; }
-        /// <summary>
-        /// 运镜进度(0到1)，选中目标后平滑过渡到目标中心
-        /// </summary>
+        /// <summary>运镜进度 0..1</summary>
         public static float CameraProgress { get; set; }
-        /// <summary>
-        /// 运镜缩放进度(0到1)，选中目标后画面放大
-        /// </summary>
+        /// <summary>运镜缩放进度 0..1</summary>
         public static float ZoomProgress { get; set; }
-        /// <summary>
-        /// 目标选中时的光圈动画计时器
-        /// </summary>
+        /// <summary>选中光圈动画计时</summary>
         public static float ReticleTimer { get; set; }
-        /// <summary>
-        /// 运镜偏移量，每帧在ModifyScreenPosition中应用
-        /// </summary>
+        /// <summary>运镜偏移，ModifyScreenPosition 应用</summary>
         public static Vector2 CameraOffset { get; set; }
 
-        /// <summary>
-        /// 当前扫描目标，null 表示无扫描目标
-        /// <br/>所有目标种类（NPC、物块、灵异、炮台、信号塔等）统一通过<see cref="IHackTarget"/>暴露
-        /// </summary>
+        /// <summary>当前扫描目标，null 为无</summary>
         public static IHackTarget CurrentScanTarget { get; private set; }
 
-        /// <summary>
-        /// 当前选中的 NPC 索引（兼容旧 API；从<see cref="CurrentScanTarget"/>派生），负数表示未选中或选中的不是 NPC
-        /// </summary>
+        /// <summary>选中 NPC 索引，兼容旧 API</summary>
         public static int SelectedTargetIndex
             => CurrentScanTarget is NpcScannable n ? n.NpcIndex : -1;
 
-        /// <summary>
-        /// 当前悬停的 NPC 索引（兼容旧 API；从<see cref="HackTimeTargeting.HoveredTarget"/>派生），负数表示无悬停或悬停的不是 NPC
-        /// </summary>
+        /// <summary>悬停 NPC 索引，兼容旧 API</summary>
         public static int HoveredTargetIndex
             => HackTimeTargeting.HoveredTarget is NpcScannable n ? n.NpcIndex : -1;
 
-        //无限骇入模式（无限袭击终态演出用）
+        //无限骇入模式，无限袭击终态演出用
         public static bool InfiniteHack { get; set; }
 
         private static float targetIntensity;
@@ -480,21 +457,19 @@ namespace CalamityOverhaul.Content.HackTimes
         //效果淡出速度
         private const float FadeOutSpeed = 0.07f;
 
-        //WorldFreezeSystem 的 reason 标签，统一通过它叠加/释放冻结
+        //WorldFreezeSystem reason 标签
         private const string FreezeReason = "HackTime";
 
-        /// <summary>
-        /// 切换骇客时间的开关状态
-        /// </summary>
+        /// <summary>切换骇客时间开关</summary>
         public static void Toggle() {
             if (Active) {
                 Deactivate();
             }
             else if (Intensity > 0.001f) {
-                //正在淡出中，直接反转回来，无需重置状态
+                //淡出中直接反转
                 Active = true;
                 targetIntensity = 1f;
-                if (VaultUtils.isSinglePlayer)//只在单人模式生效时停
+                if (VaultUtils.isSinglePlayer)//单人模式时停
                     WorldFreezeSystem.Activate(FreezeReason);
             }
             else {
@@ -502,9 +477,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 激活骇客时间
-        /// </summary>
+        /// <summary>激活骇客时间</summary>
         public static void Activate() {
             if (Main.gameMenu) return;
             Active = true;
@@ -515,10 +488,10 @@ namespace CalamityOverhaul.Content.HackTimes
             ReticleTimer = 0f;
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
-            if (VaultUtils.isSinglePlayer)//只在单人模式生效时停
+            if (VaultUtils.isSinglePlayer)//单人模式时停
                 WorldFreezeSystem.Activate(FreezeReason);
             if (WorldFreezeSystem.IsActive && Main.LocalPlayer.Alives()) {
-                //预填飞行时间，避免首次进入 PreUpdate 快照被零值覆盖
+                //预填飞行时间，防首次进入快照被零值覆盖
                 WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();
                 freezePlayer.frozenWingTime = Main.LocalPlayer.wingTime;
                 freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
@@ -528,9 +501,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 退出骇客时间
-        /// </summary>
+        /// <summary>退出骇客时间</summary>
         public static void Deactivate() {
             Active = false;
             targetIntensity = 0f;
@@ -539,79 +510,64 @@ namespace CalamityOverhaul.Content.HackTimes
             HackTimeUI.Instance?.Panel.Hide();
         }
 
-        /// <summary>
-        /// 选中一个骇入目标
-        /// <br/>所有目标种类（NPC、物块、灵异、炮台、信号塔等）通过<see cref="IHackTarget"/>统一进入
-        /// <br/>触发运镜并取消正在进行的上传
-        /// </summary>
+        /// <summary>选中骇入目标，触发运镜</summary>
         public static void Select(IHackTarget target) {
             if (!Active || target == null || !target.IsValid) return;
 
-            //目标无变化时不做处理（点击同一目标不要重复重置上传）
+            //同目标不重复处理
             if (CurrentScanTarget != null && target.TargetEquals(CurrentScanTarget)) return;
 
-            //切换目标时保留各目标自己的上传进度，不再清空队列也不退还 RAM
-            //每个目标的入队状态由队列按 (slot, target) 维度独立维护
+            //切换目标保留各目标上传进度，队列按 (slot, target) 独立维护
 
             bool freshSelect = CurrentScanTarget == null;
             CurrentScanTarget = target;
             cameraTo = target.WorldCenter;
 
-            //首次选中时从零开始推进；切换目标时保持当前进度，让偏移量平滑重定向
+            //首次选中从零推进，切换时保持进度平滑重定向
             if (freshSelect) {
                 CameraProgress = 0f;
                 ZoomProgress = 0f;
             }
 
-            //目标种类工厂可定制选中反馈（默认播放扫描音效）
+            //目标工厂选中反馈
             target.TargetType?.OnSelectFeedback(target);
         }
 
-        /// <summary>
-        /// 兼容旧 API：选中指定 NPC
-        /// </summary>
+        /// <summary>选中 NPC，兼容旧 API</summary>
         public static void SelectTarget(int npcIndex) {
             if (npcIndex < 0 || npcIndex >= Main.maxNPCs) return;
             if (!Main.npc[npcIndex].active) return;
             Select(new NpcScannable(npcIndex));
         }
 
-        /// <summary>
-        /// 取消选中目标，运镜平滑回归
-        /// </summary>
+        /// <summary>取消选中，运镜平滑回归</summary>
         public static void DeselectTarget() {
             CurrentScanTarget = null;
-            //不立即归零CameraProgress/CameraOffset，由UpdateCamera平滑回归
+            //CameraProgress/Offset 由 UpdateCamera 平滑归零
             HackTimeUI.Instance?.Panel.Hide();
         }
 
-        /// <summary>
-        /// 世界更新：RAM恢复、骇入效果驱动、队列上传推进
-        /// </summary>
+        /// <summary>世界更新，RAM/效果/队列推进</summary>
         public override void PostUpdateEverything() {
-            //RAM自动恢复
+            //RAM 自动恢复
             RamSystem.Update();
-            //骇入效果全局驱动，退出骇客时间后仍持续生效
+            //骇入效果驱动，退出后仍持续
             HackEffectTracker.Update();
-            //物块骇入效果驱动
             HackEffectTracker.UpdateTileEffects();
-            //队列上传+消费：退出骇客时间后实时推进上传并施加完成的效果
+            //队列上传与消费，退出后仍推进
             var queue = HackTimeUI.Instance?.Queue;
             queue?.Update();
             queue?.ConsumeAndApplyAll();
         }
 
-        /// <summary>
-        /// 每帧逻辑更新
-        /// </summary>
+        /// <summary>每帧逻辑更新</summary>
         public static void Update() {
             if (Main.gameMenu) {
                 Reset();
                 return;
             }
 
-            //玩家死亡 / 幽灵态 → 自动关闭，避免本系统的 UI / 镜头残留
-            //通用的冻结安全网由 WorldFreezePlayer.UpdateDead 兜底，这里只负责 HackTime 自身的状态
+            //死亡/幽灵态自动关闭
             if (Active && Main.LocalPlayer != null
                 && (Main.LocalPlayer.dead || Main.LocalPlayer.ghost)) {
                 Deactivate();
@@ -621,7 +577,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float fadeSpeed = Active ? FadeInSpeed : FadeOutSpeed;
             Intensity = MathHelper.Lerp(Intensity, targetIntensity, fadeSpeed);
 
-            //淡出完毕后彻底清理残余状态
+            //淡出完毕清理残余
             if (!Active && targetIntensity <= 0f && Intensity < 0.005f) {
                 Intensity = 0f;
                 CameraOffset = Vector2.Zero;
@@ -638,20 +594,20 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         private static void UpdateCamera() {
-            //有目标且仍然有效：平滑推进运镜与缩放
+            //有有效目标时推进运镜
             if (CurrentScanTarget != null && CurrentScanTarget.IsValid) {
                 cameraTo = CurrentScanTarget.WorldCenter;
 
                 CameraProgress = MathHelper.Lerp(CameraProgress, 1f, CameraLerpSpeed);
                 ZoomProgress = MathHelper.Lerp(ZoomProgress, 1f, CameraLerpSpeed * 0.8f);
 
-                //偏移量独立平滑插值到目标位置（切换目标时从当前偏移重定向，而非瞬跳）
+                //偏移平滑插值到目标
                 Vector2 desiredOffset = cameraTo - Main.LocalPlayer.Center;
                 CameraOffset = Vector2.Lerp(CameraOffset, desiredOffset, CameraLerpSpeed);
                 return;
             }
 
-            //目标失效时自动取消
+            //目标失效自动取消
             if (CurrentScanTarget != null && !CurrentScanTarget.IsValid) {
                 DeselectTarget();
                 return;
@@ -670,19 +626,15 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 获取当前运镜产生的额外缩放值
-        /// </summary>
+        /// <summary>运镜额外缩放值</summary>
         public static float GetZoomBoost() {
             return TargetZoomBoost * ZoomProgress * Intensity;
         }
 
-        /// <summary>
-        /// 判断指定NPC是否为可骇入目标
-        /// </summary>
+        /// <summary>是否可骇入目标</summary>
         public static bool IsHackableTarget(NPC npc) {
             if (npc == null || !npc.active) return false;
-            //在赛博空间范围内的敌对生物为可骇入目标
+            //赛博空间外默认可骇入
             if (!Cyberspace.Active) return true;
             float dx = npc.Center.X - Main.LocalPlayer.Center.X;
             float dy = npc.Center.Y - Main.LocalPlayer.Center.Y;
@@ -690,9 +642,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return dx * dx + dy * dy <= effectiveRadius * effectiveRadius;
         }
 
-        /// <summary>
-        /// 立即重置所有状态
-        /// </summary>
+        /// <summary>立即重置全部状态</summary>
         public static void Reset() {
             Active = false;
             Intensity = 0f;
@@ -704,8 +654,7 @@ namespace CalamityOverhaul.Content.HackTimes
             CameraOffset = Vector2.Zero;
             cameraTo = Vector2.Zero;
             InfiniteHack = false;
-            //Reset 是异常路径（卸载、世界切换），只释放本系统持有的 reason；
-            //其他 reason 若仍持有冻结应由各自系统在自己的 Reset/Unload 中处理
+            //异常路径仅释放本系统 FreezeReason
             WorldFreezeSystem.Deactivate(FreezeReason);
             HackTimeUI.Instance?.Queue?.Clear();
             HackEffectTracker.Reset();

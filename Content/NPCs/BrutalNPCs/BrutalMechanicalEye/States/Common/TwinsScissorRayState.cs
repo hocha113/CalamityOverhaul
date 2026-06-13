@@ -11,12 +11,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>
-    /// 双子大招·剪刀死光：
-    /// 任一眼血量低于阈值后解锁。双眼飞至高空对角远端，以电弧对接成"铰链"蓄力，
-    /// 随后各自释放持续死亡射线(魔焰眼烈焰/激光眼死光)，由外向内夹剪扫过战场，
-    /// 玩家须跟随收缩的安全缝走位。全程预警充分、收招硬直明显
-    /// </summary>
+    /// <summary>剪刀死光大招：对角铰链蓄力→双持续射线内夹→收招硬直</summary>
+    /// <para>任一眼低血量解锁；锚点锁定，玩家跟安全缝走位</para>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsScissorRay, typeof(TwinsStateContext))]
     internal class TwinsScissorRayState : TwinsStateBase
     {
@@ -129,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             int phaseTimer = Timer - PositionPhase;
             float progress = phaseTimer / (float)LockPhase;
 
-            //锁定世界坐标锚点(不再追踪玩家——给走位留出决策空间)
+            //锁定世界锚点，不再跟踪玩家(公平阀)
             if (!anchorLocked) {
                 anchorLocked = true;
                 float side = Context.IsSpazmatism ? -1f : 1f;
@@ -225,9 +221,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 收招阶段：射线收束后的明显硬直——眼体下沉排气，给予输出窗口
-        /// </summary>
+        /// <summary>收招硬直：眼体下沉排气，输出窗口</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase - LockPhase - SweepPhase;
 

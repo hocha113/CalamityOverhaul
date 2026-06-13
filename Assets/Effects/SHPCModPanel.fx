@@ -1,24 +1,16 @@
 // ============================================================================
-// SHPCModPanel.fx —— SHPC枪体改造面板专属背景着色器
-// 主题：青色科技 + 数据流网格 + 中央分析光场 + 内框柔光描边
-// 输入参数：
-//   uTime        累计时间
-//   uAlpha       全局不透明度
-//   uResolution  绘制矩形像素尺寸
-//   uEdgePad     面板内缩边距
-//   uGunCenter   枪体中心相对像素坐标（用于中央能量光场）
-//   uGunRadius   枪体光场作用半径
-// 渲染方式：sb.Begin(Immediate, AlphaBlend, ..., effect)
+// SHPCModPanel.fx SHPC枪体改造面板背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float2 uResolution;
-float uEdgePad;
-float2 uGunCenter;
-float uGunRadius;
+float2 uResolution;  //绘制矩形像素尺寸
+float uEdgePad;      //面板内缩边距
+float2 uGunCenter;   //枪体中心局部像素坐标
+float uGunRadius;    //枪体光场作用半径
 
 float hash11(float p) {
     p = frac(p * 0.1031);

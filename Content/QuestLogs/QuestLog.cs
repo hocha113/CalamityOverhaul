@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         private Rectangle panelRect;
         private int oldScrollWheelValue;
 
-        //任务详情面板相关
+        //任务详情面板
         private QuestNode selectedNode;
         private QuestNode selectedNodeTransfers;
         private bool showDetailPanel;
@@ -53,10 +53,10 @@ namespace CalamityOverhaul.Content.QuestLogs
         private const int DetailPanelWidth = 500;
         private const int DetailPanelHeight = 600;
 
-        //节点悬停相关
+        //节点悬停
         private QuestNode hoveredNode;
 
-        //进度条相关
+        //进度条
         public bool ShowProgressBar { get; set; } = true;
         //夜间模式
         public bool NightMode { get; set; } = false;
@@ -87,11 +87,11 @@ namespace CalamityOverhaul.Content.QuestLogs
         private int currentStyleIndex;
 
         public QuestLog() {
-            //初始化启动图标
+            //初始化启动器
             launcher = new QuestLogLauncher();
-            //设置初始面板大小
+            //初始面板大小
             panelRect = new Rectangle(0, 0, 800, 600);
-            //设置启动图标初始位置
+            //启动器初始位置
             LauncherPosition = new Vector2(572, 108);
 
             availableStyles = [
@@ -150,12 +150,12 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void LogicUpdate() {
-            //在逻辑更新中更新样式，这样避免高帧率让样式动画变得过快
+            //LogicUpdate 刷样式
             CurrentStyle?.UpdateStyle();
         }
 
         public override void Update() {
-            //更新动画状态
+            //开闭动画
             if (visible) {
                 openScale = MathHelper.Lerp(openScale, 1f, 0.14f);
                 mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 1f, 0.14f);
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 mainPanelAlpha = MathHelper.Lerp(mainPanelAlpha, 0f, 0.14f);
             }
 
-            //更新详情面板透明度
+            //详情面板淡入淡出
             if (showDetailPanel) {
                 if (detailPanelAlpha < 1f) {
                     detailPanelAlpha += 0.1f;
@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //默认屏幕居中，若与委托面板重叠则向右推开
+            //默认居中，避让委托面板
             int availLeft = 0;
             var entrustUI = QuestManagerUI.Instance;
             if (entrustUI != null) {
@@ -193,17 +193,15 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
             panelRect.Y = (Main.screenHeight - panelRect.Height) / 2;
 
-            //更新主UI碰撞箱
+            //主面板 HitBox
             UIHitBox = panelRect;
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && visible;
 
-            //更新启动器位置和状态
-            if (Main.playerInventory) {
-                if (launcher.IsHovered && !hoverInMainPage) {
+            //启动器点击
                     if (keyLeftPressState == KeyPressState.Pressed) {
                         visible = !visible;
                         if (!visible) {
-                            //关闭时同时关闭详情面板
+                            //关主面板同步关详情
                             showDetailPanel = false;
                             selectedNode = null;
                         }
@@ -212,27 +210,23 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
             else {
-                //使用键盘输入检测关闭
+                //Esc 关闭
                 if (visible && Main.keyState.IsKeyDown(Keys.Escape) && Main.oldKeyState.IsKeyUp(Keys.Escape)) {
                     if (showDetailPanel) {
-                        //如果详情面板开启，先关闭详情面板
+                        //先关详情
                         showDetailPanel = false;
                         selectedNode = null;
                         SoundEngine.PlaySound(SoundID.MenuClose);
                     }
                     else {
-                        //否则关闭主面板
+                        //再关主面板
                         visible = false;
                         SoundEngine.PlaySound(SoundID.MenuClose);
                     }
                 }
             }
 
-            //更新启动器位置和状态
-            if (Main.playerInventory) {
-                if (launcher.IsHovered) {
-                    player.mouseInterface = true;
-                    //右键拖动逻辑
+            //启动器拖拽
                     if (keyRightPressState == KeyPressState.Pressed && !isDraggingLauncher) {
                         isDraggingLauncher = true;
                         dragStartLauncherPos = LauncherPosition;
@@ -259,9 +253,9 @@ namespace CalamityOverhaul.Content.QuestLogs
                 player.CWR().DontSwitchWeaponTime = 2;
             }
 
-            //如果详情面板开启，优先处理详情面板交互
+            //详情面板优先交互
             if (showDetailPanel && detailPanelAlpha > 0.5f) {
-                //计算详情面板位置（同样避让委托面板）
+                //详情居中避让委托面板
                 int detailX = Math.Max(0, (Main.screenWidth - DetailPanelWidth) / 2);
                 int detailOverlap = availLeft + 8 - detailX;
                 if (detailOverlap > 0) {
@@ -274,7 +268,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                     DetailPanelWidth,
                     DetailPanelHeight
                 );
-                //关闭按钮逻辑
+                //详情关闭按钮
                 mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
                 UpdateDetailPanel();
                 return;
@@ -282,7 +276,7 @@ namespace CalamityOverhaul.Content.QuestLogs
 
             bool hoveredOtherButton = false;
 
-            //关闭按钮逻辑
+            //主面板关闭按钮
             mainCloseButtonRect = new Rectangle(panelRect.Right - 35, panelRect.Y + 5, 30, 30);
             if (mainCloseButtonRect.Contains(MouseHitBox.Location)) {
                 player.mouseInterface = true;
@@ -293,7 +287,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //处理一键领取按钮
+            //一键领取
             if (HasUnclaimedRewards()) {
                 Rectangle claimRect = CurrentStyle.GetClaimAllButtonRect(panelRect);
                 if (claimRect.Contains(Main.MouseScreen.ToPoint())) {
@@ -306,7 +300,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //处理重置视图按钮
+            //重置视图
             if (panOffset.Length() > 100f) {
                 Rectangle resetRect = CurrentStyle.GetResetViewButtonRect(panelRect);
                 if (resetRect.Contains(Main.MouseScreen.ToPoint())) {
@@ -319,7 +313,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //处理样式切换按钮
+            //样式切换
             Rectangle styleRect = CurrentStyle.GetStyleSwitchButtonRect(panelRect);
             if (styleRect.Contains(Main.MouseScreen.ToPoint())) {
                 player.mouseInterface = true;
@@ -331,7 +325,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //处理夜间模式按钮
+            //夜间模式
             Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
             if (nightRect.Contains(Main.MouseScreen.ToPoint())) {
                 player.mouseInterface = true;
@@ -342,7 +336,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //处理委托任务管理器按钮
+            //委托管理器
             Rectangle questMgrRect = GetQuestManagerButtonRect(panelRect);
             if (questMgrRect.Contains(Main.MouseScreen.ToPoint())) {
                 player.mouseInterface = true;
@@ -353,7 +347,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
             }
 
-            //处理地图拖拽和缩放
+            //地图拖拽缩放
             if (hoverInMainPage) {
                 //滚轮缩放
                 int scroll = Mouse.GetState().ScrollWheelValue;
@@ -371,7 +365,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 }
                 oldScrollWheelValue = scroll;
 
-                //检测节点悬停
+                //节点悬停
                 hoveredNode = null;
 
                 if (!hoveredOtherButton) {
@@ -385,14 +379,14 @@ namespace CalamityOverhaul.Content.QuestLogs
                     }
                 }
 
-                //使用UIHandle的keyLeftPressState处理点击
+                //节点点击
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     if (hoveredNode != null) {
-                        //点击了节点，打开详情面板
+                        //打开详情
                         selectedNode = hoveredNode;
                         showDetailPanel = true;
                         SoundEngine.PlaySound(SoundID.MenuTick);
-                        //计算详情面板位置(居中)
+                        //详情面板矩形
                         detailPanelRect = new Rectangle(
                             (Main.screenWidth - DetailPanelWidth) / 2,
                             (Main.screenHeight - DetailPanelHeight) / 2,
@@ -401,14 +395,14 @@ namespace CalamityOverhaul.Content.QuestLogs
                         );
                     }
                     else {
-                        //没点击节点，开始拖拽地图
+                        //空白处拖地图
                         isDraggingMap = true;
                         dragStartMousePos = Main.MouseScreen;
                         dragStartPanOffset = panOffset;
                     }
                 }
 
-                //处理拖拽
+                //地图拖拽
                 if (keyLeftPressState == KeyPressState.Held && isDraggingMap) {
                     Vector2 diff = Main.MouseScreen - dragStartMousePos;
                     panOffset = dragStartPanOffset + diff;
@@ -515,7 +509,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             spriteBatch.End();
 
             //计算剪裁矩形(需要适应UI缩放)
-            int margin = 4;//界面的边框为4像素宽
+            int margin = 4;//边框宽 4px
             Vector2 pos = Vector2.Transform(new Vector2(panelRect.X + margin, panelRect.Y + margin), Main.UIScaleMatrix);
             Vector2 size = Vector2.Transform(new Vector2(panelRect.Width - margin * 2, panelRect.Height - margin * 2), Main.UIScaleMatrix) - Vector2.Transform(Vector2.Zero, Main.UIScaleMatrix);
             Rectangle scissorRect = new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y);
@@ -616,7 +610,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             }
         }
 
-        /// <summary>获取委托任务管理器按钮区域——紧跟在夜间模式按钮右侧</summary>
+        /// <summary>获取委托管理器按钮区域，夜间模式右侧</summary>
         private Rectangle GetQuestManagerButtonRect(Rectangle panelRect) {
             Rectangle nightRect = CurrentStyle.GetNightModeButtonRect(panelRect);
             return new Rectangle(nightRect.Right + 10, nightRect.Y, 30, 30);
@@ -628,11 +622,11 @@ namespace CalamityOverhaul.Content.QuestLogs
             Vector2 center = buttonRect.Center.ToVector2();
             bool isHovered = buttonRect.Contains(Main.MouseScreen.ToPoint());
 
-            // 背景
+            //背景
             Color bgColor = isHovered ? new Color(60, 120, 180) : new Color(30, 50, 70);
             spriteBatch.Draw(pixel, buttonRect, bgColor * mainPanelAlpha);
 
-            // 边框
+            //边框
             Color borderColor = isHovered ? new Color(140, 210, 255) : new Color(80, 140, 180);
             int border = 2;
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, buttonRect.Width, border), borderColor * mainPanelAlpha);
@@ -640,18 +634,18 @@ namespace CalamityOverhaul.Content.QuestLogs
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.X, buttonRect.Y, border, buttonRect.Height), borderColor * mainPanelAlpha);
             spriteBatch.Draw(pixel, new Rectangle(buttonRect.Right - border, buttonRect.Y, border, buttonRect.Height), borderColor * mainPanelAlpha);
 
-            // 图标：三横线（任务列表样式）
+            //列表图标三横线
             Color iconColor = isHovered ? Color.White : new Color(140, 210, 255);
             float iconAlpha = mainPanelAlpha;
             int lineW = 14, lineH = 2, gap = 5;
             int startY = (int)center.Y - gap - lineH;
             for (int i = 0; i < 3; i++) {
-                int lw = i == 2 ? lineW - 4 : lineW; // 第三条短一点
+                int lw = i == 2 ? lineW - 4 : lineW; //第三条较短
                 spriteBatch.Draw(pixel,
                     new Rectangle((int)(center.X - lw / 2f), startY + i * (lineH + gap - 1), lw, lineH),
                     iconColor * iconAlpha);
             }
-            // 左侧小圆点（列表项标记）
+            //左侧列表圆点
             for (int i = 0; i < 3; i++) {
                 spriteBatch.Draw(pixel,
                     new Rectangle((int)(center.X - lineW / 2f - 4), startY + i * (lineH + gap - 1), 2, 2),

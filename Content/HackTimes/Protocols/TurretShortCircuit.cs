@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 炮台电路短路：瞬间放电令炮台短暂停摆
-    /// 适合扰乱炮台射击节奏，恢复期较短但消耗也低
-    /// </summary>
+    /// <summary>炮台短路，短暂停摆</summary>
     internal class TurretShortCircuit : QuickHackDef
     {
         //失效帧数（大约4秒）
@@ -22,7 +19,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not IHackableTurret turret) return false;
-            //炮台权威状态变更只在施法端执行，远端依靠 Actor 自身的同步链路还原
+            //炮台权威状态仅施法端
             if (!HackTimeNetSync.IsRemoteApply) {
                 turret.ApplyShortCircuit(DisableFrames, caster);
             }

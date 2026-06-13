@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.HackTimes
         Waiting,
         //正在上传
         Uploading,
-        //上传完成（短暂闪烁后移除）
+        //上传完成，短暂闪烁
         Completed,
     }
 
@@ -24,17 +24,14 @@ namespace CalamityOverhaul.Content.HackTimes
         Completed,
     }
 
-    /// <summary>
-    /// 左侧待执行队列的单条记录
-    /// <br/>统一通过 <see cref="IHackTarget"/> 引用承载所有目标种类，无需为每种目标维护独立字段
-    /// </summary>
+    /// <summary>队列单条记录，统一 IHackTarget</summary>
     internal class HackQueueEntry
     {
         //对应的协议定义
         public QuickHackDef Hack;
         //在 QuickHackDef.Instances 中的索引
         public int SlotIndex;
-        //目标引用（NPC、物块、灵异、炮台、信号塔等任意 IHackTarget 实现）
+        //目标引用
         public IHackTarget Target;
         //当前队列状态
         public HackQueueState State;
@@ -46,7 +43,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public float CompletedTimer;
         //故障种子
         public float GlitchSeed;
-        //实际 RAM 成本（已乘倍率），在入队时由 HackCostEvaluator 计算并固定
+        //RAM 成本，入队时由 HackCostEvaluator 固定
         public int ComputedRamCost;
 
         public HackQueueEntry(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
@@ -67,7 +64,7 @@ namespace CalamityOverhaul.Content.HackTimes
         //目标种类（旁路便捷查询）
         public HackTargetKind TargetKind => Target?.TargetType?.Kind ?? HackTargetKind.None;
 
-        //----- 兼容旧 API：暴露具体目标维度的便捷查询 -----
+        //兼容旧 API
 
         /// <summary>当 Target 为 NpcScannable 时返回 NPC 索引，否则返回 -1</summary>
         public int TargetIndex => Target is NpcScannable n ? n.NpcIndex : -1;

@@ -1,9 +1,6 @@
 // ============================================================================
-// HalibutAtlasBg.fx 深渊图鉴的海域背景
-// 一根纵向海水柱：随下潜深度(uDepth)从透光浅海过渡到漆黑渊底
-// 视觉要素：深度渐变 + 顶部体积光柱(随深度衰减) + 表层焦散 +
-//           海雪视差层(uScroll驱动, 密度随深度增加) + 上浮气泡 +
-//           深渊躁动红光(uAgitation, 复苏比例驱动) + 暗角
+// HalibutAtlasBg.fx 深渊图鉴海域背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,8 +8,8 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution;
-float uDepth;
-float uAgitation;
+float uDepth;       //下潜深度 0浅→1渊
+float uAgitation;   //深渊躁动，复苏比例驱动
 float uScroll;
 
 #define PI 3.14159265

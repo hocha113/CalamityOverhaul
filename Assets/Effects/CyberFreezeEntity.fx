@@ -1,7 +1,6 @@
 // ============================================================================
-// CyberFreezeEntity.fx — 赛博领域冻结实体着色器
-// 双效果叠加：故障滤镜 + 六角能量网格覆盖
-// 应用于被冻结的NPC和弹幕，表现"被赛博黑墙冻结"的状态
+// CyberFreezeEntity.fx 赛博冻结实体覆盖
+// 故障滤镜+六角网格；采样实体贴图 s0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +11,7 @@ float intensity;       // 赛博空间效果强度
 float seed;            // 每个实体独立的随机种子
 float2 texelSize;      // 1/texWidth, 1/texHeight
 
-// ---- 工具函数 ----
+// 工具函数
 
 float hash11(float p)
 {
@@ -63,9 +62,9 @@ float4 hexGrid(float2 uv, float scale)
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-    // ================================================================
+    // =
     // 故障扭曲偏移计算
-    // ================================================================
+    // =
     float timeHash = floor(uTime * 8.0 + seed * 50.0);
 
     // 冻结状态下故障强度明显且持续存在
@@ -97,9 +96,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float2 distorted = coords;
     distorted.x += rowShift + blockShiftX;
 
-    // ================================================================
+    // =
     // RGB通道分离
-    // ================================================================
+    // =
     // RGB通道分离（仅水平方向，避免序列图垂直采样越界）
     float channelSplit = lerp(3.5, 10.0, glitchStrength) * texelSize.x;
     float2 rOff = float2(channelSplit, 0.0);
@@ -118,9 +117,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     if (color.a < 0.01)
         return float4(0, 0, 0, 0);
 
-    // ================================================================
+    // =
     // 冻结色调：去饱和 + 暗红晶偏移（黑墙风格）
-    // ================================================================
+    // =
     float lum = dot(color.rgb, float3(0.299, 0.587, 0.114));
     float freezeStr = lerp(0.7, 0.3, progress) * intensity;
 
@@ -131,9 +130,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float3 crimsonTint = float3(lum * 1.2, lum * 0.15, lum * 0.35);
     filtered = lerp(filtered, crimsonTint, freezeStr * 0.6);
 
-    // ================================================================
+    // =
     // 扫描线干扰
-    // ================================================================
+    // =
     float scanFreq = 80.0;
     float scanLine = sin(coords.y * scanFreq + uTime * 5.0) * 0.5 + 0.5;
     scanLine = pow(scanLine, 4.0);
@@ -143,9 +142,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     thickScan = smoothstep(0.4, 0.6, thickScan);
     filtered *= 1.0 - thickScan * 0.15 * freezeStr;
 
-    // ================================================================
+    // =
     // 六角能量网格覆盖
-    // ================================================================
+    // =
     float hexScale = 12.0; // 控制六角网格大小
     float2 hexUV = coords * float2(1.0 / texelSize.x, 1.0 / texelSize.y) / hexScale;
 
@@ -178,15 +177,15 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     filtered += hexColor + cellFillColor;
 
-    // ================================================================
+    // =
     // 数字噪点
-    // ================================================================
+    // =
     float pixelNoise = hash21(coords * 400.0 + uTime * 8.0 + seed);
     filtered += (pixelNoise - 0.5) * 0.08 * freezeStr;
 
-    // ================================================================
+    // =
     // 解冻阶段 (>0.85): 故障加剧 + 闪烁
-    // ================================================================
+    // =
     float thawPhase = smoothstep(0.85, 1.0, progress);
     if (thawPhase > 0.0)
     {
@@ -198,9 +197,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         filtered = lerp(filtered, float3(1.0, 0.5, 0.5), whiteFlash * 0.3);
     }
 
-    // ================================================================
+    // =
     // 边缘发光
-    // ================================================================
+    // =
     float4 sampleUp    = tex2D(uImage0, coords + float2(0, -texelSize.y * 2.0));
     float4 sampleDown  = tex2D(uImage0, coords + float2(0,  texelSize.y * 2.0));
     float4 sampleLeft  = tex2D(uImage0, coords + float2(-texelSize.x * 2.0, 0));
@@ -212,9 +211,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     filtered += float3(0.85, 0.06, 0.2) * edgeGlow;
 
-    // ================================================================
+    // =
     // 全局透明度控制
-    // ================================================================
+    // =
     float globalFlicker = 0.85 + 0.15 * sin(uTime * 5.0 + seed * 20.0);
     color.a *= globalFlicker;
 

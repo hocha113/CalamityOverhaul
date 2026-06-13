@@ -6,11 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间物块扫描高亮渲染
-    /// <br/>在选中或悬停的物块上绘制赛博科技风格的扫描覆盖层
-    /// <br/>包括边框扫描线、角标括号、脉冲辉光和扫描线动画
-    /// </summary>
+    /// <summary>物块扫描高亮渲染</summary>
     internal static class HackTimeTileDraw
     {
         //选中动画计时器
@@ -29,10 +25,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 hasSelected ? 1f : 0f, hasSelected ? 0.08f : 0.12f);
         }
 
-        /// <summary>
-        /// 在Additive混合模式下绘制物块的扫描辉光
-        /// <br/>由HackTimeRender.EndEntityDraw调用
-        /// </summary>
+        /// <summary>Additive 物块扫描辉光</summary>
         public static void DrawAdditive(SpriteBatch sb) {
             float effectStr = HackTime.Intensity;
             if (effectStr < 0.01f) return;
@@ -44,10 +37,7 @@ namespace CalamityOverhaul.Content.HackTimes
             DrawSelectedTileGlow(sb, effectStr);
         }
 
-        /// <summary>
-        /// 在AlphaBlend模式下绘制物块的扫描边框和细节
-        /// <br/>由HackTimeRender.EndEntityDraw调用
-        /// </summary>
+        /// <summary>AlphaBlend 物块边框与标签</summary>
         public static void DrawAlphaBlend(SpriteBatch sb) {
             float effectStr = HackTime.Intensity;
             if (effectStr < 0.01f) return;
@@ -66,7 +56,7 @@ namespace CalamityOverhaul.Content.HackTimes
             int hy = HackTimeTargeting.HoveredTileY;
             if (hx < 0 || hy < 0) return;
 
-            //悬停物块已被选中则跳过（选中状态由HackTargetFrame负责显示）
+            //悬停已选中则跳过
             if (HackTime.CurrentScanTarget is TileScannable sel) {
                 Rectangle selBounds = TileScannable.GetTileWorldBounds(hx, hy);
                 if (sel.WorldCenter.X >= selBounds.X && sel.WorldCenter.X <= selBounds.Right

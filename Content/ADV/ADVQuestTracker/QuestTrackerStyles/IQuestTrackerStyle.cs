@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         void Reset();
 
         /// <summary>
-        /// 获取样式特定粒子列表（用于绘制）
+        /// 样式粒子列表
         /// </summary>
         void GetParticles(out List<object> particles);
 

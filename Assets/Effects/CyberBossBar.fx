@@ -1,27 +1,18 @@
 // ============================================================================
-// CyberBossBar.fx 赛博朋克2077风格敌人血条（材质式 HUD，ps_3_0）
-// 单个 quad 内程序化生成：平行四边形分段槽、管状光泽、能量流动、
-// 扫描线、表面噪声、填充前沿高光、色散、受击白闪、残血故障、柔和漏光
-// 不采样输入贴图，纯由 uv 生成；按预乘 alpha 输出以匹配 BlendState.AlphaBlend
-// ============================================================================
-// 参数说明：
-//   uResolution  quad 像素尺寸 (宽,高)
-//   uLifeRatio   平滑后的当前血量比例 (0~1)
-//   uTrailRatio  延迟血量比例（受击后缓降，画暗红残影）
-//   uHitFlash    受击白闪强度 (0~1)
-//   uSegments    分段数量
-//   uAlpha       全局淡入淡出
+// CyberBossBar.fx 赛博朋克2077风格敌人血条 HUD
+// 不采样贴图，uv 程序化生成；AlphaBlend 预乘 alpha
+// ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float2 uResolution;
-float uLifeRatio;
-float uTrailRatio;
-float uHitFlash;
-float uSegments;
+float2 uResolution;  //quad 像素尺寸
+float uLifeRatio;    //平滑当前血量 0~1
+float uTrailRatio;   //延迟血量，受击残影
+float uHitFlash;     //受击白闪 0~1
+float uSegments;     //分段数量
 
 //================== 工具函数 ==================
 

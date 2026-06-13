@@ -1,9 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 支架枪托：彻底消除散布，延长光束飞行距离，牺牲一定攻速换取高度精准
-    /// 纯 Apply 改件，不依赖钩子
-    /// </summary>
+    /// <summary>支架枪托：零散布+延长射程，攻速略减</summary>
     internal sealed class BraceStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

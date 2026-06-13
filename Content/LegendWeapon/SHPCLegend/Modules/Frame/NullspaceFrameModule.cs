@@ -6,10 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 虚空机匣：光束轨迹上每20帧留下一个微型爆炸残影
-    /// 用 whoAmI→timer 字典实现每束独立计时
-    /// </summary>
+    /// <summary>虚空机匣：光束轨迹每 20 帧留微型爆炸残影</summary>
     internal sealed class NullspaceFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

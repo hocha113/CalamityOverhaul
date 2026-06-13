@@ -1,9 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 狙击瞄具：大幅提升弹速与射程，牺牲追踪能力与攻速
-    /// 配合超音速枪管形成超远程单点打击
-    /// </summary>
+    /// <summary>狙击瞄具：高弹速射程，低攻速与追踪</summary>
     internal sealed class SniperOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float spiralIntensity = 0f;
         private Vector2 baseVelocity;
 
-        //七彩颜色方案 - 更加鲜艳的配色
+        //七彩配色
         private static readonly Color[] PrismColors =
         [
             new Color(255, 60, 120),   //深玫瑰红
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 trailPoints.RemoveAt(trailPoints.Count - 1);
             }
 
-            //缩放动画 - 更有张力
+            //缩放动画
             if (lifeProgress < 0.1f) {
                 scale = CWRUtils.EaseOutBack(lifeProgress / 0.1f) * 1f;
             }
@@ -232,7 +232,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
 
-            //更有力量感的反弹
+            //反弹冲量
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
                 Projectile.velocity.X = -oldVelocity.X * 0.9f;
                 baseVelocity.X = Projectile.velocity.X;

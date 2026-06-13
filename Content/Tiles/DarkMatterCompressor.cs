@@ -55,11 +55,11 @@ namespace CalamityOverhaul.Content.Tiles
             player.noThrow = 2;
             player.mouseInterface = true;
             player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<DarkMatterCompressorItem>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
+            player.cursorItemIconID = ModContent.ItemType<DarkMatterCompressorItem>();//悬停显示对应物品图标
         }
 
         public override bool RightClick(int i, int j) {
-            //没做完，先藏起来
+            //交互未实装，暂留空实现
             //if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
             // if (TileProcessorLoader.ByPositionGetTP(point, out CompressorTP compressor)) {
             //     ref int playerContrType = ref Main.LocalPlayer.CWR().CompressorContrType;

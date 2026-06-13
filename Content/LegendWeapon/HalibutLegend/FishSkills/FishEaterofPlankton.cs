@@ -52,9 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 噬魂虫弹幕，模仿EatersBite但具有更强的生物感
-    /// </summary>
+    /// <summary>噬魂虫弹幕，EatersBite 式追踪蠕虫</summary>
     internal class SoulEaterBite : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -63,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float AIState => ref Projectile.ai[1];
         private ref float AITimer => ref Projectile.localAI[0];
 
-        //身体段数（模拟蠕虫）
+        //身体段数
         private const int BodySegments = 8;
         private List<Vector2> bodyPositions = new();
         private List<float> bodyRotations = new();
@@ -263,9 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 应用蠕动运动
-        /// </summary>
+        /// <summary>蠕动偏移</summary>
         private void ApplyWriggleMotion() {
             wrigglePhase += wriggleSpeed;
 
@@ -279,9 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity += wriggleVelocity;
         }
 
-        /// <summary>
-        /// 更新身体段位置
-        /// </summary>
+        /// <summary>身体段 tick</summary>
         private void UpdateBodySegments() {
             //头部位置
             bodyPositions[0] = Projectile.Center;
@@ -321,9 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 生成粒子效果
-        /// </summary>
+        /// <summary>随机段粒子</summary>
         private void SpawnParticles() {
             //随机选择身体段生成粒子
             int segmentIndex = Main.rand.Next(BodySegments);

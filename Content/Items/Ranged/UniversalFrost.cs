@@ -10,20 +10,16 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 万象霜天
-    /// <br/>左键: 高速连发霜辉弹，每一发都为霜穹蓄能
-    /// <br/>右键: 蓄能满后在光标上空展开极光霜幕，幕下降下霜光贯击
-    /// </summary>
+    /// 万象霜天 左键连发霜辉弹蓄能 右键满蓄展开极光霜幕
     internal class UniversalFrost : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "UniversalFrost";
-        /// <summary>霜穹蓄能 0~<see cref="MaxCharge"/>，跨使用持久</summary>
+        /// <summary>霜穹蓄能 0~<see cref="MaxCharge"/> 跨使用持久</summary>
         internal float AuroraCharge;
         internal const float MaxCharge = 100f;
         /// <summary>蓄满提示只播一次的标记</summary>
         internal bool ChargeCueDone;
-        /// <summary>弹药节流计数，跨使用持久，每2发消耗1颗雪球</summary>
+        /// <summary>弹药节流 跨使用持久 每2发耗1雪球</summary>
         internal int GlimmerAmmoThrottle;
 
         public override void SetDefaults() {
@@ -48,7 +44,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool AltFunctionUse(Player player) => true;
 
-        //物品使用本身不消耗雪球，由手持弹幕按速射节奏自行拾取
+        //物品使用不耗雪球 手持弹幕按速射节奏拾取
         public override bool CanConsumeAmmo(Item ammo, Player player) => BaseSnowCannonHeld.AmmoConsumeContext;
 
         public override bool CanUseItem(Player player) {
@@ -61,7 +57,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
-            //使用瞬间生成手持弹幕，它会自己接管开火逻辑，松开按键后自动销毁
+            //使用瞬间生成手持弹幕 松键后自动销毁
             Projectile.NewProjectile(source, player.MountedCenter, velocity, Item.shoot, damage, knockback, player.whoAmI);
             return false;
         }
@@ -87,10 +83,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 万象霜天手持弹幕
-    /// <br/>帧0-3: 开火循环, 帧4: 待机
-    /// </summary>
+    /// 万象霜天手持 帧0-3开火 帧4待机
     internal class UniversalFrostHeld : BaseSnowCannonHeld
     {
         public override string Texture => CWRConstant.Item_Ranged + "UniversalFrostHeld";
@@ -144,7 +137,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         /// <summary>速射霜辉弹</summary>
         private void FireGlimmer() {
-            //每2发消耗1颗雪球，节流计数存放在物品上跨使用持久
+            //每2发耗1雪球 节流计数存物品上
             bool consume = ++WeaponItem.GlimmerAmmoThrottle >= 2;
             if (consume) {
                 WeaponItem.GlimmerAmmoThrottle = 0;
@@ -213,9 +206,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 霜辉弹——高速飞行的霜光星屑，飞行途中轻微追踪
-    /// </summary>
+    /// 霜辉弹 高速霜光星屑 弱追踪
     internal class FrostGlimmer : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -289,10 +280,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 极光霜幕——由 FrostAurora.fx 渲染的天空光幕
-    /// <br/>悬空展开，周期性向幕下的敌人降下霜光贯击，幕区内的敌人持续受霜灼
-    /// </summary>
+    /// 极光霜幕 FrostAurora.fx 悬空展开 周期贯击+幕区霜灼
     internal class AuroraCurtain : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -337,7 +325,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //周期性贯击：从幕体上挑选位置打向幕下的敌人
+            //周期性贯击 从幕体选位打幕下敌人
             if (++Projectile.ai[0] >= 4 && Main.myPlayer == Projectile.owner) {
                 Projectile.ai[0] = 0;
                 NPC target = FindLanceTarget();
@@ -363,14 +351,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>判断坐标是否处于幕体正下方的压制区</summary>
+        /// <summary>坐标是否在幕体正下方压制区</summary>
         private bool InCurtainZone(Vector2 pos) {
             return Math.Abs(pos.X - Projectile.Center.X) < CurtainWidth * 0.5f
                 && pos.Y > Projectile.Center.Y - CurtainHeight * 0.5f
                 && pos.Y < Projectile.Center.Y + 900f;
         }
 
-        /// <summary>在压制区内随机选择一个可被追击的敌人</summary>
+        /// <summary>压制区内随机可选敌人</summary>
         private NPC FindLanceTarget() {
             NPC best = null;
             int seen = 0;
@@ -426,9 +414,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 霜光贯击——从极光幕降下的纵向光矛
-    /// </summary>
+    /// 霜光贯击 从极光幕降下纵向光矛
     internal class AuroraLance : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -471,7 +457,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //光矛主体：箭头状光束贴图顺速度方向拉伸
+            //光矛主体 箭头光束贴图顺速度拉伸
             Main.EntitySpriteDraw(shot, drawPos, null, new Color(140, 220, 255, 0) * 0.9f
                 , Projectile.rotation, shot.GetOrig(), new Vector2(0.8f, 0.22f), SpriteEffects.None, 0);
             Main.EntitySpriteDraw(shot, drawPos, null, new Color(220, 250, 255, 0) * 0.8f

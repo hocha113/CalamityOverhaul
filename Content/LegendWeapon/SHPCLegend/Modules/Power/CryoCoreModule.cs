@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 低温核心：能量球爆炸时对范围内敌人施加冰冻
-    /// 直接在 OnOrbDetonation 中遍历NPC施加buff，与爆炸半径改件叠加有效
-    /// </summary>
+    /// <summary>低温核心：球爆炸范围内施加冰冻</summary>
     internal sealed class CryoCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

@@ -4,8 +4,7 @@ using System;
 namespace CalamityOverhaul.Content.ADV.IncomingCalls
 {
     /// <summary>
-    /// 来电系统注册器——管理当前使用的来电UI风格，允许运行时切换
-    /// 默认使用 <see cref="DraedonIncomingCall"/> 科技风格
+    /// 来电 UI 注册器，默认 <see cref="DraedonIncomingCall"/>
     /// </summary>
     internal static class IncomingCallRegistry
     {
@@ -30,21 +29,21 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             var old = Current;
             if (old == newStyle) return;
 
-            //强制结束旧来电
+            // 强制结束旧来电
             old?.ForceEnd();
 
             SetResolver(() => newStyle);
         }
 
         /// <summary>
-        /// 快捷方法：通过当前风格发起来电
+        /// 快捷发起来电
         /// </summary>
         public static void StartCall(string caller, string portraitKey = null) {
             Current.StartCall(caller, portraitKey);
         }
 
         /// <summary>
-        /// 快捷方法：向当前来电加入台词
+        /// 快捷入队台词
         /// </summary>
         public static void EnqueueLine(string speaker, string content, Action onFinish = null, Action onStart = null, int autoAdvanceDelay = 120) {
             Current.EnqueueLine(speaker, content, onFinish, onStart, autoAdvanceDelay);

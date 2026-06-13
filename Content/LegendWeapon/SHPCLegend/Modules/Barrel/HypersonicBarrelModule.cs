@@ -12,12 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 超音速枪管：冲压增速膛线让光束在飞行中持续加速；
-    /// 飞行约 420px 突破音障的瞬间，在突破点炸开一圈「音爆冲击」（70% 伤害的马赫环），
-    /// 同时光束本体进入白热态：伤害+30%、穿透+2、拖出蒸汽凝结尾
-    /// （犽戎礼物 —— 撕裂长空的龙啸）
-    /// </summary>
+    /// <summary>超音速枪管：飞行 420px 音爆 70%，之后 +30% 伤 +2 穿透与蒸汽尾</summary>
     internal sealed class HypersonicBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -99,10 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 音爆冲击：突破点炸开的马赫环，沿飞行方向压扁、18 帧扩满 150px，
-    /// 仅在扩张波前判定伤害。使用 SHPCSonicBoom.fx 渲染激波环与汽化锥
-    /// </summary>
+    /// <summary>音爆马赫环，扩张波前伤害；SHPCSonicBoom.fx</summary>
     internal sealed class SHPCSonicBoomProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

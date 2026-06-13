@@ -16,9 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
 
         private float MoveSpeed => 10f;
 
-        /// <summary>
-        /// 基于comboStep的固定位置偏移角度表，确保确定性行为
-        /// </summary>
+        /// <summary>comboStep 固定偏移角表，确定性走位</summary>
         private static readonly float[] PositionAngles =
         [
             MathHelper.PiOver4,                  // 右上 45°
@@ -42,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             base.OnEnter(context);
             Context = context;
 
-            //基于comboStep选择固定位置，确保多人模式同步
+            //comboStep 固定角选位，多人同步
             float angle = PositionAngles[comboStep % PositionAngles.Length];
             targetPosition = context.Target.Center + angle.ToRotationVector2() * 400f;
         }

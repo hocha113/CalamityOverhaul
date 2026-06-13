@@ -2,9 +2,7 @@
 {
     internal interface IPrimitiveDrawable
     {
-        /// <summary>
-        /// 绘制顶点
-        /// </summary>
+        /// <summary>实体层顶点图元</summary>
         void DrawPrimitives();
     }
 }

@@ -12,8 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
-    //十层鬼域，开，无限叠加，无限重启，封锁过去，截断未来，
-    //你的层次太低，永远无法理解我现在的状态
+    //领域开关与 SeaDomainProj 弹幕
     internal static class SeaDomain
     {
         internal static int ID = 4;
@@ -146,10 +145,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private const float BossDamageFactor = 1.75f; //对Boss增加
         private const float HighLifeDamageFactor = 1.4f; //对高血量精英增加
 
-        /// <summary>
-        /// 获取当前领域最大半径（供瞬移等技能使用）
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>当前领域最大半径（瞬移等技能用）</summary>
         public float GetMaxRadius() {
             return maxDomainRadius;
         }
@@ -303,11 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             maxDomainRadius = layers[^1].Radius;
         }
 
-        /// <summary>
-        /// 判断是否为弱小可束缚生物
-        /// </summary>
-        /// <param name="npc"></param>
-        /// <returns></returns>
+        /// <summary>是否为可束缚弱小生物</summary>
         public static bool IsWeakEntity(NPC npc) {
             if (npc.boss || npc.defense > 60 || npc.lifeMax > 5500) {
                 return false;//强大实体

@@ -19,8 +19,8 @@ namespace CalamityOverhaul.Content.Tiles
             Main.tileNoAttach[Type] = true;
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
-            TileID.Sets.CanBeSatOnForNPCs[Type] = true; //方便为NPC调用ModifySittingTargetInfo
-            TileID.Sets.CanBeSatOnForPlayers[Type] = true; //方便为玩家调用ModifySittingTargetInfo
+            TileID.Sets.CanBeSatOnForNPCs[Type] = true; //供 ModifySittingTargetInfo 读取
+            TileID.Sets.CanBeSatOnForPlayers[Type] = true; //供 ModifySittingTargetInfo 读取
             TileID.Sets.DisableSmartCursor[Type] = true;
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
             AddMapEntry(new Color(200, 200, 200), Language.GetText("MapObject.Chair"));
@@ -34,8 +34,8 @@ namespace CalamityOverhaul.Content.Tiles
             TileObjectData.addTile(Type);
         }
 
-        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) {//如果返回了true，那么这个物块项目就能够被玩家交互，这里判定距离来防止发生无限距离交互的情况
-            return settings.player.IsWithinSnappngRangeToTile(i, j, 180);//避免能够从远处触发它
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) {//距离门限内才允许智能交互
+            return settings.player.IsWithinSnappngRangeToTile(i, j, 180);//禁止远距离触发
         }
 
         public override void ModifySittingTargetInfo(int i, int j, ref TileRestingInfo info) {
@@ -70,14 +70,14 @@ namespace CalamityOverhaul.Content.Tiles
         public override void MouseOver(int i, int j) {
             Player player = Main.LocalPlayer;
 
-            if (!player.IsWithinSnappngRangeToTile(i, j, 180)) { //匹配RightClick中条件。仅当单击时执行某些操作时才应显示交互
+            if (!player.IsWithinSnappngRangeToTile(i, j, 180)) { //与 RightClick 同距，超距不显示交互
                 return;
             }
 
             player.noThrow = 2;
             player.mouseInterface = true;
             player.cursorItemIconEnabled = true;
-            player.cursorItemIconID = ModContent.ItemType<Items.Placeable.FoodStallChair>();//当玩家鼠标悬停在物块之上时，显示该物品的材质
+            player.cursorItemIconID = ModContent.ItemType<Items.Placeable.FoodStallChair>();//悬停显示对应物品图标
 
             if (Main.tile[i, j].TileFrameX / 18 < 1) {
                 player.cursorItemIconReversed = true;

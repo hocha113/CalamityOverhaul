@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 双鳍鳕鱼技能，开火时周期性发射游动的鳕鱼
-    /// </summary>
+    /// <summary>双鳍鳕鱼技能，周期发射游动鳕鱼</summary>
     internal class FishDoubleCod : FishSkill
     {
         public override int UnlockFishID => ItemID.DoubleCod;
@@ -388,7 +386,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //白色高光（鳞片反光）
+            //高光
             sb.Draw(
                 fishTex,
                 drawPos,

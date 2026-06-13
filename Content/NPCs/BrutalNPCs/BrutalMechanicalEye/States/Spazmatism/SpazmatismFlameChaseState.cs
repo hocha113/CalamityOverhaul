@@ -9,24 +9,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼二阶段喷火追击状态：
-    /// 弧线贴近压制并持续喷吐火舌(扇形火焰流)，二阶段套路锚点
-    /// </summary>
+    /// <summary>二阶段喷火追击：弧线贴近+持续扇形火舌</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFlameChase, typeof(TwinsStateContext))]
     internal class SpazmatismFlameChaseState : TwinsStateBase
     {
         public override string StateName => "SpazmatismFlameChase";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFlameChase;
 
-        /// <summary>
-        /// 二阶段固定招式套路(有搭档时)：
-        /// 喷火追击→二阶冲刺→磁暴链锁→残影连冲→超新星对撞→火焰风暴→大招/交叉冲刺→(循环)
-        /// 合击节点由合击信号同步双眼
-        /// 
-        /// 二阶段固定招式套路(独眼时)：
-        /// 喷火追击→二阶冲刺→残影连冲→喷火追击→火焰风暴→二阶冲刺→(循环)
-        /// </summary>
+        /// <summary>二阶段套路(有搭档/独眼)；合击节点由 ComboSignal 同步，细节见 ComboSequence*</summary>
         private static readonly string[] ComboSequenceWithPartner =
         [
             "Phase2Dash",
@@ -133,9 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             return null;
         }
 
-        /// <summary>
-        /// 根据固定套路获取下一个状态
-        /// </summary>
+        /// <summary>按固定套路取下一状态</summary>
         private ITwinsState GetNextComboState() {
             bool hasPartner = HasPartner();
             string[] sequence = hasPartner ? ComboSequenceWithPartner : ComboSequenceSolo;
@@ -154,9 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             };
         }
 
-        /// <summary>
-        /// 检查是否有另一只眼睛存活
-        /// </summary>
+        /// <summary>搭档(激光眼)是否存活</summary>
         private bool HasPartner() {
             foreach (var n in Main.npc) {
                 if (n.active && n.type == NPCID.Retinazer) {

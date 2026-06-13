@@ -3,11 +3,8 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
-    /// <summary>
-    /// 逐体节充能波状态：以头部 whoAmI 为索引存储一条沿躯体传导的"能量波"，
-    /// 体节绘制时按自身在蠕虫上的位置比例读取波强度并调制热感着色器，
-    /// 形成"电流沿躯体奔跑"的可见充能波。纯视觉共享状态，各端独立推进，无需同步。
-    /// </summary>
+    /// <summary>逐体节充能波：以头部 whoAmI 索引，体节按位置比例读波强调热感</summary>
+    /// <para>纯视觉，各端独立推进，无需同步</para>
     internal static class DestroyerChargeWave
     {
         private struct WaveData
@@ -20,7 +17,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             public float Intensity;
             /// <summary>整体均匀发光（全环闪烁用），为true时忽略Phase/Width</summary>
             public bool FullBody;
-            /// <summary>最后一次推送的帧号，用于过期判断</summary>
+            /// <summary>末次推送帧号，过期判定</summary>
             public uint LastPushFrame;
         }
 

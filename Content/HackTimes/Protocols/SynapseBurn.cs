@@ -6,9 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 突触焚毁：对目标神经系统造成持续热伤害
-    /// </summary>
+    /// <summary>突触焚毁，持续热伤害</summary>
     internal class SynapseBurn : QuickHackDef
     {
         public override void SetDefaults() {
@@ -33,7 +31,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //每15帧造成一次伤害（5秒共20次）
+            //每 15 帧伤害，5 秒共 20 次
             if (elapsed % 15 == 0) {
                 int dmg = Math.Max(10, (int)(npc.lifeMax * 0.002f));
                 npc.SimpleStrikeNPC(dmg, 0, false, 0f, null, false, 0f, true);

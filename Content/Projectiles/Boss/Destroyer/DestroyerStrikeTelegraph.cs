@@ -10,12 +10,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
     /// <summary>
-    /// 通用预警线：脉冲红线在锁定前追踪目标，锁定后定格并白闪提示即将打击。
-    /// 无伤害纯演出，服务端生成以保证多人可见。
+    /// 通用预警线：锁定前脉冲红线追踪目标，锁定后定格白闪
+    /// 无伤害纯演出，服务端生成保证多人可见
     /// <br/>ai[0]: 锚定NPC索引（-1=固定在生成点）
     /// <br/>ai[1]: 追踪的玩家索引（-1=不追踪）
     /// <br/>ai[2]: 打包参数 = 模式 + 时长*4（用 <see cref="PackParams"/> 生成；
-    /// 时长走ai槽是因为 timeLeft 不参与弹幕生成同步包）。模式 0=方向固定 1=旋转追踪玩家 2=垂直线横向跟随玩家X
+    /// 时长走 ai 槽(timeLeft 不参与生成同步包)；模式 0 方向固定 1 旋追踪 2 垂线跟玩家 X）
     /// <br/>velocity = 单位方向
     /// </summary>
     internal class DestroyerStrikeTelegraph : ModProjectile

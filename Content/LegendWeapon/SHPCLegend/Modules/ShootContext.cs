@@ -1,62 +1,33 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 {
-    /// <summary>
-    /// SHPC 射击行为聚合上下文，所有改件通过 <see cref="SHPCModuleItem.Apply"/> 修改这些字段
-    /// 浮点字段默认 1f（中性倍率），整型/布尔默认 0/false（中性加成）
-    /// 对浮点倍率字段使用加算叠加：每个改件贡献增量（+0.5 = +50%），最终值 = 1 + 各改件增量之和
-    /// 行为标志（Beam*/Orb* 部分）由弹幕在生成、命中、消亡等钩子处直接消费
-    /// </summary>
+    /// <summary>SHPC 射击聚合上下文，改件经 Apply 加算修改；浮点默认 1、整型/布尔默认 0/false</summary>
     internal struct ShootContext
     {
         //═════ 基础数值（所有改件均可调） ═════
 
-        /// <summary>
-        /// 左键攻速倍率，作用于 useTime/useAnimation（>1 更快，<1 更慢）
-        /// </summary>
+        /// <summary>左键攻速倍率（useTime/useAnimation）</summary>
         public float AttackSpeedMul;
-        /// <summary>
-        /// 通用伤害倍率
-        /// </summary>
+        /// <summary>通用伤害倍率</summary>
         public float DamageMul;
-        /// <summary>
-        /// 左键散布角度倍率，0 表示散布归零
-        /// </summary>
+        /// <summary>左键散布倍率，0 为零散布</summary>
         public float SpreadMul;
-        /// <summary>
-        /// 左键基础发射数量加成（最终发数 = max(1, BeamCount + BeamCountAdd)，MergeBeams 启用则强制为 1）
-        /// </summary>
+        /// <summary>左键额外发射数（MergeBeams 强制 1）</summary>
         public int BeamCountAdd;
-        /// <summary>
-        /// 左键弹丸初速度倍率
-        /// </summary>
+        /// <summary>左键初速倍率</summary>
         public float BeamSpeedMul;
-        /// <summary>
-        /// 左键弹丸追踪强度倍率（>1 更强）
-        /// </summary>
+        /// <summary>左键追踪强度倍率</summary>
         public float HomingMul;
-        /// <summary>
-        /// 是否将多发弹幕合并为一发（聚束枪管）
-        /// </summary>
+        /// <summary>多发合并为一发</summary>
         public bool MergeBeams;
-        /// <summary>
-        /// 合并模式下的伤害加成倍率（额外）
-        /// </summary>
+        /// <summary>合并模式额外伤害倍率</summary>
         public float MergedDamageBonus;
-        /// <summary>
-        /// 法力消耗倍率
-        /// </summary>
+        /// <summary>法力消耗倍率</summary>
         public float ManaCostMul;
-        /// <summary>
-        /// 右键蓄力时间倍率（<1 更快蓄满）
-        /// </summary>
+        /// <summary>右键蓄力时间倍率</summary>
         public float ChargeTimeMul;
-        /// <summary>
-        /// 右键能量球飞行速度倍率
-        /// </summary>
+        /// <summary>右键球飞行速度倍率</summary>
         public float OrbSpeedMul;
-        /// <summary>
-        /// 暴击率加成（百分点直接相加）
-        /// </summary>
+        /// <summary>暴击率加点</summary>
         public int CritAdd;
 
         //═════ 光束行为钩子（CyberTraceBeamProj 消费） ═════
@@ -110,9 +81,7 @@
         /// <summary>能量球飞行阶段是否持续向最近敌人偏转追踪</summary>
         public bool OrbFlyingAttract;
 
-        /// <summary>
-        /// 中性默认值
-        /// </summary>
+        /// <summary>中性默认 ShootContext</summary>
         public static ShootContext Default => new() {
             AttackSpeedMul = 1f,
             DamageMul = 1f,

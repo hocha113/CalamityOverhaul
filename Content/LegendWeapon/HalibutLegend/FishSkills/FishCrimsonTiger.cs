@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 猩红虎鱼技能，右键召唤凶猛虎鱼群撕咬敌人
-    /// </summary>
+    /// <summary>猩红虎鱼技能，右键召唤虎鱼群撕咬</summary>
     internal class FishCrimsonTiger : FishSkill
     {
         public override int UnlockFishID => ItemID.CrimsonTigerfish;
@@ -65,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                     SpawnSummonEffect(position, mouseDir);
 
-                    //虎鱼召唤音效 - 凶猛嘶吼
+                    //虎鱼召唤音效
                     SoundEngine.PlaySound(SoundID.NPCHit1 with {
                         Volume = 0.8f,
                         Pitch = -0.5f

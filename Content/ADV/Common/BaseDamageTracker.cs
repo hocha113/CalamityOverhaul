@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Common
     {
         public string LocalizationCategory => "UI.QuestTracker";
 
-        //本地化文本
+        // 本地化文本
         public static LocalizedText QuestFailedPrefix { get; private set; }
         public static LocalizedText QuestCompletedPrefix { get; private set; }
         public static LocalizedText FailureReasonWrongWeapon { get; private set; }
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         internal static void DealtReset() {
-            //Boss已经被击败或者消失，重置追踪数据
+            // Boss 已消失，重置追踪
             TargetWeaponDamageDealt = 0f;
             TotalBossDamage = 0f;
             IsBossFightActive = false;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         public override void PostUpdateNPCs() {
-            if (!IsBossFightActive) {//没有正在进行的Boss战斗，重置追踪数据
+            if (!IsBossFightActive) { // 无 Boss 战，重置追踪
                 DealtReset();
                 return;
             }
@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Common
             if (CurrentDamageTrackerInstance != null
                 && CurrentDamageTrackerInstance.NPC.Alives()
                 && NPC.AnyNPCs(CurrentDamageTrackerInstance.NPC.type)) {
-                return;//Boss仍然存在，继续追踪
+                return; // Boss 仍在场，继续追踪
             }
 
             DealtReset();
@@ -53,11 +53,11 @@ namespace CalamityOverhaul.Content.ADV.Common
     }
 
     /// <summary>
-    /// 通用的伤害追踪系统基类，用于追踪玩家对特定NPC使用特定武器造成的伤害
+    /// 指定武器对 Boss 的伤害占比追踪基类
     /// </summary>
     internal abstract class BaseDamageTracker : DeathTrackingNPC, IWorldInfo
     {
-        //伤害追踪数据
+        // 伤害追踪数据
         internal static float TargetWeaponDamageDealt = 0f;
         internal static float TotalBossDamage = 0f;
         internal static bool IsBossFightActive = false;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         /// </summary>
         internal static BaseDamageTracker CurrentDamageTrackerInstance { get; set; }
 
-        //需要子类实现的配置
+        // 子类配置
         internal abstract int TargetNPCType { get; }
         internal virtual HashSet<int> OtherNPCType => [];
 
@@ -75,23 +75,22 @@ namespace CalamityOverhaul.Content.ADV.Common
         internal abstract float RequiredContribution { get; }
 
         /// <summary>
-        /// 被追踪的NPC实例，注意因为更新周期原因，该实例可能并不总是存在
+        /// 被追踪 NPC，更新周期内可能为 null
         /// </summary>
         internal NPC NPC { get; private set; }
 
-        public override bool InstancePerEntity => true;//对应NPC实例创建一个实例
+        public override bool InstancePerEntity => true; // 每 NPC 实例一份
 
-        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);//检查NPC是否为目标NPC
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);//应用于目标NPC
+        internal bool IsTargetByID(NPC npc) => npc.type == TargetNPCType || OtherNPCType.Contains(npc.type);
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsTargetByID(entity);
 
         void IWorldInfo.OnWorldLoad() {
-            ResetDamageTracking();//进入世界时重置追踪数据
+            ResetDamageTracking(); // 进世界重置
         }
 
         /// <summary>
-        /// 检查任务是否启用/激活，子类必须实现此方法来定义任务的激活条件
+        /// 任务是否激活
         /// </summary>
-        /// <returns>如果任务处于激活状态返回true，否则返回false</returns>
         public abstract bool IsQuestActive(Player player);
 
         protected virtual void ResetDamageTracking() {
@@ -106,17 +105,17 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return true;
             }
 
-            //Boss存在时标记战斗激活
+            // Boss 在场则激活战斗追踪
             IsBossFightActive = npc.active;
-            //记录Boss总生命值
+            // 记录 Boss 最大生命
             TotalBossDamage = npc.lifeMax;
 
             if (npc.Alives()) {
-                foreach (var n in npc.EntityGlobals) {//遍历所有GlobalNPC
-                    if (n is BaseDamageTracker tracker) {//检查是否为BaseDamageTracker的子类
-                        CurrentDamageTrackerInstance = tracker;//记录当前实例
-                        CurrentDamageTrackerInstance.NPC = npc;//记录NPC实例
-                        break;//找到第一个实例后退出循环
+                foreach (var n in npc.EntityGlobals) {
+                    if (n is BaseDamageTracker tracker) {
+                        CurrentDamageTrackerInstance = tracker;
+                        CurrentDamageTrackerInstance.NPC = npc;
+                        break;
                     }
                 }
             }
@@ -128,12 +127,12 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return;
             }
 
-            //检查任务是否激活
+            // 任务未激活则跳过
             if (!IsQuestActive(player)) {
                 return;
             }
 
-            //追踪实际造成的伤害
+            // 统计目标武器伤害
             if (IsTargetWeapon(item.type)) {
                 TargetWeaponDamageDealt += hit.Damage;
             }
@@ -149,26 +148,27 @@ namespace CalamityOverhaul.Content.ADV.Common
                 player = owner;
             }
 
-            //检查任务是否激活
+            // 任务未激活则跳过
             if (!IsQuestActive(player)) {
                 return;
             }
 
-            //检测弹幕是否来自目标武器
+            // 目标武器弹幕
             if (IsTargetProjectile(projectile)) {
                 TargetWeaponDamageDealt += hit.Damage;
                 return;
             }
 
-            //额外检测是否为目标武器发射的弹幕
+            // ItemUse 来源弹幕
             if (projectile.Alives() && projectile.CWR().Source is EntitySource_ItemUse itemSource && IsTargetWeapon(itemSource.Item.type)) {
                 TargetWeaponDamageDealt += hit.Damage;
             }
         }
 
         public sealed override void OnNPCDeath(NPC npc) {
-            if (IsTargetByID(npc)) {//这个判定是不必要的，不过还是写上吧
-                Check(npc);//作为 DeathTrackingNPC 的子类，OnKill会被客户端调用，所以这里的运行不会出现问题
+            if (IsTargetByID(npc)) {
+                // DeathTrackingNPC.OnKill 在客户端调用，此处安全
+                Check(npc);
             }
         }
 
@@ -177,14 +177,14 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return;
             }
 
-            //检查任务是否激活
+            // 任务未激活则跳过
             if (!IsQuestActive(Main.LocalPlayer)) {
                 return;
             }
 
             CheckQuestCompletion();
 
-            //重置追踪数据
+            // 重置追踪
             ResetDamageTracking();
         }
 
@@ -194,7 +194,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         protected virtual void CheckQuestCompletion() {
             Player player = Main.LocalPlayer;
 
-            //检测是否造成足够的伤害贡献
+            // 伤害占比判定
             float contribution = TotalBossDamage > 0 ? TargetWeaponDamageDealt / TotalBossDamage : 0f;
             int contributionPct = (int)Math.Round(contribution * 100);
             int requiredPct = (int)Math.Round(RequiredContribution * 100);
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         /// <summary>
-        /// 当任务完成时调用，子类可重写以实现自定义逻辑
+        /// 任务完成时回调
         /// </summary>
         public abstract void OnQuestCompleted(Player player, float contribution);
 
@@ -218,7 +218,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         /// </summary>
         public virtual void ShowFailureMessage(Player player, string reason) {
             int combat = CombatText.NewText(player.Hitbox, Color.Red, $"{QuestFailedPrefix.Value}: {reason}", true);
-            Main.combatText[combat].lifeTime = 300;//延长显示时间
+            Main.combatText[combat].lifeTime = 300; // 延长显示
             VaultUtils.Text($"{QuestFailedPrefix.Value}: {reason}", Color.Red);
         }
 
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         /// </summary>
         public virtual void ShowSuccessMessage(Player player, float contribution) {
             int combat = CombatText.NewText(player.Hitbox, Color.Gold, $"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", true);
-            Main.combatText[combat].lifeTime = 300;//延长显示时间
+            Main.combatText[combat].lifeTime = 300; // 延长显示
             VaultUtils.Text($"{QuestCompletedPrefix.Value} {SuccessDamageContribution.Value}: {contribution:P0}", Color.Gold);
         }
 
@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         }
 
         /// <summary>
-        /// 获取当前伤害追踪数据供UI使用
+        /// 供 UI 读取的追踪数据
         /// </summary>
         public static (float targetWeaponDamage, float totalDamage, bool isActive) GetDamageTrackingData() {
             return (TargetWeaponDamageDealt, TotalBossDamage, IsBossFightActive);

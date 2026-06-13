@@ -11,10 +11,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
-    /// <summary>
-    /// 毁灭者运动演出辅助：高速光带拖尾、冲刺爆发、刹车火花、体节火花、落地冲击与相机震动。
-    /// 所有粒子与音效均为客户端本地视觉，服务端调用自动跳过。
-    /// </summary>
+    /// <summary>毁灭者运动演出：光带拖尾、冲刺爆发、刹车火花、冲击与震屏</summary>
+    /// <para>粒子/音效客户端本地，服务端自动跳过</para>
     internal static class DestroyerMotionFX
     {
         //固定点数的缓存Trail（Trail的点数与宽度/颜色委托在构造时绑定，且持有GPU缓冲，须复用）
@@ -30,10 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 高速光带拖尾
 
-        /// <summary>
-        /// 在头部Draw中调用：把 npc.oldPos 缓存绘制为加法混合的光带，替代逐帧重绘贴图残影。
-        /// 仅在强度大于阈值时绘制
-        /// </summary>
+        /// <summary>头部 Draw：oldPos 加法混合光带，替代贴图残影；强度&gt;阈值才绘制</summary>
         public static void DrawHeadTrail(NPC npc, float intensity) {
             if (intensity <= 0.05f || EffectLoader.GradientTrail?.Value == null) {
                 return;
@@ -142,10 +137,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 冲刺与刹车
 
-        /// <summary>
-        /// 冲刺释放瞬间的爆发演出：拉长的光核 + 锥形火花 + 扩散环。
-        /// 屏幕扭曲音爆由 <see cref="Projectiles.Boss.Destroyer.DestroyerShockwave"/>（服务端生成）承担
-        /// </summary>
+        /// <summary>冲刺释放爆发：光核+锥形火花+扩散环；音爆扭曲见 DestroyerShockwave</summary>
         public static void SpawnDashBurst(Vector2 pos, Vector2 dir) {
             if (VaultUtils.isServer) {
                 return;
@@ -187,9 +179,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             }
         }
 
-        /// <summary>
-        /// 高速运动中体节沿途甩出火花/扬尘（调用方负责频率控制，内部做屏幕外剔除）
-        /// </summary>
+        /// <summary>体节高速火花/扬尘；调用方控频率，内部屏外剔除</summary>
         public static void SpawnSegmentSpeedSparks(NPC segment, float strength = 1f) {
             if (VaultUtils.isServer || !OnScreen(segment.Center)) {
                 return;
@@ -251,10 +241,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.9f, Pitch = -0.5f }, pos);
         }
 
-        /// <summary>
-        /// 相机冲击震动（遵守屏幕震动设置，服务端跳过）。
-        /// <paramref name="direction"/> 指定震动主轴（如冲刺/俯冲向量），缺省为随机方向
-        /// </summary>
+        /// <summary>相机冲击震动(受屏幕震动设置控制，服务端跳过)；direction 指定主轴，缺省随机</summary>
         public static void CameraPunch(Vector2 pos, float strength, int frames,
             string uniqueId = "DestroyerMotion", Vector2? direction = null) {
             if (VaultUtils.isServer || !CWRServerConfig.Instance.ScreenVibration) {
@@ -287,9 +274,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             return from + new Vector2(0, 400f);
         }
 
-        /// <summary>
-        /// 世界坐标是否在屏幕可见范围内（含外扩边距），用于跳过屏幕外的粒子生成
-        /// </summary>
+        /// <summary>世界坐标是否在屏幕可见范围(含外扩边距)，屏外跳过粒子</summary>
         public static bool OnScreen(Vector2 worldPos, float margin = 280f) {
             return worldPos.X > Main.screenPosition.X - margin
                 && worldPos.X < Main.screenPosition.X + Main.screenWidth + margin

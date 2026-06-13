@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    //地表探索分支
+    //地表探索
     internal class ExploreSnow : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //这里的任务完成会交给 ShadowOrbTP 来更新
+            //ShadowOrbTP 更新完成
             if (Objectives[0].IsCompleted && !IsCompleted) IsCompleted = true;
         }
     }
@@ -470,7 +470,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    //地下探索分支
+    //地下探索
     internal class ExploreUnderground : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -763,7 +763,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    //天空探索分支
+    //天空探索
     internal class ExploreSpace : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -834,16 +834,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             }
         }
 
-        /// <summary>
-        /// 检测玩家周围是否有空岛特征方块
-        /// </summary>
+        /// <summary>检测周围空岛特征方块</summary>
         private bool CheckIsOnFloatingIsland(Player player) {
             int playerX = (int)(player.Center.X / 16f);
             int playerY = (int)(player.Center.Y / 16f);
 
-            //扫描半径（例如周围 20 格范围内）
+            //扫描半径 20 格
             int range = 20;
-            //判定阈值（至少发现多少个方块才算，防止玩家自己垫了两个云块作弊，设为 5 比较宽松但有效）
+            //阈值 5，防垫块作弊
             int cloudCount = 0;
             int threshold = 5;
 
@@ -853,15 +851,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
                     Tile tile = Main.tile[i, j];
 
-                    //检查方块是否存在且活跃
                     if (tile != null && tile.HasTile) {
-                        //检查是否是空岛常见的构成方块
-                        if (tile.TileType == TileID.Cloud ||       //云
-                            tile.TileType == TileID.RainCloud ||   //雨云
-                            tile.TileType == TileID.Sunplate)      //日盘块 (空岛房屋)
+                        if (tile.TileType == TileID.Cloud
+                            || tile.TileType == TileID.RainCloud
+                            || tile.TileType == TileID.Sunplate)
                         {
                             cloudCount++;
-                            //如果计数达到了阈值，直接返回 true，无需继续扫描
                             if (cloudCount >= threshold) {
                                 return true;
                             }
@@ -955,7 +950,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    //建造与生活分支
+    //建造与生活
     internal class BuildHouse : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -980,13 +975,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public static bool CheckPlayerHouse(Player player) {
-            //将玩家的世界坐标转换为物块坐标
+            //世界坐标转物块坐标
             int tileX = (int)(player.Center.X / 16f);
             int tileY = (int)(player.Center.Y / 16f);
             if (WorldGen.StartRoomCheck(tileX, tileY)) {
                 return true;
             }
-            //或者检查鼠标位置
             tileX = (int)(Main.MouseWorld.X / 16f);
             tileY = (int)(Main.MouseWorld.Y / 16f);
             if (WorldGen.StartRoomCheck(tileX, tileY)) {
@@ -996,7 +990,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         public override void UpdateByPlayer() {
-            //每秒检查一次玩家是否有房屋
+            //每秒检查是否有房屋
             if (Main.GameUpdateCount % 60 == 0 && CheckPlayerHouse(Main.LocalPlayer)) {
                 Objectives[0].CurrentProgress = 1;
             }
@@ -1033,7 +1027,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    //炼金分支
+    //炼金
     internal class CollectHerbs : QuestNode
     {
         public override void SetStaticDefaults() {
@@ -1106,7 +1100,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    //综合成就任务
+    //综合成就
     internal class DeepExplorer : QuestNode
     {
         public override void SetStaticDefaults() {

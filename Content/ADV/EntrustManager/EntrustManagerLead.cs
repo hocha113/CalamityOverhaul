@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -45,19 +45,19 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         public static LocalizedText TextStyleButtonLabel { get; private set; }
         public static LocalizedText TextStyleButtonAction { get; private set; }
         public static LocalizedText TextStyleButtonDesc { get; private set; }
-        //阶段4：关注引导
+        // 阶段4：关注引导
         public static LocalizedText TextTrackPromptTitle { get; private set; }
         public static LocalizedText TextTrackPromptHintLabel { get; private set; }
         public static LocalizedText TextTrackPromptHintAction { get; private set; }
         public static LocalizedText TextTrackPromptDesc { get; private set; }
         public static LocalizedText TextTrackPromptNextBtn { get; private set; }
-        //阶段5：追踪栏介绍
+        // 阶段5：追踪栏介绍
         public static LocalizedText TextTrackerIntroTitle { get; private set; }
         public static LocalizedText TextTrackerIntroLine1 { get; private set; }
         public static LocalizedText TextTrackerIntroLine2 { get; private set; }
         public static LocalizedText TextTrackerIntroLine3 { get; private set; }
         public static LocalizedText TextTrackerIntroNextBtn { get; private set; }
-        //阶段6：挂起说明
+        // 阶段6：挂起说明
         public static LocalizedText TextSuspendIntroTitle { get; private set; }
         public static LocalizedText TextSuspendIntroHintLabel { get; private set; }
         public static LocalizedText TextSuspendIntroHintAction { get; private set; }
@@ -106,17 +106,17 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         private static float animProgress = 0f;
         private static float shaderTimer = 0f;
 
-        //阶段内部帧计数，用于防呆兑底逻辑
+        // 阶段内部帧计数
         private static int phaseTickTimer;
-        //进入阶段时的关注/挂起计数快照
+        // 进入阶段时关注/挂起计数快照
         private static int trackedSnapshot;
         private static int suspendedSnapshot;
-        //>0 时表示检测到玩家操作或兑底触发，倒计后推进下一阶段
+        // >0 时玩家操作或兜底触发，倒计后推进
         private static int autoAdvanceDelay;
-        //倒计初始总时长，用于进度反馈画制
+        // 自动推进倒计总时长
         private static int autoAdvanceDelayTotal;
 
-        //防呆兑底超时（60 帧≈ 1 秒）
+        // 防呆兜底超时，60 帧≈1 秒
         private const int Phase4SoftTimeout = 60 * 30;
         private const int Phase5SoftTimeout = 60 * 35;
         private const int Phase6SoftTimeout = 60 * 25;
@@ -124,23 +124,23 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         private const int AutoFallbackAdvanceDelay = 60;
 
         private const float AnimSpeed = 0.12f;
-        //着色器边框扩展量（与ForestPanel保持一致）
+        // 着色器边框扩展，与 ForestPanel 一致
         private const int EdgePad = 8;
 
-        //卡片底部为确认按钮预留的高度，避免按钮遮挡文本
+        // 卡片底部确认按钮预留高度
         private const int CardFooterReserve = 30;
 
-        //阶段1卡片固定宽度，高度根据是否绑定按键动态决定
+        // 阶段1卡片尺寸
         private const int CardW1 = 320;
         private const int CardH1_Bound = 92;
         private const int CardH1_Unbound = 138;
-        //阶段2卡片尺寸
+        // 阶段2卡片尺寸
         private const int CardW2 = 318;
         private const int CardH2 = 176;
-        //阶段3卡片尺寸
+        // 阶段3卡片尺寸
         private const int CardW3 = 286;
         private const int CardH3 = 138;
-        //与三套管理器样式中的样式切换按钮位置保持一致
+        // 与样式切换按钮位置一致
         private const int StyleButtonOffsetFromPanelRight = 180;
         private const int StyleButtonTop = 36;
         private const int StyleButtonSize = 26;
@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             ResetPhaseGuards();
         }
 
-        //阶段切换时复位计时器与快照
+        // 阶段切换时复位计时器与快照
         private static void ResetPhaseGuards() {
             phaseTickTimer = 0;
             autoAdvanceDelay = 0;
@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             suspendedSnapshot = ui?.CountByStatus(QuestEntryStatus.Suspended) ?? 0;
         }
 
-        //启动一个自动推进倒计时
+        // 启动一个自动推进倒计时
         private static void StartAutoAdvance(int delay) {
             autoAdvanceDelay = delay;
             autoAdvanceDelayTotal = delay;
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
                 case LeadPhase.TrackPromptInPanel:
                     animProgress = MathHelper.Lerp(animProgress, 1f, AnimSpeed);
-                    //面板被关闭时退回按键提示阶段
+                    // 面板被关闭时退回按键提示阶段
                     if (!ui.IsOpen) {
                         currentPhase = LeadPhase.KeyPrompt;
                         animProgress = 0f;
@@ -284,13 +284,13 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             currentPhase = LeadPhase.Complete;
         }
 
-        // ─── 防呆兜底逻辑 ────────────────────────────────────────────────────────
+        // 防呆兜底
 
-        //阶段4：检测玩家关注操作或超时自动关注，再推进到阶段5
+        // 阶段4：关注操作或超时自动关注
         private static void UpdateTrackPhaseGuard(QuestManagerUI ui) {
             phaseTickTimer++;
 
-            //自动推进倒计时（玩家或兜底已触发关注操作后留出短暂可视反馈）
+            // 自动推进倒计
             if (autoAdvanceDelay > 0) {
                 autoAdvanceDelay--;
                 if (autoAdvanceDelay == 0)
@@ -298,27 +298,27 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 return;
             }
 
-            //玩家成功关注：相比阶段开始时多出至少一个被关注条目
+            // 玩家成功关注
             int trackedNow = ui.CountByStatus(QuestEntryStatus.Tracked);
             if (trackedNow > trackedSnapshot) {
                 StartAutoAdvance(AutoActionConfirmDelay);
                 return;
             }
 
-            //超时兑底：自动关注第一条可关注的委托，给玩家可见的"自动操作"反馈
+            // 超时兜底自动关注第一条
             if (phaseTickTimer > Phase4SoftTimeout) {
                 string key = ui.TryGetFirstTrackableKey();
                 if (key != null && ui.SetEntryStatus(key, QuestEntryStatus.Tracked)) {
                     StartAutoAdvance(AutoFallbackAdvanceDelay);
                 }
                 else {
-                    //找不到可关注条目时直接推进，避免卡死
+                    // 无可关注条目直接推进
                     StartTrackerWidgetIntro();
                 }
             }
         }
 
-        //阶段5：长时间无操作时直接推进到阶段6
+        // 阶段5：长时间无操作推进阶段6
         private static void UpdateTrackerIntroGuard() {
             phaseTickTimer++;
             if (autoAdvanceDelay > 0) {
@@ -332,7 +332,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             }
         }
 
-        //阶段6：检测玩家挂起操作或超时直接完成引导
+        // 阶段6：挂起操作或超时完成引导
         private static void UpdateSuspendPhaseGuard(QuestManagerUI ui) {
             phaseTickTimer++;
 
@@ -343,14 +343,14 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 return;
             }
 
-            //玩家成功挂起任意委托
+            // 玩家成功挂起任意委托
             int suspendedNow = ui.CountByStatus(QuestEntryStatus.Suspended);
             if (suspendedNow > suspendedSnapshot) {
                 autoAdvanceDelay = AutoActionConfirmDelay;
                 return;
             }
 
-            //超时兜底：直接结束引导，不强制挂起任何条目以免破坏玩家进度
+            // 超时兜底直接结束
             if (phaseTickTimer > Phase6SoftTimeout) {
                 autoAdvanceDelay = AutoActionConfirmDelay;
             }
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             return keys.Count > 0 ? keys[0] : null;
         }
 
-        // ─── 阶段1：左下角按键提示卡 ───────────────────────────────────────────
+        // 阶段1按键提示卡
 
         private static void DrawKeyPromptCard(SpriteBatch sb) {
             string boundKey = GetBoundKeyName();
@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             float px = x + 14f, py = y + 11f;
 
             if (hasBind) {
-                //单行：已绑定
+                // 单行：已绑定
                 string line = TextKeyPromptBound.Format(displayKey);
                 int wrapW = (int)((CardW1 - 28) / 0.85f);
                 string[] wrapped = CWRUtils.WrapTextArray(line, font, wrapW, 99, out _);
@@ -412,7 +412,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 float lineH_w = font.MeasureString("A").Y * warnScale + 2f;
                 float lineH_1 = font.MeasureString("A").Y * subScale1 + 2f;
 
-                //警告标题（琥珀色脉动，提升醒目度）
+                // 警告标题
                 float blink = 0.84f + MathF.Sin(shaderTimer * 52f) * 0.16f;
                 var warnColor = new Color(
                     (int)(255 * blink),
@@ -424,7 +424,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
                 py += lineH_w + 2f;
 
-                //可用按键提示（白色主行）
+                // 按键提示
                 string keyLine = TextKeyPromptDefaultKey.Format(displayKey);
                 int keyWrapW = (int)((CardW1 - 28) / subScale1);
                 string[] keyWrapped = CWRUtils.WrapTextArray(keyLine, font, keyWrapW, 99, out _);
@@ -436,7 +436,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 }
                 py += 1f;
 
-                //设置引导（暗淡提示色）
+                // 绑定引导
                 int hintWrapW = (int)((CardW1 - 28) / subScale2);
                 string[] hintWrapped = CWRUtils.WrapTextArray(TextKeyPromptBindHint.Value, font, hintWrapW, 99, out _);
                 foreach (string wl in hintWrapped) {
@@ -451,7 +451,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 AdvanceFromKeyPrompt();
         }
 
-        // ─── 阶段2：面板右侧说明卡 ─────────────────────────────────────────────
+        // 阶段2说明卡
 
         private static void DrawPanelIntroCard(SpriteBatch sb) {
             var ui = QuestManagerUI.Instance;
@@ -465,7 +465,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
             DrawCardBackground(sb, card, 1f, alpha);
 
-            //左侧三角箭头
+            // 左侧三角箭头
             DrawLeftArrow(sb, new Vector2(x - 8f, y + CardH2 * 0.5f), alpha);
 
             var font = FontAssets.MouseText.Value;
@@ -477,19 +477,19 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             float lineH_b = font.MeasureString("A").Y * bodyScale + 2f;
             float lineH_s = font.MeasureString("A").Y * subScale + 2f;
 
-            //标题
+            // 标题
             Utils.DrawBorderString(sb, TextPanelIntroTitle.Value,
                 new Vector2(px, py),
                 new Color(230, 225, 100, (int)(255 * alpha)), titleScale);
             py += lineH_t + 2f;
 
-            //分割线
+            // 分割线
             BaseManagerStyle.FillRect(sb,
                 new Rectangle((int)px, (int)py, CardW2 - 28, 1),
                 new Color(130, 125, 70, (int)(130 * alpha)));
             py += 6f;
 
-            //关注说明
+            // 关注说明
             float rightKeyW = font.MeasureString(TextRightClickLabel.Value).X * bodyScale;
             Utils.DrawBorderString(sb, TextRightClickLabel.Value,
                 new Vector2(px, py),
@@ -508,7 +508,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             }
             py += 6f;
 
-            //挂起说明
+            // 挂起说明
             float midKeyW = font.MeasureString(TextMiddleClickLabel.Value).X * bodyScale;
             Utils.DrawBorderString(sb, TextMiddleClickLabel.Value,
                 new Vector2(px, py),
@@ -529,7 +529,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 StartStyleButtonPrompt();
         }
 
-        // ─── 阶段3：样式切换按钮提示卡 ───────────────────────────────────────────
+        // 阶段3样式按钮提示
 
         private static void StartStyleButtonPrompt() {
             currentPhase = LeadPhase.StyleButtonPrompt;
@@ -615,9 +615,9 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 new Color(255, 230, 140, (int)(120 * alpha * pulse)));
         }
 
-        // ─── 阶段4：关注委托引导卡 ────────────────────────────────────────────
+        // 阶段4关注引导卡
 
-        //阶段4卡片尺寸
+        // 阶段4卡片尺寸
         private const int CardW4 = 318;
         private const int CardH4 = 152;
 
@@ -681,14 +681,14 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 StartTrackerWidgetIntro();
         }
 
-        // ─── 阶段5：追踪栏侧边介绍卡 ────────────────────────────────────────────
+        // 阶段5追踪栏介绍
 
-        //阶段5卡片尺寸
+        // 阶段5卡片尺寸
         private const int CardW5 = 312;
         private const int CardH5 = 174;
 
         private static void StartTrackerWidgetIntro() {
-            //自动收起委托管理器面板，把焦点交给左侧追踪栏
+            // 收起管理器面板，聚焦追踪栏
             var ui = QuestManagerUI.Instance;
             if (ui != null && ui.IsOpen) ui.TogglePanel();
             currentPhase = LeadPhase.TrackerWidgetIntro;
@@ -699,7 +699,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         private static void DrawTrackerIntroCard(SpriteBatch sb) {
             var widget = EntrustTrackerWidget.Instance;
 
-            //追踪栏外接矩形（如果不可用则使用一个屏幕左侧的预估区域）
+            // 追踪栏外接矩形，不可用时用左侧预估区域
             Rectangle trackerRect;
             if (widget != null && widget.GetTrackerBounds() is { Width: > 0 } bounds) {
                 trackerRect = bounds;
@@ -766,7 +766,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         private static void DrawBulletLine(SpriteBatch sb, ReLogic.Graphics.DynamicSpriteFont font, string text,
             ref float py, float px, float scale, int wrapWidth,
             Color textColor, Color bulletColor, float alpha) {
-            //绘制项目符号
+            // 绘制项目符号
             string bullet = "·";
             float bulletW = font.MeasureString(bullet).X * scale + 4f;
             Utils.DrawBorderString(sb, bullet, new Vector2(px, py), bulletColor, scale);
@@ -784,14 +784,14 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             if (first) py += lineH;
         }
 
-        // ─── 阶段6：挂起委托说明卡 ────────────────────────────────────────────
+        // 阶段6挂起说明卡
 
-        //阶段6卡片尺寸
+        // 阶段6卡片尺寸
         private const int CardW6 = 318;
         private const int CardH6 = 170;
 
         private static void StartSuspendIntro() {
-            //重新打开面板，让玩家联系到挂起操作的位置
+            // 重新打开面板关联挂起操作
             var ui = QuestManagerUI.Instance;
             if (ui != null && !ui.IsOpen) ui.TogglePanel();
             currentPhase = LeadPhase.SuspendInfoInPanel;
@@ -860,7 +860,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 MarkGuideSeen();
         }
 
-        // ─── 着色器背景（含降级回退） ────────────────────────────────────────────
+        // 着色器背景与降级
 
         private static void DrawCardBackground(SpriteBatch sb, Rectangle card, float variant, float alpha) {
             Effect effect = EffectLoader.EntrustGuideCard?.Value;
@@ -885,19 +885,19 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                     RasterizerState.CullNone, null, Main.UIScaleMatrix);
             }
             else {
-                //降级：纯色背景 + 边框
+                // 降级纯色背景
                 BaseManagerStyle.FillRect(sb, card, new Color(0, 0, 0, (int)(200 * alpha)));
                 BaseManagerStyle.StrokeRect(sb, card, 1, new Color(160, 160, 160, (int)(120 * alpha)));
             }
         }
 
-        // ─── 辅助 UI 元素 ────────────────────────────────────────────────────────
+        // 辅助 UI
 
         private static bool DrawConfirmButton(SpriteBatch sb, Rectangle card, float alpha, string text = null) {
             const int btnW = 78, btnH = 20, margin = 8;
             var rect = new Rectangle(card.Right - btnW - margin, card.Bottom - btnH - margin, btnW, btnH);
 
-            //在按钮上方画一条贯穿卡片的细分隔线，将正文与按钮区视觉分离
+            // 按钮上方分隔线
             int sepY = rect.Y - 6;
             BaseManagerStyle.FillRect(sb,
                 new Rectangle(card.X + 12, sepY, card.Width - 24, 1),
@@ -907,7 +907,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             BaseManagerStyle.FillRect(sb, rect, new Color(22, 58, 22, (int)((hovered ? 215 : 140) * alpha)));
             BaseManagerStyle.StrokeRect(sb, rect, 1, new Color(90, 185, 90, (int)(145 * alpha)));
 
-            //自动推进倒计时阶段，在按钮底部画一条进度条作为反馈
+            // 自动推进进度条
             if (autoAdvanceDelay > 0 && autoAdvanceDelayTotal > 0) {
                 float progress = 1f - autoAdvanceDelay / (float)autoAdvanceDelayTotal;
                 int barW = (int)(rect.Width * MathHelper.Clamp(progress, 0f, 1f));

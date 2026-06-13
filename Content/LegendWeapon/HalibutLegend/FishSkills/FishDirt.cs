@@ -134,9 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 土鱼跟随者弹幕
-    /// </summary>
+    /// <summary>土鱼跟随弹幕</summary>
     internal class DirtFishFollower : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.Dirtfish;
@@ -594,9 +592,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 土球弹幕，由土鱼聚合而成
-    /// </summary>
+    /// <summary>土球弹幕，土鱼聚合产物</summary>
     internal class DirtBall : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

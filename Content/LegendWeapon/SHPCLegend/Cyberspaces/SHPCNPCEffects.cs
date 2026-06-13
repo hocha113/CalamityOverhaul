@@ -12,11 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// SHPC 武器专属 NPC 附加效果容器
-    /// <br/>数据侵蚀（归零枪管）：持续 tick 伤害 + 绿色腐蚀滤镜
-    /// <br/>时相减速（时相握把）：强制降速 + 蓝紫粒子视觉
-    /// </summary>
+    /// <summary>SHPC 武器 NPC 附加效果：数据侵蚀、时相减速等</summary>
     internal class SHPCNPCEffects : GlobalNPC
     {
         public override bool InstancePerEntity => true;

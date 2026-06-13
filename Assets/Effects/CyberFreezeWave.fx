@@ -1,7 +1,6 @@
 // ============================================================================
-// CyberFreezeWave.fx — 赛博领域冻结黑墙能量波
-// 六角网格 + 伪3D立体感 + 黑墙风格扩散
-// 绘制在以领域中心为原点的大型四边形上，加法混合
+// CyberFreezeWave.fx 赛博领域冻结黑墙能量波
+// s0+s1 Additive；领域中心方形 quad
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -12,7 +11,7 @@ float ringProgress;     // 0~1 波前扩张进度
 float ringThickness;    // 波前厚度（归一化）
 float fadeAlpha;        // 整体淡出 0~1
 
-// ---- 六角网格工具函数 ----
+// 六角网格工具函数
 
 // 将直角坐标转换为六角网格坐标
 float2 hexCenter(float2 p, float size)
@@ -73,23 +72,23 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318;
 
-    // ---- 噪声扰动波前边缘 ----
+    // 噪声扰动波前边缘
     float n1 = tex2D(noiseTex, float2(normAngle * 3.0 + uTime * 2.5, ringProgress * 1.5)).r;
     float n2 = tex2D(noiseTex, float2(normAngle * 6.0 - uTime * 1.8, ringProgress + 0.3)).g;
     float noiseDisp = (n1 * 0.55 + n2 * 0.45 - 0.5) * 0.06;
 
     float adjDist = dist + noiseDisp;
 
-    // ---- 主波前环形遮罩 ----
+    // 主波前环形遮罩
     float ringDist = abs(adjDist - ringProgress);
     float ringMask = 1.0 - smoothstep(0.0, ringThickness, ringDist);
 
     // 内侧压缩面更亮
     float innerBias = smoothstep(ringProgress, ringProgress - ringThickness * 0.5, adjDist);
 
-    // ================================================================
+    // =
     // 六角网格效果 —— 黑墙风格
-    // ================================================================
+    // =
 
     // 将UV映射到世界空间比例的六角网格
     float hexSize = 0.045;
@@ -112,9 +111,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float waveFrontHit = 1.0 - smoothstep(0.0, ringThickness * 3.0, abs(hexCenterDist - ringProgress));
     float hexFlash = waveFrontHit * step(0.3, hexId);
 
-    // ================================================================
+    // =
     // 伪3D立体感：根据位置给六角格子添加深度错觉
-    // ================================================================
+    // =
 
     // 越靠外的六角格子有轻微透视偏移感
     float depth = hexCenterDist * 0.3;
@@ -128,9 +127,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float raised = step(0.65, hexId);
     float raiseGlow = raised * cellFill * 0.4;
 
-    // ================================================================
+    // =
     // 颜色合成 —— 赛博黑墙风格
-    // ================================================================
+    // =
 
     // 黑墙主色调：深暗红黑底 + 红晶能量边缘（偏冷红/品红，避开领域的暖橙红）
     float3 blackWallBase = float3(0.06, 0.01, 0.04);

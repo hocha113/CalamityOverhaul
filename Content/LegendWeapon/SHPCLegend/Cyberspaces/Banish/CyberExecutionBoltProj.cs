@@ -10,13 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>
-    /// Boss执行级故障天雷
-    /// <br/>放逐对Boss级目标改为召唤大量该弹幕进行高伤打击
-    /// <br/>视觉相比 <see cref="CyberGlitchBoltProj"/> 更庞大更帅气：更长更粗的主干、自动锁向Boss末端、附带分叉子雷
-    /// <br/>ai[0] 入射角度  ai[1] 起始延迟  ai[2] 目标NPC索引
-    /// <br/>localAI[0] 是否为分叉子雷（0=主干 1=分叉）
-    /// </summary>
+    /// <summary>Boss 执行天雷，ai0 角度 ai1 延迟 ai2 目标 NPC</summary>
     internal class CyberExecutionBoltProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -109,9 +103,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             Lighting.AddLight(lightPos, new Vector3(0.55f, 0.85f, 1f) * intensity);
         }
 
-        /// <summary>
-        /// 主干可见期间每帧在末端散出少量电流火花，持续强化电击穿透感
-        /// </summary>
+        /// <summary>末端电流火花</summary>
         private void EmitEndpointSparks(float t) {
             if (IsFork || Main.dedServ) return;
             if (!pathReady || points == null || pointCount < 2) return;
@@ -233,9 +225,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             points[writeIdx] = keys[keyCount - 1];
         }
 
-        /// <summary>
-        /// 解析当前弹幕的终点：主干用ai[2]指向的目标NPC中心；fork用localAI[1]/[2]携带的覆写终点
-        /// </summary>
+        /// <summary>解析终点：主干用 ai2 NPC，fork 用 localAI 覆写</summary>
         private bool ResolveEndPoint(out Vector2 end) {
             if (IsFork) {
                 if (hasForkEnd) {

@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 珊瑚枪管：命中点长出珊瑚锚，锚点间连成伤害礁线，右键爆炸触发同步浪涌。
-    /// </summary>
+    /// <summary>珊瑚枪管：命中长锚连成礁线，右键爆炸同步浪涌</summary>
     internal sealed class CoralReefBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -69,9 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 珊瑚锚：4 段珊瑚枝程序绘制 + 礁线 Trail（CyberDataArc shader）连向附近兄弟锚点
-    /// </summary>
+    /// <summary>珊瑚锚：枝程序绘+礁线 Trail</summary>
     internal sealed class SHPCCoralAnchorProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

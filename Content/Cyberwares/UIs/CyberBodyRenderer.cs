@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    ///赛博义体界面的像素人体渲染器
-    ///负责程序化绘制像素风格的人形轮廓、体内电路结构和赛博植入节点
-    /// </summary>
+    /// <summary>像素人体渲染：轮廓/电路/植入节点</summary>
     internal class CyberBodyRenderer
     {
         private readonly struct CircuitCurve
@@ -76,21 +73,17 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///像素缩放倍率，控制人体绘制的整体大小
-        /// </summary>
+        /// <summary>像素缩放倍率</summary>
         public const float PixelScale = 4.5f;
 
-        /// <summary>
-        ///人体节点总数
-        /// </summary>
+        /// <summary>人体节点数 11</summary>
         public const int NodeCount = 11;
 
         private static readonly Vector2 BodyGridCenter = new(16f, 28f);
 
         #region 像素人体数据
 
-        //人体轮廓线段数据，每行为(x1,y1,x2,y2)，坐标基于32x56像素网格（七头身比例，裆部在y=28正中）
+        //轮廓线段 32x56 网格，裆 y=28
         private static readonly int[,] OutlineSegments = {
             //头部（圆角矩形，所有角用斜线连接）
             {12, 0, 20, 0},     //颅顶
@@ -175,7 +168,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             {16, 56, 23, 56},   //右足底
         };
 
-        //主经脉，负责表现主要的机械神经束和骨架主干
+        //主经脉
         private static readonly CircuitCurve[] PrimaryCircuits = {
             new(16f, 1f, 15.45f, 2.15f, 16.35f, 4.85f, 16f, 6f, -0.25f, 1.7f),
             new(16f, 6f, 15.1f, 12.1f, 17.15f, 21.2f, 16f, 28f, 0f, 3.05f),
@@ -193,7 +186,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             new(20f, 42f, 20.9f, 44.35f, 20.75f, 49.25f, 20f, 52f, 1.88f, 1.48f),
         };
 
-        //次级结构线，负责胸腔、脑部和关节等次级结构
+        //次级结构线
         private static readonly CircuitSegment[] SecondaryCircuits = {
             new(13, 2, 19, 2, 0.12f, 1.2f),
             new(14, 4, 18, 4, 0.2f, 1.2f),
@@ -215,7 +208,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             new(25, 21, 27, 21, 1.16f, 1f),
         };
 
-        //胸腔主肋骨脉络，用轻微弧线替代原本的平直横线
+        //胸腔肋骨弧线
         private static readonly CircuitCurve[] RibCageCurves = {
             new(15.95f, 16.55f, 14.65f, 15.95f, 12.15f, 16.55f, 10.55f, 17.75f, 0.68f, 1f),
             new(16.05f, 16.55f, 17.35f, 15.95f, 19.85f, 16.55f, 21.45f, 17.75f, 0.74f, 1f),
@@ -225,7 +218,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             new(16.05f, 20.85f, 17.15f, 20.35f, 18.95f, 21.05f, 20.25f, 21.95f, 1.02f, 0.92f),
         };
 
-        //毛细分支，用短折线打破内部结构过于规则的像素栅格感
+        //毛细分支
         private static readonly CapillaryBranch[] CapillaryBranches = {
             new(16, 8, 14, 10, 12, 12, 0.12f),
             new(16, 8, 18, 10, 20, 12, 0.18f),
@@ -349,7 +342,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 CyberwareTheme.DrawLine(sb, px, start, end, 2f, outlineColor);
             }
 
-            //全息投影偏移鬼影——模拟全息色差伪影
+            //全息鬼影，色差伪影
             Color ghostColor = CyberwareTheme.AccentCyan * (alpha * 0.08f);
             float ghostDx = MathF.Sin(globalTimer * 1.5f) * 2f;
             float ghostDy = MathF.Cos(globalTimer * 1.8f) * 1f;
@@ -359,7 +352,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 CyberwareTheme.DrawLine(sb, px, gStart, gEnd, 1f, ghostColor);
             }
 
-            //人体区域扫描线——从头到脚循环扫描
+            //人体扫描线，头到脚循环
             float scanWorldY = bodyOffset.Y + scanLineY * s + breathe;
             if (scanWorldY > bodyOffset.Y && scanWorldY < bodyOffset.Y + 56 * s) {
                 Color bodyScanColor = CyberwareTheme.Accent * (alpha * 0.15f);

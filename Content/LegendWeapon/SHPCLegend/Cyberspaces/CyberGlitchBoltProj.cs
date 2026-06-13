@@ -7,12 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博空间故障闪电弹幕
-    /// <br/>领域展开时生成的闪电形黑墙故障线——从中心快速延伸再收缩消失
-    /// <br/>使用 <see cref="Trail"/> 条带 + CyberGlitchBolt.fx 着色器渲染
-    /// <br/>锯齿折线路径+数字故障方块+裂缝核心+数据条纹+边缘腐蚀
-    /// </summary>
+    /// <summary>领域展开故障闪电，Trail+CyberGlitchBolt.fx</summary>
     internal class CyberGlitchBoltProj : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

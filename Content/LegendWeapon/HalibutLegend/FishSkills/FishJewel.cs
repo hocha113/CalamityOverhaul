@@ -97,9 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///播放音乐化的宝石音效，每种宝石对应不同音高
-        ///</summary>
+        /// <summary>按音高播放宝石音效</summary>
         private void PlayMusicalGemSound(Vector2 position, int gemType) {
             //主音符 - 清脆的钟声
             SoundEngine.PlaySound(SoundID.Item29 with {
@@ -139,9 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///生成节奏化的视觉特效
-        ///</summary>
+        /// <summary>召唤 VFX</summary>
         private void SpawnRhythmicEffect(Vector2 position, int gemType) {
             Color gemColor = GetGemColor(gemType);
 
@@ -210,9 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///获取宝石颜色
-        ///</summary>
+        /// <summary>宝石颜色</summary>
         public static Color GetGemColor(int gemType) {
             return gemType switch {
                 0 => new Color(255, 100, 100),   //红宝石
@@ -225,9 +219,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             };
         }
 
-        ///<summary>
-        ///获取对应宝石的物品ID
-        ///</summary>
+        /// <summary>宝石对应物品 ID</summary>
         public static int GetGemItemID(int gemType) {
             int id = gemType switch {
                 0 => ItemID.Ruby,
@@ -410,7 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             float fadeAlpha = 1f - Projectile.alpha / 255f;
 
-            //绘制节奏性残影拖尾 - 根据音乐脉动调整透明度
+            //节奏残影拖尾
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
@@ -440,7 +432,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 mainDrawPos = Projectile.Center - Main.screenPosition;
             float pulse = 0.8f + musicPulse * 0.4f; //节奏脉动
 
-            //绘制多层光晕效果 - 随音乐脉动
+            //多层光晕
             for (int i = 0; i < 4; i++) {
                 float glowScale = Projectile.scale * (1.2f + i * 0.25f + musicPulse * 0.2f) * pulse;
                 float glowAlpha = (0.5f - i * 0.1f) * fadeAlpha;
@@ -609,7 +601,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float fadeAlpha = 1f - Projectile.alpha / 255f;
             float rhythmPulse = (float)Math.Sin(Time * 0.4f + rhythmPhase) * 0.5f + 0.5f;
 
-            //绘制节奏性残影拖尾
+            //节奏残影拖尾
             for (int i = 1; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 

@@ -15,12 +15,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Skills
 {
     /// <summary>
-    /// 义体技能雷达的可视层 —— 纯绘制，状态全部从 <see cref="CyberwareSkillRadialController"/> 读取
-    /// <list type="bullet">
-    ///   <item>使用 <see cref="SHPCRenderer"/> 的底层弧形绘制原语，与 SHPC 系列 UI 视觉语言保持一致</item>
-    ///   <item>扇区图标复用各义体物品的原版纹理，无需额外美术资源</item>
-    ///   <item>悬停扇区的信息面板复用 <see cref="SHPCRenderer.DrawInfoPanel"/></item>
-    /// </list>
+    /// 义体技能雷达可视层，纯绘制，状态读 Controller
+    /// <br/>SHPCRenderer 弧形原语 + 义体物品图标 + DrawInfoPanel
     /// </summary>
     internal class CyberwareSkillRadialUI : UIHandle, ILocalizedModType
     {
@@ -36,7 +32,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         public static LocalizedText HintNotReady { get; private set; }
 
         public override void SetStaticDefaults() {
-            //本地化全部集中在这里，避免与具体义体的本地化文件混淆
+            //本地化集中于此
             StatusOn = this.GetLocalization(nameof(StatusOn), () => "ON");
             HintClickToSelect = this.GetLocalization(nameof(HintClickToSelect), () => "[点击] 选定为当前技能");
             HintAlreadySelected = this.GetLocalization(nameof(HintAlreadySelected), () => "[当前选定]");
@@ -46,7 +42,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             HintNotReady = this.GetLocalization(nameof(HintNotReady), () => "条件不满足");
         }
 
-        //仅在玩家存活、有任意主动技能义体、且雷达进度大于阈值时显示
+        //存活+有主动技能+OpenProgress>0 时显示
         public override bool Active {
             get {
                 Player p = Main.LocalPlayer;
@@ -60,13 +56,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 if (ctrl == null) {
                     return false;
                 }
-                //打开中 / 关闭过程中都需要继续绘制，等待 OpenProgress 自然归零
+                //开/关过程继续绘至 OpenProgress 归零
                 return ctrl.IsOpen || ctrl.OpenProgress > 0.01f;
             }
         }
 
         public override void Update() {
-            //本 UI 不做任何输入处理，所有状态由 Controller 提供
+            //本 UI 无输入，全由 Controller
         }
 
         public override void Draw(SpriteBatch sb) {
@@ -84,8 +80,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return;
             }
 
-            //每帧根据当前屏幕尺寸重算一次锚点：避开"PostUpdate / Draw 跨阶段窗口尺寸变化"
-            //的潜在边界情况，且让 ScreenAnchor 永远与 sb 实际绘制坐标系对齐
+            //每帧重算锚点，对齐 Draw 坐标系
             Vector2 center = new(
                 Main.screenWidth * 0.5f,
                 Main.screenHeight * CyberwareSkillRadialController.ScreenAnchorYRatio);
@@ -93,16 +88,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             float time = ctrl.Time;
 
-            //子弹时间的全屏滤镜：在雷达绘制之前先铺一层背景，让"世界凝固"的感官立刻成立
-            //同时给雷达提供高对比的暗色底，避免雷达图形与花草背景颜色冲突而看不清
+            //子弹时间全屏滤镜，暗底衬托雷达
             DrawBulletTimeOverlay(sb, px, a);
 
-            //雷达底盘：一个明显的圆形大底板，绝对不会与世界背景混色而被忽略
-            //它的尺寸覆盖整个雷达活动范围（外缘 + 装饰环 + 安全边距）
+            //雷达底盘圆盘
             DrawRadialBackdrop(sb, px, center, a, time);
 
-            //先尝试用专属着色器铺底（外圈刻度 / 中心虹膜 / 接口背板）
-            //失败（未编译/未加载）时直接走纯 CPU 路径，雷达功能不受影响
+            //CyberwareRadialPanel 着色器铺底，失败走 CPU
             TryDrawShaderBackplate(sb, px, center, time, a);
 
             DrawCenterCore(sb, px, center, a, time);
@@ -149,14 +141,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
         }
 
         /// <summary>
-        /// 子弹时间的全屏滤镜（着色器版本，替代旧的 CPU 像素堆叠）
-        /// <list type="bullet">
-        ///   <item>只在 <see cref="WorldFreezeSystem.IsActive"/> 时绘制（多人下 freeze 失败 → 自然不显示）</item>
-        ///   <item>由 <see cref="EffectLoader.CyberwareBulletTime"/> 全屏 quad 驱动：
-        ///         径向暗角 + 时间波 + 流光 + letterbox 软幅 + 四角 HUD 括号 + 胶片颗粒</item>
-        ///   <item>着色器未加载时降级为简易纯色压暗，保证功能不丢</item>
-        ///   <item>所有 alpha 跟随 <paramref name="globalAlpha"/> 与控制器的 OpenProgress，避免开/关硬切</item>
-        /// </list>
+        /// 子弹时间全屏滤镜（CyberwareBulletTime）
+        /// <br/>WorldFreezeSystem.IsActive 时绘；多人 freeze 失败则不显示
+        /// <br/>着色器缺失降级纯色压暗；alpha 跟 OpenProgress
         /// </summary>
         private static void DrawBulletTimeOverlay(SpriteBatch sb, Texture2D px, float globalAlpha) {
             if (!WorldFreezeSystem.IsActive) {
@@ -166,7 +153,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             int w = Main.screenWidth;
             int h = Main.screenHeight;
             CyberwareSkillRadialController ctrl = CyberwareSkillRadialController.LocalInstance;
-            //冻结期间 GameUpdateCount 不前进，必须用本机控制器自己推的实时时钟
+            //冻结时 GameUpdateCount 不前进，用 ctrl.Time
             float time = ctrl != null ? ctrl.Time : 0f;
             //锚点 = 雷达圆心；着色器据此画时间波 / 视线引导
             Vector2 anchor = ctrl != null ? ctrl.ScreenAnchor
@@ -174,7 +161,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             Effect effect = EffectLoader.CyberwareBulletTime?.Value;
             if (effect == null) {
-                //降级路径：着色器尚未加载（编辑/调试场景）—— 简易纯色压暗，保证视觉上仍有 "世界凝固" 的提示
+                //着色器缺失：纯色压暗
                 sb.Draw(px, new Rectangle(0, 0, w, h),
                     new Color(8, 14, 22) * (0.42f * globalAlpha));
                 return;
@@ -199,16 +186,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>
-        /// 雷达外框：仅保留"细描边 + 底部基座投影 + 呼吸光晕"，本体由着色器铺底
-        /// <list type="bullet">
-        ///   <item>v2 不再画整块大圆盘——着色器 <see cref="EffectLoader.CyberwareRadialPanel"/> 的 FBM 大气
-        ///         已经承担了"接口板内部光晕"的视觉职责，再叠一个 CPU 黑盘只会和着色器互相抹掉细节</item>
-        ///   <item>这里只剩两件事：a) 在装饰半径上画一道双层细描边，b) 底部画一段半圆形阴影模拟"悬浮基座"，
-        ///         保证即便着色器未加载，玩家依然能感知到雷达的物理边界</item>
-        ///   <item>所有 alpha 都跟随 <paramref name="globalAlpha"/>；颜色取自 SHPCTheme，与全局 HUD 系一致</item>
-        /// </list>
-        /// </summary>
+        /// <summary>雷达外框：细描边+底投影+呼吸光晕，本体由着色器铺</summary>
         private static void DrawRadialBackdrop(SpriteBatch sb, Texture2D px,
             Vector2 center, float globalAlpha, float time) {
             const float frameR = SHPCTheme.ButtonOuterR + 18f;
@@ -226,16 +204,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 new Color(0, 4, 8) * (0.45f * globalAlpha));
         }
 
-        /// <summary>
-        /// 用义体专属着色器 <see cref="EffectLoader.CyberwareRadialPanel"/> 铺底
-        /// <list type="bullet">
-        ///   <item>渲染内容：中心虹膜 + 内/外弧描边 + 外圈拨码刻度 + 入场扩散动画</item>
-        ///   <item>底纹 alpha 故意压低，让 CPU 扇区清晰叠加在上方</item>
-        ///   <item>未加载（用户尚未编译 .fx 或资源加载失败）时直接 return，
-        ///     雷达回退到纯 CPU 绘制；该方法应当在 CPU 扇区/图标绘制之前调用</item>
-        ///   <item>SpriteBatch 状态恢复严格对齐 SHPCDialogueBox/HackRamRenderer 的范式</item>
-        /// </list>
-        /// </summary>
+        /// <summary>CyberwareRadialPanel 着色器铺底，失败 return 走 CPU</summary>
         private static bool TryDrawShaderBackplate(SpriteBatch sb, Texture2D px,
             Vector2 center, float time, float openProgress) {
             Effect effect = EffectLoader.CyberwareRadialPanel?.Value;
@@ -243,8 +212,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 return false;
             }
 
-            //quad 范围：覆盖外圈刻度环（OuterR + 12）再加 20px 安全边距，
-            //保证旋转刻度、外缘辉光、虹膜旋转辐条都不会被裁剪
+            //quad 覆盖 OuterR+刻度+边距
             const float decoExtend = 12f;
             const float padding = 20f;
             float halfSize = SHPCTheme.ButtonOuterR + decoExtend + padding;
@@ -282,11 +250,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             return true;
         }
 
-        /// <summary>
-        /// 中心地标：v2 让着色器承担 iris 主体，本方法只补一个"瞄星"小点
-        /// <br/>避免与着色器的呼吸高光重叠成糊作一团；点的呼吸节奏与着色器内部
-        /// 的 sin(uTime*2.8) 节奏接近，肉眼上会自然融合
-        /// </summary>
+        /// <summary>中心瞄星小点，iris 由着色器承担</summary>
         private static void DrawCenterCore(SpriteBatch sb, Texture2D px, Vector2 center, float a, float time) {
             float breath = 0.85f + MathF.Sin(time * 2.8f) * 0.15f;
             //瞄星：一个极小的高对比亮点，落在着色器 iris 最亮处的中央
@@ -294,9 +258,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 SHPCTheme.CyanHi * (0.95f * a));
         }
 
-        /// <summary>
-        /// Toggle 类已激活的金色环带，强化"开启中"语义
-        /// </summary>
+        /// <summary>Toggle 激活金色环带</summary>
         private static void DrawToggleActiveOverlay(SpriteBatch sb, Texture2D px,
             Vector2 center, float aStart, float aEnd, float time, float globalAlpha) {
             float pulse = 0.65f + 0.35f * (MathF.Sin(time * 4.2f) + 1f) * 0.5f;
@@ -305,14 +267,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 2.6f, SHPCTheme.Accent * (pulse * 0.7f * globalAlpha));
         }
 
-        /// <summary>
-        /// 当前选中扇区的视觉标识：内/外缘双层强调线 + 中线小三角箭头
-        /// <list type="bullet">
-        ///   <item>颜色用 <see cref="SHPCTheme.CyanHi"/>，与 Toggle 激活的金色保持不撞色</item>
-        ///   <item>强度由 <paramref name="selectedAmt"/> 控制，淡入淡出，防止选中切换时硬切</item>
-        ///   <item>呼吸光让玩家一眼分辨"被选中的是哪个"，与悬停的高光不会混淆</item>
-        /// </list>
-        /// </summary>
+        /// <summary>选中扇区：内外缘双线+中线三角，强度跟 selectedAmt</summary>
         private static void DrawSelectedOverlay(SpriteBatch sb, Texture2D px,
             Vector2 center, float aStart, float aEnd, float time, float selectedAmt, float globalAlpha) {
             float a = MathHelper.Clamp(selectedAmt, 0f, 1f) * globalAlpha;
@@ -343,9 +298,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             SHPCRenderer.DrawLine(sb, px, baseL, baseR, 1.0f, SHPCTheme.CyanHi * (0.55f * a));
         }
 
-        /// <summary>
-        /// 绘制扇区中线上的物品图标，自适应缩放到 32x32 以下
-        /// </summary>
+        /// <summary>扇区中线物品图标，缩至 28px 内</summary>
         private static void DrawItemIcon(SpriteBatch sb, CyberwareSkillRadialSector sec,
             Vector2 center, float midA, float hoverAmt, bool enabled, float globalAlpha) {
             int type = sec.Skill.IconItemType;
@@ -369,9 +322,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 tex.Size() * 0.5f, scale, SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 扇区右上角的状态文字（冷却剩余、RAM 消耗、ON 等）
-        /// </summary>
+        /// <summary>扇区右上角状态字</summary>
         private static void DrawStatusText(SpriteBatch sb, CyberwareSkillRadialSector sec,
             Vector2 center, float midA, float globalAlpha) {
             string text = sec.Skill.StatusText;
@@ -388,12 +339,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 SHPCTheme.CyanHi * globalAlpha, 0.55f);
         }
 
-        /// <summary>
-        /// 悬停扇区的信息面板：始终把面板布置在雷达外侧，与扇区不重叠
-        /// <br/>策略：根据玩家所在屏幕的左右半，把面板放到剩余空间更多的一侧；
-        /// 垂直方向居中对齐雷达圆心。面板坐标通过反推 <see cref="SHPCRenderer.DrawInfoPanel"/>
-        /// 内部的 "cursor + (18, 14)" 默认偏移得到
-        /// </summary>
+        /// <summary>悬停信息面板，布置在雷达外侧</summary>
         private static void DrawInfoPanelForHovered(SpriteBatch sb, Texture2D px,
             CyberwareSkillRadialController ctrl, Vector2 center, float globalAlpha) {
             int idx = ctrl.HoveredIndex;
@@ -442,14 +388,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
                 statusText: sec.Skill.StatusText);
         }
 
-        /// <summary>
-        /// 副标题：永远反映"接下来玩家能做什么"
-        /// <list type="bullet">
-        ///   <item>当前扇区已被选定 → "[当前选定]"，玩家无需再点</item>
-        ///   <item>未选定但可用 → "[点击] 选定为当前技能"</item>
-        ///   <item>未选定且不可用 → "条件不满足"（玩家仍可点选预备，但触发会失败）</item>
-        /// </list>
-        /// </summary>
+        /// <summary>副标题：已选/可点选/不可用</summary>
         private static string BuildSubtitle(CyberwareSkillBase skill, bool isSelected) {
             if (isSelected) {
                 return HintAlreadySelected.Value;
@@ -460,9 +399,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             return HintClickToSelect.Value;
         }
 
-        /// <summary>
-        /// 把"触发键怎么用"的类型提示附在描述末尾，让玩家无需翻物品说明就知道操作方式
-        /// </summary>
+        /// <summary>描述末尾附技能类型触发提示</summary>
         private static string AppendKindHint(CyberwareSkillBase skill) {
             string kindHint = skill.Kind switch {
                 CyberwareSkillKind.Charge => HintKindCharge.Value,
@@ -479,12 +416,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             return skill.Description + "\n" + kindHint;
         }
 
-        /// <summary>
-        /// 雷达外圈的整体描边（v2 极简版）
-        /// <br/>v1 的"旋转拨码刻度"已迁入着色器的外圈大气光晕，且改为平滑波浪，
-        /// 避免与 RAM HUD 的旋转刻度视觉撞色。这里只保留一道贴近外缘的细线，
-        /// 把扇区外沿和着色器大气在视觉上"轻轻封住"
-        /// </summary>
+        /// <summary>外圈细描边，刻度已迁入着色器</summary>
         private static void DrawOuterRing(SpriteBatch sb, Texture2D px,
             Vector2 center, int sectorCount, float globalAlpha, float time) {
             if (sectorCount <= 1) {

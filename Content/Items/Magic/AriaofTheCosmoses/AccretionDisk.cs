@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
     /// 吸积盘
-    /// </summary>
     internal class AccretionDisk : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -144,15 +142,14 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void SpawnDiskParticles() {
-            //空间裂隙粒子：从外围向黑洞中心收缩
+            //空间裂隙粒子 外围向中心收缩
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
             float distance = Main.rand.NextFloat(0.6f, 1.1f) * Projectile.width * 0.5f * Projectile.scale;
 
             Vector2 offset = angle.ToRotationVector2() * distance;
             Vector2 particlePos = Projectile.Center + offset;
-            //朝向中心的速度（被吸入感）
+            //朝向中心速度+切线旋转吸入
             Vector2 inwardVel = (Projectile.Center - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
-            //加上切线分量（旋转吸入）
             inwardVel += offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f);
 
             float distRatio = distance / (Projectile.width * 0.5f * Projectile.scale);
@@ -160,7 +157,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             PRTLoader.NewParticle<PRT_SpaceFracture>(particlePos, inwardVel, particleColor, Main.rand.NextFloat(0.3f, 0.7f)).Configure(Main.rand.Next(18, 30), Main.rand.NextFloat(-0.5f, 0.5f));
 
-            //螺旋吸入光点（每3次生成一个）
+            //螺旋吸入光点 每3次一个
             if (Projectile.timeLeft % 9 == 0) {
                 PRTLoader.NewParticle<PRT_GravityVortex>(Projectile.Center, Vector2.Zero, Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.8f)).Configure(Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(50f, 120f) * Projectile.scale, Main.rand.Next(40, 65));
             }

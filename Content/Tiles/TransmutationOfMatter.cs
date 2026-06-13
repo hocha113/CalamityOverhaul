@@ -97,25 +97,25 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            if (SupertableUI.Instance.Active && SupertableUI.TramTP is null && MSRef.Has) {//如果是这种状态，说明正在进行魔法存储的联动启动
+            if (SupertableUI.Instance.Active && SupertableUI.TramTP is null && MSRef.Has) {//魔法存储联动启动中
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.3f });
                 return false;
             }
 
-            //获取图块的左上角位置
+            //取图块左上角
             if (!VaultUtils.SafeGetTopLeft(i, j, out var point)) {
                 return true;
             }
 
-            //播放交互音效
+            //交互音效
             SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.3f });
 
-            //获取对应的 TileProcessor
+            //取 TileProcessor
             if (!TileProcessorLoader.ByPositionGetTP(point, out TramModuleTP tram)) {
                 return true;
             }
 
-            //打开UI
+            //开 UI
             tram.OpenUI(Main.LocalPlayer);
 
             return true;

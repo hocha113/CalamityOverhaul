@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 数据复制机匣：光束消亡时在原位生成一束短命的低伤回响光束
-    /// 与 RecursiveFrame 区别：副本就地生成、寿命极短、永不递归
-    /// </summary>
+    /// <summary>复制机匣：光束消亡原位短寿低伤回响，不递归</summary>
     internal sealed class ReplicatorFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

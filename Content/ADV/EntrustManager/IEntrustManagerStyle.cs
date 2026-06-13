@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.ADV.EntrustManager
 {
-    /// <summary>
-    /// 任务管理器界面样式接口，
-    /// 定义面板所有可视化元素的绘制契约
-    /// </summary>
+    /// <summary>委托管理器界面样式契约</summary>
     internal interface IEntrustManagerStyle
     {
         #region 生命周期

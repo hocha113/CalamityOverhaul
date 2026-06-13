@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>
-    /// 双子魔眼同步转阶段动画状态
-    /// 用于一阶段到二阶段的过渡演出，包含移动动画确保玩家可见
-    /// </summary>
+    /// <summary>同步转阶段：移动汇聚+形态切换，视野内可读</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsPhaseTransition, typeof(TwinsStateContext))]
     internal class TwinsPhaseTransitionState : TwinsStateBase
     {
@@ -451,7 +448,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override void OnExit(TwinsStateContext context) {
             base.OnExit(context);
 
-            //确保退出时恢复正常状态
+            //退出时恢复 scale/无敌/转阶段标记
             context.Npc.scale = 1f;
             context.Npc.dontTakeDamage = false;
             context.IsInPhaseTransition = false;

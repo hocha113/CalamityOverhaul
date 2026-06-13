@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 水晶握把：合成水晶介质把暴击的冲击波折射成实体棱片。
-    /// 光束暴击时从目标体内迸出 3 枚水晶棱片，呈抛物线飞溅并在下坠途中
-    /// 被附近敌人「晶格引力」捕获偏转，命中造成二段伤害（克苏鲁之脑 · 猩红宝石意象）
-    /// </summary>
+    /// <summary>水晶握把：暴击折射 3 枚棱片，抛物+引力偏转二段伤</summary>
     internal sealed class CrystalGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -54,10 +50,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
     }
 
-    /// <summary>
-    /// 水晶棱片：受重力的菱形晶体，下坠途中被 220px 内最近敌人的晶格引力缓缓拉偏；
-    /// 穿透 2 次，命中与消亡时碎成晶尘
-    /// </summary>
+    /// <summary>水晶棱片：重力+220px 引力偏转，穿透 2</summary>
     internal sealed class SHPCCrystalShardProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

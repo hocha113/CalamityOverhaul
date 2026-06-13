@@ -22,8 +22,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
     /// <summary>
-    /// Victor 诊所的侧面板：针对当前选中槽位，整合展示「已安装 / 已拥有(可安装) / 在售(可购买)」三段。
-    /// <br/>安装=手术，卸载归还背包，购买扣金币并进入背包；命令行式条目 + 分区标题，统一赛博 HUD 风格
+    /// 诊所侧栏：已安装/已拥有/在售三段
+    /// <br/>安装走手术，卸载归背包，购买扣金入背包
     /// </summary>
     internal class VictorClinicPanel
     {
@@ -199,7 +199,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 UpdateInteraction();
             }
 
-            //平滑悬停动画：悬停目标变化时重置
+            //悬停 key 变时重置 hoverAnim
             if (hoveredEntryKey != lastHoverKey) {
                 hoverAnim = 0f;
                 lastHoverKey = hoveredEntryKey;
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
 
-            //不再即时换装：交由手术过场在全黑关键帧执行
+            //安装走 VictorSurgery 帧 86 换装
             ActionThisFrame = true;
             VictorSurgery.BeginInstall(invIndex, boundSlot);
         }
@@ -389,13 +389,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             sb.Draw(px, header, new Rectangle(0, 0, 1, 1), CyberwareTheme.SectionBg * (alpha * 0.85f));
             VictorUIStyle.DrawHDivider(sb, panelRect.X + 6, panelRect.Right - 6, panelRect.Y + (int)HeaderHeight - 1, CyberwareTheme.Accent * (alpha * 0.6f));
 
-            //部位标题（强调块 + 大字）
             string title = VictorClinicUI.Instance?.GetSlotLabel(boundSlot) ?? "CYBERWARE";
             sb.Draw(px, new Rectangle(panelRect.X + (int)PanelPadding, panelRect.Y + 10, 4, 22), CyberwareTheme.Accent * (alpha * 0.9f));
             Utils.DrawBorderString(sb, title, new Microsoft.Xna.Framework.Vector2(panelRect.X + PanelPadding + 12, panelRect.Y + 8),
                 CyberwareTheme.Accent * alpha, 0.62f * CyberwareTheme.FontScale);
 
-            //余额
             VictorUIStyle.DrawPrice(sb, new Microsoft.Xna.Framework.Vector2(panelRect.Right - PanelPadding, panelRect.Y + 32),
                 VictorUIStyle.CountCoins(Main.LocalPlayer), alpha, 0.4f * CyberwareTheme.FontScale, rightAlign: true);
         }
@@ -463,7 +461,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                     Color accent = isOwned ? CyberwareTheme.AccentCyan : CyberwareTheme.AccentGold;
                     VictorUIStyle.DrawSectionHeader(sb, rect, label, accent, alpha, 0.42f * CyberwareTheme.FontScale);
 
-                    //空段提示
                     if (isOwned && !anyOwned) {
                         Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.EmptyOwned"), new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
                             CyberwareTheme.TextDim * (alpha * 0.5f), 0.36f * CyberwareTheme.FontScale);

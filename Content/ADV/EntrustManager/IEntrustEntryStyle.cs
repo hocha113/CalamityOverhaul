@@ -2,25 +2,17 @@
 
 namespace CalamityOverhaul.Content.ADV.EntrustManager
 {
-    /// <summary>
-    /// 委托条目在管理器列表中的自定义显示样式，
-    /// 各任务线可提供独立实现来定义自己的视觉风格，
-    /// 若委托未提供则由 <see cref="IEntrustManagerStyle"/> 的默认绘制接管
-    /// </summary>
+    /// <summary>委托条目列表自定义样式</summary>
     internal interface IEntrustEntryStyle
     {
         /// <summary>每帧更新动画计时器</summary>
         void Update();
 
-        /// <summary>
-        /// 绘制条目自定义背景，返回true表示完全接管背景绘制
-        /// </summary>
+        /// <summary>绘制条目自定义背景，true 表示完全接管</summary>
         bool DrawEntryBackground(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry,
             bool isSelected, bool isHovered, float alpha);
 
-        /// <summary>
-        /// 绘制标题左侧图标装饰，返回标题文字应右移的像素数
-        /// </summary>
+        /// <summary>绘制标题左侧图标，返回标题右移像素数</summary>
         float DrawEntryIcon(SpriteBatch sb, Vector2 titlePos, EntrustEntryData entry, float alpha);
 
         /// <summary>绘制条目前景特效覆盖层</summary>
@@ -32,7 +24,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         /// <summary>获取条目标题颜色</summary>
         Color GetTitleColor(QuestEntryStatus status, float alpha);
 
-        /// <summary>自定义条目高度，返回null则使用容器默认高度</summary>
+        /// <summary>自定义条目高度，null 用容器默认</summary>
         int? GetCustomEntryHeight();
 
         /// <summary>重置样式状态</summary>

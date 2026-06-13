@@ -50,15 +50,15 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronBow;
         }
 
-        //右键用于蓄力
+        //右键蓄力
         public override bool AltFunctionUse(Player player) => true;
 
-        //物品使用本身不消耗箭矢，由手持弹幕在实际放箭时自行拾取
+        //放箭时由手持弹幕拾取弹药
         public override bool CanConsumeAmmo(Item ammo, Player player) => NeutronBowHeld.AmmoConsumeContext;
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
             , Vector2 velocity, int type, int damage, float knockback) {
-            //使用瞬间生成手持弹幕，它会自己接管左键开火与右键蓄力，按键全部松开后自动销毁
+            //生成手持弹幕接管左右键，全松键后自毁
             int heldType = ModContent.ProjectileType<NeutronBowHeld>();
             if (player.CountProjectilesOfID(heldType) <= 0) {
                 Projectile.NewProjectile(source, player.MountedCenter, Vector2.Zero, heldType, 0, 0, player.whoAmI);
@@ -67,50 +67,44 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
         }
     }
 
-    /// <summary>
-    /// 洛希之弦的手持弹幕，由 <see cref="NeutronBow.Shoot"/> 在使用瞬间生成，只在开火与蓄力期间存活
-    /// <para>左键发射重力箭矢（强制将箭矢转化为<see cref="NeutronArrow"/>）</para>
-    /// <para>右键进行三级蓄力，蓄力期间搭箭点凝聚引力井，蓄满后松开右键发射三发引力箭矢</para>
-    /// </summary>
+    /// 洛希之弦手持弹幕：<see cref="NeutronBow.Shoot"/> 生成，开火/蓄力期存活
+    /// 左键重力箭(强制 <see cref="NeutronArrow"/>)，右键三级蓄力松手射三发引力箭
     internal class NeutronBowHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Ranged + "NeutronBow";
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<NeutronBow>();
 
-        /// <summary>
-        /// 弹药消耗上下文开关：物品使用本身不消耗箭矢（<see cref="NeutronBow.CanConsumeAmmo"/> 返回该值），
-        /// 只有手持弹幕实际放箭时才放行消耗
-        /// </summary>
+        /// 弹药门控(仅放箭时消耗)
         internal static bool AmmoConsumeContext { get; private set; }
 
         private const int MaxFrame = 7;
         private const float MaxCharge = 80f;
-        //能量弦在单帧纹理（74x114）上的锚点
+        //能量弦锚点(单帧纹理 74×114)
         private static readonly Vector2 StringTopTex = new(16f, 26f);
         private static readonly Vector2 StringBottomTex = new(16f, 90f);
 
-        /// <summary>左键张弓计时器</summary>
+        /// 左键张弓计时
         private float drawTimer;
-        /// <summary>右键蓄力值 0~<see cref="MaxCharge"/></summary>
+        /// 右键蓄力 0~MaxCharge
         private float charge;
-        /// <summary>是否已完成蓄力</summary>
+        /// 蓄力完成
         private bool fullCharged;
-        /// <summary>上一帧右键是否按下，用于检测松开瞬间</summary>
+        /// 上帧右键(检松开)
         private bool oldDownRight;
         private bool level1 = true;
         private bool level2 = true;
         private bool level3 = true;
         private int uiframe;
-        /// <summary>当前帧的弹药状态预览（不消耗）</summary>
+        /// 弹药预览(不消耗)
         private ShootState ammoState;
 
-        /// <summary>当前是否仍手持着洛希之弦</summary>
+        /// 仍手持洛希之弦
         private bool ItemValid => Item != null && !Item.IsAir && Item.type == ModContent.ItemType<NeutronBow>();
         private bool MouseSafe => !Owner.CWR().UIMouseInterface && !Owner.mouseInterface;
         private bool LeftFiring => DownLeft && MouseSafe;
         private bool RightCharging => DownRight && !DownLeft && MouseSafe;
         public override bool CanFire => DownLeft || DownRight;
-        /// <summary>蓄力等级对应的搭箭数量</summary>
+        /// 蓄力等级搭箭数
         private int ArrowDrawNum => charge > 60 ? 3 : charge > 30 ? 2 : 1;
         private float HoldDistance => 28;
         private float DrawProgress => LeftFiring ? MathHelper.Clamp(drawTimer / Item.useTime, 0f, 1f) : MathHelper.Clamp(charge / MaxCharge, 0f, 1f);
@@ -136,8 +130,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
                 Projectile.Kill();
                 return false;
             }
-            //按键全部松开且没有待结算的蓄力（蓄满松开的发射在本帧完成）时销毁，
-            //让玩家回归普通的持物状态
+            //全松键且无待结算蓄力时销毁
             if (!DownLeft && !DownRight && charge <= 0) {
                 Projectile.Kill();
                 return false;
@@ -170,9 +163,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
         }
 
         #region 行为逻辑
-        /// <summary>
-        /// 左键：张弓并发射重力箭矢
-        /// </summary>
+        /// 左键张弓射重力箭
         private void UpdateLeftFire() {
             if (!LeftFiring || !ammoState.HasAmmo) {
                 if (!RightCharging) {
@@ -188,9 +179,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             }
         }
 
-        /// <summary>
-        /// 右键：三级蓄力，蓄满后松开发射引力箭矢
-        /// </summary>
+        /// 右键三级蓄力，满蓄松手射引力箭
         private void UpdateRightCharge() {
             if (RightCharging && ammoState.HasAmmo) {
                 if (charge < MaxCharge) {
@@ -225,7 +214,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
                 return;
             }
 
-            //松开右键的瞬间：蓄满则发射
+            //右键松开且满蓄则发射
             if (oldDownRight && !DownRight && fullCharged) {
                 FireGravityArrows();
             }
@@ -243,9 +232,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             CombatText.NewText(rectext, new Color(155, 200, 100 + offsetY), key, true);
         }
 
-        /// <summary>
-        /// 拾取并消耗一发箭矢弹药，返回是否成功以及合成后的伤害与击退
-        /// </summary>
+        /// 拾取消耗一发箭，输出伤害与击退
         private bool ConsumeAmmo(out int damage, out float knockback, out int usedAmmoItemId) {
             bool dontConsume = Owner.IsRangedAmmoFreeThisShot(new Item(ammoState.UseAmmoItemType));
             AmmoConsumeContext = true;
@@ -254,9 +241,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             return hasAmmo;
         }
 
-        /// <summary>
-        /// 发射一发重力箭矢（左键）
-        /// </summary>
+        /// 左键射一发重力箭
         private void FireNeutronArrow() {
             SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
 
@@ -276,9 +261,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             NetUpdate();
         }
 
-        /// <summary>
-        /// 发射三发引力箭矢（右键蓄满）
-        /// </summary>
+        /// 右键满蓄射三发引力箭
         private void FireGravityArrows() {
             SoundEngine.PlaySound(CWRSound.Gun_Magnum_Shoot with { Pitch = 0.7f, Volume = 0.6f }, Projectile.Center);
             Owner.CWR().GetScreenShake(6.2f);
@@ -303,18 +286,14 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
         #endregion
 
         #region 姿态
-        /// <summary>
-        /// 更新弓的位置与旋转，使其紧贴玩家中心、指向鼠标
-        /// </summary>
+        /// 更新弓位旋转贴玩家指向鼠标
         private void UpdatePose() {
             Projectile.rotation = ToMouseA;
             Owner.ChangeDir(ToMouse.X >= 0 ? 1 : -1);
             Projectile.Center = Owner.GetPlayerStabilityCenter() + Projectile.rotation.ToRotationVector2() * HoldDistance;
         }
 
-        /// <summary>
-        /// 设置玩家手臂：后手持弓指向瞄准方向，前手随张弓/蓄力进度向后拉弦
-        /// </summary>
+        /// 后手持弓瞄准，前手随张弓/蓄力拉弦
         private void UpdateArms() {
             float holdArmRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, holdArmRot);
@@ -336,9 +315,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
         #endregion
 
         #region 绘制
-        /// <summary>
-        /// 把单帧纹理像素坐标转换为世界坐标（考虑旋转、缩放与垂直翻转）
-        /// </summary>
+        /// 纹理像素坐标转世界坐标
         private Vector2 TexPosToWorld(Vector2 texPos) {
             Vector2 frameSize = new(TextureValue.Width, TextureValue.Height / (float)MaxFrame);
             Vector2 offset = texPos - frameSize / 2f;
@@ -348,9 +325,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             return Projectile.Center + offset.RotatedBy(Projectile.rotation) * Projectile.scale;
         }
 
-        /// <summary>
-        /// 获取搭箭点（能量弦中点被拉开后的位置）的世界坐标
-        /// </summary>
+        /// 搭箭点世界坐标
         private Vector2 GetNockWorldPos() {
             Vector2 stringMid = TexPosToWorld((StringTopTex + StringBottomTex) / 2f);
             return stringMid - Projectile.rotation.ToRotationVector2() * DrawProgress * 12f * Projectile.scale;
@@ -389,15 +364,13 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
                 , color, toEnd.ToRotation(), new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
         }
 
-        /// <summary>
-        /// 绘制能量弓弦：蓝紫色光线连接上下弓臂与搭箭点
-        /// </summary>
+        /// 绘制蓝紫能量弓弦
         private void DrawEnergyString() {
             Vector2 top = TexPosToWorld(StringTopTex);
             Vector2 bottom = TexPosToWorld(StringBottomTex);
             Vector2 nock = GetNockWorldPos();
 
-            //A为0的颜色在AlphaBlend下表现为加色，适合能量体
+            //AlphaBlend 下 A=0 呈加色
             Color outer = new Color(110, 70, 255, 0) * 0.8f;
             Color inner = new Color(220, 210, 255, 0) * 0.9f;
             DrawLine(top, nock, outer, 3f);
@@ -412,9 +385,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
                 , 0f, glow.Size() / 2f, (0.32f + DrawProgress * 0.2f) * pulse, SpriteEffects.None);
         }
 
-        /// <summary>
-        /// 绘制搭在弦上的重力箭矢，数量随蓄力等级增加
-        /// </summary>
+        /// 绘制搭弦重力箭(数量随蓄力)
         private void DrawNockedArrows() {
             bool leftDrawing = LeftFiring && drawTimer > 3;
             bool rightDrawing = RightCharging && charge > 1;
@@ -452,9 +423,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             }
         }
 
-        /// <summary>
-        /// 蓄力时在搭箭点绘制引力井着色器特效
-        /// </summary>
+        /// 搭箭点引力井着色器
         private void DrawGravityWell() {
             float intensity = MathHelper.Clamp(charge / MaxCharge, 0f, 1f);
             if (!RightCharging || intensity < 0.05f) {

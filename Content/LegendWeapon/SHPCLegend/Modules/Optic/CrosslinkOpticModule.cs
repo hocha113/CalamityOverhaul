@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 联机瞄具：命中 NPC 时自动在被击目标与最近的另一只敌人之间生成一道数据电弧
-    /// 电弧由 <see cref="CyberDataArcProj"/> 渲染，对沿线敌人造成一次性附带伤害
-    /// </summary>
+    /// <summary>联机瞄具：命中时在目标与最近另一敌人间生成数据电弧</summary>
     internal sealed class CrosslinkOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 风暴细胞：蓄力期间每25帧自动向最近敌人释放一束追踪电击光束
-    /// 蓄力本身也在持续输出，与主炮形成时间差覆盖
-    /// </summary>
+    /// <summary>风暴细胞：蓄力每 25 帧向最近敌人射追踪电击束</summary>
     internal sealed class StormCellModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

@@ -1,9 +1,7 @@
 // ============================================================================
-// PrimeSkullBeam.fx —— 颅骨主炮巨型光束（机械骷髅王低血量扣留招）
-// 白热核心 + 橙红外缘 + 蜂窝能量格栅 + 齿状行进脉冲 + 电离闪络 + 边缘噪声撕裂。
-// 四边形约定：uv.x = 沿光束（0 枪口 → 1 末端），uv.y = 横向（0.5 中心）。
-// 参数协议与 TwinsDeathRayBeam 一致（uColor/uSecondaryColor/uExpandProgress/uImage1/uImage2）。
-// 输出预乘 alpha，配合 BlendState.Additive 使用。
+// PrimeSkullBeam.fx 颅骨主炮巨型光束
+// UV.x 0枪口→1末端 UV.y 0.5中心；协议同 TwinsDeathRayBeam
+// Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

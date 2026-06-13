@@ -15,16 +15,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
-    /// <summary>
-    /// 物流管道 TileProcessor (重写版)
-    /// <para>核心机制：</para>
-    /// <list type="bullet">
-    /// <item><b>无固定目标</b>：物品在每个分叉处由 <see cref="ItemPipelineNetwork"/> 的预计算路由表动态选路，目标失效不会卡死。</item>
-    /// <item><b>反压感知抽取</b>：输出端只有在网络中至少存在一个能接收对应物品的输入端时才抽取，且节流到 <see cref="ExtractInterval"/> 帧一次。</item>
-    /// <item><b>渐进式卡死自愈</b>：严格路由 → 宽松路由 → 任意前向 → 反向回流 → 沿途投回任意存储 → 实在无解才掉落 (60 秒)。</item>
-    /// <item><b>低开销侧位扫描</b>：连接信息 8 帧做一次完整扫描，其余帧仅做缓存校验。</item>
-    /// </list>
-    /// </summary>
+    /// <summary>物流管道 TP，路由选路+反压抽取+卡死自愈+8帧侧扫</summary>
     [VaultLoaden(CWRConstant.Asset + "MaterialFlow")]
     internal class ItemPipelineTP : TileProcessor, ICWRLoader
     {
@@ -118,51 +109,49 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         public int ShapeRotationID { get; private set; } = 0;
         internal List<ItemPipelineSideState> SideStates { get; private set; }
 
-        /// <summary>
-        /// 当前管道内正在传输的物品(可空)
-        /// </summary>
+        /// <summary>在传物品，可空</summary>
         internal TransportingItem? CurrentItem { get; set; } = null;
 
-        /// <summary>抽取节流计时器(输出模式专用)</summary>
+        /// <summary>抽取节流计时</summary>
         private int extractCooldown;
-        /// <summary>抽取节流间隔(帧)：输出端每隔此间隔尝试一次抽取，避免每帧扫存储</summary>
+        /// <summary>抽取间隔(帧)</summary>
         private const int ExtractInterval = 8;
-        /// <summary>每次抽取尝试的最大物品堆叠</summary>
+        /// <summary>单次抽取上限</summary>
         private const int ExtractBatchSize = 64;
 
-        /// <summary>物品在本节卡死帧数(进度=1 但传不出去)</summary>
+        /// <summary>本节卡死帧数</summary>
         private int stuckFrames;
-        /// <summary>卡死阶段一阈值：开始放宽路由(允许走任意输入)</summary>
+        /// <summary>阶段一：放宽路由</summary>
         private const int LooseRoutingThreshold = 60;
-        /// <summary>卡死阶段二阈值：允许任意非来源方向的空管道</summary>
+        /// <summary>阶段二：任意前向空管</summary>
         private const int AnyForwardThreshold = 180;
-        /// <summary>卡死阶段三阈值：允许通过来源方向反向回流</summary>
+        /// <summary>阶段三：允许反向回流</summary>
         private const int ReverseFlowThreshold = 360;
-        /// <summary>卡死阶段四阈值：尝试投回任意直连存储或掉落到世界(60 秒)</summary>
+        /// <summary>阶段四：投存储或掉落(60s)</summary>
         private const int RescueDropThreshold = 3600;
-        /// <summary>已发生反向回流的物品最多再被反弹的次数(避免无限振荡)</summary>
+        /// <summary>单物品最大反向跳数</summary>
         private const int MaxReverseHopsPerItem = 8;
 
-        /// <summary>输入端最近一次拒收物品的帧数戳, 短暂期内对外汇报"不可接收"</summary>
+        /// <summary>最近拒收帧戳</summary>
         private int lastDepositRejectFrame = -1000;
-        /// <summary>输入端拒收冷却帧数</summary>
+        /// <summary>拒收冷却(帧)</summary>
         private const int DepositRejectCooldown = 30;
 
-        /// <summary>流动动画器(只有输出端才会使用)</summary>
+        /// <summary>输出端流动动画</summary>
         private PipelineFlowAnimator flowAnimator;
 
-        /// <summary>缓存连接掩码, 仅变化时重计算形状</summary>
+        /// <summary>连接掩码缓存</summary>
         private int lastConnectionMask = -1;
-        /// <summary>是否已经初始化过侧位的引用(只做一次)</summary>
+        /// <summary>侧位已初始化</summary>
         private bool sideStatesInitialized;
 
-        /// <summary>物品筛选器(用于过滤输出/输入的物品类型)</summary>
+        /// <summary>物品筛选器</summary>
         internal Item ItemFilter;
-        /// <summary>缓存的筛选器版本号, 避免每次都做 GetGlobalItem 调用比对</summary>
+        /// <summary>筛选器版本缓存</summary>
         private int cachedFilterVersion = -1;
-        /// <summary>缓存的筛选物品ID集合 (HashSet 比 List 查询更快, 命中量大时收益明显)</summary>
+        /// <summary>筛选 ID 集合缓存</summary>
         private readonly HashSet<int> cachedFilterItemIds = [];
-        /// <summary>是否使用了空筛选器(允许全部)</summary>
+        /// <summary>空筛选即允许全部</summary>
         private bool cachedFilterAllowAll = true;
 
         /// <summary>悬停动画进度</summary>
@@ -180,7 +169,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             ItemFilter = new Item();
             sideStatesInitialized = false;
 
-            //新管道加入网络, 强制下次重建路由
+            //新管标脏路由
             ItemPipelineNetwork.MarkDirty();
         }
 
@@ -193,16 +182,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 sideStatesInitialized = true;
             }
 
-            //更新四个方向的连接状态(快路径优先, 节流完整扫描)
+            //四向连接，快验+节流全扫
             foreach (var side in SideStates) {
-                //Position 在 TileProcessor 生命周期内不会变, 只读, 不需要每帧再赋
+                //Position 生命周期内不变
                 side.UpdateConnectionState();
             }
 
-            //计算形状, 形状变化也算拓扑变化
+            //形状变亦标脏
             UpdateShape();
 
-            //每帧统一驱动一次网络路由的"按需重建"判断
+            //按需重建路由
             ItemPipelineNetwork.EnsureBuilt();
 
             //模式驱动逻辑
@@ -213,13 +202,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 case ItemPipelineMode.Input:
                     UpdateInputMode();
                     break;
-                    //Normal: 仅作为通道, 不主动抽取/存入
+                    //Normal 仅通道
             }
 
-            //推进当前物品(同时处理卡死自愈)
+            //推进物品与卡死自愈
             UpdateTransportingItem();
 
-            //流动动画(只对输出端有效)
+            //输出端流动动画
             if (Mode == ItemPipelineMode.Output) {
                 UpdateFlowAnimation();
             }
@@ -249,12 +238,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             ShapeRotationID = rotation;
             lastConnectionMask = connectionMask;
 
-            //从端点变中继: 自动取消模式, 避免歧义
+            //端点变中继则取消模式
             if (Mode != ItemPipelineMode.Normal && !IsEndpoint) {
                 Mode = ItemPipelineMode.Normal;
                 SendData();
             }
-            //形状变化也是拓扑变化的一种(可能让某些路由更短/更长)
+            //形状变标脏
             ItemPipelineNetwork.MarkDirty();
         }
 
@@ -275,29 +264,27 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         #endregion
 
         #region 输出模式
-        /// <summary>
-        /// 输出模式：从连接的存储中抽取物品, 仅在网络存在可接收的输入时执行
-        /// </summary>
+        /// <summary>输出模式反压抽取</summary>
         private void UpdateOutputMode() {
-            //已有物品在传输, 等待传输完成
+            //在传则等待
             if (CurrentItem.HasValue) {
                 return;
             }
 
-            //节流: 没到下一次抽取时间就退出
+            //抽取节流
             if (extractCooldown > 0) {
                 extractCooldown--;
                 return;
             }
             extractCooldown = ExtractInterval;
 
-            //先做廉价的"是否存在任意可达输入端"快检, 不存在就直接退出
+            //无可达输入则退出
             var reachableInputs = ItemPipelineNetwork.GetReachableInputs(Position);
             if (reachableInputs == null || reachableInputs.Count == 0) {
                 return;
             }
 
-            //从直连的存储侧依次尝试抽取
+            //直连存储依次抽
             for (int sideIdx = 0; sideIdx < SideStates.Count; sideIdx++) {
                 var side = SideStates[sideIdx];
                 if (side.LinkType != ItemPipelineLinkType.Storage) {
@@ -308,7 +295,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     continue;
                 }
 
-                //在存储里依次找首个允许的物品类型
+                //首个允许类型
                 foreach (var storedItem in storage.GetStoredItems()) {
                     if (storedItem == null || storedItem.IsAir) {
                         continue;
@@ -316,7 +303,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     if (!IsItemAllowedByFilter(storedItem.type)) {
                         continue;
                     }
-                    //至少有一个输入端能接收此物品才抽取(避免凭空塞满管道)
+                    //有输入能收才抽
                     if (!HasAvailableInputForItem(storedItem.type, reachableInputs)) {
                         continue;
                     }
@@ -354,10 +341,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         #endregion
 
         #region 输入模式
-        /// <summary>
-        /// 输入模式：将到达的物品存入连接的存储；
-        /// 失败则通过 <see cref="UpdateTransportingItem"/> 的卡死自愈策略尝试重定向到其他输入
-        /// </summary>
+        /// <summary>输入模式存入，失败走自愈</summary>
         private void UpdateInputMode() {
             if (!CurrentItem.HasValue) {
                 return;
@@ -401,30 +385,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             lastDepositRejectFrame = (int)Main.GameUpdateCount;
         }
 
-        /// <summary>
-        /// 在调用 DepositItem 之后稳健地推断剩余的物品数量
-        /// <para>许多 IStorageProvider(包括 MagicStorage / ChestStorageProvider)
-        /// 在成功存入后并不会回写 item.stack, 仅返回 true; 这种情况下原版的处理是
-        /// "全部已存入". 这里保留旧版的安全语义, 避免重新调度引发的物品复制,
-        /// 同时支持那些会更新 stack 的提供者(如 Incinerator/Thermal/Tram)正确处理部分存入.</para>
-        /// </summary>
+        /// <summary>DepositItem 后推断剩余量，防复制</summary>
         private static int ResolveRemainingStack(int beforeStack, Item toDeposit) {
-            //提供者明确清空了物品 -> 全部已存入
+            //stack 清零即全入
             if (toDeposit == null || toDeposit.IsAir || toDeposit.stack <= 0) {
                 return 0;
             }
-            //提供者修改了 stack 但未清空 -> 部分存入, 取真实剩余量
+            //stack 已改即部分入
             if (toDeposit.stack < beforeStack) {
                 return toDeposit.stack;
             }
-            //提供者未修改 stack(常见: 内部用 item.Clone() 后入库, 或反射调用) ->
-            //保守视为已全部存入, 与原版行为一致, 杜绝重复存入造成的复制
+            //未改 stack 保守视为全入，与原版一致防复制
             return 0;
         }
 
-        /// <summary>
-        /// 此输入端当前是否可接收指定类型的物品(综合考虑筛选器、存储空间、近期拒收)
-        /// </summary>
+        /// <summary>输入端是否可收该类型</summary>
         public bool CanReceiveItem(int itemType) {
             if (Mode != ItemPipelineMode.Input) {
                 return false;
@@ -510,9 +485,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 渐进式选路：严格 → 宽松 → 任意前向 → 反向回流
-        /// </summary>
+        /// <summary>渐进选路：严格→宽松→前向→回流</summary>
         private bool TryPassToNextPipeline(ref TransportingItem item) {
             int sourceDir = item.SourceDirection;
             bool allowReverse = stuckFrames >= ReverseFlowThreshold && item.ReverseHops < MaxReverseHopsPerItem;
@@ -521,18 +494,18 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
             int chosenDir;
 
-            //策略1: 沿"距离最近且当前可接收物品"的输入端推进
+            //策略1 最近可收输入
             chosenDir = SelectRoutedDirection(sourceDir, item.ItemType, requireReceiveAvailable: true);
             if (chosenDir < 0 && allowLooseRouting) {
-                //策略2: 任意可达的输入端(放弃接收性检查), 用于网络中目前所有输入都满的情形
+                //策略2 任意可达输入
                 chosenDir = SelectRoutedDirection(sourceDir, item.ItemType, requireReceiveAvailable: false);
             }
             if (chosenDir < 0 && allowAnyForward) {
-                //策略3: 任意非来源方向的空邻居管道
+                //策略3 任意前向空管
                 chosenDir = SelectAnyForwardDirection(sourceDir);
             }
             if (chosenDir < 0 && allowReverse) {
-                //策略4: 反向回流(同时增加反弹计数, 避免无限振荡)
+                //策略4 反向回流
                 chosenDir = SelectReverseDirection(sourceDir);
                 if (chosenDir >= 0) {
                     item.ReverseHops++;
@@ -546,7 +519,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             var selectedSide = SideStates[chosenDir];
             var nbr = selectedSide.LinkedPipeline;
             if (nbr == null || !nbr.Active || nbr.CurrentItem.HasValue) {
-                //最后一刻校验：如果选定方向其实已被占用, 放弃本次选路
+                //目标向已被占则放弃
                 return false;
             }
 
@@ -557,9 +530,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return true;
         }
 
-        /// <summary>
-        /// 按路由表选择朝向某输入端的下一跳方向
-        /// </summary>
+        /// <summary>路由表选下一跳</summary>
         private int SelectRoutedDirection(int excludeDir, int itemType, bool requireReceiveAvailable) {
             var inputs = ItemPipelineNetwork.GetReachableInputs(Position);
             if (inputs == null || inputs.Count == 0) {

@@ -8,10 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼一阶段激光扫射状态
-    /// 在玩家上方悬停并发射扫射激光
-    /// </summary>
+    /// <summary>一阶段激光扫射：上方悬停+扇形扫射</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerLaserSweep, typeof(TwinsStateContext))]
     internal class RetinazerLaserSweepState : TwinsStateBase
     {

@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 蜂蜜鱼技能
-    /// </summary>
+    /// <summary>蜂蜜鱼技能，右键生成蜂群核心</summary>
     internal class FishHoney : FishSkill
     {
         public override int UnlockFishID => ItemID.Honeyfin;
@@ -107,9 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     #region 蜂群核心控制器
-    /// <summary>
-    /// 蜂群核心，管理所有蜜蜂的生成和行为
-    /// </summary>
+    /// <summary>蜂群核心，周期生成并指挥蜜蜂</summary>
     internal class HoneyBeeSwarmCore : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

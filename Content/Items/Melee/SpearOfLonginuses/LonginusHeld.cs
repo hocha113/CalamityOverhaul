@@ -65,10 +65,8 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Projectile.ai[0]++;
         }
 
-        /// <summary>
-        /// 持续注入圣神能量。能量条充满后自动转化为一次立场充能（最高 <see cref="SpearOfLonginus.MaxChargeGrade"/> 层）。
-        /// 与盗贼潜伏完全解耦，仅依赖玩家持枪时间。
-        /// </summary>
+        /// 持续注入圣神能量，满条转一次立场充能(最高 <see cref="SpearOfLonginus.MaxChargeGrade"/> 层)
+        /// 与盗贼潜伏解耦，仅依赖持枪时间
         public void Charge() {
             SpearOfLonginus longinus = (SpearOfLonginus)Owner.HeldItem.ModItem;
 

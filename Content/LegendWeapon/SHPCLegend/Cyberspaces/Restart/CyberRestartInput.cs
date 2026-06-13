@@ -5,11 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 {
-    /// <summary>
-    /// 赛博重启按键处理
-    /// <br/>赛博空间激活时按下 <see cref="CWRKeySystem.Legend_Restart"/> 立即触发重启演出
-    /// <br/>仅本地玩家响应，所有合法性校验在 <see cref="CyberRestart.TryRestart"/> 内完成
-    /// </summary>
+    /// <summary>Legend_Restart 按键，委托 TryRestart</summary>
     internal class CyberRestartInput : ModPlayer
     {
         public override void ProcessTriggers(Terraria.GameInput.TriggersSet triggersSet) {

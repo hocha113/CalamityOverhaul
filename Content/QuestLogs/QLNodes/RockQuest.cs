@@ -28,10 +28,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(CWRID.Item_Terminus);
 
-            // 更新进度
+            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            // 检查完成
+            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
                 RequiredProgress = 1
             });
-            //这个还是别给了
+            //奖励已禁用
             //Rewards.Add(new QuestReward {
             //    ItemType = CWRID.Item_,
             //    Amount = 5,
@@ -70,10 +70,10 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void UpdateByPlayer() {
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(CWRID.Item_Rock);
-            // 更新进度
+            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            // 检查完成
+            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }

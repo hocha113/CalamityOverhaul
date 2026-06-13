@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => GiftScenarioBase.SpawnedDic.Keys.Any(g => g.TargetBossID == entity.type);
 
         public override void OnNPCDeath(NPC npc) {
-            if (!CWRRef.GetBossRushActive()//Boss Rush时不触发礼物场景
+            if (!CWRRef.GetBossRushActive() // Boss Rush 不触发礼物场景
                 && GiftScenarioBase.BossIDToInds.TryGetValue(npc.type, out var scenarios)) {
                 foreach (var scenario in scenarios) {
                     if (scenario.CanSpawned()) {
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         /// </summary>
         public readonly static Dictionary<GiftScenarioBase, bool> SpawnedDic = [];
         /// <summary>
-        /// BossID到礼物场景实例列表的映射，支持多个场景共享同一Boss触发
+        /// BossID 到礼物场景列表，多场景可共用一个 Boss
         /// </summary>
         public readonly static Dictionary<int, List<GiftScenarioBase>> BossIDToInds = [];
         /// <summary>
@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.ADV.Common
         protected abstract bool StartScenarioInternal();
 
         /// <summary>
-        /// 检查触发礼物场景所需的玩家持有条件，子类可重写以支持不同的角色体系
+        /// 子类可重写以适配不同角色体系
         /// </summary>
         protected virtual bool CheckHolderCondition(ADVSave save, Player player) {
             var halibutPlayer = player.GetOverride<HalibutPlayer>();
@@ -115,32 +115,32 @@ namespace CalamityOverhaul.Content.ADV.Common
                 return;
             }
             if (!SpawnedDic[this]) {
-                return;//Boss未被击败或礼物场景未生成
+                return; // Boss 未击败或场景未生成
             }
 
-            //避免在不合适的时候触发
+            // 避开 Boss 战与 Boss Rush
             if (CWRWorld.HasBoss || CWRWorld.BossRush) {
                 return;
             }
 
             if (!pendingTimers.TryGetValue(Key, out int timer)) {
                 timer = 60 * Main.rand.Next(2, 4);
-                pendingTimers[Key] = timer;//与SupCalMoonLordReward保持一致的随机缓冲时间
-                return;//首次满足条件进入延迟阶段
+                pendingTimers[Key] = timer;// 与 SupCalMoonLordReward 同策略，2~4 秒随机缓冲
+                return; // 首次满足条件，进入延迟
             }
 
             if (timer > 0) {
-                pendingTimers[Key] = timer - 1;//倒计时进行中
+                pendingTimers[Key] = timer - 1; // 延迟倒计时
                 return;
             }
 
             if (StartScenarioInternal()) {
                 MarkGiftCompleted(save);
-                pendingTimers.Remove(Key);//完成后移除
-                SpawnedDic[this] = false;//重置生成状态
+                pendingTimers.Remove(Key); // 完成后移除
+                SpawnedDic[this] = false; // 重置生成状态
             }
             else {
-                pendingTimers[Key] = 30;//若因其它场景占用而未成功启动则稍后重试
+                pendingTimers[Key] = 30; // 场景占用未启动，30 帧后重试
             }
         }
     }

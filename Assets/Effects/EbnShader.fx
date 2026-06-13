@@ -1,12 +1,17 @@
+// ============================================================================
+// EbnShader.fx 屏幕空间燃烧/暗角
+// 采样 noiseTex；ps_3_0
+// ============================================================================
+
 sampler noiseTex : register(s1);
-float colorMult;        //颜色乘数
-float time;             //时间，用于动画
-float radius;           //效果半径
-float maxOpacity;       //最大透明度
-float burnIntensity;    //燃烧强度
-float2 screenPosition;  //屏幕坐标位置
-float2 screenSize;      //屏幕尺寸
-float2 setPoint;        //设定中心坐标（效果中心）
+float colorMult;
+float time;
+float radius;
+float maxOpacity;
+float burnIntensity;
+float2 screenPosition;
+float2 screenSize;
+float2 setPoint; //效果中心
 
 float InverseLerp(float a, float b, float t)
 {

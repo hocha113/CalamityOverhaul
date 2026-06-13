@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    //菌生蟹行为系统
+    /// <summary>菌生蟹行为 AI</summary>
     internal class CrabulonBehavior
     {
         private readonly NPC npc;
@@ -23,16 +23,14 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.physics = physics;
         }
 
-        //处理基础更新，这些逻辑在任何状态下都应该执行
         public void UpdateBasics() {
             UpdateTimers();
             physics.UpdateGroundDistance();
             CheckHover();
-            //检查并修正卡入位置
             physics.CheckAndFixStuckPosition();
         }
 
-        //处理主AI逻辑，这部分在骑乘状态下会被跳过
+        //骑乘时跳过
         public bool ProcessAI() {
             if (owner.CrabulonPlayer != null) {
                 owner.CrabulonPlayer.CrabulonIndex = npc.whoAmI;
@@ -64,7 +62,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return ProcessFollowOrAttack();
         }
 
-        //更新计时器
         private void UpdateTimers() {
             if (owner.ai[7] > 0) owner.ai[7]--;
             if (owner.ai[8] > 0) owner.ai[8]--;
@@ -72,10 +69,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             if (owner.dontTurnTo > 0) owner.dontTurnTo--;
         }
 
-        //检查鼠标悬停
         private void CheckHover() {
             if (Main.dedServ) {
-                return;//服务器上没有鼠标，悬停判定只在本地客户端有意义
+                return;//悬停仅本地客户端
             }
             owner.hoverNPC = npc.Hitbox.Intersects(Main.MouseWorld.GetRectangle(1));
             if (owner.hoverNPC) {
@@ -86,7 +82,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //处理消化状态
         private bool ProcessDigestion() {
             if (owner.ai[8] <= 0) {
                 return false;
@@ -104,7 +99,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return true;
         }
 
-        //创建消化粒子效果
         private void CreateDigestionParticles() {
             if (owner.ai[8] == CrabulonConstants.ParticleEffectTime1) {
                 SpawnNutritionalParticles(CrabulonConstants.ParticleCount1);
@@ -114,7 +108,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //处理蹲伏状态
         private bool ProcessCrouch() {
             if (owner.Crouch) {
                 HandleCrouching();
@@ -135,7 +128,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //处理蹲伏逻辑
         private void HandleCrouching() {
             if (owner.ai[9] < CrabulonConstants.CrouchAnimationMax) {
                 owner.ai[9] += CrabulonConstants.CrouchAnimationSpeed;
@@ -145,7 +137,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //治疗NPC
         private void HealNPC() {
             if (!VaultUtils.isClient) {
                 npc.life += CrabulonConstants.HealAmount;
@@ -156,7 +147,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             SpawnNutritionalParticles(CrabulonConstants.HealParticleCount);
         }
 
-        //处理传送逻辑
         private bool ProcessTeleport() {
             if (owner.Owner.Distance(npc.Center) <= CrabulonConstants.TeleportDistance) {
                 return false;
@@ -170,7 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //执行传送：位置修改只在权威端进行，客户端通过NPC同步获得新位置，特效由广播触发
+        //位置仅权威端改，客户端跟 NPC 同步
         private void PerformTeleport() {
             owner.ai[6] = 0;
             if (VaultUtils.isClient) {
@@ -181,7 +171,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.Networking.BroadcastTeleportEffect();
         }
 
-        //处理跟随或攻击行为
         private bool ProcessFollowOrAttack() {
             Vector2 targetPos = owner.Owner.Center;
             float moveSpeed = CrabulonConstants.MoveSpeed;
@@ -206,7 +195,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             physics.AutoStepClimbing();
             UpdateDirection();
 
-            //处理落地攻击效果
             if (owner.TargetNPC != null) {
                 JumpFloorEffect();
             }
@@ -214,7 +202,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //处理横向移动
         private void ProcessHorizontalMovement(Vector2 toDis, float followDistance, float moveSpeed, float inertia) {
             if (Math.Abs(toDis.X) > followDistance && npc.velocity.Y <= 0) {
                 if (toDis.X > 0) {
@@ -237,7 +224,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //处理攻击跳跃
         private void ProcessAttackJump() {
             npc.ai[0] = 3f;
             if (npc.velocity.Y == 0) {
@@ -248,7 +234,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //处理纵向移动
         private void ProcessVerticalMovement(Vector2 targetPos) {
             if (npc.collideY && targetPos.Y < npc.Bottom.Y - 400 && npc.velocity.Y > -20) {
                 npc.velocity.Y = CrabulonConstants.JumpVelocity;
@@ -262,14 +247,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //更新朝向
         private void UpdateDirection() {
             if (owner.dontTurnTo <= 0f) {
                 npc.spriteDirection = npc.direction;
             }
         }
 
-        //生成营养粒子
         private void SpawnNutritionalParticles(int count) {
             for (int i = 0; i < count; i++) {
                 Vector2 spawnPos = npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height));
@@ -277,7 +260,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //落地冲击效果
         private void JumpFloorEffect() {
             if (!npc.collideY) {
                 owner.ai[3] += Math.Abs(npc.velocity.Y);
@@ -299,7 +281,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             owner.ai[4] = 0;
         }
 
-        //创建冲击效果
         private void CreateImpactEffects(float impactStrength) {
             if (!VaultUtils.isServer) {
                 float volume = CrabulonConstants.ImpactSoundVolume + Math.Min(
@@ -324,7 +305,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //创建冲击粒子
         private void CreateImpactDust(float impactStrength) {
             Vector2 dustPos = npc.Bottom + new Vector2(Main.rand.NextFloat(-npc.width, npc.width), 0);
             int dust = Dust.NewDust(dustPos, 4, 4, DustID.BlueFairy, 0f, -2f, 100, default, 1.5f);
@@ -333,7 +313,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             Main.dust[dust].shader = GameShaders.Armor.GetShaderFromItemId(owner.DyeItemID);
         }
 
-        //创建冲击弹幕
         private void CreateImpactProjectile(float impactStrength) {
             int baseDmg = CrabulonConstants.BaseDamage + (int)(impactStrength / CrabulonConstants.DamagePerImpact);
 

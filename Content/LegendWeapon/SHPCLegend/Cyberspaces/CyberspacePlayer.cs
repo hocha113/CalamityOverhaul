@@ -11,10 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博空间领域的玩家级状态承载，所有原本散落在 <see cref="Cyberspace"/> 静态字段上的运行时数据
-    /// 都搬迁到这里，以玩家实例为粒度持有，便于未来网络同步与多人独立体验
-    /// </summary>
+    /// <summary>赛博领域每玩家状态承载</summary>
     public class CyberspacePlayer : ModPlayer
     {
         //是否激活
@@ -23,22 +20,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         //内部强度原值，对外通过 Intensity 暴露
         internal float intensityRaw;
 
-        /// <summary>
-        /// 当前效果强度，已叠加 RestartCollapse 视觉抑制
-        /// </summary>
+        /// <summary>当前强度，含 RestartCollapse 抑制</summary>
         public float Intensity {
             get => intensityRaw * (1f - MathHelper.Clamp(RestartCollapse, 0f, 1f));
             set => intensityRaw = value;
         }
 
-        /// <summary>
-        /// 重启演出专用视觉抑制系数
-        /// </summary>
+        /// <summary>重启演出视觉抑制系数</summary>
         public float RestartCollapse { get; set; }
 
-        /// <summary>
-        /// 领域中心
-        /// </summary>
+        /// <summary>领域中心</summary>
         public Vector2 DomainCenter { get; private set; }
 
         //领域中心缓动剩余帧
@@ -53,14 +44,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         internal readonly float[] layerExpand = new float[Cyberspace.MaxLayerCount];
         internal readonly int[] layerBurstTimer = new int[Cyberspace.MaxLayerCount];
 
-        /// <summary>
-        /// 当前领域层数
-        /// </summary>
+        /// <summary>当前领域层数</summary>
         public int CurrentLayer { get; internal set; }
 
-        /// <summary>
-        /// 收缩前的层数，用于在收缩动画期间继续渲染
-        /// </summary>
+        /// <summary>收缩前层数，收缩动画期间仍参与渲染</summary>
         public int RenderLayerCount {
             get {
                 int count = 0;
@@ -71,12 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 当前最外层目标半径
-        /// <br/>Active 时只看 <see cref="CurrentLayer"/>，避免从高层降回低层的 2~4 秒过渡期里
-        /// 高层残留的 layerExpand 把视觉半径撑大到外层，导致主着色器把整个屏幕都判为 inside 而整体染红
-        /// <br/>仅在领域已请求关闭、所有层都在收缩时回退到 <see cref="RenderLayerCount"/>，让收缩动画仍有目标参考
-        /// </summary>
+        /// <summary>最外层目标半径；Active 只看 CurrentLayer，关闭时回退 RenderLayerCount</summary>
         public float Radius {
             get {
                 int rLayer = Active && CurrentLayer > 0 ? CurrentLayer : RenderLayerCount;
@@ -84,9 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 全局展开进度 = 有效外半径 / 目标外半径
-        /// </summary>
+        /// <summary>全局展开进度 = 有效外半径 / 目标外半径</summary>
         public float ExpandProgress {
             get {
                 float r = Radius;
@@ -95,9 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 实际有效的最外层半径
-        /// </summary>
+        /// <summary>实际有效最外层半径</summary>
         public float EffectiveOuterRadius {
             get {
                 float maxR = 0f;
@@ -109,12 +87,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 视觉层级（1~<see cref="Cyberspace.MaxLayerCount"/> 连续值），
-        /// 由当前有效外半径相对各层完整半径插值得出
-        /// <br/>单环边界设计依赖此值：升降层形变过程中边界环的样式（厚度/色温/装饰层）随半径连续渐变，
-        /// 而不是跟随 <see cref="CurrentLayer"/> 突变；远端玩家亦可由本地模拟的 layerExpand 直接推出，无需额外同步
-        /// </summary>
+        /// <summary>视觉层级，由有效外半径对各层半径插值；边界环样式连续渐变</summary>
         public float VisualTier {
             get {
                 float r = EffectiveOuterRadius;
@@ -133,14 +106,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 着色器累计时间
-        /// </summary>
+        /// <summary>着色器累计时间</summary>
         public float EffectTime { get; private set; }
 
-        /// <summary>
-        /// 玩家移动淡化系数
-        /// </summary>
+        /// <summary>玩家移动淡化系数</summary>
         public float MotionFade { get; private set; }
 
         internal float targetIntensity;
@@ -167,9 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return layerExpand[layerIndex];
         }
 
-        /// <summary>
-        /// 是否能在余量条件下维持指定层的最低秒数
-        /// </summary>
+        /// <summary>RAM 余量能否维持指定层最低秒数</summary>
         public bool CanAffordLayer(int layer) {
             if (HackTime.InfiniteHack) {
                 return true;
@@ -181,9 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return RamSystem.CurrentRam >= required;
         }
 
-        /// <summary>
-        /// 同帧防重入的手动切换
-        /// </summary>
+        /// <summary>同帧防重入手动切换</summary>
         public bool Toggle() {
             long frame = (long)Main.GameUpdateCount;
             if (lastManualToggleFrame == frame) {
@@ -202,9 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return true;
         }
 
-        /// <summary>
-        /// 激活领域第一层（或恢复到上次层数）
-        /// </summary>
+        /// <summary>激活第一层或恢复上次层数</summary>
         public void Activate() {
             //崩溃锁定期内拒绝
             if (crashLockoutTimer > 0) {
@@ -252,9 +215,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 升降层
-        /// </summary>
+        /// <summary>升降层</summary>
         public void SetLayer(int layer) {
             layer = Math.Clamp(layer, 1, Cyberspace.MaxLayerCount);
             if (!Active) return;
@@ -281,10 +242,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 关闭领域，所有层带收缩动画
-        /// </summary>
-        /// <param name="silent">为 true 时跳过关闭音效，用于极速换武器的静默收合</param>
+        /// <summary>关闭领域；silent 跳过关闭音效</summary>
         public void Deactivate(bool silent = false) {
             Active = false;
             targetIntensity = 0f;
@@ -301,9 +259,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// RAM 耗尽触发的"系统崩溃"
-        /// </summary>
+        /// <summary>RAM 耗尽系统崩溃</summary>
         public void TriggerSystemCrash() {
             if (!Active && CurrentLayer == 0 && crashLockoutTimer > 0) {
                 return;
@@ -320,9 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 主更新逻辑
-        /// </summary>
+        /// <summary>主更新；远端仅视觉插值</summary>
         public void Update() {
             //远端玩家只跑视觉插值，状态机（RAM消耗/崩溃/切枪检测）由其本机负责
             if (Player.whoAmI != Main.myPlayer) {
@@ -427,9 +381,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 立即重置全部状态
-        /// </summary>
+        /// <summary>立即重置全部状态</summary>
         public void Reset() {
             Active = false;
             intensityRaw = 0f;
@@ -452,9 +404,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 通知领域中心暂留在出发点
-        /// </summary>
+        /// <summary>领域中心暂留出发点</summary>
         public void NotifyTeleport(Vector2 anchorCenter) {
             DomainCenter = anchorCenter;
             domainEaseTimer = Cyberspace.DomainEaseTotal;
@@ -645,11 +595,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             copy._snapRestartCollapse = RestartCollapse;
         }
 
-        /// <summary>
-        /// 玩家加入时的全量状态同步：<see cref="SendClientChanges"/> 只在状态变化时发包，
-        /// 中途加入 / 重连的玩家若收不到这份初始快照，会永远认为该领域未激活，
-        /// 导致其本机的 <see cref="IsInsideDomain"/> 恒为 false，进而把所有冻结条目立即快进到解冻段
-        /// </summary>
+        /// <summary>加入/重连全量同步，避免 IsInsideDomain 误判</summary>
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.CyberspaceStateSync);

@@ -10,11 +10,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 俯冲贯穿（普攻版）：自轨道绞杀拆出的常态化俯冲——无撤离静默幕，
-    /// 短整备上升后直接 2 趟（激怒 3 趟）预警线交叉俯冲，瞬移循环删除回程死时间，
-    /// 每趟带音爆扭曲与热浪尾流，收尾阶梯刹车回场。总时长约 5 秒
-    /// </summary>
+    /// <summary>俯冲贯穿(普攻)：短整备→2/3趟交叉预警俯冲→阶梯刹车回场，约5秒</summary>
+    /// <para>自轨道绞杀拆出，无撤离静默幕；删回程死时间</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DiveStrike, typeof(DestroyerStateContext))]
     internal class DestroyerDiveStrikeState : DestroyerStateBase
     {

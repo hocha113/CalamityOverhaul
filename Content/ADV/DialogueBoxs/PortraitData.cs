@@ -3,7 +3,7 @@
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
-    /// 头像数据，包含头像纹理和显示样式信息
+    /// 头像数据
     /// </summary>
     public class PortraitData
     {
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         public float TargetFade;
 
         /// <summary>
-        /// 用于纹理裁剪的源矩形区域，如果为 null 则绘制整个纹理
+        /// 纹理裁剪源矩形，null 为整图
         /// </summary>
         public Rectangle? SourceRect;
     }

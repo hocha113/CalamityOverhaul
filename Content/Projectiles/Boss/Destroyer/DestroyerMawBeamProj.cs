@@ -13,13 +13,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
     /// <summary>
-    /// 毁灭者「炽核熔射」巨型口吐光柱：锚定在蠕虫头部口器，按固定角速度缓慢横扫。
+    /// 毁灭者「炽核熔射」口吐光柱：锚定头部口器，固定角速度慢扫
     /// <br/>ai[0] = 头部 NPC 的 whoAmI
     /// <br/>ai[1] = 起始角（弧度）
     /// <br/>ai[2] = 每帧扫射角速度（含方向）
-    /// <para>较颅骨主炮更厚重华丽：复用 DestroyerBeam.fx 的白热主轴 + 缠绕电弧 + 推进脉冲，
-    /// 外覆熔焰浊浪宽晕、沿束熔滴飞溅、口器多层聚能光球，与机械骷髅王橙色主炮形成红色差异化。
-    /// 展开期不造成伤害（公平反应窗口），扫射角速度刻意压低，避免远端切向无解。</para>
+    /// <para>复用 DestroyerBeam.fx 白热主轴+缠绕电弧+推进脉冲，红视觉区别于机械骷髅王橙炮；
+    /// 外覆熔焰浊浪宽晕、沿束熔滴飞溅、口器多层聚能光球
+    /// 展开期无伤害(公平窗口)，扫射角速压低防远端切向无解</para>
     /// </summary>
     internal class DestroyerMawBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {

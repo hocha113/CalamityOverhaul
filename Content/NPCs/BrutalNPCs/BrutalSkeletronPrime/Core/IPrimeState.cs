@@ -3,9 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械骷髅王头部状态索引，写入 <c>npc.ai[2]</c> 用于网络同步
-    /// </summary>
+    /// <summary>头部状态索引，写入 <c>npc.ai[2]</c> 网络同步</summary>
     internal enum PrimeStateIndex : int
     {
         /// <summary>登场演出：自深渊升起、注能回血、再生四肢</summary>

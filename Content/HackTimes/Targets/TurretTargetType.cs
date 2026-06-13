@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.HackTimes.Targets
 {
-    /// <summary>
-    /// 炮台目标种类工厂（虚空聚落加特林炮台、激光炮台等）
-    /// <br/>悬停优先级低于信号塔，因为信号塔贴图覆盖较大且通常与炮台并列存在
-    /// </summary>
+    /// <summary>炮台目标工厂</summary>
     internal class TurretTargetType : HackTargetType
     {
         public override HackTargetKind Kind => HackTargetKind.Turret;

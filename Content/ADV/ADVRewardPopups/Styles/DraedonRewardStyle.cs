@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -8,23 +8,23 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
 {
     /// <summary>
-    /// 嘉登科技风格奖励弹窗——与对话框/来电框统一的深暗青绿设计语言
+    /// 嘉登科技奖励弹窗
     /// </summary>
     internal class DraedonRewardStyle : IRewardPopupStyle
     {
-        //动画计时器
+        // 动画计时器
         private float circuitPulseTimer;
         private float hologramFlicker;
         private float dataStreamTimer;
         private float sweepTimer;
         private float glitchTimer;
 
-        //四角十六进制读出
+        // 四角十六进制读出
         private readonly string[] cornerHex = ["0x????", "0x????", "0x????", "0x????"];
         private int hexUpdateClock;
         private static readonly char[] HexChars = "0123456789ABCDEF".ToCharArray();
 
-        //粒子
+        // 粒子
         private readonly List<DraedonDataPRT> dataParticles = [];
         private int dataParticleTimer;
         private readonly List<CircuitNodePRT> circuitNodes = [];
@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             glitchTimer += 0.16f;
             if (glitchTimer > MathHelper.TwoPi) glitchTimer -= MathHelper.TwoPi;
 
-            //每40帧刷新四角十六进制读出
+            // 每40帧刷新四角十六进制读出
             hexUpdateClock++;
             if (hexUpdateClock >= 40) {
                 hexUpdateClock = 0;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             Texture2D px = VaultAsset.placeholder2.Value;
             float fa = alpha * (0.92f + hoverGlow);
 
-            //多层扩散阴影
+            // 多层扩散阴影
             for (int d = 7; d >= 1; d--) {
                 Rectangle s = rect;
                 s.Inflate(d, d);
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                     Color.Black * (alpha * 0.06f * (7f - d) / 7f));
             }
 
-            //纵向渐变背景（深暗色调）
+            // 纵向渐变背景（深暗色调）
             int segs = 24;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                     new Rectangle(0, 0, 1, 1), c);
             }
 
-            //对角线纹理（45°细线，间隔2行降低负担）
+            // 对角线纹理（45°细线，间隔2行降低负担）
             int dspacing = 18;
             float dphase = dataStreamTimer * 14f;
             for (int col = -(rect.Height / dspacing) - 1; col < (rect.Width / dspacing) + 2; col++) {
@@ -97,12 +97,12 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 }
             }
 
-            //全息闪烁叠层
+            // 全息闪烁叠层
             float flicker = MathF.Sin(hologramFlicker * 1.6f) * 0.5f + 0.5f;
             spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1),
                 new Color(0, 28, 36) * (fa * 0.18f * flicker));
 
-            //偶发故障横条
+            // 偶发故障横条
             float gf = MathF.Sin(glitchTimer * 2.1f);
             if (gf > 0.97f) {
                 float gy = rect.Y + (glitchTimer * 97f % rect.Height);
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                     new Color(0, 200, 195) * (fa * (gf - 0.97f) * 3.5f));
             }
 
-            //匀速扫描线（向下循环）
+            // 匀速扫描线（向下循环）
             float scanY = rect.Y + sweepTimer * rect.Height;
             for (int row = 0; row <= 3; row++) {
                 float iy = scanY + row * 1.5f;
@@ -129,35 +129,35 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             Texture2D px = VaultAsset.placeholder2.Value;
             float fa = alpha * (0.9f + hoverGlow * 0.3f);
 
-            //顶部主强调线（3px亮+1px暗）
+            // 顶部主强调线（3px亮+1px暗）
             Color topBright = new Color(0, 218, 208) * (fa * 0.97f);
             Color topDim = new Color(0, 140, 160) * (fa * 0.45f);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 3), new Rectangle(0, 0, 1, 1), topBright);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y + 3, rect.Width, 1), new Rectangle(0, 0, 1, 1), topDim);
 
-            //左侧强调竖条（渐变上亮下暗）
+            // 左侧强调竖条（渐变上亮下暗）
             int lbH = rect.Height / 2;
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 4, lbH),
                 new Rectangle(0, 0, 1, 1), new Color(0, 200, 190) * (fa * 0.72f));
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y + lbH, 4, rect.Height - lbH),
                 new Rectangle(0, 0, 1, 1), new Color(0, 130, 130) * (fa * 0.35f));
 
-            //右侧细线
+            // 右侧细线
             spriteBatch.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height),
                 new Rectangle(0, 0, 1, 1), new Color(0, 95, 115) * (fa * 0.42f));
-            //底部细线
+            // 底部细线
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
                 new Rectangle(0, 0, 1, 1), new Color(0, 115, 135) * (fa * 0.32f));
 
-            //顶部左侧刻痕
+            // 顶部左侧刻痕
             spriteBatch.Draw(px, new Rectangle(rect.X + 4, rect.Y, 1, 9), new Rectangle(0, 0, 1, 1), topBright * 0.82f);
             spriteBatch.Draw(px, new Rectangle(rect.X + 18, rect.Y, 1, 6), new Rectangle(0, 0, 1, 1), topBright * 0.55f);
             spriteBatch.Draw(px, new Rectangle(rect.X + 32, rect.Y, 1, 4), new Rectangle(0, 0, 1, 1), topBright * 0.32f);
 
-            //右侧刻度尺
+            // 右侧刻度尺
             DrawRuler(spriteBatch, rect, fa);
 
-            //四角十六进制读出
+            // 四角十六进制读出
             DrawCornerHex(spriteBatch, rect, fa);
         }
 
@@ -191,7 +191,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         }
 
         public void UpdateParticles(Vector2 basePos, float panelFade) {
-            //用面板中心估算面板范围
+            // 用面板中心估算面板范围
             Vector2 panelPos = new(basePos.X - 100f, basePos.Y - 50f);
             Vector2 panelSize = new(200f, 100f);
 
@@ -251,14 +251,14 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             float sc = 0.5f;
             var font = FontAssets.MouseText.Value;
 
-            //左上
+            // 左上
             Utils.DrawBorderString(sb, cornerHex[0], new Vector2(rect.X + 5f, rect.Y + 5f), col, sc);
-            //右上（右对齐）
+            // 右上（右对齐）
             float w1 = font.MeasureString(cornerHex[1]).X * sc;
             Utils.DrawBorderString(sb, cornerHex[1], new Vector2(rect.Right - w1 - 12f, rect.Y + 5f), col, sc);
-            //左下
+            // 左下
             Utils.DrawBorderString(sb, cornerHex[2], new Vector2(rect.X + 5f, rect.Bottom - 14f), col * 0.68f, sc);
-            //右下（右对齐）
+            // 右下（右对齐）
             float w3 = font.MeasureString(cornerHex[3]).X * sc;
             Utils.DrawBorderString(sb, cornerHex[3], new Vector2(rect.Right - w3 - 12f, rect.Bottom - 14f), col * 0.68f, sc);
         }

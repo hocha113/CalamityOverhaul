@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 归档机匣：累积所有 SHPC 命中造成的伤害，达到阈值时在玩家位置释放一次"数据归档"爆破
-    /// 累积量与冷却均存储在 ModItem 实例字段，避免污染 SHPCPlayer 等共享状态
-    /// </summary>
+    /// <summary>归档机匣：累积命中伤害达阈值释数据归档爆破</summary>
     internal sealed class ArchiveFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

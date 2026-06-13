@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.Hungerfish;
         public override int DefaultCooldown => 60 - +HalibutData.GetDomainLayer() * 3;
         public override int ResearchDuration => 60 * 18;
-        //恶鬼管理系统
+        //活跃恶鬼索引
         private static readonly List<int> ActiveHungries = new();
         private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
 
@@ -402,9 +402,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 更新动画帧
-        /// </summary>
+        /// <summary>动画帧 tick</summary>
         private void UpdateAnimation() {
             frameCounter++;
             if (frameCounter >= FrameSpeed) {
@@ -417,9 +415,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.frame = currentFrame;
         }
 
-        /// <summary>
-        /// 更新呼吸效果
-        /// </summary>
+        /// <summary>呼吸缩放 tick</summary>
         private void UpdateBreathing() {
             breathingPhase += 0.05f;
 
@@ -599,7 +595,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.scale / squashStretch
             );
 
-            //暗化处理（生物感）
+            //暗化主体
             Color drawColor = Color.Lerp(lightColor, new Color(200, 150, 150), 0.3f) * alpha;
 
             sb.Draw(

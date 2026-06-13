@@ -10,12 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博爆破特效弹幕
-    /// <br/>由 CyberChargeOrbProj 命中时生成，使用 CyberDetonation.fx 着色器
-    /// <br/>以全屏四边形渲染科技感爆破冲击环
-    /// <br/>对范围内敌人造成 AOE 伤害
-    /// </summary>
+    /// <summary>能量球引爆 AOE，CyberDetonation.fx</summary>
     internal class CyberDetonationProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

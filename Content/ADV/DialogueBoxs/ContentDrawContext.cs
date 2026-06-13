@@ -4,7 +4,7 @@ using ReLogic.Graphics;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
-    /// 内容绘制上下文，包含绘制过程中的所有共享状态
+    /// 内容绘制上下文
     /// </summary>
     public class ContentDrawContext
     {
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         #endregion
 
         /// <summary>
-        /// 缩放值（供子类使用）
+        /// 子类用缩放
         /// </summary>
         public float Scale;
     }

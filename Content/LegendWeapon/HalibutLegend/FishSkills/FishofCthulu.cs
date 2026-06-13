@@ -243,9 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 平滑更新帧过渡
-        /// </summary>
+        /// <summary>帧过渡 tick</summary>
         private void UpdateFrameTransition() {
             //计算当前帧过渡进度
             float targetTransition = targetMinFrame / 2f; //0或1 (因为minFrame是0或2)

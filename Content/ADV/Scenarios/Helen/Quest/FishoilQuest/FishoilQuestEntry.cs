@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.ADV.EntrustManager;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                     total += item.stack;
                 }
             }
-            //同时计入鼠标抓取的物品，避免玩家拖鱼瞬间触发与消耗的差异
+            // 同时计入鼠标抓取的物品，避免玩家拖鱼瞬间触发与消耗的差异
             if (Main.myPlayer == player.whoAmI) {
                 Item mouse = Main.mouseItem;
                 if (mouse != null && mouse.stack > 0
@@ -173,13 +173,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         }
 
         public override void OnUpdate() {
-            //统计背包+鼠标中的候选鱼数量
+            // 统计背包+鼠标中的候选鱼数量
             currentFishCount = CountAvailableFish(Main.LocalPlayer);
 
             Progress = Math.Clamp(currentFishCount / (float)FishRequired, 0f, 1f);
             ProgressLabel ??= QuestTitle;
 
-            //已经持久化完成，确保任务条目状态同步并不再触发任何提交流程
+            // 已经持久化完成，确保任务条目状态同步并不再触发任何提交流程
             if (IsPersistentlyCompleted()) {
                 if (Status != QuestEntryStatus.Completed) {
                     QuestManagerUI.Instance?.SetEntryStatus(QuestKey, QuestEntryStatus.Completed, 1f);
@@ -189,25 +189,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                 return;
             }
 
-            //场景结束后或长时间未激活时，重置提交标志（看门狗）
+            // 场景结束后或长时间未激活时，重置提交标志（看门狗）
             if (submissionActive) {
                 if (ScenarioManager.IsActive(nameof(FishoilSubmitScenario))) {
                     submissionWatchdog = 0;
                 }
                 else if (!ScenarioManager.IsActive()) {
-                    //没有任何场景在跑——之前的提交场景已结束或入队后被清空
+                    // 没有任何场景在跑——之前的提交场景已结束或入队后被清空
                     submissionActive = false;
                     submissionWatchdog = 0;
                 }
                 else if (++submissionWatchdog > SubmissionWatchdogMax) {
-                    //别的场景把队列长时间占着，强制释放避免永久卡住
+                    // 别的场景把队列长时间占着，强制释放避免永久卡住
                     submissionActive = false;
                     submissionWatchdog = 0;
                 }
             }
 
-            //当任务处于激活/关注状态且鱼够了，自动触发提交场景。
-            //Suspended/Completed 状态以及"等待手动提交"标志置位时都不再自动触发
+            // 当任务处于激活/关注状态且鱼够了，自动触发提交场景。
+            // Suspended/Completed 状态以及"等待手动提交"标志置位时都不再自动触发
             if ((Status == QuestEntryStatus.Tracked || Status == QuestEntryStatus.Active)
                 && currentFishCount >= FishRequired
                 && !IsAwaitingManualSubmit()
@@ -218,15 +218,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         }
 
         public override void OnStatusChanged(QuestEntryStatus oldStatus, QuestEntryStatus newStatus) {
-            //从挂起恢复为关注时，清除持久化挂起标记
+            // 从挂起恢复为关注时，清除持久化挂起标记
             if (oldStatus == QuestEntryStatus.Suspended && newStatus == QuestEntryStatus.Tracked) {
                 ClearSuspendedFlag();
-                //已经持久化完成则不再触发
+                // 已经持久化完成则不再触发
                 if (IsPersistentlyCompleted()) {
                     return;
                 }
-                //此处不直接读 currentFishCount，因为状态可能在 OnUpdate 之外变更，
-                //OnUpdate 下一帧自然会重新评估并触发，无需重复路径
+                // 此处不直接读 currentFishCount，因为状态可能在 OnUpdate 之外变更，
+                // OnUpdate 下一帧自然会重新评估并触发，无需重复路径
             }
         }
 
@@ -234,15 +234,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         private void TriggerSubmissionScenario() {
             ScenarioManager.Reset<FishoilSubmitScenario>();
             ScenarioManager.Start<FishoilSubmitScenario>();
-            //无论 Start 是直接启动还是入队，统一置位以避免重复触发
+            // 无论 Start 是直接启动还是入队，统一置位以避免重复触发
             submissionActive = true;
             submissionWatchdog = 0;
         }
 
         public override List<string> GetTrackerDetails() {
             if (currentFishCount >= FishRequired) {
-                //鱼已收集够：若处于等待手动提交状态，多展示一行提示，
-                //顺便让侧边栏自动加大高度以容纳提交按钮
+                // 鱼已收集够：若处于等待手动提交状态，多展示一行提示，
+                // 顺便让侧边栏自动加大高度以容纳提交按钮
                 if (IsAwaitingManualSubmit()) {
                     return [TrackerReady.Value, AwaitingSubmitHint.Value];
                 }
@@ -274,7 +274,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             float textScale = 0.6f;
             int yOffset = 0;
 
-            //收集进度文本
+            // 收集进度文本
             var details = GetTrackerDetails();
             foreach (string line in details) {
                 Color textColor = currentFishCount >= FishRequired
@@ -288,19 +288,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
             yOffset += 4;
 
-            //进度条
+            // 进度条
             Rectangle barRect = new(contentRect.X, contentRect.Y + yOffset, contentRect.Width, 12);
             string progressText = string.Format(ProgressFormat.Value, Math.Min(currentFishCount, FishRequired), FishRequired);
             oceanStyle.DrawWidgetProgress(sb, barRect, Progress, progressText, alpha);
 
             yOffset += 18;
 
-            //是否进入"等待手动提交"展示分支
+            // 是否进入"等待手动提交"展示分支
             bool awaitingSubmit = IsAwaitingManualSubmit()
                 && !IsPersistentlyCompleted()
                 && currentFishCount >= FishRequired;
 
-            //底部当前状态提示
+            // 底部当前状态提示
             string statusHint = Status switch {
                 QuestEntryStatus.Suspended => StatusSuspended.Value,
                 QuestEntryStatus.Completed => StatusCompleted.Value,
@@ -321,15 +321,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
             yOffset += 14;
 
-            //提交按钮：仅在等待手动提交且鱼数达标时绘制
+            // 提交按钮：仅在等待手动提交且鱼数达标时绘制
             submitButtonVisible = false;
             if (awaitingSubmit) {
                 int btnH = 22;
                 int btnW = Math.Min(contentRect.Width, 132);
                 int btnX = contentRect.X + (contentRect.Width - btnW) / 2;
                 int btnY = contentRect.Y + yOffset;
-                //不再额外校验越界——widget 高度已通过 GetTrackerExtraHeight 加大；
-                //即便偶发偏差，按钮也直接绘制，确保玩家始终看得到点得到
+                // 不再额外校验越界——widget 高度已通过 GetTrackerExtraHeight 加大；
+                // 即便偶发偏差，按钮也直接绘制，确保玩家始终看得到点得到
                 submitButtonRect = new Rectangle(btnX, btnY, btnW, btnH);
                 submitButtonVisible = true;
 
@@ -343,14 +343,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                 Color fill = Color.Lerp(baseFill, hoverFill, submitButtonHover) * alpha;
                 sb.Draw(px, submitButtonRect, fill);
 
-                //边框
+                // 边框
                 Color edge = Color.Lerp(new Color(80, 180, 220), new Color(140, 240, 255), submitButtonHover) * alpha;
                 sb.Draw(px, new Rectangle(submitButtonRect.X, submitButtonRect.Y, submitButtonRect.Width, 1), edge);
                 sb.Draw(px, new Rectangle(submitButtonRect.X, submitButtonRect.Bottom - 1, submitButtonRect.Width, 1), edge);
                 sb.Draw(px, new Rectangle(submitButtonRect.X, submitButtonRect.Y, 1, submitButtonRect.Height), edge);
                 sb.Draw(px, new Rectangle(submitButtonRect.Right - 1, submitButtonRect.Y, 1, submitButtonRect.Height), edge);
 
-                //文字居中
+                // 文字居中
                 string label = SubmitButtonLabel.Value;
                 float scale = 0.7f;
                 Vector2 size = font.MeasureString(label) * scale;
@@ -368,18 +368,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         }
 
         public override bool HandleTrackerInput(Rectangle widgetRect, Rectangle contentRect) {
-            //仅在按钮当前可见时才进行命中检测
+            // 仅在按钮当前可见时才进行命中检测
             if (!submitButtonVisible) return false;
-            //已完成或不再等待手动提交，直接放行
+            // 已完成或不再等待手动提交，直接放行
             if (IsPersistentlyCompleted() || !IsAwaitingManualSubmit()) return false;
 
             if (!submitButtonRect.Contains(Main.mouseX, Main.mouseY)) return false;
 
-            //悬停期间始终消费输入，避免拖拽手势误判
+            // 悬停期间始终消费输入，避免拖拽手势误判
             Main.LocalPlayer.mouseInterface = true;
 
             if (UIHandleLoader.keyLeftPressState == KeyPressState.Pressed) {
-                //清除挂起标志，让 OnUpdate 在下一帧按常规路径自动触发提交场景
+                // 清除挂起标志，让 OnUpdate 在下一帧按常规路径自动触发提交场景
                 ClearAwaitingManualSubmit();
                 SoundEngine.PlaySound(SoundID.MenuTick);
             }

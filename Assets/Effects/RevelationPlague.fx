@@ -1,12 +1,14 @@
-//启示录瘟疫NPC滤镜
-//思路：病绿色重映射 + 脉冲静脉 + 边缘病灶辉光 + 轻微扰动
+// ============================================================================
+// RevelationPlague.fx 启示录瘟疫 NPC 滤镜
+// 病绿重映射+静脉脉冲+边缘辉光；采样 uImage0
+// ============================================================================
 
 sampler uImage0 : register(s0);
 
-float2 texelSize;
-float intensity;
-float progress;
-float uTime;
+float2 texelSize;     //1/宽 1/高
+float intensity;      //0~1
+float progress;       //0~1 腐朽进度
+float uTime;          //静脉脉冲相位
 
 float hash(float2 p)
 {

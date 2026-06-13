@@ -109,9 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 溺尸弹幕 - 从地下爬出，冲向敌人并爆炸
-    /// </summary>
+    /// <summary>溺尸弹幕，爬出地面后冲刺爆炸</summary>
     internal class WaterZombie : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -229,9 +227,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 从地下爬出AI
-        /// </summary>
+        /// <summary>爬出 tick</summary>
         private void EmergeFromGroundAI() {
             StateTimer++;
 
@@ -396,9 +392,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 寻找目标AI
-        /// </summary>
+        /// <summary>寻敌 tick</summary>
         private void SeekTargetAI() {
             StateTimer++;
 
@@ -422,9 +416,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity.X = (float)Math.Sin(StateTimer * 0.2f) * 0.5f;
         }
 
-        /// <summary>
-        /// 冲刺攻击AI
-        /// </summary>
+        /// <summary>冲刺 tick</summary>
         private void ChargeAttackAI() {
             StateTimer++;
 
@@ -492,9 +484,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 爆炸AI
-        /// </summary>
+        /// <summary>爆炸 tick</summary>
         private void ExplodeAI() {
             StateTimer++;
 
@@ -517,9 +507,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>
-        /// 创建爆炸特效（重新设计）
-        /// </summary>
+        /// <summary>爆炸 burst VFX</summary>
         private void CreateExplosionEffect() {
             //强力冲击环（快速扩散）
             for (int i = 0; i < 16; i++) {

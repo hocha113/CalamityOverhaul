@@ -3,10 +3,8 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械臂状态索引，写入 <c>npc.ai[2]</c> 用于网络同步。
-    /// 四条机械臂共用 <see cref="PrimeArmStateContext"/>，按百位区分归属
-    /// </summary>
+    /// <summary>机械臂状态索引，写入 <c>npc.ai[2]</c> 网络同步</summary>
+    /// <para>四臂共用 <see cref="PrimeArmStateContext"/>，百位区分归属</para>
     internal enum PrimeArmStateIndex : int
     {
         //激光炮 100+

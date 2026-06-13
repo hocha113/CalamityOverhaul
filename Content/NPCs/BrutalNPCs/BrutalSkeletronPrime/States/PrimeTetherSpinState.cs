@@ -7,13 +7,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 武装阶段大招——电弧风车：四臂飞散到屏幕级半径，头-臂之间拉起
-    /// 带伤害判定的电弧链锁（<see cref="PrimeArcChainProj"/>），十字结构缓慢旋转并收紧。
-    /// 玩家像躲风车一样在链间扇区里跟着转（或贴中心内圈站桩），结束时中心脉冲弹环 + 冲击波。
-    /// <para>收紧半径经头部 <c>npc.ai[1]</c>（<see cref="PrimeAiSlots.HeadCommandSlot"/>）广播，
-    /// 机械臂编队代码读取后同步收拢；退出时必须清零防止污染指令通道。</para>
-    /// </summary>
+    /// <summary>电弧风车：四臂飞散+ <see cref="PrimeArcChainProj"/> 链锁旋转收紧</summary>
+    /// <para>收紧半径广播 npc.ai[1]（<see cref="PrimeAiSlots.HeadCommandSlot"/>）；退出须清零</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.TetherSpin, typeof(PrimeStateContext))]
     internal class PrimeTetherSpinState : PrimeStateBase
     {
@@ -31,7 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal static float ChainRadiusStart => 1020f;
         /// <summary>收紧终点半径</summary>
         internal static float ChainRadiusEnd => 420f;
-        /// <summary>基础角速度（弧度/帧）——风车慢转，玩家跟着扇区走即可</summary>
+        /// <summary>基础角速度（弧度/帧），风车慢转</summary>
         internal static float SpinRateBase => 0.018f;
         /// <summary>随收紧进度追加的角速度</summary>
         internal static float SpinRateGain => 0.012f;

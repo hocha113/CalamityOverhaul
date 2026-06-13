@@ -41,9 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 锁定控制面板的时间
         /// </summary>
         public int IsInteractionLockedTime;
-        /// <summary>
-        /// 鼠标世界坐标，注意该属性只应该用于不精密的方向计算
-        /// </summary>
+        /// <summary>鼠标世界坐标，仅适合粗方向计算</summary>
         public Vector2 MouseWorld {
             get {
                 if (TryGetMouseWorld(out Vector2 mouseWorld)) {
@@ -70,9 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         internal int PlayerLifeMax;
 
         #region 深渊复苏系统
-        /// <summary>
-        /// 深渊复苏系统实例
-        /// </summary>
+        /// <summary>复苏系统实例</summary>
         public ResurrectionSystem ResurrectionSystem { get; private set; } = new();
 
         //复苏增长相关常量
@@ -208,9 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             {14, 10}
         };
         #endregion
-        /// <summary>
-        /// 获取死机等级
-        /// </summary>
+        /// <summary>死机等级</summary>
         public static int GetCrashesLevel(Item item) {
             if (Main.LocalPlayer.name == "杨戬") {
                 return 14;
@@ -236,17 +230,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return (int)MathHelper.Clamp(level, 0, 10);
         }
 
-        /// <summary>
-        /// 我是一个时代孕育出来的唯一，既然敢舍弃玩家的身份，自然是无所不能
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>时代唯一判定（成长等级 14）</summary>
         public static bool TheOnlyBornOfAnEra() {
             return HalibutData.GetLevel(Main.LocalPlayer.GetItem()) == 14;
         }
 
-        /// <summary>
-        /// 计算当前激活的领域层数（基于眼睛激活状态）
-        /// </summary>
+        /// <summary>激活领域层数（按眼睛激活序）</summary>
         public int CalculateActiveDomainLayers() {
             if (!Player.TryGetModPlayer<HalibutSave>(out var save)) {
                 return 0;
@@ -270,11 +259,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return baseCount;
         }
 
-        /// <summary>
-        /// 更新复苏速度（基于激活的眼睛层级）
-        /// 未死机的眼睛：Base * GeometricFactor^(层级-1)
-        /// 死机的眼睛：仅添加极小副作用（CrashedEyeSideEffectRate）
-        /// </summary>
+        /// <summary>复苏速度 tick（按眼睛层级几何叠加）</summary>
         public void UpdateResurrectionRate() {
             if (!Player.TryGetModPlayer<HalibutSave>(out var save)) {
                 return;
@@ -314,9 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             ResurrectionSystem.ResurrectionRate = rate;
         }
 
-        /// <summary>
-        /// 更新领域系统核心数据（层数和复苏速度）
-        /// </summary>
+        /// <summary>领域层数与复苏速度 tick</summary>
         public void UpdateDomainSystemData() {
             SeaDomainLayers = CalculateActiveDomainLayers();
             UpdateResurrectionRate();
@@ -371,9 +354,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     CanCloseEye = false;
                     CloseEyes();
                 }
-                //更新领域系统核心数据（层数和复苏速度）
+                //领域层数与复苏 tick
                 UpdateDomainSystemData();
-                //更新深渊复苏系统
+                //复苏 tick
                 ResurrectionSystem.Update();
                 //同步最大生命值
                 PlayerLifeMax = (int)MathHelper.Clamp(PlayerLifeMax, Player.statLifeMax2, int.MaxValue - 1);
@@ -467,14 +450,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     SeaDomain.AltUse(Player);
                 }
             }
-            //封锁过去，埋葬现在，截断未来...难道我今天真的要被孟小董杀死？不，现在还不能放弃...
+            //克隆技能
             else if (CWRKeySystem.Halibut_Clone.JustPressed) {
                 if (SeaDomainLayers > 0) {
                     CloneCount = SeaDomainLayers;
                     CloneFish.AltUse(Player);
                 }
             }
-            //既然总部认为我已经死了，那么就让你们看看，我死后，到底会发生什么事情
+            //重启技能
             else if (CWRKeySystem.Legend_Restart.JustPressed) {
                 if (SeaDomainLayers >= 5) {//大于等于五层领域后才能使用
                     RestartFish.AltUse(Player);

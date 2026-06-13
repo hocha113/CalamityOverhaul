@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 回响光学瞄具：追踪光束消亡时在消亡点释放3束向外扇射的强追踪副光束
-    /// 通过 OnBeamKill 钩子实现，派生标记阻止递归
-    /// </summary>
+    /// <summary>回响瞄具：光束消亡点扇射 3 束强追踪副光束</summary>
     internal sealed class EchoOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

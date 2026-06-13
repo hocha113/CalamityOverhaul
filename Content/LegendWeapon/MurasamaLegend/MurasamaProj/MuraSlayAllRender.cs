@@ -7,20 +7,13 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
-    /// <summary>
-    /// 村正次元斩终结技渲染系统
-    /// 负责碎屏扭曲、滤镜、径向模糊等后处理效果
-    /// </summary>
+    /// <summary>村正次元斩终结 RenderHandle——碎屏扭曲/滤镜/径向模糊三 pass</summary>
     internal class MuraSlayAllRender : RenderHandle
     {
-        /// <summary>
-        /// 扭曲效果强度
-        /// </summary>
+        /// <summary>扭曲强度</summary>
         public float TwistStrength { get; set; } = 0f;
 
-        /// <summary>
-        /// 是否应该进行扭曲
-        /// </summary>
+        /// <summary>本帧是否走 PowerSF 扭曲</summary>
         public bool ShouldTwist { get; set; }
 
         //碎片数据
@@ -29,9 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private readonly float[] piecesScale = new float[24];
         private readonly Color[] piecesColor = new Color[24];
 
-        /// <summary>
-        /// 初始化碎片数据
-        /// </summary>
+        /// <summary>初始化碎屏采样三角形</summary>
         public void InitializePieces() {
             for (int i = 0; i < piecesPos.Length; i++) {
                 piecesPos[i] = Main.LocalPlayer.Center + Main.rand.NextVector2Circular(Main.screenWidth / 2.4f, Main.screenHeight / 2);
@@ -42,9 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             }
         }
 
-        /// <summary>
-        /// 查找当前活跃的次元斩弹幕
-        /// </summary>
+        /// <summary>活跃 <see cref="MuraDimensionSlash"/> 弹幕</summary>
         private MuraDimensionSlash FindActiveDimensionSlash() {
             foreach (Projectile proj in Main.projectile) {
                 if (!proj.active) continue;
@@ -75,9 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             DrawFinalComposite(graphicsDevice, spriteBatch, screenSwap, activeSlash);
         }
 
-        /// <summary>
-        /// 第一阶段:应用滤镜和径向模糊效果到实时画面
-        /// </summary>
+        /// <summary>Pass1 滤镜+径向模糊写 screenTargetSwap</summary>
         private void ApplyFirstPassEffects(GraphicsDevice gd, SpriteBatch sb, MuraDimensionSlash slash) {
             //将当前实时屏幕内容复制到screenTargetSwap并应用shader效果
             gd.SetRenderTarget(Main.screenTargetSwap);
@@ -113,9 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             sb.End();
         }
 
-        /// <summary>
-        /// 第二阶段:绘制碎屏扭曲效果（空间被切割的视觉表现）
-        /// </summary>
+        /// <summary>Pass2 碎屏扭曲采样源写 screenSwap</summary>
         private void DrawBrokenScreenEffect(GraphicsDevice gd, SpriteBatch sb, RenderTarget2D screenSwap, MuraDimensionSlash slash) {
             gd.SetRenderTarget(screenSwap);
             gd.Clear(Color.Transparent);
@@ -146,9 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             sb.End();
         }
 
-        /// <summary>
-        /// 第三阶段:最终合成，保持画面实时更新
-        /// </summary>
+        /// <summary>Pass3 合成回 screenTarget</summary>
         private void DrawFinalComposite(GraphicsDevice gd, SpriteBatch sb, RenderTarget2D screenSwap, MuraDimensionSlash slash) {
             gd.SetRenderTarget(Main.screenTarget);
             gd.Clear(Color.Transparent);

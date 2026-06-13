@@ -1,8 +1,7 @@
 // ============================================================================
-// DestroyerBeam.fx —— 毁灭者光束着色器
-// 红色死亡激光：白热主轴 + 缠绕电弧 + 推进能量脉冲 + 头部光球
-// uv.x: 0=尾部 → 1=弹头   uv.y: 0~1 横截面
-// 配合 BlendState.Additive 使用
+// DestroyerBeam.fx 毁灭者光束
+// UV.x 0尾→1弹头 UV.y 横截面；Additive
+// ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -48,20 +47,27 @@ PSInput VertexShaderFunction(VSInput v)
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
     float2 uv = input.TexCoords;
-    float along = uv.x;                  //0 尾 → 1 头
+    float along = uv.x;                  //0 尾(远端) → 1 头(口器)
     float cross_ = (uv.y - 0.5) * 2.0;   //-1 ~ 1 横截面
 
-    //尾部淡出
-    float tailFade = smoothstep(0.0, 0.30, along);
+    //=========================================================
+    //末端塑形：把垂直"平切口"沿横截面用噪声撕成舌状，并收束成纺锤尖
+    //=========================================================
+    float tipTurb = tex2D(noiseSamp, float2(along * 3.4 - uTime * 2.2, cross_ * 0.7 + seed + 0.5)).r - 0.5;
+    float alongTip = along + tipTurb * 0.13;   //淡出前沿随横截面错动，撕成舌状
+    //尾部淡出（前沿已被噪声打散，不再是垂直直线）
+    float tailFade = smoothstep(0.0, 0.30, alongTip);
     if (tailFade * fadeAlpha < 0.002)
         return float4(0, 0, 0, 0);
+    //末端横截面收窄：along→0 收成尖，破坏等宽矩形末端
+    float taper = lerp(0.30, 1.0, smoothstep(0.0, 0.26, alongTip));
 
     //=========================================================
     //主轴扭动：噪声驱动中轴偏移，越靠尾部摆动越大（能量耗散）
     //=========================================================
     float wob = tex2D(noiseSamp, float2(along * 2.4 - uTime * 3.0, seed)).r - 0.5;
     float axis = wob * 0.50 * (1.0 - along);
-    float d = abs(cross_ - axis);
+    float d = abs(cross_ - axis) / taper;   //除以 taper，末端等效收窄
 
     //主激光体 + 白热芯
     float core = exp(-d * d * (46.0 - exMode * 14.0));
@@ -71,7 +77,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //缠绕电弧：第二条更细的弧线绕主轴游走（机械放电感）
     //=========================================================
     float wob2 = tex2D(noiseSamp, float2(along * 4.2 + uTime * 2.3, seed + 0.41)).r - 0.5;
-    float d2 = abs(cross_ - wob2 * 1.15 * (0.25 + 0.75 * (1.0 - along)));
+    float d2 = abs(cross_ - wob2 * 1.15 * (0.25 + 0.75 * (1.0 - along))) / taper;   //电弧随核心一并收束
     float arc = exp(-d2 * d2 * 850.0) * 0.85;
     //电弧随机断续
     float arcGate = step(0.30, tex2D(noiseSamp, float2(along * 1.3 + uTime * 1.7, seed + 0.77)).r);

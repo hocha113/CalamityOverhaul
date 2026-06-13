@@ -7,9 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 自我肢解：令灵异目标肢解自己的灵异
-    /// </summary>
+    /// <summary>自我肢解，灵异目标自毁</summary>
     internal class SelfDismember : QuickHackDef
     {
         public override void SetDefaults() {

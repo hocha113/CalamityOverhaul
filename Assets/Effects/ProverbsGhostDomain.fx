@@ -1,7 +1,7 @@
 // ============================================================================
-// ProverbsGhostDomain.fx — 箴言鬼域着色器
-// 小范围硫磺火鬼域：幽火涌动 + 边缘烈焰跳动 + 周期冲击波 + 鬼域符文
-// 为箴言戒指(Proverbs)定制，强调紧凑的鬼域火焰氛围
+// ProverbsGhostDomain.fx 箴言鬼域
+// 采样 s0 + s1 噪声；紧凑硫磺火鬼域单 DrawCall
+// ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -30,7 +30,6 @@ float3 voidColor;       //虚空黑
 #define PI 3.14159265
 #define TAU 6.28318530
 
-// ---- 工具函数 ----
 float hash11(float p)
 {
     p = frac(p * 0.1031);
@@ -73,7 +72,7 @@ float fbm(float2 p, int octaves)
     return v;
 }
 
-// ---- A. 幽火涌动 ----
+// 幽火涌动
 // 域扭曲的鬼火，在领域内部流转翻滚，呈现幽灵般的火焰形态
 float3 ghostFire(float2 centered, float dist, float angle, float time)
 {
@@ -117,7 +116,7 @@ float3 ghostFire(float2 centered, float dist, float angle, float time)
     return fireCol * fireMix;
 }
 
-// ---- B. 边缘烈焰跳动 ----
+// 边缘烈焰跳动
 // 在域边界产生向外跳动的尖锐火舌，形态不规则，有鬼域的狰狞感
 float edgeFlames(float2 centered, float dist, float angle, float time)
 {
@@ -158,7 +157,7 @@ float edgeFlames(float2 centered, float dist, float angle, float time)
     return intensity;
 }
 
-// ---- C. 周期冲击波 ----
+// 周期冲击波
 // 周期性从中心向外扩散的能量环，带噪声扰动
 float shockwaveRing(float dist, float angle, float time, float phase)
 {
@@ -192,7 +191,7 @@ float shockwaveRing(float dist, float angle, float time, float phase)
     return saturate(waves);
 }
 
-// ---- D. 鬼域法阵纹 ----
+// 鬼域法阵纹
 // 紧凑的魔法阵环线和简化符文
 float ghostCircle(float2 centered, float dist, float angle, float time)
 {
@@ -250,7 +249,7 @@ float ghostCircle(float2 centered, float dist, float angle, float time)
     return saturate(result);
 }
 
-// ---- E. 鬼魂余烬 ----
+// 鬼魂余烬
 // 在域内缓缓上升的幽灵火星
 float ghostEmbers(float2 centered, float time)
 {
@@ -288,7 +287,7 @@ float ghostEmbers(float2 centered, float time)
     return saturate(embers);
 }
 
-// ---- F. 中心虚空漩涡 ----
+// 中心虚空漩涡
 // 域中心的幽暗漩涡，散发鬼域气息
 float voidVortex(float2 centered, float dist, float angle, float time)
 {
@@ -303,9 +302,7 @@ float voidVortex(float2 centered, float dist, float angle, float time)
     return vortexMask * (0.4 + swirl * 0.3 + vortexNoise * 0.3);
 }
 
-// ============================================================
 // 主像素着色器
-// ============================================================
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -341,9 +338,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     // ======== F. 中心漩涡 ========
     float vortex = voidVortex(centered, dist, angle, time);
 
-    // ============================================================
+    // =
     // 颜色合成
-    // ============================================================
+    // =
     float3 finalColor = baseColor;
 
     //幽火底层

@@ -10,9 +10,9 @@ using Terraria.Localization;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 领域之眼视图：九只程序化绘制的奈落之眼环绕旋转的比目鱼之核，
-    /// 按激活顺序计层；第十眼在九眼全开且满足时代唯一条件时浮现于中心
-    /// 文案沿用旧 DomainUI 的本地化键，保留既有的七语言翻译
+    /// 领域之眼图鉴视图：九眼轨道 + 中心核，按激活序计层
+    /// 第十眼需九眼全开且满足时代唯一条件
+    /// 文案沿用旧 DomainUI 本地化键
     /// </summary>
     internal class AtlasDomainEyes
     {
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 HalibutRenderer.DrawGlowLine(sb, center, eyePos, 1f + wave * 0.8f, lineCol * (0.35f * alpha));
             }
 
-            //中心比目鱼之核
+            //中心核
             DrawHalibutCore(sb, center, activeCount, alpha, time);
 
             //外圈九眼

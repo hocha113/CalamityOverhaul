@@ -5,17 +5,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 {
-    /// <summary>
-    /// 双子魔眼绘制辅助类
-    /// 负责绘制各种视觉特效
-    /// </summary>
+    /// <summary>双子魔眼绘制辅助：蓄力特效、本体/残影、热感滤镜</summary>
     internal static class TwinsRenderHelper
     {
         #region 蓄力特效
 
-        /// <summary>
-        /// 绘制蓄力特效
-        /// </summary>
+        /// <summary>按 ChargeType 绘制蓄力特效</summary>
         public static void DrawChargeEffect(SpriteBatch spriteBatch, TwinsStateContext context) {
             if (!context.IsCharging || context.ChargeProgress <= 0) {
                 return;
@@ -118,10 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>
-        /// 着色器能量汇聚涡：以眼睛为中心的极坐标螺旋吸入场，
-        /// 随蓄力进度收紧增亮。着色器缺失时静默跳过(其余贴图层仍在)
-        /// </summary>
+        /// <summary>着色器能量汇聚涡：螺旋吸入场，随蓄力收紧增亮；着色器缺失则跳过</summary>
         private static void DrawChargeVortex(SpriteBatch spriteBatch, TwinsStateContext context, Color chargeColor) {
             if (CalamityOverhaul.Common.EffectLoader.TwinsChargeVortex?.Value == null) {
                 return;
@@ -1001,13 +993,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 
         #region 本体绘制
 
-        /// <summary>
-        /// 绘制NPC本体和拖尾
-        /// <br/>本体外圈会根据 <see cref="MechBossVisualState"/> 当前状态自动叠加
-        /// 机械热感描边/警告/冲刺滤镜，与毁灭者、机械骷髅王共用一套视觉语言。
-        /// <br/>冲刺时根据 <see cref="TwinsStateContext.DashStretch"/> 做沿运动轴的squash&amp;stretch，
-        /// 根据 <see cref="TwinsStateContext.AfterimageBoost"/> 提升残影密度与亮度
-        /// </summary>
+        /// <summary>绘制本体+拖尾；叠 <see cref="MechBossVisualState"/> 热感滤镜与 DashStretch/AfterimageBoost</summary>
         public static void DrawNpcBody(
             SpriteBatch spriteBatch,
             NPC npc,
@@ -1058,7 +1044,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 
             Vector2 mainDrawPos = npc.Center - Main.screenPosition;
 
-            //外圈描边光环——蓄力/冲刺时尤其显眼，常态下不打扰画面
+            //外圈描边光环，蓄力/冲刺时更显眼
             MechBossThermalRenderer.DrawOutlineHaloByController(
                 spriteBatch, texture, mainDrawPos, frame,
                 drawRotation, origin, npc.scale, effects, npc.whoAmI);

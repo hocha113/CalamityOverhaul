@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 公主鱼技能，召唤公主鱼释放绚丽魔法攻击
-    /// </summary>
+    /// <summary>公主鱼技能，召唤公主鱼释放魔法攻击</summary>
     internal class FishPrincess : FishSkill
     {
         public override int UnlockFishID => ItemID.PrincessFish;
@@ -54,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         ActivePrincessFish.Add(fishProj);
                         SpawnSummonEffect(spawnPos);
 
-                        //公主鱼召唤音效 - 清脆魔法音
+                        //召唤音效
                         SoundEngine.PlaySound(SoundID.Item29 with {
                             Volume = 0.6f,
                             Pitch = 0.4f
@@ -80,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void SpawnSummonEffect(Vector2 position) {
-            //绚丽彩虹粒子爆发
+            //彩虹粒子爆发
             for (int i = 0; i < 30; i++) {
                 float angle = MathHelper.TwoPi * i / 30f;
                 Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
@@ -403,7 +401,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //攻击特效
             SpawnAttackEffect();
 
-            //攻击音效 - 魔法铃铛音
+            //攻击音效
             SoundEngine.PlaySound(SoundID.Item29 with {
                 Volume = 0.7f,
                 Pitch = 0.3f

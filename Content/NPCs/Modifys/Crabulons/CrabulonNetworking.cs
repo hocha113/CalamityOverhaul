@@ -10,11 +10,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     /// <summary>
-    /// 菌生蟹网络同步系统。
-    /// 核心状态（驯服、骑乘、鞍具等）统一走InnoVault的NPCOverride通道：
-    /// <see cref="NPCOverride.OtherNetWorkSend(ModPacket)"/>负责进世界全量同步与服务器推送，
-    /// <see cref="NPCOverride.SendNetworkData"/>负责客户端上报。
-    /// 这里只保留指令类数据包：投喂与召回
+    /// 菌生蟹网络：核心状态走 NPCOverride 通道，此处仅投喂与召回
     /// </summary>
     internal class CrabulonNetworking
     {
@@ -24,7 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.owner = owner;
         }
 
-        //写入核心状态，所有同步通道共用同一对读写以保证一致性
+        //核心状态读写，各同步通道共用
         public void WriteData(BinaryWriter netMessage) {
             netMessage.Write(owner.Owner.Alives() ? owner.Owner.whoAmI : -1);
             netMessage.Write(owner.FeedValue);
@@ -37,7 +33,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             ItemIO.Send(owner.SaddleItem, netMessage);
         }
 
-        //从网络包读取核心状态
         public void ReadData(BinaryReader reader) {
             int ownerIndex = reader.ReadInt32();
             owner.Owner = ownerIndex >= 0 && ownerIndex < Main.maxPlayers ? Main.player[ownerIndex] : null;
@@ -52,17 +47,17 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 owner.SaddleItem = new Item();
             }
 
-            //远端通知下马时清理本端的骑乘痕迹（物理标志、玩家状态）
+            //远端下马时清本端骑乘痕迹
             if (owner.Mount && !newMount) {
                 owner.MountSystem?.ForceDismount();
             }
             owner.Mount = newMount;
 
-            //应用派生字段，保证friendly/boss等状态在所有端一致
+            //派生字段，保证各端 friendly/boss 一致
             owner.ApplyStateFields();
         }
 
-        //发送投喂数据包，直接携带效果参数，不再依赖服务器反查弹幕（弹幕可能已消亡或identity撞车）
+        //投喂包直带参数，不反查弹幕
         public void SendFeedPacket(int feederWhoAmI, int dyeItemID) {
             if (!VaultUtils.isClient) {
                 return;
@@ -76,7 +71,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Send();
         }
 
-        //接收投喂数据包
         public static void ReceiveFeedPacket(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt16();
             int feederIndex = reader.ReadByte();
@@ -107,10 +101,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Write(dyeItemID);
             netMessage.Send(-1, whoAmI);
 
-            npc.netUpdate = true;//生命与状态变化由服务器下发
+            npc.netUpdate = true;//生命与状态由服务器下发
         }
 
-        //请求召回：客户端发起，服务器权威移动NPC后向所有客户端广播特效
+        //召回：客户端请求，服务器移 NPC 后广播特效
         public void SendRecallRequest() {
             if (!VaultUtils.isClient) {
                 DoRecall();
@@ -123,7 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             netMessage.Send();
         }
 
-        //执行召回：位置修改只在权威端进行，特效本地播放
+        //位置仅权威端改
         internal void DoRecall() {
             if (!owner.Owner.Alives()) {
                 return;
@@ -139,7 +133,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //向所有客户端广播传送特效（服务器跟随AI传送时也复用）
+        //广播传送特效，AI 传送复用
         internal void BroadcastTeleportEffect() {
             if (VaultUtils.isServer) {
                 ModPacket netMessage = CWRMod.Instance.GetPacket();
@@ -152,7 +146,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //传送/召回的本地特效
         internal void PlayTeleportEffect() {
             NPC npc = owner.npc;
             SoundEngine.PlaySound(SoundID.Item8, npc.Center);
@@ -165,7 +158,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //接收召回数据包：服务器视作请求并执行，客户端视作特效广播
+        //服务器执行召回，客户端播特效
         public static void ReceiveRecall(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt16();
 
@@ -186,7 +179,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //处理网络消息
         public static void HandleNetworkMessage(CWRMessageType type, BinaryReader reader, int whoAmI) {
             if (type == CWRMessageType.CrabulonFeed) {
                 ReceiveFeedPacket(reader, whoAmI);

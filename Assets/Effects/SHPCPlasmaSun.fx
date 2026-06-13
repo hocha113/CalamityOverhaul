@@ -1,8 +1,6 @@
 // ============================================================================
-// SHPCPlasmaSun.fx — 等离子残阳着色器
-// 球爆后残留的微型恒星：湍流等离子球面 + 临边昏暗 + 日冕 + 耀斑尖刺
-// 以全屏四边形渲染（SpriteBatch.Immediate, s0=白图, s1=噪声）
-// 配合 SHPCPlasmaSunProj（PlasmaInjectorModule）使用
+// SHPCPlasmaSun.fx 等离子残阳
+// s0+s1 四边形；Additive
 // ============================================================================
 
 sampler baseSamp : register(s0);
@@ -29,9 +27,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318;
 
-    // ============================================================
+    // =
     // A. 恒星本体 —— 湍流等离子表面
-    // ============================================================
+    // =
     // 双层旋转噪声制造表面对流胞
     float2 swirl1 = centered * 1.6;
     float c1 = cos(uTime * 0.35);
@@ -59,36 +57,36 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 surface = lerp(surfaceColor * 0.45, surfaceColor, plasma);
     surface = lerp(surface, coreColor, pow(limbDarken, 2.4) * (0.55 + plasma * 0.35));
 
-    // ============================================================
+    // =
     // B. 色球闪焰 —— 表面随机爆亮的小区域
-    // ============================================================
+    // =
     float cell = hash21(floor(centered * 9.0) + floor(uTime * 3.0));
     float flarePatch = step(0.93, cell) * bodyMask * plasma;
 
-    // ============================================================
+    // =
     // C. 日冕 —— 本体外的不规则光晕
-    // ============================================================
+    // =
     float coronaNoise = tex2D(noiseSamp, float2(normAngle * 3.0 + uTime * 0.10, dist * 1.5 - uTime * 0.05)).r;
     float coronaReach = sunRadius * (1.85 + coronaNoise * 0.9);
     float corona = 1.0 - smoothstep(sunRadius * 0.9, coronaReach, dist);
     corona = pow(saturate(corona), 1.6) * (1.0 - bodyMask) * (0.5 + coronaNoise * 0.5);
 
-    // ============================================================
+    // =
     // D. 耀斑尖刺 —— 沿角向的旋转日珥光芒
-    // ============================================================
+    // =
     float spikes = pow(abs(sin(angle * 5.0 + uTime * 0.7)), 18.0)
                  + pow(abs(sin(angle * 3.0 - uTime * 0.45 + 1.3)), 26.0) * 0.7;
     float spikeFade = (1.0 - smoothstep(sunRadius, sunRadius * 2.6, dist)) * (1.0 - bodyMask);
     spikes *= spikeFade;
 
-    // ============================================================
+    // =
     // E. 呼吸脉动 —— 整体亮度低频起伏
-    // ============================================================
+    // =
     float pulse = 0.9 + 0.1 * sin(uTime * 2.1) + 0.04 * sin(uTime * 7.7);
 
-    // ============================================================
+    // =
     // 颜色合成
-    // ============================================================
+    // =
     float3 color = float3(0.0, 0.0, 0.0);
     color += surface * bodyMask * limbDarken * 1.25;
     color += coreColor * flarePatch * 0.8;

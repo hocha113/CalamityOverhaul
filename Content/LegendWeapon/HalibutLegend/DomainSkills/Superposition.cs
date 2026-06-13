@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
-    /// <summary>
-    /// 叠加攻击技能，时空克隆体汇聚后释放大比目鱼炮齐射
-    /// </summary>
+    /// <summary>叠加攻击：克隆体汇聚后齐射比目鱼炮</summary>
     internal static class Superposition
     {
         public static int ID = 6;
@@ -51,9 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     }
 
     #region 时空克隆体
-    /// <summary>
-    /// 时空克隆体 - 从远处环绕聚拢的过去玩家影像
-    /// </summary>
+    /// <summary>汇聚阶段的克隆体弹幕</summary>
     internal class TimeClone
     {
         public Vector2 Position;
@@ -170,9 +166,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     #endregion
 
     #region 法阵符环
-    /// <summary>
-    /// 法阵符环 - 椭圆形魔法阵特效
-    /// </summary>
+    /// <summary>椭圆形符环 VFX</summary>
     internal class RuneCircle
     {
         public float Life;
@@ -261,9 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     }
     #endregion
 
-    /// <summary>
-    /// 叠加攻击主控制弹幕
-    /// </summary>
+    /// <summary>叠加攻击主控弹幕</summary>
     internal class SuperpositionProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -878,9 +870,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    /// <summary>
-    /// 鱼群视觉实体，轻量级自定义实体，避免制造过多的弹幕实体造成过多的性能开销
-    /// </summary>
+    /// <summary>鱼群轻量实体，减少弹幕数量</summary>
     internal class FishEntity
     {
         public Vector2 Position;
@@ -1029,9 +1019,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    /// <summary>
-    /// 统一伤害判定弹幕，管理一波鱼群的碰撞检测和视觉效果
-    /// </summary>
+    /// <summary>齐射统一伤害判定弹幕</summary>
     internal class CannonFishSwarmHitbox : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼二阶段水平弹幕状态
-    /// 在玩家上方发射激光弹幕
-    /// </summary>
+    /// <summary>二阶段水平弹幕：玩家上方连射激光</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerHorizontalBarrage, typeof(TwinsStateContext))]
     internal class RetinazerHorizontalBarrageState : TwinsStateBase
     {

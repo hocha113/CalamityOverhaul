@@ -9,15 +9,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 龙车俯冲开场（无出场无敌，共三趟贯穿）：
-    /// <br/>幕一 预兆——玩家侧方地面隆隆，尘柱与震动随 t³ 爬升，对角预警线淡入；
-    /// <br/>幕二 破土贯入——头部自地下沿预警线一帧全速贯出，体节在此帧生成、
-    ///    靠第一趟高速位移自然甩开展开（取代旧 StretchTime 展开期）；首趟轨迹偏移玩家（公平阀）；
-    /// <br/>幕三 两趟正常瞄准的交叉俯冲（左右交替成X），随后边亮相边主动回到玩家身侧——
-    ///    尖刺展开波从头扫到尾完成亮相 → 巡空。
-    /// <br/>全程可被攻击、接触伤害仅在贯穿途中开启。
-    /// </summary>
+    /// <summary>龙车俯冲开场：预兆→破土首趟→两趟交叉俯冲→尖刺亮相</summary>
+    /// <para>无出场无敌；首趟偏移玩家；接触伤仅在贯穿；体节首趟甩开展开</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Intro, typeof(DestroyerStateContext))]
     internal class DestroyerIntroState : DestroyerStateBase
     {
@@ -40,10 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private const float AimedSpeed = 74f;
         #endregion
 
-        /// <summary>
-        /// 尖刺展开波相位（0=头部→1=尾部，-1=尚未展开，2=全部展开）。
-        /// 体节绘制据此决定无刺/带刺贴图：仅当头部处于Intro且波未扫过本节时画无刺
-        /// </summary>
+        /// <summary>尖刺展开波相位(0头→1尾，-1未展，2全展)；Intro 且波未过本节时画无刺</summary>
         internal static float DeployWavePhase = 2f;
 
         private Vector2 breachPoint;
@@ -68,7 +58,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             context.Npc.damage = 0;
 
-            //服务端决定首趟方位（经ai[3]同步）；地下待命位的安置在首帧OnUpdate执行（确保Target已就绪）
+            //服务端定首趟方位(ai[3])；地下待命位等首帧 Target 就绪
             if (!VaultUtils.isClient) {
                 context.Npc.ai[3] = Main.rand.Next(2);
                 context.Npc.netUpdate = true;
@@ -139,7 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.7f, Pitch = -0.65f }, player.Center);
             }
 
-            //确定第一趟贯穿线：破土点偏移玩家约260px（公平阀——开场不打脸），自地下对角向上
+            //首趟贯穿线：破土点偏移玩家约260px(公平阀)，自地下对角向上
             if (Timer == 2) {
                 breachPoint = DestroyerMotionFX.FindGroundBelow(player.Center + new Vector2(side * 260f, 0f));
                 dir1 = (-Vector2.UnitY).RotatedBy(side * 0.62f);
@@ -287,8 +277,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             npc.damage = 0;
             context.JawCommand = 0;
 
-            //前10帧阶梯刹车泄速，随后交回转向模型主动飞回玩家身侧——
-            //亮相的同时回场，避免在屏幕外盘旋（远距时由运动内核的回归加速接管）
+            //前10帧阶梯刹车，随后转向回玩家身侧；亮相同步回场，远距由回归加速接管
             if (Timer <= AimedEnd + 10) {
                 float spd = npc.velocity.Length();
                 float brake = spd > 40f ? 0.92f : spd > 25f ? 0.94f : 0.965f;

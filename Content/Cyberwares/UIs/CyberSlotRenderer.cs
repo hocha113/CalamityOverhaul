@@ -5,32 +5,25 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    ///赛博义体界面的槽位渲染器
-    ///负责义体槽位的排布、交互检测、连接线绘制
-    /// </summary>
+    /// <summary>义体槽位渲染：排布/交互/连接线</summary>
     internal class CyberSlotRenderer
     {
         #region 槽位定义
 
-        /// <summary>
-        ///义体槽位的布局定义
-        /// </summary>
+        /// <summary>槽位布局定义</summary>
         internal readonly struct SlotDef(float xRatio, float yRatio, int nodeIndex)
         {
-            ///槽位相对面板的水平位置比例
+            ///水平比例
             public readonly float XRatio = xRatio;
-            ///槽位相对面板的垂直位置比例
+            ///垂直比例
             public readonly float YRatio = yRatio;
-            ///连接到人体节点的索引
+            ///连接人体节点索引
             public readonly int NodeIndex = nodeIndex;
-            ///是否位于面板左侧
+            ///面板左侧
             public bool IsLeft => XRatio < 0.5f;
         }
 
-        /// <summary>
-        ///所有义体槽位的布局数据，左右对称各6个
-        /// </summary>
+        /// <summary>12 槽位布局，左右各 6</summary>
         public static readonly SlotDef[] Definitions = [
             //左侧槽位
             new(0.04f, 0.08f,  0),   //额叶皮层 → 头部
@@ -75,7 +68,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         private int hoveredSlot = -1;
         private int selectedSlot = -1;
         private readonly float[] slotHoverAnim = new float[12];
-        //预分配的节点状态缓存，避免每帧分配
+        //节点状态缓存，避免每帧分配
         private readonly int[] nodeStatesCache = new int[CyberBodyRenderer.NodeCount];
 
         public int HoveredSlot => hoveredSlot;
@@ -181,13 +174,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 if (isSelected) outerBg = Color.Lerp(outerBg, CyberwareTheme.Accent, 0.08f);
                 sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), outerBg);
 
-                //内凹区域——比外层更暗，制造深度
+                //内凹暗区
                 Rectangle innerArea = new(rect.X + 2, rect.Y + 2, rect.Width - 4, rect.Height - 4);
                 Color innerBg = CyberwareTheme.SlotInnerBg * (alpha * 0.85f);
                 if (isSelected) innerBg = Color.Lerp(innerBg, CyberwareTheme.Accent, 0.05f);
                 sb.Draw(px, innerArea, new Rectangle(0, 0, 1, 1), innerBg);
 
-                //内侧顶部+左侧阴影条——模拟凹陷
+                //内凹顶左阴影条
                 sb.Draw(px, new Rectangle(innerArea.X, innerArea.Y, innerArea.Width, 2),
                     new Rectangle(0, 0, 1, 1), CyberwareTheme.InnerShadow * (alpha * 0.6f));
                 sb.Draw(px, new Rectangle(innerArea.X, innerArea.Y, 2, innerArea.Height),

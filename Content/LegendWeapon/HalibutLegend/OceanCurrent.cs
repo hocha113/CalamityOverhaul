@@ -9,9 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    ///<summary>
-    ///海洋洪流子弹
-    ///</summary>
+    /// <summary>海洋洪流弹幕</summary>
     internal class OceanCurrent : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -172,7 +170,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         private void StreamingPhaseAI() {
             //应用重力和水流浮力
             Projectile.velocity.Y += Gravity * WaterDensity / 2f;
-            Projectile.velocity.Y += BuoyancyForce; //模拟浮力
+            Projectile.velocity.Y += BuoyancyForce; //浮力
 
             //粘性阻力
             //Projectile.velocity *= WaterViscosity;
@@ -202,7 +200,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 EnterSplashState();
             }
 
-            //旋转效果（模拟水流旋涡）
+            //旋涡旋转
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
@@ -460,7 +458,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
                 life.Rotation += life.RotationSpeed;
 
-                //发光闪烁（生物发光）
+                //发光闪烁
                 life.FlickerPhase += 0.12f;
                 if (life.FlickerPhase > MathHelper.TwoPi) life.FlickerPhase -= MathHelper.TwoPi;
 
@@ -755,7 +753,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 Vector2 drawPos = life.Position - Main.screenPosition;
                 float scale = life.Size * 0.05f;
 
-                //生物发光效果
+                //发光
                 float flicker = (float)Math.Sin(life.FlickerPhase) * 0.3f + 0.7f;
                 Color lifeColor = life.Type == MarineLifeType.Fish
                     ? BioluminescentBlue * life.Opacity * flicker
@@ -936,9 +934,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
     #region 粒子数据结构
 
-    ///<summary>
-    ///海洋水滴粒子
-    ///</summary>
+    /// <summary>海洋水滴粒子</summary>
     internal struct OceanDroplet
     {
         public Vector2 Position;
@@ -954,9 +950,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public int Frame; //3x3 Spray帧索引0-8
     }
 
-    ///<summary>
-    ///海洋泡沫粒子
-    ///</summary>
+    /// <summary>海洋泡沫粒子</summary>
     internal struct SeaFoam
     {
         public Vector2 Position;
@@ -970,18 +964,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public float PopPhase; //0-1，破裂阶段
     }
 
-    ///<summary>
-    ///海洋生物类型
-    ///</summary>
+    /// <summary>海洋生物类型</summary>
     internal enum MarineLifeType
     {
         Fish,       //小鱼
         Seaweed     //海藻
     }
 
-    ///<summary>
-    ///海洋生物粒子
-    ///</summary>
+    /// <summary>海洋生物粒子</summary>
     internal struct MarineLife
     {
         public Vector2 Position;
@@ -994,7 +984,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public float Opacity;
         public MarineLifeType Type;
         public float SwimPhase;     //游动动画相位
-        public float FlickerPhase;  //闪烁相位（生物发光）
+        public float FlickerPhase;  //闪烁相位
     }
 
     #endregion

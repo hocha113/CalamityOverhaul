@@ -1,7 +1,6 @@
 // ============================================================================
-// BrimstoneDialogueBox.fx 至尊灾厄硫磺火对话框专属着色器
-// 克制风格:黑曜岩渐变底 + 缓慢的底部余热 + 游离火星 + 脉动内边
-// 刻意避免大面积火焰,保证文字区空旷,让暗部承担氛围
+// BrimstoneDialogueBox.fx 硫磺火对话框背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -10,11 +9,9 @@ float uTime;
 float uAlpha;
 float2 uResolution;
 float uEdgePad;
-float uInfernoPulse;
+float uInfernoPulse; //底部余热脉动
 
-// ============================================================================
 // 工具函数
-// ============================================================================
 #define PI 3.14159265
 #define TAU 6.28318530
 
@@ -59,9 +56,7 @@ float fbm4(float2 p) {
     return v;
 }
 
-// ============================================================================
 // 色板
-// ============================================================================
 static const float3 COL_DEEP   = float3(0.020, 0.012, 0.014);//背景深黑,略带冷紫
 static const float3 COL_VOID   = float3(0.008, 0.004, 0.006);
 static const float3 COL_ASH    = float3(0.048, 0.022, 0.018);//灰褐
@@ -69,9 +64,7 @@ static const float3 COL_MAGMA  = float3(0.180, 0.055, 0.028);//暗红
 static const float3 COL_EMBER  = float3(0.820, 0.330, 0.110);//余烬橙
 static const float3 COL_FLAME  = float3(1.000, 0.640, 0.230);//火焰亮橙
 
-// ============================================================================
 // 主片段
-// ============================================================================
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 pixelPos = coords * uResolution;

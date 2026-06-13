@@ -1,3 +1,8 @@
+// ============================================================================
+// PowerSFShader.fx 位移场扭曲采样
+// uImage0 场景 uImage1 位移(R角度 G强度)；ps_3_0
+// ============================================================================
+
 sampler uImage0 : register(s0);
 texture2D tex0; 
 sampler2D uImage1 = sampler_state  
@@ -9,7 +14,7 @@ sampler2D uImage1 = sampler_state
     AddressV = Wrap;
 };
 
-float i;
+float i;              //位移强度倍率
 float4 PSFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);

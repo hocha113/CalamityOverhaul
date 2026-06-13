@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int DefaultCooldown => 120 - HalibutData.GetDomainLayer() * 6;
         public override int ResearchDuration => 60 * 18;
 
-        //黑曜石鱼管理系统
+        //活跃黑曜石鱼索引
         private static readonly List<int> ActiveObsidianFish = new();
         private static int MaxObsidianFish => 5 + HalibutData.GetDomainLayer() / 2; //最多5-9条鱼
 
@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float baseOrbitSpeed = 0.015f; //基础环绕速度（大幅降低）
         private float orbitSpeedMultiplier = 1f; //速度倍数
 
-        //层次参数 - 创造立体感
+        //深度分层
         private float layerDepth = 0f; //深度层次（-1到1）
         private float layerPhase = 0f; //层次相位
 

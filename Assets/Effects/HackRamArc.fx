@@ -1,44 +1,27 @@
 // ============================================================================
-// HackRamArc.fx 骇客时间RAM弧形HUD着色器
-// 赛博朋克2077风格的穹顶状RAM资源条
-// SDF抗锯齿弧线、能量液面流动、扫描线、色散、低RAM故障效果
-// ============================================================================
-// 参数说明：
-//   uResolution     绘制quad的像素尺寸
-//   uArcCenter      弧线圆心在quad内的像素坐标
-//   uInnerR/uOuterR 弧线内外半径(像素)
-//   uAStart         起始角度(弧度)
-//   uCellAngle      单格角度跨度(弧度)
-//   uCellGap        格子之间的间隙角度(弧度)
-//   uCellCount      总格数
-//   uFillValue      当前显示的RAM值(浮点,支持分数)
-//   uLowRam         低RAM警告强度(0~1)
-//   uLockFill       系统锁定剩余比例(0~1)，用于绘制故障倒计时填充
-//   uRecoveryFill   当前恢复速度 / 基础最快恢复速度，用于内环恢复速率填充
-//   uInfinite       无限模式标志(0或1)
-//   uDecoOuterR     外侧装饰环半径
-//   uDecoInnerR     内侧装饰环半径
+// HackRamArc.fx 骇客时间 RAM 弧形 HUD
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float2 uResolution;
-float2 uArcCenter;
-float uInnerR;
-float uOuterR;
-float uAStart;
-float uCellAngle;
-float uCellGap;
-float uCellCount;
-float uFillValue;
-float uLowRam;
-float uLockFill;
-float uRecoveryFill;
-float uInfinite;
-float uDecoOuterR;
-float uDecoInnerR;
+float2 uResolution;   //quad 像素尺寸
+float2 uArcCenter;  //弧线圆心局部像素坐标
+float uInnerR;        //弧线内半径
+float uOuterR;        //弧线外半径
+float uAStart;        //起始角度(弧度)
+float uCellAngle;     //单格角度跨度(弧度)
+float uCellGap;       //格间间隙角度(弧度)
+float uCellCount;     //总格数
+float uFillValue;     //当前 RAM 值，支持小数
+float uLowRam;        //低 RAM 警告 0~1
+float uLockFill;      //系统锁定剩余 0~1
+float uRecoveryFill;  //恢复速率 / 基础最快恢复
+float uInfinite;      //无限模式 0或1
+float uDecoOuterR;    //外侧装饰环半径
+float uDecoInnerR;    //内侧装饰环半径
 
 //================== 工具函数 ==================
 

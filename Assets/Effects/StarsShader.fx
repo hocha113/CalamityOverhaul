@@ -1,10 +1,14 @@
+// ============================================================================
+// StarsShader.fx 程序化星空
+// 采样 uImage0；ps_3_0
+// ============================================================================
+
 sampler uImage0 : register(s0);
 
-float m; //亮度阈值
-float n; //描边宽度
-
-float uTime;//游戏时间，用于驱动动画
-float2 worldSize;//屏幕或渲染目标的分辨率
+float m;            //亮度阈值
+float n;            //描边宽度
+float uTime;
+float2 worldSize;   //渲染目标分辨率
 
 #define rot(a) float2x2(cos(a), -sin(a), sin(a), cos(a))
 

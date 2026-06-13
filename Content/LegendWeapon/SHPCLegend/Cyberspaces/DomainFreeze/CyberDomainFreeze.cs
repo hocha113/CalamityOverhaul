@@ -13,45 +13,24 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>
-    /// 赛博领域冻结系统 —— 状态管理器
-    /// <br/>按下按键后冻结领域范围内所有敌对NPC和弹幕，每个实体有独立的冻结计时
-    /// <br/>多人语义：本地玩家发起后，先在本机决定哪些 NPC/弹幕进入冻结，
-    /// 再通过 <see cref="CWRMessageType.CyberDomainFreezeStart"/> 把名单广播给其它客户端及服务端，
-    /// 让所有客户端都进入相同的冻结状态（视觉滤镜 + AI 拦截一致），并由服务端真正阻断 NPC 行为
-    /// <br/>NPC 用 whoAmI 索引同步（各端一致），弹幕用 (owner, identity) 对同步（弹幕索引各端不一致）；
-    /// 冻结锚点坐标随包广播，保证所有端钉在同一位置
-    /// <br/>计时推进由 <see cref="CyberspaceSystem"/> 驱动——客户端与服务端都会每帧调用 <see cref="Update"/>
-    /// <br/>冻结时生成黑墙风格能量波扩散演出
-    /// <br/>被冻结的实体带有故障滤镜 + 六角能量网格覆盖效果
-    /// </summary>
+    /// <summary>领域冻结管理：域内 NPC/弹幕独立计时；net 同步锚点</summary>
     internal class CyberDomainFreeze : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();
 
-        /// <summary>
-        /// 默认冻结时长（帧，10秒 = 600帧）
-        /// </summary>
+        /// <summary>默认冻结时长帧数（600=10秒）</summary>
         public const int DefaultFreezeDuration = 600;
 
-        /// <summary>
-        /// 触发领域冻结的RAM消耗量
-        /// </summary>
+        /// <summary>触发冻结 RAM 消耗</summary>
         public const int RamCost = 4;
 
-        /// <summary>
-        /// 当前正在被冻结的NPC列表
-        /// </summary>
+        /// <summary>冻结中 NPC 列表</summary>
         public static readonly List<FreezeEntry> FrozenNPCs = [];
 
-        /// <summary>
-        /// 当前正在被冻结的弹幕列表
-        /// </summary>
+        /// <summary>冻结中弹幕列表</summary>
         public static readonly List<FreezeProjEntry> FrozenProjectiles = [];
 
-        /// <summary>
-        /// 判断某NPC是否正在被冻结
-        /// </summary>
+        /// <summary>NPC 是否冻结中</summary>
         public static bool IsNPCFrozen(int npcIndex) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
                 if (FrozenNPCs[i].EntityIndex == npcIndex)
@@ -60,9 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return false;
         }
 
-        /// <summary>
-        /// 判断某弹幕是否正在被冻结
-        /// </summary>
+        /// <summary>弹幕是否冻结中</summary>
         public static bool IsProjectileFrozen(int projIndex) {
             for (int i = 0; i < FrozenProjectiles.Count; i++) {
                 if (FrozenProjectiles[i].EntityIndex == projIndex)
@@ -71,9 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return false;
         }
 
-        /// <summary>
-        /// 获取某NPC的冻结进度 (0=刚冻结, 1=即将解冻)，不在冻结中返回-1
-        /// </summary>
+        /// <summary>NPC 冻结进度 0~1，未冻结 -1</summary>
         public static float GetNPCFreezeProgress(int npcIndex) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
                 if (FrozenNPCs[i].EntityIndex == npcIndex)
@@ -82,9 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return -1f;
         }
 
-        /// <summary>
-        /// 获取某弹幕的冻结进度
-        /// </summary>
+        /// <summary>弹幕冻结进度</summary>
         public static float GetProjectileFreezeProgress(int projIndex) {
             for (int i = 0; i < FrozenProjectiles.Count; i++) {
                 if (FrozenProjectiles[i].EntityIndex == projIndex)
@@ -93,9 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return -1f;
         }
 
-        /// <summary>
-        /// 获取某NPC的冻结种子
-        /// </summary>
+        /// <summary>NPC 冻结种子</summary>
         public static float GetNPCSeed(int npcIndex) {
             for (int i = 0; i < FrozenNPCs.Count; i++) {
                 if (FrozenNPCs[i].EntityIndex == npcIndex)
@@ -104,10 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return 0f;
         }
 
-        /// <summary>
-        /// 触发领域冻结：冻结领域内所有敌对实体 + 生成能量波 + 通过网络广播给所有客户端
-        /// <br/>仅本地玩家从输入处理调用进入；远端玩家由 <see cref="HandleNetStart"/> 复刻同一帧的冻结结果
-        /// </summary>
+        /// <summary>触发域内冻结+能量波+net 广播</summary>
         public static void TriggerFreeze(Player owner) {
             if (owner == null) return;
             CyberspacePlayer cp = Cyberspace.For(owner);
@@ -182,8 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
 
             //广播给其它客户端 / 服务端
-            //弹幕不能用 whoAmI 裸索引跨端传递——不同端的弹幕槽位分配互不一致，
-            //必须用 (owner, identity) 对在远端重新解析出本地索引
+            //弹幕跨端用 (owner, identity) 对，不用 whoAmI
             if (Main.netMode != NetmodeID.SinglePlayer) {
                 List<(byte projOwner, int projIdentity, float seed, Vector2 center)> projPairs = new(projEntries.Count);
                 for (int i = 0; i < projEntries.Count; i++) {
@@ -194,10 +161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
         }
 
-        /// <summary>
-        /// 把名单写入本机的 FrozenNPCs / FrozenProjectiles，并冻住实体的速度
-        /// <br/>冻结锚点使用包内统一坐标，保证所有端钉在同一位置
-        /// </summary>
+        /// <summary>写入 Frozen 列表并冻住速度，锚点坐标 net 统一</summary>
         private static void ApplyFreezeBatch(int ownerWho,
             List<(int idx, float seed, Vector2 center)> npcEntries,
             List<(int idx, float seed, Vector2 center)> projEntries) {
@@ -262,9 +226,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             packet.Send(-1, ignoreClient);
         }
 
-        /// <summary>
-        /// 按 (owner, identity) 在本机弹幕数组中解析出对应槽位，找不到返回 -1
-        /// </summary>
+        /// <summary>按 owner+identity 解析弹幕索引</summary>
         private static int FindProjectileIndex(int projOwner, int projIdentity) {
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
@@ -275,9 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             return -1;
         }
 
-        /// <summary>
-        /// 收到远端冻结广播：在本机也把这批实体冻起来
-        /// </summary>
+        /// <summary>远端冻结广播入队</summary>
         internal static void HandleNetStart(BinaryReader reader, int whoAmI) {
             int ownerWho = reader.ReadByte();
             int npcCount = reader.ReadUInt16();
@@ -315,9 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
         }
 
-        /// <summary>
-        /// 每帧更新所有冻结实体
-        /// </summary>
+        /// <summary>每帧更新冻结实体</summary>
         public static void Update() {
             UpdateFrozenNPCs();
             UpdateFrozenProjectiles();
@@ -424,9 +382,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
     }
 
-    /// <summary>
-    /// NPC冻结数据条目
-    /// </summary>
+    /// <summary>NPC 冻结条目</summary>
     internal class FreezeEntry
     {
         public int EntityIndex;
@@ -435,17 +391,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public Vector2 FreezePosition;
         public Vector2 FreezeVelocity;
         public float Seed;
-        /// <summary>
-        /// 冻结发起者的玩家索引，用于"是否仍在该玩家领域内"的快速解冻判定
-        /// </summary>
+        /// <summary>发起者 whoAmI，域外快速解冻判定</summary>
         public int OwnerWho;
 
         public float Progress => (float)Timer / Duration;
     }
 
-    /// <summary>
-    /// 弹幕冻结数据条目
-    /// </summary>
+    /// <summary>弹幕冻结条目</summary>
     internal class FreezeProjEntry
     {
         public int EntityIndex;
@@ -454,9 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public Vector2 FreezePosition;
         public Vector2 FreezeVelocity;
         public float Seed;
-        /// <summary>
-        /// 冻结发起者的玩家索引
-        /// </summary>
+        /// <summary>发起者 whoAmI</summary>
         public int OwnerWho;
 
         public float Progress => (float)Timer / Duration;

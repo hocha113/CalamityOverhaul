@@ -1,19 +1,14 @@
 // ============================================================================
-// CyberDataArc.fx —— 赛博数据电弧着色器
-// 在两点间绘制可随时间脉动的电弧光带，配合 CyberDataArcProj 的 Trail 使用
-// 中心高亮的白热芯 + 围绕的彩色辉光 + 沿弧动的数据条纹
-// 输入：
-//   coreColor / glowColor    主光与辉光颜色
-//   uTime                    动画时间
-//   fadeAlpha                整体透明度
-//   uNoiseTex                噪声贴图（用于抖动与条纹）
+// CyberDataArc.fx 赛博数据电弧
+// Trail 条带 Additive；采样 uNoiseTex
+// ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
 float uTime;
-float fadeAlpha;
-float3 coreColor;
-float3 glowColor;
+float fadeAlpha;       //整体透明度
+float3 coreColor;      //主光色
+float3 glowColor;      //辉光色
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state

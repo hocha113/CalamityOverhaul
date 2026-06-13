@@ -71,19 +71,19 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<DawnshatterChargeDash>()
                     , (int)(damage * 2f), knockback * 1.5f, player.whoAmI);
 
-                //使用大招后重置连击
+                //大招后重置连击
                 comboCounter = 0;
                 comboResetTimer = 0;
                 return false;
             }
 
-            //左键普通刺击，传递连击阶段
+            //左键刺击传连击阶段
             float thrustPitch = 0.1f + (comboCounter % 3) * 0.15f;
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.9f, Pitch = thrustPitch }, player.Center);
 
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, comboCounter);
 
-            //增加连击计数并重置计时器
+            //连击计数+重置计时
             comboCounter++;
             comboResetTimer = 90;
 
@@ -91,6 +91,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
+    /// 破晓青蓄力突进大招
     internal class DawnshatterChargeDash : BaseHeldProj
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
@@ -171,21 +172,21 @@ namespace CalamityOverhaul.Content.Items.Melee
                 screenShakeIntensity *= 0.9f;
             }
 
-            //超强光照
+            //强光照
             float lightIntensity = currentPhase == DashPhase.Dashing ? 2f : chargeProgress * 1.5f;
             Lighting.AddLight(Projectile.Center, new Vector3(1.5f, 1.2f, 0.5f) * lightIntensity);
         }
 
-        //蓄力阶段，积蓄毁灭性的能量
+        //蓄力积蓄能量
         private void UpdateCharging() {
             chargeProgress = CWRUtils.EaseOutCubic(phaseTimer / (float)ChargeDuration);
             dashDirection = Projectile.velocity.SafeNormalize(Vector2.Zero);
 
-            //长枪在玩家前方蓄力
+            //长枪前方蓄力
             float chargeDistance = MathHelper.Lerp(50f, 80f, chargeProgress);
             Projectile.Center = Owner.MountedCenter + dashDirection * chargeDistance;
 
-            //强制减速玩家
+            //强制减速
             Owner.velocity *= 0.7f;
 
             //能量环绕效果
@@ -201,14 +202,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalSpawnEnemy with { Volume = 0.4f * chargeProgress, Pitch = chargeProgress * 0.5f }, Projectile.Center);
             }
 
-            //蓄力完成前的预警
+            //蓄力完成预警
             if (phaseTimer == ChargeDuration - 5) {
                 SoundEngine.PlaySound("CalamityMod/Sounds/Custom/Yharon/YharonRoarShort".GetSound() with { Volume = 0.8f, Pitch = -0.3f }, Owner.Center);
                 SpawnChargeCompleteEffect();
             }
         }
 
-        //进入突进阶段，爆发性冲刺
+        //进入突进
         private void EnterDashPhase() {
             currentPhase = DashPhase.Dashing;
             phaseTimer = 0;
@@ -222,11 +223,11 @@ namespace CalamityOverhaul.Content.Items.Melee
             screenShakeIntensity = 15f;
         }
 
-        //毁灭性突进
+        //突进：先加速后减速
         private void UpdateDashing() {
             float dashProgress = phaseTimer / (float)DashDuration;
 
-            //先加速后减速的曲线
+            //先加速后减速曲线
             float speedCurve;
             if (dashProgress < 0.3f) {
                 speedCurve = CWRUtils.EaseOutCubic(dashProgress / 0.3f);
@@ -245,7 +246,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //长枪保持在前方
             Projectile.Center = Owner.MountedCenter + dashDirection * 120f;
 
-            //华丽的拖尾效果
+            //拖尾
             SpawnDashTrail(dashProgress);
 
             //每隔一段时间播放冲击音效
@@ -269,7 +270,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Owner.velocity *= 0.2f;
             }
 
-            //终极爆炸
+        //终极爆炸
             SpawnUltimateExplosion();
             screenShakeIntensity = 25f;
 
@@ -291,7 +292,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 SpawnContinuousExplosion(explodeProgress);
             }
 
-            //减速玩家
+            //减速
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Owner.velocity *= 0.85f;
             }
@@ -426,7 +427,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , Main.rand.NextFloat(1.2f, 2f)).Configure(15, opacity: 0.5f, squishStrenght: 1.5f);
             }
 
-            //生成额外火焰弹
+            //额外火焰弹
             if (Projectile.IsOwnedByLocalPlayer() && Main.rand.NextBool(3)) {
                 for (int i = 0; i < 4; i++) {
                     float angle = MathHelper.PiOver2 * i;
@@ -471,7 +472,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Main.dust[dust].noGravity = true;
             }
 
-            //生成大量火焰弹
+            //大量火焰弹
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 36; i++) {
                     float angle = MathHelper.TwoPi * i / 36f;
@@ -497,16 +498,16 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             hitEnemyCount++;
 
-            //强力debuff
+            //OnFire3+Daybreak debuff
             target.AddBuff(BuffID.OnFire3, 600);
             target.AddBuff(BuffID.Daybreak, 480);
             target.AddBuff(BuffID.Ichor, 360);
 
-            //突进阶段的超强击退
+            //突进超强击退
             if (currentPhase == DashPhase.Dashing) {
                 target.velocity += dashDirection * 35f;
 
-                //每命中5个敌人生成爆炸
+            //每5敌人生成爆炸
                 if (hitEnemyCount % 5 == 0) {
                     SpawnHitExplosion(target.Center);
                 }
@@ -552,7 +553,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = VaultUtils.GetOrig(texture, 4);
             SpriteEffects effects = Owner.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //根据阶段计算发光强度
+            //阶段发光强度
             float glowIntensity = 0f;
             if (currentPhase == DashPhase.Charging) {
                 glowIntensity = chargeProgress * 1.5f;
@@ -564,7 +565,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 glowIntensity = 1f - phaseTimer / (float)RecoveryDuration;
             }
 
-            //多层超强发光
+            //多层发光
             for (int i = 0; i < 5; i++) {
                 float layerScale = 0.75f + i * 0.08f;
                 float layerAlpha = (0.5f - i * 0.08f) * glowIntensity;
@@ -584,7 +585,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Main.EntitySpriteDraw(texture, drawPosition, texture.GetRectangle(Projectile.frame, 4), drawColor
                 , drawRotation, origin, Projectile.scale * 0.7f, effects, 0);
 
-            //额外能量光晕
+            //能量光晕
             if (glowIntensity > 0.5f) {
                 Color energyColor = new Color(255, 180, 60, 0) * glowIntensity * 0.8f;
                 Main.EntitySpriteDraw(texture, drawPosition, texture.GetRectangle(Projectile.frame, 4), energyColor
@@ -595,6 +596,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
+    /// 破晓青火焰弹，重力+弱追踪
     internal class DawnshatterFireball : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -622,22 +624,22 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
-            //轻微重力和空气阻力
+            //重力+阻力
             Projectile.velocity.Y += 0.12f;
             Projectile.velocity *= 0.995f;
 
             //旋转
             Projectile.rotation += Projectile.velocity.Length() * 0.05f;
 
-            //脉冲缩放效果
+            //脉冲缩放
             scale = 1f + (float)System.Math.Sin(Projectile.timeLeft * 0.2f) * 0.15f;
 
-            //华丽的火焰拖尾
+            //火焰拖尾
             if (Main.rand.NextBool()) {
                 SpawnTrailEffect();
             }
 
-            //寻找敌人追踪
+            //弱追踪
             if (Projectile.timeLeft > 40 && Projectile.timeLeft % 10 == 0) {
                 NPC target = Projectile.Center.FindClosestNPC(300f);
                 if (target != null) {
@@ -692,7 +694,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //强力debuff
+            //OnFire3+Daybreak debuff
             target.AddBuff(BuffID.OnFire3, 300);
             target.AddBuff(BuffID.Daybreak, 240);
 
@@ -713,7 +715,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.velocity *= -0.7f;
             Projectile.velocity = Projectile.velocity.RotatedByRandom(0.5f);
 
-            //如果穿透次数还剩很多，尝试寻找新目标
+            //穿透剩多则换目标
             if (Projectile.penetrate > 2) {
                 NPC newTarget = Projectile.Center.FindClosestNPC(400f, false, true, new System.Collections.Generic.HashSet<NPC> { target });
                 if (newTarget != null) {
@@ -751,7 +753,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = 0.4f }, Projectile.Center);
 
-            //生成碰撞粒子
+            //碰撞粒子
             for (int i = 0; i < 8; i++) {
                 int dust = Dust.NewDust(Projectile.Center, 1, 1, DustID.Torch, 0, 0, 100, default, 1.5f);
                 Main.dust[dust].velocity = Main.rand.NextVector2Circular(4f, 4f);
@@ -809,6 +811,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
+    /// 破晓青连击刺击手持
     internal class DawnshatterSpearThrust : BaseHeldProj
     {
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<DawnshatterAzure>();
@@ -838,17 +841,17 @@ namespace CalamityOverhaul.Content.Items.Melee
             int maxTime = 38;
             float progress = 1f - Projectile.timeLeft / (float)maxTime;
 
-            //判断连击阶段
+            //连击阶段
             comboStage = (int)Projectile.ai[0] % 3;
 
-            //使用更激进的曲线
+            //激进刺击曲线
             float thrustProgress;
             if (progress < 0.35f) {
-                //前35%快速爆发式前刺
+                //前35%爆发前刺
                 thrustProgress = CWRUtils.EaseOutExpo(progress / 0.35f);
             }
             else if (progress < 0.6f) {
-                //中间25%短暂停顿
+                //中25%短暂停顿
                 thrustProgress = 1f + (float)Math.Sin((progress - 0.35f) / 0.25f * MathHelper.Pi) * 0.15f;
             }
             else {
@@ -856,7 +859,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 thrustProgress = 1f - CWRUtils.EaseInCubic((progress - 0.6f) / 0.4f);
             }
 
-            //根据连击阶段调整距离
+            //连击段调刺距
             float maxDistance = 200f + comboStage * 30f;
             float currentDistance = MathHelper.Lerp(0, maxDistance, thrustProgress);
 
@@ -868,29 +871,29 @@ namespace CalamityOverhaul.Content.Items.Melee
             //能量强度随时间变化
             energyIntensity = (float)Math.Sin(progress * MathHelper.Pi) * (1f + comboStage * 0.3f);
 
-            //持续生成华丽的粒子效果
+            //持续粒子
             if (progress < 0.7f) {
                 SpawnContinuousEffects(progress);
             }
 
-            //在刺击最远处时爆发
+            //刺击最远爆发
             if (Projectile.timeLeft == maxTime / 2 && !spawnedShockwave) {
                 SpawnThrustExplosion(comboStage);
                 spawnedShockwave = true;
             }
 
-            //连击第三段时生成额外的能量波
+            //第三段额外能量波
             if (comboStage == 2 && progress > 0.3f && progress < 0.4f) {
                 if (Main.rand.NextBool(3)) {
                     SpawnEnergyWave();
                 }
             }
 
-            //添加光照效果
+            //光照
             Lighting.AddLight(Projectile.Center, new Vector3(1f, 0.8f, 0.3f) * energyIntensity);
         }
 
-        //持续的华丽粒子效果
+        //刺击持续粒子
         private void SpawnContinuousEffects(float progress) {
             Vector2 tipPos = Projectile.Center + Projectile.velocity * 60f;
 
@@ -966,14 +969,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
 
-            //额外的烈焰旋涡
+            //烈焰旋涡
             for (int i = 0; i < 60; i++) {
                 Vector2 randVel = Main.rand.NextVector2Circular(12f, 12f);
                 int dust = Dust.NewDust(tipPos, 1, 1, DustID.Torch, randVel.X, randVel.Y, 100, default, Main.rand.NextFloat(2f, 3.5f));
                 Main.dust[dust].noGravity = true;
             }
 
-            //在第三段连击时生成超大爆炸
+            //第三段超大爆炸
             if (stage == 2) {
                 SpawnFinaleExplosion(tipPos);
             }
@@ -1034,7 +1037,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             target.AddBuff(BuffID.OnFire3, 360);
             target.AddBuff(BuffID.Daybreak, 300);
 
-            //强力击退
+            //强击退
             if (comboStage == 2) {
                 target.velocity += Projectile.velocity * 25f;
             }
@@ -1042,7 +1045,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //命中音效
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.6f, Pitch = 0.2f + comboStage * 0.15f }, target.Center);
 
-            //华丽的命中粒子
+            //命中粒子
             for (int i = 0; i < 20 + comboStage * 10; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(8f, 8f);
 
@@ -1051,7 +1054,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , Main.rand.NextFloat(0.8f, 1.5f)).Configure(18, opacity: 0.5f, squishStrenght: 1.2f);
             }
 
-            //连击第三段时造成范围爆炸
+            //第三段范围爆炸
             if (comboStage == 2 && Projectile.IsOwnedByLocalPlayer()) {
                 SpawnHitExplosion(target.Center);
             }
@@ -1067,7 +1070,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     , Main.rand.NextFloat(1.2f, 2f)).Configure(30, opacity: 0.6f, squishStrenght: 1.5f);
             }
 
-            //生成额外伤害弹幕
+            //额外伤害弹幕
             if (Projectile.IsOwnedByLocalPlayer()) {
                 for (int i = 0; i < 8; i++) {
                     float angle = MathHelper.TwoPi * i / 8f;

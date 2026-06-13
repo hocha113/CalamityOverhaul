@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼二阶段精准狙击状态
-    /// 蓄力后发射扇形激光弹幕
-    /// </summary>
+    /// <summary>精准狙击：蓄力后扇形激光齐射</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerPrecisionSniper, typeof(TwinsStateContext))]
     internal class RetinazerPrecisionSniperState : TwinsStateBase
     {

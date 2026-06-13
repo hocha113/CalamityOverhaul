@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// <summary>
-    /// 寰宇咏叹调手持弹幕：左键蓄力凝聚吸积盘并掷出，右键蓄力展开压扁吸积盘领域
-    /// <para>Q/R技能挂在物品 <see cref="AriaofTheCosmos.HoldItem"/> 上，不依赖本弹幕存活</para>
-    /// </summary>
+    /// 寰宇咏叹调手持 左键蓄力掷盘 右键压扁领域 Q/R见<see cref="AriaofTheCosmos.HoldItem"/>
     internal class AriaofTheCosmosHeld : BaseHeldGun
     {
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
@@ -25,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private const int MaxChargeTime = 180;
         private const int MinChargeTime = 30;
 
-        //左键蓄力状态（按键状态已被基类同步，各端本地累积即可驱动表现）
+        //左键蓄力(按键由基类同步 本地累积驱动表现)
         private int chargeTime;
         private float chargeProgress;
         private int accretionDiskIndex = -1;
@@ -41,7 +38,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         private float particleTimerR;
         private Color currentGlowColorR;
 
-        //蓄力进行中不要自毁，松开按键的下一帧由释放逻辑收尾
+        //蓄力中不自毁 松键下一帧由释放逻辑收尾
         public override bool StayAlive() => isCharging || isChargingR;
 
         public override void SetGunProperty() {
@@ -150,7 +147,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
         }
 
         private void UpdateAccretionDisk() {
-            //吸积盘弹幕只能由主人端生成和操控，远端经由弹幕自身的网络同步呈现
+            //吸积盘仅主人端生成操控 远端靠弹幕同步
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
@@ -260,7 +257,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             particleTimer = 0;
             isCharging = false;
 
-            //清理未掷出的吸积盘（已掷出的盘 timeLeft 已被重设，不会被误杀）
+            //清理未掷出吸积盘(已掷出 timeLeft 已重设)
             if (Projectile.IsOwnedByLocalPlayer()
                 && accretionDiskIndex >= 0 && Main.projectile[accretionDiskIndex].active
                 && Main.projectile[accretionDiskIndex].type == ModContent.ProjectileType<AccretionDisk>()
@@ -432,7 +429,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             particleTimerR = 0;
             isChargingR = false;
 
-            //压扁吸积盘只在蓄力期间存在，结束时直接清理
+            //压扁吸积盘仅蓄力期存在 结束即清理
             if (Projectile.IsOwnedByLocalPlayer()
                 && flattenedDiskIndex >= 0 && Main.projectile[flattenedDiskIndex].active
                 && Main.projectile[flattenedDiskIndex].type == ModContent.ProjectileType<FlattenedAccretionDisk>()) {

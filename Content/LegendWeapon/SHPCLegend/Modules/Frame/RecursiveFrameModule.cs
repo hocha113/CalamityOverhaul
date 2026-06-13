@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 递归机匣：追踪光束消亡时从玩家位置沿原方向重发一束伤害略低的副本
-    /// 通过 OnBeamKill 钩子实现，派生标记 IsDerived 防止无限递归
-    /// </summary>
+    /// <summary>递归机匣：光束消亡从玩家沿原向重发低伤副本，IsDerived 防无限</summary>
     internal sealed class RecursiveFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

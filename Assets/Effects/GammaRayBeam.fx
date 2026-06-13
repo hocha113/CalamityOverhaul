@@ -1,31 +1,35 @@
+// ============================================================================
+// GammaRayBeam.fx 伽马射线束
+// Trail 条带多层采样；s0~s3；ps_3_0/vs_3_0
+// ============================================================================
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
 sampler uImage3 : register(s3);
 
-float3 uColor;
-float3 uSecondaryColor;
-float2 uScreenResolution;
-float2 uScreenPosition;
-float2 uTargetPosition;
-float2 uDirection;
-float uOpacity;
+float3 uColor;                //内层主题色
+float3 uSecondaryColor;       //外缘主题色
+float2 uScreenResolution;     //屏幕像素尺寸
+float2 uScreenPosition;       //束起点(屏幕)
+float2 uTargetPosition;       //束终点(屏幕)
+float2 uDirection;            //束方向
+float uOpacity;               //整体透明度
 float uTime;
-float uIntensity;
-float uProgress;
-float2 uImageSize1;
-float2 uImageSize2;
-float2 uImageSize3;
-float2 uImageOffset;
-float uSaturation;
-float4 uSourceRect;
-float2 uZoom;
-
-float uBeamWidth;
-float uBeamLength;
-float uPulseSpeed;
-float uDistortionStrength;
-float uCoreIntensity;
+float uIntensity;             //总强度
+float uProgress;              //0~1 展开/生命进度
+float2 uImageSize1;           //s1 纹理尺寸
+float2 uImageSize2;           //s2 纹理尺寸
+float2 uImageSize3;           //s3 纹理尺寸
+float2 uImageOffset;          //纹理偏移
+float uSaturation;            //饱和度倍率
+float4 uSourceRect;           //源矩形(像素)
+float2 uZoom;                 //UV 缩放
+float uBeamWidth;             //束宽(顶点)
+float uBeamLength;            //束长(顶点)
+float uPulseSpeed;          //沿束脉冲速度
+float uDistortionStrength;  //湍流扰动强度
+float uCoreIntensity;       //核心亮度倍率
 
 //伽马射线色调 - 高能紫蓝-白光谱
 static const float3 CoreColor = float3(0.95, 0.9, 1.0);   //近白微紫核心

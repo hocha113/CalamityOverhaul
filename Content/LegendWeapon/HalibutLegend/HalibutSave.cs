@@ -10,10 +10,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    /// <summary>
-    /// 比目鱼每玩家数据中心：技能装备栏、技能图鉴解锁集、领域之眼状态、研究祭坛进度
-    /// UI层只读写本类，不持有任何独立数据源
-    /// </summary>
+    /// <summary>比目鱼每玩家数据：装备栏、图鉴、领域之眼、祭坛研究；UI 只读写本类</summary>
     internal class HalibutSave : ModPlayer
     {
         /// <summary>

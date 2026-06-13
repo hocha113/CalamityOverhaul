@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>
-    /// 赛博领域冻结黑墙能量波弹幕
-    /// <br/>在冻结触发时生成，以领域中心为原点向外扩散的六角网格黑墙冲击波
-    /// </summary>
+    /// <summary>冻结能量波弹幕，领域中心向外扩散</summary>
     internal class CyberFreezeWaveProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -30,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
 
         public override void AI() {
-            //贴附"弹幕主人"的领域中心；多人时必须按 owner 取数据，否则远端会错位
+            //贴附主人领域中心
             CyberspacePlayer cp = Cyberspace.For(Projectile.owner);
             if (cp != null) {
                 Projectile.Center = cp.DomainCenter;

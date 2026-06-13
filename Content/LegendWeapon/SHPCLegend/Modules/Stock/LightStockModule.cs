@@ -12,12 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 轻量枪托：分节减重设计让每束主光束化作「蠕行光链」——
-    /// 光束身后拖带 2 节沿其轨迹爬行的光链子节，各自独立判定伤害（40%）。
-    /// 光束转向时链身甩尾扫掠，曲线弹道反而比直线更凶
-    /// （世界吞噬者礼物 —— 分节蠕虫的列车意象）
-    /// </summary>
+    /// <summary>轻量枪托：主光束拖 2 节轨迹光链，各 40% 独立伤害</summary>
     internal sealed class LightStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;
@@ -54,10 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         }
     }
 
-    /// <summary>
-    /// 光链子节：沿父光束的历史轨迹爬行的能量节，父束消亡后短暂滑行随即散链。
-    /// 通过父弹幕 oldPos 缓存取得滞后位置，呈现贪吃蛇式的列车跟随
-    /// </summary>
+    /// <summary>光链子节：沿父束 oldPos 滞后爬行，父束消亡后惯性散链</summary>
     internal sealed class SHPCBeamSegmentProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -118,7 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 fadeAlpha = MathF.Min(fadeAlpha + 0.1f, 1f);
             }
             else {
-                //父束消亡：散链 —— 沿惯性滑行 18 帧后熄灭
+                //父束消亡：惯性散链 18 帧后熄灭
                 if (!orphaned) {
                     orphaned = true;
                     Projectile.timeLeft = 18;

@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
-    /// <summary>
-    /// 风暴电弧，较小的连锁闪电，用于二次打击和追踪效果
-    /// </summary>
+    /// 风暴电弧：小型连锁闪电，二次打击与追踪
     internal class StormArc : Lightning
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -30,22 +28,22 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         #endregion
 
         #region 自定义属性
-        /// <summary>追踪的目标NPC索引列表</summary>
+        /// 已命中 NPC 索引
         private HashSet<int> hitNPCs = new HashSet<int>();
 
-        /// <summary>连锁次数</summary>
+        /// 连锁次数
         private int chainCount = 0;
 
-        /// <summary>最大连锁次数</summary>
+        /// 最大连锁次数
         private int maxChains => 3 + (int)Intensity;
 
-        /// <summary>连锁搜索半径</summary>
-        private float chainRadius = 500f; //增加搜索半径
+        /// 连锁搜索半径
+        private float chainRadius = 500f;
 
-        /// <summary>当前追踪的目标</summary>
+        /// 当前追踪目标
         private NPC currentTarget = null;
 
-        /// <summary>是否已经尝试过连锁</summary>
+        /// 是否已尝试连锁
         private bool hasAttemptedChain = false;
         #endregion
 
@@ -72,13 +70,13 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 颜色系统 - 改为白蓝色系
         public override Color GetLightningColor(float factor) {
-            //使用白蓝色调（比主闪电更亮）
+            //白蓝调色(比主闪电更亮)
             Color baseColor = new Color(180, 220, 255); //明亮的白蓝色
 
-            //添加电弧特有的闪烁效果
+            //电弧闪烁
             float sparkle = 0.88f + 0.12f * MathF.Sin(Main.GlobalTimeWrappedHourly * 28f + Projectile.identity * 3f);
 
-            //根据连锁次数调整颜色（连锁越多越亮）
+            //连锁越深越亮
             float chainBrightness = 1f + chainCount * 0.08f;
 
             //添加白色高光
@@ -88,11 +86,11 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override float GetLightningWidth(float factor) {
-            //更细更快的电弧
+            //更细更快
             float curve = MathF.Sin(factor * MathHelper.Pi);
             float shapeFactor = curve * (0.7f + 0.3f * MathF.Sin(factor * MathHelper.Pi));
 
-            //添加高频震颤
+            //高频震颤
             float vibration = 1f + 0.08f * MathF.Sin(Main.GlobalTimeWrappedHourly * 40f + factor * 20f);
 
             return ThunderWidth * shapeFactor * Intensity * vibration;
@@ -113,20 +111,18 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         #region 目标寻找 - 连锁逻辑
         public override Vector2 FindTargetPosition() {
-            //寻找最近的有效NPC（排除已命中的）
+            //找最近未命中目标
             currentTarget = FindClosestValidNPC();
 
             if (currentTarget != null) {
                 return currentTarget.Center;
             }
 
-            //如果没有找到目标，向前方射出
+            //无目标则前射
             return Projectile.Center + Projectile.velocity.SafeNormalize(Vector2.UnitY) * 400f;
         }
 
-        /// <summary>
-        /// 寻找最近的有效NPC（排除已命中的）
-        /// </summary>
+        /// 最近有效 NPC(排除已命中)
         private NPC FindClosestValidNPC() {
             NPC closest = null;
             float closestDistance = chainRadius;
@@ -145,9 +141,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             return closest;
         }
 
-        /// <summary>
-        /// 寻找下一个连锁目标（从指定位置搜索）
-        /// </summary>
+        /// 下一连锁目标(从指定点搜索)
         private NPC FindNextChainTarget(Vector2 fromPosition) {
             NPC nextTarget = null;
             float closestDistance = chainRadius;
@@ -166,9 +160,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             return nextTarget;
         }
 
-        /// <summary>
-        /// 检查NPC是否是有效目标
-        /// </summary>
+        /// NPC 有效性判定
         private bool IsValidTarget(NPC npc) {
             return npc != null &&
                    npc.active &&
@@ -195,13 +187,10 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void OnHit() {
-            //这个方法在基类的 StartLinger 中被调用
-            //不需要在这里处理连锁，连锁在 OnHitNPC 中处理
+            //连锁在 OnHitNPC 处理，此处不重复
         }
 
-        /// <summary>
-        /// 生成电弧冲击粒子
-        /// </summary>
+        /// 电弧冲击粒子
         private void SpawnArcImpactParticles() {
             Color particleColor = GetLightningColor(0.5f);
 
@@ -218,9 +207,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 尝试进行连锁 - 从指定位置生成新电弧
-        /// </summary>
+        /// 从指定点尝试连锁
         private void AttemptChain(Vector2 fromPosition) {
             //防止重复触发
             if (hasAttemptedChain) return;
@@ -267,9 +254,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 生成连锁特效
-        /// </summary>
+        /// 连锁特效
         private void SpawnChainEffects(Vector2 from, Vector2 to) {
             Color chainColor = GetLightningColor(0.5f);
 
@@ -290,21 +275,19 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         protected override void UpdateStrikeMovement() {
-            //更激进的追踪
+            //强追踪(≈99%)近直
             float baseSpeed = Projectile.velocity.Length();
 
-            //基础朝向
             float selfAngle = Projectile.velocity.ToRotation();
             float targetAngle = (TargetPosition - Projectile.Center).ToRotation();
 
-            //更强的追踪（99%跟随目标）
             float newAngle = MathHelper.Lerp(selfAngle, targetAngle, 0.99f);
 
-            //非常小的扰动（电弧几乎是直的）
+            //微量扰动
             float sinOffset = MathF.Sin(Timer * 0.5f) * 0.1f;
             newAngle += sinOffset;
 
-            //偶尔的轻微抖动
+            //偶发抖动
             if (Timer % 5 == 0) {
                 float randomAngle = Main.rand.NextFloat(-0.1f, 0.1f);
                 newAngle += randomAngle;
@@ -334,7 +317,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 }
             }
 
-            //从ai[2]恢复连锁次数
+            //从 ai[2] 恢复连锁次数
             if (chainCount == 0 && Projectile.ai[2] > 0) {
                 chainCount = (int)Projectile.ai[2];
             }
@@ -376,8 +359,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 }
             }
 
-            //在命中敌人后立即尝试连锁
-            //只在本地客户端执行
+            //命中后尝试连锁(仅本地)
             if (Projectile.IsOwnedByLocalPlayer() && !hasAttemptedChain) {
                 AttemptChain(target.Center);
             }
@@ -391,7 +373,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 hitNPCs.Add(currentTarget.whoAmI);
             }
 
-            //如果到达目标但没有命中（比如碰到地面），尝试从停留位置连锁
+            //停留未命中则从停留点连锁
             if (Projectile.IsOwnedByLocalPlayer() && !hasAttemptedChain) {
                 AttemptChain(Projectile.Center);
             }

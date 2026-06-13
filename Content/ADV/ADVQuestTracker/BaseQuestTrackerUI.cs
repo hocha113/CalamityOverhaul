@@ -20,31 +20,31 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
     /// </summary>
     public enum QuestTrackerStyle
     {
-        Brimstone,  //硫磺火风格
-        Draedon,    //嘉登科技风格
-        Sulfsea     //硫磺海风格
+        Brimstone,  // 硫磺火
+        Draedon,    // 嘉登科技
+        Sulfsea     // 硫磺海
     }
 
     /// <summary>
-    /// 任务追踪UI的通用基类
+    /// 任务追踪 UI 基类
     /// </summary>
     internal abstract class BaseQuestTrackerUI : UIHandle, ILocalizedModType
     {
         public virtual string LocalizationCategory => "UI";
 
-        //本地化文本
+        // 本地化文本
         protected LocalizedText QuestTitle { get; set; }
         protected LocalizedText DamageContribution { get; set; }
         protected LocalizedText RequiredContribution { get; set; }
 
-        //UI参数
+        // UI 参数
         protected const float PanelWidth = 220f;
         protected const float MinPanelHeight = 90f;
         protected const float MaxPanelHeight = 150f;
         protected float currentPanelHeight = MinPanelHeight;
         protected const float Padding = 10f;
 
-        //位置和拖拽
+        // 位置与拖拽
         private bool dragBool;
         private float dragOffset;
         protected float screenYValue = 0;
@@ -52,13 +52,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected virtual float ScreenX => 0f;
         protected virtual float ScreenY => screenYValue;
 
-        //动画参数
+        // 动画参数
         protected float slideProgress = 0f;
         protected float pulseTimer = 0f;
         protected float borderGlow = 1f;
         protected float warningPulse = 0f;
 
-        //折叠状态
+        // 折叠状态
         protected bool isCollapsed = false;
         protected float collapseProgress = 0f;
         protected const float CollapseAnimationSpeed = 0.12f;
@@ -67,18 +67,18 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected float buttonPositionProgress = 0f;
         protected float buttonGlowPulse = 0f;
 
-        //伤害数据
+        // 伤害数据
         protected float cachedContribution = 0f;
         protected const float UpdateInterval = 0.5f;
         protected float updateTimer = 0f;
 
-        //碰撞检测与半透明化
+        // 碰撞半透明
         protected bool isOverlappingWithNPC = false;
         protected float overlappingAlpha = 1f;
         protected const float MinOverlappingAlpha = 0.3f;
         protected const float AlphaTransitionSpeed = 0.1f;
 
-        //样式系统
+        // 样式系统
         protected QuestTrackerStyle currentStyleType = QuestTrackerStyle.Brimstone;
         protected IQuestTrackerStyle currentStyle;
         protected readonly Dictionary<QuestTrackerStyle, IQuestTrackerStyle> styleInstances = new();
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 获取当前应使用的风格（子类可重写）
+        /// 子类可重写默认风格
         /// </summary>
         protected virtual QuestTrackerStyle GetQuestStyle() => QuestTrackerStyle.Brimstone;
 
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected abstract (float current, float total, bool isActive) GetTrackingData();
 
         /// <summary>
-        /// 目标NPC类型（如果不需要NPC追踪，返回-1）
+        /// 目标 NPC 类型，不需追踪则 -1
         /// </summary>
         public abstract int TargetNPCType { get; }
 
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         public override void SetStaticDefaults() {
             SetupLocalizedTexts();
 
-            //初始化样式实例
+            // 初始化样式实例
             styleInstances[QuestTrackerStyle.Brimstone] = new BrimstoneTrackerStyle();
             styleInstances[QuestTrackerStyle.Draedon] = new DraedonTrackerStyle();
             styleInstances[QuestTrackerStyle.Sulfsea] = new SulfseaTrackerStyle();
@@ -175,7 +175,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected abstract void SetupLocalizedTexts();
 
         /// <summary>
-        /// 检测UI面板是否与目标NPC碰撞箱重叠
+        /// 面板与目标 NPC 碰撞箱重叠
         /// </summary>
         protected virtual bool CheckNPCOverlap() {
             if (CurrentDamageTrackerInstance?.NPC == null || !CurrentDamageTrackerInstance.NPC.active) {
@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         /// <summary>
-        /// 计算文本换行后的高度（不实际绘制）
+        /// 文本换行高度（不绘制）
         /// </summary>
         protected virtual float CalculateTextHeight(string text, float scale = 0.75f, float maxWidth = -1f) {
             if (string.IsNullOrEmpty(text)) {
@@ -240,26 +240,26 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected virtual float CalculateContentHeight() {
             const float textScale = 0.65f;
 
-            //计算各部分高度
+            // 各部分高度
             float topPadding = 8f;
             float titleHeight = CalculateTitleHeight();
             float titleBottomMargin = 2f;
             float dividerHeight = 2f;
             float dividerBottomMargin = 8f;
 
-            //贡献度文本
+            // 贡献度文本
             float contributionTextHeight = FontAssets.MouseText.Value.MeasureString("A").Y * textScale;
             float contributionBottomMargin = 15f;
 
-            //需求文本
+            // 需求文本
             float requirementHeight = CalculateTextHeight(RequiredContribution.Value, 0.6f);
             float requirementBottomMargin = 2f;
 
-            //进度条
+            // 进度条
             float progressBarHeight = 6f;
             float bottomPadding = 8f;
 
-            //总高度
+            // 总高度
             return topPadding
                 + titleHeight + titleBottomMargin
                 + dividerHeight + dividerBottomMargin
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         }
 
         public override void Update() {
-            //初始化屏幕位置
+            // 初始化屏幕位置
             if (initialize) {
                 initialize = false;
                 if (screenYValue == 0) {
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //切换样式
+            // 切换样式
             QuestTrackerStyle targetStyle = GetQuestStyle();
             if (targetStyle != currentStyleType) {
                 currentStyleType = targetStyle;
@@ -296,10 +296,10 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //更新面板高度
+            // 更新面板高度
             UpdatePanelHeight();
 
-            //展开收起动画
+            // 展开收起动画
             float targetSlide = CanOpne ? 1f : 0f;
             slideProgress = MathHelper.Lerp(slideProgress, targetSlide, 0.15f);
 
@@ -307,25 +307,25 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 return;
             }
 
-            //折叠动画
+            // 折叠动画
             float targetCollapse = isCollapsed ? 1f : 0f;
             collapseProgress = MathHelper.Lerp(collapseProgress, targetCollapse, CollapseAnimationSpeed);
 
-            //按钮位置过渡动画
+            // 按钮位置过渡
             float targetButtonPos = isCollapsed ? 1f : 0f;
             buttonPositionProgress = MathHelper.Lerp(buttonPositionProgress, targetButtonPos, 0.15f);
 
-            //按钮发光脉冲
+            // 按钮发光脉冲
             buttonGlowPulse += 0.05f;
             if (buttonGlowPulse > MathHelper.TwoPi) {
                 buttonGlowPulse -= MathHelper.TwoPi;
             }
 
-            //动画更新
+            // 动画更新
             pulseTimer += 0.03f;
             borderGlow = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.3f + 0.7f;
 
-            //更新伤害数据显示
+            // 刷新伤害显示
             updateTimer += 0.016f;
             if (updateTimer >= UpdateInterval) {
                 updateTimer = 0f;
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             cachedContribution = MathHelper.Clamp(cachedContribution, 0, 1f);
 
-            //如果贡献度低闪烁警告
+            // 贡献度偏低时警告闪烁
             float requiredContribution = GetRequiredContribution();
             if (cachedContribution < requiredContribution * 0.5f) {
                 warningPulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f;
@@ -346,22 +346,22 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 warningPulse = 0f;
             }
 
-            //计算面板实际宽度
+            // 面板实际宽度
             float actualPanelWidth = MathHelper.Lerp(PanelWidth, 40f, CWRUtils.EaseInOutCubic(collapseProgress));
 
-            //设置UI位置
+            // UI 位置
             float offsetX = MathHelper.Lerp(-PanelWidth - 50f, ScreenX, CWRUtils.EaseOutCubic(slideProgress));
             DrawPosition = new Vector2(offsetX, ScreenY);
             Size = new Vector2(actualPanelWidth, currentPanelHeight);
             UIHitBox = DrawPosition.GetRectangle((int)actualPanelWidth, (int)currentPanelHeight);
 
-            //更新折叠按钮位置
+            // 折叠按钮位置
             UpdateCollapseButton();
 
-            //处理折叠按钮交互
+            // 折叠按钮交互
             HandleCollapseButtonInteraction();
 
-            //处理拖拽
+            // 拖拽
             hoverInMainPage = UIHitBox.Intersects(MouseHitBox) && !collapseButtonHovered;
             if (hoverInMainPage) {
                 if (keyLeftPressState == KeyPressState.Held) {
@@ -379,17 +379,17 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 }
             }
 
-            //限制Y坐标范围
+            // 限制 Y 范围
             screenYValue = MathHelper.Clamp(screenYValue, 0, Main.screenHeight - currentPanelHeight);
 
-            //检测是否与NPC碰撞箱重叠
+            // NPC 碰撞检测
             isOverlappingWithNPC = CheckNPCOverlap();
 
-            //平滑过渡透明度
+            // 透明度平滑
             float targetAlpha = isOverlappingWithNPC ? MinOverlappingAlpha : 1f;
             overlappingAlpha = MathHelper.Lerp(overlappingAlpha, targetAlpha, AlphaTransitionSpeed);
 
-            //更新样式动画
+            // 样式动画
             currentStyle?.Update(UIHitBox, Active);
             currentStyle?.UpdateParticles(DrawPosition, overlappingAlpha);
         }
@@ -400,7 +400,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected virtual void UpdateCollapseButton() {
             int buttonSize = 20;
 
-            //计算按钮X位置的平滑过渡
+            // 按钮 X 过渡
             float expandedX = DrawPosition.X + PanelWidth - buttonSize - 10;
             float collapsedX = DrawPosition.X + 10;
             float buttonX = MathHelper.Lerp(expandedX, collapsedX, CWRUtils.EaseInOutCubic(buttonPositionProgress));
@@ -465,10 +465,10 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 Vector2 linePos = new Vector2(config.Position.X, currentY);
                 Color lineColor = config.Color * config.Alpha;
 
-                //如果提供了自定义效果，先执行
+                // 自定义行效果
                 lineEffect?.Invoke(spriteBatch, lines[i], linePos, lineColor, config.Scale, config.Alpha, i);
 
-                //绘制主文本（如果lineEffect为null或子类重写时仍需要基础绘制）
+                // 无 lineEffect 时基础绘制
                 if (lineEffect == null) {
                     Utils.DrawBorderString(spriteBatch, lines[i], linePos, lineColor, config.Scale);
                 }
@@ -513,7 +513,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// 标题行效果
         /// </summary>
         protected virtual void DrawTitleLineEffect(SpriteBatch spriteBatch, string text, Vector2 position, Color color, float scale, float alpha, int lineIndex) {
-            //默认实现，简单绘制
+            // 默认简单绘制
             Utils.DrawBorderString(spriteBatch, text, position, color, scale);
         }
 
@@ -534,7 +534,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             return DrawWrappedText(spriteBatch, text, position, textColor, textScale, alpha);
         }
 
-        //这个鸡巴不能删，这个删了啥都没了
+        // 基类 Draw 入口，子类依赖此 override
         public override void Draw(SpriteBatch spriteBatch) {
             if (slideProgress < 0.01f) {
                 return;
@@ -542,16 +542,16 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             float alpha = Math.Min(slideProgress * 2f, 1f) * overlappingAlpha;
 
-            //使用样式绘制面板
+            // 样式绘制面板
             if (currentStyle != null) {
                 currentStyle.DrawPanel(spriteBatch, UIHitBox, alpha);
                 currentStyle.DrawFrame(spriteBatch, UIHitBox, alpha, borderGlow);
             }
 
-            //绘制折叠按钮
+            // 折叠按钮
             DrawCollapseButton(spriteBatch, alpha);
 
-            //折叠状态下不绘制内容
+            // 折叠时跳过内容
             if (collapseProgress < 0.99f) {
                 float contentAlpha = alpha * (1f - CWRUtils.EaseInOutCubic(collapseProgress));
                 DrawContent(spriteBatch, contentAlpha);
@@ -564,16 +564,16 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         protected virtual void DrawCollapseButton(SpriteBatch spriteBatch, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //获取样式颜色
+            // 样式色
             Color styleColor = currentStyle?.GetTitleColor(alpha) ?? new Color(100, 220, 255) * alpha;
             Color edgeColor = currentStyle?.GetNumberColor(1f, 1f, alpha) ?? Color.White * alpha;
 
-            //按钮背景使用更柔和的颜色
+            // 按钮背景
             float hoverBrightness = collapseButtonHovered ? 0.5f : 0.3f;
             Color buttonBgColor = Color.Lerp(styleColor, new Color(20, 30, 45), 0.6f) * (alpha * hoverBrightness);
             spriteBatch.Draw(pixel, collapseButtonRect, new Rectangle(0, 0, 1, 1), buttonBgColor);
 
-            //按钮发光效果
+            // 按钮发光
             if (collapseButtonHovered) {
                 float glowIntensity = (float)Math.Sin(buttonGlowPulse * 2f) * 0.2f + 0.3f;
                 Color glowColor = styleColor with { A = 0 };
@@ -582,14 +582,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), glowColor * (glowIntensity * 0.25f));
             }
 
-            //按钮边框使用更低饱和度的颜色
+            // 按钮边框
             Color buttonBorderColor = Color.Lerp(styleColor, edgeColor, 0.5f) * alpha;
             if (collapseButtonHovered) {
                 buttonBorderColor = Color.Lerp(buttonBorderColor, styleColor, 0.3f);
             }
             DrawButtonBorder(spriteBatch, collapseButtonRect, buttonBorderColor);
 
-            //绘制箭头
+            // 箭头
             Vector2 buttonCenter = collapseButtonRect.Center.ToVector2();
             DrawCollapseArrow(spriteBatch, buttonCenter, alpha, styleColor);
         }
@@ -601,16 +601,16 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             Texture2D pixel = VaultAsset.placeholder2.Value;
             int thickness = 1;
 
-            //上
+            // 上
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness),
                 new Rectangle(0, 0, 1, 1), color * 0.7f);
-            //下
+            // 下
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness),
                 new Rectangle(0, 0, 1, 1), color * 0.5f);
-            //左
+            // 左
             spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.6f);
-            //右
+            // 右
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height),
                 new Rectangle(0, 0, 1, 1), color * 0.6f);
         }
@@ -620,34 +620,34 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
         /// </summary>
         protected virtual void DrawCollapseArrow(SpriteBatch spriteBatch, Vector2 center, float alpha, Color styleColor) {
             center += new Vector2(2, 4);
-            //箭头颜色更亮，提高可见度
+            // 箭头高亮
             Color arrowColor = Color.Lerp(new Color(180, 200, 220), styleColor, 0.5f) * alpha;
 
             if (collapseButtonHovered) {
                 arrowColor = Color.Lerp(arrowColor, Color.White, 0.3f);
             }
 
-            //字体箭头符号
+            // 箭头符号
             string arrowSymbol = isCollapsed ? "◀" : "▶";
             var font = FontAssets.MouseText.Value;
 
-            //测量文本尺寸以正确居中
+            // 居中测量
             Vector2 textSize = font.MeasureString(arrowSymbol);
             float scale = collapseButtonHovered ? 1.1f : 1f;
             Vector2 scaledSize = textSize * scale;
 
-            //计算居中位置
+            // 居中位置
             Vector2 drawPos = center - scaledSize / 2f;
 
-            //绘制箭头主体
+            // 箭头主体
             Utils.DrawBorderString(spriteBatch, arrowSymbol, drawPos, arrowColor, scale);
 
-            //添加箭头发光效果
+            // 箭头发光
             if (collapseButtonHovered) {
                 Color glowColor = Color.Lerp(styleColor, Color.White, 0.4f) with { A = 0 };
                 float glowPulse = (float)Math.Sin(buttonGlowPulse * 3f) * 0.3f + 0.5f;
 
-                //绘制多层发光
+                // 多层发光
                 for (int i = 0; i < 2; i++) {
                     float glowScale = scale * (1f + i * 0.08f);
                     float glowAlpha = glowPulse * (0.4f - i * 0.15f);
@@ -667,25 +667,25 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             const float titleScale = 0.75f;
             const float textScale = 0.65f;
 
-            //标题
+            // 标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding, 8);
             float titleHeight = DrawTitle(spriteBatch, titlePos, alpha, titleScale);
 
-            //分割线
+            // 分割线
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + 2);
             Vector2 dividerEnd = dividerStart + new Vector2(PanelWidth - 20, 0);
             currentStyle?.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);
 
-            //伤害贡献度文本
+            // 贡献度文本
             Vector2 contributionTextPos = dividerStart + new Vector2(0, 8);
             DrawContributionText(spriteBatch, contributionTextPos, alpha, textScale);
 
-            //需求文本
+            // 需求文本
             Vector2 requirementPos = contributionTextPos + new Vector2(0, 15);
             Color textColor = currentStyle?.GetTextColor(alpha) ?? Color.White * alpha;
             float reqHeight = DrawWrappedText(spriteBatch, RequiredContribution.Value, requirementPos, textColor * 0.8f, 0.6f, alpha);
 
-            //进度条
+            // 进度条
             DrawProgressBar(spriteBatch, requirementPos + new Vector2(0, reqHeight + 2), alpha);
         }
 
@@ -699,7 +699,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             string contributionText = $"{DamageContribution.Value}: ";
             Utils.DrawBorderString(spriteBatch, contributionText, position, textColor, textScale);
 
-            //百分比显示
+            // 百分比
             Vector2 percentPos = position + new Vector2(font.MeasureString(contributionText).X * textScale, 0);
             string percentText = $"{cachedContribution:P1}";
 
@@ -720,7 +720,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             currentStyle?.DrawProgressBar(spriteBatch, barRect, cachedContribution, alpha);
 
-            //需求标记线
+            // 需求标记线
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float requiredX = position.X + barWidth * GetRequiredContribution();
             Rectangle requirementLine = new Rectangle((int)requiredX - 1, (int)position.Y, 2, (int)barHeight);

@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public bool IsCharging { get; set; }
         /// <summary>蓄力类型: 0=无 1=冲撞蓄力 2=过载转阶段 3=环形爆发充能</summary>
         public int ChargeType { get; set; }
-        /// <summary>冲撞方向（用于预警与视觉）</summary>
+        /// <summary>冲撞方向，供预警与视觉</summary>
         public Vector2 DashDirection { get; set; }
         #endregion
 

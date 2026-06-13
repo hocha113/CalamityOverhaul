@@ -1,8 +1,6 @@
 // ============================================================================
-// ForestPanel.fx — 森林魔法面板着色器
-// 苔藓古木底纹 + 菌丝脉络网络 + 萤火微粒 + 符文光环
-// + 有机浮雕边缘 + 斑驳树光 + 风拂扫描 + 暗角
-// uNightMode: 0=暖阳翠绿 1=冷月幽蓝
+// ForestPanel.fx 森林魔法面板
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,7 +9,7 @@ float uTime;
 float uAlpha;
 float2 uResolution;
 float uEdgePad;
-float uNightMode;
+float uNightMode; //0暖阳翠绿 1冷月幽蓝
 
 // ─── 噪声工具 ───
 float hash11(float p) {

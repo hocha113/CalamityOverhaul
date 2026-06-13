@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.ADV
                 return;
             }
 
-            //关于ADV场景的更新只在本地玩家上进行
+            // 仅本地玩家更新 ADV 场景
             var advSave = Player.GetModPlayer<ADVSavePlayer>().ADVSave;
             ADVScenarioScheduler.Tick(advSave, Player);
         }

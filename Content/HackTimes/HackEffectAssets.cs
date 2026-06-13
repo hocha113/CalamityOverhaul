@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇入效果着色器资源
-    /// <br/>通过VaultLoaden自动加载Assets/Effects/下对应的.fxc文件
-    /// </summary>
+    /// <summary>骇入效果着色器资源</summary>
     internal class HackEffectAssets
     {
         [VaultLoaden(CWRConstant.Effects)]

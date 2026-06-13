@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 系统重启：强制目标系统重启导致长时间晕眩
-    /// </summary>
+    /// <summary>系统重启，长时间晕眩</summary>
     internal class SystemReset : QuickHackDef
     {
         public override void SetDefaults() {
@@ -23,16 +21,16 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             NPC npc = Main.npc[s.NpcIndex];
             EmitApplyParticles(npc);
             CombatText.NewText(npc.Hitbox, new Color(40, 150, 255), HackTime.Rebooting.Value, true);
-            //群组扩散涉及向 HackEffectTracker 注册新效果，仅在施法端进行
+            //群组扩散仅施法端注册
             if (!HackTimeNetSync.IsRemoteApply) {
-                //群组扩散，蠕虫各体节、月总各实体一并被强制重启
+                //蠕虫体节、月总实体一并重启
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitApplyParticles);
             }
             return true;
         }
 
-        //初始蓝屏粒子，抽出复用给群组成员
+        //蓝屏粒子，群组成员复用
         private static void EmitApplyParticles(NPC npc) {
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);

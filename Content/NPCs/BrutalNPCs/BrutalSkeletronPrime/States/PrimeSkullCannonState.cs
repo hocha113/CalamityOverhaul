@@ -7,11 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 颅骨主炮（二阶段固定杀招）：90 帧蓄力（汇聚 → 72% 静默）→ 锁定瞄准 + 起点预告
-    /// → <see cref="PrimeSkullBeamProj"/> 巨型光束横扫大半圈，全场最华丽一招。
-    /// <para>完整充能语法：粒子密度 ∝ √进度、72% 处声画双静默、静默拍后瞬间释放。</para>
-    /// </summary>
+    /// <summary>颅骨主炮：90帧蓄力(72%静默) → 锁定 → <see cref="PrimeSkullBeamProj"/> 大半圈扫射</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.SkullCannon, typeof(PrimeStateContext))]
     internal class PrimeSkullCannonState : PrimeStateBase
     {
@@ -19,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         public override PrimeStateIndex StateIndex => PrimeStateIndex.SkullCannon;
 
         internal static int ChargeFrames => 90;
-        /// <summary>蓄力末段提前锁定瞄准的帧数（锁定后玩家走位不再被跟踪——公平阀）</summary>
+        /// <summary>蓄力末段锁定瞄准帧数（锁定后走位不再跟踪，公平阀）</summary>
         internal static int LockLead => 24;
         internal static int SilenceFrames => 6;
         /// <summary>扫射半弧（大师模式）：全弧 ≈ 252°，转一个大半圈</summary>
@@ -45,7 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 UpdateCharge(context);
             }
             else if (Timer < ChargeFrames + SilenceFrames) {
-                //静默拍：充能视觉骤停、机体微滞——下一刻就是巨炮
+                //静默拍：充能视觉骤停，下一刻巨炮
                 context.ResetChargeState();
                 npc.velocity *= 0.85f;
             }

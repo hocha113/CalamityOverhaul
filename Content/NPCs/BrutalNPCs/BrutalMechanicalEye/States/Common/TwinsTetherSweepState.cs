@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>
-    /// 双子磁暴链锁合击：
-    /// 双眼以高压电弧相连，对峙于玩家两侧后绕场旋转并收缩半径，
-    /// 中途骤停反转旋向，结尾双眼短暂对视(演出小动作)后散开
-    /// </summary>
+    /// <summary>磁暴链锁合击：电弧相连绕场收缩，骤停反转后对视散开</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsTetherSweep, typeof(TwinsStateContext))]
     internal class TwinsTetherSweepState : TwinsStateBase
     {

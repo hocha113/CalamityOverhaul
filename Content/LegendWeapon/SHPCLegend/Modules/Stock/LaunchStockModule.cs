@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 弹射枪托：能量球发射瞬间额外喷出3束扇形追踪副光束
-    /// 通过 OnOrbLaunched 钩子在状态切换为飞行的瞬间执行，与主球形成饱和覆盖
-    /// </summary>
+    /// <summary>弹射枪托：球发射瞬间扇形 3 束追踪副光束</summary>
     internal sealed class LaunchStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

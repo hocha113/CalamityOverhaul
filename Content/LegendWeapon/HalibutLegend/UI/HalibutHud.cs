@@ -12,11 +12,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 比目鱼常驻HUD（屏幕左下角，手持时显示）
-    /// 核心是一只着色器驱动的"深渊之眼"（HalibutHudEye.fx）：
-    /// 注视光标、随机眨眼、领域层数染色虹膜、死机故障红化、冷却薄翳、就绪闪光；
-    /// 复苏状态为着色器流体压力柱（HalibutHudGauge.fx）：液面波动、气泡、阈值蚀刻、临界沸腾
-    /// 外围辅以技能徽章、层数菱标弧、领域技能冷却卫星环与研究进度弧
+    /// 比目鱼常驻 HUD（左下，手持时显示）
+    /// 核心 HalibutHudEye.fx：光标跟踪、眨眼、层数虹膜、死机红化、冷却翳、就绪闪
+    /// 复苏条 HalibutHudGauge.fx：液面、气泡、阈值刻线、临界态
+    /// 外围：技能徽章、层数弧、领域冷却环、研究进度弧
     /// </summary>
     [VaultLoaden(CWRConstant.UI + "Halibut/FishSkill")]
     internal class HalibutHud : UIHandle, ILocalizedModType

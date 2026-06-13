@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼二阶段激光矩阵状态
-    /// 在玩家周围布置激光发射点后同时发射
-    /// </summary>
+    /// <summary>激光矩阵：玩家周围布点→蓄力→齐射</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerLaserMatrix, typeof(TwinsStateContext))]
     internal class RetinazerLaserMatrixState : TwinsStateBase
     {

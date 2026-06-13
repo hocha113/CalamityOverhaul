@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles;
+using CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
@@ -27,12 +27,12 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
         /// </summary>
         public enum RewardStyle
         {
-            Ocean,      //海洋风格（默认）
-            Brimstone,  //硫磺火风格
-            Draedon,    //嘉登科技风格
-            Sulfsea,    //硫磺海风格
-            StarStream, //星流风格
-            SHPC        //SHPC赛博朋克风格
+            Ocean,      // 海洋风格（默认）
+            Brimstone,  // 硫磺火风格
+            Draedon,    // 嘉登科技风格
+            Sulfsea,    // 硫磺海风格
+            StarStream, // 星流风格
+            SHPC        // SHPC赛博朋克风格
         }
 
         public class RewardEntry
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             public Func<Vector2> AnchorProvider;
             public Vector2 Offset;
             /// <summary>
-            /// 风格提供器，如果为null则使用默认风格
+            /// 风格提供器，null 用默认
             /// </summary>
             public Func<RewardStyle> StyleProvider;
         }
@@ -63,12 +63,12 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
         private float panelScale = 0f;
         private bool justOpened = false;
 
-        //样式系统
+        // 样式
         private RewardStyle currentStyleType = RewardStyle.Ocean;
         private IRewardPopupStyle currentStyle;
         private readonly Dictionary<RewardStyle, IRewardPopupStyle> styleInstances = new();
 
-        //面板区域缓存和鼠标悬停状态
+        // 面板矩形与悬停
         private Rectangle panelRect;
         private bool isHovering = false;
         public static int DefaultAppearDuration = 24;
@@ -76,14 +76,14 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
         public static int DefaultGiveDuration = 16;
         public static event Action<RewardEntry> OnRewardGiven;
 
-        //位置平滑过渡相关
+        // 锚点平滑过渡
         private Vector2 cachedAnchorPosition;
         private Vector2 currentDisplayPosition;
         private bool isDialogueClosing = false;
         private float positionTransitionProgress = 0f;
         private const float PositionTransitionSpeed = 0.08f;
 
-        //本地化文本
+        // 本地化文本
         protected static LocalizedText ClickToReceive;
         protected static LocalizedText ClickToContinue;
         protected static LocalizedText ClickOrWaitToContinue;
@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             ClickToContinue = this.GetLocalization(nameof(ClickToContinue), () => "点击继续");
             ClickOrWaitToContinue = this.GetLocalization(nameof(ClickOrWaitToContinue), () => "点击/等待继续");
 
-            //初始化样式实例
+            // 初始化样式实例
             var inst = Instance;
             inst.styleInstances[RewardStyle.Ocean] = new OceanRewardStyle();
             inst.styleInstances[RewardStyle.Brimstone] = new BrimstoneRewardStyle();
@@ -163,13 +163,13 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             current.Hold = 0f;
             justOpened = true;
 
-            //重置位置过渡状态
+            // 重置位置过渡状态
             isDialogueClosing = false;
             positionTransitionProgress = 0f;
             cachedAnchorPosition = Vector2.Zero;
             currentDisplayPosition = Vector2.Zero;
 
-            //切换样式
+            // 切换样式
             RewardStyle targetStyle = GetCurrentStyle();
             if (targetStyle != currentStyleType) {
                 currentStyleType = targetStyle;
@@ -179,7 +179,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                 }
             }
 
-            //初次播放音效
+            // 初次播放音效
             SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.4f, Pitch = -0.2f });
         }
 
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             if (current?.StyleProvider != null) {
                 return current.StyleProvider();
             }
-            return RewardStyle.Ocean; //默认海洋风格
+            return RewardStyle.Ocean; // 默认海洋风格
         }
 
         public override void Update() {
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                     current.Hold++;
                     bool autoReady = false;
                     if (current.HoldDuration >= 0 && current.Hold >= current.HoldDuration) autoReady = true;
-                    //只有在鼠标悬停在面板上且点击时才触发
+                    // 只有在鼠标悬停在面板上且点击时才触发
                     bool click = isHovering && keyLeftPressState == KeyPressState.Pressed;
                     if (autoReady && !current.RequireClick || click && appearT >= 0.95f) {
                         givingOut = true;
@@ -247,16 +247,16 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                 }
             }
 
-            //检测鼠标悬停状态
+            // 检测鼠标悬停状态
             Vector2 mousePos = new Vector2(Main.mouseX, Main.mouseY);
             isHovering = panelRect.Contains(mousePos.ToPoint());
 
-            //只有在悬停时才阻止鼠标交互穿透
+            // 只有在悬停时才阻止鼠标交互穿透
             if (isHovering && Active) {
                 player.mouseInterface = true;
             }
 
-            //更新样式动画
+            // 更新样式动画
             if (currentStyle != null) {
                 Vector2 basePos = ResolveBasePosition(new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f));
                 currentStyle.Update(panelRect, Active, false);
@@ -278,33 +278,33 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
         }
 
         private Vector2 ResolveBasePosition(Vector2 panelCenter) {
-            //优先使用自定义锚点提供器
+            // 优先使用自定义锚点提供器
             if (current?.AnchorProvider != null) {
                 Vector2 providedPos = current.AnchorProvider() + current.Offset;
 
-                //检测对话框是否正在关闭
+                // 检测对话框是否正在关闭
                 if (DialogueUIRegistry.Current != null) {
                     var currentBox = DialogueUIRegistry.Current;
 
-                    //如果对话框刚开始关闭，缓存当前位置
+                    // 如果对话框刚开始关闭，缓存当前位置
                     if (currentBox.closing && !isDialogueClosing) {
                         isDialogueClosing = true;
                         cachedAnchorPosition = providedPos;
                         positionTransitionProgress = 0f;
                     }
 
-                    //对话框关闭中，使用缓存位置并平滑过渡到屏幕中心
+                    // 对话框关闭中，使用缓存位置并平滑过渡到屏幕中心
                     if (isDialogueClosing) {
                         positionTransitionProgress += PositionTransitionSpeed;
                         positionTransitionProgress = Math.Clamp(positionTransitionProgress, 0f, 1f);
 
-                        //使用缓动函数平滑过渡
+                        // 使用缓动函数平滑过渡
                         float easeProgress = CWRUtils.EaseOutCubic(positionTransitionProgress);
                         currentDisplayPosition = Vector2.Lerp(cachedAnchorPosition, panelCenter, easeProgress);
                         return currentDisplayPosition;
                     }
                     else {
-                        //对话框正常显示，直接使用提供的位置
+                        // 对话框正常显示，直接使用提供的位置
                         currentDisplayPosition = providedPos;
                         return providedPos;
                     }
@@ -313,13 +313,13 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                 return providedPos;
             }
 
-            //如果没有自定义锚点，尝试使用对话框位置
+            // 如果没有自定义锚点，尝试使用对话框位置
             if (DialogueUIRegistry.Current != null) {
                 var rect = DialogueUIRegistry.Current.GetPanelRect();
                 if (rect != Rectangle.Empty) {
                     Vector2 dialoguePos = new Vector2(rect.Center.X, rect.Y - 60f);
 
-                    //同样处理对话框关闭的情况
+                    // 同样处理对话框关闭的情况
                     var currentBox = DialogueUIRegistry.Current;
 
                     if (currentBox.closing && !isDialogueClosing) {
@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                 }
             }
 
-            //默认返回屏幕中心
+            // 默认返回屏幕中心
             return panelCenter;
         }
 
@@ -358,17 +358,17 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             drawPos.Y -= MathHelper.Lerp(80f, 0f, slideIn);
             Rectangle rect = new((int)drawPos.X, (int)drawPos.Y, (int)panelSize.X, (int)panelSize.Y);
 
-            //缓存面板矩形供鼠标检测使用
+            // 缓存面板矩形供鼠标检测使用
             panelRect = rect;
 
             float hoverGlow = isHovering ? 0.15f : 0f;
 
-            //使用当前样式绘制面板
+            // 使用当前样式绘制面板
             if (currentStyle != null) {
                 currentStyle.DrawPanel(spriteBatch, rect, alpha, hoverGlow);
                 currentStyle.DrawFrame(spriteBatch, rect, alpha, hoverGlow);
 
-                //绘制样式粒子
+                // 绘制样式粒子
                 currentStyle.GetParticles(out var particles);
                 foreach (var particle in particles) {
                     if (particle is BubblePRT bubble) {
@@ -435,7 +435,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
             Vector2 namePos = iconCenter + new Vector2(0, 40f);
             float nameAlpha = iconAlpha * alpha;
 
-            //从样式获取文字颜色
+            // 从样式获取文字颜色
             Color nameGlow = currentStyle?.GetNameGlowColor(nameAlpha) ?? new Color(140, 230, 255) * (nameAlpha * 0.6f);
             Color nameColor = currentStyle?.GetNameColor(nameAlpha) ?? Color.White * nameAlpha;
 
@@ -461,7 +461,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups
                 Vector2 hs = font.MeasureString(hint) * 0.6f;
                 Vector2 hp = new(rect.Right - hs.X - 12f, rect.Bottom - hs.Y - 10f);
                 float blink = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;
-                //悬停时提示文字更亮
+                // 悬停时提示文字更亮
                 float hintAlpha = isHovering ? blink * alpha * 1.2f : blink * alpha * 0.7f;
 
                 Color hintColor = currentStyle?.GetHintColor(hintAlpha, blink) ?? new Color(140, 230, 255) * hintAlpha;

@@ -7,41 +7,24 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 {
     /// <summary>
-    /// 全向电动义足的玩家组件
-    /// <br/>承担两件事：
-    /// <list type="bullet">
-    ///   <item>空中二段跳：监听原版跳跃键，无需经过雷达，独立运作</item>
-    ///   <item>蓄力跳：完全由 <see cref="CyberwareSkillRadialUI"/> 通过 <see cref="OmniElectricFootSkill"/>
-    ///         驱动，本类只暴露 <see cref="RadialDriveCharge"/> / <see cref="RadialReleaseCharge"/> /
-    ///         <see cref="RadialCancelCharge"/> 三个入口，把蓄力比例与释放命令转换为实际游戏效果</item>
-    /// </list>
-    /// 头顶 HUD 通过本类暴露的 <see cref="ChargeRatio"/> / <see cref="IsCharging"/> 实时显示蓄力进度
+    /// 全向电动义足 ModPlayer，二段跳与蓄力跳
+    /// <br/>蓄力由 <see cref="OmniElectricFootSkill"/> 经 RadialDrive/Release/Cancel 驱动
     /// </summary>
     internal class OmniElectricFootPlayer : ModPlayer
     {
-        /// <summary>
-        /// 当前蓄力跳的能量进度（0~1），公开供 HUD 读取
-        /// </summary>
+        /// <summary>蓄力进度 0~1，HUD 读取</summary>
         public float ChargeRatio { get; private set; }
 
-        /// <summary>
-        /// 是否正在通过雷达蓄力中（HUD 据此决定显隐）
-        /// </summary>
+        /// <summary>雷达蓄力中，HUD 显隐用</summary>
         public bool IsCharging { get; private set; }
 
-        /// <summary>
-        /// 蓄力跳释放后的冷却剩余帧数，避免按键释放后立刻再次蓄力造成视觉抖动
-        /// </summary>
+        /// <summary>释放后冷却帧，防连点抖动</summary>
         public int ReleaseCooldown { get; private set; }
 
-        /// <summary>
-        /// 二段跳是否仍可使用，落地或起跳后会重置为 true
-        /// </summary>
+        /// <summary>二段跳可用，落地/起跳重置</summary>
         public bool CanDoubleJump { get; private set; } = true;
 
-        /// <summary>
-        /// 是否处于"脚踏地面"的状态，便于雷达据此决定蓄力技能是否可选
-        /// </summary>
+        /// <summary>脚踏地面，雷达 IsReady 用</summary>
         public bool IsOnGround { get; private set; }
 
         //上一帧的 Y 速度，用于检测起跳瞬间
@@ -58,12 +41,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             if (ReleaseCooldown > 0) {
                 ReleaseCooldown--;
             }
-            //帧首先快照上一帧的蓄力状态，再把 IsCharging 复位为 false
-            //本帧后续如果雷达再次调用 RadialDriveCharge，IsCharging 才会被重新置 true
-            //如此保证 HUD 读到的 IsCharging 严格等于"本帧雷达是否仍在驱动"
+            //快照上帧蓄力再复位，保证 IsCharging 严格等于本帧雷达是否驱动
             wasChargingLastFrame = IsCharging;
             IsCharging = false;
-            //没有驱动时，ChargeRatio 也按节奏衰减，让 HUD 的进度环有自然收回的过渡
+            //无驱动时 ChargeRatio 衰减，HUD 环自然收回
             if (!wasChargingLastFrame && ChargeRatio > 0f) {
                 ChargeRatio = MathF.Max(0f, ChargeRatio - 0.04f);
             }
@@ -103,10 +84,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             lastVelocityY = Player.velocity.Y;
         }
 
-        /// <summary>
-        /// 由 <see cref="OmniElectricFootSkill.OnChargeTick"/> 在雷达悬停期间每帧调用
-        /// <br/>把雷达累积的比例直接写入本组件，并按需播放第一次蓄力的音效与粒子
-        /// </summary>
+        /// <summary>雷达蓄力每帧回调，同步比例与粒子</summary>
         public void RadialDriveCharge(float ratio) {
             if (ReleaseCooldown > 0) {
                 //冷却中拒绝任何蓄力输入，防止快速点按造成视觉抖动
@@ -140,10 +118,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             }
         }
 
-        /// <summary>
-        /// 由 <see cref="OmniElectricFootSkill.OnChargeRelease"/> 在玩家松开方向键瞬间调用
-        /// <br/>蓄力比例过低或处于空中时视为无效释放，仅播一次清空粒子
-        /// </summary>
+        /// <summary>松开方向键释放蓄力跳，ratio&lt;0.05 或空中无效</summary>
         public void RadialReleaseCharge(float ratio) {
             OmniElectricFoot equipped = OmniElectricFoot.GetEquipped(Player);
             if (equipped == null) {
@@ -160,18 +135,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             ReleaseChargeJump(ratio);
         }
 
-        /// <summary>
-        /// 由 <see cref="OmniElectricFootSkill.OnChargeCancel"/> 在玩家把光标移出扇区时调用
-        /// <br/>仅清理视觉状态，不触发跳跃
-        /// </summary>
+        /// <summary>移出扇区取消蓄力，不跳跃</summary>
         public void RadialCancelCharge() {
             ChargeRatio = 0f;
             IsCharging = false;
         }
 
-        /// <summary>
-        /// 释放蓄力跳：根据蓄力比例插值跳跃倍率，并附加可观的水平推力
-        /// </summary>
+        /// <summary>蓄力跳：倍率插值 + 水平推力，ReleaseCooldown=12</summary>
         private void ReleaseChargeJump(float ratio) {
             float baseJumpSpeed = Player.jumpSpeed;
             if (baseJumpSpeed < 4f) {
@@ -201,9 +171,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             CanDoubleJump = true;
         }
 
-        /// <summary>
-        /// 二段跳：与雷达完全解耦，只依赖原版 controlJump，保留 Terraria 玩家的肌肉记忆
-        /// </summary>
+        /// <summary>二段跳，controlJump+releaseJump 触发，与雷达解耦</summary>
         private void UpdateDoubleJump(OmniElectricFoot equipped) {
             if (IsOnGround) {
                 return;
@@ -245,9 +213,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             SpawnDoubleJumpParticles();
         }
 
-        /// <summary>
-        /// 简化版地面判定：原版 player.OnGround 在某些边缘情况下不可靠
-        /// </summary>
+        /// <summary>简化地面判定，原版 OnGround 边缘不可靠</summary>
         private static bool DetectOnGround(Player player) {
             float verticalSpeed = player.velocity.Y * player.gravDir;
             return verticalSpeed >= -0.05f && verticalSpeed <= 0.05f && (player.jump <= 0);

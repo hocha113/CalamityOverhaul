@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override int DefaultCooldown => 100 - HalibutData.GetDomainLayer() * 4;
         public override int ResearchDuration => 60 * 12;
-        //骨头管理系统
+        //活跃骨头索引表
         private static readonly List<int> ActiveBones = new();
         private static int MaxBones => 3 + HalibutData.GetDomainLayer() / 2; //最多3-8根骨头
 
@@ -233,9 +233,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0.8f * lightIntensity);
         }
 
-        ///<summary>
-        ///聚集阶段，骨头快速飞向玩家附近
-        ///</summary>
+        /// <summary>聚集阶段：飞向玩家附近</summary>
         private void GatheringPhaseAI(Player owner) {
             float progress = StateTimer / GatherDuration;
 
@@ -243,7 +241,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float targetAngle = MathHelper.TwoPi * BoneIndex / 8f;
             Vector2 targetPos = owner.Center + targetAngle.ToRotationVector2() * orbitRadius;
 
-            //使用EaseOutCubic缓动，创造有力的冲刺感
+            //EaseOutCubic 冲刺
             float easeProgress = CWRUtils.EaseOutCubic(progress);
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, easeProgress * 0.4f);
 
@@ -270,9 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///环绕阶段，环绕玩家并逐渐加速
-        ///</summary>
+        /// <summary>环绕阶段：加速绕玩家旋转</summary>
         private void OrbitingPhaseAI(Player owner) {
             float progress = StateTimer / OrbitDuration;
 
@@ -280,7 +276,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float speedProgress = CWRUtils.EaseInQuad(progress);
             orbitSpeed = MathHelper.Lerp(0.05f, MaxOrbitSpeed * 0.6f, speedProgress);
 
-            //半径脉冲（营造能量聚集感）
+            //半径脉冲
             float radiusPulse = (float)Math.Sin(StateTimer * 0.3f) * 10f;
             float currentRadius = orbitRadius + radiusPulse * progress;
 
@@ -324,16 +320,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///蓄力阶段：最高速旋转，准备发射
-        ///</summary>
+        /// <summary>蓄力阶段：最高速旋转待发射</summary>
         private void ChargingPhaseAI(Player owner) {
             float progress = StateTimer / ChargeDuration;
 
             //达到最高旋转速度
             orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, CWRUtils.EaseInOutQuad(progress));
 
-            //半径脉动（蓄力震荡感）
+            //半径震荡
             float radiusOscillation = (float)Math.Sin(StateTimer * 0.5f) * 15f * progress;
             float currentRadius = orbitRadius - 20f * progress + radiusOscillation;
 
@@ -373,11 +367,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///发射向目标
-        ///</summary>
+        /// <summary>向锁定目标发射</summary>
         private void LaunchToTarget(Player owner) {
-            //计算发射速度（基于当前旋转速度增加动量感）
+            //发射初速叠当前角速度
             float momentumBonus = orbitSpeed / MaxOrbitSpeed;
             float finalSpeed = LaunchSpeed * (1f + momentumBonus * 0.5f);
 
@@ -400,9 +392,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        ///<summary>
-        ///发射阶段：向目标飞行
-        ///</summary>
+        /// <summary>飞行阶段</summary>
         private void LaunchingPhaseAI(Player owner) {
             //速度衰减
             Projectile.velocity *= 0.99f;
@@ -424,9 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        ///<summary>
-        ///散射阶段：玩家受伤，骨头向四周飞散
-        ///</summary>
+        /// <summary>散射阶段：玩家受伤后四散</summary>
         private void ScatteringPhaseAI() {
             //速度衰减
             Projectile.velocity *= 0.96f;
@@ -441,9 +429,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glowIntensity *= 0.95f;
         }
 
-        ///<summary>
-        ///进入散射状态
-        ///</summary>
+        /// <summary>切入散射状态</summary>
         private void EnterScatterState() {
             State = BoneState.Scattering;
             StateTimer = 0;
@@ -706,9 +692,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        ///<summary>
-        ///绘制骨头残影拖尾
-        ///</summary>
+        /// <summary>骨头残影拖尾</summary>
         private void DrawBoneAfterimages(SpriteBatch sb, Texture2D boneTex, Rectangle sourceRect,
             Vector2 origin, Color baseColor, float alpha) {
 
@@ -720,7 +704,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 float afterimageProgress = 1f - i / (float)afterimageCount;
                 float afterimageAlpha = afterimageProgress * trailIntensity * alpha;
 
-                //残影颜色：环绕时淡白，蓄力时增强，发射时最强
+                //残影色：环绕淡白，蓄力/发射渐强
                 Color afterimageColor;
                 if (State == BoneState.Launching) {
                     afterimageColor = Color.Lerp(

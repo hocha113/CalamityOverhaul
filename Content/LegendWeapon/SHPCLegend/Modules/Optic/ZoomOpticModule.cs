@@ -6,10 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 焦距瞄具：远距离命中（玩家与目标 ≥ 阈值）时触发额外白热打击伤害与镜筒粒子爆发
-    /// 通过 OnBeamHitNPC/OnLaserHitNPC 直接调用 <see cref="NPC.SimpleStrikeNPC"/> 发挥额外打击
-    /// </summary>
+    /// <summary>焦距瞄具：远距命中（≥600px）额外白热打击</summary>
     internal sealed class ZoomOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

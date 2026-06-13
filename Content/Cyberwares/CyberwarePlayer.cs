@@ -6,24 +6,16 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Cyberwares
 {
-    /// <summary>
-    /// 管理玩家义体装备数据的ModPlayer
-    /// </summary>
+    /// <summary>玩家义体装备数据 ModPlayer</summary>
     internal class CyberwarePlayer : ModPlayer
     {
-        /// <summary>
-        /// 义体槽位总数，对应CyberSlotRenderer.Definitions的12个槽位
-        /// </summary>
+        /// <summary>槽位总数，对应 CyberSlotRenderer.Definitions</summary>
         public const int SlotCount = 12;
 
-        /// <summary>
-        /// 玩家的最大义体容量
-        /// </summary>
+        /// <summary>最大义体容量</summary>
         public int MaxCapacity = 20;
 
-        /// <summary>
-        /// 每个槽位装备的义体物品，空位为air item
-        /// </summary>
+        /// <summary>各槽位装备，空位为 air</summary>
         public Item[] EquippedCyberwares { get; private set; }
 
         public override void Initialize() {
@@ -33,9 +25,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
         }
 
-        /// <summary>
-        /// 计算当前已使用的容量
-        /// </summary>
+        /// <summary>已用容量</summary>
         public int UsedCapacity {
             get {
                 int total = 0;
@@ -48,22 +38,18 @@ namespace CalamityOverhaul.Content.Cyberwares
             }
         }
 
-        /// <summary>
-        /// 剩余可用容量
-        /// </summary>
+        /// <summary>剩余容量</summary>
         public int RemainingCapacity => MaxCapacity - UsedCapacity;
 
-        /// <summary>
-        /// 检查指定物品是否可以装入指定槽位
-        /// </summary>
+        /// <summary>检查物品能否装入 slot</summary>
         public bool CanEquip(Item item, int slotIndex) {
             if (slotIndex < 0 || slotIndex >= SlotCount) return false;
             if (item?.ModItem is not BaseCyberware cyber) return false;
 
-            // 检查槽位类别匹配
+            //槽位类别匹配
             if ((int)cyber.SlotCategory != slotIndex) return false;
 
-            // 检查容量（如果当前槽位已有义体，先扣除旧的容量再计算）
+            //容量：先扣旧义体再算新义体
             int currentUsed = UsedCapacity;
             if (EquippedCyberwares[slotIndex]?.ModItem is BaseCyberware oldCyber) {
                 currentUsed -= oldCyber.CapacityCost;
@@ -73,16 +59,14 @@ namespace CalamityOverhaul.Content.Cyberwares
             return true;
         }
 
-        /// <summary>
-        /// 将物品装入指定槽位，返回被替换的旧物品（如有）
-        /// </summary>
+        /// <summary>装入 slot，成功返回 true</summary>
         public bool Equip(Item item, int slotIndex) {
             if (!CanEquip(item, slotIndex)) return false;
 
             Item cloned = item.Clone();
             EquippedCyberwares[slotIndex] = cloned;
 
-            // 通知克隆后的实例完成装备
+            //克隆实例后 OnEquip
             if (cloned.ModItem is BaseCyberware newCyber) {
                 newCyber.OnEquip(Player);
             }
@@ -90,16 +74,14 @@ namespace CalamityOverhaul.Content.Cyberwares
             return true;
         }
 
-        /// <summary>
-        /// 卸载指定槽位的义体，返回卸载的物品
-        /// </summary>
+        /// <summary>卸载 slot，返回旧物品</summary>
         public Item Unequip(int slotIndex) {
             if (slotIndex < 0 || slotIndex >= SlotCount) return null;
 
             Item oldItem = EquippedCyberwares[slotIndex];
             if (oldItem == null || oldItem.IsAir) return null;
 
-            // 通知义体卸载
+            //OnUnequip
             if (oldItem.ModItem is BaseCyberware cyber) {
                 cyber.OnUnequip(Player);
             }
@@ -108,9 +90,7 @@ namespace CalamityOverhaul.Content.Cyberwares
             return oldItem;
         }
 
-        /// <summary>
-        /// 获取玩家背包中所有可装入指定槽位的义体物品
-        /// </summary>
+        /// <summary>背包中可装入 slot 的义体索引列表</summary>
         public List<int> GetCompatibleItems(int slotIndex) {
             List<int> result = [];
             if (slotIndex < 0 || slotIndex >= SlotCount) return result;
@@ -134,7 +114,7 @@ namespace CalamityOverhaul.Content.Cyberwares
         }
 
         public override void PostUpdateEquips() {
-            //义体的统计类加成必须在原版装备结算后立即写入，否则会被同帧的 ResetEffects 抹掉
+            //PostUpdateEquips 后立即写入，避免同帧 ResetEffects 抹掉
             for (int i = 0; i < SlotCount; i++) {
                 if (EquippedCyberwares[i]?.ModItem is BaseCyberware cyber) {
                     cyber.PostUpdateEquipped(Player);

@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
 {
-    /// <summary>
-    /// 比目鱼传奇试炼线——将14段试炼注册到 <see cref="QuestManagerUI"/>，
-    /// 并根据 <see cref="InWorldBossPhase.Halibut_Level"/> 实时同步状态。<br/>
-    /// 同时显示当前进行中的试炼和所有已完成的试炼
-    /// </summary>
+    /// <summary>比目鱼试炼线：14 段试炼注册 QuestManagerUI，按 Halibut_Level 同步状态</summary>
     internal class HalibutTrialQuestLine : LegendTrialQuestLineBase, ILocalizedModType
     {
         public string LocalizationCategory => "Legend";
@@ -35,7 +31,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
         /// <summary>每条试炼的标题</summary>
         public static LocalizedText[] TrialTitles { get; private set; }
 
-        /// <summary>每条试炼的叙事摘要</summary>
+        /// <summary>每条试炼摘要文案</summary>
         public static LocalizedText[] TrialContents { get; private set; }
 
         #endregion
@@ -52,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
 
             TrialTitles = new LocalizedText[TRIAL_COUNT];
 
-            //标题风格参考赛博朋克2077，以比目鱼伙伴的口吻暗示目标
+            //试炼标题 default（按 Boss 阶段）
             string[] defaultTitles = [
                 "开胃菜",           //0 史莱姆王
                 "不速之瞳",         //1 克苏鲁之眼

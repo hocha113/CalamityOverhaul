@@ -4,15 +4,10 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>
-    /// 赛博领域冻结粒子生成逻辑
-    /// <br/>被冻结的实体周围持续生成六角碎片和冰晶风格的赛博粒子
-    /// </summary>
+    /// <summary>冻结粒子生成</summary>
     internal static class CyberDomainFreezeParticles
     {
-        /// <summary>
-        /// 每帧为被冻结的NPC生成粒子
-        /// </summary>
+        /// <summary>每帧冻结 NPC 粒子</summary>
         public static void SpawnFreezeParticles(NPC npc, float progress, float seed) {
             Vector2 center = npc.Center;
             float halfW = npc.width * 0.5f;
@@ -53,9 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             }
         }
 
-        /// <summary>
-        /// 解冻时的爆发粒子
-        /// </summary>
+        /// <summary>解冻爆发粒子</summary>
         public static void SpawnThawBurst(Vector2 center) {
             int count = 20;
             for (int i = 0; i < count; i++) {

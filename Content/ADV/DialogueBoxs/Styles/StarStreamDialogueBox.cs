@@ -8,33 +8,32 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
-    /// 星流风格对话框 - 金色流光、星辰光带、宇宙深邃感
-    /// 科幻风格，以深空蓝紫为底色，金色星流流光为核心视觉
+    /// 星流风格对话框
     /// </summary>
     internal class StarStreamDialogueBox : DialogueBoxBase
     {
         public static StarStreamDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<StarStreamDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        //风格参数
+        // 风格参数
         private const float FixedWidth = 540f;
         protected override float PanelWidth => FixedWidth;
 
-        //动画计时器
+        // 动画计时
         private float starFlowTimer = 0f;
         private float nebulaPulseTimer = 0f;
         private float constellationPhase = 0f;
         private float auroraTimer = 0f;
         private float shimmerTimer = 0f;
 
-        //粒子系统
+        // 粒子
         private readonly List<StarStreamPRT> starStreams = [];
         private int starStreamSpawnTimer = 0;
         private readonly List<StarDustPRT> starDusts = [];
         private int starDustSpawnTimer = 0;
         private const float SideMargin = 30f;
 
-        #region 样式配置重写
+        #region 样式配置
 
         protected override float PortraitScaleMin => 0.88f;
         protected override float TopNameOffsetBase => 12f;

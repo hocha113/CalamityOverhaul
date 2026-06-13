@@ -3,10 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 虬血握把：光束与激光命中时按伤害比例吸血回复生命值
-    /// 持久战场景下提供一定的续战能力
-    /// </summary>
+    /// <summary>虬血握把：光束/激光命中按比例吸血</summary>
     internal sealed class VampireGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

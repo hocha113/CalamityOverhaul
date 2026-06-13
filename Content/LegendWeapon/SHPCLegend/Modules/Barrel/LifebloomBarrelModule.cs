@@ -3,9 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 生命叶枪管：光束播下生命芽，延迟抽取生命并将少量治疗回流给玩家。
-    /// </summary>
+    /// <summary>生命叶枪管：光束播芽，延迟抽敌生命并少量回血</summary>
     internal sealed class LifebloomBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;

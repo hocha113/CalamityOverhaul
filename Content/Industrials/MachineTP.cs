@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Industrials
         public virtual MachineData GetGeneratorDataInds() => new MachineData();
         public sealed override void SetProperty() {
             MachineData ??= GetGeneratorDataInds();
-            PlaceNet = true;//因为下面会进行一些初始化的数值加载，所以开启放置时的网络协调
+            PlaceNet = true;//放置联网，初始化 UE
             if (TrackItem != null) {
                 MachineData.UEvalue = TrackItem.CWR().UEValue;
                 if (MachineData.UEvalue > MaxUEValue) {
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.Industrials
             if (_connectedTilesCache.Count == 0)
                 return;
 
-            //计算总电量
+            //汇总相邻管道 UE
             float totalUE = 0f;
             foreach (var tile in _connectedTilesCache) {
                 if (tile.MachineData != null)
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Industrials
             }
             float averageUE = totalUE / _connectedTilesCache.Count;
 
-            //平衡电量
+            //压差均衡
             float efficiency = this.Efficiency;
             foreach (var tile in _connectedTilesCache) {
                 if (tile.MachineData == null)
@@ -150,9 +150,7 @@ namespace CalamityOverhaul.Content.Industrials
 
         }
 
-        /// <summary>
-        /// 不会自动调用，需要在子类中手动调用
-        /// </summary>
+        /// <summary>子类手动调用，非自动</summary>
         public virtual void DrawChargeBar() {
             if (!HoverTP) {
                 return;
@@ -162,13 +160,13 @@ namespace CalamityOverhaul.Content.Industrials
 
             if (CWRRef.Has) {
                 int uiBarByWidthSengs = (int)(CWRAsset.BarFull.Value.Width * (MachineData.UEvalue / MaxUEValue));
-                //绘制温度相关的图像
+                //Calamity UE 条
                 Rectangle fullRec = new Rectangle(0, 0, uiBarByWidthSengs, CWRAsset.BarFull.Value.Height);
                 Main.spriteBatch.Draw(CWRAsset.BarTop.Value, drawPos, null, Color.White, 0, CWRAsset.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
                 Main.spriteBatch.Draw(CWRAsset.BarFull.Value, drawPos + new Vector2(10, 0), fullRec, Color.White, 0, CWRAsset.BarTop.Size() / 2, 1, SpriteEffects.None, 0);
             }
             else {
-                //未启用灾厄的版本
+                //无 Calamity 降级条
                 Texture2D value = VaultAsset.placeholder2.Value;
                 int width = 60;
                 int height = 12;

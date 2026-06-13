@@ -158,9 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 骷髅王手臂，这里用了IK
-    /// </summary>
+    /// <summary>骷髅王手臂，IK 驱动</summary>
     internal class SkeletronHandMinion : BaseHeldProj
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.SkeletronHand;
@@ -319,7 +317,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void UpdateIdleOffset() {
-            //更加明显的漂浮效果
+            //漂浮偏移
             idleOffset.X = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + HandIndex) * 50f;
             idleOffset.Y = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + HandIndex) * 30f;
         }

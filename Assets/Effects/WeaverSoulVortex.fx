@@ -1,13 +1,12 @@
 // ============================================================================
-// WeaverSoulVortex.fx —— 纠缠之怨冲刺怨魂涡流
-// 以玩家为中心的环状怨魂漩涡：三臂灵魂螺旋 + 双层旋转噪声流
-// 中心镂空容纳玩家本体，uSpinDir 控制涡旋方向与冲刺翻滚方向一致
+// WeaverSoulVortex.fx 纠缠之怨冲刺怨魂涡流
+// 以玩家为中心环状漩涡；ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
 float uTime;
 float uFade;    //整体透明度 0~1
-float uSpinDir; //旋转方向 ±1
+float uSpinDir; //旋转方向 ±1，与冲刺翻滚一致
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state

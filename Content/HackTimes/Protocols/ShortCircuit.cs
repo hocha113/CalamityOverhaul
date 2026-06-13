@@ -8,9 +8,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 短路：释放电磁脉冲造成即时伤害并短暂麻痹
-    /// </summary>
+    /// <summary>短路，电磁脉冲即时伤害</summary>
     internal class ShortCircuit : QuickHackDef
     {
         public override void SetDefaults() {
@@ -22,7 +20,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not NpcScannable s) return false;
             NPC npc = Main.npc[s.NpcIndex];
-            //权威性伤害仅在施法端执行，远端复刻只播放视觉/听觉效果，避免重复扣血
+            //权威性伤害仅施法端，远端复刻只播视觉
             if (!HackTimeNetSync.IsRemoteApply) {
                 //即时重击
                 int dmg = Math.Max(30, (int)(npc.lifeMax * 0.02f));

@@ -113,9 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 全局弹幕钩子
-    /// </summary>
+    /// <summary>全局钩子，Halibut 攻击附加减速</summary>
     internal class FishSlimeGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -312,7 +310,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //漂浮状态AI
+        //漂浮 tick
         private void FloatingPhaseAI() {
             //应用重力
             Projectile.velocity.Y += Gravity;
@@ -347,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         //计算追踪加速度
                         Vector2 trackingAccel = toTarget.SafeNormalize(Vector2.Zero) * trackingStrength;
 
-                        //应用追踪力 - 使用加速度而非直接修改速度，保持自然感
+            //追踪：加速度叠层，非直接改 velocity
                         Projectile.velocity += trackingAccel;
 
                         //限制最大速度，但允许重力和弹跳的自然速度
@@ -397,7 +395,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             track.fadeIn = 0.8f;
         }
 
-        //附着状态AI
+        //附着 tick
         private void AttachedPhaseAI() {
             int targetID = (int)AttachedTargetID;
 
@@ -437,7 +435,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //爆炸状态AI
+        //爆炸 tick
         private void ExplodingPhaseAI() {
             //停止移动
             Projectile.velocity *= 0.9f;

@@ -21,12 +21,8 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 机械骷髅王头部主控制器。
-    /// <para>全部战斗行为由 <see cref="States"/> 命名空间下的状态机驱动；
-    /// 本类只负责：资源装载、状态机生命周期、全局转移裁决（死亡演出/白昼狂暴/金币枪狂怒/转阶段/传送恢复）、
-    /// 对外契约（<see cref="PrimePhase"/> 经 npc.ai[0]、状态索引经 npc.ai[2]）以及绘制。</para>
-    /// </summary>
+    /// <summary>机械骷髅王头部 NPCOverride</summary>
+    /// <para>战斗由 <see cref="States"/> 状态机驱动；契约见 <see cref="PrimePhase"/>、npc.ai[2]</para>
     internal class HeadPrimeAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
     {
         #region 数据与资源
@@ -262,10 +258,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             stateContext.LaserAlive = laserAlive;
         }
 
-        /// <summary>
-        /// 全局转移裁决（仅服务端/单人端驱动，客户端经状态槽同步）。
-        /// 优先级：死亡演出 > 转阶段 > 白昼狂暴 > 金币枪狂怒
-        /// </summary>
+        /// <summary>全局转移裁决（服务端驱动，客户端经状态槽同步）；优先级：死亡演出>转阶段>白昼狂暴>金币枪狂怒</summary>
         private void EvaluateGlobalTransitions() {
             if (VaultUtils.isClient || stateMachine?.CurrentState == null) {
                 return;
@@ -320,13 +313,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>
-        /// 机械热感滤镜：按当前状态决定模式与强度，头部+四肢共用 npc.whoAmI 作为索引
-        /// </summary>
+        /// <summary>机械热感滤镜：按状态定模式/强度，头部+四肢共用 npc.whoAmI</summary>
         private void UpdateMechThermalVisualState() {
             IVaultState<PrimeStateContext> current = stateMachine?.CurrentState;
 
-            //死亡演出——满强度红色警告脉动，烘托"严重过载即将解体"的氛围
+            //死亡演出：满强度红色警告脉动
             if (current is PrimeDeathState) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, 1f,
                     0.5f + 0.5f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 18.0));
@@ -339,13 +330,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            //冲撞突进——白热高速
+            //冲撞突进：白热高速
             if (current is PrimeSpinDashState or PrimeRageDashState && npc.velocity.LengthSquared() > 12f * 12f) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Dashing, 1f, 1f);
                 return;
             }
 
-            //金币枪狂怒——强烈红色警告
+            //金币枪狂怒：强烈红色警告
             if (current is PrimeCoinGunFuryState) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Warning, 0.95f, 0.7f);
                 return;
@@ -357,20 +348,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            //狂暴阶段常态——红橙描边稍强
+            //狂暴常态：红橙描边稍强
             if (npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage) {
                 MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Idle, 0.8f, 0f);
                 return;
             }
 
-            //武装阶段常态——低强度滤镜兜底夜晚能见度
+            //武装常态：低强度滤镜保夜晚能见度
             MechBossVisualState.Push(npc.whoAmI, MechBossVisualMode.Idle, 0.55f, 0f);
         }
         #endregion
 
         #region 对外契约与静态工具
 
-        /// <summary>是否为 Mechdusa（机械混合体）形态——该形态交还原版逻辑</summary>
+        /// <summary>Mechdusa 形态交还原版逻辑</summary>
         internal static bool IsMechdusa(NPC head) {
             return head.ai[PrimeAiSlots.HeadMechQueenFlag] != 0f || NPC.IsMechQueenUp;
         }
@@ -540,12 +531,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #endregion
 
-        #region 死亡处理与掉落
+        #region 死亡与掉落
 
-        /// <summary>
-        /// 死亡演出未结束前一律锁血拦截死亡；演出完毕后放行，触发正常掉落与击杀标记。
-        /// 同时作为高额伤害一击致死的兜底，确保必定播放死亡演出。
-        /// </summary>
+        /// <summary>演出未完锁血拦截；演出完毕放行掉落；秒杀也先锁血切死亡演出</summary>
         public override bool? CheckDead() {
             int phase = (int)npc.ai[PrimeAiSlots.HeadPhase];
 
@@ -654,7 +642,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //速度门控热残影
             DrawAfterimages(spriteBatch, mainValue, rectangle, orig);
 
-            //外圈8方向描边光环——夜晚远距离也能看清骷髅王轮廓
+            //外圈8向描边光环，远距可读
             Vector2 mainPos = npc.Center - Main.screenPosition;
             MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, mainValue, mainPos, rectangle,
                 npc.rotation, orig, npc.scale, SpriteEffects.None, npc.whoAmI);
@@ -668,18 +656,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 MechBossThermalRenderer.EndThermalShader(spriteBatch);
             }
 
-            //发光层独立绘制——保留原始自发光不被滤镜覆盖
+            //发光层独立绘制，自发光不受滤镜
             Main.EntitySpriteDraw(glowValue, mainPos, rectangle
                 , Color.White, npc.rotation, orig, npc.scale, SpriteEffects.None, 0);
 
             return false;
         }
 
-        /// <summary>
-        /// 充能漩涡：极坐标螺旋吸入场叠加齿轮辐条，随 <see cref="PrimeStateContext.ChargeProgress"/> 收紧增亮。
-        /// 只在过载（ChargeType 2）与环形/光束充能（ChargeType 3）时显示；
-        /// 冲撞蓄力（ChargeType 1）由机械热感滤镜表达，不叠加漩涡。
-        /// </summary>
+        /// <summary>ChargeType 2/3 充能漩涡；ChargeType 1 冲撞蓄力仅走热感滤镜</summary>
         private void DrawChargeVortex(SpriteBatch spriteBatch) {
             if (stateContext == null || !stateContext.IsCharging
                 || stateContext.ChargeProgress <= 0.01f || stateContext.ChargeType < 2) {
@@ -715,10 +699,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>
-        /// 速度门控热残影：高速时 oldPos 链经 PrimeAfterimage 着色器绘制成
-        /// 噪声溶蚀+白热→深红衰变的余烬拖影；着色器缺失时退回平涂残影。
-        /// </summary>
+        /// <summary>高速 oldPos 链经 PrimeAfterimage 着色器绘残影；缺失时平涂回退</summary>
         private void DrawAfterimages(SpriteBatch spriteBatch, Texture2D mainValue, Rectangle rectangle, Vector2 orig) {
             float speed = npc.velocity.Length();
             bool ragePhase = npc.ai[PrimeAiSlots.HeadPhase] >= PrimePhase.Rage;
@@ -769,10 +750,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>
-        /// 机械臂连接件绘制：常态为两段式骨架连杆；
-        /// 编队收拢/环绕时改用紧凑机械臂贴图
-        /// </summary>
+        /// <summary>机械臂连接件：常态两段连杆，编队收拢时紧凑贴图</summary>
         internal static void DrawArm(SpriteBatch spriteBatch, NPC rCurrentNPC, Vector2 screenPos) {
             NPC head = Main.npc[(int)rCurrentNPC.ai[PrimeAiSlots.ArmHeadIndex]];
 

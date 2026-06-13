@@ -1,30 +1,25 @@
 // ============================================================================
-// CyberspaceField.fx — 赛博空间领域着色器 v5
-// 黑墙AI——深红领域，现实扭曲，数字侵蚀
-// v5 舒适度精修：内部通透化（减压暗/减去饱和）、花纹密度向边界区重分配、
-// 高频闪烁全面放缓，长时间战斗不疲劳；保留网格/数据流/实体扫描的赛博身份
+// CyberspaceField.fx 赛博空间领域
+// 采样 s0 + s1；全屏世界坐标映射，gridSize 栅格单元(世界像素)
 // ============================================================================
 
 sampler uImage0 : register(s0);
 sampler noiseTex : register(s1);
 
 float uTime;
-float radius;           // 领域半径（世界像素）
-float intensity;        // 0-1 效果强度（淡入淡出）
-float expandProgress;   // 0-1 展开进度
-float dimStrength;      // 压暗强度 (0=不压暗, 1=最大压暗)
-float motionFade;       // 0-1 玩家运动淡化：移动越快越大，会模糊淡化装饰层细节，保留网格与背景
-float layerTier;        // 1-3 视觉层级（连续插值），高层领域内部氛围略增强
-float2 setPoint;        // 领域中心（世界坐标）
-float2 screenPosition;  // 屏幕左上角（世界坐标）
-float2 worldViewSize;   // 缩放修正后的世界可视范围（非屏幕像素尺寸）
-float gridSize;         // 栅格单元边长（世界像素）
+float radius;           //领域半径(世界像素)
+float intensity;        //0~1 效果强度(淡入淡出)
+float expandProgress;   //0~1 展开进度
+float dimStrength;      //压暗强度 0不压暗 1最大
+float motionFade;       //0~1 玩家运动淡化装饰层
+float layerTier;        //1~3 视觉层级(连续插值)
+float2 setPoint;        //领域中心(世界坐标)
+float2 screenPosition;  //屏幕左上角(世界坐标)
+float2 worldViewSize;   //缩放修正后世界可视范围
+float gridSize;         //栅格单元边长(世界像素)
 
-// 域内实体扫描圆环
-int entityCount;        // 域内实体数量 (最大32)
-float4 entities[32];    // (centerX, centerY, ringRadius, seed)
-
-// ---- 工具函数 ----
+int entityCount;        //域内实体数量(最大32)
+float4 entities[32];    //centerX centerY ringRadius seed
 
 float hash21(float2 p)
 {
@@ -49,18 +44,18 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     if (intensity < 0.001 || expandProgress < 0.001)
         return original;
 
-    // ================================================================
+    // =
     // 世界坐标计算（缩放感知）
-    // ================================================================
+    // =
     float2 worldPos = screenPosition + worldViewSize * coords;
     float2 screenUV = worldViewSize * coords; //屏幕相对坐标（不随摄像机滚动）
     float2 relPos = worldPos - setPoint;
     float worldDist = length(relPos);
     float effectiveRadius = radius * expandProgress;
 
-    // ================================================================
+    // =
     // 网格基础
-    // ================================================================
+    // =
     float2 cellIdx = floor(relPos / gridSize);
     float2 cellCenter = (cellIdx + 0.5) * gridSize;
     float cellDist = length(cellCenter);
@@ -80,9 +75,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float edgeBound = effectiveRadius + radiusOffset;
     bool inside = cellDist < edgeBound;
 
-    // ================================================================
+    // =
     // 域外溢出光晕（增强：更宽扩散+UV微扭曲）
-    // ================================================================
+    // =
     if (!inside)
     {
         float overDist = (cellDist - edgeBound) / (gridSize * 6.0);
@@ -113,9 +108,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         return float4(original.rgb, original.a);
     }
 
-    // ================================================================
+    // =
     // 内部归一化坐标
-    // ================================================================
+    // =
     float normDist = saturate(cellDist / effectiveRadius);
     float edgeFactor = smoothstep(0.7, 1.0, normDist);
     float centerFactor = 1.0 - normDist;
@@ -126,18 +121,18 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     // 视觉层级加成：高层领域内部氛围略增强，但保持舒适上限
     float tierBoost = 1.0 + (clamp(layerTier, 1.0, 3.0) - 1.0) * 0.08;
 
-    // ================================================================
+    // =
     // 运动淡化主系数：移动时整体领域简约化
     // baseMul: 作用于失真/色差/压暗/红染等"大面积影响画面观感"的处理
     // skeletonMul: 作用于网格骨架/节点/边缘呼吸光等保留可读性的元素
-    // ================================================================
+    // =
     float mFade = saturate(motionFade);
     float baseMul = 1.0 - mFade * 0.55;
     float skeletonMul = 1.0 - mFade * 0.38;
 
-    // ================================================================
+    // =
     // 第一层：现实扭曲（黑墙侵蚀现实——核心新增效果）
-    // ================================================================
+    // =
     // 低频大尺度扭曲：整体空间弯曲（屏幕相对，不随摄像机滚动）
     // 强度收敛：扭曲集中在边缘，内部战斗区几乎不弯折
     float2 distUV1 = frac(screenUV * 0.0005 + float2(uTime * 0.022, uTime * 0.016));
@@ -152,20 +147,20 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     original = tex2D(uImage0, warpedCoords);
 
-    // ================================================================
+    // =
     // 第二层：色差分离（收敛在边缘带，内部不抖色）
-    // ================================================================
+    // =
     float2 edgeDir = normalize(relPos + 0.001);
     float caWorldPx = edgeFactor * 2.6 * intensity * baseMul;
     float2 caOffset = edgeDir * caWorldPx / worldViewSize;
     original.r = tex2D(uImage0, warpedCoords + caOffset).r;
     original.b = tex2D(uImage0, warpedCoords - caOffset * 0.7).b;
 
-    // ================================================================
+    // =
     // 第三层：三阶色彩映射（深邃丰富的红色光谱）
     // 通透化：压暗下限抬高、去饱和减弱、红染保留更多场景本色，
     // 战斗可读性优先，氛围由边界区与加法层承担
-    // ================================================================
+    // =
     //移动时减少压暗与红染，让画面视野恢复，避免快速移动叠加领域产生的晕眩感
     float targetDim = lerp(0.54, 0.32, centerFactor * 0.3);
     float dimFactor = lerp(1.0, targetDim, intensity * dimStrength * baseMul);
@@ -194,9 +189,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float vignette = 1.0 - normDist * normDist * 0.20;
     processed *= lerp(1.0, vignette, intensity * baseMul);
 
-    // ================================================================
+    // =
     // 第四层：加法赛博特效
-    // ================================================================
+    // =
 
     // --- A. 深层数字暗流（纵向纤维流动，屏幕相对）---
     // 增大UV尺度避免豹纹，加大频率差拉开层次
@@ -330,7 +325,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float3 cNodeColor = float3(0.95, 0.25, 0.18);
     float3 cCrackGlow = float3(1.0,  0.22, 0.12);
 
-    // ================================================================
+    // =
     // 玩家运动淡化：移动时模糊掉装饰层细节，整体领域同步简约
     // detailMul:   花纹层(数据流/脉冲环/裂纹/粒子/底层暗流) -> 强淡化
     //              stationary -> 1.0 (全显), full motion -> 0.18 (仅留极弱残影)
@@ -338,7 +333,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     //              stationary -> 1.0, full motion -> 0.55
     // skeletonMul: 网格走线/节点/边缘呼吸光 -> 中度淡化
     //              stationary -> 1.0, full motion -> 0.45
-    // ================================================================
+    // =
     float detailMul = 1.0 - mFade * 0.62;
     float entityMul = 1.0 - mFade * 0.45;
 
@@ -355,9 +350,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     additive += cBrightRed  * entityRingTotal * entityMul;                    // K: 实体扫描环 -> 弱淡化
     additive += cWhiteRed   * entityScanTotal * 0.55 * entityMul;             // K: 扫描弧高亮 -> 弱淡化
 
-    // ================================================================
+    // =
     // 最终合成
-    // ================================================================
+    // =
     //整体加法亮度再叠一层运动淡化，让快速移动时的画面整体偏向"轻量描边"观感
     float globalAddMul = lerp(1.0, 0.70, mFade);
     float3 finalColor = processed + additive * intensity * domainBreathe * globalAddMul * tierBoost;

@@ -5,12 +5,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
-    /// <summary>
-    /// 管道路径流动动画管理器
-    /// <para>从输出端到所有可达输入端的箭头粒子洪流。</para>
-    /// <para>路径不再独立做 BFS：直接复用 <see cref="ItemPipelineNetwork"/> 的下一跳路由表，
-    /// 仅当全局拓扑版本变化时重建路径，开销极低。</para>
-    /// </summary>
+    /// <summary>输出到输入端流动动画，复用路由表反推路径</summary>
     internal class PipelineFlowAnimator
     {
         /// <summary>流动粒子(沿整段路径推进)</summary>
@@ -50,9 +45,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// <summary>路径最大跳数(防御保护, 抵挡环网或异常拓扑)</summary>
         private const int MaxPathLength = 1024;
 
-        /// <summary>
-        /// 由所有者(输出端 TP)每帧调用一次：自动按需重建路径并推进粒子
-        /// </summary>
+        /// <summary>输出端每帧调用，按需重建并推进粒子</summary>
         public void Tick(ItemPipelineTP outputEndpoint) {
             if (outputEndpoint == null || outputEndpoint.Mode != ItemPipelineMode.Output) {
                 Clear();
@@ -69,10 +62,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             UpdateParticles();
         }
 
-        /// <summary>
-        /// 利用网络路由表"反推"路径：从输出端开始沿"指向输入端"的下一跳走，直到到达输入端。
-        /// 复杂度 O(I × L)，I=输入端数, L=路径长度，远小于原本的全网 BFS。
-        /// </summary>
+        /// <summary>沿路由表反推路径，O(输入数×路径长)</summary>
         private void RebuildPaths(ItemPipelineTP output) {
             branchPaths.Clear();
             particles.Clear();
@@ -96,9 +86,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 从输出端按下一跳路由走到目标输入端，返回路径点序列（含两端）
-        /// </summary>
+        /// <summary>按下一跳走到输入端，含两端</summary>
         private static List<Point16> TraceRoute(ItemPipelineTP start, Point16 inputPos) {
             List<Point16> path = [start.Position];
             ItemPipelineTP current = start;
@@ -111,7 +99,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
                 int dir = entry.NextDir;
                 if (dir > 3) {
-                    //哨兵: 自身就是输入端 - 已经处理
+                    //255 哨兵，已到输入端
                     break;
                 }
                 var sides = current.SideStates;
@@ -132,9 +120,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return current.Position == inputPos ? path : null;
         }
 
-        /// <summary>
-        /// 推进粒子(生成与移动)
-        /// </summary>
+        /// <summary>推进与生成粒子</summary>
         private void UpdateParticles() {
             if (!HasValidPath) {
                 particles.Clear();
@@ -177,9 +163,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 绘制流动动画
-        /// </summary>
+        /// <summary>绘制流动箭头</summary>
         public void Draw(SpriteBatch spriteBatch, Color flowColor) {
             if (!HasValidPath || particles.Count == 0) {
                 return;
@@ -220,9 +204,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 清空缓存(动画停止 / 输出端被破坏)
-        /// </summary>
+        /// <summary>清空缓存</summary>
         public void Clear() {
             branchPaths.Clear();
             particles.Clear();

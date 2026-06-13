@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             type == NPCID.TheDestroyer || type == NPCID.TheDestroyerBody || type == NPCID.TheDestroyerTail;
 
         public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
-            //非目标直接返回，不改任何东西，确保不会影响其它 NPC
+            //非目标直接返回，不影响其它 NPC
             if (!IsDestroyerSegment(npc.type) || HeadPrimeAI.DontReform()) {
                 return true;
             }

@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 火箭帷幕：两面火箭墙从两侧向中线折叠合拢，缺口滚动。
-    /// </summary>
+    /// <summary>火箭帷幕：两侧火箭墙向中线折叠，缺口滚动</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.RocketCurtain, typeof(PrimeStateContext))]
     internal class PrimeRocketCurtainState : PrimeStateBase
     {

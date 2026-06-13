@@ -7,20 +7,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
-    //================================================================
-    // 钳爪手设计准则（机械感）：
-    //  1. 机体永不整体打转——所有转向走 ServoRotate 伺服步进，
-    //     朝向约定与死亡演出钳子 Actor 一致：指向 θ 时 rotation = θ - PiOver2
-    //  2. 突刺是"液压活塞"：蓄力期回缩绷紧 → 一次性硬咬合朝向 → 刚性直线打出，
-    //     飞行途中绝不转体
-    //  3. 钳口开合（ctx.ClawOpen 驱动 2 帧贴图）参与演出：
-    //     蓄力/扑击张开，命中/待机闭合，咔哒作响
-    //================================================================
+    //钳爪手设计准则：
+    // 1. 机体不整体打转——转向走 ServoRotate；rotation = θ - PiOver2（同死亡演出钳子 Actor）
+    // 2. 突刺=液压活塞：回缩绷紧 → 硬咬合朝向 → 刚性直线，飞行不转体
+    // 3. ctx.ClawOpen 驱动 2 帧贴图：蓄力/扑击张开，命中/待机闭合
 
-    /// <summary>
-    /// 钳爪待机：液压浮沉悬停在头部下侧、钳口闭合缓速跟踪玩家，
-    /// 充能满后按"三连击 → 蓄力重锤 → 蓄力重锤"的确定性序列出招
-    /// </summary>
+    /// <summary>钳爪待机：头部下侧浮沉跟踪，充能后三连击→重锤确定性轮换</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceIdle, typeof(PrimeArmStateContext))]
     internal class ViceIdleState : PrimeArmStateBase
     {
@@ -70,10 +62,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 钳爪后撤蓄力：活塞回缩——拉开距离绷紧机械臂，钳口张开伺服锁定玩家，
-    /// 尾段反向蹬缩积蓄压力，下一刻就是刚性突刺
-    /// </summary>
+    /// <summary>钳爪后撤蓄力：活塞回缩、钳口张开锁定，尾段反向蹬缩后刚性突刺</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceWindUp, typeof(PrimeArmStateContext))]
     internal class ViceWindUpState : PrimeArmStateBase
     {
@@ -128,10 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 钳爪刚性突刺：出手瞬间朝向硬咬合，直线高速打出、飞行全程不转体，
-    /// 命中瞬间钳口轰然闭合并迸发冲击波
-    /// </summary>
+    /// <summary>钳爪刚性突刺：硬咬合直线打出，命中钳口闭合+冲击波</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceStrike, typeof(PrimeArmStateContext))]
     internal class ViceStrikeState : PrimeArmStateBase
     {
@@ -152,7 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             Vector2 velocity = npc.Center.DirectionTo(ctx.Target.Center) * chargeVelocity;
             ctx.SpringVelocity = velocity;
             npc.velocity = velocity;
-            //出手瞬间朝向一次性硬咬合——液压活塞式的干脆击发
+            //出手瞬间硬咬合朝向
             npc.rotation = velocity.ToRotation() - MathHelper.PiOver2;
             ctx.ClawOpen = true;
 
@@ -221,9 +207,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 钳爪收势：突刺减速回稳，钳口闭合、机体伺服回正，返回待机位重新装填
-    /// </summary>
+    /// <summary>钳爪收势：减速回待机位</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceRecovery, typeof(PrimeArmStateContext))]
     internal class ViceRecoveryState : PrimeArmStateBase
     {
@@ -251,10 +235,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 钳爪三连击：刺击 → 横扫 → 重锤的递进连段。
-    /// 每一击都是"伺服锁定 → 刚性打出"的活塞节拍，钳口随出招开合
-    /// </summary>
+    /// <summary>钳爪三连击：刺击→横扫→重锤，钳口随段开合</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceCombo, typeof(PrimeArmStateContext))]
     internal class ViceComboState : PrimeArmStateBase
     {
@@ -298,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             return null;
         }
 
-        /// <summary>第一击：快速刺击——短促锁定后直线打出</summary>
+        /// <summary>第一击：快速刺击，短锁定后直线打出</summary>
         private void ExecuteJab(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = (int)(npc.defDamage * 0.8f);
@@ -324,7 +305,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             }
         }
 
-        /// <summary>第二击：弧线横扫——伺服朝向跟随扫掠切线</summary>
+        /// <summary>第二击：弧线横扫，伺服跟随扫掠切线</summary>
         private void ExecuteSweep(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = npc.defDamage;
@@ -347,7 +328,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
             }
         }
 
-        /// <summary>第三击：大幅后撤蓄压 + 重锤冲锋——最重的一拍</summary>
+        /// <summary>第三击：后撤蓄压+重锤冲锋</summary>
         private void ExecuteHeavy(PrimeArmStateContext ctx) {
             NPC npc = ctx.Npc;
             npc.damage = (int)(npc.defDamage * 1.5f);
@@ -395,9 +376,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.A
         }
     }
 
-    /// <summary>
-    /// 钳爪远程归队：飞得太远时全速折返头部，机体伺服回正
-    /// </summary>
+    /// <summary>钳爪远程归队：过远折返头部</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceReturn, typeof(PrimeArmStateContext))]
     internal class ViceReturnState : PrimeArmStateBase
     {

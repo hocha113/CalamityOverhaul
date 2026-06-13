@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 哨戒握把：能量球飞行期间每20帧朝最近敌人自动发射一束追踪光束
-    /// 通过 OnOrbFlyingAI 钩子持续部署，形成主球+伴随光束的双重覆盖
-    /// </summary>
+    /// <summary>哨戒握把：球飞行每 20 帧射一束追踪光束</summary>
     internal sealed class SentinelGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

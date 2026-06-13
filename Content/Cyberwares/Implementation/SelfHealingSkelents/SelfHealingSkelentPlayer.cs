@@ -5,25 +5,15 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
 {
     /// <summary>
-    /// 自愈骨骼的玩家组件
-    /// <br/>承担两件事：
-    /// <list type="bullet">
-    ///   <item>追踪"上次受击距今多少帧"，决定是否进入纳米修复状态</item>
-    ///   <item>在 <see cref="ModPlayer.UpdateLifeRegen"/> 阶段直接修改 <c>player.lifeRegen</c>，与原版护甲、Buff 共享同一通道</item>
-    /// </list>
-    /// 修改 lifeRegen 必须在 <see cref="ModPlayer.UpdateLifeRegen"/> 中完成；放在 PostUpdateEquips 时机过早，
-    /// 会被原版 <c>UpdatePlayer_Buffs</c> 之后的 lifeRegen 计算重置
+    /// 自愈骨骼 ModPlayer，脱战计时与 lifeRegen 修改
+    /// <br/>须在 UpdateLifeRegen 写 lifeRegen，PostUpdateEquips 会被 UpdatePlayer_Buffs 重置
     /// </summary>
     internal class SelfHealingSkelentPlayer : ModPlayer
     {
-        /// <summary>
-        /// 上次受到伤害到现在过了多少帧，用于判断"出战"状态
-        /// </summary>
+        /// <summary>上次受击距今帧数</summary>
         public int FramesSinceLastHurt { get; private set; }
 
-        /// <summary>
-        /// 是否处于纳米修复状态（脱战足够久），公开供视觉/HUD 接入
-        /// </summary>
+        /// <summary>纳米修复状态，脱战足够久为 true</summary>
         public bool IsRegenerating { get; private set; }
 
         public override void OnEnterWorld() {
@@ -54,8 +44,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
             //常驻回复始终生效
             Player.lifeRegen += SelfHealingSkelent.LifeRegenBonus;
 
-            //脱战足够久后启用纳米修复：追加回复并强制 lifeRegenTime 为正，
-            //防止刚被打过的负 lifeRegenTime 把回复速率拉低到 0
+            //脱战纳米修复：追加回复并强制 lifeRegenTime≥60，抵消受击负延迟
             if (FramesSinceLastHurt >= SelfHealingSkelent.OutOfCombatThreshold) {
                 IsRegenerating = true;
                 Player.lifeRegen += SelfHealingSkelent.OutOfCombatRegenBonus;
@@ -81,9 +70,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHealingSkelents
             health.Base = SelfHealingSkelent.MaxLifeBonus;
         }
 
-        /// <summary>
-        /// 纳米修复粒子：在玩家身上沿垂直方向飘升的浅绿光点，区别于普通的回血视觉
-        /// </summary>
+        /// <summary>纳米修复粒子，浅绿光点上飘</summary>
         private void SpawnRegenParticles() {
             for (int i = 0; i < 2; i++) {
                 Vector2 offset = new(Main.rand.NextFloat(-Player.width * 0.5f, Player.width * 0.5f),

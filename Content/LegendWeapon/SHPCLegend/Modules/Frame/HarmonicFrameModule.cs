@@ -5,11 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 {
-    /// <summary>
-    /// 谐振机匣：当多束 SHPC 光束同时存在时彼此产生共振电弧
-    /// 每束光束在 OnBeamAI 中按窗口扫描其它存活光束，若距离足够近则在两束之间生成短促电弧
-    /// 电弧仅作为视觉/微伤强化，避免修改光束自身属性带来的耦合
-    /// </summary>
+    /// <summary>谐振机匣：多束共存时近距互生共振电弧（视觉+微伤）</summary>
     internal sealed class HarmonicFrameModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Frame;

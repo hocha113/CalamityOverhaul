@@ -12,12 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 全息瞄具：战术光栅投影仪。开火期间每隔几秒在光标处展开一面
-    /// 垂直于弹道的「全息光栅」：敌方弹幕触栅即被消解（上限 12 发），
-    /// 己方光束穿栅会被重新校准 —— 伤害提升 25% 并直指最近的敌人
-    /// （海瘟兽礼物 —— 在毒雾弹雨中开辟一扇净化之窗）
-    /// </summary>
+    /// <summary>全息瞄具：交战中周期投放光栅，消解敌对弹幕最多 12，友方穿栅 +25% homing</summary>
     internal sealed class HoloOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;
@@ -49,11 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
     }
 
-    /// <summary>
-    /// 全息光栅：垂直于玩家弹道展开的栅板（长 190px）。
-    /// 敌方弹幕触栅被消解并触发故障闪烁；己方光束穿栅获得一次校准强化。
-    /// 使用 SHPCHoloLattice.fx 渲染网格、扫描带与边角支架
-    /// </summary>
+    /// <summary>全息光栅 190px，触栅消解/校准；SHPCHoloLattice.fx</summary>
     internal sealed class SHPCHoloLatticeProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

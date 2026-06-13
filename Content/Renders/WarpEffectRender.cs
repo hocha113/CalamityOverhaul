@@ -8,13 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Renders
 {
     /// <summary>
-    /// 屏幕扭曲后处理渲染句柄
-    /// <br/>负责在 <see cref="RenderHandle.EndCaptureDraw"/> 阶段：
-    /// <list type="number">
-    ///     <item>调用所有处于活动状态的 <see cref="IPrimitiveDrawable"/> 弹幕绘制顶点图元</item>
-    ///     <item>收集所有 <see cref="IWarpDrawable"/> 弹幕，统一使用 <see cref="EffectLoader.WarpShader"/> 进行屏幕扭曲合成</item>
-    /// </list>
-    /// 通过对 <see cref="Main.projectile"/> 进行单次线性扫描配合预分配缓冲，减少每帧的迭代次数与 GC 压力
+    /// EndCaptureDraw 屏幕扭曲后处理
+    /// <br/>收集 <see cref="IWarpDrawable"/>，<see cref="EffectLoader.WarpShader"/> 全屏合成
+    /// <br/>单次扫描 <see cref="Main.projectile"/> + 预分配缓冲减 GC
     /// </summary>
     internal sealed class WarpEffectRender : RenderHandle
     {
@@ -22,15 +18,13 @@ namespace CalamityOverhaul.Content.Renders
         private static readonly List<IWarpDrawable> _warpBuffer = new(16);
         private static readonly List<IWarpDrawable> _warpNoBlueshiftBuffer = new(16);
 
-        /// <summary>
-        /// 比常规热浪类后处理稍晚执行，确保扭曲采样的画面已包含其他渲染句柄写入的内容
-        /// </summary>
+        /// <summary>权重 1.2，晚于常规热浪后处理，扭曲采样已含其他 RenderHandle 写入</summary>
         public override float Weight => 1.2f;
 
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
             CollectDrawables();
 
-            //仅在确实有扭曲源时才进入昂贵的全屏后处理路径
+            //有扭曲源才走全屏后处理
             if (_warpBuffer.Count == 0 && _warpNoBlueshiftBuffer.Count == 0) {
                 return;
             }
@@ -49,10 +43,7 @@ namespace CalamityOverhaul.Content.Renders
             }
         }
 
-        /// <summary>
-        /// 单次线性扫描 <see cref="Main.projectile"/> 同时收集图元绘制与扭曲源，
-        /// 避免原实现中对弹幕数组的多次重复遍历
-        /// </summary>
+        /// <summary>单次扫描 <see cref="Main.projectile"/> 收集 <see cref="IWarpDrawable"/></summary>
         private static void CollectDrawables() {
             _warpBuffer.Clear();
             _warpNoBlueshiftBuffer.Clear();
@@ -81,21 +72,20 @@ namespace CalamityOverhaul.Content.Renders
         }
 
         /// <summary>
-        /// 复制屏幕到临时 RT → 在 <see cref="Main.screenTargetSwap"/> 上绘制扭曲采样源 →
-        /// 通过 <see cref="EffectLoader.WarpShader"/> 将采样源应用到主 RT → 在 AlphaBlend 层补绘自定义内容
+        /// 拷屏到临时 RT → swap 上画扭曲源 → <see cref="EffectLoader.WarpShader"/> 回写主 RT → AlphaBlend 补绘自定义层
         /// </summary>
         private static void ProcessWarpSets(GraphicsDevice graphicsDevice, RenderTarget2D screen
             , List<IWarpDrawable> warpSets, bool noBlueshift) {
             SpriteBatch sb = Main.spriteBatch;
 
-            //把当前屏幕缓存到临时 RT
+            //当前屏幕缓存到临时 RT
             graphicsDevice.SetRenderTarget(screen);
             graphicsDevice.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             sb.End();
 
-            //在 swap 缓冲上绘制扭曲源
+            //swap 缓冲上画扭曲源
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
@@ -106,7 +96,7 @@ namespace CalamityOverhaul.Content.Renders
             }
             sb.End();
 
-            //把扭曲采样源经着色器应用回主 RT
+            //扭曲采样经着色器回写主 RT
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -119,8 +109,7 @@ namespace CalamityOverhaul.Content.Renders
             sb.Draw(screen, Vector2.Zero, Color.White);
             sb.End();
 
-            //允许扭曲源在 AlphaBlend 层补绘不会被扭曲影响的自定义内容
-            //先判断有无 CanDrawCustom 命中再 Begin，避免空批次造成多余的 GraphicsDevice 状态切换
+            //CanDrawCustom 命中才 Begin，避免空批次状态切换
             bool needCustomBatch = false;
             for (int i = 0; i < warpCount; i++) {
                 if (warpSets[i].CanDrawCustom()) {

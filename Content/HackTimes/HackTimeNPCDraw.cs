@@ -5,12 +5,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    //骇客时间NPC绘制拦截器
-    //在PreDraw中切换SpriteBatch到Immediate模式并应用高亮着色器
-    //让原版绘制逻辑在着色器生效的状态下执行，PostDraw中恢复
+    //骇客时间 NPC 绘制拦截，PreDraw 套高亮着色器
     internal class HackTimeNPCDraw : GlobalNPC
     {
-        //标记当前帧是否已激活着色器（用于PostDraw恢复判断）
+        //PostDraw 恢复判断
         private static bool _shaderActive;
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
@@ -22,7 +20,7 @@ namespace CalamityOverhaul.Content.HackTimes
             bool isSelected = npc.whoAmI == HackTime.SelectedTargetIndex;
             float effectStr = HackTime.Intensity;
 
-            //获取NPC纹理用于计算texelSize
+            //NPC 纹理算 texelSize
             Texture2D tex = TextureAssets.Npc[npc.type].Value;
 
             //设置着色器参数
@@ -31,7 +29,7 @@ namespace CalamityOverhaul.Content.HackTimes
             shader.Parameters["isSelected"]?.SetValue(isSelected ? 1f : 0f);
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
 
-            //切换SpriteBatch到Immediate模式以激活像素着色器
+            //Immediate 模式激活着色器
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
@@ -39,14 +37,14 @@ namespace CalamityOverhaul.Content.HackTimes
             shader.CurrentTechnique.Passes[0].Apply();
 
             _shaderActive = true;
-            return true; //让原版继续绘制NPC（此时着色器已生效）
+            return true; //原版继续绘制
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (!_shaderActive) return;
             _shaderActive = false;
 
-            //恢复SpriteBatch到Deferred模式
+            //恢复 Deferred 模式
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
@@ -55,9 +53,9 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private static bool ShouldApplyEffect(NPC npc) {
             if (!HackTime.Active && HackTime.Intensity < 0.01f) return false;
-            // 正在被放逐的NPC由放逐着色器处理，不叠加HackTime高亮
+            //放逐 NPC 不叠加高亮
             if (LegendWeapon.SHPCLegend.Cyberspaces.Banish.CyberBanish.IsBanishing(npc.whoAmI)) return false;
-            // 正在被领域冻结的NPC由冻结着色器处理
+            //领域冻结 NPC 不叠加高亮
             if (LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze.CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return false;
             return npc.whoAmI == HackTime.SelectedTargetIndex
                 || npc.whoAmI == HackTime.HoveredTargetIndex;

@@ -3,8 +3,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
     /// <summary>
-    /// 单只领域之眼的纯数据状态（每玩家实例，挂在 <see cref="HalibutSave"/> 上持久化）
-    /// 视觉表现（悬停、辉光、眨眼）全部由UI层自行维护，本类不含任何绘制状态
+    /// 单只领域之眼数据（持久化于 <see cref="HalibutSave"/>）
+    /// 悬停、辉光、眨眼由 UI 层维护，本类无绘制状态
     /// </summary>
     public class SeaEyeState
     {

@@ -14,13 +14,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
     /// <summary>
-    /// 机械骷髅王电弧链锁：在头部与一条机械臂之间维持一道带伤害判定的高压电弧束带
-    /// （TetherSpin 电弧风车的扇叶）。
+    /// 机械骷髅王电弧链锁：头臂间带伤害的高压电弧束带(TetherSpin 扇叶)
     /// <br/>ai[0] = 机械臂 NPC 的 whoAmI
     /// <br/>ai[1] = 头部 NPC 的 whoAmI
     /// <br/>ai[2] = 总持续时间（帧）
-    /// <br/>前 <see cref="WarmupTime"/> 帧为预警（细弱无伤害）；
-    /// 头/臂失效或头部脱离 TetherSpin 状态时快速消散。
+    /// <br/>前 <see cref="WarmupTime"/> 帧预警细弱无伤害；
+    /// 头/臂失效或头部脱离 TetherSpin 时快速消散
     /// </summary>
     internal class PrimeArcChainProj : ModProjectile
     {
@@ -47,7 +46,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         private ThunderTrail coreTrail;
         private float power; //0~1 当前功率（展开/收束曲线）
 
-        /// <summary>特斯拉橙金——区别于双子的青蓝电弧</summary>
+        /// <summary>特斯拉橙金，区别于双子青蓝电弧</summary>
         internal static Color ArcColor => new(255, 168, 64);
 
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3200;

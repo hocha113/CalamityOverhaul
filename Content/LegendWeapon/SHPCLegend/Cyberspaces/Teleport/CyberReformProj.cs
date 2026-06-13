@@ -6,12 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>
-    /// 赛博瞬移终点演出弹幕（体素重组版）
-    /// <br/>整张演出由 CyberReform.fx 渲染：32x32 像素网格中每个数据块从外围"飞回"目标位置，
-    /// 临归位时还要再"咬"一记白热闪——这与 <see cref="CyberPixelDecomposeProj"/> 的离心解构形成镜像
-    /// <br/>渲染方式与 <see cref="CyberDetonationProj"/> 一致：单四边形 + Immediate 模式应用 shader
-    /// </summary>
+    /// <summary>瞬移终点重组弹幕，CyberReform.fx 体素向心归位</summary>
     internal class CyberReformProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

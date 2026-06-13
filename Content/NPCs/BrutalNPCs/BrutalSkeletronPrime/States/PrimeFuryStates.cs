@@ -5,10 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 白昼狂暴：拂晓降临，机体解除全部限制器疯狂追杀。
-    /// 夜幕重新降临时收势回到对应阶段的常态。
-    /// </summary>
+    /// <summary>白昼狂暴：拂晓解除限制器追杀，入夜回到阶段常态</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.DayEnrage, typeof(PrimeStateContext))]
     internal class PrimeDayEnrageState : PrimeStateBase
     {
@@ -50,10 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         }
     }
 
-    /// <summary>
-    /// 金币枪狂怒：胆敢用铂金币羞辱机械之王者，将被不计代价地处刑。
-    /// 玩家收起金币枪后才会息怒。
-    /// </summary>
+    /// <summary>金币枪狂怒：铂金币挑衅触发，收起金币枪后息怒</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CoinGunFury, typeof(PrimeStateContext))]
     internal class PrimeCoinGunFuryState : PrimeStateBase
     {

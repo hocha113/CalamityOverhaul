@@ -5,26 +5,18 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
-    /// <summary>
-    /// 空降仓热浪扭曲后处理——在EndCapture阶段对整个屏幕施加基于仓体位置的热浪UV偏移
-    /// </summary>
+    /// <summary>空降仓热浪 RenderHandle——EndCapture <see cref="EffectLoader.DropPodHeatHaze"/> 全屏 UV 偏移</summary>
     internal class DropPodHeatHazeRender : RenderHandle
     {
-        /// <summary>
-        /// 热源在屏幕空间的归一化坐标 (0~1)
-        /// </summary>
+        /// <summary>屏幕归一化坐标 0~1</summary>
         private static Vector2 hazeCenter;
 
-        /// <summary>
-        /// 扭曲强度 0~1
-        /// </summary>
+        /// <summary>扭曲强度 0~1</summary>
         private static float hazeIntensity;
 
         public override float Weight => 1.05f;
 
-        /// <summary>
-        /// 由 <see cref="DropPodActor"/> 每帧调用，同步热浪数据
-        /// </summary>
+        /// <summary><see cref="DropPodActor"/> 每帧同步热浪数据</summary>
         internal static void SyncHazeData(Vector2 screenCenter, float intensity) {
             hazeCenter = screenCenter;
             hazeIntensity = intensity;
@@ -45,21 +37,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
 
             Effect shader = EffectLoader.DropPodHeatHaze.Value;
 
-            // ① 复制当前屏幕到 screenSwap
+            //screenTarget → screenSwap
             gd.SetRenderTarget(screenSwap);
             gd.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             sb.End();
 
-            // ② 设置着色器参数
+            //着色器参数
             shader.Parameters["screenSize"]?.SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             shader.Parameters["hazeCenter"]?.SetValue(hazeCenter);
             shader.Parameters["hazeIntensity"]?.SetValue(hazeIntensity);
             shader.Parameters["globalTime"]?.SetValue((float)Main.timeForVisualEffects * 0.02f);
             shader.Parameters["uNoise"]?.SetValue(CWRAsset.Extra_193.Value);
 
-            // ③ 用着色器把 screenSwap 画回 Main.screenTarget
+            //screenSwap → screenTarget
             gd.SetRenderTarget(Main.screenTarget);
             gd.Clear(Color.Transparent);
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);

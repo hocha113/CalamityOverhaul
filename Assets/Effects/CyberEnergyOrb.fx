@@ -1,23 +1,20 @@
 // ============================================================================
-// CyberEnergyOrb.fx — 赛博能量球着色器
-// 多层噪声扰动 + Colormap 映射 + 菲涅尔边缘辉光 + 数字脉冲
-// 对一张灰度纹理（如SoftGlow）应用，产生高质感能量球效果
-// 支持领域超驱模式：高温红炽故障风格 + 黑墙撕裂
+// CyberEnergyOrb.fx 赛博能量球
+// 采样 s0 灰度 + s1 噪声；支持超驱故障模式
 // ============================================================================
 
 float uTime;
 float fadeAlpha;
-float3 coreColor;       // 最亮的内核色
-float3 glowColor;       // 中间辉光色
-float3 auraColor;       // 边缘外层色
-float orbScale;          // 能量球的脉动缩放
+float3 coreColor;       //最亮内核色
+float3 glowColor;       //中间辉光色
+float3 auraColor;       //边缘外层色
+float orbScale;         //脉动缩放
 
-// ---- 超驱参数 ----
-float overdriveAmount;   // 0=正常 1=完全超驱
-float glitchBurst;       // 0-1 间歇性故障爆发强度
-float3 odCoreColor;      // 超驱核心色（白热）
-float3 odGlowColor;      // 超驱辉光色（红炽）
-float3 odAuraColor;      // 超驱光晕色（深红）
+float overdriveAmount;  //0正常 1完全超驱
+float glitchBurst;      //0~1 间歇故障爆发
+float3 odCoreColor;     //超驱核心色(白热)
+float3 odGlowColor;     //超驱辉光色(红炽)
+float3 odAuraColor;     //超驱光晕色(深红)
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state
@@ -66,9 +63,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     // 基础灰度形状（圆形衰减）
     float baseTex = tex2D(baseSamp, uv).r;
     
-    // ============================================================
+    // =
     // A. 多层噪声扰动 —— 能量表面流动
-    // ============================================================
+    // =
     float timeMultiplier = 1.0 + od * 2.5; // 超驱时流动极度加速
     float2 noiseUV1 = float2(
         dist * 2.0 + uTime * 0.3 * timeMultiplier,
@@ -90,9 +87,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     
     float energyField = n1 * 0.5 + n2 * 0.3 + n3 * 0.2;
     
-    // ============================================================
+    // =
     // B. Colormap 映射 —— 径向距离+能量场决定颜色
-    // ============================================================
+    // =
     float radialGrad = 1.0 - smoothstep(0.0, 0.32, dist);
     float solidCore = 1.0 - smoothstep(0.0, 0.2, dist);
     radialGrad = max(radialGrad, solidCore);
@@ -122,16 +119,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         color = lerp(effCore, float3(1.0, 0.97, 0.93), whiteBlend);
     }
     
-    // ============================================================
+    // =
     // C. 菲涅尔边缘辉光 —— 边缘高亮环（更干净的细环）
-    // ============================================================
+    // =
     float fresnelInner = 1.0 - smoothstep(0.15, 0.30, dist);
     float fresnelRing = smoothstep(0.20, 0.28, dist) * (1.0 - smoothstep(0.28, 0.35, dist));
     float3 fresnelColor = effGlow * fresnelRing * (1.25 + od * 0.8);
     
-    // ============================================================
+    // =
     // D. 数字脉冲纹 —— 赛博科幻质感（放缓减幅）
-    // ============================================================
+    // =
     float pulseSpeed = 5.0 + od * 10.0;
     float ringPulse = sin(dist * 32.0 - uTime * pulseSpeed) * 0.5 + 0.5;
     ringPulse = pow(ringPulse, 8.0);
@@ -141,16 +138,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float rays = pow(abs(sin(rayAngle * 3.14159 * 6.0)), 20.0);
     rays *= smoothstep(0.30, 0.15, dist) * (0.07 + od * 0.2);
     
-    // ============================================================
+    // =
     // E. 表面明暗变化 —— 伪3D球体光照
-    // ============================================================
+    // =
     float2 lightDir = float2(-0.4, -0.5);
     float lightDot = dot(normalize(center), normalize(lightDir));
     float lighting = 0.7 + 0.3 * lightDot;
     
-    // ============================================================
+    // =
     // 合成
-    // ============================================================
+    // =
     float3 finalColor = color * lighting;
     finalColor += fresnelColor;
     finalColor += effCore * ringPulse;
@@ -169,11 +166,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     alpha += fresnelRing * 0.4;
     alpha = saturate(alpha) * fadeAlpha;
 
-    // ============================================================
-    // F. 超驱故障层 —— "黑墙撕裂"美学
-    // 同 CyberTraceBeam.fx 的设计哲学：减少亮度叠加，强化深色撕裂、
-    // 数据丢失、RGB 通道分离等"破坏式"故障，避免光球变成手电筒。
-    // ============================================================
+    // F. 超驱故障层：破坏式故障，禁亮度叠加当手电筒
     if (od > 0.01)
     {
         float burst = glitchBurst;

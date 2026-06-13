@@ -9,11 +9,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
-    /// <summary>
-    /// SHPC扇形HUD的纯CPU程序化绘制层
-    /// 通过多次径向偏移与alpha渐变模拟SDF软边，避免像素感与拉伸感
-    /// 所有绘制方法都基于一个1像素白色纹理和角度参数化的弧线步进
-    /// </summary>
+    /// <summary>SHPC 扇形 HUD CPU 绘制，径向偏移+alpha 伪 SDF 软边</summary>
     internal static class SHPCRenderer
     {
         #region 基础几何工具
@@ -72,9 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
-        /// <summary>
-        /// 软边圆弧描边，三层不同厚度叠加模拟SDF抗锯齿
-        /// </summary>
+        /// <summary>软边圆弧描边，三层厚度伪抗锯齿</summary>
         public static void DrawArcStroke(SpriteBatch sb, Texture2D px, Vector2 center,
             float radius, float aStart, float aEnd, float thickness, Color color) {
             if (aEnd <= aStart) {
@@ -261,7 +255,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             Color bgCol = enabled ? SHPCTheme.SlotBg : SHPCTheme.SlotBg * 0.55f;
             DrawArc(sb, px, center, rIn + 1f, rOut - 1f, aStart, aEnd, bgCol * (0.92f * a));
 
-            //内侧暗化条，模拟厚度
+            //内侧暗化条
             DrawArc(sb, px, center, rIn + 1f, rIn + 4f, aStart, aEnd,
                 SHPCTheme.ShadowDark * (0.55f * a));
 

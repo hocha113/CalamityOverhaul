@@ -10,37 +10,23 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼独眼狂暴状态
-    /// 当魔焰眼死亡后进入，攻击更加疯狂和精准
-    /// 包含多种激光攻击模式的快速切换
-    /// </summary>
+    /// <summary>激光眼独眼狂暴：魔焰眼死后切入，四模式快切循环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerSoloRage, typeof(TwinsStateContext))]
     internal class RetinazerSoloRageState : TwinsStateBase
     {
         public override string StateName => "RetinazerSoloRage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerSoloRage;
 
-        /// <summary>
-        /// 当前攻击模式
-        /// </summary>
+        /// <summary>狂暴攻击模式</summary>
         private enum RageAttackMode
         {
-            /// <summary>
-            /// 激光风暴 - 快速发射大量激光
-            /// </summary>
+            /// <summary>激光风暴</summary>
             LaserStorm,
-            /// <summary>
-            /// 交叉射线 - 从多个方向发射交叉激光
-            /// </summary>
+            /// <summary>交叉射线</summary>
             CrossBeams,
-            /// <summary>
-            /// 追踪激光 - 持续追踪玩家发射激光
-            /// </summary>
+            /// <summary>追踪激光</summary>
             HomingLaser,
-            /// <summary>
-            /// 激光矩阵 - 在玩家周围布置激光阵列
-            /// </summary>
+            /// <summary>激光矩阵</summary>
             LaserMatrix
         }
 
@@ -126,11 +112,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>
-        /// 固定狂暴模式攻击循环:
-        /// 激光风暴(远程弹幕)→交叉射线(爆发输出)→追踪激光(持续追踪)→激光矩阵(区域封锁)→(循环)
-        /// 设计思路: 远程压制→爆发打击→追踪施压→区域控制，节奏分明
-        /// </summary>
+        /// <summary>狂暴循环：风暴→交叉→追踪→矩阵</summary>
         private static readonly RageAttackMode[] RageComboSequence =
         [
             RageAttackMode.LaserStorm,
@@ -139,9 +121,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             RageAttackMode.LaserMatrix
         ];
 
-        /// <summary>
-        /// 切换到下一个攻击模式
-        /// </summary>
+        /// <summary>切下一攻击模式</summary>
         private void SwitchToNextMode() {
             totalAttacks++;
             modeTimer = 0;
@@ -158,9 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 激光风暴模式 - 快速发射大量激光
-        /// </summary>
+        /// <summary>激光风暴：快射大量激光</summary>
         private void ExecuteLaserStorm(NPC npc, Player player) {
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -229,9 +207,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 交叉射线模式 - 从多个角度发射交叉激光
-        /// </summary>
+        /// <summary>交叉射线：多角度交叉激光</summary>
         private void ExecuteCrossBeams(NPC npc, Player player) {
             int chargeTime = 50;
             int fireTime = 30;
@@ -331,9 +307,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 追踪激光模式 - 持续追踪玩家发射激光
-        /// </summary>
+        /// <summary>追踪激光：持续跟踪射击</summary>
         private void ExecuteHomingLaser(NPC npc, Player player) {
             int homingDuration = Context.IsDeathMode ? 120 : 100;
 
@@ -404,9 +378,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 激光矩阵模式 - 在玩家周围布置激光阵列
-        /// </summary>
+        /// <summary>激光矩阵：环绕布点齐射</summary>
         private void ExecuteLaserMatrix(NPC npc, Player player) {
             int deployTime = 60;
             int chargeTime = 40;

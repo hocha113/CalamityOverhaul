@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
@@ -21,12 +21,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void Draw(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //绘制阴影
+            // 绘制阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(3, 3);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * 0.5f * alpha);
 
-            //绘制背景
+            // 绘制背景
             float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f) * 0.05f + 0.95f;
             Color baseA = new Color(14, 22, 38) * (alpha * wave);
             Color baseB = new Color(8, 26, 46) * 0.3f;
@@ -38,11 +38,11 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             );
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), bgCol);
 
-            //绘制边框
+            // 绘制边框
             Color edgeColor = GetEdgeColor(alpha);
             DrawBorder(spriteBatch, panelRect, edgeColor);
 
-            //绘制装饰星星
+            // 绘制装饰星星
             float starTime = Main.GlobalTimeWrappedHourly * 3f;
             Vector2 star1 = new Vector2(panelRect.Right - 18, panelRect.Y + 14);
             float s1a = ((float)Math.Sin(starTime) * 0.5f + 0.5f) * alpha;
@@ -52,14 +52,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void DrawChoiceBackground(SpriteBatch spriteBatch, Rectangle choiceRect, bool enabled, float hoverProgress, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //选项背景
+            // 选项背景
             Color choiceBg = enabled
                 ? Color.Lerp(new Color(20, 35, 50) * 0.3f, new Color(40, 70, 100) * 0.5f, hoverProgress)
                 : new Color(15, 15, 20) * 0.15f;
 
             spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
-            //选项边框
+            // 选项边框
             Color edgeColor = GetEdgeColor(alpha);
             if (enabled && hoverProgress > 0.01f) {
                 DrawChoiceBorder(spriteBatch, choiceRect, edgeColor * (hoverProgress * 0.6f));

@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    //仅仅作为一个传递用的父类
+    /// <summary>UE 管道 TP 基类</summary>
     public abstract class BaseUEPipelineTP : MachineTP
     {
         public virtual Color BaseColor => Color.White;

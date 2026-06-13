@@ -2,26 +2,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze
 {
-    /// <summary>
-    /// 赛博领域冻结资源加载器
-    /// </summary>
+    /// <summary>领域冻结资源加载</summary>
     internal class CyberDomainFreezeAssets
     {
-        /// <summary>
-        /// 黑墙能量波六角网格着色器
-        /// </summary>
+        /// <summary>能量波六角网格 fx</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect CyberFreezeWave { get; private set; }
 
-        /// <summary>
-        /// 冻结NPC/弹幕故障+六角覆盖着色器
-        /// </summary>
+        /// <summary>冻结实体故障+六角覆盖 fx</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect CyberFreezeEntity { get; private set; }
 
-        /// <summary>
-        /// 冻结实体六角能量罩着色器
-        /// </summary>
+        /// <summary>六角能量罩 fx</summary>
         [VaultLoaden(CWRConstant.Effects)]
         public static Effect CyberFreezeCage { get; private set; }
     }

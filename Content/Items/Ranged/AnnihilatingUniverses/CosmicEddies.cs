@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
                     SoundSlot = SoundEngine.PlaySound(CWRSound.BlackHole with { MaxInstances = 5 }, Projectile.Center);
                 }
                 else {
-                    //如果声音正在播放，则更新声音的位置以匹配弹丸的当前位置。
+                    //播放中则同步声源到弹丸位置
                     activeSoundTwister.Position = Projectile.position;
                 }
             }

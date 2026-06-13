@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Texture2D mainValue = HeadPrimeAI.BSPlaser.Value;
             Texture2D glowValue = HeadPrimeAI.BSPlaserGlow.Value;
 
-            //机械热感滤镜——和头部共用 head.whoAmI 状态
+            //机械热感滤镜，与头部共用 head.whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             Vector2 laserDrawPos = npc.Center - Main.screenPosition;
             Rectangle laserRect = mainValue.Bounds;

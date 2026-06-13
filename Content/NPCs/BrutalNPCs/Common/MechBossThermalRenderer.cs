@@ -5,20 +5,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 {
-    /// <summary>
-    /// 机械Boss通用热感滤镜渲染器
-    /// <br/>实现"机械Boss三态滤镜"：常态描边 / 警告脉冲 / 冲刺白热
-    /// <br/>抽取自毁灭者最初的实现，所有机械Boss（毁灭者、机械骷髅王、双子魔眼）共用。
-    /// <br/>使用方法：先调用 <see cref="DrawOutlineHalo"/> 绘制外圈描边光环，
-    /// 再调用 <see cref="BeginThermalShader"/> 切到 Immediate 模式套上着色器，绘制本体后 <see cref="EndThermalShader"/> 还原。
-    /// </summary>
+    /// <summary>机械 Boss 通用热感滤镜渲染</summary>
+    /// <para>三态：常态描边 / 警告脉冲 / 冲刺白热；Destroyer 起源，Prime/Twins 共用</para>
+    /// <para>流程：<see cref="DrawOutlineHalo"/> → <see cref="BeginThermalShader"/> 绘本体 → <see cref="EndThermalShader"/></para>
     internal static class MechBossThermalRenderer
     {
         #region 8方向描边光环
 
-        /// <summary>
-        /// 各状态下描边的主色 + 高光色
-        /// </summary>
+        /// <summary>各状态描边主色+高光色</summary>
         private static Color GetHaloColor(MechBossVisualMode mode, float progress, float pulse) {
             return mode switch {
                 MechBossVisualMode.Dashing =>
@@ -47,11 +41,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
             };
         }
 
-        /// <summary>
-        /// 8方向偏移描边光环——把贴图沿圆周偏移多次叠加，形成一圈彩色描边
-        /// <br/>这一层独立于着色器存在，因为它是真正"在贴图外"绘制的，
-        /// 不受单帧透明像素空间或多帧 UV 边界限制，远距离也能看清整个机械Boss轮廓。
-        /// </summary>
+        /// <summary>8 向偏移描边光环，独立于着色器，远距可读轮廓</summary>
         public static void DrawOutlineHalo(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawPos,
             Rectangle? sourceRect, float rotation, Vector2 origin, float scale, SpriteEffects effects,
             MechBossVisualMode mode, float intensity, float progress) {
@@ -95,10 +85,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         #region 机械热感像素着色器
 
-        /// <summary>
-        /// 切到 Immediate 模式并启用机械热感着色器，调用方在绘制完后必须调用 <see cref="EndThermalShader"/> 还原
-        /// </summary>
-        /// <param name="sourceRect">当前帧 sourceRectangle，用于将 UV 边界写入 shader，避免越帧采样</param>
+        /// <summary>Immediate 模式启用热感着色器，绘完须 <see cref="EndThermalShader"/></summary>
+        /// <param name="sourceRect">当前帧 UV 边界，防多帧贴图越界采样</param>
         public static bool BeginThermalShader(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect,
             MechBossVisualMode mode, float intensity, float progress, float seed = 0f) {
             if (intensity <= 0.01f) return false;
@@ -130,9 +118,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
             return true;
         }
 
-        /// <summary>
-        /// 还原默认的 Deferred AlphaBlend SpriteBatch（与 <see cref="BeginThermalShader"/> 配对使用）
-        /// </summary>
+        /// <summary>还原 Deferred AlphaBlend SpriteBatch</summary>
         public static void EndThermalShader(SpriteBatch spriteBatch) {
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
@@ -143,9 +129,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         #region NPC ID 状态查询便捷重载
 
-        /// <summary>
-        /// 通过 <see cref="MechBossVisualState"/> 自动查询某控制器（Boss头部）的当前视觉状态后绘制描边光环
-        /// </summary>
+        /// <summary>按 <see cref="MechBossVisualState"/> 读控制器状态后绘描边</summary>
         public static void DrawOutlineHaloByController(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawPos,
             Rectangle? sourceRect, float rotation, Vector2 origin, float scale, SpriteEffects effects,
             int controllerNpcId) {
@@ -154,9 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
                 mode, intensity, progress);
         }
 
-        /// <summary>
-        /// 通过 <see cref="MechBossVisualState"/> 自动查询某控制器（Boss头部）的当前视觉状态后启用着色器
-        /// </summary>
+        /// <summary>按 <see cref="MechBossVisualState"/> 读控制器状态后启用着色器</summary>
         public static bool BeginThermalShaderByController(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect,
             int controllerNpcId, float seed = 0f) {
             var (mode, intensity, progress) = MechBossVisualState.Read(controllerNpcId);

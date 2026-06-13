@@ -6,11 +6,7 @@ using Terraria.Graphics;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>
-    /// 赛博瞬移隐藏路由
-    /// <br/>演出期间从玩家绘制列表中移除本地玩家，让"化作裂缝"的视觉成立
-    /// <br/><see cref="ModPlayer"/> 没有 PreDrawPlayers 钩子，因此通过 PlayerOverride 转发
-    /// </summary>
+    /// <summary>瞬移演出期隐藏本地玩家绘制</summary>
     internal class CyberTeleportHideOverride : PlayerOverride
     {
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {

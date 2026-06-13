@@ -7,10 +7,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 物块名称最终兜底表
-    /// <br/>测试时遇到异常名称，可在 <see cref="RegisterInitialData"/> 里继续追加 Register / RegisterStyle
-    /// </summary>
+    /// <summary>物块名称兜底表</summary>
     internal static class TileNameFallbackRegistry
     {
         private const string LocalizationPrefix = "Mods.CalamityOverhaul.TileNameFallback.";

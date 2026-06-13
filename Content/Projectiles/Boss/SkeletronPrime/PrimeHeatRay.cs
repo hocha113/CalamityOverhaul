@@ -13,12 +13,12 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
     /// <summary>
-    /// 机械骷髅王热射线光束基类：展开 → 全功率 → 收束三段生命周期，
-    /// 未完全展开时不造成伤害（公平阀），宿主失效时快进收束。
-    /// <br/>ai[0] = 宿主 NPC 的 whoAmI（用于有效性判定/锚定）
+    /// 机械骷髅王热射线基类：展开→全功率→收束
+    /// 未完全展开无伤害(公平阀)，宿主失效快进收束
+    /// <br/>ai[0] = 宿主 NPC 的 whoAmI（有效性判定/锚定）
     /// <br/>ai[1] = 起始角（弧度）
     /// <br/>ai[2] = 每帧扫射角速度（0 = 定向光束）
-    /// <para>渲染复用 <c>PrimeSkullBeam</c> 着色器，与颅骨主炮共享同一套热能视觉语言。</para>
+    /// <para>渲染复用 <c>PrimeSkullBeam</c> 着色器，与颅骨主炮同套热能视觉</para>
     /// </summary>
     internal abstract class PrimeHeatRayBase : ModProjectile
     {
@@ -217,9 +217,9 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     }
 
     /// <summary>
-    /// 十字绞杀热射线：钉在预警线原位的定向光束，四道自四臂封位向心释放，
-    /// 两两相对接成完整十字，对角缝隙是唯一安全区。
-    /// 宿主为头部，头部脱离十字绞杀状态时快速收束。
+    /// 十字绞杀热射线：钉在预警线原位定向光束，四臂向心封位
+    /// 两两相对成十字，对角缝为唯一安全区
+    /// 宿主头部脱离十字绞杀状态时快速收束
     /// </summary>
     internal class PrimeCrossBeamProj : PrimeHeatRayBase
     {
@@ -239,8 +239,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
     }
 
     /// <summary>
-    /// 激光炮臂热射线：锚定在激光炮炮口，蓄力重炮（ai[2]=0 定向轰击）
-    /// 与横扫（ai[2]≠0 匀速扫射）两用，炮臂阵亡或被切出发射状态时快速收束。
+    /// 激光炮臂热射线：锚定炮口，ai[2]=0 定向轰击，≠0 匀速扫射
+    /// 炮臂阵亡或切出发射状态时快速收束
     /// </summary>
     internal class PrimeArmHeatRayProj : PrimeHeatRayBase
     {

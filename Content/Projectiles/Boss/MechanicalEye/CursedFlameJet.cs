@@ -7,9 +7,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
     /// <summary>
-    /// 魔焰眼火舌弹幕，替代原版<see cref="ProjectileID.EyeFire"/>：
-    /// 短寿命喷吐火焰，随飞行膨胀，视觉为纯PRT火焰流。
-    /// 近距离压制用，可被物块阻挡
+    /// 魔焰眼火舌，替代原版<see cref="ProjectileID.EyeFire"/>
+    /// 短寿命喷吐，随飞行膨胀，纯 PRT 火焰流，近距压制，可被物块挡
     /// </summary>
     internal class CursedFlameJet : ModProjectile
     {

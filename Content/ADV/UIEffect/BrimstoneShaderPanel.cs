@@ -5,16 +5,14 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
     /// <summary>
-    /// 硫磺火风格面板着色器辅助绘制
-    /// 复用BrimstoneDialogueBox.fx,统一调用流程,失败时由调用方走CPU降级
+    /// 硫磺火面板着色器，失败时 CPU 降级
     /// </summary>
     internal static class BrimstoneShaderPanel
     {
         public static bool Available => EffectLoader.BrimstoneDialogueBox?.Value != null;
 
         /// <summary>
-        /// 在指定矩形内绘制硫磺火风格面板
-        /// 调用前需保证当前SpriteBatch已开启,内部会切换到Immediate应用着色器,再恢复Deferred
+        /// 矩形内绘制 BrimstoneDialogueBox.fx 面板
         /// </summary>
         /// <param name="sb">当前已Begin的SpriteBatch</param>
         /// <param name="rect">面板包含边缘的矩形</param>

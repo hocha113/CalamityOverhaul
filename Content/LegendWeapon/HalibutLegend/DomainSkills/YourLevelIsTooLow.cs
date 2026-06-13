@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 {
-    //你的层次太低，永远无法理解我现在的状态
-    //我是一个时代孕育出来的唯一，既然舍弃了玩家的身份，自封为神
-    //自然是百无禁忌，无所不能
-    //现在就让你见识一下，可以终结这个灾厄时代的力量，到底有多么可怕
+    //第十眼时代唯一：满层自动激活的无限重启演出
     internal static class YourLevelIsTooLow
     {
         public static int ID = 8;
@@ -61,9 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
     }
 
-    /// <summary>
-    /// 无限重启叠加效果主控制器
-    /// </summary>
+    /// <summary>第十眼无限重启叠加演出控制器</summary>
     internal class YourLevelIsTooLowProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;

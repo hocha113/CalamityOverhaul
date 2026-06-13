@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.ADV.EntrustManager
 {
-    /// <summary>
-    /// 委托在屏幕左侧常驻追踪窗口中的显示样式，
-    /// 各任务线可自定义此窗口的视觉风格
-    /// </summary>
+    /// <summary>追踪窗口显示样式契约</summary>
     internal interface IEntrustTrackerWidgetStyle
     {
         #region 生命周期
@@ -62,18 +59,10 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         /// <summary>获取追踪窗口的最小高度（null 则使用默认 90px）</summary>
         int? GetMinHeight();
 
-        /// <summary>
-        /// 根据条目当前状态返回紧凑高度（null 则不使用紧凑模式）。<br/>
-        /// 由样式自行判定何时启用紧凑模式（如待机/已完成/冷却中等），
-        /// 框架不预设空闲条件，完全交由样式决定
-        /// </summary>
+        /// <summary>紧凑高度，null 不启用紧凑模式</summary>
         int? GetIdleCompactHeight(EntrustEntryData entry) => null;
 
-        /// <summary>
-        /// 返回该追踪窗口的紧凑可见度，0=完全收起（滑出屏幕），1=完全展开。<br/>
-        /// 由样式自行判定收起条件并在Update中维护动画进度，
-        /// 框架仅使用该值来控制滑入/滑出偏移。默认始终展开
-        /// </summary>
+        /// <summary>紧凑可见度 0 收起 1 展开</summary>
         float GetCompactVisibility(EntrustEntryData entry) => 1f;
 
         #endregion

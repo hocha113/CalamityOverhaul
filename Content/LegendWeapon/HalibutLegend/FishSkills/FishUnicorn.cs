@@ -130,7 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //旋转效果
             rotation += Projectile.velocity.Length() * 0.012f * DashDirection;
 
-            //华丽的彩虹拖尾粒子
+            //彩虹拖尾
             if (Main.rand.NextBool(1)) {
                 SpawnRainbowTrail();
             }
@@ -301,7 +301,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //绘制星光粒子
             DrawStarParticles();
 
-            //绘制华丽拖尾
+            //彩虹/星光拖尾
             for (int i = 0; i < Projectile.oldPos.Length; i++) {
                 if (Projectile.oldPos[i] == Vector2.Zero) continue;
 

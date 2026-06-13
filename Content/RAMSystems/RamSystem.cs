@@ -4,16 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.RAMSystems
 {
-    /// <summary>
-    /// CWR 全局 RAM 资源系统
-    /// <br/>从原 <c>HackTimeRAM</c> 升级而来，定位为独立的资源管理框架而非骇客时间附属机制
-    /// <br/>提供"永久基础值（持久化） + 动态修饰器（运行时聚合）"双层架构：
-    /// <list type="bullet">
-    ///   <item><see cref="BaseMaxRam"/>/<see cref="BaseRecoveryRate"/>：通过物品/进度永久提升，跨存档保留</item>
-    ///   <item><see cref="IRamModifierProvider"/>：义体、Buff、Cyberware 等动态来源每帧聚合</item>
-    /// </list>
-    /// 每帧得出生效值 <see cref="MaxRam"/>/<see cref="RecoveryRate"/> 供外部读取
-    /// </summary>
+    /// <summary>CWR 全局 RAM 资源系统，永久基础值加动态修饰器双层架构</summary>
     internal class RamSystem : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => UnloadReset();
@@ -27,83 +18,52 @@ namespace CalamityOverhaul.Content.RAMSystems
 
         #region 默认值与边界
 
-        /// <summary>
-        /// 默认基础 RAM 上限
-        /// </summary>
+        /// <summary>默认基础 RAM 上限</summary>
         public const int DefaultBaseMaxRam = 8;
-        /// <summary>
-        /// 默认基础每秒恢复量
-        /// </summary>
+        /// <summary>默认基础每秒恢复量</summary>
         public const float DefaultBaseRecoveryRate = 0.1f;
-        /// <summary>
-        /// 基础上限的最小值（防极端配置）
-        /// </summary>
+        /// <summary>基础上限最小值</summary>
         public const int MinBaseMaxRam = 1;
-        /// <summary>
-        /// 基础上限的软上限（与 HUD 弧条最大跨度联动，防止绕一整圈）
-        /// </summary>
+        /// <summary>基础上限软上限，与 HUD 弧条最大跨度联动</summary>
         public const int SoftMaxBaseMaxRam = 64;
-        /// <summary>
-        /// RAM 上限芯片最多可使用次数
-        /// </summary>
+        /// <summary>RAM 上限芯片最多可用次数</summary>
         public const int MaxCapacityUpgradeChips = 42;
-        /// <summary>
-        /// RAM 恢复速度芯片最多可使用次数
-        /// </summary>
+        /// <summary>RAM 恢复芯片最多可用次数</summary>
         public const int MaxRecoveryUpgradeChips = 30;
-        /// <summary>
-        /// 单个 RAM 上限芯片提供的基础上限
-        /// </summary>
+        /// <summary>单枚上限芯片提供基础上限</summary>
         public const int CapacityUpgradeChipBonus = 1;
-        /// <summary>
-        /// 单个 RAM 恢复速度芯片提供的基础每秒恢复量
-        /// </summary>
+        /// <summary>单枚恢复芯片提供基础每秒恢复量</summary>
         public const float RecoveryUpgradeChipBonus = 0.05f;
-        /// <summary>
-        /// 基础恢复速度可达到的最大值（不含义体/Buff 等运行时加成）
-        /// </summary>
+        /// <summary>基础恢复速度上限，不含运行时加成</summary>
         public const float MaxBaseRecoveryRate = DefaultBaseRecoveryRate
             + MaxRecoveryUpgradeChips * RecoveryUpgradeChipBonus;
-        /// <summary>
-        /// 消耗 RAM 后到开始恢复的延迟（秒）
-        /// </summary>
+        /// <summary>消耗后到开始恢复的延迟（秒）</summary>
         public const float RecoveryDelay = 1.5f;
-        /// <summary>
-        /// RAM 不足闪烁提示持续帧数（玩家试图使用却 RAM 不够时的故障警示时长）
-        /// </summary>
+        /// <summary>RAM 不足闪烁持续帧数</summary>
         public const int InsufficientFlashFrames = 30;
         //tModLoader 固定每秒 60 tick
         private const float TickSeconds = 1f / 60f;
 
-        //系统锁定计时（帧）：>0 时 RAM 被强制锁定为 0，期间禁止消耗与恢复
+        //系统锁定计时（帧）：>0 时 RAM 锁定为 0，禁止消耗与恢复
         private static int lockTimer;
         private static int lockTotalFrames;
-        //RAM 不足闪烁计时（帧）：>0 时 HUD 应进行红色故障闪烁
+        //RAM 不足闪烁计时（帧）：>0 时 HUD 红色故障闪烁
         private static int flashTimer;
 
         #endregion
 
         #region 锁定与故障反馈
 
-        /// <summary>
-        /// 当前是否处于系统锁定（重启演出后等冷却期）
-        /// <br/>锁定期间 RAM 持续为 0、不消耗、不恢复，HUD 应整体显示为红色故障样式
-        /// </summary>
+        /// <summary>是否处于系统锁定</summary>
         public static bool IsLocked => lockTimer > 0;
 
-        /// <summary>
-        /// 系统锁定剩余帧数
-        /// </summary>
+        /// <summary>系统锁定剩余帧数</summary>
         public static int LockRemain => lockTimer;
 
-        /// <summary>
-        /// 系统锁定总帧数（演出/HUD 可用于推算进度）
-        /// </summary>
+        /// <summary>系统锁定总帧数，供 HUD 推算进度</summary>
         public static int LockTotal => lockTotalFrames;
 
-        /// <summary>
-        /// 系统锁定剩余比例（1=刚进入锁定，0=锁定结束），供 HUD 绘制倒计时填充
-        /// </summary>
+        /// <summary>系统锁定剩余比例，供 HUD 倒计时填充</summary>
         public static float LockRemainRatio {
             get {
                 if (lockTimer <= 0 || lockTotalFrames <= 0) {
@@ -113,15 +73,10 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
         }
 
-        /// <summary>
-        /// 当前是否处于 RAM 不足故障闪烁
-        /// </summary>
+        /// <summary>是否处于 RAM 不足故障闪烁</summary>
         public static bool IsFlashing => flashTimer > 0;
 
-        /// <summary>
-        /// 取得 HUD 用警告强度 (0..1)，已组合锁定与故障闪烁
-        /// <br/>锁定状态恒定为 1，故障闪烁随计时衰减
-        /// </summary>
+        /// <summary>HUD 警告强度 0..1，锁定恒 1，闪烁随计时衰减</summary>
         public static float GetWarningPulse() {
             if (lockTimer > 0) {
                 return 1f;
@@ -133,10 +88,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             return 0f;
         }
 
-        /// <summary>
-        /// 触发系统锁定：立即榨干 RAM 并锁定为 0，持续指定帧数
-        /// <br/>由 CyberRestart 等需要硬冷却的技能在生效后调用
-        /// </summary>
+        /// <summary>触发系统锁定，榨干 RAM 并锁定指定帧数</summary>
         public static void SystemLock(int frames) {
             if (frames <= 0) {
                 return;
@@ -152,16 +104,12 @@ namespace CalamityOverhaul.Content.RAMSystems
             local.InvokeOnDepleted();
         }
 
-        /// <summary>
-        /// 触发 RAM 不足故障闪烁（HUD 短暂红色闪烁提示玩家 RAM 不够用）
-        /// </summary>
+        /// <summary>触发 RAM 不足故障闪烁</summary>
         public static void NotifyInsufficient() {
             flashTimer = InsufficientFlashFrames;
         }
 
-        /// <summary>
-        /// 立即解除系统锁定（仅用于读档/卸载等极端情形）
-        /// </summary>
+        /// <summary>立即解除系统锁定，仅读档/卸载等极端情形</summary>
         public static void ClearLock() {
             lockTimer = 0;
             lockTotalFrames = 0;
@@ -227,35 +175,23 @@ namespace CalamityOverhaul.Content.RAMSystems
             Local?.Providers.Remove(provider);
         }
 
-        /// <summary>
-        /// 当前已注册的修饰器数量（仅供调试/UI 展示）
-        /// </summary>
+        /// <summary>已注册修饰器数量，仅供调试/UI</summary>
         public static int ProviderCount => Local?.Providers.Count ?? 0;
 
         #endregion
 
         #region 永久升级 API
 
-        /// <summary>
-        /// 永久增加 RAM 基础上限（差值会写入持久化基础值）
-        /// </summary>
+        /// <summary>永久增加 RAM 基础上限</summary>
         public static void IncreaseBaseMaxRamBy(int delta) => BaseMaxRam = BaseMaxRam + delta;
-        /// <summary>
-        /// 永久增加每秒基础恢复量（差值会写入持久化基础值）
-        /// </summary>
+        /// <summary>永久增加基础每秒恢复量</summary>
         public static void IncreaseBaseRecoveryRateBy(float delta) => BaseRecoveryRate = BaseRecoveryRate + delta;
-        /// <summary>
-        /// 当前是否还能使用 RAM 上限芯片
-        /// </summary>
+        /// <summary>是否还能使用 RAM 上限芯片</summary>
         public static bool CanUseCapacityUpgradeChip => UsedCapacityUpgradeChips < MaxCapacityUpgradeChips;
-        /// <summary>
-        /// 当前是否还能使用 RAM 恢复速度芯片
-        /// </summary>
+        /// <summary>是否还能使用 RAM 恢复芯片</summary>
         public static bool CanUseRecoveryUpgradeChip => UsedRecoveryUpgradeChips < MaxRecoveryUpgradeChips;
 
-        /// <summary>
-        /// 使用一枚 RAM 上限芯片，并同步永久基础值
-        /// </summary>
+        /// <summary>使用一枚 RAM 上限芯片并同步永久基础值</summary>
         public static bool TryUseCapacityUpgradeChip() {
             if (!CanUseCapacityUpgradeChip) {
                 return false;
@@ -427,7 +363,7 @@ namespace CalamityOverhaul.Content.RAMSystems
         }
 
         public static void UnloadReset() {
-            //数据生命周期由 ModPlayer 实例管理，无需手动清理
+            //数据生命周期由 ModPlayer 管理
         }
 
         #endregion

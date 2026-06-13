@@ -6,10 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    ///赛博义体界面的面板渲染器
-    ///负责面板背景（着色器）、四角/边脉冲装饰、标题、故障特效、关闭按钮
-    /// </summary>
+    /// <summary>义体面板渲染：着色器底/装饰/标题/故障/关闭钮</summary>
     internal class CyberPanelRenderer
     {
         #region 动画状态
@@ -23,16 +20,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共方法
 
-        /// <summary>
-        ///触发一次故障干扰效果
-        /// </summary>
+        /// <summary>触发故障干扰</summary>
         public void TriggerGlitch(float intensity) {
             glitchIntensity = MathHelper.Clamp(intensity, 0, 1);
         }
 
-        /// <summary>
-        ///推进扫描线和故障效果的动画计时器
-        /// </summary>
+        /// <summary>推进扫描线/故障计时</summary>
         public void Update() {
             scanLinePhase += 0.025f;
             if (scanLinePhase > MathHelper.TwoPi) scanLinePhase -= MathHelper.TwoPi;
@@ -47,18 +40,18 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         }
 
         /// <summary>
-        ///通过 CyberwarePanel.fx 绘制面板底层（底色/网格/扫描带/中央光场/暗角/内边柔光全部由 shader 完成）
-        ///shader 未加载时降级为纯色 BgPanel 填充，与原始体验对齐
+        /// CyberwarePanel.fx 面板底层
+        /// <br/>mode 0=主面板 1=侧栏；bodyRadius&lt;=1 无光场
         /// </summary>
-        /// <param name="bodyLocalCenter">人体中心相对面板的局部像素坐标</param>
-        /// <param name="bodyRadius">人体能量光场半径，&lt;=1 时退化为无中央光场（适用于侧栏或关闭动画末段）</param>
-        /// <param name="mode">0=主面板（完整层）, 1=侧栏（轻量层）</param>
+        /// <param name="bodyLocalCenter">人体中心面板局部坐标</param>
+        /// <param name="bodyRadius">光场半径，&lt;=1 无光场</param>
+        /// <param name="mode">0 主面板 1 侧栏</param>
         public static void DrawShaderBackground(SpriteBatch sb, float alpha, Rectangle panelRect,
             Vector2 bodyLocalCenter, float bodyRadius, int mode) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;
 
-            //着色器未加载时降级为纯色背景，避免出现透明缺失
+            //着色器缺失降级 BgPanel
             if (EffectLoader.CyberwarePanel?.Value == null) {
                 sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.BgPanel * (alpha * 0.95f));
                 return;
@@ -86,10 +79,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
         }
 
-        /// <summary>
-        ///绘制几何感强的边框装饰：四角双层括号、顶部脉冲条与移动亮点、四边细线
-        ///这部分仍保留 CPU 绘制以维持清晰锐利的"装置外壳"质感
-        /// </summary>
+        /// <summary>四角括号+顶脉冲条+边线，CPU 锐利装饰</summary>
         public static void DrawFrameDecor(SpriteBatch sb, float alpha, Rectangle panelRect, float globalTimer) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;
@@ -109,7 +99,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, new Rectangle(panelRect.Right - 1, panelRect.Y, 1, panelRect.Height),
                 new Rectangle(0, 0, 1, 1), CyberwareTheme.Border * (alpha * 0.5f));
 
-            //四角装饰 —— 双层赛博朋克括号+斜切线
+            //四角双层括号+斜切
             Color cornerColor = CyberwareTheme.Accent * (alpha * 0.9f);
             Color cornerDim = cornerColor * 0.5f;
             Color cornerInner = CyberwareTheme.Accent * (alpha * 0.25f);
@@ -143,7 +133,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, new Rectangle(panelRect.Right - cInset - cL2, panelRect.Bottom - cInset - 1, cL2, 1), new Rectangle(0, 0, 1, 1), cornerInner * 0.7f);
             sb.Draw(px, new Rectangle(panelRect.Right - cInset - 1, panelRect.Bottom - cInset - cL2, 1, cL2), new Rectangle(0, 0, 1, 1), cornerInner * 0.7f);
 
-            //边缘脉冲光——沿顶部边框移动的亮点
+            //顶边脉冲亮点
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             float pulsePos = globalTimer * 0.35f % 1f;
             int pulseX = panelRect.X + (int)(pulsePos * panelRect.Width);
@@ -157,15 +147,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///绘制标题栏、版本号、底部状态栏和数据流装饰
-        /// </summary>
+        /// <summary>标题栏/版本/底状态栏</summary>
         public void DrawTitleAndDecor(SpriteBatch sb, float alpha, Rectangle panelRect, Vector2 panelCenter,
             float globalTimer, string title, string statusText) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;
 
-            //标题栏独立背景区——深色区域创造层次分离
+            //标题栏深色底
             int headerH = 26;
             sb.Draw(px, new Rectangle(panelRect.X + 2, panelRect.Y + 2, panelRect.Width - 4, headerH),
                 new Rectangle(0, 0, 1, 1), CyberwareTheme.SectionBg * (alpha * 0.9f));
@@ -250,9 +238,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 CyberwareTheme.AccentCyan * (alpha * 0.35f), 0.40f * CyberwareTheme.FontScale);
         }
 
-        /// <summary>
-        ///绘制随机故障干扰色块
-        /// </summary>
+        /// <summary>随机故障色块</summary>
         public void DrawGlitchEffect(SpriteBatch sb, float alpha, Rectangle panelRect) {
             if (glitchIntensity <= 0.01f) return;
             Texture2D px = CWRAsset.Placeholder_White?.Value;
@@ -271,16 +257,12 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///返回关闭按钮的屏幕矩形，供交互检测复用
-        /// </summary>
+        /// <summary>关闭钮矩形，交互复用</summary>
         public static Rectangle GetCloseButtonRect(Rectangle panelRect) {
             return new Rectangle(panelRect.Right - 34, panelRect.Y + 4, 24, 20);
         }
 
-        /// <summary>
-        ///绘制标题栏右侧的关闭按钮（X图标，悬停时红色高亮）
-        /// </summary>
+        /// <summary>标题栏关闭钮 X 图标</summary>
         public void DrawCloseButton(SpriteBatch sb, float alpha, Rectangle panelRect, bool isHovered) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;

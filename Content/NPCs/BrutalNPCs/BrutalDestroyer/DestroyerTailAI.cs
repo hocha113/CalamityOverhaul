@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Vector2 origin = rectangle.Size() / 2;
             float seed = (npc.whoAmI % 64) / 64f;
 
-            //尾巴halo/着色器——读取头部 (npc.realLife) 共享视觉状态并叠加尾端充能波
+            //读头部(realLife)共享视觉+尾端充能波
             int controllerId = (int)npc.realLife;
             var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
             MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,

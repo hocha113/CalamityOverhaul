@@ -14,9 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 云端漫步：蓄力高举大斧，松开后斧头向前飞出，沿途喷洒云雾，然后自动飞回玩家手中
-    /// </summary>
+    /// 云端漫步 蓄力举斧投出拖云雾后飞回
     internal class Cloudwalking : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "Cloudwalking";
@@ -26,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.height = 60;
             Item.damage = 40;
             Item.DamageType = DamageClass.Melee;
-            //使用动画由手持弹幕全权处理，这里只是触发入口
+            //使用动画由手持弹幕处理
             Item.useAnimation = 12;
             Item.useTime = 12;
             Item.useStyle = ItemUseStyleID.Shoot;
@@ -56,9 +54,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 手持弹幕：蓄力举斧 → 投出（拖云雾） → 飞回玩家 → 收手销毁
-    /// </summary>
+    /// 手持 蓄力举斧→投出拖云雾→飞回→收手销毁
     internal class CloudwalkingHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "Cloudwalking";
@@ -84,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float shakePhase;
         private int chargeParticleClock;
         private Vector2 axePivot;
-        //投出时记录起点，用于判断返回时机（仅 owner 客户端使用）
+        //投出起点 仅 owner 端判断返回时机
         private Vector2 flyOrigin;
 
         public int Phase {
@@ -114,7 +110,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             //}
         }
 
-        //飞行阶段由 velocity 驱动，蓄力/收手阶段手动固定位置
+        //飞行由 velocity 驱动 蓄力/收手手动固定位置
         public override bool ShouldUpdatePosition() => Phase == PhaseFlyingOut || Phase == PhaseReturning;
 
         public override bool? CanDamage() => Phase == PhaseFlyingOut || Phase == PhaseReturning;
@@ -225,7 +221,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             SpawnFlyingParticles(1.0f);
 
-            //仅 owner 判断返回时机，避免 flyOrigin 未同步到其他客户端
+            //仅 owner 判断返回 flyOrigin 未同步远端
             if (Projectile.IsOwnedByLocalPlayer()) {
                 float maxDist = MathHelper.Lerp(380f, MaxFlyDistance, ChargeRatio);
                 bool tooFar = Vector2.DistanceSquared(Projectile.Center, flyOrigin) >= maxDist * maxDist;

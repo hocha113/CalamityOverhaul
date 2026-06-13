@@ -9,7 +9,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.ADV
 {
     /// <summary>
-    /// ADV系统专用的玩家存档ModPlayer，负责ADVSave数据和场景数据的保存与加载
+    /// ADV 玩家存档 ModPlayer
     /// </summary>
     internal class ADVSavePlayer : ModPlayer
     {
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.ADV
 
         public override ModPlayer Clone(Player newEntity) {
             ADVSavePlayer modPlayer = (ADVSavePlayer)base.Clone(newEntity);
-            //深拷贝ADVSave，避免克隆体与原始玩家共享同一数据实例
+            // 深拷贝 ADVSave，避免克隆共享实例
             modPlayer.ADVSave = ADVSave?.DeepCopy() ?? new ADVSave();
             return modPlayer;
         }
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         /// <summary>
-        /// 从旧版HalibutSave迁移ADV数据（向后兼容），委托给<see cref="ADVLegacyMigration"/>处理
+        /// 从 HalibutSave 迁移旧版 ADV 数据
         /// </summary>
         internal void MigrateFromLegacy(TagCompound halibutTag) {
             ADVLegacyMigration.TryMigrateFromHalibutSave(halibutTag, Player, ADVSave);

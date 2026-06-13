@@ -8,14 +8,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 物块爆破协议：瓦解目标物块及周围区域的结构完整性
-    /// </summary>
+    /// <summary>物块爆破协议</summary>
     internal class TileDetonate : QuickHackDef
     {
         //爆破半径（格子数）
         private const int BlastRadius = 3;
-        //协议自带的基础镐力，未持有任何镐时也能炸开常见物块
+        //协议默认镐力，无镐也能破常见块
         private const int BasePickPower = 50;
 
         public override void SetDefaults() {
@@ -36,13 +34,12 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             }
         }
 
-        //取玩家背包中所有物品的最高镐力，再与协议默认镐力取大值
-        //这样适配所有原版及模组工具，因为它们都会把镐力写入Item.pick
+        //取背包最高镐力，与协议默认取大
         private static int GetEffectivePickPower(Player player) {
             int max = BasePickPower;
             if (player == null) return max;
             AccumulatePickFromArray(player.inventory, ref max);
-            //同时检查存钱罐等容器，便于把高级镐放在存款里也能识别
+            //含存钱罐等容器
             AccumulatePickFromArray(player.bank?.item, ref max);
             AccumulatePickFromArray(player.bank2?.item, ref max);
             AccumulatePickFromArray(player.bank3?.item, ref max);
@@ -50,8 +47,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return max;
         }
 
-        //获取目标物块的镐力门槛
-        //模组方块通过ModTile.MinPick直接读取；原版方块沿用硬编码表，与Player.PickTile一致
+        //物块镐力门槛，模组读 MinPick，原版硬编码表
         private static int GetTileMinPick(int x, int y) {
             Tile tile = Main.tile[x, y];
             ushort type = tile.TileType;
@@ -62,7 +58,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return GetVanillaMinPick(type);
         }
 
-        //原版方块的镐力门槛硬编码表，复刻Player.PickTile中的判断
+        //原版镐力门槛，复刻 Player.PickTile
         private static int GetVanillaMinPick(int type) {
             if (type == TileID.Meteorite) return 50;
             if (type == TileID.Demonite || type == TileID.Crimtane) return 55;
@@ -112,7 +108,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             int tileY = s.TileCoordY;
             Vector2 center = new(tileX * 16f + 8f, tileY * 16f + 8f);
 
-            //本端权威破坏并广播 SendTileSquare；远端复刻只播放视觉与音效，避免重复破坏与重复广播
+            //本端破坏广播 SendTileSquare，远端仅视觉
             if (!HackTimeNetSync.IsRemoteApply) {
                 int pickPower = GetEffectivePickPower(caster);
 

@@ -3,12 +3,8 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
-    /// <summary>
-    /// 双子合击协调器：
-    /// 先到达合击节点的眼睛通过<see cref="TwinsStateContext.RequestCombo"/>广播信号并直接进入合击状态，
-    /// 另一只眼在锚点状态轮询<see cref="TryFollowSignal"/>立即跟进，
-    /// 合击状态自身的集合阶段负责等待双方到齐
-    /// </summary>
+    /// <summary>双子合击协调：先到节点 RequestCombo 并进入合击，搭档 TryFollowSignal 跟进</summary>
+    /// <para>合击状态集合阶段等待双方到齐</para>
     internal static class TwinsComboCoordinator
     {
         /// <summary>

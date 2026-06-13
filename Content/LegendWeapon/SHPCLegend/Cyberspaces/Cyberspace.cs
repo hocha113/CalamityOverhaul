@@ -4,23 +4,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博空间领域系统的静态门面，所有运行时状态实际承载在 <see cref="CyberspacePlayer"/> 上
-    /// <br/>本类保留：常量配置、跨玩家共享的视觉参数，以及对本地玩家的便捷读写转发
-    /// <br/>多人语义：每个玩家持有独立的领域状态，渲染层会枚举所有活跃领域分别绘制；
-    /// 静态属性（<see cref="Active"/> / <see cref="DomainCenter"/> 等）默认指向本地玩家，
-    /// 仅供 UI、按键、HUD 等"明确只服务于本地玩家"的调用点；视觉弹幕等需要按弹幕 owner
-    /// 取数据的位置必须改用 <see cref="For(Player)"/> / <see cref="For(int)"/>
-    /// </summary>
+    /// <summary>赛博领域静态门面，状态在 CyberspacePlayer；静态属性默认本地玩家</summary>
     internal class Cyberspace : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();
 
         // ====== 常量配置（跨玩家共享） ======
 
-        /// <summary>
-        /// 最大支持层数
-        /// </summary>
+        /// <summary>最大层数</summary>
         public const int MaxLayerCount = 3;
 
         /// <summary>
@@ -102,11 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// </summary>
         internal static CyberspacePlayer Local => For(Main.LocalPlayer);
 
-        /// <summary>
-        /// 枚举当前所有"视觉上仍需绘制"的领域：包括激活中以及处于收缩动画末尾的玩家。
-        /// <br/>渲染层据此遍历每个玩家分别绘制各自的领域；同样适用于 NPC 影响判断
-        /// （任意领域内即视为"在赛博空间中"）。
-        /// </summary>
+        /// <summary>枚举视觉仍活跃的玩家领域</summary>
         internal static IEnumerable<CyberspacePlayer> EnumerateRenderable() {
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player p = Main.player[i];
@@ -152,9 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         // ====== 静态计算方法 ======
 
-        /// <summary>
-        /// 指定层(0-indexed)的完整半径，纯计算不依赖玩家
-        /// </summary>
+        /// <summary>指定层完整半径</summary>
         public static float GetLayerRadius(int layerIndex) {
             layerIndex = Math.Clamp(layerIndex, 0, MaxLayerCount - 1);
             return BaseRadius * LayerRadiusScale[layerIndex];
@@ -187,17 +172,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         public static bool IsInsideDomain(Vector2 worldPos) => Local?.IsInsideDomain(worldPos) ?? false;
 
-        /// <summary>
-        /// 指定玩家(owner)的领域是否覆盖到 worldPos；用于"弹幕主人自己的领域内才进入超驱"的判定
-        /// </summary>
+        /// <summary>owner 领域是否覆盖 worldPos</summary>
         public static bool IsInsideDomainOf(int ownerWho, Vector2 worldPos) {
             CyberspacePlayer cp = For(ownerWho);
             return cp != null && cp.IsInsideDomain(worldPos);
         }
 
-        /// <summary>
-        /// 任意玩家的领域覆盖到 worldPos 即返回 true；用于"NPC在任一玩家领域内"等场景
-        /// </summary>
+        /// <summary>任意玩家领域是否覆盖 worldPos</summary>
         public static bool IsInsideAnyDomain(Vector2 worldPos) {
             foreach (CyberspacePlayer cp in EnumerateRenderable()) {
                 if (cp.IsInsideDomain(worldPos)) return true;

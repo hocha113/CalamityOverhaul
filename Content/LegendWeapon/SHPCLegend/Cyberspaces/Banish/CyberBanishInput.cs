@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 {
-    /// <summary>
-    /// 赛博放逐按键处理
-    /// <br/>在赛博空间激活时按键放逐光标下的目标
-    /// </summary>
+    /// <summary>放逐按键，领域激活时放逐光标下目标</summary>
     internal class CyberBanishInput : ModPlayer
     {
         public override void ProcessTriggers(Terraria.GameInput.TriggersSet triggersSet) {

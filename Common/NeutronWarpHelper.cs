@@ -4,21 +4,21 @@ using Terraria;
 namespace CalamityOverhaul.Common
 {
     /// <summary>
-    /// 中子星扭曲效果辅助器 — 使用NeutronWarp着色器替代CPU端暴力叠绘
+    /// 中子星扭曲辅助——NeutronWarp 着色器替代 CPU 多层叠绘
     /// </summary>
     internal static class NeutronWarpHelper
     {
         /// <summary>
-        /// 使用NeutronWarp着色器绘制一次扭曲位移贡献，替代原先33-133层循环叠绘
+        /// NeutronWarp 单次扭曲位移，替代原 33~133 层 CPU 叠绘
         /// </summary>
-        /// <param name="worldCenter">效果的世界坐标中心</param>
-        /// <param name="screenWidth">屏幕空间效果宽度（像素）</param>
-        /// <param name="screenHeight">屏幕空间效果高度（像素）</param>
-        /// <param name="intensity">位移强度 0-1</param>
-        /// <param name="progress">生命进度 0-1（控制扩张/收缩）</param>
-        /// <param name="rotation">基础旋转角度</param>
-        /// <param name="technique">着色器技术名: GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens</param>
-        /// <param name="radius">归一化效果半径（UV空间，默认0.45）</param>
+        /// <param name="worldCenter">世界坐标中心</param>
+        /// <param name="screenWidth">屏幕宽度 px</param>
+        /// <param name="screenHeight">屏幕高度 px</param>
+        /// <param name="intensity">位移强度 0~1</param>
+        /// <param name="progress">生命进度 0~1，控扩张/收缩</param>
+        /// <param name="rotation">基础旋转</param>
+        /// <param name="technique">Pass 名：GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens</param>
+        /// <param name="radius">UV 归一化半径，默认 0.45</param>
         public static void DrawWarp(
             Vector2 worldCenter,
             float screenWidth,

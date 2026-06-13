@@ -6,21 +6,20 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>
-    /// 斯安威斯坦的时缓核心数据管理器。
-    /// 通过冻结实体AI并让它们按缓存速度的缩放值缓慢漂移来模拟子弹时间。
-    /// 实际的NPC和弹幕拦截由同目录下的SandevistanNPC和SandevistanProjectile独立处理。
+    /// 时缓数据管理，TimeGear 缩放实体漂移
+    /// <br/>NPC/弹幕拦截见 SandevistanNPC、SandevistanProjectile
     /// </summary>
     internal class SandevistanTimeSlow : ModSystem
     {
-        //时缓是否正在生效
+        //时缓生效中
         public static bool IsActive { get; private set; }
-        //速度缩放系数，值越小世界越慢。0.08就是原速的8%
+        //速度缩放，0.08≈原速 8%
         public static float SlowFactor = 0.08f;
 
-        //NPC的速度快照，时缓激活瞬间抓取
+        //激活瞬间抓取的 NPC 速度
         internal static Vector2[] NPCCachedVelocities;
         internal static bool[] NPCHasCache;
-        //弹幕的速度快照
+        //弹幕速度快照
         internal static Vector2[] ProjCachedVelocities;
         internal static bool[] ProjHasCache;
 
@@ -38,7 +37,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             ProjHasCache = null;
         }
 
-        //开启时缓，记录当前场上所有敌对实体的速度
+        //开启：TimeGear 注册 + 快照速度
         public static void Activate() {
             if (IsActive) {
                 return;
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             SnapshotAllEntities();
         }
 
-        //关闭时缓，释放缓存的速度数据
+        //关闭：TimeGear 注销 + 清缓存
         public static void Deactivate() {
             if (!IsActive) {
                 return;
@@ -58,7 +57,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             ClearAllCache();
         }
 
-        //遍历场上所有合法目标，把它们当前的速度存下来
         private static void SnapshotAllEntities() {
             foreach (NPC npc in Main.ActiveNPCs) {
                 if (ShouldAffectNPC(npc)) {
@@ -80,10 +78,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             Array.Clear(ProjHasCache);
         }
 
-        //判断这个NPC是否应该被时缓影响
         internal static bool ShouldAffectNPC(NPC npc) => npc.active;
 
-        //判断这个弹幕是否应该被时缓影响
         internal static bool ShouldAffectProjectile(Projectile proj) {
             if (proj.friendly || proj.hide) {
                 return false;
@@ -91,7 +87,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             if (Main.projPet[proj.type] || proj.minion || Main.projHook[proj.type]) {
                 return false;
             }
-            //复用现有的冻结豁免表，免疫时停的弹幕也免疫时缓
+            //ImmuneFrozen 表：免疫时停则免疫时缓
             if (CWRLoad.ProjValue.ImmuneFrozen[proj.type]) {
                 return false;
             }

@@ -5,10 +5,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 屏幕中央目标锁定框渲染
-    /// <br/>在骇入模式锁定NPC时，围绕目标绘制赛博风准星框、十字线、旋转环、文字标签
-    /// </summary>
+    /// <summary>中央目标锁定框渲染</summary>
     internal static class HackTargetFrame
     {
         public static void Draw(SpriteBatch sb, float timer) {
@@ -18,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;
 
-            //从统一的目标抽象上读取所有锁定框元数据，无需再做按种类分支
+            //统一 IHackTarget 读取锁定框元数据
             IHackTarget target = HackTime.CurrentScanTarget;
             if (target == null || !target.IsValid) return;
 

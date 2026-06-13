@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         private float wavePhase = 0f;
         private float abyssPulse = 0f;
         private float panelPulse = 0f;
-        //着色器专用单调递增时间
+        // 着色器专用单调递增时间
         private float shaderTime = 0f;
         private const int ShaderEdgePad = 12;
         private readonly List<BubblePRT> bubbles = new();
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             Texture2D px = VaultAsset.placeholder2.Value;
 
             if (SeaShaderPanel.Available) {
-                //hoverGlow转为轻微冷调变亮,避免过曝
+                // hover 冷调提亮
                 float bright = MathHelper.Clamp(0.95f + hoverGlow * 0.30f, 0.0f, 1.4f);
                 Color tint = new Color(
                     (byte)Math.Min(255, (int)(220 * bright)),
@@ -52,11 +52,11 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             DrawFallbackPanel(spriteBatch, rect, alpha, hoverGlow);
         }
 
-        //降级面板:无shader环境使用原CPU堆叠绘制
+        // 降级 CPU 绘制
         private void DrawFallbackPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //深海渐层背景条
+            // 深海渐层背景条
             int segs = 26;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -77,10 +77,10 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //波浪横线
+            // 波浪横线
             DrawWaveLines(spriteBatch, rect, alpha * 0.65f);
 
-            //内边微光
+            // 内边微光
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1), new Color(30, 120, 150) * (alpha * (0.08f + hoverGlow * 0.5f) * (0.4f + (float)Math.Sin(panelPulse * 1.3f) * 0.6f)));

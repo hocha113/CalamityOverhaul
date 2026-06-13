@@ -1,22 +1,15 @@
 // ============================================================================
-// SignalTowerElectrified.fx  信号塔被雷击后的过电滤镜
-// 读取信号塔贴图自身作为遮罩，在其不透明像素上叠加流动电弧+整体辉光
-// 渲染方式：Additive 混合，在正常贴图之上再跑一遍 shader 得到附加光
-// 参数：
-//   uTime            全局时间
-//   electrifyProgress 过电进度 0~1，0=刚被劈 1=完全恢复
-//   seed             实例随机种子
-//   texelSize        1/width, 1/height
-//   intensity        整体强度系数
+// SignalTowerElectrified.fx 信号塔过电滤镜
+// 采样 uImage0 作遮罩；Additive 叠加
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
-float electrifyProgress;
-float seed;
-float2 texelSize;
-float intensity;
+float electrifyProgress;  //过电 0~1，0刚劈 1恢复
+float seed;               //实例随机种子
+float2 texelSize;         //1/宽 1/高
+float intensity;          //整体强度
 
 float hash11(float p)
 {

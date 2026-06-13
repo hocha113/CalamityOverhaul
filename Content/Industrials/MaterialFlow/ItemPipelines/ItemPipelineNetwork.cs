@@ -5,9 +5,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
-    /// <summary>
-    /// 路由项 - 表示从某管道到达某输入端点的下一跳信息
-    /// </summary>
+    /// <summary>路由项，管道到输入端的下一跳</summary>
     internal readonly struct RoutingEntry
     {
         /// <summary>下一跳方向(0上1下2左3右)；255 代表自身就是输入端</summary>
@@ -21,15 +19,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
     }
 
-    /// <summary>
-    /// 物流管道网络的全局路由管理器
-    /// <para>设计目标：</para>
-    /// <list type="bullet">
-    /// <item>用一次性的多源BFS生成"任意管道→任意输入端的下一跳"路由表，运行时查询O(1)。</item>
-    /// <item>仅在拓扑变化时按节流间隔重建，远端管道仍正常更新自身状态，但不再每帧重复全网BFS。</item>
-    /// <item>由 SideState 主动标脏（连接类型变化、模式切换、管道生灭），最大延迟由强制重建保底。</item>
-    /// </list>
-    /// </summary>
+    /// <summary>物流管网全局路由，拓扑脏时节流 BFS 重建，查询 O(1)</summary>
     internal static class ItemPipelineNetwork
     {
         //每个管道位置 -> {输入端点位置 -> 路由项}
@@ -67,16 +57,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         public static int CurrentTopologyVersion => TopologyVersion;
 
-        /// <summary>
-        /// 通知网络拓扑发生变化，下一次 EnsureBuilt 会按节流策略重建
-        /// </summary>
+        /// <summary>拓扑变化，EnsureBuilt 将节流重建</summary>
         public static void MarkDirty() {
             unchecked { TopologyVersion++; }
         }
 
-        /// <summary>
-        /// 在每帧由任意一个管道调用 - 按需重建，已经重建则极轻量
-        /// </summary>
+        /// <summary>每帧按需重建，已建则极轻</summary>
         public static void EnsureBuilt() {
             int currentFrame = (int)Main.GameUpdateCount;
             bool topologyChanged = TopologyVersion != CachedVersion;
@@ -99,9 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             _ => -1
         };
 
-        /// <summary>
-        /// 全量重建路由表
-        /// </summary>
+        /// <summary>全量重建路由表</summary>
         private static void Rebuild() {
             RoutingTables.Clear();
             SortedInputsPerPipeline.Clear();
@@ -130,7 +114,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 return;
             }
 
-            //从每个输入端点单独BFS, 在所有可达管道上记录"下一跳指向该输入"
+            //逐输入端 BFS，记录邻居回指下一跳
             foreach (var input in inputs) {
                 BfsQueue.Clear();
                 BfsVisited.Clear();
@@ -138,7 +122,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 BfsQueue.Enqueue((input, 0));
                 BfsVisited.Add(input.Position);
 
-                //输入端自身也写入路由表(距离0,方向哨兵), 方便外部判断是否可达
+                //输入端自身写入哨兵路由
                 EnsureTable(input.Position)[input.Position] = new RoutingEntry(byte.MaxValue, 0);
 
                 while (BfsQueue.Count > 0) {
@@ -162,7 +146,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                         }
                         BfsVisited.Add(nbr.Position);
 
-                        //从邻居走"backDir"方向回到我们 = 邻居指向当前输入端的下一跳方向
+                        //邻居经 backDir 回到当前，即其下一跳
                         int backDir = OppositeDir(dir);
                         ushort newDist = (ushort)(dist + 1);
 
@@ -174,7 +158,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
             }
 
-            //按距离升序整理每个管道的输入列表(运行期遍历更高效)
+            //各管道输入列表按距离排序
             foreach (var (pos, table) in RoutingTables) {
                 List<Point16> sortedInputs = new(table.Count);
                 foreach (var key in table.Keys) {
@@ -195,30 +179,22 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             return table;
         }
 
-        /// <summary>
-        /// 从指定管道到指定输入端的下一跳
-        /// </summary>
+        /// <summary>管道到输入端的下一跳</summary>
         public static bool TryGetRouting(Point16 fromPipeline, Point16 toInput, out RoutingEntry entry) {
             entry = default;
             return RoutingTables.TryGetValue(fromPipeline, out var table)
                    && table.TryGetValue(toInput, out entry);
         }
 
-        /// <summary>
-        /// 获取从指定管道按"距离升序"可达的所有输入端点列表 (只读, 不要修改)
-        /// </summary>
+        /// <summary>可达输入端列表，只读勿改</summary>
         public static List<Point16> GetReachableInputs(Point16 fromPipeline) {
             return SortedInputsPerPipeline.TryGetValue(fromPipeline, out var list) ? list : null;
         }
 
-        /// <summary>
-        /// 是否存在任意已知输入端
-        /// </summary>
+        /// <summary>是否存在已知输入端</summary>
         public static bool HasAnyKnownInput() => KnownInputs.Count > 0;
 
-        /// <summary>
-        /// 在世界卸载或重置时清理状态
-        /// </summary>
+        /// <summary>世界卸载清理</summary>
         public static void Clear() {
             RoutingTables.Clear();
             SortedInputsPerPipeline.Clear();

@@ -1,11 +1,11 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices.Styles;
+using CalamityOverhaul.Content.ADV.ADVChoices.Styles;
 using System;
 using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
     /// <summary>
-    /// 选项框样式工厂，用于创建和管理样式实例
+    /// 选项框样式工厂
     /// </summary>
     internal static class ChoiceBoxStyleUtils
     {
@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 return creator();
             }
 
-            return new DefaultChoiceBoxStyle(); //默认样式
+            return new DefaultChoiceBoxStyle(); // 默认样式
         }
 
         /// <summary>

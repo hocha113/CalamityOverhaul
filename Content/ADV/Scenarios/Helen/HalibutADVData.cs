@@ -1,7 +1,7 @@
-﻿namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
+namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 {
     /// <summary>
-    /// 比目鱼/海伦基础剧情线的存档数据
+    /// 海伦线存档数据
     /// </summary>
     public class HalibutADVData : ADVDataModule
     {

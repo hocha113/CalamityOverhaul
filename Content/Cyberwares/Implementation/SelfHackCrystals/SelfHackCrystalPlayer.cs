@@ -7,11 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
 {
-    /// <summary>
-    /// 自骇水晶向 RAM 系统提供的修饰器
-    /// <br/>以单例方式挂入 <see cref="RamSystem"/>，每帧聚合时自查装备状态决定是否生效，
-    /// 与 <see cref="CstmVisualEyes.CstmVisualEyeRamProvider"/> 保持完全一致的设计模式
-    /// </summary>
+    /// <summary>自骇水晶 RAM 修饰器，OnEnterWorld 挂入，IsActive 自查装备</summary>
     internal sealed class SelfHackCrystalRamProvider : IRamModifierProvider
     {
         public int MaxRamBonus => 0;
@@ -20,18 +16,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
     }
 
     /// <summary>
-    /// 自骇水晶的玩家组件
-    /// <list type="bullet">
-    ///   <item>OnEnterWorld 阶段把 RAM 修饰器挂入本机玩家的 <see cref="RamSystem"/></item>
-    ///   <item>响应 <see cref="CWRKeySystem.CyberwareSkill_Key"/> 的"刚按下"事件触发自骇技能</item>
-    ///   <item>维护本机玩家的技能冷却倒计时</item>
-    /// </list>
+    /// 自骇水晶 ModPlayer，RAM 注册与技能冷却
+    /// <br/>CyberwareSkill_Key 刚按下经 Skill.OnInstantTrigger 触发自骇
     /// </summary>
     internal class SelfHackCrystalPlayer : ModPlayer
     {
-        /// <summary>
-        /// 自骇技能剩余冷却帧数，0 时可再次释放
-        /// </summary>
+        /// <summary>技能冷却剩余帧，0 可释放</summary>
         public int SkillCooldownTimer { get; private set; }
 
         public override void OnEnterWorld() {
@@ -58,10 +48,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             }
         }
 
-        /// <summary>
-        /// 由 <see cref="SelfHackCrystalSkill.OnInstantTrigger"/> 调用，尝试触发一次自骇
-        /// <br/>所有失败路径（冷却中、RAM 不足）都通过短促音效与 RAM 闪烁给出反馈
-        /// </summary>
+        /// <summary>Skill.OnInstantTrigger 入口，冷却/RAM 不足播失败音</summary>
         public void TryFireSelfHackFromRadial() {
             if (Player.whoAmI != Main.myPlayer) {
                 return;
@@ -84,9 +71,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             TryFireSelfHack();
         }
 
-        /// <summary>
-        /// 实际触发自骇：扣 RAM、清 debuff、给无敌、播粒子和音效
-        /// </summary>
+        /// <summary>扣 RAM、清 debuff、给无敌，immuneTime 取 max 防覆盖</summary>
         private void TryFireSelfHack() {
             if (!RamSystem.TryConsume(SelfHackCrystal.SkillRamCost)) {
                 //保险：极端时序下 RAM 已被其他事件耗尽
@@ -122,9 +107,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             SpawnSelfHackParticles(cleared);
         }
 
-        /// <summary>
-        /// 自骇释放粒子：以玩家为中心向外辐散青色脉冲环 + 几道斜向闪光
-        /// </summary>
+        /// <summary>自骇粒子，环数随 cleared debuff 数提升</summary>
         private void SpawnSelfHackParticles(int debuffsCleared) {
             //外环脉冲粒子，数量随被清的 debuff 数提升
             int rings = 24 + Math.Min(debuffsCleared, 6) * 4;

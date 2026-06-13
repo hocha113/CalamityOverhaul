@@ -13,11 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 {
-    /// <summary>
-    /// 风暴女神之矛的持握弹幕
-    /// <br/>三段连击: 快速突刺 → 横扫 → 上挑，每段释放不同形态的风暴闪电
-    /// <br/>横扫/上挑的电弧刀光由 StormSlashTrail.fx 渲染
-    /// </summary>
+    /// 风暴女神之矛手持：三段连击突刺/横扫/上挑，电弧刀光 StormSlashTrail.fx
     internal class StormGoddessSpearHeld : BaseHeldProj, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Projectile_Melee + "StormGoddessSpearProj";
@@ -25,12 +21,12 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
         private const int FrameCount = 8;
 
-        /// <summary>连击索引: 0=快速突刺 1=横扫 2=上挑</summary>
+        /// 连击索引 0刺 1扫 2挑
         private int ComboCounter => (int)Projectile.ai[0] % 3;
 
         private bool IsThrust => ComboCounter == 0;
 
-        //阶段时长（逻辑帧，受攻速缩放）
+        //阶段时长(逻辑帧，攻速缩放)
         private float WindupTime => ComboCounter switch { 0 => 3f, 1 => 5f, _ => 6f };
         private float ActiveTime => ComboCounter switch { 0 => 6f, 1 => 11f, _ => 12f };
         private float RecoverTime => ComboCounter switch { 0 => 7f, 1 => 7f, _ => 8f };
@@ -42,16 +38,16 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         //矛刃判定长度（从持握点向矛尖延伸）
         private const float BladeLength = 135f;
 
-        /// <summary>闪电颜色风格，统一为白蓝色系</summary>
+        /// 闪电颜色(白蓝系)
         private int lightningColorStyle = 1;
 
         private float elapsed;
         private float speedMul = 1f;
         private int lockedDirection = 1;
         private int swingSign = 1;
-        /// <summary>矛身当前指向</summary>
+        /// 矛身指向
         private Vector2 bladeUnit;
-        /// <summary>突刺持出距离（横扫/上挑时为固定值）</summary>
+        /// 突刺持距
         private float holdout;
         private float startAngle;
         private float endAngle;
@@ -62,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         private float trailFade;
         private readonly HashSet<int> hitNPCs = [];
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑（仅横扫/上挑段使用）
+        //刀光轨迹缓存(横扫/上挑)
         private const int TrailMax = 56;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -265,9 +261,9 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
                 );
             }
             else if (ComboCounter == 1) {
-                //第二击：三道优雅扇形闪电
+                //第二击三道扇形闪电
                 for (int i = -1; i <= 1; i++) {
-                    //黄金角度分布：中间更密，两侧更开
+                    //黄金角分布
                     float angle = i * 0.25f * (1f + MathF.Abs(i) * 0.2f);
                     Vector2 velocity = aim.RotatedBy(angle);
 
@@ -316,12 +312,10 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>闪电与冲击波的生成位置</summary>
+        /// 闪电/冲击波生成点
         private Vector2 LightningSpawnPos => Owner.GetPlayerStabilityCenter() + UnitToMouseV * 60f;
 
-        /// <summary>
         /// 生成玩家闪电
-        /// </summary>
         private void SpawnPlayerLightning(
             Vector2 velocity,
             float damageMultiplier,
@@ -330,8 +324,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             float widthScale = 1f,
             float speedScale = 1f) {
 
-            //使用ai[2]传递宽度缩放：原值 + 1000 * widthScale
-            //例如：colorStyle=1, widthScale=0.7 → ai2 = 1 + 700 = 701
+            //ai[2]编码宽度: colorStyle + 1000*widthScale
             int ai2Value = colorStyle;
             if (disableHoming) ai2Value += 100;
             ai2Value += (int)(1000 * widthScale); //编码宽度缩放
@@ -350,9 +343,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             );
         }
 
-        /// <summary>
-        /// 生成冲击波粒子
-        /// </summary>
+        /// 冲击波粒子
         private void SpawnShockwaveParticles() {
             Color particleColor = GetLightningColorForStyle(lightningColorStyle);
             Vector2 spawnPos = LightningSpawnPos;
@@ -377,9 +368,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 获取指定风格的闪电颜色（统一为白蓝色系）
-        /// </summary>
+        /// 闪电颜色(白蓝系)
         private Color GetLightningColorForStyle(int style) {
             return style switch {
                 1 => new Color(200, 230, 255), //亮白蓝（第一击）
@@ -408,7 +397,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //转发物品命中钩子，维持装备与饰品的近战联动
+            //转发物品命中钩子
             if (hitNPCs.Add(target.whoAmI)) {
                 ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
                 NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
@@ -429,9 +418,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 生成暴击电弧
-        /// </summary>
+        /// 暴击电弧
         private void SpawnCriticalArcs(NPC target) {
             if (!Projectile.IsOwnedByLocalPlayer()) return;
 
@@ -457,9 +444,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
             }
         }
 
-        /// <summary>
-        /// 生成命中粒子
-        /// </summary>
+        /// 命中粒子
         private void SpawnHitParticles(NPC target) {
             Color particleColor = GetLightningColorForStyle(lightningColorStyle);
 
@@ -537,7 +522,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             var bars = new VertexPositionColorTexture[trailCount * 2];
             Vector2 center = Owner.GetPlayerStabilityCenter();
-            //与绘制几何对齐：矛体中心在 holdout 处，矛尖视觉上延伸约半张贴图对角线
+            //矛尖延伸约半张贴图对角
             float outer = holdout + 142f;
             float inner = 56f;
             for (int i = 0; i < trailCount; i++) {

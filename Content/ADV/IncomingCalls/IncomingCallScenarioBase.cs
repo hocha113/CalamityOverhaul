@@ -6,10 +6,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.IncomingCalls
 {
     /// <summary>
-    /// 来电场景基类——封装来电的立绘注册、台词构建和呼出流程，
-    /// 使用方式类似 <see cref="Scenarios.ADVScenarioBase"/>：
-    /// 子类重写 <see cref="Build"/> 注册立绘并添加台词，
-    /// 外部调用 <see cref="Start"/> 即可发起来电
+    /// 来电场景基类——立绘注册、台词构建与呼出
+    /// 用法同 <see cref="Scenarios.ADVScenarioBase"/>：重写 <see cref="Build"/>，调用 <see cref="Start"/>
     /// </summary>
     internal abstract class IncomingCallScenarioBase : VaultType<IncomingCallScenarioBase>, ILocalizedModType
     {
@@ -120,7 +118,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         #endregion
 
         /// <summary>
-        /// 发起来电——构建台词并呼出
+        /// 发起来电，构建台词并呼出
         /// </summary>
         public void Start() {
             lines.Clear();

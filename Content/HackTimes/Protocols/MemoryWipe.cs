@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 记忆清除：抹除目标短期记忆使其失去仇恨
-    /// </summary>
+    /// <summary>记忆清除，抹除仇恨</summary>
     internal class MemoryWipe : QuickHackDef
     {
         public override void SetDefaults() {
@@ -23,16 +21,16 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             NPC npc = Main.npc[s.NpcIndex];
             EmitApplyParticles(npc);
             CombatText.NewText(npc.Hitbox, new Color(80, 255, 200), HackTime.MemoryWiped.Value, true);
-            //群组扩散涉及向 HackEffectTracker 注册新效果，仅在施法端进行
+            //群组扩散仅施法端注册效果
             if (!HackTimeNetSync.IsRemoteApply) {
-                //群组扩散，蠕虫体节、月总实体共同失忆，HasEffect 短路防止无限递归
+                //群组扩散，HasEffect 短路防递归
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitApplyParticles);
             }
             return true;
         }
 
-        //初始数据溶解粒子，抽出复用给群组成员
+        //初始溶解粒子，群组成员复用
         private static void EmitApplyParticles(NPC npc) {
             for (int i = 0; i < 10; i++) {
                 Vector2 pos = npc.Center + Main.rand.NextVector2Circular(

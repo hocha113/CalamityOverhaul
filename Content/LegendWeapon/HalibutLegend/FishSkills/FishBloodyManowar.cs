@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Color drawColor = lightColor * dissipateAlpha;
 
-            //多层阴影增强深度感
+            //多层阴影
             for (int i = 0; i < 3; i++) {
                 Vector2 shadowOffset = new Vector2(i * 2f, i * 2f);
                 Main.EntitySpriteDraw(texture, drawPos + shadowOffset, null,
@@ -562,7 +562,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = warpTex.Size() / 2f;
 
-            //多层旋转增强冲击力
+            //多层旋转
             for (int i = 0; i < 5; i++) {
                 float layerAlpha = fadeAlpha * (1f - i * 0.15f);
                 float layerScale = Projectile.scale * (1f + i * 0.12f);

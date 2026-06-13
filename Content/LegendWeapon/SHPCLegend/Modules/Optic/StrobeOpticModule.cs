@@ -4,10 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 频闪瞄具：光束每16帧交替切换穿墙状态，模拟数据频闪穿透
-    /// 命中时有30%概率使目标混乱
-    /// </summary>
+    /// <summary>频闪瞄具：光束每 16 帧交替穿墙，命中 30% 混乱</summary>
     internal sealed class StrobeOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

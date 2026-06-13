@@ -6,9 +6,8 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 {
     /// <summary>
-    /// 研究祭坛：悬浮在技能海域顶部（海面）的环形祭坛
-    /// 把可研究的鱼放入，计时完成后点亮对应技能节点
-    /// 研究数据存于 <see cref="HalibutSave"/>（计时在数据层推进，UI只负责交互与表现）
+    /// 研究祭坛，悬浮于海域顶部的环形投入点
+    /// 计时完成后点亮对应技能节点；数据在 <see cref="HalibutSave"/>，UI 管交互与表现
     /// </summary>
     internal class AtlasStudyAltar
     {
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 float progress = save.IsStudying
                     ? MathHelper.Clamp(save.StudyTimer / (float)save.StudyDuration, 0f, 1f)
                     : 0f;
-                //被研究的鱼：缓慢旋转漂浮 + 随进度透明化（溶解感）
+                //研究中鱼：慢旋 + 随进度淡出
                 float dissolve = 1f - progress * 0.55f;
                 float bob = MathF.Sin(time * 1.6f) * 3f;
                 float itemRot = MathF.Sin(time * 0.8f) * 0.18f;
@@ -154,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 }
             }
             else {
-                //空祭坛：中心一点幽光
+                //空祭坛中心光点
                 HalibutRenderer.DrawDisc(sb, center, 3.4f + breath * 1.5f, 3f,
                     HalibutTheme.GlowHi * ((0.5f + breath * 0.3f) * alpha));
             }

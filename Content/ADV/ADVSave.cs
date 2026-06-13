@@ -5,9 +5,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.ADV
 {
     /// <summary>
-    /// ADV数据聚合器。自动发现并管理所有<see cref="ADVDataModule"/>子类，
-    /// 提供统一的存档读写和旧版兼容能力
-    /// 新增剧情线只需创建新的ADVDataModule子类，无需修改此处
+    /// ADV 数据聚合器，自动管理 <see cref="ADVDataModule"/> 子类
     /// </summary>
     public class ADVSave
     {
@@ -50,11 +48,11 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         public virtual void LoadData(TagCompound tag) {
-            //旧版扁平格式（v0/v1）由迁移工具类统一处理
+            // v0/v1 扁平格式走 ADVLegacyMigration
             if (ADVLegacyMigration.TryLoadFromFlatFormat(tag, _modules.Values)) {
                 return;
             }
-            //当前v2分层格式：按模块SaveKey读取各自的子TagCompound
+            // v2：按 SaveKey 读子 TagCompound
             foreach (var module in _modules.Values) {
                 if (tag.TryGet<TagCompound>(module.SaveKey, out var moduleTag)) {
                     module.LoadFields(moduleTag);

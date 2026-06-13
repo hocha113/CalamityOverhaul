@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 谐振握把：生物电传导使命中时溢出的法力凝成「谐振灵雾」散落战场，
-    /// 灵雾缓缓飘向玩家，拾取后返还法力并叠加「谐鸣」层数（每层+3%攻速，最多5层）
-    /// 血肉墙礼物 —— 灵魂回响主题，鼓励边走位边收集的节奏型续航玩法
-    /// </summary>
+    /// <summary>谐振握把：命中溢流灵雾，拾取回蓝叠谐鸣层（最多 5 层 +3% 攻速）</summary>
     internal sealed class HarmonyGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;
@@ -84,10 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         }
     }
 
-    /// <summary>
-    /// 谐振灵雾：不造成伤害的拾取物弹幕。先向外漂散降速，随后缓缓追随玩家，
-    /// 触碰后返还法力、叠加谐鸣层并播放轻音效；超时自然消散
-    /// </summary>
+    /// <summary>谐振灵雾拾取弹幕：漂移后追随玩家，触 pickup 回蓝叠层</summary>
     internal sealed class SHPCHarmonyWispProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

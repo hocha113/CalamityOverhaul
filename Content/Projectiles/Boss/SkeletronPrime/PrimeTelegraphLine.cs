@@ -8,14 +8,13 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
     /// <summary>
-    /// 机械骷髅王通用预警弹幕：线 / 扇形 / 圆环 三模式，纯视觉不可伤害。
+    /// 机械骷髅王通用预警：线/扇/环三模式，纯视觉无伤害
     /// <br/>ai[0] = 模式 + 扇形半角编码（mode = 整数部分 0线/1扇/2环；小数部分×10 = 扇形半角弧度）
     /// <br/>ai[1] = 旋转（线/扇，弧度）或 半径（环，像素）
     /// <br/>ai[2] = 总时长（帧）；充能进度由 timeLeft 推导，各端确定性动画无需额外同步
-    /// <para>渲染约定：线模式（冲刺预判）为纯贴图多层绘制，不经过任何着色器；
-    /// 扇/环模式经 <c>PrimeTelegraph.fx</c> 的两个独立 technique 显式选择——
-    /// 严禁回到"单着色器 + uniform 模式分支"的写法（MojoShader 分支翻译不可靠，
-    /// 曾把环形代码画上线形面片渲染出莫名的细长椭圆）。</para>
+    /// <para>线模式(冲刺预判)纯贴图多层绘制，不经着色器；
+    /// 扇/环经 <c>PrimeTelegraph.fx</c> 两 technique 显式选择，禁止单着色器+uniform 分支
+    /// (MojoShader 分支不可靠，曾把环画成细长椭圆)</para>
     /// </summary>
     internal class PrimeTelegraphLine : ModProjectile
     {
@@ -76,9 +75,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         #region 线模式：冲刺预判（纯贴图，零着色器依赖）
 
         /// <summary>
-        /// 冲刺预判警戒线：全长暗红基线指示弹道 + 充能亮段自根部推进 +
-        /// 前端光点 + 根部辉光；临发射 20% 整体白热化。
-        /// 充能段长度 = 进度 × 全长，玩家直读"亮段推满 = 起跳"。
+        /// 冲刺预判线：暗红基线+充能亮段自根推进+前端光点+根部辉光，末 20% 白热化
+        /// 充能段长度=进度×全长，亮段推满即起跳
         /// </summary>
         private void DrawDashTelegraph() {
             Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");

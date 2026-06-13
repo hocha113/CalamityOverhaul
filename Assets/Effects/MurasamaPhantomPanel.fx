@@ -1,13 +1,6 @@
 // ============================================================================
-// MurasamaPhantomPanel.fx — 鬼妖村正委托面板着色器
-// 灵感:合金装备崛起复仇(MGR:R) 雷电Jack the Ripper血狂模式
-// 黑曜+猩红渐变底 / 倾斜利刃扫光 / 数据腐蚀 / 血雾Fbm / 边缘血光脉冲
-// 目的:取代原军绿iDroid风格,用赤红血气贴合鬼妖村正主题
-//
-// uVariant : 0=条目(更紧凑) 1=追踪窗口(更立体)
-// uIntensity: 0~1 整体强度(hover/select/Tracked时升高)
-// uPulse   : 0~1 慢速脉动(由调用方提供呼吸信号)
-// uAccent  : RGB状态色(归一化),融入边缘光晕
+// MurasamaPhantomPanel.fx 鬼妖村正委托面板背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -15,11 +8,11 @@ sampler uImage0 : register(s0);
 float  uTime;
 float  uAlpha;
 float2 uResolution;
-float  uEdgePad;
-float  uVariant;
-float  uIntensity;
-float  uPulse;
-float3 uAccent;
+float  uEdgePad;      //面板内缩边距
+float  uVariant;      //0条目 1追踪窗口
+float  uIntensity;    //0~1 hover/select/Tracked
+float  uPulse;        //0~1 慢速脉动
+float3 uAccent;       //RGB 状态色
 
 #define PI  3.14159265
 #define TAU 6.28318530

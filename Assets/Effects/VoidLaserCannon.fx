@@ -1,19 +1,20 @@
-//虚空聚落巨型激光炮台专用着色器
-//表现为一条高密度等离子能量柱：炽白核心+紫色等离子层+柔和靛蓝外晕，沿束湍流
-//不含任何环状结构，避免可见的"同心环"违和感
+// ============================================================================
+// VoidLaserCannon.fx 虚空聚落激光炮束
+// 炽白核心+紫等离子外晕；s0 束体 s1 噪声；Additive
+// ============================================================================
 
-sampler uImage0 : register(s0); //承载激光贴图(白色占位即可)
-sampler uImage1 : register(s1); //扰动噪声纹理
+sampler uImage0 : register(s0); //束体
+sampler uImage1 : register(s1); //扰动噪声
 
 float uTime;
-float uOpacity;
-float uIntensity;
-float uCoreIntensity;
-float uPulseSpeed;
-float uDistortionStrength;
-float uBeamLength;
-float uBeamWidth;
-float uPhaseBlend;
+float uOpacity;               //整体透明度
+float uIntensity;             //总强度
+float uCoreIntensity;       //核心亮度倍率
+float uPulseSpeed;          //沿束脉冲速度
+float uDistortionStrength;  //湍流扰动强度
+float uBeamLength;          //束长(顶点)
+float uBeamWidth;           //束宽(顶点)
+float uPhaseBlend;          //0细线预警 1全宽
 
 static const float3 CoreWhite     = float3(1.0, 0.97, 1.0);
 static const float3 HotPink       = float3(1.0, 0.55, 0.95);

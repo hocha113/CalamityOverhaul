@@ -1,26 +1,16 @@
 // ============================================================================
-// BreachMatrixAxisHighlight.fx
-// 破译小游戏行列高亮条——蓝色科技感半透明色带
-//   - 横切方向柔和高斯渐变（中心亮、两侧羽化）
-//   - 极细中央光线（仅1~2像素，位于带的正中）
-//   - 两端轻微羽化，避免硬切
-//   - 缓慢的呼吸明度变化，不引入高频条纹/脉冲
-// 参数：
-//   uOrientation 0=水平 1=垂直
-//   uIntensity   总强度，用于点击脉冲衰减
-//   uColor       主色（RGB）
-//   uResolution  矩形像素尺寸
-//   uCoreWeight  保留供未来调节中心光亮度
+// BreachMatrixAxisHighlight.fx 破译小游戏行列高亮条
+// AlphaBlend
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
-float uIntensity;
-float4 uColor;
-float2 uResolution;
-float uOrientation;
-float uCoreWeight;
+float uIntensity;     //总强度，点击脉冲衰减
+float4 uColor;        //主色 RGB
+float2 uResolution;   //矩形像素尺寸
+float uOrientation;   //0水平 1垂直
+float uCoreWeight;    //中心光亮度权重
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {

@@ -8,10 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 共振反应堆：蓄力期间每秒生成一次共振环（视觉粒子+轻量震荡），引爆时玩家脚下额外触发一次共振冲击
-    /// 视觉脉冲只在弹幕拥有者侧本机推进，伤害弹幕由本机生成
-    /// </summary>
+    /// <summary>共振反应堆：蓄力周期共振环，引爆时脚下额外冲击</summary>
     internal sealed class ResonanceReactorModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

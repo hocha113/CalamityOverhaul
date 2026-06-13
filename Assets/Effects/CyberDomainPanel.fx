@@ -1,24 +1,16 @@
 // ============================================================================
-// CyberDomainPanel.fx —— 赛博空间领域控制面板专属背景着色器
-// 主题：黑墙AI 深红 + 数据墙故障 + 三层领域呼吸 + RGB色散扫描
-// 输入参数：
-//   uTime        累计时间
-//   uAlpha       全局不透明度
-//   uResolution  绘制矩形像素尺寸
-//   uEdgePad     面板内缩边距
-//   uLayer       当前领域层数 0..3 (浮点过渡)
-//   uIntensity   领域整体强度 0..1
-// 渲染方式：sb.Begin(Immediate, AlphaBlend, ..., effect)
+// CyberDomainPanel.fx 赛博空间领域控制面板背景
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float2 uResolution;
-float uEdgePad;
-float uLayer;
-float uIntensity;
+float2 uResolution;  //绘制矩形像素尺寸
+float uEdgePad;      //面板内缩边距
+float uLayer;        //当前领域层数 0..3 浮点过渡
+float uIntensity;    //领域整体强度 0..1
 
 float hash11(float p) {
     p = frac(p * 0.1031);

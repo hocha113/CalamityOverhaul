@@ -184,9 +184,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 单条闪光皇后鱼的承载弹幕，静止环绕并按顺序发射激光
-    /// 多人模式下采用持有者权威 + 确定性本地推进的混合策略，
-    /// 关键状态（AimDirection、ShootDir、本地计时）通过 OnSpawn 与 SendExtraAI 跨端同步
+    /// 闪光皇后鱼承载弹幕，静止环绕并按序发射激光
+    /// 持有者权威 + 确定性推进；AimDirection、ShootDir、LocalTimer 经 OnSpawn/SendExtraAI 同步
     /// </summary>
     internal class SparklingFishHolder : ModProjectile
     {
@@ -209,9 +208,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public sbyte ShootDir => AimDirection.X >= 0 ? (sbyte)1 : (sbyte)-1;
 
         /// <summary>
-        /// 本地确定性计时器，从 0 开始递增，每帧 +1
-        /// 由于鱼在所有端的生成时刻一致，该计时器在各端会自然保持同步
-        /// 持有者会每 60 帧触发一次 netUpdate 把 LocalTimer 同步给其它端做兜底
+        /// 本地确定性计时，从 0 每帧 +1
+        /// 各端生成时刻一致故自然同步；持有者每 60 帧 netUpdate 兜底
         /// </summary>
         public int LocalTimer;
 

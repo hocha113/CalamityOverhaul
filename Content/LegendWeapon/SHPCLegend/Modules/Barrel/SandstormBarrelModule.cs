@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 砂暴枪管：连续光束在前方卷起砂幕，磨蚀敌人并削弱穿过的敌对弹幕。
-    /// </summary>
+    /// <summary>砂暴枪管：光束卷起砂幕，磨蚀敌人并削弱敌对弹幕</summary>
     internal sealed class SandstormBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -46,9 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 砂暴幕：Cyclone 旋涡 + Airflow 流场 + Fog 体积，磨蚀敌方弹幕时投出 GammaIonize 标记，玩家在内时附微震
-    /// </summary>
+    /// <summary>砂幕弹幕：旋涡+流场+Fog，磨蚀标记</summary>
     internal sealed class SHPCSandCurtainProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

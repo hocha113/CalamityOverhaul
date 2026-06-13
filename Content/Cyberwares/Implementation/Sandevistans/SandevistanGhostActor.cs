@@ -7,9 +7,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>
-    /// 斯安威斯坦残影实体，每个实例代表一个玩家在某一帧的视觉快照。
-    /// 使用 <see cref="ActorDrawLayer.BeforePlayers"/> 层级绘制，确保残影出现在玩家身后。
-    /// 绘制采用 RT 架构：所有残影先绘制到独立 RenderTarget，再通过着色器统一处理后合成到屏幕。
+    /// 斯安威斯坦残影 Actor，单帧玩家快照
+    /// <br/>BeforePlayers 层；RT 批量绘→着色器合成
     /// </summary>
     internal class SandevistanGhostActor : Actor
     {
@@ -61,7 +60,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            //每帧只由第一个被绘制的残影触发一次批量RT渲染，后续残影直接跳过
+            //每帧首个残影触发一次批量 RT
             if (Main.GameUpdateCount == lastBatchDrawFrame) {
                 return false;
             }
@@ -78,19 +77,18 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             //保存当前渲染目标
             RenderTargetBinding[] previousTargets = gd.GetRenderTargets();
 
-            //结束 ActorLoader 的批次
+            //结束 ActorLoader 批次
             spriteBatch.End();
 
-            //标记 SpriteBatch 的状态，确保异常路径下也能恢复 ActorLoader 期望的批次
+            //异常路径也须恢复 ActorLoader 批次
             bool batchActive = false;
 
             try {
-                // === Phase 1: 将所有残影绘制到独立RT ===
+                //Phase1：残影绘入 ghostRT
                 gd.SetRenderTarget(ghostRT);
                 gd.Clear(Color.Transparent);
 
-                //PlayerRenderer.DrawPlayer 内部管理自己的 Begin/End
-                //需要一个活跃批次让它的首次 End 不崩溃
+                //DrawPlayer 自管 Begin/End，先开批次防 End 崩溃
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                     SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
                 batchActive = true;
@@ -116,7 +114,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 spriteBatch.End();
                 batchActive = false;
 
-                // === Phase 2: 切换回原始RT，用着色器处理ghost RT后绘制到屏幕 ===
+                //Phase2：ghostRT 合成回主屏
                 RestorePreviousTargets(gd, previousTargets);
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
@@ -134,7 +132,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 RestorePreviousTargets(gd, previousTargets);
             }
 
-            //恢复 ActorLoader 所需的原始批次（无论成功失败都需要）
+            //恢复 ActorLoader 批次
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer,
                 null, Main.GameViewMatrix.TransformationMatrix);
@@ -142,7 +140,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             return false;
         }
 
-        //直接借用源玩家做位置快照绘制，避免使用未初始化的 new Player() 触发 BoringSetup_End 除零
+        //借用源玩家快照绘制，避免 new Player() 除零
         private static void DrawGhostFromSource(Player source, SandevistanGhostActor ghost) {
             //保存原始状态
             Vector2 origPosition = source.position;
@@ -169,7 +167,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 source.fullRotation = ghost.SnapshotFullRotation;
                 source.fullRotationOrigin = ghost.SnapshotFullRotationOrigin;
 
-                //颜色渐变：蓝 → 青绿，仅用 A 通道控制淡出
+                //蓝→青绿 tint，A 通道淡出
                 float fadeProgress = 1f - ghost.Alpha;
                 Color startColor = new Color(0, 180, 255, 255);
                 Color endColor = new Color(0, 255, 200, 255);

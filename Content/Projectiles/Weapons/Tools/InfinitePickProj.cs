@@ -93,13 +93,13 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
 
         private void ProcessTile(Tile tile, Vector2 tilePos) {
             tile.LiquidAmount = 0;
-            tilePos /= 16;//坐标默认为世界实体坐标，所以需要除以16进行换算
+            tilePos /= 16;//世界坐标转格坐标
             if (VaultUtils.TryKillChest(tilePos.ToPoint16(), out var chestItems, true, false, false)) {
                 foreach (var item in chestItems) {
                     dropTypes.Add(item.type);
                 }
             }
-            //判断是否进行挖掘
+            //挖掘判定
             if (tile.HasTile && WorldGen.CanKillTile((int)tilePos.X, (int)tilePos.Y)) {
                 if (VaultUtils.IsTopLeft((int)tilePos.X, (int)tilePos.Y, out _)) {
                     int dorptype = tile.GetTileDrop((int)tilePos.X, (int)tilePos.Y);
@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Tools
                 }
                 WorldGen.KillTile((int)tilePos.X, (int)tilePos.Y, noItem: true);
             }
-            //锤子形态下才能拆墙
+            //锤形态才可拆墙
             if (Projectile.ai[0] == 0 && tile.WallType != WallID.None) {
                 if (CWRLoad.WallToItem.TryGetValue(tile.WallType, out int wallValue) && wallValue != 0) {
                     dropTypes.Add(wallValue);

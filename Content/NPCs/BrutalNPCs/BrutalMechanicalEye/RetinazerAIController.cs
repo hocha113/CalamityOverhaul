@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 {
-    /// <summary>
-    /// 激光眼AI控制器
-    /// 继承自双子魔眼基类
-    /// </summary>
+    /// <summary>激光眼 AI 控制器，继承 <see cref="TwinsAIController"/></summary>
     internal class RetinazerAIController : TwinsAIController
     {
         public override int TargetID => NPCID.Retinazer;

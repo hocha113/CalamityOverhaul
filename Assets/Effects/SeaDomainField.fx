@@ -1,7 +1,6 @@
 // ============================================================================
-// SeaDomainField.fx — 海洋领域场着色器
-// 程序化深海领域：焦散光网 + 波动环界 + 深海渐变 + 暗流涌动 + 深海微光
-// 替代CPU侧逐段线段绘制，单次DrawCall渲染整个领域视觉场
+// SeaDomainField.fx 海洋领域场
+// s0+s1 噪声；单 DrawCall 全领域
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -29,7 +28,7 @@ float3 causticColor;    //焦散光纹色
 float3 ringInnerColor;  //内层环色
 float3 ringOuterColor;  //外层环色
 
-// ---- 焦散光网生成 ----
+// 焦散光网生成
 // 双层域扭曲纹理噪声取最小值，模拟水面折射产生的明暗光网
 float causticPattern(float2 p, float time)
 {

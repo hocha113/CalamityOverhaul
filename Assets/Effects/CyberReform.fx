@@ -1,8 +1,6 @@
 // ============================================================================
-// CyberReform.fx —— 赛博空间体素重组/分解共用着色器
-// 风格对齐：CyberspaceField 的领域边缘方格栅栏——干净红边描边块 + 暗红内填
-// 单矩形 quad 上渲染规则像素网格，每格按"出生位置 → 归位"动画
-// 通过 direction 区分演出方向：+1 = 向心重组（终点）, -1 = 离心分解（起点）
+// CyberReform.fx 赛博空间体素重组/分解
+// direction +1重组 -1分解；s0+s1 Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -14,7 +12,7 @@ float reformProgress;   //演出进度 0~1
 float snapPulse;        //"咔嗒"重现/解构闪光强度 0~1
 float dissipate;        //后段消散进度 0~1
 float seed;             //本实例随机种子
-float direction;        //+1 = reform(向心), -1 = decompose(离心)
+float direction;        //+1重组 -1分解
 
 struct PSInput
 {

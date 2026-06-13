@@ -9,13 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 回旋绞杀（近身爆发，约2.5秒，与"合围电牢"的8秒围困差异化）：
-    /// <br/>蓄势——侧位悬停，pow(t,8)迟滞后撤（前70%近乎静止，末段猛然吸气式后缩）+ 转向率衰减锁线；
-    /// <br/>突入——一帧设定直线掠过玩家；
-    /// <br/>环绕——每帧速度向量定角旋转一整圈，身体甩成绞索（环即贯穿的预警）；
-    /// <br/>收口——沿环心方向贯穿冲出 + 音爆，阶梯刹车收尾。
-    /// </summary>
+    /// <summary>回旋绞杀：蓄势→突入→环绕→收口贯穿，约2.5秒</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.LoopLash, typeof(DestroyerStateContext))]
     internal class DestroyerLoopLashState : DestroyerStateBase
     {
@@ -157,10 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return new DestroyerPatrolState();
         }
 
-        /// <summary>
-        /// 蓄势期：侧位悬停 + pow(t,8) 迟滞后撤——前70%近乎静止可读，
-        /// 末段猛然吸气式后缩；转向率随进度衰减，"锁线"的同时给玩家明确的发射方向
-        /// </summary>
+        /// <summary>蓄势：侧位悬停+pow(t,8)迟滞后撤，转向率衰减锁线</summary>
         private void UpdateCharge(DestroyerStateContext context) {
             NPC npc = context.Npc;
             Player player = context.Target;
@@ -191,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 SoundEngine.PlaySound(SoundID.Item15 with { Pitch = 0.1f, Volume = 0.8f }, npc.Center);
             }
 
-            //蓄力粒子：72%进度硬切——临爆静默
+            //72%进度硬切粒子，临爆静默
             if (t < 0.72f && !VaultUtils.isServer && Timer % 3 == 0) {
                 Vector2 dustPos = npc.Center + Main.rand.NextVector2Circular(50f, 50f);
                 Dust dust = Dust.NewDustDirect(dustPos, 1, 1,

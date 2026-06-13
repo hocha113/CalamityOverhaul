@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,11 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
 {
-    /// <summary>
-    /// 森林·自然魔法风格，苍翠绿色调，
-    /// 使用ForestPanel着色器渲染面板背景（木纹/苔藓/根脉纹理），
-    /// 符文节点/叶片粒子/藤蔓走线/六角装饰
-    /// </summary>
+    /// <summary>森林自然魔法风格，ForestPanel 着色器背景</summary>
     internal class ForestManagerStyle : BaseManagerStyle
     {
         #region 动画计时器
@@ -22,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
         private float glowTimer;
         private const int EdgePad = 12;
 
-        //叶片粒子
+        // 叶片粒子
         private struct LeafParticle
         {
             public Vector2 Pos;
@@ -31,7 +27,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             public float MaxLife;
             public float Size;
             public float Rot;
-            public int Type; //0=叶片 1=孢子 2=光尘
+            public int Type; // 0=叶片 1=孢子 2=光尘
         }
         private readonly List<LeafParticle> leafParticles = [];
 
@@ -68,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             glowTimer += 0.025f;
             if (glowTimer > MathHelper.TwoPi) glowTimer -= MathHelper.TwoPi;
 
-            //叶片粒子
+            // 叶片粒子
             if (openProgress > 0.3f && Main.rand.NextBool(7)) {
                 float life = Main.rand.NextFloat(80f, 160f);
                 leafParticles.Add(new LeafParticle {
@@ -104,7 +100,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
 
         #region 着色器面板背景
 
-        //使用ForestPanel着色器绘制面板底图，降级时回退到手绘背景
+        // 使用ForestPanel着色器绘制面板底图，降级时回退到手绘背景
         private void DrawShaderPanel(SpriteBatch sb, Rectangle rect, float alpha) {
             if (EffectLoader.ForestPanel?.Value != null) {
                 Effect effect = EffectLoader.ForestPanel.Value;
@@ -134,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             }
         }
 
-        //降级背景：深绿渐变 + 木纹扫描线 + 暗角
+        // 降级背景：深绿渐变 + 木纹扫描线 + 暗角
         private void DrawFallbackBackground(SpriteBatch sb, Rectangle rect, float alpha) {
             Color top = new(22, 28, 12);
             Color bot = new(10, 14, 5);
@@ -150,7 +146,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 FillRect(sb, new Rectangle(rect.X, y1, rect.Width, Math.Max(1, y2 - y1)), c * alpha * 0.9f);
             }
 
-            //木纹扫描线
+            // 木纹扫描线
             for (int i = 0; i < 40; i++) {
                 float t = i / 40f;
                 int y = rect.Y + (int)(t * rect.Height);
@@ -158,7 +154,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 HLine(sb, rect.X, y, rect.Width, Color.Black * (alpha * scan * 0.08f));
             }
 
-            //暗角
+            // 暗角
             int vigW = rect.Width / 4;
             for (int v = 0; v < vigW; v += 3) {
                 float fade = 1f - v / (float)vigW;
@@ -168,7 +164,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 FillRect(sb, new Rectangle(rect.Right - v - 2, rect.Y, 2, rect.Height), vc);
             }
 
-            //脉冲光覆盖
+            // 脉冲光覆盖
             float pulse = MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f;
             Color pulseC = new(60, 120, 40);
             FillRect(sb, rect, pulseC * (0.03f * pulse * alpha));
@@ -179,12 +175,12 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
         #region 面板背景
 
         public override void DrawPanelBackground(SpriteBatch sb, Rectangle rect, float alpha) {
-            //多层扩散阴影
+            // 多层扩散阴影
             DrawShadowLayers(sb, rect, alpha, 10, 4, 5);
-            //着色器面板底图
+            // 着色器面板底图
             DrawShaderPanel(sb, rect, alpha);
 
-            //四角符文装饰
+            // 四角符文装饰
             float runePulse = MathF.Sin(runeTimer) * 0.5f + 0.5f;
             Color runeColor = new Color(120, 200, 80) * ((0.4f + runePulse * 0.3f) * alpha);
             int runeOff = 16;
@@ -193,7 +189,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             DrawRuneNode(sb, new Vector2(rect.X + runeOff, rect.Bottom - runeOff), 10, runeColor, runeTimer + MathHelper.Pi);
             DrawRuneNode(sb, new Vector2(rect.Right - runeOff, rect.Bottom - runeOff), 10, runeColor, runeTimer + MathHelper.Pi * 1.5f);
 
-            //角落藤蔓走线
+            // 角落藤蔓走线
             Color vineColor = new Color(80, 160, 80) * (alpha * 0.3f);
             int traceLen = 35;
             DrawVineTrace(sb, new Vector2(rect.X + runeOff, rect.Y + runeOff), traceLen, 0f, vineColor);
@@ -202,7 +198,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             DrawVineTrace(sb, new Vector2(rect.Right - runeOff, rect.Y + runeOff), traceLen, MathHelper.Pi, vineColor);
         }
 
-        //六芒星符文节点
+        // 六芒星符文节点
         private void DrawRuneNode(SpriteBatch sb, Vector2 center, float size, Color color, float rotation) {
             int points = 6;
             for (int i = 0; i < points; i++) {
@@ -215,12 +211,12 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 float rot = diff.ToRotation();
                 sb.Draw(Px, p1, new Rectangle(0, 0, (int)len, 1), color, rot, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
-            //中心点
+            // 中心点
             sb.Draw(Px, center, new Rectangle(0, 0, 4, 4), color * 1.2f, 0f,
                 new Vector2(2, 2), 1f, SpriteEffects.None, 0f);
         }
 
-        //藤蔓走线
+        // 藤蔓走线
         private void DrawVineTrace(SpriteBatch sb, Vector2 start, int length, float angle, Color color) {
             Vector2 dir = new(MathF.Cos(angle), MathF.Sin(angle));
             Vector2 perp = new(-dir.Y, dir.X);
@@ -238,7 +234,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
         #region 面板边框
 
         public override void DrawPanelFrame(SpriteBatch sb, Rectangle rect, float alpha) {
-            //自然边框：脉冲发光，顶部亮底部暗
+            // 自然边框：脉冲发光，顶部亮底部暗
             float pulse = MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f;
             Color outer = new(80, 140, 90);
             Color inner = new(120, 200, 130);
@@ -251,7 +247,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             VLine(sb, rect.X + 1, rect.Y, rect.Height, edgeC * 0.5f);
             VLine(sb, rect.Right - 1, rect.Y, rect.Height, edgeC * 0.5f);
 
-            //四角加厚——六角形暗示
+            // 四角加厚，六角暗示
             int cs = 8;
             Color cornerC = AccentGlow * (alpha * 0.6f);
             HLine(sb, rect.X, rect.Y, cs, cornerC);
@@ -269,11 +265,11 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
         #region 标题栏
 
         public override void DrawHeader(SpriteBatch sb, Rectangle headerRect, string title, float alpha) {
-            //深绿色标题栏背景
+            // 深绿色标题栏背景
             Color headerBg = new(12, 18, 6);
             FillRect(sb, headerRect, headerBg * (alpha * 0.75f));
 
-            //渐变叠层
+            // 渐变叠层
             for (int i = 0; i < 4; i++) {
                 float t = i / 4f;
                 float t2 = (i + 1) / 4f;
@@ -283,12 +279,12 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 FillRect(sb, new Rectangle(headerRect.X, y1, headerRect.Width, Math.Max(1, y2 - y1)), gradC * alpha);
             }
 
-            //符文装饰（标题左侧旋转符文）
+            // 符文装饰（标题左侧旋转符文）
             Vector2 iconCenter = new(headerRect.X + 22f, headerRect.Y + headerRect.Height / 2f);
             float runeSpin = runeTimer * 0.5f;
             DrawRuneNode(sb, iconCenter, 8, AccentGlow * (alpha * 0.45f), runeSpin);
 
-            //标题文字
+            // 标题文字
             var font = FontAssets.MouseText.Value;
             float headerBlink = MathF.Sin(glowTimer) * 0.1f + 0.9f;
             Vector2 titlePos = new(headerRect.X + 40f, headerRect.Y + (headerRect.Height - 18f) / 2f);
@@ -300,7 +296,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             }
             Utils.DrawBorderString(sb, title, titlePos, PrimaryBright * (alpha * headerBlink), 1.0f);
 
-            //右侧状态标签
+            // 右侧状态标签
             float tagBlink = MathF.Sin(glowTimer * 1.6f) * 0.3f + 0.7f;
             string tag = QuestManagerUI.HeaderStatusTag.Value;
             float tagW = font.MeasureString(tag).X * 0.6f;
@@ -308,13 +304,13 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 new Vector2(headerRect.Right - tagW - 14f, headerRect.Y + (headerRect.Height - 14f) / 2f),
                 AccentGlow * (alpha * 0.5f * tagBlink), 0.6f);
 
-            //底部分隔线（自然脉络 + 流光）
+            // 底部分隔线（自然脉络 + 流光）
             int lineW = headerRect.Width - 16;
             int lineX = headerRect.X + 8;
             int lineY = headerRect.Bottom - 2;
             HLine(sb, lineX, lineY, lineW, Color.Black * (alpha * 0.6f));
             HLine(sb, lineX, lineY + 1, lineW, PrimaryDim * (alpha * 0.4f));
-            //流光
+            // 流光
             float sweepX = lineX + (magicTimer * 0.4f % MathHelper.TwoPi / MathHelper.TwoPi) * lineW;
             for (int dx = -4; dx <= 4; dx++) {
                 int px = (int)sweepX + dx;
@@ -343,7 +339,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
 
                 bool selected = i == selectedIndex;
 
-                //自然色渐变底色
+                // 自然色渐变底色
                 Color topC = selected ? new(50, 90, 40) : new(20, 32, 14);
                 Color botC = selected ? new(30, 55, 25) : new(12, 20, 8);
                 for (int seg = 0; seg < 4; seg++) {
@@ -356,13 +352,13 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 }
 
                 if (selected) {
-                    //选中态底部高亮线——自然发光
+                    // 选中底高亮
                     HLine(sb, tab.X, tab.Bottom - 1, tab.Width, 2, AccentGlow * (alpha * 0.85f));
-                    //顶部反光
+                    // 顶部反光
                     HLine(sb, tab.X + 2, tab.Y, tab.Width - 4, Color.White * (alpha * 0.08f));
                 }
 
-                //边线
+                // 边线
                 if (selected) {
                     Color edgeC = PrimaryMid * (alpha * 0.4f);
                     VLine(sb, tab.X, tab.Y, tab.Height, edgeC);
@@ -378,7 +374,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 tabX += tabW + 3f;
             }
 
-            //整行底部线
+            // 整行底部线
             HLine(sb, tabRect.X, tabRect.Bottom - 1, tabRect.Width, PrimaryDim * (alpha * 0.25f));
         }
 
@@ -388,17 +384,17 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
 
         public override void DrawScrollbar(SpriteBatch sb, Rectangle trackRect, float scrollRatio,
             float viewRatio, float alpha) {
-            //轨道暗底
+            // 轨道暗底
             FillRect(sb, trackRect, new Color(8, 12, 4) * (alpha * 0.5f));
             VLine(sb, trackRect.X, trackRect.Y, trackRect.Height, PrimaryDim * (alpha * 0.2f));
 
-            //滑块
+            // 滑块
             float clampedView = MathHelper.Clamp(viewRatio, 0.1f, 1f);
             int thumbH = Math.Max(20, (int)(trackRect.Height * clampedView));
             int thumbY = trackRect.Y + (int)((trackRect.Height - thumbH) * MathHelper.Clamp(scrollRatio, 0f, 1f));
             Rectangle thumb = new(trackRect.X + 1, thumbY, trackRect.Width - 2, thumbH);
 
-            //自然渐变填充
+            // 自然渐变填充
             float thumbPulse = MathF.Sin(pulseTimer * 1.5f) * 0.15f + 0.55f;
             for (int ty = thumb.Y; ty < thumb.Bottom; ty++) {
                 float t = (ty - thumb.Y) / (float)thumb.Height;
@@ -406,16 +402,16 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 HLine(sb, thumb.X, ty, thumb.Width, c * (alpha * thumbPulse));
             }
 
-            //顶部高光
+            // 顶部高光
             HLine(sb, thumb.X, thumb.Y, thumb.Width, Color.White * (alpha * 0.1f));
 
-            //流光
+            // 流光
             float flow = (magicTimer * 0.3f % MathHelper.TwoPi / MathHelper.TwoPi);
             int flowY = thumb.Y + (int)(flow * thumb.Height);
             if (flowY >= thumb.Y && flowY < thumb.Bottom)
                 HLine(sb, thumb.X, flowY, thumb.Width, AccentGlow * (alpha * 0.2f));
 
-            //边框
+            // 边框
             DrawNatureBorder(sb, thumb, PrimaryMid * (alpha * 0.35f));
         }
 
@@ -425,21 +421,21 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
 
         public override void DrawFooter(SpriteBatch sb, Rectangle footerRect, int totalQuests,
             int activeQuests, float alpha) {
-            //背景
+            // 背景
             FillRect(sb, footerRect, new Color(10, 14, 5) * (alpha * 0.65f));
 
-            //顶部分隔
+            // 顶部分隔
             HLine(sb, footerRect.X + 8, footerRect.Y, footerRect.Width - 16, Color.Black * (alpha * 0.5f));
             HLine(sb, footerRect.X + 8, footerRect.Y + 1, footerRect.Width - 16, PrimaryDim * (alpha * 0.3f));
 
-            //统计文本
+            // 统计文本
             string statsText = string.Format(QuestManagerUI.FooterStatsFormat.Value, totalQuests, activeQuests);
             float statsBlink = MathF.Sin(globalTimer * 1.2f) * 0.1f + 0.9f;
             Utils.DrawBorderString(sb, statsText,
                 new Vector2(footerRect.X + 12f, footerRect.Y + (footerRect.Height - 12f) / 2f),
                 PrimaryMid * (alpha * 0.7f * statsBlink), 0.62f);
 
-            //右侧版本标记
+            // 右侧版本标记
             string verTag = CWRMod.Instance.Version.ToString();
             var font = FontAssets.MouseText.Value;
             float vw = font.MeasureString(verTag).X * 0.55f;
@@ -469,11 +465,11 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                     DrawNatureBorder(sb, entryRect, PrimaryMid * (alpha * 0.2f));
                 }
 
-                //状态指示条（左侧3px竖条）
+                // 状态指示条（左侧3px竖条）
                 Color statusBarColor = GetStatusColor(entry.Status, alpha);
                 VLine(sb, entryRect.X + 2, entryRect.Y + 4, entryRect.Height - 8, 3, statusBarColor);
 
-                //状态叶片节点
+                // 状态叶片节点
                 int nodeX = entryRect.X + 16;
                 int nodeY = entryRect.Y + 14;
                 DrawLeafNode(sb, new Vector2(nodeX, nodeY), entry.Status, alpha, entryIndex);
@@ -483,7 +479,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             float titleX = entryRect.X + (bgHandled ? 10f : 28f);
             float titleY = entryRect.Y + 6f;
 
-            //自定义图标
+            // 自定义图标
             float iconOffset = customStyle?.DrawEntryIcon(sb, new Vector2(titleX, titleY), entry, alpha) ?? 0f;
             titleX += iconOffset;
 
@@ -496,7 +492,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 titleColor = Color.Lerp(titleColor, AccentGold, newBlink * 0.4f);
             }
 
-            //截断标题，并给右侧状态标签预留空间
+            // 截断标题，并给右侧状态标签预留空间
             string statusText = GetEntryStatusText(entry.Status);
             float statusBadgeScale = 0.55f;
             int statusBadgeW = GetStatusBadgeWidth(statusText, statusBadgeScale);
@@ -513,7 +509,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             DrawForestStatusBadge(sb, statusBadgeRect, statusText, entry.Status,
                 alpha, statusBadgeScale, entryIndex);
 
-            //Tracked态叶片指示器
+            // Tracked态叶片指示器
             if (entry.Status == QuestEntryStatus.Tracked) {
                 float leafBlink = MathF.Sin(glowTimer * 3f) * 0.4f + 0.6f;
                 float titleW = font.MeasureString(displayTitle).X * 0.78f;
@@ -526,7 +522,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 }
             }
 
-            //摘要文本
+            // 摘要文本
             float summaryY = titleY + 20f;
             Color summaryColor = PrimaryMid * (alpha * 0.6f);
             string summary = (entry.Summary ?? "").Replace("\r", "").Replace("\n", " ").Trim();
@@ -542,7 +538,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                     summaryColor * collapsedAlpha, 0.72f);
             }
 
-            //展开指示器
+            // 展开指示器
             if (!string.IsNullOrEmpty(entry.Summary)) {
                 string expandIcon = entry.IsExpanded ? "▲" : "▼";
                 float iconAlpha = isHovered ? 0.7f : 0.35f;
@@ -551,13 +547,13 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                     PrimaryMid * (alpha * iconAlpha), 0.6f);
             }
 
-            //展开内容区域
+            // 展开内容区域
             if (entry.ExpandProgress > 0.01f) {
                 int baseH = GetEntryHeight();
                 float expandAlpha = alpha * entry.ExpandProgress;
                 float descY = entryRect.Y + baseH - 4f;
 
-                //展开区域半透明背景
+                // 展开区域半透明背景
                 int expandAreaH = entryRect.Height - baseH;
                 if (expandAreaH > 0) {
                     int bgLeftPad = bgHandled ? 4 : 22;
@@ -565,7 +561,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                     FillRect(sb, expandBg, new Color(8, 14, 4) * (expandAlpha * 0.35f));
                 }
 
-                //分隔线（自然脉络 + 流光）
+                // 分隔线（自然脉络 + 流光）
                 int sepW = (int)(entryRect.Width - titleX + entryRect.X - 14f);
                 HLine(sb, (int)titleX, (int)descY, sepW, Color.Black * (expandAlpha * 0.5f));
                 HLine(sb, (int)titleX, (int)descY + 1, sepW, PrimaryDim * (expandAlpha * 0.3f));
@@ -579,7 +575,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 }
                 descY += 6f;
 
-                //自动换行描述文本
+                // 自动换行描述文本
                 string fullText = entry.Summary ?? "";
                 float descScale = 0.70f;
                 int wrapWidth = (int)((entryRect.Width - 40f) / descScale);
@@ -600,7 +596,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 }
             }
 
-            //进度条
+            // 进度条
             if (entry.Progress > 0f && entry.Status != QuestEntryStatus.Completed) {
                 float barY = entry.ExpandProgress > 0.5f
                     ? entryRect.Bottom - 14f
@@ -612,7 +608,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                     PrimaryMid * alpha, AccentGlow * alpha,
                     PrimaryDim * (alpha * 0.4f), pulseTimer);
 
-                //流光
+                // 流光
                 float flow = (magicTimer * 0.3f % MathHelper.TwoPi / MathHelper.TwoPi);
                 int fillW = (int)(barW * MathHelper.Clamp(entry.Progress, 0f, 1f));
                 int flowX = barRect.X + (int)(flow * fillW);
@@ -630,7 +626,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             customStyle?.DrawEntryOverlay(sb, entryRect, entry, alpha);
         }
 
-        //森林风状态铭牌：苔色底、藤蔓下划线和小六角符文节点
+        // 森林风状态铭牌：苔色底、藤蔓下划线和小六角符文节点
         private void DrawForestStatusBadge(SpriteBatch sb, Rectangle badgeRect, string statusText,
             QuestEntryStatus status, float alpha, float scale, int entryIndex) {
             if (badgeRect.Width <= 0 || string.IsNullOrEmpty(statusText)) return;
@@ -660,26 +656,26 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 statusColor * (alpha * (status == QuestEntryStatus.Active ? 0.74f : 0.95f)), scale);
         }
 
-        //叶片状态节点
+        // 叶片状态节点
         private void DrawLeafNode(SpriteBatch sb, Vector2 center, QuestEntryStatus status, float alpha, int index) {
             float pulse = MathF.Sin(pulseTimer + index * 0.8f) * 0.2f + 0.8f;
             Color nodeColor = GetStatusColor(status, alpha * pulse);
 
             if (status == QuestEntryStatus.Completed) {
-                //实心六角（完成）
+                // 实心六角（完成）
                 DrawSmallHex(sb, center, 5f, nodeColor);
                 sb.Draw(Px, center, new Rectangle(0, 0, 1, 1), Color.White * (alpha * 0.25f * pulse), 0f,
                     new Vector2(0.5f), 1.5f, SpriteEffects.None, 0f);
             }
             else if (status == QuestEntryStatus.Failed) {
-                //交叉标记
+                // 交叉标记
                 sb.Draw(Px, center, null, nodeColor, MathHelper.PiOver4, new Vector2(0.5f),
                     new Vector2(5f, 1.5f), SpriteEffects.None, 0f);
                 sb.Draw(Px, center, null, nodeColor, -MathHelper.PiOver4, new Vector2(0.5f),
                     new Vector2(5f, 1.5f), SpriteEffects.None, 0f);
             }
             else {
-                //空心六角
+                // 空心六角
                 if (status == QuestEntryStatus.Tracked) {
                     float glowPulse = MathF.Sin(glowTimer * 3f + index) * 0.3f + 0.3f;
                     sb.Draw(Px, center, new Rectangle(0, 0, 1, 1), AccentGlow * (alpha * glowPulse * 0.15f), 0f,
@@ -690,7 +686,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             }
         }
 
-        //小型六角形（简化绘制，用缩放正方形模拟）
+        // 小型六角形（简化绘制，用缩放正方形模拟）
         private void DrawSmallHex(SpriteBatch sb, Vector2 center, float size, Color color) {
             sb.Draw(Px, center, new Rectangle(0, 0, 1, 1), color, 0f,
                 new Vector2(0.5f), new Vector2(size, size * 0.85f), SpriteEffects.None, 0f);
@@ -699,7 +695,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
         }
 
         public override void DrawEntrySeparator(SpriteBatch sb, Vector2 start, Vector2 end, float alpha) {
-            //自然虚线——叶形间隔
+            // 叶形间隔虚线
             int dashLen = 6, gapLen = 5;
             float x = start.X;
             int dotIndex = 0;
@@ -707,7 +703,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 float segEnd = Math.Min(x + dashLen, end.X);
                 if (segEnd > x)
                     HLine(sb, (int)x, (int)start.Y, (int)(segEnd - x), PrimaryDim * (alpha * 0.12f));
-                //每隔4段画一个小叶片装饰
+                // 每隔4段画一个小叶片装饰
                 if (dotIndex % 4 == 2) {
                     float midX = x + dashLen / 2f;
                     float leafRot = MathF.Sin(magicTimer + dotIndex) * 0.3f;
@@ -756,9 +752,9 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 float fade = fadeIn * fadeOut;
 
                 Color pColor;
-                if (p.Type == 0) pColor = new Color(120, 200, 80); //叶片
-                else if (p.Type == 1) pColor = new Color(200, 220, 100); //孢子
-                else pColor = new Color(180, 255, 150); //光尘
+                if (p.Type == 0) pColor = new Color(120, 200, 80); // 叶片
+                else if (p.Type == 1) pColor = new Color(200, 220, 100); // 孢子
+                else pColor = new Color(180, 255, 150); // 光尘
 
                 pColor *= fade * 0.45f * alpha;
 
@@ -769,11 +765,11 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
         }
 
         public override void DrawOverlayEffects(SpriteBatch sb, Rectangle panelRect, float alpha) {
-            //自然脉动叠层
+            // 自然脉动叠层
             float flicker = MathF.Sin(globalTimer * 1.8f) * 0.5f + 0.5f;
             FillRect(sb, panelRect, new Color(30, 60, 20) * (alpha * 0.02f * flicker));
 
-            //微弱光膜扫掠
+            // 微弱光膜扫掠
             float sweepY = panelRect.Y + (shaderTime * 0.05f % 1f) * panelRect.Height;
             Color sweepC = new(60, 120, 40);
             for (int dy = -3; dy <= 3; dy++) {
@@ -796,15 +792,15 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             DrawSmallNatureButton(sb, btnRect, isHovered, alpha, DrawLeafIcon);
         }
 
-        //自然风按钮
+        // 自然风按钮
         private void DrawSmallNatureButton(SpriteBatch sb, Rectangle rect, bool hover, float alpha,
             Action<SpriteBatch, Vector2, float> drawIcon) {
-            //投影
+            // 投影
             Rectangle shadow = rect;
             shadow.Offset(1, 2);
             FillRect(sb, shadow, Color.Black * (0.35f * alpha));
 
-            //自然渐变
+            // 自然渐变
             Color topC = hover ? new Color(70, 130, 70) : new Color(45, 85, 45);
             Color botC = hover ? new Color(40, 75, 40) : new Color(25, 50, 25);
             for (int i = 0; i < 4; i++) {
@@ -816,10 +812,10 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                     Color.Lerp(topC, botC, t) * alpha);
             }
 
-            //顶部反光
+            // 顶部反光
             HLine(sb, rect.X + 2, rect.Y, rect.Width - 4, Color.White * (0.12f * alpha));
 
-            //边框
+            // 边框
             Color edgeC = hover ? Color.White : new Color(160, 220, 160);
             HLine(sb, rect.X, rect.Y, rect.Width, edgeC * (0.5f * alpha));
             VLine(sb, rect.X, rect.Y, rect.Height, edgeC * (0.3f * alpha));
@@ -829,16 +825,16 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
             drawIcon?.Invoke(sb, rect.Center.ToVector2(), alpha);
         }
 
-        //叶片翻页图标
+        // 叶片翻页图标
         private void DrawLeafIcon(SpriteBatch sb, Vector2 center, float alpha) {
             Color ic = new Color(200, 255, 180) * alpha;
-            //后页
+            // 后页
             sb.Draw(Px, center + new Vector2(2, -2), new Rectangle(0, 0, 14, 18),
                 ic * 0.35f, 0f, new Vector2(7, 9), 1f, SpriteEffects.None, 0f);
-            //前页
+            // 前页
             sb.Draw(Px, center + new Vector2(-1, 1), new Rectangle(0, 0, 14, 18),
                 ic * 0.75f, 0f, new Vector2(7, 9), 1f, SpriteEffects.None, 0f);
-            //叶脉纹路
+            // 叶脉纹路
             sb.Draw(Px, center + new Vector2(-1, 1) + new Vector2(-3, -4),
                 new Rectangle(0, 0, 7, 1), new Color(80, 160, 80) * (0.5f * alpha), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             sb.Draw(Px, center + new Vector2(-1, 1) + new Vector2(-3, 0),
@@ -851,7 +847,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
 
         #region 工具方法
 
-        //自然边框
+        // 自然边框
         private static void DrawNatureBorder(SpriteBatch sb, Rectangle rect, Color color) {
             HLine(sb, rect.X, rect.Y, rect.Width, color);
             HLine(sb, rect.X, rect.Bottom - 1, rect.Width, color * 0.5f);

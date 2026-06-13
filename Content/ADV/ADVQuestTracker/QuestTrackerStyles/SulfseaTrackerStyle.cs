@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
     /// </summary>
     internal class SulfseaTrackerStyle : BaseTrackerStyle
     {
-        //硫磺海风格动画参数
+        // 动画参数
         private float toxicWavePhase;
         private float sulfurPulse;
         private float miasmaTimer;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         public override void Update(Rectangle panelRect, bool active) {
             base.Update(panelRect, active);
 
-            //更新硫磺海风格动画
+            // 动画计时
             toxicWavePhase += 0.022f;
             sulfurPulse += 0.015f;
             miasmaTimer += 0.032f;
@@ -33,23 +33,23 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         public override void DrawPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //绘制阴影
+            // 阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(6, 8);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.6f));
 
-            //绘制硫磺海渐变背景
+            // 渐变背景
             DrawSulfurBackground(spriteBatch, panelRect, alpha);
 
-            //绘制瘴气覆盖层
+            // 瘴气叠层
             float miasmaEffect = (float)Math.Sin(miasmaTimer * 1.1f) * 0.5f + 0.5f;
             Color miasmaTint = new Color(45, 55, 20) * (alpha * 0.4f * miasmaEffect);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), miasmaTint);
 
-            //绘制毒性波浪覆盖
+            // 毒性波浪
             DrawToxicWaveOverlay(spriteBatch, panelRect, alpha * 0.85f);
 
-            //绘制气泡装饰
+            // 气泡装饰
             DrawBubbleDecoration(spriteBatch, panelRect, alpha);
         }
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
                 int y2 = (int)(panelRect.Y + t2 * panelRect.Height);
                 Rectangle r = new Rectangle(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                //硫磺海配色
+                // 配色采样
                 Color sulfurDeep = new Color(12, 18, 8);
                 Color toxicMid = new Color(28, 38, 15);
                 Color acidEdge = new Color(65, 85, 30);
@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         private void DrawBubbleDecoration(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //绘制几个漂浮的硫磺气泡
+            // 漂浮气泡
             for (int i = 0; i < 4; i++) {
                 float offset = (bubbleTimer + i * MathHelper.PiOver2) % MathHelper.TwoPi;
                 float yPos = rect.Y + 20 + (float)Math.Sin(offset) * 15f + i * 30f;
@@ -133,13 +133,13 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), borderGlow) * (alpha * 0.85f);
 
-            //外边框
+            // 外边框
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - 2, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, 2, panelRect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.Right - 2, panelRect.Y, 2, panelRect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
 
-            //内边框
+            // 内边框
             Rectangle inner = panelRect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(140, 170, 70) * (alpha * 0.22f * borderGlow);
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
             spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
             spriteBatch.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
 
-            //角落装饰
+            // 角落装饰
             DrawCornerStar(spriteBatch, new Vector2(panelRect.X + 10, panelRect.Y + 10), alpha * 0.9f, borderGlow);
             DrawCornerStar(spriteBatch, new Vector2(panelRect.Right - 10, panelRect.Y + 10), alpha * 0.9f, borderGlow);
             DrawCornerStar(spriteBatch, new Vector2(panelRect.X + 10, panelRect.Bottom - 10), alpha * 0.65f, borderGlow);

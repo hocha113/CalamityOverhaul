@@ -1,18 +1,8 @@
 // ============================================================================
-// PrimeTelegraph.fx —— 机械骷髅王预警着色器（扇形 / 圆环，两个独立 technique）
-//
-// 重要：禁止用 uniform 参数做 if/else-if 模式分支！
-// fx_2_0 字节码经 MojoShader 翻译后 uniform 分支链的选择不可靠，
-// 曾导致"环形代码跑在线形面片上"渲染出莫名的细长椭圆。
-// 模式选择全部由 C# 侧 effect.Techniques[name] 显式完成。
-// （冲刺的线形预警不走着色器，由 PrimeTelegraphLine 纯贴图绘制。）
-//
-// 四边形约定：
-//   扇形 FanTech ：origin 在左端中点（顶点），quad 高度 = 2×长度（保证角度等比），
-//                  uFanAngle 为扇形半角
-//   圆环 RingTech：origin 在中心，quad 边长 = 半径×2.6（外侧留收缩圈起始空间），
-//                  主环位于 r=0.77（即请求半径处）
-// 输出预乘 alpha，配合 BlendState.Additive 使用。
+// PrimeTelegraph.fx 机械骷髅王预警(扇形/圆环)
+// 禁 uniform 模式分支，C# 用 Techniques[name] 选 FanTech/RingTech
+// FanTech origin 左端中点；RingTech origin 中心主环 r=0.77
+// Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

@@ -20,15 +20,10 @@ using static CalamityOverhaul.Common.ModGanged;
 
 namespace CalamityOverhaul
 {
-    /// <summary>
-    /// 一个用于访问Calamity Mod内部内容的静态类
-    /// </summary>
+    /// <summary>Calamity Mod 内部内容反射访问</summary>
     internal static class CWRRef
     {
-        /// <summary>
-        /// 是否安装了Calamity Mod，不校验版本。
-        /// 反射访问自身具备成员级空值防护与异常记录，调用方不应再用版本匹配做一刀切
-        /// </summary>
+        /// <summary>是否安装 CalamityMod，不校验版本；成员级空值防护，勿用版本匹配一刀切</summary>
         public static bool Has {
             get {
                 _has ??= ModLoader.TryGetMod("CalamityMod", out _);
@@ -53,12 +48,12 @@ namespace CalamityOverhaul
         private static MemberInfo acidRain_OldDukeEncountered_M;
         // CalamityServerConfig
         private static object calamityServerConfigInstance;
-        private static PropertyInfo calConfig_EarlyHardmodeRework_Prop;
+        private static PropertyInfo calConfig_EarlyHardmodeRework_Prop; //EarlyHardmodeRework
         // CalamityGlobalNPC 静态方法
         private static MethodInfo calNPC_SetNewBossJustDowned_Method;
         // ArsenalTierGatedRecipe
         private static MethodInfo arsenalRecipe_ConstructCondition_Method;
-        // BalancingConstants.UniversalStealthStrikeDamageFactor（double类型的可变静态字段，Hook内实时读取）
+        // BalancingConstants.UniversalStealthStrikeDamageFactor，Hook 实时读 double
         private static FieldInfo balancing_StealthFactor_Field;
         // DamageClasses
         private static DamageClass trueMeleeDamageClass;
@@ -66,20 +61,24 @@ namespace CalamityOverhaul
         #endregion
 
         #region 反射缓存：Calamity ModNPC 类型与字段
+        // SupremeCalamitas
         private static Type supCalType;
-        private static FieldInfo supCal_giveUpCounter_Field;
+        private static FieldInfo supCal_giveUpCounter_Field; //giveUpCounter
+        // Draedon (ExoMechs)
         private static Type draedonType;
-        private static MemberInfo draedon_DefeatTimer_M;
+        private static MemberInfo draedon_DefeatTimer_M;   //DefeatTimer
         #endregion
 
         #region 反射缓存：Calamity 全局内容模板
-        private static ModPlayer calPlayerTemplate;
-        private static GlobalItem calGlobalItemTemplate;
-        private static GlobalNPC calGlobalNPCTemplate;
-        private static GlobalProjectile calGlobalProjectileTemplate;
+        // ModContent.TryFind 模板，供 GetModPlayer / TryGetGlobal* 使用
+        private static ModPlayer calPlayerTemplate;           //CalamityPlayer
+        private static GlobalItem calGlobalItemTemplate;      //CalamityGlobalItem
+        private static GlobalNPC calGlobalNPCTemplate;        //CalamityGlobalNPC
+        private static GlobalProjectile calGlobalProjectileTemplate; //CalamityGlobalProjectile
         #endregion
 
         #region 反射缓存：CalamityPlayer / CalamityGlobalItem / CalamityGlobalNPC / CalamityGlobalProjectile 成员
+        // CalamityPlayer
         private static MemberInfo calPlayer_bladeArmEnchant_M;
         private static MemberInfo calPlayer_adrenalineModeActive_M;
         private static MemberInfo calPlayer_infiniteFlight_M;
@@ -101,22 +100,27 @@ namespace CalamityOverhaul
         private static MemberInfo calPlayer_stealthDamage_M;
         private static MethodInfo calPlayer_StealthStrikeAvailable_Method;
 
+        // CalamityGlobalItem
         private static MemberInfo calItem_ChargeRatio_M;
         private static MemberInfo calItem_Charge_M;
         private static MemberInfo calItem_MaxCharge_M;
         private static MemberInfo calItem_UsesCharge_M;
         private static MemberInfo calItem_AppliedEnchantment_M;
 
+        // CalamityGlobalNPC
         private static MemberInfo calNPC_DR_M;
 
+        // CalamityGlobalProjectile
         private static MemberInfo calProj_timesPierced_M;
         private static MemberInfo calProj_conditionalHomingRange_M;
         #endregion
 
         #region 反射缓存：灾厄附魔（炼铸）系统
-        private static MethodInfo enchantManager_GetValidEnchantments_Method;
+        // EnchantmentManager (CalamitasEnchants)
+        private static MethodInfo enchantManager_GetValidEnchantments_Method; //GetValidEnchantmentsForItem
         private static MemberInfo enchantManager_ClearEnchantment_M;
         private static MemberInfo enchantManager_ItemUpgradeRelationship_M;
+        // Enchantment
         private static MemberInfo enchant_Name_M;
         private static MemberInfo enchant_Description_M;
         private static MemberInfo enchant_IconTexturePath_M;
@@ -124,17 +128,20 @@ namespace CalamityOverhaul
         #endregion
 
         #region 反射缓存：BossHealthBarManager
-        private static MemberInfo bossBar_Bars_M;
-        private static MethodInfo bossHPUI_Draw_Method;
-        private static int bossHPUI_VerticalOffsetPerBar;
+        // BossHealthBarManager / BossHPUI
+        private static MemberInfo bossBar_Bars_M;               //Bars
+        private static MethodInfo bossHPUI_Draw_Method;         //BossHPUI.Draw
+        private static int bossHPUI_VerticalOffsetPerBar;       //VerticalOffsetPerBar
         #endregion
 
         #region 反射通用助手
+        // BindingFlags 常量
         private const BindingFlags PublicStaticFlags = BindingFlags.Public | BindingFlags.Static;
         private const BindingFlags PublicInstanceFlags = BindingFlags.Public | BindingFlags.Instance;
         private const BindingFlags AnyInstanceFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         private static readonly HashSet<string> loggedReflectionFailures = new();
 
+        // 反射失败去重日志
         private static void LogFailedReflection(string value1, string value2) {
             string logKey = $"{value1}|{value2}";
             if (loggedReflectionFailures.Add(logKey)) {
@@ -149,6 +156,7 @@ namespace CalamityOverhaul
             }
         }
 
+        // Mod 类型查找
         private static Type GetModType(Mod mod, string fullName) {
             Type type = mod?.Code.GetType(fullName);
             if (type == null) {
@@ -165,6 +173,7 @@ namespace CalamityOverhaul
             return type;
         }
 
+        // 成员反射 GetField/Property/Method
         private static FieldInfo GetField(Type type, string name, BindingFlags flags) {
             if (type == null) {
                 return null;
@@ -216,6 +225,7 @@ namespace CalamityOverhaul
             LogFailedReflection(name, $"CalamityMod/{name}");
         }
 
+        // MemberInfo 读写与 FindMember
         private static MemberInfo FindMember(Type type, string name) {
             return GetFieldOrProperty(type, name, AnyInstanceFlags);
         }
@@ -235,6 +245,7 @@ namespace CalamityOverhaul
             }
         }
 
+        // ModContent.GetInstance<T>
         private static object GetModContentInstance(Type t) {
             if (t == null) {
                 return null;
@@ -258,6 +269,7 @@ namespace CalamityOverhaul
             }
         }
 
+        // Calamity Global 模板实例访问
         private static ModPlayer GetCalPlayer(Player player) {
             if (calPlayerTemplate == null || player == null) {
                 return null;
@@ -1310,34 +1322,22 @@ namespace CalamityOverhaul
         }
 
         #region 炼铸系统包装器
-        /// <summary>
-        /// 附魔包装器结构体，用于安全地封装CalamityMod的Enchantment
-        /// </summary>
+        /// CalamityMod Enchantment 安全包装
         public struct EnchantmentWrapper
         {
-            /// <summary>
-            /// 附魔名称
-            /// </summary>
+            /// 附魔名
             public LocalizedText Name { get; set; }
 
-            /// <summary>
             /// 附魔描述
-            /// </summary>
             public LocalizedText Description { get; set; }
 
-            /// <summary>
-            /// 附魔图标路径
-            /// </summary>
+            /// 图标路径
             public string IconTexturePath { get; set; }
 
-            /// <summary>
-            /// 内部标识符（用于比较）
-            /// </summary>
+            /// 内部比较 ID
             internal int InternalId { get; set; }
 
-            /// <summary>
-            /// 是否是清除附魔
-            /// </summary>
+            /// 是否清除附魔项
             public bool IsClearEnchantment { get; set; }
 
             public override bool Equals(object obj) {
@@ -1355,7 +1355,7 @@ namespace CalamityOverhaul
                 => !(left == right);
         }
 
-        //反射调用 EnchantmentManager.GetValidEnchantmentsForItem，返回装箱后的附魔对象序列
+        // 反射调用 GetValidEnchantmentsForItem
         private static IEnumerable GetRawEnchantmentsForItem(Item item) {
             if (enchantManager_GetValidEnchantments_Method == null) {
                 return null;
@@ -1368,9 +1368,7 @@ namespace CalamityOverhaul
             }
         }
 
-        /// <summary>
-        /// 获取物品的有效附魔列表
-        /// </summary>
+        /// 获取物品有效附魔列表
         public static List<EnchantmentWrapper> GetValidEnchantmentsForItem(Item item) {
             var result = new List<EnchantmentWrapper>();
             if (item == null || item.IsAir) {
@@ -1398,9 +1396,7 @@ namespace CalamityOverhaul
             return result;
         }
 
-        /// <summary>
         /// 应用附魔到物品
-        /// </summary>
         public static void ApplyEnchantmentToItem(Item item, EnchantmentWrapper wrapper, Action<Item> creationEffect = null) {
             if (item == null || item.IsAir || calItem_AppliedEnchantment_M == null) {
                 return;
@@ -1421,7 +1417,7 @@ namespace CalamityOverhaul
                 return;
             }
 
-            //通过Name和Description重新匹配Enchantment
+            //按 Name+Description 回匹配 Enchantment
             IEnumerable allEnchantments = GetRawEnchantmentsForItem(item);
             if (allEnchantments == null || enchant_Name_M == null || enchant_Description_M == null) {
                 return;
@@ -1442,7 +1438,7 @@ namespace CalamityOverhaul
             }
 
             try {
-                //装箱的Enchantment可直接赋给Enchantment?成员，反射会自动包装Nullable
+                //装箱 Enchantment 赋给 AppliedEnchantment? 成员
                 SetMember(calItem_AppliedEnchantment_M, cgi, targetEnchant);
                 creationEffect?.Invoke(item);
                 if (enchant_CreationEffect_M != null
@@ -1463,8 +1459,10 @@ namespace CalamityOverhaul
         #endregion
 
         #region 加载联动修改内容
+        // VaultHook 反射目标
         public static MethodBase BossHealthBarManager_Draw_Method;
-        public static MethodBase calamityUtils_GetReworkedReforge_Method;
+        public static MethodBase calamityUtils_GetReworkedReforge_Method; //UnLoad 占位
+
         internal delegate void On_DisplayLocalizedText_Dalegate(string key, Color? textColor = null);
 
         internal static void LoadComders() {
@@ -1473,7 +1471,7 @@ namespace CalamityOverhaul
                 return;
             }
             try {
-                //这一切不该发生，灾厄没有在这里留下任何可扩展的接口，如果想要那该死血条的为第三方事件靠边站，只能这么做，至少这是我目前能想到的方法
+                //无扩展接口，Hook Draw 让村正充能 UI 改血条位置
                 Type bossHealthBarManagerType = GetModType(mod, "CalamityMod.UI.BossHealthBarManager");
                 BossHealthBarManager_Draw_Method = GetMethod(bossHealthBarManagerType, "Draw", PublicInstanceFlags);
                 Type bossHPUIType = GetModType(mod, "CalamityMod.UI.BossHealthBarManager+BossHPUI");
@@ -1489,13 +1487,14 @@ namespace CalamityOverhaul
                     VaultHook.Add(BossHealthBarManager_Draw_Method, On_BossHealthBarManager_Draw_Hook);
                 }
 
+                //Hook BroadcastLocalizedText → ModifyDisplayText
                 Type calUtilsType = GetModType(mod, "CalamityMod.CalamityUtils");
                 MethodInfo methodInfo = GetMethod(calUtilsType, "BroadcastLocalizedText", PublicStaticFlags);
                 if (methodInfo != null) {
                     VaultHook.Add(methodInfo, OnDisplayLocalizedTextHook);
                 }
 
-                //我鸡巴的还能说什么？为什么这么多人喜欢改同一个东西？Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck
+                //Luminance 同名 BroadcastLocalizedText 也需 Hook
                 if (CWRMod.Instance.luminance != null) {
                     Type utType = FindModType(CWRMod.Instance.luminance, "Utilities");
                     methodInfo = GetMethod(utType, "BroadcastLocalizedText", PublicStaticFlags);
@@ -1532,7 +1531,7 @@ namespace CalamityOverhaul
         }
 
         private static void On_BossHealthBarManager_Draw_Hook(On_BossHealthBarManager_Draw_Dalegate orig, object obj, SpriteBatch spriteBatch, IBigProgressBar currentBar, BigProgressBarInfo info) {
-            //谢天谢地BossHealthBarManager.Bars和BossHealthBarManager.BossHPUI是公开的
+            //Bars/BossHPUI 为 public，迭代自定义绘制
             if (GetMember(bossBar_Bars_M, null) is not IEnumerable bars || bossHPUI_Draw_Method == null) {
                 orig.Invoke(obj, spriteBatch, currentBar, info);
                 return;
@@ -1587,11 +1586,11 @@ namespace CalamityOverhaul
                 Item item = player.GetItem();
                 int realUseTime = Math.Max(item.useTime, item.useAnimation);
                 double useTimeFactor = 0.75 + 0.75 * Math.Log(realUseTime + 2D, 4D);
-                //直接使用固定的基础时间，固定为 4 秒
+                //Unsunghero 固定 4 秒潜行 generation
                 double stealthGenFactor = Math.Max(Math.Pow(4f, 2D / 3D), 1.5);
 
                 float rogueStealth = (float)GetMember(calPlayer_rogueStealth_M, calamityPlayer);
-                //灾厄源码中该字段为double类型（=0.42），用Convert兼容未来可能的类型变动
+                //double 可变静态，Convert 兼容类型变动
                 double stealthStrikeFactor = Convert.ToDouble(balancing_StealthFactor_Field.GetValue(null));
                 double stealthAddedDamage = rogueStealth * stealthStrikeFactor * useTimeFactor * stealthGenFactor;
                 SetMember(calPlayer_stealthDamage_M, calamityPlayer

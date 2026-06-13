@@ -6,10 +6,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 {
     /// <summary>
-    /// 全向电动义足的雷达技能描述符
-    /// <br/>属于 <see cref="CyberwareSkillKind.Charge"/> 类：在雷达扇区上的悬停时间即为蓄力时间，
-    /// 松开方向键时根据当前蓄力比例释放蓄力跳，与原版"按住-松开"的肌肉记忆完全一致
-    /// <br/>仅在玩家"脚踏地面"时允许选中，避免空中释放出现无效跳跃
+    /// 全向电动义足雷达技能，Charge 类
+    /// <br/>扇区悬停蓄力、松键释放；仅地面可选，瞄点=蓄力比例
     /// </summary>
     internal sealed class OmniElectricFootSkill : CyberwareSkillBase
     {

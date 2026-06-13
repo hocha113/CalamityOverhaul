@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 {
-    /// <summary>
-    /// 级联握把：累计命中5次后在命中点生成悬停级联节点
-    /// <br/>节点持续约2秒，周期性向最近敌人猎杀式射出追踪光束（共5次）
-    /// </summary>
+    /// <summary>级联握把：累计 5 命中生级联节点，周期射追踪束</summary>
     internal sealed class CascadeGripModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Grip;

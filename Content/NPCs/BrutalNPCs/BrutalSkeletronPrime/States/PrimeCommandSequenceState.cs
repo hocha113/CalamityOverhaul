@@ -4,13 +4,8 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 武装阶段指挥 hub：~120 帧短悬停 + 战术指令广播，按固定序列分发下一招式。
-    /// 序列：物理突击 → SpinDash → 火力压制 → Barrage → 十字绞杀 → SpinDash → TetherSpin
-    /// <para>下一手若会把四臂收进编队（冲撞/火力阵/绞杀/风车），而场上仍有臂在收尾蓄力，
-    /// 出招倒计时会冻结在门口：头部老老实实悬停，等预警兑现完再动身——
-    /// 杜绝"手臂原地蓄力、头已冲出去"的时序脱节。</para>
-    /// </summary>
+    /// <summary>武装阶段指挥 hub：~120帧悬停+指令广播，固定 7 步序列</summary>
+    /// <para>下一手收编队且有臂收尾蓄力时冻结倒计时，等预警兑现再动身</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CommandSequence, typeof(PrimeStateContext))]
     internal class PrimeCommandSequenceState : PrimeStateBase
     {

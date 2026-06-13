@@ -30,10 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         private int burstRemaining;
         private int burstTimer;
 
-        /// <summary>
-        /// 一阶段固定招式套路: 悬停射击→激光扫射→悬停射击→调整位置，循环往复，
-        /// 每完成一轮(comboStep%4==3)与魔焰眼同步进行交叉冲刺合击
-        /// </summary>
+        /// <summary>一阶段套路：悬停射击→扫射→悬停→ reposition；comboStep%4==3 交叉冲刺合击</summary>
         public RetinazerHoverShootState() : this(0) {
         }
 

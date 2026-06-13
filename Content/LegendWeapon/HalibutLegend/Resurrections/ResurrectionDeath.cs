@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 {
     /// <summary>
-    /// 深渊复苏死亡系统，处理复苏满时的死亡机制和演出
+    /// 复苏满时的死亡流程与演出
     /// </summary>
     public class ResurrectionDeath : ModPlayer, ILocalizedModType
     {
@@ -94,10 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         /// 玩家透明度修改
         /// </summary>
         private float playerAlphaMultiplier = 1f;
-        /// <summary>
-        /// 由Kill设置，标记玩家已死亡需要在下次PreUpdate时重置状态
-        /// （PreUpdate在玩家死亡期间不运行，所以不能依赖Player.dead）
-        /// </summary>
+        /// <summary>Kill 标记，PreUpdate 中重置（死亡期间 PreUpdate 不跑）</summary>
         private bool needsDeathReset = false;
         #endregion
 
@@ -141,9 +138,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             UpdateVisualEffects();
         }
 
-        /// <summary>
-        /// 状态机更新
-        /// </summary>
+        /// <summary>死亡状态机 tick</summary>
         private void UpdateStateMachine(ResurrectionSystem system) {
             stateTimer++;
 
@@ -194,15 +189,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
                 SpawnAbyssParticle(Player.Center, large: true);
             }
 
-            //本地播放 InnoVault 死亡演出运镜（镜头跟随 + 屏幕震动统一交由演出表现）
+            //本地播放死亡演出运镜
             if (Player.whoAmI == Main.myPlayer) {
                 CutsceneDirector.Play<ResurrectionDeathCutscene, ResurrectionDeath>(this, Player, restartSameClip: false);
             }
         }
 
-        /// <summary>
-        /// 更新警告阶段
-        /// </summary>
+        /// <summary>警告阶段 tick</summary>
         private void UpdateWarningPhase() {
             //视觉效果
             screenShakeIntensity = MathHelper.Lerp(screenShakeIntensity, 8f, 0.15f);
@@ -251,9 +244,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             Main.NewText(DeathNoticeText.Value, 150, 0, 0);
         }
 
-        /// <summary>
-        /// 更新死亡动画阶段
-        /// </summary>
+        /// <summary>死亡动画 tick</summary>
         private void UpdateDeathAnimationPhase() {
             float progress = stateTimer / (float)DeathAnimationDuration;
 
@@ -261,7 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             if (progress < 0.4f) {
                 float pullProgress = progress / 0.4f;
 
-                //向玩家下方拉扯（模拟被深渊吞噬）
+                //向下拉扯
                 Player.velocity.Y += pullProgress * 0.8f; //增加拉扯力度
                 Player.velocity.X *= 0.9f; //更强的减速
 
@@ -364,9 +355,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             ExecuteDeath();
         }
 
-        /// <summary>
-        /// 更新执行阶段
-        /// </summary>
+        /// <summary>执行阶段 tick</summary>
         private void UpdateExecutingPhase() {
             //等待一小段时间确保死亡完成
             if (stateTimer >= 10 || Player.dead) {
@@ -419,9 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             playerAlphaMultiplier = 1f;
         }
 
-        /// <summary>
-        /// 更新冷却阶段
-        /// </summary>
+        /// <summary>冷却阶段 tick</summary>
         private void UpdateCooldownPhase(ResurrectionSystem system) {
             //冷却期间淡出效果
             screenShakeIntensity *= 0.9f;
@@ -514,9 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         #endregion
 
         #region 视觉效果更新
-        /// <summary>
-        /// 更新视觉效果
-        /// </summary>
+        /// <summary>粒子与触手 tick</summary>
         private void UpdateVisualEffects() {
             //更新粒子
             for (int i = abyssParticles.Count - 1; i >= 0; i--) {
@@ -590,9 +575,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
         public string LocalizationCategory => "Resurrections";
 
-        /// <summary>
-        /// 绘制死亡演出特效
-        /// </summary>
+        /// <summary>死亡演出 VFX 绘制</summary>
         public void DrawDeathEffects(SpriteBatch spriteBatch) {
             if (currentState == DeathState.None) return;
 

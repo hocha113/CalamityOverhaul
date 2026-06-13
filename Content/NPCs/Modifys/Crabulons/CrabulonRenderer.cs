@@ -4,9 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>
-    /// 菌生蟹渲染系统
-    /// </summary>
+    /// <summary>菌生蟹渲染</summary>
     internal class CrabulonRenderer
     {
         private readonly NPC npc;
@@ -18,7 +16,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             this.owner = owner;
         }
 
-        //绘制前处理
         public bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (owner.Mount && owner.Owner != null) {
                 DrawMountedPlayer();
@@ -35,7 +32,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return true;
         }
 
-        //绘制后处理
         public bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
             if (owner.DyeItemID > 0) {
                 npc.EndDyeEffectForWorld();
@@ -48,7 +44,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return true;
         }
 
-        //绘制骑乘的玩家
         private void DrawMountedPlayer() {
             if (owner.CrabulonPlayer == null || !owner.CrabulonPlayer.IsMount) {
                 return;
@@ -83,7 +78,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             );
         }
 
-        //配置骑乘玩家
         private void ConfigureMountedPlayer() {
             mountPlayerClone.fullRotation = npc.rotation + MathHelper.PiOver2;
             mountPlayerClone.fullRotationOrigin = mountPlayerClone.Size / 2f;
@@ -95,7 +89,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //绘制骑乘玩家
         private void DrawPlayerOnMount() {
             Main.PlayerRenderer.DrawPlayer(
                 Main.Camera,
@@ -106,7 +99,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             );
         }
 
-        //更新手持弹幕
         private void UpdateHeldProjectile() {
             ModifyCrabulon.mountPlayerHeldProj = mountPlayerClone.heldProj;
             if (ModifyCrabulon.mountPlayerHeldProj.TryGetProjectile(out var heldProj)) {
@@ -115,12 +107,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
         }
 
-        //恢复玩家旋转
         private void RestorePlayerRotation() {
             mountPlayerClone.fullRotation = 0;
         }
 
-        //绘制鞍具
         private void DrawSaddle(SpriteBatch spriteBatch, Color drawColor) {
             npc.BeginDyeEffectForWorld(owner.SaddleItem.CWR().DyeItemID);
 

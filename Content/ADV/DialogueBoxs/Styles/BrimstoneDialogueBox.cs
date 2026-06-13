@@ -9,34 +9,34 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
     /// <summary>
-    /// 至尊灾厄硫磺火风格对话框
+    /// 硫磺火风格对话框
     /// </summary>
     internal class BrimstoneDialogueBox : DialogueBoxBase
     {
         public static BrimstoneDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<BrimstoneDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        //风格参数
+        // 风格参数
         private const float FixedWidth = 540f;
         private const int ShaderEdgePad = 16;
         protected override float PanelWidth => FixedWidth;
 
-        //火焰动画参数
+        // 火焰动画
         private float flameTimer = 0f;
         private float emberGlowTimer = 0f;
         private float heatWavePhase = 0f;
         private float infernoPulse = 0f;
-        //着色器专用单调递增时间,避免循环回绕导致噪声跳变
+        // 着色器单调时间，避免噪声跳变
         private float shaderTime = 0f;
 
-        //粒子系统:只保留火星余烬与细灰,舍弃大体积焰魂
+        // 余烬与细灰粒子
         private readonly List<EmberPRT> embers = new();
         private int emberSpawnTimer = 0;
         private readonly List<AshPRT> ashes = new();
         private int ashSpawnTimer = 0;
         private const float ParticleSideMargin = 30f;
 
-        #region 样式配置重写
+        #region 样式配置
 
         protected override float PortraitScaleMin => 0.82f;
         protected override float TopNameOffsetBase => 12f;
@@ -72,7 +72,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 
         #endregion
 
-        #region 抽象方法实现
+        #region 绘制实现
 
         protected override void DrawPortraitFrame(ContentDrawContext ctx, Rectangle frameRect) {
             Texture2D vaule = VaultAsset.placeholder2.Value;

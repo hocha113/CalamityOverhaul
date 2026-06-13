@@ -6,11 +6,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 机械臂控制器基类：维护与头部的从属关系、驱动各自的状态机、
-    /// 响应头部状态（编队收拢/环绕、转阶段殉爆、狂暴期退场）。
-    /// 具体攻击行为全部由 <see cref="States.Arms"/> 下的状态类实现
-    /// </summary>
+    /// <summary>机械臂 NPCOverride 基类：从属头部、驱动臂状态机、响应编队/殉爆/退场</summary>
+    /// <para>攻击行为见 <see cref="States.Arms"/> 各状态</para>
     internal abstract class PrimeArm : CWRNPCOverride
     {
         /// <summary>十字绞杀封位锚点（头部正式进入绞杀状态的瞬间冻结，与预警线对齐）</summary>
@@ -31,7 +28,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         /// <summary>初始状态工厂</summary>
         protected abstract PrimeArmStateBase CreateInitialState();
-        /// <summary>转阶段殉爆延迟（帧）——四肢按各自延迟依次爆裂，形成演出节拍</summary>
+        /// <summary>转阶段殉爆延迟（帧），四肢依次爆裂节拍</summary>
         protected abstract int DetonationDelay { get; }
         /// <summary>环绕编队的角位索引（0~3）</summary>
         protected abstract int FormationIndex { get; }
@@ -96,7 +93,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
 
             //转阶段：收拢编队，按各自延迟依次殉爆。
-            //必须先于狂暴击杀兜底判定——转阶段一进入就会挂出 Rage 标记
+            //必须先于狂暴击杀兜底：转阶段一进入就挂 Rage 标记
             if (headState == PrimeStateIndex.PhaseTransition) {
                 RunDetonationSequence();
                 return false;
@@ -202,13 +199,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>
-        /// 编队接管：头部冲撞或白昼狂暴 → 拉开为高速旋转护盾编队。
-        /// <para>"蓄力已可见"的收尾攻击（<see cref="PrimeFacts.IsCommittedArmState"/>）
-        /// 不被硬切：该臂先兑现这一手再延后入列（头部调度侧也会等待，见指挥状态），
-        /// 消解头部冲刺与机械臂蓄力的时序冲突。
-        /// 唯一例外是电弧风车——链锁必须立即拉起，改为把蓄力干净取消回基态。</para>
-        /// </summary>
+        /// <summary>编队接管：冲撞/白昼狂暴环绕；收尾蓄力见 <see cref="PrimeFacts.IsCommittedArmState"/> 延后入列</summary>
+        /// <para>TetherSpin 例外：40帧内链锁就位，取消蓄力回基态</para>
         private bool HandleFormationOverride(PrimeStateIndex headState) {
             PrimeCommandKind command = HeadPrimeAI.GetActiveCommand(head);
 
@@ -287,10 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return true;
         }
 
-        /// <summary>
-        /// 十字绞杀封位：指令预热期跟踪玩家收拢；头部正式进入绞杀状态的瞬间冻结锚点
-        /// （与预警线/热射线对齐），此后各臂钉死在封位上沿射线向心瞄准
-        /// </summary>
+        /// <summary>十字封位：预热跟踪玩家，绞杀态瞬间冻结锚点与预警/射线对齐</summary>
         private bool ApplyCrossFormation(PrimeStateIndex headState) {
             npc.dontTakeDamage = true;
             npc.damage = 0;

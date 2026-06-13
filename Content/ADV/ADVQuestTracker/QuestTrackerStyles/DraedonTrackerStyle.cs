@@ -11,14 +11,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
     /// </summary>
     internal class DraedonTrackerStyle : BaseTrackerStyle
     {
-        //科技动画参数
+        // 动画参数
         private float scanLineTimer = 0f;
         private float hologramFlicker = 0f;
         private float circuitPulseTimer = 0f;
         private float dataStreamTimer = 0f;
         private float hexGridPhase = 0f;
 
-        //粒子系统
+        // 粒子
         private readonly List<DraedonDataPRT> dataParticles = [];
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int dataParticleSpawnTimer = 0;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         public override void Update(Rectangle panelRect, bool active) {
             base.Update(panelRect, active);
 
-            //科技动画计时器
+            // 动画计时
             scanLineTimer += 0.048f;
             hologramFlicker += 0.12f;
             circuitPulseTimer += 0.025f;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
             var panelRect = basePos.GetRectangle(220, 120);
             var panelSize = new Vector2(220, 120);
 
-            //数据粒子刷新
+            // 数据粒子
             dataParticleSpawnTimer++;
             if (dataParticleSpawnTimer >= 18 && dataParticles.Count < 15) {
                 dataParticleSpawnTimer = 0;
@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
                 }
             }
 
-            //电路节点刷新
+            // 电路节点
             circuitNodeSpawnTimer++;
             if (circuitNodeSpawnTimer >= 25 && circuitNodes.Count < 8) {
                 circuitNodeSpawnTimer = 0;
@@ -82,12 +82,12 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         public override void DrawPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //阴影
+            // 阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(4, 4);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.6f));
 
-            //主背景渐变(科技蓝色调)
+            // 科技蓝渐变背景
             int segs = 25;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -108,12 +108,12 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //全息扫描效果
+            // 全息扫描叠层
             float scanPulse = (float)Math.Sin(pulseTimer * 1.5f) * 0.5f + 0.5f;
             Color scanOverlay = new Color(20, 50, 80) * (alpha * 0.2f * scanPulse);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), scanOverlay);
 
-            //绘制粒子
+            // 粒子绘制
             foreach (var node in circuitNodes) {
                 var origX = node.Pos.X;
                 node.Pos.X *= panelRect.Width / 220f;

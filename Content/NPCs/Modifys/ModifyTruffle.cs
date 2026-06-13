@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 npc.townNPC = true;
                 npc.friendly = true;
                 npc.width = 56;
-                npc.height = 10;//高度稍微矮一些，这样才能接触到地面
+                npc.height = 10;//矮箱体贴地
                 npc.aiStyle = -1;
                 npc.damage = 0;
                 npc.defense = 0;
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             npc.direction = ((int)npc.To(Main.LocalPlayer.Center).UnitVector().X);
-            npc.velocity = new Vector2(npc.direction * 3, -8);//给NPC一个向上弹起的速度
+            npc.velocity = new Vector2(npc.direction * 3, -8);//唤醒弹起
 
             Sleep = false;
             SetNPCDefault();
@@ -229,8 +229,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             return false;
         }
 
-        public override void ModifyActiveShop(string shopName, Item[] items) {//去他妈的模组兼容性
-            List<Item> origItems = [];//原生的物品将被存储于此
+        public override void ModifyActiveShop(string shopName, Item[] items) {//商店全量替换，不掺原版
+            List<Item> origItems = [];//暂存原版条目
             for (int i = 0; i < items.Length; i++) {
                 Item item = items[i];
                 if (!item.Alives()) {
@@ -287,7 +287,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 items[index] = new Item(ItemID.MushroomDye) {
                     value = 10000
                 };
-                return;//在肉后才把原生物品添加回去
+                return;//肉后再并回原版条目
             }
 
             foreach (var item in origItems) {
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
                 return false;
             }
 
-            //下下策，判断生成源
+            //按生成源排除蟹弹
             if (projectile.TryGetGlobalProjectile<CWRProjectile>(out var gProj)
                 && gProj.Source != null
                 && gProj.Source is EntitySource_Parent entitySource
@@ -330,13 +330,13 @@ namespace CalamityOverhaul.Content.NPCs.Modifys
             }
 
             if (Main.hardMode && Main.rand.NextBool()) {
-                return;//下面的对话在肉后有50%概率生效
+                return;//肉后50%跳过特殊台词
             }
 
             if (!FirstChat) {
-                FirstChat = true;//完成了第一次对话
+                FirstChat = true;
 
-                if (npc.homeless) {//只在没有住房的情况下加第一次对话情况下必定触发这个台词
+                if (npc.homeless) {//无家可归首聊固定 Chats[0]
                     chat = Chats[0].Value;
                     return;
                 }

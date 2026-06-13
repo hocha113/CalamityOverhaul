@@ -1,7 +1,6 @@
 // ============================================================================
-// CyberShockwave.fx — 赛博空间领域展开冲击波
-// 黑墙AI风格环形冲击波：深红色系，数字噪声扰动，碎片拖尾
-// 绘制在以领域中心为原点的大型四边形上，加法混合
+// CyberShockwave.fx 赛博领域展开冲击波
+// 极坐标环形冲击；s0+s1 噪声；Additive 四边形
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -19,33 +18,33 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float normAngle = (angle + 3.14159) / 6.28318;
 
-    // ---- 噪声扰动环边缘 ----
+    // 噪声扰动环边缘
     float n1 = tex2D(noiseTex, float2(normAngle * 4.0 + uTime * 3.0, ringProgress * 2.0)).r;
     float n2 = tex2D(noiseTex, float2(normAngle * 7.0 - uTime * 2.0, ringProgress + 0.5)).g;
     float noiseDisp = (n1 * 0.6 + n2 * 0.4 - 0.5) * 0.07;
 
     float adjDist = dist + noiseDisp;
 
-    // ---- 主环形遮罩 ----
+    // 主环形遮罩
     float ringDist = abs(adjDist - ringProgress);
     float ringMask = 1.0 - smoothstep(0.0, ringThickness, ringDist);
 
     //内侧压缩面更亮
     float innerBias = smoothstep(ringProgress, ringProgress - ringThickness * 0.6, adjDist);
 
-    // ---- 外侧数字碎片拖尾 ----
+    // 外侧数字碎片拖尾
     float trailing = smoothstep(ringProgress + ringThickness * 2.0, ringProgress, adjDist);
     trailing *= trailing;
     float trailNoise = tex2D(noiseTex, float2(normAngle * 16.0 + uTime * 1.5, dist * 3.0)).r;
     trailing *= step(0.42, trailNoise) * 0.5;
 
-    // ---- 内侧压缩波残影（领域内暗红余波）----
+    // 内侧压缩波残影（领域内暗红余波）
     float innerWave = smoothstep(ringProgress - ringThickness * 0.5, ringProgress - ringThickness * 3.0, adjDist);
     innerWave *= (1.0 - adjDist) * 0.15;
     float innerNoise = tex2D(noiseTex, float2(normAngle * 10.0, dist * 4.0 - uTime * 2.0)).r;
     innerWave *= smoothstep(0.3, 0.7, innerNoise);
 
-    // ---- 颜色 ----
+    // 颜色
     float3 coreRed   = float3(0.85, 0.08, 0.06);
     float3 hotEdge   = float3(1.0, 0.50, 0.30);
     float3 darkTrail  = float3(0.45, 0.025, 0.035);

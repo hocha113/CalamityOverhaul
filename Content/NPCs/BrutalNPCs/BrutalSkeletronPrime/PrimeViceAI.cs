@@ -7,10 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 钳爪控制器：行为见 <see cref="ViceIdleState"/> / <see cref="ViceWindUpState"/> / <see cref="ViceStrikeState"/>
-    /// / <see cref="ViceComboState"/> / <see cref="ViceRecoveryState"/> / <see cref="ViceReturnState"/>
-    /// </summary>
+    /// <summary>钳爪 NPCOverride；行为见 <see cref="ViceIdleState"/> 等 Vice 状态</summary>
     internal class PrimeViceAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeVice;
@@ -60,7 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Rectangle viceRect = mainValue.GetRectangle(frame, 2);
             Vector2 viceOrigin = VaultUtils.GetOrig(mainValue, 2);
 
-            //机械热感滤镜——和头部共用 head.whoAmI 状态
+            //机械热感滤镜，与头部共用 head.whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, mainValue, viceDrawPos, viceRect,
                 npc.rotation, viceOrigin, npc.scale, SpriteEffects.None, controllerId);

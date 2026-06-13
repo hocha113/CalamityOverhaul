@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 蜂巢枪管：左键铺设信息素，右键引爆时派出赛博蜂群分头俯冲标记目标。
-    /// </summary>
+    /// <summary>蜂巢枪管：左键铺信息素，右键爆派蜂群俯冲标记目标</summary>
     internal sealed class HiveBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -63,9 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 赛博蜂群个体：保留 14 帧位置历史 + Trail（CyberTraceBeam shader），头部 SoftGlow + LightShotAlt 锥光
-    /// </summary>
+    /// <summary>赛博蜂单体：Trail+Additive 头部光</summary>
     internal sealed class SHPCHiveDroneProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

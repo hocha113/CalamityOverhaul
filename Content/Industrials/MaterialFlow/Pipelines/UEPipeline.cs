@@ -11,9 +11,7 @@ using Terraria.ObjectData;
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
     #region 枚举
-    /// <summary>
-    /// 管道连接的目标类型枚举
-    /// </summary>
+    /// <summary>管道连接目标类型</summary>
     public enum PipelineLinkType
     {
         None,     //无连接
@@ -22,9 +20,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         Battery   //连接到电池
     }
 
-    /// <summary>
-    /// 管道的几何形状枚举
-    /// </summary>
+    /// <summary>管道几何形状</summary>
     public enum PipelineShape
     {
         Endpoint,//端点(连接0个或1个其他管道)
@@ -35,9 +31,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     }
     #endregion
 
-    /// <summary>
-    /// 合并后的通用能源管道物品
-    /// </summary>
+    /// <summary>通用能源管道物品</summary>
     internal class UEPipeline : BasePipelineItem
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/PipelineItem";
@@ -60,9 +54,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         }
     }
 
-    /// <summary>
-    /// 合并后的通用能源管道图块
-    /// </summary>
+    /// <summary>通用能源管道图块</summary>
     internal class UEPipelineTile : ModTile
     {
         public override string Texture => CWRConstant.Asset + "MaterialFlow/Pipeline";
@@ -84,9 +76,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
     }
 
-    /// <summary>
-    /// 通用能源管道的TileProcessor
-    /// </summary>
+    /// <summary>通用能源管道 TP</summary>
     [VaultLoaden(CWRConstant.Asset + "MaterialFlow")]
     internal class UEPipelineTP : BaseUEPipelineTP, ICWRLoader
     {
@@ -105,14 +95,14 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         #endregion
 
         #region 形状查找表
-        //使用位掩码表示连接状态:上=1,下=2,左=4,右=8
+        //连接掩码：上1下2左4右8
         private const int UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8;
 
-        //形状查找表:根据连接掩码直接获取形状和旋转ID
+        //掩码查形状与旋转
         private static readonly (PipelineShape shape, int rotation)[] ShapeLookup = new (PipelineShape, int)[16];
 
         static UEPipelineTP() {
-            //初始化形状查找表
+            //初始化查找表
             for (int mask = 0; mask < 16; mask++) {
                 ShapeLookup[mask] = CalculateShape(mask);
             }
@@ -150,26 +140,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         internal List<PipelineSideState> SideState { get; private set; }
         public override int TargetItem => ModContent.ItemType<UEPipeline>();
 
-        /// <summary>
-        /// 判断该管道所在的网络是否由发电机供能(由PowerNetworkManager设置)
-        /// </summary>
+        /// <summary>网络是否由发电机供能</summary>
         internal bool IsNetworkPowered { get; set; }
 
-        /// <summary>
-        /// 当前管道的计算形状
-        /// </summary>
+        /// <summary>当前计算形状</summary>
         internal PipelineShape Shape { get; private set; } = PipelineShape.Endpoint;
 
-        /// <summary>
-        /// 管道形状的旋转方向ID(用于拐角和三通)
-        /// </summary>
+        /// <summary>拐角/三通旋转 ID</summary>
         internal int ShapeRotationID { get; private set; } = 0;
 
-        //缓存上一帧的连接掩码，避免重复计算形状
+        //上一帧连接掩码，掩码变才重算形状
         private int lastConnectionMask = -1;
 
         public override void SetMachine() {
-            Efficiency = 0;//管道不参与基类的导电逻辑，由PowerNetworkManager统一管理
+            Efficiency = 0;//不参与基类导电，由电网统一管理
             SideState = [
                 new(new Point16(0, -1)), //上:0
                 new(new Point16(0, 1)),  //下:1
@@ -178,15 +162,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             ];
         }
 
-        /// <summary>
-        /// 更新机器状态
-        /// </summary>
+        /// <summary>更新连接与形状</summary>
         public override void UpdateMachine() {
-            //每帧开始时重置供电状态，由连接检测重新确定
-            //注意:IsNetworkPowered会在HandleGeneratorConnection和HandlePipelineConnection中被重新设置
+            //每帧先重置供电，连接检测会重设
             IsNetworkPowered = false;
 
-            //更新每个方向的连接状态和电力传输
+            //四向连接与输电
             foreach (var side in SideState) {
                 side.coreTP = this;
                 side.Position = Position;
@@ -200,7 +181,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             if (SideState[2].LinkType == PipelineLinkType.Pipeline) connectionMask |= LEFT;
             if (SideState[3].LinkType == PipelineLinkType.Pipeline) connectionMask |= RIGHT;
 
-            //只有连接状态变化时才重新计算形状
+            //掩码变才重算形状
             if (connectionMask != lastConnectionMask) {
                 var (shape, rotation) = ShapeLookup[connectionMask];
                 Shape = shape;
@@ -214,25 +195,21 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>
-        /// 预绘制，用于绘制管道后方的连接臂
-        /// </summary>
+        /// <summary>预绘制非管道连接臂</summary>
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             if (Shape == PipelineShape.Cross) return;
 
             foreach (var side in SideState) {
-                //只绘制连接到非管道的连接臂(如发电机、电池)
+                //发电机/电池等非管道臂
                 if (side.canDraw && side.LinkType != PipelineLinkType.Pipeline) {
                     side.Draw(spriteBatch);
                 }
             }
         }
 
-        /// <summary>
-        /// 核心绘制逻辑，根据管道形状进行绘制
-        /// </summary>
+        /// <summary>按形状绘制管道本体</summary>
         public override void Draw(SpriteBatch spriteBatch) {
-            //先绘制连接到其他管道的连接臂
+            //先画管道间连接臂
             if (Shape != PipelineShape.Cross) {
                 foreach (var side in SideState) {
                     if (side.canDraw && side.LinkType == PipelineLinkType.Pipeline) {
@@ -257,7 +234,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                     DrawCorner(spriteBatch, drawPos, energyColor, lightingColor);
                     break;
                 case PipelineShape.Straight:
-                    //直线形状不需要额外绘制中心
                     break;
                 case PipelineShape.Endpoint:
                     DrawEndpoint(spriteBatch, drawPos, energyColor, lightingColor);
@@ -297,7 +273,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 }
             }
 
-            //只有作为两个非管道的连接器或完全独立时才绘制中心方块
+            //双非管道连接或孤立端点才画中心块
             if (linkCount != 2 || nonPipeLinkCount == 2 || linkCount == 0) {
                 spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), energyColor);
                 spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), lightingColor);

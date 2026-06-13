@@ -8,10 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 熵核：能量球飞行时持续从附近敌人吸取"熵蓄能"，引爆时按累积量释放第二次余波爆破
-    /// 用 whoAmI→entropy 字典追踪每颗球的累积，钩子结束时清理
-    /// </summary>
+    /// <summary>熵核：球飞行吸熵蓄能，引爆按累积释余波</summary>
     internal sealed class EntropyCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

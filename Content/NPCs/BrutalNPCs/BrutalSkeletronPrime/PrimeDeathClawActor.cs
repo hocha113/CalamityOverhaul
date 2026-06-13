@@ -10,11 +10,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 机械骷髅王死亡演出专用的钳子机械臂——本地视觉 <see cref="Actor"/>，与原生钳子手 NPC 完全解耦。
-    /// <para>钳子中心位置是"演出阶段 + 演出计时 + 头部位置 + 目标玩家位置 + 左右侧"的纯函数，
-    /// 因此多人模式下各客户端独立推进即可保持表现一致；本实体不造成任何伤害，仅用于演出。</para>
-    /// </summary>
+    /// <summary>死亡演出钳子 Actor，与原生 PrimeVice 解耦</summary>
+    /// <para>位置=阶段+计时+头部+目标+侧别纯函数，各端独立推进；零伤害纯视觉</para>
     internal class PrimeDeathClawActor : Actor
     {
         private int headWhoAmI = -1;
@@ -165,10 +162,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        /// <summary>
-        /// 复刻原生 NPC 机械臂绘制逻辑：两段固定贴图、固定缩放、按关节长度推进。
-        /// 不做任何纵向拉伸，避免演出专用钳子看起来像橡皮筋。
-        /// </summary>
+        /// <summary>复刻原生两段关节绘制，固定缩放，禁止纵向拉伸</summary>
         private void DrawNativeStyleArm(SpriteBatch spriteBatch, NPC head, Color armColor) {
             Vector2 joint = new Vector2(Position.X + Width * 0.5f - 5f * side, Position.Y + 20f);
             Vector2 drawOrigin = new Vector2(TextureAssets.BoneArm.Width() * 0.5f, TextureAssets.BoneArm.Height() * 0.5f);

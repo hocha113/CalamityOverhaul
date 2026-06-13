@@ -4,10 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 {
-    /// <summary>
-    /// 双子魔眼状态上下文
-    /// 存储状态机运行所需的共享数据
-    /// </summary>
+    /// <summary>双子魔眼状态上下文，状态机共享数据</summary>
     internal class TwinsStateContext : INpcStateContext
     {
         #region 静态同步数据
@@ -15,9 +12,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 是否已触发二阶段转换
         /// </summary>
         public static bool Phase2Triggered { get; set; }
-        /// <summary>
-        /// 触发二阶段的眼睛类型(用于确定谁先触发)
-        /// </summary>
+        /// <summary>触发二阶段的眼睛类型(标记谁先触发)</summary>
         public static int Phase2TriggerSource { get; set; }
         /// <summary>
         /// 二阶段转换计时器
@@ -36,11 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             ComboReadyMask = 0;
         }
 
-        /// <summary>
-        /// 当前请求的合击状态索引(<see cref="TwinsStateIndex"/>)，-1表示无合击请求。
-        /// 先到达合击节点的眼睛发起请求并直接进入合击；另一只眼在锚点状态察觉信号后立即跟进，
-        /// 合击状态的集合阶段会等待双方到齐，取代旧的"步数巧合同步"
-        /// </summary>
+        /// <summary>合击请求索引(<see cref="TwinsStateIndex"/>)，-1=无；先到节点发起，搭档锚点跟进</summary>
         public static int ComboSignal { get; set; } = -1;
 
         /// <summary>
@@ -48,10 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// </summary>
         public static int ComboSharedStep { get; set; }
 
-        /// <summary>
-        /// 合击就绪掩码：bit0=魔焰眼集合完成，bit1=激光眼集合完成。
-        /// 双方都就绪后合击才同步推进，确保对撞/夹剪等动作完全同拍
-        /// </summary>
+        /// <summary>合击就绪掩码 bit0=魔焰 bit1=激光；双方就绪后同拍推进</summary>
         public static int ComboReadyMask { get; set; }
 
         /// <summary>
@@ -144,14 +132,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// 是否处于独眼狂暴模式(另一只眼睛已死亡)
         /// </summary>
         public bool IsSoloRageMode { get; set; }
-        /// <summary>
-        /// 独眼狂暴模式刚刚触发(用于状态切换)
-        /// </summary>
+        /// <summary>独眼狂暴刚触发(状态切换用)</summary>
         public bool SoloRageJustTriggered { get; set; }
-        /// <summary>
-        /// 死亡演出是否已播放完毕。<see cref="States.Common.TwinsDeathState"/> 在演出结束时置为 true，
-        /// 控制器的 CheckDead 据此放行真正的死亡（之前一律锁血拦截）。每只眼睛各自独立。
-        /// </summary>
+        /// <summary>死亡演出完毕；<see cref="States.Common.TwinsDeathState"/> 置 true 后 CheckDead 放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
         #endregion
 
@@ -183,15 +166,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         #endregion
 
         #region 冲刺视觉数据
-        /// <summary>
-        /// 速度拉伸强度(0~1)，渲染层据此对本体做沿速度方向的squash&amp;stretch。
-        /// 状态推高数值，控制器每帧自动衰减
-        /// </summary>
+        /// <summary>速度拉伸(0~1)，渲染 squash&amp;stretch；状态推高，控制器衰减</summary>
         public float DashStretch { get; set; }
-        /// <summary>
-        /// 残影增强(0~1)，渲染层据此提升残影密度与亮度。
-        /// 状态推高数值，控制器每帧自动衰减
-        /// </summary>
+        /// <summary>残影增强(0~1)，渲染提密度/亮度；状态推高，控制器衰减</summary>
         public float AfterimageBoost { get; set; }
 
         /// <summary>

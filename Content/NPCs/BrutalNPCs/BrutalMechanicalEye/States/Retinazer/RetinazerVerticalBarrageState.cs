@@ -19,21 +19,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerVerticalBarrage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerVerticalBarrage;
 
-        /// <summary>
-        /// 二阶段固定招式套路(有搭档时)：
-        /// 游走点射→精准狙击→磁暴链锁→死亡射线扫射→超新星对撞→激光矩阵→大招/交叉冲刺→(循环)
-        /// 
-        /// 与魔焰眼的配合(combo索引对齐，合击节点1/3/5双眼同步)：
-        /// 激光眼:精准狙击(爆发输出)   ←→ 魔焰眼:二阶冲刺(高速突袭)
-        /// 激光眼:磁暴链锁(合击)       ←→ 魔焰眼:磁暴链锁(合击)
-        /// 激光眼:死亡射线扫射(区域切割)←→ 魔焰眼:残影连冲(多段突进)
-        /// 激光眼:超新星对撞(合击)     ←→ 魔焰眼:超新星对撞(合击)
-        /// 激光眼:激光矩阵(区域封锁)   ←→ 魔焰眼:火焰风暴(区域控制)
-        /// 激光眼:大招/交叉冲刺(合击)  ←→ 魔焰眼:大招/交叉冲刺(合击)
-        /// 
-        /// 二阶段固定招式套路(独眼时)：
-        /// 游走点射→精准狙击→水平弹幕→死亡射线扫射→激光矩阵→精准狙击→(循环)
-        /// </summary>
+        /// <summary>二阶段套路(有搭档/独眼)；合击节点 1/3/5 双眼同步，细节见 ComboSequence*</summary>
         private static readonly string[] ComboSequenceWithPartner =
         [
             "PrecisionSniper",

@@ -7,17 +7,15 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 {
     /// <summary>
-    /// Victor 系列界面（对话条 / 义体诊所）共用的赛博 HUD 绘制原语。
-    /// <br/>统一采用"开放边 + 角标 + 渐变高亮 + 发光分隔线"的现代游戏菜单语言，刻意避免四边闭合的网页盒子观感
+    /// Victor 对话/诊所共用 HUD 原语
+    /// <br/>开放边+角标+渐变高亮+发光分隔线，无闭合盒子
     /// </summary>
     internal static class VictorUIStyle
     {
         private static Texture2D Px => CWRAsset.Placeholder_White.Value;
         private static Texture2D Glow => CWRAsset.SoftGlow?.Value;
 
-        /// <summary>
-        /// 四角 L 形角标（HUD 取景框），不画完整边框
-        /// </summary>
+        /// <summary>四角 L 形角标，不画完整边框</summary>
         public static void DrawCorners(SpriteBatch sb, Rectangle r, Color c, int len, int th) {
             Texture2D px = Px;
             //左上
@@ -34,9 +32,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             sb.Draw(px, new Rectangle(r.Right - th, r.Bottom - len, th, len), c);
         }
 
-        /// <summary>
-        /// 竖向发光分隔线（中段亮、两端淡），用于分区
-        /// </summary>
+        /// <summary>竖向发光分隔线，中段亮两端淡</summary>
         public static void DrawVDivider(SpriteBatch sb, int x, int top, int bottom, Color c) {
             Texture2D px = Px;
             int h = bottom - top;
@@ -51,9 +47,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
         }
 
-        /// <summary>
-        /// 横向发光分隔线（中段亮、两端淡）
-        /// </summary>
+        /// <summary>横向发光分隔线，中段亮两端淡</summary>
         public static void DrawHDivider(SpriteBatch sb, int left, int right, int y, Color c) {
             Texture2D px = Px;
             int w = right - left;
@@ -68,9 +62,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
         }
 
-        /// <summary>
-        /// 分区标题条：左侧实心强调块 + 标题 + 右侧延伸虚线，区别于纯文本标签
-        /// </summary>
+        /// <summary>分区标题条：左强调块+标题+右虚线</summary>
         public static void DrawSectionHeader(SpriteBatch sb, Rectangle r, string label, Color accent, float alpha, float fontScale) {
             Texture2D px = Px;
             //左侧强调方块
@@ -87,16 +79,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
         }
 
-        /// <summary>
-        /// 命令行式条目（开放边 + 左强调条 + 悬停渐变 + 底部发光分隔线 + 悬停右移），返回内容应用的水平位移。
-        /// <br/>这是替代"盒子按钮"的核心样式
-        /// </summary>
+        /// <summary>命令行条目，返回悬停水平位移 slide</summary>
         public static int DrawCommandRow(SpriteBatch sb, Rectangle rect, Color accent, float hoverT, float alpha, bool separator = true) {
             Texture2D px = Px;
             int slide = (int)(hoverT * 6f);
             Rectangle r = new(rect.X + slide, rect.Y, rect.Width - slide, rect.Height);
 
-            //悬停渐变高亮（左亮右淡）
+            //悬停渐变高亮，左亮右淡
             if (hoverT > 0.001f) {
                 const int strips = 10;
                 for (int i = 0; i < strips; i++) {
@@ -106,7 +95,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 }
             }
             else {
-                //空闲态极淡底，制造分层但不成框
+                //空闲极淡底，分层不成框
                 sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, r.Height), CyberwareTheme.SlotInnerBg * (alpha * 0.35f));
             }
 
@@ -119,7 +108,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 sb.Draw(Glow, new Vector2(r.X, r.Center.Y), null, g, 0f, Glow.Size() / 2f, new Vector2(0.12f, r.Height / 60f), SpriteEffects.None, 0f);
             }
 
-            //底部发光分隔线（悬停时变宽变亮）
+            //底部发光分隔线，悬停变宽变亮
             if (separator) {
                 int sepW = (int)((r.Width - barW - 8) * (0.45f + 0.55f * hoverT));
                 sb.Draw(px, new Rectangle(r.X + barW + 6, r.Bottom - 1, sepW, 1), accent * (alpha * (0.2f + 0.35f * hoverT)));
@@ -128,9 +117,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             return slide;
         }
 
-        /// <summary>
-        /// 全息取景框：暗底 + 顶/底细线 + 四角标 + 缓慢扫描线，用于立绘 / 信息框
-        /// </summary>
+        /// <summary>全息取景框：暗底+顶底线+角标+扫描线</summary>
         public static void DrawHoloFrame(SpriteBatch sb, Rectangle rect, Color accent, float alpha, float timer) {
             Texture2D px = Px;
             sb.Draw(px, rect, CyberwareTheme.SectionBg * (alpha * 0.92f));
@@ -143,9 +130,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             sb.Draw(px, new Rectangle(rect.X + 2, sy + 2, rect.Width - 4, 1), accent * (alpha * 0.08f));
         }
 
-        /// <summary>
-        /// 价格绘制：依次铂/金/银/铜，跳过为 0 的面额；<paramref name="rightAlign"/> 时以 pos.X 为右边界
-        /// </summary>
+        /// <summary>铂/金/银/铜价格；rightAlign 时 pos.X 为右边界</summary>
         public static void DrawPrice(SpriteBatch sb, Vector2 pos, long value, float alpha, float scale, bool rightAlign, string freeText = "FREE") {
             Texture2D px = Px;
             if (value <= 0) {

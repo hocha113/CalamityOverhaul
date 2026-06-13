@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         public void DrawPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //绘制渐变背景 - 硫磺海配色
+            // 绘制渐变背景 - 硫磺海配色
             int segments = 26;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 int y2 = rect.Y + (int)(t2 * rect.Height);
                 Rectangle r = new(rect.X, y1, rect.Width, Math.Max(1, y2 - y1));
 
-                //硫磺海配色:深绿、黄绿、带毒的黄色
+                // 硫磺海配色:深绿、黄绿、带毒的黄色
                 Color sulfurDeep = new Color(12, 18, 8);
                 Color toxicMid = new Color(28, 38, 15);
                 Color acidEdge = new Color(65, 85, 30);
@@ -54,15 +54,15 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            //瘴气覆盖层
+            // 瘴气覆盖层
             float miasmaEffect = (float)Math.Sin(miasmaTimer * 1.1f) * 0.5f + 0.5f;
             Color miasmaTint = new Color(45, 55, 20) * (alpha * (0.4f + hoverGlow * 0.2f) * miasmaEffect);
             spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), miasmaTint);
 
-            //绘制毒波纹理效果
+            // 绘制毒波纹理效果
             DrawToxicWaveOverlay(spriteBatch, rect, alpha * (0.85f + hoverGlow * 0.15f));
 
-            //内边框微光
+            // 内边框微光
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.2f) * 0.5f + 0.5f;
@@ -74,13 +74,13 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             float pulse = (float)Math.Sin(sulfurPulse) * 0.5f + 0.5f;
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * (alpha * (0.85f + hoverGlow * 0.3f));
 
-            //绘制主边框
+            // 绘制主边框
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
 
-            //绘制内边框
+            // 绘制内边框
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(140, 170, 70) * (alpha * 0.22f * pulse * (1f + hoverGlow * 0.5f));
@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             spriteBatch.Draw(px, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
             spriteBatch.Draw(px, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
 
-            //绘制角星装饰
+            // 绘制角星装饰
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), alpha * (0.9f + hoverGlow * 0.4f));
             DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Y + 10), alpha * (0.9f + hoverGlow * 0.4f));
             DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * (0.65f + hoverGlow * 0.3f));
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         }
 
         public void UpdateParticles(Vector2 basePos, float panelFade) {
-            //气泡粒子更新
+            // 气泡粒子更新
             bubbleTimer++;
             if (panelFade > 0.6f && bubbleTimer >= 12 && bubbles.Count < 15) {
                 bubbleTimer = 0;
@@ -143,7 +143,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 }
             }
 
-            //灰烬粒子更新
+            // 灰烬粒子更新
             ashTimer++;
             if (panelFade > 0.6f && ashTimer >= 18 && ashParticles.Count < 10) {
                 ashTimer = 0;

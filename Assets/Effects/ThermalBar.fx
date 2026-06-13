@@ -1,8 +1,6 @@
 // ============================================================================
-// ThermalBar.fx — 热力发电机指示条着色器
-// 垂直渐变填充 + 流动光效 + 热浪脉冲 + 边框辉光
-// uFillRatio: 填充比例 0~1（从底部到顶部）
-// uBarMode: 0=温度条（红橙色系） 1=电力条（琥珀金色系）
+// ThermalBar.fx 热力发电机指示条
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -10,8 +8,8 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution;
-float uFillRatio;
-float uBarMode;
+float uFillRatio;  //填充 0~1 底→顶
+float uBarMode;    //0温度条红橙 1电力条琥珀
 
 float hash21(float2 p) {
     float3 p3 = frac(float3(p.xyx) * 0.1031);

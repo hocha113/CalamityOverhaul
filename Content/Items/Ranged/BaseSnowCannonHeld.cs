@@ -7,53 +7,40 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// <summary>
-    /// 雪球炮系列武器的手持弹幕基类
-    /// <br/>由武器的 <see cref="ModItem.Shoot"/> 在使用瞬间生成，
-    /// 只在开火期间存活：按键全部松开且没有收尾动作时立即销毁，不承担常态手持显示
-    /// <br/>负责持握姿态、手臂复合动画、枪口定位、后坐表现与雪球弹药消耗，
-    /// 具体开火行为由子类在 <see cref="BaseHeldProj.Initialize"/> 与 <see cref="UpdateGun"/> 中实现
-    /// <br/>注意：跨使用的冷却与充能不要放在弹幕实例字段上（弹幕销毁即丢失），应存放在武器的 ModItem 上
-    /// </summary>
+    /// 雪球炮手持基类：开火期存活，子类实现 UpdateGun
     internal abstract class BaseSnowCannonHeld : BaseHeldProj
     {
-        /// <summary>对应的武器物品ID，物品切换后手持弹幕会自动销毁</summary>
+        /// 对应武器ID
         public abstract int TargetItemID { get; }
         public override LocalizedText DisplayName => ItemLoader.GetItem(TargetItemID).DisplayName;
 
-        /// <summary>
-        /// 弹药消耗上下文开关：物品使用本身不消耗雪球（各武器的 ModItem.CanConsumeAmmo 返回该值），
-        /// 只有手持弹幕通过 <see cref="PickSnowAmmo"/> 主动拾取时才放行消耗
-        /// </summary>
+        /// 弹药门控(PickSnowAmmo 时消耗)
         internal static bool AmmoConsumeContext { get; private set; }
 
-        /// <summary>纹理的垂直帧数</summary>
+        /// 纹理垂直帧数
         protected virtual int FrameCount => 1;
-        /// <summary>枪口到持握中心的前向距离</summary>
+        /// 枪口前向距离
         protected virtual float BarrelLength => 30f;
-        /// <summary>枪口在垂直枪管方向上的偏移（正值朝枪管上方）</summary>
+        /// 枪口法线偏移
         protected virtual float MuzzleNormalOffset => 0f;
-        /// <summary>持握中心到玩家中心的距离</summary>
+        /// 持握中心距玩家
         protected virtual float HoldDistance => 16f;
-        /// <summary>
-        /// 是否还有未完成的收尾动作（剩余点射、待释放的蓄能、炮口动画等），
-        /// 为真时即使松开按键也暂不销毁
-        /// </summary>
+        /// 收尾未完成则不销毁
         protected virtual bool PendingWork => false;
 
-        /// <summary>通用开火冷却计数（仅本次存活期间有效，跨使用的冷却请用 <see cref="TimeReady"/> 时间戳）</summary>
+        /// 开火冷却(仅本实例)
         protected int cooldown;
-        /// <summary>后坐位移量，开火时增大并自动衰减，仅影响表现</summary>
+        /// 后坐位移(表现)
         protected float recoil;
 
-        /// <summary>是否按住左键且未点击UI（开火意图判定）</summary>
+        /// 左键开火意图
         protected bool FireKeyLeft => DownLeft && !Owner.mouseInterface;
-        /// <summary>是否按住右键且未点击UI、未与左键冲突</summary>
+        /// 右键开火意图
         protected bool FireKeyRight => DownRight && !DownLeft && !Owner.mouseInterface && !Owner.cursorItemIconEnabled;
 
-        /// <summary>当前枪口朝向单位向量</summary>
+        /// 枪口朝向
         protected Vector2 GunForward => Projectile.rotation.ToRotationVector2();
-        /// <summary>枪口世界坐标</summary>
+        /// 枪口世界坐标
         protected Vector2 MuzzlePos {
             get {
                 Vector2 fwd = GunForward;
@@ -62,7 +49,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>基于 <see cref="Main.GameUpdateCount"/> 的跨使用冷却判定</summary>
+        /// 跨使用冷却判定
         protected static bool TimeReady(uint readyTime) => Main.GameUpdateCount >= readyTime;
 
         public sealed override void SetDefaults() {
@@ -77,7 +64,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             SetGunDefaults();
         }
 
-        /// <summary>子类的额外属性初始化</summary>
+        /// 子类 SetDefaults 扩展
         protected virtual void SetGunDefaults() { }
 
         public override bool ShouldUpdatePosition() => false;
@@ -93,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Projectile.Kill();
                 return false;
             }
-            //没有任何开火意图与收尾动作时销毁，让玩家回归普通的持物状态
+            //无开火意图且无收尾则销毁
             if (!DownLeft && !DownRight && !PendingWork) {
                 Projectile.Kill();
                 return false;
@@ -121,10 +108,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             UpdateGun();
         }
 
-        /// <summary>每帧的开火与个性化逻辑，运行于姿态更新之后</summary>
+        /// 每帧开火逻辑
         protected abstract void UpdateGun();
 
-        /// <summary>更新枪体位置、旋转与玩家朝向</summary>
+        /// 更新枪位旋转朝向
         protected virtual void UpdateHoldPose() {
             Projectile.rotation = ToMouseA;
             Vector2 fwd = GunForward;
@@ -139,31 +126,18 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Owner.itemAnimation = 2;
         }
 
-        /// <summary>设置玩家双臂的持枪姿势</summary>
+        /// 双臂持枪姿势
         protected virtual void UpdateArms() {
             float armRot = Projectile.rotation - MathHelper.PiOver2 * SafeGravDir;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRot);
         }
 
-        /// <summary>
-        /// 拾取雪球弹药并获取弹药加成后的伤害数据
-        /// </summary>
-        /// <param name="damage">含武器与弹药加成的伤害</param>
-        /// <param name="knockback">击退</param>
-        /// <param name="consume">是否实际消耗一颗弹药</param>
-        /// <returns>背包中是否还有可用弹药</returns>
+        /// 拾取雪球弹药(含伤害击退)
         protected bool PickSnowAmmo(out int damage, out float knockback, bool consume = true)
             => PickSnowAmmo(out _, out damage, out knockback, consume);
 
-        /// <summary>
-        /// 拾取雪球弹药并获取弹药加成后的伤害数据，同时给出弹药对应的弹幕类型
-        /// </summary>
-        /// <param name="projToShoot">弹药对应的弹幕类型</param>
-        /// <param name="damage">含武器与弹药加成的伤害</param>
-        /// <param name="knockback">击退</param>
-        /// <param name="consume">是否实际消耗一颗弹药</param>
-        /// <returns>背包中是否还有可用弹药</returns>
+        /// 拾取雪球弹药(含弹幕类型)
         protected bool PickSnowAmmo(out int projToShoot, out int damage, out float knockback, bool consume = true) {
             AmmoConsumeContext = consume;
             bool hasAmmo = Owner.PickAmmo(Item, out projToShoot, out _, out damage, out knockback, out _, !consume);

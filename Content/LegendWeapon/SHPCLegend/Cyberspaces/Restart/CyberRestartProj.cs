@@ -7,19 +7,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 {
-    /// <summary>
-    /// 赛博重启演出弹幕
-    /// <br/>由 <see cref="CyberRestart"/> 触发后于发起玩家位置生成，全部演出帧均贴附于"弹幕主人"的领域中心
-    /// <br/>多人语义：必须按 <see cref="Projectile.owner"/> 取该玩家的 <see cref="CyberspacePlayer"/>，
-    /// 否则远端客户端会以本地玩家为中心，让重启演出全跑错位置
-    /// <br/>四阶段：撕裂(黑墙裂缝外放)→收缩(向心粒带挤压)→奇点(红黑核心裂缝)→炸裂(横竖闪带+尘埃外散)
-    /// <br/>额外通过 <see cref="IWarpDrawable"/> 在奇点/炸裂阶段把屏幕本身拽进核心，制造引力透镜与冲击挤压感
-    /// </summary>
+    /// <summary>赛博重启演出弹幕，贴附主人领域中心；按 owner 取 CyberspacePlayer</summary>
     internal class CyberRestartProj : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        //——黑墙裂缝——
+        //黑墙裂缝
         private const int CrackCount = 7;
         //每条裂缝的角度
         private float[] crackAngles;
@@ -28,21 +21,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         //每条裂缝出现的延迟帧
         private int[] crackDelays;
 
-        //——收缩粒带——
+        //收缩粒带
         private const int StreamCount = 18;
         private float[] streamAngles;
         private float[] streamLag;
 
-        //——炸裂尘埃——
+        //炸裂尘埃
         private const int DebrisCount = 22;
         private float[] debrisAngles;
         private float[] debrisDist;
         private float[] debrisLag;
 
-        //——奇点核心抖动相位——
+        //奇点核心抖动相位
         private float coreSeed;
 
-        //寿命：和 CyberRestart.TotalFrames 完全对齐，确保最后一帧与演出收尾同步
+        //寿命与 CyberRestart.TotalFrames 对齐
         public override void SetStaticDefaults() {
             ProjectileID.Sets.DrawScreenCheckFluff[Type] = 4096;
         }
@@ -59,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         }
 
         public override void AI() {
-            //每帧贴附"弹幕主人"的领域中心，保持与玩家/领域同步；多人时不能用 Local
+            //每帧贴附主人领域中心
             CyberspacePlayer cp = Cyberspace.For(Projectile.owner);
             if (cp != null) {
                 Projectile.Center = cp.DomainCenter;
@@ -70,9 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             }
         }
 
-        /// <summary>
-        /// 取主人玩家的领域状态；找不到时返回 null（极端情况：主人下线/重连）
-        /// </summary>
+        /// <summary>取主人 CyberspacePlayer，离线时 null</summary>
         private CyberspacePlayer OwnerCp() => Cyberspace.For(Projectile.owner);
 
         private void Init() {
@@ -236,7 +227,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             if (t > CyberRestart.PhaseSingularityEnd) return;
 
             Vector2 origin = pixel.Size() * 0.5f;
-            //当前可视外径基准——基于"主人玩家"领域当前 EffectiveOuterRadius 取一段适中的长度
+            //可视外径基于主人 EffectiveOuterRadius
             CyberspacePlayer ownerCp = OwnerCp();
             float ownerEffR = ownerCp?.EffectiveOuterRadius ?? Cyberspace.BaseRadius;
             float baseLen = MathHelper.Clamp(ownerEffR * 0.85f, 240f, 720f);

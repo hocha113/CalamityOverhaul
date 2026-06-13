@@ -9,12 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 {
-    /// <summary>
-    /// 赛博空间重启技能 —— 状态管理器
-    /// <br/>领域内重启：领域被撕开数道黑墙裂缝→迅速向心收缩→玩家压缩为红黑维度核心裂缝→猛然炸裂复原
-    /// <br/>整个过程对外播一段固定的演出，演出关键帧瞬间恢复 HP/魔力/RAM/异常状态
-    /// <br/>独立于 HackTime，仅在赛博空间激活且当前层 ≥ <see cref="RequiredLayer"/> 时可用
-    /// </summary>
+    /// <summary>领域重启管理：四阶段演出，奇点帧恢复全状态；层≥1</summary>
     internal class CyberRestart : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => Reset();
@@ -29,12 +24,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         /// </summary>
         public const float RamCostPerCast = 6f;
 
-        /// <summary>
-        /// 重启生效后，RAM 锁定为 0 的帧数（约 22 秒）。锁定期间 RAM 不恢复，也不能使用任何消耗 RAM 的技能，以此代替传统冷却
-        /// </summary>
+        /// <summary>重启后 RAM 锁定帧数（约 22s）</summary>
         public const int RamLockFrames = 60 * 22;
 
-        //——四阶段帧时点，TotalFrames 为整体演出长度——
+        //四阶段帧时点
         /// <summary>撕裂阶段终点：黑墙裂缝在领域中蔓延</summary>
         public const int PhaseTearEnd = 22;
         /// <summary>收缩阶段终点：领域整体压缩到核心</summary>

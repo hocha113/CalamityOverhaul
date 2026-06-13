@@ -1,28 +1,26 @@
 // ============================================================================
-// KingSlimeBloodWing.fx —— 史莱姆王皇室血光凝胶翼着色器
-// 重写说明：彻底移除所有 hash/noise/fbm，全部改用解析 sin/cos。
-// 根本原因：hash 函数在纹理随 Boss 移动/缩放时会产生逐帧 UV 格点跳变，
-// 表现为内部纹路的高频闪烁。sin/cos 是带限函数，任何缩放都不会产生混叠。
+// KingSlimeBloodWing.fx 史莱姆王皇室血光凝胶翼
+// 采样 uImage0 翼贴图；解析 sin/cos 形变(无 hash 防 UV 跳变闪烁)
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
-float intensity;
-float extension;
-float flapStrength;
-float flapPhase;
-float flapEnergy;
-float enragedMix;
-float isFalling;
-float seed;
-float2 texelSize;   // 保留声明兼容外部传参，不在 shader 内使用
+float intensity;       //整体强度
+float extension;       //翼展延伸
+float flapStrength;    //拍击形变强度
+float flapPhase;       //拍击相位
+float flapEnergy;      //拍击能量
+float enragedMix;      //狂暴混合 0~1
+float isFalling;       //下落态权重
+float seed;            //随机种子
+float2 texelSize;      //兼容外部传参，shader 内未用
 
-float3 bloodCore;
-float3 bloodEdge;
-float3 bloodHighlight;
+float3 bloodCore;      //血光核心色
+float3 bloodEdge;      //血光边缘色
+float3 bloodHighlight; //血光高光色
 
-// UV 形变：幅度严格限制在 ±0.015 以内，绝不让 UV 越出纹理 alpha 边界
+// UV 形变幅度 ±0.015 内，不越出纹理 alpha 边界
 float2 DeformUV(float2 uv)
 {
     float r = uv.x;

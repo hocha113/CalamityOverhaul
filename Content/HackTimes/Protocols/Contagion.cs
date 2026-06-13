@@ -5,14 +5,10 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 蔓延协议：植入自复制病毒扩散至附近目标
-    /// </summary>
+    /// <summary>蔓延，自复制病毒扩散至附近目标</summary>
     internal class Contagion : QuickHackDef
     {
-        /// <summary>
-        /// 扩散搜索半径（像素）
-        /// </summary>
+        /// <summary>扩散搜索半径（像素）</summary>
         public const float SpreadRadius = 400f;
 
         public override void SetDefaults() {
@@ -37,7 +33,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
         public override bool OnTick(IHackTarget target, int elapsed) {
             if (target is not NpcScannable s) return true;
             NPC npc = Main.npc[s.NpcIndex];
-            //每20帧造成伤害（3次/秒，15伤害/次，6秒共270)
+            //每 20 帧伤害，3 次/秒 15 伤害
             if (elapsed % 20 == 0) {
                 npc.SimpleStrikeNPC(15, 0, false, 0f, null, false, 0f, true);
             }
@@ -78,7 +74,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
                     newEff.Generation = 1; //标记二代
                 }
 
-                //传播视觉——从源到目标的粒子连线
+                //传播粒子连线
                 for (int j = 0; j < 6; j++) {
                     float t = j / 6f;
                     Vector2 pos = Vector2.Lerp(npc.Center, other.Center, t);

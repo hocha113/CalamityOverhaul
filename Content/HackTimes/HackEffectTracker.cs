@@ -8,51 +8,44 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 单个骇入效果的运行时实例
-    /// <br/>统一承载 NPC / 物块两类持续性骇入效果，目标通过<see cref="IHackTarget"/>抽象
-    /// </summary>
+    /// <summary>单个骇入效果运行时实例</summary>
     internal class ActiveHackEffect
     {
-        /// <summary>对应的协议定义</summary>
+        /// <summary>协议定义</summary>
         public QuickHackDef Hack;
-        /// <summary>受影响的目标</summary>
+        /// <summary>受影响目标</summary>
         public IHackTarget Target;
-        /// <summary>发起骇入的玩家 whoAmI</summary>
+        /// <summary>施法玩家 whoAmI</summary>
         public int CasterIndex;
         /// <summary>已持续帧数</summary>
         public int Elapsed;
-        /// <summary>效果是否仍然活跃</summary>
+        /// <summary>是否仍活跃</summary>
         public bool Active = true;
-        /// <summary>是否已对目标调用过 OnApply</summary>
+        /// <summary>是否已调用 OnApply</summary>
         public bool Applied;
-        /// <summary>Boss 时效果倍率（Boss 为 0.5f，普通为 1f）</summary>
+        /// <summary>Boss 效果倍率，Boss 0.5f 普通 1f</summary>
         public float EffectMult = 1f;
-        /// <summary>传播代数（用于蔓延协议的一跳限制。0=初始施加，1=已传播一次）</summary>
+        /// <summary>传播代数，0 初始 1 已传播一次</summary>
         public int Generation;
 
-        //----- 兼容旧 API：暴露 NPC / Tile 维度的便捷查询 -----
+        //兼容旧 API：NPC/Tile 便捷查询
 
-        /// <summary>当 Target 为 NpcScannable 时返回对应 NPC 索引，否则返回 -1</summary>
+        /// <summary>NpcScannable 时返回 NPC 索引，否则 -1</summary>
         public int TargetIndex => Target is NpcScannable n ? n.NpcIndex : -1;
-        /// <summary>当 Target 为 TileScannable 时返回对应物块 X，否则返回 -1</summary>
+        /// <summary>TileScannable 时返回物块 X，否则 -1</summary>
         public int TileX => Target is TileScannable t ? t.TileCoordX : -1;
-        /// <summary>当 Target 为 TileScannable 时返回对应物块 Y，否则返回 -1</summary>
+        /// <summary>TileScannable 时返回物块 Y，否则 -1</summary>
         public int TileY => Target is TileScannable t ? t.TileCoordY : -1;
     }
 
-    /// <summary>
-    /// 骇入效果全局追踪器
-    /// <br/>管理所有目标身上正在生效的骇入协议，驱动效果生命周期（Apply→Tick→Remove）
-    /// <br/>无叠加限制，同一目标可承受任意数量的不同协议
-    /// </summary>
+    /// <summary>骇入效果全局追踪器，驱动 Apply→Tick→Remove</summary>
     internal class HackEffectTracker : ICWRLoader
     {
         //所有 NPC 维度的活跃效果
         private static readonly List<ActiveHackEffect> activeEffects = [];
         //帧内移除缓冲
         private static readonly List<ActiveHackEffect> removeBuffer = [];
-        //OnRemove 可能施加传播类效果，延迟加入可避免当前帧遍历期间处理新效果
+        //OnRemove 传播效果延迟加入，避免遍历中处理新效果
         private static readonly List<ActiveHackEffect> pendingEffects = [];
         private static bool updatingNpcEffects;
 
@@ -60,18 +53,16 @@ namespace CalamityOverhaul.Content.HackTimes
         private static readonly List<ActiveHackEffect> activeTileEffects = [];
         private static readonly List<ActiveHackEffect> tileRemoveBuffer = [];
 
-        //击杀回收 RAM 的比例（返还协议 RamCost 的百分比）
+        //击杀回收 RAM 比例
         private const float KillRefundRatio = 0.5f;
-        //本帧已处理击杀回收的 NPC 索引集（避免同一 NPC 多效果重复回收）
+        //本帧已处理击杀回收的 NPC，防重复
         private static readonly HashSet<int> killRefundedThisFrame = [];
 
         void ICWRLoader.UnLoadData() => Reset();
 
         #region NPC 效果
 
-        /// <summary>
-        /// 对指定 NPC 施加一个骇入协议效果
-        /// </summary>
+        /// <summary>对 NPC 施加骇入效果</summary>
         public static ActiveHackEffect ApplyNpcEffect(QuickHackDef hack, int targetIndex, int casterIndex) {
             if (targetIndex < 0 || targetIndex >= Main.maxNPCs) return null;
             NPC npc = Main.npc[targetIndex];
@@ -229,16 +220,7 @@ namespace CalamityOverhaul.Content.HackTimes
         //群组扩散用的复用缓冲，所有 NPC 协议共享，避免每次都分配
         private static readonly List<NPC> groupBuffer = [];
 
-        /// <summary>
-        /// 把 <paramref name="hack"/> 类型的效果从 <paramref name="rootNpcIndex"/> 扩散到其所属
-        /// 多实体 Boss 群组（蠕虫体节、月总核心+手部+真眼等）的全部活跃成员
-        /// <br/>已经持有同类型效果的成员会被跳过，因此不会触发无限递归
-        /// </summary>
-        /// <param name="hack">要扩散的协议实例</param>
-        /// <param name="rootNpcIndex">触发源 NPC 索引</param>
-        /// <param name="casterIndex">施法玩家 whoAmI</param>
-        /// <param name="onSpread">每个新感染的成员被附加效果时的视觉回调，可空</param>
-        /// <typeparam name="T">协议类型，用于 HasEffect 短路判定</typeparam>
+        /// <summary>扩散到多实体 Boss 群组，同类型跳过防递归</summary>
         public static void PropagateNpcEffectToGroup<T>(T hack, int rootNpcIndex,
             int casterIndex, System.Action<NPC> onSpread = null) where T : QuickHackDef {
             if (hack == null || rootNpcIndex < 0 || rootNpcIndex >= Main.maxNPCs) return;
@@ -256,7 +238,7 @@ namespace CalamityOverhaul.Content.HackTimes
             groupBuffer.Clear();
         }
 
-        //击杀带有骇入效果的 NPC 时，汇总所有效果的 RAM 消耗并按比例返还
+        //击杀带骇入效果 NPC 时按比例返还 RAM
         private static void OnHackedTargetKilled(NPC target, int npcIndex) {
             killRefundedThisFrame.Add(npcIndex);
 

@@ -5,10 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼一阶段冲刺准备状态：
-    /// 弹簧式后撤蓄力(拉弓感)→方向锁定→瞬时爆发起步
-    /// </summary>
+    /// <summary>一阶段 dash 准备：后撤蓄力→锁向→爆发起步</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismDashPrepare, typeof(TwinsStateContext))]
     internal class SpazmatismDashPrepareState : TwinsStateBase
     {

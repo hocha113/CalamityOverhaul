@@ -7,7 +7,6 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.HackTimes
 {
     //左侧骇入队列渲染器
-    //显示已选择的骇入协议及其上传进度，模仿赛博朋克2077的左侧待执行队列
     internal class HackQueueRenderer
     {
         #region 布局常量
@@ -21,7 +20,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float FontName = 0.62f;
         private const float FontPct = 0.38f;
         private const float FontStatus = 0.30f;
-        //完成后闪烁持续时间（秒）
+        //完成闪烁时长（秒）
         private static float CompletedDuration => 0.2f;
 
         #endregion
@@ -34,10 +33,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 公共接口
 
-        /// <summary>
-        /// 向队列添加一个骇入协议
-        /// <br/>不允许同一目标上的同一slot重复入队，但不同目标可以并行持有同一slot的骇入状态
-        /// </summary>
+        /// <summary>入队协议，同目标同 slot 不重复</summary>
         public bool Enqueue(QuickHackDef hack, int slotIndex, IHackTarget target, int computedRamCost) {
             if (target == null) return false;
             for (int i = 0; i < queue.Count; i++) {
@@ -48,7 +44,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return true;
         }
 
-        //取消队列中指定slot的协议（任意目标，仅在显式取消场景使用）
+        //取消指定 slot，任意目标
         public void Cancel(int slotIndex) {
             for (int i = queue.Count - 1; i >= 0; i--) {
                 if (queue[i].SlotIndex == slotIndex) {
@@ -58,7 +54,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //取消队列中指定slot且作用于指定目标的协议
+        //取消指定 slot 与目标
         public void Cancel(int slotIndex, IHackTarget target) {
             if (target == null) return;
             for (int i = queue.Count - 1; i >= 0; i--) {
@@ -74,8 +70,7 @@ namespace CalamityOverhaul.Content.HackTimes
             queue.Clear();
         }
 
-        //全局消费：处理所有已完成的条目，施加效果并移除
-        //由全局更新调用，不依赖HackTimeUI的Active状态
+        //全局消费已完成条目，不依赖 UI Active
         public void ConsumeAndApplyAll() {
             for (int i = queue.Count - 1; i >= 0; i--) {
                 var entry = queue[i];
@@ -87,14 +82,14 @@ namespace CalamityOverhaul.Content.HackTimes
                 //上传完成且闪烁结束，由目标自身分派协议生效
                 if (entry.State == HackQueueState.Completed && entry.CompletedTimer <= 0f) {
                     entry.Target.ApplyHack(entry.Hack, Main.LocalPlayer);
-                    //多人模式下广播给其它客户端做视觉复刻；单人模式下方法内部会直接返回
+                    //多人广播视觉复刻
                     HackTimeNetSync.SendApplyPacket(entry.Hack, entry.Target, Main.myPlayer);
                     queue.RemoveAt(i);
                 }
             }
         }
 
-        //查询某个hack slot在队列中的状态（重复时优先级：Uploading > Queued > Completed）
+        //查询 slot 状态，Uploading 优先
         public QueueSlotState GetSlotState(int slotIndex) {
             QueueSlotState best = QueueSlotState.None;
             for (int i = 0; i < queue.Count; i++) {
@@ -109,7 +104,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return best;
         }
 
-        //查询指定slot针对指定目标的状态，target为空时退化为忽略目标的版本
+        //查询 slot 针对目标的状态
         public QueueSlotState GetSlotState(int slotIndex, IHackTarget target) {
             if (target == null) return GetSlotState(slotIndex);
             QueueSlotState best = QueueSlotState.None;
@@ -126,7 +121,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return best;
         }
 
-        //获取某个hack slot的上传进度（重复时取最活跃的那个）
+        //获取 slot 上传进度
         public float GetSlotProgress(int slotIndex) {
             float best = 0f;
             bool found = false;
@@ -143,7 +138,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return best;
         }
 
-        //获取指定slot针对指定目标的上传进度
+        //获取 slot 针对目标的进度
         public float GetSlotProgress(int slotIndex, IHackTarget target) {
             if (target == null) return GetSlotProgress(slotIndex);
             float best = 0f;
@@ -247,8 +242,7 @@ namespace CalamityOverhaul.Content.HackTimes
             return false;
         }
 
-        //获取作用于指定目标的活跃条目（Uploading 优先，其次 Completed）的进度
-        //仅返回与目标匹配的条目，避免多目标场景下把别的目标的进度画到当前选中头顶
+        //获取目标活跃条目进度，避免多目标串进度
         public bool TryGetActiveEntry(IHackTarget target, out float progress, out bool completed) {
             if (target != null) {
                 bool foundCompleted = false;
@@ -282,7 +276,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public void Update() {
             timer += 0.016f;
 
-            //确保只有队列头部处于Uploading状态
+            //仅队列头部 Uploading
             bool hasUploading = false;
             for (int i = 0; i < queue.Count; i++) {
                 var entry = queue[i];
@@ -296,7 +290,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 //状态机
                 switch (entry.State) {
                     case HackQueueState.Waiting:
-                        //骇客时间中允许状态流转到Uploading（显示排队），但不推进进度
+                        //骇客时间内可排队但不推进
                         if (!hasUploading) {
                             entry.State = HackQueueState.Uploading;
                             hasUploading = true;
@@ -305,9 +299,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
                     case HackQueueState.Uploading:
                         hasUploading = true;
-                        //仅在世界真正冻结时暂停上传进度
-                        //单人模式下进入骇客时间会触发 WorldFreezeSystem，对应进度暂停由 IsActive 决定
-                        //多人模式下不再冻结世界，上传与世界一同实时推进
+                        //世界冻结时暂停上传，多人模式实时推进
                         if (!TimeFreezes.WorldFreezeSystem.IsActive) {
                             if (entry.Hack.UploadTime > 0)
                                 entry.UploadProgress += 1f / entry.Hack.UploadTime;
@@ -378,7 +370,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float x = LeftMargin + flyOffset;
             Rectangle rect = new((int)x, (int)y, (int)ItemWidth, (int)ItemHeight);
 
-            //=== 背景 ===
+            //背景
             Color bgColor = entry.State switch {
                 HackQueueState.Uploading => Color.Lerp(HackTheme.BgSlot, HackTheme.Uploading, 0.06f),
                 HackQueueState.Completed => Color.Lerp(HackTheme.BgSlot, HackTheme.Accent, 0.08f * fadeAlpha),
@@ -386,13 +378,13 @@ namespace CalamityOverhaul.Content.HackTimes
             };
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor * (itemAlpha * 0.88f));
 
-            //=== CRT扫描线 ===
+            //CRT 扫描线
             DrawCRTOverlay(sb, px, rect, itemAlpha * 0.04f);
 
-            //=== 右侧斜切遮罩（镜像于右面板的左斜切） ===
+            //右侧斜切遮罩
             DrawSlashCutRight(sb, px, rect, itemAlpha);
 
-            //=== 类别色条（左侧） ===
+            //左侧类别色条
             Color catColor = HackTheme.CategoryColor(entry.Hack.Category);
             float breathe = MathF.Sin(timer * 2.5f + index * 1.1f) * 0.1f + 0.9f;
             float barGlow = entry.State == HackQueueState.Uploading ? 1f : 0.5f;
@@ -403,12 +395,12 @@ namespace CalamityOverhaul.Content.HackTimes
             sb.Draw(px, new Rectangle(rect.X + 5, rect.Y + 3, 10, rect.Height - 6),
                 new Rectangle(0, 0, 1, 1), catColor * (itemAlpha * barGlow * 0.06f));
 
-            //=== 类别符号 ===
+            //类别符号
             string catSymbol = HackTheme.CategorySymbol(entry.Hack.Category);
             Utils.DrawBorderString(sb, catSymbol, new Vector2(rect.X + 10, rect.Y + 6),
                 catColor * (itemAlpha * 0.5f), 0.24f);
 
-            //=== 协议名称 ===
+            //协议名称
             float nameX = rect.X + 28;
             float nameY = rect.Y + 6;
             Color nameColor = entry.State switch {
@@ -419,7 +411,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Utils.DrawBorderString(sb, entry.Hack.DisplayName.Value, new Vector2(nameX, nameY),
                 nameColor * itemAlpha, FontName);
 
-            //=== 状态文字（右上角） ===
+            //状态文字
             string statusText;
             Color statusColor;
             switch (entry.State) {
@@ -442,7 +434,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 new Vector2(rect.Right - (int)SlashWidth - statusSize.X - 8, rect.Y + 8),
                 statusColor * itemAlpha, FontPct);
 
-            //=== 上传时间（等待态右下角） ===
+            //等待态上传时间
             if (entry.State == HackQueueState.Waiting) {
                 float sec = entry.Hack.UploadTime / 60f;
                 string timeStr = $"{sec:F1}s";
@@ -452,7 +444,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     HackTheme.TextDim * (itemAlpha * 0.5f), FontStatus);
             }
 
-            //=== 进度条 ===
+            //进度条
             int barY = rect.Bottom - (int)BarHeight - 4;
             int barX = rect.X + 28;
             int barW = rect.Width - 28 - (int)SlashWidth - 8;
@@ -481,13 +473,13 @@ namespace CalamityOverhaul.Content.HackTimes
                     new Rectangle(0, 0, 1, 1), HackTheme.TextBright * (itemAlpha * 0.12f));
             }
 
-            //=== 上传时扫描线 ===
+            //上传扫描线
             if (entry.State == HackQueueState.Uploading) {
                 float scanPos = (timer * 2f + index * 0.3f) % 1.4f - 0.2f;
                 DrawScanLine(sb, px, rect, scanPos, itemAlpha * 0.2f);
             }
 
-            //=== 边框 ===
+            //边框
             Color borderCol = entry.State switch {
                 HackQueueState.Uploading => Color.Lerp(HackTheme.Border, HackTheme.Uploading, 0.4f),
                 HackQueueState.Completed => Color.Lerp(HackTheme.Border, HackTheme.Accent, 0.3f * fadeAlpha),
@@ -505,7 +497,7 @@ namespace CalamityOverhaul.Content.HackTimes
             //右斜切边线
             DrawSlashEdgeRight(sb, px, rect, borderCol * (itemAlpha * 0.45f));
 
-            //=== 完成时底部光带 ===
+            //完成底光带
             if (entry.State == HackQueueState.Completed) {
                 float completedPulse = MathF.Sin(entry.CompletedTimer * 8f) * 0.3f + 0.7f;
                 sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2),

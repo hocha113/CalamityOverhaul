@@ -14,30 +14,30 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         public static TzeentchDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<TzeentchDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        //风格参数
+        // 风格参数
         private const float FixedWidth = 560f;
         protected override float PanelWidth => FixedWidth;
 
-        //奸奇魔法动画参数
-        private float warpTimer = 0f;//现实扭曲计时器
-        private float changeFlux = 0f;//变化涌动计时器
-        private float arcanePhase = 0f;//奥术相位
-        private float fateWeave = 0f;//命运编织
-        private float colorShift = 0f;//色彩变换
-        private float chaosRipple = 0f;//混沌涟漪
+        // 动画计时
+        private float warpTimer = 0f;      // 扭曲
+        private float changeFlux = 0f;     // 变化涌动
+        private float arcanePhase = 0f;    // 奥术相位
+        private float fateWeave = 0f;      // 命运编织
+        private float colorShift = 0f;     // 色彩变换
+        private float chaosRipple = 0f;    // 混沌涟漪
 
-        //粒子系统
-        private readonly List<WarpFlame> warpFlames = [];//扭曲火焰
+        // 粒子
+        private readonly List<WarpFlame> warpFlames = [];       // 扭曲火焰
         private int warpFlameSpawnTimer = 0;
-        private readonly List<MysticRune> mysticRunes = [];//神秘符文
+        private readonly List<MysticRune> mysticRunes = [];    // 符文
         private int runeSpawnTimer = 0;
-        private readonly List<FateThread> fateThreads = [];//命运丝线
+        private readonly List<FateThread> fateThreads = [];   // 命运丝线
         private int threadSpawnTimer = 0;
-        private readonly List<ArcaneOrb> arcaneOrbs = [];//奥术法球
+        private readonly List<ArcaneOrb> arcaneOrbs = [];     // 奥术法球
         private int orbSpawnTimer = 0;
         private const float ParticleSideMargin = 35f;
 
-        #region 样式配置重写
+        #region 样式配置
 
         protected override float PortraitScaleMin => 0.75f;
         protected override float TopNameOffsetBase => 12f;

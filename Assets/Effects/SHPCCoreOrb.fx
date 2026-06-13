@@ -1,31 +1,20 @@
 // ============================================================================
-// SHPCCoreOrb.fx SHPC启动HUD的能量核心着色器
-// 替代CPU堆叠绘制，提供SDF抗锯齿环、六边形数据底纹、旋转刻度、
-// 全息扫描线、色散描边、点击冲击波、悬停辉光等动态效果
-// ============================================================================
-// 参数说明：
-//   uResolution   绘制quad的像素尺寸
-//   uCenter       核心圆心在quad内的像素坐标
-//   uCoreRingR    外环半径
-//   uCoreRadius   内核呼吸半径基准
-//   uExpand       展开进度0~1
-//   uHover        悬停强度0~1
-//   uPulse        悬停脉冲衰减0~1
-//   uClickFlash   点击瞬闪0~1
+// SHPCCoreOrb.fx SHPC 启动 HUD 能量核心
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float2 uResolution;
-float2 uCenter;
-float uCoreRingR;
-float uCoreRadius;
-float uExpand;
-float uHover;
-float uPulse;
-float uClickFlash;
+float2 uResolution;  //quad 像素尺寸
+float2 uCenter;      //核心圆心局部像素坐标
+float uCoreRingR;    //外环半径
+float uCoreRadius;   //内核呼吸半径基准
+float uExpand;       //展开进度 0~1
+float uHover;        //悬停强度 0~1
+float uPulse;        //悬停脉冲衰减 0~1
+float uClickFlash;   //点击瞬闪 0~1
 
 //================== 工具函数 ==================
 

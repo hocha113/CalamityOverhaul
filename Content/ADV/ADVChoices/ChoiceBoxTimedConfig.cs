@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
     /// <summary>
-    /// 选项框定时配置，支持灵活的定时选项框创建
+    /// 选项框定时配置
     /// </summary>
     public class ChoiceBoxTimedConfig
     {
@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         public float Duration { get; set; } = 10f;
 
         /// <summary>
-        /// 是否显示进度指示器（描边倒计时）
+        /// 是否显示描边进度
         /// </summary>
         public bool ShowProgressIndicator { get; set; } = true;
 
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         public Action<float> OnProgressUpdate { get; set; }
 
         /// <summary>
-        /// 进度条基础颜色（如果为null则使用当前样式的默认颜色）
+        /// 进度色，null 用样式默认
         /// </summary>
         public Color? ProgressColor { get; set; }
 
@@ -43,12 +43,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         public Color? DangerColor { get; set; }
 
         /// <summary>
-        /// 进入警告状态的阈值（剩余时间比例，默认35%）
+        /// 警告阈值，默认 0.35
         /// </summary>
         public float WarningThreshold { get; set; } = 0.35f;
 
         /// <summary>
-        /// 进入危险状态的阈值（剩余时间比例，默认15%）
+        /// 危险阈值，默认 0.15
         /// </summary>
         public float DangerThreshold { get; set; } = 0.15f;
 
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         };
 
         /// <summary>
-        /// 从剩余帧数创建配置（用于从对话框继承）
+        /// 从剩余帧数构建，供对话框继承
         /// </summary>
         public static ChoiceBoxTimedConfig FromRemainingFrames(int frames, Action onExpired = null) => new() {
             Duration = frames / 60f,

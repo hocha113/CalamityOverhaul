@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     }
 
     /// <summary>
-    /// 海妖八音盒唯一会话。它是玩法状态真源；幽灵视觉由纯客户端 ModSystem 绘制，不参与 Actor 网络同步
+    /// 海妖八音盒唯一会话，玩法状态真源；幽灵视觉由纯客户端 ModSystem 绘制，不参与 Actor 网络同步
     /// </summary>
     internal class SirenMusicalSystem : ModSystem
     {
@@ -890,9 +890,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
     }
 
-    /// <summary>
-    /// 纯客户端幽灵视觉，由会话状态驱动，避免 Actor 网络同步导致重复生成。
-    /// </summary>
+    /// 纯客户端幽灵视觉，由会话状态驱动，避免 Actor 同步重复生成
     internal static class SirenGhostVisual
     {
         private static int timer;

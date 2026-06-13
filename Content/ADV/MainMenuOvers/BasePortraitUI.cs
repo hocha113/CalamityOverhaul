@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
+using CalamityOverhaul.Content.UIs.MainMenuOverUIs;
 using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,21 +13,21 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
     internal abstract class BasePortraitUI : UIHandle, ICWRLoader
     {
         #region 通用字段
-        protected float _iconAlpha = 0f; //头像框透明度
-        protected Vector2 _portraitOffset = Vector2.Zero; //立绘偏移
-        protected int _autoSaveTimer = 0; //自动保存计时器
-        protected const int AutoSaveInterval = 300; //5秒自动保存一次(60帧*5秒)
-        protected bool _needsSave = false; //标记是否需要保存
+        protected float _iconAlpha = 0f; // 头像框透明度
+        protected Vector2 _portraitOffset = Vector2.Zero; // 立绘偏移
+        protected int _autoSaveTimer = 0; // 自动保存计时器
+        protected const int AutoSaveInterval = 300; // 5秒自动保存一次(60帧*5秒)
+        protected bool _needsSave = false; // 标记是否需要保存
 
-        //动画计时器
+        // 动画计时器
         protected float _pulseTimer = 0f;
 
-        //UI位置和尺寸
+        // UI位置和尺寸
         protected const float IconSize = 60f;
         protected const float IconBottomMargin = 46f;
-        protected const float IconSpacing = 80f; //与另一个头像的间距
+        protected const float IconSpacing = 80f; // 与另一个头像的间距
 
-        //图标位置(由子类实现具体偏移)
+        // 图标位置(由子类实现具体偏移)
         protected abstract Vector2 GetIconBasePosition();
 
         protected Vector2 IconPosition => GetIconBasePosition() + _portraitOffset;
@@ -41,26 +41,26 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
 
-        //确保资源已加载
+        // 确保资源已加载
         public override bool Active => MenuSave.IsPortraitUnlocked() &&
                                       CWRLoad.OnLoadContentBool &&
                                       Main.gameMenu &&
                                       IsResourceLoaded();
 
-        //检查资源是否已正确加载(由子类实现)
+        // 检查资源是否已正确加载(由子类实现)
         protected abstract bool IsResourceLoaded();
         #endregion
 
         #region 通用方法
         /// <summary>
-        /// 检查玩家是否在主菜单(menuMode == 0),而不是在子菜单中
+        /// 主菜单 menuMode==0
         /// </summary>
         protected static bool IsInMainMenu() {
             return Main.menuMode == 0;
         }
 
         /// <summary>
-        /// 检查图标是否应该可见(仅在主菜单显示,进入子菜单时隐藏)
+        /// 仅主菜单显示图标
         /// </summary>
         protected static bool ShouldShowIcon() {
             return IsInMainMenu();
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         /// </summary>
         protected void MarkNeedsSave() {
             _needsSave = true;
-            _autoSaveTimer = 0; //重置自动保存计时器
+            _autoSaveTimer = 0; // 重置自动保存计时器
         }
 
         /// <summary>
@@ -106,15 +106,15 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            //进入子菜单时快速淡出图标
+            // 进入子菜单时快速淡出图标
             if (!ShouldShowIcon()) {
                 if (_iconAlpha > 0f) {
-                    _iconAlpha -= 0.1f; //快速淡出
+                    _iconAlpha -= 0.1f; // 快速淡出
                     if (_iconAlpha < 0f) _iconAlpha = 0f;
                 }
             }
             else {
-                //仅在主菜单时渐入图标
+                // 仅在主菜单时渐入图标
                 if (_iconAlpha < 1f) {
                     _iconAlpha += 0.02f;
                 }
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         protected void DrawBaseBackground(SpriteBatch sb, Rectangle bgRect, float alpha, bool hoverIcon, Color bgColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //悬停光效(由子类提供颜色)
+            // 悬停光效(由子类提供颜色)
             if (hoverIcon) {
                 Color hoverGlow = GetHoverGlowColor() * (alpha * 0.35f);
                 for (int i = 0; i < 6; i++) {
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), bgColor);
 
-            //脉冲背景
+            // 脉冲背景
             float pulse = (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f;
             Color pulseColor = GetPulseColor() * (alpha * 0.15f * pulse);
             sb.Draw(pixel, bgRect, new Rectangle(0, 0, 1, 1), pulseColor);
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             SaveCurrentState();
             OnUnLoad();
 
-            //重置基础状态
+            // 重置基础状态
             _iconAlpha = 0f;
             _portraitOffset = Vector2.Zero;
         }

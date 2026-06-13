@@ -1,4 +1,4 @@
-﻿using InnoVault.GameSystem;
+using InnoVault.GameSystem;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers

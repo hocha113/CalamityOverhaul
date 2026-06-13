@@ -1,11 +1,7 @@
 // ============================================================================
-// KingSlimeRoyalBeam.fx —— 残酷史莱姆王 皇冠光柱 着色器
-// 设计目标：
-//   1. 在皇冠到落点之间绘制一束"皇室凝胶能量光柱"，凝胶内部流动着金箔流光。
-//   2. 三阶段渐进：警示锁定（细瘦虚线/锁定环）→ 命中暴闪（粗白金核+红光晕）
-//      → 残辉淡出（柔和的红金尾迹）。
-//   3. 风格统一：白热核心 + 皇室金 + 深皇红 三层叠加，禁绝灰度图拼凑感。
-// 配合 Trail 顶点条带渲染，BlendState.Additive 叠加。
+// KingSlimeRoyalBeam.fx 残酷史莱姆王皇冠光柱
+// Trail 条带 Additive 叠加
+// ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -72,14 +68,14 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     bool isStrike = phase >= 0.5 && phase < 1.5;
     bool isFade = phase >= 1.5;
 
-    // ---- 噪声采样：果冻流动 ----
+    // 噪声采样：果冻流动
     float n1 = tex2D(noiseSamp, frac(float2(along * 3.0 + uTime * 0.6, cross_ * 0.8 + seed * 0.13))).r;
     float n2 = tex2D(noiseSamp, frac(float2(along * 6.0 - uTime * 1.1, cross_ * 1.5 + 0.3))).g;
     float n3 = tex2D(noiseSamp, frac(float2(along * 1.8 + uTime * 0.3, cross_ * 2.5 + 0.7))).b;
 
-    // ============================================================
+    // =
     // 阶段宽度调制：警示窄、命中粗、淡出渐缩
-    // ============================================================
+    // =
     float phaseWidth = 1.0;
     if (isWarn)
     {
@@ -99,31 +95,31 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         phaseWidth = lerp(0.9, 0.35, fadeProg);
     }
 
-    // ============================================================
+    // =
     // A. 白热核心
-    // ============================================================
+    // =
     float coreWidth = (0.10 + n1 * 0.04) * phaseWidth;
     float core = 1.0 - smoothstep(0.0, coreWidth, crossDist);
     core = pow(saturate(core), 1.25);
     float corePulse = 0.85 + 0.15 * sin(uTime * 22.0 + along * 30.0);
     core *= corePulse;
 
-    // ============================================================
+    // =
     // B. 内层金辉
-    // ============================================================
+    // =
     float innerW = (0.30 + n2 * 0.10) * phaseWidth;
     float inner = 1.0 - smoothstep(coreWidth * 0.4, innerW, crossDist);
 
-    // ============================================================
+    // =
     // C. 外层红晕（皇室红霭）
-    // ============================================================
+    // =
     float outerFade = 1.0 - smoothstep(0.18, 0.95, crossDist);
     outerFade *= 0.55;
     outerFade *= phaseWidth;
 
-    // ============================================================
+    // =
     // D. 沿轴向流动的"皇室金箔流光" —— 凝胶内部能量带
-    // ============================================================
+    // =
     float bandSpeed = 4.0 + strikeProg * 2.0;
     float bandUV1 = frac(along * 4.5 - uTime * bandSpeed + seed * 0.27);
     float band1 = smoothstep(0.0, 0.08, bandUV1) * smoothstep(0.32, 0.12, bandUV1);
@@ -132,9 +128,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float bands = (band1 + band2 * 0.7) * (1.0 - crossDist * 0.65) * 0.45;
     bands *= phaseWidth;
 
-    // ============================================================
+    // =
     // E. 警示阶段虚线/锁定标记
-    // ============================================================
+    // =
     float warnDash = 1.0;
     float warnTick = 0.0;
     if (isWarn)
@@ -150,9 +146,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         warnTick = exp(-pow((along - ptrPos) * 14.0, 2.0));
     }
 
-    // ============================================================
+    // =
     // F. 端点光斑：皇冠端起始 / 落点端聚焦
-    // ============================================================
+    // =
     float crownOrb = 1.0 - smoothstep(0.0, 0.07, along);
     crownOrb *= (1.0 - crossDist * 0.65);
     crownOrb *= 0.85 + 0.15 * sin(uTime * 15.0 + seed);
@@ -165,16 +161,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         endOrb *= 1.2 + 1.5 * (1.0 - smoothstep(0.0, 0.25, strikeProg));
     }
 
-    // ============================================================
+    // =
     // G. 边缘有机切割（噪声驱动）
-    // ============================================================
+    // =
     float edgeNoise = n2 * 0.20 + n3 * 0.14;
     float edgeMask = 1.0 - smoothstep(0.45 - edgeNoise, 0.96, crossDist);
     edgeMask *= phaseWidth;
 
-    // ============================================================
+    // =
     // H. 颜色合成
-    // ============================================================
+    // =
     float3 color = float3(0, 0, 0);
     float alpha = 0.0;
 

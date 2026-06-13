@@ -1,8 +1,6 @@
 // ============================================================================
-// VoidColonySky.fx — 虚空聚落天空着色器
-// 亚空间末日风格全屏天空背景
-// 多层视差旋涡 + 能量裂隙 + 雷电 + 星云 + 星辰 + 中心炽热火眼
-// 全程序化生成，无需外部纹理依赖
+// VoidColonySky.fx 虚空聚落天空
+// 全程序化；采样 uImage0 占位
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -16,7 +14,7 @@ float uTransitionBurst; //切换演出爆闪0~1，钟形曲线，仅在瞬发过
 #define PI  3.14159265
 #define TAU 6.28318530
 
-// ======================== Hash Functions ========================
+// Hash Functions
 
 float hash11(float p)
 {
@@ -40,7 +38,7 @@ float2 hash22(float2 p)
     return frac(float2((p3.x + p3.y) * p3.z, (p3.x + p3.z) * p3.y));
 }
 
-// ======================== Noise Primitives ========================
+// Noise Primitives
 
 float vnoise(float2 p)
 {
@@ -104,7 +102,7 @@ float warpedFbm(float2 p, float t)
     return fbm(p + 3.0 * r, 3);
 }
 
-// ======================== Star Field ========================
+// Star Field
 
 float starField(float2 uv, float scale, float time)
 {
@@ -130,7 +128,7 @@ float starField(float2 uv, float scale, float time)
     return star;
 }
 
-// ======================== Helpers ========================
+// Helpers
 
 //二维旋转
 float2 rot2(float2 p, float a)
@@ -170,7 +168,7 @@ float lightningBolt(float2 p, float seed, float time)
     return bolt * life;
 }
 
-// ======================== Main Pixel Shader ========================
+// Main Pixel Shader
 
 float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -184,15 +182,15 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     //深度因子，0为远景1为近景，用于做大气透视
     float depth = saturate(1.0 - dist * 0.85);
 
-    // ====================================================================
+    // =
     //Layer 0: 深渊底色，墨黑微带血色
-    // ====================================================================
+    // =
     float3 col = float3(0.006, 0.002, 0.004);
 
-    // ====================================================================
+    // =
     //Layer 1: 远景星云背景，紫蓝幽冷的弥漫云团，慢速流动
     //定位为最深的一层，提供基础氛围与色彩对比
-    // ====================================================================
+    // =
     float2 farUV = c * 0.85 + float2(t * 0.012, -t * 0.008);
     float farNeb = fbm(farUV * 1.6 + 17.0, 4);
     farNeb = smoothstep(0.35, 0.85, farNeb);
@@ -206,15 +204,15 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     farRed = smoothstep(0.4, 0.75, farRed);
     col += float3(0.16, 0.02, 0.05) * farRed * farZone * 0.45;
 
-    // ====================================================================
+    // =
     //Layer 2: 远视差星辰，最暗最密，用于推开纵深
-    // ====================================================================
+    // =
     float starsFar = starField(c * 1.0 + 800.0, 110.0, t) * 0.55;
     float3 starsFarCol = float3(0.78, 0.82, 1.0);
 
-    // ====================================================================
+    // =
     //Layer 3: 中景反向旋转云层，深红基调，提供旋涡背板
-    // ====================================================================
+    // =
     float midRot = -t * 0.07;
     float2 midC = rot2(c, midRot);
     float2 midUV = float2(midC.x * 1.4, midC.y * 1.4 + dist * 0.5);
@@ -228,9 +226,9 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     float3 midCol = lerp(float3(0.18, 0.02, 0.02), float3(0.55, 0.10, 0.08), saturate(midClouds * 1.8));
     col += midCol * midClouds * 1.1;
 
-    // ====================================================================
+    // =
     //Layer 4: 主漩涡旋臂，对数螺旋两组叠加，富含细节噪声
-    // ====================================================================
+    // =
     float spiralA = angle + dist * 4.4 - t * 0.20;
     float spiralB = angle - dist * 3.0 + t * 0.14;
     float mainArm = pow(max(sin(spiralA * 2.0) * 0.5 + 0.5, 0.0), 1.6);
@@ -254,9 +252,9 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     );
     col += vortexCol * vortex * 0.78;
 
-    // ====================================================================
+    // =
     //Layer 5: 域弯曲能量流，宽大有机扭曲带，强化旋涡的能量流向
-    // ====================================================================
+    // =
     float2 streamUV = c * 1.15 + float2(t * 0.03, -t * 0.02);
     float stream = warpedFbm(streamUV, t * 0.6);
     float streamEdge = smoothstep(0.48, 0.62, stream);
@@ -267,9 +265,9 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     col += float3(0.55, 0.13, 0.03) * streamEdge;
     col += float3(0.85, 0.45, 0.10) * streamBright;
 
-    // ====================================================================
+    // =
     //Layer 6: 锐利能量裂隙，对应概念图旋臂中的明亮缝光
-    // ====================================================================
+    // =
     float2 riftUV = c * 2.2;
     riftUV = rot2(riftUV, dist * 3.2 - t * 0.25);
     float ridge = ridgedFbm(riftUV * 2.8, 4);
@@ -286,9 +284,9 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     float3 riftCol = lerp(float3(0.85, 0.32, 0.05), float3(1.0, 0.72, 0.30), riftCore);
     col += riftCol * rift * 0.95;
 
-    // ====================================================================
+    // =
     //Layer 7: 放射雷电，从核心向外随机抖动闪烁，强化体积感
-    // ====================================================================
+    // =
     float bolt = 0.0;
     bolt += lightningBolt(c, 0.13, t * 1.3);
     bolt += lightningBolt(rot2(c, 1.05), 0.41, t * 1.3 + 0.6);
@@ -300,15 +298,15 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     col += float3(0.5, 0.13, 0.04) * bolt * 0.55;
     col += float3(1.0, 0.78, 0.45) * pow(max(bolt, 0.0), 3.0) * 0.95;
 
-    // ====================================================================
+    // =
     //Layer 8: 中景视差星辰，中等亮度
-    // ====================================================================
+    // =
     float starsMid = starField(c * 1.0 + 400.0, 60.0, t) * 0.7;
     float3 starsMidCol = float3(0.95, 0.92, 1.0);
 
-    // ====================================================================
+    // =
     //Layer 9: 近景视差星辰，更亮更稀，伴轻微闪烁
-    // ====================================================================
+    // =
     float starsNear = starField(c * 1.0 + 100.0, 32.0, t) * 0.95;
     float3 starsNearCol = float3(1.0, 0.95, 0.86);
 
@@ -318,11 +316,11 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     starMask *= smoothstep(0.06, 0.22, dist);
     col += (starsFarCol * starsFar + starsMidCol * starsMid + starsNearCol * starsNear) * starMask;
 
-    // ====================================================================
+    // =
     //Layer 10: 中心炽热火眼，混沌不规则燃烧核心
     //完全使用笛卡尔坐标 + 多层域弯曲噪声，避免atan2接缝
     //形态非规则，沿不同方向有撕裂的火舌
-    // ====================================================================
+    // =
     //核心呼吸脉动，叠加多频率获得自然感
     float pulse = 0.86 + 0.10 * sin(t * 4.7 + 0.6 * sin(t * 1.3))
         + 0.05 * sin(t * 11.3 + 1.7);
@@ -381,25 +379,25 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     float outerHalo = exp(-(dist - 0.34) * (dist - 0.34) * 7.5) * 0.10;
     col += float3(0.40, 0.05, 0.02) * outerHalo;
 
-    // ====================================================================
+    // =
     //Layer 11: 大气透视雾，越靠近水平边缘越偏冷蓝紫，模拟空间深度
-    // ====================================================================
+    // =
     float3 fogCol = float3(0.06, 0.03, 0.10);
     float fogAmt = 1.0 - depth;
     fogAmt = pow(fogAmt, 2.2) * 0.35;
     col = lerp(col, fogCol, fogAmt);
 
-    // ====================================================================
+    // =
     //Layer 12: 漂浮尘埃，用细噪声做体积粒子的暗示
-    // ====================================================================
+    // =
     float dust = fbm(c * 12.0 + float2(t * 0.05, -t * 0.04), 3);
     dust = smoothstep(0.62, 0.86, dust) * 0.10;
     dust *= smoothstep(0.08, 0.4, dist) * smoothstep(1.4, 0.4, dist);
     col += float3(0.32, 0.13, 0.05) * dust;
 
-    // ====================================================================
+    // =
     //Post: 暗角 + 色彩调整 + 输出
-    // ====================================================================
+    // =
     //中心保护：避免雾和暗角吃掉火眼亮度
     float vignette = smoothstep(1.35, 0.4, dist);
     vignette = lerp(vignette, 1.0, exp(-dist * dist * 28.0));
@@ -411,11 +409,11 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
     //最终亮度系数，整体向暗调拉
     col *= 0.78;
 
-    // ====================================================================
+    // =
     //Post Past: 过去时代色相偏移，红赤旋涡平滑转为紫色狰狞调
     //采用RGB矩阵映射而非HSV旋转，保证暗区稳定不出现色斑
     //矩阵从经验拟合得到：红→深紫、橙→品红、亮白核心略冷化带淡青
-    // ====================================================================
+    // =
     if (uPastBlend > 0.001)
     {
         float3 pastCol;
@@ -432,10 +430,10 @@ float4 PSVoidColonySky(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) :
         col += float3(0.14, 0.04, 0.22) * hotMask * uPastBlend * 0.35;
     }
 
-    // ====================================================================
+    // =
     //Post Transition: 切换演出期间一次性的核心爆闪，同步屏幕撕裂戏剧性
     //仅按距离中心衰减提亮，不干扰远景结构
-    // ====================================================================
+    // =
     if (uTransitionBurst > 0.001)
     {
         float burstMask = exp(-dist * dist * 4.5);

@@ -5,11 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 {
-    /// <summary>
-    /// 赛博瞬移按键处理
-    /// <br/>赛博空间激活时，按下 <see cref="CWRKeySystem.Legend_Teleport"/> 立刻瞬移到光标位置
-    /// <br/>仅本地玩家响应，所有合法性校验在 <see cref="CyberTeleport.TryTeleport"/> 内完成
-    /// </summary>
+    /// <summary>瞬移按键，Legend_Teleport 触发 TryTeleport</summary>
     internal class CyberTeleportInput : ModPlayer
     {
         public override void ProcessTriggers(Terraria.GameInput.TriggersSet triggersSet) {

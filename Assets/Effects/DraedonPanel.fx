@@ -1,8 +1,6 @@
 // ============================================================================
-// DraedonPanel.fx — 嘉登数据终端面板着色器
-// 工业金属底板 + 蓝图网格 + 流动电路脉冲 + 能量场涟漪
-// + 数据流光带 + 浮雕斜面 + 角落指示灯 + 全息扫描
-// uNightMode: 0=冷蓝科技 1=暖红警戒
+// DraedonPanel.fx 嘉登数据终端面板
+// AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,7 +9,7 @@ float uTime;
 float uAlpha;
 float2 uResolution;
 float uEdgePad;
-float uNightMode;
+float uNightMode; //0冷蓝科技 1暖红警戒
 
 float hash11(float p) {
     p = frac(p * 0.1031);

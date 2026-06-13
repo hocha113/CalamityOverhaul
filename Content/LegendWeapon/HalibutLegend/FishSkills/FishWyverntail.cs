@@ -323,9 +323,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.Kill();
         }
 
-        ///<summary>
-        ///生成云雾爆炸效果
-        ///</summary>
+        /// <summary>云雾爆炸 VFX</summary>
         private static void SpawnCloudExplosion(Vector2 center, Vector2 impactVelocity) {
             //大型云雾爆炸（环形扩散）
             for (int ring = 0; ring < 3; ring++) {
@@ -389,9 +387,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override Color? GetAlpha(Color lightColor) => new Color(255, 255, 255, 200) * (1f - Projectile.alpha / 255f);
     }
 
-    ///<summary>
-    ///云雾粒子类
-    ///</summary>
+    /// <summary>云雾粒子</summary>
     internal class PRT_CloudParticle : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Fog";
@@ -449,9 +445,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    ///<summary>
-    ///云雾尾迹粒子
-    ///</summary>
+    /// <summary>云雾尾迹粒子</summary>
     internal class CloudTrailParticle
     {
         public Vector2 Position;

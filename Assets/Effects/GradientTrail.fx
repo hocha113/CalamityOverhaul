@@ -1,11 +1,16 @@
-matrix transformMatrix;
+// ============================================================================
+// GradientTrail.fx 渐变溶解拖尾
+// base+flow+gradient+dissolve 四纹理；vs_2_0/ps_3_0
+// ============================================================================
+
+matrix transformMatrix; //顶点变换
 float uTime;
-float uTimeG;
-float udissolveS;
-texture uBaseImage;
-texture uFlow;
-texture uGradient;
-texture uDissolve;
+float uTimeG;         //渐变流动相位
+float udissolveS;     //溶解强度
+texture uBaseImage;   //拖尾底色
+texture uFlow;        //流动噪声
+texture uGradient;    //沿身渐变
+texture uDissolve;    //溶解遮罩
 
 sampler2D baseTex = sampler_state
 {

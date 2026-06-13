@@ -9,11 +9,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     /// <summary>
-    /// 火力发电机热浪扭曲后处理
-    /// 在 EndCapture 阶段扫描所有处于燃烧或高温状态的火力发电机TP，
-    /// 取屏幕内距离玩家最近、强度最高的若干个，将其世界坐标转换为
-    /// 归一化屏幕坐标后批量传入 <see cref="EffectLoader.ThermalHeatHaze"/>
-    /// 在一次全屏后处理中累加扭曲偏移
+    /// 火力发电机热浪 RenderHandle——EndCapture 扫描高温 TP，<see cref="EffectLoader.ThermalHeatHaze"/> 批量扭曲
     /// </summary>
     internal class ThermalHeatHazeRender : RenderHandle
     {
@@ -30,9 +26,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 
         public override float Weight => 1.06f;
 
-        /// <summary>
-        /// 收集本帧所有有效的热源，将世界坐标转换为归一化屏幕坐标
-        /// </summary>
+        /// <summary>收集热源，世界坐标→归一化屏幕坐标</summary>
         private static void CollectSources() {
             _sourceCount = 0;
             _candidates.Clear();

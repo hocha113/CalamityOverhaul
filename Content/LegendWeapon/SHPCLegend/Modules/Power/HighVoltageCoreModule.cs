@@ -13,11 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 高压核心：武器内置高压电容。每次命中为电容充压，蓄满 100kV 后
-    /// 下一次光束命中会以玩家为电极、贯穿目标方向放出一道高压电弧，
-    /// 轰击直线路径上的所有敌人（星神使礼物 —— 阿瑞斯特斯拉炮意象）
-    /// </summary>
+    /// <summary>高压核心：命中充压至 100kV，满压下次命中放电直线电弧</summary>
     internal sealed class HighVoltageCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;
@@ -95,11 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
         }
     }
 
-    /// <summary>
-    /// 高压电弧：以发射点为起点沿固定方向延伸的折跳闪电，
-    /// 折点每 4 帧重掷一次形成放电抖动，前 10 帧具有伤害判定，整体存活 26 帧
-    /// 使用 SHPCVoltArc.fx 渲染白热弧芯 + 电蓝辉光
-    /// </summary>
+    /// <summary>高压电弧折跳，前 10 帧伤害；SHPCVoltArc.fx</summary>
     internal sealed class SHPCVoltArcProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -180,9 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
             }
         }
 
-        /// <summary>
-        /// 重建折跳路径：两端钉死，中段沿法线随机偏移，模拟电弧重击穿
-        /// </summary>
+        /// <summary>重建折跳路径，中段法线随机偏移</summary>
         private void RebuildArc() {
             arcPoints ??= new Vector2[PointCount];
             Vector2 normal = arcDir.RotatedBy(MathHelper.PiOver2);

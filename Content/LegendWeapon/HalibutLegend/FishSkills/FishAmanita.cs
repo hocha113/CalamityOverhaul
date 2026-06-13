@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    ///<summary>
-    ///真菌鱼技能，荧光孢子生态系统
-    ///</summary>
+    /// <summary>真菌鱼技能，周期切换孢子形态并生成对应攻击</summary>
     internal class FishAmanita : FishSkill
     {
         public override int UnlockFishID => ItemID.AmanitaFungifin;
@@ -209,9 +207,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     #region 爆炸蘑菇弹幕
-    ///<summary>
-    ///爆炸蘑菇 - 接触敌人或地面时爆炸
-    ///</summary>
+    /// <summary>爆炸蘑菇，触敌或触地时爆炸</summary>
     internal class AmanitaExplosiveMushroom : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Glomushroom";
@@ -351,9 +347,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     #endregion
 
     #region 追踪孢子弹幕
-    ///<summary>
-    ///追踪孢子 - 会追踪最近的敌人
-    ///</summary>
+    /// <summary>追踪孢子，寻最近敌人</summary>
     internal class AmanitaHomingSpore : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -491,9 +485,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     #endregion
 
     #region 毒雾蘑菇弹幕
-    ///<summary>
-    ///毒雾蘑菇，生成持续性毒雾区域
-    ///</summary>
+    /// <summary>毒雾蘑菇，落地生成持续毒雾区</summary>
     internal class AmanitaToxicMushroom : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Glomushroom";
@@ -677,9 +669,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     #endregion
 
     #region 闪电孢子弹幕
-    ///<summary>
-    ///闪电孢子 - 会在敌人之间跳跃放电
-    ///</summary>
+    /// <summary>闪电孢子，命中后链跳下一目标</summary>
     internal class AmanitaLightningSpore : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -840,7 +830,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Color color = new Color(255, 255, 150) * fade * 0.7f;
                 Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
 
-                //添加随机偏移模拟电弧
+                //随机偏移模拟电弧
                 Vector2 offset = Main.rand.NextVector2Circular(2f, 2f) * (1f - fade);
 
                 Main.EntitySpriteDraw(

@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 岩浆枪管：命中与消亡处留下熔岩喷口，周期喷发形成区域封锁。
-    /// </summary>
+    /// <summary>岩浆枪管：命中/消亡留熔岩喷口，周期喷发封锁</summary>
     internal sealed class MagmaVentBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;
@@ -44,9 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         }
     }
 
-    /// <summary>
-    /// 熔岩喷口：底部 DiffusionCircle 脉冲、火柱用 Fire/Fog 双层 additive，喷发瞬间触发屏幕震动与火焰粒子
-    /// </summary>
+    /// <summary>熔岩喷口 VFX+周期喷发</summary>
     internal sealed class SHPCMagmaVentProj : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

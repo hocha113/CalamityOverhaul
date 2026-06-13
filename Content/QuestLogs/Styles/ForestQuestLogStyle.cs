@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
         }
 
-        //降级背景：深色渐变+木纹扫描线+暗角
+        //降级背景
         private void DrawFallbackBackground(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha, bool nightMode) {
             Color top = nightMode ? new Color(10, 20, 22) : new Color(22, 28, 12);
             Color bot = nightMode ? new Color(4, 10, 14) : new Color(10, 14, 5);
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             float radius = size * 0.5f;
             bool hasUnclaimed = node.HasUnclaimedRewards;
 
-            //四状态色彩：未解锁/进行中/已完成待领取/已完成已领取
+            //四状态色彩
             Color baseColor;
             if (node.IsCompleted && !hasUnclaimed) {
                 baseColor = new Color(100, 200, 120);

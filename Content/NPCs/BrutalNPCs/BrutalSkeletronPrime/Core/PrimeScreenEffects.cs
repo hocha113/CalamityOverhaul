@@ -1,6 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>机械骷髅王全屏后处理，仅客户端</summary>
+    /// <summary>机械骷髅王全屏 FX，仅客户端</summary>
     /// <para>三通道：冲击波环 <see cref="MaxRings"/>、冲击帧单实例、冲刺热浪</para>
     /// <para>Push* 写入；<see cref="Renders.PrimeScreenEffectRender"/> 调 <see cref="Update"/> 衰减</para>
     internal static class PrimeScreenEffects
@@ -73,7 +73,7 @@
             };
         }
 
-        /// <summary>触发全屏冲击帧（负相→黑白→淡出）。死亡终爆专属，全场一次</summary>
+        /// <summary>全屏冲击帧(负相→黑白→淡出)，死亡终爆专属，全场一次</summary>
         public static void PushImpactFrame(float intensity = 1f, int lifeFrames = 26) {
             if (VaultUtils.isServer) {
                 return;

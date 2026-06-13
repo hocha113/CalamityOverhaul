@@ -4,9 +4,8 @@ using Terraria.GameInput;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 比目鱼UI的统一色板与几何常量
-    /// 深渊生物冷光风格：黑蓝基底 + 青色辉光 + 暖金选中 + 危险红
-    /// 色彩取值与 SeaDialogueBox.fx 的着色器色板保持一致，保证着色器背景与CPU矢量层无缝衔接
+    /// 比目鱼 UI 色板与几何常量
+    /// 黑蓝底 + 青辉光 + 暖金选中 + 危险红，与 SeaDialogueBox.fx 对齐
     /// </summary>
     internal static class HalibutTheme
     {

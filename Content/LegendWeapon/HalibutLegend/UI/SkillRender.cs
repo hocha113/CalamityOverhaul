@@ -8,6 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
+    /// <summary>Halibut 技能切换演出 RenderHandle，EndEntityDraw 头顶图标/名称动画</summary>
     internal class SkillRender : RenderHandle
     {
         //技能切换演出相关
@@ -28,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static float cachedNameYOffset = 0f;
         private static float cachedNameWavePhase = 0f;
 
-        public override void UpdateBySystem(int index) {//此处为逻辑更新
+        public override void UpdateBySystem(int index) {//逻辑更新
             if (SwitchingSkill == null) {
                 return;
             }
@@ -153,9 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        /// <summary>
-        /// 绘制技能名称（带特效）
-        /// </summary>
+        /// <summary>技能名称特效绘制</summary>
         private static void DrawSkillName(SpriteBatch spriteBatch, Vector2 iconScreenPos) {
             if (cachedNameAlpha <= 0.01f || SwitchingSkill?.DisplayName == null) {
                 return;
@@ -174,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             Vector2 nameSize = font.MeasureString(skillName);
             Vector2 nameOrigin = nameSize / 2f;
 
-            //绘制外发光（多层，营造深度）
+            //多层外发光
             for (int i = 3; i > 0; i--) {
                 float glowRadius = i * 2.5f;
                 float glowAlpha = cachedNameAlpha * (0.4f - i * 0.1f);
@@ -211,9 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        /// <summary>
-        /// 绘制波浪渐变文字（逐字符渐变）
-        /// </summary>
+        /// <summary>逐字波浪渐变文字</summary>
         private static void DrawWaveText(SpriteBatch spriteBatch, DynamicSpriteFont font,
             string text, Vector2 position, Vector2 origin) {
 

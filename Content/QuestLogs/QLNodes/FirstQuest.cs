@@ -25,7 +25,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void OnWorldEnter() {
             Rewards.Clear();
-            //自动扫描 StarterBag 的内容物作为奖励
+            //扫描 StarterBag 奖励
             if (CWRID.Item_StarterBag > 0) {
                 var dropInfos = ItemDropScanner.GetItemDropsForPlayer(CWRID.Item_StarterBag, Main.LocalPlayer);
                 foreach (var dropInfo in dropInfos) {

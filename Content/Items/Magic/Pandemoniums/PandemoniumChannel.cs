@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 引导法阵的核心控制器
-    /// </summary>
+    /// 引导法阵核心控制器
     internal class PandemoniumChannel : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -25,24 +23,24 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         private const int Tier2Time = 300;  //5秒到达2层
         private const int Tier3Time = 540;  //9秒到达3层
 
-        //攻击发射间隔
+        //攻击间隔
         private int attackCooldown = 0;
         private const int BaseAttackInterval = 50;
 
         //连击系统
         private int comboCounter = 0;
 
-        //符文动画数据 - 多层系统
+        //符文多层动画
         private List<RuneData>[] runeLayers = new List<RuneData>[3];
         private List<EnergyOrbData> orbs = new List<EnergyOrbData>();
         private List<LightningArcData> lightningArcs = new List<LightningArcData>();
         private List<CircleRingData> circleRings = new List<CircleRingData>();
         private List<BrimstoneEmberData> brimstoneEmbers = new List<BrimstoneEmberData>();
 
-        //平滑过渡变量
+        //层级平滑过渡
         private float visualTier = 0f;
         private float expandScale = 0f;
-        private float tierTransitionProgress = 1f; //层级过渡进度，0=过渡中，1=稳定
+        private float tierTransitionProgress = 1f; //层级过渡 0=中 1=稳
 
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
         private static Asset<Texture2D> GlowAsset = null;
@@ -138,7 +136,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
 
 
-            //持续消耗法力（更合理的消耗）
+            //持续耗蓝
             if (ChargeTimer > 1 && ChargeTimer % 8 == 0) {
                 int manaCost = 2 + (int)CurrentTier;
                 if (!Owner.CheckMana(Owner.inventory[Owner.selectedItem], -manaCost, true)) {
@@ -174,7 +172,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 tierTransitionProgress = Math.Min(tierTransitionProgress + 0.015f, 1f);
             }
 
-            //层级提升逻辑 - 改进过渡效果
+            //层级提升
             if (ChargeTimer == Tier1Time && CurrentTier < 1) {
                 tierTransitionProgress = 0f; //开始过渡
                 CurrentTier = 1;
@@ -207,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 ExpandProjectileSize(1000);
             }
 
-            //持续攻击逻辑（根据层级调整间隔和攻击模式）
+            //按层级调攻击间隔与模式
             int attackInterval = BaseAttackInterval - (int)CurrentTier * 8;
             if (attackCooldown <= 0 && CurrentTier >= 1) {
                 PerformTieredAttack();
@@ -228,7 +226,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             UpdateBrimstoneEmbers();
             SpawnChargeParticles();
 
-            //动态照明（硫磺火风格）
+            //硫磺火照明
             float lightIntensity = (1.5f + visualTier) * 2.5f;
             float flicker = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 12f) * 0.15f + 0.85f;
             Lighting.AddLight(Projectile.Center,
@@ -253,7 +251,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void SpawnTierUpEffect(int tier) {
-            //硫磺火风格的层级提升效果
+            //硫磺火层级提升特效
             for (int i = 0; i < 80; i++) {
                 float angle = MathHelper.TwoPi * i / 80f;
                 float distance = 150f + tier * 80f;
@@ -345,7 +343,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             float layerIntensity = 1f + layer * 0.4f;
 
             foreach (var rune in runeLayers[layer]) {
-                //淡入效果 - 在过渡期间加速
+                //过渡期加速淡入
                 float fadeSpeed = tierTransitionProgress < 0.5f ? 0.06f : 0.03f;
                 rune.Alpha = MathHelper.Lerp(rune.Alpha, 1f, fadeSpeed);
                 rune.CoreGlowAlpha = MathHelper.Lerp(rune.CoreGlowAlpha, 1f, fadeSpeed * 0.5f);
@@ -357,7 +355,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                     rune.FireFrame = (rune.FireFrame + 1) % 16;//4x4=16帧循环
                 }
 
-                //强度脉冲（用于火焰闪烁效果）
+                //强度脉冲(火焰闪烁)
                 rune.IntensityPulse += 0.15f * layerIntensity;
 
                 //基础旋转（更平滑）
@@ -368,7 +366,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 //轨道运动
                 rune.OrbitPhase += rune.OrbitSpeed;
 
-                //Lissajous曲线（参数优化）
+                //Lissajous 轨道
                 float a = 2.5f + layer * 0.8f;
                 float b = 1.8f + layer * 0.6f;
                 float delta = layer * VaultUtils.PiOver3;
@@ -376,15 +374,15 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
                 float lissajousX = (float)Math.Sin(a * rune.OrbitPhase + delta);
                 float lissajousY = (float)Math.Sin(b * rune.OrbitPhase);
 
-                //螺旋调制（更温和）
+                //螺旋调制
                 float spiral = rune.SpiralAmount * (float)Math.Sin(time * 1.5f + rune.OrbitPhase * 2.5f);
 
-                //改进的噪声
+                //Perlin 噪声扰动
                 float noise1 = (float)Math.Sin(rune.NoisePhase * 2.2f) * 0.25f;
                 float noise2 = (float)Math.Cos(rune.NoisePhase * 3.7f + layer) * 0.18f;
                 float noiseModulation = (noise1 + noise2) * 15f;
 
-                //呼吸效果（更自然）
+                //呼吸缩放
                 rune.DistanceModifier = 1f + (float)Math.Sin(time * 1.2f + layer * MathHelper.TwoPi / 3 + rune.OrbitPhase) * 0.12f;
 
                 //组合运动
@@ -567,7 +565,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
             int tier = (int)CurrentTier;
 
-            //根据连击数选择攻击模式，形成连贯的攻击节奏
+            //连击数选攻击模式
             int attackPattern = (comboCounter % 4);
 
             switch (tier) {
@@ -620,7 +618,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             comboCounter++;
         }
 
-        //改进的螺旋镰刀波 - 镰刀会螺旋展开并互相追踪
+        //螺旋镰刀波
         private void ReleaseSpiralScytheWave(int tier, int count) {
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1.1f, Pitch = -0.5f }, Projectile.Center);
 
@@ -650,7 +648,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //追踪镰刀环 - 镰刀会主动寻找并锁定目标
+        //追踪镰刀环
         private void ReleaseHomingScytheRing(int tier, int count) {
             SoundEngine.PlaySound(SoundID.Item71 with { Volume = 1.2f, Pitch = -0.3f }, Projectile.Center);
 
@@ -692,7 +690,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //改进的火球 - 追踪玩家鼠标位置并预判
+        //改进火球-预判鼠标
         private void ReleaseHomingFireball(int count) {
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.3f, Pitch = -0.3f }, Projectile.Center);
 
@@ -724,7 +722,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //集束火球 - 火球会在空中形成阵型然后一起爆炸
+        //集束火球-空中阵型后齐爆
         private void ReleaseClusterFireball(int clusterCount) {
             SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 1.4f, Pitch = -0.4f }, Projectile.Center);
 
@@ -754,7 +752,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //闪电链 - 在法阵边缘生成闪电球，会在敌人之间跳跃
+        //闪电链-法阵边缘跳跃
         private void ReleaseLightningChain() {
             SoundEngine.PlaySound(SoundID.Item122 with { Volume = 1.2f, Pitch = -0.2f }, Projectile.Center);
 
@@ -779,7 +777,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             }
         }
 
-        //硫磺血雨 - 从法阵上方落下大量硫磺火球
+        //硫磺血雨
         private void ReleaseBrimstoneRain() {
             SoundEngine.PlaySound(SoundID.Item73 with { Volume = 1.3f, Pitch = -0.5f }, Projectile.Center);
 

@@ -4,20 +4,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 {
-    /// <summary>
-    /// 深渊复苏死亡演出渲染句柄
-    /// <br/>从原 <c>EffectLoader</c> 中抽离，专门负责在 <see cref="RenderHandle.EndEntityDraw"/> 阶段
-    /// 遍历所有处于死亡演出中的玩家，调用其 <see cref="ResurrectionDeath.DrawDeathEffects"/>
-    /// </summary>
+    /// <summary>复苏死亡演出 RenderHandle，EndEntityDraw 调 DrawDeathEffects</summary>
     internal sealed class ResurrectionDeathRender : RenderHandle
     {
-        /// <summary>
-        /// 略晚于普通弹幕绘制层，保证死亡演出叠加在弹幕之上
-        /// </summary>
+        /// <summary>权重 1.25，晚于普通弹幕层</summary>
         public override float Weight => 1.25f;
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
-            //先用便宜的 for 循环过滤一遍，避免在没有玩家处于死亡演出时还开启一次空批次
+            //先过滤是否有人处于死亡演出，避免空开批次
             if (!AnyPlayerInDeathSequence(out int firstIndex)) {
                 return;
             }
@@ -39,10 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
             spriteBatch.End();
         }
 
-        /// <summary>
-        /// 快速判断当前是否存在处于死亡演出的玩家，并输出第一个命中下标
-        /// <br/>无命中时直接跳过开批次，避免每帧无意义的 GraphicsDevice 状态切换
-        /// </summary>
+        /// <summary>是否有死亡演出玩家，<paramref name="firstIndex"/> 为首个命中下标</summary>
         private static bool AnyPlayerInDeathSequence(out int firstIndex) {
             Player[] players = Main.player;
             for (int i = 0; i < players.Length; i++) {

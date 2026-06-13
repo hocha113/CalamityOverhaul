@@ -5,10 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 赛博精神病：使目标陷入狂暴攻击周围一切单位
-    /// <br/>对蠕虫类多体节 Boss 或月总等多实体 Boss，会自动扩散到群组内全部成员
-    /// </summary>
+    /// <summary>赛博精神病，狂暴攻击周围单位</summary>
     internal class Cyberpsychosis : QuickHackDef
     {
         public override void SetDefaults() {
@@ -25,9 +22,9 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             //红色精神崩溃爆发
             EmitBurstParticles(npc);
             CombatText.NewText(npc.Hitbox, new Color(255, 0, 50), HackTime.Cyberpsychosis.Value, true);
-            //群组扩散会向 HackEffectTracker 注册新效果，必须只在施法端跑，否则远端会重复触发 OnTick 伤害
+            //群组扩散仅施法端，防远端重复 OnTick 伤害
             if (!HackTimeNetSync.IsRemoteApply) {
-                //扩散到群组其他成员，HasEffect 短路保证不会无限传播
+                //扩散到群组，HasEffect 短路防无限传播
                 HackEffectTracker.PropagateNpcEffectToGroup(this, s.NpcIndex,
                     caster?.whoAmI ?? Main.myPlayer, EmitBurstParticles);
             }
@@ -57,7 +54,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             }
         }
 
-        //初始爆发粒子，单独抽出便于群组成员复用同样的视觉表现
+        //爆发粒子，群组成员复用
         private static void EmitBurstParticles(NPC npc) {
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3.5f, 3.5f);

@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
 
         #region 面板着色器背景
 
-        //用着色器绘制面板背景，降级时用程序化绘制
+        //着色器面板背景，降级用程序化绘制
         private void DrawShaderPanel(SpriteBatch sb, Rectangle rect, float alpha, bool nightMode) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
@@ -143,13 +143,13 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             Color coreColor, glowColor, edgeLight;
 
             if (node.IsCompleted && !hasUnclaimed) {
-                //已完成且已领取——沉稳绿
+                //已完成已领取，沉稳绿
                 coreColor = new Color(45, 130, 65);
                 glowColor = new Color(70, 200, 90);
                 edgeLight = new Color(130, 255, 155);
             }
             else if (hasUnclaimed) {
-                //已完成待领取——金色
+                //已完成待领取，金色
                 coreColor = new Color(160, 130, 30);
                 glowColor = new Color(245, 210, 60);
                 edgeLight = new Color(255, 240, 120);
@@ -195,7 +195,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 size, size);
             spriteBatch.Draw(px, shadowR, Color.Black * (0.45f * alpha));
 
-            //节点主体——多段纵向渐变，模拟金属光泽
+            //节点主体纵向渐变
             Rectangle nodeRect = new Rectangle(
                 (int)drawPos.X - halfSize,
                 (int)drawPos.Y - halfSize,
@@ -287,7 +287,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                     float wave = MathF.Sin((t - flowProgress) * MathHelper.TwoPi * 2f);
                     float brightness = wave * 0.5f + 0.5f;
 
-                    //中心较亮——模拟管道内部发光
+                    //中心高亮
                     Color c = Color.Lerp(new Color(130, 65, 25), new Color(255, 170, 65), brightness);
                     int segLen = (int)(length / segments) + 1;
 

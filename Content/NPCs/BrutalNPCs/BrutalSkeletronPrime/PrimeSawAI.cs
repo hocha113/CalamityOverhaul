@@ -8,10 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 电锯控制器：行为见 <see cref="SawIdleState"/> / <see cref="SawSpinUpState"/> / <see cref="SawDashState"/>
-    /// / <see cref="SawOrbitState"/> / <see cref="SawDrillState"/> / <see cref="SawRecoveryState"/>
-    /// </summary>
+    /// <summary>电锯 NPCOverride；行为见 <see cref="SawIdleState"/> 等 Saw 状态</summary>
     internal class PrimeSawAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeSaw;
@@ -39,7 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         protected override void ArmPostUpdate() {
-            //锯片转速由帧动画表现：转得越快帧切得越快——机体本身不再整体自旋
+            //锯片转速：帧动画切帧，机体不再整体自旋
             int interval = (int)MathHelper.Clamp(9f - armContext.SpinSpeed * 7f, 2f, 9f);
             if (Main.GameUpdateCount % interval == 0 && ++frame > 1) {
                 frame = 0;
@@ -60,8 +57,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vector2 sawOrigin = VaultUtils.GetOrig(mainValue, 2);
             float spinSpeed = armContext?.SpinSpeed ?? 0f;
 
-            //高速运动残影（在滤镜之前——残影本身柔和，不需要套描边）：
-            //沿速度反方向拖出位置残像，而不是旋转鬼影——机体不自旋，残影也不该转
+            //高速残影（滤镜前）：沿速度反方向位置残像，非旋转鬼影
             if (npc.velocity.LengthSquared() > 36f) {
                 Vector2 velDir = npc.velocity * 0.45f;
                 for (int i = 1; i <= 3; i++) {
@@ -71,7 +67,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 }
             }
 
-            //机械热感滤镜——和头部共用 head.whoAmI 状态
+            //机械热感滤镜，与头部共用 head.whoAmI
             int controllerId = (int)npc.ai[PrimeAiSlots.ArmHeadIndex];
             MechBossThermalRenderer.DrawOutlineHaloByController(spriteBatch, mainValue, sawDrawPos, sawRect,
                 drawRot, sawOrigin, npc.scale, SpriteEffects.None, controllerId);

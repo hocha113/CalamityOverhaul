@@ -7,9 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 死机：令灵异目标短暂陷入沉寂，停止一切活动
-    /// </summary>
+    /// <summary>死机，灵异目标短暂沉寂</summary>
     internal class SystemHalt : QuickHackDef
     {
         public override void SetDefaults() {
@@ -21,7 +19,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
         public override bool OnApply(IHackTarget target, Player caster) {
             if (target is not GlitchWraithActor wraith) return false;
-            //灵异 Actor 的权威状态变更只在施法端执行，远端依靠 Actor 自身的同步机制还原
+            //灵异权威状态仅施法端，远端靠 Actor 同步
             if (!HackTimeNetSync.IsRemoteApply) {
                 wraith.ApplySystemHalt(60 * 10);
             }

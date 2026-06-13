@@ -12,11 +12,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
     /// <summary>
-    /// 双子魔眼电弧链锁：在两只眼睛之间维持一道带伤害判定的高压电弧。
+    /// 双子魔眼电弧链锁：两眼间带伤害高压电弧
     /// <br/>ai[0] = 眼睛A的whoAmI
     /// <br/>ai[1] = 眼睛B的whoAmI
     /// <br/>ai[2] = 总持续时间(帧)
-    /// <br/>前30帧为预警(细弱无伤害)，之后全功率；任一眼失效立即消散
+    /// <br/>前30帧预警细弱无伤害，之后全功率；任一眼失效立即消散
     /// </summary>
     internal class TwinsTetherArc : ModProjectile
     {
@@ -118,9 +118,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
             }
         }
 
-        /// <summary>
-        /// 在两眼之间采样并扰动电弧路径
-        /// </summary>
+        /// 两眼间采样并扰动电弧路径
         private void BuildArcPath(Vector2 start, Vector2 end) {
             Vector2[] points = new Vector2[ArcPointCount];
             Vector2 dir = end - start;

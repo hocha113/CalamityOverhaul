@@ -8,14 +8,10 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇入成本评估器
-    /// <br/>根据目标属性计算动态 RAM 成本倍率（1.0x–3.0x），与渲染/队列系统完全解耦
-    /// <br/>通过 ICWRLoader.SetupData 在内容加载完成后自动注册分级数据
-    /// </summary>
+    /// <summary>骇入 RAM 成本评估，1.0x~3.0x</summary>
     internal class HackCostEvaluator : ICWRLoader
     {
-        //boss 类型 ID 到倍率的静态映射表，在 SetupData 中填充
+        //boss 倍率表，SetupData 填充
         private static readonly Dictionary<int, float> bossMultiplierTable = new();
 
         void ICWRLoader.SetupData() {
@@ -164,7 +160,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private static float EvaluateBossMultiplier(NPC npc) {
             //优先用自身类型查表
             if (bossMultiplierTable.TryGetValue(npc.type, out float m)) return m;
-            //体段 NPC 通过 realLife 链找头部，用头部类型查表
+            //体段经 realLife 找头部查表
             int anchorIdx = NpcGroupHelper.GetAnchorIndex(npc);
             if (anchorIdx != npc.whoAmI && anchorIdx >= 0) {
                 int anchorType = Main.npc[anchorIdx].type;

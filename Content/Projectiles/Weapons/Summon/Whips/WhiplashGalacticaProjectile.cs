@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
     {
         public override string Texture => CWRConstant.Projectile_Summon + "WhiplashGalacticaProjectile";
 
-        private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();//点集
+        private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();//鞭段点集
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.IsAWhip[Type] = true;
@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                 pos += diff;
             }
-        }//绘制连接线
+        }//鞭连接线
 
         public override bool PreDraw(ref Color lightColor) {
             DrawLine(whipPoints);
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                 Vector2 element = whipPoints[i];
                 Vector2 diff = whipPoints[i + 1] - element;
 
-                float rotation = diff.ToRotation() - MathHelper.PiOver2; //此投射物的精灵图朝下，因此使用PiOver2进行旋转修正
+                float rotation = diff.ToRotation() - MathHelper.PiOver2; //精灵朝下，PiOver2 修正朝向
                 Color color = Lighting.GetColor(element.ToTileCoordinates());
                 scale *= 0.75f;
                 Main.EntitySpriteDraw(texture, pos - Main.screenPosition, frame, color, rotation, origin, scale, flip, 0);
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                     return;
                 }
 
-                //准备轨迹点
+                //轨迹点
                 Vector2[] positions = new Vector2[Projectile.oldPos.Length];
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {
                     if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -190,11 +190,11 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                     positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
                 }
 
-                //创建或更新 Trail
+                //Trail 创建/更新
                 Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
                 Trail.TrailPositions = positions;
 
-                //使用 InnoVault 的绘制方法
+                //InnoVault 拖尾绘制
                 Effect effect = EffectLoader.GradientTrail.Value;
                 effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
                 effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);

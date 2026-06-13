@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>
-    /// 双子超新星对撞合击：
-    /// 双眼集合对位→电荷蓄力→全速对撞，在碰撞点引发真正的超新星爆炸——
-    /// 多层冲击环、机械殉爆光团、强震屏，并炸出橙红/青紫双色交错弹幕环
-    /// </summary>
+    /// <summary>超新星对撞：集合→蓄力→对撞，碰撞点超新星+双色弹幕环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCombinedAttack, typeof(TwinsStateContext))]
     internal class TwinsCombinedAttackState : TwinsStateBase
     {
@@ -262,9 +258,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 爆发阶段：超新星爆炸——殉爆光团+多层冲击环+双色交错弹幕环
-        /// </summary>
+        /// <summary>爆发：殉爆光团+冲击环+双色弹幕环</summary>
         private void ExecuteBurstPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - AlignPhase - ChargePhase - CollisionPhase;
             float progress = phaseTimer / (float)BurstPhase;
@@ -309,7 +303,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                     }
                 }
 
-                //超新星爆炸演出(双方都会执行，叠加出更厚的爆炸，但音效只播一次由魔焰眼负责)
+                //超新星演出双方各绘一层；音效仅魔焰眼播一次
                 if (!VaultUtils.isServer) {
                     Color themeColor = Context.IsSpazmatism ? TwinsMotion.SpazColor : TwinsMotion.RetinColor;
 

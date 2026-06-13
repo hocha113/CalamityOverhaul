@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 冲刺蓄力状态：S形盘蛇后撤蓄势 → 充能波尾部涌向头部 → 冲量释放 + 音爆。
-    /// 后撤的弧线由航向自然画出，配合体节跟随形成"盘蛇压缩弹簧"的预备动作
-    /// </summary>
+    /// <summary>冲刺蓄力：S形后撤→充能波尾推头→冲量释放+音爆</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DashPrepare, typeof(DestroyerStateContext))]
     internal class DestroyerDashPrepareState : DestroyerStateBase
     {
@@ -49,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             int chargeTime = ChargeTime(context);
             float progress = Math.Min(Timer / (float)chargeTime, 1f);
 
-            //对准：转向率随蓄力进度衰减——后撤的同时可见地"锁线"
+            //转向率随蓄力衰减，后撤同时锁线
             dashDirection = (player.Center - npc.Center).SafeNormalize(Vector2.UnitY);
             FaceTarget(npc, player.Center, MathHelper.Lerp(0.26f, 0.05f, progress));
 
@@ -68,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             //充能波从尾部涌向头部：能量向头部汇聚
             DestroyerChargeWave.Push(npc.whoAmI, 1f - progress, 0.22f, 0.35f + 0.65f * progress);
 
-            //蓄力粒子与震动在72%进度硬切——临爆静默，"吸气后才有尖叫"
+            //72%进度硬切粒子/震动，临爆静默
             if (progress < 0.72f && !VaultUtils.isServer) {
                 if (Timer % 3 == 0) {
                     for (int i = 0; i < (int)(progress * 5) + 1; i++) {

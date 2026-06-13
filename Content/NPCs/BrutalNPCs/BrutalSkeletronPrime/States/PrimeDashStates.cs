@@ -9,11 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 旋转冲撞：late-snap 后仰蓄势 → 锁定瞄准（预警线与实际弹道一致）→
-    /// 单帧设速全速贯穿（横跨大半屏，约 60+ 格）→ 硬刹收势，3~5 段连冲。
-    /// 接触伤害严格绑定速度门槛：只有真正高速时才有伤害。
-    /// </summary>
+    /// <summary>旋转冲撞：late-snap 蓄势→锁定→全速贯穿→硬刹，3~5 段；伤害绑速度门槛</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.SpinDash, typeof(PrimeStateContext))]
     internal class PrimeSpinDashState : PrimeStateBase
     {
@@ -154,7 +150,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void UpdateBrake(PrimeStateContext context) {
             NPC npc = context.Npc;
             float speed = npc.velocity.Length();
-            //硬刹首帧仍有速度伤害，速度跌破门槛自动失伤——伤害窗口与视觉冲势完全一致
+            //硬刹首帧仍有速度伤害，跌破门槛自动失伤
             npc.damage = speed > PrimeDirector.DashContactSpeedThreshold ? npc.defDamage * 2 : 0;
             npc.velocity *= 0.62f;
             SpinRotation(npc, 0.18f);
@@ -170,10 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         }
     }
 
-    /// <summary>
-    /// 狂暴闪现贯穿：预警（末段锁定，预警线画在真实贯穿路径上）→ 闪现至玩家远侧
-    /// → 直线全速贯穿（穿过玩家身后约 25 格）→ 越界即再闪现，三连无回程死时间。
-    /// </summary>
+    /// <summary>狂暴闪现贯穿：预警→远侧闪现→直线贯穿，越界再闪，三连无死区</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.RageDash, typeof(PrimeStateContext))]
     internal class PrimeRageDashState : PrimeStateBase
     {

@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    //菌生蟹物理系统，处理地形交互和移动
+    /// <summary>菌生蟹物理与地形交互</summary>
     internal class CrabulonPhysics
     {
         private readonly NPC npc;
@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public float JumpHeightUpdate { get; set; }
         public float JumpHeightSetFrame { get; set; }
 
-        //位置修正相关
+        //卡入修正
         private int stuckCheckTimer = 0;
         private Vector2 lastValidPosition;
         private const int StuckCheckInterval = 30;
@@ -25,7 +25,6 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             lastValidPosition = npc.position;
         }
 
-        //获取到地面的距离
         public void UpdateGroundDistance() {
             GroundClearance = 0;
             Vector2 startPos = npc.Bottom;
@@ -42,14 +41,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
                 Tile tile = Framing.GetTileSafely(tileCoords);
 
-                //改进的地面检测逻辑
-                bool hitTile = false;
+                bool hitTile;
                 if (owner.CanFallThroughPlatforms() == true) {
-                    //只检测实心方块
                     hitTile = tile.HasSolidTile();
                 }
                 else {
-                    //检测所有可碰撞的方块（包括平台）
                     hitTile = tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
                 }
 
@@ -61,43 +57,34 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 GroundClearance += CrabulonConstants.GroundCheckInterval;
             }
 
-            //如果没找到地面，设置为最大值
             if (!foundGround) {
                 GroundClearance = CrabulonConstants.MaxGroundDistance;
             }
         }
 
-        //自动攀爬台阶
         public void AutoStepClimbing() {
-            //只在服务器或单人模式执行物理计算
             if (VaultUtils.isClient) {
-                return;
+                return;//物理仅权威端
             }
 
-            //必要条件检查
             if (npc.noTileCollide || !npc.collideX) {
                 return;
             }
 
-            //使用方向感知检测
             int direction = Math.Sign(npc.velocity.X);
             if (direction == 0) {
                 return;
             }
 
-            //从NPC前方检测台阶高度
             Vector2 frontBottom = npc.Bottom + new Vector2(direction * (npc.width / 2f + 8), 0);
 
-            //检测是否存在需要攀爬的台阶
             if (!DetectStepAhead(frontBottom, direction, out int stepHeight)) {
                 return;
             }
 
-            //执行攀爬
             PerformStepClimb(stepHeight);
         }
 
-        //检测前方是否有台阶
         private bool DetectStepAhead(Vector2 checkStart, int direction, out int stepHeight) {
             stepHeight = 0;
 
@@ -120,10 +107,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             }
 
             if (!hasGroundAhead) {
-                return false;//前方是空的，不需要爬
+                return false;//前方悬空
             }
 
-            //向上检测可以攀爬的最大高度
             int maxClimbHeight = CrabulonConstants.MaxStepHeight / CrabulonConstants.StepCheckInterval;
             int foundHeight = 0;
 
@@ -131,15 +117,12 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 int checkHeightPixels = i * CrabulonConstants.StepCheckInterval;
                 Vector2 checkPos = npc.position - new Vector2(0, checkHeightPixels);
 
-                //检查在这个高度是否可以通过，检查整个NPC的碰撞箱
                 if (Collision.SolidCollision(checkPos, npc.width, npc.height)) {
-                    break;//遇到障碍物，不能再往上
+                    break;
                 }
 
-                //检查这个高度前方是否有足够空间
                 Vector2 forwardPos = checkPos + new Vector2(direction * (npc.width / 2f + 4), 0);
 
-                //确保前方和上方都有空间
                 bool hasSpace = !Collision.SolidCollision(forwardPos, npc.width / 2, npc.height);
                 bool hasHeadroom = !Collision.SolidCollision(checkPos + new Vector2(0, -npc.height / 2), npc.width, npc.height / 2);
 
@@ -156,68 +139,53 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //执行台阶攀爬
         private void PerformStepClimb(int heightLevel) {
-            //记录当前位置为有效位置
             lastValidPosition = npc.position;
 
-            //设置攀爬参数
             JumpHeightUpdate = heightLevel * CrabulonConstants.StepCheckInterval;
             JumpHeightSetFrame = CrabulonConstants.MountTimeout;
 
-            //给一个小的向上速度，但不要太大
             npc.velocity.Y = -4f;
-
-            //标记需要网络同步
             npc.netUpdate = true;
         }
 
-        //处理跳跃高度更新
         public void UpdateJumpHeight() {
             if (JumpHeightUpdate > 0) {
                 JumpHeightSetFrame = CrabulonConstants.MountTimeout;
 
-                //计算本帧应该上升的距离
-                float climbSpeed = 10f; //降低速度以提高稳定性
+                float climbSpeed = 10f;
                 float climbDistance = Math.Min(JumpHeightUpdate, climbSpeed);
 
-                //在实际移动前检查是否会卡入方块
                 Vector2 newPosition = npc.position - new Vector2(0, climbDistance);
                 if (!WouldCollideAtPosition(newPosition)) {
                     JumpHeightUpdate -= climbDistance;
                     npc.position.Y -= climbDistance;
-                    lastValidPosition = npc.position; //更新有效位置
+                    lastValidPosition = npc.position;
                 }
                 else {
-                    //如果会卡入方块，停止攀爬
                     JumpHeightUpdate = 0;
                 }
 
-                //在攀爬期间减少重力影响而不是完全禁用
                 if (npc.velocity.Y > 0) {
                     npc.velocity.Y *= 0.5f;
                 }
 
-                //标记需要同步
                 if (climbDistance > 0) {
                     npc.netUpdate = true;
                 }
             }
 
-            //更新攀爬冷却
             if (JumpHeightSetFrame > 0) {
                 JumpHeightSetFrame--;
             }
         }
 
-        //检查在指定位置是否会发生碰撞
         private bool WouldCollideAtPosition(Vector2 position) {
             return Collision.SolidCollision(position, npc.width, npc.height);
         }
 
-        //卡入方块检测和修正
         public void CheckAndFixStuckPosition() {
-            //骑乘吸附期间位置由骑手决定，不允许修正逻辑与之打架
+            //骑乘吸附时位置由骑手定，跳过修正
             if (owner.Mount) {
                 stuckCheckTimer = 0;
                 lastValidPosition = npc.position;
@@ -232,14 +200,11 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
             stuckCheckTimer = 0;
 
-            //检查NPC是否卡在方块中
             if (Collision.SolidCollision(npc.position, npc.width, npc.height)) {
-                //尝试修正位置
                 if (TryFixStuckPosition()) {
                     return;
                 }
 
-                //如果修正失败，回退到上次有效位置
                 if (lastValidPosition != Vector2.Zero &&
                     !Collision.SolidCollision(lastValidPosition, npc.width, npc.height)) {
                     npc.position = lastValidPosition;
@@ -248,24 +213,21 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 }
             }
             else {
-                //当前位置有效，更新记录
                 lastValidPosition = npc.position;
             }
         }
 
-        //尝试修正卡入位置
         private bool TryFixStuckPosition() {
-            //尝试8个方向的偏移
             Vector2[] directions = new Vector2[]
             {
-                new Vector2(0, -8),  //向上
-                new Vector2(0, 8),   //向下
-                new Vector2(-8, 0),  //向左
-                new Vector2(8, 0),   //向右
-                new Vector2(-8, -8), //左上
-                new Vector2(8, -8),  //右上
-                new Vector2(-8, 8),  //左下
-                new Vector2(8, 8)    //右下
+                new Vector2(0, -8),
+                new Vector2(0, 8),
+                new Vector2(-8, 0),
+                new Vector2(8, 0),
+                new Vector2(-8, -8),
+                new Vector2(8, -8),
+                new Vector2(-8, 8),
+                new Vector2(8, 8)
             };
 
             foreach (Vector2 offset in directions) {
@@ -282,26 +244,21 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             return false;
         }
 
-        //限制NPC在世界边界内
         public void ClampToWorldBounds() {
             ushort border = CrabulonConstants.WorldBorder;
             npc.position.X = MathHelper.Clamp(npc.position.X, border, Main.maxTilesX * 16 - border);
             npc.position.Y = MathHelper.Clamp(npc.position.Y, border, Main.maxTilesY * 16 - border);
         }
 
-        //检测是否应该穿过平台
         public bool? ShouldFallThroughPlatforms() {
-            //骑乘模式下蟹不参与碰撞（吸附在骑手身上），平台穿越由骑手侧处理
             if (owner.Mount) {
-                return true;
+                return true;//骑乘时蟹无碰撞，平台由骑手侧
             }
 
-            //垂直追逐期间不穿平台
             if (owner.ai[7] > 0) {
-                return false;
+                return false;//垂直追逐不穿平台
             }
 
-            //需要下落时穿过平台
             if (owner.ai[10] > 0) {
                 if (npc.velocity.Y == 0)
                     npc.position.Y += 1f;

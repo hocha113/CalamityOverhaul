@@ -33,9 +33,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             }
         }
 
-        /// <summary>
-        /// 悬停呼吸浮动偏移，seed用于错开两只眼睛的相位
-        /// </summary>
+        /// <summary>悬停呼吸浮动偏移，seed 错开双眼相位</summary>
         public static Vector2 BreathingOffset(float seed, float amplitude = 14f) {
             float time = Main.GlobalTimeWrappedHourly * 2.1f + seed;
             return new Vector2((float)Math.Sin(time * 0.7f) * amplitude * 0.4f, (float)Math.Sin(time) * amplitude);
@@ -65,27 +63,20 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             npc.rotation = npc.rotation.AngleLerp(targetRot, rotLerp);
         }
 
-        /// <summary>
-        /// 以有限角速度旋转NPC朝向(rotation遵循"朝向-PiOver2"约定)，用于驱动死亡射线扫射
-        /// </summary>
+        /// <summary>有限角速度旋转朝向(rotation=朝向-PiOver2)，驱动死亡射线扫射</summary>
         public static void RotateToward(NPC npc, float targetDirRot, float maxStep) {
             float currentDir = npc.rotation + MathHelper.PiOver2;
             float nextDir = currentDir.AngleTowards(targetDirRot, maxStep);
             npc.rotation = nextDir - MathHelper.PiOver2;
         }
 
-        /// <summary>
-        /// 线性预测目标位置，用于预判射击
-        /// </summary>
+        /// <summary>线性预测目标位置，预判射击</summary>
         public static Vector2 PredictTarget(Player player, Vector2 from, float projSpeed, float leadFactor = 1f) {
             float flightTime = Vector2.Distance(from, player.Center) / Math.Max(projSpeed, 1f);
             return player.Center + player.velocity * flightTime * leadFactor;
         }
 
-        /// <summary>
-        /// 冲刺起步：设定速度并触发音爆演出(冲击环垂直于冲刺方向+火花+短震+音效)。
-        /// 强力起步(boomStrength≥1.15)额外生成屏幕扭曲冲击波
-        /// </summary>
+        /// <summary>冲刺起步：设速+音爆；boomStrength≥1.15 额外生成扭曲冲击波</summary>
         public static void DashLaunch(NPC npc, Vector2 direction, float speed, bool spazTheme, float boomStrength = 1f) {
             npc.velocity = direction * speed;
             SonicBoom(npc.Center, direction, spazTheme, boomStrength);

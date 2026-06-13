@@ -4,14 +4,10 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇客时间UI层管理
-    /// <br/>激活骇客模式时屏蔽原版HUD层（快捷栏、生命条、魔力条等）
-    /// <br/>避免常规游戏UI干扰沉浸式骇入界面
-    /// </summary>
+    /// <summary>骇客时间 UI 层管理</summary>
     internal class HackTimeInterfaceSystem : ModSystem
     {
-        //骇客时间激活时需要隐藏的原版UI层
+        //骇客时间激活时隐藏的原版 UI 层
         private static readonly HashSet<string> HiddenLayers = [
             "Vanilla: Hotbar",
             "Vanilla: Resource Bars",
@@ -27,7 +23,7 @@ namespace CalamityOverhaul.Content.HackTimes
         ];
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
-            //仅在骇客时间有效果时隐藏（包括淡出过程）
+            //含淡出过程
             if (!HackTime.Active && HackTime.Intensity < 0.5f) return;
 
             foreach (var layer in layers) {

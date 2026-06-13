@@ -14,11 +14,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
     /// <summary>
-    /// 颅骨主炮巨型扫射光束：锚定在机械骷髅王头部，按固定角速度横扫。
+    /// 颅骨主炮巨型扫射光束：锚定头部，固定角速度横扫
     /// <br/>ai[0] = 头部 NPC 的 whoAmI
     /// <br/>ai[1] = 起始角（弧度）
     /// <br/>ai[2] = 每帧扫射角速度（含方向）
-    /// <br/>展开/收束有缓动，未完全展开时不造成伤害；头部失效或脱离主炮状态时快速收束。
+    /// <br/>展开/收束缓动，未完全展开无伤害；头部失效或脱离主炮状态时快速收束
     /// </summary>
     internal class PrimeSkullBeamProj : ModProjectile
     {

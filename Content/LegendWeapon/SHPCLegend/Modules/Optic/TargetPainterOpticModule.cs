@@ -4,9 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 {
-    /// <summary>
-    /// 锁定瞄具：命中目标时施加腐化减防效果，配合高频弹幕快速叠加削弱
-    /// </summary>
+    /// <summary>锁定瞄具：命中上 Ichors 减防</summary>
     internal sealed class TargetPainterOpticModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Optic;

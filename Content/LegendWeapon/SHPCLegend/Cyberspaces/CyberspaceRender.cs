@@ -8,13 +8,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博空间渲染器
-    /// <br/>多人场景：每个玩家持有独立的赛博空间状态，本渲染器枚举所有活跃领域分别绘制边界环 / 边缘光晕 /
-    /// 低质量回退栅格，让每个玩家的领域在本地客户端正确出现在各自的领域中心。
-    /// <br/>整屏后处理（压暗+去饱和+红染+加法赛博特效）由"主导域"驱动：优先取本地玩家自己的领域，
-    /// 若本地未开启则取离屏幕中心最近的活跃领域，避免多个领域同时整屏后处理造成画面冲突
-    /// </summary>
+    /// <summary>领域 RenderHandle：多玩家边界环/光晕/栅格回退</summary>
     internal class CyberspaceRender : RenderHandle
     {
         private const int MaxEntities = 32;
@@ -26,8 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private static Asset<Texture2D> softGlow;
 
         public override void UpdateBySystem(int index) {
-            //逻辑推进已移至 CyberspaceSystem（ModSystem.PostUpdateEverything）——
-            //RenderHandle 的更新钩子不会在专用服务器上运行，冻结/放逐等需要服务端权威推进的逻辑不能挂在这里
+            //逻辑在 CyberspaceSystem.PostUpdateEverything；专服不跑 RenderHandle 更新
             //此处仅在回到主菜单时兜底清理客户端残留状态（主菜单中 PostUpdateEverything 不再运行）
             if (Main.gameMenu) {
                 CyberspaceSystem.ResetAll();
@@ -51,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ApplyFullScreenShader(spriteBatch, graphicsDevice, screenSwap, primary);
             }
 
-            //逐个领域分别绘制边界环——每个玩家的领域有各自的中心 / 半径 / 阶段进度
+            //逐域绘边界环
             foreach (CyberspacePlayer cp in domains) {
                 DrawBoundaryShockwaveRing(spriteBatch, cp);
             }
@@ -65,9 +58,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             spriteBatch.End();
         }
 
-        /// <summary>
-        /// 遍历所有玩家，收集仍需绘制的领域（含正在收缩动画中的关闭态）
-        /// </summary>
+        /// <summary>枚举仍需绘制的领域（含关闭收缩动画中）</summary>
         private static List<CyberspacePlayer> CollectVisibleDomains() {
             List<CyberspacePlayer> list = new();
             foreach (CyberspacePlayer cp in Cyberspace.EnumerateRenderable()) {
@@ -76,9 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return list;
         }
 
-        /// <summary>
-        /// 选取整屏后处理的主导域：本地玩家自己有领域则用自己，否则取距离摄像机中心最近的远端域
-        /// </summary>
+        /// <summary>整屏后处理主导域，本地优先否则最近</summary>
         private static CyberspacePlayer SelectPrimaryDomain(List<CyberspacePlayer> domains) {
             int localWho = Main.myPlayer;
 
@@ -121,9 +110,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             if (screenSwap == null || screenSwap.IsDisposed) return;
             if (Main.screenTarget == null || Main.screenTarget.IsDisposed) return;
 
-            //水波质量从关/低切到中/高时，DrawNPCsOverTiles 触发点的活动 RT 不一定是 screenTarget
-            //此时再 SetRenderTarget(Main.screenTarget); Clear 会把本该写到 backbuffer 的画面整个顶替掉，
-            //表现就是整个 UI 和画面"消失"。检测到这种情况立刻走低质量回退路径
+            //活动 RT 非 screenTarget 时强写会顶替 backbuffer，走低质量回退
             if (!RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) {
                 DrawLowQualityFieldFallback(spriteBatch);
                 return;
@@ -132,14 +119,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             //保存进入时的 RT 绑定，结束后再还原回去，避免改变上层管线对活动 RT 的预期
             RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
 
-            // 将当前屏幕内容复制到交换缓冲
+            //拷屏到 screenSwap
             graphicsDevice.SetRenderTarget(screenSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            // 设置着色器参数
+            //着色器参数
             Vector2 zoom = Main.GameViewMatrix.Zoom;
             Vector2 screenPixels = Main.ScreenSize.ToVector2();
             Vector2 worldViewSize = screenPixels / zoom;
@@ -160,14 +147,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["worldViewSize"]?.SetValue(worldViewSize);
             shader.Parameters["gridSize"]?.SetValue(Cyberspace.GridSize);
 
-            // 收集域内实体数据
+            //域内 NPC 写入 entityBuffer
             int entityCount = CollectEntitiesInDomain(domainCenter, effectiveRadius);
             shader.Parameters["entityCount"]?.SetValue(entityCount);
             if (entityCount > 0) {
                 shader.Parameters["entities"]?.SetValue(entityBuffer);
             }
 
-            // 应用着色器并绘制回主屏幕
+            //着色器回写 screenTarget
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             graphicsDevice.Textures[1] = noiseTex;
@@ -183,15 +170,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        /// <summary>
-        /// 低水波/低级光照下不触碰 screenTarget，避免原版 RT 链路变化导致玩家或 UI 被清掉。
-        /// 多人场景下逐域绘制各自的栅格，让每个玩家的领域都体现存在感。
-        /// </summary>
+        /// <summary>低水波/低级光照回退，逐域栅格</summary>
         private static void DrawLowQualityFieldFallback(SpriteBatch spriteBatch) {
             Texture2D pixel = CWRAsset.Placeholder_White?.Value;
             if (pixel == null) return;
 
-            //先用一层"压暗罩"——取所有领域中最强的 intensity 来拍板压暗强度，避免在多个领域叠加时画面被压死
+            //压暗罩：取最强 intensity 定压暗强度
             float maxAlpha = 0f;
             float maxMotion = 0f;
             foreach (CyberspacePlayer cp in Cyberspace.EnumerateRenderable()) {
@@ -365,12 +349,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return new Color(c.X * alpha, c.Y * alpha, c.Z * alpha, 0f);
         }
 
-        /// <summary>
-        /// 在领域最外层有效边界绘制单一常驻边界环——使用专用 CyberBoundaryRing 着色器
-        /// <br/>单环设计：任意时刻只有一圈火纹，位置取 <see cref="CyberspacePlayer.EffectiveOuterRadius"/>，
-        /// 升降层时环沿半径连续滑动（读作"领域生长/收缩"）；层级身份由 layerTier 驱动的
-        /// 厚度/色温/装饰层样式表达，不再为每一层各画一圈遮挡战斗视野
-        /// </summary>
+        /// <summary>边界环，CyberBoundaryRing.fx</summary>
         private static void DrawBoundaryShockwaveRing(SpriteBatch spriteBatch, CyberspacePlayer cp) {
             Effect shader = EffectLoader.CyberBoundaryRing?.Value;
             if (shader == null) return;
@@ -434,10 +413,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return new Color(c.X, c.Y, c.Z);
         }
 
-        /// <summary>
-        /// 收集域内活跃NPC，将位置和大小写入 entityBuffer
-        /// 返回收集到的实体数量
-        /// </summary>
+        /// <summary>域内敌对 NPC → entityBuffer，返数量</summary>
         private static int CollectEntitiesInDomain(Vector2 domainCenter, float effectiveRadius) {
             int count = 0;
             float radiusSq = effectiveRadius * effectiveRadius;
@@ -457,7 +433,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 count++;
             }
 
-            // 清零未使用的槽位
+            //未用槽清零
             for (int i = count; i < MaxEntities; i++) {
                 entityBuffer[i] = Vector4.Zero;
             }

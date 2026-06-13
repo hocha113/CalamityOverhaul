@@ -8,10 +8,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 磁力牵引协议：将物块及其附近掉落物吸引向玩家
-    /// <br/>适合远程回收物品，对容器和家具类物块有效
-    /// </summary>
+    /// <summary>磁力牵引，回收附近掉落物</summary>
     internal class TileMagPull : QuickHackDef
     {
         //牵引半径（像素）

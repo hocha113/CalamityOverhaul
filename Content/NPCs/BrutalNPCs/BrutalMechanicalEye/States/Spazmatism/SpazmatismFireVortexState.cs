@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼一阶段火焰漩涡状态
-    /// 在玩家上方悬停并释放环形火焰弹幕
-    /// </summary>
+    /// <summary>一阶段火焰漩涡：上方悬停+环形火弹</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismFireVortex, typeof(TwinsStateContext))]
     internal class SpazmatismFireVortexState : TwinsStateBase
     {

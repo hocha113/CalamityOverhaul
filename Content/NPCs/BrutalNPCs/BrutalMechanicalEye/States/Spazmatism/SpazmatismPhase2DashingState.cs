@@ -6,10 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼二阶段冲刺中状态：
-    /// 更快的弧线追踪冲刺与更猛的急停甩头
-    /// </summary>
+    /// <summary>二阶段 dash 中：更快弧线追踪+更猛甩头</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismPhase2Dashing, typeof(TwinsStateContext))]
     internal class SpazmatismPhase2DashingState : TwinsStateBase
     {

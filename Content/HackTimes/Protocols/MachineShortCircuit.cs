@@ -9,9 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Protocols
 {
-    /// <summary>
-    /// 机械短路协议：瞬间清空目标机械的全部电能，并释放电弧伤害周围实体
-    /// </summary>
+    /// <summary>机械短路，清空电能并电弧伤害</summary>
     internal class MachineShortCircuit : QuickHackDef
     {
         //电弧伤害半径（像素）
@@ -38,8 +36,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
 
             Vector2 center = machine.CenterInWorld;
 
-            //本端权威：清空电能、伤害、TileSquare 同步——远端复刻只播放视觉
-            //避免远端重复写零或重复广播 TileSquare
+            //本端权威：清空电能、伤害、TileSquare 同步，远端仅视觉
             if (!HackTimeNetSync.IsRemoteApply) {
                 //清空电能
                 machine.MachineData.UEvalue = 0;
@@ -87,9 +84,7 @@ namespace CalamityOverhaul.Content.HackTimes.Protocols
             return true;
         }
 
-        /// <summary>
-        /// 尝试从物块坐标获取对应的MachineTP
-        /// </summary>
+        /// <summary>从物块坐标取 MachineTP</summary>
         private static bool TryGetMachine(int tileX, int tileY, out MachineTP machine) {
             machine = null;
             if (!VaultUtils.SafeGetTopLeft(tileX, tileY, out var topLeft)) return false;

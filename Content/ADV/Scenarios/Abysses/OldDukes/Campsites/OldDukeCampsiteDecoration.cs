@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>
-    /// 老公爵营地装饰渲染器
-    /// 负责渲染营地中的装饰物品和环境效果
-    /// </summary>
+    /// <summary>老公爵营地装饰 RenderHandle——锅/旗杆/蒸汽粒子</summary>
     internal class OldDukeCampsiteDecoration : RenderHandle
     {
         //多个锅的位置信息
@@ -55,9 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         private const int upOffsetValue = 660;
 
-        /// <summary>
-        /// 获取所有锅的位置列表
-        /// </summary>
+        /// <summary>锅世界坐标列表</summary>
         public static List<Vector2> GetPotPositions() {
             List<Vector2> positions = [];
             foreach (var pot in pots) {
@@ -66,9 +61,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return positions;
         }
 
-        /// <summary>
-        /// 获取所有旗杆的位置列表
-        /// </summary>
+        /// <summary>旗杆世界坐标列表</summary>
         public static List<Vector2> GetFlagpolesPositions() {
             List<Vector2> positions = [];
             foreach (var pot in flagpoles) {
@@ -77,9 +70,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return positions;
         }
 
-        /// <summary>
-        /// 通知锅被老公爵访问
-        /// </summary>
+        /// <summary>老公爵访问锅时更新交互强度</summary>
         public static void NotifyPotVisit(Vector2 oldDukePosition, bool isVisiting, Vector2 targetPosition) {
             foreach (var pot in pots) {
                 float distance = Vector2.Distance(pot.WorldPosition, oldDukePosition);
@@ -99,10 +90,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 设置装饰物的位置（服务器端执行）
-        /// 在营地生成时自动调用
-        /// </summary>
+        /// <summary>营地生成时放置装饰（服务端）</summary>
         public static void SetupPotPosition(Vector2 campsiteCenter) {
             if (decorationsPositionSet) {
                 return;
@@ -755,10 +743,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         }
 
-        /// <summary>
-        /// 蒸汽粒子
-        /// 从锅中升起的热蒸汽效果
-        /// </summary>
+        /// <summary>蒸汽粒子——锅内上升</summary>
         internal class SteamParticlePRT
         {
             public Vector2 Position;
@@ -857,10 +842,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 气泡粒子
-        /// 锅内沸腾的气泡效果
-        /// </summary>
+        /// <summary>气泡粒子——锅内沸腾</summary>
         internal class BubbleParticlePRT
         {
             public Vector2 Position;

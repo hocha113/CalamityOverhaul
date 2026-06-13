@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                 pos += diff;
             }
-        }//绘制连接线
+        }//鞭连接线
 
         public override bool PreDraw(ref Color lightColor) {
             DrawLine(whipPoints);

@@ -1,15 +1,14 @@
 // ============================================================================
-// DragonSoulSerpent.fx —— 翠龙之魂着色器
-// 程序化绘制一条蜿蜒的翠绿蛟龙：龙首 + 后掠双角 + 背鳍棘刺 + 鳞光躯体 + 消散藻尾
-// quad 由 C# 端按速度方向旋转，+x 恒为运动方向（龙首朝向）
-// uRage: 锁定猎物后的狂怒度，金瞳燃起、张口咆哮、形体更亮
+// DragonSoulSerpent.fx 翠龙之魂
+// +X 为龙首朝向；C# 按速度旋转 quad
+// ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
 float uTime;
 float uSeed;    //每条蛟龙的随机种子
 float uFade;    //整体透明度 0~1
-float uRage;    //狂怒度 0~1
+float uRage;    //狂怒度 0~1，锁定猎物后金瞳/咆哮
 
 texture uNoiseTex;
 sampler noiseSamp = sampler_state

@@ -185,8 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
     /// <summary>
     /// 硫火鱼承载弹幕
-    /// 多人模式下采用持有者权威 + 确定性本地推进的混合策略，
-    /// 关键状态（AimDirection、Fired、本地计时）通过 OnSpawn 与 SendExtraAI 跨端同步
+    /// 持有者权威 + 确定性推进；AimDirection、Fired、LocalTimer 经 OnSpawn/SendExtraAI 同步
     /// </summary>
     internal class DrizzleFishHolder : ModProjectile
     {
@@ -208,9 +207,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public sbyte ShootDir => AimDirection.X >= 0 ? (sbyte)1 : (sbyte)-1;
 
         /// <summary>
-        /// 本地确定性计时器，从 0 开始递增，每帧 +1。
-        /// 由于鱼在所有端的生成时刻一致，该计时器在各端会自然保持同步；
-        /// 持有者每 60 帧触发一次 netUpdate 把 LocalTimer 同步给其它端做兜底
+        /// 本地确定性计时，从 0 每帧 +1
+        /// 各端生成时刻一致故自然同步；持有者每 60 帧 netUpdate 兜底
         /// </summary>
         public int LocalTimer;
 
@@ -471,7 +469,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             float progress = 1f - Projectile.timeLeft / 85f;
-            //优化颜色渐变，让火焰更有层次感
+            //三层颜色渐变
             gradientStart = Color.Lerp(new Color(255, 90, 20), new Color(255, 130, 50), progress);
             gradientMid = Color.Lerp(new Color(255, 150, 60), new Color(255, 190, 90), progress);
             gradientEnd = Color.Lerp(new Color(255, 180, 80), new Color(255, 230, 120), progress);
@@ -503,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             UpdateFireParticles();
 
-            //增强火焰光照，添加脉冲效果
+            //脉冲照明
             float lightPulse = (float)Math.Sin(Projectile.localAI[0] * 0.3f) * 0.2f + 1f;
             Lighting.AddLight(Projectile.Center, 1.4f * lightPulse, 0.9f * lightPulse, 0.4f * lightPulse);
         }
@@ -605,7 +603,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //绘制火柱核心层，提供最强的发光效果
+        //火柱核心层
         private void DrawPillarCore() {
             List<ColoredVertex> vertices = new();
 
@@ -654,14 +652,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        //改进：主体绘制，优化透明度渐变
+        //主体：u 轴三重渐变 + alpha
         private void DrawPillarMainBody() {
             List<ColoredVertex> vertices = new();
 
             for (int i = 0; i < 80; i++) {
                 float u = i / 80f;
 
-                //改进颜色插值，使用三重渐变
+                //u 轴三重插值
                 Color colA = Color.Lerp(
                     Color.Lerp(gradientStart, gradientMid, u),
                     Color.Lerp(gradientMid, gradientEnd, u),
@@ -669,7 +667,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
                 Color colB = Color.Lerp(gradientStart, gradientEnd, u);
 
-                //关键改进：根据距离调整透明度，根部（u小）更不透明
+                //根部 alpha 更高
                 float alphaMultiplier = MathHelper.Lerp(1.0f, 0.7f, u);  //从100%到70%
                 colA *= alphaMultiplier;
                 colB *= alphaMultiplier;

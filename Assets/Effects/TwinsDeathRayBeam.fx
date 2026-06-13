@@ -1,3 +1,8 @@
+// ============================================================================
+// TwinsDeathRayBeam.fx 双子死亡射线
+// UV.x 0枪口→1末端；s0+s1+s2 Additive 预乘 alpha
+// ============================================================================
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);

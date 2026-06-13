@@ -1,29 +1,24 @@
 // ============================================================================
-// ElysiumHalo.fx — 天国极乐UI神圣光环着色器
-// 多层辉光环 + 体积圣光射线 + 玫瑰窗几何骨架 + 十字光芒 + 能量波纹
-// 三个Technique：HaloBackground / CenterPanel / SlotAura
+// ElysiumHalo.fx 天国极乐 UI 神圣光环
+// 采样 s0 + s1 噪声；HaloBackground/CenterPanel/SlotAura 三 Technique
 // ps_3_0
 // ============================================================================
 
-// ---- 共用参数 ----
 float uTime;
 float fadeAlpha;
-float discipleRatio;     // 已激活门徒比例 0~1
-float rotationAngle;     // 转盘旋转角(弧度)
-float pulsePhase;        // 脉冲动画相位
-float hoverSector;       // 悬停门徒索引 -1=无, 0~11
+float discipleRatio;     //已激活门徒比例 0~1
+float rotationAngle;     //转盘旋转角(弧度)
+float pulsePhase;        //脉冲相位
+float hoverSector;       //悬停门徒 -1无 0~11
 
-// ---- 几何参数(UV空间, 0~0.5范围) ----
-float outerR;            // 外环半径
-float discipleR;         // 门徒轨道半径
-float innerR;            // 内环半径
+float outerR;            //外环半径(UV 0~0.5)
+float discipleR;         //门徒轨道半径
+float innerR;            //内环半径
 
-// ---- 色彩 ----
-float3 warmGold;         // 暖金色调
-float3 brightGold;       // 亮金高光
-float3 holyWhite;        // 圣白
+float3 warmGold;         //暖金
+float3 brightGold;       //亮金
+float3 holyWhite;        //圣白
 
-// ---- SlotAura专用参数 ----
 float3 slotColor;
 float slotActive;
 float slotHover;
@@ -31,7 +26,6 @@ float slotDragSource;
 float slotDragTarget;
 float slotPhase;
 
-// ---- 噪声纹理(s1) ----
 texture uNoiseTex;
 sampler noiseSamp : register(s1) = sampler_state
 {
@@ -46,15 +40,10 @@ sampler noiseSamp : register(s1) = sampler_state
 // SpriteBatch自动绑定到s0
 sampler baseSamp : register(s0);
 
-// ---- 常量 ----
 #define PI    3.14159265
 #define TAU   6.28318530
 
-// ============================================================================
-// 辅助函数
-// ============================================================================
-
-//柔光环：高斯SDF
+// 柔光环高斯 SDF
 float softRing(float d, float r, float sharpness)
 {
     float delta = d - r;
@@ -68,10 +57,7 @@ struct PSInput
     float4 Color     : COLOR0;
 };
 
-// ============================================================================
-// HaloBackground — 主背景神圣光环
-// 在一张覆盖整个HUD的四边形上渲染完整的光环背景
-// ============================================================================
+// HaloBackground 主背景神圣光环
 float4 HaloBackgroundPS(PSInput input) : COLOR0
 {
     float2 uv   = input.TexCoords;
@@ -81,9 +67,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
 
     float3 col = 0;
 
-    // ========================================
+    // =
     // 1. 深层环境辉光 — 多层高斯径向渐变
-    // ========================================
+    // =
     float glow1 = exp(-dist * dist * 14.0);         //紧凑亮核
     float glow2 = exp(-dist * dist * 5.0);           //中层扩散
     float glow3 = exp(-dist * dist * 2.0) * 0.3;     //远层微光
@@ -91,9 +77,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     col += warmGold   * glow2 * 0.12;
     col += brightGold * glow3 * 0.06;
 
-    // ========================================
+    // =
     // 2. 体积圣光射线 — 12主光线 + 24次级
-    // ========================================
+    // =
     float rayAng = ang - rotationAngle;
 
     //折叠到12扇区
@@ -140,9 +126,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
         col += holyWhite * hGlow;
     }
 
-    // ========================================
+    // =
     // 3. 同心光环群 — 环形结构层次
-    // ========================================
+    // =
     //外环（主边界）
     float outerPulse = 0.82 + 0.18 * sin(pulsePhase * 1.5);
     col += brightGold * softRing(dist, outerR, 2500.0) * 1.0 * outerPulse;
@@ -170,9 +156,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     col += brightGold * softRing(dist, outerR * 1.04, 8000.0) * 0.2;
     col += brightGold * softRing(dist, outerR * 0.96, 8000.0) * 0.2;
 
-    // ========================================
+    // =
     // 4. 玫瑰窗几何骨架 — 12径向分割 + 拱形纹饰
-    // ========================================
+    // =
     //12条分割线
     float divLine = exp(-sectorDist * sectorDist * 4000.0);
     float divIn   = smoothstep(innerR * 1.2, innerR * 1.6, dist);
@@ -196,9 +182,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     float arch2Line   = softRing(dist, arch2Target, 10000.0);
     col += warmGold * arch2Line * archMask * 0.2;
 
-    // ========================================
+    // =
     // 5. 十字光芒（镜头耀斑）
-    // ========================================
+    // =
     float crossInt = exp(-dist * 10.0) * 0.6;
     float crossH   = exp(-c.y * c.y * 1200.0);
     float crossV   = exp(-c.x * c.x * 1200.0);
@@ -212,9 +198,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     float diagInt  = exp(-dist * 14.0) * 0.25;
     col += holyWhite * (crossD1 + crossD2) * diagInt;
 
-    // ========================================
+    // =
     // 6. 圣光能量波纹 — 同心扩散
-    // ========================================
+    // =
     float wSpeed = uTime * 0.4;
 
     float w1 = sin(dist * 80.0 - wSpeed * 8.0) * 0.5 + 0.5;
@@ -229,9 +215,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     w2 = pow(w2, 12.0);
     col += brightGold * w2 * waveMask * 0.08 * dRatio;
 
-    // ========================================
+    // =
     // 7. 微光粒子 — 噪声驱动闪烁
-    // ========================================
+    // =
     float2 shimUV  = float2(ang * 1.5 + uTime * 0.03, dist * 10.0 - uTime * 0.06);
     float  shimmer = tex2D(noiseSamp, frac(shimUV)).r;
     shimmer = pow(shimmer, 6.0);
@@ -239,9 +225,9 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     shimMask *= smoothstep(0.01, innerR * 0.3, dist);
     col += holyWhite * shimmer * shimMask * 0.2;
 
-    // ========================================
+    // =
     // 外围柔和衰减
-    // ========================================
+    // =
     float edgeFade = 1.0 - smoothstep(outerR * 1.0, outerR * 1.25, dist);
     col *= edgeFade;
 
@@ -249,9 +235,7 @@ float4 HaloBackgroundPS(PSInput input) : COLOR0
     return float4(col, 1.0);
 }
 
-// ============================================================================
-// CenterPanel — 中心面板（暗底+发光边框，预乘alpha混合）
-// ============================================================================
+// CenterPanel 中心面板暗底+发光边框
 float4 CenterPanelPS(PSInput input) : COLOR0
 {
     float2 uv   = input.TexCoords;
@@ -291,9 +275,7 @@ float4 CenterPanelPS(PSInput input) : COLOR0
     return float4(premulCol * fadeAlpha, totalAlpha * fadeAlpha);
 }
 
-// ============================================================================
-// SlotAura — 门徒槽位神圣光环
-// ============================================================================
+// SlotAura 门徒槽位光环
 float4 SlotAuraPS(PSInput input) : COLOR0
 {
     float2 uv   = input.TexCoords;
@@ -363,10 +345,6 @@ float4 SlotAuraPS(PSInput input) : COLOR0
 
     return float4(col, 1.0);
 }
-
-// ============================================================================
-// Technique定义
-// ============================================================================
 
 technique HaloBackground
 {

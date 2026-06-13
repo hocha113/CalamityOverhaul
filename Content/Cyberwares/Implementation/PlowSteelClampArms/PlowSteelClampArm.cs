@@ -9,62 +9,36 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 {
     /// <summary>
-    /// 犁钢钳臂 —— "PlowSteel Clamp Arm"
-    /// <br/>手部槽位的工业级义体，附带磁感拾取与高刚性钳臂
-    /// <list type="bullet">
-    ///   <item>装备后大幅扩展<b>挖掘 / 放置范围</b>，并永久启用<b>金钱与物品的磁吸拾取</b></item>
-    ///   <item>义体技能：从掌心释放一根<b>高热单分子线</b>，把<see cref="MonomolecularWire.MaxLifetime"/>帧内
-    ///         玩家与目标物块之间的空间钉成一条灼热细线，触碰者持续受灼烧伤害</item>
-    /// </list>
-    /// 范围加成在 <see cref="PostUpdateEquipped"/> 中实时写入，每帧都会刷新，与磁吸拾取一同生效。
-    /// 技能触发逻辑由 <see cref="PlowSteelClampArmPlayer"/> 集中管理，保证只在本机玩家上执行
+    /// 犁钢钳臂，手部槽位：挖掘/放置范围扩展、磁吸拾取
+    /// <br/>技能：高热单分子线，短线/长线双形态，详见 <see cref="MonomolecularWire"/>
     /// </summary>
     internal class PlowSteelClampArm : BaseCyberware
     {
-        /// <summary>
-        /// 挖掘 / 放置范围扩展（单位：tile）
-        /// </summary>
+        /// <summary>挖掘/放置范围扩展 tile</summary>
         public const int TileRangeBonus = 4;
 
-        /// <summary>
-        /// 拾取距离倍率（基于原版的 <c>Player.GetItemPickupRange</c> 默认范围 30 像素）
-        /// </summary>
+        /// <summary>磁吸拾取距离像素</summary>
         public const float ItemPickupRangePixels = 96f;
 
-        /// <summary>
-        /// 单分子线技能冷却（帧）
-        /// </summary>
+        /// <summary>单分子线技能冷却帧</summary>
         public const int SkillCooldown = 60 * 8;
 
-        /// <summary>
-        /// 单分子线"长线模式"持续帧数 —— 钉在锚点上的伤害判定窗口
-        /// </summary>
+        /// <summary>长线模式持续帧，锚点伤害判定窗口</summary>
         public const int WireLifetime = 60 * 5;
 
-        /// <summary>
-        /// 单分子线"短线模式"持续帧数 —— 不需要锚点的快速线性铺设
-        /// <br/>更短的时长是对"无门槛释放"的平衡，让长线模式仍然有战略意义
-        /// </summary>
+        /// <summary>短线模式持续帧，无锚点快速铺线，时长较短作平衡</summary>
         public const int ShortWireLifetime = 60 * 2;
 
-        /// <summary>
-        /// 短线模式的线段长度（像素，约 12 个 tile）
-        /// </summary>
+        /// <summary>短线长度像素，约 12 tile</summary>
         public const float ShortWireLengthPixels = 16f * 12f;
 
-        /// <summary>
-        /// 长线模式允许的最大锚点距离（像素），超出范围视为无效锚点 → 自动降级到短线
-        /// </summary>
+        /// <summary>长线最大锚点距离像素，超出则降级短线</summary>
         public const float MaxAnchorDistance = 16f * 32f;
 
-        /// <summary>
-        /// 单分子线每次伤害周期（帧），过短会让伤害堆叠失衡
-        /// </summary>
+        /// <summary>单分子线伤害周期帧</summary>
         public const int WireHitCooldown = 30;
 
-        /// <summary>
-        /// 单分子线基础伤害（叠加于受击者本帧的灼烧效果）
-        /// </summary>
+        /// <summary>单分子线基础伤害</summary>
         public const int WireBaseDamage = 60;
 
         public override CyberwareSlotCategory SlotCategory => CyberwareSlotCategory.Hands;
@@ -79,9 +53,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             Item.value = Item.sellPrice(0, 7, 0, 0);
         }
 
-        /// <summary>
-        /// 查询指定玩家是否装备了 <see cref="PlowSteelClampArm"/>，未装备返回 null
-        /// </summary>
+        /// <summary>查询玩家是否装备本义体，未装备返回 null</summary>
         public static PlowSteelClampArm GetEquipped(Player player) {
             if (player == null || !player.active) {
                 return null;
@@ -99,12 +71,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
         }
 
         public override void PostUpdateEquipped(Player player) {
-            //范围加成：原版的 tileRangeX/Y 是静态共享值，玩家私有的扩展量挂在 blockRange 上
-            //同时打开 equippedAnyTileRangeAcc，让原版认为玩家持有"扩张配饰"，激活范围加成处理流程
+            //blockRange 扩展挖掘范围，equippedAnyTileRangeAcc 激活原版范围流程
             player.blockRange += TileRangeBonus;
             player.equippedAnyTileRangeAcc = true;
 
-            //磁吸拾取：物品与金币都启用，确保"工业级抓取"语义
+            //磁吸：物品与金币
             player.treasureMagnet = true;
             player.goldRing = true;
         }

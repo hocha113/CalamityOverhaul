@@ -6,15 +6,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
-    /// <summary>
-    /// 物流管道侧面连接状态
-    /// <para>设计要点：</para>
-    /// <list type="bullet">
-    /// <item><b>快速验证(每帧)</b>：上一次扫描确认的连接，仅做一次 Active/IsValid 廉价校验；连接没变则直接复用。</item>
-    /// <item><b>完整重扫(节流)</b>：每隔 <see cref="FullScanInterval"/> 帧或快速验证失败时，做一次 tile/字典/箱子工厂全扫描。</item>
-    /// <item><b>主动标脏</b>：连接类型变化时立刻通知 <see cref="ItemPipelineNetwork"/> 重建路由。</item>
-    /// </list>
-    /// </summary>
+    /// <summary>物流管道侧连接，快验+8帧全扫，变连标脏路由</summary>
     internal class ItemPipelineSideState
     {
         /// <summary>当前管道位置(由所有者每帧同步)</summary>
@@ -49,9 +41,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             unchecked { validationFramesRemaining = (s_phaseAccumulator++ & 0x7); }
         }
 
-        /// <summary>
-        /// 主入口：每帧调用，自动选择"快速验证"或"完整扫描"
-        /// </summary>
+        /// <summary>每帧入口，快验或全扫</summary>
         public void UpdateConnectionState() {
             if (FastValidate()) {
                 return;
@@ -59,9 +49,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             FullScan();
         }
 
-        /// <summary>
-        /// 廉价复验缓存的连接，连接仍有效返回 true
-        /// </summary>
+        /// <summary>廉价复验缓存连接</summary>
         private bool FastValidate() {
             if (validationFramesRemaining <= 0) {
                 return false;
@@ -71,7 +59,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             switch (LinkType) {
                 case ItemPipelineLinkType.Pipeline:
                     if (LinkedPipeline != null && LinkedPipeline.Active && LinkedPipeline.Position == Position + Offset) {
-                        //邻居管道形状可能在变化(Cross/Corner/ThreeWay), 需更新本侧的绘制掩盖
+                        //邻居形状变需更新臂遮挡
                         UpdateDrawState();
                         return true;
                     }
@@ -82,15 +70,13 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     }
                     return false;
                 case ItemPipelineLinkType.None:
-                    //无连接则跳过几帧再重扫(玩家可能刚刚放置了新方块)
+                    //无连接冷却几帧再扫
                     return true;
             }
             return false;
         }
 
-        /// <summary>
-        /// 完整扫描:tile -> TP -> 存储工厂三级匹配
-        /// </summary>
+        /// <summary>tile→TP→存储工厂全扫</summary>
         private void FullScan() {
             ItemPipelineLinkType prevLinkType = LinkType;
 
@@ -121,7 +107,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     CanDraw = true;
                 }
                 else {
-                    //邻居是 tile + TP 但既非管道也非存储, 仍尝试存储工厂兜底
+                    //非管道非存储 TP，走箱子工厂兜底
                     CheckForChest(checkPos);
                 }
             }
@@ -129,18 +115,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 CheckForChest(checkPos);
             }
 
-            //完整扫描完成后, 给一段冷却期不再重复昂贵扫描
+            //全扫后进入冷却
             validationFramesRemaining = FullScanInterval;
 
-            //连接类型有变化, 通知网络管理器重建路由
+            //连接类型变则标脏
             if (prevLinkType != LinkType) {
                 ItemPipelineNetwork.MarkDirty();
             }
         }
 
-        /// <summary>
-        /// 通过存储工厂查找箱子等非TP存储
-        /// </summary>
+        /// <summary>箱子等非 TP 存储</summary>
         private void CheckForChest(Point16 checkPos) {
             if (!VaultUtils.SafeGetTopLeft(checkPos, out var pos)) {
                 return;
@@ -153,30 +137,24 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        /// <summary>
-        /// 根据邻居管道的形状更新自身连接臂的绘制可见性
-        /// </summary>
+        /// <summary>按邻居形状决定臂可见</summary>
         private void UpdateDrawState() {
             if (LinkedPipeline == null) {
                 CanDraw = false;
                 return;
             }
-            //十字/拐角/三通本身已经把这条臂画完整了，本侧不要重复绘制
+            //十字/拐角/三通已画满，本侧不重复
             CanDraw = LinkedPipeline.Shape != ItemPipelineShape.Cross
                       && LinkedPipeline.Shape != ItemPipelineShape.Corner
                       && LinkedPipeline.Shape != ItemPipelineShape.ThreeWay;
         }
 
-        /// <summary>
-        /// 强制下一次 UpdateConnectionState 重新扫描(避免快路径遗漏)
-        /// </summary>
+        /// <summary>强制下次全扫</summary>
         public void Invalidate() {
             validationFramesRemaining = 0;
         }
 
-        /// <summary>
-        /// 获取存储提供者(运行时校验有效性)
-        /// </summary>
+        /// <summary>运行时取存储，失效返回 null</summary>
         public IStorageProvider GetStorageProvider() {
             if (LinkType != ItemPipelineLinkType.Storage) {
                 return null;

@@ -5,10 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼一阶段冲刺中状态：
-    /// 全速段微弧追踪→末段急停甩头回正，配合速度拉伸残影
-    /// </summary>
+    /// <summary>一阶段 dash 中：微弧追踪→末段急停甩头</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismDashing, typeof(TwinsStateContext))]
     internal class SpazmatismDashingState : TwinsStateBase
     {

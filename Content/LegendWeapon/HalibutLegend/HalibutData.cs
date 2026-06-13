@@ -12,14 +12,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public override int TargetLevel => GetVersionedTrialTargetLevel();
 
-        /// <summary>
-        /// 获得武器成长等级
-        /// </summary>
+        /// <summary>武器成长等级</summary>
         public static int GetLevel() => GetLevel(Main.LocalPlayer.GetItem());
 
-        /// <summary>
-        /// 获得武器成长等级
-        /// </summary>
+        /// <summary>武器成长等级</summary>
         /// <param name="item"></param>
         /// <returns></returns>
         public static int GetLevel(Item item) {
@@ -37,17 +33,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return cwrItem.LegendData.Level;
         }
 
-        /// <summary>
-        /// 获得本地玩家的领域层数
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>本地玩家领域层数</summary>
         public static int GetDomainLayer() => GetDomainLayer(Main.LocalPlayer);
 
-        /// <summary>
-        /// 用于判断和标记历史物品
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="tag"></param>
+        /// <summary>历史传奇物品 tag 读写</summary>
         public static void IsLegacyItem(Item item, TagCompound tag) {
             //需要是曾经的大比目鱼炮
             if (item.type > ItemID.None && item.type == CWRID.Item_HalibutCannon) {
@@ -68,11 +57,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
         }
 
-        /// <summary>
-        /// 获得玩家的领域层数
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
+        /// <summary>指定玩家领域层数</summary>
         public static int GetDomainLayer(Player player) {
             if (player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return (int)MathHelper.Max(halibutPlayer.SeaDomainLayers, 1);

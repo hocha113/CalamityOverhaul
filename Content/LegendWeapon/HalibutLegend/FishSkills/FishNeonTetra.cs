@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>
-    /// 霓虹脂鲤技能，行走时周期性出现发光鱼照明并伤害敌人
-    /// </summary>
+    /// <summary>霓虹脂鲤技能，移动时周期生成照明鱼</summary>
     internal class FishNeonTetra : FishSkill
     {
         public override int UnlockFishID => ItemID.NeonTetra;

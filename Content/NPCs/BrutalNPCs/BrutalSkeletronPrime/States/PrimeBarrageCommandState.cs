@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>
-    /// 火力阵：头部升高位，四臂收拢成炮台阵列，波浪上抛寻热微导弹，带滚动缺口。
-    /// </summary>
+    /// <summary>火力阵：升高位+四臂炮台阵，波浪寻热导弹，滚动缺口</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.BarrageCommand, typeof(PrimeStateContext))]
     internal class PrimeBarrageCommandState : PrimeStateBase
     {

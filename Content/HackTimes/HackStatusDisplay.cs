@@ -8,9 +8,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    //NPC头顶骇入状态悬浮窗口
-    //对每个受骇入影响的NPC，在其头顶纵向排列绘制协议状态卡片
-    //包括：已生效的协议（显示剩余时间进度条）和正在上传的协议（显示上传进度条）
+    //NPC 头顶骇入状态卡片
     internal static class HackStatusDisplay
     {
         //卡片尺寸
@@ -192,7 +190,7 @@ namespace CalamityOverhaul.Content.HackTimes
             queue.GetEntriesForSignalTower(tower, signalTowerQueueBuf);
             if (signalTowerQueueBuf.Count == 0) return;
 
-            //信号塔体型高耸，将锚点上移至扫描标定区以避免卡片被身后天空吞没
+            //信号塔锚点上移
             Vector2 scanCenter = tower.WorldCenter;
             Vector2 topCenter = new(
                 scanCenter.X - Main.screenPosition.X,
@@ -243,7 +241,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //绘制正在上传的协议卡片
+        //上传中协议卡片
         private static void DrawUploadCard(SpriteBatch sb, Texture2D px, float x, float y, HackQueueEntry entry) {
             //卡片暗底
             Color bgColor = HackTheme.BgPanel * 0.85f;
@@ -292,7 +290,7 @@ namespace CalamityOverhaul.Content.HackTimes
             DrawCardBorder(sb, px, x, y, HackTheme.Border * 0.6f);
         }
 
-        //绘制已生效的协议卡片
+        //生效中协议卡片
         private static void DrawActiveCard(SpriteBatch sb, Texture2D px, float x, float y, ActiveHackEffect eff) {
             //卡片暗底
             Color bgColor = HackTheme.BgSection * 0.85f;
@@ -334,7 +332,7 @@ namespace CalamityOverhaul.Content.HackTimes
             DrawCardBorder(sb, px, x, y, HackTheme.Border * 0.4f);
         }
 
-        //绘制物块上已生效的协议卡片（无EffectMult，物块不区分Boss）
+        //物块生效协议卡片
         private static void DrawActiveTileCard(SpriteBatch sb, Texture2D px, float x, float y, ActiveHackEffect eff) {
             Color bgColor = HackTheme.BgSection * 0.85f;
             sb.Draw(px, new Rectangle((int)x, (int)y, (int)CardWidth, (int)CardHeight), bgColor);

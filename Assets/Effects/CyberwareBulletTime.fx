@@ -1,32 +1,16 @@
 // ============================================================================
-// CyberwareBulletTime.fx —— 义体雷达子弹时间专属全屏滤镜
-// 设计目标：
-//   - 替代旧的"纯色 + 横条 + 扫描线"CPU 堆叠版滤镜，改用程序生成的高级合成
-//   - 视觉语言：冷色 HUD 凝固感，让"世界被钉住"的感官立刻成立
-//   - 视线引导：以雷达锚点（屏幕中央偏下）为原点，向四周扩散的低频时间波 + 径向暗角
-//   - 体感：电影化的 letterbox 上下软幅、低强度胶片颗粒、淡入的画面四角 HUD 括号
-//
-// 参数说明：
-//   uResolution     屏幕像素尺寸
-//   uCenter         雷达锚点在屏幕上的像素坐标（时间波的原点 / 视线引导中心）
-//   uTime           累计真实时间（秒），冻结期间由本机控制器自己推进
-//   uAlpha          全局不透明度（0~1），由雷达 OpenProgress 驱动
-//   uOpenProgress   入场进度（0~1），用于让"波纹 / 括号 / 条带"分级淡入
-//   uHudColor       全局 HUD 蓝青色调；与雷达背板配色保持同一色系，避免冲突
-//
-// 渲染方式：sb.Begin(Immediate, AlphaBlend, ..., effect)；
-//   一张 1x1 占位贴图缩放到全屏即可，无需采样 backbuffer
-// 输出模式：预乘 alpha（与项目内 HackRamArc / CyberDomainPanel 一致）
+// CyberwareBulletTime.fx 义体雷达子弹时间全屏滤镜
+// AlphaBlend 预乘 alpha，1x1 占位贴图拉全屏
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
 float uAlpha;
-float uOpenProgress;
-float2 uResolution;
-float2 uCenter;
-float3 uHudColor;
+float uOpenProgress;  //入场进度 0~1
+float2 uResolution;   //屏幕像素尺寸
+float2 uCenter;       //雷达锚点像素坐标，时间波原点
+float3 uHudColor;     //HUD 蓝青主色
 
 //------------------ 工具函数 ------------------
 

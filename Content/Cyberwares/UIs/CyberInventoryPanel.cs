@@ -9,9 +9,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
-    /// <summary>
-    /// 义体选择背包面板，在主面板侧面显示可装入当前槽位的义体物品列表
-    /// </summary>
+    /// <summary>侧栏义体背包，显示当前槽位可装列表</summary>
     internal class CyberInventoryPanel
     {
         #region 常量
@@ -19,7 +17,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         private const float PanelWidth = 240f;
         private const float PanelPadding = 10f;
         private const float ItemRowHeight = 50f;
-        //放大字号后给头部和容量条预留更多纵向空间
+        //字号放大后头部/容量条加高
         private const float HeaderHeight = 44f;
         private const float CapacityBarHeight = 26f;
         private const float ScrollBarWidth = 5f;
@@ -28,73 +26,47 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 状态
 
-        /// <summary>
-        /// 当前绑定的槽位索引，-1表示未选中
-        /// </summary>
+        /// <summary>绑定槽位，-1 未选</summary>
         private int boundSlot = -1;
 
-        /// <summary>
-        /// 面板展开进度 0~1
-        /// </summary>
+        /// <summary>展开进度 0~1</summary>
         private float openProgress;
 
-        /// <summary>
-        /// 面板目标位置矩形
-        /// </summary>
+        /// <summary>面板矩形</summary>
         private Rectangle panelRect;
 
-        /// <summary>
-        /// 当前可选物品列表（玩家背包中的索引）
-        /// </summary>
+        /// <summary>背包可装物品索引</summary>
         private readonly List<int> compatibleItems = [];
 
-        /// <summary>
-        /// 鼠标悬停的物品行，-1无
-        /// </summary>
+        /// <summary>悬停行，-1 无</summary>
         private int hoveredItemRow = -1;
 
-        /// <summary>
-        /// 滚动偏移量
-        /// </summary>
+        /// <summary>滚动偏移</summary>
         private float scrollOffset;
 
-        /// <summary>
-        /// 是否显示已装备义体的卸载按钮区
-        /// </summary>
+        /// <summary>已装备区可见</summary>
         private bool hasEquippedItem;
 
-        /// <summary>
-        /// 上一帧滚轮值，用于计算滚动增量
-        /// </summary>
+        /// <summary>上帧滚轮值</summary>
         private int oldScrollWheelValue;
 
-        /// <summary>
-        /// "请前往义体医生"提醒弹窗的节流冷却，避免连点刷屏
-        /// </summary>
+        /// <summary>找 Victor 提醒节流</summary>
         private int reminderCooldown;
 
-        /// <summary>
-        /// 本帧是否发生了装备/卸载操作
-        /// </summary>
+        /// <summary>本帧装备/卸载操作</summary>
         public bool ActionThisFrame { get; private set; }
 
-        /// <summary>
-        /// 当前悬停的义体物品（供自定义Tooltip绘制用）
-        /// </summary>
+        /// <summary>悬停义体，Tooltip 用</summary>
         private Item hoveredCyberItem;
 
-        /// <summary>
-        /// 面板是否处于可见状态
-        /// </summary>
+        /// <summary>面板可见</summary>
         public bool IsVisible => boundSlot >= 0 || openProgress > 0.01f;
 
         #endregion
 
         #region 公共方法
 
-        /// <summary>
-        /// 绑定到指定槽位并刷新可选列表
-        /// </summary>
+        /// <summary>绑定槽位并刷新列表</summary>
         public void BindSlot(int slotIndex, CyberwarePlayer cyberPlayer) {
             if (slotIndex == boundSlot) return;
             boundSlot = slotIndex;
@@ -103,17 +75,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             RefreshItems(cyberPlayer);
         }
 
-        /// <summary>
-        /// 关闭面板
-        /// </summary>
+        /// <summary>解绑关闭</summary>
         public void Unbind() {
             boundSlot = -1;
             hasEquippedItem = false;
         }
 
-        /// <summary>
-        /// 刷新当前槽位的可选物品列表
-        /// </summary>
+        /// <summary>刷新可选列表</summary>
         public void RefreshItems(CyberwarePlayer cyberPlayer) {
             compatibleItems.Clear();
             hasEquippedItem = false;
@@ -125,16 +93,14 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             hasEquippedItem = equipped != null && !equipped.IsAir;
         }
 
-        /// <summary>
-        /// 更新面板交互逻辑
-        /// </summary>
+        /// <summary>更新交互</summary>
         public void Update(Rectangle mainPanelRect, int selectedSlot, CyberwarePlayer cyberPlayer) {
             ActionThisFrame = false;
             if (reminderCooldown > 0) {
                 reminderCooldown--;
             }
 
-            // 同步绑定状态
+            //同步绑定
             if (selectedSlot != boundSlot) {
                 if (selectedSlot >= 0) {
                     BindSlot(selectedSlot, cyberPlayer);
@@ -152,7 +118,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 return;
             }
 
-            // 计算面板位置：左侧槽位在面板左边展开，右侧槽位在面板右边展开
+            //左/右槽位决定侧栏展开方向
             bool isLeftSlot = boundSlot >= 0 && boundSlot < 6;
             float easedProgress = CWRUtils.EaseOutCubic(Math.Clamp(openProgress, 0, 1));
             float actualWidth = PanelWidth * easedProgress;
@@ -182,9 +148,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        /// 绘制面板
-        /// </summary>
+        /// <summary>绘制侧栏</summary>
         public void Draw(SpriteBatch sb, float parentAlpha, CyberwarePlayer cyberPlayer) {
             if (openProgress < 0.01f || panelRect.Width < 2) return;
 
@@ -193,7 +157,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             float alpha = parentAlpha * Math.Clamp(openProgress, 0, 1);
 
-            //背板：复用 CyberwarePanel.fx 的 uMode=1 轻量模式，与主面板视觉同源但去掉中央光场与扫描带
+            //uMode=1 轻量背板，无中央光场
             CyberPanelRenderer.DrawShaderBackground(sb, alpha * 0.95f, panelRect, Vector2.Zero, 0f, mode: 1);
 
             // 边框
@@ -268,8 +232,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     (int)ItemRowHeight
                 );
                 if (unequipRect.Contains((int)mouse.X, (int)mouse.Y)) {
-                    hoveredItemRow = -2; // 特殊值表示悬停在卸载区
-                    //普通义体界面仅供查看：点击改为提醒前往义体医生处手术
+                    hoveredItemRow = -2;//悬停卸载区
+                    //只读：点击提醒找 Victor
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
                         NotifyClinicRequired();
                     }
@@ -308,7 +272,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                         hoveredCyberItem = item;
                     }
 
-                    // 普通义体界面仅供查看：点击改为提醒前往义体医生处手术
+                    //只读：点击提醒找 Victor
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
                         NotifyClinicRequired();
                     }
@@ -318,15 +282,15 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         }
 
         /// <summary>
-        /// 普通义体界面已改为只读：尝试安装/卸载时弹出提醒，引导玩家前往义体医生 Victor 处手术。
-        /// <br/>真正的装备/卸载只在 Victor 诊所（<see cref="Victors.UIs.VictorClinicPanel"/>）经手术完成
+        /// 只读界面：安装/卸载弹 Victor 提醒
+        /// <br/>真换装走 VictorClinicPanel 手术
         /// </summary>
         private void NotifyClinicRequired() {
             if (reminderCooldown > 0) {
                 return;
             }
             reminderCooldown = 40;
-            //复用骇客时间的红色警示弹窗样式，替换为"前往义体医生"文案（弹窗自带提示音效）
+            //HackTime 红色警示弹窗样式
             NotificationPopupSystem.Add(new HackTimeAccessDeniedEntry(
                 CyberwareUI.ClinicRequiredTitle, CyberwareUI.ClinicRequiredDesc));
             ActionThisFrame = true;

@@ -1,7 +1,8 @@
-//=============================================================================
-// NeutronRing.fx v2 — 中子星能量场着色器
-// ps_3_0 — 吸积环结构 + 磁场辐射线 + 事件视界辉光 + 能量脉冲
-//=============================================================================
+// ============================================================================
+// NeutronRing.fx 中子星能量场
+// 采样 s0；吸积环+磁场线+事件视界辉光
+// ps_3_0
+// ============================================================================
 
 sampler uImage0 : register(s0);
 
@@ -55,7 +56,7 @@ float4 NeutronFieldPS(float2 uv : TEXCOORD0) : COLOR0
     float4 baseTex = tex2D(uImage0, finalUV);
     float3 baseColor = baseTex.rgb;
 
-    // ---- 吸积环结构 ----
+    // 吸积环结构
     // 主环
     float ring1Pos = 0.25;
     float ring1 = exp(-pow(abs(dist - ring1Pos) * 10.0, 2.0));
@@ -73,12 +74,12 @@ float4 NeutronFieldPS(float2 uv : TEXCOORD0) : COLOR0
     float photonFlicker = 0.7 + valueNoise(float2(normAngle * 8.0, uTime * 0.5)) * 0.3;
     photonRing *= photonFlicker;
 
-    // ---- 磁场辐射线 ----
+    // 磁场辐射线
     float fieldLines = sin(angle * 6.0 + uTime * 1.5);
     fieldLines = pow(max(fieldLines, 0.0), 3.0) * 0.3;
     fieldLines *= smoothstep(0.4, 0.1, dist);
 
-    // ---- 能量脉冲 ----
+    // 能量脉冲
     float pulse = sin(dist * 25.0 - uTime * 6.0);
     pulse = max(pulse, 0.0) * 0.2;
     pulse *= exp(-dist * 5.0);

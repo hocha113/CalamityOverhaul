@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             }
         }
 
-        //降级背景：深色渐变 + CRT扫描线 + 网格 + 暗角
+        //降级背景
         private void DrawFallbackBackground(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha, bool nightMode) {
             Color top = nightMode ? new Color(20, 6, 8) : new Color(6, 12, 22);
             Color mid = nightMode ? new Color(12, 4, 5) : new Color(4, 8, 16);
@@ -225,7 +225,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 edgeColor = new Color(140, 255, 170);
             }
             else if (hasUnclaimed) {
-                //已完成待领取——黄金数据流
+                //已完成待领取，黄金数据流
                 coreColor = new Color(200, 170, 40);
                 glowColor = new Color(255, 225, 70);
                 edgeColor = new Color(255, 245, 140);
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 Color.Black * (0.5f * alpha), rotation,
                 new Vector2(0.5f), size, SpriteEffects.None, 0f);
 
-            //菱形外壳——金属渐变（用两层模拟明暗面）
+            //菱形外壳，金属渐变
             spriteBatch.Draw(px, drawPos, new Rectangle(0, 0, 1, 1),
                 coreColor * (0.9f * alpha), rotation,
                 new Vector2(0.5f), size, SpriteEffects.None, 0f);
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 }
             }
             else {
-                //虚线——方块点阵风格
+                //未解锁，方块点阵虚线
                 int dashLen = 8;
                 int gapLen = 10;
                 int total = dashLen + gapLen;

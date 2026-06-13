@@ -8,9 +8,9 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 比目鱼UI的程序化矢量绘制层，全部基于1像素白纹理与参数化弧线步进
-    /// 大面积氛围交给 HalibutPanel.fx / HalibutAtlasBg.fx，本类负责线、弧、环、辉光、文字等前景元素
-    /// 设计参考 SHPCRenderer，但配色走 <see cref="HalibutTheme"/> 的深渊冷光体系
+    /// 比目鱼 UI 矢量绘制层：1 像素白纹理 + 参数化弧线
+    /// 背板走 HalibutPanel.fx / HalibutAtlasBg.fx，本类绘制线、弧、环、辉光与文字
+    /// 结构参考 SHPCRenderer，配色用 <see cref="HalibutTheme"/>
     /// </summary>
     internal static class HalibutRenderer
     {
@@ -181,7 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 珍珠饰点：柔光晕 + 圆珠 + 左上高光，比目鱼UI的统一有机装饰单元
+        /// 珍珠饰点：外晕 + 圆盘 + 左上高光
         /// </summary>
         public static void DrawPearl(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha = 1f) {
             DrawSoftGlow(sb, center, radius * 3.2f, color * (0.40f * alpha));
@@ -191,8 +191,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 深海软缘饰框：大圆角轮廓 + 顶缘珍珠饰 + 缓慢游移的水光
-        /// 线条圆润克制，与海洋氛围统一，避免棱角科幻感
+        /// 圆角饰框：四边直段 + 四角弧 + 顶缘珍珠与扫光
         /// </summary>
         /// <param name="sb">画布</param>
         /// <param name="rect">框体区域</param>
@@ -223,7 +222,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawArcStroke(sb, new Vector2(rect.Left + c, rect.Bottom - c), c,
                 MathHelper.PiOver2, MathHelper.Pi, 1.1f, color * (0.55f * alpha));
 
-            //顶部内侧的不对称次级细线：从左圆角向右延伸渐隐，手作感
+            //顶内侧次级细线，左实右虚
             DrawGradientLine(sb, new Vector2(rect.Left + c + 3f, rect.Top + 3.5f),
                 new Vector2(rect.Left + rect.Width * 0.52f, rect.Top + 3.5f),
                 color * (0.30f * alpha), color * (0.02f * alpha), 1f);
@@ -241,7 +240,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             //底缘中点的暗珠收尾
             DrawDisc(sb, new Vector2(rect.Center.X, rect.Bottom), 1.5f, 1.2f, color * (0.45f * alpha));
 
-            //顶缘水光：一束柔光沿上边缘缓慢往复游移，似水面透下的光斑
+            //顶缘扫光，沿上边缘往复
             float drift = (MathF.Sin(time * 0.45f + rect.X * 0.01f) * 0.5f + 0.5f);
             float lightX = MathHelper.Lerp(rect.Left + c + 6f, rect.Right - c - 6f, drift);
             float lightA = 0.5f + 0.5f * MathF.Sin(time * 1.3f);
@@ -253,8 +252,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 胶囊形按钮：两端圆弧 + 上下双线 + 悬停扫光 + 激活端点呼吸光点
-        /// 取代矩形盒子按钮
+        /// 胶囊按钮：双端圆弧 + 上下描边 + 悬停扫光 + 激活端点
         /// </summary>
         public static void DrawCapsuleButton(SpriteBatch sb, Rectangle rect, string text,
             Color accent, bool hovered, bool active, float alpha, float time) {
@@ -536,8 +534,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         #region 光标信息面板
         /// <summary>
-        /// 统一的光标悬浮信息面板：自动测量换行、屏幕边缘自适应、深海背板
-        /// 取代旧UI中三份重复的tooltip布局实现
+        /// 光标悬浮信息面板：自动换行、屏幕边缘钳制、SeaPanel 背板
         /// </summary>
         /// <param name="sb">画布</param>
         /// <param name="cursor">光标位置</param>
@@ -605,7 +602,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float time = Main.GlobalTimeWrappedHourly;
 
             DrawSeaPanel(sb, rect, alpha, 0.6f, 0f, 0.6f);
-            //纹章饰框：框色取标题色与主题冷光的混合
+            //饰框色：标题色与主题 Glow 混合
             Color frameCol = Color.Lerp(titleColor, HalibutTheme.Glow, 0.45f);
             DrawOrnateFrame(sb, rect, frameCol, alpha * 0.9f, time, 11f);
 

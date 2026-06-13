@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
 
         public bool Update(Vector2 panelPos, Vector2 panelSize) {
             Life++;
-            //微微漂移
+            // 微微漂移
             Pos.X += (float)Math.Sin(Life * 0.03f + Seed * 3f) * 0.15f;
             Pos.Y -= 0.08f;
             return Life >= MaxLife;
@@ -31,9 +31,9 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             float pulse = (float)Math.Sin((Life + Seed * 20f) * 0.06f * PulseSpeed) * 0.5f + 0.5f;
             float scale = Radius * (0.7f + pulse * 0.5f);
 
-            //金色光点核心
+            // 金色光点核心
             Color core = new Color(255, 220, 120) * (alpha * 0.65f * fade);
-            //暖色外圈
+            // 暖色外圈
             Color ring = new Color(200, 160, 60) * (alpha * 0.35f * fade);
 
             sb.Draw(px, Pos, null, ring, 0f, new Vector2(0.5f),
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             sb.Draw(px, Pos, null, core, 0f, new Vector2(0.5f),
                 new Vector2(scale), SpriteEffects.None, 0f);
 
-            //中心亮点
+            // 中心亮点
             Color bright = new Color(255, 250, 230) * (alpha * 0.45f * fade * pulse);
             sb.Draw(px, Pos, null, bright, 0f, new Vector2(0.5f),
                 new Vector2(scale * 0.35f), SpriteEffects.None, 0f);

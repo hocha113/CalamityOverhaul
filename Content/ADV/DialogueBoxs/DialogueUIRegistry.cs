@@ -4,8 +4,7 @@ using System;
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
-    /// 管理当前使用的对话框类型，允许更换不同风格实现
-    /// 默认返回深海风格 <see cref="SeaDialogueBox"/>
+    /// 当前对话框类型管理，默认 <see cref="SeaDialogueBox"/>
     /// </summary>
     internal static class DialogueUIRegistry
     {
@@ -13,8 +12,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         private static DialogueBoxBase _lastUsedBox;
 
         /// <summary>
-        /// 设置一个解析委托，用于自定义返回哪种对话框实例 (需已在 UIHandleLoader 中注册)
-        /// 传入 null 将恢复默认
+        /// 自定义对话框实例解析委托（需已注册），null 恢复默认
         /// </summary>
         public static void SetResolver(Func<DialogueBoxBase> resolver) => _resolver = resolver;
 
@@ -40,22 +38,22 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             var oldBox = _lastUsedBox ?? Current;
 
-            //如果是同一个实例，不需要切换
+            // 同实例无需切换
             if (oldBox == newBox) {
                 return;
             }
 
-            //转移队列和当前对话
+            // 转移队列与当前段
             if (transferQueue && oldBox != null && oldBox.Active) {
                 TransferDialogueState(oldBox, newBox);
             }
 
-            //强制关闭旧对话框（清空状态但不触发完成回调）
+            // 强制关旧框，不触发完成回调
             if (oldBox != null && oldBox != newBox) {
                 ForceCloseBox(oldBox);
             }
 
-            //更新解析器指向新对话框
+            // 解析器指向新框
             SetResolver(() => newBox);
             _lastUsedBox = newBox;
         }
@@ -68,43 +66,42 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
 
-            //清空新对话框
+            // 清空新框
             to.queue.Clear();
             to.current = null;
 
-            //如果有当前对话，重新入队
+            // 当前段重新入队
             if (from.current != null) {
                 to.EnqueueDialogue(from.current.Speaker, from.current.Content, from.current.OnFinish, from.current.OnStart);
             }
 
-            //转移剩余队列
+            // 转移剩余队列
             foreach (var segment in from.queue) {
                 to.EnqueueDialogue(segment.Speaker, segment.Content, segment.OnFinish, segment.OnStart);
             }
 
-            //转移预处理器
+            // 转移预处理器
             to.PreProcessor = from.PreProcessor;
 
-            //转移播放计数（关键：保证 Index 正确）
+            // 转移 playedCount，保持 Index
             to.playedCount = from.playedCount;
 
-            //转移显示进度（确保对话框保持显示状态）
+            // 转移 showProgress
             to.showProgress = from.showProgress;
 
-            //转移隐藏进度
+            // 转移 hideProgress
             to.hideProgress = from.hideProgress;
 
-            //转移内容淡入进度（关键：避免内容重新淡入）
-            //如果已经在显示内容，新对话框也应该直接显示
+            // 转移 contentFade，已显示则直接 1
             to.contentFade = from.contentFade > 0.5f ? 1f : from.contentFade;
 
-            //转移关闭状态
+            // 转移 closing
             to.closing = from.closing;
 
-            //转移面板高度（避免尺寸跳变）
+            // 转移 panelHeight
             to.panelHeight = from.panelHeight;
 
-            //转移说话人切换状态（避免头像闪烁）
+            // 转移说话人切换状态
             to.lastSpeaker = from.lastSpeaker;
             to.speakerSwitchProgress = from.speakerSwitchProgress;
         }
@@ -117,7 +114,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
 
-            //使用新的生命周期管理方法
+            // ForceClose 生命周期
             box.ForceClose(clearQueue: true, triggerCallbacks: false);
         }
 

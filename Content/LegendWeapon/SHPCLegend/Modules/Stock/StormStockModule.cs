@@ -1,9 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 风暴枪托：高攻速多弹幕全屏覆盖，单发伤害大幅折损，量取胜
-    /// 配合霰射枪管可达到弹幕地毯覆盖效果
-    /// </summary>
+    /// <summary>风暴枪托：高攻速多弹，单发伤害折损</summary>
     internal sealed class StormStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

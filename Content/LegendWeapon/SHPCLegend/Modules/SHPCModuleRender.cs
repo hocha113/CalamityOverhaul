@@ -6,11 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 {
-    /// <summary>
-    /// SHPC改件物品的赛博朋克滤镜渲染辅助
-    /// 通过End/Begin切换<see cref="SpriteBatch"/>到自定义着色器，让物品图标按识别色重映射颜色
-    /// 调用方需保证当前spritebatch处于打开状态，使用完毕务必调用<see cref="End"/>恢复
-    /// </summary>
+    /// <summary>改件图标滤镜，CyberpunkItemFilter 双调+描边</summary>
     internal static class SHPCModuleRender
     {
         //缓存上一个绘制循环传入的变换矩阵，便于End阶段恢复
@@ -18,9 +14,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
         private static SamplerState _lastSampler;
         private static bool _active;
 
-        /// <summary>
-        /// 启用滤镜，使后续<see cref="SpriteBatch.Draw(Texture2D, Vector2, Color)"/>等绘制走着色器路径
-        /// </summary>
+        /// <summary>启用滤镜，后续 Draw 走着色器</summary>
         /// <param name="sb">活动的SpriteBatch</param>
         /// <param name="tint">识别色，用于双色调高光与边缘描边</param>
         /// <param name="texSize">物品贴图（或当前帧）像素尺寸</param>
@@ -49,9 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             return true;
         }
 
-        /// <summary>
-        /// 关闭滤镜，恢复默认SpriteBatch.Begin参数
-        /// </summary>
+        /// <summary>关闭滤镜恢复默认 Begin</summary>
         public static void End(SpriteBatch sb) {
             if (!_active) {
                 return;
@@ -63,10 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
                 RasterizerState.CullCounterClockwise, null, _lastTransform);
         }
 
-        /// <summary>
-        /// 在当前spritebatch内一次性绘制一个带滤镜的物品图标
-        /// 内部完成End/Begin/Draw/End/Begin的全过程，结束后spritebatch恢复默认延迟模式
-        /// </summary>
+        /// <summary>一次性绘滤镜图标，内部 Begin/End</summary>
         public static void DrawIcon(SpriteBatch sb, Item item, Vector2 center,
             float maxSize, Color tint, float alpha, Matrix transform, float intensity = 1f) {
             if (item == null || item.IsAir) {

@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 {
-    /// <summary>
-    /// 守望枪托：玩家速度极低（接近静止）时逐帧累积"哨戒精度"层数，移动则迅速衰减
-    /// 层数会反过来动态注入到 <see cref="ShootContext"/>，因此 tooltip 会实时反映当前层数贡献
-    /// </summary>
+    /// <summary>守望枪托：静止叠哨戒精度层，动态注入 ShootContext</summary>
     internal sealed class OverwatchStockModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Stock;

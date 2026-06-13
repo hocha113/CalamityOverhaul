@@ -10,13 +10,8 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
-    /// <summary>
-    /// 双子魔眼死亡演出状态（每只眼睛独立播放）：锁血、本体急停悬停，
-    /// 眼球各处由疏到密地连环殉爆，最终核心炸裂后才真正死亡，
-    /// 表现"机械眼在严重过载与连环爆炸中解体"的演出。
-    /// <br/>状态切换与最终击杀由服务端驱动（经 npc.ai[1] 同步），
-    /// 所有爆炸粒子/音效/震动均在客户端本地生成，纯视觉，多人安全。
-    /// </summary>
+    /// <summary>死亡演出：锁血急停，由疏到密殉爆，核心终爆后真死</summary>
+    /// <para>切换/击杀服务端(ai[1])；爆炸客户端本地，多人安全</para>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsDeath, typeof(TwinsStateContext))]
     internal class TwinsDeathState : TwinsStateBase
     {
@@ -263,9 +258,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             Main.instance.CameraModifiers.Add(modifier);
         }
 
-        /// <summary>
-        /// 判断世界坐标是否落在当前屏幕可见范围内（含外扩边距），用于跳过屏幕外的爆炸生成
-        /// </summary>
+        /// <summary>世界坐标是否在屏幕可见范围(含外扩边距)，屏外跳过爆炸</summary>
         private static bool OnScreen(Vector2 worldPos, float margin = 260f) {
             return worldPos.X > Main.screenPosition.X - margin
                 && worldPos.X < Main.screenPosition.X + Main.screenWidth + margin

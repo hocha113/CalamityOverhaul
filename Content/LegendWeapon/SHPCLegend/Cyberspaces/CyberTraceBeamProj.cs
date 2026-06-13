@@ -13,12 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 {
-    /// <summary>
-    /// 赛博追踪能量光束弹幕
-    /// <br/>Cyberspace 系统的攻击手段 —— 带微追踪的拖尾能量光束
-    /// <br/>等离子家族三阶随机主题（青/电蓝/幻紫，同一色系既有变化又不混杂），光球头部，方形科幻粒子拖尾
-    /// <br/>使用 <see cref="Trail"/> 条带 + CyberTraceBeam.fx 着色器渲染
-    /// </summary>
+    /// <summary>SHPC 追踪光束，微 homing+Trail+CyberTraceBeam.fx</summary>
     internal class CyberTraceBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;

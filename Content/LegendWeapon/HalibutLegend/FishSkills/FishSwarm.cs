@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算冲刺方向（朝向光标）
             Vector2 dashDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
 
-            //生成控制器弹幕（管理玩家移动和技能状态）
+            //生成控制器（玩家移动与技能时长）
             int controller = Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
                 player.Center,
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.whoAmI
             );
 
-            //生成鱼群130-140条鱼，增加数量以提高视觉效果
+            //鱼群 130–140 条
             int fishCount = Main.rand.Next(40 + 5 * HalibutData.GetDomainLayer(), 55 + 5 * HalibutData.GetDomainLayer());
             for (int i = 0; i < fishCount; i++) {
                 //在玩家周围随机位置生成鱼
@@ -151,9 +151,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>
-    /// 鱼群控制器 - 管理玩家移动和技能状态
-    /// </summary>
+    /// <summary>鱼群控制器，玩家移动与技能时长</summary>
     internal class FishSwarmController : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

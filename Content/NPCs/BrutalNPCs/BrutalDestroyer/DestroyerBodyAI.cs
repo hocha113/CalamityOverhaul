@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private const float AerialPhaseResetThreshold = AerialPhaseThreshold * 2f;
         protected float bodyCount;
         private bool IsBodyAlt => bodyCount % 2 == 0;
-        /// <summary>本节在整条蠕虫上的位置比例（0=贴近头部, 1=尾部），用于充能波读取</summary>
+        /// <summary>本节在蠕虫上的位置比例(0头→1尾)，供充能波读取</summary>
         protected virtual float BodyFraction => MathHelper.Clamp(bodyCount / DestroyerHeadAI.BodyCount, 0f, 1f);
         private float LifeRatio => npc.life / (float)npc.lifeMax;
         private bool StartFlightPhase => LifeRatio < 0.5f;
@@ -255,10 +255,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 && (int)head.ai[2] == (int)DestroyerStateIndex.Death;
         }
 
-        /// <summary>
-        /// 死亡演出期间的体节处理：强制保活、不可受伤、不造成接触伤害，并冻结相对前一节的姿态，
-        /// 使整条蠕虫保持进入演出那一刻的弯曲形态、随头部一起静止，而不是被通用跟随算法捋成直线。
-        /// </summary>
+        /// <summary>死亡演出体节：保活无害，冻结相对前节姿态，保持入演弯曲形态</summary>
         private void HandleDeathPerformanceSegment() {
             npc.aiStyle = -1;
 
@@ -593,11 +590,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             Vector2 drawPos = npc.Center - Main.screenPosition;
             Vector2 origin = rectangle.Size() / 2;
 
-            //读取头部共享状态并叠加本节充能波——"电流沿躯体奔跑"的可见波
+            //读头部共享视觉+本节充能波
             int controllerId = (int)npc.realLife;
             var (visMode, visIntensity, visProgress) = ReadSegmentVisual(controllerId, out float wave);
 
-            //外圈描边光环——夜晚时也能看清整条蠕虫的走向
+            //外圈描边光环，夜间可读蠕虫走向
             MechBossThermalRenderer.DrawOutlineHalo(spriteBatch, value, drawPos, rectangle,
                 npc.rotation + MathHelper.Pi, origin, npc.scale, SpriteEffects.None,
                 visMode, visIntensity, visProgress);

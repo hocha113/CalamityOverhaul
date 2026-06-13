@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         Color GetEdgeColor(float alpha);
 
         /// <summary>
-        /// 获取文字发光颜色（用于悬停效果）
+        /// 悬停文字发光色
         /// </summary>
         Color GetTextGlowColor(float alpha, float hoverProgress);
 

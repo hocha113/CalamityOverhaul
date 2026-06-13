@@ -1,18 +1,15 @@
-//虚空聚落时空叠加着色器
-//过去滤镜：复古褪色胶片+冷蓝废墟感，克制的噪点与扫描线保证画面可读性
-//切换演出：约半秒的RGB色散撕裂+中线亮带，瞬发冲击但不长时间影响视线
+// ============================================================================
+// VoidTimeShift.fx 虚空聚落时空叠加
+// 采样 uImage0 屏幕
+// ============================================================================
 
 sampler uImage0 : register(s0);
 
-//过去滤镜强度0到1
-float filterIntensity;
-//切换演出强度0到1的钟形曲线
-float transitionStrength;
-//鬼乱码临近失真强度0到1，越近屏幕扰动越强
-float glitchProximity;
-//动画时间
+float filterIntensity;    //过去滤镜 0~1
+float transitionStrength; //切换演出钟形 0~1
+float glitchProximity;    //鬼乱码临近失真 0~1
 float uTime;
-//采样偏移尺度，期望外部传入1/screenWidth与1/screenHeight
+float2 texelSize;         //1/宽 1/高
 //未传入时使用保底常量，保证边缘提取仍能工作
 float2 pixelSize;
 

@@ -17,37 +17,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
     internal class SHPCOverride : ItemOverride, ILocalizedModType
     {
         public override string LocalizationCategory => "Legend";
-        /// <summary>
-        /// 目标ID，指向本模组独立物品 <see cref="SHPCItem"/>
-        /// </summary>
+        /// <summary>目标 ID，SHPCItem</summary>
         public static int ID => ModContent.ItemType<SHPCItem>();
-        /// <summary>
-        /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
-        /// </summary>
+        /// <summary>各时期伤害表，用 GetOnDamage 访问</summary>
         private static Dictionary<int, int> DamageDictionary = new Dictionary<int, int>();
-        /// <summary>
-        /// 获取开局的伤害
-        /// </summary>
+        /// <summary>开局伤害</summary>
         public static int GetStartDamage => DamageDictionary[0];
-        /// <summary>
-        /// 左键连发间隔帧数
-        /// </summary>
+        /// <summary>左键连发间隔帧</summary>
         private const int LeftClickUseTime = 20;
-        /// <summary>
-        /// 左键每次发射的光束数量
-        /// </summary>
+        /// <summary>左键光束数</summary>
         private const int BeamCount = 3;
-        /// <summary>
-        /// 左键散射角度（弧度）
-        /// </summary>
+        /// <summary>左键散射弧度</summary>
         public static float BeamSpreadAngle => 0.08f;
-        /// <summary>武器大小缩放，适当的缩放可以提升观感</summary>
+        /// <summary>武器缩放</summary>
         public static float ItemScale => 0.8f;
         public override int TargetID => ID;
 
-        /// <summary>
-        /// 获得成长等级
-        /// </summary>
+        /// <summary>成长等级</summary>
         public static int GetLevel(Item item) {
             if (item.type != ID) {
                 return 0;
@@ -63,9 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             return cwrItem.LegendData.Level;
         }
 
-        /// <summary>
-        /// 获取时期对应的伤害
-        /// </summary>
+        /// <summary>时期对应伤害</summary>
         public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
 
         public static void LoadWeaponData() {
@@ -123,16 +107,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) => SetTooltip(item, ref tooltips);
 
-        /// <summary>
-        /// 允许右键使用（蓄力能量球）
-        /// </summary>
+        /// <summary>允许右键蓄力</summary>
         public override bool? On_AltFunctionUse(Item item, Player player) => true;
 
-        /// <summary>
-        /// 拦截原版 CanUseItem，移除灵魂弹药需求
-        /// <br/>右键时：场上不能有已存在的蓄力球
-        /// <br/>左键时：正常使用
-        /// </summary>/*  */
+        /// <summary>CanUseItem：无灵魂弹；右键禁重复蓄力球</summary>
         public override bool? On_CanUseItem(Item item, Player player) {
             ShootContext ctx = SHPCModificationSystem.Resolve(player);
             if (player.altFunctionUse == 2) {
@@ -161,14 +139,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
         }
 
-        /// <summary>
-        /// 拦截原版 UseItem，阻止灵魂消耗
-        /// </summary>
+        /// <summary>UseItem：阻止灵魂消耗</summary>
         public override bool? On_UseItem(Item item, Player player) => true;
 
-        /// <summary>
-        /// 右键蓄力耗蓝由弹幕AI自行管理，触发帧本身不走原版扣蓝路径
-        /// </summary>
+        /// <summary>右键耗蓝由蓄力弹幕管理</summary>
         public override void ModifyManaCost(Item item, Player player, ref float reduce, ref float mult) {
             if (player.altFunctionUse == 2) {
                 mult = 0f;
@@ -179,11 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             mult *= ctx.ManaCostMul;
         }
 
-        /// <summary>
-        /// 拦截原版射击，实现自定义左右键弹幕
-        /// <br/>左键：发射三发 CyberTraceBeamProj
-        /// <br/>右键：发射一发 CyberChargeOrbProj（蓄力能量球）
-        /// </summary>
+        /// <summary>On_Shoot：左键光束/激光，右键蓄力球</summary>
         public override bool? On_Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             ShootContext ctx = SHPCModificationSystem.Resolve(player);

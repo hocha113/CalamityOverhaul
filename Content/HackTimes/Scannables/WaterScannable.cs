@@ -4,10 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>
-    /// 液体扫描数据实现
-    /// <br/>分析鼠标所在格子的液体类型、深度与周边生态环境
-    /// </summary>
+    /// <summary>液体扫描</summary>
     internal class WaterScannable : IHackTarget
     {
         private readonly int tileX;

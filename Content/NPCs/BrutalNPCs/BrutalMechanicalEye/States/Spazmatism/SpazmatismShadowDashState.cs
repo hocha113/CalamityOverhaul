@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼二阶段残影连冲状态：
-    /// 蓄力后进行连续三段变向弧线冲刺，每段衔接处急停甩头并爆出残影与火弹扇，
-    /// 强调速度感与机械蛮力
-    /// </summary>
+    /// <summary>残影连冲：蓄力→多段变向 dash+甩头火弹扇</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismShadowDash, typeof(TwinsStateContext))]
     internal class SpazmatismShadowDashState : TwinsStateBase
     {
@@ -101,9 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             return null;
         }
 
-        /// <summary>
-        /// 蓄力聚集阶段：弹簧悬停在玩家斜上方，能量内聚
-        /// </summary>
+        /// <summary>蓄力聚集：斜上方悬停+能量内聚</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -132,10 +126,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 三段变向弧线冲刺：每段起步瞬间爆发，全速段微弧追踪，
-        /// 衔接处急停甩头+残影爆发+火弹扇
-        /// </summary>
+        /// <summary>多段变向 dash：段首爆发，段内微弧，衔接甩头+火弹扇</summary>
         private void ExecuteDashSegments(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             int segment = (phaseTimer - 1) / SegmentTime;
@@ -220,7 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
 
         public override void OnExit(TwinsStateContext context) {
             base.OnExit(context);
-            //确保离开状态时禁用碰撞伤害
+            //OnExit 禁用接触伤害
             DisableContactDamage(context.Npc);
         }
     }

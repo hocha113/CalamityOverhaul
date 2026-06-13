@@ -1,9 +1,7 @@
-//=============================================================================
-// NeutronWarp.fx — 中子星程序化扭曲位移图生成器
-// ps_3_0 — 替代CPU端33-133层暴力叠绘，单Pass生成扭曲贡献
-// 输出格式: R=位移方向(0-1→0-2π), G=位移强度, A=混合权重
-// 4种技术: GravitationalVortex / ShockwaveRing / RelativisticJet / GravitationalLens
-//=============================================================================
+// ============================================================================
+// NeutronWarp.fx 中子星扭曲位移图
+// 输出 R方向 G强度 A混合；ps_3_0
+// ============================================================================
 
 float uTime;
 float uIntensity;
@@ -14,7 +12,7 @@ float uRotation;
 #define PI  3.14159265
 #define TAU 6.28318530
 
-// ---- 伪随机哈希 ----
+// 哈希
 float hash21(float2 p)
 {
     float3 p3 = frac(float3(p.xyx) * float3(0.1031, 0.1030, 0.0973));
@@ -22,7 +20,7 @@ float hash21(float2 p)
     return frac((p3.x + p3.y) * p3.z);
 }
 
-// ---- 值噪声 ----
+// 值噪声
 float valueNoise(float2 p)
 {
     float2 i = floor(p);
@@ -37,7 +35,7 @@ float valueNoise(float2 p)
     return lerp(lerp(a, b, f.x), lerp(c, d, f.x), f.y);
 }
 
-// ---- 分形噪声 ----
+// 分形噪声
 float fbm2(float2 p)
 {
     float v = 0.0;
@@ -52,11 +50,7 @@ float fbm2(float2 p)
     return v;
 }
 
-//=============================================================================
-// 技术A: 重力漩涡 (Gravitational Vortex)
-// 中子星爆炸 — 引力场造成的空间扭曲漩涡 + 同心引力波纹
-// 替代: NeutronExplode(33层) / EXNeutronExplode(133层)
-//=============================================================================
+// GravitationalVortex 重力漩涡
 float4 GravitationalVortexPS(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 centered = uv - 0.5;
@@ -67,30 +61,30 @@ float4 GravitationalVortexPS(float2 uv : TEXCOORD0) : COLOR0
     if (normDist > 1.5)
         return float4(0, 0, 0, 0);
 
-    // ---- 同心引力波纹(核心视觉) ----
+    // 同心引力波纹
     // 模拟原33层DiffusionCircle叠绘产生的干涉环带
     float ringPhase = normDist * 7.0 - uTime * 4.0;
     float rings = pow(saturate(0.5 + 0.5 * sin(ringPhase * TAU)), 0.5);
     // 次级高频细节波纹
     float subRings = 0.65 + 0.35 * sin(normDist * 22.0 - uTime * 10.0);
 
-    // ---- 致密引力场核心 (1/r²衰减) ----
+    // 致密引力场核心
     float gravField = 1.0 / (normDist * normDist + 0.05);
     gravField = min(gravField, 15.0) / 15.0; // 归一化到[0,1]
 
-    // ---- 爱因斯坦环(特征半径光线汇聚) ----
+    // 爱因斯坦环
     float eRingR = 0.5 + 0.04 * sin(uTime * 2.0);
     float einsteinRing = exp(-pow((normDist - eRingR) * 7.0, 2.0)) * 0.55;
 
-    // ---- 差分旋转漩涡(内快外慢) ----
+    // 差分旋转漩涡
     float angVel = 1.0 / (normDist + 0.08);
     float swirl = angVel * 0.65;
 
-    // ---- 湍流磁场 ----
+    // 湍流磁场
     float noise = fbm2(centered * 7.0 + float2(uTime * 0.5, uTime * 0.4));
     float noiseOff = (noise - 0.5) * 0.35;
 
-    // ---- 径向引力脉冲 ----
+    // 径向引力脉冲
     float pulse = sin(normDist * 16.0 - uTime * 8.0) * 0.18;
     pulse *= exp(-normDist * 2.5);
 
@@ -109,11 +103,7 @@ float4 GravitationalVortexPS(float2 uv : TEXCOORD0) : COLOR0
     return float4(direction, magnitude, 0, saturate(alpha));
 }
 
-//=============================================================================
-// 技术B: 冲击波环 (Shockwave Ring)
-// 爆炸扩散的多层环形扭曲
-// 替代: NeutronExplosionRanged / EXNeutronExplosionRanged / NeutronExplosionRogue
-//=============================================================================
+// ShockwaveRing 冲击波环
 float4 ShockwaveRingPS(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 centered = uv - 0.5;
@@ -124,26 +114,26 @@ float4 ShockwaveRingPS(float2 uv : TEXCOORD0) : COLOR0
     if (normDist > 1.8)
         return float4(0, 0, 0, 0);
 
-    // ---- 主冲击波前沿 ----
+    // 主冲击波前沿
     float ringPos = uProgress * 1.2;
     float ringWidth = 0.06 + uProgress * 0.04;
     float ring = exp(-pow((normDist - ringPos) / ringWidth, 2.0));
 
-    // ---- 次级反射冲击波 ----
+    // 次级反射冲击波
     float ring2Pos = ringPos * 0.6;
     float ring2 = exp(-pow((normDist - ring2Pos) / (ringWidth * 1.3), 2.0)) * 0.55;
 
-    // ---- 第三级波 ----
+    // 第三级波
     float ring3Pos = ringPos * 0.3;
     float ring3 = exp(-pow((normDist - ring3Pos) / (ringWidth * 1.6), 2.0)) * 0.3;
 
-    // ---- 中心残余引力坍缩 ----
+    // 中心残余引力坍缩
     float residual = exp(-normDist * normDist * 5.0) * 0.45 * (1.0 - uProgress);
 
-    // ---- 高频环波纹(视觉细节) ----
+    // 高频环波纹
     float ripple = 0.65 + 0.35 * sin(normDist * 28.0 - uTime * 7.0);
 
-    // ---- 方位角噪声扰动 ----
+    // 方位角噪声扰动
     float edgeNoise = valueNoise(float2(angle * 3.0 / TAU + uTime * 0.3, normDist * 4.0));
     float noiseMod = 0.7 + edgeNoise * 0.6;
 
@@ -160,35 +150,31 @@ float4 ShockwaveRingPS(float2 uv : TEXCOORD0) : COLOR0
     return float4(direction, magnitude, 0, saturate(alpha));
 }
 
-//=============================================================================
-// 技术C: 相对论性喷流 (Relativistic Jet)
-// 中子星极轴物质喷射 — 含冲击钻石结构
-// 替代: NeutronWandExplode(33层 scale(0.1, 21))
-//=============================================================================
+// RelativisticJet 相对论性喷流
 float4 RelativisticJetPS(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 centered = uv - 0.5;
 
-    // ---- 磁力管约束: 核心+外翼 ----
+    // 磁力管约束
     float lateralDist = abs(centered.x);
     float coreFalloff = exp(-pow(lateralDist / 0.08, 2.0));
     float wingFalloff = exp(-pow(lateralDist / 0.22, 2.0)) * 0.35;
 
-    // ---- 冲击钻石结构(内部驻波) ----
+    // 冲击钻石结构
     float shockDiamonds = 0.55 + 0.45 * sin(centered.y * 18.0 + uTime * 5.0);
     shockDiamonds *= 0.7 + 0.3 * sin(centered.y * 7.0 - uTime * 2.5);
 
-    // ---- 开尔文-亥姆霍兹不稳定性 ----
+    // 开尔文-亥姆霍兹不稳定性
     float kh = sin(centered.y * 6.0 + uTime * 4.5) * 0.2 * lateralDist;
 
-    // ---- 扭结不稳定性 ----
+    // 扭结不稳定性
     float kink = sin(centered.y * 16.0 - uTime * 7.0) * 0.1;
 
-    // ---- 磁场重联闪烁 ----
+    // 磁场重联闪烁
     float reconnect = valueNoise(float2(centered.y * 4.0 + 0.5, uTime * 2.5));
     reconnect = smoothstep(0.35, 0.65, reconnect) * 0.4;
 
-    // ---- 喷流湍流 ----
+    // 喷流湍流
     float turb = fbm2(centered * float2(10.0, 3.0) + uTime * float2(0.4, 2.0));
     float turbOff = (turb - 0.5) * 0.35;
 
@@ -206,11 +192,7 @@ float4 RelativisticJetPS(float2 uv : TEXCOORD0) : COLOR0
     return float4(direction, magnitude, 0, saturate(alpha));
 }
 
-//=============================================================================
-// 技术D: 引力透镜 (Gravitational Lens)
-// 飞行弹幕的致密引力弯曲 + 菲涅尔环带
-// 替代: NeutronGlaiveBeam(3层) / NeutronBullet(3层)
-//=============================================================================
+// GravitationalLens 引力透镜
 float4 GravitationalLensPS(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 centered = uv - 0.5;
@@ -221,17 +203,17 @@ float4 GravitationalLensPS(float2 uv : TEXCOORD0) : COLOR0
     if (normDist > 1.8)
         return float4(0, 0, 0, 0);
 
-    // ---- 广义相对论偏转 ∝ M/r² ----
+    // 广义相对论偏转
     float deflection = 1.0 / (normDist * normDist + 0.08);
     deflection = min(deflection, 10.0) / 10.0;
 
-    // ---- 菲涅尔环带(衍射干涉环) ----
+    // 菲涅尔环带
     float fresnelRings = 0.55 + 0.45 * sin(normDist * 10.0 * PI);
 
-    // ---- 爱因斯坦环增亮 ----
+    // 爱因斯坦环增亮
     float eRing = exp(-pow((normDist - 0.42) * 7.0, 2.0)) * 0.5;
 
-    // ---- 闪烁调制 ----
+    // 闪烁调制
     float scintillation = 0.82 + 0.18 * sin(angle * 3.0 + uTime * 4.0);
 
     // 径向向内
@@ -248,9 +230,6 @@ float4 GravitationalLensPS(float2 uv : TEXCOORD0) : COLOR0
     return float4(direction, magnitude, 0, saturate(alpha));
 }
 
-//=============================================================================
-// 技术定义
-//=============================================================================
 technique GravitationalVortex
 {
     pass P0

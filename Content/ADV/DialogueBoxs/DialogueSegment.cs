@@ -3,7 +3,7 @@
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
-    /// 对话段数据，表示一条对话的完整信息
+    /// 对话段数据
     /// </summary>
     public class DialogueSegment
     {
@@ -28,13 +28,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         public Action OnFinish;
 
         /// <summary>
-        /// 立绘键，如果为null则使用Speaker作为立绘键
-        /// 允许角色名和立绘显示分离
+        /// 立绘键，null 时用 Speaker
+        /// 角色名与立绘可分离
         /// </summary>
         public string PortraitKey;
 
         /// <summary>
-        /// 定时对话配置，如果为null则为普通对话（无时间限制）
+        /// 定时配置，null 为普通对话
         /// </summary>
         public TimedDialogueConfig TimedConfig;
 

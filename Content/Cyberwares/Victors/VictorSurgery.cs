@@ -13,20 +13,19 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
     /// <summary>
-    /// 义体"手术"流程控制器：把诊所的安装/卸载从即时改为一段过场。
-    /// <br/>诊所主动关闭 → InnoVault 过场聚焦 Victor 与玩家中点并拉近 → 眼睑合拢渐黑（全黑瞬间真正换装）→ 睁眼手术灯 → 收尾重开诊所。
-    /// <br/>本类同时是驱动眼睑全屏覆盖与每帧推进的 <see cref="ModSystem"/>
+    /// 义体手术流程：诊所关→过场→眼睑渐黑→帧 86 换装→手术灯→重开诊所
+    /// <br/>兼 ModSystem，驱动眼睑全屏覆盖与每帧推进
     /// </summary>
     internal class VictorSurgery : ModSystem
     {
-        /// <summary>手术过场是否进行中</summary>
+        /// <summary>过场进行中</summary>
         public static bool Active { get; private set; }
 
-        /// <summary>眼睑闭合当前值 0(睁)→1(全黑)，由 <see cref="EyelidTarget"/> 平滑逼近</summary>
+        /// <summary>眼睑闭合 0睁→1黑，Lerp 逼近 EyelidTarget</summary>
         public static float EyelidValue;
         /// <summary>眼睑闭合目标值</summary>
         public static float EyelidTarget;
-        /// <summary>睁眼瞬间手术灯眩光强度 0~1，逐帧衰减</summary>
+        /// <summary>睁眼眩光 0~1，逐帧衰减</summary>
         public static float GlowValue;
 
         private const int KindNone = 0;
@@ -41,7 +40,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         #region 对外触发
 
-        /// <summary>请求一台"安装/更换"手术：把背包 <paramref name="invIndex"/> 的义体装入 <paramref name="slot"/></summary>
+        /// <summary>安装/更换：背包 invIndex → slot</summary>
         public static void BeginInstall(int invIndex, int slot) {
             if (Active) {
                 return;
@@ -52,7 +51,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Start();
         }
 
-        /// <summary>请求一台"卸载"手术：取下 <paramref name="slot"/> 的义体</summary>
+        /// <summary>卸载 slot</summary>
         public static void BeginUninstall(int slot) {
             if (Active) {
                 return;
@@ -79,7 +78,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 Active = true;
             }
             else {
-                //无法播放过场（如 Victor 失效）时即时执行，保证功能不失效
+                //Victor 失效时即时换装兜底
                 ApplyPendingOp();
                 pendingKind = KindNone;
                 VictorClinicUI.Instance.OpenAtSlot(reopenSlot);
@@ -90,7 +89,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         #region 过场回调
 
-        /// <summary>在过场全黑关键帧由时间轴调用：真正执行义体换装</summary>
+        /// <summary>过场全黑关键帧执行换装</summary>
         public static void ApplyPendingOp() {
             if (applied || pendingKind == KindNone) {
                 return;
@@ -119,7 +118,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             if (!VaultUtils.isServer) {
-                //义体芯片植入音（与 RAM 升级芯片同源），契合赛博手术
+                //CWRSound.ChipSet 植入音
                 SoundEngine.PlaySound(CWRSound.ChipSet, p.Center);
             }
         }
@@ -152,20 +151,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             if (Active) {
                 Player p = Main.LocalPlayer;
                 if (p != null && p.active) {
-                    //手术中防止被打死 + 不闪烁
+                    //immune + immuneNoBlink 防猝死
                     p.immune = true;
                     p.immuneNoBlink = true;
                     if (p.immuneTime < 2) {
                         p.immuneTime = 2;
                     }
                 }
-                //过场自然结束或被打断 → 收尾并重开诊所
+                //过场结束或打断→Finish 重开诊所
                 if (!CutsceneDirector.IsPlaying) {
                     Finish();
                 }
             }
 
-            //会话清理：界面与手术都结束后解除 Victor 绑定
+            //UI/手术都结束→Clear VictorSession
             if (!VictorSession.IsUIActive && !Active && VictorSession.BoundWhoAmI != -1) {
                 VictorSession.Clear();
             }
@@ -184,7 +183,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             if (EyelidValue <= 0.001f && GlowValue <= 0.001f) {
                 return;
             }
-            //放到最末尾 → 盖住一切（世界 + UI + 指针）
+            //Interface 层最末，盖住世界+UI+指针
             layers.Add(new LegacyGameInterfaceLayer(
                 "CWRMod: Victor Surgery Eyelid",
                 delegate {
@@ -196,8 +195,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         private static void DrawEyelid(SpriteBatch sb) {
             GraphicsDevice gd = sb.GraphicsDevice;
-            //用真实后备缓冲尺寸：相机拉近时 Main.screenWidth 会随之缩小，但界面层绘制在整个窗口上，
-            //必须以 Viewport 为准才能全屏覆盖（这是之前只盖住左上角的根因）
+            //Viewport 尺寸全屏覆盖；screenWidth 随变焦缩小，UI 层铺整窗
             int w = gd.Viewport.Width;
             int h = gd.Viewport.Height;
             float close = MathHelper.Clamp(EyelidValue, 0f, 1f);
@@ -209,7 +207,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
             Effect shader = EffectLoader.VictorEyelidTransition?.Value;
 
-            //以像素空间（单位矩阵）接管，精确覆盖整个后备缓冲
+            //像素矩阵 Matrix.Identity 铺后备缓冲
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
@@ -223,7 +221,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 sb.Draw(px, new Rectangle(0, 0, w, h), Color.White);
             }
             else {
-                //着色器缺失时的纯黑回退：上下两道黑幕
+                //着色器缺失：上下黑幕
                 int lid = (int)(close * (h * 0.5f + 2f));
                 sb.Draw(px, new Rectangle(0, 0, w, lid), Color.Black);
                 sb.Draw(px, new Rectangle(0, h - lid, w, lid), Color.Black);
@@ -231,7 +229,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
             sb.End();
 
-            //提示文字：同样在像素空间（单位矩阵）绘制，保证基于真实屏幕居中
+            //SURGERY 提示同像素矩阵居中
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
             if (close > 0.9f) {
@@ -246,7 +244,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
             sb.End();
 
-            //还原到界面层默认状态，匹配后续层 / 鼠标绘制约定
+            //还原 UIScaleMatrix 给后续层/鼠标
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
         }

@@ -10,37 +10,23 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism
 {
-    /// <summary>
-    /// 魔焰眼独眼狂暴状态
-    /// 当激光眼死亡后进入，攻击更加疯狂和不可预测
-    /// 包含多种攻击模式的快速切换
-    /// </summary>
+    /// <summary>魔焰眼独眼狂暴：激光眼死后切入，四模式快切循环</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.SpazmatismSoloRage, typeof(TwinsStateContext))]
     internal class SpazmatismSoloRageState : TwinsStateBase
     {
         public override string StateName => "SpazmatismSoloRage";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismSoloRage;
 
-        /// <summary>
-        /// 当前攻击模式
-        /// </summary>
+        /// <summary>狂暴攻击模式</summary>
         private enum RageAttackMode
         {
-            /// <summary>
-            /// 疯狂冲刺，高速多次冲刺
-            /// </summary>
+            /// <summary>疯狂冲刺</summary>
             FrenziedDash,
-            /// <summary>
-            /// 火焰漩涡，围绕玩家旋转喷火
-            /// </summary>
+            /// <summary>火焰漩涡</summary>
             FlameVortex,
-            /// <summary>
-            /// 爆发射击，快速发射大量火球
-            /// </summary>
+            /// <summary>爆发射击</summary>
             BurstFire,
-            /// <summary>
-            /// 追踪冲刺,持续追踪玩家的冲刺
-            /// </summary>
+            /// <summary>追踪冲刺</summary>
             HomingDash
         }
 
@@ -127,11 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             return null;
         }
 
-        /// <summary>
-        /// 固定狂暴模式攻击循环:
-        /// 疯狂冲刺→爆发射击→追踪冲刺→火焰漩涡→(循环)
-        /// 设计思路: 近战冲刺→远程射击→追踪压制→区域控制，节奏分明
-        /// </summary>
+        /// <summary>狂暴循环：连冲→爆发→追踪→漩涡</summary>
         private static readonly RageAttackMode[] RageComboSequence =
         [
             RageAttackMode.FrenziedDash,
@@ -140,9 +122,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             RageAttackMode.FlameVortex
         ];
 
-        /// <summary>
-        /// 切换到下一个攻击模式
-        /// </summary>
+        /// <summary>切下一攻击模式</summary>
         private void SwitchToNextMode() {
             totalAttacks++;
             modeTimer = 0;
@@ -155,9 +135,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             currentMode = RageComboSequence[totalAttacks % RageComboSequence.Length];
         }
 
-        /// <summary>
-        /// 疯狂冲刺模式 - 高速多次冲刺
-        /// </summary>
+        /// <summary>疯狂冲刺：高速多段 dash</summary>
         private void ExecuteFrenziedDash(NPC npc, Player player) {
             int prepareTime = DashPrepareTime;
             int dashTime = DashDuration;
@@ -229,9 +207,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 火焰漩涡模式 - 围绕玩家旋转喷火
-        /// </summary>
+        /// <summary>火焰漩涡：绕玩家旋转喷火</summary>
         private void ExecuteFlameVortex(NPC npc, Player player) {
             //缩短漩涡持续时间，避免动作过于凝滞
             int vortexDuration = Context.IsDeathMode ? 110 : 95;
@@ -295,9 +271,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 爆发射击模式 - 快速发射大量火球
-        /// </summary>
+        /// <summary>爆发射击：快射大量火球</summary>
         private void ExecuteBurstFire(NPC npc, Player player) {
             if (!hasPlayedModeSound) {
                 hasPlayedModeSound = true;
@@ -367,9 +341,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 追踪冲刺模式 - 持续追踪玩家的冲刺
-        /// </summary>
+        /// <summary>追踪冲刺：持续追玩家 dash</summary>
         private void ExecuteHomingDash(NPC npc, Player player) {
             int homingDuration = Context.IsDeathMode ? 120 : 100;
 

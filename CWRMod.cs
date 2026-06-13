@@ -11,14 +11,7 @@ namespace CalamityOverhaul
     public class CWRMod : Mod
     {
         #region Data
-        //-HoCha113 - 2024/9/19/ 3:45
-        //不要使用惰性加载，这是愚蠢的，要知道有的Mod会在外部调用这个，
-        //或者有的钩子是往InnoVault上挂载的，那个时候这个单例很可能还没来得及加载，然后把一切都毁掉
-        //-Chram - 2024/9/20/13:45
-        //不，只要注意就行，这个字段被调用的频率极高，使用惰性加载是个不错的习惯，我们只需要自己注意
-        //并提醒别人不要在错误的线程上调用这个单例就行了
-        //-HoCha113 - 2024/9/20/ 14:32
-        //神皇在上，这是异端发言，你不能把整个系统的安危寄托在所有人可以遵守开发守则上，况且我们根本没有那个东西
+        // 饿汉式单例：跨 Mod/外部可能在 Load 前访问 Instance，惰性会 NRE
         private static CWRMod instance;
         internal static CWRMod Instance {
             get {
@@ -59,10 +52,11 @@ namespace CalamityOverhaul
 
         #endregion
 
+        /// <summary>跨 Mod ModCall 入口</summary>
         public override object Call(params object[] args) => ModCall.Hander(args);
 
         public override void PostSetupContent() {
-            //加载一次ID列表，从这里加载可以保障所有内容已经添加好了
+            // 内容注册完毕后再建 ID 查找表
             CWRLoad.Setup();
             CWRID.PreloadAll();
             foreach (var load in ILoaders) {
@@ -80,7 +74,7 @@ namespace CalamityOverhaul
         public override void Load() {
             FindMod();
 
-            //跨Mod兼容Hook不再依赖灾厄类型，无灾厄时同样需要加载，灾厄专属部分在LoadComders内部自行守卫
+            // 跨 Mod Hook 不依赖灾厄，灾厄专属在 LoadComders 内守卫
             ModGanged.Load();
 
             CWRRef.Load();
@@ -95,6 +89,7 @@ namespace CalamityOverhaul
         }
 
         public override void Unload() {
+            // 逆序卸载 ICWRLoader → 清空联动 Mod 引用 → 释放静态查找表
             foreach (var load in ILoaders) {
                 try {
                     load.UnLoadData();
@@ -110,6 +105,7 @@ namespace CalamityOverhaul
             CWRRef.UnLoad();
         }
 
+        /// <summary>网络包分发至 CWRNetWork</summary>
         public override void HandlePacket(BinaryReader reader, int whoAmI) => CWRNetWork.HandlePacket(this, reader, whoAmI);
 
         private void EmptyMod() {
@@ -141,6 +137,7 @@ namespace CalamityOverhaul
             fargowiltas = null;
         }
 
+        /// <summary>缓存可选联动 Mod 引用，Load/Unload 前调用</summary>
         public void FindMod() {
             EmptyMod();
             ModLoader.TryGetMod("CalamityMod", out calamity);

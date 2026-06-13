@@ -5,9 +5,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.ADV.EntrustManager
 {
-    /// <summary>
-    /// 任务管理器样式抽象基类——提供通用绘制工具方法
-    /// </summary>
+    /// <summary>管理器样式基类，通用绘制工具</summary>
     internal abstract class BaseManagerStyle : IEntrustManagerStyle
     {
         protected float pulseTimer;

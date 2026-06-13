@@ -8,23 +8,20 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
 {
     /// <summary>
-    /// SHPC赛博朋克风格奖励弹窗<br/>
-    /// 复用 <see cref="CyberShaderPanel"/> (CyberPanel.fx) 驱动面板背景,<br/>
-    /// 失败时降级为CPU程序化渐变+扫描线+六角点阵+扫掠光带<br/>
-    /// 与SHPCDialogueBox/SHPCChoiceBoxStyle保持统一的霓虹蓝紫视觉语言
+    /// SHPC 赛博奖励弹窗，CyberPanel.fx 驱动
     /// </summary>
     internal class SHPCRewardStyle : IRewardPopupStyle
     {
         private float neonPulseTimer;
         private float dataFlowTimer;
         private float sweepTimer;
-        //着色器专用单调递增时间
+        // 着色器专用单调递增时间
         private float shaderTime;
 
-        //左侧数据流线相位(2条,与对话框/选项框一致)
+        // 左侧数据流线相位(2条,与对话框/选项框一致)
         private readonly float[] dataLinePhases = new float[2];
 
-        //四角状态文字
+        // 四角状态文字
         private readonly string[] cornerStatus = ["LINK.OK", "SYS:RDY", "ITEM++", "ACK.."];
         private int statusUpdateClock;
         private static readonly string[] StatusPool = [
@@ -34,17 +31,17 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             "ITEM++", "REW.OK", "DROP.OK", "ACK..", "STK:Hi"
         ];
 
-        //粒子系统(精简数量,适配小面板)
+        // 粒子系统(精简数量,适配小面板)
         private readonly List<NeonMaidPRT> neonParticles = [];
         private int neonParticleSpawnTimer;
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int circuitNodeSpawnTimer;
         private const float SideMargin = 18f;
 
-        //六角溢出边距(shader控制alpha形状)——小面板取较小值
+        // 六角溢出边距，小面板取较小值
         private const int ShaderEdgePad = 14;
 
-        //主色调常量(与SHPCDialogueBox/SHPCChoiceBoxStyle统一)
+        // 主色调常量(与SHPCDialogueBox/SHPCChoiceBoxStyle统一)
         private static readonly Color NeonBlue = new(60, 120, 255);
         private static readonly Color NeonBlueDim = new(40, 60, 180);
         private static readonly Color DeepPurple = new(100, 40, 200);
@@ -72,7 +69,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         public void DrawPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            //外阴影(紫色调,与对话框一致,3层精简)
+            // 外阴影(紫色调,与对话框一致,3层精简)
             for (int d = 5; d >= 1; d--) {
                 Rectangle s = rect;
                 s.Inflate(d, d);
@@ -82,7 +79,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             }
 
             if (CyberShaderPanel.Available) {
-                //hoverGlow转为轻微蓝紫提亮,避免过曝
+                // hoverGlow转为轻微蓝紫提亮,避免过曝
                 float bright = MathHelper.Clamp(0.95f + hoverGlow * 0.30f, 0.0f, 1.4f);
                 Color tint = new Color(
                     (byte)Math.Min(255, (int)(225 * bright)),
@@ -95,16 +92,16 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 DrawFallbackPanel(spriteBatch, rect, alpha, hoverGlow);
             }
 
-            //左侧数据流线(shader和降级路径都叠加,保持视觉一致)
+            // 左侧数据流线(shader和降级路径都叠加,保持视觉一致)
             DrawDataFlowLines(spriteBatch, rect, alpha);
         }
 
-        //降级面板:无shader环境使用CPU堆叠绘制
+        // 降级面板:无shader环境使用CPU堆叠绘制
         private void DrawFallbackPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float fa = alpha * (0.92f + hoverGlow);
 
-            //纯渐变背景(12段平滑,深暗紫色调)
+            // 纯渐变背景(12段平滑,深暗紫色调)
             int segs = 12;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -116,13 +113,13 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                     new Rectangle(0, 0, 1, 1), c);
             }
 
-            //扫描线(每3px一条暗带)
+            // 扫描线(每3px一条暗带)
             Color scanColor = new Color(20, 12, 45) * (fa * 0.10f);
             for (int y = rect.Y; y < rect.Bottom; y += 3)
                 spriteBatch.Draw(px, new Rectangle(rect.X + 4, y, rect.Width - 8, 1),
                     new Rectangle(0, 0, 1, 1), scanColor);
 
-            //简易六角点阵(用错行圆点模拟六角网格节点)
+            // 简易六角点阵(用错行圆点模拟六角网格节点)
             int dotSpacingX = 16;
             int dotSpacingY = 14;
             Color dotColor = new Color(40, 25, 80) * (fa * 0.12f);
@@ -138,7 +135,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 }
             }
 
-            //扫掠光带(向下循环)
+            // 扫掠光带(向下循环)
             float scanY = rect.Y + (sweepTimer * 0.1f % 1f) * rect.Height;
             for (int dy = -4; dy <= 4; dy++) {
                 int py = (int)scanY + dy;
@@ -148,14 +145,14 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                     new Rectangle(0, 0, 1, 1), NeonBlueDim * (fa * 0.12f * fade * fade));
             }
 
-            //内发光脉冲
+            // 内发光脉冲
             float glowPulse = MathF.Sin(neonPulseTimer * 1.5f) * 0.5f + 0.5f;
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(px, inner, new Rectangle(0, 0, 1, 1),
                 NeonBlueDim * (fa * (0.10f + hoverGlow * 0.4f) * (0.5f + glowPulse * 0.5f)));
 
-            //暗角(左右两侧渐暗)
+            // 暗角(左右两侧渐暗)
             int vigW = 14;
             for (int v = 0; v < vigW; v += 4) {
                 float vFade = (1f - (float)v / vigW) * 0.1f;
@@ -168,10 +165,10 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         }
 
         public void DrawFrame(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
-            //角括号装饰
+            // 角括号装饰
             DrawCornerBrackets(spriteBatch, rect, alpha, hoverGlow);
 
-            //四角状态文字
+            // 四角状态文字
             DrawCornerStatusText(spriteBatch, rect, alpha);
         }
 
@@ -210,7 +207,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
         }
 
         public void UpdateParticles(Vector2 basePos, float panelFade) {
-            //用面板中心估算面板范围(与ADVRewardPopup.Draw中保持一致:240x132)
+            // 用面板中心估算面板范围(与ADVRewardPopup.Draw中保持一致:240x132)
             Vector2 panelPos = new(basePos.X - 120f, basePos.Y - 66f);
             Vector2 panelSize = new(240f, 132f);
 
@@ -281,7 +278,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 }
             }
 
-            //左侧常驻底条
+            // 左侧常驻底条
             sb.Draw(px, new Rectangle(rect.X + 4, rect.Y + 5, 1, rect.Height - 10),
                 new Rectangle(0, 0, 1, 1), NeonBlueDim * (alpha * 0.18f));
         }
@@ -295,31 +292,31 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             Color bc = NeonBlue * (alpha * (0.35f + hoverGlow * 0.3f) * pulse);
             int arm = 11;
 
-            //左上L
+            // 左上L
             sb.Draw(px, new Rectangle(rect.X + 4, rect.Y + 4, 1, arm),
                 new Rectangle(0, 0, 1, 1), bc);
             sb.Draw(px, new Rectangle(rect.X + 4, rect.Y + 4, arm, 1),
                 new Rectangle(0, 0, 1, 1), bc);
 
-            //右上L
+            // 右上L
             sb.Draw(px, new Rectangle(rect.Right - 5, rect.Y + 4, 1, arm),
                 new Rectangle(0, 0, 1, 1), bc);
             sb.Draw(px, new Rectangle(rect.Right - 5 - arm, rect.Y + 4, arm, 1),
                 new Rectangle(0, 0, 1, 1), bc);
 
-            //左下L(略暗)
+            // 左下L(略暗)
             sb.Draw(px, new Rectangle(rect.X + 4, rect.Bottom - 5 - arm, 1, arm),
                 new Rectangle(0, 0, 1, 1), bc * 0.7f);
             sb.Draw(px, new Rectangle(rect.X + 4, rect.Bottom - 5, arm, 1),
                 new Rectangle(0, 0, 1, 1), bc * 0.7f);
 
-            //右下L(略暗)
+            // 右下L(略暗)
             sb.Draw(px, new Rectangle(rect.Right - 5, rect.Bottom - 5 - arm, 1, arm),
                 new Rectangle(0, 0, 1, 1), bc * 0.7f);
             sb.Draw(px, new Rectangle(rect.Right - 5 - arm, rect.Bottom - 5, arm, 1),
                 new Rectangle(0, 0, 1, 1), bc * 0.7f);
 
-            //底部中心 双短横线点缀
+            // 底部中心 双短横线点缀
             int midX = rect.X + rect.Width / 2;
             sb.Draw(px, new Rectangle(midX - 16, rect.Bottom - 3, 12, 1),
                 new Rectangle(0, 0, 1, 1), bc * 0.65f);
@@ -337,10 +334,10 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             float sc = 0.45f;
             var font = FontAssets.MouseText.Value;
 
-            //左上(贴近L角标内侧)
+            // 左上(贴近L角标内侧)
             Utils.DrawBorderString(sb, cornerStatus[0],
                 new Vector2(rect.X + 19f, rect.Y + 5f), col, sc);
-            //右上(右对齐)
+            // 右上(右对齐)
             float w1 = font.MeasureString(cornerStatus[1]).X * sc;
             Utils.DrawBorderString(sb, cornerStatus[1],
                 new Vector2(rect.Right - w1 - 18f, rect.Y + 5f), col, sc);

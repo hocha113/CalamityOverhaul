@@ -6,12 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
 {
-    /// <summary>
-    /// 比目鱼传奇追踪窗口样式——深海极简HUD：<br/>
-    /// 不再复用ADV的<see cref="Content.ADV.Scenarios.Helen.Quest.OceanTrackerWidgetStyle"/>，
-    /// 也不再绘制焦散面板与气泡背景，仅保留：发光菱形珠粒头部记号、
-    /// 标题下方的实线 + 三段水波点 ~ 装饰、贴近文字的细青色进度线。
-    /// </summary>
+    /// <summary>试炼追踪窗口样式：菱形头、标题下划线、细进度线；无面板/气泡背景</summary>
     internal class HalibutTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -46,10 +41,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
 
-            //头部记号——发光菱形珠粒（带柔和的生物荧光halo）
+            //头部菱形记号 + 外晕
             DrawPearlSigil(sb, px, uv, headerRect.X + 9, headerRect.Y + headerRect.Height / 2, alpha);
 
-            //标题文字——水下散射投影 + 主体冰青（字号略大于默认正文）
+            //标题：散射投影 + 冰青主体
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -60,7 +55,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
                 ShadowInk * (alpha * 0.55f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleIce * alpha, titleScale);
 
-            //下划线——实线 + 三段水波点 ~（下移避开放大后的标题底部）
+            //下划线：实线 + 三段起伏点
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 18, headerRect.Width - 40);
@@ -78,7 +73,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
                 sb.Draw(px, new Rectangle(x1, underY, w, 1), uv, c);
             }
 
-            //实线之后：3 个起伏的小水波点（y随正弦微抖）
+            //实线后 3 个起伏点
             int waveStartX = textX + solidLen + 5;
             for (int k = 0; k < 3; k++) {
                 int wx = waveStartX + k * 6;
@@ -113,10 +108,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             int y = barRect.Y + (barRect.Height - barH) / 2;
             int trackW = barRect.Width;
 
-            //轨道——非常淡的深海底色线
+            //轨道淡线
             sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, SeaCyanDim * (alpha * 0.32f));
 
-            //填充——青→生物荧光的轻微渐变
+            //填充渐变
             int fillW = (int)(trackW * MathHelper.Clamp(progress, 0f, 1f));
             if (fillW > 0) {
                 int segs = Math.Max(6, fillW / 4);
@@ -152,7 +147,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.TrialQuests
             Vector2 dir = (end - start) / len;
             float rot = MathF.Atan2(dir.Y, dir.X);
 
-            //中心亮、两端淡——水流式渐变虚线
+            //中心亮、两端淡的渐变虚线
             for (float c = 0; c < len; c += 5f) {
                 float t = c / len;
                 float fade = MathF.Sin(t * MathHelper.Pi) * 0.55f;

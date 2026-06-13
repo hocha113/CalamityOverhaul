@@ -56,9 +56,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 奇点视界，微型黑洞弹幕，命中时产生吸附并绞杀周围敌人
-    /// </summary>
+    /// 奇点视界微型黑洞，命中吸附绞杀
     public class SingularityBlackHole : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
@@ -154,9 +152,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public void DrawCustom(SpriteBatch spriteBatch) { }
     }
 
-    /// <summary>
-    /// 伽马射线暴，事件视界状态下射击时额外释放的追踪弹幕
-    /// </summary>
+    /// 伽马射线暴，事件视界射击追加追踪弹
     public class GammaRayBurst : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -210,9 +206,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool PreDraw(ref Color lightColor) => false;
     }
 
-    /// <summary>
-    /// 超新星爆发弹幕，致死时化为超新星造成范围伤害
-    /// </summary>
+    /// 超新星爆发，致死范围伤害
     public class SupernovaExplosion : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Masking + "DiffusionCircle";
@@ -311,9 +305,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
     }
 
-    /// <summary>
-    /// 量子迁跃弹幕，瞬移至光标位置并消除沿途敌人弹幕
-    /// </summary>
+    /// 量子迁跃，瞬移至光标并清沿途敌弹
     public class QuantumLeapProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -395,31 +387,29 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override bool PreDraw(ref Color lightColor) => false;
     }
 
-    /// <summary>
-    /// 奇点视界玩家类，管理所有饰品机制
-    /// </summary>
+    /// 奇点视界玩家机制
     internal class EyeOfSingularityPlayer : ModPlayer
     {
         public bool Alive;
-        /// <summary> 事件视界状态（静止隐身） </summary>
+        /// 事件视界(静止隐身)
         public bool EventHorizonActive;
-        /// <summary> 事件视界透明度，用于平滑过渡隐身效果 </summary>
+        /// 事件视界透明度(平滑过渡)
         private float eventHorizonOpacity;
-        /// <summary> 坍缩协议激活 </summary>
+        /// 坍缩协议激活
         public bool CollapseProtocolActive;
-        /// <summary> 坍缩协议剩余时间(帧) </summary>
+        /// 坍缩协议剩余(帧)
         public int CollapseProtocolTimer;
-        /// <summary> 坍缩协议冷却(帧) </summary>
+        /// 坍缩协议冷却(帧)
         public int CollapseProtocolCooldown;
-        /// <summary> 量子迁跃冷却 </summary>
+        /// 量子迁跃冷却
         public int QuantumLeapCooldown;
-        /// <summary> 超新星复活冷却 </summary>
+        /// 超新星复活冷却
         public int SupernovaCooldown;
-        /// <summary> 静止计时器 </summary>
+        /// 静止计时
         private int stationaryTimer;
-        /// <summary> 玩家上一帧位置 </summary>
+        /// 上帧位置
         private Vector2 lastPosition;
-        /// <summary> 伽马射线暴内部冷却(帧) </summary>
+        /// 伽马射线暴冷却(帧)
         public int GammaRayBurstCooldown;
 
         public override void Initialize() {
@@ -467,7 +457,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            //事件视界检测，根据玩家是否在移动来判断
+            //事件视界：静止检测
             float moveDist = Vector2.Distance(Player.Center, lastPosition);
             if (moveDist < 1f) {
                 stationaryTimer++;
@@ -479,23 +469,23 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 }
             }
 
-            //60帧(1秒)不动后进入事件视界
+            //60帧静止进事件视界
             if (stationaryTimer > 60 && !EventHorizonActive) {
                 EventHorizonActive = true;
-                //进入事件视界时播放一个微弱的音效提示
+                //微弱音效提示
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.8f, Volume = 0.4f }, Player.Center);
                 }
             }
 
-            //平滑处理透明度过渡
+            //透明度平滑过渡
             if (EventHorizonActive) {
                 eventHorizonOpacity = MathHelper.Lerp(eventHorizonOpacity, 0.15f, 0.08f);
                 Player.npcTypeNoAggro[0] = true;
                 Player.aggro -= 9999;
             }
             else {
-                //恢复移动后平滑淡入
+                //恢复移动淡入
                 eventHorizonOpacity = MathHelper.Lerp(eventHorizonOpacity, 1f, 0.15f);
                 if (eventHorizonOpacity > 0.98f) {
                     eventHorizonOpacity = 1f;
@@ -507,15 +497,13 @@ namespace CalamityOverhaul.Content.Items.Accessories
             lastPosition = Player.Center;
         }
 
-        /// <summary>
-        /// 远程弹幕命中时产生微型黑洞，仅由玩家直接使用的远程武器弹幕触发，排除衍生弹幕
-        /// </summary>
+        /// 远程命中产黑洞(仅玩家直射弹，排除衍生)
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone) {
             if (!Alive) {
                 return;
             }
 
-            //排除衍生弹幕，防止无限级联
+            //排除衍生弹防级联
             int gammaType = ModContent.ProjectileType<GammaRayBurst>();
             int blackHoleType = ModContent.ProjectileType<SingularityBlackHole>();
             int supernovaType = ModContent.ProjectileType<SupernovaExplosion>();
@@ -528,19 +516,19 @@ namespace CalamityOverhaul.Content.Items.Accessories
             if (hit.DamageType.CountsAsClass<RangedDamageClass>()) {
                 target.AddBuff(ModContent.BuffType<VoidErosion>(), 600);
 
-                //坍缩协议激活时无视无敌帧
+                //坍缩协议无视无敌
                 if (CollapseProtocolActive) {
                     target.immune[Player.whoAmI] = 0;
                 }
 
-                //命中时有概率产生微型黑洞，限制同时存在数量
+                //命中概率产黑洞(限同屏数)
                 if (Main.rand.NextBool(5) && Player.whoAmI == Main.myPlayer
                     && Player.ownedProjectileCounts[blackHoleType] < 3) {
                     Projectile.NewProjectile(Player.FromObjectGetParent(), target.Center, Vector2.Zero
                         , blackHoleType, hit.SourceDamage * 2, 0, Player.whoAmI);
                 }
 
-                //事件视界下射击额外释放伽马射线暴，带冷却防止弹幕爆炸
+                //事件视界射击追加伽马射线(带冷却)
                 if (EventHorizonActive && GammaRayBurstCooldown <= 0
                     && Player.ownedProjectileCounts[gammaType] < 6
                     && Player.whoAmI == Main.myPlayer) {

@@ -393,7 +393,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
     }
 
-    // --- 困难模式任务 ---
+    //困难模式
 
     public class QueenSlimeQuest : QuestNode
     {
@@ -671,7 +671,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             DisplayName = this.GetLocalization(nameof(DisplayName), () => "瘟疫使者歌莉娅");
             Description = this.GetLocalization(nameof(Description), () => "击败瘟疫使者歌莉娅");
 
-            IconTexturePath = "CalamityMod/NPCs/PlaguebringerGoliath/PlaguebringerGoliath_BossChecklist";//歌莉娅的纹理比较特殊，这里手动设置纹理路径
+            //歌莉娅纹理路径特殊
+            IconTexturePath = "CalamityMod/NPCs/PlaguebringerGoliath/PlaguebringerGoliath_BossChecklist";
             Position = new Vector2(0, -150);
             AddParent<GolemQuest>();
 

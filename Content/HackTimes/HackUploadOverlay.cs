@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>
-    /// 骇入上传进度的目标头顶可视化效果
-    /// <br/>在目标NPC上方绘制圆弧进度环和状态文字
-    /// </summary>
+    /// <summary>上传进度头顶圆环</summary>
     internal class HackUploadOverlay
     {
 
@@ -17,9 +14,7 @@ namespace CalamityOverhaul.Content.HackTimes
             pulseTimer += 0.016f;
         }
 
-        /// <summary>
-        /// 在目标NPC上方绘制上传进度圆环
-        /// </summary>
+        /// <summary>绘制上传进度圆环</summary>
         public void Draw(SpriteBatch sb, int npcIndex, float progress, bool completed, float alpha) {
             if (npcIndex < 0 || npcIndex >= Main.maxNPCs) return;
 

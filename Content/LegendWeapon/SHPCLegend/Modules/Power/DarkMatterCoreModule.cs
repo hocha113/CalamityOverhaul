@@ -3,10 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 {
-    /// <summary>
-    /// 暗物质核心：能量球飞行阶段对周围敌人施加向球方向的持续吸引力
-    /// 与奇点核心（蓄力吸引）的区别：作用于飞行阶段，球体本身也追踪，双重汇聚
-    /// </summary>
+    /// <summary>暗物质核心：球飞行阶段吸引附近敌人向球</summary>
     internal sealed class DarkMatterCoreModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Power;

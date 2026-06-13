@@ -5,10 +5,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>
-    /// 掉落物扫描数据实现
-    /// <br/>用于分析世界中的 Item 实体，不默认提供可上传协议
-    /// </summary>
+    /// <summary>掉落物扫描，默认不可骇入</summary>
     internal class ItemScannable : IHackTarget
     {
         public int ItemIndex { get; }

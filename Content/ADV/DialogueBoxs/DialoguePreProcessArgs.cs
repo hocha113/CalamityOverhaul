@@ -1,7 +1,7 @@
 ﻿namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
     /// <summary>
-    /// 对话预处理参数，用于在对话显示前修改内容
+    /// 对话预处理参数
     /// </summary>
     public class DialoguePreProcessArgs
     {
@@ -16,7 +16,7 @@
         public string Content;
 
         /// <summary>
-        /// 当前对话在序列中的索引（从0开始）
+        /// 序列索引，从 0 起
         /// </summary>
         public int Index;
 
