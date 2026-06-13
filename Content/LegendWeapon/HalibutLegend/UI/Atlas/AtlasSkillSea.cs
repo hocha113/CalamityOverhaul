@@ -604,8 +604,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             string body = unlocked
                 ? skill.Tooltip?.Value ?? string.Empty
                 : string.Format(HalibutAtlas.LockedNodeHint.Value, Lang.GetItemNameValue(skill.UnlockFishID));
+            const float bodyScale = 0.74f;
             var font = Terraria.GameContent.FontAssets.MouseText.Value;
-            string[] lines = Utils.WordwrapString(body, font, (int)((detailRect.Width - pad * 2f) / 0.74f) + 30, 14, out _);
+            //WordwrapString 内部数组按 maxLines 分配，超出会越界；可见行数由下方 bodyBottom 裁剪
+            int wrapPx = Math.Max(32, (int)((detailRect.Width - pad * 2f) / bodyScale) + 30);
+            string[] lines = string.IsNullOrEmpty(body)
+                ? []
+                : Utils.WordwrapString(body, font, wrapPx, 99, out _);
             float bodyBottom = detailRect.Bottom - pad - 46f;
             foreach (string raw in lines) {
                 if (string.IsNullOrWhiteSpace(raw)) {
@@ -615,8 +620,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                     break;
                 }
                 string line = raw.TrimEnd('-', ' ');
-                Utils.DrawBorderString(sb, line, new Vector2(x + 1f, y + 1f), Color.Black * (alpha * 0.5f), 0.74f);
-                Utils.DrawBorderString(sb, line, new Vector2(x, y), HalibutTheme.Text * alpha, 0.74f);
+                Utils.DrawBorderString(sb, line, new Vector2(x + 1f, y + 1f), Color.Black * (alpha * 0.5f), bodyScale);
+                Utils.DrawBorderString(sb, line, new Vector2(x, y), HalibutTheme.Text * alpha, bodyScale);
                 y += 17.5f;
             }
 
