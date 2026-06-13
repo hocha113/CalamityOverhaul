@@ -428,8 +428,8 @@ CyberwareUI: {
 	Slot_Skeleton: Skelett
 	Slot_RightLeg: Rechtes Bein
 	Slot_NervousSystem: Nervensystem
-	TooltipSlot: "SLOT:"
-	TooltipCapacityCost: "KAPAZITÄTSKOSTEN: {0}"
+	TooltipSlot: SLOT:
+	TooltipCapacityCost: KAPAZITÄTSKOSTEN: {0}
 	SkillRamCost: RAM {0}
 }
 
@@ -450,8 +450,8 @@ VictorClinicUI: {
 	GuideText: Wähle ein Körperteil, um seine Cyberware anzusehen, zu tauschen und zu kaufen.
 	LabelOwned: IM BESITZ
 	LabelForSale: ZUM VERKAUF
-	EmptyOwned: "( nichts im Rucksack )"
-	EmptyShop: "( nichts mehr im Angebot )"
+	EmptyOwned: ( nichts im Rucksack )
+	EmptyShop: ( nichts mehr im Angebot )
 }
 
 SHPCDialogueBox: {

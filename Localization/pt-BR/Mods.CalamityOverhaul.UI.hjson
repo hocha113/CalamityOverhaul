@@ -430,8 +430,8 @@ CyberwareUI: {
 	Slot_Skeleton: ESQUELETO
 	Slot_RightLeg: PERNA DIREITA
 	Slot_NervousSystem: SISTEMA NERVOSO
-	TooltipSlot: "SLOT:"
-	TooltipCapacityCost: "CUSTO DE CAPACIDADE: {0}"
+	TooltipSlot: SLOT:
+	TooltipCapacityCost: CUSTO DE CAPACIDADE: {0}
 	SkillRamCost: RAM {0}
 }
 
@@ -452,8 +452,8 @@ VictorClinicUI: {
 	GuideText: Escolha uma parte do corpo para ver, trocar e comprar seus implantes.
 	LabelOwned: EM POSSE
 	LabelForSale: À VENDA
-	EmptyOwned: "( nada na mochila )"
-	EmptyShop: "( nada mais à venda )"
+	EmptyOwned: ( nada na mochila )
+	EmptyShop: ( nada mais à venda )
 }
 
 SHPCDialogueBox: {

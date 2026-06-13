@@ -87,6 +87,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             EnsureStateMachine();
             UpdateContext();
 
+            //纯服务端权威：每帧广播权威位置，客户端傀儡呈现(编队/攻击位移均由此同步)
+            if (!VaultUtils.isClient) {
+                npc.netUpdate = true;
+            }
+
             PrimeStateIndex headState = HeadPrimeAI.GetStateIndex(head);
             int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
 
@@ -120,17 +125,15 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             UpdateVisualDecay();
             ArmPreUpdate();
 
-            //客户端：臂独立攻击状态会追逐未同步玩家，移动副作用只用于视觉
-            //权威运动学交由服务端同步 + 引擎按速度外推(编队/殉爆收敛于已同步的 head，不经此路径)
+            //客户端：纯服务端权威，丢弃状态机算出的运动学(位置还原、速度清零不外推)，仅呈现同步位置
             bool clientShadow = VaultUtils.isClient;
             Vector2 savedPos = npc.position;
-            Vector2 savedVel = npc.velocity;
 
             armStateMachine.Update();
 
             if (clientShadow) {
                 npc.position = savedPos;
-                npc.velocity = savedVel;
+                npc.velocity = Vector2.Zero;
             }
 
             ArmPostUpdate();

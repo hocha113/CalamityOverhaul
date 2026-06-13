@@ -190,17 +190,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             UpdateStateContext();
             EvaluateGlobalTransitions();
 
-            //客户端：状态机的移动副作用只用于视觉，不得污染权威运动学
-            //位置/速度交由服务端同步 + 引擎按速度外推(dead reckoning)，消除本地追逐造成的抽动
+            //客户端：本Boss状态机AI高度依赖未同步的本地玩家坐标(冲撞锁向、悬停死区判定)，
+            //本地推进会与服务端严重分歧再被netUpdate拉回，造成来回瞬移。
+            //改为纯服务端权威：客户端丢弃状态机算出的运动学(位置还原、速度清零不外推)，
+            //只呈现服务端每帧广播的权威位置；视觉副作用(旋转/帧/charge/粒子)仍照常执行
             bool clientShadow = VaultUtils.isClient;
             Vector2 savedPos = npc.position;
-            Vector2 savedVel = npc.velocity;
 
             stateMachine.Update();
 
             if (clientShadow) {
                 npc.position = savedPos;
-                npc.velocity = savedVel;
+                npc.velocity = Vector2.Zero;
             }
 
             //Boss急速模式：四肢健在时为头部缓慢供血
@@ -213,7 +214,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             //编队旋转时钟（供机械臂环绕编队取角）
             ai[PrimeAiSlots.OverrideOrbitClock]++;
 
-            if (!VaultUtils.isClient && Main.GameUpdateCount % 15 == 0) {
+            //纯服务端权威下客户端不外推，必须每帧广播权威位置，冲撞等高速段才不会跳帧
+            if (!VaultUtils.isClient) {
                 npc.netUpdate = true;
             }
 

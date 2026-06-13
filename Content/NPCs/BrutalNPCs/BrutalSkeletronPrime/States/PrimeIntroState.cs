@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             npc.damage = 0;
             npc.dontTakeDamage = true;
+            npc.velocity = Vector2.Zero;
             LeanTowards(npc, target.Center);
             context.FrameMode = 0;
 
@@ -76,8 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 context.Owner.SpawnArm();
             }
 
-            //以速度表达升空Lerp(等效 Center=Lerp(Center,toPoint,0.065))，让客户端按同步速度平滑外推而非每帧追本地玩家
-            npc.velocity = (toPoint - npc.Center) * 0.065f;
+            npc.Center = Vector2.Lerp(npc.Center, toPoint, 0.065f);
 
             Timer++;
             if (Timer > IntroEnd) {

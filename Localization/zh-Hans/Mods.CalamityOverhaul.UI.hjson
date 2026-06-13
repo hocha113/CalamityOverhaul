@@ -428,8 +428,8 @@ CyberwareUI: {
 	Slot_Skeleton: 骨架
 	Slot_RightLeg: 右腿
 	Slot_NervousSystem: 神经系统
-	TooltipSlot: "槽位："
-	TooltipCapacityCost: "容量消耗：{0}"
+	TooltipSlot: 槽位：
+	TooltipCapacityCost: 容量消耗：{0}
 	SkillRamCost: RAM {0}
 }
 
