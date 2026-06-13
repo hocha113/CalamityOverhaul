@@ -251,16 +251,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
             Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
-            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D glow = CWRAsset.DiffusionCircle.Value;
             Texture2D star = CWRAsset.StarTexture.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float rot = Projectile.rotation;
             Vector2 dir = rot.ToRotationVector2();
             float flicker = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 40f);
 
-            Color blood = ThemeBlood with { A = 0 };
-            Color amber = ThemeGlow with { A = 0 };
-            Color core = Color.White with { A = 0 };
+            Color blood = ThemeBlood;
+            Color amber = ThemeGlow;
+            Color core = Color.White;
             Vector2 lineOrigin = new(0, line.Height / 2f);
             float lenScale = beamLength / line.Width;
 
@@ -282,7 +282,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 Vector2 pPos = drawPos + dir * beamLength * along;
                 float pScale = beamWidth / MaxWidth * (0.5f + 0.5f * (float)Math.Sin(along * MathHelper.Pi));
                 Main.EntitySpriteDraw(glow, pPos, null, amber * (0.7f * opacity), 0f, glow.Size() / 2f,
-                    pScale * (ex ? 1.5f : 1.1f), SpriteEffects.None, 0);
+                    pScale * (ex ? 1.5f : 1.1f) * 0.3f, SpriteEffects.None, 0);
             }
 
             //口器辉光：多层呼吸光球 + 十字星闪
