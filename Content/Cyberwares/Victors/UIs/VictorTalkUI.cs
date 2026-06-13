@@ -26,7 +26,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         public override bool CloseOnEscape => true;
         public override SoundStyle? OpenSound => SoundID.MenuOpen;
-        public override SoundStyle? CloseSound => SoundID.MenuClose;
+        public override SoundStyle? CloseSound => silentClose ? null : SoundID.MenuClose;
+
+        //切换到义体诊所时静默关闭，避免关闭音与诊所开启音重叠
+        private bool silentClose;
 
         #region 本地化
 
@@ -146,8 +149,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             UpdateHover(leaveBtnRect, ref leaveHover, ref leaveT);
 
             if (clinicHover && keyLeftPressState == KeyPressState.Pressed) {
-                Click();
+                //静默关闭对话框，只保留诊所开启音，避免两音重叠
+                silentClose = true;
                 Close();
+                silentClose = false;
                 VictorClinicUI.Instance.Open();
                 return;
             }
@@ -157,7 +162,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
             if (leaveHover && keyLeftPressState == KeyPressState.Pressed) {
-                Click();
+                //仅播放关闭音（由 CloseSound 触发）
                 Close();
                 return;
             }

@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 && Main.npc[who].type == ModContent.NPCType<Victor>();
 
             if (victorOk && CutsceneDirector.Play<VictorSurgeryCutscene, int>(who)) {
-                VictorClinicUI.Instance.Close();
+                VictorClinicUI.Instance.CloseSilent();
                 VictorTalkUI.Instance.Close();
                 EyelidValue = 0f;
                 EyelidTarget = 0f;
@@ -121,8 +121,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item37, p.Center);
-                SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.3f, Volume = 0.5f }, p.Center);
+                //义体芯片植入音（与 RAM 升级芯片同源），契合赛博手术
+                SoundEngine.PlaySound(CWRSound.ChipSet, p.Center);
             }
         }
 

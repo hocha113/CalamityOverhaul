@@ -1,3 +1,4 @@
+﻿using CalamityOverhaul.Common;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -39,23 +40,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 //入场拉近，收尾拉回
                 .Add(new CameraZoomTrack(0, 56, 1f, 1.42f, 0.045f, CutsceneEase.CubicOut))
                 .Add(new CameraZoomTrack(165, 45, 1.42f, 1f, 0.05f, CutsceneEase.CubicOut))
-                //闭眼（麻醉低鸣）
+                //闭眼（赛博扫描低鸣，与义体界面同源）
                 .AddEvent(46, _ => {
                     VictorSurgery.EyelidTarget = 1f;
                     if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item29 with { Pitch = -0.45f, Volume = 0.7f });
+                        SoundEngine.PlaySound(CWRSound.Scanning with { Volume = 0.55f });
                     }
                 })
                 //全黑：执行换装 + 手术微震
                 .Add(new CameraShakeTrack(86, Vector2.Zero, 9f, 0.85f, 16))
                 .AddEvent(86, _ => VictorSurgery.ApplyPendingOp())
-                //睁眼（手术灯眩光 + 通电音）
+                //睁眼（手术灯眩光 + 义体通电/充能音）
                 .AddEvent(140, _ => {
                     VictorSurgery.EyelidTarget = 0f;
                     VictorSurgery.GlowValue = 1f;
-                    if (!VaultUtils.isServer) {
-                        SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.2f });
-                    }
                 });
         }
     }

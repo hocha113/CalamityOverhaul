@@ -57,8 +57,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             NPC.height = 46;
             NPC.aiStyle = NPCAIStyleID.Passive;//原版城镇NPC行走 / 住房 / 逃跑AI
             NPC.damage = 10;
-            NPC.defense = 22;
-            NPC.lifeMax = 350;
+            NPC.defense = 52;
+            NPC.lifeMax = 2250;
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath1;
             NPC.knockBackResist = 0.5f;
@@ -83,8 +83,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         public override List<string> SetNPCNameList() => [
             Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name0"),
-            Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name1"),
-            Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name2"),
         ];
 
         //禁用原版聊天框，交互完全交给自定义的右键检测 + VictorTalkUI
@@ -168,8 +166,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                 && !VictorClinicUI.Instance.IsOpen && !VictorSurgery.Active) {
                 Main.mouseRightRelease = false;
                 VictorSession.Bind(NPC.whoAmI);
-                VictorTalkUI.Instance.Open();
-                SoundEngine.PlaySound(SoundID.MenuOpen);
+                VictorTalkUI.Instance.Open();//开启音由 VictorTalkUI.OpenSound 播放，避免重复
             }
         }
 

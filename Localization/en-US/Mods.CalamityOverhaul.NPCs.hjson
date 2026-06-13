@@ -3,8 +3,6 @@ Victor: {
 	Bestiary: A ripperdoc washed up on these shores, hauling a whole body's worth of cybernetic implants on his back. They say he can trade anyone's flesh for steel and current - so long as you can pay the price.
 	TalkHint: Talk to Victor
 	Name0: Victor
-	Name1: Vic
-	Name2: Doc V
 
 	TownNPCMood: {
 		Content: 我很满足。

@@ -26,7 +26,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         public override bool CloseOnEscape => true;
         public override SoundStyle? OpenSound => SoundID.MenuOpen;
-        public override SoundStyle? CloseSound => SoundID.MenuClose;
+        public override SoundStyle? CloseSound => silentClose ? null : SoundID.MenuClose;
+
+        //切入手术过场时静默关闭，避免关闭音与过场音叠加
+        private bool silentClose;
+
+        /// <summary>静默关闭（不播放关闭音），用于切入手术过场</summary>
+        public void CloseSilent() {
+            silentClose = true;
+            Close();
+            silentClose = false;
+        }
 
         #region 本地化
 
