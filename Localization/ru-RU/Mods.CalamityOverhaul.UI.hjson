@@ -428,6 +428,9 @@ CyberwareUI: {
 	Slot_Skeleton: Скелет
 	Slot_RightLeg: Правая нога
 	Slot_NervousSystem: Нервная система
+	TooltipSlot: "СЛОТ:"
+	TooltipCapacityCost: "ЗАТРАТЫ ЁМКОСТИ: {0}"
+	SkillRamCost: RAM {0}
 }
 
 VictorTalkUI: {
@@ -445,6 +448,10 @@ VictorClinicUI: {
 	TitleText: КЛИНИКА ВИКТОРА
 	StatusText: КИБЕРДОКТОР НА СВЯЗИ — ВЫБЕРИ КОНЕЧНОСТЬ
 	GuideText: Выбери часть тела, чтобы осмотреть, заменить и купить киберимпланты.
+	LabelOwned: В НАЛИЧИИ
+	LabelForSale: В ПРОДАЖЕ
+	EmptyOwned: "( в рюкзаке пусто )"
+	EmptyShop: "( больше нечего продать )"
 }
 
 SHPCDialogueBox: {

@@ -428,6 +428,9 @@ CyberwareUI: {
 	Slot_Skeleton: ESQUELETO
 	Slot_RightLeg: PIERNA DERECHA
 	Slot_NervousSystem: SISTEMA NERVIOSO
+	TooltipSlot: "RANURA:"
+	TooltipCapacityCost: "COSTE DE CAPACIDAD: {0}"
+	SkillRamCost: RAM {0}
 }
 
 VictorTalkUI: {
@@ -445,6 +448,10 @@ VictorClinicUI: {
 	TitleText: CLÍNICA DE VÍCTOR
 	StatusText: MÉDICO CIBERNÉTICO EN LÍNEA - ELIGE UN MIEMBRO
 	GuideText: Elige una parte del cuerpo para ver, cambiar y comprar sus implantes.
+	LabelOwned: EN POSESIÓN
+	LabelForSale: EN VENTA
+	EmptyOwned: "( nada en la mochila )"
+	EmptyShop: "( nada más a la venta )"
 }
 
 SHPCDialogueBox: {
