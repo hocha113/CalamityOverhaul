@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             int wrapWidth = (int)((w - WidgetPadding * 2) / 0.6f);
             int contentH = 30;
             foreach (string line in details) {
-                string[] wrapped = Utils.WordwrapString(line, font, wrapWidth, 99, out _);
+                string[] wrapped = CWRUtils.WrapTextArray(line, font, wrapWidth, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     contentH += (int)(font.MeasureString(wl.TrimEnd('-', ' ')).Y * 0.6f) + 2;
@@ -452,7 +452,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             int wrapWidth = (int)(contentRect.Width / 0.6f);
             foreach (string line in details) {
                 if (y + 16 > contentRect.Bottom) break;
-                string[] wrapped = Utils.WordwrapString(line, font, wrapWidth, 99, out _);
+                string[] wrapped = CWRUtils.WrapTextArray(line, font, wrapWidth, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     if (y + 16 > contentRect.Bottom) break;

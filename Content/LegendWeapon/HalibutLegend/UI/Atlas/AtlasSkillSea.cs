@@ -610,7 +610,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             int wrapPx = Math.Max(32, (int)((detailRect.Width - pad * 2f) / bodyScale) + 30);
             string[] lines = string.IsNullOrEmpty(body)
                 ? []
-                : Utils.WordwrapString(body, font, wrapPx, 99, out _);
+                : CWRUtils.WrapTextArray(body, font, wrapPx, 99, out _);
             float bodyBottom = detailRect.Bottom - pad - 46f;
             foreach (string raw in lines) {
                 if (string.IsNullOrWhiteSpace(raw)) {

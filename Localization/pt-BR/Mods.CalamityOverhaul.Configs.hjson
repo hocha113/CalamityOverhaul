@@ -19,7 +19,7 @@ CWRServerConfig: {
 		Label: Fragmentacao Espacial da Murasama
 		Tooltip:
 			'''
-			Ativado por padrao, o fio de corte polimero criara um efeito de esmagamento de tela para aumentar o impacto
+			Ativado por padrao, ao executar seu golpe final, a Murasama criara um efeito de esmagamento de tela para aumentar o impacto
 			Se desativado, esses efeitos sao desabilitados e podem ser configurados ao seu gosto
 			'''
 	}

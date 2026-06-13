@@ -16,6 +16,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
@@ -456,17 +457,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             foreach ((Row row, Rectangle rect) in VisibleRows()) {
                 if (row.Kind == KindLabel) {
                     bool isOwned = row.Value == LabelOwned;
-                    string label = isOwned ? "OWNED" : "FOR SALE";
+                    string label = isOwned
+                        ? Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.LabelOwned")
+                        : Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.LabelForSale");
                     Color accent = isOwned ? CyberwareTheme.AccentCyan : CyberwareTheme.AccentGold;
                     VictorUIStyle.DrawSectionHeader(sb, rect, label, accent, alpha, 0.42f * CyberwareTheme.FontScale);
 
                     //空段提示
                     if (isOwned && !anyOwned) {
-                        Utils.DrawBorderString(sb, "( none in pack )", new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
+                        Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.EmptyOwned"), new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
                             CyberwareTheme.TextDim * (alpha * 0.5f), 0.36f * CyberwareTheme.FontScale);
                     }
                     else if (!isOwned && !anyShop) {
-                        Utils.DrawBorderString(sb, "( nothing more to sell )", new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
+                        Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.EmptyShop"), new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
                             CyberwareTheme.TextDim * (alpha * 0.5f), 0.36f * CyberwareTheme.FontScale);
                     }
                     index++;

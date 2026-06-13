@@ -428,6 +428,9 @@ CyberwareUI: {
 	Slot_Skeleton: 骨架
 	Slot_RightLeg: 右腿
 	Slot_NervousSystem: 神经系统
+	TooltipSlot: "槽位："
+	TooltipCapacityCost: "容量消耗：{0}"
+	SkillRamCost: RAM {0}
 }
 
 VictorTalkUI: {
@@ -445,6 +448,10 @@ VictorClinicUI: {
 	TitleText: 维克托诊所
 	StatusText: 义体医生在线 —— 选择一个部位
 	GuideText: 选择一个身体部位，查看、更换并购买对应的义体。
+	LabelOwned: 已拥有
+	LabelForSale: 在售
+	EmptyOwned: （背包中没有）
+	EmptyShop: （没有更多可售）
 }
 
 SHPCDialogueBox: {

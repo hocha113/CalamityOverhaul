@@ -667,7 +667,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             foreach (string paragraph in paragraphs) {
                 string trimmedPara = paragraph.Trim();
                 if (string.IsNullOrEmpty(trimmedPara)) continue;
-                string[] wrapped = Utils.WordwrapString(trimmedPara, font, wrapPixelWidth, 99, out _);
+                string[] wrapped = CWRUtils.WrapTextArray(trimmedPara, font, wrapPixelWidth, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     totalLineH += (int)(font.MeasureString(wl.TrimEnd('-', ' ')).Y * textScale) + 2;

@@ -872,36 +872,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         }
 
         /// <summary>
-        /// 按字符级别贪心切分文本以适配最大宽度，逐行 yield
-        /// 中英混排下足以胜任，避免在描述里插换行符
+        /// 按宽度切分文本以适配最大宽度，统一走 CWRUtils.WrapText（CJK 感知）。
         /// </summary>
         private static System.Collections.Generic.IEnumerable<string> EnumerateWrappedLines(
             DynamicSpriteFont font, string text, float scale, float maxWidth) {
-            if (string.IsNullOrEmpty(text)) {
-                yield break;
-            }
-            if (maxWidth <= 1f) {
-                yield return text;
-                yield break;
-            }
-            int start = 0;
-            int n = text.Length;
-            while (start < n) {
-                int len = 1;
-                int lastFit = 1;
-                while (start + len <= n) {
-                    float w = font.MeasureString(text.AsSpan(start, len).ToString()).X * scale;
-                    if (w <= maxWidth) {
-                        lastFit = len;
-                        len++;
-                    }
-                    else {
-                        break;
-                    }
-                }
-                yield return text.Substring(start, lastFit);
-                start += lastFit;
-            }
+            return CWRUtils.WrapText(text, font, maxWidth, scale);
         }
 
         /// <summary>

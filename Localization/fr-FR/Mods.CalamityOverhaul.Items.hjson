@@ -627,7 +627,7 @@ JusticeUnveiled: {
 	Tooltip:
 		'''
 		Les attaques à distance accumulent des charges de « Frappe du jugement », jusqu'à 5 maximum
-		Appuyez sur [HAUT] pour dépenser 1 charge et invoquer un impact sacré dévastateur
+		Appuyez sur [UP] pour dépenser 1 charge et invoquer un impact sacré dévastateur
 		« Si la justice est appelée, j'obéirai — où qu'elle me mène. »
 		'''
 }
@@ -1587,7 +1587,7 @@ Lumberjack: {
 LifeWeaver: {
 	NoValidPositionText: Aucun emplacement de plantation valide à proximité !
 	NoEnergyText: Électricité insuffisante !
-	DisplayName: Tisseur de vie
+	DisplayName: Planteur d'arbres
 	Tooltip: Consomme de l'électricité pour planter des arbres à proximité
 }
 
@@ -1597,7 +1597,7 @@ WGGLumberjack: {
 }
 
 WGGLifeWeaver: {
-	DisplayName: Tisseur de vie des terres sauvages
+	DisplayName: Planteur d'arbres des terres sauvages
 	Tooltip: ""
 }
 

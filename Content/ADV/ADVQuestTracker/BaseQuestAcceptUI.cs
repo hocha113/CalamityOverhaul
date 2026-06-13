@@ -436,41 +436,6 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             }
         }
 
-        /// <summary>
-        /// 将文本按宽度自动换行
-        /// </summary>
-        protected static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth, float scale = 1f) {
-            List<string> lines = [];
-
-            if (string.IsNullOrEmpty(text)) {
-                return lines;
-            }
-
-            string[] words = text.Split(' ');
-            string currentLine = "";
-
-            foreach (string word in words) {
-                string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
-                Vector2 testSize = font.MeasureString(testLine) * scale;
-
-                if (testSize.X > maxWidth && !string.IsNullOrEmpty(currentLine)) {
-                    //当前行已满，保存并开始新行
-                    lines.Add(currentLine);
-                    currentLine = word;
-                }
-                else {
-                    currentLine = testLine;
-                }
-            }
-
-            //添加最后一行
-            if (!string.IsNullOrEmpty(currentLine)) {
-                lines.Add(currentLine);
-            }
-
-            return lines;
-        }
-
         protected virtual void DrawContent(SpriteBatch spriteBatch, float alpha) {
             var font = FontAssets.MouseText.Value;
             float scale = panelScaleAnim;
@@ -480,7 +445,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale);
-            List<string> titleLines = WrapText(QuestTitle.Value, font, maxTextWidth, titleScale);
+            List<string> titleLines = CWRUtils.WrapText(QuestTitle.Value, font, maxTextWidth, titleScale);
 
             //标题光晕(呼吸律动)
             float titleGlowStr = 0.4f + breatheAnim * 0.5f;
@@ -513,7 +478,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             Color textColor = new Color(220, 200, 185) * alpha;
 
             foreach (string paragraph in paragraphs) {
-                List<string> wrappedLines = WrapText(paragraph, font, maxTextWidth, descScale);
+                List<string> wrappedLines = CWRUtils.WrapText(paragraph, font, maxTextWidth, descScale);
                 foreach (string line in wrappedLines) {
                     Vector2 linePos = new Vector2(descPos.X, currentY);
                     //柔和阴影

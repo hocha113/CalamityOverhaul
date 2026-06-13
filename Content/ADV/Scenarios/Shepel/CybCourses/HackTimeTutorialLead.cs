@@ -559,7 +559,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             //正文（支持换行）
             int bodyWrapW = (int)((CardW - 28) / bodySc);
             foreach (string line in body.Split('\n')) {
-                string[] wrapped = Utils.WordwrapString(line, font, bodyWrapW, 99, out _);
+                string[] wrapped = CWRUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),
@@ -573,7 +573,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             if (keyHint && _textKeyHintUnbound != null) {
                 float pulseKey = 0.75f + 0.25f * MathF.Sin(_shaderTimer * 10f);
                 int wrapW = (int)((CardW - 28) / subSc);
-                string[] wrapped = Utils.WordwrapString(_textKeyHintUnbound.Value, font, wrapW, 99, out _);
+                string[] wrapped = CWRUtils.WrapTextArray(_textKeyHintUnbound.Value, font, wrapW, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),

@@ -255,48 +255,11 @@ namespace CalamityOverhaul.Content.HackTimes
 
             var font = FontAssets.MouseText.Value;
             float lineHeight = font.LineSpacing * scale * 0.95f;
-            //简单按字符贪心换行，兼容中英混排
-            int start = 0;
             float y = startPos.Y;
-            int lineIndex = 0;
-            const int maxLines = 2;
-
-            while (start < text.Length && lineIndex < maxLines) {
-                int end = start;
-                int lastFit = start;
-                while (end <= text.Length) {
-                    string slice = text.Substring(start, end - start);
-                    float w = font.MeasureString(slice).X * scale;
-                    if (w > maxWidth) {
-                        break;
-                    }
-                    lastFit = end;
-                    end++;
-                }
-                if (lastFit == start) {
-                    //单字符已超宽，强制吃掉一个字符避免死循环
-                    lastFit = Math.Min(text.Length, start + 1);
-                }
-
-                bool isLastLine = lineIndex == maxLines - 1;
-                string drawn = text[start..lastFit];
-                if (isLastLine && lastFit < text.Length) {
-                    //最后一行不够放下时附加省略号
-                    const string ellipsis = "...";
-                    if (font.MeasureString(ellipsis).X * scale < maxWidth) {
-                        for (int len = drawn.Length; len > 0; len--) {
-                            string candidate = drawn[..len] + ellipsis;
-                            if (font.MeasureString(candidate).X * scale <= maxWidth) {
-                                drawn = candidate;
-                                break;
-                            }
-                        }
-                    }
-                }
+            //统一走 CWRUtils.WrapText：CJK 感知，最多 2 行并在末行附省略号
+            foreach (string drawn in CWRUtils.WrapText(text, font, maxWidth, scale, maxLines: 2, ellipsis: true)) {
                 Utils.DrawBorderString(sb, drawn, new Vector2(startPos.X, y), color, scale);
                 y += lineHeight;
-                start = lastFit;
-                lineIndex++;
             }
         }
 

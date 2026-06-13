@@ -430,6 +430,9 @@ CyberwareUI: {
 	Slot_Skeleton: SKELETON
 	Slot_RightLeg: RIGHT LEG
 	Slot_NervousSystem: NERVOUS SYSTEM
+	TooltipSlot: "SLOT:"
+	TooltipCapacityCost: "CAPACITY COST: {0}"
+	SkillRamCost: RAM {0}
 }
 
 VictorTalkUI: {
@@ -447,6 +450,10 @@ VictorClinicUI: {
 	TitleText: VICTOR'S CLINIC
 	StatusText: RIPPERDOC ONLINE - SELECT A LIMB
 	GuideText: Select a body part to view, swap and buy its cyberware.
+	LabelOwned: OWNED
+	LabelForSale: FOR SALE
+	EmptyOwned: "( none in pack )"
+	EmptyShop: "( nothing more to sell )"
 }
 
 SHPCDialogueBox: {

@@ -634,7 +634,7 @@ JusticeUnveiled: {
 	Tooltip:
 		'''
 		Ataques de longo alcance acumulam cargas de Golpe da Justica, ate um maximo de 5
-		Pressione [CIMA] para gastar 1 carga e invocar um impacto sagrado devastador
+		Pressione [UP] para gastar 1 carga e invocar um impacto sagrado devastador
 		"Se a justica for necessaria, irei aonde quer que ela me leve"
 		'''
 }
@@ -1322,7 +1322,7 @@ TheForgottenTome: {
 		Quando usado, apaga cada traco de suas memorias mundanas.
 		Uma vida transformada em espectro, condenada a descida eterna
 		todos os seres estao sobrecarregados de pecado, e nenhuma alma retornara a proxima vida.
-		Meu nome e [NOME]. Quando voce ler isto, eu ja estarei morto.
+		Meu nome e [NAME]. Quando voce ler isto, eu ja estarei morto.
 		'''
 	CompletionText: Voce esqueceu tudo
 	ConditionsText: Alcance qualquer final de historia

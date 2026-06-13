@@ -529,7 +529,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             float maxWidth = SpeakingPanelWidth - Padding * 2 - PortraitSize - 20f;
-            wrappedLines = Utils.WordwrapString(current.Content, font, (int)(maxWidth / TextScale), 10, out _);
+            wrappedLines = CWRUtils.WrapTextArray(current.Content, font, (int)(maxWidth / TextScale), 10, out _);
 
             //过滤空行
             List<string> valid = [];

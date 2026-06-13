@@ -564,7 +564,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             float contentWidth = minWidth - pad * 2f;
             string[] lines = string.IsNullOrEmpty(body)
                 ? []
-                : Utils.WordwrapString(body, font, (int)(contentWidth + 40), 30, out _);
+                : CWRUtils.WrapTextArray(body, font, (int)(contentWidth + 40), 30, out _);
 
             //测量最长行，必要时拓宽并重新换行
             float longest = 0f;
@@ -583,7 +583,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 contentWidth = MathHelper.Clamp(longest, contentWidth, maxWidth - pad * 2f);
                 lines = string.IsNullOrEmpty(body)
                     ? []
-                    : Utils.WordwrapString(body, font, (int)(contentWidth / bodyScale * 0.95f + 40), 30, out _);
+                    : CWRUtils.WrapTextArray(body, font, (int)(contentWidth / bodyScale * 0.95f + 40), 30, out _);
             }
 
             int drawLines = 0;

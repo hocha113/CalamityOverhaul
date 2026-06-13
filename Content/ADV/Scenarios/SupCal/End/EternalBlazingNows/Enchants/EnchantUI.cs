@@ -652,7 +652,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             Vector2 scale = new Vector2(0.95f, 0.95f) * MathHelper.Clamp(UIScale, 0.85f, 1f) * UIScale;
 
             string unifiedDescription = EnchantmentHandler.SelectedEnchantment.Value.Description.ToString().Replace("\n", " ");
-            foreach (string line in Utils.WordwrapString(unifiedDescription, FontAssets.MouseText.Value, 400, 16, out _)) {
+            foreach (string line in CWRUtils.WrapTextArray(unifiedDescription, FontAssets.MouseText.Value, 400, 16, out _)) {
                 if (string.IsNullOrEmpty(line))
                     continue;
 

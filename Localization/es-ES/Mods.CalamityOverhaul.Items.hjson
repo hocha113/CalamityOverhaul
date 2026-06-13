@@ -1601,7 +1601,7 @@ Lumberjack: {
 LifeWeaver: {
 	NoValidPositionText: ¡No hay huecos válidos para plantar cerca!
 	NoEnergyText: ¡Falta de electricidad!
-	DisplayName: Plantador de vida
+	DisplayName: Plantador de árboles
 	Tooltip: Consume electricidad para plantar árboles en los alrededores
 }
 
@@ -1611,7 +1611,7 @@ WGGLumberjack: {
 }
 
 WGGLifeWeaver: {
-	DisplayName: Plantador de la naturaleza
+	DisplayName: Plantador de árboles de la naturaleza
 	Tooltip: ""
 }
 

@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (slotIndex >= 0 && slotIndex < slotLabelCache.Length) {
                 return slotLabelCache[slotIndex];
             }
-            return "CYBERWARE";
+            return TitleText.Value;
         }
 
         #endregion

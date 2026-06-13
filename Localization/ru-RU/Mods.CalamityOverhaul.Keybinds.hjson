@@ -1,6 +1,6 @@
 QuestLog_Key.DisplayName: Журнал заданий: Открыть/Закрыть главный интерфейс
 QuestManager_Key.DisplayName: Поручения: Открыть/Закрыть панель управления
-Legend_UIControl.DisplayName: Вкл/Выкл HUD легендарного оружия
+Legend_UIControl.DisplayName: Палтус: Открыть/Закрыть атлас бездны
 Legend_Domain.DisplayName: Развертывание домена
 Legend_Teleport.DisplayName: Телепортация домена
 Legend_Restart.DisplayName: Самоперезагрузка

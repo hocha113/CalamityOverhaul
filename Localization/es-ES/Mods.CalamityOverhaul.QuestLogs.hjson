@@ -873,8 +873,8 @@ QuestNode: {
 
 	LifeWeaverQuest: {
 		DisplayName: Reforestación
-		Description: Obtén el tejedor de vida
-		QuestObjective.Description: Obtén el tejedor de vida
+		Description: Obtén el plantador de árboles
+		QuestObjective.Description: Obtén el plantador de árboles
 		DetailedDescription: Planta árboles con precisión eléctrica; última pieza del bosque automático.
 	}
 

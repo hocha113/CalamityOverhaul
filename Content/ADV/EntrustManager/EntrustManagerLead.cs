@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 //单行：已绑定
                 string line = TextKeyPromptBound.Format(displayKey);
                 int wrapW = (int)((CardW1 - 28) / 0.85f);
-                string[] wrapped = Utils.WordwrapString(line, font, wrapW, 99, out _);
+                string[] wrapped = CWRUtils.WrapTextArray(line, font, wrapW, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -427,7 +427,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 //可用按键提示（白色主行）
                 string keyLine = TextKeyPromptDefaultKey.Format(displayKey);
                 int keyWrapW = (int)((CardW1 - 28) / subScale1);
-                string[] keyWrapped = Utils.WordwrapString(keyLine, font, keyWrapW, 99, out _);
+                string[] keyWrapped = CWRUtils.WrapTextArray(keyLine, font, keyWrapW, 99, out _);
                 foreach (string wl in keyWrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
                 //设置引导（暗淡提示色）
                 int hintWrapW = (int)((CardW1 - 28) / subScale2);
-                string[] hintWrapped = Utils.WordwrapString(TextKeyPromptBindHint.Value, font, hintWrapW, 99, out _);
+                string[] hintWrapped = CWRUtils.WrapTextArray(TextKeyPromptBindHint.Value, font, hintWrapW, 99, out _);
                 foreach (string wl in hintWrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -499,7 +499,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 new Color(200, 240, 255, (int)(240 * alpha)), bodyScale);
             py += lineH_b;
             int descWrapW = (int)((CardW2 - 28) / subScale);
-            string[] followWrapped = Utils.WordwrapString(TextRightClickDesc.Value, font, descWrapW, 99, out _);
+            string[] followWrapped = CWRUtils.WrapTextArray(TextRightClickDesc.Value, font, descWrapW, 99, out _);
             foreach (string wl in followWrapped) {
                 if (string.IsNullOrEmpty(wl)) continue;
                 Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -517,7 +517,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 new Vector2(px + midKeyW, py),
                 new Color(195, 240, 195, (int)(240 * alpha)), bodyScale);
             py += lineH_b;
-            string[] suspendWrapped = Utils.WordwrapString(TextMiddleClickDesc.Value, font, descWrapW, 99, out _);
+            string[] suspendWrapped = CWRUtils.WrapTextArray(TextMiddleClickDesc.Value, font, descWrapW, 99, out _);
             foreach (string wl in suspendWrapped) {
                 if (string.IsNullOrEmpty(wl)) continue;
                 Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -590,7 +590,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             py += lineH_b;
 
             int descWrapW = (int)((CardW3 - 28) / subScale);
-            string[] wrapped = Utils.WordwrapString(TextStyleButtonDesc.Value, font, descWrapW, 99, out _);
+            string[] wrapped = CWRUtils.WrapTextArray(TextStyleButtonDesc.Value, font, descWrapW, 99, out _);
             foreach (string wl in wrapped) {
                 if (string.IsNullOrEmpty(wl)) continue;
                 Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -669,7 +669,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             py += lineH_b;
 
             int descWrapW = (int)((CardW4 - 28) / subScale);
-            string[] wrapped = Utils.WordwrapString(TextTrackPromptDesc.Value, font, descWrapW, 99, out _);
+            string[] wrapped = CWRUtils.WrapTextArray(TextTrackPromptDesc.Value, font, descWrapW, 99, out _);
             foreach (string wl in wrapped) {
                 if (string.IsNullOrEmpty(wl)) continue;
                 Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
@@ -771,7 +771,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             float bulletW = font.MeasureString(bullet).X * scale + 4f;
             Utils.DrawBorderString(sb, bullet, new Vector2(px, py), bulletColor, scale);
 
-            string[] wrapped = Utils.WordwrapString(text, font, wrapWidth, 99, out _);
+            string[] wrapped = CWRUtils.WrapTextArray(text, font, wrapWidth, 99, out _);
             float lineH = font.MeasureString("A").Y * scale + 2f;
             bool first = true;
             foreach (string wl in wrapped) {
@@ -841,14 +841,14 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             py += lineH_b;
 
             int descWrapW = (int)((CardW6 - 28) / subScale);
-            string[] wrapped1 = Utils.WordwrapString(TextSuspendIntroDesc1.Value, font, descWrapW, 99, out _);
+            string[] wrapped1 = CWRUtils.WrapTextArray(TextSuspendIntroDesc1.Value, font, descWrapW, 99, out _);
             foreach (string wl in wrapped1) {
                 if (string.IsNullOrEmpty(wl)) continue;
                 Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
                     new Color(120, 155, 120, (int)(200 * alpha)), subScale);
                 py += lineH_s;
             }
-            string[] wrapped2 = Utils.WordwrapString(TextSuspendIntroDesc2.Value, font, descWrapW, 99, out _);
+            string[] wrapped2 = CWRUtils.WrapTextArray(TextSuspendIntroDesc2.Value, font, descWrapW, 99, out _);
             foreach (string wl in wrapped2) {
                 if (string.IsNullOrEmpty(wl)) continue;
                 Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),

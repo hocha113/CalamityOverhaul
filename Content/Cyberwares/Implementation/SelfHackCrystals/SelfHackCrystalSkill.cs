@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
                     int seconds = (frames + 59) / 60;
                     return seconds + "s";
                 }
-                return "RAM " + SelfHackCrystal.SkillRamCost;
+                return Language.GetTextValue("Mods.CalamityOverhaul.UI.CyberwareUI.SkillRamCost", SelfHackCrystal.SkillRamCost);
             }
         }
 

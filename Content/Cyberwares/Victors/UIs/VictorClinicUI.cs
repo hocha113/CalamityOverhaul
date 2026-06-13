@@ -257,7 +257,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
             //引导正文
             float gs = 0.46f * CyberwareTheme.FontScale;
-            string[] lines = Utils.WordwrapString(GuideText.Value, FontAssets.MouseText.Value, w - 32, 4, out _);
+            string[] lines = CWRUtils.WrapTextArray(GuideText.Value, FontAssets.MouseText.Value, w - 32, 4, out _);
             float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * gs + 6f;
             int cnt = 0;
             foreach (string l in lines) {

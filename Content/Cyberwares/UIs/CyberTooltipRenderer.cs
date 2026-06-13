@@ -2,6 +2,7 @@
 using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.Cyberwares.UIs
 {
@@ -34,7 +35,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             // 收集文本行
             string name = item.Name ?? "???";
             string slotName = CyberwareUI.Instance?.GetSlotLabel((int)cyber.SlotCategory) ?? cyber.SlotCategory.ToString();
-            string capText = $"CAPACITY COST: {cyber.CapacityCost}";
+            string capText = Language.GetTextValue("Mods.CalamityOverhaul.UI.CyberwareUI.TooltipCapacityCost", cyber.CapacityCost);
             string desc = cyber.Tooltip.Value;
 
             // 测量尺寸
@@ -48,7 +49,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             // 计算描述文本行，先按换行符分段再调用官方换行接口
             var descLineList = new System.Collections.Generic.List<string>();
             foreach (string para in desc.Split('\n')) {
-                foreach (string wl in Utils.WordwrapString(para.TrimEnd('\r'), FontAssets.MouseText.Value, (int)(220f / descScale), 99, out _)) {
+                foreach (string wl in CWRUtils.WrapTextArray(para.TrimEnd('\r'), FontAssets.MouseText.Value, (int)(220f / descScale), 99, out _)) {
                     if (wl != null) descLineList.Add(wl);
                 }
             }
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             y += 10;
 
             // 槽位分类
-            Utils.DrawBorderString(sb, "SLOT:", new Vector2(x, y), CyberwareTheme.TextDim, smallScale);
+            Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.CyberwareUI.TooltipSlot"), new Vector2(x, y), CyberwareTheme.TextDim, smallScale);
             Utils.DrawBorderString(sb, slotName, new Vector2(x + 42, y), CyberwareTheme.AccentCyan, smallScale);
             y += LineSpacing;
 

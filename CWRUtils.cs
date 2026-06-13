@@ -4,9 +4,11 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
+using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
@@ -766,6 +768,228 @@ namespace CalamityOverhaul
                 , immediateLoad ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
         }
 
+        #endregion
+
+        #region 文本排版
+        /// <summary>
+        /// CWR 统一的文本测量：对缺失字体提供保守兜底，避免空引用与零尺寸。
+        /// </summary>
+        /// <param name="text">待测量文本</param>
+        /// <param name="font">字体；为 null 时使用鼠标字体</param>
+        /// <param name="scale">绘制缩放，默认 1</param>
+        public static Vector2 MeasureText(string text, DynamicSpriteFont font, float scale = 1f) {
+            if (string.IsNullOrEmpty(text)) {
+                return Vector2.Zero;
+            }
+            font ??= Terraria.GameContent.FontAssets.MouseText?.Value;
+            if (font == null) {
+                return new Vector2(text.Length * 8f * scale, 16f * scale);
+            }
+            return font.MeasureString(text) * scale;
+        }
+
+        /// <summary>
+        /// 使用默认鼠标字体测量文本尺寸。
+        /// </summary>
+        public static Vector2 MeasureText(string text, float scale = 1f)
+            => MeasureText(text, Terraria.GameContent.FontAssets.MouseText?.Value, scale);
+
+        /// <summary>
+        /// CWR 统一的自动换行：CJK 感知，按宽度折行。取代分散的 <see cref="Utils.WordwrapString"/>
+        /// 调用与各处自写的折行循环，解决纯中文（无空格）因 <see cref="DynamicSpriteFont.MeasureString"/>
+        /// 对 CJK 字形测量不稳而整段不换行的问题。
+        /// </summary>
+        /// <param name="text">原始文本，允许包含 '\n' 强制换行</param>
+        /// <param name="font">字体；为 null 时使用鼠标字体</param>
+        /// <param name="maxWidth">可用像素宽度（绘制后的视觉宽度，内部会按 <paramref name="scale"/> 归一）</param>
+        /// <param name="scale">绘制缩放，默认 1</param>
+        /// <param name="maxLines">最多保留的行数，超出截断；默认不限制</param>
+        /// <param name="ellipsis">截断时是否在末行追加省略号</param>
+        public static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth
+            , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false) {
+            List<string> result = [];
+            if (string.IsNullOrEmpty(text)) {
+                return result;
+            }
+            font ??= Terraria.GameContent.FontAssets.MouseText?.Value;
+            if (font == null) {
+                result.Add(text);
+                return result;
+            }
+
+            //折行在未缩放空间内计算，因此把视觉宽度反算回字体原始测量空间
+            float effWidth = scale > 0f ? maxWidth / scale : maxWidth;
+
+            string normalized = text.Replace("\r", string.Empty);
+            foreach (string block in normalized.Split('\n')) {
+                if (string.IsNullOrEmpty(block)) {
+                    result.Add(string.Empty);
+                    continue;
+                }
+                WrapBlockCJKAware(block, font, effWidth, result);
+            }
+
+            if (maxLines < result.Count) {
+                if (ellipsis && maxLines > 0) {
+                    result[maxLines - 1] = AppendEllipsis(result[maxLines - 1], font, effWidth);
+                }
+                result.RemoveRange(maxLines, result.Count - maxLines);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 使用默认鼠标字体的自动换行重载。
+        /// </summary>
+        public static List<string> WrapText(string text, float maxWidth
+            , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false)
+            => WrapText(text, Terraria.GameContent.FontAssets.MouseText?.Value, maxWidth, scale, maxLines, ellipsis);
+
+        /// <summary>
+        /// 自动换行并返回数组，便于替换返回 string[] 的 <see cref="Utils.WordwrapString"/> 调用点。
+        /// </summary>
+        public static string[] WrapTextArray(string text, DynamicSpriteFont font, float maxWidth
+            , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false)
+            => [.. WrapText(text, font, maxWidth, scale, maxLines, ellipsis)];
+
+        /// <summary>
+        /// 与原版 <see cref="Utils.WordwrapString"/> 完全相同的签名，作为其 CJK 感知替代：
+        /// 直接把所有 <c>Utils.WordwrapString(text, font, maxWidth, maxLines, out _)</c> 改名为
+        /// <c>CWRUtils.WrapTextArray(...)</c> 即可，宽度按未缩放像素解释，行为保持一致。
+        /// </summary>
+        public static string[] WrapTextArray(string text, DynamicSpriteFont font, float maxWidth, int maxLines, out int lineCount) {
+            string[] arr = [.. WrapText(text, font, maxWidth, 1f, maxLines)];
+            lineCount = arr.Length;
+            return arr;
+        }
+
+        /// <summary>
+        /// 自动换行并以 '\n' 连接为单串，便于直接交给绘制接口。
+        /// </summary>
+        public static string WrapTextJoin(string text, DynamicSpriteFont font, float maxWidth
+            , float scale = 1f, int maxLines = int.MaxValue, bool ellipsis = false)
+            => string.Join('\n', WrapText(text, font, maxWidth, scale, maxLines, ellipsis));
+
+        private static string AppendEllipsis(string line, DynamicSpriteFont font, float maxWidth) {
+            const string dots = "…";
+            if (string.IsNullOrEmpty(line)) {
+                return dots;
+            }
+            string trimmed = line.TrimEnd();
+            while (trimmed.Length > 0 && font.MeasureString(trimmed + dots).X > maxWidth) {
+                trimmed = trimmed[..^1].TrimEnd();
+            }
+            return trimmed + dots;
+        }
+
+        /// <summary>
+        /// 把单个段落（不含 '\n'）按宽度折行追加到 <paramref name="output"/>。
+        /// CJK 字符按"任意位置可换行"处理，拉丁词按词边界处理，并用稳健的字符宽度估算
+        /// 规避 <see cref="DynamicSpriteFont.MeasureString(string)"/> 对 CJK 字形偶发偏小的问题。
+        /// </summary>
+        private static void WrapBlockCJKAware(string text, DynamicSpriteFont font, float maxWidth, List<string> output) {
+            if (string.IsNullOrEmpty(text)) {
+                output.Add(string.Empty);
+                return;
+            }
+            if (maxWidth < 1f) {
+                output.Add(text);
+                return;
+            }
+
+            //稳定的 CJK 参考宽度：优先"汉"字测量，异常偏小时用字体高度近似（CJK 字形近方块）
+            float fontHeight = font.MeasureString("A").Y;
+            if (fontHeight < 1f) {
+                fontHeight = 18f;
+            }
+            float cjkRefWidth = font.MeasureString("汉").X;
+            float expectedCJKWidth = fontHeight * 0.95f;
+            if (cjkRefWidth < expectedCJKWidth * 0.6f) {
+                cjkRefWidth = expectedCJKWidth;
+            }
+
+            StringBuilder currentLine = new();
+            float currentWidth = 0f;
+            //当前正在累计的拉丁单词在 currentLine 中的起始下标（-1 表示无拉丁单词在累积）
+            int latinWordStart = -1;
+            float latinWordWidth = 0f;
+
+            for (int i = 0; i < text.Length; i++) {
+                char ch = text[i];
+                bool isCJK = IsCJKChar(ch);
+                bool isWhite = char.IsWhiteSpace(ch);
+
+                float charWidth;
+                if (isCJK) {
+                    float measured = font.MeasureString(ch.ToString()).X;
+                    charWidth = Math.Max(measured, cjkRefWidth);
+                }
+                else {
+                    charWidth = font.MeasureString(ch.ToString()).X;
+                }
+
+                bool needWrap = currentWidth + charWidth > maxWidth && currentLine.Length > 0;
+                if (needWrap) {
+                    //latinWordStart <= 0 表示当前行本身就是一个超宽拉丁单词，必须硬断字，否则会陷入死循环
+                    if (isCJK || isWhite || latinWordStart <= 0) {
+                        output.Add(currentLine.ToString().TrimEnd(' '));
+                        currentLine.Clear();
+                        currentWidth = 0f;
+                        latinWordStart = -1;
+                        latinWordWidth = 0f;
+                        if (isWhite) {
+                            continue;
+                        }
+                    }
+                    else {
+                        //当前字符位于拉丁单词内部，把整个单词移到下一行
+                        string head = currentLine.ToString(0, latinWordStart).TrimEnd(' ');
+                        string tail = currentLine.ToString(latinWordStart, currentLine.Length - latinWordStart);
+                        output.Add(head);
+                        currentLine.Clear();
+                        currentLine.Append(tail);
+                        currentWidth = latinWordWidth;
+                        latinWordStart = 0;
+                    }
+                }
+
+                currentLine.Append(ch);
+                currentWidth += charWidth;
+
+                if (isCJK || isWhite) {
+                    latinWordStart = -1;
+                    latinWordWidth = 0f;
+                }
+                else {
+                    if (latinWordStart < 0) {
+                        latinWordStart = currentLine.Length - 1;
+                        latinWordWidth = charWidth;
+                    }
+                    else {
+                        latinWordWidth += charWidth;
+                    }
+                }
+            }
+
+            if (currentLine.Length > 0) {
+                output.Add(currentLine.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 判断字符是否属于按"任意位置可换行"处理的 CJK 表意范围。
+        /// 覆盖 CJK 统一表意、扩展 A、平/片假名、谚文音节、全/半角形与 CJK 符号标点。
+        /// </summary>
+        private static bool IsCJKChar(char c) {
+            return c is >= '\u4E00' and <= '\u9FFF'   //CJK Unified Ideographs
+                or >= '\u3400' and <= '\u4DBF'        //CJK Extension A
+                or >= '\u3040' and <= '\u309F'        //Hiragana
+                or >= '\u30A0' and <= '\u30FF'        //Katakana
+                or >= '\uAC00' and <= '\uD7AF'        //Hangul Syllables
+                or >= '\uFF00' and <= '\uFFEF'        //全/半角形（含全角标点）
+                or >= '\u3000' and <= '\u303F';       //CJK Symbols and Punctuation
+        }
         #endregion
     }
 }

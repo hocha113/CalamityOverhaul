@@ -220,7 +220,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
                 maxWidth = PanelWidth - 20f;
             }
 
-            List<string> lines = WrapText(text, font, maxWidth, scale);
+            List<string> lines = CWRUtils.WrapText(text, font, maxWidth, scale);
             float lineSpacing = font.MeasureString("A").Y * scale * 0.9f;
 
             return lines.Count * lineSpacing;
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             TextDrawConfig config,
             Action<SpriteBatch, string, Vector2, Color, float, float, int> lineEffect = null) {
             var font = FontAssets.MouseText.Value;
-            List<string> lines = WrapText(config.Text, font, config.MaxWidth - 20, config.Scale);
+            List<string> lines = CWRUtils.WrapText(config.Text, font, config.MaxWidth - 20, config.Scale);
 
             float currentY = config.Position.Y;
             float lineSpacing = font.MeasureString("A").Y * config.Scale * 0.9f;
@@ -727,39 +727,5 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker
             spriteBatch.Draw(pixel, requirementLine, new Rectangle(0, 0, 1, 1), Color.White * (alpha * 0.8f));
         }
 
-        /// <summary>
-        /// 将文本按宽度自动换行
-        /// </summary>
-        protected static List<string> WrapText(string text, DynamicSpriteFont font, float maxWidth, float scale = 1f) {
-            List<string> lines = new();
-
-            if (string.IsNullOrEmpty(text)) {
-                return lines;
-            }
-
-            string[] words = text.Split(' ');
-            string currentLine = "";
-
-            foreach (string word in words) {
-                string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
-                Vector2 testSize = font.MeasureString(testLine) * scale;
-
-                if (testSize.X > maxWidth && !string.IsNullOrEmpty(currentLine)) {
-                    //当前行已满，保存并开始新行
-                    lines.Add(currentLine);
-                    currentLine = word;
-                }
-                else {
-                    currentLine = testLine;
-                }
-            }
-
-            //添加最后一行
-            if (!string.IsNullOrEmpty(currentLine)) {
-                lines.Add(currentLine);
-            }
-
-            return lines;
-        }
     }
 }

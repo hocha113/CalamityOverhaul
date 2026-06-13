@@ -145,10 +145,10 @@ HackTargetType: {
 	NpcTargetType.DisplayName: NPC目标
 	ProjectileTargetType.DisplayName: 弹幕目标
 	SignalTowerTargetType.DisplayName: 信号塔目标
-	TileTargetType.DisplayName: 掉落物目标
+	TileTargetType.DisplayName: 物块目标
 	TurretTargetType.DisplayName: 炮台目标
 	WaterTargetType.DisplayName: 液体目标
-	WraithTargetType.DisplayName: 液体目标
+	WraithTargetType.DisplayName: 幽灵目标
 }
 
 TileNameFallback: {

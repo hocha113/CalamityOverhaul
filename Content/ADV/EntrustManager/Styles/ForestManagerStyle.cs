@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager.Styles
                 foreach (string paragraph in paragraphs) {
                     string trimmedPara = paragraph.Trim();
                     if (string.IsNullOrEmpty(trimmedPara)) continue;
-                    string[] wrapped = Utils.WordwrapString(trimmedPara, font, wrapWidth, 99, out _);
+                    string[] wrapped = CWRUtils.WrapTextArray(trimmedPara, font, wrapWidth, 99, out _);
                     foreach (string wl in wrapped) {
                         if (string.IsNullOrEmpty(wl)) continue;
                         if (descY > entryRect.Bottom - 4f) break;
