@@ -125,30 +125,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Vector2 origin = new(tex.Width / 2f, frameHeight);//底部中心：脚部贴合碰撞箱底边
 
             //贴图默认朝左，朝右移动时水平翻转
-            SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects effects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             Vector2 footPos = NPC.Bottom - screenPos + new Vector2(0f, NPC.gfxOffY + DrawVerticalOffset);
             Color light = NPC.GetAlpha(drawColor);
-            float fade = drawColor.A / 255f;//随夜间 / 隐身整体淡入淡出
-
-            Texture2D soft = CWRAsset.SoftGlow?.Value;
-
-            //落地软阴影
-            if (soft != null) {
-                float lum = (drawColor.R + drawColor.G + drawColor.B) / 765f;
-                Color shadow = Color.Black * (0.30f * MathHelper.Clamp(lum + 0.25f, 0f, 1f));
-                spriteBatch.Draw(soft, footPos + new Vector2(0f, -3f), null, shadow, 0f,
-                    soft.Size() / 2f, new Vector2(NPC.width / 24f, 0.16f), SpriteEffects.None, 0f);
-            }
-
-            //克制的赛博红边缘辉光：本体后方画一圈略微偏移的红色剪影
-            float pulse = 0.5f + 0.5f * MathF.Sin(Main.GlobalTimeWrappedHourly * 3f);
-            Color rim = new Color(255, 45, 45) * ((0.14f + 0.10f * pulse) * fade);
-            for (int i = 0; i < 4; i++) {
-                Vector2 offset = (MathHelper.PiOver2 * i + MathHelper.PiOver4).ToRotationVector2() * 2.2f;
-                spriteBatch.Draw(tex, footPos + offset, source, rim, NPC.rotation, origin, NPC.scale, effects, 0f);
-            }
-
             //本体
             spriteBatch.Draw(tex, footPos, source, light, NPC.rotation, origin, NPC.scale, effects, 0f);
             return false;
