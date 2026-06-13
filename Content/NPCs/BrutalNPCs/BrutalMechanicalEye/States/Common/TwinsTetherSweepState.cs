@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
 using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
@@ -31,8 +31,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         private int TotalDuration => GatherPhase + SweepPhase + GazePhase + RecoveryPhase;
 
         private float MaxOrbitSpeed => Context.IsDeathMode ? 0.034f : 0.028f;
-        private const float StartRadius = 500f;
-        private const float EndRadius = 310f;
+        private static float StartRadius => 1050f;
+        private static float EndRadius => 610f;
 
         private TwinsStateContext Context;
         private int comboStep;

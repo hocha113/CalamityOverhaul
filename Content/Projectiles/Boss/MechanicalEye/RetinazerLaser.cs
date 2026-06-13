@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
             Projectile.hostile = true;
             Projectile.friendly = false;
             Projectile.timeLeft = (int)maxTimeLeft;
-            Projectile.extraUpdates = 2;
+            Projectile.extraUpdates = 1;
             if (CWRRef.GetBossRushActive() || Main.zenithWorld || Main.getGoodWorld) {
                 Projectile.extraUpdates += 1;
             }

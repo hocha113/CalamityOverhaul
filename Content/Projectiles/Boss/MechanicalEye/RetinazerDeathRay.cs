@@ -68,15 +68,16 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
                 SoundEngine.PlaySound(SoundID.Zombie104 with { Volume = 0.8f, Pitch = FlameTheme ? -0.25f : 0.1f, MaxInstances = 3 }, Projectile.Center);
             }
 
+            //宽度展开/收束缓动
+            float collapseStart = Duration - CollapseTime;
+
             //锚定与朝向:跟随宿主旋转(状态机驱动npc.rotation完成扫射)
-            if (owner.Alives()) {
+            if (owner.Alives() && Timer < collapseStart) {
                 Vector2 dir = (owner.rotation + MathHelper.PiOver2).ToRotationVector2();
                 Projectile.Center = owner.Center + dir * 46f;
                 Projectile.rotation = dir.ToRotation();
             }
 
-            //宽度展开/收束缓动
-            float collapseStart = Duration - CollapseTime;
             if (Timer < ExpandTime) {
                 float t = Timer / ExpandTime;
                 beamWidth = MathHelper.Lerp(2f, MaxWidth, CWRUtils.EaseOutCubic(t));

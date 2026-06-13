@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>
         /// 射线追踪角速度(弧度/帧)——刻意限制，确保可以被跑动摆脱
         /// </summary>
-        private float TrackTurnRate => Context.IsDeathMode ? 0.019f : 0.014f;
+        private float TrackTurnRate => Context.IsDeathMode ? 0.008f : 0.007f;
 
         private TwinsStateContext Context;
         private int comboStep;
