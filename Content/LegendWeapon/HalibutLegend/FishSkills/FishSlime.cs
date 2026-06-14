@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         //计算追踪加速度
                         Vector2 trackingAccel = toTarget.SafeNormalize(Vector2.Zero) * trackingStrength;
 
-            //追踪：加速度叠层，非直接改 velocity
+                        //追踪：加速度叠层，非直接改 velocity
                         Projectile.velocity += trackingAccel;
 
                         //限制最大速度，但允许重力和弹跳的自然速度

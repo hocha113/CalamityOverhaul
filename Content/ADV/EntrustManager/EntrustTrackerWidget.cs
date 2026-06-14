@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.HackTimes;
+﻿using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.UIs.StorageUIs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -313,10 +313,10 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 }
             }
             if (entry.Progress > 0f && entry.Status != QuestEntryStatus.Completed) {
-                contentH += 20;; // 进度条
+                contentH += 20; ; // 进度条
             }
-            contentH += 16;; // 底部边距
-            contentH += (int)entry.GetTrackerContentTopPadding();; // 顶部间距
+            contentH += 16; ; // 底部边距
+            contentH += (int)entry.GetTrackerContentTopPadding(); ; // 顶部间距
             // 条目自定义额外高度（用于容纳按钮等元素）
             contentH += Math.Max(0, entry.GetTrackerExtraHeight());
 

@@ -161,7 +161,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         /// <summary>两侧副图标动画</summary>
         private static void UpdateSideIconsAnimation() {
             if (currentMainIcon < 0) {
-            //无选中时淡出副图标
+                //无选中时淡出副图标
                 for (int i = 0; i < 2; i++) {
                     sideIconFade[i] = Math.Max(sideIconFade[i] - FadeSpeed * 1.5f, 0f);
                     sideIconScale[i] = Math.Max(sideIconScale[i] - ScaleSpeed * 1.2f, 0f);

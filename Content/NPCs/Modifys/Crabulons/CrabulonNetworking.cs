@@ -1,5 +1,4 @@
-﻿using InnoVault.GameSystem;
-using System.IO;
+﻿using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Shaders;

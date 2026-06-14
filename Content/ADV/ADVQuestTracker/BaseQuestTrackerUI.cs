@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;

@@ -872,7 +872,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 0.9f * lightIntensity, 0.2f * lightIntensity, 0.2f * lightIntensity);
         }
 
-            //椭圆轨道(倾斜伪3D)
+        //椭圆轨道(倾斜伪3D)
         private Vector2 GetEllipseOrbitPos(Vector2 center, float angle, float radiusX, float radiusY, float tilt) {
             float x = MathF.Cos(angle) * radiusX;
             float y = MathF.Sin(angle) * radiusY;

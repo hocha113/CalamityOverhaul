@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.EntrustManager.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -938,7 +938,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             Rectangle contentRect = GetContentRect(panelRect);
 
             float totalH = GetTotalEntriesHeight();
-            if (totalH <= contentRect.Height) return;; // 不需要滚动条
+            if (totalH <= contentRect.Height) return; ; // 不需要滚动条
 
             float viewRatio = contentRect.Height / totalH;
             float scrollRatio = scrollOffset / Math.Max(1f, totalH - contentRect.Height);

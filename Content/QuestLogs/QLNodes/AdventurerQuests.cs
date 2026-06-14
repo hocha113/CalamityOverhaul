@@ -854,8 +854,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                     if (tile != null && tile.HasTile) {
                         if (tile.TileType == TileID.Cloud
                             || tile.TileType == TileID.RainCloud
-                            || tile.TileType == TileID.Sunplate)
-                        {
+                            || tile.TileType == TileID.Sunplate) {
                             cloudCount++;
                             if (cloudCount >= threshold) {
                                 return true;

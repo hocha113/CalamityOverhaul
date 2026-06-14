@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
             //如果是女神闪电，增加额外的威力感
             if (isGoddessLightning) {
-            //女神闪电额外增粗30%
+                //女神闪电额外增粗30%
             }
 
             return finalWidth;

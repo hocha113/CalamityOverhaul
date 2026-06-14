@@ -804,7 +804,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //按距离选行为
             if (distanceToTarget > adjustedThrowRange) {
-            //远距直接投掷
+                //远距直接投掷
                 AttackType = 3;
                 State = HandState.WindingUp;
                 StateTimer = 0;

@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SpawnChargeDust();
             }
 
-                //蓄力音效
+            //蓄力音效
             if (StateTimer % 12 == 0) {
                 SoundEngine.PlaySound(SoundID.Item30 with {
                     Volume = 0.3f * progress,

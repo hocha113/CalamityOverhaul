@@ -270,7 +270,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Owner.velocity *= 0.2f;
             }
 
-        //终极爆炸
+            //终极爆炸
             SpawnUltimateExplosion();
             screenShakeIntensity = 25f;
 
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (currentPhase == DashPhase.Dashing) {
                 target.velocity += dashDirection * 35f;
 
-            //每5敌人生成爆炸
+                //每5敌人生成爆炸
                 if (hitEnemyCount % 5 == 0) {
                     SpawnHitExplosion(target.Center);
                 }
