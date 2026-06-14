@@ -746,7 +746,6 @@ namespace CalamityOverhaul.Content.Items.Melee
     internal class SporeCloud : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "SporeCloud";
-        private int startCanHitCooldown;//弹幕堆叠所会造成极高伤害的问题始终存在，所以使用这个控制开始造成伤害的时机来错开伤害阶段
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 24;
@@ -755,9 +754,8 @@ namespace CalamityOverhaul.Content.Items.Melee
             Projectile.hostile = false;
             Projectile.friendly = true;
             Projectile.timeLeft = 60;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 25;
-            startCanHitCooldown = Main.rand.Next(Projectile.localNPCHitCooldown);
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 25;
         }
 
         public override void AI() {
@@ -772,7 +770,6 @@ namespace CalamityOverhaul.Content.Items.Melee
             VaultUtils.ClockFrame(ref Projectile.frame, 5, 3);
         }
 
-        public override bool? CanHitNPC(NPC target) => Projectile.timeLeft >= 90 - startCanHitCooldown ? false : base.CanHitNPC(target);
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Poisoned, 1200);
             Projectile.timeLeft -= 15;

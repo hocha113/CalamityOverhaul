@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void SetDefaults() {
             Item.width = Item.height = 120;
-            Item.damage = 90;
+            Item.damage = 190;
             Item.knockBack = 6;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = null;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override void SetDefaults() {
             Item.height = 132;
             Item.width = 134;
-            Item.damage = 890;
+            Item.damage = 1090;
             Item.knockBack = 8;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = null;
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         //刀尖距离持握点的长度
         private float BladeReach => (IsEX ? 168f : 150f) * (IsFinisher ? 1.08f : 1f);
         //光束伤害系数
-        private float BeamDamageMul => IsEX ? 0.75f : 0.5f;
+        private float BeamDamageMul => 1f;
         //光束数量
         private int BeamCount => IsFinisher ? (IsEX ? 5 : 3) : 1;
 
