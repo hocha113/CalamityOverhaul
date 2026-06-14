@@ -19,13 +19,14 @@ namespace CalamityOverhaul.Content.Structures
     {
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = WorldGenSystem.IndustrializationGenMessage.Value;
-            if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
-                SpawnWindGrivenGenerator();
-            }
-            if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
-                SpawnWGGCollectorTile();
-            }
+            
             if (CWRRef.Has) {
+                if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
+                    SpawnWindGrivenGenerator();
+                }
+                if (Main.getGoodWorld && WorldGenDensitySave.GetDensity("WGGCollector") != StructureDensity.Extinction) {
+                    SpawnWGGCollectorTile();
+                }
                 if (WorldGenDensitySave.GetDensity("JunkmanBase") != StructureDensity.Extinction) {
                     JunkmanBase.DoLoad<JunkmanBase>();
                 }
