@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public readonly static Dictionary<string, FishSkill> NameToInstance = [];
         public int ID => TypeToID[GetType()];
         public virtual int ResearchDuration => 60 * 20;
-        public virtual string IconTexture => CWRConstant.UI + "Halibut/FishSkill/" + Name;
+        public virtual string IconTexture => CWRConstant.UI + "FishSkill/" + Name;
         public Texture2D Icon => TypeToTex[GetType()];
         /// <summary>
         /// 技能冷却时间，单位为帧
