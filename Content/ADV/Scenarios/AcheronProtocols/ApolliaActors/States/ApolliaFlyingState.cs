@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -6,11 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States
 {
     /// <summary>
-    /// 飞行状态——阿波利娅飞行越过障碍物或深坑，使用单帧Jump纹理。
-    /// 起飞前扫描前方障碍的高度和宽度，动态规划三阶段弧线（爬升→巡航→下降），
-    /// 一次飞行连续越过多个障碍，避免反复起降。
-    /// 接近目标时自动减速并提前下降，不会飞过头。
-    /// 下降时若脚下仍是深坑则保持滑翔直到找到可着陆地面
+    /// 飞行状态：阿波利娅飞行越过障碍物或深坑，使用单帧Jump纹理。 起飞前扫描前方障碍的高度和宽度，动态规划三阶段弧线（爬升→巡航→下降）， 一次飞行连续越过多个障碍，避免反复起降。 接近目标时自动减速并提前下降，不会飞过头。 下降时若脚下仍是深坑则保持滑翔直到找到可着陆地面
     /// </summary>
     internal class ApolliaFlyingState : IApolliaState
     {
@@ -36,7 +32,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
         private float obstacleEndX;
 
         /// <summary>
+
         /// 着陆后的状态工厂。若为 null，则使用默认逻辑（Follow→Walking，Hold→Idle）
+
         /// </summary>
         private readonly Func<ApolliaActor, IApolliaState> onLand;
 
@@ -139,7 +137,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                     break;
 
                 case Phase.Landing:
-                    //平滑减速着陆——逐渐减小下落速度，柔和接近地面
+                    //平滑减速着陆：逐渐减小下落速度，柔和接近地面
                     float distToGround = landingGroundY - actor.Position.Y;
                     float landingDecel = MathHelper.Clamp(distToGround / 60f, 0.05f, 1f);
                     actor.Velocity.Y = MathHelper.Lerp(actor.Velocity.Y, MathHelper.Clamp(distToGround * 0.12f, 0.3f, 3f), 0.15f);
@@ -187,8 +185,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
         #region 障碍扫描
 
         /// <summary>
-        /// 扫描角色前方障碍区域的最大高度和总宽度（像素），
-        /// 同时考虑墙壁和深坑，连续3格无障碍视为障碍区域结束
+
+        /// 扫描角色前方障碍区域的最大高度和总宽度（像素）， 同时考虑墙壁和深坑，连续3格无障碍视为障碍区域结束
+
         /// </summary>
         private static void ScanObstacleExtent(ApolliaActor actor, int dir, out float height, out float width) {
             int footTileY = (int)((actor.Position.Y + actor.Height) / 16f);
@@ -206,7 +205,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
 
                 bool columnBlocked = false;
 
-                //检测墙壁——从脚底往上扫4格
+                //检测墙壁：从脚底往上扫4格
                 for (int dy = 0; dy <= 4; dy++) {
                     int tileY = footTileY - dy;
                     if (!WorldGen.InWorld(tileX, tileY)) continue;
@@ -217,7 +216,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                     }
                 }
 
-                //检测深坑——脚下6格内无地面
+                //检测深坑：脚下6格内无地面
                 bool hasGround = false;
                 for (int dy = 0; dy < 6; dy++) {
                     int tileY = footTileY + dy;
@@ -247,7 +246,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
         }
 
         /// <summary>
+
         /// 检测角色当前位置正下方是否是深坑（8格内无可着陆地面）
+
         /// </summary>
         private static bool IsOverGap(ApolliaActor actor) {
             int tileX = (int)(actor.Center.X / 16f);

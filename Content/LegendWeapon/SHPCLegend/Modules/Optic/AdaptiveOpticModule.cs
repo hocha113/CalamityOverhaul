@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         //自适应莱姆绿
         public override Color TintColor => new(170, 255, 120);
 
-        /// <summary>光束基准速度（与 CyberTraceBeamProj.Speed 一致），用于解算拦截点</summary>
+        /// <summary>光束基准速度，同 CyberTraceBeamProj.Speed，解算拦截点</summary>
         private const float BeamBaseSpeed = 14f;
         private const float LockRange = 1000f;
         private const float MovingThreshold = 2f;

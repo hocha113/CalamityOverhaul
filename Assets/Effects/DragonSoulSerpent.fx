@@ -1,7 +1,7 @@
 // ============================================================================
-// DragonSoulSerpent.fx 翠龙之魂
-// +X 为龙首朝向；C# 按速度旋转 quad
-// ps_3_0 / vs_3_0
+//DragonSoulSerpent.fx 翠龙之魂
+//+X 为龙首朝向；C# 按速度旋转 quad
+//ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -65,7 +65,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float py = p.y - wave * 0.20 * tailAmount;
 
     //--------------------------------------------------------------------
-    // 龙首：主颅圆 + 前伸吻部
+    //龙首：主颅圆 + 前伸吻部
     //--------------------------------------------------------------------
     float headDist = length(float2((p.x - 0.46) * 1.15, py * 1.30));
     float head = smoothstep(0.36, 0.16, headDist);
@@ -75,7 +75,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     head = max(head, snout);
 
     //--------------------------------------------------------------------
-    // 躯体：自龙首向 -x 渐细的蜿蜒长躯
+    //躯体：自龙首向 -x 渐细的蜿蜒长躯
     //--------------------------------------------------------------------
     float halfW = lerp(0.035, 0.24, smoothstep(-1.0, 0.46, p.x));
     float body = smoothstep(halfW, halfW * 0.32, abs(py));
@@ -89,7 +89,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     body *= shred;
 
     //--------------------------------------------------------------------
-    // 背鳍棘刺：沿背脊的三角棘，随波形起伏
+    //背鳍棘刺：沿背脊的三角棘，随波形起伏
     //--------------------------------------------------------------------
     float ridge = abs(frac(p.x * 4.2 + uSeed * 2.3) - 0.5) * 2.0;
     float spikeShape = smoothstep(0.42, 0.95, 1.0 - ridge);
@@ -97,7 +97,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float fin = spikeShape * finBand * smoothstep(-0.80, -0.30, p.x) * step(p.x, 0.40) * shred;
 
     //--------------------------------------------------------------------
-    // 后掠双角：自颅顶向后上方掠出
+    //后掠双角：自颅顶向后上方掠出
     //--------------------------------------------------------------------
     float2 hornDir = normalize(float2(-0.72, -0.69));
     float horn1 = Spike(float2(p.x, py), float2(0.40, -0.16), hornDir, 0.36, 0.045);
@@ -107,7 +107,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float ghost = max(max(head, body), max(fin * 0.9, horns));
 
     //--------------------------------------------------------------------
-    // 鳞光：躯体上滚动的鳞片高光
+    //鳞光：躯体上滚动的鳞片高光
     //--------------------------------------------------------------------
     float nScale = tex2D(noiseSamp, float2(p.x * 2.6 - uTime * 0.7 + uSeed, py * 3.2)).r;
     float scaleGlint = smoothstep(0.58, 0.84, nScale) * body;
@@ -117,7 +117,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float headCore = smoothstep(0.28, 0.05, headDist);
 
     //--------------------------------------------------------------------
-    // 金瞳：狂怒时燃起赤金之光
+    //金瞳：狂怒时燃起赤金之光
     //--------------------------------------------------------------------
     float eyeDist = length(float2((p.x - 0.50) * 1.9, (py + 0.06) * 1.9));
     float eyeHole = smoothstep(0.115, 0.05, eyeDist) * head;
@@ -126,7 +126,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float3 eyeGlow = lerp(cEyeCalm, cEyeRage, uRage) * eyeHole * (0.9 + uRage * 1.4);
 
     //--------------------------------------------------------------------
-    // 咆哮之口：吻部下方开合的暗洞，狂怒时大张
+    //咆哮之口：吻部下方开合的暗洞，狂怒时大张
     //--------------------------------------------------------------------
     float mouthOpen = 0.30 + 0.25 * sin(uTime * 5.0 + uSeed * 9.0) + 0.55 * uRage;
     float mouthDist = length(float2((p.x - 0.62) * 1.1, (py + 0.10) * 2.0));
@@ -135,7 +135,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float holes = saturate(eyeHole + mouthHole);
 
     //--------------------------------------------------------------------
-    // 颜色：深藻绿边缘 → 叶绿躯体 → 鎏金亮芯
+    //颜色：深藻绿边缘 → 叶绿躯体 → 鎏金亮芯
     //--------------------------------------------------------------------
     float3 cEdge = float3(0.05, 0.20, 0.11);
     float3 cBody = float3(0.26, 0.74, 0.36);

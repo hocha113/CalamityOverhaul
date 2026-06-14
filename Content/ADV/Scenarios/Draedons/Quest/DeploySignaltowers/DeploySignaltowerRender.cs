@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -161,10 +161,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 DrawTowerImage(spriteBatch);
             }
         }
-
-        /// <summary>
-        /// 更新数据文本，带乱码效果
-        /// </summary>
         private static void UpdateDataText() {
             dataUpdateTimer += 0.08f;//加快更新速度
 
@@ -194,10 +190,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 line.FlickerPhase += 0.15f;
             }
         }
-
-        /// <summary>
-        /// 生成随机科技数据行
-        /// </summary>
         private static string GenerateRandomDataLine() {
             string template = techDataTemplates[Main.rand.Next(techDataTemplates.Length)];
 
@@ -240,10 +232,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
 
             return template;
         }
-
-        /// <summary>
-        /// 绘制信息框
-        /// </summary>
         private static void DrawInfoBox(SpriteBatch sb) {
             Vector2 boxPos = GetInfoBoxScreenPos();
             Rectangle boxRect = new Rectangle(
@@ -289,10 +277,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             //绘制数据波动可视化
             DrawDataWaveform(sb, boxRect, alpha, techColor);
         }
-
-        /// <summary>
-        /// 绘制信息框背景
-        /// </summary>
         private static void DrawInfoBoxBackground(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -300,10 +284,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             //深色半透明背景，不要完全遮挡底层效果
             sb.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), new Color(5, 10, 18) * (alpha * 0.75f));
         }
-
-        /// <summary>
-        /// 绘制信息框边框
-        /// </summary>
         private static void DrawInfoBoxBorder(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -328,10 +308,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DrawCornerTechEnhanced(sb, new Vector2(rect.X + 10, rect.Bottom - 10), techColor * (alpha * 0.9f), MathHelper.Pi);
             DrawCornerTechEnhanced(sb, new Vector2(rect.Right - 10, rect.Bottom - 10), techColor * (alpha * 0.9f), MathHelper.PiOver2);
         }
-
-        /// <summary>
-        /// 绘制增强版角落装饰
-        /// </summary>
         private static void DrawCornerTechEnhanced(SpriteBatch sb, Vector2 pos, Color color, float rotation) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -347,10 +323,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             sb.Draw(pixel, pos, new Rectangle(0, 0, 1, 1), color * 0.5f, rotation,
                 new Vector2(0.5f), new Vector2(size * 0.6f, size * 0.15f), SpriteEffects.None, 0f);
         }
-
-        /// <summary>
-        /// 绘制信息框标题栏
-        /// </summary>
         private static void DrawInfoBoxHeader(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -382,10 +354,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             sb.Draw(pixel, new Rectangle(headerRect.X, headerRect.Bottom + 3, headerRect.Width, 1),
                 techColor * (alpha * 0.3f));
         }
-
-        /// <summary>
-        /// 绘制信息框数据流
-        /// </summary>
         private static void DrawInfoBoxDataStreams(SpriteBatch sb, Rectangle rect, float alpha) {
             foreach (var stream in dataStreams) {
                 if (stream.Position.X >= rect.X && stream.Position.X <= rect.Right &&
@@ -394,10 +362,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 }
             }
         }
-
-        /// <summary>
-        /// 绘制数据文本
-        /// </summary>
         private static void DrawInfoBoxDataTextEnhanced(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
             if (currentDataLines.Count == 0) return;
 
@@ -450,10 +414,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 textPos.Y += lineHeight;
             }
         }
-
-        /// <summary>
-        /// 绘制信息框扫描线
-        /// </summary>
         private static void DrawInfoBoxScanLines(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -467,10 +427,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                     scanColor, 0f, Vector2.Zero, new Vector2(rect.Width - 8, 2f + layer), SpriteEffects.None, 0f);
             }
         }
-
-        /// <summary>
-        /// 绘制数据波动可视化
-        /// </summary>
         private static void DrawDataWaveform(SpriteBatch sb, Rectangle rect, float alpha, Color techColor) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -663,10 +619,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
         #endregion
-
-        /// <summary>
-        /// 更新图片展示动画状态
-        /// </summary>
         private static void UpdateImageAnimation() {
             //淡入和缩放
             if (imageFadeProgress < 1f) {
@@ -686,10 +638,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 SpawnTechParticle();
             }
         }
-
-        /// <summary>
-        /// 绘制信号塔图片
-        /// </summary>
         private static void DrawTowerImage(SpriteBatch spriteBatch) {
             if (DeploySignaltowerShow == null) return;
 
@@ -751,10 +699,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             //绘制边框投影效果
             DrawHologramBorder(spriteBatch, screenPos, DeploySignaltowerShow.Size() * scale, alpha, techColor);
         }
-
-        /// <summary>
-        /// 绘制六角网格效果
-        /// </summary>
         private static void DrawHexagonalGrid(SpriteBatch sb, Vector2 center, Vector2 size, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -782,10 +726,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 );
             }
         }
-
-        /// <summary>
-        /// 绘制扫描线效果
-        /// </summary>
         private static void DrawScanLines(SpriteBatch sb, Vector2 center, Vector2 size, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -830,10 +770,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 );
             }
         }
-
-        /// <summary>
-        /// 绘制全息投影边框
-        /// </summary>
         private static void DrawHologramBorder(SpriteBatch sb, Vector2 center, Vector2 size, float alpha, Color color) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -860,10 +796,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DrawCornerTech(sb, new Vector2(borderRect.X + 8, borderRect.Bottom - 8), color * borderAlpha, MathHelper.Pi);
             DrawCornerTech(sb, new Vector2(borderRect.Right - 8, borderRect.Bottom - 8), color * borderAlpha, MathHelper.PiOver2);
         }
-
-        /// <summary>
-        /// 绘制角落科技装饰
-        /// </summary>
         private static void DrawCornerTech(SpriteBatch sb, Vector2 pos, Color color, float rotation) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -1058,10 +990,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
         #endregion
-
-        /// <summary>
-        /// 注册展示效果
-        /// </summary>
         internal static void RegisterShowEffect() {
             //重置状态
             showingImage = false;
@@ -1081,10 +1009,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             currentDataLines.Clear();
             hexBlockTimer = 0;
         }
-
-        /// <summary>
-        /// 显示信号塔图片
-        /// </summary>
         internal static void ShowTowerImage() {
             showingImage = true;
             imageFadeProgress = 0f;
@@ -1110,10 +1034,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 MaxInstances = 1
             });
         }
-
-        /// <summary>
-        /// 清理资源，当场景结束时调用
-        /// </summary>
         internal static void Cleanup() {
             showingImage = false;
             imageFadeProgress = 0f;

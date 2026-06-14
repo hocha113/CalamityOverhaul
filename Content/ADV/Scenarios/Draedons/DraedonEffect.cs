@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 {
-    /// <summary>
-    /// 嘉登场景效果
-    /// </summary>
+    /// <summary>嘉登场景效果</summary>
     internal class DraedonSceneEffect : ModSceneEffect
     {
         public override int Music => -1;
@@ -21,9 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(DraedonSky.Name, isActive);
     }
 
-    /// <summary>
-    /// 嘉登科技天空效果
-    /// </summary>
+    /// <summary>嘉登科技天空效果</summary>
     internal class DraedonSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:DraedonSky";
@@ -380,9 +376,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         #endregion
     }
 
-    /// <summary>
-    /// 嘉登场景效果管理器
-    /// </summary>
+    /// <summary>嘉登效果调度</summary>
     internal class DraedonEffect : ModSystem
     {
         public static bool IsActive;

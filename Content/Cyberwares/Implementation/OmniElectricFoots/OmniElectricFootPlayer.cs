@@ -27,11 +27,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
         /// <summary>脚踏地面，雷达 IsReady 用</summary>
         public bool IsOnGround { get; private set; }
 
-        //上一帧的 Y 速度，用于检测起跳瞬间
+        //上帧 Y 速度，检起跳沿
         private float lastVelocityY;
         //上一帧是否绑定地面
         private bool wasGroundedLastFrame;
-        //上一帧蓄力状态，用于在按键被外部切断时清理蓄力姿态
+        //上帧蓄力态，外部断键时清姿态
         private bool wasChargingLastFrame;
         //蓄力姿态的最近一次喷射粒子时间，避免帧率叠加导致粒子爆量
         private int chargeParticleTick;

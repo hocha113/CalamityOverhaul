@@ -4,7 +4,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
 {
     /// <summary>
-    /// SCCA-32 CRP，左臂槽位神经反射处理器
+    /// SCCA-32 CRP，左臂神经反射义体
     /// <br/>常驻 +CritChanceBonus% 暴击、+MoveSpeedBonus 移速
     /// <br/>致命攻击 DodgeChance 概率反射闪避，亢奋 ReflexBoostFrames 帧额外暴击/移速+短暂无敌
     /// <br/>闪避内部冷却 DodgeCooldownFrames 帧，防密集伤害实质无敌

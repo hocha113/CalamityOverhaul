@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
-    /// <summary>
-    /// 阿波利娅行为状态接口——每个具体行为实现为独立类
-    /// </summary>
+    /// <summary>阿波利娅行为状态接口：每个具体行为</summary>
     internal interface IApolliaState
     {
         /// <summary>进入该状态时调用一次</summary>

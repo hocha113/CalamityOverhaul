@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>颅骨主炮：90帧蓄力(72%静默) → 锁定 → <see cref="PrimeSkullBeamProj"/> 大半圈扫射</summary>
+    /// <summary>颅骨主炮：90帧蓄力(72%静默) → 锁定 → PrimeSkullBeamProj 大半圈扫射</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.SkullCannon, typeof(PrimeStateContext))]
     internal class PrimeSkullCannonState : PrimeStateBase
     {

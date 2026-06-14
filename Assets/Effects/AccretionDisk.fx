@@ -1,7 +1,7 @@
 // ============================================================================
-// AccretionDisk.fx 吸积盘/恒星球体
-// EventHorizon AlphaBlend + Accretion Additive；s0+s1
-// ps_3_0
+//AccretionDisk.fx 吸积盘/恒星球体
+//EventHorizon AlphaBlend + Accretion Additive；s0+s1
+//ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);

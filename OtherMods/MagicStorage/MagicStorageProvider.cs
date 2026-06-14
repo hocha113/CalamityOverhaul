@@ -1,4 +1,4 @@
-﻿using InnoVault.Storages;
+using InnoVault.Storages;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -26,7 +26,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
     }
 
     /// <summary>
-    /// Magic Storage模组的存储核心提供者实现，
+    /// Magic Storage模组的存储核心提供者，
     /// 与MagicStorage的所有交互统一经由<see cref="MSRef"/>的反射缓存完成，无编译期依赖
     /// </summary>
     public class MagicStorageProvider : IStorageProvider

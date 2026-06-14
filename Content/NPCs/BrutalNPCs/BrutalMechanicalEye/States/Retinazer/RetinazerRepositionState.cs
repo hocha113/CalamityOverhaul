@@ -3,9 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼一阶段调整位置状态
-    /// </summary>
+    /// <summary>激光眼一阶段调整位置状态</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerRepositionState, typeof(TwinsStateContext))]
     internal class RetinazerRepositionState : TwinsStateBase
     {
@@ -19,10 +17,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         /// <summary>comboStep 固定偏移角表，确定性走位</summary>
         private static readonly float[] PositionAngles =
         [
-            MathHelper.PiOver4,                  // 右上 45°
-            MathHelper.Pi - MathHelper.PiOver4,   // 左上 135°
-            -MathHelper.PiOver4,                  // 右下 -45°
-            MathHelper.Pi + MathHelper.PiOver4    // 左下 225°
+            MathHelper.PiOver4,                  //右上45°
+            MathHelper.Pi - MathHelper.PiOver4,  //左上135°
+            -MathHelper.PiOver4,                 //右下-45°
+            MathHelper.Pi + MathHelper.PiOver4    //左下225°
         ];
 
         private TwinsStateContext Context;

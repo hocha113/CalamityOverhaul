@@ -1,8 +1,6 @@
-﻿namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
+namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 {
-    /// <summary>
-    /// 嘉登/机甲剧情线的存档数据
-    /// </summary>
+    /// <summary>嘉登/机甲剧情线的存档数据</summary>
     public class DraedonADVData : ADVDataModule
     {
         public bool DeploySignaltowerQuestAccepted;

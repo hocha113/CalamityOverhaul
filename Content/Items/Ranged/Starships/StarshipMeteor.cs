@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        //ai[0]：启动延迟帧；ai[1]：陨石雨总数（用于触发星系）
+        //ai[0]启动延迟帧；ai[1]陨石雨总数，触发星系
         private ref float StartDelay => ref Projectile.ai[0];
         private ref float TotalCount => ref Projectile.ai[1];
 

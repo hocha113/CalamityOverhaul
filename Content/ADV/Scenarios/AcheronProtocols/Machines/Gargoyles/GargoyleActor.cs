@@ -1,15 +1,11 @@
-﻿using InnoVault.Actors;
+using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargoyles
 {
-    /// <summary>
-    /// 泰伦虫族石像鬼——单体飞行单位，作为鸟群算法(Boids)中的个体参与集群飞行。
-    /// 每帧由 <see cref="GargoyleBoids"/> 集中计算转向力并写入 <see cref="BoidVelocity"/>，
-    /// 自身只负责应用速度、翅膀动画和绘制
-    /// </summary>
+    /// <summary>泰伦虫族石像鬼：单体飞行单位，作为鸟群算法(Boids)中的个体参与集群飞行。 每帧由 <see cref="GargoyleBoids"/> 集中计算转向力并写入 <see cref="BoidVelocity"/>， 自身只</summary>
     internal class GargoyleActor : Actor
     {
         [VaultLoaden(CWRConstant.ADV + "Draedon/Gargoyle")]
@@ -17,7 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
 
         #region 鸟群状态字段
 
-        /// <summary>鸟群算法速度——由 <see cref="GargoyleBoids.UpdateFlock"/> 每帧写入</summary>
+        /// <summary>鸟群算法速度：由 <see cref="GargoyleBoids.UpdateFlock"/> 每帧写入</summary>
         internal Vector2 BoidVelocity;
 
         /// <summary>深度缩放因子 (0.3~1.2)，模拟远近层次感</summary>
@@ -32,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         /// <summary>流道索引，决定个体沿哪条蛀蜒路径飞行</summary>
         internal int SwarmGroup;
 
-        /// <summary>个体噪声种子——用于湍流场差异化采样，每个个体唯一</summary>
+        /// <summary>个体噪声种子：，每个个体唯一</summary>
         internal float NoiseSeed;
 
         /// <summary>当前序列帧索引 (0~3)</summary>
@@ -74,7 +70,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                 return;
             }
 
-            //鸟群算法每游戏帧只运行一次——第一个更新的石像鬼触发集中计算
+            //鸟群算法每游戏帧只运行一次：第一个更新的石像鬼触发集中计算
             if (Main.GameUpdateCount != lastBoidsFrame) {
                 lastBoidsFrame = Main.GameUpdateCount;
                 var flock = ActorLoader.GetActiveActors<GargoyleActor>();
@@ -97,7 +93,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
             //将鸟群速度写入 Actor.Velocity（ActorLoader 会自动执行 Position += Velocity）
             Velocity = BoidVelocity;
 
-            //朝向平滑跟随速度方向——较快的插值让转向更流畅
+            //朝向平滑跟随速度方向：较快的插值让转向更流畅
             if (BoidVelocity.LengthSquared() > 0.1f) {
                 float targetRot = BoidVelocity.ToRotation();
                 float diff = MathHelper.WrapAngle(targetRot - Rotation);
@@ -112,11 +108,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
             Vector2 drawPos = Center - Main.screenPosition;
             float baseScale = 0.35f * DepthScale;
             float drawRot = Rotation - MathHelper.Pi;
-            //翅膀拍打——Y轴缩放脉动
+            //翅膀拍打：Y轴缩放脉动
             float wingPulse = MathF.Sin(WingPhase);
             Vector2 scaleVec = new(baseScale, baseScale * (1f + wingPulse * 0.18f));
 
-            //深度明暗——远处暗淡，近处明亮
+            //深度明暗：远处暗淡，近处明亮
             float depthNorm = MathHelper.Clamp((DepthScale - 0.35f) / 0.8f, 0f, 1f);
             float brightness = MathHelper.Lerp(0.25f, 0.75f, depthNorm);
             Color bodyColor = new Color(brightness, brightness, brightness * 1.05f) * 0.9f;

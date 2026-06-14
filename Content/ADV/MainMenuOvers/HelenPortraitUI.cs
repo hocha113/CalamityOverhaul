@@ -8,9 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.MainMenuOvers
 {
-    /// <summary>
-    /// 海伦主菜单立绘 UI
-    /// </summary>
+    /// <summary>海伦主菜单立绘 UI</summary>
     internal class HelenPortraitUI : BasePortraitUI
     {
         #region 数据字段
@@ -20,17 +18,17 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
         private bool _unlocked = false; // 是否已解锁
         private float _unlockProgress = 0f; // 解锁进度动画
 
-        // 动画计时器
+        //动画计时器
         private float _waveTimer = 0f;
         private float _bubbleTimer = 0f;
 
-        // 粒子系统
+        //粒子系统
         private readonly List<BubbleParticle> _bubbles = [];
         private int _bubbleSpawnTimer = 0;
         private readonly List<WaterRipple> _ripples = [];
         private int _rippleSpawnTimer = 0;
 
-        // 重写基类属性
+        //重写基类属性
         protected override Vector2 GetIconBasePosition() => new Vector2(
             Main.screenWidth / 2 - IconSize / 2 + IconSpacing / 2,
             Main.screenHeight - IconSize - IconBottomMargin
@@ -201,7 +199,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 return;
             }
 
-            // 解锁动画
+            //解锁动画
             if (_unlocked && _unlockProgress < 1f) {
                 _unlockProgress += 0.03f;
             }
@@ -209,7 +207,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
                 _unlockProgress -= 0.03f;
             }
 
-            // 动画计时器
+            //动画计时器
             _waveTimer += 0.035f;
             _bubbleTimer += 0.025f;
             UpdatePulseTimer();
@@ -287,12 +285,12 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Vector2 iconCenter = IconPosition + new Vector2(IconSize / 2);
             bool hoverIcon = IconHitBox.Contains(MousePosition.ToPoint()) && CanInteract();
 
-            // 绘制水波纹
+            //绘制水波纹
             foreach (var ripple in _ripples) {
                 ripple.Draw(spriteBatch, _iconAlpha * _unlockProgress);
             }
 
-            // 绘制气泡粒子
+            //绘制气泡粒子
             foreach (var bubble in _bubbles) {
                 bubble.Draw(spriteBatch, _iconAlpha * 0.8f);
             }
@@ -307,7 +305,7 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             Color bgColor = new Color(5, 20, 28) * (_iconAlpha * 0.9f);
             DrawBaseBackground(spriteBatch, bgRect, _iconAlpha, hoverIcon, bgColor);
 
-            // 头像绘制
+            //头像绘制
             float iconScale = IconSize / Math.Max(iconTex.Width, iconTex.Height);
             if (hoverIcon) {
                 iconScale *= 1.08f + (float)Math.Sin(_waveTimer * 1.8f) * 0.04f;
@@ -322,10 +320,10 @@ namespace CalamityOverhaul.Content.ADV.MainMenuOvers
             spriteBatch.Draw(iconTex, iconDrawPos, null, iconColor,
                 0f, iconTex.Size() / 2, iconScale, SpriteEffects.None, 0f);
 
-            // 深海边框
+            //深海边框
             DrawOceanFrame(spriteBatch, bgRect, _iconAlpha, (float)Math.Sin(_pulseTimer * 1.5f) * 0.5f + 0.5f);
 
-            // 解锁动画特效
+            //解锁动画特效
             if (_unlockProgress > 0f && _unlockProgress < 1f) {
                 DrawUnlockEffect(spriteBatch, iconCenter, _unlockProgress);
             }

@@ -17,44 +17,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerLaserMatrix";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserMatrix;
 
-        /// <summary>
-        /// 定位阶段
-        /// </summary>
+        /// <summary>定位阶段</summary>
         private int PositionPhase => Context.IsDeathMode ? 28 : 35;
 
-        /// <summary>
-        /// 部署阶段
-        /// </summary>
+        /// <summary>部署阶段</summary>
         private int DeployPhase => Context.IsDeathMode ? 50 : 60;
 
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
+        /// <summary>蓄力阶段</summary>
         private int ChargePhase => Context.IsDeathMode ? 38 : 45;
 
-        /// <summary>
-        /// 发射阶段
-        /// </summary>
+        /// <summary>发射阶段</summary>
         private int FirePhase => Context.IsDeathMode ? 18 : 20;
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
 
-        /// <summary>
-        /// 总时长
-        /// </summary>
+        /// <summary>总时长</summary>
         private int TotalDuration => PositionPhase + DeployPhase + ChargePhase + FirePhase + RecoveryPhase;
 
-        /// <summary>
-        /// 矩阵点数量
-        /// </summary>
+        /// <summary>矩阵点数量</summary>
         private int MatrixPointCount => Context.IsDeathMode ? 5 : 4;
 
-        /// <summary>
-        /// 激光速度
-        /// </summary>
+        /// <summary>激光速度</summary>
         private float LaserSpeed => Context.IsDeathMode ? 14f : 12f;
 
         private TwinsStateContext Context;
@@ -118,9 +102,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>
-        /// 定位阶段
-        /// </summary>
+        /// <summary>定位阶段</summary>
         private void ExecutePositionPhase(NPC npc, Player player) {
             //移动到玩家上方
             Vector2 targetPos = player.Center + new Vector2(0, -450);
@@ -132,9 +114,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             context.SetChargeState(7, progress * 0.2f);
         }
 
-        /// <summary>
-        /// 部署阶段
-        /// </summary>
+        /// <summary>部署阶段</summary>
         private void ExecuteDeployPhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase;
             float progress = phaseTimer / (float)DeployPhase;
@@ -190,9 +170,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             context.SetChargeState(7, 0.2f + progress * 0.3f);
         }
 
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
+        /// <summary>蓄力阶段</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase - DeployPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -246,9 +224,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 发射阶段
-        /// </summary>
+        /// <summary>发射阶段</summary>
         private void ExecuteFirePhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase - DeployPhase - ChargePhase;
 
@@ -317,9 +293,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             FaceTarget(npc, player.Center);
             npc.velocity *= 0.95f;

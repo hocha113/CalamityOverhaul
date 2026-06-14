@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -7,9 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
-    /// <summary>
-    /// 交互逻辑管理器
-    /// </summary>
+    /// <summary>嘉登商店交互</summary>
     internal class DraedonShopInteraction
     {
         private readonly Player player;
@@ -45,9 +43,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             this.shopItems = shopItems;
         }
 
-        /// <summary>
-        /// 处理滚轮滚动
-        /// </summary>
+        /// <summary>处理滚轮滚动</summary>
         public void HandleScroll() {
             //如果正在拖动滚动条，不响应滚轮
             if (scrollBar.IsDragging) return;
@@ -63,9 +59,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
         }
 
-        /// <summary>
-        /// 更新滚动条
-        /// </summary>
+        /// <summary>更新滚动条</summary>
         public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition,
             bool mouseLeftDown, bool mouseLeftRelease) {
             if (shopItems.Count <= MaxVisibleItems) return;
@@ -80,9 +74,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             ScrollOffset = newScrollOffset;
         }
 
-        /// <summary>
-        /// 绘制滚动条
-        /// </summary>
+        /// <summary>绘制滚动条</summary>
         public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch,
             Vector2 panelPosition, float uiAlpha, float circuitPulseTimer) {
             if (shopItems.Count <= MaxVisibleItems) return;
@@ -94,9 +86,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
                 shopItems.Count, MaxVisibleItems, uiAlpha, circuitPulseTimer);
         }
 
-        /// <summary>
-        /// 更新物品选择和购买逻辑
-        /// </summary>
+        /// <summary>更新物品选择和购买逻辑</summary>
         public void UpdateItemSelection(Point mousePoint, Vector2 itemListPos, int panelWidth) {
             int itemListY = (int)itemListPos.Y;
             int itemListX = (int)itemListPos.X;
@@ -197,9 +187,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
         }
 
-        /// <summary>
-        /// 重置长按购买状态
-        /// </summary>
+        /// <summary>重置长按购买状态</summary>
         public void ResetHoldingState() {
             holdingPurchaseIndex = -1;
             holdingPurchaseTimer = 0;
@@ -207,9 +195,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             purchaseCooldown = InitialPurchaseCooldown;
         }
 
-        /// <summary>
-        /// 重置所有交互状态
-        /// </summary>
+        /// <summary>重置所有交互状态</summary>
         public void Reset() {
             HoveredIndex = -1;
             SelectedIndex = -1;

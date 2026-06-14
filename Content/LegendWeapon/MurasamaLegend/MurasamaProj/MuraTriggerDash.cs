@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             int level = MurasamaOverride.GetLevel(Item);
 
-            if (Projectile.ai[0] == 0) {//在这一阶段，弹幕负责飞出
+            if (Projectile.ai[0] == 0) {//飞出阶段
                 Projectile.rotation = Projectile.velocity.ToRotation();
                 Projectile.ai[1]++;
                 if (Projectile.ai[1] > 60 + level * 5) {//级别越高，弹幕的飞行时间便会越加的长

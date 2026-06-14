@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             try {
                 Presets ??= CreateEmptyPresets();
 
-                //读取活跃预设索引（旧存档无此字段则默认0）
+                //活跃预设索引，旧档默认 0
                 ActivePreset = tag.TryGet("SHPC_ActivePreset", out int savedPreset)
                     ? System.Math.Clamp(savedPreset, 0, PresetCount - 1)
                     : 0;
@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                     }
                 }
 
-                //老存档兜底：扫描背包 + 所有预设里已有的 SHPC 改件，确保图鉴不丢
+                //老档：扫背包+预设补图鉴
                 BackfillDiscoveredFromInventoryAndPresets();
             } catch (System.Exception ex) {
                 CWRMod.Instance.Logger.Error($"SHPCPlayer.LoadData Error: {ex}");

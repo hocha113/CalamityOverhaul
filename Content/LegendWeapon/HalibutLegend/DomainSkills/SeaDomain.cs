@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -391,7 +391,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         }
                     }
 
-                    //水压伤害处理（服务器侧）
+                    //水压伤害，dedServ
                     if (doDamageThisTick && Projectile.IsOwnedByLocalPlayer()) {
                         int damage = scaledDamage;
                         if (npc.boss) {
@@ -408,7 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                         //伤害归属玩家
                         npc.SimpleStrikeNPC(damage, npc.direction); //移除不存在的 direction 命名参数
                         npc.AddBuff(BuffID.Wet, 120);
-                        //轻微视觉反馈（客户端自行处理即可）
+                        //轻微视觉反馈，客户端
                         if (!VaultUtils.isServer) {
                             SpawnPressureHitDust(npc, damage);
                         }

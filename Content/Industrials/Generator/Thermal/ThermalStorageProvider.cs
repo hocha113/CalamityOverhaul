@@ -1,4 +1,4 @@
-﻿using InnoVault.Storages;
+using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     }
 
     /// <summary>
-    /// 热力发电机的存储提供者实现
-    /// 用于物流管道向热力发电机输入燃料
+    /// 热力发电机的存储提供者
+    /// 物流管道向热力发电机输入燃料
     /// </summary>
     internal class ThermalStorageProvider : IStorageProvider
     {
@@ -275,8 +275,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
     }
 
     /// <summary>
-    /// MK2热力发电机的存储提供者实现
-    /// 用于物流管道向MK2热力发电机输入燃料
+    /// MK2热力发电机的存储提供者
+    /// 物流管道向MK2热力发电机输入燃料
     /// </summary>
     internal class ThermalMK2StorageProvider : IStorageProvider
     {

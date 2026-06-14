@@ -5,9 +5,7 @@ using System;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
 {
     /// <summary>
-    /// 硫火女巫委托在管理器列表中的自定义条目样式——
-    /// 深红暗色调背景、硫火脉冲边框、火焰色标题、
-    /// 角落余烬装饰
+    /// 硫火女巫委托列表条目样式：深红底、硫火脉冲边框
     /// </summary>
     internal class BrimstoneEntryStyle : IEntrustEntryStyle
     {
@@ -100,7 +98,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
         public void DrawEntryOverlay(SpriteBatch sb, Rectangle entryRect, EntrustEntryData entry, float alpha) {
             var px = VaultAsset.placeholder2.Value;
 
-            //角落余烬装饰——四角微光点
+            //四角余烬微光
             float ornAlpha = alpha * (0.4f + MathF.Sin(pulseTimer * 1.5f) * 0.3f);
             Color ornC = AccentEmber * ornAlpha;
             Vector2[] corners = [

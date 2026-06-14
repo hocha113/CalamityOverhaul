@@ -8,9 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
     /// <summary>
-    /// 石像鬼虫群飞越后的阿波利娅警示对话场景。
+    /// 石像鬼虫群飞越后的阿波利娅警示对话场景
     /// <para>
-    /// 触发时机：<see cref="ApolliaPlayer"/> 中石像鬼演出结束后自动启动。
+    /// 触发时机：<see cref="ApolliaPlayer"/> 中石像鬼演出结束后自动启动
     /// </para>
     /// </summary>
     internal class GargoyleWarningScenario : ADVScenarioBase, ILocalizedModType

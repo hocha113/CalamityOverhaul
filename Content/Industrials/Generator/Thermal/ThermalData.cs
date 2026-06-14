@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         /// </summary>
         internal int BurnTimeRemaining;
         /// <summary>
-        /// 当前燃料总燃烧时间（tick），用于计算进度条
+        /// 当前燃料总燃烧时间（tick），计算进度条
         /// </summary>
         internal int BurnTimeMax;
         /// <summary>
@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             ChargeCool = tag.TryGet("ThermalData_ChargeCool", out int cc) ? cc : 0;
-            // 兼容旧存档的tag名"ThermalData_FEvalue"
+            //兼容旧存档的tag名"ThermalData_FEvalue"
             Temperature = tag.TryGet("ThermalData_Temperature", out float temp) ? temp
                         : tag.TryGet("ThermalData_FEvalue", out float oldTemp) ? oldTemp : 0f;
             BurnTimeRemaining = tag.TryGet("ThermalData_BurnTimeRemaining", out int btr) ? btr : 0;

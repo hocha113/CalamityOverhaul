@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void SetProperty() {
             PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             ai[0] = Main.rand.Next(16);
-            // InnoVault 约定 Lifetime < 0 为不限时；遗漏 Configure 时会在屏幕内永久堆积
+            //InnoVault 约定 Lifetime < 0 为不限时；遗漏 Configure 时会在屏幕内永久堆积
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(28, 42);
                 if (Opacity <= 0f) Opacity = 0.65f;

@@ -1,12 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    /// <summary>
-    /// ADV 数据聚合器，自动管理 <see cref="ADVDataModule"/> 子类
-    /// </summary>
+    /// <summary>ADV 数据聚合器，自动管理 <see cref="ADVDataModule"/> 子类</summary>
     public class ADVSave
     {
         internal const string VersionKey = "__version";
@@ -26,16 +24,12 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        /// <summary>
-        /// 获取指定类型的数据模块
-        /// </summary>
+        /// <summary>获取指定类型的数据模块</summary>
         public T Get<T>() where T : ADVDataModule {
             return (T)_modules[typeof(T)];
         }
 
-        /// <summary>
-        /// 枚举所有已注册的ADV数据模块
-        /// </summary>
+        /// <summary>枚举所有已注册的ADV数据模块</summary>
         public IEnumerable<ADVDataModule> AllModules => _modules.Values;
 
         public virtual TagCompound SaveData() {
@@ -48,11 +42,11 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         public virtual void LoadData(TagCompound tag) {
-            // v0/v1 扁平格式走 ADVLegacyMigration
+            //v0/v1 扁平格式走 ADVLegacyMigration
             if (ADVLegacyMigration.TryLoadFromFlatFormat(tag, _modules.Values)) {
                 return;
             }
-            // v2：按 SaveKey 读子 TagCompound
+            //v2：按 SaveKey 读子 TagCompound
             foreach (var module in _modules.Values) {
                 if (tag.TryGet<TagCompound>(module.SaveKey, out var moduleTag)) {
                     module.LoadFields(moduleTag);
@@ -60,9 +54,7 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        /// <summary>
-        /// 创建当前ADVSave的深拷贝（通过序列化往返实现，所有模块数据独立）
-        /// </summary>
+        /// <summary>创建当前ADVSave的深拷贝（通过序列化往返实现，所有模块数据独立）</summary>
         public ADVSave DeepCopy() {
             var copy = new ADVSave();
             copy.LoadData(SaveData());

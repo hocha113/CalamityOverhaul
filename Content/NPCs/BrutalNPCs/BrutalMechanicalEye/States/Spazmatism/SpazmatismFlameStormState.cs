@@ -14,42 +14,28 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismFlameStorm";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismFlameStorm;
 
-        /// <summary>
-        /// 上升阶段
-        /// </summary>
+        /// <summary>上升阶段</summary>
         private int RisePhase => Context.IsDeathMode ? 35 : 45;
 
         /// <summary>预警阶段</summary>
         private int WarningPhase => Context.IsDeathMode ? 40 : 50;
 
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
+        /// <summary>蓄力阶段</summary>
         private int ChargePhase => Context.IsDeathMode ? 45 : 55;
 
-        /// <summary>
-        /// 风暴阶段
-        /// </summary>
+        /// <summary>风暴阶段</summary>
         private int StormPhase => Context.IsDeathMode ? 130 : 120;
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private int RecoveryPhase => Context.IsDeathMode ? 25 : 30;
 
-        /// <summary>
-        /// 总时长
-        /// </summary>
+        /// <summary>总时长</summary>
         private int TotalDuration => RisePhase + WarningPhase + ChargePhase + StormPhase + RecoveryPhase;
 
-        /// <summary>
-        /// 旋转速度
-        /// </summary>
+        /// <summary>旋转速度</summary>
         private float RotSpeed => Context.IsDeathMode ? 0.075f : 0.06f;
 
-        /// <summary>
-        /// 火球发射间隔
-        /// </summary>
+        /// <summary>火球发射间隔</summary>
         private int FireRate => Context.IsDeathMode ? 8 : 10;
 
         private TwinsStateContext Context;
@@ -115,9 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             return null;
         }
 
-        /// <summary>
-        /// 上升阶段
-        /// </summary>
+        /// <summary>上升阶段</summary>
         private void ExecuteRisePhase(NPC npc, Player player) {
             float progress = Timer / (float)RisePhase;
 
@@ -136,9 +120,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 预警阶段 - 明确显示风暴范围，给玩家逃离时间
-        /// </summary>
+        /// <summary>预警阶段 - 明确显示风暴范围，给玩家逃离时间</summary>
         private void ExecuteWarningPhase(NPC npc, Player player) {
             int phaseTimer = Timer - RisePhase;
             float progress = phaseTimer / (float)WarningPhase;
@@ -213,9 +195,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
+        /// <summary>蓄力阶段</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - RisePhase - WarningPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -263,9 +243,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 风暴阶段
-        /// </summary>
+        /// <summary>风暴阶段</summary>
         private void ExecuteStormPhase(NPC npc, Player player) {
             int phaseTimer = Timer - RisePhase - WarningPhase - ChargePhase;
             float progress = phaseTimer / (float)StormPhase;
@@ -353,9 +331,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             //逐渐恢复
             npc.velocity *= 0.9f;

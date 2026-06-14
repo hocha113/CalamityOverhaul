@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Tiles;
+using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.TileProcessors
 {
     /// <summary>
     /// 转化物质工作台的 TileProcessor
-    /// 负责管理工作台的物品存储、网络同步和UI交互
+    /// 管理工作台的物品存储、网络同步和UI交互
     /// </summary>
     public class TramModuleTP : TileProcessor
     {

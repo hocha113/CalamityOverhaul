@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
 {
     /// <summary>
-    /// 投掷者机器处理器
-    /// 负责存储物品并按设定参数投掷出去
+    /// 投掷者机器TP
+    /// 存物品并按参数投掷
     /// </summary>
     internal class ThrowerTP : BaseBattery
     {
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         }
 
         /// <summary>
-        /// 消耗一个物品用于投掷
+        /// 消耗一个物品投掷
         /// </summary>
         private Item ConsumeOneItem() {
             for (int i = 0; i < StoredItems.Count; i++) {

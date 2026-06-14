@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         public static LocalizedText Line6 { get; private set; }
         public static LocalizedText Line7 { get; private set; }
 
-        //记录Line6的实际索引，用于PreProcessSegment中准确触发奖励
+        //Line6 索引，PreProcessSegment 触发奖励
         private int rewardLineIndex = -1;
 
         //设置场景默认使用硫磺火风格

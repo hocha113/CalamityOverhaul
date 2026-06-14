@@ -14,9 +14,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
     internal class FirstMetSupCal : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
-        /// <summary>
-        /// 玩家是否选择了战斗，并且正在进入战斗场景
-        /// </summary>
+        /// <summary>玩家选战且正进入战斗场景</summary>
         public static bool ThisIsToFight;
         //角色名称本地化
         public static LocalizedText Rolename1 { get; private set; }
@@ -94,8 +92,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             SupCalEffect.IsActive = true;
         }
 
-        //他妈的我最开始设计的时候为什么没考虑到一个角色多种表情的问题，结果现在只能用这种丑陋的方式来实现
-        //你麻痹的为什么要把角色名字和头像强绑定，现在改又不敢改，妈的被自己的设计坑死了
+        //立绘表情靠 portrait key 后缀区分，DialogueBox 名字-头像强绑定遗留
         private const string expressionCloseEye = " ";
         private const string expressionBeTo = " " + " ";
         private const string expressionDespise = " " + " " + " ";
@@ -182,7 +179,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
             protected override void Build() => Add(Rolename2.Value, Choice1Response.Value);
             protected override void OnScenarioComplete() {
-                //确保至尊灾厄不存在，才进行召唤
+                //场上无至尊灾厄才召唤
                 if (!NPC.AnyNPCs(CWRID.NPC_SupremeCalamitas)) {
                     CWRRef.SummonSupCal(Main.LocalPlayer.Center);
                 }
@@ -262,7 +259,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
             Spawned = false;
             RandomTimer = 0;
         }
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_CalamitasClone;//应用于目标NPC
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == CWRID.NPC_CalamitasClone;//CalamitasClone
         public override void OnNPCDeath(NPC npc) {
             if (npc.type == CWRID.NPC_CalamitasClone && !CWRWorld.BossRush) {
                 Spawned = true;

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -314,7 +314,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.3f, Pitch = -0.4f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1.0f, Pitch = -0.2f }, Projectile.Center);
 
-            //延迟杀死弹幕以确保伤害判定
+            //延迟Kill，等伤害判定
             Projectile.timeLeft = 3;
         }
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {

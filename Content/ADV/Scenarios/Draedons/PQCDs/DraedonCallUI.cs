@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops;
 using InnoVault.UIHandles;
@@ -15,30 +15,20 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
 {
-    /// <summary>
-    /// 呼叫框禁用状态接口
-    /// </summary>
+    /// <summary>呼叫框禁用状态接口</summary>
     public interface IDraedonCallDisabledProvider
     {
-        /// <summary>
-        /// 是否禁用呼叫功能
-        /// </summary>
+        /// <summary>是否禁用呼叫功能</summary>
         bool IsCallDisabled { get; }
 
-        /// <summary>
-        /// 禁用原因文本
-        /// </summary>
+        /// <summary>禁用原因文本</summary>
         string DisabledReason { get; }
     }
 
-    /// <summary>
-    /// 嘉登呼叫禁用状态提供者示例实现
-    /// </summary>
+    /// <summary>嘉登呼叫禁用状态提供者示例实现</summary>
     internal class DraedonCallDisabledProvider : IDraedonCallDisabledProvider
     {
-        /// <summary>
-        /// 检查嘉登是否已经存在于世界中
-        /// </summary>
+        /// <summary>检查嘉登是否已经存在于世界中</summary>
         public bool IsCallDisabled {
             get {
                 //检查是否有嘉登NPC存在
@@ -52,22 +42,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             }
         }
 
-        /// <summary>
-        /// 禁用原因文本
-        /// </summary>
+        /// <summary>禁用原因文本</summary>
         public string DisabledReason => DraedonCallUI.DisabledReasonText?.Value ?? "UNAVAILABLE";
     }
 
-    /// <summary>
-    /// 嘉登呼叫UI
-    /// </summary>
+    /// <summary>嘉登呼叫UI</summary>
     internal class DraedonCallUI : UIHandle, ILocalizedModType
     {
         public static DraedonCallUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonCallUI>();
 
-        /// <summary>
-        /// 设置禁用状态提供者
-        /// </summary>
+        /// <summary>设置禁用状态提供者</summary>
         public static IDraedonCallDisabledProvider DisabledProvider = new DraedonCallDisabledProvider();
 
         //UI状态

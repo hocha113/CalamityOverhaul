@@ -11,7 +11,6 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
     /// <summary>俯冲贯穿(普攻)：短整备→2/3趟交叉预警俯冲→阶梯刹车回场，约5秒</summary>
-    /// <para>自轨道绞杀拆出，无撤离静默幕；删回程死时间</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.DiveStrike, typeof(DestroyerStateContext))]
     internal class DestroyerDiveStrikeState : DestroyerStateBase
     {

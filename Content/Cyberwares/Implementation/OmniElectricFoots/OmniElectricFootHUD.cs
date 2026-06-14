@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         //平滑跟随真实进度，避免数值抖动
         private float displayRatio;
-        //蓄力时长的全局计时，用于扫光与电弧节奏，单位秒
+        //蓄力全局计时，扫光/电弧节奏，秒
         private float time;
         //蓄满时的脉冲强度
         private float fullPulse;

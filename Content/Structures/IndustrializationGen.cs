@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.Structures.DatIO;
@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.Structures
 
             int wggCollectorTile = ModContent.TileType<WGGCollectorTile>();
 
-            //支撑地块类型（用于判断底部是否稳定）
+            //支撑地块，判底部稳定
             int[] validGroundTiles = [
                 TileID.Stone, TileID.Mud, TileID.JungleGrass,
                 TileID.ClayBlock, TileID.Silt, TileID.Sandstone
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Structures
                         continue;
                     }
 
-                    //检查 3x5 区域是否为空（用于建筑空间）
+                    //3x5空区检查(建筑空间)
                     for (int i = 0; i < 3; i++) {
                         for (int j = -4; j <= 0; j++) {
                             Point16 check = new(x + i, y + j);

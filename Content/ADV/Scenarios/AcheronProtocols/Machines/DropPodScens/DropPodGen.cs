@@ -5,7 +5,7 @@ using Terraria.WorldBuilding;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
     /// <summary>
-    /// 空降仓子世界生成——完全空旷的世界，不放置任何方块
+    /// 空降仓子世界生成：完全空旷的世界，不放置任何方块
     /// </summary>
     internal class DropPodGen : GenPass
     {

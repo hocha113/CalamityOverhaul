@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 saveRealLifeIndex = body.realLife;
                 bodyCount++;
                 if (body == npc) {
-                    break;//指针跳到自己这里后结束搜索
+                    break;//指针到自身后停搜
                 }
             }
         }
@@ -203,9 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
 
-        /// <summary>
-        /// 读取头部共享视觉状态并叠加本节位置上的充能波，返回最终滤镜参数
-        /// </summary>
+        /// <summary>读头共享视觉+本节充能波，返滤镜参数</summary>
         protected (MechBossVisualMode mode, float intensity, float progress) ReadSegmentVisual(int controllerId, out float wave) {
             var (mode, intensity, progress) = MechBossVisualState.Read(controllerId);
             wave = DestroyerChargeWave.Read(controllerId, BodyFraction);
@@ -236,9 +234,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return -1; //找不到有效头部
         }
 
-        /// <summary>
-        /// 头部是否正处于死亡演出阶段（读取头部经网络同步的状态索引 npc.ai[2]）
-        /// </summary>
+        /// <summary>头部是否正处于死亡演出阶段（读取头部经网络同步的状态索引 npc.ai[2]）</summary>
         private bool HeadInDeathPerformance() {
             int headIndex = (int)npc.realLife;
             if (headIndex < 0 || headIndex >= Main.maxNPCs || Main.npc[headIndex].type != NPCID.TheDestroyer) {
@@ -252,7 +248,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 && (int)head.ai[2] == (int)DestroyerStateIndex.Death;
         }
 
-        /// <summary>死亡演出体节：保活无害，冻结相对前节姿态，保持入演弯曲形态</summary>
+        /// <summary>死亡演出体节：保活无害，冻相对前节姿态</summary>
         private void HandleDeathPerformanceSegment() {
             npc.aiStyle = -1;
 
@@ -362,9 +358,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
 
-        /// <summary>
-        /// 检查吴克是否存活
-        /// </summary>
+        /// <summary>骷髅王存活</summary>
         private bool CheckSkeletronAlive() {
             if (!(CWRWorld.MasterMode && !CWRWorld.BossRush && npc.localAI[3] != -1f))
                 return false;
@@ -376,17 +370,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
 
-        /// <summary>
-        /// 计算无飞行区域的高度
-        /// </summary>
+        /// <summary>禁飞区高度</summary>
         private int CalculateNoFlyZoneHeight() {
             int baseHeight = CWRWorld.MasterMode ? 1500 : 1800;
             return baseHeight - (CWRWorld.Death ? 400 : (int)(400f * (1f - LifeRatio)));
         }
 
-        /// <summary>
-        /// 计算速度、加速度和转向速度
-        /// </summary>
+        /// <summary>速度/加速度/转向</summary>
         private float CalculateSpeedModifiers(out float speed, out float turnSpeed, out float segmentVelocity) {
             speed = CWRWorld.MasterMode ? 0.2f : 0.1f;
             turnSpeed = CWRWorld.MasterMode ? 0.3f : 0.15f;
@@ -403,9 +393,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return IncreaseSpeedMore ? 2f : IncreaseSpeed ? 1.5f : 1f;
         }
 
-        /// <summary>
-        /// 应用速度修正
-        /// </summary>
+        /// <summary>速度修正</summary>
         private void ApplySpeedModifiers(ref float speed, ref float turnSpeed, ref float segmentVelocity, float velocityMultiplier) {
             segmentVelocity += 5f * enrageScale;
             speed += 0.05f * enrageScale;

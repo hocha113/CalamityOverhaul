@@ -39,7 +39,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 更新所有效果
+
         /// </summary>
         public void Update() {
             if (!machine.isWorking) {
@@ -73,7 +75,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 更新气泡效果
+
         /// </summary>
         private void UpdateBubbles() {
             if (VaultUtils.isServer) return;
@@ -98,7 +102,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 生成单个气泡
+
         /// </summary>
         private void SpawnBubble() {
             //从吸入口下方的水域生成气泡
@@ -132,7 +138,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 更新水流效果
+
         /// </summary>
         private void UpdateWaterStreams() {
             if (VaultUtils.isServer) return;
@@ -154,7 +162,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 生成水流粒子
+
         /// </summary>
         private void SpawnWaterStream() {
             Vector2 waterSurfacePos = FindWaterSurface();
@@ -179,7 +189,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 查找水面位置
+
         /// </summary>
         private Vector2 FindWaterSurface() {
             Point startPoint = (machine.Position + new Point16(3, 6)).ToPoint();
@@ -199,9 +211,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
             return Vector2.Zero;
         }
 
-        /// <summary>
-        /// 绘制水龙卷效果
-        /// </summary>
         public void DrawVortex(SpriteBatch spriteBatch) {
             if (vortexIntensity <= 0.01f || VaultUtils.isServer) return;
             if (Cyclone == null || Cyclone.IsDisposed) return;
@@ -269,9 +278,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
             DrawVortexGlow(spriteBatch, intakePos, waterSurfacePos, vortexLength);
         }
 
-        /// <summary>
-        /// 绘制水龙卷发光效果
-        /// </summary>
         private void DrawVortexGlow(SpriteBatch spriteBatch, Vector2 topPos, Vector2 bottomPos, float length) {
             Texture2D vortexTexture = Cyclone.Value;
             float glowIntensity = (float)Math.Sin(vortexPulse) * 0.3f + 0.5f;
@@ -308,7 +314,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 清理所有粒子
+
         /// </summary>
         private void ClearParticles() {
             risingBubbles.Clear();
@@ -317,7 +325,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
     }
 
     /// <summary>
+
     /// 水流粒子类
+
     /// </summary>
     internal class WaterStreamParticle
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
     internal class EbnPlayer : ModPlayer
     {
-        /// <summary>
-        /// 玩家是否达成永恒燃烧的现在结局
-        /// </summary>
+        /// <summary>是否达成 Ebn 结局</summary>
         public bool IsEbn => OnEbn(Player);
 
         #region 数据字段
@@ -20,9 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private float auraPhase = 0f;
         private float pulsePhase = 0f;
         private float wingFlamePhase = 0f;
-        /// <summary>
-        /// 用于 SendClientChanges 变更检测的影子字段
-        /// </summary>
+        /// <summary>SendClientChanges 变更检测快照</summary>
         private bool _syncIsEbn;
 
         private class AuraParticleData
@@ -42,16 +38,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public static bool IsConquered(Player player) => player.TryGetADVSave(out var save) && save.Get<SupCalADVData>().SupCalYharonQuestReward;
 
         #region 网络同步
-        /// <summary>
-        /// 进入世界时自动向其他客户端同步 Ebn 状态
-        /// </summary>
+        /// <summary>进世界同步 Ebn 状态</summary>
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) {
             SendEbnSync(Player, toWho, fromWho);
         }
 
-        /// <summary>
-        /// 当 Ebn 状态与上一帧快照不同时自动发送同步包
-        /// </summary>
+        /// <summary>Ebn 状态变化时发同步包</summary>
         public override void SendClientChanges(ModPlayer clientPlayer) {
             if (((EbnPlayer)clientPlayer)._syncIsEbn != IsEbn) {
                 SendEbnSync(Player);
@@ -63,9 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             ((EbnPlayer)targetCopy)._syncIsEbn = IsEbn;
         }
 
-        /// <summary>
-        /// 立即发送 Ebn 状态同步包。在剧情选择等需要即时同步时调用
-        /// </summary>
+        /// <summary>立即发 Ebn 同步包</summary>
         public static void SendEbnSync(Player player, int toWho = -1, int fromWho = -1) {
             if (VaultUtils.isSinglePlayer) {
                 return;
@@ -77,9 +67,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             packet.Send(toWho, fromWho);
         }
 
-        /// <summary>
-        /// 处理 Ebn 同步网络包
-        /// </summary>
+        /// <summary>Ebn 同步包入口</summary>
         internal static void HandleNetSync(BinaryReader reader, int whoAmI) {
             int playerIndex = reader.ReadByte();
             bool ebnState = reader.ReadBoolean();
@@ -91,7 +79,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             save.Get<SupCalADVData>().EternalBlazingNow = ebnState;
 
-            // 服务端转发给其他客户端
+            //服务端转发给其他客户端
             if (VaultUtils.isServer) {
                 ModPacket packet = CWRMod.Instance.GetPacket();
                 packet.Write((byte)CWRMessageType.EbnTag);

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
 using CalamityOverhaul.OtherMods.NoxusBoss;
 using InnoVault.GameSystem;
@@ -13,9 +13,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
         private static int timer;
         private static bool defeat;
         private static int battleStartTime;
-        /// <summary>
-        /// 是否等待机甲选择UI生成完毕
-        /// </summary>
+        /// <summary>是否等待机甲选择UI生成完毕</summary>
         public static bool AwaitSummonUIbeenGenerated;
         public override bool CanOverride() {
             if (NoxusRef.DraedonNPCIsCompatible()) {

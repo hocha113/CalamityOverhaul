@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
-    /// <summary>空降仓热浪 RenderHandle——EndCapture <see cref="EffectLoader.DropPodHeatHaze"/> 全屏 UV 偏移</summary>
+    /// <summary>空降仓热浪 RenderHandle：EndCapture <see cref="EffectLoader.DropPodHeatHaze"/> 全屏 UV 偏移</summary>
     internal class DropPodHeatHazeRender : RenderHandle
     {
         /// <summary>屏幕归一化坐标 0~1</summary>

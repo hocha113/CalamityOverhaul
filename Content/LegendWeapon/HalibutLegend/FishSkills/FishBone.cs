@@ -1,4 +1,4 @@
-﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         (int)(damage * (2.4f + HalibutData.GetDomainLayer() * 0.9f)),
                         knockback * 0.25f,
                         player.whoAmI,
-                        ai0: ActiveBones.Count //传递索引用于错开动画
+                        ai0: ActiveBones.Count //错开动画索引
                     );
 
                     if (boneProj >= 0 && boneProj < Main.maxProjectiles) {

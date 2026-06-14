@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         //供外部代码（如教程系统）只读查询当前固定二级面板锁定的扇区索引，-1表示未锁定
         public int PinnedSector => pinnedSector;
-        //当前操作面板是否已展开（用于教程系统判定玩家是否已点击核心）
+        //操作面板已展开(教程判定)
         public bool IsExpanded => expanded || expandProgress > 0.6f;
 
         #region 状态
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         private float[] selectAmts;
         //二级信息面板的不透明度，平滑跟随
         private float infoPanelProgress;
-        //当前用于展示的信息面板按钮索引，-1表示无
+        //信息面板按钮索引，-1 无
         private int infoButtonIdx = -1;
         //当前固定二级面板锁定的按钮索引，-1表示无
         private int pinnedSector = -1;
@@ -585,7 +585,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             //左键处理
             if (keyLeftPressState == KeyPressState.Pressed) {
                 if (cyberHover != SHPCCyberPanel.HitKind.None) {
-                    //三级面板悬停区仅用于阻止收起，不响应点击
+                    //三级悬停区只挡收起
                     bool isSkillHover = cyberHover == SHPCCyberPanel.HitKind.Skill1
                         || cyberHover == SHPCCyberPanel.HitKind.Skill2
                         || cyberHover == SHPCCyberPanel.HitKind.Skill3;

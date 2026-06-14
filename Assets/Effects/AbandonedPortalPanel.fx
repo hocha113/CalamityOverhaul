@@ -1,6 +1,6 @@
 // ============================================================================
-// AbandonedPortalPanel.fx 废墟传送门控制台面板
-// AlphaBlend 预乘 alpha
+//AbandonedPortalPanel.fx 废墟传送门控制台面板
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -13,7 +13,7 @@ float uRepair;    //修复进度 0~1
 float uState;     //0损毁 1修复中 2已修复
 float uGlitch;    //故障强度 0~1
 
-// ─── 噪声 ───
+//─── 噪声 ───
 float hash11(float p) {
     p = frac(p * 0.1031);
     p *= p + 33.33;
@@ -47,7 +47,7 @@ float fbm2(float2 p) {
     return v / 0.9375;
 }
 
-// 单一锐利电弧线：基于FBM畸变的水平光带
+//单一锐利电弧线：基于FBM畸变的水平光带
 float arcLine(float2 p, float baseY, float seed, float t) {
     float warp = fbm2(p * 0.012 + float2(t * 0.3, seed)) - 0.5;
     float dy = abs(p.y - baseY - warp * 28.0);
@@ -61,7 +61,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 innerMax = uResolution - float2(uEdgePad, uEdgePad);
     float2 innerSize = innerMax - innerMin;
 
-    // ═══ 圆角矩形SDF（带切角倒角） ═══
+    //═══ 圆角矩形SDF（带切角倒角） ═══
     float2 center = uResolution * 0.5;
     float2 halfSize = innerSize * 0.5;
     float2 dd = abs(pixelPos - center) - halfSize;
@@ -75,15 +75,15 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     float2 uv = saturate((pixelPos - innerMin) / innerSize);
 
-    // ═══ 状态主色：损毁=橙红警告 / 修复中=蓝橙混色 / 已修复=青蓝稳定 ═══
-    float3 brokenAccent  = float3(0.95, 0.32, 0.10);   // 警示橙红
-    float3 repairAccent  = float3(0.45, 0.85, 0.95);   // 启动青蓝
-    float3 stableAccent  = float3(0.55, 0.90, 1.00);   // 稳定青白
+    //═══ 状态主色：损毁=橙红警告 / 修复中=蓝橙混色 / 已修复=青蓝稳定 ═══
+    float3 brokenAccent  = float3(0.95, 0.32, 0.10);   //警示橙红
+    float3 repairAccent  = float3(0.45, 0.85, 0.95);   //启动青蓝
+    float3 stableAccent  = float3(0.55, 0.90, 1.00);   //稳定青白
 
     float3 accent = lerp(brokenAccent, repairAccent, saturate(uRepair));
     accent = lerp(accent, stableAccent, step(1.5, uState));
 
-    // ═══ 1. 锈蚀金属底色（深色泛橄榄绿+棕色） ═══
+    //═══ 1. 锈蚀金属底色（深色泛橄榄绿+棕色） ═══
     float3 baseTop = float3(0.052, 0.044, 0.038);
     float3 baseMid = float3(0.034, 0.030, 0.026);
     float3 baseBot = float3(0.020, 0.017, 0.014);
@@ -92,35 +92,35 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         ? lerp(baseTop, baseMid, uv.y * 2.0)
         : lerp(baseMid, baseBot, (uv.y - 0.5) * 2.0);
 
-    // ═══ 2. 拉丝金属 + 锈斑斑驳纹理 ═══
+    //═══ 2. 拉丝金属 + 锈斑斑驳纹理 ═══
     float brushH = valueNoise(pixelPos * float2(0.06, 0.20));
     float brushV = valueNoise(pixelPos * float2(0.30, 0.04) + 50.0);
     float brushed = brushH * 0.55 + brushV * 0.45;
     bg *= 0.78 + brushed * 0.42;
 
-    // 大尺度锈斑：低频FBM，偏暖色
+    //大尺度锈斑：低频FBM，偏暖色
     float rust = fbm2(pixelPos * 0.018 + float2(110.0, 220.0));
     rust = smoothstep(0.45, 0.95, rust);
     float3 rustColor = float3(0.085, 0.038, 0.018);
     bg += rustColor * rust * 0.55;
 
-    // 微小颗粒/腐蚀颗粒
+    //微小颗粒/腐蚀颗粒
     float grain = valueNoise(pixelPos * 0.55) - 0.5;
     bg += grain * 0.025;
 
-    // ═══ 3. 撕裂裂缝（损毁残留） ═══
-    // 基于FBM变形的少量大裂纹
+    //═══ 3. 撕裂裂缝（损毁残留） ═══
+    //基于FBM变形的少量大裂纹
     float crackVal = fbm2(pixelPos * 0.03 + 12.7);
     float crack = abs(crackVal - 0.5);
     float crackLine = 1.0 - smoothstep(0.0, 0.018, crack);
-    float crackBrokenWeight = 1.0 - saturate(uRepair * 0.8); // 修复后裂痕变淡
+    float crackBrokenWeight = 1.0 - saturate(uRepair * 0.8); //修复后裂痕变淡
     bg -= float3(0.05, 0.03, 0.02) * crackLine * (0.6 + crackBrokenWeight * 0.4);
 
-    // 裂缝中渗出的微弱能量光（修复时增强）
+    //裂缝中渗出的微弱能量光（修复时增强）
     float crackGlowMask = 1.0 - smoothstep(0.0, 0.04, crack);
     bg += accent * crackGlowMask * (0.05 + uRepair * 0.20);
 
-    // ═══ 4. 网格底图（淡薄蓝图层） ═══
+    //═══ 4. 网格底图（淡薄蓝图层） ═══
     float gridSize = 36.0;
     float gx = abs(frac(pixelPos.x / gridSize) - 0.5) * 2.0;
     float gy = abs(frac(pixelPos.y / gridSize) - 0.5) * 2.0;
@@ -139,10 +139,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 gridDim = float3(0.04, 0.06, 0.08);
     bg += gridDim * gridLine * 0.18;
     bg += gridDim * subLine * 0.05;
-    // 网格在裂缝处缺失（被腐蚀）
+    //网格在裂缝处缺失（被腐蚀）
     bg -= gridDim * gridLine * crackGlowMask * 0.6;
 
-    // ═══ 5. 修复进度电路脉冲（多条流动光带） ═══
+    //═══ 5. 修复进度电路脉冲（多条流动光带） ═══
     float circuitAccum = 0.0;
     [unroll]
     for (int ci = 0; ci < 3; ci++) {
@@ -150,33 +150,33 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float lineY = innerMin.y + innerSize.y * (0.18 + ci * 0.30);
         float arc = arcLine(pixelPos, lineY, lineSeed, uTime);
 
-        // 脉冲点沿x方向移动
+        //脉冲点沿x方向移动
         float flow = frac(pixelPos.x / innerSize.x * 0.6 + lineSeed * 0.3 - uTime * (0.18 + ci * 0.04));
         float pulseSpot = exp(-pow(abs(flow - 0.5) * 6.0, 2.0));
         circuitAccum += arc * (0.20 + pulseSpot * 0.85);
     }
-    // 仅当修复推进时电路点亮
+    //仅当修复推进时电路点亮
     float circuitWeight = smoothstep(0.0, 0.05, uRepair) * 0.9 + 0.05;
     bg += accent * circuitAccum * circuitWeight * 0.55;
 
-    // 修复进度填充条：底部从左到右一条流动能量带
+    //修复进度填充条：底部从左到右一条流动能量带
     float repairBarY = uv.y;
     float barBand = smoothstep(0.92, 0.965, repairBarY) * (1.0 - smoothstep(0.985, 1.0, repairBarY));
     float barFill = step(uv.x, uRepair);
     bg += accent * barBand * barFill * 0.55;
     bg += accent * barBand * (1.0 - barFill) * 0.05;
 
-    // ═══ 6. 故障CRT扫描线 + 横向撕裂位移 ═══
-    // 慢速垂直扫描
+    //═══ 6. 故障CRT扫描线 + 横向撕裂位移 ═══
+    //慢速垂直扫描
     float scanCRT = sin(pixelPos.y * 1.65) * 0.5 + 0.5;
     bg *= 0.90 + 0.10 * scanCRT;
 
-    // 故障横条带：根据uGlitch随机出现的撕裂条
+    //故障横条带：根据uGlitch随机出现的撕裂条
     float glitchBand = step(0.96, hash11(floor(pixelPos.y / 6.0) + floor(uTime * 9.0)));
     float glitchAmp = glitchBand * uGlitch * 0.7;
     bg += accent * glitchAmp * 0.18;
 
-    // ═══ 7. 全息扫掠（缓慢从上往下扫一束亮带） ═══
+    //═══ 7. 全息扫掠（缓慢从上往下扫一束亮带） ═══
     float swPhase = frac(uTime * 0.06);
     float swDist = uv.y - swPhase;
     if (swDist < -0.5) swDist += 1.0;
@@ -187,7 +187,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += accent * swGlow * 0.06;
     bg += gridDim * gridLine * swGlow * 0.18;
 
-    // ═══ 8. 浮雕斜面边缘（深刻金属感） ═══
+    //═══ 8. 浮雕斜面边缘（深刻金属感） ═══
     float bevelW = 12.0;
     float bevelMask = saturate(-panelSDF / bevelW);
     bevelMask = 1.0 - bevelMask;
@@ -204,23 +204,23 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float glint = bevelMask * pow(abs(bevelLight), 8.0);
     bg += float3(0.30, 0.22, 0.14) * glint * 0.30;
 
-    // 内凹槽
+    //内凹槽
     float grooveDist = abs(-panelSDF - bevelW);
     float groove = exp(-grooveDist * grooveDist * 0.12) * 0.18;
     bg -= groove * float3(0.04, 0.025, 0.018);
 
-    // ═══ 9. 危险条纹边框（顶部警示斜条） ═══
+    //═══ 9. 危险条纹边框（顶部警示斜条） ═══
     float topBandMask = (1.0 - smoothstep(0.0, 0.035, uv.y));
     float stripeT = sin((pixelPos.x - pixelPos.y - uTime * 26.0) * 0.4) * 0.5 + 0.5;
     float stripe = step(0.5, stripeT);
-    float3 hazardA = float3(0.32, 0.20, 0.04); // 警黄
-    float3 hazardB = float3(0.10, 0.06, 0.02); // 黑
-    // 修复完成后转为青色边框
+    float3 hazardA = float3(0.32, 0.20, 0.04); //警黄
+    float3 hazardB = float3(0.10, 0.06, 0.02); //黑
+    //修复完成后转为青色边框
     float3 hazardCalm = accent * 0.18;
     float3 hazardFinal = lerp(lerp(hazardB, hazardA, stripe), hazardCalm, saturate(uState - 1.0));
     bg = lerp(bg, hazardFinal, topBandMask * 0.85);
 
-    // ═══ 10. 角落警示灯（呼吸） ═══
+    //═══ 10. 角落警示灯（呼吸） ═══
     float2 lamp[4] = {
         innerMin + float2(20.0, 20.0),
         float2(innerMax.x - 20.0, innerMin.y + 20.0),
@@ -231,9 +231,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     for (int li = 0; li < 4; li++) {
         float lDist = length(pixelPos - lamp[li]);
         float lPulse = sin(uTime * (0.9 + li * 0.18) + li * 1.57) * 0.35 + 0.65;
-        // 损毁时只有部分灯闪烁
+        //损毁时只有部分灯闪烁
         float aliveMask = step(uRepair * 4.0 - 0.5, float(li));
-        // 当uState=0且uRepair=0时，aliveMask始终为1; 修复推进时灯逐个点亮
+        //当uState=0且uRepair=0时，aliveMask始终为1; 修复推进时灯逐个点亮
         float lAlive = lerp(1.0 - aliveMask, 1.0, saturate(uRepair));
         float lCore = exp(-lDist * 0.22) * lPulse;
         float lGlow = exp(-lDist * 0.045) * lPulse;
@@ -241,16 +241,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         bg += accent * lGlow * 0.10 * lAlive;
     }
 
-    // ═══ 11. 暗角 ═══
+    //═══ 11. 暗角 ═══
     float2 vig = uv * 2.0 - 1.0;
     float vigStr = dot(vig * float2(0.45, 0.55), vig * float2(0.45, 0.55));
     bg *= saturate(1.0 - vigStr) * 0.35 + 0.65;
 
-    // ═══ 12. 顶部反光（仅在修复完成后明显） ═══
+    //═══ 12. 顶部反光（仅在修复完成后明显） ═══
     float topRef = (1.0 - smoothstep(0.0, 0.18, uv.y)) * (0.20 + saturate(uState - 1.0) * 0.5);
     bg += accent * topRef * 0.10;
 
-    // ═══ 输出 ═══
+    //═══ 输出 ═══
     float fa = uAlpha * edgeAlpha;
     return float4(bg * fa, fa) * vertexColor;
 }

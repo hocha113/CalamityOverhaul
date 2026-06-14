@@ -1,16 +1,11 @@
-﻿using System;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States
 {
-    /// <summary>
-    /// 行走状态——根据指令驱动阿波利娅的移动行为：
-    /// Follow：跟随玩家；Hold：到达后切换到空闲。
-    /// 默认模式下距离远时自动加速到奔跑，接近时减速；遇到障碍时飞行越过。
-    /// walkOnly 模式下全程普通行走速度，不加速奔跑且不触发飞行（用于初次降落靠近等过场）
-    /// </summary>
+    /// <summary>行走状态：根据指令驱动阿波利娅的移动行为： Follow：跟随玩家；Hold：到达后切换到空闲。 默认模式下距离远时自动加速到奔跑，接近时减速；遇到障碍时飞行越过。 walkOnly 模式下全程普通行走速度，不加速奔跑且不触发飞行（</summary>
     internal class ApolliaWalkingState : IApolliaState
     {
         private const float WalkSpeed = 1.8f;
@@ -57,7 +52,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                 return ResolveArrivedState(actor);
             }
 
-            //障碍检测——walkOnly 模式（过场行走）完全跳过，不触发飞行
+            //障碍检测：walkOnly 模式（过场行走）完全跳过，不触发飞行
             //正常模式需要在地面行走足够帧数后才触发，防止着陆后立刻再次起飞
             if (!walkOnly) {
                 if (actor.OnGround) {
@@ -102,7 +97,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
             //地面吸附
             actor.SnapToGround();
 
-            //脚步声——奔跑时更频繁
+            //脚步声：奔跑时更频繁
             int soundInterval = (int)MathHelper.Lerp(20, 10, speedRatio);
             if (stepSoundTimer % soundInterval == 0) {
                 float pitch = MathHelper.Lerp(0.4f, 0.6f, speedRatio);

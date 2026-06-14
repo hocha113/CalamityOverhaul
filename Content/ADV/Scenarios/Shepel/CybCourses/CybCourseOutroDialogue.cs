@@ -7,8 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
     /// <summary>
-    /// 超梦教程通关祝贺对话
-    /// 由 <see cref="HackTimeTutorialLead"/> 在 Phase.Done 时拉起；OnScenarioComplete 拉起 <see cref="CybCourseCompletePanel"/>
+    /// 超梦通关祝贺对话，Done 时由 HackTimeTutorialLead 拉起
     /// </summary>
     internal class CybCourseOutroDialogue : ADVScenarioBase, ILocalizedModType
     {

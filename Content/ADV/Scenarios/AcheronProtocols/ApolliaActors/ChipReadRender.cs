@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -227,7 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             Rectangle shadowRect = new((int)(pos.X - w / 2 + 4), (int)(pos.Y - h / 2 + 5), (int)w, (int)h);
             sb.Draw(px, shadowRect, new Rectangle(0, 0, 1, 1), new Color(5, 0, 15) * (0.5f * alpha));
 
-            //面板背景——深空色
+            //面板背景：深空色
             Rectangle bgRect = new((int)(pos.X - w / 2), (int)(pos.Y - h / 2), (int)w, (int)h);
             sb.Draw(px, bgRect, new Rectangle(0, 0, 1, 1), BgDeep * (0.88f * alpha));
 
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             sb.Draw(px, new Rectangle(bgRect.X, bgRect.Y, b, bgRect.Height), new Rectangle(0, 0, 1, 1), border * 0.85f);
             sb.Draw(px, new Rectangle(bgRect.Right - b, bgRect.Y, b, bgRect.Height), new Rectangle(0, 0, 1, 1), border * 0.85f);
 
-            //角落装饰——星流风格的金色角标
+            //角落装饰：星流风格的金色角标
             int cornerLen = 8;
             Color cornerColor = HeaderGold * (0.8f * alpha);
             //左上
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             sb.Draw(px, new Rectangle((int)barX, (int)barY, (int)barW, (int)barH),
                 new Rectangle(0, 0, 1, 1), new Color(15, 12, 30) * (0.8f * alpha));
 
-            //进度——金色，完成时变绿
+            //进度：金色，完成时变绿
             float t = readProgress / ReadDuration;
             Color barColor = t > 0.85f ? ConfirmGreen : HeaderGold;
             sb.Draw(px, new Rectangle((int)barX, (int)barY, (int)(barW * t), (int)barH),

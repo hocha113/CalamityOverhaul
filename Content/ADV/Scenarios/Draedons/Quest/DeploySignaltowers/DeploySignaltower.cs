@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Items.Placeable;
 using InnoVault.TileProcessors;
 using Terraria;
@@ -78,29 +78,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
     {
         public override int TargetTileID => ModContent.TileType<DeploySignaltowerTile>();
 
-        /// <summary>
-        /// 是否已标记目标点完成
-        /// </summary>
+        /// <summary>是否已标记目标点完成</summary>
         private bool hasMarkedCompletion;
 
-        /// <summary>
-        /// 已完成的目标点索引（-1表示未完成任何点）
-        /// </summary>
+        /// <summary>已完成的目标点索引（-1表示未完成任何点）</summary>
         private int completedTargetIndex = -1;
 
-        /// <summary>
-        /// 连接动画进度计时器
-        /// </summary>
+        /// <summary>连接动画进度计时器</summary>
         private int connectionAnimTimer;
 
-        /// <summary>
-        /// 是否正在播放连接动画
-        /// </summary>
+        /// <summary>是否正在播放连接动画</summary>
         private bool isPlayingConnectionAnim;
 
-        /// <summary>
-        /// 连接动画持续时间（帧数）
-        /// </summary>
+        /// <summary>连接动画持续时间（帧数）</summary>
         private const int ConnectionAnimDuration = 180; //3秒
 
         public override void Update() {
@@ -134,9 +124,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 触发信号塔连接动画
-        /// </summary>
+        /// <summary>触发信号塔连接动画</summary>
         private void TriggerConnectionAnimation() {
             isPlayingConnectionAnim = true;
             connectionAnimTimer = 0;
@@ -156,9 +144,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }, new Vector2(Position.X * 16, Position.Y * 16));
         }
 
-        /// <summary>
-        /// 更新连接动画
-        /// </summary>
+        /// <summary>更新连接动画</summary>
         private void UpdateConnectionAnimation() {
             connectionAnimTimer++;
 
@@ -184,9 +170,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 生成能量聚集特效
-        /// </summary>
+        /// <summary>生成能量聚集特效</summary>
         private static void SpawnEnergyGatherEffect(Vector2 position, float progress) {
             //在信号塔周围生成向中心聚集的粒子
             if (Main.rand.NextBool(2)) {
@@ -203,9 +187,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 生成矩阵雨爆发效果
-        /// </summary>
+        /// <summary>生成矩阵雨爆发效果</summary>
         private static void SpawnMatrixRainBurst(Vector2 position, float progress) {
             //每帧生成多条矩阵雨
             int rainCount = (int)MathHelper.Lerp(3, 8, progress);
@@ -239,9 +221,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 生成矩阵字符粒子
-        /// </summary>
+        /// <summary>生成矩阵字符粒子</summary>
         private static void SpawnMatrixCharacter(Vector2 position, Vector2 velocity, float intensity) {
             //使用Dust模拟字符效果
             Dust charDust = Dust.NewDustPerfect(position, DustID.Electric, velocity);
@@ -261,9 +241,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             charDust.fadeIn = Main.rand.NextFloat(1.2f, 1.6f);
         }
 
-        /// <summary>
-        /// 生成能量脉冲环
-        /// </summary>
+        /// <summary>生成能量脉冲环</summary>
         private static void SpawnEnergyPulseRings(Vector2 position, float progress) {
             //生成向外扩散的能量环
             if (Main.rand.NextBool(3)) {
@@ -297,9 +275,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 当TileProcessor被移除时调用（信号塔被破坏）
-        /// </summary>
+        /// <summary>当TileProcessor被移除时调用（信号塔被破坏）</summary>
         public override void OnKill() {
             //如果该信号塔已完成某个目标点，则取消该目标点的完成状态
             if (hasMarkedCompletion && completedTargetIndex >= 0) {

@@ -1,6 +1,6 @@
 // ============================================================================
-// BreachMatrixAxisHighlight.fx 破译小游戏行列高亮条
-// AlphaBlend
+//BreachMatrixAxisHighlight.fx 破译小游戏行列高亮条
+//AlphaBlend
 // ============================================================================
 
 sampler uImage0 : register(s0);

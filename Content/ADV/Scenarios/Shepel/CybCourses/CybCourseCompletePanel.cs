@@ -12,9 +12,7 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
     /// <summary>
-    /// 教程通关后的居中确认面板
-    /// 复用 EntrustGuideCard 着色器（青色 variant），尺寸放大居中显示
-    /// 提供 RETRY（软重启）与 EXIT（离开超梦）两个按钮
+    /// 教程通关居中面板，RETRY/EXIT，EntrustGuideCard 青色 variant
     /// </summary>
     internal class CybCourseCompletePanel : ModSystem, ILocalizedModType
     {
@@ -61,18 +59,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 
         public override void OnWorldUnload() => Hide();
 
-        /// <summary>
-        /// 拉起完成面板
-        /// </summary>
+        /// <summary>显示完成面板</summary>
         public static void Show() {
             _phase = Phase.FadeIn;
             _alpha = 0f;
             _idleTimer = 0f;
         }
 
-        /// <summary>
-        /// 立刻隐藏完成面板
-        /// </summary>
+        /// <summary>隐藏完成面板</summary>
         public static void Hide() {
             _phase = Phase.Hidden;
             _alpha = 0f;

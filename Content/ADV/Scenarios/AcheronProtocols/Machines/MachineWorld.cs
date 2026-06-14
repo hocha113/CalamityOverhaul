@@ -20,14 +20,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
 
         public static bool Active => SubworldSystem.IsActive<MachineWorld>();
 
-        /// <summary>
-        /// 着陆演出是否已完成（玩家已从空降仓弹出）
-        /// 用于避免每次Update都重复生成着陆Actor
-        /// </summary>
+        /// <summary>着陆演出是否已完成（玩家已从空降仓弹出）</summary>
         public static bool landingCompleted;
 
         /// <summary>
+
         /// 着陆演出初始化是否已执行
+
         /// </summary>
         public static bool landingInitialized;
 
@@ -92,7 +91,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
-        /// 初始化着陆演出——在玩家首次进入世界时生成坠毁的空降仓
+
+        /// 初始化着陆演出：在玩家首次进入世界时生成坠毁的空降仓
+
         /// </summary>
         private static void InitializeLandingScene() {
             if (landingInitialized) {

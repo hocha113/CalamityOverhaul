@@ -6,17 +6,15 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 {
-    /// <summary>
-    /// 硫磺海风格选项框样式
-    /// </summary>
+    /// <summary>硫磺海风格选项框样式</summary>
     internal class SulfseaChoiceBoxStyle : IChoiceBoxStyle
     {
-        // 动画计时器
+        //动画计时器
         private float toxicWavePhase = 0f;
         private float sulfurPulse = 0f;
         private float miasmaTimer = 0f;
 
-        // 粒子系统
+        //粒子系统
         private readonly List<BubblePRT> bubbles = [];
         private int bubbleSpawnTimer = 0;
         private readonly List<AshPRT> ashParticles = [];
@@ -25,7 +23,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         private const float BubbleSideMargin = 20f;
 
         public void Update(Rectangle panelRect, bool active, bool closing) {
-            // 更新动画计时器
+            //更新动画计时器
             toxicWavePhase += 0.022f;
             sulfurPulse += 0.015f;
             miasmaTimer += 0.032f;
@@ -34,7 +32,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             if (sulfurPulse > MathHelper.TwoPi) sulfurPulse -= MathHelper.TwoPi;
             if (miasmaTimer > MathHelper.TwoPi) miasmaTimer -= MathHelper.TwoPi;
 
-            // 气泡粒子更新
+            //气泡粒子更新
             float scaleW = Main.UIScale;
             bubbleSpawnTimer++;
             if (active && !closing && bubbleSpawnTimer >= 12 && bubbles.Count < 15) {
@@ -56,7 +54,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 }
             }
 
-            // 灰烬粒子更新
+            //灰烬粒子更新
             ashSpawnTimer++;
             if (active && !closing && ashSpawnTimer >= 18 && ashParticles.Count < 10) {
                 ashSpawnTimer = 0;
@@ -78,12 +76,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void Draw(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 绘制阴影
+            //绘制阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(6, 8);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.60f));
 
-            // 绘制渐变背景 - 硫磺海配色
+            //绘制渐变背景 - 硫磺海配色
             int segments = 30;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -92,7 +90,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
                 Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
 
-                // 硫磺海配色:深绿、黄绿、带毒的黄色
+                //硫磺海配色:深绿、黄绿、带毒的黄色
                 Color sulfurDeep = new Color(12, 18, 8);
                 Color toxicMid = new Color(28, 38, 15);
                 Color acidEdge = new Color(65, 85, 30);
@@ -105,24 +103,24 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            // 瘴气覆盖层
+            //瘴气覆盖层
             float miasmaEffect = (float)Math.Sin(miasmaTimer * 1.1f) * 0.5f + 0.5f;
             Color miasmaTint = new Color(45, 55, 20) * (alpha * 0.4f * miasmaEffect);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), miasmaTint);
 
-            // 绘制毒波纹理效果
+            //绘制毒波纹理效果
             DrawToxicWaveOverlay(spriteBatch, panelRect, alpha * 0.85f);
 
-            // 绘制内发光
+            //绘制内发光
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.2f) * 0.5f + 0.5f;
             Rectangle inner = panelRect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(pixel, inner, new Rectangle(0, 0, 1, 1), new Color(80, 100, 35) * (alpha * 0.09f * (0.5f + pulse * 0.5f)));
 
-            // 绘制边框
+            //绘制边框
             DrawFrameSulfur(spriteBatch, panelRect, alpha, pulse);
 
-            // 绘制粒子效果
+            //绘制粒子效果
             foreach (var ash in ashParticles) {
                 ash.Draw(spriteBatch, alpha * 0.75f);
             }
@@ -134,19 +132,19 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void DrawChoiceBackground(SpriteBatch spriteBatch, Rectangle choiceRect, bool enabled, float hoverProgress, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 选项背景
+            //选项背景
             Color choiceBg = enabled
                 ? Color.Lerp(new Color(20, 30, 10) * 0.3f, new Color(50, 70, 25) * 0.5f, hoverProgress)
                 : new Color(15, 20, 10) * 0.15f;
 
             spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), choiceBg * alpha);
 
-            // 选项边框
+            //选项边框
             Color edgeColor = GetEdgeColor(alpha);
             if (enabled && hoverProgress > 0.01f) {
                 DrawChoiceBorder(spriteBatch, choiceRect, edgeColor * (hoverProgress * 0.6f));
 
-                // 悬停时的毒液效果
+                //悬停时的毒液效果
                 float toxicGlow = (float)Math.Sin(toxicWavePhase * 2f + hoverProgress * 3f) * 0.5f + 0.5f;
                 Color toxicColor = new Color(100, 140, 50) * (alpha * 0.15f * hoverProgress * toxicGlow);
                 spriteBatch.Draw(pixel, choiceRect, new Rectangle(0, 0, 1, 1), toxicColor);
@@ -223,13 +221,13 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * (alpha * 0.85f);
 
-            // 绘制主边框
+            //绘制主边框
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
             sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
             sb.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
 
-            // 绘制内边框
+            //绘制内边框
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             Color innerC = new Color(140, 170, 70) * (alpha * 0.22f * pulse);
@@ -238,7 +236,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             sb.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
             sb.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
 
-            // 绘制角星装饰
+            //绘制角星装饰
             DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(sb, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f);
             DrawCornerStar(sb, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.65f);

@@ -1,4 +1,4 @@
-﻿using InnoVault.Actors;
+using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
     /// <summary>
-    /// 树木生长动画Actor，用于表示树木快速重新生长的演出效果
+    /// 树木生长动画Actor，表示树木快速重新生长的演出效果
     /// </summary>
     internal class TreeRegrowth : Actor
     {
@@ -23,16 +23,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         private int growthPhase;
         //粒子生成计时器
         private int particleTimer;
-        //视觉高度(用于绘制生长效果)
+        //视觉高度，生长绘制
         private float visualHeight;
         //最大生长高度
         private const float MaxVisualHeight = 200f;
         //生长持续时间
         private const int GrowthDuration = 120;
 
-        //树木类型枚举(用于决定绘制风格)
+        //树木类型，绘制风格
         private TreeVisualType treeVisualType;
-        //随机种子，用于生成一致的随机效果
+        //随机种子，一致随机
         private int randomSeed;
         //树枝数据
         private BranchData[] branches;

@@ -1,6 +1,6 @@
 // ============================================================================
-// CyberDomainPanel.fx 赛博空间领域控制面板背景
-// AlphaBlend 预乘 alpha
+//CyberDomainPanel.fx 赛博空间领域控制面板背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -68,7 +68,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float layerN = saturate(uLayer / 3.0);
     float instab = layerN * uIntensity;
 
-    // ═══ A. 故障水平条带横向位移 ═══
+    //═══ A. 故障水平条带横向位移 ═══
     float gt = floor(uTime * (4.0 + layerN * 6.0));
     float bandY = hash11(gt * 13.37);
     float bandH = 0.005 + hash11(gt * 91.1) * 0.020 * (0.6 + instab);
@@ -82,7 +82,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     r = length(uvc);
     a = atan2(uvc.y, uvc.x);
 
-    // ═══ 1. 深红黑底 ═══
+    //═══ 1. 深红黑底 ═══
     float3 col = lerp(float3(0.060, 0.012, 0.018), float3(0.020, 0.004, 0.008), uv.y);
 
     //fbm 大尺度渍染
@@ -90,7 +90,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     col *= 0.78 + n * 0.5;
     col += float3(0.020, 0.002, 0.004) * (n - 0.5);
 
-    // ═══ 2. 黑墙故障环（多层同心环，随层数推进） ═══
+    //═══ 2. 黑墙故障环（多层同心环，随层数推进） ═══
     //每生效一层就出现一道故障环，最外环越靠边
     [unroll]
     for (int k = 0; k < 3; k++)
@@ -117,7 +117,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col += ringCol * hot * smoothstep(thick * 2.0, 0.0, d) * 0.9 * layerAmt;
     }
 
-    // ═══ 3. 中心黑墙圆盘（领域核心暗示） ═══
+    //═══ 3. 中心黑墙圆盘（领域核心暗示） ═══
     float coreR = 0.10 + layerN * 0.025;
     float coreEdge = smoothstep(coreR + 0.012, coreR - 0.002, r);
     //核心黑色 + 红色脉冲心跳
@@ -131,7 +131,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     col += float3(0.40, 0.06, 0.10) * pow(rays, 8.0)
          * smoothstep(0.45, 0.05, r) * 0.25 * uIntensity;
 
-    // ═══ 4. 数据流方格颗粒 ═══
+    //═══ 4. 数据流方格颗粒 ═══
     float2 cellUV = uv * float2(48.0, 28.0);
     float2 cellId = floor(cellUV);
     float h = hash21(cellId + floor(uTime * 6.0));
@@ -141,7 +141,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         * step(0.15, cellF.y) * step(cellF.y, 0.85);
     col += float3(1.0, 0.25, 0.18) * cellLit * cellShape * 0.7;
 
-    // ═══ 5. 全屏RGB色散扫描线 ═══
+    //═══ 5. 全屏RGB色散扫描线 ═══
     float scan = frac(px.y / 3.0);
     col *= 0.85 + 0.15 * smoothstep(0.0, 0.20, scan) * smoothstep(1.0, 0.80, scan);
 
@@ -150,7 +150,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float swG = exp(-abs(sweep - 0.5) * 14.0);
     col += float3(0.20, 0.04, 0.06) * swG * 0.45;
 
-    // ═══ 6. 故障块着色 ═══
+    //═══ 6. 故障块着色 ═══
     if (inBand > 0.01)
     {
         col.r += inBand * 0.45;
@@ -161,11 +161,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col.b -= disp * 0.2;
     }
 
-    // ═══ 7. 边框暗角 ═══
+    //═══ 7. 边框暗角 ═══
     float vig = saturate(sdf / (uEdgePad + 22.0));
     col *= 0.55 + 0.45 * vig;
 
-    // ═══ 8. 顶部高光带 ═══
+    //═══ 8. 顶部高光带 ═══
     col += float3(0.10, 0.020, 0.025) * (1.0 - smoothstep(0.0, 0.10, uv.y)) * 0.6;
 
     //内边线

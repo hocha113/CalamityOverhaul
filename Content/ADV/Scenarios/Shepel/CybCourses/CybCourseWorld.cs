@@ -115,10 +115,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             }
 
             float t = _entryRevealTime;
-            //三段式时间到 reveal 的映射：
-            //  [0, Hold]                       → reveal = 0（屏幕被蜂窝完全覆盖，蓄势）
-            //  [Hold, Hold+Expand]             → reveal 从 0 平滑到 1.0（波前扩散）
-            //  [Hold+Expand, total]            → reveal 从 1.0 推进到 1.18（整体淡出）
+            //reveal 三段：[0,Hold]=0；[Hold,Hold+Expand] 0→1；[Hold+Expand,total] 1→1.18
             float reveal;
             if (t < EntryHoldDuration) {
                 reveal = 0f;
@@ -179,10 +176,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             Main.spriteBatch.End();
         }
 
-        //绘制加载界面文字层（由DrawSetup在已开启的SpriteBatch内调用）
-        //设计原则：仅五块内容，从上到下形成清晰焦点动线
-        //  ① 顶部识别码（极淡）   ② 标题+副标题+下划线     ③ 雷达盘心百分比（焦点）
-        //  ④ 状态行                ⑤ 底部进度条标签
+        //加载 UI 五块：识别码、标题、雷达百分比、状态行、进度条
         public override void DrawMenu(GameTime gameTime) {
             int sw = Main.screenWidth;
             int sh = Main.screenHeight;

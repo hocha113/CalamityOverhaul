@@ -5,8 +5,8 @@ using Terraria.Localization;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
 {
     /// <summary>
-    /// 鬼妖村正的单条试炼委托条目——<see cref="EntrustEntryData"/> 子类，
-    /// 动态追踪目标Boss的存活状态与血量，为追踪窗口提供战斗进度显示
+    /// 鬼妖村正单条试炼委托，<see cref="EntrustEntryData"/>子类
+    /// 追踪目标Boss存活与血量，供追踪窗口进度
     /// </summary>
     internal class MurasamaTrialQuestEntry : LegendTrialQuestEntry
     {

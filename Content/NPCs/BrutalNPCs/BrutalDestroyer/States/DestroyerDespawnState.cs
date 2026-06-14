@@ -10,9 +10,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 脱战状态
-    /// </summary>
+    /// <summary>脱战状态</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Despawn, typeof(DestroyerStateContext))]
     internal class DestroyerDespawnState : DestroyerStateBase
     {
@@ -49,7 +47,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
     }
 
     /// <summary>死亡演出：锁血停摆，躯体由疏到密殉爆，头部终爆后真死</summary>
-    /// <para>切换与击杀服务端驱动(ai[2])；爆炸/音效/震动客户端本地，多人安全</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Death, typeof(DestroyerStateContext))]
     internal class DestroyerDeathState : DestroyerStateBase
     {
@@ -206,9 +203,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return 1;
         }
 
-        /// <summary>
-        /// 生成一团殉爆：爆炸光团 + 火花四溅 + 余烬 + 烟雾 + 动态光照 + 音效
-        /// </summary>
+        /// <summary>生成一团殉爆：爆炸光团 + 火花四溅 + 余烬 + 烟雾 + 动态光照 + 音效</summary>
         private static void SpawnBlast(Vector2 pos, float scale, bool isFinale) {
             if (VaultUtils.isServer) {
                 return;
@@ -258,9 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>
-        /// 对屏幕内的各体节按概率喷射火花，模拟各处接缝喷火 / 电路过载，屏幕外跳过
-        /// </summary>
+        /// <summary>对屏幕内的各体节按概率喷射火花，模拟各处接缝喷火 / 电路过载，屏幕外跳过</summary>
         private static void SpawnSparksOnVisibleSegments(DestroyerStateContext context, float perSegmentChance, float speed, Color color) {
             if (VaultUtils.isServer) {
                 return;
@@ -279,9 +272,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
         }
 
-        /// <summary>
-        /// 头部终极殉爆 + 全身连锁爆裂 + 强烈屏幕震动
-        /// </summary>
+        /// <summary>头部终极殉爆 + 全身连锁爆裂 + 强烈屏幕震动</summary>
         private void SpawnFinaleBlast(DestroyerStateContext context) {
             if (VaultUtils.isServer) {
                 return;
@@ -313,9 +304,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             KeepSegmentsHarmless(context);
         }
 
-        /// <summary>
-        /// 让躯体各节停止造成伤害且不可受伤，避免演出期间还能撞死玩家或被打出异常
-        /// </summary>
+        /// <summary>让躯体各节停止造成伤害且不可受伤，避免演出期间还能撞死玩家或被打出异常</summary>
         private static void KeepSegmentsHarmless(DestroyerStateContext context) {
             foreach (var seg in context.BodySegments) {
                 if (seg.Alives()) {

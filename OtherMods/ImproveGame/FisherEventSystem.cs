@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using InnoVault.GameSystem;
 using System;
 using System.Reflection;
@@ -17,12 +17,12 @@ namespace CalamityOverhaul.OtherMods.ImproveGame;
 internal class FisherEventSystem : ModSystem
 {
     /// <summary>
-    /// 用于记录是否已经钓过比目鱼
+    /// 记录是否已经钓过比目鱼
     /// </summary>
     private static bool HasCaughtHalibut;
 
     /// <summary>
-    /// 缓存的 GiveCatchToStorage MethodInfo，用于 MonoMod Hook
+    /// 缓存的 GiveCatchToStorage MethodInfo， MonoMod Hook
     /// </summary>
     private static MethodInfo _giveCatchMethod;
 

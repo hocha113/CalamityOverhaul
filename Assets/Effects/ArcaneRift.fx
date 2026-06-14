@@ -1,6 +1,6 @@
 // ============================================================================
-// ArcaneRift.fx 永恒奥秘之座奥术裂隙
-// 正方形画布，裂隙主轴沿 Y，旋转由 C# 精灵完成；s0+s1 AlphaBlend 预乘
+//ArcaneRift.fx 永恒奥秘之座奥术裂隙
+//正方形画布，裂隙主轴沿 Y，旋转由 C# 精灵完成；s0+s1 AlphaBlend 预乘
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -23,7 +23,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     }
     float axialPow = pow(axial, 1.35);
 
-    // 裂隙中线有机扭曲
+    //裂隙中线有机扭曲
     float2 wob = tex2D(noiseTex, float2(p.y * 0.65 + seed, uTime * 0.11 + seed * 3.7)).rg;
     float centerline = (wob.r - 0.5) * 0.34 * axial;
     float halfWidth = (0.05 + 0.13 * riftOpen) * axialPow;
@@ -31,7 +31,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     float d = abs(p.x - centerline);
 
-    // 内部虚空
+    //内部虚空
     float innerMask = smoothstep(halfWidth, halfWidth * 0.45, d) * riftOpen;
 
     //虚空内的缓慢星流
@@ -47,7 +47,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     voidColor += float3(0.45, 0.85, 1.0) * star1 * innerMask;
     voidColor += float3(0.75, 0.4, 1.0) * star2 * innerMask;
 
-    // 灼热裂缘
+    //灼热裂缘
     float rimBand = smoothstep(halfWidth * 1.65, halfWidth, d) - smoothstep(halfWidth, halfWidth * 0.45, d);
     rimBand = saturate(rimBand);
     float rimFlicker = 0.75 + 0.5 * tex2D(noiseTex, float2(p.y * 3.4 - uTime * 0.9, seed + 0.31)).r;
@@ -56,7 +56,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float rimMix = saturate(abs(p.y) * 1.2 + 0.25 * (wob.g - 0.5));
     float3 rimColor = lerp(rimGold, rimViolet, rimMix) * rimFlicker * 1.7;
 
-    // 侧向奥术电弧
+    //侧向奥术电弧
     float arcNoise = tex2D(noiseTex, float2(p.y * 2.6 + seed * 7.0, uTime * 0.5)).g;
     float ridge = 1.0 - abs(arcNoise * 2.0 - 1.0);
     float arcReach = smoothstep(0.62 * axialPow + halfWidth, halfWidth, d);
@@ -65,7 +65,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     arcs *= smoothstep(0.35, 0.75, arcGate);
     float3 arcColor = float3(0.62, 0.35, 1.0) * arcs * 2.1;
 
-    // 爆发脉冲
+    //爆发脉冲
     float ellipseDist = length(float2(p.x - centerline, p.y * 0.55));
     float pulseRadius = pulse * 1.25;
     float pulseBand = 1.0 - smoothstep(0.0, 0.16 + pulse * 0.1, abs(ellipseDist - pulseRadius));
@@ -73,7 +73,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float pulseNoise = 0.7 + 0.5 * tex2D(noiseTex, float2(atan2(p.y, p.x - centerline) * 0.6 + seed, pulse)).r;
     float3 pulseColor = float3(0.85, 0.55, 1.0) * pulseBand * pulseFade * pulseNoise * riftOpen * 1.5;
 
-    // 合成预乘 alpha
+    //合成预乘 alpha
     float rimAlpha = rimBand * riftOpen;
     float alpha = saturate(innerMask + rimAlpha * 0.9 + arcs * 0.7 + pulseBand * pulseFade * 0.55);
     alpha *= fadeAlpha * axialPow;

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Items.Materials;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +10,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
     internal class ShopHandle
     {
-        /// <summary>
-        /// 价格缓存，避免重复计算
-        /// </summary>
+        /// <summary>价格缓存，避免重复计算</summary>
         private static readonly Dictionary<int, int> priceCache = new();
 
-        /// <summary>
-        /// 处理商店物品列表
-        /// </summary>
+        /// <summary>处理商店物品列表</summary>
         public static void Handle(List<ShopItem> shopItems) {
             HashSet<int> addedItems = new(); //防止重复添加
             List<ShopItem> tempItems = new();
@@ -64,9 +60,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             shopItems.AddRange(tempItems);
         }
 
-        /// <summary>
-        /// 检查配方是否包含嘉登材料
-        /// </summary>
+        /// <summary>检查配方是否包含嘉登材料</summary>
         private static bool ContainsDraedonMaterials(Recipe recipe) {
             return recipe.requiredItem.Any(item =>
                 item.type == CWRID.Item_ExoPrism ||
@@ -75,9 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             );
         }
 
-        /// <summary>
-        /// 计算合理的价格
-        /// </summary>
+        /// <summary>计算合理的价格</summary>
         private static int CalculateReasonablePrice(Recipe recipe) {
             int resultType = recipe.createItem.type;
 
@@ -105,9 +97,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             return calculatedPrice;
         }
 
-        /// <summary>
-        /// 通过材料计算价格
-        /// </summary>
+        /// <summary>通过材料计算价格</summary>
         private static int CalculatePriceFromMaterials(Recipe recipe) {
             int totalMaterialValue = 0;
             int validMaterialCount = 0;
@@ -147,9 +137,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             return finalPrice;
         }
 
-        /// <summary>
-        /// 递归获取材料价值（防止无限递归）
-        /// </summary>
+        /// <summary>递归获取材料价值（防止无限递归）</summary>
         private static int GetMaterialValueRecursive(int itemType, int depth) {
             //最大递归深度限制
             const int maxDepth = 3;
@@ -215,9 +203,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             return calculatedValue;
         }
 
-        /// <summary>
-        /// 根据稀有度调整价格
-        /// </summary>
+        /// <summary>根据稀有度调整价格</summary>
         private static int AdjustPriceByRarity(int basePrice, int rarity) {
             float multiplier = rarity switch {
                 >= ItemRarityID.Red => 2.0f,      //红色及以上
@@ -236,9 +222,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             return (int)(basePrice * multiplier);
         }
 
-        /// <summary>
-        /// 根据稀有度估算价格
-        /// </summary>
+        /// <summary>根据稀有度估算价格</summary>
         private static int EstimatePriceByRarity(int rarity) {
             return rarity switch {
                 >= ItemRarityID.Red => Item.buyPrice(platinum: 5),
@@ -255,25 +239,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             };
         }
 
-        /// <summary>
-        /// 获取物品稀有度
-        /// </summary>
+        /// <summary>获取物品稀有度</summary>
         private static int GetItemRarity(int itemType) {
             Item item = new Item(itemType);
             return item.rare;
         }
 
-        /// <summary>
-        /// 获取物品名称（用于排序）
-        /// </summary>
+        /// <summary>获取物品名称（用于排序）</summary>
         private static string GetItemName(int itemType) {
             Item item = new Item(itemType);
             return item.Name ?? "";
         }
 
-        /// <summary>
-        /// 清除价格缓存（在世界重载时调用）
-        /// </summary>
+        /// <summary>清除价格缓存（在世界重载时调用）</summary>
         public static void ClearCache() {
             priceCache.Clear();
         }

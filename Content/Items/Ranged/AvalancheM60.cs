@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.damage = 62;
             Item.useAmmo = AmmoID.Snowball;
             Item.shoot = ProjectileID.Bullet;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.noUseGraphic = true;
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private int onFireTime;
         /// <summary>爆发期间的帧动画维持计时</summary>
         private int onFireTime2;
-        /// <summary>持续射击的热度（数值越低射得越久），用于解锁强化弹与过热爆发</summary>
+        /// <summary>持续射击热度，越低射越久，解锁强化弹与过热爆发</summary>
         private int fireRateValue = 20;
         //过热爆发未结束时枪体不要消失
         public override bool StayAlive() => onFireTime > 0;

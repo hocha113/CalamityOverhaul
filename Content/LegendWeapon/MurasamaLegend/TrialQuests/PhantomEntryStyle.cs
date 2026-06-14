@@ -5,9 +5,8 @@ using System;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
 {
     /// <summary>
-    /// 鬼妖村正委托条目样式——合金装备崛起复仇(MGR:R)赤红血狂主题:<br/>
-    /// 黑曜底 + 猩红渐变 + 利刃斩击扫光 + 数据腐蚀 + 血雾Fbm,
-    /// 以GPU着色器担纲背景,CPU负责锐利HUD矢量元素
+    /// 鬼妖村正委托条目，MGR:R赤红血狂主题<br/>
+    /// GPU shader背景+CPU锐利HUD矢量，黑曜底猩红扫光血雾
     /// </summary>
     internal class PhantomEntryStyle : IEntrustEntryStyle
     {
@@ -160,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
             sb.Draw(px, new Rectangle(entryRect.X + 5, entryRect.Bottom - 1,
                 entryRect.Width - 10, 1), uv, borderC * 0.30f);
 
-            //右上"威胁等级"标记(三段V字斜杠)——MGR:R ID标识
+            //右上威胁V字斜杠，MGR ID
             DrawThreatChevrons(sb, entryRect, entry, alpha, intensity);
 
             //追踪态周身电浆抖动外光
@@ -211,7 +210,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
                 _ => CrimsonBright,
             };
 
-            //刀刃造型——细长菱形(代替原大菱形)
+            //刀刃细长菱形，替大菱形
             //外框
             sb.Draw(px, new Vector2(cx, cy), null, iconC * (alpha * pulse),
                 MathHelper.PiOver4, new Vector2(0.5f), new Vector2(7f, 7f), SpriteEffects.None, 0f);

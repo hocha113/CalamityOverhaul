@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.Crafting
 {
     /// <summary>
-    /// 合成结果管理器，负责管理合成结果物品
+    /// 合成结果管理器，管理合成结果物品
     /// </summary>
     public class CraftingResultManager
     {

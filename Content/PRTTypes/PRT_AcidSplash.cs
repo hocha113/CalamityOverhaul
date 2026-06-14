@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 酸液飞溅粒子，用于气泡破裂和硫酸爆发效果
+    /// 酸液飞溅粒子，气泡破裂和硫酸爆发效果
     /// </summary>
     internal class PRT_AcidSplash : BasePRT
     {

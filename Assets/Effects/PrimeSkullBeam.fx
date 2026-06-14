@@ -1,7 +1,7 @@
 // ============================================================================
-// PrimeSkullBeam.fx 颅骨主炮巨型光束
-// UV.x 0枪口→1末端 UV.y 0.5中心；协议同 TwinsDeathRayBeam
-// Additive 预乘 alpha
+//PrimeSkullBeam.fx 颅骨主炮巨型光束
+//UV.x 0枪口→1末端 UV.y 0.5中心；协议同 TwinsDeathRayBeam
+//Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -51,7 +51,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     float cell = tex2D(uImage1, float2(along * 3.2 - uTime * 0.9, uv.y * 1.5)).g;
     float lattice = pow(saturate(cell * 1.4 - 0.35), 2.0) * body * 0.5;
 
-    //=== 齿状行进脉冲（方波——机械感，区别于生物系正弦）===
+    //=== 齿状行进脉冲（方波：机械感，区别于生物系正弦）===
     float pulse = step(0.5, frac(along * 9.0 - uTime * 5.0)) * 0.16 + 0.84;
 
     //=== 电离闪络 ===

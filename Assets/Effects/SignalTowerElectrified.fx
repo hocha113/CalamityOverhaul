@@ -1,6 +1,6 @@
 // ============================================================================
-// SignalTowerElectrified.fx 信号塔过电滤镜
-// 采样 uImage0 作遮罩；Additive 叠加
+//SignalTowerElectrified.fx 信号塔过电滤镜
+//采样 uImage0 作遮罩；Additive 叠加
 // ============================================================================
 
 sampler uImage0 : register(s0);

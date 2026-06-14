@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
     {
         //主色调，弧带与按钮的基础色
         public static readonly Color Cyan = new(86, 220, 240);
-        //略亮的高光色，用于扫光与悬停描边
+        //扫光/悬停描边高光
         public static readonly Color CyanHi = new(170, 245, 255);
         //深色背景槽位
         public static readonly Color SlotBg = new(8, 22, 30);
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         public const float ButtonInnerR = 60f;
         //按钮外弧半径
         public const float ButtonOuterR = 96f;
-        //按钮中心半径，用于摆放图标
+        //按钮中心半径，摆图标
         public const float ButtonMidR = (ButtonInnerR + ButtonOuterR) * 0.5f;
         //信息面板距按钮外缘的偏移
         public const float InfoPanelGap = 18f;

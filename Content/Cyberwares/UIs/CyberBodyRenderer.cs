@@ -93,7 +93,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             {21, 1, 21, 5},     //右太阳穴
             {11, 5, 12, 6},     //左颧骨
             {21, 5, 20, 6},     //右颧骨
-            //下颌线过渡到颈部（斜线确保连接）
+            //下颌颈连接斜线
             {12, 6, 14, 8},     //左下颌
             {20, 6, 18, 8},     //右下颌
             {14, 8, 18, 8},     //下巴
@@ -268,9 +268,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共方法
 
-        /// <summary>
-        ///设置当前人体聚焦的节点和强度，用于选中义体时放大并平移人体
-        /// </summary>
+        /// <summary>聚焦节点，选中义体 zoom/pan</summary>
         public void SetFocusNode(int nodeIndex, float strength) {
             targetFocusStrength = MathHelper.Clamp(strength, 0f, 1f);
             if (nodeIndex >= 0 && nodeIndex < NodeCount) {
@@ -283,18 +281,14 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         public float FocusVisualStrength => EaseOutFocus(focusStrength);
 
-        /// <summary>
-        ///获取指定节点在屏幕上的世界坐标
-        /// </summary>
+        /// <summary>节点屏幕坐标</summary>
         public Vector2 GetNodeWorldPosition(int nodeIndex, Vector2 bodyOrigin) {
             float breathe = MathF.Sin(breathePhase) * 0.8f;
             GetBodyTransform(bodyOrigin, out float s, out Vector2 offset);
             return offset + new Vector2(NodePositions[nodeIndex, 0] * s, NodePositions[nodeIndex, 1] * s + breathe);
         }
 
-        /// <summary>
-        ///推进呼吸和节点脉冲等动画计时器
-        /// </summary>
+        /// <summary>呼吸/scan/脉冲计时</summary>
         public void Update() {
             breathePhase += 0.02f;
             if (breathePhase > MathHelper.TwoPi) breathePhase -= MathHelper.TwoPi;
@@ -317,9 +311,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             currentFocusGrid = Vector2.Lerp(currentFocusGrid, targetFocusGrid, 0.26f + focusStrength * 0.1f);
         }
 
-        /// <summary>
-        ///绘制完整的像素人体，包括填充、内部结构、轮廓和外发光
-        /// </summary>
+        /// <summary>像素人体完整绘制</summary>
         public void DrawBody(SpriteBatch sb, float alpha, Vector2 bodyOrigin, float globalTimer) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;
@@ -381,10 +373,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
         }
 
-        /// <summary>
-        ///绘制赛博植入节点标记
-        ///nodeStates数组标记各节点状态：0普通 1已连接 2高亮激活
-        /// </summary>
+        /// <summary>植入节点，nodeStates 0普通 1已连 2高亮</summary>
         public void DrawNodes(SpriteBatch sb, float alpha, Vector2 bodyOrigin, int[] nodeStates) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
@@ -427,9 +416,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 私有方法
 
-        /// <summary>
-        ///绘制内部电路线，按主经脉、次级结构和毛细分支分层渲染
-        /// </summary>
+        /// <summary>内层电路分层绘制</summary>
         private void DrawInnerCircuits(SpriteBatch sb, Texture2D px, Vector2 bodyOffset, float s, float alpha, float breathe, float globalTimer) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             DrawPrimaryCurves(sb, px, glow, bodyOffset, s, alpha, breathe, globalTimer);
@@ -454,9 +441,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             return 1f - inv * inv * inv;
         }
 
-        /// <summary>
-        ///沿主经脉曲线路径绘制流动能量粒子
-        /// </summary>
+        /// <summary>主经脉流动粒子</summary>
         private void DrawSpineEnergyFlow(SpriteBatch sb, Texture2D px, Vector2 bodyOffset, float s, float alpha, float breathe, float globalTimer) {
             Texture2D glow = CWRAsset.SoftGlow?.Value;
 

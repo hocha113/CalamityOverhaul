@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths;
 using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             float y = startPosition.Y + initialVelocity.Y * t + 0.5f * Gravity * t * t;
             Position = new Vector2(x, y);
 
-            //计算当前速度用于旋转方向: v = v0 + g*t
+            //当前速度，旋转：v=v0+g*t
             float vx = initialVelocity.X;
             float vy = initialVelocity.Y + Gravity * t;
             Vector2 currentVelocity = new Vector2(vx, vy);
@@ -174,7 +174,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         }
 
         /// <summary>
-        /// 落地处理
+        /// 落地
         /// </summary>
         private void OnLand() {
             landed = true;
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             Vector2 origin = texture.Size() / 2f;
             Color color = Lighting.GetColor((int)(Center.X / 16), (int)(Center.Y / 16));
 
-            //计算当前速度用于拖影
+            //当前速度，拖影
             float vx = initialVelocity.X;
             float vy = initialVelocity.Y + Gravity * currentFlightTime;
             Vector2 currentVelocity = new Vector2(vx, vy);

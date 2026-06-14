@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
         }
 
         /// <summary>
-        /// 更新主题特有的效果计时器，子类覆写以实现不同视觉风格
+        /// 更新主题特有的效果计时器，子类覆写以不同视觉风格
         /// </summary>
         public abstract void UpdateThemeEffects();
 

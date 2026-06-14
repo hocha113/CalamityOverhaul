@@ -76,17 +76,17 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             float animTime = LifeTimer / 60f;
             float pulse = MathF.Sin(animTime * 3.5f) * 0.5f + 0.5f;
 
-            // 阴影
+            //阴影
             DrawSoftShadow(sb, px, r, alpha);
 
-            // 渐变背景
+            //渐变背景
             DrawGradientBg(sb, px, r, primary, alpha);
 
-            // 点阵底纹，Untracked 跳过
+            //点阵底纹，Untracked 跳过
             if (kind != StatusKind.Untracked)
                 DrawGridPattern(sb, px, r, primary, alpha);
 
-            // 左侧强调条
+            //左侧强调条
             const int barW = 4;
             float barPulse = IsImportant ? 0.7f + pulse * 0.3f : 0.85f + pulse * 0.15f;
             sb.Draw(px, new Rectangle(r.X, r.Y, barW, r.Height), primary * (alpha * barPulse));
@@ -95,37 +95,37 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             sb.Draw(px, new Rectangle(r.X + barW, r.Y + 1, 5, r.Height - 2),
                 primary * (alpha * 0.05f));
 
-            // 边框
-            // 顶边双线
+            //边框
+            //顶边双线
             sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 2), primary * (alpha * 0.85f));
             sb.Draw(px, new Rectangle(r.X + barW, r.Y + 3, r.Width - barW - 12, 1),
                 primary * (alpha * 0.18f));
-            // 底边渐变
+            //底边渐变
             DrawGradientHLine(sb, px, r.X, r.Bottom - 1, r.Width,
                 primary * (alpha * 0.5f), Color.Transparent);
             DrawGradientHLine(sb, px, r.X, r.Bottom - 2, (int)(r.Width * 0.6f),
                 primary * (alpha * 0.15f), Color.Transparent);
-            // 右侧细线
+            //右侧细线
             sb.Draw(px, new Rectangle(r.Right - 1, r.Y, 1, r.Height),
                 primary * (alpha * 0.2f));
 
-            // 右上斜切
+            //右上斜切
             DrawCornerCut(sb, px, r, primary, alpha);
 
-            // 扫描线
+            //扫描线
             DrawScanLine(sb, px, r, barW, primary, alpha, animTime);
 
-            // 状态图标
+            //状态图标
             int iconCX = r.X + barW + 20;
             int iconCY = r.Y + r.Height / 2;
             DrawStatusIcon(sb, px, iconCX, iconCY, primary, accent, alpha, pulse);
 
-            // 分隔竖线
+            //分隔竖线
             int sepX = r.X + barW + 38;
             sb.Draw(px, new Rectangle(sepX, r.Y + 8, 1, r.Height - 16),
                 primary * (alpha * 0.2f));
 
-            // 状态标签
+            //状态标签
             float textX = sepX + 8;
             string label = GetLabel();
             Color labelC = GetLabelColor();
@@ -134,23 +134,23 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                 new Vector2(textX, r.Y + 8),
                 labelC * MathHelper.Clamp(alpha + labelGlow, 0f, 1f), 0.68f);
 
-            // 标签下划线
+            //标签下划线
             int labelW = (int)(FontAssets.MouseText.Value.MeasureString(label).X * 0.68f);
             int lineMaxW = r.Right - (int)textX - 10;
             DrawGradientHLine(sb, px, (int)textX, r.Y + 23,
                 Math.Min(labelW + 10, lineMaxW),
                 primary * (alpha * 0.25f), Color.Transparent);
 
-            // 委托名称
+            //委托名称
             string displayTitle = TruncateTextToWidth(questTitle, r.Width - (textX - r.X) - 16f, 0.72f);
             Utils.DrawBorderString(sb, displayTitle,
                 new Vector2(textX, r.Y + 28),
                 Color.White * (alpha * 0.92f), 0.72f);
 
-            // 数据灯
+            //数据灯
             DrawDataTicker(sb, px, r, primary, alpha, animTime);
 
-            // 状态叠加
+            //状态叠加
             DrawStatusOverlay(sb, px, r, barW, primary, accent, alpha, pulse, animTime);
         }
 
@@ -288,7 +288,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             sb.Draw(px, new Rectangle(cx, cy - radius, 1, radius * 2 + 1), c);
             const int bLen = 3;
             Color dim = c * 0.6f;
-            // 四角括号
+            //四角括号
             sb.Draw(px, new Rectangle(cx - radius, cy - radius, bLen, 1), dim);
             sb.Draw(px, new Rectangle(cx - radius, cy - radius, 1, bLen), dim);
             sb.Draw(px, new Rectangle(cx + radius - bLen + 1, cy - radius, bLen, 1), dim);
@@ -336,13 +336,13 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             int cx, int cy, int size, Color c, float pulse) {
             Color gc = c * (0.85f + pulse * 0.15f);
             int halfS = size / 2;
-            // 短腿（左下→中间）
+            //短腿（左下→中间）
             for (int i = 0; i < halfS; i++)
                 sb.Draw(px, new Rectangle(cx - halfS + i, cy + i, 2, 1), gc);
-            // 长腿（中间→右上）
+            //长腿（中间→右上）
             for (int i = 0; i < size; i++)
                 sb.Draw(px, new Rectangle(cx - halfS + halfS + i, cy + halfS - 1 - i, 2, 1), gc);
-            // 顶点辉光
+            //顶点辉光
             sb.Draw(px, new Rectangle(cx - 1, cy + halfS - 2, 3, 3), c * (0.3f * pulse));
         }
 
@@ -375,7 +375,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
             switch (kind) {
                 case StatusKind.NewQuest: {
-                    // 向下扩散的水平波纹
+                    //向下扩散的水平波纹
                     float ripple = (animTime * 1.2f) % 1.2f;
                     int rippleY = r.Y + (int)(ripple * r.Height);
                     if (rippleY > r.Y + 1 && rippleY < r.Bottom - 2) {
@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                     break;
                 }
                 case StatusKind.Completed: {
-                    // 对角线金色流光扫过
+                    //对角线金色流光扫过
                     float sweep = (animTime * 0.5f) % 2.5f;
                     if (sweep < 1f) {
                         int sweepX = r.X + (int)(sweep * (r.Width + 30)) - 15;
@@ -402,7 +402,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                     break;
                 }
                 case StatusKind.Suspended: {
-                    // 缓慢琥珀色呼吸叠加
+                    //缓慢琥珀色呼吸叠加
                     float breathe = MathF.Sin(animTime * 1.5f) * 0.025f;
                     if (breathe > 0f)
                         sb.Draw(px, new Rectangle(innerX, r.Y + 2, innerW, r.Height - 4),
@@ -410,7 +410,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
                     break;
                 }
                 case StatusKind.Untracked: {
-                    // 水平暗纹
+                    //水平暗纹
                     for (int sy = r.Y + 4; sy < r.Bottom - 2; sy += 6)
                         sb.Draw(px, new Rectangle(innerX, sy, innerW, 1),
                             Color.Black * (alpha * 0.08f));

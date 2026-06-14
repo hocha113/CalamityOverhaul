@@ -32,36 +32,22 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         #region 常量与枚举
 
-        /// <summary>
-        /// AI主状态
-        /// </summary>
+        /// <summary>AI主状态</summary>
         private enum PrimaryAIState
         {
-            /// <summary>
-            /// 初始化
-            /// </summary>
+            /// <summary>初始化</summary>
             Initialization = 0,
-            /// <summary>
-            /// 登场演出
-            /// </summary>
+            /// <summary>登场演出</summary>
             Debut = 1,
-            /// <summary>
-            /// 常规战斗
-            /// </summary>
+            /// <summary>常规战斗</summary>
             Battle = 2,
-            /// <summary>
-            /// 狂暴战斗(二阶段)
-            /// </summary>
+            /// <summary>狂暴战斗(二阶段)</summary>
             EnragedBattle = 3,
-            /// <summary>
-            /// 逃跑退场
-            /// </summary>
+            /// <summary>逃跑退场</summary>
             Flee = 4
         }
 
-        /// <summary>
-        /// 进入死亡演出的血量阈值（与毁灭者一致，濒死时触发独立殉爆演出）
-        /// </summary>
+        /// <summary>进入死亡演出的血量阈值（与毁灭者一致，濒死时触发独立殉爆演出）</summary>
         private const int DeathPerformanceTriggerLife = 10;
 
         #endregion
@@ -76,19 +62,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         public override int TargetID => NPCID.Spazmatism;
 
-        /// <summary>
-        /// 状态机实例
-        /// </summary>
+        /// <summary>状态机实例</summary>
         protected VaultStateMachine<TwinsStateContext> stateMachine;
 
-        /// <summary>
-        /// 状态上下文
-        /// </summary>
+        /// <summary>状态上下文</summary>
         protected TwinsStateContext stateContext;
 
-        /// <summary>
-        /// 目标玩家
-        /// </summary>
+        /// <summary>目标玩家</summary>
         protected Player player;
 
         public static Color TextColor1 => new(155, 215, 215);
@@ -163,9 +143,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             InitializeStateContext();
         }
 
-        /// <summary>
-        /// 初始化状态上下文和状态机
-        /// </summary>
+        /// <summary>初始化状态上下文和状态机</summary>
         private void InitializeStateContext() {
             stateContext = new TwinsStateContext {
                 Npc = npc,
@@ -227,9 +205,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
 
         #region 工具方法
 
-        /// <summary>
-        /// 查找目标玩家
-        /// </summary>
+        /// <summary>查找目标玩家</summary>
         private void FindPlayer() {
             if (player != null && player.Alives()) {
                 return;
@@ -238,9 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             player = Main.player[npc.target];
         }
 
-        /// <summary>
-        /// 是否进入二阶段
-        /// </summary>
+        /// <summary>是否进入二阶段</summary>
         internal bool IsSecondPhase() {
             //如果还在登场演出阶段，绝对不进入二阶段
             bool isInDebut = (PrimaryAIState)ai[0] == PrimaryAIState.Debut || (PrimaryAIState)ai[0] == PrimaryAIState.Initialization;
@@ -325,9 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return ProtogenesisAI();
         }
 
-        /// <summary>
-        /// 更新帧动画
-        /// </summary>
+        /// <summary>更新帧动画</summary>
         private void UpdateAnimation() {
             stateContext.FrameCount++;
             if (stateContext.FrameCount > 5) {
@@ -336,9 +308,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        /// <summary>
-        /// 更新状态上下文
-        /// </summary>
+        /// <summary>更新状态上下文</summary>
         private void UpdateStateContext() {
             stateContext.Npc = npc;
             stateContext.Target = player;
@@ -352,9 +322,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             CheckSoloRageMode();
         }
 
-        /// <summary>
-        /// 检测独眼狂暴模式
-        /// </summary>
+        /// <summary>检测独眼狂暴模式</summary>
         private void CheckSoloRageMode() {
             //只有在二阶段时才检测独眼狂暴
             if (!stateContext.IsSecondPhase || stateContext.IsSoloRageMode) {
@@ -424,9 +392,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        /// <summary>
-        /// 原生模式AI
-        /// </summary>
+        /// <summary>原生模式AI</summary>
         private bool ProtogenesisAI() {
             //死亡演出接管：跳过常规战斗/转阶段/逃跑逻辑，仅驱动死亡状态机
             if (stateMachine?.CurrentState is TwinsDeathState) {
@@ -484,9 +450,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             return false;
         }
 
-        /// <summary>
-        /// 初始化状态机
-        /// </summary>
+        /// <summary>初始化状态机</summary>
         private void InitializeStateMachine() {
             IVaultState<TwinsStateContext> initialState;
 
@@ -520,9 +484,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             npc.damage = 0;
         }
 
-        /// <summary>
-        /// 检测阶段转换
-        /// </summary>
+        /// <summary>检测阶段转换</summary>
         private void CheckPhaseTransition() {
             bool secondPhase = IsSecondPhase();
 
@@ -547,9 +509,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             }
         }
 
-        /// <summary>
-        /// 执行登场演出
-        /// </summary>
+        /// <summary>执行登场演出</summary>
         private bool ExecuteDebutSequence() {
             if (ai[1] == 0) {
                 npc.life = 1;
@@ -711,9 +671,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
             //常态不推送，Read 零强度
         }
 
-        /// <summary>
-        /// 获取当前纹理
-        /// </summary>
+        /// <summary>获取当前纹理</summary>
         private Texture2D GetCurrentTexture() {
             if (npc.type == NPCID.Spazmatism) {
                 return IsSecondPhase() ? SpazmatismAltAsset.Value : SpazmatismAsset.Value;

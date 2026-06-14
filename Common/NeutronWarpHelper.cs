@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
 namespace CalamityOverhaul.Common
 {
     /// <summary>
-    /// 中子星扭曲辅助——NeutronWarp 着色器替代 CPU 多层叠绘
+    /// 中子星扭曲：NeutronWarp 替 CPU 叠绘
     /// </summary>
     internal static class NeutronWarpHelper
     {

@@ -25,7 +25,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
     }
 
     /// <summary>
+
     /// 硫磺海天空效果
+
     /// </summary>
     internal class SulfurSeaSky : CustomSky, ICWRLoader
     {
@@ -537,12 +539,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
     }
 
     /// <summary>
-    /// 硫磺海场景效果管理器
-    /// <para>生命周期采用声明式计算：IsActive每帧从可观察状态推导，而非手动开关</para>
-    /// <para>激活条件（满足任一即可）：</para>
-    /// <para>1. 老公爵NPC存在且处于友好剧情模式（非战斗状态）</para>
-    /// <para>2. 老公爵相关的对话场景正在运行中</para>
-    /// <para>外部代码不需要手动设置IsActive，只需在需要网络同步OldDukeState等数据时调用Send()</para>
+    /// 硫磺海场景效果，IsActive 由 ComputeShouldBeActive 声明式推导
     /// </summary>
     internal class OldDukeEffect : ModSystem
     {
@@ -555,8 +552,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         private int poisonWaveTimer = 0;
 
         /// <summary>
-        /// 声明式计算当前帧IsActive应有的值
-        /// 这是唯一决定IsActive的地方，不依赖任何手动开关
+        /// 声明式 IsActive，唯一开关入口
         /// </summary>
         private static bool ComputeShouldBeActive() {
             //条件：老公爵相关对话场景正在运行
@@ -570,9 +566,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             return false;
         }
 
-        /// <summary>
-        /// 检查当前运行的场景是否是老公爵相关场景
-        /// </summary>
         private static bool IsOldDukeScenarioRunning() {
             return ScenarioManager.IsActive(nameof(FirstMetOldDuke))
                 || ScenarioManager.IsActive(nameof(CampsiteInteractionDialogue))
@@ -709,7 +702,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 生成从底部上升的毒泡
+
         /// </summary>
         private static void SpawnToxicBubbles() {
             Vector2 spawnPos = new Vector2(
@@ -721,7 +716,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 生成弥漫的酸雾效果
+
         /// </summary>
         private static void SpawnAcidMist() {
             Vector2 spawnPos = new Vector2(
@@ -736,7 +733,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 生成腐蚀性粒子效果
+
         /// </summary>
         private static void SpawnCorrosionParticles() {
             int edge = Main.rand.Next(4);
@@ -780,7 +779,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 生成扩散的毒液波纹
+
         /// </summary>
         private static void SpawnPoisonWave() {
             Vector2 waveCenter = new Vector2(
@@ -811,7 +812,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 生成硫酸爆发效果
+
         /// </summary>
         private static void SpawnSulfuricBurst() {
             Vector2 burstCenter = new Vector2(

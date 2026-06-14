@@ -349,9 +349,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
             }
         }
 
-        /// <summary>
-        /// 尝试打开雷达
-        /// </summary>
+        /// <summary>尝试开雷达</summary>
         private void TryOpenRadial() {
             //骇客时间激活拒绝开盘
             if (HackTime.Active) {

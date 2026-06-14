@@ -1,6 +1,6 @@
 // ============================================================================
-// CyberwareRadialPanel.fx 义体技能雷达背板
-// 仅框架底纹，扇区/图标由 CPU 叠加；AlphaBlend 预乘 alpha
+//CyberwareRadialPanel.fx 义体技能雷达背板
+//仅框架底纹，扇区/图标由 CPU 叠加；AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -71,9 +71,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float outA = 0.0;
 
     //==================================================
-    // 1) FBM 大气底纹：填充整个雷达活动圈
-    //    选用低饱和度的青蓝色，叠加缓慢漂移的两层噪声，形成"接口板内部
-    //    电流余晖"的氛围感。alpha 故意压低，让上层 CPU 扇区清晰可读
+    //1) FBM 大气底纹：填充整个雷达活动圈
+    //选用低饱和度的青蓝色，叠加缓慢漂移的两层噪声，形成"接口板内部
+    //电流余晖"的氛围感。alpha 故意压低，让上层 CPU 扇区清晰可读
     //==================================================
     if (r < uDecoOuterR + 6.0) {
         //把局部坐标转换到 FBM 的输入空间
@@ -99,8 +99,8 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     }
 
     //==================================================
-    // 2) 内弧柔和光带：环本体的内边缘羽化光环
-    //    不画硬线，改用高斯衰减让"内圈口径"自然过渡到中心 iris
+    //2) 内弧柔和光带：环本体的内边缘羽化光环
+    //不画硬线，改用高斯衰减让"内圈口径"自然过渡到中心 iris
     //==================================================
     {
         float innerD = abs(r - uInnerR);
@@ -117,7 +117,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     }
 
     //==================================================
-    // 3) 外弧柔和光带：环本体的外边缘羽化光环
+    //3) 外弧柔和光带：环本体的外边缘羽化光环
     //==================================================
     {
         float outerD = abs(r - uOuterR);
@@ -134,9 +134,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     }
 
     //==================================================
-    // 4) 中心 iris：径向亮度梯度 + 三层向外扩散的脉冲环
-    //    严格避开 v1 的旋转辐条 —— 那种放射状结构非常"机械数据感"，
-    //    本版改为"光圈呼吸 + 脉冲扩散"，更接近接口张开/闭合的有机质感
+    //4) 中心 iris：径向亮度梯度 + 三层向外扩散的脉冲环
+    //严格避开 v1 的旋转辐条 ： 那种放射状结构非常"机械数据感"，
+    //本版改为"光圈呼吸 + 脉冲扩散"，更接近接口张开/闭合的有机质感
     //==================================================
     if (r < uDeadZoneR * 1.18) {
         float irisT = saturate(r / uDeadZoneR);
@@ -180,9 +180,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     }
 
     //==================================================
-    // 5) 外圈大气光晕：取代 v1 的旋转拨码刻度
-    //    用平滑的周向波形扰动一层薄薄的环带 alpha，
-    //    让外圈像"装置外壳上轻轻流动的电场"，而非机械刻度
+    //5) 外圈大气光晕：取代 v1 的旋转拨码刻度
+    //用平滑的周向波形扰动一层薄薄的环带 alpha，
+    //让外圈像"装置外壳上轻轻流动的电场"，而非机械刻度
     //==================================================
     if (r > uOuterR && r < uDecoOuterR + 4.0) {
         float haloMid = (uOuterR + uDecoOuterR) * 0.5;
@@ -210,9 +210,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     }
 
     //==================================================
-    // 6) 入场扩散动画：以圆心向外揭开
-    //    通过 ease 控制可见半径阈值，未到阈值的像素被抹掉 alpha，
-    //    让整圈背板呈现"自圆心向外绽放"的入场感
+    //6) 入场扩散动画：以圆心向外揭开
+    //通过 ease 控制可见半径阈值，未到阈值的像素被抹掉 alpha，
+    //让整圈背板呈现"自圆心向外绽放"的入场感
     //==================================================
     {
         float reveal = smoothstep(ease - 0.18, ease + 0.05, rNorm);
@@ -220,7 +220,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     }
 
     //==================================================
-    // 输出（预乘 alpha 以匹配 AlphaBlend，与 HackRamArc / CyberDomainPanel 一致）
+    //输出（预乘 alpha 以匹配 AlphaBlend，与 HackRamArc / CyberDomainPanel 一致）
     //==================================================
     float finalA = outA * uAlpha;
     return float4(outCol * finalA, finalA);

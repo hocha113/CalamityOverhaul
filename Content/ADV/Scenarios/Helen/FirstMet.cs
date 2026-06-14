@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public static LocalizedText Line19 { get; private set; }
         public static LocalizedText Line20 { get; private set; }
         public static LocalizedText Line21 { get; private set; }
-        // 默认海洋风格
+        //默认海洋风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
         private const string enjoy = " ";
         private const string alt = " " + " ";
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename2.Value, Line2.Value);
             Add(Rolename2.Value, Line3.Value);
             Add(Rolename2.Value, Line4.Value);
-            Add(Rolename2.Value, Line5.Value); // 触发奖励
+            Add(Rolename2.Value, Line5.Value); //触发奖励
             Add(Rolename2.Value + enjoy, Line6.Value);
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename2.Value, Line19.Value);
             Add(Rolename2.Value, Line20.Value);
             Add(Rolename2.Value, Line21.Value, onComplete: () => {
-                LegendWeapon.HalibutLegend.UI.Atlas.HalibutAtlas.Instance?.Open(); // 打开深渊图鉴
+                LegendWeapon.HalibutLegend.UI.Atlas.HalibutAtlas.Instance?.Open(); //打开深渊图鉴
             });
         }
 

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using System.Collections.Generic;
@@ -15,9 +15,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
     {
         public override string Texture => CWRConstant.Item + "Tools/PQCD";
 
-        /// <summary>
-        /// 需要的信号塔数量
-        /// </summary>
+        /// <summary>需要的信号塔数量</summary>
         public const int RequiredSignalTowers = 10;
 
         public static LocalizedText NeedSignalTowersText { get; private set; }
@@ -122,9 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs
             return true;
         }
 
-        /// <summary>
-        /// 获取已完成的信号塔数量
-        /// </summary>
+        /// <summary>获取已完成的信号塔数量</summary>
         private static int GetCompletedTowerCount() {
             if (!SignalTowerTargetManager.IsGenerated) {
                 return 0;

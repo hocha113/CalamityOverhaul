@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 菌泡囊 —— 战士的菌孢破片手雷
-    /// 砸向敌人后引爆，迸发毒孢冲击波，并向四周喷射追踪小孢子破片
-    /// </summary>
+    /// <summary>菌泡囊，砸敌引爆毒孢冲击波+追踪小破片</summary>
     internal class SporeburstPouch : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "SporeburstPouch";
@@ -148,11 +145,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    /// <summary>
-    /// 菌孢破片 —— 战士手雷爆炸时迸射的小型追踪破片
-    /// 短暂滞空后锁定附近敌人并以蛇皮走位追击
-    /// (类名沿用历史命名 SporeBoboRogue 以保持本地化兼容)
-    /// </summary>
+    /// <summary>菌孢破片，手雷迸射追踪破片，类名SporeBoboRogue保留本地化</summary>
     internal class SporeBoboRogue : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

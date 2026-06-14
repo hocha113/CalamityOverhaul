@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                         , color, 0.5f).Configure(60, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _entity: Owner, _followingRateRatio: 1);
                 }
             }
-            //对于位置等基本数据的修改需要确保涉及到的数据被正确赋值后，这也就是为什么这一段会放在最后面
+            //位置等基础数据改写在末尾，等前置赋值完成
             Vector2 offset = (MathHelper.TwoPi / HeavenfallLongbow.MaxVientNum * Index).ToRotationVector2() * 320;
             Projectile.Center = OrigPos + Vector2.Lerp(Vector2.Zero, offset, sengs);
             Projectile.rotation = toMou.ToRotation();

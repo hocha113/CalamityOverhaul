@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         #region 更新
 
         public override void Update() {
-            //关闭动画独立处理
+            //关闭动画
             if (isClosing) {
                 UpdateCloseAnimation();
                 return;

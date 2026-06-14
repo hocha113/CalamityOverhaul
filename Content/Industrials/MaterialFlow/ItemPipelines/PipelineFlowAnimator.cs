@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         /// <summary>缓存的拓扑版本(变化即重建)</summary>
         private int cachedTopologyVersion = -1;
-        /// <summary>上次重建的输出端位置(用于检测同一动画器复用错位)</summary>
+        /// <summary>上次重建输出端(动画器复用错位检测)</summary>
         private Point16 cachedOutputPos = Point16.NegativeOne;
 
         public bool HasValidPath => branchPaths.Count > 0;

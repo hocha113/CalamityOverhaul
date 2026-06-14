@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -9,18 +9,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    /// <summary>
-    /// 音乐展示框系统，从屏幕左下角弹出显示
-    /// </summary>
+    /// <summary>音乐展示框系统，从屏幕左下角弹出显示</summary>
     internal class MusicToast : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
 
         public static MusicToast Instance => UIHandleLoader.GetUIHandleOfType<MusicToast>();
 
-        /// <summary>
-        /// 音乐展示风格枚举
-        /// </summary>
+        /// <summary>音乐展示风格枚举</summary>
         public enum MusicStyle
         {
             Vinyl,      //黑胶唱片风格
@@ -29,9 +25,7 @@ namespace CalamityOverhaul.Content.ADV
             RedNeon     //红色霓虹光谱风格
         }
 
-        /// <summary>
-        /// 音乐数据类
-        /// </summary>
+        /// <summary>音乐数据类</summary>
         public class MusicInfo
         {
             public Texture2D AlbumCover { get; set; }
@@ -105,9 +99,7 @@ namespace CalamityOverhaul.Content.ADV
         }
 
         #region 公共API
-        /// <summary>
-        /// 显示音乐信息
-        /// </summary>
+        /// <summary>显示音乐信息</summary>
         public static void ShowMusic(string title, string artist = null, Texture2D albumCover = null,
             MusicStyle style = MusicStyle.Vinyl, int displayDuration = 300, Action onComplete = null) {
             var music = new MusicInfo {
@@ -121,9 +113,7 @@ namespace CalamityOverhaul.Content.ADV
             Instance.musicQueue.Enqueue(music);
         }
 
-        /// <summary>
-        /// 清空音乐队列
-        /// </summary>
+        /// <summary>清空音乐队列</summary>
         public static void ClearQueue() {
             Instance.musicQueue.Clear();
         }

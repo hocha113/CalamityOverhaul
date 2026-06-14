@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 20;
             Item.shoot = ModContent.ProjectileType<CommandersRay>();
             Item.shootSpeed = 10;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 20;
             Item.shoot = ModContent.ProjectileType<CommandersRay>();
             Item.shootSpeed = 10;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;

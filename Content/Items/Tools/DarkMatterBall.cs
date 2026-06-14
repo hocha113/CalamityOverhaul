@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             set {
                 if (Item.TryGetGlobalItem<DarMatterGlobal>(out var gItem)) {
                     value ??= []; //避免 null 赋值
-                    List<Item> itemList = new(); //用于存储合并后的物品
+                    List<Item> itemList = new(); //合并物品缓存
                     foreach (var item in value) {
                         VaultUtils.MergeItemStacks(itemList, item);
                     }

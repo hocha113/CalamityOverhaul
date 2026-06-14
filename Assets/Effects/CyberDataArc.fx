@@ -1,7 +1,7 @@
 // ============================================================================
-// CyberDataArc.fx 赛博数据电弧
-// Trail 条带 Additive；采样 uNoiseTex
-// ps_3_0 / vs_3_0
+//CyberDataArc.fx 赛博数据电弧
+//Trail 条带 Additive；采样 uNoiseTex
+//ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;

@@ -1,13 +1,11 @@
-﻿using CalamityOverhaul.Content.ADV.Common;
+using CalamityOverhaul.Content.ADV.Common;
 using InnoVault.UIHandles;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    /// <summary>
-    /// 量子塔构建蓝图UI
-    /// </summary>
+    /// <summary>量子塔构建蓝图UI</summary>
     internal class ConstructionBlueprintUI : BaseRecipeDisplayUI
     {
         public static ConstructionBlueprintUI Instance => UIHandleLoader.GetUIHandleOfType<ConstructionBlueprintUI>();

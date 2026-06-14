@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
+using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -11,7 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// 快捷操作管理器，一键放置、一键取出、高亮显示等
+    /// 一键放置/取出/高亮
     /// </summary>
     internal class QuickActionsManager
     {

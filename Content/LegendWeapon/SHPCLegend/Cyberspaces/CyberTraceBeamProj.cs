@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 if (themeIndex < 0) themeIndex = 0;
                 theme = Themes[themeIndex];
                 flyAngle = Projectile.velocity.ToRotation();
-                //ai[1] 由发射处注入，!=0 时作为追踪倍率，未设置（==0）按 1f 处理；负值表示追踪被压制
+                //ai[1] 追踪倍率，0→1f，负值压制
                 homingMul = Projectile.ai[1] != 0f ? Projectile.ai[1] : 1f;
                 //首帧消费改件注入：调整穿透与生命预算
                 if (ExtraPierce > 0) {
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             glitchBurstIntensity *= 0.85f;
             if (glitchBurstIntensity < 0.01f) glitchBurstIntensity = 0f;
 
-            //飞行发光（超驱时高温红炽光）—— 超驱加成降低，避免环境光也跟着过曝
+            //超驱红炽光，加成压低防环境过曝
             Color lightCol = overdriveAmount > 0.1f
                 ? Color.Lerp(theme.Core, OverdriveTheme.Core, overdriveAmount)
                 : theme.Core;
@@ -375,7 +375,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             trail ??= new Trail(trailPositions, WidthFunction, ColorFunction);
             trail.TrailPositions = trailPositions;
 
-            //确保主题已初始化
+            //InitTheme
             if (Projectile.localAI[0] == 0f) return;
             theme = Themes[themeIndex];
 
@@ -414,7 +414,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow == null) return;
 
-            //确保主题已初始化
+            //InitTheme
             if (Projectile.localAI[0] == 0f) return;
             theme = Themes[themeIndex];
 
@@ -501,7 +501,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 PRTLoader.NewParticle<PRT_CyberSquare>(target.Center + vel * 2f, vel, mainCol, scale).Configure(edgeCol, Main.rand.Next(20, 40));
             }
 
-            //改件钩子：仅本地玩家发射方处理派生弹幕，避免重复生成
+            //改件钩子：仅 myPlayer 派生，防重复
             if (Projectile.owner == Main.myPlayer) {
                 //爆炸只在原始光束触发，避免链跳每节都引爆
                 if (!IsDerived && ExplodeOnHit && ExplodeRadius > 1f) {

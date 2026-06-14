@@ -1,6 +1,6 @@
 // ============================================================================
-// DraedonPanel.fx 嘉登数据终端面板
-// AlphaBlend 预乘 alpha
+//DraedonPanel.fx 嘉登数据终端面板
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -44,7 +44,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 center = uResolution * 0.5;
     float2 halfSize = innerSize * 0.5;
 
-    // ═══ 圆角矩形SDF ═══
+    //═══ 圆角矩形SDF ═══
     float2 dd = abs(pixelPos - center) - halfSize;
     float cornerR = 4.0;
     float panelSDF = length(max(dd, 0.0)) + min(max(dd.x, dd.y), 0.0) - cornerR;
@@ -57,7 +57,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 uv = saturate((pixelPos - innerMin) / innerSize);
     float nm = uNightMode;
 
-    // ═══ 1. 渐变底色（三段式工业底色） ═══
+    //═══ 1. 渐变底色（三段式工业底色） ═══
     float3 coolTop = float3(0.038, 0.058, 0.100);
     float3 coolMid = float3(0.022, 0.038, 0.072);
     float3 coolBot = float3(0.012, 0.020, 0.045);
@@ -72,7 +72,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         ? lerp(topC, midC, uv.y * 2.0)
         : lerp(midC, botC, (uv.y - 0.5) * 2.0);
 
-    // ═══ 2. 拉丝金属纹理 ═══
+    //═══ 2. 拉丝金属纹理 ═══
     float brushH = valueNoise(pixelPos * float2(0.04, 0.16));
     float brushL = valueNoise(pixelPos * 0.025 + 200.0);
     float brushed = brushH * 0.6 + brushL * 0.4;
@@ -82,7 +82,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 warmTint = float3(0.016, 0.005, -0.004);
     bg += lerp(coolTint, warmTint, nm) * (brushed - 0.5);
 
-    // ═══ 3. 蓝图网格（双层+交叉点高亮） ═══
+    //═══ 3. 蓝图网格（双层+交叉点高亮） ═══
     float gridSize = 44.0;
     float gx = abs(frac(pixelPos.x / gridSize) - 0.5) * 2.0;
     float gy = abs(frac(pixelPos.y / gridSize) - 0.5) * 2.0;
@@ -107,7 +107,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += gridCol * subLine * 0.05;
     bg += gridCol * gridCross * 0.28;
 
-    // ═══ 4. 电路走线+流动脉冲（3条，带节点闪烁） ═══
+    //═══ 4. 电路走线+流动脉冲（3条，带节点闪烁） ═══
     float circuitAccum = 0.0;
     float circuitPulse = 0.0;
     for (int ci = 0; ci < 3; ci++) {
@@ -138,7 +138,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += lerp(coolCircuit, warmCircuit, nm) * circuitAccum * 0.30;
     bg += lerp(coolPulseC, warmPulseC, nm) * circuitPulse * 0.45;
 
-    // ═══ 5. 能量场涟漪（从中心缓慢扩散的同心波纹） ═══
+    //═══ 5. 能量场涟漪（从中心缓慢扩散的同心波纹） ═══
     float2 rippleCenter = center;
     float rippleDist = length((pixelPos - rippleCenter) * float2(1.0, 1.3)) * 0.012;
     float rWave1 = sin(rippleDist * 22.0 - uTime * 1.4) * 0.5 + 0.5;
@@ -153,7 +153,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //涟漪增强网格可见度
     bg += gridCol * gridLine * ripple * 0.08;
 
-    // ═══ 6. 浮雕斜面边缘 ═══
+    //═══ 6. 浮雕斜面边缘 ═══
     float bevelW = 12.0;
     float bevelMask = saturate(-panelSDF / bevelW);
     bevelMask = 1.0 - bevelMask;
@@ -179,7 +179,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float groove = exp(-grooveDist * grooveDist * 0.15) * 0.18;
     bg -= groove * float3(0.03, 0.02, 0.015);
 
-    // ═══ 7. 全息扫描光带（宽光带扫过时照亮一切） ═══
+    //═══ 7. 全息扫描光带（宽光带扫过时照亮一切） ═══
     float swPhase = frac(uTime * 0.055);
     float swDist = uv.y - swPhase;
     if (swDist < -0.5) swDist += 1.0;
@@ -194,11 +194,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += gridCol * gridLine * swGlow * 0.22;
     bg += gridCol * gridCross * swCore * 0.35;
 
-    // ═══ 8. CRT扫描线 ═══
+    //═══ 8. CRT扫描线 ═══
     float scl = frac(pixelPos.y / 3.0);
     bg *= 0.88 + 0.12 * smoothstep(0.0, 0.2, scl) * smoothstep(1.0, 0.8, scl);
 
-    // ═══ 9. 角落指示灯（呼吸脉冲） ═══
+    //═══ 9. 角落指示灯（呼吸脉冲） ═══
     float2 lamp[4] = {
         innerMin + float2(18.0, 18.0),
         float2(innerMax.x - 18.0, innerMin.y + 18.0),
@@ -217,7 +217,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         bg += lerp(coolLamp, warmLamp, nm) * lGlow * 0.12;
     }
 
-    // ═══ 10. 面板接缝 ═══
+    //═══ 10. 面板接缝 ═══
     float segY = frac(pixelPos.y / 65.0);
     float segDark = 1.0 - smoothstep(0.0, 0.02, segY);
     bg -= float3(0.03, 0.025, 0.015) * segDark * 0.5;
@@ -226,18 +226,18 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 warmSegHL = float3(0.030, 0.014, 0.006);
     bg += lerp(coolSegHL, warmSegHL, nm) * segHL * 0.35;
 
-    // ═══ 11. 暗角 ═══
+    //═══ 11. 暗角 ═══
     float2 vig = uv * 2.0 - 1.0;
     float vigStr = dot(vig * float2(0.45, 0.55), vig * float2(0.45, 0.55));
     bg *= saturate(1.0 - vigStr) * 0.35 + 0.65;
 
-    // ═══ 12. 顶部反光 ═══
+    //═══ 12. 顶部反光 ═══
     float topRef = 1.0 - smoothstep(0.0, 0.12, uv.y);
     float3 coolTopRef = float3(0.018, 0.028, 0.055);
     float3 warmTopRef = float3(0.040, 0.020, 0.010);
     bg += lerp(coolTopRef, warmTopRef, nm) * topRef * 0.40;
 
-    // ═══ 输出 ═══
+    //═══ 输出 ═══
     float fa = uAlpha * edgeAlpha;
     return float4(bg * fa, fa) * vertexColor;
 }

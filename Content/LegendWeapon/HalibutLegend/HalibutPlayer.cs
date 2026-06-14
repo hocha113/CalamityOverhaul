@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.Helen;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
@@ -14,7 +14,7 @@ using Terraria.Graphics;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 {
-    public class HalibutPlayer : PlayerOverride//这个类用于存储一些与玩家相关的额外数据
+    public class HalibutPlayer : PlayerOverride//比目鱼玩家扩展数据
     {
         #region Data
         /// <summary>
@@ -312,7 +312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return;
             }
 
-            //使用新的IsCrashed方法，传入player实例，确保在服务器上也能正确判断
+            //IsCrashed传player，dedServ可判
             foreach (var save in halibutSave.activationSequence) {
                 if (save.IsCrashedState(Player)) {
                     continue;//死机状态的眼睛不受影响
@@ -328,7 +328,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 }
             }
 
-            //初始化一下，确保UI同步，因为死后不这么干的话顺序会乱掉
+            //死后重InitEyes，UI顺序同步
             halibutSave.InitializeEyes(activeIndices);
             ResurrectionSystem.ResurrectionRate = 0f;
         }
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             return null;
         }
 
-        public override void PostUpdate() {//在每帧更新后进行一些操作
+        public override void PostUpdate() {//每帧收尾
             if (Player.TryGetModPlayer<HalibutSave>(out var halibutSave) && halibutSave.FishSkill != null) {
                 SkillID = halibutSave.FishSkill.ID;
             }

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
 {
-    /// <summary>
-    /// 嘉登科技来电 UI，L 角框、均衡器、扰码打字与通话时长
-    /// </summary>
+    /// <summary>嘉登科技来电 UI，L 角框、均衡器、扰码打字与通话时长</summary>
     internal class DraedonIncomingCall : IncomingCallBase, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
@@ -135,7 +133,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             glitchTimer += 0.17f;
             if (glitchTimer > MathHelper.TwoPi) glitchTimer -= MathHelper.TwoPi;
 
-            // 扫描线滚动
+            //扫描线滚动
             scanLineSpeed = MathHelper.Lerp(scanLineSpeed, 0.006f, 0.015f);
             scanLinePos += scanLineSpeed;
             if (scanLinePos > 1f) scanLinePos -= 1f;
@@ -143,7 +141,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             connectingTimer += 0.04f;
             if (connectingTimer > MathHelper.TwoPi) connectingTimer -= MathHelper.TwoPi;
 
-            // 均衡器（通话中）
+            //均衡器（通话中）
             if (State == IncomingCallState.Speaking) {
                 eqUpdateTimer++;
                 if (eqUpdateTimer >= 7) {
@@ -159,7 +157,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             Vector2 panelPos = new(panelRect.X, panelRect.Y);
             Vector2 panelSize = new(panelRect.Width, panelRect.Height);
 
-            // 数据粒子
+            //数据粒子
             dataParticleSpawnTimer++;
             if (State != IncomingCallState.Idle && State != IncomingCallState.Ending
                 && dataParticleSpawnTimer >= 22 && dataParticles.Count < 8) {
@@ -174,7 +172,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                     dataParticles.RemoveAt(i);
             }
 
-            // 电路节点
+            //电路节点
             circuitNodeSpawnTimer++;
             if (State != IncomingCallState.Idle && State != IncomingCallState.Ending
                 && circuitNodeSpawnTimer >= 32 && circuitNodes.Count < 4) {
@@ -210,19 +208,19 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             DrawScanLine(sb, rect, fa);
             DrawParticles(sb, fa);
 
-            // 信号格
+            //信号格
             DrawSignalBars(sb, new Vector2(rect.Right - 44f, rect.Y + 8f), fa);
 
-            // 来电标题栏
+            //来电标题栏
             float titleBlink = MathF.Sin(answerBtnPulse * 2.4f) * 0.4f + 0.6f;
             Utils.DrawBorderString(sb, IncomingLabel.Value,
                 new Vector2(rect.X + 12f, rect.Y + 8f),
                 new Color(0, 220, 255) * (fa * titleBlink), 0.78f);
 
-            // 标题下分割线
+            //标题下分割线
             DrawHLine(sb, rect.X + 10, rect.Y + 26, rect.Width - 20, new Color(0, 180, 255) * (fa * 0.55f));
 
-            // 头像区
+            //头像区
             float portraitDrawSize = PortraitSize;
             Vector2 portraitCenter = new(rect.X + 14f + portraitDrawSize / 2f,
                                          rect.Y + 37f + portraitDrawSize / 2f);
@@ -230,7 +228,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             DrawPortrait(sb, portraitCenter, portraitDrawSize * 0.84f, fa);
             DrawSignalArcs(sb, portraitCenter, portraitDrawSize, fa);
 
-            // 来电者名称与接听提示
+            //来电者名称与接听提示
             float textX = rect.X + 14f + portraitDrawSize + 16f;
             float nameY = rect.Y + 34f;
             Utils.DrawBorderString(sb, callerName ?? UnknownCaller.Value,
@@ -241,7 +239,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                 new Vector2(textX, nameY + 28f),
                 new Color(100, 200, 255) * (fa * 0.72f * hintBlink), 0.68f);
 
-            // 底部接听条
+            //底部接听条
             DrawAnswerBar(sb, rect, fa);
         }
 
@@ -275,29 +273,29 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             DrawScanLine(sb, rect, fa);
             DrawParticles(sb, fa);
 
-            // 连接过渡遮罩
+            //连接过渡遮罩
             if (expandProgress < 0.98f) {
                 DrawConnectingOverlay(sb, rect, fa, expandProgress);
                 return;
             }
 
-            // 通话状态圆点
+            //通话状态圆点
             float indicBlink = MathF.Sin(callIndicatorBlink * 3f) * 0.5f + 0.5f;
             DrawFilledDot(sb, new Vector2(rect.Right - 14f, rect.Y + 13f), 4f,
                 new Color(40, 255, 130) * (fa * indicBlink));
 
-            // 信号格与通话时长
+            //信号格与通话时长
             DrawSignalBars(sb, new Vector2(rect.Right - 44f, rect.Y + 8f), fa);
             DrawCallTimer(sb, rect, fa * contentAlpha);
 
-            // 头像区
+            //头像区
             float portraitDrawSize = PortraitSize;
             Vector2 portraitCenter = new(rect.X + 14f + portraitDrawSize / 2f,
                                          rect.Y + 14f + portraitDrawSize / 2f);
             DrawPortraitFrame(sb, portraitCenter, portraitDrawSize, fa);
             DrawPortrait(sb, portraitCenter, portraitDrawSize * 0.84f, fa);
 
-            // 名称与频道
+            //名称与频道
             float nameX = rect.X + 14f + portraitDrawSize + 14f;
             float nameY = rect.Y + 14f;
             string speakerName = current?.Speaker ?? callerName ?? UnknownCaller.Value;
@@ -308,29 +306,29 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                 new Vector2(nameX + FontAssets.MouseText.Value.MeasureString(speakerName).X * NameScale, nameY + 3f),
                 new Color(40, 160, 200) * (fa * contentAlpha * 0.65f), 0.7f);
 
-            // 渐变分割线
+            //渐变分割线
             DrawAnimatedDivider(sb, nameX, nameY + 22f,
                 rect.Width - (int)(nameX - rect.X) - 14, fa * contentAlpha);
 
-            // 台词文本
+            //台词文本
             if (wrappedLines != null && wrappedLines.Length > 0) {
                 Vector2 textStart = new(nameX, nameY + 34f);
                 Color textColor = Color.Lerp(new Color(200, 240, 255), Color.White, 0.25f);
                 DrawTypedText(sb, textStart, contentAlpha * fa, textColor);
             }
 
-            // 底部 Footer
+            //底部 Footer
             DrawSpeakingFooter(sb, rect, fa, contentAlpha);
         }
 
         private void DrawConnectingOverlay(SpriteBatch sb, Rectangle rect, float alpha, float progress) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            // 半透明遮罩
+            //半透明遮罩
             Color overlayC = new Color(4, 12, 24) * (alpha * (1f - progress) * 0.75f);
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), overlayC);
 
-            // 连接中文字动画
+            //连接中文字动画
             int dots = (int)(connectingTimer / (MathHelper.TwoPi / 4f)) % 4;
             string connectText = ConnectingLabel.Value + new string('.', dots);
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(connectText) * 0.88f;
@@ -340,7 +338,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             Utils.DrawBorderString(sb, connectText, textPos,
                 new Color(0, 200, 255) * (alpha * connectPulse), 0.88f);
 
-            // 连接进度条
+            //连接进度条
             int barW = rect.Width - 40;
             int barH = 3;
             Rectangle barBg = new(rect.X + 20, (int)textPos.Y + 28, barW, barH);
@@ -355,14 +353,14 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
         private void DrawSpeakingFooter(SpriteBatch sb, Rectangle rect, float fa, float contentAlpha) {
             int footerY = rect.Bottom - 26;
 
-            // 底部分割线
+            //底部分割线
             DrawHLine(sb, rect.X + 8, footerY, rect.Width - 16,
                 new Color(0, 120, 200) * (fa * 0.4f));
 
-            // 均衡器
+            //均衡器
             DrawEqualizer(sb, new Vector2(rect.X + 10f, footerY + 20f), 18f, 80f, fa * contentAlpha);
 
-            // 导航提示
+            //导航提示
             if (finishedCurrent && current != null) {
                 float hintBlink = MathF.Sin(answerBtnPulse * 2.5f) * 0.45f + 0.55f;
                 bool isLast = queue.Count == 0;
@@ -408,7 +406,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                 sb.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            // 故障水平闪光
+            //故障水平闪光
             float gFlash = MathF.Sin(glitchTimer * 3.7f);
             if (gFlash > 0.92f) {
                 float glitchY = rect.Y + (glitchTimer * 107f % rect.Height);
@@ -418,9 +416,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             }
         }
 
-        /// <summary>
-        /// 六边形点阵背景纹理
-        /// </summary>
+        /// <summary>六边形点阵背景纹理</summary>
         private static void DrawHexGrid(SpriteBatch sb, Rectangle rect, float alpha) {
             if (alpha < 0.01f) return;
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -441,19 +437,17 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             }
         }
 
-        /// <summary>
-        /// L 角框，四角独立线段
-        /// </summary>
+        /// <summary>L 角框，四角独立线段</summary>
         private static void DrawBracketFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Color edge = new Color(40, 190, 255) * (alpha * 0.9f);
             Color edgeDim = edge * 0.6f;
             int bl = 22;
             int bw = 2;
 
-            // 顶部高光线
+            //顶部高光线
             DrawHorLine(sb, rect.X, rect.Y, rect.Width, 1, edge * 0.45f);
 
-            // 四角 L 括号
+            //四角 L 括号
             DrawHorLine(sb, rect.X, rect.Y, bl, bw, edge);
             DrawVerLine(sb, rect.X, rect.Y, bl, bw, edge);
             DrawHorLine(sb, rect.Right - bl, rect.Y, bl, bw, edge);
@@ -463,7 +457,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             DrawHorLine(sb, rect.Right - bl, rect.Bottom - bw, bl, bw, edgeDim);
             DrawVerLine(sb, rect.Right - bw, rect.Bottom - bl, bl, bw, edgeDim);
 
-            // 角落刻痕
+            //角落刻痕
             DrawHorLine(sb, rect.X + bl + 2, rect.Y, 4, 1, edge * 0.35f);
             DrawHorLine(sb, rect.Right - bl - 6, rect.Y, 4, 1, edge * 0.35f);
         }
@@ -498,14 +492,12 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                 new Rectangle(0, 0, 1, 1), c);
         }
 
-        /// <summary>
-        /// 带渐隐拖影的向上扫描线
-        /// </summary>
+        /// <summary>带渐隐拖影的向上扫描线</summary>
         private void DrawScanLine(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float scanY = rect.Y + scanLinePos * rect.Height;
 
-            // 扫描线拖影
+            //扫描线拖影
             for (int i = 1; i <= 16; i++) {
                 float trailY = scanY - i * 2f;
                 if (trailY < rect.Y) continue;
@@ -515,15 +507,13 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                     new Rectangle(0, 0, 1, 1), trailCol);
             }
 
-            // 主扫描线
+            //主扫描线
             Color scanColor = new Color(80, 210, 255) * (alpha * 0.3f);
             sb.Draw(px, new Rectangle(rect.X + 4, (int)scanY, rect.Width - 8, 2),
                 new Rectangle(0, 0, 1, 1), scanColor);
         }
 
-        /// <summary>
-        /// 流动渐变分割线
-        /// </summary>
+        /// <summary>流动渐变分割线</summary>
         private void DrawAnimatedDivider(SpriteBatch sb, float x, float y, int w, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             int segs = Math.Max(1, w / 4);
@@ -537,20 +527,18 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             }
         }
 
-        /// <summary>
-        /// 头像 L形角括号边框
-        /// </summary>
+        /// <summary>头像 L形角括号边框</summary>
         private static void DrawPortraitFrame(SpriteBatch sb, Vector2 center, float size, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float half = size / 2f + 4f;
             Rectangle frame = new((int)(center.X - half), (int)(center.Y - half),
                 (int)(half * 2), (int)(half * 2));
 
-            // 头像底
+            //头像底
             Color bg = new Color(6, 14, 28) * (alpha * 0.88f);
             sb.Draw(px, frame, new Rectangle(0, 0, 1, 1), bg);
 
-            // L 角括号
+            //L 角括号
             Color edge = new Color(40, 170, 245) * (alpha * 0.75f);
             int bl = (int)(size * 0.3f);
             int bw = 2;
@@ -567,7 +555,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
         private void DrawSignalArcs(SpriteBatch sb, Vector2 center, float size, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            // 振铃脉冲环（3 段弧）
+            //振铃脉冲环（3 段弧）
             foreach (float progress in ringPulses) {
                 float radius = size * 0.5f + progress * size * 0.75f;
                 float ringAlpha = (1f - progress) * alpha * 0.65f;
@@ -586,7 +574,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                 }
             }
 
-            // 常驻信号弧（4 等分）
+            //常驻信号弧（4 等分）
             float staticAlpha = MathF.Sin(signalArcTimer * 1.2f) * 0.25f + 0.35f;
             for (int arc = 0; arc < 4; arc++) {
                 float baseAngle = MathHelper.TwoPi / 4f * arc + signalArcTimer * 0.45f;
@@ -604,9 +592,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             }
         }
 
-        /// <summary>
-        /// 信号格，4 条递增高竖条
-        /// </summary>
+        /// <summary>信号格，4 条递增高竖条</summary>
         private static void DrawSignalBars(SpriteBatch sb, Vector2 pos, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             for (int i = 0; i < 4; i++) {
@@ -618,9 +604,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
             }
         }
 
-        /// <summary>
-        /// 通话时长 MM:SS
-        /// </summary>
+        /// <summary>通话时长 MM:SS</summary>
         private void DrawCallTimer(SpriteBatch sb, Rectangle rect, float alpha) {
             int totalSec = callDurationFrames / 60;
             string timerText = $"{TimerLabel.Value} {totalSec / 60:00}:{totalSec % 60:00}";
@@ -630,9 +614,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls.Styles
                 new Vector2(rect.Right - textSize.X - 10f, rect.Y + 8f), c, 0.62f);
         }
 
-        /// <summary>
-        /// 均衡器条形图
-        /// </summary>
+        /// <summary>均衡器条形图</summary>
         private void DrawEqualizer(SpriteBatch sb, Vector2 origin, float maxH, float totalW, float alpha) {
             if (alpha < 0.01f) return;
             Texture2D px = VaultAsset.placeholder2.Value;

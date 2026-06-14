@@ -6,16 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
-    /// <summary>
-    /// 通用的世界时间冻结系统（reason 标签计数）
-    /// <list type="bullet">
-    ///   <item>提供 NPC / 弹幕 / 液体 / 玩家装备的统一暂停语义，
-    ///     供骇客时间、义体雷达等上层系统按需调用</item>
-    ///   <item>通过 <see cref="Activate(string)"/> / <see cref="Deactivate(string)"/> 以 reason 计数，
-    ///     任一活跃 reason 都保持冻结状态；全部释放后才真正解冻</item>
-    ///   <item>独立于 <c>CWRWorld.TimeFrozenTick</c>，二者可叠加</item>
-    /// </list>
-    /// </summary>
+    /// <summary>世界冻结 reason 计数，<see cref="Activate"/>/<see cref="Deactivate"/> 配对，与 <c>CWRWorld.TimeFrozenTick</c> 可叠加</summary>
     internal class WorldFreezeSystem : ICWRLoader
     {
         //Liquid.UpdateLiquid 拦截委托
@@ -42,14 +33,10 @@ namespace CalamityOverhaul.Content.TimeFreezes
             ProjSnapshotIdentities = null;
         }
 
-        /// <summary>
-        /// 当前是否至少有一个 reason 持有冻结
-        /// </summary>
+        /// <summary>至少一个 reason 活跃</summary>
         public static bool IsActive { get; private set; }
 
-        /// <summary>
-        /// 当前所有持有冻结的 reason 集合（只读视图供调试/UI 引用）
-        /// </summary>
+        /// <summary>活跃 reason 只读集合</summary>
         public static IReadOnlyCollection<string> ActiveReasons => activeReasons;
 
         //内部 reason 计数。同一 reason 重复 Activate 不重复入集合
@@ -61,7 +48,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         internal static Vector2[] NPCFrozenVelocities;
         //NPC 快照是否有效
         internal static bool[] NPCSnapshotCaptured;
-        //NPC 快照对应类型，用于避免复用槽位时套用旧快照
+        //NPC快照类型，防槽位复用套旧数据
         internal static int[] NPCSnapshotTypes;
         //弹幕冻结位置快照
         internal static Vector2[] ProjFrozenPositions;
@@ -116,9 +103,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             orig(self, i);
         }
 
-        /// <summary>
-        /// 请求一个 reason 的冻结。同一 reason 重复调用幂等
-        /// </summary>
+        /// <summary>reason 冻结，重复调用幂等</summary>
         public static void Activate(string reason) {
             if (string.IsNullOrEmpty(reason)) {
                 return;
@@ -132,9 +117,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>
-        /// 释放某 reason 的冻结；当所有 reason 都释放后才真正解冻
-        /// </summary>
+        /// <summary>释放 reason，全空才解冻</summary>
         public static void Deactivate(string reason) {
             if (string.IsNullOrEmpty(reason)) {
                 return;
@@ -147,9 +130,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>
-        /// 立刻清空所有 reason 并解冻（用于玩家死亡 / 世界卸载等异常路径）
-        /// </summary>
+        /// <summary>清空全部 reason，死亡/卸载兜底</summary>
         public static void DeactivateAll() {
             if (activeReasons.Count == 0 && !IsActive) {
                 return;
@@ -160,9 +141,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>
-        /// 检查某 reason 是否持有冻结
-        /// </summary>
+        /// <summary>reason 是否仍活跃</summary>
         public static bool HasReason(string reason)
             => !string.IsNullOrEmpty(reason) && activeReasons.Contains(reason);
 
@@ -272,17 +251,13 @@ namespace CalamityOverhaul.Content.TimeFreezes
             }
         }
 
-        /// <summary>
-        /// 判断该 NPC 是否应被冻结（目前一律冻结，留作未来按类型放行的扩展点）
-        /// </summary>
+        /// <summary>NPC 冻结判定，现一律 true</summary>
         internal static bool ShouldFreezeNPC(NPC npc) {
             if (!npc.active) return false;
             return true;
         }
 
-        /// <summary>
-        /// 判断该弹幕是否应被冻结（目前一律冻结，留作未来按类型放行的扩展点）
-        /// </summary>
+        /// <summary>弹幕冻结判定，现一律 true</summary>
         internal static bool ShouldFreezeProjectile(Projectile proj) {
             if (!proj.active) return false;
             return true;

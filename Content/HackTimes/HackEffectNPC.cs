@@ -58,7 +58,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override bool PreAI(NPC npc) {
-            //PreAI 优先级不足，改由 PreAIByOverNPC 处理
+            //PreAI 优先级不足，走 PreAIByOverNPC
             return true;
         }
 

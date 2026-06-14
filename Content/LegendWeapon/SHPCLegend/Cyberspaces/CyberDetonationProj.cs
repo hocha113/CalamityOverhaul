@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void AI() {
-            // 初始帧：读取蓄力比例，计算爆炸范围
+            //初始帧：读取蓄力比例，计算爆炸范围
             if (Projectile.localAI[0] == 0f) {
                 chargeRatio = MathHelper.Clamp(Projectile.ai[0], 0f, 1f);
                 overdriveAmount = MathHelper.Clamp(Projectile.ai[1], 0f, 1f);
@@ -60,25 +60,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 }
                 Projectile.localAI[0] = 1f;
 
-                // 设置碰撞范围用于伤害检测
+                //Hitbox 伤害检测
                 int size = (int)(explosionRadius * 2f);
                 Projectile.Resize(size, size);
 
                 SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
 
-                // 初始粒子爆发
+                //初始粒子爆发
                 if (Main.netMode != NetmodeID.Server) {
                     SpawnExplosionParticles();
                 }
             }
 
-            // 第一帧施加AOE伤害（通过碰撞检测）
-            // Projectile自带碰撞检测会自动处理
+            //第一帧施加AOE伤害（通过碰撞检测）
+            //Projectile自带碰撞检测会自动处理
 
-            // 阻止弹幕移动
+            //阻止弹幕移动
             Projectile.velocity = Vector2.Zero;
 
-            // 光照（超驱时红炽光照）
+            //光照（超驱时红炽光照）
             float t = 1f - (float)Projectile.timeLeft / Lifetime;
             float lightIntensity = MathF.Pow(1f - t, 2f);
             float od = overdriveAmount;
@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 Color.Lerp(new Color(230, 170, 30), new Color(80, 230, 220), chargeRatio),
                 new Color(255, 30, 5), od);
 
-            // 径向爆发粒子（超驱时更多更大）
+            //径向爆发粒子（超驱时更多更大）
             int count = 20 + (int)(chargeRatio * 15f) + (int)(od * 25f);
             for (int i = 0; i < count; i++) {
                 float angle = MathHelper.TwoPi * i / count + Main.rand.NextFloat(-0.1f, 0.1f);
@@ -106,14 +106,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center + vel * 2f, vel, mainCol, Main.rand.NextFloat(1.0f, 2.5f + od * 1.5f)).Configure(edgeCol, Main.rand.Next(25, 55));
             }
 
-            // 内环密集小粒子（超驱时更多）
+            //内环密集小粒子（超驱时更多）
             int innerCount = 12 + (int)(od * 12f);
             for (int i = 0; i < innerCount; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f + od * 3f, 3f + od * 3f);
                 PRTLoader.NewParticle<PRT_CyberSquare>(Projectile.Center, vel, Color.White, Main.rand.NextFloat(0.4f, 1.0f + od * 0.6f)).Configure(mainCol, Main.rand.Next(15, 35));
             }
 
-            // 超驱时额外红炽碎片爆发
+            //超驱时额外红炽碎片爆发
             if (od > 0.3f) {
                 for (int i = 0; i < 20; i++) {
                     Vector2 vel = Main.rand.NextVector2CircularEdge(8f, 8f) * Main.rand.NextFloat(0.5f, 1.2f);
@@ -123,13 +123,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            // 圆形碰撞检测
+            //圆形碰撞检测
             float dist = Vector2.Distance(Projectile.Center, targetHitbox.Center.ToVector2());
             return dist < explosionRadius;
         }
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            // 距离衰减：中心满伤，边缘50%
+            //距离衰减：中心满伤，边缘50%
             float dist = Vector2.Distance(Projectile.Center, target.Center);
             float falloff = 1f - (dist / explosionRadius) * 0.5f;
             modifiers.FinalDamage *= MathHelper.Clamp(falloff, 0.5f, 1f);
@@ -150,10 +150,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;
-            // 快速起步缓出
+            //快速起步缓出
             float ringProgress = 1f - MathF.Pow(1f - t, 2.5f);
 
-            // 淡入淡出
+            //淡入淡出
             float fadeAlpha;
             if (t < 0.15f)
                 fadeAlpha = MathHelper.SmoothStep(0f, 1f, t / 0.15f);
@@ -163,7 +163,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 fadeAlpha = 1f;
             fadeAlpha = MathHelper.Clamp(fadeAlpha, 0f, 1f);
 
-            // 颜色根据蓄力比例过渡，超驱时偏向红炽
+            //颜色根据蓄力比例过渡，超驱时偏向红炽
             float od = overdriveAmount;
             Vector3 baseCoreCol = Vector3.Lerp(new Vector3(1f, 0.86f, 0.31f), new Vector3(0.86f, 1f, 1f), chargeRatio);
             Vector3 baseRingCol = Vector3.Lerp(new Vector3(0.9f, 0.67f, 0.12f), new Vector3(0.31f, 0.9f, 0.86f), chargeRatio);
@@ -173,7 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Vector3 ringCol = Vector3.Lerp(baseRingCol, new Vector3(1f, 0.12f, 0.03f), od);
             Vector3 fragCol = Vector3.Lerp(baseFragCol, new Vector3(0.75f, 0.04f, 0f), od);
 
-            // 设置着色器参数（取主人玩家的领域时间，远端客户端不能读 Local）
+            //设置着色器参数（取主人玩家的领域时间，远端客户端不能读 Local）
             CyberspacePlayer ownerCp = Cyberspace.For(Projectile.owner);
             float effectTime = ownerCp != null && ownerCp.Active
                 ? ownerCp.EffectTime
@@ -184,7 +184,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             shader.Parameters["coreColor"]?.SetValue(coreCol);
             shader.Parameters["ringColor"]?.SetValue(ringCol);
             shader.Parameters["fragColor"]?.SetValue(fragCol);
-            // 超驱故障参数
+            //超驱故障参数
             shader.Parameters["overdriveAmount"]?.SetValue(od);
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;

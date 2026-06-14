@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
-    //SHPC HUD各元素的教程目标实现，全部通过SHPCTheme公开常量计算位置，不入侵SHPCUI内部
+    //SHPC HUD 教程目标，位置由 SHPCTheme 常量推算
     internal class SHPCHUDTargets : ILoadable
     {
         private const int SectorCount = 4;

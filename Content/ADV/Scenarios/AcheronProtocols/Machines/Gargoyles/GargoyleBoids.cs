@@ -1,19 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargoyles
 {
     /// <summary>
-    /// 湍流鸟群算法——使用空间网格加速的 Boids 变体。
-    /// <para>
-    /// 核心设计：<br/>
-    /// · 去除凝聚力(Cohesion)，只保留分离+对齐，避免虫群挤成一团<br/>
-    /// · 流道使用3层叠加波+时间演化，路径复杂不可预测<br/>
-    /// · 每个个体拥有独立噪声种子，通过时间+位置的伪噪声产生有机差异<br/>
-    /// · 湍流场以X向（飘逸顺滑）为主、Y向（上下翻腾）为辅<br/>
-    /// · 使用空间哈希网格将 O(n²) 邻域搜索降至近 O(n)<br/>
-    /// </para>
+    /// 湍流鸟群算法：使用空间网格加速的 Boids 变体。 核心设计：<br/> · 去除凝聚力(Cohesion)，只保留分离+对齐，避免虫群挤成一团<br/> · 流道使用3层叠加波+时间演化，路径复杂不可预测<br/> · 每个个体拥有独立噪声种子，通过时间+位置的伪噪声产生有机差异<br/> · 湍流场以X向（飘逸顺滑）为主、Y向（上下翻腾）为辅<br/> · 使用空间哈希网格将 O(n²) 邻域搜索降至近 O(n)<br/>
     /// </summary>
     internal static class GargoyleBoids
     {
@@ -49,18 +41,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         private const float VisualRange = 140f;
         private const float AlignmentWeight = 0.05f;
 
-        /// <summary>流道Y跟踪权重——非常柔性，只做大方向引导</summary>
+        /// <summary>流道Y跟踪权重：非常柔性，只做大方向引导</summary>
         private const float StreamYWeight = 0.006f;
 
-        /// <summary>湍流场X权重——产生飘逸的水平速度变化</summary>
+        /// <summary>湍流场X权重：产生飘逸的水平速度变化</summary>
         private const float TurbulenceXWeight = 0.15f;
-        /// <summary>湍流场Y权重——轻微的垂直扰动，远小于X</summary>
+        /// <summary>湍流场Y权重：轻微的垂直扰动，远小于X</summary>
         private const float TurbulenceYWeight = 0.06f;
 
         /// <summary>随机噪声幅度</summary>
         private const float NoiseAmount = 0.06f;
 
-        /// <summary>前向推力——始终有一个稳定的向左推力保持主方向</summary>
+        /// <summary>前向推力：始终有一个稳定的向左推力保持主方向</summary>
         private const float ForwardDrive = -0.08f;
 
         private const float MinSpeed = 13f;
@@ -118,11 +110,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
 
         #endregion
 
-        #region 湍流场——X向飘逸为主
+        #region 湍流场：X向飘逸为主
 
         /// <summary>
-        /// 基于位置+时间的湍流场。X方向是主力（产生速度的飘逸感），
-        /// Y方向是辅助（轻微起伏），避免上下摇摆的傻瓜效果
+
+        /// 基于位置+时间的湍流场。X方向是主力（产生速度的飘逸感）， Y方向是辅助（轻微起伏），避免上下摇摆的傻瓜效果
+
         /// </summary>
         private static Vector2 GetTurbulence(float x, float y, float noiseSeed) {
             float t = globalTick * 0.006f;
@@ -206,7 +199,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                     steer += (alignSum / neighbors - vel) * AlignmentWeight;
                 }
 
-                //流道跟踪——极其柔性，仅做大范围引导
+                //流道跟踪：极其柔性，仅做大范围引导
                 if (initialized) {
                     float targetY = GetStreamTargetY(self.SwarmGroup, pos.X);
                     float yError = targetY - pos.Y;
@@ -215,11 +208,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                     steer.Y += yError * pull;
                 }
 
-                //湍流——每个个体用自身 NoiseSeed 获得差异化的力场采样
+                //湍流：每个个体用自身 NoiseSeed 获得差异化的力场采样
                 Vector2 turb = GetTurbulence(pos.X, pos.Y, self.NoiseSeed);
                 steer += turb;
 
-                //前向推力——稳定的向左驱动，保持主方向不散
+                //前向推力：稳定的向左驱动，保持主方向不散
                 steer.X += ForwardDrive;
 
                 //微噪声
@@ -229,7 +222,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                 //── 应用转向，限制速度 ──
                 Vector2 newVel = vel + steer;
 
-                //Y速度衰减——抑制过大的垂直速度，让飞行更水平流畅
+                //Y速度衰减：抑制过大的垂直速度，让飞行更水平流畅
                 newVel.Y *= 0.97f;
 
                 float depthMod = MathHelper.Lerp(0.8f, 1.15f,

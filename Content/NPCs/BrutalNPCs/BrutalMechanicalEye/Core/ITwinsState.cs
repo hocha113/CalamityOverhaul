@@ -46,20 +46,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
         /// <summary>状态索引，网络同步</summary>
         TwinsStateIndex StateIndex { get; }
 
-        /// <summary>
-        /// 进入状态时调用
-        /// </summary>
+        /// <summary>进入状态时调用</summary>
         void OnEnter(TwinsStateContext context);
 
-        /// <summary>
-        /// 状态更新，每帧调用
-        /// </summary>
+        /// <summary>状态更新，每帧调用</summary>
         /// <returns>返回下一个状态，返回null表示保持当前状态</returns>
         ITwinsState OnUpdate(TwinsStateContext context);
 
-        /// <summary>
-        /// 离开状态时调用
-        /// </summary>
+        /// <summary>离开状态时调用</summary>
         void OnExit(TwinsStateContext context);
     }
 
@@ -95,9 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
 
         #region 工具方法
 
-        /// <summary>
-        /// 平滑移动到目标点
-        /// </summary>
+        /// <summary>平滑移动到目标点</summary>
         protected void MoveTo(NPC npc, Vector2 target, float speed, float inertia) {
             Vector2 direction = target - npc.Center;
             if (direction.Length() > 0.01f) {
@@ -107,25 +99,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core
             npc.velocity = (npc.velocity * (1f - inertia)) + (desiredVelocity * inertia);
         }
 
-        /// <summary>
-        /// 朝向目标旋转
-        /// </summary>
+        /// <summary>朝向目标旋转</summary>
         protected void FaceTarget(NPC npc, Vector2 targetCenter) {
             npc.rotation = (targetCenter - npc.Center).ToRotation() - MathHelper.PiOver2;
         }
 
-        /// <summary>
-        /// 朝向速度方向旋转
-        /// </summary>
+        /// <summary>朝向速度方向旋转</summary>
         protected void FaceVelocity(NPC npc) {
             if (npc.velocity.Length() > 0.1f) {
                 npc.rotation = npc.velocity.ToRotation() - MathHelper.PiOver2;
             }
         }
 
-        /// <summary>
-        /// 获取到玩家的方向向量
-        /// </summary>
+        /// <summary>获取到玩家的方向向量</summary>
         protected Vector2 GetDirectionToTarget(TwinsStateContext context) {
             return (context.Target.Center - context.Npc.Center).SafeNormalize(Vector2.UnitY);
         }

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.knockBack = 3.5f;
             Item.shoot = ModContent.ProjectileType<SandSmallTornado>();
             Item.shootSpeed = 9;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Item_Magic + "MelodyTheSand";
         public override int TargetID => ModContent.ItemType<MelodyTheSand>();
-        /// <summary>开火后的余韵进度，用于让法器在出手后短暂胀大发光</summary>
+        /// <summary>开火余韵进度，法器出手后胀大发光</summary>
         private int glowPulse;
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;

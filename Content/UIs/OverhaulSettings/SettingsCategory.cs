@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -75,12 +75,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         /// <summary>
-        /// 子类实现：初始化开关项列表
+        /// 子类：初始化开关项列表
         /// </summary>
         public abstract void Initialize();
 
         /// <summary>
-        /// 子类实现：当某个开关被切换时的回调
+        /// 子类：当某个开关被切换时的回调
         /// </summary>
         public abstract void OnToggleChanged(SettingToggle toggle, bool newValue);
 
@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         /// <summary>
-        /// 处理点击事件，返回true表示消耗了点击
+        /// 点击事件，返回true表示消耗了点击
         /// </summary>
         public virtual bool HandleClick(Rectangle mouseHitBox) {
             if (HoveringCategory) {

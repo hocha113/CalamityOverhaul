@@ -7,11 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
-    /// <summary>
-    /// 毁灭者体节等离子弹：辉光核心+加法拖尾+微加速，替代原版 <see cref="ProjectileID.DeathLaser"/>
-    /// <br/>ai[0]: 色相变体 0=红橙(齐射) 1=猩红(合围)
-    /// <br/>ai[1]: 1=启用微加速（约60帧内提速至1.6倍）
-    /// </summary>
+    /// <summary>毁灭者体节等离子弹：辉光核心+加法拖尾+微加速，替代原版<see cref="ProjectileID.DeathLaser"/>；ai[0]:色相变体0=红橙(齐射)1=猩红(合围)；ai[1]:1=启用微加速（约60帧内提速至1.6倍）</summary>
     internal class DestroyerBolt : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";

@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
     /// <para>手持弹幕由物品的 <see cref="ModItem.Shoot"/> 在使用瞬间生成（物品侧调用 <see cref="SpawnHeldProj{T}"/>），
     /// 松开按键且没有未结算状态时自动销毁，不再使用选中即生成的 SetHeldProj 模式</para>
     /// <para>它不包含任何固定的开火管线，子类完全拥有自己的 <see cref="ModProjectile.AI"/> 循环</para>
-    /// <para>基类只负责三件事：
+    /// <para>基类只三件事：
     /// 一，生存性维护（物品校验、玩家状态校验、闲置自毁、武器占用锁）；
     /// 二，提供可选调用的工具（持枪姿态、后坐力、弹药、魔力、枪口、绘制）；
     /// 三，向 CWRLoad/ModGanged 等基础设施暴露识别属性</para>
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         /// <summary>
         /// 在物品的 <see cref="ModItem.Shoot"/> 中调用：若场上没有对应手持弹幕则生成一个
-        /// <para>注意必须显式使用 T 的弹幕ID而非 Shoot 传入的 type，后者会被 useAmmo 转化为弹药射弹</para>
+        /// <para>必须显式使用 T 的弹幕ID而非 Shoot 传入的 type，后者会被 useAmmo 转化为弹药射弹</para>
         /// </summary>
         /// <returns>恒为<see langword="false"/>，可直接作为 Shoot 的返回值，阻止默认射击</returns>
         public static bool SpawnHeldProj<T>(Player player, EntitySource_ItemUse_WithAmmo source) where T : BaseHeldGun {
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
         /// <summary>是否拥有可用弹药；不需要弹药的武器恒为<see langword="true"/></summary>
         public bool HasAmmo => Item.useAmmo == AmmoID.None || AmmoState.HasAmmo;
-        /// <summary>攻速加成系数（含玩家加成与CWR前缀），用于换算开火间隔</summary>
+        /// <summary>攻速加成系数（含玩家加成与CWR前缀），换算开火间隔</summary>
         public virtual float AttackSpeed => Owner.GetWeaponAttackSpeed(Item) + Item.GetPrefixState().shootSpeedMult - 1f;
         /// <summary>当前弹药转化出的弹幕类型</summary>
         public int AmmoTypes => AmmoState.AmmoTypes;
@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         /// <summary>
-        /// 在 <see cref="SetDefaults"/> 末尾被调用，用于配置持握与后坐力等参数
+        /// 在 <see cref="SetDefaults"/> 末尾被调用，配置持握与后坐力等参数
         /// </summary>
         public virtual void SetGunProperty() {
 
@@ -228,7 +228,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         /// <summary>
-        /// 松开按键后是否仍需存活，用于结算未完成的状态（持续射线、终幕、已装填的特殊弹等），默认为<see langword="false"/>
+        /// 松开按键后是否仍需存活，结算未完成的状态（持续射线、终幕、已装填的特殊弹等），默认为<see langword="false"/>
         /// </summary>
         public virtual bool StayAlive() => false;
 
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
 
         #region 姿态工具
         /// <summary>
-        /// 统一更新持枪姿态：在闲置姿势与瞄准姿势之间平滑过渡，处理后坐力恢复并设置手臂
+        /// 统一更新持枪姿态：在闲置姿势与瞄准姿势之间平滑过渡，后坐力恢复并设置手臂
         /// <para>在子类 AI 中每帧调用一次即可获得完整的持枪表现</para>
         /// </summary>
         /// <param name="aiming">当前是否处于瞄准（开火尝试）状态</param>
@@ -376,7 +376,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         /// <summary>
-        /// 将枪体立即设置为瞄准姿态（不经过过渡），用于开火瞬间矫正延迟帧
+        /// 将枪体立即设置为瞄准姿态（不经过过渡），开火瞬间矫正延迟帧
         /// </summary>
         public void SnapToAimPose() {
             Owner.direction = ToMouse.X > 0 ? 1 : -1;
@@ -561,7 +561,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         }
 
         /// <summary>
-        /// 默认的枪体绘制：主体加可选的发光层，重写它以实现自定义绘制
+        /// 默认的枪体绘制：主体加可选的发光层，重写它以自定义绘制
         /// </summary>
         public virtual void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float offsetRot = DrawGunBodyRotOffset * (DirSign > 0 ? 1 : -1);

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.OtherMods.ImproveGame;
+using CalamityOverhaul.OtherMods.ImproveGame;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -9,9 +9,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
-    /// <summary>
-    /// 渲染器
-    /// </summary>
+    /// <summary>嘉登商店绘制</summary>
     internal class DraedonShopRenderer
     {
         private readonly Player player;
@@ -30,18 +28,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             this.interaction = interaction;
         }
 
-        /// <summary>
-        /// 计算面板位置
-        /// </summary>
+        /// <summary>计算面板位置</summary>
         public Vector2 CalculatePanelPosition() {
             float slideOffset = (1f - VaultUtils.EaseOutCubic(animation.PanelSlideProgress)) * PanelWidth;
             return new Vector2(Main.screenWidth - PanelWidth + slideOffset,
                 (Main.screenHeight - PanelHeight) / 2f);
         }
 
-        /// <summary>
-        /// 绘制所有内容
-        /// </summary>
+        /// <summary>绘制所有内容</summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, DraedonShopEffects effects) {
             if (animation.UIAlpha <= 0f) return;
 

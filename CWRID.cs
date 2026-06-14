@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul
 {
     /// <summary>
-    /// 所有用于引用外部模组内部内容的ID集中地
+    /// 所有引用外部模组内部内容的ID集中地
     /// </summary>
     internal static class CWRID
     {

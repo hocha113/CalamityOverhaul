@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>老公爵营地装饰 RenderHandle——锅/旗杆/蒸汽粒子</summary>
+    /// <summary>老公爵营地装饰 RenderHandle：锅/旗杆/蒸汽粒子</summary>
     internal class OldDukeCampsiteDecoration : RenderHandle
     {
         //多个锅的位置信息
@@ -105,7 +105,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 查找并放置装饰物（服务器端）
+
         /// </summary>
         private static void FindAndPlaceDecorations(Vector2 campsiteCenter) {
             pots.Clear();
@@ -209,7 +211,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 服务器同步装饰物位置给所有客户端
+
         /// </summary>
         private static void SyncDecorationsToClients() {
             ModPacket packet = CWRMod.Instance.GetPacket();
@@ -235,7 +239,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 客户端接收装饰物位置数据
+
         /// </summary>
         internal static void ReceiveDecorationsSync(BinaryReader reader) {
             pots.Clear();
@@ -267,7 +273,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 放置老箱子到营地
+
         /// </summary>
         private static void PlaceOldChest(Vector2 campsiteCenter) {
             //箱子放在营地左侧较远的位置
@@ -366,7 +374,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 向箱子TP实体中填充随机物品
+
         /// </summary>
         private static void FillChestWithItems(OldDuchestTP chestTP) {
             if (chestTP == null) {
@@ -380,8 +390,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
-        /// 重置装饰状态
-        /// 在营地清除时调用
+
+        /// 重置装饰状态 在营地清除时调用
+
         /// </summary>
         public static void ResetDecoration() {
             decorationsPositionSet = false;
@@ -409,7 +420,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 更新单个锅的状态
+
         /// </summary>
         private void UpdatePot(PotData pot) {
             pot.GlowTimer += 0.025f;
@@ -497,7 +510,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 检测锅是否在水下
+
         /// </summary>
         private static bool CheckPotUnderwater(Vector2 position) {
             Point tileCoord = (position / 16).ToPoint();
@@ -514,7 +529,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 生成水泡泡
+
         /// </summary>
         private static void SpawnWaterBubble(PotData pot) {
             if (VaultUtils.isServer) {
@@ -581,9 +598,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Main.spriteBatch.End();
         }
 
-        /// <summary>
-        /// 绘制锅
-        /// </summary>
         private void DrawPot(SpriteBatch sb, Vector2 screenPos, PotData pot) {
             if (OldDukeCampsite.OldPot == null) {
                 return;
@@ -663,9 +677,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
         }
 
-        /// <summary>
-        /// 绘制旗杆
-        /// </summary>
         private void DrawFlagpole(SpriteBatch sb, Vector2 screenPos, FlagpoleData flagpole) {
             if (OldDukeCampsite.Oldflagpole == null) {
                 return;
@@ -711,7 +722,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 生成蒸汽粒子
+
         /// </summary>
         private void SpawnSteamParticle(PotData pot, bool isEnhanced = false) {
             Vector2 spawnPos = pot.WorldPosition;
@@ -724,7 +737,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 生成气泡粒子
+
         /// </summary>
         private void SpawnBubbleParticle(PotData pot) {
             Vector2 spawnPos = pot.WorldPosition;
@@ -737,13 +752,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 老公爵营地装饰物品
+
         /// </summary>
         public static void Decorate(Vector2 position) {
 
         }
 
-        /// <summary>蒸汽粒子——锅内上升</summary>
+        /// <summary>蒸汽粒子：锅内上升</summary>
         internal class SteamParticlePRT
         {
             public Vector2 Position;
@@ -842,7 +859,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>气泡粒子——锅内沸腾</summary>
+        /// <summary>气泡粒子：锅内沸腾</summary>
         internal class BubbleParticlePRT
         {
             public Vector2 Position;

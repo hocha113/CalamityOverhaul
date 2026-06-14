@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Reflection;
 using Terraria;
@@ -10,7 +10,6 @@ namespace CalamityOverhaul.Common
     {
         /// <summary>
         /// <see cref="Main.screenTarget"/> 是否为当前活动 RT
-        /// <br/>钩子未绑 screenTarget 时强写会顶替 backbuffer 致全屏/UI 消失，RT 管线特效动手前先调本方法
         /// </summary>
         public static bool IsScreenTargetActive(GraphicsDevice graphicsDevice) {
             if (graphicsDevice == null) return false;
@@ -21,7 +20,7 @@ namespace CalamityOverhaul.Common
             return bindings[0].RenderTarget == Main.screenTarget;
         }
 
-        //tModLoader/Terraria 版本间该设置名可能不同，反射读取可避免绑定具体字段名。
+        //tModLoader/Terraria 版本间设置名可能不同，反射读取
         private static readonly string[] WaterQualityMemberNames = [
             "WaveQuality", "waveQuality", "WaterQuality", "waterQuality",
             "LiquidQuality", "liquidQuality"

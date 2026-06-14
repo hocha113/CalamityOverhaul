@@ -1,7 +1,7 @@
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
 {
     /// <summary>
-    /// Shepel对话线的持久化存档模块，由ADVSave自动发现，无需手动注册
+    /// Shepel 线 ADVSave 模块
     /// </summary>
     internal class ShepelADVData : ADVDataModule
     {

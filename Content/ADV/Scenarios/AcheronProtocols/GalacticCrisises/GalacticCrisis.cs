@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.GalacticCrisises
 {
     /// <summary>
-    /// 银河危机剧情场景
-    /// 嘉登向玩家展示虫族入侵的星图，提出大筛选协议（灭绝令），
-    /// 玩家拒绝后，嘉登提出备用方案：前往科尔托星系执行斩首任务，
-    /// 并揭示先遣战术人形失联的情报
+    /// 银河危机剧情场景 嘉登向玩家展示虫族入侵的星图，提出大筛选协议（灭绝令）， 玩家拒绝后，嘉登提出备用方案：前往科尔托星系执行斩首任务， 并揭示先遣战术人形失联的情报
     /// </summary>
     internal class GalacticCrisis : ADVScenarioBase, ILocalizedModType
     {
@@ -183,7 +180,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.GalacticCrisis
         }
 
         /// <summary>
+
         /// 玩家拒绝灭绝令后，启动转折与任务简报场景
+
         /// </summary>
         private void OnPlayerRefused() {
             Complete();
@@ -192,8 +191,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.GalacticCrisis
         }
 
         /// <summary>
-        /// 阶段二和阶段三：转折、任务简报与战术人形登场
-        /// 作为独立子场景处理，避免在选择回调后继续向已完成的场景添加对话
+
+        /// 阶段二和阶段三：转折、任务简报与战术人形登场 作为独立子场景，避免在选择回调后继续向已完成的场景添加对话
+
         /// </summary>
         private class GalacticCrisis_Rebuttal : ADVScenarioBase
         {

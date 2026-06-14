@@ -8,9 +8,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
     internal class OldDukeShopHandle
     {
-        /// <summary>
-        /// 处理商店物品列表
-        /// </summary>
         public static void Handle(List<OldDukeShopItem> shopItems) {
             //鱼人钓
             shopItems.Add(new OldDukeShopItem(ModContent.ItemType<MermanRod>(), 1, 1));

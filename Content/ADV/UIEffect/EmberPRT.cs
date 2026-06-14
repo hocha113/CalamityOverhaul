@@ -66,13 +66,13 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             float fade = (float)Math.Sin(t * Math.PI);
             float scale = Size * (1f + (float)Math.Sin((Life + Seed * 20f) * 0.12f) * 0.15f);
 
-            // 火焰余烬颜色：橙红到深红
+            //火焰余烬颜色：橙红到深红
             Color emberCore = Color.Lerp(new Color(255, 180, 80), new Color(255, 80, 40), t) * (alpha * 0.85f * fade);
             Color emberGlow = Color.Lerp(new Color(255, 140, 60), new Color(180, 40, 20), t) * (alpha * 0.5f * fade);
 
-            // 光晕
+            //光晕
             sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), emberGlow, 0f, new Vector2(0.5f, 0.5f), scale * 2.2f, SpriteEffects.None, 0f);
-            // 核心
+            //核心
             sb.Draw(vaule, Pos, new Rectangle(0, 0, 1, 1), emberCore, Rotation, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
         }
     }

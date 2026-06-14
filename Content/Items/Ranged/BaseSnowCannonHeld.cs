@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// 雪球炮手持基类：开火期存活，子类实现 UpdateGun
+    /// <summary>雪球炮HeldProj基类，开火期存活，子类覆写UpdateGun</summary>
     internal abstract class BaseSnowCannonHeld : BaseHeldProj
     {
         /// 对应武器ID

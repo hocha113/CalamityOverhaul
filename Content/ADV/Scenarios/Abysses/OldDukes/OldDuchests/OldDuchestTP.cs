@@ -15,8 +15,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
 {
     /// <summary>
-    /// 老箱子的TileProcessor
-    /// 管理大型存储空间
+    /// 老箱子的TileProcessor 管理大型存储空间
     /// </summary>
     public class OldDuchestTP : TileProcessor
     {
@@ -226,14 +225,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
                 return false;
             }
 
-            // 处理钱币合并
+            //处理钱币合并
             if (item.IsACoin) {
                 return MergeCoins(item);
             }
 
             bool changed = false;
 
-            // 尝试堆叠到现有物品
+            //尝试堆叠到现有物品
             for (int i = 0; i < storedItems.Count && item.stack > 0; i++) {
                 Item slot = storedItems[i];
                 if (slot == null || slot.IsAir) {
@@ -248,7 +247,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
                 }
             }
 
-            // 如果还有剩余且有空间，添加新槽位
+            //如果还有剩余且有空间，添加新槽位
             if (item.stack > 0) {
                 if (storedItems.Count < 240) {
                     storedItems.Add(item.Clone());
@@ -264,7 +263,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
             long totalValue = GetCoinValue(item.type) * item.stack;
             List<Item> coinsInChest = new();
 
-            // 收集箱子里的所有钱币
+            //收集箱子里的所有钱币
             for (int i = storedItems.Count - 1; i >= 0; i--) {
                 if (storedItems[i].IsACoin) {
                     totalValue += GetCoinValue(storedItems[i].type) * storedItems[i].stack;
@@ -273,19 +272,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
                 }
             }
 
-            // 将总价值转换回钱币物品
+            //将总价值转换回钱币物品
             List<Item> newCoins = CoinsFromValue(totalValue);
 
-            // 检查是否有足够空间存放整理后的钱币
-            // 如果整理后的钱币占用的槽位比原来少或相等，或者箱子还有空位
+            //检查是否有足够空间存放整理后的钱币
+            //如果整理后的钱币占用的槽位比原来少或相等，或者箱子还有空位
             if (storedItems.Count + newCoins.Count <= 240) {
                 storedItems.AddRange(newCoins);
-                item.stack = 0; // 钱币被完全吸收
+                item.stack = 0; //钱币被完全吸收
                 return true;
             }
             else {
-                // 空间不足，回滚操作
-                // 注意：这里回滚可能顺序会变，但对于钱币来说没关系
+                //空间不足，回滚操作
+                //注意：这里回滚可能顺序会变，但对于钱币来说没关系
                 storedItems.AddRange(coinsInChest);
                 return false;
             }
@@ -331,7 +330,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 检测箱子是否在水下
+
         /// </summary>
         private bool CheckChestUnderwater() {
             Point tileCoord = (CenterInWorld / 16).ToPoint();
@@ -350,7 +351,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 打开UI
+
         /// </summary>
         public void OpenUI(Player player) {
             if (player == null || !player.active) return;
@@ -379,7 +382,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 生成打开箱子时的泡泡
+
         /// </summary>
         private void SpawnOpenBubbles() {
             if (VaultUtils.isServer) {
@@ -418,7 +423,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 关闭UI
+
         /// </summary>
         public void CloseUI(Player player) {
             if (player == null) return;
@@ -435,7 +442,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 将物品数据同步到UI
+
         /// </summary>
         public void SyncItemsToUI() {
             if (OldDuchestUI.Instance == null) return;
@@ -444,7 +453,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 从UI保存物品数据
+
         /// </summary>
         public void SaveItemsFromUI() {
             if (OldDuchestUI.Instance == null) return;
@@ -454,7 +465,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 更新图格动画帧
+
         /// </summary>
         private void UpdateTileFrame(bool open) {
             if (!VaultUtils.SafeGetTopLeft(Position.X, Position.Y, out var topLeft)) {
@@ -494,7 +507,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 掉落所有物品
+
         /// </summary>
         private void DropItems() {
             VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, new Item(ModContent.ItemType<OldDuchest>()));
@@ -507,9 +522,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
             }
         }
 
-        /// <summary>
-        /// 检查箱子是否在营地内
-        /// </summary>
         private void CheckIfInCampsite() {
             if (!OldDukeCampsite.IsGenerated) {
                 isInCampsite = false;
@@ -522,7 +534,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 初始化营地箱子内容
+
         /// </summary>
         private void InitializeCampsiteChest() {
             if (!isInCampsite) {
@@ -536,7 +550,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 刷新战利品
+
         /// </summary>
         private void RefreshLoot(int refreshCycle) {
             if (VaultUtils.isClient) {
@@ -550,8 +566,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
-        /// 触发存入物品的动画效果
-        /// 短暂打开箱子然后自动关闭
+
+        /// 触发存入物品的动画效果 短暂打开箱子然后自动关闭
+
         /// </summary>
         public void TriggerDepositAnimation() {
             if (isOpen) {

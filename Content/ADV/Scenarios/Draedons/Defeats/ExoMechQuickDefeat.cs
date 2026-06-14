@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria.Localization;
@@ -6,9 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
 {
-    /// <summary>
-    /// 嘉登快速战败对话场景（玩家用很短时间击败机甲）
-    /// </summary>
+    /// <summary>嘉登快速战败对话</summary>
     internal class ExoMechQuickDefeat : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         //角色名称

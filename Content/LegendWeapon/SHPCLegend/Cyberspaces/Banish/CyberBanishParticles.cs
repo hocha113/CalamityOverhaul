@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;
@@ -19,34 +19,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             float halfW = npc.width * 0.5f;
             float halfH = npc.height * 0.5f;
 
-            // 粒子密度随进度增加
+            //粒子密度随进度增加
             int count;
             if (progress < 0.5f) {
-                // 阶段一：稀疏碎片从NPC表面剥离
+                //阶段一：稀疏碎片从NPC表面剥离
                 count = Main.rand.Next(1, 3);
             }
             else if (progress < 0.85f) {
-                // 阶段二：密度增大，碎片加速扩散
+                //阶段二：密度增大，碎片加速扩散
                 count = Main.rand.Next(3, 7);
             }
             else {
-                // 阶段三：密集爆发
+                //阶段三：密集爆发
                 count = Main.rand.Next(5, 10);
             }
 
             for (int i = 0; i < count; i++) {
-                // 从NPC碰撞箱内随机位置生成
+                //从NPC碰撞箱内随机位置生成
                 Vector2 spawnPos = center + new Vector2(
                     Main.rand.NextFloat(-halfW, halfW),
                     Main.rand.NextFloat(-halfH, halfH)
                 );
 
-                // 速度：从中心向外扩散，后期更快
+                //速度：从中心向外扩散，后期更快
                 float speed = MathHelper.Lerp(1.5f, 6f, progress * progress);
                 Vector2 vel = (spawnPos - center).SafeNormalize(Vector2.UnitX)
                     * Main.rand.NextFloat(speed * 0.5f, speed);
 
-                // 随机添加一些垂直偏移（模拟数字碎片上浮）
+                //随机添加一些垂直偏移（模拟数字碎片上浮）
                 vel.Y -= Main.rand.NextFloat(0.3f, 1.2f);
 
                 float scale = Main.rand.NextFloat(0.6f, 1.8f) * MathHelper.Lerp(1.2f, 0.5f, progress);
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                 PRTLoader.NewParticle<PRT_BanishGlitch>(center + vel * 2f, vel, Color.White, Main.rand.NextFloat(1f, 2.5f)).Configure(Main.rand.Next(25, 55));
             }
 
-            // 中心密集小碎片
+            //中心密集小碎片
             for (int i = 0; i < 12; i++) {
                 Vector2 vel = Main.rand.NextVector2CircularEdge(3f, 3f);
                 PRTLoader.NewParticle<PRT_BanishGlitch>(center, vel, Color.White, Main.rand.NextFloat(0.3f, 0.7f)).Configure(Main.rand.Next(15, 30));

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         }
 
         /// <summary>
-        /// 高弧线备选方案，用于近距离或复杂地形
+        /// 高弧线备选，近距/复杂地形
         /// </summary>
         private bool TryHighArcFallback(Vector2 start, Vector2 targetPos, float gravity, out Vector2 velocity, out float flightTime) {
             velocity = Vector2.Zero;
@@ -445,7 +445,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             float y = startPosition.Y + initialVelocity.Y * t + 0.5f * Gravity * t * t;
             Projectile.Center = new Vector2(x, y);
 
-            //计算当前速度用于碰撞检测
+            //当前速度，碰撞检测
             float vx = initialVelocity.X;
             float vy = initialVelocity.Y + Gravity * t;
             Projectile.velocity = new Vector2(vx, vy);

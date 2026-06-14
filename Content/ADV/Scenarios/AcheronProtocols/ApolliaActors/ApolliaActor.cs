@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States;
 using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines;
 using InnoVault.Actors;
@@ -12,8 +12,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
     /// <summary>
-    /// 阿波利娅角色Actor——通过 <see cref="IApolliaState"/> 驱动行为，
-    /// 运镜由 <see cref="ApolliaCutscene"/>（InnoVault 演出系统）按 Actor 状态自动表现
+    /// 阿波利娅角色Actor：通过 <see cref="IApolliaState"/> 驱动行为， 运镜由 <see cref="ApolliaCutscene"/>（InnoVault 演出系统）按 Actor 状态自动表现
     /// </summary>
     internal class ApolliaActor : Actor
     {
@@ -25,7 +24,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         internal IApolliaState CurrentState { get; private set; }
 
         /// <summary>
-        /// 切换到新状态——自动调用旧状态的Exit和新状态的Enter
+
+        /// 切换到新状态：自动调用旧状态的Exit和新状态的Enter
+
         /// </summary>
         internal void TransitionTo(IApolliaState newState) {
             CurrentState?.Exit(this);
@@ -35,7 +36,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 
         #endregion
 
-        #region 公开属性——供状态类读写
+        #region 公开属性：供状态类读写
 
         /// <summary>当前动画帧索引 (0=站立, 1~10=行走)</summary>
         internal int FrameIndex;
@@ -55,7 +56,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         /// <summary>帧纹理的单帧高度</summary>
         internal int FrameHeight { get; private set; }
 
-        /// <summary>速度向量——供状态类进行物理运动</summary>
+        /// <summary>速度向量：供状态类进行物理运动</summary>
         internal new Vector2 Velocity;
 
         /// <summary>角色是否站在实心地面上</summary>
@@ -68,7 +69,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 
         #region 尾焰系统
 
-        /// <summary>尾焰Trail是否激活——由飞行状态Enter/Exit控制</summary>
+        /// <summary>尾焰Trail是否激活：由飞行状态Enter/Exit控制</summary>
         internal bool JetTrailActive;
 
         private const int JetTrailPointCount = 16;
@@ -110,7 +111,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
+
         /// 外部触发：开始着陆演出
+
         /// </summary>
         internal void StartLandingCutscene(Vector2 landingPodCenter) {
             if (CurrentState != null) return;
@@ -165,7 +168,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 在角色脚下生成一个尾焰粒子——由飞行状态每帧调用
+
+        /// 在角色脚下生成一个尾焰粒子：由飞行状态每帧调用
+
         /// </summary>
         internal void SpawnJetParticle() {
             if (VaultUtils.isServer || jetParticles.Count >= MaxJetParticles) return;
@@ -187,7 +192,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 停止尾焰并清除所有粒子——飞行状态退出时调用
+
+        /// 停止尾焰并清除所有粒子：飞行状态退出时调用
+
         /// </summary>
         internal void StopJetTrail() {
             JetTrailActive = false;
@@ -197,8 +204,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 更新尾焰Trail路径点——从脚底向下后方延伸，模拟喷射推进器尾焰。
-        /// [0]=喷口(脚底), [Length-1]=火焰远端
+
+        /// 更新尾焰Trail路径点：从脚底向下后方延伸，模拟喷射推进器尾焰。 [0]=喷口(脚底), [Length-1]=火焰远端
+
         /// </summary>
         private void UpdateJetTrailPoints() {
             Vector2 nozzle = new(Center.X, Position.Y + Height - 10);
@@ -225,7 +233,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
+
         /// 使用DropPodFlame着色器绘制尾焰Trail
+
         /// </summary>
         private void DrawJetFlameTrail(SpriteBatch spriteBatch) {
             if (jetTimer < 3) return;
@@ -274,11 +284,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             return result * alpha;
         }
 
-        #region 物理辅助——供状态类调用
+        #region 物理辅助：供状态类调用
 
         /// <summary>
-        /// 探测角色脚下到最近实心地面的像素距离。
-        /// 返回值 ≥ 0 表示找到地面（距离像素），-1 表示在扫描范围内未找到
+
+        /// 探测角色脚下到最近实心地面的像素距离。 返回值 ≥ 0 表示找到地面（距离像素），-1 表示在扫描范围内未找到
+
         /// </summary>
         /// <param name="maxTiles">向下扫描的最大格数</param>
         internal float ProbeGroundDistance(int maxTiles = 8) {
@@ -298,7 +309,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
+
         /// 将角色吸附到脚下最近的实心地面上，并更新 <see cref="OnGround"/> 状态
+
         /// </summary>
         internal void SnapToGround() {
             int tileX = (int)(Center.X / 16f);
@@ -326,13 +339,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 检测角色前方是否有实心墙壁阻挡，扫描范围覆盖完整身体高度（头到脚）。
-        /// 修正：原逻辑只检测脚部往上3行，导致头部碰撞遗漏、角色穿入上半部分墙壁。
+
+        /// 检测角色前方是否有实心墙壁阻挡，扫描范围覆盖完整身体高度（头到脚）。 修正：原逻辑只检测脚部往上3行，导致头部碰撞遗漏、角色穿入上半部分墙壁
+
         /// </summary>
         internal bool IsWallAhead(int direction) {
             int checkX = (int)((Center.X + direction * (Width * 0.5f + 8f)) / 16f);
             int footY = (int)((Position.Y + Height - 4f) / 16f);
-            int headY = (int)((Position.Y + 4f) / 16f); // 从脚扫到头，覆盖全身
+            int headY = (int)((Position.Y + 4f) / 16f); //从脚扫到头，覆盖全身
 
             for (int y = footY; y >= headY; y--) {
                 if (!WorldGen.InWorld(checkX, y)) continue;
@@ -345,8 +359,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 检测角色身体中心列是否当前已陷入实心方块中（帧间穿越后的紧急检测）。
-        /// 不做严格碰撞，仅作为寻路兜底：一旦发现陷入则立即触发飞行逃逸。
+
+        /// 检测角色身体中心列是否当前已陷入实心方块中（帧间穿越后的紧急检测）。 不做严格碰撞，仅作为寻路兜底：一旦发现陷入则立即触发飞行逃逸
+
         /// </summary>
         internal bool IsEmbeddedInSolid() {
             int tileX = (int)(Center.X / 16f);
@@ -364,7 +379,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
+
         /// 检测角色前方脚下是否存在深坑 (超过6格没有地面)
+
         /// </summary>
         internal bool IsGapAhead(int direction) {
             int checkX = (int)((Center.X + direction * (Width * 0.5f + 16f)) / 16f);
@@ -380,9 +397,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             return true;
         }
 
-        /// <summary>
-        /// 应用重力和速度到位置，用于非吸附式的物理运动
-        /// </summary>
+        /// <summary>应用重力和速度到位置</summary>
         internal void ApplyGravity(float gravity = 0.4f, float maxFallSpeed = 12f) {
             Velocity.Y = Math.Min(Velocity.Y + gravity, maxFallSpeed);
             Position += Velocity;

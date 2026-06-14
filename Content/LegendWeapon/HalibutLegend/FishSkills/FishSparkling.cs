@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return !hasSparklingFish;
         }
         internal void TryTriggerSparklingVolley(Item item, Player player, HalibutPlayer hp) {
-            //该方法只在持有玩家的本地客户端运行（Shoot 由该客户端触发）
+            //仅持有者本地，Shoot触发
             //所有 Projectile.NewProjectile 由本地玩家创建后会通过 NetMessage 自动同步到其它端
             if (player.CountProjectilesOfID<SparklingFishHolder>() > 0) {
                 return;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             SetCooldown();
-            int fishCount = 4 + HalibutData.GetDomainLayer(); // 4+领域数量鱼
+            int fishCount = 4 + HalibutData.GetDomainLayer(); //4+领域数量鱼
 
             //使用同步过的鼠标方向（HalibutPlayer.MouseWorld 由 InnoVault PlayerNetwork 提供）
             Vector2 aimDir = (hp.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 offsetDir = behind.RotatedBy(angOff * shootDir * -1);
                 Vector2 spawnPos = player.Center + offsetDir * radius;
 
-                //初始 velocity 用于在所有端 OnSpawn 阶段携带 AimDirection（生成包会同步 velocity）
+                //初始velocity跨端传AimDirection
                 int proj = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, aimDir,
                     ModContent.ProjectileType<SparklingFishHolder>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI,
                     ai0: i, ai1: fishCount);
@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     float accelProgress = MathHelper.Clamp(flyTime / (float)FishSparkling.DepartureDuration, 0f, 1f);
                     accelProgress = MathF.Pow(accelProgress, 0.65f);
 
-                    //外向方向完全由出生参数决定，确保所有端一致地飞出去
+                    //外向方向出生参数定，跨端一致
                     Vector2 behind = (-AimDirection).SafeNormalize(Vector2.UnitX);
                     float arc = MathHelper.ToRadians(FishSparkling.RoingArc);
                     float t = TotalFishCount <= 1 ? 0.5f : FishIndex / (float)(TotalFishCount - 1);

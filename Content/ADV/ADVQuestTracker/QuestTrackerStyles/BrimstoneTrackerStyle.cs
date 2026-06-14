@@ -1,22 +1,20 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
 {
-    /// <summary>
-    /// 硫磺火默认追踪样式
-    /// </summary>
+    /// <summary>硫磺火默认追踪样式</summary>
     internal class BrimstoneTrackerStyle : BaseTrackerStyle
     {
         public override void DrawPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 阴影
+            //阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(3, 3);
             spriteBatch.Draw(pixel, shadowRect, new Rectangle(0, 0, 1, 1), Color.Black * (alpha * 0.5f));
 
-            // 背景渐变
+            //背景渐变
             int segments = 15;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -36,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
                 spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            // 火焰脉冲
+            //火焰脉冲
             float pulse = (float)Math.Sin(pulseTimer * 2f) * 0.5f + 0.5f;
             Color pulseColor = new Color(140, 40, 25) * (alpha * 0.15f * pulse);
             spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), pulseColor);
@@ -45,14 +43,14 @@ namespace CalamityOverhaul.Content.ADV.ADVQuestTracker.QuestTrackerStyles
         public override void DrawFrame(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float borderGlow) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 外框
+            //外框
             Color outerEdge = Color.Lerp(new Color(180, 60, 30), new Color(255, 140, 70), borderGlow) * (alpha * 0.85f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), outerEdge);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Bottom - 2, panelRect.Width, 2), new Rectangle(0, 0, 1, 1), outerEdge * 0.75f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.X, panelRect.Y, 2, panelRect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
             spriteBatch.Draw(pixel, new Rectangle(panelRect.Right - 2, panelRect.Y, 2, panelRect.Height), new Rectangle(0, 0, 1, 1), outerEdge * 0.9f);
 
-            // 内框发光
+            //内框发光
             Rectangle inner = panelRect;
             inner.Inflate(-5, -5);
             Color innerGlow = new Color(220, 100, 50) * (alpha * 0.22f * borderGlow);

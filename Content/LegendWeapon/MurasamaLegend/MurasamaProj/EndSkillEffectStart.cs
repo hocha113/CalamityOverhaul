@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
     /// <summary>
-    /// 村正终结技起始弹幕，负责触发次元斩演出效果
+    /// 村正终结技起点弹幕，触发次元斩演出
     /// </summary>
     internal class EndSkillEffectStart : ModProjectile
     {

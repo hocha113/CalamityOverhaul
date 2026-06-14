@@ -70,7 +70,7 @@ namespace CalamityOverhaul
 
                 item.CWR().OmigaSnyContent = pms;
             }
-            //在配方函数中调用这个Call，这个Call用于设置特殊的合成事件
+            //配方 Call，特殊合成事件
             else if (callType == CallType.SetNoRecipeHasFrme) {
                 if (contentCount < 2) {
                     Instance.Logger.Info("Call-SetNoRecipeHasFrme was made without additional parameters.");

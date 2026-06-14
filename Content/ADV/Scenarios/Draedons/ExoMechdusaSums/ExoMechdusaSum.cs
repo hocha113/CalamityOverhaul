@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.OtherMods.InfernumMode;
@@ -32,13 +32,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
         //Boss Rush模式文本
         public static LocalizedText BossRushLine { get; private set; }
 
-        /// <summary>
-        /// 是否启用简洁模式，如果是，跳过介绍直接选择机甲
-        /// </summary>
+        /// <summary>是否启用简洁模式，如果是，跳过介绍直接选择机甲</summary>
         public static bool SimpleMode;
-        /// <summary>
-        /// 启用兼容模式，默认使用原版选择UI而非覆盖使用选项框模式
-        /// </summary>
+        /// <summary>启用兼容模式，默认使用原版选择UI而非覆盖使用选项框模式</summary>
         public static bool CompatibleMode {
             get {
                 if (CWRMod.Instance.fargowiltasCrossmod != null) {
@@ -54,9 +50,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 简洁模式下的选择时间限制（秒）
-        /// </summary>
+        /// <summary>简洁模式下的选择时间限制（秒）</summary>
         private const float TimeLimitSeconds = 20f;
 
         //设置场景默认使用嘉登科技风格
@@ -193,9 +187,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
             }
         }
 
-        /// <summary>
-        /// 统一的对话框关闭方法
-        /// </summary>
+        /// <summary>统一的对话框关闭方法</summary>
         private void CloseDialogue() {
             ADVChoiceBox.Hide();
             var dialogueBox = DefaultDialogueStyle?.Invoke();

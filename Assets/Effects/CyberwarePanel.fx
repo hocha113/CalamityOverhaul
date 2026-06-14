@@ -1,6 +1,6 @@
 // ============================================================================
-// CyberwarePanel.fx 赛博义体管理面板背景
-// AlphaBlend 预乘 alpha
+//CyberwarePanel.fx 赛博义体管理面板背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -62,7 +62,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 uv = saturate((px - inMin) / inSize);
     bool isMain = uMode < 0.5;
 
-    // ═══ 1. 深红黑底色，竖直渐变 ═══
+    //═══ 1. 深红黑底色，竖直渐变 ═══
     float3 col = lerp(float3(0.045, 0.012, 0.012), float3(0.022, 0.008, 0.012), uv.y);
 
     //fbm 雾化纹理（侧栏减弱）
@@ -70,16 +70,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     col *= 0.85 + n * (isMain ? 0.30 : 0.18);
     col += float3(0.030, 0.008, 0.008) * (n - 0.5) * (isMain ? 1.0 : 0.5);
 
-    // ═══ 2. 数据网格背景（静态细密点阵 + 中等方格细线，无任何闪烁/扫描） ═══
+    //═══ 2. 数据网格背景（静态细密点阵 + 中等方格细线，无任何闪烁/扫描） ═══
     if (isMain)
     {
-        //细密点阵 —— 均匀分布的静态参考点，提供"芯片刻印"的科技纹理
+        //细密点阵 ： 均匀分布的静态参考点，提供"芯片刻印"的科技纹理
         float2 dotUV = uv * float2(60.0, 36.0);
         float2 dotF = frac(dotUV);
         float dotMask = step(0.85, dotF.x) * step(0.85, dotF.y);
         col += float3(0.42, 0.10, 0.10) * dotMask * 0.20;
 
-        //方格细线 —— 同样静态，提供网格结构感
+        //方格细线 ： 同样静态，提供网格结构感
         float2 grid = uv * float2(12.0, 7.0);
         float2 g = abs(frac(grid) - 0.5);
         float gridLine = step(0.46, max(g.x, g.y)) - step(0.49, max(g.x, g.y));
@@ -93,7 +93,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col += float3(0.30, 0.06, 0.06) * ln * 0.20;
     }
 
-    // ═══ 3. 中央人体能量光场 ═══
+    //═══ 3. 中央人体能量光场 ═══
     if (uBodyRadius > 1.0)
     {
         float2 bodyDelta = px - uBodyCenter;
@@ -125,14 +125,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col += float3(0.55, 0.12, 0.12) * pow(rays, 12.0) * halo * 0.35;
     }
 
-    // ═══ 4. 顶部色带高光 ═══
+    //═══ 4. 顶部色带高光 ═══
     col += float3(0.60, 0.15, 0.15) * (1.0 - smoothstep(0.0, 0.06, uv.y)) * (isMain ? 0.65 : 0.40);
 
-    // ═══ 5. 边缘暗角 ═══
+    //═══ 5. 边缘暗角 ═══
     float vig = saturate(sdf / (uEdgePad + 28.0));
     col *= 0.62 + 0.38 * vig;
 
-    // ═══ 6. 内边线柔光 ═══
+    //═══ 6. 内边线柔光 ═══
     float frameInner = smoothstep(uEdgePad + 6.0, uEdgePad + 4.0, sdf)
                      * smoothstep(uEdgePad + 2.0, uEdgePad + 4.0, sdf);
     col += float3(1.00, 0.28, 0.28) * frameInner * 0.55;

@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇客时间使用条件提供者</summary>
+    /// <summary>骇客时间开关条件</summary>
     public interface IHackTimeAccessCondition
     {
         /// <summary>判断玩家当前帧是否满足条件</summary>
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>以委托注册骇客时间使用条件</summary>
         /// <param name="predicate">传入玩家并返回是否满足</param>
         /// <param name="description">可选描述，仅调试用</param>
-        /// <returns>包装实例，可用于<see cref="Unregister"/></returns>
+        /// <returns>Unregister 用包装实例</returns>
         public static IHackTimeAccessCondition Register(Func<Player, bool> predicate, string description = null) {
             if (predicate == null) {
                 return null;

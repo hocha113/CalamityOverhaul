@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines;
+using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,8 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
     /// <summary>
-    /// 阿波利娅英雄单位面板UI——星流风格
-    /// 左侧屏幕图标触发，展示HP/伤害/指令/立绘
+    /// 阿波利娅英雄单位面板UI：星流风格 左侧屏幕图标触发，展示HP/伤害/指令/立绘
     /// </summary>
     internal class ApolliaHeroPanelUI : UIHandle, ILocalizedModType
     {
@@ -73,11 +72,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         private const float FlyDuration = 55f;
         /// <summary>飞入闪光尾迹计时器</summary>
         private float flyTrailTimer;
-        /// <summary>飞入过程中的位置记录（用于拖尾）</summary>
+        /// <summary>飞入过程中的位置记录（</summary>
         private readonly List<Vector2> flyTrailPositions = [];
 
         /// <summary>
-        /// 启动图标飞入动画——从玩家头顶飞到左侧
+
+        /// 启动图标飞入动画：从玩家头顶飞到左侧
+
         /// </summary>
         internal void StartFlyIn() {
             Player p = Main.LocalPlayer;
@@ -332,7 +333,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             //三次缓出曲线
             float t = flyProgress;
             float eased = 1f - MathF.Pow(1f - t, 3f);
-            //带弧线的飞行——中间偏上抛物
+            //带弧线的飞行：中间偏上抛物
             Vector2 mid = (flyStartPos + target) * 0.5f + new Vector2(0, -80f);
             Vector2 p01 = Vector2.Lerp(flyStartPos, mid, eased);
             Vector2 p12 = Vector2.Lerp(mid, target, eased);
@@ -471,7 +472,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
                     iconOrigin, iconScale, SpriteEffects.None, 0f);
             }
 
-            //外框——双层金蓝渐变
+            //外框：双层金蓝渐变
             Color outerBorder = Color.Lerp(new Color(140, 120, 50), new Color(220, 190, 100), pulse) * (alpha * 0.9f);
             //外层 (2px)
             sb.Draw(px, new Rectangle(iconRect.X - 1, iconRect.Y - 1, iconRect.Width + 2, 2), new Rectangle(0, 0, 1, 1), outerBorder);
@@ -649,7 +650,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 能量脉冲线——竖向发光脉冲，从底部向上传播
+
+        /// 能量脉冲线：竖向发光脉冲，从底部向上传播
+
         /// </summary>
         private void DrawEnergyPulseLines(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -932,7 +935,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             Texture2D px = VaultAsset.placeholder2.Value;
             float textScale = 0.76f;
 
-            //伤害——带图标小标记
+            //伤害：带图标小标记
             Vector2 dmgPos = new(statsRect.X + 8, statsRect.Y + 6);
             //攻击力图标：小剑形
             Color iconC = new Color(255, 200, 80) * (alpha * 0.7f);
@@ -944,7 +947,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             string dmgText = $"{DamageLabel.Value}: {(int)HeroData.BaseDamage}";
             Utils.DrawBorderString(sb, dmgText, dmgPos + new Vector2(16, 0), new Color(255, 215, 100) * (alpha * 0.92f), textScale);
 
-            //防御——带盾形图标
+            //防御：带盾形图标
             Vector2 defPos = new(statsRect.X + 8, statsRect.Y + 32);
             Color shieldC = new Color(120, 170, 220) * (alpha * 0.6f);
             sb.Draw(px, defPos + new Vector2(5, 5), null, shieldC, 0f, new Vector2(0.5f),
@@ -1043,7 +1046,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         #region 工具函数
 
         /// <summary>
+
         /// 六芒星标记
+
         /// </summary>
         private static void DrawHeroStarMark(SpriteBatch sb, Vector2 pos, float a, float size) {
             Texture2D px = VaultAsset.placeholder2.Value;

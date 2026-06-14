@@ -12,12 +12,7 @@ using static CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.CampsiteInt
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 {
-    /// <summary>
-    /// 老公爵NPC行为覆盖，负责管理初见剧情、战败潜水、切磋战斗、营地重定向等功能
-    /// <para>AI行为模式分为两大类：剧情模式和战斗模式</para>
-    /// <para>剧情模式：初见对话(接近玩家->等待对话->根据选择离开或开战)和战败后潜入海中</para>
-    /// <para>战斗模式：切磋或选择战斗后执行原版AI</para>
-    /// </summary>
+    /// <summary>老公爵NPC行为覆盖</summary>
     internal class ModifyOldDuke : NPCOverride, ILocalizedModType
     {
         public override int TargetID => CWRID.NPC_OldDuke;
@@ -25,7 +20,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         #region AI状态定义
 
         /// <summary>
+
         /// 剧情AI状态，存储在ai[0]中，通过网络自动同步
+
         /// </summary>
         private enum OldDukeAIState
         {
@@ -95,14 +92,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         #region 状态判断辅助方法
 
         /// <summary>
+
         /// 判断当前NPC是否处于潜水离开状态
+
         /// </summary>
         private bool IsInLeavingDive => LeavingDiveFlag == 1f;
 
-        /// <summary>
-        /// 根据目标玩家的存档数据判断是否需要进入剧情模式。
-        /// 剧情模式适用于：首次相遇、已相遇但未选择、拒绝合作后再次相遇
-        /// </summary>
+        /// <summary>根据目标玩家的存档数据判断是否需要进入剧情模式。 剧情模式适</summary>
         private static bool ShouldEnterStoryMode(Player target) {
             if (!target.TryGetADVSave(out var save)) {
                 return false;
@@ -116,8 +112,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 判断是否需要在合作确认后直接执行离开动画。
-        /// 当玩家已选择合作但NPC还在场上时需要执行离开
+
+        /// 判断是否需要在合作确认后直接执行离开动画。 当玩家已选择合作但NPC还在场上时需要执行离开
+
         /// </summary>
         private static bool ShouldLeaveAfterCooperation(Player target) {
             if (!target.TryGetADVSave(out var save)) {
@@ -127,8 +124,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 判断是否应该将NPC重定向到营地（消失并触发营地对话）
-        /// 条件：营地已生成、不在切磋状态、当前玩家是本地玩家、不在服务端
+
+        /// 判断是否应该将NPC重定向到营地（消失并触发营地对话） 条件：营地已生成、不在切磋状态、当前玩家是本地玩家、不在服务端
+
         /// </summary>
         private static bool ShouldRedirectToCampsite(Player target) {
             return OldDukeCampsite.IsGenerated
@@ -182,8 +180,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         #region 网络消息处理
 
         /// <summary>
-        /// 处理营地重定向的网络消息。服务端收到后广播给所有其他客户端，
-        /// 客户端收到后在本地触发对应的场景对话
+
+        /// 。服务端收到后广播给所有其他客户端， 客户端收到后在本地触发对应的场景对话
+
         /// </summary>
         internal static void StartCampsiteFindMeScenarioNetWork(BinaryReader reader, int whoAmI) {
             int npcIndex = reader.ReadInt32();
@@ -212,7 +211,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 根据当前是否在酸雨事件中，触发对应的营地场景对话
+
         /// </summary>
         private static void TriggerCampsiteScenario() {
             if (CWRRef.GetAcidRainEventIsOngoing()) {
@@ -288,9 +289,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
             return true;
         }
 
-        /// <summary>
-        /// 如果玩家状态为NotMet，标记为Met，确保只标记一次
-        /// </summary>
+        /// <summary>如果玩家状态为NotMet，标记为Met</summary>
         private static void MarkAsMetIfNeeded(Player target) {
             if (!target.TryGetADVSave(out var save)) {
                 return;
@@ -301,7 +300,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 执行营地重定向：隐藏NPC实体，触发营地场景对话，并通知服务端
+
         /// </summary>
         private void ExecuteCampsiteRedirect() {
             if (BCKRef.Has) {
@@ -322,7 +323,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 清除可能残留的老公爵召唤弹幕
+
         /// </summary>
         private static void KillDukeSummonerProjectiles() {
             foreach (var p in Main.ActiveProjectiles) {
@@ -337,9 +340,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
 
         #region 剧情AI状态机
 
-        /// <summary>
-        /// 运行剧情AI状态机。设置NPC为友好状态并根据当前State分派到对应的处理方法
-        /// </summary>
+        /// <summary>运行剧情AI状态机。设置NPC为友好状态并根据当前State分派到对应的</summary>
         private bool RunStorylineAI() {
             npc.TargetClosest();
             Player target = Main.player[npc.target];
@@ -368,7 +369,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 友好接近状态：平滑飞到玩家上方300像素处，到达后触发对话
+
         /// </summary>
         private void HandleFriendlyApproach(Player target) {
             Vector2 targetPos = target.Center + new Vector2(0, -300);
@@ -400,9 +403,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 对话暂停状态：悬浮等待对话结束，根据玩家选择决定下一步行动。
-        /// 通过轮询OldDukeEffect.IsActive来检测对话是否结束，
-        /// 使用Timer>60的缓冲时间来容忍网络延迟
+
+        /// 对话暂停状态：悬浮等待对话结束，根据玩家选择决定下一步行动。 通过轮询OldDukeEffect.IsActive来检测对话是否结束， 使用Timer>60的缓冲时间来容忍网络延迟
+
         /// </summary>
         private void HandleDialoguePause(Player target) {
             Timer++;
@@ -441,8 +444,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
-        /// 离开潜水状态：分两个阶段，先向下加速游动，再淡出消失。
-        /// 消失后停止酸雨和场景效果
+
+        /// 离开潜水状态：分两个阶段，先向下加速游动，再淡出消失。 消失后停止酸雨和场景效果
+
         /// </summary>
         private void HandleLeavingDive() {
             Timer++;
@@ -484,7 +488,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 开始战斗状态：播放60帧的准备动画（后退+绿色粒子），然后恢复原版AI
+
         /// </summary>
         private void HandleStartBattle() {
             Timer++;
@@ -513,7 +519,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         #region 状态转换辅助方法
 
         /// <summary>
+
         /// 切换到指定的AI状态并重置计时器
+
         /// </summary>
         private void TransitionToState(OldDukeAIState newState) {
             State = (float)newState;
@@ -522,7 +530,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 完成消失流程：停止酸雨，隐藏Boss列表标记，停用NPC
+
         /// </summary>
         private void FinalizeDespawn() {
             CWRRef.StopAcidRain();
@@ -539,7 +549,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes
         }
 
         /// <summary>
+
         /// 恢复原版战斗AI状态：清除友好标记，重置所有AI数据
+
         /// </summary>
         private void RestoreCombatState() {
             CWRRef.StopAcidRain();

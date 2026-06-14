@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
             //真实瞬移：按 hitbox 中心对齐目标点
             Vector2 newPos = target - new Vector2(owner.width * 0.5f, owner.height * 0.5f);
             //通知领域中心暂留在出发点：玩家瞬间到达终点，但领域慢一拍追上来，营造"撕裂前冲"的速度感
-            //仅本地玩家触发追赶动画——其它客户端的领域跟随各自玩家，自有同步
+            //仅 myPlayer 播追赶动画，远端各自同步
             if (Main.myPlayer == owner.whoAmI) {
                 Cyberspace.NotifyTeleport(origin);
             }

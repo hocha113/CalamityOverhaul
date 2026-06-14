@@ -11,11 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
-    /// <summary>
-    /// 激光眼高速激光弹，替代原版<see cref="ProjectileID.DeathLaser"/>
-    /// 青紫渐变拖尾+发光内核+命中迸发<see cref="PRT_TwinsSpark"/>
-    /// ai[1]=1 强化弹(狂暴/大招)，更快更亮
-    /// </summary>
+    /// <summary>激光眼高速激光弹，替代原版<see cref="ProjectileID.DeathLaser"/>青紫渐变拖尾+发光内核+命中迸发<see cref="PRT_TwinsSpark"/>ai[1]=1强化弹(狂暴/大招)，更快更亮</summary>
     internal class RetinazerLaser : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder2;
@@ -102,7 +98,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
         public Color GetColorFunc(Vector2 _) => Color.Lerp(CoreColor, GlowColor, 0.4f) * Projectile.Opacity;
 
         public override bool PreDraw(ref Color lightColor) {
-            //发光弹头:外层紫晕+内核白光(A=0实现加色观感)
+            //发光弹头:外层紫晕+内核白光(A=0加色观感)
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = glow.Size() / 2f;

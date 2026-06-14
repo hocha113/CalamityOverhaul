@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>
-    /// 老公爵实体类
-    /// 负责管理老公爵的AI行为和状态
-    /// </summary>
+    /// <summary>老公爵实体类</summary>
     internal class OldDukeEntity
     {
         //位置与速度
@@ -81,7 +78,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 设置可访问的锅位置列表
+
         /// </summary>
         public void SetPotPositions(List<Vector2> positions) {
             potPositions.Clear();
@@ -91,7 +90,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 更新老公爵AI
+
         /// </summary>
         public void Update(bool inDialogue, Vector2 dialogueTarget) {
             SwimPhase += 0.08f;
@@ -134,7 +135,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 对话模式行为
+
         /// </summary>
         private void UpdateDialogueBehavior(Vector2 dialogueTarget) {
             currentState = BehaviorState.Dialogue;
@@ -166,7 +169,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 正常模式行为
+
         /// </summary>
         private void UpdateNormalBehavior() {
             targetTimer++;
@@ -192,9 +197,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 检查并处理洞穴卡住情况
-        /// </summary>
         private void CheckAndHandleCaveStuck() {
             bool isInCave = IsInCave();
             bool isBelowCenter = Position.Y > campsiteCenter.Y;
@@ -218,7 +220,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 应用逃离洞穴的上浮力
+
         /// </summary>
         private void ApplyEscapeForce() {
             float escapeIntensity = MathHelper.Clamp((stuckInCaveTimer - MaxStuckTime) / 120f, 0f, 1f);
@@ -240,7 +244,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 寻找露天目标点
+
         /// </summary>
         private void FindOpenSkyTarget() {
             for (int attempt = 0; attempt < 15; attempt++) {
@@ -258,14 +264,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 检测位置是否在洞穴中
+
         /// </summary>
         private bool IsInCave() {
             return !IsOpenSky(Position);
         }
 
         /// <summary>
+
         /// 检测位置上方是否露天
+
         /// </summary>
         private bool IsOpenSky(Vector2 position) {
             Point tilePos = position.ToTileCoordinates();
@@ -286,7 +296,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 闲置行为
+
         /// </summary>
         private void UpdateIdleBehavior() {
             idleTimer--;
@@ -325,7 +337,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 游走行为
+
         /// </summary>
         private void UpdateWanderBehavior() {
             Vector2 toTarget = currentTarget - Position;
@@ -363,7 +377,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 访问锅的行为
+
         /// </summary>
         private void UpdateVisitPotBehavior() {
             Vector2 toTarget = currentTarget - Position;
@@ -412,7 +428,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 应用图块躲避力
+
         /// </summary>
         private void ApplyTileAvoidance() {
             Vector2 avoidanceForce = GetTileAvoidanceForce();
@@ -425,7 +443,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 计算图块躲避力
+
         /// </summary>
         private Vector2 GetTileAvoidanceForce() {
             Vector2 totalForce = Vector2.Zero;
@@ -462,7 +482,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 选择新的游走目标
+
         /// </summary>
         private void SelectNewTarget() {
             const int maxAttempts = 15;
@@ -497,7 +519,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 评估目标位置的适合度
+
         /// </summary>
         private float EvaluateTargetPosition(Vector2 targetPos, bool preferOpenSky = false) {
             float score = 100f;
@@ -552,7 +576,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 选择随机锅作为目标
+
         /// </summary>
         private void SelectRandomPot() {
             if (potPositions.Count == 0) {
@@ -566,7 +592,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 应用速度并添加阻力
+
         /// </summary>
         private void ApplyVelocity() {
             Position += Velocity;
@@ -574,7 +602,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 限制位置在营地范围内
+
         /// </summary>
         private void ConstrainPosition() {
             Vector2 toCampsite = Position - campsiteCenter;
@@ -592,7 +622,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 更新朝向
+
         /// </summary>
         private void UpdateFacing() {
             if (Math.Abs(Velocity.X) > 0.2f) {
@@ -600,14 +632,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 获取当前行为状态
-        /// </summary>
         public BehaviorState GetCurrentState() => currentState;
 
-        /// <summary>
-        /// 获取游泳倾斜角度
-        /// </summary>
         public float GetSwimTilt() {
             if (currentState == BehaviorState.Dialogue) {
                 return 0f;
@@ -620,22 +646,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return 0f;
         }
 
-        /// <summary>
-        /// 获取游泳波动偏移
-        /// </summary>
         public Vector2 GetSwimBobOffset() {
             float swimBob = MathF.Sin(SwimPhase) * 3f;
             return new Vector2(0, swimBob);
         }
 
         /// <summary>
+
         /// 判断是否正在访问锅
+
         /// </summary>
         public bool IsVisitingPot() => currentState == BehaviorState.VisitPot;
 
-        /// <summary>
-        /// 获取当前目标位置
-        /// </summary>
         public Vector2 GetCurrentTarget() => currentTarget;
     }
 }

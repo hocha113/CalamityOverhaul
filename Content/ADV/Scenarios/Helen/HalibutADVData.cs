@@ -1,8 +1,6 @@
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 {
-    /// <summary>
-    /// 海伦线存档数据
-    /// </summary>
+    /// <summary>海伦线存档数据</summary>
     public class HalibutADVData : ADVDataModule
     {
         public bool HasCaughtHalibut;

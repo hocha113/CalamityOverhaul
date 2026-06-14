@@ -133,17 +133,13 @@ namespace CalamityOverhaul.Content.HackTimes
 
         #region 对外接口
 
-        /// <summary>
-        /// 计算指定目标的实际 RAM 成本（已乘以倍率，至少为 1）
-        /// </summary>
+        /// <summary>目标 RAM 成本，含倍率，至少 1</summary>
         public static int GetActualCost(QuickHackDef hack, IHackTarget target) {
             float multiplier = GetMultiplier(target);
             return Math.Max(1, (int)(hack.RamCost * multiplier + 0.5f));
         }
 
-        /// <summary>
-        /// 获取指定目标的成本倍率（1.0x–3.0x）
-        /// </summary>
+        /// <summary>成本倍率 1.0x~3.0x</summary>
         public static float GetMultiplier(IHackTarget target) {
             if (target is not NpcScannable npcScan) return 1.0f;
             int idx = npcScan.NpcIndex;

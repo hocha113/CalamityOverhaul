@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -491,7 +491,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             Projectile.timeLeft = Math.Max(Projectile.timeLeft, 80);
         }
 
-        //碰撞处理
+        //碰撞分支
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == OceanState.Streaming) {
                 CreateOceanSplash(Projectile.Center, oldVelocity);
@@ -946,7 +946,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public float RotationSpeed;
         public float Opacity;
         public bool IsSplash;
-        public float ColorVariant; //0-1，用于颜色变化
+        public float ColorVariant; //0-1颜色变体
         public int Frame; //3x3 Spray帧索引0-8
     }
 

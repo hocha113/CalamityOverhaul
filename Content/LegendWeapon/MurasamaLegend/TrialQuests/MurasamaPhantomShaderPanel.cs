@@ -5,9 +5,8 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
 {
     /// <summary>
-    /// 鬼妖村正委托面板着色器辅助绘制——
-    /// 复用 MurasamaPhantomPanel.fx,统一 Begin/End 切换,
-    /// 失败时由调用方走 CPU 降级
+    /// 鬼妖村正委托面板shader辅助，复用MurasamaPhantomPanel.fx
+    /// Begin/End统一切换，失败由调用方CPU降级
     /// </summary>
     internal static class MurasamaPhantomShaderPanel
     {

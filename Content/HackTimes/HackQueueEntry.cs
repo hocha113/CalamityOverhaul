@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.HackTimes
         Completed,
     }
 
-    //用于在右侧面板查询某个 hack 在队列中的状态
+    //右侧面板 slot 状态查询
     internal enum QueueSlotState
     {
         None,
@@ -66,17 +66,17 @@ namespace CalamityOverhaul.Content.HackTimes
 
         //兼容旧 API
 
-        /// <summary>当 Target 为 NpcScannable 时返回 NPC 索引，否则返回 -1</summary>
+        /// <summary>NpcScannable 时 NPC 索引，否则 -1</summary>
         public int TargetIndex => Target is NpcScannable n ? n.NpcIndex : -1;
-        /// <summary>当 Target 为 TileScannable 时返回物块 X，否则返回 -1</summary>
+        /// <summary>TileScannable 时物块 X，否则 -1</summary>
         public int TileX => Target is TileScannable t ? t.TileCoordX : -1;
-        /// <summary>当 Target 为 TileScannable 时返回物块 Y，否则返回 -1</summary>
+        /// <summary>TileScannable 时物块 Y，否则 -1</summary>
         public int TileY => Target is TileScannable t ? t.TileCoordY : -1;
-        /// <summary>当 Target 为灵异 Actor 时返回引用</summary>
+        /// <summary>灵异 Actor 引用，否则 null</summary>
         public GlitchWraithActor WraithTarget => Target as GlitchWraithActor;
-        /// <summary>当 Target 为炮台时返回引用</summary>
+        /// <summary>炮台引用，否则 null</summary>
         public IHackableTurret TurretTarget => Target as IHackableTurret;
-        /// <summary>当 Target 为信号塔时返回引用</summary>
+        /// <summary>信号塔引用，否则 null</summary>
         public IHackableSignalTower SignalTowerTarget => Target as IHackableSignalTower;
     }
 }

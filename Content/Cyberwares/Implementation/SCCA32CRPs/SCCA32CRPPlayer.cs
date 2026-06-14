@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
             : 0f;
 
         public override void ResetEffects() {
-            //冷却与亢奋计时统一在 ResetEffects 阶段递减，确保单源单减
+            //ResetEffects 统一递减，单源单减
             if (DodgeCooldownTimer > 0) {
                 DodgeCooldownTimer--;
             }

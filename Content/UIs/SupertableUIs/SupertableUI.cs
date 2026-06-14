@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.TileProcessors;
 using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
@@ -22,7 +22,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
-    /// 欧米茄物质聚合仪UI
+    /// 欧米茄物质聚合仪 UI
     /// </summary>
     public class SupertableUI : UIHandle, ICWRLoader, ILocalizedModType
     {
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             }
             SetZenithWorldRecipesData();
 
-            //重新初始化控制器的配方引擎（确保天顶世界的配方也被加载到匹配引擎中）
+            //重载配方引擎(含天顶配方)
             Instance?._controller?.InitializeRecipes(AllRecipes);
 
             //重新初始化侧边栏配方元素
@@ -370,7 +370,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #endregion
 
-        #region 输入处理
+        #region 输入
 
         private void HandleInput() {
             //处理关闭

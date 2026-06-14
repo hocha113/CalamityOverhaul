@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0,
                     0f,
                     player.whoAmI,
-                    ai0: i //用于区分不同的鱼
+                    ai0: i //个体索引
                 );
 
                 if (Main.projectile[proj].ModProjectile is FishingFly fish) {
@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //冲刺阶段：强力加速
                 float dashProgress = DashTimer / DashDuration;
 
-                //使用缓动函数实现更有冲击力的加速
+                //缓动加速加强冲击
                 float speedMultiplier = 1f - (float)Math.Pow(dashProgress, 2); //平方衰减
                 float currentDashSpeed = DashSpeed * speedMultiplier;
 
@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public Player OwnerPlayer { get; set; }
 
         /// <summary>
-        /// 鱼的个体ID（用于行为差异化）
+        ///个体ID，行为分化
         /// </summary>
         private int FishID => (int)Projectile.ai[0];
 
@@ -387,7 +387,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float fishRotation = 0f;
 
         /// <summary>
-        /// 个体的随机行为偏好（用于增加多样性）
+        ///个体随机偏好
         /// </summary>
         private float behaviorRandomness = 1f;
 
@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float jumpPhaseOffset = 0f;
 
         /// <summary>
-        /// 生命计时器（用于判断冲刺阶段）
+        ///生命计时，判冲刺阶段
         /// </summary>
         private int lifeTimer = 0;
 
@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = 3;
-            Projectile.timeLeft = FishSwarm.FishSwarmDuration + 60; //额外时间用于淡出
+            Projectile.timeLeft = FishSwarm.FishSwarmDuration + 60; //额外帧淡出
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 (float)Math.Sin(spiralAngle) * currentRadius + spiralHeightWave
             );
 
-            //根据玩家速度预判未来位置，确保鱼群不会落后
+            //预判玩家位移，鱼群不落后
             float predictionStrength = MathHelper.Lerp(0.8f, 0.3f, dashProgress); //初期预判更强
             Vector2 playerVelocityPredict = OwnerPlayer.velocity * predictionStrength;
 
@@ -688,7 +688,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 正常阶段AI，自然的鱼群行为
         /// </summary>
         private void NormalPhaseAI() {
-            //鱼群算法实现
+            //boids
             CalculateFlockingBehavior();
 
             //应用鱼群行为力
@@ -942,7 +942,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * minSpeed;
             }
 
-            //强制位置修正（确保锥形形态）
+            //强制锥形位置修正
             if (distanceToTarget > 200f) {
                 Projectile.Center = Vector2.Lerp(Projectile.Center, targetPosition, 0.2f);
             }
@@ -1027,7 +1027,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //根据朝向决定翻转
             SpriteEffects effects = fishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-            //判断是否在冲刺阶段（用于增强拖尾效果）
+            //冲刺阶段增强拖尾
             bool isDashing = lifeTimer <= DashPhase;
             int trailLength = isDashing ? Projectile.oldPos.Length : Projectile.oldPos.Length * 2 / 3;
 

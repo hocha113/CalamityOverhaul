@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Terraria;
 
@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     {
         void ICWRLoader.UnLoadData() => Reset();
 
-        // ====== 常量配置（跨玩家共享） ======
+        //====== 常量配置（跨玩家共享） ======
 
         /// <summary>最大层数</summary>
         public const int MaxLayerCount = 3;
@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         /// </summary>
         public static float DimStrength = 0.85f;
 
-        // ====== 玩家访问器 ======
+        //====== 玩家访问器 ======
 
         /// <summary>
         /// 取指定玩家的领域状态实例；玩家未就绪时返回 null
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
         }
 
-        // ====== 转发到本地玩家的属性（仅供 UI / 按键 / HUD 等明确为本地语义的调用点） ======
+        //====== 转发到本地玩家的属性（仅供 UI / 按键 / HUD 等明确为本地语义的调用点） ======
 
         public static bool Active => Local?.Active ?? false;
 
@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         public static bool IsCrashLockedOut => Local?.IsCrashLockedOut ?? false;
 
-        // ====== 静态计算方法 ======
+        //====== 静态计算方法 ======
 
         /// <summary>指定层完整半径</summary>
         public static float GetLayerRadius(int layerIndex) {
@@ -186,51 +186,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             return false;
         }
 
-        // ====== 操作方法 ======
+        //====== 操作方法 ======
 
-        /// <summary>
-        /// 手动切换赛博空间领域开关，仅作用于传入玩家
-        /// </summary>
+        /// <summary>切换指定玩家领域</summary>
         public static bool Toggle(Player owner) {
             if (owner == null) return false;
             return owner.GetModPlayer<CyberspacePlayer>().Toggle();
         }
 
-        /// <summary>
-        /// 激活赛博空间领域，仅作用于传入玩家
-        /// </summary>
+        /// <summary>激活指定玩家领域</summary>
         public static void Activate(Player owner) {
             if (owner == null) return;
             owner.GetModPlayer<CyberspacePlayer>().Activate();
         }
 
-        /// <summary>
-        /// 设置层数；不传 owner 时默认作用于本地玩家
-        /// </summary>
+        /// <summary>设层数，owner 默认 LocalPlayer</summary>
         public static void SetLayer(int layer, Player owner = null) {
             owner ??= Main.LocalPlayer;
             if (owner == null) return;
             owner.GetModPlayer<CyberspacePlayer>().SetLayer(layer);
         }
 
-        /// <summary>
-        /// 关闭领域，作用于本地玩家
-        /// </summary>
+        /// <summary>关领域(myPlayer)</summary>
         public static void Deactivate() => Local?.Deactivate();
 
-        /// <summary>
-        /// 触发系统崩溃，作用于本地玩家
-        /// </summary>
+        /// <summary>触发 RAM 崩溃(myPlayer)</summary>
         public static void TriggerSystemCrash() => Local?.TriggerSystemCrash();
 
-        /// <summary>
-        /// 通知瞬移锚点，作用于本地玩家
-        /// </summary>
+        /// <summary>瞬移锚点(myPlayer)</summary>
         public static void NotifyTeleport(Vector2 anchorCenter) => Local?.NotifyTeleport(anchorCenter);
 
-        /// <summary>
-        /// 主更新入口；遍历所有在线玩家更新各自的赛博空间状态
-        /// </summary>
+        /// <summary>遍历在线玩家 Update</summary>
         public static void Update() {
             for (int i = 0; i < Main.maxPlayers; i++) {
                 Player p = Main.player[i];

@@ -1,4 +1,4 @@
-﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         (int)(damage * (1.6f + HalibutData.GetDomainLayer() * 0.55f)),
                         knockback * 0.3f,
                         player.whoAmI,
-                        ai0: ActiveObsidianFish.Count //传递索引用于环形排列
+                        ai0: ActiveObsidianFish.Count //环形排列索引
                     );
 
                     if (fishProj >= 0 && fishProj < Main.maxProjectiles) {
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float bodyRotation = 0f; //鱼体旋转（独立于环绕角度）
         private float targetBodyRotation = 0f; //目标鱼体旋转
         private Vector2 shatterVelocity = Vector2.Zero;
-        private float scaleMultiplier = 1f; //尺寸倍数（用于深度感）
+        private float scaleMultiplier = 1f; //尺寸倍率，深度感
 
         private const int GatherDuration = 20;
 

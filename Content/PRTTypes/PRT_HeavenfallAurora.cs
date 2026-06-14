@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
+using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -7,11 +7,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 极光丝带粒子 —— 服务于天堂陨落长弓家族
-    /// <br/>使用 Airflow 流线灰度图沿运动方向被拉伸成丝带, 颜色沿生命周期在彩虹间循环
-    /// <br/>用于充能爆发、Q 技能万象生成、命中环等需要大体量"震撼"瞬间
-    /// </summary>
+    /// <summary>极光丝带，天堂陨落长弓</summary>
     internal class PRT_HeavenfallAurora : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "Airflow";

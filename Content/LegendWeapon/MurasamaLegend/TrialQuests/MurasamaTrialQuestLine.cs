@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
 {
     /// <summary>
-    /// 鬼妖村正试炼线——将15段试炼注册到 <see cref="QuestManagerUI"/>，
+    /// 鬼妖村正试炼线，注册到 <see cref="QuestManagerUI"/>，
     /// 并根据 <see cref="InWorldBossPhase.Mura_Level"/> 实时同步状态。<br/>
     /// 同时显示当前进行中的试炼和所有已完成的试炼
     /// </summary>

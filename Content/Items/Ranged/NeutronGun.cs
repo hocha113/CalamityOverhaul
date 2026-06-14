@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.RangedModify.Core;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGun;
         }
 
-        //右键用于发射蓄能重击
+        //右键：发射蓄能重击
         public override bool AltFunctionUse(Player player) => true;
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取

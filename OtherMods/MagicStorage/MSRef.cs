@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Placeable;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
 using System.Collections;
@@ -14,7 +14,7 @@ using Terraria.UI;
 namespace CalamityOverhaul.OtherMods.MagicStorage
 {
     /// <summary>
-    /// MagicStorage的弱引用访问层，不持有任何MagicStorage的编译期类型。
+    /// MagicStorage的弱引用访问层，不持有任何MagicStorage的编译期类型
     /// 所有成员在加载期反射定位一次，并编译为表达式树委托，调用开销接近直接调用且无装箱，
     /// 模式与<see cref="CWRRef"/>一致
     /// </summary>
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         internal static bool LinkageReady { get; private set; }
 
         #region 编译委托缓存
-        //类型缓存，用于调用前的实例类型守卫，防止编译委托内部的强制转换抛出异常
+        //类型缓存，调用前实例类型守卫
         private static Type storageComponentType;
         private static Type storageHeartType;
         private static Type craftingUIStateType;
@@ -379,7 +379,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         }
 
         /// <summary>
-        /// 向存储核心存入物品，成功调用返回true（剩余数量语义由调用方处理）
+        /// 向存储核心存入物品，成功调用返回true（剩余数量语义由调用方）
         /// </summary>
         internal static bool DepositIntoHeart(object heart, Item item) {
             if (!Has || heart == null || !storageHeartType.IsInstanceOfType(heart) || item == null || item.IsAir) {
@@ -508,7 +508,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         public static Item GetSelectedRecipeResultItem() => GetSelectedRecipe()?.createItem;
 
         /// <summary>
-        /// 获取魔法存储制作界面配方面板右侧的锚点位置，用于联动UI的摆放
+        /// 获取魔法存储制作界面配方面板右侧的锚点位置，联动UI的摆放
         /// </summary>
         public static bool TryGetCraftingPagePosition(out Vector2 position, out CalculatedStyle dimensions) {
             position = Vector2.Zero;

@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 沙之飞匕 —— 战士的沙岩投掷匕首
-    /// 直线掷出后下坠，撞地后短暂停留；若插入沙地则蓄势喷沙刺，并喷射黄沙地脉冲击波
-    /// </summary>
+    /// <summary>沙之飞匕，直线掷出下坠，插沙地喷沙刺与地脉冲击波</summary>
     internal class SandDagger : ModItem
     {
         public override string Texture => CWRConstant.Item + "Melee/SandDagger";
@@ -90,7 +87,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AI() {
-            //标记"已经飞起"用于绘制拖尾
+            //已飞起，绘制拖尾
             Projectile.localAI[0] = 1f;
 
             if (OnTile == 0f) {

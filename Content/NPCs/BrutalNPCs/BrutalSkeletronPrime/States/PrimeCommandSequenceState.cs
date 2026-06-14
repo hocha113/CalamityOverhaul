@@ -5,7 +5,6 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>武装阶段指挥 hub：~120帧悬停+指令广播，固定 7 步序列</summary>
-    /// <para>下一手收编队且有臂收尾蓄力时冻结倒计时，等预警兑现再动身</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CommandSequence, typeof(PrimeStateContext))]
     internal class PrimeCommandSequenceState : PrimeStateBase
     {
@@ -32,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
             int remaining = hubDuration - Timer;
 
-            //出招门闸：等待期间不进入倒计时，臂的蓄力一兑现立刻恢复推进。
+            //出招门闸：等待期间不进入倒计时，臂的蓄力一兑现立刻恢复推进
             //（倒计时一旦开始，30 帧内不可能再有新的蓄力招起手，门闸只需守在门口）
             if (remaining == TelegraphLead && NextStepHijacksArms(context) && PrimeFacts.AnyArmCommitted()) {
                 return null;

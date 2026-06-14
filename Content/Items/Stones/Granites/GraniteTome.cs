@@ -14,9 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
-    /// <summary>
-    /// 花岗岩魔典：召出一本浮空法书，吟咏后吐出缓慢追踪的花岗能量球，命中即碎裂为四散水晶
-    /// </summary>
+    /// <summary>花岗魔典，浮空法书吐追踪能量球，命中碎水晶</summary>
     internal class GraniteTome : ModItem
     {
         public override void SetDefaults() {

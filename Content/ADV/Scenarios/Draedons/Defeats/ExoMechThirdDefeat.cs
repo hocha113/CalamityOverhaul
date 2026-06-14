@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria;
@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
 {
-    /// <summary>
-    /// 嘉登第三次战败对话场景
-    /// </summary>
+    /// <summary>嘉登第三次战败对话</summary>
     internal class ExoMechThirdDefeat : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         //角色名称

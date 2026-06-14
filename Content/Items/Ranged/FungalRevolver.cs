@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shoot = ModContent.ProjectileType<FungiAmmo>();
             Item.noUseGraphic = true;
             Item.autoReuse = true;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
         }
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取

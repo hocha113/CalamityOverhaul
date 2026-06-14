@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
 {
-    /// <summary>
-    /// 老公爵商店交互逻辑处理器
-    /// </summary>
+    /// <summary>老公爵商店交互逻辑</summary>
     internal class OldDukeShopInteraction
     {
         private readonly Player player;
@@ -52,9 +50,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             this.shopItems = shopItems;
         }
 
-        /// <summary>
-        /// 处理滚轮滚动
-        /// </summary>
         public void HandleScroll() {
             //如果滚动条正在拖动，不响应滚轮
             if (scrollBar.IsDragging) return;
@@ -71,7 +66,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 更新滚动条
+
         /// </summary>
         public void UpdateScrollBar(Vector2 panelPosition, Point mousePosition,
             bool mouseLeftDown, bool mouseLeftRelease) {
@@ -87,9 +84,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             ScrollOffset = newScrollOffset;
         }
 
-        /// <summary>
-        /// 绘制滚动条
-        /// </summary>
         public void DrawScrollBar(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch,
             Vector2 panelPosition, float uiAlpha, float sulfurPulseTimer) {
             if (shopItems.Count <= MaxVisibleItems) return;
@@ -102,7 +96,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 更新关闭按钮交互
+
         /// </summary>
         public bool UpdateCloseButton(Point mousePoint, Vector2 panelPosition, bool mouseLeftRelease) {
             Rectangle closeButtonRect = new Rectangle(
@@ -130,7 +126,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 更新物品选择和购买逻辑
+
         /// </summary>
         public void UpdateItemSelection(Point mousePoint, Vector2 itemListPos, int panelWidth) {
             int itemListY = (int)itemListPos.Y;
@@ -270,7 +268,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 重置长按购买状态
+
         /// </summary>
         public void ResetHoldingState() {
             holdingPurchaseIndex = -1;
@@ -280,7 +280,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 重置所有交互状态
+
         /// </summary>
         public void Reset() {
             HoveredIndex = -1;

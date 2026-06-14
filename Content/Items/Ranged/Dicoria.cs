@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 10;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;

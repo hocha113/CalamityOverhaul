@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
-    /// <summary>
-    /// 火力阵微型寻热导弹：上抛滞空→错相点火俯冲→微追踪蛇行
-    /// 追踪力随时间衰减、近身熄锁，横移可甩脱(公平阀)
-    /// <para><c>ai[0]</c> = 目标玩家索引；<c>ai[1]</c> = 每发种子（点火错相/散布/蛇行相位）</para>
-    /// </summary>
+    /// <summary>火力阵微型寻热导弹：上抛滞空→错相点火俯冲→微追踪蛇行追踪力随时间衰减、近身熄锁，横移可甩脱(公平阀)ai[0]=目标玩家索引；ai[1]=每发种子（点火错相/散布/蛇行相位）</summary>
     internal class PrimeSeekerMissile : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "DestroyerGrenade";

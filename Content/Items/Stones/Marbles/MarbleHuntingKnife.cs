@@ -277,9 +277,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>
-    /// 大理石近战连击状态：用于猎刀的三连终结判定
-    /// </summary>
+    /// <summary>大理石近战连击状态，猎刀三连终结判定</summary>
     internal class MarbleSwingPlayer : ModPlayer
     {
         public int ComboStep;

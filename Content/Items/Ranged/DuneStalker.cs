@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Melee;
+using CalamityOverhaul.Content.Items.Melee;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Owner.itemAnimation = 2;
             }
 
-            //反冲偏移衰减（仅用于绘制）
+            //反冲偏移衰减，仅Draw
             if (RecoilOffset > 0) {
                 RecoilOffset *= 0.82f;
                 if (RecoilOffset < 0.05f) {
@@ -276,7 +276,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private ref float State => ref Projectile.ai[0];
         /// <summary>整体计时器</summary>
         private ref float Timer => ref Projectile.ai[1];
-        /// <summary>关联的手持弹幕 whoAmI（用于定位枪口绘制锚点）</summary>
+        /// <summary>关联HeldProj whoAmI，枪口绘制锚点</summary>
         private ref float HeldOwnerWhoAmI => ref Projectile.ai[2];
 
         /// <summary>飞出阶段允许达到的最大距离</summary>

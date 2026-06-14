@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RAMSystems;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -475,7 +475,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float baseY = center.Y - InnerR + InnerDecoGap + 12f;
 
             //标题
-            string title = "// BUFFER RAM";
+            string title = "//BUFFER RAM";
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * FTitle;
             Utils.DrawBorderString(sb, title,
                 new Vector2(center.X - titleSize.X * 0.5f, baseY),
@@ -524,7 +524,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float arcLen = (aEnd - aStart) * midR;
             int steps = Math.Max((int)(arcLen / 2.5f), 3);
             float aStep = (aEnd - aStart) / steps;
-            //线宽略大于间距确保无缝
+            //线宽略大于间距，无缝拼接
             float lineThick = Math.Max(aStep * midR + 0.8f, 1.5f);
 
             for (int i = 0; i <= steps; i++) {

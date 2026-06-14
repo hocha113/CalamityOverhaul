@@ -1,4 +1,4 @@
-﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -130,18 +130,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private void AI_Recoil() {
             recoilTimer++;
 
-            // 后坐力曲线：快速后退 → 缓慢回弹
+            //后坐力曲线：快速后退 → 缓慢回弹
             int kickFrames = (int)(RecoilDuration * RecoilKickRatio);
             if (recoilTimer <= kickFrames) {
-                // 后退阶段：使用缓出插值快速到达最大偏移
+                //后退阶段：使用缓出插值快速到达最大偏移
                 float t = (float)recoilTimer / kickFrames;
-                float ease = 1f - (1f - t) * (1f - t); // easeOutQuad
+                float ease = 1f - (1f - t) * (1f - t); //easeOutQuad
                 recoilOffset = RecoilMaxOffset * ease;
             }
             else {
-                // 回弹阶段：缓慢回到原位
+                //回弹阶段：缓慢回到原位
                 float t = (float)(recoilTimer - kickFrames) / (RecoilDuration - kickFrames);
-                float ease = t * t; // easeInQuad
+                float ease = t * t; //easeInQuad
                 recoilOffset = RecoilMaxOffset * (1f - ease);
             }
 
@@ -159,11 +159,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             Projectile.velocity = Vector2.Zero;
             Projectile.Center = Owner.GetPlayerStabilityCenter();
 
-            // 玩家朝向
+            //玩家朝向
             Owner.ChangeDir(Math.Sign(aimDir.X));
 
-            // 手臂指向瞄准方向，并取得对应的前手世界坐标作为握把锚点，
-            // 这样武器握把会始终跟随实际手部位置，避免旋转时脱手
+            //手臂指向瞄准方向，并取得对应的前手世界坐标作为握把锚点，
+            //这样武器握把会始终跟随实际手部位置，避免旋转时脱手
             float armRotation = (-aimDir).ToRotation() * Owner.gravDir + MathHelper.PiOver2;
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
             handWorld = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, armRotation);
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 ? SpriteEffects.FlipVertically
                 : SpriteEffects.None;
 
-            // 以握把像素为原点，钉在前手世界坐标上绕其旋转；后坐力沿枪管反向回退
+            //以握把像素为原点，钉在前手世界坐标上绕其旋转；后坐力沿枪管反向回退
             Vector2 origin = GripPixel;
             Vector2 position = handWorld
                 - Vector2.UnitX.RotatedBy(rotation) * recoilOffset

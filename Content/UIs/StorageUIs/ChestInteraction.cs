@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
     /// <summary>
-    /// 通用箱子UI交互逻辑，处理所有槽位的鼠标交互
+    /// 通用箱子UI交互逻辑，所有槽位的鼠标交互
     /// 通过 <see cref="IChestStorage"/> 接口统一不同存储模式
     /// </summary>
     internal class ChestInteraction

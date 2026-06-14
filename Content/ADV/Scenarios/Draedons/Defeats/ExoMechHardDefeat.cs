@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria.Localization;
@@ -6,9 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Defeats
 {
-    /// <summary>
-    /// 嘉登艰难战败对话场景
-    /// </summary>
+    /// <summary>嘉登艰难战败对话</summary>
     internal class ExoMechHardDefeat : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         //角色名称

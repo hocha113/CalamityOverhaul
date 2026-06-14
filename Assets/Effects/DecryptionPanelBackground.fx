@@ -1,6 +1,6 @@
 // ============================================================================
-// DecryptionPanelBackground.fx 信号塔解密面板背景
-// AlphaBlend 预乘 alpha
+//DecryptionPanelBackground.fx 信号塔解密面板背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

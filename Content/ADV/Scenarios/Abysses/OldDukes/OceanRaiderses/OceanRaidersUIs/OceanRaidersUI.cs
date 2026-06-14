@@ -10,8 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses.OceanRaidersUIs
 {
     /// <summary>
-    /// 海洋吞噬者专属箱子UI - 基于通用箱子框架实现
-    /// 直接操作 machine.storedItems，每次修改自动同步
+    /// 海洋吞噬者专属箱子UI - 基于通用箱子框架，每次修改自动同步
     /// </summary>
     internal class OceanRaidersUI : BaseChestUI
     {
@@ -90,7 +89,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         //--- 机器行为 ---
 
         /// <summary>
+
         /// 打开UI并绑定机器
+
         /// </summary>
         public void Interactive(OceanRaidersTP machine) {
             if (machine == null) return;
@@ -123,7 +124,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         protected override void OnClose() {
-            // OceanRaiders没有CloseUI回调
+            //OceanRaiders没有CloseUI回调
         }
 
         protected override SoundStyle GetCloseSound() {

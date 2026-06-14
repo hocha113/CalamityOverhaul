@@ -80,9 +80,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 雪蝰MK2手持弹幕——冰锥点射步枪
-    /// </summary>
+    /// <summary>雪蝰MK2 HeldProj，冰锥点射步枪</summary>
     internal class SnowQuayMK2Held : BaseSnowCannonHeld
     {
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuayMK2";
@@ -195,7 +193,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 冰锥钉——被压缩机铸成的高速冰锥
+    /// 冰锥钉，压缩机铸成的高速冰锥
     /// <br/>ai0: 1=重锥，命中或破碎时向上迸出冰晶
     /// </summary>
     internal class IcicleNail : ModProjectile

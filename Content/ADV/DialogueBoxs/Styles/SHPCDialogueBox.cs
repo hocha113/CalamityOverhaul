@@ -8,9 +8,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
-    /// <summary>
-    /// SHPC 赛博朋克风格对话框
-    /// </summary>
+    /// <summary>SHPC 赛博朋克风格对话框</summary>
     internal class SHPCDialogueBox : DialogueBoxBase
     {
         public static SHPCDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<SHPCDialogueBox>();
@@ -19,15 +17,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         private const float FixedWidth = 540f;
         protected override float PanelWidth => FixedWidth;
 
-        // 动画计时
+        //动画计时
         private float neonPulseTimer;      // 霓虹脉冲
         private float dataFlowTimer;       // 数据流
         private float sweepTimer;          // 扫掠光带
 
-        // 左侧数据流线
+        //左侧数据流线
         private readonly float[] dataLinePhases = new float[2];
 
-        // 四角状态字
+        //四角状态字
         private readonly string[] cornerStatus = ["LINK.OK", "SYS:RDY", "v2.07b", "SYNC.."];
         private int statusUpdateClock;
         private static readonly string[] StatusPool = [
@@ -36,14 +34,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             "IO:PASS", "CHK:OK", "MOD:RUN", "BUF:CLR", "SIG:99"
         ];
 
-        // 粒子
+        //粒子
         private readonly List<NeonMaidPRT> neonParticles = [];
         private int neonParticleSpawnTimer;
         private readonly List<CircuitNodePRT> circuitNodes = [];
         private int circuitNodeSpawnTimer;
         private const float SideMargin = 24f;
 
-        // 六角边距，shader 控 alpha
+        //六角边距，shader 控 alpha
         private const int EdgePad = 20;
 
         //主色调常量（深暗紫底色 + 蓝色高光）
@@ -88,9 +86,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 
         #region 模板方法实现
 
-        /// <summary>
-        /// 头像框：深色底板 + 干净的双层霓虹边框
-        /// </summary>
+        /// <summary>头像框：深色底板 + 干净的双层霓虹边框</summary>
         protected override void DrawPortraitFrame(ContentDrawContext ctx, Rectangle frameRect) {
             SpriteBatch sb = ctx.SpriteBatch;
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -110,9 +106,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             DrawRect(sb, px, outer, 1, NeonBlue * (alpha * 0.12f * pulse));
         }
 
-        /// <summary>
-        /// 头像辉光：柔和的四边霓虹边缘光
-        /// </summary>
+        /// <summary>头像辉光：柔和的四边霓虹边缘光</summary>
         protected override void DrawPortraitGlow(ContentDrawContext ctx, Rectangle glowRect) {
             SpriteBatch sb = ctx.SpriteBatch;
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -131,9 +125,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                 new Rectangle(0, 0, 1, 1), glow * 0.8f);
         }
 
-        /// <summary>
-        /// 名称装饰：干净辉光 + 名字下方霓虹渐变细线
-        /// </summary>
+        /// <summary>名称装饰：干净辉光 + 名字下方霓虹渐变细线</summary>
         protected override void DrawNameGlow(ContentDrawContext ctx, Vector2 position, float alpha) {
             SpriteBatch sb = ctx.SpriteBatch;
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -160,9 +152,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             }
         }
 
-        /// <summary>
-        /// 分割线：单条青→靛渐变线
-        /// </summary>
+        /// <summary>分割线：单条青→靛渐变线</summary>
         protected override void DrawDividerLine(ContentDrawContext ctx, Vector2 start, Vector2 end, float alpha) {
             SpriteBatch sb = ctx.SpriteBatch;
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -244,7 +234,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             float contentAlpha, float easedProgress) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            // 1. 外阴影（精简为3层，紫色调）
+            //1. 外阴影（精简为3层，紫色调）
             for (int d = 6; d >= 1; d--) {
                 Rectangle s = panelRect;
                 s.Inflate(d, d);
@@ -253,19 +243,19 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                     new Color(6, 3, 12) * (alpha * 0.09f * (6f - d) / 6f));
             }
 
-            // 2. 面板背景（Shader驱动蜂窝边框或降级程序化）
+            //2. 面板背景（Shader驱动蜂窝边框或降级程序化）
             DrawPanelBackground(spriteBatch, panelRect, alpha);
 
-            // 3. 左侧数据流线
+            //3. 左侧数据流线
             DrawDataFlowLines(spriteBatch, panelRect, alpha);
 
-            // 4. 角括号装饰
+            //4. 角括号装饰
             DrawCornerBrackets(spriteBatch, panelRect, alpha);
 
-            // 5. 状态文字
+            //5. 状态文字
             DrawCornerStatusText(spriteBatch, panelRect, alpha);
 
-            // 6. 粒子
+            //6. 粒子
             foreach (var node in circuitNodes)
                 node.Draw(spriteBatch, alpha * 0.5f);
             foreach (var particle in neonParticles)
@@ -290,16 +280,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 
         #region 样式工具函数
 
-        /// <summary>
-        /// 面板背景：使用CyberPanel着色器（扩展矩形 + 蜂窝alpha遮罩），降级为程序化渐变
-        /// </summary>
+        /// <summary>面板背景：使用CyberPanel着色器（扩展矩形 + 蜂窝alpha遮罩），降级为程序化渐变</summary>
         private void DrawPanelBackground(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
             if (EffectLoader.CyberPanel?.Value != null) {
                 Effect effect = EffectLoader.CyberPanel.Value;
 
-                // 扩展绘制区域，给六角溢出留空间
+                //扩展绘制区域，给六角溢出留空间
                 Rectangle extRect = rect;
                 extRect.Inflate(EdgePad, EdgePad);
 
@@ -325,9 +313,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             }
         }
 
-        /// <summary>
-        /// 降级背景：渐变 + 扫描线 + 简易六角点阵 + 面板分段线 + 扫掠光带 + 暗角
-        /// </summary>
+        /// <summary>降级背景：渐变 + 扫描线 + 简易六角点阵 + 面板分段线 + 扫掠光带 + 暗角</summary>
         private void DrawFallbackBackground(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
             //纯渐变背景（12段平滑，紫色调）
             int segs = 12;
@@ -396,9 +382,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             }
         }
 
-        /// <summary>
-        /// 左侧数据流线（2条竖向霓虹流动线 + 侧翼辉光 + 常驻底条）
-        /// </summary>
+        /// <summary>左侧数据流线（2条竖向霓虹流动线 + 侧翼辉光 + 常驻底条）</summary>
         private void DrawDataFlowLines(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             int[] xOffsets = [9, 18];
@@ -434,9 +418,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                 new Rectangle(0, 0, 1, 1), NeonBlueDim * (alpha * 0.18f));
         }
 
-        /// <summary>
-        /// 角括号装饰（CP2077式简洁L形角标 + 底部中心短横点缀）
-        /// </summary>
+        /// <summary>角括号装饰（CP2077式简洁L形角标 + 底部中心短横点缀）</summary>
         private void DrawCornerBrackets(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float pulse = MathF.Sin(neonPulseTimer * 0.9f) * 0.1f + 0.9f;
@@ -457,9 +439,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                 new Rectangle(0, 0, 1, 1), bc * 0.7f);
         }
 
-        /// <summary>
-        /// 四角状态文字（适配斜切轮廓，右上/左下内缩避让）
-        /// </summary>
+        /// <summary>四角状态文字（适配斜切轮廓，右上/左下内缩避让）</summary>
         private void DrawCornerStatusText(SpriteBatch sb, Rectangle rect, float alpha) {
             if (alpha < 0.04f) return;
             float blink = MathF.Sin(neonPulseTimer * 0.7f) * 0.12f + 0.88f;
@@ -483,9 +463,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                 new Vector2(rect.Right - w3 - 16f, rect.Bottom - 16f), col * 0.6f, sc);
         }
 
-        /// <summary>
-        /// 矩形线框（拐角不重叠）
-        /// </summary>
+        /// <summary>矩形线框（拐角不重叠）</summary>
         private static void DrawRect(SpriteBatch sb, Texture2D px, Rectangle r, int bw, Color c) {
             sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, bw), new Rectangle(0, 0, 1, 1), c);
             sb.Draw(px, new Rectangle(r.X, r.Bottom - bw, r.Width, bw), new Rectangle(0, 0, 1, 1), c * 0.7f);

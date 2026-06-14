@@ -7,10 +7,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
 {
     /// <summary>
-    /// 硫火女巫委托追踪窗口样式——极简地狱火HUD：<br/>
-    /// 完全无背景与外框，标题左侧是"上升火焰三角 + 顶端余烬"记号，
-    /// 标题下方是实线 + 三粒错相闪烁的余烬点，
-    /// 进度仅以贴近文字的 2px 火色细线呈现，保留炽热感而不堆叠面板。
+    /// 硫火女巫委托追踪 HUD：无背景，火焰三角标题，2px 火色进度线
     /// </summary>
     internal class BrimstoneTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
@@ -46,12 +43,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
             var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
 
-            //头部记号——上升火焰三角 ∧ + 顶端余烬粒
+            //头部记号：上升火焰三角 + 顶端余烬
             int markX = headerRect.X + 8;
             int markY = headerRect.Y + headerRect.Height / 2;
             DrawFlameMark(sb, px, uv, markX, markY, alpha);
 
-            //标题文字——红色拖尾投影 + 主体暖白（字号略大于默认正文）
+            //标题：红色拖影 + 暖白主体
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -65,7 +62,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
                 ShadowInk * (alpha * 0.55f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleWarm * alpha, titleScale);
 
-            //下划线——实线 + 三粒错相闪烁的余烬点（下移避开放大后的标题底部）
+            //下划线：实线 + 三粒错相余烬
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 20, headerRect.Width - 38);
@@ -73,7 +70,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
 
             sb.Draw(px, new Rectangle(textX, underY, solidLen, 1), uv, FireRed * (alpha * 0.88f * p));
 
-            //三粒余烬——各自相位错开闪烁，y方向微抖
+            //三粒余烬，相位错开
             int emberStart = textX + solidLen + 5;
             for (int k = 0; k < 3; k++) {
                 int ex = emberStart + k * 6;
@@ -110,7 +107,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
                 MathHelper.PiOver4 - MathHelper.Pi, new Vector2(0f, 0.5f),
                 new Vector2(6f, 1f), SpriteEffects.None, 0f);
 
-            //顶端余烬粒——竖向漂浮，亮度随flicker明灭
+            //顶端余烬粒，随 flicker 明灭
             float embPhase = flicker * 1.1f;
             float ember = MathF.Sin(embPhase) * 0.5f + 0.5f;
             float embY = cy - 5f - ember * 1.6f;
@@ -128,10 +125,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
             int y = barRect.Y + (barRect.Height - barH) / 2;
             int trackW = barRect.Width;
 
-            //轨道——暗红底线
+            //轨道：暗红底线
             sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, FireRedDim * (alpha * 0.45f));
 
-            //填充——深红→余烬金的渐变
+            //填充：深红→余烬金渐变
             int fillW = (int)(trackW * MathHelper.Clamp(progress, 0f, 1f));
             if (fillW > 0) {
                 int segs = Math.Max(6, fillW / 4);
@@ -149,7 +146,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
                     sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y - 1, 1, barH + 2), uv,
                         FireRedBright * (alpha * 0.85f));
                 }
-                //尖端上方"余烬火花"——1px小点，向上偏移2px，随flicker相位明灭
+                //尖端余烬火花，随 flicker 明灭
                 float sparkFade = MathF.Sin(flicker * 1.5f) * 0.5f + 0.5f;
                 if (sparkFade > 0.05f) {
                     sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y - 3, 1, 1), uv,
@@ -157,14 +154,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
                 }
             }
 
-            //满级——条带整体微微脉动出余烬光
+            //满级条带余烬光脉动
             if (progress >= 0.999f) {
                 float fp = MathF.Sin(pulse * 4f) * 0.5f + 0.5f;
                 sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv,
                     EmberGold * (alpha * 0.18f * fp));
             }
 
-            //进度文字——靠右上方，0.5倍小字
+            //进度文字，右上 0.5 倍小字
             if (!string.IsNullOrEmpty(progressText)) {
                 var font = FontAssets.MouseText.Value;
                 Vector2 sz = font.MeasureString(progressText) * 0.5f;

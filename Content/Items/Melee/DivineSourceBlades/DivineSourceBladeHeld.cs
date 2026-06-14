@@ -14,11 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
-    /// <summary>
-    /// 神源之刃 —— 三段连击挥砍弹幕：
-    /// 第一段快斩、第二段反向回斩（出招迅捷干脆），
-    /// 第三段举剑蓄力后轰出大斩切，并释放巨型新月剑气
-    /// </summary>
+    /// <summary>神源之刃HeldProj，三段连击挥砍，末段大斩切+巨型新月剑气</summary>
     internal class DivineSourceBladeHeld : BaseHeldProj
     {
         public override string Texture => DivineSourceBladeFX.BladeTexture;

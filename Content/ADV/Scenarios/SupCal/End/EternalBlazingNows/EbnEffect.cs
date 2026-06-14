@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
-    /// <summary>Ebn 场景 ModSceneEffect——音乐由 EbnSkyEffect 控</summary>
+    /// <summary>Ebn ModSceneEffect，音乐由 EbnSkyEffect 控</summary>
     internal class EbnSceneEffect : ModSceneEffect
     {
         public override int Music => -1;//音乐在 EbnSkyEffect
@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(EbnSky.Name, isActive);
     }
 
-    /// <summary>Ebn 场景 RenderHandle——EndCapture 火圈着色器+红屏叠层</summary>
+    /// <summary>Ebn RenderHandle，EndCapture 火圈+红屏</summary>
     internal class EbnRender : RenderHandle
     {
         [VaultLoaden(CWRConstant.Effects)]
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
     }
 
-    /// <summary>Ebn 天空 CustomSky——暗红硫磺火叠层+物块色调</summary>
+    /// <summary>Ebn CustomSky，暗红硫磺火叠层</summary>
     internal class EbnSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:EbnSky";
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         }
     }
 
-    /// <summary>Ebn 场景 ModSystem——火圈/红屏/粒子/音乐状态机</summary>
+    /// <summary>Ebn ModSystem，火圈/红屏/粒子/音乐</summary>
     internal class EbnEffect : ModSystem
     {
         public static bool IsActive;
@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
 
-            //处理火圈收缩
+            //火圈收缩
             if (IsContracting) {
                 contractionTimer++;
                 ContractionProgress = Math.Min(1f, contractionTimer / (float)ContractionDuration);
@@ -320,13 +320,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
 
-            //处理红屏效果
+            //红屏
             if (IsRedScreenActive) {
                 redScreenTimer++;
                 RedScreenProgress = Math.Min(1f, redScreenTimer / (float)RedScreenDuration);
             }
 
-            //处理最终淡出
+            //最终淡出
             if (FinalFadeOut) {
                 fadeOutTimer++;
                 float fadeProgress = Math.Min(1f, fadeOutTimer / (float)FadeOutDuration);
@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                 }
             }
 
-            //处理尾声淡入
+            //尾声淡入
             if (EpilogueFadeIn) {
                 epilogueFadeTimer++;
                 EpilogueFadeProgress = Math.Min(1f, epilogueFadeTimer / (float)EpilogueFadeDuration);
@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             foreach (var p in Main.ActiveProjectiles) {
                 if (p.type == ModContent.ProjectileType<ClonePlayer>()) {
-                    //ClonePlayer 火焰 dust——封锁过去视觉
+                    //ClonePlayer 火焰 dust，封锁过去视觉
                     for (int i = 0; i < 8; i++) {
                         int dust = Dust.NewDust(p.position, p.width, p.height, DustID.RedTorch, Main.rand.NextFloat(-2f, 2f)
                             , Main.rand.NextFloat(-2f, 2f), 150, Color.OrangeRed, Main.rand.NextFloat(1.5f, 2.5f));

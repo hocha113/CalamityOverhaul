@@ -60,7 +60,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         public static LocalizedText TitleText;
 
         /// <summary>
+
         /// 玩家进入营地事件
+
         /// </summary>
         public static event Action<Vector2> OnEnterCampsite;
 
@@ -151,9 +153,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 检查是否应该生成营地
-        /// </summary>
         private static bool ShouldGenerateCampsite(Player player) {
             //玩家不在营地周围，这个检测是用于如果营地中途发生搬家的情况，避免在玩家视觉中发生营地搬迁
             if (MermanRodMoveback && player.DistanceSQ(CampsitePosition) > 1200 * 1200) {
@@ -197,7 +196,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 请求生成营地（客户端发送给服务器或单人直接生成）
+
         /// </summary>
         private static void RequestCampsiteGeneration() {
             if (VaultUtils.isSinglePlayer) {
@@ -209,7 +210,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 客户端发送生成请求给服务器
+
         /// </summary>
         private static void SendGenerationRequest() {
             if (VaultUtils.isSinglePlayer) {
@@ -221,7 +224,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 请求公爵营地装饰数据（客户端发送给服务器）
+
         /// </summary>
         internal static void RequestOldDukeCampsiteData() {
             if (VaultUtils.isSinglePlayer) {
@@ -232,9 +237,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             packet.Send();
         }
 
-        /// <summary>
-        /// 处理公爵营地装饰数据请求（服务器接收并发送给客户端）
-        /// </summary>
         /// <param name="reader"></param>
         /// <param name="whoAmI"></param>
         internal static void HandleOldDukeCampsiteDataServer(BinaryReader reader, int whoAmI) {
@@ -256,9 +258,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             packet.Send(whoAmI);
         }
 
-        /// <summary>
-        /// 处理公爵营地装饰数据（客户端接收）
-        /// </summary>
         /// <param name="reader"></param>
         /// <param name="whoAmI"></param>
         internal static void HandleOldDukeCampsiteDataClient(BinaryReader reader, int whoAmI) {
@@ -289,7 +288,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 尝试生成营地（服务器或单人执行）
+
         /// </summary>
         public static void TryGenerateCampsite() {
             if (VaultUtils.isClient) {
@@ -313,7 +314,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 服务器同步营地数据给所有客户端
+
         /// </summary>
         private static void SyncCampsiteToClients() {
             ModPacket packet = CWRMod.Instance.GetPacket();
@@ -326,7 +329,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 客户端接收营地同步数据
+
         /// </summary>
         internal static void ReceiveCampsiteSync(BinaryReader reader) {
             bool wasGenerated = IsGenerated;
@@ -342,7 +347,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 营地生成后的初始化操作
+
         /// </summary>
         private static void OnCampsiteGenerated() {
             ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
@@ -367,7 +374,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 检测是否在和老公爵切磋
+
         /// </summary>
         private static void CheckWannaToFight() {
             if (WannaToFight) {
@@ -382,9 +391,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 检查是否可以触发交互
-        /// </summary>
         /// <returns></returns>
         private static bool CanTriggerInteraction() {
             if (Main.mapFullscreen) {
@@ -407,7 +413,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 触发交互
+
         /// </summary>
         private static void TriggerInteraction() {
             //播放交互音效
@@ -433,7 +441,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 更新动画
+
         /// </summary>
         private static void UpdateAnimation() {
             animationTimer++;
@@ -446,9 +456,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 检查玩家是否靠近营地
-        /// </summary>
         private static void CheckPlayerProximity() {
             Player player = Main.LocalPlayer;
             if (player == null || !player.active) {
@@ -484,7 +491,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 生成营地
+
         /// </summary>
         public static void GenerateCampsite(Vector2 position) {
             if (IsGenerated) {
@@ -515,7 +524,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 清除营地
+
         /// </summary>
         public static void ClearCampsite() {
             MermanRodMoveback = false;
@@ -530,9 +541,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             OldDukeCampsiteDecoration.ResetDecoration();
         }
 
-        /// <summary>
-        /// 获取当前帧的贴图区域
-        /// </summary>
         public static Rectangle GetCurrentFrame() {
             if (OldDuke == null) {
                 return Rectangle.Empty;
@@ -542,14 +550,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return new Rectangle(0, frameHeight * animationFrame, OldDuke.Width, frameHeight);
         }
 
-        /// <summary>
-        /// 获取交互提示透明度
-        /// </summary>
         public static float GetInteractPromptAlpha() => interactPromptAlpha;
 
-        /// <summary>
-        /// 检查是否可以交互
-        /// </summary>
         public static bool CanInteract() => isPlayerNearby && interactPromptAlpha > 0.5f;
 
         public override void Unload() {

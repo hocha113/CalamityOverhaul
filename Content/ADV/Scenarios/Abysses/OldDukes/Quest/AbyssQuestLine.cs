@@ -7,8 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
 {
     /// <summary>
-    /// 深渊/老公爵委托线——将寻找营地与收集碎片两个委托注册到 <see cref="QuestManagerUI"/>，
-    /// 并根据 <see cref="ADVSave"/> 实时同步状态
+    /// 深渊/老公爵委托线：将寻找营地与收集碎片两个委托注册到 <see cref="QuestManagerUI"/>， 并根据 <see cref="ADVSave"/> 实时同步状态
     /// </summary>
     internal class AbyssQuestLine : ModSystem, ILocalizedModType
     {

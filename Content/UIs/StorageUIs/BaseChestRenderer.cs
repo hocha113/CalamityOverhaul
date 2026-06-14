@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
     /// <summary>
     /// 通用箱子UI渲染器基类，提供通用的槽位绘制和布局计算
-    /// 子类覆写主题相关方法以实现不同的视觉风格
+    /// 子类覆写主题相关方法以不同的视觉风格
     /// </summary>
     internal abstract class BaseChestRenderer
     {

@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -9,7 +9,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// 配方导航器，用于浏览和预览配方
+    /// 配方浏览预览
     /// </summary>
     internal class RecipeNavigator
     {

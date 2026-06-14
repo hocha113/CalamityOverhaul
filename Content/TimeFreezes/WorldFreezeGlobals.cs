@@ -6,10 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
-    /// <summary>
-    /// 更加强大的拦截 ai：
-    /// 优先级 <see cref="WorldFreezeSystem"/> &gt; <c>CWRWorld.TimeFrozenTick</c> &gt; 各专属 AI 干预
-    /// </summary>
+    /// <summary>NPC AI 冻结链：<see cref="WorldFreezeSystem"/> &gt; <c>CWRWorld.TimeFrozenTick</c> &gt; 专属干预</summary>
     internal class WorldFreezeOverNPC : NPCOverride
     {
         public override int TargetID => -1;
@@ -51,9 +48,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
     }
 
-    /// <summary>
-    /// 统一 NPC 时间冻结拦截器，处理 <see cref="WorldFreezeSystem"/> 与 <c>CWRWorld.TimeFrozenTick</c> 两种冻结模式
-    /// </summary>
+    /// <summary>WorldFreeze 期间 NPC 禁碰撞</summary>
     internal class WorldFreezeNPC : GlobalNPC
     {
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot) {
@@ -71,9 +66,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
         }
     }
 
-    /// <summary>
-    /// 统一弹幕时间冻结拦截器，处理 <see cref="WorldFreezeSystem"/> 与 <c>CWRWorld.TimeFrozenTick</c> 两种冻结模式
-    /// </summary>
+    /// <summary>WorldFreeze / TimeFrozenTick 弹幕 PreAI 拦截</summary>
     internal class WorldFreezeProjectile : GlobalProjectile
     {
         public override bool PreAI(Projectile proj) {

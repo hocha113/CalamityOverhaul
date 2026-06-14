@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         public int AttackPhaseIndex { get; set; }
         /// <summary>狂暴阶段固定出招序列索引</summary>
         public int RageAttackIndex { get; set; }
-        /// <summary>死亡演出已完；<see cref="HeadPrimeAI.CheckDead"/> 据此放行真死，此前锁血</summary>
+        /// <summary>死亡演出已完；HeadPrimeAI.CheckDead 据此放行真死，此前锁血</summary>
         public bool DeathPerformanceFinished { get; set; }
         /// <summary>由金币枪狂怒进入脱战时为 true，离场时播放嘲讽台词</summary>
         public bool DespawnFromCoinFury { get; set; }

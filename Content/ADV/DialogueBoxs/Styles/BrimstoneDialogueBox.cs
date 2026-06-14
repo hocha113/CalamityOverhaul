@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,28 +8,26 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
-    /// <summary>
-    /// 硫磺火风格对话框
-    /// </summary>
+    /// <summary>硫磺火风格对话框</summary>
     internal class BrimstoneDialogueBox : DialogueBoxBase
     {
         public static BrimstoneDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<BrimstoneDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        // 风格参数
+        //风格参数
         private const float FixedWidth = 540f;
         private const int ShaderEdgePad = 16;
         protected override float PanelWidth => FixedWidth;
 
-        // 火焰动画
+        //火焰动画
         private float flameTimer = 0f;
         private float emberGlowTimer = 0f;
         private float heatWavePhase = 0f;
         private float infernoPulse = 0f;
-        // 着色器单调时间，避免噪声跳变
+        //着色器单调时间，避免噪声跳变
         private float shaderTime = 0f;
 
-        // 余烬与细灰粒子
+        //余烬与细灰粒子
         private readonly List<EmberPRT> embers = new();
         private int emberSpawnTimer = 0;
         private readonly List<AshPRT> ashes = new();

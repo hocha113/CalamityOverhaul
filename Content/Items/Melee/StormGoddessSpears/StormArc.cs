@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
         }
 
         public override void OnHit() {
-            //连锁在 OnHitNPC 处理，此处不重复
+            //连锁在OnHitNPC，此处跳过
         }
 
         /// 电弧冲击粒子

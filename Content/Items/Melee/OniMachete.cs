@@ -511,7 +511,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private const float SegmentLength = 45f;
         private Vector2 shoulderPos = Vector2.Zero;
         private Vector2 handPos = Vector2.Zero;
-        private float armTension = 0f; //手臂张力,用于IK自然度
+        private float armTension = 0f; //手臂张力，IK自然度
         private int ownerDirection = 1; //玩家朝向 (-1左, 1右)
 
         //攻击参数
@@ -936,7 +936,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 };
                 StateTimer = 0;
 
-                //投掷段特殊处理
+                //投掷段
                 if (State == HandState.Throwing) {
                     throwActionActive = true;
                     throwStartPos = Projectile.Center;

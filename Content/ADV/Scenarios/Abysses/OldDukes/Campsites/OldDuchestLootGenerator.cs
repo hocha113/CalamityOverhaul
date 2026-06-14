@@ -5,21 +5,22 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>
-    /// 老箱子战利品生成器
-    /// 负责生成营地内老箱子的每日刷新内容
-    /// </summary>
+    /// <summary>老箱子战利品生成器</summary>
     internal static class OldDuchestLootGenerator
     {
         private static readonly Random rand = new Random();
 
         /// <summary>
+
         /// 6分钟 = 360秒 = 21600帧
+
         /// </summary>
         internal const int RefreshInterval = 21600;
 
         /// <summary>
+
         /// 生成每日刷新的箱子内容
+
         /// </summary>
         public static List<Item> GenerateDailyLoot() {
 
@@ -53,9 +54,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return loot;
         }
 
-        /// <summary>
-        /// 添加钱币奖励
-        /// </summary>
         private static void AddCoinReward(List<Item> loot, Random random) {
             int coinAmount = random.Next(80, 300);
             int platinumCoins = coinAmount / 100;
@@ -84,9 +82,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 添加老公爵掉落物
-        /// </summary>
         private static void AddOldDukeDrops(List<Item> loot, Random random) {
             HashSet<int> oldDukeDrops = VaultUtils.GetNPCDrops(CWRID.NPC_OldDuke, true);
             List<int> qualityDrops = [];
@@ -131,9 +126,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 添加海洋主题物品
-        /// </summary>
         private static void AddOceanThemeItems(List<Item> loot, Random random) {
             int[] basicOceanItems = [
                 ItemID.Coral,
@@ -156,9 +148,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 添加药水和消耗品
-        /// </summary>
         private static void AddPotionsAndConsumables(List<Item> loot, Random random) {
             int[] usefulPotions = [
                 ItemID.GreaterHealingPotion,
@@ -200,9 +189,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 添加稀有材料
-        /// </summary>
         private static void AddRareMaterials(List<Item> loot, Random random) {
             int[] rareMaterials = [
                 ItemID.SoulofLight,
@@ -229,9 +215,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 添加特殊武器装备
-        /// </summary>
         private static void AddSpecialWeapons(List<Item> loot, Random random) {
             int[] specialWeapons = [
                 ItemID.FlowerofFrost,
@@ -262,23 +245,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             loot.Add(weapon);
         }
 
-        /// <summary>
-        /// 判断物品是否为武器
-        /// </summary>
         private static bool IsWeapon(Item item) {
             return item.damage > 0;
         }
 
-        /// <summary>
-        /// 判断物品是否为装备
-        /// </summary>
         private static bool IsEquipment(Item item) {
             return item.accessory || item.defense > 0;
         }
 
         /// <summary>
-        /// 根据游戏时间生成种子
-        /// 每6分钟(21600游戏帧)刷新一次
+
+        /// 根据游戏时间生成种子 每6分钟(21600游戏帧)刷新一次
+
         /// </summary>
         public static int GetGameTimeSeed() {
             uint currentGameTime = Main.GameUpdateCount;
@@ -286,9 +264,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return refreshCycle;
         }
 
-        /// <summary>
-        /// 获取距离下次刷新的剩余时间(秒)
-        /// </summary>
         public static int GetTimeUntilNextRefresh() {
             uint currentGameTime = Main.GameUpdateCount;
             int remainingFrames = (int)(RefreshInterval - (currentGameTime % RefreshInterval));

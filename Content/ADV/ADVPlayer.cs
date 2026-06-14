@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios;
+using CalamityOverhaul.Content.ADV.Scenarios;
 using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
 using Terraria;
 using Terraria.ModLoader;
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.ADV
                 return;
             }
 
-            // 仅本地玩家更新 ADV 场景
+            //仅本地玩家更新 ADV 场景
             var advSave = Player.GetModPlayer<ADVSavePlayer>().ADVSave;
             ADVScenarioScheduler.Tick(advSave, Player);
         }

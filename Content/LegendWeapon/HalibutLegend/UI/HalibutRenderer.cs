@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 大范围径向柔光，多层圆盘衰减叠加，用于节点光晕与悬停辉光
+        ///径向柔光，节点光晕/悬停辉光
         /// </summary>
         public static void DrawSoftGlow(SpriteBatch sb, Vector2 center, float radius, Color color) {
             for (int i = 0; i < 4; i++) {
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 三次贝塞尔辉光曲线，用于连接丝线与飞行轨迹预览
+        ///贝塞尔辉光，丝线/轨迹预览
         /// </summary>
         public static void DrawBezierGlow(SpriteBatch sb, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3,
             float thickness, Color color, int segments = 24) {
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         /// <summary>
-        /// 渐变线条，用于分割线
+        ///渐变分割线
         /// </summary>
         public static void DrawGradientLine(SpriteBatch sb, Vector2 start, Vector2 end,
             Color startColor, Color endColor, float thickness) {
@@ -359,7 +359,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         /// <param name="openAmount">睁眼程度 0闭-1全开</param>
         /// <param name="irisColor">虹膜颜色</param>
         /// <param name="alpha">整体透明度</param>
-        /// <param name="time">动画时间（用于虹膜内部游动）</param>
+        /// <param name="time">虹膜游动相位</param>
         public static void DrawEye(SpriteBatch sb, Vector2 center, float size,
             float openAmount, Color irisColor, float alpha, float time) {
             openAmount = MathHelper.Clamp(openAmount, 0f, 1f);

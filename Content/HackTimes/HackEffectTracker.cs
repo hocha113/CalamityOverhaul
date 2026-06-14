@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private static readonly List<ActiveHackEffect> activeEffects = [];
         //帧内移除缓冲
         private static readonly List<ActiveHackEffect> removeBuffer = [];
-        //OnRemove 传播效果延迟加入，避免遍历中处理新效果
+        //OnRemove 传播延迟入队，避遍历中追加
         private static readonly List<ActiveHackEffect> pendingEffects = [];
         private static bool updatingNpcEffects;
 
@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         //击杀回收 RAM 比例
         private const float KillRefundRatio = 0.5f;
-        //本帧已处理击杀回收的 NPC，防重复
+        //本帧击杀回收 NPC，防重复
         private static readonly HashSet<int> killRefundedThisFrame = [];
 
         void ICWRLoader.UnLoadData() => Reset();

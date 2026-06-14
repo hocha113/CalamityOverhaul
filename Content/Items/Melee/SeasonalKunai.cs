@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 时令飞刃 —— 战士的日月消耗投掷品
-    /// 每次掷出 4 把扇形苦无，命中后日间触发破晓灼烧、夜间触发夜衰
-    /// 飞刃命中或寿命终结时会迸裂出 3 把次级飞刃做扇形扫荡
-    /// </summary>
+    /// <summary>时令飞刃，扇形4把苦无，日/夜异效，命中迸次级飞刃</summary>
     internal class SeasonalKunai : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "SeasonalKunai";

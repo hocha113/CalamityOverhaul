@@ -1,6 +1,6 @@
 // ============================================================================
-// ThermalHeatHaze.fx 火力发电机热浪扭曲
-// 多热源屏幕 UV 偏移累加；s0 场景 s1 噪声；ps_3_0
+//ThermalHeatHaze.fx 火力发电机热浪扭曲
+//多热源屏幕 UV 偏移累加；s0 场景 s1 噪声；ps_3_0
 // ============================================================================
 
 #define MAX_SOURCES 8
@@ -44,22 +44,22 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         float  radius    = src.w;
 
         float2 delta = coords - center;
-        // 修正宽高比，使热浪以圆形扩散
+        //修正宽高比，使热浪以圆形扩散
         float2 corrected = float2(delta.x * aspect, delta.y);
         float  dist = length(corrected);
 
-        // 超出影响半径直接跳过
+        //超出影响半径直接跳过
         if (dist > radius)
             continue;
 
-        // 热气上升偏置：发电机上方扭曲更强，下方衰减
+        //热气上升偏置：发电机上方扭曲更强，下方衰减
         float verticalBias = saturate(1.0 - (coords.y - center.y) * 1.6);
         verticalBias = lerp(0.25, 1.0, verticalBias);
 
         float r2 = radius * radius * 0.28;
         float falloff = exp(-dist * dist / max(r2, 0.0001)) * verticalBias;
 
-        // 噪声UV用 center 解相关，避免多个热源叠出莫尔条纹
+        //噪声UV用 center 解相关，避免多个热源叠出莫尔条纹
         float2 noiseUV1 = coords * 4.0 + center * 7.13 + float2(globalTime * 0.55, -globalTime * 0.85);
         float wave1 = tex2D(noiseTex, noiseUV1).r - 0.5;
 
@@ -69,10 +69,10 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
         float wave = wave1 * 0.65 + wave2 * 0.35;
 
         float strength = intensity * 0.0065;
-        // 主要垂直方向抖动（热气流），少量水平
+        //主要垂直方向抖动（热气流），少量水平
         float2 baseOffset = float2(wave * 0.32, wave * 1.0) * strength * falloff;
 
-        // 沿径向再叠加少量，模拟向外扩散的暖流
+        //沿径向再叠加少量，模拟向外扩散的暖流
         float2 dir = normalize(delta + float2(0.0001, 0.0001));
         baseOffset += dir * wave * strength * falloff * 0.22;
 
@@ -83,7 +83,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float2 distortedUV = clamp(coords + totalOffset, 0.001, 0.999);
     float4 color = tex2D(screenTex, distortedUV);
 
-    // 暖色调微偏移，热源附近略显发红
+    //暖色调微偏移，热源附近略显发红
     float warmShift = saturate(warmAccum) * 0.07;
     color.r += warmShift * 0.55;
     color.g += warmShift * 0.18;

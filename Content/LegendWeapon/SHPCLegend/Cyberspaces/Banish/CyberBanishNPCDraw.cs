@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ModLoader;
@@ -23,10 +23,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
             float progress = CyberBanish.GetProgress(npc.whoAmI);
             if (progress < 0f) return true;
 
-            // 获取NPC纹理用于texelSize
+            //NPC 纹理 texelSize
             Texture2D tex = TextureAssets.Npc[npc.type].Value;
 
-            // 获取对应entry的seed
+            //获取对应entry的seed
             float seed = 0f;
             for (int i = 0; i < CyberBanish.ActiveBanishments.Count; i++) {
                 if (CyberBanish.ActiveBanishments[i].NpcIndex == npc.whoAmI) {

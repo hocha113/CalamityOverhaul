@@ -1,4 +1,4 @@
-﻿using InnoVault.GameSystem;
+using InnoVault.GameSystem;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -7,8 +7,7 @@ using Terraria.Graphics;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.LandingScens
 {
     /// <summary>
-    /// 机械世界空降仓着陆演出——玩家覆写
-    /// 在着陆阶段隐藏玩家绘制，锁定玩家操控，直到玩家从空降仓弹出
+    /// 机械世界空降仓着陆演出：玩家覆写 在着陆阶段隐藏玩家绘制，锁定玩家操控，直到玩家从空降仓弹出
     /// </summary>
     internal class MachineWorldLandingPlayer : PlayerOverride
     {
@@ -18,43 +17,58 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
         public bool LandingActive;
 
         /// <summary>
+
         /// 弹出动画是否正在播放
+
         /// </summary>
         public bool EjectAnimating;
 
         /// <summary>
+
         /// 弹出动画计时器
+
         /// </summary>
         public int EjectTimer;
 
         /// <summary>
-        /// 玩家是否在本帧按下了左键（在清除controlUseItem之前捕获）
-        /// 供MachineWorldLandingActor读取
+
+        /// 玩家是否在本帧按下了左键（在清除controlUseItem之前捕获） 供MachineWorldLandingActor读取
+
         /// </summary>
         public bool ClickedThisFrame;
 
         /// <summary>
+
         /// 脱离物块阶段每帧上升的像素速度
+
         /// </summary>
         private const float EscapeSpeed = 8f;
 
         /// <summary>
+
         /// 脱离物块阶段的最大持续帧数（安全上限，避免无限循环）
+
         /// </summary>
         private const int MaxEscapeFrames = 300;
 
         /// <summary>
+
         /// 脱出后的弹射恢复帧数
+
         /// </summary>
         private const int LaunchDuration = 30;
 
         /// <summary>
+
         /// 是否已经脱离物块进入空中
+
         /// </summary>
         private bool hasReachedOpenAir;
 
         /// <summary>
+
         /// 弹出水平偏移
+
         /// </summary>
         private float ejectHorizontalOffset;
 
@@ -88,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
                 EjectTimer++;
 
                 if (!hasReachedOpenAir) {
-                    //阶段1：脱离物块——持续向上移动直到玩家位于空中
+                    //阶段1：脱离物块：持续向上移动直到玩家位于空中
                     Player.position.Y -= EscapeSpeed;
                     Player.velocity = Vector2.Zero;
                     Player.fallStart = (int)(Player.position.Y / 16f);
@@ -111,7 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
                     }
                 }
                 else {
-                    //阶段2：弹射恢复——让物理引擎逐渐接管
+                    //阶段2：弹射恢复：让物理引擎逐渐接管
                     float progress = (float)EjectTimer / LaunchDuration;
                     if (progress < 0.5f) {
                         Player.fallStart = (int)(Player.position.Y / 16f);
@@ -128,7 +142,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
         }
 
         /// <summary>
+
         /// 触发弹出动画
+
         /// </summary>
         public void TriggerEject(Vector2 podCenter) {
             if (!LandingActive || EjectAnimating) return;
@@ -142,7 +158,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
         }
 
         /// <summary>
-        /// 隐藏玩家绘制——在着陆阶段玩家不可见
+
+        /// 隐藏玩家绘制：在着陆阶段玩家不可见
+
         /// </summary>
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
             if (LandingActive && !EjectAnimating) {

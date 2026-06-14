@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             if (Cyberspace.Intensity < 0.5f) return;
             if (Cyberspace.CurrentLayer < RequiredLayer) return;
 
-            //演出进行中或 RAM 锁定中——拒绝并播放失败反馈
+            //演出中或 RAM 锁定：拒绝+失败反馈
             if (progressTimer > 0 || RamSystem.IsLocked) {
                 if (!VaultUtils.isServer) {
                     SoundEngine.PlaySound(CWRSound.FailureCurrent with {
@@ -250,10 +250,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             Player owner = Main.player[Main.myPlayer];
             if (owner == null || !owner.active) return;
 
-            //仅本地客户端处理自身恢复，避免重复广播
+            //仅 myPlayer 恢复，防重复广播
             if (Main.myPlayer != owner.whoAmI) return;
 
-            //满血、满魔——重启即"刚刚启动的状态"
+            //满血满魔，刚启动态
             owner.statLife = owner.statLifeMax2;
             owner.statMana = owner.statManaMax2;
 

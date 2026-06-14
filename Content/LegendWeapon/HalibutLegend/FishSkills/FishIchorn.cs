@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -374,7 +374,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 60;
         }
 
-        //碰撞处理-生成溅射效果
+        //碰撞溅射
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == FluidState.Streaming) {
                 CreateSplashEffect(Projectile.Center, oldVelocity);

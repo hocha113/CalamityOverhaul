@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -44,8 +44,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //数据线在枪体纹理上的接出点，坐标单位为屏幕像素（相对枪体绘制中心）
         //以枪口朝右为基准，对应SHPC贴图各功能区域的边缘位置，按 GunScale 同步缩放
         //如果实际贴图尺寸与预估不符可按照以下规律等比调整：
-        //  X轴：负值朝左（枪托侧），正值朝右（枪口侧），最大约±82*GunScale/2
-        //  Y轴：负值朝上（瞄具/枪管顶），正值朝下（握把/弹匣底），最大约±26*GunScale/2
+        //X轴：负值朝左（枪托侧），正值朝右（枪口侧），最大约±82*GunScale/2
+        //Y轴：负值朝上（瞄具/枪管顶），正值朝下（握把/弹匣底），最大约±26*GunScale/2
         private const float ConnectFactor = 1.4f / 1.2f;
         private static readonly Vector2[] ConnectPoints = {
             new(62f * ConnectFactor, -20f * ConnectFactor),  //BARREL  右上引出  枪口侧上方

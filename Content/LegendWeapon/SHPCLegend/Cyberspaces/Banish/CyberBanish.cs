@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
 using System;
@@ -54,14 +54,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         /// <summary>
-        /// 对光标下的NPC发起放逐（仅本地玩家从输入处理调用）
+        /// 光标下 NPC 放逐，输入侧 myPlayer
         /// </summary>
         public static void BanishAtCursor() {
             CyberspacePlayer cp = Cyberspace.Local;
             if (cp == null) return;
             if (!cp.Active || cp.Intensity < 0.5f || cp.CurrentLayer < 2) return;
 
-            //先尝试找命中目标，再依据目标是否为Boss级决定走哪条RAM消耗与处理路径
+            //找目标再分 Boss/普怪 RAM 路径
             int hitIndex = FindCursorTarget(cp);
             if (hitIndex < 0) return;
 
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         }
 
         /// <summary>
-        /// 在领域有效半径内、且光标命中的最近未处理NPC，找不到时返回-1
+        /// 领域内光标最近未放逐 NPC，无则 -1
         /// </summary>
         private static int FindCursorTarget(CyberspacePlayer cp) {
             Vector2 mouse = Main.MouseWorld;
@@ -237,7 +237,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
 
                 float progress = entry.Progress;
 
-                // 冻结NPC位置
+                //冻结NPC位置
                 npc.Center = entry.FreezePosition;
                 npc.velocity = Vector2.Zero;
 
@@ -259,21 +259,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     continue;
                 }
 
-                // 阶段一 (0~0.5): 强烈故障闪烁，NPC保持原大小
-                // 阶段二 (0.5~0.85): 开始缩小 + 更激烈故障
-                // 阶段三 (0.85~1.0): 急速缩小 → 高光闪白 → 消失
+                //阶段一 (0~0.5): 强烈故障闪烁，NPC保持原大小
+                //阶段二 (0.5~0.85): 开始缩小 + 更激烈故障
+                //阶段三 (0.85~1.0): 急速缩小 → 高光闪白 → 消失
                 if (progress > 0.5f) {
                     float shrinkPhase = (progress - 0.5f) / 0.5f;
                     float shrink = 1f - MathF.Pow(shrinkPhase, 2.2f);
                     npc.scale = entry.OriginalScale * Math.Max(shrink, 0.02f);
                 }
 
-                // 每帧生成故障粒子（仅客户端）
+                //每帧生成故障粒子（仅客户端）
                 if (!Main.dedServ) {
                     CyberBanishParticles.SpawnBanishParticles(npc, progress, entry.Seed);
                 }
 
-                // 动画完毕 → 抹除（仅由"放逐发起者"或服务端真正去抹除，避免多端各自把 NPC 写死）
+                //动画完毕 → 抹除（仅由"放逐发起者"或服务端真正去抹除，避免多端各自把 NPC 写死）
                 if (entry.Timer >= BanishDuration) {
                     bool authoritative = Main.netMode == NetmodeID.SinglePlayer
                         || VaultUtils.isServer
@@ -286,7 +286,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                             NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
                         }
                     }
-                    // 最终爆发粒子（仅客户端）
+                    //最终爆发粒子（仅客户端）
                     if (!Main.dedServ) {
                         CyberBanishParticles.SpawnFinalBurst(npc.Center, entry.OriginalScale);
                     }

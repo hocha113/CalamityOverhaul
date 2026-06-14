@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
                     return;
                 }
             }
-            //在走廊前段生成，Y取通道中间位置确保不落在实体块内，生成后再修正至地板上方
+            //走廊前段生成，Y 取通道中线，再修正至地板上方
             int baseX = (int)Main.LocalPlayer.Center.X + 350;
             int spawnY = (CybCourseGen.FloorY - 8) * 16;
             for (int retry = 0; retry < 3; retry++) {
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
                     _cardAnim = MathHelper.Lerp(_cardAnim, 1f, 0.16f);
                     _stepTimer += dt;
 
-                    //圣诞坦克生命周期：进入物块阶段(step 6)前确保NPC可用
+                    //step 6 前复活圣诞坦克
                     if (_currentStep >= 1 && _currentStep <= 5) {
                         EnsureTankAlive();
                     }
@@ -322,7 +322,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
                     break;
 
                 case Phase.Done:
-                    //Done阶段持续尝试拉起Outro，确保即便FadeOut完成时被其他场景占用也能续上
+                    //Done 阶段重试拉起 Outro（FadeOut 时可能被占用）
                     TryStartOutro();
                     break;
             }

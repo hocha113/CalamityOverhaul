@@ -1,6 +1,6 @@
 // ============================================================================
-// CyberTraceBeam.fx 赛博追踪能量光束
-// Trail 条带 Additive；采样 s1 噪声
+//CyberTraceBeam.fx 赛博追踪能量光束
+//Trail 条带 Additive；采样 s1 噪声
 // ============================================================================
 
 float4x4 transformMatrix;
@@ -50,7 +50,7 @@ PSInput VertexShaderFunction(VSInput v)
     return o;
 }
 
-// 简单哈希函数
+//简单哈希函数
 float hash21(float2 p)
 {
     float3 p3 = frac(float3(p.xyx) * float3(0.1031, 0.1030, 0.0973));
@@ -61,27 +61,27 @@ float hash21(float2 p)
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
     float2 uv = input.TexCoords;
-    float along = uv.x;          // 0=起点（尾部） 1=末端（头部）
-    float cross_ = uv.y;         // 0=上边 1=下边
-    float crossDist = abs(cross_ - 0.5) * 2.0; // 0=中心 1=边缘
+    float along = uv.x;          //0=起点（尾部） 1=末端（头部）
+    float cross_ = uv.y;         //0=上边 1=下边
+    float crossDist = abs(cross_ - 0.5) * 2.0; //0=中心 1=边缘
 
-    // along: 0=头部(当前位置), 1=尾端(最远历史位置)
-    // 沿拖尾方向的自然衰减
+    //along: 0=头部(当前位置), 1=尾端(最远历史位置)
+    //沿拖尾方向的自然衰减
     float distFromHead = along;
 
-    // 超驱色彩混合
+    //超驱色彩混合
     float od = overdriveAmount;
     float3 effCore = lerp(coreColor, odCoreColor, od);
     float3 effGlow = lerp(glowColor, odGlowColor, od);
     float3 effAura = lerp(auraColor, odAuraColor, od);
 
-    // 超驱UV扰动：行位移故障
+    //超驱UV扰动：行位移故障
     float2 renderUV = uv;
     if (od > 0.01)
     {
         float rowID = floor(cross_ * 30.0);
         float rowHash = hash21(float2(rowID, floor(uTime * 8.0 + glitchBurst * 20.0)));
-        // 间歇性行位移：burst时大量行偏移，平时少量
+        //间歇性行位移：burst时大量行偏移，平时少量
         float rowThreshold = 0.85 - glitchBurst * 0.45;
         float rowShift = step(rowThreshold, rowHash) * (rowHash - 0.5) * 0.2 * od;
         rowShift *= (1.0 + glitchBurst * 5.0);
@@ -92,14 +92,14 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float rCross = renderUV.y;
     float rCrossDist = abs(rCross - 0.5) * 2.0;
 
-    // 噪声采样
+    //噪声采样
     float n1 = tex2D(noiseSamp, frac(float2(rAlong * 4.0 + uTime * 1.5, rCross * 0.8))).r;
     float n2 = tex2D(noiseSamp, frac(float2(rAlong * 8.0 - uTime * 2.2, rCross * 1.5 + 0.4))).g;
     float n3 = tex2D(noiseSamp, frac(float2(rAlong * 2.5 + uTime * 0.8, rCross * 3.0 + 0.7))).b;
 
-    // =
-    // A. 白热能量核心 —— 光束中心最亮的通道（已优化：缩窄过曝区域）
-    // =
+    //=
+    //A. 白热能量核心 ： 光束中心最亮的通道（已优化：缩窄过曝区域）
+    //=
     float coreWidth = 0.06 + n1 * 0.03;
     //超驱时核心仅小幅变宽（0.12→0.04），避免热核心区域无限膨胀
     coreWidth += od * 0.04;
@@ -113,25 +113,25 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     corePulse += od * 0.2 * sin(uTime * 50.0 + rAlong * 80.0);
     core *= corePulse;
 
-    // =
-    // B. 内层辉光 —— 主题色明亮层（超驱加成降低）
-    // =
+    //=
+    //B. 内层辉光 ： 主题色明亮层（超驱加成降低）
+    //=
     float innerW = 0.25 + n2 * 0.08;
     innerW += od * 0.05;                       //0.15→0.05，内层不再大幅膨胀
     innerW *= lerp(1.0, 0.5, distFromHead);
     float inner = 1.0 - smoothstep(coreWidth * 0.4, innerW, rCrossDist);
     inner *= 0.7 + od * 0.15;                  //0.4→0.15，超驱亮度温和提升
 
-    // =
-    // C. 外层光晕 —— 柔和的主题色扩散（超驱加成降低）
-    // =
+    //=
+    //C. 外层光晕 ： 柔和的主题色扩散（超驱加成降低）
+    //=
     float outerFade = 1.0 - smoothstep(0.15, 0.95, rCrossDist);
     outerFade *= lerp(0.4, 0.1, distFromHead);
     outerFade *= (1.0 + od * 0.4);             //1.5→0.4，外层不再翻倍叠加
 
-    // =
-    // D. 纵向能量流纹 —— 沿光束方向的流动条纹（更连贯更柔）
-    // =
+    //=
+    //D. 纵向能量流纹 ： 沿光束方向的流动条纹（更连贯更柔）
+    //=
     float streamSpeed = 3.2 + od * 10.0;
     float streamUV1 = frac(rAlong * 10.0 - uTime * streamSpeed);
     float stream1 = smoothstep(0.0, 0.06, streamUV1) * smoothstep(0.22, 0.10, streamUV1);
@@ -141,24 +141,24 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     streams *= lerp(1.0, 0.2, distFromHead);
     streams *= (1.0 + od * 0.5);               //1.5→0.5，流纹强度温和增长
 
-    // =
-    // E. 微弱数字网格 —— 赛博科幻质感（闪烁降密）
-    // =
+    //=
+    //E. 微弱数字网格 ： 赛博科幻质感（闪烁降密）
+    //=
     float gridX = frac(rAlong * 30.0);
     float gridY = frac(rCross * 6.0);
     float gridLine = step(gridX, 0.04) + step(gridY, 0.06);
     gridLine = saturate(gridLine);
     float cellID = floor(rAlong * 30.0) + floor(rCross * 6.0) * 37.0;
     float cellFlicker = hash21(float2(cellID, floor(uTime * 4.0)));
-    // 超驱时网格更多闪烁
+    //超驱时网格更多闪烁
     float gridThreshold = 0.80 - od * 0.3;
     gridLine *= step(gridThreshold, cellFlicker) * (0.10 + od * 0.35);
     gridLine *= (1.0 - rCrossDist * 0.6);
     gridLine *= lerp(0.8, 0.1, distFromHead);
 
-    // =
-    // F. 头部光球 —— 圆形高亮辐射（脉动放缓）
-    // =
+    //=
+    //F. 头部光球 ： 圆形高亮辐射（脉动放缓）
+    //=
     float headOrb = 1.0 - smoothstep(0.0, 0.05, rAlong);
     headOrb *= (1.0 - rCrossDist * 0.6);
     float orbPulse = 0.85 + 0.15 * sin(uTime * 9.0);
@@ -166,23 +166,23 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float headGlow = 1.0 - smoothstep(0.02, 0.12, rAlong);
     headGlow *= (1.0 - rCrossDist * 0.8) * 0.4;
 
-    // =
-    // G. 边缘腐蚀 —— 噪声驱动的有机能量边界
-    // =
+    //=
+    //G. 边缘腐蚀 ： 噪声驱动的有机能量边界
+    //=
     float edgeNoise = n2 * 0.20 + n3 * 0.15;
     float edgeMask = 1.0 - smoothstep(0.45 - edgeNoise, 0.92, rCrossDist);
 
-    // =
-    // H. 尾端渐隐 —— 拖尾末端平滑消失（提前起始，尾部收得更干净）
-    // =
+    //=
+    //H. 尾端渐隐 ： 拖尾末端平滑消失（提前起始，尾部收得更干净）
+    //=
     float tailFade = 1.0 - smoothstep(0.62, 1.0, rAlong);
 
-    // =
-    // 颜色合成 —— 优化亮度：减少纯白叠加，让主题色辨识度更高
-    // 在 Additive Blend 下，过多白色层叠加会让 RGB 三通道同时饱和
-    // 导致中心区域过曝成纯白色，丢失主题色身份。
-    // 超驱下额外减少白热混入比例，让"灼烧橙"代替"白热"传达高温感。
-    // =
+    //=
+    //颜色合成 ： 优化亮度：减少纯白叠加，让主题色辨识度更高
+    //在 Additive Blend 下，过多白色层叠加会让 RGB 三通道同时饱和
+    //导致中心区域过曝成纯白色，丢失主题色身份
+    //超驱下额外减少白热混入比例，让"灼烧橙"代替"白热"传达高温感
+    //=
     float3 cWhite = float3(1.0, 0.97, 0.92);
     //核心高光：超驱时白光混入大幅减少（0.45→0.15），让熔岩橙 effCore 主导
     float coreWhiteBlend = 0.45 - od * 0.30;
@@ -209,23 +209,23 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     );
     alpha *= fadeAlpha * tailFade;
 
-    // I. 超驱故障层：破坏式故障，禁亮度叠加当手电筒
+    //I. 超驱故障层：破坏式故障，禁亮度叠加当手电筒
     if (od > 0.01)
     {
         float burst = glitchBurst;
 
-        // I-1. 扫描线干扰（红炽细线，不再是白热）
-        //  - 颜色改用 effGlow（深红）而非 effCore（橙），与黑色撕裂形成对比
-        //  - 强度从 1.0 降到 0.5，避免和核心高光叠加
+        //I-1. 扫描线干扰（红炽细线，不再是白热）
+        //- 颜色改用 effGlow（深红）而非 effCore（橙），与黑色撕裂形成对比
+        //- 强度从 1.0 降到 0.5，避免和核心高光叠加
         float scanFreq = 80.0 + burst * 120.0;
         float scanline = frac(rCross * scanFreq + uTime * 3.5);
         scanline = step(0.93, scanline);
         color += effGlow * scanline * od * 0.5;
         alpha += scanline * od * 0.18;
 
-        // I-2. 方块腐蚀（红炽辉光方块）
-        //  - 颜色去掉纯白渐变，改为 effGlow → effCore 渐变（红→橙）
-        //  - 整体强度大幅降低
+        //I-2. 方块腐蚀（红炽辉光方块）
+        //- 颜色去掉纯白渐变，改为 effGlow → effCore 渐变（红→橙）
+        //- 整体强度大幅降低
         float blockW = 0.05 + burst * 0.1;
         float blockID2 = floor(rAlong / blockW) + floor(rCross / (blockW * 2.0)) * 23.0;
         float blockFlash = hash21(float2(blockID2, floor(uTime * 12.0 + burst * 30.0)));
@@ -235,12 +235,12 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         color += blockColor * blockOn * od * (0.25 + burst * 0.45);
         alpha += blockOn * od * 0.12;
 
-        // I-3. 边缘红炽辉光（保留但温和化）
+        //I-3. 边缘红炽辉光（保留但温和化）
         float magentaEdge = smoothstep(0.25, 0.50, rCrossDist) * (1.0 - smoothstep(0.50, 0.85, rCrossDist));
         color += effGlow * magentaEdge * od * (0.4 + burst * 0.5);
         alpha += magentaEdge * od * 0.15;
 
-        // I-4. RGB 通道偏移（保留作为故障感关键 —— 这是"色相"扰动而非"亮度"扰动）
+        //I-4. RGB 通道偏移（保留作为故障感关键 ： 这是"色相"扰动而非"亮度"扰动）
         float channelShift = od * (0.06 + burst * 0.15);
         float3 shiftedColor;
         shiftedColor.r = color.r * (1.0 + channelShift * sin(uTime * 30.0 + rAlong * 60.0));
@@ -248,24 +248,24 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         shiftedColor.b = color.b * (1.0 + channelShift * cos(uTime * 35.0 + rAlong * 70.0));
         color = shiftedColor;
 
-        // I-5. 全局闪烁（幅度大幅降低：3.5→1.2，避免整屏闪瞎）
+        //I-5. 全局闪烁（幅度大幅降低：3.5→1.2，避免整屏闪瞎）
         float globalFlicker = hash21(float2(floor(uTime * 30.0), 13.7));
         float flickerAmount = burst * (globalFlicker - 0.3) * 1.2;
         color *= 1.0 + flickerAmount;
 
-        // I-6. 水平撕裂带（强化为"黑墙"：更频繁、更深、连 alpha 一起挖空）
-        //  - 阈值从 0.92→0.82（更频繁出现）
-        //  - 暗化系数 0.7→0.92（接近全黑），让撕裂带成为真正的"数据缺口"
-        //  - alpha 也下降 0.55，制造"光束被撕开一道缝"的视觉
+        //I-6. 水平撕裂带（强化为"黑墙"：更频繁、更深、连 alpha 一起挖空）
+        //- 阈值从 0.92→0.82（更频繁出现）
+        //- 暗化系数 0.7→0.92（接近全黑），让撕裂带成为真正的"数据缺口"
+        //- alpha 也下降 0.55，制造"光束被撕开一道缝"的视觉
         float tearID = floor(rCross * 20.0);
         float tearHash = hash21(float2(tearID, floor(uTime * 15.0)));
         float tearOn = step(0.82 - burst * 0.20, tearHash) * od;
         color *= 1.0 - tearOn * 0.92;
         alpha *= 1.0 - tearOn * 0.55;
 
-        // I-7. 数据丢失黑块（NEW —— 真正的"黑墙"美学）
-        //  - 像马赛克方块一样掏空光束局部，模拟"显存损坏"
-        //  - 颜色全黑、alpha 大幅下降，与亮度叠加形成黑白对比
+        //I-7. 数据丢失黑块（NEW ： 真正的"黑墙"美学）
+        //- 像马赛克方块一样掏空光束局部，模拟"显存损坏"
+        //- 颜色全黑、alpha 大幅下降，与亮度叠加形成黑白对比
         float corBlockW = 0.05 + burst * 0.04;
         float corID = floor(rAlong / corBlockW) * 47.0 + floor(rCross / (corBlockW * 1.5)) * 13.0;
         float corHash = hash21(float2(corID, floor(uTime * 10.0 + 7.3)));
@@ -273,7 +273,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         color *= 1.0 - corOn * 0.88;
         alpha *= 1.0 - corOn * 0.45;
 
-        // I-8. 超驱整体 alpha 微量增强（0.5→0.1，原值过激）
+        //I-8. 超驱整体 alpha 微量增强（0.5→0.1，原值过激）
         alpha *= 1.0 + od * 0.1;
     }
 

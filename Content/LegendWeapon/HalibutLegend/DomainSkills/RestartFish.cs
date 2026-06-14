@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public float Frame;
         public int FishType;
         public Color TintColor;
-        public float LifeProgress; //0-1，用于控制生命周期
+        public float LifeProgress; //0-1生命周期
         public float MaxLife;
         public float Life;
         private float rotationSpeed;

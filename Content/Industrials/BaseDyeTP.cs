@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.UIHandles;
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Industrials
         public override void MachineKill() {
             CloseDyeMachineUI();
             if (VaultUtils.isClient) {
-                return;//客户端不处理掉落
+                return;//客户端跳过掉落
             }
             if (DyeSlotItem.Alives()) {
                 VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, DyeSlotItem);

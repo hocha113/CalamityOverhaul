@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.PRTTypes
                 }
                 //Projectile projectile = ((Projectile)Entity);
                 //if (projectile != null)
-                //  Rotation = projectile.rotation;
+                //Rotation = projectile.rotation;
             }
         }
 

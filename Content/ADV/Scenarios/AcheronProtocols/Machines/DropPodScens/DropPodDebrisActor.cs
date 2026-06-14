@@ -1,4 +1,4 @@
-﻿using InnoVault.Actors;
+using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,9 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
     /// <summary>
-    /// 空降仓坠落演出中的残骸障碍物Actor
-    /// 流程：预警线阶段 → 残骸从屏幕底部向上高速飞过
-    /// 如果与空降仓碰撞则产生火花粒子效果
+    /// 空降仓坠落演出中的残骸障碍物Actor 流程：预警线阶段 → 残骸从屏幕底部向上高速飞过 如果与空降仓碰撞则产生火花粒子效果
     /// </summary>
     internal class DropPodDebrisActor : Actor
     {
@@ -140,7 +138,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             warningLineAlpha *= 0.85f;
             warningLineWidth *= 0.9f;
 
-            //碰撞检测——检查是否与空降仓碰撞
+            //碰撞检测：检查是否与空降仓碰撞
             if (!hasHit) {
                 var podActors = ActorLoader.GetActiveActors<DropPodActor>();
                 foreach (var podActor in podActors) {
@@ -171,7 +169,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 残骸击中空降仓时的效果
+
         /// </summary>
         private void OnHitPod(Vector2 podCenter) {
             //在碰撞点生成大量火花粒子
@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 });
             }
 
-            //碰撞闪光——在撞击点产生短暂白色闪光
+            //碰撞闪光：在撞击点产生短暂白色闪光
             hitFlashTimer = 1f;
             hitFlashPos = hitPoint;
 
@@ -245,7 +245,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             Vector2 lineScreenX = new Vector2(Center.X - Main.screenPosition.X, 0);
             float lineHeight = Main.screenHeight;
 
-            //主预警线——红色竖线
+            //主预警线：红色竖线
             Color warningColor = new Color(255, 60, 60) * warningLineAlpha;
             sb.Draw(px, lineScreenX, new Rectangle(0, 0, 1, 1), warningColor,
                 0f, new Vector2(0.5f, 0f), new Vector2(warningLineWidth, lineHeight), SpriteEffects.None, 0f);
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
 
             float pulse = MathF.Sin(pulseTimer) * 0.3f + 0.7f;
 
-            //能量光璀——温暖的橙红色脉冲光晕，让残骸在漆黑太空中突出
+            //能量光璀：温暖的橙红色脉冲光晕，让残骸在漆黑太空中突出
             if (CWRAsset.SoftGlow != null && !CWRAsset.SoftGlow.IsDisposed) {
                 Texture2D glow = CWRAsset.SoftGlow.Value;
                 float glowRadius = MathF.Max(tex.Width, tex.Height) * debrisScale * 0.7f;
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                     glow.Size() * 0.5f, glowScale, SpriteEffects.None, 0f);
             }
 
-            //暖色边缘光（rim light）——橙红色，与背景的冷蓝色形成对比
+            //暖色边缘光（rim light）：橙红色，与背景的冷蓝色形成对比
             float rimPulse = 0.6f + pulse * 0.4f;
             Color rimColor = new Color(255, 100, 30) * (0.7f * rimPulse);
             float rimOffset = 2.5f;
@@ -291,13 +291,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 sb.Draw(tex, drawPos + off, null, rimColor, debrisRotation, origin, debrisScale, fx, 0f);
             }
 
-            //主体——全亮度绘制
+            //主体：全亮度绘制
             sb.Draw(tex, drawPos, null, Color.White, debrisRotation, origin, debrisScale, fx, 0f);
 
-            //科技感订位括号标记——四角的L形括号
+            //科技感订位括号标记：四角的L形括号
             DrawTargetBrackets(sb, drawPos, tex, pulse);
 
-            //运动模糊拖影——温暖色调，与背景残骸的冷色拖影区分
+            //运动模糊拖影：温暖色调，与背景残骸的冷色拖影区分
             for (int t = 1; t <= 4; t++) {
                 Vector2 trailPos = drawPos + new Vector2(0, flySpeed * t * 2f);
                 float trailAlpha = 1f - t / 5f;
@@ -306,9 +306,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             }
         }
 
-        /// <summary>
-        /// 绘制科技感的订位括号标记——四角的L形括号
-        /// </summary>
         private void DrawTargetBrackets(SpriteBatch sb, Vector2 drawPos, Texture2D tex, float pulse) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
@@ -343,17 +340,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 0f, Vector2.Zero, new Vector2(bracketThickness, bracketLen), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制碰撞瞬间的闪光效果——白色→橙色渐变的短暂辉光
-        /// </summary>
         private void DrawHitFlash(SpriteBatch sb) {
             if (CWRAsset.SoftGlow == null || CWRAsset.SoftGlow.IsDisposed) return;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 drawPos = hitFlashPos - Main.screenPosition;
 
-            float t = hitFlashTimer; // 1 → 0
-            float flashScale = (1f - t) * 0.8f + 0.3f; // 快速扩散
-            float flashAlpha = t * t; // 快速衰减
+            float t = hitFlashTimer; //1 → 0
+            float flashScale = (1f - t) * 0.8f + 0.3f; //快速扩散
+            float flashAlpha = t * t; //快速衰减
 
             //内层白色核心闪光
             Color coreColor = Color.White * (flashAlpha * 0.9f);
@@ -378,7 +372,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 float scale = spark.Scale * (1f - lifeRatio * 0.5f) * 0.06f;
                 Vector2 drawPos = spark.Position - Main.screenPosition;
 
-                //火花拉伸——沿速度方向
+                //火花拉伸：沿速度方向
                 float sparkRot = spark.Velocity.ToRotation() + MathHelper.PiOver2;
                 float stretch = MathF.Min(spark.Velocity.Length() * 0.15f, 2f);
                 Vector2 sparkScale = new Vector2(scale, scale * (1f + stretch));

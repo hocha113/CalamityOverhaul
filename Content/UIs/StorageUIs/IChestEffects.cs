@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
     /// <summary>
-    /// 箱子UI视觉特效接口，不同主题实现完全不同的粒子和特效
+    /// 箱子UI视觉特效接口，不同主题完全不同的粒子和特效
     /// </summary>
     internal interface IChestEffects
     {

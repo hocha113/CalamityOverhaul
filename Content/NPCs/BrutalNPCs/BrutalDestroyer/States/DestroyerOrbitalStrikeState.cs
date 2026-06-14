@@ -10,8 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>低血量大招「轨道绞杀」：撤离→交叉俯冲2趟→垂直终结贯穿→回场散热</summary>
-    /// <para>普攻俯冲见 <see cref="DestroyerDiveStrikeState"/>；全难度完整演出，Death 只调数值</para>
+    /// <summary>低血量大招「轨道绞杀」：撤离→交叉俯冲2趟→垂直终结贯穿→回场散热；普攻俯冲见 DestroyerDiveStrikeState；全难度完整演出，Death 只调数值</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.OrbitalStrike, typeof(DestroyerStateContext))]
     internal class DestroyerOrbitalStrikeState : DestroyerStateBase
     {
@@ -219,7 +218,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = diveDir * DiveSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                //ForceRoar：避免被上一声未播完的Roar按IgnoreNew上限吞掉（详见DiveStrike同处注释）
+                //ForceRoar：防未播完Roar被IgnoreNew吞(同DiveStrike)
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.35f, Volume = 1f }, player.Center);
                 //俯冲瞬间天空闪雷
                 MachineEffect.TriggerSkyFlash(lineCenter, 1f);

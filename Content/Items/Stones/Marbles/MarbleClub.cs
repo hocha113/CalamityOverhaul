@@ -13,9 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 大理石巨棍：缓慢沉重的过顶猛砸，命中有几率石化减速，砸落瞬间在落点迸发冲击波 + 尘土 + 屏震
-    /// </summary>
+    /// <summary>大理石巨棍，过顶猛砸，石化减速，落点冲击波</summary>
     internal class MarbleClub : ModItem
     {
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleClub";
@@ -56,9 +54,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         }
     }
 
-    /// <summary>
-    /// 巨棍手持弹幕：完整接管玩家手臂动作，自抬手 → 过顶猛砸 → 收力的全过程（结构参照断罪师 Arbiter）
-    /// </summary>
+    /// <summary>巨棍HeldProj，抬手过顶猛砸收力，参照Arbiter</summary>
     internal class MarbleClubHeld : BaseHeldProj
     {
         public override string Texture => GraniteMarbleVFX.MarbleTex + "MarbleClub";
@@ -69,7 +65,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         private const int RecoverTime = 11;
         private const int TotalTime = WindupTime + SlamTime + RecoverTime;
 
-        //以"朝右"为基准的玩家相对角：自然预备 → 高举(上后方) → 砸落(下前方)，左右由 MirrorAngle 处理镜像
+        //朝右基准角：预备→高举→砸落，MirrorAngle镜像
         private const float ReadyRel = -MathHelper.Pi * 0.26f;
         private const float LiftRel = -MathHelper.Pi * 0.72f;
         private const float EndRel = MathHelper.Pi * 0.5f;
@@ -224,9 +220,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             }
         }
 
-        /// <summary>
-        /// 让玩家双臂跟随棍体朝向，避免"凭空持棍"，这是挥击观感的关键
-        /// </summary>
+        /// <summary>双臂跟随棍体朝向</summary>
         private void UpdatePlayerPose() {
             Owner.heldProj = Projectile.whoAmI;
             Owner.direction = lockedDirection;

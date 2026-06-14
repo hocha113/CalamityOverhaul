@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>火箭炮 NPCOverride；行为见 <see cref="CannonBombardState"/> / <see cref="CannonSpreadState"/></summary>
+    /// <summary>火箭炮 NPCOverride；行为见 CannonBombardState / CannonSpreadState</summary>
     internal class PrimeCannonAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeCannon;

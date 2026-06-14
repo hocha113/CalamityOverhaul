@@ -1,22 +1,15 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.ADV
 {
-    /// <summary>
-    /// ADV 数据模块基类
-    /// 各剧情线/功能模块继承并声明存档字段，由 ADVSave 自动发现
-    /// </summary>
+    /// <summary>ADV 数据模块基类<br/>各剧情线/功能模块继承并声明存档字段，由 ADVSave 自动发现</summary>
     public abstract class ADVDataModule
     {
-        /// <summary>
-        /// 存档唯一标识键，发布后勿改
-        /// </summary>
+        /// <summary>存档唯一标识键，发布后勿改</summary>
         public virtual string SaveKey => GetType().Name;
 
-        /// <summary>
-        /// 将公共字段写入 TagCompound
-        /// </summary>
+        /// <summary>将公共字段写入 TagCompound</summary>
         public TagCompound SaveFields() {
             TagCompound tag = [];
             FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -31,9 +24,7 @@ namespace CalamityOverhaul.Content.ADV
             return tag;
         }
 
-        /// <summary>
-        /// 从 TagCompound 加载公共字段
-        /// </summary>
+        /// <summary>从 TagCompound 加载公共字段</summary>
         public void LoadFields(TagCompound tag) {
             FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
             foreach (FieldInfo field in fields) {

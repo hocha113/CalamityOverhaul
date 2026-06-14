@@ -6,12 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
 {
-    /// <summary>
-    /// 嘉登委托追踪窗口样式——极简数据终端HUD：<br/>
-    /// 完全无背景与外框，标题左侧是"四角传感目镜 + 中央数据微粒"，
-    /// 标题下方是实线 + 末端菱形数据头 + 后段摩斯节律细线，
-    /// 进度仅以贴近文字的 2px 青蓝细线呈现，避免在屏幕侧边形成厚重面板。
-    /// </summary>
+    /// <summary>嘉登委托追踪HUD，无背景极简数据终端</summary>
     internal class DraedonTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -49,12 +44,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
             var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
 
-            //头部记号——四角传感目镜（4个L形角点 + 中央脉冲数据粒）
+            //头部记号，四角传感目镜
             int markX = headerRect.X + 7;
             int markY = headerRect.Y + headerRect.Height / 2;
             DrawSensorReticle(sb, px, uv, markX, markY, alpha);
 
-            //标题文字——深色投影 + 主体清亮蓝（字号略大于默认正文）
+            //标题深色投影+清亮蓝
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -64,7 +59,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
             Utils.DrawBorderString(sb, title, titlePos + new Vector2(0, 1), ShadowInk * (alpha * 0.55f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleSky * alpha, titleScale);
 
-            //下划线——实线 + 末端小菱形数据头 + 后段摩斯节律（下移避开放大后的标题底部）
+            //下划线实线+菱形数据头+摩斯节律
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 20, headerRect.Width - 40);
@@ -72,13 +67,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
 
             sb.Draw(px, new Rectangle(textX, underY, solidLen, 1), uv, DataCyan * (alpha * 0.85f * p));
 
-            //末端小菱形——青绿色"数据头"标记
+            //末端青绿菱形数据头
             int diaCx = textX + solidLen + 3;
             sb.Draw(px, new Vector2(diaCx, underY + 0.5f), uv,
                 AccentTeal * (alpha * p), MathHelper.PiOver4,
                 new Vector2(0.5f), new Vector2(2.6f), SpriteEffects.None, 0f);
 
-            //后段摩斯节律——点（1px）/划（2px）交替，逐渐淡出
+            //后段摩斯节律，点划交替淡出
             int patternStart = diaCx + 5;
             int patternEnd = headerRect.Right - 8;
             int xp = patternStart;
@@ -114,7 +109,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
             sb.Draw(px, new Rectangle(cx + s - tickLen + 1, cy + s, tickLen, 1), uv, corner);
             sb.Draw(px, new Rectangle(cx + s, cy + s - tickLen + 1, 1, tickLen), uv, corner);
 
-            //中央数据粒——根据扫描相位脉冲
+            //中央数据粒，扫描相位脉冲
             float corePulse = MathF.Sin(scan * 1.4f) * 0.5f + 0.5f;
             sb.Draw(px, new Rectangle(cx, cy, 1, 1), uv,
                 AccentTeal * (alpha * (0.5f + corePulse * 0.5f)));
@@ -130,10 +125,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
             int y = barRect.Y + (barRect.Height - barH) / 2;
             int trackW = barRect.Width;
 
-            //轨道——极淡的暗蓝底线
+            //轨道暗蓝底线
             sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, DataCyanDim * (alpha * 0.24f));
 
-            //填充——蓝→青绿的轻微数据流渐变
+            //填充蓝到青绿渐变
             int fillW = (int)(trackW * MathHelper.Clamp(progress, 0f, 1f));
             if (fillW > 0) {
                 int segs = Math.Max(6, fillW / 4);
@@ -146,7 +141,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
                     Color c = Color.Lerp(DataCyan, AccentTeal, t * 0.7f) * (alpha * 0.92f);
                     sb.Draw(px, new Rectangle(x1, y, w, barH), uv, c);
                 }
-                //尖端扫描头——向上下延伸 1px 的白色高亮
+                //尖端扫描头上下1px高亮
                 if (fillW > 1) {
                     sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y - 1, 1, barH + 2), uv,
                         Color.White * (alpha * 0.7f));
@@ -159,7 +154,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
                 sb.Draw(px, new Rectangle(tx, y + barH, 1, 2), uv, DataCyanDim * (alpha * 0.45f));
             }
 
-            //进度文字——靠右上方，0.5倍小字
+            //进度文字右上0.5倍小字
             if (!string.IsNullOrEmpty(progressText)) {
                 var font = FontAssets.MouseText.Value;
                 Vector2 sz = font.MeasureString(progressText) * 0.5f;

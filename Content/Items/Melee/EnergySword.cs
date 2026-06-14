@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        /// <summary>充能比例 0~1，用于光效强度</summary>
+        /// <summary>充能比例0~1，光效强度</summary>
         private float ChargeRatio => MathHelper.Clamp(Item.GetItemCharge() / 40f, 0f, 1f);
 
         private bool HasCharge => Item.GetItemCharge() >= 0.2f;

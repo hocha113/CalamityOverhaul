@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Renders
 {
-    /// <summary>
-    /// EndEntityDraw 弹幕扩展绘制层
-    /// <br/>收集 <see cref="IPrimitiveDrawable"/> 顶点与 <see cref="IAdditiveDrawable"/> 加色层，单次扫描 + 预分配缓冲
-    /// </summary>
+    /// <summary>EndEntityDraw 弹幕扩展绘制层</summary>
     internal sealed class ProjectileLayerRender : RenderHandle
     {
         private static readonly List<IPrimitiveDrawable> _primitiveBuffer = new(64);

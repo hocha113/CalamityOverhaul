@@ -8,7 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>电锯 NPCOverride；行为见 <see cref="SawIdleState"/> 等 Saw 状态</summary>
+    /// <summary>电锯 NPCOverride；行为见 SawIdleState 等 Saw 状态</summary>
     internal class PrimeSawAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeSaw;

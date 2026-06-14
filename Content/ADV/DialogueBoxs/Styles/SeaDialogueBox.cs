@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,28 +8,26 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
-    /// <summary>
-    /// 深海风格对话框
-    /// </summary>
+    /// <summary>深海风格对话框</summary>
     internal class SeaDialogueBox : DialogueBoxBase
     {
         public static SeaDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<SeaDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        // 风格参数
+        //风格参数
         private const float FixedWidth = 520f;
         private const int ShaderEdgePad = 16;
         protected override float PanelWidth => FixedWidth;
 
-        // 背景动画
+        //背景动画
         private float panelPulseTimer = 0f;
         private float scanTimer = 0f;
         private float wavePhase = 0f;
         private float abyssPulse = 0f;
-        // 着色器单调时间，避免噪声跳变
+        //着色器单调时间，避免噪声跳变
         private float shaderTime = 0f;
 
-        // 粒子
+        //粒子
         private readonly List<SeaStarPRT> starFx = [];
         private int starSpawnTimer = 0;
         private readonly List<BubblePRT> bubbles = [];

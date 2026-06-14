@@ -4,8 +4,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States
 {
     /// <summary>
-    /// 到达状态——阿波利娅站在目标附近，根据指令决定后续行为：
-    /// Follow：玩家远离时重新行走；Hold：切换到空闲
+    /// 到达状态：阿波利娅站在目标附近，根据指令决定后续行为： Follow：玩家远离时重新行走；Hold：切换到空闲
     /// </summary>
     internal class ApolliaArrivedState : IApolliaState
     {

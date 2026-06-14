@@ -1,6 +1,6 @@
 // ============================================================================
-// PrimeAfterimage.fx 速度门控热残影
-// 采样 uImage0；Additive 预乘 alpha
+//PrimeAfterimage.fx 速度门控热残影
+//采样 uImage0；Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

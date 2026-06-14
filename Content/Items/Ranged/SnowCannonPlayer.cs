@@ -2,9 +2,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged
 {
-    /// 雪炮系列跨使用状态宿主
-    /// <para/>这些数据原本挂在武器 ModItem 实例上，物品被拿到光标/背包时会被 tML 的克隆重置每帧抹掉
-    /// （就绪时间戳归零 → 冷却失效甚至每帧开火），故统一移到按玩家持有的运行时状态，不入存档
+    /// <summary>雪炮跨Use状态，ModItem克隆重置会抹掉，改存ModPlayer不入档</summary>
     internal class SnowCannonPlayer : ModPlayer
     {
         //冰河时代 CrystalDimming

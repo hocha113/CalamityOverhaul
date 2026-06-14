@@ -2,9 +2,7 @@ using System;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
-    /// <summary>
-    /// 选项数据类
-    /// </summary>
+    /// <summary>选项数据类</summary>
     public class Choice
     {
         public string Text { get; set; }
@@ -20,29 +18,19 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         }
     }
 
-    /// <summary>
-    /// 悬停状态变化事件参数
-    /// </summary>
+    /// <summary>悬停状态变化事件参数</summary>
     public class ChoiceHoverEventArgs : EventArgs
     {
-        /// <summary>
-        /// 悬停索引，-1 为无
-        /// </summary>
+        /// <summary>悬停索引，-1 为无</summary>
         public int CurrentIndex { get; }
 
-        /// <summary>
-        /// 前次悬停索引，-1 为无
-        /// </summary>
+        /// <summary>前次悬停索引，-1 为无</summary>
         public int PreviousIndex { get; }
 
-        /// <summary>
-        /// 当前悬停的选项对象（如果有）
-        /// </summary>
+        /// <summary>当前悬停的选项对象（如果有）</summary>
         public Choice CurrentChoice { get; }
 
-        /// <summary>
-        /// 之前悬停的选项对象（如果有）
-        /// </summary>
+        /// <summary>之前悬停的选项对象（如果有）</summary>
         public Choice PreviousChoice { get; }
 
         public ChoiceHoverEventArgs(int currentIndex, int previousIndex, Choice currentChoice, Choice previousChoice) {

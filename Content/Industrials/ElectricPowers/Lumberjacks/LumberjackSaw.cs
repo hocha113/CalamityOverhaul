@@ -515,7 +515,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                 return;
             }
 
-            //记录树木类型用于重生
+            //树木类型，重生缓存
             int treeType = tile.TileType;
 
             //找到树木下方的地面位置

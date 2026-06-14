@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.SupertableUIs.Animation;
+using CalamityOverhaul.Content.UIs.SupertableUIs.Animation;
 using CalamityOverhaul.Content.UIs.SupertableUIs.Crafting;
 using CalamityOverhaul.Content.UIs.SupertableUIs.Inventory;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
-    /// 超级工作台主控制器，协调各个模块的工作
+    /// 超级工作台主控
     /// </summary>
     public class SupertableController
     {

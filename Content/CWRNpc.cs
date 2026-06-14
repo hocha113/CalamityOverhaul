@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds;
 using CalamityOverhaul.Content.Items.Magic;
@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public int TimeFrozenTick;
         /// <summary>
-        /// 一个特殊标记，用于朗基努斯识别目标
+        /// 一个特殊标记，朗基努斯识别目标
         /// </summary>
         public bool LonginusSign;
         /// <summary>
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content
                 //怎么这么多年过去了，原灾厄那个bug竟然还没修复
                 //写这个Boss的脑袋肯定有问题
                 //一个Boss上百个体节，每个体节每帧受伤好几十次，而每次伤害都要调用
-                //DropHelper.FindClosestWormSegment——这个方法居然要遍历200个NPC
+                //DropHelper.FindClosestWormSegment：这个方法居然要遍历200个NPC
                 //n³复杂度，天才级别的优化
                 return false;
             }

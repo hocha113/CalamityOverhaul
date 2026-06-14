@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
-    /// <summary>
-    /// 金源灭却刃 —— 三段连击：两段迅捷连斩接一记蓄力大斩切，
-    /// 大斩切轰出巨型新月剑气
-    /// </summary>
+    /// <summary>金源灭却刃，三段连击，末段大斩切轰出巨型新月剑气</summary>
     internal class DivineSourceBlade : ModItem
     {
         public override string Texture => DivineSourceBladeFX.BladeTexture;

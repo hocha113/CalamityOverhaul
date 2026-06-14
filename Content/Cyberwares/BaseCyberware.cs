@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Cyberwares.Skills;
+using CalamityOverhaul.Content.Cyberwares.Skills;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,18 +8,18 @@ namespace CalamityOverhaul.Content.Cyberwares
     /// <summary>义体槽位，对应 12 个装备位</summary>
     internal enum CyberwareSlotCategory
     {
-        FrontalCortex,    // 0 额叶皮层
-        OcularSystem,     // 1 光学系统
-        LeftArm,          // 2 左臂
-        Hands,            // 3 手部
-        LeftLeg,          // 4 左腿
-        Feet,             // 5 足部
-        OperatingSystem,  // 6 操作系统
-        NervousSystem,    // 7 神经系统
-        RightArm,         // 8 右臂
-        CirculatorySystem,// 9 循环系统
-        Skeleton,         // 10 骨骼
-        RightLeg,         // 11 右腿
+        FrontalCortex,    //0 额叶皮层
+        OcularSystem,     //1 光学系统
+        LeftArm,          //2 左臂
+        Hands,            //3 手部
+        LeftLeg,          //4 左腿
+        Feet,             //5 足部
+        OperatingSystem,  //6 操作系统
+        NervousSystem,    //7 神经系统
+        RightArm,         //8 右臂
+        CirculatorySystem,//9 循环系统
+        Skeleton,         //10 骨骼
+        RightLeg,         //11 右腿
     }
 
     /// <summary>义体物品基类</summary>

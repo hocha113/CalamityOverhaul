@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
 {
     /// <summary>
     /// 通用箱子UI基类，封装所有箱子UI的通用逻辑：
-    /// 动画驱动、交互处理、开关管理、绘制流程
+    /// 动画驱动、交互、开关管理、绘制流程
     /// </summary>
     internal abstract class BaseChestUI : UIHandle, ILocalizedModType, IChestStorage
     {

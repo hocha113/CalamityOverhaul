@@ -2,10 +2,7 @@
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>
-    /// 机械骷髅王宏观阶段标记，写入 <c>npc.ai[0]</c>（原版自动同步），
-    /// 供外部系统读取：<see cref="PrimeFacts.IsDeathPerformance"/> 等
-    /// </summary>
+    /// <summary>机械骷髅王宏观阶段标记，写入npc.ai[0]（原版自动同步），供外部系统读取：<see cref="PrimeFacts.IsDeathPerformance"/>等</summary>
     internal static class PrimePhase
     {
         /// <summary>刚生成，尚未初始化</summary>
@@ -21,37 +18,27 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
     }
 
     /// <summary>机械骷髅王 ai[] 槽位契约</summary>
-    /// <para>头部 SkeletronPrime <c>npc.ai[]</c>：</para>
-    /// <list type="bullet">
-    /// <item><c>ai[0]</c>：宏观阶段 <see cref="PrimePhase"/></item>
-    /// <item><c>ai[1]</c>：战术指令 <see cref="PrimeCommandKind"/>（见 HeadCommandSlot）</item>
-    /// <item><c>ai[2]</c>：状态机槽 <see cref="PrimeStateIndex"/></item>
-    /// <item><c>ai[3]</c>：原版 Mechdusa 标记，禁止占用</item>
-    /// </list>
-    /// <para>头部 NPCOverride <c>ai[]</c>：</para>
-    /// <list type="bullet">
-    /// <item><c>ai[9]</c>：编队旋转时钟，机械臂环绕共用</item>
-    /// </list>
-    /// <para>机械臂 <c>npc.ai[]</c>：</para>
-    /// <list type="bullet">
-    /// <item><c>ai[0]</c>：臂侧 -1/1</item>
-    /// <item><c>ai[1]</c>：头部 whoAmI</item>
-    /// <item><c>ai[2]</c>：状态机槽 <see cref="PrimeArmStateIndex"/></item>
-    /// <item><c>ai[3]</c>：蓄力计时，两端确定性自增</item>
-    /// </list>
     internal static class PrimeAiSlots
     {
+        /// <summary>头 ai[0] 宏观阶段 <see cref="PrimePhase"/></summary>
         public const int HeadPhase = 0;
-        /// <summary>向四臂广播的战术指令（<see cref="PrimeCommandKind"/>）</summary>
+        /// <summary>头 ai[1] 战术指令 <see cref="PrimeCommandKind"/></summary>
         public const int HeadCommandSlot = 1;
+        /// <summary>头 ai[2] 状态机槽 <see cref="PrimeStateIndex"/></summary>
         public const int HeadStateSlot = 2;
+        /// <summary>头 ai[3] 原版 Mechdusa 标记，禁占</summary>
         public const int HeadMechQueenFlag = 3;
 
+        /// <summary>头 Override ai[9] 编队旋转时钟，四臂共用</summary>
         public const int OverrideOrbitClock = 9;
 
+        /// <summary>臂 ai[0] 侧 -1/1</summary>
         public const int ArmSide = 0;
+        /// <summary>臂 ai[1] 头部 whoAmI</summary>
         public const int ArmHeadIndex = 1;
+        /// <summary>臂 ai[2] 状态机槽 <see cref="PrimeArmStateIndex"/></summary>
         public const int ArmStateSlot = 2;
+        /// <summary>臂 ai[3] 蓄力计时，两端确定性自增</summary>
         public const int ArmChargeTimer = 3;
 
         /// <summary>机械臂生成后的攻击宽限帧数</summary>
@@ -88,7 +75,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             );
         }
 
-        /// <summary>收尾蓄力已可见，预警须兑现；<see cref="PrimeArm"/> 延后编队，头部推迟冲撞类招式</summary>
+        /// <summary>收尾蓄力已可见，预警须兑现；PrimeArm 延后编队，头部推迟冲撞类招式</summary>
         public static bool IsCommittedArmState(int armStateIndex) {
             return armStateIndex == (int)PrimeArmStateIndex.CannonMortar
                 || armStateIndex == (int)PrimeArmStateIndex.LaserSweep

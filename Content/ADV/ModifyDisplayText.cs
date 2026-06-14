@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -12,19 +12,13 @@ namespace CalamityOverhaul.Content.ADV
     {
         public string LocalizationCategory => "ADV";
 
-        /// <summary>
-        /// 台词覆盖字典，键为台词key，值为新的台词内容
-        /// </summary>
+        /// <summary>台词覆盖字典，键为台词key，值为新的台词内容</summary>
         private readonly Dictionary<string, DialogueOverride> dialogueOverrides = new();
 
-        /// <summary>
-        /// 动态台词提供器字典，键为台词key，值为提供台词的函数
-        /// </summary>
+        /// <summary>动态台词提供器字典，键为台词key，值为提供台词的函数</summary>
         private readonly Dictionary<string, Func<DialogueOverride>> dynamicDialogueProviders = new();
 
-        /// <summary>
-        /// 台词覆盖数据结构
-        /// </summary>
+        /// <summary>台词覆盖数据结构</summary>
         public class DialogueOverride
         {
             public string Text { get; set; }
@@ -41,73 +35,55 @@ namespace CalamityOverhaul.Content.ADV
                 Color = color;
             }
 
-            /// <summary>
-            /// 获取最终显示的文本（优先使用本地化文本）
-            /// </summary>
+            /// <summary>获取最终显示的文本（优先使用本地化文本）</summary>
             public string GetDisplayText() {
                 return LocalizedText?.Value ?? Text;
             }
         }
 
-        /// <summary>
-        /// 条件台词选择器，根据条件返回不同的台词
-        /// </summary>
+        /// <summary>条件台词选择器，根据条件返回不同的台词</summary>
         public class ConditionalDialogue
         {
             private readonly List<(Func<bool> condition, DialogueOverride dialogue)> conditions = new();
             private DialogueOverride defaultDialogue;
 
-            /// <summary>
-            /// 添加一个条件分支（硬编码文本）
-            /// </summary>
+            /// <summary>添加一个条件分支（硬编码文本）</summary>
             public ConditionalDialogue When(Func<bool> condition, string text, Color? color = null) {
                 conditions.Add((condition, new DialogueOverride(text, color)));
                 return this;
             }
 
-            /// <summary>
-            /// 添加一个条件分支（使用本地化文本）
-            /// </summary>
+            /// <summary>添加一个条件分支（使用本地化文本）</summary>
             public ConditionalDialogue When(Func<bool> condition, LocalizedText localizedText, Color? color = null) {
                 conditions.Add((condition, new DialogueOverride(string.Empty, color) { LocalizedText = localizedText }));
                 return this;
             }
 
-            /// <summary>
-            /// 添加一个条件分支（使用DialogueOverride对象）
-            /// </summary>
+            /// <summary>添加一个条件分支（使用DialogueOverride对象）</summary>
             public ConditionalDialogue When(Func<bool> condition, DialogueOverride dialogue) {
                 conditions.Add((condition, dialogue));
                 return this;
             }
 
-            /// <summary>
-            /// 设置默认台词（硬编码文本），当所有条件都不满足时使用
-            /// </summary>
+            /// <summary>设置默认台词（硬编码文本），当所有条件都不满足时使用</summary>
             public ConditionalDialogue Otherwise(string text, Color? color = null) {
                 defaultDialogue = new DialogueOverride(text, color);
                 return this;
             }
 
-            /// <summary>
-            /// 设置默认台词（使用本地化文本）
-            /// </summary>
+            /// <summary>设置默认台词（使用本地化文本）</summary>
             public ConditionalDialogue Otherwise(LocalizedText localizedText, Color? color = null) {
                 defaultDialogue = new DialogueOverride(string.Empty, color) { LocalizedText = localizedText };
                 return this;
             }
 
-            /// <summary>
-            /// 设置默认台词（使用DialogueOverride对象）
-            /// </summary>
+            /// <summary>设置默认台词（使用DialogueOverride对象）</summary>
             public ConditionalDialogue Otherwise(DialogueOverride dialogue) {
                 defaultDialogue = dialogue;
                 return this;
             }
 
-            /// <summary>
-            /// 获取当前应该使用的台词
-            /// </summary>
+            /// <summary>获取当前应该使用的台词</summary>
             public DialogueOverride Get() {
                 foreach (var (condition, dialogue) in conditions) {
                     if (condition()) {
@@ -128,9 +104,7 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 硬编码文本方法
 
-        /// <summary>
-        /// 设置单条台词覆盖
-        /// </summary>
+        /// <summary>设置单条台词覆盖</summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="text">新的台词文本</param>
         /// <param name="color">可选的颜色，如果为null则使用默认颜色</param>
@@ -140,9 +114,7 @@ namespace CalamityOverhaul.Content.ADV
             dynamicDialogueProviders.Remove(key);
         }
 
-        /// <summary>
-        /// 批量设置台词覆盖
-        /// </summary>
+        /// <summary>批量设置台词覆盖</summary>
         /// <param name="overrides">台词key和文本的字典</param>
         public void SetDialogues(Dictionary<string, string> overrides) {
             foreach (var kvp in overrides) {
@@ -154,9 +126,7 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 本地化文本方法
 
-        /// <summary>
-        /// 设置单条台词覆盖
-        /// </summary>
+        /// <summary>设置单条台词覆盖</summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="localizedText">本地化文本对象</param>
         /// <param name="color">可选的颜色，如果为null则使用默认颜色</param>
@@ -166,9 +136,7 @@ namespace CalamityOverhaul.Content.ADV
             dynamicDialogueProviders.Remove(key);
         }
 
-        /// <summary>
-        /// 设置单条台词覆盖
-        /// </summary>
+        /// <summary>设置单条台词覆盖</summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="localizationKey">本地化key（如 "Mods.YourMod.Dialogue.SomeKey"）</param>
         /// <param name="color">可选的颜色，如果为null则使用默认颜色</param>
@@ -177,9 +145,7 @@ namespace CalamityOverhaul.Content.ADV
             SetDialogueLocalized(key, localizedText, color);
         }
 
-        /// <summary>
-        /// 批量设置台词覆盖
-        /// </summary>
+        /// <summary>批量设置台词覆盖</summary>
         /// <param name="overrides">台词key和本地化文本的字典</param>
         public void SetDialoguesLocalized(Dictionary<string, LocalizedText> overrides) {
             foreach (var kvp in overrides) {
@@ -187,9 +153,7 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        /// <summary>
-        /// 批量设置台词覆盖
-        /// </summary>
+        /// <summary>批量设置台词覆盖</summary>
         /// <param name="overrides">台词key和本地化key的字典</param>
         public void SetDialoguesLocalizedByKey(Dictionary<string, string> overrides) {
             foreach (var kvp in overrides) {
@@ -201,9 +165,7 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 动态台词方法
 
-        /// <summary>
-        /// 设置动态台词，每次调用Handle时都会重新计算
-        /// </summary>
+        /// <summary>设置动态台词，每次调用Handle时都会重新计算</summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="provider">提供台词的函数</param>
         public void SetDynamicDialogue(string key, Func<DialogueOverride> provider) {
@@ -212,18 +174,14 @@ namespace CalamityOverhaul.Content.ADV
             dialogueOverrides.Remove(key);
         }
 
-        /// <summary>
-        /// 设置条件台词，根据条件返回不同的台词
-        /// </summary>
+        /// <summary>设置条件台词，根据条件返回不同的台词</summary>
         /// <param name="key">台词的key（不含前缀）</param>
         /// <param name="conditionalDialogue">条件台词构建器</param>
         public void SetConditionalDialogue(string key, ConditionalDialogue conditionalDialogue) {
             SetDynamicDialogue(key, () => conditionalDialogue.Get());
         }
 
-        /// <summary>
-        /// 创建一个新的条件台词构建器
-        /// </summary>
+        /// <summary>创建一个新的条件台词构建器</summary>
         public ConditionalDialogue CreateConditional() {
             return new ConditionalDialogue();
         }
@@ -232,9 +190,7 @@ namespace CalamityOverhaul.Content.ADV
 
         #region 通用方法
 
-        /// <summary>
-        /// 批量设置带颜色的台词覆盖
-        /// </summary>
+        /// <summary>批量设置带颜色的台词覆盖</summary>
         /// <param name="overrides">台词key和DialogueOverride对象的字典</param>
         public void SetDialoguesWithColor(Dictionary<string, DialogueOverride> overrides) {
             foreach (var kvp in overrides) {
@@ -243,42 +199,32 @@ namespace CalamityOverhaul.Content.ADV
             }
         }
 
-        /// <summary>
-        /// 移除台词覆盖，恢复原始台词
-        /// </summary>
+        /// <summary>移除台词覆盖，恢复原始台词</summary>
         /// <param name="key">台词的key</param>
         public void RemoveDialogue(string key) {
             dialogueOverrides.Remove(key);
             dynamicDialogueProviders.Remove(key);
         }
 
-        /// <summary>
-        /// 清空所有台词覆盖
-        /// </summary>
+        /// <summary>清空所有台词覆盖</summary>
         public void ClearDialogues() {
             dialogueOverrides.Clear();
             dynamicDialogueProviders.Clear();
         }
 
-        /// <summary>
-        /// 检查是否有台词覆盖
-        /// </summary>
+        /// <summary>检查是否有台词覆盖</summary>
         /// <param name="key">台词的key</param>
         /// <returns>如果有覆盖返回true</returns>
         public bool HasDialogueOverride(string key) {
             return dialogueOverrides.ContainsKey(key) || dynamicDialogueProviders.ContainsKey(key);
         }
 
-        /// <summary>
-        /// 获取台词覆盖的数量
-        /// </summary>
+        /// <summary>获取台词覆盖的数量</summary>
         public int GetOverrideCount() {
             return dialogueOverrides.Count + dynamicDialogueProviders.Count;
         }
 
-        /// <summary>
-        /// 获取所有已覆盖的台词key
-        /// </summary>
+        /// <summary>获取所有已覆盖的台词key</summary>
         public IEnumerable<string> GetOverriddenKeys() {
             return dialogueOverrides.Keys.Concat(dynamicDialogueProviders.Keys).Distinct();
         }

@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 && Main.projectile[idx].ModProjectile is CyberTraceBeamProj beam) {
                 beam.IsDerived = true;
                 beam.LifeMul = 0.7f;
-                //强追踪，确保猎杀感
+                //强 homing
                 Main.projectile[idx].ai[1] = 2.2f;
             }
 

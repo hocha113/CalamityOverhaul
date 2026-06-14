@@ -6,13 +6,7 @@ using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    /// <summary>
-    /// 信号塔部署委托条目——<see cref="EntrustEntryData"/> 子类，
-    /// 动态追踪信号塔搭建进度与最近目标点状态，
-    /// 为追踪窗口提供上下文感知的内容显示：<br/>
-    /// · 显示最近未完成目标点编号与距离<br/>
-    /// · 显示总体部署进度（已部署/目标数量）
-    /// </summary>
+    /// <summary>信号塔部署委托，追踪最近节点与总体进度</summary>
     internal class DeploySignaltowerQuestEntry : EntrustEntryData
     {
         /// <summary>"最近的目标点" 格式文本</summary>

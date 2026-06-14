@@ -8,8 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>转阶段演出：四臂殉爆、头部升空注能、切入 <see cref="PrimePhase.Rage"/></summary>
-    /// <para>回血全难度无条件，窗口结束硬性补满</para>
+    /// <summary>转阶段演出：四臂殉爆、头部升空注能、切入 PrimePhase.Rage</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.PhaseTransition, typeof(PrimeStateContext))]
     internal class PrimePhaseTransitionState : PrimeStateBase
     {

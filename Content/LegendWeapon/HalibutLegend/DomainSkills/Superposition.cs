@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.DamageModify;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full
                 , (MathHelper.PiOver2 * SafeGravDir - ToMouseA) * -SafeGravDir);
 
-            //安全检查：确保炮阵已生成
+            //炮阵未生成就跳过
             if (!cannonsSpawned) {
                 SpawnCannons();
             }

@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -28,9 +28,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
         public static Texture2D SpectrometerUI = null;
     }
 
-    /// <summary>
-    /// 存储UI相关的常量，便于统一管理和调整
-    /// </summary>
+    /// <summary>染色机 UI 常量</summary>
     internal static class DyeMachineConstants
     {
         //动画
@@ -49,9 +47,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 
     #region 基类与通用组件
 
-    /// <summary>
-    /// 染色机器UI的抽象基类
-    /// </summary>
+    /// <summary>染色机 UI 基类</summary>
     internal abstract class BaseDyeMachineUI : UIHandle
     {
         internal bool CanOpen;
@@ -89,7 +85,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
 
             //更新插槽位置和状态
             Vector2 center = DrawPosition + Size / 2 - DyeMachineConstants.SlotSize / 2 * sengs;
-            Vector2 SengsOffset = DyeMachineConstants.SlotSize / 2 * (1f - sengs) * -1f;//这个变量用于让收缩时对齐中心
+            Vector2 SengsOffset = DyeMachineConstants.SlotSize / 2 * (1f - sengs) * -1f;//收缩时对齐中心
             DyeSlot.DrawPosition = center + new Vector2(-60, -60) * sengs + SengsOffset;
             DyeSlot.Update();
             BeDyedItem.DrawPosition = center + new Vector2(-60, 60) * sengs + SengsOffset;
@@ -120,16 +116,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
         }
     }
 
-    /// <summary>
-    /// 染色机器中物品槽的抽象基类
-    /// </summary>
+    /// <summary>染色机物品槽基类</summary>
     internal abstract class BaseDyeMachineSlot : UIHandle
     {
         public BaseDyeMachineUI ParentUI;
         internal Item Item = new();
         internal float sengs;
         internal float hoverSengs;
-        internal float scale; //用于实现悬停放大动画
+        internal float scale; //悬停放大
         public virtual Texture2D SlotTex => ParentUI is SpectrometerUI ? DyeMachineAsset.SpectrometerSlot : DyeMachineAsset.DyeVatSlot;
         public abstract Texture2D SymbolTex { get; }
         public abstract Texture2D SymbolTexAlt { get; }
@@ -159,14 +153,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
             hoverSengs = MathHelper.Lerp(hoverSengs, targetHoverSengs, DyeMachineConstants.AnimationSpeed);
             scale = MathHelper.Lerp(scale, targetScale, DyeMachineConstants.AnimationSpeed);
 
-            //处理物品交互
+            //槽位交互
             if (hoverInMainPage && keyLeftPressState == KeyPressState.Pressed) {
                 HandleItemSlotting();
             }
         }
 
         /// <summary>
-        /// 处理复杂的物品放入、取出和交换逻辑
+        /// 复杂的物品放入、取出和交换逻辑
         /// </summary>
         private void HandleItemSlotting() {
             if (PreCheckLeft(Main.mouseItem)) {
@@ -356,7 +350,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers
                 resultSlot.Item.CWR().DyeItemID = Item.type;
             }
             else {
-                resultSlot.Item.CWR().DyeItemID = 0; //水桶用于洗去染色
+                resultSlot.Item.CWR().DyeItemID = 0; //水桶洗染色
                 if (Item.consumable && --Item.stack <= 0) {
                     Item.TurnToAir();
                 }

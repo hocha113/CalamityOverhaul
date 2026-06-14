@@ -10,13 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
-    /// <summary>
-    /// 双子魔眼持续性死亡射线：锚定眼睛，方向随 NPC 旋转(AI 驱动扫射)
-    /// <br/>ai[0] = 宿主NPC的whoAmI
-    /// <br/>ai[1] = 总持续时间(帧)
-    /// <br/>ai[2] = 主题 0=激光眼青紫死光 1=魔焰眼烈焰射线
-    /// <br/>展开/收束缓动，未完全展开无伤害；宿主死亡时快速收束
-    /// </summary>
+    /// <summary>双子魔眼持续性死亡射线：锚定眼睛，方向随NPC旋转(AI驱动扫射)；ai[0]=宿主NPC的whoAmI；ai[1]=总持续时间(帧)；ai[2]=主题0=激光眼青紫死光1=魔焰眼烈焰射线；展开/收束缓动，未完全展开无伤害；宿主死亡时快速收束</summary>
     internal class RetinazerDeathRay : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder2;
@@ -181,9 +175,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
             return false;
         }
 
-        /// <summary>
-        /// 着色器死光:流动电浆/烈焰光柱，边缘噪声撕裂，主题色由ai[2]决定
-        /// </summary>
+        /// <summary>着色器死光:流动电浆/烈焰光柱，边缘噪声撕裂，主题色由ai[2]决定</summary>
         private void DrawShaderBeam(float rot) {
             SpriteBatch sb = Main.spriteBatch;
             sb.End();
@@ -218,9 +210,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>
-        /// 兜底死光:着色器缺失时退回多层贴图拉伸
-        /// </summary>
+        /// <summary>兜底死光:着色器缺失时退回多层贴图拉伸</summary>
         private void DrawFallbackBeam(Vector2 drawPos, float rot, Color outer, Color mid, Color core, float flicker) {
             Texture2D line = CWRAsset.MaskLaserLine.Value;
             Vector2 lineOrigin = new(0, line.Height / 2f);

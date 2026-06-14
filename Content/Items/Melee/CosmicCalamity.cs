@@ -457,7 +457,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 fadeAlpha = 1f - MathF.Pow(p, 1.5f);
             }
 
-            //能量脉冲：用于让贴图本体随时间呼吸
+            //能量脉冲，贴图呼吸
             energyPulse = 0.5f + 0.5f * MathF.Sin(t * MathF.PI * (2.4f + Stage * 0.4f) + Seed * 0.13f);
 
             //飞行减速：随时间逐渐失去推力，让月牙"停下来再散开"
@@ -584,7 +584,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
 
             //四边形片元：以飞行方向为 X 轴，正前方为 UV.x = 1
-            //注意：顶点位置直接使用世界坐标，由 transformMatrix 转换至裁剪空间
+            //顶点世界坐标，transformMatrix进裁剪空间
             Vector2 forward = Projectile.velocity.SafeNormalize(Vector2.UnitX);
             Vector2 side = new(-forward.Y, forward.X);
             float radius = CurrentRadius;

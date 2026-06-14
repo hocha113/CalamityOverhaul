@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
@@ -79,13 +79,13 @@ namespace CalamityOverhaul.Content
 
         public override void PostUpdateProjectiles() {
             if (ModifyCrabulon.mountPlayerHeldProj.TryGetProjectile(out var heldProj) && heldProj.IsOwnedByLocalPlayer()) {
-                //这里缓存手持弹幕和玩家的位置差，用于在绘制函数中二次设置进行矫正
+                //缓存手持弹幕与玩家位置差，绘制二次矫正
                 ModifyCrabulon.mountPlayerHeldPosOffset = Main.LocalPlayer.To(heldProj.Center);
             }
         }
 
         /// <summary>
-        /// 用于判断是否应该冻结时间
+        /// 判断是否应该冻结时间
         /// </summary>
         /// <returns></returns>
         public static bool CanTimeFrozen() {

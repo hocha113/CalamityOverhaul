@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.ADV.EntrustManager;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -8,16 +8,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower
 {
-    /// <summary>
-    /// 目标点位渲染器
-    /// </summary>
+    /// <summary>目标点位渲染器</summary>
     internal class SignalTowerTargetRenderer : ModSystem, ILocalizedModType
     {
         private const string DEPLOY_KEY = "Draedon_DeploySignaltower";
 
-        /// <summary>
-        /// 检查委托是否正在追踪中，只有追踪时才显示指示箭头
-        /// </summary>
+        /// <summary>检查委托是否正在追踪中，只有追踪时才显示指示箭头</summary>
         private static bool IsQuestTracked() {
             var entry = QuestManagerUI.Instance?.GetEntry(DEPLOY_KEY);
             return entry != null && entry.Status == QuestEntryStatus.Tracked;
@@ -90,9 +86,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Main.spriteBatch.End();
         }
 
-        /// <summary>
-        /// 绘制目标范围指示器
-        /// </summary>
+        /// <summary>绘制目标范围指示器</summary>
         private void DrawTargetRangeIndicator(SpriteBatch sb, SignalTowerTargetPoint point, Vector2 screenPos, bool playerInRange) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -150,9 +144,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 绘制中心标记
-        /// </summary>
+        /// <summary>绘制中心标记</summary>
         private void DrawCenterMarker(SpriteBatch sb, Vector2 centerPos, float alpha, bool playerInRange) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -181,9 +173,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 绘制指向目标的箭头
-        /// </summary>
+        /// <summary>绘制指向目标的箭头</summary>
         private void DrawArrowToTarget(SpriteBatch sb, Player player, SignalTowerTargetPoint target, bool playerInRange) {
             Vector2 direction = target.WorldPosition - player.Center;
             float distance = direction.Length();
@@ -224,9 +214,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             Utils.DrawBorderString(sb, distanceText, textPos, textColor * dashAlpha, 0.9f);
         }
 
-        /// <summary>
-        /// 绘制虚线
-        /// </summary>
+        /// <summary>绘制虚线</summary>
         private void DrawDashedLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color, float thickness, int dashLength) {
             Vector2 direction = end - start;
             float totalLength = direction.Length();
@@ -248,9 +236,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 绘制直线
-        /// </summary>
+        /// <summary>绘制直线</summary>
         private static void DrawLine(SpriteBatch sb, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
@@ -264,9 +250,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             sb.Draw(pixel, start, null, color, rotation, new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制箭头头部
-        /// </summary>
+        /// <summary>绘制箭头头部</summary>
         private static void DrawArrowHead(SpriteBatch sb, Vector2 position, float rotation, Color color, float size) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 

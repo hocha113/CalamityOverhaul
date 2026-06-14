@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int animationTimer = 0;
 
         /// <summary>
-        /// 透明度（用于渐隐渐现）
+        ///透明度，渐隐渐现
         /// </summary>
         private float alpha = 0f;
 

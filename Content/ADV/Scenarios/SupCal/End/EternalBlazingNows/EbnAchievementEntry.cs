@@ -8,10 +8,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
-    /// <summary>
-    /// Ebn（永恒燃烧的现在）专用成就弹窗条目，硫磺火主题，
-    /// 深红渐变背景 + 余烬粒子 + 火焰脉冲边框 + 扫光 + 图标辉光
-    /// </summary>
+    /// <summary>Ebn 成就弹窗，硫磺火主题</summary>
     internal class EbnAchievementEntry : NotificationEntry
     {
         private readonly Texture2D icon;
@@ -58,31 +55,31 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             int life = LifeTimer;
             float time = Main.GameUpdateCount * 0.03f;
 
-            // ── 1. 阴影层 ──
+            //── 1. 阴影层 ──
             DrawShadow(sb, px, rect, alpha);
 
-            // ── 2. 深红渐变背景 ──
+            //── 2. 深红渐变背景 ──
             DrawBrimstoneBackground(sb, px, rect, alpha, time);
 
-            // ── 3. 火焰脉冲叠层 ──
+            //── 3. 火焰脉冲叠层 ──
             DrawFlamePulse(sb, px, rect, alpha, time);
 
-            // ── 4. 横向扫光 ──
+            //── 4. 横向扫光 ──
             DrawSweepLight(sb, px, rect, alpha, time, life);
 
-            // ── 5. 脉冲辉光边框 ──
+            //── 5. 脉冲辉光边框 ──
             DrawBrimstoneBorder(sb, px, rect, alpha, time);
 
-            // ── 6. 角落火焰十字 ──
+            //── 6. 角落火焰十字 ──
             DrawFlameCorners(sb, px, rect, alpha, time);
 
-            // ── 7. 余烬粒子 ──
+            //── 7. 余烬粒子 ──
             DrawEmbers(sb, px, rect, alpha, life);
 
-            // ── 8. 图标区域 ──
+            //── 8. 图标区域 ──
             DrawIcon(sb, px, rect, alpha, time, life);
 
-            // ── 9. 分隔线 ──
+            //── 9. 分隔线 ──
             float sepX = rect.X + 88;
             int sepH = rect.Height - 20;
             for (int i = 0; i < 3; i++) {
@@ -91,10 +88,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     new Color(255, 140, 60) * (fade * alpha));
             }
 
-            // ── 10. 标题与描述 ──
+            //── 10. 标题与描述 ──
             DrawText(sb, rect, alpha, life, time);
 
-            // ── 11. 底部进度装饰条 ──
+            //── 11. 底部进度装饰条 ──
             DrawBottomBar(sb, px, rect, alpha, life);
         }
 

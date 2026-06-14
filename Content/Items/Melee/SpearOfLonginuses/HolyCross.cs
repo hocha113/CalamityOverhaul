@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     /// <summary>
     /// 玩家手持朗基努斯之枪时悬浮于身下的圣神十字架，
-    /// 用于显示当前的圣神能量条以及已蓄积的立场层数（与盗贼系统解耦）
+    /// 朗基努斯圣神十字架，绘制能量条与立场层数，与盗贼系统解耦
     /// </summary>
     internal class HolyCross : ModProjectile
     {

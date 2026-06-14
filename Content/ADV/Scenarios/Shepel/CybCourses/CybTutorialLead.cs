@@ -14,7 +14,7 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
-    //超梦教程引导层，负责自动触发开场对话、管理教学步骤状态，并绘制教学卡片和高亮标注
+    //超梦教程引导：开场对话、步骤状态、教学卡片与高亮
     //复用EntrustGuideCard着色器（variant=1青色版），不修改任何被教学的目标UI代码
     internal class CybTutorialLead : ModSystem, ILocalizedModType
     {
@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         private static float _shaderTimer = 0f;
         private static float _highlightPulse = 0f;
         private static float _stepTimer = 0f;
-        //当前手动步骤累计的无操作时间，用于触发卡死提示
+        //手动步骤无操作累计，触发卡死提示
         private static float _stuckTimer = 0f;
         private static bool _introAttempted = false;
         private static bool _prevMouseLeft = false;
@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         private static Rectangle _cardRect = Rectangle.Empty;
         //手动步骤实际推进时记录上一次pinnedSector，避免重复推进
         private static int _lastPinned = -1;
-        //卡片Y轴平滑插值，用于规避展开的三级面板
+        //卡片 Y 平滑插值，规避三级面板展开跳动
         private static float _smoothCardY = 0f;
         //本地化：卡死提示
         private static LocalizedText _textHintStuck;

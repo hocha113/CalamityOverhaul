@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -6,11 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 棱镜碎片粒子 —— 服务于天堂陨落长弓家族
-    /// <br/>以 R/G/B 三次轻微偏移叠加做廉价色散, 再以 SoftGlow 衬白热内核
-    /// <br/>替代旧版的 PRT_HeavenfallStar, 视觉更精致, 与新的 HeavenfallPrismTrail 着色器风格统一
-    /// </summary>
+    /// <summary>棱镜碎片，天堂陨落长弓</summary>
     internal class PRT_HeavenfallPrism : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "StarTexture_White";

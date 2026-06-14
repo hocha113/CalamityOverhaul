@@ -1,6 +1,6 @@
 // ============================================================================
-// VoidSuction.fx 虚空吸入演出全屏滤镜
-// 径向失真+色差+暗角+黑闪；s0 场景 s1 噪声
+//VoidSuction.fx 虚空吸入演出全屏滤镜
+//径向失真+色差+暗角+黑闪；s0 场景 s1 噪声
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -38,9 +38,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float sp = suctionProgress;
     float sp2 = sp * sp;
 
-    // =
+    //=
     //径向吸入失真（强力，整个画面被拽向焦点）
-    // =
+    //=
     float pullStr = sp2 * 0.08 * falloff;
     //远离焦点的区域拉扯更明显
     pullStr *= (0.4 + normDist * 0.6);
@@ -57,25 +57,25 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     float4 distorted = tex2D(uImage0, distortedCoords);
 
-    // =
+    //=
     //色差分离（径向方向，从中心向外撕裂RGB）
-    // =
+    //=
     float2 caDir = normalize(centerUV + 0.001);
     float caStr = sp * 0.018 * (0.5 + edgeDist);
     float2 caOffset = caDir * caStr;
     distorted.r = tex2D(uImage0, clamp(distortedCoords + caOffset, 0.002, 0.998)).r;
     distorted.b = tex2D(uImage0, clamp(distortedCoords - caOffset * 0.65, 0.002, 0.998)).b;
 
-    // =
+    //=
     //去饱和（虚空侵蚀色彩）
-    // =
+    //=
     float lum = dot(distorted.rgb, float3(0.299, 0.587, 0.114));
     float desatStr = sp * 0.6;
     distorted.rgb = lerp(distorted.rgb, float3(lum, lum, lum), desatStr);
 
-    // =
+    //=
     //虚空侵蚀（暗色触手从屏幕边缘向中心蔓延）
-    // =
+    //=
     //侵蚀前沿位置：sp=0时在屏幕外，sp=1时逼近中心
     float corruptionEdge = lerp(1.4, 0.15, sp2);
 
@@ -101,16 +101,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 
     distorted.rgb = lerp(distorted.rgb, corruption, corruptFactor * sp);
 
-    // =
+    //=
     //暗角（视野急剧收窄）
-    // =
+    //=
     float vignette = edgeDist * edgeDist;
     float vignetteStr = sp * 1.2;
     distorted.rgb *= saturate(1.0 - vignette * vignetteStr);
 
-    // =
+    //=
     //黑闪覆盖
-    // =
+    //=
     distorted.rgb *= saturate(1.0 - blackFlash);
 
     return distorted;

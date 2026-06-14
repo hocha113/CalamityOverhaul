@@ -1,13 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 
 namespace CalamityOverhaul.Common
 {
-    /// <summary>
-    /// 全局着色器资源装载点
-    /// <br/><see cref="VaultLoadenAttribute"/> 自动加载 <c>Assets/Effects</c> 着色器
-    /// <br/>运行时渲染放 <c>RenderHandle</c> 子类，如 <see cref="Content.Renders.WarpEffectRender"/>
-    /// </summary>
+    /// <summary>全局着色器资源装载点</summary>
     [VaultLoaden(CWRConstant.Effects)]
     public static class EffectLoader
     {

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.EntrustManager;
@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 {
-    /// <summary>
-    /// 比目鱼鱼油获取提示与任务创建场景
-    /// </summary>
+    /// <summary>鱼油任务提示与创建</summary>
     internal class FishoilQuestScenario : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         //触发控制
@@ -95,11 +93,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             Complete();
         }
 
-        /// <summary>
-        /// 将鱼油任务注册到委托管理器，如已存在则跳过。
-        /// notify 为 false 时以 Tracked 状态静默注册，适用于存档重载的恢复路径，
-        /// 避免每次进存档都触发"新委托"弹窗
-        /// </summary>
+        /// <summary>注册鱼油委托，notify false 时静默 Tracked 恢复</summary>
         internal static void RegisterQuestEntry(bool completed = false, bool notify = true) {
             var manager = QuestManagerUI.Instance;
             if (manager == null) return;
@@ -117,12 +111,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             manager.RegisterQuest(entry);
         }
 
-        /// <summary>
-        /// 同步委托管理器中鱼油条目的注册与状态，
-        /// 未接受 → 移除条目；已接受 → 确保注册；已完成 → 标记完成；
-        /// 注：已挂起（FishoilQuestSuspended）不再切换 UI 状态为 Suspended，
-        /// 因为挂起的条目会被侧边栏隐藏，改为通过条目内的提交按钮重新询问
-        /// </summary>
+        /// <summary>同步鱼油委托注册/完成，挂起不改 Suspended 由条目按钮处理</summary>
         private static void SyncQuestEntry(ADVSave save) {
             var manager = QuestManagerUI.Instance;
             if (manager == null) return;

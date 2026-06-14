@@ -17,39 +17,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
         public override string StateName => "TwinsPhaseTransition";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.TwinsPhaseTransition;
 
-        /// <summary>
-        /// 集合移动阶段
-        /// </summary>
+        /// <summary>集合移动阶段</summary>
         private const int GatherPhase = 60;
 
-        /// <summary>
-        /// 对峙阶段
-        /// </summary>
+        /// <summary>对峙阶段</summary>
         private const int ConfrontPhase = 40;
 
-        /// <summary>
-        /// 收缩蓄力阶段
-        /// </summary>
+        /// <summary>收缩蓄力阶段</summary>
         private const int ContractPhase = 50;
 
-        /// <summary>
-        /// 爆发阶段
-        /// </summary>
+        /// <summary>爆发阶段</summary>
         private const int BurstPhase = 45;
 
-        /// <summary>
-        /// 分离阶段
-        /// </summary>
+        /// <summary>分离阶段</summary>
         private const int SeparatePhase = 50;
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private const int RecoveryPhase = 30;
 
-        /// <summary>
-        /// 总时长
-        /// </summary>
+        /// <summary>总时长</summary>
         private const int TotalDuration = GatherPhase + ConfrontPhase + ContractPhase + BurstPhase + SeparatePhase + RecoveryPhase;
 
         private TwinsStateContext Context;
@@ -122,9 +108,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>
-        /// 集合移动阶段 - 两只眼睛飞向玩家上方集合
-        /// </summary>
+        /// <summary>集合移动阶段 - 两只眼睛飞向玩家上方集合</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -160,9 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             Context.SetChargeState(11, progress * 0.2f);
         }
 
-        /// <summary>
-        /// 对峙阶段 - 两只眼睛面对面悬停
-        /// </summary>
+        /// <summary>对峙阶段 - 两只眼睛面对面悬停</summary>
         private void ExecuteConfrontPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)ConfrontPhase;
@@ -216,9 +198,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             Context.SetChargeState(11, 0.2f + progress * 0.2f);
         }
 
-        /// <summary>
-        /// 收缩蓄力阶段
-        /// </summary>
+        /// <summary>收缩蓄力阶段</summary>
         private void ExecuteContractPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase;
             float progress = phaseTimer / (float)ContractPhase;
@@ -285,9 +265,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 爆发阶段
-        /// </summary>
+        /// <summary>爆发阶段</summary>
         private void ExecuteBurstPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase - ContractPhase;
             float progress = phaseTimer / (float)BurstPhase;
@@ -372,9 +350,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             npc.Center = originalPosition + Main.rand.NextVector2Circular(smallShake, smallShake);
         }
 
-        /// <summary>
-        /// 分离阶段 - 两只眼睛分开，各自移动到战斗位置
-        /// </summary>
+        /// <summary>分离阶段 - 两只眼睛分开，各自移动到战斗位置</summary>
         private void ExecuteSeparatePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase - ContractPhase - BurstPhase;
             float progress = phaseTimer / (float)SeparatePhase;
@@ -407,9 +383,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - ConfrontPhase - ContractPhase - BurstPhase - SeparatePhase;
             float progress = phaseTimer / (float)RecoveryPhase;
@@ -433,9 +407,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 获取二阶段初始状态
-        /// </summary>
+        /// <summary>获取二阶段初始状态</summary>
         private ITwinsState GetPhase2InitialState() {
             if (Context.IsSpazmatism) {
                 return new Spazmatism.SpazmatismFlameChaseState(0);

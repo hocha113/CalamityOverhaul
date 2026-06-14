@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼二阶段游走点射状态：
-    /// 弹簧侧翼游走，三连点射预判激光，二阶段套路锚点
-    /// </summary>
+    /// <summary>激光眼二阶段游走点射状态：弹簧侧翼游走，三连点射预判激光，二阶段套路锚点</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerVerticalBarrage, typeof(TwinsStateContext))]
     internal class RetinazerVerticalBarrageState : TwinsStateBase
     {
@@ -143,9 +140,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>
-        /// 根据固定套路获取下一个状态
-        /// </summary>
+        /// <summary>根据固定套路获取下一个状态</summary>
         private ITwinsState GetNextComboState() {
             bool hasPartner = HasPartner();
             string[] sequence = hasPartner ? ComboSequenceWithPartner : ComboSequenceSolo;
@@ -164,9 +159,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             };
         }
 
-        /// <summary>
-        /// 检查是否有另一只眼睛存活
-        /// </summary>
+        /// <summary>检查是否有另一只眼睛存活</summary>
         private bool HasPartner() {
             foreach (var n in Main.npc) {
                 if (n.active && n.type == NPCID.Spazmatism) {

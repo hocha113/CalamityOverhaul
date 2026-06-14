@@ -8,7 +8,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>物块扫描与 IHackTarget 实现</summary>
+    /// <summary>物块扫描 + IHackTarget</summary>
     internal class TileScannable : IHackTarget
     {
         //物块的格子坐标
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             return new Rectangle(px, py, w, h);
         }
 
-        /// <summary>物块世界包围盒，多格与树木特殊处理</summary>
+        /// <summary>物块包围盒，多格/树特例</summary>
         public static Rectangle GetTileWorldBounds(int x, int y) {
             if (x < 0 || x >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY)
                 return new Rectangle(x * 16, y * 16, 16, 16);
@@ -347,7 +347,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             if (!tile.HasTile) return new Rectangle(x * 16, y * 16, 16, 16);
 
             int type = tile.TileType;
-            //树木特殊处理
+            //树 bounding
             if (IsTreeTile(type)) {
                 return GetTreeFullBounds(x, y, type);
             }

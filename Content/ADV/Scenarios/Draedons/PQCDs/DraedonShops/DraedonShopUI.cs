@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -7,9 +7,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
-    /// <summary>
-    /// 嘉登商店UI
-    /// </summary>
+    /// <summary>嘉登商店UI</summary>
     internal class DraedonShopUI : UIHandle
     {
         public static DraedonShopUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonShopUI>();
@@ -127,9 +125,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             renderer.Draw(spriteBatch, panelPosition, effects);
         }
 
-        /// <summary>
-        /// 初始化商店物品
-        /// </summary>
+        /// <summary>初始化商店物品</summary>
         public void InitializeShop() {
             if (shopItems.Count > 0) return;
             //添加嘉登材料合成的物品

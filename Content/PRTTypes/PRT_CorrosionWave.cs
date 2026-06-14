@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 腐蚀波纹粒子，用于毒液扩散和腐蚀效果
+    /// 腐蚀波纹粒子，毒液扩散和腐蚀效果
     /// </summary>
     internal class PRT_CorrosionWave : BasePRT
     {

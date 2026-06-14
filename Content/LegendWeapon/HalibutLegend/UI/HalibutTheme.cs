@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static readonly Color Deep = new(3, 10, 15);
         public static readonly Color Mid = new(8, 28, 38);
         public static readonly Color Teal = new(15, 66, 79);
-        //生物冷光主色，用于描边、辉光、激活态
+        //冷光主色，描边/辉光/激活
         public static readonly Color Glow = new(77, 199, 250);
-        //高光色，用于强调与扫光
+        //高光，强调/扫光
         public static readonly Color GlowHi = new(158, 240, 255);
         //焦散白，最亮的点缀
         public static readonly Color Caustic = new(200, 240, 255);

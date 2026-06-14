@@ -1,13 +1,11 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
-    /// <summary>
-    /// 视觉特效管理器
-    /// </summary>
+    /// <summary>嘉登商店VFX</summary>
     internal class DraedonShopEffects
     {
         //粒子列表
@@ -22,9 +20,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 
         private const float TechSideMargin = 35f;
 
-        /// <summary>
-        /// 更新所有粒子特效
-        /// </summary>
+        /// <summary>更新所有粒子特效</summary>
         public void UpdateParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
             UpdateDataParticles(isActive, panelPosition, panelWidth, panelHeight);
             UpdateCircuitNodes(isActive, panelPosition, panelWidth, panelHeight);
@@ -90,9 +86,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
         }
 
-        /// <summary>
-        /// 绘制所有特效
-        /// </summary>
+        /// <summary>绘制所有特效</summary>
         public void DrawEffects(SpriteBatch spriteBatch, float uiAlpha) {
             foreach (var line in energyLines) {
                 line.Draw(spriteBatch, uiAlpha);
@@ -107,9 +101,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
         }
 
-        /// <summary>
-        /// 清理所有特效
-        /// </summary>
+        /// <summary>清理所有特效</summary>
         public void Clear() {
             dataParticles.Clear();
             circuitNodes.Clear();

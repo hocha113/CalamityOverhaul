@@ -7,8 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
-    /// <summary>电弧风车：四臂飞散+ <see cref="PrimeArcChainProj"/> 链锁旋转收紧</summary>
-    /// <para>收紧半径广播 npc.ai[1]（<see cref="PrimeAiSlots.HeadCommandSlot"/>）；退出须清零</para>
+    /// <summary>电弧风车：四臂飞散+ PrimeArcChainProj 链锁旋转收紧；收紧半径广播 npc.ai[1]（PrimeAiSlots.HeadCommandSlot）；退出须清零</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.TetherSpin, typeof(PrimeStateContext))]
     internal class PrimeTetherSpinState : PrimeStateBase
     {

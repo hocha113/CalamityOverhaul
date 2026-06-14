@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
             for (int i = 0; i < MaxVientNum; i++) {
                 int proj = Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
                     , types, Item.damage, 0, player.whoAmI, i + randomOffset);//给予ai[0]一个可排序的索引量，这决定了该万象弹幕使用什么样的贴图
-                if (i == 0)//让第一个万象弹幕作为主弹幕，负责多数代码执行
+                if (i == 0)//首枚万象Proj为主控
                 {
                     frmer = proj;//将首号弹幕的索引储存起来
                 }
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
 
         public static void Obliterate(Vector2 origPos) {
             const int maxLengthSquared = 90000;
-            //已处理过的群组锚点集合，避免对同一个Boss重复触发
+            //已触发的群组锚点，同Boss不重复
             HashSet<int> handledAnchors = [];
             //群组成员复用缓冲
             List<NPC> groupBuffer = [];
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                 }
                 int anchor = NpcGroupHelper.GetAnchorIndex(npc);
                 if (anchor >= 0 && !handledAnchors.Add(anchor)) {
-                    //同群组的别的体节已经被处理过，跳过
+                    //同群组其他体节已触发，跳过
                     continue;
                 }
                 //收集整个群组（蠕虫所有体节、月总所有实体等）一并击杀

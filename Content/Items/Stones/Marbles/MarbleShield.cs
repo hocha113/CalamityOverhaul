@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>
-    /// 大理石战盾：+防御 + 抗击退；维护可再生的"石卫"护盾吸收伤害，破碎迸射碎片；
-    /// 按饰品技能键短暂举盾完美格挡并反弹弹幕
-    /// </summary>
+    /// <summary>大理石战盾，石卫护盾+技能举盾格挡反弹</summary>
     internal class MarbleShield : ModItem
     {
         public override void SetDefaults() {

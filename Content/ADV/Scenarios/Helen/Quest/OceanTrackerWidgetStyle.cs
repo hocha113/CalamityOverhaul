@@ -7,9 +7,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
 {
-    /// <summary>
-    /// 海洋追踪窗口样式
-    /// </summary>
+    /// <summary>海洋追踪窗口样式</summary>
     internal class OceanTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -52,7 +50,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
             var px = VaultAsset.placeholder2.Value;
             var uv = new Rectangle(0, 0, 1, 1);
 
-            // 软投影（偏右下，模拟水下漫射）
+            //软投影（偏右下，模拟水下漫射）
             sb.Draw(px, new Rectangle(rect.X + 2, rect.Y + 3, rect.Width, rect.Height),
                 uv, Color.Black * (alpha * 0.4f));
 
@@ -65,7 +63,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                 return;
             }
 
-            // 纵向深海渐变（由深到浅微曲线）
+            //纵向深海渐变（由深到浅微曲线）
             int segs = 14;
             for (int i = 0; i < segs; i++) {
                 float t = i / (float)segs;
@@ -73,13 +71,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                 int y1 = rect.Y + (int)(t * rect.Height);
                 int y2 = rect.Y + (int)(t2 * rect.Height);
                 if (y2 <= y1) continue;
-                // 深度曲线：底部更深，顶部1/3微亮
+                //深度曲线：底部更深，顶部1/3微亮
                 float depth = t < 0.35f ? (1f - t / 0.35f * 0.15f) : (0.85f + (t - 0.35f) / 0.65f * 0.15f);
                 Color c = Color.Lerp(AbyssBg, MidDepth, (1f - depth) * 2f) * (alpha * 0.92f);
                 sb.Draw(px, new Rectangle(rect.X, y1, rect.Width, y2 - y1), uv, c);
             }
 
-            // 焦散光斑层（3个漂移椭圆形亮区）
+            //焦散光斑层（3个漂移椭圆形亮区）
             for (int b = 0; b < 3; b++) {
                 float bx = 0.2f + b * 0.3f + MathF.Sin(causticPhase + b * 1.9f) * 0.12f;
                 float by = 0.3f + MathF.Cos(causticPhase * 0.8f + b * 2.5f) * 0.2f;
@@ -92,7 +90,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                     uv, CausticDim * (alpha * 0.06f * intensity));
             }
 
-            // 深层生物发光呼吸（整体低频脉冲）
+            //深层生物发光呼吸（整体低频脉冲）
             float bioBreath = MathF.Sin(pulse * 1.5f) * 0.5f + 0.5f;
             sb.Draw(px, rect, uv, BioGlow * (alpha * 0.025f * bioBreath));
         }
@@ -103,27 +101,27 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
             float p = MathF.Sin(pulse * 2f) * 0.3f + 0.7f;
             Color edge = FrameEdge * (alpha * p);
 
-            // 非对称边框，左强右渐隐
-            // 左侧实线（全高，较粗）
+            //非对称边框，左强右渐隐
+            //左侧实线（全高，较粗）
             sb.Draw(px, new Rectangle(rect.X, rect.Y + 2, 2, rect.Height - 4), uv, edge * 0.9f);
-            // 左侧辉光衬线
+            //左侧辉光衬线
             sb.Draw(px, new Rectangle(rect.X + 2, rect.Y + 4, 1, rect.Height - 8), uv, edge * 0.2f);
 
-            // 顶部：左起60%长度的顶线
+            //顶部：左起60%长度的顶线
             int topLineW = (int)(rect.Width * 0.6f);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, topLineW, 1), uv, edge * 0.85f);
-            // 顶线末端渐隐（4px）
+            //顶线末端渐隐（4px）
             for (int i = 0; i < 4; i++) {
                 float fade = 1f - i / 4f;
                 sb.Draw(px, new Rectangle(rect.X + topLineW + i, rect.Y, 1, 1),
                     uv, edge * (0.85f * fade));
             }
 
-            // 左上角 L 标
+            //左上角 L 标
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 8, 2), uv, SurfaceShimmer * (alpha * 0.6f));
             sb.Draw(px, new Rectangle(rect.X, rect.Y, 2, 8), uv, SurfaceShimmer * (alpha * 0.6f));
 
-            // 右侧虚线段（仅上半部分）
+            //右侧虚线段（仅上半部分）
             int dashH = rect.Height / 2;
             for (int y = rect.Y + 4; y < rect.Y + dashH; y += 5) {
                 int h = Math.Min(2, rect.Y + dashH - y);
@@ -132,7 +130,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                     uv, edge * (0.35f * fade));
             }
 
-            // 底部波浪条，不封底
+            //底部波浪条，不封底
             int waveW = (int)(rect.Width * 0.7f);
             int waveBaseX = rect.X + (int)(rect.Width * 0.15f);
             int waveY = rect.Bottom - 2;
@@ -145,7 +143,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                 sb.Draw(px, new Rectangle(wx, wy, 3, 1), uv, AccentWave * (alpha * 0.45f * fade));
             }
 
-            // 生物发光粒点（2颗，缓慢漂移）
+            //生物发光粒点（2颗，缓慢漂移）
             for (int d = 0; d < 2; d++) {
                 float dx = 0.7f + d * 0.15f + MathF.Sin(causticPhase * 0.6f + d * 3f) * 0.08f;
                 float dy = 0.25f + d * 0.35f + MathF.Cos(causticPhase * 0.5f + d * 2f) * 0.06f;
@@ -160,11 +158,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
         }
 
         public void DrawWidgetHeader(SpriteBatch sb, Rectangle headerRect, string title, float alpha) {
-            // 标题以左侧竖向色带为锚点，CP2077式强调条
+            //标题以左侧竖向色带为锚点，CP2077式强调条
             var px = VaultAsset.placeholder2.Value;
             var uv = new Rectangle(0, 0, 1, 1);
 
-            // 标题左侧竖向渐变色带
+            //标题左侧竖向渐变色带
             float p = MathF.Sin(pulse * 2f) * 0.2f + 0.8f;
             for (int y = headerRect.Y + 3; y < headerRect.Bottom - 2; y++) {
                 float t = (float)(y - headerRect.Y - 3) / (headerRect.Height - 5);
@@ -172,13 +170,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                 sb.Draw(px, new Rectangle(headerRect.X + 5, y, 2, 1), uv, barC);
             }
 
-            // 标题文字
+            //标题文字
             Vector2 titlePos = new(headerRect.X + 12, headerRect.Y + (headerRect.Height - 14f) / 2f);
-            // 水下散射辉光（极淡）
+            //水下散射辉光（极淡）
             Utils.DrawBorderString(sb, title, titlePos + new Vector2(0, 1), AbyssBg * (alpha * 0.5f), 0.76f);
             Utils.DrawBorderString(sb, title, titlePos, TitleCyan * alpha, 0.76f);
 
-            // 标题下方分隔虚线（非实线，避免盒子感）
+            //标题下方分隔虚线（非实线，避免盒子感）
             int dashY = headerRect.Bottom - 1;
             for (int x = headerRect.X + 10; x < headerRect.Right - 10; x += 7) {
                 int w = Math.Min(4, headerRect.Right - 10 - x);
@@ -193,11 +191,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
             var px = VaultAsset.placeholder2.Value;
             var uv = new Rectangle(0, 0, 1, 1);
 
-            // 进度条底，左右各缩 1px
+            //进度条底，左右各缩 1px
             sb.Draw(px, new Rectangle(barRect.X + 1, barRect.Y, barRect.Width - 2, barRect.Height),
                 uv, AbyssBg * (alpha * 0.85f));
 
-            // 填充（渐变+气泡粒感，按3px小段绘制减少DrawCall）
+            //填充（渐变+气泡粒感，按3px小段绘制减少DrawCall）
             int fillW = (int)((barRect.Width - 2) * MathHelper.Clamp(progress, 0f, 1f));
             if (fillW > 1) {
                 int segW = 3;
@@ -210,12 +208,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
                     sb.Draw(px, new Rectangle(barRect.X + 1 + sx, barRect.Y + 1, sw, barRect.Height - 2),
                         uv, c * (alpha * 0.85f));
                 }
-                // 填充前端亮缘
+                //填充前端亮缘
                 sb.Draw(px, new Rectangle(barRect.X + 1 + fillW - 1, barRect.Y, 1, barRect.Height),
                     uv, SurfaceShimmer * (alpha * 0.5f));
             }
 
-            // 上下薄边线
+            //上下薄边线
             sb.Draw(px, new Rectangle(barRect.X + 1, barRect.Y, barRect.Width - 2, 1),
                 uv, FrameEdge * (alpha * 0.45f));
             sb.Draw(px, new Rectangle(barRect.X + 1, barRect.Bottom - 1, barRect.Width - 2, 1),
@@ -233,7 +231,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
 
         public void DrawWidgetDivider(SpriteBatch sb, Vector2 start, Vector2 end, float alpha) {
             var px = VaultAsset.placeholder2.Value;
-            // 渐变虚线分隔
+            //渐变虚线分隔
             float len = (end - start).Length();
             if (len < 1f) return;
             Vector2 dir = Vector2.Normalize(end - start);
@@ -249,7 +247,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest
         }
 
         public void DrawWidgetOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
-            // 表层顶部扫光
+            //表层顶部扫光
             var px = VaultAsset.placeholder2.Value;
             float shimmer = ((wave * 0.4f) % 1f);
             int shimX = rect.X + (int)(shimmer * rect.Width);

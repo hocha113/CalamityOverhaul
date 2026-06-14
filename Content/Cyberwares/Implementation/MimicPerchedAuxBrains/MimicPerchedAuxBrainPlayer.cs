@@ -10,9 +10,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
     /// </summary>
     internal class MimicPerchedAuxBrainPlayer : ModPlayer
     {
-        /// <summary>
-        /// 幻象数量
-        /// </summary>
+        /// <summary>幻象数量 4</summary>
         public const int PhantomCount = 4;
 
         /// <summary>冷却剩余帧</summary>

@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         //打开新插槽时重置滚动位置
         public static void ScrollReset() => _scrollOffset = 0;
 
-        //处理鼠标滚轮，需在面板列表区悬停时调用
+        //列表区悬停时滚轮
         public static void HandleScroll() {
             int delta = PlayerInput.ScrollWheelDeltaForUI;
             if (delta == 0) {

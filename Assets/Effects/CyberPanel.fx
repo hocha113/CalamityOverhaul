@@ -1,6 +1,6 @@
 // ============================================================================
-// CyberPanel.fx SHPC 赛博面板背景
-// AlphaBlend 预乘 alpha
+//CyberPanel.fx SHPC 赛博面板背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -49,7 +49,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     );
     if (panelSDF < -(uEdgePad + 2.0)) return float4(0, 0, 0, 0);
 
-    // ═══ A. 故障位移块（shader独有——水平带内容错位+RGB色散） ═══
+    //═══ A. 故障位移块（shader独有：水平带内容错位+RGB色散） ═══
     float normY0 = saturate((pixelPos.y - innerMin.y) / innerSize.y);
     float glitchMask = 0.0;
     float gt = floor(uTime * 3.5);
@@ -78,7 +78,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         pixelPos.x += shift2 * ib2;
     }
 
-    // ═══ B. 六角网格 ═══
+    //═══ B. 六角网格 ═══
     float hexScale = 0.065;
     float2 hexUV = pixelPos;
     float distT = uTime * 0.35;
@@ -107,7 +107,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float hexEdge = 1.0 - smoothstep(0.36, 0.44, hexDist);
     float hexLine = smoothstep(0.38, 0.42, hexDist) * (1.0 - smoothstep(0.42, 0.50, hexDist));
 
-    // ═══ C. 波浪推进式边缘（有节奏感，非随机） ═══
+    //═══ C. 波浪推进式边缘（有节奏感，非随机） ═══
     float cellSDF = min(
         min(cellCenterPx.x - innerMin.x, innerMax.x - cellCenterPx.x),
         min(cellCenterPx.y - innerMin.y, innerMax.y - cellCenterPx.y)
@@ -120,7 +120,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     float effectiveBound = cellSDF + protrusion;
 
-    // ═══ D. Alpha遮罩 ═══
+    //═══ D. Alpha遮罩 ═══
     float cellAlpha;
     if (panelSDF > 18.0)
         cellAlpha = 1.0;
@@ -133,17 +133,17 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     float2 innerCoords = saturate((pixelPos - innerMin) / innerSize);
 
-    // ═══ 1. 深暗紫色渐变 ═══
+    //═══ 1. 深暗紫色渐变 ═══
     float3 bg = lerp(float3(0.045, 0.018, 0.078), float3(0.020, 0.010, 0.048), innerCoords.y);
 
-    // ═══ 2. 噪声表面 ═══
+    //═══ 2. 噪声表面 ═══
     float sn1 = valueNoise(pixelPos * 0.08);
     float sn2 = valueNoise(pixelPos * 0.035 + 100.0);
     float sv = sn1 * 0.6 + sn2 * 0.4;
     bg *= 0.78 + sv * 0.44;
     bg += float3(0.010, -0.004, 0.016) * (sv - 0.5);
 
-    // ═══ 3. 六角网格线（紫色底+蓝色能量流） ═══
+    //═══ 3. 六角网格线（紫色底+蓝色能量流） ═══
     float2 flowDir = normalize(float2(1.0, 0.8));
     float flowPhase = dot(pixelPos * 0.012, flowDir) - uTime * 1.8;
     float flowInt = sin(flowPhase) * 0.5 + 0.5;
@@ -156,7 +156,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += float3(0.015, 0.025, 0.085) * step(0.72, cellHash)
         * (sin(uTime * 1.8 + cellHash * 40.0) * 0.5 + 0.5) * hexEdge;
 
-    // ═══ 4. 能量脉冲传导（可见脉冲从角落沿六角网格传播） ═══
+    //═══ 4. 能量脉冲传导（可见脉冲从角落沿六角网格传播） ═══
     float p1D = length((cellCenterPx - innerMin) * 0.01);
     float p1P = frac(uTime * 0.4) * 6.5;
     float p1B = exp(-(p1D - p1P) * (p1D - p1P) * 15.0);
@@ -169,7 +169,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += float3(0.06, 0.025, 0.18) * p2B * hexLine * 2.5;
     bg += float3(0.04, 0.015, 0.10) * p2B * hexEdge * 0.5;
 
-    // ═══ 5. 数据流粒子（亮点沿六角边缘移动） ═══
+    //═══ 5. 数据流粒子（亮点沿六角边缘移动） ═══
     float cAngle = atan2(hg.y, hg.x);
     float pPhase = frac(cAngle / 6.2832 + uTime * 0.5 + cellHash);
     float pDot = 1.0 - smoothstep(0.0, 0.06, abs(pPhase - 0.5));
@@ -179,7 +179,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float pDot2 = 1.0 - smoothstep(0.0, 0.05, abs(pPhase2 - 0.5));
     bg += float3(0.10, 0.03, 0.20) * pDot2 * hexLine * step(0.65, cellHash2) * 1.8;
 
-    // ═══ 6. 波浪边框辉光 ═══
+    //═══ 6. 波浪边框辉光 ═══
     float bProx = exp(-abs(cellSDF) * 0.06);
     bg += float3(0.050, 0.020, 0.100) * hexLine * bProx * 1.5;
     bg += float3(0.012, 0.045, 0.120) * hexLine * bProx * flowInt;
@@ -187,11 +187,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float waveT = (w1 + w2 * 0.7 + w3 * 0.5) / 4.4 + 0.5;
     bg += lerp(float3(0.045, 0.020, 0.120), float3(0.020, 0.060, 0.150), waveT) * eHL;
 
-    // ═══ 7. CRT扫描线 ═══
+    //═══ 7. CRT扫描线 ═══
     float scl = frac(pixelPos.y / 3.0);
     bg *= 0.82 + 0.18 * smoothstep(0.0, 0.18, scl) * smoothstep(1.0, 0.82, scl);
 
-    // ═══ 8. 面板分段线 ═══
+    //═══ 8. 面板分段线 ═══
     float hSeg = frac(pixelPos.y / 60.0);
     bg *= 1.0 - (1.0 - smoothstep(0.0, 0.025, hSeg)) * 0.50;
     float hRef = smoothstep(0.025, 0.06, hSeg) * (1.0 - smoothstep(0.06, 0.10, hSeg));
@@ -200,7 +200,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float vL2 = 1.0 - smoothstep(0.0, 0.005, abs(innerCoords.x - 0.76));
     bg += float3(0.018, 0.012, 0.050) * (vL1 + vL2) * 0.35;
 
-    // ═══ 9. 全息扫掠光 ═══
+    //═══ 9. 全息扫掠光 ═══
     float swP = frac(uTime * 0.07);
     float swD = innerCoords.y - swP;
     if (swD < -0.5) swD += 1.0;
@@ -211,11 +211,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += float3(0.010, 0.012, 0.035) * swG * 0.25;
     bg += float3(0.008, 0.025, 0.060) * swG * hexLine * 1.5;
 
-    // ═══ 10. 暗角 ═══
+    //═══ 10. 暗角 ═══
     float2 vig = innerCoords * 2.0 - 1.0;
     bg *= saturate(1.0 - dot(vig * float2(0.45, 0.55), vig * float2(0.45, 0.55))) * 0.35 + 0.65;
 
-    // ═══ 11. 故障块着色（RGB色散+亮块） ═══
+    //═══ 11. 故障块着色（RGB色散+亮块） ═══
     if (glitchMask > 0.01)
     {
         float bx = hash11(gt * 91.3 + gt2 * 13.7);
@@ -228,7 +228,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         cellAlpha *= 1.0 - bv * 0.12;
     }
 
-    // ═══ 12. 顶部高光 ═══
+    //═══ 12. 顶部高光 ═══
     bg += float3(0.018, 0.010, 0.035) * (1.0 - smoothstep(0.0, 0.12, innerCoords.y)) * 0.3;
 
     float fa = uAlpha * cellAlpha;

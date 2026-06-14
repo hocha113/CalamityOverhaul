@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
+using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 
 namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
 {
-    /// <summary>管道侧面连接状态，处理连接检测、电力传输与绘制</summary>
+    /// <summary>管道侧连接：检测/输电/绘制</summary>
     internal class PipelineSideState(Point16 point16)
     {
         internal Point16 Position;
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 return;
             }
 
-            //根据类型处理连接和电力传输
+            //按类型连网输电
             switch (externalTP) {
                 case BaseGeneratorTP generator:
                     HandleGeneratorConnection(generator);

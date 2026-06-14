@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useTime = 18;
             Item.useAnimation = 18;
             Item.shootSpeed = 10;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noUseGraphic = true;
             Item.autoReuse = true;
             Item.rare = ItemRarityID.Green;

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -407,7 +407,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 60;
         }
 
-        //碰撞处理-生成火焰爆发效果
+        //碰撞火焰爆发
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == FlameState.Burning) {
                 CreateFlameExplosion(Projectile.Center);

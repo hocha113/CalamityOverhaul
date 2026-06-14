@@ -12,10 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 {
-    /// <summary>
-    /// 鱼油提交场景——当玩家收集够300条鱼后触发，
-    /// 比目鱼询问是否交鱼换油
-    /// </summary>
+    /// <summary>鱼油提交场景，300鱼达标后询问交鱼</summary>
     internal class FishoilSubmitScenario : ADVScenarioBase, ILocalizedModType
     {
         public static LocalizedText Rolename { get; private set; }
@@ -45,7 +42,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             NotEnoughResponse = this.GetLocalization(nameof(NotEnoughResponse), () => "嗯？鱼好像不太够，再去捕一些回来吧");
             AlreadyCompletedResponse = this.GetLocalization(nameof(AlreadyCompletedResponse), () => "鱼油已经给你了，再要的话还得等下次");
 
-            // 委托任务条目的本地化也在此初始化
+            //委托任务条目的本地化也在此初始化
             FishoilQuestEntry.InitLocalization(this);
         }
 
@@ -55,13 +52,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             DialogueBoxBase.RegisterPortrait(Rolename.Value + enjoy, ADVAsset.Helen_enjoyADV);
             DialogueBoxBase.SetPortraitStyle(Rolename.Value + enjoy, silhouette: false);
 
-            // 场景启动瞬间再次校验持久化完成标志，防止重复触发
+            //场景启动瞬间再次校验持久化完成标志，防止重复触发
             if (FishoilQuestEntry.IsPersistentlyCompleted()) {
                 Add(Rolename.Value, AlreadyCompletedResponse.Value);
                 return;
             }
 
-            // 再次校验鱼数，避免触发到这一刻之间被丢/吃/转走
+            //再次校验鱼数，避免触发到这一刻之间被丢/吃/转走
             if (FishoilQuestEntry.CountAvailableFish(Main.LocalPlayer) < FishoilQuestEntry.FishRequired) {
                 Add(Rolename.Value, NotEnoughResponse.Value);
                 return;
@@ -76,14 +73,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }, choiceBoxStyle: ADVChoiceBox.ChoiceBoxStyle.Default);
         }
 
-        /// <summary>
-        /// 点击"交鱼"瞬间同步执行的提交动作。
-        /// 把消耗、发奖、写存档、UI 状态切换打包为一次原子操作，
-        /// 失败（鱼数被实时改变）时返回 false，由调用方走兜底分支
-        /// </summary>
+        /// <summary>交鱼原子提交，消耗+发奖+存档+UI，失败返 false</summary>
         private static bool TrySubmit(Player player) {
             if (player == null) return false;
-            // 已经完成则视为成功，不再二次发奖
+            //已经完成则视为成功，不再二次发奖
             if (FishoilQuestEntry.IsPersistentlyCompleted()) return true;
 
             int needed = FishoilQuestEntry.FishRequired;
@@ -91,11 +84,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
 
             int consumed = FishoilQuestEntry.ConsumeAvailableFish(player, needed);
             if (consumed < needed) {
-                // 极端情况下消耗失败（理论上不应发生），仍然回退避免发空奖
+                //极端情况下消耗失败（理论上不应发生），仍然回退避免发空奖
                 return false;
             }
 
-            // 发放鱼油奖励
+            //发放鱼油奖励
             int fishoilType = ModContent.ItemType<Fishoil>();
             ADVRewardPopup.ShowReward(fishoilType, 5, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
                 anchorProvider: () => {
@@ -106,19 +99,19 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
                     return new Vector2(rect.Center.X, rect.Y - 70f);
                 }, offset: Vector2.Zero);
 
-            // 持久化完成状态
+            //持久化完成状态
             if (player.TryGetADVSave(out var save)) {
                 save.Get<HalibutADVData>().FishoilQuestCompleted = true;
                 save.Get<HalibutADVData>().FishoilQuestSuspended = false;
             }
-            // 更新委托管理器中的条目状态
+            //更新委托管理器中的条目状态
             QuestManagerUI.Instance?.SetEntryStatus(
                 FishoilQuestEntry.QuestKey, QuestEntryStatus.Completed, 1f);
             return true;
         }
 
         private void OnGive() {
-            // 同步执行提交，结果决定后续播放哪条对话
+            //同步执行提交，结果决定后续播放哪条对话
             bool ok = TrySubmit(Main.LocalPlayer);
             if (ok) {
                 ScenarioManager.Reset<FishoilSubmit_Give>();
@@ -131,10 +124,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             Complete();
         }
 
-        /// <summary>
-        /// 交鱼成功后的回应子场景——所有副作用已在 OnGive 阶段执行完毕，
-        /// 这里只剩展示对话，避免回调链中途中断导致的不一致
-        /// </summary>
+        /// <summary>交鱼成功回应，副作用已在 TrySubmit 完成</summary>
         private class FishoilSubmit_Give : ADVScenarioBase
         {
             public override string Key => nameof(FishoilSubmit_Give);
@@ -145,10 +135,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }
         }
 
-        /// <summary>
-        /// 鱼数在选择瞬间不再满足条件的兜底分支，
-        /// 仅播放提示对话，不做任何状态变更，让玩家补足后自然重新触发
-        /// </summary>
+        /// <summary>鱼数不足兜底，只播提示不改状态</summary>
         private class FishoilSubmit_NotEnough : ADVScenarioBase
         {
             public override string Key => nameof(FishoilSubmit_NotEnough);
@@ -160,8 +147,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
         }
 
         private void OnRefuse() {
-            // 同步置位"等待手动提交"持久化标志，
-            // 不依赖子场景的 OnScenarioComplete，避免任何时序间隙导致 OnUpdate 抢先重新触发问询
+            //同步置位"等待手动提交"持久化标志，
+            //不依赖子场景的 OnScenarioComplete，避免任何时序间隙导致 OnUpdate 抢先重新触发问询
             if (Main.LocalPlayer.TryGetADVSave(out var save)
                 && !FishoilQuestEntry.IsPersistentlyCompleted()) {
                 save.Get<HalibutADVData>().FishoilQuestSuspended = true;
@@ -171,11 +158,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             Complete();
         }
 
-        /// <summary>
-        /// 拒绝子场景——只播放"好吧，什么时候想好了再来找我"对话，
-        /// 持久化标志已在父场景的 OnRefuse 中同步写入；
-        /// 此处保留作为兜底再次确认，防止存档接口在主线程上偶发不可用
-        /// </summary>
+        /// <summary>拒交回应，挂起标志已在 OnRefuse 写入</summary>
         private class FishoilSubmit_Refuse : ADVScenarioBase
         {
             public override string Key => nameof(FishoilSubmit_Refuse);
@@ -186,9 +169,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Quest.FishoilQuest
             }
 
             protected override void OnScenarioComplete() {
-                // 已完成则不再改写状态
+                //已完成则不再改写状态
                 if (FishoilQuestEntry.IsPersistentlyCompleted()) return;
-                // 兜底再写一次（同步路径已经写过，幂等）
+                //兜底再写一次（同步路径已经写过，幂等）
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                     save.Get<HalibutADVData>().FishoilQuestSuspended = true;
                 }

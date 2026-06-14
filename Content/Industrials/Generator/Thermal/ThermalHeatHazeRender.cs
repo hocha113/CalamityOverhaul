@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +9,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
 {
     /// <summary>
-    /// 火力发电机热浪 RenderHandle——EndCapture 扫描高温 TP，<see cref="EffectLoader.ThermalHeatHaze"/> 批量扭曲
+    /// 火力发电机热浪 RenderHandle：EndCapture 扫描高温 TP，<see cref="EffectLoader.ThermalHeatHaze"/> 批量扭曲
     /// </summary>
     internal class ThermalHeatHazeRender : RenderHandle
     {
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
             if (zoom.X <= 0f) zoom.X = 1f;
             if (zoom.Y <= 0f) zoom.Y = 1f;
             Vector2 screenCenterPx = new(screenW * 0.5f, screenH * 0.5f);
-            //缩放后玩家实际能看到的世界范围（以世界坐标计），用于剔除离屏发电机
+            //缩放后可见世界范围，剔除离屏热源
             Vector2 viewWorldHalf = new(screenW * 0.5f / zoom.X, screenH * 0.5f / zoom.Y);
             Vector2 viewWorldCenter = Main.screenPosition + screenCenterPx;
             Rectangle screenRect = new(

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -8,9 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Renders
 {
     /// <summary>
-    /// EndCaptureDraw 屏幕扭曲后处理
-    /// <br/>收集 <see cref="IWarpDrawable"/>，<see cref="EffectLoader.WarpShader"/> 全屏合成
-    /// <br/>单次扫描 <see cref="Main.projectile"/> + 预分配缓冲减 GC
+    /// EndCaptureDraw 屏幕扭曲后
     /// </summary>
     internal sealed class WarpEffectRender : RenderHandle
     {
@@ -18,7 +16,7 @@ namespace CalamityOverhaul.Content.Renders
         private static readonly List<IWarpDrawable> _warpBuffer = new(16);
         private static readonly List<IWarpDrawable> _warpNoBlueshiftBuffer = new(16);
 
-        /// <summary>权重 1.2，晚于常规热浪后处理，扭曲采样已含其他 RenderHandle 写入</summary>
+        /// <summary>权重 1.2，晚于常规热浪后，扭曲采样已含其他 RenderHandle 写入</summary>
         public override float Weight => 1.2f;
 
         public override void EndCaptureDraw(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {

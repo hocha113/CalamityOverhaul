@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 {
-    /// <summary>
-    /// 银河危机剧情演出渲染器（主控）
-    /// 负责生命周期管理、阶段控制和绘制调度
-    /// 具体的银河系/虫群/灭绝令/面板绘制逻辑分布在各partial文件中
-    /// </summary>
+    /// <summary>银河危机剧情演出渲染器（主控）</summary>
     internal partial class GalacticCrisisRender : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";

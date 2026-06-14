@@ -8,9 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// 闪电链，会在敌人之间跳跃的闪电球
-    /// </summary>
+    /// <summary>闪电链，敌间跳跃闪电球</summary>
     internal class PandemoniumLightning : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

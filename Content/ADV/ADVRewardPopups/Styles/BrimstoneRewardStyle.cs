@@ -6,16 +6,14 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
 {
-    /// <summary>
-    /// 硫磺火风格奖励弹窗
-    /// </summary>
+    /// <summary>硫磺火风格奖励弹窗</summary>
     internal class BrimstoneRewardStyle : IRewardPopupStyle
     {
         private float flameTimer = 0f;
         private float emberGlowTimer = 0f;
         private float heatWavePhase = 0f;
         private float infernoPulse = 0f;
-        // 着色器专用单调递增时间
+        //着色器专用单调递增时间
         private float shaderTime = 0f;
         private const int ShaderEdgePad = 14;
         private readonly List<EmberPRT> embers = new();
@@ -41,7 +39,7 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
 
         public void DrawPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             if (BrimstoneShaderPanel.Available) {
-                // hoverGlow转为轻微热调变亮,避免过曝
+                //hoverGlow转为轻微热调变亮,避免过曝
                 float bright = MathHelper.Clamp(0.95f + hoverGlow * 0.30f, 0.0f, 1.4f);
                 Color tint = new Color(
                     (byte)Math.Min(255, (int)(255 * bright)),
@@ -56,11 +54,11 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
             DrawFallbackPanel(spriteBatch, rect, alpha, hoverGlow);
         }
 
-        // 降级面板:无shader环境使用原CPU堆叠绘制
+        //降级面板:无shader环境使用原CPU堆叠绘制
         private void DrawFallbackPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float hoverGlow) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            // 渐变背景 - 硫磺火深红色
+            //渐变背景 - 硫磺火深红色
             int segments = 35;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -83,15 +81,15 @@ namespace CalamityOverhaul.Content.ADV.ADVRewardPopups.Styles
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), finalColor);
             }
 
-            // 火焰脉冲叠加层
+            //火焰脉冲叠加层
             float pulseBrightness = (float)Math.Sin(infernoPulse * 1.8f) * 0.5f + 0.5f;
             Color pulseOverlay = new Color(120, 25, 15) * (alpha * 0.25f * pulseBrightness);
             spriteBatch.Draw(px, rect, new Rectangle(0, 0, 1, 1), pulseOverlay);
 
-            // 热浪扭曲效果层
+            //热浪扭曲效果层
             DrawHeatWave(spriteBatch, rect, alpha * 0.85f);
 
-            // 内发光
+            //内发光
             float glowPulse = (float)Math.Sin(emberGlowTimer * 1.5f) * 0.5f + 0.5f;
             Rectangle inner = rect;
             inner.Inflate(-7, -7);

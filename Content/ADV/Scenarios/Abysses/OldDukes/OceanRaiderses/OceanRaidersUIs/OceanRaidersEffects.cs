@@ -23,7 +23,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         private const float SulfseaSideMargin = 30f;
 
         /// <summary>
+
         /// 更新所有粒子和特效
+
         /// </summary>
         public void UpdateParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
             UpdateBubbles(isActive, panelPosition, panelWidth, panelHeight);
@@ -89,9 +91,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
             }
         }
 
-        /// <summary>
-        /// 绘制所有特效
-        /// </summary>
         public void DrawEffects(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, float uiAlpha) {
             //先绘制灰烬，在底层
             foreach (var ash in ashParticles) {
@@ -110,7 +109,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 清空所有特效
+
         /// </summary>
         public void Clear() {
             bubbles.Clear();

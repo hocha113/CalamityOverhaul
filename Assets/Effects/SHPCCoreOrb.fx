@@ -1,6 +1,6 @@
 // ============================================================================
-// SHPCCoreOrb.fx SHPC 启动 HUD 能量核心
-// AlphaBlend 预乘 alpha
+//SHPCCoreOrb.fx SHPC 启动 HUD 能量核心
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -111,7 +111,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             public Rectangle HitBox;
             public bool Hovering;
             /// <summary>
-            /// 可选：关联的物品类型ID，用于绘制物品图标
+            /// 关联物品ID，绘图标
             /// </summary>
             public int ItemType = 0;
         }
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             //清除悬浮提示
             hoverTooltip = null;
 
-            //判定鼠标是否在某个展开分类的内容区域内(用于遮挡层级)
+            //展开分类内容区命中(遮挡层级)
             int expandedContentOwner = -1;
             for (int i = 0; i < categories.Count; i++) {
                 var cat = categories[i];
@@ -886,7 +886,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         private static void DrawTooltip(SpriteBatch spriteBatch, string text, Vector2 mousePos, float alpha) {
             if (string.IsNullOrEmpty(text)) return;
 
-            //清理掉配色标记用于测量
+            //去配色标记再测量
             string cleanText = text.Replace("\n", "\n");
             string[] lines = cleanText.Split('\n');
 

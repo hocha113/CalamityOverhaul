@@ -10,11 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
-    /// <summary>
-    /// 音爆冲击环：无伤害纯演出，经 <see cref="Renders.WarpEffectRender"/> 扩张屏幕扭曲环
-    /// 叠加扩散圆环与火花，服务端生成保证多人可见
-    /// <br/>ai[0]: 尺寸档位 0=冲刺音爆 1=俯冲音爆 2=终结冲击
-    /// </summary>
+    /// <summary>音爆冲击环：无伤害纯演出，经<see cref="Renders.WarpEffectRender"/>扩张屏幕扭曲环叠加扩散圆环与火花，服务端生成保证多人可见；ai[0]:尺寸档位0=冲刺音爆1=俯冲音爆2=终结冲击</summary>
     internal class DestroyerShockwave : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -75,9 +71,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
         public bool DontUseBlueshiftEffect() => true;
 
-        /// <summary>
-        /// 扭曲层之上补绘的可见冲击环
-        /// </summary>
+        /// <summary>扭曲层之上补绘的可见冲击环</summary>
         public void DrawCustom(SpriteBatch spriteBatch) {
             Texture2D ring = CWRAsset.DiffusionCircle.Value;
             float t = Progress;
@@ -89,9 +83,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             spriteBatch.Draw(ring, drawPos, null, color * (alpha * 0.55f), -t * 0.9f, ring.Size() / 2f, scale * 0.78f, SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 屏幕扭曲：扩张的冲击波环
-        /// </summary>
+        /// <summary>屏幕扭曲：扩张的冲击波环</summary>
         public void Warp() {
             float t = Progress;
             float size = BaseSize * (0.3f + t * 1.4f);

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using InnoVault.Cinematics;
@@ -81,7 +81,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// C1分支——直接递出芯片
+
+        /// C1分支：直接递出芯片
+
         /// </summary>
         internal class ChipPath : ADVScenarioBase
         {
@@ -107,14 +109,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         private static void ShakeScreen() {
-            //质问发怒时的震屏——叠加到当前 InnoVault 登场运镜上
+            //质问发怒时的震屏：叠加到当前 InnoVault 登场运镜上
             if (CutsceneDirector.CurrentClip is ApolliaCutscene) {
                 CutsceneDirector.Shake(Vector2.Zero, 30f, 0.88f, 20);
             }
         }
 
         /// <summary>
-        /// C2分支——质疑后再递芯片，汇入相同结局
+
+        /// C2分支：质疑后再递芯片，汇入相同结局
+
         /// </summary>
         internal class SuspicionPath : ADVScenarioBase
         {

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -6,16 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 {
     /// <summary>
-    /// 虫群绘制：泰伦式星际虫族——比银河系更巨大的生物群落正在吞噬一切
-    ///
-    /// ★ SoftGlow 使用规范 ★
-    ///   SoftGlow 是一张"黑底圆形渐变"纹理，直接以 AlphaBlend 绘制会产生明显的黑色方框
-    ///   正确做法：将绘制颜色的 A 分量设为 0
-    ///   原理：tModLoader/XNA 默认使用"预乘Alpha"混合方程：
-    ///       result = src.rgb + dest.rgb × (1 - src.a)
-    ///   当 src.a = 0 时，方程退化为纯加法（result = src.rgb + dest.rgb），
-    ///   黑像素 RGB=0 对加法无贡献，方框自然消失
-    ///   本文件所有 SoftGlow 绘制均遵循此规范，不得例外
+    /// 虫群绘制：泰伦式星际虫族：比银河系更巨大的生物群落正在吞噬一切 ★ SoftGlow 使用规范 ★ SoftGlow 是一张"黑底圆形渐变"纹理，直接以 AlphaBlend 绘制会产生明显的黑色方框 正确做法：将绘制颜色的 A 分量设为 0 原理：tModLoader/XNA 默认使用"预乘Alpha"混合方程： result = src.rgb + dest.rgb × (1 - src.a) 当 src.a = 0 时，方程退化为纯加法（result = src.rgb + dest.rgb）， 黑像素 RGB=0 对加法无贡献，方框自然消失 本文件所有 SoftGlow 绘制均遵循此规范，不得例外
     /// </summary>
     internal partial class GalacticCrisisRender
     {
@@ -38,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 
         //虫族主入侵方向
         private const float SwarmCenterAngle = -MathHelper.PiOver4;
-        //虫族可见弧宽——它比银河系大得多，弧宽超过180°
+        //虫族可见弧宽：它比银河系大得多，弧宽超过180°
         private const float SwarmArcWidth = MathHelper.Pi * 1.25f;
 
         private struct SwarmTendril
@@ -261,24 +252,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 计算虫族主体中心和可见半径（触手根部与前沿弧线共用）
+
         /// </summary>
         private static void GetSwarmCenterAndRadius(Vector2 center, out Vector2 swarmCenter, out float massRadius) {
             //虫族主体从极远处逼近，整个过程中主体中心始终在面板外侧
             float swarmDist = GalaxyRadius * MathHelper.Lerp(2.3f, 1.35f, swarmApproachProgress);
             swarmCenter = center + new Vector2(MathF.Cos(SwarmCenterAngle), MathF.Sin(SwarmCenterAngle)) * swarmDist;
-            //虫族截面半径远超银河系——从视觉上让人感受到这是一个无穷大的存在
+            //虫族截面半径远超银河系：从视觉上让人感受到这是一个无穷大的存在
             massRadius = GalaxyRadius * MathHelper.Lerp(1.3f, 1.9f, swarmApproachProgress);
         }
 
-        /// <summary>
-        /// 绘制虫族生物质量背景
-        ///
-        /// 视觉目标：玩家看到的不是一个球，而是一片遮天蔽日向银河系压来的有机暗物质，
-        /// 颜色以深紫黑为主，带有泰伦特色的生物电浆绿（亮）和腺体紫（次亮）
-        ///
-        /// ★ 所有 SoftGlow 绘制 Color.A = 0，使用加法混合，避免黑色方框 ★
-        /// </summary>
         private static void DrawSwarmBiomass(SpriteBatch sb, Vector2 center, float alpha) {
             Texture2D sg = CWRAsset.SoftGlow?.Value;
             if (sg == null) return;
@@ -361,7 +346,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 按从细到粗的顺序绘制三层触手，粗触手遮盖细触手产生深度感
+
         /// </summary>
         private static void DrawAllTendrils(SpriteBatch sb, Vector2 center, float alpha) {
             Texture2D sg = CWRAsset.SoftGlow?.Value;
@@ -375,10 +362,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 DrawSingleTendril(sb, center, tendril, sg, alpha);
         }
 
-        /// <summary>
-        /// 绘制单根触手：三层叠加（暗紫核心 + 紫色中层 + 生物电浆荧光脉冲）
-        /// ★ 全部使用 Color.A = 0 的加法混合，无一例外 ★
-        /// </summary>
         private static void DrawSingleTendril(SpriteBatch sb, Vector2 center, in SwarmTendril tendril, Texture2D sg, float alpha) {
             if (tendril.Length <= 0.01f) return;
 
@@ -502,11 +485,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制虫族接触前沿——一条与银河系边缘相切的荧光弧线，
-        /// 代表生物场与恒星际空间的接触界面，交替出现紫色腺体光和绿色生物电浆
-        /// ★ 同样全部 Color.A = 0 ★
-        /// </summary>
         private static void DrawSwarmFrontEdge(SpriteBatch sb, Vector2 center, float alpha) {
             Texture2D sg = CWRAsset.SoftGlow?.Value;
             if (sg == null) return;

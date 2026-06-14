@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
             Utils.DrawBorderString(sb, text, center - size / 2f, color, scale);
         }
 
-        /// <summary>条目状态的明文标签，避免只靠符号区分关注、挂起等状态。</summary>
+        /// <summary>条目状态的明文标签，避免只靠符号区分关注、挂起等状态</summary>
         protected static string GetEntryStatusText(QuestEntryStatus status) {
             return status switch {
                 QuestEntryStatus.Active => QuestManagerUI.EntryStatusActive?.Value ?? "进行中",

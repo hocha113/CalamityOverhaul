@@ -5,8 +5,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 {
     /// <summary>
-    /// 至尊灾厄女巫全身立绘演出
-    /// 用于女巫告别场景，带有红色淡入效果和最终燃烧消失演出
+    /// 至尊灾厄女巫全身立绘，告别场景燃烧消失演出
     /// </summary>
     internal class SupCalFullBodyPortrait : FullBodyPortraitBase
     {
@@ -105,9 +104,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
         #region 燃烧演出
 
-        /// <summary>
-        /// 启动燃烧消失演出
-        /// </summary>
+        /// <summary>启动燃烧消失</summary>
         public void StartBurningDissolve() {
             EnterCustomPhase();
             burnProgress = 0f;
@@ -121,9 +118,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             UpdateBurningDissolve();
         }
 
-        /// <summary>
-        /// 更新燃烧消失状态
-        /// </summary>
+        /// <summary>更新燃烧状态</summary>
         private void UpdateBurningDissolve() {
             burnProgress++;
 
@@ -151,9 +146,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             CurrentFade = 1f - VaultUtils.EaseInCubic(t * 0.8f);
         }
 
-        /// <summary>
-        /// 更新火焰粒子
-        /// </summary>
+        /// <summary>更新火焰粒子</summary>
         private void UpdateFireParticles() {
             for (int i = fireParticles.Count - 1; i >= 0; i--) {
                 var particle = fireParticles[i];
@@ -176,9 +169,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
-        /// <summary>
-        /// 生成火焰粒子
-        /// </summary>
+        /// <summary>生成火焰粒子</summary>
         private void SpawnFireParticles() {
             Texture2D currentPortrait = GetCurrentPortrait();
             if (currentPortrait == null) return;
@@ -229,9 +220,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             currentTint = Color.White;
         }
 
-        /// <summary>
-        /// 获取当前应该使用的立绘
-        /// </summary>
+        /// <summary>当前立绘纹理</summary>
         private Texture2D GetCurrentPortrait() {
             if (useSmilePortrait) {
                 return ADVAsset.SupCalADV;
@@ -265,9 +254,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
-        /// <summary>
-        /// 绘制立绘切换过渡
-        /// </summary>
+        /// <summary>立绘切换过渡</summary>
         private void DrawPortraitTransition(SpriteBatch spriteBatch, float alpha) {
             //绘制淡出的闭眼立绘
             float closeEyesAlpha = alpha * (1f - portraitTransitionProgress);
@@ -282,9 +269,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             }
         }
 
-        /// <summary>
-        /// 绘制燃烧中的立绘
-        /// </summary>
+        /// <summary>绘制燃烧立绘</summary>
         private void DrawBurningPortrait(SpriteBatch spriteBatch, Vector2 pos, Vector2 size, float alpha) {
             Texture2D portrait = GetCurrentPortrait();
             Texture2D fireMask = CWRAsset.Fire?.Value;

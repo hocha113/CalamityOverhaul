@@ -1,8 +1,8 @@
 // ============================================================================
-// PrimeTelegraph.fx 机械骷髅王预警(扇形/圆环)
-// 禁 uniform 模式分支，C# 用 Techniques[name] 选 FanTech/RingTech
-// FanTech origin 左端中点；RingTech origin 中心主环 r=0.77
-// Additive 预乘 alpha
+//PrimeTelegraph.fx 机械骷髅王预警(扇形/圆环)
+//禁 uniform 模式分支，C# 用 Techniques[name] 选 FanTech/RingTech
+//FanTech origin 左端中点；RingTech origin 中心主环 r=0.77
+//Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -13,7 +13,7 @@ float uIntensity;  //总强度
 float uFanAngle;   //扇形半角（弧度）
 
 //----------------------------------------------------------------------------
-// 扇形：两条细边界线 + 克制的内部填充 + 径向进度扫描
+//扇形：两条细边界线 + 克制的内部填充 + 径向进度扫描
 //----------------------------------------------------------------------------
 float4 FanPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -43,8 +43,8 @@ float4 FanPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 }
 
 //----------------------------------------------------------------------------
-// 圆环（区域边界标记）：细亮边界环 + 倒计时收缩圈 + 流动能量段
-// 收缩圈与边界环重合的时刻 = 攻击激活
+//圆环（区域边界标记）：细亮边界环 + 倒计时收缩圈 + 流动能量段
+//收缩圈与边界环重合的时刻 = 攻击激活
 //----------------------------------------------------------------------------
 float4 RingPS(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {

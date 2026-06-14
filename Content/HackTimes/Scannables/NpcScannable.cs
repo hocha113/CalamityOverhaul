@@ -4,7 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes.Scannables
 {
-    /// <summary>NPC 扫描与 IHackTarget 实现</summary>
+    /// <summary>NPC 扫描 + IHackTarget</summary>
     internal class NpcScannable : IHackTarget
     {
         public int NpcIndex { get; }

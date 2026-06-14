@@ -105,9 +105,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             }
         }
 
-        /// <summary>
-        /// 确保玩家身下始终有一个圣神十字架弹幕负责绘制能量条与立场指示
-        /// </summary>
+        /// <summary>维持身下HolyCross，绘制能量条与立场</summary>
         private void SpawnHolyCross() {
             if (Owner.CountProjectilesOfID<HolyCross>() == 0) {
                 Projectile.NewProjectile(Owner.GetSource_FromThis(), Owner.Center, Vector2.Zero

@@ -1,6 +1,6 @@
 // ============================================================================
-// GradientTrail.fx 渐变溶解拖尾
-// base+flow+gradient+dissolve 四纹理；vs_2_0/ps_3_0
+//GradientTrail.fx 渐变溶解拖尾
+//base+flow+gradient+dissolve 四纹理；vs_2_0/ps_3_0
 // ============================================================================
 
 matrix transformMatrix; //顶点变换

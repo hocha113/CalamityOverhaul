@@ -1,4 +1,4 @@
-﻿using InnoVault.Storages;
+using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
     }
 
     /// <summary>
-    /// 投掷者的存储提供者实现
+    /// 投掷者的存储提供者
     /// </summary>
     internal class ThrowerStorageProvider : IStorageProvider
     {

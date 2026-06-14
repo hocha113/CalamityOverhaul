@@ -28,18 +28,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
         private const int MaxStarsPerColumn = 20;  //每列最多显示的星星数
         private const int StarSpacing = 0;         //星星之间的间距
 
-        //用于存储血条状态的变量
+        //血条绘制状态
         private int _totalHearts;
         private int _currentLife;
         private int _maxLife;
 
-        //用于存储魔力条状态的变量
+        //魔力条绘制状态
         private int _totalStars;
         private int _currentMana;
         private int _maxMana;
         private static int _lastMana = -1;
 
-        //用于鼠标悬停检测
+        //悬停检测碰撞箱
         private static readonly List<Rectangle> _heartHitboxes = new();
         private static readonly List<Rectangle> _starHitboxes = new();
         private static bool _isHoveringLifeBar = false;
@@ -213,7 +213,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
 
             totalRows = Math.Min(totalRows, 2);
 
-            //计算总宽度（用于右对齐）
+            //总宽度，右对齐
             int maxHeartsInAnyRow = Math.Min(MaxHeartsPerRow, _totalHearts);
             int totalWidth = maxHeartsInAnyRow * (heartBackWidth + HeartSpacing) - HeartSpacing;
 
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     int heartStartLife = heartIndex * lifePerHeart;
                     int heartEndLife = (heartIndex + 1) * lifePerHeart;
 
-                    //如果是最后一颗心，要处理可能的余数
+                    //末颗心余数
                     if (heartIndex == _totalHearts - 1) {
                         heartEndLife = _maxLife;
                         lifePerHeart = heartEndLife - heartStartLife;
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                         rowY + heartBackHeight / 2f
                     ) + globalShakeOffset + individualShakeOffset;
 
-                    //记录碰撞箱用于鼠标检测（使用缩放后的尺寸）
+                    //悬停碰撞箱（缩放后尺寸）
                     int scaledWidth = (int)(heartBackWidth * currentScale);
                     int scaledHeight = (int)(heartBackHeight * currentScale);
                     Rectangle heartHitbox = new Rectangle(
@@ -413,7 +413,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                         int starStartMana = starIndex * manaPerStar;
                         int starEndMana = (starIndex + 1) * manaPerStar;
 
-                        //如果是最后一颗星，要处理可能的余数
+                        //末颗星余数
                         if (starIndex == displayStars - 1) {
                             starEndMana = _maxMana;
                             manaPerStar = starEndMana - starStartMana;
@@ -451,7 +451,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
                     starY + starBackHeight / 2f
                 );
 
-                //记录碰撞箱用于鼠标检测（使用缩放后的尺寸）
+                //悬停碰撞箱（缩放后尺寸）
                 int scaledWidth = (int)(starBackWidth * currentScale);
                 int scaledHeight = (int)(starBackHeight * currentScale);
                 Rectangle starHitbox = new Rectangle(
@@ -558,7 +558,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //计算绘制位置（在鼠标右下方）
             Vector2 drawPos = new Vector2(Main.mouseX + 16, Main.mouseY + 16);
 
-            //确保不会超出屏幕边界
+            //clamp 勿出屏
             if (drawPos.X + totalSize.X > Main.screenWidth) {
                 drawPos.X = Main.mouseX - totalSize.X - 16;
             }
@@ -623,7 +623,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows
             //计算绘制位置（在鼠标右下方）
             Vector2 drawPos = new Vector2(Main.mouseX + 16, Main.mouseY + 16);
 
-            //确保不会超出屏幕边界
+            //clamp 勿出屏
             if (drawPos.X + totalSize.X > Main.screenWidth) {
                 drawPos.X = Main.mouseX - totalSize.X - 16;
             }

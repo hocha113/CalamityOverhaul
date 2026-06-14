@@ -10,7 +10,7 @@ using Terraria.ModLoader.Default;
 
 namespace CalamityOverhaul.Content.Items.Modifys
 {
-    //这个修改实例被用于补救全部移除的副本物品，防止玩家一更新后看到满背包的卸载物品
+    //补救卸载副本物品，防更新后满背包卸载物
     internal class RecoverUnloadedItem : ICWRLoader
     {
         public static int TargetID { get; private set; }

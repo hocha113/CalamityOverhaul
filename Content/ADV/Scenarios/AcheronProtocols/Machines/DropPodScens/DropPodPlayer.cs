@@ -7,10 +7,7 @@ using Terraria.Graphics;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
-    /// <summary>
-    /// 空降仓演出玩家覆写——在空降仓子世界中隐藏玩家绘制，管理坠落状态，
-    /// 并生成 <see cref="DropPodActor"/> 实体来处理空降仓的世界坐标逻辑和绘制
-    /// </summary>
+    /// <summary>空降仓演出玩家覆写：在空降仓子世界中隐藏玩家绘制，管理坠落状态， 并生成 <see cref="DropPodActor"/> 实体来</summary>
     internal class DropPodPlayer : PlayerOverride
     {
         /// <summary>
@@ -38,7 +35,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
 
         private float moveVelocity;
 
-        /// <summary>上一帧 2 键状态，用于边沿检测</summary>
+        /// <summary>上一帧 2 键状态</summary>
         private bool prevD2Pressed;
 
         public override void PostUpdate() {
@@ -78,13 +75,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             float targetTilt = moveVelocity / MoveSpeed * TiltMax;
             TiltAngle = MathHelper.Lerp(TiltAngle, targetTilt, TiltLerp);
 
-            // ── 调试：按 2 键触发坠入环节 ─────────────────────────────────────────
+            //── 调试：按 2 键触发坠入环节 ─────────────────────────────────────────
             bool d2 = Keyboard.GetState().IsKeyDown(Keys.D2);
             if (d2 && !prevD2Pressed) {
                 DropPodActor.TriggerLandingPhase();
             }
             prevD2Pressed = d2;
-            // ──────────────────────────────────────────────────────────────────────
+            //──────────────────────────────────────────────────────────────────────
 
             //锁定玩家位置在世界中央，无重力
             Player.position = new Vector2(
@@ -95,7 +92,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
-        /// 隐藏玩家绘制——参考HalibutPlayer和CrabulonPlayer的模式
+
+        /// 隐藏玩家绘制：参考HalibutPlayer和CrabulonPlayer的模式
+
         /// </summary>
         public override bool PreDrawPlayers(ref Camera camera, ref IEnumerable<Player> players) {
             if (!DropPodActive) return true;

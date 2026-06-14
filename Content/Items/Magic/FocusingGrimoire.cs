@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 8;
             Item.shoot = ModContent.ProjectileType<PowerCoil>();
             Item.shootSpeed = 8;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.CWR().DeathModeItem = true;
         }
 
-        //右键用于发射速射激光
+        //右键：发射速射激光
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool CanUseItem(Player player)

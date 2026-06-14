@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,26 +7,24 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
-    /// <summary>
-    /// 星流风格对话框
-    /// </summary>
+    /// <summary>星流风格对话框</summary>
     internal class StarStreamDialogueBox : DialogueBoxBase
     {
         public static StarStreamDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<StarStreamDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        // 风格参数
+        //风格参数
         private const float FixedWidth = 540f;
         protected override float PanelWidth => FixedWidth;
 
-        // 动画计时
+        //动画计时
         private float starFlowTimer = 0f;
         private float nebulaPulseTimer = 0f;
         private float constellationPhase = 0f;
         private float auroraTimer = 0f;
         private float shimmerTimer = 0f;
 
-        // 粒子
+        //粒子
         private readonly List<StarStreamPRT> starStreams = [];
         private int starStreamSpawnTimer = 0;
         private readonly List<StarDustPRT> starDusts = [];
@@ -257,9 +255,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 
         #region 样式工具函数
 
-        /// <summary>
-        /// 绘制极光光带 - 在面板中横向流动的金色/蓝紫色光带
-        /// </summary>
+        /// <summary>绘制极光光带 - 在面板中横向流动的金色/蓝紫色光带</summary>
         private void DrawAuroraStreaks(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             int streakCount = 5;
@@ -295,9 +291,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             }
         }
 
-        /// <summary>
-        /// 绘制星座网格 - 微弱的横线随相位闪烁，模拟星图坐标
-        /// </summary>
+        /// <summary>绘制星座网格 - 微弱的横线随相位闪烁，模拟星图坐标</summary>
         private void DrawConstellationGrid(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
             int rows = 7;
@@ -314,9 +308,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             }
         }
 
-        /// <summary>
-        /// 绘制星流风格边框
-        /// </summary>
+        /// <summary>绘制星流风格边框</summary>
         private void DrawStarFrame(SpriteBatch sb, Rectangle rect, float alpha, float pulse) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
@@ -364,9 +356,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             DrawCornerStar(sb, new Vector2(rect.Right - 12, rect.Bottom - 12), alpha * 0.6f);
         }
 
-        /// <summary>
-        /// 绘制角落四芒星标记
-        /// </summary>
+        /// <summary>绘制角落四芒星标记</summary>
         private static void DrawCornerStar(SpriteBatch sb, Vector2 pos, float a) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float size = 6f;
@@ -387,9 +377,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
                 new Vector2(size * 0.35f, size * 0.35f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制星流风格光效矩形
-        /// </summary>
+        /// <summary>绘制星流风格光效矩形</summary>
         private static void DrawStarGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
             Texture2D px = VaultAsset.placeholder2.Value;
             sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), glow * 0.18f);

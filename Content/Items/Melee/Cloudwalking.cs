@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.height = 60;
             Item.damage = 40;
             Item.DamageType = DamageClass.Melee;
-            //使用动画由手持弹幕处理
+            //UseAnimation在HeldProj
             Item.useAnimation = 12;
             Item.useTime = 12;
             Item.useStyle = ItemUseStyleID.Shoot;
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             //if (target.IsWormBody()) {
-            //    modifiers.FinalDamage *= 0.6f;
+            //modifiers.FinalDamage *= 0.6f;
             //}
         }
 

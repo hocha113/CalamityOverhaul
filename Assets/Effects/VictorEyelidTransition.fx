@@ -1,6 +1,6 @@
 // ============================================================================
-// VictorEyelidTransition.fx Victor 手术过场闭眼/睁眼全屏覆盖
-// AlphaBlend 全屏单 quad，不采样贴图
+//VictorEyelidTransition.fx Victor 手术过场闭眼/睁眼全屏覆盖
+//AlphaBlend 全屏单 quad，不采样贴图
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -15,7 +15,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 px = coords * uResolution;
     float cx = coords.x;
 
-    // 眼睑弧形：中央比两侧晚一点闭合，更像真实眨眼
+    //眼睑弧形：中央比两侧晚一点闭合，更像真实眨眼
     float curve = sin(cx * 3.14159265) * uResolution.y * 0.075;
     float halfH = uResolution.y * 0.5;
     float reach = uClose * (halfH + curve);
@@ -28,11 +28,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float botCover = smoothstep(botEdge, botEdge + soft, px.y);
     float lid = saturate(topCover + botCover);
 
-    // 眼睑内缘的细微暗纹（睫毛感）
+    //眼睑内缘的细微暗纹（睫毛感）
     float topLash = saturate(1.0 - abs(px.y - topEdge) / 6.0) * step(0.001, uClose) * 0.25;
     float botLash = saturate(1.0 - abs(px.y - botEdge) / 6.0) * step(0.001, uClose) * 0.25;
 
-    // 手术灯：中央横向亮带
+    //手术灯：中央横向亮带
     float bandWidth = uResolution.y * 0.18;
     float band = 1.0 - smoothstep(0.0, bandWidth, abs(px.y - halfH));
     float flick = 0.85 + 0.15 * sin(uTime * 30.0);

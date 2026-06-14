@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using InnoVault.TileProcessors;
 using InnoVault.UIHandles;
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         //使用 List 代替 HashSet 以保证顺序一致性
         internal List<int> Items = [];
 
-        //版本号用于追踪数据变更
+        //版本号，追踪数据变更
         internal int DataVersion = 0;
 
         public override bool InstancePerEntity => true;
@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         /// <summary>
-        /// 线程安全地添加物品ID
+        /// 线程安全加物品ID
         /// </summary>
         public bool TryAddItem(int itemID) {
             if (itemID <= ItemID.None) return false;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
         }
 
         /// <summary>
-        /// 线程安全地移除物品ID
+        /// 线程安全删物品ID
         /// </summary>
         public bool TryRemoveItem(int itemID) {
             bool removed = Items.Remove(itemID);

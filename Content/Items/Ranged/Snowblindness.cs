@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Terraria;
 using Terraria.Audio;
@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.knockBack = 1.5f;
             Item.value = Terraria.Item.buyPrice(0, 8, 3, 5);
             Item.rare = ItemRarityID.Red;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.autoReuse = true;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 28f;

@@ -1,7 +1,7 @@
 ﻿namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
     /// <summary>
-    /// 硫火女巫剧情线的存档数据
+    /// 硫火女巫线 ADVSave 模块
     /// </summary>
     public class SupCalADVData : ADVDataModule
     {

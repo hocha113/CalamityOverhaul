@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         /// <summary>主更新；远端仅视觉插值</summary>
         public void Update() {
-            //远端玩家只跑视觉插值，状态机（RAM消耗/崩溃/切枪检测）由其本机负责
+            //远端只插值视觉，RAM/崩溃/切枪本机算
             if (Player.whoAmI != Main.myPlayer) {
                 UpdateRemoteVisuals();
                 return;

@@ -7,10 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest
 {
-    /// <summary>
-    /// 嘉登委托线——将信号塔部署委托注册到 <see cref="QuestManagerUI"/>，
-    /// 并根据 <see cref="ADVSave"/> 实时同步状态
-    /// </summary>
+    /// <summary>嘉登信号塔委托，注册 <see cref="QuestManagerUI"/> 并按 <see cref="ADVSave"/> 同步</summary>
     internal class DraedonQuestLine : ModSystem, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";

@@ -1,7 +1,7 @@
 // ============================================================================
-// ProverbsGhostDomain.fx 箴言鬼域
-// 采样 s0 + s1 噪声；紧凑硫磺火鬼域单 DrawCall
-// ps_3_0
+//ProverbsGhostDomain.fx 箴言鬼域
+//采样 s0 + s1 噪声；紧凑硫磺火鬼域单 DrawCall
+//ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -72,8 +72,8 @@ float fbm(float2 p, int octaves)
     return v;
 }
 
-// 幽火涌动
-// 域扭曲的鬼火，在领域内部流转翻滚，呈现幽灵般的火焰形态
+//幽火涌动
+//域扭曲的鬼火，在领域内部流转翻滚，呈现幽灵般的火焰形态
 float3 ghostFire(float2 centered, float dist, float angle, float time)
 {
     float normAngle = (angle + PI) / TAU;
@@ -116,8 +116,8 @@ float3 ghostFire(float2 centered, float dist, float angle, float time)
     return fireCol * fireMix;
 }
 
-// 边缘烈焰跳动
-// 在域边界产生向外跳动的尖锐火舌，形态不规则，有鬼域的狰狞感
+//边缘烈焰跳动
+//在域边界产生向外跳动的尖锐火舌，形态不规则，有鬼域的狰狞感
 float edgeFlames(float2 centered, float dist, float angle, float time)
 {
     float normAngle = (angle + PI) / TAU;
@@ -157,8 +157,8 @@ float edgeFlames(float2 centered, float dist, float angle, float time)
     return intensity;
 }
 
-// 周期冲击波
-// 周期性从中心向外扩散的能量环，带噪声扰动
+//周期冲击波
+//周期性从中心向外扩散的能量环，带噪声扰动
 float shockwaveRing(float dist, float angle, float time, float phase)
 {
     float normAngle = (angle + PI) / TAU;
@@ -191,8 +191,8 @@ float shockwaveRing(float dist, float angle, float time, float phase)
     return saturate(waves);
 }
 
-// 鬼域法阵纹
-// 紧凑的魔法阵环线和简化符文
+//鬼域法阵纹
+//紧凑的魔法阵环线和简化符文
 float ghostCircle(float2 centered, float dist, float angle, float time)
 {
     float normAngle = (angle + PI) / TAU;
@@ -249,8 +249,8 @@ float ghostCircle(float2 centered, float dist, float angle, float time)
     return saturate(result);
 }
 
-// 鬼魂余烬
-// 在域内缓缓上升的幽灵火星
+//鬼魂余烬
+//在域内缓缓上升的幽灵火星
 float ghostEmbers(float2 centered, float time)
 {
     float embers = 0.0;
@@ -287,8 +287,8 @@ float ghostEmbers(float2 centered, float time)
     return saturate(embers);
 }
 
-// 中心虚空漩涡
-// 域中心的幽暗漩涡，散发鬼域气息
+//中心虚空漩涡
+//域中心的幽暗漩涡，散发鬼域气息
 float voidVortex(float2 centered, float dist, float angle, float time)
 {
     float normAngle = (angle + PI) / TAU;
@@ -302,7 +302,7 @@ float voidVortex(float2 centered, float dist, float angle, float time)
     return vortexMask * (0.4 + swirl * 0.3 + vortexNoise * 0.3);
 }
 
-// 主像素着色器
+//主像素着色器
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -311,36 +311,36 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float angle = atan2(centered.y, centered.x);
     float time = uTime;
 
-    // ======== 域边界裁剪（柔和过渡） ========
+    //======== 域边界裁剪（柔和过渡） ========
     float edgeFade = 1.0 - smoothstep(0.78, 1.0, dist);
     if (edgeFade <= 0.001)
         return float4(0, 0, 0, 0);
 
-    // ======== A. 内部幽火 ========
+    //======== A. 内部幽火 ========
     float3 fire = ghostFire(centered, dist, angle, time);
 
     //鬼域底色：从深渊黑到暗紫红
     float depthGrad = smoothstep(0.0, 0.8, dist);
     float3 baseColor = lerp(voidColor * 0.6, edgeColor * 0.25, depthGrad);
 
-    // ======== B. 边缘烈焰 ========
+    //======== B. 边缘烈焰 ========
     float flames = edgeFlames(centered, dist, angle, time);
 
-    // ======== C. 冲击波 ========
+    //======== C. 冲击波 ========
     float shock = shockwaveRing(dist, angle, time, pulsePhase);
 
-    // ======== D. 法阵纹 ========
+    //======== D. 法阵纹 ========
     float circle = ghostCircle(centered, dist, angle, time);
 
-    // ======== E. 余烬 ========
+    //======== E. 余烬 ========
     float embers = ghostEmbers(centered, time);
 
-    // ======== F. 中心漩涡 ========
+    //======== F. 中心漩涡 ========
     float vortex = voidVortex(centered, dist, angle, time);
 
-    // =
-    // 颜色合成
-    // =
+    //=
+    //颜色合成
+    //=
     float3 finalColor = baseColor;
 
     //幽火底层
@@ -366,7 +366,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 vortexCol = lerp(voidColor * 1.5, midColor, vortex);
     finalColor += vortexCol * vortex * 1.2;
 
-    // ======== 透明度合成 ========
+    //======== 透明度合成 ========
     float alpha = 0.0;
 
     //基础填充（领域内部的底色透明度）

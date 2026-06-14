@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     (int)(damage * (1.6f + HalibutData.GetDomainLayer() * 0.4f)),
                     knockback * 0.6f,
                     player.whoAmI,
-                    ai0: i //用于区分不同眼球
+                    ai0: i //个体索引
                 );
             }
 

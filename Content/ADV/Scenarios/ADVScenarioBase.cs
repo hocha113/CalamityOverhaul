@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         /// </summary>
         protected Dictionary<string, LocalizedText> LocalizedTextDic { get; private set; } = [];
         /// <summary>
-        /// 场景级别的默认对话框样式，如果不设置则使用全局默认
+        /// 场景默认对话框样式，null 用全局默认
         /// </summary>
         protected virtual Func<DialogueBoxBase> DefaultDialogueStyle => null;
 
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         /// 添加对话(角色名和立绘分离)
         /// </summary>
         /// <param name="speaker">显示的说话者名称</param>
-        /// <param name="portraitKey">用于查找立绘的键</param>
+        /// <param name="portraitKey">立绘键</param>
         /// <param name="content">对话内容</param>
         public void Add(string speaker, string portraitKey, string content) {
             lines.Add(new DialogueLine(speaker, portraitKey, content));
@@ -120,7 +120,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         /// 添加完整配置的对话(角色名和立绘分离)
         /// </summary>
         /// <param name="speaker">显示的说话者名称</param>
-        /// <param name="portraitKey">用于查找立绘的键</param>
+        /// <param name="portraitKey">立绘键</param>
         /// <param name="content">对话内容</param>
         /// <param name="onStart">开始回调</param>
         /// <param name="onComplete">完成回调</param>

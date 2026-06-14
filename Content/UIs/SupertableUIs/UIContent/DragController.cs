@@ -1,11 +1,11 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Terraria;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// 拖拽控制器，负责UI的拖拽移动
+    /// UI拖拽
     /// </summary>
     internal class DragController
     {

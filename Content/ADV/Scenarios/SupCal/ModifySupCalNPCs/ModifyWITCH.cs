@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
             }
         }
 
-        //临时钩子，后续改用前置实现
+        //临时钩子，待改前置
         private static bool OnCanTownNPCSpawnHook(OnCanTownNPCSpawnDelegate orig, object obj, int numTownNPCs) {
             if (Main.player.Any(p => p.Alives() && EbnPlayer.OnEbn(p))) {//如果有玩家达成永恒燃烧的现在结局
                 return false;//女巫不生成
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
 
         public override bool AI() {
             if (!CWRRef.GetDownedCalamitas()) {
-                //考虑到总是有人遇到无法正确设置击败状态的问题，这里直接让女巫的AI里设置击败状态，确保只要女巫存在了，就一定会设置击败状态
+                //女巫 AI 内写击败状态，规避击败标记不同步
                 CWRRef.SetDownedCalamitas(true);
             }
             return true;

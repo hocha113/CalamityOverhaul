@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.Actors;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,29 +19,39 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         private int dropTimer;
 
         /// <summary>
+
         /// 当前震动偏移（世界坐标像素）
+
         /// </summary>
         private Vector2 shakeOffset;
 
         /// <summary>
+
         /// 再入灼烧强度 0~1
+
         /// </summary>
         private float reentryHeat;
 
         /// <summary>
+
         /// 尾焰粒子列表
+
         /// </summary>
         private readonly List<TrailParticle> trailParticles = [];
 
         /// <summary>
+
         /// 尾焰Trail路径点，从空降仓顶部向上延伸
+
         /// </summary>
         private const int FlameTrailPointCount = 24;
         private readonly Vector2[] flameTrailPoints = new Vector2[FlameTrailPointCount];
         private Trail flameTrail;
 
         /// <summary>
-        /// 冲击波环列表——环绕仓头的大气压缩波
+
+        /// 冲击波环列表：环绕仓头的大气压缩波
+
         /// </summary>
         private readonly List<ShockwaveRing> shockwaveRings = [];
 
@@ -51,7 +61,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         private const float ShakeIntensityMax = 4f;
 
         /// <summary>
+
         /// 玩家控制的水平偏移（屏幕像素）
+
         /// </summary>
         private float horizontalOffset;
         /// <summary>
@@ -64,36 +76,41 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         private int debrisSpawnTimer;
 
         /// <summary>
+
         /// 是否已触发嘉登来电
+
         /// </summary>
         private bool incomingCallTriggered;
 
-        // ── 坠入环节 ──────────────────────────────────────────────────────────────
+        //── 坠入环节 ──────────────────────────────────────────────────────────────
         /// <summary>
-        /// 坠入环节是否已激活——空降仓向下移出屏幕并渐黑
+        /// 坠入环节是否已激活：空降仓向下移出屏幕并渐黑
         /// </summary>
         private bool landingPhaseActive;
 
         /// <summary>
+
         /// 坠入环节已运行帧数
+
         /// </summary>
         private int landingTimer;
 
         /// <summary>
+
         /// 坠入下坠速度（世界坐标 px/帧），每帧加速
+
         /// </summary>
         private float landingVelocityY;
 
         /// <summary>
+
         /// 由外部调用 <see cref="TriggerLandingPhase"/> 设置的一次性触发标记
+
         /// </summary>
         private static bool landingPhaseRequested;
-        // ──────────────────────────────────────────────────────────────────────────
+        //──────────────────────────────────────────────────────────────────────────
 
-        /// <summary>
-        /// 触发坠入环节——空降仓向下移出屏幕，同时屏幕渐黑<br/>
-        /// 此接口可在任意时机调用，常用于切换世界前的过渡演出
-        /// </summary>
+        /// <summary>触发坠入环节：空降仓向下移出屏幕，同时屏幕渐黑<br/> 此接口可在任意时机调用，常</summary>
         internal static void TriggerLandingPhase() {
             landingPhaseRequested = true;
         }
@@ -125,7 +142,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
 
             dropTimer++;
 
-            // ── 坠入环节处理 ────────────────────────────────────────────────────────
+            //── 坠入环节处理 ────────────────────────────────────────────────────────
             //接收外部触发请求
             if (landingPhaseRequested) {
                 landingPhaseRequested = false;
@@ -148,9 +165,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 float fadeProg = MathHelper.Clamp(landingTimer / 80f, 0f, 1f);
                 DropPodDrawSystem.SyncLandingFade(MathHelper.SmoothStep(0f, 1f, fadeProg));
             }
-            // ──────────────────────────────────────────────────────────────────────
+            //──────────────────────────────────────────────────────────────────────
 
-            //震动效果——坠入阶段已在上方置零，正常阶段随时间加剧
+            //震动效果：坠入阶段已在上方置零，正常阶段随时间加剧
             if (!landingPhaseActive) {
                 float shakeProgress = MathHelper.Clamp(dropTimer / 600f, 0f, 1f);
                 float shakeIntensity = MathHelper.Lerp(ShakeIntensityBase, ShakeIntensityMax, shakeProgress);
@@ -159,7 +176,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                     Main.rand.NextFloat(-shakeIntensity, shakeIntensity));
             }
 
-            //微幅摇摆旋转——叠加玩家操控的倾斜
+            //微幅摇摆旋转：叠加玩家操控的倾斜
             Rotation = tiltAngle;
 
             //再入灼烧强度随时间增加
@@ -172,12 +189,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 tiltAngle = dpPlayer.TiltAngle;
             }
 
-            //正常阶段才锁定在玩家位置——坠入阶段 Position 已由上方的速度驱动，不能再被锁回去
+            //正常阶段才锁定在玩家位置：坠入阶段 Position 已由上方的速度驱动，不能再被锁回去
             if (!landingPhaseActive && player != null && player.active) {
                 Position = player.Center - Size / 2f + new Vector2(horizontalOffset, 0);
             }
 
-            //生成残骸和新粒子——坠入阶段停止生成
+            //生成残骸和新粒子：坠入阶段停止生成
             if (!landingPhaseActive) {
                 if (dropTimer > 120) {
                     debrisSpawnTimer++;
@@ -193,7 +210,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 }
             }
 
-            //更新尾焰粒子——始终更新，使坠入时已有粒子继续运动直至消失
+            //更新尾焰粒子：始终更新，使坠入时已有粒子继续运动直至消失
             for (int i = trailParticles.Count - 1; i >= 0; i--) {
                 trailParticles[i].Update();
                 if (trailParticles[i].IsDead) {
@@ -201,7 +218,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 }
             }
 
-            //更新尾焰Trail路径点——始终更新，使火焰跟随仓体下移
+            //更新尾焰Trail路径点：始终更新，使火焰跟随仓体下移
             UpdateFlameTrailPoints();
 
             if (!landingPhaseActive) {
@@ -211,7 +228,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                 }
             }
 
-            //更新冲击波环——始终更新，坠入时已有的环继续跟随仓体下移
+            //更新冲击波环：始终更新，坠入时已有的环继续跟随仓体下移
             for (int i = shockwaveRings.Count - 1; i >= 0; i--) {
                 shockwaveRings[i].Update(Center.X);
                 if (shockwaveRings[i].IsDead) {
@@ -228,7 +245,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             //同步dropTimer给DropPodDrawSystem的屏幕特效使用
             DropPodDrawSystem.SyncDropTimer(dropTimer, reentryHeat);
 
-            //同步热浪扭曲数据——仓体屏幕中心归一化坐标 + 强度
+            //同步热浪扭曲数据：仓体屏幕中心归一化坐标 + 强度
             Vector2 screenCenter = (Center - Main.screenPosition + shakeOffset)
                 / new Vector2(Main.screenWidth, Main.screenHeight);
             float hazeStrength = reentryHeat * (landingPhaseActive ? 0.3f : 1f);
@@ -236,10 +253,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
-        /// 更新尾焰路径点——火焰从仓体顶部喷口向上(-Y)延伸
-        /// 喷口（根部）固定在仓顶中心，火焰远端随倾斜角度逐渐偏转
-        /// Trail约定：[0]=起点(喷口/根部)，[Length-1]=末尾(火焰远端)
-        /// 这样 GetFlameTrailWidth/Color 中 progress=0 对应根部（宽/亮），progress=1 对应远端（窄/暗）
+
+        /// 更新尾焰路径点：火焰从仓体顶部喷口向上(-Y)延伸 喷口（根部）固定在仓顶中心，火焰远端随倾斜角度逐渐偏转 Trail约定：[0]=起点(喷口/根部)，[Length-1]=末尾(火焰远端) 这样 GetFlameTrailWidth/Color 中 progress=0 对应根部（宽/亮），progress=1 对应远端（窄/暗）
+
         /// </summary>
         private void UpdateFlameTrailPoints() {
             //喷口位置：仓体中心略偏下，确保根部被仓体遮挡不露出断口
@@ -248,7 +264,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             //火焰的最终完整长度
             float fullFlameLength = 680f;
 
-            //当前火焰实际长度——快速增长到完整长度（10帧内完成）
+            //当前火焰实际长度：快速增长到完整长度（10帧内完成）
             float growProgress = MathHelper.Clamp(dropTimer / 10f, 0f, 1f);
             float currentFlameLength = growProgress * fullFlameLength;
 
@@ -302,13 +318,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             });
         }
 
-        /// <summary>
-        /// 获取空降仓的屏幕中心位置（用于碰撞检测）
-        /// </summary>
         internal Vector2 GetPodScreenCenter() => Center - Main.screenPosition + shakeOffset;
 
         /// <summary>
+
         /// 生成一个残骸障碍物Actor
+
         /// </summary>
         private void SpawnDebris() {
             //在屏幕宽度范围内随机选择一个 X 位置
@@ -372,7 +387,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 使用Trail和自定义着色器绘制尾焰效果
+
         /// </summary>
         private void DrawFlameTrail(SpriteBatch spriteBatch) {
             if (dropTimer < 10) return;
@@ -382,7 +399,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             flameTrail ??= new Trail(flameTrailPoints, GetFlameTrailWidth, GetFlameTrailColor);
             flameTrail.TrailPositions = flameTrailPoints;
 
-            //切换到顶点绘制模式——与DestroyerRenderHelper一致的模式
+            //切换到顶点绘制模式：与DestroyerRenderHelper一致的模式
             spriteBatch.End();
 
             Effect effect = EffectLoader.DropPodFlame.Value;
@@ -396,19 +413,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             flameTrail.DrawTrail(effect);
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
-            //恢复SpriteBatch——与项目中其他End/Begin对保持一致
+            //恢复SpriteBatch：与项目中其他End/Begin对保持一致
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         /// <summary>
+
         /// 尾焰Trail宽度函数：根部宽、末端窄，呈火焰锥形
+
         /// </summary>
         private float GetFlameTrailWidth(float progress) {
             //progress: 0=喷口(根部), 1=火焰远端
             float intensityFactor = MathHelper.Clamp(dropTimer / 120f, 0.3f, 1f);
 
-            //火焰根部宽，末端收窄——加粗基础宽度，收窄更平缓
+            //火焰根部宽，末端收窄：加粗基础宽度，收窄更平缓
             float baseWidth = 55f + reentryHeat * 25f;
             float taper = 1f - MathF.Pow(progress, 1.2f);
 
@@ -419,7 +438,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 尾焰Trail颜色函数：根部白黄，中段橙色，末端暗红渐隐
+
         /// </summary>
         private Color GetFlameTrailColor(Vector2 texCoords) {
             float progress = texCoords.X; //沿火焰长度方向
@@ -447,10 +468,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             return result * alpha * heatBoost;
         }
 
-        /// <summary>
-        /// 绘制大气再入冲击波环——从仓头向外扩散的压缩气流环
-        /// 使用着色器渲染，带噪声扰动的环形效果
-        /// </summary>
         private void DrawShockwaveRings(SpriteBatch spriteBatch) {
             if (shockwaveRings.Count == 0) return;
             if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) return;
@@ -469,7 +486,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
 
                 Vector2 drawPos = ring.WorldCenter - Main.screenPosition + shakeOffset;
 
-                //透视压缩比——横向宽、纵向窄，模拟从正上方俯视的水平环
+                //透视压缩比：横向宽、纵向窄，模拟从正上方俯视的水平环
                 const float perspectiveSquish = 0.45f;
 
                 Effect effect = EffectLoader.DropPodShockwave.Value;
@@ -571,13 +588,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
-        /// 冲击波环数据——模拟大气再入时仓头前方的弓形激波
+
+        /// 冲击波环数据：模拟大气再入时仓头前方的弓形激波
+
         /// </summary>
         private class ShockwaveRing
         {
             /// <summary>环中心的世界坐标</summary>
             public Vector2 WorldCenter;
-            /// <summary>环相对于仓体中心的Y偏移，用于在跟随X的同时保持Y独立运动</summary>
+            /// <summary>环相对于仓体中心的Y偏移</summary>
             public float YOffset;
             /// <summary>每帧移动速度（世界坐标）</summary>
             public Vector2 Velocity;
@@ -594,7 +613,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             public bool IsDead => Life >= MaxLife;
 
             /// <summary>
-            /// 更新环的位置——X轴跟随仓体当前位置，Y轴按自身速度独立运动
+
+            /// 更新环的位置：X轴跟随仓体当前位置，Y轴按自身速度独立运动
+
             /// </summary>
             public void Update(float podCenterX) {
                 Life++;

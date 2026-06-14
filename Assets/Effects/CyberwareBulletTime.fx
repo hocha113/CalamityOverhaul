@@ -1,6 +1,6 @@
 // ============================================================================
-// CyberwareBulletTime.fx 义体雷达子弹时间全屏滤镜
-// AlphaBlend 预乘 alpha，1x1 占位贴图拉全屏
+//CyberwareBulletTime.fx 义体雷达子弹时间全屏滤镜
+//AlphaBlend 预乘 alpha，1x1 占位贴图拉全屏
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -49,15 +49,15 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     ease = 1.0 - pow(1.0 - ease, 3.0);
 
     //==================================================
-    // 1) 冷色底层（极薄，让整屏先笼罩一层"系统介入"的青蓝）
+    //1) 冷色底层（极薄，让整屏先笼罩一层"系统介入"的青蓝）
     //==================================================
     float3 baseTint = float3(0.014, 0.040, 0.072);
     float baseAlpha = 0.22 * uAlpha;
 
     //==================================================
-    // 2) 径向暗角：以雷达锚点为原点的渐进压暗
-    //    rNorm < 0.05 时几乎透明（让玩家视线落在雷达上），
-    //    rNorm > 0.55 后快速变暗形成"聚光灯"效果
+    //2) 径向暗角：以雷达锚点为原点的渐进压暗
+    //rNorm < 0.05 时几乎透明（让玩家视线落在雷达上），
+    //rNorm > 0.55 后快速变暗形成"聚光灯"效果
     //==================================================
     float vignette = smoothstep(0.06, 0.58, rNorm);
     //四角额外暗角，让屏幕四个角落保持沉浸黑边
@@ -67,9 +67,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float vignetteAlpha = vignetteFinal * 0.40 * uAlpha;
 
     //==================================================
-    // 3) 时间波：从雷达原点向外扩散的低频同心环
-    //    冻结期间 GameUpdateCount 不推进，本 shader 用上层传入的实时 uTime
-    //    所以波纹依旧动起来，传达"时间仍在流逝，只是世界被钉住"的反差
+    //3) 时间波：从雷达原点向外扩散的低频同心环
+    //冻结期间 GameUpdateCount 不推进，本 shader 用上层传入的实时 uTime
+    //所以波纹依旧动起来，传达"时间仍在流逝，只是世界被钉住"的反差
     //==================================================
     float waveSpeed1 = 95.0;
     float waveSpeed2 = 58.0;
@@ -85,8 +85,8 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float waveAlpha = wave * 0.13 * uAlpha;
 
     //==================================================
-    // 4) 径向流光：从锚点向四周发散的"时间被拉伸"暗示线
-    //    按角度做哈希采样：稀疏出现 / 缓慢生灭，避免满屏放射状嘈杂感
+    //4) 径向流光：从锚点向四周发散的"时间被拉伸"暗示线
+    //按角度做哈希采样：稀疏出现 / 缓慢生灭，避免满屏放射状嘈杂感
     //==================================================
     float streakSeed = floor(ang * 14.0);
     float streakRand = hash21(float2(streakSeed, 13.7));
@@ -102,8 +102,8 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float streakAlpha = streak * 0.075 * uAlpha * ease;
 
     //==================================================
-    // 5) 顶/底软幅：电影 letterbox 的克制感
-    //    使用 smoothstep 让边界平滑过渡，避免硬切的字幕条质感
+    //5) 顶/底软幅：电影 letterbox 的克制感
+    //使用 smoothstep 让边界平滑过渡，避免硬切的字幕条质感
     //==================================================
     float bandH = 110.0;
     float bandTop = 1.0 - smoothstep(0.0, bandH, p.y);
@@ -113,9 +113,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float bandAlpha = bandMask * 0.45 * uAlpha;
 
     //==================================================
-    // 6) 四角 HUD 角标：极克制的青色短弧，传递"系统就位"的提示
-    //    用 min(x, screenW-x) / min(y, screenH-y) 做角点距离，
-    //    再叠加 ang 维度的 fade，仅在四个角落形成 L 型亮带
+    //6) 四角 HUD 角标：极克制的青色短弧，传递"系统就位"的提示
+    //用 min(x, screenW-x) / min(y, screenH-y) 做角点距离，
+    //再叠加 ang 维度的 fade，仅在四个角落形成 L 型亮带
     //==================================================
     float2 cornerVec = min(p, uResolution - p);
     float cornerNear = exp(-min(cornerVec.x, cornerVec.y) / 28.0);
@@ -127,16 +127,16 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float cornerAlpha = cornerNear * cornerL * 0.32 * uAlpha * ease;
 
     //==================================================
-    // 7) 极淡的胶片颗粒：让画面保持"生动"，不至于像静态贴图
-    //    噪声以时间做高频抖动，与 uTime 同步
+    //7) 极淡的胶片颗粒：让画面保持"生动"，不至于像静态贴图
+    //噪声以时间做高频抖动，与 uTime 同步
     //==================================================
     float grainRand = hash21(p * 0.5 + frac(uTime * 23.7) * 173.0);
     float grain = (grainRand - 0.5);
     float grainAlpha = grain * 0.045 * uAlpha;
 
     //==================================================
-    // 8) 雷达锚点附近的"开放圈"：明确告诉玩家"操作发生在这里"
-    //    一道很轻的内亮外暗的环，半径与雷达活动圈大致吻合（160~220px）
+    //8) 雷达锚点附近的"开放圈"：明确告诉玩家"操作发生在这里"
+    //一道很轻的内亮外暗的环，半径与雷达活动圈大致吻合（160~220px）
     //==================================================
     float anchorD = abs(r - 190.0);
     float anchorRing = exp(-pow(anchorD / 18.0, 2.0)) * ease;
@@ -144,9 +144,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float anchorAlpha = anchorRing * 0.10 * uAlpha;
 
     //==================================================
-    // 合成（预乘 alpha）
-    //   先把每层的"贡献色 = tint * alpha"累加为颜色项；
-    //   再把所有层的 alpha 单独累加为 alpha 项，最终保留独立的 alpha 通道
+    //合成（预乘 alpha）
+    //先把每层的"贡献色 = tint * alpha"累加为颜色项；
+    //再把所有层的 alpha 单独累加为 alpha 项，最终保留独立的 alpha 通道
     //==================================================
     float3 col = baseTint * baseAlpha
                + vignetteTint * vignetteAlpha

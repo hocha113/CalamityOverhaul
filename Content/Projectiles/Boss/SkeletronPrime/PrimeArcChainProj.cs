@@ -13,14 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
-    /// <summary>
-    /// 机械骷髅王电弧链锁：头臂间带伤害的高压电弧束带(TetherSpin 扇叶)
-    /// <br/>ai[0] = 机械臂 NPC 的 whoAmI
-    /// <br/>ai[1] = 头部 NPC 的 whoAmI
-    /// <br/>ai[2] = 总持续时间（帧）
-    /// <br/>前 <see cref="WarmupTime"/> 帧预警细弱无伤害；
-    /// 头/臂失效或头部脱离 TetherSpin 时快速消散
-    /// </summary>
+    /// <summary>机械骷髅王电弧链锁：头臂间带伤害的高压电弧束带(TetherSpin扇叶)；ai[0]=机械臂NPC的whoAmI；ai[1]=头部NPC的whoAmI；ai[2]=总持续时间（帧）；前<see cref="WarmupTime"/>帧预警细弱无伤害；头/臂失效或头部脱离TetherSpin时快速消散</summary>
     internal class PrimeArcChainProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder2;

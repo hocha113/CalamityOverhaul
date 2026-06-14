@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -6,7 +6,7 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
 {
     /// <summary>
-    /// 焚烧炉数据，用于管理输入物和焚烧后的输出物
+    /// 焚烧炉数据，管理输入物和焚烧后的输出物
     /// </summary>
     internal class IncineratorData : MachineData
     {
@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         /// </summary>
         internal float MaxUE = 500;
         /// <summary>
-        /// 当前温度(用于视觉效果)
+        /// 当前温度(视觉效果)
         /// </summary>
         internal float Temperature;
         /// <summary>

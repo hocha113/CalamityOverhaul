@@ -6,8 +6,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 {
     /// <summary>
-    /// 灭绝令效果：三阶段恒星毁灭动画、波纹、警告文本
-    /// 阶段0：恒星变红 → 阶段1：猛烈闪烁 → 阶段2：缩小消失
+    /// 灭绝令效果：三阶段恒星毁灭动画、波纹、警告文本 阶段0：恒星变红 → 阶段1：猛烈闪烁 → 阶段2：缩小消失
     /// </summary>
     internal partial class GalacticCrisisRender
     {
@@ -65,8 +64,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
-        /// 灭绝令波纹扫过恒星时标记它们
-        /// 泰拉也在清理名单中，波纹到达其径向距离时一并标记
+
+        /// 灭绝令波纹扫过恒星时标记它们 泰拉也在清理名单中，波纹到达其径向距离时一并标记
+
         /// </summary>
         private static void MarkStarsForExtinction() {
             float waveNormalized = extinctionWaveRadius / GalaxyRadius;
@@ -95,7 +95,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 更新所有被标记恒星和泰拉的三阶段毁灭动画
+
         /// </summary>
         private static void UpdateExtinctionStarAnimations() {
             float dt = 0.016f;
@@ -171,9 +173,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制灭绝令的扩展波纹前沿
-        /// </summary>
         private static void DrawExtinctionWaveFront(SpriteBatch sb, Vector2 center, float alpha) {
             if (extinctionWaveRadius <= 5f) return;
 
@@ -225,9 +224,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制灭绝令底部警告文本
-        /// </summary>
         private static void DrawExtinctionWarningText(SpriteBatch sb, float alpha, float flash) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;

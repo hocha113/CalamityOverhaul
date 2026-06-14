@@ -110,9 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>
-        /// 获取默认返回状态，保持招式套路循环
-        /// </summary>
+        /// <summary>获取默认返回状态，保持招式套路循环</summary>
         private ITwinsState GetDefaultState() {
             if (Context.IsSpazmatism) {
                 return new SpazmatismFlameChaseState(comboStep);
@@ -122,9 +120,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 集合阶段：弹簧飞抵玩家两侧
-        /// </summary>
+        /// <summary>集合阶段：弹簧飞抵玩家两侧</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -146,9 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 对位阶段：精确对位并相互校准
-        /// </summary>
+        /// <summary>对位阶段：精确对位并相互校准</summary>
         private void ExecuteAlignPhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)AlignPhase;
@@ -176,9 +170,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 蓄力阶段：锁定绷紧，能量内聚到极限
-        /// </summary>
+        /// <summary>蓄力阶段：锁定绷紧，能量内聚到极限</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase - AlignPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -222,9 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 碰撞阶段：音爆起步全速对撞，接近碰撞点保持高速(撞击感)
-        /// </summary>
+        /// <summary>碰撞阶段：音爆起步全速对撞，接近碰撞点保持高速(撞击感)</summary>
         private void ExecuteCollisionPhase(NPC npc, Player player) {
             //停止蓄力特效
             Context.ResetChargeState();
@@ -352,9 +342,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             //逐渐恢复
             npc.velocity *= 0.92f;

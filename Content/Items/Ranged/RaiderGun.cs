@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameContent.BaseEntity;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 12;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -37,7 +37,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().DeathModeItem = true;
         }
 
-        //右键用于冲刺
+        //右键：冲刺
         public override bool AltFunctionUse(Player player) => true;
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取
@@ -90,7 +90,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.CWR().DeathModeItem = true;
         }
 
-        //右键用于冲刺
+        //右键：冲刺
         public override bool AltFunctionUse(Player player) => true;
 
         //物品使用本身不消耗子弹，由手持弹幕在实际开火时自行拾取

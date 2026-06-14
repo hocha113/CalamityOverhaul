@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.Generator;
+using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public const int MaxAISlot = 3;
         /// <summary>
-        /// 用于存储物品的状态值，对这个数组的使用避免了额外类成员的创建
+        /// 存储物品的状态值，对这个数组的使用避免了额外类成员的创建
         /// (自建类成员数据对于修改物品而言总是令人困惑)
         /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
         /// </summary>
@@ -101,7 +101,7 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public bool AutoloadingOmigaSnyRecipe = true;
         /// <summary>
-        /// 被传奇武器所使用，用于保存一些数据
+        /// 被传奇武器所使用，保存一些数据
         /// </summary>
         public LegendData LegendData;
         /// <summary>
@@ -314,7 +314,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void HoldItem(Item item, Player player) {
-            //玩家手持物品，使用 PlayerHolding 上下文。把 player 一并传入用于 owner 校验，
+            //玩家手持，PlayerHolding 上下文，带 player 做 owner 校验
             //避免多人模式下 A 玩家的物品在 B 玩家屏幕上弹出确认 UI
             LegendData?.DoUpdate(item, player, LegendUpdateContext.PlayerHolding);
             if (heldProjType > 0) {
@@ -338,7 +338,7 @@ namespace CalamityOverhaul.Content
         }
 
         public override void UpdateInventory(Item item, Player player) {
-            //玩家背包中的物品，使用 PlayerInventory 上下文。把 player 一并传入用于 owner 校验，
+            //玩家背包，PlayerInventory 上下文，带 player 做 owner 校验
             //避免多人模式下 A 玩家的物品在 B 玩家屏幕上弹出确认 UI
             LegendData?.DoUpdate(item, player, LegendUpdateContext.PlayerInventory);
             RecoverUnloadedItem.UpdateInventory(item);

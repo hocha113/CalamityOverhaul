@@ -1,7 +1,7 @@
 // ============================================================================
-// PrimeChargeVortex.fx 充能漩涡
-// 头部中心方形面片；协议同 TwinsChargeVortex
-// Additive 预乘 alpha
+//PrimeChargeVortex.fx 充能漩涡
+//头部中心方形面片；协议同 TwinsChargeVortex
+//Additive 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
-    /// <summary>村正次元斩终结 RenderHandle——碎屏扭曲/滤镜/径向模糊三 pass</summary>
+    /// <summary>村正次元斩终结RenderHandle，碎屏扭曲/滤镜/径向模糊三pass</summary>
     internal class MuraSlayAllRender : RenderHandle
     {
         /// <summary>扭曲强度</summary>
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 MuraSlayAllAssets.ScreenColorMess.CurrentTechnique.Passes[0].Apply();
             }
 
-            //绘制处理后的实时画面
+            //合成最终画面
             sb.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             sb.End();
         }

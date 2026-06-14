@@ -1,6 +1,6 @@
 // ============================================================================
-// ForestPanel.fx 森林魔法面板
-// AlphaBlend 预乘 alpha
+//ForestPanel.fx 森林魔法面板
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,7 +11,7 @@ float2 uResolution;
 float uEdgePad;
 float uNightMode; //0暖阳翠绿 1冷月幽蓝
 
-// ─── 噪声工具 ───
+//─── 噪声工具 ───
 float hash11(float p) {
     p = frac(p * 0.1031);
     p *= p + 33.33;
@@ -45,7 +45,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 center = uResolution * 0.5;
     float2 halfSize = innerSize * 0.5;
 
-    // ═══ 圆角矩形SDF ═══
+    //═══ 圆角矩形SDF ═══
     float2 dd = abs(pixelPos - center) - halfSize;
     float cornerR = 5.0;
     float panelSDF = length(max(dd, 0.0)) + min(max(dd.x, dd.y), 0.0) - cornerR;
@@ -58,7 +58,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 uv = saturate((pixelPos - innerMin) / innerSize);
     float nm = uNightMode;
 
-    // ═══ 1. 苔藓渐变底色（三段式） ═══
+    //═══ 1. 苔藓渐变底色（三段式） ═══
     float3 warmTop = float3(0.048, 0.058, 0.022);
     float3 warmMid = float3(0.032, 0.045, 0.016);
     float3 warmBot = float3(0.022, 0.028, 0.010);
@@ -73,7 +73,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         ? lerp(topC, midC, uv.y * 2.0)
         : lerp(midC, botC, (uv.y - 0.5) * 2.0);
 
-    // ═══ 2. 树皮苔藓纹理 ═══
+    //═══ 2. 树皮苔藓纹理 ═══
     float barkV = valueNoise(pixelPos * float2(0.03, 0.14));
     float mossP = valueNoise(pixelPos * 0.022 + 300.0);
     float texBlend = barkV * 0.55 + mossP * 0.45;
@@ -83,7 +83,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 coolTint = float3(-0.004, 0.006, 0.016);
     bg += lerp(warmTint, coolTint, nm) * (texBlend - 0.5);
 
-    // ═══ 3. 菌丝脉络网络（ridge noise + 动态脉冲） ═══
+    //═══ 3. 菌丝脉络网络（ridge noise + 动态脉冲） ═══
     float2 veinUV1 = pixelPos * 0.016 + float2(uTime * 0.12, uTime * 0.06);
     float2 veinUV2 = pixelPos * 0.032 + float2(-uTime * 0.08, uTime * 0.10) + 50.0;
     float ridge1 = 1.0 - abs(valueNoise(veinUV1) * 2.0 - 1.0);
@@ -95,7 +95,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 coolVein = float3(0.04, 0.18, 0.26);
     bg += lerp(warmVein, coolVein, nm) * veinPattern * veinPulse * 0.38;
 
-    // ═══ 4. 萤火微粒（5个漂浮光点） ═══
+    //═══ 4. 萤火微粒（5个漂浮光点） ═══
     for (int fi = 0; fi < 5; fi++) {
         float2 flyBase = float2(
             hash11(fi * 3.7 + 1.0) * innerSize.x + innerMin.x,
@@ -115,7 +115,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         bg += lerp(warmFly, coolFly, nm) * flyCore * 0.55;
     }
 
-    // ═══ 5. 角落符文环（同心环 + 呼吸脉冲） ═══
+    //═══ 5. 角落符文环（同心环 + 呼吸脉冲） ═══
     float2 rune[4] = {
         innerMin + float2(22.0, 22.0),
         float2(innerMax.x - 22.0, innerMin.y + 22.0),
@@ -137,7 +137,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         bg += lerp(warmRune, coolRune, nm) * (ring1 * 0.40 + ring2 * 0.28 + rCore * 0.60 + rGlow * 0.12);
     }
 
-    // ═══ 6. 有机浮雕边缘 ═══
+    //═══ 6. 有机浮雕边缘 ═══
     float bevelW = 10.0;
     float bevelMask = saturate(-panelSDF / bevelW);
     bevelMask = 1.0 - bevelMask;
@@ -163,7 +163,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float groove = exp(-grooveDist * grooveDist * 0.12) * 0.15;
     bg -= groove * float3(0.025, 0.030, 0.012);
 
-    // ═══ 7. 风拂扫描光带 ═══
+    //═══ 7. 风拂扫描光带 ═══
     float swPhase = frac(uTime * 0.038);
     float swDist = uv.y - swPhase;
     if (swDist < -0.5) swDist += 1.0;
@@ -179,7 +179,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //风拂增强脉络可见度
     bg += lerp(warmVein, coolVein, nm) * veinPattern * swGlow * 0.14;
 
-    // ═══ 8. 斑驳树光（移动光斑） ═══
+    //═══ 8. 斑驳树光（移动光斑） ═══
     float2 dappleUV = pixelPos * 0.009 + float2(uTime * 0.05, uTime * 0.03);
     float dapple = valueNoise(dappleUV);
     float dappleMask = smoothstep(0.42, 0.68, dapple);
@@ -188,7 +188,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 coolDapple = float3(0.02, 0.05, 0.08);
     bg += lerp(warmDapple, coolDapple, nm) * dappleMask * 0.28;
 
-    // ═══ 9. 木板接缝 ═══
+    //═══ 9. 木板接缝 ═══
     float seamY = frac(pixelPos.y / 85.0);
     float seamDark = 1.0 - smoothstep(0.0, 0.015, seamY);
     bg -= float3(0.022, 0.028, 0.010) * seamDark * 0.42;
@@ -197,18 +197,18 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 coolSeamHL = float3(0.005, 0.013, 0.022);
     bg += lerp(warmSeamHL, coolSeamHL, nm) * seamHL * 0.32;
 
-    // ═══ 10. 暗角 ═══
+    //═══ 10. 暗角 ═══
     float2 vig = uv * 2.0 - 1.0;
     float vigStr = dot(vig * float2(0.42, 0.52), vig * float2(0.42, 0.52));
     bg *= saturate(1.0 - vigStr) * 0.35 + 0.65;
 
-    // ═══ 11. 顶部树冠光 ═══
+    //═══ 11. 顶部树冠光 ═══
     float topRef = 1.0 - smoothstep(0.0, 0.14, uv.y);
     float3 warmTopRef = float3(0.018, 0.028, 0.008);
     float3 coolTopRef = float3(0.008, 0.022, 0.038);
     bg += lerp(warmTopRef, coolTopRef, nm) * topRef * 0.45;
 
-    // ═══ 输出 ═══
+    //═══ 输出 ═══
     float fa = uAlpha * edgeAlpha;
     return float4(bg * fa, fa) * vertexColor;
 }

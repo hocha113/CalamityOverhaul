@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -13,69 +13,45 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 {
-    /// <summary>
-    /// 对话框 UI 基类
-    /// </summary>
+    /// <summary>对话框 UI 基类</summary>
     public abstract class DialogueBoxBase : UIHandle, ILocalizedModType
     {
-        // 预处理器由场景设置，无静态事件
+        //预处理器由场景设置，无静态事件
         public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
 
         #region 生命周期
 
-        /// <summary>
-        /// 当前对话框状态
-        /// </summary>
+        /// <summary>当前对话框状态</summary>
         private DialogueBoxState _state = DialogueBoxState.Idle;
 
-        /// <summary>
-        /// 获取当前对话框状态
-        /// </summary>
+        /// <summary>获取当前对话框状态</summary>
         public DialogueBoxState State => _state;
 
-        /// <summary>
-        /// 对话框是否处于可交互状态
-        /// </summary>
+        /// <summary>对话框是否处于可交互状态</summary>
         public bool IsInteractive => _state == DialogueBoxState.Active;
 
-        /// <summary>
-        /// 对话框是否正在运行（包括打开、激活、暂停状态）
-        /// </summary>
+        /// <summary>对话框是否正在运行（包括打开、激活、暂停状态）</summary>
         public bool IsRunning => _state == DialogueBoxState.Opening || _state == DialogueBoxState.Active || _state == DialogueBoxState.Paused;
 
-        /// <summary>
-        /// 对话框正在打开时触发
-        /// </summary>
+        /// <summary>对话框正在打开时触发</summary>
         public new event EventHandler<DialogueBoxLifecycleEventArgs> OnOpening;
 
-        /// <summary>
-        /// 对话框完全打开后触发
-        /// </summary>
+        /// <summary>对话框完全打开后触发</summary>
         public new event EventHandler<DialogueBoxLifecycleEventArgs> OnOpened;
 
-        /// <summary>
-        /// 对话框开始关闭时触发
-        /// </summary>
+        /// <summary>对话框开始关闭时触发</summary>
         public new event EventHandler<DialogueBoxLifecycleEventArgs> OnClosing;
 
-        /// <summary>
-        /// 对话框完全关闭后触发
-        /// </summary>
+        /// <summary>对话框完全关闭后触发</summary>
         public new event EventHandler<DialogueBoxLifecycleEventArgs> OnClosed;
 
-        /// <summary>
-        /// 对话框状态改变时触发
-        /// </summary>
+        /// <summary>对话框状态改变时触发</summary>
         public event EventHandler<DialogueBoxLifecycleEventArgs> OnStateChanged;
 
-        /// <summary>
-        /// 标记是否为强制关闭
-        /// </summary>
+        /// <summary>标记是否为强制关闭</summary>
         private bool _wasForceClosed = false;
 
-        /// <summary>
-        /// 切换状态并派发事件
-        /// </summary>
+        /// <summary>切换状态并派发事件</summary>
         protected void SetState(DialogueBoxState newState, bool forceClosed = false) {
             if (_state == newState) return;
 
@@ -85,10 +61,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             var args = new DialogueBoxLifecycleEventArgs(this, previousState, newState, forceClosed);
 
-            // 状态变更事件
+            //状态变更事件
             OnStateChanged?.Invoke(this, args);
 
-            // 分支状态事件
+            //分支状态事件
             switch (newState) {
                 case DialogueBoxState.Opening:
                     OnOpening?.Invoke(this, args);
@@ -110,16 +86,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 播放关闭动画并关闭
-        /// </summary>
+        /// <summary>播放关闭动画并关闭</summary>
         /// <returns>是否成功开始关闭</returns>
         public new virtual bool Close() {
             if (_state == DialogueBoxState.Closing || _state == DialogueBoxState.Closed || _state == DialogueBoxState.Idle) {
                 return false;
             }
 
-            // 全身立绘阻止关闭
+            //全身立绘阻止关闭
             if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueClose) {
                 return false;
             }
@@ -128,9 +102,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return true;
         }
 
-        /// <summary>
-        /// 跳过动画立即关闭
-        /// </summary>
+        /// <summary>跳过动画立即关闭</summary>
         /// <param name="clearQueue">是否清空对话队列</param>
         /// <param name="triggerCallbacks">是否触发当前对话的完成回调</param>
         public virtual void ForceClose(bool clearQueue = true, bool triggerCallbacks = false) {
@@ -138,15 +110,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
 
-            // 可选触发当前 OnFinish
+            //可选触发当前 OnFinish
             if (triggerCallbacks && current != null) {
                 current.OnFinish?.Invoke();
             }
 
-            // 隐藏全身立绘
+            //隐藏全身立绘
             HideFullBodyPortrait();
 
-            // 重置队列与显示状态
+            //重置队列与显示状态
             if (clearQueue) {
                 queue.Clear();
             }
@@ -163,21 +135,19 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             waitingForAdvance = false;
             fastModeAutoAdvanceTimer = 0;
 
-            // 重置定时对话
+            //重置定时对话
             ResetTimedDialogue();
 
-            // 注销当前解析器
+            //注销当前解析器
             if (DialogueUIRegistry.Current == this) {
                 DialogueUIRegistry.SetResolver(null);
             }
 
-            // 切至 Idle
+            //切至 Idle
             SetState(DialogueBoxState.Idle, forceClosed: true);
         }
 
-        /// <summary>
-        /// 立即补全当前段并等待推进
-        /// </summary>
+        /// <summary>立即补全当前段并等待推进</summary>
         /// <returns>是否成功跳过</returns>
         public virtual bool SkipCurrentDialogue() {
             if (current == null || _state != DialogueBoxState.Active) {
@@ -194,47 +164,43 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return false;
         }
 
-        /// <summary>
-        /// 跳过当前对话并自动推进到下一条
-        /// </summary>
+        /// <summary>跳过当前对话并自动推进到下一条</summary>
         /// <returns>是否成功跳过并推进</returns>
         public virtual bool SkipAndAdvance() {
             if (current == null || _state != DialogueBoxState.Active) {
                 return false;
             }
 
-            // 全身立绘阻止推进
+            //全身立绘阻止推进
             if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
                 return false;
             }
 
-            // 未打完字则先补全
+            //未打完字则先补全
             if (!finishedCurrent) {
                 visibleCharCount = wrappedTotalChars;
                 finishedCurrent = true;
             }
 
-            // OnFinish 后取下一条
+            //OnFinish 后取下一条
             current.OnFinish?.Invoke();
             StartNext();
             return true;
         }
 
-        /// <summary>
-        /// 跳过所有对话，直接完成（优雅地关闭）
-        /// </summary>
+        /// <summary>跳过所有对话，直接完成（优雅地关闭）</summary>
         /// <param name="triggerAllCallbacks">是否触发所有对话的完成回调</param>
         public virtual void SkipAll(bool triggerAllCallbacks = false) {
             if (_state == DialogueBoxState.Idle || _state == DialogueBoxState.Closing || _state == DialogueBoxState.Closed) {
                 return;
             }
 
-            // 当前段 OnFinish
+            //当前段 OnFinish
             if (triggerAllCallbacks && current != null) {
                 current.OnFinish?.Invoke();
             }
 
-            // 队列剩余段 OnFinish
+            //队列剩余段 OnFinish
             if (triggerAllCallbacks) {
                 while (queue.Count > 0) {
                     var segment = queue.Dequeue();
@@ -249,9 +215,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             BeginClose();
         }
 
-        /// <summary>
-        /// 暂停对话
-        /// </summary>
+        /// <summary>暂停对话</summary>
         /// <returns>是否成功暂停</returns>
         public virtual bool Pause() {
             if (_state != DialogueBoxState.Active) {
@@ -262,9 +226,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return true;
         }
 
-        /// <summary>
-        /// 恢复对话
-        /// </summary>
+        /// <summary>恢复对话</summary>
         /// <returns>是否成功恢复</returns>
         public virtual bool Resume() {
             if (_state != DialogueBoxState.Paused) {
@@ -275,16 +237,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return true;
         }
 
-        /// <summary>
-        /// 重置对话框到初始状态
-        /// </summary>
+        /// <summary>重置对话框到初始状态</summary>
         public virtual void ResetDialogueBox() {
             ForceClose(clearQueue: true, triggerCallbacks: false);
         }
 
-        /// <summary>
-        /// 清除所有生命周期事件订阅
-        /// </summary>
+        /// <summary>清除所有生命周期事件订阅</summary>
         public void ClearLifecycleEvents() {
             OnOpening = null;
             OnOpened = null;
@@ -297,52 +255,34 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #region 缩放
 
-        /// <summary>
-        /// 当前缩放，默认 1
-        /// </summary>
+        /// <summary>当前缩放，默认 1</summary>
         private float _scale = 1f;
 
-        /// <summary>
-        /// 目标缩放
-        /// </summary>
+        /// <summary>目标缩放</summary>
         private float _targetScale = 1f;
 
-        /// <summary>
-        /// 缩放过渡速度
-        /// </summary>
+        /// <summary>缩放过渡速度</summary>
         protected virtual float ScaleTransitionSpeed => 0.12f;
 
-        /// <summary>
-        /// 最小缩放值
-        /// </summary>
+        /// <summary>最小缩放值</summary>
         public const float MinScale = 1f;
 
-        /// <summary>
-        /// 最大缩放值
-        /// </summary>
+        /// <summary>最大缩放值</summary>
         public const float MaxScale = 2f;
 
-        /// <summary>
-        /// 获取当前缩放值
-        /// </summary>
+        /// <summary>获取当前缩放值</summary>
         public float Scale => _scale;
 
-        /// <summary>
-        /// 获取或设置目标缩放值
-        /// </summary>
+        /// <summary>获取或设置目标缩放值</summary>
         public float TargetScale {
             get => _targetScale;
             set => _targetScale = Math.Clamp(value, MinScale, MaxScale);
         }
 
-        /// <summary>
-        /// 缩放改变时触发的事件
-        /// </summary>
+        /// <summary>缩放改变时触发的事件</summary>
         public event Action<float> OnScaleChanged;
 
-        /// <summary>
-        /// 设置缩放值（立即生效）
-        /// </summary>
+        /// <summary>设置缩放值（立即生效）</summary>
         /// <param name="scale">缩放值（会被限制在 MinScale 和 MaxScale 之间）</param>
         public void SetScale(float scale) {
             scale = Math.Clamp(scale, MinScale, MaxScale);
@@ -354,30 +294,24 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 设置目标缩放值（平滑过渡）
-        /// </summary>
+        /// <summary>设置目标缩放值（平滑过渡）</summary>
         /// <param name="scale">目标缩放值</param>
         public void SetTargetScale(float scale) {
             TargetScale = scale;
         }
 
-        /// <summary>
-        /// 重置缩放到默认值
-        /// </summary>
+        /// <summary>重置缩放到默认值</summary>
         public void ResetScale() {
             SetScale(MinScale);
         }
 
-        /// <summary>
-        /// 更新缩放过渡
-        /// </summary>
+        /// <summary>更新缩放过渡</summary>
         protected void UpdateScaleTransition() {
             if (Math.Abs(_scale - _targetScale) > 0.001f) {
                 float oldScale = _scale;
                 _scale = MathHelper.Lerp(_scale, _targetScale, ScaleTransitionSpeed);
 
-                // 逼近目标则直接赋值
+                //逼近目标则直接赋值
                 if (Math.Abs(_scale - _targetScale) < 0.005f) {
                     _scale = _targetScale;
                 }
@@ -389,9 +323,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 外观参数变化后刷新折行布局
-        /// </summary>
+        /// <summary>外观参数变化后刷新折行布局</summary>
         private void RefreshCurrentLayout() {
             if (current != null) {
                 WrapCurrent();
@@ -400,109 +332,67 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #region 缩放辅助
 
-        /// <summary>
-        /// 获取缩放后的面板宽度
-        /// </summary>
+        /// <summary>获取缩放后的面板宽度</summary>
         protected float ScaledPanelWidth => PanelWidth * _scale;
 
-        /// <summary>
-        /// 获取缩放后的面板高度
-        /// </summary>
+        /// <summary>获取缩放后的面板高度</summary>
         protected float ScaledPanelHeight => panelHeight * _scale;
 
-        /// <summary>
-        /// 缩放后内边距
-        /// </summary>
+        /// <summary>缩放后内边距</summary>
         protected int ScaledPadding => (int)(Padding * _scale);
 
-        /// <summary>
-        /// 获取缩放后的行间距
-        /// </summary>
+        /// <summary>获取缩放后的行间距</summary>
         protected int ScaledLineSpacing => (int)(LineSpacing * _scale);
 
-        /// <summary>
-        /// 获取缩放后的最小高度
-        /// </summary>
+        /// <summary>获取缩放后的最小高度</summary>
         protected float ScaledMinHeight => MinHeight * _scale;
 
-        /// <summary>
-        /// 获取缩放后的最大高度
-        /// </summary>
+        /// <summary>获取缩放后的最大高度</summary>
         protected float ScaledMaxHeight => MaxHeight * _scale;
 
-        /// <summary>
-        /// 获取缩放后的文字大小
-        /// </summary>
+        /// <summary>获取缩放后的文字大小</summary>
         protected float ScaledTextScale => TextScale * _scale;
 
-        /// <summary>
-        /// 获取缩放后的名字大小
-        /// </summary>
+        /// <summary>获取缩放后的名字大小</summary>
         protected float ScaledNameScale => NameScale * _scale;
 
-        /// <summary>
-        /// 获取缩放后的继续提示大小
-        /// </summary>
+        /// <summary>获取缩放后的继续提示大小</summary>
         protected float ScaledContinueHintScale => ContinueHintScale * _scale;
 
-        /// <summary>
-        /// 获取缩放后的快进提示大小
-        /// </summary>
+        /// <summary>获取缩放后的快进提示大小</summary>
         protected float ScaledFastHintScale => FastHintScale * _scale;
 
-        /// <summary>
-        /// 获取缩放后的头像宽度
-        /// </summary>
+        /// <summary>获取缩放后的头像宽度</summary>
         protected float ScaledPortraitWidth => PortraitWidth * _scale;
 
-        /// <summary>
-        /// 获取缩放后的头像内边距
-        /// </summary>
+        /// <summary>获取缩放后的头像内边距</summary>
         protected float ScaledPortraitInnerPadding => PortraitInnerPadding * _scale;
 
-        /// <summary>
-        /// 获取缩放后的头像左边距
-        /// </summary>
+        /// <summary>获取缩放后的头像左边距</summary>
         protected float ScaledPortraitLeftMargin => PortraitLeftMargin * _scale;
 
-        /// <summary>
-        /// 获取缩放后的头像最小高度
-        /// </summary>
+        /// <summary>获取缩放后的头像最小高度</summary>
         protected float ScaledPortraitMinHeight => PortraitMinHeight * _scale;
 
-        /// <summary>
-        /// 获取缩放后的头像最大高度
-        /// </summary>
+        /// <summary>获取缩放后的头像最大高度</summary>
         protected float ScaledPortraitMaxHeight => PortraitMaxHeight * _scale;
 
-        /// <summary>
-        /// 获取缩放后的名字顶部偏移
-        /// </summary>
+        /// <summary>获取缩放后的名字顶部偏移</summary>
         protected float ScaledTopNameOffsetBase => TopNameOffsetBase * _scale;
 
-        /// <summary>
-        /// 获取缩放后的文本块顶部偏移
-        /// </summary>
+        /// <summary>获取缩放后的文本块顶部偏移</summary>
         protected float ScaledTextBlockOffsetBase => TextBlockOffsetBase * _scale;
 
-        /// <summary>
-        /// 获取缩放后的名字光晕半径
-        /// </summary>
+        /// <summary>获取缩放后的名字光晕半径</summary>
         protected float ScaledNameGlowRadius => NameGlowRadius * _scale;
 
-        /// <summary>
-        /// 获取缩放后的分隔线Y偏移
-        /// </summary>
+        /// <summary>获取缩放后的分隔线Y偏移</summary>
         protected float ScaledDividerLineOffsetY => DividerLineOffsetY * _scale;
 
-        /// <summary>
-        /// 标量缩放
-        /// </summary>
+        /// <summary>标量缩放</summary>
         protected float ApplyScale(float value) => value * _scale;
 
-        /// <summary>
-        /// 缩放一个向量值
-        /// </summary>
+        /// <summary>缩放一个向量值</summary>
         protected Vector2 ApplyScale(Vector2 value) => value * _scale;
 
         #endregion
@@ -511,79 +401,49 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #region 定时对话
 
-        /// <summary>
-        /// 当前定时对话的剩余时间（帧）
-        /// </summary>
+        /// <summary>当前定时对话的剩余时间（帧）</summary>
         protected int timedRemainingFrames = 0;
 
-        /// <summary>
-        /// 当前定时对话的总时间（帧）
-        /// </summary>
+        /// <summary>当前定时对话的总时间（帧）</summary>
         protected int timedTotalFrames = 0;
 
-        /// <summary>
-        /// 当前对话是否为定时对话
-        /// </summary>
+        /// <summary>当前对话是否为定时对话</summary>
         public bool IsCurrentTimed => current?.IsTimed == true;
 
-        /// <summary>
-        /// 获取定时对话的剩余时间比例（0~1，1为刚开始）
-        /// </summary>
+        /// <summary>获取定时对话的剩余时间比例（0~1，1为刚开始）</summary>
         public float TimedProgress => timedTotalFrames > 0 ? timedRemainingFrames / (float)timedTotalFrames : 0f;
 
-        /// <summary>
-        /// 获取定时对话的已过时间比例（0~1，1为结束）
-        /// </summary>
+        /// <summary>获取定时对话的已过时间比例（0~1，1为结束）</summary>
         public float TimedElapsed => 1f - TimedProgress;
 
-        /// <summary>
-        /// 获取当前定时对话的剩余帧数
-        /// </summary>
+        /// <summary>获取当前定时对话的剩余帧数</summary>
         public int TimedRemainingFrames => timedRemainingFrames;
 
-        /// <summary>
-        /// 定时对话进度条的基础颜色
-        /// </summary>
+        /// <summary>定时对话进度条的基础颜色</summary>
         protected virtual Color TimedProgressBaseColor => new Color(100, 200, 255);
 
-        /// <summary>
-        /// 定时对话进度条的警告颜色（时间不足时）
-        /// </summary>
+        /// <summary>定时对话进度条的警告颜色（时间不足时）</summary>
         protected virtual Color TimedProgressWarningColor => new Color(255, 150, 80);
 
-        /// <summary>
-        /// 定时对话进度条的危险颜色（即将结束时）
-        /// </summary>
+        /// <summary>定时对话进度条的危险颜色（即将结束时）</summary>
         protected virtual Color TimedProgressDangerColor => new Color(255, 80, 80);
 
-        /// <summary>
-        /// 进入警告状态的阈值（剩余时间比例）
-        /// </summary>
+        /// <summary>进入警告状态的阈值（剩余时间比例）</summary>
         protected virtual float TimedWarningThreshold => 0.35f;
 
-        /// <summary>
-        /// 进入危险状态的阈值（剩余时间比例）
-        /// </summary>
+        /// <summary>进入危险状态的阈值（剩余时间比例）</summary>
         protected virtual float TimedDangerThreshold => 0.15f;
 
-        /// <summary>
-        /// 进度条描边的基础粗细
-        /// </summary>
+        /// <summary>进度条描边的基础粗细</summary>
         protected virtual float TimedProgressBorderThickness => 3.5f;
 
-        /// <summary>
-        /// 进度条的透明度
-        /// </summary>
+        /// <summary>进度条的透明度</summary>
         protected virtual float TimedProgressAlpha => 0.95f;
 
-        /// <summary>
-        /// 进度条发光层数
-        /// </summary>
+        /// <summary>进度条发光层数</summary>
         protected virtual int TimedProgressGlowLayers => 3;
 
-        /// <summary>
-        /// 初始化定时对话计时器
-        /// </summary>
+        /// <summary>初始化定时对话计时器</summary>
         protected void InitializeTimedDialogue() {
             if (current?.TimedConfig != null) {
                 timedTotalFrames = (int)(current.TimedConfig.Duration * 60f);
@@ -595,15 +455,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 更新定时对话逻辑
-        /// </summary>
+        /// <summary>更新定时对话逻辑</summary>
         protected void UpdateTimedDialogue() {
             if (!IsCurrentTimed || current?.TimedConfig == null) {
                 return;
             }
 
-            // 打完字后才开始倒计时
+            //打完字后才开始倒计时
             if (!finishedCurrent) {
                 return;
             }
@@ -613,21 +471,21 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (timedRemainingFrames > 0) {
                 timedRemainingFrames--;
 
-                // OnProgressUpdate
+                //OnProgressUpdate
                 config.OnProgressUpdate?.Invoke(TimedProgress);
 
-                // 倒计时归零
+                //倒计时归零
                 if (timedRemainingFrames <= 0) {
-                    // 全身立绘阻止推进
+                    //全身立绘阻止推进
                     if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
                         return;
                     }
 
-                    // OnTimeExpired（可能含选项逻辑）
+                    //OnTimeExpired（可能含选项逻辑）
                     config.OnTimeExpired?.Invoke();
 
-                    // 按 SkipOnFinishWhenExpired 决定是否 OnFinish
-                    // 选项定时：OnTimeExpired 已处理，勿再 OnFinish 以免重复弹窗
+                    //按 SkipOnFinishWhenExpired 决定是否 OnFinish
+                    //选项定时：OnTimeExpired 已处理，勿再 OnFinish 以免重复弹窗
                     if (!config.SkipOnFinishWhenExpired) {
                         current.OnFinish?.Invoke();
                     }
@@ -637,17 +495,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 重置定时对话状态
-        /// </summary>
+        /// <summary>重置定时对话状态</summary>
         protected void ResetTimedDialogue() {
             timedRemainingFrames = 0;
             timedTotalFrames = 0;
         }
 
-        /// <summary>
-        /// 获取当前定时进度的颜色
-        /// </summary>
+        /// <summary>获取当前定时进度的颜色</summary>
         protected virtual Color GetTimedProgressColor(float progress) {
             if (progress <= TimedDangerThreshold) {
                 return TimedProgressDangerColor;
@@ -668,24 +522,20 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         internal readonly Queue<DialogueSegment> queue = new();
         internal DialogueSegment current;
         protected string[] wrappedLines = Array.Empty<string>();
-        // 折行后可显示字符总数（不含换行与被裁字符）
+        //折行后可显示字符总数（不含换行与被裁字符）
         protected int wrappedTotalChars = 0;
         protected int visibleCharCount = 0;
         protected int typeTimer = 0;
         protected const int TypeInterval = 2;
         protected bool fastMode = false;
         protected bool finishedCurrent = false;
-        /// <summary>
-        /// 快进模式下自动推进的计时器
-        /// </summary>
+        /// <summary>快进模式下自动推进的计时器</summary>
         protected int fastModeAutoAdvanceTimer = 0;
-        /// <summary>
-        /// 快进模式下自动推进的延迟帧数（给玩家短暂阅读时间）
-        /// </summary>
+        /// <summary>快进模式下自动推进的延迟帧数（给玩家短暂阅读时间）</summary>
         protected virtual int FastModeAutoAdvanceDelay => 12;
         internal int playedCount = 0;
         protected Vector2 anchorPos;
-        // 面板基础高度，绘制经 ScaledPanelHeight 缩放
+        //面板基础高度，绘制经 ScaledPanelHeight 缩放
         internal float panelHeight = 160f;
         protected virtual float MinHeight => 120f;
         protected virtual float MaxHeight => 480f;
@@ -709,16 +559,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #region 全身立绘
 
-        // 全身立绘注册表
+        //全身立绘注册表
         protected static readonly Dictionary<string, FullBodyPortraitBase> nameTofullBodyPortraits = new(StringComparer.Ordinal);
         protected static readonly Dictionary<Type, FullBodyPortraitBase> typeTofullBodyPortraits = new();
 
-        // 当前激活全身立绘
+        //当前激活全身立绘
         protected FullBodyPortraitBase activeFullBodyPortrait;
 
-        /// <summary>
-        /// 注册一个全身立绘实例
-        /// </summary>
+        /// <summary>注册一个全身立绘实例</summary>
         /// <param name="key">立绘标识符</param>
         /// <param name="portrait">立绘实例</param>
         public static void RegisterFullBodyPortrait(FullBodyPortraitBase portrait) {
@@ -733,14 +581,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 显示全身立绘
-        /// </summary>
+        /// <summary>显示全身立绘</summary>
         /// <returns>是否成功显示</returns>
         public virtual bool ShowFullBodyPortrait<T>() where T : FullBodyPortraitBase => ShowFullBodyPortrait(typeof(T));
-        /// <summary>
-        /// 显示全身立绘
-        /// </summary>
+        /// <summary>显示全身立绘</summary>
         /// <param name="key">立绘标识符</param>
         /// <returns>是否成功显示</returns>
         public virtual bool ShowFullBodyPortrait(string key) {
@@ -755,9 +599,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             StartPerformance(portrait);
             return true;
         }
-        /// <summary>
-        /// 显示全身立绘
-        /// </summary>
+        /// <summary>显示全身立绘</summary>
         /// <param name="key">立绘标识符</param>
         /// <returns>是否成功显示</returns>
         public virtual bool ShowFullBodyPortrait(Type type) {
@@ -769,17 +611,15 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return true;
         }
 
-        /// <summary>
-        /// 启动全身立绘
-        /// </summary>
+        /// <summary>启动全身立绘</summary>
         /// <param name="portrait"></param>
         public void StartPerformance(FullBodyPortraitBase portrait) {
-            // 切换立绘时结束旧演出
+            //切换立绘时结束旧演出
             if (activeFullBodyPortrait != null && activeFullBodyPortrait != portrait) {
                 activeFullBodyPortrait.EndPerformance();
             }
 
-            // 启动新立绘
+            //启动新立绘
             activeFullBodyPortrait = portrait;
             if (!portrait.Active) {
                 portrait.Initialize(this);
@@ -787,23 +627,17 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             portrait.StartPerformance();
         }
 
-        /// <summary>
-        /// 隐藏当前全身立绘
-        /// </summary>
+        /// <summary>隐藏当前全身立绘</summary>
         public virtual void HideFullBodyPortrait() {
             activeFullBodyPortrait?.EndPerformance();
         }
 
-        /// <summary>
-        /// 获取当前激活的全身立绘
-        /// </summary>
+        /// <summary>获取当前激活的全身立绘</summary>
         public FullBodyPortraitBase GetActiveFullBodyPortrait() {
             return activeFullBodyPortrait;
         }
 
-        /// <summary>
-        /// 清理所有全身立绘
-        /// </summary>
+        /// <summary>清理所有全身立绘</summary>
         public static void ClearAllFullBodyPortraits() {
             nameTofullBodyPortraits.Clear();
         }
@@ -832,9 +666,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             RegisterPortrait(speaker, tex, baseColor, silhouette);
         }
 
-        /// <summary>
-        /// 注册头像
-        /// </summary>
+        /// <summary>注册头像</summary>
         /// <param name="speaker">说话者标识符</param>
         /// <param name="texturePath">纹理路径</param>
         /// <param name="sourceRect">用于裁剪的矩形区域，允许从帧图中截取特定部分</param>
@@ -853,9 +685,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             RegisterPortrait(speaker, tex, sourceRect, baseColor, silhouette);
         }
 
-        /// <summary>
-        /// 注册头像
-        /// </summary>
+        /// <summary>注册头像</summary>
         /// <param name="speaker">说话者标识符</param>
         /// <param name="texture">纹理对象</param>
         /// <param name="baseColor">基础颜色</param>
@@ -876,9 +706,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             pd.SourceRect = null; // 使用完整纹理
         }
 
-        /// <summary>
-        /// 注册头像
-        /// </summary>
+        /// <summary>注册头像</summary>
         /// <param name="speaker">说话者标识符</param>
         /// <param name="texture">纹理对象</param>
         /// <param name="sourceRect">用于裁剪的矩形区域，允许从帧图中截取特定部分</param>
@@ -916,9 +744,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             SetPortraitStyle(speaker, baseColor, silhouette);
         }
 
-        /// <summary>
-        /// 尝试获取已注册的立绘数据（供外部系统如来电UI使用）
-        /// </summary>
+        /// <summary>尝试获取已注册的立绘数据（供外部系统如来电UI使用）</summary>
         public static bool TryGetPortrait(string key, out PortraitData portraitData) {
             return portraits.TryGetValue(key, out portraitData);
         }
@@ -933,9 +759,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             });
         }
 
-        /// <summary>
-        /// 入队对话（独立立绘键）
-        /// </summary>
+        /// <summary>入队对话（独立立绘键）</summary>
         /// <param name="speaker">说话者名称(显示用)</param>
         /// <param name="portraitKey">立绘键(用于查找头像，如果为null则使用speaker)</param>
         /// <param name="content">对话内容</param>
@@ -951,9 +775,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             });
         }
 
-        /// <summary>
-        /// 入队定时对话
-        /// </summary>
+        /// <summary>入队定时对话</summary>
         /// <param name="speaker">说话者名称</param>
         /// <param name="content">对话内容</param>
         /// <param name="timedConfig">定时配置</param>
@@ -970,9 +792,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             });
         }
 
-        /// <summary>
-        /// 入队定时对话(支持独立立绘键)
-        /// </summary>
+        /// <summary>入队定时对话(支持独立立绘键)</summary>
         /// <param name="speaker">说话者名称(显示用)</param>
         /// <param name="portraitKey">立绘键</param>
         /// <param name="content">对话内容</param>
@@ -990,9 +810,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             });
         }
 
-        /// <summary>
-        /// 入队定时对话(使用默认6秒配置)
-        /// </summary>
+        /// <summary>入队定时对话(使用默认6秒配置)</summary>
         /// <param name="speaker">说话者名称</param>
         /// <param name="content">对话内容</param>
         /// <param name="durationSeconds">持续秒数</param>
@@ -1013,7 +831,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 return;
             }
 
-            // 全身立绘阻止关闭
+            //全身立绘阻止关闭
             if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueClose) {
                 return;
             }
@@ -1021,29 +839,29 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             closing = true;
             hideProgress = 0f;
 
-            // 设置关闭中状态
+            //设置关闭中状态
             SetState(DialogueBoxState.Closing);
 
-            // 关闭时隐藏全身立绘
+            //关闭时隐藏全身立绘
             HideFullBodyPortrait();
         }
         public virtual void StartNext() {
             if (queue.Count == 0) {
-                // 队列空：通知立绘完成
+                //队列空：通知立绘完成
                 activeFullBodyPortrait?.OnDialogueComplete();
                 BeginClose();
                 playedCount = 0;
                 return;
             }
 
-            // 通知立绘推进
+            //通知立绘推进
             if (playedCount > 0) {
                 activeFullBodyPortrait?.OnDialogueAdvance();
             }
 
             current = queue.Dequeue();
 
-            // 段开始前 OnStart
+            //段开始前 OnStart
             current?.OnStart?.Invoke();
 
             playedCount++;
@@ -1056,7 +874,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     Index = index,
                     Total = total
                 };
-                // 当前 PreProcessor
+                //当前 PreProcessor
                 PreProcessor?.Invoke(args);
                 current.Speaker = args.Speaker;
                 current.Content = args.Content;
@@ -1074,7 +892,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             finishedCurrent = false;
             waitingForAdvance = false;
 
-            // 初始化定时段
+            //初始化定时段
             InitializeTimedDialogue();
 
             if (playedCount <= 1 || showProgress < 1f) {
@@ -1083,7 +901,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             else {
                 contentFade = 1f;
             }
-            // 立绘键，PortraitKey 优先
+            //立绘键，PortraitKey 优先
             string currentPortraitKey = current?.PortraitKey ?? current?.Speaker;
             if (current != null && !string.IsNullOrEmpty(currentPortraitKey) && portraits.TryGetValue(currentPortraitKey, out var pd2)) {
                 foreach (var kv in portraits) {
@@ -1099,7 +917,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
             string raw = current.Content.Replace("\r", string.Empty);
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            // 未缩放布局空间折行
+            //未缩放布局空间折行
             float textScale = TextScale;
             float baseWidth = PanelWidth - Padding * 2 - 24f;
             string wrapPortraitKey = current.PortraitKey ?? current.Speaker;
@@ -1109,7 +927,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (baseWidth < 60f) {
                 baseWidth = 60f;
             }
-            // CJK WrapText，处理 \n 与 scale
+            //CJK WrapText，处理 \n 与 scale
             wrappedLines = [.. CWRUtils.WrapText(raw, font, baseWidth, textScale)];
             wrappedTotalChars = 0;
             foreach (var line in wrappedLines)
@@ -1127,14 +945,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         public new void LogicUpdate() {
             anchorPos = new Vector2(Main.screenWidth / 2f, Main.screenHeight - 140f);
 
-            // 缩放过渡
+            //缩放过渡
             UpdateScaleTransition();
 
             if (current == null && queue.Count > 0 && !closing) {
                 StartNext();
             }
 
-            // Idle → Opening
+            //Idle → Opening
             if (!closing && _state == DialogueBoxState.Idle && (current != null || queue.Count > 0)) {
                 SetState(DialogueBoxState.Opening);
             }
@@ -1144,7 +962,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     showProgress += 1f / ShowDuration;
                     showProgress = Math.Clamp(showProgress, 0f, 1f);
 
-                    // Opening → Active
+                    //Opening → Active
                     if (showProgress >= 1f && _state == DialogueBoxState.Opening) {
                         SetState(DialogueBoxState.Active);
                     }
@@ -1166,13 +984,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                             DialogueUIRegistry.SetResolver(null);
                         }
 
-                        // Closing → Idle
+                        //Closing → Idle
                         SetState(DialogueBoxState.Idle);
                     }
                 }
             }
 
-            // Paused 跳过打字
+            //Paused 跳过打字
             if (current != null && !closing && _state != DialogueBoxState.Paused) {
                 if (!finishedCurrent) {
                     typeTimer++;
@@ -1194,20 +1012,20 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 else {
                     advanceBlinkTimer++;
 
-                    // 定时对话
+                    //定时对话
                     UpdateTimedDialogue();
 
-                    // 快进自动推进，定时禁手动时跳过
+                    //快进自动推进，定时禁手动时跳过
                     if (fastMode && waitingForAdvance) {
-                        // 定时禁手动推进
+                        //定时禁手动推进
                         if (current.TimedConfig != null && !current.TimedConfig.AllowManualAdvance) {
                         }
-                        // 立绘阻止推进
+                        //立绘阻止推进
                         else if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
                         }
                         else {
                             fastModeAutoAdvanceTimer++;
-                            // 短暂延迟防过快跳过
+                            //短暂延迟防过快跳过
                             if (fastModeAutoAdvanceTimer >= FastModeAutoAdvanceDelay) {
                                 fastModeAutoAdvanceTimer = 0;
                                 current.OnFinish?.Invoke();
@@ -1240,11 +1058,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
             }
 
-            // 全身立绘更新
+            //全身立绘更新
             if (activeFullBodyPortrait != null) {
                 activeFullBodyPortrait.Update();
 
-                // 立绘停用则清引用
+                //立绘停用则清引用
                 if (!activeFullBodyPortrait.Active) {
                     activeFullBodyPortrait = null;
                 }
@@ -1279,7 +1097,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (closing) {
                 return;
             }
-            // Paused 跳过输入
+            //Paused 跳过输入
             if (_state == DialogueBoxState.Paused) {
                 return;
             }
@@ -1295,12 +1113,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                         waitingForAdvance = true;
                     }
                     else {
-                        // 定时禁手动推进
+                        //定时禁手动推进
                         if (current.TimedConfig != null && !current.TimedConfig.AllowManualAdvance) {
                             return;
                         }
 
-                        // 立绘阻止推进
+                        //立绘阻止推进
                         if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
                             return;
                         }
@@ -1320,9 +1138,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         }
         #region 头像绘制
 
-        /// <summary>
-        /// 计算头像的绘制信息
-        /// </summary>
+        /// <summary>计算头像的绘制信息</summary>
         /// <param name="portraitData">头像数据</param>
         /// <param name="panelRect">面板矩形</param>
         /// <param name="appearScale">出现动画缩放</param>
@@ -1342,23 +1158,23 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Texture2D ptex = portraitData.Texture;
             Rectangle? sourceRect = portraitData.SourceRect;
 
-            // 纹理尺寸
+            //纹理尺寸
             Vector2 textureSize = sourceRect.HasValue
                 ? new Vector2(sourceRect.Value.Width, sourceRect.Value.Height)
                 : ptex.Size();
 
-            // 可用高度与头像上限
+            //可用高度与头像上限
             float actualAvailHeight = availHeight ?? (panelRect.Height - 60f);
             float actualMaxHeight = maxPortraitHeight ?? Math.Clamp(actualAvailHeight, 95f, 270f);
 
-            // 基础缩放
+            //基础缩放
             float scaleBase = Math.Min(PortraitWidth / textureSize.X, actualMaxHeight / textureSize.Y);
             float finalScale = scaleBase * appearScale;
 
-            // 绘制尺寸
+            //绘制尺寸
             Vector2 drawSize = textureSize * finalScale;
 
-            // 绘制位置
+            //绘制位置
             Vector2 drawPosition = new Vector2(
                 panelRect.X + Padding + PortraitInnerPadding,
                 panelRect.Y + panelRect.Height - drawSize.Y - Padding - 12f
@@ -1373,9 +1189,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             };
         }
 
-        /// <summary>
-        /// 绘制头像
-        /// </summary>
+        /// <summary>绘制头像</summary>
         /// <param name="spriteBatch">精灵批次</param>
         /// <param name="portraitData">头像数据</param>
         /// <param name="sizeInfo">尺寸信息</param>
@@ -1404,9 +1218,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
         }
 
-        /// <summary>
-        /// 计算头像的绘制信息（支持缩放）
-        /// </summary>
+        /// <summary>计算头像的绘制信息（支持缩放）</summary>
         protected virtual PortraitSizeInfo CalculatePortraitSizeScaled(
             PortraitData portraitData,
             Rectangle panelRect,
@@ -1420,23 +1232,23 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Texture2D ptex = portraitData.Texture;
             Rectangle? sourceRect = portraitData.SourceRect;
 
-            // 纹理尺寸
+            //纹理尺寸
             Vector2 textureSize = sourceRect.HasValue
                 ? new Vector2(sourceRect.Value.Width, sourceRect.Value.Height)
                 : ptex.Size();
 
-            // 可用高度（缩放后）
+            //可用高度（缩放后）
             float actualAvailHeight = availHeight ?? (panelRect.Height - ApplyScale(60f));
             float actualMaxHeight = maxPortraitHeight ?? Math.Clamp(actualAvailHeight, ScaledPortraitMinHeight, ScaledPortraitMaxHeight);
 
-            // 基础缩放（ScaledPortraitWidth）
+            //基础缩放（ScaledPortraitWidth）
             float scaleBase = Math.Min(ScaledPortraitWidth / textureSize.X, actualMaxHeight / textureSize.Y);
             float finalScale = scaleBase * appearScale;
 
-            // 绘制尺寸
+            //绘制尺寸
             Vector2 drawSize = textureSize * finalScale;
 
-            // 绘制位置（缩放内边距）
+            //绘制位置（缩放内边距）
             Vector2 drawPosition = new Vector2(
                 panelRect.X + ScaledPadding + ScaledPortraitInnerPadding,
                 panelRect.Y + panelRect.Height - drawSize.Y - ScaledPadding - ApplyScale(12f)
@@ -1455,9 +1267,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #region 内容绘制模板
 
-        /// <summary>
-        /// 立绘与文本绘制模板
-        /// </summary>
+        /// <summary>立绘与文本绘制模板</summary>
         protected virtual float PortraitScaleMin => 0.85f;
         protected virtual float PortraitScaleMax => 1f;
         protected virtual float PortraitAvailHeightOffset => 54f;
@@ -1478,36 +1288,32 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual float DividerLineThickness => 1.3f;
         protected virtual float DividerLineOffsetY => 26f;
 
-        /// <summary>
-        /// 立绘与文本主绘制流程
-        /// </summary>
+        /// <summary>立绘与文本主绘制流程</summary>
         protected virtual void DrawPortraitAndText(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha) {
-            // 构建绘制上下文
+            //构建绘制上下文
             var ctx = CreateDrawContext(spriteBatch, panelRect, alpha, contentAlpha);
             if (ctx == null) {
                 return;
             }
 
-            // 立绘区
+            //立绘区
             if (ctx.HasPortrait) {
                 DrawPortraitSection(ctx);
             }
 
-            // 说话者名
+            //说话者名
             if (current != null && !string.IsNullOrEmpty(current.Speaker)) {
                 DrawSpeakerName(ctx);
             }
 
-            // 正文
+            //正文
             DrawTextContent(ctx);
 
-            // 底部提示
+            //底部提示
             DrawHints(ctx);
         }
 
-        /// <summary>
-        /// 创建绘制上下文
-        /// </summary>
+        /// <summary>创建绘制上下文</summary>
         protected virtual ContentDrawContext CreateDrawContext(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
@@ -1528,7 +1334,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float portraitAppearScale = MathHelper.Lerp(PortraitScaleMin, PortraitScaleMax, switchEase);
             float portraitExtraAlpha = MathHelper.Clamp(switchEase, 0f, 1f);
 
-            // 缩放后布局量
+            //缩放后布局量
             float leftOffset = ScaledPadding;
             float topNameOffset = ScaledTopNameOffsetBase;
             float textBlockOffsetY = ScaledPadding + ScaledTextBlockOffsetBase;
@@ -1551,7 +1357,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 Scale = _scale
             };
 
-            // 立绘尺寸（缩放后）
+            //立绘尺寸（缩放后）
             if (hasPortrait) {
                 ctx.PortraitSizeInfo = CalculatePortraitSizeScaled(
                     speakerPortrait,
@@ -1565,19 +1371,17 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return ctx;
         }
 
-        /// <summary>
-        /// 绘制立绘区域（包括边框、立绘本身、光效）
-        /// </summary>
+        /// <summary>绘制立绘区域（包括边框、立绘本身、光效）</summary>
         protected virtual void DrawPortraitSection(ContentDrawContext ctx) {
             var sizeInfo = ctx.PortraitSizeInfo;
             var pd = ctx.PortraitData;
 
-            // 立绘位置偏移（子类可扭曲）
+            //立绘位置偏移（子类可扭曲）
             Vector2 finalPosition = ApplyPortraitOffset(ctx, sizeInfo.DrawPosition);
             sizeInfo.DrawPosition = finalPosition;
             ctx.PortraitSizeInfo = sizeInfo;
 
-            // 头像边框（线宽不随缩放）
+            //头像边框（线宽不随缩放）
             float framePadding = ApplyScale(PortraitFramePadding);
             Rectangle frameRect = new(
                 (int)(finalPosition.X - framePadding),
@@ -1587,13 +1391,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
             DrawPortraitFrame(ctx, frameRect);
 
-            // 立绘着色
+            //立绘着色
             Color drawColor = GetPortraitColor(ctx);
 
-            // 立绘区
+            //立绘区
             DrawPortrait(ctx.SpriteBatch, pd, sizeInfo, drawColor);
 
-            // 立绘区光效
+            //立绘区光效
             float glowPadding = ApplyScale(PortraitGlowPadding);
             Rectangle glowRect = new(
                 (int)(finalPosition.X - glowPadding),
@@ -1603,29 +1407,25 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
             DrawPortraitGlow(ctx, glowRect);
 
-            // 更新左偏移
+            //更新左偏移
             ctx.LeftOffset += ScaledPortraitWidth + ScaledPortraitLeftMargin;
         }
 
-        /// <summary>
-        /// 应用立绘位置偏移，子类可重写以添加扭曲/漂浮效果
-        /// </summary>
+        /// <summary>应用立绘位置偏移，子类可重写以添加扭曲/漂浮效果</summary>
         protected virtual Vector2 ApplyPortraitOffset(ContentDrawContext ctx, Vector2 basePosition) {
             return basePosition;
         }
 
-        /// <summary>
-        /// 绘制立绘边框，子类应重写以自定义样式
-        /// </summary>
+        /// <summary>绘制立绘边框，子类应重写以自定义样式</summary>
         protected virtual void DrawPortraitFrame(ContentDrawContext ctx, Rectangle frameRect) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             float alpha = ctx.Alpha * ctx.PortraitData.Fade * ctx.PortraitExtraAlpha;
 
-            // 默认深色底
+            //默认深色底
             Color back = new Color(10, 20, 30) * (alpha * 0.85f);
             ctx.SpriteBatch.Draw(vaule, frameRect, new Rectangle(0, 0, 1, 1), back);
 
-            // 默认边框
+            //默认边框
             Color edge = new Color(100, 150, 200) * (alpha * 0.6f);
             ctx.SpriteBatch.Draw(vaule, new Rectangle(frameRect.X, frameRect.Y, frameRect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
             ctx.SpriteBatch.Draw(vaule, new Rectangle(frameRect.X, frameRect.Bottom - 2, frameRect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.7f);
@@ -1633,9 +1433,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             ctx.SpriteBatch.Draw(vaule, new Rectangle(frameRect.Right - 2, frameRect.Y, 2, frameRect.Height), new Rectangle(0, 0, 1, 1), edge * 0.8f);
         }
 
-        /// <summary>
-        /// 获取立绘绘制颜色
-        /// </summary>
+        /// <summary>获取立绘绘制颜色</summary>
         protected virtual Color GetPortraitColor(ContentDrawContext ctx) {
             var pd = ctx.PortraitData;
             Color drawColor = pd.BaseColor * ctx.ContentAlpha * pd.Fade * ctx.PortraitExtraAlpha;
@@ -1647,44 +1445,36 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return drawColor;
         }
 
-        /// <summary>
-        /// 获取剪影颜色，子类可重写
-        /// </summary>
+        /// <summary>获取剪影颜色，子类可重写</summary>
         protected virtual Color GetSilhouetteColor(ContentDrawContext ctx) {
             return new Color(10, 30, 40) * 0.9f;
         }
 
-        /// <summary>
-        /// 绘制立绘光效，子类应重写以自定义样式
-        /// </summary>
+        /// <summary>绘制立绘光效，子类应重写以自定义样式</summary>
         protected virtual void DrawPortraitGlow(ContentDrawContext ctx, Rectangle glowRect) {
             var pd = ctx.PortraitData;
             Color rim = new Color(140, 200, 255) * (ctx.ContentAlpha * 0.4f * pd.Fade) * ctx.PortraitExtraAlpha;
             DrawGlowRect(ctx.SpriteBatch, glowRect, rim);
         }
 
-        /// <summary>
-        /// 绘制说话者名字
-        /// </summary>
+        /// <summary>绘制说话者名字</summary>
         protected virtual void DrawSpeakerName(ContentDrawContext ctx) {
             Vector2 speakerPos = GetSpeakerNamePosition(ctx);
             float nameAlpha = ctx.ContentAlpha * ctx.SwitchEase;
 
-            // 名字光晕
+            //名字光晕
             DrawNameGlow(ctx, speakerPos, nameAlpha);
 
-            // 名字本体
+            //名字本体
             Utils.DrawBorderString(ctx.SpriteBatch, current.Speaker, speakerPos, Color.White * nameAlpha, ScaledNameScale);
 
-            // 分隔线
+            //分隔线
             Vector2 divStart = speakerPos + new Vector2(0, ScaledDividerLineOffsetY);
             Vector2 divEnd = divStart + new Vector2(ctx.PanelRect.Width - ctx.LeftOffset - ScaledPadding, 0);
             DrawDividerLine(ctx, divStart, divEnd, nameAlpha);
         }
 
-        /// <summary>
-        /// 获取说话者名字位置，子类可重写以添加扭曲效果
-        /// </summary>
+        /// <summary>获取说话者名字位置，子类可重写以添加扭曲效果</summary>
         protected virtual Vector2 GetSpeakerNamePosition(ContentDrawContext ctx) {
             return new Vector2(
                 ctx.PanelRect.X + ctx.LeftOffset,
@@ -1692,9 +1482,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
         }
 
-        /// <summary>
-        /// 绘制名字光晕，子类应重写以自定义样式
-        /// </summary>
+        /// <summary>绘制名字光晕，子类应重写以自定义样式</summary>
         protected virtual void DrawNameGlow(ContentDrawContext ctx, Vector2 position, float alpha) {
             Color nameGlow = new Color(140, 200, 255) * alpha * 0.7f;
             for (int i = 0; i < NameGlowCount; i++) {
@@ -1704,9 +1492,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 绘制分隔线，子类应重写以自定义样式
-        /// </summary>
+        /// <summary>绘制分隔线，子类应重写以自定义样式</summary>
         protected virtual void DrawDividerLine(ContentDrawContext ctx, Vector2 start, Vector2 end, float alpha) {
             DrawGradientLine(ctx.SpriteBatch, start, end,
                 new Color(100, 150, 200) * (alpha * 0.85f),
@@ -1714,9 +1500,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 DividerLineThickness);
         }
 
-        /// <summary>
-        /// 绘制文本内容
-        /// </summary>
+        /// <summary>绘制文本内容</summary>
         protected virtual void DrawTextContent(ContentDrawContext ctx) {
             Vector2 textStart = new(ctx.PanelRect.X + ctx.LeftOffset, ctx.PanelRect.Y + ctx.TextBlockOffsetY);
             int remaining = visibleCharCount;
@@ -1749,66 +1533,54 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     break;
                 }
 
-                // 文本位置偏移（子类可扭曲）
+                //文本位置偏移（子类可扭曲）
                 Vector2 finalPos = ApplyTextLineOffset(ctx, linePos, i);
 
-                // 文本颜色
+                //文本颜色
                 Color lineColor = GetTextLineColor(ctx, i);
 
-                // 文本光晕（可选）
+                //文本光晕（可选）
                 DrawTextLineGlow(ctx, visLine, finalPos, i);
 
-                // 正文绘制
+                //正文绘制
                 Utils.DrawBorderString(ctx.SpriteBatch, visLine, finalPos, lineColor, ScaledTextScale);
             }
         }
 
-        /// <summary>
-        /// 应用文本行位置偏移，子类可重写以添加扭曲效果
-        /// </summary>
+        /// <summary>应用文本行位置偏移，子类可重写以添加扭曲效果</summary>
         protected virtual Vector2 ApplyTextLineOffset(ContentDrawContext ctx, Vector2 basePosition, int lineIndex) {
             return basePosition;
         }
 
-        /// <summary>
-        /// 获取文本行颜色，子类可重写
-        /// </summary>
+        /// <summary>获取文本行颜色，子类可重写</summary>
         protected virtual Color GetTextLineColor(ContentDrawContext ctx, int lineIndex) {
             return Color.Lerp(new Color(180, 230, 250), Color.White, 0.35f) * ctx.ContentAlpha;
         }
 
-        /// <summary>
-        /// 绘制文本行光晕，子类可重写（默认不绘制）
-        /// </summary>
+        /// <summary>绘制文本行光晕，子类可重写（默认不绘制）</summary>
         protected virtual void DrawTextLineGlow(ContentDrawContext ctx, string text, Vector2 position, int lineIndex) {
-            // 默认无光晕
+            //默认无光晕
         }
 
-        /// <summary>
-        /// 继续与加速提示
-        /// </summary>
+        /// <summary>继续与加速提示</summary>
         protected virtual void DrawHints(ContentDrawContext ctx) {
-            // 继续提示
+            //继续提示
             if (waitingForAdvance) {
                 DrawContinueHint(ctx);
             }
 
-            // 加速提示
+            //加速提示
             if (!finishedCurrent) {
                 DrawFastHint(ctx);
             }
         }
 
-        /// <summary>
-        /// 获取继续提示文本，子类可重写
-        /// </summary>
+        /// <summary>获取继续提示文本，子类可重写</summary>
         protected virtual string GetContinueHintText() {
             return $"> {ContinueHint.Value}<";
         }
 
-        /// <summary>
-        /// 绘制继续提示
-        /// </summary>
+        /// <summary>绘制继续提示</summary>
         protected virtual void DrawContinueHint(ContentDrawContext ctx) {
             float blink = (float)Math.Sin(advanceBlinkTimer / 12f * MathHelper.TwoPi) * 0.5f + 0.5f;
             string hint = GetContinueHintText();
@@ -1819,16 +1591,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Utils.DrawBorderString(ctx.SpriteBatch, hint, hintPos, hintColor, ScaledContinueHintScale);
         }
 
-        /// <summary>
-        /// 获取继续提示颜色，子类可重写
-        /// </summary>
+        /// <summary>获取继续提示颜色，子类可重写</summary>
         protected virtual Color GetContinueHintColor(ContentDrawContext ctx, float blink) {
             return new Color(140, 230, 255) * blink * ctx.ContentAlpha;
         }
 
-        /// <summary>
-        /// 绘制加速提示
-        /// </summary>
+        /// <summary>绘制加速提示</summary>
         protected virtual void DrawFastHint(ContentDrawContext ctx) {
             string fast = FastHint.Value;
             Vector2 fastSize = ctx.Font.MeasureString(fast) * (ScaledFastHintScale * 0.85f);
@@ -1838,16 +1606,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             Utils.DrawBorderString(ctx.SpriteBatch, fast, fastPos, fastColor, ScaledFastHintScale);
         }
 
-        /// <summary>
-        /// 获取加速提示颜色，子类可重写
-        /// </summary>
+        /// <summary>获取加速提示颜色，子类可重写</summary>
         protected virtual Color GetFastHintColor(ContentDrawContext ctx) {
             return new Color(120, 200, 235) * 0.4f * ctx.ContentAlpha;
         }
 
-        /// <summary>
-        /// 绘制渐变线条的辅助方法
-        /// </summary>
+        /// <summary>绘制渐变线条的辅助方法</summary>
         protected static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 edge = end - start;
@@ -1869,9 +1633,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 绘制发光矩形的辅助方法
-        /// </summary>
+        /// <summary>绘制发光矩形的辅助方法</summary>
         protected static void DrawGlowRect(SpriteBatch sb, Rectangle rect, Color glow) {
             Texture2D vaule = VaultAsset.placeholder2.Value;
             sb.Draw(vaule, rect, new Rectangle(0, 0, 1, 1), glow * 0.15f);
@@ -1887,15 +1649,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         #region 定时进度条
 
-        /// <summary>
-        /// 定时环绕边框进度条，子类可重写
-        /// </summary>
+        /// <summary>定时环绕边框进度条，子类可重写</summary>
         protected virtual void DrawTimedProgressIndicator(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             if (!IsCurrentTimed || current?.TimedConfig?.ShowProgressIndicator != true) {
                 return;
             }
 
-            // 打完字后才绘制进度条
+            //打完字后才绘制进度条
             if (!finishedCurrent) {
                 return;
             }
@@ -1903,14 +1663,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float progress = TimedProgress;
             Color baseProgressColor = GetTimedProgressColor(progress);
 
-            // 呼吸脉动（余量越少越快）
+            //呼吸脉动（余量越少越快）
             float pulseSpeed = MathHelper.Lerp(1.5f, 6f, 1f - progress);
             float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f * pulseSpeed) * 0.2f + 0.8f;
 
-            // 流动偏移
+            //流动偏移
             float flowOffset = Main.GameUpdateCount * 0.02f * MathHelper.Lerp(1f, 3f, 1f - progress);
 
-            // 多层外发光
+            //多层外发光
             for (int layer = TimedProgressGlowLayers - 1; layer >= 0; layer--) {
                 float layerAlpha = (1f - layer / (float)TimedProgressGlowLayers) * 0.4f;
                 float layerThickness = TimedProgressBorderThickness + layer * 2.5f;
@@ -1919,28 +1679,26 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, layerColor, layerThickness, flowOffset, layer > 0);
             }
 
-            // 核心进度条
+            //核心进度条
             Color coreColor = baseProgressColor * (alpha * TimedProgressAlpha * pulse);
             DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, coreColor, TimedProgressBorderThickness, flowOffset, false);
 
-            // 角落发光
+            //角落发光
             DrawProgressCornerGlow(spriteBatch, panelRect, progress, baseProgressColor * (alpha * pulse));
 
-            // 进度头追踪点
+            //进度头追踪点
             DrawProgressHead(spriteBatch, panelRect, progress, baseProgressColor * alpha, flowOffset);
         }
 
-        /// <summary>
-        /// 绘制带流动效果的进度边框
-        /// </summary>
+        /// <summary>绘制带流动效果的进度边框</summary>
         protected virtual void DrawProgressBorderWithFlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color, float thickness, float flowOffset, bool isGlowLayer) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 总周长
+            //总周长
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float visibleLength = totalPerimeter * progress;
 
-            // 四边长度
+            //四边长度
             float topLength = panelRect.Width;
             float rightLength = panelRect.Height;
             float bottomLength = panelRect.Width;
@@ -1948,10 +1706,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             float drawnLength = 0f;
 
-            // 流动 alpha 调制
+            //流动 alpha 调制
             float flowAlphaBase = isGlowLayer ? 0.6f : 1f;
 
-            // 顶边（左→右）
+            //顶边（左→右）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(topLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / topLength;
@@ -1965,7 +1723,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 drawnLength += topLength;
             }
 
-            // 右边（上→下）
+            //右边（上→下）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(rightLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / rightLength;
@@ -1979,7 +1737,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 drawnLength += rightLength;
             }
 
-            // 底边（右→左）
+            //底边（右→左）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(bottomLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / bottomLength;
@@ -1993,7 +1751,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 drawnLength += bottomLength;
             }
 
-            // 左边（下→上）
+            //左边（下→上）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(leftLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / leftLength;
@@ -2006,27 +1764,25 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 绘制进度头部的追踪亮点
-        /// </summary>
+        /// <summary>绘制进度头部的追踪亮点</summary>
         protected virtual void DrawProgressHead(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color, float flowOffset) {
             if (progress <= 0.01f) return;
 
             Texture2D pixel = CWRAsset.SoftGlow.Value;
 
-            // 进度头位置
+            //进度头位置
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float currentLength = totalPerimeter * progress;
 
             Vector2 headPos = GetPositionOnBorder(panelRect, currentLength);
 
-            // 多层追踪光点
+            //多层追踪光点
             float baseSize = pixel.Width / 2;
 
-            // 脉动
+            //脉动
             float headPulse = (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.3f + 0.7f;
 
-            // 外层光晕
+            //外层光晕
             float outerSize = baseSize * 2.5f * headPulse;
             Rectangle outerRect = new(
                 (int)(headPos.X - outerSize / 2),
@@ -2036,7 +1792,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
             spriteBatch.Draw(pixel, outerRect, null, color with { A = 0 } * 0.15f);
 
-            // 中层光晕
+            //中层光晕
             float midSize = baseSize * 1.5f * headPulse;
             Rectangle midRect = new(
                 (int)(headPos.X - midSize / 2),
@@ -2046,7 +1802,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
             spriteBatch.Draw(pixel, midRect, null, color with { A = 0 } * 0.4f);
 
-            // 核心亮点
+            //核心亮点
             float coreSize = baseSize * 0.8f;
             Rectangle coreRect = new(
                 (int)(headPos.X - coreSize / 2),
@@ -2057,39 +1813,35 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             spriteBatch.Draw(pixel, coreRect, null, Color.White with { A = 0 } * 0.9f);
         }
 
-        /// <summary>
-        /// 根据边框上的长度获取位置
-        /// </summary>
+        /// <summary>根据边框上的长度获取位置</summary>
         protected virtual Vector2 GetPositionOnBorder(Rectangle rect, float length) {
             float topLength = rect.Width;
             float rightLength = rect.Height;
             float bottomLength = rect.Width;
 
-            // 顶边
+            //顶边
             if (length <= topLength) {
                 return new Vector2(rect.X + length, rect.Y);
             }
             length -= topLength;
 
-            // 右边
+            //右边
             if (length <= rightLength) {
                 return new Vector2(rect.Right, rect.Y + length);
             }
             length -= rightLength;
 
-            // 底边
+            //底边
             if (length <= bottomLength) {
                 return new Vector2(rect.Right - length, rect.Bottom);
             }
             length -= bottomLength;
 
-            // 左边
+            //左边
             return new Vector2(rect.X, rect.Bottom - length);
         }
 
-        /// <summary>
-        /// 绘制带流动效果的进度条段
-        /// </summary>
+        /// <summary>绘制带流动效果的进度条段</summary>
         protected virtual void DrawProgressSegmentWithFlow(
             SpriteBatch spriteBatch,
             Texture2D pixel,
@@ -2114,7 +1866,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     float y1 = minY + height * t;
                     float y2 = minY + height * t2;
 
-                    // 流动明暗调制
+                    //流动明暗调制
                     float flowWave = (float)Math.Sin((t + flowOffset) * MathHelper.TwoPi * 2f) * 0.15f + 0.85f;
                     float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t) * flowWave;
 
@@ -2135,7 +1887,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     float x1 = minX + width * t;
                     float x2 = minX + width * t2;
 
-                    // 流动明暗调制
+                    //流动明暗调制
                     float flowWave = (float)Math.Sin((t + flowOffset) * MathHelper.TwoPi * 2f) * 0.15f + 0.85f;
                     float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t) * flowWave;
 
@@ -2145,17 +1897,12 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
-        /// <summary>
-        /// 绘制进度边框（从上到下渐变消失）
-        /// 子类可重写以自定义边框样式
-        /// </summary>
+        /// <summary>绘制进度边框（从上到下渐变消失），子类可重写</summary>
         protected virtual void DrawProgressBorder(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
             DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, color, TimedProgressBorderThickness, 0f, false);
         }
 
-        /// <summary>
-        /// 绘制进度条的一段
-        /// </summary>
+        /// <summary>绘制进度条的一段</summary>
         protected virtual void DrawProgressSegment(
             SpriteBatch spriteBatch,
             Texture2D pixel,
@@ -2169,50 +1916,46 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             DrawProgressSegmentWithFlow(spriteBatch, pixel, start, end, thickness, color, startAlpha, endAlpha, 0f, vertical);
         }
 
-        /// <summary>
-        /// 进度条角落发光，子类可重写
-        /// </summary>
+        /// <summary>进度条角落发光，子类可重写</summary>
         protected virtual void DrawProgressCornerGlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
             if (progress <= 0.01f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float glowSize = TimedProgressBorderThickness * 3f;
 
-            // 脉动
+            //脉动
             float cornerPulse = (float)Math.Sin(Main.GameUpdateCount * 0.08f) * 0.2f + 0.8f;
 
-            // 按进度点亮四角
+            //按进度点亮四角
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float visibleLength = totalPerimeter * progress;
 
-            // 左上角起点
+            //左上角起点
             float cornerAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f) * 0.7f * cornerPulse;
             DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Y), glowSize, color * cornerAlpha);
 
-            // 右上角
+            //右上角
             if (visibleLength > panelRect.Width) {
                 float rightTopAlpha = MathHelper.Clamp((visibleLength - panelRect.Width) / panelRect.Height, 0f, 1f) * 0.6f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Y), glowSize, color * rightTopAlpha);
             }
 
-            // 右下角
+            //右下角
             if (visibleLength > panelRect.Width + panelRect.Height) {
                 float rightBottomAlpha = MathHelper.Clamp((visibleLength - panelRect.Width - panelRect.Height) / panelRect.Width, 0f, 1f) * 0.5f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Bottom), glowSize, color * rightBottomAlpha);
             }
 
-            // 左下角
+            //左下角
             if (visibleLength > 2 * panelRect.Width + panelRect.Height) {
                 float leftBottomAlpha = MathHelper.Clamp((visibleLength - 2 * panelRect.Width - panelRect.Height) / panelRect.Height, 0f, 1f) * 0.4f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Bottom), glowSize, color * leftBottomAlpha);
             }
         }
 
-        /// <summary>
-        /// 绘制单个角落的发光
-        /// </summary>
+        /// <summary>绘制单个角落的发光</summary>
         protected virtual void DrawCornerGlow(SpriteBatch spriteBatch, Texture2D pixel, Vector2 position, float size, Color color) {
-            // 外层光晕
+            //外层光晕
             float outerSize = size * 1.8f;
             Rectangle outerRect = new(
                 (int)(position.X - outerSize / 2),
@@ -2222,7 +1965,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
             spriteBatch.Draw(pixel, outerRect, new Rectangle(0, 0, 1, 1), color * 0.2f);
 
-            // 中层光晕
+            //中层光晕
             Rectangle glowRect = new(
                 (int)(position.X - size / 2),
                 (int)(position.Y - size / 2),
@@ -2231,7 +1974,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             );
             spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), color * 0.5f);
 
-            // 中心高亮
+            //中心高亮
             Rectangle centerRect = new(
                 (int)(position.X - size / 4),
                 (int)(position.Y - size / 4),
@@ -2260,7 +2003,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             float alpha = progress;
             float contentAlpha = contentFade * alpha;
 
-            // 全身立绘在面板下层
+            //全身立绘在面板下层
             activeFullBodyPortrait?.Draw(spriteBatch, alpha);
 
             DrawStyle(spriteBatch, panelRect, alpha, contentAlpha, eased);

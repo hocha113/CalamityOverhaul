@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
-    /// 配方匹配引擎，负责配方的匹配和查询
+    /// 配方匹配引擎，配方的匹配和查询
     /// </summary>
     public class RecipeMatchingEngine
     {

@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             if (player.altFunctionUse == 2) {
                 return player.CWR().CustomCooldownCounter <= 0;
             }
-            //左键允许场上同时存在 5 把飞镰用于堆叠输出
+            //左键最多5把飞镰叠伤
             return player.ownedProjectileCounts[Item.shoot] <= 4;
         }
 

@@ -14,33 +14,26 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
 {
-    /// <summary>
-    /// 神明吞噬者任务劝阻场景
-    /// </summary>
+    /// <summary>神明吞噬者任务劝阻场景</summary>
     internal class HelensInterference : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         public static int DelayTimer;
 
-        // 角色名称本地化
         public static LocalizedText Rolename { get; private set; }
 
-        // 对话文本本地化
         public static LocalizedText Line0 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
 
-        // 第一层选项文本
         public static LocalizedText Question1 { get; private set; }
         public static LocalizedText Choice1_1 { get; private set; }
         public static LocalizedText Choice1_2 { get; private set; }
         public static LocalizedText Choice1_3 { get; private set; }
 
-        // 第二层对话和最终选择
         public static LocalizedText FinalQuestion { get; private set; }
         public static LocalizedText FinalChoice_Continue { get; private set; }
         public static LocalizedText FinalChoice_Stop { get; private set; }
 
-        // 默认海洋风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
 
         void IWorldInfo.OnWorldLoad() {
@@ -50,35 +43,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         public override void SetStaticDefaults() {
             Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
 
-            // 开场对话
             Line0 = this.GetLocalization(nameof(Line0), () => "……喂，你有空吗？");
             Line1 = this.GetLocalization(nameof(Line1), () => "今天.....嗯....天气不错？");
             Line2 = this.GetLocalization(nameof(Line2), () => "(比目鱼似乎将一些东西藏了起来)");
 
-            // 第一层选项
             Question1 = this.GetLocalization(nameof(Question1), () => "......");
             Choice1_1 = this.GetLocalization(nameof(Choice1_1), () => "你在做什么？");
             Choice1_2 = this.GetLocalization(nameof(Choice1_2), () => "拿出来！");
             Choice1_3 = this.GetLocalization(nameof(Choice1_3), () => "(沉默)");
 
-            // 最终选择
             FinalQuestion = this.GetLocalization(nameof(FinalQuestion), () => "不要再往前走了.....好吗。那个女巫，她的委托，她想要的东西......我不想看到。剩下的路我们完全可以自己走");
             FinalChoice_Continue = this.GetLocalization(nameof(FinalChoice_Continue), () => "继续委托");
             FinalChoice_Stop = this.GetLocalization(nameof(FinalChoice_Stop), () => "中止委托");
         }
 
         protected override void Build() {
-            // 注册海伦立绘
             DialogueBoxBase.RegisterPortrait(Rolename.Value, ADVAsset.Helen2ADV);
             DialogueBoxBase.SetPortraitStyle(Rolename.Value, silhouette: false);
 
-            // 开场对话
             Add(Rolename.Value, Line0.Value);
             Add(Rolename.Value, Line1.Value);
-            // 将刻心者从玩家背包移除
             Add(" ", Line2.Value, onComplete: RemoveHeartcarverFromPlayer);
 
-            // 第一层选项
             AddWithChoices(Rolename.Value, Question1.Value, new List<Choice> {
                 new Choice(Choice1_1.Value, OnChoice1),
                 new Choice(Choice1_2.Value, OnChoice2),
@@ -86,30 +72,25 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             });
         }
 
-        // 选项1：询问
         private void OnChoice1() {
             ScenarioManager.Start<Branch_Inquiry>();
             Complete();
         }
 
-        // 选项2：愤怒
         private void OnChoice2() {
             ScenarioManager.Start<Branch_Anger>();
             Complete();
         }
 
-        // 选项3：沉默
         private void OnChoice3() {
             ScenarioManager.Start<Branch_Silence>();
             Complete();
         }
 
-        // 移除刻心者的辅助方法
         private static void RemoveHeartcarverFromPlayer() {
             Player player = Main.LocalPlayer;
             int heartcarverType = ModContent.ItemType<Heartcarver>();
 
-            // 从背包中移除所有刻心者
             for (int i = 0; i < player.inventory.Length; i++) {
                 if (player.inventory[i].type == heartcarverType) {
                     player.inventory[i].TurnToAir();
@@ -117,7 +98,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
         }
 
-        // 将刻心者归还给玩家
         private static void ReturnHeartcarverToPlayer() {
             Player player = Main.LocalPlayer;
             int heartcarverType = ModContent.ItemType<Heartcarver>();
@@ -125,22 +105,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
         }
 
         public override void Update(ADVSave save, Player player) {
-            // 检查是否接受了神明吞噬者任务
             if (!save.Get<SupCalADVData>().SupCalDoGQuestAccepted) {
                 return;
             }
 
-            // 已经触发过此场景
             if (save.Get<SupCalADVData>().HelenInterferenceTriggered) {
                 return;
             }
 
-            // 如果任务已完成或已拒绝，不触发
             if (save.Get<SupCalADVData>().SupCalDoGQuestReward || save.Get<SupCalADVData>().SupCalDoGQuestDeclined) {
                 return;
             }
 
-            // 避免在不合适的时候触发
             if (CWRWorld.HasBoss) {
                 return;
             }
@@ -159,15 +135,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
         }
 
-        #region 分支场景实现
+        #region 分支场景
 
-        // 分支1：理性沟通
         private class Branch_Inquiry : ADVScenarioBase, ILocalizedModType
         {
             public override string Key => nameof(Branch_Inquiry);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
             public override string LocalizationCategory => "ADV.HelensInterference";
-            // 本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
@@ -189,7 +163,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line3.Value);
                 Add(Rolename.Value, Line4.Value);
 
-                // 最终选择
                 AddWithChoices(Rolename.Value, FinalQuestion.Value, [
                     new Choice(FinalChoice_Continue.Value, OnContinue),
                     new Choice(FinalChoice_Stop.Value, OnStop)
@@ -205,13 +178,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
         }
 
-        // 分支2：冲突
         private class Branch_Anger : ADVScenarioBase, ILocalizedModType
         {
             public override string Key => nameof(Branch_Anger);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
             public override string LocalizationCategory => "ADV.HelensInterference";
-            // 本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
@@ -233,7 +204,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line3.Value);
                 Add(Rolename.Value, Line4.Value);
 
-                // 最终选择
                 AddWithChoices(Rolename.Value, FinalQuestion.Value, new List<Choice> {
                     new Choice(FinalChoice_Continue.Value, OnContinue),
                     new Choice(FinalChoice_Stop.Value, OnStop)
@@ -249,13 +219,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
         }
 
-        // 分支3：沉默
         private class Branch_Silence : ADVScenarioBase, ILocalizedModType
         {
             public override string Key => nameof(Branch_Silence);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
             public override string LocalizationCategory => "ADV.HelensInterference";
-            // 本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
@@ -277,7 +245,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line3.Value);
                 Add(Rolename.Value, Line4.Value);
 
-                // 最终选择
                 AddWithChoices(Rolename.Value, FinalQuestion.Value, new List<Choice> {
                     new Choice(FinalChoice_Continue.Value, OnContinue),
                     new Choice(FinalChoice_Stop.Value, OnStop)
@@ -293,13 +260,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
         }
 
-        // 最终分支A：继续委托
         private class FinalBranch_Continue : ADVScenarioBase, ILocalizedModType
         {
             public override string Key => nameof(FinalBranch_Continue);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
             public override string LocalizationCategory => "ADV.HelensInterference";
-            // 本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
@@ -322,10 +287,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
                 Add(Rolename.Value, Line3.Value);
                 Add(Rolename.Value, Line4.Value);
                 Add(Rolename.Value, Line5.Value, onComplete: () => {
-                    // 归还刻心者
                     ReturnHeartcarverToPlayer();
 
-                    // 播放归还音效
                     SoundEngine.PlaySound(SoundID.Grab with {
                         Volume = 0.7f,
                         Pitch = 0.2f
@@ -334,20 +297,17 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             protected override void OnScenarioComplete() {
-                // 标记选择了继续
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                     save.Get<SupCalADVData>().HelenInterferenceContinue = true;
                 }
             }
         }
 
-        // 最终分支B：中止委托
         private class FinalBranch_Stop : ADVScenarioBase, ILocalizedModType
         {
             public override string Key => nameof(FinalBranch_Stop);
             protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SeaDialogueBox.Instance;
             public override string LocalizationCategory => "ADV.HelensInterference";
-            // 本地化文本
             public static LocalizedText Line1 { get; private set; }
             public static LocalizedText Line2 { get; private set; }
             public static LocalizedText Line3 { get; private set; }
@@ -367,13 +327,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             }
 
             protected override void OnScenarioComplete() {
-                // 标记任务被拒绝
                 if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                     save.Get<SupCalADVData>().SupCalDoGQuestDeclined = true;
                     save.Get<SupCalADVData>().HelenInterferenceStop = true;
                 }
 
-                // 播放销毁音效
                 SoundEngine.PlaySound(SoundID.NPCDeath1 with {
                     Volume = 0.6f,
                     Pitch = -0.4f

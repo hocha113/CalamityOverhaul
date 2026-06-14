@@ -1,4 +1,4 @@
-﻿using InnoVault.Actors;
+using InnoVault.Actors;
 using InnoVault.Cinematics;
 using System;
 using System.Collections.Generic;
@@ -8,14 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargoyles
 {
     /// <summary>
-    /// 石像鬼虫群过场演出控制器——管理整个虫群飞越天空的运镜和生命周期。
-    /// <para>
-    /// 演出流程：<br/>
-    /// 1. 摄像机缓缓上摇，拉向高空<br/>
-    /// 2. 大量石像鬼从画面一侧涌入，以鸟群算法驱动飞越天空<br/>
-    /// 3. 虫群穿过后，摄像机平滑回落至玩家位置<br/>
-    /// </para>
-    /// 通过 <see cref="StartCutscene"/> 从外部触发（对话、事件节点等）
+    /// 石像鬼虫群过场演出控制器：管理整个虫群飞越天空的运镜和生命周期。 演出流程：<br/> 1. 摄像机缓缓上摇，拉向高空<br/> 2. 大量石像鬼从画面一侧涌入，以鸟群算法驱动飞越天空<br/> 3. 虫群穿过后，摄像机平滑回落至玩家位置<br/> 通过 <see cref="StartCutscene"/> 从外部触发（对话、事件节点等）
     /// </summary>
     internal class GargoyleSwarmPlayer : ModPlayer
     {
@@ -27,7 +20,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         private const int PanUpEnd = 80;
         /// <summary>虫群开始分批生成的帧</summary>
         private const int SpawnStart = 30;
-        /// <summary>虫群停止生成的帧——长窗口让虫群绵延不断</summary>
+        /// <summary>虫群停止生成的帧：长窗口让虫群绵延不断</summary>
         private const int SpawnEnd = 480;
         /// <summary>虫群主体飞越开始帧</summary>
         private const int SwarmActiveStart = 80;
@@ -37,7 +30,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         private const int PanDownStart = 720;
         /// <summary>摄像机下摇完成的帧</summary>
         private const int PanDownEnd = 820;
-        /// <summary>安全上限——防止无限等待</summary>
+        /// <summary>安全上限：防止无限等待</summary>
         internal const int CutsceneHardLimit = 1200;
 
         #endregion
@@ -82,7 +75,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         #region 公开 API
 
         /// <summary>
+
         /// 启动石像鬼虫群飞越过场演出
+
         /// </summary>
         internal static void StartCutscene() {
             if (cutsceneActive) return;
@@ -102,7 +97,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         }
 
         /// <summary>
+
         /// 开始结束演出流程：立即清理游戏对象，镜头进入平滑归位阶段
+
         /// </summary>
         internal static void StopCutscene() {
             if (!cutsceneActive) return;
@@ -118,9 +115,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
             }
         }
 
-        /// <summary>
-        /// 硬重置——仅用于紧急退出（离开子世界等异常情况）或平滑归位完成后的最终清理
-        /// </summary>
+        /// <summary>硬重置：仅</summary>
         private static void FullStop() {
             cutsceneActive = false;
             timer = 0;
@@ -151,7 +146,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
 
             UpdateCamera();
 
-            //分批生成虫群——持续从右侧涌入，形成流动的河流效果
+            //分批生成虫群：持续从右侧涌入，形成流动的河流效果
             if (timer >= SpawnStart && timer <= SpawnEnd) {
                 int spawnFrames = SpawnEnd - SpawnStart;
                 int elapsed = timer - SpawnStart;
@@ -165,7 +160,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                 PruneOffscreenGargoyles();
             }
 
-            //生成结束后清理散兵——掉队或飞反方向的个体直接击杀
+            //生成结束后清理散兵：掉队或飞反方向的个体直接击杀
             if (timer >= SpawnEnd + 60) {
                 PruneStragglers();
             }
@@ -266,7 +261,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         }
 
         private static void PruneOffscreenGargoyles() {
-            //只清除已飞过屏幕左侧远处的个体——确保玩家绝对看不到消失
+            //只清除已飞过屏幕左侧远处的个体：确保玩家绝对看不到消失
             float leftKill = Main.screenPosition.X - 1000f;
 
             List<GargoyleActor> gargoyles = ActorLoader.GetActiveActors<GargoyleActor>();
@@ -278,8 +273,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
         }
 
         /// <summary>
-        /// 智能散兵清理：击杀飞反方向（向右）、垂直速度过大（失控上下窜）
-        /// 或远离视野的掉队个体，避免演出结束时被少数迷路者拖住
+
+        /// 智能散兵清理：击杀飞反方向（向右）、垂直速度过大（失控上下窜） 或远离视野的掉队个体，避免演出结束时被少数迷路者拖住
+
         /// </summary>
         private static void PruneStragglers() {
             float screenLeft = Main.screenPosition.X;
@@ -289,13 +285,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
 
             List<GargoyleActor> gargoyles = ActorLoader.GetActiveActors<GargoyleActor>();
             foreach (GargoyleActor g in gargoyles) {
-                //飞反方向（X速度向右 > 2）——迷路了
+                //飞反方向（X速度向右 > 2）：迷路了
                 if (g.BoidVelocity.X > 2f) {
                     ActorLoader.KillActor(g.WhoAmI, false);
                     continue;
                 }
 
-                //垂直速度过大、水平速度接近0——旋转失控
+                //垂直速度过大、水平速度接近0：旋转失控
                 if (MathF.Abs(g.BoidVelocity.Y) > 10f && MathF.Abs(g.BoidVelocity.X) < 3f) {
                     ActorLoader.KillActor(g.WhoAmI, false);
                     continue;
@@ -307,7 +303,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Gargo
                     continue;
                 }
 
-                //在屏幕右侧太远处还在晃——刷不过来的
+                //在屏幕右侧太远处还在晃：刷不过来的
                 if (g.Position.X > screenRight + 2000f) {
                     ActorLoader.KillActor(g.WhoAmI, false);
                 }

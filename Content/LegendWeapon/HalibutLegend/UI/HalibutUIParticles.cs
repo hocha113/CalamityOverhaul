@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private int cursor;
 
         /// <summary>
-        /// 飞行图标实体列表（贝塞尔轨迹 + 到达回调），用于技能解锁/收纳的飞行演出
+        ///飞行图标，贝塞尔+到达回调，解锁/收纳演出
         /// </summary>
         private readonly List<FlyingIcon> flyingIcons = [];
 

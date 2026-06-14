@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,33 +7,31 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
 {
-    /// <summary>
-    /// 硫磺海风格对话框
-    /// </summary>
+    /// <summary>硫磺海风格对话框</summary>
     internal class SulfseaDialogueBox : DialogueBoxBase
     {
         public static SulfseaDialogueBox Instance => UIHandleLoader.GetUIHandleOfType<SulfseaDialogueBox>();
         public override string LocalizationCategory => "UI";
 
-        // 风格参数
+        //风格参数
         private const float FixedWidth = 520f;
         protected override float PanelWidth => FixedWidth;
 
-        // 背景动画
+        //背景动画
         private float panelPulseTimer = 0f;
         private float scanTimer = 0f;
         private float toxicWavePhase = 0f;
         private float sulfurPulse = 0f;
         private float miasmaTimer = 0f;
 
-        // 粒子
+        //粒子
         private readonly List<SeaStarPRT> starFx = [];
         private int starSpawnTimer = 0;
         private readonly List<BubblePRT> bubbles = [];
         private int bubbleSpawnTimer = 0;
         private const float BubbleSideMargin = 34f;
 
-        // 硫磺灰粒子
+        //硫磺灰粒子
         private readonly List<AshPRT> ashParticles = [];
         private int ashSpawnTimer = 0;
 

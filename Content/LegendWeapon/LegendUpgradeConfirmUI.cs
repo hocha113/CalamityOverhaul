@@ -11,17 +11,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon
 {
-    /// <summary>
-    /// 传奇武器升级确认 UI
-    /// <para>
-    /// 本 UI 是<see cref="LegendUpgradeManager"/>的纯渲染层：
-    /// </para>
-    /// <list type="bullet">
-    /// <item>所有挂起请求/玩家归属/状态判断都在 manager 完成</item>
-    /// <item>UI 仅订阅 manager 的当前请求，不持有任何升级业务状态</item>
-    /// <item>关闭动画期间用本地缓存保持画面连续，避免 manager 清空后立刻"瞬间消失"</item>
-    /// </list>
-    /// </summary>
+    /// <summary>传奇升级确认 UI，纯渲染 <see cref="LegendUpgradeManager"/>；关闭动画靠本地 display 缓存</summary>
     internal class LegendUpgradeConfirmUI : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
@@ -76,7 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private const float ButtonWidth = 110f;
         private const float CornerRadius = 12f;
         private const float ItemShowcaseWidth = 120f;
-        //每次点击后等待 12 帧再处理下一个请求，给玩家明显的视觉切换反馈
+        //点击后 12 帧再切下一请求
         private const int SwapDelayFrames = 12;
 
         //按钮
@@ -87,8 +77,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         private bool hoveringCancel;
         private bool hoveringTrust;
 
-        //展示缓存：在关闭动画期间保持画面内容
-        //这些字段仅用于绘制，不参与升级业务判断
+        //关闭动画用，不参与升级逻辑
         private Item displayItem;
         private int displayTargetLevel;
         private int displayQueuedCount;
@@ -118,14 +107,11 @@ namespace CalamityOverhaul.Content.LegendWeapon
             QueueIndicator = this.GetLocalization(nameof(QueueIndicator), () => "还有 {0} 个传奇武器待确认");
         }
 
-        /// <summary>
-        /// 当 manager 有挂起请求或者关闭动画尚未结束时为 true
-        /// </summary>
+        /// <summary>manager 有待展示或关闭动画未结束</summary>
         public override bool Active => LegendUpgradeManager.HasPending || showProgress > 0.001f;
 
         public override void LoadUIData(TagCompound tag) {
-            //世界数据加载/保存时，确保所有挂起请求被清空
-            //这里使用 manager 而不是再维护一份本地静态状态
+            //Load/Save 时 CancelAll
             LegendUpgradeManager.CancelAll();
             ResetAnimations();
             displayItem = null;
@@ -162,17 +148,15 @@ namespace CalamityOverhaul.Content.LegendWeapon
         public override void Update() {
             globalTime += 0.016f;
 
-            //每帧自检：剔除已经失效的挂起请求(物品丢了/数据换了/世界变了)
+            //TickValidate 剔除失效请求
             LegendUpgradeManager.TickValidate();
 
-            //切换防误触：在每次确认/跳过/信任之后，强制 UI 进入"短暂闭合"几帧
-            //这样玩家能清晰看到一个弹窗收起、下一个弹窗弹出，不会被连点穿透
+            //确认/跳过后 swapDelay 帧，防连点穿透
             if (swapDelay > 0) {
                 swapDelay--;
             }
 
-            //从 manager 拉当前请求；只在仍然有效且不在切换冷却中时刷新缓存
-            //否则保留旧缓存让动画顺滑结束
+            //有效请求且非 swapDelay 时刷新 display 缓存
             var current = LegendUpgradeManager.Current;
             bool hasRequest = current != null && swapDelay == 0;
             if (hasRequest) {
@@ -273,7 +257,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             hoveringCancel = cancelButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
             hoveringTrust = trustButtonRect.Contains(MouseHitBox) && contentFade > 0.5f;
 
-            //点击处理：仅在请求仍然有效时响应
+            //点击仅 IsStillValid 时响应
             if (hasRequest && keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
                 if (hoveringConfirm) {
                     confirmPressAnim = 1f;
@@ -327,7 +311,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
         }
 
         private void OnConfirm() {
-            //把所有业务写入交给 manager，UI 只负责漂亮
+            //写入走 manager
             string itemName = displayItem?.Name ?? string.Empty;
             int level = displayTargetLevel;
 

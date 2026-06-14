@@ -11,7 +11,6 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
     /// <summary>交叉冲刺合击：水平/垂直两侧十字冲，交点冲击环</summary>
-    /// <para>一阶段轻量合击；二阶段大招未解锁时替补</para>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsCrossDash, typeof(TwinsStateContext))]
     internal class TwinsCrossDashState : TwinsStateBase
     {
@@ -101,9 +100,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>
-        /// 集合阶段：魔焰眼占水平侧，激光眼占垂直侧，形成十字夹角
-        /// </summary>
+        /// <summary>集合阶段：魔焰眼占水平侧，激光眼占垂直侧，形成十字夹角</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -120,9 +117,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 蓄力阶段：锁定穿过玩家的冲刺线，末段绷紧颤抖
-        /// </summary>
+        /// <summary>蓄力阶段：锁定穿过玩家的冲刺线，末段绷紧颤抖</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -152,9 +147,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 冲刺阶段：双眼同步十字穿越，交点爆出涟漪
-        /// </summary>
+        /// <summary>冲刺阶段：双眼同步十字穿越，交点爆出涟漪</summary>
         private void ExecuteDashPhase(NPC npc, Player player) {
             Context.ResetChargeState();
 
@@ -196,9 +189,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 退出状态：按所处阶段返回各自锚点
-        /// </summary>
+        /// <summary>退出状态：按所处阶段返回各自锚点</summary>
         private ITwinsState GetExitState() {
             if (Context.IsSpazmatism) {
                 return Context.IsSecondPhase

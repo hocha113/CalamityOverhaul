@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
 {
-    /// <summary>
-    /// 选择迎战并击败至尊灾厄后的场景
-    /// </summary>
+    /// <summary>迎战并击败至尊灾厄</summary>
     internal class SupCalVictory : ADVScenarioBase, ILocalizedModType
     {
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;

@@ -15,29 +15,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
         public override string StateName => "RetinazerLaserSweep";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.RetinazerLaserSweep;
 
-        /// <summary>
-        /// 进入位置阶段
-        /// </summary>
+        /// <summary>进入位置阶段</summary>
         private int PositioningPhase => Context.IsDeathMode ? 25 : 30;
 
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
+        /// <summary>蓄力阶段</summary>
         private int ChargePhase => Context.IsDeathMode ? 50 : 60;
 
-        /// <summary>
-        /// 扫射阶段
-        /// </summary>
+        /// <summary>扫射阶段</summary>
         private int SweepPhase => Context.IsDeathMode ? 65 : 70;
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private int RecoveryPhase => Context.IsDeathMode ? 20 : 25;
 
-        /// <summary>
-        /// 总时长
-        /// </summary>
+        /// <summary>总时长</summary>
         private int TotalDuration => PositioningPhase + ChargePhase + SweepPhase + RecoveryPhase;
 
         private float MoveSpeed => Context.IsDeathMode ? 12f : 10f;
@@ -93,9 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>
-        /// 进入位置阶段
-        /// </summary>
+        /// <summary>进入位置阶段</summary>
         private void ExecutePositioningPhase(NPC npc, Player player) {
             Vector2 targetPos = player.Center + new Vector2(0, -400);
             MoveTo(npc, targetPos, MoveSpeed * 0.8f, 0.12f);
@@ -113,9 +101,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 蓄力阶段
-        /// </summary>
+        /// <summary>蓄力阶段</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositioningPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -180,9 +166,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 扫射阶段
-        /// </summary>
+        /// <summary>扫射阶段</summary>
         private void ExecuteSweepPhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositioningPhase - ChargePhase;
             float progress = phaseTimer / (float)SweepPhase;
@@ -223,9 +207,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 恢复阶段
-        /// </summary>
+        /// <summary>恢复阶段</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             //逐渐恢复面向玩家
             FaceTarget(npc, player.Center);
@@ -241,9 +223,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 正弦缓入缓出函数
-        /// </summary>
+        /// <summary>正弦缓入缓出函数</summary>
         private static float EaseInOutSine(float t) {
             return -(float)Math.Cos(Math.PI * t) / 2f + 0.5f;
         }

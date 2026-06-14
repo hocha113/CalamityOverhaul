@@ -8,7 +8,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
 {
     /// <summary>
-    /// Shepel礼物场景抽象基类，重写持有者条件以检测SHPC而非比目鱼
+    /// Shepel 礼物场景基类，持有者检测 SHPC 而非比目鱼
     /// </summary>
     internal abstract class ShepelGiftScenarioBase : GiftScenarioBase
     {

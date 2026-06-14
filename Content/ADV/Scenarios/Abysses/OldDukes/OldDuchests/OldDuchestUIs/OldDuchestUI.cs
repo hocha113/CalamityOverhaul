@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.OldDuchestUIs
 {
-    /// <summary>
-    /// 老箱子UI - 基于通用箱子框架实现
-    /// </summary>
+    /// <summary>老箱子UI - 基于通用箱子框架</summary>
     internal class OldDuchestUI : BaseChestUI
     {
         public static OldDuchestUI Instance => UIHandleLoader.GetUIHandleOfType<OldDuchestUI>();
@@ -77,7 +75,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests.Ol
         //--- 箱子行为 ---
 
         /// <summary>
+
         /// 打开UI并绑定箱子
+
         /// </summary>
         public void Interactive(OldDuchestTP chest) {
             if (CurrentChest != chest) {

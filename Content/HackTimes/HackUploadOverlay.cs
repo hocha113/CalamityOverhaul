@@ -47,9 +47,7 @@ namespace CalamityOverhaul.Content.HackTimes
             Utils.DrawBorderString(sb, text, textPos, textColor, 0.3f);
         }
 
-        /// <summary>
-        /// 绘制圆弧进度环
-        /// </summary>
+        /// <summary>圆弧进度环</summary>
         private void DrawProgressRing(SpriteBatch sb, Texture2D px, Texture2D glow,
             Vector2 center, float radius, float progress, float alpha) {
 
@@ -88,9 +86,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 绘制完成状态的脉冲环
-        /// </summary>
+        /// <summary>完成态脉冲环</summary>
         private void DrawCompletedRing(SpriteBatch sb, Texture2D px, Texture2D glow,
             Vector2 center, float radius, float alpha) {
 

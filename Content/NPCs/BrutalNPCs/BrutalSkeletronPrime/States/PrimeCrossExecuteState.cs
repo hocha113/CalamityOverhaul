@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal static int Execute => 90;
         private static int Total => Telegraph + Execute + 20;
 
-        /// <summary>四臂封位槽（左/右/上/下），热射线与 <see cref="PrimeArm"/> 编队共用</summary>
+        /// <summary>四臂封位槽（左/右/上/下），热射线与 PrimeArm 编队共用</summary>
         internal static readonly Vector2[] ArmSlots = new Vector2[] {
             new(-320f, 0f), new(320f, 0f), new(0f, -280f), new(0f, 280f),
         };

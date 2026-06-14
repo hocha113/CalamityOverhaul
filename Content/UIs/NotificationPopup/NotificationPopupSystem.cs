@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
             public NotificationEntry Entry;
             public int Timer;
             public float CurrentY;
-            public float ScaleAnim; // 加入缩放动画状态
+            public float ScaleAnim; //加入缩放动画状态
 
             public int TotalLifetime => Entry.SlideTime * 2 + Entry.DisplayTime;
         }

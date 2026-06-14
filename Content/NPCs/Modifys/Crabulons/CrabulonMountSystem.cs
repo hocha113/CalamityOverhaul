@@ -5,10 +5,7 @@ using Terraria.Audio;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>
-    /// 菌生蟹骑乘：骑手客户端为运动权威，蟹每帧吸附；
-    /// 见<see cref="CrabulonMountPlayer"/>
-    /// </summary>
+    /// <summary>菌生蟹骑乘：骑手客户端为运动权威，蟹每帧吸附；见CrabulonMountPlayer</summary>
     internal class CrabulonMountSystem
     {
         private readonly NPC npc;

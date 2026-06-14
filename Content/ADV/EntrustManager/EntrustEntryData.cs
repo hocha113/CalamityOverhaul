@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria.Localization;
@@ -61,13 +61,9 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
         #region 展开状态（由QuestManagerUI管理）
 
-        /// <summary>
-        /// 列表中是否展开
-        /// </summary>
+        /// <summary>列表中是否展开</summary>
         public bool IsExpanded;
-        /// <summary>
-        /// 展开动画 0~1
-        /// </summary>
+        /// <summary>展开动画 0~1</summary>
         public float ExpandProgress;
 
         #endregion
@@ -84,9 +80,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
 
         #region 追踪面板内容
 
-        /// <summary>
-        /// 追踪可见性，false 不显示但保留关注
-        /// </summary>
+        /// <summary>追踪可见性，false 不显示但保留关注</summary>
         public Func<bool> TrackerVisibilityCheck { get; set; }
 
         /// <summary>是否在追踪窗口显示</summary>
@@ -120,9 +114,7 @@ namespace CalamityOverhaul.Content.ADV.EntrustManager
         /// <summary>每帧更新数据，子类按需重写</summary>
         public virtual void OnUpdate() { }
 
-        /// <summary>
-        /// 状态变化回调
-        /// </summary>
+        /// <summary>状态变化回调</summary>
         public virtual void OnStatusChanged(QuestEntryStatus oldStatus, QuestEntryStatus newStatus) { }
 
         /// <summary>从挂起恢复时回调，可同步存档标记</summary>

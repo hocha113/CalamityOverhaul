@@ -4,9 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>死亡演出运镜，<see cref="CutsceneClip{TSubject}"/> 对齐 <see cref="PrimeDeathState"/> 阶段帧</summary>
-    /// <para>聚焦头部正下方，缩放单调推至怒吼、终爆才拉开；全程 InputLock</para>
-    /// <para>震动经 <see cref="PrimeDeathPerformancePlayer.RequestShake"/> 叠加</para>
+    /// <summary>死亡演出运镜，CutsceneClip{TSubject} 对齐 PrimeDeathState 阶段帧；震动经 PrimeDeathPerformancePlayer.RequestShake 叠加</summary>
     internal sealed class PrimeDeathCutscene : CutsceneClip<NPC>
     {
         //死亡演出运镜优先级，高于普通演出

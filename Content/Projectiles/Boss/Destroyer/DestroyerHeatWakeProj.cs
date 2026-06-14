@@ -7,12 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
-    /// <summary>
-    /// 热浪尾流载体：锚定头部无伤害 VFX，速度越快尾流越长越强
-    /// 经 <see cref="DestroyerMotionFX.DrawHeatWakeWarp"/> 在 Warp 管线沿轨迹扭曲空气
-    /// 慢速淡出自毁，同头最多一条(<see cref="EnsureForHead"/> 去重)
-    /// <br/>ai[0]: 头部NPC whoAmI
-    /// </summary>
+    /// <summary>热浪尾流载体：锚定头部无伤害VFX，速度越快尾流越长越强经<see cref="DestroyerMotionFX.DrawHeatWakeWarp"/>在Warp管线沿轨迹扭曲空气慢速淡出自毁，同头最多一条(<see cref="EnsureForHead"/>去重)；ai[0]:头部NPCwhoAmI</summary>
     internal class DestroyerHeatWakeProj : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -43,9 +38,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>
-        /// 服务端调用：为指定头部保证存在一条尾流（已有存活实例则跳过）
-        /// </summary>
+        /// <summary>服务端调用：为指定头部保证存在一条尾流（已有存活实例则跳过）</summary>
         internal static void EnsureForHead(NPC head) {
             if (VaultUtils.isClient || !head.Alives()) {
                 return;

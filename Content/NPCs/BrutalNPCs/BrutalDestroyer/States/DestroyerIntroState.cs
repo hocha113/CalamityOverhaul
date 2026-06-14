@@ -10,7 +10,6 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
     /// <summary>龙车俯冲开场：预兆→破土首趟→两趟交叉俯冲→尖刺亮相</summary>
-    /// <para>无出场无敌；首趟偏移玩家；接触伤仅在贯穿；体节首趟甩开展开</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Intro, typeof(DestroyerStateContext))]
     internal class DestroyerIntroState : DestroyerStateBase
     {

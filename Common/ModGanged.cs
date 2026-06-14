@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,7 +16,7 @@ using static CalamityOverhaul.CWRUtils;
 
 namespace CalamityOverhaul.Common
 {
-    /// <summary>跨 Mod 兼容性 Hook 管理</summary>
+    /// <summary>跨 Mod Hook</summary>
     internal class ModGanged
     {
         #region 委托类型
@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Common
             orig.Invoke(obj, ref drawInfo);
         }
 
-        /// <summary>FGS PostAI——跳过 hide 且不可开火的手持弹幕</summary>
+        /// <summary>FGS PostAI：hide 且不可开火则跳过</summary>
         private static void On_FGS_PostAI_Hook(On_PostAI_Dalegate orig, object instance, Projectile projectile) {
             if (projectile.hide && projectile.ModProjectile is BaseHeldGun heldGun && !heldGun.CanFire) {
                 return;
@@ -193,17 +193,17 @@ namespace CalamityOverhaul.Common
             orig.Invoke(instance, projectile);
         }
 
-        /// <summary>TrO 蓄力攻击——空物品直接拒绝</summary>
+        /// <summary>TrO 蓄力：空物品拒绝</summary>
         private static bool On_AttemptPowerAttackStart_Hook(On_AttemptPowerAttackStart_Dalegate orig, object obj, Item item, Player player) {
             return !item.IsAir && item.type != ItemID.None && orig.Invoke(obj, item, player);
         }
 
-        /// <summary>FGS 附魔——<see cref="CWRProj.NotSubjectToSpecialEffects"/> 弹幕跳过</summary>
+        /// <summary>FGS 附魔：<see cref="CWRProj.NotSubjectToSpecialEffects"/> 弹幕跳过</summary>
         private static bool On_OnSpawnEnchCanAffectProjectile_Hook(On_OnSpawnEnchCanAffectProjectile_Dalegate orig, Projectile projectile, bool allowMinions) {
             return !projectile.CWR().NotSubjectToSpecialEffects && orig.Invoke(projectile, allowMinions);
         }
 
-        /// <summary>TrO ShouldForceUseAnim——CWR 手持武器不触发使用动画</summary>
+        /// <summary>TrO ShouldForceUseAnim：CWR 手持不播 use 动画</summary>
         private static bool On_ShouldForceUseAnim_Hook(On_ShouldForceUseAnim_Dalegate orig, Player player, Item item) {
             if (item == null || item.type == ItemID.None) {
                 return orig.Invoke(player, item);

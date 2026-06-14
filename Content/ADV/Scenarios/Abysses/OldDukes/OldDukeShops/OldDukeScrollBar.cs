@@ -69,9 +69,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             }
         }
 
-        /// <summary>
-        /// 绘制滚动条
-        /// </summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, int barHeight,
             int scrollOffset, int maxScroll, int totalItems, int visibleItems,
             float uiAlpha, float sulfurPulseTimer) {
@@ -176,7 +173,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 重置滚动条状态
+
         /// </summary>
         public void Reset() {
             IsDragging = false;

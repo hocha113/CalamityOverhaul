@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (player.altFunctionUse == 2) {
                 Item.useStyle = ItemUseStyleID.Swing;
             }
-            //确保同时只有一个手持弹幕存在
+            //单HeldProj
             return player.ownedProjectileCounts[Item.shoot] == 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<PallbearerBoomerang>()] == 0;
         }

@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
                 return;
             }
             float scale = 1;
-            if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断进度
+            if (!(risingDragon <= 0f) || uiAlape > 0) {//升龙进度条
                 Texture2D barBG = MuraBarBottom.Value;
                 Texture2D barFG = MuraBarTop.Value;
                 Vector2 barOrigin = barBG.Size() * 0.5f;
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI
 
             if (Compact) {
                 float risingDragon = Main.LocalPlayer.CWR().RisingDragonCharged;
-                if (!(risingDragon <= 0f) || uiAlape > 0) {//这是一个通用的进度条绘制，用于判断进度
+                if (!(risingDragon <= 0f) || uiAlape > 0) {//升龙进度条
                     Texture2D muraBarBottom = MuraBarBottom.Value;
                     Texture2D muraBarTop = MuraBarTop.Value;
                     Vector2 barOrigin2 = muraBarBottom.Size() * 0.5f;

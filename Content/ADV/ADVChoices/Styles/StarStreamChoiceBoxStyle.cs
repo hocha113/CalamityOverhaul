@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
 {
-    /// <summary>
-    /// 星流风格选择框
-    /// </summary>
+    /// <summary>星流风格选择框</summary>
     internal class StarStreamChoiceBoxStyle : IChoiceBoxStyle
     {
         private float starFlowTimer = 0f;
@@ -27,7 +25,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             if (shimmerTimer > MathHelper.TwoPi) shimmerTimer -= MathHelper.TwoPi;
             if (constellationPhase > MathHelper.TwoPi) constellationPhase -= MathHelper.TwoPi;
 
-            // 生成数据流
+            //生成数据流
             streamTimer++;
             if (active && !closing && streamTimer >= 16 && streams.Count < 12) {
                 streamTimer = 0;
@@ -36,7 +34,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 streams.Add(new StarStreamDataStream(startPos));
             }
 
-            // 更新数据流
+            //更新数据流
             for (int i = streams.Count - 1; i >= 0; i--) {
                 if (streams[i].Update(panelRect)) {
                     streams.RemoveAt(i);
@@ -47,12 +45,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
         public void Draw(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             Texture2D px = VaultAsset.placeholder2.Value;
 
-            // 绘制阴影
+            //绘制阴影
             Rectangle shadowRect = panelRect;
             shadowRect.Offset(5, 7);
             spriteBatch.Draw(px, shadowRect, new Rectangle(0, 0, 1, 1), new Color(5, 0, 15) * (alpha * 0.6f));
 
-            // 深空背景渐变
+            //深空背景渐变
             int segments = 25;
             for (int i = 0; i < segments; i++) {
                 float t = i / (float)segments;
@@ -73,19 +71,19 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
                 spriteBatch.Draw(px, r, new Rectangle(0, 0, 1, 1), c);
             }
 
-            // 星云呼吸叠加
+            //星云呼吸叠加
             float nebulaPulse = (float)Math.Sin(nebulaPulseTimer * 1.3f) * 0.5f + 0.5f;
             Color nebulaOverlay = new Color(30, 15, 50) * (alpha * 0.2f * nebulaPulse);
             spriteBatch.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), nebulaOverlay);
 
-            // 星座网格
+            //星座网格
             DrawConstellationGrid(spriteBatch, panelRect, alpha * 0.6f);
 
-            // 金色边框
+            //金色边框
             Color edgeColor = GetEdgeColor(alpha);
             DrawBorder(spriteBatch, panelRect, edgeColor);
 
-            // 绘制星流粒子
+            //绘制星流粒子
             foreach (var stream in streams) {
                 stream.Draw(spriteBatch, alpha * 0.8f);
             }
@@ -104,7 +102,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             if (enabled && hoverProgress > 0.01f) {
                 DrawChoiceBorder(spriteBatch, choiceRect, goldColor * (hoverProgress * 0.6f));
 
-                // 金色流光效果
+                //金色流光效果
                 float shimmer = (float)Math.Sin(shimmerTimer * 3f) * 1.5f;
                 Color shimmerColor = goldColor * (hoverProgress * 0.2f);
                 spriteBatch.Draw(px,
@@ -175,7 +173,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices.Styles
             spriteBatch.Draw(px, new Rectangle(rect.X, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), color * 0.9f);
             spriteBatch.Draw(px, new Rectangle(rect.Right - 3, rect.Y, 3, rect.Height), new Rectangle(0, 0, 1, 1), color * 0.9f);
 
-            // 顶部流光
+            //顶部流光
             float flowT = (shimmerTimer * 0.8f) % 1f;
             int highlightW = 60;
             int highlightX = rect.X + (int)(flowT * (rect.Width - highlightW));

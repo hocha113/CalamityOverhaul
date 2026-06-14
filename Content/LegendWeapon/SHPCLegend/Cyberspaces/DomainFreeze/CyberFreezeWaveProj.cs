@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -52,10 +52,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;
-            // 缓出曲线：快速展开，然后减速
+            //缓出曲线：快速展开，然后减速
             float ringProgress = 1f - MathF.Pow(1f - t, 3.2f);
 
-            // 淡入淡出
+            //淡入淡出
             float fadeAlpha;
             if (t < 0.15f)
                 fadeAlpha = MathHelper.SmoothStep(0f, 1f, t / 0.15f);
@@ -65,10 +65,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                 fadeAlpha = MathHelper.SmoothStep(1f, 0f, (t - 0.6f) / 0.4f);
             fadeAlpha = MathHelper.Clamp(fadeAlpha, 0f, 1f);
 
-            // 环厚度：开始时较厚，展开后变薄
+            //环厚度：开始时较厚，展开后变薄
             float thickness = 0.08f + (1f - t) * 0.05f;
 
-            // 设置着色器参数：取主人玩家的领域时间
+            //设置着色器参数：取主人玩家的领域时间
             CyberspacePlayer cpForShader = Cyberspace.For(Projectile.owner);
             float effectTime = cpForShader?.EffectTime ?? Cyberspace.EffectTime;
             shader.Parameters["uTime"]?.SetValue(effectTime);
@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
             shader.CurrentTechnique.Passes[0].Apply();
 
-            // 暗红晶色调（黑墙风格）
+            //暗红晶色调（黑墙风格）
             Color waveTint = new Color(1f, 0.3f, 0.35f);
             Main.spriteBatch.Draw(canvas, drawPos, null, waveTint,
                 0f, canvas.Size() * 0.5f, new Vector2(drawDiameter, drawDiameter),

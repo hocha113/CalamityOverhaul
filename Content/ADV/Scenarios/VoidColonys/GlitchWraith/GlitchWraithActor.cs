@@ -10,9 +10,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
 {
     /// <summary>
-    /// 鬼乱码：仅在过去视角下可见的致命威胁
-    /// 无视地形碰撞，持续向最近玩家缓慢蠕动并偶发乱码瞬移
-    /// 骇客时间激活期间会被暂停，可被玩家作为灵异目标骇入
+    /// 鬼乱码 Actor：过去视角可见，骇客时间可暂停，可骇入
     /// </summary>
     internal class GlitchWraithActor : Actor, IHackTarget
     {
@@ -322,7 +320,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
             Vector2 origin, float strength, bool selected) {
             Effect shader = HackTimeAssets.HackWraithHighlight;
             if (shader == null) {
-                //着色器未加载时回落到普通绘制，确保始终可见
+                //着色器缺失时普通绘制 fallback
                 Color fallback = Color.White * visibility;
                 sb.Draw(tex, drawPos, null, fallback, 0f, origin, 1f, SpriteEffects.None, 0f);
                 return;
@@ -412,7 +410,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
             return MathHelper.Clamp(t * eraBoost, 0f, 1f);
         }
 
-        #region IHackTarget 实现
+        #region IHackTarget
 
         Vector2 IScannable.WorldCenter => Center;
 

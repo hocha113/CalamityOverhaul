@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -7,7 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 毒雾粒子，用于弥漫的酸性雾气效果
+    /// 毒雾粒子，弥漫的酸性雾气效果
     /// </summary>
     internal class PRT_ToxicMist : BasePRT
     {

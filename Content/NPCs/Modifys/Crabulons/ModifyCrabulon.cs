@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public override bool NeedSaving() => SaddleItem.Alives() || DyeItemID > ItemID.None || FeedValue > 0f;
 
-        //死亡处理
+        //死亡
         public override bool? On_PreKill() {
             if (SaddleItem.Alives()) {
                 SaddleItem.SpwanItem(npc.FromObjectGetParent(), npc.Hitbox);

@@ -8,8 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues
 {
     /// <summary>
-    /// 赛博领域激活时的专属对话，优先级高于空闲问候
-    /// Shepel会针对当前领域层级给出状态简报
+    /// 赛博领域激活对话，优先级高于空闲问候
     /// </summary>
     internal class ShepelCyberActiveDialogue : SHPCDialogueScenarioBase, ILocalizedModType
     {

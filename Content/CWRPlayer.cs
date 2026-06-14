@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content
 
         private void Information() {
             if (SubWorldRef.AnyActiveSubWorld()) {
-                return; // 子世界不弹兼容性提示
+                return; //子世界不弹兼容性提示
             }
 
             if (!VaultHook.CheckHookStatus(out int num)) {
@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content
         public override void OnEnterWorld() {
             Information();
 
-            // 进世界 RAM 回满(LoadData 已读基础值)
+            //进世界 RAM 回满(LoadData 已读基础值)
 
             SpearOfLonginus.ZenithWorldAsset();
 
@@ -491,7 +491,7 @@ namespace CalamityOverhaul.Content
                 damageSource = PlayerDeathReason.ByCustomReason(networkText);
             }
             if (Player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
-                // 死亡时立即下马，骑手端自动广播
+                //死亡时立即下马，骑手端自动广播
                 crabulonPlayer.MountCrabulon?.CloseMount();
                 crabulonPlayer.IsMount = false;
                 ModifyCrabulon.mountPlayerHeldProj = -1;

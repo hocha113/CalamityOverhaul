@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
         /// <summary>字号全局缩放系数，与 SHPCModPanel 完全一致</summary>
         public const float FontScale = 1.2f;
 
-        //—— 与 SHPCModPanel / SHPCModuleSelectPanel 一致的基础字号档位 ——
+        //与 SHPCModPanel/SHPCModuleSelectPanel 同档基础字号
         public const float TitleBase = 0.72f;            //顶栏主标题
         public const float SubtitleBase = 0.52f;         //顶栏副标题
         public const float SysIdBase = 0.42f;            //右上 SYS#xxxx

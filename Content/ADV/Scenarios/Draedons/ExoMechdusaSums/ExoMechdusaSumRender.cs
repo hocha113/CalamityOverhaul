@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
-    /// <summary>Exo Mechdusa 召唤 UI RenderHandle——机甲图标/乱码解码文本/悬停音效</summary>
+    /// <summary>Exo Mechdusa召唤UI，机甲图标/乱码文本/悬停音</summary>
     internal class ExoMechdusaSumRender : RenderHandle, ILocalizedModType
     {
         //上次悬停选项，防重复音效

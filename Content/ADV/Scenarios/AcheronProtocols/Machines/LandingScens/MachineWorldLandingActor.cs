@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens;
+using CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens;
 using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -11,9 +11,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.LandingScens
 {
     /// <summary>
-    /// 机械世界着陆空降仓Actor——坠毁在地面的空降仓，
-    /// 带有烟雾、火花、金属嘎吱声等环境效果，
-    /// 等待玩家按下左键后弹出
+    /// 机械世界着陆空降仓Actor：坠毁在地面的空降仓， 带有烟雾、火花、金属嘎吱声等环境效果， 等待玩家按下左键后弹出
     /// </summary>
     internal class MachineWorldLandingActor : Actor
     {
@@ -21,13 +19,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
 
         private enum LandingPhase
         {
-            /// <summary>初始坠落撞击阶段——短暂的剧烈震动和闪光</summary>
+            /// <summary>初始坠落撞击阶段：短暂的剧烈震动和闪光</summary>
             Impact,
-            /// <summary>冷却稳定阶段——烟雾弥漫，火花四溅，等待玩家操作</summary>
+            /// <summary>冷却稳定阶段：烟雾弥漫，火花四溅，等待玩家操作</summary>
             Idle,
-            /// <summary>弹出阶段——舱门打开，玩家弹出</summary>
+            /// <summary>弹出阶段：舱门打开，玩家弹出</summary>
             Eject,
-            /// <summary>完成——Actor逐渐消散</summary>
+            /// <summary>完成：Actor逐渐消散</summary>
             Done
         }
 
@@ -129,14 +127,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
                     break;
             }
 
-            //持续效果——烟雾和火花（Done阶段仍然更新以排空剩余粒子）
+            //持续效果：烟雾和火花（Done阶段仍然更新以排空剩余粒子）
             UpdateSmokeParticles();
             UpdateSparkParticles();
             if (phase != LandingPhase.Done) {
                 UpdateCreakSound();
             }
 
-            //冷却效果——灼烧辉光逐渐消退
+            //冷却效果：灼烧辉光逐渐消退
             if (heatGlow > 0.05f) {
                 heatGlow *= 0.997f;
             }
@@ -274,7 +272,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
                 shakeOffset = Vector2.Zero;
             }
 
-            //弹出Dust效果——向上喷射
+            //弹出Dust效果：向上喷射
             if (phaseTimer < 10 && phaseTimer % 2 == 0) {
                 for (int i = 0; i < 6; i++) {
                     Vector2 vel = new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-10f, -4f));
@@ -517,12 +515,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
             Texture2D podTex = DropPod.DropPodAsset.Value;
             Vector2 origin = podTex.Size() * 0.5f;
 
-            //外层光晕——冷色调，坠毁后偏暗
+            //外层光晕：冷色调，坠毁后偏暗
             float glowPulse = MathF.Sin(phaseTimer * 0.03f) * 0.1f + 0.9f;
             Color ambientGlow = new Color(40, 60, 100) * (0.2f * glowPulse);
             DrawSoftGlow(sb, drawCenter, ambientGlow, 90f);
 
-            //主体绘制——带倾斜
+            //主体绘制：带倾斜
             Color podColor = Color.White;
             //坠毁后颜色略微偏暗偏橙（烧焦感）
             podColor = Color.Lerp(podColor, new Color(200, 180, 160), heatGlow * 0.3f);
@@ -535,7 +533,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
 
             Texture2D glow = CWRAsset.SoftGlow.Value;
 
-            //在仓体上模拟裂缝发光——几个不同位置的小光点
+            //在仓体上模拟裂缝发光：几个不同位置的小光点
             float flicker = MathF.Sin(phaseTimer * 0.12f) * 0.3f + 0.7f;
             Color crackColor = new Color(255, 100, 30) * (crackEmission * 0.5f * flicker);
             float crackScale = 15f / (glow.Width * 0.5f);

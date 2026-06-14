@@ -16,8 +16,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
     }
 
     /// <summary>
-    /// 科尔托三号星寂灭天空背景
-    /// 绝对零度下的机械墓场，被虫群吞噬的星流余晖
+
+    /// 科尔托三号星寂灭天空背景 绝对零度下的机械墓场，被虫群吞噬的星流余晖
+
     /// </summary>
     internal class MachineWorldSky : CustomSky, ICWRLoader
     {
@@ -51,7 +52,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         private float horizonGlowPhase;
 
         /// <summary>
+
         /// 触发闪电闪光效果，由MachineTesla在OnStrike时调用
+
         /// </summary>
         /// <param name="worldPosition">闪电击中的世界坐标</param>
         /// <param name="flashStrength">闪光强度(0-1)</param>
@@ -217,7 +220,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 底层虚无：窒息黑 + 暗紫红尘埃云
+
         /// </summary>
         private void DrawVoidBackground(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -257,7 +262,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 暗淡的尘埃云层
+
         /// </summary>
         private void DrawDustClouds(SpriteBatch sb) {
             if (CWRAsset.Fog == null || CWRAsset.Fog.IsDisposed)
@@ -282,7 +289,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 远景残骸：极慢移动，暗淡，有边缘冷光
+
         /// </summary>
         private void DrawFarDebris(SpriteBatch sb) {
             if (farDebris == null) return;
@@ -293,7 +302,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 中景残骸
+
         /// </summary>
         private void DrawMidDebris(SpriteBatch sb) {
             if (midDebris == null) return;
@@ -304,7 +315,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 近景残骸：偶有能量电弧
+
         /// </summary>
         private void DrawNearDebris(SpriteBatch sb) {
             if (nearDebris == null) return;
@@ -325,9 +338,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             }
         }
 
-        /// <summary>
-        /// 绘制单个残骸实体，含边缘冷光轮廓
-        /// </summary>
         private static void DrawDebrisEntity(SpriteBatch sb, ref DebrisEntity d, float alpha, bool drawRimOnly) {
             Texture2D tex = ExoGoreAssets.GetTexture(d.TextureIndex);
             if (tex == null)
@@ -354,7 +364,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 金属碎屑微粒
+
         /// </summary>
         private void DrawMetalShards(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -367,7 +379,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 虫群孢子微粒（带拖尾发光）
+
         /// </summary>
         private void DrawSporeParticles(SpriteBatch sb) {
             if (CWRAsset.SoftGlow == null || CWRAsset.SoftGlow.IsDisposed)
@@ -382,7 +396,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 亚空间裂隙
+
         /// </summary>
         private void DrawSubspaceRift(SpriteBatch sb) {
             if (currentRift == null) return;
@@ -407,7 +423,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 地平线光效：锯齿状机械森林影迹 + 暗淡橙红火光
+
         /// </summary>
         private void DrawHorizonGlow(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -453,9 +471,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             }
         }
 
-        /// <summary>
-        /// 绘制柔和光辉点
-        /// </summary>
         private static void DrawSoftGlow(SpriteBatch sb, Vector2 center, Color color, float radius) {
             if (CWRAsset.SoftGlow == null || CWRAsset.SoftGlow.IsDisposed)
                 return;
@@ -465,7 +480,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 闪电闪光叠加层：全屏冷色闪光 + 闪电源点辉光
+
         /// </summary>
         private void DrawLightningFlash(SpriteBatch sb) {
             if (lightningFlashIntensity <= 0.01f)

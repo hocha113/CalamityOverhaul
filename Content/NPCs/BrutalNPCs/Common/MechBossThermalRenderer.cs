@@ -5,9 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 {
-    /// <summary>机械 Boss 通用热感滤镜渲染</summary>
-    /// <para>三态：常态描边 / 警告脉冲 / 冲刺白热；Destroyer 起源，Prime/Twins 共用</para>
-    /// <para>流程：<see cref="DrawOutlineHalo"/> → <see cref="BeginThermalShader"/> 绘本体 → <see cref="EndThermalShader"/></para>
+    /// <summary>机械 Boss 通用热感滤镜渲染；流程：DrawOutlineHalo → BeginThermalShader 绘本体 → EndThermalShader</summary>
     internal static class MechBossThermalRenderer
     {
         #region 8方向描边光环
@@ -85,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         #region 机械热感像素着色器
 
-        /// <summary>Immediate 模式启用热感着色器，绘完须 <see cref="EndThermalShader"/></summary>
+        /// <summary>Immediate 模式启用热感着色器，绘完须 EndThermalShader</summary>
         /// <param name="sourceRect">当前帧 UV 边界，防多帧贴图越界采样</param>
         public static bool BeginThermalShader(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect,
             MechBossVisualMode mode, float intensity, float progress, float seed = 0f) {
@@ -129,7 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 
         #region NPC ID 状态查询便捷重载
 
-        /// <summary>按 <see cref="MechBossVisualState"/> 读控制器状态后绘描边</summary>
+        /// <summary>按 MechBossVisualState 读控制器状态后绘描边</summary>
         public static void DrawOutlineHaloByController(SpriteBatch spriteBatch, Texture2D texture, Vector2 drawPos,
             Rectangle? sourceRect, float rotation, Vector2 origin, float scale, SpriteEffects effects,
             int controllerNpcId) {
@@ -138,7 +136,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
                 mode, intensity, progress);
         }
 
-        /// <summary>按 <see cref="MechBossVisualState"/> 读控制器状态后启用着色器</summary>
+        /// <summary>按 MechBossVisualState 读控制器状态后启用着色器</summary>
         public static bool BeginThermalShaderByController(SpriteBatch spriteBatch, Texture2D texture, Rectangle sourceRect,
             int controllerNpcId, float seed = 0f) {
             var (mode, intensity, progress) = MechBossVisualState.Read(controllerNpcId);

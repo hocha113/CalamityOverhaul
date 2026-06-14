@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 硫酸爆发核心粒子，用于硫酸爆发的中心强光效果
+    /// 硫酸爆发核心粒子，硫酸爆发的中心强光效果
     /// </summary>
     internal class PRT_SulfuricCore : BasePRT
     {

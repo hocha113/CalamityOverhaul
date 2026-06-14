@@ -7,10 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>
-    /// 激光炮控制器：行为见 <see cref="LaserAimState"/> / <see cref="LaserRapidFireState"/>
-    /// / <see cref="LaserChargedShotState"/> / <see cref="LaserRingState"/>
-    /// </summary>
+    /// <summary>激光炮控制器：行为见<see cref="LaserAimState"/>/<see cref="LaserRapidFireState"/>/<see cref="LaserChargedShotState"/>/<see cref="LaserRingState"/></summary>
     internal class PrimeLaserAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeLaser;

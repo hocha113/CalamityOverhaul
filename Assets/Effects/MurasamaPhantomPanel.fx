@@ -1,6 +1,6 @@
 // ============================================================================
-// MurasamaPhantomPanel.fx 鬼妖村正委托面板背景
-// AlphaBlend 预乘 alpha
+//MurasamaPhantomPanel.fx 鬼妖村正委托面板背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -17,7 +17,7 @@ float3 uAccent;       //RGB 状态色
 #define PI  3.14159265
 #define TAU 6.28318530
 
-// ─── 工具函数 ───────────────────────────────────────────────────────────────
+//─── 工具函数 ───────────────────────────────────────────────────────────────
 
 float hash11(float p) {
     p = frac(p * 0.1031);
@@ -54,15 +54,15 @@ float fbm3(float2 p) {
     return v;
 }
 
-// ─── 色板(MGR:R血气板) ───────────────────────────────────────────────────────
-static const float3 COL_VOID    = float3(0.005, 0.001, 0.002); // 近黑(墨色铁)
-static const float3 COL_OBSIDIAN= float3(0.020, 0.008, 0.012); // 黑曜深红
-static const float3 COL_BLOOD   = float3(0.180, 0.018, 0.028); // 暗血红
-static const float3 COL_CRIMSON = float3(0.560, 0.052, 0.070); // 主猩红
-static const float3 COL_BLADE   = float3(0.920, 0.140, 0.180); // 刀刃赤
-static const float3 COL_FLASH   = float3(1.000, 0.420, 0.380); // 高光血雾
+//─── 色板(MGR:R血气板) ───────────────────────────────────────────────────────
+static const float3 COL_VOID    = float3(0.005, 0.001, 0.002); //近黑(墨色铁)
+static const float3 COL_OBSIDIAN= float3(0.020, 0.008, 0.012); //黑曜深红
+static const float3 COL_BLOOD   = float3(0.180, 0.018, 0.028); //暗血红
+static const float3 COL_CRIMSON = float3(0.560, 0.052, 0.070); //主猩红
+static const float3 COL_BLADE   = float3(0.920, 0.140, 0.180); //刀刃赤
+static const float3 COL_FLASH   = float3(1.000, 0.420, 0.380); //高光血雾
 
-// ─── 主片段 ─────────────────────────────────────────────────────────────────
+//─── 主片段 ─────────────────────────────────────────────────────────────────
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 pixelPos = coords * uResolution;
@@ -72,7 +72,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 center = uResolution * 0.5;
     float2 halfSize = innerSize * 0.5;
 
-    //几乎尖角的SDF —— MGR:R的HUD是冷硬的金属切边
+    //几乎尖角的SDF ： MGR:R的HUD是冷硬的金属切边
     float cornerR = lerp(1.0, 3.0, uVariant);
     float2 dd = abs(pixelPos - center) - halfSize;
     float panelSDF = length(max(dd, 0.0)) + min(max(dd.x, dd.y), 0.0) - cornerR;
@@ -94,13 +94,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float xLight = pow(uv.x, 2.2) * 0.18;
     bg += COL_BLOOD * xLight;
 
-    //═══ 2. 对角扫描线 —— 血纹细密斜栅 ════════════════════════════════════════
+    //═══ 2. 对角扫描线 ： 血纹细密斜栅 ════════════════════════════════════════
     float diag = pixelPos.x * 0.85 - pixelPos.y * 0.55;
     float scanPhase = frac(diag * 0.075 - t * 0.45);
     float scan = exp(-scanPhase * 14.0) * 0.16;
     bg += COL_CRIMSON * scan;
 
-    //═══ 3. 利刃斩击扫光 —— 周期性的对角光带划过整个面板 ══════════════════════
+    //═══ 3. 利刃斩击扫光 ： 周期性的对角光带划过整个面板 ══════════════════════
     float bladeCycle = 0.16 + intensity * 0.10;
     float bladePhase = frac(t * bladeCycle);
     //带宽涉及0~1.4使得光带能扫出屏外,有进出感
@@ -115,7 +115,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float bladeAfter = exp(-bladeDist * 9.0) * bladeWindow;
     bg += COL_BLOOD * bladeAfter * 0.22;
 
-    //═══ 4. 血雾(fbm) —— 大尺度低频暗红雾,集中在底半部 ═══════════════════════
+    //═══ 4. 血雾(fbm) ： 大尺度低频暗红雾,集中在底半部 ═══════════════════════
     float2 mistUV = pixelPos * 0.018 + float2(t * 0.5, -t * 0.25);
     float mist = fbm3(mistUV);
     float bottomBand = smoothstep(0.35, 0.95, uv.y);
@@ -123,7 +123,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += COL_BLOOD * bloodMist * (0.45 + intensity * 0.30);
     bg += COL_CRIMSON * pow(bloodMist, 2.5) * 0.20;
 
-    //═══ 5. 数据腐蚀色块 —— 像素级闪现的方块,只在右上角区域出现 ═══════════════
+    //═══ 5. 数据腐蚀色块 ： 像素级闪现的方块,只在右上角区域出现 ═══════════════
     float2 corrUV = floor(pixelPos / 4.0);
     float corrSeed = hash21(corrUV);
     float corrBlink = step(0.985 - intensity * 0.012, frac(corrSeed * 7.13 + t * 1.3));
@@ -133,7 +133,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float lineNoise = step(0.992, frac(uv.y * 200.0 + hash11(floor(t * 3.0)) * 50.0));
     bg += COL_BLADE * lineNoise * 0.10 * intensity;
 
-    //═══ 6. 边缘血光 —— 状态色融入内边RIM ═══════════════════════════════════════
+    //═══ 6. 边缘血光 ： 状态色融入内边RIM ═══════════════════════════════════════
     float innerDist = max(-panelSDF, 0.0);
     float rimSoft = exp(-innerDist * 0.16);
     float rimLine = exp(-innerDist * innerDist * 0.55);
@@ -143,7 +143,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += accentMix * rimSoft * 0.45 * rimPulse;
     bg += COL_BLADE * rimLine * 0.55 * rimPulse;
 
-    //═══ 7. 顶部金属切边 —— 一条细密亮线,模拟刀刃切割面板 ═══════════════════════
+    //═══ 7. 顶部金属切边 ： 一条细密亮线,模拟刀刃切割面板 ═══════════════════════
     float topDist = uv.y;
     float topEdge = smoothstep(0.05, 0.0, topDist);
     bg += COL_FLASH * topEdge * (0.30 + pulse01 * 0.30);
@@ -151,7 +151,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float topShadow = smoothstep(0.02, 0.05, topDist) * (1.0 - smoothstep(0.05, 0.10, topDist));
     bg -= float3(0.018, 0.005, 0.008) * topShadow;
 
-    //═══ 8. 左侧战术粗带 —— uv.x<0.022区域用accent色填充 ═══════════════════════
+    //═══ 8. 左侧战术粗带 ： uv.x<0.022区域用accent色填充 ═══════════════════════
     float leftBlock = (1.0 - smoothstep(0.018, 0.024, uv.x))
                     * smoothstep(0.0, 0.04, uv.y) * smoothstep(0.0, 0.04, 1.0 - uv.y);
     bg += uAccent * leftBlock * (0.55 + rimPulse * 0.35);
@@ -159,7 +159,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float leftHL = (1.0 - smoothstep(0.005, 0.008, uv.x)) * smoothstep(0.0, 0.04, uv.y) * smoothstep(0.0, 0.04, 1.0 - uv.y);
     bg += COL_FLASH * leftHL * 0.30 * rimPulse;
 
-    //═══ 9. Blade Mode 偶发整面血红脉冲 —— 仅当intensity高时较常出现 ═══════════
+    //═══ 9. Blade Mode 偶发整面血红脉冲 ： 仅当intensity高时较常出现 ═══════════
     float bladeModeT = sin(t * 2.7) * 0.5 + 0.5;
     float bladeMode = step(0.93 - intensity * 0.10, bladeModeT) * intensity;
     bg += COL_BLADE * bladeMode * 0.14;
@@ -186,7 +186,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     return float4(bg * a, a) * vertexColor;
 }
 
-// ─── Technique ──────────────────────────────────────────────────────────────
+//─── Technique ──────────────────────────────────────────────────────────────
 technique Technique1
 {
     pass MurasamaPhantomPanelPass

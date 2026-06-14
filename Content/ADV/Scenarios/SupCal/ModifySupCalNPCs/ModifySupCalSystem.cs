@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
                     }
                 }
                 if (hasEbn) {
-                    //考虑到总是有人遇到无法正确设置击败状态的问题，这里直接让女巫的AI里设置击败状态，确保只要女巫存在了，就一定会设置击败状态
+                    //女巫 AI 内写击败状态，规避击败标记不同步
                     CWRRef.SetDownedCalamitas(true);
                     Main.npc[witch].active = false;
                     Main.npc[witch].netUpdate = true;

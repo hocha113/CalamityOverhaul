@@ -1,8 +1,6 @@
 ﻿namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>机械骷髅王全屏 FX，仅客户端</summary>
-    /// <para>三通道：冲击波环 <see cref="MaxRings"/>、冲击帧单实例、冲刺热浪</para>
-    /// <para>Push* 写入；<see cref="Renders.PrimeScreenEffectRender"/> 调 <see cref="Update"/> 衰减</para>
+    /// <summary>机械骷髅王全屏 FX，仅客户端；三通道：冲击波环 MaxRings、冲击帧单实例、冲刺热浪；Push* 写入；Renders.PrimeScreenEffectRender 调 Update 衰减</summary>
     internal static class PrimeScreenEffects
     {
         internal const int MaxRings = 3;

@@ -4,8 +4,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States
 {
     /// <summary>
-    /// 空闲/驻守状态——阿波利娅站在原地，面向玩家。
-    /// 当指令切换为Follow且距离足够远时重新进入行走
+    /// 空闲/驻守状态：阿波利娅站在原地，面向玩家。 当指令切换为Follow且距离足够远时重新进入行走
     /// </summary>
     internal class ApolliaIdleState : IApolliaState
     {

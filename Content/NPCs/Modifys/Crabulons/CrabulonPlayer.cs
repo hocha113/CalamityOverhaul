@@ -82,10 +82,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         }
     }
 
-    /// <summary>
-    /// 骑蟹时接管玩家运动，权威在骑手客户端；
-    /// 蟹吸附见<see cref="CrabulonMountSystem"/>
-    /// </summary>
+    /// <summary>骑蟹时接管玩家运动，权威在骑手客户端；蟹吸附见CrabulonMountSystem</summary>
     internal class CrabulonMountPlayer : ModPlayer
     {
         private float fallDistance;

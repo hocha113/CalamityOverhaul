@@ -10,10 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 合围电牢：加速旋转+半径收缩，收缩后期体节间拉起横贯圆环的高温电弧（纯演出），
-    /// 体节朝内发射等离子弹；收口停顿时全环白热闪烁后接冲刺
-    /// </summary>
+    /// <summary>合围电牢：加速旋转+半径收缩，收缩后期体节间拉起横贯圆环的高温电弧（纯演出），体节朝内发射等离子弹；收口停顿时全环白热闪烁后接冲刺</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Encircle, typeof(DestroyerStateContext))]
     internal class DestroyerEncircleState : DestroyerStateBase
     {
@@ -113,9 +110,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return null;
         }
 
-        /// <summary>
-        /// 在圆环上选取相距约1/3周长的两节体节拉一道电弧（服务端调用，受存量上限约束）
-        /// </summary>
+        /// <summary>在圆环上选取相距约1/3周长的两节体节拉一道电弧（服务端调用，受存量上限约束）</summary>
         private static void SpawnCageArc(DestroyerStateContext context) {
             var segments = context.BodySegments;
             if (segments.Count < 12) {

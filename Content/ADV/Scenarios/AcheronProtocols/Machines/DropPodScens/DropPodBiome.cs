@@ -3,9 +3,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
-    /// <summary>
-    /// 空降仓子世界生物群系——用于触发天空效果
-    /// </summary>
+    /// <summary>空降仓子世界生物群系</summary>
     internal class DropPodBiome : ModBiome
     {
         public override int Music => -1;

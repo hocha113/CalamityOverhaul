@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
 {
-    /// <summary>
-    /// 神源之刃 —— 命中爆点（纯视觉）
-    /// </summary>
+    /// <summary>神源之刃命中爆点，纯视觉</summary>
     internal class DivineSourceHitFXProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";

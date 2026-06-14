@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.RangedModify.Core;
@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -73,7 +73,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.useAmmo = AmmoID.Bullet;
             Item.shoot = ProjectileID.Bullet;
             Item.shootSpeed = 15;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;

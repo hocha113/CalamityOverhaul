@@ -1,6 +1,6 @@
 // ============================================================================
-// TwinsEyeOverlay.fx 双子魔眼程序化绘制
-// RetinazerEye/SpazmatismEye 两 Technique；ps_3_0
+//TwinsEyeOverlay.fx 双子魔眼程序化绘制
+//RetinazerEye/SpazmatismEye 两 Technique；ps_3_0
 // ============================================================================
 
 float uTime;
@@ -20,7 +20,7 @@ float3 uScleraColor;  //眼白底色(带机械金属感)
 #define TAU 6.28318530
 
 //==============================
-// 工具函数
+//工具函数
 //==============================
 
 //伪随机
@@ -87,7 +87,7 @@ float smoothmask(float d, float w)
 }
 
 //==============================
-// 主像素着色器
+//主像素着色器
 //==============================
 float4 TwinsEyePS(float2 uv : TEXCOORD0) : COLOR0
 {
@@ -267,7 +267,7 @@ float4 TwinsEyePS(float2 uv : TEXCOORD0) : COLOR0
     //第六层：充能进度环 (从下往上点亮)
     //=========================================
     {
-        float chargeAngle = (angle + PI) / TAU; // 0..1, 起点在左侧
+        float chargeAngle = (angle + PI) / TAU; //0..1, 起点在左侧
         float chargeMask = smoothstep(0.305, 0.295, abs(dist - 0.30));
         float chargeFill = step(chargeAngle, uProgress);
 
@@ -303,7 +303,7 @@ float4 TwinsEyePS(float2 uv : TEXCOORD0) : COLOR0
 }
 
 //==============================
-// Technique
+//Technique
 //==============================
 technique TwinsEye
 {

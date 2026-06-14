@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>老公爵营地 RenderHandle——实体/毒泡/交互提示</summary>
+    /// <summary>老公爵营地 RenderHandle：实体/毒泡/交互提示</summary>
     internal class OldDukeCampsiteRenderer : RenderHandle, ILocalizedModType, IWorldInfo
     {
         public string LocalizationCategory => "ADV.OldDukeCampsite";
@@ -135,7 +135,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Main.spriteBatch.End();
         }
 
-        /// <summary>绘制老公爵 sprite</summary>
         private void DrawOldDuke(SpriteBatch sb, Vector2 screenPos) {
             if (OldDukeCampsite.OldDuke == null || oldDukeEntity == null) {
                 return;

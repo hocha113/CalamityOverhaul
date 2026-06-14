@@ -1,10 +1,8 @@
-﻿using Terraria;
+using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
-    /// <summary>
-    /// 商店物品数据
-    /// </summary>
+    /// <summary>商店物品数据</summary>
     public class ShopItem
     {
         public int itemType;

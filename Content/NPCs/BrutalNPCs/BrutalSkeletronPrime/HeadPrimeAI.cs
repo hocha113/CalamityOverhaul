@@ -21,8 +21,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>机械骷髅王头部 NPCOverride</summary>
-    /// <para>战斗由 <see cref="States"/> 状态机驱动；契约见 <see cref="PrimePhase"/>、npc.ai[2]</para>
+    /// <summary>机械骷髅王头部 NPCOverride；战斗由 States 状态机驱动；契约见 PrimePhase、npc.ai[2]</summary>
     internal class HeadPrimeAI : CWRNPCOverride, ICWRLoader, ILocalizedModType
     {
         #region 数据与资源
@@ -193,7 +192,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             EvaluateGlobalTransitions();
 
             //客户端：本Boss状态机AI高度依赖未同步的本地玩家坐标(冲撞锁向、悬停死区判定)，
-            //本地推进会与服务端严重分歧再被netUpdate拉回，造成来回瞬移。
+            //本地推进会与服务端严重分歧再被netUpdate拉回，造成来回瞬移
             //改为纯服务端权威：客户端丢弃状态机算出的运动学(位置还原、速度清零不外推)，
             //只呈现服务端每帧广播的权威位置；视觉副作用(旋转/帧/charge/粒子)仍照常执行
             bool clientShadow = VaultUtils.isClient;
@@ -283,7 +282,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            //转阶段：武装阶段生命 ≤55% 或存活臂 ≤1，必定触发。
+            //转阶段：武装阶段生命 ≤55% 或存活臂 ≤1，必定触发
             if (phase == PrimePhase.Armed && ShouldPhaseTransition()) {
                 stateMachine.ChangeState(new PrimePhaseTransitionState());
                 return;

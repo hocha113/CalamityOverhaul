@@ -6,7 +6,6 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 {
     /// <summary>战术指令执行窗口：广播四臂指令后衔接下一头部招式</summary>
-    /// <para>下一手收编队且有臂收尾蓄力时，头部悬停等预警兑现</para>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.CommandExecute, typeof(PrimeStateContext))]
     internal class PrimeCommandExecuteState : PrimeStateBase
     {

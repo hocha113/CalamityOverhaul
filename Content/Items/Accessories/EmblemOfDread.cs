@@ -205,7 +205,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             float timeOffset = Time * 0.01f;
 
-            //存储盾牌信息用于排序
+            //盾牌绘制排序缓存
             List<(Vector2 pos, float scale, Rectangle rect, Color color)> shieldData = new();
 
             for (int i = 0; i < 3; i++) {
@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 shieldData.Add((drawPos, scale, texture.GetRectangle(i, 3), color));
             }
 
-            //根据Y值（纵深）进行排序，确保远处的先绘制
+            //按Y纵深排序，远盾先画
             shieldData = [.. shieldData.OrderBy(s => s.pos.Y)];
 
             foreach (var (pos, scale, rect, color) in shieldData) {
@@ -358,9 +358,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             }
         }
 
-        /// <summary>
-        /// 设置冲刺时的各种信息
-        /// </summary>
+        /// <summary>冲刺参数写入</summary>
         public void SetDash() {
             Vector2 dashDirection = (Main.MouseWorld - Player.Center).SafeNormalize(Vector2.UnitX);
             Vector2 newVelocity = dashDirection * DashVelocity;

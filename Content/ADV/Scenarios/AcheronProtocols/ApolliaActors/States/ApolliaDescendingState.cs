@@ -1,4 +1,4 @@
-﻿using InnoVault.Cinematics;
+using InnoVault.Cinematics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -7,9 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States
 {
     /// <summary>
-    /// 从天而降状态——阿波利娅从高空降落到地面。
-    /// 降落过程中产生星流拖尾粒子与尾焰效果，
-    /// 着陆时触发屏幕震动与冲击波粒子，表现力量感
+    /// 从天而降状态：阿波利娅从高空降落到地面。 降落过程中产生星流拖尾粒子与尾焰效果， 着陆时触发屏幕震动与冲击波粒子，表现力量感
     /// </summary>
     internal class ApolliaDescendingState : IApolliaState
     {
@@ -33,7 +31,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
             actor.GlowIntensity = 0f;
             actor.UseJumpTexture = true;
 
-            //启动尾焰系统——降落全程拖尾
+            //启动尾焰系统：降落全程拖尾
             actor.JetTrailActive = true;
             //登场运镜由 ApolliaCutscene 驱动，已在 ApolliaActor.StartLandingCutscene 中本地播放
         }
@@ -49,12 +47,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
             //淡入
             actor.DescendAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f);
 
-            //降落阶段粒子——随接近地面越来越密集
+            //降落阶段粒子：随接近地面越来越密集
             if (!VaultUtils.isServer) {
                 SpawnDescentParticles(actor, progress);
             }
 
-            //尾焰粒子——降落后半段开始喷射
+            //尾焰粒子：降落后半段开始喷射
             if (progress > 0.3f) {
                 actor.SpawnJetParticle();
                 if (progress > 0.6f) {
@@ -84,10 +82,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
         #region 降落过程粒子
 
         /// <summary>
-        /// 降落过程中的粒子效果——星流电弧 + 火花拖尾，密度随接近地面递增
+
+        /// 降落过程中的粒子效果：星流电弧 + 火花拖尾，密度随接近地面递增
+
         /// </summary>
         private static void SpawnDescentParticles(ApolliaActor actor, float progress) {
-            //基础电弧粒子——全程持续
+            //基础电弧粒子：全程持续
             if (Main.GameUpdateCount % 2 == 0) {
                 Vector2 dustPos = actor.Center + Main.rand.NextVector2Circular(12, 6);
                 Dust electric = Dust.NewDustDirect(dustPos, 1, 1, DustID.Electric,
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                 electric.velocity *= 0.5f;
             }
 
-            //星流拖尾——从角色身后向上延伸的光流
+            //星流拖尾：从角色身后向上延伸的光流
             int streakCount = progress < 0.5f ? 1 : 2;
             for (int i = 0; i < streakCount; i++) {
                 float offsetX = Main.rand.NextFloat(-18f, 18f);
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                 streak.fadeIn = Main.rand.NextFloat(0.8f, 1.4f);
             }
 
-            //加速阶段（后半段）——更多粒子 + 火花
+            //加速阶段（后半段）：更多粒子 + 火花
             if (progress > 0.4f) {
                 float intensity = (progress - 0.4f) / 0.6f; //0~1
 
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                 }
             }
 
-            //临近着陆——密集光流拖尾
+            //临近着陆：密集光流拖尾
             if (progress > 0.75f) {
                 float finalIntensity = (progress - 0.75f) / 0.25f;
                 int burstCount = (int)(finalIntensity * 4) + 1;
@@ -153,14 +153,16 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
         #region 着陆冲击效果
 
         /// <summary>
-        /// 着陆瞬间——屏幕震动 + 冲击烟尘 + 辉光爆发 + 音效
+
+        /// 着陆瞬间：屏幕震动 + 冲击烟尘 + 辉光爆发 + 音效
+
         /// </summary>
         private static void OnLanding(ApolliaActor actor) {
             //重型着陆音效
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.7f, Pitch = 0.1f }, actor.Center);
             SoundEngine.PlaySound(SoundID.Item70 with { Volume = 0.5f, Pitch = -0.3f }, actor.Center);
 
-            //着陆震动——叠加到当前 InnoVault 登场运镜上
+            //着陆震动：叠加到当前 InnoVault 登场运镜上
             if (CutsceneDirector.CurrentClip is ApolliaCutscene) {
                 CutsceneDirector.Shake(new Vector2(0, 1), 8f, 0.88f, 25);
             }
@@ -168,7 +170,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
             if (!VaultUtils.isServer) {
                 Vector2 footPos = actor.Center + new Vector2(0, 20);
 
-                //着陆烟尘——扇形向两侧扩散
+                //着陆烟尘：扇形向两侧扩散
                 for (int i = 0; i < 20; i++) {
                     float spreadAngle = MathHelper.Pi * 0.15f; //扇形角度
                     float angle = -MathHelper.PiOver2 + Main.rand.NextFloat(-spreadAngle, spreadAngle)
@@ -181,7 +183,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                     smoke.noGravity = true;
                 }
 
-                //着陆电弧火花——从落点向四周散射
+                //着陆电弧火花：从落点向四周散射
                 for (int i = 0; i < 15; i++) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float speed = Main.rand.NextFloat(3f, 7f);
@@ -192,7 +194,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                     arc.noGravity = true;
                 }
 
-                //地面碎屑——带重力的石块粒子
+                //地面碎屑：带重力的石块粒子
                 for (int i = 0; i < 8; i++) {
                     Vector2 debrisVel = new Vector2(
                         Main.rand.NextFloat(-4f, 4f),
@@ -213,7 +215,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
                 }
             }
 
-            //辉光爆发——着陆瞬间最亮
+            //辉光爆发：着陆瞬间最亮
             actor.GlowIntensity = 1.2f;
             actor.DescendAlpha = 1f;
         }

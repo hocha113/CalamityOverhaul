@@ -17,29 +17,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
         public override string StateName => "SpazmatismShadowDash";
         public override TwinsStateIndex StateIndex => TwinsStateIndex.SpazmatismShadowDash;
 
-        /// <summary>
-        /// 蓄力聚集阶段时长
-        /// </summary>
+        /// <summary>蓄力聚集阶段时长</summary>
         private int GatherPhase => Context.IsDeathMode ? 38 : 46;
 
-        /// <summary>
-        /// 每段全速冲刺时长
-        /// </summary>
+        /// <summary>每段全速冲刺时长</summary>
         private int SegmentDashTime => Context.IsDeathMode ? 20 : 24;
 
-        /// <summary>
-        /// 每段急停甩头时长
-        /// </summary>
+        /// <summary>每段急停甩头时长</summary>
         private int SegmentWhipTime => Context.IsDeathMode ? 9 : 11;
 
-        /// <summary>
-        /// 冲刺段数
-        /// </summary>
+        /// <summary>冲刺段数</summary>
         private int SegmentCount => Context.IsDeathMode ? 4 : 3;
 
-        /// <summary>
-        /// 恢复阶段时长
-        /// </summary>
+        /// <summary>恢复阶段时长</summary>
         private int RecoveryPhase => Context.IsDeathMode ? 20 : 26;
 
         private int SegmentTime => SegmentDashTime + SegmentWhipTime;
@@ -195,9 +185,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
             }
         }
 
-        /// <summary>
-        /// 恢复阶段：减速面向玩家，残余火星
-        /// </summary>
+        /// <summary>恢复阶段：减速面向玩家，残余火星</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             DisableContactDamage(npc);
             npc.velocity *= 0.92f;

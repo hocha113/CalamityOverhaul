@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 重置配方(用于重新加载)
+        /// 重置配方(重新加载)
         /// </summary>
         public static void Reset() {
             SmeltRecipes?.Clear();

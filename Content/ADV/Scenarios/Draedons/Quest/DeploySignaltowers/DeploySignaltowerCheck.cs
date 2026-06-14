@@ -1,32 +1,22 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    /// <summary>
-    /// 信号塔搭建检测系统
-    /// </summary>
+    /// <summary>信号塔搭建检测系统</summary>
     internal class DeploySignaltowerCheck : ModSystem
     {
-        /// <summary>
-        /// 世界上已搭建的信号塔数量(在目标点位内的)
-        /// </summary>
+        /// <summary>世界上已搭建的信号塔数量(在目标点位内的)</summary>
         public static int DeployedTowerCount { get; private set; }
 
-        /// <summary>
-        /// 目标信号塔数量
-        /// </summary>
+        /// <summary>目标信号塔数量</summary>
         public const int TargetTowerCount = 10;
 
-        /// <summary>
-        /// 初次搭建场景触发检测计时器
-        /// </summary>
+        /// <summary>初次搭建场景触发检测计时器</summary>
         private int scenarioCheckTimer;
 
-        /// <summary>
-        /// 任务完成场景触发计时器
-        /// </summary>
+        /// <summary>任务完成场景触发计时器</summary>
         private int questCompleteCheckTimer;
 
         public override void PostUpdateEverything() {
@@ -40,9 +30,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             CheckQuestComplete();
         }
 
-        /// <summary>
-        /// 更新世界上信号塔的数量(只统计在目标点位内的)
-        /// </summary>
+        /// <summary>更新世界上信号塔的数量(只统计在目标点位内的)</summary>
         private static void UpdateTowerCount() {
             if (!SignalTowerTargetManager.IsGenerated) {
                 DeployedTowerCount = 0;
@@ -60,9 +48,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DeployedTowerCount = count;
         }
 
-        /// <summary>
-        /// 检测是否触发初次搭建场景
-        /// </summary>
+        /// <summary>检测是否触发初次搭建场景</summary>
         private void CheckFirstTowerScenario() {
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
                 return;
@@ -89,9 +75,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 检测任务完成
-        /// </summary>
+        /// <summary>检测任务完成</summary>
         private void CheckQuestComplete() {
             if (!Main.LocalPlayer.TryGetADVSave(out var save)) {
                 return;
@@ -119,17 +103,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 触发第一座信号塔搭建后的场景
-        /// </summary>
+        /// <summary>触发第一座信号塔搭建后的场景</summary>
         private static void TriggerFirstTowerScenario() {
             //触发嘉登出现给予指示的场景
             ScenarioManager.Start<FirstTowerBuiltScenario>();
         }
 
-        /// <summary>
-        /// 任务完成时调用
-        /// </summary>
+        /// <summary>任务完成时调用</summary>
         private static void OnQuestComplete() {
             //触发任务完成场景
             ScenarioManager.Start<QuestCompleteScenario>();

@@ -4,9 +4,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 {
-    /// <summary>
-    /// 营地位置查找器，负责搜索和验证营地生成位置
-    /// </summary>
+    /// <summary>营地位置查找器</summary>
     internal static class CampsiteLocationFinder
     {
         /// <summary>
@@ -38,7 +36,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 检测硫磺海是否在地图左侧
+
         /// </summary>
         private static bool IsSulphurousSeaOnLeft() {
             int leftCheckStart = 100;
@@ -55,7 +55,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 统计指定区域内的硫磺海物块数量
+
         /// </summary>
         private static int CountSulphurousTiles(int startX, int endX, int centerY, int searchRadius) {
             int count = 0;
@@ -76,15 +78,14 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return count;
         }
 
-        /// <summary>
-        /// 检查图格是否是硫磺海物块
-        /// </summary>
         private static bool IsSulphurousTile(int tileType) {
             return tileType == CWRID.Tile_SulphurousSand || tileType == CWRID.Tile_SulphurousSandstone;
         }
 
         /// <summary>
+
         /// 在硫磺海海岸区域搜索最佳位置
+
         /// </summary>
         private static Vector2? SearchInSulphurousSeaCoast(bool seaOnLeft) {
             int searchStartX, searchEndX;
@@ -105,7 +106,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 在扩展的硫磺海区域搜索
+
         /// </summary>
         private static Vector2? SearchInExtendedSulphurousArea(bool seaOnLeft) {
             int searchStartX, searchEndX;
@@ -126,7 +129,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 在玩家附近寻找硫磺海地形
+
         /// </summary>
         private static Vector2? SearchNearPlayer() {
             Player player = Main.LocalPlayer;
@@ -156,7 +161,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 使用评分系统搜索最佳位置
+
         /// </summary>
         private static Vector2? SearchWithScoring(int startX, int endX, int startY, int endY, int stepX) {
             Vector2? bestPosition = null;
@@ -179,7 +186,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 验证位置是否适合生成营地
+
         /// </summary>
         public static Vector2? ValidateLocation(int tileX, int tileY) {
             //边界检查
@@ -241,9 +250,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
         }
 
-        /// <summary>
-        /// 检查周围是否有硫磺海物块
-        /// </summary>
         private static bool HasNearbySulphurousTiles(int tileX, int tileY) {
             const int checkRadius = 10;
             int sulphurCount = 0;
@@ -272,24 +278,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         #region 位置验证辅助方法
 
-        /// <summary>
-        /// 检查是否在有效边界内
-        /// </summary>
         private static bool IsWithinBounds(int tileX, int tileY) {
             return tileX >= 50 && tileX < Main.maxTilesX - 50 &&
                    tileY >= 50 && tileY < Main.maxTilesY - 50;
         }
 
-        /// <summary>
-        /// 检查是否是危险方块
-        /// </summary>
         private static bool IsDangerousTile(Tile tile) {
             return Main.tileDungeon[tile.TileType] || Main.tileLavaDeath[tile.TileType];
         }
 
-        /// <summary>
-        /// 检查是否在水下
-        /// </summary>
         private static bool IsUnderwater(int tileX, int tileY) {
             for (int checkY = tileY - 3; checkY <= tileY; checkY++) {
                 if (checkY < 0 || checkY >= Main.maxTilesY) {
@@ -304,9 +301,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return false;
         }
 
-        /// <summary>
-        /// 检查垂直方向是否有足够空间
-        /// </summary>
         private static bool HasVerticalSpace(int tileX, int tileY, int requiredHeight) {
             for (int checkY = tileY - 1; checkY >= tileY - requiredHeight; checkY--) {
                 if (checkY < 0) {
@@ -329,9 +323,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return true;
         }
 
-        /// <summary>
-        /// 检查水平方向是否有足够空间
-        /// </summary>
         private static bool HasHorizontalSpace(int tileX, int tileY, int requiredWidth) {
             for (int offsetX = -requiredWidth; offsetX <= requiredWidth; offsetX++) {
                 int checkX = tileX + offsetX;
@@ -360,9 +351,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return true;
         }
 
-        /// <summary>
-        /// 检查是否被水包围
-        /// </summary>
         private static bool IsSurroundedByWater(int tileX, int tileY) {
             int waterCount = 0;
             int totalChecks = 0;
@@ -388,9 +376,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             return totalChecks > 0 && (float)waterCount / totalChecks > 0.4f;
         }
 
-        /// <summary>
-        /// 检查是否在海洋生物群系
-        /// </summary>
         private static bool IsInOceanBiome(int tileX, int tileY) {
             const int oceanThreshold = 380;
             return tileX < oceanThreshold || tileX > Main.maxTilesX - oceanThreshold;
@@ -401,7 +386,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         #region 位置评分系统
 
         /// <summary>
+
         /// 评估位置质量，返回分数（越高越好）
+
         /// </summary>
         private static int EvaluateLocation(int tileX, int tileY) {
             int score = 100;
@@ -422,7 +409,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 根据与地表的距离评分
+
         /// </summary>
         private static int ScoreBySurfaceDistance(int tileY) {
             float surfaceDistance = (float)Math.Abs(tileY - Main.worldSurface);
@@ -430,7 +419,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 根据地面类型评分
+
         /// </summary>
         private static int ScoreByTileType(int tileX, int tileY) {
             Tile tile = Main.tile[tileX, tileY];
@@ -455,7 +446,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 根据周围水量评分（水越少越好）
+
         /// </summary>
         private static int ScoreByNearbyWater(int tileX, int tileY) {
             int waterCount = 0;
@@ -478,7 +471,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 根据周围硫磺海物块密度评分（密度越高越好）
+
         /// </summary>
         private static int ScoreBySulphurousDensity(int tileX, int tileY) {
             const int checkRadius = 15;

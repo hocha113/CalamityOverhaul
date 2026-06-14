@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -170,7 +170,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         /// <summary>
-        /// 获取密度对应的数值乘数，用于世界生成时调节参数
+        /// 获取密度对应的数值乘数，世界生成时调节参数
         /// </summary>
         public static float GetMultiplier(string name) {
             return GetDensity(name) switch {
@@ -227,12 +227,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         private static readonly Color[] DensityLevelColors = [
-            new(100, 40, 40),    // Extinction - 暗红
-            new(90, 130, 180),   // Rare - 冷蓝
-            new(160, 180, 160),  // Normal - 灰绿
-            new(200, 180, 70),   // Common - 暖黄
-            new(200, 110, 45),   // Flood - 深橙
-            new(200, 55, 55),    // Everywhere - 亮红
+            new(100, 40, 40),    //Extinction - 暗红
+            new(90, 130, 180),   //Rare - 冷蓝
+            new(160, 180, 160),  //Normal - 灰绿
+            new(200, 180, 70),   //Common - 暖黄
+            new(200, 110, 45),   //Flood - 深橙
+            new(200, 55, 55),    //Everywhere - 亮红
         ];
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         /// <summary>
-        /// 覆写点击处理：密度选项通过左右箭头切换等级
+        /// 覆写点击：密度选项通过左右箭头切换等级
         /// </summary>
         public override bool HandleClick(Rectangle mouseHitBox) {
             if (HoveringCategory) {

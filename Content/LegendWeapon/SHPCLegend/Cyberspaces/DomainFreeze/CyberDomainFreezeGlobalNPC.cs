@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
+using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
                     null, Main.GameViewMatrix.TransformationMatrix);
             }
 
-            // 绘制六角能量罩覆盖层
+            //绘制六角能量罩覆盖层
             if (wasFrozen) {
                 float progress = CyberDomainFreeze.GetNPCFreezeProgress(npc.whoAmI);
                 float seed = CyberDomainFreeze.GetNPCSeed(npc.whoAmI);
@@ -69,7 +69,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
             float cageRadius = Math.Max(entityWidth, entityHeight) * 0.5f + 20f;
             float quadSize = cageRadius * 2.4f;
 
-            // 形成进度: 前30帧 (0.5秒) 从0到1
+            //形成进度: 前30帧 (0.5秒) 从0到1
             float formProgress = Math.Min(progress * (CyberDomainFreeze.DefaultFreezeDuration / 30f), 1f);
 
             cageShader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public static bool? PreAIByOverNPC(NPC npc) {
             if (!CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return null;
 
-            // 获取冻结位置快照
+            //获取冻结位置快照
             for (int i = 0; i < CyberDomainFreeze.FrozenNPCs.Count; i++) {
                 if (CyberDomainFreeze.FrozenNPCs[i].EntityIndex == npc.whoAmI) {
                     npc.Center = CyberDomainFreeze.FrozenNPCs[i].FreezePosition;
@@ -114,13 +114,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         }
 
         public override bool PreAI(NPC npc) {
-            //PreAI 优先级不足，停滞改由 PreAIByOverNPC 处理
+            //PreAIByOverNPC 做停滞
             return true;
         }
 
         private static bool ShouldApplyEffect(NPC npc) {
             if (!CyberDomainFreeze.IsNPCFrozen(npc.whoAmI)) return false;
-            // 正在被放逐的NPC由放逐着色器处理，不叠加冻结着色器
+            //放逐中 NPC 走放逐 shader，不叠冻结
             if (CyberBanish.IsBanishing(npc.whoAmI)) return false;
             return true;
         }

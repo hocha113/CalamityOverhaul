@@ -12,7 +12,6 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
     /// <summary>剪刀死光大招：对角铰链蓄力→双持续射线内夹→收招硬直</summary>
-    /// <para>任一眼低血量解锁；锚点锁定，玩家跟安全缝走位</para>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsScissorRay, typeof(TwinsStateContext))]
     internal class TwinsScissorRayState : TwinsStateBase
     {
@@ -27,9 +26,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
 
         private int TotalDuration => PositionPhase + LockPhase + SweepPhase + RecoveryPhase;
 
-        /// <summary>
-        /// 射线起始角(相对正下方向外偏)与结束角(向内收剪越过中线)
-        /// </summary>
+        /// <summary>射线起始角(相对正下方向外偏)与结束角(向内收剪越过中线)</summary>
         private const float StartSpread = 0.92f;
         private const float EndSpread = -0.85f;
 
@@ -99,9 +96,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>
-        /// 就位阶段：双眼弹簧飞往玩家上方两翼远端
-        /// </summary>
+        /// <summary>就位阶段：双眼弹簧飞往玩家上方两翼远端</summary>
         private void ExecutePositionPhase(NPC npc, Player player) {
             float progress = Timer / (float)PositionPhase;
 
@@ -118,9 +113,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 锁定蓄力阶段：电弧铰链对接，眼体颤抖蓄能，缓慢转向起始射角
-        /// </summary>
+        /// <summary>锁定蓄力阶段：电弧铰链对接，眼体颤抖蓄能，缓慢转向起始射角</summary>
         private void ExecuteLockPhase(NPC npc, Player player, NPC partner) {
             int phaseTimer = Timer - PositionPhase;
             float progress = phaseTimer / (float)LockPhase;
@@ -171,9 +164,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 夹剪扫射阶段：双射线由外向内缓动闭合，越过中线完成"剪切"
-        /// </summary>
+        /// <summary>夹剪扫射阶段：双射线由外向内缓动闭合，越过中线完成"剪切"</summary>
         private void ExecuteSweepPhase(NPC npc, Player player) {
             int phaseTimer = Timer - PositionPhase - LockPhase;
             float progress = phaseTimer / (float)SweepPhase;
@@ -239,9 +230,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 退出状态：返回各自二阶段锚点
-        /// </summary>
+        /// <summary>退出状态：返回各自二阶段锚点</summary>
         private ITwinsState GetExitState() {
             if (Context.IsSpazmatism) {
                 return new SpazmatismFlameChaseState(comboStep);

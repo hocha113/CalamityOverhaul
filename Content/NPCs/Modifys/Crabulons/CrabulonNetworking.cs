@@ -8,9 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
-    /// <summary>
-    /// 菌生蟹网络：核心状态走 NPCOverride 通道，此处仅投喂与召回
-    /// </summary>
+    /// <summary>菌生蟹网络：核心状态走 NPCOverride 通道，此处仅投喂与召回</summary>
     internal class CrabulonNetworking
     {
         private readonly ModifyCrabulon owner;

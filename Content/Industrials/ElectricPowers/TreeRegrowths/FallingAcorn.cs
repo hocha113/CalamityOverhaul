@@ -1,4 +1,4 @@
-﻿using InnoVault.Actors;
+using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -9,7 +9,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
 {
     /// <summary>
-    /// 橡子下落动画Actor，用于表示树木被砍伐后的种植演出
+    /// 橡子下落动画Actor，表示树木被砍伐后的种植演出
     /// </summary>
     internal class FallingAcorn : Actor
     {
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths
         private bool landed;
         //落地后的延迟计时器
         private int landedTimer;
-        //原始树木类型，用于确定生长的树木种类
+        //原树木类型，定生长种类
         private int originalTreeType;
 
         public override void OnSpawn(params object[] args) {

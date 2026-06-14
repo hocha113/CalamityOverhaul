@@ -4,9 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>
-    /// 巡空状态：椭圆轨迹盘旋，带高度起伏
-    /// </summary>
+    /// <summary>巡空状态：椭圆轨迹盘旋，带高度起伏</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.Patrol, typeof(DestroyerStateContext))]
     internal class DestroyerPatrolState : DestroyerStateBase
     {

@@ -12,9 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Granites
 {
-    /// <summary>
-    /// 花岗飞刀：穿透并拖出蓝色能量缎带，末段 / 撞地碎裂为水晶碎片
-    /// </summary>
+    /// <summary>花岗飞刀，穿透拖蓝缎带，末段/撞地碎水晶</summary>
     internal class GraniteThrowingKnife : ModItem
     {
         public override void SetDefaults() {

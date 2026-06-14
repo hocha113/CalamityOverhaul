@@ -14,18 +14,17 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
 {
     /// <summary>
-    /// 科尔托三号星世界闪电
-    /// 机械废墟中的残余星流能量放电，视觉上为冷色电弧
+    /// 科尔托三号星世界闪电 机械废墟中的残余星流能量放电，视觉上为冷色电弧
     /// </summary>
     internal class MachineTesla : Lightning
     {
         #region 世界闪电特化属性
-        public override int MaxBranches => 1; // 世界闪电分叉适中
-        public override float BranchProbability => 0.38f; // 适中的分叉概率
+        public override int MaxBranches => 1; //世界闪电分叉适中
+        public override float BranchProbability => 0.38f; //适中的分叉概率
         public override float BranchLengthRatio => 1f;
-        public override int LingerTime => 28; // 稍长的停留时间
-        public override int FadeTime => 18; // 较快消失
-        public override float BaseWidth => 42f; // 世界闪电较粗
+        public override int LingerTime => 28; //稍长的停留时间
+        public override int FadeTime => 18; //较快消失
+        public override float BaseWidth => 42f; //世界闪电较粗
         public override float MinBranchWidthRatio => 0.45f;
         public override float MaxBranchWidthRatio => 0.75f;
 
@@ -67,26 +66,28 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         #endregion
 
         public override void SetLightningDefaults() {
-            Projectile.hostile = true;  // 环境危害
+            Projectile.hostile = true;  //环境危害
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
             Projectile.damage = MassiveStrikeDamage;
 
-            // 世界闪电强度稍高
+            //世界闪电强度稍高
             Intensity = 1.0f;
         }
 
         public override Color GetLightningColor(float factor) => new Color(103, 255, 255);
 
         /// <summary>
+
         /// 世界闪电的宽度函数 - 使用优化的曲线
+
         /// </summary>
         public override float GetLightningWidth(float factor) {
-            // 更平滑的宽度曲线，避免过粗
+            //更平滑的宽度曲线，避免过粗
             float curve = MathF.Sin(factor * MathHelper.Pi);
-            // 中部略粗，但整体更细
+            //中部略粗，但整体更细
             float shapeFactor = curve * (0.55f + 0.35f * MathF.Pow(MathF.Sin(factor * MathHelper.Pi), 1.5f));
-            return ThunderWidth * shapeFactor * Intensity * 0.9f; // 额外缩小10%
+            return ThunderWidth * shapeFactor * Intensity * 0.9f; //额外缩小10%
         }
 
         #region 寻找目标算法（保持原有的复杂算法）
@@ -95,22 +96,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
-        /// 物理/逻辑要点：<br/>
-        /// 1.闪电优先击中“最高 + 导电性好 + 突出地形”的点<br/>
-        /// 2.支持实体(玩家/NPC)作为优先落点：需足够突出(minEntityProtrusion)，并在水平搜索范围内<br/>
-        /// 3.建立局部高度图，对每个X找到最上层可导实体方块(实心且非平台)<br/>
-        /// 4.对金属类方块给予高度偏置(等效“更容易引雷”)<br/>
-        /// 5.对局部凸起(比相邻更高)给予额外偏置<br/>
-        /// 6.若存在视线遮挡(Line Of Sight)则降低优先级（选取一条较清晰通路）<br/>
-        /// 7.在候选高度相近时引入轻微随机扰动，避免落点过于机械<br/>
-        /// 8.若无任何合格候选，落到最大搜索深度的垂直下方<br/>
-        /// 评分规则(数值越小越优)：score = worldY - materialBias - peakBias - entityBias + losPenalty<br/>
-        /// 其中：<br/>
-        ///  materialBias：金属类 ~14 像素 等效抬高<br/>
-        ///  peakBias：局部凸起奖励 8<br/>
-        ///  entityBias：实体（玩家/NPC）基准 18 ~ 26（玩家略高）<br/>
-        ///  losPenalty：无直视 +12<br/>
-        /// 终选：score 最小；若差距 小于 6 再比较真实高度 - 更高(更小 Y)优先<br/>
+
+        /// 物理/逻辑要点：<br/> 1.闪电优先击中“最高 + 导电性好 + 突出地形”的点<br/> 2.支持实体(玩家/NPC)作为优先落点：需足够突出(minEntityProtrusion)，并在水平搜索范围内<br/> 3.建立局部高度图，对每个X找到最上层可导实体方块(实心且非平台)<br/> 4.对金属类方块给予高度偏置(等效“更容易引雷”)<br/> 5.对局部凸起(比相邻更高)给予额外偏置<br/> 6.若存在视线遮挡(Line Of Sight)则降低优先级（选取一条较清晰通路）<br/> 7.在候选高度相近时引入轻微随机扰动，避免落点过于机械<br/> 8.若无任何合格候选，落到最大搜索深度的垂直下方<br/> 评分规则(数值越小越优)：score = worldY - materialBias - peakBias - entityBias + losPenalty<br/> 其中：<br/> materialBias：金属类 ~14 像素 等效抬高<br/> peakBias：局部凸起奖励 8<br/> entityBias：实体（玩家/NPC）基准 18 ~ 26（玩家略高）<br/> losPenalty：无直视 +12<br/> 终选：score 最小；若差距 小于 6 再比较真实高度 - 更高(更小 Y)优先<br/>
+
         /// </summary>
         internal static Vector2 FindHighestSolidInAreaBelow(
             Vector2 startPosition,
@@ -236,20 +224,20 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
 
         #region 重写基类方法
         public override void OnStrike() {
-            // 播放雷声
+            //播放雷声
             SoundStyle sound = CWRSound.Thunder;
             sound.PitchRange = (-0.2f, 0.1f);
             sound.Volume = 0.6f;
             sound.MaxInstances = 6;
             SoundEngine.PlaySound(sound, TargetPosition);
 
-            // 生成导电效果
+            //生成导电效果
             GenerateConductiveDischarge(TargetPosition.ToTileCoordinates(), 520, 56);
 
-            // 地面残留效果
+            //地面残留效果
             SpawnGroundResidual(TargetPosition);
 
-            // 触发天空闪光效果：根据与玩家的距离计算闪光强度
+            //触发天空闪光效果：根据与玩家的距离计算闪光强度
             Player player = Main.LocalPlayer;
             if (player != null && player.active) {
                 float dist = Vector2.Distance(TargetPosition, player.Center);
@@ -262,50 +250,54 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 重写分叉创建 - 世界闪电的特殊分叉逻辑
+
         /// </summary>
         protected override void CreateBranch() {
-            // 首先调用基类的优化分叉算法
+            //首先调用基类的优化分叉算法
             base.CreateBranch();
 
-            // 世界闪电的额外特殊分叉（概率较低，避免过多）
+            //世界闪电的额外特殊分叉（概率较低，避免过多）
             if (BranchTrails.Count < MaxBranches - 1 && Main.rand.NextFloat() < 0.15f) {
                 CreateSpecialBranch();
             }
         }
 
         /// <summary>
+
         /// 创建特殊的世界闪电分叉
+
         /// </summary>
         private void CreateSpecialBranch() {
             if (LightningTexture == null || TrailPoints.Count < 8) return;
 
             var points = TrailPoints.ToArray();
-            // 从主干前半段选择
+            //从主干前半段选择
             int startIndex = Main.rand.Next(points.Length / 4, points.Length / 2);
             Vector2 branchStart = points[startIndex];
 
             List<Vector2> branchPoints = new List<Vector2> { branchStart };
 
-            // 主干方向
+            //主干方向
             Vector2 mainDirection = (TargetPosition - Projectile.Center).SafeNormalize(Vector2.UnitY);
 
-            // 更大的偏离角度
+            //更大的偏离角度
             float sideSign = Main.rand.NextBool() ? 1 : -1;
             float branchAngle = mainDirection.ToRotation() + sideSign * Main.rand.NextFloat(0.7f, 1.2f);
 
-            // 较短的分叉
+            //较短的分叉
             int branchLength = Main.rand.Next(12, 22);
             Vector2 currentPos = branchStart;
 
             for (int i = 0; i < branchLength; i++) {
                 float progressFactor = i / (float)branchLength;
 
-                // 角度逐渐变化
+                //角度逐渐变化
                 branchAngle += Main.rand.NextFloat(-0.15f, 0.15f);
                 Vector2 branchDirection = branchAngle.ToRotationVector2();
 
-                // 向下偏移
+                //向下偏移
                 branchDirection.Y += 0.08f * progressFactor;
                 branchDirection = branchDirection.SafeNormalize(Vector2.UnitY);
 
@@ -315,7 +307,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                 currentPos += branchDirection * Main.rand.NextFloat(11f, 15f) + perpendicular * randomOffset;
                 branchPoints.Add(currentPos);
 
-                // 提前结束概率
+                //提前结束概率
                 if (Main.rand.NextFloat() < 0.05f + progressFactor * 0.08f) break;
             }
 
@@ -368,7 +360,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 最大电弧跳跃距离（穿越空气格数），模拟电弧可以跨越小段空气
+
         /// </summary>
         private const int MaxArcJumpDistance = 3;
         /// <summary>
@@ -386,7 +380,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             Queue<ConductionNode> q = new Queue<ConductionNode>();
             Dictionary<Point, ConductionNode> accepted = new Dictionary<Point, ConductionNode>();
 
-            // 在落点附近搜索所有实心方块作为初始种子，解决尖塔尖端只有单点的问题
+            //在落点附近搜索所有实心方块作为初始种子，解决尖塔尖端只有单点的问题
             int seedCount = 0;
             for (int dy = -1; dy <= SeedSearchRadius; dy++) {
                 for (int dx = -SeedSearchRadius; dx <= SeedSearchRadius; dx++) {
@@ -399,7 +393,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                     Point sp = new Point(nx, ny);
                     if (accepted.ContainsKey(sp)) continue;
 
-                    // 距离越远初始强度越低
+                    //距离越远初始强度越低
                     float dist = MathF.Sqrt(dx * dx + dy * dy);
                     float seedIntensity = MathHelper.Clamp(1f - dist * 0.12f, 0.5f, 1f);
                     ConductionNode seed = new ConductionNode { pos = sp, intensity = seedIntensity, layer = 0 };
@@ -409,7 +403,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                 }
             }
 
-            // 如果附近连一个实心方块都没有，放弃
+            //如果附近连一个实心方块都没有，放弃
             if (seedCount == 0) return;
 
             int processed = 0;
@@ -447,7 +441,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                 if (node.intensity < 0.06f) continue;
 
                 for (int i = 0; i < dirs.Length; i++) {
-                    // 尝试直接邻居，若为空气则电弧跳跃搜索更远的实心方块
+                    //尝试直接邻居，若为空气则电弧跳跃搜索更远的实心方块
                     Point dir = dirs[i];
                     Point np = new Point(node.pos.X + dir.X, node.pos.Y + dir.Y);
                     int jumpSteps = 1;
@@ -455,7 +449,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                     if (WorldGen.InWorld(np.X, np.Y) && !accepted.ContainsKey(np)) {
                         Tile ntile = Framing.GetTileSafely(np.X, np.Y);
                         if (!ntile.HasTile || !Main.tileSolid[ntile.TileType] || Main.tileSolidTop[ntile.TileType]) {
-                            // 邻居是空气，尝试电弧跳跃：沿同方向继续探测
+                            //邻居是空气，尝试电弧跳跃：沿同方向继续探测
                             Point jumpTarget = np;
                             bool found = false;
                             for (int j = 2; j <= MaxArcJumpDistance; j++) {
@@ -482,12 +476,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                     float cond = GetConductivity(finalTile.TileType);
                     float nextIntensity = node.intensity * (0.88f + 0.10f * cond);
 
-                    // 跳跃越远衰减越大
+                    //跳跃越远衰减越大
                     if (jumpSteps > 1) nextIntensity *= MathF.Pow(0.78f, jumpSteps - 1);
                     if (Math.Abs(dir.X) == 2) nextIntensity *= 0.85f;
                     if (dir.Y < 0) nextIntensity *= 0.80f;
 
-                    // 前几层保证扩散，不随机淘汰
+                    //前几层保证扩散，不随机淘汰
                     if (node.layer >= GuaranteedSpreadLayers) {
                         float surviveChance = 0.55f * cond + 0.45f;
                         if (Main.rand.NextFloat() > surviveChance) continue;
@@ -545,7 +539,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
                 tileRect.Y = ct.pos.Y * 16;
                 Vector2 center = new(tileRect.X + 8, tileRect.Y + 8);
 
-                // NPC伤害处理
+                //NPC伤害处理
                 for (int n = 0; n < Main.maxNPCs; n++) {
                     NPC npc = Main.npc[n];
                     if (!npc.active || npc.friendly || npc.dontTakeDamage || !npc.Hitbox.Intersects(tileRect))

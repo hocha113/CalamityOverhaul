@@ -13,8 +13,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>侧舷波次→炽核熔射：充能波齐射+<see cref="DestroyerMawBeamProj"/> 慢扫光柱</summary>
-    /// <para>扫角速压低、展开无伤、锁定后停跟踪(公平阀)</para>
+    /// <summary>侧舷波次→炽核熔射：充能波齐射+DestroyerMawBeamProj 慢扫光柱</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.LaserBarrage, typeof(DestroyerStateContext))]
     internal class DestroyerLaserBarrageState : DestroyerStateBase
     {
@@ -47,7 +46,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private int BarrageSweep(DestroyerStateContext ctx) => ctx.IsDeathMode ? 60 : 70;
         private float BoltSpeed(DestroyerStateContext ctx) => ctx.IsDeathMode ? 7.5f : 5.5f;
 
-        /// <summary>横扫半弧：决定光柱总扫角 = 2×arcHalf；越大越华丽，但角速度同步抬高，注意公平阈值</summary>
+        /// <summary>横扫半弧：决定光柱总扫角 = 2×arcHalf；越大越华丽，但角速度同步抬高，公平阈值</summary>
         private float ArcHalf(DestroyerStateContext ctx) {
             float a = 1.3f;
             if (ctx.IsEnraged) {
@@ -152,9 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #region 侧舷齐射
 
-        /// <summary>
-        /// 推进一帧波次齐射：推送充能波视觉，并在服务端对波峰扫过的体节开火
-        /// </summary>
+        /// <summary>推进波次齐射：充能波视觉+服务端体节开火</summary>
         private void DoSweep(DestroyerStateContext context, float sweepProgress) {
             var segments = context.BodySegments;
             int count = segments.Count;

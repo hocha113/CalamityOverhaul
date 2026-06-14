@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
+using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs;
@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    /// <summary>
-    /// 任务完成场景
-    /// </summary>
+    /// <summary>信号塔部署任务完成</summary>
     internal class QuestCompleteScenario : ADVScenarioBase, ILocalizedModType
     {
         //角色名称本地化

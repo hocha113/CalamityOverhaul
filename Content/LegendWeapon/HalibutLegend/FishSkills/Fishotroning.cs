@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.Projectiles.Others;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float SegmentLength = 45f;
         private Vector2 shoulderPos = Vector2.Zero;
         private Vector2 handPos = Vector2.Zero;
-        private float armTension = 0f; //手臂张力,用于IK自然度
+        private float armTension = 0f; //手臂张力，IK自然度
         private int ownerDirection = 1; //玩家朝向 (-1左, 1右)
 
         //攻击参数
@@ -492,7 +492,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 };
                 StateTimer = 0;
 
-                //投掷状态特殊处理
+                //投掷态分支
                 if (State == HandState.Throwing) {
                     throwActionActive = true;
                     throwStartPos = Projectile.Center;

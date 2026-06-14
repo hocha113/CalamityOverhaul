@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -131,7 +131,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = MaxDuration + 120; //额外时间用于消散
+            Projectile.timeLeft = MaxDuration + 120; //额外帧消散
 
             //初始化云朵翻滚参数
             for (int i = 0; i < cloudRollOffsets.Length; i++) {

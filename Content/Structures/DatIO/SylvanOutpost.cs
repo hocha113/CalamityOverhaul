@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.OverhaulSettings;
+using CalamityOverhaul.Content.UIs.OverhaulSettings;
 using InnoVault.GameSystem;
 using System;
 using System.IO;
@@ -507,7 +507,7 @@ namespace CalamityOverhaul.Content.Structures.DatIO
         }
 
         /// <summary>
-        /// 修复地基，确保建筑下方完全填充且自然融入周围地形
+        /// 修复地基，建筑下方完全填充且自然融入周围地形
         /// </summary>
         private static void RepairFoundation(Point16 startPos, Point16 regionSize) {
             int x = startPos.X;

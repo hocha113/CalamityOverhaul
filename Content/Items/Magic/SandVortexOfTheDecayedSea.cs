@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.knockBack = 4.5f;
             Item.shoot = ModContent.ProjectileType<DecayedSeaVortex>();
             Item.shootSpeed = 1;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     {
         public override string Texture => CWRConstant.Item_Magic + "SandVortexOfTheDecayedSea";
         public override int TargetID => ModContent.ItemType<SandVortexOfTheDecayedSea>();
-        /// <summary>开火后的余韵进度，用于让法器在出手后短暂胀大发光</summary>
+        /// <summary>开火余韵进度，法器出手后胀大发光</summary>
         private int glowPulse;
         public override void SetGunProperty() {
             Projectile.DamageType = DamageClass.Magic;
@@ -134,7 +134,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Projectile.width = (int)(DamageRadius * 2);
             Projectile.height = (int)(DamageRadius * 2);
             Projectile.DamageType = DamageClass.Magic;
-            //漩涡自身不通过 Terraria 的命中循环造成伤害，全部通过 SimpleStrikeNPC 直接处理
+            //伤害走SimpleStrikeNPC，不走Terraria命中循环
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.tileCollide = false;

@@ -184,9 +184,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        /// <summary>
-        /// 绘制选中物块的赛博风格边框和扫描线
-        /// </summary>
+        /// <summary>选中物块赛博边框+扫描线</summary>
         private static void DrawSelectedTileFrame(SpriteBatch sb, TileScannable tileScan, float effectStr) {
             Texture2D px = CWRAsset.Placeholder_White?.Value;
             if (px == null) return;

@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 雪蝰手持弹幕——鼓风吹雪机
+    /// 雪蝰HeldProj，鼓风吹雪机
     /// <br/>帧0: 待机, 帧1: 起转, 帧2-3: 鼓风循环, 帧4-5: 压雪弹发射后坐
     /// </summary>
     internal class SnowQuayHeld : BaseSnowCannonHeld
@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 压实雪球——雪蝰的蓄压主炮弹
+    /// 压实雪球，雪蝰蓄压主炮弹
     /// <br/>受重力滚落，可在地面弹跳两次，最终炸裂成雪暴与冰碴扇
     /// <br/>ai0: 蓄压比例 0~1，决定爆裂规模
     /// </summary>

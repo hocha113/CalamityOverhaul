@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f, Pitch = 0.1f });
         }
 
-        /// <summary>取消待处理请求</summary>
+        /// <summary>取消待确认请求</summary>
         public static void CancelPending() {
             isPending = false;
             pendingWorldName = null;

@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //ai[0] = 状态枚举（自动同步）
         //ai[1] = 状态计时（自动同步）
         //ai[2] = 锁定的目标 NPC 索引 + 1（0 表示无目标，自动同步）
-        //localAI[0] = 蓄力进度（确定性，用于绘制）
+        //localAI[0]蓄力进度，确定性绘制
         private ref float StateRaw => ref Projectile.ai[0];
         private ref float StateTimer => ref Projectile.ai[1];
         private ref float TargetSlot => ref Projectile.ai[2];

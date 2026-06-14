@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.ADV.EntrustManager;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -7,10 +7,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
 {
     /// <summary>
-    /// 硫磺海/老公爵委托追踪窗口样式——极简毒雾HUD：<br/>
-    /// 完全无背景与外框，标题左侧是"主气泡 + 上浮副气泡"的酸液气泡簇，
-    /// 标题下方是实线 + 三粒大小递减的上浮气泡点，
-    /// 进度仅以贴近文字的 2px 酸绿细线呈现，整体保留毒雾气泡感而不堆叠面板。
+    /// 硫磺海/老公爵委托追踪窗口样式：极简毒雾HUD：<br/> 完全无背景与外框，标题左侧是"主气泡 + 上浮副气泡"的酸液气泡簇， 标题下方是实线 + 三粒大小递减的上浮气泡点， 进度仅以贴近文字的 2px 酸绿细线呈现，整体保留毒雾气泡感而不堆叠面板
     /// </summary>
     internal class SulfseaTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
@@ -46,10 +43,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
             var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
 
-            //头部记号——酸液气泡簇（主气泡 + 两枚上浮小气泡）
+            //头部记号：酸液气泡簇（主气泡 + 两枚上浮小气泡）
             DrawBubbleCluster(sb, px, uv, headerRect.X + 9, headerRect.Y + headerRect.Height / 2, alpha);
 
-            //标题文字——深色投影 + 主体暖绿（字号略大于默认正文）
+            //标题文字：深色投影 + 主体暖绿（字号略大于默认正文）
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -60,7 +57,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
                 ShadowInk * (alpha * 0.55f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleWarm * alpha, titleScale);
 
-            //下划线——实线 + 三粒上浮气泡点（下移避开放大后的标题底部）
+            //下划线：实线 + 三粒上浮气泡点（下移避开放大后的标题底部）
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 18, headerRect.Width - 40);
@@ -97,7 +94,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
         private void DrawBubbleCluster(SpriteBatch sb, Texture2D px, Rectangle uv, int cx, int cy, float alpha) {
             float p = MathF.Sin(pulse * 2f) * 0.22f + 0.78f;
 
-            //主气泡——外halo + 内核（接近圆形的小方块感）
+            //主气泡：外halo + 内核（接近圆形的小方块感）
             sb.Draw(px, new Vector2(cx, cy + 1), uv, BubbleGlow * (alpha * 0.18f * p),
                 0f, new Vector2(0.5f), new Vector2(7f), SpriteEffects.None, 0f);
             sb.Draw(px, new Vector2(cx, cy + 1), uv, AcidGreen * (alpha * 0.88f * p),
@@ -131,10 +128,10 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
             int y = barRect.Y + (barRect.Height - barH) / 2;
             int trackW = barRect.Width;
 
-            //轨道——非常淡的暗绿底线
+            //轨道：非常淡的暗绿底线
             sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, AcidGreenDim * (alpha * 0.32f));
 
-            //填充——暗绿→酸亮绿的渐变
+            //填充：暗绿→酸亮绿的渐变
             int fillW = (int)(trackW * MathHelper.Clamp(progress, 0f, 1f));
             if (fillW > 0) {
                 int segs = Math.Max(6, fillW / 4);
@@ -152,7 +149,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
                     sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y - 1, 1, barH + 2), uv,
                         AcidGreenBright * (alpha * 0.75f));
                 }
-                //尖端下方"滴落酸点"——1px小点，向下偏移2px，随气泡相位明灭
+                //尖端下方"滴落酸点"：1px小点，向下偏移2px，随气泡相位明灭
                 float dripFade = MathF.Sin(bubble * 2.4f) * 0.5f + 0.5f;
                 if (dripFade > 0.05f) {
                     sb.Draw(px, new Rectangle(barRect.X + fillW - 1, y + barH + 1, 1, 1), uv,
@@ -160,7 +157,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
                 }
             }
 
-            //进度文字——靠右上方，0.5倍小字
+            //进度文字：靠右上方，0.5倍小字
             if (!string.IsNullOrEmpty(progressText)) {
                 var font = FontAssets.MouseText.Value;
                 Vector2 sz = font.MeasureString(progressText) * 0.5f;

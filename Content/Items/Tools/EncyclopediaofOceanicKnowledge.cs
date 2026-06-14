@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 );
             }
 
-            //延迟解锁由特效弹幕处理
+            //延迟解锁走特效Proj
             return true;
         }
 

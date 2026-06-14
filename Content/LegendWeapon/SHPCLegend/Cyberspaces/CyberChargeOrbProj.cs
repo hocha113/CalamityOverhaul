@@ -128,7 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public bool IsCharging => State == OrbState.Charging;
 
         /// <summary>
-        /// 关联的手持弹幕索引（ai[1]），用于蓄力阶段定位枪口
+        /// ai[1] 关联 SHPCChargeHeldProj 索引，蓄力枪口定位
         /// </summary>
         private int HeldProjIndex {
             get => (int)Projectile.ai[1];

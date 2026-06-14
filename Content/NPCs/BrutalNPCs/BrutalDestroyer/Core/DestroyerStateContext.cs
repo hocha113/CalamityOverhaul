@@ -35,22 +35,18 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core
         public int AttackPhaseIndex { get; set; }
         /// <summary>激怒出招环是否已启动（首次过50%血量时归零出招索引，保证激怒首招为轨道绞杀）</summary>
         public bool EnrageCycleStarted { get; set; }
-        /// <summary>死亡演出已完；<see cref="DestroyerHeadAI.CheckDead"/> 据此放行真死</summary>
+        /// <summary>死亡演出已完；DestroyerHeadAI.CheckDead 据此放行真死</summary>
         public bool DeathPerformanceFinished { get; set; }
         #endregion
 
         #region 蓄力特效数据
         public float ChargeProgress { get; set; }
         public bool IsCharging { get; set; }
-        /// <summary>
-        /// 蓄力类型: 0=无 1=冲刺蓄力 2=激光弹幕充能 3=包围 4=探针阵列
-        /// </summary>
+        /// <summary>蓄力类型: 0=无 1=冲刺蓄力 2=激光弹幕充能 3=包围 4=探针阵列</summary>
         public int ChargeType { get; set; }
         /// <summary>冲刺方向，预警线绘制</summary>
         public Vector2 DashDirection { get; set; }
-        /// <summary>
-        /// 轨道绞杀演出模式: 0=无 1=蓄能撤离 2=高速俯冲 3=破土回场（影响热感滤镜与体节火花）
-        /// </summary>
+        /// <summary>轨道绞杀演出模式: 0=无 1=蓄能撤离 2=高速俯冲 3=破土回场（影响热感滤镜与体节火花）</summary>
         public int OrbitalVisual { get; set; }
         #endregion
 

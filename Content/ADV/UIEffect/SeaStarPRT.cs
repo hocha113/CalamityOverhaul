@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
-    /// <summary>
-    /// 海洋星光粒子
-    /// </summary>
+    /// <summary>海洋星光粒子</summary>
     public class SeaStarPRT(Vector2 p)
     {
         public Vector2 Pos = p;

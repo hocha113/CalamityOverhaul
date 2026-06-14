@@ -3,8 +3,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>机械臂状态索引，写入 <c>npc.ai[2]</c> 网络同步</summary>
-    /// <para>四臂共用 <see cref="PrimeArmStateContext"/>，百位区分归属</para>
+    /// <summary>机械臂状态索引，写入 npc.ai[2] 网络同步；四臂共用 PrimeArmStateContext，百位区分归属</summary>
     internal enum PrimeArmStateIndex : int
     {
         //激光炮 100+
@@ -69,7 +68,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         #region 工具方法
 
-        /// <summary>弹簧移动，速度存 <see cref="PrimeArmStateContext.SpringVelocity"/> 跨状态延续</summary>
+        /// <summary>弹簧移动，速度存 PrimeArmStateContext.SpringVelocity 跨状态延续</summary>
         protected static void SpringMove(PrimeArmStateContext ctx, Vector2 target, float speedMult,
             float stiffness = 0.17f, float damping = 0.83f, float maxSpeed = 29f) {
             Vector2 toTarget = target - ctx.Npc.Center;
@@ -84,7 +83,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
         }
 
         /// <summary>伺服转角，WrapAngle 最短弧匀速步进</summary>
-        /// <para>贴图垂悬：rotation = θ - PiOver2</para>
         protected static void ServoRotate(NPC npc, float targetRotation, float maxStep) {
             float diff = MathHelper.WrapAngle(targetRotation - npc.rotation);
             npc.rotation += MathHelper.Clamp(diff, -maxStep, maxStep);
@@ -96,7 +94,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
             ServoRotate(npc, targetRotation, maxStep);
         }
 
-        /// <summary>平滑瞄准玩家，更新 <see cref="PrimeArmStateContext.AimDirection"/> 与 npc.rotation（伺服步进）</summary>
+        /// <summary>平滑瞄准玩家，更新 PrimeArmStateContext.AimDirection 与 npc.rotation（伺服步进）</summary>
         protected static void SmoothAim(PrimeArmStateContext ctx, float smoothness) {
             NPC npc = ctx.Npc;
             Vector2 toPlayer = ctx.Target.Center - npc.Center;

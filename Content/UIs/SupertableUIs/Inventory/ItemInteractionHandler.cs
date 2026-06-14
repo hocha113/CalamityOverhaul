@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.OtherMods.MagicStorage;
+using CalamityOverhaul.OtherMods.MagicStorage;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -6,15 +6,15 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
 {
     /// <summary>
-    /// 物品交互处理器，负责处理物品的点击、拖拽等交互
+    /// 槽位点击/拖拽交互
     /// </summary>
     public static class ItemInteractionHandler
     {
         /// <summary>
-        /// 处理左键点击物品
+        /// 左键点击槽位
         /// </summary>
         public static void HandleLeftClick(ref Item slotItem, ref Item mouseItem) {
-            //两个都为空，无需处理
+            //双空跳过
             if (slotItem.type == ItemID.None && mouseItem.type == ItemID.None)
                 return;
 
@@ -41,10 +41,10 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
         }
 
         /// <summary>
-        /// 处理右键点击物品
+        /// 右键点击槽位
         /// </summary>
         public static void HandleRightClick(ref Item slotItem, ref Item mouseItem) {
-            //两个都为空，无需处理
+            //双空跳过
             if (slotItem.type == ItemID.None && mouseItem.type == ItemID.None)
                 return;
 
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
         }
 
         /// <summary>
-        /// 处理拖拽放置(持续右键)
+        /// 持续右键拖拽放置
         /// </summary>
         public static void HandleDragPlace(ref Item slotItem, ref Item mouseItem) {
             if (slotItem.type == ItemID.None && mouseItem.type != ItemID.None && mouseItem.stack > 0) {

@@ -1,4 +1,4 @@
-﻿global using InnoVault;
+global using InnoVault;
 global using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace CalamityOverhaul
     public class CWRMod : Mod
     {
         #region Data
-        // 饿汉式单例：跨 Mod/外部可能在 Load 前访问 Instance，惰性会 NRE
+        //饿汉式单例：跨 Mod/外部可能在 Load 前访问 Instance，惰性会 NRE
         private static CWRMod instance;
         internal static CWRMod Instance {
             get {
@@ -56,7 +56,7 @@ namespace CalamityOverhaul
         public override object Call(params object[] args) => ModCall.Hander(args);
 
         public override void PostSetupContent() {
-            // 内容注册完毕后再建 ID 查找表
+            //内容注册完毕后再建 ID 查找表
             CWRLoad.Setup();
             CWRID.PreloadAll();
             foreach (var load in ILoaders) {
@@ -74,7 +74,7 @@ namespace CalamityOverhaul
         public override void Load() {
             FindMod();
 
-            // 跨 Mod Hook 不依赖灾厄，灾厄专属在 LoadComders 内守卫
+            //跨 Mod Hook 不依赖灾厄，灾厄专属在 LoadComders 内守卫
             ModGanged.Load();
 
             CWRRef.Load();
@@ -89,7 +89,7 @@ namespace CalamityOverhaul
         }
 
         public override void Unload() {
-            // 逆序卸载 ICWRLoader → 清空联动 Mod 引用 → 释放静态查找表
+            //逆序卸载 ICWRLoader → 清空联动 Mod 引用 → 释放静态查找表
             foreach (var load in ILoaders) {
                 try {
                     load.UnLoadData();

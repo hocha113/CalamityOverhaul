@@ -1,21 +1,21 @@
 // ============================================================================
-// HackSynapseBurn.fx 突触焚毁
-// 采样 uImage0 NPC 贴图
+//HackSynapseBurn.fx 突触焚毁
+//采样 uImage0 NPC 贴图
 // ============================================================================
 
 sampler uImage0 : register(s0);
 
 float uTime;
-float progress;    // 效果进度 0→1
-float intensity;   // 效果强度
-float2 texelSize;  // 1/texWidth, 1/texHeight
+float progress;    //效果进度 0→1
+float intensity;   //效果强度
+float2 texelSize;  //1/texWidth, 1/texHeight
 
 float hash(float n)
 {
     return frac(sin(n) * 43758.5453);
 }
 
-// 伪Worley噪声——用于生成神经网络脉络
+//伪Worley噪声：用于生成神经网络脉络
 float worley(float2 uv, float scale)
 {
     float2 id = floor(uv * scale);
@@ -40,12 +40,12 @@ float worley(float2 uv, float scale)
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-    // 热扭曲偏移
+    //热扭曲偏移
     float heatPhase = uTime * 3.0 + coords.y * 20.0;
     float heatWarp = sin(heatPhase) * 0.003 * intensity;
     float2 sampleCoords = coords + float2(heatWarp, 0);
 
-    // 行撕裂（间歇性水平偏移）
+    //行撕裂（间歇性水平偏移）
     float tearCycle = frac(uTime * 0.4);
     float tearWindow = smoothstep(0.0, 0.03, tearCycle) * smoothstep(0.08, 0.05, tearCycle);
     float row = floor(coords.y / (texelSize.y * 4.0));
@@ -55,33 +55,33 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
     float4 texColor = tex2D(uImage0, sampleCoords);
     if (texColor.a < 0.01) return texColor;
 
-    // 神经脉络纹理（Worley噪声反转 = 网络状）
+    //神经脉络纹理（Worley噪声反转 = 网络状）
     float nerve = 1.0 - worley(coords + float2(uTime * 0.05, 0), 8.0);
-    nerve = pow(nerve, 3.0); // 锐化脉络
-    // 脉冲波沿脉络行进
+    nerve = pow(nerve, 3.0); //锐化脉络
+    //脉冲波沿脉络行进
     float pulse = sin(uTime * 6.0 - coords.y * 30.0) * 0.5 + 0.5;
     nerve *= 0.5 + 0.5 * pulse;
 
-    // 全局热力呼吸
+    //全局热力呼吸
     float breathe = sin(uTime * 2.0) * 0.15 + 0.85;
 
-    // 颜色：深橙 → 亮红之间根据进度过渡
+    //颜色：深橙 → 亮红之间根据进度过渡
     float3 hotColor = lerp(float3(1.0, 0.4, 0.05), float3(1.0, 0.15, 0.0), progress);
     float3 coolColor = float3(0.8, 0.25, 0.0);
 
-    // 叠加神经网络辉光
+    //叠加神经网络辉光
     float overlay = nerve * intensity * breathe;
-    // 边缘发光增强
+    //边缘发光增强
     float edgeGlow = saturate(1.0 - texColor.a * 4.0) * 0.5;
     overlay += edgeGlow * intensity * 0.3;
 
     float3 finalColor = lerp(texColor.rgb, hotColor, overlay * 0.6);
-    // 脉络线上的亮点
+    //脉络线上的亮点
     finalColor += hotColor * nerve * pulse * intensity * 0.4;
-    // 整体受热发红
+    //整体受热发红
     finalColor = lerp(finalColor, coolColor, intensity * 0.08 * breathe);
 
-    // 进度尾声闪烁衰减
+    //进度尾声闪烁衰减
     float fadeFlicker = 1.0;
     if (progress > 0.8)
     {

@@ -6,10 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 {
-    /// <summary>
-    /// SHPC委托条目样式——赛博朋克2077主题：<br/>
-    /// 深暗紫底色、霓虹蓝高光、CRT扫描线、六边形标记、全息扫掠光带
-    /// </summary>
+    /// <summary>SHPC 委托条目：暗紫底、霓虹蓝、CRT 扫描线</summary>
     internal class SHPCEntryStyle : IEntrustEntryStyle
     {
         #region 色板
@@ -132,7 +129,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             sb.Draw(px, entryRect, new Rectangle(0, 0, 1, 1), tint * (alpha * 0.28f));
         }
 
-        /// <summary>降级背景：保留原 CPU 渐变、扫描线与全息扫掠光。</summary>
+        /// <summary>降级背景：保留原 CPU 渐变、扫描线与全息扫掠光</summary>
         private void DrawFallbackBackground(SpriteBatch sb, Texture2D px, Rectangle entryRect,
             bool isSelected, bool isHovered, float alpha) {
             var uv = new Rectangle(0, 0, 1, 1);

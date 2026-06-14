@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers;
 using System;
@@ -8,9 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums
 {
-    /// <summary>
-    /// 嘉登战斗结束对话场景
-    /// </summary>
+    /// <summary>嘉登战斗结束对话</summary>
     internal class ExoMechEndingDialogue : ADVScenarioBase, ILocalizedModType, IWorldInfo
     {
         //角色名称

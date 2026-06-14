@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
-    /// <summary>探针镭射阵：咆哮释探针→阵列就位→<see cref="PrimeCannonOnSpan"/> 齐射→恢复</summary>
+    /// <summary>探针镭射阵：咆哮释探针→阵列就位→PrimeCannonOnSpan 齐射→恢复</summary>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.ProbeMatrix, typeof(DestroyerStateContext))]
     internal class DestroyerProbeMatrixState : DestroyerStateBase
     {
@@ -25,8 +25,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private int[] probeIndices;
         private bool probesSpawned;
         private bool probesFired;
-        private int formationType; // 0=圆环 1=十字 2=V字
-
+        private int formationType; //0圆环1十字2V字
         public DestroyerProbeMatrixState() {
         }
 
@@ -129,7 +128,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 if (probeIdx >= 0 && probeIdx < Main.maxNPCs) {
                     probeIndices[i] = probeIdx;
                     NPC probe = Main.npc[probeIdx];
-                    //标记为阵列探针，ProbeAI会检测这个标记
+                    //阵列探针标记，ProbeAI读ai槽
                     probe.ai[3] = -1f;
                     probe.velocity = Main.rand.NextVector2Circular(4f, 4f);
                     probe.netUpdate = true;
@@ -272,9 +271,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             return center + baseOffset * (row + 1) * spacing + new Vector2(0, 200);
         }
 
-        /// <summary>
-        /// 消灭所有阵列探针
-        /// </summary>
+        /// <summary>清阵列探针</summary>
         private void KillAllProbes() {
             for (int i = 0; i < probeCount; i++) {
                 if (probeIndices[i] < 0) continue;

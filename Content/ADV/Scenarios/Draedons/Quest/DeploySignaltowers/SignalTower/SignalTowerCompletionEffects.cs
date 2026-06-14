@@ -1,17 +1,13 @@
-﻿using Terraria;
+using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower
 {
-    /// <summary>
-    /// 信号塔完成效果管理器
-    /// </summary>
+    /// <summary>信号塔完成VFX</summary>
     internal static class SignalTowerCompletionEffects
     {
-        /// <summary>
-        /// 播放信号塔完成效果
-        /// </summary>
+        /// <summary>播放信号塔完成效果</summary>
         public static void PlayCompletionEffect(Vector2 worldPosition, int pointIndex) {
             if (VaultUtils.isServer) {
                 return;
@@ -49,9 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
                 new Color(100, 220, 255), completionText, true, false);
         }
 
-        /// <summary>
-        /// 播放全部完成效果
-        /// </summary>
+        /// <summary>播放全部完成效果</summary>
         public static void PlayAllCompletionEffect() {
             if (VaultUtils.isServer) {
                 return;

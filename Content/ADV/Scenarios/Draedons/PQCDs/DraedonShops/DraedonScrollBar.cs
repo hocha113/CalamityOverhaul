@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -6,9 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
 {
-    /// <summary>
-    /// 可拖动的科技风格滚动条
-    /// </summary>
+    /// <summary>可拖动的科技风格滚动条</summary>
     internal class DraedonScrollBar
     {
         //滚动条状态
@@ -29,17 +27,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
         //交互区域扩展（方便点击）
         private const int InteractionPadding = 8;
 
-        /// <summary>
-        /// 获取滚动条背景矩形
-        /// </summary>
+        /// <summary>获取滚动条背景矩形</summary>
         public Rectangle GetBarBackground(Vector2 panelPosition, int barHeight) {
             Vector2 barPos = panelPosition + new Vector2(GetBarX(panelPosition), 120);
             return new Rectangle((int)barPos.X, (int)barPos.Y, BarWidth, barHeight);
         }
 
-        /// <summary>
-        /// 获取滚动条指示器矩形
-        /// </summary>
+        /// <summary>获取滚动条指示器矩形</summary>
         public Rectangle GetIndicatorRect(Vector2 panelPosition, int barHeight,
             int scrollOffset, int maxScroll, int totalItems, int visibleItems) {
             Vector2 barPos = panelPosition + new Vector2(GetBarX(panelPosition), 120);
@@ -51,9 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             return new Rectangle((int)barPos.X - 1, indicatorY, IndicatorWidth, indicatorHeight);
         }
 
-        /// <summary>
-        /// 获取交互区域矩形（扩展的点击区域）
-        /// </summary>
+        /// <summary>获取交互区域矩形（扩展的点击区域）</summary>
         public Rectangle GetInteractionRect(Rectangle indicatorRect) {
             return new Rectangle(
                 indicatorRect.X - InteractionPadding,
@@ -63,9 +55,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             );
         }
 
-        /// <summary>
-        /// 更新滚动条状态
-        /// </summary>
+        /// <summary>更新滚动条状态</summary>
         public void Update(Vector2 panelPosition, int barHeight, int scrollOffset, int maxScroll,
             int totalItems, int visibleItems, Point mousePosition, bool mouseLeftDown,
             bool mouseLeftRelease, out int newScrollOffset) {
@@ -159,9 +149,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
         }
 
-        /// <summary>
-        /// 绘制滚动条
-        /// </summary>
+        /// <summary>绘制滚动条</summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, int barHeight,
             int scrollOffset, int maxScroll, int totalItems, int visibleItems,
             float uiAlpha, float circuitPulseTimer) {
@@ -292,9 +280,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             }
         }
 
-        /// <summary>
-        /// 重置滚动条状态
-        /// </summary>
+        /// <summary>重置滚动条状态</summary>
         public void Reset() {
             isDragging = false;
             hoverProgress = 0f;
@@ -302,16 +288,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.PQCDs.DraedonShops
             pulseTimer = 0f;
         }
 
-        /// <summary>
-        /// 获取滚动条X坐标（相对于面板）
-        /// </summary>
+        /// <summary>获取滚动条X坐标（相对于面板）</summary>
         private static float GetBarX(Vector2 panelPosition) {
             return 660; //PanelWidth (680) - 20
         }
 
-        /// <summary>
-        /// 是否正在拖动
-        /// </summary>
+        /// <summary>是否正在拖动</summary>
         public bool IsDragging => isDragging;
     }
 }

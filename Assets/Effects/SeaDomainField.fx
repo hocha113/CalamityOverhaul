@@ -1,6 +1,6 @@
 // ============================================================================
-// SeaDomainField.fx 海洋领域场
-// s0+s1 噪声；单 DrawCall 全领域
+//SeaDomainField.fx 海洋领域场
+//s0+s1 噪声；单 DrawCall 全领域
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -28,8 +28,8 @@ float3 causticColor;    //焦散光纹色
 float3 ringInnerColor;  //内层环色
 float3 ringOuterColor;  //外层环色
 
-// 焦散光网生成
-// 双层域扭曲纹理噪声取最小值，模拟水面折射产生的明暗光网
+//焦散光网生成
+//双层域扭曲纹理噪声取最小值，模拟水面折射产生的明暗光网
 float causticPattern(float2 p, float time)
 {
     //第一层域扭曲
@@ -49,17 +49,17 @@ float causticPattern(float2 p, float time)
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
-    float2 centered = coords * 2.0 - 1.0;  // -1 ~ 1
-    float dist = length(centered);           // 0=中心, 1=边缘
+    float2 centered = coords * 2.0 - 1.0;  //-1 ~ 1
+    float dist = length(centered);           //0=中心, 1=边缘
     float angle = atan2(centered.y, centered.x);
-    float normAngle = (angle + 3.14159) / 6.28318; // 0~1
+    float normAngle = (angle + 3.14159) / 6.28318; //0~1
 
-    // ======== 域边界裁剪 ========
+    //======== 域边界裁剪 ========
     float edgeFade = 1.0 - smoothstep(0.86, 1.0, dist);
     if (edgeFade <= 0.001)
         return float4(0, 0, 0, 0);
 
-    // ======== A. 深海底色渐变 ========
+    //======== A. 深海底色渐变 ========
     //中心深暗，向外渐浅
     float depthGrad = smoothstep(0.0, 0.85, dist);
     float3 baseOcean = lerp(deepColor, shallowColor, depthGrad);
@@ -72,13 +72,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float baseFlow = tex2D(noiseSamp, frac(flowUV)).r;
     baseOcean *= 0.82 + baseFlow * 0.36;
 
-    // ======== B. 焦散光网 ========
+    //======== B. 焦散光网 ========
     float caustic = causticPattern(centered * 1.5, uTime);
     //中心区域焦散更明亮（光线从上方穿透水面）
     float causticMask = smoothstep(1.0, 0.15, dist);
     float3 causticContrib = causticColor * caustic * causticMask * 0.4;
 
-    // ======== C. 暗流涌动（径向+切向水流）========
+    //======== C. 暗流涌动（径向+切向水流）========
     //极坐标空间的流动纹理
     float2 polarFlow = float2(normAngle * 6.0 + uTime * 0.22, dist * 4.0 - uTime * 0.15);
     float flowField = tex2D(noiseSamp, frac(polarFlow)).r;
@@ -87,7 +87,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float flow = (flowField + flowField2) * 0.5;
     flow = smoothstep(0.35, 0.65, flow) * 0.18;
 
-    // ======== D. 层级边界环 ========
+    //======== D. 层级边界环 ========
     float ringBrightness = 0.0;
     float ringGlowTotal = 0.0;
     int iLayerCount = (int)layerCount;
@@ -129,7 +129,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //环颜色随径向位置渐变
     float3 currentRingColor = lerp(ringInnerColor, ringOuterColor, saturate(dist));
 
-    // ======== E. 深海微光（生物荧光粒子）========
+    //======== E. 深海微光（生物荧光粒子）========
     float2 sparkleUV1 = float2(centered.x * 4.0 + uTime * 0.12, centered.y * 4.0 - uTime * 0.08);
     float2 sparkleUV2 = float2(centered.x * 6.5 - uTime * 0.09, centered.y * 6.5 + uTime * 0.11);
     float s1 = tex2D(noiseSamp, frac(sparkleUV1)).r;
@@ -137,7 +137,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float sparkle = pow(abs(s1 * s2), 3.5) * 5.0;
     sparkle *= smoothstep(1.0, 0.35, dist);
 
-    // ======== F. 光柱穿透（从上方照入水中的柔和神光）========
+    //======== F. 光柱穿透（从上方照入水中的柔和神光）========
     float2 rayUV = float2(centered.x * 1.2 + uTime * 0.055, centered.y * 0.6 + uTime * 0.07);
     float rayNoise = tex2D(noiseSamp, frac(rayUV)).r;
     float godRay = smoothstep(0.52, 0.73, rayNoise) * 0.28;
@@ -145,7 +145,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     godRay *= smoothstep(0.2, -0.7, centered.y);
     godRay *= smoothstep(1.0, 0.25, dist);
 
-    // ======== 合成 ========
+    //======== 合成 ========
     //填充内容随玩家移动淡化，环形边界不受影响
     float cf = contentFade;
     float3 finalColor = baseOcean * 0.6 * cf;

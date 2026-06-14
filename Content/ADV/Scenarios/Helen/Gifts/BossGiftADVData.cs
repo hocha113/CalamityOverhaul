@@ -1,8 +1,6 @@
 namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
 {
-    /// <summary>
-    /// Boss击杀后海伦礼物的存档数据
-    /// </summary>
+    /// <summary>海伦Boss礼物存档</summary>
     public class BossGiftADVData : ADVDataModule
     {
         public bool QueenBeeGift;

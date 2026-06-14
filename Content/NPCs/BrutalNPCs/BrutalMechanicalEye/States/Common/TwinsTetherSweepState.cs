@@ -98,9 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             return null;
         }
 
-        /// <summary>
-        /// 集合阶段：双眼各自飞向玩家两侧对峙位(魔焰眼取自身所在侧，激光眼取对侧)
-        /// </summary>
+        /// <summary>集合阶段：双眼各自飞向玩家两侧对峙位(魔焰眼取自身所在侧，激光眼取对侧)</summary>
         private void ExecuteGatherPhase(NPC npc, Player player) {
             float progress = Timer / (float)GatherPhase;
 
@@ -125,9 +123,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 扫场阶段：电弧链锁成型，双眼绕玩家旋转收缩，中途骤停反转
-        /// </summary>
+        /// <summary>扫场阶段：电弧链锁成型，双眼绕玩家旋转收缩，中途骤停反转</summary>
         private void ExecuteSweepPhase(NPC npc, Player player, NPC partner) {
             int phaseTimer = Timer - GatherPhase;
             float progress = phaseTimer / (float)SweepPhase;
@@ -191,9 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             Context.PushDashVisuals(0.5f * speedScale, 0.6f * speedScale);
         }
 
-        /// <summary>
-        /// 对视阶段：双眼骤停相互凝视，电弧余韵消散(演出小动作)
-        /// </summary>
+        /// <summary>对视阶段：双眼骤停相互凝视，电弧余韵消散(演出小动作)</summary>
         private void ExecuteGazePhase(NPC npc, NPC partner) {
             npc.velocity *= 0.82f;
             //凝视搭档
@@ -206,9 +200,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 退出状态：返回各自二阶段锚点
-        /// </summary>
+        /// <summary>退出状态：返回各自二阶段锚点</summary>
         private ITwinsState GetExitState() {
             if (Context.IsSpazmatism) {
                 return new SpazmatismFlameChaseState(comboStep);

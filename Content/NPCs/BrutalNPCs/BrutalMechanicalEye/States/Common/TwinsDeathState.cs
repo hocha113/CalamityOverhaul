@@ -11,7 +11,6 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common
 {
     /// <summary>死亡演出：锁血急停，由疏到密殉爆，核心终爆后真死</summary>
-    /// <para>切换/击杀服务端(ai[1])；爆炸客户端本地，多人安全</para>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.TwinsDeath, typeof(TwinsStateContext))]
     internal class TwinsDeathState : TwinsStateBase
     {
@@ -150,16 +149,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 眼球范围内的随机偏移点
-        /// </summary>
+        /// <summary>眼球范围内的随机偏移点</summary>
         private static Vector2 RandOffset(NPC npc, float factor) {
             return Main.rand.NextVector2Circular(npc.width * factor, npc.height * factor) * npc.scale;
         }
 
-        /// <summary>
-        /// 生成一团殉爆：爆炸光团 + 火花四溅 + 余烬 + 烟雾 + 动态光照 + 音效
-        /// </summary>
+        /// <summary>生成一团殉爆：爆炸光团 + 火花四溅 + 余烬 + 烟雾 + 动态光照 + 音效</summary>
         private void SpawnBlast(Vector2 pos, float scale, bool isFinale) {
             if (VaultUtils.isServer) {
                 return;
@@ -209,9 +204,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 眼球接缝喷射火花，模拟电路过载 / 接缝喷火
-        /// </summary>
+        /// <summary>眼球接缝喷射火花，模拟电路过载 / 接缝喷火</summary>
         private void SpawnSparks(NPC npc, int count, float speed) {
             if (VaultUtils.isServer) {
                 return;
@@ -225,9 +218,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             }
         }
 
-        /// <summary>
-        /// 核心终极殉爆 + 眼球连锁爆裂 + 强烈屏幕震动
-        /// </summary>
+        /// <summary>核心终极殉爆 + 眼球连锁爆裂 + 强烈屏幕震动</summary>
         private void SpawnFinaleBlast(NPC npc) {
             if (VaultUtils.isServer) {
                 return;

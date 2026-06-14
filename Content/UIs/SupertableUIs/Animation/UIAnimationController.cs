@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.Animation
 {
     /// <summary>
-    /// UI动画控制器，负责管理UI的开关动画和悬停效果
+    /// UI动画控制器，管理UI的开关动画和悬停效果
     /// </summary>
     public class UIAnimationController
     {
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Animation
         }
 
         /// <summary>
-        /// 获取缓动后的开启进度(用于平滑动画)
+        /// 获取缓动后的开启进度(平滑动画)
         /// </summary>
         public float GetEasedOpenProgress(EasingType easingType = EasingType.EaseOutCubic) {
             return ApplyEasing(_openProgress, easingType);

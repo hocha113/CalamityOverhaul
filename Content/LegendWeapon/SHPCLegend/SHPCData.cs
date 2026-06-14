@@ -26,7 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         }
 
         /// <summary>
-        /// 用于判断和标记历史物品
+        /// 历史物品标记
         /// </summary>
         /// <param name="item"></param>
         /// <param name="tag"></param>

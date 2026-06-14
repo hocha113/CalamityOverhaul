@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -24,7 +24,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.shootSpeed = 12;
             Item.useAmmo = AmmoID.Bullet;
             Item.rare = ItemRarityID.Red;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;

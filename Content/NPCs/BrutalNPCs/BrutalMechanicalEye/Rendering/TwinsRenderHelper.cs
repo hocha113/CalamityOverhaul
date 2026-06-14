@@ -159,9 +159,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             };
         }
 
-        /// <summary>
-        /// 磁暴链锁预警：双眼之间的脉冲虚线，提示链锁危险区
-        /// </summary>
+        /// <summary>磁暴链锁预警：双眼之间的脉冲虚线，提示链锁危险区</summary>
         private static void DrawTetherSweepWarning(TwinsStateContext context, Color baseColor) {
             NPC partner = TwinsStateContext.GetPartnerNpc(context.Npc.type);
             if (partner == null || !partner.active) {
@@ -189,9 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>
-        /// 剪刀死光预警：沿当前瞄准方向的长虚线射线轨迹
-        /// </summary>
+        /// <summary>剪刀死光预警：沿当前瞄准方向的长虚线射线轨迹</summary>
         private static void DrawScissorRayWarning(TwinsStateContext context, Color baseColor) {
             Texture2D lineTex = CWRAsset.LightShot.Value;
             Vector2 rayDir = (context.Npc.rotation + MathHelper.PiOver2).ToRotationVector2();
@@ -296,9 +292,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>
-        /// 绘制扫射预警范围
-        /// </summary>
+        /// <summary>绘制扫射预警范围</summary>
         private static void DrawSweepWarning(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -361,9 +355,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>
-        /// 绘制转阶段能量聚集特效
-        /// </summary>
+        /// <summary>绘制转阶段能量聚集特效</summary>
         private static void DrawPhaseTransitionEffect(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
@@ -424,9 +416,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>
-        /// 绘制聚焦光束锁定指示器
-        /// </summary>
+        /// <summary>绘制聚焦光束锁定指示器</summary>
         private static void DrawFocusedBeamIndicator(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -508,9 +498,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>
-        /// 绘制激光矩阵网格
-        /// </summary>
+        /// <summary>绘制激光矩阵网格</summary>
         private static void DrawLaserMatrixGrid(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
@@ -622,9 +610,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             }
         }
 
-        /// <summary>
-        /// 绘制影分身冲刺指示器
-        /// </summary>
+        /// <summary>绘制影分身冲刺指示器</summary>
         private static void DrawShadowDashIndicator(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
@@ -698,9 +684,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>
-        /// 绘制火焰风暴指示器
-        /// </summary>
+        /// <summary>绘制火焰风暴指示器</summary>
         private static void DrawFlameStormIndicator(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -766,9 +750,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>
-        /// 绘制合击指示器
-        /// </summary>
+        /// <summary>绘制合击指示器</summary>
         private static void DrawCombinedAttackIndicator(TwinsStateContext context, Color baseColor) {
             if (context.Target == null) {
                 return;
@@ -855,9 +837,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
             );
         }
 
-        /// <summary>
-        /// 绘制同步转阶段特效
-        /// </summary>
+        /// <summary>绘制同步转阶段特效</summary>
         private static void DrawSyncPhaseTransitionEffect(TwinsStateContext context, Color baseColor) {
             Vector2 drawPos = context.Npc.Center - Main.screenPosition;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
@@ -993,7 +973,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
 
         #region 本体绘制
 
-        /// <summary>绘制本体+拖尾；叠 <see cref="MechBossVisualState"/> 热感滤镜与 DashStretch/AfterimageBoost</summary>
+        /// <summary>绘制本体+拖尾；叠 MechBossVisualState 热感滤镜与 DashStretch/AfterimageBoost</summary>
         public static void DrawNpcBody(
             SpriteBatch spriteBatch,
             NPC npc,

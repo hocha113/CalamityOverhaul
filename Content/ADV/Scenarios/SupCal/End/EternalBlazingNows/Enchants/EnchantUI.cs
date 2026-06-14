@@ -18,8 +18,7 @@ using Terraria.UI.Chat;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.Enchants
 {
     /// <summary>
-    /// 永恒燃烧的如今
-    /// 提供免费无限制的武器附魔，但需要等待附魔时间
+    /// Ebn 免费武器附魔 UI，炼铸需等待进度
     /// </summary>
     [VaultLoaden("@CalamityMod/UI/CalamitasEnchantments")]
     internal class EnchantUI : UIHandle, ILocalizedModType
@@ -45,12 +44,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
 
         //展开/收起状态
         public static bool IsCollapsed = false;
-        public static float CollapseProgress = 0f;// 0 = 完全展开, 1 = 完全折叠
+        public static float CollapseProgress = 0f;//0=展开 1=折叠
         public static float CollapseAnimSpeed = 0.12f;
         public static float CollapsedWidth = 60f; //折叠后的宽度
         public static float CollapsedHeight = 80f; //折叠后的高度
 
-        //炼铸逻辑处理器
         private readonly static EnchantmentHandler EnchantmentHandler = new();
 
         //按钮点击冷却
@@ -110,7 +108,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
             CollapseHint = this.GetLocalization(nameof(CollapseHint), () => "收起炼铸界面");
             EnchantTitle = this.GetLocalization(nameof(EnchantTitle), () => "炼铸");
 
-            //订阅炼铸处理器事件
+            //炼铸事件
             EnchantmentHandler.OnEnchantStart += OnEnchantStart;
             EnchantmentHandler.OnEnchantComplete += OnEnchantComplete;
         }
@@ -310,7 +308,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
                 }
             }
 
-            //处理附魔按钮点击
+            //附魔按钮
             if (isHoveringOverEnchantIcon && !EnchantmentHandler.IsEnchanting) {
                 if (Main.mouseLeft && Main.mouseLeftRelease) {
                     InteractWithEnchantIcon();
@@ -364,7 +362,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows.E
 
             Utils.DrawBorderString(spriteBatch, arrowText, textPos, Color.White, 1f);
 
-            //处理点击
+            //折叠按钮
             if (isHovering && Main.mouseLeft && Main.mouseLeftRelease && ToggleButtonClickCountdown <= 0f) {
                 IsCollapsed = !IsCollapsed;
                 ToggleButtonClickCountdown = 15f;

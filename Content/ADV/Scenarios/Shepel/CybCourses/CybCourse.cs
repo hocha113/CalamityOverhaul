@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
                 p.tileEntityAnchor.Clear();
                 Main.npcChatText = string.Empty;
             }
-            //进入子世界前拍摄主世界快照，回来时用于补全丢失的Boss进度与城镇NPC
+            //进入子世界前拍主世界快照，回主世界时补 Boss 进度与城镇 NPC
             CybCourseWorldGuard.Snapshot();
             CybCourseWorld.Enter();
         }
@@ -45,8 +45,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         }
 
         /// <summary>
-        /// 退出教程子世界
-        /// 清理 InfiniteHack、Outro 场景与完成面板，并按需发放超梦接入凭证
+        /// 退出教程子世界，清理 InfiniteHack/Outro/完成面板
         /// </summary>
         public static void Exit() {
             CybCourseCompletePanel.Hide();
@@ -57,8 +56,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         }
 
         /// <summary>
-        /// 软重启训练（RETRY）
-        /// 不重新加载子世界：清理教程状态 → 重置玩家位置/RAM → 重启 ScenarioManager → 重生测试 NPC → 触发开场对话
+        /// RETRY 软重启：不 reload 子世界，重置教程状态并重生测试 NPC
         /// </summary>
         public static void Restart() {
             //1. 关闭面板
@@ -88,8 +86,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
                 p.statLife = p.statLifeMax2;
             }
 
-            //6. 触发开场对话；CybTutorialLead.AutoTriggerIntro 会接力推进流程
-            //   _introAttempted 已在 ResetForRetry 中清零
+            //6. 触发开场；_introAttempted 已在 ResetForRetry 清零
         }
 
         public override void PostUpdateEverything() {

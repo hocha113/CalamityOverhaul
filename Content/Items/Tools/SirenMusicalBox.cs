@@ -294,7 +294,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            // 会话激活后所有存活玩家均被视为诅咒，无法通过再次右键关闭；需等待音乐结束或外部解救
+            //诅咒会话激活后不可右键关闭，等音乐结束或外部解除
             if (active) {
                 return;
             }

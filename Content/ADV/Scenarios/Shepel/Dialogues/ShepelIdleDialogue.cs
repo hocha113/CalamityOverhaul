@@ -9,8 +9,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Dialogues
 {
     /// <summary>
-    /// 空闲状态下的日常对话，优先级最低作为兜底
-    /// 每次触发都会轮换一段台词，让重复对话保持新鲜感
+    /// 空闲兜底对话，按种子轮换台词
     /// </summary>
     internal class ShepelIdleDialogue : SHPCDialogueScenarioBase, ILocalizedModType
     {

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
         private static GlobalItem _wikithisGlobalItem;
         private static bool _wikithisGlobalItemResolved;
 
-        //指定物品 ID 的 wiki 图标覆盖；用于强制非 CWR 归属的物品（SHPC/村正等）显示 CWR 自己的图标
+        //物品 ID wiki 图标覆盖，非 CWR 归属也显示 CWR 图标
         private static readonly Dictionary<int, Asset<Texture2D>> _iconOverrides = new();
 
         private delegate bool On_WikithisItem_PreDrawTooltipLine_Delegate(object self, Item item, DrawableTooltipLine line, ref int yOffset);
@@ -44,12 +44,12 @@ namespace CalamityOverhaul.OtherMods.Wikithis
                 return;
             }
 
-            //注册 Wikithis 工具提示前面显示的小图标（30x30）。负责 CWR 自家归属的物品
+            //Wikithis 30×30 小图标，CWR 归属物品
             if (CWRAsset.icon_small != null) {
                 wikithis.Call("AddWikiTexture", CWRMod.Instance, CWRAsset.icon_small);
             }
 
-            //拦截 Wikithis 的 PreDrawTooltipLine，按物品 ID 强制使用 CWR 图标（用于灾厄归属的传奇武器）
+            //PreDrawTooltipLine 按 ID 强制 CWR 图标(灾厄传奇武器)
             HookWikithisPreDrawTooltipLine(wikithis);
 
             var englishIds = new List<int>();
@@ -163,9 +163,9 @@ namespace CalamityOverhaul.OtherMods.Wikithis
         }
 
         /// <summary>
-        /// 手动转发 Wikithis 的 <c>GlobalItem.ModifyTooltips</c> 到 <paramref name="tooltips"/>。
-        /// 用于 <c>On_ModifyTooltips</c> 返回 <c>false</c> 而屏蔽掉钩子链的情况（例如 SHPC、村正）。
-        /// 已存在 Wikithis 行时不会重复添加。
+        /// 手动转发 Wikithis 的 <c>GlobalItem.ModifyTooltips</c> 到 <paramref name="tooltips"/>
+        ///  <c>On_ModifyTooltips</c> 返回 <c>false</c> 而屏蔽掉钩子链的情况（例如 SHPC、村正）
+        /// 已存在 Wikithis 行时不会重复添加
         /// </summary>
         public static void TryAppendWikiTooltip(Item item, List<TooltipLine> tooltips) {
             if (Main.dedServ || item is null || tooltips is null || !Has) {
@@ -203,9 +203,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
         private static bool _itemReplacementsResolved;
         private static Type _keyTupleType;
 
-        /// <summary>
-        /// 通过反射拿到 Wikithis 内部的 itemReplacements 字典并强制覆盖。返回成功覆盖的数量
-        /// </summary>
+        /// <summary>反射取 Wikithis itemReplacements 并强制覆盖，返回覆盖数</summary>
         private static int ForceOverwriteUrls(Mod wikithis, List<int> ids, List<string> urls, GameCulture.CultureName language) {
             IDictionary dict = GetItemReplacementsDict(wikithis);
             if (dict is null || _keyTupleType is null) {

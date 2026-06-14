@@ -13,9 +13,7 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
     /// <summary>
-    /// 教程末尾的按键绑定提醒面板
-    /// 在退出超梦前列出所有未绑定的关键快捷键，提示玩家前往设置中绑定
-    /// 复用 EntrustGuideCard 的暖琥珀 variant 营造警示氛围
+    /// 教程末尾未绑定快捷键提醒，EntrustGuideCard 暖琥珀 variant
     /// </summary>
     internal class CybCourseKeyBindReminderPanel : ModSystem, ILocalizedModType
     {
@@ -86,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         public override void OnWorldUnload() => Hide();
 
         /// <summary>
-        /// 收集未绑定的核心快捷键；若全部已绑定则直接退出教程，无需弹窗
+        /// 收集未绑定快捷键；全已绑定则直接 Exit
         /// </summary>
         public static void ShowOrExit() {
             var unbound = CollectUnbound();
@@ -306,7 +304,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
             //列表与按钮之间的间距
             curY += 14f;
 
-            //底部按钮区 —— 跟随 curY，不再硬编码 panel.Bottom 偏移
+            //底部按钮区：跟随 curY
             const int btnW = 150;
             const int btnH = 34;
             int gap = 28;

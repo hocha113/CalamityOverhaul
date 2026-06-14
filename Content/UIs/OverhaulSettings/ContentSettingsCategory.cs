@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using System.Reflection;
 using Terraria.Localization;
 using Terraria.ModLoader.Config;
@@ -7,7 +7,7 @@ using SettingToggle = CalamityOverhaul.Content.UIs.OverhaulSettings.OverhaulSett
 namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 {
     /// <summary>
-    /// 内容设置分类：管理 CWRServerConfig 中的布尔配置项
+    /// CWRServerConfig 布尔项
     /// </summary>
     internal class ContentSettingsCategory : SettingsCategory
     {

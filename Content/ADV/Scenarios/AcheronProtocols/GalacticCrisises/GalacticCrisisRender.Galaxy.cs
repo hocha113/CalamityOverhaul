@@ -117,7 +117,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         #region 逻辑更新
 
         /// <summary>
+
         /// 计算泰拉在旋臂上的屏幕坐标，使用与GalaxyStar.GetPosition相同的螺旋公式
+
         /// </summary>
         private static Vector2 GetTerraPosition(Vector2 center) {
             float r = TerraRadialDistance * GalaxyRadius;
@@ -137,9 +139,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             phaseProgress = galaxyRevealProgress;
         }
 
-        /// <summary>
-        /// 强制将银河系设为已完全展示状态，用于从非初始阶段重新激活渲染器时
-        /// </summary>
+        /// <summary>强制将银河系设为已完全展示状态</summary>
         internal static void ForceGalaxyRevealed() {
             galaxyRevealProgress = 1f;
         }

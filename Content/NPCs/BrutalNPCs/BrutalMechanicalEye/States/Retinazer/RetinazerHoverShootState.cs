@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer
 {
-    /// <summary>
-    /// 激光眼一阶段悬停射击状态：
-    /// 弹簧悬停带呼吸浮动，三连点射激光并伴随后坐力位移
-    /// </summary>
+    /// <summary>激光眼一阶段悬停射击状态：弹簧悬停带呼吸浮动，三连点射激光并伴随后坐力位移</summary>
     [InnoVault.StateMachines.VaultState((int)TwinsStateIndex.RetinazerHoverShoot, typeof(TwinsStateContext))]
     internal class RetinazerHoverShootState : TwinsStateBase
     {
@@ -95,9 +92,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>
-        /// 发射单发预判激光并产生后坐力
-        /// </summary>
+        /// <summary>发射单发预判激光并产生后坐力</summary>
         private void FireLaser(NPC npc, Player player) {
             Vector2 predicted = TwinsMotion.PredictTarget(player, npc.Center, LaserSpeed * 3f, 0.45f);
             Vector2 shootDir = (predicted - npc.Center).SafeNormalize(Vector2.UnitY);

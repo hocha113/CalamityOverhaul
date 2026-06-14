@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -61,9 +61,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
             //奖励已禁用
             //Rewards.Add(new QuestReward {
-            //    ItemType = CWRID.Item_,
-            //    Amount = 5,
-            //    Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
+            //ItemType = CWRID.Item_,
+            //Amount = 5,
+            //Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
             //});
         }
 

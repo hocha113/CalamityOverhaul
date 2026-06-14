@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
 {
-    /// <summary>
-    /// 奸奇场景效果
-    /// </summary>
+    /// <summary>奸奇场景效果</summary>
     internal class TzeentchSceneEffect : ModSceneEffect
     {
         public override int Music => -1;
@@ -21,9 +19,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         public override void SpecialVisuals(Player player, bool isActive) => player.ManageSpecialBiomeVisuals(TzeentchSky.Name, isActive);
     }
 
-    /// <summary>
-    /// 奸奇魔法天空效果
-    /// </summary>
+    /// <summary>奸奇魔法天空效果</summary>
     internal class TzeentchSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:TzeentchSky";
@@ -460,9 +456,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch
         #endregion
     }
 
-    /// <summary>
-    /// 奸奇场景效果管理器
-    /// </summary>
+    /// <summary>奸奇效果调度</summary>
     internal class TzeentchEffect : ModSystem
     {
         public static bool IsActive;

@@ -27,8 +27,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         Done
     }
 
-    /// <summary>正式战斗生命见底触发的死亡演出状态</summary>
-    /// <para>同步：主状态 npc.ai[2]+npc.ai[0]==4；钳子 <see cref="PrimeDeathClawActor"/> 纯函数；被抓玩家本地权威</para>
+    /// <summary>正式战斗生命见底触发的死亡演出状态；同步：主状态 npc.ai[2]+npc.ai[0]==4；钳子 PrimeDeathClawActor 纯函数；被抓玩家本地权威</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeStateIndex.Death, typeof(PrimeStateContext))]
     internal class PrimeDeathState : PrimeStateBase
     {
@@ -40,7 +39,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         /// <summary>玩家被举起时距头部中心的下方距离（骷髅头面朝下方，正好把玩家按在"脸"前）</summary>
         internal const float DeathLiftDistance = 210f;
 
-        //演出时间线（帧，60fps）——各阶段累计结束帧
+        //演出时间线帧(60fps)，阶段累计截止
         internal const int PhaseFakeDeathEnd = 140; //假死爆炸(0-80) + 死寂(80-140)
         internal const int PhaseSummonEnd = 195;    //嗡鸣再生钳子(55f)
         internal const int PhaseLungeEnd = 240;     //双钳迅猛扑抓(45f，最快)
@@ -48,7 +47,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         internal const int PhaseRoarEnd = 380;      //怒吼高潮定格(75f，最长)
         internal const int PhaseFinaleEnd = 450;    //终爆 + 余波 + 尘埃落定(70f)
 
-        /// <summary>由演出计时推导当前阶段</summary>
+        /// <summary>演出计时推阶段</summary>
         internal static PrimeDeathPhase GetDeathPhase(int t) {
             if (t < PhaseFakeDeathEnd) {
                 return PrimeDeathPhase.FakeDeath;
@@ -191,7 +190,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>头部竖立不追玩家，故障感靠阻尼摇摆</summary>
+        /// <summary>头竖立不追，阻尼摇摆故障感</summary>
         private void UpdateHeadRotation(PrimeStateContext context, PrimeDeathPhase phase) {
             NPC npc = context.Npc;
 
@@ -212,7 +211,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
 
         #region 各阶段演出
 
-        /// <summary>假死：先连环爆炸再陷入沉寂，误导玩家以为战斗结束</summary>
+        /// <summary>假死：连环爆后沉寂，误导已击杀</summary>
         private void UpdateFakeDeath(PrimeStateContext context) {
             if (VaultUtils.isServer) {
                 return;
@@ -254,7 +253,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>再生钳子：低沉嗡鸣，头部两侧重新长出双钳，蓄力电弧四溅</summary>
+        /// <summary>再生钳：嗡鸣，头侧双钳再生，电弧四溅</summary>
         private void UpdateSummon(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -280,7 +279,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, DeathWarmA.ToVector3() * (1f + (Timer - PhaseFakeDeathEnd) / 60f));
         }
 
-        /// <summary>扑抓：钳子 Actor 驱动运动，此处播音效/火花</summary>
+        /// <summary>扑抓：钳Actor驱动，播音效火花</summary>
         private void UpdateLunge(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -297,7 +296,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>拖拽举起：玩家位移见 <see cref="PrimeDeathPerformancePlayer"/></summary>
+        /// <summary>拖拽举起，玩家位移见 PrimeDeathPerformancePlayer</summary>
         private void UpdateDrag(PrimeStateContext context) {
             NPC npc = context.Npc;
             Player target = GetDeathTarget(context);
@@ -320,7 +319,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>怒吼蓄力：头部前倾咆哮，钳子夹紧抖动，红光持续灌注</summary>
+        /// <summary>怒吼蓄力：头前倾咆哮，钳夹抖，红光灌注</summary>
         private void UpdateRoar(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -338,7 +337,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             Lighting.AddLight(npc.Center, new Color(255, 60, 30).ToVector3() * 1.8f);
         }
 
-        /// <summary>终爆：核心炸裂、钳子崩碎，玩家被掀飞，进入真正的死亡</summary>
+        /// <summary>终爆：核心炸钳碎，掀飞玩家，真死</summary>
         private void UpdateFinale(PrimeStateContext context) {
             NPC npc = context.Npc;
 
@@ -379,7 +378,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             return (index >= 0 && index < Main.maxPlayers) ? Main.player[index] : null;
         }
 
-        /// <summary>本地生成左右两只死亡演出钳子 Actor</summary>
+        /// <summary>本地生成左右死亡钳Actor</summary>
         private static void TrySpawnDeathClaws(NPC npc) {
             if (VaultUtils.isServer) {
                 return;
@@ -443,7 +442,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             }
         }
 
-        /// <summary>在指定位置喷射电火花，模拟电路过载/接缝喷火</summary>
+        /// <summary>指定点喷电火花，过载接缝</summary>
         private static void SpawnSparks(NPC npc, Vector2 center, int count, float speed) {
             if (VaultUtils.isServer) {
                 return;

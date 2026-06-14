@@ -12,13 +12,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
-    /// <summary>
-    /// 迫击炮重型榴弹：抛物线飞向预告落点，到点或撞地引爆
-    /// 爆炸范围对齐预警环，兑现蓄力而非普攻火箭
-    /// <br/>ai[0] = 落点 X
-    /// <br/>ai[1] = 落点 Y
-    /// <br/>ai[2] = 飞行帧数（生成侧反解初速，弹道必中落点）
-    /// </summary>
+    /// <summary>迫击炮重型榴弹：抛物线飞向预告落点，到点或撞地引爆爆炸范围对齐预警环，兑现蓄力而非普攻火箭；ai[0]=落点X；ai[1]=落点Y；ai[2]=飞行帧数（生成侧反解初速，弹道必中落点）</summary>
     internal class PrimeMortarShellProj : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder3;
@@ -37,10 +31,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             set => Projectile.localAI[1] = value ? 1f : 0f;
         }
 
-        /// <summary>
-        /// 反解初速：flightFrames 帧后落在 impact
-        /// 离散积分(先位移后加重力)：pos(T) = pos0 + v0·T + g·T(T-1)/2
-        /// </summary>
+        /// <summary>反解初速：flightFrames帧后落在impact离散积分(先位移后加重力)：pos(T)=pos0+v0·T+g·T(T-1)/2</summary>
         internal static Vector2 SolveLaunchVelocity(Vector2 spawn, Vector2 impact, int flightFrames) {
             float dropTerm = Gravity * flightFrames * (flightFrames - 1) / 2f;
             return (impact - spawn - new Vector2(0f, dropTerm)) / flightFrames;

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
         /// <summary>
         /// 枚举某类别的所有模块物品 type
         /// </summary>
-        /// <param name="labPoolOnly">true 时仅返回 <see cref="SHPCModuleItem.CanGenerateInLabChest"/> 为 true 的模块（用于随机池）</param>
+        /// <param name="labPoolOnly">true 时仅 <see cref="SHPCModuleItem.CanGenerateInLabChest"/> 模块(随机池)</param>
         public static IEnumerable<int> EnumerateCategory(SHPCSlotCategory cat, bool labPoolOnly) {
             return ModContent.GetContent<SHPCModuleItem>()
                 .Where(m => m.SlotCategory == cat && (!labPoolOnly || m.CanGenerateInLabChest))
@@ -32,13 +32,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables
         }
 
         /// <summary>
-        /// 获取某类别的"完整池"（包含隐藏模块），用于图鉴展示
+        /// 某类别完整池(含隐藏)，图鉴展示
         /// </summary>
         public static IEnumerable<int> EnumerateCategoryAll(SHPCSlotCategory cat)
             => EnumerateCategory(cat, labPoolOnly: false);
 
         /// <summary>
-        /// 把玩家背包指定槽位上的模块分解掉。会在 inventory 中递减 1 stack。
+        /// 把玩家背包指定槽位上的模块分解掉。会在 inventory 中递减 1 stack
         /// </summary>
         /// <param name="player">操作的玩家</param>
         /// <param name="inventorySlot">inventory 数组下标</param>

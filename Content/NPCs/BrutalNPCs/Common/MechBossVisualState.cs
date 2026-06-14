@@ -5,7 +5,6 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.Common
 {
     /// <summary>机械Boss视觉状态容器(按 whoAmI 索引)</summary>
-    /// <para>Destroyer/Prime/Twins 头部各自 Push，体节 Draw Read；&gt;5 帧未刷新过期</para>
     internal static class MechBossVisualState
     {
         private struct Entry

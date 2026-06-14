@@ -1,6 +1,6 @@
 // ============================================================================
-// BrimstoneDialogueBox.fx 硫磺火对话框背景
-// AlphaBlend 预乘 alpha
+//BrimstoneDialogueBox.fx 硫磺火对话框背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -11,7 +11,7 @@ float2 uResolution;
 float uEdgePad;
 float uInfernoPulse; //底部余热脉动
 
-// 工具函数
+//工具函数
 #define PI 3.14159265
 #define TAU 6.28318530
 
@@ -56,7 +56,7 @@ float fbm4(float2 p) {
     return v;
 }
 
-// 色板
+//色板
 static const float3 COL_DEEP   = float3(0.020, 0.012, 0.014);//背景深黑,略带冷紫
 static const float3 COL_VOID   = float3(0.008, 0.004, 0.006);
 static const float3 COL_ASH    = float3(0.048, 0.022, 0.018);//灰褐
@@ -64,7 +64,7 @@ static const float3 COL_MAGMA  = float3(0.180, 0.055, 0.028);//暗红
 static const float3 COL_EMBER  = float3(0.820, 0.330, 0.110);//余烬橙
 static const float3 COL_FLAME  = float3(1.000, 0.640, 0.230);//火焰亮橙
 
-// 主片段
+//主片段
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 pixelPos = coords * uResolution;
@@ -87,7 +87,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float t = uTime * 0.55;
 
     //1 主渐变底:纵向三段(顶冷 中深 底暖),水平方向从边到中心略微变暗
-    //  制造中央"深渊"感,文字区最暗最干净
+    //制造中央"深渊"感,文字区最暗最干净
     float vy = uv.y;
     float3 bg;
     if (vy < 0.5) {
@@ -104,7 +104,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg *= 0.88 + hx * 0.18;
 
     //2 底部缓慢升腾的暖雾:不再是显式火焰,只是加热的空气
-    //  用大尺度fbm,垂直衰减非常陡,文字区上方几乎无侵染
+    //用大尺度fbm,垂直衰减非常陡,文字区上方几乎无侵染
     float bottomBand = smoothstep(0.55, 1.0, uv.y);
     if (bottomBand > 0.001) {
         float2 huv = float2(uv.x * 2.2, (uv.y - 0.55) / 0.45 * 1.6);
@@ -133,7 +133,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     bg += COL_EMBER * crack * crackBreath * 0.18;
 
     //4 火星点阵:小且稀疏的发光点,向上缓慢漂移
-    //  只用gridSize大的一层,避免叠加出"粒子墙"
+    //只用gridSize大的一层,避免叠加出"粒子墙"
     float gridSize = 52.0;
     float2 g = floor(pixelPos / gridSize);
     float s = hash21(g);

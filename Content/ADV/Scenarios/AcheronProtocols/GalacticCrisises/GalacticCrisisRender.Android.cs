@@ -6,8 +6,7 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
 {
     /// <summary>
-    /// 战术人形档案展示：阿蒂丝与阿波拉的立绘、信息面板
-    /// 从科尔托行星视图平滑过渡为双人档案展示
+    /// 战术人形档案展示：阿蒂丝与阿波拉的立绘、信息面板 从科尔托行星视图平滑过渡为双人档案展示
     /// </summary>
     internal partial class GalacticCrisisRender
     {
@@ -117,9 +116,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             DrawTwinInfoPanel(sb, infoRect, revealAlpha);
         }
 
-        /// <summary>
-        /// 绘制双生子共用外框（强调两人是一个整体）
-        /// </summary>
         private static void DrawTwinOuterFrame(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -172,9 +168,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             sb.Draw(pixel, new Rectangle((int)pos.X, ly, 2, (int)len), new Rectangle(0, 0, 1, 1), color * 0.9f);
         }
 
-        /// <summary>
-        /// 绘制双生子之间极淡的分割线（暗示联系而非分割）
-        /// </summary>
         private static void DrawTwinDivider(SpriteBatch sb, float x, Rectangle contentRect, int portraitZoneHeight, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -197,9 +190,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制单个战术人形卡片（立绘占满整个区域，全身展示）
-        /// </summary>
         private static void DrawAndroidCard(SpriteBatch sb, Rectangle area, Texture2D portrait,
             string name, float revealProgress, float alpha, bool isLeft) {
             if (revealProgress <= 0.01f) return;
@@ -219,9 +209,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制战术人形立绘（全身展示，无浮动，带全息投影效果）
-        /// </summary>
         private static void DrawAndroidPortrait(SpriteBatch sb, Texture2D portrait, Rectangle rect,
             float alpha, float reveal, bool isLeft) {
             if (portrait == null) return;
@@ -274,9 +261,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             DrawHoloScanOverlay(sb, rect, portraitAlpha);
         }
 
-        /// <summary>
-        /// 绘制全息扫描线覆盖在立绘上
-        /// </summary>
         private static void DrawHoloScanOverlay(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -295,9 +279,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 scanColor * 0.5f, 0f, Vector2.Zero, new Vector2(rect.Width, 1f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制双生子共享信息面板（底部，左右各一列信息）
-        /// </summary>
         private static void DrawTwinInfoPanel(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -369,9 +350,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 new Vector2(1f, rect.Height - 8), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制信息标签行（标签: 值）
-        /// </summary>
         private static void DrawInfoLabel(SpriteBatch sb, dynamic font, string label, string value,
             Vector2 pos, Color color, float alpha, float scale) {
             //标签（暗色）
@@ -383,17 +361,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             Utils.DrawBorderString(sb, value, pos + new Vector2(labelWidth, 0), color * alpha, scale);
         }
 
-        /// <summary>
-        /// 绘制单行信息文本
-        /// </summary>
         private static void DrawInfoLine(SpriteBatch sb, dynamic font, string text,
             Vector2 pos, Color color, float alpha, float scale) {
             Utils.DrawBorderString(sb, text, pos, color * alpha, scale);
         }
 
-        /// <summary>
-        /// 绘制信号丢失状态条（模拟信号强度动画）
-        /// </summary>
         private static void DrawSignalLostBar(SpriteBatch sb, Rectangle rect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;

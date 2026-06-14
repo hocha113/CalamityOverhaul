@@ -1,4 +1,4 @@
-﻿using InnoVault.UIHandles;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -10,7 +10,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
 {
     /// <summary>
-    /// 配方侧边栏管理器
+    /// 配方侧边栏
     /// </summary>
     internal class RecipeSidebarManager
     {
@@ -46,7 +46,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             }
 
             _hitbox = new Rectangle((int)drawPosition.X - 4, (int)drawPosition.Y, 72, _sidebarHeight);
-            //修复侧边栏高度计算，应该是固定高度，用于显示区域
+            //侧边栏固定高度
             int visibleSlots = 7; //一次显示7个配方
             _sidebarHeight = visibleSlots * 64;
 
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
             //计算目标配方的位置
             int targetPosition = index * 64;
 
-            //确保目标配方在可见区域内
+            //滚到可见区
             int visibleSlots = 7;
             int halfVisible = visibleSlots / 2;
 

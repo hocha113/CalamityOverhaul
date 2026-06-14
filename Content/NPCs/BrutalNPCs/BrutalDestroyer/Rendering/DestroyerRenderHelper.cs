@@ -5,7 +5,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
-    /// <summary>毁灭者蓄力/残影绘制；热感滤镜见 <see cref="Common.MechBossThermalRenderer"/></summary>
+    /// <summary>毁灭者蓄力/残影绘制；热感滤镜见 Common.MechBossThermalRenderer</summary>
     internal static class DestroyerRenderHelper
     {
         private static void BeginAdditive(SpriteBatch spriteBatch) {
@@ -20,9 +20,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>
-        /// 绘制蓄力特效
-        /// </summary>
+        /// <summary>绘制蓄力特效</summary>
         public static void DrawChargeEffect(SpriteBatch spriteBatch, DestroyerStateContext context) {
             if (!context.IsCharging || context.ChargeProgress <= 0) return;
 
@@ -44,9 +42,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             }
         }
 
-        /// <summary>
-        /// 冲刺蓄力：大范围光晕+明显收缩圆环+粗瞄准线
-        /// </summary>
+        /// <summary>冲刺蓄力：大范围光晕+明显收缩圆环+粗瞄准线</summary>
         private static void DrawDashChargeEffect(SpriteBatch spriteBatch, Vector2 drawPos, DestroyerStateContext context) {
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
@@ -83,9 +79,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             EndAdditive(spriteBatch);
         }
 
-        /// <summary>
-        /// 粗瞄准线：用LightShot绘制连续可见线段+末端光点
-        /// </summary>
+        /// <summary>粗瞄准线：用LightShot绘制连续可见线段+末端光点</summary>
         private static void DrawAimLine(Vector2 drawPos, Vector2 direction, Color baseColor, float progress,
             Texture2D lineTex, Texture2D glowTex) {
             float aimProgress = (progress - 0.3f) / 0.7f;
@@ -110,9 +104,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
                 0f, glowTex.Size() / 2f, 0.8f, SpriteEffects.None, 0);
         }
 
-        /// <summary>
-        /// 激光弹幕充能：大范围中心发光+多层脉冲波纹
-        /// </summary>
+        /// <summary>激光弹幕充能：大范围中心发光+多层脉冲波纹</summary>
         private static void DrawLaserChargeEffect(SpriteBatch spriteBatch, Vector2 drawPos, DestroyerStateContext context) {
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
@@ -166,9 +158,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             EndAdditive(spriteBatch);
         }
 
-        /// <summary>
-        /// 包围特效：以玩家为中心的收缩警告环（玩家视角可见）
-        /// </summary>
+        /// <summary>包围特效：以玩家为中心的收缩警告环（玩家视角可见）</summary>
         private static void DrawEncircleEffect(SpriteBatch spriteBatch, DestroyerStateContext context) {
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
@@ -216,9 +206,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             EndAdditive(spriteBatch);
         }
 
-        /// <summary>
-        /// 探针阵列特效：大范围能量核+可见放射线+旋转外环
-        /// </summary>
+        /// <summary>探针阵列特效：大范围能量核+可见放射线+旋转外环</summary>
         private static void DrawProbeMatrixEffect(SpriteBatch spriteBatch, Vector2 drawPos, DestroyerStateContext context) {
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
             Texture2D circleTex = CWRAsset.DiffusionCircle.Value;
@@ -283,9 +271,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             EndAdditive(spriteBatch);
         }
 
-        /// <summary>
-        /// 绘制冲刺残影
-        /// </summary>
+        /// <summary>绘制冲刺残影</summary>
         public static void DrawDashTrail(SpriteBatch spriteBatch, NPC npc, Texture2D texture,
             Rectangle frameRec, Vector2 origin, Vector2 screenPos) {
             for (int i = 0; i < npc.oldPos.Length; i++) {

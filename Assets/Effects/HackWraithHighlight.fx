@@ -1,6 +1,6 @@
 // ============================================================================
-// HackWraithHighlight.fx 骇客时间灵异目标高亮
-// 采样 uImage0；选中=紫红撕裂色差，悬停=冷紫魂光描边
+//HackWraithHighlight.fx 骇客时间灵异目标高亮
+//采样 uImage0；选中=紫红撕裂色差，悬停=冷紫魂光描边
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -166,7 +166,7 @@ float4 HackWraithPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COL
 
     if (isSelected > 0.5)
     {
-        //——A 去饱和后紫红映射，暗部深紫亮部灼红——
+        //：A 去饱和后紫红映射，暗部深紫亮部灼红：
         float3 desat = float3(lum, lum, lum);
         result = lerp(result, desat, str * 0.55);
         float3 darkTint = float3(0.28, 0.04, 0.35);
@@ -179,36 +179,36 @@ float4 HackWraithPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COL
             tint = lerp(midTint, brightTint, saturate((lum - 0.4) / 0.6));
         result = lerp(result, tint, str * 0.70);
 
-        //——B 横向撕裂伤口带：不均匀离散的暗红色条——
+        //：B 横向撕裂伤口带：不均匀离散的暗红色条：
         float tearSeed = hash2(float2(floor(coords.y * 50.0), 0.0));
         float tearMask = smoothstep(0.82, 0.92, tearSeed);
         float tearFlow = frac(coords.x - uTime * 0.2 + tearSeed * 2.0);
         float tearBand = smoothstep(0.35, 0.5, tearFlow) * smoothstep(0.65, 0.5, tearFlow);
         result = lerp(result, crimson * 0.8, tearMask * tearBand * str * 0.7);
 
-        //——C 心跳发光：整体亮度随心跳双拍脉动——
+        //：C 心跳发光：整体亮度随心跳双拍脉动：
         result += violet * heart * str * 0.25;
         result += crimson * heart * heart * str * 0.15;
 
-        //——D 内边缘魂光——
+        //：D 内边缘魂光：
         float3 haloCol = lerp(violet, crimson, 0.5 + 0.5 * sin(uTime * 3.0));
         result += haloCol * edgeFactor * str * 0.75;
 
-        //——E 垂直渗血细流：FBM调制的下落数据流——
+        //：E 垂直渗血细流：FBM调制的下落数据流：
         float dropY = frac(coords.y * 24.0 + uTime * 1.4);
         float dropCol = frac(coords.x / (texelSize.x * 14.0) + hash2(float2(floor(coords.x / (texelSize.x * 14.0)), 0.0)));
         float dropLine = smoothstep(0.47, 0.5, dropCol) * smoothstep(0.53, 0.5, dropCol);
         float dropPulse = smoothstep(0.1, 0.3, dropY) * smoothstep(0.9, 0.7, dropY);
         result += crimson * dropLine * dropPulse * str * 0.45;
 
-        //——F 整体灵异底噪——
+        //：F 整体灵异底噪：
         float bodyMist = fbm(nCoord * 1.5 + uTime * 0.4);
         result = lerp(result, result * (0.65 + bodyMist * 0.55), str * 0.35);
 
-        //——G 撕裂窗口短暂反色闪光——
+        //：G 撕裂窗口短暂反色闪光：
         result += float3(1.0, 0.5, 0.8) * tearWindow * str * 0.6;
 
-        //——H 暗色保底——
+        //：H 暗色保底：
         result = max(result, float3(0.12, 0.02, 0.10) * str);
     }
     else

@@ -4,10 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Items.Stones
 {
-    /// <summary>
-    /// 花岗岩 / 大理石两套装备共用的视觉常量与底层 VFX 助手
-    /// <br/>仅封装重复的 <see cref="EffectLoader.GradientTrail"/> 参数装配，不引入任何高层武器框架
-    /// </summary>
+    /// <summary>花岗/大理石共用VFX常量与GradientTrail助手</summary>
     internal static class GraniteMarbleVFX
     {
         //资源所在目录（贴图与 .cs 同放在 Content 下，默认自动加载）
@@ -26,9 +23,7 @@ namespace CalamityOverhaul.Content.Items.Stones
         public static readonly Color MarbleGold = new Color(228, 196, 120);
         public static readonly Color MarbleDust = new Color(214, 210, 196);
 
-        /// <summary>
-        /// 为 <see cref="EffectLoader.GradientTrail"/> 装配标准参数；调用方负责设置 BlendState 并执行 Trail.DrawTrail
-        /// </summary>
+        /// <summary>GradientTrail 标准参数，调用方设 BlendState 后 DrawTrail</summary>
         public static void ApplyGradientTrail(Effect effect, Texture2D gradientBar, Texture2D baseImage) {
             effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);

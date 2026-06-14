@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void TriggerDrizzleVolley(Item item, Player player, HalibutPlayer hp) {
-            //该方法只在持有玩家的本地客户端运行（Shoot 由该客户端触发）
+            //仅持有者本地，Shoot触发
             //所有 Projectile.NewProjectile 由本地玩家创建后会通过 NetMessage 自动同步到其它端
             int fishCount = 3 + HalibutData.GetDomainLayer() / 2;
 
@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 offsetDir = behind.RotatedBy(angOff * shootDir * -1);
                 Vector2 spawnPos = player.Center + offsetDir * radius;
 
-                //初始 velocity 用于在所有端 OnSpawn 阶段携带 AimDirection（生成包会同步 velocity）
+                //初始velocity跨端传AimDirection
                 int proj = Projectile.NewProjectile(player.GetSource_ItemUse(item), spawnPos, aimDir,
                     ModContent.ProjectileType<DrizzleFishHolder>(), shootState.WeaponDamage, shootState.WeaponKnockback, player.whoAmI,
                     ai0: i, ai1: fishCount);
@@ -221,7 +221,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private const int PreFireDelay = 18;
         private const int FireInterval = 16;
-        //火柱寿命，覆盖 DrizzleFirePillar.timeLeft = 85，再加一些冗余确保所有火柱消散
+        //火柱寿命85帧+冗余，等全消散
         private const int PillarLifetime = 90;
 
         private float glowPulse;
@@ -316,7 +316,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     float progress = MathHelper.Clamp(flyTime / (float)FishDrizzle.DepartureDuration, 0f, 1f);
                     progress = MathF.Pow(progress, 0.65f);
 
-                    //外向方向完全由出生参数决定，确保所有端一致地飞出去
+                    //外向方向出生参数定，跨端一致
                     Vector2 behind = (-AimDirection).SafeNormalize(Vector2.UnitX);
                     float arc = MathHelper.ToRadians(140f);
                     float t = TotalFishCount <= 1 ? 0.5f : FishIndex / (float)(TotalFishCount - 1);

@@ -12,18 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
-    /// <summary>
-    /// ADV 选项框 UI
-    /// </summary>
+    /// <summary>ADV 选项框 UI</summary>
     public class ADVChoiceBox : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
 
         public static ADVChoiceBox Instance => UIHandleLoader.GetUIHandleOfType<ADVChoiceBox>();
 
-        /// <summary>
-        /// 选项框样式枚举
-        /// </summary>
+        /// <summary>选项框样式枚举</summary>
         public enum ChoiceBoxStyle
         {
             Default,    // 默认深蓝科技风格
@@ -43,19 +39,13 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         private IChoiceBoxStyle currentStyle;
         private readonly Dictionary<ChoiceBoxStyle, IChoiceBoxStyle> styleInstances = new();
 
-        /// <summary>
-        /// 悬停状态变化事件
-        /// </summary>
+        /// <summary>悬停状态变化事件</summary>
         public static event EventHandler<ChoiceHoverEventArgs> OnHoverChanged;
 
-        /// <summary>
-        /// 悬停索引，-1 为无
-        /// </summary>
+        /// <summary>悬停索引，-1 为无</summary>
         public static int CurrentHoveredIndex => Instance?.hoveredIndex ?? -1;
 
-        /// <summary>
-        /// 获取当前悬停的选项对象（如果有）
-        /// </summary>
+        /// <summary>获取当前悬停的选项对象（如果有）</summary>
         public static Choice CurrentHoveredChoice {
             get {
                 var inst = Instance;
@@ -66,18 +56,18 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
         }
 
-        // 动画状态
+        //动画状态
         private float showProgress = 0f;
         private float hideProgress = 0f;
         private const float ShowDuration = 12f;
         private const float HideDuration = 10f;
         private bool closing = false;
 
-        // 选项悬停动画
+        //选项悬停动画
         private readonly float[] choiceHoverProgress = new float[10]; // 最多 10 项
         private const float HoverSpeed = 0.15f;
 
-        // 位置和尺寸
+        //位置和尺寸
         private Vector2 anchorPosition;
         private Vector2 panelSize;
         private Rectangle panelRect;
@@ -86,71 +76,47 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
         #region 定时系统
 
-        /// <summary>
-        /// 当前定时配置
-        /// </summary>
+        /// <summary>当前定时配置</summary>
         private ChoiceBoxTimedConfig timedConfig;
 
-        /// <summary>
-        /// 剩余时间（帧）
-        /// </summary>
+        /// <summary>剩余时间（帧）</summary>
         private int timedRemainingFrames;
 
-        /// <summary>
-        /// 总时间（帧）
-        /// </summary>
+        /// <summary>总时间（帧）</summary>
         private int timedTotalFrames;
 
-        /// <summary>
-        /// 是否为定时选项框
-        /// </summary>
+        /// <summary>是否为定时选项框</summary>
         public bool IsTimed => timedConfig != null && timedTotalFrames > 0;
 
-        /// <summary>
-        /// 剩余时间比 0~1
-        /// </summary>
+        /// <summary>剩余时间比 0~1</summary>
         public float TimedProgress => timedTotalFrames > 0 ? timedRemainingFrames / (float)timedTotalFrames : 0f;
 
-        /// <summary>
-        /// 已过时间比 0~1
-        /// </summary>
+        /// <summary>已过时间比 0~1</summary>
         public float TimedElapsed => 1f - TimedProgress;
 
-        /// <summary>
-        /// 剩余帧数，供外部继承
-        /// </summary>
+        /// <summary>剩余帧数，供外部继承</summary>
         public static int RemainingFrames => Instance?.timedRemainingFrames ?? 0;
 
-        /// <summary>
-        /// 是否正在显示定时选项框
-        /// </summary>
+        /// <summary>是否正在显示定时选项框</summary>
         public static bool IsTimedActive => Instance?.IsTimed == true && Instance?.isSelecting == true;
 
-        /// <summary>
-        /// 进度条默认颜色
-        /// </summary>
+        /// <summary>进度条默认颜色</summary>
         private static readonly Color DefaultProgressColor = new(100, 200, 255);
         private static readonly Color DefaultWarningColor = new(255, 150, 80);
         private static readonly Color DefaultDangerColor = new(255, 80, 80);
 
-        /// <summary>
-        /// 进度条粗细
-        /// </summary>
+        /// <summary>进度条粗细</summary>
         private const float ProgressBorderThickness = 3.5f;
 
-        /// <summary>
-        /// 进度条透明度
-        /// </summary>
+        /// <summary>进度条透明度</summary>
         private const float ProgressAlpha = 0.95f;
 
-        /// <summary>
-        /// 进度条发光层数
-        /// </summary>
+        /// <summary>进度条发光层数</summary>
         private const int ProgressGlowLayers = 3;
 
         #endregion
 
-        // 布局常量
+        //布局常量
         private const float MinWidth = 200f;
         private const float MaxWidth = 420f;
         private const float HorizontalPadding = 14f;
@@ -162,7 +128,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         private const float ChoiceHeight = 32f;
         private const float ChoicePadding = 8f;
 
-        // 本地化文本
+        //本地化文本
         protected static LocalizedText TitleText;
         protected static LocalizedText DisabledHintFormat;
 
@@ -172,7 +138,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             TitleText = this.GetLocalization(nameof(TitleText), () => "选择");
             DisabledHintFormat = this.GetLocalization(nameof(DisabledHintFormat), () => "（{0}）");
 
-            // 初始化样式实例
+            //初始化样式实例
             var inst = Instance;
             inst.styleInstances[ChoiceBoxStyle.Default] = new DefaultChoiceBoxStyle();
             inst.styleInstances[ChoiceBoxStyle.Brimstone] = new BrimstoneChoiceBoxStyle();
@@ -184,9 +150,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             inst.currentStyle = inst.styleInstances[ChoiceBoxStyle.Default];
         }
 
-        /// <summary>
-        /// 显示选项框
-        /// </summary>
+        /// <summary>显示选项框</summary>
         /// <param name="choices">选项列表</param>
         /// <param name="anchorProvider">锚点位置提供者</param>
         /// <param name="style">选项框样式</param>
@@ -194,9 +158,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             Show(choices, anchorProvider, style, null);
         }
 
-        /// <summary>
-        /// 显示定时选项框
-        /// </summary>
+        /// <summary>显示定时选项框</summary>
         /// <param name="choices">选项列表</param>
         /// <param name="timedConfig">定时配置</param>
         /// <param name="anchorProvider">锚点位置提供者</param>
@@ -205,9 +167,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             Show(choices, anchorProvider, style, timedConfig);
         }
 
-        /// <summary>
-        /// 显示定时选项框（从剩余帧数继承）
-        /// </summary>
+        /// <summary>显示定时选项框（从剩余帧数继承）</summary>
         /// <param name="choices">选项列表</param>
         /// <param name="remainingFrames">剩余帧数</param>
         /// <param name="onTimeExpired">时间耗尽回调</param>
@@ -218,9 +178,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             Show(choices, anchorProvider, style, config);
         }
 
-        /// <summary>
-        /// 显示选项框（完整参数）
-        /// </summary>
+        /// <summary>显示选项框（完整参数）</summary>
         private static void Show(List<Choice> choices, Func<Vector2> anchorProvider, ChoiceBoxStyle style, ChoiceBoxTimedConfig timedConfig) {
             ADVChoiceBox inst = Instance;
             inst.choices.Clear();
@@ -232,7 +190,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             inst.hoveredIndex = -1;
             inst.selectedIndex = -1;
 
-            // 设置定时配置
+            //设置定时配置
             inst.timedConfig = timedConfig;
             if (timedConfig != null) {
                 inst.timedTotalFrames = (int)(timedConfig.Duration * 60f);
@@ -248,34 +206,32 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 inst.currentStyle.Reset();
             }
 
-            // 重置悬停动画
+            //重置悬停动画
             for (int i = 0; i < inst.choiceHoverProgress.Length; i++) {
                 inst.choiceHoverProgress[i] = 0f;
             }
 
             AnchorProvider = anchorProvider;
 
-            // 在更新锚点之前计算面板尺寸
+            //在更新锚点之前计算面板尺寸
             inst.CalculatePanelSize();
 
-            // 初始化锚点位置
+            //初始化锚点位置
             UpdateAnchorPosition(inst);
         }
 
-        /// <summary>
-        /// 隐藏选项框
-        /// </summary>
+        /// <summary>隐藏选项框</summary>
         public static void Hide() {
             var inst = Instance;
             inst.closing = true;
             inst.hideProgress = 0f;
 
-            // 重置定时状态
+            //重置定时状态
             inst.timedConfig = null;
             inst.timedTotalFrames = 0;
             inst.timedRemainingFrames = 0;
 
-            // 清空事件订阅
+            //清空事件订阅
             OnHoverChanged = null;
         }
 
@@ -285,11 +241,11 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 return;
             }
 
-            // 计算标题尺寸
+            //计算标题尺寸
             string title = TitleText.Value;
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
 
-            // 计算选项区域所需宽度
+            //计算选项区域所需宽度
             float maxChoiceWidth = 0f;
             foreach (var choice in choices) {
                 string text = choice.Text;
@@ -305,7 +261,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             float contentWidth = Math.Max(maxChoiceWidth + ChoicePadding * 2, MinWidth - HorizontalPadding * 2);
             float panelWidth = Math.Clamp(contentWidth + HorizontalPadding * 2, MinWidth, MaxWidth);
 
-            // 计算面板高度
+            //计算面板高度
             float dividerHeight = 1.3f;
             float choicesHeight = choices.Count * ChoiceHeight + (choices.Count - 1) * ChoiceSpacing;
 
@@ -319,11 +275,9 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             panelSize = new Vector2(panelWidth, panelHeight);
         }
 
-        /// <summary>
-        /// 更新锚点位置
-        /// </summary>
+        /// <summary>更新锚点位置</summary>
         public static void UpdateAnchorPosition(ADVChoiceBox inst) {
-            // 计算锚点位置
+            //计算锚点位置
             if (AnchorProvider != null) {
                 inst.anchorPosition = AnchorProvider.Invoke();
             }
@@ -337,10 +291,10 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 return;
             }
 
-            // 更新样式动画
+            //更新样式动画
             currentStyle?.Update(panelRect, Active, closing);
 
-            // 动画更新
+            //动画更新
             if (!closing && showProgress < 1f) {
                 showProgress += 1f / ShowDuration;
                 showProgress = Math.Clamp(showProgress, 0f, 1f);
@@ -357,7 +311,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                         showProgress = 0f;
                         isSelecting = false;
 
-                        // 清理定时状态
+                        //清理定时状态
                         timedConfig = null;
                         timedTotalFrames = 0;
                         timedRemainingFrames = 0;
@@ -369,17 +323,17 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 return;
             }
 
-            // 更新定时逻辑（只有在选项框完全显示后才开始计时）
+            //更新定时逻辑（只有在选项框完全显示后才开始计时）
             if (showProgress >= 1f) {
                 UpdateTimedLogic();
             }
 
-            // 在动画完成后每帧更新锚点位置
+            //在动画完成后每帧更新锚点位置
             if (showProgress >= 1f) {
                 UpdateAnchorPosition(Instance);
             }
 
-            // 更新面板矩形
+            //更新面板矩形
             float progress = closing ? 1f - hideProgress : showProgress;
             float eased = closing ? VaultUtils.EaseInCubic(progress) : VaultUtils.EaseOutBack(progress);
 
@@ -388,7 +342,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
             panelRect = new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.X, (int)panelSize.Y);
 
-            // 检测鼠标悬停
+            //检测鼠标悬停
             Point mousePos = new Point(Main.mouseX, Main.mouseY);
             bool hoverInPanel = panelRect.Contains(mousePos);
 
@@ -400,7 +354,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             hoveredIndex = -1;
 
             if (hoverInPanel && isSelecting) {
-                // 计算每个选项的矩形
+                //计算每个选项的矩形
                 float startY = drawPos.Y + TopPadding
                     + FontAssets.MouseText.Value.MeasureString(TitleText.Value).Y * 0.9f
                     + TitleExtra + DividerSpacing * 2 + 1.3f;
@@ -417,7 +371,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                     if (choiceRect.Contains(mousePos)) {
                         hoveredIndex = i;
 
-                        // 点击处理
+                        //点击处理
                         if (keyLeftPressState == KeyPressState.Pressed) {
                             if (choices[i].Enabled) {
                                 selectedIndex = i;
@@ -434,7 +388,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 }
             }
 
-            // 触发悬停变化事件
+            //触发悬停变化事件
             if (oldHoveredIndex != hoveredIndex) {
                 Choice oldChoice = oldHoveredIndex >= 0 && oldHoveredIndex < choices.Count ? choices[oldHoveredIndex] : null;
                 Choice newChoice = hoveredIndex >= 0 && hoveredIndex < choices.Count ? choices[hoveredIndex] : null;
@@ -442,16 +396,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 OnHoverChanged?.Invoke(this, new ChoiceHoverEventArgs(hoveredIndex, oldHoveredIndex, newChoice, oldChoice));
             }
 
-            // 更新悬停动画
+            //更新悬停动画
             for (int i = 0; i < choiceHoverProgress.Length && i < choices.Count; i++) {
                 float target = i == hoveredIndex ? 1f : 0f;
                 choiceHoverProgress[i] = MathHelper.Lerp(choiceHoverProgress[i], target, HoverSpeed);
             }
         }
 
-        /// <summary>
-        /// 更新定时逻辑
-        /// </summary>
+        /// <summary>更新定时逻辑</summary>
         private void UpdateTimedLogic() {
             if (!IsTimed || !isSelecting) {
                 return;
@@ -460,15 +412,15 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             if (timedRemainingFrames > 0) {
                 timedRemainingFrames--;
 
-                // 触发进度更新回调
+                //触发进度更新回调
                 timedConfig.OnProgressUpdate?.Invoke(TimedProgress);
 
-                // 时间耗尽
+                //时间耗尽
                 if (timedRemainingFrames <= 0) {
-                    // 触发时间耗尽回调
+                    //触发时间耗尽回调
                     timedConfig.OnTimeExpired?.Invoke();
 
-                    // 隐藏选项框
+                    //隐藏选项框
                     Hide();
                 }
             }
@@ -486,7 +438,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
             float alpha = Math.Min(progress * 1.5f, 1f);
 
-            // 使用当前样式绘制
+            //使用当前样式绘制
             if (currentStyle != null) {
                 currentStyle.Draw(spriteBatch, panelRect, alpha);
             }
@@ -497,7 +449,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
             DrawContent(spriteBatch, panelRect, alpha);
 
-            // 绘制定时进度条（在内容之后绘制，作为叠加层）
+            //绘制定时进度条（在内容之后绘制，作为叠加层）
             if (IsTimed && showProgress >= 1f && !closing) {
                 DrawTimedProgressIndicator(spriteBatch, panelRect, alpha);
             }
@@ -505,9 +457,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
         #region 定时进度条绘制
 
-        /// <summary>
-        /// 绘制定时进度指示器（环绕边框渐变）
-        /// </summary>
+        /// <summary>绘制定时进度指示器（环绕边框渐变）</summary>
         private void DrawTimedProgressIndicator(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
             if (timedConfig == null || !timedConfig.ShowProgressIndicator) {
                 return;
@@ -516,14 +466,14 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             float progress = TimedProgress;
             Color baseProgressColor = GetTimedProgressColor(progress);
 
-            // 添加呼吸效果（时间越少脉动越快）
+            //添加呼吸效果（时间越少脉动越快）
             float pulseSpeed = MathHelper.Lerp(1.5f, 6f, 1f - progress);
             float pulse = (float)Math.Sin(Main.GameUpdateCount * 0.1f * pulseSpeed) * 0.2f + 0.8f;
 
-            // 添加流动效果
+            //添加流动效果
             float flowOffset = Main.GameUpdateCount * 0.02f * MathHelper.Lerp(1f, 3f, 1f - progress);
 
-            // 绘制多层发光效果（从外到内）
+            //绘制多层发光效果（从外到内）
             for (int layer = ProgressGlowLayers - 1; layer >= 0; layer--) {
                 float layerAlpha = (1f - layer / (float)ProgressGlowLayers) * 0.4f;
                 float layerThickness = ProgressBorderThickness + layer * 2.5f;
@@ -532,28 +482,26 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, layerColor, layerThickness, flowOffset, layer > 0);
             }
 
-            // 绘制主进度条（最亮的核心层）
+            //绘制主进度条（最亮的核心层）
             Color coreColor = baseProgressColor * (alpha * ProgressAlpha * pulse);
             DrawProgressBorderWithFlow(spriteBatch, panelRect, progress, coreColor, ProgressBorderThickness, flowOffset, false);
 
-            // 绘制角落发光点
+            //绘制角落发光点
             DrawProgressCornerGlow(spriteBatch, panelRect, progress, baseProgressColor * (alpha * pulse));
 
-            // 绘制进度头部的亮点（追踪点）
+            //绘制进度头部的亮点（追踪点）
             DrawProgressHead(spriteBatch, panelRect, progress, baseProgressColor * alpha, flowOffset);
         }
 
-        /// <summary>
-        /// 绘制带流动效果的进度边框
-        /// </summary>
+        /// <summary>绘制带流动效果的进度边框</summary>
         private void DrawProgressBorderWithFlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color, float thickness, float flowOffset, bool isGlowLayer) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            // 计算总周长
+            //计算总周长
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float visibleLength = totalPerimeter * progress;
 
-            // 分段长度
+            //分段长度
             float topLength = panelRect.Width;
             float rightLength = panelRect.Height;
             float bottomLength = panelRect.Width;
@@ -561,10 +509,10 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
 
             float drawnLength = 0f;
 
-            // 流动效果的alpha调制
+            //流动效果的alpha调制
             float flowAlphaBase = isGlowLayer ? 0.6f : 1f;
 
-            // 1. 绘制顶部边框（从左到右）
+            //1. 绘制顶部边框（从左到右）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(topLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / topLength;
@@ -578,7 +526,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 drawnLength += topLength;
             }
 
-            // 2. 绘制右侧边框（从上到下）
+            //2. 绘制右侧边框（从上到下）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(rightLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / rightLength;
@@ -592,7 +540,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 drawnLength += rightLength;
             }
 
-            // 3. 绘制底部边框（从右到左）
+            //3. 绘制底部边框（从右到左）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(bottomLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / bottomLength;
@@ -606,7 +554,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 drawnLength += bottomLength;
             }
 
-            // 4. 绘制左侧边框（从下到上）
+            //4. 绘制左侧边框（从下到上）
             if (drawnLength < visibleLength) {
                 float segmentToDraw = Math.Min(leftLength, visibleLength - drawnLength);
                 float segmentProgress = segmentToDraw / leftLength;
@@ -619,27 +567,25 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
         }
 
-        /// <summary>
-        /// 绘制进度头部的追踪亮点
-        /// </summary>
+        /// <summary>绘制进度头部的追踪亮点</summary>
         private void DrawProgressHead(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color, float flowOffset) {
             if (progress <= 0.01f) return;
 
             Texture2D pixel = CWRAsset.SoftGlow.Value;
 
-            // 计算进度头部位置
+            //计算进度头部位置
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float currentLength = totalPerimeter * progress;
 
             Vector2 headPos = GetPositionOnBorder(panelRect, currentLength);
 
-            // 绘制多层发光的追踪点
+            //绘制多层发光的追踪点
             float baseSize = pixel.Width / 2f;
 
-            // 脉动效果
+            //脉动效果
             float headPulse = (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.3f + 0.7f;
 
-            // 外层大发光
+            //外层大发光
             float outerSize = baseSize * 2.5f * headPulse;
             Rectangle outerRect = new(
                 (int)(headPos.X - outerSize / 2),
@@ -649,7 +595,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             );
             spriteBatch.Draw(pixel, outerRect, null, color with { A = 0 } * 0.15f);
 
-            // 中层发光
+            //中层发光
             float midSize = baseSize * 1.5f * headPulse;
             Rectangle midRect = new(
                 (int)(headPos.X - midSize / 2),
@@ -659,7 +605,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             );
             spriteBatch.Draw(pixel, midRect, null, color with { A = 0 } * 0.4f);
 
-            // 核心亮点
+            //核心亮点
             float coreSize = baseSize * 0.8f;
             Rectangle coreRect = new(
                 (int)(headPos.X - coreSize / 2),
@@ -670,39 +616,35 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             spriteBatch.Draw(pixel, coreRect, null, Color.White with { A = 0 } * 0.9f);
         }
 
-        /// <summary>
-        /// 根据边框上的长度获取位置
-        /// </summary>
+        /// <summary>根据边框上的长度获取位置</summary>
         private Vector2 GetPositionOnBorder(Rectangle rect, float length) {
             float topLength = rect.Width;
             float rightLength = rect.Height;
             float bottomLength = rect.Width;
 
-            // 顶部
+            //顶部
             if (length <= topLength) {
                 return new Vector2(rect.X + length, rect.Y);
             }
             length -= topLength;
 
-            // 右侧
+            //右侧
             if (length <= rightLength) {
                 return new Vector2(rect.Right, rect.Y + length);
             }
             length -= rightLength;
 
-            // 底部
+            //底部
             if (length <= bottomLength) {
                 return new Vector2(rect.Right - length, rect.Bottom);
             }
             length -= bottomLength;
 
-            // 左侧
+            //左侧
             return new Vector2(rect.X, rect.Bottom - length);
         }
 
-        /// <summary>
-        /// 获取当前定时进度的颜色
-        /// </summary>
+        /// <summary>获取当前定时进度的颜色</summary>
         private Color GetTimedProgressColor(float progress) {
             Color baseColor = timedConfig?.ProgressColor ?? DefaultProgressColor;
             Color warningColor = timedConfig?.WarningColor ?? DefaultWarningColor;
@@ -724,9 +666,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
         }
 
-        /// <summary>
-        /// 绘制带流动效果的进度条段
-        /// </summary>
+        /// <summary>绘制带流动效果的进度条段</summary>
         private void DrawProgressSegmentWithFlow(
             SpriteBatch spriteBatch,
             Texture2D pixel,
@@ -751,7 +691,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                     float y1 = minY + height * t;
                     float y2 = minY + height * t2;
 
-                    // 添加流动的明暗变化
+                    //添加流动的明暗变化
                     float flowWave = (float)Math.Sin((t + flowOffset) * MathHelper.TwoPi * 2f) * 0.15f + 0.85f;
                     float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t) * flowWave;
 
@@ -772,7 +712,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                     float x1 = minX + width * t;
                     float x2 = minX + width * t2;
 
-                    // 添加流动的明暗变化
+                    //添加流动的明暗变化
                     float flowWave = (float)Math.Sin((t + flowOffset) * MathHelper.TwoPi * 2f) * 0.15f + 0.85f;
                     float segAlpha = MathHelper.Lerp(startAlpha, endAlpha, t) * flowWave;
 
@@ -782,50 +722,46 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             }
         }
 
-        /// <summary>
-        /// 绘制进度条角落的发光效果
-        /// </summary>
+        /// <summary>绘制进度条角落的发光效果</summary>
         private void DrawProgressCornerGlow(SpriteBatch spriteBatch, Rectangle panelRect, float progress, Color color) {
             if (progress <= 0.01f) return;
 
             Texture2D pixel = VaultAsset.placeholder2.Value;
             float glowSize = ProgressBorderThickness * 3f;
 
-            // 脉动效果
+            //脉动效果
             float cornerPulse = (float)Math.Sin(Main.GameUpdateCount * 0.08f) * 0.2f + 0.8f;
 
-            // 计算总周长
+            //计算总周长
             float totalPerimeter = 2 * (panelRect.Width + panelRect.Height);
             float visibleLength = totalPerimeter * progress;
 
-            // 顶部起始点发光（左上角）
+            //顶部起始点发光（左上角）
             float cornerAlpha = MathHelper.Clamp(progress * 3f, 0f, 1f) * 0.7f * cornerPulse;
             DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Y), glowSize, color * cornerAlpha);
 
-            // 右上角
+            //右上角
             if (visibleLength > panelRect.Width) {
                 float rightTopAlpha = MathHelper.Clamp((visibleLength - panelRect.Width) / panelRect.Height, 0f, 1f) * 0.6f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Y), glowSize, color * rightTopAlpha);
             }
 
-            // 右下角
+            //右下角
             if (visibleLength > panelRect.Width + panelRect.Height) {
                 float rightBottomAlpha = MathHelper.Clamp((visibleLength - panelRect.Width - panelRect.Height) / panelRect.Width, 0f, 1f) * 0.5f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.Right, panelRect.Bottom), glowSize, color * rightBottomAlpha);
             }
 
-            // 左下角
+            //左下角
             if (visibleLength > 2 * panelRect.Width + panelRect.Height) {
                 float leftBottomAlpha = MathHelper.Clamp((visibleLength - 2 * panelRect.Width - panelRect.Height) / panelRect.Height, 0f, 1f) * 0.4f * cornerPulse;
                 DrawCornerGlow(spriteBatch, pixel, new Vector2(panelRect.X, panelRect.Bottom), glowSize, color * leftBottomAlpha);
             }
         }
 
-        /// <summary>
-        /// 绘制单个角落的发光
-        /// </summary>
+        /// <summary>绘制单个角落的发光</summary>
         private void DrawCornerGlow(SpriteBatch spriteBatch, Texture2D pixel, Vector2 position, float size, Color color) {
-            // 外层大发光
+            //外层大发光
             float outerSize = size * 1.8f;
             Rectangle outerRect = new(
                 (int)(position.X - outerSize / 2),
@@ -835,7 +771,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             );
             spriteBatch.Draw(pixel, outerRect, new Rectangle(0, 0, 1, 1), color * 0.2f);
 
-            // 中层发光
+            //中层发光
             Rectangle glowRect = new(
                 (int)(position.X - size / 2),
                 (int)(position.Y - size / 2),
@@ -844,7 +780,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             );
             spriteBatch.Draw(pixel, glowRect, new Rectangle(0, 0, 1, 1), color * 0.5f);
 
-            // 中心更亮
+            //中心更亮
             Rectangle centerRect = new(
                 (int)(position.X - size / 4),
                 (int)(position.Y - size / 4),
@@ -857,18 +793,18 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         #endregion
 
         private void DrawContent(SpriteBatch spriteBatch, Rectangle panelRect, float alpha) {
-            // 绘制标题
+            //绘制标题
             Vector2 titlePos = new Vector2(panelRect.X + HorizontalPadding, panelRect.Y + TopPadding);
             string title = TitleText.Value;
 
-            // 使用样式绘制标题装饰
+            //使用样式绘制标题装饰
             if (currentStyle != null) {
                 currentStyle.DrawTitleDecoration(spriteBatch, titlePos, title, alpha);
             }
 
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * alpha, 0.9f);
 
-            // 绘制分割线
+            //绘制分割线
             float titleHeight = FontAssets.MouseText.Value.MeasureString(title).Y * 0.9f;
             Vector2 dividerStart = titlePos + new Vector2(0, titleHeight + TitleExtra);
             Vector2 dividerEnd = dividerStart + new Vector2(panelSize.X - HorizontalPadding * 2, 0);
@@ -877,7 +813,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 currentStyle.DrawDivider(spriteBatch, dividerStart, dividerEnd, alpha);
             }
 
-            // 绘制选项
+            //绘制选项
             Vector2 choiceStartPos = dividerStart + new Vector2(0, DividerSpacing + 1.3f);
             DrawChoices(spriteBatch, choiceStartPos, alpha);
         }
@@ -889,7 +825,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 var choice = choices[i];
                 Vector2 choicePos = startPos + new Vector2(0, i * (ChoiceHeight + ChoiceSpacing));
 
-                // 选项背景
+                //选项背景
                 Rectangle choiceRect = new Rectangle(
                     (int)choicePos.X,
                     (int)choicePos.Y,
@@ -897,15 +833,15 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                     (int)ChoiceHeight
                 );
 
-                // 悬停效果
+                //悬停效果
                 float hoverProgress = choiceHoverProgress[i];
 
-                // 使用样式绘制选项背景
+                //使用样式绘制选项背景
                 if (currentStyle != null) {
                     currentStyle.DrawChoiceBackground(spriteBatch, choiceRect, choice.Enabled, hoverProgress, alpha);
                 }
 
-                // 选项文本
+                //选项文本
                 DrawChoiceText(spriteBatch, choice, choiceRect, alpha, edgeColor, hoverProgress, i);
             }
         }
@@ -918,7 +854,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             Vector2 textSize = FontAssets.MouseText.Value.MeasureString(text) * 0.75f;
             textPos.Y -= textSize.Y / 2f;
 
-            // 文本发光效果
+            //文本发光效果
             if (choice.Enabled && hoverProgress > 0.3f && currentStyle != null) {
                 Color glowColor = currentStyle.GetTextGlowColor(alpha, hoverProgress);
                 for (int j = 0; j < 4; j++) {
@@ -929,11 +865,11 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                 }
             }
 
-            // 绘制主文本
+            //绘制主文本
             float textAlpha = choice.Enabled ? alpha : alpha * 0.35f;
             Utils.DrawBorderString(spriteBatch, text, textPos, textColor * textAlpha, 0.75f);
 
-            // 禁用提示
+            //禁用提示
             if (!choice.Enabled && !string.IsNullOrEmpty(choice.DisabledHint)) {
                 string hint = string.Format(DisabledHintFormat.Value, choice.DisabledHint);
                 Vector2 hintSize = FontAssets.MouseText.Value.MeasureString(hint) * 0.65f;
@@ -945,7 +881,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
                     new Color(150, 80, 80) * (alpha * 0.6f), 0.65f);
             }
 
-            // 选项序号
+            //选项序号
             string indexText = $"{index + 1}.";
             Vector2 indexPos = new Vector2(
                 choiceRect.X - 18f,

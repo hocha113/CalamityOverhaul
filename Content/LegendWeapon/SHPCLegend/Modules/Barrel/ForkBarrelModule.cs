@@ -6,10 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 叉形枪管：追踪光束飞行期间每50帧向两侧各分叉一束子光束
-    /// 用 whoAmI→timer 字典实现每束独立计时，IsDerived 标记防递归
-    /// </summary>
+    /// <summary>叉形枪管：追踪束每 50 帧左右分叉，whoAmI→timer+IsDerived</summary>
     internal sealed class ForkBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;

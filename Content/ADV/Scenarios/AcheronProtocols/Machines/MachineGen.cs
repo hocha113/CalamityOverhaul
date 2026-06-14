@@ -71,7 +71,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 将原版世界中所有已有物块替换为机械风格
+
         /// </summary>
         private static void ReplaceTilesToMechanical(int worldWidth, int worldHeight, int typeDark, int[] mechTiles) {
             for (int x = SafePadding; x < worldWidth - SafePadding; x++) {
@@ -101,7 +103,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 用多层噪声叠加构建连续的地表高度图，出生点附近压平
+
         /// </summary>
         private static int[] BuildSurfaceHeightMap(int worldWidth, int worldHeight, int surfaceY, int spawnX) {
             int[] heightMap = new int[worldWidth];
@@ -156,7 +160,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 沿高度图铺设地表层物块，包含表层和浅层填充
+
         /// </summary>
         private static void LayMechanicalSurface(int worldWidth, int worldHeight,
             int[] heightMap, int typeDark, int typeStone, int[] mechTiles) {
@@ -214,7 +220,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 在地表线上稀疏生成机械尖塔，远离出生点，形状自然
+
         /// </summary>
         private static void GenerateSpires(int worldWidth, int worldHeight,
             int[] heightMap, int typeStone, int spawnX) {
@@ -260,9 +268,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             }
         }
 
-        /// <summary>
-        /// 构建单个尖塔，使用椭圆轮廓加噪声扰动实现自然形状
-        /// </summary>
+        /// <summary>构建单个尖塔，使用椭圆轮廓加噪声扰动</summary>
         private static void BuildSingleSpire(int centerX, int baseY, int height, int baseWidth,
             int typeStone, int worldHeight) {
             FastNoiseLite edgeNoise = new(centerX * 31 + baseY * 17);
@@ -319,9 +325,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             }
         }
 
-        /// <summary>
-        /// 在出生点清理出平坦的着陆区域，确保玩家不会被埋在方块里
-        /// </summary>
+        /// <summary>在出生点清理出平坦的着陆区域</summary>
         private static void ClearSpawnArea(int worldWidth, int worldHeight,
             int[] heightMap, int spawnX) {
             //着陆平台半宽
@@ -364,7 +368,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 沿实际地表面放置机械装饰物（管道、金属棒等）
+
         /// </summary>
         private static void PlaceSurfaceDecorations(int worldWidth, int worldHeight, int[] heightMap) {
             int[] decoTypes = [TileID.MetalBars, TileID.IronBrick, TileID.Cog];

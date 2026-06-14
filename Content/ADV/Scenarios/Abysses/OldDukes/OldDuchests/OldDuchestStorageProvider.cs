@@ -28,9 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
     }
 
-    /// <summary>
-    /// 老公爵营地箱子的存储提供者实现
-    /// </summary>
+    /// <summary>老公爵营地箱子的存储提供者</summary>
     public class OldDuchestStorageProvider : IStorageProvider
     {
         private readonly OldDuchestTP _chestTP;
@@ -93,7 +91,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 从位置查找OldDuchestTP并创建存储提供者
+
         /// </summary>
         public static OldDuchestStorageProvider FromPosition(Point16 position) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out OldDuchestTP tp)) {
@@ -103,7 +103,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
         }
 
         /// <summary>
+
         /// 在指定范围内查找最近的OldDuchestTP
+
         /// </summary>
         public static OldDuchestStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             float rangeSQ = range * range;
@@ -139,9 +141,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDuchests
             return nearestTP != null ? new OldDuchestStorageProvider(nearestTP) : null;
         }
 
-        /// <summary>
-        /// 获取指定位置的OldDuchestTP存储提供者
-        /// </summary>
         /// <param name="position"></param>
         /// <param name="item"></param>
         /// <returns></returns>

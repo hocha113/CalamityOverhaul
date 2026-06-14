@@ -101,9 +101,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal
         }
     }
 
-    ///<summary>
-    ///至尊灾厄场景效果管理器（负责粒子生成）
-    ///</summary>
+    ///<summary>至尊灾厄场景粒子与天空</summary>
     internal class SupCalEffect : ModSystem
     {
         public static bool IsActive;

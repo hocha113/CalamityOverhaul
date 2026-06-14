@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         }
 
         //在走廊右侧放置热能发电机MK2，作为物块扫描教学目标
-        //直接写入帧数据，绕过WorldGen.PlaceObject的放置检查，确保可靠生成
+        //直写帧数据绕过 PlaceObject 检查
         private static void PlaceGeneratorMK2() {
             int tileType = ModContent.TileType<ThermalGeneratorMK2Tile>();
             for (int dx = 0; dx < GenMK2TileW; dx++) {

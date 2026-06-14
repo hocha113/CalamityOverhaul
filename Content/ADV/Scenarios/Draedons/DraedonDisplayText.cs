@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -106,9 +106,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons
 		PlayerDeathAtAmusingTime: 很不巧，不过仍然落在我的计算范围之内。
 		Error: 这个现实的结构被撕裂了。
      */
-    /// <summary>
-    /// 嘉登对话文本修改器，用于屏蔽原版对话并使用自定义ADV系统
-    /// </summary>
+    /// <summary>嘉登对话文本修改器，用于屏蔽原版对话并使用自定义ADV系统</summary>
     internal class DraedonDisplayText : ModifyDisplayText
     {
         //需要屏蔽的原版嘉登对话key

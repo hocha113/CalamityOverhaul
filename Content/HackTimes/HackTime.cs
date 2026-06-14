@@ -514,7 +514,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public static void Select(IHackTarget target) {
             if (!Active || target == null || !target.IsValid) return;
 
-            //同目标不重复处理
+            //同目标跳过
             if (CurrentScanTarget != null && target.TargetEquals(CurrentScanTarget)) return;
 
             //切换目标保留各目标上传进度，队列按 (slot, target) 独立维护
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.HackTimes
             //光圈动画计时
             ReticleTimer += 0.016f;
 
-            //处理运镜逻辑
+            //运镜
             UpdateCamera();
         }
 

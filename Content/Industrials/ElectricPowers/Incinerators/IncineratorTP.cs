@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 处理焚烧过程
+        /// 焚烧过程
         /// </summary>
         private void ProcessSmelting() {
             //消耗电量
@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 处理物品交互
+        /// 物品交互
         /// </summary>
         internal void HandleInputItem() {
             Item mouseItem = Main.mouseItem;
@@ -239,7 +239,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 处理输出物品交互
+        /// 输出物品交互
         /// </summary>
         internal void HandleOutputItem() {
             Item mouseItem = Main.mouseItem;
@@ -268,7 +268,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 右键点击物块时的处理
+        /// 右键点击物块时的
         /// </summary>
         public void RightClickByTile(bool newTP) {
             Item item = Main.LocalPlayer.GetItem();

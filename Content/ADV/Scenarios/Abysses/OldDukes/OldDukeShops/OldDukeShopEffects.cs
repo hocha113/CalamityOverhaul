@@ -23,7 +23,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         private const float SulfseaSideMargin = 30f;
 
         /// <summary>
+
         /// 更新所有粒子和特效
+
         /// </summary>
         public void UpdateParticles(bool isActive, Vector2 panelPosition, int panelWidth, int panelHeight) {
             UpdateBubbles(isActive, panelPosition, panelWidth, panelHeight);
@@ -86,9 +88,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             }
         }
 
-        /// <summary>
-        /// 绘制所有特效
-        /// </summary>
         public void DrawEffects(SpriteBatch spriteBatch, float uiAlpha) {
             //先绘制灰烬，后绘制气泡和星星
             foreach (var ash in ashParticles) {
@@ -105,7 +104,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 清除所有特效
+
         /// </summary>
         public void Clear() {
             bubbles.Clear();

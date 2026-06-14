@@ -7,9 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
 {
     /// <summary>
-    /// 所有响应式对话的抽象基类
-    /// 新增响应式事件时只需新建一个继承此类的文件，无需修改任何现有代码
-    /// 发现机制依赖ADVScenarioBase.Instances的反射扫描，无需手动注册
+    /// 响应式对话基类，子类由 <see cref="ADVScenarioBase.Instances"/> 反射发现
     /// </summary>
     internal abstract class ShepelReactiveDialogueBase : SHPCDialogueScenarioBase, ILocalizedModType
     {
@@ -18,13 +16,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => SHPCDialogueBox.Instance;
 
         /// <summary>
-        /// 子类声明自己负责处理的事件类型，一个子类对应一种事件
+        /// 本子类绑定的响应式事件，一类事件一个子类
         /// </summary>
         protected abstract ShepelReactiveEvent HandledEvent { get; }
 
         /// <summary>
-        /// Boss专属对话重写此属性，返回目标Boss的NPC类型ID
-        /// 非Boss事件保持默认值-1，路由时不做类型过滤
+        /// Boss 对话返回目标 NPC 类型；非 Boss 保持 -1 不过滤
         /// </summary>
         protected virtual int TargetBossNpcType => -1;
 
@@ -36,13 +33,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
         }
 
         /// <summary>
-        /// 消费当前事件标记，在Build()开头调用
+        /// 清除当前事件 bit，Build 开头调用
         /// </summary>
         protected void ConsumeEvent(ShepelADVData data)
             => ShepelReactiveEvents.ClearFlag(data, HandledEvent);
 
         /// <summary>
-        /// 显示立绘并设置初始表情
+        /// 显示全身立绘并设初始表情
         /// </summary>
         protected static void ShowPortraitWithFace(ShepelFullBodyPortrait.Face face) {
             SHPCDialogueBox.Instance?.ShowFullBodyPortrait<ShepelFullBodyPortrait>();
@@ -53,7 +50,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
         }
 
         /// <summary>
-        /// 更改已显示立绘的表情，用于对话中途切换
+        /// 对话中途切换立绘表情
         /// </summary>
         protected static void SetPortraitFace(ShepelFullBodyPortrait.Face face) {
             if (SHPCDialogueBox.Instance?.GetActiveFullBodyPortrait() is ShepelFullBodyPortrait portrait)

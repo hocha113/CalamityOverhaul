@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -6,7 +6,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
 {
     /// <summary>
-    /// 物品槽位管理器，负责管理81个材料槽位
+    /// 物品槽位管理器，管理81个材料槽位
     /// </summary>
     public class ItemSlotManager
     {
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
         }
 
         /// <summary>
-        /// 获取最小堆叠数量(用于计算合成数量)
+        /// 获取最小堆叠数量(计算合成数量)
         /// </summary>
         public int GetMinimumStackSize() {
             int minStack = int.MaxValue;
@@ -150,12 +150,12 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.Inventory
         private bool IsValidIndex(int index) => index >= 0 && index < _slots.Length;
 
         /// <summary>
-        /// 直接访问槽位数组(用于兼容性)
+        /// 直接访问槽位数组(兼容性)
         /// </summary>
         public ref Item[] Slots => ref _slots;
 
         /// <summary>
-        /// 直接访问预览槽位数组(用于兼容性)
+        /// 直接访问预览槽位数组(兼容性)
         /// </summary>
         public Item[] PreviewSlots => _previewSlots;
     }

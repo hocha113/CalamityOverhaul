@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.UIs.SupertableUIs
 {
     /// <summary>
-    /// 配方工具类，提供配方相关的辅助方法
+    /// 配方辅助
     /// </summary>
     public static class RecipeUtilities
     {

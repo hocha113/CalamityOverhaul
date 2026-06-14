@@ -4,8 +4,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
 {
     /// <summary>
-    /// 监听客户端的Boss死亡事件，向本地玩家写入BossDefeated响应式标记
-    /// 仅当npc.boss为true时生效，确保体节等非主体不触发
+    /// 客户端 Boss 死亡时写入 <see cref="ShepelReactiveEvent.BossDefeated"/>，仅 <c>npc.boss</c>
     /// </summary>
     internal class ShepelBossDeathTracker : DeathTrackingNPC
     {

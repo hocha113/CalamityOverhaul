@@ -5,14 +5,12 @@ using Terraria;
 namespace CalamityOverhaul.Common
 {
     /// <summary>
-    /// 多实体 Boss 群组解析——共享 <see cref="NPC.realLife"/> 或体节类型表归一组
-    /// <br/>蠕虫头体尾、月总核心手、毁灭者/世界吞噬者等，骇客/AOE/状态附加均可直接调
+    /// 多实体 Boss 群组：共享 <see cref="NPC.realLife"/> 或体节类型表归一组
     /// </summary>
     public static class NpcGroupHelper
     {
         /// <summary>
-        /// 群组锚点索引（头/主体）
-        /// <br/><see cref="NPC.realLife"/> 有效活跃则返其索引，否则 <see cref="NPC.whoAmI"/>
+        /// 群组锚点索引（头/主体）    
         /// </summary>
         public static int GetAnchorIndex(NPC npc) {
             if (npc == null || !npc.active) {
@@ -26,7 +24,7 @@ namespace CalamityOverhaul.Common
         }
 
         /// <summary>
-        /// 两 NPC 是否同组——共享 <see cref="GetAnchorIndex"/> 锚点或同体节类型表
+        /// 两 NPC 同组：共享 <see cref="GetAnchorIndex"/> 锚点或同体节类型表
         /// </summary>
         public static bool IsSameGroup(NPC a, NPC b) {
             if (a == null || b == null || !a.active || !b.active) {

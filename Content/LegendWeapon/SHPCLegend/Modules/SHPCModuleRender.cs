@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 
         /// <summary>启用滤镜，后续 Draw 走着色器</summary>
         /// <param name="sb">活动的SpriteBatch</param>
-        /// <param name="tint">识别色，用于双色调高光与边缘描边</param>
+        /// <param name="tint">识别色，双色调高光/描边</param>
         /// <param name="texSize">物品贴图（或当前帧）像素尺寸</param>
         /// <param name="transform">当前spritebatch采用的变换矩阵，传<see cref="Main.UIScaleMatrix"/>即可</param>
         /// <param name="intensity">滤镜强度，0关闭，1完整</param>
@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             }
 
             Vector2 origin = new(frame.Width * 0.5f, frame.Height * 0.5f);
-            //贴图整体尺寸用于像素步进，使用整张tex的尺寸保证邻域采样可用
+            //整 tex 尺寸做像素步进
             Vector2 texSize = new(tex.Width, tex.Height);
 
             if (Begin(sb, tint, texSize, transform, intensity)) {

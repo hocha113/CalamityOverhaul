@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
                 return;
             }
 
-            //整屏后处理只对一个"主导域"做：本地玩家自己的领域优先；其次取与摄像机中心最近的远端域
+            //整屏后处理：本地域优先，否则离相机最近远端域
             CyberspacePlayer primary = SelectPrimaryDomain(domains);
             if (primary != null) {
                 ApplyFullScreenShader(spriteBatch, graphicsDevice, screenSwap, primary);

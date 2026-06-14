@@ -18,20 +18,21 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             //var current = Main.keyState;
             //var previous = Main.oldKeyState;
             //if (current.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)
-            //    && !previous.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) {
-            //    if (TransitionScene.IsShowing) {
-            //        TransitionScene.Hide();
-            //    }
-            //    else {
-            //        TransitionScene.Show();
-            //    }
+            //  && !previous.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.D1)) {
+            //  if (TransitionScene.IsShowing) {
+            //      TransitionScene.Hide();
+            //  }
+            //  else {
+            //      TransitionScene.Show();
+            //  }
             //}
         }
     }
 
     /// <summary>
-    /// 科幻风格过渡加载界面，灵感来自星际战士2的加载画面
-    /// 全屏覆盖，带进度条、动态粒子、电路脉冲、数据流和底部滚动提示文字
+
+    /// 科幻风格过渡加载界面，灵感来自星际战士2的加载画面 全屏覆盖，带进度条、动态粒子、电路脉冲、数据流和底部滚动提示文字
+
     /// </summary>
     internal class TransitionScene : UIHandle, ILocalizedModType
     {
@@ -75,17 +76,23 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         private bool isFadingOut;
 
         /// <summary>
+
         /// 当前加载进度，0~1
+
         /// </summary>
         private float currentProgress;
 
         /// <summary>
+
         /// 目标进度（可由外部设置）
+
         /// </summary>
         private float targetProgress;
 
         /// <summary>
+
         /// 假进度模式下的自动递增速度
+
         /// </summary>
         private bool fakeProgressMode = true;
         private float fakeProgressSpeed = 0.003f;
@@ -176,7 +183,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         #region 公开接口
 
         /// <summary>
+
         /// 显示加载界面
+
         /// </summary>
         /// <param name="useFakeProgress">是否使用假进度</param>
         public static void Show(bool useFakeProgress = true) {
@@ -192,7 +201,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 隐藏加载界面（淡出）
+
         /// </summary>
         public static void Hide() {
             var inst = Instance;
@@ -202,7 +213,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
         }
 
         /// <summary>
+
         /// 设置目标进度（非假进度模式下使用）
+
         /// </summary>
         public static void SetProgress(float progress) {
             var inst = Instance;
@@ -211,9 +224,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines
             inst.targetProgress = Math.Clamp(progress, 0f, 1f);
         }
 
-        /// <summary>
-        /// 检查加载界面是否正在显示
-        /// </summary>
         public static bool IsShowing => Instance?._active ?? false;
 
         #endregion

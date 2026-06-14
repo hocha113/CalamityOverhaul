@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles
 {
-    /// 闪电基类
+    /// <summary>闪电基类</summary>
     public abstract class Lightning : ModProjectile
     {
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public override string Texture => CWRConstant.Masking + "StarTexture";
 
         #region 状态枚举
-        /// 闪电状态
+        /// <summary>闪电状态</summary>
         public enum LightningState
         {
             Initializing = 0,  //初始化
@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public Vector2 TargetPosition { get; set; }
         /// <summary>是否已生成</summary>
         protected bool hasSpawned;
-        /// <summary>渐变值，用于消失效果</summary>
+        /// <summary>渐变值，淡出渐变</summary>
         public float FadeValue { get; set; } = 0;
         /// <summary>闪电轨迹</summary>
         public ThunderTrail MainTrail { get; protected set; }
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Projectiles
         public List<ThunderTrail> BranchTrails { get; protected set; } = new();
         /// <summary>轨迹点列表</summary>
         public LinkedList<Vector2> TrailPoints { get; protected set; } = new();
-        /// <summary>闪电强度（0-1），影响亮度、宽度等</summary>
+        /// <summary>闪电强度0-1，亮度宽度</summary>
         public float Intensity { get; set; } = 1f;
         #endregion
 
@@ -80,10 +80,10 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 虚拟方法
-        /// 闪电颜色
+        /// <summary>闪电颜色</summary>
         public virtual Color GetLightningColor(float factor) => new Color(103, 255, 255);
 
-        /// 宽度函数(强度×位置)
+        /// <summary>宽度函数(强度×位置)</summary>
         public virtual float GetLightningWidth(float factor) {
             //Sin 曲线控宽，主干中部略粗
             float curve = MathF.Sin(factor * MathHelper.Pi);
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Projectiles
             return ThunderWidth * shapeFactor * Intensity;
         }
 
-        /// 透明度
+        /// <summary>透明度</summary>
         public virtual float GetAlpha(float factor) {
             if (factor < FadeValue)
                 return 0;
@@ -102,13 +102,13 @@ namespace CalamityOverhaul.Content.Projectiles
             return alpha * (0.7f + 0.3f * Intensity);
         }
 
-        /// 寻找目标位置
+        /// <summary>寻找目标位置</summary>
         public abstract Vector2 FindTargetPosition();
 
-        /// 劈击特效
+        /// <summary>劈击特效</summary>
         public virtual void OnStrike() { }
 
-        /// 命中效果
+        /// <summary>命中效果</summary>
         public virtual void OnHit() { }
         #endregion
 
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.Projectiles
             SetLightningDefaults();
         }
 
-        /// 闪电专用默认值
+        /// <summary>闪电专用默认值</summary>
         public virtual void SetLightningDefaults() { }
         #endregion
 
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// 初始化劈击
+        /// <summary>初始化劈击</summary>
         protected virtual void InitializeStrike() {
             State = (float)LightningState.Striking;
             ThunderAlpha = 1f;
@@ -190,7 +190,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.netUpdate = true;
         }
 
-        /// 更新劈击
+        /// <summary>更新劈击</summary>
         protected virtual void UpdateStrike() {
             Timer++;
 
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// 更新劈击移动
+        /// <summary>更新劈击移动</summary>
         protected virtual void UpdateStrikeMovement() {
             float baseSpeed = Projectile.velocity.Length();
             float distance = Projectile.Center.Distance(TargetPosition);
@@ -244,7 +244,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.position += new Vector2(MathF.Sin(Timer * 0.25f), MathF.Cos(Timer * 0.2f)) * 1.2f;
         }
 
-        /// 更新轨迹
+        /// <summary>更新轨迹</summary>
         protected virtual void UpdateTrails() {
             if (MainTrail != null) {
                 TrailPoints.AddLast(Projectile.Center);
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// 创建分叉
+        /// <summary>创建分叉</summary>
         protected virtual void CreateBranch() {
             if (LightningTexture == null || TrailPoints.Count < 5) return;
 
@@ -340,7 +340,7 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// 开始停留
+        /// <summary>开始停留</summary>
         protected virtual void StartLinger() {
             State = (float)LightningState.Lingering;
             Timer = 0;
@@ -361,7 +361,7 @@ namespace CalamityOverhaul.Content.Projectiles
             Projectile.netUpdate = true;
         }
 
-        /// 更新停留
+        /// <summary>更新停留</summary>
         protected virtual void UpdateLinger() {
             Timer++;
 
@@ -387,14 +387,14 @@ namespace CalamityOverhaul.Content.Projectiles
             }
         }
 
-        /// 开始消失
+        /// <summary>开始消失</summary>
         protected virtual void StartFade() {
             State = (float)LightningState.Fading;
             Timer = 0;
             Projectile.timeLeft = FadeTime + 10;
         }
 
-        /// 更新淡出
+        /// <summary>更新淡出</summary>
         protected virtual void UpdateFade() {
             Timer++;
 
@@ -423,7 +423,7 @@ namespace CalamityOverhaul.Content.Projectiles
         }
         #endregion
 
-        #region 碰撞处理
+        #region 碰撞判定
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == (float)LightningState.Striking) {
                 StartLinger();
@@ -479,12 +479,12 @@ namespace CalamityOverhaul.Content.Projectiles
             return false;
         }
 
-        /// 绘制闪电核心
+        /// <summary>绘制闪电核心</summary>
         protected virtual void DrawLightningCore(Color lightColor) {
             //子类可重写
         }
 
-        /// 绘制轨迹
+        /// <summary>绘制轨迹</summary>
         protected virtual void DrawTrails() {
             if (MainTrail != null && ((LightningState)State != LightningState.Striking || Timer >= 3)) {
                 MainTrail.DrawThunder(Main.instance.GraphicsDevice);
@@ -498,7 +498,7 @@ namespace CalamityOverhaul.Content.Projectiles
         #endregion
 
         #region 工具方法
-        /// 平滑函数
+        /// <summary>平滑函数</summary>
         public static float Smoother(int timer, int maxTime) {
             if (maxTime <= 0) return 1f;
             float factor = Math.Clamp((float)timer / maxTime, 0f, 1f);

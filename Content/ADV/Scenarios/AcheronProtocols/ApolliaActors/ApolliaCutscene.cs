@@ -7,12 +7,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
     /// <summary>
-    /// 阿波利娅登场演出运镜——基于 InnoVault 演出系统实现（替代旧的自制 CutsceneCamera）。
-    /// <para>以 <see cref="ApolliaActor"/> 为演出主体，镜头参数随 Actor 当前状态每帧动态推导：
-    /// 降落时聚焦落点、引路行走时聚焦角色与玩家中点并按水平距离动态缩放、到达后拉近定格；
-    /// 全程锁定本地玩家操作（围观登场）。着陆震动经 <see cref="CutsceneDirector.Shake"/> 由降落状态触发。</para>
-    /// <para>演出不定长：时间轴给一个足够大的上限，由 <see cref="ApolliaPlayer.ActivateHeroPanel"/>
-    /// 或离开子世界时主动 <see cref="CutsceneDirector.Stop"/> 收尾并平滑恢复镜头。</para>
+    /// 阿波利娅登场演出运镜：基于 InnoVault 演出系统。 降落时聚焦落点、引路行走时聚焦角色与玩家中点并按水平距离动态缩放、到达后拉近定格； 全程锁定本地玩家操作（围观登场）。着陆震动经 <see cref="CutsceneDirector.Shake"/> 由降落状态触发。</para> 或离开子世界时主动 <see cref="CutsceneDirector.Stop"/> 收尾并平滑恢复镜头。</para>
     /// </summary>
     internal sealed class ApolliaCutscene : CutsceneClip<ApolliaActor>
     {

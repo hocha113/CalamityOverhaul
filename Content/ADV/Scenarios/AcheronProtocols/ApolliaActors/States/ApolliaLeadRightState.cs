@@ -5,17 +5,11 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.States
 {
     /// <summary>
-    /// 引路状态——阿波利娅向地图右侧持续前进，引导玩家前往要塞。
-    /// <para>
-    /// 行为完全自持，与场景/对话代码零耦合：<br/>
-    /// · 正常地形：全速奔跑前进，动画帧与速度同步<br/>
-    /// · 遇到墙壁或深坑：即时切换飞行弧线越障，落地后自动恢复本状态<br/>
-    /// · 无"到达"终点——由外部调用 <see cref="ApolliaActor.TransitionTo"/> 切换退出
-    /// </para>
+    /// 引路状态：阿波利娅向地图右侧持续前进，引导玩家前往要塞。 行为完全自持，与场景/对话代码零耦合：<br/> · 正常地形：全速奔跑前进，动画帧与速度同步<br/> · 遇到墙壁或深坑：即时切换飞行弧线越障，落地后自动恢复本状态<br/> · 无"到达"终点：由外部调用 <see cref="ApolliaActor.TransitionTo"/> 切换退出
     /// </summary>
     internal class ApolliaLeadRightState : IApolliaState
     {
-        private const int MoveDirection = 1; // 始终向右
+        private const int MoveDirection = 1; //始终向右
         private const float WalkSpeed = 2.0f;
         private const float RunSpeed = 4.5f;
         private const float SpeedLerpRate = 0.05f;
@@ -24,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors.
         private const int TotalWalkFrames = 11;
         /// <summary>落地后需要在地面行走的帧数，才开始检测障碍，防止着陆瞬间再次起飞</summary>
         private const int PostLandingGrace = 20;
-        /// <summary>飞行时虚拟目标与当前位置的水平偏移（足够远，确保飞行状态持续向右）</summary>
+        /// <summary>飞行时虚拟目标与当前位置的水平偏移（足够远</summary>
         private const float FlyLookaheadX = 1200f;
 
         private float currentSpeed;

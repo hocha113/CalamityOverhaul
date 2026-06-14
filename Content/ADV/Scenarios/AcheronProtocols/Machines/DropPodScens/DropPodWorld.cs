@@ -6,9 +6,7 @@ using Terraria.WorldBuilding;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropPodScens
 {
-    /// <summary>
-    /// 空降仓演出子世界——极小的空世界，用于空降仓坠落演出
-    /// </summary>
+    /// <summary>空降仓演出子世界：极小的空世界</summary>
     internal class DropPodWorld : Subworld
     {
         public static DropPodWorld Instance { get; private set; }

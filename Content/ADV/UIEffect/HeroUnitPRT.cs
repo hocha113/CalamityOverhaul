@@ -4,9 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
-    /// <summary>
-    /// 英雄面板椭圆轨道星尘粒子
-    /// </summary>
+    /// <summary>英雄面板椭圆轨道星尘粒子</summary>
     public class HeroUnitPRT(Vector2 center, float orbitRadius)
     {
         public Vector2 Center = center;
@@ -40,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             float scale = Size * (0.65f + pulse * 0.45f);
             Vector2 pos = GetPosition();
 
-            // 蓝金渐变核心
+            //蓝金渐变核心
             Color blueGold = Color.Lerp(
                 new Color(100, 160, 255),
                 new Color(255, 210, 100),
@@ -48,7 +46,7 @@ namespace CalamityOverhaul.Content.ADV.UIEffect
             sb.Draw(px, pos, null, blueGold, Angle, new Vector2(0.5f),
                 new Vector2(scale * 1.8f, scale * 0.3f), SpriteEffects.None, 0f);
 
-            // 中心亮点
+            //中心亮点
             Color bright = new Color(255, 245, 220) * (0.5f * fade * pulse);
             sb.Draw(px, pos, null, bright, 0f, new Vector2(0.5f),
                 new Vector2(scale * 0.4f), SpriteEffects.None, 0f);

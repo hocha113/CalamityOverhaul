@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float textX = baseX + 14f;
 
             //标题
-            string header = "// SCAN ANALYSIS";
+            string header = "//SCAN ANALYSIS";
             int headerChars = scanProgress < 1f
                 ? (int)(header.Length * Math.Min(scanProgress * 2.5f, 1f))
                 : header.Length;

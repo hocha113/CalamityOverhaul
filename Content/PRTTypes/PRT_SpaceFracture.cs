@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 空间裂隙粒子，用于黑洞/吸积盘周围的空间撕裂效果
+    /// 空间裂隙粒子，黑洞/吸积盘周围的空间撕裂效果
     /// 细长锐利的裂纹线条，带有色彩渐变和尖锐消散
     /// </summary>
     internal class PRT_SpaceFracture : BasePRT

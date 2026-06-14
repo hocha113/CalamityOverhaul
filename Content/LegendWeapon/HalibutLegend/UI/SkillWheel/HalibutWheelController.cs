@@ -271,9 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             }
         }
 
-        /// <summary>
-        /// 强制关盘，用于死亡 / 切换武器 / 全屏UI介入等异常路径
-        /// </summary>
+        /// <summary>强制关盘，死亡/换武/全屏UI介入</summary>
         public void ForceCloseWheel() {
             ReleaseFreezeIfOwned();
             IsOpen = false;

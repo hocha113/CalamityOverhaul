@@ -10,8 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
 {
     /// <summary>
-    /// 硫火女巫委托线——将三段女巫委托注册到 <see cref="QuestManagerUI"/>，
-    /// 并根据 <see cref="ADVSave"/> 实时同步状态
+    /// 硫火女巫委托线，三段委托注册到 <see cref="QuestManagerUI"/>
     /// </summary>
     internal class SupCalQuestLine : ModSystem, ILocalizedModType
     {

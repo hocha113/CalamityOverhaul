@@ -9,15 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
 {
-    /// <summary>
-    /// 通用预警线：锁定前脉冲红线追踪目标，锁定后定格白闪
-    /// 无伤害纯演出，服务端生成保证多人可见
-    /// <br/>ai[0]: 锚定NPC索引（-1=固定在生成点）
-    /// <br/>ai[1]: 追踪的玩家索引（-1=不追踪）
-    /// <br/>ai[2]: 打包参数 = 模式 + 时长*4（用 <see cref="PackParams"/> 生成；
-    /// 时长走 ai 槽(timeLeft 不参与生成同步包)；模式 0 方向固定 1 旋追踪 2 垂线跟玩家 X）
-    /// <br/>velocity = 单位方向
-    /// </summary>
+    /// <summary>预警线：锁定前红脉冲追踪，锁定后白闪定格无伤害演出，服务端生成；ai[0]:锚定NPC索引（-1=固定在生成点）；ai[1]:追踪的玩家索引（-1=不追踪）；ai[2]:打包参数=模式+时长*4（用<see cref="PackParams"/>生成；时长走ai槽(timeLeft不参与生成同步包)；模式0方向固定1旋追踪2垂线跟玩家X）；velocity=单位方向</summary>
     internal class DestroyerStrikeTelegraph : ModProjectile
     {
         public override string Texture => CWRConstant.Masking + "MaskLaserLine";
@@ -50,7 +42,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
         public override bool ShouldUpdatePosition() => false;
 
         public override void AI() {
-            //首帧应用打包时长并记录总时长用于淡入计算
+            //首帧应用打包时长并记录总时长淡入基准
             if (Projectile.localAI[0] == 0f) {
                 if (Duration > 0) {
                     Projectile.timeLeft = Duration;
@@ -100,9 +92,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             return false;
         }
 
-        /// <summary>
-        /// 着色器绘制：白色占位quad整幅拉伸，噪声能量流与锁定白闪全部在着色器内生成
-        /// </summary>
+        /// <summary>着色器quad拉伸，噪声流+锁定白闪</summary>
         private void DrawShaderLine(Effect effect, float fadeIn, float lockT) {
             const float LineLength = 4800f;
             float width = 120f + lockT * 70f;
@@ -129,9 +119,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
                 DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
-        /// <summary>
-        /// sprite回退路径（DestroyerTelegraph.fxc 缺失时）
-        /// </summary>
+        /// <summary>sprite回退(DestroyerTelegraph.fxc缺失)</summary>
         private void DrawSpriteFallback(float fadeIn, float lockT) {
             Texture2D tex = TextureAssets.Projectile[Type].Value;
             float pulse = 0.65f + 0.35f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 14f);

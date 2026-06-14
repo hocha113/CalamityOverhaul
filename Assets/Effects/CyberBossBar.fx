@@ -1,7 +1,7 @@
 // ============================================================================
-// CyberBossBar.fx 赛博朋克2077风格敌人血条 HUD
-// 不采样贴图，uv 程序化生成；AlphaBlend 预乘 alpha
-// ps_3_0
+//CyberBossBar.fx 赛博朋克2077风格敌人血条 HUD
+//不采样贴图，uv 程序化生成；AlphaBlend 预乘 alpha
+//ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -40,7 +40,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float2 ipx = 1.0 / uResolution;
     float2 p = uv * uResolution;
 
-    //—— 平行四边形剪切：上边右移、下边左移，制造倾斜的电子读数感 ——
+    //： 平行四边形剪切：上边右移、下边左移，制造倾斜的电子读数感 ：
     float skew = 0.08;
     float leftEdge = skew * (1.0 - uv.y);
     float rightEdge = 1.0 - skew * uv.y;
@@ -59,7 +59,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float nrm = clamp(dy * 2.0, -1.0, 1.0);
     float vEdge = 1.0 - smoothstep(0.5 - 3.0 * ipx.y, 0.5, abs(dy));
 
-    //—— 威胁配色：满血偏珊瑚红，残血偏猩红（始终红色系，不用黄）——
+    //： 威胁配色：满血偏珊瑚红，残血偏猩红（始终红色系，不用黄）：
     float threat = saturate(uLifeRatio);
     float3 cFull = float3(1.00, 0.45, 0.34);
     float3 cLow  = float3(1.00, 0.17, 0.19);
@@ -68,7 +68,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float3 deep = float3(0.30, 0.035, 0.05);
     float3 slot = float3(0.06, 0.018, 0.022);
 
-    //—— 分段：每段尾部留出间隙，形成断续信号槽 ——
+    //： 分段：每段尾部留出间隙，形成断续信号槽 ：
     float segN = max(uSegments, 1.0);
     float ti = t * segN;
     float segLocal = frac(ti);
@@ -76,7 +76,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     //在段尾 gapFrac 区间内形成断口，边界留极窄 AA 过渡
     float inGap = smoothstep(1.0 - gapFrac, 1.0 - gapFrac + 0.012, segLocal);
 
-    //—— 状态：已填充 / 残影(掉血缓降) ——
+    //： 状态：已填充 / 残影(掉血缓降) ：
     float filled = step(t, uLifeRatio);
     float trail = step(t, uTrailRatio) * (1.0 - filled);
 
@@ -96,7 +96,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
 
     float3 trailCol = deep * (0.7 + 0.3 * vy);
 
-    //—— 合成底色：空槽 → 残影 → 填充 ——
+    //： 合成底色：空槽 → 残影 → 填充 ：
     float3 col = slot;
     float a = 0.52;
     col = lerp(col, trailCol, trail);
@@ -108,7 +108,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     float sep = smoothstep(0.018, 0.0, abs(segLocal - (1.0 - gapFrac)));
     col += fillBase * sep * filled * 0.5;
 
-    //—— 填充前沿高光 + 色散 ——
+    //： 填充前沿高光 + 色散 ：
     float leadDist = abs(t - uLifeRatio);
     float lead = smoothstep(0.016, 0.0, leadDist)
                * step(0.001, uLifeRatio) * (1.0 - step(0.999, uLifeRatio));
@@ -138,7 +138,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0, float4 vcol : COLOR0) : COLOR0
     col = lerp(col, float3(1.0, 0.93, 0.86), uHitFlash * 0.5 * (filled + 0.15));
     a = max(a, uHitFlash * 0.25 * filled);
 
-    //—— 残血故障：高频闪烁 + 横向错位条带 + 猩红染色 ——
+    //： 残血故障：高频闪烁 + 横向错位条带 + 猩红染色 ：
     float danger = 1.0 - smoothstep(0.0, 0.26, threat);
     if (danger > 0.001) {
         float flick = step(0.55, frac(uTime * 9.0));

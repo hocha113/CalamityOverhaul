@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.RangedModify.Core;
 using System.Collections.Generic;
 using System.Reflection;
@@ -95,7 +95,7 @@ namespace CalamityOverhaul
         /// </summary>
         public static List<int> PerforatorSmallSegments;
         /// <summary>
-        /// 所有Boss/蠕虫体节列表的集合，用于批量检查
+        /// 所有Boss/蠕虫体节列表的集合，批量检查
         /// </summary>
         public static List<List<int>> AllBossSegmentLists { get; private set; }
         /// <summary>

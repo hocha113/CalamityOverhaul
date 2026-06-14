@@ -11,7 +11,6 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
     /// <summary>死亡演出钳子 Actor，与原生 PrimeVice 解耦</summary>
-    /// <para>位置=阶段+计时+头部+目标+侧别纯函数，各端独立推进；零伤害纯视觉</para>
     internal class PrimeDeathClawActor : Actor
     {
         private int headWhoAmI = -1;

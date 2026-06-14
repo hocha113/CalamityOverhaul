@@ -1,6 +1,6 @@
 // ============================================================================
-// SHPCModPanel.fx SHPC枪体改造面板背景
-// AlphaBlend 预乘 alpha
+//SHPCModPanel.fx SHPC枪体改造面板背景
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -60,7 +60,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     float2 uv = saturate((px - inMin) / inSize);
 
-    // ═══ 1. 深青蓝底色，竖直渐变 ═══
+    //═══ 1. 深青蓝底色，竖直渐变 ═══
     float3 col = lerp(float3(0.012, 0.040, 0.062), float3(0.005, 0.020, 0.034), uv.y);
 
     //fbm 大尺度雾化纹理
@@ -68,7 +68,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     col *= 0.85 + n * 0.30;
     col += float3(0.010, 0.030, 0.045) * (n - 0.5);
 
-    // ═══ 2. 数据网格背景（细密点阵 + 中等方格 + 高亮单元） ═══
+    //═══ 2. 数据网格背景（细密点阵 + 中等方格 + 高亮单元） ═══
     //细密点阵
     float2 dotUV = uv * float2(60.0, 36.0);
     float2 dotF = frac(dotUV);
@@ -91,7 +91,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         * step(0.18, cellF.y) * step(cellF.y, 0.82);
     col += float3(0.30, 0.95, 1.10) * cellLit * cellShape * 0.55;
 
-    // ═══ 3. 横向扫描带（缓慢自下向上扫过） ═══
+    //═══ 3. 横向扫描带（缓慢自下向上扫过） ═══
     float sweep = frac(uTime * 0.20 - uv.y * 1.1);
     float swG = exp(-abs(sweep - 0.5) * 16.0);
     col += float3(0.10, 0.45, 0.60) * swG * 0.55;
@@ -100,7 +100,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float scan = frac(px.y * 0.5);
     col *= 0.92 + 0.08 * smoothstep(0.0, 0.30, scan) * smoothstep(1.0, 0.70, scan);
 
-    // ═══ 4. 中央枪体能量光场 ═══
+    //═══ 4. 中央枪体能量光场 ═══
     float2 gunDelta = px - uGunCenter;
     float gunDist = length(gunDelta);
     if (uGunRadius > 1.0)
@@ -129,14 +129,14 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         col += float3(0.10, 0.40, 0.55) * pow(rays, 12.0) * halo * 0.35;
     }
 
-    // ═══ 5. 顶部色带高光 ═══
+    //═══ 5. 顶部色带高光 ═══
     col += float3(0.12, 0.45, 0.60) * (1.0 - smoothstep(0.0, 0.06, uv.y)) * 0.7;
 
-    // ═══ 6. 边缘暗角 ═══
+    //═══ 6. 边缘暗角 ═══
     float vig = saturate(sdf / (uEdgePad + 28.0));
     col *= 0.62 + 0.38 * vig;
 
-    // ═══ 7. 内边线柔光 ═══
+    //═══ 7. 内边线柔光 ═══
     float frameInner = smoothstep(uEdgePad + 6.0, uEdgePad + 4.0, sdf)
                      * smoothstep(uEdgePad + 2.0, uEdgePad + 4.0, sdf);
     col += float3(0.40, 0.95, 1.10) * frameInner * 0.55;

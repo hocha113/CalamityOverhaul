@@ -9,10 +9,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 {
-    /// <summary>
-    /// Q技能：硫磺火天罚，超必杀
-    /// 召唤大量硫磺火柱从天而降，覆盖鼠标周围大范围区域
-    /// </summary>
+    /// <summary>Q技能硫磺火天罚，鼠标周围大范围火柱</summary>
     internal class PandemoniumQSkill : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;

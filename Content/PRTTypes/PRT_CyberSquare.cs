@@ -1,15 +1,11 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 赛博方形科幻粒子 —— 配合 CyberTraceBeam 使用
-    /// <br/>方形/矩形几何粒子，带旋转、缩放衰减和数字闪烁效果
-    /// <br/>颜色匹配光束的蓝/黄/青主题
-    /// </summary>
+    /// <summary>赛博方形粒子，CyberTraceBeam</summary>
     internal class PRT_CyberSquare : BasePRT
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -47,12 +43,12 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override void AI() {
             Velocity *= 0.96f;
             Rotation += rotationSpeed;
-            // 尺寸衰减：前80%保持，后20%快速缩小
+            //尺寸衰减：前80%保持，后20%快速缩小
             float life = LifetimeCompletion;
             if (life > 0.8f) {
                 Scale = initialScale * (1f - (life - 0.8f) / 0.2f);
             }
-            // 数字闪烁：随机帧跳跃透明度
+            //数字闪烁：随机帧跳跃透明度
             float flicker = 0.7f + 0.3f * MathF.Sin(Time * 0.8f + flickerPhase);
             Opacity = flicker * (1f - MathF.Pow(life, 2.5f));
         }
@@ -68,17 +64,17 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 size = new(w, h);
             Vector2 origin = new(0.5f, 0.5f);
 
-            // 外层边缘光（稍大）
+            //外层边缘光（稍大）
             Color outer = edgeColor * Opacity * 0.4f;
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), outer, Rotation,
                 origin, size * 1.4f, SpriteEffects.None, 0f);
 
-            // 内层实体方块
+            //内层实体方块
             Color inner = Color * Opacity;
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), inner, Rotation,
                 origin, size, SpriteEffects.None, 0f);
 
-            // 核心高亮点（更小更亮）
+            //核心高亮点（更小更亮）
             Color core = Color.Lerp(inner, Color.White, 0.6f) * Opacity;
             spriteBatch.Draw(pixel, drawPos, new Rectangle(0, 0, 1, 1), core, Rotation,
                 origin, size * 0.4f, SpriteEffects.None, 0f);

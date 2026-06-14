@@ -11,9 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
 {
     /// <summary>
-    /// 鬼乱码处决演出状态机
-    /// 阶段：Mosaic花屏(36帧) → Black黑屏(24帧) → Kill玩家死亡
-    /// 演出期间锁定玩家无敌免伤，避免其他伤害源干扰节奏
+    /// 鬼乱码处决演出：Mosaic 36f → Black 24f → Kill
     /// </summary>
     internal static class GlitchWraithDeathSequence
     {
@@ -30,9 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith
 
         public static bool Active => Timer > 0;
 
-        /// <summary>
-        /// 由GlitchWraithActor触碰玩家时调用
-        /// </summary>
+        /// <summary>Actor 触碰玩家时启动</summary>
         public static void Trigger(Player player) {
             if (Active) return;
             Timer = TotalFrames;

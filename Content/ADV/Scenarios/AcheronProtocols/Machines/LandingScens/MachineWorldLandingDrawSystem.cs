@@ -5,8 +5,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.LandingScens
 {
     /// <summary>
-    /// 机械世界着陆演出——屏幕叠加特效系统
-    /// 管理着陆时的屏幕闪光、渐入渐出和摄像机震动
+    /// 机械世界着陆演出：屏幕叠加特效系统 管理着陆时的屏幕闪光、渐入渐出和摄像机震动
     /// </summary>
     internal class MachineWorldLandingDrawSystem : ModSystem
     {
@@ -16,32 +15,44 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.Landi
         private static bool isActive;
 
         /// <summary>
+
         /// 黑屏渐入alpha（玩家刚进入世界时从黑屏过渡）
+
         /// </summary>
         private static float blackScreenAlpha;
 
         /// <summary>
+
         /// 黑屏渐入计时器
+
         /// </summary>
         private static int fadeInTimer;
 
         /// <summary>
+
         /// 黑屏渐入总时长（帧）
+
         /// </summary>
         private const int FadeInDuration = 60;
 
         /// <summary>
+
         /// 撞击白闪alpha
+
         /// </summary>
         private static float impactWhiteFlash;
 
         /// <summary>
+
         /// 屏幕震动强度
+
         /// </summary>
         private static float screenShakeIntensity;
 
         /// <summary>
+
         /// 弹出时的屏幕闪光
+
         /// </summary>
         private static float ejectFlash;
 

@@ -36,7 +36,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
     }
 
     /// <summary>程序化工业天空着色器，响应 Boss 冲刺/蓄力/死亡演出</summary>
-    /// <para>响应仅改天空背景，不碰世界照明与全屏滤镜</para>
     internal class MachineSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:MachineSky";
@@ -161,8 +160,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
     }
 
-    /// <summary>机械场景 ModSystem：激活判定、网络同步、音乐与天空行为聚合</summary>
-    /// <para>闪电经 <see cref="TriggerSkyFlash"/>；警报/过载经 <see cref="ReportSkyMood"/></para>
+    /// <summary>机械场景 ModSystem：激活判定、网络同步、音乐与天空行为聚合；闪电经 TriggerSkyFlash；警报/过载经 ReportSkyMood</summary>
     internal class MachineEffect : ModSystem
     {
         public static bool IsActive;
@@ -268,7 +266,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 (worldPosition.X - Main.screenPosition.X) / Main.screenWidth, 0.12f, 0.88f);
         }
 
-        /// <summary>消费一次天空闪电（<see cref="MachineSky.Update"/> 调用）</summary>
+        /// <summary>消费一次天空闪电（MachineSky.Update 调用）</summary>
         public static bool ConsumeSkyFlash(out float screenX, out float strength) {
             screenX = skyFlashX;
             strength = skyFlashStrength;

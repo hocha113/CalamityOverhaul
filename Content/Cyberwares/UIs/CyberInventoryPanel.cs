@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.UIs.NotificationPopup;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -110,7 +110,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 }
             }
 
-            // 动画过渡
+            //动画过渡
             float target = boundSlot >= 0 ? 1f : 0f;
             openProgress += (target - openProgress) * 0.18f;
             if (boundSlot < 0 && openProgress < 0.01f) {
@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float actualWidth = PanelWidth * easedProgress;
 
             if (isLeftSlot) {
-                // 面板在主面板左侧
+                //面板在主面板左侧
                 panelRect = new Rectangle(
                     (int)(mainPanelRect.X - actualWidth - 6),
                     mainPanelRect.Y,
@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 );
             }
             else {
-                // 面板在主面板右侧
+                //面板在主面板右侧
                 panelRect = new Rectangle(
                     mainPanelRect.Right + 6,
                     mainPanelRect.Y,
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 );
             }
 
-            // 交互检测
+            //交互检测
             if (openProgress > 0.5f) {
                 UpdateInteraction(cyberPlayer);
             }
@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             //uMode=1 轻量背板，无中央光场
             CyberPanelRenderer.DrawShaderBackground(sb, alpha * 0.95f, panelRect, Vector2.Zero, 0f, mode: 1);
 
-            // 边框
+            //边框
             Color borderColor = CyberwareTheme.Accent * (alpha * 0.6f);
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 1), new Rectangle(0, 0, 1, 1), borderColor);
             sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 1, panelRect.Width, 1), new Rectangle(0, 0, 1, 1), borderColor * 0.5f);
@@ -170,28 +170,28 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (openProgress < 0.6f) return;
             float contentAlpha = alpha * Math.Clamp((openProgress - 0.6f) / 0.4f, 0, 1);
 
-            // 标题头部
+            //标题头部
             DrawHeader(sb, px, contentAlpha, cyberPlayer);
 
-            // 容量条
+            //容量条
             DrawCapacityBar(sb, px, contentAlpha, cyberPlayer);
 
-            // 已装备义体信息
+            //已装备义体信息
             float yOffset = HeaderHeight + CapacityBarHeight + PanelPadding;
             if (hasEquippedItem) {
                 yOffset = DrawEquippedSection(sb, px, contentAlpha, cyberPlayer, yOffset);
             }
 
-            // 分隔线
+            //分隔线
             float separatorY = panelRect.Y + yOffset;
             sb.Draw(px, new Rectangle(panelRect.X + 6, (int)separatorY, panelRect.Width - 12, 1),
                 new Rectangle(0, 0, 1, 1), CyberwareTheme.Border * contentAlpha);
             yOffset += 6;
 
-            // 可选列表
+            //可选列表
             DrawItemList(sb, px, contentAlpha, cyberPlayer, yOffset);
 
-            // 自定义义体Tooltip
+            //自定义义体Tooltip
             if (hoveredCyberItem != null && !hoveredCyberItem.IsAir) {
                 CyberTooltipRenderer.DrawTooltip(sb, hoveredCyberItem, new Vector2(Main.mouseX, Main.mouseY));
             }
@@ -208,10 +208,10 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             if (!panelRect.Contains((int)mouse.X, (int)mouse.Y)) return;
 
-            // 面板区域内拦截游戏输入
+            //面板区域内拦截游戏输入
             Main.LocalPlayer.mouseInterface = true;
 
-            // 滚轮
+            //滚轮
             MouseState currentMouseState = Mouse.GetState();
             int scrollDelta = currentMouseState.ScrollWheelValue - oldScrollWheelValue;
             oldScrollWheelValue = currentMouseState.ScrollWheelValue;
@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             float yOffset = HeaderHeight + CapacityBarHeight + PanelPadding;
 
-            // 检测卸载区域的悬停/点击
+            //检测卸载区域的悬停/点击
             if (hasEquippedItem) {
                 Rectangle unequipRect = new(
                     panelRect.X + (int)PanelPadding,
@@ -237,19 +237,19 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     if (Main.mouseLeft && Main.mouseLeftRelease) {
                         NotifyClinicRequired();
                     }
-                    // 记录悬停义体用于自定义Tooltip
+                    //悬停义体，自定义 Tooltip
                     Item equipped = cyberPlayer.EquippedCyberwares[boundSlot];
                     if (equipped != null && !equipped.IsAir) {
                         hoveredCyberItem = equipped;
                     }
                     return;
                 }
-                yOffset += ItemRowHeight + 6;// 分隔线
+                yOffset += ItemRowHeight + 6;//分隔线
             }
 
-            yOffset += 6; // 分隔线后间距
+            yOffset += 6; //分隔线后间距
 
-            // 检测物品列表的悬停/点击
+            //检测物品列表的悬停/点击
             for (int i = 0; i < compatibleItems.Count; i++) {
                 float itemY = panelRect.Y + yOffset + i * ItemRowHeight - scrollOffset;
                 if (itemY + ItemRowHeight < panelRect.Y + yOffset) continue;
@@ -265,7 +265,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 if (itemRect.Contains((int)mouse.X, (int)mouse.Y)) {
                     hoveredItemRow = i;
 
-                    // 记录悬停义体用于自定义Tooltip
+                    //悬停义体，自定义 Tooltip
                     int invIndex = compatibleItems[i];
                     Item item = Main.LocalPlayer.inventory[invIndex];
                     if (item != null && !item.IsAir) {
@@ -301,15 +301,15 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         #region 绘制子区域
 
         private void DrawHeader(SpriteBatch sb, Texture2D px, float alpha, CyberwarePlayer cyberPlayer) {
-            // 标题背景
+            //标题背景
             Rectangle headerRect = new(panelRect.X, panelRect.Y, panelRect.Width, (int)HeaderHeight);
             sb.Draw(px, headerRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.SectionBg * (alpha * 0.8f));
 
-            // 底部红色分隔线
+            //底部红色分隔线
             sb.Draw(px, new Rectangle(panelRect.X + 4, panelRect.Y + (int)HeaderHeight - 1, panelRect.Width - 8, 1),
                 new Rectangle(0, 0, 1, 1), CyberwareTheme.Accent * (alpha * 0.5f));
 
-            // 标题文字
+            //标题文字
             string title = "CYBERWARE";
             if (boundSlot >= 0 && boundSlot < CyberSlotRenderer.Definitions.Length) {
                 title = CyberwareUI.Instance?.GetSlotLabel(boundSlot) ?? "CYBERWARE";
@@ -318,7 +318,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + 6),
                 CyberwareTheme.Accent * alpha, 0.58f * CyberwareTheme.FontScale);
 
-            // 可选物品数量
+            //可选物品数量
             string countText = $"{compatibleItems.Count} AVAILABLE";
             Utils.DrawBorderString(sb, countText,
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + 28),
@@ -334,10 +334,10 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 (int)CapacityBarHeight
             );
 
-            // 背景
+            //背景
             sb.Draw(px, barBgRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.SlotEmpty * alpha);
 
-            // 标签
+            //标签
             int used = cyberPlayer.UsedCapacity;
             int max = cyberPlayer.MaxCapacity;
             string capText = $"CAPACITY {used}/{max}";
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 new Vector2(barBgRect.X + 4, barBgRect.Y + 2),
                 CyberwareTheme.TextNormal * alpha, 0.42f * CyberwareTheme.FontScale);
 
-            // 进度条
+            //进度条
             float ratio = max > 0 ? (float)used / max : 0;
             int barInner = barBgRect.Width - 4;
             Rectangle fillRect = new(barBgRect.X + 2, barBgRect.Y + 16, (int)(barInner * ratio), 4);
@@ -354,7 +354,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 ratio > 0.6f ? CyberwareTheme.AccentGold : CyberwareTheme.AccentCyan;
             sb.Draw(px, fillRect, new Rectangle(0, 0, 1, 1), barColor * (alpha * 0.8f));
 
-            // 容量条底色
+            //容量条底色
             Rectangle emptyRect = new(fillRect.Right, fillRect.Y, barInner - fillRect.Width, 4);
             sb.Draw(px, emptyRect, new Rectangle(0, 0, 1, 1), CyberwareTheme.Border * (alpha * 0.4f));
         }
@@ -364,14 +364,14 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             Item equipped = cyberPlayer.EquippedCyberwares[boundSlot];
             if (equipped == null || equipped.IsAir) return yOffset;
 
-            // "INSTALLED" 标签
+            //"INSTALLED" 标签
             Utils.DrawBorderString(sb, "[ INSTALLED ]",
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + yOffset - 2),
                 CyberwareTheme.AccentGold * (alpha * 0.7f), 0.40f * CyberwareTheme.FontScale);
 
             yOffset += 12;
 
-            // 已装备物品行
+            //已装备物品行
             Rectangle eqRect = new(
                 panelRect.X + (int)PanelPadding,
                 panelRect.Y + (int)yOffset,
@@ -385,22 +385,22 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 : CyberwareTheme.SlotEmpty;
             sb.Draw(px, eqRect, new Rectangle(0, 0, 1, 1), rowBg * (alpha * 0.7f));
 
-            // 边框
+            //边框
             Color eqBorder = isHoveredUnequip ? CyberwareTheme.Accent : CyberwareTheme.AccentGold;
             sb.Draw(px, new Rectangle(eqRect.X, eqRect.Y, eqRect.Width, 1), new Rectangle(0, 0, 1, 1), eqBorder * (alpha * 0.6f));
             sb.Draw(px, new Rectangle(eqRect.X, eqRect.Bottom - 1, eqRect.Width, 1), new Rectangle(0, 0, 1, 1), eqBorder * (alpha * 0.3f));
 
-            // 物品图标
+            //物品图标
             DrawItemIcon(sb, equipped, new Vector2(eqRect.X + 4, eqRect.Y + 4), alpha);
 
-            // 物品名称
+            //物品名称
             string name = equipped.Name ?? "???";
             if (name.Length > 18) name = name[..17] + "…";
             Utils.DrawBorderString(sb, name,
                 new Vector2(eqRect.X + 44, eqRect.Y + 4),
                 CyberwareTheme.TextBright * alpha, 0.48f * CyberwareTheme.FontScale);
 
-            // 卸载提示：普通界面只读，引导前往义体医生
+            //卸载提示：普通界面只读，引导前往义体医生
             string hint = isHoveredUnequip ? "> SEE RIPPERDOC <" : "VISIT VICTOR TO SWAP";
             Color hintColor = isHoveredUnequip ? CyberwareTheme.Accent : CyberwareTheme.TextDim;
             Utils.DrawBorderString(sb, hint,
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 return;
             }
 
-            // 列表标签
+            //列表标签
             Utils.DrawBorderString(sb, "AVAILABLE",
                 new Vector2(panelRect.X + PanelPadding, panelRect.Y + yOffset - 2),
                 CyberwareTheme.AccentCyan * (alpha * 0.6f), 0.40f * CyberwareTheme.FontScale);
@@ -449,23 +449,23 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 bool isHovered = hoveredItemRow == i;
                 bool canEquip = cyberPlayer.CanEquip(item, boundSlot);
 
-                // 行背景
+                //行背景
                 Color rowBg = isHovered
                     ? Color.Lerp(CyberwareTheme.SlotEmpty, canEquip ? CyberwareTheme.AccentCyan : CyberwareTheme.Accent, 0.12f)
                     : CyberwareTheme.SlotInnerBg;
                 sb.Draw(px, itemRect, new Rectangle(0, 0, 1, 1), rowBg * (alpha * 0.7f));
 
-                // 行边框
+                //行边框
                 if (isHovered) {
                     Color hBorder = canEquip ? CyberwareTheme.AccentCyan : CyberwareTheme.Accent;
                     sb.Draw(px, new Rectangle(itemRect.X, itemRect.Y, itemRect.Width, 1), new Rectangle(0, 0, 1, 1), hBorder * (alpha * 0.5f));
                     sb.Draw(px, new Rectangle(itemRect.X, itemRect.Y, 2, itemRect.Height), new Rectangle(0, 0, 1, 1), hBorder * (alpha * 0.6f));
                 }
 
-                // 物品图标
+                //物品图标
                 DrawItemIcon(sb, item, new Vector2(itemRect.X + 5, itemRect.Y + 4), alpha);
 
-                // 物品名称
+                //物品名称
                 string name = item.Name ?? "???";
                 if (name.Length > 16) name = name[..15] + "…";
                 Color nameColor = canEquip ? CyberwareTheme.TextBright : CyberwareTheme.TextDim;
@@ -473,7 +473,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     new Vector2(itemRect.X + 44, itemRect.Y + 2),
                     nameColor * alpha, 0.44f * CyberwareTheme.FontScale);
 
-                // 容量消耗提示
+                //容量消耗提示
                 if (item.ModItem is BaseCyberware cyber) {
                     string costText = $"CAP: {cyber.CapacityCost}";
                     Color costColor = canEquip ? CyberwareTheme.AccentCyan : CyberwareTheme.Accent;
@@ -489,7 +489,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 }
             }
 
-            // 滚动条
+            //滚动条
             if (compatibleItems.Count * ItemRowHeight > listBottom - listTop) {
                 float totalHeight = compatibleItems.Count * ItemRowHeight;
                 float viewHeight = listBottom - listTop;
@@ -509,7 +509,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             Texture2D tex = TextureAssets.Item[item.type]?.Value;
             if (tex == null) return;
 
-            // 适配券38x38的范围内
+            //适配券38x38的范围内
             float maxDim = Math.Max(tex.Width, tex.Height);
             float scale = maxDim > 38 ? 38f / maxDim : 1f;
             Vector2 iconCenter = position + new Vector2(19, 19);

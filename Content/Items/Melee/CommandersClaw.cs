@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private void StuckPhase() {
-            //嵌入阶段不再移动，处理"贴在 NPC 身上"的情况
+            //嵌入段贴NPC，不再位移
             int idx = (int)StuckNPC;
             if (idx >= 0 && idx < Main.maxNPCs) {
                 NPC stuck = Main.npc[idx];

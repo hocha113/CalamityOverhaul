@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
-    /// <summary>
-    /// 科技粒子类
-    /// </summary>
+    /// <summary>科技粒子类</summary>
     public class TechPRT
     {
         public Vector2 Position;

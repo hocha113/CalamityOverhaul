@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.HackTimes
         /// <summary>注册序号，按加载顺序自增</summary>
         public int SlotIndex { get; private set; } = -1;
 
-        /// <summary>过滤位标志，用于 SupportedTargets 位运算</summary>
+        /// <summary>SupportedTargets 位标志</summary>
         public abstract HackTargetKind Kind { get; }
 
         /// <summary>悬停优先级，越大越优先选中</summary>

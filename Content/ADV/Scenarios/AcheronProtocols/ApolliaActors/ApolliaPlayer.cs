@@ -10,9 +10,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
 {
     /// <summary>
-    /// 管理阿波利娅演出的生命周期：
-    /// 1. 检测着陆完成 → 延迟生成 ApolliaActor
-    /// 2. 登场运镜交由 <see cref="ApolliaCutscene"/>（InnoVault 演出系统）按 Actor 状态自动表现
+    /// 管理阿波利娅演出的生命周期： 1. 检测着陆完成 → 延迟生成 ApolliaActor 2. 登场运镜交由 <see cref="ApolliaCutscene"/>（InnoVault 演出系统）按 Actor 状态自动表现
     /// </summary>
     internal class ApolliaPlayer : ModPlayer
     {
@@ -124,9 +122,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
             }
         }
 
-        /// <summary>
-        /// 获取当前场景中的阿波利娅Actor实例，无效时返回null
-        /// </summary>
         internal ApolliaActor GetApolliaActor() {
             if (apolliaActorIndex >= 0 && apolliaActorIndex < ActorLoader.MaxActorCount
                 && ActorLoader.Actors[apolliaActorIndex] is ApolliaActor actor
@@ -138,7 +133,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 启动引路行为——阿波利娅开始向右引导玩家前往要塞
+
+        /// 启动引路行为：阿波利娅开始向右引导玩家前往要塞
+
         /// </summary>
         internal void StartLeadToFortress() {
             ApolliaActor actor = GetApolliaActor();
@@ -146,7 +143,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.ApolliaActors
         }
 
         /// <summary>
-        /// 激活英雄面板——在对话场景完成时调用
+
+        /// 激活英雄面板：在对话场景完成时调用
+
         /// </summary>
         internal void ActivateHeroPanel() {
             HeroPanelActivated = true;

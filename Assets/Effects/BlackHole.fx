@@ -1,6 +1,6 @@
 // ============================================================================
-// BlackHole.fx 黑洞
-// EventHorizon AlphaBlend + Accretion Additive；s0+s1
+//BlackHole.fx 黑洞
+//EventHorizon AlphaBlend + Accretion Additive；s0+s1
 // ============================================================================
 
 sampler uImage0 : register(s0);

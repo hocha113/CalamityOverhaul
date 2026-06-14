@@ -5,12 +5,7 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
-    //超梦教程入场演出层
-    //在玩家刚进入 CybCourse 子世界的前 ~2.7 秒，将六角能量网格揭示叠加层
-    //插到所有界面层之上（含鼠标指针），形成一个完整的"接入"式开场过场。
-    //
-    //单一职责：仅注册界面层；演出本身的状态机与时间推进归 CybCourseWorld 管理，
-    //单一来源避免不同系统重复推进时间。
+    //超梦入场演出层：六角网格揭示，时间由 CybCourseWorld 推进
     internal class CybCourseEntryRevealLayer : ModSystem
     {
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {

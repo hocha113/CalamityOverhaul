@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         }
 
         //拍摄玩家进入子世界前持有的 SHPC 总数
-        //失败时（无效玩家）将快照标记置否，确保 RestoreOnReturn 不会拿过期数据干预
+        //无效玩家时置快照无效，避免 RestoreOnReturn 误用
         private static void SnapshotSHPCOwnership() {
             _shpcSnapshotValid = false;
             Player p = Main.LocalPlayer;

@@ -5,10 +5,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 {
-    /// <summary>
-    /// 折射激光枪管：激光命中NPC时从命中点向两侧弹射追踪副光束
-    /// 通过 OnLaserHitNPC 钩子实现去中心化，内置冷却避免频率过高
-    /// </summary>
+    /// <summary>折射枪管：激光命中两侧弹射追踪副束，OnLaserHitNPC+CD</summary>
     internal sealed class ReflectionBarrelModule : SHPCModuleItem
     {
         public override SHPCSlotCategory SlotCategory => SHPCSlotCategory.Barrel;

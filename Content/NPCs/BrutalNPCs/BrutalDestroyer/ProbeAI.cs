@@ -200,7 +200,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             return false;
         }
 
-        /// <summary>死亡演出：急停锁血无害，过载红光+故障抖动；殉爆见 <see cref="DestroyerDeathState"/></summary>
+        /// <summary>死亡演出：急停锁血无害，过载红光+故障抖动；殉爆见 DestroyerDeathState</summary>
         private void HandleDeathPerformanceProbe() {
             npc.velocity *= 0.85f;
             if (npc.velocity.Length() < 0.1f) {

@@ -28,7 +28,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
         }
 
         /// <summary>
+
         /// 计算面板中心位置
+
         /// </summary>
         public Vector2 CalculatePanelPosition() {
             Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
@@ -42,9 +44,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             );
         }
 
-        /// <summary>
-        /// 绘制主面板和内容
-        /// </summary>
         public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, OldDukeShopEffects effects) {
             if (animation.UIAlpha <= 0f) return;
 
@@ -217,9 +216,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OldDukeShops
             DrawHeaderDivider(spriteBatch, panelPosition);
         }
 
-        /// <summary>
-        /// 绘制关闭按钮
-        /// </summary>
         private void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 

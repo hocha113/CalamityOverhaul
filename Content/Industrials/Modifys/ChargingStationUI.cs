@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             Vector2 topLeft = DrawPosition - new Vector2(PanelWidth / 2, PanelHeight / 2);
             panelRect = new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)PanelWidth, (int)PanelHeight);
 
-            //计算标题栏区域（用于拖拽）
+            //标题栏拖拽区
             titleBarRect = new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 55);
 
             //计算子区域

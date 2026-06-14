@@ -7,11 +7,7 @@ using static CalamityOverhaul.Content.ADV.Common.BaseDamageTracker;
 namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest
 {
     /// <summary>
-    /// 硫火女巫猎杀委托条目——<see cref="EntrustEntryData"/> 子类，
-    /// 动态追踪Boss存活状态与伤害贡献度，
-    /// 为追踪窗口提供上下文感知的内容显示：<br/>
-    /// · Boss不存在时提示玩家召唤目标<br/>
-    /// · Boss存在时显示实时伤害贡献与进度
+    /// 硫火女巫猎杀委托 <see cref="EntrustEntryData"/>，追踪 Boss 存活与伤害贡献
     /// </summary>
     internal class SupCalHuntQuestEntry : EntrustEntryData
     {

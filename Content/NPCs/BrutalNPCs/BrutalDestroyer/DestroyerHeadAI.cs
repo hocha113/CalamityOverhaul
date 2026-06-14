@@ -262,7 +262,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
         }
 
-        /// <summary>远距回归瞬移阀：持续远离时瞬移到视野边缘；<see cref="DestroyerStateBase.AllowFarSnap"/> 可关</summary>
+        /// <summary>远距回归瞬移阀：持续远离时瞬移到视野边缘；DestroyerStateBase.AllowFarSnap 可关</summary>
         private void UpdateFarReturnValve() {
             if (stateMachine?.CurrentState is not DestroyerStateBase state || !state.AllowFarSnap) {
                 farTimer = 0;

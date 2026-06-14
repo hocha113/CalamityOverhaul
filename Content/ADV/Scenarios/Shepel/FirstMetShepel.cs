@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel
 {
     /// <summary>
-    /// 初遇SHPC场景，首次获得SHPC时触发
+    /// 首次获得 SHPC 时触发的初遇场景
     /// </summary>
     internal class FirstMetShepel : ADVScenarioBase, ILocalizedModType
     {

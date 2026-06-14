@@ -7,10 +7,8 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
 {
     /// <summary>
-    /// 鬼妖村正追踪窗口样式——MGR:R血刃式极简HUD：<br/>
-    /// 完全无背景与外框，标题左侧是一根血红刀脊状粗竖记号、
-    /// 标题下方是实线 + 三角箭头▶ 的命令式分隔，
-    /// 进度仅以贴近文字的细红线呈现，整体保留刀气而不堆叠面板。
+    /// 鬼妖村正追踪窗口，MGR:R血刃极简HUD<br/>
+    /// 无背景外框，标题左刀脊竖记、下实线箭头分隔，进度细红线贴字
     /// </summary>
     internal class PhantomTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
@@ -46,10 +44,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
             var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
 
-            //头部记号——刀脊式粗竖条 ▎ + 顶端刀尖斜切
+            //头部刀脊粗竖条+顶端斜切
             DrawBladeMark(sb, px, uv, headerRect.X + 6, headerRect.Y + 4, headerRect.Height - 8, alpha);
 
-            //标题——血色拖尾投影 + 主体银白（字号略大于默认正文）
+            //标题血色拖尾+银白主体，字号略大
             const float titleScale = 0.95f;
             int textX = headerRect.X + 18;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -63,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
                 ShadowInk * (alpha * 0.5f), titleScale);
             Utils.DrawBorderString(sb, title, titlePos, TitleBlade * alpha, titleScale);
 
-            //下划线——实线 + 顶端三角箭头▶ + 后段长虚线（下移避开放大后的标题底部）
+            //下划实线+箭头+后段虚线，下移避标题底
             int titlePixelW = (int)(font.MeasureString(title).X * titleScale);
             int underY = headerRect.Bottom + 1;
             int solidLen = Math.Clamp(titlePixelW + 4, 22, headerRect.Width - 36);
@@ -120,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
             int y = barRect.Y + (barRect.Height - barH) / 2;
             int trackW = barRect.Width;
 
-            //轨道——血色暗调底线
+            //轨道血色暗线
             sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, CrimsonInk * (alpha * 0.55f));
 
             //填充
@@ -134,14 +132,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.TrialQuests
                 }
             }
 
-            //满级——条带整体微微脉动出血色
+            //满级条带血色脉动
             if (progress >= 0.999f) {
                 float fp = MathF.Sin(pulse * 4f) * 0.5f + 0.5f;
                 sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv,
                     BladeRedBright * (alpha * 0.18f * fp));
             }
 
-            //不画刻度——保持锐利的"刀痕"质感
+            //不画刻度，锐利刀痕
             if (!string.IsNullOrEmpty(progressText)) {
                 var font = FontAssets.MouseText.Value;
                 Vector2 sz = font.MeasureString(progressText) * 0.5f;

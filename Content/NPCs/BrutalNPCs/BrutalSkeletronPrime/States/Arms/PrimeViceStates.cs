@@ -8,10 +8,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
     //钳爪手设计准则：
-    // 1. 机体不整体打转——转向走 ServoRotate；rotation = θ - PiOver2（同死亡演出钳子 Actor）
-    // 2. 突刺=液压活塞：回缩绷紧 → 硬咬合朝向 → 刚性直线，飞行不转体
-    // 3. ctx.ClawOpen 驱动 2 帧贴图：蓄力/扑击张开，命中/待机闭合
-
+    //1. 机体不整体打转——转向走 ServoRotate；rotation = θ - PiOver2（同死亡演出钳子 Actor）    //2. 突刺=液压活塞：回缩绷紧 → 硬咬合朝向 → 刚性直线，飞行不转体    //3. ctx.ClawOpen 驱动 2 帧贴图：蓄力/扑击张开，命中/待机闭合
     /// <summary>钳爪待机：头部下侧浮沉跟踪，充能后三连击→重锤确定性轮换</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.ViceIdle, typeof(PrimeArmStateContext))]
     internal class ViceIdleState : PrimeArmStateBase

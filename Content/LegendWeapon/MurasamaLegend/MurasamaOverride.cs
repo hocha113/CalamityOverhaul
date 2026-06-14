@@ -29,31 +29,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
 
         #region Data
         /// <summary>
-        /// 每个时期阶段对应的伤害，这个成员一般不需要直接访问，而是使用<see cref="GetOnDamage"/>
+        /// 各时期伤害表，走<see cref="GetOnDamage"/>
         /// </summary>
         private static Dictionary<int, int> DamageDictionary = new Dictionary<int, int>();
         /// <summary>
-        /// 每个时期阶段对应的挥舞范围大小，这个成员一般不需要直接访问，而是使用<see cref="GetOnScale"/>
+        /// 各时期挥舞范围，走<see cref="GetOnScale"/>
         /// </summary>
         private static Dictionary<int, float> BladeVolumeRatioDictionary = new Dictionary<int, float>();
         /// <summary>
-        /// 每个时期阶段对应的额外暴击增幅的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnCrit"/>
+        /// 各时期额外暴击，走<see cref="GetOnCrit"/>
         /// </summary>
         private static Dictionary<int, int> SetLevelCritDictionary = new Dictionary<int, int>();
         /// <summary>
-        /// 每个时期阶段对应的升龙冷却的字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnRDCD"/>
+        /// 各时期升龙冷却，走<see cref="GetOnRDCD"/>
         /// </summary>
         private static Dictionary<int, int> RDCDDictionary = new Dictionary<int, int>();
         /// <summary>
-        /// 每个时期对应的击退力度字典，这个成员一般不需要直接访问，而是使用<see cref="GetOnKnockback"/>
+        /// 各时期击退，走<see cref="GetOnKnockback"/>
         /// </summary>
         private static Dictionary<int, float> KnockbackDictionary = new Dictionary<int, float>();
         /// <summary>
-        /// 获取开局的伤害
+        /// 开局伤害
         /// </summary>
         public static int GetStartDamage => DamageDictionary[0];
         /// <summary>
-        /// 获取开局的击退力度
+        /// 开局击退
         /// </summary>
         public static float GetStartKnockback => KnockbackDictionary[0];
         [VaultLoaden(CWRConstant.Item_Melee + "MuraItem")]
@@ -64,31 +64,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         public override int TargetID => ID;
         #endregion
         /// <summary>
-        /// 获取时期对应的伤害
+        /// 时期伤害
         /// </summary>
         public static int GetOnDamage(Item item) => DamageDictionary[GetLevel(item)];
         /// <summary>
-        /// 计算伤害比例
+        /// 相对开局伤害倍率
         /// </summary>
         public static float GetSengsDamage(Item item) => GetOnDamage(item) / (float)GetStartDamage;
         /// <summary>
-        /// 根据<see cref="GetOnDamage"/>获取一个与<see cref="TrueMeleeDamageClass"/>相关的乘算伤害
+        /// <see cref="TrueMeleeDamageClass"/>乘算后伤害
         /// </summary>
         public static int ActualTrueMeleeDamage(Item item) => (int)(Main.LocalPlayer.GetTotalDamage(CWRRef.GetTrueMeleeDamageClass()).ApplyTo(GetOnDamage(item)));
         /// <summary>
-        /// 获取时期对应的范围增幅
+        /// 时期挥舞范围
         /// </summary>
         public static float GetOnScale(Item item) => BladeVolumeRatioDictionary[GetLevel(item)];
         /// <summary>
-        /// 获取时期对应的额外暴击
+        /// 时期额外暴击
         /// </summary>
         public static int GetOnCrit(Item item) => SetLevelCritDictionary[GetLevel(item)];
         /// <summary>
-        /// 获取时期对应的冷却时间上限
+        /// 时期升龙冷却上限
         /// </summary>
         public static int GetOnRDCD(Item item) => RDCDDictionary[GetLevel(item)];
         /// <summary>
-        /// 获取时期对应的击退力度
+        /// 时期击退
         /// </summary>
         public static float GetOnKnockback(Item item) => KnockbackDictionary[GetLevel(item)];
         public static int Skill1Unhook = 3;
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend
         /// </summary>
         public static bool UnlockSkill3(Item item) => GetLevel(item) >= Skill3Unhook;
         /// <summary>
-        /// 获得成长等级
+        /// 成长等级
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>

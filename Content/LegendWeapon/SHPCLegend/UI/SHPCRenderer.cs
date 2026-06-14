@@ -231,7 +231,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         /// <summary>
         /// 绘制单个扇形按钮，包含底板、状态填充、描边、悬停高亮、图标
-        /// expandProgress用于按钮整体的入场动画与不透明度
+        /// expandProgress 按钮入场/透明度
         /// </summary>
         public static void DrawSector(SpriteBatch sb, Texture2D px, Vector2 center,
             float aStart, float aEnd, float expandProgress,

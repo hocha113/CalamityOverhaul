@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.Spectrometers;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -663,7 +663,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //碰撞处理
+        //碰撞分支
         public override bool OnTileCollide(Vector2 oldVelocity) {
             //增加弹跳计数
             bounceCount++;

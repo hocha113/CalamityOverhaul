@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,36 +48,36 @@ namespace CalamityOverhaul
             }
         }
 
-        // 已注释：Item 数组导出到文件
+        //已注释：Item 数组导出到文件
         //public static void ExportItemTypesToFile(Item[] items, string path = "D:\\Mod_Resource\\input.cs") {
-        //  try {
-        //      int columnIndex = 0;
-        //      using System.IO.StreamWriter sw = new(path);
-        //      sw.Write("string[] fullItems = new string[] {");
-        //      foreach (Item item in items) {
-        //          columnIndex++;
-        //          //根据是否有 ModItem 决定写入的内容
-        //          string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
-        //          sw.Write(itemInfo);
-        //          sw.Write(", ");
-        //          //每行最多写入9个元素，然后换行
-        //          if (columnIndex >= 9) {
-        //              sw.WriteLine();
-        //              columnIndex = 0;
-        //          }
-        //      }
-        //      sw.Write("};");
-        //  } catch (UnauthorizedAccessException) {
-        //      CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
-        //  } catch (System.IO.DirectoryNotFoundException) {
-        //      CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
-        //  } catch (System.IO.PathTooLongException) {
-        //      CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
-        //  } catch (System.IO.IOException) {
-        //      CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
-        //  } catch (Exception e) {
-        //      CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
-        //  }
+        //try {
+        //int columnIndex = 0;
+        //using System.IO.StreamWriter sw = new(path);
+        //sw.Write("string[] fullItems = new string[] {");
+        //foreach (Item item in items) {
+        //columnIndex++;
+        ////根据是否有 ModItem 决定写入的内容
+        //string itemInfo = item.ModItem == null ? $"\"{item.type}\"" : $"\"{item.ModItem.FullName}\"";
+        //sw.Write(itemInfo);
+        //sw.Write(", ");
+        ////每行最多写入9个元素，然后换行
+        //if (columnIndex >= 9) {
+        //sw.WriteLine();
+        //columnIndex = 0;
+        //}
+        //}
+        //sw.Write("};");
+        //} catch (UnauthorizedAccessException) {
+        //CWRMod.Instance.Logger.Info($"UnauthorizedAccessException: 无法访问文件路径 '{path}'. 权限不足");
+        //} catch (System.IO.DirectoryNotFoundException) {
+        //CWRMod.Instance.Logger.Info($"DirectoryNotFoundException: 文件路径 '{path}' 中的目录不存在");
+        //} catch (System.IO.PathTooLongException) {
+        //CWRMod.Instance.Logger.Info($"PathTooLongException: 文件路径 '{path}' 太长");
+        //} catch (System.IO.IOException) {
+        //CWRMod.Instance.Logger.Info($"IOException: 无法打开文件 '{path}' 进行写入");
+        //} catch (Exception e) {
+        //CWRMod.Instance.Logger.Info($"An error occurred: {e.Message}");
+        //}
         //}
 
         public static Type[] GetModTypes(Mod mod) => AssemblyManager.GetLoadableTypes(mod.Code);
@@ -352,7 +352,7 @@ namespace CalamityOverhaul
                 string message = "ERROR: An Empty Transfer Occurred! The Value of Item.type is Zero!";
                 VaultUtils.Text(message, Color.Red);
                 CWRMod.Instance.Logger.Error(message);
-                // throw new InvalidOperationException(message);
+                //throw new InvalidOperationException(message);
                 return null;
             }
             return item.GetGlobalItem<CWRItem>();
@@ -504,7 +504,7 @@ namespace CalamityOverhaul
                 return result;
             }
 
-            // 折行在未缩放空间内计算
+            //折行在未缩放空间内计算
             float effWidth = scale > 0f ? maxWidth / scale : maxWidth;
 
             string normalized = text.Replace("\r", string.Empty);
@@ -571,7 +571,7 @@ namespace CalamityOverhaul
                 return;
             }
 
-            // CJK 参考宽度，测量偏小时用字高近似
+            //CJK 参考宽度，测量偏小时用字高近似
             float fontHeight = font.MeasureString("A").Y;
             if (fontHeight < 1f) {
                 fontHeight = 18f;
@@ -584,7 +584,7 @@ namespace CalamityOverhaul
 
             StringBuilder currentLine = new();
             float currentWidth = 0f;
-            // 当前拉丁词在 currentLine 中的起始下标，-1 表示无
+            //当前拉丁词在 currentLine 中的起始下标，-1 表示无
             int latinWordStart = -1;
             float latinWordWidth = 0f;
 
@@ -604,7 +604,7 @@ namespace CalamityOverhaul
 
                 bool needWrap = currentWidth + charWidth > maxWidth && currentLine.Length > 0;
                 if (needWrap) {
-                    // 超宽拉丁词硬断，避免死循环
+                    //超宽拉丁词硬断，避免死循环
                     if (isCJK || isWhite || latinWordStart <= 0) {
                         output.Add(currentLine.ToString().TrimEnd(' '));
                         currentLine.Clear();
@@ -616,7 +616,7 @@ namespace CalamityOverhaul
                         }
                     }
                     else {
-                        // 整词移到下一行
+                        //整词移到下一行
                         string head = currentLine.ToString(0, latinWordStart).TrimEnd(' ');
                         string tail = currentLine.ToString(latinWordStart, currentLine.Length - latinWordStart);
                         output.Add(head);

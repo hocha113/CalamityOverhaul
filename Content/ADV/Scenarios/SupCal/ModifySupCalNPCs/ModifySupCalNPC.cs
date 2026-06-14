@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
             }
         }
 
-        //临时钩子，后续改用前置实现
+        //临时钩子，待改前置
         private static void OnBossHeadSlotHook(BossHeadSlotDelegate orig, ModNPC modNPC, ref int index) {
             originallyDownedCalamitas = CWRRef.GetDownedCalamitas();
             originallyBossRush = CWRRef.GetBossRushActive();
@@ -51,10 +51,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.ModifySupCalNPCs
             CWRRef.SetBossRushActive(originallyBossRush);
         }
 
-        /// <summary>
-        /// 设置AI状态，决定是否启用修改逻辑
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>是否启用 SupCal NPC 修改</summary>
         internal static bool SetAIState() {
             if (InfernumRef.InfernumModeOpenState) {
                 return false;

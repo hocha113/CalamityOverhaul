@@ -4,15 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
-    /// <summary>
-    /// 与 <see cref="WorldFreezeSystem"/> 配套的玩家侧冻结
-    /// <list type="bullet">
-    ///   <item>冻结期间锁定玩家位置、朝向、动画帧、各类计时器、buff 时长、HP/魔力等</item>
-    ///   <item>禁用所有控制键（仅保留鼠标，供 UI 交互）</item>
-    ///   <item>不关心具体冻结发起方（reason），与 <c>HackTime</c> / 义体雷达解耦</item>
-    ///   <item>玩家死亡时会强制释放所有 reason，由各上层系统自行监听以同步关闭自己的 UI</item>
-    /// </list>
-    /// </summary>
+    /// <summary><see cref="WorldFreezeSystem"/> 玩家侧快照与输入锁定</summary>
     internal class WorldFreezePlayer : ModPlayer
     {
         //冻结时的玩家位置快照
@@ -111,7 +103,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             //防止解冻后摔落伤害
             Player.fallStart = (int)(Player.position.Y / 16f);
 
-            //禁用所有移动和交互控制，保留鼠标用于 UI 操作
+            //禁移动键，保留鼠标给 UI
             Player.controlLeft = false;
             Player.controlRight = false;
             Player.controlUp = false;
@@ -177,11 +169,7 @@ namespace CalamityOverhaul.Content.TimeFreezes
             return true;
         }
 
-        /// <summary>
-        /// 玩家死亡时强制释放所有 reason，避免 UI 残留 / 冻结锁死
-        /// <br/>上层系统（HackTime / 义体雷达）通过监听自身状态在死亡帧自行 Deactivate("自己")，
-        /// 本兜底仅用于异常路径
-        /// </summary>
+        /// <summary>死亡时 DeactivateAll，异常路径兜底</summary>
         public override void UpdateDead() {
             if (Player.whoAmI != Main.myPlayer) return;
             if (WorldFreezeSystem.IsActive) {

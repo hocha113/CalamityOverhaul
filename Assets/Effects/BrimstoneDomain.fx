@@ -1,7 +1,7 @@
 // ============================================================================
-// BrimstoneDomain.fx 硫磺火领域法阵
-// 采样 s0 + s1 噪声；Immediate AlphaBlend 全屏 quad
-// ps_3_0
+//BrimstoneDomain.fx 硫磺火领域法阵
+//采样 s0 + s1 噪声；Immediate AlphaBlend 全屏 quad
+//ps_3_0
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -94,8 +94,8 @@ float warpedFbm(float2 p, float time)
     return fbm(p + 4.0 * r, 4);
 }
 
-// A. 硫火等离子漩涡
-// 多层旋转火焰，带域扭曲的湍流效果
+//A. 硫火等离子漩涡
+//多层旋转火焰，带域扭曲的湍流效果
 float3 brimstonePlasma(float2 centered, float dist, float angle, float time, float tier)
 {
     float normAngle = (angle + PI) / TAU;
@@ -139,8 +139,8 @@ float3 brimstonePlasma(float2 centered, float dist, float angle, float time, flo
     return fireColor * fireMix;
 }
 
-// B. 魔法阵环
-// 多层同心圆环，带符文刻蚀纹理和脉冲辉光
+//B. 魔法阵环
+//多层同心圆环，带符文刻蚀纹理和脉冲辉光
 float magicCircleRing(float dist, float angle, float ringRadius, float time,
     float rotSpeed, float runeCount, float runeSize)
 {
@@ -180,8 +180,8 @@ float magicCircleRing(float dist, float angle, float ringRadius, float time,
     return ring + glow * 0.6 + runePattern * 0.5;
 }
 
-// C. 五芒星/六芒星几何
-// 程序化绘制旋转的魔法几何图形
+//C. 五芒星/六芒星几何
+//程序化绘制旋转的魔法几何图形
 float starGeometry(float2 centered, float dist, float angle, float radius,
     int points, float rotation, float thickness)
 {
@@ -222,8 +222,8 @@ float starGeometry(float2 centered, float dist, float angle, float radius,
     return saturate(result);
 }
 
-// D. 符文光环带
-// 在特定半径上显示旋转的古代符文序列
+//D. 符文光环带
+//在特定半径上显示旋转的古代符文序列
 float runeArcBand(float dist, float angle, float bandRadius, float bandWidth,
     float time, float rotSpeed, float segCount)
 {
@@ -293,8 +293,8 @@ float runeArcBand(float dist, float angle, float bandRadius, float bandWidth,
     return pattern * bandMask * flicker;
 }
 
-// E. 硫火余烬上升效果
-// 程序化上升的火星粒子
+//E. 硫火余烬上升效果
+//程序化上升的火星粒子
 float risingEmbers(float2 centered, float time, float tier)
 {
     float embers = 0.0;
@@ -338,8 +338,8 @@ float risingEmbers(float2 centered, float time, float tier)
     return saturate(embers);
 }
 
-// F. 暗焰脉冲波
-// 从中心向外扩展的暗能量波纹
+//F. 暗焰脉冲波
+//从中心向外扩展的暗能量波纹
 float darkPulseWave(float dist, float time, float tier)
 {
     float waves = 0.0;
@@ -360,7 +360,7 @@ float darkPulseWave(float dist, float time, float tier)
     return saturate(waves);
 }
 
-// 主像素着色器
+//主像素着色器
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
     float2 centered = coords * 2.0 - 1.0;
@@ -372,19 +372,19 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float time = uTime;
     float expand = expandProgress;
 
-    // ======== 域边界裁剪 ========
+    //======== 域边界裁剪 ========
     float edgeFade = 1.0 - smoothstep(0.82, 1.0, dist);
     if (edgeFade <= 0.001)
         return float4(0, 0, 0, 0);
 
-    // ======== A. 硫火等离子底色 ========
+    //======== A. 硫火等离子底色 ========
     float3 plasma = brimstonePlasma(centered, dist, angle, time, tier);
 
     //底色暗红渐变（中心更暗更深邃，营造深渊感）
     float depthGrad = smoothstep(0.0, 0.85, dist);
     float3 baseColor = lerp(voidColor * 0.5, edgeColor * 0.3, depthGrad);
 
-    // ======== B. 核心魔法阵环 ========
+    //======== B. 核心魔法阵环 ========
     float ringTotal = 0.0;
 
     //最内环 - 始终存在
@@ -407,7 +407,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     ringTotal = saturate(ringTotal);
 
-    // ======== C. 几何图形 ========
+    //======== C. 几何图形 ========
     float geomTotal = 0.0;
 
     //内层五芒星 - 始终旋转
@@ -424,7 +424,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     geomTotal = saturate(geomTotal);
 
-    // ======== D. 符文光环带 ========
+    //======== D. 符文光环带 ========
     float runeTotal = 0.0;
 
     //内圈符文
@@ -438,13 +438,13 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
 
     runeTotal = saturate(runeTotal);
 
-    // ======== E. 暗焰脉冲波 ========
+    //======== E. 暗焰脉冲波 ========
     float pulseWave = darkPulseWave(dist, time, tier) * pulseIntensity;
 
-    // ======== F. 硫火余烬 ========
+    //======== F. 硫火余烬 ========
     float embers = risingEmbers(centered, time, tier) * (0.5 + tier * 0.16);
 
-    // ======== G. 核心漩涡 ========
+    //======== G. 核心漩涡 ========
     //中心的黑暗漩涡（深渊之眼）
     float vortexDist = smoothstep(0.18, 0.0, dist);
     float vortexSwirl = sin(angle * 3.0 + time * 4.0 + dist * 20.0) * 0.5 + 0.5;
@@ -452,7 +452,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float vortexNoise = tex2D(noiseSamp, frac(vortexUV)).r;
     float vortex = vortexDist * (0.5 + vortexSwirl * 0.3 + vortexNoise * 0.2);
 
-    // ======== H. 电弧效果 ========
+    //======== H. 电弧效果 ========
     //在环之间产生的闪电电弧
     float arcEffect = 0.0;
     if (tier >= 1.0)
@@ -475,7 +475,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         arcEffect *= 0.3 + arcFlicker * 0.7;
     }
 
-    // ======== I. 外层暗能量涌动 ========
+    //======== I. 外层暗能量涌动 ========
     float2 darkFlowUV = float2(
         normAngle * 3.0 + time * 0.18,
         dist * 2.0 - time * 0.12
@@ -490,9 +490,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     outerDark = smoothstep(0.3, 0.7, outerDark) * 0.2;
     outerDark *= smoothstep(0.4, 0.85, dist); //仅外层显示
 
-    // =
-    // 颜色合成
-    // =
+    //=
+    //颜色合成
+    //=
     float3 finalColor = baseColor;
 
     //底层等离子火焰
@@ -529,7 +529,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float3 arcColor = lerp(coreColor, float3(1.0, 0.95, 0.8), 0.5);
     finalColor += arcColor * arcEffect;
 
-    // ======== 透明度合成 ========
+    //======== 透明度合成 ========
     float alpha = 0.0;
 
     //基础填充

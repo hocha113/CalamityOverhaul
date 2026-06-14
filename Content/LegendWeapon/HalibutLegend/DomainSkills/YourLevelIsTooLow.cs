@@ -1,4 +1,4 @@
-﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private float restartGlowIntensity = 0f;
 
         //持续控制
-        private int skillTimer = 0; //用于内部节奏（不再限定上限）
+        private int skillTimer = 0; //内部节奏，无上限
         private bool endingPhase;
         private int endTimer;
         private const int EndDuration = 60; //结束渐隐时长

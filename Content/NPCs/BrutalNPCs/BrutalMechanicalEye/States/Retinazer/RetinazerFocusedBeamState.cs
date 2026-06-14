@@ -77,9 +77,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             return null;
         }
 
-        /// <summary>
-        /// 就位阶段：弹簧飞抵玩家斜上方射击位
-        /// </summary>
+        /// <summary>就位阶段：弹簧飞抵玩家斜上方射击位</summary>
         private void ExecuteApproachPhase(NPC npc, Player player) {
             float progress = Timer / (float)ApproachPhase;
 
@@ -91,9 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             Context.SetChargeState(6, progress * 0.25f);
         }
 
-        /// <summary>
-        /// 锁定蓄力阶段：准心预警，机体绷紧颤抖，能量向瞳孔汇聚
-        /// </summary>
+        /// <summary>锁定蓄力阶段：准心预警，机体绷紧颤抖，能量向瞳孔汇聚</summary>
         private void ExecuteChargePhase(NPC npc, Player player) {
             int phaseTimer = Timer - ApproachPhase;
             float progress = phaseTimer / (float)ChargePhase;
@@ -131,9 +127,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 射线阶段：释放死亡射线，受限角速度追踪玩家，机体承受持续后坐
-        /// </summary>
+        /// <summary>射线阶段：释放死亡射线，受限角速度追踪玩家，机体承受持续后坐</summary>
         private void ExecuteBeamPhase(NPC npc, Player player) {
             int phaseTimer = Timer - ApproachPhase - ChargePhase;
 
@@ -174,9 +168,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Re
             }
         }
 
-        /// <summary>
-        /// 过热硬直阶段：射线收束后排气下沉，给予输出窗口
-        /// </summary>
+        /// <summary>过热硬直阶段：射线收束后排气下沉，给予输出窗口</summary>
         private void ExecuteRecoveryPhase(NPC npc, Player player) {
             int phaseTimer = Timer - ApproachPhase - ChargePhase - BeamPhase;
 

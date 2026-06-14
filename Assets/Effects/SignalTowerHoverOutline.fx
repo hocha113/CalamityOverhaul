@@ -1,6 +1,6 @@
 // ============================================================================
-// SignalTowerHoverOutline.fx 信号塔悬停描边
-// 采样 uImage0 alpha 8 邻域描边
+//SignalTowerHoverOutline.fx 信号塔悬停描边
+//采样 uImage0 alpha 8 邻域描边
 // ============================================================================
 
 sampler uImage0 : register(s0);

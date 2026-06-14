@@ -7,10 +7,7 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms
 {
     //电锯手设计准则：
-    // 1. 机体不整体自旋——旋转仅属锯片（ctx.SpinSpeed 驱动帧间隔+音效）
-    // 2. 转向走 ServoRotate 最短弧步进
-    // 3. 出招节拍：追踪 → 锁定拍 → 刚性突进
-
+    //1. 机体不整体自旋——旋转仅属锯片（ctx.SpinSpeed 驱动帧间隔+音效）    //2. 转向走 ServoRotate 最短弧步进    //3. 出招节拍：追踪 → 锁定拍 → 刚性突进
     /// <summary>电锯待机：炮塔缓跟踪，充能后连冲→环绕→钻击轮换</summary>
     [InnoVault.StateMachines.VaultState((int)PrimeArmStateIndex.SawIdle, typeof(PrimeArmStateContext))]
     internal class SawIdleState : PrimeArmStateBase

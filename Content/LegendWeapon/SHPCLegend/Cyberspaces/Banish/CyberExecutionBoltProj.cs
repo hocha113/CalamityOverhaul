@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         private float visibleStart;
         private float visibleEnd;
         private float fadeAlpha;
-        //仅fork在生成时携带，由主干通过NewProjectile.ai[2]传入用于覆写目标终点（forkEndPoint X分量与Y分量打包到localAI[1]/[2]）
+        //fork 终点：主干 ai[2]→localAI[1]/[2]
         private Vector2 forkEndOverride;
         private bool hasForkEnd;
 

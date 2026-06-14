@@ -1,6 +1,6 @@
 // ============================================================================
-// HackTimeNPCHighlight.fx 骇客时间 NPC 高亮
-// 采样 uImage0；选中=赛博红故障，悬停=冷青全息
+//HackTimeNPCHighlight.fx 骇客时间 NPC 高亮
+//采样 uImage0；选中=赛博红故障，悬停=冷青全息
 // ============================================================================
 
 sampler uImage0 : register(s0);
@@ -45,7 +45,7 @@ float4 HackNPCPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COLOR0
     float4 texColor = tex2D(uImage0, sampleCoords);
 
     //========================================
-    //1.多层邻域采样——边缘检测
+    //1.多层邻域采样：边缘检测
     //========================================
     //内层：精细描边
     float stp1 = 1.5;
@@ -126,7 +126,7 @@ float4 HackNPCPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COLOR0
     //========================================
     if (isSelected > 0.5)
     {
-        //——A.强力去饱和再红色重映射——
+        //：A.强力去饱和再红色重映射：
         //先大幅去饱和，然后用红色通道重建
         float3 desat = float3(lum, lum, lum);
         result = lerp(result, desat, effectStr * 0.7); //先洗掉原色
@@ -142,25 +142,25 @@ float4 HackNPCPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COLOR0
             cyberColor = lerp(midTint, brightTint, saturate((lum - 0.4) / 0.6));
         result = lerp(result, cyberColor, effectStr * 0.75);
 
-        //——B.强亮度增益——
+        //：B.强亮度增益：
         result += float3(0.22, 0.04, 0.02) * effectStr;
         float highBoost = smoothstep(0.25, 0.65, lum);
         result += float3(0.3, 0.08, 0.03) * highBoost * effectStr;
 
-        //——C.内边缘强辉光（加宽加亮）——
+        //：C.内边缘强辉光（加宽加亮）：
         result += float3(1.0, 0.22, 0.10) * edgeFactor * effectStr * 0.8 * pulseSlow;
 
-        //——D.水平扫描带（更宽更亮）——
+        //：D.水平扫描带（更宽更亮）：
         float scanSweep = frac(uTime * 0.25);
         float scanBand = pulse(coords.y, scanSweep, 0.03);
         result += float3(1.0, 0.30, 0.18) * scanBand * effectStr * 0.45;
 
-        //——E.细密CRT扫描线——
+        //：E.细密CRT扫描线：
         float scanLine = frac(coords.y / (texelSize.y * 2.5));
         float scanDark = smoothstep(0.45, 0.5, scanLine) * smoothstep(0.55, 0.5, scanLine);
         result *= 1.0 - scanDark * 0.10 * effectStr;
 
-        //——F.数字网格叠加（更明显）——
+        //：F.数字网格叠加（更明显）：
         float gridX = frac(coords.x / (texelSize.x * 8.0));
         float gridY = frac(coords.y / (texelSize.y * 8.0));
         float gridLineX = smoothstep(0.46, 0.5, gridX) * smoothstep(0.54, 0.5, gridX);
@@ -168,15 +168,15 @@ float4 HackNPCPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COLOR0
         float gridMask = max(gridLineX, gridLineY);
         result += float3(0.6, 0.10, 0.05) * gridMask * effectStr * 0.12 * (0.6 + 0.4 * pulseSlow);
 
-        //——G.周期性全身闪烁（更频繁更亮）——
+        //：G.周期性全身闪烁（更频繁更亮）：
         float flashCycle = frac(uTime * 0.5);
         float flash = smoothstep(0.0, 0.02, flashCycle) * smoothstep(0.08, 0.05, flashCycle);
         result += float3(0.8, 0.15, 0.08) * flash * effectStr * 0.6;
 
-        //——H.红色底色叠加（确保即使暗色NPC也能明显看出红色）——
+        //：H.红色底色叠加（确保即使暗色NPC也能明显看出红色）：
         result = max(result, float3(0.18, 0.02, 0.01) * effectStr);
 
-        //——H.色差分离（局部RGB错位）——
+        //：H.色差分离（局部RGB错位）：
         float aberStr = 0.0015 * effectStr;
         float rShift = tex2D(uImage0, sampleCoords + float2(aberStr, 0)).r;
         float bShift = tex2D(uImage0, sampleCoords - float2(aberStr, 0)).b;
@@ -188,17 +188,17 @@ float4 HackNPCPass(float2 coords : TEXCOORD0, float4 smpColor : COLOR0) : COLOR0
     //========================================
     else
     {
-        //——A.冷青色调——
+        //：A.冷青色调：
         float3 cyberTint = float3(0.20, 0.80, 0.88);
         result = lerp(result, lum * cyberTint * 1.3, effectStr * 0.25);
 
-        //——B.轻微亮度提升——
+        //：B.轻微亮度提升：
         result += float3(0.02, 0.06, 0.07) * effectStr;
 
-        //——C.内边缘辉光：柔和青色脉冲——
+        //：C.内边缘辉光：柔和青色脉冲：
         result += float3(0.10, 0.65, 0.72) * edgeFactor * effectStr * 0.35 * pulseSlow;
 
-        //——D.数据流纹理（竖向流动的细线）——
+        //：D.数据流纹理（竖向流动的细线）：
         float dataFlow = frac(coords.y * 30.0 - uTime * 2.0);
         float dataMask = smoothstep(0.48, 0.5, dataFlow) * smoothstep(0.52, 0.5, dataFlow);
         float colMask = frac(coords.x / (texelSize.x * 12.0));

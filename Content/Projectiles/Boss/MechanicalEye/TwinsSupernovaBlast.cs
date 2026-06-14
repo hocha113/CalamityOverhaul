@@ -10,12 +10,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 {
-    /// <summary>
-    /// 双子冲击波：无伤害纯演出，经 <see cref="Renders.WarpEffectRender"/> 扩张屏幕扭曲环
-    /// 补绘橙红/青紫双色反向旋转可见冲击环，服务端生成保证多人可见
-    /// <br/>ai[0]: 尺寸档位 0=冲刺音爆 1=死光开火 2=超新星对撞
-    /// <br/>ai[1]: 主题 0=激光眼青紫 1=魔焰眼橙红 2=双色混合
-    /// </summary>
+    /// <summary>双子冲击波：无伤害纯演出，经<see cref="Renders.WarpEffectRender"/>扩张屏幕扭曲环补绘橙红/青紫双色反向旋转可见冲击环，服务端生成保证多人可见；ai[0]:尺寸档位0=冲刺音爆1=死光开火2=超新星对撞；ai[1]:主题0=激光眼青紫1=魔焰眼橙红2=双色混合</summary>
     internal class TwinsSupernovaBlast : ModProjectile, IWarpDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -90,9 +85,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
 
         public bool DontUseBlueshiftEffect() => true;
 
-        /// <summary>
-        /// 扭曲层之上补绘的双色反向旋转冲击环
-        /// </summary>
+        /// <summary>扭曲层之上补绘的双色反向旋转冲击环</summary>
         public void DrawCustom(SpriteBatch spriteBatch) {
             Texture2D ring = CWRAsset.DiffusionCircle.Value;
             float t = Progress;
@@ -111,9 +104,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
                 ring.Size() / 2f, scale * 0.74f, SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 屏幕扭曲：扩张的冲击波折射环
-        /// </summary>
+        /// <summary>屏幕扭曲：扩张的冲击波折射环</summary>
         public void Warp() {
             float t = Progress;
             float size = BaseSize * (0.3f + t * 1.45f);

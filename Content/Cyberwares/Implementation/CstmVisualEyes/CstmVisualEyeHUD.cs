@@ -50,7 +50,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
 
         #region 状态
 
-        //全局时间，用于扫光与呼吸节奏，单位秒
+        //全局时间，扫光/呼吸节奏，秒
         private float time;
         //平滑跟随 RAM 当前值，避免数值跳变带来的刺眼闪烁
         private float ramDisplayValue;

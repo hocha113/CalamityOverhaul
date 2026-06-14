@@ -10,7 +10,6 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 {
     /// <summary>钻地伏击：俯角入土→潜行(地表尘迹)→40帧预警→垂直破土→拱弧再入地</summary>
-    /// <para>普通2次喷发、激怒3次；喷发点预警开始时锁定</para>
     [InnoVault.StateMachines.VaultState((int)DestroyerStateIndex.BurrowAmbush, typeof(DestroyerStateContext))]
     internal class DestroyerBurrowAmbushState : DestroyerStateBase
     {
@@ -314,9 +313,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
         #endregion
 
-        /// <summary>
-        /// 地表尘爆（入土/出土通用，客户端粒子）
-        /// </summary>
+        /// <summary>地表尘爆（入土/出土通用，客户端粒子）</summary>
         private void SpawnGroundBurst(float worldX, float power) {
             if (VaultUtils.isServer) {
                 return;

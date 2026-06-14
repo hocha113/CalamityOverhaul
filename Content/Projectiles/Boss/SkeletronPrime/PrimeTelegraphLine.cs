@@ -7,15 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 {
-    /// <summary>
-    /// 机械骷髅王通用预警：线/扇/环三模式，纯视觉无伤害
-    /// <br/>ai[0] = 模式 + 扇形半角编码（mode = 整数部分 0线/1扇/2环；小数部分×10 = 扇形半角弧度）
-    /// <br/>ai[1] = 旋转（线/扇，弧度）或 半径（环，像素）
-    /// <br/>ai[2] = 总时长（帧）；充能进度由 timeLeft 推导，各端确定性动画无需额外同步
-    /// <para>线模式(冲刺预判)纯贴图多层绘制，不经着色器；
-    /// 扇/环经 <c>PrimeTelegraph.fx</c> 两 technique 显式选择，禁止单着色器+uniform 分支
-    /// (MojoShader 分支不可靠，曾把环画成细长椭圆)</para>
-    /// </summary>
+    /// <summary>机械骷髅王通用预警：线/扇/环三模式，纯视觉无伤害；ai[0]=模式+扇形半角编码（mode=整数部分0线/1扇/2环；小数部分×10=扇形半角弧度）；ai[1]=旋转（线/扇，弧度）或半径（环，像素）；ai[2]=总时长（帧）；充能进度由timeLeft推导，各端确定性动画无需额外同步线模式(冲刺预判)纯贴图多层绘制，不经着色器；扇/环经PrimeTelegraph.fx两technique显式选择，禁止单着色器+uniform分支(MojoShader分支不可靠，曾把环画成细长椭圆)</summary>
     internal class PrimeTelegraphLine : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder2;
@@ -74,10 +66,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
 
         #region 线模式：冲刺预判（纯贴图，零着色器依赖）
 
-        /// <summary>
-        /// 冲刺预判线：暗红基线+充能亮段自根推进+前端光点+根部辉光，末 20% 白热化
-        /// 充能段长度=进度×全长，亮段推满即起跳
-        /// </summary>
+        /// <summary>冲刺预判线：暗红基线+充能亮段自根推进+前端光点+根部辉光，末 20% 白热化充能段长度=进度×全长，亮段推满即起跳</summary>
         private void DrawDashTelegraph() {
             Texture2D line = CWRAsset.MaskLaserLine.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
@@ -98,7 +87,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
             Main.EntitySpriteDraw(line, drawPos, null, baseCol * (0.5f * pulse),
                 rot, origin, new Vector2(lenScale, 0.22f), SpriteEffects.None, 0);
 
-            //层2：充能亮段——源矩形按进度裁剪，自根部向末端推进
+            //层2：充能亮段，源矩形按进度裁剪，自根部向末端推进
             if (progress > 0.02f) {
                 Rectangle chargeSrc = new(0, 0, (int)(line.Width * progress), line.Height);
                 Main.EntitySpriteDraw(line, drawPos, chargeSrc, hotCol * 0.9f,

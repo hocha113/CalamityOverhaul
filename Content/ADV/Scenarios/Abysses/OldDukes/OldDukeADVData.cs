@@ -18,7 +18,9 @@
     }
 
     /// <summary>
+
     /// 老公爵剧情线的存档数据
+
     /// </summary>
     public class OldDukeADVData : ADVDataModule
     {
@@ -27,9 +29,6 @@
         public bool OldDukeFindFragmentsQuestTriggered;
         public bool OldDukeFindFragmentsQuestCompleted;
 
-        /// <summary>
-        /// 获取/设置老公爵交互状态
-        /// </summary>
         public OldDukeInteractionState OldDukeState {
             get => (OldDukeInteractionState)OldDukeInteraction;
             set => OldDukeInteraction = (int)value;

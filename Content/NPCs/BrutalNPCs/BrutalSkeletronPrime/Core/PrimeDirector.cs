@@ -1,7 +1,6 @@
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
     /// <summary>战斗调参中心</summary>
-    /// <para>静态属性非 const，热重载可改</para>
     internal static class PrimeDirector
     {
         /// <summary>冲撞/闪现类预警帧数</summary>

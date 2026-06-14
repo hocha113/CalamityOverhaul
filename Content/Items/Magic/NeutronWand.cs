@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
+using CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Terraria;
@@ -28,13 +28,13 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.shootSpeed = 15;
             Item.mana = 15;
             Item.crit = 6;
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronWand;
         }
 
-        //右键用于蓄力中子湮灭阵列
+        //右键：蓄力中子湮灭阵列
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool CanUseItem(Player player)

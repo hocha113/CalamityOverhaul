@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -19,9 +19,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
     }
 
     /// <summary>
-    /// 空降仓太空高空天空背景
-    /// 漆黑的太空，稀疏的星点，机械残骸从下方高速掠过（模拟极速坠落），
-    /// 大气层边缘的蓝橙辉光从底部渗入
+
+    /// 空降仓太空高空天空背景 漆黑的太空，稀疏的星点，机械残骸从下方高速掠过（模拟极速坠落）， 大气层边缘的蓝橙辉光从底部渗入
+
     /// </summary>
     internal class DropPodSky : CustomSky, ICWRLoader
     {
@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                     s.Update();
             }
 
-            //更新残骸——全部向上移动（模拟玩家正在极速下坠）
+            //更新残骸：全部向上移动（模拟玩家正在极速下坠）
             if (farDebris != null) {
                 foreach (ref var d in farDebris.AsSpan())
                     d.Update(2.5f);
@@ -183,7 +183,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 漆黑的太空底色，极深的蓝黑
+
         /// </summary>
         private void DrawSpaceBackground(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -200,7 +202,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
-        /// 星星——细小的白点/冷蓝点，微弱闪烁
+
+        /// 星星：细小的白点/冷蓝点，微弱闪烁
+
         /// </summary>
         private void DrawStars(SpriteBatch sb) {
             if (stars == null) return;
@@ -221,7 +225,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 远景残骸：暗淡，小型，向上飞过
+
         /// </summary>
         private void DrawFarDebris(SpriteBatch sb) {
             if (farDebris == null) return;
@@ -231,7 +237,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 中景残骸
+
         /// </summary>
         private void DrawMidDebris(SpriteBatch sb) {
             if (midDebris == null) return;
@@ -241,7 +249,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 近景残骸：大型，极速掠过，带运动模糊感
+
         /// </summary>
         private void DrawNearDebris(SpriteBatch sb) {
             if (nearDebris == null) return;
@@ -258,9 +268,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
             }
         }
 
-        /// <summary>
-        /// 绘制单个坠落残骸（带冷色边缘光）
-        /// </summary>
         private static void DrawFallingDebris(SpriteBatch sb, ref FallingDebris d, float alpha) {
             DrawFallingDebrisAt(sb, ref d, d.ScreenPosition, d.Tint * alpha);
         }
@@ -286,7 +293,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
-        /// 高速飞过的流星/碎片尾迹——细长的亮线，从下方向上飞过
+
+        /// 高速飞过的流星/碎片尾迹：细长的亮线，从下方向上飞过
+
         /// </summary>
         private void DrawStreaks(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
@@ -308,14 +317,15 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
-        /// 大气层边缘辉光——从屏幕底部渗透的蓝橙色弧形辉光，
-        /// 模拟从太空俯瞰大气层的边缘
+
+        /// 大气层边缘辉光：从屏幕底部渗透的蓝橙色弧形辉光， 模拟从太空俯瞰大气层的边缘
+
         /// </summary>
         private void DrawAtmosphereGlow(SpriteBatch sb) {
             Texture2D px = VaultAsset.placeholder2.Value;
             float glowPulse = MathF.Sin(atmospherePhase) * 0.15f + 0.85f;
 
-            //底部大气弧光——蓝色主调
+            //底部大气弧光：蓝色主调
             int glowY = (int)(Main.screenHeight * 0.88f);
             Color atmosphereBlue = new Color(30, 80, 180) * (intensity * 0.35f * glowPulse);
             for (int dy = 0; dy < 80; dy++) {
@@ -324,7 +334,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
                     atmosphereBlue * (grad * grad * grad));
             }
 
-            //大气弧光上层——橙色大气散射
+            //大气弧光上层：橙色大气散射
             Color atmosphereOrange = new Color(160, 80, 20) * (intensity * 0.18f * glowPulse);
             for (int dy = 0; dy < 40; dy++) {
                 float grad = 1f - dy / 40f;
@@ -342,7 +352,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.AcheronProtocols.Machines.DropP
         }
 
         /// <summary>
+
         /// 柔和光辉点
+
         /// </summary>
         private static void DrawSoftGlow(SpriteBatch sb, Vector2 center, Color color, float radius) {
             if (CWRAsset.SoftGlow == null || CWRAsset.SoftGlow.IsDisposed)

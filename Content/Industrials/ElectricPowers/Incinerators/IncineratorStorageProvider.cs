@@ -1,4 +1,4 @@
-﻿using InnoVault.Storages;
+using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
     }
 
     /// <summary>
-    /// 电炉的统一存储提供者实现
+    /// 电炉的统一存储提供者
     /// 存入物品时：检查材料槽（InputItem），只接受可熔炼的物品
     /// 取出物品时：从成品槽（OutputItem）取出
     /// </summary>
@@ -63,7 +63,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 检查材料槽是否有空间（用于存入判断）
+        /// 检查材料槽是否有空间（存入判断）
         /// </summary>
         public bool HasSpace {
             get {
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         }
 
         /// <summary>
-        /// 获取存储的物品（返回成品槽的物品，用于抽取判断）
+        /// 获取存储的物品（返回成品槽的物品，抽取判断）
         /// </summary>
         public IEnumerable<Item> GetStoredItems() {
             if (!IsValid) {
@@ -271,7 +271,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
 
             var incData = _incineratorTP.IncData;
-            //返回成品槽的物品，因为这个方法主要用于抽取判断
+            //返回成品槽，抽取判断用
             if (incData?.OutputItem != null && !incData.OutputItem.IsAir) {
                 yield return incData.OutputItem;
             }

@@ -4,7 +4,6 @@ using Terraria;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
     /// <summary>逐体节充能波：以头部 whoAmI 索引，体节按位置比例读波强调热感</summary>
-    /// <para>纯视觉，各端独立推进，无需同步</para>
     internal static class DestroyerChargeWave
     {
         private struct WaveData
@@ -23,9 +22,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         private static readonly WaveData[] waves = new WaveData[Main.maxNPCs];
 
-        /// <summary>
-        /// 每帧由状态推送当前波形（所有端都可调用，纯视觉）
-        /// </summary>
+        /// <summary>每帧由状态推送当前波形（所有端都可调用，纯视觉）</summary>
         public static void Push(int controllerId, float phase, float width, float intensity, bool fullBody = false) {
             if (controllerId < 0 || controllerId >= waves.Length) {
                 return;
@@ -39,9 +36,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             };
         }
 
-        /// <summary>
-        /// 体节读取自身位置（0=头, 1=尾）处的波强度，未推送或已过期返回0
-        /// </summary>
+        /// <summary>体节读取自身位置（0=头, 1=尾）处的波强度，未推送或已过期返回0</summary>
         public static float Read(int controllerId, float bodyFraction) {
             if (controllerId < 0 || controllerId >= waves.Length) {
                 return 0f;

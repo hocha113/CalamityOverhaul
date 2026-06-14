@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Players;
+using CalamityOverhaul.Content.Players;
 using InnoVault.Cinematics;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -357,7 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
 
         /// <summary>执行阶段 tick</summary>
         private void UpdateExecutingPhase() {
-            //等待一小段时间确保死亡完成
+            //短延迟等死亡收尾
             if (stateTimer >= 10 || Player.dead) {
                 StartCooldownPhase();
             }
@@ -459,7 +459,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections
         }
         #endregion
 
-        #region 重生处理
+        #region 重生
         public void Respawn() {
             var system = Player.GetResurrectionSystem();
             if (system == null) {

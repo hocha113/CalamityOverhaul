@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content;
+using CalamityOverhaul.Content;
 using System;
 using System.Reflection;
 
@@ -32,7 +32,7 @@ namespace CalamityOverhaul.OtherMods.NoxusBoss
 
         /// <summary>
         /// 检测是否启用嘉登NPC兼容模式
-        /// 这个用于兼容众神之怒模组中的嘉登NPC和索林的对话场景
+        /// 这个兼容众神之怒模组中的嘉登NPC和索林的对话场景
         /// </summary>
         /// <returns></returns>
         internal static bool DraedonNPCIsCompatible() {

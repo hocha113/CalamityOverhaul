@@ -1,6 +1,6 @@
 // ============================================================================
-// CelestialStar.fx 启示录天体
-// CelestialBody/ImpactFlare 两 Technique；s0+s1 ps_3_0
+//CelestialStar.fx 启示录天体
+//CelestialBody/ImpactFlare 两 Technique；s0+s1 ps_3_0
 // ============================================================================
 
 sampler baseSamp : register(s0);

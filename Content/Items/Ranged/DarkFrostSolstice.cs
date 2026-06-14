@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     }
 
     /// <summary>
-    /// 凛冬神性手持弹幕——射速攀升的极寒机枪
+    /// 凛冬神性HeldProj，射速攀升极寒机枪
     /// <br/>帧0-3: 开火循环, 帧4: 待机
     /// <br/>每次扫射发射3颗冰雹弹与3颗追踪水晶；高转速下每20发进入超频爆发：
     /// 枪身轰鸣蓄势约1秒，下一次开火在鼠标处掀起巨大的冰柱天罚
@@ -327,9 +327,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
     }
 
-    /// <summary>
-    /// 追踪水晶——远距平滑转向，近距直扑，触地反弹并迸出冰刺
-    /// </summary>
+    /// <summary>追踪水晶，远距平滑转向近距直扑，触地反弹迸冰刺</summary>
     internal class Crystal : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "Crystal";

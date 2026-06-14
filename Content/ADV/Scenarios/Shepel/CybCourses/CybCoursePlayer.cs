@@ -6,13 +6,11 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 {
     /// <summary>
-    /// 教程世界的玩家兜底层
-    /// 进入超梦教程子世界时为玩家提供：无敌、刷血、满 RAM、InfiniteHack、自动补 SHPC
-    /// 离开子世界时这些状态会随 ResetEffects/PreUpdate 自然停摆
+    /// 教程子世界 ModPlayer：无敌、满血/RAM、InfiniteHack、自动补 SHPC
     /// </summary>
     internal class CybCoursePlayer : ModPlayer
     {
-        //背包尾部用于强行塞 SHPC 的预留槽
+        //SHPC 兜底槽 50~57
         private const int SHPCFallbackSlotStart = 50;
         private const int SHPCFallbackSlotEnd = 58;
         //刷新背包间隔，避免每帧扫描
@@ -20,7 +18,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
         private int ensureSHPCTick;
 
         /// <summary>
-        /// 教程世界激活时彻底免疫所有伤害
+        /// 教程子世界内免疫伤害
         /// </summary>
         public override void ModifyHurt(ref Player.HurtModifiers modifiers) {
             if (!CybCourseWorld.Active) return;
@@ -41,14 +39,13 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.CybCourses
 
         public override void PostUpdateEquips() {
             if (!CybCourseWorld.Active) return;
-            //血量与 RAM 双保险，确保任何异常都不会让玩家陷入劣势
+            //血量与 RAM 兜底
             Player.statLife = Player.statLifeMax2;
             RamSystem.Refill();
         }
 
         /// <summary>
-        /// 检查热键栏 + 背包是否已存在 SHPC，否则补一把
-        /// 优先放入第 0 号热键槽，被占用则塞背包尾部（50~57）
+        /// 热键栏+背包无 SHPC 则补一把，优先 slot0，否则 50~57
         /// </summary>
         private void EnsureSHPC() {
             for (int i = 0; i < Player.inventory.Length; i++) {

@@ -7,8 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>死亡演出玩家侧：过场启停与被抓玩家位移锁定</summary>
-    /// <para>运镜见 <see cref="PrimeDeathCutscene"/>；震动经 <see cref="RequestShake"/> 叠加到当前过场</para>
+    /// <summary>死亡演出玩家侧：过场启停与被抓玩家位移锁定；运镜见 PrimeDeathCutscene；震动经 RequestShake 叠加到当前过场</summary>
     internal class PrimeDeathPerformancePlayer : ModPlayer
     {
         //拖拽起点缓存（被抓玩家本地）
@@ -75,7 +74,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>本地启停 <see cref="PrimeDeathCutscene"/> 过场</summary>
+        /// <summary>本地启停 PrimeDeathCutscene 过场</summary>
         private static void UpdateCutscene(HeadPrimeAI headAI, NPC head) {
             bool playing = CutsceneDirector.CurrentClip is PrimeDeathCutscene;
             if (headAI != null && head != null) {

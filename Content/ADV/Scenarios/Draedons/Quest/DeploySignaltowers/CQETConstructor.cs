@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
+using CalamityOverhaul.Content.ADV.Scenarios.Draedons.ExoMechdusaSums;
 using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
@@ -18,9 +18,7 @@ using Terraria.ObjectData;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    /// <summary>
-    /// 量子塔自我构建器
-    /// </summary>
+    /// <summary>量子塔自我构建器</summary>
     internal class CQETConstructor : ModItem
     {
         public override string Texture => CWRConstant.Item_Tools + "CQETConstructor";
@@ -229,10 +227,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             }
         }
 
-        /// <summary>
-        /// 检测地面完整性
-        /// 构建器下方5格必须是完整且存在的方块
-        /// </summary>
+        /// <summary>地面完整性，下方5格须为实心方块</summary>
         private bool CheckGroundIntegrity() {
             incompleteGroundPositions.Clear();
 
@@ -381,9 +376,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
         [VaultLoaden(CWRConstant.Item + "Placeable/")]
         public static Texture2D StarflowPlatedBlockAlt = null!;//发现这个占位符纹理效果意外不错，于是便留着
 
-        /// <summary>
-        /// 绘制地面不完整警告
-        /// </summary>
+        /// <summary>绘制地面不完整警告</summary>
         private void DrawGroundIncompleteWarning(SpriteBatch spriteBatch) {
             float alphaBase = 0.5f + 0.3f * MathF.Sin(guideAlphaTime * 0.08f);
 
@@ -514,9 +507,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowe
             DrawGroundCheckArea(spriteBatch);
         }
 
-        /// <summary>
-        /// 绘制地面检测区域边框
-        /// </summary>
+        /// <summary>绘制地面检测区域边框</summary>
         private void DrawGroundCheckArea(SpriteBatch spriteBatch) {
             int groundY = Position.Y + 2;
             Vector2 topLeft = new Vector2((Position.X - 2) * 16, groundY * 16) - Main.screenPosition;

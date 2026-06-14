@@ -4,16 +4,12 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.ADV.UIEffect
 {
-    /// <summary>
-    /// 硫磺火面板着色器，失败时 CPU 降级
-    /// </summary>
+    /// <summary>硫磺火面板着色器，失败时 CPU 降级</summary>
     internal static class BrimstoneShaderPanel
     {
         public static bool Available => EffectLoader.BrimstoneDialogueBox?.Value != null;
 
-        /// <summary>
-        /// 矩形内绘制 BrimstoneDialogueBox.fx 面板
-        /// </summary>
+        /// <summary>矩形内绘制 BrimstoneDialogueBox.fx 面板</summary>
         /// <param name="sb">当前已Begin的SpriteBatch</param>
         /// <param name="rect">面板包含边缘的矩形</param>
         /// <param name="alpha">整体透明度</param>

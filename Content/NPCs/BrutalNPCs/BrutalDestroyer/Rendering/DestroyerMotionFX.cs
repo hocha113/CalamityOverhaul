@@ -12,7 +12,6 @@ using Terraria.ID;
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 {
     /// <summary>毁灭者运动演出：光带拖尾、冲刺爆发、刹车火花、冲击与震屏</summary>
-    /// <para>粒子/音效客户端本地，服务端自动跳过</para>
     internal static class DestroyerMotionFX
     {
         //固定点数的缓存Trail（Trail的点数与宽度/颜色委托在构造时绑定，且持有GPU缓冲，须复用）
@@ -99,10 +98,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 热浪尾流扭曲
 
-        /// <summary>
-        /// 在 Warp 采集批次内绘制一条沿运动方向的热浪尾流位移quad
-        /// （由 <see cref="Projectiles.Boss.Destroyer.DestroyerHeatWakeProj"/> 的 Warp 调用）
-        /// </summary>
+        /// <summary>在Warp采集批次内绘制一条沿运动方向的热浪尾流位移quad（由<see cref="Projectiles.Boss.Destroyer.DestroyerHeatWakeProj"/>的Warp调用）</summary>
         public static void DrawHeatWakeWarp(Vector2 worldCenter, float lengthPx, float widthPx,
             float rotation, float intensity, float progress) {
             if (EffectLoader.DestroyerHeatWake?.Value == null) {
@@ -158,9 +154,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             Lighting.AddLight(pos, HotOrange.ToVector3() * 2.4f);
         }
 
-        /// <summary>
-        /// 硬刹车应力火花：逆速度方向喷出的金属火花与小段烟
-        /// </summary>
+        /// <summary>硬刹车应力火花：逆速度方向喷出的金属火花与小段烟</summary>
         public static void SpawnBrakeSparks(NPC npc) {
             if (VaultUtils.isServer || npc.velocity.Length() < 4f) {
                 return;
@@ -198,9 +192,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
 
         #region 冲击与震动
 
-        /// <summary>
-        /// 大地冲击演出：机械殉爆光团 + 碎屑喷泉 + 浓烟 + 音效（终结贯穿落点等）
-        /// </summary>
+        /// <summary>大地冲击演出：机械殉爆光团 + 碎屑喷泉 + 浓烟 + 音效（终结贯穿落点等）</summary>
         public static void SpawnImpactBlast(Vector2 pos, float power) {
             if (VaultUtils.isServer) {
                 return;
@@ -255,9 +247,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             Main.instance.CameraModifiers.Add(modifier);
         }
 
-        /// <summary>
-        /// 自给定位置向下寻找首个实体地表，找不到时回退到下方400像素（钻地/贯穿落点共用）
-        /// </summary>
+        /// <summary>自给定位置向下寻找首个实体地表，找不到时回退到下方400像素（钻地/贯穿落点共用）</summary>
         public static Vector2 FindGroundBelow(Vector2 from) {
             int tileX = (int)(from.X / 16f);
             int tileY = Math.Max((int)(from.Y / 16f), 10);

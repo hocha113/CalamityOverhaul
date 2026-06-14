@@ -223,7 +223,7 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        //获取队列头部（正在上传或已完成的）的进度和状态，用于NPC头顶进度环
+        //队列头进度，NPC 头顶环
         public bool TryGetActiveEntry(out float progress, out bool completed) {
             for (int i = 0; i < queue.Count; i++) {
                 if (queue[i].State == HackQueueState.Uploading) {

@@ -6,8 +6,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>机械臂 NPCOverride 基类：从属头部、驱动臂状态机、响应编队/殉爆/退场</summary>
-    /// <para>攻击行为见 <see cref="States.Arms"/> 各状态</para>
+    /// <summary>机械臂 NPCOverride 基类：从属头部、驱动臂状态机、响应编队/殉爆/退场；攻击行为见 States.Arms 各状态</summary>
     internal abstract class PrimeArm : CWRNPCOverride
     {
         /// <summary>十字绞杀封位锚点（头部正式进入绞杀状态的瞬间冻结，与预警线对齐）</summary>
@@ -90,7 +89,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             PrimeStateIndex headState = HeadPrimeAI.GetStateIndex(head);
             int headPhase = (int)head.ai[PrimeAiSlots.HeadPhase];
 
-            //转阶段：收拢编队，按各自延迟依次殉爆。
+            //转阶段：收拢编队，按各自延迟依次殉爆
             //必须先于狂暴击杀兜底：转阶段一进入就挂 Rage 标记
             if (headState == PrimeStateIndex.PhaseTransition) {
                 RunDetonationSequence();
@@ -197,8 +196,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             }
         }
 
-        /// <summary>编队接管：冲撞/白昼狂暴环绕；收尾蓄力见 <see cref="PrimeFacts.IsCommittedArmState"/> 延后入列</summary>
-        /// <para>TetherSpin 例外：40帧内链锁就位，取消蓄力回基态</para>
+        /// <summary>编队接管：冲撞/白昼狂暴环绕；收尾蓄力见 PrimeFacts.IsCommittedArmState 延后入列</summary>
         private bool HandleFormationOverride(PrimeStateIndex headState) {
             PrimeCommandKind command = HeadPrimeAI.GetActiveCommand(head);
 

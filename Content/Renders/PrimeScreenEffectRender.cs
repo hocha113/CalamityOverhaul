@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,10 +6,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.Renders
 {
-    /// <summary>
-    /// 机械骷髅王全屏后处理——热浪扭曲、冲击环、终爆冲击帧，screenTarget/screenSwap ping-pong 回写
-    /// <br/>状态 <see cref="PrimeScreenEffects"/> 持有，本类每帧衰减驱动；无命中处透传防黑屏
-    /// </summary>
+    /// <summary>机械骷髅王全屏后效：热浪/冲击环/终爆帧，screenTarget ping-pong 回写</summary>
     internal class PrimeScreenEffectRender : RenderHandle
     {
         /// <summary>权重 1.08，在热浪(1.06)与扭曲(1.2)之间</summary>

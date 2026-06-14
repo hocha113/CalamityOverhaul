@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using CalamityOverhaul.Content.ADV.DialogueBoxs.Styles;
 using System;
 using Terraria.Localization;
@@ -6,9 +6,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers
 {
-    /// <summary>
-    /// 第一座信号塔搭建后的场景
-    /// </summary>
+    /// <summary>首座信号塔搭建后</summary>
     internal class FirstTowerBuiltScenario : ADVScenarioBase, ILocalizedModType
     {
         //角色名称本地化

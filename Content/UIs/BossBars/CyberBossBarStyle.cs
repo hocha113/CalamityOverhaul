@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -220,10 +220,10 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             float barY = y + rowTopH + 7f;
             float row3Y = barY + barH + 7f;
 
-            //———— 暗雾背景（羽化雾带，非盒子；让红光在明亮背景上也站得住）————
+            //暗雾背景
             DrawBacking(sb, cx, y - 6f, row3Y + pctSize.Y + 6f, barW, alpha);
 
-            //———— 顶行：LV（暗）+ 名称（珊瑚），右侧 HP 读数（暗小字）————
+            //顶行：LV+名称+HP读数
             float lvY = y + (rowTopH - lvSize.Y) / 2f;
             DrawHudText(sb, font, lvText, new Vector2(left, lvY), CoralDim * (alpha * 0.9f), smallScale);
 
@@ -238,13 +238,13 @@ namespace CalamityOverhaul.Content.UIs.BossBars
             float hpY = y + (rowTopH - hpSize.Y) / 2f;
             DrawHudText(sb, font, hpText, new Vector2(left + barW - hpSize.X, hpY), CoralDim * (alpha * 0.85f), smallScale);
 
-            //———— 着色器主条（材质式 HUD 信号线）————
+            //：： 着色器主条（材质式 HUD 信号线）：：
             DrawShaderBar(sb, left, barY, barW, barH, alpha);
 
-            //———— 附加辉光层（红色漏光 + 前沿亮点）————
+            //：： 附加辉光层（红色漏光 + 前沿亮点）：：
             DrawGlow(sb, left, barY, barW, barH, primary, alpha);
 
-            //———— 第三行：百分比（左，醒目）+ ID/状态（右下，暗）————
+            //：： 第三行：百分比（左，醒目）+ ID/状态（右下，暗）：：
             DrawHudText(sb, font, pctText, new Vector2(left, row3Y), primary * alpha, pctScale);
 
             string idTag = $"TYPE:{npc.type:0000}";

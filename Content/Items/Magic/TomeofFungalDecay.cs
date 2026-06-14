@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.mana = 12;
             Item.shootSpeed = 12;
             Item.shoot = ModContent.ProjectileType<SporeBoboMagic>();
-            Item.UseSound = null;//开火音效由手持弹幕负责
+            Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;

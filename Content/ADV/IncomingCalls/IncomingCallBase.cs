@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.DialogueBoxs;
+using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -11,9 +11,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.ADV.IncomingCalls
 {
-    /// <summary>
-    /// 来电 UI 基类——左侧滑入振铃面板，接听后展开通话
-    /// </summary>
+    /// <summary>来电 UI 基类——左侧滑入振铃面板，接听后展开通话</summary>
     internal abstract class IncomingCallBase : UIHandle
     {
         #region 状态
@@ -21,58 +19,38 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         private IncomingCallState _state = IncomingCallState.Idle;
         public IncomingCallState State => _state;
 
-        /// <summary>
-        /// 来电台词队列
-        /// </summary>
+        /// <summary>来电台词队列</summary>
         internal readonly Queue<IncomingCallSegment> queue = new();
 
-        /// <summary>
-        /// 当前正在播放的台词
-        /// </summary>
+        /// <summary>当前正在播放的台词</summary>
         internal IncomingCallSegment current;
 
-        /// <summary>
-        /// 来电者名称（振铃时显示）
-        /// </summary>
+        /// <summary>来电者名称（振铃时显示）</summary>
         internal string callerName;
 
-        /// <summary>
-        /// 来电者立绘键
-        /// </summary>
+        /// <summary>来电者立绘键</summary>
         internal string callerPortraitKey;
 
         #endregion
 
         #region 动画进度
 
-        /// <summary>
-        /// 面板滑入进度 0~1
-        /// </summary>
+        /// <summary>面板滑入进度 0~1</summary>
         protected float slideProgress;
 
-        /// <summary>
-        /// 接听展开进度 0~1（Ringing面板 → Speaking面板的过渡）
-        /// </summary>
+        /// <summary>接听展开进度 0~1（Ringing面板 → Speaking面板的过渡）</summary>
         protected float expandProgress;
 
-        /// <summary>
-        /// 内容淡入进度
-        /// </summary>
+        /// <summary>内容淡入进度</summary>
         protected float contentFade;
 
-        /// <summary>
-        /// 振铃动画计时器
-        /// </summary>
+        /// <summary>振铃动画计时器</summary>
         protected float ringTimer;
 
-        /// <summary>
-        /// 振铃脉冲波纹列表
-        /// </summary>
+        /// <summary>振铃脉冲波纹列表</summary>
         protected readonly List<float> ringPulses = [];
 
-        /// <summary>
-        /// 振铃脉冲生成计时
-        /// </summary>
+        /// <summary>振铃脉冲生成计时</summary>
         protected int ringPulseSpawnTimer;
 
         #endregion
@@ -85,14 +63,10 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         protected bool finishedCurrent;
         protected int autoAdvanceTimer;
 
-        /// <summary>
-        /// 通话计时（帧），从 Connecting 进入 Speaking 后逐帧累计
-        /// </summary>
+        /// <summary>通话计时（帧），从 Connecting 进入 Speaking 后逐帧累计</summary>
         protected int callDurationFrames;
 
-        /// <summary>
-        /// 根据当前台词内容动态计算的通话面板高度
-        /// </summary>
+        /// <summary>根据当前台词内容动态计算的通话面板高度</summary>
         private float computedSpeakingHeight;
 
         #endregion
@@ -101,99 +75,61 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
 
         public override bool Active => _state != IncomingCallState.Idle;
 
-        /// <summary>
-        /// 振铃阶段面板宽度
-        /// </summary>
+        /// <summary>振铃阶段面板宽度</summary>
         protected virtual float RingingPanelWidth => 260f;
 
-        /// <summary>
-        /// 振铃阶段面板高度
-        /// </summary>
+        /// <summary>振铃阶段面板高度</summary>
         protected virtual float RingingPanelHeight => 120f;
 
-        /// <summary>
-        /// 通话阶段面板宽度
-        /// </summary>
+        /// <summary>通话阶段面板宽度</summary>
         protected virtual float SpeakingPanelWidth => 380f;
 
-        /// <summary>
-        /// 通话阶段面板最大高度
-        /// </summary>
+        /// <summary>通话阶段面板最大高度</summary>
         protected virtual float SpeakingPanelHeight => 200f;
 
-        /// <summary>
-        /// 通话阶段面板最小高度
-        /// </summary>
+        /// <summary>通话阶段面板最小高度</summary>
         protected virtual float SpeakingPanelMinHeight => 100f;
 
-        /// <summary>
-        /// 通话面板头部区域高度（头像顶部边距 + 名称 + 分割线 + 间距）
-        /// </summary>
+        /// <summary>通话面板头部区域高度（头像顶部边距 + 名称 + 分割线 + 间距）</summary>
         protected virtual float SpeakingHeaderHeight => 50f;
 
-        /// <summary>
-        /// 通话面板底部区域高度（提示文字 + 底部边距）
-        /// </summary>
+        /// <summary>通话面板底部区域高度（提示文字 + 底部边距）</summary>
         protected virtual float SpeakingFooterHeight => 30f;
 
-        /// <summary>
-        /// 面板距离屏幕左侧的边距
-        /// </summary>
+        /// <summary>面板距离屏幕左侧的边距</summary>
         protected virtual float LeftMargin => 20f;
 
-        /// <summary>
-        /// 面板距离屏幕顶部的偏移比例 (0~1)
-        /// </summary>
+        /// <summary>面板距离屏幕顶部的偏移比例 (0~1)</summary>
         protected virtual float TopRatio => 0.2f;
 
-        /// <summary>
-        /// 滑入/滑出速度
-        /// </summary>
+        /// <summary>滑入/滑出速度</summary>
         protected virtual float SlideSpeed => 0.08f;
 
-        /// <summary>
-        /// 展开速度
-        /// </summary>
+        /// <summary>展开速度</summary>
         protected virtual float ExpandSpeed => 0.06f;
 
-        /// <summary>
-        /// 打字间隔帧数
-        /// </summary>
+        /// <summary>打字间隔帧数</summary>
         protected virtual int TypeInterval => 2;
 
-        /// <summary>
-        /// 文本缩放
-        /// </summary>
+        /// <summary>文本缩放</summary>
         protected virtual float TextScale => 0.85f;
 
-        /// <summary>
-        /// 名称缩放
-        /// </summary>
+        /// <summary>名称缩放</summary>
         protected virtual float NameScale => 0.95f;
 
-        /// <summary>
-        /// 头像显示尺寸
-        /// </summary>
+        /// <summary>头像显示尺寸</summary>
         protected virtual float PortraitSize => 64f;
 
-        /// <summary>
-        /// 自动挂断延迟（最后一条台词结束后等待N帧自动挂断，0=不自动挂断）
-        /// </summary>
+        /// <summary>自动挂断延迟（最后一条台词结束后等待N帧自动挂断，0=不自动挂断）</summary>
         protected virtual int AutoHangUpDelay => 90;
 
-        /// <summary>
-        /// 振铃超时帧数（超过后自动挂断），0=不超时
-        /// </summary>
+        /// <summary>振铃超时帧数（超过后自动挂断），0=不超时</summary>
         protected virtual int RingTimeout => 0;
 
-        /// <summary>
-        /// 行间距
-        /// </summary>
+        /// <summary>行间距</summary>
         protected virtual int LineSpacing => 22;
 
-        /// <summary>
-        /// 面板内边距
-        /// </summary>
+        /// <summary>面板内边距</summary>
         protected virtual int Padding => 10;
 
         #endregion
@@ -206,9 +142,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
 
         #region 公共接口
 
-        /// <summary>
-        /// 发起来电：设置来电者并加入台词队列
-        /// </summary>
+        /// <summary>发起来电：设置来电者并加入台词队列</summary>
         public virtual void StartCall(string caller, string portraitKey = null) {
             if (_state != IncomingCallState.Idle) {
                 ForceEnd();
@@ -235,9 +169,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             OnCallStarted();
         }
 
-        /// <summary>
-        /// 加入一条台词
-        /// </summary>
+        /// <summary>加入一条台词</summary>
         public virtual void EnqueueLine(string speaker, string content, Action onFinish = null, Action onStart = null, int autoAdvanceDelay = 120) {
             queue.Enqueue(new IncomingCallSegment {
                 Speaker = speaker,
@@ -248,9 +180,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             });
         }
 
-        /// <summary>
-        /// 加入台词并指定立绘键
-        /// </summary>
+        /// <summary>加入台词并指定立绘键</summary>
         public virtual void EnqueueLine(string speaker, string portraitKey, string content, Action onFinish = null, Action onStart = null, int autoAdvanceDelay = 120) {
             queue.Enqueue(new IncomingCallSegment {
                 Speaker = speaker,
@@ -262,9 +192,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             });
         }
 
-        /// <summary>
-        /// 接听来电
-        /// </summary>
+        /// <summary>接听来电</summary>
         public virtual void Answer() {
             if (_state != IncomingCallState.Ringing) return;
             _state = IncomingCallState.Connecting;
@@ -272,13 +200,11 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             OnAnswered();
         }
 
-        /// <summary>
-        /// 自动接听（跳过振铃阶段直接进入通话）
-        /// </summary>
+        /// <summary>自动接听（跳过振铃阶段直接进入通话）</summary>
         public virtual void AutoAnswer() {
             if (_state == IncomingCallState.Ringing || _state == IncomingCallState.Idle) {
                 if (_state == IncomingCallState.Idle) {
-                    // 未初始化则先初始化
+                    //未初始化则先初始化
                     slideProgress = 1f;
                 }
                 _state = IncomingCallState.Connecting;
@@ -287,13 +213,11 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             }
         }
 
-        /// <summary>
-        /// 挂断/结束通话
-        /// </summary>
+        /// <summary>挂断/结束通话</summary>
         public virtual void HangUp() {
             if (_state == IncomingCallState.Idle || _state == IncomingCallState.Ending) return;
 
-            // 触发剩余回调
+            //触发剩余回调
             current?.OnFinish?.Invoke();
             while (queue.Count > 0) {
                 var seg = queue.Dequeue();
@@ -304,9 +228,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             OnHangUp();
         }
 
-        /// <summary>
-        /// 强制结束（跳过动画）
-        /// </summary>
+        /// <summary>强制结束（跳过动画）</summary>
         public virtual void ForceEnd() {
             current?.OnFinish?.Invoke();
             while (queue.Count > 0) {
@@ -357,15 +279,15 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         }
 
         private void UpdateRinging() {
-            // 面板滑入
+            //面板滑入
             slideProgress = MathHelper.Lerp(slideProgress, 1f, SlideSpeed);
             if (slideProgress > 0.99f) slideProgress = 1f;
 
-            // 振铃动画
+            //振铃动画
             ringTimer += 0.05f;
             if (ringTimer > MathHelper.TwoPi) ringTimer -= MathHelper.TwoPi;
 
-            // 振铃脉冲
+            //振铃脉冲
             ringPulseSpawnTimer++;
             if (ringPulseSpawnTimer >= 30) {
                 ringPulseSpawnTimer = 0;
@@ -376,7 +298,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
                 if (ringPulses[i] >= 1f) ringPulses.RemoveAt(i);
             }
 
-            // 振铃超时
+            //振铃超时
             if (RingTimeout > 0) {
                 ringTimeoutCounter++;
                 if (ringTimeoutCounter >= RingTimeout) {
@@ -385,7 +307,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
                 }
             }
 
-            // 点击接听
+            //点击接听
             HandleRingingInput();
         }
 
@@ -403,7 +325,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             callDurationFrames++;
             contentFade = MathHelper.Lerp(contentFade, 1f, 0.1f);
 
-            // 打字机
+            //打字机
             if (!finishedCurrent && wrappedLines != null) {
                 typeTimer++;
                 if (typeTimer >= TypeInterval) {
@@ -417,7 +339,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
                 }
             }
 
-            // 自动推进
+            //自动推进
             if (finishedCurrent) {
                 int delay = current?.AutoAdvanceDelay ?? 0;
                 if (delay > 0) {
@@ -459,7 +381,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
         protected virtual void HandleSpeakingInput() {
             if (IsMouseOverPanel() && Main.mouseLeft && Main.mouseLeftRelease) {
                 if (!finishedCurrent) {
-                    // 加速显示
+                    //加速显示
                     int totalChars = 0;
                     if (wrappedLines != null) {
                         foreach (var line in wrappedLines) totalChars += line.Length;
@@ -485,9 +407,9 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
 
         protected virtual void StartNextLine() {
             if (queue.Count == 0) {
-                // 台词播完
+                //台词播完
                 if (AutoHangUpDelay > 0) {
-                    // 延迟后自动挂断，在 Update 检测
+                    //延迟后自动挂断，在 Update 检测
                     finishedCurrent = true;
                     current = null;
                 }
@@ -529,14 +451,14 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             float maxWidth = SpeakingPanelWidth - Padding * 2 - PortraitSize - 20f;
             wrappedLines = CWRUtils.WrapTextArray(current.Content, font, (int)(maxWidth / TextScale), 10, out _);
 
-            // 过滤空行
+            //过滤空行
             List<string> valid = [];
             foreach (var line in wrappedLines) {
                 if (!string.IsNullOrEmpty(line)) valid.Add(line.TrimEnd('-', ' '));
             }
             wrappedLines = [.. valid];
 
-            // 按行数算面板高度
+            //按行数算面板高度
             float textHeight = valid.Count * LineSpacing;
             float totalHeight = SpeakingHeaderHeight + textHeight + SpeakingFooterHeight;
             computedSpeakingHeight = Math.Clamp(totalHeight, SpeakingPanelMinHeight, SpeakingPanelHeight);
@@ -569,19 +491,13 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
 
         #region 绘制
 
-        /// <summary>
-        /// 子类实现的样式更新
-        /// </summary>
+        /// <summary>子类实现的样式更新</summary>
         protected virtual void StyleUpdate() { }
 
-        /// <summary>
-        /// 子类绘制振铃面板
-        /// </summary>
+        /// <summary>子类绘制振铃面板</summary>
         protected abstract void DrawRingingPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha);
 
-        /// <summary>
-        /// 子类绘制通话面板
-        /// </summary>
+        /// <summary>子类绘制通话面板</summary>
         protected abstract void DrawSpeakingPanel(SpriteBatch spriteBatch, Rectangle panelRect, float alpha, float contentAlpha);
 
         public override void Draw(SpriteBatch spriteBatch) {
@@ -598,9 +514,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             }
         }
 
-        /// <summary>
-        /// 辅助：绘制立绘
-        /// </summary>
+        /// <summary>辅助：绘制立绘</summary>
         protected void DrawPortrait(SpriteBatch spriteBatch, Vector2 center, float size, float alpha) {
             string key = current?.PortraitKey ?? current?.Speaker ?? callerPortraitKey ?? callerName;
             if (key != null && DialogueBoxBase.TryGetPortrait(key, out var pd) && pd.Texture != null) {
@@ -614,9 +528,7 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             }
         }
 
-        /// <summary>
-        /// 辅助：绘制打字机文本（支持字符覆写，用于扰码/故障字形等效果）
-        /// </summary>
+        /// <summary>辅助：绘制打字机文本（支持字符覆写，用于扰码/故障字形等效果）</summary>
         protected void DrawTypedText(SpriteBatch spriteBatch, Vector2 startPos, float alpha, Color textColor) {
             if (wrappedLines == null || wrappedLines.Length == 0) return;
 
@@ -647,15 +559,10 @@ namespace CalamityOverhaul.Content.ADV.IncomingCalls
             }
         }
 
-        /// <summary>
-        /// 可重写：为指定全局字符索引返回覆写字符（返回 null 则显示原始字符）
-        /// 用于实现扰码/故障字形等打字特效
-        /// </summary>
+        /// <summary>可重写：指定全局字符索引的覆写字符（null 显示原文），用于扰码/故障字形</summary>
         protected virtual char? GetCharOverride(int globalCharIndex) => null;
 
-        /// <summary>
-        /// 可重写：文本行偏移
-        /// </summary>
+        /// <summary>可重写：文本行偏移</summary>
         protected virtual Vector2 ApplyTextLineOffset(Vector2 basePos, int lineIndex) => basePos;
 
         #endregion

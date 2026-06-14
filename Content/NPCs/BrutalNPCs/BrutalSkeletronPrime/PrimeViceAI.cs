@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 {
-    /// <summary>钳爪 NPCOverride；行为见 <see cref="ViceIdleState"/> 等 Vice 状态</summary>
+    /// <summary>钳爪 NPCOverride；行为见 ViceIdleState 等 Vice 状态</summary>
     internal class PrimeViceAI : PrimeArm
     {
         public override int TargetID => NPCID.PrimeVice;

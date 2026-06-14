@@ -30,7 +30,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 更新指示器状态
+
         /// </summary>
         private static void UpdateIndicatorState() {
             Player player = Main.LocalPlayer;
@@ -66,7 +68,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
         }
 
         /// <summary>
+
         /// 更新动画计时器
+
         /// </summary>
         private static void UpdateAnimations() {
             if (indicatorAlpha > 0.01f) {
@@ -80,9 +84,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 绘制指示器
-        /// </summary>
         public override void PostDrawInterface(SpriteBatch spriteBatch) {
             if (indicatorAlpha <= 0.01f || !OldDukeCampsite.IsGenerated) {
                 return;
@@ -115,9 +116,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             DrawSulfurIndicator(spriteBatch, arrowStartPos, directionToCampsite, distance);
         }
 
-        /// <summary>
-        /// 绘制硫磺海风格的指示器
-        /// </summary>
         private static void DrawSulfurIndicator(SpriteBatch spriteBatch, Vector2 position, Vector2 direction, float distance) {
             float rotation = direction.ToRotation();
 
@@ -143,9 +141,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
 
         #region 绘制组件
 
-        /// <summary>
-        /// 绘制外发光环
-        /// </summary>
         private static void DrawGlowRing(SpriteBatch spriteBatch, Vector2 position, float rotation, float pulse, float alpha) {
             Texture2D pixel = CWRAsset.SoftGlow.Value;
 
@@ -165,9 +160,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
         }
 
-        /// <summary>
-        /// 绘制虚线箭头
-        /// </summary>
         private static void DrawDashedArrow(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -225,9 +217,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 绘制箭头头部
-        /// </summary>
         private static void DrawArrowHead(SpriteBatch spriteBatch, Vector2 startPos, Vector2 direction, float rotation, float pulse, float glow, float alpha) {
             float arrowLength = 65f + pulse * 8f;
             Vector2 arrowTipPos = startPos + direction * arrowLength;
@@ -251,9 +240,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             DrawTriangle(spriteBatch, arrowTipPos, rotation, headLength * 0.6f, headWidth * 0.6f, innerGlow);
         }
 
-        /// <summary>
-        /// 绘制三角形（箭头头部）
-        /// </summary>
         private static void DrawTriangle(SpriteBatch spriteBatch, Vector2 position, float rotation, float length, float width, Color color) {
             //绘制三角形的三条边
             Vector2 tip = position;
@@ -281,9 +267,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             }
         }
 
-        /// <summary>
-        /// 绘制线段
-        /// </summary>
         private static void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color, float thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -306,9 +289,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             );
         }
 
-        /// <summary>
-        /// 绘制距离文字
-        /// </summary>
         private static void DrawDistanceText(SpriteBatch spriteBatch, Vector2 position, float distance, float alpha) {
             DynamicSpriteFont font = FontAssets.MouseText.Value;
 
@@ -374,9 +354,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             Utils.DrawBorderString(spriteBatch, locationText, locationTextPos, textColor, 0.75f);
         }
 
-        /// <summary>
-        /// 绘制矩形边框
-        /// </summary>
         private static void DrawRectBorder(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
@@ -390,9 +367,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites
             spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
         }
 
-        /// <summary>
-        /// 绘制毒性粒子装饰效果
-        /// </summary>
         private static void DrawToxicParticles(SpriteBatch spriteBatch, Vector2 position, float rotation, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 

@@ -24,19 +24,19 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Other + "AimTarget")]
         public static Asset<Texture2D> AimTarget = null;
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> LightShot = null;//256*128的箭头状光束灰度图，从右端点向左发散成彗星/光锥尾迹，Additive叠加用于子弹闪光、冲击光斑、激光/导弹拖尾
+        public static Asset<Texture2D> LightShot = null;//256×128箭头灰度，Additive，子弹/激光拖尾
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> LightShotAlt = null;//256*128的LightShot变体，尾部更平直紧凑，用作需要更细瘦拖尾时的替代，使用方式同LightShot
+        public static Asset<Texture2D> LightShotAlt = null;//LightShot变体，尾部更紧凑
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Airflow = null;//256*256的横向流线柔和灰度噪声，明暗带呈水平波浪走向，适合做风压、气流、水流的扭曲蒙版或滚动UV采样
+        public static Asset<Texture2D> Airflow = null;//256×256横向流线灰度，风压/水流UV
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Extra_193 = null;//256*256的类Voronoi细胞/网状灰度图，白色脊线围住暗色细胞，适合做能量网格、护盾裂纹、电浆场的扭曲/发光蒙版
+        public static Asset<Texture2D> Extra_193 = null;//256×256 Voronoi灰度，能量网格/护盾蒙版
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Spray = null;//512*512的3x3不规则烟雾碎块序列帧（含透明通道），用于喷射、爆裂碎片、粉尘飞溅的帧动画粒子
+        public static Asset<Texture2D> Spray = null;//512×512烟雾3×3帧序列，喷射/粉尘粒子
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> StarTexture_White = null;//326*326的白色4芒星（十字耀斑）图，带透明度用于Mask或乘色叠加，通过SpriteBatch.Color染色后得到任意色闪光
+        public static Asset<Texture2D> StarTexture_White = null;//326×326白4芒星，Mask/乘色闪光
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> StarTexture = null;//326*326的黑底白色4芒星（十字耀斑），需Additive叠加绘制，常用于重击/爆炸/宝物闪光点的核心高光
+        public static Asset<Texture2D> StarTexture = null;//326×326黑底4芒星，Additive重击/爆炸高光
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SoftGlow = null;//64*64的圆点灰度图（径向衰减），Additive叠加绘制圆形光晕/光源，染色时颜色A值通常设为0以避免遮挡
         [VaultLoaden(CWRConstant.Masking)]
@@ -44,15 +44,15 @@ namespace CalamityOverhaul
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Fog = null;//256*256的柔性团状烟雾灰度蒙版，中心密集四周逐渐透明，适合叠加做烟尘、雾气、魔法蒸汽
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> PerlinNoise = null;//512*512的柏林噪声灰度图，低频平滑云状纹理，常用于Shader采样做扭曲偏移、流体UV、溶解边缘
+        public static Asset<Texture2D> PerlinNoise = null;//512×512 Perlin灰度，Shader扭曲/溶解
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> Cyclone = null;//128*128的同心圆旋涡纹理（白底灰环），用于气旋、冲击波、涡流的极坐标/径向采样或旋转叠加
+        public static Asset<Texture2D> Cyclone = null;//128×128同心旋涡，气旋/冲击波径向采样
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> DiffusionCircle = null;//360*360的柔和圆环扩散蒙版，中心透明外围模糊光环，Additive叠加用作冲击波光圈、脉冲扩散特效
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> ThunderTrail = null;//256*128的闪电/能量拖尾灰度图，用于PrimitiveDrawing的Trail Shader采样，这个纹理来自珊瑚石，谢谢你瓶中微光 :)
+        public static Asset<Texture2D> ThunderTrail = null;//256×128闪电拖尾，Trail Shader(珊瑚石致谢)
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> TileHightlight = null;//153*153的物块高亮描边蒙版，用于Tile悬停/交互时的高光外框叠加，这个纹理来自珊瑚石，谢谢你瓶中微光 :)
+        public static Asset<Texture2D> TileHightlight = null;//153×153物块高亮蒙版(珊瑚石致谢)
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> MaskLaserLine = null;
         [VaultLoaden(CWRConstant.Masking)]

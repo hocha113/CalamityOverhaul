@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.ADV.EntrustManager;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -6,11 +6,7 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
 {
-    /// <summary>
-    /// SHPC追踪窗口样式——赛博朋克2077式极简HUD：<br/>
-    /// 完全无背景面板与外框，只保留霓虹蓝雪佛龙头部记号、标题下方的实线+点阵下划线、
-    /// 以及一条贴近文字的扁平进度细线。视觉重量全部交给排版与文字本身。
-    /// </summary>
+    /// <summary>SHPC 追踪 HUD：无底板，霓虹雪佛龙+下划线+扁进度条</summary>
     internal class SHPCTrackerWidgetStyle : IEntrustTrackerWidgetStyle
     {
         #region 色板
@@ -47,12 +43,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             var uv = new Rectangle(0, 0, 1, 1);
             var font = FontAssets.MouseText.Value;
 
-            //头部记号——雪佛龙 ❯（两段斜线拼成的尖角，CP2077终端命令提示符意象）
+            //头部雪佛龙 ❯
             int symX = headerRect.X + 6;
             int symY = headerRect.Y + headerRect.Height / 2;
             DrawChevron(sb, px, uv, symX, symY, alpha);
 
-            //标题文字——细微深色投影 + 主体高光蓝（字号略大于默认正文）
+            //标题：投影+高光蓝
             const float titleScale = 0.95f;
             int textX = headerRect.X + 20;
             //大字号下需略微下移基线，让顶部不贴顶
@@ -69,7 +65,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             float p = MathF.Sin(pulse * 2f) * 0.18f + 0.82f;
             sb.Draw(px, new Rectangle(textX, underY, solidLen, 1), uv, NeonBlue * (alpha * 0.85f * p));
 
-            //点阵延续——从实线末端开始，每4px一个2px小段
+            //实线后点阵延续，4px 间距
             int dotStart = textX + solidLen + 4;
             int dotEnd = headerRect.Right - 8;
             for (int x = dotStart; x < dotEnd; x += 4) {
@@ -105,7 +101,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
             int y = barRect.Y + (barRect.Height - barH) / 2;
             int trackW = barRect.Width;
 
-            //轨道——极淡的背景线（不是实心填充）
+            //轨道淡背景线
             sb.Draw(px, new Rectangle(barRect.X, y, trackW, barH), uv, NeonBlueDim * (alpha * 0.22f));
 
             //填充
@@ -125,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
                 sb.Draw(px, new Rectangle(tx, y + barH, 1, 2), uv, NeonBlueDim * (alpha * 0.45f));
             }
 
-            //进度文字——靠右上方，0.5倍小字
+            //进度字靠右上，0.5 倍
             if (!string.IsNullOrEmpty(progressText)) {
                 var font = FontAssets.MouseText.Value;
                 Vector2 sz = font.MeasureString(progressText) * 0.5f;

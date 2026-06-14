@@ -14,10 +14,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
-    /// <summary>
-    /// 鬼魅飞刀 —— 战士的鬼魂消耗投掷品
-    /// 一次掷出三把猩红飞刀，飞刀会先疾飞短停、再从远处加速冲撞最近敌人，最后炸裂为灼魂火浪
-    /// </summary>
+    /// <summary>鬼魅飞刀，三把猩红飞刀短停后冲撞，末段灼魂火浪</summary>
     internal class WraithKunai : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "WraithKunai";

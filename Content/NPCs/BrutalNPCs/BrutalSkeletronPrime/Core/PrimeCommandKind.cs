@@ -1,6 +1,6 @@
 namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 {
-    /// <summary>头部向四臂广播的战术指令，写入头部 <c>npc.ai[1]</c></summary>
+    /// <summary>头部向四臂广播的战术指令，写入头部 npc.ai[1]</summary>
     internal enum PrimeCommandKind : int
     {
         None = 0,

@@ -4,12 +4,7 @@ using Terraria;
 
 namespace CalamityOverhaul.Content.PRTTypes
 {
-    /// <summary>
-    /// 机械殉爆光团：以 <see cref="CWRAsset.SoftGlow"/> 多层叠加出白热核心 + 暖色火球，
-    /// 再叠加十字星闪（<see cref="CWRAsset.StarTexture"/>）与扩张冲击波环（<see cref="CWRAsset.DiffusionCircle"/>），
-    /// 表现重型机械严重故障 / 爆炸解体的高质感光团。
-    /// <br/>纯客户端 Additive 视觉粒子，不参与逻辑，多人安全。
-    /// </summary>
+    /// <summary>机械殉爆光团，SoftGlow 多层白热核心+冲击环，纯客户端 Additive</summary>
     internal class PRT_MechExplosion : BasePRT
     {
         public override string Texture => CWRConstant.Masking + "SoftGlow";
@@ -19,9 +14,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         //暖色火球基调（白热衰退后的主色）
         private Color warmColor = new(255, 130, 40);
 
-        /// <summary>
-        /// 配置爆炸光团。规模由 <see cref="BasePRT.Scale"/>（NewParticle 的 scale 参数）决定。
-        /// </summary>
+        /// <summary>配置爆炸光团，规模由 <see cref="BasePRT.Scale"/> 决定</summary>
         public PRT_MechExplosion Configure(int lifetime, Color warm) {
             Lifetime = lifetime;
             warmColor = warm;

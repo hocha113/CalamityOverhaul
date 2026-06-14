@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
 
         //当前面板的滑入进度，0..1
         private float openProgress;
-        //当前绑定的加工台格子位置（用于距离检查）
+        //绑定加工台 Tile 坐标，距离检查
         private Point16 boundTile;
         private bool hasBoundTile;
         //当前选中的类别

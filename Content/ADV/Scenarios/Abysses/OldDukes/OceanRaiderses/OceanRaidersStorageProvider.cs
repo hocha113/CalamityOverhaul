@@ -28,9 +28,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
     }
 
-    /// <summary>
-    /// 海洋吞噬者的存储提供者实现
-    /// </summary>
+    /// <summary>海洋吞噬者的存储提供者</summary>
     internal class OceanRaidersStorageProvider : IStorageProvider
     {
         private readonly OceanRaidersTP _machineTP;
@@ -90,7 +88,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 从位置查找OceanRaidersTP并创建存储提供者
+
         /// </summary>
         public static OceanRaidersStorageProvider FromPosition(Point16 position) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out OceanRaidersTP tp)) {
@@ -100,7 +100,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
         }
 
         /// <summary>
+
         /// 在指定范围内查找最近的OceanRaidersTP
+
         /// </summary>
         public static OceanRaidersStorageProvider FindNearPosition(Point16 position, int range, Item item) {
             float rangeSQ = range * range;
@@ -136,9 +138,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.OceanRaiderses
             return nearestTP != null ? new OceanRaidersStorageProvider(nearestTP) : null;
         }
 
-        /// <summary>
-        /// 获取指定位置的OceanRaidersTP存储提供者
-        /// </summary>
         public static OceanRaidersStorageProvider GetAtPosition(Point16 position, Item item) {
             if (!TileProcessorLoader.AutoPositionGetTP(position, out OceanRaidersTP tp)) {
                 return null;

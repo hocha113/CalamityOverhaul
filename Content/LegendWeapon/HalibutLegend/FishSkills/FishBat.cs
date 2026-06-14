@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -106,7 +106,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     0,
                     0f,
                     player.whoAmI,
-                    ai0: i //用于区分不同的蝙蝠
+                    ai0: i //个体索引
                 );
 
                 if (Main.projectile[proj].ModProjectile is BatSwarmMinion bat) {
@@ -570,7 +570,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = sourceRect.Size() / 2f;
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            //根据朝向决定翻转（纹理朝左，所以需要翻转处理）
+            //纹理朝左，按朝向翻转
             SpriteEffects effects = batDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             //绘制拖尾

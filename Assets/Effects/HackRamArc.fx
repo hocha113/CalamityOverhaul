@@ -1,6 +1,6 @@
 // ============================================================================
-// HackRamArc.fx 骇客时间 RAM 弧形 HUD
-// AlphaBlend 预乘 alpha
+//HackRamArc.fx 骇客时间 RAM 弧形 HUD
+//AlphaBlend 预乘 alpha
 // ============================================================================
 
 sampler uImage0 : register(s0);

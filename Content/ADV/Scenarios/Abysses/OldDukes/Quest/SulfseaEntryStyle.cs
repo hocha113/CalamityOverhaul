@@ -5,9 +5,7 @@ using System;
 namespace CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Quest
 {
     /// <summary>
-    /// 硫磺海/老公爵委托在管理器列表中的自定义条目样式——
-    /// 深绿毒雾背景、酸液脉冲边框、毒绿色标题、
-    /// 角落气泡装饰
+    /// 硫磺海/老公爵委托在管理器列表中的自定义条目样式： 深绿毒雾背景、酸液脉冲边框、毒绿色标题、 角落气泡装饰
     /// </summary>
     internal class SulfseaEntryStyle : IEntrustEntryStyle
     {

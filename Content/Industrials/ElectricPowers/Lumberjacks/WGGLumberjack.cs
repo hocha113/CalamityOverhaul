@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -867,7 +867,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             Vector2 midControl = (start + end) / 2 + new Vector2(0, -bendHeight);
 
-            //计算曲线长度用于确定段数
+            //曲线长度定段数
             int sampleCount = 50;
             float curveLength = 0f;
             Vector2 prev = start;

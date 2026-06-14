@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.ADV.ADVChoices
 {
-    /// <summary>
-    /// 选项框样式工厂
-    /// </summary>
+    /// <summary>选项框样式工厂</summary>
     internal static class ChoiceBoxStyleUtils
     {
         private static readonly Dictionary<ADVChoiceBox.ChoiceBoxStyle, Func<IChoiceBoxStyle>> styleCreators = new()
@@ -17,9 +15,7 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             { ADVChoiceBox.ChoiceBoxStyle.Tzeentch, () => new TzeentchChoiceBoxStyle() }
         };
 
-        /// <summary>
-        /// 创建样式实例
-        /// </summary>
+        /// <summary>创建样式实例</summary>
         public static IChoiceBoxStyle CreateStyle(ADVChoiceBox.ChoiceBoxStyle styleType) {
             if (styleCreators.TryGetValue(styleType, out var creator)) {
                 return creator();
@@ -28,16 +24,12 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
             return new DefaultChoiceBoxStyle(); // 默认样式
         }
 
-        /// <summary>
-        /// 注册自定义样式
-        /// </summary>
+        /// <summary>注册自定义样式</summary>
         public static void RegisterStyle(ADVChoiceBox.ChoiceBoxStyle styleType, Func<IChoiceBoxStyle> creator) {
             styleCreators[styleType] = creator;
         }
 
-        /// <summary>
-        /// 检查样式是否已注册
-        /// </summary>
+        /// <summary>检查样式是否已注册</summary>
         public static bool IsStyleRegistered(ADVChoiceBox.ChoiceBoxStyle styleType) {
             return styleCreators.ContainsKey(styleType);
         }

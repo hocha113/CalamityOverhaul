@@ -2,10 +2,7 @@ using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
 
 namespace CalamityOverhaul.Content.Cyberwares.Victors
 {
-    /// <summary>
-    /// 本地 Victor 交互会话，对话/诊所/手术共享 whoAmI 绑定
-    /// <br/>用于定身面向、镜头聚焦与收尾清理
-    /// </summary>
+    /// <summary>本地 Victor 交互会话，对话/诊所/手术共享 whoAmI</summary>
     internal static class VictorSession
     {
         /// <summary>当前交互的 Victor 的 <see cref="Terraria.NPC.whoAmI"/>，-1 表示无交互</summary>

@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
         private const int ScanInterval = 6;
         //缠根触发后冷却帧数（≈1 秒）
         private const int BurstCooldown = 60;
-        //缓存的本帧最高苔藓堆叠数（用于触发缠根判定）
+        //本帧最高苔藓层数，缠根判定
         private int cachedPeakStacks;
 
         public override void AI() {

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 {
     /// <summary>
-    /// 村正次元斩主控弹幕，负责控制整个演出流程
+    /// 村正次元斩主控弹幕，整场演出流程
     /// 与MuraExecutionCutOnSpan的伤害爆发时机同步
     /// </summary>
     internal class MuraDimensionSlash : ModProjectile
@@ -243,7 +243,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         }
 
         public override void OnKill(int timeLeft) {
-            //确保所有效果清除
+            //收尾清效果
             BrokenScreenState = 3;
             FilterIntensity = 0;
             RadialBlurStrength = 0;

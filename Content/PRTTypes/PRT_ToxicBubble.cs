@@ -1,4 +1,4 @@
-﻿using InnoVault.PRT;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -6,7 +6,7 @@ using Terraria;
 namespace CalamityOverhaul.Content.PRTTypes
 {
     /// <summary>
-    /// 硫磺海毒液气泡粒子，专门用于从海底上升的气泡效果
+    /// 硫磺海毒液气泡粒子，专门从海底上升的气泡效果
     /// </summary>
     internal class PRT_ToxicBubble : BasePRT
     {

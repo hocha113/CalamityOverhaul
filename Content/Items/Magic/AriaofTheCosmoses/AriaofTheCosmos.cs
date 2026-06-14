@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.RangedModify.Core;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Item.CWR().OmigaSnyContent = FullItems;
         }
 
-        //右键用于蓄力压扁吸积盘
+        //右键：蓄力压扁吸积盘
         public override bool AltFunctionUse(Player player) => true;
 
         //蓄力武器魔力在释放与技能时手动扣除

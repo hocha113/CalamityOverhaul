@@ -60,7 +60,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         #region 逻辑更新
 
         /// <summary>
+
         /// 科尔托聚焦阶段：银河系不断放大，镜头平移到科尔托位置
+
         /// </summary>
         private static void UpdateKortoZoomPhase() {
             kortoZoomProgress = MathF.Min(kortoZoomProgress + 0.006f, 1f);
@@ -90,7 +92,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 科尔托行星视图阶段：从银河俯视图过渡到行星链正视图
+
         /// </summary>
         private static void UpdateKortoPlanetViewPhase() {
             kortoPlanetViewProgress = MathF.Min(kortoPlanetViewProgress + 0.005f, 1f);
@@ -113,7 +117,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         #region 绘制
 
         /// <summary>
+
         /// 在KortoZoom阶段绘制放大中的银河系 + 科尔托标记
+
         /// </summary>
         private static void DrawKortoZoomGalaxy(SpriteBatch sb, Vector2 center, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
@@ -199,9 +205,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制科尔托星系标记：瞄准框 + 文字 + 脉冲光环
-        /// </summary>
         private static void DrawKortoMarker(SpriteBatch sb, Vector2 zoomCenter, float alpha) {
             float r = KortoRadialDistance * GalaxyRadius;
             float spiralTightness = 2.8f;
@@ -265,9 +268,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 new Color(255, 100, 60) * (alpha * pulse), 0.32f);
         }
 
-        /// <summary>
-        /// 绘制行星链正视图：恒星 + 6颗行星的轨道 + 标记第三行星
-        /// </summary>
         private static void DrawKortoPlanetView(SpriteBatch sb, Vector2 center, float alpha) {
             float viewAlpha = alpha * VaultUtils.EaseOutCubic(kortoPlanetTransition);
             if (viewAlpha < 0.01f) return;
@@ -439,7 +439,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 用像素逼近绘制行星球体，包含：明暗面、明暗分界线、表面细节纹理
+
         /// </summary>
         private static void DrawPlanetSphere(SpriteBatch sb, Texture2D pixel, Vector2 center,
             float radius, Color lightColor, Color darkColor, float selfRotation, float alpha, int planetIndex) {
@@ -494,7 +496,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 生成行星表面伪噪声纹理（不使用Random，纯数学确定性）
+
         /// </summary>
         private static float GetSurfaceNoise(float u, float v, int planetIndex) {
             //基于行星索引给不同的纹理特征
@@ -525,9 +529,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             return MathHelper.Clamp(noise * 0.5f + 0.5f, 0f, 1f);
         }
 
-        /// <summary>
-        /// 绘制气态巨行星的环系统
-        /// </summary>
         private static void DrawPlanetRing(SpriteBatch sb, Texture2D pixel, Vector2 center, float planetRadius, float alpha) {
             float innerR = planetRadius * 1.4f;
             float outerR = planetRadius * 2.2f;
@@ -585,7 +586,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 目标行星（III号）的特殊标记效果
+
         /// </summary>
         private static void DrawTargetPlanetEffects(SpriteBatch sb, Vector2 pos, float radius, float alpha) {
             Texture2D softGlow = CWRAsset.SoftGlow?.Value;
@@ -631,9 +634,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 用像素逼近绘制实心圆（辅助方法，用于像素回退模式）
-        /// </summary>
+        /// <summary>用像素逼近绘制实心圆（辅助方法</summary>
         private static void DrawFilledCirclePixel(SpriteBatch sb, Texture2D pixel, Vector2 center, float radius, Color color) {
             int r = (int)MathF.Ceiling(radius);
             for (int y = -r; y <= r; y++) {
@@ -647,9 +648,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
             }
         }
 
-        /// <summary>
-        /// 绘制目标行星的瞄准十字线
-        /// </summary>
         private static void DrawTargetReticle(SpriteBatch sb, Vector2 pos, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -673,9 +671,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
                 reticleColor, 0f, Vector2.Zero, new Vector2(lineLen, 1f), SpriteEffects.None, 0f);
         }
 
-        /// <summary>
-        /// 绘制从恒星到行星的轨道虚线
-        /// </summary>
         private static void DrawOrbitLine(SpriteBatch sb, Vector2 from, Vector2 to, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             if (pixel == null) return;
@@ -701,7 +696,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Draedons.AcheronProtocols
         }
 
         /// <summary>
+
         /// 行星视图的顶部信息标题
+
         /// </summary>
         private static void DrawKortoPlanetViewHeader(SpriteBatch sb, Rectangle panelRect, float alpha) {
             Texture2D pixel = VaultAsset.placeholder2.Value;

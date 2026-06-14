@@ -1,10 +1,10 @@
 // ============================================================================
-// ShepelGlitch.fx Shepel 立绘故障扭曲
-// 切片位移+色差+块状损坏；采样 uImage
+//ShepelGlitch.fx Shepel 立绘故障扭曲
+//切片位移+色差+块状损坏；采样 uImage
 // ============================================================================
 
 float uTime;
-float uIntensity; // 0~1
+float uIntensity; //0~1
 
 sampler2D uImage : register(s0);
 
