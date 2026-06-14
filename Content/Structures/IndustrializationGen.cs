@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.Generator.WindGriven;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
 using CalamityOverhaul.Content.Structures.DatIO;
@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Structures
     {
         public static void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
             progress.Message = WorldGenSystem.IndustrializationGenMessage.Value;
-            
+
             if (CWRRef.Has) {
                 if (WorldGenDensitySave.GetDensity("WindGrivenGenerator") != StructureDensity.Extinction) {
                     SpawnWindGrivenGenerator();
