@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), IsEnragedHost);
+            //DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), IsEnragedHost);
         }
 
         /// <summary>主光柱：DestroyerBeam.fx 在四边形 UV 内生成白热主轴 + 缠绕电弧 + 推进脉冲 + 头部光球</summary>
@@ -224,11 +224,11 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             //视觉宽度大于碰撞宽度，着色器边缘撕裂与电弧需要余量
             float halfW = beamWidth * (ex ? 2.5f : 2.1f);
 
-            //uv.x: 1=口器(头部光球) → 0=末端(淡出)；uv.y: 0~1 横截面
-            //origin 顶点用 0.96 略降强度，藏在头雕下；口器方向仍由 headFlare 主导
+            //uv.x: 1=口器(漏斗喷口+光球) → 0=末端(淡出)；uv.y: 0~1 横截面
+            //origin(uv.x=1) 落在头雕后方 backBleed 处，口器端由着色器 muzzleTaper 收成喷口、headFlare 补满光球
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
-            verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(0.96f, 0f));
-            verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(0.96f, 1f));
+            verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(1f, 1f));
             verts[2] = new VertexPositionColorTexture((tip + perp * halfW).ToVector3(), Color.White, new Vector2(0f, 0f));
             verts[3] = new VertexPositionColorTexture((tip - perp * halfW).ToVector3(), Color.White, new Vector2(0f, 1f));
 

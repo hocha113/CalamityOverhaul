@@ -61,13 +61,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
         return float4(0, 0, 0, 0);
     //末端横截面收窄：along→0 收成尖，破坏等宽矩形末端
     float taper = lerp(0.30, 1.0, smoothstep(0.0, 0.26, alongTip));
+    //口器收窄：along→1 收成喷口，光柱自漏斗喷涌而非沿头部齐口硬切
+    float muzzleTaper = lerp(0.34, 1.0, smoothstep(1.0, 0.92, along));
+    taper = min(taper, muzzleTaper);
 
     //=========================================================
     //主轴扭动：噪声驱动中轴偏移，越靠尾部摆动越大（能量耗散）
     //=========================================================
     float wob = tex2D(noiseSamp, float2(along * 2.4 - uTime * 3.0, seed)).r - 0.5;
     float axis = wob * 0.50 * (1.0 - along);
-    float d = abs(cross_ - axis) / taper;   //除以 taper，末端等效收窄
+    float d = abs(cross_ - axis) / taper;   //除以 taper，两端等效收窄
 
     //主激光体 + 白热芯
     float core = exp(-d * d * (46.0 - exMode * 14.0));
