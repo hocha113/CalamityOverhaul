@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (!arcSpawned) {
                 arcSpawned = true;
                 if (Context.IsSpazmatism && !VaultUtils.isClient) {
-                    int damage = Context.IsDeathMode ? 46 : 40;
+                    int damage = Context.IsDeathMode ? 36 : 30;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<TwinsTetherArc>(), damage, 0f, Main.myPlayer,
                         npc.whoAmI, partner.whoAmI, SweepPhase + GazePhase);

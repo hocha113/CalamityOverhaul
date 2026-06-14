@@ -188,7 +188,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         for (int i = -1; i <= 1; i++) {
                             Vector2 vel = backDir.RotatedBy(i * 0.42f) * 7.5f;
                             Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, vel,
-                                ModContent.ProjectileType<Fireball>(), 30, 0f, Main.myPlayer);
+                                ModContent.ProjectileType<Fireball>(), 22, 0f, Main.myPlayer);
                         }
                     }
                 }

@@ -151,7 +151,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             }
             float speed = CWRWorld.Death ? 6f : 4f;
             Vector2 velocity = (context.Target.Center - source.Center).SafeNormalize(Vector2.Zero) * speed;
-            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.4f);
+            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)));
             Projectile.NewProjectile(source.GetSource_FromAI(), source.Center, velocity,
                 ModContent.ProjectileType<DestroyerBolt>(), damage, 0f, Main.myPlayer, 1, 0);
         }

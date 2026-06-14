@@ -291,7 +291,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                         float angle = MathHelper.TwoPi / projectileCount * i + phaseOffset;
                         Vector2 vel = angle.ToRotationVector2() * baseSpeed;
                         Projectile.NewProjectile(npc.GetSource_FromAI(), collisionPoint, vel,
-                            projType, 38, 0f, Main.myPlayer);
+                            projType, 26, 0f, Main.myPlayer);
                     }
 
                     //第二波慢速余焰(再错开半相位)
@@ -299,7 +299,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                         float angle = MathHelper.TwoPi / (projectileCount / 2) * i + phaseOffset + MathHelper.Pi / projectileCount * 0.5f;
                         Vector2 vel = angle.ToRotationVector2() * (baseSpeed * 0.55f);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), collisionPoint, vel,
-                            projType, 33, 0f, Main.myPlayer);
+                            projType, 26, 0f, Main.myPlayer);
                     }
                 }
 

@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
                 hingeSpawned = true;
                 if (Context.IsSpazmatism && !VaultUtils.isClient) {
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
-                        ModContent.ProjectileType<TwinsTetherArc>(), 40, 0f, Main.myPlayer,
+                        ModContent.ProjectileType<TwinsTetherArc>(), 30, 0f, Main.myPlayer,
                         npc.whoAmI, partner.whoAmI, LockPhase + SweepPhase / 2);
                 }
             }
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Co
             if (!rayFired) {
                 rayFired = true;
                 if (!VaultUtils.isClient) {
-                    int damage = Context.IsDeathMode ? 56 : 50;
+                    int damage = Context.IsDeathMode ? 46 : 40;
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                         ModContent.ProjectileType<RetinazerDeathRay>(), damage, 0f, Main.myPlayer,
                         npc.whoAmI, SweepPhase, Context.IsSpazmatism ? 1f : 0f);

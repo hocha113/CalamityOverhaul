@@ -1167,16 +1167,7 @@ namespace CalamityOverhaul
             return (float)GetMember(calNPC_DR_M, cgn);
         }
 
-        public static int GetProjectileDamage(NPC npc, int projType) {
-            int num = npc.defDamage / 2;//暂时使用这个，原来的方法在某些情况下会返回1或者0
-            if (Main.expertMode) {
-                num = (int)(num * 0.75f);
-            }
-            if (Main.masterMode) {
-                num = (int)(num * 0.75f);
-            }
-            return num;
-        }
+        public static int GetProjectileDamage(NPC npc, int projType) => 40;
 
         public static void SetPlayerInfiniteFlight(this Player player, bool value) {
             ModPlayer cp = GetCalPlayer(player);

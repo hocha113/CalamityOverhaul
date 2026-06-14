@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             Vector2 dir = (normal * 0.62f + toPlayer * 0.38f).SafeNormalize(Vector2.UnitY);
             Vector2 velocity = dir * BoltSpeed(context);
 
-            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)) * 0.5f);
+            int damage = (int)(HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(context.Npc, ProjectileID.DeathLaser)));
             Projectile.NewProjectile(segment.GetSource_FromAI(), segment.Center, velocity,
                 ModContent.ProjectileType<DestroyerBolt>(), damage, 0f, Main.myPlayer, 0, 1);
         }
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
             context.JawCommand = 1;
 
             if (!VaultUtils.isClient) {
-                int damage = HeadPrimeAI.SetMultiplier(CWRRef.GetProjectileDamage(npc, ProjectileID.DeathLaser));
+                int damage = HeadPrimeAI.SetMultiplier(46);
                 Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero,
                     ModContent.ProjectileType<DestroyerMawBeamProj>(), damage, 0f, Main.myPlayer,
                     npc.whoAmI, startAngle, sweepSpeedSigned);

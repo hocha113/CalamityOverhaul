@@ -303,7 +303,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                     npc.Center,
                     toCenterDir * 10f,
                     ModContent.ProjectileType<Fireball>(),
-                    32,
+                    24,
                     0f,
                     Main.myPlayer
                 );
@@ -315,7 +315,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         npc.Center,
                         tangent * 8f,
                         ModContent.ProjectileType<Fireball>(),
-                        28,
+                        20,
                         0f,
                         Main.myPlayer
                     );

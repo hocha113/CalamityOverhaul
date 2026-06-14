@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Sp
                         npc.Center + shootDir * 36f,
                         shootDir * shootSpeed,
                         ModContent.ProjectileType<Fireball>(),
-                        30,
+                        22,
                         0f,
                         Main.myPlayer
                     );
