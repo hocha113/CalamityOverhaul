@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+ï»¿using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
         [VaultLoaden(CWRConstant.Projectile_Summon + "WhiplashGalacticaProjectileGlows")]
         private static Asset<Texture2D> Glows = null;
 
-        private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();//???¦Å???
+        private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.IsAWhip[Type] = true;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                 pos += diff;
             }
-        }//????????
+        }
 
         public override bool PreDraw(ref Color lightColor) {
             DrawLine(whipPoints);
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                 Vector2 element = whipPoints[i];
                 Vector2 diff = whipPoints[i + 1] - element;
 
-                float rotation = diff.ToRotation() - MathHelper.PiOver2; //???øL???PiOver2 ????????
+                float rotation = diff.ToRotation() - MathHelper.PiOver2;
                 Color color = Lighting.GetColor(element.ToTileCoordinates());
                 scale *= 0.75f;
                 Main.EntitySpriteDraw(texture, pos - Main.screenPosition, frame, color, rotation, origin, scale, flip, 0);
@@ -184,7 +184,6 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                     return;
                 }
 
-                //????
                 Vector2[] positions = new Vector2[Projectile.oldPos.Length];
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {
                     if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -193,11 +192,9 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                     positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
                 }
 
-                //Trail ????/????
                 Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
                 Trail.TrailPositions = positions;
 
-                //InnoVault ??¦Â????
                 Effect effect = EffectLoader.GradientTrail.Value;
                 effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
                 effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
