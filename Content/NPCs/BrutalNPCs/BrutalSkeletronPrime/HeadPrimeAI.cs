@@ -396,20 +396,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return npc.life <= npc.lifeMax * 0.45f || aliveArms <= 1;
         }
 
-        internal static bool DontReform() {
-            if (!CWRRef.Has) {
-                return !Main.expertMode || !Main.masterMode;
-            }//在没有启用灾厄的情况下，只要是专家或者大师就可以使用
-
-            if (!Main.expertMode) {
-                return true;
-            }//如果不是专家模式，就不要使用重做后的绘制
-            if (CWRWorld.Revenge || CWRWorld.Death || CWRRef.GetBossRushActive()) {
-                return false;
-            }//如果没有开启任何难度，也不要使用重做后的绘制
-            return true;
-        }
-
         internal static void FindPlayer(NPC npc) {
             if (npc.target < 0 || npc.target == Main.maxPlayers || Main.player[npc.target].dead || !Main.player[npc.target].active) {
                 npc.TargetClosest();
@@ -579,9 +565,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override void BossHeadSlot(ref int index) {
-            if (!DontReform()) {
-                index = iconIndex;
-            }
+            index = iconIndex;
         }
 
         #endregion
@@ -618,11 +602,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return DontReform() || IsMechdusa(npc);
+            return IsMechdusa(npc);
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (DontReform() || IsMechdusa(npc)) {
+            if (IsMechdusa(npc)) {
                 return true;
             }
 

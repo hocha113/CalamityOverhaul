@@ -66,9 +66,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             HeadPrimeAI.FindPlayer(npc);
             HeadPrimeAI.CheakRam(out cannonAlive, out viceAlive, out sawAlive, out laserAlive);
 
-            if (!HeadPrimeAI.DontReform()) {
-                npc.aiStyle = -1;
-            }
+            npc.aiStyle = -1;
 
             //头部已不在：机械臂立即失能坠毁（服务端单点决策，避免客户端凭空消失后被同步回来）
             if (!head.active || head.type != NPCID.SkeletronPrime) {

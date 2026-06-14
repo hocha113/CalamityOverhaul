@@ -4,7 +4,6 @@ using CalamityOverhaul.Content.Items.Summon;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.StateMachines;
 using Microsoft.Xna.Framework.Graphics;
@@ -88,10 +87,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             if (CWRWorld.CanTimeFrozen()) {
                 CWRNpc.DoTimeFrozen(npc);
                 return false;
-            }
-
-            if (HeadPrimeAI.DontReform()) {
-                return true;
             }
 
             //延迟初始化保护
@@ -397,7 +392,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         #region 绘制
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform()) return true;
             if (stateContext == null) return true;
 
             Texture2D texture = Head.Value;
@@ -455,7 +449,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return HeadPrimeAI.DontReform();
+            return false;
         }
         #endregion
 
@@ -491,23 +485,17 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         #region 地图图标
         public override void BossHeadSlot(ref int index) {
-            if (!HeadPrimeAI.DontReform()) {
-                index = iconIndex;
-            }
+            index = iconIndex;
         }
 
         public override void BossHeadRotation(ref float rotation) {
-            if (!HeadPrimeAI.DontReform()) {
-                rotation = npc.rotation + MathHelper.Pi;
-            }
+            rotation = npc.rotation + MathHelper.Pi;
         }
 
         public override void ModifyDrawNPCHeadBoss(ref float x, ref float y, ref int bossHeadId,
             ref byte alpha, ref float headScale, ref float rotation, ref SpriteEffects effects) {
-            if (!HeadPrimeAI.DontReform()) {
-                bossHeadId = iconIndex;
-                rotation = npc.rotation + MathHelper.Pi;
-            }
+            bossHeadId = iconIndex;
+            rotation = npc.rotation + MathHelper.Pi;
         }
         #endregion
     }

@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 绘制
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform() || NPC.IsMechQueenUp) {
+            if (NPC.IsMechQueenUp) {
                 return true;
             }
             HeadPrimeAI.DrawArm(spriteBatch, npc, screenPos);
@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             return false;
         }
 
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform() && !NPC.IsMechQueenUp;
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !NPC.IsMechQueenUp;
         #endregion
     }
 }

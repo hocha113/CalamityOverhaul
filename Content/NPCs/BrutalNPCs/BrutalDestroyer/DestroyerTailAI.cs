@@ -1,4 +1,3 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -16,17 +15,11 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Tril");
         }
         public override void BossHeadSlot(ref int index) {
-            if (!HeadPrimeAI.DontReform()) {
-                index = iconIndex;
-            }
+            index = iconIndex;
         }
         public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform()) {
-                return true;
-            }
-
             Texture2D value = Tail.Value;
             Rectangle rectangle = value.GetRectangle(frame, 4);
             Vector2 drawPos = npc.Center - Main.screenPosition;
@@ -62,7 +55,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return HeadPrimeAI.DontReform();
+            return false;
         }
     }
 }

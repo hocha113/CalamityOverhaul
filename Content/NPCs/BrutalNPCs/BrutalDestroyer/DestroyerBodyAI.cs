@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -70,9 +69,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override void BossHeadSlot(ref int index) {
-            if (!HeadPrimeAI.DontReform()) {
-                index = IsBodyAlt ? iconIndex2 : iconIndex;
-            }
+            index = IsBodyAlt ? iconIndex2 : iconIndex;
         }
 
         public override void BossHeadRotation(ref float rotation) => rotation = npc.rotation + MathHelper.Pi;
@@ -514,9 +511,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         private void Move(float segmentVelocity) {
             float dampingInertia = 0.18f;
             float baseLengBySegment = 64;
-            if (HeadPrimeAI.DontReform()) {
-                baseLengBySegment = 40f;
-            }
             if (NPC.IsMechQueenUp) {
                 baseLengBySegment = 24f;
                 dampingInertia += 0.1f;
@@ -570,10 +564,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform()) {
-                return true;
-            }
-
             Texture2D value = Body.Value;
             Texture2D value2 = Body_Glow.Value;
             Rectangle rectangle = value.GetRectangle(frame, 4);
@@ -625,7 +615,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return HeadPrimeAI.DontReform();
+            return false;
         }
     }
 }

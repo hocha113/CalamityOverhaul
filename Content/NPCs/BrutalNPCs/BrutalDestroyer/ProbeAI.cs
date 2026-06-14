@@ -255,10 +255,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
             }
         }
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform()) {
-                return true;
-            }
-
             SpriteEffects spriteEffects = SpriteEffects.None;
             float drawRot = npc.rotation + MathHelper.Pi;
             if (npc.spriteDirection > 0) {
@@ -300,6 +296,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
                 , null, Color.White, drawRot, value.Size() / 2, npc.scale, spriteEffects, 0);
             return false;
         }
-        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => !HeadPrimeAI.DontReform();
+        public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => true;
     }
 }

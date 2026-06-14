@@ -8,7 +8,6 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Common;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.GameSystem;
 using InnoVault.StateMachines;
@@ -183,9 +182,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region Boss头像
 
         public override void BossHeadSlot(ref int index) {
-            if (HeadPrimeAI.DontReform()) {
-                return;
-            }
             if (npc.type == NPCID.Spazmatism) {
                 index = IsSecondPhase() ? spazmatismAltIconIndex : spazmatismIconIndex;
             }
@@ -643,10 +639,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye
         #region 绘制
 
         public override bool? Draw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            if (HeadPrimeAI.DontReform()) {
-                return true;
-            }
-
             //Draw 前推送本眼热感视觉(双眼独立，可不同态)
             PushThermalVisualState();
 

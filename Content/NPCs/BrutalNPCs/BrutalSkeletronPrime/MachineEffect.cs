@@ -220,10 +220,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 return;
             }
 
-            if (HeadPrimeAI.DontReform()) {
-                return;
-            }
-
             bool found = false;
             foreach (var npc in Main.ActiveNPCs) {
                 if (npc.type == NPCID.SkeletronPrime) {

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -14,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
 
         public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams) {
             //非目标直接返回，不影响其它 NPC
-            if (!IsDestroyerSegment(npc.type) || HeadPrimeAI.DontReform()) {
+            if (!IsDestroyerSegment(npc.type)) {
                 return true;
             }
 
