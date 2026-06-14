@@ -25,9 +25,13 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// </summary>
         internal static Version TargetVersion => new(0, 7, 0, 11);
         /// <summary>
-        /// MagicStorage是否存在、版本兼容且核心访问委托可用
+        /// MagicStorage是否存在、版本兼容且核心存取委托可用，物流存取以此为准
         /// </summary>
         internal static bool Has { get; private set; }
+        /// <summary>
+        /// StoragePlayer 与制作界面联动是否就绪，为假时仅背包速取与终焉工作台联动降级，核心存取仍由 <see cref="Has"/> 保证
+        /// </summary>
+        internal static bool LinkageReady { get; private set; }
 
         #region 编译委托缓存
         //类型缓存，用于调用前的实例类型守卫，防止编译委托内部的强制转换抛出异常
@@ -128,7 +132,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             recipePanelFunc = Compile<Func<object, object>>(
                 GetField(craftingUIStateType, "recipePanel", AnyInstance), "CraftingUIState.recipePanel");
 
-            //核心存储能力齐备才视为可用，UI相关委托缺失时由各自方法自行降级
+            //核心存取能力，物流存取所需，与 StoragePlayer/制作界面联动解耦
             Has = storageComponentType != null
                 && storageHeartType != null
                 && getHeartFunc != null
@@ -139,16 +143,20 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
                 && unitInactiveFunc != null
                 && unitIsFullFunc != null
                 && unitHasSpaceInStackForFunc != null
+                && canPlayerAccessFunc != null;
+
+            //联动能力，缺失时背包速取与终焉工作台联动各自降级，不影响核心存取
+            LinkageReady = Has
                 && storagePlayerTemplate != null
                 && getStorageHeartFunc != null
                 && getCraftingAccessFunc != null
                 && craftingStationsFunc != null
-                && canPlayerAccessFunc != null
                 && isCraftingUIOpenFunc != null;
         }
 
         internal static void Unload() {
             Has = false;
+            LinkageReady = false;
             storageComponentType = null;
             storageHeartType = null;
             craftingUIStateType = null;
@@ -452,7 +460,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// 获取本地玩家当前连接的存储核心，没有连接返回null
         /// </summary>
         private static object GetLocalPlayerHeart() {
-            if (!Has) {
+            if (!LinkageReady) {
                 return null;
             }
             try {
@@ -467,7 +475,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// 获取玩家当前连接的制作核心的制作站列表，未连接返回null
         /// </summary>
         private static List<Item> GetCraftingStations(Player player) {
-            if (!Has) {
+            if (!LinkageReady) {
                 return null;
             }
             object craftingAccess = getCraftingAccessFunc(player.GetModPlayer(storagePlayerTemplate));
@@ -482,13 +490,13 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         /// <summary>
         /// 魔法存储的制作界面当前是否打开
         /// </summary>
-        public static bool IsCraftingUIOpen() => Has && isCraftingUIOpenFunc();
+        public static bool IsCraftingUIOpen() => LinkageReady && isCraftingUIOpenFunc();
 
         /// <summary>
         /// 获取魔法存储制作界面当前选中的配方，不可用时返回null
         /// </summary>
         public static Recipe GetSelectedRecipe() {
-            if (!Has || selectedRecipeFunc == null || !isCraftingUIOpenFunc()) {
+            if (!LinkageReady || selectedRecipeFunc == null || !isCraftingUIOpenFunc()) {
                 return null;
             }
             return selectedRecipeFunc();
@@ -506,7 +514,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
             position = Vector2.Zero;
             dimensions = default;
 
-            if (!Has || craftingUIFunc == null || recipePanelFunc == null || !isCraftingUIOpenFunc()) {
+            if (!LinkageReady || craftingUIFunc == null || recipePanelFunc == null || !isCraftingUIOpenFunc()) {
                 return false;
             }
 
@@ -537,7 +545,7 @@ namespace CalamityOverhaul.OtherMods.MagicStorage
         private const int MaxLinkageFailures = 3;
 
         internal static void UpdateUI() {
-            if (!Has || linkageBroken || Main.gameMenu) {
+            if (!LinkageReady || linkageBroken || Main.gameMenu) {
                 return;
             }
             try {

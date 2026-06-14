@@ -1,5 +1,6 @@
 ﻿displayName = Calamity Overhaul
 modReferences = InnoVault@1.9.93, SubworldLibrary
+weakReferences = CalamityMod, MagicStorage
 sortAfter = CalamityMod, InnoVault
 homepage = https://calamity-overhaul.cc
 author = HoCha113

@@ -14,13 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class UniversalFrost : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "UniversalFrost";
-        /// <summary>霜穹蓄能 0~<see cref="MaxCharge"/> 跨使用持久</summary>
-        internal float AuroraCharge;
         internal const float MaxCharge = 100f;
-        /// <summary>蓄满提示只播一次的标记</summary>
-        internal bool ChargeCueDone;
-        /// <summary>弹药节流 跨使用持久 每2发耗1雪球</summary>
-        internal int GlimmerAmmoThrottle;
 
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
@@ -52,7 +46,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return false;
             }
             //蓄能不满时右键无法展开霜幕
-            return player.altFunctionUse != 2 || AuroraCharge >= MaxCharge;
+            return player.altFunctionUse != 2
+                || player.GetModPlayer<SnowCannonPlayer>().FrostAuroraCharge >= MaxCharge;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
@@ -96,7 +91,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <summary>开火动画余辉</summary>
         private int fireAnimTime;
 
-        private UniversalFrost WeaponItem => Item.ModItem as UniversalFrost;
         //开火动画播完之前不销毁
         protected override bool PendingWork => fireAnimTime > 0;
 
@@ -109,9 +103,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Projectile.frame = 4;
             }
 
+            SnowCannonPlayer state = GunState;
             //蓄满提示
-            if (WeaponItem.AuroraCharge >= UniversalFrost.MaxCharge && !WeaponItem.ChargeCueDone) {
-                WeaponItem.ChargeCueDone = true;
+            if (state.FrostAuroraCharge >= UniversalFrost.MaxCharge && !state.FrostChargeCueDone) {
+                state.FrostChargeCueDone = true;
                 SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.4f, Volume = 0.9f }, Projectile.Center);
                 if (!Main.dedServ) {
                     for (int i = 0; i < 18; i++) {
@@ -130,17 +125,18 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 FireGlimmer();
             }
 
-            if (FireKeyRight && WeaponItem.AuroraCharge >= UniversalFrost.MaxCharge && cooldown <= 0) {
+            if (FireKeyRight && state.FrostAuroraCharge >= UniversalFrost.MaxCharge && cooldown <= 0) {
                 DeployAurora();
             }
         }
 
         /// <summary>速射霜辉弹</summary>
         private void FireGlimmer() {
-            //每2发耗1雪球 节流计数存物品上
-            bool consume = ++WeaponItem.GlimmerAmmoThrottle >= 2;
+            //每2发耗1雪球 节流计数按玩家持有
+            SnowCannonPlayer state = GunState;
+            bool consume = ++state.FrostGlimmerThrottle >= 2;
             if (consume) {
-                WeaponItem.GlimmerAmmoThrottle = 0;
+                state.FrostGlimmerThrottle = 0;
             }
             if (!PickSnowAmmo(out int damage, out float knockback, consume)) {
                 return;
@@ -150,13 +146,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             fireAnimTime = 8;
             recoil = 2.5f;
 
-            if (WeaponItem.AuroraCharge < UniversalFrost.MaxCharge) {
-                WeaponItem.AuroraCharge += 10f;
+            if (state.FrostAuroraCharge < UniversalFrost.MaxCharge) {
+                state.FrostAuroraCharge += 10f;
             }
 
             SoundEngine.PlaySound(CWRSound.Gun_Snowblindness_Shoot with {
                 Volume = 0.2f,
-                Pitch = 0.1f + WeaponItem.AuroraCharge / UniversalFrost.MaxCharge * 0.2f,
+                Pitch = 0.1f + state.FrostAuroraCharge / UniversalFrost.MaxCharge * 0.2f,
                 MaxInstances = 8
             }, Projectile.Center);
 
@@ -176,8 +172,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         /// <summary>展开极光霜幕</summary>
         private void DeployAurora() {
-            WeaponItem.AuroraCharge = 0;
-            WeaponItem.ChargeCueDone = false;
+            SnowCannonPlayer state = GunState;
+            state.FrostAuroraCharge = 0;
+            state.FrostChargeCueDone = false;
             cooldown = 6;
             recoil = 6f;
 
@@ -193,7 +190,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void PostDraw(Color lightColor) {
             //蓄能渐亮的枪身辉光
-            float charge01 = WeaponItem.AuroraCharge / UniversalFrost.MaxCharge;
+            float charge01 = GunState.FrostAuroraCharge / UniversalFrost.MaxCharge;
             if (charge01 <= 0.05f) {
                 return;
             }

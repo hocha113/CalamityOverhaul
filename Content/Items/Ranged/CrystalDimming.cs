@@ -14,10 +14,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class CrystalDimming : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "CrystalDimming";
-        /// 左键炮击就绪时间戳
-        internal uint ShellReadyTime;
-        /// 右键冰河波就绪时间戳
-        internal uint WaveReadyTime;
 
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
@@ -48,9 +44,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (player.ownedProjectileCounts[Item.shoot] > 0) {
                 return false;
             }
+            SnowCannonPlayer state = player.GetModPlayer<SnowCannonPlayer>();
             return player.altFunctionUse == 2
-                ? Main.GameUpdateCount >= WaveReadyTime
-                : Main.GameUpdateCount >= ShellReadyTime;
+                ? Main.GameUpdateCount >= state.CrystalWaveReadyTime
+                : Main.GameUpdateCount >= state.CrystalShellReadyTime;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
@@ -92,7 +89,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// 开火余辉计时
         private int fireAnimTime;
 
-        private CrystalDimming WeaponItem => Item.ModItem as CrystalDimming;
         //开火动画播完之前不销毁，避免炮口余辉被掐断
         protected override bool PendingWork => fireAnimTime > 0;
 
@@ -109,11 +105,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            if (FireKeyLeft && TimeReady(WeaponItem.ShellReadyTime)) {
+            if (FireKeyLeft && TimeReady(GunState.CrystalShellReadyTime)) {
                 FireShell();
             }
 
-            if (FireKeyRight && TimeReady(WeaponItem.WaveReadyTime)) {
+            if (FireKeyRight && TimeReady(GunState.CrystalWaveReadyTime)) {
                 FireGlacierWave();
             }
         }
@@ -124,7 +120,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            WeaponItem.ShellReadyTime = Main.GameUpdateCount + 12;
+            GunState.CrystalShellReadyTime = Main.GameUpdateCount + 12;
             fireAnimTime = 12;
             recoil = 6f;
 
@@ -150,10 +146,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (!PickSnowAmmo(out int damage, out float knockback)) {
                 return;
             }
-            WeaponItem.WaveReadyTime = Main.GameUpdateCount + 80;
+            SnowCannonPlayer state = GunState;
+            state.CrystalWaveReadyTime = Main.GameUpdateCount + 80;
             //释放冰河波后主炮也要缓一口气
-            if (WeaponItem.ShellReadyTime < Main.GameUpdateCount + 25) {
-                WeaponItem.ShellReadyTime = Main.GameUpdateCount + 25;
+            if (state.CrystalShellReadyTime < Main.GameUpdateCount + 25) {
+                state.CrystalShellReadyTime = Main.GameUpdateCount + 25;
             }
             fireAnimTime = 15;
             recoil = 9f;

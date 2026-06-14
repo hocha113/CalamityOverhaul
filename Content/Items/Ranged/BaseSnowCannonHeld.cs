@@ -49,6 +49,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
+        /// 跨使用状态宿主，按玩家持有规避物品克隆重置
+        protected SnowCannonPlayer GunState => Owner.GetModPlayer<SnowCannonPlayer>();
+
         /// 跨使用冷却判定
         protected static bool TimeReady(uint readyTime) => Main.GameUpdateCount >= readyTime;
 

@@ -17,10 +17,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class SnowQuayMK2 : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuayMK2";
-        /// <summary>左键点射的就绪时间戳，跨使用持久</summary>
-        internal uint BurstReadyTime;
-        /// <summary>右键霰射的就绪时间戳，跨使用持久</summary>
-        internal uint ScatterReadyTime;
 
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
@@ -51,9 +47,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (player.ownedProjectileCounts[Item.shoot] > 0) {
                 return false;
             }
+            SnowCannonPlayer state = player.GetModPlayer<SnowCannonPlayer>();
             return player.altFunctionUse == 2
-                ? Main.GameUpdateCount >= ScatterReadyTime
-                : Main.GameUpdateCount >= BurstReadyTime;
+                ? Main.GameUpdateCount >= state.MK2ScatterReadyTime
+                : Main.GameUpdateCount >= state.MK2BurstReadyTime;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position
@@ -99,7 +96,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <summary>点射内的发与发间隔</summary>
         private int burstGap;
 
-        private SnowQuayMK2 WeaponItem => Item.ModItem as SnowQuayMK2;
         //一组点射没吐完之前即使松开按键也不销毁
         protected override bool PendingWork => burstLeft > 0;
 
@@ -118,18 +114,19 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            if (FireKeyLeft && TimeReady(WeaponItem.BurstReadyTime)) {
+            SnowCannonPlayer state = GunState;
+            if (FireKeyLeft && TimeReady(state.MK2BurstReadyTime)) {
                 if (!PickSnowAmmo(out _, out _)) {
                     return;
                 }
-                WeaponItem.BurstReadyTime = Main.GameUpdateCount + 26;
+                state.MK2BurstReadyTime = Main.GameUpdateCount + 26;
                 burstLeft = 3;
                 burstGap = 0;
                 NetUpdate();
                 return;
             }
 
-            if (FireKeyRight && TimeReady(WeaponItem.ScatterReadyTime) && TimeReady(WeaponItem.BurstReadyTime)) {
+            if (FireKeyRight && TimeReady(state.MK2ScatterReadyTime) && TimeReady(state.MK2BurstReadyTime)) {
                 FireScatter();
             }
         }
@@ -177,10 +174,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             //霰射额外多扣一颗雪球，打不出来也认了，超压就是要烧弹药
             _ = PickSnowAmmo(out _, out _);
 
-            WeaponItem.ScatterReadyTime = Main.GameUpdateCount + 60;
+            SnowCannonPlayer state = GunState;
+            state.MK2ScatterReadyTime = Main.GameUpdateCount + 60;
             //霰射后点射也要缓一口气
-            if (WeaponItem.BurstReadyTime < Main.GameUpdateCount + 20) {
-                WeaponItem.BurstReadyTime = Main.GameUpdateCount + 20;
+            if (state.MK2BurstReadyTime < Main.GameUpdateCount + 20) {
+                state.MK2BurstReadyTime = Main.GameUpdateCount + 20;
             }
             recoil = 9f;
 

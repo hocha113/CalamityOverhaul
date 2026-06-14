@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.Tiles
         }
 
         public override bool RightClick(int i, int j) {
-            if (SupertableUI.Instance.Active && SupertableUI.TramTP is null && MSRef.Has) {//魔法存储联动启动中
+            if (SupertableUI.Instance.Active && SupertableUI.TramTP is null && MSRef.LinkageReady) {//魔法存储联动启动中
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.3f });
                 return false;
             }

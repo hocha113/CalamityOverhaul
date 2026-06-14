@@ -16,8 +16,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     internal class SnowQuay : ModItem
     {
         public override string Texture => CWRConstant.Item_Ranged + "SnowQuay";
-        /// <summary>鼓风弹药节流计数，跨使用持久，每3次吹雪消耗1颗雪球</summary>
-        internal int StreamAmmoThrottle;
 
         public override void SetDefaults() {
             Item.DamageType = DamageClass.Ranged;
@@ -90,7 +88,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <summary>发射大雪球后的炮口动画计时</summary>
         private int shellAnimTime;
 
-        private SnowQuay WeaponItem => Item.ModItem as SnowQuay;
         //蓄压未结算或炮口动画未播完时不销毁，保证松开按键后压雪弹能正常轰出
         protected override bool PendingWork => pressure > 0 || shellAnimTime > 0;
 
@@ -144,10 +141,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 return;
             }
 
-            //每3次吹雪消耗1颗雪球，节流计数存放在物品上跨使用持久
-            bool consume = ++WeaponItem.StreamAmmoThrottle >= 3;
+            //每3次吹雪消耗1颗雪球，节流计数按玩家持有跨使用持久
+            SnowCannonPlayer state = GunState;
+            bool consume = ++state.SnowQuayStreamThrottle >= 3;
             if (consume) {
-                WeaponItem.StreamAmmoThrottle = 0;
+                state.SnowQuayStreamThrottle = 0;
             }
             if (!PickSnowAmmo(out int damage, out float knockback, consume)) {
                 return;

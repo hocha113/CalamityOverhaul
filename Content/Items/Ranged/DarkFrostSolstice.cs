@@ -19,12 +19,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
     {
         public override string Texture => CWRConstant.Item_Ranged + "DarkFrostSolstice";
         public static int ID { get; private set; }
-        /// <summary>当前射击间隔（tick），扫射中逐渐下降提速，跨使用持久</summary>
-        internal int FireRateValue = 20;
-        /// <summary>射速攀升的节拍计数，每2发提一档</summary>
-        internal int FireIndex;
-        /// <summary>高转速下的超频积累计数，每20发触发一次轰鸣蓄势</summary>
-        internal int FireIndex2;
 
         public override void SetStaticDefaults() => ID = Type;
         public override void SetDefaults() {
@@ -99,7 +93,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <summary>轰鸣期间枪口喷尘的帧动画余辉</summary>
         private int onFireTime2;
 
-        private DarkFrostSolstice WeaponItem => Item.ModItem as DarkFrostSolstice;
         //轰鸣蓄势期间即使松开扳机也不销毁，保证攒出来的超频爆发不会丢失
         protected override bool PendingWork => onFireTime > 0;
 
@@ -139,9 +132,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 Projectile.Center += VaultUtils.RandVr(8f);
                 onFireTime--;
             }
-            else if (WeaponItem.FireRateValue > 30) {
+            else if (GunState.SolsticeFireRate > 30) {
                 //超频爆发结束，转速回落到温热档
-                WeaponItem.FireRateValue = 15;
+                GunState.SolsticeFireRate = 15;
             }
 
             if (FireKeyLeft && cooldown <= 0 && Projectile.IsOwnedByLocalPlayer()) {
@@ -180,11 +173,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
+            SnowCannonPlayer state = GunState;
             //轰鸣蓄势中：这一次开火就是冰柱天罚
             if (onFireTime > 0) {
                 FireIcePillar(damage, knockback);
                 cooldown = 15;
-                WeaponItem.FireRateValue = 8;
+                state.SolsticeFireRate = 8;
                 NetUpdate();
                 return;
             }
@@ -192,11 +186,11 @@ namespace CalamityOverhaul.Content.Items.Ranged
             recoil = 2.5f;
 
             //射速攀升：每2发提一档，最快6tick一发
-            if (++WeaponItem.FireIndex > 1) {
-                if (WeaponItem.FireRateValue > 6) {
-                    WeaponItem.FireRateValue--;
+            if (++state.SolsticeFireIndex > 1) {
+                if (state.SolsticeFireRate > 6) {
+                    state.SolsticeFireRate--;
                 }
-                WeaponItem.FireIndex = 0;
+                state.SolsticeFireIndex = 0;
             }
 
             //3颗冰雹弹：高转速下随机被淬上更重的神性
@@ -210,10 +204,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 if (Main.rand.NextBool(2)) {
                     proj.damage /= 2;
                 }
-                if (Main.rand.NextBool(4) && WeaponItem.FireRateValue <= 15) {
+                if (Main.rand.NextBool(4) && state.SolsticeFireRate <= 15) {
                     proj.scale += Main.rand.NextFloat(0.35f);
                 }
-                if (Main.rand.NextBool(3) && WeaponItem.FireRateValue <= 10) {
+                if (Main.rand.NextBool(3) && state.SolsticeFireRate <= 10) {
                     proj.extraUpdates += 1;
                     proj.penetrate += 5;
                 }
@@ -228,15 +222,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
 
             //高转速下积累超频：每20发进入一次轰鸣蓄势
-            if (WeaponItem.FireRateValue <= 8) {
-                if (++WeaponItem.FireIndex2 > 20) {
-                    WeaponItem.FireRateValue = 50;
+            if (state.SolsticeFireRate <= 8) {
+                if (++state.SolsticeFireIndex2 > 20) {
+                    state.SolsticeFireRate = 50;
                     onFireTime += 60;
-                    WeaponItem.FireIndex2 = 0;
+                    state.SolsticeFireIndex2 = 0;
                 }
             }
 
-            cooldown = WeaponItem.FireRateValue;
+            cooldown = state.SolsticeFireRate;
             NetUpdate();
         }
 
