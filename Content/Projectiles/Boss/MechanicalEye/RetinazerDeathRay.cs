@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
         }
 
         //未完全展开时不造成伤害，给玩家反应窗口
-        public override bool? CanDamage() => beamWidth >= MaxWidth * 0.6f ? null : false;
+        public override bool? CanDamage() => Timer > ExpandTime ? null : false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             float p = 0f;
