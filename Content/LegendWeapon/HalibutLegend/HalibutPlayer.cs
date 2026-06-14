@@ -241,22 +241,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 return 0;
             }
 
-            //第十眼的存在条件失效时强制熄灭（外圈不满九眼或不再满足时代唯一）
-            if (save.ExtraEyeActive && (save.activationSequence.Count < 9 || !TheOnlyBornOfAnEra())) {
-                save.ExtraEyeActive = false;
-            }
-
             int baseCount = 0;
             foreach (var eye in save.activationSequence) {
                 if (eye.IsActive) {
                     baseCount++;
                 }
             }
-            if (save.ExtraEyeActive) {
+            if (ExtraEyeEffective(save)) {
                 baseCount++;
             }
 
             return baseCount;
+        }
+
+        /// <summary>第十眼当前是否生效：玩家已开启且满足存在条件（外圈满九眼且时代唯一）；只读判定，切走武器只是暂时不计入，不清除持久开启状态</summary>
+        internal bool ExtraEyeEffective(HalibutSave save) {
+            return save != null && save.ExtraEyeActive
+                && save.activationSequence.Count >= 9
+                && HalibutData.GetLevel(Player.GetItem()) == 14;
         }
 
         /// <summary>复苏速度 tick（按眼睛层级几何叠加）</summary>
@@ -286,7 +288,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             }
 
             //第十眼的复苏贡献
-            if (save.ExtraEyeActive) {
+            if (ExtraEyeEffective(save)) {
                 bool crashed = 10 <= crashLevel;
                 if (crashed) {
                     rate += CrashedEyeSideEffectRate;

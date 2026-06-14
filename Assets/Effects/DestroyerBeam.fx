@@ -93,12 +93,17 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float pulseGlow = exp(-pow((pulse - 0.5) * 4.2, 2.0)) * 0.60 * core;
 
     //=========================================================
-    //头部光球：弹头处的炽热团
+    //口器收口（仿骷髅王 muzzle/muzzleGlow）：主体沿束向口器渐入，中轴亮核乘 core 汇聚成点
     //=========================================================
-    float headDist = (1.0 - along) * 5.5;
-    float headFlare = exp(-headDist * headDist) * saturate(1.0 - abs(cross_) * 0.85);
-    //光球高频呼吸
-    headFlare *= 0.85 + 0.15 * sin(uTime * 40.0 + seed * 17.0);
+    float headBreath = 0.85 + 0.15 * sin(uTime * 40.0 + seed * 17.0);             //灼热呼吸(毁灭者个性)
+    float headFlare = smoothstep(0.84, 1.0, along) * core * (1.4 + exMode * 0.4) * headBreath;
+    float muzzle = smoothstep(1.0, 0.90, along);    //口器端主体淡入：边界收到 0，只留亮核成喷口
+
+    //=========================================================
+    //外覆宽晕 + 横向遮罩
+    //=========================================================
+    float halo = exp(-d * d * 2.2) * 0.55;                  //随 taper 两端收束的宽幅红晕
+    float edgeMask = smoothstep(1.0, 0.78, abs(cross_));    //横向边缘渐隐，消除上下平切口
 
     //=========================================================
     //调色板
@@ -108,22 +113,24 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float3 cCore  = lerp(float3(1.00, 0.85, 0.62), float3(1.00, 0.95, 0.85), exMode);
     float3 cArc   = float3(1.00, 0.30, 0.16);
 
+    //主体三向收束：口器淡入 muzzle × 末端淡出 tailFade × 横向收窄 edgeMask
+    float bodyMask = muzzle * tailFade * edgeMask;
     float3 color = float3(0, 0, 0);
     color += cBlood * core * 1.05;
     color += cCore  * hot * (1.1 + exMode * 0.4);
     color += cArc   * arc;
     color += cHot   * pulseGlow;
-    color += cCore  * headFlare * 1.5;
+    color += cBlood * halo;
+    color *= bodyMask;
+    //口器亮核单独叠加(不受 muzzle 压，自身沿束+横向双向收窄为点)
+    color += cCore  * headFlare;
+    color += cBlood * headFlare * 0.5;       //口器灼热血晕(毁灭者个性)
 
     float alpha = saturate(
-          core * 0.80
-        + hot * 0.95
-        + arc * 0.60
-        + pulseGlow * 0.50
+          (core * 0.80 + hot * 0.95 + arc * 0.60 + pulseGlow * 0.50 + halo * 0.45) * bodyMask
         + headFlare * 0.95
     );
-
-    alpha *= tailFade * fadeAlpha;
+    alpha *= fadeAlpha;
     return float4(color * alpha, alpha) * input.Color;
 }
 

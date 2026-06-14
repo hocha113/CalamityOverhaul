@@ -269,7 +269,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             if (canShowExtra || extraOpenAmount > 0.05f) {
                 bool extraCrashed = 10 <= crashLevel;
                 Color extraIris = extraCrashed ? HalibutTheme.Danger : HalibutTheme.GlowHi;
-                if (save.ExtraEyeActive) {
+                if (save.ExtraEyeActive && canShowExtra) {
                     float pulse = HalibutTheme.Breath(time, 9f, 4f);
                     HalibutRenderer.DrawSoftGlow(sb, center, 40f + pulse * 8f, extraIris * (0.5f * alpha));
                 }

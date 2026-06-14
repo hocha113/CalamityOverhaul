@@ -209,7 +209,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
         }
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
-            //DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), IsEnragedHost);
+            DrawAdditiveDressing(MathHelper.Clamp(beamWidth / MaxWidth, 0f, 1f), IsEnragedHost);
         }
 
         /// <summary>主光柱：DestroyerBeam.fx 在四边形 UV 内生成白热主轴 + 缠绕电弧 + 推进脉冲 + 头部光球</summary>
@@ -221,8 +221,8 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             //近端向后 bleed 进头部，避免口器处出现垂直于光束的硬切边
             float backBleed = MuzzleBackBleed;
             Vector2 origin = mouth - dir * backBleed;
-            //视觉宽度大于碰撞宽度，着色器边缘撕裂与电弧需要余量
-            float halfW = beamWidth * (ex ? 2.5f : 2.1f);
+            //视觉宽度大于碰撞宽度：着色器电弧撕裂 + 外覆 halo 宽晕都需要横向余量
+            float halfW = beamWidth * (ex ? 3.4f : 3.0f);
 
             //uv.x: 1=口器(漏斗喷口+光球) → 0=末端(淡出)；uv.y: 0~1 横截面
             //origin(uv.x=1) 落在头雕后方 backBleed 处，口器端由着色器 muzzleTaper 收成喷口、headFlare 补满光球
@@ -253,30 +253,19 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.Destroyer
             device.RasterizerState = origRaster;
         }
 
-        /// <summary>外覆熔焰浊浪宽晕 + 推进光球脉冲 + 口器多层聚能光球 / 十字星闪（兼任着色器缺失兜底）</summary>
+        /// <summary>推进光球脉冲 + 口器多层聚能光球 / 十字星闪 / 头部桥接辉光（圆形点状,无矩形切口）</summary>
         private void DrawAdditiveDressing(float opacity, bool ex) {
-            Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
             Texture2D glow = CWRAsset.DiffusionCircle.Value;
             Texture2D star = CWRAsset.StarTexture.Value;
             float rot = Projectile.rotation;
             Vector2 dir = rot.ToRotationVector2();
-            float backBleed = MuzzleBackBleed;
-            //贴图起点后移，与着色器 quad 一致，消除 MaskLaserLine 在口器处的平直切口
-            Vector2 drawPos = Projectile.Center - Main.screenPosition - dir * backBleed;
             float flicker = 1f + 0.1f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 40f);
 
             Color blood = ThemeBlood;
             Color amber = ThemeGlow;
             Color core = Color.White;
-            Vector2 lineOrigin = new(0, line.Height / 2f);
-            float lenScale = (beamLength + backBleed) / line.Width;
 
-            //外覆熔焰浊浪：宽幅低透红晕，撑起"巨柱"体量
-            Main.EntitySpriteDraw(line, drawPos, null, blood * (0.5f * opacity), rot, lineOrigin,
-                new Vector2(lenScale, beamWidth / line.Height * (ex ? 7f : 6f) * flicker), SpriteEffects.None, 0);
-            Main.EntitySpriteDraw(line, drawPos, null, Color.Lerp(blood, amber, 0.5f) * (0.6f * opacity), rot, lineOrigin,
-                new Vector2(lenScale, beamWidth / line.Height * 3f), SpriteEffects.None, 0);
-
+            //外覆宽晕已并入着色器 halo(随光柱收束的圆滑渐隐,无矩形切口)；此处只补圆形点状辉光
             //推进能量脉冲：数颗光球自口器奔向末端
             Vector2 screenMouth = Projectile.Center - Main.screenPosition;
             const int pulses = 4;
