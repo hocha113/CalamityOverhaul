@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -13,6 +14,8 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
     internal class GhostFireWhipProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Summon + "GhostFireWhipProjectile";
+        [VaultLoaden(CWRConstant.Projectile_Summon + "GhostFireWhipProjectileGlow")]
+        private static Asset<Texture2D> Glow = null;
 
         private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();
 
@@ -72,7 +75,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
             DrawLine(whipPoints);
             SpriteEffects flip = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             Texture2D texture = TextureAssets.Projectile[Type].Value;
-            Texture2D _men = CWRUtils.GetT2DValue(Texture + "Glow");
+            Texture2D _men = Glow.Value;
 
             Vector2 pos = whipPoints[0];
 

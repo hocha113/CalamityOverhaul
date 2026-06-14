@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -13,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     internal class PandemoniumScythe : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Melee + "BalefulSickle";
+        [VaultLoaden(CWRConstant.Projectile_Melee + "BalefulSickle")]
+        private static Asset<Texture2D> ScytheTex = null;
 
         private NPC target;
         private float searchCooldown = 0;
@@ -181,7 +184,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D texture = CWRUtils.GetT2DAsset(Texture).Value;
+            Texture2D texture = ScytheTex.Value;
 
             //绘制拖尾 - 根据追踪模式改变颜色
             Color trail1 = HomingMode == 2 ? new Color(255, 140, 60, 0) : new Color(180, 20, 40, 0);

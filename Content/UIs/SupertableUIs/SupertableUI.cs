@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.UIs.SupertableUIs.UIContent;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +69,13 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
 
         #region UI状态字段
 
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue")]
+        private static Asset<Texture2D> MainValue = null;
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow")]
+        private static Asset<Texture2D> InputArrow = null;
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow2")]
+        private static Asset<Texture2D> InputArrow2 = null;
+
         /// <summary>
         /// 获取当前UI中的物品数组
         /// </summary>
@@ -76,7 +84,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
             set => _controller.SlotManager.Slots = value;
         }
 
-        public override Texture2D Texture => CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/MainValue");
+        public override Texture2D Texture => MainValue.Value;
 
         private GridCoordinate _hoveredCell;
         private Rectangle _gridRectangle;
@@ -497,11 +505,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
         }
 
         private void DrawArrow(SpriteBatch spriteBatch, float alpha) {
-            string arrowPath = _controller.ResultManager.HasResult
-                ? "CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow"
-                : "CalamityOverhaul/Assets/UIs/SupertableUIs/InputArrow2";
-
-            Texture2D arrow = CWRUtils.GetT2DValue(arrowPath);
+            Texture2D arrow = _controller.ResultManager.HasResult ? InputArrow.Value : InputArrow2.Value;
             spriteBatch.Draw(arrow, DrawPosition + new Vector2(460, 225), null, Color.White * alpha, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
         }
 

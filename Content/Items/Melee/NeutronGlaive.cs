@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.PRTTypes;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
@@ -23,9 +23,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
 
-        /// <summary>三段连击计数，决定下一次挥砍的招式</summary>
+        /// <summary>?????????????????</summary>
         private int comboCounter;
-        /// <summary>连击重置计时器，过久未挥砍则回到第一段</summary>
+        /// <summary>???????????????????</summary>
         private int comboResetTimer;
 
         public override void SetStaticDefaults() {
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveHeld>();
             Item.shootSpeed = 18f;
             Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGlaive;
-            //noMelee 武器需要手动允许近战词缀
+            //noMelee ????????????
             ItemOverride.ItemMeleePrefixDic[Type] = true;
         }
 
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
             if (player.altFunctionUse == 2) {
                 Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<NeutronGlaiveHeldAlt>(), damage, knockback, player.whoAmI);
-                comboCounter = 0;//中子洪流重置连击
+                comboCounter = 0;//????????
                 return false;
             }
 
@@ -94,9 +94,9 @@ namespace CalamityOverhaul.Content.Items.Melee
     }
 
     /// <summary>
-    /// 中子偃月刀手持弹幕
-    /// <br/>三段连击: 横扫 → 反手回扫 → 回环重劈，挥砍中段射出中子光束，首次命中引发中子爆轰
-    /// <br/>刀光由 NeutronSlashTrail.fx 渲染，回环重劈时拖出星河
+    /// ?????????
+    /// <br/>????: ?? ? ???? ? ??????????????????????????
+    /// <br/>??? NeutronSlashTrail.fx ????????????
     /// </summary>
     internal class NeutronGlaiveHeld : BaseHeldProj, IWarpDrawable, IPrimitiveDrawable
     {
@@ -105,21 +105,21 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private const int FrameCount = 16;
 
-        /// <summary>连击索引: 0=横扫 1=反手回扫 2=回环重劈</summary>
+        /// <summary>????: 0=?? 1=???? 2=????</summary>
         private ref float ComboIndex => ref Projectile.ai[0];
-        /// <summary>挥砍方向符号 ±1</summary>
+        /// <summary>?????? ?1</summary>
         private ref float SwingDirAi => ref Projectile.ai[1];
 
         private bool IsFinisher => ComboIndex >= 2f;
 
-        //阶段时长（逻辑帧，受攻速缩放）
+        //???????????????
         private float WindupTime => IsFinisher ? 10f : 7f;
         private float SlashTime => IsFinisher ? 18f : 13f;
         private float RecoverTime => 8f;
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
-        //挥砍弧度：终结技近乎一整圈的回环
+        //????????????????
         private float SwingArc => IsFinisher ? 5.9f : 3.6f;
-        //刀尖距离持握点的长度
+        //??????????
         private float BladeReach => IsFinisher ? 180f : 165f;
 
         private static readonly Color NeutronViolet = new(138, 80, 255);
@@ -138,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         private float trailFade;
         private readonly HashSet<int> hitNPCs = [];
 
-        //刀光轨迹缓存：每逻辑帧细分采样以保证弧光平滑
+        //??????????????????????
         private const int TrailMax = 64;
         private const int TrailSubdiv = 4;
         private readonly float[] trailRot = new float[TrailMax];
@@ -217,13 +217,13 @@ namespace CalamityOverhaul.Content.Items.Melee
             float slashEnd = WindupTime + SlashTime;
 
             if (elapsed < WindupTime) {
-                //长柄武器的大幅度蓄力回拉
+                //????????????
                 float t = elapsed / WindupTime;
                 currentRotation = startAngle - swingSign * 0.3f * MathF.Sin(t * MathHelper.PiOver2);
                 trailFade = 0f;
             }
             else if (elapsed < slashEnd) {
-                //ease-out 重斩
+                //ease-out ??
                 float t = (elapsed - WindupTime) / SlashTime;
                 float eased = 1f - MathF.Pow(1f - t, IsFinisher ? 4.4f : 3.6f);
                 currentRotation = MathHelper.Lerp(startAngle, endAngle, eased);
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                     FireBeam();
                 }
 
-                //刃锋星屑
+                //????
                 if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
                     Vector2 along = Owner.GetPlayerStabilityCenter()
                         + currentRotation.ToRotationVector2() * Main.rand.NextFloat(BladeReach * 0.55f, BladeReach);
@@ -252,7 +252,7 @@ namespace CalamityOverhaul.Content.Items.Melee
                 }
             }
             else {
-                //收势：刀停住，弧光收缩渐隐
+                //?????????????
                 float t = (elapsed - slashEnd) / RecoverTime;
                 currentRotation = endAngle;
                 trailFade = 1f - t;
@@ -306,7 +306,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //转发物品命中钩子，维持装备与饰品的近战联动
+            //?????????????????????
             if (hitNPCs.Add(target.whoAmI)) {
                 ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
                 NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
@@ -327,7 +327,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //本体在 DrawCustom 的扭曲豁免层绘制，这里只画挥砍残影
+            //??? DrawCustom ?????????????????
             if (CanDamage() != true) {
                 return false;
             }
@@ -355,11 +355,11 @@ namespace CalamityOverhaul.Content.Items.Melee
         bool IWarpDrawable.DontUseBlueshiftEffect() => true;
 
         void IWarpDrawable.Warp() {
-            //挥砍期间沿刃锋路径绘制热扭曲
+            //??????????????
             if (CanDamage() != true) {
                 return;
             }
-            Texture2D warpTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle");
+            Texture2D warpTex = CWRAsset.DiffusionCircle.Value;
             Vector2 hand = Owner.GetPlayerStabilityCenter();
             Color warpColor = new Color(45, 45, 45) * 0.5f;
             for (int i = 0; i < 4; i++) {
@@ -383,7 +383,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             spriteBatch.Draw(tex, drawPos, rect, Color.White, currentRotation + rotOffset, origin
                 , Projectile.scale, effect, 0);
 
-            //终结回环的能量辉光层
+            //??????????
             if (IsFinisher && CanDamage() == true) {
                 Color glow = NeutronBlue * 0.4f;
                 glow.A = 0;
@@ -554,33 +554,22 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
     }
 
-    internal class NeutronGlaiveHeldAlt : BaseHeldProj, ICWRLoader
+    internal class NeutronGlaiveHeldAlt : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Melee + "NeutronGlaive";
-        private static Asset<Texture2D> bar1;
-        private static Asset<Texture2D> bar2;
-        private static Asset<Texture2D> bar3;
-        private static Asset<Texture2D> bar4;
+        [VaultLoaden(CWRConstant.UI + "NeutronsBar")]
+        private static Asset<Texture2D> bar1 = null;
+        [VaultLoaden(CWRConstant.UI + "NeutronsBar2")]
+        private static Asset<Texture2D> bar2 = null;
+        [VaultLoaden(CWRConstant.UI + "NeutronsBarTop")]
+        private static Asset<Texture2D> bar3 = null;
+        [VaultLoaden(CWRConstant.UI + "NeutronsBarTop2")]
+        private static Asset<Texture2D> bar4 = null;
         private bool canatcck;
         private bool canatcck2 = true;
         private bool canatcck3 = true;
         private int uiframe;
         private const int maxatcck = 80;
-        void ICWRLoader.SetupData() {
-            if (Main.dedServ) {
-                return;
-            }
-            bar1 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBar");
-            bar2 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBar2");
-            bar3 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBarTop");
-            bar4 = CWRUtils.GetT2DAsset(CWRConstant.UI + "NeutronsBarTop2");
-        }
-        void ICWRLoader.UnLoadData() {
-            bar1 = null;
-            bar2 = null;
-            bar3 = null;
-            bar4 = null;
-        }
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 112;

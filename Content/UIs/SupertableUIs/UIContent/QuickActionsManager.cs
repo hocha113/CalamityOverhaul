@@ -43,6 +43,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
     /// </summary>
     internal class QuickPlaceButton
     {
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick")]
+        private static Asset<Texture2D> OneClick = null;
+
         private readonly SupertableUI _mainUI;
         private readonly SupertableController _controller;
         private Rectangle _hitbox;
@@ -97,7 +100,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         }
 
         public void Draw(SpriteBatch spriteBatch, float alpha) {
-            Texture2D texture = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/OneClick");
+            Texture2D texture = OneClick.Value;
             Color color = _isHovered ? Color.Gold : Color.White;
             spriteBatch.Draw(texture, _mainUI.DrawPosition + SupertableConstants.ORGANIZER_OFFSET, null, color * alpha, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
@@ -115,6 +118,9 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
     /// </summary>
     internal class QuickTakeButton
     {
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/TwoClick")]
+        private static Asset<Texture2D> TwoClick = null;
+
         private readonly SupertableUI _mainUI;
         private readonly SupertableController _controller;
         private Rectangle _hitbox;
@@ -152,7 +158,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         }
 
         public void Draw(SpriteBatch spriteBatch, float alpha) {
-            Texture2D texture = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/TwoClick");
+            Texture2D texture = TwoClick.Value;
             Color color = _isHovered ? Color.Gold : Color.White;
             spriteBatch.Draw(texture, _mainUI.DrawPosition + SupertableConstants.ORGANIZER_LEFT_OFFSET, null, color * alpha, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
@@ -172,6 +178,8 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
     {
         [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/Eye")]
         private static Asset<Texture2D> _eyeAsset = null;
+        [VaultLoaden("CalamityOverhaul/Assets/UIs/SupertableUIs/CallFull")]
+        private static Asset<Texture2D> CallFull = null;
 
         private readonly SupertableUI _mainUI;
         private readonly SupertableController _controller;
@@ -218,7 +226,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs.UIContent
         }
 
         private void DrawHighlights(SpriteBatch spriteBatch, float alpha) {
-            Texture2D highlightTexture = CWRUtils.GetT2DValue("CalamityOverhaul/Assets/UIs/SupertableUIs/CallFull");
+            Texture2D highlightTexture = CallFull.Value;
 
             for (int i = 0; i < SupertableConstants.TOTAL_SLOTS; i++) {
                 Item slotItem = _controller.SlotManager.GetSlot(i);

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -387,7 +387,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //蓄力时蓝色外光晕
             if (Phase == PhaseCharging && ChargeRatio > 0.05f) {
-                Texture2D glow = CWRUtils.GetT2DValue(CWRConstant.Masking + "SoftGlow");
+                Texture2D glow = CWRAsset.SoftGlow.Value;
                 if (glow != null) {
                     Color glowColor = Color.Lerp(new Color(60, 140, 255, 0), new Color(200, 235, 255, 0), ChargeRatio);
                     float pulse = 0.85f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.15f;

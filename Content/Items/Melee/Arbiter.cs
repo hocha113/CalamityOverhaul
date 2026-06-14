@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -448,7 +448,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             //蓄力红色外光晕
             if (ChargeRatio > 0.05f) {
-                Texture2D glow = CWRUtils.GetT2DValue(CWRConstant.Masking + "SoftGlow");
+                Texture2D glow = CWRAsset.SoftGlow.Value;
                 if (glow != null) {
                     Color glowColor = Color.Lerp(new Color(255, 80, 30, 0), new Color(255, 200, 100, 0), ChargeRatio);
                     float pulse = 0.85f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.15f;

@@ -1,5 +1,6 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System.IO;
 using System.Linq;
 using Terraria;
@@ -124,6 +125,8 @@ namespace CalamityOverhaul.Content.Items.Summon
     internal class DestroyerHead : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Summon + "DestroyerHead";
+        [VaultLoaden(CWRConstant.Item_Summon + "DestroyerHeadGlow")]
+        private static Asset<Texture2D> Glow = null;
         private Vector2 offsetByIdlePos;
         private Vector2 offsetByAttackPos;
         private NPC target;
@@ -278,7 +281,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-            value = CWRUtils.GetT2DValue(Texture + "Glow");
+            value = Glow.Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
                 , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
@@ -288,6 +291,8 @@ namespace CalamityOverhaul.Content.Items.Summon
     internal class DestroyerBody : BaseHeldProj
     {
         public override string Texture => CWRConstant.Item_Summon + "DestroyerBody";
+        [VaultLoaden(CWRConstant.Item_Summon + "DestroyerBodyGlow")]
+        private static Asset<Texture2D> Glow = null;
         public override void SetStaticDefaults() {
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
@@ -336,7 +341,7 @@ namespace CalamityOverhaul.Content.Items.Summon
             Texture2D value = TextureAssets.Projectile[Type].Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
                 , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-            value = CWRUtils.GetT2DValue(Texture + "Glow");
+            value = Glow.Value;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
                 , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
             return false;
@@ -346,5 +351,17 @@ namespace CalamityOverhaul.Content.Items.Summon
     internal class DestroyerTail : DestroyerBody
     {
         public override string Texture => CWRConstant.Item_Summon + "DestroyerTail";
+        [VaultLoaden(CWRConstant.Item_Summon + "DestroyerTailGlow")]
+        private static Asset<Texture2D> TailGlow = null;
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D value = TextureAssets.Projectile[Type].Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, lightColor
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            value = TailGlow.Value;
+            Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White
+                , Projectile.rotation, value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+            return false;
+        }
     }
 }

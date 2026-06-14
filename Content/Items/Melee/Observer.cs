@@ -1,4 +1,4 @@
-﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicWrap
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-            Texture2D value = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle3");
+            Texture2D value = CWRAsset.DiffusionCircle3.Value;
             float sengs = Math.Abs(MathF.Sin(Time * 0.04f));
             float slp = sengs * 0.6f + 1.6f;
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.Red * (0.2f + sengs * 0.5f)

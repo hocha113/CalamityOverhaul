@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MuraGroundSmash : MuraTriggerDash
     {
         public override string Texture => CWRConstant.Cay_Wap_Melee + "Murasama";
+        [VaultLoaden("@CalamityMod/Items/Weapons/Melee/Murasama")]
+        private static Asset<Texture2D> MurasamaTex = null;
 
         private enum GroundSmashState
         {
@@ -502,7 +505,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
             if (Projectile.timeLeft > 290) return false;
 
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = MurasamaTex.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Rectangle frame = texture.GetRectangle(Projectile.frame, 13);
             Vector2 origin = VaultUtils.GetOrig(texture, 13);

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
     internal class JusticeUnveiledCross : ModProjectile
     {
         public override string Texture => CWRConstant.Item_Accessorie + "JusticeUnveiled";
+        [VaultLoaden(CWRConstant.Item_Accessorie + "JusticeUnveiled")]
+        private static Asset<Texture2D> CrossTex = null;
         private int crossIndex;
         private float rotation;
         private float spawnProgress = 0f; //出现进度
@@ -232,7 +235,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D texture = CWRUtils.GetT2DValue(Texture);
+            Texture2D texture = CrossTex.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             //脉动缩放效果

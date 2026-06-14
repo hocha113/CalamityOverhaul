@@ -1,6 +1,7 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -14,8 +15,10 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
     internal class WhiplashGalacticaProjectile : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile_Summon + "WhiplashGalacticaProjectile";
+        [VaultLoaden(CWRConstant.Projectile_Summon + "WhiplashGalacticaProjectileGlows")]
+        private static Asset<Texture2D> Glows = null;
 
-        private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();//鞭段点集
+        private List<Vector2> whipPoints => Projectile.GetWhipControlPoints();//???��???
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.IsAWhip[Type] = true;
@@ -74,7 +77,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
                 pos += diff;
             }
-        }//鞭连接线
+        }//????????
 
         public override bool PreDraw(ref Color lightColor) {
             DrawLine(whipPoints);
@@ -83,7 +86,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
 
             Main.instance.LoadProjectile(Type);
             Texture2D texture = TextureAssets.Projectile[Type].Value;
-            Texture2D _men = CWRUtils.GetT2DValue(CWRConstant.Projectile_Summon + "WhiplashGalacticaProjectileGlows");
+            Texture2D _men = Glows.Value;
 
             Vector2 pos = whipPoints[0];
 
@@ -111,7 +114,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                 Vector2 element = whipPoints[i];
                 Vector2 diff = whipPoints[i + 1] - element;
 
-                float rotation = diff.ToRotation() - MathHelper.PiOver2; //精灵朝下，PiOver2 修正朝向
+                float rotation = diff.ToRotation() - MathHelper.PiOver2; //???�L???PiOver2 ????????
                 Color color = Lighting.GetColor(element.ToTileCoordinates());
                 scale *= 0.75f;
                 Main.EntitySpriteDraw(texture, pos - Main.screenPosition, frame, color, rotation, origin, scale, flip, 0);
@@ -181,7 +184,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                     return;
                 }
 
-                //轨迹点
+                //????
                 Vector2[] positions = new Vector2[Projectile.oldPos.Length];
                 for (int i = 0; i < Projectile.oldPos.Length; i++) {
                     if (Projectile.oldPos[i] == Vector2.Zero) {
@@ -190,19 +193,19 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Summon.Whips
                     positions[i] = Projectile.oldPos[i] + Projectile.Size * 0.5f;
                 }
 
-                //Trail 创建/更新
+                //Trail ????/????
                 Trail ??= new Trail(positions, GetWidthFunc, GetColorFunc);
                 Trail.TrailPositions = positions;
 
-                //InnoVault 拖尾绘制
+                //InnoVault ??��????
                 Effect effect = EffectLoader.GradientTrail.Value;
                 effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
                 effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
                 effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
                 effect.Parameters["udissolveS"].SetValue(1f);
-                effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "SlashFlatBlurHVMirror"));
+                effect.Parameters["uBaseImage"].SetValue(CWRAsset.SlashFlatBlurHVMirror.Value);
                 effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
-                effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "Excelsus_Bar"));
+                effect.Parameters["uGradient"].SetValue(CWRAsset.Excelsus_Bar.Value);
                 effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 
                 Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;

@@ -142,7 +142,7 @@ namespace CalamityOverhaul.Content.Projectiles.Weapons.Magic.NeutronWandProjs
         }
 
         private void drawMatric(string texkey, Vector2 drawpos, Vector2 size, float rotation, float uOpacity, bool set) {
-            Texture2D texRing = CWRUtils.GetT2DValue(CWRConstant.Masking + texkey);
+            Texture2D texRing = CWRAsset.NormalMatrix.Value;
             Effect effect = EffectLoader.NeutronRing.Value;
             effect.Parameters["uTime"].SetValue(rotation);
             effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));

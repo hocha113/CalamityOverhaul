@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         }
 
         private void DrawFallbackBeam(Vector2 drawPos, float rot, Color outer, Color mid, Color core, float flicker) {
-            Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+            Texture2D line = CWRAsset.MaskLaserLine.Value;
             Vector2 lineOrigin = new(0, line.Height / 2f);
             float lenScale = beamLength / line.Width;
 

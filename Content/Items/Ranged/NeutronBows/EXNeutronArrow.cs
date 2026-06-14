@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -79,9 +79,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);
-            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "Extra_193"));
+            effect.Parameters["uBaseImage"].SetValue(CWRAsset.Extra_193.Value);
             effect.Parameters["uFlow"].SetValue(CWRAsset.SoftGlow.Value);
-            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "BrinyBaron_Bar"));
+            effect.Parameters["uGradient"].SetValue(CWRAsset.BrinyBaron_Bar.Value);
             effect.Parameters["uDissolve"].SetValue(CWRAsset.SoftGlow.Value);
 
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;

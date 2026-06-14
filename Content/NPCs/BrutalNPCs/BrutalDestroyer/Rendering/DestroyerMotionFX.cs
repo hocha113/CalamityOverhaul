@@ -78,10 +78,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering
             effect.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * -0.06f);
             effect.Parameters["uTimeG"]?.SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
             effect.Parameters["udissolveS"]?.SetValue(1f);
-            effect.Parameters["uBaseImage"]?.SetValue(CWRUtils.GetT2DValue(CWRConstant.Placeholder2));
-            effect.Parameters["uFlow"]?.SetValue(CWRUtils.GetT2DValue(CWRConstant.Placeholder2));
-            effect.Parameters["uGradient"]?.SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "BloodRed_Bar"));
-            effect.Parameters["uDissolve"]?.SetValue(CWRUtils.GetT2DValue(CWRConstant.Placeholder2));
+            effect.Parameters["uBaseImage"]?.SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uFlow"]?.SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uGradient"]?.SetValue(CWRAsset.BloodRed_Bar.Value);
+            effect.Parameters["uDissolve"]?.SetValue(CWRAsset.Placeholder_White.Value);
 
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
             for (int i = 0; i < 3; i++) {

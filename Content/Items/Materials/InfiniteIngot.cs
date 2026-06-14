@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.Items.Materials
 
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-            Texture2D noiseTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "SplitTrail");
+            Texture2D noiseTex = CWRAsset.SplitTrail.Value;
 
             effect.Parameters["transformMatrix"].SetValue(projection);
             effect.Parameters["basePos"].SetValue(new Vector2(line.X, line.Y));

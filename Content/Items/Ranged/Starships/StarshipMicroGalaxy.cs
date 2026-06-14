@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D glow = CWRAsset.SoftGlow.Value;
-            Texture2D twill = CWRUtils.GetT2DValue(CWRConstant.Masking + "TransverseTwill");
+            Texture2D twill = CWRAsset.TransverseTwill.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float time = Main.GameUpdateCount * 0.02f;
             float phase = Phase01;

@@ -233,7 +233,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Trail.TrailPositions = positions;
 
             Effect effect = EffectLoader.GradientTrail.Value;
-            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.GraniteBar, CWRConstant.Masking + "StarTexture");
+            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.GraniteBar, CWRAsset.StarTexture.Value);
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
             Trail?.DrawTrail(effect);
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
@@ -326,7 +326,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Trail.TrailPositions = positions;
 
             Effect effect = EffectLoader.GradientTrail.Value;
-            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.GraniteBar, CWRConstant.Masking + "ThunderTrail");
+            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.GraniteBar, CWRAsset.ThunderTrail.Value);
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
             Trail?.DrawTrail(effect);
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;

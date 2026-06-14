@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.DamageModify;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,6 +15,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
     internal class HeavenfallLongbowHeldProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "HeavenfallLongbowProj";
+        [VaultLoaden(CWRConstant.Projectile_Ranged + "HeavenfallLongbowProjGlow")]
+        private static Asset<Texture2D> Glow = null;
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<HeavenfallLongbow>();
         public override bool CanFire => Projectile.ai[2] == 0 && DownLeft || Projectile.ai[2] == 1 && DownRight;
         private HeavenfallLongbow HFBow => (HeavenfallLongbow)Owner.GetItem().ModItem;
@@ -95,7 +98,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
         }
 
         public override void PostDraw(Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture + "Glow");
+            Texture2D mainValue = Glow.Value;
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,

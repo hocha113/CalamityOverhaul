@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using InnoVault.Trails;
@@ -107,9 +107,9 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);
-            effect.Parameters["uBaseImage"].SetValue(CWRUtils.GetT2DValue(CWRConstant.Masking + "SlashFlatBlurHVMirror"));
+            effect.Parameters["uBaseImage"].SetValue(CWRAsset.SlashFlatBlurHVMirror.Value);
             effect.Parameters["uFlow"].SetValue(CWRAsset.Airflow.Value);
-            effect.Parameters["uGradient"].SetValue(CWRUtils.GetT2DValue(CWRConstant.ColorBar + "DarklightGreatsword_Bar"));
+            effect.Parameters["uGradient"].SetValue(CWRAsset.DarklightGreatsword_Bar.Value);
             effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;

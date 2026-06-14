@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -440,7 +440,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 LoadName();
 
                 if (projectiles.Count < 50) {
-                    Texture2D pts = CWRUtils.GetT2DValue(CWRConstant.Placeholder);
+                    Texture2D pts = CWRAsset.Placeholder_Transparent.Value;
                     for (int i = 0; i < names.Length; i++) {
                         string textContent = names[i];
                         ProjItem proj = new ProjItem(i, projTimer, 1, 0, Color.White, ItemPos, new Vector2(0, -1), textContent, pts, i * 90);

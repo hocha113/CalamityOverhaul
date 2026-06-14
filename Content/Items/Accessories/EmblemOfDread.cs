@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
@@ -250,7 +250,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
                 return;
             }
 
-            Texture2D warpTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle");
+            Texture2D warpTex = CWRAsset.DiffusionCircle.Value;
             Color warpColor = new Color(45, 45, 45) * 0.6f * Projectile.localAI[1];
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 drawOrig = warpTex.Size() / 2;

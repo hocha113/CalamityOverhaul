@@ -463,8 +463,6 @@ namespace CalamityOverhaul
         #endregion
 
         #region DrawUtils
-        /// <summary>按路径取 Texture2D</summary>
-        public static Texture2D GetT2DValue(string texture, bool immediateLoad = false) => GetT2DAsset(texture, immediateLoad).Value;
         /// <summary>按路径取 Asset&lt;Texture2D&gt;，immediateLoad 同步加载</summary>
         public static Asset<Texture2D> GetT2DAsset(string texture, bool immediateLoad = false) {
             if (string.IsNullOrEmpty(texture) || !ModContent.HasAsset(texture)) {

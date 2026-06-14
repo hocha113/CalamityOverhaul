@@ -1,5 +1,6 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Linq;
 using Terraria;
@@ -13,6 +14,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
     internal class AnnihilatingUniverseHeldProj : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/AnnihilatingUniverseBow";
+        [VaultLoaden(CWRConstant.Projectile_Ranged + "AnnihilatingUniverseProj/AnnihilatingUniverseBowGlow")]
+        private static Asset<Texture2D> Glow = null;
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<AnnihilatingUniverse>();
         private float Time;
         private float Time2;
@@ -88,7 +91,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
         }
 
         public override void PostDraw(Color lightColor) {
-            Texture2D mainValue = CWRUtils.GetT2DValue(Texture + "Glow");
+            Texture2D mainValue = Glow.Value;
             Main.EntitySpriteDraw(
                 mainValue,
                 Projectile.Center - Main.screenPosition,

@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Trail.TrailPositions = positions;
 
             Effect effect = EffectLoader.GradientTrail.Value;
-            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.MarbleBar, CWRConstant.Masking + "Line");
+            GraniteMarbleVFX.ApplyGradientTrail(effect, GraniteMarbleVFX.MarbleBar, CWRAsset.Line.Value);
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
             Trail?.DrawTrail(effect);
             Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;

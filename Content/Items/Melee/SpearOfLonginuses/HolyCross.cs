@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -107,7 +107,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Color glowColor = (Color.Gold with { A = 0 }) * (fill * 0.9f * appear);
 
             //底层柔光
-            Texture2D glowTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "SoftGlow");
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
             if (glowTex != null) {
                 float glowScale = (VerticalLength * 0.018f) * pulse * appear;
                 Main.spriteBatch.Draw(glowTex, drawPos, null, glowColor, 0f
@@ -187,7 +187,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             if (chargeGrade <= 0) {
                 return;
             }
-            Texture2D glowTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "SoftGlow");
+            Texture2D glowTex = CWRAsset.SoftGlow.Value;
 
             float radius = (HorizontalLength * 0.55f + 6f) * appear;
             float baseRot = pulsePhase * 0.6f;

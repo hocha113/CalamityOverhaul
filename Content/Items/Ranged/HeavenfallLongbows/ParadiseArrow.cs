@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
             secondaryColor = Color.Lerp(Color.White, secondaryColor, 0.85f);
 
             Vector2 scale = new Vector2(0.5f, 1.6f) * Projectile.scale;
-            Texture2D texture = CWRUtils.GetT2DAsset(CWRConstant.Masking + "Extra_98").Value;
+            Texture2D texture = CWRAsset.Extra_98.Value;
 
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, mainColor, Projectile.rotation, texture.Size() * 0.5f, scale, 0, 0f);
             Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, secondaryColor, Projectile.rotation, texture.Size() * 0.5f, scale * new Vector2(0.45f, 1f), 0, 0f);

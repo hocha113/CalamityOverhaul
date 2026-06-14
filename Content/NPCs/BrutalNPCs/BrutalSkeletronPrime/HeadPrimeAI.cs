@@ -73,6 +73,12 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
         internal static Asset<Texture2D> BSPRAMGlow = null;
         [VaultLoaden(CWRConstant.NPC + "BSP/BSPRAM_ForearmGlow")]
         internal static Asset<Texture2D> BSPRAM_ForearmGlow = null;
+        [VaultLoaden(CWRConstant.Item + "Bag/TwinBag")]
+        internal static Asset<Texture2D> TwinBag = null;
+        [VaultLoaden(CWRConstant.Item + "Bag/DestroyerBag")]
+        internal static Asset<Texture2D> DestroyerBag = null;
+        [VaultLoaden(CWRConstant.Item + "Bag/PrimeBag")]
+        internal static Asset<Texture2D> PrimeBag = null;
         internal static Asset<Texture2D> Vanilla_TwinsBossBag;
         internal static Asset<Texture2D> Vanilla_DestroyerBossBag;
         internal static Asset<Texture2D> Vanilla_SkeletronPrimeBossBag;
@@ -92,9 +98,9 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
             Vanilla_DestroyerBossBag = TextureAssets.Item[ItemID.DestroyerBossBag];
             Vanilla_SkeletronPrimeBossBag = TextureAssets.Item[ItemID.SkeletronPrimeBossBag];
             if (CWRServerConfig.Instance.BiologyOverhaul) {
-                TextureAssets.Item[ItemID.TwinsBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/TwinBag");
-                TextureAssets.Item[ItemID.DestroyerBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/DestroyerBag");
-                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = CWRUtils.GetT2DAsset(CWRConstant.Item + "Bag/PrimeBag");
+                TextureAssets.Item[ItemID.TwinsBossBag] = TwinBag;
+                TextureAssets.Item[ItemID.DestroyerBossBag] = DestroyerBag;
+                TextureAssets.Item[ItemID.SkeletronPrimeBossBag] = PrimeBag;
             }
             else {//中途关闭生物大修后需要恢复原版纹理
                 TextureAssets.Item[ItemID.TwinsBossBag] = Vanilla_TwinsBossBag;

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
@@ -79,7 +79,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
         /// 充能段长度=进度×全长，亮段推满即起跳
         /// </summary>
         private void DrawDashTelegraph() {
-            Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+            Texture2D line = CWRAsset.MaskLaserLine.Value;
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Vector2 origin = new(0f, line.Height / 2f);
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -177,7 +177,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime
                 return;
             }
 
-            Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+            Texture2D line = CWRAsset.MaskLaserLine.Value;
             Vector2 origin = new(0f, line.Height / 2f);
             //扇形兜底：画两条边界线
             Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color,

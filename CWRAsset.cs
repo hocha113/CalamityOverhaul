@@ -53,6 +53,36 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> ThunderTrail = null;//256*128的闪电/能量拖尾灰度图，用于PrimitiveDrawing的Trail Shader采样，这个纹理来自珊瑚石，谢谢你瓶中微光 :)
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> TileHightlight = null;//153*153的物块高亮描边蒙版，用于Tile悬停/交互时的高光外框叠加，这个纹理来自珊瑚石，谢谢你瓶中微光 :)
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> MaskLaserLine = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SlashFlatBlurHVMirror = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> DiffusionCircle3 = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> TransverseTwill = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SplitTrail = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Extra_98 = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> NormalMatrix = null;
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Line = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> BloodRed_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> AbsoluteZero_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> DragonRage_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> DarklightGreatsword_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> BrinyBaron_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> Excelsus_Bar = null;
+        [VaultLoaden(CWRConstant.ColorBar)]
+        public static Asset<Texture2D> AegisBlade_Bar = null;
         [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeterBorder")]
         internal static Asset<Texture2D> BarTop { get; private set; }
         [VaultLoaden("@CalamityMod/UI/DraedonsArsenal/ChargeMeter")]

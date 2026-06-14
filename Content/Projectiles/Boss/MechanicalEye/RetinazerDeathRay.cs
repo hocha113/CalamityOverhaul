@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -222,7 +222,7 @@ namespace CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye
         /// 兜底死光:着色器缺失时退回多层贴图拉伸
         /// </summary>
         private void DrawFallbackBeam(Vector2 drawPos, float rot, Color outer, Color mid, Color core, float flicker) {
-            Texture2D line = CWRUtils.GetT2DValue(CWRConstant.Masking + "MaskLaserLine");
+            Texture2D line = CWRAsset.MaskLaserLine.Value;
             Vector2 lineOrigin = new(0, line.Height / 2f);
             float lenScale = beamLength / line.Width;
 

@@ -2,17 +2,18 @@
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
 {
-    internal class VientianePunishment : ModProjectile
+    internal class VientianePunishment : ModProjectile, ICWRLoader
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -22,43 +23,8 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
 
         public ref float TargetIndex => ref Projectile.ai[2];
 
-        public static string[] VientianeTex = [
-            "Alluvion",
-            "ArterialAssault",
-            "AstralBow",
-            "AstrealDefeat",
-            "Barinade",
-            "Barinautical",
-            "BlossomFlux",
-            "BrimstoneFury",
-            "ClockworkBow",
-            "Contagion",
-            "CorrodedCaustibow",
-            "ContinentalGreatbow",
-            "DaemonsFlame",
-            "DarkechoGreatbow",
-            "Deathwind",
-            "Drataliornus",
-            "FlarewingBow",
-            "Galeforce",
-            "Goobow",
-            "HeavenlyGale",
-            "HoarfrostBow",
-            "LunarianBow",
-            "Malevolence",
-            "MarksmanBow",
-            "Monsoon",
-            "NettlevineGreatbow",
-            "Phangasm",
-            "PlanetaryAnnihilation",
-            "Shellshooter",
-            "TelluricGlare",
-            "TheBallista",
-            "TheMaelstrom",
-            "Ultima",
-            "Toxibow",
-            "VernalBolter"
-        ];
+        //PostSetupContent 的 SetupData 阶段填充，仅收录 CWRID 解析成功的灾厄弓
+        private static int[] ValidBowItemIds = [];
 
         public Color[] VientianeColors;
 
@@ -80,20 +46,57 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
 
         private ThunderTrail lightningTrail;
 
-        private static Dictionary<int, Asset<Texture2D>> BowTextures = new();
+        void ICWRLoader.SetupData() {
+            ValidBowItemIds = [.. new int[] {
+                CWRID.Item_Alluvion,
+                CWRID.Item_ArterialAssault,
+                CWRID.Item_AstralBow,
+                CWRID.Item_AstrealDefeat,
+                CWRID.Item_Barinade,
+                CWRID.Item_Barinautical,
+                CWRID.Item_BlossomFlux,
+                CWRID.Item_BrimstoneFury,
+                CWRID.Item_ClockworkBow,
+                CWRID.Item_Contagion,
+                CWRID.Item_CorrodedCaustibow,
+                CWRID.Item_ContinentalGreatbow,
+                CWRID.Item_DaemonsFlame,
+                CWRID.Item_DarkechoGreatbow,
+                CWRID.Item_Deathwind,
+                CWRID.Item_Drataliornus,
+                CWRID.Item_FlarewingBow,
+                CWRID.Item_Galeforce,
+                CWRID.Item_Goobow,
+                CWRID.Item_HeavenlyGale,
+                CWRID.Item_HoarfrostBow,
+                CWRID.Item_LunarianBow,
+                CWRID.Item_Malevolence,
+                CWRID.Item_MarksmanBow,
+                CWRID.Item_Monsoon,
+                CWRID.Item_NettlevineGreatbow,
+                CWRID.Item_Phangasm,
+                CWRID.Item_PlanetaryAnnihilation,
+                CWRID.Item_Shellshooter,
+                CWRID.Item_TelluricGlare,
+                CWRID.Item_TheBallista,
+                CWRID.Item_TheMaelstrom,
+                CWRID.Item_Ultima,
+                CWRID.Item_Toxibow,
+                CWRID.Item_VernalBolter,
+            }.Where(CWRID.IsValid)];
+        }
 
-        public static Asset<Texture2D> GetBowTexture(int index) {
-            if (BowTextures.TryGetValue(index, out var asset)) return asset;
+        void ICWRLoader.UnLoadData() {
+            ValidBowItemIds = [];
+        }
 
-            if (index >= 0 && index < VientianeTex.Length) {
-                string path = CWRConstant.Cay_Wap_Ranged + VientianeTex[index];
-                if (ModContent.HasAsset(path)) {
-                    asset = CWRUtils.GetT2DAsset(path);
-                    BowTextures[index] = asset;
-                    return asset;
-                }
+        public static Texture2D GetBowTexture(int index) {
+            if (ValidBowItemIds.Length == 0) {
+                return VaultAsset.placeholder3.Value;
             }
-            return VaultAsset.placeholder3;
+            int itemId = ValidBowItemIds[index % ValidBowItemIds.Length];
+            Main.instance.LoadItem(itemId);
+            return TextureAssets.Item[itemId].Value;
         }
 
         public override void SendExtraAI(BinaryWriter writer) {
@@ -126,7 +129,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
 
             if (lightningTrail == null) {
                 lightningTrail = new ThunderTrail(
-                    CWRUtils.GetT2DAsset(CWRConstant.Masking + "ThunderTrail"),
+                    CWRAsset.ThunderTrail,
                     GetTrailWidth,
                     GetTrailColor,
                     (f) => 1f
@@ -222,7 +225,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
 
         public override void OnKill(int timeLeft) {
             if (!VaultUtils.isServer) {
-                Texture2D value = GetBowTexture((int)Projectile.ai[0]).Value;
+                Texture2D value = GetBowTexture((int)Projectile.ai[0]);
                 for (int i = 0; i < 16; i++) {
                     PRTLoader.NewParticle<PRT_Light>(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(value.Width), new Vector2(0, -7)
                     , vientianeColor, Main.rand.NextFloat(0.3f, 0.7f)).Configure(60, opacity: 1, squishStrenght: 1.5f, hueShift: 0.0f, _followingRateRatio: 1);
@@ -237,7 +240,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
         }
 
         public void GetColorDate() {
-            Texture2D tex = GetBowTexture((int)Projectile.ai[0]).Value;
+            Texture2D tex = GetBowTexture((int)Projectile.ai[0]);
             if (tex == null) return;
             Color[] colors = new Color[tex.Width * tex.Height];
             tex.GetData(colors);
@@ -264,7 +267,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
                 lightningTrail?.DrawThunder(Main.instance.GraphicsDevice);
             }
 
-            Texture2D value = GetBowTexture((int)Projectile.ai[0]).Value;
+            Texture2D value = GetBowTexture((int)Projectile.ai[0]);
             Main.EntitySpriteDraw(value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, value.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
             return false;

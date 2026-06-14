@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -15,6 +16,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
     internal class MurasamaHeld : BaseHeldProj
     {
         public override string Texture => CWRConstant.Projectile_Melee + "MurasamaHeld";
+        [VaultLoaden(CWRConstant.Projectile_Melee + "MurasamaHeld")]
+        private static Asset<Texture2D> HeldTex = null;
+        [VaultLoaden(CWRConstant.Projectile_Melee + "MurasamaHeld2")]
+        private static Asset<Texture2D> HeldTex2 = null;
         private ref float Time => ref Projectile.ai[0];
         private ref int RisingDragon => ref Owner.CWR().RisingDragonCharged;
         private bool CanStartRightAction => !Projectile.IsOwnedByLocalPlayer()
@@ -333,7 +338,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 return false;
             }
 
-            Texture2D value = CWRUtils.GetT2DValue(Texture + (Projectile.hide ? "" : "2"));
+            Texture2D value = Projectile.hide ? HeldTex.Value : HeldTex2.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition + Owner.CWR().SpecialDrawPositionOffset;
             Main.EntitySpriteDraw(value, drawPos, null, lightColor, Projectile.rotation
                 , value.GetOrig(), Projectile.scale

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
                 return false;
             }
 
-            Texture2D texture = CWRUtils.GetT2DValue(CWRConstant.Masking + "TransverseTwill");
+            Texture2D texture = CWRAsset.TransverseTwill.Value;
             if (texture == null) {
                 return false;
             }

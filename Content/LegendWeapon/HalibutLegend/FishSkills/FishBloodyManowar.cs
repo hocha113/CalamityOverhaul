@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -556,7 +556,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D warpTex = CWRUtils.GetT2DValue(CWRConstant.Masking + "DiffusionCircle");
+            Texture2D warpTex = CWRAsset.DiffusionCircle.Value;
             float fadeAlpha = 1f - Projectile.alpha / 255f;
             Color warpColor = new Color(120, 0, 0, 0) * fadeAlpha;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
