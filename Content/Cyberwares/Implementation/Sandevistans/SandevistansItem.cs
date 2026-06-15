@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public virtual float MaxCooldownTime => 480f;
 
         /// <summary>激活每帧消耗，越大越短</summary>
-        public virtual float ConsumptionPerFrame => 1.5f;
+        public virtual float ConsumptionPerFrame => 2f;
 
         /// <summary>停用每帧恢复</summary>
         public virtual float RecoveryPerFrame => 0.8f;
