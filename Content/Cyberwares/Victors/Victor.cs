@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Cyberwares.Victors.UIs;
-using CalamityOverhaul.Content.HackTimes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -65,15 +64,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             ]);
         }
 
-        //克苏鲁之眼击败后且有空房才入住
-        public override bool CanTownNPCSpawn(int numTownNPCs) {
-            foreach (var p in Main.ActivePlayers) {
-                if (HackTimeAccess.CanUse(p)) {
-                    return true;
-                }
-            }
-            return NPC.downedBoss1;
-        }
+        /// <summary>
+        /// 禁用原版 town NPC spawn 路径，统一走 <see cref="VictorPortalSpawner"/> 的传送门出场
+        /// <br/>原版 spawn 依赖"空房+随机帧"会不稳定，自定义系统在玩家旁找开放地面后用 <see cref="VictorRiftPortalProj"/> 演出生成
+        /// </summary>
+        public override bool CanTownNPCSpawn(int numTownNPCs) => false;
 
         public override List<string> SetNPCNameList() => [
             Language.GetTextValue("Mods.CalamityOverhaul.NPCs.Victor.Name0"),
@@ -130,6 +125,20 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             Color light = NPC.GetAlpha(drawColor);
             spriteBatch.Draw(tex, footPos, source, light, NPC.rotation, origin, NPC.scale, effects, 0f);
             return false;
+        }
+
+        /// <summary>
+        /// 传送门出场期间冻结原版 Passive AI：alpha 较高（仍未完全淡入）就跳过移动
+        /// <br/>位置/朝向由 <see cref="VictorRiftPortalProj.UpdateBoundVictor"/> 每帧锚定
+        /// </summary>
+        public override bool PreAI() {
+            if (NPC.alpha > 16) {
+                NPC.velocity = Vector2.Zero;
+                //保持站立帧
+                NPC.frameCounter = 0;
+                return false;
+            }
+            return true;
         }
 
         public override void AI() {

@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     /// 复苏条 HalibutHudGauge.fx：液面、气泡、阈值刻线、临界态
     /// 外围：技能徽章、层数弧、领域冷却环、研究进度弧
     /// </summary>
-    [VaultLoaden(CWRConstant.UI + "Halibut/FishSkill")]
+    [VaultLoaden(CWRConstant.UI + "FishSkill")]
     internal class HalibutHud : UIHandle, ILocalizedModType
     {
         public string LocalizationCategory => "Legend.HalibutText";
