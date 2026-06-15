@@ -2744,7 +2744,6 @@ MarbleBalloon: {
 	DisplayName: Marble Balloon
 	Tooltip:
 		'''
-		Increases jump height and grants a heavy second jump
 		Press Down while airborne to slam down, releasing a shockwave on landing
 		Negates fall damage
 		'''
@@ -2754,7 +2753,16 @@ MarbleinaBottle: {
 	DisplayName: Marble in a Bottle
 	Tooltip:
 		'''
-		Double-tap a direction to roll forward in a stone dash
-		Grants brief invulnerability while dashing
+		Grants a heavy second jump
+		'''
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Marble Cloud Balloon
+	Tooltip:
+		'''
+		Grants a heavy second jump
+		Press Down while airborne to slam down, releasing a shockwave on landing
+		Negates fall damage
 		'''
 }

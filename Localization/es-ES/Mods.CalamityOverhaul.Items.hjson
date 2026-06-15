@@ -2735,7 +2735,6 @@ MarbleBalloon: {
 	DisplayName: Globo de mármol
 	Tooltip:
 		'''
-		Aumenta la altura de salto y otorga un pesado segundo salto
 		Pulsa Abajo en el aire para azotar el suelo, liberando una onda de choque al aterrizar
 		Anula el daño por caída
 		'''
@@ -2745,7 +2744,16 @@ MarbleinaBottle: {
 	DisplayName: Mármol en una botella
 	Tooltip:
 		'''
-		Pulsa dos veces una dirección para rodar hacia delante en una embestida de piedra
-		Otorga una breve invulnerabilidad mientras embistes
+		Otorga un pesado segundo salto
+		'''
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Globo nuboso de mármol
+	Tooltip:
+		'''
+		Otorga un pesado segundo salto
+		Pulsa Abajo en el aire para azotar el suelo, liberando una onda de choque al aterrizar
+		Anula el daño por caída
 		'''
 }

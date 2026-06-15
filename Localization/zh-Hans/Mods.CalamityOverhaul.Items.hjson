@@ -2706,7 +2706,6 @@ MarbleBalloon: {
 	DisplayName: 大理石气球
 	Tooltip:
 		'''
-		提升跳跃高度，并额外赋予一段沉重的二段跳
 		空中按↓砸向地面，落地掀起冲击波
 		免疫摔落伤害
 		'''
@@ -2716,7 +2715,16 @@ MarbleinaBottle: {
 	DisplayName: 瓶中大理石
 	Tooltip:
 		'''
-		双击方向键向前滚动冲刺
-		冲刺期间获得短暂无敌
+		额外赋予一段沉重的二段跳
+		'''
+}
+
+MarbleCloudBalloon: {
+	DisplayName: 大理石云朵气球
+	Tooltip:
+		'''
+		额外赋予一段沉重的二段跳
+		空中按↓砸向地面，落地掀起冲击波
+		免疫摔落伤害
 		'''
 }

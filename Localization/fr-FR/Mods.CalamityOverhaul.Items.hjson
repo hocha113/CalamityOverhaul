@@ -2718,7 +2718,6 @@ MarbleBalloon: {
 	DisplayName: Ballon de marbre
 	Tooltip:
 		'''
-		Augmente la hauteur de saut et accorde un lourd second saut
 		Appuyez sur Bas en l'air pour s'écraser au sol, libérant une onde de choc à l'atterrissage
 		Annule les dégâts de chute
 		'''
@@ -2728,7 +2727,16 @@ MarbleinaBottle: {
 	DisplayName: Marbre en bouteille
 	Tooltip:
 		'''
-		Appuyez deux fois sur une direction pour rouler en avant dans une ruée de pierre
-		Accorde une brève invulnérabilité pendant la ruée
+		Accorde un lourd second saut
+		'''
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Ballon nuage de marbre
+	Tooltip:
+		'''
+		Accorde un lourd second saut
+		Appuyez sur Bas en l'air pour s'écraser au sol, libérant une onde de choc à l'atterrissage
+		Annule les dégâts de chute
 		'''
 }

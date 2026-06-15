@@ -2732,7 +2732,6 @@ MarbleBalloon: {
 	DisplayName: Balão de mármore
 	Tooltip:
 		'''
-		Aumenta a altura do salto e concede um pesado segundo salto
 		Pressione Baixo no ar para mergulhar, liberando uma onda de choque ao aterrissar
 		Anula o dano de queda
 		'''
@@ -2742,7 +2741,16 @@ MarbleinaBottle: {
 	DisplayName: Mármore na garrafa
 	Tooltip:
 		'''
-		Toque duas vezes em uma direção para rolar à frente em uma investida de pedra
-		Concede breve invulnerabilidade durante a investida
+		Concede um pesado segundo salto
+		'''
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Balão de nuvem de mármore
+	Tooltip:
+		'''
+		Concede um pesado segundo salto
+		Pressione Baixo no ar para mergulhar, liberando uma onda de choque ao aterrissar
+		Anula o dano de queda
 		'''
 }

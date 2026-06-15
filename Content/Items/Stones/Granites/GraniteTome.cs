@@ -274,8 +274,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.MaxUpdates = 2;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 22;
         }
 
         public override void AI() {

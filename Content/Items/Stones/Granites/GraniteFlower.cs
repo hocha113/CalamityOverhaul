@@ -225,8 +225,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             Projectile.timeLeft = Life;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 24;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 24;
         }
 
         private float Open => MathHelper.Clamp((Life - Projectile.timeLeft) / 16f, 0f, 1f)

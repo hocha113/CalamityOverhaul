@@ -2711,7 +2711,6 @@ MarbleBalloon: {
 	DisplayName: Marmorballon
 	Tooltip:
 		'''
-		Erhöht die Sprunghöhe und gewährt einen schweren zweiten Sprung
 		Drücke in der Luft Abwärts, um herabzustürzen und bei der Landung eine Schockwelle freizusetzen
 		Hebt Fallschaden auf
 		'''
@@ -2721,7 +2720,16 @@ MarbleinaBottle: {
 	DisplayName: Marmor in der Flasche
 	Tooltip:
 		'''
-		Tippe zweimal eine Richtung an, um in einem Steinsturm vorwärtszurollen
-		Gewährt kurze Unverwundbarkeit während des Sturms
+		Gewährt einen schweren zweiten Sprung
+		'''
+}
+
+MarbleCloudBalloon: {
+	DisplayName: Marmor-Wolkenballon
+	Tooltip:
+		'''
+		Gewährt einen schweren zweiten Sprung
+		Drücke in der Luft Abwärts, um herabzustürzen und bei der Landung eine Schockwelle freizusetzen
+		Hebt Fallschaden auf
 		'''
 }
