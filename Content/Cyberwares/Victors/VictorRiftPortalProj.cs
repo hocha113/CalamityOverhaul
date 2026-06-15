@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -248,8 +248,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         private void PlaySfxTear() {
             if (VaultUtils.isServer) return;
             //撕开瞬间，玻璃碎+电流
-            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.55f, Pitch = -0.25f }, Projectile.Center);
-            SoundEngine.PlaySound(CWRSound.ShortCircuit with { Volume = 0.85f, Pitch = 0.15f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.35f, Pitch = -0.25f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.ShortCircuit with { Volume = 0.55f, Pitch = 0.15f }, Projectile.Center);
         }
         private void PlaySfxStable() {
             if (VaultUtils.isServer) return;
