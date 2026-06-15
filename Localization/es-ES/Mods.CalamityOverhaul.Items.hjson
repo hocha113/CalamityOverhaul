@@ -2742,10 +2742,7 @@ MarbleBalloon: {
 
 MarbleinaBottle: {
 	DisplayName: Mármol en una botella
-	Tooltip:
-		'''
-		Otorga un pesado segundo salto
-		'''
+	Tooltip: Otorga un pesado segundo salto
 }
 
 MarbleCloudBalloon: {

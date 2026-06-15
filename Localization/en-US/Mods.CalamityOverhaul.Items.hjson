@@ -2751,10 +2751,7 @@ MarbleBalloon: {
 
 MarbleinaBottle: {
 	DisplayName: Marble in a Bottle
-	Tooltip:
-		'''
-		Grants a heavy second jump
-		'''
+	Tooltip: Grants a heavy second jump
 }
 
 MarbleCloudBalloon: {

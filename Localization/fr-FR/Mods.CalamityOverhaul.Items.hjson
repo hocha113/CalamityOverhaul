@@ -2725,10 +2725,7 @@ MarbleBalloon: {
 
 MarbleinaBottle: {
 	DisplayName: Marbre en bouteille
-	Tooltip:
-		'''
-		Accorde un lourd second saut
-		'''
+	Tooltip: Accorde un lourd second saut
 }
 
 MarbleCloudBalloon: {

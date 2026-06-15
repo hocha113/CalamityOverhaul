@@ -2736,10 +2736,7 @@ MarbleBalloon: {
 
 MarbleinaBottle: {
 	DisplayName: Мрамор в бутылке
-	Tooltip:
-		'''
-		Даёт тяжёлый второй прыжок
-		'''
+	Tooltip: Даёт тяжёлый второй прыжок
 }
 
 MarbleCloudBalloon: {

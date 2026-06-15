@@ -2718,10 +2718,7 @@ MarbleBalloon: {
 
 MarbleinaBottle: {
 	DisplayName: Marmor in der Flasche
-	Tooltip:
-		'''
-		Gewährt einen schweren zweiten Sprung
-		'''
+	Tooltip: Gewährt einen schweren zweiten Sprung
 }
 
 MarbleCloudBalloon: {

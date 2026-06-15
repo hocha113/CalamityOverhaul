@@ -2713,10 +2713,7 @@ MarbleBalloon: {
 
 MarbleinaBottle: {
 	DisplayName: 瓶中大理石
-	Tooltip:
-		'''
-		额外赋予一段沉重的二段跳
-		'''
+	Tooltip: 额外赋予一段沉重的二段跳
 }
 
 MarbleCloudBalloon: {
