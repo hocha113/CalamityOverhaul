@@ -88,7 +88,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
                     BoundVictorWhoAmI = -1;
                     Projectile.netUpdate = true;
                 }
-                PlaySfxTear();
             }
 
             //稳定开放期间的环境音/震屏
@@ -244,13 +243,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         }
 
         #region 音效
-
-        private void PlaySfxTear() {
-            if (VaultUtils.isServer) return;
-            //撕开瞬间，玻璃碎+电流
-            SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.35f, Pitch = -0.25f }, Projectile.Center);
-            SoundEngine.PlaySound(CWRSound.ShortCircuit with { Volume = 0.55f, Pitch = 0.15f }, Projectile.Center);
-        }
         private void PlaySfxStable() {
             if (VaultUtils.isServer) return;
             SoundEngine.PlaySound(CWRSound.Hacker with { Volume = 0.45f, Pitch = -0.05f }, Projectile.Center);
