@@ -15,6 +15,8 @@ float collapse;         //关闭/坍缩 0=正常 1=完全坍缩
 float seed;             //本实例随机种子
 float2 portalSize;      //传送门半轴像素 (宽,高)，用于像素均匀采样
 float facing;           //+1 朝右 -1 朝左 控制内部数据流方向
+float quadInnerRadius;  //portal 半径占 quad 半径的比例 [0,1]
+                        //quad 边在 p=±1，portal 边落在 p=±quadInnerRadius；越小则辉光余量越大
 
 struct PSInput
 {
@@ -58,23 +60,31 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float2 p = (uv - 0.5) * 2.0;
     p.y = -p.y;
 
+    //quad 边缘软淡出（按矩形距离，与 portal 形状无关，保证 quad 任何边都不出硬切）
+    //在 rectDist [0.76, 0.99] 内 23% 宽度内平滑淡出，>0.99 一律 0
+    //quadInnerRadius=0.625 时 portal Y 端在 rectDist=0.625，离淡出起点还有 0.13 余量
+    float rectDist = max(abs(input.TexCoords.x - 0.5), abs(input.TexCoords.y - 0.5)) * 2.0;
+    float quadFalloff = 1.0 - smoothstep(0.76, 0.99, rectDist);
+    if (quadFalloff <= 0.001) return float4(0, 0, 0, 0);
+
     //collapse 期把整体往中心拉
     float collapseSq = collapse * collapse;
     p /= max(1.0 - collapseSq * 0.85, 0.05);
 
     //当前开口因子：撕开瞬间小、张开时接近 1
     float openSq = saturate(openProgress);
-    //椭圆边形状（竖立门，h > w 看起来更像撕开的口）
-    //收口时纵向先收，再水平拍扁
+    //椭圆边形状（竖立门，h > w）；quadInnerRadius 把 portal 主体压在 quad 内侧
+    //X 方向再 ×0.85 收窄，造型偏"撕开的口"
     float2 ellipNorm = p / float2(
-        max(openSq * 0.85, 0.05),
-        max(openSq, 0.05));
+        max(quadInnerRadius * openSq * 0.85, 0.05),
+        max(quadInnerRadius * openSq, 0.05));
     float ellipR = length(ellipNorm);
 
     //——————————————————————————————
-    //门外彻底丢弃（早期被裂痕外缘咬出毛刺，所以阈值大于 1）
+    //门外软衰减遮罩（替代硬截，配合 quadFalloff 让辉光不被画布切掉）
     //——————————————————————————————
-    if (ellipR > 1.42) return float4(0, 0, 0, 0);
+    float farMask = 1.0 - smoothstep(1.20, 1.70, ellipR);
+    if (farMask <= 0.001) return float4(0, 0, 0, 0);
 
     //内部局部时间，统一节奏
     float tt = uTime * 1.05;
@@ -103,12 +113,12 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
 
     if (rimSdf > 0.0)
     {
-        //门外只画边缘辉光
+        //门外只画边缘辉光，由 farMask + quadFalloff 双重软淡出，避免被 quad 边切
         float outerGlow = exp(-rimSdf * 4.5);
         float flick = 0.6 + 0.4 * sin(tt * 18.0 + aN * 47.0 + seed * 13.0);
         float3 rim = float3(1.0, 0.42, 0.18) * outerGlow * flick;
         rim += float3(0.92, 0.08, 0.045) * pow(outerGlow, 1.7) * 0.6;
-        float a = saturate(outerGlow * 0.85);
+        float a = saturate(outerGlow * 0.85) * farMask * quadFalloff;
         return float4(rim * a, a) * input.Color;
     }
 
@@ -296,6 +306,10 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float collapseMask = 1.0 - smoothstep(0.5 - collapse * 0.5, 1.0 - collapse * 0.5, ellipR);
     a *= lerp(1.0, collapseMask, collapse);
     col *= lerp(1.0, collapseMask, collapse);
+
+    //quad 边软淡出 + 椭圆外软衰减，杜绝画布边缘硬切
+    a *= quadFalloff * farMask;
+    col *= quadFalloff * farMask;
 
     return float4(col * a, a) * input.Color;
 }

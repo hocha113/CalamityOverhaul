@@ -301,15 +301,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             return MathHelper.Clamp((age - CollapseStart) / (float)(TotalLife - CollapseStart), 0f, 1f);
         }
 
+        /// <summary>
+        /// 画布相对 portal 半径的放大倍数：quad 半径 = portal 半径 × QuadOverPortal
+        /// <br/>必须 > 1.0；越大，辉光/锯齿/坍塌冲击波越不容易被 quad 边切；shader 同步收到 1/QuadOverPortal 作为内圈半径
+        /// </summary>
+        private const float QuadOverPortal = 1.6f;
+
         private void DrawShaderPortal(Effect shader, float openProg, float emergePulse, float collapseT) {
             Texture2D canvas = CWRAsset.Placeholder_White.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float halfW = BaseHalfWidth * Scale;
             float halfH = halfW * AspectRatio;
-            //画布往外多 20% 给撕裂边缘留余量
-            float quadW = halfW * 2.45f;
-            float quadH = halfH * 2.45f;
+            //quad 半轴 = portal 半轴 × QuadOverPortal，给所有外发光留出软淡出余量
+            float quadW = halfW * QuadOverPortal * 2f;
+            float quadH = halfH * QuadOverPortal * 2f;
 
             shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly + visualSeed * 12f);
             shader.Parameters["openProgress"]?.SetValue(MathHelper.Clamp(openProg, 0f, 1.1f));
@@ -318,6 +324,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             shader.Parameters["seed"]?.SetValue(visualSeed);
             shader.Parameters["portalSize"]?.SetValue(new Vector2(halfW, halfH));
             shader.Parameters["facing"]?.SetValue(Facing);
+            shader.Parameters["quadInnerRadius"]?.SetValue(1f / QuadOverPortal);
 
             SpriteBatch sb = Main.spriteBatch;
             sb.End();
