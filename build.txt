@@ -3,6 +3,7 @@ modReferences = InnoVault@1.9.93, SubworldLibrary
 weakReferences = CalamityMod, MagicStorage
 sortAfter = CalamityMod, InnoVault
 homepage = https://calamity-overhaul.cc
+buildIgnore = .git\*, Doc\*, .editorconfig, .gitignore, *.ps1
 author = HoCha113
 version = 0.9018
 includeSource = true
