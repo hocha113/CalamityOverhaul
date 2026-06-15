@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
-    /// <summary>大理石云气球：整合瓶中大理石的二段跳与大理石气球的砸地能力</summary>
+    /// <summary>大理石云朵气球：整合瓶中大理石的二段跳与大理石气球的砸地能力</summary>
     internal class MarbleCloudBalloon : ModItem
     {
         public override void SetDefaults() {
@@ -19,6 +19,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             player.GetModPlayer<MarbleBalloonPlayer>().Equipped = true;
             player.noFallDmg = true;
         }
+
+        public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
+            => MarbleBalloon.CanEquipWithBalloon(equippedItem, incomingItem);
 
         public override void AddRecipes() {
             CreateRecipe()

@@ -26,6 +26,19 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             player.noFallDmg = true;
         }
 
+        public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
+            => CanEquipWithBalloon(equippedItem, incomingItem);
+
+        internal static bool CanEquipWithBalloon(Item equippedItem, Item incomingItem)
+            => !(IsMarbleBalloon(equippedItem) && IsBalloon(incomingItem))
+                && !(IsMarbleBalloon(incomingItem) && IsBalloon(equippedItem));
+
+        private static bool IsMarbleBalloon(Item item)
+            => item.type == ModContent.ItemType<MarbleBalloon>()
+                || item.type == ModContent.ItemType<MarbleCloudBalloon>();
+
+        private static bool IsBalloon(Item item) => item.balloonSlot > 0 || IsMarbleBalloon(item);
+
         public override void AddRecipes() {
             CreateRecipe()
                 .AddIngredient(ItemID.Marble, 16)
