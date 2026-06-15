@@ -14,13 +14,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return true;
             }
 
-            int idx = projectile.whoAmI;
-            //新弹幕首次记入速度
-            if (!SandevistanTimeSlow.ProjHasCache[idx]) {
-                SandevistanTimeSlow.ProjCachedVelocities[idx] = projectile.velocity;
-                SandevistanTimeSlow.ProjHasCache[idx] = true;
-            }
+            //缓速期间首次出现或槽位被复用（type/owner/identity 错配）时按需重新抓取原速度
+            SandevistanTimeSlow.EnsureProjectileSnapshot(projectile);
 
+            int idx = projectile.whoAmI;
             Vector2 slowVel = SandevistanTimeSlow.ProjCachedVelocities[idx] * SandevistanTimeSlow.SlowFactor;
 
             //回滚位移后按缩放速度推进

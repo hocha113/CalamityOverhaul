@@ -1,16 +1,22 @@
-﻿using InnoVault.RenderHandles;
+﻿using CalamityOverhaul.Common;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
-    /// <summary>EndCapture 全屏后处理，径向模糊/色差/暗角/辉光</summary>
+    /// <summary>EndCapture 全屏后处理，径向模糊/色差/暗角/辉光
+    /// <br/>RT 安全门参考 <see cref="Content.HackTimes.HackTimeRender"/>、<see cref="Content.LegendWeapon.SHPCLegend.Cyberspaces.CyberspaceRender"/>
+    /// 关闭水波、Retro/Trippy 光照或 RT 异常时跳过滤镜，让残影 + HUD 替代视觉</summary>
     internal class SandevistanRender : RenderHandle
     {
         /// <summary>权重 1.1，残影 RT 之后</summary>
         public override float Weight => 1.1f;
 
         public override void EndCaptureDraw(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap) {
+            if (Main.gameMenu) {
+                return;
+            }
             float effectIntensity = Sandevistan.ScreenEffectIntensity;
             if (effectIntensity <= 0.001f) {
                 return;
@@ -20,6 +26,24 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             if (shader == null) {
                 return;
             }
+            if (screenSwap == null || screenSwap.IsDisposed) {
+                return;
+            }
+            if (Main.screenTarget == null || Main.screenTarget.IsDisposed) {
+                return;
+            }
+
+            //低水波/低光照模式或 RT 异常时直接跳过全屏滤镜，避免强写 screenTarget 顶替 backbuffer
+            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+                return;
+            }
+            //活动 RT 非 screenTarget 时强写会破坏上层管线，放弃本帧滤镜
+            if (!RenderQualitySafety.IsScreenTargetActive(gd)) {
+                return;
+            }
+
+            //保存进入时 RT 绑定，结束后还原回去，避免改变上层管线对活动 RT 的预期
+            RenderTargetBinding[] previousTargets = gd.GetRenderTargets();
 
             //拷屏到 swap
             gd.SetRenderTarget(screenSwap);
@@ -51,6 +75,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
             shader.CurrentTechnique.Passes[0].Apply();
             sb.Draw(screenSwap, Vector2.Zero, Color.White);
             sb.End();
+
+            //还原进入时 RT 绑定，防止改变上层管线对当前活动 RT 的预期
+            if (previousTargets != null && previousTargets.Length > 0
+                && previousTargets[0].RenderTarget != Main.screenTarget) {
+                gd.SetRenderTargets(previousTargets);
+            }
         }
     }
 }

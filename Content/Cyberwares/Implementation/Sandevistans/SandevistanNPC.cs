@@ -14,13 +14,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return true;
             }
 
-            int id = npc.whoAmI;
-            //时缓中新 NPC 首次记入速度
-            if (!SandevistanTimeSlow.NPCHasCache[id]) {
-                SandevistanTimeSlow.NPCCachedVelocities[id] = npc.velocity;
-                SandevistanTimeSlow.NPCHasCache[id] = true;
-            }
+            //缓速期间首次出现或槽位被复用时按需重新抓取原速度
+            SandevistanTimeSlow.EnsureNPCSnapshot(npc);
 
+            int id = npc.whoAmI;
             Vector2 slowVel = SandevistanTimeSlow.NPCCachedVelocities[id] * SandevistanTimeSlow.SlowFactor;
 
             //保活+冻动画
