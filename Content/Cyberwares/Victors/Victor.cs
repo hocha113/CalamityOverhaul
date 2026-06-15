@@ -15,6 +15,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
     /// 义体医生 Victor，克苏鲁之眼击败后入住的城镇 NPC
     /// <br/>行走/住房走 <see cref="NPCAIStyleID.Passive"/>；对话与诊所走 <see cref="VictorTalkUI"/> / <see cref="UIs.VictorClinicUI"/>
     /// </summary>
+    [AutoloadHead]
     internal class Victor : ModNPC
     {
         /// <summary>与 Victor.png 一致共 10 帧，第 0 帧站立</summary>
