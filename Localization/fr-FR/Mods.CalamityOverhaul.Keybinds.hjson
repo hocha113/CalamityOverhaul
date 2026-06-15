@@ -1,6 +1,6 @@
 QuestLog_Key.DisplayName: Journal de quêtes : basculer l'interface principale
 QuestManager_Key.DisplayName: Commissions : basculer le panneau de gestion
-Legend_UIControl.DisplayName: Flétan : basculer l'atlas des abysses
+Legend_UIControl.DisplayName: Arme légendaire : basculer le HUD
 Legend_Domain.DisplayName: Déploiement de domaine
 Legend_Teleport.DisplayName: Téléportation de domaine
 Legend_Restart.DisplayName: Auto-redémarrage

@@ -1,6 +1,6 @@
 QuestLog_Key.DisplayName: Diario de misiones: alternar interfaz principal
 QuestManager_Key.DisplayName: Encargos: alternar panel de gestión
-Legend_UIControl.DisplayName: Fletán: alternar atlas abisal
+Legend_UIControl.DisplayName: Arma legendaria: alternar HUD
 Legend_Domain.DisplayName: Despliegue de dominio
 Legend_Teleport.DisplayName: Teletransporte de dominio
 Legend_Restart.DisplayName: Autorreinicio
