@@ -49,10 +49,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
         private Player Owner => Main.player[Projectile.owner];
 
         private float seed;
-        private float progress;      //0~1 总体蓄力进度（包含淡入淡出整形）
-        private float chargeProgress;//0~1 纯线性 charging 进度（用于螺旋紧度）
-        private float pulse;         //外部脉冲注入（如 tier-up 时叠加）
-        private float drawRadius;    //当前绘制半径
+        private float progress;        //0~1 总体蓄力进度（含淡入淡出整形）
+        private float chargeProgress;  //0~1 线性 charging 进度
+        private float dramaProgress;   //0~1 演绎进度（ease+三阶段整形，shader 用）
+        private float pulse;           //外部脉冲注入
+        private float drawRadius;      //当前绘制半径
+        private float rotationAngle;   //C# 累积的螺旋旋转角（脉冲式而非匀速）
+        private float beatValue;       //当前心跳爆发 0~1
 
         private List<BloodMist> bloodMists = new List<BloodMist>();
         private List<BloodShard> bloodShards = new List<BloodShard>();
@@ -240,34 +243,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             fadeOut = EaseOutCubic(fadeOut);
             float life = fadeIn * fadeOut;
 
-            //总进度（视觉用）
-            progress = chargeProgress;
+            //=== 演绎进度（含三阶段非线性整形） ===
+            //聚集相 0~25%(雾起)、凝聚相 25~65%(丝带显形)、爆发相 65~100%(心跳脉冲)
+            //先用 SmoothStep 给线性 chargeProgress 一个 S-curve，避免匀速感
+            float ease = chargeProgress * chargeProgress * (3f - 2f * chargeProgress);
+            dramaProgress = ease;
+            progress = dramaProgress;
 
-            //半径：先扩张到 MaxRadius，进入 charging 后微微回缩（聚拢感）
+            //=== 心跳节奏：每 ~28 帧一次高斯尖峰 ===
+            float beatPhase = (t * 0.036f) % 1f;
+            float beatRaw = (float)Math.Exp(-Math.Pow((beatPhase - 0.5f) * 5.5f, 2.0));
+            //仅在中后段显形
+            float beatGate = MathHelper.Clamp((chargeProgress - 0.25f) / 0.5f, 0f, 1f);
+            beatValue = beatRaw * beatGate;
+
+            //=== 旋转累积：基础慢速 + 心跳推动（脉冲式而非匀速高速） ===
+            //基础速度：起步极慢→爆发期中速；远低于以前的 0.36+0.55*prog
+            float baseRotSpeed = MathHelper.Lerp(0.0035f, 0.0085f, dramaProgress);
+            //心跳推动：每次心跳额外推一把
+            float beatPush = beatValue * 0.014f;
+            //外部脉冲也推动
+            float pulsePush = pulse * 0.020f;
+            rotationAngle += baseRotSpeed + beatPush + pulsePush;
+            if (rotationAngle > MathHelper.TwoPi * 4f) {
+                rotationAngle -= MathHelper.TwoPi * 4f;
+            }
+
+            //=== 半径整形：先扩张，凝聚相微缩，爆发相小幅"心跳起伏" ===
             float baseR = MathHelper.Lerp(StartRadius, MaxRadius, fadeIn);
-            float shrink = MathHelper.Lerp(1f, 0.86f, chargeProgress);
-            drawRadius = baseR * shrink;
+            float shrink = MathHelper.Lerp(1f, 0.84f, dramaProgress);
+            float radiusBeat = 1f + beatValue * 0.025f * dramaProgress;
+            drawRadius = baseR * shrink * radiusBeat;
 
-            //=== 粒子供给 ===
+            //=== 粒子供给（密度随阶段，爆发期更多） ===
             SpawnBloodMist(life);
             SpawnBloodShards(life);
             SpawnDustAccent(life);
             UpdateBloodMist();
             UpdateBloodShards();
 
-            //=== 屏幕震动：心跳节奏（低频强烈 + 持续细微） ===
+            //=== 屏幕震动：底层细微 + 心跳爆发 ===
             if (owner.whoAmI == Main.myPlayer) {
-                //底层细微振动
-                float shake = MathHelper.Lerp(0.4f, 2.2f, chargeProgress) * life;
-                //心跳：每 ~22 帧一次的脉冲
-                float beatPhase = (t * 0.045f) % 1f;
-                float beat = (float)Math.Exp(-Math.Pow((beatPhase - 0.5f) * 4f, 2f));
-                shake += beat * (1.6f + chargeProgress * 2.2f) * life;
+                float shake = MathHelper.Lerp(0.35f, 1.7f, dramaProgress) * life;
+                shake += beatValue * (1.4f + dramaProgress * 2.4f) * life;
                 owner.GetModPlayer<CWRPlayer>().GetScreenShake(shake);
             }
 
-            //=== 光照：纯血红（去粉色味） ===
-            float lightIntens = (0.85f + chargeProgress * 1.4f) * life;
+            //=== 光照：纯血红，心跳时刻更亮 ===
+            float lightIntens = (0.80f + dramaProgress * 1.3f + beatValue * 0.55f) * life;
             Lighting.AddLight(Projectile.Center,
                 1.55f * lightIntens,
                 0.10f * lightIntens,
@@ -276,7 +299,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             //外部脉冲缓慢衰减
             pulse = MathHelper.Lerp(pulse, 0f, 0.12f);
 
-            //=== 自然终止 ===
             if (t >= dur) {
                 Projectile.Kill();
             }
@@ -299,16 +321,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             if (life < 0.05f) {
                 return;
             }
-            //密度随进度增加
-            int spawnPer = (int)MathHelper.Lerp(2f, 7f, chargeProgress);
+            //密度随阶段：聚集相只有 2 个；凝聚相 3~4；爆发期心跳瞬间额外 3~6 个
+            int baseN = (int)MathHelper.Lerp(2f, 5f, dramaProgress);
+            int beatN = (int)(beatValue * 5f * dramaProgress);
+            int spawnPer = baseN + beatN;
             for (int i = 0; i < spawnPer; i++) {
                 float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                 //从外缘略外起步，跟着丝带"卷进来"
                 float rad = drawRadius * Main.rand.NextFloat(0.9f, 1.20f);
 
-                //向心径向 + 顺时切向（统一旋向）形成螺旋；进度高时切向更快
-                float radialVel = -Main.rand.NextFloat(2.8f, 4.8f) * (0.75f + chargeProgress * 0.65f);
-                float angularVel = Main.rand.NextFloat(0.028f, 0.052f) * (0.9f + chargeProgress * 1.1f);
+                //向心径向 + 顺时切向（统一旋向）形成螺旋
+                //角速度降低 ~50%，避免后期粒子糊成一团；爆发心跳时短暂加速
+                float radialVel = -Main.rand.NextFloat(2.5f, 4.2f) * (0.75f + dramaProgress * 0.55f);
+                float angularVel = Main.rand.NextFloat(0.015f, 0.030f)
+                    * (0.85f + dramaProgress * 0.85f + beatValue * 0.6f);
 
                 //真血色谱：暗血/血肉/鲜血混搭，主体偏暗
                 Color c = Main.rand.Next(5) switch {
@@ -339,15 +365,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             for (int i = bloodMists.Count - 1; i >= 0; i--) {
                 var m = bloodMists[i];
                 m.Life++;
-                m.Alpha = MathHelper.Lerp(m.Alpha, 1f, 0.12f);
-                //螺旋更新
+                m.Alpha = MathHelper.Lerp(m.Alpha, 1f, 0.10f);
                 m.Angle += m.AngularVel;
                 m.Radius += m.RadialVel;
-                //向心同时角速度加快（开普勒感）
+                //开普勒感：靠近中心角速度加快，但比之前更克制(0.02 系数)
                 if (m.Radius > 10f) {
-                    m.AngularVel = MathHelper.Lerp(m.AngularVel, m.AngularVel * 1.04f, 0.5f);
+                    m.AngularVel = MathHelper.Lerp(m.AngularVel, m.AngularVel * 1.02f, 0.5f);
                 }
-                m.RadialVel *= 0.985f;
+                m.RadialVel *= 0.987f;
                 m.Rotation += m.RotationSpeed;
 
                 //尾声 fade
@@ -365,11 +390,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
         }
 
         private void SpawnBloodShards(float life) {
-            if (life < 0.1f || chargeProgress < 0.15f) {
+            //血色飞溅：仅凝聚相后开始，爆发心跳期密集
+            if (life < 0.1f || dramaProgress < 0.30f) {
                 return;
             }
-            //频率随进度增加
-            int chance = Math.Max(2, 10 - (int)(chargeProgress * 8f));
+            int chance = Math.Max(2, 9 - (int)(dramaProgress * 7f));
+            //心跳爆发期保底高频
+            if (beatValue > 0.4f) {
+                chance = Math.Max(1, chance - 2);
+            }
             if (!Main.rand.NextBool(chance)) {
                 return;
             }
@@ -431,8 +460,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             d.noGravity = true;
             d.fadeIn = 1.1f;
 
-            //PRT 火花：鲜亮血红飞溅（仅进度后段），方向沿丝带切向
-            if (chargeProgress > 0.45f && Main.rand.NextBool(3)) {
+            //PRT 火花：鲜亮血红飞溅，爆发心跳期更密
+            bool sparkOK = (dramaProgress > 0.45f && Main.rand.NextBool(3))
+                        || (beatValue > 0.5f && Main.rand.NextBool(2));
+            if (sparkOK) {
                 Vector2 sparkVel = vel.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f))
                     * Main.rand.NextFloat(1.5f, 2.4f);
                 PRTLoader.NewParticle<PRT_Spark>(pos, sparkVel,
@@ -478,32 +509,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                 return;
             }
 
-            //略大于 drawRadius，留出外缘羽化空间
-            float diameter = drawRadius * 2.15f;
-
+            //共用 uniform
             shader.Parameters["uTime"]?.SetValue(time);
-            shader.Parameters["uProgress"]?.SetValue(chargeProgress);
-            shader.Parameters["uIntensity"]?.SetValue(0.72f + chargeProgress * 0.75f);
+            shader.Parameters["uProgress"]?.SetValue(dramaProgress);
+            shader.Parameters["uIntensity"]?.SetValue(0.78f + dramaProgress * 0.65f);
             shader.Parameters["uOpacity"]?.SetValue(life);
             shader.Parameters["uSeed"]?.SetValue(seed);
             shader.Parameters["uPulse"]?.SetValue(pulse);
+            shader.Parameters["uBeat"]?.SetValue(beatValue);
+            shader.Parameters["uRotation"]?.SetValue(rotationAngle);
             shader.Parameters["uBloodDark"]?.SetValue(BloodDark.ToVector3());
             shader.Parameters["uBloodFlesh"]?.SetValue(BloodFlesh.ToVector3());
             shader.Parameters["uBloodBright"]?.SetValue(BloodBright.ToVector3());
             shader.Parameters["uBloodGleam"]?.SetValue(BloodGleam.ToVector3());
             shader.Parameters["uImage1"]?.SetValue(noise);
 
-            //AlphaBlend 让深血色"覆盖"屏幕，制造血液浸染感而非发光叠加
+            float diameter = drawRadius * 2.15f;
+            Vector2 scale = new Vector2(diameter / quad.Width, diameter / quad.Height);
+            Vector2 origin = quad.Size() * 0.5f;
+
+            //=== Pass 1: TechBase (AlphaBlend) 写暗血底+丝带阴影 ===
+            shader.CurrentTechnique = shader.Techniques["TechBase"];
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap,
                 DepthStencilState.None, RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
             shader.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(quad, center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
 
-            sb.Draw(quad, center, null, Color.White, 0f, quad.Size() * 0.5f,
-                new Vector2(diameter / quad.Width, diameter / quad.Height),
-                SpriteEffects.None, 0f);
+            //=== Pass 2: TechHighlight (Additive) 叠加鲜血脉冲与反光 ===
+            shader.CurrentTechnique = shader.Techniques["TechHighlight"];
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+            shader.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(quad, center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
 
+            //恢复
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
                 DepthStencilState.None, RasterizerState.CullNone, null,
@@ -630,11 +673,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                 return;
             }
 
-            //心跳脉冲：与屏幕震动同节奏
-            float beatPhase = (Ticks * 0.045f) % 1f;
-            float beat = (float)Math.Exp(-Math.Pow((beatPhase - 0.5f) * 4f, 2f));
-            float fastPulse = 0.55f + 0.45f * (float)Math.Sin(time * 4.2f);
-            float coreScale = (0.50f + chargeProgress * 1.30f) * life;
+            //与 AI 中 beatValue 直接同步，确保画面节拍统一
+            float beat = beatValue;
+            float fastPulse = 0.55f + 0.45f * (float)Math.Sin(time * 3.4f);
+            float coreScale = (0.50f + dramaProgress * 1.30f) * life;
 
             sb.End();
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState,
@@ -650,15 +692,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                 (BloodBright with { A = 0 }) * life * (0.55f + fastPulse * 0.55f + beat * 0.6f),
                 0f, glow.Size() / 2f, coreScale * 1.05f, SpriteEffects.None, 0f);
             //最白热点（charging 中后期），反光色，避免纯白星云感
-            if (chargeProgress > 0.35f && life > 0.2f) {
-                float hotR = (chargeProgress - 0.35f) / 0.65f * life;
+            if (dramaProgress > 0.35f && life > 0.2f) {
+                float hotR = (dramaProgress - 0.35f) / 0.65f * life;
                 sb.Draw(glow, center, null,
                     (BloodGleam with { A = 0 }) * hotR * (0.35f + fastPulse * 0.5f + beat * 0.8f),
                     0f, glow.Size() / 2f, coreScale * 0.55f, SpriteEffects.None, 0f);
             }
             //十字反光：模拟血液表面的镜面高光，仅心跳爆发瞬间显现
-            if (star != null && chargeProgress > 0.25f) {
-                float starI = chargeProgress * life * (0.35f + beat * 1.1f);
+            if (star != null && dramaProgress > 0.25f) {
+                float starI = dramaProgress * life * (0.35f + beat * 1.1f);
                 sb.Draw(star, center, null, (BloodBright with { A = 0 }) * starI,
                     time * 0.5f, star.Size() / 2f,
                     new Vector2(coreScale * 0.95f, coreScale * 0.16f),
