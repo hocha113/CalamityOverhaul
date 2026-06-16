@@ -47,8 +47,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         public override void SetDefaults() {
             NPC.townNPC = true;
             NPC.friendly = true;
-            NPC.width = 24;
-            NPC.height = 46;
+            NPC.width = 36;
+            NPC.height = 50;
             NPC.aiStyle = NPCAIStyleID.Passive;//Passive 行走/住房/逃跑
             NPC.damage = 10;
             NPC.defense = 52;

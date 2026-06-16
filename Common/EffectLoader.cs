@@ -145,5 +145,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DivineSourceArc { get; set; }
         public static Asset<Effect> DivineSourceCrescent { get; set; }
         public static Asset<Effect> DivineSourceImpact { get; set; }
+        public static Asset<Effect> OniDomainCharge { get; set; }
     }
 }
