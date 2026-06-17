@@ -3,7 +3,6 @@ using CalamityOverhaul.OtherMods.SubWorld;
 using System;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Cyberwares.Victors

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -149,10 +148,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
 
             if (!silent) {
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with {
-                    Volume = 1.1f, Pitch = -0.55f
+                    Volume = 1.1f,
+                    Pitch = -0.55f
                 }, player.Center);
                 SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen with {
-                    Volume = 1.05f, Pitch = -0.4f
+                    Volume = 1.05f,
+                    Pitch = -0.4f
                 }, player.Center);
             }
 
