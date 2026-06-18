@@ -245,8 +245,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
             float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * ds + 7f;
             float areaTop = divY + 12f;
-            float blockH = lineCount * lineH;
-            float y = areaTop + Math.Max(0f, (textRect.Bottom - areaTop - blockH) / 2f);
+            float y = areaTop;
 
             int budget = (int)revealed;
             float lastY = y;
