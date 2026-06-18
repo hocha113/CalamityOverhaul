@@ -412,10 +412,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             string title = VictorClinicUI.Instance?.GetSlotLabel(boundSlot) ?? "CYBERWARE";
             sb.Draw(px, new Rectangle(panelRect.X + (int)PanelPadding, panelRect.Y + 10, 4, 22), CyberwareTheme.Accent * (alpha * 0.9f));
             Utils.DrawBorderString(sb, title, new Microsoft.Xna.Framework.Vector2(panelRect.X + PanelPadding + 12, panelRect.Y + 8),
-                CyberwareTheme.Accent * alpha, 0.62f * CyberwareTheme.FontScale);
+                CyberwareTheme.Accent * alpha, 0.72f * CyberwareTheme.FontScale);
 
             VictorUIStyle.DrawPrice(sb, new Microsoft.Xna.Framework.Vector2(panelRect.Right - PanelPadding, panelRect.Y + 32),
-                VictorUIStyle.CountCoins(Main.LocalPlayer), alpha, 0.4f * CyberwareTheme.FontScale, rightAlign: true);
+                VictorUIStyle.CountCoins(Main.LocalPlayer), alpha, 0.44f * CyberwareTheme.FontScale, rightAlign: true);
         }
 
         private void DrawCapacityBar(SpriteBatch sb, Texture2D px, float alpha) {
@@ -427,7 +427,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             int used = cyberPlayer.UsedCapacity;
             int max = cyberPlayer.MaxCapacity;
             Utils.DrawBorderString(sb, $"CAPACITY {used}/{max}", new Microsoft.Xna.Framework.Vector2(bg.X + 6, bg.Y + 3),
-                CyberwareTheme.TextNormal * alpha, 0.44f * CyberwareTheme.FontScale);
+                CyberwareTheme.TextNormal * alpha, 0.48f * CyberwareTheme.FontScale);
 
             float ratio = max > 0 ? (float)used / max : 0f;
             int inner = bg.Width - 6;
@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
             float headerY = panelRect.Y + HeaderHeight + CapacityBarHeight + PanelPadding;
             VictorUIStyle.DrawSectionHeader(sb, new Rectangle(panelRect.X + (int)PanelPadding, (int)headerY, panelRect.Width - (int)(PanelPadding * 2), 14),
-                "INSTALLED", CyberwareTheme.AccentGold, alpha, 0.42f * CyberwareTheme.FontScale);
+                "INSTALLED", CyberwareTheme.AccentGold, alpha, 0.44f * CyberwareTheme.FontScale);
 
             Rectangle row = InstalledRect();
             bool hover = hoveredEntryKey == -2;
@@ -452,10 +452,10 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
             VictorUIStyle.DrawItemIcon(sb, eq.type, new Microsoft.Xna.Framework.Vector2(row.X + 30, row.Center.Y), 40f, alpha);
             Utils.DrawBorderString(sb, VictorUIStyle.Trim(eq.Name, 16), new Microsoft.Xna.Framework.Vector2(row.X + 56, row.Y + 7),
-                CyberwareTheme.TextBright * alpha, 0.5f * CyberwareTheme.FontScale);
+                CyberwareTheme.TextBright * alpha, 0.52f * CyberwareTheme.FontScale);
             string hint = hover ? "> UNINSTALL <" : "CLICK TO UNINSTALL";
             Utils.DrawBorderString(sb, hint, new Microsoft.Xna.Framework.Vector2(row.X + 56, row.Y + 32),
-                (hover ? CyberwareTheme.Accent : CyberwareTheme.TextDim) * (alpha * 0.8f), 0.4f * CyberwareTheme.FontScale);
+                (hover ? CyberwareTheme.Accent : CyberwareTheme.TextDim) * (alpha * 0.8f), 0.46f * CyberwareTheme.FontScale);
         }
 
         private void DrawList(SpriteBatch sb, Texture2D px, float alpha) {
@@ -479,15 +479,15 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                         ? Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.LabelOwned")
                         : Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.LabelForSale");
                     Color accent = isOwned ? CyberwareTheme.AccentCyan : CyberwareTheme.AccentGold;
-                    VictorUIStyle.DrawSectionHeader(sb, rect, label, accent, alpha, 0.42f * CyberwareTheme.FontScale);
+                    VictorUIStyle.DrawSectionHeader(sb, rect, label, accent, alpha, 0.44f * CyberwareTheme.FontScale);
 
                     if (isOwned && !anyOwned) {
                         Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.EmptyOwned"), new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
-                            CyberwareTheme.TextDim * (alpha * 0.5f), 0.36f * CyberwareTheme.FontScale);
+                            CyberwareTheme.TextDim * (alpha * 0.5f), 0.44f * CyberwareTheme.FontScale);
                     }
                     else if (!isOwned && !anyShop) {
                         Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.EmptyShop"), new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),
-                            CyberwareTheme.TextDim * (alpha * 0.5f), 0.36f * CyberwareTheme.FontScale);
+                            CyberwareTheme.TextDim * (alpha * 0.5f), 0.44f * CyberwareTheme.FontScale);
                     }
                     index++;
                     continue;
@@ -518,14 +518,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
             VictorUIStyle.DrawItemIcon(sb, item.type, new Microsoft.Xna.Framework.Vector2(rect.X + 28 + slide, rect.Center.Y), 38f, alpha);
             Utils.DrawBorderString(sb, VictorUIStyle.Trim(item.Name, 15), new Microsoft.Xna.Framework.Vector2(rect.X + 54 + slide, rect.Y + 7),
-                (canEquip ? CyberwareTheme.TextBright : CyberwareTheme.TextDim) * alpha, 0.48f * CyberwareTheme.FontScale);
+                (canEquip ? CyberwareTheme.TextBright : CyberwareTheme.TextDim) * alpha, 0.52f * CyberwareTheme.FontScale);
 
             string sub = item.ModItem is BaseCyberware bc ? $"CAP {bc.CapacityCost}" : "";
             Utils.DrawBorderString(sb, sub, new Microsoft.Xna.Framework.Vector2(rect.X + 54 + slide, rect.Y + 32),
-                accent * (alpha * 0.7f), 0.4f * CyberwareTheme.FontScale);
+                accent * (alpha * 0.7f), 0.44f * CyberwareTheme.FontScale);
 
             string act = !canEquip ? "OVER CAP" : hv > 0.5f ? "▶ INSTALL" : "INSTALL";
-            float aScale = 0.42f * CyberwareTheme.FontScale;
+            float aScale = 0.46f * CyberwareTheme.FontScale;
             float aW = FontAssets.MouseText.Value.MeasureString(act).X * aScale;
             Utils.DrawBorderString(sb, act, new Microsoft.Xna.Framework.Vector2(rect.Right - aW - 10, rect.Y + (rect.Height - 16) / 2f),
                 (canEquip ? accent : CyberwareTheme.Accent) * (alpha * (0.6f + 0.4f * hv)), aScale);
@@ -539,12 +539,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
             VictorUIStyle.DrawItemIcon(sb, type, new Microsoft.Xna.Framework.Vector2(rect.X + 28 + slide, rect.Center.Y), 38f, alpha * (affordable ? 1f : 0.55f));
             Utils.DrawBorderString(sb, VictorUIStyle.Trim(Lang.GetItemNameValue(type), 15), new Microsoft.Xna.Framework.Vector2(rect.X + 54 + slide, rect.Y + 7),
-                (affordable ? CyberwareTheme.TextBright : CyberwareTheme.TextDim) * alpha, 0.48f * CyberwareTheme.FontScale);
+                (affordable ? CyberwareTheme.TextBright : CyberwareTheme.TextDim) * alpha, 0.52f * CyberwareTheme.FontScale);
 
-            VictorUIStyle.DrawPrice(sb, new Microsoft.Xna.Framework.Vector2(rect.X + 54 + slide, rect.Y + 32), price, alpha, 0.4f * CyberwareTheme.FontScale, rightAlign: false);
+            VictorUIStyle.DrawPrice(sb, new Microsoft.Xna.Framework.Vector2(rect.X + 54 + slide, rect.Y + 32), price, alpha, 0.44f * CyberwareTheme.FontScale, rightAlign: false);
 
             string act = hv > 0.5f ? "▶ BUY" : "BUY";
-            float aScale = 0.42f * CyberwareTheme.FontScale;
+            float aScale = 0.46f * CyberwareTheme.FontScale;
             float aW = FontAssets.MouseText.Value.MeasureString(act).X * aScale;
             Utils.DrawBorderString(sb, act, new Microsoft.Xna.Framework.Vector2(rect.Right - aW - 10, rect.Y + (rect.Height - 16) / 2f),
                 (affordable ? accent : CyberwareTheme.Accent) * (alpha * (0.6f + 0.4f * hv)), aScale);
