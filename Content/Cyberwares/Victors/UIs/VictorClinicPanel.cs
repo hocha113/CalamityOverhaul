@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
             float headerY = panelRect.Y + HeaderHeight + CapacityBarHeight + PanelPadding;
             VictorUIStyle.DrawSectionHeader(sb, new Rectangle(panelRect.X + (int)PanelPadding, (int)headerY, panelRect.Width - (int)(PanelPadding * 2), 14),
-                "INSTALLED", CyberwareTheme.AccentGold, alpha, 0.44f * CyberwareTheme.FontScale);
+                "INSTALLED", CyberwareTheme.AccentGold, alpha, 0.48f * CyberwareTheme.FontScale);
 
             Rectangle row = InstalledRect();
             bool hover = hoveredEntryKey == -2;
@@ -479,7 +479,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                         ? Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.LabelOwned")
                         : Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.LabelForSale");
                     Color accent = isOwned ? CyberwareTheme.AccentCyan : CyberwareTheme.AccentGold;
-                    VictorUIStyle.DrawSectionHeader(sb, rect, label, accent, alpha, 0.44f * CyberwareTheme.FontScale);
+                    VictorUIStyle.DrawSectionHeader(sb, rect, label, accent, alpha, 0.48f * CyberwareTheme.FontScale);
 
                     if (isOwned && !anyOwned) {
                         Utils.DrawBorderString(sb, Language.GetTextValue("Mods.CalamityOverhaul.UI.VictorClinicUI.EmptyOwned"), new Microsoft.Xna.Framework.Vector2(rect.X + 16, rect.Y + LabelHeight - 2),

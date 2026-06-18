@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
     {
         private const float Padding = 10f;
         private const float IconSize = 36f;
-        private const float LineSpacing = 16f;
+        private const float LineSpacing = 18f;
         private const float ScanLineSpeed = 3.5f;
 
         private static float scanPhase;
@@ -35,8 +35,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             //测量尺寸
             float textScale = 0.76f;
-            float smallScale = 0.60f;
-            float descScale = 0.56f;
+            float smallScale = 0.66f;
+            float descScale = 0.64f;
 
             Vector2 nameSize = CWRUtils.MeasureText(name, textScale);
             Vector2 slotSize = CWRUtils.MeasureText(slotName, smallScale);
