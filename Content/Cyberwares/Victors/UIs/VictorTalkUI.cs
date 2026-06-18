@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         }
 
         #endregion
-
+        [VaultLoaden("CalamityOverhaul/Content/Cyberwares/Victors/Victor")]
         private static Asset<Texture2D> portraitAsset;
 
         private string currentDialogue = string.Empty;
@@ -206,9 +206,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         private void DrawPortrait(SpriteBatch sb, Texture2D px, float alpha) {
             VictorUIStyle.DrawHoloFrame(sb, portraitRect, CyberwareTheme.Accent, alpha, GlobalTimer);
-
-            portraitAsset ??= ModContent.Request<Texture2D>(
-                "CalamityOverhaul/Content/Cyberwares/Victors/Victor", AssetRequestMode.ImmediateLoad);
             Texture2D tex = portraitAsset?.Value;
             if (tex != null) {
                 int frameH = tex.Height / Victor.FrameCount;
