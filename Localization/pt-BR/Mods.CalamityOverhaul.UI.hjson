@@ -441,6 +441,14 @@ VictorTalkUI: {
 	Greet1: Quer um corpo mais forte? O aço nunca te trai; só a sua carteira faz isso.
 	Greet2: Já vi tolos demais aguentando balas com a carne. Agora eles só vivem na minha memória... e na minha mesa de cirurgia.
 	Greet3: Cérebro, olhos, membros: se o preço for justo, não há nada que eu não possa substituir.
+	Greet4: Você ainda tem os dois olhos originais. Interessante. A maioria das pessoas cuida disso primeiro.
+	Greet5: Não toque em nada nessa bandeja. Metade está esterilizada. A outra metade é pior.
+	Greet6: Não pergunto onde você levou o dano. Só garanto que não aconteça do mesmo jeito duas vezes.
+	Greet7: O último cliente entrou sem um braço. Saiu com dois melhores. Isso é progresso.
+	Greet8: A carne apodrece. O cromo certo, não. Pense nisso antes de sair daqui sem mudança alguma.
+	Greet9: Tempo é dinheiro. O meu, especificamente. Diga o que precisa e poupe a conversa fiada.
+	Greet10: Peças novas precisam de adaptação. Tente não levar fogo pesado por alguns dias.
+	Greet11: O corpo é só uma ferramenta. O seu parece que pulou a manutenção há um bom tempo.
 	ClinicButtonText: Clínica cibernética
 	ChatButtonText: Conversar
 	LeaveButtonText: Sair

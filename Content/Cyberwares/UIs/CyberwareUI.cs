@@ -69,11 +69,8 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 状态
 
-        private bool isOpen;
-        private float openProgress;
         private bool isClosing;
         private float closeAnimTimer;
-        private float globalTimer;
         private float dataStreamPhase;
         private Rectangle panelRect;
         private Vector2 panelCenter;
@@ -93,7 +90,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         public static CyberwareUI Instance => UIHandleLoader.GetUIHandleOfType<CyberwareUI>();
 
-        public override bool Active => isOpen || openProgress > 0.01f || isClosing;
+        public override bool Active => IsOpen || OpenProgress.Current > 0.01f || isClosing;
 
         /// <summary>槽位本地化标签</summary>
         public string GetSlotLabel(int slotIndex) {
@@ -111,41 +108,25 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         #region 公共接口
 
-        /// <summary>打开界面</summary>
-        public void Open() {
-            if (!isOpen) {
-                isOpen = true;
-                if (isClosing) {
-                    openProgress = Math.Max(0.05f, currentWidthProgress);
-                    isClosing = false;
-                    closeAnimTimer = 0f;
-                }
-                panelRenderer.TriggerGlitch(0.8f);
-
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.Scanning, Main.LocalPlayer.Center);
-                }
-            }
-        }
-
-        /// <summary>关闭界面</summary>
-        public void Close() {
-            if (isOpen) {
-                isOpen = false;
-                isClosing = true;
+        protected override void OnOpen() {
+            if (isClosing) {
+                OpenProgress.Current = Math.Max(0.05f, currentWidthProgress);
+                isClosing = false;
                 closeAnimTimer = 0f;
-                panelRenderer.TriggerGlitch(0.6f);
-
-                if (!VaultUtils.isServer) {
-                    SoundEngine.PlaySound(CWRSound.Scanning, Main.LocalPlayer.Center);
-                }
+            }
+            panelRenderer.TriggerGlitch(0.8f);
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(CWRSound.Scanning, Main.LocalPlayer.Center);
             }
         }
 
-        /// <summary>切换开关</summary>
-        public void Toggle() {
-            if (isOpen) Close();
-            else Open();
+        protected override void OnClose() {
+            isClosing = true;
+            closeAnimTimer = 0f;
+            panelRenderer.TriggerGlitch(0.6f);
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(CWRSound.Scanning, Main.LocalPlayer.Center);
+            }
         }
 
         #endregion
@@ -159,19 +140,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 return;
             }
 
-            //打开过渡动画
-            float targetProgress = isOpen ? 1f : 0f;
-            openProgress += (targetProgress - openProgress) * 0.12f;
-            if (!isOpen && openProgress < 0.01f) openProgress = 0f;
-            if (openProgress < 0.01f) return;
+            if (OpenProgress.Current < 0.01f) return;
 
-            //推进全局计时器
-            globalTimer += 0.016f;
             dataStreamPhase += 0.03f;
             if (dataStreamPhase > MathHelper.TwoPi) dataStreamPhase -= MathHelper.TwoPi;
 
             //计算面板布局（开启时宽高统一缩放）
-            float easedProgress = VaultUtils.EaseOutCubic(Math.Clamp(openProgress, 0, 1));
+            float easedProgress = VaultUtils.EaseOutCubic(Math.Clamp(OpenProgress.Current, 0, 1));
             currentWidthProgress = easedProgress;
             currentHeightProgress = easedProgress;
             currentAlpha = easedProgress;
@@ -198,7 +173,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             slotRenderer.UpdateAnimations();
             bodyRenderer.SetFocusNode(slotRenderer.FocusedNodeIndex, slotRenderer.FocusStrength);
 
-            particleSystem.Update(bodyOrigin, openProgress);
+            particleSystem.Update(bodyOrigin, OpenProgress.Current);
 
             //更新义体背包面板
             var cyberPlayer = player.GetModPlayer<CyberwarePlayer>();
@@ -219,7 +194,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             }
 
             //拦截面板区域内的游戏输入
-            if (isOpen && panelRect.Contains(Main.mouseX, Main.mouseY)) {
+            if (IsOpen && panelRect.Contains(Main.mouseX, Main.mouseY)) {
                 player.mouseInterface = true;
             }
         }
@@ -239,7 +214,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             if (closeAnimTimer >= 1f) {
                 isClosing = false;
-                openProgress = 0f;
+                OpenProgress.Snap(0f);
                 closeAnimTimer = 0f;
                 return;
             }
@@ -267,8 +242,6 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                 closeLineGlow = (1f - p) * 1.5f;
             }
 
-            //推进计时器
-            globalTimer += 0.016f;
             dataStreamPhase += 0.03f;
             if (dataStreamPhase > MathHelper.TwoPi) dataStreamPhase -= MathHelper.TwoPi;
 
@@ -295,7 +268,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         #region 绘制
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (!isClosing && openProgress < 0.01f) return;
+            if (!isClosing && OpenProgress.Current < 0.01f) return;
 
             //刷新本地化缓存
             RefreshSlotLabelCache();
@@ -305,7 +278,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float bodyR = CyberwareTheme.BodyHaloRadius * MathHelper.Clamp(currentContentAlpha, 0f, 1f);
             CyberPanelRenderer.DrawShaderBackground(spriteBatch, currentAlpha, panelRect, bodyLocalCenter, bodyR, mode: 0);
             //CPU 四角括号+顶脉冲
-            CyberPanelRenderer.DrawFrameDecor(spriteBatch, currentAlpha, panelRect, globalTimer);
+            CyberPanelRenderer.DrawFrameDecor(spriteBatch, currentAlpha, panelRect, GlobalTimer);
 
             RasterizerState rasterizerState = new RasterizerState { ScissorTestEnable = true };
             spriteBatch.End();
@@ -324,7 +297,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
             //内容层，关闭时淡出
             if (currentContentAlpha > 0.01f) {
-                bodyRenderer.DrawBody(spriteBatch, currentContentAlpha, bodyOrigin, globalTimer);
+                bodyRenderer.DrawBody(spriteBatch, currentContentAlpha, bodyOrigin, GlobalTimer);
                 bodyRenderer.DrawNodes(spriteBatch, currentContentAlpha, bodyOrigin, slotRenderer.ComputeNodeStates());
 
                 slotRenderer.DrawConnectors(spriteBatch, currentContentAlpha, panelRect, bodyRenderer, bodyOrigin, dataStreamPhase);
@@ -333,7 +306,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
                     SlotSelectedText.Value, SlotEmptyText.Value, cyberPlayer);
 
                 panelRenderer.DrawTitleAndDecor(spriteBatch, currentContentAlpha, panelRect, panelCenter,
-                    globalTimer, TitleText.Value, StatusText.Value);
+                    GlobalTimer, TitleText.Value, StatusText.Value);
             }
 
             particleSystem.Draw(spriteBatch, currentAlpha);

@@ -439,6 +439,14 @@ VictorTalkUI: {
 	Greet1: Willst du einen stärkeren Körper? Stahl verrät dich nie – nur deine Geldbörse tut das.
 	Greet2: Ich habe zu viele Narren gesehen, die Kugeln mit Fleisch aufgefangen haben. Jetzt leben sie nur noch in meiner Erinnerung ... und auf meinem Operationstisch.
 	Greet3: Gehirn, Augen, Gliedmaßen – wenn der Preis stimmt, gibt es nichts, was ich nicht ersetzen kann.
+	Greet4: Du hast noch beide Originalaugen. Interessant. Die meisten kümmern sich zuerst darum.
+	Greet5: Fass nichts auf diesem Tablett an. Die Hälfte ist steril. Die andere Hälfte ist schlimmer.
+	Greet6: Ich frage nicht, woher du den Schaden hast. Ich sorge nur dafür, dass es nicht auf dieselbe Weise zweimal passiert.
+	Greet7: Der letzte Kunde kam ohne einen Arm herein. Ging mit zwei besseren heraus. Das ist Fortschritt.
+	Greet8: Fleisch fault. Das richtige Chrom nicht. Denk daran, bevor du hier unverändert gehst.
+	Greet9: Zeit ist Geld. Meins, genauer gesagt. Sag mir, was du brauchst, und spare dir das Geplauder.
+	Greet10: Neue Teile brauchen eine Einfahrzeit. Versuche, ein paar Tage keinem schweren Beschuss ausgesetzt zu sein.
+	Greet11: Der Körper ist nur ein Werkzeug. Deiner sieht aus, als hätte er lange keine Wartung mehr gehabt.
 	ClinicButtonText: Cyberware-Klinik
 	ChatButtonText: Plaudern
 	LeaveButtonText: Verlassen

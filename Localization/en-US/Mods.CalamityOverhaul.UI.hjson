@@ -441,6 +441,14 @@ VictorTalkUI: {
 	Greet1: Want a stronger body? Steel never betrays you - only your wallet does.
 	Greet2: I have seen too many fools soak up bullets with flesh. Now they only live on in my memory... and on my operating table.
 	Greet3: Brain, eyes, limbs - if the price is right, there is nothing I cannot replace.
+	Greet4: You still have both original eyes. Interesting. Most people fix that first.
+	Greet5: Don't touch anything on that tray. Half of it is sterile. The other half is worse.
+	Greet6: I don't ask where you got the damage. I just make sure it does not happen the same way twice.
+	Greet7: Last customer came in missing an arm. Left with two better ones. That is progress.
+	Greet8: Flesh rots. The right chrome does not. Keep that in mind before you walk out of here unchanged.
+	Greet9: Time is money. Mine, specifically. Tell me what you need and skip the small talk.
+	Greet10: New parts need breaking in. Try not to take heavy fire for a few days.
+	Greet11: The body is just a tool. Yours looks like it has skipped maintenance for a while.
 	ClinicButtonText: Cyberware Clinic
 	ChatButtonText: Small Talk
 	LeaveButtonText: Leave

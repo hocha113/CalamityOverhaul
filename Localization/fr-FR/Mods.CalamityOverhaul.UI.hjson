@@ -439,6 +439,14 @@ VictorTalkUI: {
 	Greet1: Tu veux un corps plus solide ? L'acier ne te trahit jamais – seul ton portefeuille le fait.
 	Greet2: J'ai vu trop d'imbéciles encaisser des balles avec leur chair. Aujourd'hui, ils ne survivent que dans ma mémoire... et sur ma table d'opération.
 	Greet3: Cerveau, yeux, membres – si le prix est juste, il n'y a rien que je ne puisse remplacer.
+	Greet4: Tu as encore tes deux yeux d'origine. Intéressant. La plupart des gens s'en occupent en premier.
+	Greet5: Ne touche à rien sur ce plateau. La moitié est stérile. L'autre moitié est pire.
+	Greet6: Je ne demande pas comment tu as été blessé. Je fais juste en sorte que ça n'arrive pas de la même façon deux fois.
+	Greet7: Le dernier client est arrivé sans un bras. Reparti avec deux meilleurs. C'est ça, le progrès.
+	Greet8: La chair pourrit. Le bon chrome, non. Garde ça à l'esprit avant de partir sans rien changer.
+	Greet9: Le temps, c'est de l'argent. Le mien, plus précisément. Dis-moi ce qu'il te faut, sans bavardage.
+	Greet10: Les nouvelles pièces ont besoin d'un rodage. Évite de prendre des tirs lourds pendant quelques jours.
+	Greet11: Le corps n'est qu'un outil. Le tien a l'air de n'avoir pas subi d'entretien depuis un moment.
 	ClinicButtonText: Clinique cybernétique
 	ChatButtonText: Bavarder
 	LeaveButtonText: Partir

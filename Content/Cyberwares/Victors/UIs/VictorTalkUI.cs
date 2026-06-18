@@ -43,10 +43,18 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             ChatButtonText = this.GetLocalization(nameof(ChatButtonText), () => "Small Talk");
             LeaveButtonText = this.GetLocalization(nameof(LeaveButtonText), () => "Leave");
             greetings = [
-                this.GetLocalization("Greet0", () => "Another customer? Come in, before the draft scatters your spare parts."),
-                this.GetLocalization("Greet1", () => "Want a stronger body? Steel never betrays you - only your wallet does."),
-                this.GetLocalization("Greet2", () => "Brain, eyes, limbs - if the price is right, there is nothing I cannot replace."),
-                this.GetLocalization("Greet3", () => "Sit on the table. Let me see what flesh of yours is still worth keeping."),
+                this.GetLocalization("Greet0",  () => "Another customer? Come in, before the draft scatters your spare parts."),
+                this.GetLocalization("Greet1",  () => "Want a stronger body? Steel never betrays you - only your wallet does."),
+                this.GetLocalization("Greet2",  () => "Brain, eyes, limbs - if the price is right, there is nothing I cannot replace."),
+                this.GetLocalization("Greet3",  () => "Sit on the table. Let me see what flesh of yours is still worth keeping."),
+                this.GetLocalization("Greet4",  () => "You still have both original eyes. Interesting. Most people fix that first."),
+                this.GetLocalization("Greet5",  () => "Don't touch anything on that tray. Half of it is sterile. The other half is worse."),
+                this.GetLocalization("Greet6",  () => "I don't ask where you got the damage. I just make sure it does not happen the same way twice."),
+                this.GetLocalization("Greet7",  () => "Last customer came in missing an arm. Left with two better ones. That is progress."),
+                this.GetLocalization("Greet8",  () => "Flesh rots. The right chrome does not. Keep that in mind before you walk out of here unchanged."),
+                this.GetLocalization("Greet9",  () => "Time is money. Mine, specifically. Tell me what you need and skip the small talk."),
+                this.GetLocalization("Greet10", () => "New parts need breaking in. Try not to take heavy fire for a few days."),
+                this.GetLocalization("Greet11", () => "The body is just a tool. Yours looks like it has skipped maintenance for a while."),
             ];
         }
 
@@ -70,12 +78,26 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
 
         private readonly CyberPanelRenderer panelRenderer = new();
 
+        //轮转洗牌队列，保证一轮内不重复
+        private int[] shuffleQueue;
+        private int shufflePos;
+
         protected override void OnOpen() => PickDialogue();
 
         private void PickDialogue() {
-            if (greetings != null && greetings.Length > 0) {
-                currentDialogue = greetings[Main.rand.Next(greetings.Length)].Value;
+            if (greetings == null || greetings.Length == 0) {
+                return;
             }
+            if (shuffleQueue == null || shufflePos >= shuffleQueue.Length) {
+                shuffleQueue = new int[greetings.Length];
+                for (int i = 0; i < shuffleQueue.Length; i++) shuffleQueue[i] = i;
+                for (int i = shuffleQueue.Length - 1; i > 0; i--) {
+                    int j = Main.rand.Next(i + 1);
+                    (shuffleQueue[i], shuffleQueue[j]) = (shuffleQueue[j], shuffleQueue[i]);
+                }
+                shufflePos = 0;
+            }
+            currentDialogue = greetings[shuffleQueue[shufflePos++]].Value;
             revealed = 0f;
         }
 
