@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             sb.Draw(px, new Vector2(panelRect.X + 10, bottomTextY + 2), new Rectangle(0, 0, 1, 1),
                 statusDot, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
             Utils.DrawBorderString(sb, statusText, new Vector2(panelRect.X + 22, bottomTextY - 2),
-                CyberwareTheme.TextDim * alpha, 0.42f * CyberwareTheme.FontScale);
+                CyberwareTheme.TextDim * alpha, 0.44f * CyberwareTheme.FontScale);
 
             //右下角滚动数据标签
             string dataTag = $"NET::0x{(int)(globalTimer * 100) % 0xFFFF:X4}";
