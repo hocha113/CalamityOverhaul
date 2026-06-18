@@ -98,9 +98,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// <summary>槽位本地化标签</summary>
         public string GetSlotLabel(int slotIndex) {
             if (slotIndex >= 0 && slotIndex < slotLabelCache.Length) {
-                return slotLabelCache[slotIndex];
+                string cached = slotLabelCache[slotIndex];
+                if (cached != null) return cached;
             }
-            return TitleText.Value;
+            if (slotLabelTexts != null && slotIndex >= 0 && slotIndex < slotLabelTexts.Length) {
+                return slotLabelTexts[slotIndex].Value;
+            }
+            return TitleText?.Value ?? "CYBERWARE";
         }
 
         #endregion
