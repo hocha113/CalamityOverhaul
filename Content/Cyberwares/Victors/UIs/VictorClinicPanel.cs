@@ -98,6 +98,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
         private float scrollOffset;
         private int oldScrollWheelValue;
         private bool hasEquippedItem;
+        private int lastOwnedCount = -1;
+        private int lastEquippedType = -1;
 
         private readonly List<Row> rows = [];
         private CyberwarePlayer cyberPlayer;
@@ -127,6 +129,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             boundSlot = -1;
             hasEquippedItem = false;
             rows.Clear();
+            lastOwnedCount = -1;
+            lastEquippedType = -1;
         }
 
         public void RefreshItems(CyberwarePlayer cp) {
@@ -162,6 +166,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                     rows.Add(new Row(KindShop, t));
                 }
             }
+
+            lastOwnedCount = owned.Count;
+            lastEquippedType = installedType;
         }
 
         #endregion
@@ -178,6 +185,19 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 }
                 else {
                     Unbind();
+                }
+            }
+            else if (boundSlot >= 0 && cp != null) {
+                int equippedType = cp.EquippedCyberwares[boundSlot]?.type ?? 0;
+                int ownedCount = 0;
+                for (int i = 0; i < Main.InventorySlotsTotal; i++) {
+                    Item inv = Main.LocalPlayer.inventory[i];
+                    if (inv != null && !inv.IsAir && inv.ModItem is BaseCyberware bc && (int)bc.SlotCategory == boundSlot) {
+                        ownedCount++;
+                    }
+                }
+                if (ownedCount != lastOwnedCount || equippedType != lastEquippedType) {
+                    RefreshItems(cp);
                 }
             }
 
