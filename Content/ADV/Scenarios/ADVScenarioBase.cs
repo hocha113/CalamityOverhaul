@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.ADV.ADVChoices;
+using CalamityOverhaul.Content.ADV.ADVRewardPopups;
 using CalamityOverhaul.Content.ADV.DialogueBoxs;
 using System;
 using System.Collections.Generic;
@@ -165,6 +166,53 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
             };
             lines.Add(line);
         }
+
+        #region 对话回合奖励事件
+
+        /// <summary>
+        /// 对话面板上方的奖励弹窗锚点，<paramref name="yOffset"/> 可在默认位置上再做偏移
+        /// </summary>
+        internal static Vector2 PanelRewardAnchor(float yOffset = 0f) {
+            var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
+            if (rect == Rectangle.Empty) {
+                return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f + yOffset);
+            }
+            return new Vector2(rect.Center.X, rect.Y - 70f + yOffset);
+        }
+
+        /// <summary>
+        /// 构造一个"弹出物品奖励"的回合事件，配合 <see cref="AddReward"/> 或行的 onStart 使用
+        /// </summary>
+        /// <param name="itemType">物品类型</param>
+        /// <param name="stack">数量</param>
+        /// <param name="text">奖励标题，null 时自动取物品名</param>
+        /// <param name="style">奖励弹窗风格，null 用默认海洋风格</param>
+        /// <param name="yOffset">锚点纵向偏移</param>
+        internal static Action ShowPanelReward(int itemType, int stack = 1, string text = null,
+            ADVRewardPopup.RewardStyle? style = null, float yOffset = 0f) => () => {
+                Func<ADVRewardPopup.RewardStyle> styleProvider = style.HasValue ? () => style.Value : null;
+                ADVRewardPopup.ShowReward(itemType, stack, text,
+                    appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
+                    anchorProvider: () => PanelRewardAnchor(yOffset), offset: Vector2.Zero,
+                    styleProvider: styleProvider);
+            };
+
+        /// <summary>
+        /// 添加一条"进入该回合即发放物品奖励"的对话（奖励事件注册在该行的 onStart，跳过时会停在此处）
+        /// </summary>
+        /// <param name="speaker">说话者名称</param>
+        /// <param name="content">对话内容</param>
+        /// <param name="itemType">奖励物品类型</param>
+        /// <param name="stack">数量</param>
+        /// <param name="text">奖励标题，null 自动取物品名</param>
+        /// <param name="style">奖励弹窗风格</param>
+        /// <param name="yOffset">锚点纵向偏移</param>
+        internal void AddReward(string speaker, string content, int itemType, int stack = 1, string text = null,
+            ADVRewardPopup.RewardStyle? style = null, float yOffset = 0f) {
+            Add(speaker, content, onStart: ShowPanelReward(itemType, stack, text, style, yOffset));
+        }
+
+        #endregion
 
         #region 定时对话方法
 
