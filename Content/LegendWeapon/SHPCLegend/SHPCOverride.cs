@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
                 //再生成蓄力能量球，ai[1] 传递手持弹幕索引以定位枪口
                 Vector2 spawnPos = player.Center + velocity.SafeNormalize(Vector2.UnitX) * 70f;
-                int orbDamage = (int)(damage * 2 * ctx.DamageMul);
+                int orbDamage = (int)(damage * 2);
                 int orbIdx = Projectile.NewProjectile(source, spawnPos, Vector2.Zero,
                     ModContent.ProjectileType<CyberChargeOrbProj>(),
                     orbDamage, knockback, player.whoAmI,
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                         SoundEngine.PlaySound(SoundID.Item92, player.Center);
                         Vector2 laserDir = velocity.SafeNormalize(Vector2.UnitX);
                         Vector2 spawnPos = player.Center + laserDir * 60f;
-                        int laserDamage = (int)(damage * ctx.DamageMul);
+                        int laserDamage = damage;
                         if (laserDamage < 1) laserDamage = 1;
                         int laserIdx = Projectile.NewProjectile(source, spawnPos, laserDir,
                             ModContent.ProjectileType<CyberPrismLaserProj>(),
@@ -216,7 +216,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 
                 int beams = ctx.MergeBeams ? 1 : System.Math.Max(1, BeamCount + ctx.BeamCountAdd);
                 float spreadAngle = BeamSpreadAngle * MathF.Max(ctx.SpreadMul, 0f);
-                int finalDamage = (int)(damage * ctx.DamageMul * (ctx.MergeBeams ? ctx.MergedDamageBonus : 1f));
+                int finalDamage = (int)(damage * (ctx.MergeBeams ? ctx.MergedDamageBonus : 1f));
                 if (finalDamage < 1) finalDamage = 1;
 
                 for (int i = 0; i < beams; i++) {
