@@ -29,25 +29,11 @@ QuestTracker: {
 	}
 }
 
-SeaDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
-BrimstoneDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
-DraedonDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
+DialogueSystem: {
+	// ContinueHint: Continue
+	// FastHint: Accelerate
+	// AutoHint: Auto
+	// SkipHint: Skip
 }
 
 ExoMechdusaSumRender: {
@@ -77,13 +63,6 @@ DraedonCallUI: {
 	ConnectingText: Подключение...
 	ConnectedText: Подключено
 	DisabledReasonText: Дрэдон уже вызван
-}
-
-TzeentchDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 EnchantUI: {
@@ -129,13 +108,6 @@ ChargingStationUI: {
 	EnergyUnit: ЕЭ
 	StationText1: Только для заряжаемых предметов!
 	StationText2: Только для энергобатарей Дрэдона!
-}
-
-SulfseaDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 OldDukeShopUI: {
@@ -371,13 +343,6 @@ TransitionScene: {
 	Hint9: Машины не предают, но те, кто ими управляет — могут.
 }
 
-StarStreamDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
 ApolliaHeroPanelUI: {
 	TitleText: Аполлия
 	HPLabel: Здоровье
@@ -472,13 +437,6 @@ VictorClinicUI: {
 	LabelForSale: В ПРОДАЖЕ
 	EmptyOwned: ( в рюкзаке пусто )
 	EmptyShop: ( больше нечего продать )
-}
-
-SHPCDialogueBox: {
-	ContinueHint: Продолжить
-	FastHint: Ускорить
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 EntrustManagerNotification: {

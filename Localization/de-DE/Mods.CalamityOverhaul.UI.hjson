@@ -29,25 +29,11 @@ QuestTracker: {
 	}
 }
 
-SeaDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
-BrimstoneDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
-DraedonDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
+DialogueSystem: {
+	// ContinueHint: Continue
+	// FastHint: Accelerate
+	// AutoHint: Auto
+	// SkipHint: Skip
 }
 
 ExoMechdusaSumRender: {
@@ -77,13 +63,6 @@ DraedonCallUI: {
 	ConnectingText: Verbinde...
 	ConnectedText: Verbunden
 	DisabledReasonText: Draedon wurde bereits gerufen
-}
-
-TzeentchDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 EnchantUI: {
@@ -129,13 +108,6 @@ ChargingStationUI: {
 	EnergyUnit: UE
 	StationText1: Nur aufladbare Items erlaubt!
 	StationText2: Nur Draedon-Energiezellen erlaubt!
-}
-
-SulfseaDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 OldDukeShopUI: {
@@ -371,13 +343,6 @@ TransitionScene: {
 	Hint9: Maschinen verraten nicht — aber die, die sie steuern, vielleicht schon.
 }
 
-StarStreamDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
 ApolliaHeroPanelUI: {
 	TitleText: Apollia
 	HPLabel: LP
@@ -472,13 +437,6 @@ VictorClinicUI: {
 	LabelForSale: ZUM VERKAUF
 	EmptyOwned: ( nichts im Rucksack )
 	EmptyShop: ( nichts mehr im Angebot )
-}
-
-SHPCDialogueBox: {
-	ContinueHint: Weiter
-	FastHint: Beschleunigen
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 EntrustManagerNotification: {

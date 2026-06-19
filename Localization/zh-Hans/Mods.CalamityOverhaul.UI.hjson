@@ -29,25 +29,11 @@ QuestTracker: {
 	}
 }
 
-SeaDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
-BrimstoneDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
-DraedonDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
+DialogueSystem: {
+	// ContinueHint: Continue
+	// FastHint: Accelerate
+	// AutoHint: Auto
+	// SkipHint: Skip
 }
 
 ExoMechdusaSumRender: {
@@ -77,13 +63,6 @@ DraedonCallUI: {
 	ConnectingText: 正在连接...
 	ConnectedText: 已连接
 	DisabledReasonText: 嘉登已被呼叫
-}
-
-TzeentchDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 EnchantUI: {
@@ -129,13 +108,6 @@ ChargingStationUI: {
 	EnergyUnit: UE
 	StationText1: 只能放入可充能物品!
 	StationText2: 只能放入嘉登能量电池!
-}
-
-SulfseaDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 OldDukeShopUI: {
@@ -371,13 +343,6 @@ TransitionScene: {
 	Hint9: 机械不会背叛，但操控机械的人或许会
 }
 
-StarStreamDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
-}
-
 ApolliaHeroPanelUI: {
 	TitleText: 阿波利娅
 	HPLabel: 生命值
@@ -472,13 +437,6 @@ VictorClinicUI: {
 	LabelForSale: 在售
 	EmptyOwned: （背包中没有）
 	EmptyShop: （没有更多可售）
-}
-
-SHPCDialogueBox: {
-	ContinueHint: 继续
-	FastHint: 加速
-	// AutoHint: 自动
-	// SkipHint: 跳过
 }
 
 EntrustManagerNotification: {
