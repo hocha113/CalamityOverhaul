@@ -65,7 +65,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             Utils.DrawBorderString(ctx.SpriteBatch, text, position + new Vector2(0, 1), textGlow, TextScale);
         }
 
-        protected override string GetContinueHintText() => $"✦ {ContinueHint.Value} ✦";
+        protected override string FormatContinueHint(string label, bool hover) => hover ? $"✦ [{label}] ✦" : $"✦ {label} ✦";
 
         protected override Color GetContinueHintColor(ContentDrawContext ctx, float blink) {
             return new Color(255, 210, 100) * blink * ctx.ContentAlpha;

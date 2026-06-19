@@ -613,8 +613,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         //自动/跳过提示的点击区域
         protected Rectangle autoButtonRect;
         protected Rectangle skipButtonRect;
+        protected Rectangle continueHintRect;
         protected bool autoButtonHover;
         protected bool skipButtonHover;
+        protected bool continueHintHover;
 
         #endregion
         internal int playedCount = 0;
@@ -1184,18 +1186,21 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             //选项进行中：交互交给选项框，对话框不响应推进/跳过
             if (ADVChoiceBox.IsChoosing) {
-                autoButtonHover = skipButtonHover = false;
+                autoButtonHover = skipButtonHover = continueHintHover = false;
                 return;
             }
 
             Rectangle panelRect = GetPanelRect();
             Point mouse = new Point(Main.mouseX, Main.mouseY);
 
+            UpdateHintHoverStates(panelRect, mouse);
+
             //自动/跳过提示优先于面板点击
             bool overCommand = HandleCommandButtons(panelRect, mouse);
+            bool overContinue = waitingForAdvance && continueHintHover;
 
             bool hover = panelRect.Contains(mouse);
-            if (hover && !overCommand) {
+            if (hover && !overCommand && !overContinue) {
                 player.mouseInterface |= Active;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     if (!finishedCurrent) {
@@ -1221,16 +1226,28 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             }
         }
 
+        /// <summary>更新底行提示的悬停状态与点击区域</summary>
+        protected virtual void UpdateHintHoverStates(Rectangle panelRect, Point mouse) {
+            autoButtonHover = skipButtonHover = continueHintHover = false;
+            var font = FontAssets.MouseText.Value;
+
+            if (ShowCommandBar) {
+                GetCommandHintRects(panelRect, font, out autoButtonRect, out skipButtonRect);
+                autoButtonHover = autoButtonRect.Contains(mouse);
+                skipButtonHover = skipButtonRect.Contains(mouse);
+            }
+
+            if (waitingForAdvance) {
+                GetContinueHintRect(panelRect, font, out continueHintRect);
+                continueHintHover = continueHintRect.Contains(mouse);
+            }
+        }
+
         /// <summary>处理自动/跳过提示的悬停与点击，返回鼠标是否落在提示上</summary>
         protected virtual bool HandleCommandButtons(Rectangle panelRect, Point mouse) {
             if (!ShowCommandBar) {
-                autoButtonHover = skipButtonHover = false;
                 return false;
             }
-
-            GetCommandHintRects(panelRect, FontAssets.MouseText.Value, out autoButtonRect, out skipButtonRect);
-            autoButtonHover = autoButtonRect.Contains(mouse);
-            skipButtonHover = skipButtonRect.Contains(mouse);
 
             if (!autoButtonHover && !skipButtonHover) {
                 return false;
@@ -1393,6 +1410,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual float TextBlockOffsetBase => 36f;
         protected virtual float NameScale => 0.9f;
         protected virtual float TextScale => 0.8f;
+        protected virtual int HintBottomMargin => 8;
+        /// <summary>底行提示的 Y 坐标（较面板 Padding 更贴近底边）</summary>
+        protected float GetHintRowBottom(Rectangle panelRect) => panelRect.Bottom - ApplyScale(HintBottomMargin);
+
         protected virtual float ContinueHintScale => 0.8f;
         protected virtual float FastHintScale => 0.7f;
         protected virtual float TextBottomSafetyPadding => 8f;
@@ -1678,28 +1699,36 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <summary>继续与自动/跳过提示</summary>
         protected virtual void DrawHints(ContentDrawContext ctx) {
             if (ShowCommandBar && !ADVChoiceBox.IsChoosing) {
+                GetCommandHintRects(ctx.PanelRect, ctx.Font, out autoButtonRect, out skipButtonRect);
                 DrawCommandHints(ctx);
             }
 
             if (waitingForAdvance) {
+                GetContinueHintRect(ctx.PanelRect, ctx.Font, out continueHintRect);
                 DrawContinueHint(ctx);
             }
         }
 
+        /// <summary>提示文本：悬停或布局测量时加中括号</summary>
+        protected static string FormatHintLabel(string label, bool bracketed) => bracketed ? $"[{label}]" : label;
+
+        /// <summary>获取继续提示文本，子类可重写装饰符号</summary>
+        protected virtual string FormatContinueHint(string label, bool hover) => FormatHintLabel(label, hover);
+
+        /// <summary>继续提示的布局宽度（始终按带中括号计算，避免悬停时位移）</summary>
+        protected virtual string GetContinueHintLayoutText() => FormatContinueHint(ContinueHint.Value, hover: true);
+
         /// <summary>获取继续提示文本，子类可重写</summary>
-        protected virtual string GetContinueHintText() {
-            return $"> {ContinueHint.Value}<";
-        }
+        protected virtual string GetContinueHintText(bool hover = false) => FormatContinueHint(ContinueHint.Value, hover);
 
         /// <summary>获取自动提示文本，子类可重写</summary>
-        protected virtual string GetAutoHintText() {
-            return autoMode ? $"> {AutoHint.Value} <" : $"[{AutoHint.Value}]";
-        }
+        protected virtual string GetAutoHintText(bool hover = false) => FormatHintLabel(AutoHint.Value, hover);
 
         /// <summary>获取跳过提示文本，子类可重写</summary>
-        protected virtual string GetSkipHintText() {
-            return $"[{SkipHint.Value}]";
-        }
+        protected virtual string GetSkipHintText(bool hover = false) => FormatHintLabel(SkipHint.Value, hover);
+
+        /// <summary>布局用地：始终带中括号</summary>
+        protected string GetHintLayoutText(string label) => FormatHintLabel(label, true);
 
         /// <summary>计算底行提示区左边界（有立绘时为文本列起点，避免提示压住头像框）</summary>
         protected float GetHintRowLeftBound(Rectangle panelRect) {
@@ -1720,22 +1749,36 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return left;
         }
 
+        /// <summary>计算继续提示的点击区域</summary>
+        protected void GetContinueHintRect(Rectangle panelRect, DynamicSpriteFont font, out Rectangle rect) {
+            float measureScale = ScaledContinueHintScale * 0.75f;
+            float hitPad = ApplyScale(6f);
+            float bottom = GetHintRowBottom(panelRect);
+            string text = GetContinueHintLayoutText();
+            Vector2 size = font.MeasureString(text) * measureScale;
+            rect = new Rectangle(
+                (int)(panelRect.Right - ScaledPadding - size.X - hitPad),
+                (int)(bottom - size.Y - hitPad),
+                (int)(size.X + hitPad * 2f),
+                (int)(size.Y + hitPad * 2f));
+        }
+
         /// <summary>计算自动/跳过提示的点击区域（底行右侧、继续提示左侧，且不侵入立绘列）</summary>
         protected void GetCommandHintRects(Rectangle panelRect, DynamicSpriteFont font, out Rectangle autoRect, out Rectangle skipRect) {
             float measureScale = ScaledContinueHintScale * 0.75f;
             float hitPad = ApplyScale(6f);
             float hintGap = ApplyScale(14f);
-            float bottom = panelRect.Bottom - ScaledPadding;
+            float bottom = GetHintRowBottom(panelRect);
 
-            string autoText = GetAutoHintText();
-            string skipText = GetSkipHintText();
+            string autoText = GetHintLayoutText(AutoHint.Value);
+            string skipText = GetHintLayoutText(SkipHint.Value);
             Vector2 autoSize = font.MeasureString(autoText) * measureScale;
             Vector2 skipSize = font.MeasureString(skipText) * measureScale;
 
             //从右向左排：继续（若显示）← 跳过 ← 自动
             float rowRight = panelRect.Right - ScaledPadding;
             if (waitingForAdvance) {
-                string continueText = GetContinueHintText();
+                string continueText = GetContinueHintLayoutText();
                 Vector2 continueSize = font.MeasureString(continueText) * measureScale;
                 rowRight -= continueSize.X + hintGap;
             }
@@ -1763,12 +1806,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         /// <summary>绘制自动/跳过提示，风格与继续提示一致</summary>
         protected virtual void DrawCommandHints(ContentDrawContext ctx) {
-            GetCommandHintRects(ctx.PanelRect, ctx.Font, out var autoRect, out var skipRect);
-            autoButtonRect = autoRect;
-            skipButtonRect = skipRect;
-
-            DrawCommandHint(ctx, autoRect, GetAutoHintText(), autoMode, autoButtonHover);
-            DrawCommandHint(ctx, skipRect, GetSkipHintText(), false, skipButtonHover);
+            DrawCommandHint(ctx, autoButtonRect, GetAutoHintText(autoButtonHover), autoMode, autoButtonHover);
+            DrawCommandHint(ctx, skipButtonRect, GetSkipHintText(skipButtonHover), false, skipButtonHover);
         }
 
         /// <summary>绘制单个命令提示</summary>
@@ -1786,12 +1825,13 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <summary>绘制继续提示</summary>
         protected virtual void DrawContinueHint(ContentDrawContext ctx) {
             float blink = (float)Math.Sin(advanceBlinkTimer / 12f * MathHelper.TwoPi) * 0.5f + 0.5f;
-            string hint = GetContinueHintText();
-            Vector2 hintSize = ctx.Font.MeasureString(hint) * (ScaledContinueHintScale * 0.75f);
-            Vector2 hintPos = new(ctx.PanelRect.Right - ScaledPadding - hintSize.X, ctx.PanelRect.Bottom - ScaledPadding - hintSize.Y);
+            string hint = GetContinueHintText(continueHintHover);
+            float hitPad = ApplyScale(6f);
+            Vector2 pos = new(continueHintRect.X + hitPad, continueHintRect.Y + hitPad);
 
-            Color hintColor = GetContinueHintColor(ctx, blink);
-            Utils.DrawBorderString(ctx.SpriteBatch, hint, hintPos, hintColor, ScaledContinueHintScale);
+            float lit = continueHintHover ? 1f : blink;
+            Color hintColor = GetContinueHintColor(ctx, lit);
+            Utils.DrawBorderString(ctx.SpriteBatch, hint, pos, hintColor, ScaledContinueHintScale);
         }
 
         /// <summary>获取继续提示颜色，子类可重写</summary>

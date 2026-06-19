@@ -138,9 +138,7 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         }
 
         /// <summary>获取继续提示文本</summary>
-        protected override string GetContinueHintText() {
-            return $"◆ {ContinueHint.Value} ◆";
-        }
+        protected override string FormatContinueHint(string label, bool hover) => hover ? $"◆ [{label}] ◆" : $"◆ {label} ◆";
 
         /// <summary>获取继续提示颜色</summary>
         protected override Color GetContinueHintColor(ContentDrawContext ctx, float blink) {

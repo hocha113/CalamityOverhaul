@@ -31,10 +31,10 @@ QuestTracker: {
 }
 
 DialogueSystem: {
-	// ContinueHint: Continue
-	// FastHint: Accelerate
-	// AutoHint: Auto
-	// SkipHint: Skip
+	ContinueHint: Continuar
+	FastHint: Acelerar
+	AutoHint: Auto
+	SkipHint: Pular
 }
 
 ExoMechdusaSumRender: {
