@@ -413,12 +413,22 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                     startCallback = line.OnStart;
                 }
 
+                // 标记特殊节点：含选项/用户回调/定时的对话，跳过时会停在此处而非略过
+                bool isSpecial = (line.Choices != null && line.Choices.Count > 0)
+                    || line.OnComplete != null
+                    || line.OnStart != null
+                    || line.IsTimed;
+
                 // 按是否定时选择入队方法
+                DialogueSegment seg;
                 if (line.IsTimed) {
-                    initialBox.EnqueueTimedDialogue(line.Speaker, line.PortraitKey, line.Content, line.TimedConfig, completeCallback, startCallback);
+                    seg = initialBox.EnqueueTimedDialogue(line.Speaker, line.PortraitKey, line.Content, line.TimedConfig, completeCallback, startCallback);
                 }
                 else {
-                    initialBox.EnqueueDialogue(line.Speaker, line.PortraitKey, line.Content, completeCallback, startCallback);
+                    seg = initialBox.EnqueueDialogue(line.Speaker, line.PortraitKey, line.Content, completeCallback, startCallback);
+                }
+                if (seg != null) {
+                    seg.IsSpecial = isSpecial;
                 }
             }
         }

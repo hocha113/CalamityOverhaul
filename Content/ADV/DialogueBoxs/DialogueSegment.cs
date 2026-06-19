@@ -25,5 +25,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
         /// <summary>是否为定时对话</summary>
         public bool IsTimed => TimedConfig != null;
+
+        /// <summary>是否为特殊节点（含选项/用户回调/定时等事件），跳过对话时会停在此处而非略过</summary>
+        public bool IsSpecial;
     }
 }

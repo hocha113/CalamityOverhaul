@@ -60,12 +60,14 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             //当前段重新入队
             if (from.current != null) {
-                to.EnqueueDialogue(from.current.Speaker, from.current.Content, from.current.OnFinish, from.current.OnStart);
+                var moved = to.EnqueueDialogue(from.current.Speaker, from.current.Content, from.current.OnFinish, from.current.OnStart);
+                moved.IsSpecial = from.current.IsSpecial;
             }
 
             //转移剩余队列
             foreach (var segment in from.queue) {
-                to.EnqueueDialogue(segment.Speaker, segment.Content, segment.OnFinish, segment.OnStart);
+                var moved = to.EnqueueDialogue(segment.Speaker, segment.Content, segment.OnFinish, segment.OnStart);
+                moved.IsSpecial = segment.IsSpecial;
             }
 
             //转移预处理器

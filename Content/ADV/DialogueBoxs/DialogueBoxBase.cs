@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.ADV.ADVChoices;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -133,7 +134,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             visibleCharCount = 0;
             finishedCurrent = false;
             waitingForAdvance = false;
-            fastModeAutoAdvanceTimer = 0;
+            autoAdvanceTimer = 0;
+            autoMode = false;
+            skipActiveVisual = false;
 
             //重置定时对话
             ResetTimedDialogue();
@@ -213,6 +216,69 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             current = null;
             BeginClose();
+        }
+
+        /// <summary>
+        /// 跳过对话直到下一个停顿点：依次结算并越过普通对话，
+        /// 在遇到特殊节点（<see cref="DialogueSegment.IsSpecial"/>，如选项/回调/定时）时停下并补全显示，
+        /// 若途中弹出选项则停在选项处，若后面没有特殊节点则一路推进到结束
+        /// </summary>
+        /// <returns>是否执行了跳过</returns>
+        public virtual bool SkipToNextStop() {
+            if (current == null || _state != DialogueBoxState.Active || closing) {
+                return false;
+            }
+
+            //选项进行中，交互交给选项框
+            if (ADVChoiceBox.IsChoosing) {
+                return false;
+            }
+
+            //全身立绘阻止推进
+            if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                return false;
+            }
+
+            int guard = 0;
+            while (guard++ < 1000) {
+                var prev = current;
+
+                //结算当前段并推进（等价一次手动推进）
+                current.OnFinish?.Invoke();
+                StartNext();
+
+                //到达结尾或正在关闭
+                if (current == null || closing) {
+                    break;
+                }
+                //队列已空且关闭被阻止，无法继续推进，避免重复结算
+                if (current == prev) {
+                    break;
+                }
+                //刚才的结算弹出了选项，停在选项处
+                if (ADVChoiceBox.IsChoosing) {
+                    break;
+                }
+                //立绘开始阻止推进
+                if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                    break;
+                }
+                //到达特殊节点：停下，补全显示并等待玩家处理
+                if (current.IsSpecial) {
+                    visibleCharCount = wrappedTotalChars;
+                    finishedCurrent = true;
+                    waitingForAdvance = true;
+                    break;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>切换自动播放模式（galgame Auto）</summary>
+        public virtual void ToggleAutoMode() {
+            autoMode = !autoMode;
+            autoAdvanceTimer = 0;
+            SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = autoMode ? 0.5f : 0.1f });
         }
 
         /// <summary>暂停对话</summary>
@@ -529,10 +595,39 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected const int TypeInterval = 2;
         protected bool fastMode = false;
         protected bool finishedCurrent = false;
-        /// <summary>快进模式下自动推进的计时器</summary>
-        protected int fastModeAutoAdvanceTimer = 0;
+        /// <summary>自动推进计时器（快进与自动播放共用）</summary>
+        protected int autoAdvanceTimer = 0;
         /// <summary>快进模式下自动推进的延迟帧数（给玩家短暂阅读时间）</summary>
         protected virtual int FastModeAutoAdvanceDelay => 12;
+
+        #region 自动播放 / 跳过
+
+        /// <summary>自动播放模式（galgame Auto）：打完字后等待可读时长再自动推进</summary>
+        protected bool autoMode = false;
+        /// <summary>是否开启自动播放</summary>
+        public bool AutoMode => autoMode;
+        /// <summary>本帧是否处于跳过状态（按住 Ctrl 时），仅用于按钮高亮</summary>
+        protected bool skipActiveVisual = false;
+        /// <summary>自动播放基础等待帧数</summary>
+        protected virtual int AutoModeBaseDelay => 75;
+        /// <summary>自动播放按字数追加的等待帧数（长句给更多阅读时间）</summary>
+        protected virtual float AutoModePerCharDelay => 1.4f;
+        /// <summary>自动播放最大等待帧数</summary>
+        protected virtual int AutoModeMaxDelay => 360;
+        /// <summary>计算自动播放当前段的等待帧数</summary>
+        protected int GetAutoModeDelay() => Math.Min(AutoModeMaxDelay, AutoModeBaseDelay + (int)(wrappedTotalChars * AutoModePerCharDelay));
+
+        /// <summary>是否显示命令栏（自动/跳过按钮），子类可关闭</summary>
+        protected virtual bool ShowCommandBar => true;
+        //命令栏按钮矩形与悬停/发光状态
+        protected Rectangle autoButtonRect;
+        protected Rectangle skipButtonRect;
+        protected bool autoButtonHover;
+        protected bool skipButtonHover;
+        protected float autoButtonGlow;
+        protected float skipButtonGlow;
+
+        #endregion
         internal int playedCount = 0;
         protected Vector2 anchorPos;
         //面板基础高度，绘制经 ScaledPanelHeight 缩放
@@ -749,14 +844,16 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             return portraits.TryGetValue(key, out portraitData);
         }
 
-        public virtual void EnqueueDialogue(string speaker, string content, Action onFinish = null, Action onStart = null) {
-            queue.Enqueue(new DialogueSegment {
+        public virtual DialogueSegment EnqueueDialogue(string speaker, string content, Action onFinish = null, Action onStart = null) {
+            var segment = new DialogueSegment {
                 Speaker = speaker,
                 Content = content ?? string.Empty,
                 OnStart = onStart,
                 OnFinish = onFinish,
                 PortraitKey = null
-            });
+            };
+            queue.Enqueue(segment);
+            return segment;
         }
 
         /// <summary>入队对话（独立立绘键）</summary>
@@ -765,14 +862,16 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <param name="content">对话内容</param>
         /// <param name="onFinish">完成回调</param>
         /// <param name="onStart">开始回调</param>
-        public virtual void EnqueueDialogue(string speaker, string portraitKey, string content, Action onFinish = null, Action onStart = null) {
-            queue.Enqueue(new DialogueSegment {
+        public virtual DialogueSegment EnqueueDialogue(string speaker, string portraitKey, string content, Action onFinish = null, Action onStart = null) {
+            var segment = new DialogueSegment {
                 Speaker = speaker,
                 Content = content ?? string.Empty,
                 OnStart = onStart,
                 OnFinish = onFinish,
                 PortraitKey = portraitKey
-            });
+            };
+            queue.Enqueue(segment);
+            return segment;
         }
 
         /// <summary>入队定时对话</summary>
@@ -781,15 +880,17 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <param name="timedConfig">定时配置</param>
         /// <param name="onFinish">完成回调</param>
         /// <param name="onStart">开始回调</param>
-        public virtual void EnqueueTimedDialogue(string speaker, string content, TimedDialogueConfig timedConfig, Action onFinish = null, Action onStart = null) {
-            queue.Enqueue(new DialogueSegment {
+        public virtual DialogueSegment EnqueueTimedDialogue(string speaker, string content, TimedDialogueConfig timedConfig, Action onFinish = null, Action onStart = null) {
+            var segment = new DialogueSegment {
                 Speaker = speaker,
                 Content = content ?? string.Empty,
                 OnStart = onStart,
                 OnFinish = onFinish,
                 PortraitKey = null,
                 TimedConfig = timedConfig
-            });
+            };
+            queue.Enqueue(segment);
+            return segment;
         }
 
         /// <summary>入队定时对话(支持独立立绘键)</summary>
@@ -799,15 +900,17 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <param name="timedConfig">定时配置</param>
         /// <param name="onFinish">完成回调</param>
         /// <param name="onStart">开始回调</param>
-        public virtual void EnqueueTimedDialogue(string speaker, string portraitKey, string content, TimedDialogueConfig timedConfig, Action onFinish = null, Action onStart = null) {
-            queue.Enqueue(new DialogueSegment {
+        public virtual DialogueSegment EnqueueTimedDialogue(string speaker, string portraitKey, string content, TimedDialogueConfig timedConfig, Action onFinish = null, Action onStart = null) {
+            var segment = new DialogueSegment {
                 Speaker = speaker,
                 Content = content ?? string.Empty,
                 OnStart = onStart,
                 OnFinish = onFinish,
                 PortraitKey = portraitKey,
                 TimedConfig = timedConfig
-            });
+            };
+            queue.Enqueue(segment);
+            return segment;
         }
 
         /// <summary>入队定时对话(使用默认6秒配置)</summary>
@@ -816,8 +919,8 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         /// <param name="durationSeconds">持续秒数</param>
         /// <param name="onFinish">完成回调</param>
         /// <param name="onStart">开始回调</param>
-        public virtual void EnqueueTimedDialogue(string speaker, string content, float durationSeconds, Action onFinish = null, Action onStart = null) {
-            EnqueueTimedDialogue(speaker, content, TimedDialogueConfig.WithDuration(durationSeconds), onFinish, onStart);
+        public virtual DialogueSegment EnqueueTimedDialogue(string speaker, string content, float durationSeconds, Action onFinish = null, Action onStart = null) {
+            return EnqueueTimedDialogue(speaker, content, TimedDialogueConfig.WithDuration(durationSeconds), onFinish, onStart);
         }
         public virtual void ReplaceDialogue(IEnumerable<(string speaker, string content, Action callback)> segments) {
             queue.Clear();
@@ -980,6 +1083,11 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                         lastSpeaker = null;
                         speakerSwitchProgress = 1f;
 
+                        //对话结束后复位自动播放，下次对话从头开始
+                        autoMode = false;
+                        autoAdvanceTimer = 0;
+                        skipActiveVisual = false;
+
                         if (DialogueUIRegistry.Current == this) {
                             DialogueUIRegistry.SetResolver(null);
                         }
@@ -1015,26 +1123,31 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     //定时对话
                     UpdateTimedDialogue();
 
-                    //快进自动推进，定时禁手动时跳过
-                    if (fastMode && waitingForAdvance) {
-                        //定时禁手动推进
-                        if (current.TimedConfig != null && !current.TimedConfig.AllowManualAdvance) {
-                        }
-                        //立绘阻止推进
-                        else if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
-                        }
-                        else {
-                            fastModeAutoAdvanceTimer++;
-                            //短暂延迟防过快跳过
-                            if (fastModeAutoAdvanceTimer >= FastModeAutoAdvanceDelay) {
-                                fastModeAutoAdvanceTimer = 0;
-                                current.OnFinish?.Invoke();
-                                StartNext();
-                            }
+                    //自动推进：快进(临时按住)或自动播放(开关)，均在打完字且可推进时生效
+                    bool autoAdvancing = waitingForAdvance && (fastMode || autoMode);
+                    //定时禁手动推进 / 立绘阻止推进 / 选项进行中 时不自动推进
+                    if (current.TimedConfig != null && !current.TimedConfig.AllowManualAdvance) {
+                        autoAdvancing = false;
+                    }
+                    if (activeFullBodyPortrait != null && activeFullBodyPortrait.BlockDialogueAdvance) {
+                        autoAdvancing = false;
+                    }
+                    if (ADVChoiceBox.IsChoosing) {
+                        autoAdvancing = false;
+                    }
+
+                    if (autoAdvancing) {
+                        autoAdvanceTimer++;
+                        //快进用极短延迟，自动播放按文本长度给阅读时间
+                        int delay = fastMode ? FastModeAutoAdvanceDelay : GetAutoModeDelay();
+                        if (autoAdvanceTimer >= delay) {
+                            autoAdvanceTimer = 0;
+                            current.OnFinish?.Invoke();
+                            StartNext();
                         }
                     }
                     else {
-                        fastModeAutoAdvanceTimer = 0;
+                        autoAdvanceTimer = 0;
                     }
                 }
                 if (contentFade < 1f) {
@@ -1057,6 +1170,10 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                     p.Fade = 0f;
                 }
             }
+
+            //命令栏按钮悬停发光过渡
+            autoButtonGlow = MathHelper.Lerp(autoButtonGlow, autoButtonHover ? 1f : 0f, 0.2f);
+            skipButtonGlow = MathHelper.Lerp(skipButtonGlow, skipButtonHover ? 1f : 0f, 0.2f);
 
             //全身立绘更新
             if (activeFullBodyPortrait != null) {
@@ -1101,10 +1218,23 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             if (_state == DialogueBoxState.Paused) {
                 return;
             }
+
+            //选项进行中：交互交给选项框，对话框不响应推进/跳过
+            if (ADVChoiceBox.IsChoosing) {
+                fastMode = false;
+                skipActiveVisual = false;
+                autoButtonHover = skipButtonHover = false;
+                return;
+            }
+
             Rectangle panelRect = GetPanelRect();
             Point mouse = new Point(Main.mouseX, Main.mouseY);
+
+            //命令栏按钮（自动/跳过）优先于面板点击处理
+            bool overCommand = HandleCommandButtons(panelRect, mouse);
+
             bool hover = panelRect.Contains(mouse);
-            if (hover) {
+            if (hover && !overCommand) {
                 player.mouseInterface |= Active;
                 if (keyLeftPressState == KeyPressState.Pressed) {
                     if (!finishedCurrent) {
@@ -1129,12 +1259,50 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 }
             }
 
-            if (keyRightPressState == KeyPressState.Pressed && hover) {
+            if (keyRightPressState == KeyPressState.Pressed && hover && !overCommand) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
             }
+
+            //按住 Ctrl 连续跳过（galgame 习惯），跳过会停在选项/特殊节点
+            bool ctrlHeld = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftControl)
+                || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightControl);
+            skipActiveVisual = ctrlHeld;
+            if (ctrlHeld) {
+                SkipToNextStop();
+            }
+
             fastMode = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift)
                 || Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.RightShift)
                 || keyRightPressState == KeyPressState.Held;
+        }
+
+        /// <summary>处理命令栏按钮（自动/跳过）的悬停与点击，返回鼠标是否落在按钮上</summary>
+        protected virtual bool HandleCommandButtons(Rectangle panelRect, Point mouse) {
+            if (!ShowCommandBar) {
+                autoButtonHover = skipButtonHover = false;
+                return false;
+            }
+
+            GetCommandButtonRects(panelRect, out autoButtonRect, out skipButtonRect);
+            autoButtonHover = autoButtonRect.Contains(mouse);
+            skipButtonHover = skipButtonRect.Contains(mouse);
+
+            if (!autoButtonHover && !skipButtonHover) {
+                return false;
+            }
+
+            player.mouseInterface |= Active;
+
+            if (keyLeftPressState == KeyPressState.Pressed) {
+                if (autoButtonHover) {
+                    ToggleAutoMode();
+                }
+                else if (skipButtonHover) {
+                    SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.35f });
+                    SkipToNextStop();
+                }
+            }
+            return true;
         }
         #region 头像绘制
 
@@ -1311,6 +1479,9 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
 
             //底部提示
             DrawHints(ctx);
+
+            //命令栏（自动/跳过按钮）
+            DrawCommandBar(ctx);
         }
 
         /// <summary>创建绘制上下文</summary>
@@ -1610,6 +1781,89 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
         protected virtual Color GetFastHintColor(ContentDrawContext ctx) {
             return new Color(120, 200, 235) * 0.4f * ctx.ContentAlpha;
         }
+
+        #region 命令栏（自动/跳过）
+
+        /// <summary>自动按钮文本，子类可重写</summary>
+        protected virtual string GetAutoButtonLabel() => "AUTO";
+
+        /// <summary>跳过按钮文本，子类可重写</summary>
+        protected virtual string GetSkipButtonLabel() => "SKIP";
+
+        /// <summary>命令栏强调色，默认取继续提示色以匹配各风格主题</summary>
+        protected virtual Color GetCommandBarAccentColor(ContentDrawContext ctx) {
+            Color c = GetContinueHintColor(ctx, 1f);
+            //继续提示色已乘 contentAlpha，这里还原为纯色调供命令栏自行调透明度
+            if (ctx.ContentAlpha > 0.01f) {
+                c *= 1f / ctx.ContentAlpha;
+            }
+            return c;
+        }
+
+        /// <summary>计算命令栏按钮矩形（面板右上方一排：自动、跳过）</summary>
+        protected void GetCommandButtonRects(Rectangle panelRect, out Rectangle autoRect, out Rectangle skipRect) {
+            int h = (int)ApplyScale(20f);
+            int w = (int)ApplyScale(50f);
+            int gap = (int)ApplyScale(6f);
+            int top = panelRect.Y - h - (int)ApplyScale(6f);
+            skipRect = new Rectangle(panelRect.Right - w, top, w, h);
+            autoRect = new Rectangle(skipRect.X - gap - w, top, w, h);
+        }
+
+        /// <summary>绘制命令栏（自动/跳过按钮），位于面板右上方</summary>
+        protected virtual void DrawCommandBar(ContentDrawContext ctx) {
+            if (!ShowCommandBar || ADVChoiceBox.IsChoosing) {
+                return;
+            }
+
+            GetCommandButtonRects(ctx.PanelRect, out var autoRect, out var skipRect);
+            autoButtonRect = autoRect;
+            skipButtonRect = skipRect;
+
+            Color accent = GetCommandBarAccentColor(ctx);
+            float alpha = ctx.ContentAlpha;
+
+            DrawCommandButton(ctx, autoRect, GetAutoButtonLabel(), accent, autoButtonGlow, autoMode, alpha);
+            DrawCommandButton(ctx, skipRect, GetSkipButtonLabel(), accent, skipButtonGlow, skipActiveVisual, alpha);
+        }
+
+        /// <summary>绘制单个命令栏按钮，子类可重写以自定义外观</summary>
+        protected virtual void DrawCommandButton(ContentDrawContext ctx, Rectangle rect, string label, Color accent, float hoverGlow, bool active, float alpha) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            SpriteBatch sb = ctx.SpriteBatch;
+
+            //激活时呼吸脉动，叠加悬停发光得到最终亮度
+            float activePulse = active ? (float)Math.Sin(Main.GameUpdateCount * 0.12f) * 0.25f + 0.6f : 0f;
+            float lit = MathHelper.Clamp(hoverGlow + activePulse, 0f, 1f);
+
+            //底色
+            Color back = Color.Lerp(new Color(8, 14, 22), new Color(20, 34, 50), lit) * (alpha * 0.85f);
+            sb.Draw(pixel, rect, new Rectangle(0, 0, 1, 1), back);
+
+            //边框（强调色，随悬停/激活增亮）
+            Color edge = accent * (alpha * (0.35f + 0.55f * lit));
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 1), new Rectangle(0, 0, 1, 1), edge);
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), new Rectangle(0, 0, 1, 1), edge * 0.8f);
+            sb.Draw(pixel, new Rectangle(rect.X, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.9f);
+            sb.Draw(pixel, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.9f);
+
+            //悬停/激活外发光
+            if (lit > 0.01f) {
+                Rectangle glowRect = rect;
+                glowRect.Inflate((int)ApplyScale(2f), (int)ApplyScale(2f));
+                DrawGlowRect(sb, glowRect, accent * (alpha * 0.5f * lit));
+            }
+
+            //文本居中
+            DynamicSpriteFont font = ctx.Font;
+            float textScale = ScaledFastHintScale * 0.92f;
+            Vector2 size = font.MeasureString(label) * textScale;
+            Vector2 pos = new(rect.Center.X - size.X / 2f, rect.Center.Y - size.Y / 2f);
+            Color textColor = Color.Lerp(new Color(175, 195, 215), Color.White, lit) * alpha;
+            Utils.DrawBorderString(sb, label, pos, textColor, textScale);
+        }
+
+        #endregion
 
         /// <summary>绘制渐变线条的辅助方法</summary>
         protected static void DrawGradientLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color startColor, Color endColor, float thickness) {

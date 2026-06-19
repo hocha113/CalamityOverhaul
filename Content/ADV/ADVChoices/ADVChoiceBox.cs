@@ -100,6 +100,9 @@ namespace CalamityOverhaul.Content.ADV.ADVChoices
         /// <summary>是否正在显示定时选项框</summary>
         public static bool IsTimedActive => Instance?.IsTimed == true && Instance?.isSelecting == true;
 
+        /// <summary>是否正在进行选项选择（供对话框暂停自动推进/跳过判断）</summary>
+        public static bool IsChoosing => Instance != null && Instance.isSelecting;
+
         /// <summary>进度条默认颜色</summary>
         private static readonly Color DefaultProgressColor = new(100, 200, 255);
         private static readonly Color DefaultWarningColor = new(255, 150, 80);
