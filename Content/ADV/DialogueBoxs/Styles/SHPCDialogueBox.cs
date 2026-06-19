@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,8 +64,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         protected override float PortraitFramePadding => 6f;
         protected override float PortraitGlowPadding => 3f;
         protected override float PortraitLeftMargin => 22f;
-        protected override float ContinueHintScale => 0.82f;
-        protected override float FastHintScale => 0.72f;
 
         protected override Color GetSilhouetteColor(ContentDrawContext ctx)
             => new Color(12, 8, 24) * 0.9f;

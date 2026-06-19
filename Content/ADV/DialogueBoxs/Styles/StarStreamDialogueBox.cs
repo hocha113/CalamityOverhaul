@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.UIEffect;
+﻿using CalamityOverhaul.Content.ADV.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -75,8 +75,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
             return new Color(200, 175, 120) * 0.45f * ctx.ContentAlpha;
         }
 
-        protected override float ContinueHintScale => 0.82f;
-        protected override float FastHintScale => 0.72f;
 
         //定时进度条颜色覆盖为金色系
         protected override Color TimedProgressBaseColor => new Color(255, 210, 100);

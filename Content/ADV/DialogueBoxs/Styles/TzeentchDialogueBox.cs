@@ -1,4 +1,4 @@
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -52,8 +52,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs.Styles
         protected override float PortraitLeftMargin => 24f;
         protected override float DividerLineOffsetY => 30f;
         protected override float DividerLineThickness => 1.8f;
-        protected override float ContinueHintScale => 0.88f;
-        protected override float FastHintScale => 0.72f;
 
         #endregion
 
