@@ -85,7 +85,7 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             Add(Rolename2.Value, Line2.Value);
             Add(Rolename2.Value, Line3.Value);
             Add(Rolename2.Value, Line4.Value);
-            Add(Rolename2.Value, Line5.Value); //触发奖励
+            AddReward(Rolename2.Value, Line5.Value, ItemID.Bass, text: "");
             Add(Rolename2.Value + enjoy, Line6.Value);
             Add(Rolename2.Value, Line7.Value);
             Add(Rolename2.Value, Line8.Value);
@@ -119,19 +119,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen
             if (Main.LocalPlayer.TryGetADVSave(out var save)) {
                 save.Get<HalibutADVData>().FirstMet = true;
                 save.Get<HalibutADVData>().PostFirstMetIsComplete = true;
-            }
-        }
-
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            if (args.Index == 5) {
-                ADVRewardPopup.ShowReward(ItemID.Bass, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero);
             }
         }
     }

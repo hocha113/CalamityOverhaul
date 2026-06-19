@@ -32,21 +32,8 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Shepel.Gifts
             Add(RoleName.Value, L0.Value,
                 onStart: () => ShowPortraitWithFace(ShepelFullBodyPortrait.Face.None));
             Add(RoleName.Value, L1.Value);
-            Add(RoleName.Value, L2.Value);
+            AddReward(RoleName.Value, L2.Value, ModContent.ItemType<LightStockModule>(), style: ADVRewardPopup.RewardStyle.SHPC);
             Add(RoleName.Value, L3.Value, onComplete: Complete);
-        }
-
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ModContent.ItemType<LightStockModule>(), 1, null,
-                    appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty)
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero, styleProvider: () => ADVRewardPopup.RewardStyle.SHPC);
-            }
         }
 
         protected override bool IsGiftCompleted(ADVSave save) => save.Get<ShepelGiftData>().EaterOfWorldsGift;

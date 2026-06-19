@@ -77,25 +77,12 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.DoGQuest
             Add(Rolename1.Value, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
             Add(Rolename1.Value, Line3.Value);
-            Add(Rolename1.Value, Line4.Value); //奖励
+            AddReward(Rolename1.Value, Line4.Value, ModContent.ItemType<OniMachete>(), style: ADVRewardPopup.RewardStyle.Brimstone); //奖励
             Add(Rolename1.Value, Line5.Value);
             Add(Rolename1.Value, Line6.Value);
 
             if (hasHalibut) {
                 Add(Rolename2.Value, Line7.Value);
-            }
-        }
-
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            if (args.Index == 3) { //Line4时发放奖励
-                ADVRewardPopup.ShowReward(ModContent.ItemType<OniMachete>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero, styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
             }
         }
 

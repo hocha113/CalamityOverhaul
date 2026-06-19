@@ -33,21 +33,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             DialogueBoxBase.RegisterPortrait(R1.Value + " " + " ", ADVAsset.Helen_seriousADV);
             Add(R1.Value, L0.Value);
             Add(R1.Value + " ", L1.Value);
-            Add(R1.Value, L2.Value); //奖励
+            AddReward(R1.Value, L2.Value, ItemID.PrincessFish); //奖励
             Add(R1.Value, L3.Value);
             Add(R1.Value + " " + " ", L4.Value);
-        }
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(ItemID.PrincessFish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero);
-            }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
             return save.Get<BossGiftADVData>().SupremeCalamitasGift;

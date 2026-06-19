@@ -28,9 +28,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
         public static LocalizedText Line6 { get; private set; }
         public static LocalizedText Line7 { get; private set; }
 
-        //Line6 索引，PreProcessSegment 触发奖励
-        private int rewardLineIndex = -1;
-
         //设置场景默认使用硫磺火风格
         protected override Func<DialogueBoxBase> DefaultDialogueStyle => () => BrimstoneDialogueBox.Instance;
 
@@ -65,49 +62,18 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.PallbearerQuest
             DialogueBoxBase.SetPortraitStyle(Rolename2.Value, silhouette: false);
 
             //添加对话
-            //计数器跟踪当前索引
-            int currentIndex = 0;
-
             Add(Rolename1.Value, Line1.Value);
-            currentIndex++; //0
-
             Add(Rolename1.Value, Line2.Value);
-            currentIndex++; //1
-
             Add(Rolename1.Value, Line3.Value);
-            currentIndex++; //2
 
             //条件对话：只有在特定情况下才添加
             if (Main.LocalPlayer.TryGetOverride<HalibutPlayer>(out var halibutPlayer) && halibutPlayer.HasHalubut) {
                 Add(Rolename2.Value, Line4.Value);
-                currentIndex++; //3 (如果添加)
             }
 
             Add(Rolename1.Value, Line5.Value);
-            currentIndex++; //3 or 4
-
-            //记录奖励对话的实际索引
-            rewardLineIndex = currentIndex;
-            Add(Rolename1.Value, Line6.Value);//奖励
-            currentIndex++; //4 or 5
-
+            AddReward(Rolename1.Value, Line6.Value, ModContent.ItemType<Pallbearer>(), style: ADVRewardPopup.RewardStyle.Brimstone);//奖励
             Add(Rolename1.Value, Line7.Value);
-            currentIndex++; //5 or 6
-        }
-
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            //使用动态计算的索引而不是硬编码的5
-            if (args.Index == rewardLineIndex) { //Line6 - 奖励物品
-                ADVRewardPopup.ShowReward(ModContent.ItemType<Pallbearer>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero
-                    , styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
-            }
         }
 
         public override void Update(ADVSave save, Player player) {

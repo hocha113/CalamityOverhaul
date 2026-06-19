@@ -73,10 +73,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
         /// </summary>
         protected virtual ScenarioPolicy ConfigurePolicy() => null;
 
-        public override void Unload() { }
-
-        public virtual void PreProcessSegment(DialoguePreProcessArgs args) { }
-
         /// <summary>
         /// 启动场景
         /// </summary>
@@ -384,7 +380,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
             }
 
             initialBox ??= DialogueUIRegistry.Current;
-            initialBox.PreProcessor = PreProcessSegment;
 
             // 逐条入队，支持中途换样式
             for (int i = 0; i < lines.Count; i++) {
@@ -449,8 +444,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
                             var oldBox = DialogueUIRegistry.Current;
                             if (oldBox != styleBox) {
                                 DialogueUIRegistry.SwitchDialogueBox(styleBox, transferQueue: true);
-                                // 新框也挂预处理器
-                                styleBox.PreProcessor = PreProcessSegment;
                             }
                             // 用户 OnStart
                             line.OnStart?.Invoke();
@@ -485,11 +478,6 @@ namespace CalamityOverhaul.Content.ADV.Scenarios
             OnScenarioComplete();
 
             lines.Clear();
-
-            var box = DialogueUIRegistry.Current;
-            if (box != null && box.PreProcessor == PreProcessSegment) {
-                box.PreProcessor = null;
-            }
         }
 
         public virtual void SaveData(TagCompound tag) { }

@@ -70,9 +70,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
                 moved.IsSpecial = segment.IsSpecial;
             }
 
-            //转移预处理器
-            to.PreProcessor = from.PreProcessor;
-
             //转移 playedCount，保持 Index
             to.playedCount = from.playedCount;
 

@@ -43,21 +43,9 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.Helen.Gifts
             DialogueBoxBase.SetPortraitStyle(R1.Value + enjoy, silhouette: false);
             Add(R1.Value + solemn, L0.Value);
             Add(R1.Value + serious, L1.Value);
-            Add(R1.Value, L2.Value); //奖励
+            AddReward(R1.Value, L2.Value, CWRID.Item_Brimlish); //奖励
             Add(R1.Value + naughty, L3.Value);
             Add(R1.Value + enjoy, L4.Value);
-        }
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            if (args.Index == 2) {
-                ADVRewardPopup.ShowReward(CWRID.Item_Brimlish, 1, null, appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero);
-            }
         }
         protected override bool IsGiftCompleted(ADVSave save) {
             return save.Get<BossGiftADVData>().CalamitasCloneGift;

@@ -89,34 +89,11 @@ namespace CalamityOverhaul.Content.ADV.Scenarios.SupCal.Quest.YharonQuest
             Add(Rolename1.Value + expressionSigh, Line1.Value);
             Add(Rolename1.Value, Line2.Value);
             Add(Rolename1.Value + expressionCloseEye, Line3.Value);
-            Add(Rolename1.Value, Line4.Value);//奖励
-            Add(Rolename1.Value + expressionCloseEye, Line5.Value);
-            Add(Rolename1.Value, Line6.Value);
+            Add(Rolename1.Value, Line4.Value);
+            AddReward(Rolename1.Value + expressionCloseEye, Line5.Value, CWRID.Item_AuricBar, 302, "", ADVRewardPopup.RewardStyle.Brimstone);
+            Add(Rolename1.Value, Line6.Value, onStart: ShowPanelReward(ModContent.ItemType<Proverbs>(), 1, "", ADVRewardPopup.RewardStyle.Brimstone, -60f));
             if (hasHalibut) {
                 Add(Rolename2.Value, Line7.Value);
-            }
-        }
-
-        public override void PreProcessSegment(DialoguePreProcessArgs args) {
-            if (args.Index == 4) {//在Line5时发放奖励
-                ADVRewardPopup.ShowReward(CWRID.Item_AuricBar, 302, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero, styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
-            }
-            if (args.Index == 5) {//在Line6时发放奖励
-                ADVRewardPopup.ShowReward(ModContent.ItemType<Proverbs>(), 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f - 60);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f - 60);
-                    }, offset: Vector2.Zero, styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
             }
         }
 

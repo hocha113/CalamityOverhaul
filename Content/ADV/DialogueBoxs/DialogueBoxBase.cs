@@ -17,9 +17,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
     /// <summary>对话框 UI 基类</summary>
     public abstract class DialogueBoxBase : UIHandle, ILocalizedModType
     {
-        //预处理器由场景设置，无静态事件
-        public Action<DialoguePreProcessArgs> PreProcessor { get; set; }
-
         #region 生命周期
 
         /// <summary>当前对话框状态</summary>
@@ -968,20 +965,6 @@ namespace CalamityOverhaul.Content.ADV.DialogueBoxs
             current?.OnStart?.Invoke();
 
             playedCount++;
-            int index = playedCount - 1;
-            int total = playedCount + queue.Count;
-            if (current != null) {
-                var args = new DialoguePreProcessArgs {
-                    Speaker = current.Speaker,
-                    Content = current.Content,
-                    Index = index,
-                    Total = total
-                };
-                //当前 PreProcessor
-                PreProcessor?.Invoke(args);
-                current.Speaker = args.Speaker;
-                current.Content = args.Content;
-            }
             if (current != null) {
                 if (current.Speaker != lastSpeaker) {
                     lastSpeaker = current.Speaker;
