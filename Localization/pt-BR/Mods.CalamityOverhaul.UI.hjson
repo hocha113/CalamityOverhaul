@@ -33,16 +33,22 @@ QuestTracker: {
 SeaDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Acelerar
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 BrimstoneDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Acelerar
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 DraedonDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Acelerar
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 ExoMechdusaSumRender: {
@@ -77,6 +83,8 @@ DraedonCallUI: {
 TzeentchDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Acelerar
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 EnchantUI: {
@@ -127,6 +135,8 @@ ChargingStationUI: {
 SulfseaDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Acelerar
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 OldDukeShopUI: {
@@ -366,6 +376,8 @@ TransitionScene: {
 StarStreamDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Avancar Rapido
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 ApolliaHeroPanelUI: {
@@ -467,6 +479,8 @@ VictorClinicUI: {
 SHPCDialogueBox: {
 	ContinueHint: Continuar
 	FastHint: Avancar Rapido
+	// AutoHint: 自动
+	// SkipHint: 跳过
 }
 
 EntrustManagerNotification: {

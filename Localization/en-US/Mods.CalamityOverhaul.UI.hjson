@@ -1,4 +1,4 @@
-ItemFilterUI: {
+﻿ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -30,19 +30,11 @@ QuestTracker: {
 	}
 }
 
-SeaDialogueBox: {
+DialogueSystem: {
 	ContinueHint: Continue
 	FastHint: Accelerate
-}
-
-BrimstoneDialogueBox: {
-	ContinueHint: Continue
-	FastHint: Accelerate
-}
-
-DraedonDialogueBox: {
-	ContinueHint: Continue
-	FastHint: Accelerate
+	AutoHint: Auto
+	SkipHint: Skip
 }
 
 ExoMechdusaSumRender: {
@@ -72,11 +64,6 @@ DraedonCallUI: {
 	ConnectingText: Connecting...
 	ConnectedText: Connected
 	DisabledReasonText: Draedon Has Been Called
-}
-
-TzeentchDialogueBox: {
-	ContinueHint: Continue
-	FastHint: Accelerate
 }
 
 EnchantUI: {
@@ -122,11 +109,6 @@ ChargingStationUI: {
 	EnergyUnit: UE
 	StationText1: Only accepts rechargeable items!
 	StationText2: Only accepts Draedon Power Cells!
-}
-
-SulfseaDialogueBox: {
-	ContinueHint: Continue
-	FastHint: Accelerate
 }
 
 OldDukeShopUI: {
@@ -363,11 +345,6 @@ TransitionScene: {
 	Hint9: Machines do not betray, but those who control them might.
 }
 
-StarStreamDialogueBox: {
-	ContinueHint: Continue
-	FastHint: Fast Forward
-}
-
 ApolliaHeroPanelUI: {
 	TitleText: Apollia
 	HPLabel: HP
@@ -462,11 +439,6 @@ VictorClinicUI: {
 	LabelForSale: FOR SALE
 	EmptyOwned: ( none in pack )
 	EmptyShop: ( nothing more to sell )
-}
-
-SHPCDialogueBox: {
-	ContinueHint: Continue
-	FastHint: Fast Forward
 }
 
 EntrustManagerNotification: {
