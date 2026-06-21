@@ -89,7 +89,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
              .Say("Helen", "Serious2", Line11.Value)
              .Say("SupCalShadow", "BeTo", Line12.Value)
              .Say("SupCalShadow", "BeTo", Line13.Value)
-             .Say("SupCalShadow", "BeTo", Line14.Value, onEnter: ScreenJitter)
+             .Say("SupCalShadow", "BeTo", Line14.Value, onExit: ScreenJitter)
              .Choice("Helen", "Wrath", Line15.Value, c => c
                  .Option("stop", Choice1Text.Value, NarrativeTarget.Goto(Choice1Label), onSelect: OnChoice1)
                  .Option("silence", Choice2Text.Value, NarrativeTarget.Goto(Choice1Label), onSelect: OnChoice1, () => false))

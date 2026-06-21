@@ -24,10 +24,16 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 
         public override void OnDialogueAdvance() {
             base.OnDialogueAdvance();
+            dialogueIndex.Domp();
             if (dialogueIndex >= SmilePortraitDialogueIndex && !useSmilePortrait) {
                 useSmilePortrait = true;
                 StartBurningDissolve();
             }
+        }
+
+        public void StartBurning() {
+            useSmilePortrait = true;
+            StartBurningDissolve();
         }
 
         public override void EndPerformance() {
@@ -58,7 +64,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch, float alpha) {
-            Texture2D portrait = useSmilePortrait ? ADVAsset.SupCal_smileADV : ADVAsset.SupCal_closeEyesADV;
+            Texture2D portrait = useSmilePortrait ? ADVAsset.SupCalADV : ADVAsset.SupCal_closeEyesADV;
             if (portrait == null || portrait.IsDisposed || OwnerDialogue == null) {
                 return;
             }

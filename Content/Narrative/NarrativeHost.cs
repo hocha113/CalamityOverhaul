@@ -100,6 +100,9 @@ namespace CalamityOverhaul.Content.Narrative
                 .AsSilhouette()
                 .Expression(NarrativeIds.BeTo, () => ADVAsset.SupCalsADV[3]);
 
+            PortraitRegistry.Register(NarrativeIds.SupCalFarewell)
+                .Name(() => EternalBlazingNow.Rolename2.Value);
+
             PortraitRegistry.Register(NarrativeIds.SupCal)
                 .Name(() => SupCalFirstMet.Rolename2.Value)
                 .Portrait(() => ADVAsset.SupCalsADV[0])

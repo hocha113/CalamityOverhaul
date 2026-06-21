@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.Narrative
         internal static readonly CharacterId SupCalUnknown = CharacterId.ForMod(ModName, "SupCalUnknown");
         internal static readonly CharacterId SupCal = CharacterId.ForMod(ModName, "SupCal");
         internal static readonly CharacterId SupCalShadow = CharacterId.ForMod(ModName, "SupCalShadow");
+        internal static readonly CharacterId SupCalFarewell = CharacterId.ForMod(ModName, "SupCalFarewell");
         internal static readonly CharacterId Shepel = CharacterId.ForMod(ModName, "Shepel");
 
         internal static readonly ExpressionId Doubt = new("Doubt");

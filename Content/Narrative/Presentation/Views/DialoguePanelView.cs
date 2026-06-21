@@ -19,6 +19,8 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 
         Rectangle INarrativePanelAnchor.GetPanelRect() => PanelRect;
 
+        public static T GetPortraits<T>() where T : FullBodyPortraitBase => TypeToPortraits[typeof(T)] as T;
+
         /// <summary>显示全身立绘</summary>
         public bool ShowFullBodyPortrait<T>() where T : FullBodyPortraitBase => ShowFullBodyPortrait(typeof(T));
 

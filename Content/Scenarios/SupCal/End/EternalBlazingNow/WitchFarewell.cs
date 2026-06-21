@@ -48,17 +48,17 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say("SupCalShadow", FarewellLine1.Value, onEnter: TriggerRedScreen)
-             .Say("SupCalShadow", FarewellLine2.Value)
-             .Say("SupCalShadow", FarewellLine3.Value)
-             .Say("SupCalShadow", FarewellLine4.Value)
-             .Say("SupCalShadow", FarewellLine5.Value)
-             .Say("SupCalShadow", FarewellLine6.Value)
-             .Say("SupCalShadow", FarewellLine7.Value)
-             .Say("SupCalShadow", FarewellLine8.Value)
-             .Say("SupCalShadow", FarewellLine9.Value)
-             .Say("SupCalShadow", FarewellLine10.Value)
-             .Say("SupCalShadow", FarewellLine11.Value, onEnter: ShowAchievement, onExit: FinalFade);
+            n.Say("SupCalFarewell", FarewellLine1.Value, onEnter: TriggerRedScreen)
+             .Say("SupCalFarewell", FarewellLine2.Value)
+             .Say("SupCalFarewell", FarewellLine3.Value)
+             .Say("SupCalFarewell", FarewellLine4.Value)
+             .Say("SupCalFarewell", FarewellLine5.Value)
+             .Say("SupCalFarewell", FarewellLine6.Value)
+             .Say("SupCalFarewell", FarewellLine7.Value)
+             .Say("SupCalFarewell", FarewellLine8.Value)
+             .Say("SupCalFarewell", FarewellLine9.Value)
+             .Say("SupCalFarewell", FarewellLine10.Value)
+             .Say("SupCalFarewell", FarewellLine11.Value, onEnter: ShowAchievement, onExit: FinalFade);
         }
 
         public static void RequestSpawn() => SpawnPending = true;
@@ -103,6 +103,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private static void FinalFade() => EbnEffect.FinalFadeOut = true;
 
         private static void ShowAchievement() {
+            DialoguePanelView.GetPortraits<SupCalFullBodyPortrait>().StartBurning();
             CWRNpc.SetNPCLoot(CWRID.NPC_SupremeCalamitas);
             NotificationPopupSystem.Add(new EbnAchievementEntry(
                 CWRAsset.icon_small.Value,
