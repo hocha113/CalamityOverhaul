@@ -69,6 +69,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.ExoMechdusaSums
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.ExoMechEndingDialogue, d => d.ExoMechEndingDialogue),
+            CanTrigger = (_, _) => false,
             OnCompleted = _ => DraedonStorySync.WriteDraedon(d => d.ExoMechEndingDialogue = true, d => d.ExoMechEndingDialogue = true),
         };
 

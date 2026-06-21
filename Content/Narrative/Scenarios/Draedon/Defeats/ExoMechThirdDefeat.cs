@@ -45,6 +45,7 @@ DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.ExoMechThirdDefeat, d => d.ExoMechThirdDefeat),
+            CanTrigger = (_, _) => false,
             OnCompleted = _ => DraedonStorySync.WriteDraedon(d => d.ExoMechThirdDefeat = true, d => d.ExoMechThirdDefeat = true),
         };
 

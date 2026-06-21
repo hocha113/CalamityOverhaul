@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Shepel.CybCourses
 {
     internal sealed class CybCourseOutroDialogue : ShepelCybCourseDialogue
     {
-        public override string LocalizationCategory => "ADV";
+        public override string LocalizationCategory => "ADV.Shepel";
 
         protected override bool SkipPortraitFadeInOnStart => true;
 

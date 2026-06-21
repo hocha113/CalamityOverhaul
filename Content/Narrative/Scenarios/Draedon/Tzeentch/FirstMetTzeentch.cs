@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Narrative.Runtime;
 using CalamityOverhaul.Content.Narrative.Scenarios.Draedon;
 using InnoVault.Narrative.Composition;
@@ -171,6 +171,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Tzeentch
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.FirstMetTzeentch, d => d.FirstMetTzeentch),
+            CanTrigger = (_, _) => false,
         };
     }
 }

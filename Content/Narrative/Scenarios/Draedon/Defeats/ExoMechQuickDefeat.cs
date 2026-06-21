@@ -46,5 +46,9 @@ DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
             DraedonEffect.Send();
         }
 
+        protected override NarrativePolicy ConfigurePolicy() => new() {
+            CanTrigger = (_, _) => false,
+        };
+
     }
 }

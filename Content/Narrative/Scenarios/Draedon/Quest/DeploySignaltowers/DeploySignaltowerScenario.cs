@@ -60,11 +60,11 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Quest.DeploySigna
             AcceptPrompt = this.GetLocalization(nameof(AcceptPrompt), () => "那么，你是否接受？");
             ChoiceAccept = this.GetLocalization(nameof(ChoiceAccept), () => "接受委托");
             ChoiceDecline = this.GetLocalization(nameof(ChoiceDecline), () => "以后再说");
-            AcceptResponse = this.GetLocalization(nameof(AcceptResponse), () => "很好，这是信号塔的建造蓝图。完成后向我汇报进度");
-            AcceptL1 = this.GetLocalization(nameof(AcceptL1), () => "这是第一批建材，数量有限，先搭建信号塔的主要框架");
-            AcceptL2 = this.GetLocalization(nameof(AcceptL2), () => "当第一个节点投入运作后，通讯链路将趋于稳定");
-            AcceptL3 = this.GetLocalization(nameof(AcceptL3), () => "到那时，我就能通过亚空间持续输送更多资源，用于更大规模的建造");
-            DeclineResponse = this.GetLocalization(nameof(DeclineResponse), () => "我理解，当你准备好时随时可以回来找我");
+            AcceptResponse = this.GetLocalization("Choice_Accept.AcceptResponse", () => "很好，这是信号塔的建造蓝图。完成后向我汇报进度");
+            AcceptL1 = this.GetLocalization("Choice_Accept.L1", () => "这是第一批建材，数量有限，先搭建信号塔的主要框架");
+            AcceptL2 = this.GetLocalization("Choice_Accept.L2", () => "当第一个节点投入运作后，通讯链路将趋于稳定");
+            AcceptL3 = this.GetLocalization("Choice_Accept.L3", () => "到那时，我就能通过亚空间持续输送更多资源，用于更大规模的建造");
+            DeclineResponse = this.GetLocalization("Choice_Decline.DeclineResponse", () => "我理解，当你准备好时随时可以回来找我");
         }
 
         public static void ResetWorldState() {

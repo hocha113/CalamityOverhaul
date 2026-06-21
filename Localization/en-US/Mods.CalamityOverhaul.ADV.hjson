@@ -1,4 +1,4 @@
-﻿FirstMet: {
+FirstMet: {
 	Rolename1: ???
 	Rolename2: Halibut
 	Line0: Sir... your fishing technique... leaves something to be desired.
@@ -811,6 +811,7 @@ FirstMetTzeentch: {
 	Choice3_R3: It's just... most of the endings are not very pleasant.
 	EndLine1: Well, then. We will meet again.
 	EndLine2: Soon.
+	Rolename: ?????????????????????
 }
 
 DyeProtest: {

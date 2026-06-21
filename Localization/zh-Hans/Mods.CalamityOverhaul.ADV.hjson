@@ -1,4 +1,4 @@
-﻿FirstMet: {
+FirstMet: {
 	Rolename1: ???
 	Rolename2: 比目鱼
 	Line0: 先生......你的钓鱼技法，还有一些进步空间
@@ -806,6 +806,7 @@ FirstMetTzeentch: {
 	Choice3_R3: 只是……大多数结局都不太愉快
 	EndLine1: 那么，我们会再见的
 	EndLine2: 很快
+	// Rolename: ?????????????????????
 }
 
 DyeProtest: {

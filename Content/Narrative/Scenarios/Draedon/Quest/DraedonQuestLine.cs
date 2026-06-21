@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.EntrustManager;
+using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Quest.DeploySignaltowers;
 using CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using Terraria;
@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Quest
 {
-    internal sealed class DraedonNarrativeQuestLine : ModSystem, ILocalizedModType
+    internal sealed class DraedonQuestLine : ModSystem, ILocalizedModType
     {
         private const string DeployKey = "Draedon_DeploySignaltower";
 

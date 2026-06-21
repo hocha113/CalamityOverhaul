@@ -1,5 +1,6 @@
 ﻿using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
+using InnoVault.Narrative.Runtime;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -40,6 +41,10 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Defeats
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
         }
+
+        protected override NarrativePolicy ConfigurePolicy() => new() {
+            CanTrigger = (_, _) => false,
+        };
 
     }
 }

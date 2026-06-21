@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -42,6 +43,10 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Quest.FindFragmen
         }
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
+            IsCompleted = _ => OldDukeStorySync.Read(
+                d => d.OldDukeFirstCampsiteDialogueCompleted || d.OldDukeFindFragmentsQuestTriggered,
+                d => d.OldDukeFirstCampsiteDialogueCompleted || d.OldDukeFindFragmentsQuestTriggered),
+            CanTrigger = (_, _) => false,
             OnCompleted = _ => OldDukeStorySync.Write(
                 d => d.OldDukeFindFragmentsQuestTriggered = true,
                 d => d.OldDukeFindFragmentsQuestTriggered = true),

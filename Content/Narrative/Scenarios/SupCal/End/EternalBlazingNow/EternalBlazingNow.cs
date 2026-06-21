@@ -38,6 +38,8 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazing
         public static LocalizedText QuestionLine { get; private set; }
         public static LocalizedText Choice1Text { get; private set; }
         public static LocalizedText Choice2Text { get; private set; }
+        public static LocalizedText Choice1Line1 { get; private set; }
+        public static LocalizedText Choice1Line2 { get; private set; }
         public static LocalizedText AchievementTitle { get; private set; }
         public static LocalizedText AchievementTooltip { get; private set; }
 
@@ -67,6 +69,8 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazing
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "......");
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "(阻止比目鱼)");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "(保持沉默)");
+            Choice1Line1 = this.GetLocalization(nameof(Choice1Line1), () => "......这就是你的选择吗？");
+            Choice1Line2 = this.GetLocalization(nameof(Choice1Line2), () => "我明白了......");
             AchievementTitle = this.GetLocalization(nameof(AchievementTitle), () => "BE结局：永恒燃烧的现在");
             AchievementTooltip = this.GetLocalization(nameof(AchievementTooltip), () => "往日被烈火所吞噬，以异类之躯触及永恒");
         }

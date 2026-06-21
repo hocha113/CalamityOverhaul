@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Shepel.CybCourses
 {
     internal sealed class CybCourseHackIntroDialogue : ShepelCybCourseDialogue
     {
-        public override string LocalizationCategory => "ADV";
+        public override string LocalizationCategory => "ADV.Shepel";
 
         public static LocalizedText SpeakerName { get; private set; }
         public static LocalizedText Line1 { get; private set; }

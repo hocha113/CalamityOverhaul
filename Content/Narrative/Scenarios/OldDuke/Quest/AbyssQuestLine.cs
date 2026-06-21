@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.EntrustManager;
+using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Quest;
 using Terraria;
@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Quest
 {
-    internal sealed class AbyssNarrativeQuestLine : ModSystem, ILocalizedModType
+    internal sealed class AbyssQuestLine : ModSystem, ILocalizedModType
     {
         internal const string CampsiteKey = "Abyss_FindCampsite";
         internal const string FragmentKey = "Abyss_FindFragment";

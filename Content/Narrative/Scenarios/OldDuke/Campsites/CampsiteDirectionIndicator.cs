@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites
             }
 
             //检查寻找营地委托是否处于追踪状态
-            var campsiteEntry = QuestManagerUI.Instance?.GetEntry(AbyssNarrativeQuestLine.CampsiteKey);
+            var campsiteEntry = QuestManagerUI.Instance?.GetEntry(AbyssQuestLine.CampsiteKey);
             bool questTracked = campsiteEntry != null
                 && campsiteEntry.Status == QuestEntryStatus.Tracked;
 
