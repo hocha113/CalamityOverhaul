@@ -66,7 +66,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Brimstone
 
                 float ang = MathHelper.TwoPi * i / 4f;
 
-                Utils.DrawBorderString(spriteBatch, NarrativeUIText.ChoiceTitle, titlePos + ang.ToRotationVector2() * 1.25f, edge * 0.55f, 0.9f);
+                Utils.DrawBorderString(spriteBatch, ResolveChoiceTitle(), titlePos + ang.ToRotationVector2() * 1.25f, edge * 0.55f, 0.9f);
 
             }
 

@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC
             Vector2 titlePos = context.TitleRect.Location.ToVector2();
             for (int i = 0; i < 4; i++) {
                 float ang = MathHelper.TwoPi * i / 4f;
-                Utils.DrawBorderString(spriteBatch, NarrativeUIText.ChoiceTitle, titlePos + ang.ToRotationVector2() * 1.4f, glow * 0.5f, 0.85f);
+                Utils.DrawBorderString(spriteBatch, ResolveChoiceTitle(), titlePos + ang.ToRotationVector2() * 1.4f, glow * 0.5f, 0.85f);
             }
         }
 

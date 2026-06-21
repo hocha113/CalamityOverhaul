@@ -31,7 +31,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream
             Vector2 titlePos = context.TitleRect.Location.ToVector2();
             for (int i = 0; i < 5; i++) {
                 float angle = MathHelper.TwoPi * i / 5f + state.ShimmerTimer * 0.3f;
-                Utils.DrawBorderString(spriteBatch, NarrativeUIText.ChoiceTitle, titlePos + angle.ToRotationVector2() * 2.2f, nameGlow * 0.5f, 0.95f);
+                Utils.DrawBorderString(spriteBatch, ResolveChoiceTitle(), titlePos + angle.ToRotationVector2() * 2.2f, nameGlow * 0.5f, 0.95f);
             }
         }
 

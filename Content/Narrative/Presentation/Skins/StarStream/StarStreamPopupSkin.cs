@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream
         }
 
         public override void DrawHint(SpriteBatch spriteBatch, PopupLayoutContext context) {
-            string hint = context.RequireClaim ? NarrativeUIText.ClaimHint : NarrativeUIText.ContinueHint;
+            string hint = context.RequireClaim ? ResolveClaimHint() : ResolveContinueHint();
             Vector2 hintSize = context.Font.MeasureString(hint) * 0.6f;
             float blink = (float)(Math.Sin(context.GlobalTimer * 6f) * 0.5 + 0.5);
             Utils.DrawBorderString(spriteBatch, hint,

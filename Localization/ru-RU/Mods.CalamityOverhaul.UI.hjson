@@ -34,6 +34,9 @@ DialogueSystem: {
 	FastHint: Ускорить
 	AutoHint: Авто
 	SkipHint: Пропустить
+	ClaimHint: Нажмите, чтобы забрать
+	PopupContinueHint: Нажмите, чтобы продолжить
+	ChoiceTitle: Выберите
 }
 
 ExoMechdusaSumRender: {

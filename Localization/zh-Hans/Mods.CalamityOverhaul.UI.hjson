@@ -34,6 +34,9 @@ DialogueSystem: {
 	FastHint: 加速
 	AutoHint: 自动
 	SkipHint: 跳过
+	ClaimHint: 点击领取
+	PopupContinueHint: 点击继续
+	ChoiceTitle: 选择
 }
 
 ExoMechdusaSumRender: {

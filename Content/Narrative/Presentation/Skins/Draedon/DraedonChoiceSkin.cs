@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Draedon
 
         public override void DrawTitleDecoration(SpriteBatch spriteBatch, ChoiceLayoutContext context)
             => DraedonPanelDraw.DrawSpeakerGlow(spriteBatch, context.TitleRect.Location.ToVector2(),
-                NarrativeUIText.ChoiceTitle, context.Alpha, 0.95f);
+                ResolveChoiceTitle(), context.Alpha, 0.95f);
 
         public override void DrawDivider(SpriteBatch spriteBatch, ChoiceLayoutContext context) {
             Vector2 start = new(context.DividerRect.X, context.DividerRect.Y);
