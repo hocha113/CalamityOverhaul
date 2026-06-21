@@ -1,5 +1,4 @@
 using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.Players;
 using InnoVault.GameSystem;
@@ -1545,19 +1544,15 @@ namespace CalamityOverhaul
         internal static void OnDisplayLocalizedTextHook(On_DisplayLocalizedText_Dalegate orig, string key, Color? textColor = null) {
             Color color = textColor ?? Color.White;
             if (VaultLoad.LoadenContent) {
-                bool result = true;
-                foreach (var d in ModifyDisplayText.Instances) {
+                foreach (var d in global::CalamityOverhaul.Content.Narrative.Runtime.NarrativeDisplayText.Instances) {
                     if (!d.Alive(Main.LocalPlayer)) {
                         continue;
                     }
-                    bool newResult = d.Handle(ref key, ref color);
-                    if (!newResult) {
-                        result = false;
+                    if (!d.Handle(ref key, ref color)) {
+                        return;
                     }
                 }
-                if (!result) {
-                    return;
-                }
+
             }
 
             orig.Invoke(key, color);

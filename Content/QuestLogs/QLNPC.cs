@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Common;
+﻿using CalamityOverhaul.Content.Narrative.Common;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria;
 

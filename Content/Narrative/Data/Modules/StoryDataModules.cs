@@ -1,0 +1,176 @@
+﻿using InnoVault.DataModules;
+
+namespace CalamityOverhaul.Content.Narrative.Data.Modules
+{
+    public sealed class HalibutStoryData : DataModule
+    {
+        public bool HasCaughtHalibut;
+        public bool FirstMet;
+        public bool PostFirstMetIsComplete;
+        public bool DyeProtest;
+        public bool FishoilQuestDeclined;
+        public bool FishoilQuestAccepted;
+        public bool FishoilQuestCompleted;
+        public bool FishoilQuestSuspended;
+        public bool FirstResurrectionWarning;
+    }
+
+    public sealed class SupCalStoryData : DataModule
+    {
+        public bool FirstMetSupCal;
+        public bool SupCalChoseToFight;
+        public bool SupCalMoonLordReward;
+        public bool SupCalDefeat;
+        public bool SupCalQuestAccepted;
+        public bool SupCalQuestDeclined;
+        public bool SupCalQuestReward;
+        public bool SupCalQuestRewardSceneComplete;
+        public bool SupCalDoGQuestAccepted;
+        public bool SupCalDoGQuestReward;
+        public bool SupCalDoGQuestRewardSceneComplete;
+        public bool SupCalDoGQuestDeclined;
+        public bool SupCalYharonQuestReward;
+        public bool SupCalYharonQuestAccepted;
+        public bool SupCalYharonQuestDeclined;
+        public bool SupCalYharonQuestRewardSceneComplete;
+        public bool EternalBlazingNowTriggered;
+        public bool EternalBlazingNowChoice1;
+        public bool EternalBlazingNowChoice2;
+        public bool GiveBlazingBud;
+        public bool EternalBlazingNow;
+        public bool HelenInterferenceTriggered;
+        public bool HelenInterferenceContinue;
+        public bool HelenInterferenceStop;
+    }
+
+    public sealed class DraedonStoryData : DataModule
+    {
+        public bool DeploySignaltowerQuestAccepted;
+        public bool DeploySignaltowerQuestDeclined;
+        public bool DeploySignaltowerFirstTowerBuilt;
+        public bool DeploySignaltowerQuestCompleted;
+        public bool UseConstructionBlueprint;
+        [DataModuleName(nameof(FirstExoMechdusaSum), "FristExoMechdusaSum")]
+        public bool FirstExoMechdusaSum;
+        public bool ExoMechEndingDialogue;
+        public bool ExoMechSecondDefeat;
+        public bool ExoMechThirdDefeat;
+        public int ExoMechDefeatCount;
+        public bool FirstMetTzeentch;
+    }
+
+    /// <summary>
+    /// 老公爵交互状态枚举
+    /// </summary>
+    public enum OldDukeInteractionState
+    {
+        /// <summary>未遇见</summary>
+        NotMet = 0,
+        /// <summary>已遇见但未做选择</summary>
+        Met = 1,
+        /// <summary>接受合作</summary>
+        AcceptedCooperation = 2,
+        /// <summary>拒绝合作（可重新选择）</summary>
+        DeclinedCooperation = 3,
+        /// <summary>选择战斗（永久战斗）</summary>
+        ChoseToFight = 4
+    }
+
+    public sealed class OldDukeStoryData : DataModule
+    {
+        [DataModuleName(nameof(OldDukeState), "OldDukeInteraction")]
+        public OldDukeInteractionState OldDukeState { get; set; }
+        public bool OldDukeFirstCampsiteDialogueCompleted;
+        public bool OldDukeFindFragmentsQuestTriggered;
+        public bool OldDukeFindFragmentsQuestCompleted;
+
+        [DataModuleIgnore]
+        public bool FirstMetOldDuke => OldDukeState != OldDukeInteractionState.NotMet;
+        [DataModuleIgnore]
+        public bool OldDukeCooperationAccepted => OldDukeState == OldDukeInteractionState.AcceptedCooperation;
+        [DataModuleIgnore]
+        public bool OldDukeCooperationDeclined => OldDukeState == OldDukeInteractionState.DeclinedCooperation;
+        [DataModuleIgnore]
+        public bool OldDukeChoseToFight => OldDukeState == OldDukeInteractionState.ChoseToFight;
+    }
+
+    public sealed class BossGiftStoryData : DataModule
+    {
+        public bool QueenBeeGift;
+        public bool SkeletronGift;
+        public bool EyeOfCthulhuGift;
+        public bool KingSlimeGift;
+        public bool CrabulonGift;
+        public bool PerforatorGift;
+        public bool HiveMindGift;
+        public bool WallOfFleshGift;
+        public bool SlimeGodGift;
+        public bool CryogenGift;
+        public bool BrimstoneElementalGift;
+        public bool AquaticScourgeGift;
+        public bool CalamitasCloneGift;
+        public bool PlanteraGift;
+        public bool GolemGift;
+        public bool HellGift;
+        public bool MoonLordGift;
+        public bool LeviathanGift;
+        public bool PlaguebringerGift;
+        public bool ProvidenceGift;
+        public bool DevourerOfGodsGift;
+        public bool YharonGift;
+        public bool SupremeCalamitasGift;
+    }
+
+    public sealed class ShepelStoryData : DataModule
+    {
+        public int IdleVariantSeed;
+        public int StoryPhase;
+        public int ReactiveEventFlags;
+        public int LastDefeatedBossNpcType = -1;
+        public bool FirstSHPCObtained;
+        public int UnderworldVariantSeed;
+        public int DungeonVariantSeed;
+        public int OceanVariantSeed;
+        public int SnowVariantSeed;
+        public int JungleVariantSeed;
+        public int NightVariantSeed;
+        public bool FirstSHPCIntroCompleted;
+    }
+
+    public sealed class ShepelGiftStoryData : DataModule
+    {
+        public bool EyeOfCthulhuGift;
+        public bool EaterOfWorldsGift;
+        public bool BrainOfCthulhuGift;
+        public bool HiveMindGift;
+        public bool PerforatorGift;
+        public bool SlimeGodGift;
+        public bool WallOfFleshGift;
+        public bool AquaticScourgeGift;
+        public bool BrimstoneElementalGift;
+        public bool DestroyerGift;
+        public bool TwinsGift;
+        public bool SkeletronPrimeGift;
+        public bool CalamitasCloneGift;
+        public bool PlanteraGift;
+        public bool GolemGift;
+        public bool CultistGift;
+        public bool MoonLordGift;
+        public bool ProvidenceGift;
+        public bool PolterghastGift;
+        public bool DevourerofGodsGift;
+        public bool YharonGift;
+        public bool ExoMechsGift;
+        public bool SupremeCalamitasGift;
+    }
+
+    public sealed class ApolliaStoryData : DataModule
+    {
+        public bool GalacticCrisisCompleted;
+    }
+
+    public sealed class EntrustGuideData : DataModule
+    {
+        public bool GuideSeen;
+    }
+}

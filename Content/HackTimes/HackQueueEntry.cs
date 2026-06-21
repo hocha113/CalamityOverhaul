@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith;
-using CalamityOverhaul.Content.HackTimes.Scannables;
+﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using Terraria;
 
 namespace CalamityOverhaul.Content.HackTimes
@@ -72,8 +71,6 @@ namespace CalamityOverhaul.Content.HackTimes
         public int TileX => Target is TileScannable t ? t.TileCoordX : -1;
         /// <summary>TileScannable 时物块 Y，否则 -1</summary>
         public int TileY => Target is TileScannable t ? t.TileCoordY : -1;
-        /// <summary>灵异 Actor 引用，否则 null</summary>
-        public GlitchWraithActor WraithTarget => Target as GlitchWraithActor;
         /// <summary>炮台引用，否则 null</summary>
         public IHackableTurret TurretTarget => Target as IHackableTurret;
         /// <summary>信号塔引用，否则 null</summary>

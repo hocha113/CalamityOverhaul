@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
-            bool ebn = EbnPlayer.OnEbn(Main.LocalPlayer);
+            bool ebn = EbnState.OnEbn(Main.LocalPlayer);
             foreach (TooltipLine line in tooltips) {
                 if (line.Name == "ItemName") {
                     continue;
@@ -61,7 +61,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
         public override void ResetEffects() {
             HasProverbs = false;
             HideVisual = false;
-            IsEbn = EbnPlayer.OnEbn(Player);
+            IsEbn = EbnState.OnEbn(Player);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

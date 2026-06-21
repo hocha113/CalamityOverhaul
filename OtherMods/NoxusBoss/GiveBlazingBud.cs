@@ -1,6 +1,9 @@
-﻿using CalamityOverhaul.Content.ADV.ADVRewardPopups;
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
+﻿using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.Narrative.Runtime;
+using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
+using InnoVault.Narrative.Core;
+using InnoVault.Narrative.Services;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -25,13 +28,12 @@ namespace CalamityOverhaul.OtherMods.NoxusBoss
             if (CWRMod.Instance.noxusBoss == null) {
                 return;
             }
-            if (!Player.TryGetADVSave(out var save)) {
+            if (!EbnState.OnEbn(Player)) {
                 return;
             }
-            if (!save.Get<SupCalADVData>().EternalBlazingNow) {
-                return;
-            }
-            if (save.Get<SupCalADVData>().GiveBlazingBud) {
+
+            SupCalStoryData data = Player.GetModPlayer<StoryPlayer>().Get<SupCalStoryData>();
+            if (data.GiveBlazingBud) {
                 return;
             }
             if (--RandTimer > 0) {
@@ -41,17 +43,11 @@ namespace CalamityOverhaul.OtherMods.NoxusBoss
                 return;
             }
 
-            ADVRewardPopup.ShowReward(blazingBudItem.Type, 1, "", appearDuration: 24, holdDuration: -1, giveDuration: 16, requireClick: true,
-                    anchorProvider: () => {
-                        var rect = DialogueUIRegistry.Current?.GetPanelRect() ?? Rectangle.Empty;
-                        if (rect == Rectangle.Empty) {
-                            return new Vector2(Main.screenWidth / 2f, Main.screenHeight * 0.45f);
-                        }
-                        return new Vector2(rect.Center.X, rect.Y - 70f);
-                    }, offset: Vector2.Zero
-                    , styleProvider: () => ADVRewardPopup.RewardStyle.Brimstone);
-
-            save.Get<SupCalADVData>().GiveBlazingBud = true;
+            data.GiveBlazingBud = true;
+            NarrativeServices.RewardGrant?.Grant(new RewardPayload {
+                ItemType = blazingBudItem.Type,
+                Stack = 1
+            }, Player);
 
             VaultUtils.Text(MessageText.Value, Color.Orange);
         }

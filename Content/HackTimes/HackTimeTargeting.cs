@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.Scenarios.VoidColonys.GlitchWraith;
 using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.UIs.NotificationPopup;
 using Terraria;
@@ -24,8 +23,6 @@ namespace CalamityOverhaul.Content.HackTimes
         public static int HoveredTileX => HoveredTarget is TileScannable t ? t.TileCoordX : -1;
         /// <summary>当前悬停的可扫描物块 Y，无悬停物块时返回 -1</summary>
         public static int HoveredTileY => HoveredTarget is TileScannable t ? t.TileCoordY : -1;
-        /// <summary>当前悬停的灵异 Actor，无悬停灵异时返回 null</summary>
-        public static GlitchWraithActor HoveredWraith => HoveredTarget as GlitchWraithActor;
         /// <summary>当前悬停的可骇入炮台，无悬停炮台时返回 null</summary>
         public static IHackableTurret HoveredTurret => HoveredTarget as IHackableTurret;
         /// <summary>当前悬停的可骇入信号塔，无悬停信号塔时返回 null</summary>

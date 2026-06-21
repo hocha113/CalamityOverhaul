@@ -1,12 +1,9 @@
-﻿using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.DialogueBoxs;
-using CalamityOverhaul.Content.ADV.MainMenuOvers;
-using CalamityOverhaul.Content.ADV.Scenarios;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
+﻿using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites;
+using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
+using CalamityOverhaul.Content.UIs.MainMenuOvers;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -43,65 +40,11 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (player.CountProjectilesOfID<ForgottenTomeEffect>() > 0) {
                 return false;
             }
-            if (!player.TryGetADVSave(out var save)) {
-                return false;
-            }
-            return IsAnySaveDataActive(save);
-        }
-
-        internal static bool IsAnySaveDataActive(ADVSave save) {
-            foreach (ADVDataModule module in save.AllModules) {
-                FieldInfo[] fields = module.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                foreach (FieldInfo field in fields) {
-                    if (field.FieldType == typeof(bool)) {
-                        bool value = (bool)field.GetValue(module);
-                        if (value) {
-                            return true;
-                        }
-                    }
-                    if (field.FieldType == typeof(int)) {
-                        int value = (int)field.GetValue(module);
-                        if (value != 0) {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            if (CWRRef.GetDownedCalamitas()) {
-                return true;
-            }
-
-            return false;
+            return EbnState.OnEbn(player) || CWRRef.GetDownedCalamitas();
         }
 
         internal static int ResetAllADVData(Player owner) {
             int resetFieldCount = 0;
-            if (!owner.TryGetADVSave(out var save)) {
-                return resetFieldCount;
-            }
-
-            resetFieldCount = 0;
-
-            foreach (ADVDataModule module in save.AllModules) {
-                FieldInfo[] fields = module.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                foreach (FieldInfo field in fields) {
-                    if (field.FieldType == typeof(bool)) {
-                        bool value = (bool)field.GetValue(module);
-                        if (value) {
-                            field.SetValue(module, false);
-                            resetFieldCount++;
-                        }
-                    }
-                    if (field.FieldType == typeof(int)) {
-                        int value = (int)field.GetValue(module);
-                        if (value != 0) {
-                            field.SetValue(module, 0);
-                            resetFieldCount++;
-                        }
-                    }
-                }
-            }
 
             if (CWRRef.GetDownedCalamitas()) {
                 resetFieldCount++;
@@ -124,16 +67,10 @@ namespace CalamityOverhaul.Content.Items.Tools
                 OldDukeCampsite.ClearCampsite();
             }
 
-            //关闭当前可能存在的对话框
-            DialogueUIRegistry.ForceCloseBox(DialogueUIRegistry.Current);
-            ScenarioManager.ResetAll();
             return resetFieldCount;
         }
 
         public override bool? UseItem(Player player) {
-            if (!player.TryGetADVSave(out _)) {
-                return false;
-            }
             if (Main.myPlayer == player.whoAmI) {
                 Projectile.NewProjectile(
                     player.GetSource_ItemUse(Item),

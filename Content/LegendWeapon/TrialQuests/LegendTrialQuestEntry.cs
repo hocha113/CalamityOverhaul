@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using System.Collections.Generic;
 using Terraria.Localization;
 

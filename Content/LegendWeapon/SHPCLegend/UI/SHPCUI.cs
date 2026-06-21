@@ -1,10 +1,10 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.EntrustManager;
-using CalamityOverhaul.Content.ADV.Scenarios;
-using CalamityOverhaul.Content.ADV.Scenarios.Shepel;
 using CalamityOverhaul.Content.Cyberwares.UIs;
+using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.Narrative.Runtime;
+using CalamityOverhaul.Content.Narrative.Scenarios.Shepel;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.RAMSystems;
 using InnoVault.UIHandles;
@@ -382,10 +382,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                     Glyph = "T",
                     Enabled = () => true,
                     StatusValue = () => -1f,
-                    StatusText = () => ScenarioManager.IsActive()
+                    StatusText = () => NarrativeTriggerGate.IsBusy
                         ? Talk_Status_Busy.Value
                         : Talk_Status_Ready.Value,
-                    OnClick = () => SHPCDialogueRouter.TryStart(Main.LocalPlayer),
+                    OnClick = () => SHPCNarrativeRouter.TryStart(Main.LocalPlayer),
                 },
             };
             hoverAmts = new float[buttons.Count];

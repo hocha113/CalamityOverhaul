@@ -1,6 +1,6 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
-using CalamityOverhaul.Content.ADV.Scenarios;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
+using CalamityOverhaul.Content.Narrative.Runtime;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.TrialQuests
         protected override LocalizedText TrackerBriefText => TrackerBrief;
         protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
         protected override bool CanCreateEntries(Player player) {
-            if (ScenarioManager.IsActive()) {
+            if (NarrativeTriggerGate.IsBusy) {
                 return false;
             }
             return player.HasItem(SHPCOverride.ID);

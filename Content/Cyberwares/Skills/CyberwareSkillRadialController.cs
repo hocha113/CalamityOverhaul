@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.EntrustManager;
+using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.TimeFreezes;

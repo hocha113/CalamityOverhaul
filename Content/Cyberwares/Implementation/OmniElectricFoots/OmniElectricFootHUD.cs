@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.ADV.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.QuestLogs;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;

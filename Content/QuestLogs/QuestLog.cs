@@ -1,5 +1,5 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV.EntrustManager;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles;
 using InnoVault.UIHandles;
@@ -108,7 +108,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             currentStyleIndex = Math.Clamp(index, 0, availableStyles.Count - 1);
             CurrentStyle = availableStyles[currentStyleIndex];
             if (sync) {
-                ADV.EntrustManager.QuestManagerUI.Instance?.SetStyleByIndex(currentStyleIndex, false);
+                QuestManagerUI.Instance?.SetStyleByIndex(currentStyleIndex, false);
             }
         }
 
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             QuestManagerText = this.GetLocalization(nameof(QuestManagerText), () => "委托任务");
         }
 
-        public new void SaveUIData(TagCompound tag) {
+        public override void SaveUIData(TagCompound tag) {
             tag[Name + ":" + nameof(zoom)] = zoom;
             tag[Name + ":" + nameof(panOffset)] = panOffset;
             tag[Name + ":" + nameof(dragStartMousePos)] = dragStartMousePos;
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             tag[Name + ":" + nameof(LauncherPosition)] = LauncherPosition;
         }
 
-        public new void LoadUIData(TagCompound tag) {
+        public override void LoadUIData(TagCompound tag) {
             tag.TryGet(Name + ":" + nameof(zoom), out zoom);
             zoom = MathHelper.Clamp(zoom, 0.4f, 2.0f);
             tag.TryGet(Name + ":" + nameof(panOffset), out panOffset);

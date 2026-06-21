@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -233,16 +232,6 @@ namespace CalamityOverhaul
                 num += player.bank4.item.InquireItem(itemTypes);
             }
             return num;
-        }
-
-        /// <summary>尝试取玩家 ADV 存档</summary>
-        internal static bool TryGetADVSave(this Player player, out ADVSave save) {
-            save = null;
-            if (player.TryGetModPlayer<ADVSavePlayer>(out var advSavePlayer)) {
-                save = advSavePlayer.ADVSave;
-                return save != null;
-            }
-            return false;
         }
 
         /// <summary>尝试取玩家 HalibutPlayer</summary>

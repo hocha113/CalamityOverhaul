@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.UIEffect;
+﻿using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;

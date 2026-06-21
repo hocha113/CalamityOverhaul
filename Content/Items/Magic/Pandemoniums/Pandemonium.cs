@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.SupCalDisplayTexts;
+using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
+using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.SupCalDisplayTexts;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.Collections.Generic;
 using Terraria;
@@ -59,7 +58,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_Q, "PandemoniumQSkill", CWRKeySystem.Notbound.Value);
             tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, "PandemoniumRSkill", CWRKeySystem.Notbound.Value);
 
-            if (Main.LocalPlayer.TryGetADVSave(out ADVSave save) && save.Get<SupCalADVData>().EternalBlazingNow) {
+            if (EbnState.OnEbn(Main.LocalPlayer)) {
                 TooltipLine line = new(Mod, "Story", SupCalDisplayText.Story4.Value);
                 line.OverrideColor = Color.OrangeRed;
                 tooltips.Add(line);

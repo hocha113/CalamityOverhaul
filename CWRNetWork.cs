@@ -1,10 +1,5 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes;
-using CalamityOverhaul.Content.ADV.Scenarios.Abysses.OldDukes.Campsites;
-using CalamityOverhaul.Content.ADV.Scenarios.Draedons;
-using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Quest.DeploySignaltowers.SignalTower;
-using CalamityOverhaul.Content.ADV.Scenarios.Draedons.Tzeentch;
-using CalamityOverhaul.Content.ADV.Scenarios.SupCal.End.EternalBlazingNows;
+using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
@@ -15,8 +10,13 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
+using CalamityOverhaul.Content.Narrative.Scenarios.Draedon;
+using CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Tzeentch;
+using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke;
+using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
 using System.IO;
 using Terraria.ModLoader;
+using CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 
 namespace CalamityOverhaul
 {
@@ -89,7 +89,7 @@ namespace CalamityOverhaul
                 OldDukeCampsiteDecoration.ReceiveDecorationsSync(reader);
             }
             else if (type == CWRMessageType.StartCampsiteFindMeScenario) {
-                ModifyOldDuke.StartCampsiteFindMeScenarioNetWork(reader, whoAmI);
+                OldDukeTriggerService.HandleStartCampsiteFindMeScenario(reader, whoAmI);
             }
             else if (type == CWRMessageType.ResurrectionRate) {
                 ResurrectionSystem.HandleResurrectionRate(reader, whoAmI);
@@ -101,7 +101,7 @@ namespace CalamityOverhaul
                 SirenMusicalBoxTP.HandleTogglePacket(reader, whoAmI);
             }
             else if (type == CWRMessageType.EbnTag) {
-                EbnPlayer.HandleNetSync(reader, whoAmI);
+                EbnState.HandleNetSync(reader, whoAmI);
             }
             else if (type == CWRMessageType.CyberspaceStateSync) {
                 CyberspacePlayer.HandleNetSync(reader, whoAmI);

@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.ADV.EntrustManager;
+﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.QuestLogs;

@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.ADV;
 using CalamityOverhaul.Content.Items.Tools;
+using CalamityOverhaul.Content.Narrative.Runtime;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;

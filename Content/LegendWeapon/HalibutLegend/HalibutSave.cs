@@ -1,5 +1,7 @@
-﻿using CalamityOverhaul.Content.ADV;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.UIs.MainMenuOvers;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -454,9 +456,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                     if (tag.TryGet<TagCompound>("ResurrectionSystem", out var resurrectionTag)) {
                         halibutPlayer.ResurrectionSystem.LoadData(resurrectionTag);
                     }
-                    //向后兼容：如果旧版ADCSave数据存在于HalibutSave中，委托给ADVLegacyMigration迁移
-                    if (tag.ContainsKey("ADCSave") && Player.TryGetModPlayer<ADVSavePlayer>(out var advSavePlayer)) {
-                        advSavePlayer.MigrateFromLegacy(tag);
+                    //向后兼容：HalibutSave 内嵌 v0 ADCSave 迁移到 StoryPlayer
+                    if (tag.TryGet<TagCompound>("ADCSave", out TagCompound adcTag)) {
+                        StoryPlayer storyPlayer = Player.GetModPlayer<StoryPlayer>();
+                        LegacyStorySaveImporter.TryImport(adcTag, storyPlayer.StoryData);
+                        if (storyPlayer.Get<SupCalStoryData>().EternalBlazingNow) {
+                            MenuSave.UnlockEternalBlazingNowPortrait(Player);
+                        }
                     }
                     if (tag.TryGet("IsInteractionLockedTime", out int isInteractionLockedTime)) {
                         halibutPlayer.IsInteractionLockedTime = isInteractionLockedTime;
