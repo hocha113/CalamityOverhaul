@@ -59,8 +59,7 @@ namespace CalamityOverhaul.Content.Narrative
 
         private static void RegisterPortraits() {
             PortraitRegistry.Register(NarrativeIds.System)
-                .Name(() => " ")
-                .AsSilhouette();
+                .Name(() => string.Empty);
 
             PortraitRegistry.Register(NarrativeIds.OldDuke)
                 .Name(() => FirstMetOldDuke.OldDukeName.Value)
@@ -110,9 +109,6 @@ namespace CalamityOverhaul.Content.Narrative
                 .Expression(NarrativeIds.Shock, () => ADVAsset.SupCalsADV[2])
                 .Expression(NarrativeIds.Smile, () => ADVAsset.SupCalsADV[1])
                 .Expression(NarrativeIds.Sigh, () => ADVAsset.SupCalsADV[5]);
-
-            PortraitRegistry.Register(NarrativeIds.System)
-                .Name(() => string.Empty);
 
             PortraitRegistry.Register(NarrativeIds.DraedonSpeaker)
                 .Name(() => "嘉登")
