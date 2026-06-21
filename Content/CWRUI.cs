@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow.Enchants;
 using CalamityOverhaul.Content.QuestLogs;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchants;
 using InnoVault.GameSystem;
 using System;
 using Terraria;

@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
-using CalamityOverhaul.Content.Narrative.Runtime;
-using CalamityOverhaul.Content.Narrative.Scenarios.Helen.Quest;
+using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Scenarios.Helen.Quest;
 using System;
 using System.Collections.Generic;
 using Terraria;

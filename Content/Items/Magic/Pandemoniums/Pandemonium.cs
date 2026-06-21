@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.SupCalDisplayTexts;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
+using CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.Collections.Generic;
 using Terraria;

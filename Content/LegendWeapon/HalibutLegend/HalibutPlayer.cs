@@ -1,8 +1,8 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
-using CalamityOverhaul.Content.Narrative.Scenarios.Helen;
+using CalamityOverhaul.Content.Scenarios.Helen;
 using InnoVault.GameSystem;
 using InnoVault.VaultNetworks;
 using System;

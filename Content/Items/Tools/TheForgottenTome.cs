@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
+﻿using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.UIs.MainMenuOvers;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
@@ -10,13 +9,14 @@ using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
 using CalamityOverhaul.Content.NPCs.Modifys;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
-using CalamityOverhaul.Content.Narrative.Scenarios.Draedon;
-using CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Tzeentch;
-using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
 using System.IO;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.Scenarios.Draedon;
+using CalamityOverhaul.Content.Scenarios.OldDuke;
+using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 
 namespace CalamityOverhaul
 {

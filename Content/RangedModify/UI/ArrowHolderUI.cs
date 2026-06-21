@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.RangedModify;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;

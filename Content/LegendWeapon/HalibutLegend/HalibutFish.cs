@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.Narrative.Scenarios.Helen;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
+﻿using CalamityOverhaul.Content.Scenarios.Helen;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

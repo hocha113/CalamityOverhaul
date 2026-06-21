@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.Narrative.Scenarios.Helen;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.SupCalDisplayTexts;
+﻿using CalamityOverhaul.Content.Scenarios.Helen;
+using CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;

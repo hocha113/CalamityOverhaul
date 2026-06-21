@@ -1,0 +1,30 @@
+﻿using CalamityOverhaul.Content.Scenarios.OldDuke;
+using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest.FindFragments
+{
+    internal class FindfragmentFish : ModPlayer
+    {
+        public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition) {
+            if (attempt.inHoney || attempt.inLava || !OldDukeCampsite.IsGenerated) {
+                return;
+            }
+
+            if (Main.rand.NextBool(4)) {
+                itemDrop = ModContent.ItemType<Oceanfragments>();
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (OldDukeCampsite.IsGenerated
+                && target.life <= 0 && target.lifeMax > 100
+                && Main.rand.NextBool(4)
+                && (Player.ZoneBeach || Player.GetPlayerZoneSulphur() || Player.GetPlayerZoneAbyss())) {//击杀概率掉落海洋残片
+                VaultUtils.SpwanItem(target.FromObjectGetParent(), target.Hitbox, new Item(ModContent.ItemType<Oceanfragments>()));
+            }
+        }
+    }
+}

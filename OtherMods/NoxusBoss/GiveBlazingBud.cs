@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using CalamityOverhaul.Content.Narrative.Runtime;
-using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.End.EternalBlazingNow;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Services;
 using Terraria;
