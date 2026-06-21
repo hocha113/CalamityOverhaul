@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios
 {
-    internal sealed class NarrativeScenarioTicker : ModSystem
+    internal sealed class ScenarioTicker : ModSystem
     {
         public override void OnWorldLoad() {
             ShepelGiftNarrativeTracker.ResetWorldState();
