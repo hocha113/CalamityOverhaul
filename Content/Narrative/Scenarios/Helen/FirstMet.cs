@@ -75,7 +75,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen
              .Say("Helen", Line3.Value)
              .Say("Helen", Line4.Value)
              .Reward(ItemID.Bass, 1, string.Empty, blocking: false)
-             .Say("Helen", Line5.Value, onEnter: RewardLineAnchor)
+             .Say("Helen", Line5.Value)
              .Say("Helen", "Enjoy", Line6.Value)
              .Say("Helen", Line7.Value)
              .Say("Helen", Line8.Value)
@@ -101,7 +101,5 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen
             OnTriggered = _ => HalibutStorySync.WriteHalibut(d => d.FirstMet = true, d => d.FirstMet = true),
             OnCompleted = _ => HalibutStorySync.WriteHalibut(d => d.PostFirstMetIsComplete = true, d => d.PostFirstMetIsComplete = true),
         };
-
-        private static void RewardLineAnchor() { }
     }
 }
