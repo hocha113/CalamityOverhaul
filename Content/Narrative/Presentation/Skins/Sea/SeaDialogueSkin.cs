@@ -13,8 +13,8 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sea
 
         public override float Padding => 10;
 
-        public override float PortraitSize => 120f;
-        public override float PortraitGap => 20f;
+        public override float PortraitSize => 100;
+        public override float PortraitGap => 10f;
         /// <summary>对齐 Sea shader 内缘留白。</summary>
         public override float TextWrapInset => SeaPanelState.ShaderEdgePad;
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using InnoVault.Narrative.Presentation.Dialogue;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +11,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Brimstone
     {
         private readonly BrimstonePanelState _state = new();
 
+        public override float PortraitSize => 100;
         public override float Padding => 10;
         /// <summary>对齐 Brimstone shader 内缘留白。</summary>
         public override float TextWrapInset => BrimstonePanelState.ShaderEdgePad;
