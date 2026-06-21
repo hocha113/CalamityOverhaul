@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums;
 using InnoVault.PRT;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,8 +15,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
-using CalamityOverhaul.Content.Scenarios.Draedon;
-using CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {

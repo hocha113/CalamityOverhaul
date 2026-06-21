@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
-using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using Terraria;

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Draedon;
-using CalamityOverhaul.Content.Scenarios.Draedon.PQCDs;
+﻿using CalamityOverhaul.Content.Scenarios.Draedon.PQCDs;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;

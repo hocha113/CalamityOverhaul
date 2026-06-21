@@ -1,12 +1,10 @@
 ﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses;
 using CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Quest;
 using CalamityOverhaul.OtherMods.ImproveGame;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
 using System;
 using System.Collections.Generic;
 using Terraria;

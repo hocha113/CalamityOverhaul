@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.OldDuke;
-using InnoVault.RenderHandles;
+﻿using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;

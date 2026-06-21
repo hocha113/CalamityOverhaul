@@ -1,9 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -24,7 +21,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_Yharon;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "那条龙的飞行速度……已经突破了我的追踪极限。");
             L1 = this.GetLocalization(nameof(L1), () => "为了不让您暴露在它的高速扑击下，我在实战中重写了底层的预测模块。");
             L2 = this.GetLocalization(nameof(L2), () => "现在，您的武器初速和响应速度已经得到了显著提升，足以超越它的极速。");

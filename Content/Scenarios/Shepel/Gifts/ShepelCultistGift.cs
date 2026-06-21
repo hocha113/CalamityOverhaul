@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.CultistBoss;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "那些神神叨叨的信徒可算消停了，在这里搞些诡异的仪式。");
             L1 = this.GetLocalization(nameof(L1), () => "不过主人，您觉不觉得空气变得非常沉闷？我的传感器也在报警，好像有什么了不得的大麻烦正在从天上靠近。");
             L2 = this.GetLocalization(nameof(L2), () => "刚才我趁乱截获了那些乱七八糟的虚空信号，顺手把它改成了一个能帮您捕捉目标的小插件。");

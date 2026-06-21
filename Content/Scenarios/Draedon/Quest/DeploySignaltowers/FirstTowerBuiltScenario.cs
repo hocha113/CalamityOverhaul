@@ -1,9 +1,7 @@
 ﻿using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Scenarios.Draedon;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
@@ -20,7 +18,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "新的量子纠缠节点运行平稳，信号稳定");
             Line2 = this.GetLocalization(nameof(Line2), () => "很好，这是网络的第一步。继续部署剩余的信号塔");

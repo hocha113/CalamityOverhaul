@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.Draedon;
+﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;

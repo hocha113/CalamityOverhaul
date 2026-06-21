@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.Plantera;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "地下丛林里的藤蔓长得太放肆了，到处都是恼人的倒刺和孢子。");
             L1 = this.GetLocalization(nameof(L1), () => "那朵食人花伪装得很巧妙，但也不过是一堆等待清理的杂草而已。");
             L2 = this.GetLocalization(nameof(L2), () => "我改进了瞄具的动态视觉。这下子，那些挡视线的阔叶就再也无法干扰您的判断了。");

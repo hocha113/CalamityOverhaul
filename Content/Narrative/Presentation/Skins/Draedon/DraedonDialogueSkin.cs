@@ -1,6 +1,5 @@
-using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
 using InnoVault.Narrative.Presentation.Dialogue;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 

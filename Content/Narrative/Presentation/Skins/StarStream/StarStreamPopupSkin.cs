@@ -1,7 +1,6 @@
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
 using InnoVault.Narrative.Presentation;
-using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
 using InnoVault.Narrative.Presentation.Popups;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

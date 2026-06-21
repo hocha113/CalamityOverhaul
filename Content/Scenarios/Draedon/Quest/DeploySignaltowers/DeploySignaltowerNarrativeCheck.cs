@@ -1,6 +1,4 @@
 ﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.Draedon;
-using CalamityOverhaul.Content.Scenarios.Draedon.Quest;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using Terraria;
 using Terraria.ModLoader;

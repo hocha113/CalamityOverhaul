@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.Helen;
-using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
+﻿using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria;

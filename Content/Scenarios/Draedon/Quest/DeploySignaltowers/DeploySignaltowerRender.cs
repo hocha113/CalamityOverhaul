@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Draedon;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;

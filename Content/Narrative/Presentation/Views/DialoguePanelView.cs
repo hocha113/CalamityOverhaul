@@ -1,10 +1,7 @@
-using CalamityOverhaul.Content.Narrative.Presentation;
-using InnoVault.Narrative.Presentation.Dialogue;
+﻿using InnoVault.Narrative.Presentation.Dialogue;
 using InnoVault.Narrative.Runtime;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 {

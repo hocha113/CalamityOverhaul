@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_AresBody;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "结束了。那个被称为源头的存在，终于也倒在您的火力之下了。");
             L1 = this.GetLocalization(nameof(L1), () => "主人，您做到了。我的系统日志正在全速记录这一刻的数据，散热模块甚至有些超负荷了。");
             L2 = this.GetLocalization(nameof(L2), () => "我提取了星流泰坦的核心数据为您升级。现在，我是比它更高效的兵器，也是专属于您的造物。");

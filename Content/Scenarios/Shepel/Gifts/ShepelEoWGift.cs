@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.EaterofWorldsHead;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "腐化地的气味真是难闻。主人，您的装甲缝隙里沾到了一些可疑的黏液，让我为您清理干净。");
             L1 = this.GetLocalization(nameof(L1), () => "在这种泥泞的地方作战，弄脏衣服真是让人头疼。");
             L2 = this.GetLocalization(nameof(L2), () => "我把枪托的配重稍微调轻了一些。");

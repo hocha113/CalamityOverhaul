@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Narrative.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.OtherMods.BossChecklist;
 using System.IO;
 using Terraria;

@@ -1,17 +1,16 @@
-﻿using CalamityOverhaul.Content.Narrative.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.Scenarios.Helen.Gifts;
-using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Narrative.Common;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest;
 using CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest;
 using CalamityOverhaul.Content.Scenarios.SupCal.Quest.YharonQuest;
+using InnoVault.Narrative.Core;
+using InnoVault.Narrative.Runtime;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal
 {

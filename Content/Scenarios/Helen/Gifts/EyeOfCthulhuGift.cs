@@ -1,7 +1,5 @@
-﻿using CalamityOverhaul.Content.Scenarios.Helen;
-using InnoVault.Narrative.Composition;
+﻿using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;

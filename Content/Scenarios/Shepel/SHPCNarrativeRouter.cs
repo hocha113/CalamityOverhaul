@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
-using CalamityOverhaul.Content.Narrative.Runtime;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System.Collections.Generic;

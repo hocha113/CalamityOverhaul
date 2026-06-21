@@ -1,5 +1,5 @@
-﻿using System;
-using CalamityOverhaul.Content.Narrative.Presentation.Views;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Views;
+using System;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel
 {

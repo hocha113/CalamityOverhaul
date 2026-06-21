@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Draedon;
-using InnoVault.Narrative.Composition;
+﻿using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using Terraria.Localization;

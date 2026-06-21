@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using CalamityOverhaul.Content.Items.Accessories;
+﻿using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative.Common;
-using CalamityOverhaul.Content.Narrative.Scenarios.Helen.Gifts;
 using CalamityOverhaul.Content.Scenarios.Helen;
-using CalamityOverhaul.Content.Scenarios.SupCal;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria;

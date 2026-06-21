@@ -3,7 +3,6 @@ using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Scenarios.Draedon;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
 {
@@ -18,7 +17,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
+            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //第三次战败对话：表现出对玩家一贯性的肯定
             ThirdDefeatLine1 = this.GetLocalization(nameof(ThirdDefeatLine1), () => "稳定的表现，这正是我所追求的完美的一部分");

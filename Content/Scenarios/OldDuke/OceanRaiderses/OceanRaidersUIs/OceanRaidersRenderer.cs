@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses;
-using CalamityOverhaul.Content.UIs.StorageUIs;
+﻿using CalamityOverhaul.Content.UIs.StorageUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;

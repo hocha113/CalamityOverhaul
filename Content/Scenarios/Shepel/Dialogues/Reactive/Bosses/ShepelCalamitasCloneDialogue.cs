@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Shepel;
-using InnoVault.Narrative.Composition;
+﻿using InnoVault.Narrative.Composition;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -14,8 +13,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive.Bosses
         public static LocalizedText Line3 { get; private set; }
 
         public override void SetStaticDefaults() {
-Line1 = this.GetLocalization(nameof(Line1),
-                () => "灾厄克隆体的信号已消失。主人没有被这股反射能量波及吧？");
+            Line1 = this.GetLocalization(nameof(Line1),
+                            () => "灾厄克隆体的信号已消失。主人没有被这股反射能量波及吧？");
             Line2 = this.GetLocalization(nameof(Line2),
                 () => "扫描显示本体的威胁依然潜伏在深处……如果她敢出现。");
             Line3 = this.GetLocalization(nameof(Line3),
@@ -24,10 +23,10 @@ Line1 = this.GetLocalization(nameof(Line1),
 
         protected override void Build(NarrativeComposer n) {
             ConsumeEvent();
-             n
-             .Say("Shepel", Line1.Value)
-             .Say("Shepel", Line2.Value)
-             .Say("Shepel", Line3.Value);
+            n
+            .Say("Shepel", Line1.Value)
+            .Say("Shepel", Line2.Value)
+            .Say("Shepel", Line3.Value);
         }
     }
 }

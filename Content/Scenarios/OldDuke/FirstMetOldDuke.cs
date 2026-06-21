@@ -2,7 +2,6 @@
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

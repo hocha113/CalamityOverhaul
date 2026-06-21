@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 

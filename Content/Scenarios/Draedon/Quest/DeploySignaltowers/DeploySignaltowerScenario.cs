@@ -1,17 +1,14 @@
-﻿using CalamityOverhaul.OtherMods.SubWorld;
+﻿using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
+using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
+using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using InnoVault.Narrative.Services;
-using System;
 using Terraria;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Scenarios.Draedon;
-using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
-using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {

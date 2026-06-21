@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {

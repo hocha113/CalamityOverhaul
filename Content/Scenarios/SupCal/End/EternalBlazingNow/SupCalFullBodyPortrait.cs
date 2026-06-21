@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Presentation;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {

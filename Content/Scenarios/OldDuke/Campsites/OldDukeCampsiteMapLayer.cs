@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.UI;
-using CalamityOverhaul.Content.Scenarios.OldDuke;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {

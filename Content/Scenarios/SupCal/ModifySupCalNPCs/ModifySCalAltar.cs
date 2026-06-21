@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.SupCal;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.TileProcessors;
 using InnoVault.GameSystem;

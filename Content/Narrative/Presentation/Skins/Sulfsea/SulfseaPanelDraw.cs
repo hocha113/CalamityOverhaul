@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;

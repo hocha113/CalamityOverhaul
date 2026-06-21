@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.Helen;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;

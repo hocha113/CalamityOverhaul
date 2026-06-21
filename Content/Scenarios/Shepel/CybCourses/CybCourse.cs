@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.HackTimes;
-using CalamityOverhaul.Content.Narrative.Runtime;
 using CalamityOverhaul.Content.RAMSystems;
 using InnoVault.Narrative.Runtime;
 using Terraria;

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Scenarios.Draedon.Defeats;
 using CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon
 {

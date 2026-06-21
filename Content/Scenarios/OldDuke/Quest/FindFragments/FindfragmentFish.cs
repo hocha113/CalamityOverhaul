@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.OldDuke;
-using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+﻿using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

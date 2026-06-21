@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.EyeofCthulhu;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "夜晚的视线有些模糊呢，主人。不过那只巨大的眼睛已经被您彻底击碎了。");
             L1 = this.GetLocalization(nameof(L1), () => "我已经为您准备好了热茶和干净的毛巾，请稍作休整。");
             L2 = this.GetLocalization(nameof(L2), () => "在您休息时，我会对武器的光学系统进行改进，光束会更加聚拢。");

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses;
 using CalamityOverhaul.Content.UIs.StorageUIs;
 using InnoVault.UIHandles;
 using Terraria;

@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.Items.Tools;
-using CalamityOverhaul.Content.Scenarios.Helen;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

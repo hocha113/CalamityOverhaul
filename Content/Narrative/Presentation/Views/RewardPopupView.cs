@@ -1,7 +1,6 @@
-using InnoVault.Narrative.Core;
+﻿using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Presentation.Anchors;
 using InnoVault.Narrative.Presentation.Popups;
-using Microsoft.Xna.Framework;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 {

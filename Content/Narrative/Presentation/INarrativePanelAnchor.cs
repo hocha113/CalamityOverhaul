@@ -1,6 +1,4 @@
-using Microsoft.Xna.Framework;
-
-namespace CalamityOverhaul.Content.Narrative.Presentation
+﻿namespace CalamityOverhaul.Content.Narrative.Presentation
 {
     public interface INarrativePanelAnchor
     {

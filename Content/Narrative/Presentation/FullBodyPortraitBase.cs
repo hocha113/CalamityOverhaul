@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Narrative.Presentation.Views;
-using Microsoft.Xna.Framework;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Views;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 

@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.Shepel;
-using InnoVault.Narrative.Composition;
+﻿using InnoVault.Narrative.Composition;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;

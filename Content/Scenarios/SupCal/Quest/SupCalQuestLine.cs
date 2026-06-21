@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.EntrustManager;using CalamityOverhaul.Content.Narrative.Scenarios.SupCal.Quest;
-using CalamityOverhaul.Content.Scenarios.Helen;
+﻿using CalamityOverhaul.Content.EntrustManager;using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest;using CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest;using CalamityOverhaul.Content.Scenarios.SupCal.Quest.YharonQuest;using System;
 using Terraria;
 using Terraria.Localization;

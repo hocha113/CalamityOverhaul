@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Narrative.Common;
-using CalamityOverhaul.Content.Scenarios.Draedon;
-using Terraria;
+﻿using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;

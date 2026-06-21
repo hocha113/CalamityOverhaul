@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Shepel;
-using InnoVault.Narrative.Composition;
+﻿using InnoVault.Narrative.Composition;
 using Terraria.Localization;
 using Terraria.ModLoader;
 

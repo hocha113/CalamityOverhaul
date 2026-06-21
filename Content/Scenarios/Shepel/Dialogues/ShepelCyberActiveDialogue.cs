@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
-using InnoVault.Narrative.Core;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;

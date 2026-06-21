@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Narrative.Data.Modules;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using Terraria;
 using Terraria.ID;
@@ -15,8 +14,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive.Bosses
         public static LocalizedText Line2 { get; private set; }
 
         public override void SetStaticDefaults() {
-Line1 = this.GetLocalization(nameof(Line1),
-                () => "机械双子眼已双双坠毁。它们的火力覆盖网已被完全撕裂。");
+            Line1 = this.GetLocalization(nameof(Line1),
+                            () => "机械双子眼已双双坠毁。它们的火力覆盖网已被完全撕裂。");
             Line2 = this.GetLocalization(nameof(Line2),
                 () => "无论它们如何进行视觉共享和战术协同，也无法逃脱我对您的绝对聚焦。");
         }
@@ -27,9 +26,9 @@ Line1 = this.GetLocalization(nameof(Line1),
 
         protected override void Build(NarrativeComposer n) {
             ConsumeEvent();
-             n
-             .Say("SHPC", Line1.Value)
-             .Say("SHPC", Line2.Value);
+            n
+            .Say("SHPC", Line1.Value)
+            .Say("SHPC", Line2.Value);
         }
     }
 }

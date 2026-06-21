@@ -1,6 +1,5 @@
 ﻿using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
 {

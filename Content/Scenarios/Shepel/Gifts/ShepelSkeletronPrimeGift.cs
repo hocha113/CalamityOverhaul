@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -24,7 +22,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.SkeletronPrime;
 
         public override void SetStaticDefaults() {
-RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
+            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "挥舞着四条手臂的重型骨架……攻击频率确实很快，但机动逻辑过于死板。");
             L1 = this.GetLocalization(nameof(L1), () => "它只是在机械地重复行为，根本无法适应您的战术变化。");
             L2 = this.GetLocalization(nameof(L2), () => "我提炼了它在切换多种武器时的优势，为您优化了武器的突击响应速度。");

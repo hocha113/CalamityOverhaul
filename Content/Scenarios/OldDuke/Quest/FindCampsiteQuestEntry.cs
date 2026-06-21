@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
-using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using System.Collections.Generic;
 using Terraria;

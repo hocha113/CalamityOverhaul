@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;

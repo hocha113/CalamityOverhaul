@@ -1,9 +1,7 @@
-using CalamityOverhaul.Common;
-using InnoVault.Narrative.Presentation.Dialogue;
+﻿using InnoVault.Narrative.Presentation.Dialogue;
 using InnoVault.Narrative.Runtime;
 using ReLogic.Graphics;
 using System;
-using Terraria;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation
 {

@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;

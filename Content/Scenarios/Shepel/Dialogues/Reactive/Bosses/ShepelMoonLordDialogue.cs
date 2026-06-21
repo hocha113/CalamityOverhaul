@@ -1,8 +1,7 @@
 ﻿using InnoVault.Narrative.Composition;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ID;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive.Bosses
 {
@@ -15,8 +14,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive.Bosses
         public static LocalizedText Line3 { get; private set; }
 
         public override void SetStaticDefaults() {
-Line1 = this.GetLocalization(nameof(Line1),
-                () => "月亮领主的信号已经彻底消失。主人，这是我当前运行周期里记录过的最高威胁等级目标。");
+            Line1 = this.GetLocalization(nameof(Line1),
+                            () => "月亮领主的信号已经彻底消失。主人，这是我当前运行周期里记录过的最高威胁等级目标。");
             Line2 = this.GetLocalization(nameof(Line2),
                 () => "笼罩在天空的压迫感消散了，但我不会放松警惕。");
             Line3 = this.GetLocalization(nameof(Line3),
@@ -25,10 +24,10 @@ Line1 = this.GetLocalization(nameof(Line1),
 
         protected override void Build(NarrativeComposer n) {
             ConsumeEvent();
-             n
-             .Say("Shepel", Line1.Value)
-             .Say("Shepel", Line2.Value)
-             .Say("Shepel", Line3.Value);
+            n
+            .Say("Shepel", Line1.Value)
+            .Say("Shepel", Line2.Value)
+            .Say("Shepel", Line3.Value);
         }
     }
 }

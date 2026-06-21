@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.Helen;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;

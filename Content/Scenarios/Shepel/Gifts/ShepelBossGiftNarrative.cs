@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
-using CalamityOverhaul.Content.Scenarios.Shepel;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;

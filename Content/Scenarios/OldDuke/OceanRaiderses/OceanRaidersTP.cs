@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Industrials;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Projectiles.Others;
+using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Utilities;
 using System;
@@ -14,7 +15,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 {

@@ -1,9 +1,7 @@
-﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers;
+﻿using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Shepel;
 using CalamityOverhaul.Content.Scenarios.Shepel.Gifts;
-using InnoVault.Narrative.Runtime;
 using Terraria;
 using Terraria.ModLoader;
 

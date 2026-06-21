@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Narrative;
-using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.OtherMods.SubWorld;
 using Microsoft.Xna.Framework.Graphics;
 using System;

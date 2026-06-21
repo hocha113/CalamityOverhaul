@@ -1,6 +1,4 @@
-using Terraria;
-
-namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Common
+﻿namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Common
 {
     internal static class SkinAnimUtil
     {

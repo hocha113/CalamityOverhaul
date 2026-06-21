@@ -1,6 +1,4 @@
-﻿using CalamityOverhaul.Content.Scenarios.Shepel;
-using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
+﻿using InnoVault.Narrative.Core;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses

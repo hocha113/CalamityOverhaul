@@ -3,7 +3,6 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
-using InnoVault.Narrative.Runtime;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
