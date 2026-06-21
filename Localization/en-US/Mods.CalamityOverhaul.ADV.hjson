@@ -591,7 +591,6 @@ EternalBlazingNow: {
 		EpilogueLine3: Welcome back...
 	}
 
-
 	WitchFarewell: {
 		FarewellLine1: In this long life, I have seen countless dawns and endings.
 		FarewellLine2: Flames devour eras, but also illuminate new beginnings. I thought this time would be no exception.
@@ -993,6 +992,7 @@ FirstMetShepel: {
 	CybCourseDeclineText: Not right now.
 	CybCourseAcceptResponse: Acknowledged. Establishing neural link... Please remain still.
 	CybCourseDeclineResponse: Understood. Superdream access credentials have been written to your save data. You can activate it yourself at any time, Master.
+	SpeakerName: SHPC
 }
 
 TheHerInThePast: {

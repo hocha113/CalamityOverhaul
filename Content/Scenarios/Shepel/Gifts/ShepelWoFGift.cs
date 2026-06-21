@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelWoFGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -22,7 +20,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.WallofFlesh;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "肉墙倒塌后，地壳结构和能量基线都发生了剧烈的震荡。");
             L1 = this.GetLocalization(nameof(L1), () => "世界正在进入一个更危险的阶段。但同时，新的稀有材料也开始大量涌现。");
             L2 = this.GetLocalization(nameof(L2), () => "我用那些新出现的合金为您升级了握持系统，这算是我们跨入新阶段的第一步。");

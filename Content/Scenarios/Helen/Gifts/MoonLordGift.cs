@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => NPCID.MoonLordCore;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "月球的主宰，哈！或者说，曾经是。现在它只是一堆漂浮的眼球和血肉");
             L1 = this.GetLocalization(nameof(L1), () => "我们刚才不仅拯救了世界，还关闭了一个从不应该被打开的门");
             L2 = this.GetLocalization(nameof(L2), () => "我逮到了云鱼，从天空的裂缝里飘下来的。它在手里像是没有重量");

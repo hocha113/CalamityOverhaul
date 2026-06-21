@@ -9,15 +9,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
     internal sealed class ExoMechThirdDefeat : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText ThirdDefeatLine1 { get; private set; }
         public static LocalizedText ThirdDefeatLine2 { get; private set; }
 
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //第三次战败对话：表现出对玩家一贯性的肯定
             ThirdDefeatLine1 = this.GetLocalization(nameof(ThirdDefeatLine1), () => "稳定的表现，这正是我所追求的完美的一部分");

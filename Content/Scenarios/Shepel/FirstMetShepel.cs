@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
 
         public string LocalizationCategory => "ADV";
 
+        public static LocalizedText SpeakerName { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Choice1Text { get; private set; }
         public static LocalizedText Choice2Text { get; private set; }
@@ -34,6 +35,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
         public override StyleId DefaultStyle => "SHPC";
 
         public override void SetStaticDefaults() {
+            SpeakerName = this.GetLocalization(nameof(SpeakerName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1), () => "主人！很高兴再见到您！");
             Choice1Text = this.GetLocalization(nameof(Choice1Text), () => "你认错人了吧？");
             Choice2Text = this.GetLocalization(nameof(Choice2Text), () => "...好久不见");

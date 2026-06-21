@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelBrimstoneElementalGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_BrimstoneElemental;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "呼，那种快要把人烤化的高温终于降下来了。这个女士的脾气可真是火爆。");
             L1 = this.GetLocalization(nameof(L1), () => "让我仔细看看……万幸，您的衣角连一丝被烧焦的痕迹都没有。");
             L2 = this.GetLocalization(nameof(L2), () => "趁着刚才收集到的受热数据，我给您的武器做了一次特别的热处理。");

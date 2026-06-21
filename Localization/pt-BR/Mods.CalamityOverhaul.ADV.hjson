@@ -26,7 +26,6 @@ FirstMet: {
 }
 
 EyeOfCthulhuGift: {
-	R1: Halibut
 	L0: Seus movimentos foram arrastados para a camara lenta... So pensei que voce estava posando.
 	L1: Entramos no 'Estagio Observado'. O que significa... mais problemas.
 	L2: Encontrei isto em sua... bocarra. Pegue. Um Peixe de Cthulhu. Assim como o original... realmente nao segue logica.
@@ -35,7 +34,6 @@ EyeOfCthulhuGift: {
 }
 
 KingSlimeGift: {
-	R1: Halibut
 	L0: Aquela bolha azul... um 'slime', voce chama? Parecia mais... emocao solidificada.
 	L1: Talvez uma tentativa desajeitada da materia ganhar autoconsciencia e evoluir.
 	L2: Aqui vai, um Slimefish. Nao aperte. Seus sentimentos podem explodir.
@@ -44,8 +42,6 @@ KingSlimeGift: {
 }
 
 QueenBeeGift: {
-	R1: Halibut
-	R2: ???
 	L0: Quase levei um banho de mel ali atras.
 	L1: Ainda assim, consegui puxar um peixe de uma pocinha de mel no chao.
 	L2: Aqui, fresco e... ainda quente Honeyfish.
@@ -53,7 +49,6 @@ QueenBeeGift: {
 }
 
 SkeletronGift: {
-	R1: Halibut
 	L0: Essa foi uma quantidade significativa de calcio.
 	L1: Sua estrutura craniana me lembrou de uma constructo psiquico descontrolado.
 	L2: Deixe meu cano da arma esfriar. Encontrei um peixe por aqui enquanto isso.
@@ -62,7 +57,6 @@ SkeletronGift: {
 }
 
 AquaticScourgeGift: {
-	R1: Halibut
 	L0: Me lembra os vizinhos menos amigaveis da minha cidade natal. Esse aqui era bem amigavel, no entanto. Era o chefe de seguranca da Universidade do Mar Sulfuroso. Sempre cumprimentava.
 	L1: O Mar Sulfuroso e um lugar interessante. Toda criatura la faz a mesma pergunta: 'Por que ainda estou vivo?'
 	L2: Um Prismfish. Suas escamas refratam cores que voce nunca viu. Principalmente porque nao deveriam existir.
@@ -71,7 +65,6 @@ AquaticScourgeGift: {
 }
 
 BrimstoneElementalGift: {
-	R1: Halibut
 	L0: Ela so ficar ali era como um discurso inflamado. Ainda bem que conseguimos faze-la calar a boca.
 	L1: Alguns elementais nao sao criados. Eles sao apenas... estranhezas... que vazam das rachaduras do mundo.
 	L2: Um Obsidianfish. Um produto de lava resfriada instantaneamente. Suas escamas sao mais duras do que os rancores que apodrecem no inferno.
@@ -80,7 +73,6 @@ BrimstoneElementalGift: {
 }
 
 CalamitasCloneGift: {
-	R1: Halibut
 	L0: Uma sombra barata. Me lembra das monstruosidades geneticas que eu costumava criar na minha trincheira na universidade. De qualquer forma, quem fez isso tem pessimo gosto.
 	L1: Tenho um mau pressentimento. O terror real ainda esta esperando... mais fundo. Esta ate se aproximando.
 	L2: Voltando aos negocios. Um Brimstone Fish, pego de suas brasas. Voce ainda pode ouvir ele resmungando bobagens se segurar perto.
@@ -89,7 +81,6 @@ CalamitasCloneGift: {
 }
 
 CrabulonGift: {
-	R1: Halibut
 	L0: Aquele ser parecido com um cogumelo... E sabedoria ou puro instinto escondido sob seu chapéu?
 	L1: Sabia que redes miceliais podem transmitir informacao? Talvez ele estivesse pedindo ajuda.
 	L2: Isto e um Fungifish. Quase nao o peguei entre os esporos que ele estava liberando.
@@ -98,7 +89,6 @@ CrabulonGift: {
 }
 
 CryogenGift: {
-	R1: Halibut
 	L0: Uma alma congelada...
 	L1: Nos Arquivos Abissais, esse tipo de baixa temperatura e geralmente usado para 'preservar' os lunaticos.
 	L2: Um Cryo-minnow, descongelado dos fragmentos de gelo. Ainda esta na pose em que foi congelado.
@@ -107,7 +97,6 @@ CryogenGift: {
 }
 
 DevourerOfGodsGift: {
-	R1: Halibut
 	L0: O Devorador de Deuses... uma serpente cosmica que janta divindades. Seu apetite e tao infinito quanto sua ambicao.
 	L1: Voce sabe o que dizem: quando voce olha para o abismo, o abismo olha de volta. Mas essa coisa nao so olha. Ela quer voce como petisco.
 	L2: Um Neon Tetra. Flutuou para fora de uma fenda do vazio. A luz que emite nao e desta dimensao.
@@ -116,7 +105,6 @@ DevourerOfGodsGift: {
 }
 
 GolemGift: {
-	R1: Halibut
 	L0: Um monte de rochas movedicas. Legado de uma civilizacao antiga... ou talvez, prova de seu fracasso.
 	L1: Pode estar guardando algo. Ou apenas repetindo um programa que perdeu seu significado ha muito tempo.
 	L2: Um Rockfish, escavado da fundacao do templo. Sua densidade me faz questionar minha propria existencia.
@@ -125,7 +113,6 @@ GolemGift: {
 }
 
 HiveMindGift: {
-	R1: Halibut
 	L0: Uma consciencia coletiva feita de corrupcao... que conceito nojento.
 	L1: Seu processo de pensamento deve ser... unico. Inumeros fragmentos podres unidos em um todo distorcido.
 	L2: Aqui, um Rotfish. Puxado daquele monte de carnicao. Nao pergunte como.
@@ -134,7 +121,6 @@ HiveMindGift: {
 }
 
 LeviathanGift: {
-	R1: Halibut
 	L0: O tirano do oceano... e seu pequeno comparsa que esta sempre a seguindo. Algumas amizades transcendem especies. E logica.
 	L1: Acho que o que vive nas trincheiras mais profundas nao e o medo, e a solidao. Eles so estao procurando companhia.
 	L2: Um Tropic-cuda, puxado de um vortice das profundezas. Parece comum, o que e precisamente o que e suspeito nele.
@@ -143,7 +129,6 @@ LeviathanGift: {
 }
 
 MoonLordGift: {
-	R1: Halibut
 	L0: O Senhor da Lua, ha! Ou, *ex*-senhor. Agora apenas um monte flutuante de olhos e carnificina.
 	L1: Nos nao apenas salvamos o mundo; fechamos uma porta que nunca deveria ter sido aberta.
 	L2: Peguei um Cloudfish. Ele flutuou de uma rachadura no ceu. Parece sem peso na minha mao.
@@ -152,7 +137,6 @@ MoonLordGift: {
 }
 
 PerforatorGift: {
-	R1: Halibut
 	L0: Um monte de vermes de carne perfurantes... a existencia dessa criatura e um desafio a biologia.
 	L1: Seu sangue tem uma viscosidade estranha, como algum tipo de metal vivo.
 	L2: Encontrei isto nos destrocos. Um Gore-fish. Ainda esta se contorcendo.
@@ -161,7 +145,6 @@ PerforatorGift: {
 }
 
 PlaguebringerGift: {
-	R1: Halibut
 	L0: A Pestífera Goliarda... uma abelha mecanica carregando uma arma biologica. Quem projetou isso? Um verdadeiro bastardo, ousando escravizar abelhas.
 	L1: Um virus nao se importa com certo ou errado. So quer sobreviver. Como nos, apenas mais direto.
 	L2: Um Jewel-fish. Infectado e miraculosamente recuperado. Seu sistema imunologico e mais experiente do que voce.
@@ -170,7 +153,6 @@ PlaguebringerGift: {
 }
 
 PlanteraGift: {
-	R1: Halibut
 	L0: Uma flor... se 'flor' e a palavra para aquele conglomerado de videiras devoradoras de homens.
 	L1: A furia da selva, crescida em forma de planta. A vinganca da natureza nunca e racional.
 	L2: Um Twin-Cod. Tem duas cabecas. A selva e como um oceano terrestre; as coisas aqui nao precisam de razao para cultivar partes extras.
@@ -179,7 +161,6 @@ PlanteraGift: {
 }
 
 ProvidenceGift: {
-	R1: Halibut
 	L0: A Deusa Profanada... uma contradicao de fe e chama. Bastante patetica.
 	L1: Nos nao apenas extinguimos uma chama sagrada, mas as brasas de uma era inteira.
 	L2: Um Demon-Hell Fish, renascido de suas cinzas. Sua temperatura esta permanentemente fixada em 'quente o suficiente para nao queimar voce'.
@@ -188,7 +169,6 @@ ProvidenceGift: {
 }
 
 SlimeGodGift: {
-	R1: Halibut
 	L0: Tres slimes... ou, uma divindade fragmentada? Essa existencia dualista e... interessante.
 	L1: Corrupcao e Carmesim. O conflito eterno deste mundo. E nos apenas provamos que o conflito pode ser 'resolvido'.
 	L2: Um Variegated Lardfish. Pegue da gosma. Nao pergunte sobre o nome.
@@ -197,7 +177,6 @@ SlimeGodGift: {
 }
 
 SupremeCalamitasGift: {
-	R1: Halibut
 	L0: Bruxa de Enxofre... uma vingadora. A conjuradora de magia mais poderosa do seculo passado.
 	L1: O que acabamos de fazer... nos encerramos uma lenda, ou criamos uma nova?
 	L2: Um Princessfish, nascido de suas brasas. Tem uma graca conflitante, como uma flor desabrochando em ruinas.
@@ -206,7 +185,6 @@ SupremeCalamitasGift: {
 }
 
 WallOfFleshGift: {
-	R1: Halibut
 	L0: Uma parede de carne e osso... o criador deste mundo deve ter tido algumas ideias peculiares.
 	L1: Voce acabou de quebrar algum tipo de equilibrio. Sente isso? O pulso do mundo esta acelerando.
 	L2: Encontrei este Hungering Fish nos restos. Parece eternamente faminto.
@@ -215,7 +193,6 @@ WallOfFleshGift: {
 }
 
 YharonGift: {
-	R1: Halibut
 	L0: O Dragao da Selva... nao, o Dragao Queimador de Mundos. Ele nao queima com carne, mas com obsessao.
 	L1: Uma lealdade tao pura que se queimaria ate virar cinzas por seu mestre... me lembra dos cardumes que guardam os recifes de coral la de casa.
 	L2: Um Scarlet Tigerfish. Acabei de pegar. Gosto bastante de suas listras.
@@ -232,7 +209,6 @@ ADVRewardPopup: {
 FirstMetSupCal: {
 	Rolename1: ???
 	Rolename2: Bruxa de Enxofre
-	Rolename3: Halibut
 	Line1: Eu nao esperava que voce matasse minha 'irma' tao cedo.
 	Line2: Voce esta crescendo... mais rapido do que o antecipado.
 	Line3: Eu reconheco voce... Voce e...
@@ -262,8 +238,6 @@ ADVChoiceBox: {
 }
 
 SupCalMoonLordReward: {
-	Rolename1: Bruxa de Enxofre
-	Rolename2: Halibut
 	Line1: Hahaha...
 	Line2: Entao e assim que ele caiu.
 	Line3: Voce tem ideia de como estao as subterraneas agora?
@@ -274,7 +248,6 @@ SupCalMoonLordReward: {
 }
 
 SupCalDefeat: {
-	Rolename1: Bruxa de Enxofre
 	Rolename2: Halibut & [Nome]
 	Line1: Quem diria que voce ja alcancou este nivel... Heh. Fui superada.
 	Line2: Mas voce nao e o mais forte. Voce pode ser bom, mas *ele* certamente nao e pior do que voce.
@@ -289,8 +262,6 @@ SupCalDefeat: {
 }
 
 SupCalPlayerDefeat: {
-	Rolename1: Bruxa de Enxofre
-	Rolename2: Halibut
 	Line1: Voce se despedaca ao toque. Voce e feito de papel?
 	Line2: Pensei que tinha encontrado um brinquedo que duraria um pouco mais no fogo.
 	Line3: Superestimei voce. Seu calibre atual... voce nem e digno de ser meu aquecimento.
@@ -303,8 +274,6 @@ SupCalPlayerDefeat: {
 }
 
 SupCalVictory: {
-	Rolename1: Bruxa de Enxofre
-	Rolename2: Halibut
 	Line1: O que... Como isso e possivel!
 	Line2: Voce... Voce me derrotou?!
 	Line3: Impossivel... Isso e absolutamente impossivel...
@@ -323,8 +292,6 @@ PallbearerQuestUI: {
 }
 
 SupCalQuestReward: {
-	Rolename1: Bruxa de Enxofre
-	Rolename2: Halibut
 	Line1: Bem feito.
 	Line2: Esta besta combina com voce.
 	Line3: Voce resolveu um problema para mim.
@@ -335,7 +302,6 @@ SupCalQuestReward: {
 }
 
 ResurrectionWarn: {
-	Rolename: Halibut
 	Line0: Espera... voce sentiu isso?
 	Line1: O estado de 'ressurreicao' esta se aproximando de um limiar critico.
 	Line2: Tenho que avisar, isto nao e um jogo.
@@ -350,7 +316,6 @@ ResurrectionWarn: {
 }
 
 FishoilQuestScenario: {
-	Rolename: Halibut
 	Line0: Voce parece ter pescado uma boa quantidade de peixes comuns ultimamente.
 	Line1: Me de alguns para minha pesquisa, e posso refina-los em uma garrafa de oleo de peixe fresco.
 	Line2: O processo nao e dificil, apenas... tedioso.
@@ -378,8 +343,6 @@ DoGQuestUI: {
 }
 
 SupCalDoGQuestReward: {
-	Rolename1: Bruxa de Enxofre
-	Rolename2: Halibut
 	Line1: Feito de forma limpa.
 	Line2: Esta lamina... tao satisfatoria como sempre.
 	Line3: Quando eu ainda era mortal, foi com isso que arranquei o coracao do meu mestre. Funciona bem, nao funciona?
@@ -390,8 +353,6 @@ SupCalDoGQuestReward: {
 }
 
 SupCalYharonQuestReward: {
-	Rolename1: Bruxa de Enxofre
-	Rolename2: Halibut
 	Line1: Ah... finalmente acabou.
 	Line2: Para mim... aquele dragao... era um dos pouquissimos seres dignos de respeito.
 	Line3: Sabendo que morreria, ainda assim escolhendo permanecer firme... Mesmo que seja revivido pela Alma Aurica, o que retorna e meramente uma copia.
@@ -422,7 +383,6 @@ SupCalQuestLine: {
 }
 
 HelensInterference: {
-	Rolename: Halibut
 	Line0: ...Ei, voce esta livre?
 	Line1: Hoje..... uh.... bom tempo, ne?
 	Line2: (Halibut parece estar escondendo algo.)
@@ -471,7 +431,6 @@ HelensInterference: {
 }
 
 HellGift: {
-	R1: Halibut
 	L0: Este maldito lugar... o Inferno esta ficando cada vez mais quente.
 	L1: Tenho uma ideia. Vamos cavar o fundo do mar e fazer esta parte tambem do oceano.
 	L2: Uma fonte termal geotermica... abrangendo o continente inteiro.
@@ -481,7 +440,6 @@ HellGift: {
 }
 
 ExoMechdusaSum: {
-	DraedonName: Draedon
 	IntroLine1: Voce entende... este momento foi longamente antecipado.
 	IntroLine2: Sou fascinado por todos os aspectos do desconhecido, mas nada me fascina mais do que sua propria natureza.
 	IntroLine3: Mostrarei a voce minhas criacoes que superam deuses.
@@ -495,7 +453,6 @@ ExoMechdusaSum: {
 }
 
 ExoMechEndingDialogue: {
-	DraedonName: Draedon
 	EndLine1: Uma variavel desconhecida. Voce... e uma singularidade.
 	EndLine2: Voce e um estranho a esta terra e sua historia, assim como eu.
 	EndLine3: ...Minhas desculpas. Mas apos uma 'demonstracao' como essa, devo tomar um momento para organizar meus pensamentos.
@@ -509,7 +466,6 @@ ExoMechEndingDialogue: {
 }
 
 DeploySignaltowerScenario: {
-	DraedonName: Draedon
 	IntroLine1: Devo conduzir um experimento critico, e voce e o individuo mais adequado atualmente disponivel para me ajudar.
 	IntroLine2: Cem anos terrestres atras, uma tempestade de energia varreu a galaxia, destruindo a maioria das minhas instalacoes neste planeta.
 	IntroLine3: Tudo estava muito distante. Quando percebi que minha rede de monitoramento em Terra havia ficado offline, um seculo ja havia passado.
@@ -536,7 +492,6 @@ DeploySignaltowerScenario: {
 }
 
 FirstTowerBuiltScenario: {
-	DraedonName: Draedon
 	Line1: O novo no de entrelacamento quantico esta funcionando sem problemas. O sinal esta estavel.
 	Line2: Bom. Este e o primeiro passo para a rede. Continue implantando as torres de sinal restantes.
 	Line3: Quando o numero de nos atingir o padrao, poderei conduzir observacoes precisas em uma area muito maior.
@@ -544,7 +499,6 @@ FirstTowerBuiltScenario: {
 }
 
 QuestCompleteScenario: {
-	DraedonName: Draedon
 	Line1: Todos os nos quanticos estao online. A rede esta totalmente operacional.
 	Line2: A latencia de transmissao de dados e consistente com os valores teoricos. Sem desvios.
 	Line3: Seu desempenho foi mais rapido do que minhas projecoes. Louvavel.
@@ -553,27 +507,23 @@ QuestCompleteScenario: {
 }
 
 ExoMechHardDefeat: {
-	DraedonName: Draedon
 	HardDefeatLine1: Tomada de decisao sob estresse extremo. Estes sao os dados que eu desejava ver.
 	HardDefeatLine2: Sua capacidade de manter a racionalidade sob pressao e... satisfatoria.
 }
 
 ExoMechQuickDefeat: {
-	DraedonName: Draedon
 	QuickDefeatLine1: ...Este periodo de tempo esta significativamente abaixo dos meus modelos preditivos.
 	QuickDefeatLine2: Parece que subestimei sua eficiencia de combate atual.
 	QuickDefeatLine3: Talvez seja hora de considerar... filosofias de design... mais agressivas.
 }
 
 ExoMechSecondDefeat: {
-	DraedonName: Draedon
 	SecondDefeatLine1: Interessante. Sua taxa de adaptacao excede minhas projecoes.
 	SecondDefeatLine2: Os dados indicam que voce ja fez melhorias direcionadas desde o ultimo engajamento.
 	SecondDefeatLine3: Parece que devo reavaliar sua curva de aprendizado.
 }
 
 ExoMechThirdDefeat: {
-	DraedonName: Draedon
 	ThirdDefeatLine1: Desempenho consistente. Um componente da perfeicao que almejo.
 	ThirdDefeatLine2: Voce provou que suas capacidades nao sao... uma anomalia estatistica.
 }
@@ -613,7 +563,6 @@ AbyssQuestLine: {
 MusicToast.NowPlaying: Tocando Agora
 
 EternalBlazingNow: {
-	Rolename1: Halibut
 	Rolename2: ???Bruxa de Enxofre???
 	Line1: Voce esta brincando...
 	Line2: Eles desapareceram... Este fogo esta... *selando* o passado?!
@@ -642,8 +591,6 @@ EternalBlazingNow: {
 		EpilogueLine3: Bem-vindo de volta...
 	}
 
-	Rolename3: Bruxa de Enxofre
-
 	WitchFarewell: {
 		FarewellLine1: Nesta longa vida, vi inumeros amanheceres e fins.
 		FarewellLine2: Chamas devoram eras, mas tambem iluminam novos comecos. Pensei que desta vez nao seria excecao.
@@ -663,7 +610,6 @@ EternalBlazingNow: {
 }
 
 SCalAltarScenario: {
-	Rolename1: Bruxa de Enxofre
 	L1: Ainda nao e hora. Ainda ha outro inimigo bloqueando seu caminho.
 	L2: Va montar aquele monte de brinquedos mecanicos seus, entao derrote-o.
 	L3: ...O que? Preciso repetir?
@@ -815,7 +761,6 @@ FirstMetTzeentch: {
 }
 
 DyeProtest: {
-	R1: Halibut
 	L1: Honestamente, eu realmente nao gosto de usar aquelas cores brilhantes.
 	L2: Mande lavar, quer? Coloque no tinteiro, entao use aquele balde de agua.
 }
@@ -824,7 +769,6 @@ GiveBlazingBud.MessageText: As brasas ardentes sussurram ao vento, e uma flor es
 
 FirstMetOldDuke: {
 	OldDukeName: Velho Duque
-	HelenName: Halibut
 	L0: ......
 	L1: Embainhe sua sede de sangue, jovem aventureiro. Nao ha necessidade de sacar armas no momento em que nos encontramos.
 	L2: Sou velho. Estou cansado de tais jogos violentos.
@@ -854,7 +798,6 @@ OldDukeCampsite: {
 }
 
 CampsiteInteractionDialogue: {
-	OldDukeName: Velho Duque
 	GreetingLine: O que precisa?
 	Choice1Text: Estou aqui para negociar.
 	Choice2Text: Trouxe as coisas que voce queria.
@@ -872,7 +815,6 @@ CampsiteInteractionDialogue: {
 	Choice4_R3: Usar-me como pedra de amolar nao e uma jogada sabia...
 
 	CampsiteChatDialogue: {
-		OldDukeName: Velho Duque
 		GreetingLine: Quer conversar?
 		Choice_BackToMain: Mudar de assunto
 		Choice_EndConversation: E so isso
@@ -937,7 +879,6 @@ CampsiteInteractionDialogue: {
 }
 
 FirstCampsiteDialogue: {
-	OldDukeName: Velho Duque
 	L0: Voce veio.
 	L1: Tenho coletado estes fragmentos por bastantes anos.
 	L2: Eles sao... peculiares. Nao parecem produtos de evolucao natural, mas sim objetos estranhos que 'invadiram' este mundo.
@@ -948,7 +889,6 @@ FirstCampsiteDialogue: {
 }
 
 ComeCampsiteFindMe: {
-	OldDukeName: Velho Duque
 	B1: ...Venha tomar uma xícara de cha quando tiver tempo.
 	C1: Tenho negocios com voce.
 	C2: So estava pescando por diversao...
@@ -956,7 +896,6 @@ ComeCampsiteFindMe: {
 }
 
 GalacticCrisis: {
-	DraedonName: Draedon
 	CrisisIntro1: Agora que a rede quantica esta reconectada, ha algumas coisas que voce deve ver por si mesmo.
 	CrisisIntro2: Esta e a sombra que atualmente devora os braços espirais da galaxia.
 	CrisisIntro3: Estas sombras sao compostas pela Colmeia. Antes disso, implantei milhoes de Titãs Exo na tentativa de intercepta-los.
@@ -987,7 +926,6 @@ GalacticCrisis: {
 }
 
 FirstMetApollia: {
-	Rolename: Apollia
 	Line1: ......Humano?
 	Line2: Aquela trajetoria de queda atmosferica era obvia demais. Previ a zona de pouso e vim tentar a sorte.
 	Line3: Sou Apollia. E melhor que voce seja o guia de vanguarda da Frota Exo, aqui para me dizer que a forca principal esta bem atras de voce.
@@ -1008,7 +946,6 @@ GargoyleWarningScenario: {
 }
 
 DropPodCallScenario: {
-	CallerNameText: Draedon
 	Line1: Mais suave do que eu antecipava. O tempo de transito pelo sub-espaco foi de 43 minutos negativos.
 	Line2: Sua constituicao e excepcionalmente adequada para navegacao no sub-espaco.
 	Line3: Voce esta agora em orbita baixa sobre Corto III.
@@ -1021,7 +958,6 @@ DropPodCallScenario: {
 }
 
 FishoilSubmitScenario: {
-	Rolename: Halibut
 	SubmitLine1: Hmm, voce coletou peixes suficientes.
 	SubmitLine2: Suficiente para eu extrair uma garrafa de oleo de peixe.
 	QuestionLine: Voce vai entrega-los a mim?
@@ -1046,7 +982,6 @@ FishoilSubmitScenario: {
 }
 
 FirstMetShepel: {
-	RolenameSHPC: SHPC
 	Line1: Mestre! Estou tao feliz em ve-lo novamente!
 	Choice1Text: Voce confundiu a pessoa, nao confundiu?
 	Choice2Text: ...Quanto tempo sem ver.
@@ -1057,11 +992,10 @@ FirstMetShepel: {
 	CybCourseDeclineText: Agora nao.
 	CybCourseAcceptResponse: Reconhecido. Estabelecendo ligacao neural... Por favor, permaneca parado.
 	CybCourseDeclineResponse: Entendido. As credenciais de acesso ao neurosonho foram gravadas em seus dados de salvamento. Voce pode ativa-lo a qualquer momento, Mestre.
+	// SpeakerName: SHPC
 }
 
 TheHerInThePast: {
-	RolenameWitch: Bruxa de Enxofre
-	RolenameSHPC: SHPC
 	WitchLine1: Ser perseguido por aquelas coisas imundas deve ser bem desagradavel. Ainda bem que voce esbarrou comigo.
 	ShpcLine1: Obrigada... Mas como isso e possivel? Voce pertence ao passado, ainda assim pode se mover...
 	WitchLine2: Se voce pode invadir aqui de um seculo no futuro, e natural que eu possa fazer algo semelhante.
@@ -1076,8 +1010,6 @@ TheHerInThePast: {
 }
 
 EternalBlazingNowNoHelen: {
-	Rolename1: ???Bruxa de Enxofre???
-	Rolename2: Bruxa de Enxofre
 	Line1: ......Ha muito tempo que alguem nao chega tao longe.
 	Line2: Nao morrerei... mas isso esta perto o suficiente.
 	Line3: Voce se saiu bem... talvez, voce seja verdadeiramente o "unico desta era" que ele mencionou, o que vale a pena esperar.

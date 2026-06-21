@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelPerforatorGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_PerforatorHive;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "这种血肉异形的侵略性极强，行为也充满了野蛮的本能。");
             L1 = this.GetLocalization(nameof(L1), () => "它们经常尝试从视野死角发动攻击，防不胜防。");
             L2 = this.GetLocalization(nameof(L2), () => "为了反制这种突袭，我为您改装了火力网更广阔的散射模块。");

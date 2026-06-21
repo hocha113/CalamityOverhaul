@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => CWRID.NPC_Leviathan;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "海洋的暴君……和那个总是跟着她的小跟班。有些友谊超越了物种，也超越了理智");
             L1 = this.GetLocalization(nameof(L1), () => "我觉得最深的海沟里住着的不是恐惧，而是孤独。它们只是在寻找陪伴");
             L2 = this.GetLocalization(nameof(L2), () => "热带梭鱼，从深海漩涡里捞出来的。它看起来很普通，但这正是最可疑的地方");

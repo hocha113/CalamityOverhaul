@@ -12,9 +12,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
     internal sealed class SupCalMoonLordReward : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText Rolename1 { get; private set; }
-        public static LocalizedText Rolename2 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -26,8 +23,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
         public override StyleId DefaultStyle => "Brimstone";
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
-            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "呵呵呵");
             Line2 = this.GetLocalization(nameof(Line2), () => "那个家伙……竟已落到这种地步");

@@ -11,9 +11,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
     internal sealed class EternalBlazingNowNoHelen : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText Rolename1 { get; private set; }
-        public static LocalizedText Rolename2 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -28,9 +25,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         public override StyleId DefaultStyle => "Brimstone";
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???硫火女巫???");
-            Rolename2 = this.GetLocalization(nameof(Rolename2), () => "硫火女巫");
-
             Line1 = this.GetLocalization(nameof(Line1), () => "......能走到这里的人，已经许久没有出现了");
             Line2 = this.GetLocalization(nameof(Line2), () => "我不会死......不过，也差不多了");
             Line3 = this.GetLocalization(nameof(Line3), () => "你做得很好......或许，你真的是他口中那个值得等待的“时代唯一”");

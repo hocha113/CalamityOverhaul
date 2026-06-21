@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
     internal sealed class ExoMechQuickDefeat : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText QuickDefeatLine1 { get; private set; }
         public static LocalizedText QuickDefeatLine2 { get; private set; }
         public static LocalizedText QuickDefeatLine3 { get; private set; }
@@ -18,7 +16,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //快速战败对话：表现出对玩家压倒性实力的惊讶
             QuickDefeatLine1 = this.GetLocalization(nameof(QuickDefeatLine1), () => "......这个时间远低于我的预测模型");

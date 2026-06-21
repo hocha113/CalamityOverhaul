@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
     internal sealed class ExoMechSecondDefeat : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText SecondDefeatLine1 { get; private set; }
         public static LocalizedText SecondDefeatLine2 { get; private set; }
         public static LocalizedText SecondDefeatLine3 { get; private set; }
@@ -18,7 +16,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //第二次战败对话：表现出对玩家学习能力的认可
             SecondDefeatLine1 = this.GetLocalization(nameof(SecondDefeatLine1), () => "有趣，你的适应速度超出了我的预期");

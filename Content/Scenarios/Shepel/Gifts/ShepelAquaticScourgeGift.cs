@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelAquaticScourgeGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_AquaticScourgeHead;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "主人，渊海的水质可真让人头疼。这些飘来飘去的浑浊杂质，实在是太碍眼了。");
             L1 = this.GetLocalization(nameof(L1), () => "刚才飞溅的酸液弄脏了您的装甲，不过请放心，我已经抢先一步为您清理得干干净净了。");
             L2 = this.GetLocalization(nameof(L2), () => "另外，为了不让这些深海环境再来捣乱，我稍微花了一点心思，给瞄准镜重新写了一套光学滤镜。");

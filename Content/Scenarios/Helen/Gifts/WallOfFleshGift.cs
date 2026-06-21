@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => NPCID.WallofFlesh;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "一堵由肉和骨组成的墙……这个世界的创造者一定有些特别的想法");
             L1 = this.GetLocalization(nameof(L1), () => "你刚才打破了某种平衡。感觉到了吗？世界的脉搏开始加速");
             L2 = this.GetLocalization(nameof(L2), () => "从那堆残骸里找到了这条饥饿鱼，它看起来永远吃不饱");

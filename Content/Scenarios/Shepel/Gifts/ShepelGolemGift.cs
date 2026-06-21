@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelGolemGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -22,7 +20,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.Golem;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "神庙里的环境有些压抑。石巨人的攻击虽然笨重，但引发的地形震荡容易破坏射击平衡。");
             L1 = this.GetLocalization(nameof(L1), () => "为了应对这种高频的物理冲击，我对武器架构进行了重新评估。");
             L2 = this.GetLocalization(nameof(L2), () => "我为您的武装加装了最新的减震结构。");

@@ -35,8 +35,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
             ItemID.SpecularFish,
             ItemID.Prismite
         ];
-
-        public static LocalizedText Rolename { get; private set; }
         public static LocalizedText Line0 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
@@ -48,7 +46,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
         public override StyleId DefaultStyle => "Sea";
 
         public override void SetStaticDefaults() {
-            Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
             Line0 = this.GetLocalization(nameof(Line0), () => "你最近好像捕到了不少普通的鱼");
             Line1 = this.GetLocalization(nameof(Line1), () => "给我一些做实验，我可以提炼出一瓶新鲜的鱼油");
             Line2 = this.GetLocalization(nameof(Line2), () => "过程不难但很枯燥");

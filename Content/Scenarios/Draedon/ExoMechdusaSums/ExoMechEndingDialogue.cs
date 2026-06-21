@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
     internal sealed class ExoMechEndingDialogue : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText EndLine1 { get; private set; }
         public static LocalizedText EndLine2 { get; private set; }
         public static LocalizedText EndLine3 { get; private set; }
@@ -25,7 +23,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //结束对话(对应原游戏的 DraedonEndText 系列)
             EndLine1 = this.GetLocalization(nameof(EndLine1), () => "一个未知因素——你，是一个特异点");

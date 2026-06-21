@@ -16,14 +16,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => CWRID.NPC_CalamitasClone;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "一个劣质的影子，让我想起来上大学时自己窝在海沟里捣鼓的基因怪兽，总之制作这个东西的家伙品味很差");
             L1 = this.GetLocalization(nameof(L1), () => "我有种不详的预感，真正的恐怖还在更深的地方等着，它甚至在靠近");
             L2 = this.GetLocalization(nameof(L2), () => "说回正事，硫磺火鱼，从灾厄的余烬中捡的。捧在手心里还能听到它在瞎嘀咕些什么");

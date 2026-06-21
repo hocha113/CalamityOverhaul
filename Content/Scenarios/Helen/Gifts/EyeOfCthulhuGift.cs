@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => NPCID.EyeofCthulhu;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "你的动作被那只巨眼拖成了慢镜头……我还以为你在刻意摆造型");
             L1 = this.GetLocalization(nameof(L1), () => "我们已经进入‘被注视的阶段’。这意味着更多麻烦");
             L2 = this.GetLocalization(nameof(L2), () => "我从眼睛的大嘴里找到了这个，拿着，这是克苏鲁鱼。它和同名的神话一样......不太讲逻辑");

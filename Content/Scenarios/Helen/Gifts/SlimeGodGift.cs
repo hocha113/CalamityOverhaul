@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => CWRID.NPC_SlimeGodCore;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "三个史莱姆，呃，或者说一个分裂的神性？这种二元对立的存在形式很有意思");
             L1 = this.GetLocalization(nameof(L1), () => "腐化与猩红，就像这个世界永恒的矛盾。而我们刚才证明了矛盾可以被'解决'");
             L2 = this.GetLocalization(nameof(L2), () => "这是杂色猪油鱼，从那堆粘液里捞出来的。别问我为什么叫这个名字");

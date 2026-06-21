@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelPolterghastGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_Polterghast;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "地牢里的这些幽魂，一直无法解脱，真是可悲。");
             L1 = this.GetLocalization(nameof(L1), () => "这里的环境有些嘈杂，我已经为您开启了噪音过滤。");
             L2 = this.GetLocalization(nameof(L2), () => "我捕捉了那些游荡的灵体信号，将其改写成了能连续触发次级火力的程序。");

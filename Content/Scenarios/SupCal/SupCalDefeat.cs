@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
     internal sealed class SupCalDefeat : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
@@ -26,7 +24,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
         public override StyleId DefaultStyle => "Brimstone";
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "硫火女巫");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "比目鱼&[Name]");
             Line1 = this.GetLocalization(nameof(Line1), () => "你竟然已经到达这种地步了吗......呵，是我技不如人了");
             Line2 = this.GetLocalization(nameof(Line2), () => "但你并非最强，你或许很不错，但那个人绝对不会比你差");

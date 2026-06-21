@@ -9,15 +9,12 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
     internal sealed class ExoMechHardDefeat : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText HardDefeatLine1 { get; private set; }
         public static LocalizedText HardDefeatLine2 { get; private set; }
 
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
 
             //艰难战败对话：表现出对接近极限的认可
             HardDefeatLine1 = this.GetLocalization(nameof(HardDefeatLine1), () => "极限状态下的决策，这才是我想看到的数据");

@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => NPCID.KingSlime;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "刚才那团蓝色的……你称之为史莱姆？看起来更像是一种固态的情绪");
             L1 = this.GetLocalization(nameof(L1), () => "或许是物质自我意识试图聚集和进化的一次拙劣尝试");
             L2 = this.GetLocalization(nameof(L2), () => "请拿好，这是史莱姆鱼。别挤它，它的心情会爆炸");

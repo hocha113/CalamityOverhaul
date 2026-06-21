@@ -26,7 +26,6 @@ FirstMet: {
 }
 
 EyeOfCthulhuGift: {
-	R1: Halibut
 	L0: Ihre Bewegungen wurden von dem Riesenauge in Zeitlupe gezogen … ich dachte, Sie posieren absichtlich.
 	L1: Wir sind in der ‚Stufe des Beobachtetwerdens‘. Das bedeutet … mehr Ärger.
 	L2: Ich fand das in seinem … Schlund. Nehmen Sie es. Ein Cthulhu-Fisch. Wie sein Namensvetter … folgt er keiner Logik.
@@ -35,7 +34,6 @@ EyeOfCthulhuGift: {
 }
 
 KingSlimeGift: {
-	R1: Halibut
 	L0: Dieser blaue Klumpen … ein ‚Schleim‘, sagen Sie? Wirkte eher wie … verfestigte Emotion.
 	L1: Vielleicht ein holpriger Versuch der Materie, Selbstbewusstsein zu sammeln und zu evolvieren.
 	L2: Bitte nehmen Sie diesen Schleimfisch. Drücken Sie ihn nicht – seine Gefühle explodieren sonst.
@@ -44,8 +42,6 @@ KingSlimeGift: {
 }
 
 QueenBeeGift: {
-	R1: Halibut
-	R2: ???
 	L0: Da hätte ich beinahe eine Gesichtsmaske aus Honig bekommen.
 	L1: Trotzdem habe ich einen Fisch aus einer Honigpfütze am Boden gezogen.
 	L2: Bitte, frischer … noch warmer Honigfisch.
@@ -53,7 +49,6 @@ QueenBeeGift: {
 }
 
 SkeletronGift: {
-	R1: Halibut
 	L0: Das war eine beachtliche Menge Kalzium.
 	L1: Seine Schädelstruktur erinnerte mich an ein entlaufenes psionisches Konstrukt.
 	L2: Lasst meinen Lauf erst abkühlen. Inzwischen habe ich hier einen Fisch gefunden.
@@ -62,7 +57,6 @@ SkeletronGift: {
 }
 
 AquaticScourgeGift: {
-	R1: Halibut
 	L0: Er erinnert mich an die weniger freundlichen Nachbarn aus meiner Heimat. Dieser hier war recht umgänglich – früher Sicherheitschef an der Schwefelmeer-Universität. Grüßte immer.
 	L1: Das Schwefelmeer ist ein merkwürdiger Ort. Jedes Wesen dort stellt dieselbe Frage: ‚Warum lebe ich noch?‘
 	L2: Ein Prismenfisch. Seine Schuppen brechen Farben, die Sie nie gesehen haben – vor allem, weil sie nicht existieren sollten.
@@ -71,7 +65,6 @@ AquaticScourgeGift: {
 }
 
 BrimstoneElementalGift: {
-	R1: Halibut
 	L0: Dass sie einfach dastand, war wie eine brennende Rede. Gut, dass wir sie zum Schweigen brachten.
 	L1: Manche Elementare werden nicht erschaffen. Sie sind nur … Merkwürdigkeiten … die aus den Rissen der Welt sickern.
 	L2: Ein Obsidianfisch. Produkt von schlagartig abgekühlter Lava. Seine Schuppen sind härter als Groll, der in der Hölle gärt.
@@ -80,7 +73,6 @@ BrimstoneElementalGift: {
 }
 
 CalamitasCloneGift: {
-	R1: Halibut
 	L0: Ein billiger Schatten. Erinnert mich an die genetischen Monstrositäten, die ich in der Uni in meinem Graben züchtete. Wer das gemacht hat, hat jedenfalls schlechten Geschmack.
 	L1: Ich habe ein schlechtes Gefühl. Der wahre Schrecken wartet noch … tiefer. Und er kommt näher.
 	L2: Zurück zur Arbeit. Ein Schwefelfisch, aus ihrer Glut gepflückt. Hält man ihn nah ans Ohr, hört man noch Gemurmel.
@@ -89,7 +81,6 @@ CalamitasCloneGift: {
 }
 
 CrabulonGift: {
-	R1: Halibut
 	L0: Dieses pilzähnliche … Wesen? Weisheit oder bloß Instinkt unter dem Hut?
 	L1: Wussten Sie, dass Myzel-Netzwerke Informationen übertragen können? Vielleicht rief es um Hilfe.
 	L2: Das ist ein Pilzfisch. Ich habe ihn kaum aus den Sporen herausfangen können, die er verstreute.
@@ -98,7 +89,6 @@ CrabulonGift: {
 }
 
 CryogenGift: {
-	R1: Halibut
 	L0: Eine gefrorene Seele …
 	L1: In den Abgrund-Archiven dient solche Tieftemperatur meist dazu, Verrückte zu ‚konservieren‘.
 	L2: Ein Kryo-Elritze, aus den Eissplittern aufgetaut. Hält noch die Pose, in der er eingefroren wurde.
@@ -107,7 +97,6 @@ CryogenGift: {
 }
 
 DevourerOfGodsGift: {
-	R1: Halibut
 	L0: Der Verschlinger der Götter … eine kosmische Schlange, die Götter verspeist. Ihr Appetit ist so grenzenlos wie ihr Ehrgeiz.
 	L1: Man sagt: Wer in den Abgrund blickt, den blickt der Abgrund zurück. Dieses Ding blickt nicht nur – es will Sie als Snack.
 	L2: Ein Neonsalmler. Er schwebte aus einem Riss der Leere. Sein Licht stammt nicht aus dieser Dimension.
@@ -116,7 +105,6 @@ DevourerOfGodsGift: {
 }
 
 GolemGift: {
-	R1: Halibut
 	L0: Ein Haufen beweglicher Steine. Erbe einer alten Zivilisation … oder vielleicht Beweis ihres Scheiterns.
 	L1: Vielleicht bewacht er etwas. Oder wiederholt ein Programm, das längst seine Bedeutung verlor.
 	L2: Ein Felsfisch, aus dem Fundament des Tempels geborgen. Seine Dichte lässt mich mein eigenes Dasein hinterfragen.
@@ -125,7 +113,6 @@ GolemGift: {
 }
 
 HiveMindGift: {
-	R1: Halibut
 	L0: Ein Kollektivbewusstsein aus Verderbnis … ein ekelhafter Gedanke.
 	L1: Sein Denken muss … einzigartig sein. Unzählige faule Fragmente zu einem verdrehten Ganzen gefügt.
 	L2: Hier, ein Fäulisfisch. Aus dem Aasberg gezogen. Fragen Sie nicht wie.
@@ -134,7 +121,6 @@ HiveMindGift: {
 }
 
 LeviathanGift: {
-	R1: Halibut
 	L0: Der Tyrann des Ozeans … und ihr kleiner Begleiter, der ihr immer folgt. Manche Freundschaften überschreiten Art und Logik.
 	L1: Ich glaube, in den tiefsten Gräben wohnt nicht Furcht, sondern Einsamkeit. Sie suchen nur Gesellschaft.
 	L2: Ein Tropen-Barrakuda, aus einem Tiefsee-Wirbel gezogen. Sieht gewöhnlich aus – genau das ist verdächtig.
@@ -143,7 +129,6 @@ LeviathanGift: {
 }
 
 MoonLordGift: {
-	R1: Halibut
 	L0: Der Herr des Mondes, ha! Oder *ehemals*. Jetzt nur noch ein schwebender Haufen Augäpfel und Gewebe.
 	L1: Wir retteten nicht nur die Welt – wir schlossen eine Tür, die nie geöffnet werden sollte.
 	L2: Ich fing einen Wolkenfisch. Er glitt durch einen Riss am Himmel. Fühlt sich federleicht in der Hand an.
@@ -152,7 +137,6 @@ MoonLordGift: {
 }
 
 PerforatorGift: {
-	R1: Halibut
 	L0: Ein Haufen bohrender Fleischwürmer … das Dasein dieses Wesens ist eine Herausforderung für die Biologie.
 	L1: Ihr Blut hat eine merkwürdige Viskosität, wie lebendiges Metall.
 	L2: Ich fand das in den Trümmern. Ein Blutfisch. Er zappelt noch.
@@ -161,7 +145,6 @@ PerforatorGift: {
 }
 
 PlaguebringerGift: {
-	R1: Halibut
 	L0: Die Seuchenbringer-Goliath … eine mechanische Biene mit Biowaffe. Wer hat das entworfen? Ein richtiger Bastard, der es wagt, Bienen zu versklaven.
 	L1: Ein Virus fragt nicht nach Recht oder Unrecht. Es will nur überleben. Wie wir – nur direkter.
 	L2: Ein Juwelenfisch. Infiziert und auf wundersame Weise genesen. Sein Immunsystem ist erfahrener als Sie.
@@ -170,7 +153,6 @@ PlaguebringerGift: {
 }
 
 PlanteraGift: {
-	R1: Halibut
 	L0: Eine Blume … wenn man ‚Blume‘ so nennen darf bei diesem menschenfressenden Rankengewirr.
 	L1: Der Zorn des Dschungels, in Pflanzenform gewachsen. Die Rache der Natur ist nie rational.
 	L2: Ein Zwillingsdorsch. Er hat zwei Köpfe. Der Dschungel ist wie ein Landmeer – hier braucht nichts einen Grund, um Extra-Teile zu wachsen.
@@ -179,7 +161,6 @@ PlanteraGift: {
 }
 
 ProvidenceGift: {
-	R1: Halibut
 	L0: Die geschändete Göttin … ein Widerspruch aus Glauben und Flamme. Ziemlich erbärmlich.
 	L1: Wir löschten nicht nur heiliges Feuer, sondern die Glut einer ganzen Ära.
 	L2: Ein Dämonen-Höllenfisch, aus ihrer Asche wiedergeboren. Seine Temperatur bleibt dauerhaft bei ‚gerade heiß genug, um Sie nicht zu verbrennen‘.
@@ -188,7 +169,6 @@ ProvidenceGift: {
 }
 
 SlimeGodGift: {
-	R1: Halibut
 	L0: Drei Schleime … oder eine zersplitterte Göttlichkeit? Diese dualistische Existenz ist … interessant.
 	L1: Verderbnis und Purpur. Der ewige Konflikt dieser Welt. Und wir bewiesen gerade, dass sich Konflikte ‚lösen‘ lassen.
 	L2: Ein Scheckiger Schmalzfisch. Aus dem Schleim geschöpft. Fragen Sie nicht nach dem Namen.
@@ -197,7 +177,6 @@ SlimeGodGift: {
 }
 
 SupremeCalamitasGift: {
-	R1: Halibut
 	L0: Die Schwefelfeuer-Hexe … eine Rächerin. Die mächtigste Magiewirkerin des letzten Jahrhunderts.
 	L1: Was wir gerade taten … beendeten wir eine Legende oder schufen einen neuen Anfang?
 	L2: Ein Prinzessinnenfisch, aus ihrer Glut geboren. Er trägt eine widersprüchliche Anmut, wie eine Blume auf Ruinen.
@@ -206,7 +185,6 @@ SupremeCalamitasGift: {
 }
 
 WallOfFleshGift: {
-	R1: Halibut
 	L0: Eine Mauer aus Fleisch und Knochen … der Schöpfer dieser Welt muss seltsame Ideen gehabt haben.
 	L1: Sie brachen gerade irgendein Gleichgewicht. Spüren Sie das? Der Puls der Welt beschleunigt.
 	L2: In den Überresten fand ich diesen Hungerfisch. Er wirkt ewig ausgehungert.
@@ -215,7 +193,6 @@ WallOfFleshGift: {
 }
 
 YharonGift: {
-	R1: Halibut
 	L0: Der Dschungeldrache … nein, der Weltverbrenner. Er brennt nicht mit Fleisch, sondern mit Obsession.
 	L1: Eine Loyalität so rein, dass sie sich für ihren Herrn zu Asche verbrennt … erinnert mich an die Fischschwärme, die zu Hause die Korallenriffe bewachen.
 	L2: Ein Scharlach-Tigerfisch. Gerade gefangen. Ich mag seine Streifen.
@@ -232,7 +209,6 @@ ADVRewardPopup: {
 FirstMetSupCal: {
 	Rolename1: ???
 	Rolename2: Schwefelfeuer-Hexe
-	Rolename3: Halibut
 	Line1: Ich hätte nicht erwartet, dass Sie meine ‚Schwester‘ so bald töten.
 	Line2: Sie wachsen … schneller als erwartet.
 	Line3: Ich kenne Sie … Sie sind …
@@ -262,8 +238,6 @@ ADVChoiceBox: {
 }
 
 SupCalMoonLordReward: {
-	Rolename1: Schwefelfeuer-Hexe
-	Rolename2: Halibut
 	Line1: Hahaha …
 	Line2: So weit ist er gefallen.
 	Line3: Haben Sie eine Ahnung, wie es gerade im Untergrund aussieht?
@@ -274,7 +248,6 @@ SupCalMoonLordReward: {
 }
 
 SupCalDefeat: {
-	Rolename1: Schwefelfeuer-Hexe
 	Rolename2: Halibut&[Name]
 	Line1: Schon diese Stufe erreicht … Heh. Ich war unterlegen.
 	Line2: Aber ihr seid nicht die Stärksten. Ihr seid gut – doch *er* ist euch sicher nicht nachstehend.
@@ -289,8 +262,6 @@ SupCalDefeat: {
 }
 
 SupCalPlayerDefeat: {
-	Rolename1: Schwefelfeuer-Hexe
-	Rolename2: Halibut
 	Line1: Bei Berührung zerbricht ihr – seid ihr aus Papier?
 	Line2: Ich dachte, ich hätte ein Spielzeug gefunden, das im Feuer etwas länger hält.
 	Line3: Ich überschätzte euch. Euer heutiges Kaliber … nicht einmal als Aufwärmen würdig.
@@ -303,8 +274,6 @@ SupCalPlayerDefeat: {
 }
 
 SupCalVictory: {
-	Rolename1: Schwefelfeuer-Hexe
-	Rolename2: Halibut
 	Line1: Was … wie ist das möglich!
 	Line2: Ihr … ihr habt mich besiegt?!
 	Line3: Unmöglich … das ist absolut unmöglich …
@@ -323,8 +292,6 @@ PallbearerQuestUI: {
 }
 
 SupCalQuestReward: {
-	Rolename1: Schwefelfeuer-Hexe
-	Rolename2: Halibut
 	Line1: Gut gemacht.
 	Line2: Diese Armbrust steht dir.
 	Line3: Du hast mir ein Problem gelöst.
@@ -335,7 +302,6 @@ SupCalQuestReward: {
 }
 
 ResurrectionWarn: {
-	Rolename: Halibut
 	Line0: Warten Sie … haben Sie das gespürt?
 	Line1: Der ‚Wiederbelebungs‘-Zustand nähert sich einem kritischen Schwellenwert.
 	Line2: Ich muss Sie warnen – das ist kein Spiel.
@@ -350,7 +316,6 @@ ResurrectionWarn: {
 }
 
 FishoilQuestScenario: {
-	Rolename: Halibut
 	Line0: Sie scheinen in letzter Zeit recht viele gewöhnliche Fische gefangen zu haben.
 	Line1: Geben Sie mir welche für meine Forschung – ich kann daraus eine Flasche frisches Fischöl raffinieren.
 	Line2: Der Prozess ist nicht schwer, nur … mühsam.
@@ -378,8 +343,6 @@ DoGQuestUI: {
 }
 
 SupCalDoGQuestReward: {
-	Rolename1: Schwefelfeuer-Hexe
-	Rolename2: Halibut
 	Line1: Sauber erledigt.
 	Line2: Diese Klinge … befriedigend wie immer.
 	Line3: Als ich noch sterblich war, schnitzte ich damit das Herz meines Meisters heraus. Funktioniert gut, nicht wahr?
@@ -390,8 +353,6 @@ SupCalDoGQuestReward: {
 }
 
 SupCalYharonQuestReward: {
-	Rolename1: Schwefelfeuer-Hexe
-	Rolename2: Halibut
 	Line1: Ah … endlich vorbei.
 	Line2: Für mich … war jener Drache … eines der wenigen Wesen, die Respekt verdienen.
 	Line3: Zu wissen, dass man stirbt, und trotzdem zu stehen … Selbst mit Auric-Seele wiederbelebt, ist die Rückkehr nur eine Kopie.
@@ -422,7 +383,6 @@ SupCalQuestLine: {
 }
 
 HelensInterference: {
-	Rolename: Halibut
 	Line0: …Hey, haben Sie Zeit?
 	Line1: Heute … äh … schönes Wetter, oder?
 	Line2: (Halibut scheint etwas zu verstecken.)
@@ -471,7 +431,6 @@ HelensInterference: {
 }
 
 HellGift: {
-	R1: Halibut
 	L0: Dieser verdammte Ort … die Hölle wird immer heißer.
 	L1: Ich habe eine Idee. Lassen Sie uns einfach den Meeresboden durchstechen und auch hier ein Stück Ozean machen.
 	L2: Eine geothermische Heißquelle … über den ganzen Kontinent.
@@ -481,7 +440,6 @@ HellGift: {
 }
 
 ExoMechdusaSum: {
-	DraedonName: Draedon
 	IntroLine1: Sie wissen … auf diesen Moment habe ich lange gewartet.
 	IntroLine2: Alles Unbekannte fasziniert mich – doch nichts so sehr wie Ihre Natur selbst.
 	IntroLine3: Ich werde Ihnen meine gottübertreffenden Schöpfungen zeigen.
@@ -495,7 +453,6 @@ ExoMechdusaSum: {
 }
 
 ExoMechEndingDialogue: {
-	DraedonName: Draedon
 	EndLine1: Eine unbekannte Variable. Sie … sind ein Singularitätspunkt.
 	EndLine2: Für dieses Land und seine Geschichte sind Sie ein Außenstehender – wie ich.
 	EndLine3: …Meine Entschuldigung. Nach einer solchen ‚Demonstration‘ muss ich meine Gedanken ordnen.
@@ -509,7 +466,6 @@ ExoMechEndingDialogue: {
 }
 
 DeploySignaltowerScenario: {
-	DraedonName: Draedon
 	IntroLine1: Ich muss ein kritisches Experiment durchführen – und Sie sind derzeit der am besten geeignete Helfer.
 	IntroLine2: Vor hundert terranianischen Jahren fegte ein Energiesturm durch die Galaxie und zerstörte den Großteil meiner Anlagen auf diesem Planeten.
 	IntroLine3: Alles war zu weit entfernt. Als mir klar wurde, dass mein Überwachungsnetz auf Terra ausfiel, war ein Jahrhundert vergangen.
@@ -536,7 +492,6 @@ DeploySignaltowerScenario: {
 }
 
 FirstTowerBuiltScenario: {
-	DraedonName: Draedon
 	Line1: Der neue Quantenverschränkungsknoten läuft reibungslos. Das Signal ist stabil.
 	Line2: Gut. Das ist der erste Schritt des Netzes. Setzen Sie die übrigen Signaltürme fort.
 	Line3: Erreicht die Knotenzahl den Standard, kann ich viel weiter gefasst präzise beobachten.
@@ -544,7 +499,6 @@ FirstTowerBuiltScenario: {
 }
 
 QuestCompleteScenario: {
-	DraedonName: Draedon
 	Line1: Alle Quantenknoten sind online. Das Netz läuft vollständig.
 	Line2: Die Datenübertragungslatenz entspricht den theoretischen Werten. Keine Abweichungen.
 	Line3: Ihre Leistung übertraf meine Prognosen. Lobenswert.
@@ -553,27 +507,23 @@ QuestCompleteScenario: {
 }
 
 ExoMechHardDefeat: {
-	DraedonName: Draedon
 	HardDefeatLine1: Entscheidungen unter extremem Druck. Genau diese Daten wollte ich sehen.
 	HardDefeatLine2: Ihre Fähigkeit, unter Druck rational zu bleiben, ist … zufriedenstellend.
 }
 
 ExoMechQuickDefeat: {
-	DraedonName: Draedon
 	QuickDefeatLine1: …Dieser Zeitrahmen liegt deutlich unter meinen Vorhersagemodellen.
 	QuickDefeatLine2: Anscheinend unterschätzte ich Ihre aktuelle Kampfeffizienz.
 	QuickDefeatLine3: Vielleicht ist es Zeit, …aggressivere … Designphilosophien zu erwägen.
 }
 
 ExoMechSecondDefeat: {
-	DraedonName: Draedon
 	SecondDefeatLine1: Interessant. Ihre Anpassungsrate übertrifft meine Prognosen.
 	SecondDefeatLine2: Die Daten zeigen gezielte Verbesserungen seit dem letzten Gefecht.
 	SecondDefeatLine3: Ich muss Ihre Lernkurve neu bewerten.
 }
 
 ExoMechThirdDefeat: {
-	DraedonName: Draedon
 	ThirdDefeatLine1: Konstante Leistung. Ein Teil der Perfektion, die ich anstrebe.
 	ThirdDefeatLine2: Sie bewiesen, dass Ihre Fähigkeiten keine … statistische Anomalie sind.
 }
@@ -613,7 +563,6 @@ AbyssQuestLine: {
 MusicToast.NowPlaying: Wird abgespielt
 
 EternalBlazingNow: {
-	Rolename1: Halibut
 	Rolename2: ???Schwefelfeuer-Hexe???
 	Line1: Sie machen Witze …
 	Line2: Die Gestalten der Vergangenheit sind verschwunden … versiegelt dieses Feuer die Vergangenheit?!
@@ -642,8 +591,6 @@ EternalBlazingNow: {
 		EpilogueLine3: Willkommen zurück …
 	}
 
-	Rolename3: Schwefelfeuer-Hexe
-
 	WitchFarewell: {
 		FarewellLine1: In diesem langen Leben sah ich unzählige Morgenröten und Enden.
 		FarewellLine2: Flammen verschlingen Ären, erhellen aber auch neue Anfänge. Ich dachte, diesmal wäre es nicht anders.
@@ -663,7 +610,6 @@ EternalBlazingNow: {
 }
 
 SCalAltarScenario: {
-	Rolename1: Schwefelfeuer-Hexe
 	L1: Es ist noch nicht Zeit. Ein weiterer Feind blockiert euren Weg.
 	L2: Setzt euren Haufen mechanischer Spielzeuge zusammen und besiegt ihn.
 	L3: …Was? Soll ich mich wiederholen?
@@ -815,7 +761,6 @@ FirstMetTzeentch: {
 }
 
 DyeProtest: {
-	R1: Halibut
 	L1: Ehrlich gesagt mag ich diese grellen Farben nicht.
 	L2: Waschen Sie sie ab, ja? In den Farbott, dann mit dem Wassereimer.
 }
@@ -824,7 +769,6 @@ GiveBlazingBud.MessageText: Die brennenden Glutreste flüstern im Wind, und eine
 
 FirstMetOldDuke: {
 	OldDukeName: Alter Herzog
-	HelenName: Halibut
 	L0: ......
 	L1: Steck deine Blutgier weg, Junge. Beim ersten Treffen braucht es kein gezücktes Schwert.
 	L2: Ich bin alt. Diese gewalttätigen Spiele habe ich satt.
@@ -854,7 +798,6 @@ OldDukeCampsite: {
 }
 
 CampsiteInteractionDialogue: {
-	OldDukeName: Alter Herzog
 	GreetingLine: Was brauchst du?
 	Choice1Text: Ich bin zum Handeln hier.
 	Choice2Text: Ich habe, was du wolltest.
@@ -872,7 +815,6 @@ CampsiteInteractionDialogue: {
 	Choice4_R3: Mich als Wetzstein zu nutzen ist nicht klug …
 
 	CampsiteChatDialogue: {
-		OldDukeName: Alter Herzog
 		GreetingLine: Willst du plaudern?
 		Choice_BackToMain: Thema wechseln
 		Choice_EndConversation: Das war's
@@ -937,7 +879,6 @@ CampsiteInteractionDialogue: {
 }
 
 FirstCampsiteDialogue: {
-	OldDukeName: Alter Herzog
 	L0: Du bist da.
 	L1: Ich sammle diese Fragmente schon seit Jahren.
 	L2: Sie sind … seltsam. Nicht wie natürliche Evolution, eher wie Fremdkörper, die in diese Welt ‚eindrangen‘.
@@ -948,7 +889,6 @@ FirstCampsiteDialogue: {
 }
 
 ComeCampsiteFindMe: {
-	OldDukeName: Alter Herzog
 	B1: …Komm auf eine Tasse Tee vorbei, wenn du Zeit hast.
 	C1: Ich habe Geschäftliches mit dir.
 	C2: Ich wollte nur zum Spaß angeln …
@@ -956,7 +896,6 @@ ComeCampsiteFindMe: {
 }
 
 GalacticCrisis: {
-	DraedonName: Draedon
 	CrisisIntro1: Da das Quantennetz wieder verbunden ist, müssen Sie einiges selbst sehen.
 	CrisisIntro2: Das ist der Schatten, der gerade die galaktischen Spiralarme verschlingt.
 	CrisisIntro3: Diese Schatten bestehen aus dem Schwarm. Zuvor setzte ich Millionen Exo-Titanen ein, um sie abzufangen.
@@ -987,7 +926,6 @@ GalacticCrisis: {
 }
 
 FirstMetApollia: {
-	Rolename: Apollia
 	Line1: ……Mensch?
 	Line2: Die Abstiegsbahn in der Atmosphäre war zu auffällig. Ich prognostizierte die Landezone und versuchte mein Glück.
 	Line3: Ich bin Apollia. Sie sind hoffentlich der Vorhutführer der Exo-Flotte und sagen mir, die Hauptstreitmacht folge direkt.
@@ -1008,7 +946,6 @@ GargoyleWarningScenario: {
 }
 
 DropPodCallScenario: {
-	CallerNameText: Draedon
 	Line1: Reibungsloser als erwartet. Warp-Transitzeit minus 43 Minuten.
 	Line2: Ihre Konstitution eignet sich außergewöhnlich für Subraumnavigation.
 	Line3: Sie befinden sich in niedriger Umlaufbahn über Corto III.
@@ -1021,7 +958,6 @@ DropPodCallScenario: {
 }
 
 FishoilSubmitScenario: {
-	Rolename: Halibut
 	SubmitLine1: Hm, genug Fische gesammelt.
 	SubmitLine2: Gerade genug für eine Flasche Fischöl.
 	QuestionLine: Geben Sie sie mir ab?
@@ -1046,7 +982,6 @@ FishoilSubmitScenario: {
 }
 
 FirstMetShepel: {
-	RolenameSHPC: SHPC
 	Line1: Meister! So schön, Sie wiederzusehen!
 	Choice1Text: Sie haben sich geirrt, oder?
 	Choice2Text: …Lange nicht gesehen.
@@ -1057,11 +992,10 @@ FirstMetShepel: {
 	CybCourseDeclineText: Nicht jetzt.
 	CybCourseAcceptResponse: Verstanden. Neuronale Verbindung wird aufgebaut … Bitte ruhig bleiben.
 	CybCourseDeclineResponse: Verstanden. Superdream-Zugangsdaten wurden in Ihren Spielstand geschrieben. Sie können ihn jederzeit selbst aktivieren, Meister.
+	// SpeakerName: SHPC
 }
 
 TheHerInThePast: {
-	RolenameWitch: Schwefelfeuer-Hexe
-	RolenameSHPC: SHPC
 	WitchLine1: Von diesem Dreck verfolgt zu werden ist unangenehm. Gut, dass ich Sie erwischt habe.
 	ShpcLine1: Danke … aber wie ist das möglich? Sie gehören der Vergangenheit an und können sich doch bewegen …
 	WitchLine2: Wenn ihr aus hundert Jahren Zukunft hier eindringen könnt, kann ich natürlich etwas Ähnliches tun.
@@ -1076,8 +1010,6 @@ TheHerInThePast: {
 }
 
 EternalBlazingNowNoHelen: {
-	Rolename1: ???Schwefelfeuer-Hexe???
-	Rolename2: Schwefelfeuer-Hexe
 	Line1: ……Seit langem ist niemand so weit gekommen.
 	Line2: Ich werde nicht sterben … aber es reicht fast.
 	Line3: Ihr habt gut geleistet … vielleicht seid ihr wirklich das ‚Einzige dieser Ära‘, von dem er sprach und auf das zu warten sich gelohnt hat.

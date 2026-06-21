@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => CWRID.NPC_DevourerofGodsHead;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "神明吞噬者……一条以神为食的宇宙之蛇。它的胃口和它的野心一样无限");
             L1 = this.GetLocalization(nameof(L1), () => "你知道吗？当你凝视深渊时，深渊也在凝视你。但这家伙不止凝视，它还想把你当零食");
             L2 = this.GetLocalization(nameof(L2), () => "霓虹四脚鱼，从虚空裂隙里飘出来的。它发出的光不属于这个维度");

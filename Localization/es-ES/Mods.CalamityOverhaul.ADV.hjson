@@ -26,7 +26,6 @@ FirstMet: {
 }
 
 EyeOfCthulhuGift: {
-	R1: Halibut
 	L0: Sus movimientos quedaron en cámara lenta por ese ojo gigante... pensé que posaba a propósito.
 	L1: Hemos entrado en la «fase de la mirada». Eso significa más problemas.
 	L2: Encontré esto en la boca del ojo. Tómalo: el pez Cthulhu. Como su homónimo mítico... no sigue mucha lógica.
@@ -35,7 +34,6 @@ EyeOfCthulhuGift: {
 }
 
 KingSlimeGift: {
-	R1: Halibut
 	L0: Ese bulto azul... ¿un slime? Parecía más bien emoción solidificada.
 	L1: Quizá un torpe intento de la materia por reunirse y evolucionar.
 	L2: Toma, un pez slime. No lo aprietes; su ánimo podría explotar.
@@ -44,8 +42,6 @@ KingSlimeGift: {
 }
 
 QueenBeeGift: {
-	R1: Halibut
-	R2: ???
 	L0: Casi me entierra la cara en miel.
 	L1: Aun así saqué un pez del charco de miel del suelo.
 	L2: Toma, un pez de miel recién sacado y aún caliente.
@@ -53,7 +49,6 @@ QueenBeeGift: {
 }
 
 SkeletronGift: {
-	R1: Halibut
 	L0: ¡Vaya montón de calcio!
 	L1: Su estructura craneal me recordó a un constructo psíquico desbocado.
 	L2: Deja que enfríe el cañón; mientras tanto recogí un pez por aquí.
@@ -62,7 +57,6 @@ SkeletronGift: {
 }
 
 AquaticScourgeGift: {
-	R1: Halibut
 	L0: Me recuerda a los vecinos poco amables de mi tierra, aunque este era bastante cordial: fue jefe de seguridad en la Universidad del Mar de Azufre y siempre me saludaba.
 	L1: El Mar de Azufre es un lugar curioso; allí todos se preguntan: «¿Por qué sigo vivo?»
 	L2: Un pez prisma; sus escamas refractan colores que nunca has visto, sobre todo porque no deberían existir.
@@ -71,7 +65,6 @@ AquaticScourgeGift: {
 }
 
 BrimstoneElementalGift: {
-	R1: Halibut
 	L0: Allí de pie parecía un discurso en llamas; menos mal que logramos callarla.
 	L1: Algunos elementales no se crean: son rarezas que se filtran por las grietas del mundo.
 	L2: Un pez de obsidiana, producto de lava enfriada al instante; sus escamas son más duras que los rencores del infierno.
@@ -80,7 +73,6 @@ BrimstoneElementalGift: {
 }
 
 CalamitasCloneGift: {
-	R1: Halibut
 	L0: Una sombra barata; me recuerda a los monstruos genéticos que armaba en mi madriguera en la universidad. Quien hizo esto tiene pésimo gusto.
 	L1: Tengo un mal presentimiento: el verdadero horror aguarda más abajo y se acerca.
 	L2: Volvamos al asunto: un pez de azufre, recogido de sus brasas; en la palma aún se oye murmurar.
@@ -89,7 +81,6 @@ CalamitasCloneGift: {
 }
 
 CrabulonGift: {
-	R1: Halibut
 	L0: Ese ser... ¿seta? ¿Es sabiduría o instinto bajo el sombrero?
 	L1: ¿Sabías que la micelia puede transmitir información? Quizá pedía ayuda a los suyos.
 	L2: Un pez hongo; lo atrapé entre las esporas que despedía.
@@ -98,7 +89,6 @@ CrabulonGift: {
 }
 
 CryogenGift: {
-	R1: Halibut
 	L0: Un alma congelada...
 	L1: En los archivos del abismo, este frío suele servir para «conservar» a los dementes.
 	L2: Un pececillo helado, descongelado de un fragmento de hielo; conserva la postura del instante en que quedó helado.
@@ -107,7 +97,6 @@ CryogenGift: {
 }
 
 DevourerOfGodsGift: {
-	R1: Halibut
 	L0: El Devorador de Dioses... una serpiente cósmica que se alimenta de deidades; su apetito es tan infinito como su ambición.
 	L1: Cuando miras al abismo, el abismo te devuelve la mirada; pero este no solo mira, quiere comerte.
 	L2: Un tetra de neón, salido de una grieta del vacío; su luz no pertenece a esta dimensión.
@@ -116,7 +105,6 @@ DevourerOfGodsGift: {
 }
 
 GolemGift: {
-	R1: Halibut
 	L0: Un montón de rocas vivas: legado de una civilización antigua, o prueba de su fracaso.
 	L1: Quizá guardaba algo, o solo repetía un programa sin sentido desde hace siglos.
 	L2: Un pez roca, sacado de los cimientos del templo; su densidad me hace dudar de mi existencia.
@@ -125,7 +113,6 @@ GolemGift: {
 }
 
 HiveMindGift: {
-	R1: Halibut
 	L0: Una conciencia colectiva hecha de corrupción... qué concepto asqueroso.
 	L1: Su forma de pensar debe ser peculiar: fragmentos podridos unidos en un todo retorcido.
 	L2: Toma, un pez podrido; lo saqué de ese montón de carroña, no preguntes cómo.
@@ -134,7 +121,6 @@ HiveMindGift: {
 }
 
 LeviathanGift: {
-	R1: Halibut
 	L0: La tirana del océano y su escolta eterna; algunas amistades trascienden especies y la razón.
 	L1: En las fosas más profundas no vive el miedo, sino la soledad; solo buscan compañía.
 	L2: Una barracuda tropical, sacada de un remolino abisal; parece normal, y eso es lo sospechoso.
@@ -143,7 +129,6 @@ LeviathanGift: {
 }
 
 MoonLordGift: {
-	R1: Halibut
 	L0: El señor de la luna, ¡ja! O más bien, el que fue: ahora solo un amasijo flotante de ojos y carne.
 	L1: No solo salvamos el mundo; cerramos una puerta que nunca debió abrirse.
 	L2: Atrapé un pez nube, descendido por una grieta del cielo; en la mano no pesa nada.
@@ -152,7 +137,6 @@ MoonLordGift: {
 }
 
 PerforatorGift: {
-	R1: Halibut
 	L0: Un montón de gusanos de carne perforadora; su existencia desafía la biología.
 	L1: Su sangre tiene una viscosidad extraña, como metal vivo.
 	L2: Lo encontré entre los restos: un pez sangriento, aún se retuerce.
@@ -161,7 +145,6 @@ PerforatorGift: {
 }
 
 PlaguebringerGift: {
-	R1: Halibut
 	L0: La Goliat Traeplagas... una abeja mecánica con arma biológica; quien diseñó esto es un canalla por esclavizar abejas.
 	L1: Un virus no distingue el bien del mal; solo quiere sobrevivir, como nosotros, pero más directo.
 	L2: Un pez joya, infectado y curado milagrosamente; su sistema inmune tiene más historias que tú.
@@ -170,7 +153,6 @@ PlaguebringerGift: {
 }
 
 PlanteraGift: {
-	R1: Halibut
 	L0: Una flor... si «flor» sirve para ese enredo de lianas devoradoras.
 	L1: La furia de la jungla hecha planta; la venganza de la naturaleza nunca es racional.
 	L2: Un bacalao doble, con dos cabezas; la jungla es un océano en tierra firme: aquí crecen partes de más sin motivo.
@@ -179,7 +161,6 @@ PlanteraGift: {
 }
 
 ProvidenceGift: {
-	R1: Halibut
 	L0: La Diosa Profanada... fe y fuego en un solo cuerpo contradictorio; bastante lamentable.
 	L1: No solo apagamos la llama sagrada, sino las brasas de una era entera.
 	L2: Un pez demoníaco infernal, renacido de sus cenizas; su temperatura queda siempre en «justo antes de quemarte».
@@ -188,7 +169,6 @@ ProvidenceGift: {
 }
 
 SlimeGodGift: {
-	R1: Halibut
 	L0: Tres slimes, o una divinidad fracturada; esta dualidad es interesante.
 	L1: Corrupción y Carmesí, la contradicción eterna del mundo; y acabamos de demostrar que puede «resolverse».
 	L2: Un pez manteca jaspeado, sacado del limo; no preguntes por el nombre.
@@ -197,7 +177,6 @@ SlimeGodGift: {
 }
 
 SupremeCalamitasGift: {
-	R1: Halibut
 	L0: La Bruja del Azufre... una vengadora, la hechicera más poderosa del siglo pasado.
 	L1: ¿Acabamos de cerrar una leyenda o de abrir un nuevo comienzo?
 	L2: Un pez princesa, nacido de las brasas de la calamidad; elegancia contradictoria, como una flor en ruinas.
@@ -206,7 +185,6 @@ SupremeCalamitasGift: {
 }
 
 WallOfFleshGift: {
-	R1: Halibut
 	L0: Un muro de carne y hueso... el creador de este mundo tenía ideas muy particulares.
 	L1: Acabas de romper un equilibrio; ¿lo notas? El pulso del mundo se acelera.
 	L2: Entre los restos encontré este pez hambriento, siempre con hambre.
@@ -215,7 +193,6 @@ WallOfFleshGift: {
 }
 
 YharonGift: {
-	R1: Halibut
 	L0: El dragón de la jungla... no, el dragón que incinera mundos; no arde carne, sino obsesión.
 	L1: Una lealtad tan pura que se consume por su señor; me recuerda a los cardúmenes que guardan los arrecifes de mi hogar.
 	L2: Un pez tigre carmesí, recién capturado; me gustan sus rayas.
@@ -232,7 +209,6 @@ ADVRewardPopup: {
 FirstMetSupCal: {
 	Rolename1: ???
 	Rolename2: Bruja del Azufre
-	Rolename3: Halibut
 	Line1: No esperaba que mataras a mi «hermana» tan pronto.
 	Line2: Creces más rápido de lo previsto.
 	Line3: Te reconozco... eres...
@@ -262,8 +238,6 @@ ADVChoiceBox: {
 }
 
 SupCalMoonLordReward: {
-	Rolename1: Bruja del Azufre
-	Rolename2: Halibut
 	Line1: Jejeje...
 	Line2: Así ha caído ese tipo.
 	Line3: ¿Sabes cómo está el subsuelo ahora mismo?
@@ -274,7 +248,6 @@ SupCalMoonLordReward: {
 }
 
 SupCalDefeat: {
-	Rolename1: Bruja del Azufre
 	Rolename2: Halibut y [Name]
 	Line1: Ya has llegado tan lejos... je, me has superado.
 	Line2: Pero no eres el más fuerte; puedes ser bueno, pero él no te va a la zaga.
@@ -289,8 +262,6 @@ SupCalDefeat: {
 }
 
 SupCalPlayerDefeat: {
-	Rolename1: Bruja del Azufre
-	Rolename2: Halibut
 	Line1: Te rompes al tacto, ¿estás hecho de papel?
 	Line2: Creí haber encontrado un juguete que aguantara más el fuego.
 	Line3: Te sobreestimé; con tu nivel actual ni siquiera mereces calentarme.
@@ -303,8 +274,6 @@ SupCalPlayerDefeat: {
 }
 
 SupCalVictory: {
-	Rolename1: Bruja del Azufre
-	Rolename2: Halibut
 	Line1: ¿Qué...? ¡¿Cómo es posible?!
 	Line2: ¡Me has derrotado!
 	Line3: Imposible, totalmente imposible...
@@ -323,8 +292,6 @@ PallbearerQuestUI: {
 }
 
 SupCalQuestReward: {
-	Rolename1: Bruja del Azufre
-	Rolename2: Halibut
 	Line1: Bien hecho.
 	Line2: Esta ballesta te queda bien.
 	Line3: Me has quitado un problema de encima.
@@ -335,7 +302,6 @@ SupCalQuestReward: {
 }
 
 ResurrectionWarn: {
-	Rolename: Halibut
 	Line0: Espera, ¿lo has sentido?
 	Line1: El estado de resurrección se acerca al umbral crítico.
 	Line2: Esto no es un juego.
@@ -350,7 +316,6 @@ ResurrectionWarn: {
 }
 
 FishoilQuestScenario: {
-	Rolename: Halibut
 	Line0: Últimamente has pescado bastantes peces comunes.
 	Line1: Dame algunos para experimentar y destilaré aceite de pescado fresco.
 	Line2: No es difícil, solo tedioso.
@@ -378,8 +343,6 @@ DoGQuestUI: {
 }
 
 SupCalDoGQuestReward: {
-	Rolename1: Bruja del Azufre
-	Rolename2: Halibut
 	Line1: Limpio y directo.
 	Line2: Esta hoja sigue siendo tan satisfactoria como siempre.
 	Line3: Cuando aún era mortal, con ella arranqué el corazón de mi maestro; funciona bien, ¿verdad?
@@ -390,8 +353,6 @@ SupCalDoGQuestReward: {
 }
 
 SupCalYharonQuestReward: {
-	Rolename1: Bruja del Azufre
-	Rolename2: Halibut
 	Line1: Ah... por fin terminó.
 	Line2: Para mí, ese dragón era de los pocos seres dignos de respeto.
 	Line3: Sabía que moriría y aun así se quedó en pie; aunque el alma áurica lo reviva, el que vuelve es solo una copia.
@@ -422,7 +383,6 @@ SupCalQuestLine: {
 }
 
 HelensInterference: {
-	Rolename: Halibut
 	Line0: ...Oye, ¿tienes un momento?
 	Line1: Hoy... eh... hace buen tiempo, ¿no?
 	Line2: (Halibut parece esconder algo.)
@@ -471,7 +431,6 @@ HelensInterference: {
 }
 
 HellGift: {
-	R1: Halibut
 	L0: Este sitio maldito cada vez está más caliente.
 	L1: Tengo una idea: perforar el fondo marino y convertir esto también en océano.
 	L2: Unas termas geotérmicas que crucen todo el continente...
@@ -481,7 +440,6 @@ HellGift: {
 }
 
 ExoMechdusaSum: {
-	DraedonName: Draedon
 	IntroLine1: Este momento lo he esperado demasiado tiempo.
 	IntroLine2: Todo lo desconocido me fascina, pero nada tanto como tu esencia.
 	IntroLine3: Te mostraré mis creaciones que superan a los dioses.
@@ -495,7 +453,6 @@ ExoMechdusaSum: {
 }
 
 ExoMechEndingDialogue: {
-	DraedonName: Draedon
 	EndLine1: Un factor desconocido: tú eres una singularidad.
 	EndLine2: Para esta tierra y su historia eres un forastero, como yo.
 	EndLine3: ...Disculpa, pero tras una «demostración» así debo ordenar mis ideas un momento.
@@ -509,7 +466,6 @@ ExoMechEndingDialogue: {
 }
 
 DeploySignaltowerScenario: {
-	DraedonName: Draedon
 	IntroLine1: Debo realizar un experimento crítico y eres el candidato más adecuado para ayudarme.
 	IntroLine2: Hace cien años terrarianos, una tormenta de energía arrasó la galaxia y destruyó casi todas mis instalaciones en este planeta.
 	IntroLine3: Todo quedó demasiado lejos; cuando noté la desconexión con la conciencia de Terra, ya había pasado un siglo.
@@ -536,7 +492,6 @@ DeploySignaltowerScenario: {
 }
 
 FirstTowerBuiltScenario: {
-	DraedonName: Draedon
 	Line1: El nuevo nodo de entrelazamiento funciona con estabilidad.
 	Line2: Bien, es el primer paso de la red; sigue desplegando el resto de torres.
 	Line3: Al alcanzar el número requerido podré observar un área mucho mayor con precisión.
@@ -544,7 +499,6 @@ FirstTowerBuiltScenario: {
 }
 
 QuestCompleteScenario: {
-	DraedonName: Draedon
 	Line1: Todos los nodos cuánticos están activos; la red funciona con normalidad.
 	Line2: La latencia coincide con la teoría, sin desviaciones.
 	Line3: Has sido más rápido de lo previsto; encomiable.
@@ -553,27 +507,23 @@ QuestCompleteScenario: {
 }
 
 ExoMechHardDefeat: {
-	DraedonName: Draedon
 	HardDefeatLine1: Decisiones bajo presión extrema: esos son los datos que buscaba.
 	HardDefeatLine2: Mantener la racionalidad bajo estrés es... satisfactorio.
 }
 
 ExoMechQuickDefeat: {
-	DraedonName: Draedon
 	QuickDefeatLine1: ...Este tiempo está muy por debajo de mis modelos predictivos.
 	QuickDefeatLine2: Parece que subestimé tu eficiencia de combate actual.
 	QuickDefeatLine3: Quizá toque plantear diseños más agresivos.
 }
 
 ExoMechSecondDefeat: {
-	DraedonName: Draedon
 	SecondDefeatLine1: Interesante; tu adaptación supera mis proyecciones.
 	SecondDefeatLine2: Los datos indican mejoras dirigidas desde el último combate.
 	SecondDefeatLine3: Debo reevaluar tu curva de aprendizaje.
 }
 
 ExoMechThirdDefeat: {
-	DraedonName: Draedon
 	ThirdDefeatLine1: Rendimiento estable, parte de la perfección que busco.
 	ThirdDefeatLine2: Has demostrado que tu valor no es una anomalía estadística.
 }
@@ -613,7 +563,6 @@ AbyssQuestLine: {
 MusicToast.NowPlaying: Reproduciendo
 
 EternalBlazingNow: {
-	Rolename1: Halibut
 	Rolename2: ???Bruja del Azufre???
 	Line1: ¿Es una broma...?
 	Line2: Las sombras del pasado han desaparecido... ¿este fuego sella el pasado?!
@@ -642,8 +591,6 @@ EternalBlazingNow: {
 		EpilogueLine3: Bienvenido de vuelta...
 	}
 
-	Rolename3: Bruja del Azufre
-
 	WitchFarewell: {
 		FarewellLine1: En esta larga vida he visto innumerables amaneceres y finales.
 		FarewellLine2: El fuego devora eras y enciende nuevos comienzos; pensé que esta vez no sería distinto.
@@ -663,7 +610,6 @@ EternalBlazingNow: {
 }
 
 SCalAltarScenario: {
-	Rolename1: Bruja del Azufre
 	L1: Aún no es el momento; otro enemigo bloquea tu camino.
 	L2: Arma tus juguetes mecánicos y derrota a ese.
 	L3: ...¿Necesitas que lo repita?
@@ -810,7 +756,6 @@ FirstMetTzeentch: {
 }
 
 DyeProtest: {
-	R1: Halibut
 	L1: La verdad, no me gustan esos colores chillones.
 	L2: ¿Los quitas? Al tintero, y luego ese cubo de agua.
 }
@@ -819,7 +764,6 @@ GiveBlazingBud.MessageText: Las brasas arden y susurran al viento; una flor extr
 
 FirstMetOldDuke: {
 	OldDukeName: El Viejo Duque
-	HelenName: Halibut
 	L0: ......
 	L1: Guarda el filo, muchacho; no hace falta desenvainar al primer encuentro.
 	L2: Soy viejo y estoy cansado de esos juegos violentos.
@@ -849,7 +793,6 @@ OldDukeCampsite: {
 }
 
 CampsiteInteractionDialogue: {
-	OldDukeName: El Viejo Duque
 	GreetingLine: ¿Qué necesitas?
 	Choice1Text: Vine a comerciar
 	Choice2Text: Traje lo que pediste
@@ -867,7 +810,6 @@ CampsiteInteractionDialogue: {
 	Choice4_R3: Usarme de piedra de afilar no es sabio...
 
 	CampsiteChatDialogue: {
-		OldDukeName: El Viejo Duque
 		GreetingLine: ¿De qué quieres hablar?
 		Choice_BackToMain: Cambiar de tema
 		Choice_EndConversation: Eso es todo
@@ -932,7 +874,6 @@ CampsiteInteractionDialogue: {
 }
 
 FirstCampsiteDialogue: {
-	OldDukeName: El Viejo Duque
 	L0: Has venido.
 	L1: Llevo años recolectando estos fragmentos.
 	L2: Son peculiares; no parecen evolución natural, sino algo que «invadió» este mundo.
@@ -943,7 +884,6 @@ FirstCampsiteDialogue: {
 }
 
 ComeCampsiteFindMe: {
-	OldDukeName: El Viejo Duque
 	B1: ...Pasa a tomar té cuando puedas.
 	C1: Tengo un asunto contigo
 	C2: Solo pescaba por diversión...
@@ -951,7 +891,6 @@ ComeCampsiteFindMe: {
 }
 
 GalacticCrisis: {
-	DraedonName: Draedon
 	CrisisIntro1: Con la red cuántica reconectada, hay cosas que debes ver con tus propios ojos.
 	CrisisIntro2: Esta es la sombra que devora los brazos espirales de la galaxia.
 	CrisisIntro3: Sombras hechas de enjambre; antes desplegué millones de titanes estelares para interceptarlos.
@@ -982,7 +921,6 @@ GalacticCrisis: {
 }
 
 FirstMetApollia: {
-	Rolename: Apollia
 	Line1: ......¿Humano?
 	Line2: La trayectoria de reentrada era demasiado evidente; calculé la zona de caída y vine a probar suerte.
 	Line3: Soy Apollia; más te vale ser la avanzadilla de la flota estelar y decirme que el grueso viene detrás.
@@ -1003,7 +941,6 @@ GargoyleWarningScenario: {
 }
 
 DropPodCallScenario: {
-	CallerNameText: Draedon
 	Line1: Más fluido de lo previsto; el salto duró -43 minutos.
 	Line2: Tu constitución se adapta muy bien a la navegación subespacial.
 	Line3: Estás en órbita baja de Corto III.
@@ -1016,7 +953,6 @@ DropPodCallScenario: {
 }
 
 FishoilSubmitScenario: {
-	Rolename: Halibut
 	SubmitLine1: Mmm, has reunido suficientes peces.
 	SubmitLine2: Justo para una botella de aceite.
 	QuestionLine: ¿Me los entregas?
@@ -1041,7 +977,6 @@ FishoilSubmitScenario: {
 }
 
 FirstMetShepel: {
-	RolenameSHPC: SHPC
 	Line1: ¡Amo, qué alegría volver a verle!
 	Choice1Text: ¿No se habrá equivocado de persona?
 	Choice2Text: ...Cuánto tiempo.
@@ -1052,11 +987,10 @@ FirstMetShepel: {
 	CybCourseDeclineText: Ahora no
 	CybCourseAcceptResponse: Recibido; estableciendo enlace neural... Permanezca quieto.
 	CybCourseDeclineResponse: Entendido; credenciales guardadas en su partida; puede activarlas cuando quiera, amo.
+	// SpeakerName: SHPC
 }
 
 TheHerInThePast: {
-	RolenameWitch: Bruja del Azufre
-	RolenameSHPC: SHPC
 	WitchLine1: Que esas porquerías te persigan debe ser horrible; menos mal que llegué.
 	ShpcLine1: Gracias... pero ¿cómo es posible? Pertenece al pasado y aun así se mueve...
 	WitchLine2: Si vosotros podéis invadir desde un siglo en el futuro, yo también puedo hacer algo parecido.
@@ -1071,8 +1005,6 @@ TheHerInThePast: {
 }
 
 EternalBlazingNowNoHelen: {
-	Rolename1: ???Bruja del Azufre???
-	Rolename2: Bruja del Azufre
 	Line1: ......Hace mucho que nadie llega tan lejos.
 	Line2: No moriré... aunque ya casi.
 	Line3: Lo has hecho bien... quizá seas el «único de la era» del que hablaba, digno de la espera.

@@ -22,8 +22,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
         public static int DelayTimer;
 
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText Rolename { get; private set; }
         public static LocalizedText Line0 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
@@ -59,7 +57,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
         public override StyleId DefaultStyle => "Sea";
 
         public override void SetStaticDefaults() {
-            Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
             Line0 = this.GetLocalization(nameof(Line0), () => "……喂，你有空吗？");
             Line1 = this.GetLocalization(nameof(Line1), () => "今天.....嗯....天气不错？");
             Line2 = this.GetLocalization(nameof(Line2), () => "(比目鱼似乎将一些东西藏了起来)");

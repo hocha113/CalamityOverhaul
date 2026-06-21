@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => CWRID.NPC_Yharon;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "丛林龙，嗯......应该叫它焚世之龙，它燃烧的并非肉体，而是执念");
             L1 = this.GetLocalization(nameof(L1), () => "忠诚到愿意为主人燃尽自己，这种纯粹让我想起海底那些守护珊瑚礁的鱼群");
             L2 = this.GetLocalization(nameof(L2), () => "猩红虎鱼，刚才逮到的，我很喜欢它身上的条纹");

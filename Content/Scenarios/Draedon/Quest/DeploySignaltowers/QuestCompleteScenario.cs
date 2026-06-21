@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
     internal sealed class QuestCompleteScenario : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -23,7 +21,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
             Line1 = this.GetLocalization(nameof(Line1), () => "所有量子节点已上线，网络运行正常");
             Line2 = this.GetLocalization(nameof(Line2), () => "数据传输延迟与理论值一致，没有偏差");
             Line3 = this.GetLocalization(nameof(Line3), () => "你的表现比我预期更快，值得肯定");

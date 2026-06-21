@@ -15,14 +15,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
         public static LocalizedText L4 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => CWRID.NPC_BrimstoneElemental;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "她往那里一站就像一场燃烧的演讲，幸好我们成功让她闭嘴了");
             L1 = this.GetLocalization(nameof(L1), () => "有些元素不是被创造的，而是从世界的裂缝中渗出来的古怪玩意儿");
             L2 = this.GetLocalization(nameof(L2), () => "黑曜石鱼，熔岩冷却的瞬间凝固产物。它的鳞片比地狱里纠缠的仇恨还要坚硬");

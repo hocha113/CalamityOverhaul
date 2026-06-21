@@ -12,8 +12,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
     internal sealed class HellGift : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText R1 { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -24,7 +22,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public override StyleId DefaultStyle => "Sea";
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
             L0 = this.GetLocalization(nameof(L0), () => "地狱这个鬼地方是越来越热了");
             L1 = this.GetLocalization(nameof(L1), () => "我有个提议，把海底挖穿，让这里也变成海洋的一部分");
             L2 = this.GetLocalization(nameof(L2), () => "跨越整块大陆的地热温泉......");

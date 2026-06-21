@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelDevourerofGodsGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_DevourerofGodsHead;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "能够吞噬神明的巨兽，最终也只是倒在了您的脚下。这片星空的动荡总算是平息了。");
             L1 = this.GetLocalization(nameof(L1), () => "这种高强度的跨维度追击战，一定让您感到疲惫了吧？请先收起武器，稍微放松一下肩膀。");
             L2 = this.GetLocalization(nameof(L2), () => "至于战利品，我已经从那些扭曲的空间残骸中，为您提取并适配好了最高效的穿透模组。");

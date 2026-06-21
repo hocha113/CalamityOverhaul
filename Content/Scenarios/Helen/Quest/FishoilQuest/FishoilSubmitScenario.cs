@@ -17,8 +17,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
         private static bool giveSucceeded;
 
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText Rolename { get; private set; }
         public static LocalizedText SubmitLine1 { get; private set; }
         public static LocalizedText SubmitLine2 { get; private set; }
         public static LocalizedText QuestionLine { get; private set; }
@@ -32,7 +30,6 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Quest.FishoilQuest
         public override StyleId DefaultStyle => "Sea";
 
         public override void SetStaticDefaults() {
-            Rolename = this.GetLocalization(nameof(Rolename), () => "比目鱼");
             SubmitLine1 = this.GetLocalization(nameof(SubmitLine1), () => "嗯，你收集到了足够的鱼");
             SubmitLine2 = this.GetLocalization(nameof(SubmitLine2), () => "正好够我提炼一瓶鱼油的量");
             QuestionLine = this.GetLocalization(nameof(QuestionLine), () => "你要把它们交给我吗？");

@@ -9,8 +9,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelHiveMindGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -21,7 +19,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => CWRID.NPC_HiveMind;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "那个大脑散发的波动，带有强烈的精神干扰。主人，您的脑波频率刚才有些异常。");
             L1 = this.GetLocalization(nameof(L1), () => "请深呼吸，将注意力集中在我的系统提示音上，屏蔽掉那些亵渎的低语。");
             L2 = this.GetLocalization(nameof(L2), () => "我把那种干扰波动进行了反向编译。现在，您的攻击也能附带撕裂敌方护盾的高频震荡。");

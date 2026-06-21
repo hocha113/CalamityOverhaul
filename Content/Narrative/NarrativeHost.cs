@@ -4,10 +4,12 @@ using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sea;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea;
+using CalamityOverhaul.Content.Scenarios.Draedon.Quest;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+using CalamityOverhaul.Content.Scenarios.Shepel;
 using CalamityOverhaul.Content.Scenarios.SupCal;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using InnoVault.Cinematics;
@@ -114,16 +116,16 @@ namespace CalamityOverhaul.Content.Narrative
                 .Expression(NarrativeIds.Sigh, () => ADVAsset.SupCalsADV[5]);
 
             PortraitRegistry.Register(NarrativeIds.DraedonSpeaker)
-                .Name(() => "嘉登")
+                .Name(() => DraedonQuestLine.QuestCategory.Value)
                 .Portrait(() => ADVAsset.Draedon2ADV)
                 .Expression(NarrativeIds.Red, () => ADVAsset.Draedon2RedADV)
                 .Expression(NarrativeIds.Alt, () => ADVAsset.DraedonADV);
 
             PortraitRegistry.Register(CharacterId.ForMod(NarrativeIds.ModName, "SHPC"))
-                .Name(() => "SHPC");
+                .Name(() => FirstMetShepel.SpeakerName.Value);
 
             PortraitRegistry.Register(NarrativeIds.Shepel)
-                .Name(() => "SHPC");
+                .Name(() => FirstMetShepel.SpeakerName.Value);
 
             PortraitRegistry.Register(CharacterId.ForMod(NarrativeIds.ModName, "HalibutPlayer"))
                 .Name(() => SupCalDefeat.Rolename2.Value.Replace("[Name]", Main.LocalPlayer.name))

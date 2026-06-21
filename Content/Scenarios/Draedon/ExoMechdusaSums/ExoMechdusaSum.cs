@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
     internal sealed class ExoMechdusaSum : NarrativeScenario, ILocalizedModType
     {
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText IntroLine1 { get; private set; }
         public static LocalizedText IntroLine2 { get; private set; }
         public static LocalizedText IntroLine3 { get; private set; }
@@ -45,7 +43,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
             IntroLine1 = this.GetLocalization(nameof(IntroLine1), () => "你知道吗？这一刻我已经等了太久了");
             IntroLine2 = this.GetLocalization(nameof(IntroLine2), () => "我对一切未知感到着迷，但最让我着迷的莫过于你的本质");
             IntroLine3 = this.GetLocalization(nameof(IntroLine3), () => "我将会向你展示，我那些超越神明的造物");

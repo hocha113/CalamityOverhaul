@@ -7,15 +7,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
     internal sealed class CybCourseIntroDialogue : ShepelCybCourseDialogue
     {
         public override string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText SpeakerName { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
         public static LocalizedText Line4 { get; private set; }
 
         public override void SetStaticDefaults() {
-            SpeakerName = this.GetLocalization(nameof(SpeakerName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
                 () => "主人，欢迎进入神经训练节点。");
             Line2 = this.GetLocalization(nameof(Line2),

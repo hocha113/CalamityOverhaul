@@ -18,8 +18,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         public static int RandTimer { get; private set; }
 
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText DraedonName { get; private set; }
         public static LocalizedText IntroLine1 { get; private set; }
         public static LocalizedText IntroLine2 { get; private set; }
         public static LocalizedText IntroLine3 { get; private set; }
@@ -43,7 +41,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         public override StyleId DefaultStyle => "Draedon";
 
         public override void SetStaticDefaults() {
-            DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
             IntroLine1 = this.GetLocalization(nameof(IntroLine1), () => "我需要执行一项关键实验，而你是当前最适合协助我的个体");
             IntroLine2 = this.GetLocalization(nameof(IntroLine2), () => "一百个泰拉年前，一场能量风暴横扫星系，摧毁了我在泰拉的绝大部分设施");
             IntroLine3 = this.GetLocalization(nameof(IntroLine3), () => "一切都太过遥远，当我意识到和泰拉的意识体断连时，已经一个世纪过去了");

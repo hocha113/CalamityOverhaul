@@ -9,14 +9,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public override string LocalizationCategory => "ADV.Shepel";
 
         protected override bool SkipPortraitFadeInOnStart => true;
-
-        public static LocalizedText SpeakerName { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
 
         public override void SetStaticDefaults() {
-            SpeakerName = this.GetLocalization(nameof(SpeakerName), () => "SHPC");
             Line1 = this.GetLocalization(nameof(Line1),
                 () => "训练完成。所有接口均已完成校准。");
             Line2 = this.GetLocalization(nameof(Line2),

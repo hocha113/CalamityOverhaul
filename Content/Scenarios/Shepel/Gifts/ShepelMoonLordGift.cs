@@ -10,8 +10,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
     internal sealed class ShepelMoonLordGift : ShepelBossGiftNarrative, ILocalizedModType
     {
         public string LocalizationCategory => "ADV.Shepel";
-
-        public static LocalizedText RoleName { get; private set; }
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -22,7 +20,6 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         public override int TargetBossId => NPCID.MoonLordCore;
 
         public override void SetStaticDefaults() {
-            RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             L0 = this.GetLocalization(nameof(L0), () => "盘踞在星空之上的异形终于陨落了。");
             L1 = this.GetLocalization(nameof(L1), () => "确认主人生理体征平稳……太好了，警报解除。");
             L2 = this.GetLocalization(nameof(L2), () => "我从它残余的高维力场中提炼出了这个核心。");

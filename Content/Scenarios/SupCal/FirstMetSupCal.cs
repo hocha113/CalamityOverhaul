@@ -20,7 +20,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
 
         public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
-        public static LocalizedText Rolename3 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -48,7 +47,6 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
         public override void SetStaticDefaults() {
             Rolename1 = this.GetLocalization(nameof(Rolename1), () => "???");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "硫火女巫");
-            Rolename3 = this.GetLocalization(nameof(Rolename3), () => "比目鱼");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "没想到你这么快就杀掉了我的'妹妹'");
             Line2 = this.GetLocalization(nameof(Line2), () => "你的成长速度确实有些快了");

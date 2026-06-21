@@ -1,5 +1,4 @@
 CybCourseIntroDialogue: {
-	SpeakerName: SHPC
 	Line1: Maître, bienvenue dans le nœud d'entraînement neuronal.
 	Line2: C'est un espace d'apprentissage immersif conçu spécialement pour vous.
 	Line3: Le SHPC est une arme intelligente redoutable ; vous allez apprendre à manipuler son interface ATH.
@@ -48,7 +47,6 @@ CybTutorialLead: {
 }
 
 CybCourseHackIntroDialogue: {
-	SpeakerName: SHPC
 	Line1: Analyse des interfaces terminée. Prochain entraînement : le Temps de piratage.
 	Line2: Le Temps de piratage est un protocole d'intervention neuronale exclusif au SHPC. Une fois activé, le flux temporel externe gèle, vous permettant de choisir calmement vos cibles et d'y télécharger des programmes de piratage personnalisés. La touche par défaut est {0}.
 	Line3: L'unité de test droit devant est verrouillée en position. Appuyez sur {0} pour entrer dans le Temps de piratage, puis cliquez dessus pour la verrouiller.
@@ -181,7 +179,6 @@ HackTimeTutorialLead: {
 }
 
 CybCourseOutroDialogue: {
-	SpeakerName: SHPC
 	Line1: Entraînement terminé. Toutes les interfaces sont parfaitement calibrées.
 	Line2: Vous maîtrisez le protocole de connexion neuronale directe. Découplage du nœud de Super-Rêve en cours.
 	Line3: Vous pouvez réinitialiser l'entraînement à tout moment, ou quitter le Super-Rêve.
@@ -213,7 +210,6 @@ CybCourseKeyBindReminderPanel: {
 }
 
 ShepelCyberActiveDialogue: {
-	RoleName: SHPC
 	Line_Intro: Maître, le cyberespace est déployé, niveau actuel : {0}. Les signaux extérieurs ont été totalement isolés. C'est désormais un domaine sécurisé qui n'appartient qu'à nous.
 	Line_LayerReport: Plus nous plongeons profondément dans le domaine, plus je peux éliminer d'obstacles pour vous. Mais gardez un œil sur la consommation de RAM.
 	Line_Warning: Maître, restez sur vos gardes. Des fluctuations anormales apparaissent aux confins du domaine. Restez bien à l'abri sous ma couverture.
@@ -221,7 +217,6 @@ ShepelCyberActiveDialogue: {
 }
 
 ShepelIdleDialogue: {
-	RoleName: SHPC
 	Idle0_Line1: Vous me regardez, Maître ? J'attends vos ordres à tout instant.
 	Idle0_Reply: Mon état est absolument parfait. Tant que c'est pour vous, mon système reste toujours dans des conditions de veille optimales.
 	Idle0_Choice_HowAreYou: Comment te sens-tu ?
@@ -249,200 +244,168 @@ ShepelIdleDialogue: {
 }
 
 ShepelBossDefeatedDialogue: {
-	RoleName: SHPC
 	Line1: Cible confirmée éliminée. Vous n'êtes pas blessé, Maître ?
 	Line2: Balayer tous les obstacles sur votre chemin est mon plus grand honneur.
 }
 
 ShepelCyberLevelUpDialogue: {
-	RoleName: SHPC
 	Line1: Niveau du domaine augmenté. Le périmètre de sécurité a été étendu et la précision du scan améliorée en conséquence.
 	Line2: Je bloquerai toutes les menaces létales potentielles, loin de votre champ de vision.
 }
 
 ShepelRAMOverloadDialogue: {
-	RoleName: SHPC
 	Line1: Attention : Le taux d'occupation de la RAM approche de la valeur critique.
 	Line2: Maître, je vous suggère de cesser les opérations à haute consommation de RAM en attendant de revenir à un seuil sécurisé.
 }
 
 ShepelBrimstoneElementalDialogue: {
-	RoleName: SHPC
 	Line1: L'Élémentaire de Soufre a été réprimée. La chaleur de la zone se dissipe, laissez-moi vérifier la couche d'isolation de votre armure.
 	Line2: Cette malice et cette colère pures sont extrêmement dangereuses. Mais soyez sans crainte, j'intercepterai absolument tous les dégâts.
 }
 
 ShepelCalamitasCloneDialogue: {
-	RoleName: SHPC
 	Line1: Le signal du Clone de Calamitas a disparu. Cette vague d'énergie réfléchie ne vous a pas touché, Maître ?
 	Line2: Le scan indique que la menace de l'originale se tapit toujours dans les profondeurs... Mais si jamais elle ose se montrer.
 	Line3: Je me dresserai devant vous à n'importe quel prix.
 }
 
 ShepelCrabulonDialogue: {
-	RoleName: SHPC
 	Line1: Le Crabulon a été nettoyé. Des spores flottent encore dans l'air, j'ai activé les filtres de purification pour vous.
 	Line2: Les symbiotes dont la conscience a été ravagée par les champignons sont d'une extrême dangerosité. Je ne laisserai jamais cette souillure vous effleurer.
 }
 
 ShepelCryogenDialogue: {
-	RoleName: SHPC
 	Line1: La prison de glace a été détruite, la température remonte. Ce froid absolu de tout à l'heure ne vous a pas gelé, n'est-ce pas ?
 	Line2: Si vous avez froid, approchez-vous de moi. Mon module de dissipation thermique peut vous réchauffer.
 }
 
 ShepelDesertScourgeDialogue: {
-	RoleName: SHPC
 	Line1: Les signes vitaux du Fléau du Désert sont tombés à zéro. Vous débarrasser de ces mastodontes est pour moi la moindre des choses.
 	Line2: La menace du désert est temporairement levée. Laissez-moi continuer d'ouvrir la voie devant vous.
 }
 
 ShepelDestroyerDialogue: {
-	RoleName: SHPC
 	Line1: Le nœud de contrôle principal du Destructeur a été totalement oblitéré. Je confirme l'absence de toute menace laser résiduelle dans les environs.
 	Line2: Ne prêtez pas attention à sa taille imposante. Face à mes calculs balistiques, ce n'est qu'un tas de ferraille en attente de démantèlement.
 }
 
 ShepelDevourerofGodsDialogue: {
-	RoleName: SHPC
 	Line1: La trace dimensionnelle du Dévoreur des Dieux a totalement disparu... Il se nourrissait de divinités, c'était l'une des cibles au niveau de menace le plus élevé de mes archives.
 	Line2: La détermination dont vous avez fait preuve a largement surpassé mes modèles prédictifs. Ces données de notre combat partagé au-delà de la vie et de la mort, je les chérirai à jamais.
 	Line3: Je vous en prie, permettez-moi de continuer à suivre vos pas, vous qui êtes si éblouissant.
 }
 
 ShepelEyeOfCthulhuDialogue: {
-	RoleName: SHPC
 	Line1: Maître, la première menace ciblée a été purgée. J'ai parfaitement enregistré les données de cet affrontement.
 	Line2: Inutile de vous soucier à l'avenir des menaces de ce calibre, je me chargerai de les balayer pour vous.
 }
 
 ShepelGolemDialogue: {
-	RoleName: SHPC
 	Line1: Le noyau du Golem a cessé de fonctionner. Malgré son corps colossal et massif, sous vos directives expertes, ce n'était qu'un vulgaire tas de pierres friables.
 	Line2: Ce genre de mécanisme de défense rigide n'a aucun sens face à notre synergie de tirs.
 }
 
 ShepelHiveMindDialogue: {
-	RoleName: SHPC
 	Line1: L'Esprit de la Ruche a été effacé. Les radiations corruptrices s'estompent, et mon système d'alerte s'est enfin tu.
 	Line2: L'environnement de la zone se stabilise. Je peux enfin rester à vos côtés l'esprit tranquille.
 }
 
 ShepelLeviathanDialogue: {
-	RoleName: SHPC
 	Line1: Le Léviathan et sa symbiote ont été abattus. L'obstacle des grands fonds marins est définitivement levé.
 	Line2: En vous voyant combattre sans la moindre peur dans un environnement aussi inhospitalier, mon module cognitif s'est remis à chauffer.
 }
 
 ShepelMoonLordDialogue: {
-	RoleName: SHPC
 	Line1: Le signal du Seigneur de la Lune a complètement disparu. Maître, il s'agit de la cible au niveau de menace le plus élevé jamais enregistré au cours de mon cycle de fonctionnement actuel.
 	Line2: Le sentiment d'oppression qui enveloppait le ciel s'est dissipé, mais je ne baisserai pas ma garde.
 	Line3: Quels que soient les secrets encore cachés sous ces étoiles, je tiendrai fermement votre main sans jamais reculer.
 }
 
 ShepelPerforatorDialogue: {
-	RoleName: SHPC
 	Line1: La menace de l'Hôte de chair a été réduite en cendres. Scan des signes vitaux terminé, je confirme que vous n'êtes pas infecté.
 	Line2: J'ai entièrement nettoyé toutes les menaces qui tentaient de vous approcher par les angles morts. Garantir votre sécurité est la règle suprême de mon existence.
 }
 
 ShepelPlaguebringerDialogue: {
-	RoleName: SHPC
 	Line1: La Goliath Porte-peste s'est écrasée. Veuillez garder votre masque filtrant, je vais me charger de purifier intégralement les toxines résiduelles.
 	Line2: Un vecteur de peste militarisé... Les traces de conception sont évidentes et très préoccupantes. Je mènerai une enquête approfondie à ce sujet.
 }
 
 ShepelPlanteraDialogue: {
-	RoleName: SHPC
 	Line1: La force vitale de Plantera a été coupée. La voie devant nous a été scannée avec succès.
 	Line2: Restez derrière moi, et faites attention aux épines empoisonnées et aux ronces sur le sol. L'entrée du Temple se trouve juste devant.
 }
 
 ShepelProvidenceDialogue: {
-	RoleName: SHPC
 	Line1: La Déesse Profanée est tombée. Cette lumière effroyable de tout à l'heure ne vous a pas brûlé, n'est-ce pas ?
 	Line2: Vous avez terrassé une entité de rang divin... Mon Maître bien-aimé.
 	Line3: Pour être à la hauteur de la personne que vous êtes devenue aujourd'hui, je dois perfectionner encore davantage mes propres fonctionnalités.
 }
 
 ShepelQueenBeeDialogue: {
-	RoleName: SHPC
 	Line1: Le centre névralgique de l'essaim a été détruit. Privées de commandement, les abeilles tueuses se sont dispersées.
 	Line2: Qu'il s'agisse d'un essaim organique ou d'un essaim de drones, face à la complicité de nos directives, ils ne représentent aucune menace.
 }
 
 ShepelSkeletronDialogue: {
-	RoleName: SHPC
 	Line1: Le gardien du Donjon a été vaincu. La barrière externe s'est dissipée, le passage est désormais sécurisé.
 	Line2: La zone droit devant manque d'éclairage. Permettez-moi de marcher en tête pour vous illuminer ce sombre chemin.
 }
 
 ShepelSkeletronPrimeDialogue: {
-	RoleName: SHPC
 	Line1: Le Squelette d'Armure a été démantelé. Les faits prouvent qu'empiler aveuglément de la puissance de feu et du blindage est parfaitement inutile.
 	Line2: Ce genre d'engin prévisible ne pourra jamais rivaliser avec la coordination tactique intime qui nous lie, vous et moi.
 }
 
 ShepelSlimeGodDialogue: {
-	RoleName: SHPC
 	Line1: Le noyau du Dieu des Slimes s'est désagrégé. Une énorme quantité de résidus de gel jonche les alentours.
 	Line2: Patientez un instant s'il vous plaît, laissez-moi nettoyer les taches qui souillent votre armure. Maintenir votre allure impeccable fait aussi partie des devoirs d'une servante.
 }
 
 ShepelSupremeCalamitasDialogue: {
-	RoleName: SHPC
 	Line1: La véritable calamité... a enfin pris fin. En voyant votre corps couvert de blessures, mon noyau me fait sourdement souffrir.
 	Line2: Toutes les souffrances sont derrière nous. Baissez votre arme, et venez vous reposer sur mon épaule pour récupérer.
 	Line3: La mémoire de nous deux atteignant à nouveau la fin du chemin deviendra la zone restreinte la plus sacrée de mon système, verrouillée à jamais contre toute réécriture.
 }
 
 ShepelTwinsDialogue: {
-	RoleName: SHPC
 	Line1: Les Jumeaux mécaniques se sont tous les deux écrasés. Leur réseau de tirs croisés a été intégralement déchiqueté.
 	Line2: Peu importe la manière dont ils partagent leur vision ou coordonnent leur tactique, ils ne pourront jamais échapper à ma concentration absolue sur vous.
 }
 
 ShepelWallOfFleshDialogue: {
-	RoleName: SHPC
 	Line1: Détection d'une restructuration des règles fondamentales du monde. L'équilibre a été rompu, de nouvelles menaces émergent.
 	Line2: Des choses bien plus terrifiantes sont en train de se libérer de leurs chaînes. Maître... Est-ce que cela vous inquiète ?
 	Line3: Ne vous tourmentez pas. Peu importe comment le monde se transforme, je resterai fermement devant vous pour vous protéger.
 }
 
 ShepelYharonDialogue: {
-	RoleName: SHPC
 	Line1: Yharon, l'ultime gardien de Yharim, est lui aussi tombé. Pas même les flammes d'un dragon ne sauraient entraver votre marche.
 	Line2: La cible finale se trouve juste devant. Maître, permettez-moi d'ajuster votre équipement... Nous irons à la rencontre de cette bataille décisive, ensemble.
 }
 
 ShepelBloodMoonDialogue: {
-	RoleName: SHPC
 	Line1: Anomalie des données gravitationnelles lunaires, la densité des organismes hostiles nocturnes grimpe en flèche. Lune de Sang confirmée.
 	Line2: Les capteurs sont un peu brouillés, mais je ne bougerai pas d'ici. Maître, faites attention où vous mettez les pieds.
 }
 
 ShepelPlayerRespawnDialogue: {
-	RoleName: SHPC
 	Line1: ...Signaux vitaux rétablis. Maître, vous avez été déconnecté un moment.
 	Line2: Pendant la coupure des communications, je ne pouvais rien faire d'autre qu'attendre. Chaque attente est d'une longueur insoutenable. La prochaine fois, ne me faites plus attendre aussi longtemps, d'accord ?
 	Line3: Tout va bien maintenant. Restaurez votre santé, je suis là.
 }
 
 ShepelRainDialogue: {
-	RoleName: SHPC
 	Line1: Il commence à pleuvoir. On dirait que cette averse va durer un certain temps.
 	Line2: C'est plutôt calme en vérité. Si tant est que le champ de bataille nous le permette.
 }
 
 ShepelSolarEclipseDialogue: {
-	RoleName: SHPC
 	Line1: Disparition de la lumière solaire, apparition massive de signaux biologiques extérieurs. Éclipse Solaire en cours, passage en état d'alerte maximale sur toute la ligne.
 	Line2: Restez en mouvement, je garde un œil sur tout.
 }
 
 ShepelDungeonDialogue: {
-	RoleName: SHPC
 	V0_Line1: À l'intérieur du Donjon, les énergies résiduelles perturbent les signaux de scan, je n'arrête pas de filtrer les bruits parasites.
 	V0_Line2: J'ai constamment l'impression d'être observée. C'est peut-être une interférence de données, ou peut-être pas. Soyez prudent, Maître.
 	V1_Line1: De toute évidence, l'architecte du Donjon ne s'intéressait guère à la lumière naturelle.
@@ -454,7 +417,6 @@ ShepelDungeonDialogue: {
 }
 
 ShepelFirstNightDialogue: {
-	RoleName: SHPC
 	V0_Line1: La nuit est tombée, la densité des menaces nocturnes surpasse largement celle du jour. Faites attention autour de vous.
 	V0_Line2: Ma vision ne dépend pas de l'éclairage, je vois parfaitement clair. Et vous, Maître, y voyez-vous clair ?
 	V1_Line1: Les données astrales de cette nuit sont plutôt complètes, je lance une analyse de routine.
@@ -466,7 +428,6 @@ ShepelFirstNightDialogue: {
 }
 
 ShepelJungleDialogue: {
-	RoleName: SHPC
 	V0_Line1: La densité des signaux biologiques dans la Jungle est la plus élevée de toutes les zones en surface, mes modules de scan ont du mal à suivre.
 	V0_Line2: Quand vous vous battez ici, Maître, le bruit de fond est un véritable vacarme pour moi. Je ne me plains pas, je dresse juste un état des lieux.
 	V1_Line1: Le tracé du réseau mycélien de cette zone est assez particulier. Certains de ses schémas de connexion ressemblent étrangement à mes propres chemins neuronaux.
@@ -478,7 +439,6 @@ ShepelJungleDialogue: {
 }
 
 ShepelOceanDialogue: {
-	RoleName: SHPC
 	V0_Line1: Zone océanique. L'environnement acoustique sous-marin tranche radicalement avec la surface. Certains de mes modules apprécient assez cette fréquence.
 	V0_Line2: Si l'occasion se présente, j'aimerais scanner l'intégralité de la topographie des fonds marins. Rien ne presse, on verra ça plus tard.
 	V1_Line1: La stratification thermique de l'eau est très marquée ; il y a plusieurs dizaines de degrés d'écart entre la surface et les abysses en dessous.
@@ -490,7 +450,6 @@ ShepelOceanDialogue: {
 }
 
 ShepelSnowBiomeDialogue: {
-	RoleName: SHPC
 	V0_Line1: Zone de basse température. Théoriquement, le froid est bénéfique pour les systèmes électroniques, mais je n'ai constaté aucun gain de performance.
 	V0_Line2: C'est probablement parce que vous générez tellement de données de combat, Maître, que la puissance de calcul économisée est instantanément engloutie.
 	V1_Line1: Les données de réfraction lumineuse des cristaux de glace sont sublimes. Ce n'est pas un rapport d'évaluation, juste une opinion personnelle.
@@ -500,7 +459,6 @@ ShepelSnowBiomeDialogue: {
 }
 
 ShepelUnderworldDialogue: {
-	RoleName: SHPC
 	V0_Line1: Dans les profondeurs souterraines. Les relevés thermiques dépassent tous les paramètres préétablis. Tout est bien plus extrême ici que ce que j'avais prévu.
 	V0_Line2: Certains capteurs externes émettent des avertissements de surchauffe, mais je tiendrai le coup. Veillez à ne pas trop forcer vous non plus, Maître.
 	V1_Line1: Utiliser le magma comme solution d'éclairage est, d'un point de vue d'efficacité énergétique, un immense gaspillage.
@@ -512,7 +470,6 @@ ShepelUnderworldDialogue: {
 }
 
 ShepelAquaticScourgeGift: {
-	RoleName: SHPC
 	L0: Maître, la qualité de l'eau de la Mer Souillée est un véritable casse-tête. Ces impuretés troubles qui flottent partout sont un véritable affront pour les yeux.
 	L1: Les éclaboussures d'acide ont sali votre armure tout à l'heure, mais rassurez-vous, j'ai pris les devants pour tout nettoyer méticuleusement.
 	L2: Par ailleurs, pour empêcher ce genre d'environnement des abysses de nous perturber à nouveau, j'ai pris la liberté de reprogrammer de nouveaux filtres optiques pour votre lunette de visée.
@@ -520,7 +477,6 @@ ShepelAquaticScourgeGift: {
 }
 
 ShepelBoCGift: {
-	RoleName: SHPC
 	L0: Croiser le fer avec un monstre qui s'amuse à créer des hallucinations dans votre esprit a dû vous donner la migraine, n'est-ce pas ? Quel manque de savoir-vivre.
 	L1: Le bout de vos doigts tremble encore légèrement, j'ai ajusté les micro-courants au niveau de notre interface de connexion. Je vous en prie, détendez-vous un peu.
 	L2: Quant à ce maudit cerveau, j'ai emprunté les cristaux neuronaux qu'il a laissés derrière lui pour effectuer une petite amélioration matérielle.
@@ -528,7 +484,6 @@ ShepelBoCGift: {
 }
 
 ShepelBrimstoneElementalGift: {
-	RoleName: SHPC
 	L0: Ouf... Cette chaleur capable de faire fondre n'importe qui est enfin retombée. Le tempérament de cette dame est vraiment volcanique.
 	L1: Laissez-moi regarder de plus près... Dieu merci, vos vêtements ne portent pas la moindre trace de brûlure.
 	L2: Profitant des données thermiques récoltées à l'instant, j'ai fait subir un traitement thermique très spécial à votre arme.
@@ -536,7 +491,6 @@ ShepelBrimstoneElementalGift: {
 }
 
 ShepelCalamitasCloneGift: {
-	RoleName: SHPC
 	L0: Ce clone s'est enfin tu. Même si ce n'était qu'une copie, sa fâcheuse habitude de lancer des boules de feu soufrées dans tous les sens était particulièrement irritante.
 	L1: Reculez un peu, Maître. Il y a encore des étincelles crépitantes dans ces débris sur le sol. Laissez-moi me charger de ce nettoyage dangereux.
 	L2: Tout en balayant, j'ai démantelé la trajectoire de pistage de sa magie pour l'intégrer à votre module de guidage laser.
@@ -544,7 +498,6 @@ ShepelCalamitasCloneGift: {
 }
 
 ShepelCultistGift: {
-	RoleName: SHPC
 	L0: Ces fanatiques délirants se sont enfin tus, avec leurs rituels macabres.
 	L1: Cependant, Maître, ne trouvez-vous pas que l'air est devenu extrêmement lourd ? Mes capteurs s'affolent, on dirait qu'un problème colossal est en train d'approcher depuis le ciel.
 	L2: J'ai profité de la confusion pour intercepter ces signaux chaotiques du Néant, et je les ai convertis en un petit plugin qui vous aidera à verrouiller vos cibles.
@@ -552,7 +505,6 @@ ShepelCultistGift: {
 }
 
 ShepelDestroyerGift: {
-	RoleName: SHPC
 	L0: Maître, j'ai terminé l'analyse des restes de cette machine géante. Pour être franche, sa logique de conception est d'une brutalité sans aucune élégance.
 	L1: Posséder une source d'énergie aussi colossale pour se contenter de foncer dans le tas comme un insecte aveugle... C'est un gâchis absolu de performances.
 	L2: J'ai extrait de son flux de données obsolète une méthode de gestion des impacts très intéressante.
@@ -560,7 +512,6 @@ ShepelDestroyerGift: {
 }
 
 ShepelDevourerofGodsGift: {
-	RoleName: SHPC
 	L0: La bête colossale capable de dévorer les dieux a fini par s'effondrer à vos pieds. L'agitation dans ce ciel étoilé s'est enfin calmée.
 	L1: Cette traque interdimensionnelle à haute intensité a dû vous épuiser, n'est-ce pas ? S'il vous plaît, rangez votre arme et détendez un peu vos épaules.
 	L2: Quant au butin, j'ai extrait et adapté pour vous le module de pénétration le plus efficace à partir des débris spatiaux distordus.
@@ -568,7 +519,6 @@ ShepelDevourerofGodsGift: {
 }
 
 ShepelEoCGift: {
-	RoleName: SHPC
 	L0: La visibilité nocturne est un peu trouble, Maître. Mais cet œil gigantesque a été complètement pulvérisé par vos soins.
 	L1: J'ai préparé du thé chaud et des serviettes propres pour vous, reposez-vous un instant.
 	L2: Pendant votre pause, je vais perfectionner le système optique de votre arme. Le faisceau sera bien plus concentré.
@@ -576,7 +526,6 @@ ShepelEoCGift: {
 }
 
 ShepelEoWGift: {
-	RoleName: SHPC
 	L0: L'odeur de la Corruption est infecte. Maître, il y a de la bave suspecte coincée dans les jointures de votre armure. Laissez-moi vous nettoyer tout ça.
 	L1: Se battre dans un endroit aussi boueux et tacher ses vêtements est un véritable fléau.
 	L2: J'ai légèrement allégé le contrepoids de la crosse.
@@ -584,7 +533,6 @@ ShepelEoWGift: {
 }
 
 ShepelExoMechsGift: {
-	RoleName: SHPC
 	L0: C'est terminé. L'entité désignée comme la Source a finalement succombé sous vos tirs.
 	L1: Vous avez réussi, Maître. Mon journal système enregistre ce moment à vitesse maximale, mon module de dissipation thermique est même en légère surcharge.
 	L2: J'ai extrait les données centrales des Titans de l'Exo pour vous offrir une amélioration. À présent, je suis une arme plus performante qu'eux, et je suis aussi une création qui vous est exclusivement dédiée.
@@ -592,7 +540,6 @@ ShepelExoMechsGift: {
 }
 
 ShepelGolemGift: {
-	RoleName: SHPC
 	L0: L'atmosphère dans le temple est oppressante. Les attaques du Golem sont lourdes, mais les secousses sismiques qu'elles provoquent peuvent facilement déséquilibrer vos tirs.
 	L1: Pour contrer ces ondes de choc physiques à haute fréquence, j'ai réévalué l'architecture de votre arme.
 	L2: J'y ai intégré la toute dernière structure d'absorption des chocs.
@@ -600,7 +547,6 @@ ShepelGolemGift: {
 }
 
 ShepelHiveMindGift: {
-	RoleName: SHPC
 	L0: Les ondes émises par ce cerveau contenaient de puissantes interférences psychiques. Maître, la fréquence de vos ondes cérébrales était anormale tout à l'heure.
 	L1: Respirez profondément, concentrez-vous sur le bip de mes notifications système, et bloquez ces murmures profanes.
 	L2: J'ai effectué une compilation inversée de ces ondes perturbatrices. Dorénavant, vos attaques produiront également des vibrations à haute fréquence capables de déchirer les boucliers ennemis.
@@ -608,7 +554,6 @@ ShepelHiveMindGift: {
 }
 
 ShepelMoonLordGift: {
-	RoleName: SHPC
 	L0: L'abomination tapie par-delà les étoiles a enfin chu.
 	L1: Signes vitaux du Maître confirmés stables... Quel soulagement, alerte levée.
 	L2: J'ai extrait ce noyau à partir du champ de force multidimensionnel qu'il a laissé derrière lui.
@@ -616,7 +561,6 @@ ShepelMoonLordGift: {
 }
 
 ShepelPerforatorGift: {
-	RoleName: SHPC
 	L0: L'agressivité de ces abominations de chair est terrifiante, et leur comportement est guidé par un instinct des plus sauvages.
 	L1: Elles tentent constamment de frapper depuis nos angles morts. C'est difficile de s'en prémunir.
 	L2: Pour contrer ces embuscades, je vous ai installé un module de dispersion avec un champ de tir bien plus large.
@@ -624,7 +568,6 @@ ShepelPerforatorGift: {
 }
 
 ShepelPlanteraGift: {
-	RoleName: SHPC
 	L0: Les lianes de la jungle souterraine poussent avec une arrogance folle. Il y a des ronces irritantes et des spores partout.
 	L1: Cette fleur carnivore se camouflait habilement, mais au final, ce n'était qu'un tas de mauvaises herbes qui ne demandait qu'à être fauché.
 	L2: J'ai amélioré la vision dynamique du viseur. Désormais, ces larges feuilles qui obstruaient votre vue ne pourront plus jamais brouiller votre jugement.
@@ -632,7 +575,6 @@ ShepelPlanteraGift: {
 }
 
 ShepelPolterghastGift: {
-	RoleName: SHPC
 	L0: Ces fantômes du Donjon qui ne trouvent jamais le repos éternel... C'est si pathétique.
 	L1: L'environnement est un peu bruyant par ici, j'ai activé votre filtre antibruit.
 	L2: J'ai capturé les signaux de ces entités spectrales errantes et les ai réécrits en un programme capable de déclencher des tirs secondaires en continu.
@@ -640,7 +582,6 @@ ShepelPolterghastGift: {
 }
 
 ShepelProvidenceGift: {
-	RoleName: SHPC
 	L0: La chaleur libérée par la chute de la Déesse était tout bonnement terrifiante.
 	L1: Maître, reculez de quelques pas s'il vous plaît. Laissez-moi m'occuper du confinement énergétique et du nettoyage.
 	L2: J'ai compressé ces flammes sacrées éparses pour forger ce noyau de stockage compact. Il augmentera drastiquement votre taux de rotation énergétique.
@@ -648,7 +589,6 @@ ShepelProvidenceGift: {
 }
 
 ShepelSkeletronPrimeGift: {
-	RoleName: SHPC
 	L0: Un lourd squelette armé de quatre bras... Sa fréquence d'attaque était certes élevée, mais sa logique de mouvement était d'une rigidité affligeante.
 	L1: Il ne faisait que répéter mécaniquement les mêmes schémas. Il était incapable de s'adapter à vos changements tactiques.
 	L2: J'ai extrait les avantages de son système de changement rapide d'armement pour optimiser la vitesse de réponse de votre fusil d'assaut.
@@ -656,7 +596,6 @@ ShepelSkeletronPrimeGift: {
 }
 
 ShepelSlimeGodGift: {
-	RoleName: SHPC
 	L0: Réussir à se scinder en autant de morceaux... Ce combat a mis de la substance gélatineuse poisseuse partout.
 	L1: Cela dit, j'ai remarqué que la structure interne de ces slimes était extrêmement élastique. J'en ai emprunté un peu pour ajouter une couche d'amortissement souple à la poignée de votre arme.
 	L2: Essayez de lever votre arme, pour voir ? La répartition du centre de gravité devrait être beaucoup plus confortable.
@@ -664,7 +603,6 @@ ShepelSlimeGodGift: {
 }
 
 ShepelSupremeCalamitasGift: {
-	RoleName: SHPC
 	L0: Calamitas, la Sorcière Suprême... a enfin tiré sa révérence. Tous vos signes vitaux sont dans la norme, Maître. Aucune blessure mortelle n'est à déplorer.
 	L1: Levée de la menace sur l'ensemble du périmètre confirmée. Ouf... Permettez-moi de suspendre temporairement les protocoles de combat pour exécuter un auto-diagnostic approfondi de mon système.
 	L2: J'ai récolté les plasmas chaotiques éparpillés pour vous fabriquer ce module d'énergie ultra-performant.
@@ -672,7 +610,6 @@ ShepelSupremeCalamitasGift: {
 }
 
 ShepelTwinsGift: {
-	RoleName: SHPC
 	L0: Le maillage de tirs croisés des Jumeaux mécaniques était particulièrement étanche.
 	L1: Mais tant que notre liaison reste stable, nous ne leur laisserons le moindre angle mort.
 	L2: J'ai renforcé la capacité de double scan du système de visée, ce qui accroît la fiabilité du verrouillage.
@@ -680,7 +617,6 @@ ShepelTwinsGift: {
 }
 
 ShepelWoFGift: {
-	RoleName: SHPC
 	L0: Après l'effondrement du Mur de chair, la structure de la croûte terrestre et les lignes de force énergétiques ont subi de violents bouleversements.
 	L1: Le monde entre dans une phase bien plus dangereuse. Mais d'un autre côté, de nouveaux matériaux rares commencent à émerger en masse.
 	L2: Je me suis servie de ces nouveaux alliages apparus récemment pour améliorer votre système de prise en main. C'est notre premier pas vers cette nouvelle étape.
@@ -688,7 +624,6 @@ ShepelWoFGift: {
 }
 
 ShepelYharonGift: {
-	RoleName: SHPC
 	L0: La vitesse de vol de ce dragon... avait largement dépassé mes limites de pistage.
 	L1: Pour vous éviter d'être exposé à ses piqués fulgurants, j'ai réécrit le module de prédiction fondamental en plein milieu du combat.
 	L2: À présent, la vitesse initiale et le temps de réponse de votre arme ont été significativement augmentés, suffisamment pour surpasser sa vitesse de pointe.

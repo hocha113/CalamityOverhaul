@@ -16,10 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         private const string Choice1Label = "choice1";
 
         public string LocalizationCategory => "ADV";
-
-        public static LocalizedText Rolename1 { get; private set; }
         public static LocalizedText Rolename2 { get; private set; }
-        public static LocalizedText Rolename3 { get; private set; }
         public static LocalizedText Line1 { get; private set; }
         public static LocalizedText Line2 { get; private set; }
         public static LocalizedText Line3 { get; private set; }
@@ -46,9 +43,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         public override StyleId DefaultStyle => "Brimstone";
 
         public override void SetStaticDefaults() {
-            Rolename1 = this.GetLocalization(nameof(Rolename1), () => "比目鱼");
             Rolename2 = this.GetLocalization(nameof(Rolename2), () => "???硫火女巫???");
-            Rolename3 = this.GetLocalization(nameof(Rolename3), () => "硫火女巫");
 
             Line1 = this.GetLocalization(nameof(Line1), () => "开什么玩笑......");
             Line2 = this.GetLocalization(nameof(Line2), () => "过去的身影都消失了......这些火......是在封锁过去？！");

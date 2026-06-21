@@ -14,16 +14,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
         public static LocalizedText L3 { get; private set; }
-        public static LocalizedText R1 { get; private set; }
-        public static LocalizedText R2 { get; private set; }
 
         public override StyleId DefaultStyle => "Sea";
 
         public override int TargetBossId => NPCID.QueenBee;
 
         public override void SetStaticDefaults() {
-            R1 = this.GetLocalization(nameof(R1), () => "比目鱼");
-            R2 = this.GetLocalization(nameof(R2), () => "???");
             L0 = this.GetLocalization(nameof(L0), () => "我差点以为脸要被埋进蜂蜜里了");
             L1 = this.GetLocalization(nameof(L1), () => "不过，我刚才从地上堆积的蜂蜜里摸到了一条鱼");
             L2 = this.GetLocalization(nameof(L2), () => "给，新鲜还热乎的蜂蜜鱼");
