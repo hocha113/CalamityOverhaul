@@ -36,8 +36,6 @@ DraedonName = this.GetLocalization(nameof(DraedonName), () => "嘉登");
              .Say("Draedon", Line4.Value);
         }
 
-        private static void RewardLineAnchor() { }
-
         protected override void OnStarted() {
             DraedonEffect.IsActive = true;
             DraedonEffect.Send();

@@ -1,4 +1,4 @@
-﻿using InnoVault.Narrative.Composition;
+using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using Terraria.Localization;
@@ -29,8 +29,6 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.Defeats
              .Say("Draedon", HardDefeatLine1.Value)
              .Say("Draedon", HardDefeatLine2.Value);
         }
-
-        private static void RewardLineAnchor() { }
 
         protected override void OnStarted() {
             DraedonEffect.IsActive = true;

@@ -36,13 +36,10 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen.Gifts
             n
              .Say("Helen", L0.Value)
              .Say("Helen", L1.Value)
-             .Reward(ItemID.DoubleCod, 1, string.Empty, blocking: false)
-             .Say("Helen", L2.Value, onEnter: RewardLineAnchor)
+             .SayReward("Helen", L2.Value, ItemID.DoubleCod, title: string.Empty)
              .Say("Helen", L3.Value)
              .Say("Helen", "Naughty2", L4.Value);
         }
-
-        private static void RewardLineAnchor() { }
 
         protected override bool IsGiftCompleted()
             => HalibutStorySync.ReadGift(d => d.PlanteraGift, d => d.PlanteraGift);

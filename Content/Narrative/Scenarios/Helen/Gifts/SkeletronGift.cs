@@ -37,12 +37,9 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen.Gifts
              .Say("Helen", L0.Value)
              .Say("Helen", "Enjoy", L1.Value)
              .Say("Helen", "Enjoy", L2.Value)
-             .Reward(ItemID.Fishotron, 1, string.Empty, blocking: false)
-             .Say("Helen", L3.Value, onEnter: RewardLineAnchor)
+             .SayReward("Helen", L3.Value, ItemID.Fishotron, title: string.Empty)
              .Say("Helen", L4.Value);
         }
-
-        private static void RewardLineAnchor() { }
 
         protected override bool IsGiftCompleted()
             => HalibutStorySync.ReadGift(d => d.SkeletronGift, d => d.SkeletronGift);

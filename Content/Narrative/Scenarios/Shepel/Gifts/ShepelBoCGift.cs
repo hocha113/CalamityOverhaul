@@ -35,12 +35,9 @@ RoleName = this.GetLocalization(nameof(RoleName), () => "SHPC");
             n
              .Say("SHPC", L0.Value)
              .Say("SHPC", L1.Value)
-             .Reward(ModContent.ItemType<CrystalGripModule>(), 1, string.Empty, blocking: false)
-             .Say("SHPC", L2.Value, onEnter: RewardLineAnchor)
+             .SayReward("SHPC", L2.Value, ModContent.ItemType<CrystalGripModule>(), title: string.Empty)
              .Say("SHPC", L3.Value, onEnter: PortraitSmirk);
         }
-
-        private static void RewardLineAnchor() { }
 
         protected override bool IsGiftCompleted()
             => ShepelStorySync.ReadGift(d => d.BrainOfCthulhuGift, d => d.BrainOfCthulhuGift);

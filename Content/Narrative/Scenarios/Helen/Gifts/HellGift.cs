@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative.Scenarios.Helen;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
@@ -40,8 +40,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen.Gifts
              .Say("Helen", "Enjoy", L2.Value)
              .Say("Helen", "Enjoy2", L3.Value)
              .Say("Helen", L4.Value)
-             .Reward(ItemID.GuideVoodooFish, 1, string.Empty, blocking: false)
-             .Say("Helen", L5.Value, onEnter: RewardLineAnchor);
+             .SayReward("Helen", L5.Value, ItemID.GuideVoodooFish, title: string.Empty);
         }
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
@@ -57,7 +56,5 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen.Gifts
             },
             OnCompleted = _ => HalibutStorySync.WriteGift(d => d.HellGift = true, d => d.HellGift = true),
         };
-
-        private static void RewardLineAnchor() { }
     }
 }

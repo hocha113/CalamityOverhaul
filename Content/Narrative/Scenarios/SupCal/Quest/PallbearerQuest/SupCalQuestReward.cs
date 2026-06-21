@@ -46,11 +46,9 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.SupCal.Quest.PallbearerQu
             n.Say("SupCal", "Smile", Line1.Value)
              .Say("SupCal", Line2.Value)
              .Say("SupCal", Line3.Value)
-             .Say("SupCal", "CloseEye", Line4.Value)
-             .Reward(CWRID.Item_AshesofAnnihilation, 199, string.Empty, blocking: false)
-             .Say("SupCal", "CloseEye", Line5.Value, onEnter: RewardLineAnchor)
-             .Reward(ModContent.ItemType<Heartcarver>(), 1, string.Empty, blocking: false)
-             .Say("SupCal", Line6.Value, onEnter: RewardLineAnchor);
+             .SayReward("SupCal", "CloseEye", Line4.Value, CWRID.Item_AshesofAnnihilation, stack: 199, title: string.Empty)
+             .SayReward("SupCal", "CloseEye", Line5.Value, ModContent.ItemType<Heartcarver>(), title: string.Empty, anchorYOffset: -60f)
+             .Say("SupCal", Line6.Value);
 
             if (HasHalibut()) {
                 n.Say("Helen", "Solemn", Line7.Value);
@@ -65,8 +63,6 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.SupCal.Quest.PallbearerQu
                 d => d.SupCalQuestRewardSceneComplete = true,
                 d => d.SupCalQuestRewardSceneComplete = true);
         }
-
-        private static void RewardLineAnchor() { }
 
         private static bool HasHalibut() {
             try {

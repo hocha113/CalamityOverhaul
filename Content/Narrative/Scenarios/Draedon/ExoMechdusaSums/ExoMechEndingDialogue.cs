@@ -1,4 +1,4 @@
-﻿using InnoVault.Narrative.Composition;
+using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using Terraria.Localization;
@@ -54,8 +54,6 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Draedon.ExoMechdusaSums
              .Say("Draedon", EndLine8.Value)
              .Say("Draedon", EndLine9.Value);
         }
-
-        private static void RewardLineAnchor() { }
 
         protected override void OnStarted() {
             DraedonEffect.IsActive = true;

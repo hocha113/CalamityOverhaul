@@ -37,13 +37,10 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen.Gifts
             n
              .Say("Helen", "Stern", L0.Value)
              .Say("Helen", "Stern", L1.Value)
-             .Reward(ItemID.BloodyManowar, 1, string.Empty, blocking: false)
-             .Say("Helen", L2.Value, onEnter: RewardLineAnchor)
+             .SayReward("Helen", L2.Value, ItemID.BloodyManowar, title: string.Empty)
              .Say("Helen", L3.Value)
              .Say("Helen", "Solemn", L4.Value);
         }
-
-        private static void RewardLineAnchor() { }
 
         protected override bool IsGiftCompleted()
             => HalibutStorySync.ReadGift(d => d.PerforatorGift, d => d.PerforatorGift);

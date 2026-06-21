@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
@@ -74,8 +74,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Helen
              .Say("Helen", Line2.Value)
              .Say("Helen", Line3.Value)
              .Say("Helen", Line4.Value)
-             .Reward(ItemID.Bass, 1, string.Empty, blocking: false)
-             .Say("Helen", Line5.Value)
+             .SayReward("Helen", Line5.Value, ItemID.Bass, title: string.Empty)
              .Say("Helen", "Enjoy", Line6.Value)
              .Say("Helen", Line7.Value)
              .Say("Helen", Line8.Value)

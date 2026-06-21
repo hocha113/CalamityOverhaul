@@ -49,10 +49,8 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.SupCal.Quest.YharonQuest
              .Say("SupCal", Line2.Value)
              .Say("SupCal", "CloseEye", Line3.Value)
              .Say("SupCal", Line4.Value)
-             .Say("SupCal", "CloseEye", Line5.Value)
-             .Reward(CWRID.Item_AuricBar, 302, string.Empty, blocking: false)
-             .Say("SupCal", Line6.Value, onEnter: RewardLineAnchor)
-             .Reward(ModContent.ItemType<Proverbs>(), 1, string.Empty, blocking: false);
+             .SayReward("SupCal", "CloseEye", Line5.Value, CWRID.Item_AuricBar, stack: 302, title: string.Empty)
+             .SayReward("SupCal", Line6.Value, ModContent.ItemType<Proverbs>(), title: string.Empty, anchorYOffset: -60f);
 
             if (HasHalibut()) {
                 n.Say("Helen", "Solemn", Line7.Value);
@@ -67,8 +65,6 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.SupCal.Quest.YharonQuest
                 d => d.SupCalYharonQuestRewardSceneComplete = true,
                 d => d.SupCalYharonQuestRewardSceneComplete = true);
         }
-
-        private static void RewardLineAnchor() { }
 
         private static bool HasHalibut() {
             try {

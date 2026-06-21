@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.Narrative.Scenarios.Shepel.CybCourses;
 using InnoVault.Narrative.Composition;
@@ -62,8 +62,7 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Shepel
                  onExit: OnAcceptCybCourse)
              .End()
              .Label(CybDeclineLabel)
-             .Reward(ModContent.ItemType<Mewtwo>(), 1, string.Empty, blocking: true)
-             .Say("SHPC", CybCourseDeclineResponse.Value, onEnter: RewardLineAnchor, onExit: ShepelStorySync.MarkFirstSHPCIntroCompleted)
+             .SayReward("SHPC", CybCourseDeclineResponse.Value, ModContent.ItemType<Mewtwo>(), title: string.Empty, onExit: ShepelStorySync.MarkFirstSHPCIntroCompleted)
              .End()
              .Label(Choice2Label)
              .End();
@@ -93,7 +92,5 @@ namespace CalamityOverhaul.Content.Narrative.Scenarios.Shepel
                 CybCourse.Enter();
             }
         }
-
-        private static void RewardLineAnchor() { }
     }
 }
