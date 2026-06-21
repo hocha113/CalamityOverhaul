@@ -50,9 +50,10 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
                 return;
             }
 
+            GraphicsDevice graphicsDevice = Main.instance.GraphicsDevice;
             spriteBatch.Draw(
                 VaultAsset.placeholder2.Value,
-                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height),
                 new Color(10, 5, 8) * intensity * 0.9f);
         }
 

@@ -18,6 +18,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
 
         public string LocalizationCategory => "ADV";
 
+        public static LocalizedText OldDukeName { get; private set; }
+
         public static LocalizedText L0 { get; private set; }
         public static LocalizedText L1 { get; private set; }
         public static LocalizedText L2 { get; private set; }
@@ -39,6 +41,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         public override StyleId DefaultStyle => "Sulfsea";
 
         public override void SetStaticDefaults() {
+            OldDukeName = this.GetLocalization(nameof(OldDukeName), () => "老公爵");
             L0 = this.GetLocalization(nameof(L0), () => "......");
             L1 = this.GetLocalization(nameof(L1), () => "收起杀气吧，后生。没必要一见面就兵戎相见");
             L2 = this.GetLocalization(nameof(L2), () => "我年纪大了，那套打打杀杀的把戏，我已经厌倦了");

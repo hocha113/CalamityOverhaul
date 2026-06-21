@@ -6,6 +6,7 @@ using CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Helen;
+using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.SupCal;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
@@ -57,8 +58,12 @@ namespace CalamityOverhaul.Content.Narrative
         }
 
         private static void RegisterPortraits() {
+            PortraitRegistry.Register(NarrativeIds.System)
+                .Name(() => " ")
+                .AsSilhouette();
+
             PortraitRegistry.Register(NarrativeIds.OldDuke)
-                .Name(() => "老公爵")
+                .Name(() => FirstMetOldDuke.OldDukeName.Value)
                 .Portrait(() => OldDukeCampsite.OldDuke, () => OldDukeCampsite.PortraitRec)
                 .AsSilhouette();
 

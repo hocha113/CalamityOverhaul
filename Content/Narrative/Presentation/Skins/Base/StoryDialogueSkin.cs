@@ -1,8 +1,9 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.Narrative.Presentation.Dialogue;
 using InnoVault.Narrative.Styling;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
 {
@@ -18,10 +19,10 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
         public override Color SpeakerColor => new(180, 220, 255);
         public override Color HintColor => new(150, 190, 235);
 
-        protected override string ResolveAutoHint() => "Auto";
-        protected override string ResolveFastHint() => "Fast";
-        protected override string ResolveSkipHint() => "Skip";
-        protected override string ResolveContinueHint(bool hover) => FormatHintLabel("Continue", hover);
+        protected override string ResolveAutoHint() => DialogueSystem.AutoHint.Value;
+        protected override string ResolveFastHint() => DialogueSystem.FastHint.Value;
+        protected override string ResolveSkipHint() => DialogueSystem.SkipHint.Value;
+        protected override string ResolveContinueHint(bool hover) => FormatHintLabel(DialogueSystem.ContinueHint.Value, hover);
 
         protected static string FormatHintLabel(string label, bool bracketed) => bracketed ? $"[{label}]" : label;
 
