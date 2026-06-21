@@ -58,13 +58,13 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         protected override void OnDraw(SpriteBatch spriteBatch, float alpha) {
-            Texture2D portrait = useSmilePortrait ? ADVAsset.Lain_smile : ADVAsset.Lain;
+            Texture2D portrait = useSmilePortrait ? ADVAsset.SupCal_smileADV : ADVAsset.SupCal_closeEyesADV;
             if (portrait == null || portrait.IsDisposed || OwnerDialogue == null) {
                 return;
             }
 
             Rectangle panel = OwnerDialogue.GetPanelRect();
-            Vector2 pos = new(panel.X - portrait.Width * scale * 0.45f, panel.Bottom - portrait.Height * scale + 40f);
+            Vector2 pos = new(panel.X, panel.Bottom - portrait.Height * scale);
             spriteBatch.Draw(portrait, pos, null, Color.White * alpha, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
         }
     }

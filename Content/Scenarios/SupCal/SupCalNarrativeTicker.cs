@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal
         }
 
         private static void TickWitchFarewell() {
-            if (!WitchFarewell.SpawnPending || CWRWorld.HasBoss || NarrativeRunner.IsBusy) {
+            if (!WitchFarewell.SpawnPending || NarrativeRunner.IsBusy) {
                 return;
             }
 
