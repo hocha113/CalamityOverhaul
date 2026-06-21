@@ -28,7 +28,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation
         protected Color drawColor = Color.White;
         protected int timer;
         protected PerformancePhase currentPhase = PerformancePhase.Inactive;
-        protected int dialogueIndex;
         protected float phaseProgress;
 
         protected virtual float FadeInDuration => 60f;
@@ -47,7 +46,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation
             Active = true;
             CurrentFade = 0f;
             timer = 0;
-            dialogueIndex = 0;
             phaseProgress = 0f;
             BlockDialogueAdvance = false;
             BlockDialogueClose = false;
@@ -116,10 +114,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation
             }
 
             OnDraw(spriteBatch, MathHelper.Clamp(dialogueAlpha * CurrentFade, 0f, 1f));
-        }
-
-        public virtual void OnDialogueAdvance() {
-            dialogueIndex++;
         }
 
         public virtual void OnDialogueComplete() { }

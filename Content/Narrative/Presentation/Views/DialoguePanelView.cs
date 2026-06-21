@@ -76,7 +76,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
                 StoryDialogueLayoutUtil.RefreshWrappedLines(Layout, session.Line);
             }
             UpdateFullBodyPortrait();
-            NotifyPortraitLineAdvance();
             BindSessionBlockers();
         }
 
@@ -103,28 +102,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
             if (!_activeFullBodyPortrait.Active) {
                 _activeFullBodyPortrait = null;
             }
-        }
-
-        private void NotifyPortraitLineAdvance() {
-            NarrativeSession session = NarrativeRunner.Active;
-            if (session == null || !session.DialogueVisible || _activeFullBodyPortrait == null) {
-                return;
-            }
-
-            LinePresentation line = session.Line;
-            string lineKey = $"{line.Speaker}:{line.Text}";
-            if (!_portraitLineKeyInitialized) {
-                _portraitLineKey = lineKey;
-                _portraitLineKeyInitialized = true;
-                return;
-            }
-
-            if (lineKey == _portraitLineKey) {
-                return;
-            }
-
-            _portraitLineKey = lineKey;
-            _activeFullBodyPortrait.OnDialogueAdvance();
         }
 
         private void BindSessionBlockers() {
