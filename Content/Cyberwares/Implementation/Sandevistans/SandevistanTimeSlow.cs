@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
     internal class SandevistanTimeSlow : ModSystem
     {
         //TimeGear 注册名
-        private const string TimeGearKey = "Sandevistan";
+        internal const string TimeGearKey = "Sandevistan";
 
         //时缓生效中
         public static bool IsActive { get; private set; }

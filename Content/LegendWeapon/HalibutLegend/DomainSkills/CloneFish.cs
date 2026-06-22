@@ -1,4 +1,5 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -439,93 +440,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Main.dust[dust].fadeIn = 1.2f;
         }
 
-        //借用 Owner 做快照绘制，避免 new Player/CopyVisuals
+        //快照绘制干净克隆体，武器另行手绘；不改动真实玩家，也不重放其 buff/特效绘制钩子
         internal void DrawClonePlayer(in PlayerSnapshot snap) {
             if (cloneAlpha <= 0.01f) {
                 return;
             }
 
-            Player player = Owner;
-            Vector2 origPosition = player.position;
-            Vector2 origVelocity = player.velocity;
-            int origDirection = player.direction;
-            int origSelectedItem = player.selectedItem;
-            int origItemAnimation = player.itemAnimation;
-            int origItemTime = player.itemTime;
-            int origItemTimeMax = player.itemTimeMax;
-            float origItemRotation = player.itemRotation;
-            Vector2 origItemLocation = player.itemLocation;
-            int origItemWidth = player.itemWidth;
-            int origItemHeight = player.itemHeight;
-            int origHeldProj = player.heldProj;
-            Rectangle origBodyFrame = player.bodyFrame;
-            Rectangle origLegFrame = player.legFrame;
-            Color origSkin = player.skinColor;
-            Color origShirt = player.shirtColor;
-            Color origUnderShirt = player.underShirtColor;
-            Color origPants = player.pantsColor;
-            Color origShoe = player.shoeColor;
-            Color origHair = player.hairColor;
-            Color origEye = player.eyeColor;
+            Color drawColor = Color.BlueViolet * cloneAlpha;
+            PlayerCloneRenderer.Draw(Owner, snap.Position, drawColor, snap.Direction,
+                snap.BodyFrame, snap.LegFrame, Owner.fullRotation, Owner.fullRotationOrigin);
 
-            try {
-                player.position = snap.Position;
-                player.velocity = snap.Velocity;
-                player.direction = snap.Direction;
-                player.selectedItem = FindAirInventorySlot(player, origSelectedItem);
-                player.bodyFrame = snap.BodyFrame;
-                player.legFrame = snap.LegFrame;
-                //玩家本体交给 PlayerRenderer，武器另行手绘；否则原版持有物路径会把真实玩家的武器状态画进克隆体批次
-                player.itemAnimation = 0;
-                player.itemTime = 0;
-                player.itemTimeMax = 0;
-                player.itemRotation = snap.ItemRotation;
-                player.itemLocation = player.Center;
-                player.itemWidth = 0;
-                player.itemHeight = 0;
-                player.heldProj = -1;
-
-                Color drawColor = Color.BlueViolet * cloneAlpha;
-                player.skinColor = drawColor;
-                player.shirtColor = drawColor;
-                player.underShirtColor = drawColor;
-                player.pantsColor = drawColor;
-                player.shoeColor = drawColor;
-                player.hairColor = drawColor;
-                player.eyeColor = drawColor;
-
-                Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin);
-
-                if (snap.ItemAnimation > 0) {
-                    Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
-                    Vector2 gunOrigin = new(gun.Width * 0.5f, gun.Height * 0.5f);
-                    Main.spriteBatch.Draw(gun
-                        , player.Center - Main.screenPosition + snap.ItemRotation.ToRotationVector2() * 42 * HalibutOverride.ItemScale * player.direction
-                        , null, Color.BlueViolet * 0.75f, snap.ItemRotation, gunOrigin, HalibutOverride.ItemScale
-                        , player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                }
-            } finally {
-                player.position = origPosition;
-                player.velocity = origVelocity;
-                player.direction = origDirection;
-                player.selectedItem = origSelectedItem;
-                player.itemAnimation = origItemAnimation;
-                player.itemTime = origItemTime;
-                player.itemTimeMax = origItemTimeMax;
-                player.itemRotation = origItemRotation;
-                player.itemLocation = origItemLocation;
-                player.itemWidth = origItemWidth;
-                player.itemHeight = origItemHeight;
-                player.heldProj = origHeldProj;
-                player.bodyFrame = origBodyFrame;
-                player.legFrame = origLegFrame;
-                player.skinColor = origSkin;
-                player.shirtColor = origShirt;
-                player.underShirtColor = origUnderShirt;
-                player.pantsColor = origPants;
-                player.shoeColor = origShoe;
-                player.hairColor = origHair;
-                player.eyeColor = origEye;
+            if (snap.ItemAnimation > 0) {
+                Texture2D gun = TextureAssets.Item[HalibutOverride.ID].Value;
+                Vector2 gunOrigin = new(gun.Width * 0.5f, gun.Height * 0.5f);
+                Vector2 cloneCenter = snap.Position + Owner.Size * 0.5f;
+                Main.spriteBatch.Draw(gun
+                    , cloneCenter - Main.screenPosition + snap.ItemRotation.ToRotationVector2() * 42 * HalibutOverride.ItemScale * snap.Direction
+                    , null, Color.BlueViolet * 0.75f, snap.ItemRotation, gunOrigin, HalibutOverride.ItemScale
+                    , snap.Direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }
         }
 
@@ -582,15 +514,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 Color c = FishDrawColor * fade * alphaMod;
                 spriteBatch.Draw(fishTex, b.Position - Main.screenPosition, rect, c, rot, origin, b.Scale * 0.55f, spriteEffects, 0f);
             }
-        }
-
-        private static int FindAirInventorySlot(Player player, int fallbackSlot) {
-            for (int i = 0; i < player.inventory.Length; i++) {
-                if (player.inventory[i].type == ItemID.None) {
-                    return i;
-                }
-            }
-            return fallbackSlot;
         }
 
         public override bool PreDraw(ref Color lightColor) {

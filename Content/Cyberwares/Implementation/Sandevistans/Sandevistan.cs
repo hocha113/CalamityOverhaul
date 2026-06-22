@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.Actors;
 using Terraria;
 using Terraria.Audio;
@@ -104,9 +105,12 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
             //输入走 SandevistanSkill 雷达桥接，不监听 CyberwareSkill_Key
 
-            //冷却值消耗与恢复
+            //外部时缓因子（排除自身源）：HackTime 等冻结期间为 0，冷却消耗/恢复随之暂停；本人自身的世界减速不计入
+            float externalTimeScale = TimeGear.TimeScaleExcluding(SandevistanTimeSlow.TimeGearKey);
+
+            //冷却值消耗与恢复，按外部时缓缩放
             if (IsActive) {
-                CurrentCooldown -= ConsumptionRate;
+                CurrentCooldown -= ConsumptionRate * externalTimeScale;
                 if (CurrentCooldown <= 0) {
                     CurrentCooldown = 0;
                     IsActive = false;
@@ -114,13 +118,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 //激活期重置恢复延迟
                 recoveryDelay = RecoveryDelayTicks;
             }
-            else {
-                //延迟结束后才恢复
+            else if (externalTimeScale > 0f) {
+                //冻结期间恢复延迟与恢复一并暂停
                 if (recoveryDelay > 0) {
                     recoveryDelay--;
                 }
                 else {
-                    CurrentCooldown = MathHelper.Min(CurrentCooldown + RecoveryRate, MaxCooldown);
+                    CurrentCooldown = MathHelper.Min(CurrentCooldown + RecoveryRate * externalTimeScale, MaxCooldown);
                 }
             }
 
@@ -137,6 +141,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
             if (!IsActive) {
                 spawnTimer = 0;
+                return;
+            }
+
+            //外部时间冻结（HackTime 等）期间不推进残影节奏
+            if (externalTimeScale <= 0f) {
                 return;
             }
 

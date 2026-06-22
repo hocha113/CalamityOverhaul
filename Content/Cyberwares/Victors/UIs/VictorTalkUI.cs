@@ -234,7 +234,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 Rectangle src = new(0, 0, tex.Width, frameH);
                 float sc = Math.Min((portraitRect.Width - 20f) / src.Width, (portraitRect.Height - 22f) / src.Height);
                 Vector2 anchor = new(portraitRect.Center.X, portraitRect.Bottom - 10);
-                sb.Draw(tex, anchor, src, Color.White * alpha, 0f, new Vector2(src.Width / 2f, src.Height), sc, SpriteEffects.None, 0f);
+                sb.Draw(tex, anchor, src, Color.White * alpha, 0f, new Vector2(src.Width / 2f, src.Height), sc, SpriteEffects.FlipHorizontally, 0f);
             }
         }
 
@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
 
-            float ds = 0.62f * CyberwareTheme.FontScale;
+            float ds = 0.8f * CyberwareTheme.FontScale;
             string[] lines = CWRUtils.WrapTextArray(currentDialogue, FontAssets.MouseText.Value, (int)(textRect.Width / ds), 8, out _);
             int total = 0;
             int lineCount = 0;

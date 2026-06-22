@@ -38,6 +38,19 @@ namespace CalamityOverhaul.Content.TimeFreezes
             TimeScale = min;
         }
 
+        /// <summary>排除指定源后的时间因子，供该源自身免疫自己的缩放（如世界 8% 但本人按外部时间结算）</summary>
+        /// <param name="excludeKey">需要忽略的源标识</param>
+        public static float TimeScaleExcluding(string excludeKey) {
+            float min = 1f;
+            foreach (var pair in scaleSources) {
+                if (pair.Key == excludeKey) {
+                    continue;
+                }
+                if (pair.Value < min) min = pair.Value;
+            }
+            return min;
+        }
+
         /// <summary>Unload 清空全部源</summary>
         public static void Reset() {
             scaleSources.Clear();

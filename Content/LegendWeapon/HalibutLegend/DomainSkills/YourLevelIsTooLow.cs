@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -403,7 +404,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        //借用 Owner 进行快照式绘制，避免每帧 new Player() 触发的大量数组分配以及 CopyVisuals 的开销
         private void DrawTimeClone(InfiniteTimeClone clone) {
             if (clone.Alpha < 0.05f) {
                 return;
@@ -411,48 +411,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             Lighting.AddLight(clone.Position, TorchID.Blue);
 
-            //保存原始字段，绘制结束后恢复，避免影响真实玩家
-            Vector2 origPosition = Owner.position;
-            int origHeldProj = Owner.heldProj;
-            Color origSkin = Owner.skinColor;
-            Color origShirt = Owner.shirtColor;
-            Color origUnderShirt = Owner.underShirtColor;
-            Color origPants = Owner.pantsColor;
-            Color origShoe = Owner.shoeColor;
-            Color origHair = Owner.hairColor;
-            Color origEye = Owner.eyeColor;
-
-            try {
-                Owner.position = clone.Position - Owner.Size * 0.5f;
-                Owner.heldProj = -1;
-
-                Color ghostColor = Color.Blue;
-                Owner.skinColor = ghostColor;
-                Owner.shirtColor = ghostColor;
-                Owner.underShirtColor = ghostColor;
-                Owner.pantsColor = ghostColor;
-                Owner.shoeColor = ghostColor;
-                Owner.hairColor = ghostColor;
-                Owner.eyeColor = ghostColor;
-
-                Main.PlayerRenderer.DrawPlayer(
-                    Main.Camera,
-                    Owner,
-                    Owner.position,
-                    Owner.fullRotation,
-                    Owner.fullRotationOrigin
-                );
-            } finally {
-                Owner.position = origPosition;
-                Owner.heldProj = origHeldProj;
-                Owner.skinColor = origSkin;
-                Owner.shirtColor = origShirt;
-                Owner.underShirtColor = origUnderShirt;
-                Owner.pantsColor = origPants;
-                Owner.shoeColor = origShoe;
-                Owner.hairColor = origHair;
-                Owner.eyeColor = origEye;
-            }
+            //干净克隆体绘制：仅身体本体，不改动真实玩家，也不重放其 buff/特效绘制钩子
+            Vector2 topLeft = clone.Position - Owner.Size * 0.5f;
+            PlayerCloneRenderer.Draw(Owner, topLeft, Color.Blue, Owner.direction,
+                Owner.bodyFrame, Owner.legFrame, Owner.fullRotation, Owner.fullRotationOrigin);
         }
 
         private static void BeginWorldAlphaBatch() {
