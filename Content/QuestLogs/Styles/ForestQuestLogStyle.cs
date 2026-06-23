@@ -459,7 +459,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                         spriteBatch.Draw(itemTexture, new Vector2(rewardRect.X + 18, rewardRect.Y + 18), frame, Color.White * alpha, 0f, frame.Size() / 2f, sc, SpriteEffects.None, 0f);
                     }
 
-                    Utils.DrawBorderString(spriteBatch, reward.GetDisplayText(), new Vector2(rewardX + 40, currentY + 10), Color.White * alpha, 0.8f);
+                    Utils.DrawBorderString(spriteBatch, $"x{reward.Amount}", new Vector2(rewardX + 40, currentY + 10), Color.White * alpha, 0.8f);
 
                     rewardX += 105;
                     if (rewardX > panelRect.Right - padding - 105) {

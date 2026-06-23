@@ -56,8 +56,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         }
 
         private void AddVanillaStarterRewards() {
-            AddReward(ItemID.IronPickaxe, 1, descriptionStyle: QuestRewardDescriptionStyle.SingleTool);
-            AddReward(ItemID.IronAxe, 1, descriptionStyle: QuestRewardDescriptionStyle.SingleTool);
+            AddReward(ItemID.IronPickaxe, 1);
+            AddReward(ItemID.IronAxe, 1);
             AddReward(ItemID.LesserHealingPotion, 10);
             AddReward(ItemID.RecallPotion, 3);
             AddReward(ItemID.Torch, 50);

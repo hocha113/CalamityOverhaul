@@ -142,11 +142,6 @@ QuestLog: {
 	SunModeText: Mode Jour
 	LauncherHoverText: Clic gauche Interagir, Clic droit Glisser
 	QuestManagerText: Commissions
-
-	Template: {
-		AmountItem: "{0} {1}"
-		SingleTool: 1 {0}
-	}
 }
 
 QuestNotificationSystem.Text1: Quête terminée

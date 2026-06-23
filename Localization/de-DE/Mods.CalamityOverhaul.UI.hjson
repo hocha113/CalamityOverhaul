@@ -142,11 +142,6 @@ QuestLog: {
 	SunModeText: Tagmodus
 	LauncherHoverText: Linksklick Interagieren, Rechtsklick Ziehen
 	QuestManagerText: Aufträge
-
-	Template: {
-		AmountItem: "{0} {1}"
-		SingleTool: 1 {0}
-	}
 }
 
 QuestNotificationSystem.Text1: Quest abgeschlossen

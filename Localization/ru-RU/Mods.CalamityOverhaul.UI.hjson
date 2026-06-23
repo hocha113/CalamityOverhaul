@@ -142,11 +142,6 @@ QuestLog: {
 	SunModeText: Дневной режим
 	LauncherHoverText: ЛКМ для взаимод., ПКМ для перетаскивания
 	QuestManagerText: Поручения
-
-	Template: {
-		AmountItem: "{0} {1}"
-		SingleTool: 1 {0}
-	}
 }
 
 QuestNotificationSystem.Text1: Задание выполнено

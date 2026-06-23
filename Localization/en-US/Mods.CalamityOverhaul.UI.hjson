@@ -143,11 +143,6 @@ QuestLog: {
 	SunModeText: Daytime Mode
 	LauncherHoverText: Left-click to interact, right-click to drag
 	QuestManagerText: Commission
-
-	Template: {
-		AmountItem: "{0} {1}"
-		SingleTool: 1 {0}
-	}
 }
 
 QuestNotificationSystem.Text1: Quest Complete
