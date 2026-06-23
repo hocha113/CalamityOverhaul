@@ -10,55 +10,47 @@ QuestNode: {
 		DisplayName: Mining Basics
 		Description: Obtain 10 {0}
 		DetailedDescription: The underground holds infinite wealth. First, we need some basic metals to craft tools.
-		QuestObjective.Description: Collect 10 {0}
 	}
 
 	MiningQuestII: {
 		DisplayName: Iron Age
 		Description: Collect 50 {0}
-		QuestObjective.Description: Collect 50 {0}
 		DetailedDescription: Copper is too soft; we need harder metals to arm ourselves. Delve deeper underground to find Iron veins.
 	}
 
 	MiningQuestIII: {
 		DisplayName: Gold Rush
 		Description: Collect 100 {0}
-		QuestObjective.Description: Collect 100 {0}
 		DetailedDescription: Gold is not just currency; it possesses excellent magical conductivity and ductility. Although softer than Iron, it is a crucial material for crafting advanced gear.
 	}
 
 	BrimstoneElementalQuest: {
 		DisplayName: Brimstone Elemental
 		Description: Defeat the Brimstone Elemental
-		QuestObjective.Description: Defeat the Brimstone Elemental
 		DetailedDescription: In the ruins of the Brimstone Crag, awaken and defeat the slumbering elemental spirit. Beware her bullet hell.
 	}
 
 	CalamitasCloneQuest: {
 		DisplayName: Calamitas Clone
 		Description: Defeat the Calamitas Clone
-		QuestObjective.Description: Defeat the Calamitas Clone
 		DetailedDescription: A clone filled with hatred and a desire for destruction. Defeat it to prove you are worthy of facing the true Witch.
 	}
 
 	CrabulonQuest: {
 		DisplayName: Crabulon
 		Description: Defeat Crabulon
-		QuestObjective.Description: Defeat Crabulon
 		DetailedDescription: In the Glowing Mushroom underground, a giant crab infested by fungi lurks. Its spores are extremely dangerous.
 	}
 
 	CryogenQuest: {
 		DisplayName: Cryogen
 		Description: Defeat Cryogen
-		QuestObjective.Description: Defeat Cryogen
 		DetailedDescription: The former Archmage of the cosmos is sealed within this eternal prison of ice. Release and defeat it to unleash the power of the arctic.
 	}
 
 	DesertScourgeQuest: {
 		DisplayName: Desert Scourge
 		Description: Defeat the Desert Scourge
-		QuestObjective.Description: Defeat the Desert Scourge
 		DetailedDescription: The former tyrant of the seas now gasps for life in the dried-up desert. Beware its massive mandibles and minions.
 	}
 
@@ -72,14 +64,12 @@ QuestNode: {
 	EyeofCthulhuQuest: {
 		DisplayName: Eye of Cthulhu
 		Description: Defeat the Eye of Cthulhu
-		QuestObjective.Description: Defeat the Eye of Cthulhu
 		DetailedDescription: As long as you feel that evil gaze, it will appear. This is the first true test of your strength.
 	}
 
 	GolemQuest: {
 		DisplayName: Golem
 		Description: Defeat Golem
-		QuestObjective.Description: Defeat Golem
 		DetailedDescription: Deep within the Jungle Temple, an ancient war machine is enshrined. Beware its lasers and heavy fists.
 	}
 
@@ -93,14 +83,12 @@ QuestNode: {
 	KingSlimeQuest: {
 		DisplayName: King Slime
 		Description: Defeat King Slime
-		QuestObjective.Description: Defeat King Slime
 		DetailedDescription: The ruler of all gelatinous creatures. Though it looks somewhat comical, do not let its massive size crush you.
 	}
 
 	LunaticCultistQuest: {
 		DisplayName: Lunatic Cultist
 		Description: Defeat the Lunatic Cultist
-		QuestObjective.Description: Defeat the Lunatic Cultist
 		DetailedDescription: At the dungeon entrance, a group of fanatical cultists is trying to prevent—or perhaps trigger—the apocalypse. Stop their ritual.
 	}
 
@@ -114,341 +102,292 @@ QuestNode: {
 	MoonLordQuest: {
 		DisplayName: Moon Lord
 		Description: Defeat the Moon Lord
-		QuestObjective.Description: Defeat the Moon Lord
 		DetailedDescription: The mastermind behind it all, the terror from the dark side of the moon. End this long nightmare.
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: The Plaguebringer Goliath
 		Description: Defeat The Plaguebringer Goliath
-		QuestObjective.Description: Defeat The Plaguebringer Goliath
 		DetailedDescription: A Queen Bee modified by nano-virus machinery. It is not only deadly but also carries a dangerous plague.
 	}
 
 	PlanteraQuest: {
 		DisplayName: Plantera
 		Description: Defeat Plantera
-		QuestObjective.Description: Defeat Plantera
 		DetailedDescription: Deep in the jungle sleeps a massive man-eating flower. Break the bulb and face the jungle's wrath.
 	}
 
 	SkeletronQuest: {
 		DisplayName: Skeletron
 		Description: Defeat Skeletron
-		QuestObjective.Description: Defeat Skeletron
 		DetailedDescription: Only by defeating this cursed old man can you safely enter the Dungeon to explore its secrets.
 	}
 
 	SlimeGodQuest: {
 		DisplayName: The Slime God
 		Description: Defeat The Slime God
-		QuestObjective.Description: Defeat The Slime God
 		DetailedDescription: The apex of the slime species, an ancient and gluttonous deity. Beware the combined attacks of its avatars.
 	}
 
 	WallofFleshQuest: {
 		DisplayName: Wall of Flesh
 		Description: Defeat the Wall of Flesh
-		QuestObjective.Description: Defeat the Wall of Flesh
 		DetailedDescription: The gatekeeper of the world. Throw the Guide Voodoo Doll into the lava to release this world's ancient deity and begin Hardmode.
 	}
 
 	CeaselessVoidQuest: {
 		DisplayName: Ceaseless Void
 		Description: Defeat the Ceaseless Void
-		QuestObjective.Description: Defeat the Ceaseless Void
 		DetailedDescription: One of the Sentinels of the Devourer, a mirror of nothingness from another dimension.
 	}
 
 	DevourerofGodsQuest: {
 		DisplayName: The Devourer of Gods
 		Description: Defeat The Devourer of Gods
-		QuestObjective.Description: Defeat The Devourer of Gods
 		DetailedDescription: A cosmic serpent that hungers to devour all divinity. Duel it in the void, and do not let it consume you.
 	}
 
 	DragonfollyQuest: {
 		DisplayName: The Dragonfolly
 		Description: Defeat The Dragonfolly
-		QuestObjective.Description: Defeat The Dragonfolly
 		DetailedDescription: A failed attempt to clone Yharon, a mad and electrified pseudo-dragon.
 	}
 
 	ExoMechsQuest: {
 		DisplayName: Exo Mechs
 		Description: Defeat the Exo Mechs
-		QuestObjective.Description: Defeat the Exo Mechs
 		DetailedDescription: Draedon's ultimate masterpieces, representing the pinnacle of Terrarian technology. Survive this perfect performance.
 	}
 
 	OldDukeQuest: {
 		DisplayName: The Old Duke
 		Description: Defeat The Old Duke
-		QuestObjective.Description: Defeat The Old Duke
 		DetailedDescription: The ancient overlord of the Sulphurous Sea depths, a combination of mutation and power. Beware its toxic steam.
 	}
 
 	PolterghastQuest: {
 		DisplayName: Polterghast
 		Description: Defeat Polterghast
-		QuestObjective.Description: Defeat Polterghast
 		DetailedDescription: A monster formed by the gathering of vengeful souls who died in the Dungeon. Quell their rage.
 	}
 
 	PrimordialWyrmQuest: {
 		DisplayName: Primordial Wyrm
 		Description: Defeat the Primordial Wyrm
-		QuestObjective.Description: Defeat the Primordial Wyrm
 		DetailedDescription: The guardian of the deepest Abyss. An entity older than the gods themselves. Do not disturb it unless necessary.
 	}
 
 	ProfanedGuardiansQuest: {
 		DisplayName: Profaned Guardians
 		Description: Defeat the Profaned Guardians
-		QuestObjective.Description: Defeat the Profaned Guardians
 		DetailedDescription: Loyal guards of the Profaned Goddess. Defeat them to weaken the Goddess's defenses.
 	}
 
 	ProvidenceQuest: {
 		DisplayName: Providence, the Profaned Goddess
 		Description: Defeat Providence
-		QuestObjective.Description: Defeat Providence
 		DetailedDescription: The Goddess who controls holy fire and purification. Challenge her in the Hallow or the Underworld, but beware of being incinerated by holy flames.
 	}
 
 	SignusQuest: {
 		DisplayName: Signus, Envoy of the Devourer
 		Description: Defeat Signus
-		QuestObjective.Description: Defeat Signus
 		DetailedDescription: One of the Sentinels of the Devourer, a formless assassin, a ghost of the void.
 	}
 
 	StormWeaverQuest: {
 		DisplayName: Storm Weaver
 		Description: Defeat the Storm Weaver
-		QuestObjective.Description: Defeat the Storm Weaver
 		DetailedDescription: One of the Sentinels of the Devourer, a sky worm that feeds on thunderstorms and lightning.
 	}
 
 	SupremeCalamitasQuest: {
 		DisplayName: Supreme Witch, Calamitas
 		Description: Defeat Supreme Witch, Calamitas
-		QuestObjective.Description: Defeat Supreme Witch, Calamitas
 		DetailedDescription: The legendary Brimstone Witch. This is the end of your journey, or perhaps a new beginning? Prepare yourself for true bullet hell.
 	}
 
 	YharonQuest: {
 		DisplayName: Yharon, Dragon of Rebirth
 		Description: Defeat Yharon
-		QuestObjective.Description: Defeat Yharon
 		DetailedDescription: The loyal comrade of the Tyrant, a dragon possessing the phoenix's ability of rebirth. This is a trial of the soul.
 	}
 
 	BatteryQuest: {
 		DisplayName: Energy Storage
 		Description: Craft a Thermal Battery
-		QuestObjective.Description: Obtain a Thermal Battery
 		DetailedDescription: Power needs to be stored after generation. Crafting batteries is the first step to building a stable power grid.
 	}
 
 	HydroelectricQuest: {
 		DisplayName: Clean Energy
 		Description: Craft a Hydroelectric Generator
-		QuestObjective.Description: Obtain a Hydroelectric Generator
 		DetailedDescription: Harness the power of flowing water to generate electricity. A clean and sustainable way to obtain energy.
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: Industrial Revolution
 		Description: Craft a Wind Generator
-		QuestObjective.Description: Obtain a Wind Generator
 		DetailedDescription: The first step towards automation. Use wind energy to drive your machines and free your hands.
 	}
 
 	ItemFilterQuest: {
 		DisplayName: Logistics Sorting
 		Description: Craft an Item Filter
-		QuestObjective.Description: Obtain an Item Filter
 		DetailedDescription: Automated production lines require order. Use filters to precisely control the flow of items.
 	}
 
 	MiningMachineQuest: {
 		DisplayName: Automated Excavation
 		Description: Craft a Mining Machine
-		QuestObjective.Description: Obtain a Mining Machine
 		DetailedDescription: Say goodbye to tedious manual mining. This machine devours ore veins with astonishing efficiency.
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: Deep Core Drilling
 		Description: Craft a Mining Machine MK2
-		QuestObjective.Description: Obtain a Mining Machine MK2
 		DetailedDescription: Its reinforced power core offers unparalleled speed.
 	}
 
 	PipelineQuest: {
 		DisplayName: Energy Transmission
 		Description: Craft Universal Energy Pipes
-		QuestObjective.Description: Obtain Universal Energy Pipes
 		DetailedDescription: The veins connecting generators and machines. Without it, electricity is just stagnant water.
 	}
 
 	TeslaTowerQuest: {
 		DisplayName: Magnetic Storm Tower
 		Description: Craft a Tesla Tower
-		QuestObjective.Description: Obtain a Tesla Tower
 		DetailedDescription: The crystallization of Draedon's technology. This tower allows for wireless power transmission, completely revolutionizing your wiring layout.
 	}
 
 	ThermalPowerQuest: {
 		DisplayName: Time to Burn
 		Description: Craft a Thermal Generator
-		QuestObjective.Description: Obtain a Thermal Generator
 		DetailedDescription: Burn fuel to generate massive amounts of power. Though not environmentally friendly, it is the most reliable energy source in the early stages.
 	}
 
 	AnnihilatingUniverseQuest: {
-		QuestObjective.Description: Obtain Annihilating Universe
 		DisplayName: Annihilating Universe
 		Description: Obtain "Annihilating Universe"
 		DetailedDescription: Compress the power of galaxies onto a bowstring. This weapon possesses the power to destroy universal dimensions, the ultimate proof for a ranger.
 	}
 
 	AriaofTheCosmosQuest: {
-		QuestObjective.Description: Obtain Aria of the Cosmos
 		DisplayName: Aria of the Cosmos
 		Description: Obtain "Aria of the Cosmos"
 		DetailedDescription: Perform the symphony of the stars. This tome summons black holes and quasars, letting enemies vanish amidst the song of the universe.
 	}
 
 	DarkMatterCompressorQuest: {
-		QuestObjective.Description: Obtain Dark Matter Compressor
 		DisplayName: Dark Matter Compressor
 		Description: Obtain Dark Matter Compressor
 		DetailedDescription: Manipulate the most mysterious matter in the universe. This machine compresses dark matter into high-density energy spheres for advanced crafting.
 	}
 
 	InfiniteIngotQuest: {
-		QuestObjective.Description: Obtain Infinite Ingot
 		DisplayName: Infinite Ingot
 		Description: Forge Infinite Ingot
 		DetailedDescription: A metal that transcends the law of conservation of mass. It is the cornerstone to ultimate power, containing infinite possibilities.
 	}
 
 	InfinitePickQuest: {
-		QuestObjective.Description: Obtain Infinite Pickaxe
 		DisplayName: Infinite Pickaxe
 		Description: Obtain Infinite Pickaxe
 		DetailedDescription: Nothing can stop this pickaxe. It can mine everything, even the bedrock of the world.
 	}
 
 	InfiniteToiletQuest: {
-		QuestObjective.Description: Obtain Infinite Toilet
 		DisplayName: Infinite Toilet
 		Description: Obtain Infinite Toilet
 		DetailedDescription: The throne of gods. Though it sounds absurd, it truly symbolizes some form of... supreme authority.
 	}
 
 	InfinityCatalystQuest: {
-		QuestObjective.Description: Obtain Infinity Catalyst
 		DisplayName: Infinity Catalyst
 		Description: Obtain Infinity Catalyst
 		DetailedDescription: The key medium to start the infinite reaction. It allows matter to cycle between annihilation and rebirth, generating immense energy.
 	}
 
 	NeutronBowQuest: {
-		QuestObjective.Description: Obtain Neutron Bow
 		DisplayName: Neutron Bow
 		Description: Obtain Neutron Bow
 		DetailedDescription: A bow forged from the core fragments of a neutron star. Every arrow carries the gravity of a collapsing star.
 	}
 
 	NeutronGlaiveQuest: {
-		QuestObjective.Description: Obtain Neutron Glaive
 		DisplayName: Neutron Glaive
 		Description: Obtain Neutron Glaive
 		DetailedDescription: A polearm with astonishing density. Wielding it requires immense strength, but no armor can withstand its slash.
 	}
 
 	NeutronGunQuest: {
-		QuestObjective.Description: Obtain Neutron Gun
 		DisplayName: Neutron Gun
 		Description: Obtain Neutron Gun
 		DetailedDescription: A firearm that shoots micro-neutron streams. Due to their extreme density, the bullets are almost unaffected by resistance.
 	}
 
 	NeutronScytheQuest: {
-		QuestObjective.Description: Obtain Neutron Scythe
 		DisplayName: Neutron Scythe
 		Description: Obtain Neutron Scythe
 		DetailedDescription: The reaper's harvesting tool. It tears through space with ease, harvesting life like wheat.
 	}
 
 	NeutronStarIngotQuest: {
-		QuestObjective.Description: Obtain Neutron Star Ingot
 		DisplayName: Neutron Star Ingot
 		Description: Obtain Neutron Star Ingot
 		DetailedDescription: One of the densest materials in the universe. This metal is unimaginably heavy, humming with gravitational fluctuations.
 	}
 
 	NeutronWandQuest: {
-		QuestObjective.Description: Obtain Neutron Wand
 		DisplayName: Neutron Wand
 		Description: Obtain Neutron Wand
 		DetailedDescription: A staff that controls gravity. Use the power of a neutron star to distort space-time and crush your enemies.
 	}
 
 	PandemoniumQuest: {
-		QuestObjective.Description: Obtain Pandemonium
 		DisplayName: Pandemonium
 		Description: Obtain "Pandemonium"
 		DetailedDescription: The ultimate weapon fusing countless souls and Calamitous power. Holding it, you hold the keys to Hell and the Abyss.
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Obtain Ancient Eternal Stone
 		DisplayName: Ancient Eternal Stone
 		Description: Obtain Ancient Eternal Stone
 		DetailedDescription: A seemingly ordinary stone, yet it has witnessed the cycle of countless Boss Rushes. It is a symbol of eternal perseverance.
 	}
 
 	TerminusQuest: {
-		QuestObjective.Description: Obtain Terminus
 		DisplayName: Terminus
 		Description: Obtain Terminus
 		DetailedDescription: The key to starting the Boss Rush. Gaze into this stone and prepare to face a continuous trial against the world's strongest beings.
 	}
 
 	TransmutationOfMatterQuest: {
-		QuestObjective.Description: Obtain Matter Transmuter
 		DisplayName: Matter Transmuter
 		Description: Obtain Matter Transmuter
 		DetailedDescription: The ultimate form of alchemy. This machine breaks the principle of equivalent exchange, converting matter at will, or creating it from nothing.
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Obtain Infinite Bow
 		DisplayName: Infinite Bow
 		Description: Obtain Infinite Bow
 		DetailedDescription: A longbow that has shot down gods. Now it shall reappear in the world.
 	}
 
 	SpearOfLonginusQuest: {
-		QuestObjective.Description: Obtain Spear of Longinus
 		DisplayName: Spear of Longinus
 		Description: Obtain Spear of Longinus
 		DetailedDescription: The legendary holy lance that pierced a deity, possessing the power to penetrate all fields and absolute barriers. When thrown, even the laws of causality make way for it.
 	}
 
 	DragonsWordQuest: {
-		QuestObjective.Description: Obtain Dragon's Word
 		DisplayName: Dragon's Word
 		Description: Obtain Dragon's Word
 		DetailedDescription: A dragon sheds tears only once in its life, at the moment of its death.
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Clear Boss Rush 5 times, obtain 5 Ancient Eternal Stones
 		DisplayName: Cycle of Conquest
 		Description: Clear Boss Rush 5 times, obtain 5 Ancient Eternal Stones
 		DetailedDescription: The symbol of a true warrior
@@ -541,14 +480,12 @@ QuestNode: {
 	AquaticScourgeQuest: {
 		DisplayName: Aquatic Scourge
 		Description: Defeat the Aquatic Scourge
-		QuestObjective.Description: Defeat the Aquatic Scourge
 		DetailedDescription: Once a peaceful leviathan of the clear oceans, now twisted by the toxicity of the Sulphurous Sea. In these polluted acidic waters, beware its sudden charges and toxic clouds.
 	}
 
 	QueenSlimeQuest: {
 		DisplayName: Queen Slime
 		Description: Defeat Queen Slime
-		QuestObjective.Description: Defeat Queen Slime
 		DetailedDescription: The crystal empress of the Hallow, ruling over all sanctified gelatinous creatures. Compared to her spouse, she is far more agile and deadly. Prepare for a magnificent barrage.
 	}
 
@@ -681,49 +618,42 @@ QuestNode: {
 	QueenBeeQuest: {
 		DisplayName: Queen Bee
 		Description: Defeat Queen Bee
-		QuestObjective.Description: Defeat Queen Bee
 		DetailedDescription: Deep within the massive hives of the Underground Jungle, breaking the larva inside will enrage the ruler of the swarm. Prepare anti-poison potions and beware her stingers and rapid dashes.
 	}
 
 	CollectorQuest: {
 		DisplayName: Collection Assistant
 		Description: Obtain the Collector
-		QuestObjective.Description: Obtain the Collector
 		DetailedDescription: Tired of bending over to pick up loot everywhere? This device automatically collects nearby dropped items. It is a core component for building automated logistics and sorting systems, completely freeing your hands.
 	}
 
 	LumberjackQuest: {
 		DisplayName: Timber Time
 		Description: Obtain the Lumberjack
-		QuestObjective.Description: Obtain the Lumberjack
 		DetailedDescription: Wood is the cornerstone of industry and construction. Say goodbye to primitive axes; this machine consumes power to automate your tree farm, ensuring a continuous supply of timber.
 	}
 
 	LifeWeaverQuest: {
 		DisplayName: Reforestation
 		Description: Obtain the Tree Planter
-		QuestObjective.Description: Obtain the Tree Planter
 		DetailedDescription: Forest regeneration is usually a slow process. This machine uses power to precisely plant saplings, quickly restoring life to barren lands. It is the final piece of the puzzle for building a fully automated, sustainable tree farm.
 	}
 
 	IncineratorQuest: {
 		DisplayName: Electric Smelting
 		Description: Craft an Electric Incinerator
-		QuestObjective.Description: Obtain an Electric Incinerator
 		DetailedDescription: Traditional furnaces are inefficient, wasting a significant amount of mineral essence. Utilizing the extreme temperatures generated by high-voltage arcs, this machine thoroughly breaks down ores, extracting double the yield compared to before. This is a crucial step towards industrialization.
 	}
 
 	ItemPipelineQuest: {
 		DisplayName: Logistics System
 		Description: Craft an Item Pipeline
-		QuestObjective.Description: Obtain an Item Pipeline
 		DetailedDescription: Still running between chests like a primitive? These pipes are the veins of industry. Connect them between machines and containers, and watch items automatically flow to where they belong. Build an automated assembly line and enjoy the pleasure of reaping rewards without the labor.
 	}
 
 	ThrowerQuest: {
 		DisplayName: Throwing Assistant
 		Description: Craft a Thrower
-		QuestObjective.Description: Obtain a Thrower
 		DetailedDescription: Not all items are worth treasuring. This device ejects items from the logistics network, tossing them out into the world. Whether for automated crafting (like dropping items into liquids) or simply acting as a garbage disposal chute, it handles the job perfectly.
 	}
 }

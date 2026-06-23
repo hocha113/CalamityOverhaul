@@ -10,55 +10,47 @@ QuestNode: {
 		DisplayName: Начало раскопок
 		Description: Добыть 10 ед. {0}
 		DetailedDescription: Подземелья хранят бесконечные богатства. Для начала нам понадобятся базовые металлы для создания инструментов.
-		QuestObjective.Description: Соберите 10 ед. {0}
 	}
 
 	MiningQuestII: {
 		DisplayName: Железный век
 		Description: Собрать 50 ед. {0}
-		QuestObjective.Description: Соберите 50 ед. {0}
 		DetailedDescription: Медь слишком мягкая, нам нужен более твердый металл, чтобы защитить себя. Спускайтесь глубже в поисках железных жил.
 	}
 
 	MiningQuestIII: {
 		DisplayName: Золотая лихорадка
 		Description: Собрать 100 ед. {0}
-		QuestObjective.Description: Соберите 100 ед. {0}
 		DetailedDescription: Золото — это не просто валюта, оно обладает отличной магической проводимостью и ковкостью. Хотя оно не так твердо, как железо, это важный материал для создания снаряжения высокого уровня.
 	}
 
 	BrimstoneElementalQuest: {
 		DisplayName: Серный элементаль
 		Description: Победить Серного элементаля
-		QuestObjective.Description: Победить Серного элементаля
 		DetailedDescription: В руинах Серных скал пробудите и победите дремлющего духа стихий. Остерегайтесь её пулевого ада.
 	}
 
 	CalamitasCloneQuest: {
 		DisplayName: Клон Каламитас
 		Description: Победить Клона Каламитас
-		QuestObjective.Description: Победить Клона Каламитас
 		DetailedDescription: Клон, наполненный ненавистью и жаждой разрушения. Победите его, чтобы доказать, что вы достойны встретиться с настоящей ведьмой.
 	}
 
 	CrabulonQuest: {
 		DisplayName: Крабулон
 		Description: Победить Крабулона
-		QuestObjective.Description: Победить Крабулона
 		DetailedDescription: В подземном биоме светящихся грибов скрывается гигантский краб, пораженный грибком. Его споры очень опасны.
 	}
 
 	CryogenQuest: {
 		DisplayName: Криоген
 		Description: Победить Криогена
-		QuestObjective.Description: Победить Криогена
 		DetailedDescription: Этот некогда могущественный криомант был заточен в вечной ледяной тюрьме. Освободите и победите его, чтобы высвободить холодную силу полярных льдов.
 	}
 
 	DesertScourgeQuest: {
 		DisplayName: Пустынный бич
 		Description: Победить Пустынного бича
-		QuestObjective.Description: Победить Пустынного бича
 		DetailedDescription: Бывший повелитель морей, ныне влачащий жалкое существование в высохшей пустыне. Остерегайтесь его огромных челюстей и миньонов.
 	}
 
@@ -72,14 +64,12 @@ QuestNode: {
 	EyeofCthulhuQuest: {
 		DisplayName: Глаз Ктулху
 		Description: Победить Глаз Ктулху
-		QuestObjective.Description: Победить Глаз Ктулху
 		DetailedDescription: Стоит вам почувствовать этот злобный взгляд, как он появится. Это первое настоящее испытание вашей силы.
 	}
 
 	GolemQuest: {
 		DisplayName: Голем
 		Description: Победить Голема
-		QuestObjective.Description: Победить Голема
 		DetailedDescription: В глубинах Храма джунглей покоится древняя машина войны. Берегитесь его лазеров и тяжелых кулаков.
 	}
 
@@ -93,14 +83,12 @@ QuestNode: {
 	KingSlimeQuest: {
 		DisplayName: Король слизней
 		Description: Победить Короля слизней
-		QuestObjective.Description: Победить Короля слизней
 		DetailedDescription: Повелитель гелевых существ. Хоть он и выглядит комично, не дайте его огромному телу раздавить вас.
 	}
 
 	LunaticCultistQuest: {
 		DisplayName: Лунатик-культист
 		Description: Победить Лунатика-культиста
-		QuestObjective.Description: Победить Лунатика-культиста
 		DetailedDescription: У входа в Темницу группа фанатиков пытается предотвратить — или вызвать — конец света. Остановите их ритуал.
 	}
 
@@ -114,341 +102,292 @@ QuestNode: {
 	MoonLordQuest: {
 		DisplayName: Лунный лорд
 		Description: Победить Лунного лорда
-		QuestObjective.Description: Победить Лунного лорда
 		DetailedDescription: Кукловод за кулисами всего происходящего, ужас с обратной стороны Луны. Положите конец этому долгому кошмару.
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: Предвестница чумы, Голиаф
 		Description: Победить Предвестницу чумы, Голиаф
-		QuestObjective.Description: Победить Предвестницу чумы, Голиаф
 		DetailedDescription: Королева пчел, модифицированная нановирусом. Она не только смертоносна, но и переносит опасную чуму.
 	}
 
 	PlanteraQuest: {
 		DisplayName: Плантера
 		Description: Победить Плантеру
-		QuestObjective.Description: Победить Плантеру
 		DetailedDescription: В глубине джунглей дремлет гигантский цветок-людоед. Разбейте бутон и столкнитесь с яростью джунглей.
 	}
 
 	SkeletronQuest: {
 		DisplayName: Скелетрон
 		Description: Победить Скелетрона
-		QuestObjective.Description: Победить Скелетрона
 		DetailedDescription: Только победив этого проклятого старика, вы сможете безопасно войти в Темницу и исследовать её тайны.
 	}
 
 	SlimeGodQuest: {
 		DisplayName: Бог слизней
 		Description: Победить Бога слизней
-		QuestObjective.Description: Победить Бога слизней
 		DetailedDescription: Вершина эволюции слизней, древнее и ненасытное божество. Остерегайтесь комбинированных атак его частей.
 	}
 
 	WallofFleshQuest: {
 		DisplayName: Стена плоти
 		Description: Победить Стену плоти
-		QuestObjective.Description: Победить Стену плоти
 		DetailedDescription: Страж этого мира. Бросьте куклу гида в лаву, чтобы освободить древних духов и начать Хардмод.
 	}
 
 	CeaselessVoidQuest: {
 		DisplayName: Нескончаемая пустота
 		Description: Победить Нескончаемую пустоту
-		QuestObjective.Description: Победить Нескончаемую пустоту
 		DetailedDescription: Один из стражей Пожирателя богов, зеркало небытия из иного измерения.
 	}
 
 	DevourerofGodsQuest: {
 		DisplayName: Пожиратель богов
 		Description: Победить Пожирателя богов
-		QuestObjective.Description: Победить Пожирателя богов
 		DetailedDescription: Космический змей, жаждущий поглотить всю божественность. Сразитесь с ним в пустоте и не дайте себя сожрать.
 	}
 
 	DragonfollyQuest: {
 		DisplayName: Псевдодракон
 		Description: Победить Псевдодракона
-		QuestObjective.Description: Победить Псевдодракона
 		DetailedDescription: Неудачный продукт попытки воскресить Ярона, безумный и наэлектризованный лжедракон.
 	}
 
 	ExoMechsQuest: {
 		DisplayName: Экзо-механизмы
 		Description: Победить Экзо-механизмы
-		QuestObjective.Description: Победить Экзо-механизмы
 		DetailedDescription: Главный шедевр Дрэйдона, вершина технологий Террарии. Выживите в этом идеальном представлении.
 	}
 
 	OldDukeQuest: {
 		DisplayName: Герцог-реликт Серного моря
 		Description: Победить герцога-реликта Серного моря
-		QuestObjective.Description: Победить герцога-реликта Серного моря
 		DetailedDescription: Древний владыка глубин Серного моря, сочетание мутации и силы. Остерегайтесь его ядовитого пара.
 	}
 
 	PolterghastQuest: {
 		DisplayName: Полтергаст
 		Description: Победить Полтергаста
-		QuestObjective.Description: Победить Полтергаста
 		DetailedDescription: Монстр, созданный из скопления душ, погибших в Темнице. Усмирите их гнев.
 	}
 
 	PrimordialWyrmQuest: {
 		DisplayName: Первозданный змий
 		Description: Победить Первозданного змия
-		QuestObjective.Description: Победить Первозданного змия
 		DetailedDescription: Страж глубочайшего слоя Бездны. Существо более древнее, чем сами боги. Не беспокойте его без необходимости.
 	}
 
 	ProfanedGuardiansQuest: {
 		DisplayName: Оскверненные стражи
 		Description: Победить Оскверненных стражей
-		QuestObjective.Description: Победить Оскверненных стражей
 		DetailedDescription: Верные защитники Оскверненной богини. Победите их, чтобы ослабить защиту божества.
 	}
 
 	ProvidenceQuest: {
 		DisplayName: Провиденс
 		Description: Победить Провиденс
-		QuestObjective.Description: Победить Провиденс
 		DetailedDescription: Богиня, управляющая священным огнем и очищением. Бросьте ей вызов в Святых землях или в Аду, но берегитесь её испепеляющего пламени.
 	}
 
 	SignusQuest: {
 		DisplayName: Сигнус
 		Description: Победить Сигнуса
-		QuestObjective.Description: Победить Сигнуса
 		DetailedDescription: Один из стражей Пожирателя богов, невидимый убийца, призрак пустоты.
 	}
 
 	StormWeaverQuest: {
 		DisplayName: Штормовой ткач
 		Description: Победить Штормового ткача
-		QuestObjective.Description: Победить Штормового ткача
 		DetailedDescription: Один из стражей Пожирателя богов, небесный червь, питающийся грозами и молниями.
 	}
 
 	SupremeCalamitasQuest: {
 		DisplayName: Высшая Каламитас
 		Description: Победить Высшую Каламитас
-		QuestObjective.Description: Победить Высшую Каламитас
 		DetailedDescription: Легендарная серная ведьма. Это конец вашего пути или начало нового? Приготовьтесь встретить настоящий пулевой ад.
 	}
 
 	YharonQuest: {
 		DisplayName: Ярон, Дракон джунглей
 		Description: Победить Ярона, Дракона джунглей
-		QuestObjective.Description: Победить Ярона, Дракона джунглей
 		DetailedDescription: Верный соратник Тирана, дракон, обладающий способностью феникса к возрождению. Это испытание для вашей души.
 	}
 
 	BatteryQuest: {
 		DisplayName: Хранение энергии
 		Description: Создать термальную батарею
-		QuestObjective.Description: Получить термальную батарею
 		DetailedDescription: Произведенное электричество нужно хранить. Создание батареи — первый шаг к построению стабильной энергосети.
 	}
 
 	HydroelectricQuest: {
 		DisplayName: Чистая энергия
 		Description: Создать гидроэлектрогенератор
-		QuestObjective.Description: Получить гидроэлектрогенератор
 		DetailedDescription: Используйте силу текущей воды для выработки электричества. Это чистый и устойчивый источник энергии.
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: Промышленная революция
 		Description: Создать ветряной генератор
-		QuestObjective.Description: Получить ветряной генератор
 		DetailedDescription: Первый шаг к автоматизации. Используйте энергию ветра, чтобы привести машины в действие и освободить свои руки.
 	}
 
 	ItemFilterQuest: {
 		DisplayName: Сортировка логистики
 		Description: Создать предметный фильтр
-		QuestObjective.Description: Получить предметный фильтр
 		DetailedDescription: Автоматизированные линии требуют порядка. Используйте фильтры для точного контроля потока предметов.
 	}
 
 	MiningMachineQuest: {
 		DisplayName: Автоматизированная добыча
 		Description: Создать буровую установку
-		QuestObjective.Description: Получить буровую установку
 		DetailedDescription: Попрощайтесь с утомительной ручной копкой. Эта машина способна поглощать рудные жилы с невероятной эффективностью.
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: Глубокое бурение
 		Description: Создать буровую установку MK2
-		QuestObjective.Description: Получить буровую установку MK2
 		DetailedDescription: Усиленное энергетическое ядро обеспечивает непревзойденную скорость бурения.
 	}
 
 	PipelineQuest: {
 		DisplayName: Передача энергии
 		Description: Создать универсальный энергопровод
-		QuestObjective.Description: Получить универсальный энергопровод
 		DetailedDescription: Кровеносные сосуды, соединяющие генераторы и машины. Без них электричество — это лишь застоявшаяся вода.
 	}
 
 	TeslaTowerQuest: {
 		DisplayName: Башня магнитной бури
 		Description: Создать Башню Теслы
-		QuestObjective.Description: Получить Башню Теслы
 		DetailedDescription: Венец технологий Дрэйдона. Эта башня обеспечивает беспроводную передачу энергии, полностью меняя ваш подход к прокладке сетей.
 	}
 
 	ThermalPowerQuest: {
 		DisplayName: Время сжигать
 		Description: Создать тепловой электрогенератор
-		QuestObjective.Description: Получить тепловой электрогенератор
 		DetailedDescription: Сжигайте топливо для получения большого количества энергии. Пусть это и не экологично, но на ранних этапах это самый надежный источник энергии.
 	}
 
 	AnnihilatingUniverseQuest: {
-		QuestObjective.Description: Получить Вселенское аннигилирование
 		DisplayName: Вселенское аннигилирование
 		Description: Получить "Вселенское аннигилирование"
 		DetailedDescription: Сила галактик, сжатая в тетиве лука. Это оружие обладает мощью, способной разрушать космические измерения, доказывая превосходство стрелка.
 	}
 
 	AriaofTheCosmosQuest: {
-		QuestObjective.Description: Получить Арию Космоса
 		DisplayName: Ария Космоса
 		Description: Получить "Арию Космоса"
 		DetailedDescription: Сыграйте симфонию звезд. Эта магическая книга призывает черные дыры и квазары, заставляя врагов исчезать под песнь вселенной.
 	}
 
 	DarkMatterCompressorQuest: {
-		QuestObjective.Description: Получить компрессор темной материи
 		DisplayName: Компрессор темной материи
 		Description: Получить компрессор темной материи
 		DetailedDescription: Управляйте самым загадочным веществом во вселенной. Эта машина сжимает темную материю в сверхплотные энергетические сферы для продвинутого синтеза.
 	}
 
 	InfiniteIngotQuest: {
-		QuestObjective.Description: Получить бесконечный слиток
 		DisplayName: Бесконечный слиток
 		Description: Выковать бесконечный слиток
 		DetailedDescription: Металл, превосходящий закон сохранения массы. Это краеугольный камень абсолютной силы, таящий в себе безграничные возможности.
 	}
 
 	InfinitePickQuest: {
-		QuestObjective.Description: Получить бесконечную кирку
 		DisplayName: Бесконечная кирка
 		Description: Получить бесконечную кирку
 		DetailedDescription: Ничто не может остановить эту кирку. Она может вскопать всё, даже коренную породу мира.
 	}
 
 	InfiniteToiletQuest: {
-		QuestObjective.Description: Получить бесконечный унитаз
 		DisplayName: Бесконечный унитаз
 		Description: Получить бесконечный унитаз
 		DetailedDescription: Трон богов. Звучит нелепо, но он действительно символизирует некую... высшую власть.
 	}
 
 	InfinityCatalystQuest: {
-		QuestObjective.Description: Получить бесконечный катализатор
 		DisplayName: Бесконечный катализатор
 		Description: Получить бесконечный катализатор
 		DetailedDescription: Ключевой катализатор для запуска бесконечной реакции. Он позволяет материи циклировать между аннигиляцией и возрождением, генерируя колоссальную энергию.
 	}
 
 	NeutronBowQuest: {
-		QuestObjective.Description: Получить нейтронный лук
 		DisplayName: Нейтронный лук
 		Description: Получить нейтронный лук
 		DetailedDescription: Лук, выкованный из осколков ядра нейтронной звезды. Каждая стрела несет в себе гравитацию коллапсирующей звезды.
 	}
 
 	NeutronGlaiveQuest: {
-		QuestObjective.Description: Получить нейтронную глефу
 		DisplayName: Нейтронная глефа
 		Description: Получить нейтронную глефу
 		DetailedDescription: Древковое оружие невероятной плотности. Чтобы владеть им, нужна огромная сила, но ни одна броня не выдержит его удара.
 	}
 
 	NeutronGunQuest: {
-		QuestObjective.Description: Получить нейтронную пушку
 		DisplayName: Нейтронная пушка
 		Description: Получить нейтронную пушку
 		DetailedDescription: Оружие, стреляющее потоками микро-нейтронов. Из-за сверхвысокой плотности пули практически не испытывают сопротивления.
 	}
 
 	NeutronScytheQuest: {
-		QuestObjective.Description: Получить нейтронную косу
 		DisplayName: Нейтронная коса
 		Description: Получить нейтронную косу
 		DetailedDescription: Инструмент жатвы самой Смерти. Она легко разрывает пространство, скашивая жизни, словно пшеницу.
 	}
 
 	NeutronStarIngotQuest: {
-		QuestObjective.Description: Получить нейтронный слиток
 		DisplayName: Нейтронный слиток
 		Description: Получить нейтронный слиток
 		DetailedDescription: Одно из самых плотных веществ во вселенной. Этот металл невообразимо тяжел и гудит от гравитационных колебаний.
 	}
 
 	NeutronWandQuest: {
-		QuestObjective.Description: Получить нейтронный жезл
 		DisplayName: Нейтронный жезл
 		Description: Получить нейтронный жезл
 		DetailedDescription: Посох, управляющий гравитацией. Используйте силу нейтронной звезды, чтобы искажать пространство-время и сокрушать врагов.
 	}
 
 	PandemoniumQuest: {
-		QuestObjective.Description: Получить Пандемониум
 		DisplayName: Пандемониум
 		Description: Получить "Пандемониум"
 		DetailedDescription: Абсолютное оружие, впитавшее бесчисленные души и силу бедствия. Держа его, вы держите ключи от Ада и Бездны.
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Получить Древний вечный камень
 		DisplayName: Древний вечный камень
 		Description: Получить Древний вечный камень
 		DetailedDescription: С виду обычный камень, но он был свидетелем бесчисленных циклов конца света. Это символ вечной стойкости.
 	}
 
 	TerminusQuest: {
-		QuestObjective.Description: Получить Терминус
 		DisplayName: Терминус
 		Description: Получить Терминус
 		DetailedDescription: Ключ к финальному испытанию. Взгляните в этот камень и приготовьтесь к серии судов от сильнейших существ этого мира.
 	}
 
 	TransmutationOfMatterQuest: {
-		QuestObjective.Description: Получить стол трансмутации материи
 		DisplayName: Стол трансмутации материи
 		Description: Получить стол трансмутации материи
 		DetailedDescription: Высшая форма алхимии. Эта машина нарушает принципы равноценного обмена, позволяя трансформировать материю по воле владельца или даже создавать её из ничего.
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Получить Лук Бесконечности
 		DisplayName: Лук Бесконечности
 		Description: Получить Лук Бесконечности
 		DetailedDescription: Длинный лук, когда-то сразивший богов. Теперь он снова явлен миру.
 	}
 
 	SpearOfLonginusQuest: {
-		QuestObjective.Description: Получить Копье Лонгина
 		DisplayName: Копье Лонгина
 		Description: Получить Копье Лонгина
 		DetailedDescription: Легендарное святое копье, пронзившее бога, обладающее властью пробивать любые силовые поля и абсолютные барьеры. Когда его метают, даже закон причинности уступает ему дорогу.
 	}
 
 	DragonsWordQuest: {
-		QuestObjective.Description: Получить Слово дракона
 		DisplayName: Слово дракона
 		Description: Получить Слово дракона
 		DetailedDescription: Дракон плачет лишь раз в жизни — в момент своей смерти.
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
 		DisplayName: Цикл войны
 		Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
 		DetailedDescription: Символ истинного воина.
@@ -541,14 +480,12 @@ QuestNode: {
 	AquaticScourgeQuest: {
 		DisplayName: Акватический бич
 		Description: Победить Акватического бича
-		QuestObjective.Description: Победить Акватического бича
 		DetailedDescription: Некогда мирный гигант чистых вод, теперь искаженный токсинами Сернистого моря. В этих загрязненных кислотных водах остерегайтесь его внезапных рывков и ядовитых облаков.
 	}
 
 	QueenSlimeQuest: {
 		DisplayName: Королева слизней
 		Description: Победить Королеву слизней
-		QuestObjective.Description: Победить Королеву слизней
 		DetailedDescription: Кристальная императрица Святых земель, управляющая всеми святыми гелевыми существами. Она гораздо быстрее и смертоноснее своего супруга. Приготовьтесь к великолепному шквалу снарядов.
 	}
 
@@ -681,49 +618,42 @@ QuestNode: {
 	QueenBeeQuest: {
 		DisplayName: Королева пчел
 		Description: Победить Королеву пчел
-		QuestObjective.Description: Победить Королеву пчел
 		DetailedDescription: В глубине подземных джунглей, в огромном улье, уничтожение личинки разгневает правительницу всего роя. Приготовьте противоядия и остерегайтесь её жал и скоростных рывков.
 	}
 
 	CollectorQuest: {
 		DisplayName: Помощник-сборщик
 		Description: Получить Сборщика
-		QuestObjective.Description: Получить Сборщика
 		DetailedDescription: Устали наклоняться за каждым трофеем? Это устройство автоматически собирает предметы вокруг. Это ключевой компонент для создания автоматизированной логистики и систем сортировки, полностью освобождающий ваши руки.
 	}
 
 	LumberjackQuest: {
 		DisplayName: Время рубить
 		Description: Получить Дровосека
-		QuestObjective.Description: Получить Дровосека
 		DetailedDescription: Древесина — основа промышленности и строительства. Забудьте о примитивных топорах, эта машина использует электричество для автоматического управления вашей лесофермой, обеспечивая непрерывный поток древесины.
 	}
 
 	LifeWeaverQuest: {
 		DisplayName: Озеленение
 		Description: Получить Сажатель деревьев
-		QuestObjective.Description: Получить Сажатель деревьев
 		DetailedDescription: Восстановление лесов обычно идет медленно. Эта машина использует электричество для точной посадки саженцев, быстро возвращая жизнь на пустынные земли. Это последний элемент пазла для создания полностью автоматической цикличной лесофермы.
 	}
 
 	IncineratorQuest: {
 		DisplayName: Электрическая плавильня
 		Description: Создать электрический инсинератор
-		QuestObjective.Description: Получить электрический инсинератор
 		DetailedDescription: Традиционные печи неэффективны и тратят впустую много минеральной эссенции. Эта машина использует экстремальные температуры высоковольтной дуги для полного расщепления руды, извлекая вдвое больше продукта, чем раньше. Это решающий шаг к индустриализации.
 	}
 
 	ItemPipelineQuest: {
 		DisplayName: Логистическая система
 		Description: Создать логистическую трубу
-		QuestObjective.Description: Получить логистическую трубу
 		DetailedDescription: Всё еще бегаете между сундуками как дикарь? Эти трубы — вены промышленности. Соедините ими машины и контейнеры, и наблюдайте, как предметы сами текут туда, куда нужно. Постройте автоматизированную сборочную линию.
 	}
 
 	ThrowerQuest: {
 		DisplayName: Выбрасыватель
 		Description: Создать выбрасыватель
-		QuestObjective.Description: Получить выбрасыватель
 		DetailedDescription: Не все предметы стоит хранить. Это устройство выводит предметы из логистической сети, выбрасывая их в мир. Будь то для специфического автокрафта (например, сброс предметов в жидкость) или просто как мусоропровод — оно отлично справится.
 	}
 }

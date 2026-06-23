@@ -10,55 +10,47 @@ QuestNode: {
 		DisplayName: Fundamentos de minería
 		Description: Obtén diez {0}
 		DetailedDescription: El subsuelo guarda riqueza infinita; primero necesitamos metales básicos para herramientas.
-		QuestObjective.Description: Recolecta diez {0}
 	}
 
 	MiningQuestII: {
 		DisplayName: Edad del hierro
 		Description: Recolecta cincuenta {0}
-		QuestObjective.Description: Recolecta cincuenta {0}
 		DetailedDescription: El cobre es demasiado blando; necesitamos metales más duros. Baja más para encontrar vetas de hierro.
 	}
 
 	MiningQuestIII: {
 		DisplayName: Fiebre del oro
 		Description: Recolecta cien {0}
-		QuestObjective.Description: Recolecta cien {0}
 		DetailedDescription: El oro no es solo moneda: conduce bien la magia y es dúctil; más blando que el hierro, pero clave para equipo avanzado.
 	}
 
 	BrimstoneElementalQuest: {
 		DisplayName: Elemental de Azufre
 		Description: Derrota al elemental de azufre
-		QuestObjective.Description: Derrota al elemental de azufre
 		DetailedDescription: En las ruinas del risco de azufre, despierta y vence al espíritu elemental dormido; cuidado con su infierno de proyectiles.
 	}
 
 	CalamitasCloneQuest: {
 		DisplayName: Clon de Calamitas
 		Description: Derrota al Clon de Calamitas
-		QuestObjective.Description: Derrota al Clon de Calamitas
 		DetailedDescription: Un clon lleno de odio y destrucción; véncelo para demostrar que mereces enfrentar a la verdadera bruja.
 	}
 
 	CrabulonQuest: {
 		DisplayName: Crabulon
 		Description: Derrota a Crabulon
-		QuestObjective.Description: Derrota a Crabulon
 		DetailedDescription: En el subsuelo fúngico acecha un cangrejo gigante infestado; sus esporas son muy peligrosas.
 	}
 
 	CryogenQuest: {
 		DisplayName: Criógeno
 		Description: Derrota a Criógeno
-		QuestObjective.Description: Derrota a Criógeno
 		DetailedDescription: El antiguo archimago del cosmos está sellado en hielo eterno; libéralo y véncelo.
 	}
 
 	DesertScourgeQuest: {
 		DisplayName: Azote del desierto
 		Description: Derrota al azote del desierto
-		QuestObjective.Description: Derrota al azote del desierto
 		DetailedDescription: El antiguo tirano de los mares ahora agoniza en el desierto seco; cuidado con sus mandíbulas y secuaces.
 	}
 
@@ -72,14 +64,12 @@ QuestNode: {
 	EyeofCthulhuQuest: {
 		DisplayName: Ojo de Cthulhu
 		Description: Derrota al Ojo de Cthulhu
-		QuestObjective.Description: Derrota al Ojo de Cthulhu
 		DetailedDescription: Mientras sientas esa mirada maligna, aparecerá; es tu primera prueba de verdad.
 	}
 
 	GolemQuest: {
 		DisplayName: Gólem
 		Description: Derrota al Gólem
-		QuestObjective.Description: Derrota al Gólem
 		DetailedDescription: En el templo de la jungla yace una máquina de guerra antigua; cuidado con láseres y puños.
 	}
 
@@ -93,14 +83,12 @@ QuestNode: {
 	KingSlimeQuest: {
 		DisplayName: Rey Slime
 		Description: Derrota al Rey Slime
-		QuestObjective.Description: Derrota al Rey Slime
 		DetailedDescription: El rey de los gelatinosos; parece cómico, pero no dejes que su tamaño te aplaste.
 	}
 
 	LunaticCultistQuest: {
 		DisplayName: Cultista lunático
 		Description: Derrota al cultista lunático
-		QuestObjective.Description: Derrota al cultista lunático
 		DetailedDescription: En la entrada de la mazmorra, fanáticos intentan evitar o provocar el apocalipsis; detén el ritual.
 	}
 
@@ -114,341 +102,292 @@ QuestNode: {
 	MoonLordQuest: {
 		DisplayName: Señor de la Luna
 		Description: Derrota al Señor de la Luna
-		QuestObjective.Description: Derrota al Señor de la Luna
 		DetailedDescription: La mente detrás de todo, el terror del lado oscuro de la luna; acaba con esta pesadilla.
 	}
 
 	PlaguebringerGoliathQuest: {
 		DisplayName: La Goliat Traeplagas
 		Description: Derrota a La Goliat Traeplagas
-		QuestObjective.Description: Derrota a La Goliat Traeplagas
 		DetailedDescription: Una abeja reina modificada por nanovirus; mortal y cargada de peste.
 	}
 
 	PlanteraQuest: {
 		DisplayName: Plantera
 		Description: Derrota a Plantera
-		QuestObjective.Description: Derrota a Plantera
 		DetailedDescription: En lo profundo de la jungla duerme una flor devoradora; rompe el bulbo y enfréntate a su furia.
 	}
 
 	SkeletronQuest: {
 		DisplayName: Skeletron
 		Description: Derrota a Skeletron
-		QuestObjective.Description: Derrota a Skeletron
 		DetailedDescription: Solo venciendo a este anciano maldito podrás entrar con seguridad en la mazmorra.
 	}
 
 	SlimeGodQuest: {
 		DisplayName: Dios Slime
 		Description: Derrota al Dios Slime
-		QuestObjective.Description: Derrota al Dios Slime
 		DetailedDescription: La cima de la especie slime, un dios antiguo y voraz; cuidado con sus avatares combinados.
 	}
 
 	WallofFleshQuest: {
 		DisplayName: Muro carnoso
 		Description: Derrota a Muro carnoso
-		QuestObjective.Description: Derrota a Muro carnoso
 		DetailedDescription: El guardián del mundo. Arroja el muñeco vudú del guía a la lava para liberar a la antigua deidad de este mundo y abrir el modo difícil.
 	}
 
 	CeaselessVoidQuest: {
 		DisplayName: Vacío Perpetuo
 		Description: Derrota a Vacío Perpetuo
-		QuestObjective.Description: Derrota a Vacío Perpetuo
 		DetailedDescription: Centinela del Devorador de Dioses, espejo del vacío de otra dimensión.
 	}
 
 	DevourerofGodsQuest: {
 		DisplayName: Devorador de Dioses
 		Description: Derrota al Devorador de Dioses
-		QuestObjective.Description: Derrota al Devorador de Dioses
 		DetailedDescription: Una serpiente cósmica hambrienta de divinidad; combátela en el vacío sin dejar que te trague.
 	}
 
 	DragonfollyQuest: {
 		DisplayName: Locura dracónica
 		Description: Derrota a la locura dracónica
-		QuestObjective.Description: Derrota a la locura dracónica
 		DetailedDescription: Un fallido clon de Yharon, un pseudodragón loco y electrizado.
 	}
 
 	ExoMechsQuest: {
 		DisplayName: Exo Mecánicos
 		Description: Derrota a los Exo Mecánicos
-		QuestObjective.Description: Derrota a los Exo Mecánicos
 		DetailedDescription: Las obras maestras de Draedon, cénit de la tecnología terrariana; sobrevive a la función perfecta.
 	}
 
 	OldDukeQuest: {
 		DisplayName: El Viejo Duque
 		Description: Derrota a El Viejo Duque
-		QuestObjective.Description: Derrota a El Viejo Duque
 		DetailedDescription: El antiguo señor de las profundidades del Mar de Azufre; cuidado con su vapor tóxico.
 	}
 
 	PolterghastQuest: {
 		DisplayName: Polterghast
 		Description: Derrota a Polterghast
-		QuestObjective.Description: Derrota a Polterghast
 		DetailedDescription: Almas vengativas de la mazmorra reunidas en un monstruo; calma su furia.
 	}
 
 	PrimordialWyrmQuest: {
 		DisplayName: Guiverno primordial
 		Description: Derrota al guiverno primordial
-		QuestObjective.Description: Derrota al guiverno primordial
 		DetailedDescription: Guardián del fondo del abismo, más antiguo que los dioses; no lo molestes sin necesidad.
 	}
 
 	ProfanedGuardiansQuest: {
 		DisplayName: Guardianes profanados
 		Description: Derrota a los guardianes profanados
-		QuestObjective.Description: Derrota a los guardianes profanados
 		DetailedDescription: Leales guardianes de la Diosa Profanada; derrotales para debilitar sus defensas.
 	}
 
 	ProvidenceQuest: {
 		DisplayName: Providence, la Diosa Profanada
 		Description: Derrota a Providence
-		QuestObjective.Description: Derrota a Providence
 		DetailedDescription: Diosa del fuego sagrado y la purificación; desafíala en el Sagrado o el Inframundo sin quemarte.
 	}
 
 	SignusQuest: {
 		DisplayName: Signus, Enviado del Devorador
 		Description: Derrota a Signus
-		QuestObjective.Description: Derrota a Signus
 		DetailedDescription: Centinela del Devorador de Dioses, asesino sin forma, fantasma del vacío.
 	}
 
 	StormWeaverQuest: {
 		DisplayName: Tejedor de tormentas
 		Description: Derrota al tejedor de tormentas
-		QuestObjective.Description: Derrota al tejedor de tormentas
 		DetailedDescription: Centinela del Devorador de Dioses, gusano del cielo que se alimenta de rayos.
 	}
 
 	SupremeCalamitasQuest: {
 		DisplayName: Calamitas Suprema
 		Description: Derrota a Calamitas Suprema
-		QuestObjective.Description: Derrota a Calamitas Suprema
 		DetailedDescription: La legendaria Bruja del Azufre; ¿fin del viaje o nuevo comienzo? Prepárate para el infierno de proyectiles.
 	}
 
 	YharonQuest: {
 		DisplayName: Yharon, dragón del renacimiento
 		Description: Derrota a Yharon
-		QuestObjective.Description: Derrota a Yharon
 		DetailedDescription: El fiel compañero del Tirano, dragón con renacer de fénix; prueba del alma.
 	}
 
 	BatteryQuest: {
 		DisplayName: Almacenamiento de energía
 		Description: Fabrica una batería térmica
-		QuestObjective.Description: Obtén una batería térmica
 		DetailedDescription: La electricidad debe almacenarse; las baterías son el primer paso de una red estable.
 	}
 
 	HydroelectricQuest: {
 		DisplayName: Energía limpia
 		Description: Fabrica un generador hidroeléctrico
-		QuestObjective.Description: Obtén un generador hidroeléctrico
 		DetailedDescription: Aprovecha el agua en movimiento para generar electricidad de forma limpia y sostenible.
 	}
 
 	IndustrialStartQuest: {
 		DisplayName: Revolución industrial
 		Description: Fabrica un generador eólico
-		QuestObjective.Description: Obtén un generador eólico
 		DetailedDescription: Primer paso hacia la automatización: usa el viento para mover tus máquinas.
 	}
 
 	ItemFilterQuest: {
 		DisplayName: Clasificación logística
 		Description: Fabrica un filtro de objetos
-		QuestObjective.Description: Obtén un filtro de objetos
 		DetailedDescription: Las líneas automáticas necesitan orden; controla el flujo con filtros.
 	}
 
 	MiningMachineQuest: {
 		DisplayName: Excavación automática
 		Description: Fabrica una máquina minera
-		QuestObjective.Description: Obtén una máquina minera
 		DetailedDescription: Olvida la minería manual; esta máquina devora vetas con eficiencia asombrosa.
 	}
 
 	MiningMachineIIQuest: {
 		DisplayName: Perforación profunda
 		Description: Fabrica una máquina minera MK2
-		QuestObjective.Description: Obtén una máquina minera MK2
 		DetailedDescription: Un núcleo reforzado ofrece velocidad sin igual.
 	}
 
 	PipelineQuest: {
 		DisplayName: Transmisión de energía
 		Description: Fabrica tuberías de energía universal
-		QuestObjective.Description: Obtén tuberías de energía universal
 		DetailedDescription: Las venas entre generadores y máquinas; sin ellas la electricidad no circula.
 	}
 
 	TeslaTowerQuest: {
 		DisplayName: Torre de tormenta magnética
 		Description: Fabrica una torre Tesla
-		QuestObjective.Description: Obtén una torre Tesla
 		DetailedDescription: Tecnología de Draedon; transmite energía sin cables y cambia tu diseño eléctrico.
 	}
 
 	ThermalPowerQuest: {
 		DisplayName: Hora de quemar
 		Description: Fabrica un generador térmico
-		QuestObjective.Description: Obtén un generador térmico
 		DetailedDescription: Quema combustible para mucha energía; poco ecológico, pero fiable al principio.
 	}
 
 	AnnihilatingUniverseQuest: {
-		QuestObjective.Description: Obtén el Aniquilador del universo
 		DisplayName: Aniquilador del universo
 		Description: Obtén el «Aniquilador del universo»
 		DetailedDescription: Comprime el poder de galaxias en una cuerda de arco; destruye dimensiones, la prueba suprema del arquero.
 	}
 
 	AriaofTheCosmosQuest: {
-		QuestObjective.Description: Obtén la Aria del cosmos
 		DisplayName: Aria del cosmos
 		Description: Obtén la «Aria del cosmos»
 		DetailedDescription: Toca la sinfonía de las estrellas; invoca agujeros negros y cuásares hasta disolver a los enemigos.
 	}
 
 	DarkMatterCompressorQuest: {
-		QuestObjective.Description: Obtén el compresor de materia oscura
 		DisplayName: Compresor de materia oscura
 		Description: Obtén el compresor de materia oscura
 		DetailedDescription: Manipula la materia más misteriosa; comprime materia oscura en esferas de alta densidad.
 	}
 
 	InfiniteIngotQuest: {
-		QuestObjective.Description: Obtén lingote infinito
 		DisplayName: Lingote infinito
 		Description: Forja lingote infinito
 		DetailedDescription: Un metal que trasciende la conservación de la masa; piedra angular del poder supremo.
 	}
 
 	InfinitePickQuest: {
-		QuestObjective.Description: Obtén pico infinito
 		DisplayName: Pico infinito
 		Description: Obtén pico infinito
 		DetailedDescription: Nada lo detiene; puede minar hasta el lecho rocoso del mundo.
 	}
 
 	InfiniteToiletQuest: {
-		QuestObjective.Description: Obtén retrete infinito
 		DisplayName: Retrete infinito
 		Description: Obtén retrete infinito
 		DetailedDescription: El trono de los dioses; absurdo, pero simboliza un poder supremo.
 	}
 
 	InfinityCatalystQuest: {
-		QuestObjective.Description: Obtén catalizador infinito
 		DisplayName: Catalizador infinito
 		Description: Obtén catalizador infinito
 		DetailedDescription: Clave para la reacción infinita; la materia cicla entre aniquilación y renacimiento.
 	}
 
 	NeutronBowQuest: {
-		QuestObjective.Description: Obtén arco de neutrones
 		DisplayName: Arco de neutrones
 		Description: Obtén arco de neutrones
 		DetailedDescription: Forjado con fragmentos del núcleo de una estrella de neutrones; cada flecha lleva gravedad colapsada.
 	}
 
 	NeutronGlaiveQuest: {
-		QuestObjective.Description: Obtén guja de neutrones
 		DisplayName: Guja de neutrones
 		Description: Obtén guja de neutrones
 		DetailedDescription: Densidad asombrosa; ninguna armadura resiste su tajo.
 	}
 
 	NeutronGunQuest: {
-		QuestObjective.Description: Obtén rifle de neutrones
 		DisplayName: Rifle de neutrones
 		Description: Obtén rifle de neutrones
 		DetailedDescription: Dispara microflujos de neutrones casi sin resistencia.
 	}
 
 	NeutronScytheQuest: {
-		QuestObjective.Description: Obtén guadaña de neutrones
 		DisplayName: Guadaña de neutrones
 		Description: Obtén guadaña de neutrones
 		DetailedDescription: La herramienta del segador; siega la vida como trigo.
 	}
 
 	NeutronStarIngotQuest: {
-		QuestObjective.Description: Obtén lingote de estrella de neutrones
 		DisplayName: Lingote de estrella de neutrones
 		Description: Obtén lingote de estrella de neutrones
 		DetailedDescription: Uno de los materiales más densos del universo; vibra con fluctuaciones gravitatorias.
 	}
 
 	NeutronWandQuest: {
-		QuestObjective.Description: Obtén varita de neutrones
 		DisplayName: Varita de neutrones
 		Description: Obtén varita de neutrones
 		DetailedDescription: Controla la gravedad y deforma el espacio-tiempo.
 	}
 
 	PandemoniumQuest: {
-		QuestObjective.Description: Obtén Pandemonium
 		DisplayName: Pandemonium
 		Description: Obtén «Pandemonium»
 		DetailedDescription: Arma definitiva que fusiona almas y poder calamitoso; llaves del infierno y el abismo.
 	}
 
 	RockQuest: {
-		QuestObjective.Description: Obtén piedra eternita antigua
 		DisplayName: Piedra eternita antigua
 		Description: Obtén piedra eternita antigua
 		DetailedDescription: Una piedra aparentemente común que ha visto innumerables ciclos del desafío final; símbolo de perseverancia eterna.
 	}
 
 	TerminusQuest: {
-		QuestObjective.Description: Obtén piedra del fin
 		DisplayName: Piedra del fin
 		Description: Obtén piedra del fin
 		DetailedDescription: Llave del desafío final; contempla la piedra y enfrenta a los seres más fuertes del mundo.
 	}
 
 	TransmutationOfMatterQuest: {
-		QuestObjective.Description: Obtén transmutador de materia
 		DisplayName: Transmutador de materia
 		Description: Obtén transmutador de materia
 		DetailedDescription: Alquimia suprema que rompe el intercambio equivalente y crea de la nada.
 	}
 
 	HeavenfallLongbowQuest: {
-		QuestObjective.Description: Obtén arco infinito
 		DisplayName: Arco infinito
 		Description: Obtén arco infinito
 		DetailedDescription: Un arco que derribó dioses; vuelve al mundo.
 	}
 
 	SpearOfLonginusQuest: {
-		QuestObjective.Description: Obtén lanza de Longino
 		DisplayName: Lanza de Longino
 		Description: Obtén lanza de Longino
 		DetailedDescription: La lanza sagrada que perforó a un dios; atraviesa campos y dominios absolutos.
 	}
 
 	DragonsWordQuest: {
-		QuestObjective.Description: Obtén palabra del dragón
 		DisplayName: Palabra del dragón
 		Description: Obtén palabra del dragón
 		DetailedDescription: Un dragón solo llora una vez en la vida, al morir.
 	}
 
 	RockQuestII: {
-		QuestObjective.Description: Completa la oleada de jefes cinco veces y obtén al menos cinco piedras eternita antiguas
 		DisplayName: Ciclo de conquista
 		Description: Completa la oleada de jefes cinco veces y obtén al menos cinco piedras eternita antiguas
 		DetailedDescription: Símbolo del verdadero guerrero
@@ -541,14 +480,12 @@ QuestNode: {
 	AquaticScourgeQuest: {
 		DisplayName: Azote acuático
 		Description: Derrota al azote acuático
-		QuestObjective.Description: Derrota al azote acuático
 		DetailedDescription: Antes leviatán pacífico del océano claro, ahora retorcido por el Mar de Azufre; cuidado con cargas y nubes tóxicas.
 	}
 
 	QueenSlimeQuest: {
 		DisplayName: Reina Slime
 		Description: Derrota a la Reina Slime
-		QuestObjective.Description: Derrota a la Reina Slime
 		DetailedDescription: Emperatriz cristalina del Sagrado; más ágil y letal que su consorte; prepárate para un barrage espectacular.
 	}
 
@@ -681,49 +618,42 @@ QuestNode: {
 	QueenBeeQuest: {
 		DisplayName: Abeja reina
 		Description: Derrota a la Abeja reina
-		QuestObjective.Description: Derrota a la Abeja reina
 		DetailedDescription: Romper la larva en la colmena de la jungla enfurece a la reina; antídoto y esquivar aguijones.
 	}
 
 	CollectorQuest: {
 		DisplayName: Asistente recolector
 		Description: Obtén el recolector
-		QuestObjective.Description: Obtén el recolector
 		DetailedDescription: Recoge botín automáticamente; pieza clave de la logística automatizada.
 	}
 
 	LumberjackQuest: {
 		DisplayName: Hora de talar
 		Description: Obtén el leñador
-		QuestObjective.Description: Obtén el leñador
 		DetailedDescription: La madera es base industrial; esta máquina automatiza el bosque con electricidad.
 	}
 
 	LifeWeaverQuest: {
 		DisplayName: Reforestación
 		Description: Obtén el plantador de árboles
-		QuestObjective.Description: Obtén el plantador de árboles
 		DetailedDescription: Planta árboles con precisión eléctrica; última pieza del bosque automático.
 	}
 
 	IncineratorQuest: {
 		DisplayName: Fundición eléctrica
 		Description: Fabrica un incinerador eléctrico
-		QuestObjective.Description: Obtén un incinerador eléctrico
 		DetailedDescription: Arcos de alta tensión duplican el rendimiento mineral frente a hornos primitivos.
 	}
 
 	ItemPipelineQuest: {
 		DisplayName: Sistema logístico
 		Description: Fabrica una tubería de objetos
-		QuestObjective.Description: Obtén una tubería de objetos
 		DetailedDescription: Tuberías que conectan máquinas y cofres; olvida correr como un primitivo.
 	}
 
 	ThrowerQuest: {
 		DisplayName: Asistente lanzador
 		Description: Fabrica un lanzador
-		QuestObjective.Description: Obtén un lanzador
 		DetailedDescription: Expulsa objetos de la red logística al mundo; útil para automatizar o desechar.
 	}
 }
