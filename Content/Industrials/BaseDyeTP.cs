@@ -28,26 +28,9 @@ namespace CalamityOverhaul.Content.Industrials
 
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
-            if (tag.TryGet<TagCompound>("DyeSlotItem", out var value)) {
-                DyeSlotItem = ItemIO.Load(value);
-            }
-            else {
-                DyeSlotItem = new();
-            }
-
-            if (tag.TryGet<TagCompound>("BeDyedItem", out var value2)) {
-                BeDyedItem = ItemIO.Load(value2);
-            }
-            else {
-                BeDyedItem = new();
-            }
-
-            if (tag.TryGet<TagCompound>("ResultDyedItem", out var value3)) {
-                ResultDyedItem = ItemIO.Load(value3);
-            }
-            else {
-                ResultDyedItem = new();
-            }
+            DyeSlotItem = CWRSaveData.LoadItemFromTag(tag, "DyeSlotItem", GetType().Name);
+            BeDyedItem = CWRSaveData.LoadItemFromTag(tag, "BeDyedItem", GetType().Name);
+            ResultDyedItem = CWRSaveData.LoadItemFromTag(tag, "ResultDyedItem", GetType().Name);
         }
 
         public override void SendData(ModPacket data) {

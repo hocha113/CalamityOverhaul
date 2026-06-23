@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
@@ -250,9 +251,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 pendingOwnerName = tag.GetString("j");
                 TryResolvePendingOwner();
             }
-            if (tag.ContainsKey("k")) {
-                SaddleItem = ItemIO.Load(tag.Get<TagCompound>("k"));
-            }
+            SaddleItem = CWRSaveData.LoadItemFromTag(tag, "k", nameof(ModifyCrabulon));
 
             //骑乘为会话状态，读档后重置
             Mount = false;

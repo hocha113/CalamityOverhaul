@@ -70,12 +70,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
 
-            if (tag.TryGet<TagCompound>("_ItemFilter", out var value)) {
-                ItemFilter = ItemIO.Load(value);
-            }
-            else {
-                ItemFilter = new Item();
-            }
+            ItemFilter = CWRSaveData.LoadItemFromTag(tag, "_ItemFilter", nameof(CollectorTP));
 
             if (tag.TryGet("_TagItemFullName", out string fullName)) {
                 TagItemSign = VaultUtils.GetItemTypeFromFullName(fullName);

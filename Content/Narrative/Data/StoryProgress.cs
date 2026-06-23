@@ -66,7 +66,9 @@ namespace CalamityOverhaul.Content.Narrative.Data
             if (tag.TryGet("progress", out List<string> progressEntries)) {
                 foreach (string entry in progressEntries) {
                     int eq = entry.LastIndexOf('=');
-                    if (eq > 0 && int.TryParse(entry[(eq + 1)..], out int value)) {
+                    if (eq > 0
+                        && int.TryParse(entry[(eq + 1)..], out int value)
+                        && Enum.IsDefined(typeof(ScenarioProgress), value)) {
                         progress[entry[..eq]] = (ScenarioProgress)value;
                     }
                 }

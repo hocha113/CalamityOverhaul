@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -91,7 +92,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
 
             tag.TryGet(Name + ":" + nameof(IsCollapsed), out IsCollapsed);
             if (tag.TryGet(Name + ":" + "CurrentlyHeldItem", out TagCompound itemTag)) {
-                EnchantmentHandler.CurrentItem = ItemIO.Load(itemTag);
+                EnchantmentHandler.CurrentItem = CWRSaveData.LoadItemTag(itemTag, $"{nameof(EnchantUI)}:CurrentlyHeldItem");
             }
             else {
                 EnchantmentHandler.CurrentItem = new Item();

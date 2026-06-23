@@ -483,6 +483,12 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         private static void PlaceInChest(Chest chest, int itemType) {
+            for (int i = 0; i < chest.item.Length; i++) {
+                if (chest.item[i] != null && chest.item[i].type == itemType) {
+                    return;
+                }
+            }
+
             //优先替换星怒
             for (int i = 0; i < chest.item.Length; i++) {
                 if (chest.item[i] == null || chest.item[i].type == ItemID.Starfury) {

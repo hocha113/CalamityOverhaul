@@ -89,19 +89,8 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
 
-            if (tag.TryGet<TagCompound>("_Item", out var itemTag)) {
-                Item = ItemIO.Load(itemTag);
-            }
-            else {
-                Item = new Item();
-            }
-
-            if (tag.TryGet<TagCompound>("_Empty", out var emptyTag)) {
-                Empty = ItemIO.Load(emptyTag);
-            }
-            else {
-                Empty = new Item();
-            }
+            Item = CWRSaveData.LoadItemFromTag(tag, "_Item", nameof(ChargingStationTP));
+            Empty = CWRSaveData.LoadItemFromTag(tag, "_Empty", nameof(ChargingStationTP));
         }
 
         public override void SetStaticDefaults() => StaticID = ID;

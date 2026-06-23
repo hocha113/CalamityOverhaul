@@ -74,6 +74,12 @@ namespace CalamityOverhaul.Content.RAMSystems
 
         private static void AddChestItem(Chest chest, int itemType) {
             for (int i = 0; i < chest.item.Length; i++) {
+                if (chest.item[i] != null && chest.item[i].type == itemType) {
+                    return;
+                }
+            }
+
+            for (int i = 0; i < chest.item.Length; i++) {
                 Item item = chest.item[i];
                 if (item.type != ItemID.None) {
                     continue;

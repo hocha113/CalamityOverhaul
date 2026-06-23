@@ -140,12 +140,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             try {
-                if (tag.TryGet<TagCompound>("_ItemFilter", out var value)) {
-                    ItemFilter = ItemIO.Load(value);
-                }
-                else {
-                    ItemFilter = new Item();
-                }
+                ItemFilter = CWRSaveData.LoadItemFromTag(tag, "_ItemFilter", nameof(OceanRaidersTP));
 
                 //加载存储的物品
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
@@ -154,7 +149,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 
                 storedItems.Clear();
                 foreach (var itemTag in itemTags) {
-                    storedItems.Add(ItemIO.Load(itemTag));
+                    storedItems.Add(CWRSaveData.LoadItemTag(itemTag, $"{nameof(OceanRaidersTP)}:itemTags"));
                 }
             } catch (Exception ex) {
                 VaultMod.Instance.Logger.Error($"OceanRaidersTP.LoadData Error: {ex.Message}");

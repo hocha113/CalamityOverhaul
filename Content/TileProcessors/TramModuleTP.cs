@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Tiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
@@ -127,7 +128,7 @@ namespace CalamityOverhaul.Content.TileProcessors
                 Item[] fixedItems = new Item[ITEM_COUNT];
                 int loadCount = Math.Min(itemTags.Count, ITEM_COUNT);
                 for (int i = 0; i < loadCount; i++) {
-                    fixedItems[i] = ItemIO.Load(itemTags[i]);
+                    fixedItems[i] = CWRSaveData.LoadItemTag(itemTags[i], $"{nameof(TramModuleTP)}:itemTags[{i}]");
                 }
                 for (int i = loadCount; i < ITEM_COUNT; i++) {
                     fixedItems[i] = new Item();

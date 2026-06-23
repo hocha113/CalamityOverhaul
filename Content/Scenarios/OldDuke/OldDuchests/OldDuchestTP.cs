@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests
 
                 storedItems.Clear();
                 foreach (var itemTag in itemTags) {
-                    storedItems.Add(ItemIO.Load(itemTag));
+                    storedItems.Add(CWRSaveData.LoadItemTag(itemTag, $"{nameof(OldDuchestTP)}:itemTags"));
                 }
 
                 //加载刷新数据

@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -161,7 +162,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 if (tag.TryGet("_StoredItems", out List<TagCompound> itemTags)) {
                     StoredItems.Clear();
                     foreach (var itemTag in itemTags) {
-                        StoredItems.Add(ItemIO.Load(itemTag));
+                        StoredItems.Add(CWRSaveData.LoadItemTag(itemTag, $"{nameof(ThrowerTP)}:_StoredItems"));
                     }
                 }
             } catch (Exception ex) {

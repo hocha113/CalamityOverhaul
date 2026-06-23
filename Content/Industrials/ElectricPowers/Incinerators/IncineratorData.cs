@@ -1,3 +1,4 @@
+using CalamityOverhaul.Common;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader;
@@ -83,18 +84,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             if (!tag.TryGet("Incinerator_Temperature", out Temperature)) {
                 Temperature = 0;
             }
-            if (tag.ContainsKey("Incinerator_InputItem")) {
-                InputItem = ItemIO.Load(tag.GetCompound("Incinerator_InputItem"));
-            }
-            else {
-                InputItem = new Item();
-            }
-            if (tag.ContainsKey("Incinerator_OutputItem")) {
-                OutputItem = ItemIO.Load(tag.GetCompound("Incinerator_OutputItem"));
-            }
-            else {
-                OutputItem = new Item();
-            }
+            InputItem = CWRSaveData.LoadItemFromTag(tag, "Incinerator_InputItem", nameof(IncineratorData));
+            OutputItem = CWRSaveData.LoadItemFromTag(tag, "Incinerator_OutputItem", nameof(IncineratorData));
         }
     }
 }

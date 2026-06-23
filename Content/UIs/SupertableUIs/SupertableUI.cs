@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.UIs.SupertableUIs
                 Item[] fixedItems = new Item[SupertableConstants.TOTAL_SLOTS];
                 int loadCount = Math.Min(itemTags.Count, SupertableConstants.TOTAL_SLOTS);
                 for (int i = 0; i < loadCount; i++) {
-                    fixedItems[i] = ItemIO.Load(itemTags[i]);
+                    fixedItems[i] = CWRSaveData.LoadItemTag(itemTags[i], $"{nameof(SupertableUI)}:GlobalItems[{i}]");
                 }
                 for (int i = loadCount; i < SupertableConstants.TOTAL_SLOTS; i++) {
                     fixedItems[i] = new Item();
