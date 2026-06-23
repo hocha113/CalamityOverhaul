@@ -50,10 +50,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得暗物质压缩机"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<DarkMatterBall>(),
@@ -81,10 +78,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得无尽催化剂"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -112,10 +106,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得无尽锭"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -143,10 +134,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得无尽镐"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -174,10 +162,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得无尽弓"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -205,10 +190,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Easy;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得无尽马桶"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -236,10 +218,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得物质转化台"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -267,10 +246,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得寰宇湮灭"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -298,10 +274,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得寰宇咏叹调"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -329,10 +302,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得万魔殿"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -360,10 +330,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得朗基努斯"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -391,10 +358,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得龙言"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
@@ -423,11 +387,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                TargetItemID = CWRID.Item_Rock,
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
-                RequiredProgress = 5
-            });
+            AddCollectObjective(5, CWRID.Item_Rock);
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_Rock,
@@ -455,10 +415,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得中子星锭"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
@@ -486,10 +443,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得中子弓"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
@@ -517,10 +471,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得中子剑"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
@@ -548,10 +499,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得中子镰刀"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
@@ -579,10 +527,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得中子杖"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
@@ -610,10 +555,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得中子枪"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),

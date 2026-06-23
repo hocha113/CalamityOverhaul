@@ -142,6 +142,12 @@ QuestLog: {
 	SunModeText: 日间模式
 	LauncherHoverText: 左键交互，右键拖动
 	QuestManagerText: 委托任务
+
+	ObjectiveTemplate: {
+		DefeatNpc: 击败{0}
+		ObtainItem: 获得{0}
+		CollectItem: 收集{0}块{1}
+	}
 }
 
 QuestNotificationSystem.Text1: 任务完成

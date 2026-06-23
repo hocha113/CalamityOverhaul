@@ -16,10 +16,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得终末石"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             AddReward(CWRID.Item_BloodOrb, 999);
         }
@@ -55,10 +52,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得古恒石"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
             //奖励已禁用
             //Rewards.Add(new QuestReward {
             //ItemType = CWRID.Item_,

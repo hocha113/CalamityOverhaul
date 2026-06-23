@@ -82,6 +82,9 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ResetViewText;
         public static LocalizedText LauncherHoverText;
         public static LocalizedText QuestManagerText;
+        public static LocalizedText ObjectiveTemplateDefeatNpc;
+        public static LocalizedText ObjectiveTemplateObtainItem;
+        public static LocalizedText ObjectiveTemplateCollectItem;
 
         private List<IQuestLogStyle> availableStyles;
         private int currentStyleIndex;
@@ -124,6 +127,9 @@ namespace CalamityOverhaul.Content.QuestLogs
             ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
             LauncherHoverText = this.GetLocalization(nameof(LauncherHoverText), () => "左键开关面板，右键拖动");
             QuestManagerText = this.GetLocalization(nameof(QuestManagerText), () => "委托任务");
+            ObjectiveTemplateDefeatNpc = this.GetLocalization("ObjectiveTemplate.DefeatNpc", () => "Defeat {0}");
+            ObjectiveTemplateObtainItem = this.GetLocalization("ObjectiveTemplate.ObtainItem", () => "Obtain {0}");
+            ObjectiveTemplateCollectItem = this.GetLocalization("ObjectiveTemplate.CollectItem", () => "Collect {0} {1}");
         }
 
         public override void SaveUIData(TagCompound tag) {

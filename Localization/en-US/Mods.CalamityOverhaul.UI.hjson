@@ -143,6 +143,12 @@ QuestLog: {
 	SunModeText: Daytime Mode
 	LauncherHoverText: Left-click to interact, right-click to drag
 	QuestManagerText: Commission
+
+	ObjectiveTemplate: {
+		DefeatNpc: Defeat {0}
+		ObtainItem: Obtain {0}
+		CollectItem: Collect {0} {1}
+	}
 }
 
 QuestNotificationSystem.Text1: Quest Complete

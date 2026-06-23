@@ -142,6 +142,12 @@ QuestLog: {
 	SunModeText: Modo Día
 	LauncherHoverText: Clic izq. Interactuar, Clic der. Arrastrar
 	QuestManagerText: Encargos
+
+	ObjectiveTemplate: {
+		DefeatNpc: Derrota a {0}
+		ObtainItem: Obtén {0}
+		CollectItem: Recoge {0} {1}
+	}
 }
 
 QuestNotificationSystem.Text1: Misión completada

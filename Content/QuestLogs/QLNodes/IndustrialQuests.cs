@@ -32,10 +32,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得风力发电机"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.IronBar,
@@ -64,10 +61,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得火力发电机"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Coal,
@@ -96,10 +90,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得电力焚化炉"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             AddReward(ItemID.Coal, 50);
         }
@@ -125,10 +116,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得通用能源管道"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<UEPipeline>(),
@@ -157,10 +145,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得热能电池"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Wire,
@@ -189,10 +174,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得采矿机"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.SpelunkerPotion,
@@ -221,10 +203,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得采矿机MK2"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.SpelunkerPotion,
@@ -253,10 +232,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得收集者"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
@@ -287,10 +263,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得伐木者"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             AddReward(ItemID.LucyTheAxe);
             AddReward(CWRID.Item_DubiousPlating, 10);
@@ -318,10 +291,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得植树者"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             AddReward(ItemID.Wood, 500);
             AddReward(CWRID.Item_DubiousPlating, 10);
@@ -349,10 +319,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得物品过滤器"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
@@ -383,10 +350,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得物品管道"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
@@ -417,10 +381,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得投掷者"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
@@ -451,10 +412,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得水力发电机"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.BottomlessBucket,
@@ -483,10 +441,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Expert;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "获得特斯拉电磁塔"),
-                RequiredProgress = 1
-            });
+            AddObtainObjective();
 
             if (CWRRef.Has) {
                 if (ModContent.TryFind("CalamityMod", "DubiousPlating", out ModItem dubiousPlatingItem)) {

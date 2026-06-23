@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
                 currentY += 28;
 
                 foreach (var obj in node.Objectives) {
-                    string objText = $"• {obj.Description} ({obj.CurrentProgress}/{obj.RequiredProgress})";
+                    string objText = $"• {obj.GetDisplayText()} ({obj.CurrentProgress}/{obj.RequiredProgress})";
                     Color objColor = obj.IsCompleted ? new Color(150, 255, 180) : Color.White;
                     Utils.DrawBorderString(spriteBatch, objText, new Vector2(panelRect.X + padding + 12, currentY), objColor * alpha, 0.85f);
 

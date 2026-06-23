@@ -143,6 +143,12 @@ QuestLog: {
 	SunModeText: Modo Diurno
 	LauncherHoverText: Clique Esquerdo Alterna, Clique Direito Arrasta
 	QuestManagerText: Comissao
+
+	ObjectiveTemplate: {
+		DefeatNpc: Derrote {0}
+		ObtainItem: Obtenha {0}
+		CollectItem: Colete {0} {1}
+	}
 }
 
 QuestNotificationSystem.Text1: Missao Completa

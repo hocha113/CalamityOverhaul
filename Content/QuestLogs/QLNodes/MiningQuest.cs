@@ -17,10 +17,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Easy;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "收集十块{0}"),
-                RequiredProgress = 10
-            });
+            AddCollectObjective(10, ItemID.CopperOre);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.CopperBar,
@@ -44,7 +41,6 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             }
 
             Objectives[0].TargetItemID = TargetOreID;
-            Objectives[0].Description = this.GetLocalization("QuestObjective.Description").WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Rewards[0].ItemType = targetBar;
 
@@ -84,10 +80,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Easy;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "收集五十块{0}"),
-                RequiredProgress = 50
-            });
+            AddCollectObjective(50, ItemID.IronOre);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.IronBar,
@@ -113,7 +106,6 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Description = this.GetLocalization(nameof(Description)).WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Objectives[0].TargetItemID = TargetOreID;
-            Objectives[0].Description = this.GetLocalization("QuestObjective.Description").WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Rewards[0].ItemType = targetBar;
 
@@ -153,10 +145,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Easy;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "收集一百块{0}"),
-                RequiredProgress = 100
-            });
+            AddCollectObjective(100, ItemID.GoldOre);
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldBar,
@@ -182,7 +171,6 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Description = this.GetLocalization(nameof(Description)).WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Objectives[0].TargetItemID = TargetOreID;
-            Objectives[0].Description = this.GetLocalization("QuestObjective.Description").WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Rewards[0].ItemType = targetBar;
 

@@ -269,10 +269,15 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             DetailedDescription ??= this.GetLocalization(nameof(DetailedDescription), () => " ");
             InitializeRewards();
             for (int i = 0; i < Objectives.Count; i++) {
-                //无目标物品且图标为物品时，默认用图标物品
                 if (Objectives[i].TargetItemID == 0 && IconType == QuestIconType.Item && IconItemType > 0) {
                     Objectives[i].TargetItemID = IconItemType;
                 }
+
+                if (Objectives[i].TargetNpcID == 0 && Objectives[i].DescriptionStyle == QuestObjectiveDescriptionStyle.DefeatNpc
+                    && IconType == QuestIconType.NPC && IconNPCType > 0) {
+                    Objectives[i].TargetNpcID = IconNPCType;
+                }
+
                 Objectives[i].Initialize(this, i);
             }
             PostSetup();
@@ -299,6 +304,37 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
                 Description = text
             });
             InitializeRewards();
+        }
+
+        /// <summary>添加击败 NPC 目标（未指定 npcType 时在初始化阶段从 <see cref="IconNPCType"/> 补全）</summary>
+        public void AddDefeatObjective(int npcType = 0) {
+            Objectives.Add(new QuestObjective {
+                DescriptionStyle = QuestObjectiveDescriptionStyle.DefeatNpc,
+                TargetNpcID = npcType,
+                RequiredProgress = 1
+            });
+        }
+
+        /// <summary>添加获得物品目标（未指定 itemType 时在初始化阶段从 <see cref="IconItemType"/> 补全）</summary>
+        public void AddObtainObjective(int itemType = 0) {
+            Objectives.Add(new QuestObjective {
+                DescriptionStyle = QuestObjectiveDescriptionStyle.ObtainItem,
+                TargetItemID = itemType,
+                RequiredProgress = 1
+            });
+        }
+
+        /// <summary>添加收集物品目标</summary>
+        public void AddCollectObjective(int amount, int itemType = 0) {
+            if (amount <= 0) {
+                return;
+            }
+
+            Objectives.Add(new QuestObjective {
+                DescriptionStyle = QuestObjectiveDescriptionStyle.CollectItem,
+                TargetItemID = itemType,
+                RequiredProgress = amount
+            });
         }
 
         /// <summary>SetStaticDefaults 后调用，依赖其它任务的初始化</summary>
@@ -374,12 +410,16 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
     /// <summary>任务目标</summary>
     public class QuestObjective
     {
-        /// <summary>目标描述</summary>
+        /// <summary>自定义目标描述；<see cref="DescriptionStyle"/> 非 Custom 时一般无需设置</summary>
         public LocalizedText Description;
+        /// <summary>自动描述模板样式</summary>
+        public QuestObjectiveDescriptionStyle DescriptionStyle = QuestObjectiveDescriptionStyle.Custom;
         /// <summary>所需进度</summary>
         public int RequiredProgress;
         /// <summary>目标物品 ID</summary>
         public int TargetItemID;
+        /// <summary>目标 NPC ID</summary>
+        public int TargetNpcID;
 
         private QuestNode _node;
         private int _index;
@@ -388,6 +428,9 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             _node = node;
             _index = index;
         }
+
+        /// <summary>展示用目标描述</summary>
+        public string GetDisplayText() => QuestObjectiveTemplates.Format(this);
 
         /// <summary>当前进度</summary>
         public int CurrentProgress {

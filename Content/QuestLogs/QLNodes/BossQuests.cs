@@ -56,10 +56,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败史莱姆王"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldCoin,
@@ -90,10 +87,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败荒漠灾虫"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (CWRRef.Has) {
                 if (ModContent.TryFind("CalamityMod", "VictoryShard", out ModItem victoryShardItem)) {
@@ -128,10 +122,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败克苏鲁之眼"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.DemoniteOre,
@@ -162,10 +153,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败菌生蟹"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GlowingMushroom,
@@ -231,10 +219,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败蜂后"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             AddReward(ItemID.BeeWax, 20);
         }
@@ -299,10 +284,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Normal;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败骷髅王"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Bone,
@@ -333,10 +315,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败史莱姆之神"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Gel,
@@ -370,10 +349,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败血肉墙"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             AddReward(ItemID.SoulofLight, 20);
             AddReward(ItemID.SoulofNight, 20);
@@ -402,10 +378,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败史莱姆皇后"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             AddReward(ItemID.QueenSlimeMountSaddle);
         }
@@ -433,10 +406,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败渊海灾虫"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_CorrodedFossil,
@@ -467,10 +437,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败极地冰灵"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (CWRRef.Has) {
                 if (ModContent.TryFind("CalamityMod", "EssenceofEleum", out ModItem essenceOfEleumItem)) {
@@ -534,10 +501,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Hard;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败硫磺火元素"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (CWRRef.Has) {
                 if (ModContent.TryFind("CalamityMod", "EssenceofHavoc", out ModItem essenceOfHavocItem)) {
@@ -567,10 +531,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Expert;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败世纪之花"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ChlorophyteOre,
@@ -601,10 +562,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Expert;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败灾厄之影"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AshesofCalamity,
@@ -633,10 +591,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Expert;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败石巨人"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.BeetleHusk,
@@ -667,10 +622,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Expert;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败瘟疫使者歌莉娅"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_PlagueCellCanister,
@@ -699,10 +651,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败拜月教邪教徒"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             AddReward(ItemID.FragmentSolar, 5);
             AddReward(ItemID.FragmentVortex, 5);
@@ -731,10 +680,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败月球领主"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             AddReward(ItemID.LunarOre, 100);
         }

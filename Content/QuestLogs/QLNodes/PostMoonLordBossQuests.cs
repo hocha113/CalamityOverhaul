@@ -19,10 +19,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败亵渎使徒"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "UnholyEssence", out ModItem unholyEssenceItem)) {
                 AddReward(unholyEssenceItem.Type, 30);
@@ -53,10 +50,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败痴愚金龙"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "EffulgentFeather", out ModItem effulgentFeatherItem)) {
                 Rewards.Add(new QuestReward {
@@ -95,10 +89,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败亵渎天神"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_DivineGeode,
@@ -138,10 +129,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败风暴编织者"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "ArmoredShell", out ModItem armoredShellItem)) {
                 Rewards.Add(new QuestReward {
@@ -183,10 +171,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败无尽虚空"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "DarkPlasma", out ModItem darkPlasmaItem)) {
                 Rewards.Add(new QuestReward {
@@ -228,10 +213,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败西格纳斯"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "TwistingNether", out ModItem twistingNetherItem)) {
                 Rewards.Add(new QuestReward {
@@ -273,10 +255,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败噬魂幽花"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "RuinousSoul", out ModItem ruinousSoulItem)) {
                 Rewards.Add(new QuestReward {
@@ -321,10 +300,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败硫海遗爵"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "CorrodedFossil", out ModItem corrodedFossilItem)) {
                 Rewards.Add(new QuestReward {
@@ -369,10 +345,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败神明吞噬者"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_CosmiliteBar,
@@ -418,10 +391,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败丛林龙,犽戎"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AuricBar,
@@ -470,10 +440,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败星流巨械"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_ExoPrism,
@@ -522,10 +489,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败至尊灾厄"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AshesofAnnihilation,
@@ -574,10 +538,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             QuestType = QuestType.Side;
             Difficulty = QuestDifficulty.Master;
 
-            Objectives.Add(new QuestObjective {
-                Description = this.GetLocalization("QuestObjective.Description", () => "击败始源妖龙"),
-                RequiredProgress = 1
-            });
+            AddDefeatObjective();
 
             if (ModContent.TryFind("CalamityMod", "HalibutCannon", out ModItem halibutCannonItem)) {
                 Rewards.Add(new QuestReward {
