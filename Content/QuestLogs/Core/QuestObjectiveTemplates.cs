@@ -1,7 +1,4 @@
-using CalamityOverhaul.Content.QuestLogs;
-using InnoVault;
-using Terraria;
-using Terraria.Localization;
+﻿using Terraria;
 
 namespace CalamityOverhaul.Content.QuestLogs.Core
 {
