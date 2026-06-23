@@ -2564,3 +2564,8 @@ MarbleCloudBalloon: {
 		Annule les dégâts de chute
 		'''
 }
+
+TestItem: {
+	// DisplayName: Test Item
+	// Tooltip: ""
+}

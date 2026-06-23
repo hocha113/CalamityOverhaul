@@ -2574,3 +2574,8 @@ MarbleCloudBalloon: {
 		Сводит на нет урон от падения
 		'''
 }
+
+TestItem: {
+	// DisplayName: Test Item
+	// Tooltip: ""
+}

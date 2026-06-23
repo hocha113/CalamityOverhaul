@@ -2578,3 +2578,8 @@ MarbleCloudBalloon: {
 		Anula o dano de queda
 		'''
 }
+
+TestItem: {
+	// DisplayName: Test Item
+	// Tooltip: ""
+}
