@@ -12,6 +12,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
         private static readonly System.Collections.Generic.Dictionary<string, FullBodyPortraitBase> NameToPortraits = new(StringComparer.Ordinal);
 
         private FullBodyPortraitBase _activeFullBodyPortrait;
+        private NarrativeSession _activeFullBodyPortraitSession;
         private string _portraitLineKey = string.Empty;
         private bool _portraitLineKeyInitialized;
 
@@ -50,6 +51,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
             }
 
             _activeFullBodyPortrait = portrait;
+            _activeFullBodyPortraitSession = NarrativeRunner.Active;
             if (!portrait.Active) {
                 portrait.Initialize(this);
             }
@@ -58,6 +60,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 
         public override void Sync(NarrativeSession active) {
             if (active != null && active.DialogueVisible) {
+                ClearStaleFullBodyPortrait(active);
                 Open();
                 return;
             }
@@ -101,7 +104,18 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
             _activeFullBodyPortrait.Update();
             if (!_activeFullBodyPortrait.Active) {
                 _activeFullBodyPortrait = null;
+                _activeFullBodyPortraitSession = null;
             }
+        }
+
+        private void ClearStaleFullBodyPortrait(NarrativeSession active) {
+            if (_activeFullBodyPortrait == null || ReferenceEquals(_activeFullBodyPortraitSession, active)) {
+                return;
+            }
+
+            _activeFullBodyPortrait.AbortPerformance();
+            _activeFullBodyPortrait = null;
+            _activeFullBodyPortraitSession = null;
         }
 
         private void BindSessionBlockers() {

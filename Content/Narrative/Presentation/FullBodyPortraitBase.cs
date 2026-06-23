@@ -118,6 +118,16 @@ namespace CalamityOverhaul.Content.Narrative.Presentation
 
         public virtual void OnDialogueComplete() { }
 
+        internal void AbortPerformance() {
+            if (!Active && currentPhase == PerformancePhase.Inactive) {
+                OwnerDialogue = null;
+                return;
+            }
+
+            ForceDeactivate();
+            OwnerDialogue = null;
+        }
+
         protected void EnterCustomPhase() {
             currentPhase = PerformancePhase.Custom;
             phaseProgress = 0f;
