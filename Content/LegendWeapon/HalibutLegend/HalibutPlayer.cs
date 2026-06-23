@@ -339,9 +339,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             RestartFishCooldown = 0;//强制清除重启技能冷却
             FishTeleportCooldown = 0;//强制清除瞬移技能冷却
             SuperpositionCooldown = 0;//强制清除叠加攻击技能冷却
-            if (Player.CountProjectilesOfID<YourLevelIsTooLowProj>() > 0) {
-                return false;//无限重启，不死
-            }
             return null;
         }
 

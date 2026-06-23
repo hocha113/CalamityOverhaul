@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using InnoVault.GameSystem;
 using System;
 using Terraria.DataStructures;
@@ -27,7 +28,15 @@ namespace CalamityOverhaul.Content.Players
                 }
 
                 Player.statLife = Math.Clamp(Player.statLife, 1, Player.statLifeMax2);
-                return false;
+                return false;//八音盒诅咒
+            }
+
+            if (Player.CountProjectilesOfID<RestartEffectProj>() > 0) {
+                return false;//正在重启，阻止死亡
+            }
+
+            if (Player.CountProjectilesOfID<YourLevelIsTooLowProj>() > 0) {
+                return false;//无限重启，不死
             }
 
             return null;

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Items.Tools;
+﻿using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
@@ -200,14 +200,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     internal class RestartPlayer : ModPlayer
     {
-        public override bool PreKill(double damage, int hitDirection, bool pvp
-            , ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource) {
-            if (Player.CountProjectilesOfID<RestartEffectProj>() > 0) {
-                return false; //正在重启，阻止死亡
-            }
-            return true;
-        }
-
         public override void OnRespawn() {
             if (!Player.TryGetOverride<HalibutPlayer>(out var halibutPlayer)) {
                 return;
