@@ -25,7 +25,6 @@ QuestNode: {
 		Description: Sammle fünfzig {0}
 		QuestObjective.Description: Sammle fünfzig {0}
 
-
 		DetailedDescription: Kupfer ist zu weich — wir brauchen härtere Metalle. Grabe tiefer nach Eisenerz.
 	}
 
@@ -33,7 +32,6 @@ QuestNode: {
 		DisplayName: Goldrausch
 		Description: Sammle hundert {0}
 		QuestObjective.Description: Sammle hundert {0}
-
 
 		DetailedDescription: Gold ist nicht nur Währung — es leitet Magie gut und ist formbar. Weicher als Eisen, aber wichtig für fortgeschrittene Ausrüstung.
 	}
@@ -519,7 +517,6 @@ QuestNode: {
 		Description: Finde den verschlüsselten Bauplan im Draedon-Labor der Unterwelt
 		QuestObjective.Description: Erhalte Höllen-Bauplan
 
-
 		DetailedDescription: Draedon nutzte Geothermie in der Unterwelt. Finde den Bauplan für neue Waffentechnologie.
 	}
 
@@ -527,7 +524,6 @@ QuestNode: {
 		DisplayName: Polar-Code
 		Description: Finde den verschlüsselten Bauplan im Draedon-Labor der Schneelandschaft
 		QuestObjective.Description: Erhalte Eis-Bauplan
-
 
 		DetailedDescription: Niedrige Temperaturen bewahren Präzisionsinstrumente. Finde die versiegelte Polar-Technologie.
 	}
@@ -537,7 +533,6 @@ QuestNode: {
 		Description: Finde den verschlüsselten Bauplan im Draedon-Labor des Dschungels
 		QuestObjective.Description: Erhalte Dschungel-Bauplan
 
-
 		DetailedDescription: Der Dschungel verbirgt Draedons Biolabor — Seuchen und Nanoviren. Finde die gefährliche Wahrheit.
 	}
 
@@ -546,7 +541,6 @@ QuestNode: {
 		Description: Finde den verschlüsselten Bauplan im Draedon-Labor auf dem Planetoiden
 		QuestObjective.Description: Erhalte Planetoiden-Bauplan
 
-
 		DetailedDescription: In der Mikrogravitation schwebt ein Labor — frühe Exo-Mech-Entwürfe.
 	}
 
@@ -554,7 +548,6 @@ QuestNode: {
 		DisplayName: Versunkenes Meer
 		Description: Finde den verschlüsselten Bauplan im Draedon-Labor des Versunkenen Meeres
 		QuestObjective.Description: Erhalte Versunkenes-Meer-Bauplan
-
 
 		DetailedDescription: In diesem ruhigen Unterwassermeer hinterließ Draedon Prismenergie-Forschung. Tauche und hole die Daten.
 	}
@@ -599,7 +592,6 @@ QuestNode: {
 		Description: Sammle verschiedene Edelsteine
 		QuestObjective.Description: Sammle 5 verschiedene Edelsteine
 
-
 		DetailedDescription: Funkelnde Kristalle im Gestein — wichtig für Stäbe und Enterhaken. Regenbogen aus Farben.
 	}
 
@@ -628,7 +620,6 @@ QuestNode: {
 		DisplayName: Tiefenforscher
 		Description: Erkunde alle Hauptbiome
 		QuestObjective.Description: Schließe alle Erkundungsaufträge ab
-
 
 		DetailedDescription: Von den Wolken bis zur Unterwelt — die ganze Welt liegt zu deinen Füßen.
 	}
@@ -686,7 +677,6 @@ QuestNode: {
 		DisplayName: Kern des Bösen
 		Description: Finde Schattenkugel oder Purpurherz tief im bösen Biom
 		QuestObjective.Description: Zerstöre Schattenkugel oder Purpurherz
-
 
 		DetailedDescription: Tief in der Kluft pulsiert Verderben. Drei Zerstörungen wecken Schreckliches.
 	}

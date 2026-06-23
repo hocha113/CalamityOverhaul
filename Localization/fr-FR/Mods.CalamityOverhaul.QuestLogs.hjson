@@ -25,7 +25,6 @@ QuestNode: {
 		Description: Collecter cinquante {0}
 		QuestObjective.Description: Collecter cinquante {0}
 
-
 		DetailedDescription: Le cuivre est trop mou ; il nous faut des métaux plus durs. Descends plus profond pour trouver des filons de fer.
 	}
 
@@ -33,7 +32,6 @@ QuestNode: {
 		DisplayName: Ruée vers l'or
 		Description: Collecter cent {0}
 		QuestObjective.Description: Collecter cent {0}
-
 
 		DetailedDescription: L'or n'est pas qu'une monnaie : il conduit bien la magie et se travaille facilement. Plus mou que le fer, mais essentiel pour l'équipement avancé.
 	}
@@ -519,7 +517,6 @@ QuestNode: {
 		Description: Trouver le plan chiffré dans le labo de Draedon en Enfer
 		QuestObjective.Description: Obtenir le plan de l'Enfer
 
-
 		DetailedDescription: Draedon a établi un avant-poste en Enfer pour exploiter la géothermie. Trouve le plan pour débloquer de nouvelles technologies d'armes.
 	}
 
@@ -527,7 +524,6 @@ QuestNode: {
 		DisplayName: Code polaire
 		Description: Trouver le plan chiffré dans le labo de Draedon enneigé
 		QuestObjective.Description: Obtenir le plan de glace
-
 
 		DetailedDescription: Le froid préserve les instruments de précision. Descends dans le labo sous la glace pour retrouver cette technologie polaire scellée.
 	}
@@ -537,7 +533,6 @@ QuestNode: {
 		Description: Trouver le plan chiffré dans le labo de Draedon en jungle
 		QuestObjective.Description: Obtenir le plan de la jungle
 
-
 		DetailedDescription: La jungle dense dissimule le labo biologique de Draedon, où il étudiait pestes et nanovirus. Trouve le plan et découvre la vérité dangereuse.
 	}
 
@@ -546,7 +541,6 @@ QuestNode: {
 		Description: Trouver le plan chiffré dans le labo de Draedon sur astéroïde
 		QuestObjective.Description: Obtenir le plan de l'astéroïde
 
-
 		DetailedDescription: En microgravité, un labo flotte silencieusement. Va y chercher les premiers plans des Exo Mechs.
 	}
 
@@ -554,7 +548,6 @@ QuestNode: {
 		DisplayName: Mer engloutie
 		Description: Trouver le plan chiffré dans le labo de Draedon de la Mer engloutie
 		QuestObjective.Description: Obtenir le plan de la Mer engloutie
-
 
 		DetailedDescription: Dans cette mer souterraine paisible, Draedon a laissé des recherches sur l'énergie prismatique. Plonge et récupère ces précieuses données.
 	}
@@ -599,7 +592,6 @@ QuestNode: {
 		Description: Collecter diverses gemmes
 		QuestObjective.Description: Collecter 5 gemmes différentes
 
-
 		DetailedDescription: Des cristaux éclatants enfouis dans la roche. Au-delà de la décoration, ils servent aux bâtons et grappins. Rassemble-les pour composer l'éclat de l'arc-en-ciel.
 	}
 
@@ -628,7 +620,6 @@ QuestNode: {
 		DisplayName: Explorateur des profondeurs
 		Description: Explorer tous les biomes majeurs
 		QuestObjective.Description: Terminer toutes les quêtes d'exploration
-
 
 		DetailedDescription: Tu as parcouru chaque recoin du monde, des nuages les plus hauts aux profondeurs de l'Enfer. Ta carte témoigne de ton courage. Le monde est à tes pieds.
 	}
@@ -686,7 +677,6 @@ QuestNode: {
 		DisplayName: Cœur du mal
 		Description: Trouver une orbe d'ombre ou un cœur carmin au fond du biome maléfique
 		QuestObjective.Description: Détruire une orbe d'ombre ou un cœur carmin
-
 
 		DetailedDescription: Au fond de la faille maléfique palpite un cœur corrompu ou une orbe d'ombre. Les briser donne des armes, mais attention : en détruire trois réveillera quelque chose d'horrible.
 	}

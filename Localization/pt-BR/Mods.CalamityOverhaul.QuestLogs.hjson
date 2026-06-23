@@ -25,7 +25,6 @@ QuestNode: {
 		Description: Colete 50 {0}
 		QuestObjective.Description: Colete 50 {0}
 
-
 		DetailedDescription: Cobre e muito mole; precisamos de metais mais duros para nos armar. Va mais fundo no subterraneo para encontrar veios de Ferro.
 	}
 
@@ -33,7 +32,6 @@ QuestNode: {
 		DisplayName: Corrida do Ouro
 		Description: Colete 100 {0}
 		QuestObjective.Description: Colete 100 {0}
-
 
 		DetailedDescription: Ouro nao e apenas moeda; possui excelente condutividade magica e ductilidade. Embora mais macio que o Ferro, e um material crucial para fabricar equipamentos avancados.
 	}
@@ -519,7 +517,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon no Submundo
 		QuestObjective.Description: Obtenha Esquema do Inferno
 
-
 		DetailedDescription: Draedon estabeleceu um posto avancado no Inferno para experimentar com energia geotermica. Encontre o esquema la; pode desbloquear novas tecnologias de armas.
 	}
 
@@ -527,7 +524,6 @@ QuestNode: {
 		DisplayName: Codigo Polar
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon na Neve
 		QuestObjective.Description: Obtenha Esquema de Gelo
-
 
 		DetailedDescription: As baixas temperaturas aqui sao perfeitas para preservar instrumentos de precisao. Mergulhe no laboratorio sob o gelo para encontrar aquela tecnologia polar selada.
 	}
@@ -537,7 +533,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon na Selva
 		QuestObjective.Description: Obtenha Esquema da Selva
 
-
 		DetailedDescription: A densa selva esconde o laboratorio biologico de Draedon. Ele estudou peste e nano-virus la. Encontre aquele esquema para revelar a verdade perigosa.
 	}
 
@@ -546,7 +541,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon no Planetóide
 		QuestObjective.Description: Obtenha Esquema do Planetóide
 
-
 		DetailedDescription: No ambiente de microgravidade da alta altitude, um laboratorio flutua silenciosamente. Va la para encontrar projetos iniciais relacionados aos Exo Mechs.
 	}
 
@@ -554,7 +548,6 @@ QuestNode: {
 		DisplayName: Mar Submerso
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon no Mar Submerso
 		QuestObjective.Description: Obtenha Esquema do Mar Submerso
-
 
 		DetailedDescription: Neste tranquilo mar subterraneo, Draedon deixou pesquisas sobre energia Prisma. Mergulhe na agua e recupere aqueles dados valiosos.
 	}
@@ -599,7 +592,6 @@ QuestNode: {
 		Description: Colete varias gemas
 		QuestObjective.Description: Colete 5 tipos diferentes de gemas
 
-
 		DetailedDescription: Cristais brilhantes enterrados nas camadas de rocha. Alem da decoracao, sao vitais para fabricar cajados e ganchos. Coletar gemas de cores diferentes pode permitir que voce junte o brilho de um arco-iris.
 	}
 
@@ -628,7 +620,6 @@ QuestNode: {
 		DisplayName: Explorador Profundo
 		Description: Explore todos os principais biomas
 		QuestObjective.Description: Complete todas as missoes de exploracao
-
 
 		DetailedDescription: Voce percorreu todos os cantos do mundo, das nuvens mais altas ao inferno mais profundo. O mapa que voce desenhou e a prova da sua coragem. Agora, o mundo inteiro esta a seus pes.
 	}
@@ -686,7 +677,6 @@ QuestNode: {
 		DisplayName: Núcleo do Mal
 		Description: Encontre um Orbe Sombrio ou Coracao Carmesim nas profundezas do bioma maligno
 		QuestObjective.Description: Destrua um Orbe Sombrio ou Coracao Carmesim
-
 
 		DetailedDescription: Nas profundezas do abismo do mal pulsa um coracao corrupto ou um orbe sombrio. Quebra-los rende armas, mas cuidado... se voce quebrar tres, algo terrivel despertara.
 	}

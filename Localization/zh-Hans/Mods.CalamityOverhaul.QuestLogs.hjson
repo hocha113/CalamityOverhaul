@@ -25,7 +25,6 @@ QuestNode: {
 		Description: 收集五十块{0}
 		QuestObjective.Description: 收集五十块{0}
 
-
 		DetailedDescription: 铜矿太过柔软，我们需要更坚硬的金属来武装自己。深入地下寻找铁矿脉吧。
 	}
 
@@ -33,7 +32,6 @@ QuestNode: {
 		DisplayName: 黄金狂潮
 		Description: 收集一百块{0}
 		QuestObjective.Description: 收集一百块{0}
-
 
 		DetailedDescription: 黄金不仅仅是货币，它具有良好的导魔性和延展性。虽然它不如铁坚硬，但它是制作高级装备的重要材料。
 	}
@@ -519,7 +517,6 @@ QuestNode: {
 		Description: 在地狱嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取地狱图纸
 
-
 		DetailedDescription: 嘉登在地狱建立了一座前哨站，利用这里的地热进行实验。找到那里的图纸，或许能解锁新的武器科技。
 	}
 
@@ -527,7 +524,6 @@ QuestNode: {
 		DisplayName: 极地密码
 		Description: 在雪原嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取冰冻图纸
-
 
 		DetailedDescription: 这里的低温是保存精密仪器的绝佳环境。深入冰原下的实验室，寻找那份被封存的极地科技。
 	}
@@ -537,7 +533,6 @@ QuestNode: {
 		Description: 在丛林嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取丛林图纸
 
-
 		DetailedDescription: 茂密的丛林掩盖了嘉登的生物实验室。他在那里研究瘟疫与纳米病毒。找到那份图纸，揭开危险的真相。
 	}
 
@@ -546,7 +541,6 @@ QuestNode: {
 		Description: 在小行星嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取小行星图纸
 
-
 		DetailedDescription: 在高空的微重力环境下，嘉登的一座实验室正静静漂浮。去那里寻找关于星流巨械的早期设计图。
 	}
 
@@ -554,7 +548,6 @@ QuestNode: {
 		DisplayName: 沉沦之海
 		Description: 在沉沦之海嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取沉沦之海图纸
-
 
 		DetailedDescription: 在这片宁静的地下海中，嘉登遗留了一些关于棱晶能源的研究。潜入水下，取回那些宝贵的数据。
 	}
@@ -599,7 +592,6 @@ QuestNode: {
 		Description: 收集各种宝石
 		QuestObjective.Description: 收集5种不同的宝石
 
-
 		DetailedDescription: 埋藏在岩层中的璀璨结晶。除了作为装饰，它们也是制作法杖和抓钩的重要材料。当你集齐不同颜色的宝石时，也许能拼凑出彩虹的光辉。
 	}
 
@@ -628,7 +620,6 @@ QuestNode: {
 		DisplayName: 深渊探索者
 		Description: 探索所有主要生物群落
 		QuestObjective.Description: 完成所有探索任务
-
 
 		DetailedDescription: 你已经走遍了世界的每一个角落，从最高的云端到最深的地狱。你绘制的地图证明了你的勇气。现在，整个世界都在你的脚下。
 	}
@@ -686,7 +677,6 @@ QuestNode: {
 		DisplayName: 邪恶核心
 		Description: 在邪恶之地深处寻找暗影珠或猩红之心
 		QuestObjective.Description: 摧毁暗影珠或猩红之心
-
 
 		DetailedDescription: 在邪恶裂隙的深处，搏动着腐败的心脏或暗影的球体。敲碎它们能获得武器，但要注意......如果你敲碎了三个，将会唤醒一些可怕的东西。
 	}
