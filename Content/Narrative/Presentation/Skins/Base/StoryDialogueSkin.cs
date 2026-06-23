@@ -38,6 +38,9 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
         public override void PlaySkipSound()
             => SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.35f });
 
+        public override void PlayBacklogSound() 
+            => SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.35f });
+
         public override void DrawPanel(SpriteBatch spriteBatch, Rectangle panel, float alpha)
             => NarrativeSkinDraw.DrawPanel(spriteBatch, panel, Fill, Edge, alpha);
         public override void DrawDivider(SpriteBatch spriteBatch, DialogueLayoutContext context) {
