@@ -11,11 +11,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sea
     {
         private readonly SeaPanelState _state = new();
 
-        public override float Padding => 10;
-
-        public override float PortraitSize => 100;
-        public override float PortraitGap => 10f;
-        /// <summary>对齐 Sea shader 内缘留白。</summary>
         public override float TextWrapInset => SeaPanelState.ShaderEdgePad;
 
         public override Color TextColor => new(210, 240, 255);

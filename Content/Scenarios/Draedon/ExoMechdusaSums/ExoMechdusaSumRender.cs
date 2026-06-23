@@ -702,60 +702,6 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             sideIconRotation = new float[2];
             techParticles.Clear();
             particleSpawnTimer = 0;
-
-            ExoMechChoiceHover.OnHoverChanged += OnChoiceHoverChanged;
-        }
-
-        /// <summary>悬停切换主图标+播 Calamity 悬停音</summary>
-        private static void OnChoiceHoverChanged(object sender, ExoMechChoiceHoverEventArgs e) {
-            //新启用选项悬停，防重复触发
-            if (e.CurrentIndex >= 0 && e.CurrentChoice != null && e.CurrentChoice.Enabled && e.CurrentIndex != lastHoveredChoice) {
-                lastHoveredChoice = e.CurrentIndex;
-                targetMainIcon = e.CurrentIndex;
-
-                //播放对应机甲的悬停音效
-                SoundStyle hoverSound = e.CurrentIndex switch {
-                    0 => AresIconHover,//阿瑞斯
-                    1 => ThanatosIconHover,//塔纳托斯
-                    2 => ArtemisApolloIconHover,//双子
-                    _ => SoundID.MenuTick
-                };
-
-                //播放音效
-                if (hoverSound != SoundID.MenuTick) {
-                    SoundEngine.PlaySound(hoverSound with {
-                        Volume = 0.7f,
-                        MaxInstances = 2
-                    });
-                }
-                else {
-                    //备用音效
-                    SoundEngine.PlaySound(SoundID.MenuTick with {
-                        Volume = 0.5f,
-                        Pitch = 0.3f + e.CurrentIndex * 0.15f,
-                        MaxInstances = 3
-                    });
-                }
-
-                //播放额外的科技感音效
-                SoundEngine.PlaySound(SoundID.Item8 with {
-                    Volume = 0.3f,
-                    Pitch = 0.5f,
-                    MaxInstances = 2
-                });
-            }
-
-            //如果离开了选项，悬停到空白处
-            if (e.CurrentIndex < 0 && e.PreviousIndex >= 0) {
-                lastHoveredChoice = -1;
-                targetMainIcon = -1;
-
-                //播放离开音效
-                SoundEngine.PlaySound(SoundID.MenuClose with {
-                    Volume = 0.3f,
-                    Pitch = -0.2f
-                });
-            }
         }
 
         /// <summary>场景结束解绑悬停</summary>
@@ -767,12 +713,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             sideIconFade = new float[2];
             sideIconScale = new float[2];
             techParticles.Clear();
-            ExoMechChoiceHover.OnHoverChanged -= OnChoiceHoverChanged;
         }
-    }
-    internal sealed class ExoMechChoiceHover
-    {
-        public static event EventHandler<ExoMechChoiceHoverEventArgs> OnHoverChanged;
     }
 
     internal sealed class ExoMechChoiceHoverEventArgs : EventArgs

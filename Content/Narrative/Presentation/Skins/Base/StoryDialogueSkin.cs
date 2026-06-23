@@ -12,6 +12,9 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
         /// <summary>与 ADV 底栏一致：略压入 shader 内缘，消除视觉底边空隙。</summary>
         public override float HintBottomMargin => -8f;
 
+        public override float PortraitSize => 100;
+        public override float Padding => 10f;
+
         protected virtual Color Fill => new(16, 22, 34);
         protected virtual Color Edge => new(70, 130, 200);
 
