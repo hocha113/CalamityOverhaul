@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
@@ -39,8 +39,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.IronBar,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个铁锭")
+                Amount = 10
             });
         }
 
@@ -72,11 +71,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Coal,
-                Amount = 50,
-                Description = this.GetLocalization("QuestReward.Description", () => "50个煤炭")
+                Amount = 50
             });
-            Rewards[0].ItemType = ItemID.Coal;
-            Rewards[0].Description = this.GetLocalization("QuestReward.Description", () => "50个煤炭");
         }
 
         public override void UpdateByPlayer() {
@@ -136,8 +132,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<UEPipeline>(),
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个通用能源管道")
+                Amount = 20
             });
         }
 
@@ -169,8 +164,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Wire,
-                Amount = 50,
-                Description = this.GetLocalization("QuestReward.Description", () => "50个电线")
+                Amount = 50
             });
         }
 
@@ -202,8 +196,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.SpelunkerPotion,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5个洞穴探险药水")
+                Amount = 5
             });
         }
 
@@ -235,8 +228,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.SpelunkerPotion,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5个洞穴探险药水")
+                Amount = 5
             });
         }
 
@@ -268,8 +260,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+                Amount = 2
             });
             AddReward(CWRID.Item_DubiousPlating, 10);
             AddReward(CWRID.Item_MysteriousCircuitry, 10);
@@ -365,8 +356,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+                Amount = 2
             });
             AddReward(CWRID.Item_DubiousPlating, 10);
             AddReward(CWRID.Item_MysteriousCircuitry, 10);
@@ -400,8 +390,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+                Amount = 2
             });
             AddReward(CWRID.Item_DubiousPlating, 10);
             AddReward(CWRID.Item_MysteriousCircuitry, 10);
@@ -435,8 +424,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Chest,
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "2个箱子")
+                Amount = 2
             });
             AddReward(CWRID.Item_DubiousPlating, 10);
             AddReward(CWRID.Item_MysteriousCircuitry, 10);
@@ -470,8 +458,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.BottomlessBucket,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "水桶")
+                Amount = 1
             });
         }
 
@@ -503,7 +490,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             if (CWRRef.Has) {
                 if (ModContent.TryFind("CalamityMod", "DubiousPlating", out ModItem dubiousPlatingItem)) {
-                    AddReward(dubiousPlatingItem.Type, 20, this.GetLocalization("QuestReward.Description", () => "20个可疑镀层"));
+                    AddReward(dubiousPlatingItem.Type, 20);
                 }
             }
         }

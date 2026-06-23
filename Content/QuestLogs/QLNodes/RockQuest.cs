@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            AddReward(CWRID.Item_BloodOrb, 999, this.GetLocalization("QuestReward.Description", () => "大量血珠"));
+            AddReward(CWRID.Item_BloodOrb, 999);
         }
 
         public override void UpdateByPlayer() {

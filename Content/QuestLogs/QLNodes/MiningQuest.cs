@@ -24,13 +24,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.CopperBar,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五个{0}")
+                Amount = 5
             });
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.IronPickaxe,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description2", () => "一把{0}")
+                Amount = 1
             });
         }
 
@@ -49,14 +47,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Objectives[0].Description = this.GetLocalization("QuestObjective.Description").WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Rewards[0].ItemType = targetBar;
-            Rewards[0].Description = this.GetLocalization("QuestReward.Description").WithFormatArgs(Lang.GetItemNameValue(targetBar));
 
             int nextTierPickaxe = ItemID.IronPickaxe;
             if (WorldGen.SavedOreTiers.Iron == TileID.Lead) {
                 nextTierPickaxe = ItemID.LeadPickaxe;
             }
             Rewards[1].ItemType = nextTierPickaxe;
-            Rewards[1].Description = this.GetLocalization("QuestReward.Description2").WithFormatArgs(Lang.GetItemNameValue(nextTierPickaxe));
 
             IconItemType = targetPickaxe;
         }
@@ -65,10 +61,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(false, ItemID.CopperOre, ItemID.TinOre);
 
-            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }
@@ -97,13 +91,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.IronBar,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五十个{0}")
+                Amount = 5
             });
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldPickaxe,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description2", () => "一把{0}")
+                Amount = 1
             });
         }
 
@@ -124,14 +116,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Objectives[0].Description = this.GetLocalization("QuestObjective.Description").WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Rewards[0].ItemType = targetBar;
-            Rewards[0].Description = this.GetLocalization("QuestReward.Description").WithFormatArgs(Lang.GetItemNameValue(targetBar));
 
             int nextTierPickaxe = ItemID.GoldPickaxe;
             if (WorldGen.SavedOreTiers.Gold == TileID.Platinum) {
                 nextTierPickaxe = ItemID.PlatinumPickaxe;
             }
             Rewards[1].ItemType = nextTierPickaxe;
-            Rewards[1].Description = this.GetLocalization("QuestReward.Description2").WithFormatArgs(Lang.GetItemNameValue(nextTierPickaxe));
 
             IconItemType = targetPickaxe;
         }
@@ -140,10 +130,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(false, ItemID.IronOre, ItemID.LeadOre);
 
-            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }
@@ -172,13 +160,11 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldBar,
-                Amount = 100,
-                Description = this.GetLocalization("QuestReward.Description", () => "一百个{0}")
+                Amount = 100
             });
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ReaverShark,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description2", () => "一把{0}")
+                Amount = 1
             });
         }
 
@@ -199,11 +185,9 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Objectives[0].Description = this.GetLocalization("QuestObjective.Description").WithFormatArgs(Lang.GetItemNameValue(TargetOreID));
 
             Rewards[0].ItemType = targetBar;
-            Rewards[0].Description = this.GetLocalization("QuestReward.Description").WithFormatArgs(Lang.GetItemNameValue(targetBar));
 
             int nextTierPickaxe = ItemID.ReaverShark;
             Rewards[1].ItemType = nextTierPickaxe;
-            Rewards[1].Description = this.GetLocalization("QuestReward.Description2").WithFormatArgs(Lang.GetItemNameValue(nextTierPickaxe));
 
             IconItemType = targetPickaxe;
         }
@@ -212,10 +196,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             Player player = Main.LocalPlayer;
             int currentOre = player.InquireItem(false, ItemID.GoldOre, ItemID.PlatinumOre);
 
-            //更新进度
             Objectives[0].CurrentProgress = currentOre;
 
-            //检查完成
             if (Objectives[0].IsCompleted && !IsCompleted) {
                 IsCompleted = true;
             }

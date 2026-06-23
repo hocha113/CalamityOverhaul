@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using System.Collections.Generic;
 using Terraria;
@@ -28,14 +28,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.HermesBoots,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "跑靴")
+                Amount = 1
             });
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.LuckyHorseshoe,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "马蹄铁")
+                Amount = 1
             });
         }
 
@@ -72,8 +70,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.WarmthPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "暖身药水")
+                Amount = 3
             });
         }
 
@@ -109,21 +106,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
                     Rewards.Add(new QuestReward {
                         ItemType = plating.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Plating", () => "可疑镀层")
+                        Amount = 5
                     });
                     Rewards.Add(new QuestReward {
                         ItemType = circuit.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Circuitry", () => "神秘电路")
+                        Amount = 5
                     });
                 }
             }
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Shiverthorn,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description.Shiverthorn", () => "寒颤棘")
+                Amount = 10
             });
         }
 
@@ -153,8 +147,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.WaterWalkingPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "水上行走药水")
+                Amount = 3
             });
         }
 
@@ -184,8 +177,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GillsPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "鱼鳃药水")
+                Amount = 3
             });
         }
 
@@ -221,21 +213,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
                     Rewards.Add(new QuestReward {
                         ItemType = plating.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Plating", () => "可疑镀层")
+                        Amount = 5
                     });
                     Rewards.Add(new QuestReward {
                         ItemType = circuit.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Circuitry", () => "神秘电路")
+                        Amount = 5
                     });
                 }
             }
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Waterleaf,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description.Waterleaf", () => "波浪叶")
+                Amount = 10
             });
         }
 
@@ -265,8 +254,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.SummoningPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "召唤药水")
+                Amount = 3
             });
         }
 
@@ -302,21 +290,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
                     Rewards.Add(new QuestReward {
                         ItemType = plating.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Plating", () => "可疑镀层")
+                        Amount = 5
                     });
                     Rewards.Add(new QuestReward {
                         ItemType = circuit.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Circuitry", () => "神秘电路")
+                        Amount = 5
                     });
                 }
             }
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Moonglow,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description.Moonglow", () => "月光草")
+                Amount = 10
             });
         }
 
@@ -346,8 +331,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.BattlePotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "战斗药水")
+                Amount = 3
             });
         }
 
@@ -378,8 +362,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Torch,
-                Amount = 99,
-                Description = this.GetLocalization("QuestReward.Description", () => "火把")
+                Amount = 99
             });
         }
 
@@ -409,14 +392,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Dynamite,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "炸药")
+                Amount = 10
             });
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Bomb,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description.Bomb", () => "炸弹")
+                Amount = 20
             });
         }
 
@@ -457,8 +438,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.TrapsightPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "危险感应药水")
+                Amount = 3
             });
         }
 
@@ -489,8 +469,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.MiningPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "挖矿药水")
+                Amount = 3
             });
         }
 
@@ -527,8 +506,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.RecallPotion,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "回忆药水")
+                Amount = 5
             });
         }
 
@@ -563,14 +541,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ShinePotion,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "光芒药水")
+                Amount = 5
             });
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Diamond,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description.Diamond", () => "钻石")
+                Amount = 3
             });
         }
 
@@ -607,8 +583,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.SpelunkerPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "洞穴探险药水")
+                Amount = 3
             });
         }
 
@@ -639,8 +614,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.LesserHealingPotion,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "次级治疗药水")
+                Amount = 10
             });
         }
 
@@ -669,8 +643,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.NightOwlPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "夜猫子药水")
+                Amount = 3
             });
         }
 
@@ -700,8 +673,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ObsidianSkinPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "黑曜石皮肤药水")
+                Amount = 3
             });
         }
 
@@ -737,21 +709,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
                     Rewards.Add(new QuestReward {
                         ItemType = plating.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Plating", () => "可疑镀层")
+                        Amount = 5
                     });
                     Rewards.Add(new QuestReward {
                         ItemType = circuit.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Circuitry", () => "神秘电路")
+                        Amount = 5
                     });
                 }
             }
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Fireblossom,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description.Fireblossom", () => "火焰花")
+                Amount = 10
             });
         }
 
@@ -782,8 +751,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.FeatherfallPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "羽落药水")
+                Amount = 3
             });
         }
 
@@ -813,8 +781,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GravitationPotion,
-                Amount = 3,
-                Description = this.GetLocalization("QuestReward.Description", () => "重力药水")
+                Amount = 3
             });
         }
 
@@ -887,8 +854,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.LesserManaPotion,
-                Amount = 15,
-                Description = this.GetLocalization("QuestReward.Description", () => "次级魔力药水")
+                Amount = 15
             });
         }
 
@@ -923,21 +889,18 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 if (calamityMod.TryFind("DubiousPlating", out ModItem plating) && calamityMod.TryFind("MysteriousCircuitry", out ModItem circuit)) {
                     Rewards.Add(new QuestReward {
                         ItemType = plating.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Plating", () => "可疑镀层")
+                        Amount = 5
                     });
                     Rewards.Add(new QuestReward {
                         ItemType = circuit.Type,
-                        Amount = 5,
-                        Description = this.GetLocalization("QuestReward.Description.Circuitry", () => "神秘电路")
+                        Amount = 5
                     });
                 }
             }
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.FallenStar,
-                Amount = 15,
-                Description = this.GetLocalization("QuestReward.Description.FallenStar", () => "坠落之星")
+                Amount = 15
             });
         }
 
@@ -968,8 +931,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Wood,
-                Amount = 200,
-                Description = this.GetLocalization("QuestReward.Description", () => "木材")
+                Amount = 200
             });
         }
 
@@ -1015,8 +977,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldCoin,
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "金币")
+                Amount = 2
             });
         }
 
@@ -1045,8 +1006,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.BottledWater,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "瓶装水")
+                Amount = 20
             });
         }
 
@@ -1083,8 +1043,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.LesserManaPotion,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "次级魔力药水")
+                Amount = 10
             });
         }
 
@@ -1121,14 +1080,12 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GPS,
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "全球定位系统")
+                Amount = 1
             });
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldCoin,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description.Gold", () => "金币")
+                Amount = 5
             });
         }
 

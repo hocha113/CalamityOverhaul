@@ -1,10 +1,15 @@
+QuestReward: {
+	Template: {
+		AmountItem: "{0} {1}"
+	}
+}
+
 QuestNode: {
 	FirstQuest: {
 		DisplayName: Bem-vindo ao Mundo da Calamidade!
 		Description: O Inicio da Jornada
 		DetailedDescription: Toda lenda comeca de origens humildes. Pegue seu equipamento inicial e prepare-se para enfrentar um mundo cheio de deuses e monstros.
 		QuestObjective.Description: Clique para pegar itens iniciais
-		QuestReward.Description: Pacote de Aventura Inicial
 	}
 
 	MiningQuest: {
@@ -13,10 +18,6 @@ QuestNode: {
 		DetailedDescription: O subterraneo guarda riquezas infinitas. Primeiro, precisamos de alguns metais basicos para fabricar ferramentas.
 		QuestObjective.Description: Colete 10 {0}
 
-		QuestReward: {
-			Description: 5 {0}
-			Description2: 1 {0}
-		}
 	}
 
 	MiningQuestII: {
@@ -24,10 +25,6 @@ QuestNode: {
 		Description: Colete 50 {0}
 		QuestObjective.Description: Colete 50 {0}
 
-		QuestReward: {
-			Description: 50 {0}
-			Description2: 1 {0}
-		}
 
 		DetailedDescription: Cobre e muito mole; precisamos de metais mais duros para nos armar. Va mais fundo no subterraneo para encontrar veios de Ferro.
 	}
@@ -37,10 +34,6 @@ QuestNode: {
 		Description: Colete 100 {0}
 		QuestObjective.Description: Colete 100 {0}
 
-		QuestReward: {
-			Description: 100 {0}
-			Description2: 1 {0}
-		}
 
 		DetailedDescription: Ouro nao e apenas moeda; possui excelente condutividade magica e ductilidade. Embora mais macio que o Ferro, e um material crucial para fabricar equipamentos avancados.
 	}
@@ -49,7 +42,6 @@ QuestNode: {
 		DisplayName: Elemental de Enxofre
 		Description: Derrote a Elemental de Enxofre
 		QuestObjective.Description: Derrote a Elemental de Enxofre
-		QuestReward.Description: 10 Almas da Noite
 		DetailedDescription: Nas ruinas da Falésia de Enxofre, desperte e derrote o espirito elemental adormecido. Cuidado com seu inferno de projeteis.
 	}
 
@@ -57,7 +49,6 @@ QuestNode: {
 		DisplayName: Clone da Calamitas
 		Description: Derrote o Clone da Calamitas
 		QuestObjective.Description: Derrote o Clone da Calamitas
-		QuestReward.Description: 10 Poeira Calamitosa
 		DetailedDescription: Uma clone cheia de odio e desejo de destruicao. Derrote-a para provar que voce e digno de enfrentar a verdadeira Bruxa.
 	}
 
@@ -65,7 +56,6 @@ QuestNode: {
 		DisplayName: Crabulon
 		Description: Derrote Crabulon
 		QuestObjective.Description: Derrote Crabulon
-		QuestReward.Description: 50 Cogumelos Brilhantes
 		DetailedDescription: No subsolo dos Cogumelos Brilhantes, um caranguejo gigante infestado por fungos espreita. Seus esporos sao extremamente perigosos.
 	}
 
@@ -73,7 +63,6 @@ QuestNode: {
 		DisplayName: Cryogen
 		Description: Derrote Cryogen
 		QuestObjective.Description: Derrote Cryogen
-		QuestReward.Description: 10 Almas da Luz
 		DetailedDescription: O antigo Arqui-mago do cosmos esta selado nesta prisao eterna de gelo. Liberte e derrote-o para desencadear o poder do ártico.
 	}
 
@@ -81,7 +70,6 @@ QuestNode: {
 		DisplayName: Flagelo do Deserto
 		Description: Derrote o Flagelo do Deserto
 		QuestObjective.Description: Derrote o Flagelo do Deserto
-		QuestReward.Description: 10 Fragmentos da Vitoria
 		DetailedDescription: O antigo tirano dos mares agora luta pela vida no deserto ressecado. Cuidado com suas mandibulas massivas e seus lacaios.
 	}
 
@@ -89,7 +77,6 @@ QuestNode: {
 		DisplayName: Devorador de Mundos / Cerebro de Cthulhu
 		Description: Derrote o Chefe da Corrupcao ou do Carmesim
 		QuestObjective.Description: Derrote o Devorador de Mundos ou o Cerebro de Cthulhu
-		QuestReward.Description: 20 Escamas Sombrias / Amostras de Tecido
 		DetailedDescription: O mal esta se espalhando. Aventure-se nas lesoes do mundo e erradique o verme gigante ou o cerebro vil ali enraizado.
 	}
 
@@ -97,7 +84,6 @@ QuestNode: {
 		DisplayName: Olho de Cthulhu
 		Description: Derrote o Olho de Cthulhu
 		QuestObjective.Description: Derrote o Olho de Cthulhu
-		QuestReward.Description: 20 Minerio de Demonite / Crimtane
 		DetailedDescription: Enquanto voce sentir aquele olhar maligno, ele aparecera. Este e o primeiro verdadeiro teste de sua forca.
 	}
 
@@ -105,7 +91,6 @@ QuestNode: {
 		DisplayName: Golem
 		Description: Derrote o Golem
 		QuestObjective.Description: Derrote o Golem
-		QuestReward.Description: 10 Cascas de Besouro
 		DetailedDescription: Nas profundezas do Templo da Selva, uma antiga maquina de guerra esta encerrada. Cuidado com seus lasers e punhos pesados.
 	}
 
@@ -113,7 +98,6 @@ QuestNode: {
 		DisplayName: A Colmeia Mental / Os Perfuradores
 		Description: Derrote o verdadeiro deus do bioma maligno
 		QuestObjective.Description: Derrote A Colmeia Mental ou Os Perfuradores
-		QuestReward.Description: 10 Barras de Demonite / Crimtane
 		DetailedDescription: Eles sao as manifestacoes fisicas da consciencia da Corrupcao e do Carmesim. Se nao forem destruidos, esta terra nunca conhecera a paz.
 	}
 
@@ -121,7 +105,6 @@ QuestNode: {
 		DisplayName: Rei Slime
 		Description: Derrote o Rei Slime
 		QuestObjective.Description: Derrote o Rei Slime
-		QuestReward.Description: 5 Moedas de Ouro
 		DetailedDescription: O governante de todas as criaturas gelatinosas. Embora pareca um pouco comico, nao deixe que seu tamanho massivo o esmague.
 	}
 
@@ -129,7 +112,6 @@ QuestNode: {
 		DisplayName: Cultista Lunatico
 		Description: Derrote o Cultista Lunatico
 		QuestObjective.Description: Derrote o Cultista Lunatico
-		QuestReward.Description: 5 Fragmentos Solares
 		DetailedDescription: Na entrada da masmorra, um grupo de cultistas fanaticos esta tentando impedir—ou talvez desencadear—o apocalipse. Pare seu ritual.
 	}
 
@@ -137,7 +119,6 @@ QuestNode: {
 		DisplayName: Chefes Mecanicos
 		Description: Derrote todos os Chefes Mecanicos
 		QuestObjective.Description: Derrote todos os Chefes Mecanicos
-		QuestReward.Description: 20 Barras Sagradas
 		DetailedDescription: Criacoes iniciais de Draedon, imitando partes de Cthulhu. So derrotando-os o mundo sera revitalizado.
 	}
 
@@ -145,7 +126,6 @@ QuestNode: {
 		DisplayName: Senhor da Lua
 		Description: Derrote o Senhor da Lua
 		QuestObjective.Description: Derrote o Senhor da Lua
-		QuestReward.Description: Trofeu do Senhor da Lua
 		DetailedDescription: O mentor por tras de tudo, o terror do lado escuro da lua. Acabe com este longo pesadelo.
 	}
 
@@ -153,7 +133,6 @@ QuestNode: {
 		DisplayName: A Pestífera Goliarda
 		Description: Derrote a Pestífera Goliarda
 		QuestObjective.Description: Derrote a Pestífera Goliarda
-		QuestReward.Description: 20 Cilindros de Celulas de Peste
 		DetailedDescription: Uma Abelha Rainha modificada por maquinario de nano-virus. Nao e apenas mortal, mas tambem carrega uma peste perigosa.
 	}
 
@@ -161,7 +140,6 @@ QuestNode: {
 		DisplayName: Plantera
 		Description: Derrote Plantera
 		QuestObjective.Description: Derrote Plantera
-		QuestReward.Description: 50 Minerio de Clorofita
 		DetailedDescription: Nas profundezas da selva, dorme uma flor carnivora massiva. Quebre o bulbo e enfrente a ira da selva.
 	}
 
@@ -169,7 +147,6 @@ QuestNode: {
 		DisplayName: Esqueleto
 		Description: Derrote o Esqueleto
 		QuestObjective.Description: Derrote o Esqueleto
-		QuestReward.Description: 50 Ossos
 		DetailedDescription: So derrotando este velho amaldiçoado voce pode entrar com seguranca na Masmorra para explorar seus segredos.
 	}
 
@@ -177,7 +154,6 @@ QuestNode: {
 		DisplayName: O Deus Slime
 		Description: Derrote O Deus Slime
 		QuestObjective.Description: Derrote O Deus Slime
-		QuestReward.Description: 1000 Gel
 		DetailedDescription: O apice da especie slime, uma divindade antiga e glutona. Cuidado com os ataques combinados de seus avatares.
 	}
 
@@ -185,7 +161,6 @@ QuestNode: {
 		DisplayName: Parede de Carne
 		Description: Derrote a Parede de Carne
 		QuestObjective.Description: Derrote a Parede de Carne
-		QuestReward.Description: Martelo do Herói
 		DetailedDescription: O porteiro do mundo. Jogue a Boneca Vodu do Guia na lava para libertar os deuses antigos do mundo e comecar o Modo Dificil.
 	}
 
@@ -193,7 +168,6 @@ QuestNode: {
 		DisplayName: Vazio Incessante
 		Description: Derrote o Vazio Incessante
 		QuestObjective.Description: Derrote o Vazio Incessante
-		QuestReward.Description: 5 Plasma Escuro
 		DetailedDescription: Um dos Sentinela do Devorador, um espelho do nada de outra dimensao.
 	}
 
@@ -201,7 +175,6 @@ QuestNode: {
 		DisplayName: O Devorador de Deuses
 		Description: Derrote o Devorador de Deuses
 		QuestObjective.Description: Derrote o Devorador de Deuses
-		QuestReward.Description: 30 Barras de Cosmilite
 		DetailedDescription: Uma serpente cosmica que anseia devorar toda a divindade. Duelo no vazio, e nao deixe que ela o consuma.
 	}
 
@@ -209,7 +182,6 @@ QuestNode: {
 		DisplayName: O Dragonfolly
 		Description: Derrote O Dragonfolly
 		QuestObjective.Description: Derrote O Dragonfolly
-		QuestReward.Description: 10 Penas Effulgentes
 		DetailedDescription: Uma tentativa fracassada de clonar Yharon, um pseudo-dragao louco e eletrificado.
 	}
 
@@ -217,7 +189,6 @@ QuestNode: {
 		DisplayName: Exo Mechs
 		Description: Derrote os Exo Mechs
 		QuestObjective.Description: Derrote os Exo Mechs
-		QuestReward.Description: 20 Prismas Exo
 		DetailedDescription: As obras-primas finais de Draedon, representando o apice da tecnologia Terrariana. Sobreviva a esta performance perfeita.
 	}
 
@@ -225,7 +196,6 @@ QuestNode: {
 		DisplayName: O Velho Duque
 		Description: Derrote o Velho Duque
 		QuestObjective.Description: Derrote o Velho Duque
-		QuestReward.Description: 20 Fosseis Corroídos
 		DetailedDescription: O antigo senhor das profundezas do Mar Sulfuroso, uma combinacao de mutacao e poder. Cuidado com seu vapor toxico.
 	}
 
@@ -233,7 +203,6 @@ QuestNode: {
 		DisplayName: Polterghast
 		Description: Derrote Polterghast
 		QuestObjective.Description: Derrote Polterghast
-		QuestReward.Description: 10 Almas Ruinosas
 		DetailedDescription: Um monstro formado pela reuniao de almas vingativas que morreram na Masmorra. Acalme sua raiva.
 	}
 
@@ -241,7 +210,6 @@ QuestNode: {
 		DisplayName: Wyrm Primordial
 		Description: Derrote o Wyrm Primordial
 		QuestObjective.Description: Derrote o Wyrm Primordial
-		QuestReward.Description: Canhao do Halibut
 		DetailedDescription: O guardiao do Abismo mais profundo. Uma entidade mais antiga que os proprios deuses. Nao o perturbe a menos que necessario.
 	}
 
@@ -249,7 +217,6 @@ QuestNode: {
 		DisplayName: Guardioes Profanados
 		Description: Derrote os Guardioes Profanados
 		QuestObjective.Description: Derrote os Guardioes Profanados
-		QuestReward.Description: 3 Essencia Profana
 		DetailedDescription: Guardioes leais da Deusa Profanada. Derrote-os para enfraquecer as defesas da Deusa.
 	}
 
@@ -257,7 +224,6 @@ QuestNode: {
 		DisplayName: Providence, a Deusa Profanada
 		Description: Derrote Providence
 		QuestObjective.Description: Derrote Providence
-		QuestReward.Description: 20 Geodos Divinos
 		DetailedDescription: A Deusa que controla o fogo sagrado e a purificacao. Desafie-a no Sagrado ou no Submundo, mas cuidado para nao ser incinerado pelas chamas sagradas.
 	}
 
@@ -265,7 +231,6 @@ QuestNode: {
 		DisplayName: Signus, Emissario do Devorador
 		Description: Derrote Signus
 		QuestObjective.Description: Derrote Signus
-		QuestReward.Description: 5 Nether Distorcido
 		DetailedDescription: Um dos Sentinela do Devorador, um assassino sem forma, um fantasma do vazio.
 	}
 
@@ -273,7 +238,6 @@ QuestNode: {
 		DisplayName: Tecedor de Tempestades
 		Description: Derrote o Tecedor de Tempestades
 		QuestObjective.Description: Derrote o Tecedor de Tempestades
-		QuestReward.Description: 5 Cascas Blindadas
 		DetailedDescription: Um dos Sentinela do Devorador, um verme dos ceus que se alimenta de tempestades e relampagos.
 	}
 
@@ -281,7 +245,6 @@ QuestNode: {
 		DisplayName: Calamitas, a Bruxa Suprema
 		Description: Derrote Calamitas, a Bruxa Suprema
 		QuestObjective.Description: Derrote Calamitas, a Bruxa Suprema
-		QuestReward.Description: 20 Cinzas da Aniquilacao
 		DetailedDescription: A lendaria Bruxa de Enxofre. Este e o fim da sua jornada, ou talvez um novo comeco? Prepare-se para o verdadeiro inferno de projeteis.
 	}
 
@@ -289,7 +252,6 @@ QuestNode: {
 		DisplayName: Yharon, Dragao do Renascimento
 		Description: Derrote Yharon
 		QuestObjective.Description: Derrote Yharon
-		QuestReward.Description: 20 Barras de Tesla Auricas
 		DetailedDescription: O leal companheiro do Tirano, um dragao possuindo a habilidade de renascimento da fenix. Esta e uma provacao da alma.
 	}
 
@@ -297,7 +259,6 @@ QuestNode: {
 		DisplayName: Armazenamento de Energia
 		Description: Fabrique uma Bateria Termica
 		QuestObjective.Description: Obtenha uma Bateria Termica
-		QuestReward.Description: 50 Fios
 		DetailedDescription: A energia precisa ser armazenada apos a geracao. Fabricar baterias e o primeiro passo para construir uma rede eletrica estavel.
 	}
 
@@ -305,7 +266,6 @@ QuestNode: {
 		DisplayName: Energia Limpa
 		Description: Fabrique um Gerador Hidreletrico
 		QuestObjective.Description: Obtenha um Gerador Hidreletrico
-		QuestReward.Description: Balde d'Agua
 		DetailedDescription: Aproveite o poder da agua corrente para gerar eletricidade. Uma maneira limpa e sustentavel de obter energia.
 	}
 
@@ -313,7 +273,6 @@ QuestNode: {
 		DisplayName: Revolucao Industrial
 		Description: Fabrique um Gerador Eolico
 		QuestObjective.Description: Obtenha um Gerador Eolico
-		QuestReward.Description: 10 Barras de Ferro
 		DetailedDescription: O primeiro passo em direcao a automacao. Use a energia eolica para mover suas maquinas e libertar suas maos.
 	}
 
@@ -321,7 +280,6 @@ QuestNode: {
 		DisplayName: Classificacao Logistica
 		Description: Fabrique um Filtro de Itens
 		QuestObjective.Description: Obtenha um Filtro de Itens
-		QuestReward.Description: 2 Baus
 		DetailedDescription: Linhas de producao automatizadas exigem ordem. Use filtros para controlar com precisão o fluxo de itens.
 	}
 
@@ -329,7 +287,6 @@ QuestNode: {
 		DisplayName: Escavacao Automatizada
 		Description: Fabrique uma Maquina de Mineracao
 		QuestObjective.Description: Obtenha uma Maquina de Mineracao
-		QuestReward.Description: 5 Pocoes do Espeleologo
 		DetailedDescription: Diga adeus à mineracao manual tediosa. Esta maquina devora veios de minerio com eficiencia surpreendente.
 	}
 
@@ -337,7 +294,6 @@ QuestNode: {
 		DisplayName: Perfuracao de Nucleo Profundo
 		Description: Fabrique uma Maquina de Mineracao MK2
 		QuestObjective.Description: Obtenha uma Maquina de Mineracao MK2
-		QuestReward.Description: 5 Pocoes de Mineracao
 		DetailedDescription: Seu nucleo de energia reforcado oferece velocidade incomparavel.
 	}
 
@@ -345,7 +301,6 @@ QuestNode: {
 		DisplayName: Transmissao de Energia
 		Description: Fabrique Dutos de Energia Universais
 		QuestObjective.Description: Obtenha Dutos de Energia Universais
-		QuestReward.Description: 20 Dutos de Energia Universais
 		DetailedDescription: As veias que conectam geradores e maquinas. Sem eles, a eletricidade e apenas agua estagnada.
 	}
 
@@ -353,7 +308,6 @@ QuestNode: {
 		DisplayName: Torre de Tempestade Magnetica
 		Description: Fabrique uma Torre Tesla
 		QuestObjective.Description: Obtenha uma Torre Tesla
-		QuestReward.Description: 20 Revestimentos Duvidosos
 		DetailedDescription: A cristalizacao da tecnologia de Draedon. Esta torre permite transmissao de energia sem fio, revolucionando completamente seu layout de fios.
 	}
 
@@ -361,13 +315,11 @@ QuestNode: {
 		DisplayName: Hora de Queimar
 		Description: Fabrique um Gerador Termico
 		QuestObjective.Description: Obtenha um Gerador Termico
-		QuestReward.Description: 50 Carvao
 		DetailedDescription: Queime combustivel para gerar grandes quantidades de energia. Embora nao seja ecologicamente correto, e a fonte de energia mais confiavel nos primeiros estagios.
 	}
 
 	AnnihilatingUniverseQuest: {
 		QuestObjective.Description: Obtenha Universo Aniquilador
-		QuestReward.Description: 5 Lingotes Infinitos
 		DisplayName: Universo Aniquilador
 		Description: Obtenha "Universo Aniquilador"
 		DetailedDescription: Comprima o poder das galaxias em uma corda de arco. Esta arma possui o poder de destruir dimensões universais, a prova definitiva para um atirador.
@@ -375,7 +327,6 @@ QuestNode: {
 
 	AriaofTheCosmosQuest: {
 		QuestObjective.Description: Obtenha Aria do Cosmos
-		QuestReward.Description: 20 Lingotes Infinitos
 		DisplayName: Aria do Cosmos
 		Description: Obtenha "Aria do Cosmos"
 		DetailedDescription: Execute a sinfonia das estrelas. Este tomo invoca buracos negros e quasares, fazendo os inimigos desaparecerem em meio a cancao do universo.
@@ -383,7 +334,6 @@ QuestNode: {
 
 	DarkMatterCompressorQuest: {
 		QuestObjective.Description: Obtenha Compressor de Materia Escura
-		QuestReward.Description: 10 Bolas de Materia Escura
 		DisplayName: Compressor de Materia Escura
 		Description: Obtenha Compressor de Materia Escura
 		DetailedDescription: Manipule a materia mais misteriosa do universo. Esta maquina comprime materia escura em esferas de energia de alta densidade para fabricacao avancada.
@@ -391,7 +341,6 @@ QuestNode: {
 
 	InfiniteIngotQuest: {
 		QuestObjective.Description: Obtenha Lingote Infinito
-		QuestReward.Description: 2 Lingotes Infinitos
 		DisplayName: Lingote Infinito
 		Description: Forje o Lingote Infinito
 		DetailedDescription: Um metal que transcende a lei da conservacao da massa. E a pedra angular para o poder supremo, contendo infinitas possibilidades.
@@ -399,7 +348,6 @@ QuestNode: {
 
 	InfinitePickQuest: {
 		QuestObjective.Description: Obtenha Picareta Infinita
-		QuestReward.Description: 5 Lingotes Infinitos
 		DisplayName: Picareta Infinita
 		Description: Obtenha Picareta Infinita
 		DetailedDescription: Nada pode parar esta picareta. Ela pode minerar tudo, ate a rocha madre do mundo.
@@ -407,7 +355,6 @@ QuestNode: {
 
 	InfiniteToiletQuest: {
 		QuestObjective.Description: Obtenha Banheiro Infinito
-		QuestReward.Description: 1 Lingote Infinito
 		DisplayName: Banheiro Infinito
 		Description: Obtenha Banheiro Infinito
 		DetailedDescription: O trono dos deuses. Embora pareca absurdo, realmente simboliza alguma forma de... autoridade suprema.
@@ -415,7 +362,6 @@ QuestNode: {
 
 	InfinityCatalystQuest: {
 		QuestObjective.Description: Obtenha Catalisador do Infinito
-		QuestReward.Description: 1 Lingote Infinito
 		DisplayName: Catalisador do Infinito
 		Description: Obtenha Catalisador do Infinito
 		DetailedDescription: O catalisador-chave para iniciar a reacao infinita. Permite que a materia circule entre aniquilacao e renascimento, gerando energia imensa.
@@ -423,7 +369,6 @@ QuestNode: {
 
 	NeutronBowQuest: {
 		QuestObjective.Description: Obtenha Arco de Neutrons
-		QuestReward.Description: 2 Lingotes de Estrela de Neutrons
 		DisplayName: Arco de Neutrons
 		Description: Obtenha Arco de Neutrons
 		DetailedDescription: Um arco forjado a partir dos fragmentos do núcleo de uma estrela de neutrons. Cada flecha carrega a gravidade de uma estrela em colapso.
@@ -431,7 +376,6 @@ QuestNode: {
 
 	NeutronGlaiveQuest: {
 		QuestObjective.Description: Obtenha Glaive de Neutrons
-		QuestReward.Description: 2 Lingotes de Estrela de Neutrons
 		DisplayName: Glaive de Neutrons
 		Description: Obtenha Glaive de Neutrons
 		DetailedDescription: Uma arma de haste com densidade surpreendente. Empunha-la requer força imensa, mas nenhuma armadura pode resistir ao seu corte.
@@ -439,7 +383,6 @@ QuestNode: {
 
 	NeutronGunQuest: {
 		QuestObjective.Description: Obtenha Arma de Neutrons
-		QuestReward.Description: 2 Lingotes de Estrela de Neutrons
 		DisplayName: Arma de Neutrons
 		Description: Obtenha Arma de Neutrons
 		DetailedDescription: Uma arma de fogo que dispara micro-correntes de neutrons. Devido à sua densidade extrema, as balas sao quase afetadas pela resistencia.
@@ -447,7 +390,6 @@ QuestNode: {
 
 	NeutronScytheQuest: {
 		QuestObjective.Description: Obtenha Foice de Neutrons
-		QuestReward.Description: 2 Lingotes de Estrela de Neutrons
 		DisplayName: Foice de Neutrons
 		Description: Obtenha Foice de Neutrons
 		DetailedDescription: A ferramenta de colheita do ceifador. Ela rasga o espaco com facilidade, colhendo vidas como trigo.
@@ -455,7 +397,6 @@ QuestNode: {
 
 	NeutronStarIngotQuest: {
 		QuestObjective.Description: Obtenha Lingote de Estrela de Neutrons
-		QuestReward.Description: 5 Lingotes de Estrela de Neutrons
 		DisplayName: Lingote de Estrela de Neutrons
 		Description: Obtenha Lingote de Estrela de Neutrons
 		DetailedDescription: Um dos materiais mais densos do universo. Este metal e inimaginavelmente pesado, vibrando com flutuacoes gravitacionais.
@@ -463,7 +404,6 @@ QuestNode: {
 
 	NeutronWandQuest: {
 		QuestObjective.Description: Obtenha Varinha de Neutrons
-		QuestReward.Description: 2 Lingotes de Estrela de Neutrons
 		DisplayName: Varinha de Neutrons
 		Description: Obtenha Varinha de Neutrons
 		DetailedDescription: Uma varinha que controla a gravidade. Use o poder de uma estrela de neutrons para distorcer o espaco-tempo e esmagar seus inimigos.
@@ -471,7 +411,6 @@ QuestNode: {
 
 	PandemoniumQuest: {
 		QuestObjective.Description: Obtenha Pandemonio
-		QuestReward.Description: 20 Lingotes Infinitos
 		DisplayName: Pandemonio
 		Description: Obtenha "Pandemonio"
 		DetailedDescription: A arma suprema fundindo inumeras almas e poder Calamitoso. Segurando-a, voce segura as chaves do Inferno e do Abismo.
@@ -479,7 +418,6 @@ QuestNode: {
 
 	RockQuest: {
 		QuestObjective.Description: Obtenha Pedra Eternita Antiga
-		QuestReward.Description: 5 Pedras Eternita Antigas
 		DisplayName: Pedra Eternita Antiga
 		Description: Obtenha Pedra Eternita Antiga
 		DetailedDescription: Uma pedra aparentemente comum, mas que testemunhou o ciclo de inumeros Boss Rushes. E um simbolo de perseveranca eterna.
@@ -487,7 +425,6 @@ QuestNode: {
 
 	TerminusQuest: {
 		QuestObjective.Description: Obtenha Terminus
-		QuestReward.Description: Quantidade Massiva de Orbes de Sangue
 		DisplayName: Terminus
 		Description: Obtenha Terminus
 		DetailedDescription: A chave para iniciar o Boss Rush. Contemple esta pedra e prepare-se para enfrentar um julgamento continuo contra os seres mais fortes do mundo.
@@ -495,7 +432,6 @@ QuestNode: {
 
 	TransmutationOfMatterQuest: {
 		QuestObjective.Description: Obtenha Transmutador de Materia
-		QuestReward.Description: 10 Lingotes Infinitos
 		DisplayName: Transmutador de Materia
 		Description: Obtenha Transmutador de Materia
 		DetailedDescription: A forma final da alquimia. Esta maquina quebra o principio da troca equivalente, convertendo materia a vontade, ou criando-a do nada.
@@ -503,7 +439,6 @@ QuestNode: {
 
 	HeavenfallLongbowQuest: {
 		QuestObjective.Description: Obtenha Arco Infinito
-		QuestReward.Description: 5 Lingotes Infinitos
 		DisplayName: Arco Infinito
 		Description: Obtenha Arco Infinito
 		DetailedDescription: Um arco longo que derrubou deuses. Agora reaparecera no mundo.
@@ -511,7 +446,6 @@ QuestNode: {
 
 	SpearOfLonginusQuest: {
 		QuestObjective.Description: Obtenha Lanca de Longinus
-		QuestReward.Description: 5 Lingotes Infinitos
 		DisplayName: Lanca de Longinus
 		Description: Obtenha Lanca de Longinus
 		DetailedDescription: A lendaria lanca sagrada que perfurou uma divindade possui o poder de atravessar todos os campos e barreiras absolutas. Quando lancada, ate as leis da causalidade abrem caminho para ela.
@@ -519,7 +453,6 @@ QuestNode: {
 
 	DragonsWordQuest: {
 		QuestObjective.Description: Obtenha Palavra do Dragao
-		QuestReward.Description: 5 Lingotes Infinitos
 		DisplayName: Palavra do Dragao
 		Description: Obtenha Palavra do Dragao
 		DetailedDescription: Um dragao derrama lagrimas apenas uma vez na vida, no momento de sua morte.
@@ -527,7 +460,6 @@ QuestNode: {
 
 	RockQuestII: {
 		QuestObjective.Description: Complete o Boss Rush 5 vezes, obtenha 5 Pedras Eternita Antigas
-		QuestReward.Description: 5 Pedras Eternita Antigas
 		DisplayName: Ciclo da Conquista
 		Description: Complete o Boss Rush 5 vezes, obtenha 5 Pedras Eternita Antigas
 		DetailedDescription: O simbolo de um verdadeiro guerreiro
@@ -537,7 +469,6 @@ QuestNode: {
 		DisplayName: Aventureiro
 		Description: O mundo e meu para percorrer!
 		QuestObjective.Description: Clique para Pegar
-		QuestReward.Description: Botas de Hermes
 		DetailedDescription: Uma jornada de mil milhas comeca com um unico passo. Calce estas botas e meca este vasto mundo.
 	}
 
@@ -545,7 +476,6 @@ QuestNode: {
 		DisplayName: Masmorra Sombria
 		Description: Descubra a entrada da Masmorra
 		QuestObjective.Description: Chegue a Masmorra
-		QuestReward.Description: Pocao de Sensacao de Perigo
 		DetailedDescription: Infinitos segredos e perigos se escondem atras das paredes amaldicoadas. Apenas os exploradores mais corajosos ousam pisar neste reino dos mortos.
 	}
 
@@ -553,7 +483,6 @@ QuestNode: {
 		DisplayName: Submundo Abissal
 		Description: Desca ao Submundo
 		QuestObjective.Description: Chegue ao Submundo
-		QuestReward.Description: Pocao de Pele de Obsidiana
 		DetailedDescription: Rios de lava fluem nas partes mais profundas do mundo. E o lar dos demonios e a fonte de Obsidiana e Rocha Infernal. Cuidado onde pisa.
 	}
 
@@ -561,7 +490,6 @@ QuestNode: {
 		DisplayName: Expedicao a Selva
 		Description: Aventure-se no bioma da Selva
 		QuestObjective.Description: Chegue a Selva
-		QuestReward.Description: Pocao de Invocacao
 		DetailedDescription: Um labirinto verde vibrante, porem perigoso. A vegetacao densa esconde templos antigos e enxames mortais de abelhas.
 	}
 
@@ -569,7 +497,6 @@ QuestNode: {
 		DisplayName: Fim do Mundo
 		Description: Chegue ao bioma do Oceano
 		QuestObjective.Description: Chegue ao Oceano
-		QuestReward.Description: Pocao de Brânquias
 		DetailedDescription: A borda do continente. Aqui, o ceu encontra o mar. Navios naufragados e monstros marinhos desconhecidos jazem enterrados sob o azul profundo.
 	}
 
@@ -577,7 +504,6 @@ QuestNode: {
 		DisplayName: Esteril Gelado
 		Description: Explore o bioma de Neve
 		QuestObjective.Description: Chegue ao bioma de Neve
-		QuestReward.Description: Pocao de Aquecimento
 		DetailedDescription: Permafrost eterno. O vento cortante cobre tudo em gelo e neve. Aqui, a vida existe de uma forma muito mais resistente.
 	}
 
@@ -585,7 +511,6 @@ QuestNode: {
 		DisplayName: Mar de Estrelas
 		Description: Voe para o Espaco
 		QuestObjective.Description: Chegue ao Espaco
-		QuestReward.Description: Pocao de Pena Caída
 		DetailedDescription: Liberte-se das algemas da gravidade e toque as estrelas. So voando alto o suficiente voce pode ver o quadro completo deste mundo.
 	}
 
@@ -594,13 +519,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon no Submundo
 		QuestObjective.Description: Obtenha Esquema do Inferno
 
-		QuestReward: {
-			Description: {
-				Plating: Revestimento Duvidoso
-				Circuitry: Circuitaria Misteriosa
-				Fireblossom: Flor de Fogo
-			}
-		}
 
 		DetailedDescription: Draedon estabeleceu um posto avancado no Inferno para experimentar com energia geotermica. Encontre o esquema la; pode desbloquear novas tecnologias de armas.
 	}
@@ -610,13 +528,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon na Neve
 		QuestObjective.Description: Obtenha Esquema de Gelo
 
-		QuestReward: {
-			Description: {
-				Plating: Revestimento Duvidoso
-				Circuitry: Circuitaria Misteriosa
-				Shiverthorn: Espinho Tremulo
-			}
-		}
 
 		DetailedDescription: As baixas temperaturas aqui sao perfeitas para preservar instrumentos de precisao. Mergulhe no laboratorio sob o gelo para encontrar aquela tecnologia polar selada.
 	}
@@ -626,13 +537,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon na Selva
 		QuestObjective.Description: Obtenha Esquema da Selva
 
-		QuestReward: {
-			Description: {
-				Plating: Revestimento Duvidoso
-				Circuitry: Circuitaria Misteriosa
-				Moonglow: Brilho da Lua
-			}
-		}
 
 		DetailedDescription: A densa selva esconde o laboratorio biologico de Draedon. Ele estudou peste e nano-virus la. Encontre aquele esquema para revelar a verdade perigosa.
 	}
@@ -642,13 +546,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon no Planetóide
 		QuestObjective.Description: Obtenha Esquema do Planetóide
 
-		QuestReward: {
-			Description: {
-				Plating: Revestimento Duvidoso
-				Circuitry: Circuitaria Misteriosa
-				FallenStar: Estrela Cadente
-			}
-		}
 
 		DetailedDescription: No ambiente de microgravidade da alta altitude, um laboratorio flutua silenciosamente. Va la para encontrar projetos iniciais relacionados aos Exo Mechs.
 	}
@@ -658,13 +555,6 @@ QuestNode: {
 		Description: Encontre o Esquema Criptografado no Laboratorio de Draedon no Mar Submerso
 		QuestObjective.Description: Obtenha Esquema do Mar Submerso
 
-		QuestReward: {
-			Description: {
-				Plating: Revestimento Duvidoso
-				Circuitry: Circuitaria Misteriosa
-				Waterleaf: Folha d'Agua
-			}
-		}
 
 		DetailedDescription: Neste tranquilo mar subterraneo, Draedon deixou pesquisas sobre energia Prisma. Mergulhe na agua e recupere aqueles dados valiosos.
 	}
@@ -673,7 +563,6 @@ QuestNode: {
 		DisplayName: Flagelo Aquatico
 		Description: Derrote o Flagelo Aquatico
 		QuestObjective.Description: Derrote o Flagelo Aquatico
-		QuestReward.Description: Fosseis Corroídos
 		DetailedDescription: Outrora um leviata pacifico dos oceanos limpos, agora distorcido pela toxicidade do Mar Sulfuroso. Nestas aguas acidas poluídas, cuidado com suas investidas repentinas e nuvens toxicas.
 	}
 
@@ -681,7 +570,6 @@ QuestNode: {
 		DisplayName: Rainha Slime
 		Description: Derrote a Rainha Slime
 		QuestObjective.Description: Derrote a Rainha Slime
-		QuestReward.Description: 10 Almas da Luz
 		DetailedDescription: A imperatriz de cristal do Sagrado, governando todas as criaturas gelatinosas santificadas. Comparada ao seu consorte, ela e muito mais agil e mortal. Prepare-se para uma saraivada magnifica.
 	}
 
@@ -689,7 +577,6 @@ QuestNode: {
 		DisplayName: Mestre Construtor
 		Description: Construa uma casa adequada
 		QuestObjective.Description: Construa uma casa valida
-		QuestReward.Description: Madeira
 		DetailedDescription: Todos precisam de um santuario. Seja o Guia ou outros andarilhos, se voce fornecer um quarto com moveis, luz e paredes, eles lhe oferecerao seus servicos.
 	}
 
@@ -697,7 +584,6 @@ QuestNode: {
 		DisplayName: Minerios Malignos
 		Description: Colete minerios malignos
 		QuestObjective.Description: Colete Minerio de Demonite ou Crimtane
-		QuestReward.Description: Tochas
 		DetailedDescription: Estes minerios irradiam uma aura ominosa, parecendo frios e umidos ao toque. Embora se originem das lesoes do mundo, sao materiais essenciais para fabricar equipamentos poderosos.
 	}
 
@@ -705,7 +591,6 @@ QuestNode: {
 		DisplayName: Coletor de Estrelas
 		Description: Colete Estrelas Cadentes
 		QuestObjective.Description: Colete Estrelas Cadentes
-		QuestReward.Description: Pocao de Mana Menor
 		DetailedDescription: Elas sao as lagrimas do ceu noturno, caindo so depois do anoitecer. Colete-as nao apenas para aumentar sua capacidade de mana, mas tambem para usar como municao poderosa ou material magico.
 	}
 
@@ -714,12 +599,6 @@ QuestNode: {
 		Description: Colete varias gemas
 		QuestObjective.Description: Colete 5 tipos diferentes de gemas
 
-		QuestReward: {
-			Description: {
-				$parentVal: Pocao de Brilho
-				Diamond: Diamante
-			}
-		}
 
 		DetailedDescription: Cristais brilhantes enterrados nas camadas de rocha. Alem da decoracao, sao vitais para fabricar cajados e ganchos. Coletar gemas de cores diferentes pode permitir que voce junte o brilho de um arco-iris.
 	}
@@ -728,7 +607,6 @@ QuestNode: {
 		DisplayName: Aprendiz de Ervas
 		Description: Colete varias ervas
 		QuestObjective.Description: Colete 3 tipos diferentes de ervas
-		QuestReward.Description: Agua Engarrafada
 		DetailedDescription: A fundacao da alquimia. Diferentes plantas prosperam em diferentes ambientes: desertos, tundras e ate o submundo. Aprender a identifica-las e o primeiro passo para se tornar um mestre alquimista.
 	}
 
@@ -743,7 +621,6 @@ QuestNode: {
 			}
 		}
 
-		QuestReward.Description: Pocao de Retorno
 		DetailedDescription: Minerar e a essencia da sobrevivencia. Cobre e Ferro podem ser comuns, mas sao as pedras angulares para escapar de uma vida primitiva. Nao os despreze; ate herois lendarios comecaram balancando uma picareta de cobre.
 	}
 
@@ -752,12 +629,6 @@ QuestNode: {
 		Description: Explore todos os principais biomas
 		QuestObjective.Description: Complete todas as missoes de exploracao
 
-		QuestReward: {
-			Description: {
-				$parentVal: GPS
-				Gold: Moedas de Ouro
-			}
-		}
 
 		DetailedDescription: Voce percorreu todos os cantos do mundo, das nuvens mais altas ao inferno mais profundo. O mapa que voce desenhou e a prova da sua coragem. Agora, o mundo inteiro esta a seus pes.
 	}
@@ -766,7 +637,6 @@ QuestNode: {
 		DisplayName: Profundezas da Caverna
 		Description: Explore as camadas mais profundas da Caverna
 		QuestObjective.Description: Chegue a camada da Caverna
-		QuestReward.Description: Pocao do Espeleologo
 		DetailedDescription: Nao ha luz solar aqui, apenas escuridao e criaturas desconhecidas. A lava comeca a aparecer, e os depositos de minerio se tornam mais ricos. Cuidado onde pisa; o abismo esta olhando de volta para voce.
 	}
 
@@ -774,7 +644,6 @@ QuestNode: {
 		DisplayName: A Corrupcao
 		Description: Explore a Corrupcao ou o Carmesim
 		QuestObjective.Description: Entre na Corrupcao ou no Carmesim
-		QuestReward.Description: Pocao de Batalha
 		DetailedDescription: Esta terra esta doente. A corrupcao roxa ou a carne carmesim esta devorando a terra. Embora cheia de monstros sanguinarios, e necessario entrar na toca do tigre para obter Escamas Sombrias ou Amostras de Tecido.
 	}
 
@@ -782,7 +651,6 @@ QuestNode: {
 		DisplayName: Deserto Abrasador
 		Description: Entre no bioma do Deserto
 		QuestObjective.Description: Chegue ao Deserto
-		QuestReward.Description: Pocao de Caminhada na Agua
 		DetailedDescription: O sol escaldante queima a terra, e o mar dourado de areia enterra fosseis antigos e formigas-leão ferozes. Traga bastante agua; a aridez aqui drenara sua vida.
 	}
 
@@ -790,7 +658,6 @@ QuestNode: {
 		DisplayName: Ilhas Flutuantes
 		Description: Encontre Ilhas Flutuantes no ceu
 		QuestObjective.Description: Chegue a uma Ilha Flutuante
-		QuestReward.Description: Pocao de Gravidade
 		DetailedDescription: Diz a lenda que acima das nuvens jazem cofres de tesouro deixados por uma civilizacao antiga. Procure por anomalias gravitacionais ou construa uma torre para os ceus para descobrir.
 	}
 
@@ -798,7 +665,6 @@ QuestNode: {
 		DisplayName: Cogumelo Brilhante
 		Description: Encontre o bioma do Cogumelo Brilhante
 		QuestObjective.Description: Chegue ao bioma do Cogumelo Brilhante
-		QuestReward.Description: Pocao da Coruja Noturna
 		DetailedDescription: Um ecossistema subterraneo psicodélico. Fungos gigantes emitem um brilho azul fantasmagorico, iluminando a escuridao. Este e o lar do Trufado e de insetos peculiares.
 	}
 
@@ -806,7 +672,6 @@ QuestNode: {
 		DisplayName: Exploracao Subterranea
 		Description: Mergulhe nas cavernas subterraneas
 		QuestObjective.Description: Chegue ao Subterraneo
-		QuestReward.Description: Pocao de Mineracao
 		DetailedDescription: Apenas raspar a sujeira da superficie nao e suficiente. A verdadeira aventura comeca abaixo da superficie. Traga suas tochas; a primeira camada de rocha e apenas o comeco.
 	}
 
@@ -814,7 +679,6 @@ QuestNode: {
 		DisplayName: Fonte da Vida
 		Description: Encontre um Cristal da Vida
 		QuestObjective.Description: Encontre um Cristal da Vida
-		QuestReward.Description: Pocao de Cura Menor
 		DetailedDescription: Este cristal vermelho pulsa com vitalidade. Esmague-o e consuma-o para fortalecer permanentemente seu fisico. Esta e a chave para a sobrevivencia ao enfrentar inimigos poderosos.
 	}
 
@@ -823,12 +687,6 @@ QuestNode: {
 		Description: Encontre um Orbe Sombrio ou Coracao Carmesim nas profundezas do bioma maligno
 		QuestObjective.Description: Destrua um Orbe Sombrio ou Coracao Carmesim
 
-		QuestReward: {
-			Description: {
-				$parentVal: Dinamite
-				Bomb: Bomba
-			}
-		}
 
 		DetailedDescription: Nas profundezas do abismo do mal pulsa um coracao corrupto ou um orbe sombrio. Quebra-los rende armas, mas cuidado... se voce quebrar tres, algo terrivel despertara.
 	}
@@ -837,7 +695,6 @@ QuestNode: {
 		DisplayName: Fundamentos da Alquimia
 		Description: Prepare sua primeira pocao
 		QuestObjective.Description: Prepare qualquer pocao
-		QuestReward.Description: Pocao de Mana Menor
 		DetailedDescription: Coloque um frasco vazio sobre uma mesa, e voce tera uma estacao de alquimia simples. Nao sao necessarios feiticios complexos, apenas a mistura certa de ingredientes. Beba e sinta o poder da magia.
 	}
 
@@ -845,7 +702,6 @@ QuestNode: {
 		DisplayName: Vila Florescente
 		Description: Atraia varios NPCs para se mudarem
 		QuestObjective.Description: Tenha 5 NPCs
-		QuestReward.Description: Moedas de Ouro
 		DetailedDescription: Sobreviver sozinho no ermo e solitario. A medida que voce se torna mais forte e possui mais moeda, mais pessoas virao se juntar a voce. Construa uma comunidade próspera e deixe que eles sejam seu suporte.
 	}
 
@@ -860,7 +716,6 @@ QuestNode: {
 		DisplayName: Assistente de Coleta
 		Description: Obtenha o Coletor
 		QuestObjective.Description: Obtenha o Coletor
-		QuestReward.Description: 2 Baus
 		DetailedDescription: Cansado de se abaixar para pegar itens em toda parte? Este dispositivo coleta automaticamente itens caídos proximos. E um componente central para construir sistemas automatizados de logistica e classificacao, libertando completamente suas maos.
 	}
 
@@ -889,7 +744,6 @@ QuestNode: {
 		DisplayName: Sistema Logistico
 		Description: Fabrique um Duto de Itens
 		QuestObjective.Description: Obtenha um Duto de Itens
-		QuestReward.Description: 2 Baus
 		DetailedDescription: Ainda correndo entre baus como um primitivo? Estes dutos sao as veias da industria. Conecte-os entre maquinas e containers, e observe os itens fluirem automaticamente para onde pertencem. Construa uma linha de montagem automatizada e desfrute do prazer de colher recompensas sem o trabalho.
 	}
 
@@ -897,7 +751,6 @@ QuestNode: {
 		DisplayName: Assistente de Arremesso
 		Description: Fabrique um Arremessador
 		QuestObjective.Description: Obtenha um Arremessador
-		QuestReward.Description: 2 Baus
 		DetailedDescription: Nem todos os itens valem a pena ser guardados. Este dispositivo ejeta itens da rede logistica, jogando-os para fora no mundo. Seja para fabricacao automatizada (como jogar itens em liquidos) ou simplesmente atuar como uma calha de lixo, ele faz o trabalho perfeitamente.
 	}
 }

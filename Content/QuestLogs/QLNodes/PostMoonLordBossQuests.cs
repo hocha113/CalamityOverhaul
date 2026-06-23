@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.QuestLogs.QLNodes
@@ -61,8 +61,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "EffulgentFeather", out ModItem effulgentFeatherItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = effulgentFeatherItem.Type,
-                    Amount = 10,
-                    Description = this.GetLocalization("QuestReward.Description", () => "10个闪耀金羽")
+                    Amount = 10
                 });
             }
         }
@@ -103,8 +102,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_DivineGeode,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个圣神晶石")
+                Amount = 20
             });
         }
 
@@ -148,8 +146,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "ArmoredShell", out ModItem armoredShellItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = armoredShellItem.Type,
-                    Amount = 5,
-                    Description = this.GetLocalization("QuestReward.Description", () => "5个装甲外壳")
+                    Amount = 5
                 });
             }
         }
@@ -194,8 +191,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "DarkPlasma", out ModItem darkPlasmaItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = darkPlasmaItem.Type,
-                    Amount = 5,
-                    Description = this.GetLocalization("QuestReward.Description", () => "5个暗物质")
+                    Amount = 5
                 });
             }
         }
@@ -240,8 +236,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "TwistingNether", out ModItem twistingNetherItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = twistingNetherItem.Type,
-                    Amount = 5,
-                    Description = this.GetLocalization("QuestReward.Description", () => "5个扭曲虚空")
+                    Amount = 5
                 });
             }
         }
@@ -286,8 +281,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "RuinousSoul", out ModItem ruinousSoulItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = ruinousSoulItem.Type,
-                    Amount = 10,
-                    Description = this.GetLocalization("QuestReward.Description", () => "10个幽花之魂")
+                    Amount = 10
                 });
             }
         }
@@ -335,8 +329,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "CorrodedFossil", out ModItem corrodedFossilItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = corrodedFossilItem.Type,
-                    Amount = 20,
-                    Description = this.GetLocalization("QuestReward.Description", () => "20个腐蚀化石")
+                    Amount = 20
                 });
             }
         }
@@ -383,8 +376,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_CosmiliteBar,
-                Amount = 30,
-                Description = this.GetLocalization("QuestReward.Description", () => "30个神宇金锭")
+                Amount = 30
             });
         }
 
@@ -433,8 +425,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AuricBar,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个圣金源锭")
+                Amount = 20
             });
         }
 
@@ -486,8 +477,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_ExoPrism,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个星流棱晶")
+                Amount = 20
             });
         }
 
@@ -539,8 +529,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AshesofAnnihilation,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个灭世余灰")
+                Amount = 20
             });
         }
 
@@ -593,8 +582,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             if (ModContent.TryFind("CalamityMod", "HalibutCannon", out ModItem halibutCannonItem)) {
                 Rewards.Add(new QuestReward {
                     ItemType = halibutCannonItem.Type,
-                    Amount = 1,
-                    Description = this.GetLocalization("QuestReward.Description", () => "大比目鱼炮")
+                    Amount = 1
                 });
             }
         }

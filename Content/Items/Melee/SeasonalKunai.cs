@@ -47,11 +47,14 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void AddRecipes() {
-            if (CWRID.Item_LifeAlloy > 0 && CWRID.Item_AstralBar > 0 && CWRID.Item_GalacticaSingularity > 0) {
+            if (CWRID.Item_LifeAlloy > 0 && CWRID.Item_AstralBar > 0) {
                 CreateRecipe(333).
                 AddIngredient(CWRID.Item_LifeAlloy).
                 AddIngredient(CWRID.Item_AstralBar).
-                AddIngredient(CWRID.Item_GalacticaSingularity).
+                AddIngredient(ItemID.FragmentSolar).
+                AddIngredient(ItemID.FragmentVortex).
+                AddIngredient(ItemID.FragmentNebula).
+                AddIngredient(ItemID.FragmentStardust).
                 AddTile(TileID.LunarCraftingStation).
                 Register();
             }

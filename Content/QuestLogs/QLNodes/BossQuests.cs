@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.QuestLogs.Core;
+using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -63,8 +63,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldCoin,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "5金币")
+                Amount = 5
             });
         }
 
@@ -98,7 +97,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             if (CWRRef.Has) {
                 if (ModContent.TryFind("CalamityMod", "VictoryShard", out ModItem victoryShardItem)) {
-                    AddReward(victoryShardItem.Type, 10, this.GetLocalization("QuestReward.Description", () => "10个胜利碎片"));
+                    AddReward(victoryShardItem.Type, 10);
                 }
             }
         }
@@ -136,8 +135,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.DemoniteOre,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个魔矿/猩红矿")
+                Amount = 20
             });
         }
 
@@ -171,8 +169,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GlowingMushroom,
-                Amount = 50,
-                Description = this.GetLocalization("QuestReward.Description", () => "50个发光蘑菇")
+                Amount = 50
             });
         }
 
@@ -209,8 +206,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ShadowScale,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个暗影鳞片/组织样本")
+                Amount = 20
             });
         }
 
@@ -273,8 +269,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.DemoniteBar,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个魔矿锭/猩红矿锭")
+                Amount = 10
             });
         }
 
@@ -311,8 +306,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Bone,
-                Amount = 50,
-                Description = this.GetLocalization("QuestReward.Description", () => "50个骨头")
+                Amount = 50
             });
         }
 
@@ -346,8 +340,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.Gel,
-                Amount = 1000,
-                Description = this.GetLocalization("QuestReward.Description", () => "1000个凝胶")
+                Amount = 1000
             });
         }
 
@@ -447,8 +440,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_CorrodedFossil,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "酸蚀化石")
+                Amount = 10
             });
         }
 
@@ -515,8 +507,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.HallowedBar,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个神圣锭")
+                Amount = 20
             });
         }
 
@@ -583,8 +574,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ChlorophyteOre,
-                Amount = 50,
-                Description = this.GetLocalization("QuestReward.Description", () => "50个叶绿矿")
+                Amount = 50
             });
         }
 
@@ -618,8 +608,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_AshesofCalamity,
-                Amount = 100,
-                Description = this.GetLocalization("QuestReward.Description", () => "100个灾厄尘")
+                Amount = 100
             });
         }
 
@@ -651,8 +640,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.BeetleHusk,
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "10个甲虫外壳")
+                Amount = 10
             });
         }
 
@@ -686,8 +674,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_PlagueCellCanister,
-                Amount = 20,
-                Description = this.GetLocalization("QuestReward.Description", () => "20个瘟疫细胞罐")
+                Amount = 20
             });
         }
 

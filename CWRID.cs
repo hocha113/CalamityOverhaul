@@ -36,7 +36,6 @@ namespace CalamityOverhaul
         public static int Item_UelibloomBar => Get();
         public static int Item_LifeAlloy => Get();
         public static int Item_AstralBar => Get();
-        public static int Item_GalacticaSingularity => Get();
         public static int Item_Onyxia => Get();
         public static int Item_CryonicBar => Get();
         public static int Item_FlurrystormCannon => Get();
@@ -80,7 +79,6 @@ namespace CalamityOverhaul
         public static int Item_BrimstoneFury => Get();
         public static int Item_Alluvion => Get();
         public static int Item_ArterialAssault => Get();
-        public static int Item_AstralBow => Get();
         public static int Item_AstrealDefeat => Get();
         public static int Item_Barinade => Get();
         public static int Item_Barinautical => Get();
@@ -351,7 +349,6 @@ namespace CalamityOverhaul
         public static int Buff_MarkedforDeath => Get();
         public static int Buff_GodSlayerInferno => Get();
         public static int Buff_Nightwither => Get();
-        public static int Buff_GlacialState => Get();
         public static int Buff_ArmorCrunch => Get();
         public static int Buff_CrushDepth => Get();
         public static int Buff_WhisperingDeath => Get();

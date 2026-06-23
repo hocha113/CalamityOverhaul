@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Items.Magic;
+using CalamityOverhaul.Content.Items.Magic;
 using CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses;
 using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using CalamityOverhaul.Content.Items.Materials;
@@ -57,8 +57,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<DarkMatterBall>(),
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "十个暗物质球")
+                Amount = 10
             });
         }
 
@@ -89,8 +88,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "一块无尽锭")
+                Amount = 1
             });
         }
 
@@ -121,8 +119,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "两块无尽锭")
+                Amount = 2
             });
         }
 
@@ -153,8 +150,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -185,8 +181,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -217,8 +212,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 1,
-                Description = this.GetLocalization("QuestReward.Description", () => "一块无尽锭")
+                Amount = 1
             });
         }
 
@@ -249,8 +243,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 10,
-                Description = this.GetLocalization("QuestReward.Description", () => "十块无尽锭")
+                Amount = 10
             });
         }
 
@@ -281,8 +274,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -313,8 +305,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -345,8 +336,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -377,8 +367,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -409,8 +398,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块无尽锭")
+                Amount = 5
             });
         }
 
@@ -443,8 +431,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = CWRID.Item_Rock,
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块古恒石")
+                Amount = 5
             });
         }
 
@@ -475,8 +462,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
-                Amount = 5,
-                Description = this.GetLocalization("QuestReward.Description", () => "五块中子星锭")
+                Amount = 5
             });
         }
 
@@ -507,8 +493,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "两块中子星锭")
+                Amount = 2
             });
         }
 
@@ -539,8 +524,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "两块中子星锭")
+                Amount = 2
             });
         }
 
@@ -571,8 +555,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "两块中子星锭")
+                Amount = 2
             });
         }
 
@@ -603,8 +586,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "两块中子星锭")
+                Amount = 2
             });
         }
 
@@ -635,8 +617,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
             Rewards.Add(new QuestReward {
                 ItemType = ModContent.ItemType<NeutronStarIngot>(),
-                Amount = 2,
-                Description = this.GetLocalization("QuestReward.Description", () => "两块中子星锭")
+                Amount = 2
             });
         }
 

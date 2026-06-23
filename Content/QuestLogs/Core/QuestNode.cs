@@ -296,7 +296,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             Rewards.Add(new QuestReward() {
                 ItemType = itemType,
                 Amount = amount,
-                Description = text ?? VaultUtils.GetLocalizedItemName(itemType)
+                Description = text
             });
             InitializeRewards();
         }
@@ -343,7 +343,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public int ItemType;
         /// <summary>奖励数量</summary>
         public int Amount;
-        /// <summary>奖励描述</summary>
+        /// <summary>自定义奖励描述；为空时用模板自动生成</summary>
         public LocalizedText Description;
 
         private QuestNode _node;
@@ -353,6 +353,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             _node = node;
             _index = index;
         }
+
+        /// <summary>展示用奖励描述</summary>
+        public string GetDisplayText() =>
+            Description != null ? Description.Value : QuestRewardTemplates.Format(ItemType, Amount);
 
         /// <summary>是否已领取</summary>
         public bool Claimed {

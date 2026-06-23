@@ -22,12 +22,15 @@ namespace CalamityOverhaul.Content.Items.Summon
         }
 
         public override void AddRecipes() {
-            if (CWRID.Item_LifeAlloy > 0 && CWRID.Item_GalacticaSingularity > 0) {
+            if (CWRID.Item_LifeAlloy > 0) {
                 _ = CreateRecipe()
                 .AddIngredient(ItemID.RainbowWhip)
                 .AddIngredient(ItemID.LunarBar, 5)
                 .AddIngredient(CWRID.Item_LifeAlloy, 5)
-                .AddIngredient(CWRID.Item_GalacticaSingularity, 5)
+                .AddIngredient(ItemID.FragmentSolar, 5)
+                .AddIngredient(ItemID.FragmentVortex, 5)
+                .AddIngredient(ItemID.FragmentNebula, 5)
+                .AddIngredient(ItemID.FragmentStardust, 5)
                 .AddTile(TileID.LunarCraftingStation)
                 .Register();
             }

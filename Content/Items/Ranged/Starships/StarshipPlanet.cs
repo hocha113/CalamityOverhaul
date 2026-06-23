@@ -30,10 +30,10 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
                 Corona = new Vector3(1f, 0.35f, 0.15f), Trail = new Vector3(1f, 0.3f, 0.1f),
                 Radius = 0.23f, DebuffId = CWRID.Buff_PearlAura, DebuffDuration = 300
             },
-            1 => new PlanetData { //海王星：富营养化 + 冰河时代
+            1 => new PlanetData { //海王星：冰封
                 Core = new Vector3(0.75f, 0.9f, 1f), Surface = new Vector3(0.3f, 0.6f, 0.95f),
                 Corona = new Vector3(0.5f, 0.85f, 1f), Trail = new Vector3(0.2f, 0.5f, 1f),
-                Radius = 0.25f, DebuffId = CWRID.Buff_GlacialState, DebuffDuration = 300
+                Radius = 0.25f, DebuffId = BuffID.Frozen, DebuffDuration = 300
             },
             2 => new PlanetData { //木星：粉碎
                 Core = new Vector3(1f, 0.85f, 0.55f), Surface = new Vector3(0.85f, 0.6f, 0.4f),

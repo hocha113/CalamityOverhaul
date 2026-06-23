@@ -368,7 +368,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.AddBuff(BuffID.Frostburn, 180);
-            target.AddBuff(CWRID.Buff_GlacialState, 30);
+            target.AddBuff(BuffID.Frozen, 30);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {

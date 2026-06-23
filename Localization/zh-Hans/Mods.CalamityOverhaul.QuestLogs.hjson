@@ -1,10 +1,15 @@
+QuestReward: {
+	Template: {
+		AmountItem: "{0}个{1}"
+	}
+}
+
 QuestNode: {
 	FirstQuest: {
 		DisplayName: 欢迎来到灾厄世界!
 		Description: 旅途的起点
 		DetailedDescription: 每一个传奇都始于微末。领取你的初始物资，准备迎接这个充满了神明与怪物的世界吧。
 		QuestObjective.Description: 点击领取初始道具
-		QuestReward.Description: 初始冒险包
 	}
 
 	MiningQuest: {
@@ -13,10 +18,6 @@ QuestNode: {
 		DetailedDescription: 地下蕴藏着无限的财富。首先，我们需要一些基础金属来打造工具。
 		QuestObjective.Description: 收集十块{0}
 
-		QuestReward: {
-			Description: 五个{0}
-			Description2: 一把{0}
-		}
 	}
 
 	MiningQuestII: {
@@ -24,10 +25,6 @@ QuestNode: {
 		Description: 收集五十块{0}
 		QuestObjective.Description: 收集五十块{0}
 
-		QuestReward: {
-			Description: 五十个{0}
-			Description2: 一把{0}
-		}
 
 		DetailedDescription: 铜矿太过柔软，我们需要更坚硬的金属来武装自己。深入地下寻找铁矿脉吧。
 	}
@@ -37,10 +34,6 @@ QuestNode: {
 		Description: 收集一百块{0}
 		QuestObjective.Description: 收集一百块{0}
 
-		QuestReward: {
-			Description: 一百个{0}
-			Description2: 一把{0}
-		}
 
 		DetailedDescription: 黄金不仅仅是货币，它具有良好的导魔性和延展性。虽然它不如铁坚硬，但它是制作高级装备的重要材料。
 	}
@@ -49,7 +42,6 @@ QuestNode: {
 		DisplayName: 硫磺火元素
 		Description: 击败硫磺火元素
 		QuestObjective.Description: 击败硫磺火元素
-		QuestReward.Description: 10个暗影之魂
 		DetailedDescription: 在硫磺火崖的废墟中，唤醒并击败那位沉睡的元素之灵。小心她的弹幕地狱。
 	}
 
@@ -57,7 +49,6 @@ QuestNode: {
 		DisplayName: 灾厄之影
 		Description: 击败灾厄之影
 		QuestObjective.Description: 击败灾厄之影
-		QuestReward.Description: 10个灾厄尘
 		DetailedDescription: 一个充满了仇恨与毁灭欲望的克隆体。击败它，证明你拥有直面真正魔女的资格。
 	}
 
@@ -65,7 +56,6 @@ QuestNode: {
 		DisplayName: 菌生蟹
 		Description: 击败菌生蟹
 		QuestObjective.Description: 击败菌生蟹
-		QuestReward.Description: 50个发光蘑菇
 		DetailedDescription: 发光蘑菇地下生物群落中潜伏着一只被真菌寄生的巨蟹。它的孢子非常危险。
 	}
 
@@ -73,7 +63,6 @@ QuestNode: {
 		DisplayName: 极地冰灵
 		Description: 击败极地冰灵
 		QuestObjective.Description: 击败极地冰灵
-		QuestReward.Description: 10个光明之魂
 		DetailedDescription: 这位曾经的御宇寒冰法师被封印在永恒的寒冰监狱中。释放并击败它，解放极地的寒冷力量。
 	}
 
@@ -81,7 +70,6 @@ QuestNode: {
 		DisplayName: 荒漠灾虫
 		Description: 击败荒漠灾虫
 		QuestObjective.Description: 击败荒漠灾虫
-		QuestReward.Description: 10个胜利碎片
 		DetailedDescription: 曾经的海洋霸主如今在干涸的沙漠中苟延残喘。小心它巨大的颚部和随从。
 	}
 
@@ -89,7 +77,6 @@ QuestNode: {
 		DisplayName: 世界吞噬者/克苏鲁之脑
 		Description: 击败腐化或猩红之地的Boss
 		QuestObjective.Description: 击败世界吞噬者或克苏鲁之脑
-		QuestReward.Description: 20个暗影鳞片/组织样本
 		DetailedDescription: 邪恶正在蔓延。深入世界的病灶，铲除盘踞在那里的巨型蠕虫或邪恶大脑。
 	}
 
@@ -97,7 +84,6 @@ QuestNode: {
 		DisplayName: 克苏鲁之眼
 		Description: 击败克苏鲁之眼
 		QuestObjective.Description: 击败克苏鲁之眼
-		QuestReward.Description: 20个魔矿/猩红矿
 		DetailedDescription: 只要你感到那股邪恶的注视，它就会出现。这是对你实力的第一次真正考验。
 	}
 
@@ -105,7 +91,6 @@ QuestNode: {
 		DisplayName: 石巨人
 		Description: 击败石巨人
 		QuestObjective.Description: 击败石巨人
-		QuestReward.Description: 10个甲虫外壳
 		DetailedDescription: 丛林神庙深处供奉着一台古老的战争机器。小心它的激光和重拳。
 	}
 
@@ -113,7 +98,6 @@ QuestNode: {
 		DisplayName: 腐巢意志/血肉宿主
 		Description: 击败邪恶生物群落的真神
 		QuestObjective.Description: 击败腐巢意志或血肉宿主
-		QuestReward.Description: 10个魔矿锭/猩红矿锭
 		DetailedDescription: 它们是腐化与猩红意识的具象化。如果不消灭它们，这片土地将永无宁日。
 	}
 
@@ -121,7 +105,6 @@ QuestNode: {
 		DisplayName: 史莱姆王
 		Description: 击败史莱姆王
 		QuestObjective.Description: 击败史莱姆王
-		QuestReward.Description: 5金币
 		DetailedDescription: 凝胶生物的统御者。虽然看起来有些滑稽，但不要被它巨大的体型压扁了。
 	}
 
@@ -129,7 +112,6 @@ QuestNode: {
 		DisplayName: 拜月教邪教徒
 		Description: 击败拜月教邪教徒
 		QuestObjective.Description: 击败拜月教邪教徒
-		QuestReward.Description: 5个日耀碎片
 		DetailedDescription: 在地牢门口，一群狂热的信徒正在试图阻止——或者引发——末日。阻止他们的仪式。
 	}
 
@@ -137,7 +119,6 @@ QuestNode: {
 		DisplayName: 机械三王
 		Description: 击败所有机械Boss
 		QuestObjective.Description: 击败所有机械Boss
-		QuestReward.Description: 20个神圣锭
 		DetailedDescription: 嘉登的早期造物，模仿了克苏鲁的部分器官。只有击败它们，世界才会焕发新生。
 	}
 
@@ -145,7 +126,6 @@ QuestNode: {
 		DisplayName: 月球领主
 		Description: 击败月球领主
 		QuestObjective.Description: 击败月球领主
-		QuestReward.Description: 月球领主纪念章
 		DetailedDescription: 这一切背后的幕后黑手，月球背面的恐怖。终结这场漫长的梦魇吧。
 	}
 
@@ -153,7 +133,6 @@ QuestNode: {
 		DisplayName: 瘟疫使者歌莉娅
 		Description: 击败瘟疫使者歌莉娅
 		QuestObjective.Description: 击败瘟疫使者歌莉娅
-		QuestReward.Description: 20个瘟疫细胞罐
 		DetailedDescription: 一只被纳米机械病毒改造的蜂后。它不仅致命，还携带这危险的瘟疫。
 	}
 
@@ -161,7 +140,6 @@ QuestNode: {
 		DisplayName: 世纪之花
 		Description: 击败世纪之花
 		QuestObjective.Description: 击败世纪之花
-		QuestReward.Description: 50个叶绿矿
 		DetailedDescription: 丛林深处沉睡着一朵巨大的食人花。打破花苞，面对丛林的愤怒。
 	}
 
@@ -169,7 +147,6 @@ QuestNode: {
 		DisplayName: 骷髅王
 		Description: 击败骷髅王
 		QuestObjective.Description: 击败骷髅王
-		QuestReward.Description: 50个骨头
 		DetailedDescription: 只有击败这个被诅咒的老人，你才能安全地进入地牢探寻其中的秘密。
 	}
 
@@ -177,7 +154,6 @@ QuestNode: {
 		DisplayName: 史莱姆之神
 		Description: 击败史莱姆之神
 		QuestObjective.Description: 击败史莱姆之神
-		QuestReward.Description: 1000个凝胶
 		DetailedDescription: 史莱姆这一物种的顶点，古老而贪婪的神明。小心它的分身合击。
 	}
 
@@ -185,7 +161,6 @@ QuestNode: {
 		DisplayName: 血肉墙
 		Description: 击败血肉墙
 		QuestObjective.Description: 击败血肉墙
-		QuestReward.Description: 神锤
 		DetailedDescription: 世界的守门人。将向导的玩偶投入岩浆，释放这个世界的古老神灵，开启困难模式。
 	}
 
@@ -193,7 +168,6 @@ QuestNode: {
 		DisplayName: 无尽虚空
 		Description: 击败无尽虚空
 		QuestObjective.Description: 击败无尽虚空
-		QuestReward.Description: 5个暗物质
 		DetailedDescription: 神明吞噬者的哨兵之一，来自异维度的虚无之镜。
 	}
 
@@ -201,7 +175,6 @@ QuestNode: {
 		DisplayName: 神明吞噬者
 		Description: 击败神明吞噬者
 		QuestObjective.Description: 击败神明吞噬者
-		QuestReward.Description: 30个神宇金锭
 		DetailedDescription: 一条渴望吞噬一切神性的宇宙之蛇。在虚空中与它决战，不要让它把你吞下。
 	}
 
@@ -209,7 +182,6 @@ QuestNode: {
 		DisplayName: 痴愚金龙
 		Description: 击败痴愚金龙
 		QuestObjective.Description: 击败痴愚金龙
-		QuestReward.Description: 10个闪耀金羽
 		DetailedDescription: 试图复活犽戎的失败产物，疯狂而带电的伪龙。
 	}
 
@@ -217,7 +189,6 @@ QuestNode: {
 		DisplayName: 星流巨械
 		Description: 击败星流巨械
 		QuestObjective.Description: 击败星流巨械
-		QuestReward.Description: 20个星流棱晶
 		DetailedDescription: 嘉登的终极杰作，代表了泰拉瑞亚科技的巅峰。在这场完美的演出中活下来。
 	}
 
@@ -225,7 +196,6 @@ QuestNode: {
 		DisplayName: 硫海遗爵
 		Description: 击败硫海遗爵
 		QuestObjective.Description: 击败硫海遗爵
-		QuestReward.Description: 20个腐蚀化石
 		DetailedDescription: 硫磺海深处的古老霸主，变异与力量的结合体。小心它的剧毒蒸汽。
 	}
 
@@ -233,7 +203,6 @@ QuestNode: {
 		DisplayName: 噬魂幽花
 		Description: 击败噬魂幽花
 		QuestObjective.Description: 击败噬魂幽花
-		QuestReward.Description: 10个幽花之魂
 		DetailedDescription: 那些在地牢中死去的冤魂聚集而成的怪物。平息它们的愤怒。
 	}
 
@@ -241,7 +210,6 @@ QuestNode: {
 		DisplayName: 始源妖龙
 		Description: 击败始源妖龙
 		QuestObjective.Description: 击败始源妖龙
-		QuestReward.Description: 大比目鱼炮
 		DetailedDescription: 深渊最底层的守护者。它是比神明更古老的存在，非必要请勿打扰。
 	}
 
@@ -249,7 +217,6 @@ QuestNode: {
 		DisplayName: 亵渎使徒
 		Description: 击败亵渎使徒
 		QuestObjective.Description: 击败亵渎使徒
-		QuestReward.Description: 3个亵渎碎片
 		DetailedDescription: 亵渎天神的忠诚守卫，击败它们以削弱女神的防御。
 	}
 
@@ -257,7 +224,6 @@ QuestNode: {
 		DisplayName: 亵渎天神
 		Description: 击败亵渎天神
 		QuestObjective.Description: 击败亵渎天神
-		QuestReward.Description: 20个圣神晶石
 		DetailedDescription: 掌控圣火与净化的女神。在神圣之地或地狱挑战她，但要小心被圣火焚尽。
 	}
 
@@ -265,7 +231,6 @@ QuestNode: {
 		DisplayName: 西格纳斯
 		Description: 击败西格纳斯
 		QuestObjective.Description: 击败西格纳斯
-		QuestReward.Description: 5个扭曲虚空
 		DetailedDescription: 神明吞噬者的哨兵之一，无形的刺客，虚空的幽灵。
 	}
 
@@ -273,7 +238,6 @@ QuestNode: {
 		DisplayName: 风暴编织者
 		Description: 击败风暴编织者
 		QuestObjective.Description: 击败风暴编织者
-		QuestReward.Description: 5个装甲外壳
 		DetailedDescription: 神明吞噬者的哨兵之一，以雷暴和闪电为食的空之虫。
 	}
 
@@ -281,7 +245,6 @@ QuestNode: {
 		DisplayName: 至尊灾厄
 		Description: 击败至尊灾厄
 		QuestObjective.Description: 击败至尊灾厄
-		QuestReward.Description: 20个灭世余灰
 		DetailedDescription: 传说中的硫火女巫。这是你旅途的终点，亦或是新的开始？准备好迎接真正的弹幕地狱吧。
 	}
 
@@ -289,7 +252,6 @@ QuestNode: {
 		DisplayName: 丛林龙,犽戎
 		Description: 击败丛林龙,犽戎
 		QuestObjective.Description: 击败丛林龙,犽戎
-		QuestReward.Description: 20个圣金源锭
 		DetailedDescription: 魔君的忠诚战友，拥有凤凰般重生能力的巨龙。这是一场关乎灵魂的试炼。
 	}
 
@@ -297,7 +259,6 @@ QuestNode: {
 		DisplayName: 能源储存
 		Description: 制作热能电池
 		QuestObjective.Description: 获得热能电池
-		QuestReward.Description: 50个电线
 		DetailedDescription: 电力生产出来后需要储存。制作电池是构建稳定电力网络的第一步。
 	}
 
@@ -305,7 +266,6 @@ QuestNode: {
 		DisplayName: 清洁能源
 		Description: 制作一台水力发电机
 		QuestObjective.Description: 获得水力发电机
-		QuestReward.Description: 水桶
 		DetailedDescription: 利用流水的力量产生电力。这是一种清洁且可持续的能源获取方式。
 	}
 
@@ -313,7 +273,6 @@ QuestNode: {
 		DisplayName: 工业革命
 		Description: 制作一台风力发电机
 		QuestObjective.Description: 获得风力发电机
-		QuestReward.Description: 10个铁锭
 		DetailedDescription: 迈向自动化的第一步。利用风能驱动你的机器，解放你的双手。
 	}
 
@@ -321,7 +280,6 @@ QuestNode: {
 		DisplayName: 物流筛选
 		Description: 制作一个物品过滤器
 		QuestObjective.Description: 获得物品过滤器
-		QuestReward.Description: 2个箱子
 		DetailedDescription: 自动化产线需要秩序。使用过滤器来精准控制物品的流向。
 	}
 
@@ -329,7 +287,6 @@ QuestNode: {
 		DisplayName: 自动化挖掘
 		Description: 制作一台采矿机
 		QuestObjective.Description: 获得采矿机
-		QuestReward.Description: 5个洞穴探险药水
 		DetailedDescription: 告别繁琐的手工挖掘。这台机器能以惊人的效率吞噬矿脉。
 	}
 
@@ -337,7 +294,6 @@ QuestNode: {
 		DisplayName: 深层钻探
 		Description: 制作一台采矿机MK2
 		QuestObjective.Description: 获得采矿机MK2
-		QuestReward.Description: 5个洞穴探险药水
 		DetailedDescription: 强化的动力核心带来了无与伦比的挖掘速度。
 	}
 
@@ -345,7 +301,6 @@ QuestNode: {
 		DisplayName: 能量传输
 		Description: 制作通用能源管道
 		QuestObjective.Description: 获得通用能源管道
-		QuestReward.Description: 20个通用能源管道
 		DetailedDescription: 连接发电机与机器的血管。没有它，电力只是一潭死水。
 	}
 
@@ -353,7 +308,6 @@ QuestNode: {
 		DisplayName: 磁暴高塔
 		Description: 制作一座特斯拉电磁塔
 		QuestObjective.Description: 获得特斯拉电磁塔
-		QuestReward.Description: 20个可疑镀层
 		DetailedDescription: 嘉登科技的结晶。这座塔能进行无线输电，彻底改变你的布线布局。
 	}
 
@@ -361,13 +315,11 @@ QuestNode: {
 		DisplayName: 燃烧时刻
 		Description: 制作一台火力发电机
 		QuestObjective.Description: 获得火力发电机
-		QuestReward.Description: 50个煤炭
 		DetailedDescription: 燃烧燃料以获取大量电力。虽然不环保，但在早期它是最可靠的能源。
 	}
 
 	AnnihilatingUniverseQuest: {
 		QuestObjective.Description: 获得寰宇湮灭
-		QuestReward.Description: 五块无尽锭
 		DisplayName: 寰宇湮灭
 		Description: 获得“寰宇湮灭”
 		DetailedDescription: 将星系的力量压缩在弓弦之上。这把武器拥有毁灭宇宙维度的力量，是射手极致的证明。
@@ -375,7 +327,6 @@ QuestNode: {
 
 	AriaofTheCosmosQuest: {
 		QuestObjective.Description: 获得寰宇咏叹调
-		QuestReward.Description: 二十块无尽锭
 		DisplayName: 寰宇咏叹调
 		Description: 获得“寰宇咏叹调”
 		DetailedDescription: 演奏群星的乐章。这本魔法书能召唤黑洞与类星体，让敌人在宇宙的歌声中消逝。
@@ -383,7 +334,6 @@ QuestNode: {
 
 	DarkMatterCompressorQuest: {
 		QuestObjective.Description: 获得暗物质压缩机
-		QuestReward.Description: 十个暗物质球
 		DisplayName: 暗物质压缩机
 		Description: 获得暗物质压缩机
 		DetailedDescription: 操纵宇宙中最神秘的物质。这台机器能将暗物质压缩成高密度的能量球，用于更高级的合成。
@@ -391,7 +341,6 @@ QuestNode: {
 
 	InfiniteIngotQuest: {
 		QuestObjective.Description: 获得无尽锭
-		QuestReward.Description: 两块无尽锭
 		DisplayName: 无尽锭
 		Description: 锻造无尽锭
 		DetailedDescription: 超越了物质守恒定律的金属。它是通往终极力量的基石，蕴含着无尽的可能性。
@@ -399,7 +348,6 @@ QuestNode: {
 
 	InfinitePickQuest: {
 		QuestObjective.Description: 获得无尽镐
-		QuestReward.Description: 五块无尽锭
 		DisplayName: 无尽镐
 		Description: 获得无尽镐
 		DetailedDescription: 没有什么能阻挡这把镐子。它能挖掘一切，甚至是世界的基岩。
@@ -407,7 +355,6 @@ QuestNode: {
 
 	InfiniteToiletQuest: {
 		QuestObjective.Description: 获得无尽马桶
-		QuestReward.Description: 一块无尽锭
 		DisplayName: 无尽马桶
 		Description: 获得无尽马桶
 		DetailedDescription: 神明的王座。虽然听起来很荒谬，但它确实象征着某种......至高无上的权力。
@@ -415,7 +362,6 @@ QuestNode: {
 
 	InfinityCatalystQuest: {
 		QuestObjective.Description: 获得无尽催化剂
-		QuestReward.Description: 一块无尽锭
 		DisplayName: 无尽催化剂
 		Description: 获得无尽催化剂
 		DetailedDescription: 启动无尽反应的关键媒介。它能让物质在湮灭与重生中循环，产生巨大的能量。
@@ -423,7 +369,6 @@ QuestNode: {
 
 	NeutronBowQuest: {
 		QuestObjective.Description: 获得中子弓
-		QuestReward.Description: 两块中子星锭
 		DisplayName: 中子弓
 		Description: 获得中子弓
 		DetailedDescription: 由中子星核心碎片打造的弓。每一箭都带着坍缩恒星的重力。
@@ -431,7 +376,6 @@ QuestNode: {
 
 	NeutronGlaiveQuest: {
 		QuestObjective.Description: 获得中子剑
-		QuestReward.Description: 两块中子星锭
 		DisplayName: 中子战刃
 		Description: 获得中子战刃
 		DetailedDescription: 密度惊人的长柄武器。挥舞它需要巨大的力量，但没有任何护甲能阻挡它的斩击。
@@ -439,7 +383,6 @@ QuestNode: {
 
 	NeutronGunQuest: {
 		QuestObjective.Description: 获得中子枪
-		QuestReward.Description: 两块中子星锭
 		DisplayName: 中子枪
 		Description: 获得中子枪
 		DetailedDescription: 发射微型中子流的枪械。由于其极高的密度，子弹几乎不会受到阻力影响。
@@ -447,7 +390,6 @@ QuestNode: {
 
 	NeutronScytheQuest: {
 		QuestObjective.Description: 获得中子镰刀
-		QuestReward.Description: 两块中子星锭
 		DisplayName: 中子镰刀
 		Description: 获得中子镰刀
 		DetailedDescription: 死神的收割工具。它能轻易撕裂空间，像收割麦子一样收割生命。
@@ -455,7 +397,6 @@ QuestNode: {
 
 	NeutronStarIngotQuest: {
 		QuestObjective.Description: 获得中子星锭
-		QuestReward.Description: 五块中子星锭
 		DisplayName: 中子星锭
 		Description: 获得中子星锭
 		DetailedDescription: 宇宙中密度最大的物质之一。这块金属沉重得难以想象，散发着引力波动的嗡鸣。
@@ -463,7 +404,6 @@ QuestNode: {
 
 	NeutronWandQuest: {
 		QuestObjective.Description: 获得中子杖
-		QuestReward.Description: 两块中子星锭
 		DisplayName: 中子杖
 		Description: 获得中子杖
 		DetailedDescription: 掌控重力的法杖。利用中子星的力量扭曲时空，粉碎你的敌人。
@@ -471,7 +411,6 @@ QuestNode: {
 
 	PandemoniumQuest: {
 		QuestObjective.Description: 获得万魔殿
-		QuestReward.Description: 二十块无尽锭
 		DisplayName: 万魔殿
 		Description: 获得“万魔殿”
 		DetailedDescription: 融合了无数灵魂与灾厄力量的终极武器。握着它，你就握住了通往地狱与深渊的钥匙。
@@ -479,7 +418,6 @@ QuestNode: {
 
 	RockQuest: {
 		QuestObjective.Description: 获得古恒石
-		QuestReward.Description: 五块古恒石
 		DisplayName: 古恒石
 		Description: 获得古恒石
 		DetailedDescription: 一块看似普通的石头，却见证了无数次终末的轮回。它是永恒毅力的象征。
@@ -487,7 +425,6 @@ QuestNode: {
 
 	TerminusQuest: {
 		QuestObjective.Description: 获得终末石
-		QuestReward.Description: 大量血珠
 		DisplayName: 终末石
 		Description: 获得终末石
 		DetailedDescription: 开启终末挑战的钥匙。凝视这块石头，准备迎接来自整个世界最强生物的连续审判。
@@ -495,7 +432,6 @@ QuestNode: {
 
 	TransmutationOfMatterQuest: {
 		QuestObjective.Description: 获得物质转化台
-		QuestReward.Description: 十块无尽锭
 		DisplayName: 物质转化台
 		Description: 获得物质转化台
 		DetailedDescription: 炼金术的终极形态。这台机器能打破等价交换的原则，将物质随意转化，甚至无中生有。
@@ -503,7 +439,6 @@ QuestNode: {
 
 	HeavenfallLongbowQuest: {
 		QuestObjective.Description: 获得无尽弓
-		QuestReward.Description: 五块无尽锭
 		DisplayName: 无尽弓
 		Description: 获得无尽弓
 		DetailedDescription: 射杀过神明的长弓。现在将重现于世。
@@ -511,7 +446,6 @@ QuestNode: {
 
 	SpearOfLonginusQuest: {
 		QuestObjective.Description: 获得朗基努斯
-		QuestReward.Description: 五块无尽锭
 		DisplayName: 朗基努斯
 		Description: 获得朗基努斯
 		DetailedDescription: 传说中刺穿神明的圣枪，拥有贯穿一切力场与绝对领域的权能。当它被投掷出时，就连因果律也会为其让路。
@@ -519,7 +453,6 @@ QuestNode: {
 
 	DragonsWordQuest: {
 		QuestObjective.Description: 获得龙言
-		QuestReward.Description: 五块无尽锭
 		DisplayName: 龙言
 		Description: 获得龙言
 		DetailedDescription: 龙一生只流一次眼泪，那是死亡之时
@@ -527,7 +460,6 @@ QuestNode: {
 
 	RockQuestII: {
 		QuestObjective.Description: 通过终末之战五次，获得五块以上的古恒石
-		QuestReward.Description: 五块古恒石
 		DisplayName: 征战轮回
 		Description: 通过终末之战五次，获得五块以上的古恒石
 		DetailedDescription: 真正战士的象征
@@ -537,7 +469,6 @@ QuestNode: {
 		DisplayName: 冒险家
 		Description: 世界任我走！
 		QuestObjective.Description: 点击领取
-		QuestReward.Description: 跑靴
 		DetailedDescription: 千里之行始于足下。穿上这双靴子，去丈量这个广阔的世界吧。
 	}
 
@@ -545,7 +476,6 @@ QuestNode: {
 		DisplayName: 阴森地牢
 		Description: 发现地牢入口
 		QuestObjective.Description: 到达地牢
-		QuestReward.Description: 危险感应药水
 		DetailedDescription: 被诅咒的墙壁后隐藏着无尽的秘密与危险。只有最勇敢的探险家敢于踏足这片亡者的领地。
 	}
 
@@ -553,7 +483,6 @@ QuestNode: {
 		DisplayName: 地狱深渊
 		Description: 深入地狱
 		QuestObjective.Description: 到达地狱
-		QuestReward.Description: 黑曜石皮肤药水
 		DetailedDescription: 世界的最深处流淌着熔岩之河。那是恶魔的家园，也是黑曜石与狱石的产地。记得看路，别掉进去了。
 	}
 
@@ -561,7 +490,6 @@ QuestNode: {
 		DisplayName: 丛林探险
 		Description: 深入丛林生物群落
 		QuestObjective.Description: 到达丛林
-		QuestReward.Description: 召唤药水
 		DetailedDescription: 生机勃勃却又危机四伏的绿色迷宫。茂密的植被下掩盖着古老的庙宇和致命的蜂群。
 	}
 
@@ -569,7 +497,6 @@ QuestNode: {
 		DisplayName: 世界尽头
 		Description: 到达海洋生物群落
 		QuestObjective.Description: 到达海洋
-		QuestReward.Description: 鱼鳃药水
 		DetailedDescription: 大陆的边缘。在这里，天与海交汇。深邃的蓝色之下埋藏着沉船与未知的海怪。
 	}
 
@@ -577,7 +504,6 @@ QuestNode: {
 		DisplayName: 极寒之地
 		Description: 探索雪原生物群落
 		QuestObjective.Description: 到达雪原
-		QuestReward.Description: 暖身药水
 		DetailedDescription: 永恒的冻土。寒风凛冽，冰雪覆盖了一切。在这里，生命以一种更坚韧的方式存在。
 	}
 
@@ -585,7 +511,6 @@ QuestNode: {
 		DisplayName: 星辰大海
 		Description: 飞向太空
 		QuestObjective.Description: 到达太空
-		QuestReward.Description: 羽落药水
 		DetailedDescription: 摆脱重力的束缚，触摸群星。只有飞得够高，你才能看清这个世界的全貌。
 	}
 
@@ -594,13 +519,6 @@ QuestNode: {
 		Description: 在地狱嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取地狱图纸
 
-		QuestReward: {
-			Description: {
-				Plating: 可疑镀层
-				Circuitry: 神秘电路
-				Fireblossom: 火焰花
-			}
-		}
 
 		DetailedDescription: 嘉登在地狱建立了一座前哨站，利用这里的地热进行实验。找到那里的图纸，或许能解锁新的武器科技。
 	}
@@ -610,13 +528,6 @@ QuestNode: {
 		Description: 在雪原嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取冰冻图纸
 
-		QuestReward: {
-			Description: {
-				Plating: 可疑镀层
-				Circuitry: 神秘电路
-				Shiverthorn: 寒颤棘
-			}
-		}
 
 		DetailedDescription: 这里的低温是保存精密仪器的绝佳环境。深入冰原下的实验室，寻找那份被封存的极地科技。
 	}
@@ -626,13 +537,6 @@ QuestNode: {
 		Description: 在丛林嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取丛林图纸
 
-		QuestReward: {
-			Description: {
-				Plating: 可疑镀层
-				Circuitry: 神秘电路
-				Moonglow: 月光草
-			}
-		}
 
 		DetailedDescription: 茂密的丛林掩盖了嘉登的生物实验室。他在那里研究瘟疫与纳米病毒。找到那份图纸，揭开危险的真相。
 	}
@@ -642,13 +546,6 @@ QuestNode: {
 		Description: 在小行星嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取小行星图纸
 
-		QuestReward: {
-			Description: {
-				Plating: 可疑镀层
-				Circuitry: 神秘电路
-				FallenStar: 坠落之星
-			}
-		}
 
 		DetailedDescription: 在高空的微重力环境下，嘉登的一座实验室正静静漂浮。去那里寻找关于星流巨械的早期设计图。
 	}
@@ -658,13 +555,6 @@ QuestNode: {
 		Description: 在沉沦之海嘉登实验室寻找加密图纸
 		QuestObjective.Description: 获取沉沦之海图纸
 
-		QuestReward: {
-			Description: {
-				Plating: 可疑镀层
-				Circuitry: 神秘电路
-				Waterleaf: 波浪叶
-			}
-		}
 
 		DetailedDescription: 在这片宁静的地下海中，嘉登遗留了一些关于棱晶能源的研究。潜入水下，取回那些宝贵的数据。
 	}
@@ -673,7 +563,6 @@ QuestNode: {
 		DisplayName: 渊海灾虫
 		Description: 击败渊海灾虫
 		QuestObjective.Description: 击败渊海灾虫
-		QuestReward.Description: 酸蚀化石
 		DetailedDescription: 曾经是清澈海洋中的和平巨兽，如今被硫磺海的剧毒所扭曲。在这片被污染的酸蚀海域中，小心它突如其来的冲撞和剧毒的云雾。
 	}
 
@@ -681,7 +570,6 @@ QuestNode: {
 		DisplayName: 史莱姆皇后
 		Description: 击败史莱姆皇后
 		QuestObjective.Description: 击败史莱姆皇后
-		QuestReward.Description: 10个光明之魂
 		DetailedDescription: 神圣之地的水晶女皇，统御着所有圣洁的凝胶生物。比起她的配偶，她更加敏捷且致命。准备好迎接一场华丽的弹幕洗礼吧。
 	}
 
@@ -689,7 +577,6 @@ QuestNode: {
 		DisplayName: 建筑大师
 		Description: 建造合适的房屋
 		QuestObjective.Description: 建造一个有效房屋
-		QuestReward.Description: 木材
 		DetailedDescription: 每个人都需要一个避风港。无论是向导还是其他流浪者，只要你提供一个拥有桌椅、光源和墙壁的房间，他们就会为你效力。
 	}
 
@@ -697,7 +584,6 @@ QuestNode: {
 		DisplayName: 邪恶矿藏
 		Description: 收集邪恶矿石
 		QuestObjective.Description: 收集魔矿或猩红矿
-		QuestReward.Description: 火把
 		DetailedDescription: 这种矿石散发着不祥的气息，触感冰冷且黏稠。虽然它们来自这个世界的病灶，但却是制作强力装备必不可少的材料。
 	}
 
@@ -705,7 +591,6 @@ QuestNode: {
 		DisplayName: 星辰收集者
 		Description: 收集坠落之星
 		QuestObjective.Description: 收集坠落之星
-		QuestReward.Description: 次级魔力药水
 		DetailedDescription: 它们是夜空的眼泪，只有在夜晚才会从天而降。收集它们，不仅可以增加你的法力上限，还能作为强大的弹药或魔法材料。
 	}
 
@@ -714,12 +599,6 @@ QuestNode: {
 		Description: 收集各种宝石
 		QuestObjective.Description: 收集5种不同的宝石
 
-		QuestReward: {
-			Description: {
-				$parentVal: 光芒药水
-				Diamond: 钻石
-			}
-		}
 
 		DetailedDescription: 埋藏在岩层中的璀璨结晶。除了作为装饰，它们也是制作法杖和抓钩的重要材料。当你集齐不同颜色的宝石时，也许能拼凑出彩虹的光辉。
 	}
@@ -728,7 +607,6 @@ QuestNode: {
 		DisplayName: 草药学徒
 		Description: 收集各种草药
 		QuestObjective.Description: 收集3种不同的草药
-		QuestReward.Description: 瓶装水
 		DetailedDescription: 炼金术的基础。不同的植物生长在不同的环境下：沙漠、雪原、甚至地狱。学会辨认它们，是成为炼金大师的第一步。
 	}
 
@@ -743,7 +621,6 @@ QuestNode: {
 			}
 		}
 
-		QuestReward.Description: 回忆药水
 		DetailedDescription: 挖掘是生存的根本。铜和铁虽然普通，但它们是你摆脱原始生活的基石。不要嫌弃它们，哪怕是传说中的英雄也是从挥舞铜镐开始的。
 	}
 
@@ -752,12 +629,6 @@ QuestNode: {
 		Description: 探索所有主要生物群落
 		QuestObjective.Description: 完成所有探索任务
 
-		QuestReward: {
-			Description: {
-				$parentVal: 全球定位系统
-				Gold: 金币
-			}
-		}
 
 		DetailedDescription: 你已经走遍了世界的每一个角落，从最高的云端到最深的地狱。你绘制的地图证明了你的勇气。现在，整个世界都在你的脚下。
 	}
@@ -766,7 +637,6 @@ QuestNode: {
 		DisplayName: 洞穴深处
 		Description: 探索更深的洞穴层
 		QuestObjective.Description: 到达洞穴层
-		QuestReward.Description: 洞穴探险药水
 		DetailedDescription: 这里没有阳光，只有黑暗和未知的生物。岩浆开始出现，矿藏也变得更加丰富。小心脚下，深渊在凝视着你。
 	}
 
@@ -774,7 +644,6 @@ QuestNode: {
 		DisplayName: 腐化之地
 		Description: 探索腐化或猩红之地
 		QuestObjective.Description: 进入腐化或猩红
-		QuestReward.Description: 战斗药水
 		DetailedDescription: 这片土地病了。紫色的腐化或红色的血肉正在吞噬大地。尽管这里充满了嗜血的怪物，但只有深入虎穴，才能获得暗影鳞片或组织样本。
 	}
 
@@ -782,7 +651,6 @@ QuestNode: {
 		DisplayName: 炎热荒漠
 		Description: 踏入沙漠生物群落
 		QuestObjective.Description: 到达沙漠
-		QuestReward.Description: 水上行走药水
 		DetailedDescription: 烈日灼烧着大地，金色的沙海下掩埋着古老的化石和凶猛的蚁狮。准备好充足的水，这里的干燥会夺走你的生命。
 	}
 
@@ -790,7 +658,6 @@ QuestNode: {
 		DisplayName: 浮空岛屿
 		Description: 找到天空中的浮空岛
 		QuestObjective.Description: 到达浮空岛
-		QuestReward.Description: 重力药水
 		DetailedDescription: 传说在云层之上，有古代文明留下的宝库。寻找重力的反常之处，或者搭建通天的高塔，去一探究竟吧。
 	}
 
@@ -798,7 +665,6 @@ QuestNode: {
 		DisplayName: 发光蘑菇
 		Description: 找到发光蘑菇生物群落
 		QuestObjective.Description: 到达蘑菇地
-		QuestReward.Description: 夜猫子药水
 		DetailedDescription: 一个充满了迷幻色彩的地下生态。巨大的真菌发出蓝色的幽光，照亮了黑暗。这里是松露人和奇特虫子的家园。
 	}
 
@@ -806,7 +672,6 @@ QuestNode: {
 		DisplayName: 地下探险
 		Description: 深入地下洞穴
 		QuestObjective.Description: 到达地下洞穴
-		QuestReward.Description: 挖矿药水
 		DetailedDescription: 仅仅是铲除地表的泥土是不够的。真正的冒险始于地表之下。带上你的火把，第一层岩石只是个开始。
 	}
 
@@ -814,7 +679,6 @@ QuestNode: {
 		DisplayName: 生命之源
 		Description: 寻找生命水晶
 		QuestObjective.Description: 找到生命水晶
-		QuestReward.Description: 次级治疗药水
 		DetailedDescription: 这种红色的水晶蕴含着生命力。打碎并使用它，能永久强健你的体魄。这是你在面对强大敌人时生存的关键。
 	}
 
@@ -823,12 +687,6 @@ QuestNode: {
 		Description: 在邪恶之地深处寻找暗影珠或猩红之心
 		QuestObjective.Description: 摧毁暗影珠或猩红之心
 
-		QuestReward: {
-			Description: {
-				$parentVal: 炸药
-				Bomb: 炸弹
-			}
-		}
 
 		DetailedDescription: 在邪恶裂隙的深处，搏动着腐败的心脏或暗影的球体。敲碎它们能获得武器，但要注意......如果你敲碎了三个，将会唤醒一些可怕的东西。
 	}
@@ -837,7 +695,6 @@ QuestNode: {
 		DisplayName: 炼金入门
 		Description: 制作你的第一瓶药水
 		QuestObjective.Description: 制作任意药水
-		QuestReward.Description: 次级魔力药水
 		DetailedDescription: 将空瓶放在桌子上，你就有了一个简易的炼金站。并不需要复杂的咒语，只需要正确的材料混合。喝下去，感受魔法的力量。
 	}
 
@@ -845,7 +702,6 @@ QuestNode: {
 		DisplayName: 繁荣村落
 		Description: 吸引多位NPC入住
 		QuestObjective.Description: 拥有5位NPC
-		QuestReward.Description: 金币
 		DetailedDescription: 一个人在野外生存是孤独的。当你变得强大，持有更多的货币时，更多的人会慕名而来。建立一个繁荣的社区，让他们成为你的后盾。
 	}
 
@@ -860,7 +716,6 @@ QuestNode: {
 		DisplayName: 收集助手
 		Description: 获得收集者
 		QuestObjective.Description: 获得收集者
-		QuestReward.Description: 2个箱子
 		DetailedDescription: 厌倦了弯腰拾取满地的战利品？这个装置能自动拾取周围的掉落物。它是构建自动化物流与整理系统的核心组件，彻底解放你的双手。
 	}
 
@@ -889,7 +744,6 @@ QuestNode: {
 		DisplayName: 物流系统
 		Description: 制作一个物品管道
 		QuestObjective.Description: 获得物品管道
-		QuestReward.Description: 2个箱子
 		DetailedDescription: 还在像个原始人一样在箱子之间跑来跑去吗？这些管道是工业的血管。将它们连接在机器与容器之间，看着物品自动流向它们该去的地方。建立一条自动化的流水线。
 	}
 
@@ -897,7 +751,6 @@ QuestNode: {
 		DisplayName: 投掷助手
 		Description: 制作一个投掷者
 		QuestObjective.Description: 获得投掷者
-		QuestReward.Description: 2个箱子
 		DetailedDescription: 并非所有物品都值得被珍藏。这个装置能将物品从物流网络中排出，将其抛掷到世界中。无论是为了特定的自动化合成（比如将物品丢入液体），还是单纯地作为垃圾排放口，它都能完美胜任。
 	}
 }

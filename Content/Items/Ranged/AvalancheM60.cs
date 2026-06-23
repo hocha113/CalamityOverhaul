@@ -307,12 +307,12 @@ namespace CalamityOverhaul.Content.Items.Ranged
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(CWRID.Buff_GlacialState, 30);
+            target.AddBuff(BuffID.Frozen, 30);
             target.AddBuff(BuffID.Frostburn2, 180);
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(CWRID.Buff_GlacialState, 30);
+            target.AddBuff(BuffID.Frozen, 30);
             target.AddBuff(BuffID.Frostburn2, 180);
             if (Projectile.hostile && VaultUtils.isClient)
                 return;

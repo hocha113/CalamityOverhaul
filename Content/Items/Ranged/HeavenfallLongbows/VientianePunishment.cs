@@ -50,7 +50,6 @@ namespace CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows
             ValidBowItemIds = [.. new int[] {
                 CWRID.Item_Alluvion,
                 CWRID.Item_ArterialAssault,
-                CWRID.Item_AstralBow,
                 CWRID.Item_AstrealDefeat,
                 CWRID.Item_Barinade,
                 CWRID.Item_Barinautical,

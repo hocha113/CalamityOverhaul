@@ -1,10 +1,15 @@
+QuestReward: {
+	Template: {
+		AmountItem: "{0} {1}"
+	}
+}
+
 QuestNode: {
 	FirstQuest: {
 		DisplayName: Добро пожаловать в мир Calamity!
 		Description: Начало путешествия
 		DetailedDescription: Каждая легенда начинается с малого. Заберите свое стартовое снаряжение и приготовьтесь встретить этот мир, полный богов и чудовищ.
 		QuestObjective.Description: Нажмите, чтобы получить стартовые предметы
-		QuestReward.Description: Стартовый набор приключенца
 	}
 
 	MiningQuest: {
@@ -13,10 +18,6 @@ QuestNode: {
 		DetailedDescription: Подземелья хранят бесконечные богатства. Для начала нам понадобятся базовые металлы для создания инструментов.
 		QuestObjective.Description: Соберите 10 ед. {0}
 
-		QuestReward: {
-			Description: 5 ед. {0}
-			Description2: 1 {0}
-		}
 	}
 
 	MiningQuestII: {
@@ -24,10 +25,6 @@ QuestNode: {
 		Description: Собрать 50 ед. {0}
 		QuestObjective.Description: Соберите 50 ед. {0}
 
-		QuestReward: {
-			Description: 50 ед. {0}
-			Description2: 1 {0}
-		}
 
 		DetailedDescription: Медь слишком мягкая, нам нужен более твердый металл, чтобы защитить себя. Спускайтесь глубже в поисках железных жил.
 	}
@@ -37,10 +34,6 @@ QuestNode: {
 		Description: Собрать 100 ед. {0}
 		QuestObjective.Description: Соберите 100 ед. {0}
 
-		QuestReward: {
-			Description: 100 ед. {0}
-			Description2: 1 {0}
-		}
 
 		DetailedDescription: Золото — это не просто валюта, оно обладает отличной магической проводимостью и ковкостью. Хотя оно не так твердо, как железо, это важный материал для создания снаряжения высокого уровня.
 	}
@@ -49,7 +42,6 @@ QuestNode: {
 		DisplayName: Серный элементаль
 		Description: Победить Серного элементаля
 		QuestObjective.Description: Победить Серного элементаля
-		QuestReward.Description: 10 эссенций тьмы
 		DetailedDescription: В руинах Серных скал пробудите и победите дремлющего духа стихий. Остерегайтесь её пулевого ада.
 	}
 
@@ -57,7 +49,6 @@ QuestNode: {
 		DisplayName: Клон Каламитас
 		Description: Победить Клона Каламитас
 		QuestObjective.Description: Победить Клона Каламитас
-		QuestReward.Description: 10 пыльцы бедствия
 		DetailedDescription: Клон, наполненный ненавистью и жаждой разрушения. Победите его, чтобы доказать, что вы достойны встретиться с настоящей ведьмой.
 	}
 
@@ -65,7 +56,6 @@ QuestNode: {
 		DisplayName: Крабулон
 		Description: Победить Крабулона
 		QuestObjective.Description: Победить Крабулона
-		QuestReward.Description: 50 светящихся грибов
 		DetailedDescription: В подземном биоме светящихся грибов скрывается гигантский краб, пораженный грибком. Его споры очень опасны.
 	}
 
@@ -73,7 +63,6 @@ QuestNode: {
 		DisplayName: Криоген
 		Description: Победить Криогена
 		QuestObjective.Description: Победить Криогена
-		QuestReward.Description: 10 эссенций света
 		DetailedDescription: Этот некогда могущественный криомант был заточен в вечной ледяной тюрьме. Освободите и победите его, чтобы высвободить холодную силу полярных льдов.
 	}
 
@@ -81,7 +70,6 @@ QuestNode: {
 		DisplayName: Пустынный бич
 		Description: Победить Пустынного бича
 		QuestObjective.Description: Победить Пустынного бича
-		QuestReward.Description: 10 осколков победы
 		DetailedDescription: Бывший повелитель морей, ныне влачащий жалкое существование в высохшей пустыне. Остерегайтесь его огромных челюстей и миньонов.
 	}
 
@@ -89,7 +77,6 @@ QuestNode: {
 		DisplayName: Пожиратель миров / Мозг Ктулху
 		Description: Победить босса Порчи или Багрянца
 		QuestObjective.Description: Победить Пожирателя миров или Мозг Ктулху
-		QuestReward.Description: 20 теневых чешуек / образцов ткани
 		DetailedDescription: Зло распространяется. Проникните в очаг болезни этого мира и искорените гигантского червя или зловещий мозг, обитающий там.
 	}
 
@@ -97,7 +84,6 @@ QuestNode: {
 		DisplayName: Глаз Ктулху
 		Description: Победить Глаз Ктулху
 		QuestObjective.Description: Победить Глаз Ктулху
-		QuestReward.Description: 20 демонитовой / кримтановой руды
 		DetailedDescription: Стоит вам почувствовать этот злобный взгляд, как он появится. Это первое настоящее испытание вашей силы.
 	}
 
@@ -105,7 +91,6 @@ QuestNode: {
 		DisplayName: Голем
 		Description: Победить Голема
 		QuestObjective.Description: Победить Голема
-		QuestReward.Description: 10 панцирей жука
 		DetailedDescription: В глубинах Храма джунглей покоится древняя машина войны. Берегитесь его лазеров и тяжелых кулаков.
 	}
 
@@ -113,7 +98,6 @@ QuestNode: {
 		DisplayName: Разум улья / Перфораторы
 		Description: Победить истинное божество злого биома
 		QuestObjective.Description: Победить Разум улья или Перфораторов
-		QuestReward.Description: 10 демонитовых / кримтановых слитков
 		DetailedDescription: Они являются воплощением сознания Порчи и Багрянца. Если их не уничтожить, эта земля никогда не узнает покоя.
 	}
 
@@ -121,7 +105,6 @@ QuestNode: {
 		DisplayName: Король слизней
 		Description: Победить Короля слизней
 		QuestObjective.Description: Победить Короля слизней
-		QuestReward.Description: 5 золотых монет
 		DetailedDescription: Повелитель гелевых существ. Хоть он и выглядит комично, не дайте его огромному телу раздавить вас.
 	}
 
@@ -129,7 +112,6 @@ QuestNode: {
 		DisplayName: Лунатик-культист
 		Description: Победить Лунатика-культиста
 		QuestObjective.Description: Победить Лунатика-культиста
-		QuestReward.Description: 5 солнечных фрагментов
 		DetailedDescription: У входа в Темницу группа фанатиков пытается предотвратить — или вызвать — конец света. Остановите их ритуал.
 	}
 
@@ -137,7 +119,6 @@ QuestNode: {
 		DisplayName: Механические боссы
 		Description: Победить всех механических боссов
 		QuestObjective.Description: Победить всех механических боссов
-		QuestReward.Description: 20 святых слитков
 		DetailedDescription: Ранние творения Дрэйдона, имитирующие части тела Ктулху. Только победив их, мир сможет возродиться.
 	}
 
@@ -145,7 +126,6 @@ QuestNode: {
 		DisplayName: Лунный лорд
 		Description: Победить Лунного лорда
 		QuestObjective.Description: Победить Лунного лорда
-		QuestReward.Description: Трофей Лунного лорда
 		DetailedDescription: Кукловод за кулисами всего происходящего, ужас с обратной стороны Луны. Положите конец этому долгому кошмару.
 	}
 
@@ -153,7 +133,6 @@ QuestNode: {
 		DisplayName: Предвестница чумы, Голиаф
 		Description: Победить Предвестницу чумы, Голиаф
 		QuestObjective.Description: Победить Предвестницу чумы, Голиаф
-		QuestReward.Description: 20 канистр с чумной клеткой
 		DetailedDescription: Королева пчел, модифицированная нановирусом. Она не только смертоносна, но и переносит опасную чуму.
 	}
 
@@ -161,7 +140,6 @@ QuestNode: {
 		DisplayName: Плантера
 		Description: Победить Плантеру
 		QuestObjective.Description: Победить Плантеру
-		QuestReward.Description: 50 хлорофитовой руды
 		DetailedDescription: В глубине джунглей дремлет гигантский цветок-людоед. Разбейте бутон и столкнитесь с яростью джунглей.
 	}
 
@@ -169,7 +147,6 @@ QuestNode: {
 		DisplayName: Скелетрон
 		Description: Победить Скелетрона
 		QuestObjective.Description: Победить Скелетрона
-		QuestReward.Description: 50 костей
 		DetailedDescription: Только победив этого проклятого старика, вы сможете безопасно войти в Темницу и исследовать её тайны.
 	}
 
@@ -177,7 +154,6 @@ QuestNode: {
 		DisplayName: Бог слизней
 		Description: Победить Бога слизней
 		QuestObjective.Description: Победить Бога слизней
-		QuestReward.Description: 1000 геля
 		DetailedDescription: Вершина эволюции слизней, древнее и ненасытное божество. Остерегайтесь комбинированных атак его частей.
 	}
 
@@ -185,7 +161,6 @@ QuestNode: {
 		DisplayName: Стена плоти
 		Description: Победить Стену плоти
 		QuestObjective.Description: Победить Стену плоти
-		QuestReward.Description: Святой молот
 		DetailedDescription: Страж этого мира. Бросьте куклу гида в лаву, чтобы освободить древних духов и начать Хардмод.
 	}
 
@@ -193,7 +168,6 @@ QuestNode: {
 		DisplayName: Нескончаемая пустота
 		Description: Победить Нескончаемую пустоту
 		QuestObjective.Description: Победить Нескончаемую пустоту
-		QuestReward.Description: 5 темной материи
 		DetailedDescription: Один из стражей Пожирателя богов, зеркало небытия из иного измерения.
 	}
 
@@ -201,7 +175,6 @@ QuestNode: {
 		DisplayName: Пожиратель богов
 		Description: Победить Пожирателя богов
 		QuestObjective.Description: Победить Пожирателя богов
-		QuestReward.Description: 30 слитков космоса
 		DetailedDescription: Космический змей, жаждущий поглотить всю божественность. Сразитесь с ним в пустоте и не дайте себя сожрать.
 	}
 
@@ -209,7 +182,6 @@ QuestNode: {
 		DisplayName: Псевдодракон
 		Description: Победить Псевдодракона
 		QuestObjective.Description: Победить Псевдодракона
-		QuestReward.Description: 10 золотых перьев
 		DetailedDescription: Неудачный продукт попытки воскресить Ярона, безумный и наэлектризованный лжедракон.
 	}
 
@@ -217,7 +189,6 @@ QuestNode: {
 		DisplayName: Экзо-механизмы
 		Description: Победить Экзо-механизмы
 		QuestObjective.Description: Победить Экзо-механизмы
-		QuestReward.Description: 20 экзо-призм
 		DetailedDescription: Главный шедевр Дрэйдона, вершина технологий Террарии. Выживите в этом идеальном представлении.
 	}
 
@@ -225,7 +196,6 @@ QuestNode: {
 		DisplayName: Герцог-реликт Серного моря
 		Description: Победить герцога-реликта Серного моря
 		QuestObjective.Description: Победить герцога-реликта Серного моря
-		QuestReward.Description: 20 разъеденных ископаемых
 		DetailedDescription: Древний владыка глубин Серного моря, сочетание мутации и силы. Остерегайтесь его ядовитого пара.
 	}
 
@@ -233,7 +203,6 @@ QuestNode: {
 		DisplayName: Полтергаст
 		Description: Победить Полтергаста
 		QuestObjective.Description: Победить Полтергаста
-		QuestReward.Description: 10 душ фантомного цветка
 		DetailedDescription: Монстр, созданный из скопления душ, погибших в Темнице. Усмирите их гнев.
 	}
 
@@ -241,7 +210,6 @@ QuestNode: {
 		DisplayName: Первозданный змий
 		Description: Победить Первозданного змия
 		QuestObjective.Description: Победить Первозданного змия
-		QuestReward.Description: Пушка палтуса
 		DetailedDescription: Страж глубочайшего слоя Бездны. Существо более древнее, чем сами боги. Не беспокойте его без необходимости.
 	}
 
@@ -249,7 +217,6 @@ QuestNode: {
 		DisplayName: Оскверненные стражи
 		Description: Победить Оскверненных стражей
 		QuestObjective.Description: Победить Оскверненных стражей
-		QuestReward.Description: 3 оскверненных осколка
 		DetailedDescription: Верные защитники Оскверненной богини. Победите их, чтобы ослабить защиту божества.
 	}
 
@@ -257,7 +224,6 @@ QuestNode: {
 		DisplayName: Провиденс
 		Description: Победить Провиденс
 		QuestObjective.Description: Победить Провиденс
-		QuestReward.Description: 20 божественных жеод
 		DetailedDescription: Богиня, управляющая священным огнем и очищением. Бросьте ей вызов в Святых землях или в Аду, но берегитесь её испепеляющего пламени.
 	}
 
@@ -265,7 +231,6 @@ QuestNode: {
 		DisplayName: Сигнус
 		Description: Победить Сигнуса
 		QuestObjective.Description: Победить Сигнуса
-		QuestReward.Description: 5 искаженной пустоты
 		DetailedDescription: Один из стражей Пожирателя богов, невидимый убийца, призрак пустоты.
 	}
 
@@ -273,7 +238,6 @@ QuestNode: {
 		DisplayName: Штормовой ткач
 		Description: Победить Штормового ткача
 		QuestObjective.Description: Победить Штормового ткача
-		QuestReward.Description: 5 бронированных панцирей
 		DetailedDescription: Один из стражей Пожирателя богов, небесный червь, питающийся грозами и молниями.
 	}
 
@@ -281,7 +245,6 @@ QuestNode: {
 		DisplayName: Высшая Каламитас
 		Description: Победить Высшую Каламитас
 		QuestObjective.Description: Победить Высшую Каламитас
-		QuestReward.Description: 20 пепла бедствия
 		DetailedDescription: Легендарная серная ведьма. Это конец вашего пути или начало нового? Приготовьтесь встретить настоящий пулевой ад.
 	}
 
@@ -289,7 +252,6 @@ QuestNode: {
 		DisplayName: Ярон, Дракон джунглей
 		Description: Победить Ярона, Дракона джунглей
 		QuestObjective.Description: Победить Ярона, Дракона джунглей
-		QuestReward.Description: 20 слитков ауритовой руды
 		DetailedDescription: Верный соратник Тирана, дракон, обладающий способностью феникса к возрождению. Это испытание для вашей души.
 	}
 
@@ -297,7 +259,6 @@ QuestNode: {
 		DisplayName: Хранение энергии
 		Description: Создать термальную батарею
 		QuestObjective.Description: Получить термальную батарею
-		QuestReward.Description: 50 проводов
 		DetailedDescription: Произведенное электричество нужно хранить. Создание батареи — первый шаг к построению стабильной энергосети.
 	}
 
@@ -305,7 +266,6 @@ QuestNode: {
 		DisplayName: Чистая энергия
 		Description: Создать гидроэлектрогенератор
 		QuestObjective.Description: Получить гидроэлектрогенератор
-		QuestReward.Description: Ведро воды
 		DetailedDescription: Используйте силу текущей воды для выработки электричества. Это чистый и устойчивый источник энергии.
 	}
 
@@ -313,7 +273,6 @@ QuestNode: {
 		DisplayName: Промышленная революция
 		Description: Создать ветряной генератор
 		QuestObjective.Description: Получить ветряной генератор
-		QuestReward.Description: 10 железных слитков
 		DetailedDescription: Первый шаг к автоматизации. Используйте энергию ветра, чтобы привести машины в действие и освободить свои руки.
 	}
 
@@ -321,7 +280,6 @@ QuestNode: {
 		DisplayName: Сортировка логистики
 		Description: Создать предметный фильтр
 		QuestObjective.Description: Получить предметный фильтр
-		QuestReward.Description: 2 сундука
 		DetailedDescription: Автоматизированные линии требуют порядка. Используйте фильтры для точного контроля потока предметов.
 	}
 
@@ -329,7 +287,6 @@ QuestNode: {
 		DisplayName: Автоматизированная добыча
 		Description: Создать буровую установку
 		QuestObjective.Description: Получить буровую установку
-		QuestReward.Description: 5 зелий спелеолога
 		DetailedDescription: Попрощайтесь с утомительной ручной копкой. Эта машина способна поглощать рудные жилы с невероятной эффективностью.
 	}
 
@@ -337,7 +294,6 @@ QuestNode: {
 		DisplayName: Глубокое бурение
 		Description: Создать буровую установку MK2
 		QuestObjective.Description: Получить буровую установку MK2
-		QuestReward.Description: 5 зелий спелеолога
 		DetailedDescription: Усиленное энергетическое ядро обеспечивает непревзойденную скорость бурения.
 	}
 
@@ -345,7 +301,6 @@ QuestNode: {
 		DisplayName: Передача энергии
 		Description: Создать универсальный энергопровод
 		QuestObjective.Description: Получить универсальный энергопровод
-		QuestReward.Description: 20 универсальных энергопроводов
 		DetailedDescription: Кровеносные сосуды, соединяющие генераторы и машины. Без них электричество — это лишь застоявшаяся вода.
 	}
 
@@ -353,7 +308,6 @@ QuestNode: {
 		DisplayName: Башня магнитной бури
 		Description: Создать Башню Теслы
 		QuestObjective.Description: Получить Башню Теслы
-		QuestReward.Description: 20 подозрительного покрытия
 		DetailedDescription: Венец технологий Дрэйдона. Эта башня обеспечивает беспроводную передачу энергии, полностью меняя ваш подход к прокладке сетей.
 	}
 
@@ -361,13 +315,11 @@ QuestNode: {
 		DisplayName: Время сжигать
 		Description: Создать тепловой электрогенератор
 		QuestObjective.Description: Получить тепловой электрогенератор
-		QuestReward.Description: 50 угля
 		DetailedDescription: Сжигайте топливо для получения большого количества энергии. Пусть это и не экологично, но на ранних этапах это самый надежный источник энергии.
 	}
 
 	AnnihilatingUniverseQuest: {
 		QuestObjective.Description: Получить Вселенское аннигилирование
-		QuestReward.Description: 5 бесконечных слитков
 		DisplayName: Вселенское аннигилирование
 		Description: Получить "Вселенское аннигилирование"
 		DetailedDescription: Сила галактик, сжатая в тетиве лука. Это оружие обладает мощью, способной разрушать космические измерения, доказывая превосходство стрелка.
@@ -375,7 +327,6 @@ QuestNode: {
 
 	AriaofTheCosmosQuest: {
 		QuestObjective.Description: Получить Арию Космоса
-		QuestReward.Description: 20 бесконечных слитков
 		DisplayName: Ария Космоса
 		Description: Получить "Арию Космоса"
 		DetailedDescription: Сыграйте симфонию звезд. Эта магическая книга призывает черные дыры и квазары, заставляя врагов исчезать под песнь вселенной.
@@ -383,7 +334,6 @@ QuestNode: {
 
 	DarkMatterCompressorQuest: {
 		QuestObjective.Description: Получить компрессор темной материи
-		QuestReward.Description: 10 сфер темной материи
 		DisplayName: Компрессор темной материи
 		Description: Получить компрессор темной материи
 		DetailedDescription: Управляйте самым загадочным веществом во вселенной. Эта машина сжимает темную материю в сверхплотные энергетические сферы для продвинутого синтеза.
@@ -391,7 +341,6 @@ QuestNode: {
 
 	InfiniteIngotQuest: {
 		QuestObjective.Description: Получить бесконечный слиток
-		QuestReward.Description: 2 бесконечных слитка
 		DisplayName: Бесконечный слиток
 		Description: Выковать бесконечный слиток
 		DetailedDescription: Металл, превосходящий закон сохранения массы. Это краеугольный камень абсолютной силы, таящий в себе безграничные возможности.
@@ -399,7 +348,6 @@ QuestNode: {
 
 	InfinitePickQuest: {
 		QuestObjective.Description: Получить бесконечную кирку
-		QuestReward.Description: 5 бесконечных слитков
 		DisplayName: Бесконечная кирка
 		Description: Получить бесконечную кирку
 		DetailedDescription: Ничто не может остановить эту кирку. Она может вскопать всё, даже коренную породу мира.
@@ -407,7 +355,6 @@ QuestNode: {
 
 	InfiniteToiletQuest: {
 		QuestObjective.Description: Получить бесконечный унитаз
-		QuestReward.Description: 1 бесконечный слиток
 		DisplayName: Бесконечный унитаз
 		Description: Получить бесконечный унитаз
 		DetailedDescription: Трон богов. Звучит нелепо, но он действительно символизирует некую... высшую власть.
@@ -415,7 +362,6 @@ QuestNode: {
 
 	InfinityCatalystQuest: {
 		QuestObjective.Description: Получить бесконечный катализатор
-		QuestReward.Description: 1 бесконечный слиток
 		DisplayName: Бесконечный катализатор
 		Description: Получить бесконечный катализатор
 		DetailedDescription: Ключевой катализатор для запуска бесконечной реакции. Он позволяет материи циклировать между аннигиляцией и возрождением, генерируя колоссальную энергию.
@@ -423,7 +369,6 @@ QuestNode: {
 
 	NeutronBowQuest: {
 		QuestObjective.Description: Получить нейтронный лук
-		QuestReward.Description: 2 нейтронных слитка
 		DisplayName: Нейтронный лук
 		Description: Получить нейтронный лук
 		DetailedDescription: Лук, выкованный из осколков ядра нейтронной звезды. Каждая стрела несет в себе гравитацию коллапсирующей звезды.
@@ -431,7 +376,6 @@ QuestNode: {
 
 	NeutronGlaiveQuest: {
 		QuestObjective.Description: Получить нейтронную глефу
-		QuestReward.Description: 2 нейтронных слитка
 		DisplayName: Нейтронная глефа
 		Description: Получить нейтронную глефу
 		DetailedDescription: Древковое оружие невероятной плотности. Чтобы владеть им, нужна огромная сила, но ни одна броня не выдержит его удара.
@@ -439,7 +383,6 @@ QuestNode: {
 
 	NeutronGunQuest: {
 		QuestObjective.Description: Получить нейтронную пушку
-		QuestReward.Description: 2 нейтронных слитка
 		DisplayName: Нейтронная пушка
 		Description: Получить нейтронную пушку
 		DetailedDescription: Оружие, стреляющее потоками микро-нейтронов. Из-за сверхвысокой плотности пули практически не испытывают сопротивления.
@@ -447,7 +390,6 @@ QuestNode: {
 
 	NeutronScytheQuest: {
 		QuestObjective.Description: Получить нейтронную косу
-		QuestReward.Description: 2 нейтронных слитка
 		DisplayName: Нейтронная коса
 		Description: Получить нейтронную косу
 		DetailedDescription: Инструмент жатвы самой Смерти. Она легко разрывает пространство, скашивая жизни, словно пшеницу.
@@ -455,7 +397,6 @@ QuestNode: {
 
 	NeutronStarIngotQuest: {
 		QuestObjective.Description: Получить нейтронный слиток
-		QuestReward.Description: 5 нейтронных слитков
 		DisplayName: Нейтронный слиток
 		Description: Получить нейтронный слиток
 		DetailedDescription: Одно из самых плотных веществ во вселенной. Этот металл невообразимо тяжел и гудит от гравитационных колебаний.
@@ -463,7 +404,6 @@ QuestNode: {
 
 	NeutronWandQuest: {
 		QuestObjective.Description: Получить нейтронный жезл
-		QuestReward.Description: 2 нейтронных слитка
 		DisplayName: Нейтронный жезл
 		Description: Получить нейтронный жезл
 		DetailedDescription: Посох, управляющий гравитацией. Используйте силу нейтронной звезды, чтобы искажать пространство-время и сокрушать врагов.
@@ -471,7 +411,6 @@ QuestNode: {
 
 	PandemoniumQuest: {
 		QuestObjective.Description: Получить Пандемониум
-		QuestReward.Description: 20 бесконечных слитков
 		DisplayName: Пандемониум
 		Description: Получить "Пандемониум"
 		DetailedDescription: Абсолютное оружие, впитавшее бесчисленные души и силу бедствия. Держа его, вы держите ключи от Ада и Бездны.
@@ -479,7 +418,6 @@ QuestNode: {
 
 	RockQuest: {
 		QuestObjective.Description: Получить Древний вечный камень
-		QuestReward.Description: 5 древних вечных камней
 		DisplayName: Древний вечный камень
 		Description: Получить Древний вечный камень
 		DetailedDescription: С виду обычный камень, но он был свидетелем бесчисленных циклов конца света. Это символ вечной стойкости.
@@ -487,7 +425,6 @@ QuestNode: {
 
 	TerminusQuest: {
 		QuestObjective.Description: Получить Терминус
-		QuestReward.Description: Большое количество кровавых бусин
 		DisplayName: Терминус
 		Description: Получить Терминус
 		DetailedDescription: Ключ к финальному испытанию. Взгляните в этот камень и приготовьтесь к серии судов от сильнейших существ этого мира.
@@ -495,7 +432,6 @@ QuestNode: {
 
 	TransmutationOfMatterQuest: {
 		QuestObjective.Description: Получить стол трансмутации материи
-		QuestReward.Description: 10 бесконечных слитков
 		DisplayName: Стол трансмутации материи
 		Description: Получить стол трансмутации материи
 		DetailedDescription: Высшая форма алхимии. Эта машина нарушает принципы равноценного обмена, позволяя трансформировать материю по воле владельца или даже создавать её из ничего.
@@ -503,7 +439,6 @@ QuestNode: {
 
 	HeavenfallLongbowQuest: {
 		QuestObjective.Description: Получить Лук Бесконечности
-		QuestReward.Description: 5 бесконечных слитков
 		DisplayName: Лук Бесконечности
 		Description: Получить Лук Бесконечности
 		DetailedDescription: Длинный лук, когда-то сразивший богов. Теперь он снова явлен миру.
@@ -511,7 +446,6 @@ QuestNode: {
 
 	SpearOfLonginusQuest: {
 		QuestObjective.Description: Получить Копье Лонгина
-		QuestReward.Description: 5 бесконечных слитков
 		DisplayName: Копье Лонгина
 		Description: Получить Копье Лонгина
 		DetailedDescription: Легендарное святое копье, пронзившее бога, обладающее властью пробивать любые силовые поля и абсолютные барьеры. Когда его метают, даже закон причинности уступает ему дорогу.
@@ -519,7 +453,6 @@ QuestNode: {
 
 	DragonsWordQuest: {
 		QuestObjective.Description: Получить Слово дракона
-		QuestReward.Description: 5 бесконечных слитков
 		DisplayName: Слово дракона
 		Description: Получить Слово дракона
 		DetailedDescription: Дракон плачет лишь раз в жизни — в момент своей смерти.
@@ -527,7 +460,6 @@ QuestNode: {
 
 	RockQuestII: {
 		QuestObjective.Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
-		QuestReward.Description: 5 древних вечных камней
 		DisplayName: Цикл войны
 		Description: Пройти финальную битву (Терминус) 5 раз и получить более 5 древних вечных камней
 		DetailedDescription: Символ истинного воина.
@@ -537,7 +469,6 @@ QuestNode: {
 		DisplayName: Искатель приключений
 		Description: Мир у моих ног!
 		QuestObjective.Description: Нажмите, чтобы получить
-		QuestReward.Description: Сапоги бегуна
 		DetailedDescription: Путешествие в тысячу миль начинается с первого шага. Наденьте эти сапоги и отправляйтесь измерять этот огромный мир.
 	}
 
@@ -545,7 +476,6 @@ QuestNode: {
 		DisplayName: Жуткая темница
 		Description: Найти вход в Темницу
 		QuestObjective.Description: Дойти до Темницы
-		QuestReward.Description: Зелье предчувствия
 		DetailedDescription: За проклятыми стенами скрыты бесконечные тайны и опасности. Лишь самые храбрые исследователи осмеливаются ступить на эту землю мертвых.
 	}
 
@@ -553,7 +483,6 @@ QuestNode: {
 		DisplayName: Адская бездна
 		Description: Спуститься в Ад
 		QuestObjective.Description: Дойти до Ада
-		QuestReward.Description: Зелье обсидиановой кожи
 		DetailedDescription: В самой глубине мира текут реки лавы. Это дом демонов, а также месторождение обсидиана и адского камня. Смотрите под ноги, не упадите.
 	}
 
@@ -561,7 +490,6 @@ QuestNode: {
 		DisplayName: Экспедиция в джунгли
 		Description: Углубиться в биом джунглей
 		QuestObjective.Description: Дойти до джунглей
-		QuestReward.Description: Зелье призыва
 		DetailedDescription: Полный жизни, но смертельно опасный зеленый лабиринт. Густая растительность скрывает древние храмы и смертоносные рои пчел.
 	}
 
@@ -569,7 +497,6 @@ QuestNode: {
 		DisplayName: Край света
 		Description: Дойти до биома океана
 		QuestObjective.Description: Дойти до океана
-		QuestReward.Description: Зелье жабр
 		DetailedDescription: Край континента. Здесь небо встречается с морем. Под глубокой синевой скрываются затонувшие корабли и неизвестные морские чудовища.
 	}
 
@@ -577,7 +504,6 @@ QuestNode: {
 		DisplayName: Ледяные земли
 		Description: Исследовать снежный биом
 		QuestObjective.Description: Дойти до снегов
-		QuestReward.Description: Зелье тепла
 		DetailedDescription: Вечная мерзлота. Пронизывающий ветер и лед, покрывающий всё вокруг. Здесь жизнь существует в своей самой стойкой форме.
 	}
 
@@ -585,7 +511,6 @@ QuestNode: {
 		DisplayName: Море звезд
 		Description: Полететь в космос
 		QuestObjective.Description: Дойти до космоса
-		QuestReward.Description: Зелье перышка
 		DetailedDescription: Избавьтесь от оков гравитации и прикоснитесь к звездам. Только взлетев достаточно высоко, можно увидеть этот мир целиком.
 	}
 
@@ -594,13 +519,6 @@ QuestNode: {
 		Description: Найти зашифрованный чертеж в лаборатории Дрэйдона в Аду
 		QuestObjective.Description: Получить чертеж Ада
 
-		QuestReward: {
-			Description: {
-				Plating: Подозрительное покрытие
-				Circuitry: Таинственная электросхема
-				Fireblossom: Огнецвет
-			}
-		}
 
 		DetailedDescription: Дрэйдон основал аванпост в Аду, используя местное геотермальное тепло для экспериментов. Найдите там чертежи, возможно, они откроют доступ к новому оружию.
 	}
@@ -610,13 +528,6 @@ QuestNode: {
 		Description: Найти зашифрованный чертеж в лаборатории Дрэйдона в снегах
 		QuestObjective.Description: Получить ледяной чертеж
 
-		QuestReward: {
-			Description: {
-				Plating: Подозрительное покрытие
-				Circuitry: Таинственная электросхема
-				Shiverthorn: Ледошип
-			}
-		}
 
 		DetailedDescription: Низкие температуры — идеальная среда для сохранения точных приборов. Проникните в лабораторию подо льдами и найдите законсервированные полярные технологии.
 	}
@@ -626,13 +537,6 @@ QuestNode: {
 		Description: Найти зашифрованный чертеж в лаборатории Дрэйдона в джунглях
 		QuestObjective.Description: Получить чертеж джунглей
 
-		QuestReward: {
-			Description: {
-				Plating: Подозрительное покрытие
-				Circuitry: Таинственная электросхема
-				Moonglow: Луноцвет
-			}
-		}
 
 		DetailedDescription: Густые джунгли скрывают биолабораторию Дрэйдона. Там он изучал чуму и нановирусы. Найдите этот чертеж, чтобы раскрыть опасную правду.
 	}
@@ -642,13 +546,6 @@ QuestNode: {
 		Description: Найти зашифрованный чертеж в лаборатории Дрэйдона на планетоиде
 		QuestObjective.Description: Получить чертеж планетоида
 
-		QuestReward: {
-			Description: {
-				Plating: Подозрительное покрытие
-				Circuitry: Таинственная электросхема
-				FallenStar: Упавшая звезда
-			}
-		}
 
 		DetailedDescription: В условиях микрогравитации высоко в небе дрейфует лаборатория Дрэйдона. Отправляйтесь туда, чтобы найти ранние чертежи Экзо-механизмов.
 	}
@@ -658,13 +555,6 @@ QuestNode: {
 		Description: Найти зашифрованный чертеж в лаборатории Дрэйдона в Затерянном море
 		QuestObjective.Description: Получить чертеж Затерянного моря
 
-		QuestReward: {
-			Description: {
-				Plating: Подозрительное покрытие
-				Circuitry: Таинственная электросхема
-				Waterleaf: Воднолист
-			}
-		}
 
 		DetailedDescription: В этом безмятежном подземном море Дрэйдон оставил исследования призматической энергии. Нырните под воду и заберите эти ценные данные.
 	}
@@ -673,7 +563,6 @@ QuestNode: {
 		DisplayName: Акватический бич
 		Description: Победить Акватического бича
 		QuestObjective.Description: Победить Акватического бича
-		QuestReward.Description: Разъеденное ископаемое
 		DetailedDescription: Некогда мирный гигант чистых вод, теперь искаженный токсинами Сернистого моря. В этих загрязненных кислотных водах остерегайтесь его внезапных рывков и ядовитых облаков.
 	}
 
@@ -681,7 +570,6 @@ QuestNode: {
 		DisplayName: Королева слизней
 		Description: Победить Королеву слизней
 		QuestObjective.Description: Победить Королеву слизней
-		QuestReward.Description: 10 эссенций света
 		DetailedDescription: Кристальная императрица Святых земель, управляющая всеми святыми гелевыми существами. Она гораздо быстрее и смертоноснее своего супруга. Приготовьтесь к великолепному шквалу снарядов.
 	}
 
@@ -689,7 +577,6 @@ QuestNode: {
 		DisplayName: Мастер-строитель
 		Description: Построить подходящий дом
 		QuestObjective.Description: Построить валидный дом
-		QuestReward.Description: Древесина
 		DetailedDescription: Каждому нужно убежище. Будь то Гид или другие странники, если вы предоставите комнату со столом, стулом, светом и стенами, они будут служить вам.
 	}
 
@@ -697,7 +584,6 @@ QuestNode: {
 		DisplayName: Залежи зла
 		Description: Собрать руду злого биома
 		QuestObjective.Description: Собрать демонитовую или кримтановую руду
-		QuestReward.Description: Факел
 		DetailedDescription: Эта руда источает зловещую ауру, она холодная и липкая на ощупь. Хоть она и происходит из очага болезни этого мира, это незаменимый материал для создания мощного снаряжения.
 	}
 
@@ -705,7 +591,6 @@ QuestNode: {
 		DisplayName: Собиратель звезд
 		Description: Собрать упавшие звезды
 		QuestObjective.Description: Собрать упавшие звезды
-		QuestReward.Description: Малое зелье маны
 		DetailedDescription: Слезы ночного неба, падающие лишь с наступлением темноты. Соберите их, чтобы не только увеличить запас маны, но и использовать как мощные боеприпасы или материал для магии.
 	}
 
@@ -714,12 +599,6 @@ QuestNode: {
 		Description: Собрать различные драгоценные камни
 		QuestObjective.Description: Собрать 5 видов разных камней
 
-		QuestReward: {
-			Description: {
-				$parentVal: Зелье блеска
-				Diamond: Алмаз
-			}
-		}
 
 		DetailedDescription: Сияющие кристаллы, скрытые в толще породы. Помимо украшений, они важны для создания посохов и крюков-кошек. Собрав камни разных цветов, вы, возможно, сможете воссоздать сияние радуги.
 	}
@@ -728,7 +607,6 @@ QuestNode: {
 		DisplayName: Ученик травника
 		Description: Собрать различные травы
 		QuestObjective.Description: Собрать 3 вида разных трав
-		QuestReward.Description: Банка с водой
 		DetailedDescription: Основа алхимии. Разные растения растут в разных условиях: в пустыне, снегах и даже в Аду. Умение различать их — первый шаг к тому, чтобы стать мастером алхимии.
 	}
 
@@ -743,7 +621,6 @@ QuestNode: {
 			}
 		}
 
-		QuestReward.Description: Зелье возврата
 		DetailedDescription: Раскопки — основа выживания. Медь и железо хоть и обычны, но они — фундамент вашего выхода из первобытной жизни. Не пренебрегайте ими, ведь даже легендарные герои начинали с взмахов медной киркой.
 	}
 
@@ -752,12 +629,6 @@ QuestNode: {
 		Description: Исследовать все основные биомы
 		QuestObjective.Description: Завершить все задания по исследованию
 
-		QuestReward: {
-			Description: {
-				$parentVal: GPS
-				Gold: Золотая монета
-			}
-		}
 
 		DetailedDescription: Вы обошли каждый уголок мира, от самых высоких облаков до глубочайшего ада. Составленная вами карта доказывает вашу храбрость. Теперь весь мир у ваших ног.
 	}
@@ -766,7 +637,6 @@ QuestNode: {
 		DisplayName: Глубины пещер
 		Description: Исследовать глубокие слои пещер
 		QuestObjective.Description: Дойти до слоя пещер
-		QuestReward.Description: Зелье спелеолога
 		DetailedDescription: Здесь нет солнца, только тьма и неизвестные существа. Появляется лава, а залежи руды становятся богаче. Смотрите под ноги, бездна смотрит на вас.
 	}
 
@@ -774,7 +644,6 @@ QuestNode: {
 		DisplayName: Земли Порчи
 		Description: Исследовать Порчу или Багрянец
 		QuestObjective.Description: Войти в Порчу или Багрянец
-		QuestReward.Description: Зелье битвы
 		DetailedDescription: Эта земля больна. Фиолетовая гниль или красная плоть пожирают землю. Хоть здесь и полно кровожадных монстров, только проникнув в логово зверя, можно добыть теневую чешую или образцы ткани.
 	}
 
@@ -782,7 +651,6 @@ QuestNode: {
 		DisplayName: Жгучая пустыня
 		Description: Ступить в биом пустыни
 		QuestObjective.Description: Дойти до пустыни
-		QuestReward.Description: Зелье хождения по воде
 		DetailedDescription: Палящее солнце выжигает землю, а под золотыми песками скрыты древние окаменелости и свирепые муравьиные львы. Запаситесь водой, здешняя сухость может стоить вам жизни.
 	}
 
@@ -790,7 +658,6 @@ QuestNode: {
 		DisplayName: Парящие острова
 		Description: Найти парящий остров в небе
 		QuestObjective.Description: Дойти до парящего острова
-		QuestReward.Description: Зелье гравитации
 		DetailedDescription: Легенды гласят, что над облаками хранятся сокровища древней цивилизации. Ищите гравитационные аномалии или стройте башню до небес, чтобы узнать правду.
 	}
 
@@ -798,7 +665,6 @@ QuestNode: {
 		DisplayName: Светящиеся грибы
 		Description: Найти биом светящихся грибов
 		QuestObjective.Description: Дойти до грибного биома
-		QuestReward.Description: Зелье совы
 		DetailedDescription: Подземная экосистема, полная психоделических красок. Гигантские грибы излучают призрачный синий свет, разгоняя тьму. Это дом Трюфеля и диковинных насекомых.
 	}
 
@@ -806,7 +672,6 @@ QuestNode: {
 		DisplayName: Подземная экспедиция
 		Description: Углубиться в подземелье
 		QuestObjective.Description: Дойти до подземелья
-		QuestReward.Description: Зелье добычи
 		DetailedDescription: Просто копать грязь на поверхности недостаточно. Настоящие приключения начинаются под землей. Берите факелы, первый слой камня — это только начало.
 	}
 
@@ -814,7 +679,6 @@ QuestNode: {
 		DisplayName: Источник жизни
 		Description: Найти кристалл жизни
 		QuestObjective.Description: Найти кристалл жизни
-		QuestReward.Description: Малое лечебное зелье
 		DetailedDescription: Этот красный кристалл наполнен жизненной силой. Разбейте и используйте его, чтобы навсегда укрепить свое тело. Это ключ к выживанию в битвах с сильными врагами.
 	}
 
@@ -823,12 +687,6 @@ QuestNode: {
 		Description: Найти теневую сферу или багряное сердце в глубинах зла
 		QuestObjective.Description: Уничтожить теневую сферу или сердце
 
-		QuestReward: {
-			Description: {
-				$parentVal: Динамит
-				Bomb: Бомба
-			}
-		}
 
 		DetailedDescription: В глубинах злых разломов пульсируют гнилые сердца или теневые сферы. Разбив их, вы получите оружие, но будьте осторожны... если разобьете три, то пробудите нечто ужасное.
 	}
@@ -837,7 +695,6 @@ QuestNode: {
 		DisplayName: Основы алхимии
 		Description: Создать свое первое зелье
 		QuestObjective.Description: Создать любое зелье
-		QuestReward.Description: Малое зелье маны
 		DetailedDescription: Поставьте пустую банку на стол, и у вас получится простая алхимическая станция. Сложные заклинания не нужны, только правильное смешивание ингредиентов. Выпейте и почувствуйте силу магии.
 	}
 
@@ -845,7 +702,6 @@ QuestNode: {
 		DisplayName: Процветающая деревня
 		Description: Привлечь несколько поселенцев
 		QuestObjective.Description: Иметь 5 поселенцев
-		QuestReward.Description: Золотая монета
 		DetailedDescription: Выживать в дикой природе в одиночку тяжело. Когда вы станете сильнее и богаче, к вам потянутся люди. Создайте процветающее сообщество, и они станут вашей опорой.
 	}
 
@@ -860,7 +716,6 @@ QuestNode: {
 		DisplayName: Помощник-сборщик
 		Description: Получить Сборщика
 		QuestObjective.Description: Получить Сборщика
-		QuestReward.Description: 2 сундука
 		DetailedDescription: Устали наклоняться за каждым трофеем? Это устройство автоматически собирает предметы вокруг. Это ключевой компонент для создания автоматизированной логистики и систем сортировки, полностью освобождающий ваши руки.
 	}
 
@@ -889,7 +744,6 @@ QuestNode: {
 		DisplayName: Логистическая система
 		Description: Создать логистическую трубу
 		QuestObjective.Description: Получить логистическую трубу
-		QuestReward.Description: 2 сундука
 		DetailedDescription: Всё еще бегаете между сундуками как дикарь? Эти трубы — вены промышленности. Соедините ими машины и контейнеры, и наблюдайте, как предметы сами текут туда, куда нужно. Постройте автоматизированную сборочную линию.
 	}
 
@@ -897,7 +751,6 @@ QuestNode: {
 		DisplayName: Выбрасыватель
 		Description: Создать выбрасыватель
 		QuestObjective.Description: Получить выбрасыватель
-		QuestReward.Description: 2 сундука
 		DetailedDescription: Не все предметы стоит хранить. Это устройство выводит предметы из логистической сети, выбрасывая их в мир. Будь то для специфического автокрафта (например, сброс предметов в жидкость) или просто как мусоропровод — оно отлично справится.
 	}
 }
