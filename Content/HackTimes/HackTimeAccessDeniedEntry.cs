@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.NotificationPopup;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -251,8 +251,8 @@ namespace CalamityOverhaul.Content.HackTimes
             var font = FontAssets.MouseText.Value;
             float lineHeight = font.LineSpacing * scale * 0.95f;
             float y = startPos.Y;
-            //统一走 CWRUtils.WrapText：CJK 感知，最多 2 行并在末行附省略号
-            foreach (string drawn in CWRUtils.WrapText(text, font, maxWidth, scale, maxLines: 2, ellipsis: true)) {
+            //统一走 VaultUtils.WrapText：CJK 感知，最多 2 行并在末行附省略号
+            foreach (string drawn in VaultUtils.WrapText(text, font, maxWidth, scale, maxLines: 2, ellipsis: true)) {
                 Utils.DrawBorderString(sb, drawn, new Vector2(startPos.X, y), color, scale);
                 y += lineHeight;
             }

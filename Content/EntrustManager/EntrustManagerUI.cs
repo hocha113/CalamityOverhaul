@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.EntrustManager.Styles;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -656,7 +656,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             foreach (string paragraph in paragraphs) {
                 string trimmedPara = paragraph.Trim();
                 if (string.IsNullOrEmpty(trimmedPara)) continue;
-                string[] wrapped = CWRUtils.WrapTextArray(trimmedPara, font, wrapPixelWidth, 99, out _);
+                string[] wrapped = VaultUtils.WrapTextArray(trimmedPara, font, wrapPixelWidth, 99, out _);
                 foreach (string wl in wrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     totalLineH += (int)(font.MeasureString(wl.TrimEnd('-', ' ')).Y * textScale) + 2;

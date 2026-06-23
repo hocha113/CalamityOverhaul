@@ -612,7 +612,7 @@ namespace CalamityOverhaul.Content.HackTimes
             //描述区宽度需扣除右侧状态区，Wordwrap 用缩放前像素
             var descFont = FontAssets.MouseText.Value;
             int descWrapPx = Math.Max(32, (int)((rect.Right - descPos.X - 30f) / FontDesc));
-            string[] descLines = CWRUtils.WrapTextArray(hack.Description.Value, descFont, descWrapPx, 2, out _);
+            string[] descLines = VaultUtils.WrapTextArray(hack.Description.Value, descFont, descWrapPx, 2, out _);
             float descLineH = descFont.MeasureString("汉").Y * FontDesc;
             for (int li = 0; li < descLines.Length; li++) {
                 if (string.IsNullOrEmpty(descLines[li])) continue;

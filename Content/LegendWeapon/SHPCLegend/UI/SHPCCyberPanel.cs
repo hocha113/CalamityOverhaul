@@ -815,10 +815,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             return count <= 0 ? 1 : count;
         }
 
-        /// <summary>CWRUtils.WrapText 换行</summary>
+        /// <summary>VaultUtils.WrapText 换行</summary>
         private static System.Collections.Generic.IEnumerable<string> EnumerateWrappedLines(
             DynamicSpriteFont font, string text, float scale, float maxWidth) {
-            return CWRUtils.WrapText(text, font, maxWidth, scale);
+            return VaultUtils.WrapText(text, font, maxWidth, scale);
         }
 
         /// <summary>超宽文本尾部省略</summary>

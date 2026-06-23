@@ -249,7 +249,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             VictorUIStyle.DrawHDivider(sb, card.X + 16, card.Right - 16, card.Y + 38, CyberwareTheme.AccentCyan * (alpha * 0.5f));
 
             float gs = 0.46f * CyberwareTheme.FontScale;
-            string[] lines = CWRUtils.WrapTextArray(GuideText.Value, FontAssets.MouseText.Value, w - 32, 4, out _);
+            string[] lines = VaultUtils.WrapTextArray(GuideText.Value, FontAssets.MouseText.Value, w - 32, 4, out _);
             float lineH = FontAssets.MouseText.Value.MeasureString("A").Y * gs + 6f;
             int cnt = 0;
             foreach (string l in lines) {

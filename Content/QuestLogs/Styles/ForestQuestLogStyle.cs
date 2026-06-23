@@ -385,7 +385,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Styles
             string description = string.IsNullOrEmpty(node.DetailedDescription?.Value) ? node.Description?.Value : node.DetailedDescription?.Value;
             if (!string.IsNullOrEmpty(description)) {
                 int maxW = panelRect.Width - padding * 2;
-                string[] lines = CWRUtils.WrapTextArray(description, FontAssets.MouseText.Value, (int)(maxW / 0.9f), 99, out _);
+                string[] lines = VaultUtils.WrapTextArray(description, FontAssets.MouseText.Value, (int)(maxW / 0.9f), 99, out _);
                 foreach (string line in lines) {
                     if (string.IsNullOrEmpty(line)) continue;
                     Utils.DrawBorderString(spriteBatch, line.TrimEnd('-', ' '), new Vector2(panelRect.X + padding, currentY), Color.White * alpha, 0.9f);

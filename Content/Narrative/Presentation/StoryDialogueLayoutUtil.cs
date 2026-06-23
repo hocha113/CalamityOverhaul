@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation
 
             DynamicSpriteFont font = layout.Font ?? Terraria.GameContent.FontAssets.MouseText.Value;
             float width = Math.Max(60f, layout.TextRect.Width);
-            layout.WrappedLines = CWRUtils.WrapText(line.Text ?? string.Empty, font, width, layout.TextScale).ToArray();
+            layout.WrappedLines = VaultUtils.WrapText(line.Text ?? string.Empty, font, width, layout.TextScale).ToArray();
 
             int total = 0;
             foreach (string wrappedLine in layout.WrappedLines) {

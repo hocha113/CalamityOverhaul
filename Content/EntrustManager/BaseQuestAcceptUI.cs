@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -434,7 +434,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             //标题
             Vector2 titlePos = DrawPosition + new Vector2(Padding * scale, Padding * scale);
-            List<string> titleLines = CWRUtils.WrapText(QuestTitle.Value, font, maxTextWidth, titleScale);
+            List<string> titleLines = VaultUtils.WrapText(QuestTitle.Value, font, maxTextWidth, titleScale);
 
             //标题光晕(呼吸律动)
             float titleGlowStr = 0.4f + breatheAnim * 0.5f;
@@ -467,7 +467,7 @@ namespace CalamityOverhaul.Content.EntrustManager
             Color textColor = new Color(220, 200, 185) * alpha;
 
             foreach (string paragraph in paragraphs) {
-                List<string> wrappedLines = CWRUtils.WrapText(paragraph, font, maxTextWidth, descScale);
+                List<string> wrappedLines = VaultUtils.WrapText(paragraph, font, maxTextWidth, descScale);
                 foreach (string line in wrappedLines) {
                     Vector2 linePos = new Vector2(descPos.X, currentY);
                     //柔和阴影

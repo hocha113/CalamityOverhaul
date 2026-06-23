@@ -401,7 +401,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             //正文（支持换行）
             int bodyWrapW = (int)((CardW - 28) / bodySc);
             foreach (string line in body.Split('\n')) {
-                string[] bodyWrapped = CWRUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
+                string[] bodyWrapped = VaultUtils.WrapTextArray(line, font, bodyWrapW, 99, out _);
                 foreach (string wl in bodyWrapped) {
                     if (string.IsNullOrEmpty(wl)) continue;
                     Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px2, py),

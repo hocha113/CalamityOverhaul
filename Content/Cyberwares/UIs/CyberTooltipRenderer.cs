@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -38,13 +38,13 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float smallScale = 0.66f;
             float descScale = 0.64f;
 
-            Vector2 nameSize = CWRUtils.MeasureText(name, textScale);
-            Vector2 slotSize = CWRUtils.MeasureText(slotName, smallScale);
+            Vector2 nameSize = VaultUtils.MeasureText(name, textScale);
+            Vector2 slotSize = VaultUtils.MeasureText(slotName, smallScale);
 
             //计算描述文本行，先按换行符分段再调用官方换行接口
             var descLineList = new System.Collections.Generic.List<string>();
             foreach (string para in desc.Split('\n')) {
-                foreach (string wl in CWRUtils.WrapTextArray(para.TrimEnd('\r'), FontAssets.MouseText.Value, (int)(220f / descScale), 99, out _)) {
+                foreach (string wl in VaultUtils.WrapTextArray(para.TrimEnd('\r'), FontAssets.MouseText.Value, (int)(220f / descScale), 99, out _)) {
                     if (wl != null) descLineList.Add(wl);
                 }
             }
@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             float contentWidth = Math.Max(nameSize.X + IconSize + Padding, 200f);
             contentWidth = Math.Max(contentWidth, slotSize.X + 80f);
             foreach (string line in descLines) {
-                contentWidth = Math.Max(contentWidth, CWRUtils.MeasureText(line, descScale).X);
+                contentWidth = Math.Max(contentWidth, VaultUtils.MeasureText(line, descScale).X);
             }
             contentWidth += Padding * 2;
 

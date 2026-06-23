@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -667,7 +667,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             Vector2 scale = new Vector2(0.95f, 0.95f) * MathHelper.Clamp(UIScale, 0.85f, 1f) * UIScale;
 
             string unifiedDescription = EnchantmentHandler.SelectedEnchantment.Value.Description.ToString().Replace("\n", " ");
-            foreach (string line in CWRUtils.WrapTextArray(unifiedDescription, FontAssets.MouseText.Value, 400, 16, out _)) {
+            foreach (string line in VaultUtils.WrapTextArray(unifiedDescription, FontAssets.MouseText.Value, 400, 16, out _)) {
                 if (string.IsNullOrEmpty(line))
                     continue;
 

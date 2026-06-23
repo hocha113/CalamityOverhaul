@@ -375,7 +375,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             //提前换行以确定实际行数，驱动面板高度
             string[] descLines = string.IsNullOrEmpty(description)
                 ? []
-                : CWRUtils.WrapTextArray(description, font, maxTextW + 112, 99, out _);
+                : VaultUtils.WrapTextArray(description, font, maxTextW + 112, 99, out _);
             float lineH = font.MeasureString("A").Y * descScale;
             int validLineCount = 0;
             foreach (string l in descLines) {
