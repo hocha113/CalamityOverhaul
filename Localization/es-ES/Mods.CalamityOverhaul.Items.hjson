@@ -48,11 +48,6 @@ GhostFireWhip: {
 		'''
 }
 
-AllhallowsGoldWhip: {
-	DisplayName: Latigo de Oro de Todos los Santos
-	Tooltip: En realidad, aún no está terminado.
-}
-
 DivineSourceBlade: {
 	DisplayName: Cuchilla Aniquiladora de Oro
 	Tooltip:
@@ -126,16 +121,6 @@ HeavenfallLongbow: {
 		El arco asesino de dioses resurgirá, en medio de la sinfonía de las estrellas, para escribir la historia una vez más con sangre y polvo de estrellas.
 
 		'''
-}
-
-TestItem: {
-	DisplayName: Artículo de Prueba
-	Tooltip: Hmm... no deberías tenerlo.
-}
-
-BaseSingularity: {
-	DisplayName: Clase Base de Singularidad
-	Tooltip: Hmm... no deberías tenerlo.
 }
 
 InfiniteIngot: {
@@ -407,50 +392,6 @@ SimpleMuzzleBrake: {
 		'''
 }
 
-AmmoBoxFire: {
-	DisplayName: Caja de Munición Ardiente
-	Tooltip:
-		'''
-		Mantén presionado para desplegar, después de desplegar, mantén la munición en la caja, haz clic derecho en la caja de munición para cargar municiones especiales en el cargador del arma
-		Las municiones especiales se pueden combinar con el efecto de las balas originales
-		Hace que las balas sean extremadamente inflamables, causando explosiones al impactar
-		"Esto no es COD"
-		'''
-}
-
-ArmourPiercerBox: {
-	DisplayName: Caja de Munición Perforadora
-	Tooltip:
-		'''
-		Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
-		La munición especial puede combinarse con el efecto de las balas originales.
-		Recubre las balas con tungsteno para aumentar su capacidad de perforación, ignorando el 75% de la armadura del objetivo.
-		"Sin embargo, no intentes usar una pistola para destruir un tanque."
-		'''
-}
-
-HighExplosiveBox: {
-	DisplayName: Caja de Munición de Alta Explosión
-	Tooltip:
-		'''
-		Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
-		La munición especial puede combinarse con el efecto de las balas originales.
-		Transforma las balas en explosivos de alto poder; provocan explosiones intensas al impactar.
-		"¡Hazlos volar todos!"
-		'''
-}
-
-DragonBreathBox: {
-	DisplayName: Caja de Munición aliento de Dragón
-	Tooltip:
-		'''
-		Mantén presionado para desplegar. Después de desplegar, haz clic derecho en la caja con un arma para llenar el cargador con munición especial.
-		La munición especial puede combinarse con el efecto de las balas originales.
-		Una combinación de magia y tecnología; las balas explotan al impactar, causando un chorro metálico que daña a muchos enemigos.
-		"Es la saliva de ese dragón, si quieres creerlo."
-		'''
-}
-
 HalibutItem: {
 	DisplayName: Fletán
 	Tooltip: ""
@@ -555,17 +496,6 @@ NeutronWand: {
 		'''
 }
 
-FadingGlory: {
-	DisplayName: Resentimiento
-	Tooltip:
-		'''
-		Un ataque cuerpo a cuerpo verdadero que, si impacta en un organismo, 
-		cura al jugador; si impacta en un organismo inorgánico, genera chispas
-		En combate no cuerpo a cuerpo, se lanzarán activamente las hojas de espada, 
-		generando una sombra errante que sigue al objetivo y libera un tentáculo de sangre al explotar
-		'''
-}
-
 NeutronScythe: {
 	DisplayName: Heraldo del agujero negro
 	Tooltip:
@@ -613,18 +543,6 @@ SnowQuayMK2: {
 		Clic izquierdo dispara ráfagas de tres tiros; el último es un carámbano pesado que estalla en cristales al impactar
 		Clic derecho libera una dispersión de carámbanos de corto alcance por sobrepresión
 		"La Víbora de Nieve de segunda generación ya no necesita precalentamiento"
-		'''
-}
-
-HghExplosiveBox: {
-	DisplayName: Caja de Munición de Alta Explosión
-	Tooltip:
-		'''
-		Mantén presionado para desplegar, después de desplegar, 
-		sostén el arma y haz clic derecho en la caja de munición para cargar munición especial en el cargador del arma
-		La munición especial puede combinarse con los efectos de las balas originales
-		La ojiva contendrá explosivos de alto poder, causando una pequeña explosión al impactar en el objetivo
-		"¡Hazlos volar!"
 		'''
 }
 
@@ -885,16 +803,6 @@ Dicoria: {
 		'''
 }
 
-GeminisTributeEX: {
-	DisplayName: Tributo a los Gemelos EX
-	Tooltip:
-		'''
-		Lanza una guadaña que gira rápidamente y corta de ida y vuelta
-		Al golpear a un enemigo genera dos guadañas compañeras adicionales
-		«Solo puede existir una personalidad dominante, y está claro que el Ojo de magmaflama ha ganado»
-		'''
-}
-
 DestroyersBlade: {
 	DisplayName: Hoja del Destructor
 	Tooltip:
@@ -919,11 +827,6 @@ StaffoftheDestroyer: {
 		'''
 }
 
-ForgedLash: {
-	DisplayName: Látigo forjado
-	Tooltip: «No conviene venderlo como chatarra»
-}
-
 CommandersClaw: {
 	DisplayName: Garra del comandante
 	Tooltip:
@@ -932,16 +835,6 @@ CommandersClaw: {
 		Cada impacto libera chispas metálicas, ondas de choque y una breve sacudida de pantalla
 		Pueden volar varias lanzas a la vez, clavándose en el terreno o quedando brevemente incrustadas en los enemigos golpeados
 		'''
-}
-
-DraedonsRemote: {
-	DisplayName: Mando a distancia de Draedon
-	Tooltip:
-		'''
-		Invoca el Trío Mecánico EX
-		Solo puede usarse de noche
-		'''
-	DontUseByDeath: ¡La dificultad actual no permite enviar señales!
 }
 
 CommandersStaffEX: {
@@ -956,11 +849,6 @@ CommandersStaffEX: {
 CommandersChainsawEX: {
 	DisplayName: Motosierra del comandante EX
 	Tooltip: «Desmenuza todo lo que se interponga en tu camino»
-}
-
-ForgedLashEX: {
-	DisplayName: Látigo forjado EX
-	Tooltip: Libera esferas térmicas con seguimiento al azotar
 }
 
 SoulofFrightEX: {
@@ -1044,15 +932,6 @@ WGGMK2Wilderness: {
 WGGWilderness: {
 	DisplayName: Turbinas eólicas en la naturaleza
 	Tooltip: ""
-}
-
-MedicalBox: {
-	DisplayName: Caja médica
-	Tooltip:
-		'''
-		Mantén pulsado para desplegarla en el suelo
-		Clic derecho en la caja desplegada para curarte
-		'''
 }
 
 TeslaElectromagneticTower: {
@@ -1648,61 +1527,6 @@ Thrower: {
 		Consume electricidad para lanzar objetos
 		Clic derecho para abrir el panel de control
 		'''
-}
-
-Elysium: {
-	DisplayName: Elysium
-	Tooltip:
-		'''
-		Mantén clic izquierdo para canalizar una serpiente sagrada
-		Clic derecho para convertir a residentes cercanos en uno de los doce discípulos, hasta 12
-		Tras el martirio de los discípulos se acumula poder de martirio; con 11 cargas, pulsa [ElysiumQKey] para martirizar a Juan e invocar el Apocalipsis
-		Antes de alcanzar 11 cargas, [ElysiumQKey] invoca un rayo divino
-		[c/AADDFF:Más discípulos aumentan el daño global, la probabilidad de crítico y la defensa; con 11 recuperas vida, con 12 ganas velocidad de movimiento]
-		[c/FF6666:Con los 12 reunidos: si tu vida cae por debajo del 30 %, Judas te traicionará y te matará al instante (10 s de enfriamiento)]
-		[c/FFD700:━━ Fase del Apocalipsis ━━]
-		[c/FFD700:[ElysiumQKey] Lanza un meteoro celestial (180 % de daño)]
-		[c/FFD700:[ElysiumRKey] Activa el Juicio de los últimos tres sellos (420 % de daño)]
-		[c/FFD700:Clic derecho para invocar a los cuatro jinetes en orden: Pestilencia, Guerra, Hambre, Muerte]
-		[c/FFAA55:Guerra aumenta daño y críticos; Hambre otorga gran penetración de armadura; Muerte amplifica todos los efectos del meteoro celestial y del jinete de Guerra]
-		'''
-	DiscipleName_0: Simón Pedro
-	DiscipleName_1: San Andrés
-	DiscipleName_2: Santiago
-	DiscipleName_3: San Juan
-	DiscipleName_4: Felipe
-	DiscipleName_5: Bartolomé
-	DiscipleName_6: Tomás
-	DiscipleName_7: San Mateo
-	DiscipleName_8: Santiago el Menor
-	DiscipleName_9: Tadeo
-	DiscipleName_10: Simón el Zelote
-	DiscipleName_11: Judas Iscariote
-	HorsemanName_0: Pestilencia
-	HorsemanName_1: Guerra
-	HorsemanName_2: Hambre
-	HorsemanName_3: Muerte
-	DiscipleFullText: Plazas de discípulos llenas
-	NoConvertTargetText: No hay residentes convertibles cerca
-	DiscipleFallbackText: Discípulo
-	RevelationText: Apocalipsis
-	RevelationEndText: Apocalipsis finalizado
-	CelestialMeteorText: Meteoro celestial
-	SealStarsText: Quinta estrella Sexta estrella Séptima estrella
-	HorsemenFullText: Los cuatro jinetes ya están reunidos
-	HorsemanArrivalText: Desciende el jinete de {0}
-	DiscipleJoinedText: "{0} se ha unido"
-	JudasBetrayalText: ¡La traición de Judas!
-	JudasDeathReasonText: "{0} fue traicionado por Judas"
-	DiscipleMartyrText: "{0} ha sido martirizado"
-	MartyrdomPowerText: Martirio {0}/11
-	Tooltip_DiscipleCountText: Discípulos actuales: {0}/12
-	Tooltip_NoDisciplesText: Aún no hay discípulos siguiéndote
-	Tooltip_MartyrdomPowerText: Martirio: {0} {1}/11
-	Tooltip_RevelationReadyText: Pulsa Q — Juan será martirizado, comienza el Apocalipsis
-	Tooltip_JudgmentActiveText: Juicio de los últimos tres sellos en curso
-	Tooltip_RevelationActiveText: Apocalipsis activo Q:Meteoro R:Juicio de sellos Clic der.:Jinetes {0}/4
-	Tooltip_JudasWarningText: Advertencia: la traición de Judas acecha a tu lado
 }
 
 SandevistansItem: {

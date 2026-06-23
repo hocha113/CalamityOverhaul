@@ -132,9 +132,6 @@ NeutronExplode.DisplayName: Explosao de Neutrons
 NeutronGlaiveBeam.DisplayName: Glaive de Neutrons
 NeutronGlaiveHeldAlt.DisplayName: Glaive de Neutrons - Alternativo
 NeutronsOrb.DisplayName: Orbe de Neutrons
-LigSpark.DisplayName: Faisca de Relampago
-SparkBall.DisplayName: Bola de Faisca
-SparkLightning.DisplayName: Relampago de Faisca
 StormArc.DisplayName: Arco da Tempestade
 StormLightning.DisplayName: Relampago da Tempestade
 CelestialDevourer.DisplayName: Devorador Celestial
@@ -258,7 +255,6 @@ ArcaneRiftProj.DisplayName: Fenda Arcana
 TruthLeapProj.DisplayName: Salto da Verdade
 RealityShockProj.DisplayName: Tremor da Realidade
 SpawnOldDukeWannaToFight.DisplayName: Duelo com o Velho Duque
-MachineTesla.DisplayName: Mecha Tesla
 CyberGlitchBoltProj.DisplayName: Raio de Falha Cibernetica
 CyberShockwaveProj.DisplayName: Onda de Choque Cibernetica
 CyberTraceBeamProj.DisplayName: Raio de Rastreamento Cibernetico
@@ -318,20 +314,7 @@ MarblePebbleProj.DisplayName: Seixo de Marmore
 MarbleShard.DisplayName: Fragmento de Marmore
 MarbleShockwave.DisplayName: Onda de Choque de Marmore
 SHPCSonicBoomProj.DisplayName: Estrondo Sonico SHPC
-SHPCQuantumNodeProj.DisplayName: No Quantico SHPC
-SHPCBalanceSparkProj.DisplayName: Faisca de Equilibrio SHPC
-SHPCCrystalFacetProj.DisplayName: Faceta de Cristal SHPC
-SHPCHarmonyPulseProj.DisplayName: Pulso Harmonico SHPC
-SHPCHoloDecoyProj.DisplayName: Isca Holografica SHPC
-SHPCPrecisionLanceProj.DisplayName: Lanca de Precisao SHPC
-SHPCPredictiveReticleProj.DisplayName: Mira Preditiva SHPC
-SHPCPlasmaBloomProj.DisplayName: Floracao de Plasma SHPC
-SHPCPlasmaNeedleProj.DisplayName: Agulha de Plasma SHPC
 SHPCVoltArcProj.DisplayName: Arco Volt SHPC
-SHPCAssaultDroneProj.DisplayName: Drone de Assalto SHPC
-SHPCBraceAnchorProj.DisplayName: Ancora de Suporte SHPC
-SHPCKineticBarrierProj.DisplayName: Barreira Cinetica SHPC
-SHPCRelayNodeProj.DisplayName: No de Rele SHPC
 SHPCQuantumLinkProj.DisplayName: Elo Quantico SHPC
 SHPCCrystalShardProj.DisplayName: Fragmento de Cristal SHPC
 SHPCHarmonyWispProj.DisplayName: Fogo-folha Harmonico SHPC

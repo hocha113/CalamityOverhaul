@@ -48,11 +48,6 @@ GhostFireWhip: {
 		'''
 }
 
-AllhallowsGoldWhip: {
-	DisplayName: Chicote de Ouro Divino
-	Tooltip: Na verdade ainda nao esta terminado
-}
-
 DivineSourceBlade: {
 	DisplayName: Lamina Aniquiladora da Fonte Divina
 	Tooltip:
@@ -132,16 +127,6 @@ HeavenfallLongbow: {
 		Mais uma vez, ele esculpira os anais da historia em sangue e poeira estelar.
 
 		'''
-}
-
-TestItem: {
-	DisplayName: Item de Teste
-	Tooltip: Hum... Voce nao deveria ter isso
-}
-
-BaseSingularity: {
-	DisplayName: Singularidade Base
-	Tooltip: Hum... Voce nao deveria ter isso
 }
 
 InfiniteIngot: {
@@ -418,50 +403,6 @@ SimpleMuzzleBrake: {
 		'''
 }
 
-AmmoBoxFire: {
-	DisplayName: Caixa de Municao Incendiaria
-	Tooltip:
-		'''
-		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
-		A municao especial pode ser sobreposta ao efeito da bala original
-		Torna a ogiva altamente inflamavel e explode quando atinge o alvo
-		"Isso nao e COD."
-		'''
-}
-
-ArmourPiercerBox: {
-	DisplayName: Caixa Perfuradora de Armaduras
-	Tooltip:
-		'''
-		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
-		A municao especial pode ser sobreposta ao efeito da bala original
-		Reveste a municao com uma camada de tungstenio para aumentar a capacidade de perfuracao de armadura da bala, ignorando 75% da armadura do alvo
-		"Mesmo assim, nao tente derrubar um tanque com uma pistola."
-		'''
-}
-
-HighExplosiveBox: {
-	DisplayName: Caixa de Alta Explosividade
-	Tooltip:
-		'''
-		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
-		A municao especial pode ser sobreposta ao efeito da bala original
-		Transforma a ogiva em um projetil de alta explosividade, disparando uma explosao violenta quando a bala atinge o alvo
-		"Exploda todos eles!"
-		'''
-}
-
-DragonBreathBox: {
-	DisplayName: Caixa de Sopro do Dragao
-	Tooltip:
-		'''
-		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador da arma
-		A municao especial pode ser sobreposta ao efeito da bala original
-		Uma combinacao de magia e tecnologia, balas atingem seus alvos e explodem em um jato de metal, causando dano a uma ampla gama de inimigos
-		"Isso e a saliva do dragao. Voce quer acreditar?"
-		'''
-}
-
 HalibutItem: {
 	DisplayName: Linguado
 	Tooltip: ""
@@ -560,15 +501,6 @@ NeutronWand: {
 		'''
 }
 
-FadingGlory: {
-	DisplayName: Gloria Desvanecente
-	Tooltip:
-		'''
-		Ataques corpo a corpo verdadeiros curam o jogador se o alvo for organico; se for inorganico, liberam muitas faiscas
-		Fora de corpo a corpo verdadeiro, dispara laminas ativamente; ao acertar, gera um corte fantasma perseguidor extra e libera um tentaculo de sangue na explosao
-		'''
-}
-
 NeutronScythe: {
 	DisplayName: Mensageiro do Buraco Negro
 	Tooltip:
@@ -615,17 +547,6 @@ SnowQuayMK2: {
 		Botao esquerdo dispara rajadas de tres tiros; o ultimo e uma estaca pesada que estoura em cristais ao acertar
 		Botao direito libera uma dispersao de estacas de curto alcance por sobrepressao
 		"A Naja da Neve de segunda geracao nao precisa mais de pre-aquecimento"
-		'''
-}
-
-HghExplosiveBox: {
-	DisplayName: Caixa de Municao de Alta Explosividade
-	Tooltip:
-		'''
-		Mantenha pressionado para implantar; apos a implantacao, segure a arma de fogo e clique com o botao direito na caixa de municao para encher o carregador
-		A municao especial pode acumular efeitos com a bala original
-		A ogiva contem explosivos de alta potencia e causa uma pequena explosao ao acertar o alvo
-		"Exploda todos eles!"
 		'''
 }
 
@@ -884,16 +805,6 @@ Dicoria: {
 		'''
 }
 
-GeminisTributeEX: {
-	DisplayName: Tributo dos Gemeos EX
-	Tooltip:
-		'''
-		Lanca uma foice que gira rapidamente e corta para frente e para tras
-		Acertar um inimigo gera duas foices companheiras adicionais
-		"Apenas uma personalidade dominante pode existir, e claramente, Olho de Chama Magma venceu."
-		'''
-}
-
 DestroyersBlade: {
 	DisplayName: Lamina do Destruidor
 	Tooltip:
@@ -918,11 +829,6 @@ StaffoftheDestroyer: {
 		'''
 }
 
-ForgedLash: {
-	DisplayName: Chicote Forjado
-	Tooltip: '''"Nao e adequado para ser comprado como ferro-velho."'''
-}
-
 CommandersClaw: {
 	DisplayName: Garra do Comandante
 	Tooltip:
@@ -930,16 +836,6 @@ CommandersClaw: {
 		Lance-os nos inimigos e restrinja-os.
 		O ataque furtivo gerara varias Granadas do Destruidor.
 		'''
-}
-
-DraedonsRemote: {
-	DisplayName: Controle Remoto de Draedon
-	Tooltip:
-		'''
-		Invoca o Trio Mecanico EX
-		So pode ser usado a noite
-		'''
-	DontUseByDeath: A dificuldade atual do jogo nao permite enviar sinais!
 }
 
 CommandersStaffEX: {
@@ -954,11 +850,6 @@ CommandersStaffEX: {
 CommandersChainsawEX: {
 	DisplayName: Moto Serra do Comandante EX
 	Tooltip: '''"Despedaca tudo em seu caminho"'''
-}
-
-ForgedLashEX: {
-	DisplayName: Chicote Forjado EX
-	Tooltip: Dispara bolas de calor homing ao chicotear
 }
 
 SoulofFrightEX: {
@@ -1042,15 +933,6 @@ WGGMK2Wilderness: {
 WGGWilderness: {
 	DisplayName: Turbinas Eolicas no Ermo
 	Tooltip: ""
-}
-
-MedicalBox: {
-	DisplayName: Caixa Medica
-	Tooltip:
-		'''
-		Mantenha pressionado para implantar no chao
-		Clique com o botao direito na caixa medica apos a implantacao para se curar
-		'''
 }
 
 TeslaElectromagneticTower: {
@@ -1645,61 +1527,6 @@ Thrower: {
 		Consome energia para arremessar itens
 		Clique direito para abrir o painel de controle
 		'''
-}
-
-Elysium: {
-	DisplayName: Elisio
-	Tooltip:
-		'''
-		Segure o botao esquerdo para canalizar uma serpente sagrada
-		Clique direito para converter moradores da cidade proximos em um dos Doze Discipulos (ate 12)
-		Quando discipulos sao martirizados, eles acumulam energia de Martirio; com 11 pilhas, pressione [ElysiumQKey] para martirizar Joao e invocar a Revelacao
-		Usar [ElysiumQKey] antes de atingir 11 pilhas invoca um raio divino
-		[c/AADDFF:Mais discipulos concedem aumento global de dano, chance de acerto critico e defesa; 11 discipulos restauram vida, 12 concedem bonus de velocidade de movimento]
-		[c/FF6666:Com todos os 12 reunidos: se sua vida cair abaixo de 30%, Judas o traira e matara instantaneamente (10s de recarga)]
-		[c/FFD700:━━ Fase da Revelacao ━━]
-		[c/FFD700:[ElysiumQKey] Soltar um Meteoro Celestial (180% de dano)]
-		[c/FFD700:[ElysiumRKey] Desencadear o Julgamento dos Tres Ultimos Selos (420% de dano)]
-		[c/FFD700:Clique direito para invocar os Quatro Cavaleiros em ordem: Peste, Guerra, Fome, Morte]
-		[c/FFAA55:Guerra aumenta dano e crits; Fome concede enorme penetracao de armadura; Morte amplifica todos os efeitos de Meteoro e Cavaleiro da Guerra]
-		'''
-	DiscipleName_0: Simao Pedro
-	DiscipleName_1: Santo Andre
-	DiscipleName_2: Tiago
-	DiscipleName_3: Sao Joao
-	DiscipleName_4: Filipe
-	DiscipleName_5: Bartolomeu
-	DiscipleName_6: Tomas
-	DiscipleName_7: Sao Mateus
-	DiscipleName_8: Tiago Menor
-	DiscipleName_9: Tadeu
-	DiscipleName_10: Simao, o Zelote
-	DiscipleName_11: Judas Iscariotes
-	HorsemanName_0: Peste
-	HorsemanName_1: Guerra
-	HorsemanName_2: Fome
-	HorsemanName_3: Morte
-	DiscipleFullText: Slots de discipulos cheios
-	NoConvertTargetText: Nenhum morador conversivel proximo
-	DiscipleFallbackText: Discipulo
-	RevelationText: Revelacao
-	RevelationEndText: Revelacao terminada
-	CelestialMeteorText: Meteoro Celestial
-	SealStarsText: Quinta Estrela Sexta Estrela Setima Estrela
-	HorsemenFullText: Todos os Quatro Cavaleiros invocados
-	HorsemanArrivalText: Cavaleiro de {0} desce
-	DiscipleJoinedText: "{0} se juntou"
-	JudasBetrayalText: Traicao de Judas!
-	JudasDeathReasonText: "{0} foi traido por Judas"
-	DiscipleMartyrText: "{0} foi martirizado"
-	MartyrdomPowerText: Martirio {0}/11
-	Tooltip_DiscipleCountText: Discipulos Atuais: {0}/12
-	Tooltip_NoDisciplesText: Nenhum discipulo seguindo
-	Tooltip_MartyrdomPowerText: Martirio: {0} {1}/11
-	Tooltip_RevelationReadyText: Pressione Q — Joao sera martirizado, Revelacao comeca
-	Tooltip_JudgmentActiveText: Julgamento dos Tres Ultimos Selos em andamento
-	Tooltip_RevelationActiveText: Revelacao ativa Q:Meteoro R:Julgamento dos Selos RMB:Cavaleiros {0}/4
-	Tooltip_JudasWarningText: Aviso: A traicao de Judas esta ao seu lado
 }
 
 SandevistansItem: {

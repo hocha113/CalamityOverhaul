@@ -48,11 +48,6 @@ GhostFireWhip: {
 		'''
 }
 
-AllhallowsGoldWhip: {
-	DisplayName: Allhallows Gold Whip
-	Tooltip: It's actually not finished yet
-}
-
 DivineSourceBlade: {
 	DisplayName: Divine Source Blade
 	Tooltip:
@@ -132,16 +127,6 @@ HeavenfallLongbow: {
 		Once more, it shall carve the annals of history in blood and stardust.
 
 		'''
-}
-
-TestItem: {
-	DisplayName: Text Item
-	Tooltip: Um... You shouldn't have it
-}
-
-BaseSingularity: {
-	DisplayName: Base Singularity
-	Tooltip: Um... You shouldn't have it
 }
 
 InfiniteIngot: {
@@ -418,50 +403,6 @@ SimpleMuzzleBrake: {
 		'''
 }
 
-AmmoBoxFire: {
-	DisplayName: Burning Ammo Box
-	Tooltip:
-		'''
-		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
-		Special ammo can be overlaid with the original bullet effect
-		It makes the warhead highly flammable and explodes when it hits the target
-		"This isn't cod."
-		'''
-}
-
-ArmourPiercerBox: {
-	DisplayName: Armour Piercer Box
-	Tooltip:
-		'''
-		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
-		Special ammo can be overlaid with the original bullet effect
-		Coat the ammunition with tungsten gold to increase the bullet's armor breaking ability, ignoring the target's 75% armor
-		"Even so, don't try to shoot down a tank with a pistol."
-		'''
-}
-
-HighExplosiveBox: {
-	DisplayName: High Explosive Box
-	Tooltip:
-		'''
-		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
-		Special ammo can be overlaid with the original bullet effect
-		Turn the warhead into a high-explosive projectile, firing a violent explosion when the bullet hits the target
-		"Blow them all up!"
-		'''
-}
-
-DragonBreathBox: {
-	DisplayName: Dragon Breath Box
-	Tooltip:
-		'''
-		Hold to deploy. Once deployed, right-click the ammo box while holding a firearm to load special ammunition into the magazine
-		Special ammo can be overlaid with the original bullet effect
-		A combination of magic and technology, bullets hit their targets and explode into a jet of metal, causing damage to a wide range of enemies
-		"This is the dragon's saliva. Do you want to believe it?"
-		'''
-}
-
 HalibutItem: {
 	DisplayName: Halibut
 	Tooltip: ""
@@ -564,18 +505,6 @@ NeutronWand: {
 		'''
 }
 
-FadingGlory: {
-	DisplayName: Fading Glory
-	Tooltip:
-		'''
-		True melee hits a target that heals the player if the target is an organism, 
-		and releases a lot of sparks if the target is non-organism
-		Non-true proximity battles will actively fire the blade, 
-		which will generate an extra bell chasing ghost cut after 
-		hitting the target and release a blood tentacle when exploding
-		'''
-}
-
 NeutronScythe: {
 	DisplayName: Blackhole Messenger
 	Tooltip:
@@ -622,17 +551,6 @@ SnowQuayMK2: {
 		Left-click fires three-round bursts; the final round is a heavy spike that bursts into crystals
 		Right-click vents an overpressure scatter of short-ranged icicles
 		"The second-generation Snow Viper no longer needs preheating"
-		'''
-}
-
-HghExplosiveBox: {
-	DisplayName: High Explosive Ammo Box
-	Tooltip:
-		'''
-		Hold to deploy. Once deployed, right-click the ammo box with a firearm to load special ammunition into the magazine.
-		Special ammo can stack effects with regular bullets.
-		The warhead contains high explosives, creating a small explosion on hit.
-		"Blow them all to the skies!"
 		'''
 }
 
@@ -894,16 +812,6 @@ Dicoria: {
 		'''
 }
 
-GeminisTributeEX: {
-	DisplayName: Twins' Tribute EX
-	Tooltip:
-		'''
-		Throws a fast-revolving scythe that slashes back and forth
-		Hitting an enemy spawns two additional companion scythes
-		"Only one dominant personality can exist, and clearly, Magmaflame Eye has won."
-		'''
-}
-
 DestroyersBlade: {
 	DisplayName: Destroyer's Blade
 	Tooltip:
@@ -928,11 +836,6 @@ StaffoftheDestroyer: {
 		'''
 }
 
-ForgedLash: {
-	DisplayName: Forged Lash
-	Tooltip: '''"Not suitable for being bought as scrap iron."'''
-}
-
 CommandersClaw: {
 	DisplayName: Commander's Claw
 	Tooltip:
@@ -941,16 +844,6 @@ CommandersClaw: {
 		Each impact erupts with metallic sparks, shockwaves, and a sharp screen shake.
 		Multiple spears can fly at once, embedding into terrain on a wall hit and pinning to enemies on a strike.
 		'''
-}
-
-DraedonsRemote: {
-	DisplayName: Draedon's Remote
-	Tooltip:
-		'''
-		Summons the EX Mechanical Trio
-		Can only be used at night
-		'''
-	DontUseByDeath: The current game difficulty does not allow sending signals!
 }
 
 CommandersStaffEX: {
@@ -965,11 +858,6 @@ CommandersStaffEX: {
 CommandersChainsawEX: {
 	DisplayName: Commander's Chainsaw EX
 	Tooltip: '''"Shreds everything in your path"'''
-}
-
-ForgedLashEX: {
-	DisplayName: Forged Lash EX
-	Tooltip: Launches homing heat orbs while you lash
 }
 
 SoulofFrightEX: {
@@ -1053,15 +941,6 @@ WGGMK2Wilderness: {
 WGGWilderness: {
 	DisplayName: Wind Turbines In The Wilderness
 	Tooltip: ""
-}
-
-MedicalBox: {
-	DisplayName: Medical Box
-	Tooltip:
-		'''
-		Press and hold to deploy to the ground
-		Right-click on the medical box after deployment to heal yourself
-		'''
 }
 
 TeslaElectromagneticTower: {
@@ -1657,61 +1536,6 @@ Thrower: {
 		Consumes power to throw items
 		Right-click to open the control panel
 		'''
-}
-
-Elysium: {
-	DisplayName: Elysium
-	Tooltip:
-		'''
-		Hold left-click to channel a holy serpent
-		Right-click to convert nearby town residents into one of the Twelve Disciples (up to 12)
-		When disciples are martyred they build Martyrdom energy; at 11 stacks, press [ElysiumQKey] to martyr John and invoke the Revelation
-		Using [ElysiumQKey] before reaching 11 stacks calls down a divine lightning strike instead
-		[c/AADDFF:More disciples grant increasing global damage, critical strike chance, and defense; 11 disciples restores life, 12 grants bonus move speed]
-		[c/FF6666:With all 12 gathered: if your health falls below 30%, Judas will betray and instantly kill you (10s cooldown)]
-		[c/FFD700:━━ Revelation Phase ━━]
-		[c/FFD700:[ElysiumQKey] Drop a Celestial Meteor (180% damage)]
-		[c/FFD700:[ElysiumRKey] Trigger the Last Three Seals Judgment (420% damage)]
-		[c/FFD700:Right-click to summon the Four Horsemen in order: Pestilence, War, Famine, Death]
-		[c/FFAA55:War boosts damage and crits; Famine grants massive armor penetration; Death amplifies all Meteor and War Horseman effects]
-		'''
-	DiscipleName_0: Simon Peter
-	DiscipleName_1: Saint Andrew
-	DiscipleName_2: James
-	DiscipleName_3: Saint John
-	DiscipleName_4: Philip
-	DiscipleName_5: Bartholomew
-	DiscipleName_6: Thomas
-	DiscipleName_7: Saint Matthew
-	DiscipleName_8: James the Lesser
-	DiscipleName_9: Thaddaeus
-	DiscipleName_10: Simon the Zealot
-	DiscipleName_11: Judas Iscariot
-	HorsemanName_0: Pestilence
-	HorsemanName_1: War
-	HorsemanName_2: Famine
-	HorsemanName_3: Death
-	DiscipleFullText: Disciple slots full
-	NoConvertTargetText: No convertible residents nearby
-	DiscipleFallbackText: Disciple
-	RevelationText: Revelation
-	RevelationEndText: Revelation ended
-	CelestialMeteorText: Celestial Meteor
-	SealStarsText: Fifth Star Sixth Star Seventh Star
-	HorsemenFullText: All Four Horsemen summoned
-	HorsemanArrivalText: Horseman of {0} descends
-	DiscipleJoinedText: "{0} has joined"
-	JudasBetrayalText: Judas's Betrayal!
-	JudasDeathReasonText: "{0} was betrayed by Judas"
-	DiscipleMartyrText: "{0} was martyred"
-	MartyrdomPowerText: Martyrdom {0}/11
-	Tooltip_DiscipleCountText: Current Disciples: {0}/12
-	Tooltip_NoDisciplesText: No disciples following
-	Tooltip_MartyrdomPowerText: Martyrdom: {0} {1}/11
-	Tooltip_RevelationReadyText: Press Q — John will be martyred, Revelation begins
-	Tooltip_JudgmentActiveText: Last Three Seals judgment in progress
-	Tooltip_RevelationActiveText: Revelation active Q:Meteor R:Seal Judgment RMB:Horsemen {0}/4
-	Tooltip_JudasWarningText: Warning: Judas's betrayal lurks beside you
 }
 
 SandevistansItem: {

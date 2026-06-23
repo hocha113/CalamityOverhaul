@@ -132,9 +132,6 @@ NeutronExplode.DisplayName: Neutronenexplosion
 NeutronGlaiveBeam.DisplayName: Neutronengleve
 NeutronGlaiveHeldAlt.DisplayName: Neutronengleve · Ableitung
 NeutronsOrb.DisplayName: Neutronenkugel
-LigSpark.DisplayName: Lichtbogen
-SparkBall.DisplayName: Lichtbogenkugel
-SparkLightning.DisplayName: Lichtbogenblitz
 StormArc.DisplayName: Sturmbogen
 StormLightning.DisplayName: Sturmblitz
 CelestialDevourer.DisplayName: Himmlischer Verschlinger
@@ -258,7 +255,6 @@ ArcaneRiftProj.DisplayName: Arkane Riss
 TruthLeapProj.DisplayName: Wahrheitssprung
 RealityShockProj.DisplayName: Realitätsbeben
 SpawnOldDukeWannaToFight.DisplayName: Alter Herzog — Übungskampf
-MachineTesla.DisplayName: Tesla-Mech
 CyberGlitchBoltProj.DisplayName: Kyber-Glitch-Blitz
 CyberShockwaveProj.DisplayName: Kyber-Schockwelle
 CyberTraceBeamProj.DisplayName: Kyber-Verfolgungsstrahl
@@ -318,20 +314,7 @@ MarblePebbleProj.DisplayName: Marmorkiesel
 MarbleShard.DisplayName: Marmorsplitter
 MarbleShockwave.DisplayName: Marmor-Schockwelle
 SHPCSonicBoomProj.DisplayName: Schallstoß
-SHPCQuantumNodeProj.DisplayName: Quantenknoten
-SHPCBalanceSparkProj.DisplayName: Gleichgewichtsfunken
-SHPCCrystalFacetProj.DisplayName: Kristallfacette
-SHPCHarmonyPulseProj.DisplayName: Harmoniepuls
-SHPCHoloDecoyProj.DisplayName: Holografischer Köder
-SHPCPrecisionLanceProj.DisplayName: Präzisionslanze
-SHPCPredictiveReticleProj.DisplayName: Prädiktives Fadenkreuz
-SHPCPlasmaBloomProj.DisplayName: Plasmabluhte
-SHPCPlasmaNeedleProj.DisplayName: Plasmanadel
 SHPCVoltArcProj.DisplayName: Voltbogen
-SHPCAssaultDroneProj.DisplayName: Angriffsdrohne
-SHPCBraceAnchorProj.DisplayName: Stützanker
-SHPCKineticBarrierProj.DisplayName: Kinetische Barriere
-SHPCRelayNodeProj.DisplayName: Relaisknoten
 SHPCQuantumLinkProj.DisplayName: Quantenverbindung
 SHPCCrystalShardProj.DisplayName: Kristallsplitter
 SHPCHarmonyWispProj.DisplayName: Harmonie-Irrlicht

@@ -48,11 +48,6 @@ GhostFireWhip: {
 		'''
 }
 
-AllhallowsGoldWhip: {
-	DisplayName: Goldene Peitsche
-	Tooltip: Sie ist noch nicht fertiggestellt
-}
-
 DivineSourceBlade: {
 	DisplayName: Göttliche Energie-Klinge
 	Tooltip:
@@ -129,16 +124,6 @@ HeavenfallLongbow: {
 		Der Gottesmörderbogen wird wieder auftauchen, inmitten der Symphonie der Sterne, und die Geschichte wird erneut in Blut und Sternenstaub geschrieben.
 
 		'''
-}
-
-TestItem: {
-	DisplayName: Testobjekt
-	Tooltip: Hm... du solltest es nicht besitzen
-}
-
-BaseSingularity: {
-	DisplayName: Basis-Singularität
-	Tooltip: Hm... du solltest es nicht besitzen
 }
 
 InfiniteIngot: {
@@ -410,49 +395,6 @@ SimpleMuzzleBrake: {
 		'''
 }
 
-AmmoBoxFire: {
-	DisplayName: Brandmunitionskiste
-	Tooltip:
-		'''
-		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
-		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
-		Macht die Geschossspitzen hochentzündlich, so dass sie beim Aufprall explodieren
-		'''
-}
-
-ArmourPiercerBox: {
-	DisplayName: Panzerbrecher-Munitionskiste
-	Tooltip:
-		'''
-		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
-		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
-		Beschichtet die Geschossspitzen mit Wolfram, erhöht die Durchschlagskraft der Kugeln, ignoriert 75% der Rüstung des Ziels
-		"Aber versuche trotzdem nicht, einen Panzer mit einer Pistole zu zerstören"
-		'''
-}
-
-HighExplosiveBox: {
-	DisplayName: Hochexplosive Munitionskiste
-	Tooltip:
-		'''
-		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
-		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
-		Verwandelt die Geschossspitzen in hochexplosive Bomben, die bei Treffern eine heftige Explosion auslösen
-		"Lasst sie alle explodieren!"
-		'''
-}
-
-DragonBreathBox: {
-	DisplayName: Drachenatem-Munitionskiste
-	Tooltip:
-		'''
-		Halte zum Bereitstellen gedrückt; nach dem Bereitstellen Rechtsklick mit Schusswaffe auf Munitionskiste, um spezielle Munition in das Magazin der Schusswaffe zu laden
-		Spezielle Munition kann mit den Originalgeschossen kombiniert werden
-		Fusion von Magie und Technologie; Kugeln lösen nach dem Aufprall einen metallischen Strahl aus, der großen Schaden bei einer Vielzahl von Feinden verursacht
-		"Ist das der Speichel des Drachen, an den du glauben möchtest?"
-		'''
-}
-
 HalibutItem: {
 	DisplayName: Heilbutt
 	Tooltip: ""
@@ -551,15 +493,6 @@ NeutronWand: {
 		'''
 }
 
-FadingGlory: {
-	DisplayName: Verblassende Herrlichkeit
-	Tooltip:
-		'''
-		Bei echten Nahkämpfen heilt es den Spieler, wenn das Ziel ein Organismus ist, oder es löst viele Funken aus, wenn das Ziel anorganisch ist
-		Bei nicht echten Nahkämpfen feuert es automatisch Schwertklingen ab, die das Ziel durchdringen und beim Explodieren zusätzliche Seelenfragmente und einen Bluttentakel freisetzen
-		'''
-}
-
 NeutronScythe: {
 	DisplayName: Schwarzloch-Bote
 	Tooltip:
@@ -606,18 +539,6 @@ SnowQuayMK2: {
 		Linksklick feuert Drei-Schuss-Bursts; die letzte Kugel ist ein schwerer Zapfen, der beim Treffer in Kristalle zerspringt
 		Rechtsklick entlädt einen Überdruck-Streuschuss kurzreichweitiger Eiszapfen
 		„Die Schneequay der zweiten Generation braucht kein Vorheizen mehr“
-		'''
-}
-
-HghExplosiveBox: {
-	DisplayName: Sprengstoffkiste
-	Tooltip:
-		'''
-		Zum Bereitstellen gedrückt halten. Nach dem Einsatz mit einer Waffe das 
-		Munitionslager mit einem Rechtsklick anklicken, um spezielle Munition ins Magazin zu laden.
-		Spezialmunition kann mit der Wirkung von normalen Kugeln kombiniert werden.
-		Die Geschossspitzen enthalten hochexplosiven Sprengstoff und erzeugen beim Treffer eine kleine Explosion.
-		"Schieß sie in den Himmel!"
 		'''
 }
 
@@ -872,16 +793,6 @@ Dicoria: {
 		'''
 }
 
-GeminisTributeEX: {
-	DisplayName: Zwillings-Tribut EX
-	Tooltip:
-		'''
-		Wirft eine schnell hin und her schneidende Sense
-		Bei Treffer entstehen zwei Begleitsensen
-		„Es kann nur eine dominante Persönlichkeit geben – offensichtlich hat das Magmaflammen-Auge gewonnen“
-		'''
-}
-
 DestroyersBlade: {
 	DisplayName: Zerstörer-Klinge
 	Tooltip:
@@ -905,11 +816,6 @@ StaffoftheDestroyer: {
 		'''
 }
 
-ForgedLash: {
-	DisplayName: Geschmiedete Peitsche
-	Tooltip: „Nicht als Schrott verkaufbar“
-}
-
 CommandersClaw: {
 	DisplayName: Kommandeur-Klaue
 	Tooltip:
@@ -918,16 +824,6 @@ CommandersClaw: {
 		Jeder Treffer entfesselt metallische Funken, Schockwellen und ein kurzes Bildschirmbeben
 		Mehrere Speere können gleichzeitig fliegen, sich in Gelände bohren oder getroffene Gegner kurzzeitig durchbohrt festhalten
 		'''
-}
-
-DraedonsRemote: {
-	DisplayName: Draedons Fernbedienung
-	Tooltip:
-		'''
-		Beschwört das EX-Mechanische-Trio
-		Nur nachts verwendbar
-		'''
-	DontUseByDeath: Die aktuelle Spielschwierigkeit erlaubt kein Senden von Signalen!
 }
 
 CommandersStaffEX: {
@@ -942,11 +838,6 @@ CommandersStaffEX: {
 CommandersChainsawEX: {
 	DisplayName: Kommandeur-Kettensäge EX
 	Tooltip: „Zerkleinert alles, was dir im Weg steht“
-}
-
-ForgedLashEX: {
-	DisplayName: Geschmiedete Peitsche EX
-	Tooltip: Feuert beim Peitschen verfolgende Wärmebälle ab
 }
 
 SoulofFrightEX: {
@@ -1030,15 +921,6 @@ WGGMK2Wilderness: {
 WGGWilderness: {
 	DisplayName: Windkraftanlage in der Wildnis
 	Tooltip: ""
-}
-
-MedicalBox: {
-	DisplayName: Medizinkiste
-	Tooltip:
-		'''
-		Gedrückt halten zum Ausrollen auf den Boden
-		Rechtsklick auf ausgerollte Kiste heilt dich
-		'''
 }
 
 TeslaElectromagneticTower: {
@@ -1627,61 +1509,6 @@ Thrower: {
 		Verbraucht Strom zum Werfen von Gegenständen
 		Rechtsklick öffnet das Bedienfeld
 		'''
-}
-
-Elysium: {
-	DisplayName: Elysium
-	Tooltip:
-		'''
-		Linksklick hält eine heilige Riesenschlange am Laufen
-		Rechtsklick bekehrt nahe Bewohner zu einem der zwölf Jünger, maximal 12
-		Nach Martyrium der Jünger sammelt sich Martyriumskraft; bei 11 Stapeln [ElysiumQKey] drücken, damit Johannes martyriert wird und die Offenbarung beginnt
-		Vor 11 Stapeln ruft [ElysiumQKey] einen göttlichen Blitz herab
-		[c/AADDFF:Mehr Jünger erhöhen Gesamtschaden, Krit-Chance und Verteidigung; bei 11 zusätzliche Lebensregeneration, bei 12 deutlich höhere Bewegungsgeschwindigkeit]
-		[c/FF6666:Bei allen 12: Fällt deine Gesundheit unter 30 %, ersticht dich Judas von hinten (10 s Abklingzeit)]
-		[c/FFD700:━━ Offenbarungsphase ━━]
-		[c/FFD700:[ElysiumQKey] Himmelsmeteorit abwerfen (180 % Schaden)]
-		[c/FFD700:[ElysiumRKey] Urteil der letzten drei Siegel (420 % Schaden)]
-		[c/FFD700:Rechtsklick beschwört nacheinander die vier Reiter: Pest, Krieg, Hunger, Tod]
-		[c/FFAA55:Kriegsreiter erhöht Schaden und Krit; Hungerreiter gewährt hohe Rüstungsdurchdringung; Todesreiter verstärkt Himmelsmeteoriten und alle Effekte des Kriegsreiters]
-		'''
-	DiscipleName_0: Simon Petrus
-	DiscipleName_1: Andreas
-	DiscipleName_2: Jakobus
-	DiscipleName_3: Johannes
-	DiscipleName_4: Philippus
-	DiscipleName_5: Bartholomäus
-	DiscipleName_6: Thomas
-	DiscipleName_7: Matthäus
-	DiscipleName_8: Jakobus der Jüngere
-	DiscipleName_9: Thaddäus
-	DiscipleName_10: Simon
-	DiscipleName_11: Judas
-	HorsemanName_0: Pest
-	HorsemanName_1: Krieg
-	HorsemanName_2: Hunger
-	HorsemanName_3: Tod
-	DiscipleFullText: Jüngerplätze voll
-	NoConvertTargetText: Keine bekehrbaren Bewohner in der Nähe
-	DiscipleFallbackText: Jünger
-	RevelationText: Offenbarung
-	RevelationEndText: Offenbarung beendet
-	CelestialMeteorText: Himmelsmeteorit
-	SealStarsText: Fünfter Stern Sechster Stern Siebter Stern
-	HorsemenFullText: Alle vier Reiter versammelt
-	HorsemanArrivalText: Reiter des {0} erscheint
-	DiscipleJoinedText: "{0} ist beigetreten"
-	JudasBetrayalText: Judas' Verrat!
-	JudasDeathReasonText: "{0} wurde von Judas verraten"
-	DiscipleMartyrText: "{0} ist martyriert worden"
-	MartyrdomPowerText: Martyriumskraft {0}/11
-	Tooltip_DiscipleCountText: Aktuelle Jünger: {0}/12
-	Tooltip_NoDisciplesText: Noch keine Jünger folgen dir
-	Tooltip_MartyrdomPowerText: Martyriumskraft: {0} {1}/11
-	Tooltip_RevelationReadyText: Q drücken — Johannes wird martyriert, die Offenbarung beginnt
-	Tooltip_JudgmentActiveText: Urteil der letzten drei Siegel läuft, warte auf den Abschluss
-	Tooltip_RevelationActiveText: Offenbarung aktiv Q:Meteorit R:Siegel-Urteil RMB:Reiter {0}/4
-	Tooltip_JudasWarningText: Warnung: Judas' Verrat lauert an deiner Seite
 }
 
 SandevistansItem: {

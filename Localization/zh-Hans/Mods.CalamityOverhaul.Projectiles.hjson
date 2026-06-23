@@ -132,9 +132,6 @@ NeutronExplode.DisplayName: 中子爆破
 NeutronGlaiveBeam.DisplayName: 中子战刃
 NeutronGlaiveHeldAlt.DisplayName: 中子战刃·派生
 NeutronsOrb.DisplayName: 中子球
-LigSpark.DisplayName: 电光
-SparkBall.DisplayName: 电光球
-SparkLightning.DisplayName: 电光之雷
 StormArc.DisplayName: 风暴电弧
 StormLightning.DisplayName: 风暴之雷
 CelestialDevourer.DisplayName: 天神吞噬者
@@ -258,7 +255,6 @@ ArcaneRiftProj.DisplayName: 奥术裂隙
 TruthLeapProj.DisplayName: 真理跃迁
 RealityShockProj.DisplayName: 现实震荡
 SpawnOldDukeWannaToFight.DisplayName: 生成老公爵切磋
-MachineTesla.DisplayName: 特斯拉机型
 CyberGlitchBoltProj.DisplayName: 赛博故障电矢
 CyberShockwaveProj.DisplayName: 赛博冲击波
 CyberTraceBeamProj.DisplayName: 赛博追踪射线
@@ -318,20 +314,7 @@ MarblePebbleProj.DisplayName: 大理石卵石
 MarbleShard.DisplayName: 大理石碎片
 MarbleShockwave.DisplayName: 大理石冲击波
 SHPCSonicBoomProj.DisplayName: SHPC 音爆
-SHPCQuantumNodeProj.DisplayName: SHPC 量子节点
-SHPCBalanceSparkProj.DisplayName: SHPC 平衡火花
-SHPCCrystalFacetProj.DisplayName: SHPC 水晶切面
-SHPCHarmonyPulseProj.DisplayName: SHPC 谐振脉冲
-SHPCHoloDecoyProj.DisplayName: SHPC 全息诱饵
-SHPCPrecisionLanceProj.DisplayName: SHPC 精准长矛
-SHPCPredictiveReticleProj.DisplayName: SHPC 预测准星
-SHPCPlasmaBloomProj.DisplayName: SHPC 等离子绽放
-SHPCPlasmaNeedleProj.DisplayName: SHPC 等离子针
 SHPCVoltArcProj.DisplayName: SHPC 伏特电弧
-SHPCAssaultDroneProj.DisplayName: SHPC 突击无人机
-SHPCBraceAnchorProj.DisplayName: SHPC 支撑锚点
-SHPCKineticBarrierProj.DisplayName: SHPC 动能屏障
-SHPCRelayNodeProj.DisplayName: SHPC 中继节点
 SHPCQuantumLinkProj.DisplayName: SHPC 量子链接
 SHPCCrystalShardProj.DisplayName: SHPC 水晶碎片
 SHPCHarmonyWispProj.DisplayName: SHPC 谐振灵火

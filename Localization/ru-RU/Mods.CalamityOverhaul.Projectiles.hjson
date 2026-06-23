@@ -132,9 +132,6 @@ NeutronExplode.DisplayName: Нейтронный взрыв
 NeutronGlaiveBeam.DisplayName: Нейтронная глефа
 NeutronGlaiveHeldAlt.DisplayName: Нейтронная глефа (Вар.)
 NeutronsOrb.DisplayName: Нейтронная сфера
-LigSpark.DisplayName: Искра
-SparkBall.DisplayName: Искровая сфера
-SparkLightning.DisplayName: Искровая молния
 StormArc.DisplayName: Дуга шторма
 StormLightning.DisplayName: Молния шторма
 CelestialDevourer.DisplayName: Божественный пожиратель
@@ -258,7 +255,6 @@ ArcaneRiftProj.DisplayName: Арканный разлом
 TruthLeapProj.DisplayName: Скачок истины
 RealityShockProj.DisplayName: Реальностная дрожь
 SpawnOldDukeWannaToFight.DisplayName: Поединок со Старым герцогом
-MachineTesla.DisplayName: Машина Тесла
 CyberGlitchBoltProj.DisplayName: Кибер-болт глюка
 CyberShockwaveProj.DisplayName: Кибер-ударная волна
 CyberTraceBeamProj.DisplayName: Кибер-луч слежения
@@ -318,20 +314,7 @@ MarblePebbleProj.DisplayName: Мраморная галька
 MarbleShard.DisplayName: Мраморный осколок
 MarbleShockwave.DisplayName: Мраморная ударная волна
 SHPCSonicBoomProj.DisplayName: Звуковой удар SHPC
-SHPCQuantumNodeProj.DisplayName: Квантовый узел SHPC
-SHPCBalanceSparkProj.DisplayName: Искра равновесия SHPC
-SHPCCrystalFacetProj.DisplayName: Кристальная грань SHPC
-SHPCHarmonyPulseProj.DisplayName: Гармонический импульс SHPC
-SHPCHoloDecoyProj.DisplayName: Голографическая приманка SHPC
-SHPCPrecisionLanceProj.DisplayName: Точное копьё SHPC
-SHPCPredictiveReticleProj.DisplayName: Предиктивная сетка SHPC
-SHPCPlasmaBloomProj.DisplayName: Плазменное цветение SHPC
-SHPCPlasmaNeedleProj.DisplayName: Плазменная игла SHPC
 SHPCVoltArcProj.DisplayName: Вольтовая дуга SHPC
-SHPCAssaultDroneProj.DisplayName: Штурмовой дрон SHPC
-SHPCBraceAnchorProj.DisplayName: Опорный якорь SHPC
-SHPCKineticBarrierProj.DisplayName: Кинетический барьер SHPC
-SHPCRelayNodeProj.DisplayName: Релейный узел SHPC
 SHPCQuantumLinkProj.DisplayName: Квантовая связь SHPC
 SHPCCrystalShardProj.DisplayName: Кристальный осколок SHPC
 SHPCHarmonyWispProj.DisplayName: Гармоническое болотное огонько SHPC

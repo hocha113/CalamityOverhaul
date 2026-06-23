@@ -132,9 +132,6 @@ NeutronExplode.DisplayName: Explosion à neutrons
 NeutronGlaiveBeam.DisplayName: Glaive à neutrons
 NeutronGlaiveHeldAlt.DisplayName: Glaive à neutrons · Dérivé
 NeutronsOrb.DisplayName: Orbe à neutrons
-LigSpark.DisplayName: Étincelle électrique
-SparkBall.DisplayName: Orbe électrique
-SparkLightning.DisplayName: Foudre électrique
 StormArc.DisplayName: Arc de tempête
 StormLightning.DisplayName: Foudre de tempête
 CelestialDevourer.DisplayName: Dévoreur céleste
@@ -258,7 +255,6 @@ ArcaneRiftProj.DisplayName: Faille arcanique
 TruthLeapProj.DisplayName: Saut de vérité
 RealityShockProj.DisplayName: Tremblement de réalité
 SpawnOldDukeWannaToFight.DisplayName: Vieux Duc — combat d'entraînement
-MachineTesla.DisplayName: Mech Tesla
 CyberGlitchBoltProj.DisplayName: Éclair cyber glitch
 CyberShockwaveProj.DisplayName: Onde de choc cyber
 CyberTraceBeamProj.DisplayName: Rayon de traçage cyber
@@ -318,20 +314,7 @@ MarblePebbleProj.DisplayName: Galet de marbre
 MarbleShard.DisplayName: Éclat de marbre
 MarbleShockwave.DisplayName: Onde de choc de marbre
 SHPCSonicBoomProj.DisplayName: Détonation sonique SHPC
-SHPCQuantumNodeProj.DisplayName: Nœud quantique SHPC
-SHPCBalanceSparkProj.DisplayName: Étincelle d'équilibre SHPC
-SHPCCrystalFacetProj.DisplayName: Facette de cristal SHPC
-SHPCHarmonyPulseProj.DisplayName: Pulsion harmonique SHPC
-SHPCHoloDecoyProj.DisplayName: Leurre holographique SHPC
-SHPCPrecisionLanceProj.DisplayName: Lance de précision SHPC
-SHPCPredictiveReticleProj.DisplayName: Réticule prédictif SHPC
-SHPCPlasmaBloomProj.DisplayName: Floraison de plasma SHPC
-SHPCPlasmaNeedleProj.DisplayName: Aiguille de plasma SHPC
 SHPCVoltArcProj.DisplayName: Arc volt SHPC
-SHPCAssaultDroneProj.DisplayName: Drone d'assaut SHPC
-SHPCBraceAnchorProj.DisplayName: Ancre de soutien SHPC
-SHPCKineticBarrierProj.DisplayName: Barrière cinétique SHPC
-SHPCRelayNodeProj.DisplayName: Nœud relais SHPC
 SHPCQuantumLinkProj.DisplayName: Lien quantique SHPC
 SHPCCrystalShardProj.DisplayName: Éclat de cristal SHPC
 SHPCHarmonyWispProj.DisplayName: Feu follet harmonique SHPC

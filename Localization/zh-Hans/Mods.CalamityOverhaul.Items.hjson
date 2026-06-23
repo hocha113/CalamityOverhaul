@@ -48,11 +48,6 @@ GhostFireWhip: {
 		'''
 }
 
-AllhallowsGoldWhip: {
-	DisplayName: 金源长鞭
-	Tooltip: 它实际上还没有完成
-}
-
 DivineSourceBlade: {
 	DisplayName: 金源灭却刃
 	Tooltip:
@@ -122,16 +117,6 @@ HeavenfallLongbow: {
 		而如今，命运的齿轮再次转动，天堂的怒火重新点燃。那柄杀神之弓，将在众星的赞歌中复现，再次将历史书写于鲜血与星尘之上
 
 		'''
-}
-
-TestItem: {
-	DisplayName: 测试物品
-	Tooltip: 嗯...你不应该拥有它
-}
-
-BaseSingularity: {
-	DisplayName: 奇点基类
-	Tooltip: 嗯...你不应该拥有它
 }
 
 InfiniteIngot: {
@@ -402,50 +387,6 @@ SimpleMuzzleBrake: {
 		'''
 }
 
-AmmoBoxFire: {
-	DisplayName: 燃烧弹药箱
-	Tooltip:
-		'''
-		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-		特种弹药可以和原来的子弹效果叠加
-		让弹头变得极度易燃，击中目标时发生爆燃
-		"这里不是cod"
-		'''
-}
-
-ArmourPiercerBox: {
-	DisplayName: 破甲弹药箱
-	Tooltip:
-		'''
-		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-		特种弹药可以和原来的子弹效果叠加
-		给弹药镀上一层钨金，增加子弹的破甲能力，无视目标75%护甲
-		"即便如此，你仍旧不要尝试用手枪去击毁坦克"
-		'''
-}
-
-HighExplosiveBox: {
-	DisplayName: 高爆弹药箱
-	Tooltip:
-		'''
-		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-		特种弹药可以和原来的子弹效果叠加
-		让弹头变成高爆炸弹，子弹击中目标时发射剧烈的爆炸
-		"把它们全部炸飞！"
-		'''
-}
-
-DragonBreathBox: {
-	DisplayName: 龙息弹药箱
-	Tooltip:
-		'''
-		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-		特种弹药可以和原来的子弹效果叠加
-		魔法与科技的结合，子弹击中目标后会爆发出一道金属射流，对大范围的敌人造成杀伤
-		"这是那条龙的唾液，你愿意相信吗？"
-		'''
-}
-
 HalibutItem: {
 	DisplayName: 大比目鱼
 	Tooltip: ""
@@ -545,15 +486,6 @@ NeutronWand: {
 		'''
 }
 
-FadingGlory: {
-	DisplayName: 残怨
-	Tooltip:
-		'''
-		真近战击中目标，如果目标是有机体，将会治疗玩家，如果目标是无机体，将会释放大量火花
-		非真近战时将会主动发射剑刃，击中目标后额外生成追踪的孤魂切并在爆炸时释放出一条血触手
-		'''
-}
-
 NeutronScythe: {
 	DisplayName: 黑洞使者
 	Tooltip:
@@ -600,17 +532,6 @@ SnowQuayMK2: {
 		左键三连点射冰锥钉，每组点射的最后一发为重锥，命中迸出冰晶
 		右键超压霰射，扇形喷出一片短程冰锥
 		"第二代雪蝰不再需要预热"
-		'''
-}
-
-HghExplosiveBox: {
-	DisplayName: 高爆弹药箱
-	Tooltip:
-		'''
-		长按以部署，部署完成后手持枪械右击弹药箱，让特种弹药填装枪械弹匣
-		特种弹药可以和原来的子弹效果叠加
-		弹头将包含高爆炸药，击中目标时制造一次小型爆炸
-		"把他们都炸上天!"
 		'''
 }
 
@@ -865,16 +786,6 @@ Dicoria: {
 		'''
 }
 
-GeminisTributeEX: {
-	DisplayName: 双生礼赞EX
-	Tooltip:
-		'''
-		投掷出一把快速来回切割的镰刀
-		击中敌人后会生成两把额外的伴生之镰
-		"只能存在一个主人格，很明显是魔焰眼胜利了"
-		'''
-}
-
 DestroyersBlade: {
 	DisplayName: 毁灭者之刃
 	Tooltip:
@@ -899,11 +810,6 @@ StaffoftheDestroyer: {
 		'''
 }
 
-ForgedLash: {
-	DisplayName: 锻钢之鞭
-	Tooltip: '''"不适合当废铁买"'''
-}
-
 CommandersClaw: {
 	DisplayName: 统帅之钳
 	Tooltip:
@@ -912,16 +818,6 @@ CommandersClaw: {
 		命中时迸发金属火星与冲击波，并使屏幕轻微震颤
 		长矛可同时存在多支，撞墙后插入地形，刺中敌人时则贴附其上短暂保留
 		'''
-}
-
-DraedonsRemote: {
-	DisplayName: 嘉登遥控器
-	Tooltip:
-		'''
-		召唤EX机械三王
-		只能在夜晚使用
-		'''
-	DontUseByDeath: 当前游戏难度不允许发送信号!
 }
 
 CommandersStaffEX: {
@@ -936,11 +832,6 @@ CommandersStaffEX: {
 CommandersChainsawEX: {
 	DisplayName: 统帅链锯EX
 	Tooltip: '''"切碎挡在你面前的一切"'''
-}
-
-ForgedLashEX: {
-	DisplayName: 锻钢之鞭EX
-	Tooltip: 在鞭打过程中释放追踪的热力球
 }
 
 SoulofFrightEX: {
@@ -1024,15 +915,6 @@ WGGMK2Wilderness: {
 WGGWilderness: {
 	DisplayName: 荒野中的风力发电机
 	Tooltip: ""
-}
-
-MedicalBox: {
-	DisplayName: 医疗补给箱
-	Tooltip:
-		'''
-		长按部署至地面
-		右键部署后的医疗箱可以治疗自己
-		'''
 }
 
 TeslaElectromagneticTower: {
@@ -1622,61 +1504,6 @@ Thrower: {
 		消耗电力投掷物品
 		右键打开操控面板
 		'''
-}
-
-Elysium: {
-	DisplayName: 天国极乐
-	Tooltip:
-		'''
-		左键持续发射神圣巨蛇
-		右键感召附近居民成为十二使徒之一，最多12名
-		使徒殉道后积累殉道之力；聚集11层后使用[ElysiumQKey]令约翰殉道，启示录降临
-		在殉道之力未满时使用[ElysiumQKey]可召唤天雷
-		[c/AADDFF:门徒越多，全伤害、暴击率与防御持续提升；11名时额外回复生命，12名时移速大幅提升]
-		[c/FF6666:12名齐聚时：若血量跌破30%，犹大将背刺致死（10秒冷却）]
-		[c/FFD700:━━ 启示录阶段 ━━]
-		[c/FFD700:[ElysiumQKey] 降落天体陨石（180%伤害）]
-		[c/FFD700:[ElysiumRKey] 发动后三印审判（420%伤害）]
-		[c/FFD700:右键依次召唤四骑士：瘟疫、战争、饥荒、死亡]
-		[c/FFAA55:战争骑士提升伤害与暴击；饥荒骑士提供大量护甲穿透；死亡骑士强化天体陨石与战争骑士的一切效果]
-		'''
-	DiscipleName_0: 西门彼得
-	DiscipleName_1: 圣安德鲁
-	DiscipleName_2: 雅各布
-	DiscipleName_3: 圣约翰
-	DiscipleName_4: 腓力
-	DiscipleName_5: 巴多罗买
-	DiscipleName_6: 多马
-	DiscipleName_7: 圣马修
-	DiscipleName_8: 雅各
-	DiscipleName_9: 达泰
-	DiscipleName_10: 西门
-	DiscipleName_11: 犹大
-	HorsemanName_0: 瘟疫
-	HorsemanName_1: 战争
-	HorsemanName_2: 饥荒
-	HorsemanName_3: 死亡
-	DiscipleFullText: 门徒已满
-	NoConvertTargetText: 附近没有可转化的居民
-	DiscipleFallbackText: 门徒
-	RevelationText: 启示录
-	RevelationEndText: 启示录终止
-	CelestialMeteorText: 天体陨石
-	SealStarsText: 第五星 第六星 第七星
-	HorsemenFullText: 四骑士已齐聚
-	HorsemanArrivalText: "{0}骑士降临"
-	DiscipleJoinedText: "{0} 已加入"
-	JudasBetrayalText: 犹大的背叛!
-	JudasDeathReasonText: "{0} 被犹大背叛了"
-	DiscipleMartyrText: "{0} 殉道了"
-	MartyrdomPowerText: 殉道之力 {0}/11
-	Tooltip_DiscipleCountText: 当前门徒: {0}/12
-	Tooltip_NoDisciplesText: 尚无门徒追随
-	Tooltip_MartyrdomPowerText: 殉道之力: {0} {1}/11
-	Tooltip_RevelationReadyText: 按Q键 — 约翰将殉道，启示录将降临
-	Tooltip_JudgmentActiveText: 后三印审判进行中，等待终结收束
-	Tooltip_RevelationActiveText: 启示录已降临 Q降天体陨石 R发动后三印审判 右键召唤四骑士 {0}/4
-	Tooltip_JudasWarningText: 警告: 犹大的背叛已潜伏于你的身边
 }
 
 SandevistansItem: {

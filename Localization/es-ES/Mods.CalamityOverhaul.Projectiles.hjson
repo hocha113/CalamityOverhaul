@@ -132,9 +132,6 @@ NeutronExplode.DisplayName: Explosión de neutrones
 NeutronGlaiveBeam.DisplayName: Guja de neutrones
 NeutronGlaiveHeldAlt.DisplayName: Guja de neutrones · Derivación
 NeutronsOrb.DisplayName: Orbe de neutrones
-LigSpark.DisplayName: Chispa eléctrica
-SparkBall.DisplayName: Orbe eléctrico
-SparkLightning.DisplayName: Rayo eléctrico
 StormArc.DisplayName: Arco de tormenta
 StormLightning.DisplayName: Rayo de tormenta
 CelestialDevourer.DisplayName: Devorador celestial
@@ -258,7 +255,6 @@ ArcaneRiftProj.DisplayName: Grieta arcana
 TruthLeapProj.DisplayName: Salto de la verdad
 RealityShockProj.DisplayName: Temblor de la realidad
 SpawnOldDukeWannaToFight.DisplayName: Invocar al Viejo Duque para un combate
-MachineTesla.DisplayName: Meca Tesla
 CyberGlitchBoltProj.DisplayName: Rayo cibernético de fallo
 CyberShockwaveProj.DisplayName: Onda de choque cibernética
 CyberTraceBeamProj.DisplayName: Rayo de rastreo cibernético
@@ -318,20 +314,7 @@ MarblePebbleProj.DisplayName: Guijarro de mármol
 MarbleShard.DisplayName: Fragmento de mármol
 MarbleShockwave.DisplayName: Onda de choque de mármol
 SHPCSonicBoomProj.DisplayName: Estallido sónico SHPC
-SHPCQuantumNodeProj.DisplayName: Nodo cuántico SHPC
-SHPCBalanceSparkProj.DisplayName: Chispa de equilibrio SHPC
-SHPCCrystalFacetProj.DisplayName: Faceta de cristal SHPC
-SHPCHarmonyPulseProj.DisplayName: Pulso armónico SHPC
-SHPCHoloDecoyProj.DisplayName: Señuelo holográfico SHPC
-SHPCPrecisionLanceProj.DisplayName: Lanza de precisión SHPC
-SHPCPredictiveReticleProj.DisplayName: Retícula predictiva SHPC
-SHPCPlasmaBloomProj.DisplayName: Floración de plasma SHPC
-SHPCPlasmaNeedleProj.DisplayName: Aguja de plasma SHPC
 SHPCVoltArcProj.DisplayName: Arco volt SHPC
-SHPCAssaultDroneProj.DisplayName: Dron de asalto SHPC
-SHPCBraceAnchorProj.DisplayName: Ancla de apoyo SHPC
-SHPCKineticBarrierProj.DisplayName: Barrera cinética SHPC
-SHPCRelayNodeProj.DisplayName: Nodo de relevo SHPC
 SHPCQuantumLinkProj.DisplayName: Enlace cuántico SHPC
 SHPCCrystalShardProj.DisplayName: Fragmento de cristal SHPC
 SHPCHarmonyWispProj.DisplayName: Fuego fatuo armónico SHPC
