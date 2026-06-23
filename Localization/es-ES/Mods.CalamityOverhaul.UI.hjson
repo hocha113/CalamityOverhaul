@@ -145,7 +145,7 @@ QuestLog: {
 
 	Template: {
 		AmountItem: "{0} {1}"
-		SingleTool: "1 {0}"
+		SingleTool: 1 {0}
 	}
 }
 

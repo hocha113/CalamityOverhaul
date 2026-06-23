@@ -11,14 +11,12 @@ QuestNode: {
 		Description: Obtén diez {0}
 		DetailedDescription: El subsuelo guarda riqueza infinita; primero necesitamos metales básicos para herramientas.
 		QuestObjective.Description: Recolecta diez {0}
-
 	}
 
 	MiningQuestII: {
 		DisplayName: Edad del hierro
 		Description: Recolecta cincuenta {0}
 		QuestObjective.Description: Recolecta cincuenta {0}
-
 		DetailedDescription: El cobre es demasiado blando; necesitamos metales más duros. Baja más para encontrar vetas de hierro.
 	}
 
@@ -26,7 +24,6 @@ QuestNode: {
 		DisplayName: Fiebre del oro
 		Description: Recolecta cien {0}
 		QuestObjective.Description: Recolecta cien {0}
-
 		DetailedDescription: El oro no es solo moneda: conduce bien la magia y es dúctil; más blando que el hierro, pero clave para equipo avanzado.
 	}
 
@@ -510,7 +507,6 @@ QuestNode: {
 		DisplayName: Plano del infierno
 		Description: Busca el plano cifrado en el laboratorio de Draedon del Inframundo
 		QuestObjective.Description: Obtén el plano del infierno
-
 		DetailedDescription: Draedon tenía un puesto en el infierno para experimentar con energía geotérmica; el plano puede desbloquear nuevas armas.
 	}
 
@@ -518,7 +514,6 @@ QuestNode: {
 		DisplayName: Código polar
 		Description: Busca el plano cifrado en el laboratorio de Draedon en la nieve
 		QuestObjective.Description: Obtén el plano helado
-
 		DetailedDescription: El frío conserva instrumentos de precisión; baja al laboratorio bajo el hielo.
 	}
 
@@ -526,7 +521,6 @@ QuestNode: {
 		DisplayName: Borrador de la jungla
 		Description: Busca el plano cifrado en el laboratorio de Draedon en la jungla
 		QuestObjective.Description: Obtén el plano de la jungla
-
 		DetailedDescription: La jungla oculta el laboratorio biológico de Draedon sobre plagas y nanovirus.
 	}
 
@@ -534,7 +528,6 @@ QuestNode: {
 		DisplayName: Misterio estelar
 		Description: Busca el plano cifrado en el laboratorio de Draedon en el planetoide
 		QuestObjective.Description: Obtén el plano del planetoide
-
 		DetailedDescription: En la microgravedad de las alturas flota un laboratorio con diseños tempranos de mecánicas estelares.
 	}
 
@@ -542,7 +535,6 @@ QuestNode: {
 		DisplayName: Mar hundido
 		Description: Busca el plano cifrado en el laboratorio de Draedon del mar hundido
 		QuestObjective.Description: Obtén el plano del mar hundido
-
 		DetailedDescription: En este mar subterráneo tranquilo, Draedon dejó investigación sobre energía prismática.
 	}
 
@@ -585,7 +577,6 @@ QuestNode: {
 		DisplayName: Coleccionista de gemas
 		Description: Recolecta gemas variadas
 		QuestObjective.Description: Recolecta cinco tipos de gemas
-
 		DetailedDescription: Cristales en la roca; decoración y material para bastones y garfios; juntar colores forma un arcoíris.
 	}
 
@@ -614,7 +605,6 @@ QuestNode: {
 		DisplayName: Explorador profundo
 		Description: Explora todos los biomas principales
 		QuestObjective.Description: Completa todas las misiones de exploración
-
 		DetailedDescription: Has recorrido el mundo de las nubes al infierno; el mapa prueba tu valor.
 	}
 
@@ -671,7 +661,6 @@ QuestNode: {
 		DisplayName: Núcleo del mal
 		Description: Encuentra un orbe sombrío o corazón carmesí
 		QuestObjective.Description: Destruye un orbe sombrío o corazón carmesí
-
 		DetailedDescription: En lo profundo del mal palpita corrupción u orbe; romper tres despertará algo terrible.
 	}
 

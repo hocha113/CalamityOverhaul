@@ -11,14 +11,12 @@ QuestNode: {
 		Description: Obtain 10 {0}
 		DetailedDescription: The underground holds infinite wealth. First, we need some basic metals to craft tools.
 		QuestObjective.Description: Collect 10 {0}
-
 	}
 
 	MiningQuestII: {
 		DisplayName: Iron Age
 		Description: Collect 50 {0}
 		QuestObjective.Description: Collect 50 {0}
-
 		DetailedDescription: Copper is too soft; we need harder metals to arm ourselves. Delve deeper underground to find Iron veins.
 	}
 
@@ -26,7 +24,6 @@ QuestNode: {
 		DisplayName: Gold Rush
 		Description: Collect 100 {0}
 		QuestObjective.Description: Collect 100 {0}
-
 		DetailedDescription: Gold is not just currency; it possesses excellent magical conductivity and ductility. Although softer than Iron, it is a crucial material for crafting advanced gear.
 	}
 
@@ -510,7 +507,6 @@ QuestNode: {
 		DisplayName: Hell Blueprint
 		Description: Find the Encrypted Schematic in the Underworld Draedon Lab
 		QuestObjective.Description: Obtain Hell Schematic
-
 		DetailedDescription: Draedon established an outpost in Hell to experiment with geothermal energy. Find the schematic there; it might unlock new weapon technologies.
 	}
 
@@ -518,7 +514,6 @@ QuestNode: {
 		DisplayName: Polar Code
 		Description: Find the Encrypted Schematic in the Snow Draedon Lab
 		QuestObjective.Description: Obtain Ice Schematic
-
 		DetailedDescription: The low temperatures here are perfect for preserving precision instruments. Delve into the lab beneath the ice to find that sealed polar technology.
 	}
 
@@ -526,7 +521,6 @@ QuestNode: {
 		DisplayName: Jungle Draft
 		Description: Find the Encrypted Schematic in the Jungle Draedon Lab
 		QuestObjective.Description: Obtain Jungle Schematic
-
 		DetailedDescription: The dense jungle conceals Draedon's biological laboratory. He studied plagues and nano-viruses there. Find that schematic to reveal the dangerous truth.
 	}
 
@@ -534,7 +528,6 @@ QuestNode: {
 		DisplayName: Exo Mystery
 		Description: Find the Encrypted Schematic in the Planetoid Draedon Lab
 		QuestObjective.Description: Obtain Planetoid Schematic
-
 		DetailedDescription: In the microgravity environment of high altitude, a lab floats silently. Go there to find early design blueprints regarding the Exo Mechs.
 	}
 
@@ -542,7 +535,6 @@ QuestNode: {
 		DisplayName: Sunken Sea
 		Description: Find the Encrypted Schematic in the Sunken Sea Draedon Lab
 		QuestObjective.Description: Obtain Sunken Sea Schematic
-
 		DetailedDescription: In this tranquil underground sea, Draedon left behind research regarding Prism energy. Dive underwater and retrieve that valuable data.
 	}
 
@@ -585,7 +577,6 @@ QuestNode: {
 		DisplayName: Gem Collector
 		Description: Collect various gems
 		QuestObjective.Description: Collect 5 different types of gems
-
 		DetailedDescription: Brilliant crystals buried within the rock layers. Beyond decoration, they are vital for crafting staves and grappling hooks. Gathering gems of different colors might let you piece together the brilliance of a rainbow.
 	}
 
@@ -614,7 +605,6 @@ QuestNode: {
 		DisplayName: Deep Explorer
 		Description: Explore all major biomes
 		QuestObjective.Description: Complete all exploration quests
-
 		DetailedDescription: You have traversed every corner of the world, from the highest clouds to the deepest hell. The map you have drawn is proof of your courage. Now, the entire world lies at your feet.
 	}
 
@@ -671,7 +661,6 @@ QuestNode: {
 		DisplayName: Core of Evil
 		Description: Find a Shadow Orb or Crimson Heart deep in the evil biome
 		QuestObjective.Description: Destroy a Shadow Orb or Crimson Heart
-
 		DetailedDescription: Deep within the chasm of evil pulsates a corrupt heart or a shadow orb. Smashing them yields weapons, but beware... if you break three, something terrible will awaken.
 	}
 
