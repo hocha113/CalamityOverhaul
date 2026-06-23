@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using CalamityOverhaul.Content.QuestLogs.Styles;
@@ -82,6 +82,8 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ResetViewText;
         public static LocalizedText LauncherHoverText;
         public static LocalizedText QuestManagerText;
+        public static LocalizedText RewardTemplateAmountItem;
+        public static LocalizedText RewardTemplateSingleTool;
 
         private List<IQuestLogStyle> availableStyles;
         private int currentStyleIndex;
@@ -124,6 +126,8 @@ namespace CalamityOverhaul.Content.QuestLogs
             ResetViewText = this.GetLocalization(nameof(ResetViewText), () => "重置视图");
             LauncherHoverText = this.GetLocalization(nameof(LauncherHoverText), () => "左键开关面板，右键拖动");
             QuestManagerText = this.GetLocalization(nameof(QuestManagerText), () => "委托任务");
+            RewardTemplateAmountItem = this.GetLocalization("Template.AmountItem", () => "{0} {1}");
+            RewardTemplateSingleTool = this.GetLocalization("Template.SingleTool", () => "1 {0}");
         }
 
         public override void SaveUIData(TagCompound tag) {

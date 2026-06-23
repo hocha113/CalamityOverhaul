@@ -1,4 +1,6 @@
-﻿using Terraria.Localization;
+using CalamityOverhaul.Content.QuestLogs;
+using InnoVault;
+using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.QuestLogs.Core
 {
@@ -14,12 +16,6 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
     /// <summary>任务奖励描述的通用本地化模板</summary>
     internal static class QuestRewardTemplates
     {
-        private const string AmountItemKey = "Mods.CalamityOverhaul.QuestLogs.QuestReward.Template.AmountItem";
-        private const string SingleToolKey = "Mods.CalamityOverhaul.QuestLogs.QuestReward.Template.SingleTool";
-
-        private static LocalizedText AmountItem => Language.GetOrRegister(AmountItemKey, () => "{0} {1}");
-        private static LocalizedText SingleTool => Language.GetOrRegister(SingleToolKey, () => "1 {0}");
-
         /// <summary>按样式生成奖励描述</summary>
         public static string Format(int itemType, int amount, QuestRewardDescriptionStyle style = QuestRewardDescriptionStyle.AmountItem) {
             if (itemType <= Terraria.ID.ItemID.None || amount <= 0) {
@@ -28,10 +24,10 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
             LocalizedText itemName = VaultUtils.GetLocalizedItemName(itemType);
             if (style == QuestRewardDescriptionStyle.SingleTool) {
-                return SingleTool.WithFormatArgs(itemName.Value).Value;
+                return QuestLog.RewardTemplateSingleTool.WithFormatArgs(itemName.Value).Value;
             }
 
-            return AmountItem.WithFormatArgs(amount, itemName.Value).Value;
+            return QuestLog.RewardTemplateAmountItem.WithFormatArgs(amount, itemName.Value).Value;
         }
     }
 }

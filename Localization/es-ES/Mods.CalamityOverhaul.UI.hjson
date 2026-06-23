@@ -142,6 +142,11 @@ QuestLog: {
 	SunModeText: Modo Día
 	LauncherHoverText: Clic izq. Interactuar, Clic der. Arrastrar
 	QuestManagerText: Encargos
+
+	Template: {
+		AmountItem: "{0} {1}"
+		SingleTool: "1 {0}"
+	}
 }
 
 QuestNotificationSystem.Text1: Misión completada

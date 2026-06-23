@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -143,6 +143,11 @@ QuestLog: {
 	SunModeText: Daytime Mode
 	LauncherHoverText: Left-click to interact, right-click to drag
 	QuestManagerText: Commission
+
+	Template: {
+		AmountItem: "{0} {1}"
+		SingleTool: "1 {0}"
+	}
 }
 
 QuestNotificationSystem.Text1: Quest Complete

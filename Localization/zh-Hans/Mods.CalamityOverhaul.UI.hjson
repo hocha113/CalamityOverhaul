@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: 左键点击可添加项目
 	HintText2: 左键点击可移除项目
 	CloseHint: "[ESC]键或[右键点击]可关闭"
@@ -142,6 +142,11 @@ QuestLog: {
 	SunModeText: 日间模式
 	LauncherHoverText: 左键交互，右键拖动
 	QuestManagerText: 委托任务
+
+	Template: {
+		AmountItem: "{0}个{1}"
+		SingleTool: "一把{0}"
+	}
 }
 
 QuestNotificationSystem.Text1: 任务完成

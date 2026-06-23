@@ -143,6 +143,11 @@ QuestLog: {
 	SunModeText: Modo Diurno
 	LauncherHoverText: Clique Esquerdo Alterna, Clique Direito Arrasta
 	QuestManagerText: Comissao
+
+	Template: {
+		AmountItem: "{0} {1}"
+		SingleTool: "1 {0}"
+	}
 }
 
 QuestNotificationSystem.Text1: Missao Completa
