@@ -1,9 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using InnoVault.UIHandles;
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.TimeFreezes;
+using InnoVault.UIHandles;
 using System;
 using System.Collections.Generic;
 using Terraria;

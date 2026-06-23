@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Base;
-using InnoVault.Narrative.Presentation;
 using InnoVault.Narrative.Presentation.Popups;
 using Microsoft.Xna.Framework.Graphics;
 using System;
