@@ -82,7 +82,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
 
             if (hoverInMainPage) {
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
 
                 if (keyLeftPressState != KeyPressState.None) {
                     //更新滚动条（优先处理）

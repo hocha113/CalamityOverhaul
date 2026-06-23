@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
 
             if (hoverInMainPage) {
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
 
                 if (Interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, PanelWidth,
                     keyLeftPressState == KeyPressState.Pressed)) {

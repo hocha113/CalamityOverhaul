@@ -2,6 +2,7 @@ using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using CalamityOverhaul.Content.TimeFreezes;
+using InnoVault.UIHandles;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -181,7 +182,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                 return;
             }
             Player.mouseInterface = true;
-            Player.CWR().DontSwitchWeaponTime = 2;
+            UIInputGuard.SuppressWeaponSwitch();
 
             int newHover = HitTest();
             if (newHover != HoveredIndex) {

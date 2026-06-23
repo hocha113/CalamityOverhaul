@@ -579,7 +579,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
                 cyberPanelHit;
             if (inHotArea) {
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
             }
 
             //左键处理

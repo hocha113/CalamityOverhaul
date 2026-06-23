@@ -1,4 +1,5 @@
-﻿using InnoVault.RenderHandles;
+﻿using InnoVault.Narrative.Runtime;
+using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -18,11 +19,13 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
     {
         //上次悬停选项，防重复音效
         private static int lastHoveredChoice = -1;
+        //当前订阅的叙事会话，对应原型里 ADVChoiceBox.OnHoverChanged 的挂载点
+        private static NarrativeSession hoverSession;
 
         //三个机甲图标的悬停音效
-        public static readonly SoundStyle ThanatosIconHover = "CalamityMod/Sounds/Custom/Codebreaker/ThanatosIconHover".GetSound();
-        public static readonly SoundStyle AresIconHover = "CalamityMod/Sounds/Custom/Codebreaker/AresIconHover".GetSound();
-        public static readonly SoundStyle ArtemisApolloIconHover = "CalamityMod/Sounds/Custom/Codebreaker/ArtemisApolloIconHover".GetSound();
+        public static SoundStyle ThanatosIconHover => "CalamityMod/Sounds/Custom/Codebreaker/ThanatosIconHover".GetSound();
+        public static SoundStyle AresIconHover => "CalamityMod/Sounds/Custom/Codebreaker/AresIconHover".GetSound();
+        public static SoundStyle ArtemisApolloIconHover => "CalamityMod/Sounds/Custom/Codebreaker/ArtemisApolloIconHover".GetSound();
 
         //反射加载纹理，对应三种机甲图标
         [VaultLoaden("@CalamityMod/UI/DraedonSummoning/")]
@@ -70,7 +73,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         private const int GlitchUpdateInterval = 2;
 
         //图标位置偏移
-        private readonly static Vector2 mainIconOffset = new Vector2(0, -120f);
+        private readonly static Vector2 mainIconOffset = new Vector2(0, -160f);
         private readonly static Vector2 textOffset = new Vector2(0, -100f);
         private readonly static Vector2 leftSideIconOffset = new Vector2(-180f, 0f);
         private readonly static Vector2 rightSideIconOffset = new Vector2(180f, 0f);
@@ -688,8 +691,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         }
         #endregion
 
-        /// <summary>注册 ExoMechChoiceHover 悬停回调</summary>
+        /// <summary>注册叙事选项悬停追踪并重置动画状态</summary>
         internal static void RegisterHoverEffects() {
+            Cleanup();
+
+            hoverSession = NarrativeRunner.Active;
+            if (hoverSession?.Scenario is ExoMechdusaSum) {
+                hoverSession.ChoiceHoverChanged += OnChoiceHoverChanged;
+                hoverSession.OnAborted += Cleanup;
+            }
+
             lastHoveredChoice = -1;
             currentMainIcon = -1;
             targetMainIcon = -1;
@@ -704,8 +715,77 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             particleSpawnTimer = 0;
         }
 
-        /// <summary>场景结束解绑悬停</summary>
+        /// <summary>悬停切换主图标+播 Calamity 悬停音</summary>
+        private static void OnChoiceHoverChanged(object sender, ChoiceHoverChangedEventArgs e) {
+            int currentIndex = e.CurrentIndex;
+            int previousIndex = e.PreviousIndex;
+            if (currentIndex >= 0 && currentIndex != lastHoveredChoice) {
+                if (e.CurrentOption == null || !e.CurrentOption.IsEnabled) {
+                    return;
+                }
+
+                lastHoveredChoice = currentIndex;
+                targetMainIcon = currentIndex;
+
+                SoundStyle hoverSound = GetHoverSound(currentIndex);
+                if (hoverSound != SoundID.MenuTick) {
+                    TryPlaySound(hoverSound with {
+                        Volume = 0.7f,
+                        MaxInstances = 2
+                    });
+                }
+                else {
+                    TryPlaySound(SoundID.MenuTick with {
+                        Volume = 0.5f,
+                        Pitch = 0.3f + currentIndex * 0.15f,
+                        MaxInstances = 3
+                    });
+                }
+
+                TryPlaySound(SoundID.Item8 with {
+                    Volume = 0.3f,
+                    Pitch = 0.5f,
+                    MaxInstances = 2
+                });
+            }
+
+            if (currentIndex < 0 && previousIndex >= 0) {
+                lastHoveredChoice = -1;
+                targetMainIcon = -1;
+
+                TryPlaySound(SoundID.MenuClose with {
+                    Volume = 0.3f,
+                    Pitch = -0.2f
+                });
+            }
+        }
+
+        private static SoundStyle GetHoverSound(int index) {
+            return index switch {
+                0 => AresIconHover,
+                1 => ThanatosIconHover,
+                2 => ArtemisApolloIconHover,
+                _ => SoundID.MenuTick
+            };
+        }
+
+        private static void TryPlaySound(SoundStyle style) {
+            if (style == default) {
+                return;
+            }
+
+            SoundEngine.PlaySound(style);
+        }
+
+        /// <summary>场景结束重置悬停追踪</summary>
         internal static void Cleanup() {
+            if (hoverSession != null) {
+                hoverSession.ChoiceHoverChanged -= OnChoiceHoverChanged;
+                hoverSession.OnAborted -= Cleanup;
+                hoverSession = null;
+            }
+
+            lastHoveredChoice = -1;
             currentMainIcon = -1;
             targetMainIcon = -1;
             mainIconFade = 0f;
@@ -714,25 +794,5 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
             sideIconScale = new float[2];
             techParticles.Clear();
         }
-    }
-
-    internal sealed class ExoMechChoiceHoverEventArgs : EventArgs
-    {
-        public int CurrentIndex { get; }
-        public int PreviousIndex { get; }
-        public ExoMechChoiceOption CurrentChoice { get; }
-        public ExoMechChoiceOption PreviousChoice { get; }
-
-        public ExoMechChoiceHoverEventArgs(int currentIndex, int previousIndex, ExoMechChoiceOption currentChoice, ExoMechChoiceOption previousChoice) {
-            CurrentIndex = currentIndex;
-            PreviousIndex = previousIndex;
-            CurrentChoice = currentChoice;
-            PreviousChoice = previousChoice;
-        }
-    }
-
-    internal sealed class ExoMechChoiceOption
-    {
-        public bool Enabled { get; set; } = true;
     }
 }

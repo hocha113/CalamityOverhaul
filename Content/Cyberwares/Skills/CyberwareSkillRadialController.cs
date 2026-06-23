@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.QuestLogs;
@@ -296,7 +297,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Skills
 
             //mouseInterface 防穿透
             Player.mouseInterface = true;
-            Player.CWR().DontSwitchWeaponTime = 2;
+            UIInputGuard.SuppressWeaponSwitch();
 
             //命中检测
             int newHover = HitTest();

@@ -1,4 +1,5 @@
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -264,7 +265,7 @@ namespace CalamityOverhaul.Content.RangedModify.Core
         /// </summary>
         public void KeepWeaponOccupied() {
             Owner.itemTime = 2;
-            Owner.CWR().DontSwitchWeaponTime = 2;
+            UIInputGuard.SuppressWeaponSwitch();
         }
 
         private void UpdateMouseUIFree() {

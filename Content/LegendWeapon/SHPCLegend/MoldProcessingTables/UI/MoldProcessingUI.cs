@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.MoldProcessingTables.
             //鼠标交互占用
             if (cachedLayout.Panel.Contains((int)MousePosition.X, (int)MousePosition.Y)) {
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
             }
 
             //滚轮：按当前 tab 分发

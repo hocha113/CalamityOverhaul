@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -174,7 +175,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 int delta = PlayerInput.ScrollWheelDeltaForUI;
                 if (delta != 0) {
                     scrollTarget -= MathF.Sign(delta) * 96f;
-                    Main.LocalPlayer.CWR().DontSwitchWeaponTime = 5;
+                    UIInputGuard.SuppressWeaponSwitch(5);
                     scrollIdleTimer = 0;
                 }
             }

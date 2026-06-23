@@ -34,6 +34,7 @@ DialogueSystem: {
 	FastHint: Ускорить
 	AutoHint: Авто
 	SkipHint: Пропустить
+	BacklogHint: BACKLOG
 	ClaimHint: Нажмите, чтобы забрать
 	PopupContinueHint: Нажмите, чтобы продолжить
 	ChoiceTitle: Выберите

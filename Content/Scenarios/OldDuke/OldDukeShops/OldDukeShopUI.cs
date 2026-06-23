@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
             if (hoverInMainPage) {
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
 
                 //优先检测关闭按钮
                 if (interaction.UpdateCloseButton(MousePosition.ToPoint(), panelPosition, keyLeftPressState == KeyPressState.Pressed)) {

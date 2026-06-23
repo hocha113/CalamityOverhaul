@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //阻止鼠标穿透
             if (hoverInMainPage) {
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
             }
 
             //详情面板优先

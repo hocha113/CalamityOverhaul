@@ -3,7 +3,6 @@ using InnoVault.Narrative.Presentation.Dialogue;
 using InnoVault.Narrative.Styling;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.Audio;
-using Terraria.Localization;
 
 namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
 {
@@ -25,6 +24,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Base
         protected override string ResolveAutoHint() => DialogueSystem.AutoHint.Value;
         protected override string ResolveFastHint() => DialogueSystem.FastHint.Value;
         protected override string ResolveSkipHint() => DialogueSystem.SkipHint.Value;
+        protected override string ResolveBacklogHint() => DialogueSystem.BacklogHint.Value;
         protected override string ResolveContinueHint(bool hover) => FormatHintLabel(DialogueSystem.ContinueHint.Value, hover);
 
         protected static string FormatHintLabel(string label, bool bracketed) => bracketed ? $"[{label}]" : label;

@@ -88,8 +88,6 @@ namespace CalamityOverhaul.Content
         public int InspectOmigaTime;
         /// <summary>站平台帧数，&gt;0 时无重力</summary>
         public int ReceivingPlatformTime;
-        /// <summary>禁切武器剩余帧数，每帧减一</summary>
-        public int DontSwitchWeaponTime;
         /// <summary>禁暗影克隆体剩余帧数，每帧减一</summary>
         public int DontHasSemberDarkMasterCloneTime;
         /// <summary>实时绘制位置矫正</summary>
@@ -162,7 +160,6 @@ namespace CalamityOverhaul.Content
             cwr.CompressorContrType = CompressorContrType;
             cwr.InspectOmigaTime = InspectOmigaTime;
             cwr.ReceivingPlatformTime = ReceivingPlatformTime;
-            cwr.DontSwitchWeaponTime = DontSwitchWeaponTime;
             cwr.DontHasSemberDarkMasterCloneTime = DontHasSemberDarkMasterCloneTime;
             cwr.SpecialDrawPositionOffset = SpecialDrawPositionOffset;
             cwr.PlayerPositionChange = PlayerPositionChange;
@@ -344,9 +341,6 @@ namespace CalamityOverhaul.Content
 
             if (DontUseItemTime > 0) {
                 DontUseItemTime--;
-            }
-            if (DontSwitchWeaponTime > 0) {
-                DontSwitchWeaponTime--;
             }
             if (DontHasSemberDarkMasterCloneTime > 0) {
                 DontHasSemberDarkMasterCloneTime--;

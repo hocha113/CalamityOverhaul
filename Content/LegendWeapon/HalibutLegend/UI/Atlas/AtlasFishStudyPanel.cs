@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -143,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
                 if (delta != 0) {
                     gridScroll = MathHelper.Clamp(gridScroll - MathF.Sign(delta) * (CellSize + CellGap),
                         0f, gridScrollMax);
-                    Main.LocalPlayer.CWR().DontSwitchWeaponTime = 5;
+                    UIInputGuard.SuppressWeaponSwitch(5);
                     LayoutCompute(contentArea);
                 }
             }

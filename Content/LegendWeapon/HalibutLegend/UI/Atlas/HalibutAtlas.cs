@@ -155,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             if (IsOpen) {
                 //打开期间整屏占用鼠标并阻止武器切换
                 player.mouseInterface = true;
-                player.CWR().DontSwitchWeaponTime = 2;
+                UIInputGuard.SuppressWeaponSwitch();
                 //异常自动关闭
                 if (!player.active || player.dead
                     || !player.TryGetOverride<HalibutPlayer>(out var hp) || !hp.HasHalubut) {

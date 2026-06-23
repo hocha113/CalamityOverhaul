@@ -35,6 +35,7 @@ DialogueSystem: {
 	FastHint: Accelerate
 	AutoHint: Auto
 	SkipHint: Skip
+	BacklogHint: BACKLOG
 	ClaimHint: Click to claim
 	PopupContinueHint: Click to continue
 	ChoiceTitle: Choose

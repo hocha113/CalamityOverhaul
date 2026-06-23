@@ -402,7 +402,7 @@ namespace CalamityOverhaul.Content.EntrustManager
                 return;
             }
 
-            player.CWR().DontSwitchWeaponTime = 2;
+            UIInputGuard.SuppressWeaponSwitch();
 
             //交互处理
             if (hoverInMainPage) {
