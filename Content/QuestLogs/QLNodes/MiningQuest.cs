@@ -28,7 +28,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.IronPickaxe,
-                Amount = 1
+                Amount = 1,
+                DescriptionStyle = QuestRewardDescriptionStyle.SingleTool
             });
         }
 
@@ -95,7 +96,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.GoldPickaxe,
-                Amount = 1
+                Amount = 1,
+                DescriptionStyle = QuestRewardDescriptionStyle.SingleTool
             });
         }
 
@@ -164,7 +166,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             });
             Rewards.Add(new QuestReward {
                 ItemType = ItemID.ReaverShark,
-                Amount = 1
+                Amount = 1,
+                DescriptionStyle = QuestRewardDescriptionStyle.SingleTool
             });
         }
 

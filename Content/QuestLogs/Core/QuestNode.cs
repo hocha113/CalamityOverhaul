@@ -286,7 +286,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         }
 
         /// <summary>添加奖励</summary>
-        public void AddReward(int itemType, int amount = 1, LocalizedText text = null) {
+        public void AddReward(int itemType, int amount = 1, LocalizedText text = null,
+            QuestRewardDescriptionStyle descriptionStyle = QuestRewardDescriptionStyle.AmountItem) {
             if (itemType <= ItemID.None || amount <= 0) {
                 return;
             }
@@ -296,7 +297,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
             Rewards.Add(new QuestReward() {
                 ItemType = itemType,
                 Amount = amount,
-                Description = text
+                Description = text,
+                DescriptionStyle = descriptionStyle
             });
             InitializeRewards();
         }
@@ -345,6 +347,8 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
         public int Amount;
         /// <summary>自定义奖励描述；为空时用模板自动生成</summary>
         public LocalizedText Description;
+        /// <summary>自动描述模板样式</summary>
+        public QuestRewardDescriptionStyle DescriptionStyle = QuestRewardDescriptionStyle.AmountItem;
 
         private QuestNode _node;
         private int _index;
@@ -356,7 +360,7 @@ namespace CalamityOverhaul.Content.QuestLogs.Core
 
         /// <summary>展示用奖励描述</summary>
         public string GetDisplayText() =>
-            Description != null ? Description.Value : QuestRewardTemplates.Format(ItemType, Amount);
+            Description != null ? Description.Value : QuestRewardTemplates.Format(ItemType, Amount, DescriptionStyle);
 
         /// <summary>是否已领取</summary>
         public bool Claimed {

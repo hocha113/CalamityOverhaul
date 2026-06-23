@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
                 RequiredProgress = 1
             });
 
-            AddReward(ItemID.LucyTheAxe);
+            AddReward(ItemID.LucyTheAxe, descriptionStyle: QuestRewardDescriptionStyle.SingleTool);
             AddReward(CWRID.Item_DubiousPlating, 10);
             AddReward(CWRID.Item_MysteriousCircuitry, 10);
         }
