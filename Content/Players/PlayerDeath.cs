@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Players
             }
 
             if (Player.CountProjectilesOfID<RestartEffectProj>() > 0) {
-                return false;//正在重启，阻止死亡
+                return false;//正在重启，不死
             }
 
             if (Player.CountProjectilesOfID<YourLevelIsTooLowProj>() > 0) {
