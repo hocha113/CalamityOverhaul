@@ -1,5 +1,6 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
@@ -7,7 +8,6 @@ using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -18,10 +18,9 @@ using Terraria.UI;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 {
     /// <summary>
-    /// 大比目鱼界面引导：首次完成「初遇比目鱼」后，依次介绍深渊之眼 HUD、技能装备栏与技能转盘
-    /// （转盘只能用快捷键呼出，必须显式告知，否则极易被玩家全程忽略）
-    /// 通过 <see cref="GuideLeadQueue"/> 统一排队：本引导优先级高于委托引导，且从初遇演出一开始就占位，
-    /// 因此委托引导只会在本引导结束后才登场，无需两边互相引用
+    /// 大比目鱼界面引导：首次完成「初遇比目鱼」后，以"按键/操作占位"方式依次带玩家
+    /// 打开图鉴 → 在研究祭坛投鱼研究 → 认识装备栏 → 亲手按键呼出一次技能转盘。
+    /// 通过 <see cref="GuideLeadQueue"/> 统一排队，优先级高于委托引导，从初遇演出一开始即占位。
     /// </summary>
     internal class HalibutHudLead : ModSystem, ILocalizedModType, IGuideLead
     {
@@ -31,7 +30,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         {
             Inactive,
             HudIntro,
-            AtlasEquip,
+            Research,
+            Equip,
             SkillWheel,
             Complete
         }
@@ -39,57 +39,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         #region 本地化
         //阶段1：深渊之眼 HUD
         public static LocalizedText HudTitle { get; private set; }
-        public static LocalizedText HudLine1 { get; private set; }
-        public static LocalizedText HudLine2 { get; private set; }
-        public static LocalizedText HudOpenPrompt { get; private set; }
+        public static LocalizedText HudBody { get; private set; }
+        public static LocalizedText HudPrompt { get; private set; }
         public static LocalizedText HudOpenBtn { get; private set; }
-        //阶段2：技能海域与装备栏
-        public static LocalizedText AtlasTitle { get; private set; }
-        public static LocalizedText AtlasLine1 { get; private set; }
-        public static LocalizedText AtlasLine2 { get; private set; }
-        public static LocalizedText AtlasLine3 { get; private set; }
-        public static LocalizedText AtlasDockLabel { get; private set; }
-        public static LocalizedText AtlasNextBtn { get; private set; }
-        //阶段3：技能转盘（仅快捷键）
+        //阶段2：研究祭坛
+        public static LocalizedText ResearchTitle { get; private set; }
+        public static LocalizedText ResearchBody { get; private set; }
+        public static LocalizedText ResearchPrompt { get; private set; }
+        //阶段3：技能装备栏
+        public static LocalizedText EquipTitle { get; private set; }
+        public static LocalizedText EquipBody { get; private set; }
+        public static LocalizedText EquipWaiting { get; private set; }
+        //阶段4：技能转盘
         public static LocalizedText WheelTitle { get; private set; }
-        public static LocalizedText WheelLine1 { get; private set; }
-        public static LocalizedText WheelLine2 { get; private set; }
-        public static LocalizedText WheelLine3 { get; private set; }
-        public static LocalizedText WheelWarn { get; private set; }
-        public static LocalizedText WheelDoneBtn { get; private set; }
+        public static LocalizedText WheelBody { get; private set; }
+        public static LocalizedText WheelPrompt { get; private set; }
+        //通用
+        public static LocalizedText SkipBtn { get; private set; }
 
         public override void SetStaticDefaults() {
             GuideLeadQueue.Register(this);
+
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "深渊之眼");
-            HudLine1 = this.GetLocalization(nameof(HudLine1), () => "手持大比目鱼时，这只眼会常驻在屏幕左下角");
-            HudLine2 = this.GetLocalization(nameof(HudLine2), () => "它显示当前选用的领域技能、深渊复苏进度与领域层数");
-            HudOpenPrompt = this.GetLocalization(nameof(HudOpenPrompt), () => "左键点击眼睛，或按 {0} 打开「深渊图鉴」");
+            HudBody = this.GetLocalization(nameof(HudBody), () => "手持大比目鱼时它常驻屏幕左下角，显示当前技能、深渊复苏与领域层数");
+            HudPrompt = this.GetLocalization(nameof(HudPrompt), () => "左键点击眼睛，或按 {0} 打开深渊图鉴");
             HudOpenBtn = this.GetLocalization(nameof(HudOpenBtn), () => "打开图鉴");
 
-            AtlasTitle = this.GetLocalization(nameof(AtlasTitle), () => "技能海域 与 装备栏");
-            AtlasLine1 = this.GetLocalization(nameof(AtlasLine1), () => "顶部是研究祭坛：投入捕获的鱼，研究完成即可点亮对应技能");
-            AtlasLine2 = this.GetLocalization(nameof(AtlasLine2), () => "屏幕底部这一排凹槽就是「装备栏」，最多放入 10 个技能");
-            AtlasLine3 = this.GetLocalization(nameof(AtlasLine3), () => "长按拖拽技能到装备栏，或在技能详情卡中点击「装备」");
-            AtlasDockLabel = this.GetLocalization(nameof(AtlasDockLabel), () => "装 备 栏");
-            AtlasNextBtn = this.GetLocalization(nameof(AtlasNextBtn), () => "下一步");
+            ResearchTitle = this.GetLocalization(nameof(ResearchTitle), () => "研究祭坛");
+            ResearchBody = this.GetLocalization(nameof(ResearchBody), () => "把捕获的鱼投入祭坛研究，即可解锁对应的领域技能");
+            ResearchPrompt = this.GetLocalization(nameof(ResearchPrompt), () => "点击高亮的研究祭坛，选一条鱼投入研究");
 
-            WheelTitle = this.GetLocalization(nameof(WheelTitle), () => "技能转盘 · 仅可快捷键呼出");
-            WheelLine1 = this.GetLocalization(nameof(WheelLine1), () => "战斗中按住 {0} 呼出技能转盘，从装备栏快速切换当前技能");
-            WheelLine2 = this.GetLocalization(nameof(WheelLine2), () => "移动光标到对应扇区、松开按键即可选定，右键取消");
-            WheelLine3 = this.GetLocalization(nameof(WheelLine3), () => "装备栏为空时转盘不会响应——记得先在祭坛研究并装备技能");
-            WheelWarn = this.GetLocalization(nameof(WheelWarn), () => "切记：转盘只能用快捷键呼出，界面上没有任何按钮——别让它被遗忘");
-            WheelDoneBtn = this.GetLocalization(nameof(WheelDoneBtn), () => "我记住了");
+            EquipTitle = this.GetLocalization(nameof(EquipTitle), () => "技能装备栏");
+            EquipBody = this.GetLocalization(nameof(EquipBody), () => "屏幕底部这排凹槽就是装备栏，研究好的技能会放入这里，至多 10 个");
+            EquipWaiting = this.GetLocalization(nameof(EquipWaiting), () => "正在研究…完成后技能会自动装入装备栏");
+
+            WheelTitle = this.GetLocalization(nameof(WheelTitle), () => "技能转盘");
+            WheelBody = this.GetLocalization(nameof(WheelBody), () => "装备技能后，可在战斗中快速切换当前使用的技能");
+            WheelPrompt = this.GetLocalization(nameof(WheelPrompt), () => "按住 {0} 呼出技能转盘试一次");
+
+            SkipBtn = this.GetLocalization(nameof(SkipBtn), () => "跳过");
         }
         #endregion
 
         private static Phase currentPhase = Phase.Inactive;
         private static float animProgress;
-        //本引导进行/待触发期间应让委托引导回避
+        //当前阶段已停留帧数，用于"卡住一段时间后才出现跳过"
+        private static int phaseTimer;
+        //装备栏阶段：研究完成、技能入栏后的停留帧，给解锁演出留出时间再转入转盘环节
+        private static int holdTimer;
         private const float AnimSpeed = 0.12f;
+        //卡顿约 9 秒后才显示低调的"跳过"兜底，平时以行动推进为主
+        private const int StuckFramesBeforeSkip = 60 * 9;
+        //技能入栏后停留约 2.2 秒，让图鉴的解锁演出播完
+        private const int EquipHoldFrames = 130;
 
         public override void OnWorldUnload() {
             currentPhase = Phase.Inactive;
             animProgress = 0f;
+            phaseTimer = 0;
+            holdTimer = 0;
         }
 
         #region 引导排队协议
@@ -148,6 +156,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 && p.TryGetOverride<HalibutPlayer>(out var hp) && hp.HeldHalibut;
         }
 
+        private static HalibutSave Save => Main.LocalPlayer.GetModPlayer<HalibutSave>();
+
         private static void MarkSeen() {
             Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<HalibutGuideData>().GuideSeen = true;
             currentPhase = Phase.Complete;
@@ -158,6 +168,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private static void SetPhase(Phase phase) {
             currentPhase = phase;
             animProgress = 0f;
+            phaseTimer = 0;
+            holdTimer = 0;
         }
 
         public override void UpdateUI(GameTime gameTime) {
@@ -183,12 +195,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
+            phaseTimer++;
             switch (currentPhase) {
                 case Phase.HudIntro:
                     UpdateHudIntro();
                     break;
-                case Phase.AtlasEquip:
-                    UpdateAtlasEquip();
+                case Phase.Research:
+                    UpdateResearch();
+                    break;
+                case Phase.Equip:
+                    UpdateEquip();
                     break;
                 case Phase.SkillWheel:
                     UpdateSkillWheel();
@@ -202,22 +218,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
+        //打开图鉴（左键点眼睛 / 按键 / 助手按钮）后进入研究环节
         private static void UpdateHudIntro() {
-            //玩家自行打开了图鉴（左键点眼睛 / 按键）→ 进入装备栏介绍
             if (HalibutAtlas.Instance?.IsOpen == true) {
-                SetPhase(Phase.AtlasEquip);
+                SetPhase(Phase.Research);
             }
         }
 
-        private static void UpdateAtlasEquip() {
-            //玩家把图鉴关掉 → 退回上一步，重新引导其打开
-            if (HalibutAtlas.Instance == null || !HalibutAtlas.Instance.IsOpen) {
+        //引导玩家点击研究祭坛投鱼：开始研究或已有解锁即推进
+        private static void UpdateResearch() {
+            HalibutAtlas atlas = HalibutAtlas.Instance;
+            if (atlas == null || !atlas.IsOpen) {
+                //玩家关掉图鉴 → 退回引导其重新打开
                 SetPhase(Phase.HudIntro);
+                return;
+            }
+            HalibutSave save = Save;
+            if (save.IsStudying || save.unlocked.Count > 0) {
+                SetPhase(Phase.Equip);
             }
         }
 
+        //介绍装备栏：研究完成自动装入（loadout 非空）后稍作停留，再转入转盘环节
+        private static void UpdateEquip() {
+            HalibutAtlas atlas = HalibutAtlas.Instance;
+            if (atlas == null || !atlas.IsOpen) {
+                SetPhase(Phase.HudIntro);
+                return;
+            }
+            if (Save.loadout.Count > 0) {
+                //留出图鉴解锁演出时间后再切换
+                if (++holdTimer > EquipHoldFrames) {
+                    StartSkillWheel();
+                }
+            }
+            else {
+                holdTimer = 0;
+            }
+        }
+
+        //引导玩家亲手呼出一次技能转盘：转盘开启即完成
         private static void UpdateSkillWheel() {
-            //该阶段聚焦转盘，确保图鉴保持关闭
+            HalibutWheelController ctrl = HalibutWheelController.LocalInstance;
+            if (ctrl != null && (ctrl.IsOpen || ctrl.OpenProgress > 0.3f)) {
+                MarkSeen();
+                return;
+            }
+            //该阶段聚焦转盘，确保图鉴保持关闭（否则转盘无法呼出）
             if (HalibutAtlas.Instance?.IsOpen == true) {
                 HalibutAtlas.Instance.Close();
             }
@@ -228,7 +275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (atlas != null && !atlas.IsOpen) {
                 atlas.Open();
             }
-            SetPhase(Phase.AtlasEquip);
+            SetPhase(Phase.Research);
         }
 
         private static void StartSkillWheel() {
@@ -264,8 +311,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 case Phase.HudIntro:
                     DrawHudIntro(sb, time);
                     break;
-                case Phase.AtlasEquip:
-                    DrawAtlasEquip(sb, time);
+                case Phase.Research:
+                    DrawResearch(sb, time);
+                    break;
+                case Phase.Equip:
+                    DrawEquip(sb, time);
                     break;
                 case Phase.SkillWheel:
                     DrawSkillWheel(sb, time);
@@ -281,7 +331,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             DrawTargetHighlight(sb, eye, 30f, time, a);
 
-            const int cardW = 340, cardH = 188;
+            const int cardW = 330, cardH = 152;
             float slide = (1f - ease) * 34f;
             float x = MathHelper.Clamp(eye.X + 62f - slide, 16f, HalibutTheme.UIScreenW - cardW - 16f);
             float y = MathHelper.Clamp(eye.Y - cardH - 22f, 16f, HalibutTheme.UIScreenH - cardH - 16f);
@@ -291,77 +341,122 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             DrawConnector(sb, new Vector2(card.X + 26f, card.Bottom), eye, a, time);
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 16f, py = card.Y + 14f, wrap = cardW - 32f;
-
+            float px = card.X + 16f, py = card.Y + 13f, wrap = cardW - 32f;
             HalibutRenderer.DrawGlowText(sb, HudTitle.Value, new Vector2(px, py),
-                HalibutTheme.GlowHi * a, HalibutTheme.Glow * (0.4f * a), 0.92f);
-            py += 27f;
+                HalibutTheme.GlowHi * a, HalibutTheme.Glow * (0.4f * a), 0.9f);
+            py += 26f;
             DrawDivider(sb, px, py, cardW - 32, HalibutTheme.Glow, a);
-            py += 9f;
-
-            py = DrawBody(sb, font, HudLine1.Value, px, py, wrap, 0.66f, HalibutTheme.Text, a);
-            py = DrawBody(sb, font, HudLine2.Value, px, py, wrap, 0.66f, HalibutTheme.TextDim, a);
-            py += 5f;
+            py += 8f;
+            py = DrawBody(sb, font, HudBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
+            py += 3f;
             string openKey = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
-            DrawBody(sb, font, string.Format(HudOpenPrompt.Value, openKey), px, py, wrap, 0.68f, HalibutTheme.GlowHi, a);
+            DrawBody(sb, font, string.Format(HudPrompt.Value, openKey), px, py, wrap, 0.68f, HalibutTheme.GlowHi, a);
 
-            if (DrawButton(sb, card, HudOpenBtn.Value, HalibutTheme.Glow, time)) {
+            //"打开图鉴"助手按钮：等价于按键/点眼，始终可用
+            if (DrawActionButton(sb, card, HudOpenBtn.Value, HalibutTheme.Glow, time)) {
                 OpenAtlasAndAdvance();
             }
         }
         #endregion
 
-        #region 阶段2：技能海域与装备栏
-        private static void DrawAtlasEquip(SpriteBatch sb, float time) {
+        #region 阶段2：研究祭坛
+        private static void DrawResearch(SpriteBatch sb, float time) {
             HalibutAtlas atlas = HalibutAtlas.Instance;
             if (atlas == null) {
                 return;
             }
             float a = animProgress;
-            float ease = VaultUtils.EaseOutCubic(a);
+            bool panelOpen = atlas.AltarPanelOpen;
+            bool altarVisible = !panelOpen && atlas.SeaViewActive;
+            Vector2 altar = atlas.AltarCenter;
+
+            if (altarVisible) {
+                DrawTargetHighlight(sb, altar, AtlasStudyAltar.Radius + 6f, time, a);
+            }
+
+            const int cardW = 322, cardH = 150;
+            float x, y;
+            if (panelOpen) {
+                //选鱼面板占屏时把卡片挪到右上角让位
+                x = MathHelper.Clamp(HalibutTheme.UIScreenW - cardW - 20f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
+                y = 78f;
+            }
+            else {
+                x = MathHelper.Clamp(altar.X - cardW * 0.5f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
+                y = MathHelper.Clamp(altar.Y + AtlasStudyAltar.Radius + 28f, 84f, HalibutTheme.UIScreenH - cardH - 16f);
+            }
+            var card = new Rectangle((int)x, (int)y, cardW, cardH);
+
+            DrawCard(sb, card, HalibutTheme.Accent, 0.5f);
+            if (altarVisible && card.Y > altar.Y) {
+                DrawConnector(sb, new Vector2(card.Center.X, card.Y), altar, a, time);
+            }
+
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            float px = card.X + 16f, py = card.Y + 13f, wrap = cardW - 32f;
+            HalibutRenderer.DrawGlowText(sb, ResearchTitle.Value, new Vector2(px, py),
+                HalibutTheme.Accent * a, HalibutTheme.Accent * (0.35f * a), 0.9f);
+            py += 26f;
+            DrawDivider(sb, px, py, cardW - 32, HalibutTheme.Accent, a);
+            py += 8f;
+            py = DrawBody(sb, font, ResearchBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
+            py += 3f;
+            DrawBody(sb, font, ResearchPrompt.Value, px, py, wrap, 0.66f, HalibutTheme.GlowHi, a);
+
+            if (phaseTimer > StuckFramesBeforeSkip && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
+                SetPhase(Phase.Equip);
+            }
+        }
+        #endregion
+
+        #region 阶段3：技能装备栏
+        private static void DrawEquip(SpriteBatch sb, float time) {
+            HalibutAtlas atlas = HalibutAtlas.Instance;
+            if (atlas == null) {
+                return;
+            }
+            float a = animProgress;
+            HalibutSave save = Save;
 
             Rectangle dock = atlas.SeaViewActive ? atlas.DockBounds : Rectangle.Empty;
             if (dock.Width > 0) {
                 DrawRegionHighlight(sb, dock, time, a);
-                HalibutRenderer.DrawGlowTextCentered(sb, AtlasDockLabel.Value,
-                    new Vector2(dock.Center.X, dock.Top - 15f),
-                    HalibutTheme.Accent * a, HalibutTheme.Deep * (0.4f * a), 0.78f);
             }
 
-            const int cardW = 322, cardH = 198;
-            float slide = (1f - ease) * 40f;
-            float x = MathHelper.Clamp(HalibutTheme.UIScreenW - cardW - 24f + slide,
-                16f, HalibutTheme.UIScreenW - cardW - 16f);
-            float y = MathHelper.Clamp((HalibutTheme.UIScreenH - cardH) * 0.5f,
-                72f, HalibutTheme.UIScreenH - cardH - 16f);
+            const int cardW = 322, cardH = 152;
+            float x = MathHelper.Clamp(HalibutTheme.UIScreenW - cardW - 24f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
+            float y = MathHelper.Clamp((HalibutTheme.UIScreenH - cardH) * 0.5f, 72f, HalibutTheme.UIScreenH - cardH - 16f);
             var card = new Rectangle((int)x, (int)y, cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.Accent, 0.55f);
             if (dock.Width > 0) {
-                DrawConnector(sb, new Vector2(card.X + 24f, card.Bottom),
-                    new Vector2(dock.Center.X, dock.Top), a, time);
+                DrawConnector(sb, new Vector2(card.X + 24f, card.Bottom), new Vector2(dock.Center.X, dock.Top), a, time);
             }
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 16f, py = card.Y + 14f, wrap = cardW - 32f;
-
-            HalibutRenderer.DrawGlowText(sb, AtlasTitle.Value, new Vector2(px, py),
-                HalibutTheme.Accent * a, HalibutTheme.Accent * (0.35f * a), 0.92f);
-            py += 27f;
+            float px = card.X + 16f, py = card.Y + 13f, wrap = cardW - 32f;
+            HalibutRenderer.DrawGlowText(sb, EquipTitle.Value, new Vector2(px, py),
+                HalibutTheme.Accent * a, HalibutTheme.Accent * (0.35f * a), 0.9f);
+            py += 26f;
             DrawDivider(sb, px, py, cardW - 32, HalibutTheme.Accent, a);
-            py += 9f;
+            py += 8f;
+            py = DrawBody(sb, font, EquipBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
+            py += 3f;
+            //研究进行中：提示等待自动装入，不打扰、不显啰嗦
+            if (save.IsStudying && save.loadout.Count == 0) {
+                Color waitCol = Color.Lerp(HalibutTheme.GlowHi, HalibutTheme.Accent, HalibutTheme.Breath(time, 1f, 3f));
+                DrawBody(sb, font, EquipWaiting.Value, px, py, wrap, 0.66f, waitCol, a);
+            }
 
-            py = DrawBody(sb, font, AtlasLine1.Value, px, py, wrap, 0.64f, HalibutTheme.Text, a);
-            py = DrawBody(sb, font, AtlasLine2.Value, px, py, wrap, 0.64f, HalibutTheme.GlowHi, a);
-            DrawBody(sb, font, AtlasLine3.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
-
-            if (DrawButton(sb, card, AtlasNextBtn.Value, HalibutTheme.Glow, time)) {
+            //仅在没有进行中研究、尚无技能入栏、且确实卡住时给跳过兜底（入栏后会自动转入下一步）
+            if (!save.IsStudying && save.loadout.Count == 0 && phaseTimer > StuckFramesBeforeSkip
+                && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 StartSkillWheel();
             }
         }
         #endregion
 
-        #region 阶段3：技能转盘
+        #region 阶段4：技能转盘
         private static void DrawSkillWheel(SpriteBatch sb, float time) {
             float a = animProgress;
             Vector2 center = new(HalibutTheme.UIScreenW * 0.5f,
@@ -369,29 +464,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             DrawWheelHint(sb, center, time, a);
 
-            const int cardW = 436, cardH = 240;
+            const int cardW = 340, cardH = 152;
             var card = new Rectangle((int)(center.X - cardW * 0.5f), (int)(center.Y - cardH * 0.5f), cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.GlowHi, 0.7f);
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 18f, py = card.Y + 15f, wrap = cardW - 36f;
+            float px = card.X + 16f, py = card.Y + 14f, wrap = cardW - 32f;
             string wheelKey = CWRKeySystem.Halibut_SkillWheel.ToTooltipString(CWRKeySystem.Notbound.Value);
 
             HalibutRenderer.DrawGlowText(sb, WheelTitle.Value, new Vector2(px, py),
-                HalibutTheme.GlowHi * a, HalibutTheme.Glow * (0.4f * a), 0.94f);
-            py += 28f;
-            DrawDivider(sb, px, py, cardW - 36, HalibutTheme.GlowHi, a);
-            py += 9f;
+                HalibutTheme.GlowHi * a, HalibutTheme.Glow * (0.4f * a), 0.92f);
+            py += 27f;
+            DrawDivider(sb, px, py, cardW - 32, HalibutTheme.GlowHi, a);
+            py += 8f;
+            py = DrawBody(sb, font, WheelBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
+            py += 3f;
+            DrawBody(sb, font, string.Format(WheelPrompt.Value, wheelKey), px, py, wrap, 0.7f, HalibutTheme.GlowHi, a);
 
-            py = DrawBody(sb, font, string.Format(WheelLine1.Value, wheelKey), px, py, wrap, 0.66f, HalibutTheme.Text, a);
-            py = DrawBody(sb, font, WheelLine2.Value, px, py, wrap, 0.66f, HalibutTheme.TextDim, a);
-            py = DrawBody(sb, font, WheelLine3.Value, px, py, wrap, 0.66f, HalibutTheme.Text, a);
-            py += 4f;
-            Color warnCol = Color.Lerp(HalibutTheme.Accent, HalibutTheme.Caustic, HalibutTheme.Breath(time, 2f, 4f));
-            DrawBody(sb, font, WheelWarn.Value, px, py, wrap, 0.66f, warnCol, a);
-
-            if (DrawButton(sb, card, WheelDoneBtn.Value, HalibutTheme.GlowHi, time)) {
+            if (phaseTimer > StuckFramesBeforeSkip && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 MarkSeen();
             }
         }
@@ -439,9 +530,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             return y;
         }
 
-        private static bool DrawButton(SpriteBatch sb, Rectangle card, string text, Color accent, float time) {
-            const int btnW = 132, btnH = 28;
-            var rect = new Rectangle((int)(card.Center.X - btnW * 0.5f), card.Bottom - btnH - 12, btnW, btnH);
+        //右下角小按钮（助手/跳过），返回是否被点击
+        private static bool DrawActionButton(SpriteBatch sb, Rectangle card, string text, Color accent, float time) {
+            const int btnW = 98, btnH = 24;
+            var rect = new Rectangle(card.Right - btnW - 12, card.Bottom - btnH - 11, btnW, btnH);
             bool hovered = rect.Contains(HalibutTheme.UIMouse.ToPoint());
             HalibutRenderer.DrawCapsuleButton(sb, rect, text, accent, hovered, false, animProgress, time);
             if (hovered) {

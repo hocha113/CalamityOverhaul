@@ -114,6 +114,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         /// <summary>装备坞外接矩形（引导高亮用），仅在海域视图下有效</summary>
         public Rectangle DockBounds => Sea.GetDockBounds();
 
+        /// <summary>研究祭坛屏幕中心（引导高亮用），仅在海域视图下有效</summary>
+        public Vector2 AltarCenter => Sea.Altar.ScreenCenter;
+
+        /// <summary>选鱼面板是否打开（引导让位用）</summary>
+        public bool AltarPanelOpen => Sea.Altar.PanelOpen;
+
         public override bool CloseOnEscape => true;
 
         public override Terraria.Audio.SoundStyle? OpenSound => SoundID.MenuOpen with { Pitch = -0.35f, Volume = 0.6f };

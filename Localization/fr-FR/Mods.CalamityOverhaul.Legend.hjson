@@ -64,22 +64,19 @@ HalibutText: {
 
 	HalibutHudLead: {
 		HudTitle: Œil de l'abîme
-		HudLine1: Tant que le Grand flétan est tenu, cet œil reste en bas à gauche de l'écran
-		HudLine2: Il affiche votre compétence de domaine équipée, la progression de résurrection abyssale et les couches du domaine
-		HudOpenPrompt: Clic gauche sur l'œil, ou appuyez sur {0} pour ouvrir l'Atlas abyssal
+		HudBody: Tant que le Grand flétan est tenu, cet œil reste en bas à gauche et affiche compétence, résurrection et couches du domaine
+		HudPrompt: Clic gauche sur l'œil, ou appuyez sur {0} pour ouvrir l'Atlas abyssal
 		HudOpenBtn: Ouvrir l'Atlas
-		AtlasTitle: Mer des compétences et Équipement
-		AtlasLine1: En haut se trouve l'Autel de recherche — déposez-y des poissons capturés pour débloquer la compétence associée
-		AtlasLine2: Cette rangée d'emplacements en bas est l'Équipement — il contient jusqu'à 10 compétences
-		AtlasLine3: Glissez une compétence vers l'Équipement en maintenant le clic, ou cliquez sur Équiper dans sa fiche
-		AtlasDockLabel: Équipement
-		AtlasNextBtn: Suivant
-		WheelTitle: Roue des compétences · Raccourci uniquement
-		WheelLine1: En combat, maintenez {0} pour invoquer la roue des compétences et changer la compétence active depuis l'équipement
-		WheelLine2: Déplacez le curseur sur un secteur et relâchez la touche pour sélectionner ; clic droit pour annuler
-		WheelLine3: La roue ne répond pas si l'équipement est vide — recherchez et équipez d'abord une compétence
-		WheelWarn: Rappel — la roue ne s'invoque QUE par raccourci, aucun bouton à l'écran ne lui est dédié
-		WheelDoneBtn: Compris
+		ResearchTitle: Autel de recherche
+		ResearchBody: Déposez un poisson capturé sur l'autel pour l'étudier et débloquer la compétence associée
+		ResearchPrompt: Cliquez sur l'Autel de recherche en surbrillance et choisissez un poisson à étudier
+		EquipTitle: Équipement
+		EquipBody: Cette rangée d'emplacements en bas est votre équipement ; les compétences étudiées y vont, jusqu'à 10
+		EquipWaiting: Étude en cours… la compétence rejoindra l'équipement une fois terminée
+		WheelTitle: Roue des compétences
+		WheelBody: Une compétence équipée, changez la compétence active à la volée en combat
+		WheelPrompt: Maintenez {0} pour invoquer la roue des compétences — essayez
+		SkipBtn: Passer
 	}
 
 	DomainUI: {

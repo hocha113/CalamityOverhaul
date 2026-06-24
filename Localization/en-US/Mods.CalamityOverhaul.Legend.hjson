@@ -64,22 +64,19 @@ HalibutText: {
 
 	HalibutHudLead: {
 		HudTitle: Abyssal Eye
-		HudLine1: While the Great Halibut is held, this eye stays at the lower-left of your screen
-		HudLine2: It shows your equipped domain skill, abyssal resurrection progress and domain layers
-		HudOpenPrompt: Left-click the eye, or press {0} to open the Abyssal Atlas
+		HudBody: While the Halibut is held, this eye sits at the lower-left, showing your skill, resurrection and domain layers
+		HudPrompt: Left-click the eye, or press {0} to open the Abyssal Atlas
 		HudOpenBtn: Open Atlas
-		AtlasTitle: Skill Sea & Loadout
-		AtlasLine1: Up top is the Research Altar: feed it caught fish to unlock the matching skill
-		AtlasLine2: That row of sockets at the bottom is the Loadout — it holds up to 10 skills
-		AtlasLine3: Hold-drag a skill onto the Loadout, or click Equip in a skill's detail card
-		AtlasDockLabel: L O A D O U T
-		AtlasNextBtn: Next
-		WheelTitle: Skill Wheel · Hotkey Only
-		WheelLine1: In combat, hold {0} to summon the skill wheel and swap your active skill from the loadout
-		WheelLine2: Move the cursor onto a sector and release the key to select; right-click to cancel
-		WheelLine3: The wheel won't respond while your loadout is empty — research and equip a skill first
-		WheelWarn: Remember: the wheel can ONLY be summoned by hotkey — there is no on-screen button for it
-		WheelDoneBtn: Got it
+		ResearchTitle: Research Altar
+		ResearchBody: Drop a caught fish onto the altar to research it and unlock the matching skill
+		ResearchPrompt: Click the highlighted Research Altar and pick a fish to study
+		EquipTitle: Loadout
+		EquipBody: That row of sockets at the bottom is your loadout; researched skills land here, up to 10
+		EquipWaiting: Researching... the skill is added to your loadout when done
+		WheelTitle: Skill Wheel
+		WheelBody: Once a skill is equipped, swap your active skill on the fly in combat
+		WheelPrompt: Hold {0} to summon the skill wheel — give it a try
+		SkipBtn: Skip
 	}
 
 	DomainUI: {
