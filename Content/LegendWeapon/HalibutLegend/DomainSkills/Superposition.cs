@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
@@ -630,8 +630,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public bool Completed => state == CannonState.Finish;
 
         //配色：青蓝水流 + 紫电叠加；满层转白金。A=255 以便加算/PRT 正常显色
-        private Color GlowColor => infinite ? new Color(255, 226, 150) : new Color(150, 120, 255);
-        private Color FlashColor => infinite ? new Color(255, 244, 206) : new Color(190, 170, 255);
+        private Color GlowColor => infinite ? new Color(55, 26, 150) : new Color(50, 20, 255);
+        private Color FlashColor => infinite ? new Color(55, 44, 206) : new Color(90, 70, 255);
 
         public override void SetDefaults() {
             Projectile.width = 80;
@@ -933,8 +933,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             wavePhase = Main.rand.NextFloat(MathHelper.TwoPi);
             waveFreq = Main.rand.NextFloat(0.16f, 0.26f);
             this.echoLayers = echoLayers;
-            coreTint = infinite ? new Color(255, 244, 206) : new Color(140, 214, 255);
-            glowTint = infinite ? new Color(255, 226, 150) : new Color(150, 120, 255);
+            coreTint = infinite ? new Color(55, 44, 206) : new Color(40, 14, 255);
+            glowTint = infinite ? new Color(55, 26, 150) : new Color(50, 20, 255);
         }
 
         public void Update(List<FishEntity> swarm) {
@@ -1049,7 +1049,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             float rot = FishRotation + (FishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
             Vector2 drawPos = Position - Main.screenPosition;
 
-            Main.spriteBatch.Draw(fishTex, drawPos, rect, coreTint * a, rot, origin, FishScale, effects, 0f);
+            Main.spriteBatch.Draw(fishTex, drawPos, rect, Color.White * a, rot, origin, FishScale, effects, 0f);
 
             //高速时叠一层偏白描边，强调突进锋面
             float speedT = MathHelper.Clamp(Velocity.Length() / 24f, 0f, 1f);
@@ -1120,8 +1120,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (!Main.dedServ && particleSpawnTimer >= 5 && fishSwarm.Count > 0) {
                 particleSpawnTimer = 0;
                 var fish = fishSwarm[Main.rand.Next(fishSwarm.Count)];
-                Color tint = Infinite ? new Color(255, 226, 150) : new Color(150, 190, 255);
-                PRTLoader.NewParticle<PRT_Light>(fish.Position, -fish.Velocity * 0.15f, tint, 0.45f).Configure(14);
+                Color tint = Infinite ? new Color(55, 26, 150) : new Color(50, 90, 255);
+                PRTLoader.NewParticle<PRT_Light>(fish.Position, -fish.Velocity * 0.15f, tint, 0.15f).Configure(14);
             }
 
             //如果所有鱼都消失，移除弹幕
@@ -1146,7 +1146,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return;
             }
             //命中冲击：加算光爆 + 偶发脉冲环
-            Color tint = Infinite ? new Color(255, 232, 170) : new Color(150, 200, 255);
+            Color tint = Infinite ? new Color(55, 32, 170) : new Color(50, 100, 255);
             for (int i = 0; i < 5; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
                 PRTLoader.NewParticle<PRT_Light>(target.Center, vel, tint, Main.rand.NextFloat(0.5f, 0.9f)).Configure(20, hueShift: 0.01f);
@@ -1161,7 +1161,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return;
             }
             //消散：洪流尽头的余光
-            Color tint = Infinite ? new Color(255, 226, 150) : new Color(150, 200, 255);
+            Color tint = Infinite ? new Color(55, 26, 150) : new Color(50, 100, 255);
             for (int i = 0; i < 8; i++) {
                 Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
                 PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel, tint, Main.rand.NextFloat(0.5f, 0.8f)).Configure(24);
