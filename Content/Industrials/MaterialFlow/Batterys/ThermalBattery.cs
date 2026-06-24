@@ -63,8 +63,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         public const int SheetSquare = 18;
         [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryTile")]
         private static Asset<Texture2D> tileAsset = null;
-        [VaultLoaden(CWRConstant.Asset + "MaterialFlow/ThermalBatteryFull")]
-        private static Asset<Texture2D> tileFullAsset = null;
         public override void SetStaticDefaults() {
             Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
@@ -119,17 +117,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
-            //着色器可用时由 ThermalBatteryTP.Draw 绘制熔核，这里只画金属外壳
-            bool shaderCore = EffectLoader.ThermalBatteryCore?.Value != null;
+            //仅绘制金属外壳；熔核由 ThermalBatteryCoreDraw 合批绘制在物块层下，透过透明窗口透出
             if (!t.IsHalfBlock && t.Slope == 0) {
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, thermal.fullLoad ? t.TileFrameY : frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                if (!shaderCore) {
-                    //回退：旧的内部发光贴图随电量做透明度渐变
-                    Texture2D glow = tileFullAsset.Value;
-                    spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                        , thermal.drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                }
             }
             else if (t.IsHalfBlock) {
                 spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
@@ -144,7 +135,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         public override int TargetTileID => ModContent.TileType<ThermalBatteryTile>();
         public override int TargetItem => ModContent.ItemType<ThermalBattery>();
         internal int frame;
-        internal Color drawColor;
         internal float oldUEValue;
         internal int activeTime;
         internal const float _maxUEValue = 8000;
@@ -165,7 +155,6 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             }
 
             float ratio = MachineData.UEvalue / MaxUEValue;
-            drawColor = Color.White * ratio;
             if (!ratioInited) {
                 displayRatio = ratio;
                 ratioInited = true;

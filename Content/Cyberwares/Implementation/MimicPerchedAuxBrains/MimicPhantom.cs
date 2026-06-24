@@ -230,6 +230,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
 
             phantomDrawPlayer ??= new Player();
             Player gp = phantomDrawPlayer;
+            //标记为陈列体：tileRangeX/Y 是全局静态，ResetEffects 在 whoAmI==myPlayer 时会把它刷回原版 5/4，
+            //而傀儡 whoAmI 默认 0、单人下恰好等于 myPlayer，会在绘制阶段抹掉本人与其他模组的接触距离加成
+            gp.isDisplayDollOrInanimate = true;
             gp.CopyVisuals(owner);
             gp.ResetEffects();
             gp.position = Projectile.Center - owner.Size * 0.5f;

@@ -197,42 +197,26 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>
-        /// 能量层是否由电网着色器统一批次绘制：仅基础管道 + 着色器可用时为 true。
-        /// 创造管道(子类)与着色器缺失时，能量层在本 TP 内联平涂回退
-        /// </summary>
-        private bool EnergyDrawnByNetwork => GetType() == typeof(UEPipelineTP) && EffectLoader.UEPipelineFlow?.Value != null;
-
-        /// <summary>预绘制非管道连接臂（金属外壳；能量层视情况内联回退）</summary>
+        /// <summary>预绘制非管道连接臂金属外壳（能量层由对应合批器经着色器统一绘制）</summary>
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             if (Shape == PipelineShape.Cross) return;
 
-            bool inlineEnergy = !EnergyDrawnByNetwork;
-            Color energyColor = inlineEnergy ? GetEnergyDrawColor(false) : default;
             foreach (var side in SideState) {
                 //发电机/电池等非管道臂
                 if (side.canDraw && side.LinkType != PipelineLinkType.Pipeline) {
-                    if (inlineEnergy) {
-                        side.DrawEnergy(spriteBatch, energyColor);
-                    }
                     side.DrawCasing(spriteBatch);
                 }
             }
         }
 
-        /// <summary>按形状绘制管道本体（金属外壳；能量层视情况内联回退）</summary>
+        /// <summary>按形状绘制管道本体金属外壳（能量层由对应合批器经着色器统一绘制）</summary>
         public override void Draw(SpriteBatch spriteBatch) {
-            bool inlineEnergy = !EnergyDrawnByNetwork;
-            Color energyColor = inlineEnergy ? GetEnergyDrawColor(false) : default;
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
 
             //管道间连接臂
             if (Shape != PipelineShape.Cross) {
                 foreach (var side in SideState) {
                     if (side.canDraw && side.LinkType == PipelineLinkType.Pipeline) {
-                        if (inlineEnergy) {
-                            side.DrawEnergy(spriteBatch, energyColor);
-                        }
                         side.DrawCasing(spriteBatch);
                     }
                 }
@@ -241,27 +225,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             Vector2 drawPos = PosInWorld - Main.screenPosition;
             switch (Shape) {
                 case PipelineShape.Cross:
-                    if (inlineEnergy) DrawCrossEnergy(spriteBatch, energyColor);
                     DrawCrossCasing(spriteBatch, lightingColor);
                     break;
                 case PipelineShape.ThreeWay:
-                    if (inlineEnergy) DrawThreeWayEnergy(spriteBatch, drawPos, energyColor);
                     DrawThreeWayCasing(spriteBatch, drawPos, lightingColor);
                     break;
                 case PipelineShape.Corner:
-                    if (inlineEnergy) DrawCornerEnergy(spriteBatch, drawPos, energyColor);
                     DrawCornerCasing(spriteBatch, drawPos, lightingColor);
                     break;
                 case PipelineShape.Straight:
                     break;
                 case PipelineShape.Endpoint:
-                    if (inlineEnergy) DrawEndpointEnergy(spriteBatch, drawPos, energyColor);
                     DrawEndpointCasing(spriteBatch, drawPos, lightingColor);
                     break;
             }
         }
 
-        /// <summary>能量层：本体 + 所有连接臂，由 <see cref="UEPipelineEnergyDraw"/> 着色器批次统一调用</summary>
+        /// <summary>能量层：本体 + 所有连接臂，由合批器（基础/创造）经各自着色器统一调用</summary>
         internal void DrawEnergy(SpriteBatch spriteBatch, Color energyColor) {
             if (MachineData == null) return;
 
@@ -292,18 +272,11 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>
-        /// 能量绘制色。着色器模式：rgb=色调(BaseColor)，a=电量比例(0~1)供着色器读取强度；
-        /// 回退模式：BaseColor×电量比例 直接平涂
-        /// </summary>
-        internal Color GetEnergyDrawColor(bool shaderMode) {
-            if (shaderMode) {
-                //着色器读取真实充盈度(0~1)作强度，使管内含量随亮度真实变化
-                Color c = BaseColor;
-                c.A = (byte)(MathHelper.Clamp(MachineData.UEvalue / MaxUEValue, 0f, 1f) * 255);
-                return c;
-            }
-            return BaseColor * (MachineData.UEvalue / (MaxUEValue * 0.5f));
+        /// <summary>能量绘制色：rgb=色调(BaseColor)，a=真实充盈度(0~1)供着色器读取强度</summary>
+        internal Color GetEnergyDrawColor() {
+            Color c = BaseColor;
+            c.A = (byte)(MathHelper.Clamp(MachineData.UEvalue / MaxUEValue, 0f, 1f) * 255);
+            return c;
         }
 
         #region 分形状的能量层 / 外壳层
@@ -378,7 +351,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                 },
                 tp => {
                     var pipe = (UEPipelineTP)tp;
-                    pipe.DrawEnergy(spriteBatch, pipe.GetEnergyDrawColor(true));
+                    pipe.DrawEnergy(spriteBatch, pipe.GetEnergyDrawColor());
                 });
             return true;
         }

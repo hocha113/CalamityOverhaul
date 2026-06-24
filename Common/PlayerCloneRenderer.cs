@@ -24,6 +24,9 @@ namespace CalamityOverhaul.Common
                 return;
             }
             dummy ??= new Player();
+            //标记为陈列体：tileRangeX/Y 是全局静态，ResetEffects 在 whoAmI==myPlayer 时会把它刷回原版 5/4，
+            //而傀儡 whoAmI 默认 0、单人下恰好等于 myPlayer，会在绘制阶段抹掉本人与其他模组的接触距离加成
+            dummy.isDisplayDollOrInanimate = true;
             //拷外观→清效果：克隆体保留护甲/染料/发型等外观，但不携带真实玩家的 buff/义体/光环状态
             dummy.CopyVisuals(owner);
             dummy.ResetEffects();
