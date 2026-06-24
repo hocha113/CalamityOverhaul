@@ -1,4 +1,5 @@
-﻿using InnoVault.TileProcessors;
+﻿using CalamityOverhaul.Common;
+using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -118,12 +119,17 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
             Vector2 offset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
             Vector2 drawOffset = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y) + offset;
             Color drawColor = Lighting.GetColor(i, j);
-            Texture2D glow = tileFullAsset.Value;
+            //着色器可用时由 ThermalBatteryTP.Draw 绘制熔核，这里只画金属外壳
+            bool shaderCore = EffectLoader.ThermalBatteryCore?.Value != null;
             if (!t.IsHalfBlock && t.Slope == 0) {
                 spriteBatch.Draw(tex, drawOffset, new Rectangle(frameXPos, thermal.fullLoad ? t.TileFrameY : frameYPos, 16, 16)
                     , drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
-                spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
-                    , thermal.drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                if (!shaderCore) {
+                    //回退：旧的内部发光贴图随电量做透明度渐变
+                    Texture2D glow = tileFullAsset.Value;
+                    spriteBatch.Draw(glow, drawOffset, new Rectangle(frameXPos, frameYPos, 16, 16)
+                        , thermal.drawColor, 0.0f, Vector2.Zero, 1f, SpriteEffects.None, 0.0f);
+                }
             }
             else if (t.IsHalfBlock) {
                 spriteBatch.Draw(tex, drawOffset + Vector2.UnitY * 8f, new Rectangle(frameXPos, frameYPos, 16, 16)
@@ -144,20 +150,63 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys
         internal const float _maxUEValue = 8000;
         public override float MaxUEValue => _maxUEValue;
         internal bool fullLoad;
+        //熔核着色器用：平滑后的电量比例与初始化标记
+        internal float displayRatio;
+        private bool ratioInited;
+        //熔腔在电池本地坐标(0~1)中的范围，依据美术开窗测得，可微调
+        private static readonly Vector2 ChamberMin = new(0.21f, 0.20f);
+        private static readonly Vector2 ChamberMax = new(0.71f, 0.82f);
         public override void UpdateMachine() {
             fullLoad = MachineData.UEvalue >= MaxUEValue;
             if (--activeTime > 0 || fullLoad) {
                 VaultUtils.ClockFrame(ref frame, 5, 5);
             }
 
-            drawColor = Color.White * (MachineData.UEvalue / MaxUEValue);
+            float ratio = MachineData.UEvalue / MaxUEValue;
+            drawColor = Color.White * ratio;
+            if (!ratioInited) {
+                displayRatio = ratio;
+                ratioInited = true;
+            }
+            else {
+                displayRatio = MathHelper.Lerp(displayRatio, ratio, 0.1f);
+            }
             if (oldUEValue != MachineData.UEvalue) {
                 activeTime = 60;
                 oldUEValue = MachineData.UEvalue;
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) { }
+        //熔核绘制在墙体之后、物块之前（PreTileDraw 层），让金属外壳的透明窗口把熔核透出
+        public override void PreTileDraw(SpriteBatch spriteBatch) {
+            Effect effect = EffectLoader.ThermalBatteryCore?.Value;
+            if (effect == null) {
+                return;//着色器缺失时交由 Tile.PreDraw 的 CPU 回退接管
+            }
+
+            float ratio = MathHelper.Clamp(displayRatio, 0f, 1f);
+            float activity = MathHelper.Clamp(activeTime / 60f, 0f, 1f);
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uAlpha"]?.SetValue(1f);
+            effect.Parameters["uResolution"]?.SetValue(new Vector2(Width, Height));
+            effect.Parameters["uFill"]?.SetValue(ratio);
+            effect.Parameters["uActivity"]?.SetValue(activity);
+            effect.Parameters["uChamberMin"]?.SetValue(ChamberMin);
+            effect.Parameters["uChamberMax"]?.SetValue(ChamberMax);
+
+            Vector2 drawPos = PosInWorld - Main.screenPosition;
+            drawPos.X += 4;
+            Rectangle dest = new((int)drawPos.X, (int)drawPos.Y, Width - 4, Height);
+
+            //切到 Immediate 应用熔核着色器，绘制后恢复 PreTileDraw 批次(Main.Transform)
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.Transform);
+            spriteBatch.Draw(VaultAsset.placeholder2.Value, dest, Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+        }
 
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
