@@ -108,6 +108,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
         public override bool Active => IsOpen || OpenProgress > 0.01f;
 
+        /// <summary>当前是否处于「技能海域」视图（引导高亮装备坞时判定）</summary>
+        public bool SeaViewActive => view == AtlasView.Sea;
+
+        /// <summary>装备坞外接矩形（引导高亮用），仅在海域视图下有效</summary>
+        public Rectangle DockBounds => Sea.GetDockBounds();
+
         public override bool CloseOnEscape => true;
 
         public override Terraria.Audio.SoundStyle? OpenSound => SoundID.MenuOpen with { Pitch = -0.35f, Volume = 0.6f };

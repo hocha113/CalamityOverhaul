@@ -383,6 +383,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         /// </summary>
         private float DockHideOffset => VaultUtils.EaseInCubic(chromeHide) * 92f;
 
+        /// <summary>
+        /// 装备坞的大致外接矩形（引导高亮用），随收起偏移一并移动
+        /// </summary>
+        public Rectangle GetDockBounds() {
+            Vector2 left = DockSlotPos(lastContentArea, 0);
+            Vector2 right = DockSlotPos(lastContentArea, HalibutTheme.DockSlotCount - 1);
+            int r = (int)HalibutTheme.DockSlotR;
+            int x = (int)left.X - r - 8;
+            int top = (int)MathF.Min(left.Y, right.Y) - r - 6;
+            int w = (int)(right.X - left.X) + (r + 8) * 2;
+            int h = r * 2 + 16;
+            return new Rectangle(x, top, w, h);
+        }
+
         private Vector2 DockSlotPos(Rectangle contentArea, int index) {
             float spacing = HalibutTheme.DockSlotR * 2f + 9f;
             float startX = contentArea.Center.X - (HalibutTheme.DockSlotCount - 1) * spacing * 0.5f;

@@ -62,6 +62,26 @@ HalibutText: {
 		StudyingLabel: Wird erforscht
 	}
 
+	HalibutHudLead: {
+		HudTitle: Auge des Abgrunds
+		HudLine1: Während der Große Heilbutt gehalten wird, bleibt dieses Auge unten links auf dem Bildschirm
+		HudLine2: Es zeigt deine ausgerüstete Domänenfähigkeit, den Fortschritt der Abgrund-Wiederbelebung und die Domänenschichten
+		HudOpenPrompt: Linksklick auf das Auge oder {0} drücken, um den Abgrund-Atlas zu öffnen
+		HudOpenBtn: Atlas öffnen
+		AtlasTitle: Fähigkeitsmeer & Ausrüstung
+		AtlasLine1: Oben ist der Forschungsaltar — lege gefangene Fische hinein, um die zugehörige Fähigkeit freizuschalten
+		AtlasLine2: Die Steckplatzreihe unten ist die Ausrüstung — sie fasst bis zu 10 Fähigkeiten
+		AtlasLine3: Ziehe eine Fähigkeit per Halten in die Ausrüstung oder klicke in der Detailkarte auf Ausrüsten
+		AtlasDockLabel: Ausrüstung
+		AtlasNextBtn: Weiter
+		WheelTitle: Fähigkeitsrad · Nur per Tastenkürzel
+		WheelLine1: Halte im Kampf {0}, um das Fähigkeitsrad aufzurufen und die aktive Fähigkeit aus der Ausrüstung zu wechseln
+		WheelLine2: Bewege den Cursor auf einen Sektor und lass die Taste los zum Auswählen; Rechtsklick bricht ab
+		WheelLine3: Bei leerer Ausrüstung reagiert das Rad nicht — erforsche und rüste zuerst eine Fähigkeit aus
+		WheelWarn: Denk dran — das Rad lässt sich NUR per Tastenkürzel aufrufen, es gibt keine Schaltfläche dafür
+		WheelDoneBtn: Verstanden
+	}
+
 	DomainUI: {
 		TitleText: Meeresdomäne
 		ExtraEyeTitleText: Die  zehnte  Schicht

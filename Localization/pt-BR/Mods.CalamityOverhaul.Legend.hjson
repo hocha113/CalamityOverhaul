@@ -62,6 +62,26 @@ HalibutText: {
 		StudyingLabel: Pesquisando
 	}
 
+	HalibutHudLead: {
+		HudTitle: Olho do abismo
+		HudLine1: Enquanto o Linguado-gigante estiver em mãos, este olho fica no canto inferior esquerdo da tela
+		HudLine2: Ele mostra sua habilidade de domínio equipada, o progresso de ressurreição abissal e as camadas do domínio
+		HudOpenPrompt: Clique esquerdo no olho, ou pressione {0} para abrir o Atlas Abissal
+		HudOpenBtn: Abrir Atlas
+		AtlasTitle: Mar de Habilidades e Equipamento
+		AtlasLine1: No topo está o Altar de Pesquisa — coloque peixes capturados para desbloquear a habilidade correspondente
+		AtlasLine2: Aquela fileira de encaixes na parte de baixo é o Equipamento — comporta até 10 habilidades
+		AtlasLine3: Arraste uma habilidade até o Equipamento segurando o clique, ou clique em Equipar na ficha de detalhes
+		AtlasDockLabel: Equipamento
+		AtlasNextBtn: Próximo
+		WheelTitle: Roda de habilidades · Apenas por atalho
+		WheelLine1: Em combate, segure {0} para invocar a roda de habilidades e trocar a habilidade ativa do equipamento
+		WheelLine2: Mova o cursor até um setor e solte a tecla para selecionar; clique direito para cancelar
+		WheelLine3: A roda não responde se o equipamento estiver vazio — pesquise e equipe uma habilidade primeiro
+		WheelWarn: Lembre-se — a roda só pode ser invocada por atalho, não há nenhum botão na tela para ela
+		WheelDoneBtn: Entendi
+	}
+
 	DomainUI: {
 		TitleText: Dominio Abissal
 		ExtraEyeTitleText: A  Decima  Camada

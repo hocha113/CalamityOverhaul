@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -89,7 +88,8 @@ namespace CalamityOverhaul.Content.Scenarios.Helen
              .Say("Helen", Line18.Value)
              .Say("Helen", Line19.Value)
              .Say("Helen", Line20.Value)
-             .Say("Helen", Line21.Value, onExit: () => HalibutAtlas.Instance?.Open());
+             .Say("Helen", Line21.Value);
+            //不再在此直接打开图鉴：交由 HalibutHudLead 引导玩家认识 HUD、装备栏与技能转盘
         }
 
         protected override NarrativePolicy ConfigurePolicy() => new() {

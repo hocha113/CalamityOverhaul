@@ -173,4 +173,9 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     {
         public bool GuideSeen;
     }
+
+    public sealed class HalibutGuideData : DataModule
+    {
+        public bool GuideSeen;
+    }
 }

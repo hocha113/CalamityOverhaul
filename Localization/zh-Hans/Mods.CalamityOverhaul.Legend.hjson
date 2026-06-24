@@ -62,6 +62,26 @@ HalibutText: {
 		StudyingLabel: 研究中
 	}
 
+	HalibutHudLead: {
+		HudTitle: 深渊之眼
+		HudLine1: 手持大比目鱼时，这只眼会常驻在屏幕左下角
+		HudLine2: 它显示当前选用的领域技能、深渊复苏进度与领域层数
+		HudOpenPrompt: 左键点击眼睛，或按 {0} 打开「深渊图鉴」
+		HudOpenBtn: 打开图鉴
+		AtlasTitle: 技能海域 与 装备栏
+		AtlasLine1: 顶部是研究祭坛：投入捕获的鱼，研究完成即可点亮对应技能
+		AtlasLine2: 屏幕底部这一排凹槽就是「装备栏」，最多放入 10 个技能
+		AtlasLine3: 长按拖拽技能到装备栏，或在技能详情卡中点击「装备」
+		AtlasDockLabel: 装 备 栏
+		AtlasNextBtn: 下一步
+		WheelTitle: 技能转盘 · 仅可快捷键呼出
+		WheelLine1: 战斗中按住 {0} 呼出技能转盘，从装备栏快速切换当前技能
+		WheelLine2: 移动光标到对应扇区、松开按键即可选定，右键取消
+		WheelLine3: 装备栏为空时转盘不会响应——记得先在祭坛研究并装备技能
+		WheelWarn: 切记：转盘只能用快捷键呼出，界面上没有任何按钮——别让它被遗忘
+		WheelDoneBtn: 我记住了
+	}
+
 	DomainUI: {
 		TitleText: 海洋领域
 		ExtraEyeTitleText: 第 十 层

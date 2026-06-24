@@ -62,6 +62,26 @@ HalibutText: {
 		StudyingLabel: Investigando
 	}
 
+	HalibutHudLead: {
+		HudTitle: Ojo del abismo
+		HudLine1: Mientras sostengas el Halibut gigante, este ojo permanece en la esquina inferior izquierda de la pantalla
+		HudLine2: Muestra tu habilidad de dominio equipada, el progreso de resurrección abisal y las capas del dominio
+		HudOpenPrompt: Haz clic izquierdo en el ojo, o pulsa {0} para abrir el Atlas abisal
+		HudOpenBtn: Abrir Atlas
+		AtlasTitle: Mar de habilidades y Equipamiento
+		AtlasLine1: Arriba está el Altar de investigación — deposita peces capturados para desbloquear la habilidad correspondiente
+		AtlasLine2: Esa fila de ranuras de abajo es el Equipamiento — admite hasta 10 habilidades
+		AtlasLine3: Arrastra una habilidad al Equipamiento manteniendo pulsado, o haz clic en Equipar en su ficha de detalle
+		AtlasDockLabel: Equipamiento
+		AtlasNextBtn: Siguiente
+		WheelTitle: Rueda de habilidades · Solo con atajo
+		WheelLine1: En combate, mantén {0} para invocar la rueda de habilidades y cambiar la habilidad activa desde el equipamiento
+		WheelLine2: Mueve el cursor a un sector y suelta la tecla para seleccionar; clic derecho para cancelar
+		WheelLine3: La rueda no responde si el equipamiento está vacío — investiga y equipa una habilidad primero
+		WheelWarn: Recuerda — la rueda SOLO se invoca con el atajo, no hay ningún botón en pantalla para ella
+		WheelDoneBtn: Entendido
+	}
+
 	DomainUI: {
 		TitleText: Dominio abisal
 		ExtraEyeTitleText: La  décima  capa

@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
 using Microsoft.Xna.Framework.Graphics;
@@ -117,6 +118,11 @@ namespace CalamityOverhaul.Content.EntrustManager
         //自动推进倒计总时长
         private static int autoAdvanceDelayTotal;
 
+        //回避比目鱼界面引导期间的累计等待帧
+        private static int halibutDeferTimer;
+        //回避比目鱼引导的最长等待（保底），约2分钟，防止其卡住时无限等待
+        private const int HalibutDeferTimeout = 60 * 120;
+
         //防呆兜底超时，60 帧≈1 秒
         private const int Phase4SoftTimeout = 60 * 30;
         private const int Phase5SoftTimeout = 60 * 35;
@@ -149,6 +155,7 @@ namespace CalamityOverhaul.Content.EntrustManager
         public override void OnWorldUnload() {
             currentPhase = LeadPhase.Inactive;
             animProgress = 0f;
+            halibutDeferTimer = 0;
             ResetPhaseGuards();
         }
 
@@ -179,6 +186,15 @@ namespace CalamityOverhaul.Content.EntrustManager
             switch (currentPhase) {
                 case LeadPhase.Inactive:
                     if (ui.HasAnyEntry && !Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<EntrustGuideData>().GuideSeen) {
+                        //回避比目鱼界面引导：其进行或待触发期间先按兵不动，结束后再出现
+                        if (HalibutHudLead.ShouldDeferEntrust) {
+                            //过时保底：等待过久则接管并强制结束比目鱼引导，避免无限等待与两套引导叠加
+                            if (++halibutDeferTimer < HalibutDeferTimeout) {
+                                break;
+                            }
+                            HalibutHudLead.ForceComplete();
+                        }
+                        halibutDeferTimer = 0;
                         currentPhase = LeadPhase.KeyPrompt;
                         animProgress = 0f;
                         ResetPhaseGuards();
