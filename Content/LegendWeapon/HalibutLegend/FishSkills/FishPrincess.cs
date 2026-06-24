@@ -12,13 +12,14 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>公主鱼技能：召唤优雅的彩虹咏唱者，蓄力后扇射追踪魔弹</summary>
+    /// <summary>公主鱼技能，召唤公主鱼释放魔法攻击</summary>
     internal class FishPrincess : FishSkill
     {
         public override int UnlockFishID => ItemID.PrincessFish;
         public override int DefaultCooldown => 50 - HalibutData.GetDomainLayer() * 2;
         public override int ResearchDuration => 60 * 22;
 
+        //活跃的公主鱼追踪
         private static readonly List<int> ActivePrincessFish = new();
         private static int MaxPrincessFish => 3 + HalibutData.GetDomainLayer() / 3;
 
@@ -30,10 +31,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 CleanupInactiveFish();
 
                 if (ActivePrincessFish.Count < MaxPrincessFish) {
+                    //在玩家周围随机位置生成公主鱼
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float distance = Main.rand.NextFloat(200f, 300f);
                     Vector2 spawnPos = player.Center + angle.ToRotationVector2() * distance;
 
+                    //将鱼的索引通过ai2传递
                     int fishProj = Projectile.NewProjectile(
                         source,
                         spawnPos,
@@ -42,14 +45,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                         (int)(damage * (0.2f + HalibutData.GetDomainLayer() * 0.05f)),
                         knockback * 1.5f,
                         player.whoAmI,
-                        ai2: ActivePrincessFish.Count
+                        ai2: ActivePrincessFish.Count //通过ai2传递索引
                     );
 
                     if (fishProj >= 0 && fishProj < Main.maxProjectiles) {
                         ActivePrincessFish.Add(fishProj);
                         SpawnSummonEffect(spawnPos);
-                        SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.4f }, spawnPos);
-                        SoundEngine.PlaySound(SoundID.Item82 with { Volume = 0.5f, Pitch = 0.3f }, spawnPos);
+
+                        //召唤音效
+                        SoundEngine.PlaySound(SoundID.Item29 with {
+                            Volume = 0.6f,
+                            Pitch = 0.4f
+                        }, spawnPos);
+
+                        SoundEngine.PlaySound(SoundID.Item82 with {
+                            Volume = 0.5f,
+                            Pitch = 0.3f
+                        }, spawnPos);
                     }
                 }
             }
@@ -66,65 +78,95 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void SpawnSummonEffect(Vector2 position) {
-            if (VaultUtils.isServer) {
-                return;
+            //彩虹粒子爆发
+            for (int i = 0; i < 30; i++) {
+                float angle = MathHelper.TwoPi * i / 30f;
+                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
+
+                //彩虹色粒子
+                Color rainbowColor = Main.hslToRgb((i / 30f + Main.GlobalTimeWrappedHourly * 0.3f) % 1f, 1f, 0.6f);
+
+                Dust rainbow = Dust.NewDustPerfect(
+                    position,
+                    DustID.RainbowMk2,
+                    velocity,
+                    0,
+                    rainbowColor,
+                    Main.rand.NextFloat(1.8f, 2.8f)
+                );
+                rainbow.noGravity = true;
+                rainbow.fadeIn = 1.5f;
             }
-            for (int i = 0; i < 24; i++) {
-                float angle = MathHelper.TwoPi * i / 24f;
-                Color c = Main.hslToRgb((i / 24f + Main.GlobalTimeWrappedHourly * 0.3f) % 1f, 1f, 0.65f);
-                PRTLoader.NewParticle<PRT_Light>(position, angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f), c, 0.7f)
-                    .Configure(28, hueShift: 0.02f);
+
+            //星星粒子
+            for (int i = 0; i < 15; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                Dust star = Dust.NewDustPerfect(
+                    position,
+                    DustID.PinkFairy,
+                    velocity,
+                    0,
+                    default,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                star.noGravity = true;
             }
-            for (int i = 0; i < 14; i++) {
-                Color c = Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.7f);
-                PRTLoader.NewParticle<PRT_Spark>(position, Main.rand.NextVector2Circular(8f, 8f), c, Main.rand.NextFloat(0.7f, 1.1f))
-                    .Configure(false, Main.rand.Next(18, 28));
+
+            //魔法光环
+            for (int i = 0; i < 20; i++) {
+                float angle = MathHelper.TwoPi * i / 20f;
+                Vector2 velocity = angle.ToRotationVector2() * 6f;
+
+                PRTLoader.NewParticle<PRT_Light>(
+                    position,
+                    velocity,
+                    Main.hslToRgb((i / 20f) % 1f, 1f, 0.7f),
+                    0.8f
+                ).Configure(30, hueShift: 0.01f);
             }
         }
     }
 
     /// <summary>
-    /// 公主鱼咏唱者：优雅环绕玩家，彩虹飘带（顶点绘制，逐顶点变色）尾随。
-    /// 攻击采用"聚能蓄力 → 扇射 → 后坐回收"的演出节奏。
+    /// 公主鱼召唤物弹幕
     /// </summary>
     internal class PrincessFishMinion : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.PrincessFish;
 
+        //状态
         private enum FishState
         {
-            Spawning,
-            Following,
-            Targeting,
-            Attacking
+            Spawning,    //生成阶段
+            Following,   //跟随玩家
+            Targeting,   //锁定目标
+            Attacking    //攻击阶段
         }
 
         private FishState State {
             get => (FishState)Projectile.ai[0];
             set => Projectile.ai[0] = (float)value;
         }
+
         private ref float AttackCooldown => ref Projectile.ai[1];
         private ref float FishIndex => ref Projectile.ai[2];
         private ref float StateTimer => ref Projectile.localAI[0];
 
         private int targetNPCID = -1;
-        private Vector2 idleOffset;
-        private float orbitAngle;
-        private float floatPhase;
-        private Vector2 castFocus;     //蓄力聚能点
-        private Vector2 castRecoilVel; //咏唱后坐
+        private Vector2 idleOffset = Vector2.Zero;
+        private float orbitAngle = 0f;
+        private float floatPhase = 0f;
 
-        private float glowIntensity;
-        private float rainbowHue;
-        private float chargeUp;        //攻击蓄力 0-1
-        private readonly List<Vector2> trail = new();
-        private const int MaxTrailLength = 22;
+        //视觉效果
+        private float glowIntensity = 0f;
+        private float rainbowHue = 0f;
+        private readonly List<Vector2> trailPositions = new();
+        private const int MaxTrailLength = 15;
 
+        //攻击参数
         private const float SearchRange = 1400f;
         private const int AttackInterval = 90;
         private const int SpawningDuration = 20;
-        private const int CastWindUp = 16;
-        private const int CastTotal = 42;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -150,7 +192,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
-            if (!owner.active || owner.dead || !FishSkill.GetT<FishPrincess>().Active(owner)) {
+
+            if (!owner.active || owner.dead) {
+                Projectile.Kill();
+                return;
+            }
+
+            if (!FishSkill.GetT<FishPrincess>().Active(owner)) {
                 Projectile.Kill();
                 return;
             }
@@ -158,6 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 60;
             StateTimer++;
 
+            //状态机
             switch (State) {
                 case FishState.Spawning:
                     SpawningAI();
@@ -173,32 +222,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
-            //咏唱后坐弹簧
-            Projectile.Center += castRecoilVel;
-            castRecoilVel *= 0.82f;
-
+            //更新拖尾
             UpdateTrail();
-            rainbowHue = (rainbowHue + 0.01f) % 1f;
-            Lighting.AddLight(Projectile.Center, Main.hslToRgb(rainbowHue, 1f, 0.6f).ToVector3() * (0.6f + glowIntensity * 0.4f));
 
-            if (!Main.dedServ && Main.rand.NextBool(7)) {
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f)
-                    , Projectile.velocity * -0.2f + Main.rand.NextVector2Circular(1f, 1f)
-                    , Main.hslToRgb(rainbowHue, 1f, 0.6f), 0.4f).Configure(18, hueShift: 0.03f);
+            //更新彩虹色相
+            rainbowHue += 0.01f;
+            if (rainbowHue > 1f) rainbowHue -= 1f;
+
+            //公主鱼的彩虹光照
+            Color lightColor = Main.hslToRgb(rainbowHue, 1f, 0.6f);
+            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * 0.8f);
+
+            //生成彩虹粒子
+            if (Main.rand.NextBool(8)) {
+                SpawnRainbowParticle();
             }
 
-            if (AttackCooldown > 0) {
-                AttackCooldown--;
-            }
+            //攻击冷却
+            if (AttackCooldown > 0) AttackCooldown--;
         }
 
         private void SpawningAI() {
-            float p = StateTimer / SpawningDuration;
-            Projectile.alpha = (int)((1f - p) * 255f);
-            Projectile.scale = VaultUtils.EaseOutBack(MathHelper.Clamp(p, 0f, 1f));
-            Projectile.velocity.Y = -2f * (1f - p);
+            float progress = StateTimer / SpawningDuration;
+
+            //淡入效果
+            Projectile.alpha = (int)((1f - progress) * 255f);
+            Projectile.scale = progress;
+
+            //向上浮现
+            Projectile.velocity.Y = -2f * (1f - progress);
             Projectile.velocity.X *= 0.9f;
-            glowIntensity = p;
+
+            glowIntensity = progress;
+
+            //生成绚丽粒子
+            if (Main.rand.NextBool(3)) {
+                SpawnSpawnParticle();
+            }
 
             if (StateTimer >= SpawningDuration) {
                 State = FishState.Following;
@@ -210,19 +270,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private void FollowingAI(Player owner) {
             UpdateIdleOffset();
-            orbitAngle += 0.02f;
-            //利萨如曲线环绕，比正圆更优雅
-            Vector2 orbitPos = owner.Center + new Vector2(
-                (float)Math.Cos(orbitAngle + FishIndex) * 160f,
-                (float)Math.Sin((orbitAngle + FishIndex * 0.7f) * 1.3f) * 96f) + idleOffset;
 
+            //环绕玩家
+            orbitAngle += 0.02f;
+            Vector2 orbitPos = owner.Center +
+                new Vector2(
+                    (float)Math.Cos(orbitAngle + FishIndex) * 150f,
+                    (float)Math.Sin(orbitAngle + FishIndex * 0.7f) * 100f
+                ) + idleOffset;
+
+            //平滑移动
             Vector2 toTarget = orbitPos - Projectile.Center;
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, toTarget * 0.08f, 0.2f);
-            FaceVelocity(0.15f);
+
+            //旋转朝向移动方向
+            if (Projectile.velocity.LengthSquared() > 0.5f) {
+                Projectile.rotation = MathHelper.Lerp(
+                    Projectile.rotation,
+                    Projectile.velocity.ToRotation(),
+                    0.15f
+                );
+            }
 
             glowIntensity = 0.6f + (float)Math.Sin(StateTimer * 0.1f) * 0.2f;
-            chargeUp = MathHelper.Lerp(chargeUp, 0f, 0.2f);
 
+            //搜索敌人
             if (AttackCooldown <= 0) {
                 NPC target = owner.Center.FindClosestNPC(SearchRange);
                 if (target != null) {
@@ -241,14 +313,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             NPC target = Main.npc[targetNPCID];
-            Vector2 attackPos = target.Center + new Vector2(0, -210f);
-            Vector2 toAttackPos = attackPos - Projectile.Center;
-            Projectile.velocity = Vector2.Lerp(Projectile.velocity, toAttackPos.SafeNormalize(Vector2.Zero) * 15f, 0.15f);
 
-            FaceTarget(target, 0.2f);
+            //移动到目标上方
+            Vector2 attackPos = target.Center + new Vector2(0, -200f);
+            Vector2 toAttackPos = attackPos - Projectile.Center;
+
+            Projectile.velocity = Vector2.Lerp(
+                Projectile.velocity,
+                toAttackPos.SafeNormalize(Vector2.Zero) * 14f,
+                0.15f
+            );
+
+            //旋转朝向目标
+            Projectile.rotation = MathHelper.Lerp(
+                Projectile.rotation,
+                (target.Center - Projectile.Center).ToRotation(),
+                0.2f
+            );
+
             glowIntensity = 0.8f + (float)Math.Sin(StateTimer * 0.3f) * 0.2f;
 
-            if (Vector2.Distance(Projectile.Center, attackPos) < 100f && StateTimer > 22) {
+            //到达位置后开始攻击
+            if (Vector2.Distance(Projectile.Center, attackPos) < 100f && StateTimer > 25) {
                 State = FishState.Attacking;
                 StateTimer = 0;
             }
@@ -259,42 +345,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = FishState.Following;
                 StateTimer = 0;
                 AttackCooldown = AttackInterval;
-                chargeUp = 0f;
                 return;
             }
 
             NPC target = Main.npc[targetNPCID];
-            Projectile.velocity *= 0.85f;
-            FaceTarget(target, 0.25f);
 
-            if (StateTimer <= CastWindUp) {
-                //蓄力：在身前聚出能量焦点，光辉收紧
-                chargeUp = StateTimer / CastWindUp;
-                Vector2 aim = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                castFocus = Projectile.Center + aim * 26f;
-                glowIntensity = 1f + chargeUp * 0.8f;
+            //保持位置并攻击
+            Projectile.velocity *= 0.9f;
 
-                if (!Main.dedServ && Main.rand.NextBool(2)) {
-                    Vector2 from = castFocus + Main.rand.NextVector2Circular(40f, 40f);
-                    PRTLoader.NewParticle<PRT_Light>(from, (castFocus - from) * 0.14f
-                        , Main.hslToRgb((rainbowHue + Main.rand.NextFloat(0.3f)) % 1f, 1f, 0.7f), 0.5f).Configure(14, hueShift: 0.03f);
-                }
-            }
-            else if (StateTimer == CastWindUp + 1) {
-                if (Projectile.IsOwnedByLocalPlayer()) {
-                    LaunchMagicAttack(target);
-                }
-                //后坐 + 释放
-                Vector2 aim = (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitY);
-                castRecoilVel = -aim * 9f;
-                chargeUp = 0f;
-                SpawnAttackEffect(aim);
-            }
-            else {
-                glowIntensity = MathHelper.Lerp(glowIntensity, 0.8f, 0.15f);
+            glowIntensity = 1f;
+
+            //发射魔法弹幕
+            if (StateTimer == 1 && Projectile.IsOwnedByLocalPlayer()) {
+                LaunchMagicAttack(target);
             }
 
-            if (StateTimer >= CastTotal) {
+            //攻击持续时间
+            if (StateTimer >= 45) {
                 State = FishState.Following;
                 StateTimer = 0;
                 AttackCooldown = AttackInterval - HalibutData.GetDomainLayer() * 8;
@@ -302,33 +369,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void LaunchMagicAttack(NPC target) {
+            //发射多个彩虹魔法球
             int projectileCount = 3 + HalibutData.GetDomainLayer() / 4;
-            Vector2 targetPos = target.Center + target.velocity * 20f;
-            Vector2 baseDir = (targetPos - Projectile.Center).SafeNormalize(Vector2.UnitY);
 
             for (int i = 0; i < projectileCount; i++) {
-                float spreadAngle = projectileCount > 1 ? MathHelper.Lerp(-0.32f, 0.32f, i / (float)(projectileCount - 1)) : 0f;
-                Vector2 velocity = baseDir.RotatedBy(spreadAngle) * 18f;
-                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity
-                    , ModContent.ProjectileType<PrincessMagicOrb>(), Projectile.damage, Projectile.knockBack
-                    , Projectile.owner, ai0: i / (float)projectileCount);
+                //计算预判位置
+                Vector2 targetPos = target.Center + target.velocity * 20f;
+                Vector2 toTarget = targetPos - Projectile.Center;
+
+                //添加扇形散射
+                float spreadAngle = MathHelper.Lerp(-0.3f, 0.3f, i / (float)(projectileCount - 1));
+                Vector2 velocity = toTarget.SafeNormalize(Vector2.Zero).RotatedBy(spreadAngle) * 18f;
+
+                //生成魔法球
+                int proj = Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    velocity,
+                    ModContent.ProjectileType<PrincessMagicOrb>(),
+                    Projectile.damage,
+                    Projectile.knockBack,
+                    Projectile.owner,
+                    ai0: i / (float)projectileCount //传递颜色偏移
+                );
+
                 if (proj >= 0) {
                     Main.projectile[proj].netUpdate = true;
                 }
             }
 
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.7f, Pitch = 0.3f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item43 with { Volume = 0.6f, Pitch = 0.5f }, Projectile.Center);
-        }
+            //攻击特效
+            SpawnAttackEffect();
 
-        private void FaceVelocity(float lerp) {
-            if (Projectile.velocity.LengthSquared() > 0.5f) {
-                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.velocity.ToRotation(), lerp);
-            }
-        }
+            //攻击音效
+            SoundEngine.PlaySound(SoundID.Item29 with {
+                Volume = 0.7f,
+                Pitch = 0.3f
+            }, Projectile.Center);
 
-        private void FaceTarget(NPC target, float lerp) {
-            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, (target.Center - Projectile.Center).ToRotation(), lerp);
+            SoundEngine.PlaySound(SoundID.Item43 with {
+                Volume = 0.6f,
+                Pitch = 0.5f
+            }, Projectile.Center);
         }
 
         private void UpdateIdleOffset() {
@@ -338,106 +420,197 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void UpdateTrail() {
-            trail.Insert(0, Projectile.Center);
-            if (trail.Count > MaxTrailLength) {
-                trail.RemoveAt(trail.Count - 1);
+            trailPositions.Insert(0, Projectile.Center);
+            if (trailPositions.Count > MaxTrailLength) {
+                trailPositions.RemoveAt(trailPositions.Count - 1);
             }
         }
 
         private bool IsTargetValid() {
-            if (targetNPCID < 0 || targetNPCID >= Main.maxNPCs) {
-                return false;
-            }
+            if (targetNPCID < 0 || targetNPCID >= Main.maxNPCs) return false;
             NPC target = Main.npc[targetNPCID];
             return target.active && target.CanBeChasedBy();
         }
 
-        private void SpawnAttackEffect(Vector2 aim) {
-            if (Main.dedServ) {
-                return;
+        //粒子效果
+        private void SpawnRainbowParticle() {
+            Color rainbowColor = Main.hslToRgb(rainbowHue, 1f, 0.6f);
+
+            Dust rainbow = Dust.NewDustPerfect(
+                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
+                DustID.RainbowMk2,
+                Projectile.velocity * -0.3f + Main.rand.NextVector2Circular(1f, 1f),
+                0,
+                rainbowColor,
+                Main.rand.NextFloat(0.8f, 1.3f)
+            );
+            rainbow.noGravity = true;
+            rainbow.fadeIn = 1f;
+        }
+
+        private void SpawnSpawnParticle() {
+            Color spawnColor = Main.hslToRgb(Main.rand.NextFloat(1f), 1f, 0.7f);
+
+            PRTLoader.NewParticle<PRT_Light>(
+                Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
+                Main.rand.NextVector2Circular(3f, 3f),
+                spawnColor,
+                Main.rand.NextFloat(0.6f, 1f)
+            ).Configure(25, hueShift: 0.02f);
+        }
+
+        private void SpawnAttackEffect() {
+            //攻击爆发环
+            for (int i = 0; i < 25; i++) {
+                float angle = MathHelper.TwoPi * i / 25f;
+                Vector2 velocity = angle.ToRotationVector2() * 8f;
+                Color attackColor = Main.hslToRgb((i / 25f + rainbowHue) % 1f, 1f, 0.6f);
+
+                PRTLoader.NewParticle<PRT_Light>(
+                    Projectile.Center,
+                    velocity,
+                    attackColor,
+                    0.9f
+                ).Configure(35, hueShift: 0.015f);
             }
-            for (int i = 0; i < 22; i++) {
-                float a = MathHelper.Lerp(-0.9f, 0.9f, i / 21f);
-                Color c = Main.hslToRgb((i / 22f + rainbowHue) % 1f, 1f, 0.6f);
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, aim.RotatedBy(a) * Main.rand.NextFloat(5f, 10f), c, 0.7f)
-                    .Configure(26, hueShift: 0.02f);
-            }
-            for (int i = 0; i < 10; i++) {
-                Color c = Main.hslToRgb(Main.rand.NextFloat(), 1f, 0.7f);
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, aim.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(6f, 12f)
-                    , c, Main.rand.NextFloat(0.7f, 1.1f)).Configure(false, 22);
+
+            //星星爆发
+            for (int i = 0; i < 15; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
+                Dust star = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.PinkFairy,
+                    velocity,
+                    0,
+                    default,
+                    Main.rand.NextFloat(2f, 3f)
+                );
+                star.noGravity = true;
             }
         }
 
         public override void OnKill(int timeLeft) {
-            if (Main.dedServ) {
-                return;
-            }
-            for (int i = 0; i < 26; i++) {
-                Color c = Main.hslToRgb((i / 26f + rainbowHue) % 1f, 1f, 0.6f);
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Main.rand.NextVector2Circular(8f, 8f), c, Main.rand.NextFloat(0.5f, 0.9f))
-                    .Configure(28, hueShift: 0.02f);
-            }
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.5f, Pitch = -0.3f }, Projectile.Center);
-        }
+            //消散效果
+            for (int i = 0; i < 30; i++) {
+                Color fadeColor = Main.hslToRgb((i / 30f + rainbowHue) % 1f, 1f, 0.6f);
 
-        public float TrailWidth(float t) => MathHelper.Lerp(26f, 2f, t) * Projectile.scale * (0.7f + glowIntensity * 0.3f);
+                Dust fade = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.RainbowMk2,
+                    Main.rand.NextVector2Circular(8f, 8f),
+                    0,
+                    fadeColor,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                fade.noGravity = true;
+            }
 
-        public Color TrailColor(float t) {
-            Color c = Main.hslToRgb((rainbowHue + t * 0.55f) % 1f, 1f, 0.6f);
-            return c * (1f - t) * 0.85f * ((255f - Projectile.alpha) / 255f);
+            SoundEngine.PlaySound(SoundID.Item29 with {
+                Volume = 0.5f,
+                Pitch = -0.3f
+            }, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            SpriteBatch sb = Main.spriteBatch;
             Texture2D fishTex = TextureAssets.Item[ItemID.PrincessFish].Value;
-            Vector2 origin = fishTex.Size() / 2f;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            float fade = (255f - Projectile.alpha) / 255f;
-            float rot = Projectile.rotation + MathHelper.PiOver4;
+            Vector2 origin = fishTex.Size() / 2f;
 
-            //聚能焦点（蓄力时）
-            if (chargeUp > 0.02f) {
-                Texture2D glowTex = CWRAsset.SoftGlow.Value;
-                Vector2 fp = castFocus - Main.screenPosition;
-                Color fc = Main.hslToRgb(rainbowHue, 1f, 0.75f) with { A = 0 };
-                float fs = chargeUp * (0.6f + (float)Math.Sin(StateTimer * 0.6f) * 0.1f);
-                Main.spriteBatch.Draw(glowTex, fp, null, fc * (chargeUp * fade), 0f, glowTex.Size() / 2f, fs, SpriteEffects.None, 0f);
-                Main.spriteBatch.Draw(glowTex, fp, null, Color.White with { A = 0 } * (chargeUp * 0.8f * fade), 0f, glowTex.Size() / 2f, fs * 0.5f, SpriteEffects.None, 0f);
-            }
+            float alpha = (255f - Projectile.alpha) / 255f;
 
-            //彩虹辉光层
+            //绘制彩虹拖尾
+            DrawRainbowTrail(sb, fishTex, origin, alpha);
+
+            //绘制彩虹辉光层
             for (int i = 0; i < 3; i++) {
-                Color gc = Main.hslToRgb((rainbowHue + i * 0.1f) % 1f, 1f, 0.6f) with { A = 0 };
-                Main.spriteBatch.Draw(fishTex, drawPos, null, gc * (glowIntensity * (0.5f - i * 0.13f) * fade)
-                    , rot, origin, Projectile.scale * (1.2f + i * 0.15f), SpriteEffects.None, 0f);
+                float glowScale = Projectile.scale * (1.2f + i * 0.15f);
+                float glowAlpha = glowIntensity * (1f - i * 0.3f) * 0.5f * alpha;
+                Color glowColor = Main.hslToRgb((rainbowHue + i * 0.1f) % 1f, 1f, 0.6f) with { A = 0 };
+
+                sb.Draw(
+                    fishTex,
+                    drawPos,
+                    null,
+                    glowColor * glowAlpha,
+                    Projectile.rotation + MathHelper.PiOver4,
+                    origin,
+                    glowScale,
+                    SpriteEffects.None,
+                    0
+                );
             }
 
-            //本体（融入彩虹色调）
-            Color body = Color.Lerp(lightColor, Main.hslToRgb(rainbowHue, 0.8f, 0.7f), glowIntensity * 0.55f);
-            Main.spriteBatch.Draw(fishTex, drawPos, null, body * fade, rot, origin, Projectile.scale, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(fishTex, drawPos, null, Color.White with { A = 0 } * (glowIntensity * 0.4f * fade), rot, origin, Projectile.scale * 0.95f, SpriteEffects.None, 0f);
+            //主体绘制 - 应用彩虹色调
+            Color mainColor = Color.Lerp(
+                lightColor,
+                Main.hslToRgb(rainbowHue, 0.8f, 0.7f),
+                glowIntensity * 0.6f
+            );
 
-            //彩虹飘带（顶点绘制）
-            if (trail.Count >= 2) {
-                Vector2[] pts = new Vector2[trail.Count];
-                for (int i = 0; i < trail.Count; i++) {
-                    pts[i] = trail[i] - Main.screenPosition;
-                }
+            sb.Draw(
+                fishTex,
+                drawPos,
+                null,
+                mainColor * alpha,
+                Projectile.rotation + MathHelper.PiOver4,
+                origin,
+                Projectile.scale,
+                SpriteEffects.None,
+                0
+            );
 
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp
-                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                FishSkillVFX.DrawRibbon(CWRAsset.LightShot.Value, pts, TrailWidth, TrailColor);
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            }
+            //额外白色高光
+            float highlightAlpha = glowIntensity * 0.4f * alpha;
+            sb.Draw(
+                fishTex,
+                drawPos,
+                null,
+                Color.White * highlightAlpha,
+                Projectile.rotation + MathHelper.PiOver4,
+                origin,
+                Projectile.scale * 0.95f,
+                SpriteEffects.None,
+                0
+            );
 
             return false;
         }
+
+        private void DrawRainbowTrail(SpriteBatch sb, Texture2D texture, Vector2 origin, float alpha) {
+            for (int i = 1; i < trailPositions.Count; i++) {
+                if (i >= trailPositions.Count) continue;
+
+                float progress = 1f - i / (float)trailPositions.Count;
+                float trailAlpha = progress * alpha * 0.6f;
+                float trailScale = Projectile.scale * MathHelper.Lerp(0.7f, 1f, progress);
+
+                Color trailColor = Main.hslToRgb(
+                    (rainbowHue + i * 0.05f) % 1f,
+                    1f,
+                    0.5f
+                ) * trailAlpha;
+
+                Vector2 trailPos = trailPositions[i] - Main.screenPosition;
+
+                sb.Draw(
+                    texture,
+                    trailPos,
+                    null,
+                    trailColor,
+                    Projectile.rotation - i * 0.05f,
+                    origin,
+                    trailScale,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+        }
     }
 
-    /// <summary>公主鱼的彩虹魔弹：彩虹飘带尾 + 追踪 + 弹跳，命中绽放</summary>
+    /// <summary>
+    /// 公主鱼的魔法球弹幕
+    /// </summary>
     internal class PrincessMagicOrb : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -445,12 +618,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float ColorOffset => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];
 
-        private float orbRotation;
-        private float pulsePhase;
-        private readonly List<FishSkillVFX.ShockRing> rings = new();
+        private float orbRotation = 0f;
+        private float pulsePhase = 0f;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 14;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -469,54 +641,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.localNPCHitCooldown = -1;
         }
 
-        private float Hue => (ColorOffset + Main.GlobalTimeWrappedHourly * 0.5f) % 1f;
-
         public override void AI() {
             Timer++;
             pulsePhase += 0.15f;
             orbRotation += 0.2f;
 
+            //轻微追踪
             if (Timer > 15) {
                 NPC target = Projectile.Center.FindClosestNPC(400f);
                 if (target != null) {
-                    Projectile.velocity += (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 0.25f;
+                    Vector2 toTarget = target.Center - Projectile.Center;
+                    Projectile.velocity += toTarget.SafeNormalize(Vector2.Zero) * 0.25f;
+
                     if (Projectile.velocity.Length() > 20f) {
                         Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f;
                     }
                 }
             }
 
+            //旋转
             Projectile.rotation = Projectile.velocity.ToRotation();
-            Lighting.AddLight(Projectile.Center, Main.hslToRgb(Hue, 1f, 0.6f).ToVector3() * 1.2f);
 
-            for (int i = rings.Count - 1; i >= 0; i--) {
-                rings[i].Update();
-                if (rings[i].Dead) {
-                    rings.RemoveAt(i);
-                }
-            }
+            //彩虹光照
+            float hue = (ColorOffset + Main.GlobalTimeWrappedHourly * 0.5f) % 1f;
+            Color lightColor = Main.hslToRgb(hue, 1f, 0.6f);
+            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * 1.2f);
 
-            if (!Main.dedServ && Main.rand.NextBool(2)) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
-                    , -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1f, 1f), Main.hslToRgb(Hue, 1f, 0.65f)
-                    , Main.rand.NextFloat(0.6f, 1f)).Configure(false, 14);
+            //彩虹粒子轨迹
+            if (Main.rand.NextBool(3)) {
+                SpawnTrailParticle(hue);
             }
+        }
+
+        private void SpawnTrailParticle(float hue) {
+            Color particleColor = Main.hslToRgb(hue, 1f, 0.6f);
+
+            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), -Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f), particleColor, Main.rand.NextFloat(0.8f, 1.2f)).Configure(false, 15);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Main.dedServ) {
-                return;
-            }
-            rings.Add(new FishSkillVFX.ShockRing(Projectile.Center, 70f, 8f, Main.hslToRgb(Hue, 1f, 0.65f), 1f, 16, 30));
+            //击中魔法爆发
+            float hue = (ColorOffset + Main.GlobalTimeWrappedHourly * 0.5f) % 1f;
+
             for (int i = 0; i < 12; i++) {
                 float angle = MathHelper.TwoPi * i / 12f;
-                Color c = Main.hslToRgb((Hue + i * 0.05f) % 1f, 1f, 0.6f);
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, angle.ToRotationVector2() * 6f, c, 0.7f).Configure(24, hueShift: 0.02f);
+                Vector2 velocity = angle.ToRotationVector2() * 6f;
+                Color hitColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f);
+
+                PRTLoader.NewParticle<PRT_Light>(
+                    Projectile.Center,
+                    velocity,
+                    hitColor,
+                    0.7f
+                ).Configure(25, hueShift: 0.02f);
             }
-            SoundEngine.PlaySound(SoundID.Item10 with { Volume = 0.5f, Pitch = 0.4f }, Projectile.Center);
+
+            SoundEngine.PlaySound(SoundID.Item10 with {
+                Volume = 0.5f,
+                Pitch = 0.4f
+            }, Projectile.Center);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
+            //反弹
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
                 Projectile.velocity.X = -oldVelocity.X * 0.7f;
             }
@@ -528,85 +715,132 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Projectile.penetrate <= 0) {
                 Projectile.Kill();
             }
-            SoundEngine.PlaySound(SoundID.Item10 with { Volume = 0.4f, Pitch = 0.2f }, Projectile.Center);
+
+            SoundEngine.PlaySound(SoundID.Item10 with {
+                Volume = 0.4f,
+                Pitch = 0.2f
+            }, Projectile.Center);
+
             return false;
         }
 
         public override void OnKill(int timeLeft) {
-            if (Main.dedServ) {
-                return;
-            }
-            for (int i = 0; i < 18; i++) {
-                Color c = Main.hslToRgb((Hue + i * 0.03f) % 1f, 1f, 0.6f);
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Main.rand.NextVector2Circular(8f, 8f), c, Main.rand.NextFloat(0.5f, 0.9f))
-                    .Configure(28, hueShift: 0.02f);
-            }
-            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
-        }
+            float hue = (ColorOffset + Main.GlobalTimeWrappedHourly * 0.5f) % 1f;
 
-        public float TrailWidth(float t) => MathHelper.Lerp(20f, 2f, t);
+            //彩虹爆发
+            for (int i = 0; i < 20; i++) {
+                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
+                Color burstColor = Main.hslToRgb((hue + i * 0.03f) % 1f, 1f, 0.6f);
 
-        public Color TrailColor(float t) {
-            Color c = Main.hslToRgb((Hue + t * 0.4f) % 1f, 1f, 0.6f);
-            return c * (1f - t) * 0.8f;
+                PRTLoader.NewParticle<PRT_Light>(
+                    Projectile.Center,
+                    velocity,
+                    burstColor,
+                    Main.rand.NextFloat(0.6f, 1f)
+                ).Configure(30, hueShift: 0.02f);
+            }
+
+            //星星粒子
+            for (int i = 0; i < 12; i++) {
+                Dust star = Dust.NewDustPerfect(
+                    Projectile.Center,
+                    DustID.PinkFairy,
+                    Main.rand.NextVector2Circular(7f, 7f),
+                    0,
+                    default,
+                    Main.rand.NextFloat(1.5f, 2.5f)
+                );
+                star.noGravity = true;
+            }
+
+            SoundEngine.PlaySound(SoundID.Item29 with {
+                Volume = 0.6f,
+                Pitch = 0.3f
+            }, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            SpriteBatch sb = Main.spriteBatch;
             Texture2D glowTex = CWRAsset.SoftGlow.Value;
-            Color orbColor = Main.hslToRgb(Hue, 1f, 0.7f);
+
+            float hue = (ColorOffset + Main.GlobalTimeWrappedHourly * 0.5f) % 1f;
+            Color orbColor = Main.hslToRgb(hue, 1f, 0.7f);
+
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float pulse = 1f + (float)Math.Sin(pulsePhase) * 0.15f;
 
-            //外层光晕（A=0 加色）
-            for (int i = 0; i < 3; i++) {
-                Color gc = Main.hslToRgb((Hue + i * 0.05f) % 1f, 1f, 0.6f) with { A = 0 };
-                Main.spriteBatch.Draw(glowTex, drawPos, null, gc * ((1f - i * 0.3f) * 0.5f), orbRotation
-                    , glowTex.Size() / 2f, pulse * (0.5f + i * 0.2f), SpriteEffects.None, 0f);
-            }
-            Main.spriteBatch.Draw(glowTex, drawPos, null, orbColor with { A = 0 }, orbRotation, glowTex.Size() / 2f, pulse * 0.35f, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(glowTex, drawPos, null, Color.White with { A = 0 } * 0.85f, orbRotation, glowTex.Size() / 2f, pulse * 0.2f, SpriteEffects.None, 0f);
+            //绘制拖尾
+            for (int i = 1; i < Projectile.oldPos.Length; i++) {
+                if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
-            //彩虹飘带（顶点绘制） + 命中环
-            bool drawTrail = BuildTrailPoints(out Vector2[] pts);
-            bool drawRings = rings.Count > 0;
-            if (drawTrail || drawRings) {
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp
-                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                if (drawTrail) {
-                    FishSkillVFX.DrawRibbon(CWRAsset.LightShot.Value, pts, TrailWidth, TrailColor);
-                }
-                if (drawRings) {
-                    Texture2D ringTex = CWRAsset.Placeholder_White.Value;
-                    foreach (FishSkillVFX.ShockRing r in rings) {
-                        r.Draw(ringTex);
-                    }
-                }
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
-                    , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                float progress = 1f - i / (float)Projectile.oldPos.Length;
+                float trailAlpha = progress * 0.6f;
+                float trailScale = progress * pulse * 0.8f;
+
+                Color trailColor = Main.hslToRgb((hue + i * 0.02f) % 1f, 1f, 0.6f) with { A = 0 };
+
+                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+
+                sb.Draw(
+                    glowTex,
+                    trailPos,
+                    null,
+                    trailColor * trailAlpha,
+                    orbRotation - i * 0.1f,
+                    glowTex.Size() / 2f,
+                    trailScale * 0.4f,
+                    SpriteEffects.None,
+                    0
+                );
             }
+
+            //外层光晕
+            for (int i = 0; i < 3; i++) {
+                float glowScale = pulse * (1.3f + i * 0.2f);
+                float glowAlpha = (1f - i * 0.3f) * 0.5f;
+
+                Color glowColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f) with { A = 0 };
+
+                sb.Draw(
+                    glowTex,
+                    drawPos,
+                    null,
+                    glowColor * glowAlpha,
+                    orbRotation,
+                    glowTex.Size() / 2f,
+                    glowScale * 0.5f,
+                    SpriteEffects.None,
+                    0
+                );
+            }
+
+            //主体魔法球
+            sb.Draw(
+                glowTex,
+                drawPos,
+                null,
+                orbColor with { A = 0 },
+                orbRotation,
+                glowTex.Size() / 2f,
+                pulse * 0.35f,
+                SpriteEffects.None,
+                0
+            );
+
+            //白色核心
+            sb.Draw(
+                glowTex,
+                drawPos,
+                null,
+                Color.White with { A = 0 } * 0.8f,
+                orbRotation,
+                glowTex.Size() / 2f,
+                pulse * 0.2f,
+                SpriteEffects.None,
+                0
+            );
 
             return false;
-        }
-
-        private bool BuildTrailPoints(out Vector2[] pts) {
-            pts = null;
-            if (Projectile.oldPos == null || Projectile.oldPos.Length < 4) {
-                return false;
-            }
-            List<Vector2> list = new(Projectile.oldPos.Length);
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) {
-                    continue;
-                }
-                list.Add(Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition);
-            }
-            if (list.Count < 2) {
-                return false;
-            }
-            pts = list.ToArray();
-            return true;
         }
     }
 }
