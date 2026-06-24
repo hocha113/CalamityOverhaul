@@ -21,8 +21,6 @@ namespace CalamityOverhaul.Common
         public static ModKeybind VoidTimeShift_Key { get; private set; }
         public static ModKeybind Halibut_Clone { get; private set; }
         public static ModKeybind Halibut_Superposition { get; private set; }
-        public static ModKeybind Halibut_Skill_L { get; private set; }
-        public static ModKeybind Halibut_Skill_R { get; private set; }
         public static ModKeybind Halibut_SkillWheel { get; private set; }
         public static ModKeybind Murasama_TriggerKey { get; private set; }
         public static ModKeybind Murasama_DownKey { get; private set; }
@@ -50,8 +48,6 @@ namespace CalamityOverhaul.Common
             VoidTimeShift_Key = KeybindLoader.RegisterKeybind(mod, nameof(VoidTimeShift_Key), "K");
             Halibut_Clone = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Clone), "J");
             Halibut_Superposition = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Superposition), "F");
-            Halibut_Skill_L = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Skill_L), "Q");
-            Halibut_Skill_R = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_Skill_R), "E");
             Halibut_SkillWheel = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_SkillWheel), "Tab");
             Murasama_TriggerKey = KeybindLoader.RegisterKeybind(mod, nameof(Murasama_TriggerKey), "F");
             Murasama_DownKey = KeybindLoader.RegisterKeybind(mod, nameof(Murasama_DownKey), "X");
@@ -71,8 +67,6 @@ namespace CalamityOverhaul.Common
             Halibut_Superposition = null;
             Legend_Teleport = null;
             Legend_UIControl = null;
-            Halibut_Skill_L = null;
-            Halibut_Skill_R = null;
             Halibut_SkillWheel = null;
             WeponSkill_Q = null;
             WeponSkill_R = null;

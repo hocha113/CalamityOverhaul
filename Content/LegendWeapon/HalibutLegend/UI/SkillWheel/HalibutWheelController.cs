@@ -27,7 +27,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
     /// <summary>
     /// 技能轮盘状态机，视觉见 <see cref="HalibutSkillWheel"/>
     /// 按住 Halibut_SkillWheel 开盘 + 子弹时间，松键或左键选定；右键关盘
-    /// Halibut_Skill_L/R 关盘时循环装备栏技能
     /// </summary>
     internal class HalibutWheelController : ModPlayer
     {
@@ -96,7 +95,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
             }
 
             HandleWheelKey();
-            HandleCycleKeys();
             HandleWheelMouse();
             UpdateOpenProgress();
         }
@@ -144,36 +142,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.SkillWheel
                     SelectSkill(sectors[HoveredIndex].Skill);
                 }
                 CloseWheel(silentSound: false);
-            }
-        }
-
-        /// <summary>
-        /// 轮盘关闭时的左右循环切换
-        /// </summary>
-        private void HandleCycleKeys() {
-            if (IsOpen) {
-                return;
-            }
-            bool left = CWRKeySystem.Halibut_Skill_L.JustPressed;
-            bool right = CWRKeySystem.Halibut_Skill_R.JustPressed;
-            if (!left && !right) {
-                return;
-            }
-            var save = Save;
-            if (save.loadout.Count == 0) {
-                return;
-            }
-            int currentIndex = save.FishSkill != null ? save.loadout.IndexOf(save.FishSkill) : -1;
-            int newIndex;
-            if (left) {
-                newIndex = currentIndex <= 0 ? save.loadout.Count - 1 : currentIndex - 1;
-            }
-            else {
-                newIndex = currentIndex >= save.loadout.Count - 1 ? 0 : currentIndex + 1;
-            }
-            FishSkill target = save.loadout[newIndex];
-            if (target != null && target != save.FishSkill) {
-                SelectSkill(target);
             }
         }
 
