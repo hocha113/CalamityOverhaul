@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using InnoVault.TileProcessors;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria;
@@ -195,73 +197,156 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>预绘制非管道连接臂</summary>
+        /// <summary>
+        /// 能量层是否由电网着色器统一批次绘制：仅基础管道 + 着色器可用时为 true。
+        /// 创造管道(子类)与着色器缺失时，能量层在本 TP 内联平涂回退
+        /// </summary>
+        private bool EnergyDrawnByNetwork => GetType() == typeof(UEPipelineTP) && EffectLoader.UEPipelineFlow?.Value != null;
+
+        /// <summary>预绘制非管道连接臂（金属外壳；能量层视情况内联回退）</summary>
         public override void PreTileDraw(SpriteBatch spriteBatch) {
             if (Shape == PipelineShape.Cross) return;
 
+            bool inlineEnergy = !EnergyDrawnByNetwork;
+            Color energyColor = inlineEnergy ? GetEnergyDrawColor(false) : default;
             foreach (var side in SideState) {
                 //发电机/电池等非管道臂
                 if (side.canDraw && side.LinkType != PipelineLinkType.Pipeline) {
-                    side.Draw(spriteBatch);
+                    if (inlineEnergy) {
+                        side.DrawEnergy(spriteBatch, energyColor);
+                    }
+                    side.DrawCasing(spriteBatch);
                 }
             }
         }
 
-        /// <summary>按形状绘制管道本体</summary>
+        /// <summary>按形状绘制管道本体（金属外壳；能量层视情况内联回退）</summary>
         public override void Draw(SpriteBatch spriteBatch) {
-            //先画管道间连接臂
+            bool inlineEnergy = !EnergyDrawnByNetwork;
+            Color energyColor = inlineEnergy ? GetEnergyDrawColor(false) : default;
+            Color lightingColor = Lighting.GetColor(Position.ToPoint());
+
+            //管道间连接臂
             if (Shape != PipelineShape.Cross) {
                 foreach (var side in SideState) {
                     if (side.canDraw && side.LinkType == PipelineLinkType.Pipeline) {
-                        side.Draw(spriteBatch);
+                        if (inlineEnergy) {
+                            side.DrawEnergy(spriteBatch, energyColor);
+                        }
+                        side.DrawCasing(spriteBatch);
                     }
                 }
             }
 
             Vector2 drawPos = PosInWorld - Main.screenPosition;
-            float energyRatio = MachineData.UEvalue / (MaxUEValue * 0.5f);
-            Color energyColor = BaseColor * energyRatio;
-            Color lightingColor = Lighting.GetColor(Position.ToPoint());
-
             switch (Shape) {
                 case PipelineShape.Cross:
-                    DrawCross(spriteBatch, energyColor, lightingColor);
+                    if (inlineEnergy) DrawCrossEnergy(spriteBatch, energyColor);
+                    DrawCrossCasing(spriteBatch, lightingColor);
                     break;
                 case PipelineShape.ThreeWay:
-                    DrawThreeWay(spriteBatch, drawPos, energyColor, lightingColor);
+                    if (inlineEnergy) DrawThreeWayEnergy(spriteBatch, drawPos, energyColor);
+                    DrawThreeWayCasing(spriteBatch, drawPos, lightingColor);
                     break;
                 case PipelineShape.Corner:
-                    DrawCorner(spriteBatch, drawPos, energyColor, lightingColor);
+                    if (inlineEnergy) DrawCornerEnergy(spriteBatch, drawPos, energyColor);
+                    DrawCornerCasing(spriteBatch, drawPos, lightingColor);
                     break;
                 case PipelineShape.Straight:
                     break;
                 case PipelineShape.Endpoint:
-                    DrawEndpoint(spriteBatch, drawPos, energyColor, lightingColor);
+                    if (inlineEnergy) DrawEndpointEnergy(spriteBatch, drawPos, energyColor);
+                    DrawEndpointCasing(spriteBatch, drawPos, lightingColor);
                     break;
             }
         }
 
-        private void DrawCross(SpriteBatch spriteBatch, Color energyColor, Color lightingColor) {
-            Vector2 drawPos = CenterInWorld - Main.screenPosition;
-            Vector2 origin = PipelineCross.Size() / 2;
-            spriteBatch.Draw(PipelineCross.Value, drawPos, null, energyColor, 0, origin, 1, SpriteEffects.None, 0);
-            spriteBatch.Draw(PipelineCrossSide.Value, drawPos, null, lightingColor, 0, origin, 1, SpriteEffects.None, 0);
+        /// <summary>能量层：本体 + 所有连接臂，由 <see cref="UEPipelineEnergyDraw"/> 着色器批次统一调用</summary>
+        internal void DrawEnergy(SpriteBatch spriteBatch, Color energyColor) {
+            if (MachineData == null) return;
+
+            if (Shape != PipelineShape.Cross) {
+                foreach (var side in SideState) {
+                    if (side.canDraw) {
+                        side.DrawEnergy(spriteBatch, energyColor);
+                    }
+                }
+            }
+
+            Vector2 drawPos = PosInWorld - Main.screenPosition;
+            switch (Shape) {
+                case PipelineShape.Cross:
+                    DrawCrossEnergy(spriteBatch, energyColor);
+                    break;
+                case PipelineShape.ThreeWay:
+                    DrawThreeWayEnergy(spriteBatch, drawPos, energyColor);
+                    break;
+                case PipelineShape.Corner:
+                    DrawCornerEnergy(spriteBatch, drawPos, energyColor);
+                    break;
+                case PipelineShape.Straight:
+                    break;
+                case PipelineShape.Endpoint:
+                    DrawEndpointEnergy(spriteBatch, drawPos, energyColor);
+                    break;
+            }
         }
 
-        private void DrawThreeWay(SpriteBatch spriteBatch, Vector2 drawPos, Color energyColor, Color lightingColor) {
+        /// <summary>
+        /// 能量绘制色。着色器模式：rgb=色调(BaseColor)，a=电量比例(0~1)供着色器读取强度；
+        /// 回退模式：BaseColor×电量比例 直接平涂
+        /// </summary>
+        internal Color GetEnergyDrawColor(bool shaderMode) {
+            if (shaderMode) {
+                //着色器读取真实充盈度(0~1)作强度，使管内含量随亮度真实变化
+                Color c = BaseColor;
+                c.A = (byte)(MathHelper.Clamp(MachineData.UEvalue / MaxUEValue, 0f, 1f) * 255);
+                return c;
+            }
+            return BaseColor * (MachineData.UEvalue / (MaxUEValue * 0.5f));
+        }
+
+        #region 分形状的能量层 / 外壳层
+        private void DrawCrossEnergy(SpriteBatch spriteBatch, Color energyColor) {
+            Vector2 drawPos = CenterInWorld - Main.screenPosition;
+            spriteBatch.Draw(PipelineCross.Value, drawPos, null, energyColor, 0, PipelineCross.Size() / 2, 1, SpriteEffects.None, 0);
+        }
+        private void DrawCrossCasing(SpriteBatch spriteBatch, Color lightingColor) {
+            Vector2 drawPos = CenterInWorld - Main.screenPosition;
+            spriteBatch.Draw(PipelineCrossSide.Value, drawPos, null, lightingColor, 0, PipelineCrossSide.Size() / 2, 1, SpriteEffects.None, 0);
+        }
+
+        private void DrawThreeWayEnergy(SpriteBatch spriteBatch, Vector2 drawPos, Color energyColor) {
             Rectangle rect = PipelineThreeCrutches.Value.GetRectangle(ShapeRotationID, 4);
             spriteBatch.Draw(PipelineThreeCrutches.Value, drawPos, rect, energyColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+        }
+        private void DrawThreeWayCasing(SpriteBatch spriteBatch, Vector2 drawPos, Color lightingColor) {
+            Rectangle rect = PipelineThreeCrutchesSide.Value.GetRectangle(ShapeRotationID, 4);
             spriteBatch.Draw(PipelineThreeCrutchesSide.Value, drawPos, rect, lightingColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
         }
 
-        private void DrawCorner(SpriteBatch spriteBatch, Vector2 drawPos, Color energyColor, Color lightingColor) {
+        private void DrawCornerEnergy(SpriteBatch spriteBatch, Vector2 drawPos, Color energyColor) {
             Rectangle rect = PipelineCorner.Value.GetRectangle(ShapeRotationID, 4);
             spriteBatch.Draw(PipelineCorner.Value, drawPos, rect, energyColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+        }
+        private void DrawCornerCasing(SpriteBatch spriteBatch, Vector2 drawPos, Color lightingColor) {
+            Rectangle rect = PipelineCornerSide.Value.GetRectangle(ShapeRotationID, 4);
             spriteBatch.Draw(PipelineCornerSide.Value, drawPos, rect, lightingColor, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
         }
 
-        private void DrawEndpoint(SpriteBatch spriteBatch, Vector2 drawPos, Color energyColor, Color lightingColor) {
-            //统计连接数量
+        private void DrawEndpointEnergy(SpriteBatch spriteBatch, Vector2 drawPos, Color energyColor) {
+            if (ShouldDrawEndpointCenter()) {
+                spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), energyColor);
+            }
+        }
+        private void DrawEndpointCasing(SpriteBatch spriteBatch, Vector2 drawPos, Color lightingColor) {
+            if (ShouldDrawEndpointCenter()) {
+                spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), lightingColor);
+            }
+        }
+
+        /// <summary>双非管道连接或孤立端点才画中心块</summary>
+        private bool ShouldDrawEndpointCenter() {
             int linkCount = 0;
             int nonPipeLinkCount = 0;
             foreach (var side in SideState) {
@@ -272,12 +357,53 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
                     }
                 }
             }
+            return linkCount != 2 || nonPipeLinkCount == 2 || linkCount == 0;
+        }
+        #endregion
+    }
 
-            //双非管道连接或孤立端点才画中心块
-            if (linkCount != 2 || nonPipeLinkCount == 2 || linkCount == 0) {
-                spriteBatch.Draw(Pipeline.Value, drawPos.GetRectangle(Size), energyColor);
-                spriteBatch.Draw(PipelineSide.Value, drawPos.GetRectangle(Size), lightingColor);
+    /// <summary>
+    /// 电力管道能量层统一绘制：在墙后物块前(PreTileDraw 层)用 <see cref="EffectLoader.UEPipelineFlow"/>
+    /// 单批次渲染全网管道的流动能量，金属外壳由各 TP 在其上叠加。着色器缺失时各 TP 内联平涂回退
+    /// </summary>
+    internal class UEPipelineEnergyDraw : GlobalTileProcessor
+    {
+        private static readonly List<UEPipelineTP> visiblePipes = [];
+
+        public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
+            if (Main.dedServ) {
+                return true;
             }
+            Effect effect = EffectLoader.UEPipelineFlow?.Value;
+            if (effect == null) {
+                return true;//着色器缺失：能量层由各管道内联平涂回退
+            }
+
+            visiblePipes.Clear();
+            foreach (var tp in TileProcessorLoader.TP_InWorld) {
+                //仅基础管道；创造管道(子类)有自己的星空渲染，排除
+                if (tp.GetType() == typeof(UEPipelineTP) && tp.Active
+                    && VaultUtils.IsPointOnScreen(tp.PosInWorld - Main.screenPosition, tp.DrawExtendMode)) {
+                    visiblePipes.Add((UEPipelineTP)tp);
+                }
+            }
+            if (visiblePipes.Count == 0) {
+                return true;
+            }
+
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uAlpha"]?.SetValue(1f);
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, RasterizerState.CullNone, effect, Main.Transform);
+            foreach (var pipe in visiblePipes) {
+                pipe.DrawEnergy(spriteBatch, pipe.GetEnergyDrawColor(true));
+            }
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+            return true;
         }
     }
 }

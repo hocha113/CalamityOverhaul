@@ -175,20 +175,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
             }
         }
 
-        /// <summary>绘制连接臂</summary>
-        public void Draw(SpriteBatch spriteBatch) {
+        /// <summary>绘制连接臂能量层（颜色由调用方决定：电网着色器批次 or 平涂回退）</summary>
+        public void DrawEnergy(SpriteBatch spriteBatch, Color energyColor) {
             if (coreTP?.MachineData == null || externalTP == null) return;
 
             Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
             float drawRot = Offset.ToVector2().ToRotation();
             Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
-
-            //绘制能量流动效果
-            float energyRatio = coreTP.MachineData.UEvalue / (coreTP.MaxUEValue * 0.5f);
-            Color energyColor = coreTP.BaseColor * energyRatio;
             spriteBatch.Draw(UEPipelineTP.PipelineChannel.Value, drawPos + orig, null, energyColor, drawRot, orig, 1, SpriteEffects.None, 0);
+        }
 
-            //绘制管道连接臂本体
+        /// <summary>绘制连接臂金属外壳层</summary>
+        public void DrawCasing(SpriteBatch spriteBatch) {
+            if (coreTP?.MachineData == null || externalTP == null) return;
+
+            Vector2 drawPos = coreTP.PosInWorld + Offset.ToVector2() * 16 - Main.screenPosition;
+            float drawRot = Offset.ToVector2().ToRotation();
+            Vector2 orig = UEPipelineTP.PipelineChannel.Size() / 2;
             Color lightingColor = Lighting.GetColor(Position.ToPoint());
             spriteBatch.Draw(UEPipelineTP.PipelineChannelSide.Value, drawPos + orig, null, lightingColor, drawRot, orig, 1, SpriteEffects.None, 0);
         }

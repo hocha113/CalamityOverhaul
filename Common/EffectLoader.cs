@@ -96,6 +96,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> ThermalPanel { get; set; }
         public static Asset<Effect> ThermalBar { get; set; }
         public static Asset<Effect> ThermalBatteryCore { get; set; }
+        public static Asset<Effect> UEPipelineFlow { get; set; }
         public static Asset<Effect> ThermalHeatHaze { get; set; }
         public static Asset<Effect> VoidColonySky { get; set; }
         public static Asset<Effect> VoidFog { get; set; }
