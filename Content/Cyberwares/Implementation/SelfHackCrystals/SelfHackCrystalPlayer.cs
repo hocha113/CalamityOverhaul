@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Cyberwares;
 using CalamityOverhaul.Content.RAMSystems;
 using System;
 using Terraria;
@@ -23,6 +24,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
     {
         /// <summary>技能冷却剩余帧，0 可释放</summary>
         public int SkillCooldownTimer { get; private set; }
+        private float skillCooldownCarry;
 
         public override void OnEnterWorld() {
             //仅本机玩家需把贡献项写入本机 RAM 列表，多人模式下其他玩家的实例不必参与本机聚合
@@ -33,9 +35,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
         }
 
         public override void ResetEffects() {
-            if (SkillCooldownTimer > 0) {
-                SkillCooldownTimer--;
-            }
+            int timer = SkillCooldownTimer;
+            BaseCyberware.TickFrameDown(ref timer, ref skillCooldownCarry);
+            SkillCooldownTimer = timer;
         }
 
         public override void PostUpdate() {
@@ -45,6 +47,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
             if (SelfHackCrystal.GetEquipped(Player) == null) {
                 //未装备时清空冷却，使重新装备后立刻可用
                 SkillCooldownTimer = 0;
+                skillCooldownCarry = 0f;
             }
         }
 
@@ -100,6 +103,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SelfHackCrystals
 
             //冷却进入计时
             SkillCooldownTimer = SelfHackCrystal.SkillCooldown;
+            skillCooldownCarry = 0f;
 
             //音效与粒子：清债越多反馈越强，让玩家直观感知"清理了多少负面"
             SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.4f, Volume = 0.7f }, Player.Center);

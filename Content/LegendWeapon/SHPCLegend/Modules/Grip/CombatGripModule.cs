@@ -20,7 +20,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         private int _stacks;
         private int _freshTimer;
+        private float _freshCarry;
         private int _decayTimer;
+        private float _decayCarry;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += -0.08f;
@@ -54,17 +56,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
                 }
             }
             _freshTimer = FreshTime;
+            _freshCarry = 0f;
         }
 
         public override void OnPlayerUpdate(Player player) {
             if (_stacks <= 0) return;
             if (_freshTimer > 0) {
-                _freshTimer--;
+                TickDown(ref _freshTimer, ref _freshCarry);
                 return;
             }
-            _decayTimer++;
+            _decayTimer += TickUp(ref _decayCarry);
             if (_decayTimer >= DecayInterval) {
                 _decayTimer = 0;
+                _decayCarry = 0f;
                 _stacks--;
             }
         }

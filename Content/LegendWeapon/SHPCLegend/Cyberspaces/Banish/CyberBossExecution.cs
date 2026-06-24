@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -136,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
                     TickSpawnBolts(entry, npc);
                 }
 
-                entry.Timer++;
+                entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
                 if (entry.Timer >= ExecutionDuration) {
                     ActiveExecutions.RemoveAt(i);
                 }
@@ -216,6 +217,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
     {
         public int NpcIndex;
         public int Timer;
+        internal float TimerCarry;
         public int SpawnedCount;
         public int Damage;
         public int OwnerWho;

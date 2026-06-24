@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         private const int DeployCooldown = 280;
         private int cooldownTimer;
+        private float cooldownCarry;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.SpreadMul += -0.3f;
@@ -28,13 +29,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
         }
 
         public override void OnPlayerUpdate(Player player) {
-            if (cooldownTimer > 0) cooldownTimer--;
+            TickDown(ref cooldownTimer, ref cooldownCarry);
             if (player.whoAmI != Main.myPlayer) return;
             if (player.HeldItem == null || player.HeldItem.type != SHPCOverride.ID) return;
             //仅在交战中（武器动画激活）才消耗冷却投放光栅
             if (cooldownTimer > 0 || !player.ItemAnimationActive) return;
 
             cooldownTimer = DeployCooldown;
+            cooldownCarry = 0f;
             Vector2 aim = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
             Projectile.NewProjectile(player.GetSource_FromThis(),
                 Main.MouseWorld, Vector2.Zero,

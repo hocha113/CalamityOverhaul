@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Cyberwares;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -15,15 +16,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
     {
         /// <summary>技能冷却剩余帧，0 可释放</summary>
         public int SkillCooldownTimer { get; private set; }
+        private float skillCooldownCarry;
 
         /// <summary>冷却比例 0~1，雷达扇区填充用</summary>
         public float CooldownRatio => PlowSteelClampArm.SkillCooldown <= 0
             ? 0f : MathHelper.Clamp((float)SkillCooldownTimer / PlowSteelClampArm.SkillCooldown, 0f, 1f);
 
         public override void ResetEffects() {
-            if (SkillCooldownTimer > 0) {
-                SkillCooldownTimer--;
-            }
+            int timer = SkillCooldownTimer;
+            BaseCyberware.TickFrameDown(ref timer, ref skillCooldownCarry);
+            SkillCooldownTimer = timer;
         }
 
         public override void PostUpdate() {
@@ -33,6 +35,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             if (PlowSteelClampArm.GetEquipped(Player) == null) {
                 //卸下义体后即时清理冷却
                 SkillCooldownTimer = 0;
+                skillCooldownCarry = 0f;
             }
         }
 
@@ -82,6 +85,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
             }
 
             SkillCooldownTimer = PlowSteelClampArm.SkillCooldown;
+            skillCooldownCarry = 0f;
         }
 
         /// <summary>短线发射，ai2=1 静态模式，两端冻结于生成瞬间</summary>
@@ -120,6 +124,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
             //短线冷却更短，鼓励玩家频繁使用作为常规手段
             SkillCooldownTimer = PlowSteelClampArm.SkillCooldown / 2;
+            skillCooldownCarry = 0f;
         }
 
         /// <summary>光标附近搜实心物块作锚点，超 MaxAnchorDistance 失败</summary>

@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -227,7 +228,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
         public static void Update() {
             for (int i = ActiveBanishments.Count - 1; i >= 0; i--) {
                 BanishEntry entry = ActiveBanishments[i];
-                entry.Timer++;
+                entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
 
                 NPC npc = Main.npc[entry.NpcIndex];
                 if (!npc.active) {
@@ -307,6 +308,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
     {
         public int NpcIndex;
         public int Timer;
+        internal float TimerCarry;
         public float OriginalScale;
         public Vector2 FreezePosition;
         public float Seed;

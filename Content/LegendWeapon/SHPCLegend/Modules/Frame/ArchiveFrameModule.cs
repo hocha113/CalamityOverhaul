@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         private float _accumulated;
         private int _cooldown;
+        private float _cooldownCarry;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.DamageMul += 0.06f;
@@ -41,6 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             //达成阈值，扣除阈值并触发数据归档爆破在玩家位置
             _accumulated -= Threshold;
             _cooldown = CooldownFrames;
+            _cooldownCarry = 0f;
             Player owner = Main.player[source.owner];
             if (owner == null || !owner.active) return;
 
@@ -59,7 +61,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         }
 
         public override void OnPlayerUpdate(Player player) {
-            if (_cooldown > 0) _cooldown--;
+            TickDown(ref _cooldown, ref _cooldownCarry);
         }
     }
 }

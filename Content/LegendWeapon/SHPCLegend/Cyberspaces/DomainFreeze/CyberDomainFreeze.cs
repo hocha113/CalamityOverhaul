@@ -2,6 +2,7 @@
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -284,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         private static void UpdateFrozenNPCs() {
             for (int i = FrozenNPCs.Count - 1; i >= 0; i--) {
                 FreezeEntry entry = FrozenNPCs[i];
-                entry.Timer++;
+                entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
 
                 NPC npc = Main.npc[entry.EntityIndex];
                 if (!npc.active) {
@@ -355,7 +356,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         private static void UpdateFrozenProjectiles() {
             for (int i = FrozenProjectiles.Count - 1; i >= 0; i--) {
                 FreezeProjEntry entry = FrozenProjectiles[i];
-                entry.Timer++;
+                entry.Timer += TimeGear.PullFrameAdvance(ref entry.TimerCarry);
 
                 Projectile proj = Main.projectile[entry.EntityIndex];
                 if (!proj.active) {
@@ -387,6 +388,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
     {
         public int EntityIndex;
         public int Timer;
+        internal float TimerCarry;
         public int Duration;
         public Vector2 FreezePosition;
         public Vector2 FreezeVelocity;
@@ -402,6 +404,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
     {
         public int EntityIndex;
         public int Timer;
+        internal float TimerCarry;
         public int Duration;
         public Vector2 FreezePosition;
         public Vector2 FreezeVelocity;

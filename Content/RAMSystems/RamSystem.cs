@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.HackTimes;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 
@@ -47,8 +48,10 @@ namespace CalamityOverhaul.Content.RAMSystems
         //系统锁定计时（帧）：>0 时 RAM 锁定为 0，禁止消耗与恢复
         private static int lockTimer;
         private static int lockTotalFrames;
+        private static float lockTimerCarry;
         //RAM 不足闪烁计时（帧）：>0 时 HUD 红色故障闪烁
         private static int flashTimer;
+        private static float flashTimerCarry;
 
         #endregion
 
@@ -95,6 +98,7 @@ namespace CalamityOverhaul.Content.RAMSystems
             }
             lockTimer = frames;
             lockTotalFrames = frames;
+            lockTimerCarry = 0f;
             var local = Local;
             if (local == null) {
                 return;
@@ -107,13 +111,16 @@ namespace CalamityOverhaul.Content.RAMSystems
         /// <summary>触发 RAM 不足故障闪烁</summary>
         public static void NotifyInsufficient() {
             flashTimer = InsufficientFlashFrames;
+            flashTimerCarry = 0f;
         }
 
         /// <summary>立即解除系统锁定，仅读档/卸载等极端情形</summary>
         public static void ClearLock() {
             lockTimer = 0;
             lockTotalFrames = 0;
+            lockTimerCarry = 0f;
             flashTimer = 0;
+            flashTimerCarry = 0f;
         }
 
         #endregion
@@ -317,17 +324,16 @@ namespace CalamityOverhaul.Content.RAMSystems
             local.RecomputeEffective();
 
             //故障闪烁计时独立推进
-            if (flashTimer > 0) {
-                flashTimer--;
-            }
+            TimeGear.ConsumeFrames(ref flashTimer, ref flashTimerCarry);
 
             //系统锁定：强制 RAM 为 0、阻断本帧恢复
             if (lockTimer > 0) {
-                lockTimer--;
+                TimeGear.ConsumeFrames(ref lockTimer, ref lockTimerCarry);
                 local.CurrentRam = 0f;
                 local.RecoveryCooldown = 0f;
                 if (lockTimer == 0) {
                     lockTotalFrames = 0;
+                    lockTimerCarry = 0f;
                 }
                 return;
             }
@@ -336,11 +342,11 @@ namespace CalamityOverhaul.Content.RAMSystems
                 return;
             }
             if (local.RecoveryCooldown > 0f) {
-                local.RecoveryCooldown -= TickSeconds;
+                local.RecoveryCooldown -= TickSeconds * TimeGear.TimeScale;
                 return;
             }
-            if (local.CurrentRam < local.MaxRam) {
-                local.CurrentRam += local.RecoveryRate * TickSeconds;
+            if (local.CurrentRam < local.MaxRam && TimeGear.TimeScale > 0f) {
+                local.CurrentRam += local.RecoveryRate * TickSeconds * TimeGear.TimeScale;
                 if (local.CurrentRam > local.MaxRam) {
                     local.CurrentRam = local.MaxRam;
                 }
@@ -354,7 +360,9 @@ namespace CalamityOverhaul.Content.RAMSystems
         public static void Reset() {
             lockTimer = 0;
             lockTotalFrames = 0;
+            lockTimerCarry = 0f;
             flashTimer = 0;
+            flashTimerCarry = 0f;
             if (!Main.LocalPlayer.active) return;
             var local = Local;
             local.RecoveryCooldown = 0f;

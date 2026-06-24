@@ -1,6 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -41,7 +42,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 
         //本地玩家专用计时（只在客户端本地推进）
         private static int cooldownTimer;
+        private static float cooldownTimerCarry;
         private static int hideTimer;
+        private static float hideTimerCarry;
 
         /// <summary>演出隐藏期，PlayerOverride 移除绘制</summary>
         public static bool IsLocalPlayerHidden => hideTimer > 0;
@@ -141,9 +144,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
 
             //计时
             cooldownTimer = CooldownFrames;
+            cooldownTimerCarry = 0f;
             //仅本地客户端隐藏自己的绘制（其它客户端通过弹幕看到效果即可）
             if (Main.myPlayer == owner.whoAmI) {
                 hideTimer = HideDuration;
+                hideTimerCarry = 0f;
             }
 
             //生成演出弹幕（NewProjectile 自带网络同步，远端也能看到解构/走廊/重组）
@@ -199,8 +204,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         /// 每帧推进：本地计时滴答；远端不需要参与（演出由弹幕回放）
         /// </summary>
         public static void Update() {
-            if (cooldownTimer > 0) cooldownTimer--;
-            if (hideTimer > 0) hideTimer--;
+            TimeGear.ConsumeFrames(ref cooldownTimer, ref cooldownTimerCarry);
+            TimeGear.ConsumeFrames(ref hideTimer, ref hideTimerCarry);
         }
 
         /// <summary>
@@ -208,7 +213,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         /// </summary>
         public static void Reset() {
             cooldownTimer = 0;
+            cooldownTimerCarry = 0f;
             hideTimer = 0;
+            hideTimerCarry = 0f;
         }
     }
 }

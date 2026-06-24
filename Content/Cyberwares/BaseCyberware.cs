@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Cyberwares.Skills;
+using CalamityOverhaul.Content.TimeFreezes;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -51,6 +52,14 @@ namespace CalamityOverhaul.Content.Cyberwares
         /// <br/>建议 static 单例；运行时状态留在 ModPlayer/ModSystem
         /// </summary>
         public virtual CyberwareSkillBase ActiveSkill => null;
+
+        /// <summary>按 <see cref="TimeGear"/> 推进整帧倒计时，供关联 ModPlayer 冷却</summary>
+        public static void TickFrameDown(ref int frames, ref float carry, float scale = -1f)
+            => TimeGear.ConsumeFrames(ref frames, ref carry, scale);
+
+        /// <summary>按 <see cref="TimeGear"/> 返回本帧应推进的整帧数（正计时）</summary>
+        public static int TickFrameUp(ref float carry, float scale = -1f)
+            => TimeGear.PullFrameAdvance(ref carry, scale);
 
         public override void SetDefaults() {
             Item.maxStack = 1;

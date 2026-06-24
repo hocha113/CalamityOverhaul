@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -41,6 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
 
         //本地玩家专用计时
         private static int progressTimer;
+        private static float progressTimerCarry;
         //演出锚定层数：触发时领域所处层数，炸裂阶段恢复时使用
         private static int anchorLayer;
         //奇点关键帧是否已经触发恢复，避免帧重入
@@ -157,6 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             }
 
             progressTimer = 1;
+            progressTimerCarry = 0f;
             anchorLayer = Math.Clamp(Cyberspace.CurrentLayer, 1, Cyberspace.MaxLayerCount);
             restoreFired = false;
 
@@ -210,7 +213,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
                 SpawnBurstVFX();
             }
 
-            progressTimer++;
+            progressTimer += TimeGear.PullFrameAdvance(ref progressTimerCarry);
             if (progressTimer > TotalFrames) {
                 FinishRoutine();
             }
@@ -332,6 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         /// </summary>
         private static void FinishRoutine() {
             progressTimer = 0;
+            progressTimerCarry = 0f;
             restoreFired = false;
         }
 
@@ -340,6 +344,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         /// </summary>
         public static void Reset() {
             progressTimer = 0;
+            progressTimerCarry = 0f;
             anchorLayer = 0;
             restoreFired = false;
             Cyberspace.RestartCollapse = 0f;

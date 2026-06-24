@@ -28,6 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private int npcA = -1;
         private int npcB = -1;
         private int linkTimer;
+        private float linkTimerCarry;
         private int accumDamage;
         private int lastHitNpc = -1;
 
@@ -84,6 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             npcA = first.whoAmI;
             npcB = second.whoAmI;
             linkTimer = LinkDuration;
+            linkTimerCarry = 0f;
             accumDamage = 0;
             lastHitNpc = -1;
 
@@ -107,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             if (!LinkActive()) return;
             if (player.whoAmI != Main.myPlayer) return;
 
-            linkTimer--;
+            TickDown(ref linkTimer, ref linkTimerCarry);
             NPC a = Main.npc[npcA];
             NPC b = Main.npc[npcB];
             bool aGone = !a.active || a.friendly;
@@ -148,6 +150,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
             npcA = -1;
             npcB = -1;
             linkTimer = 0;
+            linkTimerCarry = 0f;
             accumDamage = 0;
         }
     }

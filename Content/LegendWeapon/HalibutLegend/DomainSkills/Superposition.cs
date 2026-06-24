@@ -1,6 +1,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -582,13 +584,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     #region 齐射炮弹幕
     /// <summary>
-    /// 大比目鱼炮 - 齐射弹幕发射器
+    /// 大比目鱼炮 - 叠加态齐射发射器：长蓄力→塌缩沉默→重锤齐射，炮口随领域层数叠加重影
     /// </summary>
     internal class SuperpositionCannon : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
         private Player Owner => Main.player[Projectile.owner];
+
+        //owner 同步后的瞄准点：远程端读近似鼠标，避免误用本地视角鼠标
+        private Vector2 AimWorld {
+            get {
+                if (Owner.TryGetOverride<HalibutPlayer>(out var hp)) {
+                    return hp.MouseWorld;
+                }
+                return Main.MouseWorld;
+            }
+        }
 
         private enum CannonState
         {
@@ -602,15 +614,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private int timer;
         private int volleyIndex;
 
-        private const int DeployTime = 20;
-        private const int ChargeTime = 30;
+        private const int DeployTime = 18;
+        private const int ChargeTime = 34;
         private const int VolleyCount = 4;
-        private const int VolleySpacing = 12;
+        private const int VolleySpacing = 9;
 
         private float angleOffset;
-        private float pulse;
+        private float pulse;        //整体强度，驱动本体缩放与发光
+        private float barrelGlow;   //炮口蓄力辉光 0..1
+        private float recoil;       //后坐位移，沿 -瞄准方向逐帧回弹
+        private float deployScale;  //部署弹出缩放
+        private int echoLayers;     //叠加重影层数（随领域层数 7→10 提升）
+        private bool infinite;      //满层（第十眼）白金配色
 
         public bool Completed => state == CannonState.Finish;
+
+        //配色：青蓝水流 + 紫电叠加；满层转白金。A=255 以便加算/PRT 正常显色
+        private Color GlowColor => infinite ? new Color(255, 226, 150) : new Color(150, 120, 255);
+        private Color FlashColor => infinite ? new Color(255, 244, 206) : new Color(190, 170, 255);
 
         public override void SetDefaults() {
             Projectile.width = 80;
@@ -630,11 +651,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             if (timer == 0) {
                 angleOffset = Projectile.ai[0];
+                int layer = HalibutData.GetDomainLayer();
+                echoLayers = (int)MathHelper.Clamp(layer - 6, 1, 4);
+                infinite = layer >= 10;
             }
 
             timer++;
 
-            Vector2 direction = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
+            Vector2 direction = (AimWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
             Vector2 backDir = -direction;
             Vector2 perpendicular = direction.RotatedBy(MathHelper.PiOver2);
 
@@ -645,66 +669,84 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             Owner.direction = Math.Sign(direction.X);
 
+            recoil = MathHelper.Lerp(recoil, 0f, 0.25f);
+            Lighting.AddLight(Projectile.Center, GlowColor.R / 255f * pulse, GlowColor.G / 255f * pulse, GlowColor.B / 255f * pulse);
+
             switch (state) {
                 case CannonState.Deploy:
                     UpdateDeploy();
                     break;
                 case CannonState.Charge:
-                    UpdateCharge();
+                    UpdateCharge(direction);
                     break;
                 case CannonState.Volley:
                     UpdateVolley(direction);
                     break;
                 case CannonState.Finish:
-                    UpdateFinish();
+                    UpdateFinish(direction);
                     break;
             }
         }
 
         private void UpdateDeploy() {
-            pulse = timer / (float)DeployTime;
+            float p = timer / (float)DeployTime;
+            deployScale = VaultUtils.EaseOutBack(p);
+            pulse = p * 0.45f;
+
+            if (timer == 1) {
+                SoundEngine.PlaySound(SoundID.Item34 with { Pitch = 0.3f, Volume = 0.45f }, Projectile.Center);
+            }
 
             if (timer >= DeployTime) {
                 state = CannonState.Charge;
                 timer = 0;
-                SoundEngine.PlaySound(
-                    SoundID.Item34 with { Pitch = -0.5f },
-                    Projectile.Center
-                );
+                deployScale = 1f;
+                SoundEngine.PlaySound(SoundID.Item72 with { Pitch = -0.35f, Volume = 0.7f }, Projectile.Center);
             }
         }
 
-        private void UpdateCharge() {
-            pulse = (float)Math.Sin(timer / (float)ChargeTime * MathHelper.Pi);
+        private void UpdateCharge(Vector2 direction) {
+            deployScale = 1f;
+            float p = timer / (float)ChargeTime;
+            barrelGlow = MathHelper.Clamp(p * 1.15f, 0f, 1f);
+            pulse = 0.45f + barrelGlow * 0.55f;
 
-            //充能粒子
-            if (timer % 6 == 0) {
-                int dust = Dust.NewDust(
-                    Projectile.Center - new Vector2(8, 8),
-                    16, 16,
-                    DustID.Water,
-                    0, 0, 150,
-                    new Color(160, 200, 255),
-                    1.3f
-                );
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = (Owner.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * -2f +
-                                           Main.rand.NextVector2Circular(1f, 1f);
+            //蓄力期递增的镜头微震，临射前最紧绷
+            Owner.GetModPlayer<CWRPlayer>().GetScreenShake(0.5f + p * 2.2f);
+
+            //汇聚的蓄力光点旋入炮口
+            if (!Main.dedServ) {
+                Vector2 muzzle = Projectile.Center + direction * 36f;
+                int rate = p > 0.6f ? 1 : 2;
+                if (timer % rate == 0) {
+                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                    Vector2 radial = ang.ToRotationVector2();
+                    float dist = Main.rand.NextFloat(70f, 130f) * (1f - p * 0.4f);
+                    Vector2 sp = muzzle + radial * dist;
+                    Vector2 vel = (muzzle - sp) * 0.08f + radial.RotatedBy(MathHelper.PiOver2) * 1.5f;
+                    PRTLoader.NewParticle<PRT_Light>(sp, vel, FlashColor, 0.4f + p * 0.45f).Configure(16);
+                }
+            }
+
+            //临射前的"塌缩"沉默：辉光回落，蓄势待发（爆发的留白）
+            if (timer >= ChargeTime - 5) {
+                barrelGlow = MathHelper.Lerp(1f, 0.5f, (timer - (ChargeTime - 5)) / 5f);
             }
 
             if (timer >= ChargeTime) {
                 state = CannonState.Volley;
                 timer = 0;
                 volleyIndex = 0;
-                SoundEngine.PlaySound(SoundID.Item82, Projectile.Center);
             }
         }
 
         private void UpdateVolley(Vector2 forward) {
             pulse = 1f;
+            barrelGlow = 1f;
 
             if (timer == 1) {
                 FireVolley(forward);
+                FireFlash(forward);
                 volleyIndex++;
             }
 
@@ -717,24 +759,55 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
         }
 
-        private void UpdateFinish() {
-            pulse *= 0.92f;
+        private void UpdateFinish(Vector2 direction) {
+            pulse *= 0.9f;
+            barrelGlow *= 0.84f;
 
-            if (pulse < 0.05f) {
+            //收尾炮口余烬
+            if (timer == 1 && !Main.dedServ) {
+                Vector2 muzzle = Projectile.Center + direction * 34f;
+                for (int i = 0; i < 5; i++) {
+                    Vector2 vel = direction * Main.rand.NextFloat(1f, 3f) + Main.rand.NextVector2Circular(1.5f, 1.5f);
+                    PRTLoader.NewParticle<PRT_Light>(muzzle, vel, GlowColor, Main.rand.NextFloat(0.4f, 0.7f)).Configure(22);
+                }
+            }
+
+            if (pulse < 0.04f) {
                 Projectile.Kill();
             }
         }
 
+        //齐射的"重锤"反馈：大后坐 + 镜头冲击 + 炮口星芒/火花（首发最猛）
+        private void FireFlash(Vector2 forward) {
+            recoil = 26f - volleyIndex * 3f;
+            Owner.GetModPlayer<CWRPlayer>().GetScreenShake(volleyIndex == 0 ? 6.5f : 4f);
+
+            if (!Main.dedServ) {
+                Vector2 muzzle = Projectile.Center + forward * 40f;
+                PRTLoader.NewParticle<PRT_StarPulseRing>(muzzle, Vector2.Zero, FlashColor, 0.5f).Configure(0.5f, 2.4f, 18);
+                PRTLoader.NewParticle<PRT_Light>(muzzle, forward * 2f, FlashColor, 1.15f).Configure(16);
+                for (int i = 0; i < 7; i++) {
+                    Vector2 vel = forward.RotatedByRandom(0.5f) * Main.rand.NextFloat(7f, 17f);
+                    PRTLoader.NewParticle<PRT_Spark>(muzzle, vel, FlashColor, Main.rand.NextFloat(0.8f, 1.4f)).Configure(false, Main.rand.Next(10, 18));
+                }
+            }
+
+            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.55f, Pitch = 0.15f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item82 with { Volume = 0.85f }, Projectile.Center);
+        }
+
         private void FireVolley(Vector2 forward) {
             var source = Projectile.GetSource_FromThis();
-            int fishPerVolley = 10;
-            float spread = MathHelper.ToRadians(18f);
+            int fishPerVolley = 9;
+            float spread = MathHelper.ToRadians(20f);
             ShootState shootState = Owner.GetShootState();
+            Vector2 muzzle = Projectile.Center + forward * 30f;
+            Vector2 perp = forward.RotatedBy(MathHelper.PiOver2);
 
             //生成统一伤害判定弹幕
             int projId = Projectile.NewProjectile(
                 source,
-                Projectile.Center + forward * 30f,
+                muzzle,
                 forward,
                 ModContent.ProjectileType<CannonFishSwarmHitbox>(),
                 shootState.WeaponDamage * (HalibutData.GetDomainLayer() - 6) * 2,
@@ -744,96 +817,77 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 volleyIndex         //传递齐射索引
             );
 
-            //将鱼群实体数据传递给判定弹幕
+            //把鱼沿炮口横向铺开成"有厚度的洪流"，再交给鱼自行向轴心汇拢
             if (projId >= 0 && Main.projectile[projId].ModProjectile is CannonFishSwarmHitbox hitbox) {
+                hitbox.Infinite = infinite;
                 for (int i = 0; i < fishPerVolley; i++) {
                     float lerpFactor = (i + 0.5f) / fishPerVolley;
                     float angle = spread * (lerpFactor - 0.5f);
-                    Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(14f, 18f);
+                    Vector2 velocity = forward.RotatedBy(angle) * Main.rand.NextFloat(17f, 23f);
+                    Vector2 spawn = muzzle + perp * ((lerpFactor - 0.5f) * 70f) + forward * Main.rand.NextFloat(-6f, 10f);
 
                     hitbox.AddFish(new FishEntity(
-                        Projectile.Center + forward * 30f,
+                        spawn,
                         velocity,
-                        Main.rand.Next(9999)
+                        muzzle,
+                        forward,
+                        Main.rand.Next(9999),
+                        echoLayers,
+                        infinite
                     ));
                 }
             }
+        }
 
-            //环形粒子特效
-            for (int k = 0; k < 14; k++) {
-                float angle = MathHelper.TwoPi * k / 14f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f) + forward * 6f;
-                int dust = Dust.NewDust(
-                    Projectile.Center, 1, 1,
-                    DustID.Water,
-                    0, 0, 100,
-                    new Color(180, 220, 255),
-                    1.4f
-                );
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = velocity;
-            }
+        private static void BeginAdditiveBatch() {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+        }
 
-            SoundEngine.PlaySound(
-                SoundID.Item11 with { Volume = 0.6f, Pitch = -0.2f },
-                Projectile.Center
-            );
+        private static void BeginWorldAlphaBatch() {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadItem(HalibutOverride.ID);
             Texture2D texture = TextureAssets.Item[HalibutOverride.ID].Value;
             Vector2 origin = texture.Size() / 2f;
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
 
-            Vector2 direction = (Main.MouseWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
+            Vector2 direction = (AimWorld - Owner.Center).SafeNormalize(Vector2.UnitX);
             SpriteEffects spriteEffects = direction.X > 0
                 ? SpriteEffects.None
                 : SpriteEffects.FlipHorizontally;
             float rotation = direction.ToRotation() + (direction.X > 0 ? 0 : MathHelper.Pi);
 
-            //后坐力效果
-            float recoil = (state == CannonState.Volley && timer < 4) ? -6f : 0f;
-            drawPosition += direction * recoil;
+            //后坐力沿 -瞄准方向把炮身踢回，部署时从小弹出
+            float scale = (0.8f + pulse * 0.3f) * HalibutOverride.ItemScale * (0.25f + 0.75f * deployScale);
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition - direction * recoil;
+            Vector2 muzzle = drawPosition + direction * 40f * scale;
 
-            float scale = 0.8f + pulse * 0.25f;
-            scale *= HalibutOverride.ItemScale;
+            //加算辉光层：炮身底光 + 炮口蓄力核心 + 齐射星芒
+            Main.spriteBatch.End();
+            BeginAdditiveBatch();
 
-            //发光层
-            Color glowColor = new Color(180, 200, 255, 0) * pulse * 0.6f;
-            for (int i = 0; i < 3; i++) {
-                Vector2 offset = (i * MathHelper.TwoPi / 3f).ToRotationVector2() * pulse * 4f;
-                Main.spriteBatch.Draw(
-                    texture,
-                    drawPosition + offset,
-                    null,
-                    glowColor,
-                    rotation,
-                    origin,
-                    scale,
-                    spriteEffects,
-                    0f
-                );
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Texture2D star = CWRAsset.StarTexture.Value;
+            Vector2 glowOrigin = glow.Size() / 2f;
+
+            Main.spriteBatch.Draw(glow, drawPosition, null, GlowColor * (0.45f + pulse * 0.55f), 0f, glowOrigin, scale * 2.4f, SpriteEffects.None, 0f);
+            if (barrelGlow > 0.02f) {
+                Main.spriteBatch.Draw(glow, muzzle, null, FlashColor * barrelGlow, 0f, glowOrigin, scale * (1f + barrelGlow * 1.6f), SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(star, muzzle, null, FlashColor * barrelGlow, rotation, star.Size() / 2f, scale * barrelGlow * 0.7f, SpriteEffects.None, 0f);
             }
 
-            //主体绘制
-            Main.spriteBatch.Draw(
-                texture,
-                drawPosition,
-                null,
-                Color.White,
-                rotation,
-                origin,
-                scale,
-                spriteEffects,
-                0f
-            );
+            Main.spriteBatch.End();
+            BeginWorldAlphaBatch();
+
+            //本体
+            Main.spriteBatch.Draw(texture, drawPosition, null, Color.White, rotation, origin, scale, spriteEffects, 0f);
 
             return false;
         }
     }
 
-    /// <summary>鱼群轻量实体，减少弹幕数量</summary>
+    /// <summary>鱼群轻量实体：沿炮口轴线高速突进、向轴心汇拢并叠加重影，表现"叠加"的洪流冲击</summary>
     internal class FishEntity
     {
         public Vector2 Position;
@@ -847,142 +901,166 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         public float FishRotation;
         public int FishDirection;
         public readonly List<Vector2> TrailPositions = new();
-        private const int MaxTrailLength = 10;
+        private const int MaxTrailLength = 9;
 
-        public FishEntity(Vector2 position, Vector2 velocity, float seed) {
+        //轴线与叠加表现
+        private readonly Vector2 axisOrigin;   //炮口原点
+        private readonly Vector2 axisDir;      //突进方向（单位向量）
+        private readonly float laneOffset;     //初始横向偏移（带符号），向轴心汇拢的起点
+        private readonly float wavePhase;      //摆动相位
+        private readonly float waveFreq;       //摆动频率
+        private readonly float baseSpeed;      //巡航速度
+        private readonly int echoLayers;       //叠加重影层数（随领域层数提升）
+        private readonly Color coreTint;       //本体色（青蓝）
+        private readonly Color glowTint;       //辉光色（紫电）
+
+        public FishEntity(Vector2 position, Vector2 velocity, Vector2 axisOrigin, Vector2 axisDir
+            , float seed, int echoLayers, bool infinite) {
             Position = position;
+            this.axisOrigin = axisOrigin;
+            this.axisDir = axisDir.SafeNormalize(Vector2.UnitX);
             Velocity = velocity;
             Seed = seed;
-            Life = 0;
-            MaxLife = 90f;
+            Life = 0f;
+            MaxLife = 78f;
             Alpha = 0f;
             FishType = Main.rand.Next(3);
-            FishScale = 0.6f + Main.rand.NextFloat() * 0.3f;
-            FishDirection = velocity.X > 0 ? 1 : -1;
+            FishScale = 0.62f + Main.rand.NextFloat() * 0.34f;
+            FishDirection = this.axisDir.X >= 0 ? 1 : -1;
+            baseSpeed = MathHelper.Max(velocity.Length(), 6f);
+            //以鱼相对轴线的初始投影作为车道偏移，使其从所在位置自然汇拢
+            laneOffset = Vector2.Dot(position - axisOrigin, this.axisDir.RotatedBy(MathHelper.PiOver2));
+            wavePhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            waveFreq = Main.rand.NextFloat(0.16f, 0.26f);
+            this.echoLayers = echoLayers;
+            coreTint = infinite ? new Color(255, 244, 206) : new Color(140, 214, 255);
+            glowTint = infinite ? new Color(255, 226, 150) : new Color(150, 120, 255);
         }
 
         public void Update(List<FishEntity> swarm) {
             Life++;
-            Alpha = Math.Min(1f, Alpha + 0.1f);
+            float t = Life / MaxLife;
 
-            //波动运动
-            Velocity *= 0.998f;
-            Vector2 waveOffset = new Vector2(0, (float)Math.Sin((MaxLife - Life + Seed) * 0.2f)) * 0.06f;
-            Velocity += waveOffset;
+            float fadeIn = MathHelper.Clamp(Life / 6f, 0f, 1f);
+            float fadeOut = 1f - MathHelper.Clamp((t - 0.74f) / 0.26f, 0f, 1f);
+            Alpha = fadeIn * fadeOut;
 
-            //群聚行为
-            ApplyCohesion(swarm);
+            //炮口爆发：初段极速冲出，随后回落巡航（速度即冲击感）
+            float burst = MathHelper.Lerp(1.7f, 1f, VaultUtils.EaseOutCubic(MathHelper.Clamp(t / 0.22f, 0f, 1f)));
+            float speed = baseSpeed * burst;
 
-            //更新朝向
-            if (Math.Abs(Velocity.X) > 0.5f) {
+            //沿轴线分解当前位置，计算汇拢与摆动
+            Vector2 perp = axisDir.RotatedBy(MathHelper.PiOver2);
+            float along = Vector2.Dot(Position - axisOrigin, axisDir);
+            Vector2 axisPoint = axisOrigin + axisDir * along;
+            float curPerp = Vector2.Dot(Position - axisPoint, perp);
+
+            //目标横向：车道随时间收拢，叠加正弦摆动（摆动随汇拢减弱）——越走越聚成一束
+            float laneNow = laneOffset * MathHelper.Lerp(1f, 0.55f, VaultUtils.EaseOutCubic(t));
+            float wave = (float)Math.Sin(Life * waveFreq + wavePhase) * 26f * (1f - t * 0.7f);
+            float targetPerp = laneNow + wave;
+
+            Vector2 desired = axisDir * speed + perp * (targetPerp - curPerp) * 0.16f;
+            Velocity = Vector2.Lerp(Velocity, desired, 0.22f);
+            Position += Velocity;
+
+            if (Math.Abs(Velocity.X) > 0.4f) {
                 FishDirection = Velocity.X > 0 ? 1 : -1;
             }
-
             if (Velocity.LengthSquared() > 0.1f) {
                 FishRotation = Velocity.ToRotation();
             }
 
-            Position += Velocity;
-
-            //记录拖尾
             TrailPositions.Insert(0, Position);
             if (TrailPositions.Count > MaxTrailLength) {
                 TrailPositions.RemoveAt(TrailPositions.Count - 1);
             }
         }
 
-        private void ApplyCohesion(List<FishEntity> swarm) {
-            Vector2 cohesion = Vector2.Zero;
-            int nearbyCount = 0;
-
-            foreach (var other in swarm) {
-                if (other == this) {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(Position, other.Position);
-                if (distance < 100f && distance > 0.1f) {
-                    cohesion += (other.Position - Position).SafeNormalize(Vector2.Zero) / distance;
-                    nearbyCount++;
-                }
-            }
-
-            if (nearbyCount > 0) {
-                cohesion /= nearbyCount;
-                Velocity += cohesion * 0.15f;
-            }
-        }
-
         public bool ShouldRemove() => Life >= MaxLife;
 
         public Rectangle GetHitbox() {
-            return new Rectangle(
-                (int)(Position.X - 12),
-                (int)(Position.Y - 12),
-                24,
-                24
-            );
+            return new Rectangle((int)(Position.X - 14), (int)(Position.Y - 14), 28, 28);
         }
 
-        public void Draw() {
-            if (Alpha < 0.05f) {
-                return;
-            }
-
-            int itemType = FishType switch {
+        private static Texture2D GetFishTexture(int fishType) {
+            int itemType = fishType switch {
                 0 => ItemID.Tuna,
                 1 => ItemID.Bass,
                 2 => ItemID.Trout,
                 _ => ItemID.Tuna
             };
-
             Main.instance.LoadItem(itemType);
-            Texture2D fishTexture = TextureAssets.Item[itemType].Value;
+            return TextureAssets.Item[itemType].Value;
+        }
 
-            Rectangle rect = fishTexture.Bounds;
-            Vector2 origin = rect.Size() * 0.5f;
-            SpriteEffects effects = FishDirection > 0
-                ? SpriteEffects.None
-                : SpriteEffects.FlipVertically;
-            float rotation = FishRotation + (FishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
-
-            //绘制拖尾
-            for (int i = 0; i < TrailPositions.Count; i++) {
-                float trailProgress = i / (float)TrailPositions.Count;
-                float trailAlpha = Alpha * (1f - trailProgress) * 0.5f;
-                Vector2 trailPosition = TrailPositions[i] - Main.screenPosition;
-                float trailScale = FishScale * 0.8f * (1f - trailProgress * 0.3f);
-
-                Main.spriteBatch.Draw(
-                    fishTexture,
-                    trailPosition,
-                    rect,
-                    new Color(140, 200, 255) * trailAlpha,
-                    rotation,
-                    origin,
-                    trailScale,
-                    effects,
-                    0f
-                );
+        /// <summary>加算光层（须在 Additive 批次中调用）：拖尾洪流 + 叠加重影 + 炮口辉光</summary>
+        public void DrawGlow(float globalAlpha) {
+            if (Alpha < 0.04f) {
+                return;
             }
 
-            //绘制主体
-            Vector2 drawPosition = Position - Main.screenPosition;
-            Main.spriteBatch.Draw(
-                fishTexture,
-                drawPosition,
-                rect,
-                Color.White * Alpha,
-                rotation,
-                origin,
-                FishScale,
-                effects,
-                0f
-            );
+            float a = Alpha * globalAlpha;
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            Vector2 glowOrigin = glow.Size() * 0.5f;
+            float speedT = MathHelper.Clamp(Velocity.Length() / 26f, 0f, 1f);
+
+            //拖尾：沿历史位置铺柔光，越尾越细越淡——水之洪流
+            for (int i = 1; i < TrailPositions.Count; i++) {
+                float p = i / (float)TrailPositions.Count;
+                Vector2 pos = TrailPositions[i] - Main.screenPosition;
+                float ta = a * (1f - p) * 0.5f;
+                float ts = FishScale * (0.55f - p * 0.34f);
+                Main.spriteBatch.Draw(glow, pos, null, glowTint * ta, 0f, glowOrigin, ts, SpriteEffects.None, 0f);
+            }
+
+            //叠加重影：把同一条鱼相位错移再画若干层，越叠越亮——"叠加态"的视觉本体
+            Texture2D fishTex = GetFishTexture(FishType);
+            Rectangle rect = fishTex.Bounds;
+            Vector2 fishOrigin = rect.Size() * 0.5f;
+            SpriteEffects effects = FishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float rot = FishRotation + (FishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+            Vector2 back = Velocity.SafeNormalize(Vector2.Zero);
+
+            for (int i = 1; i <= echoLayers; i++) {
+                float echo = i / (float)(echoLayers + 1);
+                Vector2 offset = -back * (i * 5f + Velocity.Length() * 0.5f * echo);
+                float ea = a * (1f - echo) * 0.4f;
+                Main.spriteBatch.Draw(fishTex, Position - Main.screenPosition + offset, rect
+                    , glowTint * ea, rot, fishOrigin, FishScale * (1f + echo * 0.12f), effects, 0f);
+            }
+
+            //炮口辉光本体（速度越快越亮）
+            Main.spriteBatch.Draw(glow, Position - Main.screenPosition, null
+                , glowTint * (a * (0.5f + speedT * 0.5f)), 0f, glowOrigin, FishScale * (0.7f + speedT * 0.7f), SpriteEffects.None, 0f);
+        }
+
+        /// <summary>本体绘制（须在 AlphaBlend 批次中调用）：清晰鱼身 + 高速白热锋面</summary>
+        public void DrawBody(float globalAlpha) {
+            if (Alpha < 0.04f) {
+                return;
+            }
+
+            float a = Alpha * globalAlpha;
+            Texture2D fishTex = GetFishTexture(FishType);
+            Rectangle rect = fishTex.Bounds;
+            Vector2 origin = rect.Size() * 0.5f;
+            SpriteEffects effects = FishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float rot = FishRotation + (FishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+            Vector2 drawPos = Position - Main.screenPosition;
+
+            Main.spriteBatch.Draw(fishTex, drawPos, rect, coreTint * a, rot, origin, FishScale, effects, 0f);
+
+            //高速时叠一层偏白描边，强调突进锋面
+            float speedT = MathHelper.Clamp(Velocity.Length() / 24f, 0f, 1f);
+            if (speedT > 0.2f) {
+                Color hot = Color.Lerp(coreTint, Color.White, 0.7f);
+                Main.spriteBatch.Draw(fishTex, drawPos, rect, hot * (a * speedT * 0.6f), rot, origin, FishScale * 1.08f, effects, 0f);
+            }
         }
     }
 
-    /// <summary>齐射统一伤害判定弹幕</summary>
+    /// <summary>叠加齐射的统一伤害判定弹幕：承载一束鱼群洪流</summary>
     internal class CannonFishSwarmHitbox : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
@@ -990,12 +1068,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         private readonly List<FishEntity> fishSwarm = new();
         private int particleSpawnTimer;
 
+        /// <summary>满层（第十眼）白金配色，由发射炮设置</summary>
+        public bool Infinite { get; set; }
+
         public override void SetDefaults() {
             Projectile.width = 800;
             Projectile.height = 800;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 90;
+            Projectile.timeLeft = 110;
             Projectile.ignoreWater = true;
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.tileCollide = false;
@@ -1024,31 +1105,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
             fishSwarm.RemoveAll(f => f.ShouldRemove());
 
-            //计算弹幕中心位置为所有鱼的平均位置
+            //计算弹幕中心位置为所有鱼的平均位置，并沿洪流投光
             if (fishSwarm.Count > 0) {
                 Vector2 center = Vector2.Zero;
                 foreach (var fish in fishSwarm) {
                     center += fish.Position;
                 }
                 Projectile.Center = center / fishSwarm.Count;
+                Lighting.AddLight(Projectile.Center, Infinite ? new Vector3(1f, 0.85f, 0.5f) : new Vector3(0.5f, 0.55f, 1f));
             }
 
-            //生成轨迹粒子（降低频率）
+            //洪流中点缀加算光点（客户端）
             particleSpawnTimer++;
-            if (particleSpawnTimer >= 8 && fishSwarm.Count > 0) {
+            if (!Main.dedServ && particleSpawnTimer >= 5 && fishSwarm.Count > 0) {
                 particleSpawnTimer = 0;
                 var fish = fishSwarm[Main.rand.Next(fishSwarm.Count)];
-                int dust = Dust.NewDust(
-                    fish.Position - new Vector2(12, 12),
-                    24,
-                    24,
-                    DustID.Water,
-                    0, 0, 150,
-                    new Color(150, 210, 255),
-                    1.0f
-                );
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity = -fish.Velocity * 0.3f;
+                Color tint = Infinite ? new Color(255, 226, 150) : new Color(150, 190, 255);
+                PRTLoader.NewParticle<PRT_Light>(fish.Position, -fish.Velocity * 0.15f, tint, 0.45f).Configure(14);
             }
 
             //如果所有鱼都消失，移除弹幕
@@ -1069,47 +1142,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //生成击中特效
-            for (int i = 0; i < 3; i++) {
-                int dust = Dust.NewDust(
-                    target.position,
-                    target.width,
-                    target.height,
-                    DustID.Water,
-                    0, 0, 150,
-                    new Color(140, 210, 255),
-                    1.2f
-                );
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity *= 0.4f;
+            if (Main.dedServ) {
+                return;
+            }
+            //命中冲击：加算光爆 + 偶发脉冲环
+            Color tint = Infinite ? new Color(255, 232, 170) : new Color(150, 200, 255);
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
+                PRTLoader.NewParticle<PRT_Light>(target.Center, vel, tint, Main.rand.NextFloat(0.5f, 0.9f)).Configure(20, hueShift: 0.01f);
+            }
+            if (Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_StarPulseRing>(target.Center, Vector2.Zero, tint, 0.4f).Configure(0.4f, 1.4f, 14);
             }
         }
 
         public override void OnKill(int timeLeft) {
-            //生成消失特效
-            if (fishSwarm.Count > 0) {
-                Vector2 center = Projectile.Center;
-                for (int i = 0; i < 8; i++) {
-                    int dust = Dust.NewDust(
-                        center - new Vector2(12, 12),
-                        24,
-                        24,
-                        DustID.Water,
-                        0, 0, 120,
-                        new Color(160, 220, 255),
-                        1.4f
-                    );
-                    Main.dust[dust].noGravity = true;
-                    Main.dust[dust].velocity = Main.rand.NextVector2Circular(3f, 3f);
-                }
+            if (Main.dedServ || fishSwarm.Count == 0) {
+                return;
+            }
+            //消散：洪流尽头的余光
+            Color tint = Infinite ? new Color(255, 226, 150) : new Color(150, 200, 255);
+            for (int i = 0; i < 8; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, vel, tint, Main.rand.NextFloat(0.5f, 0.8f)).Configure(24);
             }
         }
 
+        private static void BeginAdditiveBatch() {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+        }
+
+        private static void BeginWorldAlphaBatch() {
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
-            //绘制所有鱼实体
-            foreach (var fish in fishSwarm) {
-                fish.Draw();
+            if (fishSwarm.Count == 0) {
+                return false;
             }
+
+            //加算层：辉光本体 + 拖尾洪流 + 叠加重影（重叠的炮束自然在此处叠亮成核）
+            Main.spriteBatch.End();
+            BeginAdditiveBatch();
+            foreach (var fish in fishSwarm) {
+                fish.DrawGlow(1f);
+            }
+            Main.spriteBatch.End();
+
+            //常规层：清晰鱼身
+            BeginWorldAlphaBatch();
+            foreach (var fish in fishSwarm) {
+                fish.DrawBody(1f);
+            }
+
             return false;
         }
     }

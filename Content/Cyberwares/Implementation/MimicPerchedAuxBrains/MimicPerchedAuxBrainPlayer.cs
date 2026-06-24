@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using CalamityOverhaul.Content.Cyberwares;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
@@ -15,9 +16,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
 
         /// <summary>冷却剩余帧</summary>
         public int TriggerCooldownTimer;
+        private float triggerCooldownCarry;
 
         /// <summary>混乱视觉剩余帧，触发后 30</summary>
         public int ChaosVisualTimer;
+        private float chaosVisualCarry;
 
         /// <summary>上帧是否装备，检测切换</summary>
         private bool wasEquippedLastFrame;
@@ -76,12 +79,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
 
         public override void ResetEffects() {
             //冷却与混乱视觉计时持续递减
-            if (TriggerCooldownTimer > 0) {
-                TriggerCooldownTimer--;
-            }
-            if (ChaosVisualTimer > 0) {
-                ChaosVisualTimer--;
-            }
+            BaseCyberware.TickFrameDown(ref TriggerCooldownTimer, ref triggerCooldownCarry);
+            BaseCyberware.TickFrameDown(ref ChaosVisualTimer, ref chaosVisualCarry);
         }
 
         public override void PostUpdate() {
@@ -134,7 +133,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
             CommandPhantomsRush(attackerCenter, attackerNpcIndex, phantomDamage);
 
             TriggerCooldownTimer = equipped.TriggerCooldown;
+            triggerCooldownCarry = 0f;
             ChaosVisualTimer = 30;
+            chaosVisualCarry = 0f;
 
             //制造一阵混乱粒子作为视觉反馈
             for (int i = 0; i < 24; i++) {

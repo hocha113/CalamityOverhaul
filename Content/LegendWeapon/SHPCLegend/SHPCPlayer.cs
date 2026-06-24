@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
+using CalamityOverhaul.Content.TimeFreezes;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -24,6 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
         public int OverkillStacks;
         //层数衰减计时器（每120帧 -1 层）
         public int OverkillTimer;
+        private float overkillTimerCarry;
 
         //模具加工台：六类碎片数量（按 SHPCSlotCategory 索引）
         public int[] MoldShards;
@@ -174,14 +176,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (!SHPCModificationSystem.HasModule<Modules.Frame.OverkillFrameModule>(Player)) {
                 OverkillStacks = 0;
                 OverkillTimer = 0;
+                overkillTimerCarry = 0f;
                 return;
             }
             if (OverkillTimer > 0) {
-                OverkillTimer--;
+                TimeGear.ConsumeFrames(ref OverkillTimer, ref overkillTimerCarry);
                 return;
             }
             OverkillStacks--;
             OverkillTimer = 150;
+            overkillTimerCarry = 0f;
         }
 
         public override void SaveData(TagCompound tag) {

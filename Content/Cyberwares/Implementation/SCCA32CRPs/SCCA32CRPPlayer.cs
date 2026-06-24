@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Cyberwares;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -14,9 +15,11 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
     {
         /// <summary>闪避冷却剩余帧</summary>
         public int DodgeCooldownTimer { get; private set; }
+        private float dodgeCooldownCarry;
 
         /// <summary>亢奋剩余帧</summary>
         public int ReflexBoostTimer { get; private set; }
+        private float reflexBoostCarry;
 
         /// <summary>亢奋剩余比例，HUD 接入用</summary>
         public float BoostRatio => SCCA32CRP.ReflexBoostFrames > 0
@@ -25,12 +28,13 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
 
         public override void ResetEffects() {
             //ResetEffects 统一递减，单源单减
-            if (DodgeCooldownTimer > 0) {
-                DodgeCooldownTimer--;
-            }
-            if (ReflexBoostTimer > 0) {
-                ReflexBoostTimer--;
-            }
+            int dodgeTimer = DodgeCooldownTimer;
+            BaseCyberware.TickFrameDown(ref dodgeTimer, ref dodgeCooldownCarry);
+            DodgeCooldownTimer = dodgeTimer;
+
+            int boostTimer = ReflexBoostTimer;
+            BaseCyberware.TickFrameDown(ref boostTimer, ref reflexBoostCarry);
+            ReflexBoostTimer = boostTimer;
         }
 
         public override void PostUpdateEquips() {
@@ -71,7 +75,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.SCCA32CRPs
 
             //成功反射：进入冷却 + 亢奋 + 短暂无敌窗口
             DodgeCooldownTimer = SCCA32CRP.DodgeCooldownFrames;
+            dodgeCooldownCarry = 0f;
             ReflexBoostTimer = SCCA32CRP.ReflexBoostFrames;
+            reflexBoostCarry = 0f;
             Player.immune = true;
             Player.immuneTime = Math.Max(Player.immuneTime, SCCA32CRP.DodgeImmunityFrames);
             Player.immuneNoBlink = false;

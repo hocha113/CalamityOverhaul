@@ -23,6 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         internal int ResonanceStacks;
         /// <summary>层数保持计时，归零后开始衰减</summary>
         internal int ResonanceTimer;
+        private float _resonanceCarry;
 
         public override void Apply(ref ShootContext ctx) {
             ctx.ManaCostMul += -0.2f;
@@ -35,6 +36,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         internal void AddResonance() {
             ResonanceStacks = Math.Min(ResonanceStacks + 1, MaxResonance);
             ResonanceTimer = 300;
+            _resonanceCarry = 0f;
         }
 
         public override void OnBeamHitNPC(CyberTraceBeamProj beam, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -66,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override void OnPlayerUpdate(Player player) {
             if (ResonanceStacks <= 0) return;
             if (ResonanceTimer > 0) {
-                ResonanceTimer--;
+                TickDown(ref ResonanceTimer, ref _resonanceCarry);
                 //满层时指尖萦绕薄荷电雾，提示玩家处于全速谐鸣
                 if (ResonanceStacks >= MaxResonance && Main.netMode != NetmodeID.Server && Main.rand.NextBool(6)) {
                     Vector2 pos = player.Center + Main.rand.NextVector2Circular(20f, 26f);
@@ -77,6 +79,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
             ResonanceStacks--;
             ResonanceTimer = 60;
+            _resonanceCarry = 0f;
         }
     }
 

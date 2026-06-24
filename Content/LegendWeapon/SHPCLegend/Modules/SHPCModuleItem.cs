@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces;
+using CalamityOverhaul.Content.TimeFreezes;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -69,6 +70,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
 
         /// <summary>玩家 PostUpdate 分发，逐帧衰减/持续效果</summary>
         public virtual void OnPlayerUpdate(Player player) { }
+
+        /// <summary>按 <see cref="TimeGear"/> 推进整帧倒计时</summary>
+        protected static void TickDown(ref int frames, ref float carry, float scale = -1f)
+            => TimeGear.ConsumeFrames(ref frames, ref carry, scale);
+
+        /// <summary>按 <see cref="TimeGear"/> 返回本帧应推进的整帧数（正计时）</summary>
+        protected static int TickUp(ref float carry, float scale = -1f)
+            => TimeGear.PullFrameAdvance(ref carry, scale);
 
         #endregion
         /// <summary>属性 diff 文案，子类勿覆写</summary>

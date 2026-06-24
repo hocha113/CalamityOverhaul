@@ -37,6 +37,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         //RAM 崩溃锁定计时
         private int crashLockoutTimer;
+        private float crashLockoutCarry;
 
         public bool IsCrashLockedOut => crashLockoutTimer > 0;
 
@@ -267,6 +268,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
             Deactivate();
             crashLockoutTimer = Cyberspace.CrashLockoutFrames;
+            crashLockoutCarry = 0f;
 
             if (!VaultUtils.isServer && Player.whoAmI == Main.myPlayer) {
                 Color crashColor = new(255, 70, 70);
@@ -304,7 +306,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
 
             if (crashLockoutTimer > 0) {
-                crashLockoutTimer--;
+                TimeGear.ConsumeFrames(ref crashLockoutTimer, ref crashLockoutCarry);
             }
 
             UpdateDomainCenter();
@@ -318,8 +320,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             }
 
             float dt = 1f / 60f;
-            float timeSpeed = TimeGear.IsTimeSlowed ? MathHelper.Max(TimeGear.TimeScale, 0.1f) : 1f;
-            EffectTime += dt * timeSpeed;
+            EffectTime += dt * TimeGear.TimeScale;
 
             UpdateMotionFade();
 
@@ -396,6 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
             targetIntensity = 0f;
             ambientBoltTimer = 0;
             crashLockoutTimer = 0;
+            crashLockoutCarry = 0f;
             DomainCenter = Vector2.Zero;
             domainEaseTimer = 0;
             for (int i = 0; i < Cyberspace.MaxLayerCount; i++) {
@@ -530,13 +532,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         //仅跑远端玩家的视觉插值，不触碰状态机
         private void UpdateRemoteVisuals() {
-            if (crashLockoutTimer > 0) crashLockoutTimer--;
+            if (crashLockoutTimer > 0) {
+                TimeGear.ConsumeFrames(ref crashLockoutTimer, ref crashLockoutCarry);
+            }
 
             DomainCenter = Player.Center;
 
             float dt = 1f / 60f;
-            float timeSpeed = TimeGear.IsTimeSlowed ? MathHelper.Max(TimeGear.TimeScale, 0.1f) : 1f;
-            EffectTime += dt * timeSpeed;
+            EffectTime += dt * TimeGear.TimeScale;
 
             float intensityLerp = Active && CurrentLayer > 0 ? 0.045f : 0.015f;
             intensityRaw = MathHelper.Lerp(intensityRaw, targetIntensity, intensityLerp);

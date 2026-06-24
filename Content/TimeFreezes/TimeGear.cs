@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CalamityOverhaul.Content.TimeFreezes
 {
@@ -55,6 +56,44 @@ namespace CalamityOverhaul.Content.TimeFreezes
         public static void Reset() {
             scaleSources.Clear();
             TimeScale = 1f;
+        }
+
+        /// <summary>按 time scale 从整帧倒计时扣除；scale≤0 时不推进</summary>
+        /// <param name="frames">剩余帧数</param>
+        /// <param name="carry">小数余量，跨帧累积</param>
+        /// <param name="scale">时间因子，&lt;0 时使用 <see cref="TimeScale"/></param>
+        public static void ConsumeFrames(ref int frames, ref float carry, float scale = -1f) {
+            if (frames <= 0) {
+                return;
+            }
+            float s = scale >= 0f ? scale : TimeScale;
+            if (s <= 0f) {
+                return;
+            }
+            carry += s;
+            int tick = (int)carry;
+            if (tick <= 0) {
+                return;
+            }
+            carry -= tick;
+            frames = Math.Max(0, frames - tick);
+        }
+
+        /// <summary>按 time scale 返回本帧应推进的整帧数（用于 count-up 计时）；scale≤0 时返回 0</summary>
+        /// <param name="carry">小数余量，跨帧累积</param>
+        /// <param name="scale">时间因子，&lt;0 时使用 <see cref="TimeScale"/></param>
+        public static int PullFrameAdvance(ref float carry, float scale = -1f) {
+            float s = scale >= 0f ? scale : TimeScale;
+            if (s <= 0f) {
+                return 0;
+            }
+            carry += s;
+            int tick = (int)carry;
+            if (tick <= 0) {
+                return 0;
+            }
+            carry -= tick;
+            return tick;
         }
     }
 }

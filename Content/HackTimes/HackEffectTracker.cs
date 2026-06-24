@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.HackTimes.Scannables;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -19,6 +20,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public int CasterIndex;
         /// <summary>已持续帧数</summary>
         public int Elapsed;
+        internal float ElapsedCarry;
         /// <summary>是否仍活跃</summary>
         public bool Active = true;
         /// <summary>是否已调用 OnApply</summary>
@@ -152,7 +154,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     continue;
                 }
 
-                eff.Elapsed++;
+                eff.Elapsed += TimeGear.PullFrameAdvance(ref eff.ElapsedCarry);
             }
             updatingNpcEffects = false;
 
@@ -342,7 +344,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     continue;
                 }
 
-                eff.Elapsed++;
+                eff.Elapsed += TimeGear.PullFrameAdvance(ref eff.ElapsedCarry);
             }
 
             for (int i = 0; i < tileRemoveBuffer.Count; i++) {

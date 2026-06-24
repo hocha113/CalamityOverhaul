@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.Cyberwares;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -20,6 +21,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         /// <summary>释放后冷却帧，防连点抖动</summary>
         public int ReleaseCooldown { get; private set; }
+        private float releaseCooldownCarry;
 
         /// <summary>二段跳可用，落地/起跳重置</summary>
         public bool CanDoubleJump { get; private set; } = true;
@@ -38,9 +40,9 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
 
         public override void ResetEffects() {
             //冷却递减
-            if (ReleaseCooldown > 0) {
-                ReleaseCooldown--;
-            }
+            int releaseCd = ReleaseCooldown;
+            BaseCyberware.TickFrameDown(ref releaseCd, ref releaseCooldownCarry);
+            ReleaseCooldown = releaseCd;
             //快照上帧蓄力再复位，保证 IsCharging 严格等于本帧雷达是否驱动
             wasChargingLastFrame = IsCharging;
             IsCharging = false;
@@ -168,6 +170,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.OmniElectricFoots
             ChargeRatio = 0f;
             IsCharging = false;
             ReleaseCooldown = 12;
+            releaseCooldownCarry = 0f;
             CanDoubleJump = true;
         }
 
