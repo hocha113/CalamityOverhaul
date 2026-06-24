@@ -8,6 +8,7 @@ using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
@@ -220,6 +221,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         //打开图鉴（左键点眼睛 / 按键 / 助手按钮）后进入研究环节
         private static void UpdateHudIntro() {
+            //防呆：已装备技能的玩家若抢先呼出转盘，直接跳到转盘环节收尾，避免卡片与转盘错位
+            if (HalibutWheelController.LocalInstance?.IsOpen == true) {
+                SetPhase(Phase.SkillWheel);
+                return;
+            }
             if (HalibutAtlas.Instance?.IsOpen == true) {
                 SetPhase(Phase.Research);
             }
@@ -272,7 +278,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         private static void OpenAtlasAndAdvance() {
             HalibutAtlas atlas = HalibutAtlas.Instance;
-            if (atlas != null && !atlas.IsOpen) {
+            if (atlas == null) {
+                return;//图鉴不可用则不前进，留在本阶段
+            }
+            if (!atlas.IsOpen) {
                 atlas.Open();
             }
             SetPhase(Phase.Research);
@@ -331,7 +340,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             DrawTargetHighlight(sb, eye, 30f, time, a);
 
-            const int cardW = 330, cardH = 152;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            const int cardW = 336;
+            float contentW = cardW - 32f;
+            string openKey = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
+            GLine[] body = {
+                new(HudBody.Value, 0.74f, HalibutTheme.TextDim),
+                new(string.Format(HudPrompt.Value, openKey), 0.78f, HalibutTheme.GlowHi),
+            };
+            int cardH = MeasureCardH(font, 0.9f, body, contentW);
+
             float slide = (1f - ease) * 34f;
             float x = MathHelper.Clamp(eye.X + 62f - slide, 16f, HalibutTheme.UIScreenW - cardW - 16f);
             float y = MathHelper.Clamp(eye.Y - cardH - 22f, 16f, HalibutTheme.UIScreenH - cardH - 16f);
@@ -339,18 +357,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             DrawCard(sb, card, HalibutTheme.Glow, 0.4f);
             DrawConnector(sb, new Vector2(card.X + 26f, card.Bottom), eye, a, time);
-
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 16f, py = card.Y + 13f, wrap = cardW - 32f;
-            HalibutRenderer.DrawGlowText(sb, HudTitle.Value, new Vector2(px, py),
-                HalibutTheme.GlowHi * a, HalibutTheme.Glow * (0.4f * a), 0.9f);
-            py += 26f;
-            DrawDivider(sb, px, py, cardW - 32, HalibutTheme.Glow, a);
-            py += 8f;
-            py = DrawBody(sb, font, HudBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
-            py += 3f;
-            string openKey = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
-            DrawBody(sb, font, string.Format(HudPrompt.Value, openKey), px, py, wrap, 0.68f, HalibutTheme.GlowHi, a);
+            DrawCardContent(sb, font, card, HudTitle.Value, 0.9f, HalibutTheme.GlowHi, HalibutTheme.Glow, body, a);
 
             //"打开图鉴"助手按钮：等价于按键/点眼，始终可用
             if (DrawActionButton(sb, card, HudOpenBtn.Value, HalibutTheme.Glow, time)) {
@@ -367,14 +374,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
             float a = animProgress;
             bool panelOpen = atlas.AltarPanelOpen;
-            bool altarVisible = !panelOpen && atlas.SeaViewActive;
             Vector2 altar = atlas.AltarCenter;
+            //防呆：祭坛被滚动到屏幕外/切到领域之眼视图/选鱼面板占屏时，不画高亮与连线
+            bool altarVisible = !panelOpen && atlas.SeaViewActive
+                && altar.Y > 60f && altar.Y < HalibutTheme.UIScreenH - 40f;
 
             if (altarVisible) {
                 DrawTargetHighlight(sb, altar, AtlasStudyAltar.Radius + 6f, time, a);
             }
 
-            const int cardW = 322, cardH = 150;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            const int cardW = 330;
+            float contentW = cardW - 32f;
+            GLine[] body = {
+                new(ResearchBody.Value, 0.74f, HalibutTheme.TextDim),
+                new(ResearchPrompt.Value, 0.78f, HalibutTheme.GlowHi),
+            };
+            int cardH = MeasureCardH(font, 0.9f, body, contentW);
+
             float x, y;
             if (panelOpen) {
                 //选鱼面板占屏时把卡片挪到右上角让位
@@ -391,17 +408,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             if (altarVisible && card.Y > altar.Y) {
                 DrawConnector(sb, new Vector2(card.Center.X, card.Y), altar, a, time);
             }
-
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 16f, py = card.Y + 13f, wrap = cardW - 32f;
-            HalibutRenderer.DrawGlowText(sb, ResearchTitle.Value, new Vector2(px, py),
-                HalibutTheme.Accent * a, HalibutTheme.Accent * (0.35f * a), 0.9f);
-            py += 26f;
-            DrawDivider(sb, px, py, cardW - 32, HalibutTheme.Accent, a);
-            py += 8f;
-            py = DrawBody(sb, font, ResearchBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
-            py += 3f;
-            DrawBody(sb, font, ResearchPrompt.Value, px, py, wrap, 0.66f, HalibutTheme.GlowHi, a);
+            DrawCardContent(sb, font, card, ResearchTitle.Value, 0.9f, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
 
             if (phaseTimer > StuckFramesBeforeSkip && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 SetPhase(Phase.Equip);
@@ -419,34 +426,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             HalibutSave save = Save;
 
             Rectangle dock = atlas.SeaViewActive ? atlas.DockBounds : Rectangle.Empty;
-            if (dock.Width > 0) {
+            //防呆：装备坞被滚动收起/切视图后不画高亮与连线
+            bool dockVisible = dock.Width > 0 && dock.Top > 40f && dock.Top < HalibutTheme.UIScreenH;
+            if (dockVisible) {
                 DrawRegionHighlight(sb, dock, time, a);
             }
 
-            const int cardW = 322, cardH = 152;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            const int cardW = 330;
+            float contentW = cardW - 32f;
+            bool waiting = save.IsStudying && save.loadout.Count == 0;
+            GLine[] body = waiting
+                ? new GLine[] {
+                    new(EquipBody.Value, 0.74f, HalibutTheme.TextDim),
+                    new(EquipWaiting.Value, 0.76f, Color.Lerp(HalibutTheme.GlowHi, HalibutTheme.Accent, HalibutTheme.Breath(time, 1f, 3f))),
+                }
+                : new GLine[] {
+                    new(EquipBody.Value, 0.74f, HalibutTheme.TextDim),
+                };
+            int cardH = MeasureCardH(font, 0.9f, body, contentW);
+
             float x = MathHelper.Clamp(HalibutTheme.UIScreenW - cardW - 24f, 16f, HalibutTheme.UIScreenW - cardW - 16f);
             float y = MathHelper.Clamp((HalibutTheme.UIScreenH - cardH) * 0.5f, 72f, HalibutTheme.UIScreenH - cardH - 16f);
             var card = new Rectangle((int)x, (int)y, cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.Accent, 0.55f);
-            if (dock.Width > 0) {
+            if (dockVisible) {
                 DrawConnector(sb, new Vector2(card.X + 24f, card.Bottom), new Vector2(dock.Center.X, dock.Top), a, time);
             }
-
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 16f, py = card.Y + 13f, wrap = cardW - 32f;
-            HalibutRenderer.DrawGlowText(sb, EquipTitle.Value, new Vector2(px, py),
-                HalibutTheme.Accent * a, HalibutTheme.Accent * (0.35f * a), 0.9f);
-            py += 26f;
-            DrawDivider(sb, px, py, cardW - 32, HalibutTheme.Accent, a);
-            py += 8f;
-            py = DrawBody(sb, font, EquipBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
-            py += 3f;
-            //研究进行中：提示等待自动装入，不打扰、不显啰嗦
-            if (save.IsStudying && save.loadout.Count == 0) {
-                Color waitCol = Color.Lerp(HalibutTheme.GlowHi, HalibutTheme.Accent, HalibutTheme.Breath(time, 1f, 3f));
-                DrawBody(sb, font, EquipWaiting.Value, px, py, wrap, 0.66f, waitCol, a);
-            }
+            DrawCardContent(sb, font, card, EquipTitle.Value, 0.9f, HalibutTheme.Accent, HalibutTheme.Accent, body, a);
 
             //仅在没有进行中研究、尚无技能入栏、且确实卡住时给跳过兜底（入栏后会自动转入下一步）
             if (!save.IsStudying && save.loadout.Count == 0 && phaseTimer > StuckFramesBeforeSkip
@@ -464,23 +472,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
             DrawWheelHint(sb, center, time, a);
 
-            const int cardW = 340, cardH = 152;
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            const int cardW = 348;
+            float contentW = cardW - 32f;
+            string wheelKey = CWRKeySystem.Halibut_SkillWheel.ToTooltipString(CWRKeySystem.Notbound.Value);
+            GLine[] body = {
+                new(WheelBody.Value, 0.74f, HalibutTheme.TextDim),
+                new(string.Format(WheelPrompt.Value, wheelKey), 0.8f, HalibutTheme.GlowHi),
+            };
+            int cardH = MeasureCardH(font, 0.92f, body, contentW);
             var card = new Rectangle((int)(center.X - cardW * 0.5f), (int)(center.Y - cardH * 0.5f), cardW, cardH);
 
             DrawCard(sb, card, HalibutTheme.GlowHi, 0.7f);
-
-            DynamicSpriteFont font = FontAssets.MouseText.Value;
-            float px = card.X + 16f, py = card.Y + 14f, wrap = cardW - 32f;
-            string wheelKey = CWRKeySystem.Halibut_SkillWheel.ToTooltipString(CWRKeySystem.Notbound.Value);
-
-            HalibutRenderer.DrawGlowText(sb, WheelTitle.Value, new Vector2(px, py),
-                HalibutTheme.GlowHi * a, HalibutTheme.Glow * (0.4f * a), 0.92f);
-            py += 27f;
-            DrawDivider(sb, px, py, cardW - 32, HalibutTheme.GlowHi, a);
-            py += 8f;
-            py = DrawBody(sb, font, WheelBody.Value, px, py, wrap, 0.64f, HalibutTheme.TextDim, a);
-            py += 3f;
-            DrawBody(sb, font, string.Format(WheelPrompt.Value, wheelKey), px, py, wrap, 0.7f, HalibutTheme.GlowHi, a);
+            DrawCardContent(sb, font, card, WheelTitle.Value, 0.92f, HalibutTheme.GlowHi, HalibutTheme.GlowHi, body, a);
 
             if (phaseTimer > StuckFramesBeforeSkip && DrawActionButton(sb, card, SkipBtn.Value, HalibutTheme.TextDim, time)) {
                 MarkSeen();
@@ -528,6 +532,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 y += lineH;
             }
             return y;
+        }
+
+        //一段卡片正文行
+        private readonly struct GLine
+        {
+            public readonly string Text;
+            public readonly float Scale;
+            public readonly Color Color;
+            public GLine(string text, float scale, Color color) {
+                Text = text; Scale = scale; Color = color;
+            }
+        }
+
+        //按实际换行测量一段文字的高度
+        private static float MeasureWrapH(DynamicSpriteFont font, string text, float scale, float wrapPx) {
+            if (string.IsNullOrEmpty(text)) {
+                return 0f;
+            }
+            int wrapW = Math.Max(8, (int)(wrapPx / scale));
+            int n = 0;
+            foreach (string s in VaultUtils.WrapTextArray(text, font, wrapW, 99, out _)) {
+                if (!string.IsNullOrEmpty(s)) n++;
+            }
+            return Math.Max(n, 1) * (font.MeasureString("A").Y * scale + 3f);
+        }
+
+        //据标题+正文动态计算卡片高度，避免大字体/英文换行溢出
+        private static int MeasureCardH(DynamicSpriteFont font, float titleScale, GLine[] body, float contentW) {
+            float la = font.MeasureString("A").Y;
+            float h = 13f + (la * titleScale + 8f) + 8f;//顶距 + 标题 + 分割线
+            foreach (GLine gl in body) {
+                h += MeasureWrapH(font, gl.Text, gl.Scale, contentW) + 4f;
+            }
+            return (int)MathF.Ceiling(h + 40f);//底部按钮预留
+        }
+
+        //绘制卡片标题 + 分割线 + 正文（与 MeasureCardH 对齐）
+        private static void DrawCardContent(SpriteBatch sb, DynamicSpriteFont font, Rectangle card,
+            string title, float titleScale, Color titleColor, Color accent, GLine[] body, float a) {
+            float px = card.X + 16f, py = card.Y + 13f, wrap = card.Width - 32f;
+            HalibutRenderer.DrawGlowText(sb, title, new Vector2(px, py), titleColor * a, accent * (0.4f * a), titleScale);
+            py += font.MeasureString("A").Y * titleScale + 8f;
+            DrawDivider(sb, px, py, card.Width - 32, accent, a);
+            py += 8f;
+            foreach (GLine gl in body) {
+                py = DrawBody(sb, font, gl.Text, px, py, wrap, gl.Scale, gl.Color, a) + 4f;
+            }
         }
 
         //右下角小按钮（助手/跳过），返回是否被点击

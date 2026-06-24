@@ -131,19 +131,16 @@ namespace CalamityOverhaul.Content.EntrustManager
         //着色器边框扩展，与 ForestPanel 一致
         private const int EdgePad = 8;
 
-        //卡片底部确认按钮预留高度
-        private const int CardFooterReserve = 30;
+        //卡片通用排版：内容区按文字实际换行动态测高，杜绝溢出（尤其英文/未绑定按键时）
+        private const int CardTopPad = 11;
+        private const int CardPadX = 14;
+        //底部确认按钮（含分隔线）预留高度
+        private const int CardFooter = 38;
 
-        //阶段1卡片尺寸
+        //各阶段卡片宽度（高度按内容动态计算）
         private const int CardW1 = 320;
-        private const int CardH1_Bound = 92;
-        private const int CardH1_Unbound = 138;
-        //阶段2卡片尺寸
         private const int CardW2 = 318;
-        private const int CardH2 = 176;
-        //阶段3卡片尺寸
-        private const int CardW3 = 286;
-        private const int CardH3 = 138;
+        private const int CardW3 = 316;
         //与样式切换按钮位置一致
         private const int StyleButtonOffsetFromPanelRight = 180;
         private const int StyleButtonTop = 36;
@@ -423,72 +420,31 @@ namespace CalamityOverhaul.Content.EntrustManager
             string boundKey = GetBoundKeyName();
             bool hasBind = boundKey != null;
             string displayKey = hasBind ? boundKey : "K";
-            int cardH = hasBind ? CardH1_Bound : CardH1_Unbound;
+            float alpha = animProgress;
+            var font = FontAssets.MouseText.Value;
+            float contentW = CardW1 - CardPadX * 2;
 
+            var lines = new List<CL>();
+            if (hasBind) {
+                lines.Add(CL.Wrap(TextKeyPromptBound.Format(displayKey), 0.92f, new Color(255, 255, 230, 255)));
+            }
+            else {
+                //警告标题用可换行行（英文较长也不横向溢出），保留闪烁强调
+                lines.Add(CL.Wrap(TextKeyPromptWarnTitle.Value, 0.86f, new Color(255, 175, 25, 255), blink: true));
+                lines.Add(CL.Gap(2f));
+                lines.Add(CL.Wrap(TextKeyPromptDefaultKey.Format(displayKey), 0.83f, new Color(235, 225, 200, 245)));
+                lines.Add(CL.Gap(1f));
+                lines.Add(CL.Wrap(TextKeyPromptBindHint.Value, 0.73f, new Color(165, 155, 115, 195)));
+            }
+
+            int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideY = (1f - animProgress) * 65f;
             float x = 20f;
             float y = Main.screenHeight - cardH - 20f + slideY;
-            float alpha = animProgress;
             var card = new Rectangle((int)x, (int)y, CardW1, cardH);
 
             DrawCardBackground(sb, card, 0f, alpha);
-
-            var font = FontAssets.MouseText.Value;
-            float px = x + 14f, py = y + 11f;
-
-            if (hasBind) {
-                //单行：已绑定
-                string line = TextKeyPromptBound.Format(displayKey);
-                int wrapW = (int)((CardW1 - 28) / 0.85f);
-                string[] wrapped = VaultUtils.WrapTextArray(line, font, wrapW, 99, out _);
-                foreach (string wl in wrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                        new Color(255, 255, 230, (int)(255 * alpha)), 0.85f);
-                    py += font.MeasureString("A").Y * 0.85f + 2f;
-                }
-            }
-            else {
-                float warnScale = 0.82f;
-                float subScale1 = 0.73f;
-                float subScale2 = 0.63f;
-                float lineH_w = font.MeasureString("A").Y * warnScale + 2f;
-                float lineH_1 = font.MeasureString("A").Y * subScale1 + 2f;
-
-                //警告标题
-                float blink = 0.84f + MathF.Sin(shaderTimer * 52f) * 0.16f;
-                var warnColor = new Color(
-                    (int)(255 * blink),
-                    (int)(175 * blink),
-                    (int)(25 * blink),
-                    (int)(255 * alpha));
-                Utils.DrawBorderString(sb, TextKeyPromptWarnTitle.Value,
-                    new Vector2(px, py), warnColor, warnScale);
-
-                py += lineH_w + 2f;
-
-                //按键提示
-                string keyLine = TextKeyPromptDefaultKey.Format(displayKey);
-                int keyWrapW = (int)((CardW1 - 28) / subScale1);
-                string[] keyWrapped = VaultUtils.WrapTextArray(keyLine, font, keyWrapW, 99, out _);
-                foreach (string wl in keyWrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                        new Color(235, 225, 200, (int)(245 * alpha)), subScale1);
-                    py += lineH_1;
-                }
-                py += 1f;
-
-                //绑定引导
-                int hintWrapW = (int)((CardW1 - 28) / subScale2);
-                string[] hintWrapped = VaultUtils.WrapTextArray(TextKeyPromptBindHint.Value, font, hintWrapW, 99, out _);
-                foreach (string wl in hintWrapped) {
-                    if (string.IsNullOrEmpty(wl)) continue;
-                    Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                        new Color(165, 155, 115, (int)(195 * alpha)), subScale2);
-                    py += font.MeasureString("A").Y * subScale2 + 2f;
-                }
-            }
+            DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             if (DrawConfirmButton(sb, card, alpha, TextKeyPromptConfirmBtn.Value))
                 AdvanceFromKeyPrompt();
@@ -499,74 +455,31 @@ namespace CalamityOverhaul.Content.EntrustManager
         private static void DrawPanelIntroCard(SpriteBatch sb) {
             var ui = QuestManagerUI.Instance;
             if (ui == null) return;
+            float alpha = animProgress;
+            var font = FontAssets.MouseText.Value;
+            float contentW = CardW2 - CardPadX * 2;
 
+            var lines = new List<CL> {
+                CL.Title(TextPanelIntroTitle.Value, 0.84f, new Color(230, 225, 100, 255)),
+                CL.Divider(new Color(130, 125, 70, 130)),
+                CL.KeyAction(TextRightClickLabel.Value, new Color(95, 210, 255, 240),
+                    TextRightClickAction.Value, new Color(200, 240, 255, 240), 0.78f),
+                CL.Wrap(TextRightClickDesc.Value, 0.72f, new Color(130, 165, 175, 200)),
+                CL.Gap(6f),
+                CL.KeyAction(TextMiddleClickLabel.Value, new Color(130, 220, 145, 240),
+                    TextMiddleClickAction.Value, new Color(195, 240, 195, 240), 0.78f),
+                CL.Wrap(TextMiddleClickDesc.Value, 0.72f, new Color(120, 155, 120, 200)),
+            };
+
+            int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideX = (1f - animProgress) * 80f;
             float x = ui.PanelRightEdge + 15f - slideX;
-            float y = (Main.screenHeight - CardH2) * 0.5f;
-            float alpha = animProgress;
-            var card = new Rectangle((int)x, (int)y, CardW2, CardH2);
+            float y = (Main.screenHeight - cardH) * 0.5f;
+            var card = new Rectangle((int)x, (int)y, CardW2, cardH);
 
             DrawCardBackground(sb, card, 1f, alpha);
-
-            //左侧三角箭头
-            DrawLeftArrow(sb, new Vector2(x - 8f, y + CardH2 * 0.5f), alpha);
-
-            var font = FontAssets.MouseText.Value;
-            float titleScale = 0.80f;
-            float bodyScale = 0.68f;
-            float subScale = 0.62f;
-            float px = x + 14f, py = y + 11f;
-            float lineH_t = font.MeasureString("A").Y * titleScale + 2f;
-            float lineH_b = font.MeasureString("A").Y * bodyScale + 2f;
-            float lineH_s = font.MeasureString("A").Y * subScale + 2f;
-
-            //标题
-            Utils.DrawBorderString(sb, TextPanelIntroTitle.Value,
-                new Vector2(px, py),
-                new Color(230, 225, 100, (int)(255 * alpha)), titleScale);
-            py += lineH_t + 2f;
-
-            //分割线
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px, (int)py, CardW2 - 28, 1),
-                new Color(130, 125, 70, (int)(130 * alpha)));
-            py += 6f;
-
-            //关注说明
-            float rightKeyW = font.MeasureString(TextRightClickLabel.Value).X * bodyScale;
-            Utils.DrawBorderString(sb, TextRightClickLabel.Value,
-                new Vector2(px, py),
-                new Color(95, 210, 255, (int)(240 * alpha)), bodyScale);
-            Utils.DrawBorderString(sb, TextRightClickAction.Value,
-                new Vector2(px + rightKeyW, py),
-                new Color(200, 240, 255, (int)(240 * alpha)), bodyScale);
-            py += lineH_b;
-            int descWrapW = (int)((CardW2 - 28) / subScale);
-            string[] followWrapped = VaultUtils.WrapTextArray(TextRightClickDesc.Value, font, descWrapW, 99, out _);
-            foreach (string wl in followWrapped) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                    new Color(130, 165, 175, (int)(200 * alpha)), subScale);
-                py += lineH_s;
-            }
-            py += 6f;
-
-            //挂起说明
-            float midKeyW = font.MeasureString(TextMiddleClickLabel.Value).X * bodyScale;
-            Utils.DrawBorderString(sb, TextMiddleClickLabel.Value,
-                new Vector2(px, py),
-                new Color(130, 220, 145, (int)(240 * alpha)), bodyScale);
-            Utils.DrawBorderString(sb, TextMiddleClickAction.Value,
-                new Vector2(px + midKeyW, py),
-                new Color(195, 240, 195, (int)(240 * alpha)), bodyScale);
-            py += lineH_b;
-            string[] suspendWrapped = VaultUtils.WrapTextArray(TextMiddleClickDesc.Value, font, descWrapW, 99, out _);
-            foreach (string wl in suspendWrapped) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                    new Color(120, 155, 120, (int)(200 * alpha)), subScale);
-                py += lineH_s;
-            }
+            DrawLeftArrow(sb, new Vector2(x - 8f, y + cardH * 0.5f), alpha);
+            DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             if (DrawConfirmButton(sb, card, alpha))
                 StartStyleButtonPrompt();
@@ -596,50 +509,25 @@ namespace CalamityOverhaul.Content.EntrustManager
             float alpha = animProgress;
             DrawStyleButtonHighlight(sb, styleRect, alpha);
 
+            var font = FontAssets.MouseText.Value;
+            float contentW = CardW3 - CardPadX * 2;
+            var lines = new List<CL> {
+                CL.Title(TextStyleButtonTitle.Value, 0.84f, new Color(230, 225, 100, 255)),
+                CL.Divider(new Color(130, 125, 70, 130)),
+                CL.KeyAction(TextStyleButtonLabel.Value, new Color(245, 190, 95, 240),
+                    TextStyleButtonAction.Value, new Color(255, 230, 170, 240), 0.78f),
+                CL.Wrap(TextStyleButtonDesc.Value, 0.72f, new Color(175, 150, 105, 205)),
+            };
+            int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
+
             float slideX = (1f - animProgress) * 70f;
             float x = MathHelper.Clamp(styleRect.Right + 16f + slideX, 20f, Main.screenWidth - CardW3 - 20f);
-            float y = MathHelper.Clamp(styleRect.Y - 8f, 20f, Main.screenHeight - CardH3 - 20f);
-            var card = new Rectangle((int)x, (int)y, CardW3, CardH3);
+            float y = MathHelper.Clamp(styleRect.Y - 8f, 20f, Main.screenHeight - cardH - 20f);
+            var card = new Rectangle((int)x, (int)y, CardW3, cardH);
 
             DrawCardBackground(sb, card, 0.5f, alpha);
             DrawLeftArrow(sb, new Vector2(x - 8f, y + 28f), alpha);
-
-            var font = FontAssets.MouseText.Value;
-            float titleScale = 0.78f;
-            float bodyScale = 0.66f;
-            float subScale = 0.60f;
-            float px = x + 14f, py = y + 10f;
-            float lineH_t = font.MeasureString("A").Y * titleScale + 2f;
-            float lineH_b = font.MeasureString("A").Y * bodyScale + 2f;
-            float lineH_s = font.MeasureString("A").Y * subScale + 2f;
-
-            Utils.DrawBorderString(sb, TextStyleButtonTitle.Value,
-                new Vector2(px, py),
-                new Color(230, 225, 100, (int)(255 * alpha)), titleScale);
-            py += lineH_t + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px, (int)py, CardW3 - 28, 1),
-                new Color(130, 125, 70, (int)(130 * alpha)));
-            py += 6f;
-
-            float keyW = font.MeasureString(TextStyleButtonLabel.Value).X * bodyScale;
-            Utils.DrawBorderString(sb, TextStyleButtonLabel.Value,
-                new Vector2(px, py),
-                new Color(245, 190, 95, (int)(240 * alpha)), bodyScale);
-            Utils.DrawBorderString(sb, TextStyleButtonAction.Value,
-                new Vector2(px + keyW, py),
-                new Color(255, 230, 170, (int)(240 * alpha)), bodyScale);
-            py += lineH_b;
-
-            int descWrapW = (int)((CardW3 - 28) / subScale);
-            string[] wrapped = VaultUtils.WrapTextArray(TextStyleButtonDesc.Value, font, descWrapW, 99, out _);
-            foreach (string wl in wrapped) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                    new Color(175, 150, 105, (int)(205 * alpha)), subScale);
-                py += lineH_s;
-            }
+            DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             bool clickedStyleButton = styleRect.Contains(Main.mouseX, Main.mouseY)
                 && Main.mouseLeft && !Main.mouseLeftRelease;
@@ -660,9 +548,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         //阶段4关注引导卡
 
-        //阶段4卡片尺寸
         private const int CardW4 = 318;
-        private const int CardH4 = 152;
 
         private static void StartTrackPrompt() {
             currentPhase = LeadPhase.TrackPromptInPanel;
@@ -673,52 +559,27 @@ namespace CalamityOverhaul.Content.EntrustManager
         private static void DrawTrackPromptCard(SpriteBatch sb) {
             var ui = QuestManagerUI.Instance;
             if (ui == null) return;
+            float alpha = animProgress;
+            var font = FontAssets.MouseText.Value;
+            float contentW = CardW4 - CardPadX * 2;
 
+            var lines = new List<CL> {
+                CL.Title(TextTrackPromptTitle.Value, 0.84f, new Color(230, 225, 100, 255)),
+                CL.Divider(new Color(130, 125, 70, 130)),
+                CL.KeyAction(TextTrackPromptHintLabel.Value, new Color(95, 210, 255, 240),
+                    TextTrackPromptHintAction.Value, new Color(200, 240, 255, 240), 0.78f),
+                CL.Wrap(TextTrackPromptDesc.Value, 0.72f, new Color(135, 170, 180, 205)),
+            };
+
+            int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideX = (1f - animProgress) * 80f;
             float x = ui.PanelRightEdge + 15f - slideX;
-            float y = (Main.screenHeight - CardH4) * 0.5f;
-            float alpha = animProgress;
-            var card = new Rectangle((int)x, (int)y, CardW4, CardH4);
+            float y = (Main.screenHeight - cardH) * 0.5f;
+            var card = new Rectangle((int)x, (int)y, CardW4, cardH);
 
             DrawCardBackground(sb, card, 1.5f, alpha);
-            DrawLeftArrow(sb, new Vector2(x - 8f, y + CardH4 * 0.5f), alpha);
-
-            var font = FontAssets.MouseText.Value;
-            float titleScale = 0.80f;
-            float bodyScale = 0.68f;
-            float subScale = 0.62f;
-            float px = x + 14f, py = y + 11f;
-            float lineH_t = font.MeasureString("A").Y * titleScale + 2f;
-            float lineH_b = font.MeasureString("A").Y * bodyScale + 2f;
-            float lineH_s = font.MeasureString("A").Y * subScale + 2f;
-
-            Utils.DrawBorderString(sb, TextTrackPromptTitle.Value,
-                new Vector2(px, py),
-                new Color(230, 225, 100, (int)(255 * alpha)), titleScale);
-            py += lineH_t + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px, (int)py, CardW4 - 28, 1),
-                new Color(130, 125, 70, (int)(130 * alpha)));
-            py += 6f;
-
-            float keyW = font.MeasureString(TextTrackPromptHintLabel.Value).X * bodyScale;
-            Utils.DrawBorderString(sb, TextTrackPromptHintLabel.Value,
-                new Vector2(px, py),
-                new Color(95, 210, 255, (int)(240 * alpha)), bodyScale);
-            Utils.DrawBorderString(sb, TextTrackPromptHintAction.Value,
-                new Vector2(px + keyW, py),
-                new Color(200, 240, 255, (int)(240 * alpha)), bodyScale);
-            py += lineH_b;
-
-            int descWrapW = (int)((CardW4 - 28) / subScale);
-            string[] wrapped = VaultUtils.WrapTextArray(TextTrackPromptDesc.Value, font, descWrapW, 99, out _);
-            foreach (string wl in wrapped) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                    new Color(135, 170, 180, (int)(205 * alpha)), subScale);
-                py += lineH_s;
-            }
+            DrawLeftArrow(sb, new Vector2(x - 8f, y + cardH * 0.5f), alpha);
+            DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             if (DrawConfirmButton(sb, card, alpha, TextTrackPromptNextBtn.Value))
                 StartTrackerWidgetIntro();
@@ -726,9 +587,7 @@ namespace CalamityOverhaul.Content.EntrustManager
 
         //阶段5追踪栏介绍
 
-        //阶段5卡片尺寸
         private const int CardW5 = 312;
-        private const int CardH5 = 174;
 
         private static void StartTrackerWidgetIntro() {
             //收起管理器面板，聚焦追踪栏
@@ -753,43 +612,27 @@ namespace CalamityOverhaul.Content.EntrustManager
 
             DrawTrackerHighlight(sb, trackerRect, animProgress);
 
+            float alpha = animProgress;
+            var font = FontAssets.MouseText.Value;
+            float contentW = CardW5 - CardPadX * 2;
+            var lines = new List<CL> {
+                CL.Title(TextTrackerIntroTitle.Value, 0.84f, new Color(255, 200, 110, 255)),
+                CL.Divider(new Color(160, 130, 70, 140)),
+                CL.Bullet(TextTrackerIntroLine1.Value, 0.76f, new Color(225, 235, 245, 235), new Color(255, 200, 120, 240)),
+                CL.Bullet(TextTrackerIntroLine2.Value, 0.76f, new Color(190, 210, 230, 220), new Color(255, 200, 120, 240)),
+                CL.Bullet(TextTrackerIntroLine3.Value, 0.76f, new Color(170, 195, 215, 210), new Color(255, 200, 120, 240)),
+            };
+            int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
+
             float slideX = (1f - animProgress) * 70f;
             float x = MathHelper.Clamp(trackerRect.Right + 18f + slideX, 20f, Main.screenWidth - CardW5 - 20f);
-            float y = MathHelper.Clamp(trackerRect.Y - 4f, 20f, Main.screenHeight - CardH5 - 20f);
-            float alpha = animProgress;
-            var card = new Rectangle((int)x, (int)y, CardW5, CardH5);
+            float y = MathHelper.Clamp(trackerRect.Y - 4f, 20f, Main.screenHeight - cardH - 20f);
+            var card = new Rectangle((int)x, (int)y, CardW5, cardH);
 
             DrawCardBackground(sb, card, 0.25f, alpha);
             DrawLeftArrow(sb, new Vector2(x - 8f, MathHelper.Clamp(trackerRect.Y + trackerRect.Height * 0.5f,
-                y + 14f, y + CardH5 - 14f)), alpha);
-
-            var font = FontAssets.MouseText.Value;
-            float titleScale = 0.80f;
-            float bodyScale = 0.66f;
-            float px = x + 14f, py = y + 11f;
-            float lineH_t = font.MeasureString("A").Y * titleScale + 2f;
-            float lineH_b = font.MeasureString("A").Y * bodyScale + 2f;
-
-            Utils.DrawBorderString(sb, TextTrackerIntroTitle.Value,
-                new Vector2(px, py),
-                new Color(255, 200, 110, (int)(255 * alpha)), titleScale);
-            py += lineH_t + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px, (int)py, CardW5 - 28, 1),
-                new Color(160, 130, 70, (int)(140 * alpha)));
-            py += 6f;
-
-            int descWrapW = (int)((CardW5 - 28) / bodyScale);
-            DrawBulletLine(sb, font, TextTrackerIntroLine1.Value, ref py, px, bodyScale, descWrapW,
-                new Color(225, 235, 245, (int)(235 * alpha)),
-                new Color(255, 200, 120, (int)(240 * alpha)), alpha);
-            DrawBulletLine(sb, font, TextTrackerIntroLine2.Value, ref py, px, bodyScale, descWrapW,
-                new Color(190, 210, 230, (int)(220 * alpha)),
-                new Color(255, 200, 120, (int)(240 * alpha)), alpha);
-            DrawBulletLine(sb, font, TextTrackerIntroLine3.Value, ref py, px, bodyScale, descWrapW,
-                new Color(170, 195, 215, (int)(210 * alpha)),
-                new Color(255, 200, 120, (int)(240 * alpha)), alpha);
+                y + 14f, y + cardH - 14f)), alpha);
+            DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             if (DrawConfirmButton(sb, card, alpha, TextTrackerIntroNextBtn.Value))
                 StartSuspendIntro();
@@ -806,32 +649,9 @@ namespace CalamityOverhaul.Content.EntrustManager
                 new Color(255, 230, 160, (int)(110 * alpha * pulse)));
         }
 
-        private static void DrawBulletLine(SpriteBatch sb, ReLogic.Graphics.DynamicSpriteFont font, string text,
-            ref float py, float px, float scale, int wrapWidth,
-            Color textColor, Color bulletColor, float alpha) {
-            //绘制项目符号
-            string bullet = "·";
-            float bulletW = font.MeasureString(bullet).X * scale + 4f;
-            Utils.DrawBorderString(sb, bullet, new Vector2(px, py), bulletColor, scale);
-
-            string[] wrapped = VaultUtils.WrapTextArray(text, font, wrapWidth, 99, out _);
-            float lineH = font.MeasureString("A").Y * scale + 2f;
-            bool first = true;
-            foreach (string wl in wrapped) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '),
-                    new Vector2(px + bulletW, py), textColor, scale);
-                py += lineH;
-                first = false;
-            }
-            if (first) py += lineH;
-        }
-
         //阶段6挂起说明卡
 
-        //阶段6卡片尺寸
         private const int CardW6 = 318;
-        private const int CardH6 = 170;
 
         private static void StartSuspendIntro() {
             //重新打开面板关联挂起操作
@@ -845,62 +665,171 @@ namespace CalamityOverhaul.Content.EntrustManager
         private static void DrawSuspendIntroCard(SpriteBatch sb) {
             var ui = QuestManagerUI.Instance;
             if (ui == null) return;
+            float alpha = animProgress;
+            var font = FontAssets.MouseText.Value;
+            float contentW = CardW6 - CardPadX * 2;
 
+            var lines = new List<CL> {
+                CL.Title(TextSuspendIntroTitle.Value, 0.84f, new Color(180, 235, 165, 255)),
+                CL.Divider(new Color(110, 150, 100, 140)),
+                CL.KeyAction(TextSuspendIntroHintLabel.Value, new Color(130, 220, 145, 240),
+                    TextSuspendIntroHintAction.Value, new Color(195, 240, 195, 240), 0.78f),
+                CL.Wrap(TextSuspendIntroDesc1.Value, 0.72f, new Color(120, 155, 120, 200)),
+                CL.Wrap(TextSuspendIntroDesc2.Value, 0.72f, new Color(120, 155, 120, 200)),
+            };
+
+            int cardH = CardTopPad + MeasureCardBody(lines, font, contentW) + CardFooter;
             float slideX = (1f - animProgress) * 80f;
             float x = ui.PanelRightEdge + 15f - slideX;
-            float y = (Main.screenHeight - CardH6) * 0.5f;
-            float alpha = animProgress;
-            var card = new Rectangle((int)x, (int)y, CardW6, CardH6);
+            float y = (Main.screenHeight - cardH) * 0.5f;
+            var card = new Rectangle((int)x, (int)y, CardW6, cardH);
 
             DrawCardBackground(sb, card, 1f, alpha);
-            DrawLeftArrow(sb, new Vector2(x - 8f, y + CardH6 * 0.5f), alpha);
-
-            var font = FontAssets.MouseText.Value;
-            float titleScale = 0.80f;
-            float bodyScale = 0.68f;
-            float subScale = 0.62f;
-            float px = x + 14f, py = y + 11f;
-            float lineH_t = font.MeasureString("A").Y * titleScale + 2f;
-            float lineH_b = font.MeasureString("A").Y * bodyScale + 2f;
-            float lineH_s = font.MeasureString("A").Y * subScale + 2f;
-
-            Utils.DrawBorderString(sb, TextSuspendIntroTitle.Value,
-                new Vector2(px, py),
-                new Color(180, 235, 165, (int)(255 * alpha)), titleScale);
-            py += lineH_t + 2f;
-
-            BaseManagerStyle.FillRect(sb,
-                new Rectangle((int)px, (int)py, CardW6 - 28, 1),
-                new Color(110, 150, 100, (int)(140 * alpha)));
-            py += 6f;
-
-            float keyW = font.MeasureString(TextSuspendIntroHintLabel.Value).X * bodyScale;
-            Utils.DrawBorderString(sb, TextSuspendIntroHintLabel.Value,
-                new Vector2(px, py),
-                new Color(130, 220, 145, (int)(240 * alpha)), bodyScale);
-            Utils.DrawBorderString(sb, TextSuspendIntroHintAction.Value,
-                new Vector2(px + keyW, py),
-                new Color(195, 240, 195, (int)(240 * alpha)), bodyScale);
-            py += lineH_b;
-
-            int descWrapW = (int)((CardW6 - 28) / subScale);
-            string[] wrapped1 = VaultUtils.WrapTextArray(TextSuspendIntroDesc1.Value, font, descWrapW, 99, out _);
-            foreach (string wl in wrapped1) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                    new Color(120, 155, 120, (int)(200 * alpha)), subScale);
-                py += lineH_s;
-            }
-            string[] wrapped2 = VaultUtils.WrapTextArray(TextSuspendIntroDesc2.Value, font, descWrapW, 99, out _);
-            foreach (string wl in wrapped2) {
-                if (string.IsNullOrEmpty(wl)) continue;
-                Utils.DrawBorderString(sb, wl.TrimEnd('-', ' '), new Vector2(px, py),
-                    new Color(120, 155, 120, (int)(200 * alpha)), subScale);
-                py += lineH_s;
-            }
+            DrawLeftArrow(sb, new Vector2(x - 8f, y + cardH * 0.5f), alpha);
+            DrawCardBody(sb, lines, font, card.X + CardPadX, card.Y + CardTopPad, contentW, alpha);
 
             if (DrawConfirmButton(sb, card, alpha))
                 MarkGuideSeen();
+        }
+
+        //卡片行模型：测量与绘制共用同一份行表，卡片高度据此动态计算，避免文字溢出
+
+        private enum CLKind { Title, Divider, KeyAction, Wrap, Bullet, Gap }
+
+        //一行卡片内容；颜色把目标最大不透明度写在 .A，绘制时再乘渐显 alpha
+        private readonly struct CL
+        {
+            public readonly CLKind Kind;
+            public readonly string A;
+            public readonly string B;
+            public readonly float Scale;
+            public readonly Color C1;
+            public readonly Color C2;
+            public readonly float GapPx;
+            public readonly bool Blink;
+
+            private CL(CLKind kind, string a, string b, float scale, Color c1, Color c2, float gap, bool blink) {
+                Kind = kind; A = a; B = b; Scale = scale; C1 = c1; C2 = c2; GapPx = gap; Blink = blink;
+            }
+
+            public static CL Title(string t, float sc, Color c, bool blink = false) => new(CLKind.Title, t, null, sc, c, default, 0f, blink);
+            public static CL Divider(Color c) => new(CLKind.Divider, null, null, 0f, c, default, 0f, false);
+            public static CL KeyAction(string label, Color labelColor, string action, Color actionColor, float sc)
+                => new(CLKind.KeyAction, label, action, sc, labelColor, actionColor, 0f, false);
+            public static CL Wrap(string t, float sc, Color c, bool blink = false) => new(CLKind.Wrap, t, null, sc, c, default, 0f, blink);
+            public static CL Bullet(string t, float sc, Color textColor, Color bulletColor) => new(CLKind.Bullet, t, null, sc, textColor, bulletColor, 0f, false);
+            public static CL Gap(float px) => new(CLKind.Gap, null, null, 0f, default, default, px, false);
+        }
+
+        private static Color Fade(Color c, float a) => new(c.R, c.G, c.B, (int)(c.A * a));
+
+        //警告闪烁调制（明暗脉动）
+        private static Color ApplyBlink(Color c) {
+            float blink = 0.84f + MathF.Sin(shaderTimer * 52f) * 0.16f;
+            return new Color((int)(c.R * blink), (int)(c.G * blink), (int)(c.B * blink), c.A);
+        }
+
+        private static int CountWrapLines(string text, ReLogic.Graphics.DynamicSpriteFont font, float scale, float widthPx) {
+            if (string.IsNullOrEmpty(text)) return 0;
+            int wrapW = Math.Max(8, (int)(widthPx / scale));
+            string[] arr = VaultUtils.WrapTextArray(text, font, wrapW, 99, out _);
+            int n = 0;
+            foreach (string s in arr) {
+                if (!string.IsNullOrEmpty(s)) n++;
+            }
+            return Math.Max(n, 1);
+        }
+
+        private static float LineHeight(in CL l, ReLogic.Graphics.DynamicSpriteFont font, float contentW) {
+            float la = font.MeasureString("A").Y;
+            switch (l.Kind) {
+                case CLKind.Title:
+                    return la * l.Scale + 4f;
+                case CLKind.Divider:
+                    return 7f;
+                case CLKind.Gap:
+                    return l.GapPx;
+                case CLKind.KeyAction: {
+                    float lh = la * l.Scale + 2f;
+                    float w = font.MeasureString(l.A).X * l.Scale
+                        + (string.IsNullOrEmpty(l.B) ? 0f : font.MeasureString(l.B).X * l.Scale);
+                    //标签+动作一行放不下时折成两行
+                    return w <= contentW ? lh : lh * 2f;
+                }
+                case CLKind.Wrap:
+                    return string.IsNullOrEmpty(l.A) ? 0f : CountWrapLines(l.A, font, l.Scale, contentW) * (la * l.Scale + 2f);
+                case CLKind.Bullet: {
+                    float bulletW = font.MeasureString("·").X * l.Scale + 4f;
+                    return CountWrapLines(l.A, font, l.Scale, contentW - bulletW) * (la * l.Scale + 2f);
+                }
+            }
+            return 0f;
+        }
+
+        private static int MeasureCardBody(List<CL> lines, ReLogic.Graphics.DynamicSpriteFont font, float contentW) {
+            float h = 0f;
+            foreach (CL l in lines) {
+                h += LineHeight(l, font, contentW);
+            }
+            return (int)MathF.Ceiling(h);
+        }
+
+        private static void DrawCardBody(SpriteBatch sb, List<CL> lines, ReLogic.Graphics.DynamicSpriteFont font,
+            float x, float y, float contentW, float alpha) {
+            float la = font.MeasureString("A").Y;
+            foreach (CL l in lines) {
+                switch (l.Kind) {
+                    case CLKind.Title: {
+                        Color c = l.Blink ? ApplyBlink(l.C1) : l.C1;
+                        Utils.DrawBorderString(sb, l.A, new Vector2(x, y), Fade(c, alpha), l.Scale);
+                        break;
+                    }
+                    case CLKind.Divider:
+                        BaseManagerStyle.FillRect(sb, new Rectangle((int)x, (int)y, (int)contentW, 1), Fade(l.C1, alpha));
+                        break;
+                    case CLKind.KeyAction: {
+                        float lh = la * l.Scale + 2f;
+                        float labelW = font.MeasureString(l.A).X * l.Scale;
+                        float actionW = string.IsNullOrEmpty(l.B) ? 0f : font.MeasureString(l.B).X * l.Scale;
+                        Utils.DrawBorderString(sb, l.A, new Vector2(x, y), Fade(l.C1, alpha), l.Scale);
+                        if (!string.IsNullOrEmpty(l.B)) {
+                            if (labelW + actionW <= contentW) {
+                                Utils.DrawBorderString(sb, l.B, new Vector2(x + labelW, y), Fade(l.C2, alpha), l.Scale);
+                            }
+                            else {
+                                Utils.DrawBorderString(sb, l.B, new Vector2(x, y + lh), Fade(l.C2, alpha), l.Scale);
+                            }
+                        }
+                        break;
+                    }
+                    case CLKind.Wrap: {
+                        if (!string.IsNullOrEmpty(l.A)) {
+                            Color wc = l.Blink ? ApplyBlink(l.C1) : l.C1;
+                            int wrapW = Math.Max(8, (int)(contentW / l.Scale));
+                            float lh = la * l.Scale + 2f, yy = y;
+                            foreach (string s in VaultUtils.WrapTextArray(l.A, font, wrapW, 99, out _)) {
+                                if (string.IsNullOrEmpty(s)) continue;
+                                Utils.DrawBorderString(sb, s.TrimEnd('-', ' '), new Vector2(x, yy), Fade(wc, alpha), l.Scale);
+                                yy += lh;
+                            }
+                        }
+                        break;
+                    }
+                    case CLKind.Bullet: {
+                        float bulletW = font.MeasureString("·").X * l.Scale + 4f;
+                        Utils.DrawBorderString(sb, "·", new Vector2(x, y), Fade(l.C2, alpha), l.Scale);
+                        int wrapW = Math.Max(8, (int)((contentW - bulletW) / l.Scale));
+                        float lh = la * l.Scale + 2f, yy = y;
+                        foreach (string s in VaultUtils.WrapTextArray(l.A, font, wrapW, 99, out _)) {
+                            if (string.IsNullOrEmpty(s)) continue;
+                            Utils.DrawBorderString(sb, s.TrimEnd('-', ' '), new Vector2(x + bulletW, yy), Fade(l.C1, alpha), l.Scale);
+                            yy += lh;
+                        }
+                        break;
+                    }
+                }
+                y += LineHeight(l, font, contentW);
+            }
         }
 
         //着色器背景与降级
@@ -937,7 +866,12 @@ namespace CalamityOverhaul.Content.EntrustManager
         //辅助 UI
 
         private static bool DrawConfirmButton(SpriteBatch sb, Rectangle card, float alpha, string text = null) {
-            const int btnW = 78, btnH = 20, margin = 8;
+            const int btnH = 22, margin = 8;
+            const float btnTextScale = 0.68f;
+            string buttonText = text ?? TextConfirmBtn.Value;
+            Vector2 ts = FontAssets.MouseText.Value.MeasureString(buttonText) * btnTextScale;
+            //按钮宽度随文字自适应，避免英文按钮文字溢出
+            int btnW = Math.Clamp((int)ts.X + 22, 78, card.Width - 24);
             var rect = new Rectangle(card.Right - btnW - margin, card.Bottom - btnH - margin, btnW, btnH);
 
             //按钮上方分隔线
@@ -959,12 +893,10 @@ namespace CalamityOverhaul.Content.EntrustManager
                     new Color(180, 255, 180, (int)(220 * alpha)));
             }
 
-            string buttonText = text ?? TextConfirmBtn.Value;
             var textColor = new Color(175, 240, 175, (int)(255 * alpha));
-            Vector2 ts = FontAssets.MouseText.Value.MeasureString(buttonText) * 0.62f;
             Utils.DrawBorderString(sb, buttonText,
                 new Vector2(rect.X + (rect.Width - ts.X) * 0.5f, rect.Y + (rect.Height - ts.Y) * 0.5f),
-                textColor, 0.62f);
+                textColor, btnTextScale);
             if (hovered) Main.LocalPlayer.mouseInterface = true;
             return hovered && Main.mouseLeft && !Main.mouseLeftRelease;
         }

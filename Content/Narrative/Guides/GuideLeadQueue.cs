@@ -96,8 +96,23 @@ namespace CalamityOverhaul.Content.Narrative.Guides
             if (holder != null && !holder.GuideReserving) {
                 holder = null;
             }
-            //有人正在展示且仍占位 → 不抢占，安心等其结束
+            //有人正在展示且仍占位
             if (holder != null) {
+                //保底：持有者长期未就绪（如玩家中途收起武器使引导暂停）又在饿死已就绪的低优先级引导，超时则放弃它
+                if (!holder.GuideReady && HasLowerReadyThan(holder)) {
+                    if (blocker != holder) {
+                        blocker = holder;
+                        starveTimer = 0;
+                    }
+                    if (++starveTimer >= StarveTimeout) {
+                        holder.OnGuideAbandoned();
+                        holder = null;
+                        blocker = null;
+                        starveTimer = 0;
+                    }
+                    return;
+                }
+                //正常展示中 → 不抢占，安心等其结束
                 blocker = null;
                 starveTimer = 0;
                 return;
