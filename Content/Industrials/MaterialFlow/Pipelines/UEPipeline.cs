@@ -368,41 +368,18 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
     /// </summary>
     internal class UEPipelineEnergyDraw : GlobalTileProcessor
     {
-        private static readonly List<UEPipelineTP> visiblePipes = [];
-
         public override bool PreTileDrawEverything(SpriteBatch spriteBatch) {
-            if (Main.dedServ) {
-                return true;
-            }
-            Effect effect = EffectLoader.UEPipelineFlow?.Value;
-            if (effect == null) {
-                return true;//着色器缺失：能量层由各管道内联平涂回退
-            }
-
-            visiblePipes.Clear();
-            foreach (var tp in TileProcessorLoader.TP_InWorld) {
+            MachineShaderBatch.DrawBatch(spriteBatch, EffectLoader.UEPipelineFlow, SamplerState.PointClamp,
                 //仅基础管道；创造管道(子类)有自己的星空渲染，排除
-                if (tp.GetType() == typeof(UEPipelineTP) && tp.Active
-                    && VaultUtils.IsPointOnScreen(tp.PosInWorld - Main.screenPosition, tp.DrawExtendMode)) {
-                    visiblePipes.Add((UEPipelineTP)tp);
-                }
-            }
-            if (visiblePipes.Count == 0) {
-                return true;
-            }
-
-            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            effect.Parameters["uAlpha"]?.SetValue(1f);
-
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-                DepthStencilState.None, RasterizerState.CullNone, effect, Main.Transform);
-            foreach (var pipe in visiblePipes) {
-                pipe.DrawEnergy(spriteBatch, pipe.GetEnergyDrawColor(true));
-            }
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
-                DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+                static tp => tp.GetType() == typeof(UEPipelineTP),
+                static effect => {
+                    effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                    effect.Parameters["uAlpha"]?.SetValue(1f);
+                },
+                tp => {
+                    var pipe = (UEPipelineTP)tp;
+                    pipe.DrawEnergy(spriteBatch, pipe.GetEnergyDrawColor(true));
+                });
             return true;
         }
     }

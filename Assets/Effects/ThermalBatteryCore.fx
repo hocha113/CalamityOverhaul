@@ -2,7 +2,7 @@
 //ThermalBatteryCore.fx 热能电池熔核
 //密封玻璃腔内的发光熔岩：随电量上涨的液面 + 上浮火星 + 内部热流 +
 //液面亮线与白炽态 + 满电沸腾 + 腔壁余辉。世界空间绘制，AlphaBlend 预乘 alpha
-//uFill=电量比例, uActivity=近期充能活跃度(驱动火星与亮度),
+//可合批：逐电池数据走顶点色(r=电量比例, g=近期充能活跃度)，其余为整批共享 uniform
 //uChamberMin/uChamberMax=熔腔在电池本地坐标(0~1)中的矩形范围
 // ============================================================================
 
@@ -11,8 +11,6 @@ sampler uImage0 : register(s0);
 float uTime;
 float uAlpha;
 float2 uResolution;
-float uFill;
-float uActivity;
 float2 uChamberMin;
 float2 uChamberMax;
 
@@ -48,8 +46,8 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 res = uResolution;
     float2 p = coords * res;          //电池本地像素坐标
     float t = uTime;
-    float fill = saturate(uFill);
-    float act = saturate(uActivity);
+    float fill = saturate(vertexColor.r);   //逐电池：电量比例
+    float act = saturate(vertexColor.g);    //逐电池：充能活跃度
 
     //----- 熔腔圆角矩形 SDF -----
     float2 cMin = uChamberMin * res;
@@ -139,7 +137,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     }
 
     float fa = a * uAlpha;
-    return float4(col * uAlpha, fa) * vertexColor;
+    return float4(col * uAlpha, fa);   //顶点色仅承载逐电池数据，颜色全由程序生成
 }
 
 technique Technique1
