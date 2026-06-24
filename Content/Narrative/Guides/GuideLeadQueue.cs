@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.Narrative.Guides
 {
     /// <summary>
     /// 教学引导排队参与者。所有"首次教学引导"统一登记到 <see cref="GuideLeadQueue"/>，
-    /// 由队列仲裁同一时刻只展示一个，按优先级排序，彼此无需相互引用——各自老实排队即可。
+    /// 由队列仲裁同一时刻只展示一个，按优先级排序，彼此无需相互引用——各自老实排队即可
     /// </summary>
     internal interface IGuideLead
     {
@@ -14,8 +14,8 @@ namespace CalamityOverhaul.Content.Narrative.Guides
         int GuidePriority { get; }
 
         /// <summary>
-        /// 是否占位：本引导尚未完成且其"会话前提"已成立（哪怕还没准备好展示）。
-        /// 占位会压制更低优先级的引导抢先，从而保证顺序，即使本引导此刻还不能展示。
+        /// 是否占位：本引导尚未完成且其"会话前提"已成立（哪怕还没准备好展示）
+        /// 占位会压制更低优先级的引导抢先，从而保证顺序，即使本引导此刻还不能展示
         /// </summary>
         bool GuideReserving { get; }
 
@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.Narrative.Guides
     }
 
     /// <summary>
-    /// 教学引导统一队列：同一时刻至多一个引导持有"展示权"。
+    /// 教学引导统一队列：同一时刻至多一个引导持有"展示权"
     /// <para>· 高优先级即便尚未就绪也会占位、压制低优先级，保证既定顺序；</para>
     /// <para>· 持有者只要仍在占位就不会被抢占（不打断进行中的引导）；</para>
     /// <para>· 饥饿保底：当高优先级占位者长期未就绪、且确有更低优先级引导已就绪被压制时，
