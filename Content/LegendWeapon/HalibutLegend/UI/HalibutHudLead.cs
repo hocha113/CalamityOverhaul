@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.Narrative.Guides;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -19,9 +20,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     /// <summary>
     /// 大比目鱼界面引导：首次完成「初遇比目鱼」后，依次介绍深渊之眼 HUD、技能装备栏与技能转盘
     /// （转盘只能用快捷键呼出，必须显式告知，否则极易被玩家全程忽略）
-    /// 委托引导 <see cref="EntrustManager.EntrustManagerLead"/> 会回避本引导，待其结束后再出现
+    /// 通过 <see cref="GuideLeadQueue"/> 统一排队：本引导优先级高于委托引导，且从初遇演出一开始就占位，
+    /// 因此委托引导只会在本引导结束后才登场，无需两边互相引用
     /// </summary>
-    internal class HalibutHudLead : ModSystem, ILocalizedModType
+    internal class HalibutHudLead : ModSystem, ILocalizedModType, IGuideLead
     {
         public string LocalizationCategory => "Legend.HalibutText";
 
@@ -57,6 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         public static LocalizedText WheelDoneBtn { get; private set; }
 
         public override void SetStaticDefaults() {
+            GuideLeadQueue.Register(this);
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "深渊之眼");
             HudLine1 = this.GetLocalization(nameof(HudLine1), () => "手持大比目鱼时，这只眼会常驻在屏幕左下角");
             HudLine2 = this.GetLocalization(nameof(HudLine2), () => "它显示当前选用的领域技能、深渊复苏进度与领域层数");
@@ -89,41 +92,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             animProgress = 0f;
         }
 
-        #region 与委托引导的协调
+        #region 引导排队协议
+        int IGuideLead.GuidePriority => 10;//先于委托引导
+        bool IGuideLead.GuideReserving => Reserving;
+        bool IGuideLead.GuideReady => Ready;
+        //保底被放弃时直接收尾，停止占位
+        void IGuideLead.OnGuideAbandoned() => MarkSeen();
+
         /// <summary>
-        /// 委托引导是否应回避：本引导正在进行，或已满足前置条件但尚未看过（待触发）
+        /// 占位条件：拥有比目鱼、已触发初遇（FirstMet 在 OnTriggered 即置位，早于演出结束）、尚未看过。
+        /// 从演出一开始就占住队列，压制委托引导抢先。
         /// </summary>
-        public static bool ShouldDeferEntrust {
+        private static bool Reserving {
             get {
-                if (currentPhase != Phase.Inactive && currentPhase != Phase.Complete) {
-                    return true;
+                Player p = Main.LocalPlayer;
+                if (p == null || !p.active) {
+                    return false;
                 }
-                return IsPending();
+                if (HasSeen) {
+                    return false;
+                }
+                if (!p.TryGetOverride<HalibutPlayer>(out var hp) || !hp.HasHalubut) {
+                    return false;
+                }
+                return HalibutStorySync.ReadHalibut(d => d.FirstMet, d => d.FirstMet);
             }
         }
 
         /// <summary>
-        /// 委托引导保底超时后调用：直接结束本引导，避免两套引导叠加显示
+        /// 就绪条件：占位之上，手持比目鱼、初遇已演完、无对话/过场干扰
         /// </summary>
-        public static void ForceComplete() {
-            if (currentPhase != Phase.Complete) {
-                MarkSeen();
+        private static bool Ready {
+            get {
+                if (!Reserving) {
+                    return false;
+                }
+                if (NarrativeTriggerGate.IsBusy || InnoVault.Cinematics.CutsceneDirector.IsPlaying) {
+                    return false;
+                }
+                if (!StillActive()) {
+                    return false;
+                }
+                return HalibutStorySync.ReadHalibut(d => d.PostFirstMetIsComplete, d => d.PostFirstMetIsComplete);
             }
-        }
-
-        //满足前置（完成初遇、手持比目鱼）但尚未看过引导
-        private static bool IsPending() {
-            if (HasSeen) {
-                return false;
-            }
-            Player p = Main.LocalPlayer;
-            if (p == null || !p.active || p.dead) {
-                return false;
-            }
-            if (!p.TryGetOverride<HalibutPlayer>(out var hp) || !hp.HeldHalibut) {
-                return false;
-            }
-            return HalibutStorySync.ReadHalibut(d => d.PostFirstMetIsComplete, d => d.PostFirstMetIsComplete);
         }
         #endregion
 
@@ -154,10 +165,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
                 return;
             }
 
+            //统一排队：未轮到本引导则按兵不动（异常残留则收起）
+            if (!GuideLeadQueue.IsHolder(this)) {
+                if (currentPhase != Phase.Inactive && currentPhase != Phase.Complete) {
+                    currentPhase = Phase.Inactive;
+                    animProgress = 0f;
+                }
+                return;
+            }
+
+            //轮到本引导（队列仅在就绪时授予）：未开始则起步
+            if (currentPhase == Phase.Inactive) {
+                SetPhase(Phase.HudIntro);
+            }
+            //暂时不可见（未手持/已死）时暂停推进与绘制，不重置，等恢复
+            if (!StillActive()) {
+                return;
+            }
+
             switch (currentPhase) {
-                case Phase.Inactive:
-                    TryBegin();
-                    break;
                 case Phase.HudIntro:
                     UpdateHudIntro();
                     break;
@@ -176,30 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
-        private static void TryBegin() {
-            if (HasSeen) {
-                return;
-            }
-            //剧情对话/过场进行中先不打扰，等其结束再触发
-            if (NarrativeTriggerGate.IsBusy || InnoVault.Cinematics.CutsceneDirector.IsPlaying) {
-                return;
-            }
-            if (!StillActive()) {
-                return;
-            }
-            if (!HalibutStorySync.ReadHalibut(d => d.PostFirstMetIsComplete, d => d.PostFirstMetIsComplete)) {
-                return;
-            }
-            SetPhase(Phase.HudIntro);
-        }
-
         private static void UpdateHudIntro() {
-            //失去手持则回到等待，下次手持再触发，避免遗留悬浮卡
-            if (!StillActive()) {
-                currentPhase = Phase.Inactive;
-                animProgress = 0f;
-                return;
-            }
             //玩家自行打开了图鉴（左键点眼睛 / 按键）→ 进入装备栏介绍
             if (HalibutAtlas.Instance?.IsOpen == true) {
                 SetPhase(Phase.AtlasEquip);
@@ -207,11 +210,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static void UpdateAtlasEquip() {
-            if (!StillActive()) {
-                currentPhase = Phase.Inactive;
-                animProgress = 0f;
-                return;
-            }
             //玩家把图鉴关掉 → 退回上一步，重新引导其打开
             if (HalibutAtlas.Instance == null || !HalibutAtlas.Instance.IsOpen) {
                 SetPhase(Phase.HudIntro);
@@ -219,11 +217,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         }
 
         private static void UpdateSkillWheel() {
-            if (!StillActive()) {
-                currentPhase = Phase.Inactive;
-                animProgress = 0f;
-                return;
-            }
             //该阶段聚焦转盘，确保图鉴保持关闭
             if (HalibutAtlas.Instance?.IsOpen == true) {
                 HalibutAtlas.Instance.Close();
@@ -245,6 +238,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers) {
             if (currentPhase == Phase.Inactive || currentPhase == Phase.Complete) {
+                return;
+            }
+            //暂停态（未手持比目鱼/已死）不绘制，避免脱离 HUD 语境的悬浮卡
+            if (!StillActive()) {
                 return;
             }
             //插在原版鼠标文本层之前，从而绘制在所有 UIHandle（HUD/图鉴/转盘）之上

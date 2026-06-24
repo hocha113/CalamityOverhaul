@@ -1,7 +1,8 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
+using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Narrative.Data;
 using CalamityOverhaul.Content.Narrative.Data.Modules;
+using CalamityOverhaul.Content.Narrative.Guides;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using Terraria.UI;
 
 namespace CalamityOverhaul.Content.EntrustManager
 {
-    internal class EntrustManagerLead : ModSystem, ILocalizedModType
+    internal class EntrustManagerLead : ModSystem, ILocalizedModType, IGuideLead
     {
         private enum LeadPhase
         {
@@ -68,6 +69,7 @@ namespace CalamityOverhaul.Content.EntrustManager
         public static LocalizedText TextConfirmBtn { get; private set; }
 
         public override void SetStaticDefaults() {
+            GuideLeadQueue.Register(this);
             TextKeyPromptBound = this.GetLocalization(nameof(TextKeyPromptBound), () => "按 [{0}] 打开委托面板");
             TextKeyPromptWarnTitle = this.GetLocalization(nameof(TextKeyPromptWarnTitle), () => "⚠  委托快捷键尚未绑定！");
             TextKeyPromptDefaultKey = this.GetLocalization(nameof(TextKeyPromptDefaultKey), () => "当前按 [{0}]（默认键）可打开委托面板");
@@ -118,11 +120,6 @@ namespace CalamityOverhaul.Content.EntrustManager
         //自动推进倒计总时长
         private static int autoAdvanceDelayTotal;
 
-        //回避比目鱼界面引导期间的累计等待帧
-        private static int halibutDeferTimer;
-        //回避比目鱼引导的最长等待（保底），约2分钟，防止其卡住时无限等待
-        private const int HalibutDeferTimeout = 60 * 120;
-
         //防呆兜底超时，60 帧≈1 秒
         private const int Phase4SoftTimeout = 60 * 30;
         private const int Phase5SoftTimeout = 60 * 35;
@@ -155,9 +152,41 @@ namespace CalamityOverhaul.Content.EntrustManager
         public override void OnWorldUnload() {
             currentPhase = LeadPhase.Inactive;
             animProgress = 0f;
-            halibutDeferTimer = 0;
             ResetPhaseGuards();
         }
+
+        #region 引导排队协议
+        int IGuideLead.GuidePriority => 20;//晚于比目鱼界面引导
+        bool IGuideLead.GuideReserving => Reserving;
+        bool IGuideLead.GuideReady => Ready;
+        //保底被放弃时直接收尾，停止占位
+        void IGuideLead.OnGuideAbandoned() => MarkGuideSeen();
+
+        //占位条件：存在任意委托条目且尚未看过引导
+        private static bool Reserving {
+            get {
+                Player p = Main.LocalPlayer;
+                if (p == null || !p.active) {
+                    return false;
+                }
+                var ui = QuestManagerUI.Instance;
+                if (ui == null || !ui.HasAnyEntry) {
+                    return false;
+                }
+                return !p.GetModPlayer<StoryPlayer>().Get<EntrustGuideData>().GuideSeen;
+            }
+        }
+
+        //就绪条件：占位之上，无对话/过场干扰（确保不与初遇等演出抢镜）
+        private static bool Ready {
+            get {
+                if (!Reserving) {
+                    return false;
+                }
+                return !NarrativeTriggerGate.IsBusy && !InnoVault.Cinematics.CutsceneDirector.IsPlaying;
+            }
+        }
+        #endregion
 
         //阶段切换时复位计时器与快照
         private static void ResetPhaseGuards() {
@@ -183,22 +212,25 @@ namespace CalamityOverhaul.Content.EntrustManager
             shaderTimer += 0.004f;
             if (shaderTimer > 100f) shaderTimer -= 100f;
 
+            //统一排队：未轮到本引导则按兵不动（异常残留则收起）
+            if (!GuideLeadQueue.IsHolder(this)) {
+                if (currentPhase != LeadPhase.Inactive && currentPhase != LeadPhase.Complete) {
+                    currentPhase = LeadPhase.Inactive;
+                    animProgress = 0f;
+                    ResetPhaseGuards();
+                }
+                return;
+            }
+
+            //轮到本引导（队列仅在就绪时授予）：起步
+            if (currentPhase == LeadPhase.Inactive) {
+                currentPhase = LeadPhase.KeyPrompt;
+                animProgress = 0f;
+                ResetPhaseGuards();
+            }
+
             switch (currentPhase) {
                 case LeadPhase.Inactive:
-                    if (ui.HasAnyEntry && !Main.LocalPlayer.GetModPlayer<StoryPlayer>().Get<EntrustGuideData>().GuideSeen) {
-                        //回避比目鱼界面引导：其进行或待触发期间先按兵不动，结束后再出现
-                        if (HalibutHudLead.ShouldDeferEntrust) {
-                            //过时保底：等待过久则接管并强制结束比目鱼引导，避免无限等待与两套引导叠加
-                            if (++halibutDeferTimer < HalibutDeferTimeout) {
-                                break;
-                            }
-                            HalibutHudLead.ForceComplete();
-                        }
-                        halibutDeferTimer = 0;
-                        currentPhase = LeadPhase.KeyPrompt;
-                        animProgress = 0f;
-                        ResetPhaseGuards();
-                    }
                     break;
 
                 case LeadPhase.KeyPrompt:
