@@ -52,6 +52,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         /// <summary>尝试一次生成；返回 true 表示已生成传送门并应进入长冷却</summary>
         public bool TryScheduleSpawn() {
             if (Main.dayTime) return false;
+            if (CWRWorld.HasBoss) return false;
             //世界里已经有 Victor（或他的传送门）就不再生成
             int victorType = ModContent.NPCType<Victor>();
             if (NPC.AnyNPCs(victorType)) return false;
