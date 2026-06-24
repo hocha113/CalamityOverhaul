@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.Cyberwares;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 

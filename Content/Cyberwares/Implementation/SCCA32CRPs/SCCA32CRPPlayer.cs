@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Cyberwares;
-using System;
+﻿using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
