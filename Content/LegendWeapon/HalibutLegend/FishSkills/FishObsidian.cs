@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -153,7 +153,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private Vector2 shatterVelocity;
         private float shatterSpin;
-        private readonly List<FishSkillVFX.ShockRing> rings = new();
+        private readonly List<ShockRing> rings = new();
 
         public static readonly Color ObsidianDark = new(34, 22, 44);
         public static readonly Color MoltenGlow = new(255, 95, 40);
@@ -355,7 +355,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             shatterVelocity = Main.rand.NextVector2Circular(10f, 10f) - Vector2.UnitY * 2f;
             shatterSpin = Main.rand.NextFloat(-0.4f, 0.4f);
 
-            FishSkillVFX.Punch(Owner, 5f);
+            Punch(Owner, 5f);
             SpawnShatterEffect();
 
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Main.dedServ) {
                 return;
             }
-            rings.Add(new FishSkillVFX.ShockRing(Projectile.Center, 150f, 14f, MoltenGlow, 1f, 22, 40));
+            rings.Add(new ShockRing(Projectile.Center, 150f, 14f, MoltenGlow, 1f, 22, 40));
 
             //玻璃碎片（受重力四散）
             for (int i = 0; i < 22; i++) {
@@ -397,7 +397,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 PRTLoader.NewParticle<PRT_Spark>(contact, Main.rand.NextVector2Circular(5f, 5f)
                     , CrackGlow, Main.rand.NextFloat(0.5f, 0.9f)).Configure(true, 14);
             }
-            rings.Add(new FishSkillVFX.ShockRing(contact, 56f, 7f, MoltenGlow, 1f, 14, 28));
+            rings.Add(new ShockRing(contact, 56f, 7f, MoltenGlow, 1f, 14, 28));
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.3f, Pitch = 0.5f }, target.Center);
         }
 
@@ -446,7 +446,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
                 Texture2D ringTex = CWRAsset.Placeholder_White.Value;
-                foreach (FishSkillVFX.ShockRing r in rings) {
+                foreach (ShockRing r in rings) {
                     r.Draw(ringTex);
                 }
                 Main.spriteBatch.End();
@@ -455,6 +455,98 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 取最大值的镜头冲击；仅本地玩家、且服务器配置开启屏幕震动时生效，避免多端各自抖动与配置越权
+        /// </summary>
+        public static void Punch(Player owner, float amount) {
+            if (owner == null || owner.whoAmI != Main.myPlayer || !CWRServerConfig.Instance.ScreenVibration) {
+                return;
+            }
+            owner.CWR().ScreenShakeValue = MathHelper.Max(owner.CWR().ScreenShakeValue, amount);
+        }
+
+        /// <summary>
+        /// 加色三角带圆环（真正的顶点绘制）。须在外部已 Begin 的 Immediate/Additive 批次中调用，
+        /// 由该批次为设备绑定精灵着色器；颜色由内/外环顶点插值，<paramref name="squash"/> 做地面透视压扁
+        /// </summary>
+        public static void DrawShockRing(Texture2D tex, Vector2 screenCenter, float radius, float thickness
+            , Color innerColor, Color outerColor, int segments = 72, float squash = 1f, float rot = 0f
+            , float jitter = 0f, float jitterPhase = 0f, float jitterFreq = 6f) {
+            if (radius <= 1f || thickness <= 0.1f || segments < 3) {
+                return;
+            }
+
+            int vertCount = (segments + 1) * 2;
+            ColoredVertex[] verts = new ColoredVertex[vertCount];
+            float half = thickness * 0.5f;
+
+            for (int i = 0; i <= segments; i++) {
+                float t = i / (float)segments;
+                float ang = t * MathHelper.TwoPi + rot;
+                Vector2 dir = ang.ToRotationVector2();
+                dir.Y *= squash;
+
+                float r = radius;
+                if (jitter > 0f) {
+                    r += (float)Math.Sin(ang * jitterFreq + jitterPhase) * jitter;
+                }
+
+                verts[i * 2] = new ColoredVertex(screenCenter + dir * (r - half), innerColor, new Vector3(t, 0f, 1f));
+                verts[i * 2 + 1] = new ColoredVertex(screenCenter + dir * (r + half), outerColor, new Vector3(t, 1f, 1f));
+            }
+
+            Main.graphics.GraphicsDevice.Textures[0] = tex;
+            Main.graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, vertCount - 2);
+        }
+
+        /// <summary>
+        /// 可复用的顶点冲击波环：随生命扩张、变薄、淡出，可压扁成贴地椭圆。
+        /// 由弹幕维护实例列表，AI 内 <see cref="Update"/>，绘制时在 Immediate/Additive 批次内 <see cref="Draw"/>。
+        /// </summary>
+        public sealed class ShockRing
+        {
+            private readonly Vector2 center;
+            private readonly float maxRadius;
+            private readonly float baseThickness;
+            private readonly Color color;
+            private readonly float squash;
+            private readonly int segments;
+            private readonly float phase;
+            private readonly float edgeFade;
+            private int life;
+            private readonly int maxLife;
+
+            public bool Dead => life >= maxLife;
+
+            public ShockRing(Vector2 center, float maxRadius, float thickness, Color color
+                , float squash = 1f, int maxLife = 26, int segments = 72, float edgeFade = 0.15f) {
+                this.center = center;
+                this.maxRadius = maxRadius;
+                baseThickness = thickness;
+                this.color = color;
+                this.squash = squash;
+                this.maxLife = maxLife;
+                this.segments = segments;
+                this.edgeFade = edgeFade;
+                phase = Main.rand.NextFloat(MathHelper.TwoPi);
+            }
+
+            public void Update() => life++;
+
+            public void Draw(Texture2D tex) {
+                float p = life / (float)maxLife;
+                float radius = VaultUtils.EaseOutCubic(p) * maxRadius;
+                float alpha = (float)Math.Sin((1f - p) * MathHelper.PiOver2);
+                float thickness = baseThickness * (1.4f - p);
+                Color inner = color * alpha;
+                inner.A = 0;
+                Color outer = color * (alpha * edgeFade);
+                outer.A = 0;
+                DrawShockRing(tex, center - Main.screenPosition, radius, thickness, inner, outer
+                    , segments, squash, 0f, radius * 0.04f, phase + life * 0.2f);
+            }
         }
     }
 }
