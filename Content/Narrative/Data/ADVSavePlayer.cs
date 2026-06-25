@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Narrative.Data
         }
 
         public override void SaveData(TagCompound tag) {
-            
+
         }
     }
 }

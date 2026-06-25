@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops;
+﻿using CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using System.Collections.Generic;
 using Terraria;
