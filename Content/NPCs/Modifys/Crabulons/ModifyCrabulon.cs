@@ -183,7 +183,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 
         public void SetFeedState() {
             npc.timeLeft = 1800;
-            npc.ModNPC.Music = -1;
+            //Boss 音乐由灾厄的 CrabulonMusicScene(ModSceneEffect)驱动，仅看 npc.type，与 npc.boss 无关；
+            //驯服后的压制改由 CrabulonMusicOverride 处理。这里不再写 npc.ModNPC.Music，避免污染共享单例
             npc.BossBar = ModContent.GetInstance<CrabulonFriendBossBar>();
             npc.boss = false;
             npc.friendly = true;
