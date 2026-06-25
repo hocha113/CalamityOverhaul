@@ -109,6 +109,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         public List<PlayerSnapshot> CloneSnapshots { get; set; } = new();
         public List<CloneShootEvent> CloneShootEvents { get; set; } = new();
         private const int MaxSnapshots = 60 * 10; //最多记录10秒（支持更长延迟）
+        /// <summary>当前齐射编号（同一帧的射击共享一个编号，供过去身轮流分配）</summary>
+        private int cloneVolleySeq = -1;
+        /// <summary>上一次记录射击事件所在帧，用于划分齐射边界</summary>
+        private int cloneLastShootFrame = -1;
         /// <summary>
         /// 克隆技能触发冷却，防止一帧多次切换
         /// </summary>
@@ -375,6 +379,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 if (CloneSnapshots.Count > 0) CloneSnapshots.Clear();
                 if (CloneShootEvents.Count > 0) CloneShootEvents.Clear();
                 CloneFrameCounter = 0;
+                cloneVolleySeq = -1;
+                cloneLastShootFrame = -1;
             }
 
             if (CloneFishToggleCD > 0) CloneFishToggleCD--;
@@ -507,8 +513,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (!CloneFishActive) {
                 return;
             }
+            //同一帧内的多发归为同一齐射，跨帧则推进齐射编号，供过去身轮流射击
+            if (CloneFrameCounter != cloneLastShootFrame) {
+                cloneVolleySeq++;
+                cloneLastShootFrame = CloneFrameCounter;
+            }
             CloneShootEvents.Add(new CloneShootEvent {
                 FrameIndex = CloneFrameCounter,
+                VolleyId = cloneVolleySeq,
                 Velocity = velocity,
                 Type = projType,
                 Damage = damage,

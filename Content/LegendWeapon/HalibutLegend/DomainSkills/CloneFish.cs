@@ -47,12 +47,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             var hp = player.GetOverride<HalibutPlayer>();
             var source = player.FromObjectGetParent();
 
-            //生成多个克隆体，每个有不同的延迟
+            //生成多个克隆体，每个有不同的延迟与轮转序号（index/count 用于轮流射击）
             int count = Math.Clamp(hp.CloneCount, 1, 10);
             for (int i = 0; i < count; i++) {
                 int delay = hp.CloneMinDelay + (i * hp.CloneInterval);
                 Projectile.NewProjectile(source, player.Center, Vector2.Zero
-                    , ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI, delay);
+                    , ModContent.ProjectileType<ClonePlayer>(), 0, 0, player.whoAmI, delay, i, count);
             }
         }
     }
@@ -86,6 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     public struct CloneShootEvent
     {
         public int FrameIndex;
+        public int VolleyId; //同一帧的所有射击共享一个齐射编号，供过去身轮流分配
         public Vector2 Position;
         public Vector2 Velocity;
         public int Type;
@@ -223,6 +224,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
         //延迟配置（通过 ai[0] 传递）
         private int replayDelay;
 
+        //轮流射击配置（通过 ai[1]/ai[2] 传递）
+        private int cloneIndex;     //本过去身在轮转中的序号
+        private int cloneCount = 1; //本批过去身总数
+        //每个齐射“同时”开火的过去身数量上限：封顶弹幕量，使其与过去身总数解耦，避免后期成倍堆叠卡顿
+        private const int MaxConcurrentShooters = 1;
+        //实际每齐射开火的过去身数量 = min(cloneCount, 上限)，初始化时算好
+        private int shootersPerVolley = 1;
+        //火力补偿系数：把“开火位装不下的那部分过去身”的火力折算进单发伤害
+        //使总DPS仍随过去身数量线性增长（如10个过去身≈10倍总输出），但弹幕量封顶
+        private float cloneDamageScale = 1f;
+
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 40;
@@ -236,10 +248,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             if (!Owner.active) { Projectile.Kill(); return; }
             var hp = Owner.GetOverride<HalibutPlayer>();
 
-            //第一帧初始化延迟
+            //第一帧初始化延迟与轮流射击参数
             if (Projectile.localAI[0] == 0f) {
                 replayDelay = (int)Projectile.ai[0];
                 if (replayDelay <= 0) replayDelay = 30; //默认最小延迟
+                cloneIndex = (int)Projectile.ai[1];
+                cloneCount = Math.Max(1, (int)Projectile.ai[2]);
+                shootersPerVolley = Math.Min(cloneCount, MaxConcurrentShooters);
+                cloneDamageScale = cloneCount / (float)shootersPerVolley;
                 Projectile.localAI[0] = 1f;
             }
 
@@ -303,6 +319,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 return;
             }
 
+            //轮流射击：同一帧的事件同属一个齐射，仅当该齐射轮到本过去身时才重放
+            //使过去身总弹幕量与过去身数量解耦，避免后期成倍堆叠导致卡顿
+            if (!IsMyVolley(events[eventIndex].VolleyId)) {
+                return;
+            }
+
             int shootNum = 1 + HalibutData.GetLevel() / 4;
             float randomRot = 0.15f;
             int oceanCurrentType = ModContent.ProjectileType<OceanCurrent>();
@@ -316,7 +338,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
                 int evShootNum = shootNum;
                 float addby = ev.Type == oceanCurrentType ? 0.25f : 0.4f;
-                int evDamage = (int)(ev.Damage * (1f + evShootNum * addby));
+                //叠加火力补偿：被轮转“省下”的过去身火力折算进单发伤害，总DPS随过去身数量线性增长
+                int evDamage = (int)(ev.Damage * (1f + evShootNum * addby) * cloneDamageScale);
                 int proj = Projectile.NewProjectile(shootState.Source
                    , shootPosition, ev.Velocity.RotatedByRandom(randomRot)
                    , ev.Type, evDamage, ev.KnockBack, Owner.whoAmI);
@@ -345,6 +368,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 }
             }
             return result;
+        }
+
+        //轮转分配：判断某个齐射是否轮到本过去身开火
+        //每个齐射固定属于 (volleyId - cloneIndex) 落在 [0, shootersPerVolley) 窗口内的过去身，随齐射递增而轮转
+        private bool IsMyVolley(int volleyId) {
+            if (cloneCount <= 1) {
+                return true; //只有一个过去身时始终开火
+            }
+            int slot = (volleyId - cloneIndex) % cloneCount;
+            if (slot < 0) {
+                slot += cloneCount;
+            }
+            return slot < shootersPerVolley;
         }
 
         private void UpdateActive(HalibutPlayer hp) {
