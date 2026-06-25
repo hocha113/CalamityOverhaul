@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
+using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -7,9 +8,26 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
 {
     internal static class SulfseaPanelDraw
     {
-        public static void DrawPanel(SpriteBatch spriteBatch, Rectangle rect, float alpha, float toxicWavePhase, float sulfurPulse, float miasmaTimer, float hoverGlow = 0f) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
+        /// <summary>硫磺海面板背景：优先 SulfseaPanel 着色器，着色器缺失时回退到 CPU 色带绘制</summary>
+        public static void DrawShaderBackground(SpriteBatch spriteBatch, Rectangle rect, float alpha, SulfseaPanelState state, float hoverGlow = 0f) {
             SkinDrawUtil.DrawPanelShadow(spriteBatch, rect, Color.Black * (alpha * 0.60f), 6, 8);
+
+            if (SulfseaShaderPanel.Available) {
+                float miasma01 = (float)Math.Sin(state.MiasmaTimer * 1.1f) * 0.5f + 0.5f;
+                float bright = MathHelper.Clamp(0.95f + hoverGlow * 0.35f, 0f, 1.4f);
+                Color tint = new(
+                    (byte)Math.Min(255, (int)(228 * bright)),
+                    (byte)Math.Min(255, (int)(236 * bright)),
+                    (byte)Math.Min(255, (int)(200 * bright)));
+                SulfseaShaderPanel.Draw(spriteBatch, rect, alpha * 0.97f, miasma01, state.ShaderTime, SulfseaPanelState.ShaderEdgePad, tint);
+            }
+            else {
+                DrawCpuBackground(spriteBatch, rect, alpha, state.ToxicWavePhase, state.SulfurPulse, state.MiasmaTimer, hoverGlow);
+            }
+        }
+
+        private static void DrawCpuBackground(SpriteBatch spriteBatch, Rectangle rect, float alpha, float toxicWavePhase, float sulfurPulse, float miasmaTimer, float hoverGlow) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             const int segments = 30;
             for (int i = 0; i < segments; i++) {
@@ -35,7 +53,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
             Rectangle inner = rect;
             inner.Inflate(-6, -6);
             spriteBatch.Draw(pixel, inner, new Rectangle(0, 0, 1, 1), new Color(80, 100, 35) * (alpha * (0.09f + hoverGlow * 0.4f) * (0.5f + pulse * 0.5f)));
-            DrawFrame(spriteBatch, rect, alpha, pulse);
         }
 
         private static void DrawToxicWaveOverlay(SpriteBatch spriteBatch, Rectangle rect, float alpha, float toxicWavePhase) {
@@ -63,12 +80,22 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
             }
         }
 
-        private static void DrawFrame(SpriteBatch spriteBatch, Rectangle rect, float alpha, float pulse) {
+        /// <summary>面板描边与四角星：着色器内边之上的清晰前景细节</summary>
+        public static void DrawFrame(SpriteBatch spriteBatch, Rectangle rect, float alpha, float pulse) {
             Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * (alpha * 0.85f);
             SkinDrawUtil.DrawRectBorder(spriteBatch, rect, edge, 2);
             Rectangle inner = rect;
             inner.Inflate(-5, -5);
             SkinDrawUtil.DrawRectBorder(spriteBatch, inner, new Color(140, 170, 70) * (alpha * 0.22f * pulse), 1);
+            Color starTint = new(160, 190, 80);
+            SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f, starTint);
+            SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f, starTint);
+            SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Bottom - 10), alpha * 0.65f, starTint);
+            SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Bottom - 10), alpha * 0.65f, starTint);
+        }
+
+        /// <summary>仅绘制四角星：对话/选项皮肤在着色器内边之上的轻量签名细节</summary>
+        public static void DrawCornerStars(SpriteBatch spriteBatch, Rectangle rect, float alpha) {
             Color starTint = new(160, 190, 80);
             SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), alpha * 0.9f, starTint);
             SkinDrawUtil.DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Y + 10), alpha * 0.9f, starTint);

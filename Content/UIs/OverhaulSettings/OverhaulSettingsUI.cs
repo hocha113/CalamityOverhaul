@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
             if (keyLeftPressState == KeyPressState.Pressed && contentFade > 0.8f) {
                 if (hoveringClose) {
                     closePressAnim = 1f;
-                    OnClose();
+                    CloseSettings();
                 }
                 else {
                     foreach (var cat in categories) {
@@ -339,12 +339,12 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
                 KeyboardState currentKeyState = Main.keyState;
                 KeyboardState previousKeyState = Main.oldKeyState;
                 if (currentKeyState.IsKeyDown(Keys.Escape) && !previousKeyState.IsKeyDown(Keys.Escape)) {
-                    OnClose();
+                    CloseSettings();
                 }
             }
         }
 
-        public void OnClose() {
+        public void CloseSettings() {
             SoundEngine.PlaySound(SoundID.MenuClose);
             Main.menuMode = 0;
             if (!closing) {

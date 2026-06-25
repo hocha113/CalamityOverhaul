@@ -43,6 +43,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         public static LocalizedText StatusRestText { get; set; }
         public static LocalizedText StatusMountText { get; set; }
         public static LocalizedText StatusFollowText { get; set; }
+        public static LocalizedText UnsaddleText { get; set; }
+        public static LocalizedText CommandHintText { get; set; }
+        public static LocalizedText ReleaseConfirmText { get; set; }
 
         public string LocalizationCategory => "NPCModifys";
 
@@ -63,6 +66,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         internal bool rightPressed;
         internal static int mountPlayerHeldProj;
         internal static Vector2 mountPlayerHeldPosOffset;
+
+        //指令环 UI 的纯本地视觉态：受击闪光与上一帧生命
+        internal int uiOldLife = -1;
+        internal float uiDamageFlash;
 
         public CrabulonPhysics Physics { get; private set; }
         public CrabulonMountSystem MountSystem { get; private set; }
@@ -86,6 +93,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
             StatusRestText = this.GetLocalization(nameof(StatusRestText), () => "[REST]");
             StatusMountText = this.GetLocalization(nameof(StatusMountText), () => "[MOUNT]");
             StatusFollowText = this.GetLocalization(nameof(StatusFollowText), () => "[FOLLOW]");
+            UnsaddleText = this.GetLocalization(nameof(UnsaddleText), () => "Unsaddle");
+            CommandHintText = this.GetLocalization(nameof(CommandHintText), () => "Command");
+            ReleaseConfirmText = this.GetLocalization(nameof(ReleaseConfirmText), () => "Click again to release");
         }
 
         public override void SetProperty() {
@@ -381,7 +391,9 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         }
 
         public override bool PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) {
-            return Renderer.PostDraw(spriteBatch, screenPos, drawColor);
+            bool result = Renderer.PostDraw(spriteBatch, screenPos, drawColor);
+            CrabulonUIs.CrabulonClusterRenderer.DrawWorldCluster(spriteBatch, this);
+            return result;
         }
     }
 }

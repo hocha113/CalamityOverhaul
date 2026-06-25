@@ -8,10 +8,13 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
 {
     internal sealed class SulfseaPanelState
     {
+        public const int ShaderEdgePad = 16;
+
         public float PanelPulse;
         public float ToxicWavePhase;
         public float SulfurPulse;
         public float MiasmaTimer;
+        public float ShaderTime;
 
         private readonly List<SeaStarPRT> _stars = [];
         private readonly List<BubblePRT> _bubbles = [];
@@ -27,6 +30,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
             ToxicWavePhase = SkinAnimUtil.WrapTimer(ToxicWavePhase, 0.022f);
             SulfurPulse = SkinAnimUtil.WrapTimer(SulfurPulse, 0.015f);
             MiasmaTimer = SkinAnimUtil.WrapTimer(MiasmaTimer, 0.032f);
+            ShaderTime = SkinAnimUtil.AdvanceShaderTime(ShaderTime);
 
             if (!active) {
                 return;
@@ -88,6 +92,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
             ToxicWavePhase = 0f;
             SulfurPulse = 0f;
             MiasmaTimer = 0f;
+            ShaderTime = 0f;
             _stars.Clear();
             _bubbles.Clear();
             _ashes.Clear();

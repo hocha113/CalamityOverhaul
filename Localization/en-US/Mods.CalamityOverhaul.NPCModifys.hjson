@@ -13,6 +13,9 @@ ModifyCrabulon: {
 	StatusRestText: "[REST]"
 	StatusMountText: "[MOUNT]"
 	StatusFollowText: "[FOLLOW]"
+	UnsaddleText: Unsaddle
+	CommandHintText: Command
+	ReleaseConfirmText: Click again to release
 }
 
 ModifyTruffle: {

@@ -13,6 +13,9 @@
 	StatusRestText: "[待机]"
 	StatusMountText: "[骑乘]"
 	StatusFollowText: "[跟随]"
+	UnsaddleText: 卸下鞍具
+	CommandHintText: 指令
+	ReleaseConfirmText: 再次点击以放生
 }
 
 ModifyTruffle: {

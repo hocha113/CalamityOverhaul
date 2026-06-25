@@ -13,6 +13,9 @@ ModifyCrabulon: {
 	StatusRestText: "[DESCANSO]"
 	StatusMountText: "[MONTADO]"
 	StatusFollowText: "[SIGUIENDO]"
+	UnsaddleText: Quitar silla
+	CommandHintText: Orden
+	ReleaseConfirmText: Clic de nuevo para soltar
 }
 
 ModifyTruffle: {

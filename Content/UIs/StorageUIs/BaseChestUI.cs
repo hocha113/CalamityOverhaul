@@ -12,12 +12,8 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
     /// </summary>
     internal abstract class BaseChestUI : UIHandle, ILocalizedModType, IChestStorage
     {
-        //UI状态
-        private bool _active;
-        public override bool Active {
-            get => _active || Animation.UIAlpha > 0f;
-            set => _active = value;
-        }
+        //UI开关状态由基类生命周期 IsOpen 驱动；淡出动画期间(UIAlpha>0)仍保持 Active 以播放收尾动画
+        public override bool Active => IsOpen || Animation.UIAlpha > 0f;
 
         public abstract string LocalizationCategory { get; }
 
@@ -44,11 +40,15 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
         /// <summary>验证关联的机器/箱子是否仍然有效</summary>
         protected abstract bool ValidateSource();
 
-        /// <summary>当UI关闭时的回调</summary>
-        protected abstract void OnClose();
+        /// <summary>当UI关闭时的回调，接入基类 <see cref="UIHandle.Close"/> 生命周期</summary>
+        protected abstract override void OnClose();
 
         /// <summary>获取关闭音效</summary>
         protected abstract SoundStyle GetCloseSound();
+
+        //接入基类生命周期：关闭音效与 ESC 关闭交由基类统一处理
+        public override SoundStyle? CloseSound => GetCloseSound();
+        public override bool CloseOnEscape => true;
 
         /// <summary>获取存储区域起始偏移</summary>
         protected abstract Vector2 GetStorageStartOffset();
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
         //--- 通用Update逻辑 ---
 
         public override void Update() {
-            Animation.UpdateUIAnimation(_active);
+            Animation.UpdateUIAnimation(IsOpen);
 
             if (Animation.UIAlpha <= 0f) {
                 CleanupEffects();
@@ -76,7 +76,7 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             }
 
             if (!ValidateSource()) {
-                _active = false;
+                Close();
                 return;
             }
 
@@ -84,9 +84,9 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
 
             Vector2 panelPosition = Renderer.CalculatePanelPosition();
 
-            Effects.UpdateParticles(_active, panelPosition, PanelWidth, PanelHeight);
+            Effects.UpdateParticles(IsOpen, panelPosition, PanelWidth, PanelHeight);
 
-            if (_active && Animation.PanelSlideProgress > 0.9f) {
+            if (IsOpen && Animation.PanelSlideProgress > 0.9f) {
                 UpdateInteraction(panelPosition);
             }
 
@@ -126,17 +126,6 @@ namespace CalamityOverhaul.Content.UIs.StorageUIs
             else if (keyLeftPressState == KeyPressState.Pressed && Animation.UIAlpha >= 1f && !player.mouseInterface) {
                 Close();
             }
-
-            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
-                Close();
-            }
-        }
-
-        /// <summary>关闭UI并播放关闭音效</summary>
-        protected void Close() {
-            _active = false;
-            OnClose();
-            SoundEngine.PlaySound(GetCloseSound());
         }
 
         private void CleanupEffects() {

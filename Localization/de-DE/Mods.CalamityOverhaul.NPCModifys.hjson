@@ -13,6 +13,9 @@ ModifyCrabulon: {
 	StatusRestText: "[RUHE]"
 	StatusMountText: "[REITEN]"
 	StatusFollowText: "[FOLGEN]"
+	UnsaddleText: Sattel abnehmen
+	CommandHintText: Befehl
+	ReleaseConfirmText: Erneut klicken zum Freilassen
 }
 
 ModifyTruffle: {

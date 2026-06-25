@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> TwinsDeathRayBeam { get; set; }
         public static Asset<Effect> TwinsChargeVortex { get; set; }
         public static Asset<Effect> MechSky { get; set; }
+        public static Asset<Effect> SulfurSeaSky { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
@@ -115,6 +116,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> GatlinImpactBurst { get; set; }
         public static Asset<Effect> BrimstoneDialogueBox { get; set; }
         public static Asset<Effect> SeaDialogueBox { get; set; }
+        public static Asset<Effect> SulfseaPanel { get; set; }
         public static Asset<Effect> EntrustGuideCard { get; set; }
         public static Asset<Effect> MurasamaPhantomPanel { get; set; }
         public static Asset<Effect> CybCourseSky { get; set; }

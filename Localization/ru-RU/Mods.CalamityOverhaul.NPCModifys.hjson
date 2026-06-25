@@ -13,6 +13,9 @@
 	StatusRestText: "[ОЖИДАНИЕ]"
 	StatusMountText: "[ВЕРХОМ]"
 	StatusFollowText: "[СЛЕДОВАНИЕ]"
+	UnsaddleText: Снять седло
+	CommandHintText: Команда
+	ReleaseConfirmText: Нажмите снова, чтобы отпустить
 }
 
 ModifyTruffle: {

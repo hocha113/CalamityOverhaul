@@ -21,8 +21,11 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
 
         public override void Reset() => _state.Reset();
 
-        public override void DrawPanel(SpriteBatch spriteBatch, ChoiceLayoutContext context)
-            => SulfseaPanelDraw.DrawPanel(spriteBatch, context.PanelRect, context.Alpha, _state.ToxicWavePhase, _state.SulfurPulse, _state.MiasmaTimer);
+        public override void DrawPanel(SpriteBatch spriteBatch, ChoiceLayoutContext context) {
+            SulfseaPanelDraw.DrawShaderBackground(spriteBatch, context.PanelRect, context.Alpha, _state);
+            float pulse = (float)Math.Sin(_state.SulfurPulse * 2.2f) * 0.5f + 0.5f;
+            SulfseaPanelDraw.DrawFrame(spriteBatch, context.PanelRect, context.Alpha, pulse);
+        }
 
         public override void DrawBackgroundDecorations(SpriteBatch spriteBatch, ChoiceLayoutContext context)
             => _state.DrawForeground(spriteBatch, context.Alpha);

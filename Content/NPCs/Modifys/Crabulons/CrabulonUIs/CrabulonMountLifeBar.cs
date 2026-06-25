@@ -12,7 +12,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
 {
     internal class CrabulonMountLifeBar : UIHandle
     {
-        public bool Open {
+        //该 HUD 由坐骑状态驱动，不走基类 Open()/Close() 生命周期，故用独立名称避免隐藏基类的 Open()
+        private bool ShouldShow {
             get {
                 if (!player.TryGetOverride<CrabulonPlayer>(out var crabulonPlayer)) {
                     return false;
@@ -30,7 +31,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         public const int crabulonLiveCount = 20;
         public const int crabulonLiveColumn = 2;
         public const int crabulonLiveLine = crabulonLiveCount / crabulonLiveColumn;
-        public override bool Active => Open || sengs > 0f;
+        public override bool Active => ShouldShow || sengs > 0f;
         private float sengs;
         private NPC npc;
         private int oldLife = -1;
@@ -44,7 +45,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         }
 
         public override void Update() {
-            if (!Open) {
+            if (!ShouldShow) {
                 if (sengs > 0f) {
                     sengs -= 0.1f;
                 }

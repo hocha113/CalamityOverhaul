@@ -13,6 +13,9 @@ ModifyCrabulon: {
 	StatusRestText: "[EN ATTENTE]"
 	StatusMountText: "[MONTE]"
 	StatusFollowText: "[SUIT]"
+	UnsaddleText: Retirer la selle
+	CommandHintText: Commande
+	ReleaseConfirmText: Cliquer à nouveau pour relâcher
 }
 
 ModifyTruffle: {

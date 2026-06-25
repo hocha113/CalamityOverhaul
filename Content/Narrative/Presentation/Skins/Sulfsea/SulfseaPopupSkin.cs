@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
         }
 
         public override void DrawPanel(SpriteBatch spriteBatch, PopupLayoutContext context)
-            => SulfseaPanelDraw.DrawPanel(spriteBatch, context.PanelRect, context.Alpha, _state.ToxicWavePhase, _state.SulfurPulse, _state.MiasmaTimer, _hoverGlow);
+            => SulfseaPanelDraw.DrawShaderBackground(spriteBatch, context.PanelRect, context.Alpha, _state, _hoverGlow);
 
         public override void DrawFrame(SpriteBatch spriteBatch, PopupLayoutContext context) {
             Color starTint = new(160, 190, 80);

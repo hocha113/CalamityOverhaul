@@ -13,6 +13,9 @@ ModifyCrabulon: {
 	StatusRestText: "[DESCANSAR]"
 	StatusMountText: "[MONTAR]"
 	StatusFollowText: "[SEGUIR]"
+	UnsaddleText: Remover Sela
+	CommandHintText: Comando
+	ReleaseConfirmText: Clique novamente para soltar
 }
 
 ModifyTruffle: {

@@ -16,12 +16,16 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea
         public override Color HintColor => new(160, 190, 80);
         public override Color SilhouetteColor => new Color(20, 30, 15) * 0.85f;
 
+        public override float TextWrapInset => SulfseaPanelState.ShaderEdgePad;
+
         public override void Update(DialogueLayoutContext context) => _state.Update(context.PanelRect, context.Alpha > 0.01f);
 
         public override void Reset() => _state.Reset();
 
-        public override void DrawBackground(SpriteBatch spriteBatch, DialogueLayoutContext context)
-            => SulfseaPanelDraw.DrawPanel(spriteBatch, context.PanelRect, context.Alpha, _state.ToxicWavePhase, _state.SulfurPulse, _state.MiasmaTimer);
+        public override void DrawBackground(SpriteBatch spriteBatch, DialogueLayoutContext context) {
+            SulfseaPanelDraw.DrawShaderBackground(spriteBatch, context.PanelRect, context.Alpha, _state);
+            SulfseaPanelDraw.DrawCornerStars(spriteBatch, context.PanelRect, context.Alpha * 0.9f);
+        }
 
         public override void DrawBackgroundDecorations(SpriteBatch spriteBatch, DialogueLayoutContext context)
             => _state.DrawForeground(spriteBatch, context.Alpha);

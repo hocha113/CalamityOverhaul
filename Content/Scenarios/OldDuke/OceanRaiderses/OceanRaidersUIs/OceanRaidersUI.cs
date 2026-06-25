@@ -98,7 +98,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
 
             if (currentMachine != machine) {
                 currentMachine = machine;
-                Active = true;
 
                 if (Interaction == null || _renderer == null) {
                     InitInteraction();
@@ -107,12 +106,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaiders
                 else {
                     _renderer.UpdateMachine(machine);
                 }
+
+                Open();
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
+            }
+            else if (IsOpen) {
+                //关闭交由基类生命周期播放 GetCloseSound
+                Close();
             }
             else {
-                Active = !Active;
+                Open();
+                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
             }
-
-            SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
         }
 
         //--- BaseChestUI 抽象方法实现 ---

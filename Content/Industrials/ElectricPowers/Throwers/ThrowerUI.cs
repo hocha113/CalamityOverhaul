@@ -36,11 +36,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         private int dataParticleTimer;
 
         public static ThrowerUI Instance => UIHandleLoader.GetUIHandleOfType<ThrowerUI>();
-        public bool Open;
-        public override bool Active => Open || uiFadeAlpha > 0;
 
-        //UI淡入淡出
-        private float uiFadeAlpha;
+        //淡入淡出进度由基类 OpenProgress 驱动，Active 沿用基类默认实现(IsOpen || OpenProgress > 0)
+        private float uiFadeAlpha => OpenProgress.Current;
 
         //拖拽功能
         private bool isDragging;
@@ -126,31 +124,23 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         public void Initialize(ThrowerTP throwerTP) {
             if (Station != throwerTP) {
                 Station = throwerTP;
-                Open = true;
                 DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
+                Open();
             }
             else {
-                Open = !Open;
+                Toggle();
             }
         }
 
         public override void Update() {
-            //淡入淡出
-            if (Open) {
-                uiFadeAlpha = Math.Min(1f, uiFadeAlpha + 0.12f);
-            }
-            else {
-                uiFadeAlpha = Math.Max(0f, uiFadeAlpha - 0.12f);
-            }
-
             if (uiFadeAlpha < 0.01f) {
                 return;
             }
 
             //检查有效性
-            if (Open && (Station == null || !Station.Active || Station.PosInWorld.To(player.Center).Length() > 200)) {
-                Open = false;
+            if (IsOpen && (Station == null || !Station.Active || Station.PosInWorld.To(player.Center).Length() > 200)) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.3f, Volume = 0.5f });
+                Close();
                 return;
             }
 

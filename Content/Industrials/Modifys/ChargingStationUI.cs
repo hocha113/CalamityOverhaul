@@ -36,11 +36,9 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
 
         public static ChargingStationUI Instance => UIHandleLoader.GetUIHandleOfType<ChargingStationUI>();
         public bool ids;
-        public bool Open;
-        public override bool Active => Open || uiFadeAlpha > 0;
 
-        //UI淡入淡出
-        private float uiFadeAlpha = 0f;
+        //淡入淡出进度由基类 OpenProgress 驱动，Active 沿用基类默认实现(IsOpen || OpenProgress > 0)
+        private float uiFadeAlpha => OpenProgress.Current;
 
         //拖拽功能
         private bool isDragging = false;
@@ -98,34 +96,24 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
         public void Initialize(ChargingStationTP chargingStation) {
             if (station != chargingStation) {
                 station = chargingStation;
-                Open = true;
+                Open();
             }
             else {
-                Open = !Open;
+                Toggle();
             }
 
             ids = true;
         }
 
         public override void Update() {
-            if (Open) {
-                if (uiFadeAlpha < 1f) {
-                    uiFadeAlpha += 0.1f;
-                }
-            }
-            else {
-                if (uiFadeAlpha > 0f) {
-                    uiFadeAlpha -= 0.1f;
-                }
-            }
             if (ids) {
                 ids = false;
                 DrawPosition = new Vector2(Main.screenWidth / 2, Main.screenHeight / 4f);
             }
 
-            if (Open && (station == null || !station.Active || station.PosInWorld.To(player.Center).Length() > 160)) {
-                Open = false;
+            if (IsOpen && (station == null || !station.Active || station.PosInWorld.To(player.Center).Length() > 160)) {
                 SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f, Volume = 0.6f });
+                Close();
                 return;
             }
 

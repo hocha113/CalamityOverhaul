@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
 
                 CurrentChest = chest;
                 chestPosition = chest.Position;
-                Active = true;
+                Open();
 
                 if (Interaction == null || _renderer == null) {
                     InitInteraction();
@@ -98,11 +98,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
                 SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f, Pitch = chest.isUnderwater ? -0.4f : 0 });
             }
             else {
-                if (Active) {
+                if (IsOpen) {
                     Close();
                 }
                 else {
-                    Active = true;
+                    Open();
                     chest.OpenUI(player);
                     SoundEngine.PlaySound(CWRSound.OldDuchestOpen with { Volume = 0.4f, Pitch = chest.isUnderwater ? -0.4f : 0 });
                 }
@@ -126,9 +126,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDuchests.OldDuchestUIs
         }
 
         //--- BaseChestUI 抽象方法实现 ---
-
-        /// <summary>外部关闭UI（供TP调用）</summary>
-        public new void Close() => base.Close();
 
         protected override bool ValidateSource() {
             if (CurrentChest == null) return false;
