@@ -74,27 +74,34 @@ namespace CalamityOverhaul.Content.Narrative.Data
         }
 
         private static bool ImportRoot(TagCompound root, DataModuleStore store) {
-            if (IsSectionedFormat(root)) {
-                //v2：每个模块从各自的子标签读取，天然无字段名冲突
-                bool imported = false;
-                foreach (LegacyModuleMap map in ModuleMaps) {
-                    if (root.TryGet<TagCompound>(map.LegacyKey, out TagCompound moduleTag)) {
-                        map.Load(moduleTag, store);
-                        imported = true;
+            bool sectioned = IsSectionedFormat(root);
+            bool imported = false;
+
+            foreach (LegacyModuleMap map in ModuleMaps) {
+                //v2：各模块从自己的子标签读取（无字段名冲突）；v0/v1：字段全局唯一，按探针存在性从扁平根读取
+                TagCompound moduleTag;
+                if (sectioned) {
+                    if (!root.TryGet(map.LegacyKey, out moduleTag)) {
+                        continue;
                     }
                 }
-                return imported;
-            }
+                else if (map.FlatProbeKey != null && root.ContainsKey(map.FlatProbeKey)) {
+                    moduleTag = root;
+                }
+                else {
+                    continue;
+                }
 
-            //v0/v1：字段全局唯一并直接位于根标签，仅在探针字段存在时把该模块从扁平根读取
-            bool flatImported = false;
-            foreach (LegacyModuleMap map in ModuleMaps) {
-                if (map.FlatProbeKey != null && root.ContainsKey(map.FlatProbeKey)) {
-                    map.Load(root, store);
-                    flatImported = true;
+                //逐模块隔离异常：单个模块字段异常（如历史类型不匹配）不应中断其余模块的迁移，更不应抛回读档流程
+                try {
+                    map.Load(moduleTag, store);
+                    imported = true;
+                } catch (Exception ex) {
+                    CWRMod.Instance.Logger.Error($"Legacy ADV migration: module '{map.LegacyKey}' skipped due to load error.", ex);
                 }
             }
-            return flatImported;
+
+            return imported;
         }
 
         /// <summary>是否为 v2 分模块格式（存在任一旧 SaveKey 对应的子标签）</summary>
