@@ -116,7 +116,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         }
 
         private void UpdateFocus(ModifyCrabulon hovered, ModifyCrabulon nearest) {
-            ModifyCrabulon desired = hovered ?? nearest;
+            //开环期间焦点锁定在该蟹，避免多蟹相邻时悬停另一只导致绘制与命中错位
+            ModifyCrabulon desired = WheelOpen ? wheelTarget : (hovered ?? nearest);
             if (desired != null && !desired.Mount) {
                 Focus = desired;
             }
@@ -160,7 +161,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             }
 
             Vector2 buttonWorld = CrabulonClusterRenderer.ButtonWorld(Focus, Time, WheelProgress);
-            bool overButton = ButtonAppear > 0.4f && (Main.MouseWorld - buttonWorld).Length() < 13f;
+            bool overButton = ButtonAppear > 0.4f
+                && (Main.MouseWorld - buttonWorld).Length() < CrabulonClusterRenderer.ButtonHitRadius;
             ButtonHover = MathHelper.Lerp(ButtonHover, overButton ? 1f : 0f, 0.2f);
 
             //指令环命中与悬停
@@ -279,12 +281,16 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             lastHover = -1;
             ReleaseArmed = false;
             WheelOpen = true;
+            target.uiCommandOpen = true;//开环期间屏蔽右键上马
             SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.4f, Pitch = 0.25f }, target.npc.Center);
         }
 
         private void CloseWheel(bool silent) {
             if (WheelOpen && !silent) {
                 SoundEngine.PlaySound(SoundID.MenuClose with { Volume = 0.35f, Pitch = -0.1f });
+            }
+            if (wheelTarget != null) {
+                wheelTarget.uiCommandOpen = false;
             }
             WheelOpen = false;
             HoveredCommand = -1;
@@ -436,6 +442,10 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
         internal static readonly Color Danger = new(255, 95, 95);
         internal static readonly Color Warm = new(255, 205, 120);
         internal static readonly Color TextCol = new(200, 245, 235);
+
+        //展开键基础缩放与点击半径，二者同源以保证视觉与命中一致
+        internal const float ButtonBaseScale = 2f;
+        internal const float ButtonHitRadius = 5.2f * ButtonBaseScale + 6f;
 
         public static float BodyRadius(NPC npc) => MathHelper.Clamp(MathF.Max(npc.width, npc.height) * 0.5f, 40f, 90f);
 
@@ -608,7 +618,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons.CrabulonUIs
             Vector2 pos = ButtonWorld(m, time, wheel) - Main.screenPosition;
             float hover = ctrl.ButtonHover;
             float pulse = 0.6f + 0.4f * MathF.Sin(time * 3f);
-            float scale = 2f + hover * 0.4f;
+            float scale = ButtonBaseScale + hover * 0.4f;
             Color accent = Color.Lerp(Cyan, Glow, hover);
 
             HalibutRenderer.DrawSoftGlow(sb, pos, 11f * scale, (accent with { A = 0 }) * (appear * (0.35f + pulse * 0.3f)));

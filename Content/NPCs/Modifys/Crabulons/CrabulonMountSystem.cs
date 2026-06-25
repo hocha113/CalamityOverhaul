@@ -97,6 +97,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
                 && owner.SaddleItem.Alives()
                 && owner.DontMount <= 0
                 && !owner.MountACrabulon
+                && !owner.uiCommandOpen//开着指令环时右键用于取消，不上马
                 && owner.hoverNPC
                 && owner.rightPressed;
         }

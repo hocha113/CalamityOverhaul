@@ -70,6 +70,8 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         //指令环 UI 的纯本地视觉态：受击闪光与上一帧生命
         internal int uiOldLife = -1;
         internal float uiDamageFlash;
+        //指令环开启时占位，供骑乘逻辑跳过右键上马，避免“开环右键取消”被读成上马
+        internal bool uiCommandOpen;
 
         public CrabulonPhysics Physics { get; private set; }
         public CrabulonMountSystem MountSystem { get; private set; }
