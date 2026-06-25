@@ -73,7 +73,7 @@ DraedonShopUI: {
 	TitleText: DRAEDON.EXCHANGE
 	FundsLabelText: БАЛАНС
 	BuyActionText: КУПИТЬ
-	HintText: [ЛКМ] Купить · Удерживайте для повтора · [ESC] Закрыть
+	HintText: "[ЛКМ] Купить · Удерживайте для повтора · [ESC] Закрыть"
 	EmptyText: Нет товаров для обмена
 }
 

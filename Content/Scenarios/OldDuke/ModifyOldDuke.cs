@@ -253,7 +253,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             Vector2 targetPos = target.Center + new Vector2(0, -300);
             Vector2 toTarget = npc.Center.To(targetPos);
 
-            const float speed = 8f;
+            const float speed = 25f;
             const float inertia = 20f;
             npc.velocity = (npc.velocity * (inertia - 1f) + toTarget.SafeNormalize(Vector2.Zero) * speed) / inertia;
 

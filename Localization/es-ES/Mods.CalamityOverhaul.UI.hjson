@@ -73,7 +73,7 @@ DraedonShopUI: {
 	TitleText: DRAEDON.EXCHANGE
 	FundsLabelText: SALDO
 	BuyActionText: COMPRAR
-	HintText: [Clic izq.] Comprar · Mantén para repetir · [ESC] Cerrar
+	HintText: "[Clic izq.] Comprar · Mantén para repetir · [ESC] Cerrar"
 	EmptyText: No hay artículos disponibles para intercambiar
 }
 

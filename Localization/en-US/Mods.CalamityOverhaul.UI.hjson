@@ -74,7 +74,7 @@ DraedonShopUI: {
 	TitleText: DRAEDON.EXCHANGE
 	FundsLabelText: BALANCE
 	BuyActionText: BUY
-	HintText: [LMB] Buy · Hold to repeat · [ESC] Close
+	HintText: "[LMB] Buy · Hold to repeat · [ESC] Close"
 	EmptyText: No goods available for exchange
 }
 

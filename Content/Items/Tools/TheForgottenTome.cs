@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (player.CountProjectilesOfID<ForgottenTomeEffect>() > 0) {
                 return false;
             }
-            return EbnState.OnEbn(player) || CWRRef.GetDownedCalamitas();
+            return true;
         }
 
         internal static int ResetAllADVData(Player owner) {

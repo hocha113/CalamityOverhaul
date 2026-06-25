@@ -73,7 +73,7 @@ DraedonShopUI: {
 	TitleText: DRAEDON.EXCHANGE
 	FundsLabelText: GUTHABEN
 	BuyActionText: KAUFEN
-	HintText: [Linksklick] Kaufen · Halten für Wiederholung · [ESC] Schließen
+	HintText: "[Linksklick] Kaufen · Halten für Wiederholung · [ESC] Schließen"
 	EmptyText: Keine Waren zum Austausch verfügbar
 }
 
