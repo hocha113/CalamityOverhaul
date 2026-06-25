@@ -7,6 +7,7 @@ using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.RAMSystems;
 using CalamityOverhaul.Content.Scenarios.Shepel;
+using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -20,7 +21,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 {
     /// <summary>SHPC HUD 主入口，左下扇形按钮，手持 SHPC 时显示</summary>
-    internal class SHPCUI : UIHandle, ILocalizedModType
+    internal class SHPCUI : UIHandle, ILocalizedModType, IBottomLeftHud
     {
         public string LocalizationCategory => "UI";
         public static SHPCUI Instance => UIHandleLoader.GetUIHandleOfType<SHPCUI>();
@@ -197,6 +198,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
             }
         }
 
+        #endregion
+
+        #region 左下角 HUD 队列接入
+        //SHPC 是主武器 HUD，作为左下角队列底部成员；手持 SHPC 时本就独占左下角，避让量恒为 0
+        bool IBottomLeftHud.HudStackActive => Active;
+        int IBottomLeftHud.HudStackOrder => 0;
+        Vector2 IBottomLeftHud.HudStackAnchor => NaturalCorePosition;
+        //自核心向上覆盖扇形按钮与固定面板，向下覆盖 RAM 弧条
+        float IBottomLeftHud.HudStackTopExtent => 104f;
+        float IBottomLeftHud.HudStackBottomExtent => 60f;
         #endregion
 
         //供 SHPCModPanel 调用：打开三级模块选择面板
@@ -396,8 +407,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
 
         #region 工具
 
-        //取得核心位置
-        private static Vector2 GetCorePosition() => new(96f, Main.screenHeight - 96f);
+        //自然核心位置（未经队列避让的原始位置）
+        private static Vector2 NaturalCorePosition => new(96f, Main.screenHeight - 96f);
+
+        //取得核心位置（经左下角 HUD 队列避让；SHPC 始终独占，避让量恒为 0，等价于自然位置）
+        private static Vector2 GetCorePosition() {
+            SHPCUI inst = Instance;
+            return inst == null ? NaturalCorePosition : BottomLeftHudStack.ResolveAnchor(inst);
+        }
 
         //单按钮的角度区间
         private static void GetSectorAngles(int idx, int count, out float aStart, out float aEnd) {

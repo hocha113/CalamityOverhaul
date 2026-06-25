@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.QuestLogs;
 using CalamityOverhaul.Content.RAMSystems;
+using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -14,7 +15,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
     /// CSTM 视像义眼 HUD，左下 RAM 弧条+义眼核心
     /// <br/>装备且未持 SHPC 时显示；复用 SHPCRenderer.DrawRAMBar
     /// </summary>
-    internal class CstmVisualEyeHUD : UIHandle
+    internal class CstmVisualEyeHUD : UIHandle, IBottomLeftHud
     {
         public static CstmVisualEyeHUD Instance => UIHandleLoader.GetUIHandleOfType<CstmVisualEyeHUD>();
 
@@ -46,6 +47,16 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
             }
         }
 
+        #endregion
+
+        #region 左下角 HUD 队列接入
+        //义眼 RAM 读数为被动小 HUD，置于队列上层：与比目鱼等主武器 HUD 同屏时自动上移悬浮避让
+        bool IBottomLeftHud.HudStackActive => Active;
+        int IBottomLeftHud.HudStackOrder => 10;
+        Vector2 IBottomLeftHud.HudStackAnchor => NaturalCorePosition;
+        //自核心向上覆盖 RAM 弧条与数值标签，向下覆盖义眼核心与弧条下沿
+        float IBottomLeftHud.HudStackTopExtent => 66f;
+        float IBottomLeftHud.HudStackBottomExtent => 34f;
         #endregion
 
         #region 状态
@@ -90,8 +101,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
                 ramDisplayValue, RamSystem.MaxRam, time, globalAlpha);
         }
 
-        /// <summary>与 SHPCUI 一致的核心位置</summary>
-        private static Vector2 GetCorePosition() => new(96f, Main.screenHeight - 96f);
+        //自然核心位置（与 SHPCUI 一致；改用 UI 空间高度以修正高 UIScale 下的漂移）
+        private static Vector2 NaturalCorePosition => new(96f, BottomLeftHudStack.UIScreenH - 96f);
+
+        /// <summary>核心位置，经左下角 HUD 队列避让：与比目鱼等底部 HUD 同屏时自动上移悬浮</summary>
+        private static Vector2 GetCorePosition() {
+            CstmVisualEyeHUD inst = Instance;
+            return inst == null ? NaturalCorePosition : BottomLeftHudStack.ResolveAnchor(inst);
+        }
 
         /// <summary>程序化义眼核心：外环+巩膜+虹膜+竖瞳+扫描线</summary>
         private static void DrawEyeCore(SpriteBatch sb, Texture2D px, Vector2 center,

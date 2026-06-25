@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas;
+using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,7 +19,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
     /// 外围：技能徽章、层数弧、领域冷却环、研究进度弧
     /// </summary>
     [VaultLoaden(CWRConstant.UI + "FishSkill")]
-    internal class HalibutHud : UIHandle, ILocalizedModType
+    internal class HalibutHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
         public string LocalizationCategory => "Legend.HalibutText";
         public static HalibutHud Instance => UIHandleLoader.GetUIHandleOfType<HalibutHud>();
@@ -84,6 +85,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
             }
         }
 
+        #region 左下角 HUD 队列接入
+        //比目鱼是主武器 HUD，作为左下角队列的底部锚定成员（次序最小，独占时不被顶高）
+        bool IBottomLeftHud.HudStackActive => Active;
+        int IBottomLeftHud.HudStackOrder => 0;
+        Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
+        //自眼心向上覆盖卫星环/层数弧/压力柱顶，向下覆盖技能徽章与命中盒底部
+        float IBottomLeftHud.HudStackTopExtent => 90f;
+        float IBottomLeftHud.HudStackBottomExtent => 70f;
+        #endregion
+
         #region 几何常量
         //眼睛着色器quad边长与可视半径
         private const int EyeQuadSize = 96;
@@ -124,10 +135,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private int hoverSatellite = -1;
 
         /// <summary>
-        /// HUD锚点（深渊之眼圆心），基于UI空间屏幕尺寸，不受缩放语境影响
+        /// HUD自然锚点（深渊之眼圆心），基于UI空间屏幕尺寸，不受缩放语境影响。
+        /// 这是未参与左下角队列避让时的原始位置
         /// </summary>
-        public static Vector2 Anchor => new(HalibutTheme.HudAnchorOffset.X,
+        public static Vector2 NaturalAnchor => new(HalibutTheme.HudAnchorOffset.X,
             HalibutTheme.UIScreenH + HalibutTheme.HudAnchorOffset.Y);
+
+        /// <summary>
+        /// HUD锚点（深渊之眼圆心），经左下角 HUD 队列避让后的最终位置。
+        /// 比目鱼为队列底部成员，独占时与 <see cref="NaturalAnchor"/> 一致；绘制与命中盒统一使用本属性
+        /// </summary>
+        public static Vector2 Anchor {
+            get {
+                HalibutHud inst = Instance;
+                return inst == null ? NaturalAnchor : BottomLeftHudStack.ResolveAnchor(inst);
+            }
+        }
 
         /// <summary>
         /// 复苏压力柱中心
