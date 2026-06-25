@@ -142,7 +142,10 @@ namespace CalamityOverhaul.Content.LegendWeapon
                 tag["LegendData:TrustedWorlds"] = TrustedWorldFullNames;
             }
             if (TrialDefinitions != null) {
-                SyncTrialProgressFromWorld();
+                //只落已确认进度：仅刷新 schema/路线签名，绝不在存档时吞并当前世界击杀，
+                //否则把武器带进高进度世界存一次档就永久升级，跨世界确认失效
+                TrialSchemaVersion = CurrentTrialSchemaVersion;
+                TrialRouteSignature = LegendTrialRouteResolver.GetRouteSignature(TrialDefinitions);
                 tag["LegendData:TrialSchemaVersion"] = TrialSchemaVersion;
                 if (!string.IsNullOrEmpty(TrialRouteSignature)) {
                     tag["LegendData:TrialRouteSignature"] = TrialRouteSignature;
@@ -282,7 +285,9 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         /// <summary>仍待升级</summary>
         public bool NeedUpgrade() {
-            SyncTrialProgressFromWorld();
+            //此处不写盘：TargetLevel 已实时 OR 当前世界击杀，足够判定；
+            //若在只读查询里 SyncTrialProgressFromWorld，会把当前世界进度永久并入
+            //CompletedTrialKeys，导致跨世界确认弹窗形同虚设(回到本世界后静默升级)
             //本会话已跳过
             if (!string.IsNullOrEmpty(SkipUpgradeWorldFullName) && SkipUpgradeWorldFullName == SaveWorld.WorldFullName) {
                 return false;

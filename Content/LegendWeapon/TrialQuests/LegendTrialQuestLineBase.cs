@@ -42,10 +42,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             }
 
             bool allowCreate = CanCreateEntries(Main.LocalPlayer);
-            //完成状态以"挂在该武器上的版本化进度"为准(记住做过的试炼、跨世界不回退)，
-            //无对应物品时退回世界Boss状态，与工具提示等级同源
+            //完成状态 = 已确认的版本化进度 ∪ 当前世界实时击杀，且只读不写盘：
+            //在此 SyncTrialProgressFromWorld 会把当前世界进度永久并入武器，令跨世界升级确认失效；
+            //已确认进度的落盘只在 PerformUpgrade 时发生。无对应物品时退回世界Boss状态
             LegendData data = GetLegendData(Main.LocalPlayer);
-            data?.SyncTrialProgressFromWorld();
             Func<LegendTrialDefinition, bool> isCompleted = BuildCompletionCheck(data);
 
             IReadOnlyList<LegendTrialDefinition> availableTrials = LegendTrialRouteResolver.GetAvailableTrials(Trials);

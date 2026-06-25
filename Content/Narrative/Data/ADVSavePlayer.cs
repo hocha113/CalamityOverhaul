@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -27,6 +27,10 @@ namespace CalamityOverhaul.Content.Narrative.Data
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error("ADVSavePlayer legacy migration failed", ex);
             }
+        }
+
+        public override void SaveData(TagCompound tag) {
+            
         }
     }
 }
