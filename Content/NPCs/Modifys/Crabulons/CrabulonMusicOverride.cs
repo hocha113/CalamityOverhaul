@@ -1,4 +1,4 @@
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
