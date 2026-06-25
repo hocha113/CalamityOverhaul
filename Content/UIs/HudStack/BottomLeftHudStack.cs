@@ -6,18 +6,18 @@ using Terraria.GameInput;
 namespace CalamityOverhaul.Content.UIs.HudStack
 {
     /// <summary>
-    /// 左下角 HUD 堆叠管理器（“HUD 队列”）。各左下角常驻 HUD 实现 <see cref="IBottomLeftHud"/>，
-    /// 并在定位时调用 <see cref="ResolveAnchor"/> 取锚点；本管理器每帧收集所有想显示的成员，
-    /// 按 <see cref="IBottomLeftHud.HudStackOrder"/> 自下而上排布：最底部成员保持原位，其上方成员被平滑
-    /// 顶高，刚好让出下方成员的占用高度，从而避免重叠。
-    /// <br/>典型场景：手持比目鱼时 <c>HalibutHud</c> 占据底部，义眼 <c>CstmVisualEyeHUD</c> 自动上移悬浮其上。
-    /// <br/>成员无需互相感知；只要实现接口并改用本类取锚点，新增 HUD 即自动纳入排布。
+    /// 左下角 HUD 堆叠管理器（“HUD 队列”）
+    /// <br/>各成员实现 <see cref="IBottomLeftHud"/> 并在定位时调用 <see cref="ResolveAnchor"/> 取锚点；
+    /// 每帧收集想显示的成员，按 <see cref="IBottomLeftHud.HudStackOrder"/> 自下而上排布：底部成员保持原位，
+    /// 上方成员被平滑顶高，刚好让出下方占用高度以避免重叠
+    /// <br/>典型场景：手持比目鱼时 <c>HalibutHud</c> 占底，义眼 <c>CstmVisualEyeHUD</c> 自动上移悬浮其上
+    /// <br/>成员无需互相感知，新增 HUD 实现接口并改用本类取锚点即自动纳入排布
     /// </summary>
     internal static class BottomLeftHudStack
     {
         /// <summary>
-        /// UI 空间下的屏幕高度（任意调用语境取值一致，随 <see cref="Main.UIScale"/> 校正）。
-        /// 可能与他人共同堆叠的成员应以此构造锚点，避免缩放下的漂移。
+        /// UI 空间下的屏幕高度（任意调用语境取值一致，随 <see cref="Main.UIScale"/> 校正）
+        /// <br/>可能与他人共堆叠的成员应以此构造锚点，避免缩放下漂移
         /// </summary>
         public static float UIScreenH => PlayerInput.RealScreenHeight / Main.UIScale;
 
@@ -53,8 +53,8 @@ namespace CalamityOverhaul.Content.UIs.HudStack
         private static int lastLayoutFrame = -1;
 
         /// <summary>
-        /// 取得该 HUD 经过堆叠避让后的最终锚点；首次调用自动登记成员。
-        /// 应在该 HUD 的更新与绘制中统一使用本方法返回值定位（含命中盒），以保证交互与绘制一致。
+        /// 取得该 HUD 经堆叠避让后的最终锚点，首次调用自动登记成员
+        /// <br/>更新与绘制（含命中盒）统一用本方法返回值定位，以保证交互与绘制一致
         /// </summary>
         public static Vector2 ResolveAnchor(IBottomLeftHud hud) {
             lock (gate) {
@@ -64,9 +64,7 @@ namespace CalamityOverhaul.Content.UIs.HudStack
             }
         }
 
-        /// <summary>
-        /// 取得该 HUD 当前的竖直避让偏移（负值表示被顶高）；一般直接用 <see cref="ResolveAnchor"/> 即可。
-        /// </summary>
+        /// <summary>取得该 HUD 当前竖直避让偏移（负值=被顶高），一般直接用 <see cref="ResolveAnchor"/> 即可</summary>
         public static float ResolvePushUp(IBottomLeftHud hud) {
             lock (gate) {
                 Slot slot = Register(hud);
@@ -160,7 +158,7 @@ namespace CalamityOverhaul.Content.UIs.HudStack
             }
         }
 
-        /// <summary>卸载时清空登记表，避免残留旧实例（热重载安全）。</summary>
+        /// <summary>卸载时清空登记表，避免残留旧实例（热重载安全）</summary>
         internal static void Clear() {
             lock (gate) {
                 slots.Clear();
@@ -172,9 +170,7 @@ namespace CalamityOverhaul.Content.UIs.HudStack
         }
     }
 
-    /// <summary>
-    /// 让 <see cref="BottomLeftHudStack"/> 的静态登记表随模组卸载一并清理。
-    /// </summary>
+    /// <summary>让 <see cref="BottomLeftHudStack"/> 的静态登记表随模组卸载一并清理</summary>
     internal sealed class BottomLeftHudStackLoader : ICWRLoader
     {
         void ICWRLoader.UnLoadData() => BottomLeftHudStack.Clear();

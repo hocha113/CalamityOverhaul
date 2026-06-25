@@ -135,15 +135,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         private int hoverSatellite = -1;
 
         /// <summary>
-        /// HUD自然锚点（深渊之眼圆心），基于UI空间屏幕尺寸，不受缩放语境影响。
-        /// 这是未参与左下角队列避让时的原始位置
+        /// HUD自然锚点（深渊之眼圆心），基于UI空间屏幕尺寸，不受缩放语境影响
+        /// <br/>未参与左下角队列避让时的原始位置
         /// </summary>
         public static Vector2 NaturalAnchor => new(HalibutTheme.HudAnchorOffset.X,
             HalibutTheme.UIScreenH + HalibutTheme.HudAnchorOffset.Y);
 
         /// <summary>
-        /// HUD锚点（深渊之眼圆心），经左下角 HUD 队列避让后的最终位置。
-        /// 比目鱼为队列底部成员，独占时与 <see cref="NaturalAnchor"/> 一致；绘制与命中盒统一使用本属性
+        /// HUD锚点（深渊之眼圆心），经左下角 HUD 队列避让后的最终位置
+        /// <br/>比目鱼为队列底部成员，独占时与 <see cref="NaturalAnchor"/> 一致；绘制与命中盒统一用本属性
         /// </summary>
         public static Vector2 Anchor {
             get {
