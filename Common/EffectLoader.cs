@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> TwinsChargeVortex { get; set; }
         public static Asset<Effect> MechSky { get; set; }
         public static Asset<Effect> SulfurSeaSky { get; set; }
+        public static Asset<Effect> TzeentchSky { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
         public static Asset<Effect> Crystal { get; set; }
@@ -67,6 +68,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> HalibutAtlasBg { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }
+        public static Asset<Effect> EncyclopediaKnowledge { get; set; }
         public static Asset<Effect> ElysiumHalo { get; set; }
         public static Asset<Effect> ElysiumStaff { get; set; }
         public static Asset<Effect> SerpentTrail { get; set; }
@@ -117,6 +119,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> BrimstoneDialogueBox { get; set; }
         public static Asset<Effect> SeaDialogueBox { get; set; }
         public static Asset<Effect> SulfseaPanel { get; set; }
+        public static Asset<Effect> TzeentchPanel { get; set; }
         public static Asset<Effect> EntrustGuideCard { get; set; }
         public static Asset<Effect> MurasamaPhantomPanel { get; set; }
         public static Asset<Effect> CybCourseSky { get; set; }

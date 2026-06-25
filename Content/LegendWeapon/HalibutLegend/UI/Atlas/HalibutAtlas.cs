@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             StudyPlaceHint = this.GetLocalization(nameof(StudyPlaceHint), () => "点击投入研究祭坛");
             StudyingFormat = this.GetLocalization(nameof(StudyingFormat), () => "正在研究：{0}");
             StudyReclaim = this.GetLocalization(nameof(StudyReclaim), () => "取 回");
-            DragHint = this.GetLocalization(nameof(DragHint), () => "长按拖拽技能到装备栏 · 滚轮下潜");
+            DragHint = this.GetLocalization(nameof(DragHint), () => "按住拖动技能到装备栏 · 滚轮下潜");
             LayerStateFormat = this.GetLocalization(nameof(LayerStateFormat), () => "领域 {0} 层");
             UnlockCountFormat = this.GetLocalization(nameof(UnlockCountFormat), () => "已点亮 {0} / {1}");
 

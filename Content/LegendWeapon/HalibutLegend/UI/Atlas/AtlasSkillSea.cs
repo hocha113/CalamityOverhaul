@@ -36,8 +36,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
         private AtlasSkillNode selectedNode;
         private FishSkill draggingSkill;
         private bool dragFromDock;
-        private int dragHoldTimer;
-        private const int DragHoldDelay = 9;
+        //按下即捕获拖拽候选：光标移动越过阈值就立刻成形为拖拽，无需"先选中再点击确认"
+        private FishSkill pressSkill;       //候选技能（已解锁节点或装备坞槽位才有值，锁定节点为 null）
+        private AtlasSkillNode pressNode;   //按下命中的节点（未成形拖拽时松手=点击打开详情）
+        private bool pressFromDock;         //候选来自装备坞
+        private int pressDockIndex = -1;    //候选所在的装备坞槽位
+        private Vector2 pressMouse;         //按下时的光标位置（位移阈值基准）
+        private bool pressActive;           //本次按压是否已登记（含空白处，供松手判定）
+        //光标自按下点位移超过此值即由"点击候选"转为"拖拽"
+        private const float DragStartDist = 6f;
         private int dockHoverIndex = -1;
         private float loadoutFullFlash;
 
@@ -123,6 +130,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
             }
             selectedNode = null;
             draggingSkill = null;
+            ClearPress();
         }
 
         /// <summary>
@@ -273,109 +281,148 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI.Atlas
 
         private void HandleMouseInput(Rectangle contentArea, HalibutSave save, Vector2 mouse, bool inputAvailable) {
             if (!inputAvailable) {
-                dragHoldTimer = 0;
+                //输入不可用：放弃尚未成形的按压候选（进行中的拖拽保留，待输入恢复后照常松手结算）
+                if (draggingSkill == null) {
+                    ClearPress();
+                }
                 return;
             }
 
-            //长按计时（拖拽起始）
-            if (Main.mouseLeft && draggingSkill == null) {
-                dragHoldTimer++;
-            }
-            else if (!Main.mouseLeft) {
-                dragHoldTimer = 0;
-            }
-
-            //开始拖拽：悬停的已解锁节点或装备坞槽位
-            if (draggingSkill == null && Main.mouseLeft && dragHoldTimer == DragHoldDelay) {
-                if (hoveredNode != null && save.IsUnlocked(hoveredNode.Skill)) {
-                    draggingSkill = hoveredNode.Skill;
-                    dragFromDock = false;
-                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
-                }
-                else if (dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
-                    draggingSkill = save.loadout[dockHoverIndex];
-                    dragFromDock = true;
-                    SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
-                }
-            }
-
-            //拖拽释放
-            if (draggingSkill != null && !Main.mouseLeft) {
-                bool overDockArea = mouse.Y > contentArea.Bottom - DockHeight - 44f;
-                if (dockHoverIndex >= 0 || overDockArea) {
-                    int targetSlot = dockHoverIndex >= 0 ? dockHoverIndex : save.loadout.Count;
-                    if (save.loadout.Contains(draggingSkill)) {
-                        save.MoveLoadout(save.loadout.IndexOf(draggingSkill), Math.Min(targetSlot, save.loadout.Count - 1));
-                        SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.4f });
-                    }
-                    else if (save.EquipSkill(draggingSkill, targetSlot)) {
-                        SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
-                        particles.SpawnRingPulse(DockSlotPos(contentArea,
-                            Math.Min(targetSlot, save.loadout.Count - 1)), HalibutTheme.GlowHi, 38f, 3f);
-                    }
-                    else {
-                        //装备失败（已满）
-                        loadoutFullFlash = 1f;
-                        SoundEngine.PlaySound(CWRSound.ButtonZero);
-                    }
-                }
-                else if (dragFromDock) {
-                    //从装备坞拖出 = 卸下
-                    save.UnequipSkill(draggingSkill);
-                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
-                }
-                draggingSkill = null;
-                dragHoldTimer = 0;
-                return;
-            }
-
-            //点击（非拖拽）
-            if (!(Main.mouseLeft && Main.mouseLeftRelease)) {
-                return;
-            }
-
-            //详情卡按钮
-            if (selectedNode != null && detailRect.Contains(mouse.ToPoint())) {
+            //详情卡：按下即响应按钮（按钮为即时控件，且位于右缘不与海域节点重叠）
+            if (selectedNode != null && Main.mouseLeft && Main.mouseLeftRelease
+                && detailRect.Contains(mouse.ToPoint())) {
                 Main.mouseLeftRelease = false;
-                bool unlockedSel = save.IsUnlocked(selectedNode.Skill);
-                if (unlockedSel && equipBtnRect.Contains(mouse.ToPoint())) {
-                    if (save.loadout.Contains(selectedNode.Skill)) {
-                        save.UnequipSkill(selectedNode.Skill);
-                        SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
-                    }
-                    else if (save.EquipSkill(selectedNode.Skill)) {
-                        SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
-                    }
-                    else {
-                        loadoutFullFlash = 1f;
-                        SoundEngine.PlaySound(CWRSound.ButtonZero);
-                    }
-                }
-                else if (unlockedSel && selectBtnRect.Contains(mouse.ToPoint())) {
-                    SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(selectedNode.Skill);
-                }
+                HandleDetailButtons(save, mouse);
                 return;
             }
 
-            //装备坞点击 = 选用该技能
-            if (dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
-                Main.mouseLeftRelease = false;
-                SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(save.loadout[dockHoverIndex]);
-                return;
+            //按下：登记拖拽候选（不再在按下瞬间打开详情/选用，消除"先选中再确认"的繁琐）
+            if (Main.mouseLeft && Main.mouseLeftRelease && draggingSkill == null) {
+                pressActive = true;
+                pressMouse = mouse;
+                pressNode = hoveredNode;
+                if (dockHoverIndex >= 0 && dockHoverIndex < save.loadout.Count) {
+                    pressFromDock = true;
+                    pressDockIndex = dockHoverIndex;
+                    pressSkill = save.loadout[dockHoverIndex];
+                    Main.mouseLeftRelease = false;
+                }
+                else {
+                    pressFromDock = false;
+                    pressDockIndex = -1;
+                    //仅已解锁节点可拖拽；锁定节点松手时仍可点击查看详情
+                    pressSkill = hoveredNode != null && save.IsUnlocked(hoveredNode.Skill) ? hoveredNode.Skill : null;
+                    if (hoveredNode != null) {
+                        Main.mouseLeftRelease = false;
+                    }
+                }
             }
 
-            //节点点击 = 打开详情
-            if (hoveredNode != null) {
-                Main.mouseLeftRelease = false;
-                selectedNode = hoveredNode;
+            //按住光标移动越过阈值 = 开始拖拽（用按下时捕获的目标，光标移离原节点也不丢失）
+            if (pressActive && draggingSkill == null && pressSkill != null && Main.mouseLeft
+                && Vector2.Distance(mouse, pressMouse) > DragStartDist) {
+                draggingSkill = pressSkill;
+                dragFromDock = pressFromDock;
+                SoundEngine.PlaySound(SoundID.Grab with { Pitch = 0.25f });
+            }
+
+            //松手结算：进行中的拖拽落点入坞/卸下，否则视为点击
+            if (!Main.mouseLeft) {
+                if (draggingSkill != null) {
+                    ReleaseDrag(contentArea, save, mouse);
+                }
+                else if (pressActive) {
+                    HandleClick(save, mouse);
+                }
+                ClearPress();
+            }
+        }
+
+        /// <summary>
+        /// 拖拽落点结算：落在装备坞=装备/移动，从坞拖到坞外=卸下
+        /// </summary>
+        private void ReleaseDrag(Rectangle contentArea, HalibutSave save, Vector2 mouse) {
+            bool overDockArea = mouse.Y > contentArea.Bottom - DockHeight - 44f;
+            if (dockHoverIndex >= 0 || overDockArea) {
+                int targetSlot = dockHoverIndex >= 0 ? dockHoverIndex : save.loadout.Count;
+                if (save.loadout.Contains(draggingSkill)) {
+                    save.MoveLoadout(save.loadout.IndexOf(draggingSkill), Math.Min(targetSlot, save.loadout.Count - 1));
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.4f });
+                }
+                else if (save.EquipSkill(draggingSkill, targetSlot)) {
+                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
+                    particles.SpawnRingPulse(DockSlotPos(contentArea,
+                        Math.Min(targetSlot, save.loadout.Count - 1)), HalibutTheme.GlowHi, 38f, 3f);
+                }
+                else {
+                    //装备失败（已满）
+                    loadoutFullFlash = 1f;
+                    SoundEngine.PlaySound(CWRSound.ButtonZero);
+                }
+            }
+            else if (dragFromDock) {
+                //从装备坞拖出 = 卸下
+                save.UnequipSkill(draggingSkill);
+                SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
+            }
+            draggingSkill = null;
+        }
+
+        /// <summary>
+        /// 未成形拖拽的轻点：装备坞槽=选用，节点=打开详情，空白=关闭详情
+        /// </summary>
+        private void HandleClick(HalibutSave save, Vector2 mouse) {
+            //装备坞轻点 = 选用该技能
+            if (pressFromDock && pressDockIndex >= 0 && pressDockIndex < save.loadout.Count) {
+                SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(save.loadout[pressDockIndex]);
+                return;
+            }
+            //节点轻点 = 打开详情
+            if (pressNode != null) {
+                selectedNode = pressNode;
                 SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = 0.2f });
                 return;
             }
-
-            //点击空白 = 关闭详情
+            //轻点空白 = 关闭详情
             if (selectedNode != null && !detailRect.Contains(mouse.ToPoint())) {
                 selectedNode = null;
             }
+        }
+
+        /// <summary>
+        /// 详情卡按钮命中处理（装备/卸下、选用）
+        /// </summary>
+        private void HandleDetailButtons(HalibutSave save, Vector2 mouse) {
+            if (selectedNode == null || !save.IsUnlocked(selectedNode.Skill)) {
+                return;
+            }
+            if (equipBtnRect.Contains(mouse.ToPoint())) {
+                if (save.loadout.Contains(selectedNode.Skill)) {
+                    save.UnequipSkill(selectedNode.Skill);
+                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = 0.3f });
+                }
+                else if (save.EquipSkill(selectedNode.Skill)) {
+                    SoundEngine.PlaySound(SoundID.Item8 with { Volume = 0.5f, Pitch = -0.1f });
+                }
+                else {
+                    loadoutFullFlash = 1f;
+                    SoundEngine.PlaySound(CWRSound.ButtonZero);
+                }
+            }
+            else if (selectBtnRect.Contains(mouse.ToPoint())) {
+                SkillWheel.HalibutWheelController.LocalInstance?.SelectSkill(selectedNode.Skill);
+            }
+        }
+
+        /// <summary>
+        /// 清空本次按压登记的拖拽候选
+        /// </summary>
+        private void ClearPress() {
+            pressActive = false;
+            pressSkill = null;
+            pressNode = null;
+            pressFromDock = false;
+            pressDockIndex = -1;
         }
 
         /// <summary>

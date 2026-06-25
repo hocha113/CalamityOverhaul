@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch
         public static LocalizedText EndLine1 { get; private set; }
         public static LocalizedText EndLine2 { get; private set; }
 
-        public override StyleId DefaultStyle => "Draedon";
+        public override StyleId DefaultStyle => "Tzeentch";
 
         public override void SetStaticDefaults() {
             Rolename = this.GetLocalization(nameof(Rolename), () => "?????????????????????");

@@ -1,5 +1,7 @@
-﻿using InnoVault.UIHandles;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -37,9 +39,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
         //组件
         private readonly OldDukeShopAnimation animation = new();
-        private readonly OldDukeShopEffects effects = new();
+        private readonly SulfseaPanelState sulfseaState = new();
         private OldDukeShopInteraction interaction;
         private OldDukeShopRenderer renderer;
+        private bool escWasDown;
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "老公爵的店铺");
@@ -58,21 +61,16 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
             //初始化组件（延迟初始化，确保shopItems已填充）
             if (interaction == null) {
-                interaction = new OldDukeShopInteraction(player, shopItems);
+                interaction = new OldDukeShopInteraction(player, shopItems, animation);
                 renderer = new OldDukeShopRenderer(player, shopItems, animation, interaction);
             }
 
-            //更新硫磺海动画
-            animation.UpdateSulfseaEffects();
-
-            //计算面板位置
             Vector2 panelPosition = renderer.CalculatePanelPosition();
-
-            //更新粒子和特效
-            effects.UpdateParticles(_active, panelPosition, PanelWidth, PanelHeight);
+            Rectangle panelRect = new((int)panelPosition.X, (int)panelPosition.Y, PanelWidth, PanelHeight);
+            sulfseaState.Update(panelRect, _active);
 
             //更新UI交互
-            if (_active && animation.PanelSlideProgress > 0.9f) {
+            if (_active && animation.PanelSlideProgress > 0.82f) {
                 UpdateInteraction(panelPosition);
             }
 
@@ -114,7 +112,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 //检测物品点击和悬停（滚动条未拖动时才响应）
                 if (!interaction.IsScrollBarDragging) {
                     Vector2 itemListPos = panelPosition + new Vector2(35, 140);
-                    interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth);
+                    interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth, keyLeftPressState);
                 }
             }
             else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !player.mouseInterface) {
@@ -122,15 +120,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
             }
 
-            //ESC关闭
-            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
+            bool escDown = Main.keyState.IsKeyDown(Keys.Escape);
+            if (escDown && !escWasDown) {
                 _active = false;
                 SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.3f });
             }
+            escWasDown = escDown;
         }
 
         private void CleanupEffects() {
-            effects.Clear();
+            sulfseaState.Reset();
+            animation.Reset();
+            escWasDown = false;
             interaction?.Reset();
         }
 
@@ -138,7 +139,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             if (animation.UIAlpha <= 0f || renderer == null) return;
 
             Vector2 panelPosition = renderer.CalculatePanelPosition();
-            renderer.Draw(spriteBatch, panelPosition, effects);
+            renderer.Draw(spriteBatch, panelPosition, sulfseaState);
         }
 
         /// <summary>

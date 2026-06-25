@@ -70,6 +70,14 @@ DraedonCallUI: {
 	DisabledReasonText: Draedon Has Been Called
 }
 
+DraedonShopUI: {
+	TitleText: DRAEDON.EXCHANGE
+	FundsLabelText: BALANCE
+	BuyActionText: BUY
+	HintText: [LMB] Buy · Hold to repeat · [ESC] Close
+	EmptyText: No goods available for exchange
+}
+
 EnchantUI: {
 	ExpandHint: Expand Enchant Menu
 	CollapseHint: Collapse Enchant Menu

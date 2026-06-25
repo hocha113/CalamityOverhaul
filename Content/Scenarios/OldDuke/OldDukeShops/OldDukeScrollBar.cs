@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
@@ -9,10 +11,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
     /// </summary>
     internal class OldDukeScrollBar
     {
-        public bool IsDragging { get; private set; }
+        public bool IsHovered { get; private set; }
         private Rectangle indicatorRect;
         private const int offsetX = 550;
         private const int offsetY = 140;
+
+        public bool IsDragging { get; private set; }
         /// <summary>
         /// 更新滚动条状态
         /// </summary>
@@ -41,19 +45,20 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             int indicatorY = barY + (int)((barHeight - indicatorHeight) * scrollRatio);
 
             indicatorRect = new Rectangle(barX, indicatorY, 12, indicatorHeight);
+            IsHovered = barBg.Contains(mousePosition) || indicatorRect.Contains(mousePosition);
 
-            //鼠标交互
             if (mouseLeftDown) {
                 if (Main.mouseLeftRelease) {
-                    //首次点击
                     if (indicatorRect.Contains(mousePosition)) {
                         IsDragging = true;
                     }
                     else if (barBg.Contains(mousePosition)) {
-                        //点击滚动条背景，直接跳转
-                        float clickRatio = (mousePosition.Y - barY) / (float)barHeight;
+                        float clickRatio = (mousePosition.Y - barY - indicatorHeight * 0.5f) / Math.Max(1f, barHeight - indicatorHeight);
                         newScrollOffset = (int)(clickRatio * maxScroll);
                         newScrollOffset = Math.Clamp(newScrollOffset, 0, maxScroll);
+                        if (newScrollOffset != scrollOffset) {
+                            SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.24f, Pitch = -0.2f });
+                        }
                     }
                 }
                 else if (IsDragging) {
@@ -64,7 +69,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 }
             }
             else {
-                //松开鼠标
                 IsDragging = false;
             }
         }
@@ -83,7 +87,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             Rectangle barBg = new Rectangle(barX, barY, 12, barHeight);
 
             //绘制滚动条背景
-            DrawScrollBarBackground(spriteBatch, barBg, pixel, uiAlpha, sulfurPulseTimer);
+            DrawScrollBarBackground(spriteBatch, barBg, pixel, uiAlpha, sulfurPulseTimer, IsHovered || IsDragging);
 
             //滑块高度
             float indicatorHeightRatio = (float)visibleItems / totalItems;
@@ -103,9 +107,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         }
 
         private void DrawScrollBarBackground(SpriteBatch spriteBatch, Rectangle barBg,
-            Texture2D pixel, float uiAlpha, float sulfurPulseTimer) {
-            //背景
-            Color bgColor = new Color(20, 30, 12) * (uiAlpha * 0.6f);
+            Texture2D pixel, float uiAlpha, float sulfurPulseTimer, bool highlighted) {
+            Color bgColor = new Color(20, 30, 12) * (uiAlpha * (highlighted ? 0.72f : 0.6f));
             spriteBatch.Draw(pixel, barBg, new Rectangle(0, 0, 1, 1), bgColor);
 
             //边框
@@ -179,6 +182,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         /// </summary>
         public void Reset() {
             IsDragging = false;
+            IsHovered = false;
         }
     }
 }

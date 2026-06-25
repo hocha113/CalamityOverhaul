@@ -69,6 +69,14 @@ DraedonCallUI: {
 	DisabledReasonText: Draedon ya ha sido llamado
 }
 
+DraedonShopUI: {
+	TitleText: DRAEDON.EXCHANGE
+	FundsLabelText: SALDO
+	BuyActionText: COMPRAR
+	HintText: [Clic izq.] Comprar · Mantén para repetir · [ESC] Cerrar
+	EmptyText: No hay artículos disponibles para intercambiar
+}
+
 EnchantUI: {
 	ExpandHint: Expandir interfaz de forja
 	CollapseHint: Colapsar interfaz de forja

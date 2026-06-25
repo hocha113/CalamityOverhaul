@@ -69,6 +69,14 @@ DraedonCallUI: {
 	DisabledReasonText: Дрэдон уже вызван
 }
 
+DraedonShopUI: {
+	TitleText: DRAEDON.EXCHANGE
+	FundsLabelText: БАЛАНС
+	BuyActionText: КУПИТЬ
+	HintText: [ЛКМ] Купить · Удерживайте для повтора · [ESC] Закрыть
+	EmptyText: Нет товаров для обмена
+}
+
 EnchantUI: {
 	ExpandHint: Развернуть интерфейс ковки
 	CollapseHint: Свернуть интерфейс ковки

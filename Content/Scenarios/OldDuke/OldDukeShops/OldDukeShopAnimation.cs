@@ -2,32 +2,20 @@
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 {
-    /// <summary>
-    /// 老公爵商店动画状态管理器
-    /// </summary>
+    /// <summary>老公爵商店动画状态管理器</summary>
     internal class OldDukeShopAnimation
     {
-        //UI动画参数
-        public float UIAlpha { get; set; } = 0f;
-        public float PanelSlideProgress { get; set; } = 0f;
+        public float UIAlpha { get; set; }
+        public float PanelSlideProgress { get; set; }
         private const float FadeSpeed = 0.08f;
         private const float SlideSpeed = 0.12f;
 
-        //硫磺海动画参数
-        public float ToxicWavePhase { get; private set; } = 0f;
-        public float SulfurPulse { get; private set; } = 0f;
-        public float MiasmaTimer { get; private set; } = 0f;
-        public float BubbleTimer { get; private set; } = 0f;
-        public float AcidFlowTimer { get; private set; } = 0f;
-        public float CorrosionPulse { get; private set; } = 0f;
-        public float CurrencyDisplayPulse { get; private set; } = 0f;
+        public float AcidFlowTimer { get; private set; }
+        public float CurrencyDisplayPulse { get; private set; }
 
-        //槽位悬停动画
-        public float[] SlotHoverProgress { get; private set; } = new float[OldDukeShopInteraction.MaxVisibleItems];
+        public float[] SlotHoverProgress { get; } = new float[OldDukeShopInteraction.MaxVisibleItems];
+        public float[] SlotFailFlash { get; } = new float[OldDukeShopInteraction.MaxVisibleItems];
 
-        /// <summary>
-        /// 更新UI激活状态
-        /// </summary>
         public void UpdateUIAnimation(bool isActive) {
             if (isActive) {
                 if (UIAlpha < 1f) {
@@ -49,57 +37,48 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                     PanelSlideProgress = Math.Clamp(PanelSlideProgress, 0f, 1f);
                 }
             }
-        }
 
-        /// <summary>
-        /// 更新硫磺海效果动画
-        /// </summary>
-        public void UpdateSulfseaEffects() {
-            ToxicWavePhase += 0.022f;
-            SulfurPulse += 0.015f;
-            MiasmaTimer += 0.032f;
-            BubbleTimer += 0.045f;
             AcidFlowTimer += 0.038f;
-            CorrosionPulse += 0.028f;
             CurrencyDisplayPulse += 0.05f;
-
-            if (ToxicWavePhase > MathHelper.TwoPi) ToxicWavePhase -= MathHelper.TwoPi;
-            if (SulfurPulse > MathHelper.TwoPi) SulfurPulse -= MathHelper.TwoPi;
-            if (MiasmaTimer > MathHelper.TwoPi) MiasmaTimer -= MathHelper.TwoPi;
-            if (BubbleTimer > MathHelper.TwoPi) BubbleTimer -= MathHelper.TwoPi;
             if (AcidFlowTimer > MathHelper.TwoPi) AcidFlowTimer -= MathHelper.TwoPi;
-            if (CorrosionPulse > MathHelper.TwoPi) CorrosionPulse -= MathHelper.TwoPi;
             if (CurrencyDisplayPulse > MathHelper.TwoPi) CurrencyDisplayPulse -= MathHelper.TwoPi;
+
+            UpdateFailFlash();
         }
 
-        /// <summary>
-        /// 更新槽位悬停动画
-        /// </summary>
         public void UpdateSlotHoverAnimations(int hoveredIndex, int scrollOffset) {
-            //hoveredIndex 是全局索引，需要转换为可见槽位索引
             int visibleSlotIndex = hoveredIndex >= 0 ? hoveredIndex - scrollOffset : -1;
 
             for (int i = 0; i < SlotHoverProgress.Length; i++) {
                 float target = i == visibleSlotIndex ? 1f : 0f;
-                SlotHoverProgress[i] = MathHelper.Lerp(SlotHoverProgress[i], target, 0.15f);
+                float rate = target > SlotHoverProgress[i] ? 0.28f : 0.16f;
+                SlotHoverProgress[i] = MathHelper.Lerp(SlotHoverProgress[i], target, rate);
             }
         }
 
-        /// <summary>
-        /// 重置所有动画状态
-        /// </summary>
+        public void TriggerFailFlash(int visibleSlotIndex) {
+            if (visibleSlotIndex >= 0 && visibleSlotIndex < SlotFailFlash.Length) {
+                SlotFailFlash[visibleSlotIndex] = 1f;
+            }
+        }
+
+        private void UpdateFailFlash() {
+            for (int i = 0; i < SlotFailFlash.Length; i++) {
+                if (SlotFailFlash[i] > 0f) {
+                    SlotFailFlash[i] = Math.Max(0f, SlotFailFlash[i] - 0.14f);
+                }
+            }
+        }
+
         public void Reset() {
             UIAlpha = 0f;
             PanelSlideProgress = 0f;
-            ToxicWavePhase = 0f;
-            SulfurPulse = 0f;
-            MiasmaTimer = 0f;
-            BubbleTimer = 0f;
             AcidFlowTimer = 0f;
-            CorrosionPulse = 0f;
+            CurrencyDisplayPulse = 0f;
 
             for (int i = 0; i < SlotHoverProgress.Length; i++) {
                 SlotHoverProgress[i] = 0f;
+                SlotFailFlash[i] = 0f;
             }
         }
     }

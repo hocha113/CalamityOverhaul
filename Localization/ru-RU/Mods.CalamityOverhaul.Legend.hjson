@@ -1,4 +1,4 @@
-HalibutOverride: {
+﻿HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -222,7 +222,7 @@ MurasamaOverride: {
 	Text0: Разблокировано
 	Text1: Не разблокировано. Нужно пройти испытание [Unhook]
 	Text_Lang_0: Испытание:
-	DisplayName: Они-мара
+	DisplayName: Мурасама
 	Tooltip:
 		'''
 		Удерживайте ПКМ, чтобы прицелиться и зарядить меч энергией

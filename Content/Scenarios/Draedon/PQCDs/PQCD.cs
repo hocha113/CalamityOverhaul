@@ -31,7 +31,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
             Item.height = 32;
             Item.useTime = Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.HoldUp;
-            Item.UseSound = CWRSound.ButtonZero;
+            //开关音效交由交换终端 UI 自己播放，避免与道具使用音叠加成廉价的双击声
+            Item.UseSound = null;
             Item.rare = ItemRarityID.Cyan;
             Item.value = Item.buyPrice(gold: 50);
         }
@@ -114,8 +115,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs
                     return true;
                 }
 
-                //所有信号塔已部署，打开商店界面
-                DraedonShopUI.Instance.Active = !DraedonShopUI.Instance.Active;
+                //所有信号塔已部署，开关商店界面
+                DraedonShopUI.Instance.Toggle();
             }
             return true;
         }

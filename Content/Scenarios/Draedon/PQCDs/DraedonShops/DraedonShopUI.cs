@@ -1,134 +1,422 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Narrative.Presentation.Skins.Draedon;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameInput;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
 {
-    /// <summary>嘉登商店UI</summary>
-    internal class DraedonShopUI : UIHandle
+    /// <summary>嘉登交换终端：右侧滑入的终端面板，配色与嘉登对话皮肤同源</summary>
+    internal class DraedonShopUI : UIHandle, ILocalizedModType
     {
         public static DraedonShopUI Instance => UIHandleLoader.GetUIHandleOfType<DraedonShopUI>();
+        public string LocalizationCategory => "UI";
 
-        //UI状态
-        private bool _active;
-        public override bool Active {
-            get => _active || animation.UIAlpha > 0f;
-            set => _active = value;
+        public override bool CloseOnEscape => true;
+        public override SoundStyle? OpenSound => CWRSound.ButtonZero with { Pitch = 0.25f };
+        public override SoundStyle? CloseSound => CWRSound.ButtonZero with { Pitch = -0.1f };
+        //在 Main.MouseScreen 之外统一走 UI 空间，使命中判定与绘制布局一致
+        public override Vector2 MousePosition => DraedonShopTheme.UIMouse;
+
+        #region 本地化
+        public static LocalizedText TitleText { get; private set; }
+        public static LocalizedText FundsLabelText { get; private set; }
+        public static LocalizedText BuyActionText { get; private set; }
+        public static LocalizedText HintText { get; private set; }
+        public static LocalizedText EmptyText { get; private set; }
+
+        public override void SetStaticDefaults() {
+            TitleText = this.GetLocalization(nameof(TitleText), () => "DRAEDON.EXCHANGE");
+            FundsLabelText = this.GetLocalization(nameof(FundsLabelText), () => "余额");
+            BuyActionText = this.GetLocalization(nameof(BuyActionText), () => "购买");
+            HintText = this.GetLocalization(nameof(HintText), () => "[左键] 购买 · 按住连续购买 · [ESC] 关闭");
+            EmptyText = this.GetLocalization(nameof(EmptyText), () => "暂无可交换的货品");
+        }
+        #endregion
+
+        #region 状态
+        private readonly DraedonPanelState state = new() {
+            TechSideMargin = DraedonShopTheme.SidePadding,
+            DataSpawnInterval = 24,
+            MaxDataParticles = 12,
+            CircuitSpawnInterval = 34,
+            MaxCircuitNodes = 6,
+            ParticleInsetY = 50f
+        };
+
+        private readonly List<ShopItem> shopItems = [];
+
+        private Rectangle panelRect;
+        private float eased;
+
+        //平滑滚动（像素）
+        private float scrollPx;
+        private float scrollTarget;
+
+        //悬停 / 选中
+        private int hoveredIndex = -1;
+        private int selectedIndex = -1;
+        private float hoverAnim;
+        private int lastHoveredIndex = -1;
+
+        //长按连续购买
+        private int holdIndex = -1;
+        private int holdTimer;
+        private int purchaseCooldown = InitialCooldown;
+        private int consecutiveCount;
+        private const int HoldThreshold = 18;
+        private const int InitialCooldown = 28;
+        private const int MinCooldown = 2;
+
+        //滚动条拖拽
+        private bool scrollDragging;
+        private float dragGrabOffset;
+        private float scrollbarGlow;
+
+        /// <summary>当前面板矩形，供呼叫面板贴靠</summary>
+        public Rectangle PanelRect => panelRect;
+        #endregion
+
+        protected override void OnOpen() {
+            scrollPx = scrollTarget = 0f;
+            hoveredIndex = selectedIndex = -1;
+            ResetHold();
         }
 
-        //UI尺寸
-        private const int PanelWidth = 680;
-        private const int PanelHeight = 640;
-
-        //商店数据
-        private readonly List<ShopItem> shopItems = new();
-
-        //组件
-        private readonly DraedonShopAnimation animation = new();
-        private readonly DraedonShopEffects effects = new();
-        private DraedonShopInteraction interaction;
-        private DraedonShopRenderer renderer;
+        protected override void OnClose() => ResetHold();
 
         public override void Update() {
-            //更新动画进度
-            animation.UpdateUIAnimation(_active);
-
-            if (animation.UIAlpha <= 0f) {
-                CleanupEffects();
+            if (!IsOpen && OpenProgress.Current <= 0.001f) {
                 return;
             }
 
-            //初始化商店
+            eased = VaultUtils.EaseOutCubic(MathHelper.Clamp(OpenProgress.Current, 0f, 1f));
+            panelRect = new Rectangle(
+                (int)(DraedonShopTheme.UIScreenW - DraedonShopTheme.PanelWidth + (1f - eased) * DraedonShopTheme.PanelWidth),
+                (int)((DraedonShopTheme.UIScreenH - DraedonShopTheme.PanelHeight) / 2f),
+                DraedonShopTheme.PanelWidth, DraedonShopTheme.PanelHeight);
+
             InitializeShop();
+            state.Update(panelRect, IsOpen);
 
-            //初始化组件（延迟初始化，确保shopItems已填充）
-            if (interaction == null) {
-                interaction = new DraedonShopInteraction(player, shopItems);
-                renderer = new DraedonShopRenderer(player, shopItems, animation, interaction);
+            //平滑滚动
+            scrollTarget = MathHelper.Clamp(scrollTarget, 0f, MaxScroll());
+            scrollPx = MathHelper.Lerp(scrollPx, scrollTarget, 0.25f);
+
+            bool interactive = IsOpen && eased > 0.85f;
+            if (interactive) {
+                UpdateInteraction();
+            }
+            else {
+                hoveredIndex = -1;
+                scrollDragging = false;
             }
 
-            DraedonCallUI.Instance.Active = animation.UIAlpha >= 0f;
-
-            //更新科技动画
-            animation.UpdateTechEffects();
-
-            //计算面板位置
-            Vector2 panelPosition = renderer.CalculatePanelPosition();
-
-            //更新粒子和特效
-            effects.UpdateParticles(_active, panelPosition, PanelWidth, PanelHeight);
-
-            //更新UI交互
-            if (_active && animation.PanelSlideProgress > 0.9f) {
-                UpdateInteraction(panelPosition);
+            //悬停动画：切换条目时重置淡入
+            if (hoveredIndex != lastHoveredIndex) {
+                hoverAnim = 0f;
+                lastHoveredIndex = hoveredIndex;
             }
+            hoverAnim = MathHelper.Clamp(hoverAnim + (hoveredIndex >= 0 ? 0.2f : -0.3f), 0f, 1f);
+            scrollbarGlow = MathHelper.Lerp(scrollbarGlow, scrollDragging ? 1f : 0f, 0.2f);
 
-            //更新槽位悬停动画
-            animation.UpdateSlotHoverAnimations(interaction.HoveredIndex);
+            UpdateHold();
         }
 
-        private void UpdateInteraction(Vector2 panelPosition) {
-            UIHitBox = new Rectangle(
-                (int)panelPosition.X,
-                (int)panelPosition.Y,
-                PanelWidth,
-                PanelHeight
-            );
-
-            hoverInMainPage = UIHitBox.Intersects(MouseHitBox);
+        private void UpdateInteraction() {
+            hoverInMainPage = panelRect.Contains(MousePosition.ToPoint());
+            bool pressed = keyLeftPressState == KeyPressState.Pressed;
 
             if (hoverInMainPage) {
                 player.mouseInterface = true;
                 UIInputGuard.SuppressWeaponSwitch();
-
-                if (keyLeftPressState != KeyPressState.None) {
-                    //更新滚动条（优先处理）
-                    interaction.UpdateScrollBar(panelPosition, MousePosition.ToPoint(),
-                        Main.mouseLeft, Main.mouseLeftRelease);
-                }
-
-                //滚轮滚动（滚动条未拖动时才响应）
-                if (!interaction.IsScrollBarDragging) {
-                    interaction.HandleScroll();
-                }
-
-                //检测物品点击和悬停（滚动条未拖动时才响应）
-                if (!interaction.IsScrollBarDragging) {
-                    Vector2 itemListPos = panelPosition + new Vector2(30, 120);
-                    interaction.UpdateItemSelection(MousePosition.ToPoint(), itemListPos, PanelWidth);
-                }
             }
-            else if (keyLeftPressState == KeyPressState.Pressed && animation.UIAlpha >= 1f && !DraedonCallUI.Instance.hoverInMainPage && !player.mouseInterface) {
-                _active = false;
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
+            else if (pressed && !DraedonCallUI.Instance.hoverInMainPage && !player.mouseInterface) {
+                //点击面板之外（且不在呼叫面板上）关闭
+                Close();
+                return;
             }
 
-            //ESC关闭
-            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape)) {
-                _active = false;
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = 0.2f });
+            HandleScrollbar();
+            if (!scrollDragging) {
+                HandleWheel();
+                HandleRows();
+            }
+            else {
+                hoveredIndex = -1;
             }
         }
 
-        private void CleanupEffects() {
-            effects.Clear();
-            interaction?.Reset();
+        private void HandleWheel() {
+            if (!hoverInMainPage || MaxScroll() <= 0f) {
+                return;
+            }
+            int delta = MouseScrollDelta;
+            if (delta != 0) {
+                scrollTarget = MathHelper.Clamp(scrollTarget - Math.Sign(delta) * DraedonShopTheme.RowHeight * 0.9f, 0f, MaxScroll());
+                PlayerInput.LockVanillaMouseScroll("CalamityOverhaul/DraedonShop");
+                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.22f, Pitch = -0.2f });
+            }
         }
+
+        private void HandleScrollbar() {
+            float maxScroll = MaxScroll();
+            if (maxScroll <= 0f) {
+                scrollDragging = false;
+                return;
+            }
+
+            Rectangle track = ScrollTrack();
+            int indH = IndicatorHeight();
+            float progress = scrollTarget / maxScroll;
+            int indY = track.Y + (int)(progress * (track.Height - indH));
+            Rectangle indicator = new(track.X - 4, indY, track.Width + 8, indH);
+
+            Vector2 mouse = MousePosition;
+            bool overIndicator = indicator.Contains(mouse.ToPoint());
+            bool overTrack = track.Contains(mouse.ToPoint());
+
+            if (!scrollDragging && keyLeftPressState == KeyPressState.Pressed && (overIndicator || overTrack)) {
+                scrollDragging = true;
+                dragGrabOffset = overIndicator ? mouse.Y - indY : indH / 2f;
+                SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f, Pitch = 0.5f });
+            }
+
+            if (scrollDragging) {
+                if (Main.mouseLeft) {
+                    float available = track.Height - indH;
+                    float newProgress = available > 0f ? (mouse.Y - track.Y - dragGrabOffset) / available : 0f;
+                    scrollTarget = MathHelper.Clamp(newProgress, 0f, 1f) * maxScroll;
+                }
+                else {
+                    scrollDragging = false;
+                }
+            }
+        }
+
+        private void HandleRows() {
+            hoveredIndex = -1;
+            Rectangle viewport = ListViewport();
+            Vector2 mouse = MousePosition;
+            if (!viewport.Contains(mouse.ToPoint())) {
+                ResetHold();
+                return;
+            }
+
+            for (int i = 0; i < shopItems.Count; i++) {
+                Rectangle row = RowRect(i);
+                if (row.Y > viewport.Bottom || row.Bottom < viewport.Top) {
+                    continue;
+                }
+                if (row.Contains(mouse.ToPoint())) {
+                    hoveredIndex = i;
+                    if (lastHoveredIndex != i) {
+                        SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.2f, Pitch = 0.4f });
+                    }
+                    HandlePurchaseInput(i);
+                    return;
+                }
+            }
+            ResetHold();
+        }
+
+        private void HandlePurchaseInput(int index) {
+            if (!Main.mouseLeft) {
+                if (holdIndex == index) {
+                    ResetHold();
+                }
+                return;
+            }
+
+            if (Main.mouseLeftRelease) {
+                //首次点击：选中并购买一次
+                selectedIndex = index;
+                holdIndex = index;
+                holdTimer = 0;
+                consecutiveCount = 0;
+                purchaseCooldown = InitialCooldown;
+                TryBuy(index);
+                return;
+            }
+
+            if (holdIndex != index) {
+                holdIndex = index;
+                holdTimer = 0;
+                consecutiveCount = 0;
+                purchaseCooldown = InitialCooldown;
+                return;
+            }
+
+            holdTimer++;
+            if (holdTimer >= HoldThreshold && (holdTimer - HoldThreshold) % purchaseCooldown == 0) {
+                TryBuy(index);
+                consecutiveCount++;
+                if (consecutiveCount % 5 == 0) {
+                    purchaseCooldown = Math.Max(MinCooldown, (int)(purchaseCooldown * 0.8f));
+                }
+            }
+        }
+
+        private void TryBuy(int index) {
+            if (index < 0 || index >= shopItems.Count) {
+                return;
+            }
+            ShopItem si = shopItems[index];
+            if (player.BuyItem(si.price)) {
+                player.QuickSpawnItem(player.GetSource_OpenItem(si.itemType), si.itemType, si.stack);
+                SoundEngine.PlaySound(SoundID.Coins);
+                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.6f, Pitch = 0.3f });
+            }
+            else {
+                SoundEngine.PlaySound(SoundID.MenuClose with { Pitch = -0.5f, Volume = 0.8f });
+            }
+        }
+
+        private void UpdateHold() {
+            //松开鼠标即清空蓄力
+            if (!Main.mouseLeft && holdIndex != -1) {
+                ResetHold();
+            }
+        }
+
+        private void ResetHold() {
+            holdIndex = -1;
+            holdTimer = 0;
+            consecutiveCount = 0;
+            purchaseCooldown = InitialCooldown;
+        }
+
+        #region 布局
+        private Rectangle ListViewport() => new(
+            panelRect.X, panelRect.Y + DraedonShopTheme.HeaderHeight,
+            DraedonShopTheme.PanelWidth, DraedonShopTheme.PanelHeight - DraedonShopTheme.HeaderHeight - DraedonShopTheme.FooterHeight);
+
+        private Rectangle RowRect(int index) {
+            int listTop = panelRect.Y + DraedonShopTheme.HeaderHeight;
+            int rowX = panelRect.X + DraedonShopTheme.SidePadding;
+            int rowW = DraedonShopTheme.PanelWidth - DraedonShopTheme.SidePadding * 2 - 12;
+            int y = (int)(listTop - scrollPx + index * DraedonShopTheme.RowHeight) + 4;
+            return new Rectangle(rowX, y, rowW, DraedonShopTheme.RowHeight - 8);
+        }
+
+        private Rectangle ScrollTrack() {
+            Rectangle viewport = ListViewport();
+            return new Rectangle(panelRect.Right - 13, viewport.Top + 4, 4, viewport.Height - 8);
+        }
+
+        private int IndicatorHeight() {
+            float viewportH = ListViewport().Height;
+            float contentH = shopItems.Count * DraedonShopTheme.RowHeight;
+            float track = ScrollTrack().Height;
+            return (int)Math.Max(28f, contentH > 0f ? track * viewportH / contentH : track);
+        }
+
+        private float MaxScroll() {
+            float viewportH = ListViewport().Height;
+            float contentH = shopItems.Count * DraedonShopTheme.RowHeight;
+            return Math.Max(0f, contentH - viewportH);
+        }
+        #endregion
 
         public override void Draw(SpriteBatch spriteBatch) {
-            if (animation.UIAlpha <= 0f || renderer == null) return;
+            if (OpenProgress.Current <= 0.001f) {
+                return;
+            }
+            float alpha = eased;
 
-            Vector2 panelPosition = renderer.CalculatePanelPosition();
-            renderer.Draw(spriteBatch, panelPosition, effects);
+            DraedonShopRenderer.DrawChrome(spriteBatch, panelRect, alpha, state);
+
+            DrawRowsClipped(spriteBatch, alpha);
+            ShowHoveredTooltip();
+
+            long funds = DraedonShopStyle.CountCoins(player);
+            DraedonShopRenderer.DrawHeader(spriteBatch, panelRect, alpha, state, TitleText.Value, FundsLabelText.Value, funds);
+            DraedonShopRenderer.DrawFooter(spriteBatch, panelRect, alpha, state, HintText.Value, PageText());
+
+            if (MaxScroll() > 0f) {
+                DraedonShopRenderer.DrawScrollbar(spriteBatch, ScrollTrack(), alpha, scrollTarget, MaxScroll(),
+                    IndicatorHeight(), scrollbarGlow, state);
+            }
         }
 
-        /// <summary>初始化商店物品</summary>
+        private void DrawRowsClipped(SpriteBatch spriteBatch, float alpha) {
+            Rectangle viewport = ListViewport();
+
+            if (shopItems.Count == 0) {
+                DraedonShopRenderer.DrawEmpty(spriteBatch, viewport, alpha, EmptyText.Value);
+                return;
+            }
+
+            spriteBatch.End();
+            Vector2 clipPos = Vector2.Transform(new Vector2(viewport.X, viewport.Y), Main.UIScaleMatrix);
+            Vector2 clipSize = Vector2.Transform(new Vector2(viewport.Width, viewport.Height), Main.UIScaleMatrix)
+                - Vector2.Transform(Vector2.Zero, Main.UIScaleMatrix);
+            Rectangle scissor = new((int)clipPos.X, (int)clipPos.Y, (int)clipSize.X, (int)clipSize.Y);
+            scissor = Rectangle.Intersect(scissor, spriteBatch.GraphicsDevice.Viewport.Bounds);
+            Rectangle original = spriteBatch.GraphicsDevice.ScissorRectangle;
+            RasterizerState rasterizer = new() { ScissorTestEnable = true };
+
+            spriteBatch.GraphicsDevice.ScissorRectangle = scissor;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, rasterizer, null, Main.UIScaleMatrix);
+
+            float holdProgress = holdTimer < HoldThreshold ? holdTimer / (float)HoldThreshold : 0f;
+            for (int i = 0; i < shopItems.Count; i++) {
+                Rectangle row = RowRect(i);
+                if (row.Y > viewport.Bottom || row.Bottom < viewport.Top) {
+                    continue;
+                }
+                ShopItem si = shopItems[i];
+                float hover = i == hoveredIndex ? hoverAnim : 0f;
+                var visual = new DraedonShopRenderer.RecordVisual(
+                    i + 1, si.itemType, Lang.GetItemNameValue(si.itemType), si.price,
+                    hover, i == selectedIndex, player.CanAfford(si.price),
+                    i == holdIndex ? holdProgress : 0f, i == holdIndex ? consecutiveCount : 0);
+                DraedonShopRenderer.DrawRecord(spriteBatch, row, alpha, state, visual, BuyActionText.Value);
+            }
+
+            spriteBatch.End();
+            spriteBatch.GraphicsDevice.ScissorRectangle = original;
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+        }
+
+        /// <summary>悬停时把货品交给原版提示系统绘制（与 ChargingStationUI 同法，在绘制阶段赋值）</summary>
+        private void ShowHoveredTooltip() {
+            if (hoveredIndex < 0 || hoveredIndex >= shopItems.Count) {
+                return;
+            }
+            ShopItem si = shopItems[hoveredIndex];
+            if (ContentSamples.ItemsByType.TryGetValue(si.itemType, out Item sample)) {
+                Item clone = sample.Clone();
+                clone.stack = Math.Max(1, si.stack);
+                Main.HoverItem = clone;
+                Main.hoverItemName = clone.Name;
+            }
+        }
+
+        private string PageText() {
+            if (shopItems.Count == 0) {
+                return string.Empty;
+            }
+            int rowsPerView = Math.Max(1, ListViewport().Height / DraedonShopTheme.RowHeight);
+            int first = (int)(scrollPx / DraedonShopTheme.RowHeight) + 1;
+            int last = Math.Min(shopItems.Count, first + rowsPerView - 1);
+            return $"{first:00}-{last:00} / {shopItems.Count:00}";
+        }
+
+        /// <summary>初始化商店物品列表（仅一次）</summary>
         public void InitializeShop() {
-            if (shopItems.Count > 0) return;
-            //添加嘉登材料合成的物品
+            if (shopItems.Count > 0) {
+                return;
+            }
             ShopHandle.Handle(shopItems);
         }
     }

@@ -79,8 +79,14 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             }
         }
 
-        private static long PriceOf(int type) =>
-            ContentSamples.ItemsByType.TryGetValue(type, out Item it) && it.value > 0 ? it.value : Item.buyPrice(0, 5);
+        /// <summary>Victor 售价相对义体基础价值的倍率：基础价偏低，店面统一上调</summary>
+        private const int PriceMultiplier = 3;
+
+        private static long PriceOf(int type) {
+            long baseValue = ContentSamples.ItemsByType.TryGetValue(type, out Item it) && it.value > 0
+                ? it.value : Item.buyPrice(0, 5);
+            return baseValue * PriceMultiplier;
+        }
 
         #endregion
 

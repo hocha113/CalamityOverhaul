@@ -17,6 +17,7 @@ namespace CalamityOverhaul.Content.Narrative
         internal static readonly StyleId Sulfsea = StyleId.ForMod(ModName, "Sulfsea");
         internal static readonly StyleId StarStream = StyleId.ForMod(ModName, "StarStream");
         internal static readonly StyleId SHPC = StyleId.ForMod(ModName, "SHPC");
+        internal static readonly StyleId Tzeentch = StyleId.ForMod(ModName, "Tzeentch");
 
         internal static readonly CharacterId OldDuke = CharacterId.ForMod(ModName, "OldDuke");
         internal static readonly CharacterId Helen = CharacterId.ForMod(ModName, "Helen");

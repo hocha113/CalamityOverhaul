@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.OtherMods.ImproveGame;
+﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea;
+using CalamityOverhaul.OtherMods.ImproveGame;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
@@ -44,154 +45,28 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             );
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, OldDukeShopEffects effects) {
+        public void Draw(SpriteBatch spriteBatch, Vector2 panelPosition, SulfseaPanelState sulfseaState) {
             if (animation.UIAlpha <= 0f) return;
 
-            //绘制主面板
-            DrawMainPanel(spriteBatch, panelPosition);
+            DrawMainPanel(spriteBatch, panelPosition, sulfseaState);
+            sulfseaState.DrawForeground(spriteBatch, animation.UIAlpha);
 
-            //绘制特效粒子（在内容下方）
-            effects.DrawEffects(spriteBatch, animation.UIAlpha);
-
-            //绘制标题
-            DrawHeader(spriteBatch, panelPosition);
-
-            //绘制货币显示
+            DrawHeader(spriteBatch, panelPosition, sulfseaState.SulfurPulse);
             DrawCurrencyDisplay(spriteBatch, panelPosition);
-
-            //绘制物品列表
-            DrawItemList(spriteBatch, panelPosition);
-
-            //绘制滚动条
-            interaction.DrawScrollBar(spriteBatch, panelPosition, animation.UIAlpha, animation.SulfurPulse);
-
-            //绘制滚动提示
+            DrawItemList(spriteBatch, panelPosition, sulfseaState.ToxicWavePhase);
+            interaction.DrawScrollBar(spriteBatch, panelPosition, animation.UIAlpha, sulfseaState.SulfurPulse);
             DrawScrollHint(spriteBatch, panelPosition);
         }
 
-        #region 主面板绘制
-        private void DrawMainPanel(SpriteBatch spriteBatch, Vector2 panelPosition) {
-            Rectangle panelRect = new Rectangle(
-                (int)panelPosition.X,
-                (int)panelPosition.Y,
-                580,
-                720
-            );
-
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //阴影
-            Rectangle shadow = panelRect;
-            shadow.Offset(6, 8);
-            spriteBatch.Draw(pixel, shadow, new Rectangle(0, 0, 1, 1), Color.Black * (animation.UIAlpha * 0.60f));
-
-            //绘制渐变背景
-            DrawGradientBackground(spriteBatch, panelRect, pixel);
-
-            //瘴气覆盖层
-            float miasmaEffect = (float)Math.Sin(animation.MiasmaTimer * 1.1f) * 0.5f + 0.5f;
-            Color miasmaTint = new Color(45, 55, 20) * (animation.UIAlpha * 0.4f * miasmaEffect);
-            spriteBatch.Draw(pixel, panelRect, new Rectangle(0, 0, 1, 1), miasmaTint);
-
-            //绘制毒波纹理效果
-            DrawToxicWaveOverlay(spriteBatch, panelRect, pixel);
-
-            //内边框微光
-            float pulse = (float)Math.Sin(animation.SulfurPulse) * 0.5f + 0.5f;
-            Rectangle inner = panelRect;
-            inner.Inflate(-6, -6);
-            spriteBatch.Draw(pixel, inner, new Rectangle(0, 0, 1, 1), new Color(80, 100, 35) * (animation.UIAlpha * 0.09f * (0.5f + pulse * 0.5f)));
-
-            //绘制硫磺框架
-            DrawSulfseaFrame(spriteBatch, panelRect, pulse, pixel);
+        private void DrawMainPanel(SpriteBatch spriteBatch, Vector2 panelPosition, SulfseaPanelState sulfseaState) {
+            Rectangle panelRect = new((int)panelPosition.X, (int)panelPosition.Y, 580, 720);
+            SulfseaPanelDraw.DrawShaderBackground(spriteBatch, panelRect, animation.UIAlpha, sulfseaState);
+            float pulse = (float)Math.Sin(sulfseaState.SulfurPulse * 2.2f) * 0.5f + 0.5f;
+            SulfseaPanelDraw.DrawFrame(spriteBatch, panelRect, animation.UIAlpha, pulse);
         }
-
-        private void DrawGradientBackground(SpriteBatch spriteBatch, Rectangle panelRect, Texture2D pixel) {
-            int segments = 30;
-            for (int i = 0; i < segments; i++) {
-                float t = i / (float)segments;
-                float t2 = (i + 1) / (float)segments;
-                int y1 = panelRect.Y + (int)(t * panelRect.Height);
-                int y2 = panelRect.Y + (int)(t2 * panelRect.Height);
-                Rectangle r = new(panelRect.X, y1, panelRect.Width, Math.Max(1, y2 - y1));
-
-                //硫磺海配色
-                Color sulfurDeep = new Color(12, 18, 8);
-                Color toxicMid = new Color(28, 38, 15);
-                Color acidEdge = new Color(65, 85, 30);
-
-                float breathing = (float)Math.Sin(animation.SulfurPulse) * 0.5f + 0.5f;
-                Color blendBase = Color.Lerp(sulfurDeep, toxicMid, (float)Math.Sin(animation.SulfurPulse * 0.5f + t * 1.4f) * 0.5f + 0.5f);
-                Color c = Color.Lerp(blendBase, acidEdge, t * 0.7f * (0.3f + breathing * 0.7f));
-                c *= animation.UIAlpha * 0.92f;
-
-                spriteBatch.Draw(pixel, r, new Rectangle(0, 0, 1, 1), c);
-            }
-        }
-
-        private void DrawToxicWaveOverlay(SpriteBatch spriteBatch, Rectangle rect, Texture2D pixel) {
-            int bands = 6;
-            for (int i = 0; i < bands; i++) {
-                float t = i / (float)bands;
-                float y = rect.Y + 18 + t * (rect.Height - 36);
-                float amp = 7f + (float)Math.Sin((animation.ToxicWavePhase + t) * 2.2f) * 4.5f;
-                float thickness = 2.2f;
-                int segments = 42;
-                Vector2 prev = Vector2.Zero;
-                for (int s = 0; s <= segments; s++) {
-                    float p = s / (float)segments;
-                    float localY = y + (float)Math.Sin(animation.ToxicWavePhase * 2.2f + p * MathHelper.TwoPi * 1.3f + t) * amp;
-                    Vector2 point = new(rect.X + 8 + p * (rect.Width - 16), localY);
-                    if (s > 0) {
-                        Vector2 diff = point - prev;
-                        float len = diff.Length();
-                        if (len > 0.01f) {
-                            float rot = diff.ToRotation();
-                            Color c = new Color(60, 90, 30) * (animation.UIAlpha * 0.08f);
-                            spriteBatch.Draw(pixel, prev, new Rectangle(0, 0, 1, 1), c, rot, Vector2.Zero, new Vector2(len, thickness), SpriteEffects.None, 0f);
-                        }
-                    }
-                    prev = point;
-                }
-            }
-        }
-
-        private void DrawSulfseaFrame(SpriteBatch spriteBatch, Rectangle rect, float pulse, Texture2D pixel) {
-            Color edge = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), pulse) * (animation.UIAlpha * 0.85f);
-
-            //主边框
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Rectangle(0, 0, 1, 1), edge * 0.75f);
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
-            spriteBatch.Draw(pixel, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height), new Rectangle(0, 0, 1, 1), edge * 0.88f);
-
-            //内边框
-            Rectangle inner = rect;
-            inner.Inflate(-5, -5);
-            Color innerC = new Color(140, 170, 70) * (animation.UIAlpha * 0.22f * pulse);
-            spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC);
-            spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Bottom - 1, inner.Width, 1), new Rectangle(0, 0, 1, 1), innerC * 0.7f);
-            spriteBatch.Draw(pixel, new Rectangle(inner.X, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
-            spriteBatch.Draw(pixel, new Rectangle(inner.Right - 1, inner.Y, 1, inner.Height), new Rectangle(0, 0, 1, 1), innerC * 0.88f);
-
-            //角星装饰
-            DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Y + 10), animation.UIAlpha * 0.9f);
-            DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Y + 10), animation.UIAlpha * 0.9f);
-            DrawCornerStar(spriteBatch, new Vector2(rect.X + 10, rect.Bottom - 10), animation.UIAlpha * 0.65f);
-            DrawCornerStar(spriteBatch, new Vector2(rect.Right - 10, rect.Bottom - 10), animation.UIAlpha * 0.65f);
-        }
-
-        private static void DrawCornerStar(SpriteBatch spriteBatch, Vector2 pos, float alpha) {
-            Texture2D px = VaultAsset.placeholder2.Value;
-            float size = 5f;
-            Color c = new Color(160, 190, 80) * alpha;
-            spriteBatch.Draw(px, pos, new Rectangle(0, 0, 1, 1), c, 0f, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
-            spriteBatch.Draw(px, pos, new Rectangle(0, 0, 1, 1), c * 0.8f, MathHelper.PiOver2, new Vector2(0.5f, 0.5f), new Vector2(size, size * 0.26f), SpriteEffects.None, 0f);
-        }
-        #endregion
 
         #region 标题绘制
-        private void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition) {
+        private void DrawHeader(SpriteBatch spriteBatch, Vector2 panelPosition, float sulfurPulse) {
             DynamicSpriteFont font = FontAssets.DeathText.Value;
             string title = OldDukeShopUI.TitleText.Value;
             float titleSclse = 1f;
@@ -210,13 +85,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             Utils.DrawBorderString(spriteBatch, title, titlePos, Color.White * animation.UIAlpha, titleSclse);
 
             //绘制关闭按钮
-            DrawCloseButton(spriteBatch, panelPosition);
+            DrawCloseButton(spriteBatch, panelPosition, sulfurPulse);
 
             //分割线
-            DrawHeaderDivider(spriteBatch, panelPosition);
+            DrawHeaderDivider(spriteBatch, panelPosition, sulfurPulse);
         }
 
-        private void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition) {
+        private void DrawCloseButton(SpriteBatch spriteBatch, Vector2 panelPosition, float sulfurPulse) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
             Vector2 closeButtonPos = panelPosition + new Vector2(580 - OldDukeShopInteraction.CloseButtonSize - 15, 15);
@@ -238,7 +113,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
             //悬停时的发光效果
             if (isHovered) {
-                float glowPulse = (float)Math.Sin(animation.SulfurPulse * 2f) * 0.5f + 0.5f;
+                float glowPulse = (float)Math.Sin(sulfurPulse * 2f) * 0.5f + 0.5f;
                 Color glowColor = new Color(180, 90, 70) * (animation.UIAlpha * 0.3f * glowPulse);
                 Rectangle glowRect = closeButtonRect;
                 glowRect.Inflate(3, 3);
@@ -292,12 +167,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
                 Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0);
         }
 
-        private void DrawHeaderDivider(SpriteBatch spriteBatch, Vector2 panelPosition) {
+        private void DrawHeaderDivider(SpriteBatch spriteBatch, Vector2 panelPosition, float sulfurPulse) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 lineStart = panelPosition + new Vector2(40, 80);
             Vector2 lineEnd = panelPosition + new Vector2(540, 80);
 
-            Color edgeColor = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), (float)Math.Sin(animation.SulfurPulse) * 0.5f + 0.5f) * (animation.UIAlpha * 0.9f);
+            Color edgeColor = Color.Lerp(new Color(70, 100, 35), new Color(130, 160, 65), (float)Math.Sin(sulfurPulse) * 0.5f + 0.5f) * (animation.UIAlpha * 0.9f);
 
             DrawGradientLine(spriteBatch, lineStart, lineEnd, edgeColor, edgeColor * 0.08f, 1.5f, pixel);
         }
@@ -377,7 +252,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         #endregion
 
         #region 物品列表绘制
-        private void DrawItemList(SpriteBatch spriteBatch, Vector2 panelPosition) {
+        private void DrawItemList(SpriteBatch spriteBatch, Vector2 panelPosition, float toxicWavePhase) {
             if (shopItems.Count == 0) return;
 
             DynamicSpriteFont font = FontAssets.MouseText.Value;
@@ -395,12 +270,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
                 float hoverProgress = animation.SlotHoverProgress[i];
 
-                DrawShopItemSlot(spriteBatch, shopItem, slotPos, isHovered, isSelected, hoverProgress, font, index, isHolding);
+                float failFlash = animation.SlotFailFlash[i];
+                DrawShopItemSlot(spriteBatch, shopItem, slotPos, isHovered, isSelected, hoverProgress, failFlash, font, index, isHolding, toxicWavePhase);
             }
         }
 
         private void DrawShopItemSlot(SpriteBatch spriteBatch, OldDukeShopItem shopItem, Vector2 position,
-            bool isHovered, bool isSelected, float hoverProgress, DynamicSpriteFont font, int currentItemIndex, bool isHolding) {
+            bool isHovered, bool isSelected, float hoverProgress, float failFlash, DynamicSpriteFont font, int currentItemIndex, bool isHolding, float toxicWavePhase) {
             Rectangle slotRect = new Rectangle(
                 (int)position.X,
                 (int)position.Y,
@@ -409,7 +285,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
             );
 
             //绘制槽位背景
-            DrawSlotBackground(spriteBatch, slotRect, isHovered, isSelected, isHolding, hoverProgress);
+            DrawSlotBackground(spriteBatch, slotRect, isHovered, isSelected, isHolding, hoverProgress, failFlash, toxicWavePhase);
 
             //绘制长按进度条
             if (isHolding) {
@@ -437,21 +313,27 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
         }
 
         private void DrawSlotBackground(SpriteBatch spriteBatch, Rectangle slotRect, bool isHovered,
-            bool isSelected, bool isHolding, float hoverProgress) {
+            bool isSelected, bool isHolding, float hoverProgress, float failFlash, float toxicWavePhase) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
 
-            //槽位背景
             Color bgBase = new Color(20, 30, 10) * (animation.UIAlpha * 0.3f);
             Color bgHover = new Color(50, 70, 25) * (animation.UIAlpha * 0.5f);
             Color slotBg = Color.Lerp(bgBase, bgHover, hoverProgress);
+            if (isSelected && hoverProgress > 0.5f) {
+                slotBg = Color.Lerp(slotBg, new Color(65, 90, 30) * (animation.UIAlpha * 0.55f), 0.35f);
+            }
 
             spriteBatch.Draw(pixel, slotRect, new Rectangle(0, 0, 1, 1), slotBg);
 
-            //悬停时的毒液效果
             if (hoverProgress > 0.01f) {
-                float toxicGlow = (float)Math.Sin(animation.ToxicWavePhase * 2f + hoverProgress * 3f) * 0.5f + 0.5f;
+                float toxicGlow = (float)Math.Sin(toxicWavePhase * 2f + hoverProgress * 3f) * 0.5f + 0.5f;
                 Color toxicColor = new Color(100, 140, 50) * (animation.UIAlpha * 0.15f * hoverProgress * toxicGlow);
                 spriteBatch.Draw(pixel, slotRect, new Rectangle(0, 0, 1, 1), toxicColor);
+            }
+
+            if (failFlash > 0.01f) {
+                Color failColor = new Color(200, 70, 60) * (animation.UIAlpha * failFlash * 0.45f);
+                spriteBatch.Draw(pixel, slotRect, new Rectangle(0, 0, 1, 1), failColor);
             }
 
             //槽位边框
@@ -469,7 +351,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OldDukeShops
 
         private void DrawHoldProgressBar(SpriteBatch spriteBatch, Rectangle slotRect) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
-            float holdProgress = Math.Min(1f, interaction.HoldingPurchaseTimer / 20f);
+            float holdProgress = Math.Min(1f, interaction.HoldingPurchaseTimer / (float)OldDukeShopInteraction.HoldThreshold);
 
             Rectangle progressBg = new Rectangle(slotRect.X + 3, slotRect.Bottom - 6, slotRect.Width - 6, 3);
             spriteBatch.Draw(pixel, progressBg, new Rectangle(0, 0, 1, 1), Color.Black * (animation.UIAlpha * 0.5f));

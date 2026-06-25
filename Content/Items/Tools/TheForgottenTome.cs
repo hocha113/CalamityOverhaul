@@ -1,6 +1,8 @@
-﻿using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
+﻿using CalamityOverhaul.Content.Narrative.Data;
+using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.UIs.MainMenuOvers;
+using InnoVault.Narrative.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -45,6 +47,15 @@ namespace CalamityOverhaul.Content.Items.Tools
 
         internal static int ResetAllADVData(Player owner) {
             int resetFieldCount = 0;
+
+            //重置该玩家的全部剧情数据模块：角色剧情标记、Boss 礼物记录、剧本进度(StoryProgress)等一并回到初始状态
+            //重构后剧情数据由 StoryPlayer.StoryData 持有，旧版基于 ADVSave 反射清空字段的逻辑已失效，这里改为驱动新数据系统
+            StoryPlayer storyPlayer = owner.GetModPlayer<StoryPlayer>();
+            resetFieldCount += storyPlayer.StoryData.Modules.Count;
+            storyPlayer.StoryData.Reset();
+
+            //中止当前正在播放/排队的叙事会话并关闭对话框，避免重置后界面仍引用已被清空的剧情状态
+            NarrativeRunner.Reset();
 
             if (CWRRef.GetDownedCalamitas()) {
                 resetFieldCount++;

@@ -69,6 +69,14 @@ DraedonCallUI: {
 	DisabledReasonText: 嘉登已被呼叫
 }
 
+DraedonShopUI: {
+	TitleText: DRAEDON.EXCHANGE
+	FundsLabelText: 余额
+	BuyActionText: 购买
+	HintText: [左键] 购买 · 按住连续购买 · [ESC] 关闭
+	EmptyText: 暂无可交换的货品
+}
+
 EnchantUI: {
 	ExpandHint: 展开炼铸界面
 	CollapseHint: 收起炼铸界面

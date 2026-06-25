@@ -69,6 +69,14 @@ DraedonCallUI: {
 	DisabledReasonText: Draedon wurde bereits gerufen
 }
 
+DraedonShopUI: {
+	TitleText: DRAEDON.EXCHANGE
+	FundsLabelText: GUTHABEN
+	BuyActionText: KAUFEN
+	HintText: [Linksklick] Kaufen · Halten für Wiederholung · [ESC] Schließen
+	EmptyText: Keine Waren zum Austausch verfügbar
+}
+
 EnchantUI: {
 	ExpandHint: Schmiede-Interface erweitern
 	CollapseHint: Schmiede-Interface einklappen

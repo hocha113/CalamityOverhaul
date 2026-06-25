@@ -74,7 +74,8 @@ float rainLayer(float2 p, float colScale, float vScale, float speed, float seed)
     //向下平移雨柱（- 号 = 下落）
     float yy   = p.y * vScale - uTime * speed * (0.7 + rnd * 0.7) + rnd * 31.0;
     float seg  = frac(yy);
-    float dash = exp(-seg * 5.2);          //头亮尾淡的雨丝
+    //亮头在下（下落前缘），尾迹向上拖；seg 随屏幕下移而增大，故亮度在 seg→1 处最强
+    float dash = exp(-(1.0 - seg) * 5.2);
     float thin = exp(-fx * fx * 70.0);     //横向收窄
     return step(0.34, rnd) * thin * dash;
 }

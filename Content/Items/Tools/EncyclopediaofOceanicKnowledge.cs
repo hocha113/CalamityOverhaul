@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -156,15 +157,26 @@ namespace CalamityOverhaul.Content.Items.Tools
         //技能图标飞行实体列表
         private List<FlyingSkillIcon> flyingIcons = new List<FlyingSkillIcon>();
 
-        //粒子系统
+        //柔光粒子系统
         private List<OceanParticle> particles = new List<OceanParticle>();
 
-        //光环效果
-        private float auraRadius = 0f;
-        private float auraIntensity = 0f;
+        //仪式场状态（驱动着色器）
+        private float fieldRadius;         //当前符文环半径（像素）
+        private float coreIntensity;       //知识核心强度 0~1
+        private float shockProgress = -1f; //完成冲击波进度 0~1，<0 表示未激活
+        private float globalFade = 1f;     //整体淡出 0~1
 
         //已解锁的技能列表
         private List<FishSkill> unlockedSkills = new List<FishSkill>();
+
+        private const float MinRingRadius = 70f;  //收束后的最小环半径
+        private const float MaxRingRadius = 420f; //展开后的最大环半径
+        private const float QuadRadius = 560f;    //着色器绘制区半径（含神光/冲击波余量）
+
+        public override void SetStaticDefaults() {
+            //仪式场以玩家为中心向外延伸，放宽绘制裁剪避免边缘被剔除
+            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 1400;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 1;
@@ -217,7 +229,7 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 汇聚：技能图标自四周飞向玩家
+        /// 汇聚：符文环展开，鱼类知识图标自四周汇聚
         private void GatherPhaseAI(Player owner) {
             //初始化飞行图标
             if (Timer == 1) {
@@ -225,12 +237,14 @@ namespace CalamityOverhaul.Content.Items.Tools
                 PlayGatherSound(owner);
             }
 
-            //更新光环
             float progress = Timer / GatherDuration;
-            auraRadius = MathHelper.Lerp(0f, 400f, VaultUtils.EaseOutCubic(progress));
-            auraIntensity = MathHelper.Lerp(0f, 1f, progress);
+            //仪式环由内向外展开
+            fieldRadius = MathHelper.Lerp(MinRingRadius, MaxRingRadius, VaultUtils.EaseOutCubic(progress));
+            //核心微微亮起
+            coreIntensity = MathHelper.Lerp(0f, 0.22f, progress);
+            globalFade = 1f;
 
-            //生成环境粒子
+            //生成汇聚柔光粒子
             if (Timer % 2 == 0) {
                 SpawnGatherParticles(owner.Center);
             }
@@ -251,18 +265,18 @@ namespace CalamityOverhaul.Content.Items.Tools
             }
         }
 
-        /// 吸收：技能吸入玩家
+        /// 吸收：符文环收束，知识汇入核心
         private void AbsorbPhaseAI(Player owner) {
             float progress = Timer / AbsorbDuration;
 
-            //光环收缩
-            auraRadius = MathHelper.Lerp(400f, 0f, VaultUtils.EaseInCubic(progress));
-            auraIntensity = MathHelper.Lerp(1f, 0.3f, progress);
+            //符文环向内收束
+            fieldRadius = MathHelper.Lerp(MaxRingRadius, MinRingRadius, VaultUtils.EaseInCubic(progress));
+            //核心急剧增亮
+            coreIntensity = MathHelper.Lerp(0.22f, 1f, VaultUtils.EaseOutCubic(progress));
+            globalFade = 1f;
 
-            //强化的吸收粒子
-            if (Timer % 1 == 0) {
-                SpawnAbsorbParticles(owner.Center, progress);
-            }
+            //强化的向心吸收粒子
+            SpawnAbsorbParticles(owner.Center, progress);
 
             //脉冲音效
             if (Timer % 10 == 0) {
@@ -276,24 +290,29 @@ namespace CalamityOverhaul.Content.Items.Tools
             if (Timer >= AbsorbDuration) {
                 Phase = EffectPhase.Complete;
                 Timer = 0;
+                shockProgress = 0f;//激活冲击波
                 UnlockAllSkills(owner);
                 PlayCompleteSound(owner);
             }
         }
 
-        /// 完成：爆发特效
+        /// 完成：核心闪爆 + 冲击波向外扩散
         private void CompletePhaseAI(Player owner) {
             float progress = Timer / CompleteDuration;
 
-            //爆发光环
+            //爆发柔光粒子
             if (Timer == 1) {
-                for (int i = 0; i < 50; i++) {
+                for (int i = 0; i < 60; i++) {
                     SpawnBurstParticle(owner.Center);
                 }
             }
 
-            //淡出
-            auraIntensity = MathHelper.Lerp(0.3f, 0f, progress);
+            //核心闪爆后回落
+            coreIntensity = MathHelper.Lerp(1f, 0f, progress * progress);
+            //冲击波向外扩散
+            shockProgress = VaultUtils.EaseOutCubic(progress);
+            //尾段整体淡出
+            globalFade = MathHelper.Clamp(1f - (progress - 0.55f) / 0.45f, 0f, 1f);
 
             if (Timer >= CompleteDuration) {
                 Projectile.Kill();
@@ -353,7 +372,7 @@ namespace CalamityOverhaul.Content.Items.Tools
         //粒子生成方法
         private void SpawnGatherParticles(Vector2 center) {
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float radius = Main.rand.NextFloat(50f, auraRadius);
+            float radius = Main.rand.NextFloat(50f, Math.Max(60f, fieldRadius));
             Vector2 pos = center + angle.ToRotationVector2() * radius;
             Vector2 velocity = (center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(2f, 5f);
 
@@ -402,76 +421,77 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            SpriteBatch sb = Main.spriteBatch;
             Player owner = Main.player[Projectile.owner];
+            Vector2 center = owner.Center;
+            SpriteBatch sb = Main.spriteBatch;
 
-            //绘制光环
-            DrawAura(sb, owner.Center);
+            //着色器仪式场（焦散水盘 + 符文环 + 知识核心 + 神光 + 冲击波）
+            //自带 Immediate/Additive 批次，结束时恢复 Deferred/AlphaBlend
+            DrawRitualField(center);
 
-            //绘制粒子
+            //柔光层：向心粒子 + 图标光晕与拖尾（Additive）
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             foreach (var particle in particles) {
                 particle.Draw(sb);
             }
-
-            //绘制飞行图标
             foreach (var icon in flyingIcons) {
-                icon.Draw(sb);
+                icon.DrawGlow(sb);
             }
+            sb.End();
 
-            //绘制中心发光
-            if (Phase == EffectPhase.Absorb || Phase == EffectPhase.Complete) {
-                DrawCenterGlow(sb, owner.Center);
+            //主体层：技能图标本体（AlphaBlend），并恢复默认批次状态
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            foreach (var icon in flyingIcons) {
+                icon.DrawBody(sb);
             }
 
             return false;
         }
 
-        private void DrawAura(SpriteBatch sb, Vector2 center) {
-            if (auraIntensity <= 0.01f) {
+        /// 用着色器单次绘制整个仪式场
+        private void DrawRitualField(Vector2 center) {
+            Effect shader = EffectLoader.EncyclopediaKnowledge?.Value;
+            if (shader == null) {
                 return;
             }
 
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Color auraColor = new Color(100, 200, 255) * (auraIntensity * 0.3f);
-
-            //绘制多层光环
-            for (int i = 0; i < 3; i++) {
-                float ringRadius = auraRadius * (0.8f + i * 0.1f);
-                float ringThickness = 2f + i;
-                int segments = 64;
-
-                for (int j = 0; j < segments; j++) {
-                    float angle1 = (j / (float)segments) * MathHelper.TwoPi;
-                    float angle2 = ((j + 1) / (float)segments) * MathHelper.TwoPi;
-
-                    Vector2 pos1 = center + angle1.ToRotationVector2() * ringRadius;
-                    Vector2 pos2 = center + angle2.ToRotationVector2() * ringRadius;
-
-                    Vector2 diff = pos2 - pos1;
-                    float length = diff.Length();
-                    float rotation = diff.ToRotation();
-
-                    sb.Draw(pixel, pos1 - Main.screenPosition, null, auraColor,
-                        rotation, Vector2.Zero, new Vector2(length, ringThickness), SpriteEffects.None, 0f);
-                }
+            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D noise = CWRAsset.Extra_193?.Value;
+            if (canvas == null || noise == null) {
+                return;
             }
-        }
 
-        private void DrawCenterGlow(SpriteBatch sb, Vector2 center) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            float pulse = (float)Math.Sin(Timer * 0.3f) * 0.3f + 0.7f;
-            Color glowColor = new Color(100, 200, 255) * (auraIntensity * pulse);
+            float drawDiameter = QuadRadius * 2f;
+            Vector2 drawPos = center - Main.screenPosition;
 
-            for (int i = 0; i < 5; i++) {
-                float scale = 30f * (1f + i * 0.3f);
-                float alpha = (1f - i / 5f) * auraIntensity;
-                sb.Draw(pixel, center - Main.screenPosition, null, glowColor * alpha,
-                    0f, new Vector2(0.5f), new Vector2(scale), SpriteEffects.None, 0f);
-            }
+            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            shader.Parameters["uRingScale"]?.SetValue(MathHelper.Clamp(fieldRadius / QuadRadius, 0f, 1f));
+            shader.Parameters["uCoreIntensity"]?.SetValue(MathHelper.Clamp(coreIntensity, 0f, 1f));
+            shader.Parameters["uShock"]?.SetValue(shockProgress < 0f ? 0f : MathHelper.Clamp(shockProgress, 0f, 1f));
+            shader.Parameters["uFade"]?.SetValue(MathHelper.Clamp(globalFade, 0f, 1f));
+            shader.Parameters["deepColor"]?.SetValue(new Vector3(0.03f, 0.10f, 0.20f));
+            shader.Parameters["glowColor"]?.SetValue(new Vector3(0.30f, 0.78f, 0.98f));
+            shader.Parameters["causticColor"]?.SetValue(new Vector3(0.78f, 0.94f, 1.0f));
+            shader.Parameters["runeColor"]?.SetValue(new Vector3(0.62f, 0.90f, 1.0f));
+            shader.Parameters["uNoiseTex"]?.SetValue(noise);
+
+            SpriteBatch sb = Main.spriteBatch;
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            shader.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(canvas, drawPos, null, Color.White, 0f, canvas.Size() * 0.5f,
+                new Vector2(drawDiameter, drawDiameter), SpriteEffects.None, 0f);
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 
-    /// 飞行技能图标实体
+    /// 飞行技能图标实体：自外缘沿贝塞尔曲线汇入核心，带水流柔光拖尾
     internal class FlyingSkillIcon
     {
         public FishSkill Skill;
@@ -483,7 +503,9 @@ namespace CalamityOverhaul.Content.Items.Tools
         public float Scale;
         public int Index;
 
-        private const float FlyDuration = 120f;
+        private readonly Vector2 ctrlOffset;
+        private readonly List<Vector2> trail = new List<Vector2>();
+        private const int MaxTrail = 10;
 
         public bool ShouldRemove => Progress >= 1f;
 
@@ -493,52 +515,68 @@ namespace CalamityOverhaul.Content.Items.Tools
             Position = startPos;
             Index = index;
             Progress = 0f;
-            Speed = 0.01f + (index % 10) * 0.001f;
+            Speed = 0.012f + (index % 10) * 0.0012f;
             Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
             Scale = 0.8f;
+            //控制点偏移固定在生成时，避免逐帧抖动
+            ctrlOffset = new Vector2(Main.rand.NextFloat(-110f, 110f), Main.rand.NextFloat(-340f, -180f));
         }
 
         public void Update(Vector2 targetPos) {
-            Progress += Speed;
-            Progress = Math.Clamp(Progress, 0f, 1f);
+            Progress = Math.Clamp(Progress + Speed, 0f, 1f);
 
             //贝塞尔曲线飞行
-            Vector2 mid = (StartPosition + targetPos) / 2;
-            Vector2 control1 = StartPosition + new Vector2(0, -200f);
-            Vector2 control2 = mid + new Vector2(Main.rand.NextFloat(-100f, 100f), -300f);
-
+            Vector2 mid = (StartPosition + targetPos) * 0.5f;
+            Vector2 control1 = StartPosition + new Vector2(0f, -200f);
+            Vector2 control2 = mid + ctrlOffset;
             Position = VaultUtils.CubicBezier(Progress, StartPosition, control1, control2, targetPos);
 
-            //旋转
             Rotation += 0.05f;
 
-            //缩放动画
-            if (Progress < 0.5f) {
-                Scale = MathHelper.Lerp(0.8f, 1.2f, Progress * 2f);
-            }
-            else {
-                Scale = MathHelper.Lerp(1.2f, 0.3f, (Progress - 0.5f) * 2f);
+            //先放大后收束，汇入核心时变小
+            Scale = Progress < 0.5f
+                ? MathHelper.Lerp(0.8f, 1.2f, Progress * 2f)
+                : MathHelper.Lerp(1.2f, 0.3f, (Progress - 0.5f) * 2f);
+
+            trail.Insert(0, Position);
+            if (trail.Count > MaxTrail) {
+                trail.RemoveAt(trail.Count - 1);
             }
         }
 
-        public void Draw(SpriteBatch sb) {
+        /// 柔光层：水流拖尾 + 图标光晕（Additive）
+        public void DrawGlow(SpriteBatch sb) {
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow == null) {
+                return;
+            }
+            Vector2 glowOrigin = glow.Size() * 0.5f;
+            float life = 1f - Progress;
+
+            for (int i = 0; i < trail.Count; i++) {
+                float t = i / (float)Math.Max(1, trail.Count - 1);
+                float tAlpha = (1f - t) * life * 0.45f;
+                if (tAlpha <= 0.01f) {
+                    continue;
+                }
+                Color c = new Color(90, 190, 255, 0) * tAlpha;
+                float s = Scale * 0.5f * (1f - t * 0.6f);
+                sb.Draw(glow, trail[i] - Main.screenPosition, null, c, 0f, glowOrigin, s, SpriteEffects.None, 0f);
+            }
+
+            //图标背后的光晕
+            Color halo = new Color(120, 210, 255, 0) * (0.25f + life * 0.45f);
+            sb.Draw(glow, Position - Main.screenPosition, null, halo, 0f, glowOrigin, Scale * 1.15f, SpriteEffects.None, 0f);
+        }
+
+        /// 主体层：技能图标本体（AlphaBlend）
+        public void DrawBody(SpriteBatch sb) {
             if (Skill?.Icon == null) {
                 return;
             }
-
-            Color drawColor = Color.White * (1f - Progress * 0.5f);
-            Vector2 origin = Skill.Icon.Size() / 2f;
-
-            //绘制发光
-            for (int i = 0; i < 3; i++) {
-                Color glowColor = new Color(100, 200, 255) * ((1f - Progress) * 0.3f);
-                sb.Draw(Skill.Icon, Position - Main.screenPosition, null, glowColor,
-                    Rotation, origin, Scale * (1f + i * 0.1f), SpriteEffects.None, 0f);
-            }
-
-            //绘制主体
-            sb.Draw(Skill.Icon, Position - Main.screenPosition, null, drawColor,
-                Rotation, origin, Scale, SpriteEffects.None, 0f);
+            Vector2 origin = Skill.Icon.Size() * 0.5f;
+            Color drawColor = Color.Lerp(new Color(190, 232, 255), Color.White, 0.5f) * (1f - Progress * 0.35f);
+            sb.Draw(Skill.Icon, Position - Main.screenPosition, null, drawColor, Rotation, origin, Scale, SpriteEffects.None, 0f);
         }
     }
 
@@ -595,16 +633,20 @@ namespace CalamityOverhaul.Content.Items.Tools
         }
 
         public void Draw(SpriteBatch sb) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Color color = Type switch {
-                ParticleType.Gather => new Color(100, 200, 255),
-                ParticleType.Absorb => new Color(150, 220, 255),
-                ParticleType.Burst => new Color(200, 240, 255),
-                _ => Color.White
-            } * Alpha;
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow == null) {
+                return;
+            }
+            Color color = (Type switch {
+                ParticleType.Gather => new Color(90, 190, 255, 0),
+                ParticleType.Absorb => new Color(150, 225, 255, 0),
+                ParticleType.Burst => new Color(200, 245, 255, 0),
+                _ => new Color(255, 255, 255, 0)
+            }) * (Alpha * 0.85f);
 
-            sb.Draw(pixel, Position - Main.screenPosition, null, color,
-                Rotation, new Vector2(0.5f), new Vector2(Scale * 4f), SpriteEffects.None, 0f);
+            float s = Scale * 0.4f * (0.6f + Alpha * 0.4f);
+            sb.Draw(glow, Position - Main.screenPosition, null, color,
+                Rotation, glow.Size() * 0.5f, s, SpriteEffects.None, 0f);
         }
     }
 }

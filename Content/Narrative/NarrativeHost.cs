@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sea;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sulfsea;
+using CalamityOverhaul.Content.Narrative.Presentation.Skins.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Helen;
@@ -57,6 +58,7 @@ namespace CalamityOverhaul.Content.Narrative
             StyleRegistry.RegisterSet(NarrativeIds.Draedon, new DraedonDialogueSkin(), new DraedonChoiceSkin(), new DraedonPopupSkin());
             StyleRegistry.RegisterSet(NarrativeIds.StarStream, new StarStreamDialogueSkin(), new StarStreamChoiceSkin(), new StarStreamPopupSkin());
             StyleRegistry.RegisterSet(NarrativeIds.SHPC, new SHPCDialogueSkin(), new SHPCChoiceSkin(), new SHPCPopupSkin());
+            StyleRegistry.RegisterSet(NarrativeIds.Tzeentch, new TzeentchDialogueSkin(), new TzeentchChoiceSkin(), new TzeentchPopupSkin());
         }
 
         private static void RegisterPortraits() {
