@@ -483,7 +483,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             }
 
             Color drawColor = Color.BlueViolet * cloneAlpha;
-            PlayerCloneRenderer.Draw(Owner, snap.Position, drawColor, snap.Direction,
+            //傀儡外观已由调用方按 Owner 统一 Prepare（每个 Owner 每帧仅一次），此处只摆位绘制本体；
+            //避免每个过去身都重复执行重度的 CopyVisuals/ResetEffects——这是过去身越多越掉帧的根因
+            PlayerCloneRenderer.DrawPrepared(snap.Position, drawColor, snap.Direction,
                 snap.BodyFrame, snap.LegFrame, Owner.fullRotation, Owner.fullRotationOrigin);
 
             if (snap.ItemAnimation > 0) {
@@ -585,9 +587,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp
                     , DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
+                //同一玩家的全部过去身共用一份傀儡外观：cloneBuffer 已按 owner 排序，每个 Owner 每帧只 Prepare 一次，
+                //把原先“每个过去身一次”的重度 CopyVisuals/ResetEffects 降为“每个玩家一次”
+                int lastOwner = -1;
                 for (int i = 0; i < cloneCount; i++) {
                     ClonePlayer clone = cloneBuffer[i];
                     if (clone.TryGetDrawSnapshot(out PlayerSnapshot snap)) {
+                        int owner = clone.Projectile.owner;
+                        if (owner != lastOwner) {
+                            PlayerCloneRenderer.Prepare(Main.player[owner]);
+                            lastOwner = owner;
+                        }
                         clone.DrawClonePlayer(snap);
                     }
                 }
@@ -614,6 +624,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
                 if (projectile.ModProjectile is ClonePlayer clone) {
                     cloneBuffer.Add(clone);
                 }
+            }
+            //按 owner 分组（同 owner 内保持弹幕索引顺序，绘制层序稳定），让“每个 Owner 仅 Prepare 一次”的合并生效
+            //单人下只有一个 owner，等价于原先的索引升序，绘制顺序不变
+            if (cloneBuffer.Count > 1) {
+                cloneBuffer.Sort((a, b) => {
+                    int byOwner = a.Projectile.owner.CompareTo(b.Projectile.owner);
+                    return byOwner != 0 ? byOwner : a.Projectile.whoAmI.CompareTo(b.Projectile.whoAmI);
+                });
             }
         }
     }
