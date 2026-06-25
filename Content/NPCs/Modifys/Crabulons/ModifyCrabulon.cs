@@ -202,7 +202,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
         //状态走 NPCOverride：客户端 SendNetworkData，服务器 NetOtherWorkSend
         public void SendNetWork() {
             if (VaultUtils.isClient) {
-                SendNetworkData();
+                RequestSync(NPCOverrideSyncField.All);
             }
             else if (VaultUtils.isServer) {
                 NetOtherWorkSend = true;

@@ -13,8 +13,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 
         private FullBodyPortraitBase _activeFullBodyPortrait;
         private NarrativeSession _activeFullBodyPortraitSession;
-        private string _portraitLineKey = string.Empty;
-        private bool _portraitLineKeyInitialized;
 
         float INarrativePanelAnchor.ShowProgress => MotionProgress;
 
@@ -132,13 +130,7 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
 
         private bool IsCompletionBlocked() => _activeFullBodyPortrait is { BlockDialogueClose: true };
 
-        private void ResetPortraitTracking() {
-            _portraitLineKey = string.Empty;
-            _portraitLineKeyInitialized = false;
-        }
-
         public override void Open() {
-            ResetPortraitTracking();
             base.Open();
         }
 
@@ -153,7 +145,6 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Views
             }
 
             HideFullBodyPortrait();
-            ResetPortraitTracking();
             base.Close();
         }
     }

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using System;
@@ -31,7 +31,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         private int side;
         private int loopDir;
         private Vector2 anchorPos;
-        private bool lungeFired;
         private bool exitFired;
 
         public DestroyerLoopLashState() {
@@ -40,7 +39,6 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
         public override void OnEnter(DestroyerStateContext context) {
             base.OnEnter(context);
             context.SkipDefaultMovement = true;
-            lungeFired = false;
             exitFired = false;
             side = 0;
             SoundEngine.PlaySound(SoundID.NPCHit4 with { Pitch = -0.45f, Volume = 0.7f }, context.Npc.Center);
@@ -74,7 +72,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
                 npc.velocity = lungeDir * LungeSpeed(context);
                 npc.rotation = npc.velocity.ToRotation() + MathHelper.PiOver2;
                 npc.netUpdate = true;
-                lungeFired = true;
+
                 //ForceRoar：突入/贯穿两声间隔短于Roar采样时长，普通Roar会因IgnoreNew上限丢失
                 SoundEngine.PlaySound(SoundID.ForceRoar with { Pitch = 0.3f, Volume = 1f }, npc.Center);
                 DestroyerMotionFX.SpawnDashBurst(npc.Center, lungeDir);

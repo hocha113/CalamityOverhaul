@@ -15,9 +15,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private static readonly Vector4[] entityBuffer = new Vector4[MaxEntities];
 
         [VaultLoaden(CWRConstant.Masking + "Noise2")]
-        private static Asset<Texture2D> noise2;
+        private static Asset<Texture2D> noise2 = null;
         [VaultLoaden(CWRConstant.Masking + "SoftGlow")]
-        private static Asset<Texture2D> softGlow;
+        private static Asset<Texture2D> softGlow = null;
 
         public override void UpdateBySystem(int index) {
             //逻辑在 CyberspaceSystem.PostUpdateEverything；专服不跑 RenderHandle 更新

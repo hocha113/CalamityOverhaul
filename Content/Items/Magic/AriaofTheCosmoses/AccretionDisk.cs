@@ -22,7 +22,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         private float time;
         private float brightness = 1f;
-        private float distortionStrength = 0.15f;
 
         //颜色配置
         private Color innerColor = new Color(255, 200, 100); //内圈
