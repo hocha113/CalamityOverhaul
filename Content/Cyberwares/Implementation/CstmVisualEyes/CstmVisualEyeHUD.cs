@@ -55,8 +55,8 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.CstmVisualEyes
         int IBottomLeftHud.HudStackOrder => 10;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalCorePosition;
         //自核心向上覆盖 RAM 弧条与数值标签，向下覆盖义眼核心与弧条下沿
-        float IBottomLeftHud.HudStackTopExtent => 66f;
-        float IBottomLeftHud.HudStackBottomExtent => 34f;
+        float IBottomLeftHud.HudStackTopExtent => 60f;
+        float IBottomLeftHud.HudStackBottomExtent => 60f;
         #endregion
 
         #region 状态

@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalCorePosition;
         //自核心向上覆盖扇形按钮与固定面板，向下覆盖 RAM 弧条
-        float IBottomLeftHud.HudStackTopExtent => 104f;
+        float IBottomLeftHud.HudStackTopExtent => 60f;
         float IBottomLeftHud.HudStackBottomExtent => 60f;
         #endregion
 

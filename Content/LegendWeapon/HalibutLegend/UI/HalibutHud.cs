@@ -91,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
         //自眼心向上覆盖卫星环/层数弧/压力柱顶，向下覆盖技能徽章与命中盒底部
-        float IBottomLeftHud.HudStackTopExtent => 90f;
+        float IBottomLeftHud.HudStackTopExtent => 60f;
         float IBottomLeftHud.HudStackBottomExtent => 70f;
         #endregion
 
