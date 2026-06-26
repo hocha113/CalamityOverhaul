@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOvers
+namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
 {
     /// <summary>主菜单立绘UI基类</summary>
     internal abstract class BasePortraitUI : UIHandle, ICWRLoader

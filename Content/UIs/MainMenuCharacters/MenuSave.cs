@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.ModLoader.IO;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOvers
+namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
 {
     /// <summary>主菜单立绘存档</summary>
     internal class MenuSave : SaveMod

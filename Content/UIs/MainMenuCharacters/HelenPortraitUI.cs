@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace CalamityOverhaul.Content.UIs.MainMenuOvers
+namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
 {
     /// <summary>海伦主菜单立绘 UI</summary>
     internal class HelenPortraitUI : BasePortraitUI
