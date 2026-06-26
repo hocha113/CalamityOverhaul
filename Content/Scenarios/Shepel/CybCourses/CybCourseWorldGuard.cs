@@ -1,8 +1,10 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.OtherMods.ImproveGame;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
@@ -10,6 +12,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
     //职责：快照灾厄Boss击杀进度 + 城镇NPC列表 + SHPC 持有总数，回到主世界后补全丢失数据并剥离教程兜底产生的多余SHPC
     //快照时机：CybCourse.Enter() 在切换世界前调用 Snapshot()
     //恢复时机：CybCoursePlayer.OnEnterWorld() 确认已回到主世界后调用 RestoreOnReturn()
+    //安全约束：快照与"它来自哪个主世界"绑定（_sourceWorldId）。只有回到同一个主世界才会应用，
+    //          一旦当前世界不匹配（例如玩家从子世界"保存并退出"到主菜单后又载入了别的世界）就整组丢弃，
+    //          绝不把 A 世界的城镇NPC坐标/Boss旗标/SHPC数量套用到 B 世界（否则会在新世界越界生成NPC而闪退）
     internal static class CybCourseWorldGuard
     {
         //记录进入子世界前灾厄Boss击杀标志的快照
@@ -28,11 +33,29 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static int _shpcOwnedSnapshot;
         private static bool _shpcSnapshotValid;
 
-        //进入子世界前调用，同时拍摄Boss进度、城镇NPC、SHPC 持有量三类快照
+        //快照来源主世界的唯一标识；恢复时用它校验"是否回到了同一个世界"
+        private static Guid _sourceWorldId;
+        //是否持有一份待消费的快照。作为总开关，避免依赖各子快照字段的 null 状态做隐式判断
+        private static bool _hasSnapshot;
+
+        //当前活动世界的唯一标识，取不到时回退到 Guid.Empty
+        private static Guid CurrentWorldId() => Main.ActiveWorldFileData?.UniqueId ?? Guid.Empty;
+
+        //进入子世界前调用，同时拍摄Boss进度、城镇NPC、SHPC 持有量三类快照，并记录来源世界
         internal static void Snapshot() {
+            _sourceWorldId = CurrentWorldId();
+            _hasSnapshot = true;
             SnapshotCalamityFlags();
             SnapshotTownNPCs();
             SnapshotSHPCOwnership();
+        }
+
+        //丢弃整组快照（用于世界不匹配的兜底，不做任何世界写入）
+        private static void DiscardSnapshot() {
+            _calBossFlags = null;
+            _npcSnapshot = null;
+            _shpcSnapshotValid = false;
+            _sourceWorldId = Guid.Empty;
         }
 
         //拍摄灾厄Boss击杀标志（仅在灾厄Mod存在时生效）
@@ -52,10 +75,26 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         }
 
         //回到主世界后统一恢复，在CybCoursePlayer.OnEnterWorld()中调用
+        //该钩子在每次进入任意世界时都会触发，因此必须用 _hasSnapshot 一次性消费 + 世界校验双重保护：
+        //  · 无快照 → 直接返回（绝大多数玩家从不进教程，这里就是空操作）
+        //  · 有快照但当前世界与来源不符 → 整组丢弃，绝不写入新世界（防越界生成NPC闪退）
+        //  · 有快照且世界匹配 → 正常恢复
         internal static void RestoreOnReturn() {
+            if (!_hasSnapshot) {
+                return;
+            }
+            //一次性消费：无论后续走哪条分支，这份快照都不再保留，杜绝跨世界/跨存档残留
+            _hasSnapshot = false;
+
+            if (CurrentWorldId() != _sourceWorldId) {
+                DiscardSnapshot();
+                return;
+            }
+
             RestoreCalamityFlags();
             RestoreTownNPCs();
             PruneTutorialSHPC();
+            _sourceWorldId = Guid.Empty;
         }
 
         //以OR方式将快照标志补写回灾厄系统（只补true，绝不清除已有的true）
@@ -68,6 +107,11 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         //补全快照中存在、但当前世界里已消失的城镇NPC
         private static void RestoreTownNPCs() {
             if (_npcSnapshot is null) return;
+            //生成NPC属于服务器权威行为，多人客户端绝不能本地补怪，否则产生幽灵NPC并与服务器不同步
+            if (Main.netMode == NetmodeID.MultiplayerClient) {
+                _npcSnapshot = null;
+                return;
+            }
             //收集当前已存在的城镇NPC类型
             HashSet<int> present = new(64);
             for (int i = 0; i < Main.maxNPCs; i++) {
@@ -77,8 +121,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             }
             //补生缺失的城镇NPC，位置尽量还原到快照坐标
             foreach (NpcEntry e in _npcSnapshot) {
-                if (!present.Contains(e.Type))
-                    NPC.NewNPC(new EntitySource_Misc("CybCourse_NPCRestore"), e.X, e.Y, e.Type);
+                if (present.Contains(e.Type)) continue;
+                //坐标按快照世界尺寸记录，最后再做一次边界兜底，避免落到当前世界范围外导致后续AI越界访问瓦片
+                if (!WorldGen.InWorld(e.X / 16, e.Y / 16, 10)) continue;
+                NPC.NewNPC(new EntitySource_Misc("CybCourse_NPCRestore"), e.X, e.Y, e.Type);
             }
             _npcSnapshot = null;
         }

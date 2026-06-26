@@ -385,8 +385,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             var queue = HackTimeUI.Instance?.Queue;
             //step 1：玩家点击锁定SantaNK1
             if (step == 1) {
-                if (HackTime.SelectedTargetIndex < 0) return false;
-                NPC target = Main.npc[HackTime.SelectedTargetIndex];
+                int ti = HackTime.SelectedTargetIndex;
+                //上界兜底，与 HackTimeRender 等处保持一致，杜绝异常索引越界访问 Main.npc
+                if (ti < 0 || ti >= Main.npc.Length) return false;
+                NPC target = Main.npc[ti];
                 return target.active && target.type == NPCID.SantaNK1;
             }
             //step 3：玩家把至少一个NPC协议加入队列

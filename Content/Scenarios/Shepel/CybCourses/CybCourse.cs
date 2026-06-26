@@ -18,21 +18,26 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public static bool IsActive => CybCourseWorld.Active;
 
         public static void Enter() {
-            //在切换子世界前清理玩家身上的"跨世界引用"，否则进入子世界后
-            //RecipeBrowser/MagicStorage/Fargo 等 Mod 在 OnEnterWorld 里调 FindRecipes 时
-            //Recipe.CollectItemsToCraftWithFrom 会拿主世界的 chest/sign/TileEntity 索引去访问子世界的
-            //Main.chest[] / TileEntity.ByID（已被换成空的），从而抛 NullReferenceException 闪退
-            Player p = Main.LocalPlayer;
-            if (p != null && p.active) {
-                p.chest = -1;
-                p.sign = -1;
-                p.SetTalkNPC(-1, fromNet: false);
-                p.tileEntityAnchor.Clear();
-                Main.npcChatText = string.Empty;
-            }
+            //切换子世界前先清掉跨世界引用（详见 ClearCrossWorldRefs 注释）
+            ClearCrossWorldRefs(Main.LocalPlayer);
             //进入子世界前拍主世界快照，回主世界时补 Boss 进度与城镇 NPC
             CybCourseWorldGuard.Snapshot();
             CybCourseWorld.Enter();
+        }
+
+        //清理玩家身上的"跨世界引用"：chest/sign/聊天NPC/TileEntity 锚点都是按"当前世界"的索引，
+        //一旦带着它们切换世界，RecipeBrowser/MagicStorage/Fargo 等 Mod 会在 OnEnterWorld 里调 FindRecipes，
+        //Recipe.CollectItemsToCraftWithFrom 拿旧世界的索引去访问新世界的 Main.chest[] / TileEntity.ByID（已被换空），
+        //从而抛 NullReferenceException 闪退。进、出子世界两个方向都必须做此清理，否则只堵住了单边。
+        private static void ClearCrossWorldRefs(Player p) {
+            if (p == null || !p.active) {
+                return;
+            }
+            p.chest = -1;
+            p.sign = -1;
+            p.SetTalkNPC(-1, fromNet: false);
+            p.tileEntityAnchor.Clear();
+            Main.npcChatText = string.Empty;
         }
 
         //由FirstMetShepel_CybCourseAccept在进入子世界前调用，标记回到主世界后需发放凭证
@@ -53,6 +58,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             CybCourseKeyBindReminderPanel.Hide();
             NarrativeRunner.Reset();
             HackTime.InfiniteHack = false;
+            //与 Enter 对称：回主世界前清掉子世界里残留的 chest/sign/TileEntity 锚点，避免被主世界误读为本地索引而闪退
+            ClearCrossWorldRefs(Main.LocalPlayer);
             CybCourseWorld.Exit();
         }
 

@@ -53,6 +53,8 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             HackTime.InfiniteHack = false;
             //避免下次进入时误用旧值
             _entryRevealTime = -1f;
+            //释放整图回滚快照，避免 ~400×250 结构体常驻内存
+            CybCourseGen.ClearSnapshot();
         }
 
         public override void OnLoad() {
