@@ -1,4 +1,5 @@
-﻿using InnoVault.UIHandles;
+﻿using InnoVault.GameSystem;
+using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -16,7 +17,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
     /// 全屏背景与谢幕辉光走着色器（AckBackdrop / AckFinale），缺失时 CPU 回退；
     /// 版式参考明日方舟片尾：近黑底、单一暖琥珀强调、克制留白与缓动
     /// </summary>
-    internal class AcknowledgmentUI : UIHandle<AcknowledgmentUI>, ILocalizedModType
+    internal class AcknowledgmentUI : UIHandle<AcknowledgmentUI>, IUpdateAudio, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
 
@@ -57,6 +58,24 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public override bool Active => CWRLoad.OnLoadContentBool;
         public override float RenderPriority => 1.2f;
         public override SoundStyle? CloseSound => SoundID.MenuClose;
+
+        void IUpdateAudio.DecideMusic() {
+            if (!Main.gameMenu || !OnActive()) {
+                return;
+            }
+            AcknowledgmentUI ui = InstanceOrNull;
+            if (ui == null) {
+                return;
+            }
+            int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
+            for (int i = 0; i < Main.musicFade.Length; i++) {
+                if (i == targetID) {
+                    continue;
+                }
+                Main.musicFade[i] = ui.MusicFade50 / 120f;
+            }
+            Main.newMusic = targetID;
+        }
 
         public static bool OnActive() {
             AcknowledgmentUI ui = InstanceOrNull;
