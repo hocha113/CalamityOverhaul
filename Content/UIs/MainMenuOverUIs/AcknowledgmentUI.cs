@@ -66,8 +66,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             return ui.IsOpen || ui.OpenProgress.Current > 0f;
         }
 
-        /// <summary>从公告栏等入口打开致谢 ED，并锁定主菜单 menuMode</summary>
-        public static void OpenFromMenu() {
+        private static void ReleaseMenuMode() {
+            if (Main.menuMode == MenuMode) {
+                Main.menuMode = 0;
+            }
+        }
+
+        protected override void OnOpen() {
             if (Main.menuMode == MenuMode) {
                 SoundEngine.PlaySound(SoundID.Unlock);
                 return;
@@ -77,16 +82,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
             Main.menuMode = MenuMode;
-            InstanceOrNull?.Open();
-        }
 
-        private static void ReleaseMenuMode() {
-            if (Main.menuMode == MenuMode) {
-                Main.menuMode = 0;
-            }
-        }
-
-        protected override void OnOpen() {
             pendingTimelineReset = false;
             ResetTimeline();
         }

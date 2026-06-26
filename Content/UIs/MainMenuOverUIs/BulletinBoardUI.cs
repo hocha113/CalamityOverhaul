@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             bulletinBoardElements.Add(logBulletinBoard);
 
             BulletinBoardElement acknowledgmentNulletinBoard = new BulletinBoardElement()
-                .Setproperty(AcknowledgmentLabel, AcknowledgmentUI.OpenFromMenu,
+                .Setproperty(AcknowledgmentLabel, AcknowledgmentUI.Instance.Open,
                     disabledFunc: () => Main.menuMode != 0);
             bulletinBoardElements.Add(acknowledgmentNulletinBoard);
 
