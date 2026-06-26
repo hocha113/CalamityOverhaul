@@ -4,6 +4,7 @@ using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.UI;
 using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Narrative.Guides;
 using InnoVault.Narrative.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,7 +19,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
     //超梦教程引导：开场对话、步骤状态、教学卡片与高亮
     //复用EntrustGuideCard着色器（variant=1青色版），不修改任何被教学的目标UI代码
-    internal class CybTutorialLead : ModSystem, ILocalizedModType
+    //作为IGuideLead以最高优先级登记进引导队列：整段教程子世界期间独占展示权，
+    //压制比目鱼/委托等无关首次引导，避免它们与教学卡片同屏抢镜
+    internal class CybTutorialLead : ModSystem, ILocalizedModType, IGuideLead
     {
         private enum Phase { Inactive, Running, FadeOut, Done }
 
@@ -43,6 +46,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         private static LocalizedText _textNextBtn;
 
         public override void SetStaticDefaults() {
+            GuideLeadQueue.Register(this);
             _stepTitles = new[] {
                 this.GetLocalization("Step0_Title", () => "连接 SHPC"),
                 this.GetLocalization("Step1_Title", () => "核心节点"),
@@ -81,6 +85,18 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
         public static bool IsDone => _phase == Phase.Done;
         //SHPC教学的最后一步（FadeOut或Done阶段）：允许下游HackTime教学提前接入
         public static bool IsTailing => _phase == Phase.FadeOut || _phase == Phase.Done;
+
+        #region 引导排队协议
+        //教程是子世界内的强制流程（SHPC教学 → 骇客时间教学 → 通关收尾），
+        //整段子世界期间都由本引导独占引导队列，压制比目鱼/委托等无关首次引导。
+        //骇客时间教学(HackTimeTutorialLead)是同一流程的下游环节，已被本引导对整段
+        //子世界的占位覆盖，无需单独登记。退出子世界后CybCourseWorld.Active转false，占位自然释放。
+        int IGuideLead.GuidePriority => 0;//最高优先级，子世界内压制其它一切引导
+        bool IGuideLead.GuideReserving => CybCourseWorld.Active;
+        bool IGuideLead.GuideReady => CybCourseWorld.Active;
+        //子世界强制流程始终就绪、不会被饥饿保底放弃；占位随退出子世界自然释放，无需额外处理
+        void IGuideLead.OnGuideAbandoned() { }
+        #endregion
 
         private static Phase _phase = Phase.Inactive;
         private static int _currentStep = 0;
