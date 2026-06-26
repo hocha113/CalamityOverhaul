@@ -31,6 +31,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public override void OnUnequip(Player player) {
             Sandevistan.ForceDeactivate();
             Sandevistan.CurrentCooldown = 0;
+            Item.value = Item.sellPrice(0, 7, 0, 0);
         }
     }
 }
