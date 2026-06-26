@@ -185,14 +185,14 @@ CybCourseOutroDialogue: {
 }
 
 CybCourseCompletePanel: {
-	Title: TRAINING COMPLETE
-	Subtitle: SUPERDREAM PROTOCOL
+	Title: ENTRAÎNEMENT TERMINÉ
+	Subtitle: PROTOCOLE SUPER-RÊVE
 	Stat1: "[#] ATH du SHPC calibré"
 	Stat2: "[#] Temps de piratage calibré"
 	Stat3: "[#] Interface de scan de bloc calibrée"
-	BtnRetry: RETRY
-	BtnExit: EXIT
-	Footer: Sélectionnez une option pour continuer — RETRY pour relancer l'entraînement, EXIT pour quitter le Super-Rêve.
+	BtnRetry: RECOMMENCER
+	BtnExit: QUITTER
+	Footer: Sélectionnez une option pour continuer — RECOMMENCER pour relancer l'entraînement, QUITTER pour quitter le Super-Rêve.
 }
 
 CybCourseKeyBindReminderPanel: {

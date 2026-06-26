@@ -185,14 +185,14 @@ CybCourseOutroDialogue: {
 }
 
 CybCourseCompletePanel: {
-	Title: TRAINING COMPLETE
-	Subtitle: SUPERDREAM PROTOCOL
+	Title: TRAINING ABGESCHLOSSEN
+	Subtitle: SUPERDREAM-PROTOKOLL
 	Stat1: "[#] SHPC-HUD kalibriert"
 	Stat2: "[#] Hack Time kalibriert"
 	Stat3: "[#] Block-Scan-Schnittstelle kalibriert"
-	BtnRetry: RETRY
-	BtnExit: EXIT
-	Footer: Wähle zum Fortfahren — RETRY startet Training neu, EXIT verlässt Superdream
+	BtnRetry: ERNEUT
+	BtnExit: BEENDEN
+	Footer: Wähle zum Fortfahren — ERNEUT startet Training neu, BEENDEN verlässt Superdream
 }
 
 CybCourseKeyBindReminderPanel: {

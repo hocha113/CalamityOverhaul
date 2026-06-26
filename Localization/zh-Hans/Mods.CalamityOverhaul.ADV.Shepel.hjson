@@ -185,14 +185,14 @@ CybCourseOutroDialogue: {
 }
 
 CybCourseCompletePanel: {
-	Title: TRAINING COMPLETE
-	Subtitle: SUPERDREAM PROTOCOL
+	Title: 训练完成
+	Subtitle: 超梦协议
 	Stat1: "[#] SHPC HUD 校准完毕"
 	Stat2: "[#] 骇客时间校准完毕"
 	Stat3: "[#] 物块扫描接口校准完毕"
-	BtnRetry: RETRY
-	BtnExit: EXIT
-	Footer: 选择以继续 — RETRY 重启训练，EXIT 离开超梦
+	BtnRetry: 重新训练
+	BtnExit: 退出
+	Footer: 选择以继续 — 重新训练可重启训练，退出可离开超梦
 }
 
 CybCourseKeyBindReminderPanel: {

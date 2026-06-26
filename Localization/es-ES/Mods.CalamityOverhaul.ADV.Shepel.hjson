@@ -192,7 +192,7 @@ CybCourseCompletePanel: {
 	Stat3: "[#] Interfaz de escaneo de bloques calibrada"
 	BtnRetry: REINTENTAR
 	BtnExit: SALIR
-	Footer: Seleccione para continuar — RETRY reinicia el entrenamiento, EXIT abandona el hiper-sueño
+	Footer: Seleccione para continuar — REINTENTAR reinicia el entrenamiento, SALIR abandona el hiper-sueño
 }
 
 CybCourseKeyBindReminderPanel: {
