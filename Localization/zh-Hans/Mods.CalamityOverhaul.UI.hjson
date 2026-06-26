@@ -848,6 +848,10 @@ AcknowledgmentUI: {
 	MusicianRole: 音乐制作
 	DonorRole: 捐赠者
 	BalanceTesterRole: 平衡测试
+	TitleText: 鸣 谢
+	SubtitleText: 灾厄大修 · 全体贡献者
+	FinaleText: 感谢一路同行
+	ExitHintText: 点击或按 ESC 退出
 }
 
 CWRPlayer: {

@@ -1,12 +1,9 @@
-using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye;
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -16,7 +13,12 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 {
-    internal class AcknowledgmentUI : UIHandle, ICWRLoader, IUpdateAudio, ILocalizedModType
+    /// <summary>
+    /// 模组致谢 ED：编排式片尾——入场标题揭示 → 分节滚动名单 → 谢幕定格卡。
+    /// 全屏背景与谢幕辉光走着色器（AckBackdrop / AckFinale），缺失时 CPU 回退；
+    /// 版式参考明日方舟片尾：近黑底、单一暖琥珀强调、克制留白与缓动
+    /// </summary>
+    internal class AcknowledgmentUI : UIHandle, IUpdateAudio, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
 
@@ -25,596 +27,392 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public static LocalizedText MusicianRole { get; private set; }
         public static LocalizedText DonorRole { get; private set; }
         public static LocalizedText BalanceTesterRole { get; private set; }
+        public static LocalizedText TitleText { get; private set; }
+        public static LocalizedText SubtitleText { get; private set; }
+        public static LocalizedText FinaleText { get; private set; }
+        public static LocalizedText ExitHintText { get; private set; }
 
-        internal static string ArtistText => $" [{ArtistRole.Value}]";
-        internal static string CodeAssistanceText => $" [{CodeAssistanceRole.Value}]";
-        internal static string MusicianText => $" [{MusicianRole.Value}]";
-        internal static string DonorText => $" [{DonorRole.Value}]";
-        internal static string BalanceTesterText => $" [{BalanceTesterRole.Value}]";
-
-        internal static string[] names = [];
-        private int musicFade50;
-        private float _sengs;
-        internal bool _active;
         internal static AcknowledgmentUI Instance;
+        /// <summary>外部入口（致谢按钮）置真以开启 ED</summary>
+        internal bool _active;
+
         [VaultLoaden("CalamityOverhaul/IntactLogo")]
         private static Asset<Texture2D> Logo = null;
-        internal List<ProjItem> projectiles = [];
-        internal List<EffectEntity> effectEntities = [];
-        internal List<NPCGhostItem> npcGhostItem = [];
-        private static Vector2 ItemPos => new(Main.screenWidth / 2, Main.screenHeight - 60);
-        private const int projTimer = 4600;
+
+        private enum Phase { Title, Roll, Finale }
+        private Phase phase;
+        private float phaseTime;     //当前阶段已运行秒数
+        private float fade;          //主透明度 0-1
+        private float globalTime;    //动画总时钟（秒），驱动呼吸/微光
+        private float scrollPx;      //名单滚动量（UI空间像素）
+        private float rollDistance;  //名单滚完所需的滚动量
+        private float frameReveal;   //取景框入场 0-1
+        private int musicFade50;     //ED 音乐与其它音轨的交叉淡入计数
+
+        private const float TitleDuration = 6f;     //标题阶段总时长
+        private const float TitleExitTime = 1.3f;   //标题退场淡出时长
+        private const float FinaleRiseTime = 2.4f;  //谢幕辉光涨起时长
+        private const float RollPxPerFrame = 0.85f; //名单每帧滚动像素
+
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
         public override float RenderPriority => 1.2f;
-        internal class NPCGhostItem : ProjItem
-        {
-            private float rotation;
-            private int frameConter;
-            private int frameIndex;
-
-            public NPCGhostItem(
-                int index, int timeLeft, float size, int alp, Color color,
-                Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime)
-                : base(index, timeLeft, size, alp, color, position, velocity, text, texture, startTime) {
-
-            }
-
-            public override void AI(float sengs) {
-                if (--startTime > 0) {
-                    return;
-                }
-
-                position += velocity;
-                rotation = velocity.ToRotation() - MathHelper.PiOver2;
-                timeLeft--;
-
-                if (timeLeft > 60) {
-                    alp = Math.Min(alp + 5, 255);
-                }
-                else {
-                    alp = Math.Max(alp - 4, 0);
-                }
-
-                if (timeLeft <= 0 || alp <= 0) {
-                    active = false;
-                }
-
-                if (++frameConter > 5) {
-                    if (++frameIndex > 3) {
-                        frameIndex = 0;
-                    }
-                    frameConter = 0;
-                }
-            }
-
-            public override void Draw(SpriteBatch spriteBatch, float sengs) {
-                if (startTime > 0) {
-                    return;
-                }
-
-                //用主材质或替代材质
-                Texture2D tex = index == 0 ? TwinsAIController.SpazmatismAsset.Value : TwinsAIController.RetinazerAsset.Value;
-                if (index == 2) {
-                    tex = TwinsAIController.SpazmatismAltAsset.Value;
-                }
-                if (index == 3) {
-                    tex = TwinsAIController.RetinazerAltAsset.Value;
-                }
-                Rectangle frameRect = tex.GetRectangle(frameIndex, 4);
-                SpriteEffects effects = velocity.X >= 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
-                Vector2 origin = frameRect.Size() / 2f;
-                float drawRot = rotation + MathHelper.PiOver2;
-                Color color = Color.White * (alp / 255f) * sengs;
-                //残影轨迹模拟
-                float trailOpacity = 0.2f;
-                float trailScale = size * 0.7f;
-                for (int i = 0; i < 5; i++) {
-                    Vector2 offset = new Vector2(i * -velocity.X * 2f, i * -velocity.Y * 2f);
-                    Color trailColor = color * trailOpacity;
-                    spriteBatch.Draw(tex, position + offset, frameRect, trailColor,
-                        drawRot, origin, trailScale, effects, 0f);
-                    trailOpacity *= 0.75f;
-                    trailScale *= 0.95f;
-                }
-
-                //主体绘制
-                Color colorFinal = color;
-                spriteBatch.Draw(tex, position, frameRect, colorFinal,
-                    drawRot, origin, size, effects, 0f);
-            }
-        }
-
-        internal class ProjItem
-        {
-            public int index;
-            public int timeLeft;
-            public int startTime;
-            public int alp;
-            public bool active = true;
-            public float size;
-            public string text;
-            public Texture2D texture;
-            public Color color;
-            public Vector2 position;
-            public Vector2 velocity;
-            public Vector2 textSize;
-            public ProjItem(int index, int timeLeft, float size, int alp, Color color
-                , Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime) {
-                this.index = index;
-                this.timeLeft = timeLeft;
-                this.size = size;
-                this.alp = alp;
-                this.color = color;
-                this.position = position;
-                this.velocity = velocity;
-                this.text = text;
-                this.texture = texture;
-                this.startTime = startTime;
-            }
-
-            public virtual void AI(float sengs) {
-                if (--startTime > 0) {
-                    return;
-                }
-                textSize = FontAssets.MouseText.Value.MeasureString(text);
-                if (alp < 255 && timeLeft % 2 == 0) {
-                    alp++;
-                }
-                position += velocity;
-                timeLeft--;
-                if (timeLeft <= 0) {
-                    active = false;
-                }
-            }
-
-            public virtual void Draw(SpriteBatch spriteBatch, float sengs) {
-                if (--startTime > 0 || position.Y < -200) {
-                    return;
-                }
-
-                float textAlp = sengs * (alp / 255f);
-                if (index == 0) {
-                    spriteBatch.Draw(Logo.Value, position, null, Color.White * textAlp, 0f
-                        , new Vector2(Logo.Size().X / 2, Logo.Size().Y), 1, SpriteEffects.None, 0);
-                    return;
-                }
-                Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.MouseText.Value, text
-                    , position.X - textSize.X / 2, position.Y, color * textAlp, Color.Black * textAlp, new Vector2(0.2f), 1);
-            }
-        }
-
-        internal class EffectEntity : ProjItem
-        {
-            protected int ai0;
-            private float rotation;
-            public float rotSpeed;
-            public int itemID;
-            private Item Item {
-                get {
-                    Item inds = new Item();
-                    inds.SetDefaults(itemID);
-                    return inds;
-                }
-            }
-
-            public EffectEntity(int index, int timeLeft, float size, int alp, Color color
-                , Vector2 position, Vector2 velocity, string text, Texture2D texture, int startTime
-                , int ai0, float rotation, int itemID, float rotSpeed)
-                : base(index, timeLeft, size, alp, color, position, velocity, text, texture, startTime) {
-                this.ai0 = ai0;
-                this.rotation = rotation;
-                this.itemID = itemID;
-                this.rotSpeed = rotSpeed;
-            }
-
-            public static int SpwanItemID() {
-                List<ItemOverride> list = [.. ItemOverride.Instances.Where(inds => inds.Mod == CWRMod.Instance)];
-                int id = list[Main.rand.Next(list.Count)].TargetID;
-                Main.instance.LoadItem(id);
-                return id;
-            }
-
-            public override void AI(float sengs) {
-                if (--startTime > 0) {
-                    return;
-                }
-
-                if (timeLeft > 60) {
-                    alp = Math.Min(255, alp + 5);
-                }
-                else {
-                    alp = Math.Max(0, alp - 4);
-                }
-
-                //波动 + 曲线偏移轨迹
-                float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + sengs + itemID) * 0.5f;
-                float curve = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.2f + sengs + itemID) * 0.3f;
-                Vector2 drift = new Vector2(curve, wave) * 0.8f;
-
-                //旋转渐变
-                rotSpeed += (Main.rand.NextFloat() - 0.5f) * 0.002f;
-                rotSpeed = MathHelper.Clamp(rotSpeed, -0.03f, 0.03f);
-                rotation += rotSpeed;
-
-                //漂浮
-                position += velocity + drift;
-
-                //透明度闪动
-                if (timeLeft % 20 == 0 && timeLeft < 60) {
-                    alp -= Main.rand.Next(5, 15);
-                }
-
-                //生命周期终止
-                timeLeft--;
-                if (timeLeft <= 0 || alp <= 0) {
-                    active = false;
-                }
-            }
-
-            public override void Draw(SpriteBatch spriteBatch, float sengs) {
-                if (--startTime > 0) {
-                    return;
-                }
-                Rectangle? rectangle = null;
-                Vector2 orig = texture.Size() / 2;
-                Color newColor = color * sengs * (alp / 255f);
-                if (Item != null) {
-                    rectangle = Main.itemAnimations[Item.type] != null ?
-                        Main.itemAnimations[Item.type].GetFrame(TextureAssets.Item[Item.type].Value)
-                        : TextureAssets.Item[Item.type].Value.Frame(1, 1, 0, 0);
-                }
-                if (rectangle.HasValue) {
-                    orig = rectangle.Value.Size() / 2;
-                }
-                spriteBatch.Draw(texture, position, rectangle, newColor, rotation, orig, size, SpriteEffects.None, 0);
-            }
-        }
+        public override bool CanLoad() => true;
 
         public static bool OnActive() {
             if (Instance == null) {
                 return false;
             }
-            return Instance._active || Instance._sengs > 0;
+            return Instance._active || Instance.fade > 0f;
         }
-        public override bool CanLoad() => true;
-        void ICWRLoader.SetupData() => LoadName();
+
         public override void SetStaticDefaults() {
             ArtistRole = this.GetLocalization(nameof(ArtistRole), () => "画师");
             CodeAssistanceRole = this.GetLocalization(nameof(CodeAssistanceRole), () => "代码援助");
             MusicianRole = this.GetLocalization(nameof(MusicianRole), () => "音乐制作");
             DonorRole = this.GetLocalization(nameof(DonorRole), () => "捐赠者");
             BalanceTesterRole = this.GetLocalization(nameof(BalanceTesterRole), () => "平衡测试");
+            TitleText = this.GetLocalization(nameof(TitleText), () => "鸣 谢");
+            SubtitleText = this.GetLocalization(nameof(SubtitleText), () => "灾厄大修 · 全体贡献者");
+            FinaleText = this.GetLocalization(nameof(FinaleText), () => "感谢一路同行");
+            ExitHintText = this.GetLocalization(nameof(ExitHintText), () => "点击或按 ESC 退出");
             Instance = UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
-            _sengs = 0;
+            ResetTimeline();
         }
-        private static void LoadName() {
-            names = [
-            "[icon]",
-            "雾梯" + ArtistText,
-            "Cyrilly" + CodeAssistanceText,
-            "瓶中微光" + CodeAssistanceText,
-            "Monomon" + CodeAssistanceText,
-            "Ryusa" + MusicianText,
-            "像樱花一样飘散吧" + BalanceTesterText,
-            "洛千希" + BalanceTesterText,
-            "闪耀£星辰" + BalanceTesterText,
-            "蒹葭" + BalanceTesterText,
-            "悬剑" + BalanceTesterText,
-            "CataStrophe" + BalanceTesterText,
-            "啊,胖子" + DonorText,
-            "Reficul" + DonorText,
-            "星星之火" + DonorText,
-            "摸鱼的龙虾" + DonorText,
-            "众星环绕" + DonorText,
-            "L1ng" + DonorText,
-            "respect" + DonorText,
-            "鱼过海洋" + DonorText,
-            "猫猫爱睡觉觉" + DonorText,
-            "阿巴巴巴" + DonorText,
-            "亻尔女子" + DonorText,
-            "YFeawa" + DonorText,
-            "一铭_N8S" + DonorText,
-            "一只giao" + DonorText,
-            "maybe" + DonorText,
-            "浮云落日" + DonorText,
-            "生物音素" + DonorText,
-            "快乐肥宅橘九" + DonorText,
-            "半生浮云半生闲" + DonorText,
-            "阿萨德沃荣托" + DonorText,
-            "冰冷小龙" + DonorText,
-            "心酱" + DonorText,
-            "LEI雷克斯" + DonorText,
-            "尼古丁真" + DonorText,
-            "龙辰" + DonorText,
-            "圣盗杰布微明" + DonorText,
-            "柳冠希" + DonorText,
-            "天空之城" + DonorText,
-            "Svetlana" + DonorText,
-            "Murainm" + DonorText,
-            "Sergei" + DonorText,
-            "森林之心" + DonorText,
-            "流浪者" + DonorText,
-            "黑夜之光" + DonorText,
-            "秋叶" + DonorText,
-            "青空" + DonorText,
-            "月光下的影子" + DonorText,
-            "冰镇紫苏" + DonorText,
-            "Montana" + DonorText,
-            "八背龙" + DonorText,
-            "FengD" + DonorText,
-            "逐风者" + DonorText,
-            "Ivan" + DonorText,
-            "Olga" + DonorText,
-            "Alexander" + DonorText,
-            "Natalia" + DonorText,
-            "Dmitry" + DonorText,
-            "悠然见南山" + DonorText,
-            "星河影" + DonorText,
-            "ShadowHunter" + DonorText,
-            "MysticWarrior" + DonorText,
-            "StormBringer" + DonorText,
-            "无形剑" + DonorText,
-            "Сырныйбарон336" + DonorText,
-            "IceQueen" + DonorText,
-            "Yelena" + DonorText,
-            "Viktor" + DonorText,
-            "白日梦想家" + DonorText,
-            "追梦少年" + DonorText,
-            "PhoenixRising" + DonorText,
-            "DragonSlayer" + DonorText,
-            "Vladislav" + DonorText,
-            "Anastasia" + DonorText,
-            "行者无疆" + DonorText,
-            "蓝色星辰" + DonorText,
-            "BlazeKnight" + DonorText,
-            "ThunderGod" + DonorText,
-            "StarLord" + DonorText,
-            "天涯海角" + DonorText,
-            "梦幻旅人" + DonorText,
-            "风中的歌" + DonorText,
-            "花间一壶酒" + DonorText,
-            "凌云壮志" + DonorText,
-            "Maxim" + DonorText,
-            "Nikolai" + DonorText,
-            "Tatiana" + DonorText,
-            "寂静春天Ogger1943" + DonorText,
-            "无尽之海" + DonorText,
-            "Yuri" + DonorText,
-            "Sasha" + DonorText,
-            "苍穹之翼" + DonorText,
-            "淮海不是明月" + DonorText,
-            "剑心" + DonorText,
-            "Ekaterina" + DonorText,
-            "Mikhail" + DonorText,
-            "Igor" + DonorText,
-            "Lyudmila" + DonorText,
-            "Artem" + DonorText,
-            "Katerina" + DonorText,
-            "Oleg" + DonorText,
-            "Fwoer'Vmoerd" + DonorText,
-            "苍穹彼岸offest" + DonorText,
-            "Кот Пельмень" + DonorText,
-            "Sodayo 的 Live" + DonorText,
-            "我能看看你的小学吗" + DonorText,
-            "烂柯棋缘" + DonorText,
-            "华屋丘墟" + DonorText,
-            "易燃易爆品daze" + DonorText,
-            "梦境使者爱梅斯" + DonorText,
-        ];
+
+        public override void UnLoad() {
+            Instance = null;
+            fade = 0f;
         }
+
+        private void ResetTimeline() {
+            phase = Phase.Title;
+            phaseTime = 0f;
+            scrollPx = 0f;
+            frameReveal = 0f;
+        }
+
+        private static string RoleHeader(CreditRole role) => role switch {
+            CreditRole.Artist => ArtistRole.Value,
+            CreditRole.CodeAssistance => CodeAssistanceRole.Value,
+            CreditRole.Musician => MusicianRole.Value,
+            CreditRole.BalanceTester => BalanceTesterRole.Value,
+            _ => DonorRole.Value,
+        };
 
         void IUpdateAudio.DecideMusic() {
             if (!Main.gameMenu || !OnActive()) {
                 return;
             }
-
             int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
             for (int i = 0; i < Main.musicFade.Length; i++) {
                 if (i == targetID) {
                     continue;
                 }
-                Main.musicFade[i] = (musicFade50 / 120f);
+                Main.musicFade[i] = musicFade50 / 120f;
             }
             Main.newMusic = targetID;
         }
 
-        public override void UnLoad() {
-            Instance = null;
-            _sengs = 0;
-            names = null;
-        }
-        public void Initialize() {
-            if (_active) {
-                if (_sengs < 1) {
-                    _sengs += 0.04f;
-                }
-            }
-            else {
-                if (_sengs > 0) {
-                    _sengs -= 0.04f;
-                }
-            }
-
-            try {
-                LoadName();
-
-                if (projectiles.Count < 50) {
-                    Texture2D pts = CWRAsset.Placeholder_Transparent.Value;
-                    for (int i = 0; i < names.Length; i++) {
-                        string textContent = names[i];
-                        ProjItem proj = new ProjItem(i, projTimer, 1, 0, Color.White, ItemPos, new Vector2(0, -1), textContent, pts, i * 90);
-                        projectiles.Add(proj);
-                    }
-                }
-
-                //更新 projItem
-                foreach (ProjItem projItem in projectiles) {
-                    if (projItem.index >= 0 && projItem.index < names.Length) {
-                        projItem.text = names[projItem.index];
-                    }
-                    if (projItem.active) {
-                        continue;
-                    }
-
-                    projItem.color.R -= 25;
-                    projItem.timeLeft = projTimer;
-                    projItem.position = ItemPos;
-                    projItem.alp = 0;
-                    projItem.active = true;
-                }
-
-                if (effectEntities.Count < 10) {
-                    for (int i = 0; i < 10; i++) {
-                        int id = EffectEntity.SpwanItemID();
-                        Texture2D effectValue = TextureAssets.Item[id].Value;
-                        EffectEntity effect = new EffectEntity(i, 390, 1, 0, Color.White,
-                            new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight)),
-                            new Vector2(0, -1), names[i], effectValue, i * 90, 0, 0, id, Main.rand.NextFloat(-0.03f, 0.03f));
-                        effectEntities.Add(effect);
-                    }
-                }
-
-                //更新 effectEntities
-                foreach (EffectEntity effect in effectEntities) {
-                    if (effect.active) {
-                        continue;
-                    }
-
-                    int id = EffectEntity.SpwanItemID();
-                    Texture2D effectValue = TextureAssets.Item[id].Value;
-                    effect.itemID = id;
-                    effect.texture = effectValue;
-                    effect.text = names[effect.index];
-                    effect.position = new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight));
-                    effect.rotSpeed = Main.rand.NextFloat(-0.03f, 0.03f);
-                    effect.timeLeft = 360;
-                    effect.velocity = new Vector2(0, -Main.rand.NextFloat(0.8f, 1.2f));
-                    effect.alp = 0;
-                    effect.active = true;
-                }
-
-                //初始化 NPCGhostItem
-                if (npcGhostItem.Count < 1) {
-                    Texture2D tex = TextureAssets.Npc[NPCID.Spazmatism].Value;
-                    Texture2D alt = TextureAssets.NpcHeadBoss[18].Value; //示例替代图
-                    Vector2 npcStartPosition;
-                    Vector2 npcVelocity;
-                    if (Main.rand.NextBool()) {
-                        npcStartPosition = new Vector2(Main.screenWidth + 100, Main.rand.Next(150, Main.screenHeight - 150));
-                        npcVelocity = new Vector2(-Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
-                    }
-                    else {
-                        npcStartPosition = new Vector2(-100, Main.rand.Next(150, Main.screenHeight - 150));
-                        npcVelocity = new Vector2(Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
-                    }
-                    NPCGhostItem ghost = new NPCGhostItem(
-                        index: Main.rand.Next(4),
-                        timeLeft: Main.rand.Next(1400, 1600),
-                        size: 1.2f,
-                        alp: 0,
-                        color: Color.White,
-                        position: npcStartPosition,
-                        velocity: npcVelocity,
-                        text: "npc",
-                        texture: null,
-                        startTime: Main.rand.Next(120)
-                    );
-                    npcGhostItem.Add(ghost);
-                }
-
-                //更新 NPCGhostItem
-                foreach (NPCGhostItem ghost in npcGhostItem) {
-                    if (ghost.active) {
-                        continue;
-                    }
-
-                    ghost.index = Main.rand.Next(4);
-                    ghost.startTime = Main.rand.Next(60, 360);
-                    ghost.timeLeft = Main.rand.Next(1400, 1600);
-                    ghost.alp = 0;
-                    ghost.active = true;
-                    if (Main.rand.NextBool()) {
-                        ghost.position = new Vector2(Main.screenWidth + 100, Main.rand.Next(150, Main.screenHeight - 150));
-                        ghost.velocity = new Vector2(-Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
-                    }
-                    else {
-                        ghost.position = new Vector2(-100, Main.rand.Next(150, Main.screenHeight - 150));
-                        ghost.velocity = new Vector2(Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(-0.3f, 0.3f));
-                    }
-                    ghost.text = "npc";
-                }
-
-            } catch {
-                _sengs = 0;
-                _active = false;
-            }
-        }
         public override void Update() {
+            globalTime += 1f / 60f;
+
             if (!OnActive()) {
                 if (musicFade50 < 120) {
                     musicFade50++;
                 }
                 return;
             }
-
             if (musicFade50 > 0) {
                 musicFade50--;
             }
 
-            Initialize();
-
-            foreach (ProjItem projItem in projectiles) {
-                projItem.AI(_sengs);
+            if (_active) {
+                fade = MathF.Min(1f, fade + 0.035f);
             }
-            foreach (EffectEntity effect in effectEntities) {
-                effect.AI(_sengs);
-            }
-            foreach (NPCGhostItem npc in npcGhostItem) {
-                npc.AI(_sengs);
-            }
-
-            //int mouS = DownStartL();
-            int mouS = (int)keyLeftPressState;
-
-            if (mouS == 1) {
-                if (_sengs >= 1) {
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                    _active = false;
+            else if (fade > 0f) {
+                fade = MathF.Max(0f, fade - 0.045f);
+                if (fade <= 0f) {
+                    ResetTimeline();
+                    return;
                 }
             }
 
-            if (OnActive()) {
-                KeyboardState currentKeyState = Main.keyState;
-                KeyboardState previousKeyState = Main.oldKeyState;
-                if (currentKeyState.IsKeyDown(Keys.Escape) && !previousKeyState.IsKeyDown(Keys.Escape)) {
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                    _active = false;
-                }
+            //淡入到一定程度后才推进编排，避免黑屏瞬间就开始滚动
+            if (fade > 0.25f) {
+                phaseTime += 1f / 60f;
+                AdvancePhase();
+            }
+
+            HandleInput();
+        }
+
+        private void AdvancePhase() {
+            switch (phase) {
+                case Phase.Title:
+                    frameReveal = MathF.Min(1f, frameReveal + 1f / 90f);
+                    if (phaseTime >= TitleDuration) {
+                        phase = Phase.Roll;
+                        phaseTime = 0f;
+                        scrollPx = 0f;
+                        rollDistance = MeasureRollDistance(AckTheme.UIScreenW, AckTheme.UIScreenH);
+                    }
+                    break;
+                case Phase.Roll:
+                    scrollPx += RollPxPerFrame;
+                    if (scrollPx >= rollDistance) {
+                        phase = Phase.Finale;
+                        phaseTime = 0f;
+                    }
+                    break;
+                case Phase.Finale:
+                    break;
             }
         }
+
+        private void HandleInput() {
+            if (fade < 0.85f) {
+                return;
+            }
+            bool close = keyLeftPressState == KeyPressState.Pressed;
+            KeyboardState keyState = Main.keyState;
+            KeyboardState oldKeyState = Main.oldKeyState;
+            if (keyState.IsKeyDown(Keys.Escape) && !oldKeyState.IsKeyDown(Keys.Escape)) {
+                close = true;
+            }
+            if (close) {
+                SoundEngine.PlaySound(SoundID.MenuClose);
+                _active = false;
+            }
+        }
+
+        #region 名单布局测算
+        private static int DonorColumns(float contentWidth) => Math.Max(2, (int)(contentWidth / AckTheme.DonorColWidth));
+
+        private static bool IsGridSection(in CreditSection sec)
+            => sec.Role == CreditRole.Donor || sec.Names.Length > AckCredits.MultiColumnThreshold;
+
+        /// <summary>名单从底部入场滚到完全离顶所需的滚动距离</summary>
+        private static float MeasureRollDistance(float screenW, float screenH) {
+            float contentWidth = screenW * (1f - AckTheme.SideMarginRatio * 2f);
+            int cols = DonorColumns(contentWidth);
+            float y = 0f;
+            foreach (CreditSection sec in AckCredits.Sections) {
+                y += AckTheme.SectionGap + AckTheme.HeaderHeight;
+                if (IsGridSection(sec)) {
+                    int rows = (sec.Names.Length + cols - 1) / cols;
+                    y += rows * AckTheme.DonorRowHeight;
+                }
+                else {
+                    y += sec.Names.Length * AckTheme.NameRowHeight;
+                }
+            }
+            return y + AckTheme.SectionGap + screenH * 0.5f;
+        }
+        #endregion
+
         public override void Draw(SpriteBatch spriteBatch) {
             if (!OnActive()) {
                 return;
             }
-            //运行环境比较敏感，为了防止玩家在卸载模组时还要和UI进行交互，这里判断一下资源是否已经被释放
+            //资源在卸载模组时可能已被释放，绘制前确认占位纹理仍可用
             if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
                 _active = false;
                 return;
             }
 
-            spriteBatch.Draw(CWRAsset.Placeholder_White.Value, Vector2.Zero
-                , new Rectangle(0, 0, Main.screenWidth, Main.screenHeight)
-                , Color.Black * _sengs * 0.85f, 0f, Vector2.Zero, 1, SpriteEffects.None, 0);
-            foreach (EffectEntity effect in effectEntities) {
-                effect.Draw(spriteBatch, _sengs);
+            float screenW = AckTheme.UIScreenW;
+            float screenH = AckTheme.UIScreenH;
+
+            //背景情绪随阶段过渡：入场偏冷暗 → 名单中段 → 谢幕暖亮
+            float progress = phase switch {
+                Phase.Finale => 1f,
+                Phase.Roll => 0.5f,
+                _ => 0.15f,
+            };
+            AckRenderer.DrawBackdrop(spriteBatch, new Rectangle(0, 0, (int)screenW, (int)screenH),
+                fade, progress, AckTheme.Accent);
+
+            AckRenderer.DrawScreenFrame(spriteBatch, screenW, screenH, fade, frameReveal, globalTime);
+
+            switch (phase) {
+                case Phase.Title:
+                    DrawTitle(spriteBatch, screenW, screenH);
+                    break;
+                case Phase.Roll:
+                    DrawRoll(spriteBatch, screenW, screenH);
+                    break;
+                case Phase.Finale:
+                    DrawFinale(spriteBatch, screenW, screenH);
+                    break;
             }
-            foreach (NPCGhostItem npc in npcGhostItem) {
-                npc.Draw(spriteBatch, _sengs);
+
+            DrawExitHint(spriteBatch, screenW, screenH);
+        }
+
+        #region 标题阶段
+        private void DrawTitle(SpriteBatch sb, float screenW, float screenH) {
+            float t = phaseTime;
+            float exit = AckTheme.EaseInOutCubic((t - (TitleDuration - TitleExitTime)) / TitleExitTime);
+            float block = fade * (1f - exit);
+            if (block < 0.01f) {
+                return;
             }
-            foreach (ProjItem projItem in projectiles) {
-                projItem.Draw(spriteBatch, _sengs);
+            float riseOut = -38f * exit;
+            float cx = screenW * 0.5f;
+
+            //标志：缓出回弹浮入（回弹会越过 1，位移用其过冲，透明度须钳制避免 Color*scale 溢出回绕）
+            float logoAppear = AckTheme.EaseOutBack((t - 0.5f) / 1.7f);
+            Vector2 logoCenter = new(cx, screenH * 0.40f + (1f - logoAppear) * 26f + riseOut);
+            AckRenderer.DrawLogo(sb, Logo?.Value, logoCenter, 0.92f, block * AckTheme.Saturate(logoAppear), AckTheme.Accent);
+
+            //主标题
+            float titleAppear = AckTheme.EaseOutCubic((t - 1.7f) / 1.4f);
+            float titleScale = 1.95f;
+            Vector2 titleCenter = new(cx, screenH * 0.54f + (1f - titleAppear) * 16f + riseOut);
+            Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(TitleText.Value) * titleScale;
+            AckRenderer.DrawGlowTextCentered(sb, TitleText.Value, titleCenter,
+                AckTheme.Text * (block * titleAppear), AckTheme.Accent * (block * titleAppear * 0.55f), titleScale, 2.2f);
+
+            //标题两侧取景括号
+            float bracketGap = titleSize.X * 0.5f + 30f;
+            float bh = titleSize.Y * 0.40f;
+            Color brc = AckTheme.Accent * (block * titleAppear * 0.85f);
+            AckRenderer.DrawBracket(sb, new Vector2(titleCenter.X - bracketGap, titleCenter.Y - bh), 13f, 2f, 1, 1, brc);
+            AckRenderer.DrawBracket(sb, new Vector2(titleCenter.X - bracketGap, titleCenter.Y + bh), 13f, 2f, 1, -1, brc);
+            AckRenderer.DrawBracket(sb, new Vector2(titleCenter.X + bracketGap, titleCenter.Y - bh), 13f, 2f, -1, 1, brc);
+            AckRenderer.DrawBracket(sb, new Vector2(titleCenter.X + bracketGap, titleCenter.Y + bh), 13f, 2f, -1, -1, brc);
+
+            //标题下的对称生长强调线 + 中点菱形
+            float ulHalf = (titleSize.X * 0.5f + 12f) * AckTheme.EaseOutQuint(titleAppear);
+            float ulY = titleCenter.Y + titleSize.Y * 0.5f + 9f;
+            AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx - ulHalf, ulY),
+                AckTheme.Accent * (block * 0.7f), AckTheme.Accent * 0.02f, 1.6f);
+            AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx + ulHalf, ulY),
+                AckTheme.Accent * (block * 0.7f), AckTheme.Accent * 0.02f, 1.6f);
+            AckRenderer.DrawDiamond(sb, new Vector2(cx, ulY), 4f, AckTheme.AccentHi * (block * titleAppear));
+
+            //副标题：字距拉开，居中
+            float subAppear = AckTheme.EaseOutCubic((t - 2.7f) / 1.3f);
+            string sub = SubtitleText.Value;
+            float subScale = 0.78f;
+            float subTrack = 2.6f;
+            float subW = AckRenderer.MeasureTracked(sub, subScale, subTrack);
+            AckRenderer.DrawTrackedText(sb, sub, new Vector2(cx - subW * 0.5f, ulY + 18f),
+                AckTheme.TextDim * (block * subAppear), subScale, subTrack);
+        }
+        #endregion
+
+        #region 名单阶段
+        private void DrawRoll(SpriteBatch sb, float screenW, float screenH) {
+            float contentLeft = screenW * AckTheme.SideMarginRatio;
+            float contentRight = screenW * (1f - AckTheme.SideMarginRatio);
+            float contentWidth = contentRight - contentLeft;
+            int cols = DonorColumns(contentWidth);
+            float baseY = screenH;
+            float y = 0f;
+            int sectionIndex = 0;
+            int total = AckCredits.Sections.Length;
+
+            foreach (CreditSection sec in AckCredits.Sections) {
+                y += AckTheme.SectionGap;
+                float headerTop = baseY - scrollPx + y;
+                if (headerTop > -AckTheme.HeaderHeight && headerTop < screenH + 40f) {
+                    float a = RowAlpha(headerTop + 20f, screenH);
+                    float reveal = AckTheme.Saturate((screenH * 0.92f - headerTop) / (screenH * 0.32f));
+                    AckRenderer.DrawSectionHeader(sb, sectionIndex, total, sec.Role, RoleHeader(sec.Role),
+                        contentLeft, headerTop + 38f, contentRight, a, reveal, globalTime);
+                }
+                y += AckTheme.HeaderHeight;
+
+                if (IsGridSection(sec)) {
+                    int rows = (sec.Names.Length + cols - 1) / cols;
+                    float colW = contentWidth / cols;
+                    for (int n = 0; n < sec.Names.Length; n++) {
+                        int col = n % cols;
+                        int row = n / cols;
+                        float rowY = baseY - scrollPx + y + row * AckTheme.DonorRowHeight;
+                        if (rowY < -20f || rowY > screenH + 20f) {
+                            continue;
+                        }
+                        float a = RowAlpha(rowY + AckTheme.DonorRowHeight * 0.5f, screenH);
+                        if (a < 0.01f) {
+                            continue;
+                        }
+                        Vector2 cellCenter = new(contentLeft + colW * (col + 0.5f), rowY + AckTheme.DonorRowHeight * 0.5f);
+                        AckRenderer.DrawNameCentered(sb, sec.Names[n], cellCenter, AckTheme.TextDim, a, 0.82f);
+                    }
+                    y += rows * AckTheme.DonorRowHeight;
+                }
+                else {
+                    Color nameCol = Color.Lerp(AckTheme.Text, AckTheme.RoleColor(sec.Role), 0.18f);
+                    for (int n = 0; n < sec.Names.Length; n++) {
+                        float rowY = baseY - scrollPx + y + n * AckTheme.NameRowHeight;
+                        if (rowY < -20f || rowY > screenH + 20f) {
+                            continue;
+                        }
+                        float a = RowAlpha(rowY + AckTheme.NameRowHeight * 0.5f, screenH);
+                        if (a < 0.01f) {
+                            continue;
+                        }
+                        AckRenderer.DrawName(sb, sec.Names[n], new Vector2(contentLeft + 28f, rowY), nameCol, a, 0.95f);
+                    }
+                    y += sec.Names.Length * AckTheme.NameRowHeight;
+                }
+                sectionIndex++;
             }
+        }
+
+        /// <summary>名字进出视野时上下渐隐，乘以主透明度</summary>
+        private float RowAlpha(float screenY, float screenH) {
+            float band = AckTheme.FadeBand;
+            float topFactor = AckTheme.Saturate(screenY / band);
+            float bottomFactor = AckTheme.Saturate((screenH - screenY) / band);
+            return topFactor * bottomFactor * fade;
+        }
+        #endregion
+
+        #region 谢幕阶段
+        private void DrawFinale(SpriteBatch sb, float screenW, float screenH) {
+            float cx = screenW * 0.5f;
+            float cy = screenH * 0.46f;
+            float intensity = AckTheme.EaseOutCubic(phaseTime / FinaleRiseTime);
+            float auraR = MathF.Min(screenW, screenH) * 0.42f;
+
+            AckRenderer.DrawFinaleAura(sb, new Vector2(cx, cy), auraR, fade, intensity, AckTheme.Accent);
+
+            float breath = AckTheme.Breath(globalTime, 0f, 1.2f);
+            AckRenderer.DrawLogo(sb, Logo?.Value, new Vector2(cx, cy), 1f + breath * 0.02f,
+                fade * intensity, AckTheme.AccentHi);
+
+            float textAppear = AckTheme.EaseOutCubic((phaseTime - 0.8f) / 1.6f);
+            float fScale = 1.15f;
+            Vector2 textCenter = new(cx, cy + auraR * 0.55f + 24f);
+            Vector2 fSize = FontAssets.MouseText.Value.MeasureString(FinaleText.Value) * fScale;
+            AckRenderer.DrawGlowTextCentered(sb, FinaleText.Value, textCenter,
+                AckTheme.Text * (fade * textAppear), AckTheme.Accent * (fade * textAppear * 0.5f), fScale, 1.8f);
+
+            float ulY = textCenter.Y + fSize.Y * 0.5f + 10f;
+            float ulHalf = (fSize.X * 0.5f + 26f) * AckTheme.EaseOutQuint(textAppear);
+            AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx - ulHalf, ulY),
+                AckTheme.Accent * (fade * 0.6f), AckTheme.Accent * 0.02f, 1.4f);
+            AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx + ulHalf, ulY),
+                AckTheme.Accent * (fade * 0.6f), AckTheme.Accent * 0.02f, 1.4f);
+            AckRenderer.DrawDiamond(sb, new Vector2(cx, ulY), 4f, AckTheme.AccentHi * (fade * textAppear));
+        }
+        #endregion
+
+        private void DrawExitHint(SpriteBatch sb, float screenW, float screenH) {
+            float a = AckTheme.Saturate((fade - 0.5f) * 2f) * 0.5f;
+            if (a < 0.01f) {
+                return;
+            }
+            float pulse = 0.6f + 0.4f * MathF.Sin(globalTime * 2f);
+            string hint = ExitHintText.Value;
+            float scale = 0.66f;
+            float w = AckRenderer.MeasureTracked(hint, scale, 1.5f);
+            AckRenderer.DrawTrackedText(sb, hint, new Vector2(screenW * 0.5f - w * 0.5f, screenH - 44f),
+                AckTheme.TextFaint * (a * pulse), scale, 1.5f);
         }
     }
 }
