@@ -1,5 +1,4 @@
-﻿using InnoVault.GameSystem;
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
@@ -17,7 +16,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
     /// 全屏背景与谢幕辉光走着色器（AckBackdrop / AckFinale），缺失时 CPU 回退；
     /// 版式参考明日方舟片尾：近黑底、单一暖琥珀强调、克制留白与缓动
     /// </summary>
-    internal class AcknowledgmentUI : UIHandle, IUpdateAudio, ILocalizedModType
+    internal class AcknowledgmentUI : UIHandle<AcknowledgmentUI>, ILocalizedModType
     {
         public string LocalizationCategory => "UI";
 
@@ -31,11 +30,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public static LocalizedText FinaleText { get; private set; }
         public static LocalizedText ExitHintText { get; private set; }
 
-        internal static AcknowledgmentUI Instance;
         /// <summary>全屏 ED 占用主菜单时的 menuMode</summary>
         public const int MenuMode = 888;
-        /// <summary>外部入口（致谢按钮）置真以开启 ED</summary>
-        internal bool _active;
 
         [VaultLoaden("CalamityOverhaul/IntactLogo")]
         private static Asset<Texture2D> Logo = null;
@@ -43,33 +39,35 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private enum Phase { Title, Roll, Finale }
         private Phase phase;
         private float phaseTime;     //当前阶段已运行秒数
-        private float fade;          //主透明度 0-1
-        private float globalTime;    //动画总时钟（秒），驱动呼吸/微光
         private float scrollPx;      //名单滚动量（UI空间像素）
         private float rollDistance;  //名单滚完所需的滚动量
         private float frameReveal;   //取景框入场 0-1
         private float holdProgress;  //长按退出读条 0-1
-        private int musicFade50;     //ED 音乐与其它音轨的交叉淡入计数
+        private bool pendingTimelineReset;
+        internal int MusicFade50;  //ED 音乐与其它音轨的交叉淡入计数
 
         private const float TitleDuration = 6f;     //标题阶段总时长
         private const float TitleExitTime = 1.3f;   //标题退场淡出时长
         private const float FinaleRiseTime = 2.4f;  //谢幕辉光涨起时长
         private const float RollPxPerFrame = 0.85f; //名单每帧滚动像素
+        /// <summary>OpenProgress Lerp 系数；约 0.14 时墙钟节奏接近原线性 +0.035/帧 的淡入</summary>
+        private const float OpenFadeSpeed = 0.14f;
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         public override bool Active => CWRLoad.OnLoadContentBool;
         public override float RenderPriority => 1.2f;
-        public override bool CanLoad() => true;
+        public override SoundStyle? CloseSound => SoundID.MenuClose;
 
         public static bool OnActive() {
-            if (Instance == null) {
+            AcknowledgmentUI ui = InstanceOrNull;
+            if (ui == null) {
                 return false;
             }
-            return Instance._active || Instance.fade > 0f;
+            return ui.IsOpen || ui.OpenProgress.Current > 0f;
         }
 
         /// <summary>从公告栏等入口打开致谢 ED，并锁定主菜单 menuMode</summary>
-        public static void OnOpen() {
+        public static void OpenFromMenu() {
             if (Main.menuMode == MenuMode) {
                 SoundEngine.PlaySound(SoundID.Unlock);
                 return;
@@ -79,11 +77,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
             Main.menuMode = MenuMode;
-            if (Instance == null) {
-                return;
-            }
-            Instance.ResetTimeline();
-            Instance._active = true;
+            InstanceOrNull?.Open();
         }
 
         private static void ReleaseMenuMode() {
@@ -92,10 +86,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        private void CloseAcknowledgment() {
-            SoundEngine.PlaySound(SoundID.MenuClose);
-            _active = false;
+        protected override void OnOpen() {
+            pendingTimelineReset = false;
+            ResetTimeline();
+        }
+
+        protected override void OnClose() {
             ReleaseMenuMode();
+            pendingTimelineReset = true;
         }
 
         public override void SetStaticDefaults() {
@@ -108,15 +106,20 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             SubtitleText = this.GetLocalization(nameof(SubtitleText), () => "灾厄大修 · 全体贡献者");
             FinaleText = this.GetLocalization(nameof(FinaleText), () => "感谢一路同行");
             ExitHintText = this.GetLocalization(nameof(ExitHintText), () => "长按任意键退出");
-            Instance = UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
+        }
+
+        public override void Load() {
+            OpenProgress.Speed = OpenFadeSpeed;
             ResetTimeline();
         }
 
         public override void UnLoad() {
             ReleaseMenuMode();
-            Instance = null;
-            fade = 0f;
+            OpenProgress.Snap(0f);
+            pendingTimelineReset = false;
         }
+
+        private float Fade => OpenProgress.Current;
 
         private void ResetTimeline() {
             phase = Phase.Title;
@@ -134,47 +137,25 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             _ => DonorRole.Value,
         };
 
-        void IUpdateAudio.DecideMusic() {
-            if (!Main.gameMenu || !OnActive()) {
-                return;
-            }
-            int targetID = MusicLoader.GetMusicSlot("CalamityOverhaul/Assets/Sounds/Music/ED_WEH");
-            for (int i = 0; i < Main.musicFade.Length; i++) {
-                if (i == targetID) {
-                    continue;
-                }
-                Main.musicFade[i] = musicFade50 / 120f;
-            }
-            Main.newMusic = targetID;
-        }
-
         public override void Update() {
-            globalTime += 1f / 60f;
-
             if (!OnActive()) {
-                if (musicFade50 < 120) {
-                    musicFade50++;
+                if (MusicFade50 < 120) {
+                    MusicFade50++;
                 }
                 return;
             }
-            if (musicFade50 > 0) {
-                musicFade50--;
+            if (MusicFade50 > 0) {
+                MusicFade50--;
             }
 
-            if (_active) {
-                fade = MathF.Min(1f, fade + 0.035f);
-            }
-            else if (fade > 0f) {
-                fade = MathF.Max(0f, fade - 0.045f);
-                if (fade <= 0f) {
-                    ReleaseMenuMode();
-                    ResetTimeline();
-                    return;
-                }
+            if (pendingTimelineReset && OpenProgress.Current <= 0f) {
+                ResetTimeline();
+                pendingTimelineReset = false;
+                return;
             }
 
             //淡入到一定程度后才推进编排，避免黑屏瞬间就开始滚动
-            if (fade > 0.25f) {
+            if (OpenProgress.Current > 0.25f) {
                 phaseTime += 1f / 60f;
                 AdvancePhase();
             }
@@ -207,14 +188,14 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
 
         private void HandleInput() {
             //长按任意键（含鼠标）读条退出，松开即回落，避免误触瞬退
-            if (fade < 0.85f) {
+            if (OpenProgress.Current < 0.85f) {
                 holdProgress = MathF.Max(0f, holdProgress - 0.05f);
                 return;
             }
             if (AnyKeyHeld()) {
                 holdProgress = MathF.Min(1f, holdProgress + 1f / 78f);
                 if (holdProgress >= 1f) {
-                    CloseAcknowledgment();
+                    Close();
                 }
             }
             else {
@@ -222,8 +203,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
         }
 
-        private static bool AnyKeyHeld() {
-            if (Main.mouseLeft || Main.mouseRight || Main.mouseMiddle) {
+        private bool AnyKeyHeld() {
+            if (keyLeftPressState is KeyPressState.Pressed or KeyPressState.Held
+                || keyRightPressState is KeyPressState.Pressed or KeyPressState.Held
+                || keyMiddlePressState is KeyPressState.Pressed or KeyPressState.Held) {
                 return true;
             }
             return Main.keyState.GetPressedKeys().Length > 0;
@@ -260,11 +243,12 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             }
             //资源在卸载模组时可能已被释放，绘制前确认占位纹理仍可用
             if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
-                _active = false;
+                Close();
                 ReleaseMenuMode();
                 return;
             }
 
+            float fade = Fade;
             float screenW = AckTheme.UIScreenW;
             float screenH = AckTheme.UIScreenH;
 
@@ -277,7 +261,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             AckRenderer.DrawBackdrop(spriteBatch, new Rectangle(0, 0, (int)screenW, (int)screenH),
                 fade, progress, AckTheme.Accent);
 
-            AckRenderer.DrawScreenFrame(spriteBatch, screenW, screenH, fade, frameReveal, globalTime);
+            AckRenderer.DrawScreenFrame(spriteBatch, screenW, screenH, fade, frameReveal, GlobalTimer);
 
             switch (phase) {
                 case Phase.Title:
@@ -298,7 +282,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private void DrawTitle(SpriteBatch sb, float screenW, float screenH) {
             float t = phaseTime;
             float exit = AckTheme.EaseInOutCubic((t - (TitleDuration - TitleExitTime)) / TitleExitTime);
-            float block = fade * (1f - exit);
+            float block = Fade * (1f - exit);
             if (block < 0.01f) {
                 return;
             }
@@ -365,7 +349,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     float a = RowAlpha(headerTop + AckTheme.HeaderHeight * 0.5f, screenH);
                     float reveal = AckTheme.Saturate((screenH * 0.92f - headerTop) / (screenH * 0.32f));
                     AckRenderer.DrawSectionHeader(sb, sectionIndex, total, sec.Role, RoleHeader(sec.Role),
-                        contentLeft, headerTop, AckTheme.HeaderHeight, contentRight, a, reveal, globalTime);
+                        contentLeft, headerTop, AckTheme.HeaderHeight, contentRight, a, reveal, GlobalTimer);
                 }
                 y += AckTheme.HeaderHeight;
 
@@ -412,7 +396,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float band = AckTheme.FadeBand;
             float topFactor = AckTheme.Saturate(screenY / band);
             float bottomFactor = AckTheme.Saturate((screenH - screenY) / band);
-            return topFactor * bottomFactor * fade;
+            return topFactor * bottomFactor * Fade;
         }
         #endregion
 
@@ -423,31 +407,31 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float intensity = AckTheme.EaseOutCubic(phaseTime / FinaleRiseTime);
             float auraR = MathF.Min(screenW, screenH) * 0.42f;
 
-            AckRenderer.DrawFinaleAura(sb, new Vector2(cx, cy), auraR, fade, intensity, AckTheme.Accent);
+            AckRenderer.DrawFinaleAura(sb, new Vector2(cx, cy), auraR, Fade, intensity, AckTheme.Accent);
 
-            float breath = AckTheme.Breath(globalTime, 0f, 1.2f);
+            float breath = AckTheme.Breath(GlobalTimer, 0f, 1.2f);
             AckRenderer.DrawLogo(sb, Logo?.Value, new Vector2(cx, cy), 1f + breath * 0.02f,
-                fade * intensity, AckTheme.AccentHi);
+                Fade * intensity, AckTheme.AccentHi);
 
             float textAppear = AckTheme.EaseOutCubic((phaseTime - 0.8f) / 1.6f);
             float fScale = 1.15f;
             Vector2 textCenter = new(cx, cy + auraR * 0.55f + 24f);
             Vector2 fSize = FontAssets.MouseText.Value.MeasureString(FinaleText.Value) * fScale;
             AckRenderer.DrawDisplayText(sb, FinaleText.Value, textCenter,
-                AckTheme.Text * (fade * textAppear), AckTheme.Accent, fScale, fade * textAppear * 0.4f);
+                AckTheme.Text * (Fade * textAppear), AckTheme.Accent, fScale, Fade * textAppear * 0.4f);
 
             float ulY = textCenter.Y + fSize.Y * 0.5f + 10f;
             float ulHalf = (fSize.X * 0.5f + 26f) * AckTheme.EaseOutQuint(textAppear);
             AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx - ulHalf, ulY),
-                AckTheme.Accent * (fade * 0.6f), AckTheme.Accent * 0.02f, 1.4f);
+                AckTheme.Accent * (Fade * 0.6f), AckTheme.Accent * 0.02f, 1.4f);
             AckRenderer.DrawGradientLine(sb, new Vector2(cx, ulY), new Vector2(cx + ulHalf, ulY),
-                AckTheme.Accent * (fade * 0.6f), AckTheme.Accent * 0.02f, 1.4f);
-            AckRenderer.DrawDiamond(sb, new Vector2(cx, ulY), 4f, AckTheme.AccentHi * (fade * textAppear));
+                AckTheme.Accent * (Fade * 0.6f), AckTheme.Accent * 0.02f, 1.4f);
+            AckRenderer.DrawDiamond(sb, new Vector2(cx, ulY), 4f, AckTheme.AccentHi * (Fade * textAppear));
         }
         #endregion
 
         private void DrawExitHold(SpriteBatch sb, float screenW, float screenH) {
-            float baseA = AckTheme.Saturate((fade - 0.5f) * 2f);
+            float baseA = AckTheme.Saturate((Fade - 0.5f) * 2f);
             if (baseA < 0.01f) {
                 return;
             }
