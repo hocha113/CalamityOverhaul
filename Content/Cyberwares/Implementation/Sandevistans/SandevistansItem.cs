@@ -16,13 +16,18 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public override CyberwareSkillBase ActiveSkill => SandevistanSkill.Instance;
 
         /// <summary>最大冷却帧，总可持续时长</summary>
-        public virtual float MaxCooldownTime => 480f;
+        public virtual float MaxCooldownTime => 300f;
 
         /// <summary>激活每帧消耗，越大越短</summary>
         public virtual float ConsumptionPerFrame => 2f;
 
         /// <summary>停用每帧恢复</summary>
-        public virtual float RecoveryPerFrame => 0.8f;
+        public virtual float RecoveryPerFrame => 0.4f;
+
+        public override void SetDefaults() {
+            base.SetDefaults();
+            Item.value = Item.sellPrice(0, 15, 0, 0);
+        }
 
         public override void OnEquip(Player player) {
             Sandevistan.CurrentCooldown = MaxCooldownTime;
@@ -31,7 +36,6 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         public override void OnUnequip(Player player) {
             Sandevistan.ForceDeactivate();
             Sandevistan.CurrentCooldown = 0;
-            Item.value = Item.sellPrice(0, 7, 0, 0);
         }
     }
 }
