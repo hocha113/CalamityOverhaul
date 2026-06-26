@@ -55,7 +55,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private const float OpenFadeSpeed = 0.14f;
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => CWRLoad.OnLoadContentBool;
+        public override bool Active => VaultLoad.LoadenContent;
         public override float RenderPriority => 1.2f;
         public override SoundStyle? CloseSound => SoundID.MenuClose;
 

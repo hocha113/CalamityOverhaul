@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content;
+﻿using CalamityOverhaul.Content;
 using CalamityOverhaul.Content.RangedModify.Core;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,8 +10,6 @@ namespace CalamityOverhaul
 {
     public static class CWRLoad
     {
-        public static bool OnLoadContentBool;
-
         #region 跨Mod物品ID
         public static int EternitySoul;
         public static int DevisCurse;
@@ -213,7 +211,6 @@ namespace CalamityOverhaul
             SetupItemData();
             SetupNPCData();
             SetupProjectileData();
-            OnLoadContentBool = true;
         }
 
         private static void SetupBossSegmentLists() {

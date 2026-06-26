@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuCharacters
 
         //确保资源已加载
         public override bool Active => MenuSave.IsPortraitUnlocked() &&
-                                      CWRLoad.OnLoadContentBool &&
+                                      VaultLoad.LoadenContent &&
                                       Main.gameMenu &&
                                       IsResourceLoaded();
 

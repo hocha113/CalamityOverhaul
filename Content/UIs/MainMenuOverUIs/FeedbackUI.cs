@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private Vector2 SteamPos => Vector2.Lerp(SteamPos1, SteamPos2, _sengs);
         private Vector2 SteamCenter => SteamPos + new Vector2(steamOAC.Width(), steamOAC.Height()) / 2 * GithubSiz;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => CWRLoad.OnLoadContentBool;
+        public override bool Active => VaultLoad.LoadenContent;
         public bool OnActive() => _active || _sengs > 0;
         public override void Load() {
             Instance = this;

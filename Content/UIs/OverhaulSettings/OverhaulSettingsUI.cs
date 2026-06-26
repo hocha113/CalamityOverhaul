@@ -1,4 +1,4 @@
-using InnoVault.UIHandles;
+﻿using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
-        public override bool Active => CWRLoad.OnLoadContentBool;
+        public override bool Active => VaultLoad.LoadenContent;
         public override float RenderPriority => 1.1f;
         public static bool OnActive() {
             if (Instance == null) {

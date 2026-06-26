@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private string ModNameAndVersion => Mod.Name + " v" + Mod.Version;
         private Vector2 ModNameSize => Font.Value.MeasureString(ModNameAndVersion);
         internal Vector2 TrueDrawPos => new Vector2(Main.screenWidth - ModNameSize.X - 4, DrawPosition.Y);
-        public override bool Active => CWRLoad.OnLoadContentBool;
+        public override bool Active => VaultLoad.LoadenContent;
         public override LayersModeEnum LayersMode => LayersModeEnum.Mod_MenuLoad;
         #endregion
         public override void SetStaticDefaults() {
@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void Update() {
-            if (sengs < 1 && CWRLoad.OnLoadContentBool) {//如果CWRLoad都加载好了，那么本地化肯定已经加载好了
+            if (sengs < 1 && VaultLoad.LoadenContent) {//如果CWRLoad都加载好了，那么本地化肯定已经加载好了
                 sengs += 0.01f;
             }
             UIHitBox = TrueDrawPos.GetRectangle(ModNameSize);
