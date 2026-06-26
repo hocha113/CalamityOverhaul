@@ -129,7 +129,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         public override void UnLoad() {
-            ReleaseMenuMode();
             OpenProgress.Snap(0f);
             pendingTimelineReset = false;
         }
@@ -259,7 +258,6 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             //资源在卸载模组时可能已被释放，绘制前确认占位纹理仍可用
             if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
                 Close();
-                ReleaseMenuMode();
                 return;
             }
 
