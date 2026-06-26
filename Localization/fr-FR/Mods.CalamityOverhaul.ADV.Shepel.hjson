@@ -1,6 +1,6 @@
 CybCourseIntroDialogue: {
 	Line1: Maître, bienvenue dans le nœud d'entraînement neuronal.
-	Line2: C'est un espace d'apprentissage immersif conçu spécialement pour vous.
+	Line2: C'est un espace d'entraînement fermé.
 	Line3: Le SHPC est une arme intelligente redoutable ; vous allez apprendre à manipuler son interface ATH.
 	Line4: Êtes-vous prêt à lier votre conscience à la mienne ? Serrez fort ma main, et commençons.
 }
@@ -48,7 +48,7 @@ CybTutorialLead: {
 
 CybCourseHackIntroDialogue: {
 	Line1: Analyse des interfaces terminée. Prochain entraînement : le Temps de piratage.
-	Line2: Le Temps de piratage est un protocole d'intervention neuronale exclusif au SHPC. Une fois activé, le flux temporel externe gèle, vous permettant de choisir calmement vos cibles et d'y télécharger des programmes de piratage personnalisés. La touche par défaut est {0}.
+	Line2: Une fois le Temps de piratage activé, le monde s'arrête à vos yeux. Prenez le temps de choisir vos cibles et d'organiser vos protocoles. Touche par défaut : {0}.
 	Line3: L'unité de test droit devant est verrouillée en position. Appuyez sur {0} pour entrer dans le Temps de piratage, puis cliquez dessus pour la verrouiller.
 }
 
@@ -172,27 +172,27 @@ HackTimeTutorialLead: {
 		'''
 	HT_S11_Body:
 		'''
-		L'entraînement au protocole de piratage est entièrement terminé.
-		Vous maîtrisez désormais le processus complet : scan, protocole, téléchargement et exécution.
+		Entraînement piratage terminé.
+		Scan, protocole, upload, exécution — le flux est bon.
 		'''
 	HT_Observing: UPLOADING...
 }
 
 CybCourseOutroDialogue: {
 	Line1: Entraînement terminé. Toutes les interfaces sont parfaitement calibrées.
-	Line2: Vous maîtrisez le protocole de connexion neuronale directe. Découplage du nœud de Super-Rêve en cours.
+	Line2: La liaison neuronale est OK. Découplage du nœud Super-Rêve en cours.
 	Line3: Vous pouvez réinitialiser l'entraînement à tout moment, ou quitter le Super-Rêve.
 }
 
 CybCourseCompletePanel: {
 	Title: ENTRAÎNEMENT TERMINÉ
-	Subtitle: PROTOCOLE SUPER-RÊVE
-	Stat1: "[#] ATH du SHPC calibré"
-	Stat2: "[#] Temps de piratage calibré"
-	Stat3: "[#] Interface de scan de bloc calibrée"
+	Subtitle: NŒUD SUPER-RÊVE
+	Stat1: "[#] ATH SHPC prêt"
+	Stat2: "[#] Temps de piratage prêt"
+	Stat3: "[#] Scan de bloc prêt"
 	BtnRetry: RECOMMENCER
 	BtnExit: QUITTER
-	Footer: Sélectionnez une option pour continuer — RECOMMENCER pour relancer l'entraînement, QUITTER pour quitter le Super-Rêve.
+	Footer: Sélectionnez une option pour continuer.
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -200,13 +200,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: Raccourcis vitaux non assignés
 	Hint:
 		'''
-		Les raccourcis suivants ne sont actuellement pas assignés. Si vous quittez le Super-Rêve, vous ne pourrez pas utiliser leurs fonctions associées.
-		Veuillez vous rendre dans [Paramètres → Contrôles] pour leur attribuer une touche.
+		Ces touches ne sont pas assignées. En quittant le Super-Rêve, ces fonctions ne marcheront pas.
+		Allez dans [Paramètres → Contrôles] pour les assigner.
 		'''
 	UnboundLabel: Non assigné
 	BtnConfirm: J'ai compris
 	BtnLater: Plus tard
-	Footer: Choisir n'importe quelle option vous déconnectera du Super-Rêve. Vous pourrez ajuster vos raccourcis à tout moment depuis les paramètres du monde principal.
+	Footer: Les deux options quittent le Super-Rêve. Vous pourrez changer les touches plus tard dans les paramètres.
 }
 
 ShepelCyberActiveDialogue: {

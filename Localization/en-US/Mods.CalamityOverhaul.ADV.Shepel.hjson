@@ -1,6 +1,6 @@
 CybCourseIntroDialogue: {
 	Line1: Master, welcome to the neural training node.
-	Line2: This is an immersive simulation space prepared exclusively for you.
+	Line2: This is a closed training space.
 	Line3: The SHPC is a powerful intelligent weapon. Here, you will learn how to operate its HUD.
 	Line4: Are you ready to link your consciousness with mine? Please hold my hand tightly, and let us begin.
 }
@@ -48,7 +48,7 @@ CybTutorialLead: {
 
 CybCourseHackIntroDialogue: {
 	Line1: Interfaces resolved. Next training phase: Hack Time.
-	Line2: Hack Time is an exclusive neural intervention protocol of the SHPC. Once activated, the external flow of time will freeze, allowing you to calmly select targets and upload custom hacking programs. The default hotkey is {0}.
+	Line2: When Hack Time is active, the world stops in your eyes. Take your time picking targets and queueing protocols. Default hotkey: {0}.
 	Line3: The test unit ahead is secured in place. Press {0} to enter Hack Time, then click to lock onto it.
 }
 
@@ -172,27 +172,27 @@ HackTimeTutorialLead: {
 		'''
 	HT_S11_Body:
 		'''
-		All hacking protocol training is now complete.
-		You have mastered the entire flow of scanning, queueing, uploading, and execution.
+		Hack training is done.
+		Scan, queue, upload, execute — you've got the flow.
 		'''
 	HT_Observing: UPLOADING...
 }
 
 CybCourseOutroDialogue: {
 	Line1: Training complete. All interfaces are fully calibrated.
-	Line2: You have mastered the direct neural link protocols. The Superdream node is now disconnecting.
+	Line2: Neural link checks out. The Superdream node is disconnecting.
 	Line3: You may reset the training or exit the Superdream at any time.
 }
 
 CybCourseCompletePanel: {
 	Title: TRAINING COMPLETE
-	Subtitle: SUPERDREAM PROTOCOL
-	Stat1: "[#] SHPC HUD Calibrated"
-	Stat2: "[#] Hack Time Calibrated"
-	Stat3: "[#] Tile Scan Interface Calibrated"
-	BtnRetry: RETRY
+	Subtitle: SUPERDREAM NODE
+	Stat1: "[#] SHPC HUD Ready"
+	Stat2: "[#] Hack Time Ready"
+	Stat3: "[#] Tile Scan Ready"
+	BtnRetry: RESTART
 	BtnExit: EXIT
-	Footer: Select to continue — RETRY to restart training, EXIT to leave Superdream
+	Footer: Select an option to continue.
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -200,13 +200,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: Core Hotkeys Unbound
 	Hint:
 		'''
-		The following hotkeys are currently unbound. Once you leave the Superdream, you will be unable to use their corresponding functions properly.
-		Please assign keys to them in [Settings → Controls].
+		These keys aren't bound yet. After leaving the Superdream, those features won't work.
+		Assign keys in [Settings → Controls].
 		'''
 	UnboundLabel: Unbound
 	BtnConfirm: Understood
 	BtnLater: Remind Me Later
-	Footer: Selecting either option will disconnect the Superdream. You can adjust your keybindings at any time in the main world's settings.
+	Footer: Either option exits the Superdream. You can change keys later in settings.
 }
 
 ShepelCyberActiveDialogue: {

@@ -1,6 +1,6 @@
 CybCourseIntroDialogue: {
 	Line1: 主人，欢迎进入神经训练节点
-	Line2: 这里是为您准备的沉浸式教学空间
+	Line2: 这里是封闭的训练空间
 	Line3: SHPC是一种强大的智能武器，您将学习如何操作它的HUD界面
 	Line4: 准备好将意识与我连接了吗？请握紧我的手，我们开始吧
 }
@@ -48,7 +48,7 @@ CybTutorialLead: {
 
 CybCourseHackIntroDialogue: {
 	Line1: 接口解析完毕。下一项训练：骇客时间
-	Line2: 骇客时间是SHPC专属的神经干预协议。激活后，外部时间流将冻结，您可以从容选择目标并上传定制骇入程序。默认按键是 {0}
+	Line2: 骇客时间激活后，世界在您眼中会停住。您可以慢慢选目标、排协议。默认按键是 {0}
 	Line3: 前方的测试单元已固定就位。按下 {0} 进入骇客时间，然后点击锁定它
 }
 
@@ -172,27 +172,27 @@ HackTimeTutorialLead: {
 		'''
 	HT_S11_Body:
 		'''
-		骇客协议训练全部完成
-		你已掌握扫描、协议、上传、生效的完整流程
+		骇客这边的训练全部完成
+		扫描、排协议、上传、生效，流程都走通了
 		'''
 	HT_Observing: UPLOADING...
 }
 
 CybCourseOutroDialogue: {
 	Line1: 训练完成。所有接口均已完成校准
-	Line2: 您已掌握神经直连协议，超梦节点正在脱钩
+	Line2: 神经直连没问题了。超梦节点正在脱钩
 	Line3: 随时可重置训练，或退出超梦
 }
 
 CybCourseCompletePanel: {
 	Title: 训练完成
-	Subtitle: 超梦协议
-	Stat1: "[#] SHPC HUD 校准完毕"
-	Stat2: "[#] 骇客时间校准完毕"
-	Stat3: "[#] 物块扫描接口校准完毕"
+	Subtitle: 超梦节点
+	Stat1: "[#] SHPC HUD 已就绪"
+	Stat2: "[#] 骇客时间 已就绪"
+	Stat3: "[#] 物块扫描 已就绪"
 	BtnRetry: 重新训练
 	BtnExit: 退出
-	Footer: 选择以继续 — 重新训练可重启训练，退出可离开超梦
+	Footer: 请选择一项以继续
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -200,13 +200,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: 核心快捷键未绑定
 	Hint:
 		'''
-		以下快捷键当前未绑定。离开超梦后，您将无法正常使用其对应的功能
-		请前往 [设置 → 控制] 中为它们分配按键
+		这些键还没绑定。离开超梦后，对应功能用不了。
+		去 [设置 → 控制] 里分配按键。
 		'''
 	UnboundLabel: 未绑定
 	BtnConfirm: 已知悉
 	BtnLater: 稍后处理
-	Footer: 选择任意选项都将断开超梦连接。您可以随时在主世界的设置中调整按键绑定
+	Footer: 选哪边都会退出超梦。按键可以之后在设置里改。
 }
 
 ShepelCyberActiveDialogue: {

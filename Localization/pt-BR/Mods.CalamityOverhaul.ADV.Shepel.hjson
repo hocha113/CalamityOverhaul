@@ -1,6 +1,6 @@
 CybCourseIntroDialogue: {
 	Line1: Mestre, bem-vindo ao no de treinamento neural.
-	Line2: Este e um espaco imersivo de tutorial preparado para voce.
+	Line2: Este e um espaco de treinamento fechado.
 	Line3: SHPC e uma arma inteligente poderosa. Voce aprendera a operar sua interface HUD.
 	Line4: Pronto para conectar sua consciencia a minha? Segure minha mao firme, vamos comecar.
 }
@@ -48,7 +48,7 @@ CybTutorialLead: {
 
 CybCourseHackIntroDialogue: {
 	Line1: Interface resolvida. Proxima fase de treinamento: Tempo de Hackear.
-	Line2: Tempo de Hackear e o protocolo de intervencao neural exclusivo da SHPC. Uma vez ativado, o fluxo de tempo externo congelara, permitindo que voce selecione alvos calmamente e carregue programas de invasao personalizados. O botao padrao e {0}.
+	Line2: Com o Tempo de Hackear ativo, o mundo para diante dos seus olhos. Escolha alvos e organize protocolos com calma. Tecla padrao: {0}.
 	Line3: A unidade de teste a frente esta travada no lugar. Pressione {0} para entrar no Tempo de Hackear, entao clique para travar nela.
 }
 
@@ -172,27 +172,27 @@ HackTimeTutorialLead: {
 		'''
 	HT_S11_Body:
 		'''
-		Treinamento de protocolo de invasao totalmente completo.
-		Voce dominou a sequencia completa de escaneamento, selecao de protocolo, envio e execucao.
+		Treinamento de invasao concluido.
+		Scan, protocolo, upload, execucao — o fluxo esta claro.
 		'''
 	HT_Observing: ENVIANDO...
 }
 
 CybCourseOutroDialogue: {
 	Line1: Treinamento completo. Todas as interfaces estao totalmente calibradas.
-	Line2: Voce dominou o protocolo de ligacao neural direta. O no de neurosonho esta desconectando.
+	Line2: Link neural OK. No de neurosonho desconectando.
 	Line3: Voce pode reiniciar o treinamento a qualquer momento, ou sair do neurosonho.
 }
 
 CybCourseCompletePanel: {
 	Title: TREINAMENTO COMPLETO
-	Subtitle: PROTOCOLO SUPERDREAM
-	Stat1: "[#] HUD da SHPC calibrada"
-	Stat2: "[#] Tempo de Hackear calibrado"
-	Stat3: "[#] Interface de escaneamento de blocos calibrada"
-	BtnRetry: REPETIR
+	Subtitle: NO SUPERDREAM
+	Stat1: "[#] HUD SHPC pronto"
+	Stat2: "[#] Tempo de Hackear pronto"
+	Stat3: "[#] Scan de blocos pronto"
+	BtnRetry: REINICIAR
 	BtnExit: SAIR
-	Footer: Escolha para continuar — REPETIR reinicia o treinamento, SAIR sai do neurosonho
+	Footer: Escolha uma opcao para continuar.
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -200,13 +200,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: Teclas Principais Nao Vinculadas
 	Hint:
 		'''
-		As seguintes teclas de atalho nao estao vinculadas no momento. Ao sair do neurosonho, voce nao podera usar suas funcoes correspondentes normalmente.
-		Por favor, atribua teclas para elas em [Configuracoes → Controles].
+		Essas teclas ainda nao estao vinculadas. Ao sair do neurosonho, essas funcoes nao funcionarao.
+		Va em [Configuracoes → Controles] para vincular.
 		'''
 	UnboundLabel: Nao Vinculado
 	BtnConfirm: Ciente
 	BtnLater: Lembrar Depois
-	Footer: Selecionar qualquer opcao desconectara o neurosonho. Voce pode ajustar as vinculacoes de teclas a qualquer momento nas configuracoes do mundo principal.
+	Footer: Qualquer opcao sai do neurosonho. Voce pode mudar as teclas depois nas configuracoes.
 }
 
 ShepelCyberActiveDialogue: {

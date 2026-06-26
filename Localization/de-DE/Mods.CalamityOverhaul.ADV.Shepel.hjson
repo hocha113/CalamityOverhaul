@@ -1,6 +1,6 @@
 CybCourseIntroDialogue: {
 	Line1: Meister, willkommen im neuronalen Trainingsknoten.
-	Line2: Dies ist ein immersiver Lernraum, exklusiv für Sie vorbereitet.
+	Line2: Dies ist ein geschlossener Trainingsraum.
 	Line3: Die SHPC ist eine mächtige intelligente Waffe. Hier lernen Sie, ihr HUD zu bedienen.
 	Line4: Sind Sie bereit, Ihr Bewusstsein mit meinem zu verbinden? Halten Sie meine Hand fest — wir beginnen.
 }
@@ -48,7 +48,7 @@ CybTutorialLead: {
 
 CybCourseHackIntroDialogue: {
 	Line1: Schnittstellen aufgelöst. Nächste Trainingsphase: Hack Time.
-	Line2: Hack Time ist ein exklusives neuronales Interventionsprotokoll der SHPC. Nach Aktivierung friert der äußere Zeitfluss ein — du kannst Ziele wählen und Hack-Programme hochladen. Standardtaste: {0}.
+	Line2: Sobald Hack Time aktiv ist, steht die Welt in deinen Augen still. Nimm dir Zeit für Ziele und Protokolle. Standardtaste: {0}.
 	Line3: Die Testeinheit voraus ist fixiert. Drücke {0} für Hack Time und klicke, um sie zu fixieren.
 }
 
@@ -172,27 +172,27 @@ HackTimeTutorialLead: {
 		'''
 	HT_S11_Body:
 		'''
-		Alle Hack-Protokoll-Trainings abgeschlossen.
-		Du beherrschst Scan, Protokoll, Upload und Ausführung.
+		Hack-Training abgeschlossen.
+		Scan, Protokoll, Upload, Ausführung — der Ablauf sitzt.
 		'''
 	HT_Observing: UPLOADING...
 }
 
 CybCourseOutroDialogue: {
 	Line1: Training abgeschlossen. Alle Schnittstellen sind kalibriert.
-	Line2: Du beherrschst die direkte neuronale Verbindung. Der Superdream-Knoten trennt sich.
+	Line2: Neuronale Direktverbindung steht. Superdream-Knoten trennt sich.
 	Line3: Du kannst das Training jederzeit zurücksetzen oder Superdream verlassen.
 }
 
 CybCourseCompletePanel: {
 	Title: TRAINING ABGESCHLOSSEN
-	Subtitle: SUPERDREAM-PROTOKOLL
-	Stat1: "[#] SHPC-HUD kalibriert"
-	Stat2: "[#] Hack Time kalibriert"
-	Stat3: "[#] Block-Scan-Schnittstelle kalibriert"
-	BtnRetry: ERNEUT
+	Subtitle: SUPERDREAM-KNOTEN
+	Stat1: "[#] SHPC-HUD bereit"
+	Stat2: "[#] Hack Time bereit"
+	Stat3: "[#] Block-Scan bereit"
+	BtnRetry: NEUSTART
 	BtnExit: BEENDEN
-	Footer: Wähle zum Fortfahren — ERNEUT startet Training neu, BEENDEN verlässt Superdream
+	Footer: Wähle eine Option zum Fortfahren.
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -200,13 +200,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: Kern-Tasten unbelegt
 	Hint:
 		'''
-		Folgende Tasten sind derzeit unbelegt. Nach Superdream funktionieren die zugehörigen Features nicht richtig.
-		Lege sie unter [Einstellungen → Steuerung] fest.
+		Diese Tasten sind noch unbelegt. Nach dem Superdream funktionieren die Features nicht.
+		Unter [Einstellungen → Steuerung] belegen.
 		'''
 	UnboundLabel: Unbelegt
 	BtnConfirm: Verstanden
 	BtnLater: Später
-	Footer: Beide Optionen trennen Superdream. Tastenbelegung kann jederzeit in der Hauptwelt geändert werden.
+	Footer: Beide Optionen beenden den Superdream. Tastenbelegung später in den Einstellungen änderbar.
 }
 
 ShepelCyberActiveDialogue: {

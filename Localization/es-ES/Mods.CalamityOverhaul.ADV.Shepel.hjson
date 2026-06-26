@@ -1,6 +1,6 @@
 CybCourseIntroDialogue: {
 	Line1: Maestro, bienvenido al nodo de entrenamiento neuronal.
-	Line2: Este es un espacio de enseñanza inmersiva preparado especialmente para usted.
+	Line2: Este es un espacio de entrenamiento cerrado.
 	Line3: SHPC es un arma inteligente formidable. Aquí aprenderá a operar su interfaz HUD.
 	Line4: ¿Listo para conectar su conciencia con la mía? Sostenga mi mano con fuerza y comencemos.
 }
@@ -48,7 +48,7 @@ CybTutorialLead: {
 
 CybCourseHackIntroDialogue: {
 	Line1: Análisis de interfaz completado. Siguiente entrenamiento: Tiempo de Hackeo.
-	Line2: El Tiempo de Hackeo es un protocolo de intervención neuronal exclusivo de SHPC. Al activarse, el flujo temporal externo se congelará, permitiéndole elegir sus objetivos con calma y cargar programas de hackeo personalizados. La tecla por defecto es {0}.
+	Line2: Al activar el Tiempo de Hackeo, el mundo se detiene ante sus ojos. Tómese su tiempo para elegir objetivos y colocar protocolos. Tecla predeterminada: {0}.
 	Line3: La unidad de prueba frente a usted está asegurada. Presione {0} para entrar en el Tiempo de Hackeo y luego haga clic para fijarla como objetivo.
 }
 
@@ -172,27 +172,27 @@ HackTimeTutorialLead: {
 		'''
 	HT_S11_Body:
 		'''
-		Entrenamiento de protocolos de hackeo completamente terminado.
-		Ha dominado el proceso completo de escaneo, selección de protocolos, carga y ejecución.
+		Entrenamiento de hackeo completado.
+		Escaneo, protocolo, carga y ejecución: el flujo está claro.
 		'''
 	HT_Observing: CARGANDO...
 }
 
 CybCourseOutroDialogue: {
 	Line1: Entrenamiento completado. Todas las interfaces han sido calibradas.
-	Line2: Ha dominado el protocolo de conexión neuronal directa. El nodo de hiper-sueño (Superdream) se está desconectando.
+	Line2: Enlace neuronal en orden. El nodo de hiper-sueño se está desconectando.
 	Line3: Puede reiniciar el entrenamiento en cualquier momento o salir del hiper-sueño.
 }
 
 CybCourseCompletePanel: {
 	Title: ENTRENAMIENTO COMPLETADO
-	Subtitle: PROTOCOLO SÚPER SUEÑO
-	Stat1: "[#] HUD de SHPC calibrado"
-	Stat2: "[#] Tiempo de Hackeo calibrado"
-	Stat3: "[#] Interfaz de escaneo de bloques calibrada"
-	BtnRetry: REINTENTAR
+	Subtitle: NODO DE HIPER-SUEÑO
+	Stat1: "[#] HUD SHPC listo"
+	Stat2: "[#] Tiempo de Hackeo listo"
+	Stat3: "[#] Escaneo de bloques listo"
+	BtnRetry: REINICIAR
 	BtnExit: SALIR
-	Footer: Seleccione para continuar — REINTENTAR reinicia el entrenamiento, SALIR abandona el hiper-sueño
+	Footer: Seleccione una opción para continuar.
 }
 
 CybCourseKeyBindReminderPanel: {
@@ -200,13 +200,13 @@ CybCourseKeyBindReminderPanel: {
 	Subtitle: Teclas de acceso rápido del núcleo sin asignar
 	Hint:
 		'''
-		Las siguientes teclas no están asignadas actualmente. Al salir del hiper-sueño, no podrá utilizar sus funciones correspondientes.
-		Por favor, diríjase a [Configuración → Controles] para asignarles una tecla.
+		Estas teclas no están asignadas. Al salir del hiper-sueño, esas funciones no funcionarán.
+		Asígnelas en [Configuración → Controles].
 		'''
 	UnboundLabel: Sin asignar
 	BtnConfirm: Entendido
 	BtnLater: Más tarde
-	Footer: Seleccionar cualquier opción desconectará el hiper-sueño. Puede ajustar la configuración de teclas en el mundo principal en cualquier momento.
+	Footer: Cualquier opción sale del hiper-sueño. Puede cambiar las teclas después en ajustes.
 }
 
 ShepelCyberActiveDialogue: {
