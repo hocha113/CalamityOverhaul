@@ -41,11 +41,11 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     glow += exp(-r * r * 5.0) * 1.1 * pulse;
     glow += exp(-r * 3.2) * 0.35;
 
-    //外扩柔环
+    //外扩柔环（半径收束在遮罩内，避免触及方形边缘）
     for (int i = 0; i < 3; i++) {
         float ph = frac(t * 0.18 + i * 0.333);
-        float ring = exp(-pow((r - ph * 1.1) * 9.0, 2.0)) * (1.0 - ph);
-        glow += ring * 0.30;
+        float ring = exp(-pow((r - ph * 0.82) * 9.0, 2.0)) * (1.0 - ph);
+        glow += ring * 0.28;
     }
 
     //向心汇聚光点（笛卡尔位置，无角度）
@@ -56,12 +56,15 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
         float s = hash21(seed);
         float2 dir = hash22(seed + 9.1) - 0.5;
         float life = frac(s + t * (0.12 + s * 0.12));
-        float2 start = dir * (1.5 + s * 0.6);
+        float2 start = dir * (1.3 + s * 0.4);
         float2 pos = lerp(start, float2(0.0, 0.0), life);
         float dd = length(d * 2.0 - pos);
         motes += (1.0 - smoothstep(0.0, 0.05, dd)) * (1.0 - life) * (0.4 + s * 0.6);
     }
     glow += motes * 0.45;
+
+    //径向遮罩：辉光在四边形边缘前彻底归零，杜绝可见的方形硬边
+    glow *= 1.0 - smoothstep(0.78, 0.98, r);
 
     float a = saturate(glow) * uIntensity * uAlpha;
     float3 col = uAccent * (0.6 + glow * 0.8);

@@ -165,52 +165,48 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         };
 
         /// <summary>
-        /// 分节标题：序号牌 + 大号角色名 + 拉丁副标签 + 向右延伸的渐隐强调长线。
-        /// reveal 0-1 驱动强调线的生长与文字浮入
+        /// 分节标题，自上而下三层互不重叠：
+        /// 元信息小行（竖纹 + 序号/总数 + 拉丁标签） → 大号角色名（清晰描边，无彩色偏移辉光） → 全宽分割线。
+        /// 分割线在文字下方独占一行，线上的菱形与游走高光不会被任何元素遮挡
         /// </summary>
         public static void DrawSectionHeader(SpriteBatch sb, int index, int total, CreditRole role,
-            string headerText, float leftX, float baselineY, float contentRight,
+            string headerText, float leftX, float headerTop, float headerHeight, float contentRight,
             float alpha, float reveal, float time) {
             Color roleCol = AckTheme.RoleColor(role);
             float ease = AckTheme.EaseOutCubic(reveal);
-            float rise = (1f - ease) * 14f;
+            float rise = (1f - ease) * 12f;
 
-            //序号牌：竖向强调短条 + 两位数序号 + 总数
-            Vector2 tagPos = new(leftX, baselineY - 26f + rise);
-            DrawGlowLine(sb, new Vector2(leftX, tagPos.Y + 2f), new Vector2(leftX, tagPos.Y + 16f),
-                2f, roleCol * (alpha * 0.9f));
+            //元信息小行
+            float metaY = headerTop + 6f + rise;
+            DrawLine(sb, new Vector2(leftX, metaY + 1f), new Vector2(leftX, metaY + 14f), 2f, roleCol * (alpha * 0.9f));
             string idx = (index + 1).ToString("00");
-            DrawGlowText(sb, idx, new Vector2(leftX + 9f, tagPos.Y),
-                AckTheme.Text * alpha, roleCol * (alpha * 0.4f), 0.82f);
-            float idxW = Font.MeasureString(idx).X * 0.82f;
-            DrawTrackedText(sb, "/ " + total.ToString("00"),
-                new Vector2(leftX + 12f + idxW, tagPos.Y + 3f), AckTheme.TextFaint * alpha, 0.62f, 1f);
+            const float idxScale = 0.82f;
+            Utils.DrawBorderString(sb, idx, new Vector2(leftX + 9f, metaY), AckTheme.Text * alpha, idxScale);
+            float metaX = leftX + 9f + Font.MeasureString(idx).X * idxScale + 6f;
+            metaX += DrawTrackedText(sb, "/ " + total.ToString("00"), new Vector2(metaX, metaY + 2f),
+                AckTheme.TextFaint * alpha, 0.62f, 1f) + 16f;
+            DrawTrackedText(sb, RoleTag(role), new Vector2(metaX, metaY + 2f),
+                roleCol * (alpha * 0.85f * ease), 0.62f, 2.4f);
 
             //大号角色名
-            Vector2 namePos = new(leftX, baselineY - 6f + rise);
-            float nameScale = 1.34f;
-            DrawGlowText(sb, headerText, namePos, AckTheme.Text * alpha, roleCol * (alpha * 0.5f), nameScale, 1.8f);
-            float nameW = Font.MeasureString(headerText).X * nameScale;
+            const float nameScale = 1.3f;
+            float nameY = headerTop + 26f + rise;
+            Color nameCol = Color.Lerp(AckTheme.Text, roleCol, 0.25f);
+            Utils.DrawBorderString(sb, headerText, new Vector2(leftX, nameY), nameCol * alpha, nameScale);
+            float nameH = Font.MeasureString(headerText).Y * nameScale;
 
-            //拉丁副标签，紧贴角色名右侧基线
-            string tag = RoleTag(role);
-            float tagScale = 0.62f;
-            float tagBaseline = namePos.Y + 22f;
-            DrawTrackedText(sb, tag, new Vector2(leftX + nameW + 16f, tagBaseline),
-                roleCol * (alpha * 0.85f * ease), tagScale, 2.4f);
-
-            //右延强调长线：起点菱形 + 生长 + 渐隐，末端呼吸光点
-            float lineStartX = leftX + nameW + 16f + MeasureTracked(tag, tagScale, 2.4f) + 18f;
-            float lineY = namePos.Y + 14f;
-            float fullLen = MathF.Max(0f, contentRight - lineStartX);
-            float curLen = fullLen * AckTheme.EaseOutQuint(reveal);
+            //全宽分割线，文字之下独占一行
+            float lineY = nameY + nameH + 8f;
+            float curLen = MathF.Max(0f, contentRight - leftX) * AckTheme.EaseOutQuint(reveal);
             if (curLen > 6f) {
-                DrawDiamond(sb, new Vector2(lineStartX, lineY), 5f, roleCol * (alpha * 0.9f));
-                DrawGradientLine(sb, new Vector2(lineStartX + 5f, lineY), new Vector2(lineStartX + curLen, lineY),
-                    roleCol * (alpha * 0.7f), roleCol * (alpha * 0.02f), 1.4f);
-                float pulse = 0.5f + 0.5f * MathF.Sin(time * 2.2f + index);
-                DrawSoftGlow(sb, new Vector2(lineStartX + curLen, lineY), 5f + pulse * 2f,
-                    AckTheme.AccentHi * (alpha * 0.25f * ease));
+                DrawDiamond(sb, new Vector2(leftX, lineY), 5f, roleCol * (alpha * 0.95f));
+                DrawGradientLine(sb, new Vector2(leftX + 7f, lineY), new Vector2(leftX + curLen, lineY),
+                    roleCol * (alpha * 0.65f), roleCol * (alpha * 0.02f), 1.5f);
+                //沿线游走的高光段（清晰线段，非像素堆叠辉光）
+                float travel = (time * 0.12f + index * 0.27f) % 1f;
+                float hx = leftX + 7f + travel * MathF.Max(0f, curLen - 14f);
+                DrawLine(sb, new Vector2(hx - 7f, lineY), new Vector2(hx + 7f, lineY),
+                    1.8f, AckTheme.AccentHi * (alpha * 0.5f * ease));
             }
         }
 
@@ -223,22 +219,41 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             Utils.DrawBorderString(sb, name, pos + new Vector2(14f, 0f), baseColor * alpha, scale);
         }
 
-        /// <summary>居中名字（捐赠者网格单元）</summary>
-        public static void DrawNameCentered(SpriteBatch sb, string name, Vector2 center, Color baseColor, float alpha, float scale) {
+        /// <summary>居中名字（捐赠者网格单元），超过 maxWidth 时按比例缩小以免越列重叠</summary>
+        public static void DrawNameCentered(SpriteBatch sb, string name, Vector2 center,
+            Color baseColor, float alpha, float scale, float maxWidth = 0f) {
             if (alpha < 0.01f) {
                 return;
             }
-            Vector2 size = Font.MeasureString(name) * scale;
-            Utils.DrawBorderString(sb, name, center - size * 0.5f, baseColor * alpha, scale);
+            Vector2 raw = Font.MeasureString(name);
+            float s = scale;
+            if (maxWidth > 1f && raw.X * s > maxWidth) {
+                s = maxWidth / raw.X;
+            }
+            Vector2 size = raw * s;
+            Utils.DrawBorderString(sb, name, center - size * 0.5f, baseColor * alpha, s);
         }
 
-        /// <summary>标志绘制：背后柔光 + 本体</summary>
+        /// <summary>展示级居中文字：着色器辉光球作底 + 清晰描边正文（替代彩色偏移辉光的拼接观感）</summary>
+        public static void DrawDisplayText(SpriteBatch sb, string text, Vector2 center,
+            Color textColor, Color glowColor, float scale, float glowAlpha) {
+            if (string.IsNullOrEmpty(text)) {
+                return;
+            }
+            Vector2 size = Font.MeasureString(text) * scale;
+            if (glowAlpha > 0.01f) {
+                DrawGlowOrb(sb, center, MathF.Max(size.X, size.Y) * 0.62f, glowColor, glowAlpha, 1.9f);
+            }
+            Utils.DrawBorderString(sb, text, center - size * 0.5f, textColor, scale);
+        }
+
+        /// <summary>标志绘制：着色器软辉光作底 + 本体</summary>
         public static void DrawLogo(SpriteBatch sb, Texture2D logo, Vector2 center, float scale, float alpha, Color glow) {
             if (logo == null) {
                 return;
             }
             Vector2 origin = logo.Size() * 0.5f;
-            DrawSoftGlow(sb, center, logo.Width * scale * 0.55f, glow * (alpha * 0.5f));
+            DrawGlowOrb(sb, center, logo.Width * scale * 0.62f, glow, alpha * 0.55f, 2.2f);
             sb.Draw(logo, center, null, Color.White * alpha, 0f, origin, scale, SpriteEffects.None, 0f);
         }
 
@@ -324,6 +339,24 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             effect.Parameters["uResolution"]?.SetValue(new Vector2(rect.Width, rect.Height));
             effect.Parameters["uIntensity"]?.SetValue(AckTheme.Saturate(intensity));
             effect.Parameters["uAccent"]?.SetValue(accent.ToVector3());
+            ShaderQuad(sb, effect, rect);
+        }
+
+        /// <summary>用 AckGlow.fx 绘制软径向辉光球；缺失时回退 CPU 同心柔光</summary>
+        public static void DrawGlowOrb(SpriteBatch sb, Vector2 center, float radius, Color color, float alpha, float falloff = 2.4f) {
+            if (radius < 1f || alpha < 0.01f) {
+                return;
+            }
+            Effect effect = EffectLoader.AckGlow?.Value;
+            if (effect == null) {
+                DrawSoftGlow(sb, center, radius, color * AckTheme.Saturate(alpha));
+                return;
+            }
+            Rectangle rect = new((int)(center.X - radius), (int)(center.Y - radius), (int)(radius * 2f), (int)(radius * 2f));
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["uAlpha"]?.SetValue(AckTheme.Saturate(alpha));
+            effect.Parameters["uFalloff"]?.SetValue(falloff);
+            effect.Parameters["uAccent"]?.SetValue(color.ToVector3());
             ShaderQuad(sb, effect, rect);
         }
 

@@ -1,7 +1,6 @@
 using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using ReLogic.Content;
 using System;
 using Terraria;
@@ -47,6 +46,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         private float scrollPx;      //名单滚动量（UI空间像素）
         private float rollDistance;  //名单滚完所需的滚动量
         private float frameReveal;   //取景框入场 0-1
+        private float holdProgress;  //长按退出读条 0-1
         private int musicFade50;     //ED 音乐与其它音轨的交叉淡入计数
 
         private const float TitleDuration = 6f;     //标题阶段总时长
@@ -90,6 +90,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             phaseTime = 0f;
             scrollPx = 0f;
             frameReveal = 0f;
+            holdProgress = 0f;
         }
 
         private static string RoleHeader(CreditRole role) => role switch {
@@ -171,19 +172,28 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
 
         private void HandleInput() {
+            //长按任意键（含鼠标）读条退出，松开即回落，避免误触瞬退
             if (fade < 0.85f) {
+                holdProgress = MathF.Max(0f, holdProgress - 0.05f);
                 return;
             }
-            bool close = keyLeftPressState == KeyPressState.Pressed;
-            KeyboardState keyState = Main.keyState;
-            KeyboardState oldKeyState = Main.oldKeyState;
-            if (keyState.IsKeyDown(Keys.Escape) && !oldKeyState.IsKeyDown(Keys.Escape)) {
-                close = true;
+            if (AnyKeyHeld()) {
+                holdProgress = MathF.Min(1f, holdProgress + 1f / 78f);
+                if (holdProgress >= 1f) {
+                    SoundEngine.PlaySound(SoundID.MenuClose);
+                    _active = false;
+                }
             }
-            if (close) {
-                SoundEngine.PlaySound(SoundID.MenuClose);
-                _active = false;
+            else {
+                holdProgress = MathF.Max(0f, holdProgress - 0.045f);
             }
+        }
+
+        private static bool AnyKeyHeld() {
+            if (Main.mouseLeft || Main.mouseRight || Main.mouseMiddle) {
+                return true;
+            }
+            return Main.keyState.GetPressedKeys().Length > 0;
         }
 
         #region 名单布局测算
@@ -247,7 +257,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                     break;
             }
 
-            DrawExitHint(spriteBatch, screenW, screenH);
+            DrawExitHold(spriteBatch, screenW, screenH);
         }
 
         #region 标题阶段
@@ -271,8 +281,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float titleScale = 1.95f;
             Vector2 titleCenter = new(cx, screenH * 0.54f + (1f - titleAppear) * 16f + riseOut);
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(TitleText.Value) * titleScale;
-            AckRenderer.DrawGlowTextCentered(sb, TitleText.Value, titleCenter,
-                AckTheme.Text * (block * titleAppear), AckTheme.Accent * (block * titleAppear * 0.55f), titleScale, 2.2f);
+            AckRenderer.DrawDisplayText(sb, TitleText.Value, titleCenter,
+                AckTheme.Text * (block * titleAppear), AckTheme.Accent, titleScale, block * titleAppear * 0.4f);
 
             //标题两侧取景括号
             float bracketGap = titleSize.X * 0.5f + 30f;
@@ -318,10 +328,10 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 y += AckTheme.SectionGap;
                 float headerTop = baseY - scrollPx + y;
                 if (headerTop > -AckTheme.HeaderHeight && headerTop < screenH + 40f) {
-                    float a = RowAlpha(headerTop + 20f, screenH);
+                    float a = RowAlpha(headerTop + AckTheme.HeaderHeight * 0.5f, screenH);
                     float reveal = AckTheme.Saturate((screenH * 0.92f - headerTop) / (screenH * 0.32f));
                     AckRenderer.DrawSectionHeader(sb, sectionIndex, total, sec.Role, RoleHeader(sec.Role),
-                        contentLeft, headerTop + 38f, contentRight, a, reveal, globalTime);
+                        contentLeft, headerTop, AckTheme.HeaderHeight, contentRight, a, reveal, globalTime);
                 }
                 y += AckTheme.HeaderHeight;
 
@@ -340,7 +350,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                             continue;
                         }
                         Vector2 cellCenter = new(contentLeft + colW * (col + 0.5f), rowY + AckTheme.DonorRowHeight * 0.5f);
-                        AckRenderer.DrawNameCentered(sb, sec.Names[n], cellCenter, AckTheme.TextDim, a, 0.82f);
+                        AckRenderer.DrawNameCentered(sb, sec.Names[n], cellCenter, AckTheme.TextDim, a, 0.82f, colW - 18f);
                     }
                     y += rows * AckTheme.DonorRowHeight;
                 }
@@ -389,8 +399,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             float fScale = 1.15f;
             Vector2 textCenter = new(cx, cy + auraR * 0.55f + 24f);
             Vector2 fSize = FontAssets.MouseText.Value.MeasureString(FinaleText.Value) * fScale;
-            AckRenderer.DrawGlowTextCentered(sb, FinaleText.Value, textCenter,
-                AckTheme.Text * (fade * textAppear), AckTheme.Accent * (fade * textAppear * 0.5f), fScale, 1.8f);
+            AckRenderer.DrawDisplayText(sb, FinaleText.Value, textCenter,
+                AckTheme.Text * (fade * textAppear), AckTheme.Accent, fScale, fade * textAppear * 0.4f);
 
             float ulY = textCenter.Y + fSize.Y * 0.5f + 10f;
             float ulHalf = (fSize.X * 0.5f + 26f) * AckTheme.EaseOutQuint(textAppear);
@@ -402,17 +412,33 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         }
         #endregion
 
-        private void DrawExitHint(SpriteBatch sb, float screenW, float screenH) {
-            float a = AckTheme.Saturate((fade - 0.5f) * 2f) * 0.5f;
-            if (a < 0.01f) {
+        private void DrawExitHold(SpriteBatch sb, float screenW, float screenH) {
+            float baseA = AckTheme.Saturate((fade - 0.5f) * 2f);
+            if (baseA < 0.01f) {
                 return;
             }
-            float pulse = 0.6f + 0.4f * MathF.Sin(globalTime * 2f);
+            float cx = screenW * 0.5f;
+            float y = screenH - 48f;
+
+            //提示文字：按住时由暗转亮
             string hint = ExitHintText.Value;
-            float scale = 0.66f;
-            float w = AckRenderer.MeasureTracked(hint, scale, 1.5f);
-            AckRenderer.DrawTrackedText(sb, hint, new Vector2(screenW * 0.5f - w * 0.5f, screenH - 44f),
-                AckTheme.TextFaint * (a * pulse), scale, 1.5f);
+            const float hintScale = 0.66f;
+            const float hintTrack = 1.8f;
+            float hintW = AckRenderer.MeasureTracked(hint, hintScale, hintTrack);
+            Color hintCol = Color.Lerp(AckTheme.TextFaint, AckTheme.Accent, holdProgress);
+            AckRenderer.DrawTrackedText(sb, hint, new Vector2(cx - hintW * 0.5f, y - 22f),
+                hintCol * (baseA * (0.45f + holdProgress * 0.5f)), hintScale, hintTrack);
+
+            //读条：细轨 + 生长辉光填充 + 端点菱形
+            const float barW = 210f;
+            float left = cx - barW * 0.5f;
+            AckRenderer.DrawLine(sb, new Vector2(left, y), new Vector2(left + barW, y), 2f,
+                AckTheme.TextFaint * (baseA * 0.35f));
+            if (holdProgress > 0.001f) {
+                float fillX = left + barW * holdProgress;
+                AckRenderer.DrawGlowLine(sb, new Vector2(left, y), new Vector2(fillX, y), 2.2f, AckTheme.Accent * baseA);
+                AckRenderer.DrawDiamond(sb, new Vector2(fillX, y), 4.5f, AckTheme.AccentHi * baseA);
+            }
         }
     }
 }

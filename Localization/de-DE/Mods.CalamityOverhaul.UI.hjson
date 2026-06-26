@@ -851,7 +851,7 @@ AcknowledgmentUI: {
 	// TitleText: Acknowledgments
 	// SubtitleText: Calamity Overhaul · All Contributors
 	// FinaleText: Thank you for journeying with us
-	// ExitHintText: Click or press ESC to exit
+	// ExitHintText: Hold any key to exit
 }
 
 CWRPlayer: {

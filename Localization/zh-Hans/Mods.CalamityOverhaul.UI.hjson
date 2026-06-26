@@ -851,7 +851,7 @@ AcknowledgmentUI: {
 	TitleText: 鸣 谢
 	SubtitleText: 灾厄大修 · 全体贡献者
 	FinaleText: 感谢一路同行
-	ExitHintText: 点击或按 ESC 退出
+	ExitHintText: 长按任意键退出
 }
 
 CWRPlayer: {

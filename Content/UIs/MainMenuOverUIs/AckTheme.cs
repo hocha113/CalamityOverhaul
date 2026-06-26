@@ -36,9 +36,9 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         //内容列左右安全边距占屏比
         public const float SideMarginRatio = 0.135f;
         //分节标题之上的额外留白
-        public const float SectionGap = 70f;
-        //分节标题占高
-        public const float HeaderHeight = 60f;
+        public const float SectionGap = 66f;
+        //分节标题占高（容纳元信息小行 + 大号角色名 + 分割线，且各层不重叠）
+        public const float HeaderHeight = 82f;
         //单列名字行高
         public const float NameRowHeight = 32f;
         //捐赠者网格行高与列宽
