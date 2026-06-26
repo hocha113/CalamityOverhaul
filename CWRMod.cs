@@ -1,4 +1,4 @@
-global using InnoVault;
+﻿global using InnoVault;
 global using Microsoft.Xna.Framework;
 using CalamityOverhaul.Common;
 using System.Collections.Generic;
@@ -103,6 +103,7 @@ namespace CalamityOverhaul
             CWRLoad.UnLoad();
             CWRID.UnLoad();
             CWRRef.UnLoad();
+            instance = null;
         }
 
         /// <summary>网络包分发至 CWRNetWork</summary>
