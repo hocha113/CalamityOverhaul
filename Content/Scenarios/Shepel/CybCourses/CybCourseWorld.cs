@@ -13,9 +13,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
 {
     internal class CybCourseWorld : Subworld
     {
-        //世界宽高保持极小，够用就行，不浪费内存
+        //世界宽保持极小，够用就行，不浪费内存
         public override int Width => 400;
-        public override int Height => 250;
+        //高度必须让"地狱层"(Terraria 固定取 maxTilesY-200)落到走廊下方。
+        //若世界太矮(如 250)，地狱层会落在 tile≈50，而走廊在 tile≈148-178 → 整条走廊被判成地狱生物群系，
+        //从而误触发各种地狱判定(任务书地狱探索节点、比目鱼/海伦的地狱赠礼、巫毒玩偶等)。
+        //取 FloorY(170)+280=450 → 地狱层=450-200=250，稳稳落在走廊下方(余量≈72格)。
+        public override int Height => CybCourseGen.FloorY + 280;
 
         public static bool Active => SubworldSystem.IsActive<CybCourseWorld>();
 
@@ -53,7 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             HackTime.InfiniteHack = false;
             //避免下次进入时误用旧值
             _entryRevealTime = -1f;
-            //释放整图回滚快照，避免 ~400×250 结构体常驻内存
+            //释放整图回滚快照，避免整张子世界尺寸的结构体数组常驻内存
             CybCourseGen.ClearSnapshot();
         }
 
@@ -61,10 +65,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             //固定为永夜，强化赛博朋克氛围
             Main.dayTime = false;
             Main.time = 0;
-            //把地表线和岩层线推到世界底部，令游戏认为整个世界处于地面以上
-            //这样环境光照正常工作，不会出现地下黑暗
-            Main.worldSurface = Height - 5;
-            Main.rockLayer = Height - 4;
+            //把地表线/岩层线放在走廊正下方，使整条走廊判定为"地表(Overworld)"，避免任何地下/地狱/天空判定：
+            //· 走廊(tile≈148-178)位于地表线之上 → 环境光正常工作，不会出现地下黑暗
+            //· 地表线(FloorY+30=200)在走廊下方，且 0.35*200=70 在走廊上方 → 既不算地下也不算天空
+            //· 地狱层(maxTilesY-200=250)同样在走廊下方 → 不会被判成地狱
+            Main.worldSurface = CybCourseGen.FloorY + 30;
+            Main.rockLayer = CybCourseGen.FloorY + 55;
         }
 
         public override void Update() {

@@ -293,7 +293,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
                     return;
                 }
             }
-            for (int i = 10; i < 58; i++) {
+            //上界止于主背包末尾(50)，绝不延伸到钱币/弹药槽(50~57)：
+            //否则交换会把当前手持的主武器塞进非法槽位而丢失
+            for (int i = 10; i < 50; i++) {
                 if (p.inventory[i].type == SHPCOverride.ID) {
                     var tmp = p.inventory[p.selectedItem];
                     p.inventory[p.selectedItem] = p.inventory[i];

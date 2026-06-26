@@ -260,7 +260,7 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.CybCourses
             WorldGen.RangeFrame(0, 0, w - 1, h - 1);
         }
 
-        //离开子世界时释放整图快照（约 400×250 个结构体，常驻无意义）
+        //离开子世界时释放整图快照（整张子世界尺寸的结构体数组，常驻无意义）
         //快照只服务于子世界内的 RETRY 回滚，下次进入会在 ApplyPass 末尾重新拍摄
         internal static void ClearSnapshot() {
             _snapshot = null;
