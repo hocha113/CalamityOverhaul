@@ -1,4 +1,4 @@
-using InnoVault.GameSystem;
+﻿using InnoVault.GameSystem;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -32,6 +32,8 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
         public static LocalizedText ExitHintText { get; private set; }
 
         internal static AcknowledgmentUI Instance;
+        /// <summary>全屏 ED 占用主菜单时的 menuMode</summary>
+        public const int MenuMode = 888;
         /// <summary>外部入口（致谢按钮）置真以开启 ED</summary>
         internal bool _active;
 
@@ -66,6 +68,36 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             return Instance._active || Instance.fade > 0f;
         }
 
+        /// <summary>从公告栏等入口打开致谢 ED，并锁定主菜单 menuMode</summary>
+        public static void OnOpen() {
+            if (Main.menuMode == MenuMode) {
+                SoundEngine.PlaySound(SoundID.Unlock);
+                return;
+            }
+            if (Main.menuMode != 0) {
+                SoundEngine.PlaySound(SoundID.Unlock);
+                return;
+            }
+            Main.menuMode = MenuMode;
+            if (Instance == null) {
+                return;
+            }
+            Instance.ResetTimeline();
+            Instance._active = true;
+        }
+
+        private static void ReleaseMenuMode() {
+            if (Main.menuMode == MenuMode) {
+                Main.menuMode = 0;
+            }
+        }
+
+        private void CloseAcknowledgment() {
+            SoundEngine.PlaySound(SoundID.MenuClose);
+            _active = false;
+            ReleaseMenuMode();
+        }
+
         public override void SetStaticDefaults() {
             ArtistRole = this.GetLocalization(nameof(ArtistRole), () => "画师");
             CodeAssistanceRole = this.GetLocalization(nameof(CodeAssistanceRole), () => "代码援助");
@@ -75,12 +107,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             TitleText = this.GetLocalization(nameof(TitleText), () => "鸣 谢");
             SubtitleText = this.GetLocalization(nameof(SubtitleText), () => "灾厄大修 · 全体贡献者");
             FinaleText = this.GetLocalization(nameof(FinaleText), () => "感谢一路同行");
-            ExitHintText = this.GetLocalization(nameof(ExitHintText), () => "点击或按 ESC 退出");
+            ExitHintText = this.GetLocalization(nameof(ExitHintText), () => "长按任意键退出");
             Instance = UIHandleLoader.GetUIHandleOfType<AcknowledgmentUI>();
             ResetTimeline();
         }
 
         public override void UnLoad() {
+            ReleaseMenuMode();
             Instance = null;
             fade = 0f;
         }
@@ -134,6 +167,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             else if (fade > 0f) {
                 fade = MathF.Max(0f, fade - 0.045f);
                 if (fade <= 0f) {
+                    ReleaseMenuMode();
                     ResetTimeline();
                     return;
                 }
@@ -180,8 +214,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             if (AnyKeyHeld()) {
                 holdProgress = MathF.Min(1f, holdProgress + 1f / 78f);
                 if (holdProgress >= 1f) {
-                    SoundEngine.PlaySound(SoundID.MenuClose);
-                    _active = false;
+                    CloseAcknowledgment();
                 }
             }
             else {
@@ -228,6 +261,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             //资源在卸载模组时可能已被释放，绘制前确认占位纹理仍可用
             if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
                 _active = false;
+                ReleaseMenuMode();
                 return;
             }
 

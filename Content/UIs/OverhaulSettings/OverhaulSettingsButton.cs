@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         }
 
         public static void OnOpen() {
-            if (Main.menuMode == 888) {
+            if (Main.menuMode != 0) {
                 SoundEngine.PlaySound(SoundID.Unlock);
                 return;
             }

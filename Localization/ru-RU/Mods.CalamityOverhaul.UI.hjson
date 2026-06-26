@@ -848,10 +848,10 @@ AcknowledgmentUI: {
 	MusicianRole: Музыкант
 	DonorRole: Донатер
 	BalanceTesterRole: Тестирование баланса
-	// TitleText: Acknowledgments
-	// SubtitleText: Calamity Overhaul · All Contributors
-	// FinaleText: Thank you for journeying with us
-	// ExitHintText: Hold any key to exit
+	TitleText: Благодарности
+	SubtitleText: Calamity Overhaul · Все участники
+	FinaleText: Спасибо, что были с нами
+	ExitHintText: Удерживайте любую клавишу для выхода
 }
 
 CWRPlayer: {

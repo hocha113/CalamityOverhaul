@@ -81,11 +81,13 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
             bulletinBoardElements.Add(logBulletinBoard);
 
             BulletinBoardElement acknowledgmentNulletinBoard = new BulletinBoardElement()
-                .Setproperty(AcknowledgmentLabel, () => AcknowledgmentUI.Instance._active = true);
+                .Setproperty(AcknowledgmentLabel, AcknowledgmentUI.OnOpen,
+                    disabledFunc: () => Main.menuMode != 0);
             bulletinBoardElements.Add(acknowledgmentNulletinBoard);
 
             BulletinBoardElement overhaulSettingsButtonBoard = new BulletinBoardElement()
-                .Setproperty(OverhaulSettingsButton.OverhaulSettingsButtonText, OverhaulSettingsButton.OnOpen, disabledFunc: () => Main.menuMode == 888);
+                .Setproperty(OverhaulSettingsButton.OverhaulSettingsButtonText, OverhaulSettingsButton.OnOpen,
+                    disabledFunc: () => Main.menuMode != 0);
             bulletinBoardElements.Add(overhaulSettingsButtonBoard);
         }
         public override void UnLoad() {
