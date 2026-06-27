@@ -115,12 +115,6 @@ namespace CalamityOverhaul.Common
             set => Data.MuraPosStyleValue = value;
         }
 
-        [BackgroundColor(45, 175, 225, 255)]
-        [SliderColor(224, 165, 56, 255)]
-        [Range(1f, 2f)]
-        [DefaultValue(1)]
-        public float DialogueBox_Scale_Value { get; set; }//对话框缩放
-
         public override void OnLoaded() {
             Instance = this;
             ConfigChangePrefix = this.GetLocalization(nameof(ConfigChangePrefix), () => "用户");
