@@ -169,9 +169,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
                     if (Main.masterMode || Main.expertMode) {
                         dmg = 12;
                     }
-                    ArmIndex = Projectile.NewProjectileDirect(this.FromObjectGetParent()
-                    , ArmPos, Vector2.Zero, ModContent.ProjectileType<WGGLumberjackSaw>(), dmg, 3, -1).identity;
-                    SendData();
+                    //并行阶段弹幕生成延迟到主线程执行，生成后回填臂索引(identity)并联网(串行阶段立即执行)
+                    DeferSpawnProjectile(this.FromObjectGetParent(), ArmPos, Vector2.Zero
+                        , ModContent.ProjectileType<WGGLumberjackSaw>(), dmg, 3, -1, onSpawned: id => {
+                            if (id >= 0 && id < Main.maxProjectiles) {
+                                ArmIndex = Main.projectile[id].identity;
+                                SendData();
+                            }
+                        });
                 }
             }
         }

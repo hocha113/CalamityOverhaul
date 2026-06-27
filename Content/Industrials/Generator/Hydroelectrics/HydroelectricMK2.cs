@@ -135,34 +135,40 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
             }
 
             for (int i = 0; i < 3; i++) {
-                if (!InScreen || !Main.rand.NextBool(Math.Max(10 - (int)(hasElmdVlome * 10), 4))) {
+                if (!InScreen || !Rand.NextBool(Math.Max(10 - (int)(hasElmdVlome * 10), 4))) {
                     continue;
                 }
 
-                PRTLoader.NewParticle<PRT_WaterBubble>(
-                    CenterInWorld + new Vector2(62, -16) + VaultUtils.RandVr(6)
-                    , new Vector2(2, -4), Color.White, Main.rand.NextFloat(0.4f, 0.8f));
+                //并行阶段粒子生成(及其内部随机数与返回值使用)统一延迟到主线程执行(串行阶段立即执行)
+                Defer(() => {
+                    PRTLoader.NewParticle<PRT_WaterBubble>(
+                        CenterInWorld + new Vector2(62, -16) + VaultUtils.RandVr(6)
+                        , new Vector2(2, -4), Color.White, Rand.NextFloat(0.4f, 0.8f));
 
-                BasePRT prt;
+                    BasePRT prt;
 
-                Vector2 targetPos = CenterInWorld + new Vector2(44, 18);
-                Vector2 spawnPos = CenterInWorld + new Vector2(46, 120) + VaultUtils.RandVr(46);
-                prt = PRTLoader.NewParticle<PRT_HomeBubble>(
-                    spawnPos, new Vector2(0, -6), Color.White, Main.rand.NextFloat(0.2f, 0.6f));
-                prt.ai[0] = targetPos.X;
-                prt.ai[1] = targetPos.Y;
+                    Vector2 targetPos = CenterInWorld + new Vector2(44, 18);
+                    Vector2 spawnPos = CenterInWorld + new Vector2(46, 120) + VaultUtils.RandVr(46);
+                    prt = PRTLoader.NewParticle<PRT_HomeBubble>(
+                        spawnPos, new Vector2(0, -6), Color.White, Rand.NextFloat(0.2f, 0.6f));
+                    prt.ai[0] = targetPos.X;
+                    prt.ai[1] = targetPos.Y;
 
-                targetPos = CenterInWorld + new Vector2(24, 18);
-                spawnPos = CenterInWorld + new Vector2(12, 120) + VaultUtils.RandVr(46);
-                prt = PRTLoader.NewParticle<PRT_HomeBubble>(
-                    spawnPos, new Vector2(0, -6), Color.White, Main.rand.NextFloat(0.2f, 0.6f));
-                prt.ai[0] = targetPos.X;
-                prt.ai[1] = targetPos.Y;
+                    targetPos = CenterInWorld + new Vector2(24, 18);
+                    spawnPos = CenterInWorld + new Vector2(12, 120) + VaultUtils.RandVr(46);
+                    prt = PRTLoader.NewParticle<PRT_HomeBubble>(
+                        spawnPos, new Vector2(0, -6), Color.White, Rand.NextFloat(0.2f, 0.6f));
+                    prt.ai[0] = targetPos.X;
+                    prt.ai[1] = targetPos.Y;
+                });
             }
 
-            if (!SoundEngine.TryGetActiveSound(hydroelectricSoundSlot, out var activeSound)) {
-                hydroelectricSoundSlot = SoundEngine.PlaySound(hydroelectricSoundStyle, CenterInWorld, LoopingSoundUpdate);
-            }
+            //并行阶段循环音效的查询与播放统一延迟到主线程执行(串行阶段立即执行)
+            Defer(() => {
+                if (!SoundEngine.TryGetActiveSound(hydroelectricSoundSlot, out var activeSound)) {
+                    hydroelectricSoundSlot = SoundEngine.PlaySound(hydroelectricSoundStyle, CenterInWorld, LoopingSoundUpdate);
+                }
+            });
         }
 
         public override void FrontDraw(SpriteBatch spriteBatch) => DrawChargeBar();

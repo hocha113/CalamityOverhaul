@@ -88,7 +88,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 if (!VaultUtils.isClient) {
                     SendData();
                 }
-                SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld);
+                Defer(() => SoundEngine.PlaySound(CWRSound.CollectorStart, PosInWorld));
             }
             VaultUtils.ClockFrame(ref frame, 5, maxFrame - 1);
         }
@@ -174,9 +174,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             if (ArmActorIndices.Count < 3) {
                 int armSlot = ArmActorIndices.Count;
-                int actorIndex = ActorLoader.NewActor<CollectorArm>(ArmPos, Vector2.Zero);
-                ArmActorIndices.Add(actorIndex);
-                ActorLoader.Actors[actorIndex].OnSpawn(Position, armSlot);
+                //并行阶段Actor生成与列表记账延迟到主线程执行(串行阶段立即执行)
+                Defer(() => {
+                    int actorIndex = ActorLoader.NewActor<CollectorArm>(ArmPos, Vector2.Zero);
+                    ArmActorIndices.Add(actorIndex);
+                    if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
+                        ActorLoader.Actors[actorIndex].OnSpawn(Position, armSlot);
+                    }
+                });
             }
         }
 
@@ -203,7 +208,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             int totalArms = ActorLoader.GetActiveActors<CollectorArm>().Count;
             if (totalArms > 300) {
                 if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value);
+                    Defer(() => CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text1.Value));
                     textIdleTime = 300;
                 }
                 return;
@@ -214,7 +219,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             //检查能量状态
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt && textIdleTime <= 0) {
-                CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value);
+                Defer(() => CombatText.NewText(HitBox, Color.YellowGreen, Collector.Text3.Value));
                 textIdleTime = 300;
             }
         }

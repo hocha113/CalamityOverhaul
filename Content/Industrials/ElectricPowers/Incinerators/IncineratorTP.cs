@@ -101,7 +101,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
         private void StartSmelting() {
             IncData.SmeltingProgress = 1;
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.5f, Pitch = -0.2f }, CenterInWorld);
+                //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                Defer(() => SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.5f, Pitch = -0.2f }, CenterInWorld));
             }
         }
 
@@ -188,12 +189,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators
             }
             particleTimer = 0;
 
-            Vector2 particlePos = CenterInWorld + new Vector2(Main.rand.NextFloat(-20f, 20f), -30f);
-            if (Main.rand.NextBool(3)) {
-                Dust.NewDust(particlePos, 4, 4, DustID.Smoke, 0, -2f, 100, default, 1.2f);
+            Vector2 particlePos = CenterInWorld + new Vector2(Rand.NextFloat(-20f, 20f), -30f);
+            if (Rand.NextBool(3)) {
+                //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
+                Defer(() => Dust.NewDust(particlePos, 4, 4, DustID.Smoke, 0, -2f, 100, default, 1.2f));
             }
-            if (Main.rand.NextBool(2)) {
-                Dust.NewDust(particlePos, 4, 4, DustID.Torch, Main.rand.NextFloat(-1f, 1f), -3f, 0, default, 1.5f);
+            if (Rand.NextBool(2)) {
+                float torchVelX = Rand.NextFloat(-1f, 1f);
+                //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
+                Defer(() => Dust.NewDust(particlePos, 4, 4, DustID.Torch, torchVelX, -3f, 0, default, 1.5f));
             }
         }
 

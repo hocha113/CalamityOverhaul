@@ -1,5 +1,6 @@
 ﻿using InnoVault.TileProcessors;
 using System.Collections.Generic;
+using System.Threading;
 using Terraria;
 using Terraria.DataStructures;
 
@@ -59,7 +60,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         /// <summary>拓扑变化，EnsureBuilt 将节流重建</summary>
         public static void MarkDirty() {
-            unchecked { TopologyVersion++; }
+            //可能在并行的 Update 中被调用，需用 Interlocked 保证原子递增
+            Interlocked.Increment(ref TopologyVersion);
+            //同步通知框架的并行岛屿调度：连接关系变化意味着邻接图变化，需要重建岛屿
+            TileProcessorParallel.MarkTopologyDirty();
         }
 
         /// <summary>每帧按需重建，已建则极轻</summary>

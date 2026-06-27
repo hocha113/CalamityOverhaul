@@ -251,11 +251,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            for (int i = 0; i < 33; i++) {
-                Vector2 pos = CenterInWorld + VaultUtils.RandVr(GuardValue, GuardValue + 2);
-                int dust = Dust.NewDust(pos, 1, 1, DustID.Electric);
-                Main.dust[dust].noGravity = true;
-            }
+            //并行阶段随机数(RandVr 内部使用 Main.rand)与Dust生成统一延迟到主线程执行(串行阶段立即执行)
+            Defer(() => {
+                for (int i = 0; i < 33; i++) {
+                    Vector2 pos = CenterInWorld + VaultUtils.RandVr(GuardValue, GuardValue + 2);
+                    int dust = Dust.NewDust(pos, 1, 1, DustID.Electric);
+                    Main.dust[dust].noGravity = true;
+                }
+            });
         }
 
         public override void UpdateMachine() {
@@ -265,16 +268,18 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     TargetByNPC = CenterInWorld.FindClosestNPC(700, false, true);
                     if (TargetByNPC != null) {
                         for (int i = 0; i < 6; i++) {
-                            Vector2 spanPos = PosInWorld + new Vector2(Main.rand.Next(Width), Main.rand.Next(Height / 2)) + new Vector2(8, 8);
-                            PRTLoader.NewParticle<PRT_TileHightlight>(spanPos, Vector2.Zero, Color.White);
+                            Vector2 spanPos = PosInWorld + new Vector2(Rand.Next(Width), Rand.Next(Height / 2)) + new Vector2(8, 8);
+                            //并行阶段粒子生成延迟到主线程执行(串行阶段立即执行)
+                            Defer(() => PRTLoader.NewParticle<PRT_TileHightlight>(spanPos, Vector2.Zero, Color.White));
                         }
 
-                        SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld);
+                        Defer(() => SoundEngine.PlaySound(CWRSound.MagneticBurst, CenterInWorld));
                         //这里选择从某个玩家的端口上生成弹幕，因为未知原因从服务端上无法生成闪电，这是一个临时的解决方法
                         Player player = VaultUtils.FindClosestPlayer(CenterInWorld);
                         if (player != null && player.whoAmI == Main.myPlayer) {
                             Vector2 dir = CenterInWorld.To(TargetByNPC.Center).UnitVector();
-                            Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
+                            //并行阶段弹幕生成延迟到主线程执行(串行阶段立即执行)
+                            DeferSpawnProjectile(new EntitySource_WorldEvent(), CenterInWorld
                                 , dir * 8, ModContent.ProjectileType<TeslaBallByAttack>(), 32, 2, -1);
                         }
                         MachineData.UEvalue -= 60;
@@ -296,7 +301,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                     if (npc.Distance(CenterInWorld) > GuardValue) {
                         continue;
                     }
-                    npc.AddBuff(BuffID.Electrified, 30);
+                    //并行阶段Buff写入延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => npc.AddBuff(BuffID.Electrified, 30));
                 }
 
                 if (++FireCoolden > 40) {
@@ -335,10 +341,11 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers
                 return;
             }
 
-            SoundEngine.PlaySound(CWRSound.ArcCharging, CenterInWorld);
+            Defer(() => SoundEngine.PlaySound(CWRSound.ArcCharging, CenterInWorld));
 
             Vector2 dir = CenterInWorld.To(player.Center).UnitVector();
-            Projectile.NewProjectile(new EntitySource_WorldEvent(), CenterInWorld
+            //并行阶段弹幕生成延迟到主线程执行(串行阶段立即执行)
+            DeferSpawnProjectile(new EntitySource_WorldEvent(), CenterInWorld
                 , dir * 8, ModContent.ProjectileType<TeslaBallByGuard>(), 0, 0, player.whoAmI);
         }
 

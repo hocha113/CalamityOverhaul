@@ -215,11 +215,13 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Thermal
                 if (!VaultUtils.isServer && GeneratorUI?.GeneratorTP == this
                     && UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive) {
                     UIHandleLoader.GetUIHandleOfType<ThermalGeneratorUI>().IsActive = false;
-                    SoundEngine.PlaySound(SoundID.MenuTick);
+                    //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => SoundEngine.PlaySound(SoundID.MenuTick));
                 }
             }
             else {
-                Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2;
+                //并行阶段对玩家字段的写入延迟到主线程执行(串行阶段立即执行)
+                Defer(() => Main.LocalPlayer.CWR().ThermalGenerationActiveTime = 2);
             }
 
             //1. 燃料燃烧：持续释放热量（每tick）

@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -121,6 +122,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow
         public override int TargetItem => ModContent.ItemType<LaserEnergyTrans>();
         public override bool ReceivedEnergy => true;
         public override float MaxUEValue => 100;
+        //跨岛远程传能：读写最远 ~1200px 外目标机器的 UE，几乎总落在不同的并行岛屿，强制串行更新以消除数据竞争
+        public override ParallelExecutionKind ParallelKind => ParallelExecutionKind.Serial;
         internal Vector2 TrueCenter => CenterInWorld - new Vector2(0, 12);
         internal Player fromePlayer;
         internal MachineTP targetMachine;

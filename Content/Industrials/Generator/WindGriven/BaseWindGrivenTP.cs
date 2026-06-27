@@ -60,7 +60,8 @@ namespace CalamityOverhaul.Content.Industrials.Generator.WindGriven
             float volumeFactor = MathHelper.Clamp(baseSoundPith + Main.windSpeedCurrent * 0.8f, baseSoundPith, 1.0f); //音量随风速变化
 
             if (++soundCount > soundInterval && Main.LocalPlayer.DistanceSQ(CenterInWorld) < 640000) {
-                SoundEngine.PlaySound(CWRSound.Windmill with { Volume = baseVolume * volumeFactor, MaxInstances = 12 }, CenterInWorld);
+                //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                Defer(() => SoundEngine.PlaySound(CWRSound.Windmill with { Volume = baseVolume * volumeFactor, MaxInstances = 12 }, CenterInWorld));
                 soundCount = 0;
             }
         }

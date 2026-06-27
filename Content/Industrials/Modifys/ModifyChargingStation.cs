@@ -218,18 +218,23 @@ namespace CalamityOverhaul.Content.Industrials.Modifys
             int dustID = 226; //电流粒子
             int numDust = 6;
             for (int i = 0; i < numDust; i += 2) {
-                float pairSpeed = Main.rand.NextFloat(0.5f, 5f);
+                float pairSpeed = Rand.NextFloat(0.5f, 5f);
                 float pairScale = 0.9f;
 
-                Dust d = Dust.NewDustDirect(CenterInWorld, 0, 0, dustID);
-                d.velocity = Vector2.UnitX * pairSpeed;
-                d.scale = pairScale;
-                d.noGravity = true;
+                //并行阶段Dust生成及其后续设置延迟到主线程执行(串行阶段立即执行)
+                Defer(() => {
+                    Dust d = Dust.NewDustDirect(CenterInWorld, 0, 0, dustID);
+                    d.velocity = Vector2.UnitX * pairSpeed;
+                    d.scale = pairScale;
+                    d.noGravity = true;
+                });
 
-                d = Dust.NewDustDirect(CenterInWorld, 0, 0, dustID);
-                d.velocity = Vector2.UnitX * -pairSpeed;
-                d.scale = pairScale;
-                d.noGravity = true;
+                Defer(() => {
+                    Dust d = Dust.NewDustDirect(CenterInWorld, 0, 0, dustID);
+                    d.velocity = Vector2.UnitX * -pairSpeed;
+                    d.scale = pairScale;
+                    d.noGravity = true;
+                });
             }
         }
 

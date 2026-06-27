@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
 
             //随机打乱
             for (int i = indices.Count - 1; i > 0; i--) {
-                int j = Main.rand.Next(i + 1);
+                int j = Rand.Next(i + 1);
                 (indices[i], indices[j]) = (indices[j], indices[i]);
             }
 
@@ -305,12 +305,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             PlantPosition plantPos = pos.Value;
             Vector2 startPos = GetLaunchPosition();
 
-            //生成抛射橡子Actor
-            int actorIndex = ActorLoader.NewActor<LifeWeaverAcorn>(startPos, launchVelocity);
-            if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
-                //传入目标位置、地面类型和预计飞行时间
-                ActorLoader.Actors[actorIndex].OnSpawn(plantPos.TileX, plantPos.TileY, plantPos.GroundType, flightTime);
-            }
+            //生成抛射橡子Actor(并行阶段延迟到主线程执行，串行阶段立即执行)
+            Defer(() => {
+                int actorIndex = ActorLoader.NewActor<LifeWeaverAcorn>(startPos, launchVelocity);
+                if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
+                    //传入目标位置、地面类型和预计飞行时间
+                    ActorLoader.Actors[actorIndex].OnSpawn(plantPos.TileX, plantPos.TileY, plantPos.GroundType, flightTime);
+                }
+            });
 
             //从列表中移除已选中的位置
             validPositions.Remove(plantPos);
@@ -335,7 +337,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt) {
                 if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, Color.YellowGreen, LifeWeaver.NoEnergyText.Value);
+                    //并行阶段CombatText生成延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => CombatText.NewText(HitBox, Color.YellowGreen, LifeWeaver.NoEnergyText.Value));
                     textIdleTime = 300;
                 }
                 return;
@@ -344,7 +347,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             //没有有效位置
             if (validPositions.Count == 0) {
                 if (textIdleTime <= 0 && positionSearchTimer == 0) {
-                    CombatText.NewText(HitBox, Color.Orange, LifeWeaver.NoValidPositionText.Value);
+                    //并行阶段CombatText生成延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => CombatText.NewText(HitBox, Color.Orange, LifeWeaver.NoValidPositionText.Value));
                     textIdleTime = 300;
                 }
                 return;

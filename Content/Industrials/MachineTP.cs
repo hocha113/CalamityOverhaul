@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines;
+using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -38,6 +39,23 @@ namespace CalamityOverhaul.Content.Industrials
 
         }
 
+        /// <summary>机器与相邻管道/机器互相作用(能量扩散)，按连通岛屿并行更新</summary>
+        public override ParallelExecutionKind ParallelKind => ParallelExecutionKind.Grouped;
+
+        /// <summary>声明机器外缘一圈的邻接格，使相连的机器/管道落入同一并行岛屿(岛内串行，跨岛并行)</summary>
+        public override void CollectGroupLinks(ref TPGroupLinkBuilder builder) {
+            int tileWidth = Width / 16;
+            int tileHeight = Height / 16;
+            for (int i = Position.X; i < Position.X + tileWidth; i++) {
+                builder.Link(i, Position.Y - 1);
+                builder.Link(i, Position.Y + tileHeight);
+            }
+            for (int j = Position.Y; j < Position.Y + tileHeight; j++) {
+                builder.Link(Position.X - 1, j);
+                builder.Link(Position.X + tileWidth, j);
+            }
+        }
+
         public sealed override void Update() {
             if (Efficiency > 0) {
                 UpdateConductive();
@@ -68,10 +86,12 @@ namespace CalamityOverhaul.Content.Industrials
         public void DropItem(int id) => DropItem(new Item(id));
 
         public void DropItem(Item item) {
-            int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, item);
-            if (VaultUtils.isServer) {
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
-            }
+            //并行阶段把物品生成与发包延迟到主线程执行(串行阶段则立即执行)
+            DeferSpawnItem(new EntitySource_WorldEvent(), HitBox, item, type => {
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type, 0f, 0f, 0f, 0, 0, 0);
+                }
+            });
         }
 
         public virtual void ExtraConductive(Point16 point, TileProcessor tp) {

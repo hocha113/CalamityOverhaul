@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 {
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
         public static void Register(OreDropRule rule) => DropRules.Add(rule);
 
-        public static bool TryGetDropItem(int tier, Point position, out int itemID) {
+        public static bool TryGetDropItem(int tier, Point position, UnifiedRandom rand, out int itemID) {
             itemID = 0;
             var context = new MiningDropContext {
                 Tier = tier,
@@ -151,7 +152,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
             foreach (var rule in DropRules) {
                 if (rule.CanDrop(context)) {
-                    if (Main.rand.NextFloat() < rule.GetChance(context)) {
+                    if (rand.NextFloat() < rule.GetChance(context)) {
                         itemID = rule.ItemID;
                         return true;
                     }

@@ -136,7 +136,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             PlaceNet = true;
         }
         public override void Initialize() {
-            altState = Main.rand.NextBool();
+            altState = Rand.NextBool();
             MachineData.UEvalue = MaxUEValue;
         }
         public override void SendData(ModPacket data) {
@@ -163,9 +163,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     if (Main.masterMode || Main.expertMode) {
                         dmg = 8;
                     }
-                    ArmIndex = Projectile.NewProjectileDirect(this.FromObjectGetParent()
-                    , ArmPos, Vector2.Zero, ModContent.ProjectileType<WGGCollectorArm>(), dmg, 2, -1).identity;
-                    SendData();
+                    //并行阶段弹幕生成延迟到主线程执行，生成后回填臂索引(identity)并联网(串行阶段立即执行)
+                    DeferSpawnProjectile(this.FromObjectGetParent(), ArmPos, Vector2.Zero
+                        , ModContent.ProjectileType<WGGCollectorArm>(), dmg, 2, -1, onSpawned: id => {
+                            if (id >= 0 && id < Main.maxProjectiles) {
+                                ArmIndex = Main.projectile[id].identity;
+                                SendData();
+                            }
+                        });
                 }
             }
         }

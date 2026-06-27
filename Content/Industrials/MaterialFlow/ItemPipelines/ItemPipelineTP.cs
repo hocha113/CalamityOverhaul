@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -156,6 +157,9 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 
         /// <summary>悬停动画进度</summary>
         internal float hoverSengs;
+
+        /// <summary>跨岛共享存储(如同一箱子被不同管网连接)时的访问互斥锁，避免并发存取损坏物品数据</summary>
+        private static readonly object storageGate = new();
         #endregion
 
         #region 初始化和更新
@@ -172,6 +176,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             //新管标脏路由
             ItemPipelineNetwork.MarkDirty();
         }
+
+        /// <summary>管道与相邻管道互相 hand-off 物品，按连通岛屿并行更新(岛内串行，跨岛并行)</summary>
+        public override ParallelExecutionKind ParallelKind => ParallelExecutionKind.Grouped;
+
+        /// <summary>声明四向相邻格，使同一连通管网的管道落入同一并行岛屿</summary>
+        public override void CollectGroupLinks(ref TPGroupLinkBuilder builder) {
+            builder.Link(Position.X, Position.Y - 1);
+            builder.Link(Position.X, Position.Y + 1);
+            builder.Link(Position.X - 1, Position.Y);
+            builder.Link(Position.X + 1, Position.Y);
+        }
+
+        /// <summary>并行前在主线程统一重建全局路由，避免并行 Update 中并发触碰路由表</summary>
+        public override void PreParallel() => ItemPipelineNetwork.EnsureBuilt();
 
         public override void Update() {
             if (!sideStatesInitialized) {
@@ -191,8 +209,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             //形状变亦标脏
             UpdateShape();
 
-            //按需重建路由
-            ItemPipelineNetwork.EnsureBuilt();
+            //路由重建已上移到 PreParallel() 在主线程统一执行，此处不再调用
 
             //模式驱动逻辑
             switch (Mode) {
@@ -295,26 +312,29 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     continue;
                 }
 
-                //首个允许类型
-                foreach (var storedItem in storage.GetStoredItems()) {
-                    if (storedItem == null || storedItem.IsAir) {
-                        continue;
-                    }
-                    if (!IsItemAllowedByFilter(storedItem.type)) {
-                        continue;
-                    }
-                    //有输入能收才抽
-                    if (!HasAvailableInputForItem(storedItem.type, reachableInputs)) {
-                        continue;
-                    }
+                //跨岛共享存储互斥，避免并发抽取损坏数据
+                lock (storageGate) {
+                    //首个允许类型
+                    foreach (var storedItem in storage.GetStoredItems()) {
+                        if (storedItem == null || storedItem.IsAir) {
+                            continue;
+                        }
+                        if (!IsItemAllowedByFilter(storedItem.type)) {
+                            continue;
+                        }
+                        //有输入能收才抽
+                        if (!HasAvailableInputForItem(storedItem.type, reachableInputs)) {
+                            continue;
+                        }
 
-                    int extractAmount = Math.Min(storedItem.stack, ExtractBatchSize);
-                    Item withdrawn = storage.WithdrawItem(storedItem.type, extractAmount);
-                    if (withdrawn != null && !withdrawn.IsAir) {
-                        CurrentItem = new TransportingItem(withdrawn.type, withdrawn.stack, withdrawn.prefix) {
-                            SourceDirection = (sbyte)side.DirectionIndex
-                        };
-                        return;
+                        int extractAmount = Math.Min(storedItem.stack, ExtractBatchSize);
+                        Item withdrawn = storage.WithdrawItem(storedItem.type, extractAmount);
+                        if (withdrawn != null && !withdrawn.IsAir) {
+                            CurrentItem = new TransportingItem(withdrawn.type, withdrawn.stack, withdrawn.prefix) {
+                                SourceDirection = (sbyte)side.DirectionIndex
+                            };
+                            return;
+                        }
                     }
                 }
             }
@@ -362,22 +382,25 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                     continue;
                 }
 
-                Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
-                if (!storage.CanAcceptItem(toDeposit)) {
-                    continue;
-                }
-                int beforeStack = toDeposit.stack;
-                if (storage.DepositItem(toDeposit)) {
-                    int remaining = ResolveRemainingStack(beforeStack, toDeposit);
-                    if (remaining <= 0) {
-                        CurrentItem = null;
+                //跨岛共享存储互斥，避免并发存入损坏数据
+                lock (storageGate) {
+                    Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
+                    if (!storage.CanAcceptItem(toDeposit)) {
+                        continue;
                     }
-                    else {
-                        //部分存入: 剩余的继续等待或在卡死自愈阶段被重定向
-                        item.Stack = remaining;
-                        CurrentItem = item;
+                    int beforeStack = toDeposit.stack;
+                    if (storage.DepositItem(toDeposit)) {
+                        int remaining = ResolveRemainingStack(beforeStack, toDeposit);
+                        if (remaining <= 0) {
+                            CurrentItem = null;
+                        }
+                        else {
+                            //部分存入: 剩余的继续等待或在卡死自愈阶段被重定向
+                            item.Stack = remaining;
+                            CurrentItem = item;
+                        }
+                        return;
                     }
-                    return;
                 }
             }
 
@@ -427,8 +450,10 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 if (storage == null || !storage.IsValid) {
                     continue;
                 }
-                if (storage.CanAcceptItem(testItem)) {
-                    return true;
+                lock (storageGate) {
+                    if (storage.CanAcceptItem(testItem)) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -592,7 +617,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
                 candidates[count++] = i;
             }
-            return count == 0 ? -1 : candidates[Main.rand.Next(count)];
+            //并行阶段使用线程安全的 Rand(Main.rand 非线程安全)
+            return count == 0 ? -1 : candidates[Rand.Next(count)];
         }
 
         /// <summary>
@@ -626,14 +652,16 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 if (storage == null || !storage.IsValid) {
                     continue;
                 }
-                Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
-                if (!storage.CanAcceptItem(toDeposit)) {
-                    continue;
-                }
-                int beforeStack = toDeposit.stack;
-                if (storage.DepositItem(toDeposit)) {
-                    item.Stack = ResolveRemainingStack(beforeStack, toDeposit);
-                    return true;
+                lock (storageGate) {
+                    Item toDeposit = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
+                    if (!storage.CanAcceptItem(toDeposit)) {
+                        continue;
+                    }
+                    int beforeStack = toDeposit.stack;
+                    if (storage.DepositItem(toDeposit)) {
+                        item.Stack = ResolveRemainingStack(beforeStack, toDeposit);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -656,10 +684,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
             var item = CurrentItem.Value;
             Item drop = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
-            int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, drop);
-            if (VaultUtils.isServer) {
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
-            }
+            //并行阶段把物品生成与发包延迟到主线程执行
+            DeferSpawnItem(new EntitySource_WorldEvent(), HitBox, drop, type => {
+                if (VaultUtils.isServer) {
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
+                }
+            });
             CurrentItem = null;
         }
         #endregion
@@ -889,10 +919,12 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             if (CurrentItem.HasValue && !VaultUtils.isClient) {
                 var item = CurrentItem.Value;
                 Item drop = new Item(item.ItemType, item.Stack) { prefix = (byte)item.Prefix };
-                int type = Item.NewItem(new EntitySource_WorldEvent(), HitBox, drop);
-                if (VaultUtils.isServer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
-                }
+                //并行阶段把物品生成与发包延迟到主线程执行
+                DeferSpawnItem(new EntitySource_WorldEvent(), HitBox, drop, type => {
+                    if (VaultUtils.isServer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, type);
+                    }
+                });
             }
             //从网络中移除自身, 触发路由表重建
             ItemPipelineNetwork.MarkDirty();

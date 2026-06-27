@@ -166,23 +166,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
             if (canDig) {
                 if (!Main.dedServ) {
                     if (++time > 4) {
-                        offsetPos = new Vector2(Main.rand.Next(-2, 2), Main.rand.Next(0, 2));
+                        offsetPos = new Vector2(Rand.Next(-2, 2), Rand.Next(0, 2));
                         time = 0;
                     }
 
                     Vector2 excavatePos = PosInWorld + new Vector2(10, 40);
-                    if (Main.rand.NextBool(6)) {
-                        Dust.NewDust(excavatePos, 1, 1, DustID.Stone);
+                    if (Rand.NextBool(6)) {
+                        //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
+                        Defer(() => Dust.NewDust(excavatePos, 1, 1, DustID.Stone));
                     }
                 }
 
                 if (++time2 > 20) {
                     if (!Main.dedServ) {
-                        SoundEngine.PlaySound(SoundID.Item22 with { Pitch = -0.2f, Volume = 0.6f }, CenterInWorld);
-                        SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.2f, Volume = 0.6f }, CenterInWorld);
+                        //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                        Defer(() => SoundEngine.PlaySound(SoundID.Item22 with { Pitch = -0.2f, Volume = 0.6f }, CenterInWorld));
+                        Defer(() => SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.2f, Volume = 0.6f }, CenterInWorld));
                     }
 
-                    if (!VaultUtils.isClient && Main.rand.NextBool(6)) {
+                    if (!VaultUtils.isClient && Rand.NextBool(6)) {
                         DropOre(); //生成矿物掉落
                     }
 
@@ -194,20 +196,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.MiningMachines
 
             if (!Main.dedServ) {
                 if (++time2 > 4) {
-                    SoundEngine.PlaySound(SoundID.Item22 with { Pitch = -0.2f, Volume = 0.6f }, CenterInWorld);
+                    //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => SoundEngine.PlaySound(SoundID.Item22 with { Pitch = -0.2f, Volume = 0.6f }, CenterInWorld));
                     time2 = 0;
                 }
 
                 if (++time > 180) {
-                    int text = CombatText.NewText(HitBox, Color.DarkSeaGreen, MiningMachine.DontWork.Value);
-                    Main.combatText[text].lifeTime *= 2;
+                    //并行阶段CombatText生成及其后续修改延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => {
+                        int text = CombatText.NewText(HitBox, Color.DarkSeaGreen, MiningMachine.DontWork.Value);
+                        Main.combatText[text].lifeTime *= 2;
+                    });
                     time = 0;
                 }
             }
         }
 
         private void DropOre() {
-            if (MiningMachineSystem.TryGetDropItem(1, Position.ToPoint(), out int itemID)) {
+            //并行阶段从TP的线程安全随机源取数后再计算掉落
+            if (MiningMachineSystem.TryGetDropItem(1, Position.ToPoint(), Rand, out int itemID)) {
                 DropItem(itemID);
             }
         }

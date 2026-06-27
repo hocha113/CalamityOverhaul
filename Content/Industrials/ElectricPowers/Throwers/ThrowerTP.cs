@@ -261,7 +261,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             if (MachineData.UEvalue < ConsumeUE) {
                 IsWorking = false;
                 if (IsThrowing && TextIdleTime <= 0) {
-                    CombatText.NewText(HitBox, new Color(255, 180, 100), Thrower.NoEnergyText.Value);
+                    //并行阶段CombatText生成延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => CombatText.NewText(HitBox, new Color(255, 180, 100), Thrower.NoEnergyText.Value));
                     TextIdleTime = 180;
                 }
                 return;
@@ -272,7 +273,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             if (nextItem == null) {
                 IsWorking = false;
                 if (IsThrowing && TextIdleTime <= 0) {
-                    CombatText.NewText(HitBox, new Color(255, 180, 100), Thrower.NoItemText.Value);
+                    //并行阶段CombatText生成延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => CombatText.NewText(HitBox, new Color(255, 180, 100), Thrower.NoItemText.Value));
                     TextIdleTime = 180;
                 }
                 return;
@@ -327,8 +329,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
                 ThrowItemEntity(throwItem, velocity);
             }
 
-            //播放音效
-            SoundEngine.PlaySound(SoundID.Item1 with { Pitch = 0.3f, Volume = 0.5f }, LaunchPosition);
+            //播放音效(并行阶段延迟到主线程执行)
+            Defer(() => SoundEngine.PlaySound(SoundID.Item1 with { Pitch = 0.3f, Volume = 0.5f }, LaunchPosition));
 
             //粒子效果
             SpawnThrowParticles(velocity);
@@ -361,47 +363,36 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             //使用投掷力度作为伤害
             int damage = (int)ThrowSpeed;
 
-            int projIndex = Projectile.NewProjectile(
-                this.FromObjectGetParent(),
-                LaunchPosition,
-                velocity,
-                projectileType,
-                damage,
-                2f,
-                Main.myPlayer
-            );
+            //并行阶段弹幕生成与后续设置/发包延迟到主线程执行(串行阶段立即执行)
+            DeferSpawnProjectile(this.FromObjectGetParent(), LaunchPosition, velocity, projectileType
+                , damage, 2f, Main.myPlayer, onSpawned: projIndex => {
+                    if (projIndex >= 0 && projIndex < Main.maxProjectiles) {
+                        Main.projectile[projIndex].friendly = true;
+                        Main.projectile[projIndex].hostile = false;
 
-            if (projIndex >= 0 && projIndex < Main.maxProjectiles) {
-                Main.projectile[projIndex].friendly = true;
-                Main.projectile[projIndex].hostile = false;
-
-                if (VaultUtils.isServer) {
-                    NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projIndex);
-                }
-            }
+                        if (VaultUtils.isServer) {
+                            NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projIndex);
+                        }
+                    }
+                });
         }
 
         /// <summary>
         /// 投掷物品实体
         /// </summary>
         private void ThrowItemEntity(Item throwItem, Vector2 velocity) {
-            int itemIndex = Item.NewItem(
-                this.FromObjectGetParent(),
-                LaunchPosition,
-                throwItem.type,
-                1,
-                false,
-                throwItem.prefix
-            );
+            //throwItem 已是 stack=1 的克隆(见 ConsumeOneItem)，直接交由线程安全生成入口在主线程生成
+            Rectangle spawnArea = new Rectangle((int)LaunchPosition.X, (int)LaunchPosition.Y, 0, 0);
+            DeferSpawnItem(this.FromObjectGetParent(), spawnArea, throwItem, itemIndex => {
+                if (itemIndex >= 0 && itemIndex < Main.maxItems) {
+                    Main.item[itemIndex].velocity = velocity;
+                    Main.item[itemIndex].noGrabDelay = 30;
 
-            if (itemIndex >= 0 && itemIndex < Main.maxItems) {
-                Main.item[itemIndex].velocity = velocity;
-                Main.item[itemIndex].noGrabDelay = 30;
-
-                if (VaultUtils.isServer) {
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemIndex);
+                    if (VaultUtils.isServer) {
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemIndex);
+                    }
                 }
-            }
+            });
         }
 
         /// <summary>
@@ -413,9 +404,12 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
             }
 
             for (int i = 0; i < 5; i++) {
-                Vector2 dustVel = velocity * 0.3f + Main.rand.NextVector2Circular(2f, 2f);
-                Dust dust = Dust.NewDustDirect(LaunchPosition, 8, 8, DustID.Smoke, dustVel.X, dustVel.Y, 100, default, 1f);
-                dust.noGravity = true;
+                Vector2 dustVel = velocity * 0.3f + Rand.NextVector2Circular(2f, 2f);
+                //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
+                Defer(() => {
+                    Dust dust = Dust.NewDustDirect(LaunchPosition, 8, 8, DustID.Smoke, dustVel.X, dustVel.Y, 100, default, 1f);
+                    dust.noGravity = true;
+                });
             }
         }
 

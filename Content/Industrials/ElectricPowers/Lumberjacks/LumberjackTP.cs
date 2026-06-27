@@ -63,9 +63,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             ArmActorIndices.RemoveAll(index => !IsArmActorValid(index));
 
             if (ArmActorIndices.Count < 1) {
-                int actorIndex = ActorLoader.NewActor<LumberjackSaw>(ArmPos, Vector2.Zero);
-                ArmActorIndices.Add(actorIndex);
-                ActorLoader.Actors[actorIndex].OnSpawn(Position);
+                //并行阶段Actor生成与列表记账延迟到主线程执行(串行阶段立即执行)
+                Defer(() => {
+                    int actorIndex = ActorLoader.NewActor<LumberjackSaw>(ArmPos, Vector2.Zero);
+                    ArmActorIndices.Add(actorIndex);
+                    if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
+                        ActorLoader.Actors[actorIndex].OnSpawn(Position);
+                    }
+                });
             }
         }
 
@@ -77,9 +82,14 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
 
             //生成模式指示器动画
             Vector2 indicatorPos = CenterInWorld + new Vector2(0, -32);
-            int actorIndex = ActorLoader.NewActor<LumberjackModeIndicator>(indicatorPos, Vector2.Zero);
-            //0=循环模式(橡子) 1=清理模式(斧头)
-            ActorLoader.Actors[actorIndex].OnSpawn(CycleMode ? 0 : 1);
+            //并行阶段Actor生成延迟到主线程执行(串行阶段立即执行)
+            Defer(() => {
+                int actorIndex = ActorLoader.NewActor<LumberjackModeIndicator>(indicatorPos, Vector2.Zero);
+                //0=循环模式(橡子) 1=清理模式(斧头)
+                if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
+                    ActorLoader.Actors[actorIndex].OnSpawn(CycleMode ? 0 : 1);
+                }
+            });
 
             //同步数据
             SendData();
@@ -115,7 +125,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             int totalArms = ActorLoader.GetActiveActors<LumberjackSaw>().Count;
             if (totalArms > 100) {
                 if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, Color.YellowGreen, Lumberjack.Text1.Value);
+                    Defer(() => CombatText.NewText(HitBox, Color.YellowGreen, Lumberjack.Text1.Value));
                     textIdleTime = 300;
                 }
                 return;
@@ -126,7 +136,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
             //检查能量状态
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt && textIdleTime <= 0) {
-                CombatText.NewText(HitBox, Color.YellowGreen, Lumberjack.Text2.Value);
+                Defer(() => CombatText.NewText(HitBox, Color.YellowGreen, Lumberjack.Text2.Value));
                 textIdleTime = 300;
             }
         }

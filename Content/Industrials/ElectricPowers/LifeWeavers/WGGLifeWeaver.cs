@@ -321,20 +321,24 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
                 dmg = 10;
             }
 
-            Projectile.NewProjectile(this.FromObjectGetParent(), startPos, velocity,
+            //并行阶段弹幕生成延迟到主线程执行(串行阶段立即执行)
+            DeferSpawnProjectile(this.FromObjectGetParent(), startPos, velocity,
                 ModContent.ProjectileType<WGGLifeWeaverAcorn>(), dmg, 2f, -1, flightTime);
 
-            //播放发射音效
-            SoundEngine.PlaySound(SoundID.Item1 with {
+            //播放发射音效(并行阶段延迟到主线程执行)
+            Defer(() => SoundEngine.PlaySound(SoundID.Item1 with {
                 Volume = 0.6f,
                 Pitch = 0.2f
-            }, startPos);
+            }, startPos));
 
             //发射粒子效果
             for (int i = 0; i < 5; i++) {
-                Vector2 dustVel = velocity * 0.3f + Main.rand.NextVector2Circular(2f, 2f);
-                Dust dust = Dust.NewDustDirect(startPos, 8, 8, DustID.Grass, dustVel.X, dustVel.Y, 100, default, 1.2f);
-                dust.noGravity = true;
+                Vector2 dustVel = velocity * 0.3f + Rand.NextVector2Circular(2f, 2f);
+                //并行阶段Dust生成延迟到主线程执行(串行阶段立即执行)
+                Defer(() => {
+                    Dust dust = Dust.NewDustDirect(startPos, 8, 8, DustID.Grass, dustVel.X, dustVel.Y, 100, default, 1.2f);
+                    dust.noGravity = true;
+                });
             }
         }
 
@@ -352,7 +356,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             BatteryPrompt = MachineData.UEvalue < consumeUE;
             if (BatteryPrompt) {
                 if (textIdleTime <= 0) {
-                    CombatText.NewText(HitBox, new Color(111, 247, 200), WGGLifeWeaver.TurretBatteryDepleted.Value);
+                    //并行阶段CombatText生成延迟到主线程执行(串行阶段立即执行)
+                    Defer(() => CombatText.NewText(HitBox, new Color(111, 247, 200), WGGLifeWeaver.TurretBatteryDepleted.Value));
                     textIdleTime = 300;
                 }
                 return;

@@ -78,7 +78,8 @@ namespace CalamityOverhaul.Content.Industrials
 
         public void CloseDyeMachineUI() {
             if (DyeMachineUI.CanOpen && DyeMachineUI.DyeTP.WhoAmI == WhoAmI) {
-                SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f });
+                //并行阶段音效播放延迟到主线程执行(串行阶段立即执行)
+                Defer(() => SoundEngine.PlaySound(CWRSound.ButtonZero with { Pitch = -0.2f }));
                 DyeMachineUI.CanOpen = false;
             }
         }
@@ -87,7 +88,8 @@ namespace CalamityOverhaul.Content.Industrials
             if (Main.LocalPlayer.DistanceSQ(CenterInWorld) > 90000) {
                 CloseDyeMachineUI();
             }
-            DyeMachineUI.DyeSlot.UpdateSlot();
+            //UpdateSlot 含非线程安全副作用(写UI槽Item/DyeProgress、FinishDyeing播放音效、扣TP电量并SendData)，并行阶段延迟到主线程执行
+            Defer(() => DyeMachineUI.DyeSlot.UpdateSlot());
             UpdateDyeMachine();
         }
 
