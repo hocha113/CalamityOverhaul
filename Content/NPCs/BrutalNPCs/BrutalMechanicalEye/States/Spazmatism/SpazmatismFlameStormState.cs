@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;

@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
-using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
 using System;
 using Terraria;
 using Terraria.Audio;

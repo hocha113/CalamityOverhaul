@@ -1,6 +1,6 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Items.Materials;
-using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.Projectiles;
 using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;

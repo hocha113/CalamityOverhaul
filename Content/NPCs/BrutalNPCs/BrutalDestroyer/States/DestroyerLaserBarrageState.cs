@@ -1,8 +1,8 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Rendering;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.Projectiles.Boss.Destroyer;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;

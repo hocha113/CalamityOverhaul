@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States.Arms;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.Common;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;

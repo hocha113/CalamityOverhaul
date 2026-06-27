@@ -1,6 +1,6 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;

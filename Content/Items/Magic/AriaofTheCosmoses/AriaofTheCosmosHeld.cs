@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.Projectiles;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using System;
 using Terraria;

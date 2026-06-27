@@ -1,5 +1,4 @@
-using CalamityOverhaul.Content.Projectiles.Others;
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -49,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (justHitCooldown > 0) {
                 justHitCooldown--;
             }
-            if (justHitCooldown <= 0 && ActiveHands.Count > 0 && player.CountProjectilesOfID<Hit>() > 0) {
+            if (justHitCooldown <= 0 && ActiveHands.Count > 0 && player.immuneTime > 0) {
                 int index = ActiveHands[^1];
                 if (index.TryGetProjectile(out var hand)) {
                     hand.Kill();

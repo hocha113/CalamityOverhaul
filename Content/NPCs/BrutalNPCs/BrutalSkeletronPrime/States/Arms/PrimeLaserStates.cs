@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles;
 using CalamityOverhaul.OtherMods.InfernumMode;
 using System;
 using Terraria;

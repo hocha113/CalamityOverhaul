@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Retinazer;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.States.Spazmatism;
-using CalamityOverhaul.Content.Projectiles.Boss.MechanicalEye;
 using System;
 using Terraria;
 using Terraria.Audio;

@@ -1,16 +1,11 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
-using CalamityOverhaul.Content.Projectiles.Others;
-using CalamityOverhaul.Content.RangedModify;
-using CalamityOverhaul.Content.RangedModify.Core;
-using CalamityOverhaul.OtherMods.ImproveGame;
-using CalamityOverhaul.OtherMods.SubWorld;
-using InnoVault.GameSystem;
+using CalamityOverhaul.Content.Projectiles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -246,41 +241,13 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private void Information() {
-            if (SubWorldRef.AnyActiveSubWorld()) {
-                return; //子世界不弹兼容性提示
-            }
-
-            if (!VaultHook.CheckHookStatus(out int num)) {
-                string hookDownText1 = $"{num} " + Error_HookFailure.Value;
-                VaultUtils.Text(hookDownText1, Color.Red);
-            }
-
-            if (!ImproveRef.Suitableversion_improveGame && CWRMod.Instance.improveGame != null) {
-                string improvGameText = OnEnterWorld_ImproveGameWarning.Value;
-                SpwanTextProj.New(Player, () => VaultUtils.Text(improvGameText, Color.Red), 210);
-                CWRMod.Instance.Logger.Info(improvGameText);
-            }
-        }
-
         public override void OnEnterWorld() {
-            Information();
-
-            //进世界 RAM 回满(LoadData 已读基础值)
-
             SpearOfLonginus.ZenithWorldAsset();
 
             LegendData.ResetInventory(Player);
 
             oldPlayerPositionChange = Player.position;
             PlayerPositionChange = Vector2.Zero;
-        }
-
-        public override void OnHurt(Player.HurtInfo info) {
-            if (Main.myPlayer == Player.whoAmI) {
-                Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center, Vector2.Zero
-                    , ModContent.ProjectileType<Hit>(), 0, 0, Player.whoAmI);
-            }
         }
 
         public override void PreUpdateMovement() {
@@ -404,19 +371,6 @@ namespace CalamityOverhaul.Content
             if (!player.frozen && !item.IsAir && !player.dead && item.type > ItemID.None) {
                 if (player.gravDir < 0) {
                     offsetRot = MathHelper.Pi;
-                }
-
-                if (GlobalBow.IsBow || GlobalBow.IsArrow) {
-                    int maxframe = 4;
-                    if (player.velocity.Y == 0f && player.velocity.X != 0) {
-                        frameindex = (int)(Main.GameUpdateCount / 4 % maxframe);
-                    }
-                    value = CWRAsset.Quiver_back_Asset.Value;
-                    frame = value.GetRectangle(frameindex, maxframe);
-                    if (HeldStyle >= 0) {
-                        frame = value.GetRectangle(0, maxframe);
-                    }
-                    orig = frame.Size() / 2;
                 }
 
                 if (item.type == DarkFrostSolstice.ID) {

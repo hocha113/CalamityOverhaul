@@ -1,5 +1,5 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;

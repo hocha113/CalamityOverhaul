@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Core;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -175,7 +176,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States
 
             //锁定瞬间：相邻探针间拉起电弧连线，勾勒出阵型轮廓（纯演出）
             if (Timer == FormationPhase + 2 && !VaultUtils.isClient) {
-                int arcType = ModContent.ProjectileType<Projectiles.Boss.Destroyer.DestroyerArc>();
+                int arcType = ModContent.ProjectileType<DestroyerArc>();
                 for (int i = 0; i < probeCount; i++) {
                     int a = probeIndices[i];
                     int b = probeIndices[(i + 1) % probeCount];

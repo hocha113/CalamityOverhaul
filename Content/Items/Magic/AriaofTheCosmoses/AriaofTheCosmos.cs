@@ -1,5 +1,5 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
 using System.Collections.Generic;

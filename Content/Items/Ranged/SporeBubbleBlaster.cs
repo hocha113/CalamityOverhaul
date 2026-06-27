@@ -1,5 +1,5 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Projectiles;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;

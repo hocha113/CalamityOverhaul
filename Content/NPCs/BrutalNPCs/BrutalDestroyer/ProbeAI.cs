@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.States;
 using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime;
-using CalamityOverhaul.Content.Projectiles.Boss.SkeletronPrime;
+using CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;

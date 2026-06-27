@@ -1,4 +1,4 @@
-using InnoVault.GameContent.BaseEntity;
+﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -97,17 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         //检查玩家是否受伤（通过Hit弹幕数量）
-        public static bool IsPlayerHurt(Player player) {
-            int hitCount = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++) {
-                if (Main.projectile[i].active &&
-                    Main.projectile[i].owner == player.whoAmI &&
-                    Main.projectile[i].type == ModContent.ProjectileType<Content.Projectiles.Others.Hit>()) {
-                    hitCount++;
-                }
-            }
-            return hitCount > 0;
-        }
+        public static bool IsPlayerHurt(Player player) => player.immuneTime > 0;
     }
 
     /// <summary>

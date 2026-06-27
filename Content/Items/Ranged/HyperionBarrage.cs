@@ -1,7 +1,7 @@
-using CalamityOverhaul.Content.Buffs;
+﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.Items.Materials;
+using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.RangedModify.Core;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;

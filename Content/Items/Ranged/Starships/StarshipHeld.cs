@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.Projectiles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.IO;

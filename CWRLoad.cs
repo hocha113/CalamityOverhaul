@@ -1,5 +1,5 @@
 ﻿using CalamityOverhaul.Content;
-using CalamityOverhaul.Content.RangedModify.Core;
+using CalamityOverhaul.Content.Projectiles;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;

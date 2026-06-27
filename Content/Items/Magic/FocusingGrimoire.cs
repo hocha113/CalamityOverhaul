@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.RangedModify.Core;
+﻿using CalamityOverhaul.Content.Projectiles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;

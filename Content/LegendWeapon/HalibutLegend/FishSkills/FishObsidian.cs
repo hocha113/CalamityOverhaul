@@ -23,8 +23,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static readonly List<int> ActiveObsidianFish = new();
         private static int MaxObsidianFish => 5 + HalibutData.GetDomainLayer() / 2;
 
-        private int lastPlayerHitCount = 0;
-
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
 
@@ -59,17 +57,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
-            int currentHitCount = player.CountProjectilesOfID<Content.Projectiles.Others.Hit>();
-
-            if (currentHitCount > lastPlayerHitCount && ActiveObsidianFish.Count > 0) {
-                ShatterOneFish(player);
+            if (player.immuneTime > 0 && ActiveObsidianFish.Count > 0) {
+                ShatterOneFish();
             }
-
-            lastPlayerHitCount = currentHitCount;
             return true;
         }
 
-        private void ShatterOneFish(Player player) {
+        private static void ShatterOneFish() {
             CleanupInactiveFish();
 
             if (ActiveObsidianFish.Count > 0) {
