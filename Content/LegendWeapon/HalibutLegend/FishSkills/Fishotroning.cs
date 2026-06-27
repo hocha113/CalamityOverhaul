@@ -25,6 +25,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int shootCounter = 0;
         private static int HandSpawnInterval = 1;
         private int justHitCooldown;
+        private float justHitCooldownCarry;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -47,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             if (justHitCooldown > 0) {
-                justHitCooldown--;
+                ConsumeScaled(ref justHitCooldown, ref justHitCooldownCarry);
             }
             if (justHitCooldown <= 0 && ActiveHands.Count > 0 && player.CountProjectilesOfID<Hit>() > 0) {
                 int index = ActiveHands[^1];
@@ -55,6 +56,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     hand.Kill();
                     ActiveHands.RemoveAt(ActiveHands.Count - 1);
                     justHitCooldown = 2;
+                    justHitCooldownCarry = 0f;
                 }
             }
             return true;

@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.Scenarios.Helen;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.GameSystem;
 using InnoVault.VaultNetworks;
 using System;
@@ -133,6 +134,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
         /// 将要启动克隆
         /// </summary>
         public bool OnStartClone;
+        #endregion
+
+        #region TimeGear 余量
+        private float cloneFishToggleCDCarry;
+        private float seaDomainToggleCDCarry;
+        private float restartFishToggleCDCarry;
+        private float restartFishCooldownCarry;
+        private float fishTeleportToggleCDCarry;
+        private float fishTeleportCooldownCarry;
+        private float superpositionToggleCDCarry;
+        private float superpositionCooldownCarry;
+        private float hidePlayerTimeCarry;
+        internal float fishSwarmTimerCarry;
+        internal float batSwarmTimerCarry;
+
+        private int TickScaledCooldown(int timer, ref float carry) {
+            TimeGear.ConsumeFrames(ref timer, ref carry);
+            return timer;
+        }
+
+        internal int AdvanceScaledTimer(int timer, ref float carry) {
+            return timer + TimeGear.PullFrameAdvance(ref carry);
+        }
         #endregion
 
         #region 海洋领域技能数据
@@ -383,28 +407,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 cloneLastShootFrame = -1;
             }
 
-            if (CloneFishToggleCD > 0) CloneFishToggleCD--;
+            CloneFishToggleCD = TickScaledCooldown(CloneFishToggleCD, ref cloneFishToggleCDCarry);
 
             //海洋领域冷却
-            if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
+            SeaDomainToggleCD = TickScaledCooldown(SeaDomainToggleCD, ref seaDomainToggleCDCarry);
 
             //重启技能冷却
-            if (RestartFishToggleCD > 0) RestartFishToggleCD--;
-            if (RestartFishCooldown > 0) RestartFishCooldown--;
+            RestartFishToggleCD = TickScaledCooldown(RestartFishToggleCD, ref restartFishToggleCDCarry);
+            RestartFishCooldown = TickScaledCooldown(RestartFishCooldown, ref restartFishCooldownCarry);
 
             //瞬移技能冷却
-            if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
-            if (FishTeleportCooldown > 0) FishTeleportCooldown--;
+            FishTeleportToggleCD = TickScaledCooldown(FishTeleportToggleCD, ref fishTeleportToggleCDCarry);
+            FishTeleportCooldown = TickScaledCooldown(FishTeleportCooldown, ref fishTeleportCooldownCarry);
 
             //叠加攻击冷却
-            if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
-            if (SuperpositionCooldown > 0) SuperpositionCooldown--;
+            SuperpositionToggleCD = TickScaledCooldown(SuperpositionToggleCD, ref superpositionToggleCDCarry);
+            SuperpositionCooldown = TickScaledCooldown(SuperpositionCooldown, ref superpositionCooldownCarry);
 
-            if (HidePlayerTime > 0) HidePlayerTime--;
+            HidePlayerTime = TickScaledCooldown(HidePlayerTime, ref hidePlayerTimeCarry);
 
             foreach (var skill in FishSkill.Instances) {
-                if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
-                    skill.Cooldown--;
+                if (skill.UpdateCooldown(this, Player)) {
+                    skill.TickCooldownDown();
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Content.TimeFreezes;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -67,6 +68,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             UnlockFishs.Clear();
             IDToInstance.Clear();
             NameToInstance.Clear();
+            cooldownCarries = null;
+        }
+
+        private static float[] cooldownCarries;
+
+        /// <summary>按 <see cref="TimeGear.TimeScale"/> 递减技能冷却</summary>
+        internal void TickCooldownDown() {
+            if (Cooldown <= 0) {
+                return;
+            }
+            EnsureCooldownCarryArray();
+            TimeGear.ConsumeFrames(ref Cooldown, ref cooldownCarries[ID]);
+        }
+
+        /// <summary>按 TimeGear 递减帧计时</summary>
+        internal static void ConsumeScaled(ref int frames, ref float carry)
+            => TimeGear.ConsumeFrames(ref frames, ref carry);
+
+        /// <summary>按 TimeGear 递增帧计时</summary>
+        internal static void AdvanceScaled(ref int frames, ref float carry) {
+            frames += TimeGear.PullFrameAdvance(ref carry);
+        }
+
+        private void EnsureCooldownCarryArray() {
+            if (cooldownCarries == null || cooldownCarries.Length <= ID) {
+                Array.Resize(ref cooldownCarries, Math.Max(ID + 1, Instances.Count + 1));
+            }
+        }
+
+        private void ResetCooldownCarry() {
+            if (cooldownCarries != null && ID > 0 && ID < cooldownCarries.Length) {
+                cooldownCarries[ID] = 0f;
+            }
         }
 
         public static T GetT<T>() where T : FishSkill {
@@ -78,6 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
 
         public void SetCooldown() {
             Cooldown = (int)MathHelper.Clamp(DefaultCooldown, 1, 32767);
+            ResetCooldownCarry();
         }
 
         public virtual void SaveData(TagCompound tag) {

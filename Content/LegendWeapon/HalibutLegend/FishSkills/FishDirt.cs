@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static int MaxDirtFish => 5 + HalibutData.GetDomainLayer();
         private static int FishPerDomainLayer => 1 + HalibutData.GetDomainLayer() / 5;
         private int spawnTimer = 0;
+        private float spawnTimerCarry;
         private const int SpawnInterval = 20;
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -33,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             if (Active(player)) {
-                spawnTimer++;
+                AdvanceScaled(ref spawnTimer, ref spawnTimerCarry);
 
                 int currentCount = player.CountProjectilesOfID<DirtFishFollower>();
                 int maxCount = MaxDirtFish + HalibutData.GetDomainLayer() * FishPerDomainLayer;
@@ -41,6 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (spawnTimer >= SpawnInterval && currentCount < maxCount && player.velocity.LengthSquared() > 1f) {
                     SpawnDirtFish(player);
                     spawnTimer = 0;
+                    spawnTimerCarry = 0f;
                 }
             }
             return true;

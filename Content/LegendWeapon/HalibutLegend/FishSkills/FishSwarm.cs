@@ -40,12 +40,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             //更新技能状态
             if (halibutPlayer.FishSwarmActive) {
-                halibutPlayer.FishSwarmTimer++;
+                halibutPlayer.FishSwarmTimer = halibutPlayer.AdvanceScaledTimer(
+                    halibutPlayer.FishSwarmTimer, ref halibutPlayer.fishSwarmTimerCarry);
 
                 if (halibutPlayer.FishSwarmTimer >= FishSwarmDuration) {
                     //技能结束
                     halibutPlayer.FishSwarmActive = false;
                     halibutPlayer.FishSwarmTimer = 0;
+                    halibutPlayer.fishSwarmTimerCarry = 0f;
                     SetCooldown();
                 }
             }
@@ -64,6 +66,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             halibutPlayer.FishConeSurgeActive = true;
             halibutPlayer.FishSwarmActive = true;
             halibutPlayer.FishSwarmTimer = 0;
+            halibutPlayer.fishSwarmTimerCarry = 0f;
 
             //计算冲刺方向（朝向光标）
             Vector2 dashDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
@@ -322,8 +325,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Owner != null && Owner.active) {
                 Owner.gravity = Player.defaultGravity;
             }
-            Owner.GetOverride<HalibutPlayer>().FishSwarmActive = false;
-            Owner.GetOverride<HalibutPlayer>().FishSwarmTimer = 0;
+            HalibutPlayer halibutPlayer = Owner.GetOverride<HalibutPlayer>();
+            halibutPlayer.FishSwarmActive = false;
+            halibutPlayer.FishSwarmTimer = 0;
+            halibutPlayer.fishSwarmTimerCarry = 0f;
         }
     }
 

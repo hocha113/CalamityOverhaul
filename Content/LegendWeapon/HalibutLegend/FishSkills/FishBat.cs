@@ -48,7 +48,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
             //更新技能状态
             if (halibutPlayer.BatSwarmActive) {
-                halibutPlayer.BatSwarmTimer++;
+                halibutPlayer.BatSwarmTimer = halibutPlayer.AdvanceScaledTimer(
+                    halibutPlayer.BatSwarmTimer, ref halibutPlayer.batSwarmTimerCarry);
                 if (halibutPlayer.BatSwarmTimer >= BatSwarmDuration) {
                     //技能结束
                     DismissBatSwarm(player, halibutPlayer);
@@ -71,6 +72,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //激活技能
             halibutPlayer.BatSwarmActive = true;
             halibutPlayer.BatSwarmTimer = 0;
+            halibutPlayer.batSwarmTimerCarry = 0f;
 
             //生成控制器弹幕（玩家飞行与技能时长）
             int controller = Projectile.NewProjectile(
@@ -134,6 +136,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static void DismissBatSwarm(Player player, HalibutPlayer halibutPlayer) {
             halibutPlayer.BatSwarmActive = false;
             halibutPlayer.BatSwarmTimer = 0;
+            halibutPlayer.batSwarmTimerCarry = 0f;
 
             //杀死所有蝙蝠弹幕
             for (int i = 0; i < Main.maxProjectiles; i++) {

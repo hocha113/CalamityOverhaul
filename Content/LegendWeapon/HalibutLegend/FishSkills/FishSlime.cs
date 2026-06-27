@@ -20,6 +20,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 16;
         //凝胶球生成计数器
         private int gelCounter = 0;
+        private float gelCounterCarry;
         private const int GelInterval = 10;
 
         //活跃的凝胶球追踪
@@ -39,11 +40,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
 
-            gelCounter++;
+            AdvanceScaled(ref gelCounter, ref gelCounterCarry);
 
             //周期性生成凝胶球
             if (gelCounter >= GelInterval && Cooldown <= 0) {
                 gelCounter = 0;
+                gelCounterCarry = 0f;
                 SetCooldown();
 
                 CleanupInactiveGels();
