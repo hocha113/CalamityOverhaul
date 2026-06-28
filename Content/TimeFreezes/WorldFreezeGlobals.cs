@@ -126,14 +126,14 @@ namespace CalamityOverhaul.Content.TimeFreezes
     {
         public override bool PreSingleInstanceUpdate(TileProcessor tileProcessor) {
             if (WorldFreezeSystem.IsActive) {
-                return false;
+                //return false;
             }
             return base.PreSingleInstanceUpdate(tileProcessor);
         }
 
         public override bool PreUpdate(TileProcessor tileProcessor) {
             if (WorldFreezeSystem.IsActive) {
-                return false;
+                //return false;
             }
             return base.PreUpdate(tileProcessor);
         }
