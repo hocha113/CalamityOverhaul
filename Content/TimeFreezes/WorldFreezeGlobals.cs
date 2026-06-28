@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFreeze;
 using InnoVault.GameSystem;
+using InnoVault.TileProcessors;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -118,6 +119,23 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 return false;
             }
             return true;
+        }
+    }
+
+    internal class WorldFreezeTileProcessor : GlobalTileProcessor
+    {
+        public override bool PreSingleInstanceUpdate(TileProcessor tileProcessor) {
+            if (WorldFreezeSystem.IsActive) {
+                return false;
+            }
+            return base.PreSingleInstanceUpdate(tileProcessor);
+        }
+
+        public override bool PreUpdate(TileProcessor tileProcessor) {
+            if (WorldFreezeSystem.IsActive) {
+                return false;
+            }
+            return base.PreUpdate(tileProcessor);
         }
     }
 }
