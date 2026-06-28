@@ -3,6 +3,7 @@ using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.Resurrections;
 using CalamityOverhaul.Content.Scenarios.Helen;
+using CalamityOverhaul.Content.TimeFreezes;
 using InnoVault.GameSystem;
 using InnoVault.VaultNetworks;
 using System;
@@ -383,28 +384,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
                 cloneLastShootFrame = -1;
             }
 
-            if (CloneFishToggleCD > 0) CloneFishToggleCD--;
+            if (TimeGear.TimeScale > 0) {
+                if (CloneFishToggleCD > 0) CloneFishToggleCD--;
 
-            //海洋领域冷却
-            if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
+                //海洋领域冷却
+                if (SeaDomainToggleCD > 0) SeaDomainToggleCD--;
 
-            //重启技能冷却
-            if (RestartFishToggleCD > 0) RestartFishToggleCD--;
-            if (RestartFishCooldown > 0) RestartFishCooldown--;
+                //重启技能冷却
+                if (RestartFishToggleCD > 0) RestartFishToggleCD--;
+                if (RestartFishCooldown > 0) RestartFishCooldown--;
 
-            //瞬移技能冷却
-            if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
-            if (FishTeleportCooldown > 0) FishTeleportCooldown--;
+                //瞬移技能冷却
+                if (FishTeleportToggleCD > 0) FishTeleportToggleCD--;
+                if (FishTeleportCooldown > 0) FishTeleportCooldown--;
 
-            //叠加攻击冷却
-            if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
-            if (SuperpositionCooldown > 0) SuperpositionCooldown--;
+                //叠加攻击冷却
+                if (SuperpositionToggleCD > 0) SuperpositionToggleCD--;
+                if (SuperpositionCooldown > 0) SuperpositionCooldown--;
 
-            if (HidePlayerTime > 0) HidePlayerTime--;
+                if (HidePlayerTime > 0) HidePlayerTime--;
 
-            foreach (var skill in FishSkill.Instances) {
-                if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
-                    skill.Cooldown--;
+                foreach (var skill in FishSkill.Instances) {
+                    if (skill.UpdateCooldown(this, Player) && skill.Cooldown > 0) {
+                        skill.Cooldown--;
+                    }
                 }
             }
 
