@@ -137,6 +137,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
 
         #region 初始化
         public override void SetProperty() {
+            npc.aiStyle = -1;
+            npc.knockBackResist = 0;
             for (int i = 0; i < ai.Length; i++) {
                 ai[i] = 0;
             }
@@ -183,6 +185,13 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime
                 InitializeStateContext();
             }
 
+            //状态机把状态/阶段写进 npc.ai[0..2]，与原版 aiStyle 共用槽位，故交出 aiStyle（同机械臂，InnoVault 约定）；
+            //Mechdusa 形态在上方已 return 交还原版，不受影响
+            npc.aiStyle = -1;
+            npc.knockBackResist = 0;
+            //多人客户端的 NPC 运动平滑(netOffset)会把这种"服务端权威+被高频同步"的快速 Boss 位置反复叠偏 → 抽搐瞬移；
+            //每帧清零，让头干净呈现权威位置（机械臂无此问题是因其位移幅度小，头部高速段会被放大）
+            npc.netOffset = Vector2.Zero;
             npc.defense = npc.defDefense;
             npc.reflectsProjectiles = false;
             npc.dontTakeDamage = false;
