@@ -108,9 +108,8 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
                 || DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted)) {
                 return false;
             }
-            //前置:本世界星流巨械已败 + 结束对话已播放
-            return InWorldBossPhase.Downed29.Invoke()
-                && DraedonStorySync.ReadDraedon(d => d.ExoMechEndingDialogue, d => d.ExoMechEndingDialogue);
+            //前置只认本世界星流巨械已败;与结束对话的先后由 IsBusy 和嘉登在场两道环境闸维持
+            return InWorldBossPhase.Downed29.Invoke();
         }
 
         private static bool IsEnvironmentBlocked()
