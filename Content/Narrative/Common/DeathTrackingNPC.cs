@@ -1,4 +1,4 @@
-using Terraria;
+ï»¿using Terraria;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Narrative.Common
@@ -11,13 +11,13 @@ namespace CalamityOverhaul.Content.Narrative.Common
             if (_deathHandled) {
                 return;
             }
-            if (npc.life <= 0 || !npc.active) {//ÓĞĞ©Çé¿öÏÂÊÇÊÖ¶¯ÉèÖÃµÄËÀÍö£¬ÕâÊ±life¿ÉÄÜ²»Îª0£¬µ«active»á±»ÉèÎªfalse
+            if (npc.life <= 0 || !npc.active) {//æœ‰äº›æƒ…å†µä¸‹æ˜¯æ‰‹åŠ¨è®¾ç½®çš„æ­»äº¡ï¼Œè¿™æ—¶lifeå¯èƒ½ä¸ä¸º0ï¼Œä½†activeä¼šè¢«è®¾ä¸ºfalse
                 _deathHandled = true;
                 OnNPCDeath(npc);
             }
         }
         /// <summary>
-        /// µ±NPC±»»÷É±Ê±µ÷ÓÃ£¬ÔÚ¿Í»§¶Ë»òÕß·şÎñ¶ËÉÏ¾ù»áÔËĞĞ
+        /// å½“NPCè¢«å‡»æ€æ—¶è°ƒç”¨ï¼Œåœ¨å®¢æˆ·ç«¯æˆ–è€…æœåŠ¡ç«¯ä¸Šå‡ä¼šè¿è¡Œ
         /// </summary>
         /// <param name="npc"></param>
         public virtual void OnNPCDeath(NPC npc) { }
