@@ -49,7 +49,5 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon
 
             return NarrativeRouter.Begin<ExoMechdusaSum>();
         }
-
-        public static void ArmDeploySignaltowerQuest() => Quest.DeploySignaltowers.DeploySignaltowerScenario.SetTurnOn();
     }
 }
