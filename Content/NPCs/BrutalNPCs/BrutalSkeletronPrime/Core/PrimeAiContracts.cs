@@ -31,6 +31,10 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Core
 
         /// <summary>头 Override ai[9] 编队旋转时钟，四臂共用</summary>
         public const int OverrideOrbitClock = 9;
+        /// <summary>头 Override ai[10] 狂暴闪现冲撞锁定方向 X</summary>
+        public const int OverrideRageDashDirX = 10;
+        /// <summary>头 Override ai[11] 狂暴闪现冲撞锁定方向 Y</summary>
+        public const int OverrideRageDashDirY = 11;
 
         /// <summary>臂 ai[0] 侧 -1/1</summary>
         public const int ArmSide = 0;

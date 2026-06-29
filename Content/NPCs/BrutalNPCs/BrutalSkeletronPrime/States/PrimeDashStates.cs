@@ -197,6 +197,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             base.OnEnter(context);
             phase = 0;
             phaseTimer = 0;
+            context.Owner.ai[PrimeAiSlots.OverrideRageDashDirX] = 0f;
+            context.Owner.ai[PrimeAiSlots.OverrideRageDashDirY] = 0f;
         }
 
         public override IPrimeState OnUpdate(PrimeStateContext context) {
@@ -230,14 +232,19 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
             NPC npc = context.Npc;
             npc.damage = 0;
             int telegraph = PrimeDirector.DashTelegraphFrames;
+            int lockFrame = telegraph - AimLockLead;
 
             //锁定前跟踪；锁定后预警线画在闪现后的真实贯穿路径上
-            if (phaseTimer < telegraph - AimLockLead) {
+            if (phaseTimer < lockFrame) {
                 dashDir = DirectionToTarget(context);
             }
-            else if (phaseTimer == telegraph - AimLockLead && !VaultUtils.isClient) {
-                Vector2 flashPoint = context.Target.Center - dashDir * FlashDistance;
-                PrimeTelegraphLine.SpawnLine(npc, flashPoint, dashDir.ToRotation(), AimLockLead);
+            else {
+                if (phaseTimer == lockFrame && !VaultUtils.isClient) {
+                    StoreSyncedDashDirection(context);
+                    Vector2 flashPoint = context.Target.Center - dashDir * FlashDistance;
+                    PrimeTelegraphLine.SpawnLine(npc, flashPoint, dashDir.ToRotation(), AimLockLead);
+                }
+                ApplySyncedDashDirection(context);
             }
 
             context.SetChargeState(1, phaseTimer / (float)telegraph);
@@ -257,6 +264,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
         private void FlashReposition(PrimeStateContext context) {
             NPC npc = context.Npc;
             Player target = context.Target;
+            ApplySyncedDashDirection(context);
             flashFrom = npc.Center;
             npc.Center = target.Center - dashDir * FlashDistance;
             npc.velocity = Vector2.Zero;
@@ -324,6 +332,25 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.States
                 Counter++;
                 phase = 0;
                 phaseTimer = 0;
+            }
+        }
+
+        private void StoreSyncedDashDirection(PrimeStateContext context) {
+            context.Owner.ai[PrimeAiSlots.OverrideRageDashDirX] = dashDir.X;
+            context.Owner.ai[PrimeAiSlots.OverrideRageDashDirY] = dashDir.Y;
+            context.Npc.netUpdate = true;
+        }
+
+        private void ApplySyncedDashDirection(PrimeStateContext context) {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+
+            Vector2 synced = new(
+                context.Owner.ai[PrimeAiSlots.OverrideRageDashDirX],
+                context.Owner.ai[PrimeAiSlots.OverrideRageDashDirY]);
+            if (synced.LengthSquared() > 0.01f) {
+                dashDir = synced.SafeNormalize(dashDir);
             }
         }
     }
