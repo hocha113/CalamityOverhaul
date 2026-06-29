@@ -344,7 +344,6 @@ namespace CalamityOverhaul.Content
             Vector2 drawPos;
             float size = 1;
             float offsetRot = 0;
-            int frameindex = 0;
             SpriteEffects spriteEffects = Player.direction == player.gravDir ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             SpecialDrawPositionOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.Directions;
