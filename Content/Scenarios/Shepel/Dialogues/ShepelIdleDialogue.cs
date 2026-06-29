@@ -134,10 +134,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues
                     .Option("nothing", Idle0_Choice_Nothing.Value, NarrativeTarget.Goto(NothingLabel)))
              .Label(HowAreYouLabel)
              .Say("SHPC", Idle0_Reply.Value)
-             .Say("SHPC", Idle0_HowAreYou_Response.Value)
+             .Say("SHPC", Idle0_HowAreYou_Response.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Happy))
              .End()
              .Label(NothingLabel)
-             .Say("SHPC", Idle0_Nothing_Response.Value)
+             .Say("SHPC", Idle0_Nothing_Response.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Smirk))
              .End();
         }
 
@@ -145,28 +145,36 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues
             => n.Say("SHPC", Idle1_Line1.Value).Say("SHPC", Idle1_Line2.Value);
 
         private static void BuildVariant2(NarrativeComposer n)
-            => n.Say("SHPC", Idle2_Line1.Value).Say("SHPC", Idle2_Line2.Value);
+            => n.Say("SHPC", Idle2_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious))
+                .Say("SHPC", Idle2_Line2.Value);
 
         private static void BuildVariant3(NarrativeComposer n)
-            => n.Say("SHPC", Idle3_Line1.Value).Say("SHPC", Idle3_Line2.Value);
+            => n.Say("SHPC", Idle3_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Smirk))
+                .Say("SHPC", Idle3_Line2.Value);
 
         private static void BuildVariant4(NarrativeComposer n)
-            => n.Say("SHPC", Idle4_Line1.Value).Say("SHPC", Idle4_Line2.Value);
+            => n.Say("SHPC", Idle4_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious))
+                .Say("SHPC", Idle4_Line2.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Happy));
 
         private static void BuildVariant5(NarrativeComposer n)
-            => n.Say("SHPC", Idle5_Line1.Value).Say("SHPC", Idle5_Line2.Value);
+            => n.Say("SHPC", Idle5_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious))
+                .Say("SHPC", Idle5_Line2.Value);
 
         private static void BuildVariant6(NarrativeComposer n)
-            => n.Say("SHPC", Idle6_Line1.Value).Say("SHPC", Idle6_Line2.Value);
+            => n.Say("SHPC", Idle6_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Blank))
+                .Say("SHPC", Idle6_Line2.Value);
 
         private static void BuildVariant7(NarrativeComposer n)
-            => n.Say("SHPC", Idle7_Line1.Value).Say("SHPC", Idle7_Line2.Value);
+            => n.Say("SHPC", Idle7_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious))
+                .Say("SHPC", Idle7_Line2.Value);
 
         private static void BuildVariant8(NarrativeComposer n)
-            => n.Say("SHPC", Idle8_Line1.Value).Say("SHPC", Idle8_Line2.Value);
+            => n.Say("SHPC", Idle8_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious))
+                .Say("SHPC", Idle8_Line2.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Happy));
 
         private static void BuildVariant9(NarrativeComposer n)
-            => n.Say("SHPC", Idle9_Line1.Value).Say("SHPC", Idle9_Line2.Value);
+            => n.Say("SHPC", Idle9_Line1.Value, onEnter: ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Smirk))
+                .Say("SHPC", Idle9_Line2.Value);
 
         protected override NarrativePolicy ConfigurePolicy() => null;
 

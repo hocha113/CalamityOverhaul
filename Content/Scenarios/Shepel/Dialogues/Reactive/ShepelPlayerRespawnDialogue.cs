@@ -25,9 +25,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive
 
         protected override void Build(NarrativeComposer n) {
             ConsumeEvent();
-            n.Say("SHPC", Line1.Value)
-             .Say("SHPC", Line2.Value)
-             .Say("SHPC", Line3.Value);
+            n.Say("SHPC", Line1.Value, onEnter: PortraitShocked)
+             .Say("SHPC", Line2.Value, onEnter: PortraitSad)
+             .Say("SHPC", Line3.Value, onEnter: PortraitSerious);
         }
     }
 }

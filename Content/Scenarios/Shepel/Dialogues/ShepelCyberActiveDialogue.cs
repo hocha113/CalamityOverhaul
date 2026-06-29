@@ -35,10 +35,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues
             bool isMaxLayer = layer >= Cyberspace.MaxLayerCount;
             string introText = string.Format(Line_Intro.Value, layer);
 
-            n.Say("SHPC", introText);
+            n.Say("SHPC", introText, onEnter: PortraitSerious);
 
             if (isMaxLayer) {
-                n.Say("SHPC", Line_MaxLayer.Value);
+                n.Say("SHPC", Line_MaxLayer.Value, onEnter: PortraitShocked);
             }
             else {
                 n.Say("SHPC", Line_LayerReport.Value)

@@ -24,9 +24,9 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Reactive.Bosses
         protected override void Build(NarrativeComposer n) {
             ConsumeEvent();
             n
-            .Say("Shepel", Line1.Value)
-            .Say("Shepel", Line2.Value)
-            .Say("Shepel", Line3.Value);
+            .Say("Shepel", Line1.Value, onEnter: PortraitShocked)
+            .Say("Shepel", Line2.Value, onEnter: PortraitSad)
+            .Say("Shepel", Line3.Value, onEnter: PortraitSerious);
         }
     }
 }

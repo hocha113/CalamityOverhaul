@@ -14,8 +14,9 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 {
     internal sealed class DeploySignaltowerScenario : NarrativeScenario, ILocalizedModType
     {
-        public static bool Spawn { get; private set; }
-        public static int RandTimer { get; private set; }
+        //本地客户端登门倒计时状态,世界加载时由 ScenarioTicker 重置
+        private static int delayTimer;
+        private static bool offeredThisSession;
 
         public string LocalizationCategory => "ADV";
         public static LocalizedText IntroLine1 { get; private set; }
@@ -63,41 +64,62 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
         }
 
         public static void ResetWorldState() {
-            Spawn = false;
-            RandTimer = 0;
-        }
-
-        public static void SetTurnOn() {
-            Spawn = true;
-            RandTimer = Main.rand.Next(60 * 32, 60 * 40);
+            delayTimer = 0;
+            offeredThisSession = false;
         }
 
         public static void Tick() {
-            if (!Spawn) {
+            if (Main.dedServ) {
                 return;
             }
 
-            if (DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted)) {
+            if (!ShouldOffer()) {
+                delayTimer = 0;
                 return;
             }
 
-            if (EbnEffect.IsActive || CWRWorld.HasBoss || CWRWorld.BossRush || NPC.AnyNPCs(CWRID.NPC_Draedon) || NarrativeTriggerGate.IsBusy) {
+            //Boss战/子世界/其他对话进行时挂起倒计时,条件恢复后从原值继续
+            if (IsEnvironmentBlocked()) {
                 return;
             }
 
-            if (SubWorldRef.AnyActiveSubWorld()) {
+            if (delayTimer <= 0) {
+                delayTimer = Main.rand.Next(60 * 32, 60 * 40);//击败星流巨械后约32-40秒登门
                 return;
             }
 
-            if (--RandTimer > 0) {
+            if (--delayTimer > 0) {
                 return;
             }
 
-            if (NarrativeRunner.Begin<DeploySignaltowerScenario>()) {
-                Spawn = false;
-                RandTimer = 0;
+            if (NarrativeRouter.Begin<DeploySignaltowerScenario>()) {
+                offeredThisSession = true;
+                delayTimer = 0;
             }
         }
+
+        /// <summary>仅凭持久剧情标记与本世界目标点状态判定是否应主动登门</summary>
+        private static bool ShouldOffer() {
+            if (offeredThisSession) {
+                return false;
+            }
+            //本世界已在部署(目标点已生成)或委托已彻底完成时不再登门
+            if (SignalTowerTargetManager.IsGenerated
+                || DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted)) {
+                return false;
+            }
+            //前置:本世界星流巨械已败 + 结束对话已播放
+            return InWorldBossPhase.Downed29.Invoke()
+                && DraedonStorySync.ReadDraedon(d => d.ExoMechEndingDialogue, d => d.ExoMechEndingDialogue);
+        }
+
+        private static bool IsEnvironmentBlocked()
+            => EbnEffect.IsActive
+            || CWRWorld.HasBoss
+            || CWRWorld.BossRush
+            || NPC.AnyNPCs(CWRID.NPC_Draedon)
+            || NarrativeTriggerGate.IsBusy
+            || SubWorldRef.AnyActiveSubWorld();
 
         protected override void Build(NarrativeComposer n) {
             bool declined = DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestDeclined, d => d.DeploySignaltowerQuestDeclined);
@@ -141,6 +163,11 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
             DraedonEffect.Send();
         }
 
+        protected override NarrativePolicy ConfigurePolicy() => new() {
+            IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.DeploySignaltowerQuestCompleted, d => d.DeploySignaltowerQuestCompleted),
+            CanTrigger = (_, _) => false,//不参与自动调度,仅由本类倒计时手动启动
+        };
+
         private static void GiveBlueprint() {
             NarrativeServices.RewardGrant?.Grant(new RewardPayload {
                 ItemType = ModContent.ItemType<ConstructionBlueprintQET>(),
@@ -157,9 +184,16 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers
 
         private static void AcceptQuest() {
             SignalTowerTargetManager.GenerateTargetPoints();
+            //接取即清除拒绝标记,委托面板据 Accepted && !Declined 判定登记
             DraedonStorySync.WriteDraedon(
-                d => d.DeploySignaltowerQuestAccepted = true,
-                d => d.DeploySignaltowerQuestAccepted = true);
+                d => {
+                    d.DeploySignaltowerQuestAccepted = true;
+                    d.DeploySignaltowerQuestDeclined = false;
+                },
+                d => {
+                    d.DeploySignaltowerQuestAccepted = true;
+                    d.DeploySignaltowerQuestDeclined = false;
+                });
         }
 
         private static void DeclineQuest() {

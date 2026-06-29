@@ -55,6 +55,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
 
         protected override void OnCompleted() => ShepelNarrativePortrait.Hide();
 
+        protected static System.Action PortraitSerious => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious);
+        protected static System.Action PortraitHappy => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Happy);
+        protected static System.Action PortraitSmirk => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Smirk);
+        protected static System.Action PortraitShocked => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Shocked);
+        protected static System.Action PortraitSad => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Sad);
+        protected static System.Action PortraitBlank => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Blank);
+
         protected void ConsumeEvent() {
             ShepelReactiveEvents.ClearFlag(ShepelStorySync.Story, HandledEvent);
         }
@@ -89,6 +96,13 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel
         protected override void OnStarted() => ShepelNarrativePortrait.Show();
 
         protected override void OnCompleted() => ShepelNarrativePortrait.Hide();
+
+        protected static System.Action PortraitSerious => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Serious);
+        protected static System.Action PortraitHappy => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Happy);
+        protected static System.Action PortraitSmirk => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Smirk);
+        protected static System.Action PortraitShocked => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Shocked);
+        protected static System.Action PortraitSad => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Sad);
+        protected static System.Action PortraitBlank => ShepelNarrativePortrait.FaceEnter(ShepelFullBodyPortrait.Face.Blank);
 
         protected override NarrativePolicy ConfigurePolicy() => null;
     }

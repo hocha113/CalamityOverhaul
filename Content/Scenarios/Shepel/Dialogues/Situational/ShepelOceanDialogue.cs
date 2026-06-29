@@ -49,10 +49,10 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Dialogues.Situational
                 total);
 
             switch (v) {
-                case 0: n.Say("SHPC", V0_Line1.Value).Say("SHPC", V0_Line2.Value); break;
-                case 1: n.Say("SHPC", V1_Line1.Value).Say("SHPC", V1_Line2.Value); break;
-                case 2: n.Say("SHPC", V2_Line1.Value).Say("SHPC", V2_Line2.Value); break;
-                default: n.Say("SHPC", VRain_Line1.Value).Say("SHPC", VRain_Line2.Value); break;
+                case 0: n.Say("SHPC", V0_Line1.Value, onEnter: PortraitSerious).Say("SHPC", V0_Line2.Value, onEnter: PortraitHappy); break;
+                case 1: n.Say("SHPC", V1_Line1.Value, onEnter: PortraitSerious).Say("SHPC", V1_Line2.Value); break;
+                case 2: n.Say("SHPC", V2_Line1.Value, onEnter: PortraitSerious).Say("SHPC", V2_Line2.Value, onEnter: PortraitSmirk); break;
+                default: n.Say("SHPC", VRain_Line1.Value, onEnter: PortraitSerious).Say("SHPC", VRain_Line2.Value, onEnter: PortraitSmirk); break;
             }
         }
     }
