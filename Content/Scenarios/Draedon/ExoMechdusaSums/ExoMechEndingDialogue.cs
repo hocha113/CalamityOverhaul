@@ -60,12 +60,13 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.ExoMechdusaSums
         protected override void OnCompleted() {
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
+            //本场景由 DraedonTriggerService 手动 Begin,策略回调只在调度器路径生效,完成标记须落在本重写
+            DraedonStorySync.WriteDraedon(d => d.ExoMechEndingDialogue = true, d => d.ExoMechEndingDialogue = true);
         }
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.ExoMechEndingDialogue, d => d.ExoMechEndingDialogue),
             CanTrigger = (_, _) => false,
-            OnCompleted = _ => DraedonStorySync.WriteDraedon(d => d.ExoMechEndingDialogue = true, d => d.ExoMechEndingDialogue = true),
         };
 
     }

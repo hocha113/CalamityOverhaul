@@ -35,12 +35,13 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.Defeats
         protected override void OnCompleted() {
             DraedonEffect.IsActive = false;
             DraedonEffect.Send();
+            //手动 Begin 的场景策略回调不触发,完成标记须落在本重写
+            DraedonStorySync.WriteDraedon(d => d.ExoMechThirdDefeat = true, d => d.ExoMechThirdDefeat = true);
         }
 
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => DraedonStorySync.ReadDraedon(d => d.ExoMechThirdDefeat, d => d.ExoMechThirdDefeat),
             CanTrigger = (_, _) => false,
-            OnCompleted = _ => DraedonStorySync.WriteDraedon(d => d.ExoMechThirdDefeat = true, d => d.ExoMechThirdDefeat = true),
         };
 
     }

@@ -41,14 +41,18 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Quest.FindFragments
              .End();
         }
 
+        protected override void OnCompleted() {
+            //手动 Begin 的场景策略回调不触发,委托登记标记须落在本重写
+            OldDukeStorySync.Write(
+                d => d.OldDukeFindFragmentsQuestTriggered = true,
+                d => d.OldDukeFindFragmentsQuestTriggered = true);
+        }
+
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => OldDukeStorySync.Read(
                 d => d.OldDukeFirstCampsiteDialogueCompleted || d.OldDukeFindFragmentsQuestTriggered,
                 d => d.OldDukeFirstCampsiteDialogueCompleted || d.OldDukeFindFragmentsQuestTriggered),
             CanTrigger = (_, _) => false,
-            OnCompleted = _ => OldDukeStorySync.Write(
-                d => d.OldDukeFindFragmentsQuestTriggered = true,
-                d => d.OldDukeFindFragmentsQuestTriggered = true),
         };
     }
 }
