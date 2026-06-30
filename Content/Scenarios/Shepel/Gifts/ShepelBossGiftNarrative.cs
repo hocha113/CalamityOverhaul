@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
+using CalamityOverhaul.Content.Narrative.Common;
+using CalamityOverhaul.Content.Scenarios.Helen.Gifts;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
@@ -131,9 +133,12 @@ namespace CalamityOverhaul.Content.Scenarios.Shepel.Gifts
         }
     }
 
-    internal sealed class ShepelGiftBossKillNPC : GlobalNPC
+    internal sealed class ShepelGiftBossKillNPC : DeathTrackingNPC
     {
-        public override void OnKill(NPC npc) {
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.boss;
+
+        public override void OnNPCDeath(NPC npc) {
+            if (Main.dedServ) return;
             ShepelGiftNarrativeTracker.NotifyBossDefeated(npc.type);
         }
     }
