@@ -38,6 +38,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> FlattenedDisk { get; set; }
         public static Asset<Effect> BlackHole { get; set; }
         public static Asset<Effect> GammaRayBeam { get; set; }
+        public static Asset<Effect> CommandersBeam { get; set; }
         public static Asset<Effect> DropPodFlame { get; set; }
         public static Asset<Effect> DropPodShockwave { get; set; }
         public static Asset<Effect> DropPodHeatHaze { get; set; }

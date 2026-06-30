@@ -850,7 +850,7 @@ CommandersStaffEX: {
 	DisplayName: Commander's Staff EX
 	Tooltip:
 		'''
-		Fires multiple spreading thermal beams
+		Fires five overcharged beams that spiral and converge like a cutting drill
 		"Suitable for cutting metal"
 		'''
 }

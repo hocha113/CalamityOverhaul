@@ -824,7 +824,7 @@ CommandersStaffEX: {
 	DisplayName: 统帅之杖EX
 	Tooltip:
 		'''
-		发射多道扩散的热能射线
+		发射五道环绕汇聚、旋转切割的过载射线
 		"适合切割金属"
 		'''
 }

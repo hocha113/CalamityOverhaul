@@ -3,9 +3,8 @@ using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -87,7 +86,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// <summary>
     /// 指挥官法杖的共同持握行为：单手45°持杖指向鼠标，从杖尖放出指挥射线
     /// </summary>
-    internal abstract class BaseCommandersStaffHeld : BaseHeldGun
+    internal abstract class BaseCommandersStaffHeld : BaseHeldGun, IOverlayDrawable
     {
         public override SoundStyle? ShootSound => SoundID.Item68;
         public sealed override void SetGunProperty() {
@@ -125,6 +124,18 @@ namespace CalamityOverhaul.Content.Items.Magic
         /// </summary>
         public abstract void FireRay();
 
+        //法杖本体改由IOverlayDrawable在ProjectileLayerRender的遮挡层绘制(晚于射线的图元/加色层)，
+        //从而稳定盖住射线在杖尖处的顶点几何，不依赖弹幕数组遍历顺序的偶然结果
+        public sealed override bool PreDraw(ref Color lightColor) => false;
+
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            if (!OnHandheldDisplayBool) {
+                return;
+            }
+            Color lightColor = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
+            GunDraw(Projectile.Center - Main.screenPosition + SpecialDrawPositionOffset, ref lightColor);
+        }
+
         //法杖持握绘制：原点设在握把端，旋转角附加45°，让杖体从手中向外延伸
         public override void GunDraw(Vector2 drawPos, ref Color lightColor) {
             float rot = DirSign > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
@@ -152,165 +163,297 @@ namespace CalamityOverhaul.Content.Items.Magic
         public override string Texture => CWRConstant.Item_Magic + "CommandersStaffEXHeld";
         public override int TargetID => ModContent.ItemType<CommandersStaffEX>();
         public override void FireRay() {
-            for (int i = 0; i < 5; i++) {
+            //五道射线均匀分布在环形枪口上，ai1记录端口序号供CommandersRayEX计算自旋与汇聚方向
+            const int beamCount = 5;
+            for (int i = 0; i < beamCount; i++) {
                 Projectile.NewProjectile(Source, ShootPos, ShootVelocity
-                    , ModContent.ProjectileType<CommandersRay>()
+                    , ModContent.ProjectileType<CommandersRayEX>()
                     , WeaponDamage, WeaponKnockback, Owner.whoAmI
-                    , ai0: Projectile.identity, ai1: (-2 + i) * 0.01f, ai2: 1);
+                    , ai0: Projectile.identity, ai1: i);
             }
         }
     }
 
-    internal class CommandersRay : ModProjectile
+    /// <summary>
+    /// 指挥官射线公共骨架：跟随持握武器的瞄准方向逐帧重定位，沿方向步进求与地形的命中长度，
+    /// 以顶点四边形+<see cref="EffectLoader.CommandersBeam"/>着色器绘制连续光柱，取代旧版逐像素粒子拼接的拖尾
+    /// </summary>
+    internal abstract class BaseCommandersRay : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
-        private const int MaxPosNum = 100;
-        private int scaleTimer = 0;
-        private int scaleIndex = 0;
+
+        //展开/维持/收束三段式生命周期，时长贴近原版的一次脉冲射击节奏
+        private const int ExpandTime = 6;
+        private const int SustainTime = 38;
+        private const int CollapseTime = 10;
+        private const int TotalLife = ExpandTime + SustainTime + CollapseTime;
+        private const float MaxRayLength = 2000f;
+
+        protected int Age;
+        private float widthMul;
         private float toTileLeng;
-        private const int disengage = 20;
-        private Trail Trail;
-        private List<Vector2> newPoss;
-        private Projectile homeProj;
-        public override bool ShouldUpdatePosition() => false;
+
+        /// <summary>射线的视觉/碰撞基准宽度</summary>
+        protected abstract float BeamWidth { get; }
+        /// <summary>顶点四边形相对<see cref="BeamWidth"/>的放大倍率，留出着色器光晕余量；多束并存时调小以保持彼此独立可辨</summary>
+        protected virtual float VisualWidthMul => 3.2f;
+        /// <summary>0=热能分解 1=EX过载切割，直接喂给<see cref="EffectLoader.CommandersBeam"/>的exMode</summary>
+        protected abstract float BeamMode { get; }
+        protected abstract Color CoreThemeColor { get; }
+        protected abstract Color GlowThemeColor { get; }
+
+        /// <summary>由子类基于持握武器当前瞄准给出本帧射线的起点与方向</summary>
+        protected abstract void GetMuzzle(Projectile gunProj, out Vector2 origin, out Vector2 direction);
+
+        /// <summary>子类可在此追加专属的SetDefaults收尾，默认空</summary>
+        protected virtual void SetExtraDefaults() { }
+
         public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
+
         public override void SetDefaults() {
             Projectile.DamageType = DamageClass.Magic;
-            Projectile.width = 10;
-            Projectile.height = 10;
-            Projectile.hostile = false;
+            Projectile.width = Projectile.height = 10;
             Projectile.friendly = true;
-            Projectile.scale = 1f;
+            Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = disengage + 40;
             Projectile.alpha = 0;
+            Projectile.timeLeft = TotalLife + 10;
+            SetExtraDefaults();
         }
 
+        public override bool ShouldUpdatePosition() => false;
+
         public override void AI() {
-            if (Projectile.ai[2] != 0) {
-                Projectile.usesLocalNPCImmunity = true;
-                Projectile.localNPCHitCooldown = 10;
-                Projectile.ai[1] *= 1.06f;
+            Projectile homeProj = Main.projectile.FindByIdentity((int)Projectile.ai[0]);
+            if (!homeProj.Alives() || homeProj.type <= ProjectileID.None) {
+                Projectile.Kill();
+                return;
             }
 
-            homeProj = Main.projectile.FindByIdentity((int)Projectile.ai[0]);
-            if (homeProj.Alives() && homeProj.type > ProjectileID.None) {
-                Projectile.Center = homeProj.Center;
-                Projectile.rotation = homeProj.rotation + Projectile.ai[1];
-            }
-            else {
+            Age++;
+            if (Age >= TotalLife) {
                 Projectile.Kill();
+                return;
             }
+
+            GetMuzzle(homeProj, out Vector2 origin, out Vector2 direction);
+            Projectile.Center = origin;
+            Projectile.rotation = direction.ToRotation();
+
+            widthMul = Age < ExpandTime
+                ? VaultUtils.EaseOutCubic(Age / (float)ExpandTime)
+                : Age > TotalLife - CollapseTime
+                    ? 1f - VaultUtils.EaseInQuad((Age - (TotalLife - CollapseTime)) / (float)CollapseTime)
+                    : 1f;
+
+            toTileLeng = MeasureRayLength(direction);
 
             if (!VaultUtils.isServer) {
-                Color color = VaultUtils.MultiStepColorLerp(Projectile.timeLeft / 60f, Color.IndianRed, Color.Red, Color.DarkRed, Color.Red, Color.IndianRed, Color.OrangeRed);
+                UpdateVisuals(direction);
+            }
+        }
 
-                toTileLeng = 0;
-                Vector2 unitVer = Projectile.rotation.ToRotationVector2();
-                Tile tile = Framing.GetTileSafely(Projectile.Center + unitVer * toTileLeng);
-                bool isSolid = tile.HasSolidTile();
-                while (!isSolid && toTileLeng < 2000) {
-                    toTileLeng += 8;
-                    Vector2 targetPos = Projectile.Center + unitVer * toTileLeng;
-                    tile = Framing.GetTileSafely(targetPos);
-                    isSolid = tile.HasSolidTile();
-
-                    if (toTileLeng % 32 == 0) {
-                        Lighting.AddLight(targetPos, color.ToVector3() * (Projectile.timeLeft / 60f));
-                    }
-
-                    if (isSolid) {
-                        PRTLoader.NewParticle<PRT_HeavenfallStar>(targetPos, VaultUtils.RandVr(6), color, Main.rand.NextFloat(0.6f, 1.6f)).Configure(false, 2);
-                    }
-                    else if (toTileLeng > 90) {
-                        PRTLoader.NewParticle<PRT_HeavenfallStarAlpha>(targetPos, unitVer, color, Main.rand.NextFloat(0.2f, 0.4f) * scaleTimer * 0.2f).Configure(false, 2);
-                    }
+        //沿射线方向步进至首个实心瓦片，碰撞与绘制共用，故服务端也需要计算
+        private float MeasureRayLength(Vector2 direction) {
+            float length = 0f;
+            while (length < MaxRayLength) {
+                if (Framing.GetTileSafely(Projectile.Center + direction * length).HasSolidTile()) {
+                    break;
                 }
+                length += 8f;
+            }
+            return length;
+        }
 
-                newPoss = [];
-                for (int i = 0; i < MaxPosNum; i++) {
-                    newPoss.Add(Projectile.Center + unitVer * (i / (float)MaxPosNum * toTileLeng));
-                }
-
-                if (!Main.dedServ) {
-                    Trail ??= new Trail([.. newPoss], (float sengs) => scaleTimer, (Vector2 _) => Color.Red);
-                    Trail.TrailPositions = [.. newPoss];
-                }
+        private void UpdateVisuals(Vector2 direction) {
+            Lighting.AddLight(Projectile.Center, CoreThemeColor.ToVector3() * (0.5f * widthMul));
+            int lightSteps = (int)(toTileLeng / 48f);
+            for (int i = 1; i <= lightSteps; i++) {
+                Lighting.AddLight(Projectile.Center + direction * (i * 48f), CoreThemeColor.ToVector3() * (0.6f * widthMul));
             }
 
-            if (Projectile.alpha < 255) {
-                Projectile.alpha += 15;
+            Vector2 perp = direction.RotatedBy(MathHelper.PiOver2);
+            if (Main.rand.NextBool(3)) {
+                float along = Main.rand.NextFloat(0.1f, 0.95f);
+                Vector2 pos = Projectile.Center + direction * (toTileLeng * along) + perp * Main.rand.NextFloat(-BeamWidth * 0.35f, BeamWidth * 0.35f);
+                Vector2 vel = direction.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * Main.rand.NextFloat(2f, 5f);
+                PRTLoader.NewParticle<PRT_Spark>(pos, vel, Color.Lerp(CoreThemeColor, Color.White, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.5f, 0.95f))
+                    ?.Configure(false, Main.rand.Next(10, 16));
             }
-
-            if (scaleTimer < 8 && scaleIndex == 0) {
-                scaleTimer++;
+            if (toTileLeng > 48f) {
+                Vector2 hitPos = Projectile.Center + direction * toTileLeng;
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(hitPos, VaultUtils.RandVr(5), GlowThemeColor, Main.rand.NextFloat(0.55f, 1.1f) * widthMul)
+                    ?.Configure(false, 3);
             }
-
-            if (Projectile.timeLeft < disengage) {
-                scaleIndex = 1;
-            }
-
-            if (scaleIndex > 0) {
-                if (--scaleTimer <= 0) {
-                    Projectile.Kill();
-                }
-            }
-
-            Projectile.localAI[0]++;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (toTileLeng < 4f || widthMul < 0.05f) {
+                return false;
+            }
             float point = 0f;
+            Vector2 direction = Projectile.rotation.ToRotationVector2();
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , Projectile.Center, Projectile.rotation.ToRotationVector2() * toTileLeng + Projectile.Center, scaleTimer * 4, ref point);
+                , Projectile.Center, Projectile.Center + direction * toTileLeng, BeamWidth * 0.7f * widthMul, ref point);
         }
 
         public override void CutTiles() {
             DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
-            Utils.PlotTileLine(Projectile.Center, Projectile.rotation.ToRotationVector2() * toTileLeng + Projectile.Center, Projectile.width, DelegateMethods.CutTiles);
+            Vector2 direction = Projectile.rotation.ToRotationVector2();
+            Utils.PlotTileLine(Projectile.Center, Projectile.Center + direction * toTileLeng, Projectile.width, DelegateMethods.CutTiles);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            int starPoints = 8;
-            for (int i = 0; i < starPoints; i++) {
-                float angle = MathHelper.TwoPi * i / starPoints;
-                for (int j = 0; j < 12; j++) {
-                    float starSpeed = MathHelper.Lerp(2f, 10f, j / 12f);
-                    Color dustColor = Color.Lerp(Color.Red, Color.DarkRed, j / 12f);
-                    float dustScale = MathHelper.Lerp(1.6f, 0.85f, j / 12f);
-
-                    Dust fire = Dust.NewDustPerfect(target.Center, DustID.RedTorch);
-                    fire.velocity = angle.ToRotationVector2() * starSpeed;
-                    fire.color = dustColor;
-                    fire.scale = dustScale;
-                    fire.noGravity = true;
-                }
+            if (VaultUtils.isServer) {
+                return;
+            }
+            for (int i = 0; i < 6; i++) {
+                float angle = MathHelper.TwoPi * i / 6f;
+                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 8f);
+                Color color = Color.Lerp(CoreThemeColor, Color.White, Main.rand.NextFloat(0.15f, 0.5f));
+                PRTLoader.NewParticle<PRT_HeavenfallStar>(target.Center, vel, color, Main.rand.NextFloat(0.7f, 1.3f))
+                    ?.Configure(false, Main.rand.Next(12, 20));
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            if (Trail == null) {
-                return false;
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, VaultUtils.RandVr(2, 5), CoreThemeColor, Main.rand.NextFloat(0.5f, 0.9f))
+                    ?.Configure(false, Main.rand.Next(8, 14));
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (toTileLeng < 4f || widthMul < 0.02f) {
+                return;
             }
 
-            Effect effect = EffectLoader.GradientTrail.Value;
-            effect.Parameters["transformMatrix"].SetValue(VaultUtils.GetTransfromMatrix());
-            effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
-            effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
-            effect.Parameters["udissolveS"].SetValue(1f);
-            effect.Parameters["uBaseImage"].SetValue(CWRAsset.Placeholder_White.Value);
-            effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
-            effect.Parameters["uGradient"].SetValue(CWRAsset.BloodRed_Bar.Value);
-            effect.Parameters["uDissolve"].SetValue(CWRAsset.Placeholder_White.Value);
-
-            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-            for (int i = 0; i < 6; i++) {
-                Trail?.DrawTrail(effect);
+            Effect effect = EffectLoader.CommandersBeam?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
+                return;
             }
-            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-            return false;
+
+            Vector2 direction = Projectile.rotation.ToRotationVector2();
+            Vector2 perp = direction.RotatedBy(MathHelper.PiOver2);
+            //起点沿自身方向回缩一段，让光柱视觉上从杖体内部涌出而非在杖尖处硬切
+            Vector2 muzzle = Projectile.Center - direction * (BeamWidth * 0.6f + 16f);
+            Vector2 tip = Projectile.Center + direction * toTileLeng;
+            float halfWidth = BeamWidth * VisualWidthMul * widthMul;
+
+            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            verts[0] = new VertexPositionColorTexture((muzzle + perp * halfWidth).ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[1] = new VertexPositionColorTexture((muzzle - perp * halfWidth).ToVector3(), Color.White, new Vector2(1f, 1f));
+            verts[2] = new VertexPositionColorTexture((tip + perp * halfWidth).ToVector3(), Color.White, new Vector2(0f, 0f));
+            verts[3] = new VertexPositionColorTexture((tip - perp * halfWidth).ToVector3(), Color.White, new Vector2(0f, 1f));
+
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.Additive;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["fadeAlpha"]?.SetValue(widthMul);
+            effect.Parameters["exMode"]?.SetValue(BeamMode);
+            effect.Parameters["seed"]?.SetValue(Projectile.whoAmI * 0.173f % 1f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+            }
+
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+        }
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            if (toTileLeng < 4f || widthMul < 0.02f) {
+                return;
+            }
+
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            Texture2D star = CWRAsset.StarTexture?.Value;
+            if (glow == null || star == null) {
+                return;
+            }
+
+            Vector2 direction = Projectile.rotation.ToRotationVector2();
+            Vector2 muzzleScreen = Projectile.Center - Main.screenPosition;
+            Vector2 tipScreen = muzzleScreen + direction * toTileLeng;
+            float flicker = 1f + 0.08f * MathF.Sin(Main.GlobalTimeWrappedHourly * 30f);
+            float widthScale = BeamWidth / glow.Width;
+
+            //杖口聚能
+            spriteBatch.Draw(glow, muzzleScreen, null, CoreThemeColor * (0.85f * widthMul), 0f
+                , glow.Size() / 2f, widthScale * 2.4f * flicker, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glow, muzzleScreen, null, Color.White * (0.6f * widthMul), 0f
+                , glow.Size() / 2f, widthScale * 1.1f, SpriteEffects.None, 0f);
+
+            //命中点迸发
+            spriteBatch.Draw(glow, tipScreen, null, GlowThemeColor * (0.8f * widthMul), 0f
+                , glow.Size() / 2f, widthScale * 1.7f * flicker, SpriteEffects.None, 0f);
+            spriteBatch.Draw(star, tipScreen, null, CoreThemeColor * (0.7f * widthMul), Main.GlobalTimeWrappedHourly * 2.4f
+                , star.Size() / 2f, (BeamWidth / star.Width) * 1.3f, SpriteEffects.None, 0f);
+        }
+    }
+
+    /// <summary>统帅之杖基础射线：单束直出，沿瞄准方向延伸的热能分解光柱</summary>
+    internal class CommandersRay : BaseCommandersRay
+    {
+        protected override float BeamWidth => 24f;
+        protected override float BeamMode => 0f;
+        protected override Color CoreThemeColor => new(255, 96, 48);
+        protected override Color GlowThemeColor => new(255, 196, 120);
+
+        protected override void GetMuzzle(Projectile gunProj, out Vector2 origin, out Vector2 direction) {
+            direction = gunProj.rotation.ToRotationVector2();
+            origin = gunProj.ModProjectile is BaseHeldGun gun ? gun.ShootPos : gunProj.Center;
+        }
+    }
+
+    /// <summary>
+    /// 统帅之杖EX专属切割射线：五束围绕瞄准轴小半径环形分布、缓慢自旋，
+    /// 各自朝前方同一焦点收束后再发散，形成旋转的切割锥而非单纯的平行扩散
+    /// </summary>
+    internal class CommandersRayEX : BaseCommandersRay
+    {
+        private const int PortCount = 5;
+        private const float PortRadius = 22f;
+        private const float FocalDistance = 320f;
+        private const float SpinSpeed = 0.06f;//弧度/帧
+
+        protected override float BeamWidth => 21f;
+        //五束并行环绕，光晕倍率略小于基础版以保持切割锥的独立刃口可辨，但不应细成丝线
+        protected override float VisualWidthMul => 2.6f;
+        protected override float BeamMode => 1f;
+        //呼应毁灭者/机械骷髅王的血红毁灭色系：比基础版更深邃浓烈、核心更炽白，而非偏离到品红
+        protected override Color CoreThemeColor => new(255, 32, 18);
+        protected override Color GlowThemeColor => new(255, 120, 60);
+
+        protected override void SetExtraDefaults() {
+            //五束并行命中同一目标，需独立免疫帧才能各自持续造成伤害
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 10;
+        }
+
+        protected override void GetMuzzle(Projectile gunProj, out Vector2 origin, out Vector2 direction) {
+            Vector2 muzzle = gunProj.ModProjectile is BaseHeldGun gun ? gun.ShootPos : gunProj.Center;
+            float aimRot = gunProj.rotation;
+            int portIndex = (int)Projectile.ai[1];
+            float ringAngle = aimRot + Age * SpinSpeed + portIndex * (MathHelper.TwoPi / PortCount);
+
+            origin = muzzle + ringAngle.ToRotationVector2() * PortRadius;
+            Vector2 focal = muzzle + aimRot.ToRotationVector2() * FocalDistance;
+            direction = (focal - origin).SafeNormalize(aimRot.ToRotationVector2());
         }
     }
 }
