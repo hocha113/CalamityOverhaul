@@ -33,6 +33,11 @@ HyperDisintegration: {
 	Description: Faz o alvo se desintegrar de dentro para fora
 }
 
+FocusMark: {
+	DisplayName: Marca de Foco
+	Description: Raios da morte causam dano bonus contra esta marca
+}
+
 TemporalStasis: {
 	DisplayName: Estase Temporal
 	Description: O tempo congela ao redor dela

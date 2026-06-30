@@ -33,6 +33,11 @@ HyperDisintegration: {
 	Description: Разрушает цель изнутри
 }
 
+FocusMark: {
+	DisplayName: Метка фокуса
+	Description: Лучи смерти наносят дополнительный урон по этой метке
+}
+
 TemporalStasis: {
 	DisplayName: Временной стазис
 	Description: Время застывает вокруг цели

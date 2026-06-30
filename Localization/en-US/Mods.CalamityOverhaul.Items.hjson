@@ -736,8 +736,8 @@ FocusingGrimoire: {
 	DisplayName: Focusing Grimoire
 	Tooltip:
 		'''
-		Left click to fire homing thermal rings
-		Right click to rapidly fire death rays
+		Left click fires homing thermal rings that mark enemies on impact
+		Right click rapidly fires death rays, which deal bonus damage and always crit against marked enemies
 		"Better than six books combined"
 		'''
 }

@@ -33,6 +33,11 @@ HyperDisintegration: {
 	Description: Lass das Ziel von innen zerfallen
 }
 
+FocusMark: {
+	DisplayName: Fokusmarkierung
+	Description: Todesstrahlen verursachen zusätzlichen Schaden gegen diese Markierung
+}
+
 TemporalStasis: {
 	DisplayName: Zeitstillstand
 	Description: Die Zeit erstarrt um sie herum

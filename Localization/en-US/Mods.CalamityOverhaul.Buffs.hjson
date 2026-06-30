@@ -33,6 +33,11 @@ HyperDisintegration: {
 	Description: Let the goal disintegrate from within
 }
 
+FocusMark: {
+	DisplayName: Focus Mark
+	Description: Death rays deal bonus damage against this mark
+}
+
 TemporalStasis: {
 	DisplayName: Temporal Stasis
 	Description: Time freezes around it
