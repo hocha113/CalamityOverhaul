@@ -1,11 +1,11 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Narrative.Common;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
 {
@@ -122,9 +122,12 @@ namespace CalamityOverhaul.Content.Scenarios.Helen.Gifts
         }
     }
 
-    internal sealed class HelenGiftBossKillNPC : GlobalNPC
+    internal sealed class HelenGiftBossKillNPC : DeathTrackingNPC
     {
-        public override void OnKill(NPC npc) {
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.boss;
+
+        public override void OnNPCDeath(NPC npc) {
+            if (Main.dedServ) return;
             HelenGiftNarrativeTracker.NotifyBossDefeated(npc.type);
         }
     }
