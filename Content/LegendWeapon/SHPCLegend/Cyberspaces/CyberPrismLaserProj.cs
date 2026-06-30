@@ -95,8 +95,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         }
 
         public override void AI() {
-            if (!Owner.active || Owner.dead || !Owner.channel || Owner.GetItem().type != SHPCOverride.ID || Owner.statMana <= 0) {
+            if (!Owner.Alives() || !Owner.channel || Item.type != SHPCOverride.ID) {
                 Projectile.Kill();
+                return;
+            }
+
+            if (Projectile.IsOwnedByLocalPlayer() && Owner.itemAnimation == 0) {
+                Projectile.Kill();
+                Projectile.netUpdate = true;
                 return;
             }
 

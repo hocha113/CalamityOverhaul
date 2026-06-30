@@ -149,13 +149,28 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             }
 
             Player local = Main.LocalPlayer;
-            if (local == null || !local.active || local.dead || local.mouseInterface) {
+            if (!local.Alives()) {
+                if (VictorTalkUI.Instance.IsOpen) {
+                    VictorTalkUI.Instance.Close();
+                }
+                return;
+            }
+
+            if (local.mouseInterface) {
                 return;
             }
 
             bool hover = NPC.Hitbox.Contains(Main.MouseWorld.ToPoint());
-            bool inRange = Vector2.Distance(local.Center, NPC.Center) < 130f;
-            if (!hover || !inRange) {
+            bool inRange = Vector2.Distance(local.Center, NPC.Center) < 200f;
+
+            if (!inRange) {
+                if (VictorTalkUI.Instance.IsOpen) {
+                    VictorTalkUI.Instance.Close();
+                }
+                return;
+            }
+
+            if (!hover) {
                 return;
             }
 
