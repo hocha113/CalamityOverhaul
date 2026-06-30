@@ -855,31 +855,6 @@ AcknowledgmentUI: {
 }
 
 CWRPlayer: {
-	Error_HookFailure:
-		'''
-		Un hook a échoué. Fermez le jeu et reconnectez-vous pour rétablir le fonctionnement normal.
-		Si le problème persiste, exportez votre journal et contactez les développeurs du mod.
-		'''
-	OnEnterWorld_ImproveGameWarning:
-		'''
-		[Quality of Terraria] est installé, mais votre version est obsolète.
-		Pour une expérience stable, mettez [Quality of Terraria] à jour vers au moins la version 1.7.1.7.
-		'''
 	HellfireExplosionDeathReason: "{0} a été réduit en cendres dans les flammes des Enfers"
 	SoulfireExplosionDeathReason: "{0} a vu son âme s'élever dans les flammes"
-
-	CWRPlayer: {
-		Error_HookFailure:
-			'''
-			Un hook a échoué. Fermez le jeu et reconnectez-vous pour rétablir le fonctionnement normal.
-			Si le problème persiste, exportez votre journal et contactez les développeurs du mod.
-			'''
-		OnEnterWorld_ImproveGameWarning:
-			'''
-			[Quality of Terraria] est installé, mais votre version est obsolète.
-			Pour une expérience stable, mettez [Quality of Terraria] à jour vers au moins la version 1.7.1.7.
-			'''
-		HellfireExplosionDeathReason: "{0} a été réduit en cendres dans les flammes des Enfers"
-		SoulfireExplosionDeathReason: "{0} a vu son âme s'élever dans les flammes"
-	}
 }

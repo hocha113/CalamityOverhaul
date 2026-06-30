@@ -20,24 +20,12 @@ namespace CalamityOverhaul.Content
 {
     public class CWRPlayer : ModPlayer, ILocalizedModType
     {
-        public string LocalizationCategory => "UI.CWRPlayer";
+        public string LocalizationCategory => "UI";
 
-        public static LocalizedText Error_HookFailure { get; private set; }
-        public static LocalizedText OnEnterWorld_ImproveGameWarning { get; private set; }
         public static LocalizedText HellfireExplosionDeathReason { get; private set; }
         public static LocalizedText SoulfireExplosionDeathReason { get; private set; }
 
         public override void SetStaticDefaults() {
-            Error_HookFailure = this.GetLocalization(nameof(Error_HookFailure), () =>
-                """
-                个钩子失效了，为了游戏正常，请关闭游戏并重新进入，
-                如果这仍旧没有恢复正常，请带上导出的日志寻找模组开发者
-                """);
-            OnEnterWorld_ImproveGameWarning = this.GetLocalization(nameof(OnEnterWorld_ImproveGameWarning), () =>
-                """
-                检测到您安装了[更好的体验]，但您的[更好的体验]版本过旧
-                为了保证游戏正常运行，请保证[更好的体验]版本不低于1.7.1.7
-                """);
             HellfireExplosionDeathReason = this.GetLocalization(nameof(HellfireExplosionDeathReason),
                 () => "{0}在地狱的烈火中化为灰烬");
             SoulfireExplosionDeathReason = this.GetLocalization(nameof(SoulfireExplosionDeathReason),
@@ -45,10 +33,6 @@ namespace CalamityOverhaul.Content
         }
 
         #region Data
-        /// <summary>是否拥有大修宝典</summary>
-        public bool HasOverhaulTheBibleBook;
-        /// <summary>摄像头位置额外矫正值</summary>
-        public Vector2 OffsetScreenPos;
         /// <summary>屏幕振动强度</summary>
         public float ScreenShakeValue;
         /// <summary>火力发电活跃帧数</summary>
@@ -61,8 +45,6 @@ namespace CalamityOverhaul.Content
         public bool HeldMurasamaBool;
         /// <summary>是否正在进行终结技</summary>
         public bool EndSkillEffectStartBool;
-        /// <summary>同 <see cref="Player.mouseInterface"/> 的 UI 鼠标占用</summary>
-        public bool UIMouseInterface => Player.mouseInterface;
         /// <summary>是否了解风力</summary>
         public bool UnderstandWindGriven;
         /// <summary>是否了解风力 MK2</summary>
@@ -75,20 +57,14 @@ namespace CalamityOverhaul.Content
         public int RisingDragonCharged;
         /// <summary>Tram 归属</summary>
         public int TramTPContrType = -1;
-        /// <summary>Compressor 归属</summary>
-        public int CompressorContrType = -1;
         /// <summary>欧米茄指示箭头计数器</summary>
         public int InspectOmigaTime;
-        /// <summary>站平台帧数，&gt;0 时无重力</summary>
-        public int ReceivingPlatformTime;
-        /// <summary>禁暗影克隆体剩余帧数，每帧减一</summary>
-        public int DontHasSemberDarkMasterCloneTime;
         /// <summary>实时绘制位置矫正</summary>
         internal Vector2 SpecialDrawPositionOffset;
         /// <summary>玩家位置变化量</summary>
         public Vector2 PlayerPositionChange;
         /// <summary>上一帧玩家位置变化量</summary>
-        public Vector2 oldPlayerPositionChange;
+        private Vector2 oldPlayerPositionChange;
         /// <summary>是否有地狱炎爆 debuff</summary>
         public bool HellfireExplosion;
         /// <summary>是否有灵魂火 debuff</summary>
@@ -107,8 +83,6 @@ namespace CalamityOverhaul.Content
         public Vector2? PendingDashVelocity { get; set; } = null;
         /// <summary>翻滚旋转速度倍率</summary>
         public float PendingDashRotSpeedMode = 0.015f;
-        /// <summary>减速剩余帧数</summary>
-        public float DecelerationCounter { get; set; }
         /// <summary>冲刺中是否旋转</summary>
         public bool IsRotatingDuringDash { get; set; }
         /// <summary>冲刺旋转方向，1 顺时针 -1 逆时针</summary>
@@ -118,25 +92,18 @@ namespace CalamityOverhaul.Content
         /// <summary>旋转复位剩余帧数</summary>
         public float RotationResetCounter { get; set; }
         /// <summary>旋转复位持续帧数</summary>
-        public float RotationResetDuration { get; set; } = 15;
+        private const float RotationResetDuration = 15f;
         /// <summary>自定义冷却剩余帧数</summary>
         public int CustomCooldownCounter;
         /// <summary>掠袭者：冲刺后强化射击就绪</summary>
         public bool RaiderGunDashReady;
         /// <summary>掠袭者共享冲刺冷却(帧)，每帧减一</summary>
         public int RaiderGunDashCooldown;
-        /// <summary>禁使用物品剩余帧数，每帧减一</summary>
-        public int DontUseItemTime;
         /// <summary>抬棺人下一发弩箭伤害倍率，默认 1</summary>
         public float PallbearerNextArrowDamageMult = 1;
-
-        [Obsolete("已经过时，目前保留仅用作外部联动兼容")]
-        public float PressureIncrease;
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
-            cwr.HasOverhaulTheBibleBook = HasOverhaulTheBibleBook;
-            cwr.OffsetScreenPos = OffsetScreenPos;
             cwr.ScreenShakeValue = ScreenShakeValue;
             cwr.ThermalGenerationActiveTime = ThermalGenerationActiveTime;
             cwr.SupertableUIStartBool = SupertableUIStartBool;
@@ -149,10 +116,7 @@ namespace CalamityOverhaul.Content
             cwr.RideElectricMinRocketRecoverStateTime = RideElectricMinRocketRecoverStateTime;
             cwr.RisingDragonCharged = RisingDragonCharged;
             cwr.TramTPContrType = TramTPContrType;
-            cwr.CompressorContrType = CompressorContrType;
             cwr.InspectOmigaTime = InspectOmigaTime;
-            cwr.ReceivingPlatformTime = ReceivingPlatformTime;
-            cwr.DontHasSemberDarkMasterCloneTime = DontHasSemberDarkMasterCloneTime;
             cwr.SpecialDrawPositionOffset = SpecialDrawPositionOffset;
             cwr.PlayerPositionChange = PlayerPositionChange;
             cwr.oldPlayerPositionChange = oldPlayerPositionChange;
@@ -164,16 +128,13 @@ namespace CalamityOverhaul.Content
             cwr.JusticeUnveiledCooldown = JusticeUnveiledCooldown;
             cwr.PendingDashVelocity = PendingDashVelocity;
             cwr.PendingDashRotSpeedMode = PendingDashRotSpeedMode;
-            cwr.DecelerationCounter = DecelerationCounter;
             cwr.IsRotatingDuringDash = IsRotatingDuringDash;
             cwr.RotationDirection = RotationDirection;
             cwr.DashCooldownCounter = DashCooldownCounter;
             cwr.RotationResetCounter = RotationResetCounter;
-            cwr.RotationResetDuration = RotationResetDuration;
             cwr.CustomCooldownCounter = CustomCooldownCounter;
             cwr.RaiderGunDashReady = RaiderGunDashReady;
             cwr.RaiderGunDashCooldown = RaiderGunDashCooldown;
-            cwr.DontUseItemTime = DontUseItemTime;
             cwr.PallbearerNextArrowDamageMult = PallbearerNextArrowDamageMult;
             return cwr;
         }
@@ -182,8 +143,6 @@ namespace CalamityOverhaul.Content
 
         public override void Initialize() {
             TramTPContrType = 0;
-            ReceivingPlatformTime = 0;
-            DontUseItemTime = 0;
             ThermalGenerationActiveTime = 0;
             PallbearerNextArrowDamageMult = 1;
             Reset();
@@ -192,12 +151,10 @@ namespace CalamityOverhaul.Content
         public override void ResetEffects() => Reset();
 
         private void Reset() {
-            OffsetScreenPos = Vector2.Zero;
             IsUnsunghero = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
             EndSkillEffectStartBool = false;
-            HasOverhaulTheBibleBook = false;
             HellfireExplosion = false;
             IsJusticeUnveiled = false;
             DestroyerOwner = false;
@@ -220,13 +177,6 @@ namespace CalamityOverhaul.Content
                     UnderstandWindGrivenMK2 = false;
                 }
             } catch (Exception ex) { CWRMod.Instance.Logger.Error($"CWRPlayer.LoadData An Error Has Cccurred: {ex.Message}"); }
-        }
-
-        public override bool CanUseItem(Item item) {
-            if (DontUseItemTime > 0) {
-                return false;
-            }
-            return base.CanUseItem(item);
         }
 
         public override void PostUpdateMiscEffects() {
@@ -274,11 +224,6 @@ namespace CalamityOverhaul.Content
                 Player.fullRotation = MathHelper.Lerp(0, Player.fullRotation, resetProgress);
             }
 
-            if (DecelerationCounter > 0) {
-                Player.velocity *= 0.95f;
-                DecelerationCounter--;
-            }
-
             if (DashCooldownCounter > 0) {
                 DashCooldownCounter--;
             }
@@ -290,24 +235,9 @@ namespace CalamityOverhaul.Content
             if (RaiderGunDashCooldown > 0) {
                 RaiderGunDashCooldown--;
             }
-
-            if (ReceivingPlatformTime > 0) {
-                Player.gravity = 0;
-                if (Player.velocity.Y > 0) {
-                    Player.velocity.Y = 0;
-                }
-                ReceivingPlatformTime--;
-            }
         }
 
         public override void PostUpdate() {
-
-            if (DontUseItemTime > 0) {
-                DontUseItemTime--;
-            }
-            if (DontHasSemberDarkMasterCloneTime > 0) {
-                DontHasSemberDarkMasterCloneTime--;
-            }
             if (InspectOmigaTime > 0) {
                 InspectOmigaTime--;
             }
@@ -388,7 +318,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void ModifyScreenPosition() {
-            Main.screenPosition += OffsetScreenPos;
             if (ScreenShakeValue > 0f) {
                 Main.screenPosition += Main.rand.NextVector2Circular(ScreenShakeValue, ScreenShakeValue);
                 ScreenShakeValue = MathHelper.Clamp(ScreenShakeValue - 0.185f, 0f, 20f);

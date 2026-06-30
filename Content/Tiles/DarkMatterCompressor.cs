@@ -62,7 +62,6 @@ namespace CalamityOverhaul.Content.Tiles
             //交互未实装，暂留空实现
             //if (VaultUtils.SafeGetTopLeft(i, j, out var point)) {
             //if (TileProcessorLoader.ByPositionGetTP(point, out CompressorTP compressor)) {
-            //ref int playerContrType = ref Main.LocalPlayer.CWR().CompressorContrType;
             //if (playerContrType == compressor.WhoAmI && playerContrType >= 0) {
             //if (CompressorUI.Instance.compressorEntity == null) {
             //CompressorUI.Instance.compressorEntity = compressor;

@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         /// <summary>当前是否仍手持着荒芜弓</summary>
         private bool ItemValid => Item != null && !Item.IsAir && Item.type == ModContent.ItemType<BarrenBow>();
         /// <summary>是否处于开火交互中：按住左键、手持正确物品且鼠标未悬停UI</summary>
-        private bool Engaged => ItemValid && DownLeft && !Owner.CWR().UIMouseInterface && !Owner.mouseInterface;
+        private bool Engaged => ItemValid && DownLeft && !Owner.mouseInterface;
         public override bool CanFire => DownLeft;
         private float HoldDistance => TextureValue.Width / 2f - 8;
 

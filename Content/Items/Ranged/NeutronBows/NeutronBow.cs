@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
 
         /// 仍手持洛希之弦
         private bool ItemValid => Item != null && !Item.IsAir && Item.type == ModContent.ItemType<NeutronBow>();
-        private bool MouseSafe => !Owner.CWR().UIMouseInterface && !Owner.mouseInterface;
+        private bool MouseSafe => !Owner.mouseInterface;
         private bool LeftFiring => DownLeft && MouseSafe;
         private bool RightCharging => DownRight && !DownLeft && MouseSafe;
         public override bool CanFire => DownLeft || DownRight;

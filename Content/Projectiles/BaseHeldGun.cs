@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.Projectiles
             if (CanFire || !Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
-            mouseUIFree = !Owner.CWR().UIMouseInterface;
+            mouseUIFree = !Owner.mouseInterface;
             if (oldMouseUIFree != mouseUIFree) {
                 NetUpdate();
             }

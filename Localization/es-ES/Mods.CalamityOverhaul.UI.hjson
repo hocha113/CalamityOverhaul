@@ -855,31 +855,6 @@ AcknowledgmentUI: {
 }
 
 CWRPlayer: {
-	Error_HookFailure:
-		'''
-		Un gancho ha fallado. Para el funcionamiento normal del juego, por favor cierra el juego y vuelve a entrar.
-		Si eso no resuelve el problema, lleva el registro exportado a un desarrollador del mod.
-		'''
-	OnEnterWorld_ImproveGameWarning:
-		'''
-		[Quality of Terraria] está instalado, pero tu versión está desactualizada.
-		Para un juego estable, actualiza [Quality of Terraria] al menos a la versión 1.7.1.7.
-		'''
 	HellfireExplosionDeathReason: "{0} se redujo a cenizas en el fuego del Inframundo"
 	SoulfireExplosionDeathReason: "{0} ascendió en llamas"
-
-	CWRPlayer: {
-		Error_HookFailure:
-			'''
-			Un gancho ha fallado. Para que el juego funcione con normalidad, cierra el juego y vuelve a entrar.
-			Si eso no resuelve el problema, lleva el registro exportado a un desarrollador del mod.
-			'''
-		OnEnterWorld_ImproveGameWarning:
-			'''
-			[Quality of Terraria] está instalado, pero tu versión está desactualizada.
-			Para un juego estable, actualiza [Quality of Terraria] al menos a la versión 1.7.1.7.
-			'''
-		HellfireExplosionDeathReason: "{0} se redujo a cenizas en el fuego del Inframundo"
-		SoulfireExplosionDeathReason: "{0} ascendió en llamas"
-	}
 }

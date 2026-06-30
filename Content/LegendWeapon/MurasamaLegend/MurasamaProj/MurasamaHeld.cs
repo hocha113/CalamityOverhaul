@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
         private ref float Time => ref Projectile.ai[0];
         private ref int RisingDragon => ref Owner.CWR().RisingDragonCharged;
         private bool CanStartRightAction => !Projectile.IsOwnedByLocalPlayer()
-            || (!Owner.CWR().UIMouseInterface && !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == ItemID.None);
+            || (!Owner.mouseInterface && !Owner.cursorItemIconEnabled && Owner.cursorItemIconID == ItemID.None);
         private bool OnFireR => DownRight && !DownLeft && CanStartRightAction;
         private int Level => MurasamaOverride.GetLevel(Item);
         private bool initialize;

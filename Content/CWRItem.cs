@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Industrials.Generator;
+﻿using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
@@ -323,13 +323,13 @@ namespace CalamityOverhaul.Content
                     Projectile.NewProjectileDirect(item.GetSource_FromThis(), player.Center, Vector2.Zero
                         , heldProjType, item.damage, item.knockBack, player.whoAmI);
                 }
-                if (CWRLoad.ItemIsRanged[item.type]) {
-                    bool lDown = player.PressKey();
-                    bool rDown = player.PressKey(false);
-                    if (lDown || (rDown && !lDown && CWRLoad.ItemIsRangedAndCanRightClickFire[item.type] && !player.cursorItemIconEnabled)) {
-                        player.CWR().HeldStyle = 0;
-                    }
-                }
+                //if (CWRLoad.ItemIsRanged[item.type]) {
+                //    bool lDown = player.PressKey();
+                //    bool rDown = player.PressKey(false);
+                //    if (lDown || (rDown && !lDown && CWRLoad.ItemIsRangedAndCanRightClickFire[item.type] && !player.cursorItemIconEnabled)) {
+                //        player.CWR().HeldStyle = 0;
+                //    }
+                //}
             }
             //转化历史物品
             if (LegacyItemTranslationID > ItemID.None) {

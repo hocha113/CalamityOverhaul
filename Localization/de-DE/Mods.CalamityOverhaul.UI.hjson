@@ -855,31 +855,6 @@ AcknowledgmentUI: {
 }
 
 CWRPlayer: {
-	Error_HookFailure:
-		'''
-		Ein Hook ist fehlgeschlagen. Schließe das Spiel und tritt erneut bei, um normal weiterzuspielen.
-		Wenn das Problem bestehen bleibt, exportiere dein Log und wende dich an die Mod-Entwickler.
-		'''
-	OnEnterWorld_ImproveGameWarning:
-		'''
-		[Quality of Terraria] ist installiert, aber deine Version ist veraltet.
-		Für stabiles Spielen aktualisiere [Quality of Terraria] mindestens auf Version 1.7.1.7.
-		'''
 	HellfireExplosionDeathReason: "{0} wurde in den Flammen der Unterwelt zu Asche"
 	SoulfireExplosionDeathReason: "{0}s Seele stieg in den Flammen auf"
-
-	CWRPlayer: {
-		Error_HookFailure:
-			'''
-			Ein Hook ist fehlgeschlagen. Schließe das Spiel und tritt erneut bei, um normal weiterzuspielen.
-			Wenn das Problem bestehen bleibt, exportiere dein Log und wende dich an die Mod-Entwickler.
-			'''
-		OnEnterWorld_ImproveGameWarning:
-			'''
-			[Quality of Terraria] ist installiert, aber deine Version ist veraltet.
-			Für stabiles Spielen aktualisiere [Quality of Terraria] mindestens auf Version 1.7.1.7.
-			'''
-		HellfireExplosionDeathReason: "{0} wurde in den Flammen der Unterwelt zu Asche"
-		SoulfireExplosionDeathReason: "{0}s Seele stieg in den Flammen auf"
-	}
 }
