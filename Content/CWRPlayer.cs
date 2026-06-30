@@ -71,8 +71,6 @@ namespace CalamityOverhaul.Content
         public bool RideElectricMinRocket;
         /// <summary>卸乘电动火箭恢复周期(帧)</summary>
         public int RideElectricMinRocketRecoverStateTime;
-        /// <summary>手持状态</summary>
-        public int HeldStyle;
         /// <summary>升龙技充能</summary>
         public int RisingDragonCharged;
         /// <summary>Tram 归属</summary>
@@ -149,7 +147,6 @@ namespace CalamityOverhaul.Content
             cwr.UnderstandWindGrivenMK2 = UnderstandWindGrivenMK2;
             cwr.RideElectricMinRocket = RideElectricMinRocket;
             cwr.RideElectricMinRocketRecoverStateTime = RideElectricMinRocketRecoverStateTime;
-            cwr.HeldStyle = HeldStyle;
             cwr.RisingDragonCharged = RisingDragonCharged;
             cwr.TramTPContrType = TramTPContrType;
             cwr.CompressorContrType = CompressorContrType;
@@ -196,7 +193,6 @@ namespace CalamityOverhaul.Content
 
         private void Reset() {
             OffsetScreenPos = Vector2.Zero;
-            HeldStyle = -1;
             IsUnsunghero = false;
             InFoodStallChair = false;
             HeldMurasamaBool = false;
@@ -363,10 +359,6 @@ namespace CalamityOverhaul.Content
             }
 
             Item item = player.GetItem();
-            if (HeldStyle >= 0) {
-                player.headFrame.Y = player.headFrame.Height * HeldStyle;
-                player.bodyFrame.Y = player.bodyFrame.Height * HeldStyle;
-            }
             if (!player.frozen && !item.IsAir && !player.dead && item.type > ItemID.None) {
                 if (player.gravDir < 0) {
                     offsetRot = MathHelper.Pi;
