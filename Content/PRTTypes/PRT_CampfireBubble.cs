@@ -1,4 +1,4 @@
-using InnoVault.PRT;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         }
 
         public override void SetProperty() {
-            PRTDrawMode = PRTDrawModeEnum.AlphaBlend;
+            PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
             if (Lifetime <= 0) {
                 Lifetime = Main.rand.Next(20, 35);
             }

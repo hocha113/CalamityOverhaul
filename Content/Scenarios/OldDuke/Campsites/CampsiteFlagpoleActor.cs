@@ -1,4 +1,4 @@
-using InnoVault.Actors;
+﻿using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Width = 60;
             Height = 160;
             DrawExtendMode = 200;
-            DrawLayer = ActorDrawLayer.Default;
+            DrawLayer = ActorDrawLayer.BeforePlayers;
             swayTimer = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 

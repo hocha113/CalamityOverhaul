@@ -786,10 +786,7 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeWanderingActor: {
-		InteractHint: "[ПКМ] Говорить"
-	}
-
+	OldDukeWanderingActor.InteractHint: "[ПКМ] Говорить"
 	OldDukeCampsite.TitleText: Лагерь Старого герцога
 }
 

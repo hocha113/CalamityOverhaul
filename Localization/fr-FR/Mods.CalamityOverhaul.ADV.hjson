@@ -789,10 +789,7 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeWanderingActor: {
-		InteractHint: "[Clic droit] Parler"
-	}
-
+	OldDukeWanderingActor.InteractHint: "[Clic droit] Parler"
 	OldDukeCampsite.TitleText: Campement du Vieux Duc
 }
 

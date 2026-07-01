@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -108,10 +108,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
             //朝向只是对当前速度的派生展示，两端各自算一份即可，不需要额外联机字段
             UpdateFacing();
-
-            if (!VaultUtils.isServer) {
-                SpawnAmbientBubbles();
-            }
         }
 
         private void RunAuthorityBehavior() {
@@ -588,23 +584,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         private Vector2 GetSwimBobOffset() {
             float swimBob = MathF.Sin(SwimPhase) * 3f;
             return new Vector2(0, swimBob);
-        }
-
-        /// <summary>
-        /// 在老公爵周围生成硫磺海毒泡的氛围粒子，纯视觉，两端各自生成即可
-        /// </summary>
-        private void SpawnAmbientBubbles() {
-            bubbleSpawnTimer++;
-            if (bubbleSpawnTimer < 15) {
-                return;
-            }
-            bubbleSpawnTimer = 0;
-
-            Vector2 spawnPos = Position + new Vector2(Main.rand.NextFloat(-80f, 80f), Main.rand.NextFloat(-60f, 60f));
-            Vector2 velocity = new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-1.2f, -0.5f));
-            float scale = Main.rand.NextFloat(0.6f, 1.2f);
-
-            PRTLoader.NewParticle<PRT_ToxicBubble>(spawnPos, velocity, Color.White, scale).Configure(Main.rand.Next(60, 120));
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {

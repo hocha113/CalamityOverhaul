@@ -789,10 +789,7 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeWanderingActor: {
-		InteractHint: "[Botao Direito] Falar"
-	}
-
+	OldDukeWanderingActor.InteractHint: "[Botao Direito] Falar"
 	OldDukeCampsite.TitleText: Acampamento do Velho Duque
 }
 

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
+﻿using CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.PRT;
@@ -36,7 +36,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Width = 46;
             Height = 48;
             DrawExtendMode = 200;
-            DrawLayer = ActorDrawLayer.Default;
+            DrawLayer = ActorDrawLayer.AfterTiles;
 
             glowTimer = Main.rand.NextFloat(MathHelper.TwoPi);
             bouncePhase = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -127,7 +127,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         private void SpawnBoilBubble() {
             Vector2 spawnPos = Position + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-8f, 0f));
             Vector2 velocity = new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-0.8f, -0.4f));
-            float scale = Main.rand.NextFloat(0.3f, 0.6f);
+            float scale = Main.rand.NextFloat(0.1f, 0.2f);
 
             PRTLoader.NewParticle<PRT_CampfireBubble>(spawnPos, velocity, Color.White, scale).Configure(Main.rand.Next(20, 35));
         }
