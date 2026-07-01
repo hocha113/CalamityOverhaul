@@ -1,62 +1,24 @@
-﻿using System;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.Actors;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
-    /// <summary>老公爵实体类</summary>
-    internal class OldDukeEntity
+    /// <summary>
+    /// 老公爵营地里游荡的观赏性实体：位置/移动由服务端(或单人)权威决策，
+    /// 客户端仅做视觉预测与外观绘制，避免多人下各端各走各的
+    /// </summary>
+    internal class OldDukeWanderingActor : Actor, ILocalizedModType
     {
-        //位置与速度
-        public Vector2 Position;
-        public Vector2 Velocity;
-
-        //朝向
-        public bool FacingLeft;
-
-        //动画相位
-        public float SwimPhase;
-
-        public float Sengs;
-
-        //移动目标
-        private Vector2 currentTarget;
-        private int targetTimer;
-        private BehaviorState currentState;
-
-        //行为常量
-        private const float WanderRadius = 420f;
-        private const float MoveSpeed = 1.6f;
-        private const float MaxSpeed = 3.2f;
-        private const float PotApproachDistance = 80f;
-        private const float IdleRadius = 280f;
-
-        //行为权重
-        private int idleTimer;
-        private int potVisitCooldown;
-        private const int MinIdleTime = 180;
-        private const int MaxIdleTime = 420;
-        private const int PotVisitInterval = 600;
-
-        //营地中心缓存
-        private Vector2 campsiteCenter;
-
-        //可访问的锅列表
-        private List<Vector2> potPositions = [];
-
-        //避障相关
-        private const float TileDetectionRadius = 64f;
-        private const float TileAvoidanceForce = 2.5f;
-
-        //露天倾向相关
-        private const int OpenSkyCheckHeight = 10;
-        private const float OpenSkyPreference = 40f;
-        private int stuckInCaveTimer;
-        private const int MaxStuckTime = 180;
-        private const float EscapeUpwardForce = 0.8f;
-        private bool isEscapingCave;
-
-        public enum BehaviorState
+        private enum BehaviorState
         {
             Idle,
             Wander,
@@ -64,53 +26,108 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Dialogue
         }
 
-        public OldDukeEntity(Vector2 startPosition) {
-            Position = startPosition;
-            Velocity = Vector2.Zero;
-            campsiteCenter = startPosition;
-            SwimPhase = 0f;
+        public string LocalizationCategory => "ADV.OldDukeCampsite";
+        public static LocalizedText InteractHint;
+
+        //朝向与动画相位，纯视觉，两端各自计算即可
+        public bool FacingLeft;
+        public float SwimPhase;
+        /// <summary>
+        /// 切磋开始时的淡出透明度，由 <see cref="OldDukeCampsite.WannaToFight"/>(已联机同步)驱动，两端各自计算保持一致
+        /// </summary>
+        public float Sengs = 1f;
+
+        private float glowTimer;
+        private int bubbleSpawnTimer;
+
+        //以下字段只在服务端/单人下由权威行为逻辑读写，客户端不参与决策，只依赖Actor自带的位置同步+插值
+        private Vector2 campsiteCenter;
+        private Vector2 currentTarget;
+        private int targetTimer;
+        private BehaviorState currentState;
+        private int idleTimer;
+        private int potVisitCooldown;
+        private int stuckInCaveTimer;
+        private bool isEscapingCave;
+
+        private const float WanderRadius = 420f;
+        private const float MoveSpeed = 1.6f;
+        private const float MaxSpeed = 3.2f;
+        private const float PotApproachDistance = 80f;
+        private const float IdleRadius = 280f;
+        private const int MinIdleTime = 180;
+        private const int MaxIdleTime = 420;
+        private const int PotVisitInterval = 600;
+        private const float TileDetectionRadius = 64f;
+        private const float TileAvoidanceForce = 2.5f;
+        private const int OpenSkyCheckHeight = 10;
+        private const float OpenSkyPreference = 40f;
+        private const int MaxStuckTime = 180;
+        private const float EscapeUpwardForce = 0.8f;
+
+        public override void SetStaticDefaults() {
+            InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 对话");
+        }
+
+        public override void OnSpawn(params object[] args) {
+            Width = 100;
+            Height = 120;
+            DrawExtendMode = 400;
+            DrawLayer = ActorDrawLayer.Default;
+
+            //生成点即营地中心，两端都能从已同步的Position直接推出，不需要额外联机字段
+            campsiteCenter = Position;
+            currentTarget = Position;
             FacingLeft = Main.rand.NextBool();
             currentState = BehaviorState.Idle;
             idleTimer = Main.rand.Next(MinIdleTime, MaxIdleTime);
+            SwimPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            glowTimer = Main.rand.NextFloat(MathHelper.TwoPi);
+            Sengs = 1f;
             stuckInCaveTimer = 0;
             isEscapingCave = false;
-            SelectNewTarget();
         }
 
-        /// <summary>
-
-        /// 设置可访问的锅位置列表
-
-        /// </summary>
-        public void SetPotPositions(List<Vector2> positions) {
-            potPositions.Clear();
-            if (positions != null) {
-                potPositions.AddRange(positions);
-            }
-        }
-
-        /// <summary>
-
-        /// 更新老公爵AI
-
-        /// </summary>
-        public void Update(bool inDialogue, Vector2 dialogueTarget) {
+        public override void AI() {
             SwimPhase += 0.08f;
             if (SwimPhase > MathHelper.TwoPi) {
                 SwimPhase -= MathHelper.TwoPi;
             }
+            glowTimer += 0.03f;
+            if (glowTimer > MathHelper.TwoPi) {
+                glowTimer -= MathHelper.TwoPi;
+            }
 
-            if (inDialogue) {
-                UpdateDialogueBehavior(dialogueTarget);
+            //Sengs的渐隐渐显由已联机同步的WannaToFight驱动，两端跑同一份确定性逻辑即可保持画面一致
+            UpdateWannaToFight();
+
+            //真正"决定去哪/做什么"的逻辑只由权威端跑，客户端只吃Actor自带的Position/Velocity同步+插值
+            if (VaultUtils.isServer || VaultUtils.isSinglePlayer) {
+                RunAuthorityBehavior();
+            }
+
+            //朝向只是对当前速度的派生展示，两端各自算一份即可，不需要额外联机字段
+            UpdateFacing();
+
+            if (!VaultUtils.isServer) {
+                SpawnAmbientBubbles();
+            }
+        }
+
+        private void RunAuthorityBehavior() {
+            //等价于原先"先用速度推进位置、再对速度做阻尼"的顺序：Actor框架会在AI()返回后统一做Position += Velocity，
+            //这里提前对上一tick末的速度做阻尼，效果与原实现逐帧对齐
+            Velocity *= 0.96f;
+
+            if (OldDukeEffect.IsActive) {
+                UpdateDialogueBehavior();
             }
             else {
                 UpdateNormalBehavior();
             }
 
-            UpdateWannaToFight();
-            ApplyVelocity();
+            UpdateNearbyPots();
             ConstrainPosition();
-            UpdateFacing();
         }
 
         private void UpdateWannaToFight() {
@@ -134,14 +151,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 对话模式行为
-
-        /// </summary>
-        private void UpdateDialogueBehavior(Vector2 dialogueTarget) {
+        private void UpdateDialogueBehavior() {
             currentState = BehaviorState.Dialogue;
-            currentTarget = dialogueTarget;
+
+            //营地对话没有固定的"服务端视角"，取离营地最近的玩家作为面向目标，两端读到的都是已同步的玩家位置
+            Player target = Position.FindClosestPlayer();
+            currentTarget = target is not null ? target.Center + new Vector2(0, -200f) : Position;
 
             Vector2 toTarget = currentTarget - Position;
             float distance = toTarget.Length();
@@ -168,11 +183,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             isEscapingCave = false;
         }
 
-        /// <summary>
-
-        /// 正常模式行为
-
-        /// </summary>
         private void UpdateNormalBehavior() {
             targetTimer++;
             potVisitCooldown--;
@@ -190,9 +200,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     UpdateVisitPotBehavior();
                     break;
                 case BehaviorState.Dialogue:
-                    if (!OldDukeEffect.IsActive) {
-                        currentState = BehaviorState.Idle;
-                    }
+                    currentState = BehaviorState.Idle;
                     break;
             }
         }
@@ -219,18 +227,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 应用逃离洞穴的上浮力
-
-        /// </summary>
         private void ApplyEscapeForce() {
             float escapeIntensity = MathHelper.Clamp((stuckInCaveTimer - MaxStuckTime) / 120f, 0f, 1f);
             Vector2 upwardForce = new Vector2(0, -EscapeUpwardForce * escapeIntensity);
 
             Vector2 toCenter = campsiteCenter - Position;
-            float horizontalForce = toCenter.X * 0.02f;
-            upwardForce.X += horizontalForce;
+            upwardForce.X += toCenter.X * 0.02f;
 
             Velocity += upwardForce;
 
@@ -243,11 +245,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 寻找露天目标点
-
-        /// </summary>
         private void FindOpenSkyTarget() {
             for (int attempt = 0; attempt < 15; attempt++) {
                 float angle = -MathHelper.PiOver2 + Main.rand.NextFloat(-0.5f, 0.5f);
@@ -263,21 +260,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
+        private bool IsInCave() => !IsOpenSky(Position);
 
-        /// 检测位置是否在洞穴中
-
-        /// </summary>
-        private bool IsInCave() {
-            return !IsOpenSky(Position);
-        }
-
-        /// <summary>
-
-        /// 检测位置上方是否露天
-
-        /// </summary>
-        private bool IsOpenSky(Vector2 position) {
+        private static bool IsOpenSky(Vector2 position) {
             Point tilePos = position.ToTileCoordinates();
 
             for (int y = 0; y < OpenSkyCheckHeight; y++) {
@@ -295,11 +280,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return true;
         }
 
-        /// <summary>
-
-        /// 闲置行为
-
-        /// </summary>
         private void UpdateIdleBehavior() {
             idleTimer--;
 
@@ -323,9 +303,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
 
             if (idleTimer <= 0) {
-                if (potPositions.Count > 0 && potVisitCooldown <= 0 && Main.rand.NextBool(3) && !isEscapingCave) {
+                List<CampsitePotActor> pots = ActorLoader.GetActiveActors<CampsitePotActor>();
+                if (pots.Count > 0 && potVisitCooldown <= 0 && Main.rand.NextBool(3) && !isEscapingCave) {
                     currentState = BehaviorState.VisitPot;
-                    SelectRandomPot();
+                    SelectRandomPot(pots);
                     potVisitCooldown = PotVisitInterval;
                 }
                 else {
@@ -336,11 +317,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 游走行为
-
-        /// </summary>
         private void UpdateWanderBehavior() {
             Vector2 toTarget = currentTarget - Position;
             float distanceToTarget = toTarget.Length();
@@ -376,11 +352,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             ApplyTileAvoidance();
         }
 
-        /// <summary>
-
-        /// 访问锅的行为
-
-        /// </summary>
         private void UpdateVisitPotBehavior() {
             Vector2 toTarget = currentTarget - Position;
             float distanceToTarget = toTarget.Length();
@@ -427,11 +398,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 应用图块躲避力
-
-        /// </summary>
         private void ApplyTileAvoidance() {
             Vector2 avoidanceForce = GetTileAvoidanceForce();
             if (avoidanceForce.Length() > 0.1f) {
@@ -442,11 +408,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 计算图块躲避力
-
-        /// </summary>
         private Vector2 GetTileAvoidanceForce() {
             Vector2 totalForce = Vector2.Zero;
             int checkRadius = (int)(TileDetectionRadius / 16f);
@@ -481,17 +442,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return totalForce;
         }
 
-        /// <summary>
-
-        /// 选择新的游走目标
-
-        /// </summary>
         private void SelectNewTarget() {
             const int maxAttempts = 15;
             Vector2 bestTarget = Position;
             float bestScore = float.MinValue;
 
-            bool needOpenSky = isEscapingCave || IsInCave() && Position.Y > campsiteCenter.Y;
+            bool needOpenSky = isEscapingCave || (IsInCave() && Position.Y > campsiteCenter.Y);
 
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
                 Vector2 candidateTarget;
@@ -518,11 +474,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             currentTarget = bestTarget;
         }
 
-        /// <summary>
-
-        /// 评估目标位置的适合度
-
-        /// </summary>
         private float EvaluateTargetPosition(Vector2 targetPos, bool preferOpenSky = false) {
             float score = 100f;
             Point tilePosi = targetPos.ToTileCoordinates();
@@ -559,10 +510,8 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                     score += 60f;
                 }
             }
-            else {
-                if (preferOpenSky) {
-                    score -= 100f;
-                }
+            else if (preferOpenSky) {
+                score -= 100f;
             }
 
             if (targetPos.Y < campsiteCenter.Y) {
@@ -575,37 +524,39 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return score;
         }
 
-        /// <summary>
-
-        /// 选择随机锅作为目标
-
-        /// </summary>
-        private void SelectRandomPot() {
-            if (potPositions.Count == 0) {
+        private void SelectRandomPot(List<CampsitePotActor> pots) {
+            if (pots.Count == 0) {
                 SelectNewTarget();
                 currentState = BehaviorState.Wander;
                 return;
             }
 
-            Vector2 selectedPot = potPositions[Main.rand.Next(potPositions.Count)];
-            currentTarget = selectedPot + new Vector2(0, -60f + Main.rand.NextFloat(-20f, 20f));
+            CampsitePotActor selected = pots[Main.rand.Next(pots.Count)];
+            currentTarget = selected.Position + new Vector2(0, -60f + Main.rand.NextFloat(-20f, 20f));
         }
 
         /// <summary>
-
-        /// 应用速度并添加阻力
-
+        /// 更新附近锅的"被访问"表现状态；这两个字段标了[SyncVar]，只要权威端写入就会自动广播给客户端
         /// </summary>
-        private void ApplyVelocity() {
-            Position += Velocity;
-            Velocity *= 0.96f;
+        private void UpdateNearbyPots() {
+            bool isVisiting = currentState == BehaviorState.VisitPot;
+            List<CampsitePotActor> pots = ActorLoader.GetActiveActors<CampsitePotActor>();
+
+            foreach (CampsitePotActor pot in pots) {
+                float distance = Vector2.Distance(pot.Position, Position);
+                float targetDistance = Vector2.Distance(pot.Position, currentTarget);
+
+                if (isVisiting && targetDistance < 100f && distance < 150f) {
+                    pot.IsBeingVisited = true;
+                    float distanceFactor = 1f - MathHelper.Clamp(distance / 150f, 0f, 1f);
+                    pot.InteractionIntensity = MathHelper.Lerp(pot.InteractionIntensity, distanceFactor, 0.1f);
+                }
+                else {
+                    pot.IsBeingVisited = false;
+                }
+            }
         }
 
-        /// <summary>
-
-        /// 限制位置在营地范围内
-
-        /// </summary>
         private void ConstrainPosition() {
             Vector2 toCampsite = Position - campsiteCenter;
             float distanceFromCenter = toCampsite.Length();
@@ -621,43 +572,116 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        /// <summary>
-
-        /// 更新朝向
-
-        /// </summary>
         private void UpdateFacing() {
             if (Math.Abs(Velocity.X) > 0.2f) {
                 FacingLeft = Velocity.X < 0;
             }
         }
 
-        public BehaviorState GetCurrentState() => currentState;
-
-        public float GetSwimTilt() {
-            if (currentState == BehaviorState.Dialogue) {
-                return 0f;
-            }
-
+        private float GetSwimTilt() {
             if (Velocity.Length() > 0.5f) {
                 return MathHelper.Clamp(Velocity.Y * 0.08f, -0.15f, 0.15f);
             }
-
             return 0f;
         }
 
-        public Vector2 GetSwimBobOffset() {
+        private Vector2 GetSwimBobOffset() {
             float swimBob = MathF.Sin(SwimPhase) * 3f;
             return new Vector2(0, swimBob);
         }
 
         /// <summary>
-
-        /// 判断是否正在访问锅
-
+        /// 在老公爵周围生成硫磺海毒泡的氛围粒子，纯视觉，两端各自生成即可
         /// </summary>
-        public bool IsVisitingPot() => currentState == BehaviorState.VisitPot;
+        private void SpawnAmbientBubbles() {
+            bubbleSpawnTimer++;
+            if (bubbleSpawnTimer < 15) {
+                return;
+            }
+            bubbleSpawnTimer = 0;
 
-        public Vector2 GetCurrentTarget() => currentTarget;
+            Vector2 spawnPos = Position + new Vector2(Main.rand.NextFloat(-80f, 80f), Main.rand.NextFloat(-60f, 60f));
+            Vector2 velocity = new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-1.2f, -0.5f));
+            float scale = Main.rand.NextFloat(0.6f, 1.2f);
+
+            PRTLoader.NewParticle<PRT_ToxicBubble>(spawnPos, velocity, Color.White, scale).Configure(Main.rand.Next(60, 120));
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
+            if (OldDukeCampsite.OldDuke == null) {
+                return false;
+            }
+
+            Rectangle frame = OldDukeCampsite.GetCurrentFrame();
+            Vector2 origin = frame.Size() / 2f;
+            Vector2 screenPos = Position - Main.screenPosition;
+
+            float breathScale = 1f + MathF.Sin(glowTimer * 1.5f) * 0.01f;
+            Vector2 bobOffset = GetSwimBobOffset();
+            float swimTilt = GetSwimTilt();
+            SpriteEffects flip = FacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            //硫磺海风格底层发光
+            float glowIntensity = (MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f) * 0.4f;
+            Color glowColor = new Color(100, 200, 120) with { A = 0 };
+
+            for (int i = 0; i < 3; i++) {
+                float glowScale = breathScale * (1.2f + i * 0.1f);
+                float glowAlpha = glowIntensity * (1f - i * 0.3f);
+                spriteBatch.Draw(OldDukeCampsite.OldDuke, screenPos + bobOffset, frame,
+                    glowColor * glowAlpha * Sengs, swimTilt, origin, glowScale, flip, 0f);
+            }
+
+            spriteBatch.Draw(OldDukeCampsite.OldDuke, screenPos + bobOffset, frame,
+                Lighting.GetColor((Position / 16).ToPoint()) * Sengs, swimTilt, origin, breathScale, flip, 0f);
+
+            return false;
+        }
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
+            DrawInteractPrompt(spriteBatch);
+        }
+
+        /// <summary>
+        /// 交互提示：用柔光衬底+描边文字取代实心方框，呼应项目"拒绝方框UI"的规范
+        /// </summary>
+        private void DrawInteractPrompt(SpriteBatch sb) {
+            float alpha = OldDukeCampsite.GetInteractPromptAlpha();
+            if (alpha <= 0.01f) {
+                return;
+            }
+
+            Vector2 screenPos = Position - Main.screenPosition;
+            Vector2 textPos = screenPos + new Vector2(0, -150);
+
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            string hintText = InteractHint.Value;
+            Vector2 textSize = font.MeasureString(hintText) * 0.9f;
+
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            float pulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 3f) * 0.5f + 0.5f;
+
+            //柔光椭圆衬底，取代实心矩形背景
+            Vector2 backingScale = new Vector2((textSize.X + 50f) / glow.Width, (textSize.Y + 30f) / glow.Height);
+            Color backingColor = new Color(90, 180, 130) with { A = 0 } * (alpha * (0.3f + pulse * 0.12f));
+            sb.Draw(glow, textPos, null, backingColor, 0f, glow.Size() / 2f, backingScale, SpriteEffects.None, 0f);
+
+            //文字
+            Color textColor = new Color(200, 240, 220) * alpha;
+            Utils.DrawBorderString(sb, hintText, textPos - textSize / 2, textColor, 0.9f);
+
+            //脉动光带取代硬边框分隔线
+            float lineWidth = textSize.X * (0.7f + pulse * 0.25f);
+            Vector2 linePos = textPos + new Vector2(0, textSize.Y / 2f + 6f);
+            Color lineColor = new Color(140, 220, 160) with { A = 0 } * (alpha * 0.6f);
+            sb.Draw(glow, linePos, null, lineColor, 0f, glow.Size() / 2f, new Vector2(lineWidth / glow.Width, 4f / glow.Height), SpriteEffects.None, 0f);
+
+            //脉动箭头图标
+            string iconText = "▼";
+            Vector2 iconSize = font.MeasureString(iconText) * 0.7f;
+            Vector2 iconPos = textPos + new Vector2(0, textSize.Y / 2 + 16);
+            Utils.DrawBorderString(sb, iconText, iconPos - iconSize / 2,
+                new Color(150, 230, 180) * (alpha * pulse), 0.7f);
+        }
     }
 }

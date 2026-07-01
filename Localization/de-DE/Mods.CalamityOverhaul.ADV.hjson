@@ -789,9 +789,8 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeCampsiteRenderer: {
+	OldDukeWanderingActor: {
 		InteractHint: "[Rechtsklick] Sprechen"
-		GreetingText: Hm? Hallo …
 	}
 
 	OldDukeCampsite.TitleText: Lager des Alten Herzogs

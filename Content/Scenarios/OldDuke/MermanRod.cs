@@ -103,22 +103,12 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
             }
             //如果不在视野内，则进行搬家
             if (!inView) {
-                //先清理旧营地
+                //先清理旧营地(含旧的锅/旗杆/老公爵Actor，避免搬家后残留在原地)
+                OldDukeCampsite.ClearCampsiteAndSync();
+
+                //生成新营地，isRelocation跳过箱子重复放置
                 if (VaultUtils.isServer) {
-                    OldDukeCampsite.ClearCampsite();
-                    ModPacket packet = CWRMod.Instance.GetPacket();
-                    packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
-                    packet.Write(false);
-                    packet.Send();
-                }
-                else if (VaultUtils.isSinglePlayer) {
-                    OldDukeCampsite.ClearCampsite();
-                }
-                //设置鱼人钓搬家标记
-                OldDukeCampsiteDecoration.mermanRod = true;
-                //生成新营地
-                if (VaultUtils.isServer) {
-                    OldDukeCampsite.GenerateCampsite(PosInWorld);
+                    OldDukeCampsite.GenerateCampsite(PosInWorld, isRelocation: true);
                     //同步给客户端
                     ModPacket packet = CWRMod.Instance.GetPacket();
                     packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
@@ -127,7 +117,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
                     packet.Send();
                 }
                 else if (VaultUtils.isSinglePlayer) {
-                    OldDukeCampsite.GenerateCampsite(PosInWorld);
+                    OldDukeCampsite.GenerateCampsite(PosInWorld, isRelocation: true);
                 }
             }
         }
@@ -150,13 +140,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
         public override void OnKill() {
             //当被挖掘时，设置搬家标记
             OldDukeCampsite.MermanRodMoveback = true;
-            //如果是在多人模式中，先清理旧营地
+            //如果是在多人模式中，先清理旧营地；单人模式下延后到玩家远离营地时再清理(见ShouldGenerateCampsite)，避免营地在玩家眼前突然消失
             if (VaultUtils.isServer) {
-                OldDukeCampsite.ClearCampsite();
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
-                packet.Write(false);
-                packet.Send();
+                OldDukeCampsite.ClearCampsiteAndSync();
             }
         }
     }

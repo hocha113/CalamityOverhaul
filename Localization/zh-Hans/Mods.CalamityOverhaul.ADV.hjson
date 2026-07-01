@@ -784,9 +784,8 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeCampsiteRenderer: {
+	OldDukeWanderingActor: {
 		InteractHint: "[右键] 对话"
-		GreetingText: 嗯？你好啊...
 	}
 
 	OldDukeCampsite.TitleText: 老公爵营地

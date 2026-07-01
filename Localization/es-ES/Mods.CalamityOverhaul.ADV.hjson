@@ -784,9 +784,8 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeCampsiteRenderer: {
+	OldDukeWanderingActor: {
 		InteractHint: "[Clic derecho] Hablar"
-		GreetingText: ¿Eh? Hola...
 	}
 
 	OldDukeCampsite.TitleText: Campamento de El Viejo Duque

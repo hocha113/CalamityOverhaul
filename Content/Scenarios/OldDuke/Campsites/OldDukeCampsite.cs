@@ -1,7 +1,9 @@
 ﻿using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.OtherMods.SubWorld;
+using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -57,6 +59,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         private static bool isPlayerNearby;
         private static float interactPromptAlpha;
         private const float InteractDistance = 220f;//交互距离（像素）
+
+        //生成请求去重，避免联机下条件成立到收到回执之间逐帧刷包
+        private static bool pendingGenerationRequest;
 
         public static LocalizedText TitleText;
 
@@ -120,7 +125,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             isPlayerNearby = false;
             interactPromptAlpha = 0f;
             WannaToFight = false;
-            OldDukeCampsiteDecoration.ResetDecoration();
+            pendingGenerationRequest = false;
         }
 
         public override void OnWorldUnload() {
@@ -131,6 +136,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             if (!IsGenerated) {
                 return;
             }
+
+            //声明式补种检查：世界刚加载或搬家失败导致装饰Actor缺失时自动补回
+            OldDukeCampsiteGenerationService.EnsureCampsitePlaced();
 
             UpdateAnimation();
             CheckPlayerProximity();
@@ -158,7 +166,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             //玩家不在营地周围，这个检测是用于如果营地中途发生搬家的情况，避免在玩家视觉中发生营地搬迁
             if (MermanRodMoveback && player.DistanceSQ(CampsitePosition) > 1200 * 1200) {
                 if (VaultUtils.isSinglePlayer) {
-                    ClearCampsite();
+                    ClearCampsiteAndSync();
                 }
                 return true;
             }
@@ -209,80 +217,17 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
         /// <summary>
 
-        /// 客户端发送生成请求给服务器
+        /// 客户端发送生成请求给服务器，带去重标记避免收到回执前逐帧刷包
 
         /// </summary>
         private static void SendGenerationRequest() {
-            if (VaultUtils.isSinglePlayer) {
+            if (VaultUtils.isSinglePlayer || pendingGenerationRequest) {
                 return;
             }
+            pendingGenerationRequest = true;
             ModPacket packet = CWRMod.Instance.GetPacket();
             packet.Write((byte)CWRMessageType.OldDukeCampsiteGenerationRequest);
             packet.Send();
-        }
-
-        /// <summary>
-
-        /// 请求公爵营地装饰数据（客户端发送给服务器）
-
-        /// </summary>
-        internal static void RequestOldDukeCampsiteData() {
-            if (VaultUtils.isSinglePlayer) {
-                return;
-            }
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.HandleOldDukeCampsiteDataServer);
-            packet.Send();
-        }
-
-        /// <param name="reader"></param>
-        /// <param name="whoAmI"></param>
-        internal static void HandleOldDukeCampsiteDataServer(BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isServer) {
-                return;
-            }
-            var pots = OldDukeCampsiteDecoration.GetPotPositions();
-            ModPacket packet = CWRMod.Instance.GetPacket();
-            packet.Write((byte)CWRMessageType.HandleOldDukeCampsiteDataClient);
-            packet.Write(pots.Count);
-            for (int i = 0; i < pots.Count; i++) {
-                packet.WriteVector2(pots[i]);
-            }
-            pots = OldDukeCampsiteDecoration.GetFlagpolesPositions();
-            packet.Write(pots.Count);
-            for (int i = 0; i < pots.Count; i++) {
-                packet.WriteVector2(pots[i]);
-            }
-            packet.Send(whoAmI);
-        }
-
-        /// <param name="reader"></param>
-        /// <param name="whoAmI"></param>
-        internal static void HandleOldDukeCampsiteDataClient(BinaryReader reader, int whoAmI) {
-            if (!VaultUtils.isClient) {
-                return;
-            }
-            int potCount = reader.ReadInt32();
-            OldDukeCampsiteDecoration.pots.Clear();
-            for (int i = 0; i < potCount; i++) {
-                OldDukeCampsiteDecoration.PotData pot = new() {
-                    WorldPosition = reader.ReadVector2(),
-                    GlowTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi),
-                    BubbleTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi),
-                    SteamTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi)
-                };
-                OldDukeCampsiteDecoration.pots.Add(pot);
-            }
-            int flagpoleCount = reader.ReadInt32();
-            OldDukeCampsiteDecoration.flagpoles.Clear();
-            for (int i = 0; i < flagpoleCount; i++) {
-                OldDukeCampsiteDecoration.FlagpoleData flagpole = new() {
-                    WorldPosition = reader.ReadVector2(),
-                    SwayTimer = Main.rand.NextFloat(0f, MathHelper.TwoPi)
-                };
-                OldDukeCampsiteDecoration.flagpoles.Add(flagpole);
-            }
-            OldDukeCampsiteDecoration.decorationsPositionSet = true;
         }
 
         /// <summary>
@@ -332,6 +277,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
         /// </summary>
         internal static void ReceiveCampsiteSync(BinaryReader reader) {
+            //无论结果如何，收到一次回执就说明请求周期已经走完，允许下次再发
+            pendingGenerationRequest = false;
+
             bool wasGenerated = IsGenerated;
             IsGenerated = reader.ReadBoolean();
 
@@ -346,12 +294,10 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
         /// <summary>
 
-        /// 营地生成后的初始化操作
+        /// 营地生成后的表现（装饰/老公爵Actor由生成服务负责放置，这里只负责客户端听觉反馈）
 
         /// </summary>
         private static void OnCampsiteGenerated() {
-            ModContent.GetInstance<OldDukeCampsiteRenderer>().SetEntityInitialized(false);
-            //播放生成音效
             SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.5f, Pitch = -0.2f }, CampsitePosition);
         }
 
@@ -363,9 +309,9 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
                 return;
             }
             var playePos = CampsitePosition + new Vector2(0, -50);
-            var potPoss = OldDukeCampsiteDecoration.GetPotPositions();
-            if (potPoss.Count > 0) {
-                playePos = potPoss[Main.rand.Next(potPoss.Count)] + new Vector2(0, -16);
+            List<CampsitePotActor> pots = ActorLoader.GetActiveActors<CampsitePotActor>();
+            if (pots.Count > 0) {
+                playePos = pots[Main.rand.Next(pots.Count)].Position + new Vector2(0, -16);
             }
             player.Teleport(playePos, 999);
             CampsiteInteractionDialogue.GiveTeaOnStart = true;
@@ -457,9 +403,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             float distance = Vector2.Distance(player.Center, CampsitePosition);
             bool wasNearby = isPlayerNearby;
             isPlayerNearby = distance < InteractDistance;
-            var entity = ModContent.GetInstance<OldDukeCampsiteRenderer>().oldDukeEntity;
-            if (entity is not null && entity.Position.To(player.Center).Length() < InteractDistance) {
-                isPlayerNearby = true;
+            foreach (OldDukeWanderingActor entity in ActorLoader.GetActiveActors<OldDukeWanderingActor>()) {
+                if (entity.Position.To(player.Center).Length() < InteractDistance) {
+                    isPlayerNearby = true;
+                    break;
+                }
             }
 
             //交互提示淡入淡出
@@ -487,7 +435,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         /// 生成营地
 
         /// </summary>
-        public static void GenerateCampsite(Vector2 position) {
+        public static void GenerateCampsite(Vector2 position, bool isRelocation = false) {
             if (IsGenerated) {
                 return;
             }
@@ -495,29 +443,27 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             CampsitePosition = position;
             IsGenerated = true;
 
-            //设置装饰物品位置
-            OldDukeCampsiteDecoration.SetupPotPosition(position);
+            //放置锅/旗杆/老公爵Actor；isRelocation时跳过箱子重复放置(鱼人钓搬家场景)
+            OldDukeCampsiteGenerationService.PlaceCampsite(position, isRelocation);
 
-            //调整营地位置的Y值，使其更合理
-            var list = OldDukeCampsiteDecoration.GetPotPositions();
-            if (list.Count > 0) {
+            //调整营地位置的Y值，使其更贴近实际摆放的锅群
+            List<CampsitePotActor> pots = ActorLoader.GetActiveActors<CampsitePotActor>();
+            if (pots.Count > 0) {
                 float y = 0;
-                foreach (var value in list) {
-                    y += value.Y;
+                foreach (CampsitePotActor pot in pots) {
+                    y += pot.Position.Y;
                 }
-                y /= list.Count;
+                y /= pots.Count;
                 //将营地Y位置限制在锅位置的上下120像素范围内
                 CampsitePosition = new Vector2(CampsitePosition.X, MathHelper.Clamp(CampsitePosition.Y, y - 120, y + 120));
             }
 
-            if (VaultUtils.isClient) {
-                OnCampsiteGenerated();
-            }
+            OnCampsiteGenerated();
         }
 
         /// <summary>
 
-        /// 清除营地
+        /// 清除营地的本地/存档状态(不含Actor清理，世界卸载等收尾路径调用)
 
         /// </summary>
         public static void ClearCampsite() {
@@ -527,10 +473,28 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             animationTimer = 0;
             isPlayerNearby = false;
             interactPromptAlpha = 0f;
+            pendingGenerationRequest = false;
             CampsitePosition = Vector2.Zero;
+        }
 
-            //重置装饰状态
-            OldDukeCampsiteDecoration.ResetDecoration();
+        /// <summary>
+
+        /// 清除营地并同步给所有客户端：状态重置+销毁装饰/老公爵Actor+广播，统一入口供搬家/剧情重置等场景调用
+
+        /// </summary>
+        public static void ClearCampsiteAndSync() {
+            if (VaultUtils.isServer) {
+                ClearCampsite();
+                OldDukeCampsiteGenerationService.ClearCampsiteActors();
+                ModPacket packet = CWRMod.Instance.GetPacket();
+                packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
+                packet.Write(false);
+                packet.Send();
+            }
+            else if (VaultUtils.isSinglePlayer) {
+                ClearCampsite();
+                OldDukeCampsiteGenerationService.ClearCampsiteActors();
+            }
         }
 
         public static Rectangle GetCurrentFrame() {

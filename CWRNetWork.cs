@@ -35,11 +35,7 @@ namespace CalamityOverhaul
         EbnTag,
         OldDukeEffect,
         OldDukeCampsiteGenerationRequest,
-        OldDukeCampsiteDecorationsSync,
         OldDukeCampsiteSync,
-        RequestOldDukeCampsiteData,
-        HandleOldDukeCampsiteDataServer,
-        HandleOldDukeCampsiteDataClient,
         StartCampsiteFindMeScenario,
         ResurrectionRate,
         DespawnDestroyer,
@@ -78,15 +74,6 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.OldDukeCampsiteSync) {
                 OldDukeCampsite.ReceiveCampsiteSync(reader);
-            }
-            else if (type == CWRMessageType.HandleOldDukeCampsiteDataServer) {
-                OldDukeCampsite.HandleOldDukeCampsiteDataServer(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.HandleOldDukeCampsiteDataClient) {
-                OldDukeCampsite.HandleOldDukeCampsiteDataClient(reader, whoAmI);
-            }
-            else if (type == CWRMessageType.OldDukeCampsiteDecorationsSync) {
-                OldDukeCampsiteDecoration.ReceiveDecorationsSync(reader);
             }
             else if (type == CWRMessageType.StartCampsiteFindMeScenario) {
                 OldDukeTriggerService.HandleStartCampsiteFindMeScenario(reader, whoAmI);

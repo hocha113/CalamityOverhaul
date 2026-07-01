@@ -65,17 +65,8 @@ namespace CalamityOverhaul.Content.Items.Tools
                 }
             }
 
-            //先清理旧营地
-            if (VaultUtils.isServer) {
-                OldDukeCampsite.ClearCampsite();
-                ModPacket packet = CWRMod.Instance.GetPacket();
-                packet.Write((byte)CWRMessageType.OldDukeCampsiteSync);
-                packet.Write(false);
-                packet.Send();
-            }
-            else if (VaultUtils.isSinglePlayer) {
-                OldDukeCampsite.ClearCampsite();
-            }
+            //先清理旧营地(含锅/旗杆/老公爵Actor)
+            OldDukeCampsite.ClearCampsiteAndSync();
 
             return resetFieldCount;
         }

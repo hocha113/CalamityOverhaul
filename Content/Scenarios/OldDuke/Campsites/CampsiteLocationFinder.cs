@@ -7,6 +7,11 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
     /// <summary>营地位置查找器</summary>
     internal static class CampsiteLocationFinder
     {
+        //评分足够高时提前结束扫描；理论满分约350(100+100+0+150)，300已代表贴近硫磺海且干燥的优质点位
+        private const int GoodEnoughScore = 300;
+        //纵向采样步长；地面判定/绘制本就以16像素为最小单位，逐行(step=1)扫描远超实际需要的精度
+        private const int SearchStepY = 3;
+
         /// <summary>
         /// 寻找最佳营地位置
         /// </summary>
@@ -162,7 +167,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
         /// <summary>
 
-        /// 使用评分系统搜索最佳位置
+        /// 使用评分系统搜索最佳位置，命中足够高分的位置时提前结束，避免把整个区间扫完
 
         /// </summary>
         private static Vector2? SearchWithScoring(int startX, int endX, int startY, int endY, int stepX) {
@@ -170,13 +175,19 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             int bestScore = -1;
 
             for (int searchX = startX; searchX < endX; searchX += stepX) {
-                for (int y = startY; y < endY; y++) {
+                for (int y = startY; y < endY; y += SearchStepY) {
                     Vector2? candidatePos = ValidateLocation(searchX, y);
-                    if (candidatePos.HasValue) {
-                        int score = EvaluateLocation(searchX, y);
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestPosition = candidatePos;
+                    if (!candidatePos.HasValue) {
+                        continue;
+                    }
+
+                    int score = EvaluateLocation(searchX, y);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestPosition = candidatePos;
+
+                        if (bestScore >= GoodEnoughScore) {
+                            return bestPosition;
                         }
                     }
                 }

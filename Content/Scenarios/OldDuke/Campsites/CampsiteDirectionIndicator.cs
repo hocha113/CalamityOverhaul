@@ -302,35 +302,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 
             Vector2 distanceSize = font.MeasureString(distanceText) * 0.7f;
             Vector2 locationSize = font.MeasureString(locationText) * 0.75f;
+            Vector2 locationTextPos = textPos + new Vector2(0, distanceSize.Y + 4);
 
-            //绘制背景
-            float padding = 8f;
-            Rectangle distanceBg = new Rectangle(
-                (int)(textPos.X - padding),
-                (int)(textPos.Y - padding),
-                (int)(distanceSize.X + padding * 2),
-                (int)(distanceSize.Y + padding * 2)
-            );
-            Rectangle locationBg = new Rectangle(
-                (int)(textPos.X - padding),
-                (int)(textPos.Y - padding + distanceSize.Y + 4),
-                (int)(locationSize.X + padding * 2),
-                (int)(locationSize.Y + padding * 2)
-            );
+            //柔光衬底取代实心方框背景，呼应项目"拒绝方框UI"的规范
+            Texture2D glow = CWRAsset.SoftGlow.Value;
+            float glowPulse = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f) * 0.15f + 0.85f;
+            Color backingColor = new Color(70, 110, 40) with { A = 0 } * (alpha * 0.45f * glowPulse);
 
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //硫磺海风格背景
-            Color bgColor = new Color(12, 18, 8) * (alpha * 0.85f);
-            Color borderColor = new Color(100, 140, 50) * (alpha * 0.75f);
-
-            //距离背景
-            spriteBatch.Draw(pixel, distanceBg, new Rectangle(0, 0, 1, 1), bgColor);
-            DrawRectBorder(spriteBatch, distanceBg, borderColor, 2);
-
-            //位置背景
-            spriteBatch.Draw(pixel, locationBg, new Rectangle(0, 0, 1, 1), bgColor);
-            DrawRectBorder(spriteBatch, locationBg, borderColor, 2);
+            DrawGlowBacking(spriteBatch, glow, textPos, distanceSize, backingColor);
+            DrawGlowBacking(spriteBatch, glow, locationTextPos, locationSize, backingColor);
 
             //绘制文字
             Color textColor = new Color(200, 220, 150) * alpha;
@@ -345,7 +325,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Utils.DrawBorderString(spriteBatch, distanceText, textPos, textColor, 0.7f);
 
             //位置文字
-            Vector2 locationTextPos = textPos + new Vector2(0, distanceSize.Y + 4);
             for (int i = 0; i < 4; i++) {
                 float angle = MathHelper.TwoPi * i / 4f;
                 Vector2 offset = angle.ToRotationVector2() * 1.5f;
@@ -354,17 +333,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             Utils.DrawBorderString(spriteBatch, locationText, locationTextPos, textColor, 0.75f);
         }
 
-        private static void DrawRectBorder(SpriteBatch spriteBatch, Rectangle rect, Color color, int thickness) {
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-
-            //上
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, rect.Width, thickness), new Rectangle(0, 0, 1, 1), color);
-            //下
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Bottom - thickness, rect.Width, thickness), new Rectangle(0, 0, 1, 1), color);
-            //左
-            spriteBatch.Draw(pixel, new Rectangle(rect.X, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
-            //右
-            spriteBatch.Draw(pixel, new Rectangle(rect.Right - thickness, rect.Y, thickness, rect.Height), new Rectangle(0, 0, 1, 1), color);
+        /// <summary>
+        /// 在文字左上角对应的行范围内画一片柔光椭圆衬底，代替硬边框方框
+        /// </summary>
+        private static void DrawGlowBacking(SpriteBatch spriteBatch, Texture2D glow, Vector2 textTopLeft, Vector2 textSize, Color color) {
+            Vector2 center = textTopLeft + textSize / 2f;
+            Vector2 scale = new Vector2((textSize.X + 36f) / glow.Width, (textSize.Y + 20f) / glow.Height);
+            spriteBatch.Draw(glow, center, null, color, 0f, glow.Size() / 2f, scale, SpriteEffects.None, 0f);
         }
 
         private static void DrawToxicParticles(SpriteBatch spriteBatch, Vector2 position, float rotation, float alpha) {

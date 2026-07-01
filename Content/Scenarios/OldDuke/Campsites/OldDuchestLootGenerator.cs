@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Utilities;
 
 namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
 {
     /// <summary>老箱子战利品生成器</summary>
     internal static class OldDuchestLootGenerator
     {
-        private static readonly Random rand = new Random();
-
         /// <summary>
 
         /// 6分钟 = 360秒 = 21600帧
@@ -25,6 +23,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         public static List<Item> GenerateDailyLoot() {
 
             List<Item> loot = [];
+            UnifiedRandom rand = Main.rand;
 
             //钱币奖励
             AddCoinReward(loot, rand);
@@ -54,7 +53,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             return loot;
         }
 
-        private static void AddCoinReward(List<Item> loot, Random random) {
+        private static void AddCoinReward(List<Item> loot, UnifiedRandom random) {
             int coinAmount = random.Next(80, 300);
             int platinumCoins = coinAmount / 100;
             int goldCoins = coinAmount % 100 / 10;
@@ -82,7 +81,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        private static void AddOldDukeDrops(List<Item> loot, Random random) {
+        private static void AddOldDukeDrops(List<Item> loot, UnifiedRandom random) {
             HashSet<int> oldDukeDrops = VaultUtils.GetNPCDrops(CWRID.NPC_OldDuke, true);
             List<int> qualityDrops = [];
 
@@ -126,7 +125,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        private static void AddOceanThemeItems(List<Item> loot, Random random) {
+        private static void AddOceanThemeItems(List<Item> loot, UnifiedRandom random) {
             int[] basicOceanItems = [
                 ItemID.Coral,
                 ItemID.Starfish,
@@ -148,7 +147,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        private static void AddPotionsAndConsumables(List<Item> loot, Random random) {
+        private static void AddPotionsAndConsumables(List<Item> loot, UnifiedRandom random) {
             int[] usefulPotions = [
                 ItemID.GreaterHealingPotion,
                 ItemID.GreaterManaPotion,
@@ -189,7 +188,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        private static void AddRareMaterials(List<Item> loot, Random random) {
+        private static void AddRareMaterials(List<Item> loot, UnifiedRandom random) {
             int[] rareMaterials = [
                 ItemID.SoulofLight,
                 ItemID.SoulofNight,
@@ -215,7 +214,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
             }
         }
 
-        private static void AddSpecialWeapons(List<Item> loot, Random random) {
+        private static void AddSpecialWeapons(List<Item> loot, UnifiedRandom random) {
             int[] specialWeapons = [
                 ItemID.FlowerofFrost,
                 ItemID.Uzi,

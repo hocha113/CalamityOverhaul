@@ -789,9 +789,8 @@ FirstMetOldDuke: {
 }
 
 OldDukeCampsite: {
-	OldDukeCampsiteRenderer: {
+	OldDukeWanderingActor: {
 		InteractHint: "[Right Click] Talk"
-		GreetingText: Hm? Hello there...
 	}
 
 	OldDukeCampsite.TitleText: Old Duke's Campsite
