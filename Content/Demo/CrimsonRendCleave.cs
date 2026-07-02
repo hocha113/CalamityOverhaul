@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.Demo
                 Mode = 1f, Rot = BladeAngle, Span = 0f, Thick = 0.34f,
                 HalfX = 235f * s, HalfY = 128f * s, Flip = Flip,
                 Opacity = 0.95f, FrontGlow = 2.7f, OffsetAlongAim = 0f, Seed = Projectile.whoAmI * 0.173f % 1f,
-                TailErode = 0.55f, FlashPower = 1f, FarDim = 0f,
+                TailErode = 0.55f, FlashPower = 0.75f, FarDim = 0f,
             };
         }
 

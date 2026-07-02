@@ -191,8 +191,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float tipFeather = smoothstep(0.0, 0.05, uc) * smoothstep(1.0, 0.952, uc);
 
     float alpha = aSharp * aDark * tipFeather * reveal * survive;
-    //笔刷透密调制：白闪帧抬升下限让 pop 结实
-    alpha *= lerp(saturate(0.42 + streak * 0.95), 1.0, uFlash * 0.8);
+    //笔刷透密调制：白闪帧轻抬下限即可，避免整面被拉到全不透明糊掉笔触细节
+    alpha *= lerp(saturate(0.42 + streak * 0.95), 1.0, uFlash * 0.40);
     alpha = saturate(alpha) * uOpacity * passMul;
 
     //---- 色带（沿 h：剃刀线 → 高光渐变 → 主体 → 暗描边） ----
@@ -206,18 +206,20 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += uColHot * razor * 1.15 * (1.0 - uColorShift * 0.65);
 
     //笔刷高光 + 燃边 + 前缘 + 全形白闪
+    //白闪只做适度提亮增益（不整面覆盖成纯白），笔刷streak/色带在闪光期依然可辨——
+    //这是"干脆感"与"细节质感"的平衡点：闪光是"提亮一拍"而不是"擦掉重画"
     col += uColBright * streak * (1.0 - h * 0.55) * 0.50;
     col += float3(1.25, 0.42, 0.18) * burn * 2.3;
     col += uColHot * front * 2.6;
-    col = lerp(col, uColHot * 1.18, uFlash);
+    col = lerp(col, col + uColHot * 0.55, saturate(uFlash));
 
     //远半侧压暗（空间纵深线索），略偏冷偏暗
     col *= dimMul;
 
     //剃刀线/前缘/白闪在 alpha 之外再给增益 → 半加法辉光
-    float glowA = saturate(alpha + (front * 0.55 + burn * 0.25 + razor * 0.18 + uFlash * 0.30)
+    float glowA = saturate(alpha + (front * 0.55 + burn * 0.25 + razor * 0.18 + uFlash * 0.16)
         * uOpacity * reveal * tipFeather * survive * passMul);
-    return float4(col * alpha + uColHot * (front * 0.35 + uFlash * 0.15) * uOpacity * tipFeather * reveal * passMul * dimMul, glowA);
+    return float4(col * alpha + uColHot * (front * 0.35 + uFlash * 0.08) * uOpacity * tipFeather * reveal * passMul * dimMul, glowA);
 }
 
 technique Technique1

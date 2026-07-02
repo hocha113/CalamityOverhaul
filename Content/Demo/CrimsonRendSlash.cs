@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.Demo
         private int timer;
         private int hitstopHold;
         private bool impactFired;
-        private int finisherImpactFrame;
+        private int impactFrame;
         private Rectangle[] speedLineRects;
         private float[] speedLineOffsets;
 
@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Demo
                 Mode = 0f, Rot = a + f * 0.15f, Span = 3.60f, Thick = 0.30f,
                 HalfX = 150f * s, HalfY = 208f * s, Flip = f,
                 Opacity = 0.92f, FrontGlow = 2.2f, OffsetAlongAim = 30f * s, Seed = 0.47f,
-                TailErode = 0.50f, FlashPower = 0.8f, FarDim = 0f,
+                TailErode = 0.50f, FlashPower = 0.62f, FarDim = 0f,
             };
 
             //2 反手上撩（草图定义）：同一正面纵切平面反向——自脚下回拉撩至头顶收势，
@@ -129,7 +129,7 @@ namespace CalamityOverhaul.Content.Demo
                 Mode = 0f, Rot = a - f * 0.10f, Span = 3.55f, Thick = 0.33f,
                 HalfX = 172f * s, HalfY = 238f * s, Flip = -f,
                 Opacity = 0.96f, FrontGlow = 2.4f, OffsetAlongAim = 44f * s, Seed = 0.71f,
-                TailErode = 0.45f, FlashPower = 0.9f, FarDim = 0f,
+                TailErode = 0.45f, FlashPower = 0.68f, FarDim = 0f,
             };
 
             //3 月牙终结：满弧厚重主月牙（力量核心），正面自上而下的重裂（"裂空"本义），
@@ -140,10 +140,8 @@ namespace CalamityOverhaul.Content.Demo
                 Mode = 0f, Rot = a, Span = 3.55f, Thick = 0.36f,
                 HalfX = 245f * s, HalfY = 245f * s, Flip = f,
                 Opacity = 1f, FrontGlow = 2.6f, OffsetAlongAim = 0f, Seed = 0.88f,
-                TailErode = 0.42f, FlashPower = 1f, FarDim = 0f,
+                TailErode = 0.42f, FlashPower = 0.82f, FarDim = 0f,
             };
-
-            finisherImpactFrame = slashes[FinisherIndex].Birth + slashes[FinisherIndex].SweepFrames;
         }
 
         private Vector2 GetCenter(in SlashDef d) => Projectile.Center + AimDir * d.OffsetAlongAim;
@@ -202,14 +200,13 @@ namespace CalamityOverhaul.Content.Demo
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.2f, Volume = 0.95f }, Projectile.Center);
             }
 
-            //各段收势确认：力度递增的小节拍
-            TryPing(0, flash: 0.15f, sparks: 5, pitch: 0.65f, hitFlash: false);
-            TryPing(1, flash: 0.22f, sparks: 7, pitch: 0.5f, hitFlash: false);
-            TryPing(2, flash: 0.30f, sparks: 10, pitch: 0.75f, hitFlash: true);
+            //各段收势确认：力度递增的小节拍（挥空也会有，这是"刀光美术"本身的呼吸，
+            //不算"打击效果"）
+            TryPing(0, flash: 0.05f, sparks: 5, pitch: 0.65f, hitFlash: false);
+            TryPing(1, flash: 0.02f, sparks: 7, pitch: 0.5f, hitFlash: false);
+            TryPing(2, flash: 0.01f, sparks: 10, pitch: 0.75f, hitFlash: true);
 
-            if (!impactFired && timer >= finisherImpactFrame) {
-                DoFinisherImpact();
-            }
+            //终结满弧过期未命中：不再补放大爆点，安静收场（避免挥空也顿帧炸屏）
         }
 
         /// <summary>第 index 段扫掠完成瞬间的轻确认（白闪/火花/音效），不顿帧</summary>
@@ -239,16 +236,18 @@ namespace CalamityOverhaul.Content.Demo
             }
         }
 
-        /// <summary>终结冲击帧：世界顿帧 + 白闪 + 爆点全层（无震屏/压暗/变焦）</summary>
+        /// <summary>终结冲击帧：仅在实际命中目标时触发（<see cref="OnHitNPC"/> 内判定）——
+        /// 世界顿帧 + 白闪 + 爆点全层（无震屏/压暗/变焦）；挥空不触发，安静收场</summary>
         private void DoFinisherImpact() {
             impactFired = true;
+            impactFrame = timer;
             hitstopHold = HitstopFrames;
             CWRWorld.TimeFrozenTick = HitstopFrames;
 
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.35f, Volume = 0.9f }, ImpactWorldPos);
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.55f, Volume = 0.45f }, ImpactWorldPos);
 
-            CrimsonImpactFX.PushImpact(ImpactWorldPos, 0.5f);
+            CrimsonImpactFX.PushImpact(ImpactWorldPos, 0.36f);
 
             if (Main.dedServ) {
                 return;
@@ -284,7 +283,7 @@ namespace CalamityOverhaul.Content.Demo
         private void PushScreenState() {
             float bloom = 0.28f;
             if (impactFired) {
-                float bp = MathHelper.Clamp((timer - finisherImpactFrame) / (float)BurstFadeFrames, 0f, 1f);
+                float bp = MathHelper.Clamp((timer - impactFrame) / (float)BurstFadeFrames, 0f, 1f);
                 bloom += 0.38f * (1f - bp) * (1f - bp);
             }
             if (timer > TotalLifetime - 14) {
@@ -396,6 +395,16 @@ namespace CalamityOverhaul.Content.Demo
 
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, Volume = 0.75f }, target.Center);
 
+            //终结斩确认命中才触发大型冲击演出（世界顿帧/全屏白闪/爆点全层）——
+            //挥空不再触发，避免"无论如何都会炸屏"
+            if (slashes != null && !impactFired) {
+                ref readonly SlashDef fin = ref slashes[FinisherIndex];
+                int lt = timer - fin.Birth;
+                if (lt >= fin.DamageStart && lt <= fin.DamageEnd) {
+                    DoFinisherImpact();
+                }
+            }
+
             if (Main.dedServ) {
                 return;
             }
@@ -440,6 +449,7 @@ namespace CalamityOverhaul.Content.Demo
             if (Main.dedServ || slashes == null) {
                 return;
             }
+
             GraphicsDevice device = Main.instance.GraphicsDevice;
             if (!CSR.BeginDraw(device, out Effect fx, out var pb, out var pr, out var pd)) {
                 return;
@@ -460,8 +470,8 @@ namespace CalamityOverhaul.Content.Demo
 
         /// <summary>终结爆点 + 余韵光球，自管加色批次</summary>
         private void DrawAdditiveLayers() {
-            bool burstActive = impactFired && timer - finisherImpactFrame < BurstFadeFrames;
-            bool afterglowActive = impactFired && timer - finisherImpactFrame is >= 26 and < 46;
+            bool burstActive = impactFired && timer - impactFrame < BurstFadeFrames;
+            bool afterglowActive = impactFired && timer - impactFrame is >= 26 and < 46;
             if (!burstActive && !afterglowActive) {
                 return;
             }
@@ -476,7 +486,7 @@ namespace CalamityOverhaul.Content.Demo
 
             //余韵：暗紫红光球内爆收束（参考序列尾帧）
             if (afterglowActive && DemoAssets.StarFlare01?.Value is Texture2D orb) {
-                float t = (timer - finisherImpactFrame - 26) / 20f;
+                float t = (timer - impactFrame - 26) / 20f;
                 float oA = MathF.Sin(t * MathF.PI) * 0.42f;
                 float oS = MathHelper.Lerp(0.9f, 0.18f, CSR.EaseOutCubic(t)) * SizeMul;
                 Color oc = Color.Lerp(new Color(210, 70, 130), new Color(70, 24, 66), t);
@@ -489,7 +499,7 @@ namespace CalamityOverhaul.Content.Demo
 
         /// <summary>终结爆点全 layer：星爆核心/放射尖刺/十字闪/扩散环/撕裂形/速度线</summary>
         private void DrawImpactBurst(SpriteBatch sb) {
-            float bt = MathHelper.Clamp(timer - finisherImpactFrame, 0f, BurstFadeFrames);
+            float bt = MathHelper.Clamp(timer - impactFrame, 0f, BurstFadeFrames);
             float bp = bt / BurstFadeFrames;
             if (bp >= 1f) {
                 return;
@@ -501,29 +511,29 @@ namespace CalamityOverhaul.Content.Demo
             float easeOut = 1f - MathF.Pow(inv, 3f);
             float seedRot = Projectile.whoAmI * 1.37f;
 
-            //白热星爆核心：前3帧过曝，随后急剧收缩
+            //白热核心：峰值收紧到 0.7，避免整块纯白糊住刀光笔触细节，随后急剧收缩
             if (DemoAssets.StarFlare02?.Value is Texture2D flare) {
-                float coreA = MathF.Pow(inv, 2.0f);
-                float coreS = (1.0f + easeOut * 0.75f) * SizeMul;
-                sb.Draw(flare, impact, null, Color.White * coreA, seedRot
+                float coreA = MathF.Pow(inv, 2.0f) * 0.70f;
+                float coreS = (0.85f + easeOut * 0.65f) * SizeMul;
+                sb.Draw(flare, impact, null, new Color(255, 244, 232) * coreA, seedRot
                     , flare.Size() * 0.5f, coreS, SpriteEffects.None, 0);
-                sb.Draw(flare, impact, null, new Color(255, 120, 80) * (coreA * 0.55f), -seedRot * 0.6f
+                sb.Draw(flare, impact, null, new Color(255, 120, 80) * (coreA * 0.5f), -seedRot * 0.6f
                     , flare.Size() * 0.5f, coreS * 1.3f, SpriteEffects.None, 0);
             }
 
             //放射尖刺
             if (DemoAssets.RayBurst01?.Value is Texture2D rays) {
-                float rayA = MathF.Pow(inv, 1.8f);
-                float rayS = (1.25f + easeOut * 1.2f) * SizeMul;
+                float rayA = MathF.Pow(inv, 1.8f) * 0.78f;
+                float rayS = (1.1f + easeOut * 1.0f) * SizeMul;
                 sb.Draw(rays, impact, null, new Color(255, 190, 160) * rayA, seedRot * 0.4f
                     , rays.Size() * 0.5f, rayS, SpriteEffects.None, 0);
             }
 
             //十字长闪沿瞄准方向
             if (DemoAssets.RayCross01?.Value is Texture2D cross) {
-                float cA = MathF.Pow(inv, 2.4f);
+                float cA = MathF.Pow(inv, 2.4f) * 0.82f;
                 sb.Draw(cross, impact, null, new Color(255, 230, 215) * cA, AimAngle
-                    , cross.Size() * 0.5f, new Vector2(2.5f, 1.15f) * easeOut * SizeMul, SpriteEffects.None, 0);
+                    , cross.Size() * 0.5f, new Vector2(2.2f, 1.0f) * easeOut * SizeMul, SpriteEffects.None, 0);
             }
 
             //扩散环
@@ -583,7 +593,7 @@ namespace CalamityOverhaul.Content.Demo
         /// 注意：AlphaBlend 压暗必须用 alpha 通道承载形状的贴图（SmokeSheet01），
         /// 黑底不透明的亮度型贴图会把整个 quad 糊成暗色方框</summary>
         private void DrawCollapseCore() {
-            float bt = timer - finisherImpactFrame;
+            float bt = timer - impactFrame;
             if (!impactFired || bt < 2f || bt > 8f) {
                 return;
             }
