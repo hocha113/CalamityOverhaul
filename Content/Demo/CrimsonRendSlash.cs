@@ -51,6 +51,19 @@ namespace CalamityOverhaul.Content.Demo
             public float FrontGlow;
             public float OffsetAlongAim; //中心沿瞄准方向偏移
             public float Seed;
+            public float TailErode;      //彗星尾定向蒸发强度上限（0=不蒸发）
+            public float FlashPower;     //全形白闪帧强度
+        }
+
+        /// <summary>子刀光单帧动画状态（几何动画包：过冲/外扩/厚度呼吸/惯性收势/尾蒸发/白闪/奔涌）</summary>
+        private struct SlashAnim
+        {
+            public float ScaleMul;   //出生爆发+过冲+缓慢外扩
+            public float RotOffset;  //扫掠后惯性收势旋转
+            public float ThickMul;   //薄入→冲击帧最厚→衰减
+            public float TailErode;  //彗星尾蒸发进度
+            public float Flash;      //全形白闪
+            public float FlowPhase;  //能量沿刃奔涌相位
         }
 
         //==== 时间轴常量 ====
@@ -135,13 +148,14 @@ namespace CalamityOverhaul.Content.Demo
 
             slashes = new SlashDef[4];
 
-            //0 环月回旋：椭圆全周，薄且快，开场铺垫
+            //0 环月回旋：椭圆全周，薄且快，尾部高蒸发 → 读作"旋转的运动拖尾"
             slashes[0] = new SlashDef {
                 Birth = 0, SweepFrames = 6, Life = 26, ErodeStart = 8, ErodeFrames = 16,
                 ColorShiftDelay = 6, ColorShiftFrames = 12, DamageStart = 2, DamageEnd = 8,
                 Mode = 0f, Rot = a - f * 2.95f, Span = 5.90f, Thick = 0.20f,
                 HalfX = 170f * s, HalfY = 78f * s, Flip = f,
                 Opacity = 0.80f, FrontGlow = 1.7f, OffsetAlongAim = 0f, Seed = 0.13f,
+                TailErode = 0.85f, FlashPower = 0.45f,
             };
 
             //1/2 交叉裂斩：两道白热直线斩，前移交叉于打击区
@@ -151,6 +165,7 @@ namespace CalamityOverhaul.Content.Demo
                 Mode = 1f, Rot = a - 0.52f * f, Span = 0f, Thick = 0.34f,
                 HalfX = 235f * s, HalfY = 128f * s, Flip = f,
                 Opacity = 0.95f, FrontGlow = 2.7f, OffsetAlongAim = 120f * s, Seed = 0.47f,
+                TailErode = 0.55f, FlashPower = 1f,
             };
             slashes[2] = slashes[1] with {
                 Birth = 14, Rot = a + 0.52f * f, Flip = -f, Seed = 0.71f,
@@ -163,6 +178,7 @@ namespace CalamityOverhaul.Content.Demo
                 Mode = 0f, Rot = a - f * 1.775f, Span = 3.55f, Thick = 0.36f,
                 HalfX = 245f * s, HalfY = 245f * s, Flip = f,
                 Opacity = 1f, FrontGlow = 2.6f, OffsetAlongAim = 0f, Seed = 0.88f,
+                TailErode = 0.42f, FlashPower = 1f,
             };
 
             finisherImpactFrame = slashes[FinisherIndex].Birth + slashes[FinisherIndex].SweepFrames;
@@ -171,6 +187,15 @@ namespace CalamityOverhaul.Content.Demo
         //==== 子刀光生命周期采样 ====
 
         private static float EaseOutCubic(float x) => 1f - MathF.Pow(1f - MathHelper.Clamp(x, 0f, 1f), 3f);
+
+        /// <summary>带过冲的缓出（尺寸爆发"弹"出的关键曲线，峰值 ~1.05 后回落 1）</summary>
+        private static float EaseOutBack(float x) {
+            x = MathHelper.Clamp(x, 0f, 1f);
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            float xm = x - 1f;
+            return 1f + c3 * xm * xm * xm + c1 * xm * xm;
+        }
 
         private static float SmoothStep01(float x) {
             x = MathHelper.Clamp(x, 0f, 1f);
@@ -189,22 +214,62 @@ namespace CalamityOverhaul.Content.Demo
             ? d.FrontGlow
             : d.FrontGlow * MathF.Max(0f, 1f - (lt - d.SweepFrames - 1) / 5f);
 
+        /// <summary>几何动画包：静态贴纸 → 运动实体的核心。所有形变随生命期逐帧演进</summary>
+        private SlashAnim GetSlashAnim(in SlashDef d, int lt) {
+            float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
+
+            //出生爆发：62% 尺寸起步，easeOutBack 过冲到 ~104% 回落，随后全程缓慢外扩（波向外传播）
+            float burstT = MathHelper.Clamp(lt / (d.SweepFrames + 2f), 0f, 1f);
+            float scale = MathHelper.Lerp(0.62f, 1f, EaseOutBack(burstT)) + 0.07f * lifeT;
+
+            //惯性收势：扫掠结束后沿挥动方向继续减速旋转（follow-through）
+            float followT = MathHelper.Clamp((lt - d.SweepFrames) / 14f, 0f, 1f);
+            float rotOff = d.Flip * 0.13f * (1f - (1f - followT) * (1f - followT));
+
+            //厚度呼吸：薄入 → 冲击帧最厚 → 消散期变薄
+            float thickIn = EaseOutCubic(lt / (d.SweepFrames + 2f));
+            float thickMul = MathHelper.Lerp(0.68f, 1.12f, thickIn)
+                * (1f - 0.42f * SmoothStep01((lifeT - 0.45f) / 0.55f));
+
+            //彗星尾：扫掠完成即从起笔端向前蒸发
+            float tail = d.TailErode * SmoothStep01((lt - d.SweepFrames) / (d.Life * 0.72f));
+
+            //全形白闪帧：完全张开瞬间过曝 1~2 帧，速落
+            float ft = lt - d.SweepFrames;
+            float flash = ft < 0f ? 0f : ft <= 1f ? 1f : MathF.Pow(0.52f, ft - 1f);
+            if (flash < 0.02f) {
+                flash = 0f;
+            }
+            flash *= d.FlashPower;
+
+            //能量沿刃奔涌：前段快速冲出、减速停驻
+            float flowPhase = 0.62f * EaseOutCubic(lt / 15f);
+
+            return new SlashAnim {
+                ScaleMul = scale, RotOffset = rotOff, ThickMul = thickMul,
+                TailErode = tail, Flash = flash, FlowPhase = flowPhase,
+            };
+        }
+
         private Vector2 SlashCenter(in SlashDef d) => Projectile.Center + AimDir * d.OffsetAlongAim;
 
-        /// <summary>刀光带中线上一点：uc=0..1 沿刃，rFrac 覆盖椭圆压扁与直线两种几何</summary>
-        private Vector2 PointAt(in SlashDef d, float uc) {
-            Vector2 ax = d.Rot.ToRotationVector2();
+        /// <summary>刀光带中线上一点：uc=0..1 沿刃，含几何动画（缩放/收势旋转/厚度）</summary>
+        private Vector2 PointAt(in SlashDef d, float uc, int lt) {
+            SlashAnim anim = GetSlashAnim(in d, lt);
+            Vector2 ax = (d.Rot + anim.RotOffset).ToRotationVector2();
             Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
             Vector2 c = SlashCenter(d);
+            float hx = d.HalfX * anim.ScaleMul;
+            float hy = d.HalfY * anim.ScaleMul;
             if (d.Mode > 0.5f) {
                 //直线：沿刃长 -HalfX..+HalfX
-                return c + ax * (uc * 2f - 1f) * d.HalfX * 0.90f;
+                return c + ax * (uc * 2f - 1f) * hx * 0.90f;
             }
             float env = MathF.Sin(MathF.Pow(uc, 1.85f) * MathF.PI);
-            float w = d.Thick * MathF.Pow(MathF.Max(env, 0.0001f), 0.72f);
+            float w = d.Thick * anim.ThickMul * MathF.Pow(MathF.Max(env, 0.0001f), 0.72f);
             float rFrac = 0.90f - w * 0.5f;
             float phi = d.Flip * (uc - 0.5f) * d.Span;
-            return c + ax * MathF.Cos(phi) * rFrac * d.HalfX + ay * MathF.Sin(phi) * rFrac * d.HalfY;
+            return c + ax * MathF.Cos(phi) * rFrac * hx + ay * MathF.Sin(phi) * rFrac * hy;
         }
 
         //==================== 时间轴推进 ====================
@@ -363,8 +428,8 @@ namespace CalamityOverhaul.Content.Demo
                     continue;
                 }
                 float edgeU = MathHelper.Clamp(SlashSweep(in d, lt) * 1.05f, 0.06f, 0.94f);
-                Vector2 pos = PointAt(in d, edgeU);
-                Vector2 tangent = (PointAt(in d, MathHelper.Clamp(edgeU + 0.03f, 0f, 1f)) - pos).SafeNormalize(AimDir);
+                Vector2 pos = PointAt(in d, edgeU, lt);
+                Vector2 tangent = (PointAt(in d, MathHelper.Clamp(edgeU + 0.03f, 0f, 1f), lt) - pos).SafeNormalize(AimDir);
 
                 for (int k = 0; k < 2; k++) {
                     Vector2 vel = tangent * Main.rand.NextFloat(4f, 11f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
@@ -391,7 +456,7 @@ namespace CalamityOverhaul.Content.Demo
             }
             for (int i = 0; i < 2; i++) {
                 float uc = Main.rand.NextFloat(0.12f, 0.96f);
-                Vector2 mid = PointAt(in fin, uc);
+                Vector2 mid = PointAt(in fin, uc, lt);
                 Vector2 dir = (mid - Projectile.Center).SafeNormalize(AimDir);
                 Vector2 pos = mid + dir * fin.HalfX * 0.06f;
                 Vector2 vel = dir * Main.rand.NextFloat(0.3f, 1.1f) + Main.rand.NextVector2Circular(0.35f, 0.35f);
@@ -421,8 +486,8 @@ namespace CalamityOverhaul.Content.Demo
 
                 if (d.Mode > 0.5f) {
                     //直线：单线段判定
-                    Vector2 head = PointAt(in d, 0.05f);
-                    Vector2 tail = PointAt(in d, MathF.Min(0.95f, sweepU));
+                    Vector2 head = PointAt(in d, 0.05f, lt);
+                    Vector2 tail = PointAt(in d, MathF.Min(0.95f, sweepU), lt);
                     float cp = 0f;
                     if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
                         , head, tail, d.HalfY * 0.62f, ref cp)) {
@@ -441,7 +506,7 @@ namespace CalamityOverhaul.Content.Demo
                     if (uc > sweepU) {
                         break;
                     }
-                    Vector2 mid = PointAt(in d, uc);
+                    Vector2 mid = PointAt(in d, uc, lt);
                     if (hasPrev) {
                         float cp = 0f;
                         if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
@@ -487,7 +552,8 @@ namespace CalamityOverhaul.Content.Demo
             DrawCollapseCore();
         }
 
-        /// <summary>全部子刀光：终结月牙带外圈残影，其余单 pass</summary>
+        /// <summary>全部子刀光：三层异步结构（软辉光垫底滞后2帧 → 主体 → 白热核心薄条超前1帧），
+        /// 层间时序差与几何差本身构成层次感</summary>
         private void DrawSlashes() {
             Effect fx = EffectLoader.DemoCrimsonSlash?.Value;
             Texture2D brush = DemoAssets.SlashBrush01?.Value;
@@ -521,32 +587,20 @@ namespace CalamityOverhaul.Content.Demo
                     continue;
                 }
 
-                float opacity = SlashOpacity(in d, lt);
-                if (opacity <= 0.01f) {
-                    continue;
-                }
-                float erode = SlashErode(in d, lt);
+                //软辉光垫底：滞后 2 帧出现，更宽更淡，余韵最后消
+                DrawSlashLayer(device, fx, in d, lt - 2
+                    , opacityMul: 0.30f, thickMul: 1.85f, scaleMul: 1.08f
+                    , erodeBias: 0.06f, frontMul: 0.35f, flashMul: 0.5f, forceHot: false);
 
-                fx.Parameters["uMode"]?.SetValue(d.Mode);
-                fx.Parameters["uSweep"]?.SetValue(SlashSweep(in d, lt));
-                fx.Parameters["uColorShift"]?.SetValue(SlashColorShift(in d, lt));
-                fx.Parameters["uFlip"]?.SetValue(d.Flip);
-                fx.Parameters["uSeed"]?.SetValue(d.Seed);
-                fx.Parameters["uArcSpan"]?.SetValue(d.Span > 0f ? d.Span : 1f);
-                fx.Parameters["uThick"]?.SetValue(d.Thick);
+                //主体色带
+                DrawSlashLayer(device, fx, in d, lt
+                    , opacityMul: 1f, thickMul: 1f, scaleMul: 1f
+                    , erodeBias: 0f, frontMul: 1f, flashMul: 1f, forceHot: false);
 
-                //终结月牙垫一层放大残影增厚
-                if (i == FinisherIndex) {
-                    fx.Parameters["uOpacity"]?.SetValue(opacity * 0.32f);
-                    fx.Parameters["uErode"]?.SetValue(MathHelper.Clamp(erode + 0.20f, 0f, 1f));
-                    fx.Parameters["uFrontGlow"]?.SetValue(SlashFrontGlow(in d, lt) * 0.4f);
-                    DrawSlashQuad(device, fx, in d, 1.07f);
-                }
-
-                fx.Parameters["uOpacity"]?.SetValue(opacity);
-                fx.Parameters["uErode"]?.SetValue(erode);
-                fx.Parameters["uFrontGlow"]?.SetValue(SlashFrontGlow(in d, lt));
-                DrawSlashQuad(device, fx, in d, 1f);
+                //白热核心薄条：超前 1 帧领跑，贴锋利侧，不随生命期压暗
+                DrawSlashLayer(device, fx, in d, Math.Min(lt + 1, d.Life - 1)
+                    , opacityMul: 0.92f, thickMul: 0.42f, scaleMul: 1f
+                    , erodeBias: 0f, frontMul: 1.25f, flashMul: 1f, forceHot: true);
             }
 
             device.BlendState = prevBlend;
@@ -554,12 +608,39 @@ namespace CalamityOverhaul.Content.Demo
             device.DepthStencilState = prevDepth;
         }
 
-        private void DrawSlashQuad(GraphicsDevice device, Effect fx, in SlashDef d, float sizeMul) {
+        /// <summary>单层绘制：以层内时间 lt 采样生命周期与几何动画后提交 quad</summary>
+        private void DrawSlashLayer(GraphicsDevice device, Effect fx, in SlashDef d, int lt
+            , float opacityMul, float thickMul, float scaleMul, float erodeBias
+            , float frontMul, float flashMul, bool forceHot) {
+            if (lt < 0 || lt >= d.Life) {
+                return;
+            }
+            float opacity = SlashOpacity(in d, lt) * opacityMul;
+            if (opacity <= 0.012f) {
+                return;
+            }
+
+            SlashAnim anim = GetSlashAnim(in d, lt);
+
+            fx.Parameters["uMode"]?.SetValue(d.Mode);
+            fx.Parameters["uSweep"]?.SetValue(SlashSweep(in d, lt));
+            fx.Parameters["uErode"]?.SetValue(MathHelper.Clamp(SlashErode(in d, lt) + erodeBias, 0f, 1f));
+            fx.Parameters["uTailErode"]?.SetValue(anim.TailErode);
+            fx.Parameters["uFlash"]?.SetValue(anim.Flash * flashMul);
+            fx.Parameters["uFlowPhase"]?.SetValue(anim.FlowPhase);
+            fx.Parameters["uColorShift"]?.SetValue(forceHot ? 0f : SlashColorShift(in d, lt));
+            fx.Parameters["uOpacity"]?.SetValue(opacity);
+            fx.Parameters["uFlip"]?.SetValue(d.Flip);
+            fx.Parameters["uSeed"]?.SetValue(d.Seed);
+            fx.Parameters["uArcSpan"]?.SetValue(d.Span > 0f ? d.Span : 1f);
+            fx.Parameters["uThick"]?.SetValue(d.Thick * anim.ThickMul * thickMul);
+            fx.Parameters["uFrontGlow"]?.SetValue(SlashFrontGlow(in d, lt) * frontMul);
+
             Vector2 center = SlashCenter(in d);
-            Vector2 axisX = d.Rot.ToRotationVector2();
+            Vector2 axisX = (d.Rot + anim.RotOffset).ToRotationVector2();
             Vector2 axisY = axisX.RotatedBy(MathHelper.PiOver2);
-            float hx = d.HalfX * sizeMul;
-            float hy = d.HalfY * sizeMul;
+            float hx = d.HalfX * anim.ScaleMul * scaleMul;
+            float hy = d.HalfY * anim.ScaleMul * scaleMul;
 
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((center - axisX * hx - axisY * hy).ToVector3(), Color.White, new Vector2(0f, 0f));
