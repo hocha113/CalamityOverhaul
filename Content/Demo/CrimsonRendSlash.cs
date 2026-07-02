@@ -390,9 +390,6 @@ namespace CalamityOverhaul.Content.Demo
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //受击目标单独短暂顿帧（局部卡肉，不动镜头）
-            target.CWR().TimeFrozenTick = HitstopFrames + 2;
-
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, Volume = 0.75f }, target.Center);
 
             //终结斩确认命中才触发大型冲击演出（世界顿帧/全屏白闪/爆点全层）——

@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -185,11 +185,6 @@ namespace CalamityOverhaul.Content.Demo
         /// farSel：0=整体 +1=仅近半侧 -1=仅远半侧（配合玩家遮挡分层）</summary>
         public static void DrawThreeLayers(GraphicsDevice device, Effect fx, in SlashDef d
             , Vector2 center, int lt, float farSel) {
-            //软辉光垫底：滞后 2 帧出现，更宽更淡，余韵最后消
-            DrawLayer(device, fx, in d, center, lt - 2, farSel
-                , opacityMul: 0.30f, thickMul: 1.85f, scaleMul: 1.08f
-                , erodeBias: 0.06f, frontMul: 0.35f, flashMul: 0.5f, forceHot: false);
-
             //主体色带
             DrawLayer(device, fx, in d, center, lt, farSel
                 , opacityMul: 1f, thickMul: 1f, scaleMul: 1f
