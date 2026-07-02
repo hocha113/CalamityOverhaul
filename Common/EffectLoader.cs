@@ -160,5 +160,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> AckBackdrop { get; set; }
         public static Asset<Effect> AckFinale { get; set; }
         public static Asset<Effect> AckGlow { get; set; }
+        public static Asset<Effect> DemoCrimsonSlash { get; set; }
+        public static Asset<Effect> DemoImpactPost { get; set; }
+        public static Asset<Effect> DemoBloom { get; set; }
     }
 }
