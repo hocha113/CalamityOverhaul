@@ -38,12 +38,12 @@ DestroyerGrenade.DisplayName: Granada do Destruidor
 DicoriaRay.DisplayName: Raio de Dicoria
 FungiAmmo.DisplayName: Projetil Fungico
 PallbearerArrow.DisplayName: Flecha do Portador do Caixao
-PrimeCannonOnSpanFriendly.DisplayName: Saraivada do Canhao Prime
 PrimeCannonOnSpan.DisplayName: Saraivada do Canhao Prime
 PrimeSeekerMissile.DisplayName: Micromisseil Buscador de Calor
+// HyperionCruiseMissile.DisplayName: Thermal Cruise Missile
+// HyperionBlastProj.DisplayName: Thermal Detonation
 PunisherGrenade.DisplayName: Granada do Punitivo
 RaiderGunDash.DisplayName: Investida do Saqueador
-RocketSkeletonFriendly.DisplayName: Esqueleto Foguete
 RocketSkeleton.DisplayName: Esqueleto Foguete
 SporeBurst.DisplayName: Explosao de Esporos
 CommandersClawThrow.DisplayName: Garra do Comandante

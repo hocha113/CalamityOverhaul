@@ -38,12 +38,12 @@ DestroyerGrenade.DisplayName: Граната Уничтожителя
 DicoriaRay.DisplayName: Луч Близнецов
 FungiAmmo.DisplayName: Грибные боеприпасы
 PallbearerArrow.DisplayName: Стрела гробовщика
-PrimeCannonOnSpanFriendly.DisplayName: Механическая пушка: Залп
 PrimeCannonOnSpan.DisplayName: Механическая пушка: Залп
 PrimeSeekerMissile.DisplayName: Микроракета с тепловым наведением
+// HyperionCruiseMissile.DisplayName: Thermal Cruise Missile
+// HyperionBlastProj.DisplayName: Thermal Detonation
 PunisherGrenade.DisplayName: Граната Карателя
 RaiderGunDash.DisplayName: Рывок Налетчика
-RocketSkeletonFriendly.DisplayName: Скелетная ракета
 RocketSkeleton.DisplayName: Скелетная ракета
 SporeBurst.DisplayName: Споровый взрыв
 CommandersClawThrow.DisplayName: Коготь командира

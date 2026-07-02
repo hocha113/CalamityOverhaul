@@ -117,6 +117,8 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> BreachMatrixAxisHighlight { get; set; }
         public static Asset<Effect> GatlinTracer { get; set; }
         public static Asset<Effect> GatlinImpactBurst { get; set; }
+        public static Asset<Effect> HyperionExhaust { get; set; }
+        public static Asset<Effect> HyperionBlast { get; set; }
         public static Asset<Effect> BrimstoneDialogueBox { get; set; }
         public static Asset<Effect> SeaDialogueBox { get; set; }
         public static Asset<Effect> SulfseaPanel { get; set; }

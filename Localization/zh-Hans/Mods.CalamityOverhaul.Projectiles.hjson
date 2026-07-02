@@ -38,12 +38,12 @@ DestroyerGrenade.DisplayName: 毁灭者榴弹
 DicoriaRay.DisplayName: 双子射线
 FungiAmmo.DisplayName: 真菌弹药
 PallbearerArrow.DisplayName: 护柩者之箭
-PrimeCannonOnSpanFriendly.DisplayName: 机械巨炮·齐射
 PrimeCannonOnSpan.DisplayName: 机械巨炮·齐射
 PrimeSeekerMissile.DisplayName: 寻热微型导弹
+HyperionCruiseMissile.DisplayName: 热射巡航弹
+HyperionBlastProj.DisplayName: 热射殉爆
 PunisherGrenade.DisplayName: 惩罚者榴弹
 RaiderGunDash.DisplayName: 掠夺者冲锋
-RocketSkeletonFriendly.DisplayName: 骷髅火箭
 RocketSkeleton.DisplayName: 骷髅火箭
 SporeBurst.DisplayName: 孢子爆发
 CommandersClawThrow.DisplayName: 指挥官飞爪

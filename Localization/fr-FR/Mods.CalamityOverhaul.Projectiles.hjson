@@ -38,12 +38,12 @@ DestroyerGrenade.DisplayName: Grenade du destructeur
 DicoriaRay.DisplayName: Rayon jumeau
 FungiAmmo.DisplayName: Munition fongique
 PallbearerArrow.DisplayName: Flèche du porteur de cercueil
-PrimeCannonOnSpanFriendly.DisplayName: Canon principal · Salve
 PrimeCannonOnSpan.DisplayName: Canon principal · Salve
 PrimeSeekerMissile.DisplayName: Micromissile à tête chercheuse
+// HyperionCruiseMissile.DisplayName: Thermal Cruise Missile
+// HyperionBlastProj.DisplayName: Thermal Detonation
 PunisherGrenade.DisplayName: Grenade du punisseur
 RaiderGunDash.DisplayName: Charge du pillard
-RocketSkeletonFriendly.DisplayName: Roquette squelette
 RocketSkeleton.DisplayName: Roquette squelette
 SporeBurst.DisplayName: Éruption de spores
 CommandersClawThrow.DisplayName: Griffe du commandant

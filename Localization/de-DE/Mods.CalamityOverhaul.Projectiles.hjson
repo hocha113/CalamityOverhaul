@@ -38,12 +38,12 @@ DestroyerGrenade.DisplayName: Zerstörergranate
 DicoriaRay.DisplayName: Zwillingstrahl
 FungiAmmo.DisplayName: Pilzmunition
 PallbearerArrow.DisplayName: Sargträger-Pfeil
-PrimeCannonOnSpanFriendly.DisplayName: Primärkanone · Salve
 PrimeCannonOnSpan.DisplayName: Primärkanone · Salve
 PrimeSeekerMissile.DisplayName: Wärmesuch-Mikrorakete
+// HyperionCruiseMissile.DisplayName: Thermal Cruise Missile
+// HyperionBlastProj.DisplayName: Thermal Detonation
 PunisherGrenade.DisplayName: Bestrafergranate
 RaiderGunDash.DisplayName: Plünderer-Sturm
-RocketSkeletonFriendly.DisplayName: Skelett-Rakete
 RocketSkeleton.DisplayName: Skelett-Rakete
 SporeBurst.DisplayName: Sporenexplosion
 CommandersClawThrow.DisplayName: Kommandanten-Klaue

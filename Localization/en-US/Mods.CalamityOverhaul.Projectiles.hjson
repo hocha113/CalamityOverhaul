@@ -38,12 +38,12 @@ DestroyerGrenade.DisplayName: Destroyer Grenade
 DicoriaRay.DisplayName: Dicoria Ray
 FungiAmmo.DisplayName: Fungal Round
 PallbearerArrow.DisplayName: Pallbearer Arrow
-PrimeCannonOnSpanFriendly.DisplayName: Prime Cannon Salvo
 PrimeCannonOnSpan.DisplayName: Prime Cannon Salvo
 PrimeSeekerMissile.DisplayName: Heatseeker Micro Missile
+HyperionCruiseMissile.DisplayName: Thermal Cruise Missile
+HyperionBlastProj.DisplayName: Thermal Detonation
 PunisherGrenade.DisplayName: Punisher Grenade
 RaiderGunDash.DisplayName: Raider's Dash
-RocketSkeletonFriendly.DisplayName: Skeletal Rocket
 RocketSkeleton.DisplayName: Skeletal Rocket
 SporeBurst.DisplayName: Spore Burst
 CommandersClawThrow.DisplayName: Commander's Claw

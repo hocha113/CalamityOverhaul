@@ -766,7 +766,8 @@ HyperionBarrage: {
 	DisplayName: Hyperion Auto-Turret
 	Tooltip:
 		'''
-		Fires thermal cruise missiles
+		Fires thermal cruise missiles that detonate on impact and ignite enemies
+		Every fourth trigger pull vertically launches a salvo of three missiles that dive onto your crosshair
 		"Make full use of everything"
 		'''
 }
@@ -1021,7 +1022,7 @@ HyperionBarrageEX: {
 	DisplayName: Hyperion Barrage EX
 	Tooltip:
 		'''
-		After hitting the target, the heat-seeking cruise missile will split into multiple parts to cause secondary damage.
+		Fires heavy cruise missiles that burst into six self-locking cluster missiles on detonation
 		"Beyond its intended use"
 		'''
 }
