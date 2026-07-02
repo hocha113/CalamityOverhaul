@@ -33,6 +33,7 @@ float uFrontGlow;    //扫掠前缘白热强度
 float uFarSel;       //远近半侧分层：0=整体 +1=仅近半 -1=仅远半(玩家身后层)
 float uFarDim;       //远半侧压暗系数（空间纵深的明度线索）
 float2 uFarDirLocal; //quad uv 空间中指向"远侧(屏幕上方)"的单位向量
+float uRazorTailWiden; //剃刀线向收笔端展宽强度（0=恒定宽；>0 外弧白热高光向末端加粗）
 
 float3 uColHot;      //白热核心
 float3 uColBright;   //亮绯红
@@ -196,14 +197,17 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     alpha = saturate(alpha) * uOpacity * passMul;
 
     //---- 色带（沿 h：剃刀线 → 高光渐变 → 主体 → 暗描边） ----
-    float3 col = lerp(uColHot, uColBright, smoothstep(0.02, 0.24, h));
+    //末端展宽：h 是相对带厚的比例坐标，带在收笔端本就收窄，按比例展宽读作
+    //"白热渐渐吃满末端带宽"（力量积聚在收势），绝对像素宽不会爆
+    float widen = uRazorTailWiden * smoothstep(0.38, 0.97, uc);
+    float3 col = lerp(uColHot, uColBright, smoothstep(0.02, 0.24 + widen * 0.16, h));
     col = lerp(col, uColDeep, smoothstep(0.30, 0.66, h));
     col = lerp(col, uColDark, smoothstep(0.62, 1.0, h));
     col = lerp(col, lerp(uColDark, uColDeep * 0.55, h), uColorShift * 0.85);
 
-    //剃刀细线：贴 h=0 轮廓一条白热高光，活跃期恒亮，压暗期淡出
-    float razor = exp(-pow(h / 0.075, 2.0));
-    col += uColHot * razor * 1.15 * (1.0 - uColorShift * 0.65);
+    //剃刀细线：贴 h=0 轮廓一条白热高光，活跃期恒亮，压暗期淡出，向收笔端展宽增亮
+    float razor = exp(-pow(h / (0.075 * (1.0 + widen * 1.6)), 2.0));
+    col += uColHot * razor * (1.15 + widen * 0.35) * (1.0 - uColorShift * 0.65);
 
     //笔刷高光 + 燃边 + 前缘 + 全形白闪
     //白闪只做适度提亮增益（不整面覆盖成纯白），笔刷streak/色带在闪光期依然可辨——

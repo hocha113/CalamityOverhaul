@@ -13,27 +13,29 @@ using SlashDef = CalamityOverhaul.Content.Demo.CrimsonSlashRenderer.SlashDef;
 namespace CalamityOverhaul.Content.Demo
 {
     /// <summary>
-    /// 绯红裂空斩：完整连段演出编排器（跟随玩家，一条时间轴调度四段弧形变奏）<br/>
-    /// 设计原则：四段全部是"同一个弧形挥舞"在不同挥砍平面上的投影变形（压扁率/滚转角/挥向交替），
-    /// 拒绝平面半圆刀光 —— 环旋段的远半侧真实绘制于玩家身后（空间穿插），近亮远暗<br/>
+    /// 绯红裂空斩：完整连段演出编排器（跟随玩家，一条时间轴调度五段弧形变奏）<br/>
+    /// 设计原则：前三拍是"同一个弧形挥舞"在不同挥砍平面上的投影变形（快斩，easeOut 干脆完成），
+    /// 后两拍是高离心率椭圆重斩（冲击形楔痕而非圆弧）——快慢刀对比：蓄势缓推 → 滞一拍 → 两帧爆发；
+    /// 攻击间隔渐宽（10/10/13/15 帧），重击前的呼吸本身是力量感的一半<br/>
     /// 节拍（60fps）：<br/>
-    /// T0-6   横旋回环 —— 透视压扁的全周回旋，尾部高蒸发读作旋转拖尾，远半侧被角色遮挡<br/>
-    /// T10-14 纵斩下劈 —— 正面纵切平面（竖长椭圆），自头顶前压至脚下<br/>
-    /// T18-21 反手上撩 —— 同一平面反向，自脚下撩至头顶收势，覆盖正面 ±100°<br/>
-    /// T26-29 月牙终结 —— 满弧重月牙正面自上而下重裂，T29 冲击帧：爆点全层 + 世界顿帧 + 白闪<br/>
-    /// T31-37 负片收缩暗核；T55-75 余韵光球内爆 + 侵蚀烟化长尾<br/>
+    /// T0-4   纵斩下劈 —— 正面纵切平面（竖长椭圆），自头顶前压至脚下<br/>
+    /// T10-13 反手上撩 —— 同一平面反向，自脚下撩至头顶收势，覆盖正面 ±100°<br/>
+    /// T20-23 月牙重斩 —— 满弧重月牙正面自上而下重裂（中段力量拍）<br/>
+    /// T33-41 蓄势重斩 —— 椭圆冲击形，缓推揭开 30% 后滞一拍，末 2 帧瞬间完成<br/>
+    /// T48-57 蓄势终结 —— 最大最重的镜像椭圆重斩，爆发帧命中触发：爆点全层 + 世界顿帧 + 白闪<br/>
+    /// 其后：负片收缩暗核 → 余韵光球内爆 + 侵蚀烟化长尾（T~108 收场）<br/>
     /// 屏幕级只保留短白闪与 Bloom —— 不做震屏/压暗/变焦，防眩晕<br/>
     /// ai[0]=瞄准角(弧度) ai[1]=挥动镜像(±1) ai[2]=尺寸倍率
     /// </summary>
-    internal class CrimsonRendSlash : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable
+    internal class CrimsonRendSlash : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
         //==== 时间轴常量 ====
         private const int HitstopFrames = 4;
         private const int BurstFadeFrames = 16;
-        private const int FinisherIndex = 3;
-        private const int TotalLifetime = 84;
+        private const int FinisherIndex = 4;
+        private const int TotalLifetime = 108;
 
         private SlashDef[] slashes;
         private int timer;
@@ -50,8 +52,13 @@ namespace CalamityOverhaul.Content.Demo
 
         private Vector2 ImpactWorldPos {
             get {
-                float outer = slashes != null ? slashes[FinisherIndex].HalfX * 0.90f : 200f * SizeMul;
-                return Projectile.Center + AimDir * outer * 0.92f;
+                if (slashes == null) {
+                    return Projectile.Center + AimDir * 180f * SizeMul;
+                }
+                //刃锋鼓腹（uc≈0.69）沿瞄准方向的近似距离：中心偏移 + 半长轴×经验系数
+                //（终结段中心为负偏移贴身，爆点须跟随几何压在鼓腹上而非弧外空处）
+                ref readonly SlashDef fin = ref slashes[FinisherIndex];
+                return Projectile.Center + AimDir * (fin.OffsetAlongAim + fin.HalfX * 0.55f);
             }
         }
 
@@ -88,59 +95,74 @@ namespace CalamityOverhaul.Content.Demo
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 10;   //连段各节拍可分别结算
+            Projectile.localNPCHitCooldown = 10;   //连段各节拍可分别结算（拍间最短 10 帧）
         }
 
         public override bool ShouldUpdatePosition() => false;
 
-        /// <summary>四段弧形变奏：同一招式在不同挥砍平面上的投影（压扁/滚转/挥向/尺寸/节奏全部变化）</summary>
+        /// <summary>五段弧形变奏：前三拍快斩（easeOut 干脆），后两拍高离心率椭圆重斩（蓄势-爆发快慢刀）；
+        /// 间隔渐宽 10/10/13/15 帧，重击前留更长呼吸；剃刀线末端展宽逐拍加强（力量层次）</summary>
         private void BuildSchedule() {
             float s = SizeMul;
             float a = AimAngle;
             float f = Flip;
 
-            slashes = new SlashDef[4];
+            slashes = new SlashDef[5];
 
-            //0 横旋回环：透视压扁 0.42 的全周回旋，远半侧入玩家身后层，尾部高蒸发 → 旋转拖尾
+            //0 纵斩下劈：正面纵切平面（沿瞄准方向纵深压扁 → 竖长椭圆），自头顶前压至脚下
             slashes[0] = new SlashDef {
-                Birth = 0, SweepFrames = 6, Life = 24, ErodeStart = 8, ErodeFrames = 14,
-                ColorShiftDelay = 6, ColorShiftFrames = 12, DamageStart = 2, DamageEnd = 8,
-                Mode = 0f, Rot = a - f * 2.95f, Span = 5.90f, Thick = 0.20f,
-                HalfX = 175f * s, HalfY = 74f * s, Flip = f,
-                Opacity = 0.80f, FrontGlow = 1.7f, OffsetAlongAim = 0f, Seed = 0.13f,
-                TailErode = 0.85f, FlashPower = 0.45f, FarDim = 0.52f,
-            };
-
-            //1 纵斩下劈：正面纵切平面（沿瞄准方向纵深压扁 → 竖长椭圆），自头顶前压至脚下
-            slashes[1] = new SlashDef {
-                Birth = 10, SweepFrames = 4, Life = 26, ErodeStart = 8, ErodeFrames = 14,
+                Birth = 0, SweepFrames = 4, Life = 26, ErodeStart = 8, ErodeFrames = 14,
                 ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 1, DamageEnd = 9,
                 Mode = 0f, Rot = a + f * 0.15f, Span = 3.60f, Thick = 0.30f,
                 HalfX = 150f * s, HalfY = 208f * s, Flip = f,
                 Opacity = 0.92f, FrontGlow = 2.2f, OffsetAlongAim = 30f * s, Seed = 0.47f,
-                TailErode = 0.50f, FlashPower = 0.62f, FarDim = 0f,
+                TailErode = 0.50f, FlashPower = 0.62f, RazorTailWiden = 0.40f,
             };
 
-            //2 反手上撩（草图定义）：同一正面纵切平面反向——自脚下回拉撩至头顶收势，
+            //1 反手上撩：同一正面纵切平面反向——自脚下回拉撩至头顶收势，
             //  覆盖玩家前方约 ±100°，开口朝向玩家，更大更立，节奏收紧
-            slashes[2] = new SlashDef {
-                Birth = 18, SweepFrames = 3, Life = 26, ErodeStart = 8, ErodeFrames = 14,
+            slashes[1] = new SlashDef {
+                Birth = 10, SweepFrames = 3, Life = 26, ErodeStart = 8, ErodeFrames = 14,
                 ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 1, DamageEnd = 8,
                 Mode = 0f, Rot = a - f * 0.10f, Span = 3.55f, Thick = 0.33f,
                 HalfX = 172f * s, HalfY = 238f * s, Flip = -f,
                 Opacity = 0.96f, FrontGlow = 2.4f, OffsetAlongAim = 44f * s, Seed = 0.71f,
-                TailErode = 0.45f, FlashPower = 0.68f, FarDim = 0f,
+                TailErode = 0.45f, FlashPower = 0.68f, RazorTailWiden = 0.40f,
             };
 
-            //3 月牙终结：满弧厚重主月牙（力量核心），正面自上而下的重裂（"裂空"本义），
-            //  刃锋过中线时爆点落在瞄准点，随后向下贯穿收势
-            slashes[3] = new SlashDef {
-                Birth = 26, SweepFrames = 3, Life = 54, ErodeStart = 10, ErodeFrames = 30,
-                ColorShiftDelay = 6, ColorShiftFrames = 18, DamageStart = 1, DamageEnd = 12,
+            //2 月牙重斩：满弧重月牙正面自上而下重裂 —— 原终结段降为中段力量拍，
+            //  白闪减配、寿命收短给后续重击让场
+            slashes[2] = new SlashDef {
+                Birth = 20, SweepFrames = 3, Life = 34, ErodeStart = 8, ErodeFrames = 18,
+                ColorShiftDelay = 6, ColorShiftFrames = 14, DamageStart = 1, DamageEnd = 10,
                 Mode = 0f, Rot = a, Span = 3.55f, Thick = 0.36f,
                 HalfX = 245f * s, HalfY = 245f * s, Flip = f,
                 Opacity = 1f, FrontGlow = 2.6f, OffsetAlongAim = 0f, Seed = 0.88f,
-                TailErode = 0.42f, FlashPower = 0.82f, FarDim = 0f,
+                TailErode = 0.42f, FlashPower = 0.60f, RazorTailWiden = 0.55f,
+            };
+
+            //3 蓄势重斩：高离心率椭圆冲击形（压扁靠 HalfY<HalfX，跨度保持全弧 → 起笔端延续出
+            //  干脆的薄尾楔，避免窄跨+蒸发把形状收成"花瓣"），负偏移贴身，弧尖包回玩家身侧；
+            //  快慢刀：缓推 30% → 滞一拍 → 末 2 帧爆发完成，伤害窗对齐爆发（蓄势期无判定）
+            slashes[3] = new SlashDef {
+                Birth = 33, SweepFrames = 8, Life = 30, ErodeStart = 9, ErodeFrames = 16,
+                ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 7, DamageEnd = 12,
+                Mode = 0f, Rot = a - f * 0.35f, Span = 3.45f, Thick = 0.42f,
+                HalfX = 330f * s, HalfY = 195f * s, Flip = f,
+                Opacity = 0.97f, FrontGlow = 2.6f, OffsetAlongAim = -35f * s, Seed = 0.29f,
+                TailErode = 0.32f, FlashPower = 0.75f, SweepSnap = 1f, RazorTailWiden = 0.75f,
+            };
+
+            //4 蓄势终结：最大最重的镜像椭圆重斩（力量核心），蓄势更长、爆发更狠，
+            //  负偏移让巨弧把角色整个罩进挥砍平面、弧尖绕到身后；
+            //  爆发帧命中即触发终结冲击（爆点全层+世界顿帧+白闪），挥空安静收场
+            slashes[4] = new SlashDef {
+                Birth = 48, SweepFrames = 9, Life = 56, ErodeStart = 12, ErodeFrames = 30,
+                ColorShiftDelay = 7, ColorShiftFrames = 18, DamageStart = 8, DamageEnd = 14,
+                Mode = 0f, Rot = a + f * 0.20f, Span = 3.35f, Thick = 0.44f,
+                HalfX = 400f * s, HalfY = 230f * s, Flip = -f,
+                Opacity = 1f, FrontGlow = 2.9f, OffsetAlongAim = -60f * s, Seed = 0.57f,
+                TailErode = 0.30f, FlashPower = 0.95f, SweepSnap = 1f, RazorTailWiden = 0.85f,
             };
         }
 
@@ -183,28 +205,44 @@ namespace CalamityOverhaul.Content.Demo
             PushScreenState();
         }
 
-        /// <summary>时间轴节拍分发：起挥哨声逐段升调（accelerando），每段收势一次确认，终结满击</summary>
+        /// <summary>蓄势重击的爆发起点帧（绝对 timer），与 <see cref="CSR.SweepAnticipate"/> 的滞帧末 0.75 对齐——
+        /// 爆发脆响落在这里，比首个伤害帧领先 1 帧（声音先行的冲击同步）</summary>
+        private int SnapFrame(int index) => slashes[index].Birth + (int)(slashes[index].SweepFrames * 0.75f);
+
+        /// <summary>时间轴节拍分发：快斩三拍起挥哨声逐段升调（accelerando），
+        /// 重击两拍改为"低音蓄势起手 + 爆发帧脆响"的快慢刀声学，每段收势一次确认</summary>
         private void DispatchBeats() {
             if (slashes == null) {
                 return;
             }
 
-            //各段起挥哨声：音高逐段上行，营造连段加速感
+            //快斩拍起挥哨声：音高逐段上行，营造连段加速感
             if (timer == slashes[1].Birth) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.38f, Volume = 0.5f }, Projectile.Center);
             }
             else if (timer == slashes[2].Birth) {
-                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.55f, Volume = 0.55f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.55f, Volume = 0.6f }, Projectile.Center);
+            }
+            //重击拍：起手低鸣读作蓄力，爆发起点一声脆响
+            else if (timer == slashes[3].Birth) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.45f, Volume = 0.42f }, Projectile.Center);
+            }
+            else if (timer == SnapFrame(3)) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.78f, Volume = 0.7f }, Projectile.Center);
             }
             else if (timer == slashes[FinisherIndex].Birth) {
-                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.2f, Volume = 0.95f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.6f, Volume = 0.5f }, Projectile.Center);
+            }
+            else if (timer == SnapFrame(FinisherIndex)) {
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.6f, Volume = 0.9f }, Projectile.Center);
             }
 
             //各段收势确认：力度递增的小节拍（挥空也会有，这是"刀光美术"本身的呼吸，
             //不算"打击效果"）
-            TryPing(0, flash: 0.05f, sparks: 5, pitch: 0.65f, hitFlash: false);
-            TryPing(1, flash: 0.02f, sparks: 7, pitch: 0.5f, hitFlash: false);
-            TryPing(2, flash: 0.01f, sparks: 10, pitch: 0.75f, hitFlash: true);
+            TryPing(0, flash: 0.02f, sparks: 6, pitch: 0.5f, hitFlash: false);
+            TryPing(1, flash: 0.01f, sparks: 8, pitch: 0.65f, hitFlash: false);
+            TryPing(2, flash: 0.05f, sparks: 10, pitch: 0.75f, hitFlash: true);
+            TryPing(3, flash: 0.06f, sparks: 12, pitch: 0.85f, hitFlash: true);
 
             //终结满弧过期未命中：不再补放大爆点，安静收场（避免挥空也顿帧炸屏）
         }
@@ -292,7 +330,8 @@ namespace CalamityOverhaul.Content.Demo
             CrimsonImpactFX.PushAmbience(ImpactWorldPos, MathF.Max(bloom, 0f));
         }
 
-        /// <summary>各扫开中的刀光前缘火花</summary>
+        /// <summary>各扫开中的刀光前缘火花：喷量随本帧扫掠增量走 ——
+        /// 蓄势缓推期零星细屑，滞帧近乎无声，爆发帧集中迸发（快慢刀的粒子语言）</summary>
         private void SpawnSweepSparks() {
             if (slashes == null) {
                 return;
@@ -303,14 +342,21 @@ namespace CalamityOverhaul.Content.Demo
                 if (lt < 0 || lt > d.SweepFrames + 1) {
                     continue;
                 }
+                float delta = CSR.Sweep(in d, lt) - (lt > 0 ? CSR.Sweep(in d, lt - 1) : 0f);
+                int count = delta > 0.20f ? 5 : delta > 0.015f ? 2 : lt % 2 == 0 ? 1 : 0;
+                if (count == 0) {
+                    continue;
+                }
+                float speedMul = delta > 0.20f ? 1.5f : 1f;
+
                 Vector2 center = GetCenter(in d);
                 float edgeU = MathHelper.Clamp(CSR.Sweep(in d, lt) * 1.05f, 0.06f, 0.94f);
                 Vector2 pos = CSR.PointAt(in d, center, edgeU, lt);
                 Vector2 tangent = (CSR.PointAt(in d, center, MathHelper.Clamp(edgeU + 0.03f, 0f, 1f), lt) - pos)
                     .SafeNormalize(AimDir);
 
-                for (int k = 0; k < 2; k++) {
-                    Vector2 vel = tangent * Main.rand.NextFloat(4f, 11f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
+                for (int k = 0; k < count; k++) {
+                    Vector2 vel = tangent * Main.rand.NextFloat(4f, 11f) * speedMul + Main.rand.NextVector2Circular(1.2f, 1.2f);
                     PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 120, 80)
                         , Main.rand.NextFloat(0.3f, 0.6f) * SizeMul)
                         ?.Configure(Main.rand.Next(10, 18), affectedByGravity: false);
@@ -414,8 +460,8 @@ namespace CalamityOverhaul.Content.Demo
         }
 
         //==================== 绘制 ====================
-        //近半侧/无透视刀光 → EndEntityDraw 弹幕扩展层（覆盖实体）
-        //远半侧（FarDim>0 的环旋）→ CrimsonFarLayerRender 玩家绘制前（被角色遮挡）
+        //全部刀光 → EndEntityDraw 弹幕扩展层（覆盖实体）；
+        //玩家身后分层机制（ICrimsonFarDrawable/FarDim）保留在渲染器中备用，本连段不再使用
 
         public override bool PreDraw(ref Color lightColor) => false;
 
@@ -432,37 +478,13 @@ namespace CalamityOverhaul.Content.Demo
                     if (lt < 0 || lt >= d.Life) {
                         continue;
                     }
-                    //有透视分层的只画近半侧，其余整体
-                    CSR.DrawThreeLayers(device, fx, in d, GetCenter(in d), lt, d.FarDim > 0f ? 1f : 0f);
+                    CSR.DrawThreeLayers(device, fx, in d, GetCenter(in d), lt, 0f);
                 }
                 CSR.EndDraw(device, pb, pr, pd);
             }
 
             DrawAdditiveLayers();
             DrawCollapseCore();
-        }
-
-        void ICrimsonFarDrawable.DrawFarSlashes() {
-            if (Main.dedServ || slashes == null) {
-                return;
-            }
-
-            GraphicsDevice device = Main.instance.GraphicsDevice;
-            if (!CSR.BeginDraw(device, out Effect fx, out var pb, out var pr, out var pd)) {
-                return;
-            }
-            for (int i = 0; i < slashes.Length; i++) {
-                ref readonly SlashDef d = ref slashes[i];
-                if (d.FarDim <= 0f) {
-                    continue;
-                }
-                int lt = timer - d.Birth;
-                if (lt < 0 || lt >= d.Life) {
-                    continue;
-                }
-                CSR.DrawThreeLayers(device, fx, in d, GetCenter(in d), lt, -1f);
-            }
-            CSR.EndDraw(device, pb, pr, pd);
         }
 
         /// <summary>终结爆点 + 余韵光球，自管加色批次</summary>

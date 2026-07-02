@@ -41,6 +41,8 @@ namespace CalamityOverhaul.Content.Demo
             public float TailErode;      //彗星尾定向蒸发强度上限（0=不蒸发）
             public float FlashPower;     //全形白闪帧强度
             public float FarDim;         //>0 = 启用远近半侧分层：远半侧压暗系数，并绘制于玩家身后
+            public float SweepSnap;      //>0 = 蓄势-爆发扫掠曲线权重（快慢刀：缓推→滞帧→瞬间完成）
+            public float RazorTailWiden; //剃刀线向收笔端展宽强度（外弧白热高光末端加粗）
         }
 
         /// <summary>子刀光单帧动画状态（几何动画包）</summary>
@@ -80,7 +82,29 @@ namespace CalamityOverhaul.Content.Demo
 
         //==== 生命周期采样 ====
 
-        public static float Sweep(in SlashDef d, int lt) => EaseOutCubic(lt / (float)d.SweepFrames);
+        public static float Sweep(in SlashDef d, int lt) {
+            float t = lt / (float)d.SweepFrames;
+            return d.SweepSnap > 0f
+                ? MathHelper.Lerp(EaseOutCubic(t), SweepAnticipate(t), d.SweepSnap)
+                : EaseOutCubic(t);
+        }
+
+        /// <summary>蓄势-爆发扫掠曲线（快慢刀）：前 60% 时间缓推只揭开 30% 弧长，
+        /// 滞一拍（爆发前的静止是"瞬间极快"成立的关键），末 25% 时间瞬间完成。<br/>
+        /// 伤害窗/爆发音效应对齐爆发起点：帧数 ≈ SweepFrames * 0.75</summary>
+        public static float SweepAnticipate(float t) {
+            t = MathHelper.Clamp(t, 0f, 1f);
+            const float creepEnd = 0.60f;   //蓄势段末
+            const float holdEnd = 0.75f;    //滞帧末 = 爆发起点
+            const float creepAmt = 0.30f;   //蓄势段揭开比例
+            if (t < creepEnd) {
+                return creepAmt * EaseOutCubic(t / creepEnd);
+            }
+            if (t < holdEnd) {
+                return creepAmt;
+            }
+            return creepAmt + (1f - creepAmt) * EaseOutCubic((t - holdEnd) / (1f - holdEnd));
+        }
 
         public static float Erode(in SlashDef d, int lt) => SmoothStep01((lt - d.ErodeStart) / (float)d.ErodeFrames);
 
@@ -243,6 +267,7 @@ namespace CalamityOverhaul.Content.Demo
             fx.Parameters["uFarSel"]?.SetValue(d.FarDim > 0f ? farSel : 0f);
             fx.Parameters["uFarDim"]?.SetValue(d.FarDim);
             fx.Parameters["uFarDirLocal"]?.SetValue(farDirLocal);
+            fx.Parameters["uRazorTailWiden"]?.SetValue(d.RazorTailWiden);
 
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((center - axisX * hx - axisY * hy).ToVector3(), Color.White, new Vector2(0f, 0f));
