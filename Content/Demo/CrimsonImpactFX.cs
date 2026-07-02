@@ -2,56 +2,46 @@ using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Graphics;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Demo
 {
     /// <summary>
-    /// 绯红裂空斩屏幕级演出状态（仅客户端）：压暗聚焦 / 冲击白闪 / Bloom 提亮 / 镜头变焦 punch<br/>
-    /// 弹幕侧每帧 Push 推高目标值，渲染端 <see cref="Update"/> 自然衰减 —— 弹幕消失后画面自动回落
+    /// 绯红裂空斩屏幕级演出状态（仅客户端）：冲击白闪 + Bloom 提亮<br/>
+    /// 弹幕侧每帧 Push 推高目标值，渲染端 <see cref="Update"/> 自然衰减 —— 弹幕消失后画面自动回落<br/>
+    /// 不做压暗/震屏/变焦：全屏级镜头运动容易造成眩晕，打击感交给顿帧与白闪
     /// </summary>
     internal static class CrimsonImpactFX
     {
-        /// <summary>场景压暗 0..1，Push 取最大值维持</summary>
-        public static float DimIntensity { get; private set; }
         /// <summary>冲击白闪 0..1，触发后指数衰减</summary>
         public static float FlashIntensity { get; private set; }
         /// <summary>Bloom 强度 0..1</summary>
         public static float BloomIntensity { get; private set; }
-        /// <summary>变焦 punch 当前值（乘到 Zoom 上的增量）</summary>
-        public static float ZoomPunch { get; private set; }
-        /// <summary>白闪/压暗聚焦中心（世界坐标）</summary>
+        /// <summary>白闪中心（世界坐标）</summary>
         public static Vector2 FocusWorldCenter { get; private set; }
 
-        public static bool HasAny => DimIntensity > 0.01f || FlashIntensity > 0.01f || BloomIntensity > 0.01f;
+        public static bool HasAny => FlashIntensity > 0.01f || BloomIntensity > 0.01f;
 
-        /// <summary>每帧推高场景压暗与 Bloom（弹幕存活期间持续调用）</summary>
-        public static void PushAmbience(Vector2 focusWorld, float dim, float bloom) {
+        /// <summary>每帧推高 Bloom（弹幕存活期间持续调用）</summary>
+        public static void PushAmbience(Vector2 focusWorld, float bloom) {
             if (VaultUtils.isServer) {
                 return;
             }
             FocusWorldCenter = focusWorld;
-            DimIntensity = MathHelper.Clamp(MathHelper.Max(DimIntensity, dim), 0f, 1f);
             BloomIntensity = MathHelper.Clamp(MathHelper.Max(BloomIntensity, bloom), 0f, 1.2f);
         }
 
-        /// <summary>冲击瞬间：白闪 + 变焦 punch，一次触发自行衰减</summary>
-        public static void PushImpact(Vector2 focusWorld, float flash, float zoomPunch) {
+        /// <summary>冲击瞬间白闪，一次触发自行衰减</summary>
+        public static void PushImpact(Vector2 focusWorld, float flash) {
             if (VaultUtils.isServer) {
                 return;
             }
             FocusWorldCenter = focusWorld;
             FlashIntensity = MathHelper.Clamp(MathHelper.Max(FlashIntensity, flash), 0f, 1f);
-            ZoomPunch = MathHelper.Max(ZoomPunch, zoomPunch);
         }
 
         /// <summary>渲染端每帧衰减（由 <see cref="DemoImpactRender"/> 驱动）</summary>
         public static void Update() {
-            DimIntensity *= 0.90f;
-            if (DimIntensity < 0.01f) {
-                DimIntensity = 0f;
-            }
             FlashIntensity *= 0.70f;
             if (FlashIntensity < 0.01f) {
                 FlashIntensity = 0f;
@@ -62,38 +52,21 @@ namespace CalamityOverhaul.Content.Demo
             }
         }
 
-        /// <summary>逻辑帧衰减变焦 punch（由 <see cref="CrimsonImpactSystem"/> 驱动，与渲染帧率解耦）</summary>
-        internal static void UpdateZoom() {
-            ZoomPunch *= 0.82f;
-            if (ZoomPunch < 0.0012f) {
-                ZoomPunch = 0f;
-            }
-        }
-
         /// <summary>世界切换/卸载兜底清空</summary>
         public static void Clear() {
-            DimIntensity = FlashIntensity = BloomIntensity = ZoomPunch = 0f;
+            FlashIntensity = BloomIntensity = 0f;
         }
     }
 
-    /// <summary>变焦 punch 注入与逻辑帧衰减</summary>
+    /// <summary>世界卸载时清空屏幕演出状态</summary>
     internal sealed class CrimsonImpactSystem : ModSystem
     {
-        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform) {
-            float punch = CrimsonImpactFX.ZoomPunch;
-            if (punch > 0.001f) {
-                Transform.Zoom *= 1f + punch;
-            }
-        }
-
-        public override void PostUpdateEverything() => CrimsonImpactFX.UpdateZoom();
-
         public override void OnWorldUnload() => CrimsonImpactFX.Clear();
     }
 
     /// <summary>
-    /// 绯红裂空斩全屏后效：Bloom（提亮→双迭代高斯→加色合成）+ 压暗聚焦/冲击白闪，
-    /// screenTarget ping-pong 回写；Bloom 提取自压暗前的画面，保证刀光辉光不被压暗削弱
+    /// 绯红裂空斩全屏后效：Bloom（提亮→双迭代高斯→加色合成）+ 冲击白闪，
+    /// screenTarget ping-pong 回写；Bloom 提取先于白闪，辉光形状不受闪光干扰
     /// </summary>
     internal sealed class DemoImpactRender : RenderHandle
     {
@@ -120,22 +93,34 @@ namespace CalamityOverhaul.Content.Demo
                 && ScreenTargets != null && ScreenTargets.Length >= 2
                 && ScreenTargets[0] != null && ScreenTargets[1] != null;
 
-            //1) 从未压暗的画面提取亮部并模糊
+            //1) 提取亮部并模糊
             if (doBloom) {
                 BuildBloom(sb, gd, bloomFx);
             }
 
-            //2) 压暗聚焦 + 白闪 ping-pong 回写
-            if (postFx != null && (CrimsonImpactFX.DimIntensity > 0.01f || CrimsonImpactFX.FlashIntensity > 0.01f)) {
+            //2) 冲击白闪 ping-pong 回写
+            if (postFx != null && CrimsonImpactFX.FlashIntensity > 0.01f) {
                 ApplyPost(sb, gd, screenSwap, postFx);
             }
 
-            //3) Bloom 加色合成到最终画面
+            //3) Bloom 加色合成：Main.screenTarget 为 DiscardContents（tML Main.InitTargets 未指定 usage），
+            //   重绑定即丢弃原画面 —— 必须经 screenSwap 全帧往返，绑定后立刻整帧重绘，
+            //   否则场景被丢弃、只剩加色 Bloom → 全屏黑屏
             if (doBloom) {
-                gd.SetRenderTarget(Main.screenTarget);
+                gd.SetRenderTarget(screenSwap);
+                gd.Clear(Color.Transparent);
+                sb.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+                sb.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                sb.End();
                 sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp
                     , DepthStencilState.None, RasterizerState.CullNone);
                 sb.Draw(ScreenTargets[0], Vector2.Zero, Color.White * MathHelper.Clamp(CrimsonImpactFX.BloomIntensity, 0f, 1f));
+                sb.End();
+
+                gd.SetRenderTarget(Main.screenTarget);
+                gd.Clear(Color.Transparent);
+                sb.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+                sb.Draw(screenSwap, Vector2.Zero, Color.White);
                 sb.End();
             }
         }
@@ -180,16 +165,16 @@ namespace CalamityOverhaul.Content.Demo
             }
         }
 
-        /// <summary>拷屏到 screenSwap 再带着 DemoImpactPost 写回 screenTarget</summary>
+        /// <summary>拷屏到 screenSwap 再带着 DemoImpactPost 写回 screenTarget（仅白闪，无压暗）</summary>
         private static void ApplyPost(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap, Effect postFx) {
             Vector2 centerUV = WorldToScreenUV(CrimsonImpactFX.FocusWorldCenter);
 
-            postFx.Parameters["uDim"]?.SetValue(CrimsonImpactFX.DimIntensity);
+            postFx.Parameters["uDim"]?.SetValue(0f);
             postFx.Parameters["uFlash"]?.SetValue(CrimsonImpactFX.FlashIntensity);
             postFx.Parameters["uCenter"]?.SetValue(centerUV);
             postFx.Parameters["uAspect"]?.SetValue(Main.screenWidth / (float)Main.screenHeight);
-            postFx.Parameters["uDimTint"]?.SetValue(new Vector3(0.72f, 0.60f, 0.78f));
-            postFx.Parameters["uDesat"]?.SetValue(0.35f);
+            postFx.Parameters["uDimTint"]?.SetValue(new Vector3(1f, 1f, 1f));
+            postFx.Parameters["uDesat"]?.SetValue(0f);
 
             gd.SetRenderTarget(screenSwap);
             gd.Clear(Color.Transparent);

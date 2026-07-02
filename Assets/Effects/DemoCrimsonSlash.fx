@@ -1,21 +1,24 @@
 // ============================================================================
-//DemoCrimsonSlash.fx 绯红裂空斩月牙主体
-//四边形 UV0..1 内做极坐标月牙带：phi=atan2 仅经 u=phi/span+0.5 做单调比较与 clamp 采样，
-//无 sin/cos/噪声直接消费原始极角，分支切线(±π)落在弧外 → 极角审计合规
-//笔刷贴图提供撕裂质感，噪声贴图负责外缘参差与生命期侵蚀
+//DemoCrimsonSlash.fx 绯红裂空斩刀光（双模式）
+//uMode=0 极坐标月牙带：phi=atan2 仅经 u=phi/span+0.5 做单调比较与 clamp 采样，
+//  无 sin/cos/噪声直接消费原始极角，分支切线(±π)落在弧外 → 极角审计合规
+//uMode=1 直线刀刃带：u 沿刃长，v=|横向|/厚度，白热中脊、两缘暗红
+//椭圆环形斩由 CPU 侧非等比 quad（HalfY<HalfX）实现，uv 空间数学不变
+//笔刷贴图提供撕裂质感，噪声贴图负责边缘参差与生命期侵蚀
 //预乘 alpha 输出，配 BlendState.AlphaBlend
 //ps_3_0 / vs_3_0
 // ============================================================================
 
 float4x4 transformMatrix;
 float uTime;         //秒
+float uMode;         //0=弧形月牙 1=直线刀刃
 float uSweep;        //0..1 扫掠揭开进度
 float uErode;        //0..1 生命期侵蚀
 float uColorShift;   //0..1 亮红→深酒红整体压暗
 float uOpacity;      //整体不透明度
 float uFlip;         //+1/-1 挥动镜像
 float uSeed;         //实例随机相位
-float uArcSpan;      //弧总跨度(弧度，须<2π)
+float uArcSpan;      //弧总跨度(弧度，须<2π)，仅弧模式
 float uThick;        //带厚度(p 空间尺度，0..~0.4)
 float uFrontGlow;    //扫掠前缘白热强度
 
@@ -76,30 +79,52 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float2 p = (input.TexCoords - 0.5) * 2.0;
     p.y *= uFlip;
 
+    //按模式解出 (uRaw:沿刃坐标可越界, uc:0..1, v:0内/中→1外/缘)
+    float uRaw;
+    float uc;
+    float v;
+    float isArc = uMode < 0.5 ? 1.0 : 0.0;
+
+    //弧模式坐标
     float r = length(p);
     float phi = atan2(p.y, p.x);
-    //弧向坐标：0=起笔角 → 1=收笔角(冲击端)。弧外像素被厚度包络归零，cut 处两侧同为透明
-    float uRaw = phi / uArcSpan + 0.5;
-    float uc = saturate(uRaw);
+    float uRawArc = phi / uArcSpan + 0.5;
+    //直线模式坐标
+    float uRawLine = input.TexCoords.x;
 
-    //厚度包络：峰值偏向收笔端(~0.7)，两端收成尖
-    float env = sin(pow(uc, 1.85) * PI);
+    uRaw = lerp(uRawLine, uRawArc, isArc);
+    uc = saturate(uRaw);
+
+    //厚度包络：弧模式峰值偏收笔端(~0.7)，直线模式近中央(~0.6)，两端收尖
+    float envPow = lerp(1.35, 1.85, isArc);
+    float env = sin(pow(uc, envPow) * PI);
     float w = uThick * pow(max(env, 0.0), 0.72);
     if (w < 0.004)
         return float4(0, 0, 0, 0);
 
-    //外缘参差：双八度噪声推挤外缘半径，侵蚀期加剧
+    //边缘参差：双八度噪声，侵蚀期加剧
     float jag1 = tex2D(noiseSamp, float2(uc * 2.6 + uSeed, 0.19 + uSeed * 0.7)).r - 0.5;
     float jag2 = tex2D(noiseSamp, float2(uc * 6.5 - uTime * 0.10 + uSeed, 0.71)).r - 0.5;
-    float outerR = 0.90 + (jag1 * 0.055 + jag2 * 0.030) * (1.0 + uErode * 1.6);
+    float jag = jag1 * 0.055 + jag2 * 0.030;
 
-    float innerR = outerR - w;
-    float v = (r - innerR) / w;   //0=内缘(白热利落) → 1=外缘(暗色撕裂)
+    if (uMode < 0.5)
+    {
+        //弧：参差推挤外缘半径
+        float outerR = 0.90 + jag * (1.0 + uErode * 1.6);
+        float innerR = outerR - w;
+        v = (r - innerR) / w;
+    }
+    else
+    {
+        //直线：中脊向两缘对称，参差直接骚扰 v
+        v = abs(p.y) / w + jag * (1.8 + uErode * 2.4);
+    }
+
     if (v < -0.15 || v > 1.25)
         return float4(0, 0, 0, 0);
     float vc = saturate(v);
 
-    //笔刷主体：两个八度沿弧向反向流动
+    //笔刷主体：两个八度沿刃向反向流动
     float flow = uTime * 0.45 + uSeed;
     float4 b1 = tex2D(brushSamp, float2(uc * 1.30 - flow * 0.22, vc));
     float4 b2 = tex2D(brushSamp, float2(uc * 3.10 + flow * 0.40 + 0.37, vc * 0.62 + 0.20));
@@ -117,8 +142,9 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float survive = smoothstep(eTh - 0.02, eTh + 0.12, eN);
     float burn = smoothstep(eTh - 0.16, eTh - 0.02, eN) * (1.0 - survive);
 
-    //径向 alpha：内缘利落，外缘被笔刷撕碎；角向两端羽化
-    float aIn = smoothstep(-0.045, 0.09, v);
+    //径向 alpha：弧内缘利落，直线中脊饱满；外缘被笔刷撕碎；两端羽化
+    float aInArc = smoothstep(-0.045, 0.09, v);
+    float aIn = lerp(1.0, aInArc, isArc);
     float aOut = smoothstep(1.06, 0.66, v + (0.5 - streak) * 0.40);
     float tipFeather = smoothstep(0.0, 0.05, uc) * smoothstep(1.0, 0.952, uc);
 
@@ -126,13 +152,13 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     alpha *= saturate(0.42 + streak * 0.95);
     alpha = saturate(alpha) * uOpacity;
 
-    //三段色带：白热内缘 → 亮绯红 → 深红 → 暗酒红外缘，随生命期整体压暗
+    //三段色带：白热核心 → 亮绯红 → 深红 → 暗酒红边缘，随生命期整体压暗
     float3 col = lerp(uColHot, uColBright, smoothstep(0.03, 0.25, vc));
     col = lerp(col, uColDeep, smoothstep(0.32, 0.70, vc));
     col = lerp(col, uColDark, smoothstep(0.68, 1.02, vc));
     col = lerp(col, lerp(uColDeep * 0.55, uColDark, vc), uColorShift * 0.85);
 
-    //内缘白热刃线 + 笔刷高光 + 侵蚀燃边 + 扫掠前缘
+    //核心白热刃线 + 笔刷高光 + 侵蚀燃边 + 扫掠前缘
     float rim = pow(saturate(1.0 - vc * 3.4), 2.2);
     col += uColHot * rim * (1.0 - uColorShift * 0.75) * 0.9;
     col += uColBright * streak * (1.0 - vc * 0.6) * 0.55;
