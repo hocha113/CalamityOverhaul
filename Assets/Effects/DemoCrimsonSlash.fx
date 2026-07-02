@@ -30,6 +30,9 @@ float uSeed;         //实例随机相位
 float uArcSpan;      //弧总跨度(弧度，须<2π)，仅弧模式
 float uThick;        //带厚度(p 空间尺度，0..~0.4)
 float uFrontGlow;    //扫掠前缘白热强度
+float uFarSel;       //远近半侧分层：0=整体 +1=仅近半 -1=仅远半(玩家身后层)
+float uFarDim;       //远半侧压暗系数（空间纵深的明度线索）
+float2 uFarDirLocal; //quad uv 空间中指向"远侧(屏幕上方)"的单位向量
 
 float3 uColHot;      //白热核心
 float3 uColBright;   //亮绯红
@@ -85,8 +88,25 @@ PSInput VertexShaderFunction(VSInput v)
 
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
-    float2 p = (input.TexCoords - 0.5) * 2.0;
+    float2 p0 = (input.TexCoords - 0.5) * 2.0;   //未镜像坐标，供远近半侧判定
+    float2 p = p0;
     p.y *= uFlip;
+
+    //远近半侧分层：farW=1 远侧(屏幕上方) 0 近侧，边界羽化避免接缝
+    float farW = smoothstep(-0.15, 0.15, dot(p0, uFarDirLocal));
+    float passMul = 1.0;
+    float dimMul = 1.0;
+    if (uFarSel > 0.5)
+    {
+        passMul = 1.0 - farW;         //近半侧 pass
+    }
+    else if (uFarSel < -0.5)
+    {
+        passMul = farW;               //远半侧 pass（玩家身后）
+        dimMul = uFarDim;
+    }
+    if (passMul < 0.004)
+        return float4(0, 0, 0, 0);
 
     float isArc = uMode < 0.5 ? 1.0 : 0.0;
 
@@ -173,7 +193,7 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float alpha = aSharp * aDark * tipFeather * reveal * survive;
     //笔刷透密调制：白闪帧抬升下限让 pop 结实
     alpha *= lerp(saturate(0.42 + streak * 0.95), 1.0, uFlash * 0.8);
-    alpha = saturate(alpha) * uOpacity;
+    alpha = saturate(alpha) * uOpacity * passMul;
 
     //---- 色带（沿 h：剃刀线 → 高光渐变 → 主体 → 暗描边） ----
     float3 col = lerp(uColHot, uColBright, smoothstep(0.02, 0.24, h));
@@ -191,10 +211,13 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     col += uColHot * front * 2.6;
     col = lerp(col, uColHot * 1.18, uFlash);
 
+    //远半侧压暗（空间纵深线索），略偏冷偏暗
+    col *= dimMul;
+
     //剃刀线/前缘/白闪在 alpha 之外再给增益 → 半加法辉光
     float glowA = saturate(alpha + (front * 0.55 + burn * 0.25 + razor * 0.18 + uFlash * 0.30)
-        * uOpacity * reveal * tipFeather * survive);
-    return float4(col * alpha + uColHot * (front * 0.35 + uFlash * 0.15) * uOpacity * tipFeather * reveal, glowA);
+        * uOpacity * reveal * tipFeather * survive * passMul);
+    return float4(col * alpha + uColHot * (front * 0.35 + uFlash * 0.15) * uOpacity * tipFeather * reveal * passMul * dimMul, glowA);
 }
 
 technique Technique1
