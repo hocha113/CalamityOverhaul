@@ -22,8 +22,10 @@ namespace CalamityOverhaul.Content.Demo
     /// T10-13 反手上撩 —— 同一平面反向，自脚下撩至头顶收势，覆盖正面 ±100°<br/>
     /// T20-23 月牙重斩 —— 满弧重月牙正面自上而下重裂（中段力量拍）<br/>
     /// T33-41 蓄势重斩 —— 椭圆冲击形，缓推揭开 30% 后滞一拍，末 2 帧瞬间完成<br/>
-    /// T48-57 蓄势终结 —— 最大最重的镜像椭圆重斩，爆发帧命中触发：爆点全层 + 世界顿帧 + 白闪<br/>
+    /// T48-57 蓄势终结 —— 最大最重的镜像椭圆重斩，爆发帧命中触发全层演出<br/>
     /// 其后：负片收缩暗核 → 余韵光球内爆 + 侵蚀烟化长尾（T~108 收场）<br/>
+    /// 每拍首次命中都触发同一套爆点全层演出（强度随拍位递增），拒绝"只有最后一下有反馈"的断手感；
+    /// 不做世界/目标顿帧——命中确认全部交给音效/粒子/白闪，不打断任何实体的时间流<br/>
     /// 屏幕级只保留短白闪与 Bloom —— 不做震屏/压暗/变焦，防眩晕<br/>
     /// ai[0]=瞄准角(弧度) ai[1]=挥动镜像(±1) ai[2]=尺寸倍率
     /// </summary>
@@ -32,16 +34,15 @@ namespace CalamityOverhaul.Content.Demo
         public override string Texture => CWRConstant.Placeholder;
 
         //==== 时间轴常量 ====
-        private const int HitstopFrames = 4;
         private const int BurstFadeFrames = 16;
         private const int FinisherIndex = 4;
         private const int TotalLifetime = 108;
 
         private SlashDef[] slashes;
         private int timer;
-        private int hitstopHold;
-        private bool impactFired;
-        private int impactFrame;
+        private bool[] beatImpactDone;
+        private int lastImpactFrame = -999;
+        private Vector2 lastImpactPos;
         private Rectangle[] speedLineRects;
         private float[] speedLineOffsets;
 
@@ -50,13 +51,13 @@ namespace CalamityOverhaul.Content.Demo
         private float SizeMul => Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
         private Vector2 AimDir => AimAngle.ToRotationVector2();
 
+        /// <summary>刃身环境光锚点（与实际命中无关）：近似终结弧刃锋鼓腹沿瞄准方向的位置，
+        /// 供每帧常驻的 Lighting/Bloom 使用；真实命中特效改用 <see cref="lastImpactPos"/>（目标实际中心）</summary>
         private Vector2 ImpactWorldPos {
             get {
                 if (slashes == null) {
                     return Projectile.Center + AimDir * 180f * SizeMul;
                 }
-                //刃锋鼓腹（uc≈0.69）沿瞄准方向的近似距离：中心偏移 + 半长轴×经验系数
-                //（终结段中心为负偏移贴身，爆点须跟随几何压在鼓腹上而非弧外空处）
                 ref readonly SlashDef fin = ref slashes[FinisherIndex];
                 return Projectile.Center + AimDir * (fin.OffsetAlongAim + fin.HalfX * 0.55f);
             }
@@ -90,7 +91,7 @@ namespace CalamityOverhaul.Content.Demo
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = TotalLifetime + HitstopFrames + 2;
+            Projectile.timeLeft = TotalLifetime + 2;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.netImportant = true;
@@ -174,6 +175,7 @@ namespace CalamityOverhaul.Content.Demo
             if (Projectile.localAI[0] == 0f) {
                 Projectile.localAI[0] = 1f;
                 BuildSchedule();
+                beatImpactDone = new bool[slashes.Length];
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.2f, Volume = 0.6f }, Projectile.Center);
             }
 
@@ -181,14 +183,6 @@ namespace CalamityOverhaul.Content.Demo
             Player owner = Main.player[Projectile.owner];
             if (owner.active && !owner.dead) {
                 Projectile.Center = owner.Center;
-            }
-
-            //顿帧保持：终结冲击后世界冻结期间时间轴挂起，姿态定格
-            if (impactFired && hitstopHold > 0 && CWRWorld.TimeFrozenTick > 0) {
-                hitstopHold--;
-                Projectile.timeLeft++;
-                PushScreenState();
-                return;
             }
 
             timer++;
@@ -274,54 +268,55 @@ namespace CalamityOverhaul.Content.Demo
             }
         }
 
-        /// <summary>终结冲击帧：仅在实际命中目标时触发（<see cref="OnHitNPC"/> 内判定）——
-        /// 世界顿帧 + 白闪 + 爆点全层（无震屏/压暗/变焦）；挥空不触发，安静收场</summary>
-        private void DoFinisherImpact() {
-            impactFired = true;
-            impactFrame = timer;
-            hitstopHold = HitstopFrames;
-            CWRWorld.TimeFrozenTick = HitstopFrames;
+        /// <summary>每拍首次命中共用的爆点全层演出（白闪 + 粒子层 + 加色爆点绘制）——
+        /// 五拍强度统一按 power(0..1) 缩放，拒绝"只有最后一下有反馈"的断手感；
+        /// 不冻结世界/目标时间，命中确认全部交给音效/粒子/白闪本身的冲击力</summary>
+        private void TriggerImpactBurst(Vector2 pos, float power) {
+            lastImpactFrame = timer;
+            lastImpactPos = pos;
 
-            SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.35f, Volume = 0.9f }, ImpactWorldPos);
-            SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.55f, Volume = 0.45f }, ImpactWorldPos);
+            SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
+            SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.6f - power * 0.1f, Volume = 0.2f + power * 0.25f }, pos);
 
-            CrimsonImpactFX.PushImpact(ImpactWorldPos, 0.36f);
+            CrimsonImpactFX.PushImpact(pos, 0.02f + power * 0.01f);
 
             if (Main.dedServ) {
                 return;
             }
 
-            Vector2 impact = ImpactWorldPos;
             Vector2 aimDir = AimDir;
 
-            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(impact, Vector2.Zero
-                , new Color(255, 225, 205), 1.5f * SizeMul);
-            for (int i = 0; i < 2; i++) {
+            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(pos, Vector2.Zero
+                , new Color(255, 225, 205), (0.75f + power * 0.8f) * SizeMul);
+            int satellites = 1 + (int)(power * 2f);
+            for (int i = 0; i < satellites; i++) {
                 Vector2 off = Main.rand.NextVector2Circular(24f, 24f) * SizeMul;
-                PRTLoader.NewParticle<PRT_CrimsonHitFlash>(impact + off, off * 0.05f
-                    , new Color(255, 140, 110), Main.rand.NextFloat(0.55f, 0.8f) * SizeMul);
+                PRTLoader.NewParticle<PRT_CrimsonHitFlash>(pos + off, off * 0.05f
+                    , new Color(255, 140, 110), Main.rand.NextFloat(0.5f, 0.75f) * SizeMul);
             }
 
-            for (int i = 0; i < 20; i++) {
-                Vector2 vel = aimDir.RotatedByRandom(0.78) * Main.rand.NextFloat(6f, 21f) * SizeMul;
+            int mainSparks = 8 + (int)(power * 14f);
+            for (int i = 0; i < mainSparks; i++) {
+                Vector2 vel = aimDir.RotatedByRandom(0.78) * Main.rand.NextFloat(5f, 12f + power * 10f) * SizeMul;
                 Color c = Main.rand.NextBool(3) ? new Color(255, 236, 210) : new Color(255, 92, 58);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(impact, vel, c
-                    , Main.rand.NextFloat(0.5f, 1.05f) * SizeMul)
-                    ?.Configure(Main.rand.Next(22, 40), affectedByGravity: true);
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, c
+                    , Main.rand.NextFloat(0.45f, 0.7f + power * 0.4f) * SizeMul)
+                    ?.Configure(Main.rand.Next(18, 30 + (int)(power * 12f)), affectedByGravity: true);
             }
-            for (int i = 0; i < 6; i++) {
+            int backSparks = 2 + (int)(power * 5f);
+            for (int i = 0; i < backSparks; i++) {
                 Vector2 vel = (-aimDir).RotatedByRandom(1.1) * Main.rand.NextFloat(3f, 8f) * SizeMul;
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(impact, vel, new Color(255, 70, 46)
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 70, 46)
                     , Main.rand.NextFloat(0.35f, 0.6f) * SizeMul)
                     ?.Configure(Main.rand.Next(16, 26), affectedByGravity: false);
             }
         }
 
-        /// <summary>屏幕级演出包络：仅 Bloom + 终结脉冲（白闪由节拍触发）</summary>
+        /// <summary>屏幕级演出包络：仅 Bloom + 命中脉冲（白闪由节拍触发）</summary>
         private void PushScreenState() {
             float bloom = 0.28f;
-            if (impactFired) {
-                float bp = MathHelper.Clamp((timer - impactFrame) / (float)BurstFadeFrames, 0f, 1f);
+            if (lastImpactFrame >= 0) {
+                float bp = MathHelper.Clamp((timer - lastImpactFrame) / (float)BurstFadeFrames, 0f, 1f);
                 bloom += 0.38f * (1f - bp) * (1f - bp);
             }
             if (timer > TotalLifetime - 14) {
@@ -438,13 +433,22 @@ namespace CalamityOverhaul.Content.Demo
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, Volume = 0.75f }, target.Center);
 
-            //终结斩确认命中才触发大型冲击演出（世界顿帧/全屏白闪/爆点全层）——
-            //挥空不再触发，避免"无论如何都会炸屏"
-            if (slashes != null && !impactFired) {
-                ref readonly SlashDef fin = ref slashes[FinisherIndex];
-                int lt = timer - fin.Birth;
-                if (lt >= fin.DamageStart && lt <= fin.DamageEnd) {
-                    DoFinisherImpact();
+            //五拍每拍首次命中都触发同一套爆点全层演出（强度按拍位递增）——
+            //拒绝"只有最后一下有反馈"的断手感；不冻结世界/目标时间
+            if (slashes != null) {
+                for (int i = 0; i < slashes.Length; i++) {
+                    if (beatImpactDone[i]) {
+                        continue;
+                    }
+                    ref readonly SlashDef d = ref slashes[i];
+                    int lt = timer - d.Birth;
+                    if (lt < d.DamageStart || lt > d.DamageEnd) {
+                        continue;
+                    }
+                    beatImpactDone[i] = true;
+                    float power = (i + 1) / (float)slashes.Length;
+                    TriggerImpactBurst(target.Center, power);
+                    break;
                 }
             }
 
@@ -487,10 +491,10 @@ namespace CalamityOverhaul.Content.Demo
             DrawCollapseCore();
         }
 
-        /// <summary>终结爆点 + 余韵光球，自管加色批次</summary>
+        /// <summary>命中爆点 + 余韵光球，自管加色批次</summary>
         private void DrawAdditiveLayers() {
-            bool burstActive = impactFired && timer - impactFrame < BurstFadeFrames;
-            bool afterglowActive = impactFired && timer - impactFrame is >= 26 and < 46;
+            bool burstActive = lastImpactFrame >= 0 && timer - lastImpactFrame < BurstFadeFrames;
+            bool afterglowActive = lastImpactFrame >= 0 && timer - lastImpactFrame is >= 26 and < 46;
             if (!burstActive && !afterglowActive) {
                 return;
             }
@@ -503,28 +507,28 @@ namespace CalamityOverhaul.Content.Demo
                 DrawImpactBurst(sb);
             }
 
-            //余韵：暗紫红光球内爆收束（参考序列尾帧）
+            //余韵：暗紫红光球内爆收束（参考序列尾帧）——仅在下一拍命中前完整播放
             if (afterglowActive && DemoAssets.StarFlare01?.Value is Texture2D orb) {
-                float t = (timer - impactFrame - 26) / 20f;
+                float t = (timer - lastImpactFrame - 26) / 20f;
                 float oA = MathF.Sin(t * MathF.PI) * 0.42f;
                 float oS = MathHelper.Lerp(0.9f, 0.18f, CSR.EaseOutCubic(t)) * SizeMul;
                 Color oc = Color.Lerp(new Color(210, 70, 130), new Color(70, 24, 66), t);
-                sb.Draw(orb, ImpactWorldPos - Main.screenPosition, null, oc * oA
+                sb.Draw(orb, lastImpactPos - Main.screenPosition, null, oc * oA
                     , t * 2.4f, orb.Size() * 0.5f, oS, SpriteEffects.None, 0);
             }
 
             sb.End();
         }
 
-        /// <summary>终结爆点全 layer：星爆核心/放射尖刺/十字闪/扩散环/撕裂形/速度线</summary>
+        /// <summary>命中爆点全 layer：星爆核心/放射尖刺/十字闪/扩散环/撕裂形/速度线</summary>
         private void DrawImpactBurst(SpriteBatch sb) {
-            float bt = MathHelper.Clamp(timer - impactFrame, 0f, BurstFadeFrames);
+            float bt = MathHelper.Clamp(timer - lastImpactFrame, 0f, BurstFadeFrames);
             float bp = bt / BurstFadeFrames;
             if (bp >= 1f) {
                 return;
             }
 
-            Vector2 impact = ImpactWorldPos - Main.screenPosition;
+            Vector2 impact = lastImpactPos - Main.screenPosition;
             Vector2 aimDir = AimDir;
             float inv = 1f - bp;
             float easeOut = 1f - MathF.Pow(inv, 3f);
@@ -612,8 +616,8 @@ namespace CalamityOverhaul.Content.Demo
         /// 注意：AlphaBlend 压暗必须用 alpha 通道承载形状的贴图（SmokeSheet01），
         /// 黑底不透明的亮度型贴图会把整个 quad 糊成暗色方框</summary>
         private void DrawCollapseCore() {
-            float bt = timer - impactFrame;
-            if (!impactFired || bt < 2f || bt > 8f) {
+            float bt = timer - lastImpactFrame;
+            if (lastImpactFrame < 0 || bt < 2f || bt > 8f) {
                 return;
             }
             Texture2D cloud = DemoAssets.SmokeSheet01?.Value;
@@ -630,7 +634,7 @@ namespace CalamityOverhaul.Content.Demo
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-            sb.Draw(cloud, ImpactWorldPos - Main.screenPosition, frame
+            sb.Draw(cloud, lastImpactPos - Main.screenPosition, frame
                 , new Color(16, 4, 9) * coreA, Projectile.whoAmI * 1.37f
                 , frame.Size() * 0.5f, coreS, SpriteEffects.None, 0);
             sb.End();
