@@ -36,12 +36,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                 odp.PendingPaperCapture = false;
                 odp.PaperValid = false;
                 DrawLowQualityFallback(spriteBatch, odp);
-                DrawSlashOverlays(spriteBatch, odp);
+                DrawOverlays(spriteBatch, odp);
                 return;
             }
 
             ApplyGradeAndPeel(spriteBatch, graphicsDevice, screenSwap, odp);
-            DrawSlashOverlays(spriteBatch, odp);
+            DrawOverlays(spriteBatch, odp);
         }
 
         public override void EndEntityDraw(SpriteBatch spriteBatch, Main main) {
@@ -80,26 +80,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             bool gradeUra = capturing ? !odp.WorldIsUra : odp.WorldIsUra;
 
             Vector2 screenSize = new(Main.screenWidth, Main.screenHeight);
-            Vector2 slashScreen = Vector2.Transform(
-                odp.SlashWorldPos - Main.screenPosition,
+            Vector2 spreadOrigin = Vector2.Transform(
+                odp.EyeWorldPos - Main.screenPosition,
                 Main.GameViewMatrix.TransformationMatrix);
 
             float stillness = 0f;
             if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.PreSilence) {
-                stillness = MathHelper.Clamp(odp.PhaseTimer / 45f, 0f, 1f);
+                stillness = MathHelper.Clamp(odp.PhaseTimer / 30f, 0f, 1f);
             }
 
             bool spread = odp.Phase == OniDomainPhase.Opening || odp.Phase == OniDomainPhase.Closing;
+            //浪头红烬：爆域最烈随扩散衰减，吸回时余温
+            float frontEmber = 0f;
+            if (odp.Phase == OniDomainPhase.Opening) {
+                frontEmber = MathHelper.Lerp(1.0f, 0.3f, odp.SpreadProgress);
+            }
+            else if (odp.Phase == OniDomainPhase.Closing) {
+                frontEmber = 0.3f;
+            }
 
             grade.Parameters["uTime"]?.SetValue(odp.EffectTime);
             grade.Parameters["uScreenSize"]?.SetValue(screenSize);
             grade.Parameters["uWorldBlend"]?.SetValue(gradeUra ? 1f : 0f);
             grade.Parameters["uSpreadMode"]?.SetValue(spread ? 1f : 0f);
             grade.Parameters["uSpreadProgress"]?.SetValue(odp.SpreadProgress);
-            grade.Parameters["uSlashScreenPos"]?.SetValue(slashScreen);
+            grade.Parameters["uSpreadOrigin"]?.SetValue(spreadOrigin);
             grade.Parameters["uAnomalyPulse"]?.SetValue(odp.AnomalyPulse);
             grade.Parameters["uNegativeFlash"]?.SetValue(odp.NegativeFlash);
             grade.Parameters["uStillness"]?.SetValue(stillness);
+            grade.Parameters["uFrontEmber"]?.SetValue(frontEmber);
 
             //调色回写主屏
             graphicsDevice.SetRenderTarget(Main.screenTarget);
@@ -167,9 +176,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             Vector2 dir = odp.FlipSlashAngle.ToRotationVector2();
             Vector2 nrm = new(-dir.Y, dir.X);
             float prog = odp.PeelProgress;
-            //滑出：三次缓入，末段加速离场
+            //滑出：三次缓入，末段加速离场；两半按 PeelBias 不对称分滑
             float slide = prog * prog * (3f - 2f * prog);
-            float slideDist = screenSize.Length() * 0.36f * slide * slide;
+            float slideDist = screenSize.Length() * 0.72f * slide * slide;
             float rot = 0.085f * slide;
 
             peel.Parameters["uTime"]?.SetValue(odp.EffectTime);
@@ -186,25 +195,100 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
 
             for (int half = 0; half < 2; half++) {
                 float sign = half == 0 ? 1f : -1f;
+                //两半按 PeelBias 不对称分滑，每次翻转构图不同
+                float bias = half == 0 ? odp.PeelBias : 1f - odp.PeelBias;
                 peel.Parameters["uHalfSign"]?.SetValue(sign);
                 peel.CurrentTechnique.Passes[0].Apply();
-                Vector2 pos = center + nrm * sign * slideDist;
-                spriteBatch.Draw(paper, pos, null, Color.White, sign * rot, center, 1f, SpriteEffects.None, 0f);
+                Vector2 pos = center + nrm * sign * slideDist * bias;
+                spriteBatch.Draw(paper, pos, null, Color.White,
+                    sign * rot * (0.5f + bias), center, 1f, SpriteEffects.None, 0f);
             }
 
             spriteBatch.End();
         }
 
-        //====== 白线开域刀痕 / 全屏翻转刀痕 ======
+        //====== 调色后叠加层：翻转刀痕 / 鬼眼 ======
 
-        private static void DrawSlashOverlays(SpriteBatch spriteBatch, OniDomainPlayer odp) {
+        private static void DrawOverlays(SpriteBatch spriteBatch, OniDomainPlayer odp) {
+            DrawOpeningDim(spriteBatch, odp);
+            DrawBurstShockwave(spriteBatch, odp);
+            DrawFlipSlashLine(spriteBatch, odp);
+            DrawEyeOverlays(spriteBatch, odp);
+        }
+
+        //爆域冲击波：追着浸染前沿跑的红光环 + 头几帧的红闪
+        private static void DrawBurstShockwave(SpriteBatch spriteBatch, OniDomainPlayer odp) {
+            if (odp.Phase != OniDomainPhase.Opening) {
+                return;
+            }
+            int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
+            int st = odp.PhaseTimer - tBurst;
+            if (st < 0 || st > 16) {
+                return;
+            }
+            Texture2D ring = CWRAsset.DiffusionCircle?.Value;
+            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            if (ring == null || white == null) {
+                return;
+            }
+
+            float f = st / 16f;
+            Vector2 origin = Vector2.Transform(
+                odp.EyeWorldPos - Main.screenPosition,
+                Main.GameViewMatrix.TransformationMatrix);
+            float diag = new Vector2(Main.screenWidth, Main.screenHeight).Length();
+            //环半径贴合浸染前沿（mask 前沿位于 dist≈progress*1.18）
+            float radius = odp.SpreadProgress * 1.18f * diag + 50f;
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
+
+            //头 5 帧红闪
+            if (st < 5) {
+                float flashA = 0.30f * (1f - st / 5f);
+                spriteBatch.Draw(white, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                    new Color(0.90f, 0.24f, 0.14f, 0f) * flashA);
+            }
+
+            Color ringCol = new Color(1f, 0.30f, 0.14f, 0f) * (0.55f * (1f - f));
+            float scale = radius * 2f / ring.Width;
+            spriteBatch.Draw(ring, origin, null, ringCol, 0f,
+                ring.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+
+            spriteBatch.End();
+        }
+
+        //鬼眼成形期间世界屏息压暗，爆域随扩散抬回
+        private static void DrawOpeningDim(SpriteBatch spriteBatch, OniDomainPlayer odp) {
+            if (odp.Phase != OniDomainPhase.Opening) {
+                return;
+            }
+            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            if (white == null) {
+                return;
+            }
+            int tBurst = OniDomain.EyeEmergeFrames + OniDomain.EyeOpenFrames + OniDomain.EyeBurstFrames;
+            float dim = odp.PhaseTimer <= tBurst
+                ? odp.PhaseTimer / (float)tBurst
+                : 1f - odp.SpreadProgress;
+            if (dim <= 0.002f) {
+                return;
+            }
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
+                SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone);
+            Rectangle full = new(0, 0, Main.screenWidth, Main.screenHeight);
+            spriteBatch.Draw(white, full, new Color(4, 2, 6) * (0.24f * dim));
+            spriteBatch.End();
+        }
+
+        private static void DrawFlipSlashLine(SpriteBatch spriteBatch, OniDomainPlayer odp) {
             Texture2D white = CWRAsset.Placeholder_White?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (white == null || glow == null) {
                 return;
             }
 
-            float openLine = odp.SlashLineIntensity;
             float flipLine = 0f;
             if (odp.Phase == OniDomainPhase.Flipping) {
                 if (odp.FlipStage == OniFlipStage.Flash) {
@@ -214,33 +298,91 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                     flipLine = MathHelper.Clamp(1f - odp.PeelProgress * 5f, 0f, 1f);
                 }
             }
-            if (openLine <= 0.001f && flipLine <= 0.001f) {
+            if (flipLine <= 0.001f) {
                 return;
             }
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
                 SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
 
-            if (openLine > 0.001f) {
-                //世界裂口：竖直微斜白线，出现时抽长
+            //全屏斜断刀痕
+            Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
+            float diag = new Vector2(Main.screenWidth, Main.screenHeight).Length();
+            DrawSlashLine(spriteBatch, white, glow, center,
+                odp.FlipSlashAngle + MathHelper.PiOver2, diag * 1.25f, flipLine);
+
+            spriteBatch.End();
+        }
+
+        private static void DrawEyeOverlays(SpriteBatch spriteBatch, OniDomainPlayer odp) {
+            Effect eye = EffectLoader.OniEye?.Value;
+            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (eye == null || white == null || noise == null) {
+                return;
+            }
+
+            //主眼，世界锚定；不限阶段，Omote 里的余韵也画
+            if (odp.EyeVisible) {
                 Vector2 pos = Vector2.Transform(
-                    odp.SlashWorldPos - Main.screenPosition,
+                    odp.EyeWorldPos - Main.screenPosition,
                     Main.GameViewMatrix.TransformationMatrix);
-                float ease = 1f - (1f - openLine) * (1f - openLine);
-                float len = MathHelper.Lerp(26f, 200f, ease);
-                float flicker = 0.9f + 0.1f * MathF.Sin(odp.EffectTime * 37f);
-                float angle = -0.13f;
-                DrawSlashLine(spriteBatch, white, glow, pos, angle, len, openLine * flicker);
+                //活体悬浮：轻微上下漂 + 睁眼撑大 + 爆闪鼓胀
+                pos.Y += MathF.Sin(odp.EffectTime * 2.1f) * 3.5f;
+                float halfSize = 118f * (0.88f + 0.12f * odp.EyeOpenAmount) + 16f * odp.EyeFlash;
+                DrawEyeQuad(spriteBatch, eye, white, noise, pos, halfSize,
+                    odp.EyeIntensity, odp.EyeOpenAmount, odp.EyeSpin, odp.EyeFlash,
+                    odp.EyeDissolve, odp.EffectTime);
             }
 
-            if (flipLine > 0.001f) {
-                //全屏斜断刀痕
-                Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f;
-                float diag = new Vector2(Main.screenWidth, Main.screenHeight).Length();
-                DrawSlashLine(spriteBatch, white, glow, center,
-                    odp.FlipSlashAngle + MathHelper.PiOver2, diag * 1.25f, flipLine);
+            //负片帧彩蛋：旧世界的日/月化作同一只眼看你一眼
+            if (odp.Phase == OniDomainPhase.Flipping && odp.FlipStage == OniFlipStage.Flash
+                && odp.NegativeFlash > 0.01f) {
+                float camX = Main.screenPosition.X;
+                bool sun = odp.FlipToUra;
+                //与 OniSky.fx 的天体位置常量保持一致
+                Vector2 c = sun
+                    ? new Vector2(0.310f - camX * 0.000010f, 0.560f)
+                    : new Vector2(0.700f - camX * 0.000012f, 0.250f);
+                Vector2 pos = new(c.X * Main.screenWidth, c.Y * Main.screenHeight);
+                float bodyR = (sun ? 0.105f : 0.150f) * Main.screenHeight;
+                DrawEyeQuad(spriteBatch, eye, white, noise, pos, bodyR * 2.3f,
+                    odp.NegativeFlash, 1f, odp.EffectTime * 1.3f, 0f, 0f, odp.EffectTime);
             }
+        }
 
+        private static void DrawEyeQuad(SpriteBatch spriteBatch, Effect eye, Texture2D white, Texture2D noise,
+            Vector2 center, float halfSize, float intensity, float open, float spin, float flash,
+            float dissolve, float time) {
+
+            var gd = Main.instance.GraphicsDevice;
+            eye.Parameters["uTime"]?.SetValue(time);
+            eye.Parameters["uIntensity"]?.SetValue(intensity);
+            eye.Parameters["uOpen"]?.SetValue(open);
+            eye.Parameters["uSpin"]?.SetValue(spin);
+            eye.Parameters["uFlash"]?.SetValue(flash);
+            eye.Parameters["uDissolve"]?.SetValue(dissolve);
+
+            Vector2 scale = new(halfSize * 2f / white.Width, halfSize * 2f / white.Height);
+            Vector2 origin = white.Size() * 0.5f;
+
+            gd.Textures[1] = noise;
+            gd.SamplerStates[1] = SamplerState.LinearWrap;
+
+            //本体
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
+            eye.CurrentTechnique = eye.Techniques["TechEyeBase"];
+            eye.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(white, center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.End();
+
+            //红光
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive,
+                SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
+            eye.CurrentTechnique = eye.Techniques["TechEyeGlow"];
+            eye.CurrentTechnique.Passes[0].Apply();
+            spriteBatch.Draw(white, center, null, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
             spriteBatch.End();
         }
 

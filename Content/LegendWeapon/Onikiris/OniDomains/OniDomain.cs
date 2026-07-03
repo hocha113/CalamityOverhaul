@@ -24,17 +24,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
     /// </summary>
     public static class OniDomain
     {
-        //Opening 时序
-        public const int SlashRevealFrames = 36;    //裂口白线浮现
-        public const int OpenSpreadFrames = 130;    //墨水浸染全屏
+        //Opening 时序：鬼眼浮现→睁眼→勾玉狂旋→爆域
+        public const int EyeEmergeFrames = 26;      //闭眼轮廓浮现，灵体汇聚
+        public const int EyeOpenFrames = 12;        //眼睑猛然撑开
+        public const int EyeBurstFrames = 10;       //勾玉加速至虹膜闪白
+        public const int OpenSpreadFrames = 46;     //墨浪爆扩全屏（缓出）
         //Flipping 时序
-        public const int PreSilenceToUra = 92;      //入里前死寂
-        public const int PreSilenceToOmote = 36;    //回表前停顿
+        public const int PreSilenceToUra = 55;      //入里前死寂
+        public const int PreSilenceToOmote = 20;    //回表前停顿
         public const int FlashFrames = 7;           //负片闪
-        public const int PeelFrames = 86;           //纸层剥落
-        public const int SettleFrames = 30;         //落定
-        //Closing 时序
-        public const int CloseFrames = 132;         //墨水退潮
+        public const int PeelFrames = 60;           //纸层剥落
+        public const int SettleFrames = 18;         //落定
+        //Closing 时序：眼睛重现→墨水吸回→阖眼
+        public const int CloseEyeFrames = 16;       //眼睛重现
+        public const int CloseRetractFrames = 56;   //墨水吸回眼中（缓入）
+        public const int CloseBlinkFrames = 14;     //阖眼收尾
 
         /// <summary>本地玩家域状态，服务器与主菜单返回 null</summary>
         public static OniDomainPlayer Local {

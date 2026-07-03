@@ -14,10 +14,11 @@ float2 uScreenSize;     //像素
 float uWorldBlend;      //0=表 1=里，捕获帧瞬切（纸层覆盖期间不可见）
 float uSpreadMode;      //0=全覆盖 1=开合浸染
 float uSpreadProgress;  //0~1 墨水覆盖
-float2 uSlashScreenPos; //裂口屏幕像素坐标
+float2 uSpreadOrigin;   //扩散原点屏幕像素坐标（鬼眼位置）
 float uAnomalyPulse;    //0~1 错位帧
 float uNegativeFlash;   //0~1 负片闪
 float uStillness;       //0~1 死寂加深
+float uFrontEmber;      //0~1 扩散前沿红烬强度（爆域时最烈）
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
@@ -135,7 +136,7 @@ float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
 
     //墨水浸染遮罩：毛边墨须为双频笛卡尔噪声扰动前沿
     float diag = length(uScreenSize);
-    float2 rel = (coords * uScreenSize - uSlashScreenPos) / diag;
+    float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
     float dist = length(rel);
     float jag = noiseTex(coords * 2.3 + uTime * 0.012) * 0.6
               + noiseTex(coords * 5.1 - uTime * 0.017) * 0.4;
@@ -147,6 +148,8 @@ float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
 
     float3 final = lerp(src, graded, mask);
     final = lerp(final, final * float3(0.22, 0.20, 0.27), front * 0.75);
+    //爆域浪头红烬
+    final += float3(0.72, 0.09, 0.05) * front * uFrontEmber;
 
     //负片闪
     final = lerp(final, 1.0 - final, uNegativeFlash * 0.92);

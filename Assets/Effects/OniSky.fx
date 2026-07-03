@@ -11,11 +11,15 @@ sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 
 float uTime;
-float uSkyAlpha;        //0~1 天空整体在场（开收域淡入淡出）
+float uSkyAlpha;        //0~1 天空整体在场
 float uUraBlend;        //0=表 1=里，翻转期间快速过渡
 float2 uScreenSize;     //像素
 float uCamX;            //Main.screenPosition.X 像素，视差用
 float uCamY;            //Main.screenPosition.Y 像素
+float uSpreadMode;      //0=全覆盖 1=开合浸染（与 OniWorldGrade 同款遮罩，圈内即完整新世界）
+float uSpreadProgress;  //0~1 墨水覆盖
+float2 uSpreadOrigin;   //扩散原点（视口像素，鬼眼位置）
+float uMaskTime;        //遮罩噪声时间，必须与 OniWorldGrade 的 uTime 同源，否则毛边前沿错位
 
 //====== 表世界调色板：逢魔黄昏 ======
 static const float3 OMO_SKY_TOP = float3(0.335, 0.245, 0.285);
@@ -288,7 +292,16 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float3 mistCol = lerp(OMO_MIST, URA_MIST, ura);
     col = lerp(col, mistCol, mist * lerp(0.28, 0.52, ura));
 
-    float alpha = uSkyAlpha * 0.97;
+    //开合浸染遮罩：公式与 OniWorldGrade 完全一致，圈到哪天空换到哪
+    float diag = length(uScreenSize);
+    float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
+    float dist = length(rel);
+    float jag = noiseTex(coords * 2.3 + uMaskTime * 0.012) * 0.6
+              + noiseTex(coords * 5.1 - uMaskTime * 0.017) * 0.4;
+    float sd = dist + (jag - 0.5) * 0.16 - uSpreadProgress * 1.18;
+    float mask = lerp(1.0, 1.0 - smoothstep(-0.012, 0.014, sd), step(0.5, uSpreadMode));
+
+    float alpha = uSkyAlpha * 0.97 * mask;
     return float4(col * alpha, alpha);
 }
 

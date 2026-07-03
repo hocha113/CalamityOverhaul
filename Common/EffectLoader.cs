@@ -160,6 +160,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }
         public static Asset<Effect> OniDomainDeco { get; set; }
+        public static Asset<Effect> OniEye { get; set; }
         public static Asset<Effect> AckBackdrop { get; set; }
         public static Asset<Effect> AckFinale { get; set; }
         public static Asset<Effect> AckGlow { get; set; }

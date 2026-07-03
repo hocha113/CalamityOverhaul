@@ -53,14 +53,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             public int MaxLife;
         }
 
+        private class Wisp
+        {
+            public Vector2 Pos;
+            public Vector2 Vel;
+            public Vector2 Target;
+            public bool Homing;
+            public float Size;
+            public int Life;
+            public int MaxLife;
+        }
+
         private static readonly List<Petal> petals = new();
         private static readonly List<Lantern> lanterns = new();
         private static readonly List<Ash> ashes = new();
+        private static readonly List<Wisp> wisps = new();
 
         private const int OmotePetalCap = 44;
         private const int UraPetalCap = 10;
         private const int LanternCap = 8;
         private const int AshCap = 140;
+        private const int WispCap = 90;
 
         private static readonly Color PetalPink = new(255, 205, 216);
         private static readonly Color PetalPinkDeep = new(250, 178, 194);
@@ -71,6 +84,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             petals.Clear();
             lanterns.Clear();
             ashes.Clear();
+            wisps.Clear();
+        }
+
+        //====== 灵体：向鬼眼汇聚 / 自鬼眼逸散 ======
+
+        public static void SpawnEyeConverge(Vector2 eyeWorld, int count) {
+            for (int i = 0; i < count && wisps.Count < WispCap; i++) {
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                float dist = Main.rand.NextFloat(140f, 280f);
+                Vector2 pos = eyeWorld + ang.ToRotationVector2() * dist;
+                Vector2 vel = (eyeWorld - pos).SafeNormalize(Vector2.UnitY) * Main.rand.NextFloat(2.6f, 5.2f);
+                wisps.Add(new Wisp {
+                    Pos = pos,
+                    Vel = vel,
+                    Target = eyeWorld,
+                    Homing = true,
+                    Size = Main.rand.NextFloat(2.6f, 5.5f),
+                    MaxLife = Main.rand.Next(45, 80)
+                });
+            }
+        }
+
+        public static void SpawnEyeScatter(Vector2 eyeWorld, int count) {
+            for (int i = 0; i < count && wisps.Count < WispCap; i++) {
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 pos = eyeWorld + ang.ToRotationVector2() * Main.rand.NextFloat(10f, 55f);
+                Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(1.4f, 3.4f)
+                    + new Vector2(0f, -0.7f);
+                wisps.Add(new Wisp {
+                    Pos = pos,
+                    Vel = vel,
+                    Homing = false,
+                    Size = Main.rand.NextFloat(2.2f, 4.8f),
+                    MaxLife = Main.rand.Next(45, 85)
+                });
+            }
+        }
+
+        private static void UpdateWisps() {
+            for (int i = wisps.Count - 1; i >= 0; i--) {
+                Wisp w = wisps[i];
+                w.Life++;
+                if (w.Homing) {
+                    //加速扑向眼睛，近了就没入
+                    Vector2 toT = w.Target - w.Pos;
+                    float d = toT.Length();
+                    if (d < 16f || w.Life >= w.MaxLife) {
+                        wisps.RemoveAt(i);
+                        continue;
+                    }
+                    float speed = w.Vel.Length() * 1.03f + 0.08f;
+                    w.Vel = Vector2.Lerp(w.Vel, toT / d * speed, 0.14f);
+                }
+                else {
+                    w.Vel *= 0.965f;
+                    w.Vel.Y -= 0.012f;
+                    if (w.Life >= w.MaxLife) {
+                        wisps.RemoveAt(i);
+                        continue;
+                    }
+                }
+                w.Pos += w.Vel;
+            }
         }
 
         /// <summary>死寂：花瓣全部空中冻结</summary>
@@ -122,6 +198,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             UpdatePetals(odp);
             UpdateLanterns(odp);
             UpdateAshes(odp);
+            UpdateWisps();
         }
 
         //====== 樱瓣 ======
@@ -343,7 +420,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
         //====== 绘制，由 OniDomainRender.EndEntityDraw 调用 ======
 
         public static void Draw(SpriteBatch spriteBatch) {
-            if (petals.Count == 0 && lanterns.Count == 0 && ashes.Count == 0) {
+            if (petals.Count == 0 && lanterns.Count == 0 && ashes.Count == 0 && wisps.Count == 0) {
                 return;
             }
 
@@ -409,9 +486,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                 spriteBatch.End();
             }
 
-            //灯笼光晕 + 燃瓣余烬，Additive
+            //灯笼光晕 + 燃瓣余烬 + 灵体，Additive
             Texture2D glowTex = CWRAsset.SoftGlow?.Value;
-            if (glowTex != null && (lanterns.Count > 0 || petals.Count > 0)) {
+            if (glowTex != null && (lanterns.Count > 0 || petals.Count > 0 || wisps.Count > 0)) {
                 spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive,
                     SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone,
                     null, Main.GameViewMatrix.TransformationMatrix);
@@ -434,6 +511,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                     float s = 34f * p.Scale / glowTex.Width;
                     spriteBatch.Draw(glowTex, p.Pos - Main.screenPosition, null, ember,
                         0f, gOrigin, s, SpriteEffects.None, 0f);
+                }
+
+                //灵体：红色小光点拖尾
+                foreach (Wisp w in wisps) {
+                    float lifeF = w.Life / (float)w.MaxLife;
+                    float a = MathF.Sin(MathHelper.Clamp(lifeF, 0f, 1f) * MathHelper.Pi) * 0.65f;
+                    Color c = new Color(1f, 0.24f, 0.08f, 0f) * a;
+                    float s = w.Size * 11f / glowTex.Width;
+                    spriteBatch.Draw(glowTex, w.Pos - Main.screenPosition, null, c,
+                        0f, gOrigin, s, SpriteEffects.None, 0f);
+                    //速度方向小拖尾
+                    spriteBatch.Draw(glowTex, w.Pos - w.Vel * 1.6f - Main.screenPosition, null, c * 0.45f,
+                        0f, gOrigin, s * 0.7f, SpriteEffects.None, 0f);
                 }
 
                 spriteBatch.End();
