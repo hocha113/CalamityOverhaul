@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.TimeFreezes;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -67,6 +68,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
         private int flipStageTimer;
         private int preSilenceDuration;
         private long lastCommandFrame = -1;
+
+        //WorldFreezeSystem reason 标签
+        private const string FreezeReason = "OniDomainFlip";
+        //本次翻转是否由本机挂了时停
+        private bool flipFreezeHeld;
 
         //环境音计时
         private int ambienceTimer;
@@ -144,7 +150,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             //斜向刀痕，围绕 -35° 随机摆动
             FlipSlashAngle = MathHelper.ToRadians(-35f) + Main.rand.NextFloat(-0.22f, 0.22f);
             OniDomainDeco.NotifyFreeze();
+
+            //翻转仪式全程时停：世界屏息，纸层揭开后恢复。多人下静态快照体系会失同步，单人才挂
+            if (VaultUtils.isSinglePlayer && Player.whoAmI == Main.myPlayer) {
+                WorldFreezeSystem.Activate(FreezeReason);
+                flipFreezeHeld = true;
+                if (Main.LocalPlayer.Alives()) {
+                    //预填飞行时间，防首次进入快照被零值覆盖
+                    WorldFreezePlayer freezePlayer = Main.LocalPlayer.GetModPlayer<WorldFreezePlayer>();
+                    freezePlayer.frozenWingTime = Main.LocalPlayer.wingTime;
+                    freezePlayer.frozenRocketTime = Main.LocalPlayer.rocketTime;
+                }
+            }
             return true;
+        }
+
+        private void ReleaseFlipFreeze() {
+            if (!flipFreezeHeld) {
+                return;
+            }
+            WorldFreezeSystem.Deactivate(FreezeReason);
+            flipFreezeHeld = false;
         }
 
         //同帧防重入
@@ -278,6 +304,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
                         FlipStage = OniFlipStage.Settle;
                         flipStageTimer = 0;
                         PaperValid = false;
+                        //纸层落尽，新世界开始呼吸
+                        ReleaseFlipFreeze();
                     }
                     break;
 
@@ -378,6 +406,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
         private static int SetAnomalyInterval() => Main.rand.Next(420, 900);
 
         internal void ResetDomain() {
+            ReleaseFlipFreeze();
             Phase = OniDomainPhase.Closed;
             PhaseTimer = 0;
             WorldIsUra = false;

@@ -7,23 +7,30 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
 {
-    //里世界激活天空替换
+    //鬼域激活期间（表里都算）启用天空替换
     internal class OniDomainSkyData : ModSceneEffect
     {
         public override int Music => -1;
         public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
         public override bool IsSceneEffectActive(Player player) =>
-            player.whoAmI == Main.myPlayer && OniDomain.LocalUraSmooth > 0.01f;
+            player.whoAmI == Main.myPlayer && (OniDomain.Local?.AnyActive ?? false);
         public override void SpecialVisuals(Player player, bool isActive) =>
             player.ManageSpecialBiomeVisuals(OniDomainSky.Name, isActive);
     }
 
-    /// <summary>里世界天空：墨色天穹、苍白圆月、鸟居剪影，强度随 UraSmooth</summary>
+    /// <summary>
+    /// 鬼域双世界天空：表=逢魔黄昏，里=淡底浓墨，山脊几何表里同构
+    /// <br/>在场强度随开收域墨水进度，表里切换用快速过渡（剥落纸层作掩护）
+    /// </summary>
     internal class OniDomainSky : CustomSky, ICWRLoader
     {
         internal static string Name => "CWRMod:OniDomainSky";
 
         private bool active;
+        //天空在场 0~1，跟随墨水覆盖
+        private float presence;
+        //表里调色板过渡 0~1，比 UraSmooth 快，赶在纸层揭开前完成
+        private float uraBlend;
 
         void ICWRLoader.LoadData() {
             if (Main.dedServ) {
@@ -32,26 +39,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             //ManageSpecialBiomeVisuals 对 Filters.Scene[name] 不做空检查，
             //Sky 与 Filter 必须同名成对注册，缺 Filter 直接 NRE
             SkyManager.Instance[Name] = this;
-            //冷暗微滤镜：主调色由 OniWorldGrade 负责，这里只垫低画质回退时的底色
+            //冷暗微滤镜：透明度由 Update 动态驱动，仅里世界生效
             Filters.Scene[Name] = new Filter(new ScreenShaderData("FilterMiniTower")
                 .UseColor(0.03f, 0.03f, 0.06f)
-                .UseOpacity(0.12f), EffectPriority.High);
+                .UseOpacity(0f), EffectPriority.High);
         }
 
         public override void Activate(Vector2 position, params object[] args) => active = true;
         public override void Deactivate(params object[] args) => active = false;
-        public override bool IsActive() => active || OniDomain.LocalUraSmooth > 0.004f;
-        public override void Reset() => active = false;
+        public override bool IsActive() => active || presence > 0.004f;
+        public override void Reset() {
+            active = false;
+            presence = 0f;
+            uraBlend = 0f;
+        }
 
-        public override void Update(GameTime gameTime) { }
+        public override void Update(GameTime gameTime) {
+            OniDomainPlayer odp = OniDomain.Local;
+
+            float presenceTarget = 0f;
+            float uraTarget = 0f;
+            if (odp != null && odp.AnyActive) {
+                //开收域跟随墨水覆盖，稳态满值
+                presenceTarget = odp.Phase == OniDomainPhase.Opening || odp.Phase == OniDomainPhase.Closing
+                    ? odp.SpreadProgress
+                    : 1f;
+                uraTarget = odp.WorldIsUra ? 1f : 0f;
+            }
+
+            presence = MathHelper.Lerp(presence, presenceTarget, 0.15f);
+            if (presence < 0.004f && presenceTarget <= 0f) {
+                presence = 0f;
+            }
+            //快速过渡：约半秒走完，纸层剥落前段全覆盖能遮住切换
+            uraBlend = MathHelper.Lerp(uraBlend, uraTarget, 0.11f);
+
+            //里世界滤镜垫底色（低画质回退时的主要氛围来源）
+            Filters.Scene[Name]?.GetShader()?.UseOpacity(0.10f * uraBlend * presence);
+        }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth) {
-            //只绘制一次，最底背景层
+            //跨 0 深度切片只画一次：该切片在所有原版背景层之后绘制，覆盖山野等背景
             if (maxDepth < 0f || minDepth >= 0f) {
                 return;
             }
-            float ura = OniDomain.LocalUraSmooth;
-            if (ura <= 0.004f) {
+            if (presence <= 0.004f) {
                 return;
             }
             Effect shader = EffectLoader.OniSky?.Value;
@@ -73,7 +105,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             gd.SamplerStates[1] = SamplerState.LinearWrap;
 
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
-            shader.Parameters["uUra"]?.SetValue(ura);
+            shader.Parameters["uSkyAlpha"]?.SetValue(presence);
+            shader.Parameters["uUraBlend"]?.SetValue(uraBlend);
             shader.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
             shader.Parameters["uCamX"]?.SetValue(Main.screenPosition.X);
             shader.Parameters["uCamY"]?.SetValue(Main.screenPosition.Y);

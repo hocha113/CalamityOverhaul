@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.Onikiris
 {
-    /// <summary>鬼切：传奇太刀，左键释放绯红裂空斩五段连击</summary>
+    /// <summary>鬼切：传奇太刀，按住左键驱动绯红裂空斩滚动五段连段（轻点出快斩，按住循环，随时转向）</summary>
     internal class OnikiriItem : ModItem
     {
         public override void SetStaticDefaults() {
@@ -27,6 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
+            Item.channel = true;   //连段由控制器按住循环驱动，物品只负责首次触发
             Item.UseSound = null;
             Item.shoot = ModContent.ProjectileType<CrimsonRendSlash>();
             Item.shootSpeed = 1f;
@@ -38,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
-            CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: 1f, player.direction, source);
+            CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: 1f, source);
             return false;
         }
     }

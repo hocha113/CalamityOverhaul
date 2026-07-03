@@ -22,11 +22,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             OniDomainDeco.Clear();
         }
 
-        //里世界：世界的光真的灭了，只留灯笼
+        //里世界压光：氛围级而非致盲级，剪影可读性靠淡色雾空反衬
         public override void ModifyLightingBrightness(ref float scale) {
             float ura = OniDomain.LocalUraSmooth;
             if (ura > 0.001f) {
-                scale *= 1f - 0.60f * ura;
+                scale *= 1f - 0.35f * ura;
             }
         }
 
@@ -35,9 +35,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             if (ura <= 0.001f) {
                 return;
             }
-            //阴间月色：冷灰蓝，压掉日光
-            Color uraTile = new(34, 36, 48);
-            Color uraBg = new(14, 14, 22);
+            //月光级冷灰蓝，日光换色而非熄灭
+            Color uraTile = new(92, 97, 122);
+            Color uraBg = new(46, 48, 62);
             tileColor = Color.Lerp(tileColor, uraTile, ura);
             backgroundColor = Color.Lerp(backgroundColor, uraBg, ura);
         }

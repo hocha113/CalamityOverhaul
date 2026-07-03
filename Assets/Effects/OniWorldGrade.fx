@@ -1,7 +1,7 @@
 // ============================================================================
 //OniWorldGrade.fx 鬼域全屏调色
-//表世界：泛黄和纸（去饱和+暖调+颗粒+呼吸暗角+低频错位帧）
-//里世界：水墨阴间（亮度量化墨阶+Sobel墨线+黑白红三色纪律+纸纹）
+//表世界：轻胶片质感（微暖+颗粒+轻暗角+呼吸+低频错位帧），氛围主体在 OniSky
+//里世界：淡底浓墨（亮度量化墨阶上提+Sobel墨线+黑白红三色纪律+纸纹）
 //开/收域：墨水从裂口浸染/退潮，噪声毛边墨须前沿
 //全部噪声输入为屏幕空间笛卡尔 UV，无极坐标
 // ============================================================================
@@ -21,11 +21,11 @@ float uStillness;       //0~1 死寂加深
 
 #define LUMA_W float3(0.299, 0.587, 0.114)
 
-static const float3 WASHI_TINT = float3(1.05, 0.97, 0.80);
-static const float3 INK_BLACK = float3(0.030, 0.028, 0.036);
-static const float3 INK_DARK  = float3(0.105, 0.105, 0.135);
-static const float3 INK_MID   = float3(0.310, 0.310, 0.360);
-static const float3 INK_PALE  = float3(0.800, 0.780, 0.740);
+static const float3 WASHI_TINT = float3(1.030, 1.000, 0.935);
+static const float3 INK_BLACK = float3(0.085, 0.082, 0.098);
+static const float3 INK_DARK  = float3(0.185, 0.182, 0.215);
+static const float3 INK_MID   = float3(0.420, 0.420, 0.470);
+static const float3 INK_PALE  = float3(0.840, 0.820, 0.780);
 static const float3 ONI_RED   = float3(0.820, 0.075, 0.095);
 
 //亮度量化为 4 档墨阶，档间软过渡
@@ -49,20 +49,20 @@ float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
 }
 
-//表世界：旧相纸
+//表世界：轻胶片质感，氛围主体交给天空层，死寂时才明显收紧
 float3 GradeOmote(float3 src, float2 uv, float d) {
     float luma = dot(src, LUMA_W);
-    float desat = 0.38 + uStillness * 0.30;
+    float desat = 0.12 + uStillness * 0.32;
     float3 c = lerp(src, luma.xxx, desat);
     c *= WASHI_TINT;
 
     //细颗粒
     float grain = noiseTex(uv * float2(6.0, 6.0 * uScreenSize.y / uScreenSize.x) + frac(uTime * 7.31) * 3.7);
-    c *= 0.955 + grain * 0.09;
+    c *= 0.968 + grain * 0.055;
 
     //暖褐暗角，死寂时收紧
-    float vig = smoothstep(0.48 - uStillness * 0.10, 0.98 - uStillness * 0.18, d);
-    c = lerp(c, c * float3(0.62, 0.52, 0.42), vig * (0.30 + uStillness * 0.28));
+    float vig = smoothstep(0.50 - uStillness * 0.12, 1.00 - uStillness * 0.20, d);
+    c = lerp(c, c * float3(0.62, 0.52, 0.42), vig * (0.16 + uStillness * 0.30));
     return c;
 }
 
@@ -83,9 +83,11 @@ float3 GradeUra(float3 src, float2 uv, float2 px, float d) {
     float edge = smoothstep(0.10, 0.45, sqrt(gx * gx + gy * gy));
 
     float luma = dot(src, LUMA_W);
-    //墨阶提亮一点避免全黑糊死
-    float q = bandify(pow(saturate(luma * 1.18), 0.92));
+    //暗部大幅上提：淡底浓墨，可读性优先
+    float q = bandify(pow(saturate(luma * 1.35), 0.85));
     float3 ink = inkRamp(q);
+    //回混一成半原始亮度：软化档间断层，让月亮/高光比淡墨阶更亮
+    ink = lerp(ink, luma.xxx, 0.14);
 
     //墨线：亮处落黑线，暗处浮白线（剪影可读）
     float3 lineCol = lerp(INK_PALE * 0.85, INK_BLACK, smoothstep(0.30, 0.62, luma));
@@ -104,9 +106,9 @@ float3 GradeUra(float3 src, float2 uv, float2 px, float d) {
     float3 redCol = ONI_RED * (0.45 + luma * 1.45);
     float3 c = lerp(ink, redCol, redMask);
 
-    //深暗角
-    float vig = smoothstep(0.42, 1.0, d);
-    c *= 1.0 - vig * 0.46;
+    //暗角收敛到氛围级，不吃可读性
+    float vig = smoothstep(0.46, 1.05, d);
+    c *= 1.0 - vig * 0.25;
     return c;
 }
 
