@@ -156,12 +156,15 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DivineSourceArc { get; set; }
         public static Asset<Effect> DivineSourceCrescent { get; set; }
         public static Asset<Effect> DivineSourceImpact { get; set; }
-        public static Asset<Effect> OniDomainCharge { get; set; }
+        public static Asset<Effect> OniWorldGrade { get; set; }
+        public static Asset<Effect> OniPaperPeel { get; set; }
+        public static Asset<Effect> OniSky { get; set; }
+        public static Asset<Effect> OniDomainDeco { get; set; }
         public static Asset<Effect> AckBackdrop { get; set; }
         public static Asset<Effect> AckFinale { get; set; }
         public static Asset<Effect> AckGlow { get; set; }
-        public static Asset<Effect> DemoCrimsonSlash { get; set; }
-        public static Asset<Effect> DemoImpactPost { get; set; }
-        public static Asset<Effect> DemoBloom { get; set; }
+        public static Asset<Effect> OniCrimsonSlash { get; set; }
+        public static Asset<Effect> OniCrimsonImpactPost { get; set; }
+        public static Asset<Effect> OniCrimsonBloom { get; set; }
     }
 }

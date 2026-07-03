@@ -7,10 +7,10 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CSR = CalamityOverhaul.Content.Demo.CrimsonSlashRenderer;
-using SlashDef = CalamityOverhaul.Content.Demo.CrimsonSlashRenderer.SlashDef;
+using CSR = CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs.CrimsonSlashRenderer;
+using SlashDef = CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs.CrimsonSlashRenderer.SlashDef;
 
-namespace CalamityOverhaul.Content.Demo
+namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs
 {
     /// <summary>
     /// 绯红裂空斩：完整连段演出编排器（跟随玩家，一条时间轴调度五段弧形变奏）<br/>
@@ -508,7 +508,7 @@ namespace CalamityOverhaul.Content.Demo
             }
 
             //余韵：暗紫红光球内爆收束（参考序列尾帧）——仅在下一拍命中前完整播放
-            if (afterglowActive && DemoAssets.StarFlare01?.Value is Texture2D orb) {
+            if (afterglowActive && OnikiriAssets.StarFlare01?.Value is Texture2D orb) {
                 float t = (timer - lastImpactFrame - 26) / 20f;
                 float oA = MathF.Sin(t * MathF.PI) * 0.42f;
                 float oS = MathHelper.Lerp(0.9f, 0.18f, CSR.EaseOutCubic(t)) * SizeMul;
@@ -535,7 +535,7 @@ namespace CalamityOverhaul.Content.Demo
             float seedRot = Projectile.whoAmI * 1.37f;
 
             //白热核心：峰值收紧到 0.7，避免整块纯白糊住刀光笔触细节，随后急剧收缩
-            if (DemoAssets.StarFlare02?.Value is Texture2D flare) {
+            if (OnikiriAssets.StarFlare02?.Value is Texture2D flare) {
                 float coreA = MathF.Pow(inv, 2.0f) * 0.70f;
                 float coreS = (0.85f + easeOut * 0.65f) * SizeMul;
                 sb.Draw(flare, impact, null, new Color(255, 244, 232) * coreA, seedRot
@@ -545,7 +545,7 @@ namespace CalamityOverhaul.Content.Demo
             }
 
             //放射尖刺
-            if (DemoAssets.RayBurst01?.Value is Texture2D rays) {
+            if (OnikiriAssets.RayBurst01?.Value is Texture2D rays) {
                 float rayA = MathF.Pow(inv, 1.8f) * 0.78f;
                 float rayS = (1.1f + easeOut * 1.0f) * SizeMul;
                 sb.Draw(rays, impact, null, new Color(255, 190, 160) * rayA, seedRot * 0.4f
@@ -553,14 +553,14 @@ namespace CalamityOverhaul.Content.Demo
             }
 
             //十字长闪沿瞄准方向
-            if (DemoAssets.RayCross01?.Value is Texture2D cross) {
+            if (OnikiriAssets.RayCross01?.Value is Texture2D cross) {
                 float cA = MathF.Pow(inv, 2.4f) * 0.82f;
                 sb.Draw(cross, impact, null, new Color(255, 230, 215) * cA, AimAngle
                     , cross.Size() * 0.5f, new Vector2(2.2f, 1.0f) * easeOut * SizeMul, SpriteEffects.None, 0);
             }
 
             //扩散环
-            if (DemoAssets.Ring01?.Value is Texture2D ring) {
+            if (OnikiriAssets.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.4f + easeOut * 2.2f) * SizeMul;
                 float ringA = MathF.Pow(inv, 2.5f) * 0.6f;
                 sb.Draw(ring, impact, null, new Color(255, 90, 60) * ringA, 0f
@@ -568,7 +568,7 @@ namespace CalamityOverhaul.Content.Demo
             }
 
             //手绘撕裂形：沿瞄准方向一大一小，短命
-            if (bt < 9f && DemoAssets.TearSpread01?.Value is Texture2D tear) {
+            if (bt < 9f && OnikiriAssets.TearSpread01?.Value is Texture2D tear) {
                 float tA = MathF.Pow(1f - bt / 9f, 1.8f) * 0.85f;
                 sb.Draw(tear, impact, null, new Color(255, 150, 120) * tA, AimAngle
                     , tear.Size() * 0.5f, (1.5f + easeOut * 0.55f) * SizeMul, SpriteEffects.None, 0);
@@ -578,14 +578,14 @@ namespace CalamityOverhaul.Content.Demo
             }
 
             //锯齿冲击形垫底
-            if (bt < 7f && DemoAssets.HitJagged01?.Value is Texture2D jag) {
+            if (bt < 7f && OnikiriAssets.HitJagged01?.Value is Texture2D jag) {
                 float jA = MathF.Pow(1f - bt / 7f, 2f) * 0.5f;
                 sb.Draw(jag, impact, null, new Color(255, 80, 55) * jA, AimAngle + MathHelper.Pi
                     , jag.Size() * 0.5f, (1.8f + easeOut * 0.6f) * SizeMul, SpriteEffects.None, 0);
             }
 
             //速度线：随机截条从冲击点向后扫出
-            if (DemoAssets.SpeedLines01?.Value is Texture2D lines) {
+            if (OnikiriAssets.SpeedLines01?.Value is Texture2D lines) {
                 EnsureSpeedLineRects();
                 float lA = MathF.Pow(inv, 1.6f) * 0.5f;
                 for (int i = 0; i < speedLineRects.Length; i++) {
@@ -620,7 +620,7 @@ namespace CalamityOverhaul.Content.Demo
             if (lastImpactFrame < 0 || bt < 2f || bt > 8f) {
                 return;
             }
-            Texture2D cloud = DemoAssets.SmokeSheet01?.Value;
+            Texture2D cloud = OnikiriAssets.SmokeSheet01?.Value;
             if (cloud == null) {
                 return;
             }
@@ -629,7 +629,7 @@ namespace CalamityOverhaul.Content.Demo
             //512px 帧：峰值 ~0.36 倍 ≈ 185px 暗核，收缩至 ~60px
             float coreS = MathHelper.Lerp(0.36f, 0.12f, t * t) * SizeMul;
             float coreA = MathF.Sin(t * MathF.PI) * 0.78f;
-            Rectangle frame = new((Projectile.whoAmI % 2) * 512, (Projectile.whoAmI / 2 % 2) * 512, 512, 512);
+            Rectangle frame = new(Projectile.whoAmI % 2 * 512, Projectile.whoAmI / 2 % 2 * 512, 512, 512);
 
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp

@@ -1,5 +1,5 @@
 // ============================================================================
-//DemoBloom.fx 亮度提取 + 可分离高斯模糊（Bloom 双技术）
+//OniCrimsonBloom.fx 亮度提取 + 可分离高斯模糊（Bloom 双技术）
 //ThresholdTech: 屏幕 → 亮部缓冲；BlurTech: uDelta 方向 13 抽头高斯
 //合成回屏用普通 Additive SpriteBatch，不需要着色器
 //ps_3_0

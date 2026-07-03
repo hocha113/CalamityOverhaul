@@ -38,7 +38,6 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.Campsites
         public float Sengs = 1f;
 
         private float glowTimer;
-        private int bubbleSpawnTimer;
 
         //以下字段只在服务端/单人下由权威行为逻辑读写，客户端不参与决策，只依赖Actor自带的位置同步+插值
         private Vector2 campsiteCenter;

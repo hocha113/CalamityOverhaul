@@ -1,6 +1,45 @@
-﻿namespace CalamityOverhaul.Content.LegendWeapon.Onikiris
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs;
+using InnoVault.GameSystem;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.LegendWeapon.Onikiris
 {
-    internal class OnikiriItem
+    /// <summary>鬼切：传奇太刀，左键释放绯红裂空斩五段连击</summary>
+    internal class OnikiriItem : ModItem
     {
+        public override void SetStaticDefaults() {
+            ItemOverride.ItemMeleePrefixDic[Type] = true;
+        }
+
+        public override void SetDefaults() {
+            Item.width = 90;
+            Item.height = 96;
+            Item.damage = 420;
+            Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
+            Item.knockBack = 6.5f;
+            Item.crit = 8;
+            Item.useAnimation = Item.useTime = 12;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.autoReuse = true;
+            Item.UseSound = null;
+            Item.shoot = ModContent.ProjectileType<CrimsonRendSlash>();
+            Item.shootSpeed = 1f;
+            Item.rare = CWRID.Rarity_BurnishedAuric > 0 ? CWRID.Rarity_BurnishedAuric : ItemRarityID.Purple;
+            Item.value = Item.buyPrice(0, 25, 0, 0);
+        }
+
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonRendSlash>()] == 0;
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
+            Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: 1f, player.direction, source);
+            return false;
+        }
     }
 }

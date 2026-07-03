@@ -5,7 +5,7 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Demo
+namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs
 {
     /// <summary>
     /// 绯红裂空系列共享刀光渲染机制：子刀光定义/几何动画包/三层异步绘制。<br/>
@@ -173,9 +173,9 @@ namespace CalamityOverhaul.Content.Demo
         /// <summary>设备状态 + 帧级公共 uniform；返回 false 表示资产未就绪</summary>
         public static bool BeginDraw(GraphicsDevice device, out Effect fx
             , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth) {
-            fx = EffectLoader.DemoCrimsonSlash?.Value;
-            Texture2D brush = DemoAssets.SlashBrush01?.Value;
-            Texture2D noise = DemoAssets.NoiseSoft01?.Value;
+            fx = EffectLoader.OniCrimsonSlash?.Value;
+            Texture2D brush = OnikiriAssets.SlashBrush01?.Value;
+            Texture2D noise = OnikiriAssets.NoiseSoft01?.Value;
             prevBlend = device.BlendState;
             prevRaster = device.RasterizerState;
             prevDepth = device.DepthStencilState;

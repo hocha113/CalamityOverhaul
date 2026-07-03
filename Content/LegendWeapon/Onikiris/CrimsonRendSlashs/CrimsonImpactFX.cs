@@ -1,10 +1,10 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.RenderHandles;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Demo
+namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs
 {
     /// <summary>
     /// 绯红裂空斩屏幕级演出状态（仅客户端）：冲击白闪 + Bloom 提亮<br/>
@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.Demo
             FlashIntensity = MathHelper.Clamp(MathHelper.Max(FlashIntensity, flash), 0f, 1f);
         }
 
-        /// <summary>渲染端每帧衰减（由 <see cref="DemoImpactRender"/> 驱动）</summary>
+        /// <summary>渲染端每帧衰减（由 <see cref="OnikiriImpactRender"/> 驱动）</summary>
         public static void Update() {
             FlashIntensity *= 0.70f;
             if (FlashIntensity < 0.01f) {
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.Demo
     /// 绯红裂空斩全屏后效：Bloom（提亮→双迭代高斯→加色合成）+ 冲击白闪，
     /// screenTarget ping-pong 回写；Bloom 提取先于白闪，辉光形状不受闪光干扰
     /// </summary>
-    internal sealed class DemoImpactRender : RenderHandle
+    internal sealed class OnikiriImpactRender : RenderHandle
     {
         /// <summary>权重 1.10，晚于 PrimeScreenEffectRender(1.08)，早于弹幕扩展层(1.2)</summary>
         public override float Weight => 1.10f;
@@ -86,8 +86,8 @@ namespace CalamityOverhaul.Content.Demo
                 return;
             }
 
-            Effect bloomFx = EffectLoader.DemoBloom?.Value;
-            Effect postFx = EffectLoader.DemoImpactPost?.Value;
+            Effect bloomFx = EffectLoader.OniCrimsonBloom?.Value;
+            Effect postFx = EffectLoader.OniCrimsonImpactPost?.Value;
 
             bool doBloom = CrimsonImpactFX.BloomIntensity > 0.02f && bloomFx != null
                 && ScreenTargets != null && ScreenTargets.Length >= 2
@@ -165,7 +165,7 @@ namespace CalamityOverhaul.Content.Demo
             }
         }
 
-        /// <summary>拷屏到 screenSwap 再带着 DemoImpactPost 写回 screenTarget（仅白闪，无压暗）</summary>
+        /// <summary>拷屏到 screenSwap 再带着 OniCrimsonImpactPost 写回 screenTarget（仅白闪，无压暗）</summary>
         private static void ApplyPost(SpriteBatch sb, GraphicsDevice gd, RenderTarget2D screenSwap, Effect postFx) {
             Vector2 centerUV = WorldToScreenUV(CrimsonImpactFX.FocusWorldCenter);
 

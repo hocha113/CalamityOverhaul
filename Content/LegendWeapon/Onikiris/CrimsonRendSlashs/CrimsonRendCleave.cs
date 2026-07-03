@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -7,10 +7,10 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CSR = CalamityOverhaul.Content.Demo.CrimsonSlashRenderer;
-using SlashDef = CalamityOverhaul.Content.Demo.CrimsonSlashRenderer.SlashDef;
+using CSR = CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs.CrimsonSlashRenderer;
+using SlashDef = CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs.CrimsonSlashRenderer.SlashDef;
 
-namespace CalamityOverhaul.Content.Demo
+namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs
 {
     /// <summary>
     /// 绯红裂空·断斩：从连段中移植出的独立直线斩击（原"交叉裂斩"），供斩切类效果复用。<br/>

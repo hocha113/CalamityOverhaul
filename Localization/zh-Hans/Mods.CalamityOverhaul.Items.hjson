@@ -392,6 +392,11 @@ HalibutItem: {
 	Tooltip: ""
 }
 
+OnikiriItem: {
+	DisplayName: 鬼切
+	Tooltip: ""
+}
+
 SHPCItem: {
 	DisplayName: SHPC
 	Tooltip: ""
