@@ -113,7 +113,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniDomains
             shader.Parameters["uTime"]?.SetValue((float)Main.timeForVisualEffects * 0.016f);
             shader.Parameters["uSkyAlpha"]?.SetValue(presence);
             shader.Parameters["uUraBlend"]?.SetValue(uraBlend);
-            shader.Parameters["uScreenSize"]?.SetValue(new Vector2(vpW, vpH));
+            //遮罩空间尺寸与 OniWorldGrade 严格同源，不用视口尺寸
+            shader.Parameters["uScreenSize"]?.SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             shader.Parameters["uCamX"]?.SetValue(Main.screenPosition.X);
             shader.Parameters["uCamY"]?.SetValue(Main.screenPosition.Y);
             shader.Parameters["uSpreadMode"]?.SetValue(spread ? 1f : 0f);

@@ -292,13 +292,14 @@ float4 PSSky(float2 coords : TEXCOORD0) : COLOR0 {
     float3 mistCol = lerp(OMO_MIST, URA_MIST, ura);
     col = lerp(col, mistCol, mist * lerp(0.28, 0.52, ura));
 
-    //开合浸染遮罩：公式与 OniWorldGrade 完全一致，圈到哪天空换到哪
+    //开合浸染遮罩：公式与 OniWorldGrade 完全一致（含振幅成长曲线），圈到哪天空换到哪
     float diag = length(uScreenSize);
     float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
     float dist = length(rel);
     float jag = noiseTex(coords * 2.3 + uMaskTime * 0.012) * 0.6
               + noiseTex(coords * 5.1 - uMaskTime * 0.017) * 0.4;
-    float sd = dist + (jag - 0.5) * 0.16 - uSpreadProgress * 1.18;
+    float jagAmp = lerp(0.030, 0.160, smoothstep(0.10, 0.70, uSpreadProgress));
+    float sd = dist + (jag - 0.5) * jagAmp - uSpreadProgress * 1.18;
     float mask = lerp(1.0, 1.0 - smoothstep(-0.012, 0.014, sd), step(0.5, uSpreadMode));
 
     float alpha = uSkyAlpha * 0.97 * mask;

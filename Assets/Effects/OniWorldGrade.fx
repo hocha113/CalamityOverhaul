@@ -140,7 +140,9 @@ float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
     float dist = length(rel);
     float jag = noiseTex(coords * 2.3 + uTime * 0.012) * 0.6
               + noiseTex(coords * 5.1 - uTime * 0.017) * 0.4;
-    float sd = dist + (jag - 0.5) * 0.16 - uSpreadProgress * 1.18;
+    //墨须振幅随覆盖率成长：早期半径小，固定大振幅会把前沿拽成偏心歪圆
+    float jagAmp = lerp(0.030, 0.160, smoothstep(0.10, 0.70, uSpreadProgress));
+    float sd = dist + (jag - 0.5) * jagAmp - uSpreadProgress * 1.18;
     float useSpread = step(0.5, uSpreadMode);
     float mask = lerp(1.0, 1.0 - smoothstep(-0.012, 0.014, sd), useSpread);
     //前沿墨迹淤积带
