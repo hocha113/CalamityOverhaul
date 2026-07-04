@@ -69,12 +69,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFlashSteps
         /// retract 0..1 从尾向头蒸发，flash 全形过曝帧，opacity 整体包络
         /// </summary>
         public static void DrawRibbon(GraphicsDevice device, Effect fx
-            , IReadOnlyList<Vector2> points, in RibbonDef def
+            , IReadOnlyList<Vector2> rawPoints, in RibbonDef def
             , float retract, float flash, float opacity) {
-            int count = points.Count;
-            if (count < 2) {
+            if (rawPoints.Count < 2) {
                 return;
             }
+
+            //细分到 ≤44px 段：收束尖与子带汇入的漏斗曲线需要足够的顶点采样
+            List<Vector2> points = SubdividePath(rawPoints);
+            int count = points.Count;
 
             float totalLen = 0f;
             for (int i = 1; i < count; i++) {
@@ -115,9 +118,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFlashSteps
                 dir = dir.SafeNormalize(Vector2.UnitX);
                 Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
-                //幅宽包络：尾端略收、头端全宽（撕裂舌由 shader 负责，几何只给画布）
+                //幅宽包络：尾端略收、头端全宽（收束尖与撕裂舌由 shader 负责，几何只给画布）
                 float hw = def.HalfWidth * MathHelper.Lerp(0.68f, 1f, u);
-                Vector2 center = points[i] + perp * def.PerpOffset;
+                //平行偏移在头段漏斗式归零：多股流带汇入同一个收束点
+                float funnel = MathHelper.Clamp((1f - u) / 0.34f, 0f, 1f);
+                funnel = funnel * (2f - funnel);   //easeOut，汇入平滑无折角
+                Vector2 center = points[i] + perp * (def.PerpOffset * funnel);
 
                 verts[i * 2] = new VertexPositionColorTexture(
                     (center - perp * hw).ToVector3(), Color.White, new Vector2(u, 0f));
@@ -129,6 +135,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFlashSteps
                 pass.Apply();
                 device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, count * 2 - 2);
             }
+        }
+
+        /// <summary>路径细分：任何超过 44px 的段插入等分点（原点集不变，仅补密）</summary>
+        private static List<Vector2> SubdividePath(IReadOnlyList<Vector2> raw) {
+            const float MaxSeg = 44f;
+            List<Vector2> outPts = new(raw.Count * 4);
+            outPts.Add(raw[0]);
+            for (int i = 1; i < raw.Count; i++) {
+                Vector2 a = raw[i - 1];
+                Vector2 b = raw[i];
+                float len = Vector2.Distance(a, b);
+                int cuts = (int)(len / MaxSeg);
+                for (int k = 1; k <= cuts; k++) {
+                    outPts.Add(Vector2.Lerp(a, b, k / (float)(cuts + 1)));
+                }
+                outPts.Add(b);
+            }
+            return outPts;
         }
 
         /// <summary>按弧长比例取路径上一点（0=尾 1=头），供蒸发前沿定位烟尘</summary>

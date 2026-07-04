@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs;
 using InnoVault.PRT;
@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFlashSteps
         private const int MaxMarks = 24;        //单次冲刺标记上限
 
         /// <summary>A/B：冲刺期隐藏本地玩家（"人化作一道神威"的完全体），默认关</summary>
-        public static bool HidePlayerDuringDash = false;
+        public static bool HidePlayerDuringDash => true;
         /// <summary>本地玩家当前处于冲刺隐藏帧（由 <see cref="OniFlashStepHideOverride"/> 消费）</summary>
         internal static bool LocalPlayerHidden;
 
@@ -463,16 +463,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFlashSteps
                 return;
             }
 
-            //---- 头端锋头：人即流光的头，刹停后 6 帧渐熄 ----
-            float headA = stopFrame < 0 ? 1f
-                : 1f - MathHelper.Clamp((timer - stopFrame) / 6f, 0f, 1f);
-            if (headA > 0.02f && OnikiriAssets.StarGlow01?.Value is Texture2D glow) {
-                Vector2 headPos = (stopFrame < 0 ? Owner.Center : path[^1]) - Main.screenPosition;
-                float wob = 1f + 0.06f * MathF.Sin(timer * 0.9f);
-                spriteBatch.Draw(glow, headPos, null, new Color(255, 118, 78) * (0.85f * headA)
-                    , DashAngle, glow.Size() * 0.5f, new Vector2(3.0f, 1.15f) * sizeMul * wob, SpriteEffects.None, 0);
-                spriteBatch.Draw(glow, headPos, null, new Color(255, 232, 214) * (0.9f * headA)
-                    , DashAngle, glow.Size() * 0.5f, new Vector2(1.5f, 0.62f) * sizeMul * wob, SpriteEffects.None, 0);
+            //---- 刹停爆点：星芒过曝一拍，把"收束成一点"钉进眼里 ----
+            if (stopFrame >= 0 && timer - stopFrame < 5 && OnikiriAssets.StarFlare02?.Value is Texture2D popFlare) {
+                float popT = (timer - stopFrame) / 5f;
+                float popA = MathF.Pow(1f - popT, 1.6f);
+                Vector2 popPos = path[^1] + dashDir * headExt - Main.screenPosition;
+                spriteBatch.Draw(popFlare, popPos, null, new Color(255, 244, 232) * (popA * 0.9f)
+                    , seed * 3f, popFlare.Size() * 0.5f, (1.3f + popT * 0.6f) * sizeMul, SpriteEffects.None, 0);
             }
 
             //---- 出发点告别语：撕裂形沿冲刺方向绽开，短命 ----

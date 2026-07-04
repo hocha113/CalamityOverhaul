@@ -88,12 +88,16 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float n2 = tex2D(noiseSamp, f2UV).r;
     float flow = n1 * 0.62 + n2 * 0.38;
 
-    //---- 撕裂轮廓：大舌 + 细齿，向尾端递增 ----
-    float tear = uTearAmp * (0.35 + 0.65 * (1.0 - u));
+    //---- 头端收束：末 ~26% 边界向中脊聚拢成尖（彗星鼻形，pow<1 → 尖端快张缓平）----
+    float taper = pow(saturate((1.0 - u) / 0.26), 0.58);
+
+    //---- 撕裂轮廓：大舌 + 细齿，向尾端递增；收束段轮廓同步免撕（尖要干净） ----
+    float tear = uTearAmp * (0.35 + 0.65 * (1.0 - u)) * saturate(taper * 1.6);
     float bN = tex2D(noiseSamp, float2(s * 0.30 - uTime * 0.45 * uFlowMul, 0.15 + uSeed * 0.53)).r;
     float bN2 = tex2D(noiseSamp, float2(s * 0.95 - uTime * 0.90 * uFlowMul, 0.66 + uSeed)).r;
-    float boundary = 0.98 - tear * (0.62 * bN + 0.30 * bN2);
-    float aEdge = smoothstep(boundary, boundary - 0.30, abs(cy));
+    float boundary = (0.98 - tear * (0.62 * bN + 0.30 * bN2)) * taper;
+    //羽化宽度随收束缩窄，尖端不糊
+    float aEdge = smoothstep(boundary, boundary - (0.26 * taper + 0.035), abs(cy));
     if (aEdge < 0.004)
         return float4(0, 0, 0, 0);
 
@@ -103,8 +107,8 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float survive = smoothstep(eTh - 0.03, eTh + 0.16, flow);
     float burn = smoothstep(eTh - 0.18, eTh - 0.03, flow) * (1.0 - survive);
 
-    //---- 两端羽化 ----
-    float capA = smoothstep(0.0, 0.055, u) * smoothstep(1.0, 0.965, u);
+    //---- 尾端羽化（头端交给收束尖，不再平切） ----
+    float capA = smoothstep(0.0, 0.055, u);
 
     //---- alpha：流丝透密调制 ----
     float body = saturate(0.30 + flow * 1.05);
@@ -127,8 +131,11 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     //暗涡：低值处压向近黑（墨的身体）
     col = lerp(col, uColDark * 0.65, smoothstep(0.42, 0.05, flow) * (1.0 - heat) * 0.85);
 
-    //白热中脊：只属于头段，向尾迅速让位给墨
-    float core = exp(-pow(cy / 0.24, 2.0)) * smoothstep(0.45, 0.95, u) * uHeadBoost;
+    //白热中脊：只属于头段，向尾迅速让位给墨；宽度随收束聚拢，
+    //亮度向尖端增益——能量收进那一点
+    float coreW = 0.24 * max(taper, 0.07);
+    float core = exp(-pow(cy / coreW, 2.0)) * smoothstep(0.45, 0.95, u) * uHeadBoost;
+    core *= 1.0 + (1.0 - taper) * 0.75;
     col += uColHot * core * 1.35;
 
     //蒸发前沿烧蚀橙边
