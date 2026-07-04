@@ -133,7 +133,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             }
 
             fx.Parameters["uDim"]?.SetValue(MathHelper.Clamp(OniFinaleFX.Dim, 0f, 1f));
-            fx.Parameters["uDimTint"]?.SetValue(new Vector3(0.62f, 0.44f, 0.78f));
+            //暗场压向暗酒红：与鬼切绯红主题同色相，只降明度不偏色
+            fx.Parameters["uDimTint"]?.SetValue(new Vector3(0.74f, 0.40f, 0.42f));
             fx.Parameters["uDesat"]?.SetValue(0.55f);
             fx.Parameters["uCenter"]?.SetValue(WorldToScreenUV(OniFinaleFX.FocusWorld));
             fx.Parameters["uAspect"]?.SetValue(Main.screenWidth / (float)Main.screenHeight);
@@ -143,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             fx.Parameters["uSplitAngle"]?.SetValue(OniFinaleFX.SplitAngle);
             fx.Parameters["uSplitCenter"]?.SetValue(WorldToScreenUV(OniFinaleFX.SplitCenterWorld));
             fx.Parameters["uSeamGlow"]?.SetValue(OniFinaleFX.SeamGlow);
-            fx.Parameters["uSeamColor"]?.SetValue(new Vector3(1.45f, 1.05f, 1.75f));
+            fx.Parameters["uSeamColor"]?.SetValue(new Vector3(1.80f, 1.18f, 0.92f));
 
             //拷屏到 screenSwap 再带着后效写回 screenTarget
             gd.SetRenderTarget(screenSwap);

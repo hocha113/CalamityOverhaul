@@ -43,7 +43,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
         /// <param name="player">攻击发起者</param>
         /// <param name="center">环心（世界坐标，生成后不追踪）</param>
         /// <param name="roll">滚转角（弧度，决定椭圆长轴朝向）</param>
-        /// <param name="escalate">升调进度 0..1（绯红→鬼火紫，同时驱动尺寸/白闪递增）</param>
+        /// <param name="escalate">升调进度 0..1（绯红→白热，同时驱动尺寸/白闪递增）</param>
         /// <param name="flip">扫掠方向镜像 ±1</param>
         /// <param name="damage">伤害</param>
         /// <param name="knockback">击退</param>
@@ -96,7 +96,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 Opacity = 0.95f, FrontGlow = 2.4f + 0.5f * t, Seed = seed,
                 TailErode = 0.45f, FlashPower = 0.55f + 0.28f * t,
                 FarDim = 0.52f, SweepSnap = 0f, RazorTailWiden = 0.45f,
-                //环族升调封顶在鬼火紫之下，纯 t=1 留给终斩独占
+                //环族升调封顶在白热之下，纯 t=1 留给终斩独占
                 Palette = OFR.BladePalette.Escalate(t * 0.80f),
             };
         }
@@ -121,11 +121,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             }
 
             Vector3 light = Vector3.Lerp(new Vector3(1.0f, 0.25f, 0.18f)
-                , new Vector3(0.75f, 0.35f, 1.0f), EscalateT);
+                , new Vector3(1.35f, 0.55f, 0.30f), EscalateT);
             Lighting.AddLight(Projectile.Center, light * 0.8f);
         }
 
-        /// <summary>扫掠前缘火花：喷量随本帧扫掠增量走，颜色随升调红→紫</summary>
+        /// <summary>扫掠前缘火花：喷量随本帧扫掠增量走，颜色随升调红→炽橙</summary>
         private void SpawnSweepSparks() {
             if (timer > def.SweepFrames + 1) {
                 return;
@@ -139,7 +139,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             Vector2 tangent = (OFR.PointAt(in def, in s, Projectile.Center, MathHelper.Clamp(edgeU + 0.03f, 0f, 1f)) - pos)
                 .SafeNormalize(Roll.ToRotationVector2());
 
-            Color c = Color.Lerp(new Color(255, 120, 80), new Color(190, 120, 255), EscalateT);
+            Color c = Color.Lerp(new Color(255, 120, 80), new Color(255, 190, 125), EscalateT);
             for (int k = 0; k < count; k++) {
                 Vector2 vel = tangent * Main.rand.NextFloat(4f, 10f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
                 PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, c
@@ -192,9 +192,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 impactDone = true;
                 CrimsonImpactFX.PushImpact(target.Center, 0.015f + 0.02f * t);
                 PRTLoader.NewParticle<PRT_CrimsonHitFlash>(target.Center, Vector2.Zero
-                    , Color.Lerp(new Color(255, 210, 190), new Color(225, 190, 255), t), (0.6f + 0.4f * t) * SizeMul);
+                    , Color.Lerp(new Color(255, 210, 190), new Color(255, 238, 218), t), (0.6f + 0.4f * t) * SizeMul);
             }
-            Color sparkColor = Color.Lerp(new Color(255, 96, 60), new Color(180, 105, 255), t);
+            Color sparkColor = Color.Lerp(new Color(255, 96, 60), new Color(255, 155, 92), t);
             for (int i = 0; i < 6; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 10f);
                 PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center, vel, sparkColor

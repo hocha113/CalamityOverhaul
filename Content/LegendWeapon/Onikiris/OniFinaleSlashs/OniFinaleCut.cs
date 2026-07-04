@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
     /// <summary>
     /// 终之太刀·纳刀断世：居合语法的终斩。<br/>
     /// 出鞘瞬间只留一条无声细线（斩击已经完成，世界还没反应过来）→ 滞拍 →
-    /// 纳刀脆响的刹那伤口撕开：巨月牙+白紫光束芯爆开、世界沿刀线裂成两半滑移、
+    /// 纳刀脆响的刹那伤口撕开：巨月牙+白热光束芯爆开、世界沿刀线裂成两半滑移、
     /// 伤害在此刻一次性结算 —— 最大的一刀的重量全压在那声刀鞘响上。<br/>
     /// 判定为沿刀线中心向两端各延伸 2400px 的线（参照村正处刑斩），蠕虫/阿瑞斯节段减伤。<br/>
     /// ai[0]=刀线角(弧度) ai[1]=尺寸倍率
@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
 
         private OFR.BladeDef lineDef;   //滞拍细线（斩痕本体，引爆后作残影淡出）
         private OFR.BladeDef arcDef;    //巨月牙：伤口撕开的主形
-        private OFR.BladeDef beamDef;   //白紫光束芯：沿刀线的爆发高光
+        private OFR.BladeDef beamDef;   //白热光束芯：沿刀线的爆发高光
         private bool initialized;
         private bool detonatedFx;
         private int timer;
@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 Opacity = 1f, FrontGlow = 2.9f, Seed = seed + 0.37f,
                 TailErode = 0.35f, FlashPower = 1f, SweepSnap = 0f,
                 RazorTailWiden = 0.85f,
-                Palette = OFR.BladePalette.OniFire,
+                Palette = OFR.BladePalette.WhiteHot,
             };
             beamDef = new OFR.BladeDef {
                 SweepFrames = 2, Life = Lifetime - HoldFrames,
@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 Opacity = 1f, FrontGlow = 2.4f, Seed = seed + 0.71f,
                 TailErode = 0f, FlashPower = 1f,
                 RazorTailWiden = 0.40f,
-                Palette = OFR.BladePalette.OniFire,
+                Palette = OFR.BladePalette.WhiteHot,
             };
         }
 
@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 float seam = MathF.Exp(-dt * 0.10f);
                 OniFinaleFX.PushSplit(Projectile.Center, CutAngle, offset, seam);
 
-                Lighting.AddLight(Projectile.Center, new Vector3(0.9f, 0.55f, 1.2f) * seam * 1.4f);
+                Lighting.AddLight(Projectile.Center, new Vector3(1.35f, 0.55f, 0.32f) * seam * 1.4f);
             }
         }
 
@@ -183,7 +183,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 Vector2 pos = Projectile.Center + dir * along * 1300f * SizeMul;
                 Vector2 vel = perp * Main.rand.NextFloat(3f, 11f) * (Main.rand.NextBool() ? 1f : -1f)
                     + dir * Main.rand.NextFloat(-2f, 2f);
-                Color c = Main.rand.NextBool(3) ? new Color(240, 220, 255) : new Color(185, 110, 255);
+                Color c = Main.rand.NextBool(3) ? new Color(255, 238, 215) : new Color(255, 115, 62);
                 PRTLoader.NewParticle<PRT_OniShard>(pos, vel, c
                     , Main.rand.NextFloat(0.5f, 0.95f) * SizeMul)
                     ?.Configure(Main.rand.Next(26, 44), Main.rand.NextFloat(-0.28f, 0.28f)
@@ -192,11 +192,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             for (int i = 0; i < 14; i++) {
                 Vector2 vel = perp.RotatedByRandom(0.5) * Main.rand.NextFloat(6f, 15f) * (Main.rand.NextBool() ? 1f : -1f);
                 PRTLoader.NewParticle<PRT_CrimsonSpark>(Projectile.Center + dir * Main.rand.NextFloat(-400f, 400f) * SizeMul
-                    , vel, new Color(210, 150, 255), Main.rand.NextFloat(0.5f, 0.9f) * SizeMul)
+                    , vel, new Color(255, 150, 95), Main.rand.NextFloat(0.5f, 0.9f) * SizeMul)
                     ?.Configure(Main.rand.Next(20, 34), affectedByGravity: true);
             }
             PRTLoader.NewParticle<PRT_CrimsonHitFlash>(Projectile.Center, Vector2.Zero
-                , new Color(235, 215, 255), 1.6f * SizeMul);
+                , new Color(255, 236, 216), 1.6f * SizeMul);
         }
 
         //==================== 判定 ====================
@@ -236,10 +236,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 return;
             }
             PRTLoader.NewParticle<PRT_CrimsonHitFlash>(target.Center, Vector2.Zero
-                , new Color(235, 210, 255), 1.2f);
+                , new Color(255, 222, 198), 1.2f);
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = CutAngle.ToRotationVector2().RotatedByRandom(0.55) * Main.rand.NextFloat(5f, 13f);
-                PRTLoader.NewParticle<PRT_OniShard>(target.Center, vel, new Color(200, 130, 255)
+                PRTLoader.NewParticle<PRT_OniShard>(target.Center, vel, new Color(255, 132, 76)
                     , Main.rand.NextFloat(0.45f, 0.8f))
                     ?.Configure(Main.rand.Next(20, 34), Main.rand.NextFloat(-0.25f, 0.25f)
                         , Main.rand.NextFloat(1.5f, 2.6f), affectedByGravity: true);
@@ -329,16 +329,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             if (OnikiriAssets.StarFlare02?.Value is Texture2D flare) {
                 float coreA = MathF.Pow(inv, 2.0f) * 0.85f;
                 float coreS = (1.2f + easeOut * 1.1f) * SizeMul;
-                sb.Draw(flare, screenPos, null, new Color(245, 230, 255) * coreA, Projectile.whoAmI * 1.37f
+                sb.Draw(flare, screenPos, null, new Color(255, 244, 230) * coreA, Projectile.whoAmI * 1.37f
                     , flare.Size() * 0.5f, coreS, SpriteEffects.None, 0);
-                sb.Draw(flare, screenPos, null, new Color(170, 100, 255) * (coreA * 0.6f), -Projectile.whoAmI * 0.8f
+                sb.Draw(flare, screenPos, null, new Color(255, 122, 68) * (coreA * 0.6f), -Projectile.whoAmI * 0.8f
                     , flare.Size() * 0.5f, coreS * 1.4f, SpriteEffects.None, 0);
             }
 
             if (OnikiriAssets.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.5f + easeOut * 3.4f) * SizeMul;
                 float ringA = MathF.Pow(inv, 2.4f) * 0.7f;
-                sb.Draw(ring, screenPos, null, new Color(190, 120, 255) * ringA, 0f
+                sb.Draw(ring, screenPos, null, new Color(255, 98, 58) * ringA, 0f
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
             }
 
@@ -350,7 +350,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                     Rectangle src = new(0, (int)(seed * (1024 - 96)), 1024, 96);
                     Vector2 pos = screenPos + dir * ((seed - 0.5f) * 900f + easeOut * 220f) * SizeMul
                         + dir.RotatedBy(MathHelper.PiOver2) * (seed * 2f - 1f) * 90f * SizeMul;
-                    sb.Draw(lines, pos, src, new Color(210, 170, 255) * lA, CutAngle
+                    sb.Draw(lines, pos, src, new Color(255, 176, 138) * lA, CutAngle
                         , src.Size() * 0.5f, new Vector2(0.9f + easeOut * 0.5f, 0.5f) * SizeMul
                         , SpriteEffects.None, 0);
                 }

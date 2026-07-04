@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
     /// 分离 —— 环斩/终斩走 <see cref="ComputeState"/> 的标准生命周期，
     /// 直痕的"闪现-定格-引爆"外控时间轴则自行合成 state 后驱动同一套绘制。<br/>
     /// 与 <see cref="CrimsonRendSlashs.CrimsonSlashRenderer"/> 的分工差异：调色逐刀传入
-    /// （绯红→鬼火白紫升调），远近半侧双 pass 为立体环斩的常开路径
+    /// （绯红→白热升调），远近半侧双 pass 为立体环斩的常开路径
     /// </summary>
     internal static class OniFinaleRenderer
     {
@@ -30,22 +30,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 Dark = new Vector3(0.16f, 0.015f, 0.035f),
             };
 
-            /// <summary>鬼火白紫：大招升调的终点色，终斩独占的"烧穿常态"</summary>
-            public static readonly BladePalette OniFire = new() {
-                Hot = new Vector3(1.58f, 1.42f, 1.78f),
-                Bright = new Vector3(0.98f, 0.42f, 1.62f),
-                Deep = new Vector3(0.40f, 0.11f, 0.86f),
-                Dark = new Vector3(0.09f, 0.028f, 0.21f),
+            /// <summary>白热绯红：大招升调的终点色，终斩独占的"烧穿常态"——
+            /// 同一绯红色相烧得更烫（深红提亮、暗描边化作余烬红），不偏移色相</summary>
+            public static readonly BladePalette WhiteHot = new() {
+                Hot = new Vector3(1.85f, 1.62f, 1.30f),
+                Bright = new Vector3(1.72f, 0.52f, 0.22f),
+                Deep = new Vector3(1.05f, 0.16f, 0.10f),
+                Dark = new Vector3(0.30f, 0.05f, 0.05f),
             };
 
-            /// <summary>升调采样：t=0 绯红 → t=1 鬼火白紫</summary>
+            /// <summary>升调采样：t=0 常态绯红 → t=1 白热绯红</summary>
             public static BladePalette Escalate(float t) {
                 t = MathHelper.Clamp(t, 0f, 1f);
                 return new BladePalette {
-                    Hot = Vector3.Lerp(Crimson.Hot, OniFire.Hot, t),
-                    Bright = Vector3.Lerp(Crimson.Bright, OniFire.Bright, t),
-                    Deep = Vector3.Lerp(Crimson.Deep, OniFire.Deep, t),
-                    Dark = Vector3.Lerp(Crimson.Dark, OniFire.Dark, t),
+                    Hot = Vector3.Lerp(Crimson.Hot, WhiteHot.Hot, t),
+                    Bright = Vector3.Lerp(Crimson.Bright, WhiteHot.Bright, t),
+                    Deep = Vector3.Lerp(Crimson.Deep, WhiteHot.Deep, t),
+                    Dark = Vector3.Lerp(Crimson.Dark, WhiteHot.Dark, t),
                 };
             }
         }

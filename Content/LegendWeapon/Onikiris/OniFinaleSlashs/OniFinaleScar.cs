@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
     /// <summary>
     /// 终之太刀·激光直痕：三态时间轴外控的跨屏直线斩痕。<br/>
     /// 闪现（1~2 帧白热割开，伤害窗）→ 定格（不侵蚀的余烬红伤痕，屏幕上蓄积成刀痕网）→
-    /// 引爆（终斩纳刀瞬间白紫回燃、碎成晶片）。<br/>
+    /// 引爆（终斩纳刀瞬间白热回燃、碎成晶片）。<br/>
     /// 蓄积-引爆让乱舞与终斩产生因果：每道直痕都是给最后一刀布线。<br/>
     /// 生命周期不走 <see cref="OFR.ComputeState"/> 标准采样，由本类状态机手工合成。<br/>
     /// ai[0]=刃方向角(弧度) ai[1]=引爆延迟(帧，&lt;=0 回退 70) ai[2]=尺寸倍率
@@ -168,10 +168,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
             Lighting.AddLight(Projectile.Center, new Vector3(0.8f, 0.14f, 0.12f) * glow);
         }
 
-        /// <summary>引爆：白紫回燃 + 沿刃碎成晶片，碎晶顺主控给的流向漂移（斩碎的空间被终斩卷走）</summary>
+        /// <summary>引爆：白热回燃 + 沿刃碎成晶片，碎晶顺主控给的流向漂移（斩碎的空间被终斩卷走）</summary>
         private void Detonate() {
             detonated = true;
-            //引爆瞬间调色烧向鬼火紫，配合 ColorShift=0 的回燃读作"伤痕被终斩点燃"
+            //引爆瞬间调色烧向白热，配合 ColorShift=0 的回燃读作"伤痕被终斩点燃"
             def.Palette = OFR.BladePalette.Escalate(0.92f);
 
             SoundEngine.PlaySound(SoundID.Item27 with {
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.OniFinaleSlashs
                 Vector2 pos = OFR.PointAt(in def, in st, Projectile.Center, uc);
                 Vector2 vel = perp * Main.rand.NextFloat(2.5f, 8f) * (Main.rand.NextBool() ? 1f : -1f)
                     + flow + Main.rand.NextVector2Circular(1.4f, 1.4f);
-                Color c = Main.rand.NextBool(3) ? new Color(235, 205, 255) : new Color(185, 110, 255);
+                Color c = Main.rand.NextBool(3) ? new Color(255, 235, 210) : new Color(255, 118, 66);
                 PRTLoader.NewParticle<PRT_OniShard>(pos, vel, c
                     , Main.rand.NextFloat(0.42f, 0.78f) * SizeMul)
                     ?.Configure(Main.rand.Next(22, 38), Main.rand.NextFloat(-0.24f, 0.24f)

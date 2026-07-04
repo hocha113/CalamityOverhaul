@@ -8,7 +8,7 @@
 sampler uImage0 : register(s0);
 
 float uDim;          //0..1 场景压暗强度
-float3 uDimTint;     //压暗色调（暗紫）
+float3 uDimTint;     //压暗色调（暗酒红）
 float uDesat;        //压暗附带去饱和量 0..1
 float2 uCenter;      //聚焦点 uv（压暗在此处保亮）
 float uAspect;       //宽高比，校正距离场
@@ -17,7 +17,7 @@ float uSplitOffset;  //裂屏滑移量（屏幕高度归一单位，两半各滑
 float uSplitAngle;   //刀线角度（屏幕空间弧度）
 float2 uSplitCenter; //刀线中心 uv
 float uSeamGlow;     //0..1 裂缝辉光强度
-float3 uSeamColor;   //裂缝辉光色（鬼火白紫）
+float3 uSeamColor;   //裂缝辉光色（白热绯红）
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 {
@@ -40,7 +40,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float4 src = tex2D(uImage0, sampleUV);
     float3 col = src.rgb;
 
-    //---- 压暗聚焦：聚焦点附近保亮，四周压向暗紫；边缘再叠暗角 ----
+    //---- 压暗聚焦：聚焦点附近保亮，四周压向暗酒红；边缘再叠暗角 ----
     float2 toC = coords - uCenter;
     toC.x *= uAspect;
     float dist = length(toC);
@@ -57,7 +57,7 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     //---- 负片闪：死寂末帧的整屏反相脉冲 ----
     col = lerp(col, saturate(float3(1.0, 1.0, 1.0) - col), uNegative);
 
-    //---- 裂缝辉光：贴刀线一条白热紫光，随 uSeamGlow 呼吸 ----
+    //---- 裂缝辉光：贴刀线一条白热光，随 uSeamGlow 呼吸 ----
     if (uSeamGlow > 1e-4)
     {
         float seamCore = exp(-pow(abs(side) / 0.0045, 2.0));
