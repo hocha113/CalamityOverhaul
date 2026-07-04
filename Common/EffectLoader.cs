@@ -167,5 +167,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniCrimsonSlash { get; set; }
         public static Asset<Effect> OniCrimsonImpactPost { get; set; }
         public static Asset<Effect> OniCrimsonBloom { get; set; }
+        public static Asset<Effect> OniFinaleBlade { get; set; }
+        public static Asset<Effect> OniFinalePost { get; set; }
     }
 }

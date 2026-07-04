@@ -56,6 +56,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (WorldFreezeSystem.IsActive) {
                 return false;
             }
+            //全局 TimeFrozenTick 时停演出（村正次元斩/鬼切终之太刀）中玩家保持自由行动，
+            //被冻结在原地的 NPC 不应再构成接触伤害威胁
+            if (CWRWorld.TimeFrozenTick > 0) {
+                return false;
+            }
             return true;
         }
 
