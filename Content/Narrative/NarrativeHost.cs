@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation.Skins.Brimstone;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Draedon;
+using CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Sea;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.SHPC;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.StarStream;
@@ -9,6 +10,7 @@ using CalamityOverhaul.Content.Scenarios.Draedon.Quest;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
+using CalamityOverhaul.Content.Scenarios.Onikiri;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.Shepel;
 using CalamityOverhaul.Content.Scenarios.SupCal;
@@ -59,6 +61,7 @@ namespace CalamityOverhaul.Content.Narrative
             StyleRegistry.RegisterSet(NarrativeIds.StarStream, new StarStreamDialogueSkin(), new StarStreamChoiceSkin(), new StarStreamPopupSkin());
             StyleRegistry.RegisterSet(NarrativeIds.SHPC, new SHPCDialogueSkin(), new SHPCChoiceSkin(), new SHPCPopupSkin());
             StyleRegistry.RegisterSet(NarrativeIds.Tzeentch, new TzeentchDialogueSkin(), new TzeentchChoiceSkin(), new TzeentchPopupSkin());
+            StyleRegistry.RegisterSet(NarrativeIds.Onikiri, new OnikiriDialogueSkin(), new OnikiriChoiceSkin(), new OnikiriPopupSkin());
         }
 
         private static void RegisterPortraits() {
@@ -137,6 +140,10 @@ namespace CalamityOverhaul.Content.Narrative
                 .Name(() => FirstMetTzeentch.Rolename?.Value ?? "?????????????????????")
                 .Portrait(() => ADVAsset.Tzeentch)
                 .AsSilhouette();
+
+            //鬼切伴侣角色,立绘待接入,当前仅显示名(演示场景 OnikiriStyleDemo 使用)
+            PortraitRegistry.Register(NarrativeIds.Mayo)
+                .Name(() => OnikiriStyleDemo.MayoName.Value);
         }
 
         private static void RegisterBlockers() {

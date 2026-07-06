@@ -1017,3 +1017,22 @@ EternalBlazingNowNoHelen: {
 	Line9: Verschwindet mein Bewusstsein ganz, wird die ganze Welt zu Asche.
 	Line10: Außerdem – wollt ihr diese Ära beenden, ist ein sterbliches Gefäß viel zu zerbrechlich.
 }
+
+OnikiriStyleDemo: {
+	// MayoName: 绯村真夜
+	// L1: 月亮升起来了。绯红的,和我离开那晚一模一样
+	// L2: (纸垂在夜风里轻轻晃动,某种视线落在你肩上)
+	// L3: 别紧张,刀还在鞘里
+	// L4: 这块面板是新裱的:和纸吃了墨,边框是一笔收出来的,顶上那条绸子……嗯,是我系的。你要是盯着这行字看,应该能看到最新的字迹还带着一点没干透的绯色
+	// ChoicePrompt: 那么——想先看哪一样?
+	// C1: 看看奖励弹窗(绘马)
+	// C2: 把刚才的话再演一遍
+	// C3: 解开鬼切的封印
+	// C4: 今晚就到这里
+	// SealedHint: 封印中
+	// RewardLine: 拿好。普通的刀而已,但挂牌的样子你看到了
+	// ReplayLine1: 好,再来一遍。注意看说话人换行时,朱印是怎么重新盖下去的
+	// ReplayLine2: (无名的低语——这一行没有名牌,也没有印)
+	// Farewell1: 夜还长,茶就不留你了
+	// Farewell2: 下次再见时,希望是在正式的故事里
+}

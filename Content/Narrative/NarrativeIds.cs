@@ -18,6 +18,7 @@ namespace CalamityOverhaul.Content.Narrative
         internal static readonly StyleId StarStream = StyleId.ForMod(ModName, "StarStream");
         internal static readonly StyleId SHPC = StyleId.ForMod(ModName, "SHPC");
         internal static readonly StyleId Tzeentch = StyleId.ForMod(ModName, "Tzeentch");
+        internal static readonly StyleId Onikiri = StyleId.ForMod(ModName, "Onikiri");
 
         internal static readonly CharacterId OldDuke = CharacterId.ForMod(ModName, "OldDuke");
         internal static readonly CharacterId Helen = CharacterId.ForMod(ModName, "Helen");
@@ -29,6 +30,7 @@ namespace CalamityOverhaul.Content.Narrative
         internal static readonly CharacterId SupCalShadow = CharacterId.ForMod(ModName, "SupCalShadow");
         internal static readonly CharacterId SupCalFarewell = CharacterId.ForMod(ModName, "SupCalFarewell");
         internal static readonly CharacterId Shepel = CharacterId.ForMod(ModName, "Shepel");
+        internal static readonly CharacterId Mayo = CharacterId.ForMod(ModName, "Mayo");
 
         internal static readonly ExpressionId Doubt = new("Doubt");
         internal static readonly ExpressionId Serious = new("Serious");

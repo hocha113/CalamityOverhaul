@@ -121,6 +121,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> HyperionBlast { get; set; }
         public static Asset<Effect> BrimstoneDialogueBox { get; set; }
         public static Asset<Effect> SeaDialogueBox { get; set; }
+        public static Asset<Effect> OniNarrativePanel { get; set; }
         public static Asset<Effect> SulfseaPanel { get; set; }
         public static Asset<Effect> TzeentchPanel { get; set; }
         public static Asset<Effect> EntrustGuideCard { get; set; }
@@ -170,6 +171,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniFinaleBlade { get; set; }
         public static Asset<Effect> OniFinalePost { get; set; }
         public static Asset<Effect> OniKamuiFlow { get; set; }
+        public static Asset<Effect> OniDismember { get; set; }
         public static Asset<Effect> OniAnnihilateField { get; set; }
         public static Asset<Effect> RadialBlur { get; set; }
     }

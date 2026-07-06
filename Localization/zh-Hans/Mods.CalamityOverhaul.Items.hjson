@@ -2563,3 +2563,13 @@ TestItem: {
 	// DisplayName: Test Item
 	// Tooltip: ""
 }
+
+OnikiriStyleDemoItem: {
+	DisplayName: 鬼切样式演示(调试)
+	Tooltip:
+		'''
+		使用后播放「鬼切/绯夜」叙事皮肤演示场景
+		包含对话框、选择框(含禁用项)与奖励弹窗
+		调试用物品
+		'''
+}
