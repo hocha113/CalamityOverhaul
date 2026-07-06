@@ -1,0 +1,162 @@
+﻿using CalamityOverhaul.Common;
+using InnoVault.RenderHandles;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using Terraria;
+
+namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
+{
+    /// <summary>
+    /// 肢解快照捕获：把目标 NPC 的完整外观（含 glowmask 等全部绘制层）经
+    /// <see cref="Main.DrawNPCDirect"/> 画进目标专属 RT。捕获的那一瞬即"定格"——
+    /// 之后无论 NPC 帧动画如何推进，碎片画的都是这张静止快照。<br/>
+    /// 时机选在 <see cref="DrawNPCsOverTiles"/>（NPC 层绘制之前）：触发帧当帧完成捕获，
+    /// <see cref="OniDismemberNPC"/> 同帧即可接管绘制，本体一帧都不会"复活"。<br/>
+    /// <see cref="Main.screenTarget"/> 是 DiscardContents——重绑定即丢弃已绘制的背景/物块，
+    /// 故捕获前先把屏幕搬到 screenSwap，捕获后原样搬回（镜像 CyberspaceRender 的安全门）
+    /// </summary>
+    internal sealed class OniDismemberRender : RenderHandle
+    {
+        //孤儿 RT 清理暂存
+        private static readonly List<int> pruneScratch = [];
+
+        public override void UpdateBySystem(int index) {
+            //回主菜单后实体状态已失效，释放全部快照
+            if (Main.gameMenu && OniDismember.SnapRTs.Count > 0) {
+                OniDismember.DisposeAllSnapshots();
+            }
+        }
+
+        public override void DrawNPCsOverTiles(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, RenderTarget2D screenSwap) {
+            if (Main.gameMenu) {
+                return;
+            }
+
+            PruneOrphanRTs();
+
+            if (!AnyPendingCapture()) {
+                return;
+            }
+
+            //低质量光照/RT 异常时放弃捕获：目标仅定身不裂开，本体照常绘制
+            if (RenderQualitySafety.NeedsScreenTargetFallback()) {
+                return;
+            }
+            if (screenSwap == null || screenSwap.IsDisposed) {
+                return;
+            }
+            if (Main.screenTarget == null || Main.screenTarget.IsDisposed) {
+                return;
+            }
+            if (!RenderQualitySafety.IsScreenTargetActive(graphicsDevice)) {
+                return;
+            }
+
+            RenderTargetBinding[] previousTargets = graphicsDevice.GetRenderTargets();
+
+            //先保屏：screenTarget 一旦重绑定内容即被丢弃
+            graphicsDevice.SetRenderTarget(screenSwap);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            //逐个捕获待处理目标
+            foreach (DismemberEntry entry in OniDismember.Entries) {
+                if (entry.Captured || entry.SnapWidth <= 0) {
+                    continue;
+                }
+                NPC npc = Main.npc[entry.NpcIndex];
+                if (!npc.active || npc.type != entry.NpcType) {
+                    continue;
+                }
+                CaptureSnapshot(spriteBatch, graphicsDevice, entry, npc);
+            }
+
+            //还屏
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque);
+            spriteBatch.Draw(screenSwap, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            //还原进入时的 RT 绑定，避免改变上层管线对活动 RT 的预期
+            if (previousTargets != null && previousTargets.Length > 0
+                && previousTargets[0].RenderTarget != Main.screenTarget) {
+                graphicsDevice.SetRenderTargets(previousTargets);
+            }
+        }
+
+        /// <summary>NPC 完整外观 → 专属 RT；伪造 screenPos 让 npc.Center 落在 RT 中央</summary>
+        private static void CaptureSnapshot(SpriteBatch sb, GraphicsDevice gd, DismemberEntry entry, NPC npc) {
+            RenderTarget2D rt = OniDismember.EnsureSnapshotRT(gd, entry);
+            if (rt == null) {
+                entry.SnapWidth = 0;    //显存不足等异常：永久降级为仅定身
+                return;
+            }
+
+            CaptureNpcAppearance(sb, gd, npc, rt, entry.AnchorCenter, entry.BehindTiles);
+            entry.Captured = true;
+        }
+
+        /// <summary>
+        /// 把 NPC 完整外观（含 glowmask 等全部绘制层）画进给定 RT，npc.Center 落在 RT 中央。<br/>
+        /// 调用方负责 RT 生命周期与前后的主屏保护/还原；面影系统共用此核心
+        /// </summary>
+        internal static void CaptureNpcAppearance(SpriteBatch sb, GraphicsDevice gd, NPC npc,
+            RenderTarget2D rt, Vector2 anchorCenter, bool behindTiles) {
+
+            gd.SetRenderTarget(rt);
+            gd.Clear(Color.Transparent);
+
+            Vector2 fakeScreenPos = anchorCenter - new Vector2(rt.Width, rt.Height) * 0.5f;
+            Vector2 realScreenPos = Main.screenPosition;
+            //部分模组 NPC 的 PreDraw 直接读 Main.screenPosition，临时改写保证它们落进 RT
+            Main.screenPosition = fakeScreenPos;
+
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+            try {
+                Main.instance.DrawNPCDirect(sb, npc, behindTiles, fakeScreenPos);
+            }
+            catch {
+                //单个 NPC 绘制钩子异常不拖垮捕获管线
+            }
+            finally {
+                Main.screenPosition = realScreenPos;
+                try {
+                    sb.End();
+                }
+                catch {
+                    //绘制钩子把 spriteBatch 留在非活跃状态时兜底
+                }
+            }
+        }
+
+        private static bool AnyPendingCapture() {
+            foreach (DismemberEntry entry in OniDismember.Entries) {
+                if (!entry.Captured && entry.SnapWidth > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>释放已无对应肢解状态的快照 RT</summary>
+        private static void PruneOrphanRTs() {
+            if (OniDismember.SnapRTs.Count == 0) {
+                return;
+            }
+            pruneScratch.Clear();
+            foreach (int npcIndex in OniDismember.SnapRTs.Keys) {
+                if (OniDismember.GetEntry(npcIndex) == null) {
+                    pruneScratch.Add(npcIndex);
+                }
+            }
+            foreach (int npcIndex in pruneScratch) {
+                OniDismember.SnapRTs[npcIndex]?.Dispose();
+                OniDismember.SnapRTs.Remove(npcIndex);
+            }
+        }
+    }
+}

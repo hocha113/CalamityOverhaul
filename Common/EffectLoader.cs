@@ -161,6 +161,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> DivineSourceCrescent { get; set; }
         public static Asset<Effect> DivineSourceImpact { get; set; }
         public static Asset<Effect> OniWorldGrade { get; set; }
+        public static Asset<Effect> OniOmokage { get; set; }
         public static Asset<Effect> OniPaperPeel { get; set; }
         public static Asset<Effect> OniSky { get; set; }
         public static Asset<Effect> OniDomainDeco { get; set; }
@@ -175,7 +176,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniFinalePost { get; set; }
         public static Asset<Effect> OniKamuiFlow { get; set; }
         public static Asset<Effect> OniDismember { get; set; }
-        public static Asset<Effect> OniAnnihilateField { get; set; }
-        public static Asset<Effect> RadialBlur { get; set; }
+        public static Asset<Effect> OniAnnihilateArc { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.Onikiris.CrimsonRendSlashs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 

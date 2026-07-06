@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.Onikiris.UI;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using CalamityOverhaul.Content.UIs.UIEffect;
 using Microsoft.Xna.Framework.Graphics;

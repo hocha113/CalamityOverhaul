@@ -1,0 +1,443 @@
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
+{
+    /// <summary>肢解切口：快照中心局部像素系下的一条无限直线</summary>
+    internal struct DismemberCut
+    {
+        /// <summary>切线上一点（快照中心局部像素）</summary>
+        public Vector2 PointLocal;
+        /// <summary>单位法线，碎片沿 ±法线分离</summary>
+        public Vector2 Normal;
+        /// <summary>切口出生时刻（entry.Timer 时基）</summary>
+        public int Birth;
+    }
+
+    /// <summary>肢解碎片：快照 quad 被切割线裁出的凸多边形</summary>
+    internal class DismemberPiece
+    {
+        /// <summary>顶点（快照中心局部像素，恒为未位移的原始身体空间）</summary>
+        public Vector2[] Verts;
+        public Vector2 Centroid;
+        /// <summary>与 <see cref="DismemberEntry.Cuts"/> 对齐：+1/-1=本片在该切口的哪一侧，0=未被该刀切中</summary>
+        public readonly List<sbyte> CutSides = [];
+        /// <summary>与 Cuts 对齐的分离旋转量（弧度，含符号），继承自父片避免新刀导致旧旋转跳变</summary>
+        public readonly List<float> CutSpins = [];
+        public float JitterPhase;
+    }
+
+    /// <summary>单个被肢解 NPC 的完整状态</summary>
+    internal class DismemberEntry
+    {
+        public int NpcIndex;
+        public int NpcType;          //槽位复用校验
+        public int Timer;
+        public int Duration;
+        public float Seed;
+        /// <summary>定身锚点（触发帧的 npc.Center，快照与碎片都锚定于此）</summary>
+        public Vector2 AnchorCenter;
+        public bool BehindTiles;
+        /// <summary>快照 RT 像素尺寸，0=服务器/未初始化（无视觉）</summary>
+        public int SnapWidth;
+        public int SnapHeight;
+        /// <summary>渲染端完成快照捕获后置位，此前本体照常绘制</summary>
+        public bool Captured;
+        public float DriftMax;
+        public readonly List<DismemberCut> Cuts = [];
+        public readonly List<DismemberPiece> Pieces = [];
+
+        /// <summary>尾段整体淡出 0..1</summary>
+        public float FadeAlpha => 1f - MathHelper.Clamp(
+            (Timer - (Duration - OniDismember.FadeFrames)) / (float)OniDismember.FadeFrames, 0f, 1f);
+    }
+
+    /// <summary>
+    /// 鬼切肢解定格管理器：目标被切割分开、原地僵住。<br/>
+    /// 视觉三段式：触发帧由 <see cref="OniDismemberRender"/> 把 NPC 完整外观（含 glowmask 等
+    /// 全部绘制层）捕获进专属 RT → <see cref="OniDismemberNPC"/> 隐藏本体，把快照按切割线
+    /// 裁成凸多边形碎片做顶点绘制 → 滞拍 <see cref="HoldFrames"/> 帧后碎片沿切线法线滑开，
+    /// 断面走 <c>OniDismember.fx</c> 的灼热辉光。快照捕获的那一瞬同时就是"定格"本身。<br/>
+    /// 僵直复用 <see cref="CWRNpc.TimeFrozenTick"/> 冻结链逐帧刷新，位置钉死在锚点。<br/>
+    /// 调用入口：<see cref="Trigger(NPC, Vector2, float, int)"/>，同一目标可反复触发追加切口（上限 <see cref="MaxCuts"/>）。
+    /// </summary>
+    internal class OniDismember : ICWRLoader
+    {
+        /// <summary>最大切口数，与 OniDismember.fx 的 uCutLine 数组长度一致</summary>
+        public const int MaxCuts = 4;
+        /// <summary>碎片总数上限，防多刀指数分裂</summary>
+        public const int MaxPieces = 12;
+        /// <summary>滞拍帧数：切口亮起 → 碎片开始分离的间隔（居合语法：斩击已完成，世界还没反应过来）</summary>
+        public const int HoldFrames = 12;
+        /// <summary>分离滑开动画帧数</summary>
+        public const int SeparateFrames = 26;
+        /// <summary>结束淡出帧数</summary>
+        public const int FadeFrames = 24;
+        /// <summary>默认肢解持续帧数</summary>
+        public const int DefaultDuration = 300;
+        //小于该面积(px²)的裁剪结果视为未切中，不产生碎片
+        private const float MinPieceArea = 24f;
+
+        /// <summary>所有活跃肢解状态</summary>
+        internal static readonly List<DismemberEntry> Entries = [];
+        /// <summary>快照 RT 注册表（npcIndex → RT），生命周期由 <see cref="OniDismemberRender"/> 管理</summary>
+        internal static readonly Dictionary<int, RenderTarget2D> SnapRTs = [];
+
+        void ICWRLoader.UnLoadData() {
+            Entries.Clear();
+            Main.QueueMainThreadAction(DisposeAllSnapshots);
+        }
+
+        //==================== 公开接口 ====================
+
+        /// <summary>肢解目标：切线过 npc.Center，角度为世界空间弧度</summary>
+        public static bool Trigger(NPC npc, float cutAngle, int duration = DefaultDuration)
+            => Trigger(npc, npc?.Center ?? Vector2.Zero, cutAngle, duration);
+
+        /// <summary>
+        /// 肢解目标。首次调用建立定格并捕获快照；对已肢解目标重复调用则追加一条切口
+        /// （上限 <see cref="MaxCuts"/>）并顺延持续时间
+        /// </summary>
+        /// <param name="npc">目标 NPC（boss 亦可）</param>
+        /// <param name="cutPointWorld">切线经过的世界坐标（会被收拢进身体范围）</param>
+        /// <param name="cutAngle">切线方向（世界空间弧度）</param>
+        /// <param name="duration">从当前帧起的持续帧数，尾段含 <see cref="FadeFrames"/> 帧淡出</param>
+        public static bool Trigger(NPC npc, Vector2 cutPointWorld, float cutAngle, int duration = DefaultDuration) {
+            if (npc == null || !npc.active) {
+                return false;
+            }
+
+            DismemberEntry entry = GetEntry(npc.whoAmI);
+            if (entry == null || entry.NpcType != npc.type) {
+                if (entry != null) {
+                    Entries.Remove(entry);  //槽位被新 NPC 复用，旧状态作废
+                }
+                entry = CreateEntry(npc, duration);
+                Entries.Add(entry);
+            }
+            else {
+                entry.Duration = Math.Max(entry.Duration, entry.Timer + Math.Max(duration, FadeFrames));
+            }
+
+            AddCut(entry, cutPointWorld, cutAngle);
+
+            //立即入冻：不等下一次系统刷新
+            npc.CWR().TimeFrozenTick = 2;
+            npc.velocity = Vector2.Zero;
+            return true;
+        }
+
+        /// <summary>提前解除：进入淡出，随后自然恢复</summary>
+        public static void Release(int npcIndex) {
+            DismemberEntry entry = GetEntry(npcIndex);
+            if (entry != null) {
+                entry.Duration = Math.Min(entry.Duration, entry.Timer + FadeFrames);
+            }
+        }
+
+        /// <inheritdoc cref="Release(int)"/>
+        public static void Release(NPC npc) {
+            if (npc != null) {
+                Release(npc.whoAmI);
+            }
+        }
+
+        public static bool IsDismembered(int npcIndex) => GetEntry(npcIndex) != null;
+
+        /// <summary>立刻清空全部肢解状态（世界卸载兜底）</summary>
+        public static void Clear() => Entries.Clear();
+
+        //==================== 状态查询 ====================
+
+        internal static DismemberEntry GetEntry(int npcIndex) {
+            for (int i = 0; i < Entries.Count; i++) {
+                if (Entries[i].NpcIndex == npcIndex) {
+                    return Entries[i];
+                }
+            }
+            return null;
+        }
+
+        //==================== 建立与切割 ====================
+
+        private static DismemberEntry CreateEntry(NPC npc, int duration) {
+            DismemberEntry entry = new() {
+                NpcIndex = npc.whoAmI,
+                NpcType = npc.type,
+                Duration = Math.Max(duration, FadeFrames + HoldFrames),
+                Seed = Main.rand.NextFloat(),
+                AnchorCenter = npc.Center,
+                BehindTiles = npc.behindTiles,
+            };
+
+            if (!Main.dedServ) {
+                ComputeSnapSize(npc, out int snapW, out int snapH);
+                entry.SnapWidth = snapW;
+                entry.SnapHeight = snapH;
+                entry.DriftMax = MathHelper.Clamp(MathF.Max(entry.SnapWidth, entry.SnapHeight) * 0.05f, 6f, 30f);
+
+                float hw = entry.SnapWidth * 0.5f;
+                float hh = entry.SnapHeight * 0.5f;
+                entry.Pieces.Add(new DismemberPiece {
+                    Verts = [new(-hw, -hh), new(hw, -hh), new(hw, hh), new(-hw, hh)],
+                    Centroid = Vector2.Zero,
+                    JitterPhase = Main.rand.NextFloat(MathHelper.TwoPi),
+                });
+            }
+            return entry;
+        }
+
+        /// <summary>估算能兜住 NPC 完整外观的快照 RT 尺寸（客户端调用），面影系统共用</summary>
+        internal static void ComputeSnapSize(NPC npc, out int width, out int height) {
+            Main.instance.LoadNPC(npc.type);
+            Texture2D tex = TextureAssets.Npc[npc.type].Value;
+            int frames = Math.Max(Main.npcFrameCount[npc.type], 1);
+            float fw = MathF.Max(tex.Width, npc.width);
+            float fh = MathF.Max(tex.Height / (float)frames, npc.height);
+            //1.9 倍余量兜住发光层/超帧绘制；上限防巨型贴图撑爆显存
+            int w = (int)MathF.Ceiling(fw * npc.scale * 1.9f);
+            int h = (int)MathF.Ceiling(fh * npc.scale * 1.9f);
+            width = Math.Clamp(w & ~1, 64, 1600);
+            height = Math.Clamp(h & ~1, 64, 1600);
+        }
+
+        private static void AddCut(DismemberEntry entry, Vector2 cutPointWorld, float cutAngle) {
+            if (entry.SnapWidth <= 0 || entry.Cuts.Count >= MaxCuts) {
+                return;
+            }
+
+            //切点收拢进身体范围，保证切线穿过快照 quad
+            Vector2 local = cutPointWorld - entry.AnchorCenter;
+            local.X = MathHelper.Clamp(local.X, -entry.SnapWidth * 0.35f, entry.SnapWidth * 0.35f);
+            local.Y = MathHelper.Clamp(local.Y, -entry.SnapHeight * 0.35f, entry.SnapHeight * 0.35f);
+            Vector2 dir = cutAngle.ToRotationVector2();
+            DismemberCut cut = new() {
+                PointLocal = local,
+                Normal = new Vector2(-dir.Y, dir.X),
+                Birth = entry.Timer,
+            };
+
+            SplitPieces(entry, in cut);
+            entry.Cuts.Add(cut);
+        }
+
+        /// <summary>用切线把现有碎片各自一分为二（Sutherland–Hodgman 半平面裁剪）</summary>
+        private static void SplitPieces(DismemberEntry entry, in DismemberCut cut) {
+            List<DismemberPiece> next = new(entry.Pieces.Count + 2);
+            foreach (DismemberPiece piece in entry.Pieces) {
+                List<Vector2> posSide = ClipHalfPlane(piece.Verts, cut.PointLocal, cut.Normal, 1f);
+                List<Vector2> negSide = ClipHalfPlane(piece.Verts, cut.PointLocal, cut.Normal, -1f);
+
+                bool canSplit = entry.Pieces.Count < MaxPieces
+                    && posSide.Count >= 3 && negSide.Count >= 3
+                    && PolyArea(posSide) >= MinPieceArea && PolyArea(negSide) >= MinPieceArea;
+
+                if (!canSplit) {
+                    //未切中的碎片对本刀不产生位移
+                    piece.CutSides.Add(0);
+                    piece.CutSpins.Add(0f);
+                    next.Add(piece);
+                    continue;
+                }
+                next.Add(MakeChild(piece, posSide, 1));
+                next.Add(MakeChild(piece, negSide, -1));
+            }
+            entry.Pieces.Clear();
+            entry.Pieces.AddRange(next);
+        }
+
+        private static DismemberPiece MakeChild(DismemberPiece parent, List<Vector2> verts, sbyte side) {
+            DismemberPiece child = new() {
+                Verts = [.. verts],
+                Centroid = PolyCentroid(verts),
+                JitterPhase = Main.rand.NextFloat(MathHelper.TwoPi),
+            };
+            //继承父片的历史切口关系，追加本刀
+            child.CutSides.AddRange(parent.CutSides);
+            child.CutSpins.AddRange(parent.CutSpins);
+            child.CutSides.Add(side);
+            child.CutSpins.Add(side * Main.rand.NextFloat(0.018f, 0.05f));
+            return child;
+        }
+
+        /// <summary>保留 dot(v-p, n)*side ≥ 0 半平面的凸多边形裁剪（面影纸裂共用）</summary>
+        internal static List<Vector2> ClipHalfPlane(Vector2[] poly, Vector2 p, Vector2 n, float side) {
+            List<Vector2> result = new(poly.Length + 2);
+            for (int i = 0; i < poly.Length; i++) {
+                Vector2 a = poly[i];
+                Vector2 b = poly[(i + 1) % poly.Length];
+                float da = Vector2.Dot(a - p, n) * side;
+                float db = Vector2.Dot(b - p, n) * side;
+                if (da >= 0f) {
+                    result.Add(a);
+                }
+                if (da >= 0f != db >= 0f) {
+                    result.Add(Vector2.Lerp(a, b, da / (da - db)));
+                }
+            }
+            return result;
+        }
+
+        internal static float PolyArea(List<Vector2> poly) {
+            float area = 0f;
+            for (int i = 0; i < poly.Count; i++) {
+                Vector2 p0 = poly[i];
+                Vector2 p1 = poly[(i + 1) % poly.Count];
+                area += p0.X * p1.Y - p1.X * p0.Y;
+            }
+            return MathF.Abs(area) * 0.5f;
+        }
+
+        internal static Vector2 PolyCentroid(List<Vector2> poly) {
+            float signedArea = 0f;
+            Vector2 acc = Vector2.Zero;
+            for (int i = 0; i < poly.Count; i++) {
+                Vector2 p0 = poly[i];
+                Vector2 p1 = poly[(i + 1) % poly.Count];
+                float cross = p0.X * p1.Y - p1.X * p0.Y;
+                signedArea += cross;
+                acc += (p0 + p1) * cross;
+            }
+            if (MathF.Abs(signedArea) < 1e-4f) {
+                //退化多边形回退顶点均值
+                Vector2 avg = Vector2.Zero;
+                foreach (Vector2 v in poly) {
+                    avg += v;
+                }
+                return avg / Math.Max(poly.Count, 1);
+            }
+            return acc / (3f * signedArea);
+        }
+
+        //==================== 碎片运动 ====================
+
+        /// <summary>滞拍后缓出的分离曲线 0..1</summary>
+        internal static float SeparationCurve(int age) {
+            if (age < HoldFrames) {
+                return 0f;
+            }
+            return OniFinaleRenderer.EaseOutCubic((age - HoldFrames) / (float)SeparateFrames);
+        }
+
+        /// <summary>碎片本帧位移与旋转：各切口贡献按各自时基独立缓动，全部到位后叠加僵直微颤</summary>
+        internal static void GetPieceMotion(DismemberEntry entry, DismemberPiece piece, out Vector2 offset, out float rotation) {
+            offset = Vector2.Zero;
+            rotation = 0f;
+            float settled = 0f;
+            for (int i = 0; i < entry.Cuts.Count; i++) {
+                sbyte side = i < piece.CutSides.Count ? piece.CutSides[i] : (sbyte)0;
+                if (side == 0) {
+                    continue;
+                }
+                float curve = SeparationCurve(entry.Timer - entry.Cuts[i].Birth);
+                if (curve <= 0f) {
+                    continue;
+                }
+                offset += entry.Cuts[i].Normal * (side * entry.DriftMax * curve);
+                rotation += piece.CutSpins[i] * curve;
+                if (curve > settled) {
+                    settled = curve;
+                }
+            }
+            if (settled >= 0.999f) {
+                //僵住后的极轻微颤：尸身"绷着"的张力
+                float t = Main.GlobalTimeWrappedHourly;
+                offset.X += MathF.Sin(t * 21.3f + piece.JitterPhase) * 0.4f;
+                offset.Y += MathF.Cos(t * 17.7f + piece.JitterPhase * 1.7f) * 0.4f;
+            }
+        }
+
+        //==================== 逐帧维护 ====================
+
+        /// <summary>由 <see cref="OniDismemberSystem.PostUpdateNPCs"/> 驱动：冻结刷新/锚点钉死/到期移除/分离演出</summary>
+        internal static void UpdateAll() {
+            for (int i = Entries.Count - 1; i >= 0; i--) {
+                DismemberEntry entry = Entries[i];
+                NPC npc = Main.npc[entry.NpcIndex];
+                if (!npc.active || npc.type != entry.NpcType) {
+                    Entries.RemoveAt(i);
+                    continue;
+                }
+
+                entry.Timer++;
+                if (entry.Timer >= entry.Duration) {
+                    Entries.RemoveAt(i);
+                    continue;
+                }
+
+                //冻结链逐帧续期 + 锚点钉死（击退只改 velocity，一并抹掉）
+                npc.CWR().TimeFrozenTick = 2;
+                npc.Center = entry.AnchorCenter;
+                npc.velocity = Vector2.Zero;
+
+                if (!Main.dedServ) {
+                    foreach (DismemberCut cut in entry.Cuts) {
+                        if (entry.Timer - cut.Birth == HoldFrames) {
+                            SeparationBurst(entry, in cut);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>断开瞬间的声画：沿切线迸出碎晶 + 脆响</summary>
+        private static void SeparationBurst(DismemberEntry entry, in DismemberCut cut) {
+            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.4f, Volume = 0.55f }, entry.AnchorCenter);
+
+            Vector2 tangent = new(-cut.Normal.Y, cut.Normal.X);
+            float halfLen = MathF.Min(entry.SnapWidth, entry.SnapHeight) * 0.4f;
+            for (int k = 0; k < 10; k++) {
+                Vector2 pos = entry.AnchorCenter + cut.PointLocal + tangent * Main.rand.NextFloat(-1f, 1f) * halfLen;
+                Vector2 vel = cut.Normal * Main.rand.NextFloat(1.5f, 4.5f) * (Main.rand.NextBool() ? 1f : -1f)
+                    + tangent * Main.rand.NextFloat(-1f, 1f);
+                Color c = Main.rand.NextBool(3) ? new Color(255, 238, 215) : new Color(255, 115, 62);
+                PRTLoader.NewParticle<PRT_OniShard>(pos, vel, c, Main.rand.NextFloat(0.35f, 0.7f))
+                    ?.Configure(Main.rand.Next(18, 30), Main.rand.NextFloat(-0.25f, 0.25f)
+                        , Main.rand.NextFloat(1.4f, 2.4f), affectedByGravity: true);
+            }
+        }
+
+        //==================== 资源 ====================
+
+        /// <summary>取或建目标专属快照 RT（仅绘制线程调用）</summary>
+        internal static RenderTarget2D EnsureSnapshotRT(GraphicsDevice gd, DismemberEntry entry) {
+            if (SnapRTs.TryGetValue(entry.NpcIndex, out RenderTarget2D rt) && rt != null && !rt.IsDisposed
+                && rt.Width == entry.SnapWidth && rt.Height == entry.SnapHeight) {
+                return rt;
+            }
+            rt?.Dispose();
+            try {
+                rt = new RenderTarget2D(gd, entry.SnapWidth, entry.SnapHeight, false
+                    , SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            }
+            catch {
+                return null;
+            }
+            SnapRTs[entry.NpcIndex] = rt;
+            return rt;
+        }
+
+        internal static void DisposeAllSnapshots() {
+            foreach (RenderTarget2D rt in SnapRTs.Values) {
+                rt?.Dispose();
+            }
+            SnapRTs.Clear();
+        }
+    }
+
+    /// <summary>肢解状态逐帧维护与世界卸载清理</summary>
+    internal sealed class OniDismemberSystem : ModSystem
+    {
+        public override void PostUpdateNPCs() => OniDismember.UpdateAll();
+
+        public override void OnWorldUnload() => OniDismember.Clear();
+    }
+}

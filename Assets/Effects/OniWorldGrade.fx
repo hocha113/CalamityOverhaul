@@ -1,8 +1,13 @@
 // ============================================================================
-//OniWorldGrade.fx 鬼域全屏调色
-//表世界：轻胶片质感（微暖+颗粒+轻暗角+呼吸+低频错位帧），氛围主体在 OniSky
-//里世界：淡底浓墨（亮度量化墨阶上提+Sobel墨线+黑白红三色纪律+纸纹）
-//开/收域：墨水从裂口浸染/退潮，噪声毛边墨须前沿
+//OniWorldGrade.fx 鬼域全屏调色，两个 technique 对应两个渲染时机
+//TechGrade（NPC 层之前，只吃环境：天空/墙/物块）：
+//  表世界：轻胶片质感（微暖+颗粒+轻暗角），氛围主体在 OniSky
+//  里世界：淡底浓墨（亮度量化墨阶上提+Sobel墨线+黑白红三色纪律+纸纹）
+//  开/收域：墨水从裂口浸染/退潮，噪声毛边墨须前沿
+//TechUnify（EndCapture，吃整帧含 NPC/弹幕/玩家）：
+//  轻统一色罩（去饱和+冷/暖染，红色保真）+ 呼吸 + 错位帧 + 负片闪
+//  实体只经过这层轻罩，墨阶量化/墨线不上身，战斗可读性优先
+//呼吸与错位帧属全帧位移，必须在 TechUnify：拆在环境层会让实体相对地形滑动
 //全部噪声输入为屏幕空间笛卡尔 UV，无极坐标
 // ============================================================================
 
@@ -48,6 +53,23 @@ float3 inkRamp(float q) {
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
+}
+
+//墨水浸染遮罩：毛边墨须为双频笛卡尔噪声扰动前沿
+//返回 x=覆盖遮罩 y=前沿淤积带，两个 technique 共用同一前沿
+float2 spreadMaskFront(float2 coords) {
+    float diag = length(uScreenSize);
+    float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
+    float dist = length(rel);
+    float jag = noiseTex(coords * 2.3 + uTime * 0.012) * 0.6
+              + noiseTex(coords * 5.1 - uTime * 0.017) * 0.4;
+    //墨须振幅随覆盖率成长：早期半径小，固定大振幅会把前沿拽成偏心歪圆
+    float jagAmp = lerp(0.030, 0.160, smoothstep(0.10, 0.70, uSpreadProgress));
+    float sd = dist + (jag - 0.5) * jagAmp - uSpreadProgress * 1.18;
+    float useSpread = step(0.5, uSpreadMode);
+    float mask = lerp(1.0, 1.0 - smoothstep(-0.012, 0.014, sd), useSpread);
+    float front = exp(-sd * sd / 0.0011) * (0.45 + 0.55 * jag) * useSpread;
+    return float2(mask, front);
 }
 
 //表世界：轻胶片质感，氛围主体交给天空层，死寂时才明显收紧
@@ -113,47 +135,63 @@ float3 GradeUra(float3 src, float2 uv, float2 px, float d) {
     return c;
 }
 
+//====== TechGrade：环境调色（NPC 层之前执行，画面里只有环境） ======
 float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
     float2 px = 1.0 / uScreenSize;
     float2 uv = coords;
 
-    //呼吸：表世界 8 秒周期的 0.35% 缩放，死寂时停摆
-    float omoteF = 1.0 - uWorldBlend;
-    float breath = sin(uTime * 0.785) * 0.0035 * omoteF * (1.0 - uStillness);
-    uv = (uv - 0.5) * (1.0 - breath) + 0.5;
-
-    //错位帧：整帧平移数像素 + 红通道错开（pulse=0 时偏移归零，无需分支）
-    float2 uvShift = uv + float2(px.x * 4.0, -px.y * 1.5) * uAnomalyPulse;
-    float3 src = tex2D(uImage0, uvShift).rgb;
-    src.r = tex2D(uImage0, uvShift + float2(px.x * 3.0 * uAnomalyPulse, 0)).r;
-
+    float3 src = tex2D(uImage0, uv).rgb;
     float d = length((uv - 0.5) * float2(uScreenSize.x / uScreenSize.y, 1.0)) * 1.15;
 
     //两世界都算全，step 选择：规避分支内梯度指令
     float3 omote = GradeOmote(src, uv, d);
-    float3 ura = GradeUra(src, uvShift, px, d);
+    float3 ura = GradeUra(src, uv, px, d);
     float3 graded = lerp(omote, ura, step(0.5, uWorldBlend));
 
-    //墨水浸染遮罩：毛边墨须为双频笛卡尔噪声扰动前沿
-    float diag = length(uScreenSize);
-    float2 rel = (coords * uScreenSize - uSpreadOrigin) / diag;
-    float dist = length(rel);
-    float jag = noiseTex(coords * 2.3 + uTime * 0.012) * 0.6
-              + noiseTex(coords * 5.1 - uTime * 0.017) * 0.4;
-    //墨须振幅随覆盖率成长：早期半径小，固定大振幅会把前沿拽成偏心歪圆
-    float jagAmp = lerp(0.030, 0.160, smoothstep(0.10, 0.70, uSpreadProgress));
-    float sd = dist + (jag - 0.5) * jagAmp - uSpreadProgress * 1.18;
-    float useSpread = step(0.5, uSpreadMode);
-    float mask = lerp(1.0, 1.0 - smoothstep(-0.012, 0.014, sd), useSpread);
+    float2 mf = spreadMaskFront(coords);
+    float3 final = lerp(src, graded, mf.x);
     //前沿墨迹淤积带
-    float front = exp(-sd * sd / 0.0011) * (0.45 + 0.55 * jag) * useSpread;
-
-    float3 final = lerp(src, graded, mask);
-    final = lerp(final, final * float3(0.22, 0.20, 0.27), front * 0.75);
+    final = lerp(final, final * float3(0.22, 0.20, 0.27), mf.y * 0.75);
     //爆域浪头红烬
-    final += float3(0.72, 0.09, 0.05) * front * uFrontEmber;
+    final += float3(0.72, 0.09, 0.05) * mf.y * uFrontEmber;
 
-    //负片闪
+    return float4(final, 1.0);
+}
+
+//====== TechUnify：全帧轻统一罩（EndCapture 执行，实体已在画面里） ======
+float4 PSUnify(float2 coords : TEXCOORD0) : COLOR0 {
+    float2 px = 1.0 / uScreenSize;
+
+    //呼吸：表世界 8 秒周期的 0.35% 缩放，死寂时停摆
+    float omoteF = 1.0 - uWorldBlend;
+    float breath = sin(uTime * 0.785) * 0.0035 * omoteF * (1.0 - uStillness);
+    float2 uv = (coords - 0.5) * (1.0 - breath) + 0.5;
+
+    //错位帧：整帧平移数像素 + 红通道错开（pulse=0 时偏移归零，无需分支）
+    uv += float2(px.x * 4.0, -px.y * 1.5) * uAnomalyPulse;
+    float3 src = tex2D(uImage0, uv).rgb;
+    src.r = tex2D(uImage0, uv + float2(px.x * 3.0 * uAnomalyPulse, 0)).r;
+
+    float luma = dot(src, LUMA_W);
+    //红色保真：里世界三色纪律下红仍是唯一的colour，实体的红光/红弹不减艳
+    float redness = src.r - max(src.g, src.b);
+    float redMask = smoothstep(0.05, 0.30, redness);
+
+    //表世界罩：微量去饱和 + 和纸微暖，死寂时略深
+    float3 warm = lerp(src, luma.xxx, 0.08 + uStillness * 0.22) * WASHI_TINT;
+
+    //里世界罩：三成去饱和 + 冷灰染，实体在墨色环境里减艳但色相/轮廓仍清晰
+    //红色双重豁免（去饱和+冷染）：三色纪律下红是唯一的colour，不减艳
+    float3 cold = lerp(src, luma.xxx, 0.32 * (1.0 - redMask));
+    cold *= lerp(float3(0.90, 0.92, 1.04), float3(1.0, 1.0, 1.0), redMask);
+
+    float3 tone = lerp(warm, cold, step(0.5, uWorldBlend));
+
+    //浸染遮罩内生效：开/收域时墨浪压过哪里，哪里才染上
+    float2 mf = spreadMaskFront(coords);
+    float3 final = lerp(src, tone, mf.x);
+
+    //负片闪：全画面事件，旧世界日月化眼的一瞬
     final = lerp(final, 1.0 - final, uNegativeFlash * 0.92);
 
     return float4(final, 1.0);
@@ -162,5 +200,11 @@ float4 PSGrade(float2 coords : TEXCOORD0) : COLOR0 {
 technique TechGrade {
     pass P0 {
         PixelShader = compile ps_3_0 PSGrade();
+    }
+}
+
+technique TechUnify {
+    pass P0 {
+        PixelShader = compile ps_3_0 PSUnify();
     }
 }
