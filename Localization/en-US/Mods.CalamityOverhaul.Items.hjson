@@ -1,4 +1,4 @@
-SHPCModTooltipDraw: {
+﻿SHPCModTooltipDraw: {
 	InstalledHeader: INSTALLED MODULES
 	NoModules: NONE
 	BonusHeader: TOTAL MODULE BONUSES
@@ -2597,14 +2597,4 @@ MarbleCloudBalloon: {
 TestItem: {
 	DisplayName: Test Item
 	Tooltip: ""
-}
-
-OnikiriStyleDemoItem: {
-	DisplayName: Onikiri Style Demo (Debug)
-	Tooltip:
-		'''
-		Plays the Onikiri narrative skin demo scenario
-		Covers dialogue box, choice box (with a disabled option) and reward popup
-		Debug item
-		'''
 }

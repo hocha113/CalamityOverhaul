@@ -67,6 +67,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OceanWaterBlob { get; set; }
         public static Asset<Effect> HalibutPanel { get; set; }
         public static Asset<Effect> HalibutAtlasBg { get; set; }
+        public static Asset<Effect> OniGhostScroll { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }
         public static Asset<Effect> EncyclopediaKnowledge { get; set; }

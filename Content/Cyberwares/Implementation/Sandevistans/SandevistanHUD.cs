@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.QuestLogs;
+using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
@@ -12,8 +13,10 @@ using Terraria.GameContent;
 namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 {
     /// <summary>斯安威斯坦冷却 HUD，四段弧环+故障/粒子/扫描</summary>
-    internal class SandevistanHUD : UIHandle
+    internal class SandevistanHUD : UIHandle, IBottomLeftHud
     {
+        public static SandevistanHUD Instance => UIHandleLoader.GetUIHandleOfType<SandevistanHUD>();
+
         public override bool Active {
             get {
                 if (Sandevistan.GetEquipped(Main.LocalPlayer) == null) return false;
@@ -24,6 +27,17 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
                 return true;
             }
         }
+
+        #region 左下角 HUD 队列接入
+        //主动技能冷却环，置于武器 HUD（次序 0）与义眼被动读数（次序 10）之间：
+        //持比目鱼/SHPC 时被顶到其上方，义眼再叠于本环之上
+        bool IBottomLeftHud.HudStackActive => Active;
+        int IBottomLeftHud.HudStackOrder => 5;
+        Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
+        //自环心向上/向下覆盖刻度环、扫描头辉光与故障碎片的散布范围
+        float IBottomLeftHud.HudStackTopExtent => 65f;
+        float IBottomLeftHud.HudStackBottomExtent => 65f;
+        #endregion
 
         #region 状态
 
@@ -202,12 +216,21 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
 
         #region 绘制
 
+        //自然锚点（环心，未经队列避让）：UI 空间坐标，与义眼 HUD 同一停靠位，避免高 UIScale 下漂移
+        private static Vector2 NaturalAnchor => new(96f, BottomLeftHudStack.UIScreenH - 96f);
+
+        /// <summary>环心位置，经左下角 HUD 队列避让：与武器 HUD 同屏时自动上移悬浮</summary>
+        private static Vector2 GetCenter() {
+            SandevistanHUD inst = Instance;
+            return inst == null ? NaturalAnchor : BottomLeftHudStack.ResolveAnchor(inst);
+        }
+
         public override void Draw(SpriteBatch sb) {
             Texture2D px = TextureAssets.MagicPixel.Value;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             float ratio = Math.Clamp(displayRatio, 0f, 1f);
             bool active = Sandevistan.IsActive;
-            Vector2 center = new(Main.screenWidth * 0.5f, Main.screenHeight - 82f);
+            Vector2 center = GetCenter();
 
             DrawBackgroundRing(sb, px, center);
             DrawFilledArc(sb, px, center, ratio, active);

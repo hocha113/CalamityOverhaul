@@ -638,3 +638,42 @@ MoldProcessingUI: {
 	Discovered: 已发现
 	PinnedTag: 已固定
 }
+
+OnikiriText: {
+	OniRegisterUI: {
+		TitleText: 点 鬼 簿
+		StatusFormat: 铭鬼 {0} 缕 · 总驾驭 {1}%
+		MasteryFormat: 驾驭 {0}%
+		OriginLabel: 来历
+		PowerLabel: 赋力
+		StateEngraved: 铭刻 · 稳固
+		StateRestless: 铭刻 · 躁动
+		StateSealed: 封印中
+		StateUnknown: 铭位空悬
+		UnknownName: （留白）
+		UnknownHint: 簿上留白。夜还长，总会有名字自己走上来
+		SealedOriginHint: 封印未解。莫揭，莫应，莫回头
+		SealedPowerHint: ———
+		Ghost1Name: 无面女
+		Ghost1Origin: 雨夜的桥头，她借走了你的脸。刀落下时，水里的倒影替你还了礼
+		Ghost1Power: 「借颜」——拔刀的第一斩，无人看得见
+		Ghost2Name: 提灯童子
+		Ghost2Origin: 山道尽头有灯，灯下无人。跟着走的人都说，灯笼里烧的不是火
+		Ghost2Power: 「引路」——绯红连段的去向，由你不由天
+		Ghost3Name: 绯嫁
+		Ghost3Origin: 花轿在门前停了七夜。第七夜，轿帘自己掀开了——别数她的手指
+		Ghost3Power: 「迎亲」——被斩者替她走完余下的路，血落成红毯
+		Ghost4Name: 井中鸣
+	}
+
+	OniEngraveRiteUI: {
+		RiteTitle: 铭 刻
+		RiteHint: 落笔 · 归卷
+	}
+
+	OniTalismanHud: {
+		HudTitle: 封印札
+		HudHintFormat: "{0} 或点击 开阖点鬼簿"
+		HudDangerLine: 札下起了青焰——有鬼躁动
+	}
+}

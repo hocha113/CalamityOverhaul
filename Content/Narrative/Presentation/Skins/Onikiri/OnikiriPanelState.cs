@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.LegendWeapon.Onikiris.UI;
 using CalamityOverhaul.Content.Narrative.Presentation.Skins.Common;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -22,14 +23,14 @@ namespace CalamityOverhaul.Content.Narrative.Presentation.Skins.Onikiri
         /// <summary>shader 画布外扩:注连墨绸/绯月/纸垂住在这一圈</summary>
         public const int ShaderEdgePad = 18;
 
-        //==== 调色板(与 CrimsonSlashRenderer 四色同源,此处为 CPU 侧 LDR 对应) ====
-        public static readonly Color Paper = new(242, 234, 222);
-        public static readonly Color HotWhite = new(255, 243, 226);
-        public static readonly Color Bright = new(255, 41, 26);
-        public static readonly Color Deep = new(158, 13, 18);
-        public static readonly Color Dark = new(41, 4, 9);
-        public static readonly Color Ink = new(24, 12, 15);
-        public static readonly Color Seal = new(186, 32, 26);
+        //==== 调色板(单一来源在 OnikiriUITheme,此处保留别名维持皮肤侧引用) ====
+        public static readonly Color Paper = OnikiriUITheme.Paper;
+        public static readonly Color HotWhite = OnikiriUITheme.HotWhite;
+        public static readonly Color Bright = OnikiriUITheme.Bright;
+        public static readonly Color Deep = OnikiriUITheme.Deep;
+        public static readonly Color Dark = OnikiriUITheme.Dark;
+        public static readonly Color Ink = OnikiriUITheme.Ink;
+        public static readonly Color Seal = OnikiriUITheme.Seal;
 
         public float SwayTimer;
         public float PulseTimer;
