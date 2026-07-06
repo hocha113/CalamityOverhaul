@@ -668,6 +668,8 @@ OnikiriText: {
 		Ghost3Origin: The bridal palanquin waited at the gate for seven nights. On the seventh, the curtain lifted itself — do not count her fingers
 		Ghost3Power: 「The Procession」— the slain walk the rest of her road, their blood laid down as a red carpet
 		Ghost4Name: The Ringing in the Well
+		CloseTagText: ROLL
+		CloseHintFormat: ESC · {0} · click outside to roll up
 	}
 
 	OniEngraveRiteUI: {

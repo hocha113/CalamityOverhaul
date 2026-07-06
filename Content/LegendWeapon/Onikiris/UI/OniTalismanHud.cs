@@ -42,8 +42,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
 
         private float appear;
         private bool hover;
+        private bool wasHovered;
         private readonly OniUIParticlePool particles = new(40);
         private int emberTimer;
+        //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
+        private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
+        //本帧札体姿态(由绳末段决定),Update 算好供 Draw/粒子共用
+        private Vector2 stripTopNow;
+        private float stripRotNow;
 
         /// <summary>绳结自然锚点(未避让)</summary>
         public static Vector2 NaturalAnchor => new(OnikiriUITheme.HudAnchorOffset.X,
@@ -68,18 +74,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
 
         public override bool Active => LocalHolding() || appear > 0.01f;
 
-        /// <summary>纸札摆角(钟摆),危态时叠一层高频细颤</summary>
-        private float SwayAngle {
-            get {
-                float sway = (float)Math.Sin(GlobalTimer * 1.35f) * 0.055f
-                    + (float)Math.Sin(GlobalTimer * 0.53f + 1.7f) * 0.03f;
-                if (OniRegistry.InDanger) {
-                    sway += (float)Math.Sin(GlobalTimer * 11f) * 0.012f;
-                }
-                return sway;
-            }
-        }
-
         public override void Update() {
             bool holding = LocalHolding();
             appear = MathHelper.Clamp(appear + (holding ? 0.07f : -0.09f), 0f, 1f);
@@ -89,10 +83,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             }
             particles.Update();
 
-            //命中盒:纸札的轴对齐外包(摆角小,近似矩形足够)
+            bool danger = OniRegistry.InDanger;
+
+            //挂绳推进:危态风更烈,偶尔整根绳被"什么东西"拽一下
             Vector2 knot = Anchor;
-            Vector2 stripTop = knot + new Vector2(0f, OnikiriUITheme.HudRopeLen);
-            Rectangle strip = new((int)(stripTop.X - OnikiriUITheme.HudTalismanW * 0.5f - 4f), (int)stripTop.Y,
+            rope.Update(knot, null, GlobalTimer, danger ? 0.45f : 0.24f, endWeight: 0.5f);
+            if (danger && Main.rand.NextBool(140)) {
+                rope.Nudge(Main.rand.NextFloat(1.0f, 2.2f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.5f));
+            }
+            stripTopNow = rope.End;
+            stripRotNow = rope.EndRotation - MathHelper.PiOver2;
+            if (danger) {
+                stripRotNow += (float)Math.Sin(GlobalTimer * 11f) * 0.010f;
+            }
+
+            //命中盒:纸札的轴对齐外包(摆角小,近似矩形足够)
+            Rectangle strip = new((int)(stripTopNow.X - OnikiriUITheme.HudTalismanW * 0.5f - 4f), (int)stripTopNow.Y,
                 (int)OnikiriUITheme.HudTalismanW + 8, (int)OnikiriUITheme.HudTalismanH + 4);
             DrawPosition = strip.Location.ToVector2();
             Size = strip.Size();
@@ -101,11 +107,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
             if (registerOpen > 0.4f || riteOpen > 0.4f) {
-                hover = false;
+                hover = wasHovered = false;
                 return;
             }
 
             hover = strip.Contains(MousePosition.ToPoint());
+            //拂过纸札:绳吃一记小冲量
+            if (hover && !wasHovered) {
+                rope.Nudge(Main.rand.NextFloat(0.6f, 1.2f) * (Main.rand.NextBool() ? 1f : -1f));
+            }
+            wasHovered = hover;
             if (hover) {
                 player.mouseInterface = true;
                 if (keyLeftPressState == KeyPressState.Pressed) {
@@ -115,11 +126,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             }
 
             //危态:札脚剥落鬼火余烬
-            if (OniRegistry.InDanger) {
+            if (danger) {
                 emberTimer++;
                 if (emberTimer >= 26) {
                     emberTimer = 0;
-                    Vector2 stripBottom = stripTop + SwayAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2)
+                    Vector2 stripBottom = stripTopNow + (MathHelper.PiOver2 + stripRotNow).ToRotationVector2()
                         * OnikiriUITheme.HudTalismanH;
                     particles.SpawnEmber(stripBottom + Main.rand.NextVector2Circular(OnikiriUITheme.HudTalismanW * 0.4f, 2f));
                 }
@@ -139,42 +150,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
             Vector2 knot = Anchor;
-            float rot = SwayAngle;
-            //纸札顶部中点(挂在绳下),札体沿摆角向下
-            Vector2 stripTop = knot + new Vector2(0f, OnikiriUITheme.HudRopeLen);
+            float rot = stripRotNow;
+            //纸札顶部中点与姿态由 Verlet 绳末段决定
+            Vector2 stripTop = stripTopNow;
             Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
             float W = OnikiriUITheme.HudTalismanW;
             float H = OnikiriUITheme.HudTalismanH;
 
-            //挂绳:上端渐隐(挂在看不见的地方),结点一枚朱菱
+            //挂绳:上端渐隐(挂在看不见的地方),结点一枚朱菱,绳体为 Verlet 折线
             OniBrush.DrawGradientLine(sb, knot - new Vector2(0f, 26f), knot, OnikiriUITheme.Dark * 0f, OnikiriUITheme.Deep * (a * 0.8f), 1.3f);
-            OniBrush.DrawGradientLine(sb, knot, stripTop, OnikiriUITheme.Deep * (a * 0.85f), OnikiriUITheme.Deep * (a * 0.6f), 1.3f);
+            rope.Draw(sb, OnikiriUITheme.Deep * 0.88f, OnikiriUITheme.Deep * 0.62f, 1.3f, a);
             sb.Draw(pixel, knot, src, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f, new Vector2(0.5f), new Vector2(4.6f), SpriteEffects.None, 0f);
 
-            //札体:阴影/纸面/上折角/边线(全部绕 stripTop 随摆角旋转)
-            Vector2 stripCenter = stripTop + down * (H * 0.5f);
-            sb.Draw(pixel, stripCenter + new Vector2(1.5f, 2f), src, OnikiriUITheme.Dark * (a * 0.5f), rot, new Vector2(0.5f), new Vector2(W, H), SpriteEffects.None, 0f);
-            sb.Draw(pixel, stripCenter, src, OnikiriUITheme.Paper * (a * (hover ? 0.98f : 0.9f)), rot, new Vector2(0.5f), new Vector2(W, H), SpriteEffects.None, 0f);
-            sb.Draw(pixel, stripTop + down * 3f, src, OnikiriUITheme.TextDim * (a * 0.5f), rot, new Vector2(0.5f, 0.5f), new Vector2(W, 6f), SpriteEffects.None, 0f);
-            //左右侧沿各一线深红压边
+            //札体:纸条质感(三段明暗/折角/压边/缓移光泽),危态时改走焚烧 shader
             Vector2 side = rot.ToRotationVector2();
-            sb.Draw(pixel, stripCenter - side * (W * 0.5f - 1f), src, OnikiriUITheme.Deep * (a * 0.5f), rot + MathHelper.PiOver2, new Vector2(0.5f), new Vector2(H, 1.4f), SpriteEffects.None, 0f);
-            sb.Draw(pixel, stripCenter + side * (W * 0.5f - 1f), src, OnikiriUITheme.Deep * (a * 0.5f), rot + MathHelper.PiOver2, new Vector2(0.5f), new Vector2(H, 1.4f), SpriteEffects.None, 0f);
-
-            //札首小朱印
-            OniBrush.DrawSealGlyph(sb, stripTop + down * 15f, 8.5f, a * 0.95f, rot);
-
-            //墨批:自印下垂书一笔,长度=总驾驭度;危态时笔尾渗绯
             float mastery = MathHelper.Clamp(OniRegistry.TotalMastery, 0f, 1f);
             bool danger = OniRegistry.InDanger;
-            if (mastery > 0.02f) {
-                Vector2 strokeStart = stripTop + down * 26f;
-                Vector2 strokeEnd = stripTop + down * (26f + (H - 36f) * mastery);
-                OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.4f, 0.8f, a * 0.92f);
+            bool paperByShader = danger && OniPaperBurnDraw.Available;
+            if (paperByShader) {
+                //焚烧量吃"距离失控有多近":总驾驭越低烧得越高。
+                //只许舔掉下缘一小截——札是警示牌,不能被火吃掉存在感
+                float burn = MathHelper.Clamp(0.09f + (1f - mastery) * 0.17f, 0f, 0.30f);
+                OniPaperBurnDraw.Draw(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), burn, GlobalTimer);
+            }
+            else {
+                OniBrush.DrawPaperStrip(sb, stripTop, rot, new Vector2(W, H), a * (hover ? 1.05f : 0.96f), GlobalTimer * 0.11f);
             }
 
-            //危态:札脚焦边 + 青焰(随札体旋转,逐列手绘)
-            if (danger) {
+            //札首小朱印
+            OniBrush.DrawSealGlyph(sb, stripTop + down * 16f, 9.5f, a * 0.95f, rot);
+
+            //墨批:自印下垂书一笔,长度=总驾驭度
+            if (mastery > 0.02f) {
+                Vector2 strokeStart = stripTop + down * 29f;
+                Vector2 strokeEnd = stripTop + down * (29f + (H - 42f) * mastery);
+                OniBrush.DrawTaperedSlash(sb, strokeStart, strokeEnd, 3.8f, 0.9f, a * 0.92f);
+            }
+
+            //危态:焚烧 shader 缺席时退回逐列手绘焦边
+            if (danger && !paperByShader) {
                 DrawCharredHem(sb, stripTop, down, side, W, H, a);
             }
             particles.Draw(sb, a);
@@ -189,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
         private void DrawCharredHem(SpriteBatch sb, Vector2 stripTop, Vector2 down, Vector2 side, float w, float h, float a) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
-            float rot = SwayAngle;
+            float rot = stripRotNow;
             const int Cols = 10;
             float step = w / Cols;
             for (int i = 0; i < Cols; i++) {

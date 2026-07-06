@@ -70,13 +70,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
 
         #region 封印札 HUD 几何
         /// <summary>HUD 绳结锚点：距屏幕左下角的偏移</summary>
-        public static readonly Vector2 HudAnchorOffset = new(64f, -150f);
+        public static readonly Vector2 HudAnchorOffset = new(64f, -168f);
         /// <summary>纸札宽</summary>
-        public const float HudTalismanW = 30f;
-        /// <summary>纸札高</summary>
-        public const float HudTalismanH = 76f;
+        public const float HudTalismanW = 34f;
+        /// <summary>纸札高(修长的长条,存在感靠"长"不靠"宽")</summary>
+        public const float HudTalismanH = 112f;
         /// <summary>绳结到纸札顶的绳长</summary>
-        public const float HudRopeLen = 16f;
+        public const float HudRopeLen = 18f;
         #endregion
 
         /// <summary>异相位呼吸波，给定相位种子返回 0-1 的缓慢脉动</summary>

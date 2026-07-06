@@ -236,10 +236,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             Rectangle src = new(0, 0, 1, 1);
             Vector2 center = Center;
 
-            //====压暗背景:全屏墨罩 + 构图后方一团深红背光====
+            //====压暗背景:全屏墨罩 + 构图后方一团深红背光(背景层随光标轻微反向视差)====
             Rectangle full = new(0, 0, (int)OnikiriUITheme.UIScreenW + 2, (int)OnikiriUITheme.UIScreenH + 2);
             spriteBatch.Draw(pixel, full, src, Color.Black * (a * 0.74f));
-            OniBrush.DrawBacklight(spriteBatch, center, 320f, OnikiriUITheme.Deep, a * 0.55f);
+            Vector2 parallax = (OnikiriUITheme.UIMouse - center) * -0.012f;
+            OniBrush.DrawBacklight(spriteBatch, center + parallax, 320f, OnikiriUITheme.Deep, a * 0.55f);
 
             //====小题「铭 刻」+ 两笔角签====
             float titleA = MathHelper.Clamp((timer - 8f) / 22f, 0f, 1f) * a;
@@ -252,8 +253,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
                 OniBrush.DrawTaperedSlash(spriteBatch, tPos + new Vector2(tSize.X + 6f, tSize.Y * 0.5f), tPos + new Vector2(tSize.X + 26f, tSize.Y * 0.45f), 1.6f, 0.5f, titleA * 0.8f);
             }
 
-            //====鬼影(青烟剪影 + 鬼火之眼)====
-            DrawSilhouette(spriteBatch, a);
+            //====鬼影(青烟剪影 + 鬼火之眼),吃同一份背景视差====
+            DrawSilhouette(spriteBatch, a, parallax);
 
             //====白热刀痕:扫过鬼影,收势后余温残留====
             float sweep = SlashSweep;
@@ -295,11 +296,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             }
         }
 
-        /// <summary>鬼影:三层烟团缓旋扭动,碎裂时向外散逸;头部两点鬼火之眼</summary>
-        private void DrawSilhouette(SpriteBatch sb, float a) {
+        /// <summary>
+        /// 鬼影:shader 可用时走域扭曲 fbm 幽影(形体逐帧生成,眼/碎裂在 shader 内);
+        /// 否则降级为三层烟团 + CPU 像素眼
+        /// </summary>
+        private void DrawSilhouette(SpriteBatch sb, float a, Vector2 parallax) {
             float grow = MathHelper.Clamp(timer / 42f, 0f, 1f);
             grow = grow * (2f - grow);
             float break_ = SilhouetteBreak;
+
+            if (OniGhostShadowDraw.Available) {
+                float bodyA = a * grow;
+                if (bodyA <= 0.01f || break_ >= 0.999f) {
+                    return;
+                }
+                Vector2 c = SilhouetteCenter + parallax;
+                Rectangle quad = new((int)(c.X - 108f), (int)(c.Y - 148f), 216, 286);
+                float eyeOpen = entry.HasEyes
+                    ? MathHelper.Clamp((timer - 38f) / 14f, 0f, 1f) * (1f - MathHelper.Clamp((timer - TSlash) / 5f, 0f, 1f))
+                    : 0f;
+                OniGhostShadowDraw.Draw(sb, quad, new OniGhostShadowParams {
+                    Writhe = entry.State == OniGhostState.Sealed ? 0.12f : 0.85f,
+                    Break = break_,
+                    EyeOpen = eyeOpen,
+                    Glance = Vector2.Zero,
+                    Seed = OniGhostShadowDraw.SeedFromKey(entry.Key),
+                    Alpha = bodyA,
+                    Time = GlobalTimer,
+                });
+                return;
+            }
+
             float alpha = a * grow * (1f - break_);
             if (alpha <= 0.01f) {
                 return;
@@ -308,7 +335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             Texture2D smoke = OnikiriAssets.SmokeSheet01.Value;
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
-            Vector2 basePos = SilhouetteCenter;
+            Vector2 basePos = SilhouetteCenter + parallax;
 
             for (int i = 0; i < 3; i++) {
                 int frame = (int)(GlobalTimer * 5f + i * 1.7f) % 4;

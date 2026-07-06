@@ -93,16 +93,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             DrawSingleShide(spriteBatch, rect, 0.78f, 18f, alpha * 0.92f, swayTimer, 2.1f);
         }
 
-        /// <summary>单条纸垂：绳结 + 三段之字折纸，摆角向纸尾递增(钟摆感)。u 为顶沿归一横坐标</summary>
+        /// <summary>
+        /// 单条纸垂：绳结 + 三段之字折纸，摆角向纸尾递增(钟摆感)。u 为顶沿归一横坐标。<br/>
+        /// 摆动为双谐波 + 阵风包络；每段折面按朝向对虚拟光源(左上)算明暗，折缝叠一线高光——纸是折过的,不是三个矩形
+        /// </summary>
         public static void DrawSingleShide(SpriteBatch sb, Rectangle rect, float u, float length, float alpha, float swayTimer, float phase) {
             float sag = (float)Math.Sin(u * Math.PI) * 3.4f;
             Vector2 anchor = new(rect.X + rect.Width * u, rect.Y - 6f + sag);
-            float sway = (float)Math.Sin(swayTimer * 1.5f + phase) * 0.085f;
+
+            //双谐波摆 + 低频阵风:风起时摆幅涨,平息后归于微晃
+            float gust = (float)Math.Pow(Math.Max(0f, Math.Sin(swayTimer * 0.23f + phase * 0.7f)), 3.0) * 0.6f;
+            float sway = (float)Math.Sin(swayTimer * 1.5f + phase) * 0.085f * (1f + gust)
+                + (float)Math.Sin(swayTimer * 3.7f + phase * 1.3f) * 0.026f;
 
             //绳结
             sb.Draw(Pixel, anchor, PixelSrc, OnikiriUITheme.Deep * (alpha * 0.9f), sway * 0.5f + MathHelper.PiOver4, new Vector2(0.5f), new Vector2(4.2f, 4.2f), SpriteEffects.None, 0f);
 
-            //三段之字折纸
+            //三段之字折纸;虚拟光源在左上
+            Vector2 lightDir = Vector2.Normalize(new Vector2(-0.42f, -1f));
             Vector2 pos = anchor + new Vector2(0f, 1.5f);
             float segLen = length / 3f;
             const float zig = 0.46f;
@@ -111,10 +119,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
                 float rot = MathHelper.PiOver2 + lean + sway * (0.5f + i * 0.45f);
                 Vector2 dir = rot.ToRotationVector2();
                 Vector2 size = new(segLen + 1.2f, 4.6f - i * 0.5f);
+
+                //折面明暗:面法线与光向的点积,交替的折面自然一亮一暗,并随摆动呼吸
+                Vector2 normal = (rot - MathHelper.PiOver2).ToRotationVector2();
+                float lit = 0.72f + 0.30f * Math.Max(0f, Vector2.Dot(normal, lightDir));
+                Color face = OnikiriUITheme.Paper * (alpha * 0.85f * lit);
+
                 sb.Draw(Pixel, pos + new Vector2(0.8f, 0.8f), PixelSrc, OnikiriUITheme.Dark * (alpha * 0.45f), rot, new Vector2(0f, 0.5f), size, SpriteEffects.None, 0f);
-                sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.Paper * (alpha * 0.85f), rot, new Vector2(0f, 0.5f), size, SpriteEffects.None, 0f);
+                sb.Draw(Pixel, pos, PixelSrc, face, rot, new Vector2(0f, 0.5f), size, SpriteEffects.None, 0f);
+                //折缝高光:段起点一线,纸脊接住光
+                if (i > 0) {
+                    sb.Draw(Pixel, pos, PixelSrc, OnikiriUITheme.HotWhite * (alpha * 0.22f * lit), rot + MathHelper.PiOver2,
+                        new Vector2(0.5f), new Vector2(size.Y * 0.9f, 1f), SpriteEffects.None, 0f);
+                }
                 pos += dir * segLen * 0.9f;
             }
+        }
+
+        /// <summary>
+        /// 纸条(封印札/HUD 札共用)：阴影 + 纵向三段明暗(顶亮底沉) + 上折角 + 双侧深红压边 + 缓移光泽带。<br/>
+        /// top 为纸条顶部中点，纸条沿 rot 决定的"下"方向铺开
+        /// </summary>
+        public static void DrawPaperStrip(SpriteBatch sb, Vector2 top, float rot, Vector2 size, float alpha, float sheenPhase) {
+            Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
+            Vector2 side = rot.ToRotationVector2();
+            Vector2 center = top + down * (size.Y * 0.5f);
+            Vector2 half = new(0.5f);
+
+            //阴影
+            sb.Draw(Pixel, center + new Vector2(1.5f, 2f), PixelSrc, OnikiriUITheme.Dark * (alpha * 0.5f), rot, half, size, SpriteEffects.None, 0f);
+
+            //纵向三段明暗:纸从光里垂下来,顶承光底沉影
+            Span<(float f0, float f1, float lit)> bands = [(0f, 0.34f, 1.05f), (0.34f, 0.72f, 0.97f), (0.72f, 1f, 0.88f)];
+            foreach ((float f0, float f1, float lit) in bands) {
+                Vector2 bandCenter = top + down * (size.Y * (f0 + f1) * 0.5f);
+                Vector2 bandSize = new(size.X, size.Y * (f1 - f0) + 0.6f);
+                sb.Draw(Pixel, bandCenter, PixelSrc, OnikiriUITheme.Paper * (alpha * 0.9f * lit), rot, half, bandSize, SpriteEffects.None, 0f);
+            }
+
+            //上折角
+            sb.Draw(Pixel, top + down * 3f, PixelSrc, OnikiriUITheme.TextDim * (alpha * 0.5f), rot, half, new Vector2(size.X, 6f), SpriteEffects.None, 0f);
+
+            //双侧深红压边
+            sb.Draw(Pixel, center - side * (size.X * 0.5f - 1f), PixelSrc, OnikiriUITheme.Deep * (alpha * 0.5f), rot + MathHelper.PiOver2, half, new Vector2(size.Y, 1.4f), SpriteEffects.None, 0f);
+            sb.Draw(Pixel, center + side * (size.X * 0.5f - 1f), PixelSrc, OnikiriUITheme.Deep * (alpha * 0.5f), rot + MathHelper.PiOver2, half, new Vector2(size.Y, 1.4f), SpriteEffects.None, 0f);
+
+            //光泽带:一条极淡的亮痕沿纸面缓移,纸在光里轻轻转
+            float sheenT = sheenPhase - (float)Math.Floor(sheenPhase);
+            Vector2 sheenCenter = top + down * (size.Y * MathHelper.Lerp(0.12f, 0.88f, sheenT));
+            float sheenA = (float)Math.Sin(sheenT * Math.PI);
+            sb.Draw(Pixel, sheenCenter, PixelSrc, OnikiriUITheme.HotWhite * (alpha * 0.10f * sheenA), rot, half, new Vector2(size.X - 2f, 5f), SpriteEffects.None, 0f);
         }
 
         /// <summary>绘马挂绳：两根斜绳收到顶结，结下垂一缕随摆的流苏(弹窗用)</summary>

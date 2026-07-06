@@ -50,6 +50,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
         public static LocalizedText Ghost3Origin { get; private set; }
         public static LocalizedText Ghost3Power { get; private set; }
         public static LocalizedText Ghost4Name { get; private set; }
+        public static LocalizedText CloseTagText { get; private set; }
+        public static LocalizedText CloseHintFormat { get; private set; }
 
         public override void SetStaticDefaults() {
             TitleText = this.GetLocalization(nameof(TitleText), () => "点 鬼 簿");
@@ -75,6 +77,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             Ghost3Origin = this.GetLocalization(nameof(Ghost3Origin), () => "花轿在门前停了七夜。第七夜，轿帘自己掀开了——别数她的手指");
             Ghost3Power = this.GetLocalization(nameof(Ghost3Power), () => "「迎亲」——被斩者替她走完余下的路，血落成红毯");
             Ghost4Name = this.GetLocalization(nameof(Ghost4Name), () => "井中鸣");
+            CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
+            CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
 
             OniRegistry.BuildDemoEntries();
         }
@@ -92,7 +96,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
         private float selectEase;
         private Rectangle scrollRect;
         private Rectangle detailRect;
-        private Rectangle closeRect;
+        //收卷木牌:挂在顶部轴杆右端,点击关闭。牌绳为 Verlet 摆
+        private Rectangle closeTagRect;
+        private float closeTagHover;
+        private bool closeTagWasHovered;
+        private Vector2 closeTagAnchor;
+        private readonly OniRope closeTagRope = new(5, 22f);
         private readonly Rectangle[] entryRects = new Rectangle[16];
 
         //====动画状态====
@@ -201,6 +210,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             selectEase = MathHelper.Clamp(selectEase + 0.07f, 0f, 1f);
 
             LayoutCompute();
+
+            //收卷牌摆:绳受风,牌是末端配重
+            closeTagRope.Update(closeTagAnchor, null, GlobalTimer, 0.26f, endWeight: 0.55f);
+            Vector2 tagTop = closeTagRope.End;
+            closeTagRect = new Rectangle((int)(tagTop.X - 16f), (int)tagTop.Y - 2, 32, 48);
+
             UpdateInteraction(a);
             UpdateAmbient(a);
             UpdateAnomalies();
@@ -224,7 +239,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             float detailW = Math.Min(430f, sw - detailX - 44f);
             detailRect = new Rectangle((int)detailX, (int)(sh * 0.5f - 216f), (int)detailW, 432);
 
-            closeRect = new Rectangle((int)sw - 48, 16, 32, 32);
+            //收卷木牌绳锚:顶部轴杆右端帽,牌体位置由 Verlet 绳每帧决定
+            closeTagAnchor = new Vector2(scrollRect.Right + 17f, scrollRect.Y - 7f);
 
             //名录竖列,右起左行(旧式名册自右向左)
             Rectangle inner = scrollRect;
@@ -266,13 +282,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
                 hoverEase[i] += (target - hoverEase[i]) * (target > hoverEase[i] ? 0.22f : 0.12f);
             }
 
+            //收卷牌 hover 缓动;拂过时给绳一记横向冲量,像被手碰了一下
+            bool tagHovered = inputAvailable && closeTagRect.Contains(mp);
+            closeTagHover += ((tagHovered ? 1f : 0f) - closeTagHover) * 0.2f;
+            if (tagHovered && !closeTagWasHovered) {
+                closeTagRope.Nudge(Main.rand.NextFloat(0.8f, 1.5f) * (Main.rand.NextBool() ? 1f : -1f));
+            }
+            closeTagWasHovered = tagHovered;
+
             if (inputAvailable && keyLeftPressState == KeyPressState.Pressed) {
-                if (closeRect.Contains(mp)) {
+                if (tagHovered) {
                     Close();
                     return;
                 }
                 if (hoverIndex >= 0) {
                     SelectEntry(hoverIndex);
+                    return;
+                }
+                //点击卷外压暗区收卷:卷轴(含外扩边)、细节板、收卷牌之外都算"外"
+                Rectangle scrollHit = scrollRect;
+                scrollHit.Inflate(OnikiriUITheme.ScrollEdgePad + 22, OnikiriUITheme.ScrollEdgePad + 22);
+                if (!scrollHit.Contains(mp) && !detailRect.Contains(mp)) {
+                    Close();
                 }
             }
         }
@@ -388,10 +419,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             Rectangle src = new(0, 0, 1, 1);
             var entries = OniRegistry.Entries;
 
-            //====压暗世界 + 绯月====
+            //====压暗世界 + 绯月(远景视差:随光标轻微反向,层次感白拿)====
             Rectangle full = new(0, 0, (int)OnikiriUITheme.UIScreenW + 2, (int)OnikiriUITheme.UIScreenH + 2);
             spriteBatch.Draw(pixel, full, src, Color.Black * (a * 0.66f));
-            OniRegisterRenderer.DrawMoon(spriteBatch, new Vector2(OnikiriUITheme.UIScreenW * 0.84f, 118f), a, ShaderTime, pupilOpen);
+            Vector2 parallax = (OnikiriUITheme.UIMouse - OnikiriUITheme.UIScreenSize * 0.5f) * -0.016f;
+            OniRegisterRenderer.DrawMoon(spriteBatch, new Vector2(OnikiriUITheme.UIScreenW * 0.84f, 118f) + parallax, a, ShaderTime, pupilOpen);
 
             //====卷轴纸体(shader / CPU 降级) + 轴杆 + 挂件====
             float reveal = a;
@@ -408,7 +440,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
                 DrawHeader(spriteBatch, font, contentA);
                 DrawEntries(spriteBatch, font, contentA, entries);
                 OniRegisterRenderer.DrawDetail(spriteBatch, this, detailRect, contentA);
-                DrawCloseButton(spriteBatch, contentA);
+                OniRegisterRenderer.DrawCloseTag(spriteBatch, font, closeTagRope, contentA, closeTagHover, GlobalTimer);
+                DrawCloseHint(spriteBatch, font, contentA);
             }
 
             //====两翼落花====
@@ -451,16 +484,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             }
         }
 
-        private void DrawCloseButton(SpriteBatch sb, float a) {
-            Vector2 center = closeRect.Center.ToVector2();
-            bool hovered = closeRect.Contains(MousePosition.ToPoint());
-            float hi = hovered ? 1f : 0.55f;
-            //两笔交叉的收笔刀痕
-            OniBrush.DrawTaperedSlash(sb, center + new Vector2(-7f, -7f), center + new Vector2(7f, 7f), 2.0f, 0.6f, a * hi);
-            OniBrush.DrawTaperedSlash(sb, center + new Vector2(7f, -7f), center + new Vector2(-7f, 7f), 2.0f, 0.6f, a * hi);
-            if (hovered) {
-                player.mouseInterface = true;
-            }
+        /// <summary>卷底常驻关闭提示:ESC/键位/点卷外</summary>
+        private void DrawCloseHint(SpriteBatch sb, DynamicSpriteFont font, float a) {
+            string keyName = CWRKeySystem.Legend_UIControl.ToTooltipString(CWRKeySystem.Notbound.Value);
+            string hint = string.Format(CloseHintFormat.Value, keyName);
+            Vector2 size = font.MeasureString(hint) * 0.62f;
+            float y = Math.Min(scrollRect.Bottom + 14f, OnikiriUITheme.UIScreenH - 24f);
+            Utils.DrawBorderString(sb, hint,
+                new Vector2(scrollRect.Center.X - size.X * 0.5f, y),
+                OnikiriUITheme.TextDim * (a * 0.6f), 0.62f);
         }
     }
 

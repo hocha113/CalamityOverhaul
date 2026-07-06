@@ -114,6 +114,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             }
         }
 
+        /// <summary>
+        /// 收卷木牌：挂在顶部轴杆右端的小木牌，点击关闭。<br/>
+        /// 牌绳是 Verlet 摆——受风、被拂过会真的晃起来；关闭入口本身也是卷轴上的在世挂件
+        /// </summary>
+        public static void DrawCloseTag(SpriteBatch sb, DynamicSpriteFont font, OniRope rope, float alpha, float hover, float time) {
+            //绳与顶结
+            rope.Draw(sb, OnikiriUITheme.Deep * 0.9f, OnikiriUITheme.Deep * 0.62f, 1.3f, alpha);
+            sb.Draw(Pixel, rope[0], PixelSrc, OnikiriUITheme.Seal * (alpha * 0.9f), MathHelper.PiOver4, new Vector2(0.5f), new Vector2(3.8f), SpriteEffects.None, 0f);
+
+            //牌体姿态由绳末段方向决定,hover 叠一丝高频轻颤
+            Vector2 tagTop = rope.End;
+            float rot = rope.EndRotation - MathHelper.PiOver2 + hover * (float)Math.Sin(time * 14f) * 0.015f;
+            Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
+            Vector2 side = rot.ToRotationVector2();
+
+            Vector2 tagSize = new(26f, 40f);
+            Vector2 tagCenter = tagTop + down * (tagSize.Y * 0.5f);
+
+            //牌体:漆木底 + 深红包边 + 顶部穿绳孔
+            float lift = 1f + hover * 0.06f;
+            Vector2 half = new(0.5f);
+            sb.Draw(Pixel, tagCenter + new Vector2(1.4f, 1.8f), PixelSrc, new Color(8, 2, 5) * (alpha * 0.55f), rot, half, tagSize * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, tagCenter, PixelSrc, OnikiriUITheme.Deep * (alpha * (0.55f + hover * 0.35f)), rot, half, (tagSize + new Vector2(3f, 3f)) * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, tagCenter, PixelSrc, Color.Lerp(new Color(52, 18, 16), new Color(74, 26, 22), hover) * (alpha * 0.96f), rot, half, tagSize * lift, SpriteEffects.None, 0f);
+            //木纹:两道极淡的纵向暗纹
+            sb.Draw(Pixel, tagCenter - side * 5f, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.3f), rot, half, new Vector2(1f, tagSize.Y * 0.8f) * lift, SpriteEffects.None, 0f);
+            sb.Draw(Pixel, tagCenter + side * 6f, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.22f), rot, half, new Vector2(1f, tagSize.Y * 0.7f) * lift, SpriteEffects.None, 0f);
+            //穿绳孔
+            sb.Draw(Pixel, tagTop + down * 4f, PixelSrc, OnikiriUITheme.Ink * (alpha * 0.9f), rot, half, new Vector2(3f), SpriteEffects.None, 0f);
+
+            //牌文:CJK 逐字竖排 / 拉丁旋转 90°
+            string text = OniRegisterUI.CloseTagText.Value;
+            Color textCol = Color.Lerp(OnikiriUITheme.Paper, OnikiriUITheme.HotWhite, hover) * (alpha * (0.8f + hover * 0.2f));
+            const float Scale = 0.72f;
+            if (OniBrush.ContainsCJK(text)) {
+                float charH = font.MeasureString("字").Y * Scale + 1f;
+                float totalH = charH * text.Length - 1f;
+                Vector2 pen = tagCenter - down * (totalH * 0.5f - charH * 0.28f);
+                foreach (char c in text) {
+                    string s = c.ToString();
+                    Vector2 size = font.MeasureString(s) * Scale;
+                    Vector2 pos = pen - side * (size.X * 0.5f) - down * (size.Y * 0.35f);
+                    Utils.DrawBorderString(sb, s, pos, textCol, Scale);
+                    pen += down * charH;
+                }
+            }
+            else {
+                Vector2 size = font.MeasureString(text) * Scale;
+                Vector2 pos = tagCenter + side * (size.Y * 0.34f) - down * (size.X * 0.5f);
+                sb.DrawString(font, text, pos + new Vector2(1f, 1f), OnikiriUITheme.Ink * (alpha * 0.8f), MathHelper.PiOver2 + rot, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+                sb.DrawString(font, text, pos, textCol, MathHelper.PiOver2 + rot, Vector2.Zero, Scale, SpriteEffects.None, 0f);
+            }
+        }
+
         //====================== 绯月 ======================
 
         /// <summary>绯月：三档软辉叠出的红月,危态低频睁开一条竖瞳</summary>
@@ -225,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             }
         }
 
-        /// <summary>封印札：糊在名讳上的竖纸条,朱纹批画,偶发轻颤</summary>
+        /// <summary>封印札：糊在名讳上的竖纸条(纸条质感走 OniBrush),朱纹批画,偶发轻颤</summary>
         private static void DrawSealTalisman(SpriteBatch sb, Rectangle rect, float alpha, float time, int index) {
             //偶发轻颤:长周期正弦越过阈值的窄窗内高频抖动
             float gate = (float)Math.Sin(time * 0.21f + index * 2.63f);
@@ -235,12 +289,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
             float rot = 0.03f + tremble;
             Vector2 size = new(20f, rect.Height * 0.7f);
             Vector2 half = new(0.5f);
+            Vector2 top = center - (MathHelper.PiOver2 + rot).ToRotationVector2() * (size.Y * 0.5f);
 
-            sb.Draw(Pixel, center + new Vector2(1.4f, 1.8f), PixelSrc, OnikiriUITheme.Dark * (alpha * 0.5f), rot, half, size, SpriteEffects.None, 0f);
-            sb.Draw(Pixel, center, PixelSrc, OnikiriUITheme.Paper * (alpha * 0.88f), rot, half, size, SpriteEffects.None, 0f);
-            //顶折角
-            sb.Draw(Pixel, center + new Vector2(0f, -size.Y * 0.5f + 3f).RotatedBy(rot), PixelSrc,
-                OnikiriUITheme.TextDim * (alpha * 0.5f), rot, half, new Vector2(size.X, 5f), SpriteEffects.None, 0f);
+            OniBrush.DrawPaperStrip(sb, top, rot, size, alpha * 0.94f, time * 0.07f + index * 0.4f);
+
             //朱纹:一长竖两短横,似符非字
             Color strokeCol = OnikiriUITheme.Seal * (alpha * 0.85f);
             sb.Draw(Pixel, center + new Vector2(0f, 4f).RotatedBy(rot), PixelSrc, strokeCol, rot, half, new Vector2(2.2f, size.Y * 0.52f), SpriteEffects.None, 0f);
@@ -339,6 +391,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
                 return;
             }
 
+            if (OniGhostShadowDraw.Available) {
+                DrawDetailShadowShader(sb, ui, entry, rect, lightCenter, alpha);
+                return;
+            }
+
             Texture2D smoke = OnikiriAssets.SmokeSheet01.Value;
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
@@ -381,6 +438,64 @@ namespace CalamityOverhaul.Content.LegendWeapon.Onikiris.UI
                     sb.Draw(Pixel, eye + toMouse, PixelSrc, OnikiriUITheme.GhostFire * (alpha * 0.92f * flick), 0f,
                         new Vector2(0.5f), new Vector2(2.4f, 1.9f), SpriteEffects.None, 0f);
                 }
+            }
+        }
+
+        /// <summary>
+        /// 影绘 shader 路径:伪散射(放大模糊层沿光向偏移)卖"光透过纸"的厚度,
+        /// 再叠清晰芯;封印的裹布与封字印保持 CPU 压在影上
+        /// </summary>
+        private static void DrawDetailShadowShader(SpriteBatch sb, OniRegisterUI ui, OniGhostEntry entry,
+            Rectangle rect, Vector2 lightCenter, float alpha) {
+            Vector2 basePos = lightCenter + new Vector2(0f, 14f);
+            int w = (int)(rect.Width * 0.56f);
+            int h = (int)(rect.Height * 0.46f);
+            Rectangle quad = new((int)(basePos.X - w * 0.5f), (int)(basePos.Y - h * 0.52f), w, h);
+
+            float writhe = entry.State switch {
+                OniGhostState.Sealed => 0.06f,
+                OniGhostState.Restless => 1f,
+                _ => 0.5f,
+            };
+            float seed = OniGhostShadowDraw.SeedFromKey(entry.Key);
+            //凝视:瞳位向光标方向压 UV 偏移(只转眼,不动身)
+            Vector2 glance = Vector2.Zero;
+            if (entry.HasEyes && ui.GlanceStrength > 0.01f) {
+                Vector2 toMouse = ui.MousePosition - basePos;
+                glance = toMouse.SafeNormalize(Vector2.Zero) * 0.024f * ui.GlanceStrength;
+            }
+
+            //伪散射层:放大 1.25 倍、低透明、沿光源反向微沉——影子在纸纤维里晕开
+            Rectangle diffuse = quad;
+            diffuse.Inflate((int)(w * 0.125f), (int)(h * 0.125f));
+            diffuse.Offset(0, 4);
+            OniGhostShadowDraw.Draw(sb, diffuse, new OniGhostShadowParams {
+                Writhe = writhe * 0.7f,
+                Break = 0f,
+                EyeOpen = 0f,
+                Glance = glance,
+                Seed = seed,
+                Alpha = alpha * 0.30f,
+                Time = ui.GlobalTimer,
+            });
+
+            //清晰芯
+            float eyeOpen = entry.HasEyes ? 1f : 0f;
+            OniGhostShadowDraw.Draw(sb, quad, new OniGhostShadowParams {
+                Writhe = writhe,
+                Break = 0f,
+                EyeOpen = eyeOpen,
+                Glance = glance,
+                Seed = seed,
+                Alpha = alpha * 0.92f,
+                Time = ui.GlobalTimer,
+            });
+
+            //封印:影上横一条裹尸布似的纸带 + 小封字印
+            if (entry.State == OniGhostState.Sealed) {
+                sb.Draw(Pixel, basePos + new Vector2(0f, -8f), PixelSrc, OnikiriUITheme.Paper * (alpha * 0.4f),
+                    0.06f, new Vector2(0.5f), new Vector2(96f, 12f), SpriteEffects.None, 0f);
+                OniBrush.DrawSealGlyph(sb, basePos + new Vector2(30f, -8f), 8f, alpha * 0.8f, 0.06f);
             }
         }
 
