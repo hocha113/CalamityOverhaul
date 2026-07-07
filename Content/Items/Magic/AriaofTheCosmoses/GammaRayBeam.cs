@@ -190,19 +190,20 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Vector2 dir = Projectile.rotation.ToRotationVector2();
             Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
-            //撞墙时条带向墙内延伸容纳热球
-            float ballExt = hitWall ? StripHalfWidth * 0.9f : 0f;
-            float stripLen = rayLength + ballExt;
-            //枪口向后 bleed 藏起始硬边
+            //条带止于 raycast 命中点,不再向外延伸(热球由 shader SDF + 加色层圆光负责)
+            float stripLen = rayLength;
             Vector2 origin = Projectile.Center - dir * 10f;
             Vector2 tip = Projectile.Center + dir * stripLen;
             float halfW = StripHalfWidth * (0.45f + 0.55f * widthMul);
 
+            //末端顶点收尖,消灭 quad 方角(撞墙端略宽以承接热球)
+            float tipPinch = hitWall ? 0.32f : 0.06f;
+
             var verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(0f, 0f));
             verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(0f, 1f));
-            verts[2] = new VertexPositionColorTexture((tip + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));
-            verts[3] = new VertexPositionColorTexture((tip - perp * halfW).ToVector3(), Color.White, new Vector2(1f, 1f));
+            verts[2] = new VertexPositionColorTexture((tip + perp * halfW * tipPinch).ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[3] = new VertexPositionColorTexture((tip - perp * halfW * tipPinch).ToVector3(), Color.White, new Vector2(1f, 1f));
 
             GraphicsDevice device = Main.graphics.GraphicsDevice;
             BlendState origBlend = device.BlendState;
