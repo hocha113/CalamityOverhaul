@@ -50,6 +50,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText Ghost3Origin { get; private set; }
         public static LocalizedText Ghost3Power { get; private set; }
         public static LocalizedText Ghost4Name { get; private set; }
+        public static LocalizedText Ghost5Name { get; private set; }
+        public static LocalizedText Ghost5Origin { get; private set; }
+        public static LocalizedText Ghost5Power { get; private set; }
+        public static LocalizedText Ghost6Name { get; private set; }
+        public static LocalizedText Ghost6Origin { get; private set; }
+        public static LocalizedText Ghost6Power { get; private set; }
+        public static LocalizedText Ghost7Name { get; private set; }
+        public static LocalizedText Ghost7Origin { get; private set; }
+        public static LocalizedText Ghost7Power { get; private set; }
         public static LocalizedText CloseTagText { get; private set; }
         public static LocalizedText CloseHintFormat { get; private set; }
 
@@ -69,14 +78,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             SealedPowerHint = this.GetLocalization(nameof(SealedPowerHint), () => "———");
             Ghost1Name = this.GetLocalization(nameof(Ghost1Name), () => "无面女");
             Ghost1Origin = this.GetLocalization(nameof(Ghost1Origin), () => "雨夜的桥头，她借走了你的脸。刀落下时，水里的倒影替你还了礼");
-            Ghost1Power = this.GetLocalization(nameof(Ghost1Power), () => "「借颜」——拔刀的第一斩，无人看得见");
+            Ghost1Power = this.GetLocalization(nameof(Ghost1Power), () => "「借颜」——它借走你的脸，别人便认不出你；第一个照面，谁都以为看错了人");
             Ghost2Name = this.GetLocalization(nameof(Ghost2Name), () => "提灯童子");
             Ghost2Origin = this.GetLocalization(nameof(Ghost2Origin), () => "山道尽头有灯，灯下无人。跟着走的人都说，灯笼里烧的不是火");
-            Ghost2Power = this.GetLocalization(nameof(Ghost2Power), () => "「引路」——绯红连段的去向，由你不由天");
+            Ghost2Power = this.GetLocalization(nameof(Ghost2Power), () => "「引路」——灯照过的路不会迷；坑洞、埋伏、回不去的岔口，它都先替你踩过");
             Ghost3Name = this.GetLocalization(nameof(Ghost3Name), () => "绯嫁");
             Ghost3Origin = this.GetLocalization(nameof(Ghost3Origin), () => "花轿在门前停了七夜。第七夜，轿帘自己掀开了——别数她的手指");
-            Ghost3Power = this.GetLocalization(nameof(Ghost3Power), () => "「迎亲」——被斩者替她走完余下的路，血落成红毯");
+            Ghost3Power = this.GetLocalization(nameof(Ghost3Power), () => "「迎亲」——伤过你的，都得替她走完余下的路；血落成红毯");
             Ghost4Name = this.GetLocalization(nameof(Ghost4Name), () => "井中鸣");
+            Ghost5Name = this.GetLocalization(nameof(Ghost5Name), () => "替死鬼");
+            Ghost5Origin = this.GetLocalization(nameof(Ghost5Origin), () => "都说横死的要找替身才能走。它跟了你这么多年，却一次也不肯换——你的死，它先替着，账记在这本簿上");
+            Ghost5Power = this.GetLocalization(nameof(Ghost5Power), () => "「替死」——夺命的那一击落下时，死的是它，不是你。它不要谢，它记账");
+            Ghost6Name = this.GetLocalization(nameof(Ghost6Name), () => "无头鬼影");
+            Ghost6Origin = this.GetLocalization(nameof(Ghost6Origin), () => "人皮纸上按了手印，这桩交易就算成了：它住进你的影子里。灯下别回头细看——它的头，还没找回来");
+            Ghost6Power = this.GetLocalization(nameof(Ghost6Power), () => "「夺影」——你的影子归它，你的重量也归它；夜里赶路，脚不沾地");
+            Ghost7Name = this.GetLocalization(nameof(Ghost7Name), () => "鬼手");
+            Ghost7Origin = this.GetLocalization(nameof(Ghost7Origin), () => "高空的客舱里，打盹的人脖颈上多出五道青痕。后来它被一枚假棺材钉钉住——钉得住手，钉不住它想攥的东西");
+            Ghost7Power = this.GetLocalization(nameof(Ghost7Power), () => "「攥」——它从你袖口探出去，攥住什么，什么就动弹不得");
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
 

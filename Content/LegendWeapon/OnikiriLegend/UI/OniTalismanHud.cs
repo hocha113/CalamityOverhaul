@@ -47,9 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private int emberTimer;
         //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
         private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
-        //本帧札体姿态(由绳末段决定),Update 算好供 Draw/粒子共用
+        //本帧札体姿态(绳末位置+摆角弹簧),Update 算好供 Draw/粒子/命中共用
         private Vector2 stripTopNow;
         private float stripRotNow;
+        //札体摆角弹簧状态:长纸条的转动惯性来自这两个量,而非绳末段的瞬时方向
+        private float stripRot;
+        private float stripRotVel;
+        //捏点的札面局部坐标(x=横向,y=沿札向下),悬停进入时记录
+        private Vector2 gripLocal;
+        //失去悬停后的帧计数:边缘打滑造成的快速重捏不重复响纸声
+        private int hoverOffTicks = 60;
 
         /// <summary>绳结自然锚点(未避让)</summary>
         public static Vector2 NaturalAnchor => new(OnikiriUITheme.HudAnchorOffset.X,
@@ -78,44 +85,94 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool holding = LocalHolding();
             appear = MathHelper.Clamp(appear + (holding ? 0.07f : -0.09f), 0f, 1f);
             if (appear <= 0.01f) {
-                hover = false;
+                hover = wasHovered = false;
+                hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
                 return;
             }
             particles.Update();
 
             bool danger = OniRegistry.InDanger;
 
-            //挂绳推进:危态风更烈,偶尔整根绳被"什么东西"拽一下
+            //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
             Vector2 knot = Anchor;
-            rope.Update(knot, null, GlobalTimer, danger ? 0.45f : 0.24f, endWeight: 0.5f);
-            if (danger && Main.rand.NextBool(140)) {
-                rope.Nudge(Main.rand.NextFloat(1.0f, 2.2f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.5f));
+            float windAmp = danger ? 0.18f : 0.09f;
+            if (hover) {
+                windAmp *= 0.2f;
+            }
+            rope.Update(knot, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.88f);
+            if (danger && !hover && Main.rand.NextBool(140)) {
+                rope.Nudge(Main.rand.NextFloat(0.6f, 1.3f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.5f));
+            }
+            //悬停牵引:绳末被拉向"让捏点贴住光标"的位置,绳长约束自然给出被拽住的弹性
+            if (hover) {
+                Vector2 gripSide = stripRot.ToRotationVector2();
+                Vector2 gripDown = (MathHelper.PiOver2 + stripRot).ToRotationVector2();
+                rope.PullEnd(MousePosition - gripSide * gripLocal.X - gripDown * gripLocal.Y, 0.22f);
             }
             stripTopNow = rope.End;
-            stripRotNow = rope.EndRotation - MathHelper.PiOver2;
+
+            //札体摆角:平时以整绳方向为基线做弹簧跟随(末段仅数像素,瞬时方向的噪声
+            //会被 112px 札身放大成大幅甩摆);悬停时目标归零,入捏的一下"扶正"就是持握感
+            float targetRot, stiffness, rotDamp;
+            if (hover) {
+                targetRot = 0f;
+                stiffness = 0.16f;
+                rotDamp = 0.70f;
+            }
+            else {
+                targetRot = ((rope.End - knot).SafeNormalize(Vector2.UnitY).ToRotation() - MathHelper.PiOver2) * 1.15f;
+                stiffness = 0.12f;
+                rotDamp = 0.86f;
+            }
+            stripRotVel += (targetRot - stripRot) * stiffness;
+            stripRotVel *= rotDamp;
+            stripRot = MathHelper.Clamp(stripRot + stripRotVel, -0.55f, 0.55f);
+            stripRotNow = stripRot;
             if (danger) {
                 stripRotNow += (float)Math.Sin(GlobalTimer * 11f) * 0.010f;
             }
 
-            //命中盒:纸札的轴对齐外包(摆角小,近似矩形足够)
-            Rectangle strip = new((int)(stripTopNow.X - OnikiriUITheme.HudTalismanW * 0.5f - 4f), (int)stripTopNow.Y,
-                (int)OnikiriUITheme.HudTalismanW + 8, (int)OnikiriUITheme.HudTalismanH + 4);
-            DrawPosition = strip.Location.ToVector2();
-            Size = strip.Size();
-            UIHitBox = strip;
+            //命中:光标变换进札面局部空间,与绘制同一姿态的 OBB(旧的轴对齐外包在摆角大时会漏判)
+            float w = OnikiriUITheme.HudTalismanW;
+            float h = OnikiriUITheme.HudTalismanH;
+            Vector2 side = stripRotNow.ToRotationVector2();
+            Vector2 down = (MathHelper.PiOver2 + stripRotNow).ToRotationVector2();
+            Vector2 rel = MousePosition - stripTopNow;
+            float localX = Vector2.Dot(rel, side);
+            float localY = Vector2.Dot(rel, down);
+            bool inStrip = localX >= -w * 0.5f - 5f && localX <= w * 0.5f + 5f
+                && localY >= -3f && localY <= h + 5f;
+
+            //框架命中盒/绘制位:旋转矩形的轴对齐外包
+            Vector2 cornerA = stripTopNow - side * (w * 0.5f);
+            Vector2 cornerB = stripTopNow + side * (w * 0.5f);
+            Vector2 cornerC = cornerA + down * h;
+            Vector2 cornerD = cornerB + down * h;
+            float minX = MathF.Min(MathF.Min(cornerA.X, cornerB.X), MathF.Min(cornerC.X, cornerD.X));
+            float maxX = MathF.Max(MathF.Max(cornerA.X, cornerB.X), MathF.Max(cornerC.X, cornerD.X));
+            float minY = MathF.Min(MathF.Min(cornerA.Y, cornerB.Y), MathF.Min(cornerC.Y, cornerD.Y));
+            float maxY = MathF.Max(MathF.Max(cornerA.Y, cornerB.Y), MathF.Max(cornerC.Y, cornerD.Y));
+            DrawPosition = new Vector2(minX, minY);
+            Size = new Vector2(maxX - minX, maxY - minY);
+            UIHitBox = new Rectangle((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
 
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
             if (registerOpen > 0.4f || riteOpen > 0.4f) {
                 hover = wasHovered = false;
+                hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
                 return;
             }
 
-            hover = strip.Contains(MousePosition.ToPoint());
-            //拂过纸札:绳吃一记小冲量
+            hover = inStrip;
+            //初捏:记下捏点并给一声很轻的纸响,不再推绳(推开会破坏"拿住"的感觉)
             if (hover && !wasHovered) {
-                rope.Nudge(Main.rand.NextFloat(0.6f, 1.2f) * (Main.rand.NextBool() ? 1f : -1f));
+                gripLocal = new Vector2(MathHelper.Clamp(localX, -w * 0.5f, w * 0.5f), MathHelper.Clamp(localY, 0f, h));
+                if (hoverOffTicks > 8) {
+                    SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 0.3f, Pitch = 0.35f });
+                }
             }
+            hoverOffTicks = hover ? 0 : Math.Min(hoverOffTicks + 1, 600);
             wasHovered = hover;
             if (hover) {
                 player.mouseInterface = true;

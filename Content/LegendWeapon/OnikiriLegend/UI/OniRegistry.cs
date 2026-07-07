@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     }
 
     /// <summary>
-    /// 点鬼簿数据入口。当前为作者钦定的演示名录（6 条：2 稳固 / 1 躁动 / 1 封印 / 2 未知），
+    /// 点鬼簿数据入口。当前为作者钦定的演示名录（9 条：4 稳固 / 2 躁动 / 1 封印 / 2 未知），
     /// 玩法数据层就绪后用 <see cref="SetSource"/> 替换即可，三屏 UI 只读本类
     /// </summary>
     internal static class OniRegistry
@@ -114,6 +114,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 Power = () => OniRegisterUI.Ghost3Power.Value,
                 Mastery = 0.16f,
                 State = OniGhostState.Restless,
+            });
+            //替死鬼:对主人"好得反常",稳定本身就是不祥
+            demoEntries.Add(new OniGhostEntry {
+                Key = "StandIn",
+                Name = () => OniRegisterUI.Ghost5Name.Value,
+                Origin = () => OniRegisterUI.Ghost5Origin.Value,
+                Power = () => OniRegisterUI.Ghost5Power.Value,
+                Mastery = 0.77f,
+                State = OniGhostState.Engraved,
+            });
+            //无头鬼影:头还没找回来,不完整的鬼驯不熟
+            demoEntries.Add(new OniGhostEntry {
+                Key = "HeadlessShade",
+                Name = () => OniRegisterUI.Ghost6Name.Value,
+                Origin = () => OniRegisterUI.Ghost6Origin.Value,
+                Power = () => OniRegisterUI.Ghost6Power.Value,
+                Mastery = 0.28f,
+                State = OniGhostState.Restless,
+            });
+            //鬼手:被假棺材钉钉住的,驯而不服
+            demoEntries.Add(new OniGhostEntry {
+                Key = "GhostHand",
+                Name = () => OniRegisterUI.Ghost7Name.Value,
+                Origin = () => OniRegisterUI.Ghost7Origin.Value,
+                Power = () => OniRegisterUI.Ghost7Power.Value,
+                Mastery = 0.45f,
+                State = OniGhostState.Engraved,
             });
             demoEntries.Add(new OniGhostEntry {
                 Key = "WellThing",

@@ -105,6 +105,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>
+        /// 末端向目标点软牵引(悬停持握用):位置与历史同步平移,不注入动能;<br/>
+        /// strength 为每帧插值比例,约束迭代会把超出绳长的部分拉回,牵引因此自带弹性余量
+        /// </summary>
+        public void PullEnd(Vector2 target, float strength) {
+            if (!warmed) {
+                return;
+            }
+            Vector2 shift = (target - pos[^1]) * strength;
+            pos[^1] += shift;
+            old[^1] += shift;
+            if (pos.Length > 2) {
+                pos[^2] += shift * 0.5f;
+                old[^2] += shift * 0.5f;
+            }
+        }
+
+        /// <summary>
         /// 逐段折线绘制:主体首尾渐变 + 绞纹高光(每段一粒斜向亮点,随材质走不滑动)
         /// </summary>
         public void Draw(SpriteBatch sb, Color start, Color end, float thickness, float alpha, bool twist = true) {

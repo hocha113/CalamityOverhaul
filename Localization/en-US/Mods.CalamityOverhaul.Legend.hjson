@@ -660,14 +660,23 @@ OnikiriText: {
 		SealedPowerHint: ———
 		Ghost1Name: The Faceless Woman
 		Ghost1Origin: On a rain-soaked bridge she borrowed your face. When the blade fell, your reflection in the water bowed back
-		Ghost1Power: 「Borrowed Face」— the first cut after the draw is seen by no one
+		Ghost1Power: 「Borrowed Face」— she borrows your face, and no one knows you; at first sight, everyone thinks they saw someone else
 		Ghost2Name: The Lantern Boy
 		Ghost2Origin: A lamp at the end of the mountain road, and no one beneath it. Those who followed all said the lantern did not burn with fire
-		Ghost2Power: 「Guiding Light」— where the crimson combo goes is yours to decide, not heaven's
+		Ghost2Power: 「Guiding Light」— a road once lit is never lost; pits, ambushes, forks with no way back — it walks them first
 		Ghost3Name: The Crimson Bride
 		Ghost3Origin: The bridal palanquin waited at the gate for seven nights. On the seventh, the curtain lifted itself — do not count her fingers
-		Ghost3Power: 「The Procession」— the slain walk the rest of her road, their blood laid down as a red carpet
+		Ghost3Power: 「The Procession」— all who wound you walk the rest of her road, their blood laid down as a red carpet
 		Ghost4Name: The Ringing in the Well
+		Ghost5Name: The Stand-In
+		Ghost5Origin: The wrongly dead must find a substitute before they can leave — so they say. It has followed you for years and never once traded places. Your death, it holds on credit; the debt is kept in this register
+		Ghost5Power: 「Stand-In」— when the killing blow falls, it dies in your place. It asks no thanks. It keeps accounts
+		Ghost6Name: The Headless Shade
+		Ghost6Origin: A handprint on human-skin paper sealed the bargain: it lives in your shadow now. Under the lamp, don't look back too closely — it still hasn't found its head
+		Ghost6Power: 「Shadow-Taken」— your shadow is its, and so is your weight; on night roads your feet never quite touch the ground
+		Ghost7Name: The Ghost Hand
+		Ghost7Origin: In a cabin miles above the ground, dozing passengers woke with five bruises on the neck. It was pinned with a counterfeit coffin nail — the nail holds the hand, not what the hand means to hold
+		Ghost7Power: 「Grip」— it reaches out from your sleeve; whatever it closes on cannot move
 		CloseTagText: ROLL
 		CloseHintFormat: ESC · {0} · click outside to roll up
 	}

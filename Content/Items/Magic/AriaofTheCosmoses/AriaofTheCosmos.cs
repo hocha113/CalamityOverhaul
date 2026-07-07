@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     , ModContent.ProjectileType<AriaQSkill>(), state.WeaponDamage, state.WeaponKnockback, player.whoAmI);
                 QSkillCooldown = QSkillMaxCooldown;
                 player.statMana = Math.Max(player.statMana - Item.mana * 2, 0);
-                SoundEngine.PlaySound(SoundID.Item109 with { Volume = 0.8f, Pitch = 0.3f }, player.Center);
+                //激活音效由 AriaQSkill 出场帧自播 物品侧不再重复
             }
 
             if (CWRKeySystem.WeponSkill_R.JustPressed && RSkillCooldown <= 0
@@ -104,7 +104,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
                     , ModContent.ProjectileType<AriaRSkill>(), (int)(state.WeaponDamage * 1.5f), state.WeaponKnockback * 1.5f, player.whoAmI);
                 RSkillCooldown = RSkillMaxCooldown;
                 player.statMana = Math.Max(player.statMana - Item.mana * 3, 0);
-                SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.9f, Pitch = -0.3f }, player.Center);
+                //激活音效由 AriaRSkill 蓄力首帧自播 物品侧不再重复
             }
         }
 

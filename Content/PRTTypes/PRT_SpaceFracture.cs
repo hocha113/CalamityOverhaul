@@ -1,4 +1,4 @@
-using InnoVault.PRT;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -77,7 +77,7 @@ namespace CalamityOverhaul.Content.PRTTypes
             Vector2 drawPos = Position - Main.screenPosition;
 
             //非对称缩放（极窄+长条）
-            Vector2 scale = new Vector2(0.15f, 1.8f) * Scale;
+            Vector2 scale = new Vector2(0.05f, 0.18f) * Scale;
 
             //外层辉光
             spriteBatch.Draw(texture, drawPos, null,

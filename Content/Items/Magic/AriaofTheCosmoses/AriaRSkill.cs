@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
-using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -11,18 +9,20 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// R技能伽马射线爆 鼠标方向多道射线束
+    /// R技能伽马射线暴：蓄力吸光→白闪→扇形逐道点射(每3帧一道,共9道)
     internal class AriaRSkill : ModProjectile
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private const int ChargeTime = 60; //1秒
-        private const int FireTime = 90; //1.5秒
-        private const int BeamCount = 9; //射线数量
+        private const int ChargeTime = 60;
+        private const int BeamCount = 9;
+        private const int BeamInterval = 3;
+        //发完最后一道后留足其生命周期
+        private const int FireWindow = BeamCount * BeamInterval + GammaRayBeam.TotalLife;
+        private const float SpreadDeg = 44f;
 
-        private List<int> beamIndices = new();
+        private int beamsFired;
         private float chargeProgress;
-        private bool isFiring;
 
         public override void SetDefaults() {
             Projectile.width = 32;
@@ -30,7 +30,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = ChargeTime + FireTime;
+            Projectile.timeLeft = ChargeTime + FireWindow;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.alpha = 255;
@@ -38,513 +38,113 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
         public override void AI() {
             Player player = Main.player[Projectile.owner];
-
             if (!player.active || player.dead) {
                 Projectile.Kill();
                 return;
             }
 
-            //跟随玩家
             Projectile.Center = player.Center;
 
-            //蓄力阶段
-            if (Projectile.timeLeft > FireTime) {
+            if (Projectile.timeLeft > FireWindow) {
                 ChargePhase(player);
             }
-            //发射阶段
-            else if (!isFiring) {
-                FirePhase(player);
-                isFiring = true;
-            }
-            //维持阶段
             else {
-                MaintainPhase(player);
+                FirePhase(player);
             }
         }
 
         private void ChargePhase(Player player) {
-            int currentTime = ChargeTime - (Projectile.timeLeft - FireTime);
+            int currentTime = ChargeTime - (Projectile.timeLeft - FireWindow);
             chargeProgress = MathHelper.Clamp(currentTime / (float)ChargeTime, 0f, 1f);
 
-            //蓄力音效
             if (currentTime == 1) {
-                SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with {
-                    Volume = 0.8f,
-                    Pitch = -0.3f
-                }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.8f, Pitch = -0.3f }, Projectile.Center);
             }
             else if (currentTime == ChargeTime / 2) {
-                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
-                    Volume = 0.9f,
-                    Pitch = 0f
-                }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 0.9f, Pitch = 0.1f }, Projectile.Center);
             }
 
-            //蓄力粒子
-            if (currentTime % 2 == 0) {
-                SpawnChargeParticles(player);
+            //周围光被吸进玩家：紫白引力尘向心塌入
+            if (!VaultUtils.isServer && currentTime % 2 == 0) {
+                int count = (int)(2 + chargeProgress * 4);
+                for (int i = 0; i < count; i++) {
+                    Vector2 pos = player.Center + Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(90f, 200f);
+                    PRTLoader.NewParticle<PRT_Spark>(pos,
+                        (player.Center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(6f, 12f) * (0.5f + chargeProgress),
+                        Color.Lerp(GammaRayBeam.ColViolet, GammaRayBeam.ColCore, chargeProgress), Main.rand.NextFloat(0.6f, 1.1f))
+                        ?.Configure(false, Main.rand.Next(10, 18), player);
+                }
+
+                //蓄力后半程:身周电离弧
+                if (chargeProgress > 0.5f && Main.rand.NextBool(2)) {
+                    PRTLoader.NewParticle<PRT_GammaIonize>(player.Center + Main.rand.NextVector2Circular(40f, 40f),
+                        Main.rand.NextVector2Circular(2f, 2f),
+                        GammaRayBeam.ColCheren, Main.rand.NextFloat(0.4f, 0.7f))
+                        ?.Configure(Main.rand.Next(12, 20), Main.rand.NextFloat(MathHelper.TwoPi));
+                }
             }
 
-            //蓄力能量环
-            if (currentTime % 8 == 0) {
-                SpawnChargeRing(player);
-            }
-
-            //屏幕震动
             if (chargeProgress > 0.5f) {
-                player.GetModPlayer<CWRPlayer>().GetScreenShake(chargeProgress * 3f);
+                player.CWR().GetScreenShake(chargeProgress * 3f);
             }
 
-            //发光效果
-            float lightIntensity = chargeProgress * 1.5f;
-            Lighting.AddLight(Projectile.Center,
-                new Vector3(0.3f, 0.6f, 1f) * lightIntensity);
+            Lighting.AddLight(Projectile.Center, GammaRayBeam.ColViolet.ToVector3() * chargeProgress * 1.4f);
         }
 
         private void FirePhase(Player player) {
-            //播放发射音效
-            SoundEngine.PlaySound(SoundID.Item109 with {
-                Volume = 1.2f,
-                Pitch = 0.5f
-            }, Projectile.Center);
+            int fireTime = FireWindow - Projectile.timeLeft;
 
-            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
-                Volume = 1f,
-                Pitch = 0.3f
-            }, Projectile.Center);
-
-            //强烈屏幕震动
-            player.GetModPlayer<CWRPlayer>().GetScreenShake(15f);
-
-            //创建多道伽马射线
-            Vector2 mouseDirection = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.Zero);
-            float spreadAngle = MathHelper.ToRadians(45f); //45度扩散角
-
-            for (int i = 0; i < BeamCount; i++) {
-                float angleOffset = MathHelper.Lerp(-spreadAngle / 2, spreadAngle / 2, i / (float)(BeamCount - 1));
-                Vector2 beamDirection = mouseDirection.RotatedBy(angleOffset);
-
-                int beamIndex = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    player.Center,
-                    beamDirection * 20f,
-                    ModContent.ProjectileType<AriaRSkillBeam>(),
-                    (int)(Projectile.damage * 1.2f),
-                    Projectile.knockBack * 1.5f,
-                    Projectile.owner,
-                    i / (float)BeamCount
-                );
-
-                beamIndices.Add(beamIndex);
-            }
-
-            //发射特效
-            SpawnFireEffect(player, mouseDirection);
-        }
-
-        private void MaintainPhase(Player player) {
-            //维持射线存活
-            foreach (int beamIndex in beamIndices) {
-                if (beamIndex >= 0 && Main.projectile[beamIndex].active) {
-                    if (Main.projectile[beamIndex].timeLeft < 10)
-                        Main.projectile[beamIndex].timeLeft = 10;
+            //首发瞬间：白闪 + 重震 + 相机缓动
+            if (fireTime == 0) {
+                SoundEngine.PlaySound(SoundID.Item109 with { Volume = 1.1f, Pitch = 0.4f }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1f, Pitch = 0.2f }, Projectile.Center);
+                player.CWR().GetScreenShake(13f);
+                if (CWRServerConfig.Instance.LensEasing) {
+                    Main.SetCameraLerp(0.12f, 40);
                 }
-            }
 
-            //持续粒子效果
-            if (Projectile.timeLeft % 3 == 0) {
-                SpawnMaintainParticles(player);
-            }
-
-            //发光
-            Lighting.AddLight(Projectile.Center, new Vector3(0.5f, 0.8f, 1.2f) * 1.2f);
-
-            //淡出效果
-            if (Projectile.timeLeft < 20) {
-                float fadeProgress = Projectile.timeLeft / 20f;
-                foreach (int beamIndex in beamIndices) {
-                    if (beamIndex >= 0 && Main.projectile[beamIndex].active) {
-                        Main.projectile[beamIndex].alpha = (int)(255 * (1f - fadeProgress));
+                if (!VaultUtils.isServer) {
+                    //爆发闪光粒子
+                    for (int i = 0; i < 40; i++) {
+                        PRTLoader.NewParticle<PRT_Light>(player.Center, Main.rand.NextVector2Circular(22f, 22f),
+                            Color.Lerp(GammaRayBeam.ColCore, GammaRayBeam.ColViolet, Main.rand.NextFloat()),
+                            Main.rand.NextFloat(0.7f, 1.4f))
+                            ?.Configure(Main.rand.Next(18, 30), opacity: 1.6f, squishStrenght: 2.2f, hueShift: 0.02f);
                     }
                 }
             }
-        }
 
-        private void SpawnChargeParticles(Player player) {
-            if (VaultUtils.isServer) {
-                return;
+            //扇形逐道点射：左→右横扫,瞄准跟手
+            if (fireTime % BeamInterval == 0 && beamsFired < BeamCount && Projectile.IsOwnedByLocalPlayer()) {
+                Vector2 mouseDir = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX);
+                float sweep01 = beamsFired / (float)(BeamCount - 1);
+                float angleOffset = MathHelper.ToRadians(MathHelper.Lerp(-SpreadDeg * 0.5f, SpreadDeg * 0.5f, sweep01));
+
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), player.Center,
+                    mouseDir.RotatedBy(angleOffset) * 4f,
+                    ModContent.ProjectileType<GammaRayBeam>(),
+                    (int)(Projectile.damage * 1.2f), Projectile.knockBack * 1.5f, Projectile.owner,
+                    1f, beamsFired * 0.113f);
+
+                beamsFired++;
+                player.CWR().GetScreenShake(3.5f);
             }
 
-            int particleCount = (int)(3 + chargeProgress * 5);
-            for (int i = 0; i < particleCount; i++) {
-                Vector2 particlePos = player.Center + Main.rand.NextVector2Circular(80, 80);
-                Vector2 particleVel = (player.Center - particlePos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 8f);
-
-                Color particleColor = Color.Lerp(Color.Cyan, Color.White, chargeProgress);
-
-                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, particleColor, Main.rand.NextFloat(0.4f, 0.8f)).Configure(Main.rand.Next(15, 25), Main.rand.NextFloat(-0.2f, 0.2f), false, Main.rand.NextFloat(0.15f, 0.25f));
-            }
-        }
-
-        private void SpawnChargeRing(Player player) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            int segments = 48;
-            float radius = 40 + chargeProgress * 80;
-
-            for (int i = 0; i < segments; i++) {
-                float angle = MathHelper.TwoPi * i / segments;
-                Vector2 offset = angle.ToRotationVector2() * radius;
-                Vector2 particlePos = player.Center + offset;
-                Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 2.5f;
-
-                PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, Color.Lerp(Color.Cyan, Color.DeepSkyBlue, chargeProgress), Main.rand.NextFloat(0.5f, 1f)).Configure(Main.rand.Next(20, 30), Main.rand.NextFloat(-0.3f, 0.3f), false, Main.rand.NextFloat(0.18f, 0.28f));
-            }
-        }
-
-        private void SpawnFireEffect(Player player, Vector2 direction) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            //爆发粒子
-            for (int i = 0; i < 100; i++) {
-                float angle = MathHelper.TwoPi * i / 100f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 20f);
-
-                PRTLoader.NewParticle<PRT_GammaImpact>(player.Center, velocity, Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.5f)).Configure(Main.rand.Next(30, 50), Main.rand.NextFloat(-0.5f, 0.5f), false, 0.3f);
-            }
-
-            //方向性冲击波
-            for (int ring = 0; ring < 3; ring++) {
-                int segments = 32;
-                float radius = 50f + ring * 80f;
-
-                for (int i = 0; i < segments; i++) {
-                    float angle = MathHelper.TwoPi * i / segments;
-                    Vector2 offset = angle.ToRotationVector2() * radius;
-                    Vector2 particlePos = player.Center + offset;
-                    Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 5f;
-
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, new Color(100, 200, 255), Main.rand.NextFloat(0.7f, 1.3f)).Configure(Main.rand.Next(35, 50), Main.rand.NextFloat(-0.4f, 0.4f), false, Main.rand.NextFloat(0.25f, 0.35f));
-                }
-            }
-        }
-
-        private void SpawnMaintainParticles(Player player) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            for (int i = 0; i < 3; i++) {
-                Vector2 particlePos = player.Center + Main.rand.NextVector2Circular(40, 40);
-                Vector2 particleVel = Main.rand.NextVector2Circular(3f, 3f);
-
-                PRTLoader.NewParticle<PRT_Spark>(particlePos, particleVel, Color.Cyan, Main.rand.NextFloat(0.8f, 1.2f)).Configure(false, Main.rand.Next(10, 18), player);
-            }
+            Lighting.AddLight(Projectile.Center, GammaRayBeam.ColViolet.ToVector3() * 1.1f);
         }
 
         public override void OnKill(int timeLeft) {
-            //清理所有射线
-            foreach (int beamIndex in beamIndices) {
-                if (beamIndex >= 0 && Main.projectile[beamIndex].active) {
-                    Main.projectile[beamIndex].Kill();
-                }
-            }
-
-            //消失特效
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with {
-                    Volume = 0.7f,
-                    Pitch = 0.4f
-                }, Projectile.Center);
-
-                for (int i = 0; i < 40; i++) {
-                    Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                    PRTLoader.NewParticle<PRT_GammaImpact>(Projectile.Center, velocity, Color.Cyan, Main.rand.NextFloat(0.5f, 1f)).Configure(Main.rand.Next(25, 40), Main.rand.NextFloat(-0.4f, 0.4f), true, 0.25f);
-                }
-            }
-        }
-    }
-
-    /// R技能伽马射线束
-    internal class AriaRSkillBeam : ModProjectile
-    {
-        public override string Texture => CWRConstant.Placeholder;
-
-        private const int MaxTrailLength = 30;
-        private float beamWidth = 35f;
-        private float maxBeamWidth = 80f;
-        private float beamLength = 0f;
-        private float maxBeamLength = 2800f;
-
-        private float pulseIntensity = 1f;
-        private float coreIntensity = 1f;
-        private float distortionStrength = 0.2f;
-
-        public ref float BeamIndex => ref Projectile.ai[0];
-
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = MaxTrailLength;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 3000;
-        }
-
-        public override void SetDefaults() {
-            Projectile.width = 20;
-            Projectile.height = 20;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 300;
-            Projectile.tileCollide = false;
-            Projectile.ignoreWater = true;
-            Projectile.alpha = 0;
-            Projectile.DamageType = DamageClass.Magic;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 1;
-        }
-
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            float p = 0f;
-            return Collision.CheckAABBvLineCollision(
-                targetHitbox.TopLeft(),
-                targetHitbox.Size(),
-                Projectile.Center,
-                Projectile.Center + Projectile.rotation.ToRotationVector2() * beamLength,
-                beamWidth * 1.2f,
-                ref p);
-        }
-
-        public override void AI() {
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            Projectile.position -= Projectile.velocity;
-
-            float lifeRatio = 1f - Projectile.timeLeft / 300f;
-
-            //展开阶段
-            if (lifeRatio < 0.15f) {
-                float expandProgress = lifeRatio / 0.15f;
-                beamWidth = MathHelper.Lerp(6f, maxBeamWidth, VaultUtils.EaseOutCubic(expandProgress));
-                beamLength = MathHelper.Lerp(0f, maxBeamLength, VaultUtils.EaseOutQuad(expandProgress));
-                coreIntensity = MathHelper.Lerp(0.8f, 2f, expandProgress);
-            }
-            //收缩阶段
-            else if (lifeRatio > 0.85f) {
-                float collapseProgress = (lifeRatio - 0.85f) / 0.15f;
-                beamWidth = MathHelper.Lerp(maxBeamWidth, 6f, VaultUtils.EaseInQuad(collapseProgress));
-                coreIntensity = MathHelper.Lerp(2f, 0f, collapseProgress);
-            }
-            //稳定阶段
-            else {
-                beamWidth = maxBeamWidth;
-                beamLength = maxBeamLength;
-
-                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.15f + 0.85f;
-                pulseIntensity = pulse;
-                coreIntensity = 1.8f + pulse * 0.4f;
-            }
-
-            //生成能量粒子
-            SpawnEnergyParticles();
-
-            //发光效果
-            Lighting.AddLight(Projectile.Center,
-                0.3f * coreIntensity,
-                0.8f * coreIntensity,
-                1.2f * coreIntensity);
-
-            //音效
-            if (Projectile.timeLeft % 40 == 0) {
-                SoundEngine.PlaySound(SoundID.Item15 with {
-                    Volume = 0.35f,
-                    Pitch = 0.7f,
-                    SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
-                }, Projectile.Center);
-            }
-
-            Vector2 toMus = Main.player[Projectile.owner].Center.To(Main.MouseWorld).UnitVector();
-            Projectile.Center = Main.player[Projectile.owner].Center;
-            if (Projectile.localAI[0] == 0) {
-                Projectile.localAI[0] = Projectile.rotation - toMus.ToRotation();
-            }
-            Projectile.rotation = toMus.ToRotation() + Projectile.localAI[0];
-        }
-
-        private void SpawnEnergyParticles() {
-            if (VaultUtils.isServer || Projectile.timeLeft % 2 != 0) {
-                return;
-            }
-
-            //星光闪烁
-            if (Main.rand.NextBool(4)) {
-                Vector2 sparkPos = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.5f, beamWidth * 0.5f);
-                Vector2 sparkVel = Main.rand.NextVector2Circular(1.5f, 1.5f);
-
-                PRTLoader.NewParticle<PRT_Spark>(sparkPos + sparkVel * 10, sparkVel, Color.White, Main.rand.NextFloat(1f, 1.5f)).Configure(false, Main.rand.Next(6, 10), Main.player[Projectile.owner]);
-            }
-
-            //能量流线
-            if (Main.rand.NextBool(3)) {
-                Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.4f, beamWidth * 0.4f);
-                Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
-
-                PRTLoader.NewParticle<PRT_Line>(lineStart + lineVel * 10, lineVel, Color.Lerp(Color.Cyan, new Color(180, 230, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.6f, 1.2f)).Configure(false, Main.rand.Next(5, 8));
-            }
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.numHits % 5 != 0) {
-                return;
-            }
-
-            //击中音效
-            SoundEngine.PlaySound(SoundID.Item94 with {
-                Volume = 0.4f,
-                Pitch = 0.5f
-            }, target.Center);
-
-            if (!VaultUtils.isServer) {
-                //伽马冲击粒子
-                for (int i = 0; i < 10; i++) {
-                    float angle = MathHelper.TwoPi * i / 10f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
-
-                    PRTLoader.NewParticle<PRT_GammaImpact>(target.Center, velocity, Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.5f)).Configure(Main.rand.Next(25, 40), Main.rand.NextFloat(-0.4f, 0.4f), false, 0.3f);
-                }
-
-                //光芒粒子
-                for (int i = 0; i < 12; i++) {
-                    Vector2 velocity = Main.rand.NextVector2Circular(25f, 25f);
-
-                    PRTLoader.NewParticle<PRT_Light>(
-                        target.Center,
-                        velocity,
-                        Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()),
-                        Main.rand.NextFloat(1f, 1.8f)
-                    ).Configure(Main.rand.Next(30, 45), opacity: 1.8f, squishStrenght: 2.5f, hueShift: 0.03f);
-                }
-            }
-
-            //穿透伤害衰减
-            Projectile.damage = (int)(Projectile.damage * 0.92f);
-        }
-
-        public override void OnKill(int timeLeft) {
-            //消失爆炸效果
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with {
-                    Volume = 0.6f,
-                    Pitch = 0.4f
-                }, Projectile.Center);
-
-                //放射状粒子爆发
-                for (int i = 0; i < 30; i++) {
-                    float angle = MathHelper.TwoPi * i / 30f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 16f);
-
-                    var burst = PRTLoader.NewParticle<PRT_GammaImpact>(Projectile.Center, velocity, Color.Lerp(Color.Cyan, Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.6f, 1f));
-                    burst.Configure(Main.rand.Next(35, 50), Main.rand.NextFloat(-0.5f, 0.5f), false, 0.35f);
-                    burst.inOwner = Main.player[Projectile.owner].whoAmI;
-                }
-
-                //内爆收缩粒子
-                for (int i = 0; i < 20; i++) {
-                    Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(120f, 120f);
-                    Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(12f, 22f);
-
-                    PRTLoader.NewParticle<PRT_Spark>(spawnPos, velocity, Color.White, Main.rand.NextFloat(1.2f, 2f)).Configure(false, Main.rand.Next(25, 35), Main.player[Projectile.owner]);
-                }
-            }
-        }
-
-        public override Color? GetAlpha(Color lightColor) {
-            float colorShift = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + BeamIndex * MathHelper.Pi) * 0.5f + 0.5f;
-            return Color.Lerp(Color.Cyan, Color.White, colorShift * coreIntensity);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            DrawGammaBeam();
-            return false;
-        }
-
-        private void DrawGammaBeam() {
             if (VaultUtils.isServer) {
                 return;
             }
+            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.6f, Pitch = 0.5f }, Projectile.Center);
 
-            SpriteBatch sb = Main.spriteBatch;
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            Effect shader = EffectLoader.GammaRayBeam.Value;
-
-            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly + BeamIndex);
-            shader.Parameters["uOpacity"]?.SetValue(1f - Projectile.alpha / 255f);
-            shader.Parameters["uIntensity"]?.SetValue(pulseIntensity);
-            shader.Parameters["uBeamWidth"]?.SetValue(beamWidth);
-            shader.Parameters["uBeamLength"]?.SetValue(beamLength);
-            shader.Parameters["uPulseSpeed"]?.SetValue(6f);
-            shader.Parameters["uDistortionStrength"]?.SetValue(distortionStrength);
-            shader.Parameters["uCoreIntensity"]?.SetValue(coreIntensity);
-
-            shader.Parameters["uImage1"]?.SetValue(CWRAsset.Extra_193.Value);
-            shader.Parameters["uImage2"]?.SetValue(CWRAsset.StarTexture.Value);
-            shader.Parameters["uImage3"]?.SetValue(CWRAsset.Placeholder_White.Value);
-
-            shader.CurrentTechnique.Passes["GammaRayPass"].Apply();
-
-            Texture2D beamTexture = CWRAsset.Placeholder_White.Value;
-            Vector2 beamOrigin = new Vector2(0, beamTexture.Height / 2f);
-            Vector2 beamScale = new Vector2(beamLength / beamTexture.Width, beamWidth / beamTexture.Height);
-
-            sb.Draw(
-                beamTexture,
-                Projectile.Center - Main.screenPosition,
-                null,
-                new Color(100, 200, 255) * (1f - Projectile.alpha / 255f),
-                Projectile.rotation,
-                beamOrigin,
-                beamScale,
-                SpriteEffects.None,
-                0f
-            );
-
-            DrawCoreHighlight(sb);
-
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        private void DrawCoreHighlight(SpriteBatch sb) {
-            Texture2D glowTexture = CWRAsset.StarTexture.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-
-            for (int i = 0; i < 15; i++) {
-                float scale = (beamWidth / glowTexture.Width) * (1.4f - i * 0.25f) * coreIntensity;
-                float alpha = (1f - i * 0.35f) * pulseIntensity;
-
-                Color glowColor = Color.Lerp(
-                    new Color(100, 220, 255),
-                    new Color(150, 180, 255),
-                    i / 5f) * alpha;
-
-                sb.Draw(
-                    glowTexture,
-                    drawPos,
-                    null,
-                    glowColor,
-                    Projectile.rotation,
-                    new Vector2(0, glowTexture.Height / 2f),
-                    new Vector2(beamLength / glowTexture.Width * 0.9f, scale),
-                    SpriteEffects.None,
-                    0f
-                );
+            //余韵：残留电离弧散开
+            for (int i = 0; i < 16; i++) {
+                float ang = MathHelper.TwoPi * i / 16f;
+                PRTLoader.NewParticle<PRT_GammaIonize>(Projectile.Center, ang.ToRotationVector2() * Main.rand.NextFloat(3f, 8f),
+                    Color.Lerp(GammaRayBeam.ColViolet, GammaRayBeam.ColCheren, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.8f))
+                    ?.Configure(Main.rand.Next(12, 24), Main.rand.NextFloat(MathHelper.TwoPi));
             }
         }
     }

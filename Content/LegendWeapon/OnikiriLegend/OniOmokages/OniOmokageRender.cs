@@ -10,13 +10,13 @@ using Terraria;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 {
     /// <summary>
-    /// 面影渲染：快照捕获 + 水墨挂轴纸面 + 因果线/脉冲。<br/>
+    /// 面影渲染：快照捕获 + 水墨挂轴 + 因果线/脉冲/斩纸刀光。<br/>
     /// <see cref="DrawNPCsOverTiles"/>（NPC 层之前、OniDomainRender 环境调色之后，Weight 1.3）：
     /// 先把待捕获目标经 <see cref="OniDismemberRender.CaptureNpcAppearance"/> 画进共享 RT，
-    /// 再以顶点四边形提交纸面（<c>OniOmokage.fx</c> 负责墨阶拓印/纸纹/朱印/溶解），
+    /// 再以顶点四边形提交挂轴（<c>OniOmokage.fx</c> 负责天地装裱/轴棒/墨阶拓印/朱印/溶解），
     /// 斩开的面影画成两半沿切线法线滑开；<br/>
-    /// <see cref="EndEntityDraw(SpriteBatch, Main)"/>：赤色因果线（呼吸，靠近增亮）与飞行脉冲，
-    /// 以及快照不可用时的素纸回退
+    /// <see cref="EndEntityDraw(SpriteBatch, Main)"/>：吊绳、赤色因果线（呼吸，靠近增亮）、
+    /// 飞行脉冲、斩纸刀光（居合白线/拉丝/星爆），以及快照不可用时的素纸回退
     /// </summary>
     internal sealed class OniOmokageRender : RenderHandle
     {
@@ -251,6 +251,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             fx.Parameters["uSnapSize"]?.SetValue(new Vector2(entry.SnapWidth, entry.SnapHeight));
             fx.Parameters["uPaperSize"]?.SetValue(paperSize);
+            fx.Parameters["uMountPad"]?.SetValue(OniOmokage.PaperMountPad);
             fx.Parameters["uDissolve"]?.SetValue(entry.Dissolve);
             fx.Parameters["uDevelop"]?.SetValue(develop);
             fx.Parameters["uCutFlash"]?.SetValue(cutFlash);
@@ -358,16 +359,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
                 spriteBatch.Draw(white, pos, null, new Color(233, 224, 202) * (0.85f * alpha),
                     sway, origin, size / white.Size(), SpriteEffects.None, 0f);
-                //朱印占位：右上角红点
-                Vector2 sealPos = pos + new Vector2(size.X * 0.5f - 20f, -size.Y * 0.5f + 22f).RotatedBy(sway);
+                //朱印占位：本纸右上角红点
+                Vector2 sealPos = pos + new Vector2(size.X * 0.5f - 15f,
+                    -size.Y * 0.5f + OniOmokage.PaperMountPad + 16f).RotatedBy(sway);
                 spriteBatch.Draw(white, sealPos, null, new Color(184, 26, 26) * alpha,
-                    sway, origin, new Vector2(12f) / white.Size(), SpriteEffects.None, 0f);
+                    sway, origin, new Vector2(10f) / white.Size(), SpriteEffects.None, 0f);
             }
 
             spriteBatch.End();
         }
 
-        //====== 因果线与脉冲 ======
+        //====== 因果线、脉冲与斩纸刀光 ======
 
         private static void DrawThreadsAndPulses(SpriteBatch spriteBatch) {
             Texture2D white = CWRAsset.Placeholder_White?.Value;
@@ -391,6 +393,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 if (alpha <= 0.05f) {
                     continue;
                 }
+
+                //吊绳：挂轴顶端一小段向上的赤绳，与因果线同语言（"过去被挂在这里"）
+                float sway = MathF.Sin(time * 0.8f + entry.SwayPhase) * 0.03f;
+                Vector2 top = entry.AnchorCenter + new Vector2(0f, -entry.PaperHalf.Y).RotatedBy(sway);
+                Vector2 hook = entry.AnchorCenter + new Vector2(0f, -entry.PaperHalf.Y - 16f);
+                DrawLine(spriteBatch, white, hook, top, new Color(0.72f, 0.10f, 0.09f, 0f) * (0.5f * alpha), 1.1f);
+                spriteBatch.Draw(glow, hook - Main.screenPosition, null,
+                    new Color(0.9f, 0.16f, 0.12f, 0f) * (0.5f * alpha), 0f,
+                    glow.Size() * 0.5f, 7f / glow.Width, SpriteEffects.None, 0f);
+
                 NPC npc = OniOmokage.ValidTarget(entry.NpcIndex, entry.NpcType);
                 if (npc == null) {
                     continue;
@@ -408,6 +420,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
                 DrawLine(spriteBatch, white, entry.AnchorCenter, npc.Center,
                     new Color(0.86f, 0.12f, 0.10f, 0f) * strength, 1.2f);
+            }
+
+            //斩纸刀光：居合白线 + 刀光拉丝 + 落刀点星爆
+            foreach (OmokageEntry entry in OniOmokage.Entries) {
+                if (entry.Cut && entry.CutAge <= SlashFxFrames) {
+                    DrawCutSlash(spriteBatch, white, glow, entry);
+                }
             }
 
             //脉冲：赤点沿线疾驰，缓入加速 + 短残尾
@@ -452,6 +471,70 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             spriteBatch.Draw(white, startWorld - Main.screenPosition, null, color,
                 delta.ToRotation(), new Vector2(0f, white.Height * 0.5f),
                 new Vector2(length / white.Width, thickness / white.Height), SpriteEffects.None, 0f);
+        }
+
+        //====== 斩纸刀光 ======
+
+        /// <summary>刀光演出总时长（帧），CutAge 超过即熄</summary>
+        private const int SlashFxFrames = 14;
+
+        /// <summary>
+        /// 三层刀光（加色批次内调用）：居合白线横贯纸面（头 5 帧）→
+        /// 刀光拉丝沿刀向抹出（全程衰减）→ 落刀点星爆（头 6 帧）
+        /// </summary>
+        private static void DrawCutSlash(SpriteBatch spriteBatch, Texture2D white, Texture2D glow, OmokageEntry entry) {
+            Texture2D brush = OnikiriAssets.SlashBrush01?.Value;
+            Texture2D flare = OnikiriAssets.StarFlare02?.Value;
+
+            Vector2 dir = entry.CutAngle.ToRotationVector2();
+            if (!OniOmokage.ClipLineToRect(entry.CutLocal, dir, entry.PaperHalf, out float t0, out float t1)) {
+                return;
+            }
+            float chord = (t1 - t0) * 1.25f;
+            Vector2 cutWorld = entry.AnchorCenter + entry.CutLocal;
+            Vector2 mid = cutWorld + dir * ((t0 + t1) * 0.5f);
+            int age = entry.CutAge;
+
+            //居合白线：斩击本身的一瞬，先过曝后急收
+            float lineInt = 1f - age / 5f;
+            if (lineInt > 0f) {
+                Vector2 half = dir * (chord * 0.5f);
+                //宽晕
+                DrawLine(spriteBatch, white, mid - half, mid + half,
+                    new Color(0.95f, 0.55f, 0.45f, 0f) * (0.40f * lineInt), 7f);
+                //白芯
+                DrawLine(spriteBatch, white, mid - half, mid + half,
+                    new Color(1f, 0.97f, 0.92f, 0f) * lineInt, 2f);
+            }
+
+            //刀光拉丝：白热芯 + 绯红缘，沿刀向轻微滑移（挥砍的"抹"感），宽度收束
+            if (brush != null) {
+                float f = age / (float)SlashFxFrames;
+                float streakInt = (1f - f) * (1f - f);
+                float width = MathHelper.Lerp(26f, 10f, f);
+                Vector2 pos = mid + dir * (age * 2.2f) - Main.screenPosition;
+                Vector2 scale = new(chord / brush.Width, width / brush.Height);
+                Vector2 origin = brush.Size() * 0.5f;
+                spriteBatch.Draw(brush, pos, null, new Color(1f, 0.20f, 0.13f, 0f) * (0.85f * streakInt),
+                    entry.CutAngle, origin, scale * new Vector2(1f, 1.35f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(brush, pos, null, new Color(1f, 0.90f, 0.80f, 0f) * streakInt,
+                    entry.CutAngle, origin, scale, SpriteEffects.None, 0f);
+            }
+
+            //落刀点星爆：命中确认
+            if (flare != null && age <= 6) {
+                float f = age / 6f;
+                float flareInt = 1f - f;
+                float scale = (34f + 26f * f) / flare.Width;
+                Vector2 pos = cutWorld - Main.screenPosition;
+                spriteBatch.Draw(flare, pos, null, new Color(1f, 0.32f, 0.20f, 0f) * (0.8f * flareInt),
+                    entry.CutAngle, flare.Size() * 0.5f, scale * 1.5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(flare, pos, null, new Color(1f, 0.94f, 0.88f, 0f) * flareInt,
+                    entry.CutAngle, flare.Size() * 0.5f, scale, SpriteEffects.None, 0f);
+                //落刀点辉光垫底
+                spriteBatch.Draw(glow, pos, null, new Color(1f, 0.30f, 0.18f, 0f) * (0.7f * flareInt),
+                    0f, glow.Size() * 0.5f, 46f / glow.Width, SpriteEffects.None, 0f);
+            }
         }
     }
 }

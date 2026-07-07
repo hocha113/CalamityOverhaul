@@ -1,10 +1,13 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -30,6 +33,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         public Vector2 AnchorCenter;
         public int SnapWidth;
         public int SnapHeight;
+        /// <summary>挂轴尺寸（px），基于身形贴合计算而非快照 RT（RT 带 1.9 倍捕获余量）</summary>
+        public float PaperWidth;
+        public float PaperHeight;
         public int Timer;
         public int Lifetime;
         public float Seed;
@@ -50,8 +56,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         public bool Burning;
         public int BurnTimer;
 
-        /// <summary>纸面半尺寸（快照 + 纸边距）</summary>
-        public Vector2 PaperHalf => new(SnapWidth * 0.5f + OniOmokage.PaperPad, SnapHeight * 0.5f + OniOmokage.PaperPad);
+        /// <summary>挂轴半尺寸</summary>
+        public Vector2 PaperHalf => new(PaperWidth * 0.5f, PaperHeight * 0.5f);
 
         /// <summary>综合可见度：寿命尾段淡出 × 烧散 × 斩纸消散</summary>
         public float Alpha {
@@ -113,8 +119,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
     internal class OniOmokage : ICWRLoader
     {
         //====== 时序与容量常量 ======
-        /// <summary>纸面边距（快照四周留白，px）</summary>
-        public const int PaperPad = 14;
+        /// <summary>挂轴左右留白（px）</summary>
+        public const float PaperSidePad = 8f;
+        /// <summary>天地装裱带高度（上下各一段，px），含轴棒；着色器同步使用</summary>
+        public const float PaperMountPad = 22f;
+        /// <summary>本纸内身影上下呼吸留白（px）</summary>
+        public const float PaperBreathPad = 10f;
+        /// <summary>挂轴整体缩放（调试可改）</summary>
+        public static float PaperScale = 1f;
         /// <summary>寿命尾段淡出帧数</summary>
         public const int FadeFrames = 30;
         /// <summary>离里/收域/断链的快速烧散帧数</summary>
@@ -152,9 +164,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
         //==================== 调试接口 ====================
 
-        /// <summary>在 npc 当前位置挂一幅面影（快照捕获由渲染线程随后完成）</summary>
+        /// <summary>在 npc 当前位置挂一幅面影（快照捕获由渲染线程随后完成）；任意存活 NPC 均可，不分敌我</summary>
         public static bool Imprint(NPC npc) {
-            if (Main.dedServ || npc == null || !npc.active || !npc.CanBeChasedBy()) {
+            if (Main.dedServ || npc == null || !npc.active || npc.life <= 0) {
                 return false;
             }
 
@@ -185,12 +197,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 return false;
             }
 
+            ComputePaperSize(npc, out float paperW, out float paperH);
             Entries.Add(new OmokageEntry {
                 NpcIndex = npc.whoAmI,
                 NpcType = npc.type,
                 AnchorCenter = npc.Center,
                 SnapWidth = snap.Width,
                 SnapHeight = snap.Height,
+                PaperWidth = paperW,
+                PaperHeight = paperH,
                 Lifetime = Math.Max(Lifetime, FadeFrames + 10),
                 Seed = Main.rand.NextFloat(),
                 SwayPhase = Main.rand.NextFloat(MathHelper.TwoPi),
@@ -198,7 +213,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             return true;
         }
 
-        /// <summary>快门：屏内（含 200px 余量）全部有效敌对 NPC 各挂一幅，返回成功数量</summary>
+        /// <summary>
+        /// 挂轴尺寸：贴合 NPC 可见身形（贴图帧 × 1.08）而非快照 RT——RT 的 1.9 倍捕获余量
+        /// 直接作纸面会显得空旷如占位符。竖向额外加天地装裱位
+        /// </summary>
+        private static void ComputePaperSize(NPC npc, out float width, out float height) {
+            Main.instance.LoadNPC(npc.type);
+            Texture2D tex = TextureAssets.Npc[npc.type].Value;
+            int frames = Math.Max(Main.npcFrameCount[npc.type], 1);
+            float fw = MathF.Max(tex.Width, npc.width);
+            float fh = MathF.Max(tex.Height / (float)frames, npc.height);
+            width = MathHelper.Clamp(fw * npc.scale * 1.08f * PaperScale + PaperSidePad * 2f, 44f, 1400f);
+            height = MathHelper.Clamp(fh * npc.scale * 1.08f * PaperScale + PaperBreathPad * 2f + PaperMountPad * 2f,
+                72f, 1400f);
+        }
+
+        /// <summary>快门：屏内（含 200px 余量）全部存活 NPC 各挂一幅（不分敌我），返回成功数量</summary>
         public static int ImprintVisible() {
             if (Main.dedServ) {
                 return 0;
@@ -298,8 +328,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             entry.CutAge = 0;
             BuildHalves(entry);
 
-            //纸裂：与纸层剥落同源的撕裂声
+            //纸裂：与纸层剥落同源的撕裂声 + 沿刀线迸出纸屑碎晶
             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = -0.6f, MaxInstances = 3 }, entry.AnchorCenter);
+            SpawnCutScraps(entry);
 
             //赤线脉冲：距离越远飞得越久，clamp 6~14 帧
             NPC npc = ValidTarget(entry.NpcIndex, entry.NpcType);
@@ -320,6 +351,56 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             });
             //发射帧单声风铃：因果启程
             SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.35f, Pitch = 0.4f, MaxInstances = 2 }, entry.AnchorCenter);
+        }
+
+        /// <summary>斩纸碎屑：和纸屑为主、鬼红碎晶点缀，沿刀线两侧迸出（与肢解断口同语汇）</summary>
+        private static void SpawnCutScraps(OmokageEntry entry) {
+            Vector2 dir = entry.CutAngle.ToRotationVector2();
+            Vector2 nrm = new(-dir.Y, dir.X);
+            if (!ClipLineToRect(entry.CutLocal, dir, entry.PaperHalf, out float t0, out float t1)) {
+                t0 = -20f;
+                t1 = 20f;
+            }
+
+            for (int k = 0; k < 12; k++) {
+                Vector2 pos = entry.AnchorCenter + entry.CutLocal
+                    + dir * MathHelper.Lerp(t0, t1, Main.rand.NextFloat()) * 0.85f;
+                Vector2 vel = nrm * Main.rand.NextFloat(1.2f, 3.6f) * (Main.rand.NextBool() ? 1f : -1f)
+                    + dir * Main.rand.NextFloat(-0.8f, 0.8f);
+                Color c = Main.rand.NextBool(3) ? new Color(214, 36, 28) : new Color(233, 224, 202);
+                PRTLoader.NewParticle<PRT_OniShard>(pos, vel, c, Main.rand.NextFloat(0.3f, 0.55f))
+                    ?.Configure(Main.rand.Next(16, 26), Main.rand.NextFloat(-0.2f, 0.2f),
+                        Main.rand.NextFloat(1.2f, 2.0f), affectedByGravity: true);
+            }
+        }
+
+        /// <summary>过 point 沿 dir 的无限直线与中心在原点的矩形求交，返回参数区间；刀光弦长与碎屑分布共用</summary>
+        internal static bool ClipLineToRect(Vector2 point, Vector2 dir, Vector2 rectHalf, out float t0, out float t1) {
+            t0 = float.MinValue;
+            t1 = float.MaxValue;
+            for (int axis = 0; axis < 2; axis++) {
+                float p = axis == 0 ? dir.X : dir.Y;
+                float o = axis == 0 ? point.X : point.Y;
+                float half = axis == 0 ? rectHalf.X : rectHalf.Y;
+
+                if (MathF.Abs(p) < 1e-5f) {
+                    if (MathF.Abs(o) > half) {
+                        return false;
+                    }
+                    continue;
+                }
+                float tA = (-half - o) / p;
+                float tB = (half - o) / p;
+                if (tA > tB) {
+                    (tA, tB) = (tB, tA);
+                }
+                t0 = MathF.Max(t0, tA);
+                t1 = MathF.Min(t1, tB);
+                if (t0 > t1) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>切线把整张纸裁成两半；退化情况（贴角掠过）保留整纸单片不滑动</summary>

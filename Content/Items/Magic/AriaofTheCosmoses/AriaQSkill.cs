@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,15 +10,30 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// Q技能星环护卫 环绕小吸积盘自动攻击
-    internal class AriaQSkill : BaseHeldProj
+    /// Q技能星流环带：单quad星环+6颗星卫结点,结点轮转弹射追踪星屑
+    internal class AriaQSkill : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private const int MaxDiskCount = 6;
-        private float orbitRadius = 180f;
-        private float orbitSpeed = 0.06f;
-        private int[] diskIndices = new int[MaxDiskCount];
+        private const int NodeCount = 6;
+        private const int Lifetime = 600;
+        private const int SpawnTime = 22;
+        private const int FadeTime = 40;
+        private const int AttackInterval = 10;
+        private const float BaseOrbitR = 170f;
+
+        private float nodePhase;
+        private float spinPhase;
+        private float visTime;
+        private int attackTimer;
+        private int nextNode;
+
+        /// <summary>0出场→1稳态→0退场</summary>
+        private float lifeEnvelope;
+        private float OrbitR => BaseOrbitR * (0.25f + 0.75f * lifeEnvelope)
+            * (1f + 0.02f * (float)Math.Sin(visTime * MathHelper.TwoPi * 1.2f));
+
+        private float QuadSide => (BaseOrbitR + 90f) * 2f;
 
         public override void SetDefaults() {
             Projectile.width = 32;
@@ -27,663 +41,284 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 600;
+            Projectile.timeLeft = Lifetime;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.alpha = 255;
         }
 
+        private Vector2 NodeWorldPos(int i)
+            => Projectile.Center + (nodePhase + MathHelper.TwoPi * i / NodeCount).ToRotationVector2() * OrbitR;
+
         public override void AI() {
-            if (!Owner.active || Owner.dead || Item.type != ModContent.ItemType<AriaofTheCosmos>()) {
+            Player player = Main.player[Projectile.owner];
+            if (!player.active || player.dead
+                || player.HeldItem.type != ModContent.ItemType<AriaofTheCosmos>()) {
                 Projectile.Kill();
                 return;
             }
 
-            //跟随玩家
-            Projectile.Center = Owner.Center;
+            Projectile.Center = player.Center;
+            visTime += 1f / 60f;
+            nodePhase += 0.032f;
+            spinPhase += 0.5f / 60f;
 
-            //初始化吸积盘
-            if (Projectile.ai[0] == 0) {
-                InitializeDisks(Owner);
-                Projectile.ai[0] = 1;
-
-                //播放激活音效
-                SoundEngine.PlaySound(SoundID.Item109 with {
-                    Volume = 0.9f,
-                    Pitch = 0.3f
-                }, Projectile.Center);
-
-                SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with {
-                    Volume = 0.8f,
-                    Pitch = -0.2f
-                }, Projectile.Center);
-
-                //生成激活特效
-                SpawnActivationEffect();
-            }
-
-            //更新所有吸积盘
-            UpdateOrbitingDisks(Owner);
-
-            //生成环绕粒子
-            if (Projectile.timeLeft % 2 == 0) {
-                SpawnOrbitParticles();
-            }
-
-            //生成连接线粒子
-            if (Projectile.timeLeft % 5 == 0) {
-                SpawnConnectionParticles(Owner);
-            }
-
-            //淡出效果
-            if (Projectile.timeLeft < 60) {
-                float fadeProgress = Projectile.timeLeft / 60f;
-                for (int i = 0; i < MaxDiskCount; i++) {
-                    if (diskIndices[i] >= 0 && Main.projectile[diskIndices[i]].active) {
-                        Main.projectile[diskIndices[i]].alpha = (int)(255 * (1f - fadeProgress));
-                    }
+            //出场展开/退场收拢包络
+            int age = Lifetime - Projectile.timeLeft;
+            if (age < SpawnTime) {
+                lifeEnvelope = VaultUtils.EaseOutCubic(age / (float)SpawnTime);
+                if (age == 1 && !VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item109 with { Volume = 0.85f, Pitch = 0.35f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 0.7f, Pitch = 0.1f }, Projectile.Center);
                 }
             }
+            else if (Projectile.timeLeft < FadeTime) {
+                lifeEnvelope = VaultUtils.EaseInQuad(Projectile.timeLeft / (float)FadeTime);
+            }
+            else {
+                lifeEnvelope = 1f;
+            }
 
-            //发光效果
-            float pulseIntensity = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 5f) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center,
-                new Vector3(1f, 0.8f, 0.3f) * pulseIntensity * 0.8f);
+            //结点轮转攻击
+            attackTimer++;
+            if (attackTimer >= AttackInterval && lifeEnvelope > 0.9f) {
+                attackTimer = 0;
+                TryNodeAttack();
+            }
+
+            //环带碎星飘尘
+            if (!VaultUtils.isServer && Projectile.timeLeft % 4 == 0 && lifeEnvelope > 0.3f) {
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 pos = Projectile.Center + ang.ToRotationVector2() * (OrbitR + Main.rand.NextFloat(-14f, 14f));
+                PRTLoader.NewParticle<PRT_Spark>(pos,
+                    ang.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(1f, 2.4f),
+                    Color.Lerp(AccretionDisk.ColGold, AccretionDisk.ColHot, Main.rand.NextFloat()) * 0.75f,
+                    Main.rand.NextFloat(0.4f, 0.8f))?.Configure(false, Main.rand.Next(10, 18), Main.player[Projectile.owner]);
+            }
+
+            float pulse = 0.7f + 0.3f * (float)Math.Sin(visTime * MathHelper.TwoPi * 1.2f);
+            Lighting.AddLight(Projectile.Center, AccretionDisk.ColGold.ToVector3() * pulse * lifeEnvelope * 0.8f);
         }
 
-        private void InitializeDisks(Player player) {
-            for (int i = 0; i < MaxDiskCount; i++) {
-                float angle = MathHelper.TwoPi * i / MaxDiskCount;
-                Vector2 offset = angle.ToRotationVector2() * orbitRadius;
-
-                int diskIndex = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    player.Center + offset,
-                    Vector2.Zero,
-                    ModContent.ProjectileType<AriaQSkillDisk>(),
-                    (int)(Projectile.damage * 0.7f),
-                    Projectile.knockBack * 0.6f,
-                    Projectile.owner,
-                    angle,
-                    Projectile.whoAmI
-                );
-
-                diskIndices[i] = diskIndex;
-            }
-        }
-
-        private void UpdateOrbitingDisks(Player player) {
-            for (int i = 0; i < MaxDiskCount; i++) {
-                if (diskIndices[i] < 0 || !Main.projectile[diskIndices[i]].active) {
-                    continue;
-                }
-
-                Projectile disk = Main.projectile[diskIndices[i]];
-
-                //更新轨道角度
-                float currentAngle = disk.ai[0] + orbitSpeed;
-                disk.ai[0] = currentAngle;
-
-                //添加轻微的波动效果
-                float wave = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + i * (MathHelper.Pi / 3f)) * 20f;
-                float currentRadius = orbitRadius + wave;
-
-                //计算轨道位置
-                Vector2 targetPos = player.Center + currentAngle.ToRotationVector2() * currentRadius;
-
-                //平滑移动
-                disk.Center = Vector2.Lerp(disk.Center, targetPos, 0.18f);
-                disk.timeLeft = 10; //保持存活
-            }
-        }
-
-        private void SpawnOrbitParticles() {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            //每个吸积盘生成轨迹粒子
-            for (int i = 0; i < MaxDiskCount; i++) {
-                if (diskIndices[i] < 0 || !Main.projectile[diskIndices[i]].active) {
-                    continue;
-                }
-
-                Projectile disk = Main.projectile[diskIndices[i]];
-
-                //在吸积盘轨迹上生成粒子
-                if (Main.rand.NextBool(2)) {
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(disk.Center + Main.rand.NextVector2Circular(20, 20), Main.rand.NextVector2Circular(1.5f, 1.5f), Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.45f)).Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(-0.15f, 0.15f), false, Main.rand.NextFloat(0.12f, 0.18f));
-                }
-            }
-        }
-
-        private void SpawnConnectionParticles(Player player) {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            //生成从玩家到吸积盘的能量连接线
-            for (int i = 0; i < MaxDiskCount; i++) {
-                if (diskIndices[i] < 0 || !Main.projectile[diskIndices[i]].active) {
-                    continue;
-                }
-
-                Projectile disk = Main.projectile[diskIndices[i]];
-                Vector2 direction = disk.Center - player.Center;
-                float distance = direction.Length();
-
-                //在连接线上生成粒子
-                int particleCount = (int)(distance / 40f);
-                for (int j = 0; j < particleCount; j++) {
-                    float progress = j / (float)particleCount;
-                    Vector2 particlePos = player.Center + direction * progress;
-
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, Vector2.Zero, Color.Lerp(Color.Gold, Color.Orange, progress) * 0.6f, Main.rand.NextFloat(0.15f, 0.25f)).Configure(Main.rand.Next(8, 15), 0f, false, Main.rand.NextFloat(0.08f, 0.12f));
-                }
-            }
-        }
-
-        private void SpawnActivationEffect() {
-            if (VaultUtils.isServer) {
-                return;
-            }
-
-            //环形激活波
-            for (int ring = 0; ring < 3; ring++) {
-                int segments = 48;
-                float radius = 60f + ring * 80f;
-
-                for (int i = 0; i < segments; i++) {
-                    float angle = MathHelper.TwoPi * i / segments;
-                    Vector2 offset = angle.ToRotationVector2() * radius;
-                    Vector2 particlePos = Projectile.Center + offset;
-                    Vector2 particleVel = offset.SafeNormalize(Vector2.Zero) * 4f;
-
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(particlePos, particleVel, Color.Lerp(Color.Gold, Color.Orange, ring / 3f), Main.rand.NextFloat(0.6f, 1.1f)).Configure(Main.rand.Next(35, 50), Main.rand.NextFloat(-0.3f, 0.3f), false, Main.rand.NextFloat(0.25f, 0.35f));
-                }
-            }
-
-            //爆发粒子
-            for (int i = 0; i < 50; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                PRTLoader.NewParticle<PRT_GammaImpact>(Projectile.Center, velocity, Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()), Main.rand.NextFloat(0.7f, 1.2f)).Configure(Main.rand.Next(30, 45), Main.rand.NextFloat(-0.4f, 0.4f), true, 0.3f);
-            }
-        }
-
-        public override void OnKill(int timeLeft) {
-            //清理所有吸积盘
-            for (int i = 0; i < MaxDiskCount; i++) {
-                if (diskIndices[i] >= 0 && Main.projectile[diskIndices[i]].active) {
-                    Main.projectile[diskIndices[i]].Kill();
-                }
-            }
-
-            //播放消失音效
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with {
-                    Volume = 0.7f,
-                    Pitch = 0.2f
-                }, Projectile.Center);
-
-                //消失特效
-                for (int i = 0; i < 40; i++) {
-                    Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(150f, 150f);
-                    Vector2 velocity = (Projectile.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 15f);
-
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(spawnPos, velocity, Color.Lerp(Color.Gold, Color.Orange, Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(25, 40), Main.rand.NextFloat(-0.4f, 0.4f), true, Main.rand.NextFloat(0.2f, 0.3f));
-                }
-            }
-        }
-    }
-
-    /// Q技能环绕小吸积盘
-    internal class AriaQSkillDisk : ModProjectile, IPrimitiveDrawable
-    {
-        public override string Texture => CWRConstant.Placeholder;
-
-        public ref float OrbitAngle => ref Projectile.ai[0];
-        public ref float ParentIndex => ref Projectile.ai[1];
-
-        private float time;
-        private float brightness = 1f;
-        private float distortionStrength = 0.12f;
-
-        //颜色配置
-        private Color innerColor = new Color(255, 230, 150);
-        private Color midColor = new Color(255, 180, 100);
-        private Color outerColor = new Color(220, 130, 60);
-
-        private float attackCooldown;
-        private const float MaxAttackCooldown = 45f; //1.5秒
-        private float rotationSpeed = 2.5f;
-
-        public override void SetDefaults() {
-            Projectile.width = 120;
-            Projectile.height = 120;
-            Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 10;
-            Projectile.tileCollide = false;
-            Projectile.ignoreWater = true;
-            Projectile.alpha = 0;
-            Projectile.scale = 0.35f; //稍小一些
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 12;
-        }
-
-        public override void AI() {
-            time += 0.02f;
-            Projectile.rotation += 0.12f * rotationSpeed;
-
-            //脉动效果
-            float pulse = (float)Math.Sin(time * 4f) * 0.12f + 0.88f;
-            brightness = pulse;
-
-            //攻击冷却
-            if (attackCooldown > 0) {
-                attackCooldown--;
-            }
-
-            //寻找并攻击敌人
-            if (attackCooldown <= 0) {
-                NPC target = FindNearestEnemy();
-                if (target != null) {
-                    AttackEnemy(target);
-                    attackCooldown = MaxAttackCooldown;
-                }
-            }
-
-            //生成粒子
-            if (Main.rand.NextBool(4)) {
-                SpawnDiskParticle();
-            }
-
-            //发光
-            Lighting.AddLight(Projectile.Center, innerColor.ToVector3() * brightness * 0.6f * Projectile.scale);
-        }
-
-        private NPC FindNearestEnemy() {
-            float maxDetectDistance = 1500f;
-            NPC closestNPC = null;
-            float minDistance = maxDetectDistance;
-
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.CanBeChasedBy(Projectile)) {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(Projectile.Center, npc.Center);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestNPC = npc;
-                }
-            }
-
-            return closestNPC;
-        }
-
-        private void AttackEnemy(NPC target) {
+        private void TryNodeAttack() {
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
 
-            //发射迷你追踪吸积盘
-            Vector2 velocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 12f;
+            NPC target = Projectile.Center.FindClosestNPC(1300f);
+            if (target == null) {
+                return;
+            }
 
-            int miniDisk = Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                Projectile.Center,
-                velocity,
+            //轮转结点弹射
+            Vector2 nodePos = NodeWorldPos(nextNode);
+            nextNode = (nextNode + 1) % NodeCount;
+
+            Vector2 vel = (target.Center - nodePos).SafeNormalize(Vector2.UnitX) * 15f;
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), nodePos, vel,
                 ModContent.ProjectileType<AriaQSkillMiniDisk>(),
-                Projectile.damage,
-                Projectile.knockBack,
-                Projectile.owner,
-                target.whoAmI
-            );
+                (int)(Projectile.damage * 0.7f), Projectile.knockBack * 0.6f, Projectile.owner,
+                target.whoAmI);
 
-            //攻击音效
-            SoundEngine.PlaySound(SoundID.Item9 with {
-                Volume = 0.5f,
-                Pitch = 0.7f
-            }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item9 with { Volume = 0.4f, Pitch = 0.75f, MaxInstances = 4 }, nodePos);
 
-            //攻击特效
             if (!VaultUtils.isServer) {
-                for (int i = 0; i < 8; i++) {
-                    Vector2 particleVel = velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.4f, 0.7f);
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(Projectile.Center, particleVel, Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.35f, 0.65f)).Configure(Main.rand.Next(18, 28), Main.rand.NextFloat(-0.25f, 0.25f), false, Main.rand.NextFloat(0.18f, 0.28f));
+                for (int i = 0; i < 5; i++) {
+                    PRTLoader.NewParticle<PRT_Spark>(nodePos, vel.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.15f, 0.4f),
+                        AccretionDisk.ColHot, Main.rand.NextFloat(0.5f, 0.9f))?.Configure(false, Main.rand.Next(8, 14));
                 }
             }
         }
 
-        private void SpawnDiskParticle() {
+        public override void OnKill(int timeLeft) {
             if (VaultUtils.isServer) {
                 return;
             }
+            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
 
-            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float distance = Main.rand.NextFloat(0.3f, 0.7f) * Projectile.width * 0.5f * Projectile.scale;
-            Vector2 offset = angle.ToRotationVector2() * distance;
-            Vector2 particleVel = offset.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero) * 0.8f;
-
-            PRTLoader.NewParticle<PRT_AccretionDiskImpact>(Projectile.Center + offset, particleVel, Color.Lerp(innerColor, outerColor, distance / (Projectile.width * 0.5f * Projectile.scale)), Main.rand.NextFloat(0.2f, 0.35f)).Configure(Main.rand.Next(12, 20), Main.rand.NextFloat(-0.12f, 0.12f), false, Main.rand.NextFloat(0.1f, 0.15f));
+            //结点碎裂成星屑
+            for (int i = 0; i < NodeCount; i++) {
+                Vector2 nodePos = NodeWorldPos(i);
+                for (int j = 0; j < 6; j++) {
+                    PRTLoader.NewParticle<PRT_Spark>(nodePos, Main.rand.NextVector2Circular(6f, 6f),
+                        Color.Lerp(AccretionDisk.ColGold, AccretionDisk.ColHot, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(0.6f, 1.1f))?.Configure(false, Main.rand.Next(12, 22));
+                }
+            }
         }
 
-        public void DrawPrimitives() {
-            if (VaultUtils.isServer) {
+        //=================== 绘制 ===================
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (VaultUtils.isServer || lifeEnvelope <= 0.02f) {
+                return;
+            }
+            Effect effect = EffectLoader.AriaStarRing?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            if (effect == null || noise == null || white == null) {
                 return;
             }
 
-            DrawMiniAccretionDisk();
+            SpriteBatch sb = Main.spriteBatch;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float side = QuadSide;
+            Vector2 quadScale = new(side / white.Width, side / white.Height);
+
+            Matrix finalMatrix = Main.GameViewMatrix.TransformationMatrix
+                * Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"]?.SetValue(finalMatrix);
+            effect.Parameters["uTime"]?.SetValue(visTime);
+            effect.Parameters["uFade"]?.SetValue(lifeEnvelope);
+            effect.Parameters["uRingN"]?.SetValue(OrbitR / side);
+            effect.Parameters["uRingW"]?.SetValue(17f / side);
+            effect.Parameters["uNodePhase"]?.SetValue(nodePhase);
+            effect.Parameters["uSpin"]?.SetValue(spinPhase);
+            effect.Parameters["seed"]?.SetValue(Projectile.whoAmI * 0.137f % 1f);
+            effect.Parameters["noiseTexture"]?.SetValue(noise);
+
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            effect.CurrentTechnique = effect.Techniques["Ring"];
+            effect.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(white, drawPos, null, Color.White, 0f, white.Size() * 0.5f, quadScale, SpriteEffects.None, 0);
+            sb.End();
         }
 
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Texture2D TransverseTwill = null!;
-
-        private void DrawMiniAccretionDisk() {
-            SpriteBatch spriteBatch = Main.spriteBatch;
-
-            //第一层绘制块
-            {
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-                Effect shader = EffectLoader.AccretionDisk.Value;
-
-                float actualWidth = Projectile.width * Projectile.scale;
-                float actualHeight = Projectile.height * Projectile.scale;
-
-                Matrix world = Matrix.Identity;
-                Matrix view = Main.GameViewMatrix.TransformationMatrix;
-                Matrix projection = Matrix.CreateOrthographicOffCenter(
-                    0, Main.screenWidth,
-                    Main.screenHeight, 0,
-                    -1, 1);
-
-                Matrix finalMatrix = world * view * projection;
-
-                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
-                shader.Parameters["uTime"]?.SetValue(time);
-                shader.Parameters["rotationSpeed"]?.SetValue(rotationSpeed);
-                shader.Parameters["innerRadius"]?.SetValue(0.18f);
-                shader.Parameters["outerRadius"]?.SetValue(0.82f);
-                shader.Parameters["brightness"]?.SetValue(brightness);
-                shader.Parameters["distortionStrength"]?.SetValue(distortionStrength);
-                shader.Parameters["noiseTexture"]?.SetValue(VaultAsset.placeholder2.Value);
-
-                Vector2 screenCenter = Projectile.Center - Main.screenPosition;
-                shader.Parameters["centerPos"]?.SetValue(screenCenter);
-
-                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
-                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
-                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
-
-                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-                shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
-
-                Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-
-                //绘制多层以增强效果
-                for (int i = 0; i < 6; i++) {
-                    float layerScale = 10.6f + i * 0.2f;
-                    spriteBatch.Draw(
-                        TransverseTwill,
-                        drawPosition,
-                        null,
-                        Color.White * (1f - Projectile.alpha / 255f),
-                        Projectile.rotation + i * 0.1f,
-                        TransverseTwill.Size() * 0.5f,
-                        new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height) * layerScale,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
-
-                spriteBatch.End();
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            if (lifeEnvelope <= 0.02f) {
+                return;
+            }
+            Texture2D star = CWRAsset.StarTexture?.Value;
+            Texture2D glow = CWRAsset.DiffusionCircle?.Value;
+            if (star == null || glow == null) {
+                return;
             }
 
-            //第二层绘制块
-            {
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //结点星卫本体：星芒+光晕
+            for (int i = 0; i < NodeCount; i++) {
+                Vector2 pos = NodeWorldPos(i) - Main.screenPosition;
+                float flick = 1f + 0.14f * (float)Math.Sin(visTime * MathHelper.TwoPi * 3f + i * 1.7f);
+                float readyGlow = i == nextNode ? 1.25f : 1f;
 
-                Effect shader = EffectLoader.AccretionDisk.Value;
-
-                float actualWidth = Projectile.width * Projectile.scale;
-                float actualHeight = Projectile.height * Projectile.scale;
-
-                Matrix world = Matrix.Identity;
-                Matrix view = Main.GameViewMatrix.TransformationMatrix;
-                Matrix projection = Matrix.CreateOrthographicOffCenter(
-                    0, Main.screenWidth,
-                    Main.screenHeight, 0,
-                    -1, 1);
-
-                Matrix finalMatrix = world * view * projection;
-
-                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
-                shader.Parameters["uTime"]?.SetValue(time);
-                shader.Parameters["rotationSpeed"]?.SetValue(rotationSpeed);
-                shader.Parameters["innerRadius"]?.SetValue(0.18f);
-                shader.Parameters["outerRadius"]?.SetValue(0.82f);
-                shader.Parameters["brightness"]?.SetValue(brightness);
-                shader.Parameters["distortionStrength"]?.SetValue(distortionStrength);
-                shader.Parameters["noiseTexture"]?.SetValue(TransverseTwill);
-
-                Vector2 screenCenter = Projectile.Center - Main.screenPosition;
-                shader.Parameters["centerPos"]?.SetValue(screenCenter);
-
-                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
-                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
-                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
-
-                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-                shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
-
-                Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-
-                //绘制多层以增强效果
-                for (int i = 0; i < 6; i++) {
-                    float layerScale = 10.8f + i * 0.15f;
-                    spriteBatch.Draw(
-                        TransverseTwill,
-                        drawPosition,
-                        null,
-                        Color.White * (1f - Projectile.alpha / 255f),
-                        Projectile.rotation + i * 0.08f,
-                        TransverseTwill.Size() * 0.5f,
-                        new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height) * layerScale,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
-
-                spriteBatch.End();
+                Main.EntitySpriteDraw(glow, pos, null, AccretionDisk.ColGold * (0.5f * lifeEnvelope), 0f,
+                    glow.Size() / 2f, 0.16f * flick * readyGlow, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(star, pos, null, AccretionDisk.ColHot * (0.95f * lifeEnvelope),
+                    visTime * 2.4f + i, star.Size() / 2f, 0.15f * flick * readyGlow, SpriteEffects.None, 0);
             }
         }
     }
 
-    /// Q技能迷你追踪吸积盘
-    internal class AriaQSkillMiniDisk : ModProjectile, IPrimitiveDrawable
+    /// Q技能星屑：结点弹射的追踪光矢
+    internal class AriaQSkillMiniDisk : ModProjectile, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
         public ref float TargetNPCIndex => ref Projectile.ai[0];
 
-        private float time;
-        private float brightness = 1f;
-        private float rotationSpeed = 3f;
-
-        private Color innerColor = new Color(255, 230, 150);
-        private Color midColor = new Color(255, 180, 100);
-        private Color outerColor = new Color(220, 130, 60);
+        private float visTime;
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 12;
+            ProjectileID.Sets.TrailCacheLength[Type] = 8;
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
 
         public override void SetDefaults() {
-            Projectile.width = 60;
-            Projectile.height = 60;
+            Projectile.width = 22;
+            Projectile.height = 22;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 3;
-            Projectile.timeLeft = 240;
+            Projectile.penetrate = 2;
+            Projectile.timeLeft = 200;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.alpha = 0;
-            Projectile.scale = 0.25f;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
+            Projectile.extraUpdates = 1;
         }
 
         public override void AI() {
-            time += 0.025f;
-            Projectile.rotation += 0.15f * rotationSpeed;
+            visTime += 1f / 60f;
+            Projectile.rotation = Projectile.velocity.ToRotation();
 
-            //脉动效果
-            float pulse = (float)Math.Sin(time * 5f) * 0.15f + 0.85f;
-            brightness = pulse;
-
-            //强力追踪
+            //追踪：目标失效则重寻
+            NPC target = null;
             if (TargetNPCIndex >= 0 && TargetNPCIndex < Main.maxNPCs) {
-                NPC target = Main.npc[(int)TargetNPCIndex];
-                if (target.active && target.CanBeChasedBy(Projectile)) {
-                    Vector2 desiredVelocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 20f;
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, 0.12f);
-                }
-                else {
-                    //目标丢失，寻找新目标
-                    NPC newTarget = Projectile.Center.FindClosestNPC(400f);
-                    if (newTarget != null) {
-                        TargetNPCIndex = newTarget.whoAmI;
-                    }
+                NPC candidate = Main.npc[(int)TargetNPCIndex];
+                if (candidate.active && candidate.CanBeChasedBy(Projectile)) {
+                    target = candidate;
                 }
             }
-            else {
-                //没有目标，寻找最近的敌人
-                NPC newTarget = Projectile.Center.FindClosestNPC(400f);
-                if (newTarget != null) {
-                    TargetNPCIndex = newTarget.whoAmI;
+            if (target == null) {
+                target = Projectile.Center.FindClosestNPC(500f);
+                if (target != null) {
+                    TargetNPCIndex = target.whoAmI;
                 }
             }
-
-            //生成拖尾粒子
-            if (Main.rand.NextBool(2)) {
-                SpawnTrailParticle();
+            if (target != null) {
+                Vector2 desired = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 19f;
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desired, 0.1f);
             }
 
-            //发光
-            Lighting.AddLight(Projectile.Center, innerColor.ToVector3() * brightness * 0.5f * Projectile.scale);
-        }
-
-        private void SpawnTrailParticle() {
-            if (VaultUtils.isServer) {
-                return;
+            //星尘拖尾
+            if (!VaultUtils.isServer && Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center,
+                    -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.25f),
+                    Color.Lerp(AccretionDisk.ColGold, AccretionDisk.ColHot, Main.rand.NextFloat()) * 0.8f,
+                    Main.rand.NextFloat(0.4f, 0.7f))?.Configure(false, Main.rand.Next(8, 14));
             }
 
-            PRTLoader.NewParticle<PRT_AccretionDiskImpact>(Projectile.Center, -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f), Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.45f)).Configure(Main.rand.Next(10, 18), Main.rand.NextFloat(-0.2f, 0.2f), false, Main.rand.NextFloat(0.12f, 0.18f));
+            Lighting.AddLight(Projectile.Center, AccretionDisk.ColGold.ToVector3() * 0.5f);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中特效
+            SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.35f, Pitch = 0.55f, MaxInstances = 5 }, target.Center);
+
             if (!VaultUtils.isServer) {
-                for (int i = 0; i < 12; i++) {
-                    Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                    PRTLoader.NewParticle<PRT_AccretionDiskImpact>(target.Center, velocity, Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.7f)).Configure(Main.rand.Next(18, 28), Main.rand.NextFloat(-0.35f, 0.35f), true, Main.rand.NextFloat(0.2f, 0.3f));
+                for (int i = 0; i < 8; i++) {
+                    PRTLoader.NewParticle<PRT_Spark>(target.Center, Main.rand.NextVector2Circular(5f, 5f),
+                        Color.Lerp(AccretionDisk.ColGold, AccretionDisk.ColHot, Main.rand.NextFloat()),
+                        Main.rand.NextFloat(0.5f, 1f))?.Configure(false, Main.rand.Next(10, 18));
                 }
+                PRTLoader.NewParticle<PRT_Light>(target.Center, Vector2.Zero,
+                    AccretionDisk.ColGold, Main.rand.NextFloat(0.5f, 0.8f))
+                    ?.Configure(Main.rand.Next(12, 18), opacity: 1.3f, squishStrenght: 1.8f, hueShift: 0.01f);
             }
 
-            //击中音效
-            SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.4f,
-                Pitch = 0.5f
-            }, target.Center);
-
-            //穿透伤害衰减
             Projectile.damage = (int)(Projectile.damage * 0.8f);
         }
 
-        public void DrawPrimitives() {
-            if (VaultUtils.isServer) {
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            Texture2D star = CWRAsset.StarTexture?.Value;
+            Texture2D glow = CWRAsset.DiffusionCircle?.Value;
+            if (star == null || glow == null) {
                 return;
             }
 
-            DrawMiniDisk();
-        }
-
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Texture2D TransverseTwill = null!;
-
-        private void DrawMiniDisk() {
-            SpriteBatch spriteBatch = Main.spriteBatch;
-
-            //第二层绘制块
-            {
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-                Effect shader = EffectLoader.AccretionDisk.Value;
-
-                float actualWidth = Projectile.width * Projectile.scale;
-                float actualHeight = Projectile.height * Projectile.scale;
-
-                Matrix world = Matrix.Identity;
-                Matrix view = Main.GameViewMatrix.TransformationMatrix;
-                Matrix projection = Matrix.CreateOrthographicOffCenter(
-                    0, Main.screenWidth,
-                    Main.screenHeight, 0,
-                    -1, 1);
-
-                Matrix finalMatrix = world * view * projection;
-
-                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
-                shader.Parameters["uTime"]?.SetValue(time);
-                shader.Parameters["rotationSpeed"]?.SetValue(rotationSpeed);
-                shader.Parameters["innerRadius"]?.SetValue(0.2f);
-                shader.Parameters["outerRadius"]?.SetValue(0.85f);
-                shader.Parameters["brightness"]?.SetValue(brightness);
-                shader.Parameters["distortionStrength"]?.SetValue(0.15f);
-                shader.Parameters["noiseTexture"]?.SetValue(TransverseTwill);
-
-                Vector2 screenCenter = Projectile.Center - Main.screenPosition;
-                shader.Parameters["centerPos"]?.SetValue(screenCenter);
-
-                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
-                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
-                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
-
-                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-                shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
-
-                Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-
-                //第二组绘制层
-                for (int i = 0; i < 6; i++) {
-                    float layerScale = 110.7f + i * 2.68f;
-                    spriteBatch.Draw(
-                        TransverseTwill,
-                        drawPosition,
-                        null,
-                        Color.White * (1f - Projectile.alpha / 255f),
-                        Projectile.rotation + i * 0.1f,
-                        TransverseTwill.Size() * 0.5f,
-                        new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height) * layerScale,
-                        SpriteEffects.None,
-                        0
-                    );
+            //速度方向拉长的彗星残影
+            for (int i = Projectile.oldPos.Length - 1; i >= 0; i--) {
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
                 }
-
-                spriteBatch.End();
+                float k = 1f - i / (float)Projectile.oldPos.Length;
+                Vector2 pos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                Main.EntitySpriteDraw(glow, pos, null, AccretionDisk.ColGold * (0.25f * k * k), 0f,
+                    glow.Size() / 2f, 0.09f * k, SpriteEffects.None, 0);
             }
+
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float flick = 1f + 0.15f * (float)Math.Sin(visTime * MathHelper.TwoPi * 5f + Projectile.whoAmI);
+            Main.EntitySpriteDraw(glow, drawPos, null, AccretionDisk.ColGold * 0.55f, 0f,
+                glow.Size() / 2f, 0.15f * flick, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, drawPos, null, AccretionDisk.ColHot * 0.95f,
+                Projectile.rotation + MathHelper.PiOver4, star.Size() / 2f,
+                new Vector2(0.24f, 0.13f) * flick, SpriteEffects.None, 0);
         }
     }
 }

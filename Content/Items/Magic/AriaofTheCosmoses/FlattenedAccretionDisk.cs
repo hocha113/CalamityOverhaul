@@ -1,4 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -8,317 +10,238 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// 压扁3D吸积盘
-    internal class FlattenedAccretionDisk : ModProjectile, IPrimitiveDrawable
+    /// 右键·事件视界领域：蓝紫高能态黑洞架成炮台
+    /// 盘面垂直于瞄准方向,喷流轴指向鼠标;蓄满后沿轴持续点射伽马射线
+    /// rotation/ChargeProgress 由手持弹幕每帧喂入
+    internal class FlattenedAccretionDisk : ModProjectile, IPrimitiveDrawable, IWarpDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        //吸积盘参数
-        public ref float RotationSpeed => ref Projectile.ai[0];
-        public ref float FlattenAngle => ref Projectile.ai[1]; //压扁角度 3D效果
-        public ref float ChargeProgress => ref Projectile.ai[2]; //蓄力进度
+        /// <summary>0~1 蓄力进度(手持喂入)</summary>
+        public ref float ChargeProgress => ref Projectile.ai[2];
 
-        private float time;
-        private float brightness = 1f;
-        private float distortionStrength = 0.15f;
-        private float pulseIntensity = 0f;
+        private const float FireThreshold = 0.8f;
+        private const int FireInterval = 7;
 
-        //颜色配置
-        private Color innerColor = new Color(255, 200, 100); //内圈
-        private Color midColor = new Color(255, 120, 50);    //中圈
-        private Color outerColor = new Color(100, 50, 150);  //外圈
+        private float visTime;
+        private float spinPhase;
+        private float fade;
+        private float jetPower;
+        private int gammaRayTimer;
 
-        private int gammaRayTimer = 0;
-        private const int GammaRayInterval = 30; //伽马射线间隔
-
-        public override void SetStaticDefaults() {
-            Main.projFrames[Type] = 1;
-        }
+        /// <summary>绘制quad边长：领域直径的2.4倍留辉光余量</summary>
+        private float QuadSide => Projectile.width * Projectile.scale * 2.4f;
+        private float Seed => Projectile.whoAmI * 0.137f % 1f;
 
         public override void SetDefaults() {
-            Projectile.width = 800;
-            Projectile.height = 800;
+            Projectile.width = 500;
+            Projectile.height = 500;
             Projectile.friendly = false;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.alpha = 255;
             Projectile.DamageType = DamageClass.Magic;
+            Projectile.scale = 0.35f;
         }
 
+        public override bool ShouldUpdatePosition() => false;
+
         public override void AI() {
-            //淡入效果
-            if (Projectile.alpha > 0) {
-                Projectile.alpha -= 8;
+            visTime += 1f / 60f;
+            fade = Math.Min(fade + 0.09f, 1f);
+            Projectile.scale = MathHelper.Lerp(0.35f, 1f, ChargeProgress);
+
+            //自旋相位积分
+            spinPhase += MathHelper.Lerp(1.2f, 3f, ChargeProgress) / 60f;
+
+            //喷流功率：达阈值后爬升,未达缓降
+            float jetTarget = ChargeProgress >= FireThreshold ? 1f : 0f;
+            jetPower = MathHelper.Lerp(jetPower, jetTarget, 0.12f);
+
+            //引力拉拽领域内敌人(比左键温和,持续)
+            float pullR = QuadSide * 0.55f;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy(Projectile) || npc.boss || npc.knockBackResist <= 0f) {
+                    continue;
+                }
+                float dist = Vector2.Distance(npc.Center, Projectile.Center);
+                if (dist < pullR && dist > 20f) {
+                    float factor = 1f - dist / pullR;
+                    npc.velocity += (Projectile.Center - npc.Center).SafeNormalize(Vector2.Zero)
+                        * 3f * factor * npc.knockBackResist;
+                }
             }
 
-            time += 0.016f;
-
-            //默认参数设置
-            if (RotationSpeed == 0) {
-                RotationSpeed = 1.5f;
-            }
-            if (FlattenAngle == 0) {
-                FlattenAngle = 0.65f; //默认压扁角度
-            }
-
-            //脉动效果
-            brightness = 1f;
-
-            //根据蓄力进度调整脉动强度
-            pulseIntensity = ChargeProgress * 0.3f;
-
-            //生成环绕粒子
-            if (Projectile.timeLeft % 2 == 0 && !Main.dedServ) {
-                SpawnDiskParticles();
-            }
-
-            //蓄力完成后定期发射伽马射线
-            if (ChargeProgress >= 0.8f) {
+            //蓄满:沿喷流轴点射伽马射线
+            if (ChargeProgress >= FireThreshold) {
                 gammaRayTimer++;
-                if (gammaRayTimer >= 8) {
+                if (gammaRayTimer >= FireInterval) {
                     ShootGammaRay();
                     gammaRayTimer = 0;
                 }
             }
 
-            //淡出效果
-            if (Projectile.timeLeft < 60) {
-                Projectile.alpha += 5;
-                brightness *= Projectile.timeLeft / 60f;
-            }
+            EmitParticles();
 
-            //发光
             Lighting.AddLight(Projectile.Center,
-                innerColor.ToVector3() * brightness * 1.2f * (1f - Projectile.alpha / 255f));
-        }
-
-        private void SpawnDiskParticles() {
-            //在吸积盘边缘生成粒子
-            float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-            float distance = Main.rand.NextFloat(0.3f, 0.9f) * Projectile.width * 0.5f * Projectile.scale;
-
-            //考虑压扁效果的Y轴缩放
-            Vector2 offset = new Vector2(
-                (float)Math.Cos(angle) * distance,
-                (float)Math.Sin(angle) * distance * FlattenAngle
-            );
-
-            Vector2 particlePos = Projectile.Center + offset;
-            Vector2 particleVel = Vector2.Normalize(offset.RotatedBy(MathHelper.PiOver2)) * Main.rand.NextFloat(0.5f, 2f);
-
-            int dustType = Main.rand.Next(new[] { 59, 60, 62, 135 }); //蓝色系粒子
-            Dust dust = Dust.NewDustPerfect(particlePos, dustType, particleVel, 100,
-                Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 2f));
-            dust.noGravity = true;
-            dust.fadeIn = 1.2f;
+                GammaRayBeam.ColViolet.ToVector3() * (0.6f + ChargeProgress * 0.8f) * fade);
         }
 
         private void ShootGammaRay() {
+            if (!VaultUtils.isServer) {
+                SoundEngine.PlaySound(SoundID.Item75 with { Volume = 0.5f, Pitch = 0.5f, MaxInstances = 4 }, Projectile.Center);
+            }
             if (!Projectile.IsOwnedByLocalPlayer()) {
                 return;
             }
 
-            //播放射线音效
-            SoundEngine.PlaySound(SoundID.Item72 with {
-                Volume = 0.6f,
-                Pitch = -0.2f
-            }, Projectile.Center);
+            //沿盘轴(瞄准方向)发射,微散布
+            Vector2 dir = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.06f);
+            int damage = (int)(Projectile.damage * (0.4f + ChargeProgress * 0.35f));
 
-            //寻找最近的敌人
-            NPC target = null;
-            float minDistance = 900f;
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                Projectile.Center + dir * 30f, dir * 4f,
+                ModContent.ProjectileType<GammaRayBeam>(), damage, 2f, Projectile.owner,
+                0f, Main.rand.NextFloat());
+        }
 
-            foreach (NPC npc in Main.ActiveNPCs) {
-                if (!npc.CanBeChasedBy(Projectile)) {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(Projectile.Center, npc.Center);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    target = npc;
-                }
+        private void EmitParticles() {
+            if (VaultUtils.isServer) {
+                return;
             }
 
-            //发射伽马射线
-            Vector2 shootDirection = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.2f);
+            //蓝紫坠入流:贴视界的切向裂隙
+            if (Projectile.timeLeft % 3 == 0 && fade > 0.5f) {
+                float hr = QuadSide * 0.075f;
+                float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                Vector2 pos = Projectile.Center + ang.ToRotationVector2() * hr * Main.rand.NextFloat(1.4f, 2.4f);
+                Vector2 vel = ang.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(2.5f, 5f)
+                    + (Projectile.Center - pos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 2.5f);
+                PRTLoader.NewParticle<PRT_SpaceFracture>(pos, vel,
+                    Color.Lerp(GammaRayBeam.ColViolet, GammaRayBeam.ColCheren, Main.rand.NextFloat()) * 0.9f,
+                    Main.rand.NextFloat(0.3f, 0.6f))?.Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(-0.4f, 0.4f));
+            }
 
-            //射线伤害随蓄力进度提升
-            int damage = (int)(Projectile.damage * (0.4f + ChargeProgress * 0.3f));
+            //吸入光点
+            if (Projectile.timeLeft % 6 == 0 && ChargeProgress > 0.2f) {
+                PRTLoader.NewParticle<PRT_GravityVortex>(Projectile.Center, Vector2.Zero,
+                    Color.Lerp(GammaRayBeam.ColCheren, GammaRayBeam.ColCore, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.35f, 0.65f))
+                    ?.Configure(Main.rand.NextFloat(MathHelper.TwoPi), QuadSide * Main.rand.NextFloat(0.3f, 0.5f), Main.rand.Next(35, 55));
+            }
 
-            Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                Projectile.Center,
-                shootDirection * 2f,
-                ModContent.ProjectileType<GammaRayBeam>(),
-                damage,
-                2f,
-                Projectile.owner
-            );
-
-            //发射伽马射线电离闪光
-            if (!VaultUtils.isServer) {
-                for (int i = 0; i < 8; i++) {
-                    Vector2 sparkVel = shootDirection.RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 12f);
-                    Dust spark = Dust.NewDustPerfect(Projectile.Center, DustID.PurpleTorch, sparkVel, 100,
-                        new Color(160, 120, 255), Main.rand.NextFloat(1.2f, 2f));
-                    spark.noGravity = true;
-                }
-
-                //辐射环
-                for (int i = 0; i < 10; i++) {
-                    float angle = MathHelper.TwoPi * i / 10f;
-                    Vector2 offset = angle.ToRotationVector2() * 30f;
-
-                    Dust shockwave = Dust.NewDustPerfect(Projectile.Center + offset, DustID.PurpleTorch,
-                        offset.SafeNormalize(Vector2.Zero) * 2f, 100,
-                        new Color(100, 60, 200), Main.rand.NextFloat(1.2f, 1.8f));
-                    shockwave.noGravity = true;
-                }
+            //喷流工作时:沿轴电离飞沫
+            if (jetPower > 0.3f && Main.rand.NextBool(2)) {
+                Vector2 dir = Projectile.rotation.ToRotationVector2();
+                Vector2 pos = Projectile.Center + dir * Main.rand.NextFloat(20f, QuadSide * 0.4f)
+                    + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-10f, 10f);
+                PRTLoader.NewParticle<PRT_Spark>(pos, dir * Main.rand.NextFloat(6f, 14f),
+                    Color.Lerp(GammaRayBeam.ColCore, GammaRayBeam.ColCheren, Main.rand.NextFloat(0.4f)),
+                    Main.rand.NextFloat(0.6f, 1.1f))?.Configure(false, Main.rand.Next(8, 14));
             }
         }
 
         public override void OnKill(int timeLeft) {
-            //消失特效
             if (VaultUtils.isServer) {
                 return;
             }
-            SoundEngine.PlaySound(SoundID.Item92 with {
-                Volume = 0.6f,
-                Pitch = 0.2f
-            }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item92 with { Volume = 0.6f, Pitch = 0.2f }, Projectile.Center);
 
-            //爆发粒子
-            for (int i = 0; i < 40; i++) {
-                float angle = MathHelper.TwoPi * i / 40f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
-                velocity.Y *= FlattenAngle; //保持压扁效果
-
-                Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, velocity, 100,
-                    Color.Lerp(innerColor, outerColor, Main.rand.NextFloat()),
-                    Main.rand.NextFloat(1.5f, 2.5f));
-                dust.noGravity = true;
+            //领域坍缩:蓝紫裂隙内爆
+            int count = (int)(18 * Projectile.scale) + 8;
+            for (int i = 0; i < count; i++) {
+                Vector2 spawn = Projectile.Center + Main.rand.NextVector2Circular(1f, 1f) * QuadSide * 0.35f;
+                PRTLoader.NewParticle<PRT_SpaceFracture>(spawn,
+                    (Projectile.Center - spawn).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(6f, 13f),
+                    Color.Lerp(GammaRayBeam.ColViolet, GammaRayBeam.ColCheren, Main.rand.NextFloat()),
+                    Main.rand.NextFloat(0.4f, 0.9f))?.Configure(Main.rand.Next(14, 26), Main.rand.NextFloat(-0.5f, 0.5f));
             }
+        }
+
+        //=================== 绘制 ===================
+
+        public override bool PreDraw(ref Color lightColor) => false;
+        public bool CanDrawCustom() => false;
+        public void DrawCustom(SpriteBatch spriteBatch) { }
+
+        public void Warp() {
+            if (fade < 0.1f) {
+                return;
+            }
+            float size = MathHelper.Clamp(QuadSide * 1.15f, 200f, 2200f);
+            NeutronWarpHelper.DrawWarp(Projectile.Center, size, size,
+                MathHelper.Lerp(0.1f, 0.42f, ChargeProgress) * fade, 1f, 0f, "GravitationalLens");
         }
 
         public void DrawPrimitives() {
-            if (VaultUtils.isServer) {
+            if (VaultUtils.isServer || fade <= 0.02f) {
                 return;
             }
 
-            DrawFlattenedAccretionDisk();
-        }
+            Effect effect = EffectLoader.AriaBlackHole?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            if (effect == null || noise == null || white == null) {
+                return;
+            }
 
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Texture2D TransverseTwill = null!;
-
-        private void DrawFlattenedAccretionDisk() {
-            SpriteBatch spriteBatch = Main.spriteBatch;
-            float alpha = 1f - Projectile.alpha / 255f;
-            if (alpha <= 0f) return;
-
+            SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            float actualWidth = Projectile.width * Projectile.scale;
-            float actualHeight = Projectile.height * Projectile.scale * FlattenAngle;
+            float side = QuadSide;
+            Vector2 texHalf = white.Size() * 0.5f;
+            Vector2 quadScale = new(side / white.Width, side / white.Height);
+            //quad 局部-y轴对准瞄准方向:喷流指向鼠标,盘面垂直于瞄准
+            float quadRot = Projectile.rotation + MathHelper.PiOver2;
 
-            Matrix finalMatrix = Matrix.Identity
-                * Main.GameViewMatrix.TransformationMatrix
+            Matrix finalMatrix = Main.GameViewMatrix.TransformationMatrix
                 * Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-            Vector2 screenCenter = Projectile.Center - Main.screenPosition;
-            Vector2 texHalf = TransverseTwill.Size() * 0.5f;
-            Vector2 diskScale = new Vector2(actualWidth / TransverseTwill.Width, actualHeight / TransverseTwill.Height);
+            float breath = (float)Math.Sin(visTime * MathHelper.TwoPi * 2.5f);
+            float charge = ChargeProgress;
 
-            //绘制吸积盘主体
-            {
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            effect.Parameters["transformMatrix"]?.SetValue(finalMatrix);
+            effect.Parameters["uTime"]?.SetValue(visTime);
+            effect.Parameters["uSpinPhase"]?.SetValue(spinPhase);
+            effect.Parameters["uSeed"]?.SetValue(Seed);
+            effect.Parameters["uFade"]?.SetValue(fade);
+            effect.Parameters["uStretch"]?.SetValue(1f);
+            effect.Parameters["uMotAngle"]?.SetValue(0f);
+            effect.Parameters["uStarR"]?.SetValue(0f);
+            effect.Parameters["uStarBright"]?.SetValue(0f);
+            effect.Parameters["uCollapse"]?.SetValue(0f);
+            effect.Parameters["uHorizonR"]?.SetValue(0.075f);
+            effect.Parameters["uRingBright"]?.SetValue(0.9f + charge * 0.4f + jetPower * 0.25f * breath);
+            effect.Parameters["uDiskIn"]?.SetValue(0.10f);
+            effect.Parameters["uDiskOut"]?.SetValue(MathHelper.Lerp(0.20f, 0.42f, charge));
+            effect.Parameters["uDiskFlat"]?.SetValue(MathHelper.Lerp(0.55f, 0.30f, charge));
+            effect.Parameters["uDiskBright"]?.SetValue(0.9f + charge * 0.3f);
+            effect.Parameters["uArc"]?.SetValue(charge);
+            effect.Parameters["uDoppler"]?.SetValue(0.5f);
+            effect.Parameters["uInflow"]?.SetValue(0.5f + charge * 0.4f + breath * 0.12f);
+            effect.Parameters["uBlueshift"]?.SetValue(jetPower * (0.5f + 0.2f * breath));
+            effect.Parameters["uFlash"]?.SetValue(0f);
+            effect.Parameters["uJet"]?.SetValue(jetPower * (0.85f + 0.15f * breath));
+            effect.Parameters["uJetAsym"]?.SetValue(1f);
+            effect.Parameters["uPalShift"]?.SetValue(1f);
+            effect.Parameters["noiseTexture"]?.SetValue(noise);
 
-                Effect shader = EffectLoader.FlattenedDisk.Value;
+            //Pass1:暗背板+视界
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            effect.CurrentTechnique = effect.Techniques["Backdrop"];
+            effect.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(white, drawPos, null, Color.White, quadRot, texHalf, quadScale, SpriteEffects.None, 0);
+            sb.End();
 
-                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
-                shader.Parameters["uTime"]?.SetValue(time);
-                shader.Parameters["rotationSpeed"]?.SetValue(RotationSpeed);
-                shader.Parameters["flattenRatio"]?.SetValue(FlattenAngle);
-                shader.Parameters["brightness"]?.SetValue(brightness * 1.5f);
-                shader.Parameters["distortionStrength"]?.SetValue(distortionStrength * 1.2f);
-                shader.Parameters["pulseIntensity"]?.SetValue(pulseIntensity);
-                shader.Parameters["dopplerStrength"]?.SetValue(0.6f);
-                shader.Parameters["noiseTexture"]?.SetValue(TransverseTwill);
-                shader.Parameters["centerPos"]?.SetValue(screenCenter);
-                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
-                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
-                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
-
-                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-                shader.CurrentTechnique.Passes["FlattenedDiskPass"].Apply();
-
-                //外层辉光
-                for (int i = 0; i < 2; i++) {
-                    float s = 1.6f + i * 0.5f;
-                    float a = alpha * (0.2f - i * 0.06f);
-                    spriteBatch.Draw(TransverseTwill, drawPos, null,
-                        Color.White * a,
-                        Projectile.rotation + i * 0.12f + MathHelper.PiOver2,
-                        texHalf, diskScale * s, SpriteEffects.None, 0);
-                }
-
-                //核心盘面层
-                for (int i = 0; i < 3; i++) {
-                    float s = 0.85f + i * 0.12f;
-                    spriteBatch.Draw(TransverseTwill, drawPos, null,
-                        Color.White * alpha * 0.85f,
-                        Projectile.rotation + i * 0.03f + MathHelper.PiOver2,
-                        texHalf, diskScale * s, SpriteEffects.None, 0);
-                }
-
-                spriteBatch.End();
-            }
-
-            //绘制中央天体（黑洞/能量核心）
-            {
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                    DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-                Effect shader = EffectLoader.AccretionDisk.Value;
-                float orbSize = Projectile.width * Projectile.scale * 0.25f;
-
-                shader.Parameters["transformMatrix"]?.SetValue(finalMatrix);
-                shader.Parameters["uTime"]?.SetValue(time);
-                shader.Parameters["rotationSpeed"]?.SetValue(RotationSpeed * 1.2f);
-                shader.Parameters["innerRadius"]?.SetValue(0.12f);
-                shader.Parameters["outerRadius"]?.SetValue(0.85f);
-                shader.Parameters["brightness"]?.SetValue(brightness * 1.5f);
-                shader.Parameters["distortionStrength"]?.SetValue(distortionStrength * 0.3f);
-                shader.Parameters["noiseTexture"]?.SetValue(TransverseTwill);
-                shader.Parameters["centerPos"]?.SetValue(screenCenter);
-                shader.Parameters["innerColor"]?.SetValue(innerColor.ToVector4());
-                shader.Parameters["midColor"]?.SetValue(midColor.ToVector4());
-                shader.Parameters["outerColor"]?.SetValue(outerColor.ToVector4());
-
-                Main.graphics.GraphicsDevice.Textures[1] = TransverseTwill;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
-
-                shader.CurrentTechnique.Passes["AccretionDiskPass"].Apply();
-
-                Vector2 orbDrawPos = drawPos + Projectile.rotation.ToRotationVector2() * 8f * Projectile.scale;
-                Vector2 orbScale = new Vector2(orbSize / TransverseTwill.Width, orbSize / TransverseTwill.Height);
-
-                for (int i = 0; i < 3; i++) {
-                    float s = 0.75f + i * 0.2f;
-                    spriteBatch.Draw(TransverseTwill, orbDrawPos, null,
-                        Color.White * alpha * 0.85f,
-                        Projectile.rotation + i * 0.1f,
-                        texHalf, orbScale * s, SpriteEffects.None, 0);
-                }
-
-                spriteBatch.End();
-            }
+            //Pass2:发光层
+            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            effect.CurrentTechnique = effect.Techniques["Glow"];
+            effect.CurrentTechnique.Passes[0].Apply();
+            sb.Draw(white, drawPos, null, Color.White, quadRot, texHalf, quadScale, SpriteEffects.None, 0);
+            sb.End();
         }
     }
 }

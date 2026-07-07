@@ -1,5 +1,5 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,27 +10,37 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 {
-    /// 伽马射线
-    internal class GammaRayBeam : BaseHeldProj
+    /// 伽马射线：细过曝白核短脉冲，tile raycast 真实终点，四顶点条带 + AriaGammaRay.fx
+    /// ai[0]=1 锚定主人中心(R技能)，0 固定发射点；ai[1]=编队相位种子
+    internal class GammaRayBeam : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
         public override string Texture => CWRConstant.Placeholder;
 
-        private const int MaxTrailLength = 30;
-        private float beamWidth = 22f;
-        private float maxBeamWidth = 65f;
-        private float beamLength = 0f;
-        private float maxBeamLength = 2200f;
+        //三段生命周期：过冲展开→维持→收束
+        internal const int ExpandTime = 4;
+        internal const int SustainTime = 26;
+        internal const int CollapseTime = 8;
+        internal const int TotalLife = ExpandTime + SustainTime + CollapseTime;
 
-        //视觉效果参数
-        private float pulseIntensity = 1f;
-        private float coreIntensity = 1f;
-        private float distortionStrength = 0.15f;
+        private const float MaxRayLength = 2200f;
+        /// <summary>碰撞核宽</summary>
+        private const float CoreWidth = 22f;
+        /// <summary>顶点条带半宽(给辉光余量)</summary>
+        private const float StripHalfWidth = 56f;
 
-        public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = MaxTrailLength;
-            ProjectileID.Sets.TrailingMode[Type] = 2;
-            ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2000;
-        }
+        public ref float AnchorOwner => ref Projectile.ai[0];
+        public ref float PhaseSeed => ref Projectile.ai[1];
+
+        private int Age;
+        private float widthMul;
+        private float rayLength;
+        private bool hitWall;
+
+        internal static readonly Color ColCore = new(242, 235, 255);
+        internal static readonly Color ColViolet = new(155, 107, 255);
+        internal static readonly Color ColCheren = new(56, 182, 255);
+
+        public override void SetStaticDefaults() => ProjectileID.Sets.DrawScreenCheckFluff[Type] = 2400;
 
         public override void SetDefaults() {
             Projectile.width = 16;
@@ -38,287 +48,222 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 300;
-            Projectile.tileCollide = true;
+            Projectile.timeLeft = TotalLife + 10;
+            Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.alpha = 0;
             Projectile.DamageType = DamageClass.Magic;
-            Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 2;
+            Projectile.localNPCHitCooldown = 8;
+        }
+
+        public override bool ShouldUpdatePosition() => false;
+
+        public override void AI() {
+            //首帧锁定朝向：velocity 只用来传方向
+            if (Age == 0) {
+                Projectile.rotation = Projectile.velocity.ToRotation();
+                Projectile.velocity = Vector2.Zero;
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.Item75 with { Volume = 0.7f, Pitch = 0.65f, MaxInstances = 5 }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item94 with { Volume = 0.45f, Pitch = -0.4f, MaxInstances = 5 }, Projectile.Center);
+                }
+            }
+
+            //R技能模式：起点跟随主人,角度保持
+            if (AnchorOwner >= 1f) {
+                Player owner = Main.player[Projectile.owner];
+                if (!owner.active || owner.dead) {
+                    Projectile.Kill();
+                    return;
+                }
+                Projectile.Center = owner.Center;
+            }
+
+            Age++;
+            if (Age >= TotalLife) {
+                Projectile.Kill();
+                return;
+            }
+
+            //展开过冲→维持→收束
+            widthMul = Age < ExpandTime
+                ? VaultUtils.EaseOutCubic(Age / (float)ExpandTime)
+                : Age > TotalLife - CollapseTime
+                    ? 1f - VaultUtils.EaseInQuad((Age - (TotalLife - CollapseTime)) / (float)CollapseTime)
+                    : 1f;
+
+            MeasureRayLength();
+
+            if (!VaultUtils.isServer) {
+                UpdateVisuals();
+            }
+        }
+
+        //沿射线步进至首个实心瓦片：碰撞与绘制共用终点
+        private void MeasureRayLength() {
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            float length = 0f;
+            hitWall = false;
+            while (length < MaxRayLength) {
+                if (Framing.GetTileSafely(Projectile.Center + dir * length).HasSolidTile()) {
+                    hitWall = true;
+                    break;
+                }
+                length += 8f;
+            }
+            rayLength = length;
+        }
+
+        private void UpdateVisuals() {
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+
+            Lighting.AddLight(Projectile.Center, ColViolet.ToVector3() * widthMul);
+            int lightSteps = (int)(rayLength / 60f);
+            for (int i = 1; i <= lightSteps; i++) {
+                Lighting.AddLight(Projectile.Center + dir * (i * 60f), ColViolet.ToVector3() * 0.7f * widthMul);
+            }
+
+            //沿束电离火花
+            if (Main.rand.NextBool(3)) {
+                float along = Main.rand.NextFloat(0.05f, 0.95f);
+                Vector2 pos = Projectile.Center + dir * (rayLength * along) + perp * Main.rand.NextFloat(-CoreWidth * 0.5f, CoreWidth * 0.5f);
+                PRTLoader.NewParticle<PRT_Spark>(pos, dir.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(2f, 5f),
+                    Color.Lerp(ColViolet, ColCore, Main.rand.NextFloat(0.3f, 0.8f)), Main.rand.NextFloat(0.5f, 1f))
+                    ?.Configure(false, Main.rand.Next(8, 14));
+            }
+
+            //命中端反溅电离弧
+            if (hitWall && Main.rand.NextBool(2)) {
+                Vector2 hitPos = Projectile.Center + dir * rayLength;
+                Vector2 splashVel = (-dir).RotatedBy(Main.rand.NextFloat(-1.1f, 1.1f)) * Main.rand.NextFloat(4f, 10f);
+                PRTLoader.NewParticle<PRT_GammaIonize>(hitPos, splashVel,
+                    Color.Lerp(ColViolet, ColCheren, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.8f))
+                    ?.Configure(Main.rand.Next(10, 18), Main.rand.NextFloat(MathHelper.TwoPi));
+            }
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
-            float p = 0f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * beamLength, beamWidth, ref p);
-        }
-
-        public override void AI() {
-            Projectile.rotation = Projectile.velocity.ToRotation();
-            Projectile.position -= Projectile.velocity;
-
-            //光束展开和收缩动画
-            float lifeRatio = 1f - Projectile.timeLeft / 300f;
-
-            if (lifeRatio < 0.1f) {
-                //快速展开阶段
-                float expandProgress = lifeRatio / 0.15f;
-                beamWidth = MathHelper.Lerp(4f, maxBeamWidth, VaultUtils.EaseOutCubic(expandProgress));
-                beamLength = MathHelper.Lerp(0f, maxBeamLength, VaultUtils.EaseOutQuad(expandProgress));
-                coreIntensity = MathHelper.Lerp(0.5f, 1.5f, expandProgress);
+            if (rayLength < 4f || widthMul < 0.05f) {
+                return false;
             }
-            else if (lifeRatio > 0.9f) {
-                //收缩消失阶段
-                float collapseProgress = (lifeRatio - 0.85f) / 0.15f;
-                beamWidth = MathHelper.Lerp(maxBeamWidth, 4f, VaultUtils.EaseInQuad(collapseProgress));
-                coreIntensity = MathHelper.Lerp(1.5f, 0f, collapseProgress);
-            }
-            else {
-                //稳定阶段
-                beamWidth = maxBeamWidth;
-                beamLength = maxBeamLength;
-
-                //脉动效果
-                float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.1f + 0.9f;
-                pulseIntensity = pulse;
-                coreIntensity = 1.2f + pulse * 0.3f;
-            }
-
-            //能量粒子特效
-            SpawnEnergyParticles();
-
-            //伽马射线辐射光 紫蓝
-            Lighting.AddLight(Projectile.Center,
-                0.6f * coreIntensity,
-                0.35f * coreIntensity,
-                1.2f * coreIntensity);
-
-            //音效
-            if (Projectile.timeLeft % 30 == 0) {
-                SoundEngine.PlaySound(SoundID.Item15 with {
-                    Volume = 0.3f,
-                    Pitch = 0.6f,
-                    SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest
-                }, Projectile.Center);
-            }
-
-            Vector2 toMus = ToMouse;
-            Projectile.Center = Owner.Center;
-            if (Projectile.localAI[0] == 0) {
-                Projectile.localAI[0] = Projectile.rotation - toMus.ToRotation();
-            }
-            Projectile.rotation = toMus.ToRotation() + Projectile.localAI[0];
-        }
-
-        private void SpawnEnergyParticles() {
-            if (VaultUtils.isServer || Projectile.timeLeft % 2 != 0) {
-                return;
-            }
-
-            //电离闪烁火花 沿光束散射
-            if (Main.rand.NextBool(4)) {
-                float along = Main.rand.NextFloat(0.1f, 0.9f);
-                Vector2 beamDir = Projectile.rotation.ToRotationVector2();
-                Vector2 sparkPos = Projectile.Center + beamDir * beamLength * along
-                    + beamDir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-beamWidth * 0.3f, beamWidth * 0.3f);
-                Vector2 sparkVel = beamDir.RotatedBy(Main.rand.NextFloat(-0.8f, 0.8f)) * Main.rand.NextFloat(1f, 3f);
-
-                PRTLoader.NewParticle<PRT_Spark>(sparkPos, sparkVel, Color.Lerp(new Color(180, 140, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)), Main.rand.NextFloat(0.6f, 1.1f)).Configure(false, Main.rand.Next(8, 15), Owner);
-            }
-
-            //高能射线流线 紫蓝
-            if (Main.rand.NextBool(5)) {
-                Vector2 lineStart = Projectile.Center + Main.rand.NextVector2Circular(beamWidth * 0.2f, beamWidth * 0.2f);
-                Vector2 lineVel = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
-
-                PRTLoader.NewParticle<PRT_Line>(lineStart, lineVel, Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.9f)).Configure(false, Main.rand.Next(10, 18));
-            }
+            float point = 0f;
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
+                Projectile.Center, Projectile.Center + dir * rayLength, CoreWidth * widthMul, ref point);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.numHits != 0) {
-                return;
-            }
-
-            //击中爆发效果
-            SoundEngine.PlaySound(SoundID.Item94 with {
-                Volume = 0.5f,
-                Pitch = 0.4f
-            }, Projectile.Center);
-
-            if (!VaultUtils.isServer) {
-                //电离散射 紫蓝短线段
-                for (int i = 0; i < 16; i++) {
-                    float angle = MathHelper.TwoPi * i / 16f + Main.rand.NextFloat(-0.15f, 0.15f);
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
-
-                    PRTLoader.NewParticle<PRT_GammaIonize>(target.Center + Main.rand.NextVector2Circular(8f, 8f), velocity, Color.Lerp(new Color(160, 120, 255), Color.White, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.4f, 1.0f)).Configure(Main.rand.Next(12, 22), Main.rand.NextFloat(MathHelper.TwoPi));
-                }
-
-                //伽马冲击残影 Flashimpact
-                for (int i = 0; i < 6; i++) {
-                    float angle = MathHelper.TwoPi * i / 6f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
-
-                    PRTLoader.NewParticle<PRT_GammaImpact>(target.Center, velocity, Color.Lerp(new Color(140, 100, 255), new Color(80, 180, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.3f, 0.8f)).Configure(Main.rand.Next(15, 28), Main.rand.NextFloat(-0.2f, 0.2f), false, 0.3f);
-                }
-
-                //辐射光线 命中点向外高速光束
-                float rand = Main.rand.NextFloat(MathHelper.TwoPi);
+            if (!VaultUtils.isServer && Projectile.numHits <= 2) {
+                //电离散射
                 for (int i = 0; i < 10; i++) {
-                    float angle = MathHelper.TwoPi * i / 10f + rand;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(20f, 35f);
-
-                    PRTLoader.NewParticle<PRT_Light>(
-                        target.Center,
-                        velocity,
-                        Color.Lerp(new Color(160, 130, 255), new Color(200, 200, 255), Main.rand.NextFloat()),
-                        Main.rand.NextFloat(0.6f, 1.2f)
-                    ).Configure(Main.rand.Next(18, 32), opacity: 1.5f, squishStrenght: 2f, hueShift: 0.015f);
+                    float ang = MathHelper.TwoPi * i / 10f + Main.rand.NextFloat(-0.2f, 0.2f);
+                    PRTLoader.NewParticle<PRT_GammaIonize>(target.Center + Main.rand.NextVector2Circular(8f, 8f),
+                        ang.ToRotationVector2() * Main.rand.NextFloat(4f, 10f),
+                        Color.Lerp(ColViolet, ColCore, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.4f, 0.9f))
+                        ?.Configure(Main.rand.Next(10, 20), Main.rand.NextFloat(MathHelper.TwoPi));
+                }
+                //辐射光斑
+                for (int i = 0; i < 6; i++) {
+                    PRTLoader.NewParticle<PRT_Light>(target.Center, Main.rand.NextVector2Circular(18f, 18f),
+                        Color.Lerp(ColViolet, ColCheren, Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1f))
+                        ?.Configure(Main.rand.Next(16, 28), opacity: 1.4f, squishStrenght: 2f, hueShift: 0.02f);
                 }
             }
 
             //穿透伤害递减
-            Projectile.damage = (int)(Projectile.damage * 0.8f);
+            Projectile.damage = (int)(Projectile.damage * 0.85f);
         }
 
-        public override void OnKill(int timeLeft) {
-            //伽马射线消散效果
-            if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item62 with {
-                    Volume = 0.5f,
-                    Pitch = 0.5f
-                }, Projectile.Center);
+        public override bool PreDraw(ref Color lightColor) => false;
 
-                //辐射残留电离线段 放射散开
-                for (int i = 0; i < 18; i++) {
-                    float angle = MathHelper.TwoPi * i / 18f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 11f);
-
-                    PRTLoader.NewParticle<PRT_GammaIonize>(Projectile.Center, velocity, Color.Lerp(new Color(140, 100, 255), new Color(80, 160, 255), Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 0.9f)).Configure(Main.rand.Next(15, 30), Main.rand.NextFloat(MathHelper.TwoPi));
-                }
-
-                //伽马冲击残影
-                for (int i = 0; i < 10; i++) {
-                    float angle = MathHelper.TwoPi * i / 10f;
-                    Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
-
-                    var burst = PRTLoader.NewParticle<PRT_GammaImpact>(Projectile.Center, velocity, Color.Lerp(new Color(160, 130, 255), Color.White, Main.rand.NextFloat(0.3f, 0.7f)), Main.rand.NextFloat(0.4f, 0.7f));
-                    burst.Configure(Main.rand.Next(20, 35), Main.rand.NextFloat(-0.3f, 0.3f), false, 0.25f);
-                    burst.inOwner = Owner.whoAmI;
-                }
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (VaultUtils.isServer || widthMul < 0.03f || rayLength < 8f) {
+                return;
             }
-        }
-
-        public override Color? GetAlpha(Color lightColor) {
-            //伽马射线动态紫蓝色变化
-            float colorShift = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f) * 0.5f + 0.5f;
-            return Color.Lerp(new Color(140, 100, 255), new Color(220, 200, 255), colorShift * coreIntensity);
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            DrawGammaBeam();
-            return false;
-        }
-
-        private void DrawGammaBeam() {
-            if (VaultUtils.isServer) {
+            Effect effect = EffectLoader.AriaGammaRay?.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (effect == null || noise == null) {
                 return;
             }
 
-            SpriteBatch sb = Main.spriteBatch;
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
 
-            //准备渲染
-            sb.End();
-            sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            //撞墙时条带向墙内延伸容纳热球
+            float ballExt = hitWall ? StripHalfWidth * 0.9f : 0f;
+            float stripLen = rayLength + ballExt;
+            //枪口向后 bleed 藏起始硬边
+            Vector2 origin = Projectile.Center - dir * 10f;
+            Vector2 tip = Projectile.Center + dir * stripLen;
+            float halfW = StripHalfWidth * (0.45f + 0.55f * widthMul);
 
-            Effect shader = Common.EffectLoader.GammaRayBeam.Value;
+            var verts = new VertexPositionColorTexture[4];
+            verts[0] = new VertexPositionColorTexture((origin + perp * halfW).ToVector3(), Color.White, new Vector2(0f, 0f));
+            verts[1] = new VertexPositionColorTexture((origin - perp * halfW).ToVector3(), Color.White, new Vector2(0f, 1f));
+            verts[2] = new VertexPositionColorTexture((tip + perp * halfW).ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[3] = new VertexPositionColorTexture((tip - perp * halfW).ToVector3(), Color.White, new Vector2(1f, 1f));
 
-            //设置着色器参数
-            shader.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
-            shader.Parameters["uOpacity"]?.SetValue(1f - Projectile.alpha / 255f);
-            shader.Parameters["uIntensity"]?.SetValue(pulseIntensity);
-            shader.Parameters["uBeamWidth"]?.SetValue(beamWidth);
-            shader.Parameters["uBeamLength"]?.SetValue(beamLength);
-            shader.Parameters["uPulseSpeed"]?.SetValue(5f);
-            shader.Parameters["uDistortionStrength"]?.SetValue(distortionStrength);
-            shader.Parameters["uCoreIntensity"]?.SetValue(coreIntensity);
+            GraphicsDevice device = Main.graphics.GraphicsDevice;
+            BlendState origBlend = device.BlendState;
+            RasterizerState origRaster = device.RasterizerState;
+            device.BlendState = BlendState.Additive;
+            device.RasterizerState = RasterizerState.CullNone;
 
-            //设置纹理
-            shader.Parameters["uImage1"]?.SetValue(CWRAsset.Extra_193.Value); //噪声纹理
-            shader.Parameters["uImage2"]?.SetValue(CWRAsset.StarTexture.Value); //星光纹理
-            shader.Parameters["uImage3"]?.SetValue(CWRAsset.Placeholder_White.Value); //光束纹理
+            float overshoot = Age < ExpandTime + 2 ? 1f - Age / (float)(ExpandTime + 2) : 0f;
 
-            shader.CurrentTechnique.Passes["GammaRayPass"].Apply();
+            effect.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            effect.Parameters["fadeAlpha"]?.SetValue(widthMul);
+            effect.Parameters["uOvershoot"]?.SetValue(overshoot);
+            effect.Parameters["uHitWall"]?.SetValue(hitWall ? 1f : 0f);
+            effect.Parameters["uLengthPx"]?.SetValue(rayLength + 10f);
+            effect.Parameters["uStripLenPx"]?.SetValue(stripLen + 10f);
+            effect.Parameters["uHalfWidthPx"]?.SetValue(halfW);
+            effect.Parameters["seed"]?.SetValue((Projectile.whoAmI * 0.137f + PhaseSeed) % 1f);
+            effect.Parameters["uNoiseTex"]?.SetValue(noise);
 
-            //绘制主光束
-            Texture2D beamTexture = CWRAsset.Placeholder_White.Value;
-            Vector2 beamOrigin = new Vector2(0, beamTexture.Height / 2f);
-            Vector2 beamScale = new Vector2(beamLength / beamTexture.Width, beamWidth / beamTexture.Height);
-
-            sb.Draw(
-                beamTexture,
-                Projectile.Center - Main.screenPosition,
-                null,
-                new Color(180, 140, 255) * (1f - Projectile.alpha / 255f),
-                Projectile.rotation,
-                beamOrigin,
-                beamScale,
-                SpriteEffects.None,
-                0f
-            );
-
-            //绘制核心高光层
-            DrawCoreHighlight(sb);
-
-            //恢复默认渲染状态
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        private void DrawCoreHighlight(SpriteBatch sb) {
-            //绘制伽马核心发光层 紫蓝白
-            Texture2D glowTexture = CWRAsset.StarTexture.Value;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-
-            for (int i = 0; i < 4; i++) {
-                float scale = (beamWidth / glowTexture.Width) * (1.3f - i * 0.25f) * coreIntensity;
-                float a = (1f - i * 0.25f) * pulseIntensity;
-
-                //核心白紫 外层蓝紫
-                Color glowColor = Color.Lerp(
-                    new Color(220, 190, 255),
-                    new Color(100, 60, 220), i / 3f) * a;
-
-                sb.Draw(
-                    glowTexture,
-                    drawPos,
-                    null,
-                    glowColor,
-                    Projectile.rotation,
-                    new Vector2(0, glowTexture.Height / 2f),
-                    new Vector2(beamLength / glowTexture.Width * 0.85f, scale),
-                    SpriteEffects.None,
-                    0f
-                );
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
             }
 
-            //切伦科夫辐射光晕 薄蓝光
-            float cherenkovAlpha = pulseIntensity * 0.3f;
-            float cherenkovScale = (beamWidth / glowTexture.Width) * 1.8f * coreIntensity;
-            sb.Draw(
-                glowTexture,
-                drawPos,
-                null,
-                new Color(80, 160, 255) * cherenkovAlpha,
-                Projectile.rotation,
-                new Vector2(0, glowTexture.Height / 2f),
-                new Vector2(beamLength / glowTexture.Width * 0.9f, cherenkovScale),
-                SpriteEffects.None,
-                0f
-            );
+            device.BlendState = origBlend;
+            device.RasterizerState = origRaster;
+        }
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            if (widthMul < 0.03f) {
+                return;
+            }
+            Texture2D glow = CWRAsset.DiffusionCircle?.Value;
+            Texture2D star = CWRAsset.StarTexture?.Value;
+            if (glow == null || star == null) {
+                return;
+            }
+
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            Vector2 muzzle = Projectile.Center - Main.screenPosition;
+            float flicker = 1f + 0.12f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 46f + PhaseSeed * 9f);
+
+            //枪口聚焦光球 + 星芒
+            Main.EntitySpriteDraw(glow, muzzle, null, ColViolet * (0.85f * widthMul), 0f, glow.Size() / 2f,
+                0.5f * widthMul * flicker, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(glow, muzzle, null, ColCore * (0.6f * widthMul), 0f, glow.Size() / 2f,
+                0.28f * widthMul, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(star, muzzle, null, ColCore * (0.9f * widthMul), Main.GlobalTimeWrappedHourly * 4f,
+                star.Size() / 2f, 0.42f * widthMul * flicker, SpriteEffects.None, 0);
+
+            //命中端冲击辉光
+            if (hitWall) {
+                Vector2 hitPos = Projectile.Center + dir * rayLength - Main.screenPosition;
+                Main.EntitySpriteDraw(glow, hitPos, null, ColCheren * (0.8f * widthMul), 0f, glow.Size() / 2f,
+                    0.62f * widthMul * flicker, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, hitPos, null, ColCore * (0.65f * widthMul), 0f, glow.Size() / 2f,
+                    0.34f * widthMul, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(star, hitPos, null, ColCore * (0.8f * widthMul), -Main.GlobalTimeWrappedHourly * 5f,
+                    star.Size() / 2f, 0.5f * widthMul * flicker, SpriteEffects.None, 0);
+            }
         }
     }
 }
