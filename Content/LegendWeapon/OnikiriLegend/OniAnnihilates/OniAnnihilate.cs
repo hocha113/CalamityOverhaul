@@ -353,23 +353,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 return;
             }
 
-            //残像先画（垫在主弧身后，各自错帧跟进），复笔更干
-            OAR.InkParams ghostInk = ComposeGhostInk();
-            int ghostBT = timer - 4;
-            if (ghostBT > 0) {
-                OFR.BladeState ghostBState = OFR.ComputeState(in ghostBDef, ghostBT);
-                if (ghostBState.Opacity > 0.012f) {
-                    OAR.DrawBladeLayers(device, fx, in ghostBDef, in ghostBState, Projectile.Center, in ghostInk);
-                }
-            }
-            int ghostAT = timer - 2;
-            if (ghostAT > 0) {
-                OFR.BladeState ghostAState = OFR.ComputeState(in ghostADef, ghostAT);
-                if (ghostAState.Opacity > 0.012f) {
-                    OAR.DrawBladeLayers(device, fx, in ghostADef, in ghostAState, Projectile.Center, in ghostInk);
-                }
-            }
-
             OFR.BladeState arcState = OFR.ComputeState(in arcDef, timer);
             if (arcState.Opacity > 0.012f) {
                 OAR.InkParams ink = ComposeInk();
