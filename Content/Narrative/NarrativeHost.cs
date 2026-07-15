@@ -10,7 +10,7 @@ using CalamityOverhaul.Content.Scenarios.Draedon.Quest;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
 using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
-using CalamityOverhaul.Content.Scenarios.Himaya;
+using CalamityOverhaul.Content.Scenarios.Himayo;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.Shepel;
 using CalamityOverhaul.Content.Scenarios.SupCal;

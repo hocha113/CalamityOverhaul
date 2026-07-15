@@ -1,9 +1,9 @@
 ﻿using CalamityOverhaul.Content.Narrative.Presentation;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace CalamityOverhaul.Content.Scenarios.Himaya
+namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
-    internal class HimayaFullBodyPortrait : FullBodyPortraitBase
+    internal class HimayoFullBodyPortrait : FullBodyPortraitBase
     {
         public override string PortraitKey => "HimayaFullBody";
 

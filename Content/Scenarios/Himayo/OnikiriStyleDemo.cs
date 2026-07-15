@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.Himaya
+namespace CalamityOverhaul.Content.Scenarios.Himayo
 {
     /// <summary>
     /// 鬼切叙事皮肤演示场景(调试用):跑一遍对话/换行/换说话人/选择(含禁用项)/奖励弹窗,
