@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Common
     [VaultLoaden(CWRConstant.Asset + "Sounds")]
     public static class CWRSound
     {
-        public static SoundStyle loadTheRounds;
+        public static SoundStyle LoadTheRounds;
         public static SoundStyle MeatySlash;
         public static SoundStyle SwiftSlice;
         public static SoundStyle Pecharge;
@@ -107,5 +107,8 @@ namespace CalamityOverhaul.Common
         public static SoundStyle InvasionPastPosten;
         public static SoundStyle ChipSet;
         public static SoundStyle BelCanto;
+        public static SoundStyle KatanaSprint;
+        public static SoundStyle KatanaA;
+        public static SoundStyle KatanaB;
     }
 }

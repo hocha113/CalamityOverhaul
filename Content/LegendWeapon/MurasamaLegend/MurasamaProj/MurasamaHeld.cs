@@ -236,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
                 Projectile.rotation = ToMouseA + MathHelper.ToRadians(75 + (DirSign > 0 ? 20 : 0));
                 if (RisingDragon < MurasamaOverride.GetOnRDCD(Item)) {
                     if (RisingDragon == MurasamaOverride.GetOnRDCD(Item) - 1) {
-                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(CWRSound.LoadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                     }
                     RisingDragon += 3;
                     noAttenuationTime = 10;
@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj
 
             if (triggerKeyDown && Owner.ownedProjectileCounts[breakOutType] == 0 && noHasDownSkillProj) {//扳机键被按下，并且升龙冷却已经完成，那么将刀发射出去
                 if (nolegendStart && RisingDragon >= MurasamaOverride.GetOnRDCD(Item)) {
-                    SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
+                    SoundEngine.PlaySound(CWRSound.LoadTheRounds with { Pitch = 0.15f, Volume = 0.3f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.Item38 with { Pitch = 0.1f, Volume = 0.5f }, Projectile.Center);
                     if (MurasamaOverride.NameIsVergil(Owner) && Main.rand.NextBool()) {
                         SoundStyle sound = Main.rand.NextBool() ? CWRSound.V_Kengms : CWRSound.V_Heen;

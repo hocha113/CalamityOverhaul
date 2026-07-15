@@ -187,17 +187,17 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
 
                     if (charge > 8 && level1) {
                         NewText(NeutronBow.Lang1.Value, 0);
-                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.3f, Volume = 0.6f }, Projectile.Center);
+                        SoundEngine.PlaySound(CWRSound.LoadTheRounds with { Pitch = -0.3f, Volume = 0.6f }, Projectile.Center);
                         level1 = false;
                     }
                     if (charge > 30 && level2) {
                         NewText(NeutronBow.Lang2.Value, 60);
-                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
+                        SoundEngine.PlaySound(CWRSound.LoadTheRounds with { Pitch = -0.2f, Volume = 0.7f }, Projectile.Center);
                         level2 = false;
                     }
                     if (charge > 60 && level3) {
                         NewText(NeutronBow.Lang3.Value, 120);
-                        SoundEngine.PlaySound(CWRSound.loadTheRounds with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
+                        SoundEngine.PlaySound(CWRSound.LoadTheRounds with { Pitch = -0.1f, Volume = 0.8f }, Projectile.Center);
                         level3 = false;
                         charge = MaxCharge;
                     }
