@@ -664,15 +664,15 @@ OnikiriText: {
 		Ghost3Origin: 花轿在门前停了七夜。第七夜，轿帘自己掀开了——别数她的手指
 		Ghost3Power: 「迎亲」——伤过你的，都得替她走完余下的路；血落成红毯
 		Ghost4Name: 井中鸣
-		Ghost5Name: 替死鬼
-		Ghost5Origin: 都说横死的要找替身才能走。它跟了你这么多年，却一次也不肯换——你的死，它先替着，账记在这本簿上
-		Ghost5Power: 「替死」——夺命的那一击落下时，死的是它，不是你。它不要谢，它记账
-		Ghost6Name: 无头鬼影
-		Ghost6Origin: 人皮纸上按了手印，这桩交易就算成了：它住进你的影子里。灯下别回头细看——它的头，还没找回来
-		Ghost6Power: 「夺影」——你的影子归它，你的重量也归它；夜里赶路，脚不沾地
-		Ghost7Name: 鬼手
-		Ghost7Origin: 高空的客舱里，打盹的人脖颈上多出五道青痕。后来它被一枚假棺材钉钉住——钉得住手，钉不住它想攥的东西
-		Ghost7Power: 「攥」——它从你袖口探出去，攥住什么，什么就动弹不得
+		Ghost5Name: 替死簿
+		Ghost5Origin: 那本泛黄的硬皮册子里，有一页死死粘连着你的生辰
+		Ghost5Power: 「替死」致命的袭击或诅咒降临的瞬间，伤害会被强制转移
+		Ghost6Name: 无头人影
+		Ghost6Origin: 你脚下的黑影便有些坐立不安，在灯火摇晃的夜里，你会发现那道影子的肩膀以上空无一物
+		Ghost6Power: 「拼肢」拆卸敌人的肢体，也可以拼接自身断裂的躯体，用于恢复
+		Ghost7Name: 焦黑枯手
+		Ghost7Origin: 一截焦黑枯瘦的恐怖手臂
+		Ghost7Power: 「攥」被掐住的目标会被压制灵异，并限制行动
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 	}
