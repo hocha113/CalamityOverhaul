@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.Narrative;
+﻿using CalamityOverhaul.Content.Narrative;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace CalamityOverhaul.Content.Scenarios.Onikiri
+namespace CalamityOverhaul.Content.Scenarios.Himaya
 {
     /// <summary>
     /// 鬼切叙事皮肤演示场景(调试用):跑一遍对话/换行/换说话人/选择(含禁用项)/奖励弹窗,
