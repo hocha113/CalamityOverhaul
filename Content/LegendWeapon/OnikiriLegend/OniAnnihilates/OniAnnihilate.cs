@@ -45,8 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private const int TongueCount = 10;
 
         private OFR.BladeDef arcDef;      //主弧：血墨挥毫的本体
-        private OFR.BladeDef ghostADef;   //淡墨残像 A（延迟 2 帧）
-        private OFR.BladeDef ghostBDef;   //淡墨残像 B（延迟 4 帧）
+
         private bool initialized;
         private int timer;
 
