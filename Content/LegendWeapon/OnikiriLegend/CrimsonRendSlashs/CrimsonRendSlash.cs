@@ -684,11 +684,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             //锯齿冲击形垫底
-            if (bt < 7f && OnikiriAssets.HitJagged01?.Value is Texture2D jag) {
-                float jA = MathF.Pow(1f - bt / 7f, 2f) * 0.5f;
-                sb.Draw(jag, impact, null, new Color(255, 80, 55) * jA, lastImpactAim + MathHelper.Pi
-                    , jag.Size() * 0.5f, (1.8f + easeOut * 0.6f) * sizeMul, SpriteEffects.None, 0);
-            }
+            //if (bt < 7f && OnikiriAssets.HitJagged01?.Value is Texture2D jag) {
+            //    float jA = MathF.Pow(1f - bt / 7f, 2f) * 0.5f;
+            //    sb.Draw(jag, impact, null, new Color(255, 80, 55) * jA, lastImpactAim + MathHelper.Pi
+            //        , jag.Size() * 0.5f, (1.8f + easeOut * 0.6f) * sizeMul, SpriteEffects.None, 0);
+            //}
 
             //速度线：随机截条从冲击点向后扫出
             if (OnikiriAssets.SpeedLines01?.Value is Texture2D lines) {

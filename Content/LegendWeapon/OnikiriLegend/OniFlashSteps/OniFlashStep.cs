@@ -105,6 +105,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         public override bool ShouldUpdatePosition() => false;
 
+        private Vector2 GetCenter() => Owner.Center + dashDir * 100;
+
         private void Initialize() {
             initialized = true;
             dashDir = DashAngle.ToRotationVector2();
@@ -113,18 +115,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             plannedDashFrames = Math.Max(2, (int)MathF.Ceiling(Distance / DashSpeed));
             Projectile.timeLeft = JudgmentFrame + RetractDelay + RetractFrames + 30;
 
-            path.Add(Owner.Center);
+            path.Add(GetCenter());
             if (Owner.whoAmI == Main.myPlayer) {
                 Owner.RemoveAllGrapplingHooks();
             }
 
             //出发即巅峰：布帛撕裂 + 风切 + 低太鼓，没有任何充能音
-            SoundEngine.PlaySound(SoundID.Grass with { Pitch = -0.78f, Volume = 0.90f }, Owner.Center);
-            SoundEngine.PlaySound(CWRSound.SwiftSlice with { Pitch = -0.05f, Volume = 0.80f }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.72f, Volume = 0.62f }, Owner.Center);
+            SoundEngine.PlaySound(SoundID.Grass with { Pitch = -0.78f, Volume = 0.90f }, GetCenter());
+            SoundEngine.PlaySound(CWRSound.SwiftSlice with { Pitch = -0.05f, Volume = 0.80f }, GetCenter());
+            SoundEngine.PlaySound(CWRSound.KatanaSprint with { Pitch = -0.72f, Volume = 0.62f }, GetCenter());
             Owner.CWR().GetScreenShake(4f);
 
             SpawnOriginInkBurst();
+
+            //只设置冲刺玩家的镜头，不要把别的玩家的镜头也设置了
+            if (Projectile.IsOwnedByLocalPlayer() && CWRServerConfig.Instance.LensEasing) {
+                Main.SetCameraLerp(0.12f, 20);
+            }
         }
 
         public override void AI() {
@@ -168,31 +175,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>冲刺帧：~150px 定距推进，撞墙提前止步；位移、标记、姿态、无敌帧</summary>
         private void DashFrame() {
-            Vector2 prevCenter = Owner.Center;
+            Vector2 prevCenter = GetCenter();
             Vector2 step = dashDir * MathF.Min(DashSpeed, Distance - traveled);
-            Vector2 allowed = Collision.TileCollision(Owner.position, step
-                , Owner.width, Owner.height, fallThrough: true, fall2: true, (int)Owner.gravDir);
+            //Vector2 allowed = Collision.TileCollision(Owner.position, step
+            //    , Owner.width, Owner.height, fallThrough: true, fall2: true, (int)Owner.gravDir);
 
-            Owner.position += allowed;
+            Owner.position += step;
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
-            traveled += allowed.Length();
+            traveled += step.Length();
 
             //撞墙帧不塞重合点，避免流带出现退化段
-            if (Vector2.DistanceSquared(path[^1], Owner.Center) > 64f) {
-                path.Add(Owner.Center);
+            if (Vector2.DistanceSquared(path[^1], GetCenter()) > 64f) {
+                path.Add(GetCenter());
             }
             Owner.GivePlayerImmuneState(10);
             HoldPose();
 
-            MarkSweep(prevCenter, Owner.Center);
+            MarkSweep(prevCenter, GetCenter());
 
             if (!Main.dedServ) {
-                SpawnDashWisps(prevCenter, Owner.Center);
+                SpawnDashWisps(prevCenter, GetCenter());
             }
 
             //撞墙（本帧几乎没走动）或走满：跳到刹车段，不为自己的日程表干等
-            if (allowed.LengthSquared() < DashSpeed * DashSpeed * 0.12f || traveled >= Distance - 1f) {
+            if (step.LengthSquared() < DashSpeed * DashSpeed * 0.12f || traveled >= Distance - 1f) {
                 timer = Math.Max(timer, plannedDashFrames);
             }
         }
@@ -208,8 +215,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.fallStart = (int)(Owner.position.Y / 16f);
 
             //过冲帧记录头端；回拉帧不回撤墨迹——身体从墨里向后挣出，墨保持前伸
-            if (bt == 1 && Vector2.DistanceSquared(path[^1], Owner.Center) > 16f) {
-                path.Add(Owner.Center);
+            if (bt == 1 && Vector2.DistanceSquared(path[^1], GetCenter()) > 16f) {
+                path.Add(GetCenter());
             }
             Owner.GivePlayerImmuneState(8);
             HoldPose();
@@ -218,12 +225,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 stopFrame = timer;
                 headExt = 22f * sizeMul;
                 Owner.CWR().GetScreenShake(2.2f);
-                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.25f, Volume = 0.40f }, Owner.Center);
 
                 if (!Main.dedServ) {
                     //刹停点几缕墨屑落定
                     for (int i = 0; i < 4; i++) {
-                        PRTLoader.NewParticle<PRT_CrimsonSmoke>(Owner.Center + Main.rand.NextVector2Circular(18f, 24f)
+                        PRTLoader.NewParticle<PRT_CrimsonSmoke>(GetCenter() + Main.rand.NextVector2Circular(18f, 24f)
                             , dashDir * Main.rand.NextFloat(0.6f, 1.8f) + Main.rand.NextVector2Circular(0.5f, 0.5f)
                             , Color.White, Main.rand.NextFloat(0.05f, 0.09f) * sizeMul)
                             ?.Configure(Main.rand.Next(16, 26), new Color(120, 26, 34), new Color(30, 14, 22));
@@ -297,9 +303,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (marked.Count == 0) {
                 return;   //挥空不响鞘：死寂本身就是收势
             }
-            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.10f, Volume = 0.55f }, Owner.Center);
-            SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.35f, Volume = 0.22f }, Owner.Center);
-            CrimsonImpactFX.PushImpact(Owner.Center, 0.02f);
+            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.10f, Volume = 0.55f }, GetCenter());
+            SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.35f, Volume = 0.22f }, GetCenter());
+            CrimsonImpactFX.PushImpact(GetCenter(), 0.02f);
             Owner.CWR().GetScreenShake(3f);
         }
 
@@ -336,11 +342,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         /// <summary>出发点墨爆：黑红墨浪 + 碎晶 + 一帧白闪——"人从墨里挣脱出去"</summary>
         private void SpawnOriginInkBurst() {
-            CrimsonImpactFX.PushImpact(Owner.Center, 0.02f);
+            CrimsonImpactFX.PushImpact(GetCenter(), 0.02f);
             if (Main.dedServ) {
                 return;
             }
-            Vector2 origin = Owner.Center;
+            Vector2 origin = GetCenter();
 
             for (int i = 0; i < 10; i++) {
                 Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.2f, 3.4f)

@@ -164,7 +164,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.15f, Volume = 0.95f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.35f, Volume = 1f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.50f, Volume = 0.80f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.45f, Volume = 0.90f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.KatanaB, Projectile.Center);
 
             if (Main.dedServ) {
                 return;

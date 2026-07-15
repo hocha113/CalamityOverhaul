@@ -168,7 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
                 Vector2 center = Projectile.Center + Main.rand.NextVector2Circular(70f, 55f);
                 float roll = Aim + RingBeats[i].RollOff + Main.rand.NextFloat(-0.15f, 0.15f);
                 OniFinaleRing.Fire(Owner, center, roll, escalate, RingBeats[i].Flip
-                    , ringDamage, Projectile.knockBack, SizeMul * (1f + 0.18f * escalate)
+                    , ringDamage, Projectile.knockBack, SizeMul * (1f + 0.18f * escalate) * 1.12f
                     , Projectile.GetSource_FromAI());
             }
 

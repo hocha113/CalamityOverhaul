@@ -196,9 +196,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private void DetonateFx() {
             //爆响复合：低爆垫底、布帛撕裂、高频刀鸣、太鼓落点
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.30f, Volume = 1f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.50f, Volume = 0.85f }, Projectile.Center);
+            //SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.50f, Volume = 0.85f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.50f, Volume = 0.90f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.45f, Volume = 0.85f }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.KatanaA, Projectile.Center);
 
             if (Main.dedServ) {
                 return;
@@ -299,8 +299,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //单体顿帧：命中重量最大化（不是世界时停）
-            target.CWR().TimeFrozenTick = 10;
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
 
             if (Main.dedServ) {
