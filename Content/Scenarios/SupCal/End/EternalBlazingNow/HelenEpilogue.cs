@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
+using CalamityOverhaul.Content.Narrative.Common;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using Terraria;
@@ -36,9 +37,9 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         public static void ResetWorldState() => SpawnPending = false;
     }
 
-    internal sealed class HelenEpilogueNPC : GlobalNPC
+    internal sealed class HelenEpilogueNPC : DeathTrackingNPC
     {
-        public override void OnKill(NPC npc) {
+        public override void OnNPCDeath(NPC npc) {
             if (npc.type != CWRID.NPC_PrimordialWyrmHead || !HelenEpilogue.SpawnPending) {
                 return;
             }

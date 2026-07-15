@@ -7,7 +7,8 @@ namespace CalamityOverhaul.Content.Narrative.Common
     {
         public override bool InstancePerEntity => true;
         private bool _deathHandled = false;
-        public override void HitEffect(NPC npc, NPC.HitInfo hit) {
+        public sealed override void OnKill(NPC npc) { }
+        public sealed override void HitEffect(NPC npc, NPC.HitInfo hit) {
             if (_deathHandled) {
                 return;
             }
