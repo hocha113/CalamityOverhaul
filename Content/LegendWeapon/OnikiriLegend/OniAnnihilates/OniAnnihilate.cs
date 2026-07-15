@@ -108,12 +108,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             initialized = true;
             float s = SizeMul;
             float seed = Projectile.identity * 0.6180339887f % 1f;
-            float flip = Projectile.identity % 2 == 0 ? 1f : -1f;
 
             float cos = MathF.Cos(CutAngle);
-            if (MathF.Abs(cos) >= 0.05f) {
-                Owner.ChangeDir(cos > 0f ? 1 : -1);
-            }
+            int facingDir = MathF.Abs(cos) < 0.05f ? Owner.direction : MathF.Sign(cos);
+            Owner.ChangeDir(facingDir);
+            float flip = facingDir;
 
             //主弧：quad 中心 = 玩家（曲率中心在人身上，读作"从人挥出去"），
             //Rot = 瞄准角 → 弓背朝瞄准方向鼓出；两帧揭开，真·一闪
@@ -129,33 +128,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
                 RazorTailWiden = 0.85f,
                 Palette = OFR.BladePalette.Escalate(0.55f),
             };
-            //淡墨残像 A：滚转略落后、略小、更淡 —— 复笔的第一道
-            ghostADef = new OFR.BladeDef {
-                SweepFrames = 3, Life = Lifetime - 6,
-                ErodeStart = 8, ErodeFrames = 26,
-                ColorShiftDelay = 8, ColorShiftFrames = 20,
-                Mode = 0f, Rot = CutAngle - flip * 0.16f, Span = 3.60f,
-                Thick = 0.44f,
-                HalfX = ArcHalfX * 0.90f * s, HalfY = ArcHalfY * 0.90f * s, Flip = flip,
-                Opacity = 0.55f, FrontGlow = 1.0f, Seed = seed + 0.61f,
-                TailErode = 0.50f, FlashPower = 0.4f,
-                RazorTailWiden = 0.60f,
-                Palette = OFR.BladePalette.Escalate(0.30f),
-            };
-            //淡墨残像 B：更落后、更小、几乎只剩墨影 —— 复笔的第二道
-            ghostBDef = new OFR.BladeDef {
-                SweepFrames = 3, Life = Lifetime - 10,
-                ErodeStart = 6, ErodeFrames = 22,
-                ColorShiftDelay = 6, ColorShiftFrames = 16,
-                Mode = 0f, Rot = CutAngle - flip * 0.30f, Span = 3.60f,
-                Thick = 0.48f,
-                HalfX = ArcHalfX * 0.80f * s, HalfY = ArcHalfY * 0.80f * s, Flip = flip,
-                Opacity = 0.35f, FrontGlow = 0.6f, Seed = seed + 0.83f,
-                TailErode = 0.60f, FlashPower = 0.2f,
-                RazorTailWiden = 0.45f,
-                Palette = OFR.BladePalette.Escalate(0.10f),
-            };
-
+            
             //罡气舌：黄金角均布 + 随机抖动，长短宽窄各异 —— 泼出去的墨不整齐
             const float GoldenAngle = 2.39996323f;
             for (int i = 0; i < TongueCount; i++) {
