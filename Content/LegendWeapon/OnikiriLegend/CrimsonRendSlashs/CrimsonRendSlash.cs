@@ -300,6 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     SoundEngine.PlaySound(CWRSound.KatanaSwing with {
                         Pitch = a.Beat == 3 ? 0.78f : 0.60f,
                         Volume = a.Beat == 3 ? 0.70f : 0.90f,
+                        MaxInstances = 2
                     }, Projectile.Center);
                 }
 
