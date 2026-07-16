@@ -137,6 +137,11 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
         public bool FirstSHPCIntroCompleted;
     }
 
+    public sealed class HimayoStoryData : DataModule
+    {
+        public bool FirstMet;
+    }
+
     public sealed class ShepelGiftStoryData : DataModule
     {
         public bool EyeOfCthulhuGift;

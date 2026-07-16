@@ -101,6 +101,16 @@ namespace CalamityOverhaul.Content.Narrative
         public static Texture2D Shepel_Sleep = null;
         [VaultLoaden(CWRConstant.ADV + "Shepel/")]
         public static Texture2D Shepel_Smirk = null;
+        [VaultLoaden(CWRConstant.ADV + "Himayo/")]
+        public static Texture2D Himayo = null;
+        [VaultLoaden(CWRConstant.ADV + "Himayo/")]
+        public static Texture2D Himayo_doubt = null;
+        [VaultLoaden(CWRConstant.ADV + "Himayo/")]
+        public static Texture2D Himayo_grin = null;
+        [VaultLoaden(CWRConstant.ADV + "Himayo/")]
+        public static Texture2D Himayo_forsmile = null;
+        [VaultLoaden(CWRConstant.ADV + "Himayo/")]
+        public static Texture2D Himayo_ruminate = null;
         [VaultLoaden(CWRConstant.ADV + "VoidColony/")]
         public static Texture2D Glitchwraith = null;
     }

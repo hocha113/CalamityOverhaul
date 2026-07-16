@@ -141,9 +141,8 @@ namespace CalamityOverhaul.Content.Narrative
                 .Portrait(() => ADVAsset.Tzeentch)
                 .AsSilhouette();
 
-            //鬼切伴侣角色,立绘待接入,当前仅显示名(演示场景 OnikiriStyleDemo 使用)
             PortraitRegistry.Register(NarrativeIds.Mayo)
-                .Name(() => OnikiriStyleDemo.MayoName.Value);
+                .Name(() => FirstMetHimayo.SpeakerName.Value);
         }
 
         private static void RegisterBlockers() {
