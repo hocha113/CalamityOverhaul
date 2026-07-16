@@ -170,7 +170,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.30f, Volume = 1f }, Projectile.Center);
             //SoundEngine.PlaySound(SoundID.Item122 with { Pitch = -0.50f, Volume = 0.85f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.50f, Volume = 0.90f }, Projectile.Center);
-            SoundEngine.PlaySound(CWRSound.KatanaA, Projectile.Center);
+            //SoundEngine.PlaySound(CWRSound.KatanaA, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.KatanaSwing, Projectile.Center);
 
             if (Main.dedServ) {
                 return;
@@ -271,7 +272,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.45f, Volume = 0.9f }, target.Center);
+            SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.15f, Volume = 1.2f }, target.Center);
 
             if (Main.dedServ) {
                 return;

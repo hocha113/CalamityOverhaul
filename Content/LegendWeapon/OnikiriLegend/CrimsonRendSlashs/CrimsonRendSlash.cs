@@ -371,8 +371,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             lastImpactAim = aim;
             lastImpactFlip = flip;
 
-            SoundEngine.PlaySound(SoundID.Item14 with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
-            SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.6f - power * 0.1f, Volume = 0.2f + power * 0.25f }, pos);
+            SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
+            //SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.6f - power * 0.1f, Volume = 0.2f + power * 0.25f }, pos);
 
             CrimsonImpactFX.PushImpact(pos, 0.02f + power * 0.01f);
 
