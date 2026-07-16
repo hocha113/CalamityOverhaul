@@ -1,6 +1,6 @@
 // ============================================================================
-//OniPaperBurn.fx 封印札焚烧——噪声阈值溶解:纸自下缘被鬼火舔穿,
-//烧穿处透空,燃线沿噪声轮廓爬行(鬼火青双色),线内侧一圈炭黑焦痕
+//OniPaperBurn.fx 封印札焚烧——噪声阈值溶解:纸自下缘被火焰舔穿,
+//烧穿处透空,燃线沿噪声轮廓爬行(暗红至橙黄),线内侧一圈炭黑焦痕
 //quad 即纸条本体:含和纸纤维底、上折角、双侧压边,烧到哪儿纸就没到哪儿
 //AlphaBlend 预乘 alpha 输出
 // ============================================================================
@@ -14,8 +14,8 @@ float2 uSize;         //纸条像素尺寸(纤维/边线按物理像素算)
 float3 uColPaper;     //纸白
 float3 uColEdge;      //压边深红
 float3 uColChar;      //炭黑
-float3 uColFireDim;   //鬼火暗青
-float3 uColFireHot;   //鬼火亮青
+float3 uColFireDim;   //火焰暗红外缘
+float3 uColFireHot;   //火焰橙黄高温芯
 
 float hash21(float2 p) {
     float3 p3 = frac(float3(p.xyx) * 0.1031);
@@ -82,13 +82,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float scorch = smoothstep(burn + 0.10, burn + 0.24, burnFront);
     col = lerp(col * 0.72, col, scorch);
 
-    //燃线:烧穿边界上一线鬼火,双色芯,低频闪
+    //燃线:烧穿边界上的暖色火焰,由暗红外缘渐变至橙黄高温芯
     float flick = 0.72 + 0.28 * sin(uTime * 6.1 + px.x * 0.35);
     float rimW = abs(burnFront - burn);
     float rim = exp(-rimW * rimW * 900.0) * flick;
     float rimCore = exp(-rimW * rimW * 3600.0) * flick;
-    col += uColFireDim * rim * 0.9;
-    col += uColFireHot * rimCore * 1.1;
+    //用归一化芯宽选择色温,再覆盖到炭边；避免两层加色把通道夹成银白
+    float heat = saturate(rimCore / max(rim, 0.001));
+    float flameMask = saturate(rim * 0.82 + rimCore * 0.35);
+    float3 flameCol = lerp(uColFireDim, uColFireHot, heat);
+    col = lerp(col, flameCol, flameMask);
 
     A *= burned;
     A = max(A, saturate(rim * 0.8 + rimCore) * step(0.001, uBurn));

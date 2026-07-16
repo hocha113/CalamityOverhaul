@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
         }
 
-        /// <summary>札脚焦边:炭黑参差 + 数簇青焰,跟随摆角</summary>
+        /// <summary>札脚焦边:炭黑参差 + 数簇暖色火焰,跟随摆角</summary>
         private void DrawCharredHem(SpriteBatch sb, Vector2 stripTop, Vector2 down, Vector2 side, float w, float h, float a) {
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
@@ -275,8 +275,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     float flick = (float)Math.Sin(GlobalTimer * (3.1f + hash * 2.6f) + i * 1.9f) * 0.5f + 0.5f;
                     float flameH = (3f + hash * 4.5f) * (0.4f + flick * 0.6f);
                     Vector2 flamePos = stripTop + down * (h - charH) + side * x;
-                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.GhostDim * (a * 0.55f * flick), rot, new Vector2(0.5f, 1f), new Vector2(step - 0.5f, flameH), SpriteEffects.None, 0f);
-                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.GhostFire * (a * 0.72f * flick), rot, new Vector2(0.5f, 1f), new Vector2(1.4f, flameH * 0.6f), SpriteEffects.None, 0f);
+                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.BurnDim * (a * 0.55f * flick), rot, new Vector2(0.5f, 1f), new Vector2(step - 0.5f, flameH), SpriteEffects.None, 0f);
+                    sb.Draw(pixel, flamePos, src, OnikiriUITheme.BurnHot * (a * 0.72f * flick), rot, new Vector2(0.5f, 1f), new Vector2(1.4f, flameH * 0.6f), SpriteEffects.None, 0f);
                 }
             }
         }

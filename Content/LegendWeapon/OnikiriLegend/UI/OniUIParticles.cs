@@ -109,7 +109,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             p.Color = color;
         }
 
-        /// <summary>鬼火余烬，自 pos 上飘</summary>
+        /// <summary>纸札焚烧余烬，自 pos 上飘</summary>
         public void SpawnEmber(Vector2 pos) {
             ref Particle p = ref Next();
             p.Active = true;
@@ -209,8 +209,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     case OniParticleKind.Ember: {
                         float flick = 0.6f + 0.4f * (float)Math.Sin(p.Life * 0.5f + p.Seed);
                         float fade = (1f - t) * flick;
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.GhostDim * (alpha * 0.5f * fade), 0f, half, new Vector2(2.2f * p.Scale), SpriteEffects.None, 0f);
-                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.GhostFire * (alpha * 0.8f * fade), 0f, half, new Vector2(1.1f * p.Scale), SpriteEffects.None, 0f);
+                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.BurnDim * (alpha * 0.5f * fade), 0f, half, new Vector2(2.2f * p.Scale), SpriteEffects.None, 0f);
+                        sb.Draw(pixel, p.Position, src, OnikiriUITheme.BurnHot * (alpha * 0.8f * fade), 0f, half, new Vector2(1.1f * p.Scale), SpriteEffects.None, 0f);
                         break;
                     }
                 }

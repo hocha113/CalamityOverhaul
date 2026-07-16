@@ -30,8 +30,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             effect.Parameters["uColPaper"]?.SetValue(OnikiriUITheme.Paper.ToVector3());
             effect.Parameters["uColEdge"]?.SetValue(OnikiriUITheme.Deep.ToVector3());
             effect.Parameters["uColChar"]?.SetValue(OnikiriUITheme.Ink.ToVector3());
-            effect.Parameters["uColFireDim"]?.SetValue(OnikiriUITheme.GhostDim.ToVector3());
-            effect.Parameters["uColFireHot"]?.SetValue(OnikiriUITheme.GhostFire.ToVector3());
+            effect.Parameters["uColFireDim"]?.SetValue(OnikiriUITheme.BurnDim.ToVector3());
+            effect.Parameters["uColFireHot"]?.SetValue(OnikiriUITheme.BurnHot.ToVector3());
 
             sb.End();
             sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend,

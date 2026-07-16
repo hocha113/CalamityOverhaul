@@ -6,7 +6,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
     /// <summary>
     /// 鬼切 UI 色板与几何常量。<br/>
     /// 绯红家族(纸/墨/朱)为人间侧——刀、驭鬼者意志、簿与契；<br/>
-    /// 鬼火青为界面唯一冷色,专属于"鬼"——鬼影之眼、失控预兆、焦边燃焰。<br/>
+    /// 鬼火青为界面唯一冷色,专属于"鬼"——鬼影之眼与失控预兆；纸札焚烧则使用暖色火焰。<br/>
     /// 驾驭度的拉锯直接用"朱红压青焰"讲
     /// </summary>
     internal static class OnikiriUITheme
@@ -40,6 +40,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static readonly Color Ink = new(24, 12, 15);
         /// <summary>朱印红，印章体</summary>
         public static readonly Color Seal = new(186, 32, 26);
+        /// <summary>纸札焚烧暗部：炭边外侧的暗红橙</summary>
+        public static readonly Color BurnDim = new(184, 43, 12);
+        /// <summary>纸札焚烧高温芯：低蓝量的橙黄，避免过曝成银白</summary>
+        public static readonly Color BurnHot = new(255, 196, 64);
 
         //====鬼侧：鬼火青(界面唯一冷色)====
         /// <summary>鬼火亮青：鬼影之眼/火苗芯</summary>
