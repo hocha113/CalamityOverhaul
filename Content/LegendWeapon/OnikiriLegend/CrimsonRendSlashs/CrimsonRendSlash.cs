@@ -281,7 +281,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 3 => (-0.45f, 0.42f),
                 _ => (-0.60f, 0.50f),
             };
-            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = pitch, Volume = volume }, Projectile.Center);
+            SoundEngine.PlaySound(CWRSound.KatanaSwing with { Pitch = pitch, Volume = volume }, Projectile.Center);
         }
 
         /// <summary>逐子刀光的时间轴事件：重击爆发脆响（滞帧末 0.75 处，领先首个伤害帧 1 帧的声音先行）、
@@ -297,7 +297,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
                 if (!a.SnapPlayed && lt == (int)(a.Def.SweepFrames * 0.75f)) {
                     a.SnapPlayed = true;
-                    SoundEngine.PlaySound(SoundID.Item71 with {
+                    SoundEngine.PlaySound(CWRSound.KatanaSwing with {
                         Pitch = a.Beat == 3 ? 0.78f : 0.60f,
                         Volume = a.Beat == 3 ? 0.70f : 0.90f,
                     }, Projectile.Center);

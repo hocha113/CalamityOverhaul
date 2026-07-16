@@ -110,5 +110,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle KatanaSprint;
         public static SoundStyle KatanaA;
         public static SoundStyle KatanaB;
+        public static SoundStyle KatanaSwing;
     }
 }
