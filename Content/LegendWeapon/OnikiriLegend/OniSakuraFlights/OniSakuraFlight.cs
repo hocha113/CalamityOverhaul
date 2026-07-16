@@ -487,10 +487,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 FlowRate = Main.rand.NextFloat(0.62f, 1.42f),
                 Wander = Main.rand.NextFloat(0.65f, 1.45f),
                 Opacity = role == PetalRole.Core
-                    ? Main.rand.NextFloat(0.78f, 0.96f)
-                    : Main.rand.NextFloat(0.46f, 0.78f),
+                    ? Main.rand.NextFloat(0.84f, 0.98f)
+                    : Main.rand.NextFloat(0.64f, 0.90f),
                 Lane = index % 2 == 0 ? 1 : -1,
-                DeepColor = Main.rand.NextBool(role == PetalRole.Core ? 15 : 11),
+                DeepColor = Main.rand.NextBool(role == PetalRole.Core ? 18 : 22),
                 Glow = Main.rand.NextBool(role == PetalRole.Core ? 7 : 17)
             };
         }
@@ -614,7 +614,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
             float patch = MathHelper.SmoothStep(0f, 1f,
                 MathHelper.Clamp((patchWave - 0.16f) / 0.72f, 0f, 1f));
             targetAlpha = headFade * tailFade * coverage * petal.Opacity
-                * MathHelper.Lerp(0.20f, 1f, patch);
+                * MathHelper.Lerp(0.42f, 1f, patch);
 
             petal.Depth = depth;
             petal.Flip = MathHelper.Lerp(0.14f, 1f, MathF.Abs(depth));
@@ -645,7 +645,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                     + normal * Main.rand.NextFloat(-3.6f, 3.6f)
                     + Main.rand.NextVector2Circular(0.8f, 0.8f)
                     - Vector2.UnitY * Main.rand.NextFloat(0f, 0.7f);
-                SpawnLoosePetal(position, velocity, Main.rand.Next(46, 82), Main.rand.NextFloat(0.42f, 0.72f));
+                SpawnLoosePetal(position, velocity, Main.rand.Next(46, 82), Main.rand.NextFloat(0.56f, 0.84f));
             }
 
             float turn = lastVisualDirection.X * moveDirection.Y - lastVisualDirection.Y * moveDirection.X;
@@ -657,7 +657,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                     Vector2 velocity = normal * side * Main.rand.NextFloat(3.0f, 7.0f)
                         - moveDirection * Main.rand.NextFloat(0.2f, 1.6f)
                         + Main.rand.NextVector2Circular(0.8f, 0.8f);
-                    SpawnLoosePetal(position, velocity, Main.rand.Next(52, 88), Main.rand.NextFloat(0.50f, 0.78f));
+                    SpawnLoosePetal(position, velocity, Main.rand.Next(52, 88), Main.rand.NextFloat(0.62f, 0.88f));
                 }
             }
             lastVisualDirection = moveDirection;
@@ -693,7 +693,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 InitialAlpha = alpha,
                 Seed = Main.rand.NextFloat(MathHelper.TwoPi),
                 MaxLife = life,
-                DeepColor = Main.rand.NextBool(9),
+                DeepColor = Main.rand.NextBool(18),
                 Glow = Main.rand.NextBool(19)
             });
         }
@@ -828,13 +828,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights
                 }
 
                 float front = (petal.Depth + 1f) * 0.5f;
-                Color back = petal.DeepColor ? new Color(106, 24, 46) : new Color(211, 106, 139);
-                Color middle = petal.DeepColor ? new Color(165, 48, 76) : new Color(255, 180, 202);
-                Color face = petal.DeepColor ? new Color(220, 88, 112) : new Color(255, 236, 241);
+                Color back = petal.DeepColor ? new Color(178, 48, 79) : new Color(244, 157, 183);
+                Color middle = petal.DeepColor ? new Color(229, 90, 119) : new Color(255, 196, 213);
+                Color face = petal.DeepColor ? new Color(255, 174, 191) : new Color(255, 243, 247);
                 Color color = front < 0.5f
                     ? Color.Lerp(back, middle, front * 2f)
                     : Color.Lerp(middle, face, front * 2f - 1f);
-                color *= petal.Alpha * MathHelper.Lerp(0.52f, 1f, front);
+                //PSPetal 会自行输出预乘色；这里只写透明度，不能再次压暗 RGB。
+                float opacity = MathHelper.Clamp(
+                    petal.Alpha * MathHelper.Lerp(0.76f, 1f, front), 0f, 1f);
+                color.A = (byte)(opacity * byte.MaxValue);
 
                 float width = 19f * petal.RenderScale * petal.Flip;
                 float height = 25f * petal.RenderScale * petal.Stretch;
