@@ -18,6 +18,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             portrait.currentFace = face;
         }
 
+        public static void ShowPetalAssembly(HimayoFullBodyPortrait.Face face = HimayoFullBodyPortrait.Face.Doubt) {
+            Show(face);
+            if (DialoguePanelView.Instance?.GetActiveFullBodyPortrait() is HimayoFullBodyPortrait portrait) {
+                portrait.StartPetalAssembly();
+            }
+        }
+
         public static void SetFace(HimayoFullBodyPortrait.Face face) {
             if (DialoguePanelView.Instance?.GetActiveFullBodyPortrait() is HimayoFullBodyPortrait portrait) {
                 portrait.currentFace = face;

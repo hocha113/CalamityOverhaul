@@ -16,9 +16,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     internal class OniDismemberNPC : GlobalNPC
     {
         //复用缓冲，避免逐帧分配
-        private static readonly List<VertexPositionColorTexture> vertexScratch = new(96);
-        private static readonly Vector4[] cutLineParams = new Vector4[OniDismember.MaxCuts];
-        private static readonly Vector4[] cutGlowParams = new Vector4[OniDismember.MaxCuts];
+        private static readonly List<VertexPositionColorTexture> vertexScratch = [];
+        private static Vector4[] cutLineParams = [];
+        private static Vector4[] cutGlowParams = [];
 
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot) {
             //僵直的尸身不再构成接触伤害威胁
@@ -62,14 +62,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             gd.RasterizerState = RasterizerState.CullNone;
             gd.DepthStencilState = DepthStencilState.None;
 
-            SetShaderParams(entry, rt, fx);
             BuildVertices(entry);
 
-            if (vertexScratch.Count >= 3) {
+            int batchCapacity = EnsureCutParamBuffers(fx);
+            if (vertexScratch.Count >= 3 && entry.Cuts.Count > 0 && batchCapacity > 0) {
+                SetCommonShaderParams(entry, rt, fx);
                 VertexPositionColorTexture[] verts = [.. vertexScratch];
-                foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
-                    pass.Apply();
-                    gd.DrawUserPrimitives(PrimitiveType.TriangleList, verts, 0, verts.Length / 3);
+                for (int start = 0; start < entry.Cuts.Count; start += batchCapacity) {
+                    SetCutBatchParams(entry, fx, start, batchCapacity);
+                    foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                        pass.Apply();
+                        gd.DrawUserPrimitives(PrimitiveType.TriangleList, verts, 0, verts.Length / 3);
+                    }
                 }
             }
 
@@ -78,24 +82,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             gd.DepthStencilState = prevDepth;
         }
 
-        private static void SetShaderParams(DismemberEntry entry, RenderTarget2D rt, Effect fx) {
-            for (int i = 0; i < OniDismember.MaxCuts; i++) {
-                if (i < entry.Cuts.Count) {
-                    DismemberCut cut = entry.Cuts[i];
-                    cutLineParams[i] = new Vector4(cut.PointLocal.X, cut.PointLocal.Y, cut.Normal.X, cut.Normal.Y);
-                    cutGlowParams[i] = new Vector4(GlowStrength(entry, in cut), GlowHalfWidth(entry, in cut), 0f, 0f);
-                }
-                else {
-                    cutLineParams[i] = Vector4.Zero;
-                    cutGlowParams[i] = new Vector4(0f, 1f, 0f, 0f);
-                }
+        /// <summary>从 effect 反射着色器单批容量，避免 C# 维护重复常量</summary>
+        private static int EnsureCutParamBuffers(Effect fx) {
+            int lineCapacity = fx.Parameters["uCutLine"]?.Elements.Count ?? 0;
+            int glowCapacity = fx.Parameters["uCutGlow"]?.Elements.Count ?? 0;
+            int capacity = Math.Min(lineCapacity, glowCapacity);
+            if (capacity <= 0) {
+                return 0;
             }
+            if (cutLineParams.Length != capacity) {
+                cutLineParams = new Vector4[capacity];
+                cutGlowParams = new Vector4[capacity];
+            }
+            return capacity;
+        }
 
+        private static void SetCommonShaderParams(DismemberEntry entry, RenderTarget2D rt, Effect fx) {
             fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             fx.Parameters["uSnapSize"]?.SetValue(new Vector2(entry.SnapWidth, entry.SnapHeight));
-            fx.Parameters["uCutLine"]?.SetValue(cutLineParams);
-            fx.Parameters["uCutGlow"]?.SetValue(cutGlowParams);
             //定格冷灰随滞拍结束缓入，尸身"冷下来"
             float coldIn = OniDismember.SeparationCurve(entry.Timer - entry.Cuts[0].Birth);
             fx.Parameters["uDesat"]?.SetValue(0.38f * coldIn);
@@ -103,6 +108,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             fx.Parameters["uColHot"]?.SetValue(new Vector3(1.85f, 1.62f, 1.30f));
             fx.Parameters["uColBright"]?.SetValue(new Vector3(1.55f, 0.28f, 0.14f));
             fx.Parameters["uSnapTex"]?.SetValue(rt);
+        }
+
+        private static void SetCutBatchParams(DismemberEntry entry, Effect fx, int start, int capacity) {
+            int count = Math.Min(entry.Cuts.Count - start, capacity);
+            for (int i = 0; i < count; i++) {
+                DismemberCut cut = entry.Cuts[start + i];
+                cutLineParams[i] = new Vector4(cut.PointLocal.X, cut.PointLocal.Y, cut.Normal.X, cut.Normal.Y);
+                cutGlowParams[i] = new Vector4(GlowStrength(entry, in cut), GlowHalfWidth(entry, in cut), 0f, 0f);
+            }
+            fx.Parameters["uCutLine"]?.SetValue(cutLineParams);
+            fx.Parameters["uCutGlow"]?.SetValue(cutGlowParams);
+            fx.Parameters["uCutCount"]?.SetValue(count);
+            //首批画身体，后续批次输出 alpha=0 的附加辉光
+            fx.Parameters["uDrawBase"]?.SetValue(start == 0 ? 1f : 0f);
         }
 
         /// <summary>切口辉光强度：亮起闪 → 滞拍呼吸 → 分离后稳定灼热，尾段随整体淡出</summary>
@@ -137,6 +156,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// <summary>全部碎片 → 三角扇顶点（世界坐标，交给 shader 的 transformMatrix 投屏）</summary>
         private static void BuildVertices(DismemberEntry entry) {
             vertexScratch.Clear();
+            int requiredCapacity = 0;
+            foreach (DismemberPiece piece in entry.Pieces) {
+                requiredCapacity += Math.Max(piece.Verts.Length - 2, 0) * 3;
+            }
+            vertexScratch.EnsureCapacity(requiredCapacity);
             Color tint = Color.White * entry.FadeAlpha;
             Vector2 snapHalf = new(entry.SnapWidth * 0.5f, entry.SnapHeight * 0.5f);
 

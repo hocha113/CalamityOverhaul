@@ -57,7 +57,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             OnTriggered = _ => HimayoStorySync.MarkFirstMet(),
         };
 
-        protected override void OnStarted() => HimayoNarrativePortrait.Show();
+        protected override void OnStarted() => HimayoNarrativePortrait.ShowPetalAssembly();
 
         protected override void OnCompleted() => HimayoNarrativePortrait.Hide();
     }

@@ -71,10 +71,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// </summary>
     internal class OniDismember : ICWRLoader
     {
-        /// <summary>最大切口数，与 OniDismember.fx 的 uCutLine 数组长度一致</summary>
-        public const int MaxCuts = 4;
-        /// <summary>碎片总数上限，防多刀指数分裂</summary>
-        public const int MaxPieces = 12;
+        /// <summary>默认最大切口数</summary>
+        public const int DefaultMaxCuts = 16;
+        /// <summary>默认碎片总数上限，足以容纳 16 条直线在矩形内产生的理论最大分区</summary>
+        public const int DefaultMaxPieces = 160;
+        private static int maxCuts = DefaultMaxCuts;
+        private static int maxPieces = DefaultMaxPieces;
+        /// <summary>最大切口数，可在运行时调整；已存在的切口不受下调影响</summary>
+        public static int MaxCuts {
+            get => maxCuts;
+            set => maxCuts = Math.Max(value, 1);
+        }
+        /// <summary>碎片总数上限，可在运行时调整；已存在的碎片不受下调影响</summary>
+        public static int MaxPieces {
+            get => maxPieces;
+            set => maxPieces = Math.Max(value, 2);
+        }
         /// <summary>滞拍帧数：切口亮起 → 碎片开始分离的间隔（居合语法：斩击已完成，世界还没反应过来）</summary>
         public const int HoldFrames = 12;
         /// <summary>分离滑开动画帧数</summary>
@@ -93,6 +105,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         void ICWRLoader.UnLoadData() {
             Entries.Clear();
+            MaxCuts = DefaultMaxCuts;
+            MaxPieces = DefaultMaxPieces;
             Main.QueueMainThreadAction(DisposeAllSnapshots);
         }
 
@@ -231,13 +245,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         /// <summary>用切线把现有碎片各自一分为二（Sutherland–Hodgman 半平面裁剪）</summary>
         private static void SplitPieces(DismemberEntry entry, in DismemberCut cut) {
-            List<DismemberPiece> next = new(entry.Pieces.Count + 2);
+            int remainingSplits = Math.Max(MaxPieces - entry.Pieces.Count, 0);
+            int potentialSplits = Math.Min(entry.Pieces.Count, remainingSplits);
+            List<DismemberPiece> next = new(entry.Pieces.Count + potentialSplits);
             foreach (DismemberPiece piece in entry.Pieces) {
+                if (remainingSplits <= 0) {
+                    piece.CutSides.Add(0);
+                    piece.CutSpins.Add(0f);
+                    next.Add(piece);
+                    continue;
+                }
+
                 List<Vector2> posSide = ClipHalfPlane(piece.Verts, cut.PointLocal, cut.Normal, 1f);
                 List<Vector2> negSide = ClipHalfPlane(piece.Verts, cut.PointLocal, cut.Normal, -1f);
 
-                bool canSplit = entry.Pieces.Count < MaxPieces
-                    && posSide.Count >= 3 && negSide.Count >= 3
+                bool canSplit = posSide.Count >= 3 && negSide.Count >= 3
                     && PolyArea(posSide) >= MinPieceArea && PolyArea(negSide) >= MinPieceArea;
 
                 if (!canSplit) {
@@ -249,6 +271,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 }
                 next.Add(MakeChild(piece, posSide, 1));
                 next.Add(MakeChild(piece, negSide, -1));
+                remainingSplits--;
             }
             entry.Pieces.Clear();
             entry.Pieces.AddRange(next);
