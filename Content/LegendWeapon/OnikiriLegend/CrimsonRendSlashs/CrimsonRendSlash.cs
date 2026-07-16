@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using CSR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs.CrimsonSlashRenderer;
@@ -37,6 +38,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private const int BurstFadeFrames = 16;
         private const int AfterglowEnd = 46;   //命中余韵层最晚结束帧（相对 lastImpactFrame）
         private const int BaseHitCooldown = 10;
+        private const int BladeReleaseRecoveryFrames = 12;
+        private const float BladePathStart = 0.06f;
+        private const float BladePathEnd = 0.94f;
+        private const float BladeDrawScale = 0.90f;
+        /// <summary>物品贴图中的护手与刀尖位置（UV 比例）；护手作为手心支点，避免刀身绕贴图中心悬空旋转</summary>
+        private static Vector2 BladeHiltUV => new(0.1f, 1f);
+        private static Vector2 BladeTipUV => new(0.73f, 0.01f);
         /// <summary>各拍到下一拍的基准间隔（攻速 1 时），末位为终结后的循环呼吸</summary>
         private static readonly int[] BeatGap = [10, 10, 13, 15, 24];
         /// <summary>快斩四拍收势轻确认参数（白闪强度/火花数/音高/是否命中型白闪）</summary>
@@ -54,6 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public int Birth;        //绝对 timer 帧
             public int Beat;         //0..4 拍位
             public float Aim;        //该拍开火瞬间的瞄准角
+            public int Facing;       //该拍冻结的玩家朝向
             public bool ImpactDone;  //本拍首次命中爆点已触发
             public bool SnapPlayed;  //重击爆发脆响已播（快斩恒 true）
         }
@@ -75,6 +84,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private float lastImpactFlip = 1f;
         private Rectangle[] speedLineRects;
         private float[] speedLineOffsets;
+        private float bladeRotation;
+        private float bladePreviousRotation;
+        private float bladeOlderRotation;
+        private float bladeOpacity;
+        private float bladeAngularSpeed;
+        private int bladeFacing = 1;
+        private bool bladePoseInitialized;
+        private bool bladeInStrike;
 
         /// <summary>刃身环境光锚点（与实际命中无关）：最新子刀光刃锋鼓腹沿其瞄准方向的位置，
         /// 供每帧常驻的 Lighting/Bloom 使用；真实命中特效用 <see cref="lastImpactPos"/>（目标实际中心）</summary>
@@ -196,6 +213,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         private Vector2 CenterOf(ActiveSlash a) => Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim;
 
+        /// <summary>刀柄支点：略偏离身体中心，让贴图护手落在前手而不是角色胸口</summary>
+        private Vector2 BladeHandPosition(int facing) => Owner.GetPlayerStabilityCenter()
+            + new Vector2(facing * 3f, -5f * Owner.gravDir);
+
+        /// <summary>把刀光中线前缘还原为实体刀朝向；只使用方向，不把刀身拉伸到能量弧半径</summary>
+        private float BladePathRotation(in SlashDef d, float aim, int facing, float u, int lt) {
+            Vector2 center = Projectile.Center + aim.ToRotationVector2() * d.OffsetAlongAim;
+            Vector2 edge = CSR.PointAt(in d, center, MathHelper.Clamp(u, BladePathStart, BladePathEnd), lt);
+            Vector2 fromHand = edge - BladeHandPosition(facing);
+            return fromHand.LengthSquared() > 1f ? fromHand.ToRotation() : aim;
+        }
+
+        private static float LerpAngle(float from, float to, float amount)
+            => from + MathHelper.WrapAngle(to - from) * MathHelper.Clamp(amount, 0f, 1f);
+
         //==================== 连段推进 ====================
 
         public override void AI() {
@@ -204,6 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
             UpdateCombo();
             UpdateBeatEvents();
+            UpdateBladePose();
 
             if (!Main.dedServ) {
                 SpawnSweepSparks();
@@ -214,6 +247,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
             Lighting.AddLight(AmbientAnchor, new Vector3(1.0f, 0.25f, 0.18f));
             Lighting.AddLight(Projectile.Center, new Vector3(0.6f, 0.12f, 0.10f));
+            if (bladeOpacity > 0.01f) {
+                Vector2 bladeLight = BladeHandPosition(bladeFacing)
+                    + bladeRotation.ToRotationVector2() * 92f * sizeMul;
+                Lighting.AddLight(bladeLight, new Vector3(0.72f, 0.10f, 0.06f) * bladeOpacity);
+            }
 
             PushScreenState();
             UpdateLifetime();
@@ -261,6 +299,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 Birth = timer,
                 Beat = beat,
                 Aim = aim,
+                Facing = (int)flip,
                 SnapPlayed = beat < 3,
             });
             PlayBeatFireSound(beat);
@@ -270,6 +309,80 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             comboIndex = (comboIndex + 1) % BeatCount;
             lastBeatFire = timer;
             nextBeatTime = timer + Math.Max(4, (int)MathF.Round(BeatGap[beat] * speedFactor));
+        }
+
+        /// <summary>
+        /// 实体刀姿态：最新一拍的刀光前缘驱动唯一刀身；拍间把刀回收到下一拍起点，
+        /// 松键后仍完成挥砍与短收势，避免刀光尚在而玩家已经空手。
+        /// </summary>
+        private void UpdateBladePose() {
+            if (actives.Count == 0) {
+                bladeOpacity = 0f;
+                bladeAngularSpeed = 0f;
+                bladeInStrike = false;
+                bladePoseInitialized = false;
+                return;
+            }
+
+            ActiveSlash a = actives[^1];
+            int lt = Math.Max(0, timer - a.Birth);
+            bladeFacing = a.Facing;
+            bladeOpacity = 1f;
+            bladeInStrike = lt <= a.Def.SweepFrames + 1;
+
+            float targetRotation;
+            if (lt <= a.Def.SweepFrames) {
+                float edgeU = MathHelper.Clamp(CSR.Sweep(in a.Def, lt) * 1.05f
+                    , BladePathStart, BladePathEnd);
+                targetRotation = BladePathRotation(in a.Def, a.Aim, a.Facing, edgeU, lt);
+            }
+            else {
+                int followLt = Math.Min(lt, a.Def.SweepFrames + 14);
+                float followRotation = BladePathRotation(in a.Def, a.Aim, a.Facing
+                    , BladePathEnd, followLt);
+                targetRotation = followRotation;
+
+                if (scheduling && timer < nextBeatTime) {
+                    int prepStart = a.Birth + a.Def.SweepFrames;
+                    float prepT = MathHelper.Clamp((timer - prepStart)
+                        / (float)Math.Max(1, nextBeatTime - prepStart), 0f, 1f);
+                    float previewAim = ToMouse.LengthSquared() > 1f ? ToMouseA : curAim;
+                    float previewCos = MathF.Cos(previewAim);
+                    int previewFacing = MathF.Abs(previewCos) < 0.05f
+                        ? a.Facing
+                        : (previewCos > 0f ? 1 : -1);
+                    SlashDef nextDef = BuildBeatDef(comboIndex, previewAim, previewFacing, sizeMul);
+                    float nextStart = BladePathRotation(in nextDef, previewAim, previewFacing
+                        , BladePathStart, 0);
+                    float prepBlend = CSR.SmoothStep01((prepT - 0.08f) / 0.92f);
+                    targetRotation = LerpAngle(followRotation, nextStart, prepBlend);
+                    if (prepT > 0.55f) {
+                        bladeFacing = previewFacing;
+                    }
+                }
+                else if (!scheduling) {
+                    float recoverT = MathHelper.Clamp((lt - a.Def.SweepFrames)
+                        / (float)BladeReleaseRecoveryFrames, 0f, 1f);
+                    float guardRotation = a.Aim - a.Facing * 1.05f;
+                    targetRotation = LerpAngle(followRotation, guardRotation
+                        , CSR.SmoothStep01(recoverT));
+                    bladeOpacity = 1f - CSR.SmoothStep01((recoverT - 0.68f) / 0.32f);
+                }
+            }
+
+            if (!bladePoseInitialized) {
+                bladeRotation = targetRotation;
+                bladePreviousRotation = targetRotation;
+                bladeOlderRotation = targetRotation;
+                bladeAngularSpeed = 0f;
+                bladePoseInitialized = true;
+                return;
+            }
+
+            bladeOlderRotation = bladePreviousRotation;
+            bladePreviousRotation = bladeRotation;
+            bladeRotation = targetRotation;
+            bladeAngularSpeed = MathF.Abs(MathHelper.WrapAngle(bladeRotation - bladePreviousRotation));
         }
 
         /// <summary>起挥音效：快斩三拍哨声逐段升调（accelerando），重击两拍低音蓄势起手</summary>
@@ -334,21 +447,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>持械姿态：姿态朝向每帧跟随鼠标（刀光角度仍按拍冻结），保持使用状态防止换用其他物品</summary>
+        /// <summary>持械姿态：身体与双臂服从实体刀，而非追逐已冻结刀光之外的实时鼠标</summary>
         private void UpdatePose() {
-            if (!scheduling) {
-                return;   //收势期释放角色姿态
+            if (bladeOpacity <= 0.01f) {
+                return;
             }
-            if (ToMouse.LengthSquared() > 1f) {
-                curAim = ToMouseA;
-            }
+
             SetHeld();
-            float cos = MathF.Cos(curAim);
-            if (MathF.Abs(cos) >= 0.05f) {
-                Owner.ChangeDir(cos > 0f ? 1 : -1);
-            }
-            Owner.itemRotation = (curAim.ToRotationVector2() * Owner.direction).ToRotation();
+            Owner.ChangeDir(bladeFacing);
+            Owner.itemRotation = (bladeRotation.ToRotationVector2() * Owner.direction).ToRotation();
             Owner.itemTime = Owner.itemAnimation = 2;
+
+            float armRotation = bladeRotation - MathHelper.PiOver2;
+            Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+            Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters
+                , armRotation + 0.16f * bladeFacing);
         }
 
         /// <summary>存活契约：排拍中或有子刀光时续命；全部收势且命中余韵播完即 Kill，
@@ -574,7 +687,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         //全部刀光 → EndEntityDraw 弹幕扩展层（覆盖实体）；
         //玩家身后分层机制（ICrimsonFarDrawable/FarDim）保留在渲染器中备用，本连段不使用
 
-        public override bool PreDraw(ref Color lightColor) => false;
+        /// <summary>普通实体层绘制唯一实体刀；随后 EndEntityDraw 的刀光自然覆盖在其上</summary>
+        public override bool PreDraw(ref Color lightColor) {
+            if (Main.dedServ || bladeOpacity <= 0.01f) {
+                return false;
+            }
+
+            Texture2D blade = TextureAssets.Item[ModContent.ItemType<OnikiriItem>()].Value;
+            Vector2 textureSize = blade.Size();
+            Vector2 origin = new(textureSize.X * BladeHiltUV.X, textureSize.Y * BladeHiltUV.Y);
+            Vector2 textureTip = new(textureSize.X * BladeTipUV.X, textureSize.Y * BladeTipUV.Y);
+            SpriteEffects bladeEffect = SpriteEffects.None;
+            if (bladeFacing < 0) {
+                //非对称太刀朝左时必须翻转刀脊/刃口；同步镜像护手支点与刀尖，
+                //才能在 FlipVertically 后仍让护手钉在手心、刀尖严格指向 bladeRotation。
+                bladeEffect = SpriteEffects.FlipVertically;
+                origin.Y = textureSize.Y - origin.Y;
+                textureTip.Y = textureSize.Y - textureTip.Y;
+            }
+            float textureAxis = (textureTip - origin).ToRotation();
+            Vector2 drawPos = BladeHandPosition(bladeFacing) - Main.screenPosition;
+            float scale = BladeDrawScale * sizeMul;
+
+            float motion = MathHelper.Clamp((bladeAngularSpeed - 0.06f) / 0.50f, 0f, 1f);
+            if (bladeInStrike && motion > 0.01f) {
+                Color farGhost = new Color(126, 20, 30, 105)
+                    * (bladeOpacity * motion * 0.34f);
+                Color nearGhost = new Color(210, 42, 38, 130)
+                    * (bladeOpacity * motion * 0.48f);
+                Main.EntitySpriteDraw(blade, drawPos, null, farGhost
+                    , bladeOlderRotation - textureAxis, origin, scale, bladeEffect, 0);
+                Main.EntitySpriteDraw(blade, drawPos, null, nearGhost
+                    , bladePreviousRotation - textureAxis, origin, scale, bladeEffect, 0);
+            }
+
+            Color shadow = new Color(15, 3, 8, 190) * (bladeOpacity * 0.62f);
+            Main.EntitySpriteDraw(blade, drawPos + new Vector2(bladeFacing, 1f), null, shadow
+                , bladeRotation - textureAxis, origin, scale * 1.018f, bladeEffect, 0);
+
+            Color bodyColor = Color.Lerp(lightColor, Color.White, 0.24f) * bladeOpacity;
+            Main.EntitySpriteDraw(blade, drawPos, null, bodyColor
+                , bladeRotation - textureAxis, origin, scale, bladeEffect, 0);
+            return false;
+        }
 
         void IPrimitiveDrawable.DrawPrimitives() {
             if (Main.dedServ || actives.Count == 0 && lastImpactFrame < 0) {

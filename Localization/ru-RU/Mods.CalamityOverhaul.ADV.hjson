@@ -1033,3 +1033,14 @@ OnikiriStyleDemo: {
 	// Farewell1: 夜还长,茶就不留你了
 	// Farewell2: 下次再见时,希望是在正式的故事里
 }
+
+FirstMetHimayo: {
+	// SpeakerName: Himura Mayo
+	// Line1: ...I'm still alive?
+	// Line2: Wait, let me make sure... Is this some kind of spirit summoning?
+	// Line3: No.
+	// Line4: Why is my consciousness inside a sword now?
+	// Line5: My head hurts... I suppose I'm somewhere between a living person and something inhuman.
+	// Line6: I have absolutely no idea what happened...
+	// Line7: Still, from today onward, I hope we'll get along.
+}
