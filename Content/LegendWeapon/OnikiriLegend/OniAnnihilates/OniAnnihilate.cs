@@ -301,17 +301,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             };
         }
 
-        /// <summary>残像旋钮：更干的复笔 —— 墨阶浅、飞白重、洇边略深</summary>
-        private OAR.InkParams ComposeGhostInk() {
-            float erodeT = MathHelper.Clamp((timer - 6) / 20f, 0f, 1f);
-            return new OAR.InkParams {
-                InkStep = 0.60f,
-                FeiBai = 0.55f + 0.40f * erodeT,
-                Bleed = MathHelper.Clamp((timer - 4) / 18f, 0f, 1f),
-                SplitTail = 0.70f,
-            };
-        }
-
         //==================== 绘制 ====================
 
         /// <summary>主弧 + 残像：实体扩展图元层（EndEntityDraw，盖在实体之上）</summary>
