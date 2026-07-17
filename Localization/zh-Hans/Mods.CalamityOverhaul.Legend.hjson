@@ -651,28 +651,28 @@ OnikiriText: {
 		StateSealed: 封印中
 		StateUnknown: 铭位空悬
 		UnknownName: （留白）
-		UnknownHint: 簿上留白。夜还长，总会有名字自己走上来
-		SealedOriginHint: 封印未解。莫揭，莫应，莫回头
+		UnknownHint: 簿上留白
+		SealedOriginHint: 封印未解
 		SealedPowerHint: ———
 		Ghost1Name: 无面女
-		Ghost1Origin: 雨夜的桥头，她借走了你的脸。刀落下时，水里的倒影替你还了礼
-		Ghost1Power: 「借颜」——它借走你的脸，别人便认不出你；第一个照面，谁都以为看错了人
+		Ghost1Origin: 雨夜桥头，她借走了你的脸
+		Ghost1Power: 「借颜」窃取目标的相貌，短暂复制其能力
 		Ghost2Name: 提灯童子
-		Ghost2Origin: 山道尽头有灯，灯下无人。跟着走的人都说，灯笼里烧的不是火
-		Ghost2Power: 「引路」——灯照过的路不会迷；坑洞、埋伏、回不去的岔口，它都先替你踩过
+		Ghost2Origin: 山道尽头有灯，灯下无人，再看已是灯中人
+		Ghost2Power: 「引路」灯光照出的影子会同步自身行为，影子拥有六成实力
 		Ghost3Name: 绯嫁
-		Ghost3Origin: 花轿在门前停了七夜。第七夜，轿帘自己掀开了——别数她的手指
-		Ghost3Power: 「迎亲」——伤过你的，都得替她走完余下的路；血落成红毯
+		Ghost3Origin: 花轿在门前停了七夜
+		Ghost3Power: 「迎亲」拼图补全，允许使用鬼灯笼叠加自身
 		Ghost4Name: 井中鸣
 		Ghost5Name: 替死簿
-		Ghost5Origin: 那本泛黄的硬皮册子里，有一页死死粘连着你的生辰
+		Ghost5Origin: 泛黄的硬皮册子里，有一页死死粘连着你的生辰
 		Ghost5Power: 「替死」致命的袭击或诅咒降临的瞬间，伤害会被强制转移
 		Ghost6Name: 无头人影
-		Ghost6Origin: 你脚下的黑影便有些坐立不安，在灯火摇晃的夜里，你会发现那道影子的肩膀以上空无一物
-		Ghost6Power: 「拼肢」拆卸敌人的肢体，也可以拼接自身断裂的躯体，用于恢复
+		Ghost6Origin: 你脚下的黑影抽动着，在灯火摇晃的夜里，影子的肩膀以上空无一物
+		Ghost6Power: 「拼肢」拆卸目标的肢体，也可以拼接自身断裂的躯体，用于恢复
 		Ghost7Name: 焦黑枯手
 		Ghost7Origin: 一截焦黑枯瘦的恐怖手臂
-		Ghost7Power: 「攥」被掐住的目标会被压制灵异，并限制行动
+		Ghost7Power: 「攥」被掐住的目标会被压制，并限制其行动
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 	}
@@ -685,6 +685,6 @@ OnikiriText: {
 	OniTalismanHud: {
 		HudTitle: 封印札
 		HudHintFormat: "{0} 或点击 开阖点鬼簿"
-		HudDangerLine: 札下起了青焰——有鬼躁动
+		HudDangerLine: 札下起了青焰
 	}
 }

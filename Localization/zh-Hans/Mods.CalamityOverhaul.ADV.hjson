@@ -1033,12 +1033,17 @@ OnikiriStyleDemo: {
 }
 
 FirstMetHimayo: {
-	SpeakerName: 绯村真夜
+	SpeakerName: 鬼切
 	Line1: ……我还活着？
 	Line2: 等等，先确认一下……这是招魂吗？
-	Line3: 不对。
+	Line3: 不对
 	Line4: 为什么我的意识，现在在一把刀里面？
-	Line5: 头疼……我的状态大概介于活人和异类之间吧。
+	Line5: 头疼……我的状态很奇怪
 	Line6: 完全搞不懂发生了什么……
-	Line7: 不过从今天开始，就请多多关照了。
+	Line7: 不过从今天开始，就请多多关照了
+}
+
+ItCametoThis: {
+	// Line1: 真不想走到这一步啊
+	// Line2: 从现在开始，这个世界我接管了
 }
