@@ -84,6 +84,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 HalfX = 235f * s, HalfY = 128f * s, Flip = Flip,
                 Opacity = 0.95f, FrontGlow = 2.7f, OffsetAlongAim = 0f, Seed = Projectile.whoAmI * 0.173f % 1f,
                 TailErode = 0.55f, FlashPower = 0.75f, FarDim = 0f,
+                Ink = 0.45f, FeiBai = 0.45f, Bleed = 0.12f, SplitTail = 0.60f,
             };
         }
 

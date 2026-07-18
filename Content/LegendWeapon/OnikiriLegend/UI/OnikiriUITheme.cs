@@ -81,12 +81,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float HudTalismanH = 112f;
         /// <summary>绳结到纸札顶的绳长</summary>
         public const float HudRopeLen = 18f;
-        /// <summary>气力墨脉 shader 画布相对绳结锚点的偏移</summary>
-        public static readonly Vector2 VigorHudOffset = new(7f, 72f);
-        /// <summary>气力墨脉 shader 画布尺寸，四周留白用于洇边、飞墨与辉光</summary>
-        public static readonly Vector2 VigorHudSize = new(184f, 52f);
-        /// <summary>画布内墨脉起止、中心线与最大半宽，直接传给 shader 避免两侧常量漂移</summary>
-        public static readonly Vector4 VigorStroke = new(22f, 171f, 26f, 7.5f);
         #endregion
 
         /// <summary>异相位呼吸波，给定相位种子返回 0-1 的缓慢脉动</summary>

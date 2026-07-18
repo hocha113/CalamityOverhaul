@@ -44,7 +44,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private bool hover;
         private bool wasHovered;
         private readonly OniUIParticlePool particles = new(40);
-        private readonly OniVigorHud vigorHud = new();
         private int emberTimer;
         //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
         private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
@@ -85,7 +84,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public override void Update() {
             bool holding = LocalHolding();
             appear = MathHelper.Clamp(appear + (holding ? 0.07f : -0.09f), 0f, 1f);
-            vigorHud.Update(player, holding);
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
@@ -95,16 +93,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             bool danger = OniRegistry.InDanger;
 
-            //挂绳推进:纸札是有分量的长纸，不该被持续风力推成钟摆。
-            //危态只稍强一档；悬停视为被手捏住，风息且快速耗散余振
+            //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
             Vector2 knot = Anchor;
-            float windAmp = danger ? 0.075f : 0.032f;
+            float windAmp = danger ? 0.18f : 0.09f;
             if (hover) {
-                windAmp *= 0.12f;
+                windAmp *= 0.2f;
             }
-            rope.Update(knot, null, GlobalTimer, windAmp, endWeight: 0.68f, damping: hover ? 0.68f : 0.79f);
-            if (danger && !hover && Main.rand.NextBool(300)) {
-                rope.Nudge(Main.rand.NextFloat(0.18f, 0.42f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.08f, 0.18f));
+            rope.Update(knot, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.88f);
+            if (danger && !hover && Main.rand.NextBool(140)) {
+                rope.Nudge(Main.rand.NextFloat(0.6f, 1.3f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.5f));
             }
             //悬停牵引:绳末被拉向"让捏点贴住光标"的位置,绳长约束自然给出被拽住的弹性
             if (hover) {
@@ -119,22 +116,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float targetRot, stiffness, rotDamp;
             if (hover) {
                 targetRot = 0f;
-                stiffness = 0.12f;
-                rotDamp = 0.58f;
+                stiffness = 0.16f;
+                rotDamp = 0.70f;
             }
             else {
-                //只继承约六成绳摆，避免短绳角度被 112px 札身放大；低保速让余振尽快收住
-                targetRot = ((rope.End - knot).SafeNormalize(Vector2.UnitY).ToRotation() - MathHelper.PiOver2) * 0.58f;
-                stiffness = 0.075f;
-                rotDamp = 0.68f;
+                targetRot = ((rope.End - knot).SafeNormalize(Vector2.UnitY).ToRotation() - MathHelper.PiOver2) * 1.15f;
+                stiffness = 0.12f;
+                rotDamp = 0.86f;
             }
             stripRotVel += (targetRot - stripRot) * stiffness;
             stripRotVel *= rotDamp;
-            float maxRot = danger ? 0.20f : 0.15f;
-            stripRot = MathHelper.Clamp(stripRot + stripRotVel, -maxRot, maxRot);
+            stripRot = MathHelper.Clamp(stripRot + stripRotVel, -0.55f, 0.55f);
             stripRotNow = stripRot;
             if (danger) {
-                stripRotNow += (float)Math.Sin(GlobalTimer * 5.2f) * 0.0035f;
+                stripRotNow += (float)Math.Sin(GlobalTimer * 11f) * 0.010f;
             }
 
             //命中:光标变换进札面局部空间,与绘制同一姿态的 OBB(旧的轴对齐外包在摆角大时会漏判)
@@ -216,7 +211,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //纸札顶部中点与姿态由 Verlet 绳末段决定
             Vector2 stripTop = stripTopNow;
             Vector2 down = (MathHelper.PiOver2 + rot).ToRotationVector2();
-            Vector2 side = rot.ToRotationVector2();
             float W = OnikiriUITheme.HudTalismanW;
             float H = OnikiriUITheme.HudTalismanH;
 
@@ -225,11 +219,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             rope.Draw(sb, OnikiriUITheme.Deep * 0.88f, OnikiriUITheme.Deep * 0.62f, 1.3f, a);
             sb.Draw(pixel, knot, src, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f, new Vector2(0.5f), new Vector2(4.6f), SpriteEffects.None, 0f);
 
-            //气力墨脉保持水平供战斗读取，仅用一根软墨丝接到摆动札面
-            Vector2 vigorLink = stripTop + down * (H * 0.70f) + side * (W * 0.46f);
-            vigorHud.Draw(sb, knot, vigorLink, a, GlobalTimer);
-
             //札体:纸条质感(三段明暗/折角/压边/缓移光泽),危态时改走焚烧 shader
+            Vector2 side = rot.ToRotationVector2();
             float mastery = MathHelper.Clamp(OniRegistry.TotalMastery, 0f, 1f);
             bool danger = OniRegistry.InDanger;
             bool paperByShader = danger && OniPaperBurnDraw.Available;

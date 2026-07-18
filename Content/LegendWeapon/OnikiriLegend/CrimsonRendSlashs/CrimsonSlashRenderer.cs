@@ -43,6 +43,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public float FarDim;         //>0 = 启用远近半侧分层：远半侧压暗系数，并绘制于玩家身后
             public float SweepSnap;      //>0 = 蓄势-爆发扫掠曲线权重（快慢刀：缓推→滞帧→瞬间完成）
             public float RazorTailWiden; //剃刀线向收笔端展宽强度（外弧白热高光末端加粗）
+            //==== 水墨旋钮（0 = 原光润能量；干湿浓淡按拍位区分：快斩干笔飞白、重斩湿笔洇边）====
+            public float Ink;            //0..1 主权重：墨场纹理/墨分五色/透密呼吸/辉光收敛
+            public float FeiBai;         //0..1 飞白干笔断丝（侵蚀期在 DrawLayer 内加剧）
+            public float Bleed;          //0..1 洇边墨晕上限（生命期内渐渗）
+            public float SplitTail;      //0..1 散锋分叉（彗星尾按锋毫拆带收笔）
         }
 
         /// <summary>子刀光单帧动画状态（几何动画包）</summary>
@@ -283,6 +288,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             fx.Parameters["uFarDim"]?.SetValue(d.FarDim);
             fx.Parameters["uFarDirLocal"]?.SetValue(farDirLocal);
             fx.Parameters["uRazorTailWiden"]?.SetValue(d.RazorTailWiden);
+            //水墨旋钮：白热核心薄条关掉墨相细节只留散锋（与歼灭斩双层结构同语言）；
+            //飞白随侵蚀加剧（干笔越扫越枯），洇边随生命期渐渗（墨慢慢吃进纸里）
+            fx.Parameters["uInk"]?.SetValue(forceHot ? 0f : d.Ink);
+            fx.Parameters["uFeiBai"]?.SetValue(forceHot ? 0f
+                : d.FeiBai * (0.60f + 0.40f * Erode(in d, lt)));
+            fx.Parameters["uBleed"]?.SetValue(forceHot ? 0f
+                : d.Bleed * SmoothStep01(lt / (d.Life * 0.45f)));
+            fx.Parameters["uSplitTail"]?.SetValue(d.SplitTail);
 
             VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
             verts[0] = new VertexPositionColorTexture((center - axisX * hx - axisY * hy).ToVector3(), Color.White, new Vector2(0f, 0f));

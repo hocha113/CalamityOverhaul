@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -189,14 +190,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>五段弧形变奏的确定性美术参数：aim/flip 逐拍传入，Seed 掺入出生帧防止循环重复同噪声</summary>
         private SlashDef BuildBeatDef(int beat, float a, float f, float s) {
             SlashDef d = beat switch {
-                //0 纵斩下劈：正面纵切平面（沿瞄准方向纵深压扁为竖长椭圆），自头顶前压至脚下
+                //0 纵斩下劈：正面纵切平面（沿瞄准方向纵深压扁为竖长椭圆），自头顶前压至脚下；
+                //  快斩=干笔疾书：飞白重、墨阶轻、几乎不洇
                 0 => new SlashDef {
                     SweepFrames = 4, Life = 26, ErodeStart = 8, ErodeFrames = 14,
                     ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 1, DamageEnd = 9,
                     Mode = 0f, Rot = a + f * 0.15f, Span = 3.60f, Thick = 0.30f,
                     HalfX = 150f * s, HalfY = 208f * s, Flip = f,
                     Opacity = 0.92f, FrontGlow = 2.2f, OffsetAlongAim = 30f * s,
-                    TailErode = 0.50f, FlashPower = 0.62f, RazorTailWiden = 0.40f, FarDim = 0.70f,
+                    TailErode = 0.50f, FlashPower = 0.62f, RazorTailWiden = 0.40f, FarDim = 0.78f,
+                    Ink = 0.42f, FeiBai = 0.58f, Bleed = 0.06f, SplitTail = 0.50f,
                 },
                 //1 反手上撩：同一平面反向，自脚下撩至头顶收势，覆盖正面 ±100°，更大更立
                 1 => new SlashDef {
@@ -205,19 +208,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Mode = 0f, Rot = a - f * 0.10f, Span = 3.55f, Thick = 0.33f,
                     HalfX = 172f * s, HalfY = 238f * s, Flip = -f,
                     Opacity = 0.96f, FrontGlow = 2.4f, OffsetAlongAim = 44f * s,
-                    TailErode = 0.45f, FlashPower = 0.68f, RazorTailWiden = 0.40f, FarDim = 0.70f,
+                    TailErode = 0.45f, FlashPower = 0.68f, RazorTailWiden = 0.40f, FarDim = 0.78f,
+                    Ink = 0.42f, FeiBai = 0.62f, Bleed = 0.06f, SplitTail = 0.50f,
                 },
-                //2 月牙重斩：满弧重月牙正面自上而下重裂，中段力量拍
+                //2 月牙重斩：满弧重月牙正面自上而下重裂，中段力量拍；中墨过渡
                 2 => new SlashDef {
                     SweepFrames = 3, Life = 34, ErodeStart = 8, ErodeFrames = 18,
                     ColorShiftDelay = 6, ColorShiftFrames = 14, DamageStart = 1, DamageEnd = 10,
                     Mode = 0f, Rot = a, Span = 3.55f, Thick = 0.36f,
                     HalfX = 245f * s, HalfY = 245f * s, Flip = f,
                     Opacity = 1f, FrontGlow = 2.6f, OffsetAlongAim = 0f,
-                    TailErode = 0.42f, FlashPower = 0.60f, RazorTailWiden = 0.55f, FarDim = 0.66f,
+                    TailErode = 0.42f, FlashPower = 0.60f, RazorTailWiden = 0.55f, FarDim = 0.74f,
+                    Ink = 0.52f, FeiBai = 0.42f, Bleed = 0.15f, SplitTail = 0.58f,
                 },
                 //3 蓄势重斩：高离心率椭圆冲击形，负偏移贴身；缓推 30% 滞一拍后末 2 帧爆发，
-                //  伤害窗对齐爆发（蓄势期无判定）
+                //  伤害窗对齐爆发（蓄势期无判定）；重斩=湿笔浓墨：洇边明显、飞白收
                 3 => new SlashDef {
                     SweepFrames = 8, Life = 30, ErodeStart = 9, ErodeFrames = 16,
                     ColorShiftDelay = 7, ColorShiftFrames = 12, DamageStart = 7, DamageEnd = 12,
@@ -225,9 +230,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     HalfX = 330f * s, HalfY = 195f * s, Flip = f,
                     Opacity = 0.97f, FrontGlow = 2.6f, OffsetAlongAim = -35f * s,
                     TailErode = 0.32f, FlashPower = 0.75f, SweepSnap = 1f, RazorTailWiden = 0.75f,
-                    FarDim = 0.60f,
+                    FarDim = 0.70f,
+                    Ink = 0.62f, FeiBai = 0.24f, Bleed = 0.30f, SplitTail = 0.75f,
                 },
-                //4 蓄势终结：最大最重的镜像椭圆重斩，巨弧把角色罩进挥砍平面、弧尖绕到身后
+                //4 蓄势终结：最大最重的镜像椭圆重斩，巨弧把角色罩进挥砍平面、弧尖绕到身后；
+                //  近泼墨，但整体压在歼灭斩（全参数 1.0 + 泼墨罡气）之下保持大招层级
                 _ => new SlashDef {
                     SweepFrames = 9, Life = 56, ErodeStart = 12, ErodeFrames = 30,
                     ColorShiftDelay = 7, ColorShiftFrames = 18, DamageStart = 8, DamageEnd = 14,
@@ -235,7 +242,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     HalfX = 400f * s, HalfY = 230f * s, Flip = -f,
                     Opacity = 1f, FrontGlow = 2.9f, OffsetAlongAim = -60f * s,
                     TailErode = 0.30f, FlashPower = 0.95f, SweepSnap = 1f, RazorTailWiden = 0.85f,
-                    FarDim = 0.55f,
+                    FarDim = 0.66f,
+                    Ink = 0.68f, FeiBai = 0.26f, Bleed = 0.45f, SplitTail = 0.85f,
                 },
             };
             d.Seed = (beat * 0.191f + timer * 0.037f) % 1f;
@@ -711,7 +719,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         /// <summary>各扫开中的刀光前缘火花：喷量随本帧扫掠增量走，
-        /// 蓄势缓推期零星细屑，滞帧近乎无声，爆发帧集中迸发（快慢刀的粒子语言）</summary>
+        /// 蓄势缓推期零星细屑，滞帧近乎无声，爆发帧集中迸发（快慢刀的粒子语言）；
+        /// 湿笔拍位按洇墨权重把部分火花换成暗墨滴——粒子语言与刀光干湿一致</summary>
         private void SpawnSweepSparks() {
             for (int i = 0; i < actives.Count; i++) {
                 ActiveSlash a = actives[i];
@@ -734,6 +743,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
                 for (int k = 0; k < count; k++) {
                     Vector2 vel = tangent * Main.rand.NextFloat(4f, 11f) * speedMul + Main.rand.NextVector2Circular(1.2f, 1.2f);
+                    //墨滴走 AlphaBlend 染暗色（加色画不了黑），读作甩出的墨点而非光屑；
+                    //色值抬到深酒红：明亮背景上近黑圆点过闷
+                    if (Main.rand.NextFloat() < a.Def.Bleed + 0.15f) {
+                        PRTLoader.NewParticle<PRT_OniInkDrop>(pos, vel * 0.55f, new Color(96, 24, 28)
+                            , Main.rand.NextFloat(0.18f, 0.34f) * sizeMul)
+                            ?.Configure(Main.rand.Next(16, 26));
+                        continue;
+                    }
                     PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 120, 80)
                         , Main.rand.NextFloat(0.3f, 0.6f) * sizeMul)
                         ?.Configure(Main.rand.Next(10, 18), affectedByGravity: false);
@@ -741,14 +758,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
         }
 
-        /// <summary>终结拍侵蚀期沿外缘生成细碎烟屑，后期停喷</summary>
+        /// <summary>重击两拍（湿笔浓墨）侵蚀期沿外缘生成细碎烟屑，后期停喷；终结拍喷量更足</summary>
         private void SpawnEdgeSmoke() {
             if (timer % 2 != 0) {
                 return;
             }
             for (int i = 0; i < actives.Count; i++) {
                 ActiveSlash a = actives[i];
-                if (a.Beat != BeatCount - 1) {
+                if (a.Beat < 3) {
                     continue;
                 }
                 int lt = timer - a.Birth;
@@ -759,8 +776,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 if (erode > 0.78f) {
                     continue;
                 }
+                int wisps = a.Beat == BeatCount - 1 ? 2 : 1;
                 Vector2 finCenter = CenterOf(a);
-                for (int k = 0; k < 2; k++) {
+                for (int k = 0; k < wisps; k++) {
                     float uc = Main.rand.NextFloat(0.12f, 0.96f);
                     Vector2 mid = CSR.PointAt(in a.Def, finCenter, uc, lt);
                     Vector2 dir = (mid - Projectile.Center).SafeNormalize(a.Aim.ToRotationVector2());
