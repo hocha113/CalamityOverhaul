@@ -690,5 +690,7 @@ OnikiriText: {
 		HudTitle: Sealing Talisman
 		HudHintFormat: "{0} or click to open the Ghost Register"
 		HudDangerLine: Ghost-fire under the talisman — something is restless
+		VigorTitle: Vigor
+		VigorValueFormat: "{0} / {1}"
 	}
 }

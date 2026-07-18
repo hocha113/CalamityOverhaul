@@ -83,6 +83,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float HudRopeLen = 18f;
         #endregion
 
+        #region 气力墨脉 HUD 几何
+        /// <summary>气力墨脉 quad 左上角相对绳结锚点的偏移(不随纸札摆角,战斗中读数不晃)</summary>
+        public static readonly Vector2 HudVigorOffset = new(28f, 64f);
+        /// <summary>气力墨脉 quad 宽(笔画本体约 158px,余量留给飞墨/洇边)</summary>
+        public const float HudVigorQuadW = 178f;
+        /// <summary>气力墨脉 quad 高(笔画核心约 14px,余量留给蒸散残丝)</summary>
+        public const float HudVigorQuadH = 44f;
+        /// <summary>笔画两端在 quad 内的横向留白(与 OniVigorInk.fx 的 padL/padR 同值)</summary>
+        public const float HudVigorPad = 10f;
+        /// <summary>气力墨脉形状种子:会话内恒定,笔形不逐帧变形——读数才可信</summary>
+        public const float HudVigorSeed = 7.31f;
+        #endregion
+
         /// <summary>异相位呼吸波，给定相位种子返回 0-1 的缓慢脉动</summary>
         public static float Breath(float time, float seed, float speed = 2f) {
             return (float)System.Math.Sin(time * speed + seed * 17.39f) * 0.5f + 0.5f;

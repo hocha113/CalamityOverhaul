@@ -25,11 +25,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText HudTitle { get; private set; }
         public static LocalizedText HudHintFormat { get; private set; }
         public static LocalizedText HudDangerLine { get; private set; }
+        public static LocalizedText VigorTitle { get; private set; }
+        public static LocalizedText VigorValueFormat { get; private set; }
 
         public override void SetStaticDefaults() {
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
             HudHintFormat = this.GetLocalization(nameof(HudHintFormat), () => "{0} 或点击 开阖点鬼簿");
             HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "札下起了青焰——有鬼躁动");
+            VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
+            VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
         }
 
         #region 左下角 HUD 队列接入
@@ -44,6 +48,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private bool hover;
         private bool wasHovered;
         private readonly OniUIParticlePool particles = new(40);
+        //气力墨脉:札旁横书一笔墨痕作气力计,共用本 HUD 锚点(数据层见 OniVigorData)
+        private readonly OniVigorStroke vigor = new();
         private int emberTimer;
         //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
         private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
@@ -87,6 +93,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
+                vigor.Reset();
                 return;
             }
             particles.Update();
@@ -158,7 +165,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
-            if (registerOpen > 0.4f || riteOpen > 0.4f) {
+            bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f;
+            //气力墨脉推进:点鬼簿开卷时也继续呼吸,只是不受理悬浮
+            vigor.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
+            if (uiCovered) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
                 return;
@@ -248,6 +258,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (danger && !paperByShader) {
                 DrawCharredHem(sb, stripTop, down, side, W, H, a);
             }
+
+            //气力墨脉:定在锚侧不随札摆,墨丝自札边垂下把两者缝在一起
+            Vector2 vigorAttach = stripTop + down * (H * 0.62f) + side * (W * 0.5f - 2f);
+            vigor.Draw(sb, a, vigorAttach, GlobalTimer, hover);
+
             particles.Draw(sb, a);
 
             //悬浮说明

@@ -1,0 +1,186 @@
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using System;
+using Terraria;
+using Terraria.GameContent;
+
+namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
+{
+    /// <summary>
+    /// 气力墨脉：封印札 HUD 簇内的气力计,札旁横书一笔"一"字墨痕。<br/>
+    /// 墨长=气力;消耗时墨锋利落回切、留绯红残痕蒸散,恢复时沿纸纤维缓缓洇进;
+    /// 低于约四分之一笔锋干裂、朱印呼吸开裂;回满时白热收笔扫光。<br/>
+    /// 由 <see cref="OniTalismanHud"/> 驱动,共用其锚点,不单独加入左下角 HUD 队列;
+    /// 数据经 <see cref="OniVigor.Get"/> 取原始快照,动画状态全部在本类推导
+    /// </summary>
+    internal sealed class OniVigorStroke
+    {
+        //====显示状态(由数值变化自行推导,数据层只给 Value/Max)====
+        //-1 = 未初始化:首帧直接吸附,重新出现不重播旧动画
+        private float targetFill = -1f;
+        private float displayFill;
+        private float trailFill;
+        private float flow;
+        private float spendPulse;
+        private float gainPulse;
+        private float fullPulse;
+        private bool wasFull;
+        private float hoverEase;
+        private OniVigorSnapshot snap;
+        private Vector2 quadTopLeft;
+        private Vector2 lastMouse;
+
+        /// <summary>本帧悬浮在笔道核心带上(纯读数,不捕获点击)</summary>
+        public bool Hovering { get; private set; }
+
+        /// <summary>朱印中心:笔画起端外侧,视觉锚点</summary>
+        private Vector2 SealCenter => quadTopLeft + new Vector2(-4f, OnikiriUITheme.HudVigorQuadH * 0.5f);
+
+        /// <summary>隐藏期间调用:清空瞬态,下次出现直接吸附到当前值</summary>
+        public void Reset() {
+            targetFill = -1f;
+            spendPulse = gainPulse = fullPulse = 0f;
+            flow = 0f;
+            hoverEase = 0f;
+            Hovering = false;
+        }
+
+        public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse) {
+            quadTopLeft = anchor + OnikiriUITheme.HudVigorOffset;
+            lastMouse = mouse;
+            snap = OniVigor.Get(player);
+            float newTarget = snap.Ratio;
+            if (targetFill < 0f) {
+                targetFill = displayFill = trailFill = newTarget;
+                wasFull = newTarget >= 0.995f;
+            }
+
+            //事件检测:目标值跳变推导消耗/补气脉冲
+            float delta = newTarget - targetFill;
+            if (delta < -0.005f) {
+                //消耗:残痕自旧显示位起
+                trailFill = Math.Max(trailFill, displayFill);
+                spendPulse = Math.Min(1f, spendPulse + Math.Min(1f, 0.35f - delta * 4f));
+            }
+            else if (delta > 0.04f) {
+                gainPulse = Math.Min(1f, gainPulse + delta * 3f);
+            }
+            targetFill = newTarget;
+
+            //显示值:消耗利落回切,恢复缓慢洇进
+            float step = targetFill - displayFill;
+            displayFill += step * (step < 0f ? 0.34f : 0.065f);
+            if (Math.Abs(targetFill - displayFill) < 0.0008f) {
+                displayFill = targetFill;
+            }
+            //残痕蒸散,收拢回墨锋
+            trailFill = Math.Max(displayFill, trailFill - 0.009f);
+            //流速平滑,喂给墨锋的爬动与湿亮
+            flow = MathHelper.Lerp(flow, MathHelper.Clamp(step * 14f, -1f, 1f), 0.16f);
+            //回满收笔
+            bool full = displayFill >= 0.995f;
+            if (full && !wasFull) {
+                fullPulse = 1f;
+            }
+            wasFull = full;
+            spendPulse *= 0.90f;
+            gainPulse *= 0.88f;
+            fullPulse *= 0.95f;
+
+            //悬浮:只吃笔道核心带
+            Rectangle core = new((int)(quadTopLeft.X + OnikiriUITheme.HudVigorPad - 16f),
+                (int)(quadTopLeft.Y + OnikiriUITheme.HudVigorQuadH * 0.5f - 12f),
+                (int)(OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad * 2f + 20f), 24);
+            Hovering = interactive && core.Contains(mouse.ToPoint());
+            hoverEase += ((Hovering ? 1f : 0f) - hoverEase) * 0.2f;
+        }
+
+        /// <summary>
+        /// 绘制墨丝/朱印/墨痕/悬浮读数。stripAttach 为纸札边缘的墨丝挂点(随札摆动),
+        /// suppressTag 为真时不出悬浮读数(让位给札体说明)
+        /// </summary>
+        public void Draw(SpriteBatch sb, float alpha, Vector2 stripAttach, float time, bool suppressTag) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+
+            //墨丝:自摆动的札边垂到定住的朱印,把两件东西缝进同一具身体
+            Vector2 seal = SealCenter;
+            OniBrush.DrawGradientLine(sb, stripAttach, seal,
+                OnikiriUITheme.Deep * (alpha * 0.28f), OnikiriUITheme.Deep * (alpha * 0.70f), 1.1f);
+
+            //朱印:气力将尽时呼吸并裂开
+            float lowT = 1f - MathHelper.Clamp((displayFill - 0.12f) / 0.16f, 0f, 1f);
+            float breath = 1f + (float)Math.Sin(time * 4.3f) * 0.10f * lowT;
+            OniBrush.DrawSealGlyph(sb, seal, 8.5f * breath, alpha * 0.95f,
+                (float)Math.Sin(time * 1.2f) * 0.03f, 1f - lowT * 0.45f);
+
+            //墨痕主体:shader 缺席退回 CPU 简笔
+            Rectangle dest = new((int)quadTopLeft.X, (int)quadTopLeft.Y,
+                (int)OnikiriUITheme.HudVigorQuadW, (int)OnikiriUITheme.HudVigorQuadH);
+            if (OniVigorInkDraw.Available) {
+                OniVigorInkDraw.Draw(sb, dest, new OniVigorInkParams {
+                    Fill = displayFill,
+                    TrailFill = trailFill,
+                    Flow = flow,
+                    SpendPulse = spendPulse,
+                    GainPulse = gainPulse,
+                    FullPulse = fullPulse,
+                    Alpha = alpha,
+                    Time = time,
+                });
+            }
+            else {
+                DrawFallback(sb, alpha);
+            }
+
+            if (!suppressTag && hoverEase > 0.05f) {
+                DrawHoverTag(sb, alpha * hoverEase);
+            }
+        }
+
+        /// <summary>CPU 降级:上限底痕 + 残痕红线 + 已填充段一笔刀痕(sweep 即截断)</summary>
+        private void DrawFallback(SpriteBatch sb, float alpha) {
+            float y = quadTopLeft.Y + OnikiriUITheme.HudVigorQuadH * 0.5f;
+            float x0 = quadTopLeft.X + OnikiriUITheme.HudVigorPad;
+            float x1 = quadTopLeft.X + OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad;
+            OniBrush.DrawGradientLine(sb, new Vector2(x0, y), new Vector2(x1, y),
+                OnikiriUITheme.TextDim * (alpha * 0.30f), OnikiriUITheme.TextDim * (alpha * 0.16f), 1.2f);
+            float fillX = MathHelper.Lerp(x0, x1, displayFill);
+            float trailX = MathHelper.Lerp(x0, x1, trailFill);
+            if (trailX - fillX > 1.5f) {
+                OniBrush.DrawGradientLine(sb, new Vector2(fillX, y), new Vector2(trailX, y),
+                    OnikiriUITheme.Bright * (alpha * 0.55f), OnikiriUITheme.Bright * (alpha * 0.10f), 2.2f);
+            }
+            if (displayFill > 0.01f) {
+                OniBrush.DrawTaperedSlash(sb, new Vector2(x0, y + 1f), new Vector2(x1, y - 1f),
+                    5.0f, 1.2f, alpha * 0.95f, displayFill);
+            }
+        }
+
+        /// <summary>悬浮读数:小裱墨牌,题名 + 当前/上限</summary>
+        private void DrawHoverTag(SpriteBatch sb, float alpha) {
+            DynamicSpriteFont font = FontAssets.MouseText.Value;
+            string title = OniTalismanHud.VigorTitle.Value;
+            string line = string.Format(OniTalismanHud.VigorValueFormat.Value,
+                (int)MathF.Round(snap.Value), (int)MathF.Round(snap.MaxValue));
+
+            float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(line).X * 0.7f);
+            Rectangle panel = new((int)lastMouse.X + 16, (int)lastMouse.Y - 6, (int)w + 20, 42);
+            //不出屏
+            if (panel.Right > OnikiriUITheme.UIScreenW - 8f) {
+                panel.X = (int)(lastMouse.X - panel.Width - 12f);
+            }
+
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            sb.Draw(pixel, new Rectangle(panel.X + 2, panel.Y + 3, panel.Width, panel.Height), src, new Color(8, 2, 5) * (alpha * 0.5f));
+            sb.Draw(pixel, panel, src, OnikiriUITheme.Ink * (alpha * 0.95f));
+            OniBrush.DrawTaperedSlash(sb, new Vector2(panel.X + 4f, panel.Y + 20f),
+                new Vector2(panel.Right - 4f, panel.Y + 19f), 1.3f, 0.7f, alpha * 0.7f);
+
+            Utils.DrawBorderString(sb, title, new Vector2(panel.X + 9f, panel.Y + 3f), OnikiriUITheme.HotWhite * alpha, 0.78f);
+            Utils.DrawBorderString(sb, line, new Vector2(panel.X + 9f, panel.Y + 23f), OnikiriUITheme.TextDim * alpha, 0.7f);
+        }
+    }
+}

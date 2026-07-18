@@ -686,5 +686,7 @@ OnikiriText: {
 		HudTitle: 封印札
 		HudHintFormat: "{0} 或点击 开阖点鬼簿"
 		HudDangerLine: 札下起了青焰
+		VigorTitle: 气力
+		VigorValueFormat: "{0} / {1}"
 	}
 }
