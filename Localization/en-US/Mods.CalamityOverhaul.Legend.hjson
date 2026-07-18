@@ -695,5 +695,6 @@ OnikiriText: {
 		StanceTitle: Stance
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: The edge has left its sheath — one draw remains
+		StanceHalfLine: Past the half — enough for an Annihilating Flash
 	}
 }

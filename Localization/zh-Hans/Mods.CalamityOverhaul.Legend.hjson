@@ -691,5 +691,6 @@ OnikiriText: {
 		StanceTitle: 架势
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: 锋已离鞘——只欠一拔
+		StanceHalfLine: 势已过半——足以一记灭世一闪
 	}
 }

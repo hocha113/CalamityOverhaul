@@ -2,7 +2,9 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
@@ -24,6 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float spendPulse;
         private float gainPulse;
         private float fullPulse;
+        private float denyPulse;
         private bool wasFull;
         private float hoverEase;
         private OniVigorSnapshot snap;
@@ -39,10 +42,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>隐藏期间调用:清空瞬态,下次出现直接吸附到当前值</summary>
         public void Reset() {
             targetFill = -1f;
-            spendPulse = gainPulse = fullPulse = 0f;
+            spendPulse = gainPulse = fullPulse = denyPulse = 0f;
             flow = 0f;
             hoverEase = 0f;
             Hovering = false;
+        }
+
+        /// <summary>气力不足的拒绝反馈:干笔一颤 + 一声哑响(玩法层经 OniTalismanHud 转发调用,本地客户端)</summary>
+        public void NotifyDenied() {
+            denyPulse = 1f;
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.7f, Volume = 0.4f });
         }
 
         public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse) {
@@ -86,6 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             spendPulse *= 0.90f;
             gainPulse *= 0.88f;
             fullPulse *= 0.95f;
+            denyPulse *= 0.87f;
 
             //悬浮:只吃笔道核心带
             Rectangle core = new((int)(quadTopLeft.X + OnikiriUITheme.HudVigorPad - 16f),
@@ -115,8 +125,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             OniBrush.DrawSealGlyph(sb, seal, 9.5f * breath, alpha * 0.95f,
                 (float)Math.Sin(time * 1.2f) * 0.03f, 1f - lowT * 0.45f);
 
+            //拒绝反馈:干笔横向一颤(只抖墨痕,朱印与墨丝按住不动)
+            float denyShake = denyPulse > 0.02f ? MathF.Sin(time * 43f) * 2.2f * denyPulse : 0f;
+
             //墨痕主体:shader 缺席退回 CPU 简笔
-            Rectangle dest = new((int)quadTopLeft.X, (int)quadTopLeft.Y,
+            Rectangle dest = new((int)(quadTopLeft.X + denyShake), (int)quadTopLeft.Y,
                 (int)OnikiriUITheme.HudVigorQuadW, (int)OnikiriUITheme.HudVigorQuadH);
             if (OniVigorInkDraw.Available) {
                 OniVigorInkDraw.Draw(sb, dest, new OniVigorInkParams {
@@ -131,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 });
             }
             else {
-                DrawFallback(sb, alpha);
+                DrawFallback(sb, alpha, denyShake);
             }
 
             if (!suppressTag && hoverEase > 0.05f) {
@@ -140,10 +153,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         }
 
         /// <summary>CPU 降级:上限底痕 + 残痕红线 + 已填充段一笔刀痕(sweep 即截断)</summary>
-        private void DrawFallback(SpriteBatch sb, float alpha) {
+        private void DrawFallback(SpriteBatch sb, float alpha, float shakeX = 0f) {
             float y = quadTopLeft.Y + OnikiriUITheme.HudVigorQuadH * 0.5f;
-            float x0 = quadTopLeft.X + OnikiriUITheme.HudVigorPad;
-            float x1 = quadTopLeft.X + OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad;
+            float x0 = quadTopLeft.X + shakeX + OnikiriUITheme.HudVigorPad;
+            float x1 = quadTopLeft.X + shakeX + OnikiriUITheme.HudVigorQuadW - OnikiriUITheme.HudVigorPad;
             OniBrush.DrawGradientLine(sb, new Vector2(x0, y), new Vector2(x1, y),
                 OnikiriUITheme.TextDim * (alpha * 0.30f), OnikiriUITheme.TextDim * (alpha * 0.16f), 1.2f);
             float fillX = MathHelper.Lerp(x0, x1, displayFill);

@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using InnoVault.GameSystem;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -36,6 +37,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonRendSlash>()] == 0;
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            //把说明里的 [KEY] 占位符替换为玩家实际绑定的处决键
+            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, noneTip: CWRKeySystem.Notbound.Value);
+        }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {

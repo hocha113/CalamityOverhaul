@@ -26,6 +26,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private float fullGlow;
         private float releaseFlash;
         private float seatPulse;
+        private float denyPulse;
         private bool wasFull;
         //释放/大幅泄势后等待读数落底,落底瞬间放归座反馈
         private bool seating;
@@ -40,11 +41,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         /// <summary>隐藏期间调用:清空瞬态,下次出现直接吸附到当前值</summary>
         public void Reset() {
             targetFill = -1f;
-            releaseFlash = seatPulse = 0f;
+            releaseFlash = seatPulse = denyPulse = 0f;
             flow = fullGlow = 0f;
             seating = false;
             hoverEase = 0f;
             Hovering = false;
+        }
+
+        /// <summary>架势不足的拒绝反馈:刀在鞘中一顿 + 木鞘叩响(玩法层经 OniTalismanHud 转发调用,本地客户端)</summary>
+        public void NotifyDenied() {
+            denyPulse = 1f;
+            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.62f, Volume = 0.38f });
         }
 
         public void Update(Player player, Vector2 anchor, bool interactive, Vector2 mouse) {
@@ -88,6 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             fullGlow += ((targetFill >= 0.995f ? 1f : 0f) - fullGlow) * 0.07f;
             releaseFlash *= 0.88f;
             seatPulse *= 0.86f;
+            denyPulse *= 0.87f;
 
             //悬浮:整刀(含后撤余量)的轴对齐外包
             float totalLen = OnikiriUITheme.HudStanceTsukaLen + 3f + OnikiriUITheme.HudStanceBladeW;
@@ -114,6 +122,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //柄随蓄势后撤:刀正在被抽出的第二动势(缓动曲线,不追噪声)
             float ease = displayFill * displayFill * (3f - 2f * displayFill);
             Vector2 pommel = pommelBase - dir * (OnikiriUITheme.HudStanceTsukaRecede * ease);
+            //拒绝反馈:整刀沿轴向在鞘中顿挫(柄/镡/刃鞘全部从柄头推导,自然一起抖)
+            if (denyPulse > 0.02f) {
+                pommel += dir * (MathF.Sin(time * 46f) * 1.8f * denyPulse);
+            }
             Vector2 tsubaC = pommel + dir * OnikiriUITheme.HudStanceTsukaLen;
             Vector2 quadLC = tsubaC + dir * 3f;
 
@@ -134,9 +146,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 DrawFallback(sb, quadLC, dir, perp, cant, alpha);
             }
 
+            //半势刻度:鞘身中点一枚朱菱,过阈点亮——灭世一闪的门槛
+            Vector2 notchPos = quadLC + dir * (OnikiriUITheme.HudStanceBladeW * 0.5f) + perp * 9f;
+            bool notchLit = displayFill >= 0.5f;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            sb.Draw(pixel, notchPos, src,
+                (notchLit ? OnikiriUITheme.Seal : OnikiriUITheme.Disabled) * (alpha * (notchLit ? 0.95f : 0.5f)),
+                MathHelper.PiOver4, new Vector2(0.5f), new Vector2(notchLit ? 4.4f : 3.4f), SpriteEffects.None, 0f);
+            if (notchLit) {
+                float notchBreath = 0.6f + 0.4f * (float)Math.Sin(time * 2.8f);
+                sb.Draw(pixel, notchPos, src, OnikiriUITheme.Bright * (alpha * 0.5f * notchBreath),
+                    MathHelper.PiOver4, new Vector2(0.5f), new Vector2(1.8f), SpriteEffects.None, 0f);
+            }
+
             //归座反馈:鲤口处一线短促白光
             if (seatPulse > 0.03f) {
-                sb.Draw(VaultAsset.placeholder2.Value, quadLC + dir * 4f, new Rectangle(0, 0, 1, 1),
+                sb.Draw(pixel, quadLC + dir * 4f, src,
                     OnikiriUITheme.HotWhite * (alpha * seatPulse * 0.9f), cant + MathHelper.PiOver2,
                     new Vector2(0.5f), new Vector2(13f, 1.6f), SpriteEffects.None, 0f);
             }
@@ -210,7 +236,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             string title = OniTalismanHud.StanceTitle.Value;
             string line = string.Format(OniTalismanHud.StanceValueFormat.Value,
                 (int)MathF.Round(snap.Value), (int)MathF.Round(snap.MaxValue));
-            string readyLine = displayFill >= 0.995f ? OniTalismanHud.StanceReadyLine.Value : null;
+            //满出终结乱舞,半满提示灭世一闪已可用
+            string readyLine = displayFill >= 0.995f ? OniTalismanHud.StanceReadyLine.Value
+                : displayFill >= 0.5f ? OniTalismanHud.StanceHalfLine.Value : null;
 
             float w = Math.Max(font.MeasureString(title).X * 0.78f, font.MeasureString(line).X * 0.7f);
             if (readyLine != null) {

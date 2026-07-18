@@ -30,6 +30,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText StanceTitle { get; private set; }
         public static LocalizedText StanceValueFormat { get; private set; }
         public static LocalizedText StanceReadyLine { get; private set; }
+        public static LocalizedText StanceHalfLine { get; private set; }
 
         public override void SetStaticDefaults() {
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
@@ -40,7 +41,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StanceTitle = this.GetLocalization(nameof(StanceTitle), () => "架势");
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
             StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
+            StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半——足以一记灭世一闪");
         }
+
+        /// <summary>气力不足反馈:墨痕干笔一颤(玩法层调用,本地客户端)</summary>
+        public static void NotifyVigorDenied() => Instance?.vigor.NotifyDenied();
+        /// <summary>架势不足反馈:刀在鞘中一顿(玩法层调用,本地客户端)</summary>
+        public static void NotifyStanceDenied() => Instance?.stance.NotifyDenied();
 
         #region 左下角 HUD 队列接入
         bool IBottomLeftHud.HudStackActive => Active;

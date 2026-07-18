@@ -275,6 +275,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     OniFlashMark.Fire(Owner, npc, judgeDelay, Projectile.damage
                         , Projectile.knockBack, DashAngle, Projectile.GetSource_FromAI());
+                    //穿身即格挡:居合掠过之敌为主人蓄势(封顶/蠕虫去重在资源层)
+                    Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(npc);
                 }
 
                 SoundEngine.PlaySound(SoundID.Item71 with {

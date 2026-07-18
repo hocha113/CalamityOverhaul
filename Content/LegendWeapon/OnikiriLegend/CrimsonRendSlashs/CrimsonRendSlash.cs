@@ -853,6 +853,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, Volume = 0.75f }, target.Center);
 
+            //刀刀入肉:连段命中为主人回气蓄势(owner 端自治)
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Owner.GetModPlayer<OnikiriPlayer>().OnComboHit();
+            }
+
             //每拍首次命中触发爆点全层演出，强度按拍位递增，拒绝"只有最后一下有反馈"
             ActiveSlash a = FindDamagingSlash();
             if (a != null && !a.ImpactDone) {
