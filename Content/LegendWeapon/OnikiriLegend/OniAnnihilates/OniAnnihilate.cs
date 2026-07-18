@@ -43,6 +43,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private const float ArcHalfX = 760f;
         /// <summary>主弧 quad 半短轴(px)（略压扁的滚转透视）</summary>
         private const float ArcHalfY = 690f;
+        /// <summary>近身罡气判定半径(px):泼墨罡气(墨舌 190~280px)视觉覆盖的贴身圈,略盖过其外缘</summary>
+        private const float NearBurstRadius = 300f;
+        /// <summary>扇形补心辐条宽(px):相邻辐条在弧半径处间距约 105px,须小于此宽以保证扇内无缝</summary>
+        private const float SpokeWidth = 160f;
         /// <summary>罡气舌数量</summary>
         private const int TongueCount = 10;
 
@@ -289,19 +293,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             }
         }
 
-        /// <summary>贴刀光的弧形判定：沿主弧带中线取 24 段折线逐段检测，刀光画到哪打到哪</summary>
+        /// <summary>
+        /// 三层判定,填掉"环内空挡"：<br/>
+        /// 1. 近身罡气圈——泼墨罡气的视觉本就吞没贴身一圈,所见即所得,贴脸的敌人不再漏刀;<br/>
+        /// 2. 弧带本体——沿主弧带中线取 24 段折线逐段检测,刀光画到哪打到哪;<br/>
+        /// 3. 扇形补心辐条——每段再自施法点向段中点连线检测,挡在人与刀光之间的都在挥砍平面里;
+        /// 辐条终点取自折线采样,自动跟随弧的揭开动画。<br/>
+        /// localNPCHitCooldown(60) 大于伤害窗,多层命中仍是单次结算
+        /// </summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
             if (!initialized) {
                 return false;
             }
+
+            //近身罡气圈:圆对碰撞箱取最近点判距
+            float nearR = NearBurstRadius * SizeMul;
+            Vector2 nearest = new(
+                MathHelper.Clamp(Projectile.Center.X, targetHitbox.Left, targetHitbox.Right),
+                MathHelper.Clamp(Projectile.Center.Y, targetHitbox.Top, targetHitbox.Bottom));
+            if (Vector2.DistanceSquared(Projectile.Center, nearest) <= nearR * nearR) {
+                return true;
+            }
+
             const int Segments = 24;
             OFR.BladeState state = OFR.ComputeState(in arcDef, Math.Max(timer, 1));
             float cp = 0f;
             Vector2 prev = OFR.PointAt(in arcDef, in state, Projectile.Center, 0f);
             for (int i = 1; i <= Segments; i++) {
                 Vector2 next = OFR.PointAt(in arcDef, in state, Projectile.Center, i / (float)Segments);
+                //弧带本体
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
                     , prev, next, 220f * SizeMul, ref cp)) {
+                    return true;
+                }
+                //扇形补心:施法点到段中点的辐条
+                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
+                    , Projectile.Center, (prev + next) * 0.5f, SpokeWidth * SizeMul, ref cp)) {
                     return true;
                 }
                 prev = next;
