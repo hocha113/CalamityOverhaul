@@ -85,15 +85,34 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
         #region 气力墨脉 HUD 几何
         /// <summary>气力墨脉 quad 左上角相对绳结锚点的偏移(不随纸札摆角,战斗中读数不晃)</summary>
-        public static readonly Vector2 HudVigorOffset = new(28f, 64f);
-        /// <summary>气力墨脉 quad 宽(笔画本体约 158px,余量留给飞墨/洇边)</summary>
-        public const float HudVigorQuadW = 178f;
-        /// <summary>气力墨脉 quad 高(笔画核心约 14px,余量留给蒸散残丝)</summary>
-        public const float HudVigorQuadH = 44f;
+        public static readonly Vector2 HudVigorOffset = new(28f, 61f);
+        /// <summary>气力墨脉 quad 宽(笔画本体约 184px,余量留给飞墨/洇边)</summary>
+        public const float HudVigorQuadW = 204f;
+        /// <summary>气力墨脉 quad 高(笔画核心约 16px,余量留给蒸散残丝)</summary>
+        public const float HudVigorQuadH = 50f;
         /// <summary>笔画两端在 quad 内的横向留白(与 OniVigorInk.fx 的 padL/padR 同值)</summary>
         public const float HudVigorPad = 10f;
         /// <summary>气力墨脉形状种子:会话内恒定,笔形不逐帧变形——读数才可信</summary>
         public const float HudVigorSeed = 7.31f;
+        #endregion
+
+        #region 架势鞘刀 HUD 几何
+        //构图纪律:柄头与气力墨脉的朱印同踩一条左轨,锋尖与墨痕尾端齐平,
+        //刀整体让开纸札摆动列(含焚烧札脚)——札/墨/刀三件各归其位才不显乱
+        /// <summary>鞘刀柄头中心相对绳结锚点的偏移(不随纸札摆角)</summary>
+        public static readonly Vector2 HudStanceOffset = new(26f, 124f);
+        /// <summary>鞘刀倾角(弧度)。放平与墨脉同轨,"兵器感"交给刀形与反(sori)本身</summary>
+        public const float HudStanceCant = 0f;
+        /// <summary>柄长(柄头到镡)</summary>
+        public const float HudStanceTsukaLen = 34f;
+        /// <summary>刃/鞘段 quad 宽(镡到鞘尾)</summary>
+        public const float HudStanceBladeW = 164f;
+        /// <summary>刃/鞘段 quad 高(刀身核心约 10px,余量给刃口辉光与拔刀闪)</summary>
+        public const float HudStanceBladeH = 36f;
+        /// <summary>柄随架势后撤的最大距离(拔刀的第二动势;全撤时仍不进纸札摆动列)</summary>
+        public const float HudStanceTsukaRecede = 8f;
+        /// <summary>架势鞘刀形状种子(刃文/肌理,会话内恒定)</summary>
+        public const float HudStanceSeed = 3.77f;
         #endregion
 
         /// <summary>异相位呼吸波，给定相位种子返回 0-1 的缓慢脉动</summary>

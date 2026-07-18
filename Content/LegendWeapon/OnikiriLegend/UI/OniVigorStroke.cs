@@ -112,7 +112,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //朱印:气力将尽时呼吸并裂开
             float lowT = 1f - MathHelper.Clamp((displayFill - 0.12f) / 0.16f, 0f, 1f);
             float breath = 1f + (float)Math.Sin(time * 4.3f) * 0.10f * lowT;
-            OniBrush.DrawSealGlyph(sb, seal, 8.5f * breath, alpha * 0.95f,
+            OniBrush.DrawSealGlyph(sb, seal, 9.5f * breath, alpha * 0.95f,
                 (float)Math.Sin(time * 1.2f) * 0.03f, 1f - lowT * 0.45f);
 
             //墨痕主体:shader 缺席退回 CPU 简笔
@@ -154,7 +154,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             }
             if (displayFill > 0.01f) {
                 OniBrush.DrawTaperedSlash(sb, new Vector2(x0, y + 1f), new Vector2(x1, y - 1f),
-                    5.0f, 1.2f, alpha * 0.95f, displayFill);
+                    5.8f, 1.3f, alpha * 0.95f, displayFill);
             }
         }
 

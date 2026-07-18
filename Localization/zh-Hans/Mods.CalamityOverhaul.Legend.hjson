@@ -688,5 +688,8 @@ OnikiriText: {
 		HudDangerLine: 札下起了青焰
 		VigorTitle: 气力
 		VigorValueFormat: "{0} / {1}"
+		StanceTitle: 架势
+		StanceValueFormat: "{0} / {1}"
+		StanceReadyLine: 锋已离鞘——只欠一拔
 	}
 }

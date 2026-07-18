@@ -692,5 +692,8 @@ OnikiriText: {
 		HudDangerLine: Ghost-fire under the talisman — something is restless
 		VigorTitle: Vigor
 		VigorValueFormat: "{0} / {1}"
+		StanceTitle: Stance
+		StanceValueFormat: "{0} / {1}"
+		StanceReadyLine: The edge has left its sheath — one draw remains
 	}
 }

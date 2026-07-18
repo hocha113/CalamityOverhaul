@@ -27,6 +27,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText HudDangerLine { get; private set; }
         public static LocalizedText VigorTitle { get; private set; }
         public static LocalizedText VigorValueFormat { get; private set; }
+        public static LocalizedText StanceTitle { get; private set; }
+        public static LocalizedText StanceValueFormat { get; private set; }
+        public static LocalizedText StanceReadyLine { get; private set; }
 
         public override void SetStaticDefaults() {
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
@@ -34,6 +37,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             HudDangerLine = this.GetLocalization(nameof(HudDangerLine), () => "札下起了青焰——有鬼躁动");
             VigorTitle = this.GetLocalization(nameof(VigorTitle), () => "气力");
             VigorValueFormat = this.GetLocalization(nameof(VigorValueFormat), () => "{0} / {1}");
+            StanceTitle = this.GetLocalization(nameof(StanceTitle), () => "架势");
+            StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
+            StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
         }
 
         #region 左下角 HUD 队列接入
@@ -41,7 +47,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
         float IBottomLeftHud.HudStackTopExtent => 12f;
-        float IBottomLeftHud.HudStackBottomExtent => OnikiriUITheme.HudRopeLen + OnikiriUITheme.HudTalismanH + 14f;
+        //簇的下缘取纸札(绳+札+余量)与架势鞘刀(刀轴+刃辉下摆)中更低者
+        float IBottomLeftHud.HudStackBottomExtent => MathF.Max(
+            OnikiriUITheme.HudRopeLen + OnikiriUITheme.HudTalismanH + 14f,
+            OnikiriUITheme.HudStanceOffset.Y + OnikiriUITheme.HudStanceBladeH * 0.5f + 2f);
         #endregion
 
         private float appear;
@@ -50,6 +59,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private readonly OniUIParticlePool particles = new(40);
         //气力墨脉:札旁横书一笔墨痕作气力计,共用本 HUD 锚点(数据层见 OniVigorData)
         private readonly OniVigorStroke vigor = new();
+        //架势鞘刀:墨脉之下横悬的鞘中刀,拔刀进度=架势(数据层见 OniStanceData)
+        private readonly OniStanceSheath stance = new();
         private int emberTimer;
         //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
         private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
@@ -94,6 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
                 vigor.Reset();
+                stance.Reset();
                 return;
             }
             particles.Update();
@@ -101,14 +113,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool danger = OniRegistry.InDanger;
 
             //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
+            //风幅与阻尼取"檐下无风时微微息动"的档位,大幅甩摆只留给悬停初捏与危态拽动
             Vector2 knot = Anchor;
-            float windAmp = danger ? 0.18f : 0.09f;
+            float windAmp = danger ? 0.11f : 0.05f;
             if (hover) {
                 windAmp *= 0.2f;
             }
-            rope.Update(knot, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.88f);
-            if (danger && !hover && Main.rand.NextBool(140)) {
-                rope.Nudge(Main.rand.NextFloat(0.6f, 1.3f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.5f));
+            rope.Update(knot, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.84f);
+            if (danger && !hover && Main.rand.NextBool(180)) {
+                rope.Nudge(Main.rand.NextFloat(0.45f, 0.95f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.35f));
             }
             //悬停牵引:绳末被拉向"让捏点贴住光标"的位置,绳长约束自然给出被拽住的弹性
             if (hover) {
@@ -127,13 +140,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 rotDamp = 0.70f;
             }
             else {
-                targetRot = ((rope.End - knot).SafeNormalize(Vector2.UnitY).ToRotation() - MathHelper.PiOver2) * 1.15f;
-                stiffness = 0.12f;
-                rotDamp = 0.86f;
+                //放大系数 <1:绳向噪声压着用,札身只承接大势不追细碎
+                targetRot = ((rope.End - knot).SafeNormalize(Vector2.UnitY).ToRotation() - MathHelper.PiOver2) * 0.72f;
+                stiffness = 0.085f;
+                rotDamp = 0.80f;
             }
             stripRotVel += (targetRot - stripRot) * stiffness;
             stripRotVel *= rotDamp;
-            stripRot = MathHelper.Clamp(stripRot + stripRotVel, -0.55f, 0.55f);
+            stripRot = MathHelper.Clamp(stripRot + stripRotVel, -0.32f, 0.32f);
             stripRotNow = stripRot;
             if (danger) {
                 stripRotNow += (float)Math.Sin(GlobalTimer * 11f) * 0.010f;
@@ -166,8 +180,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
             float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
             bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f;
-            //气力墨脉推进:点鬼簿开卷时也继续呼吸,只是不受理悬浮
+            //气力墨脉与架势鞘刀推进:点鬼簿开卷时也继续呼吸,只是不受理悬浮
             vigor.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
+            stance.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
             if (uiCovered) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
@@ -262,6 +277,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //气力墨脉:定在锚侧不随札摆,墨丝自札边垂下把两者缝在一起
             Vector2 vigorAttach = stripTop + down * (H * 0.62f) + side * (W * 0.5f - 2f);
             vigor.Draw(sb, a, vigorAttach, GlobalTimer, hover);
+
+            //架势鞘刀:横悬在墨脉之下,拔刀进度=架势
+            stance.Draw(sb, a, GlobalTimer, hover || vigor.Hovering);
 
             particles.Draw(sb, a);
 
