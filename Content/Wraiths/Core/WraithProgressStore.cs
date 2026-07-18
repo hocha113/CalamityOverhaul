@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
@@ -57,10 +58,19 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         public IReadOnlyDictionary<string, WraithProgressRecord> Records => records;
 
+        /// <summary>
+        /// 变更版本号，展示层用它做脏检查缓存。经存储方法的修改自动自增；
+        /// 直接改 <see cref="WraithProgressRecord"/> 字段后须手动 <see cref="BumpVersion"/>
+        /// </summary>
+        public int Version { get; private set; }
+
+        public void BumpVersion() => Version++;
+
         public WraithProgressRecord GetOrCreate(string key) {
             if (!records.TryGetValue(key, out WraithProgressRecord record)) {
                 record = new WraithProgressRecord();
                 records[key] = record;
+                BumpVersion();
             }
             return record;
         }
@@ -74,9 +84,13 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             if (record.State == WraithBindState.Unknown) {
                 record.State = WraithBindState.Discovered;
             }
+            BumpVersion();
         }
 
-        public void Clear() => records.Clear();
+        public void Clear() {
+            records.Clear();
+            BumpVersion();
+        }
 
         /// <summary>写入宿主 tag，键带 WraithProgress 前缀避免与宿主自身数据冲突</summary>
         public void SaveData(TagCompound tag) {
@@ -98,6 +112,7 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         public void LoadData(TagCompound tag) {
             records.Clear();
+            BumpVersion();
             if (!tag.TryGet("WraithProgress:Records", out List<TagCompound> list) || list == null) {
                 return;
             }
@@ -109,6 +124,40 @@ namespace CalamityOverhaul.Content.Wraiths.Core
                 }
                 records[key] = WraithProgressRecord.Load(entry);
             }
+        }
+
+        //====联机序列化（物品 NetSend/NetReceive 链使用，两端读写顺序一致）====
+
+        public void NetSend(BinaryWriter writer) {
+            writer.Write(records.Count);
+            foreach ((string key, WraithProgressRecord record) in records) {
+                writer.Write(key);
+                writer.Write((byte)record.State);
+                writer.Write(record.Mastery);
+                writer.Write(record.EncounterCount);
+            }
+        }
+
+        public void NetReceive(BinaryReader reader) {
+            records.Clear();
+            int count = reader.ReadInt32();
+            //上限防御:恶意/损坏包不至于撑爆字典
+            if (count < 0 || count > 512) {
+                BumpVersion();
+                return;
+            }
+            for (int i = 0; i < count; i++) {
+                string key = reader.ReadString();
+                WraithProgressRecord record = new() {
+                    State = (WraithBindState)reader.ReadByte(),
+                    Mastery = reader.ReadSingle(),
+                    EncounterCount = reader.ReadInt32(),
+                };
+                if (!string.IsNullOrEmpty(key)) {
+                    records[key] = record;
+                }
+            }
+            BumpVersion();
         }
     }
 }

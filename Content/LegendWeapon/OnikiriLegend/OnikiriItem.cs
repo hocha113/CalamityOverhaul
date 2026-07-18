@@ -34,6 +34,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Item.shootSpeed = 1f;
             Item.rare = CWRID.Rarity_BurnishedAuric > 0 ? CWRID.Rarity_BurnishedAuric : ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 25, 0, 0);
+            //点鬼簿绑定层:每把刀一份厉鬼进度(存档/联机走 CWRItem 的 LegendData 通道)
+            Item.CWR().LegendData = new OnikiriData();
         }
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<CrimsonRendSlash>()] == 0;
