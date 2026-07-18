@@ -74,6 +74,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             public int Facing;       //该拍冻结的玩家朝向
             public bool ImpactDone;  //本拍首次命中爆点已触发
             public bool SnapPlayed;  //重击爆发脆响已播（快斩恒 true）
+            public Vector2? FrozenCenter;   //硬让位瞬间就地冻结的世界锚点(平时随玩家)
         }
 
         /// <summary>停手超过该帧数后再按从第一拍重启，短停续接拍序（节奏点按可走完整连段）</summary>
@@ -250,7 +251,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return d;
         }
 
-        private Vector2 CenterOf(ActiveSlash a) => Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim;
+        /// <summary>子刀光锚点：平时随玩家(攻击中走位刀光跟人),硬让位后取冻结点——
+        /// 已经劈进空气的斩击不跟着疾走/大招瞬移</summary>
+        private Vector2 CenterOf(ActiveSlash a)
+            => a.FrozenCenter ?? (Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim);
+
+        /// <summary>本帧是否持有刀权(排拍中/子刀光未散/实体刀未收完);技能的软姿态据此让位</summary>
+        internal bool ClaimsBlade => scheduling || actives.Count > 0 || bladeOpacity > 0.03f;
+
+        /// <summary>查找该玩家当前的连段控制器,无则 null(所有客户端可用,弹幕本身已同步)</summary>
+        internal static CrimsonRendSlash FindController(Player player) {
+            int type = ModContent.ProjectileType<CrimsonRendSlash>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == player.whoAmI && proj.type == type
+                    && proj.ModProjectile is CrimsonRendSlash controller) {
+                    return controller;
+                }
+            }
+            return null;
+        }
 
         /// <summary>刀柄方向支点：略偏离身体中心的稳定点，仅用于解算刀身朝向；
         /// 绘制锚点用 <see cref="bladeHandWorld"/>（真实复合手臂手心），二者相差数像素，方向误差可忽略——
@@ -294,6 +313,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Projectile.Center = Owner.Center;
             timer++;
 
+            UpdateYield();
             UpdateCombo();
             UpdateBeatEvents();
             UpdateBladePose();
@@ -317,15 +337,46 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             UpdateLifetime();
         }
 
+        //====刀权让位====
+        /// <summary>硬让位后子刀光的最大余寿(帧):干脆散掉,不拖 26 帧全程</summary>
+        private const int YieldFadeFrames = 8;
+        //上帧硬让位状态,用于检测让位起始沿
+        private bool yielding;
+
+        /// <summary>
+        /// 刀权仲裁：主人有硬占刀权的技能弹幕(疾走位移段/灭世大挥/终结乱舞开场)时让位——
+        /// 停排、就地冻结在场刀光并速褪、实体刀立刻交权(随人一起化入技能演出)。
+        /// 让位结束后按住左键由既有重启逻辑续接拍序,零额外操作
+        /// </summary>
+        private void UpdateYield() {
+            bool hard = OniBladeOccupancy.AnyHardOccupant(Owner);
+            if (hard && !yielding) {
+                scheduling = false;
+                bladeOpacity = 0f;
+                foreach (ActiveSlash a in actives) {
+                    a.FrozenCenter ??= Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim;
+                    int remain = a.Def.Life - (timer - a.Birth);
+                    if (remain > YieldFadeFrames) {
+                        a.Birth = timer - (a.Def.Life - YieldFadeFrames);
+                    }
+                }
+            }
+            yielding = hard;
+        }
+
         /// <summary>连段排拍：按住推进，松手停排，收势中再按从第一拍重启（DownLeft 由基类自动同步）</summary>
         private void UpdateCombo() {
             bool canContinue = !Owner.noItems && !Owner.CCed
                 && Item.type == ModContent.ItemType<OnikiriItem>();
-            bool holding = DownLeft && canContinue;
+            bool holding = DownLeft && canContinue && !yielding;
 
             //首拍前的纯起手窗（反向蓄势）：窗口走完无条件出刀，轻点也有完整反馈；
             //只有首次启动有这段前摇，之后的节拍间隔与重启响应完全不变
             if (!firstBeatFired) {
+                if (yielding) {
+                    //技能演出优先:首拍推迟到让位结束
+                    return;
+                }
                 if (timer > FirstWindupFrames) {
                     FireBeat();
                     firstBeatFired = true;
@@ -383,6 +434,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// </summary>
         private void UpdateBladePose() {
             DecaySmears();
+
+            //硬让位期间刀随人化入技能演出,不再露面;让位结束重启时姿态照常同帧接管
+            if (yielding) {
+                bladeOpacity = 0f;
+                bladePoseInitialized = false;
+                return;
+            }
 
             float targetRotation;
             float targetDepth;

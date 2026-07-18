@@ -27,7 +27,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
     /// 判定为贴刀光的弧形折线带（蠕虫/阿瑞斯节段减伤惯例）。<br/>
     /// ai[0]=刀线角(弧度) ai[1]=尺寸倍率
     /// </summary>
-    internal class OniAnnihilate : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable
+    internal class OniAnnihilate : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -37,6 +37,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private const int Lifetime = 46;
         /// <summary>施展摆臂帧数（只摆姿态，不锁位移不锁操控）</summary>
         private const int PoseFrames = 6;
+        /// <summary>大挥后的残心余韵帧数(持刀停在收势位,末段淡出)</summary>
+        private const int ZanshinFrames = 12;
         /// <summary>主弧 quad 半长轴(px)</summary>
         private const float ArcHalfX = 760f;
         /// <summary>主弧 quad 半短轴(px)（略压扁的滚转透视）</summary>
@@ -58,6 +60,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         private float CutAngle => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
         private Player Owner => Main.player[Projectile.owner];
+
+        //大挥的实体刀:巨弧是这一挥的结果,不是凭空出现的天象
+        private readonly OniBladePose bladePose = new();
+
+        /// <summary>大挥+残心头段硬占刀权:连段就地冻结让位,10 帧后即恢复,"零后摇"身份不破</summary>
+        bool IOniBladeOccupant.HardOccupiesBlade => timer <= PoseFrames + 4;
 
         /// <summary>
         /// 触发接口：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
@@ -147,7 +155,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             }
             timer++;
 
-            if (timer <= PoseFrames && Owner.active && !Owner.dead) {
+            bladePose.Update();
+            if (timer <= PoseFrames + ZanshinFrames && Owner.active && !Owner.dead) {
                 ApplyCastPose();
             }
 
@@ -155,13 +164,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
             Lighting.AddLight(Projectile.Center, new Vector3(1.35f, 0.55f, 0.32f) * seam * 1.5f);
         }
 
-        /// <summary>施展摆臂：4 帧内从抬臂扫到收势，只摆姿态不锁操控</summary>
+        /// <summary>
+        /// 施展大挥：实体刀 6 帧内自肩后甩到收势位(挥动帧甩出角度残影),
+        /// 随后残心停刀、末段淡出——巨弧读作这一挥的延伸。
+        /// 只摆姿态不锁位移;itemTime 锁仅覆盖原摆臂窗,残心期操控完全自由
+        /// </summary>
         private void ApplyCastPose() {
-            Owner.heldProj = Projectile.whoAmI;
-            Owner.itemTime = Owner.itemAnimation = 2;
-            float sw = OFR.EaseOutCubic(timer / 4f);
-            Owner.itemRotation = MathHelper.WrapAngle(CutAngle
-                + Owner.direction * MathHelper.Lerp(-0.9f, 0.45f, sw));
+            int dir = MathF.Cos(CutAngle) >= 0f ? 1 : -1;
+            float sw = OFR.EaseOutCubic(MathHelper.Clamp(timer / (float)PoseFrames, 0f, 1f));
+            bladePose.Rotation = CutAngle + dir * MathHelper.Lerp(-2.0f, 0.55f, sw);
+
+            if (timer <= PoseFrames) {
+                Owner.itemTime = Owner.itemAnimation = 2;
+                Owner.itemRotation = MathHelper.WrapAngle(CutAngle
+                    + Owner.direction * MathHelper.Lerp(-0.9f, 0.45f, sw));
+                bladePose.Opacity = 1f;
+                if (timer >= 2) {
+                    bladePose.PushSmear(1f);
+                }
+            }
+            else {
+                //残心:停在收势位,后段淡出;玩家续连段或另起技能时立刻放手
+                if (OniBladeOccupancy.ComboClaims(Owner) || OniBladeOccupancy.AnyHardOccupant(Owner, Projectile)) {
+                    bladePose.Opacity = 0f;
+                    return;
+                }
+                bladePose.Opacity = 1f - MathHelper.Clamp((timer - PoseFrames - 4f) / (ZanshinFrames - 4f), 0f, 1f);
+            }
+            bladePose.ApplyPose(Owner, Projectile);
+        }
+
+        /// <summary>遮挡层：大挥实体刀与其残影,稳定盖在巨弧与罡气之上</summary>
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            if (Main.dedServ) {
+                return;
+            }
+            bladePose.Draw(spriteBatch, Owner);
         }
 
         /// <summary>出生帧：全部声画一次砸下</summary>

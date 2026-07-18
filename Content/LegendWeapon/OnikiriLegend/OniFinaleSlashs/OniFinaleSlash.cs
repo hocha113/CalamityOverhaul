@@ -1,4 +1,6 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -19,7 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// ai[0]=瞄准角(弧度，决定终斩刀线与碎晶流向) ai[1]=尺寸倍率；伤害经 damage 传入，
     /// 环斩 45% / 直痕 35% / 终斩 400% 逐类派生
     /// </summary>
-    internal class OniFinaleSlash : ModProjectile
+    internal class OniFinaleSlash : ModProjectile, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -59,6 +61,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         private float Aim => Projectile.ai[0];
         private float SizeMul => Projectile.ai[1] > 0.05f ? Projectile.ai[1] : 1f;
         private Player Owner => Main.player[Projectile.owner];
+
+        //====残心静立与纳刀(纯视觉,软占刀权)====
+        /// <summary>纳刀一挑时长,与引爆帧同步起手</summary>
+        private const int NotoFlickFrames = 6;
+        /// <summary>纳刀后持刀淡出</summary>
+        private const int NotoFadeFrames = 12;
+        private readonly OniBladePose bladePose = new();
+
+        /// <summary>开场短促硬占:清掉在场连段刀光,给演出一个干净的起手;之后普攻自由(不锁)</summary>
+        bool IOniBladeOccupant.HardOccupiesBlade => timer <= 10;
 
         /// <summary>
         /// 触发接口（调试入口）：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
@@ -118,10 +130,59 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
 
             PlayTimelineSounds();
+            UpdateStandPose();
 
             if (Projectile.owner == Main.myPlayer) {
                 RunSpawnTimeline();
             }
+        }
+
+        /// <summary>
+        /// 演出期残心静立(纯视觉,不锁操控)：世界被劈开的整场,持刀人立定屏息;
+        /// 纳刀一挑与引爆帧同帧——刀入鞘,世界才裂。<br/>
+        /// 软占刀权:玩家重新挥连段或施放技能时立刻放手,行动自由完全保留
+        /// </summary>
+        private void UpdateStandPose() {
+            bladePose.Update();
+            if (!Owner.active || Owner.dead) {
+                return;
+            }
+            if (timer > DetonateFrame + NotoFlickFrames + NotoFadeFrames
+                || OniBladeOccupancy.ComboClaims(Owner)
+                || OniBladeOccupancy.AnyHardOccupant(Owner, Projectile)) {
+                bladePose.Opacity = 0f;
+                return;
+            }
+
+            int facing = MathF.Cos(Aim) >= 0f ? 1 : -1;
+            //残心持刀位:刀锋斜垂身前
+            float standRot = Aim + facing * 0.72f;
+            if (timer <= DetonateFrame) {
+                bladePose.Rotation = standRot + MathF.Sin(timer * 0.045f) * 0.035f;   //屏息的呼吸
+                bladePose.Opacity = MathHelper.Clamp(timer / 8f, 0f, 1f);
+            }
+            else if (timer <= DetonateFrame + NotoFlickFrames) {
+                //纳刀:与引爆同帧,一挑入鞘
+                float t = (timer - DetonateFrame) / (float)NotoFlickFrames;
+                float ease = 1f - (1f - t) * (1f - t) * (1f - t);
+                bladePose.Rotation = OniBladePose.LerpAngle(standRot, Aim - facing * 1.05f, ease);
+                bladePose.Opacity = 1f;
+                if (timer - DetonateFrame <= 3) {
+                    bladePose.PushSmear(0.8f);
+                }
+            }
+            else {
+                bladePose.Opacity = 1f - (timer - DetonateFrame - NotoFlickFrames) / (float)NotoFadeFrames;
+            }
+            bladePose.ApplyPose(Owner, Projectile);
+        }
+
+        /// <summary>遮挡层：残心静立/纳刀的实体刀</summary>
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            if (Main.dedServ) {
+                return;
+            }
+            bladePose.Draw(spriteBatch, Owner);
         }
 
         /// <summary>暗场包络：起手浸入 → 乱舞恒定 → 死寂压到最深 → 纳刀后停推自然回落</summary>

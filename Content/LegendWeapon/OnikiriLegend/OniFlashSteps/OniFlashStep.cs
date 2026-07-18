@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
     /// 与雷电/科技无关——鬼切的神威是墨与绸，不是电。<br/>
     /// ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率；伤害经 damage 传入墨痕全额结算
     /// </summary>
-    internal class OniFlashStep : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
+    internal class OniFlashStep : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
     {
         public override string Texture => CWRConstant.Placeholder;
 
@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private const int RetractDelay = 10;    //刹停到流带开始蒸发
         private const int RetractFrames = 22;   //蒸发时长
         private const int MaxMarks = 24;        //单次冲刺标记上限
+        private const int NotoFlickFrames = 6;  //纳刀一挑时长(起于纳刀结算帧,与"锵"同步)
+        private const int TailFadeFrames = 8;   //纳刀后持刀淡出
 
         /// <summary>A/B：冲刺期隐藏本地玩家（"人化作一道神威"的完全体），默认关</summary>
         public static bool HidePlayerDuringDash => true;
@@ -62,6 +64,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool Braking => stopFrame < 0 && timer > plannedDashFrames;
         /// <summary>纳刀结算的绝对帧：按计划距离恒定，撞墙早停只是"锵"前多一拍死寂，节奏不散</summary>
         private int JudgmentFrame => plannedDashFrames + BrakeFrames + JudgmentDelay;
+
+        //收尾残心/纳刀的实体刀(纯视觉,非阻塞)
+        private readonly OniBladePose bladePose = new();
+
+        /// <summary>位移+刹车段硬占刀权:人已化入神威,连段就地冻结让位</summary>
+        bool IOniBladeOccupant.HardOccupiesBlade => stopFrame < 0;
 
         private Player Owner => Main.player[Projectile.owner];
         private float DashAngle => Projectile.ai[0];
@@ -160,6 +168,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 Judge();
             }
 
+            UpdateTailPose();
             UpdateHideState();
             SpawnRetractWisps();
             PushScreenState();
@@ -309,6 +318,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.35f, Volume = 0.22f }, GetCenter());
             CrimsonImpactFX.PushImpact(GetCenter(), 0.02f);
             Owner.CWR().GetScreenShake(3f);
+        }
+
+        /// <summary>
+        /// 刹停后的残心→纳刀(纯视觉,非阻塞)：重现身即前指残心,死寂里持刀不动,
+        /// 纳刀结算帧一挑收刀与"锵"同帧——居合的身体动画补在眼睛来得及读的地方。<br/>
+        /// 连段夺权(按住左键续连段)或新技能硬占时立刻放手,玩家输入永远优先
+        /// </summary>
+        private void UpdateTailPose() {
+            bladePose.Update();
+            if (stopFrame < 0 || !Owner.active || Owner.dead) {
+                return;
+            }
+            if (timer - JudgmentFrame > NotoFlickFrames + TailFadeFrames
+                || OniBladeOccupancy.ComboClaims(Owner)
+                || OniBladeOccupancy.AnyHardOccupant(Owner, Projectile)) {
+                bladePose.Opacity = 0f;
+                return;
+            }
+
+            int facing = MathF.Cos(DashAngle) >= 0f ? 1 : -1;
+            int sinceJudge = timer - JudgmentFrame;
+            if (sinceJudge <= 0) {
+                //残心:刀沿冲刺向平指,极轻的呼吸下沉
+                bladePose.Rotation = DashAngle + facing * 0.05f * MathF.Sin((timer - stopFrame) * 0.35f);
+                bladePose.Opacity = 1f;
+            }
+            else if (sinceJudge <= NotoFlickFrames) {
+                //纳刀一挑:EaseOut 干脆收刀回背(与连段收势的持刀位同一套语言)
+                float t = sinceJudge / (float)NotoFlickFrames;
+                float ease = 1f - (1f - t) * (1f - t) * (1f - t);
+                bladePose.Rotation = OniBladePose.LerpAngle(DashAngle, DashAngle - facing * 1.05f, ease);
+                bladePose.Opacity = 1f;
+                if (sinceJudge <= 3) {
+                    bladePose.PushSmear(1f - t * 0.4f);
+                }
+            }
+            else {
+                bladePose.Opacity = 1f - (sinceJudge - NotoFlickFrames) / (float)TailFadeFrames;
+            }
+            bladePose.ApplyPose(Owner, Projectile);
+        }
+
+        /// <summary>遮挡层：收尾残心/纳刀的实体刀,稳定盖在流带辉光之上</summary>
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            if (Main.dedServ) {
+                return;
+            }
+            bladePose.Draw(spriteBatch, Owner);
         }
 
         //==================== 演出状态 ====================
