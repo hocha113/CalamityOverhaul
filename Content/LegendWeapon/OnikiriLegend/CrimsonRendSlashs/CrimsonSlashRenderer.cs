@@ -153,6 +153,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             };
         }
 
+        /// <summary>刀光带中线上一点（静态几何）：忽略出生缩放/惯性滚转/厚度呼吸，
+        /// 供实体刀等需要稳定路径方向的调用方使用——刀身不该被能量弧的果冻形变反向牵动</summary>
+        public static Vector2 StaticPointAt(in SlashDef d, Vector2 center, float uc) {
+            Vector2 ax = d.Rot.ToRotationVector2();
+            Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
+            if (d.Mode > 0.5f) {
+                return center + ax * (uc * 2f - 1f) * d.HalfX * 0.90f;
+            }
+            float env = MathF.Sin(MathF.Pow(uc, 1.85f) * MathF.PI);
+            float w = d.Thick * MathF.Pow(MathF.Max(env, 0.0001f), 0.72f);
+            float rFrac = 0.90f - w * 0.5f;
+            float phi = d.Flip * (uc - 0.5f) * d.Span;
+            return center + ax * MathF.Cos(phi) * rFrac * d.HalfX + ay * MathF.Sin(phi) * rFrac * d.HalfY;
+        }
+
         /// <summary>刀光带中线上一点：uc=0..1 沿刃，center 为已解算的刀光中心，含几何动画</summary>
         public static Vector2 PointAt(in SlashDef d, Vector2 center, float uc, int lt) {
             SlashAnim anim = GetAnim(in d, lt);
