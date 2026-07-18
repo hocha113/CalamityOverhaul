@@ -41,25 +41,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public bool HasEyes => State == OniGhostState.Engraved || State == OniGhostState.Restless;
     }
 
-    /// <summary>簿面数据源。玩法层实现本接口后经 <see cref="OniRegistry.SetSource"/> 挂接，未挂接时走演示名录</summary>
+    /// <summary>簿面数据源。常规实现为 <see cref="OniWraithSource"/>（厉鬼框架适配器），经 <see cref="OniRegistry.SetSource"/> 挂接</summary>
     internal interface IOniGhostSource
     {
         IReadOnlyList<OniGhostEntry> Entries { get; }
     }
 
     /// <summary>
-    /// 点鬼簿数据入口。当前为作者钦定的演示名录（9 条：4 稳固 / 2 躁动 / 1 封印 / 2 未知），
-    /// 玩法数据层就绪后用 <see cref="SetSource"/> 替换即可，三屏 UI 只读本类
+    /// 点鬼簿数据入口，只读聚合。数据自 <see cref="IOniGhostSource"/> 来，
+    /// 未挂接时为空簿；三屏 UI 只读本类
     /// </summary>
     internal static class OniRegistry
     {
         private static IOniGhostSource source;
-        private static readonly List<OniGhostEntry> demoEntries = [];
 
-        /// <summary>挂接真实玩法数据源；传 null 回落演示名录</summary>
+        /// <summary>挂接数据源；传 null 回落空簿</summary>
         public static void SetSource(IOniGhostSource s) => source = s;
 
-        public static IReadOnlyList<OniGhostEntry> Entries => source?.Entries ?? demoEntries;
+        public static IReadOnlyList<OniGhostEntry> Entries => source?.Entries ?? Array.Empty<OniGhostEntry>();
 
         /// <summary>总驾驭度：已铭刻(含躁动)条目的驾驭均值，HUD 墨批与危态判定用。空簿返回 0</summary>
         public static float TotalMastery {
@@ -86,72 +85,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 }
                 return TotalMastery < 0.35f && Entries.Count > 0;
             }
-        }
-
-        /// <summary>由 <see cref="OniRegisterUI.SetStaticDefaults"/> 在本地化注册完成后调用，构建演示名录</summary>
-        internal static void BuildDemoEntries() {
-            demoEntries.Clear();
-            demoEntries.Add(new OniGhostEntry {
-                Key = "NoFace",
-                Name = () => OniRegisterUI.Ghost1Name.Value,
-                Origin = () => OniRegisterUI.Ghost1Origin.Value,
-                Power = () => OniRegisterUI.Ghost1Power.Value,
-                Mastery = 0.86f,
-                State = OniGhostState.Engraved,
-            });
-            demoEntries.Add(new OniGhostEntry {
-                Key = "LanternBoy",
-                Name = () => OniRegisterUI.Ghost2Name.Value,
-                Origin = () => OniRegisterUI.Ghost2Origin.Value,
-                Power = () => OniRegisterUI.Ghost2Power.Value,
-                Mastery = 0.58f,
-                State = OniGhostState.Engraved,
-            });
-            demoEntries.Add(new OniGhostEntry {
-                Key = "CrimsonBride",
-                Name = () => OniRegisterUI.Ghost3Name.Value,
-                Origin = () => OniRegisterUI.Ghost3Origin.Value,
-                Power = () => OniRegisterUI.Ghost3Power.Value,
-                Mastery = 0.16f,
-                State = OniGhostState.Restless,
-            });
-            //替死鬼:对主人"好得反常",稳定本身就是不祥
-            demoEntries.Add(new OniGhostEntry {
-                Key = "StandIn",
-                Name = () => OniRegisterUI.Ghost5Name.Value,
-                Origin = () => OniRegisterUI.Ghost5Origin.Value,
-                Power = () => OniRegisterUI.Ghost5Power.Value,
-                Mastery = 0.77f,
-                State = OniGhostState.Engraved,
-            });
-            //无头鬼影:头还没找回来,不完整的鬼驯不熟
-            demoEntries.Add(new OniGhostEntry {
-                Key = "HeadlessShade",
-                Name = () => OniRegisterUI.Ghost6Name.Value,
-                Origin = () => OniRegisterUI.Ghost6Origin.Value,
-                Power = () => OniRegisterUI.Ghost6Power.Value,
-                Mastery = 0.28f,
-                State = OniGhostState.Restless,
-            });
-            //鬼手:被假棺材钉钉住的,驯而不服
-            demoEntries.Add(new OniGhostEntry {
-                Key = "GhostHand",
-                Name = () => OniRegisterUI.Ghost7Name.Value,
-                Origin = () => OniRegisterUI.Ghost7Origin.Value,
-                Power = () => OniRegisterUI.Ghost7Power.Value,
-                Mastery = 0.45f,
-                State = OniGhostState.Engraved,
-            });
-            demoEntries.Add(new OniGhostEntry {
-                Key = "WellThing",
-                Name = () => OniRegisterUI.Ghost4Name.Value,
-                Origin = () => OniRegisterUI.SealedOriginHint.Value,
-                Power = () => OniRegisterUI.SealedPowerHint.Value,
-                Mastery = 0f,
-                State = OniGhostState.Sealed,
-            });
-            demoEntries.Add(new OniGhostEntry { Key = "Unknown0", State = OniGhostState.Unknown });
-            demoEntries.Add(new OniGhostEntry { Key = "Unknown1", State = OniGhostState.Unknown });
         }
     }
 }

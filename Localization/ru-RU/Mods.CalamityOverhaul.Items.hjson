@@ -2589,3 +2589,15 @@ TestItem: {
 	// DisplayName: Test Item
 	// Tooltip: ""
 }
+
+WraithDebugTool: {
+	// DisplayName: Wraith Debug Tool
+	/* Tooltip:
+		'''
+		Left click to materialize a debug wraith at the cursor
+		Right click to toggle ambient debug haunting (single player)
+		Development tool for the wraith framework
+		''' */
+	// HauntOn: Debug haunting enabled
+	// HauntOff: Debug haunting disabled
+}

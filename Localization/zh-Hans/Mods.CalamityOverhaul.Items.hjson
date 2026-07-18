@@ -2568,3 +2568,15 @@ TestItem: {
 	// DisplayName: Test Item
 	// Tooltip: ""
 }
+
+WraithDebugTool: {
+	DisplayName: 厉鬼调试器
+	Tooltip:
+		'''
+		左键在光标处显形一只调试厉鬼
+		右键开关环境自动闹鬼（单人调试）
+		厉鬼框架开发调试用
+		'''
+	HauntOn: 调试闹鬼已开启
+	HauntOff: 调试闹鬼已关闭
+}
