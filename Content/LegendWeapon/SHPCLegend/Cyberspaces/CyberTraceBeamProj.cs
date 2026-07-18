@@ -139,6 +139,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public int SplitOnDeath;
         /// <summary>是否为子代光束（避免分裂/链跳无限递归）</summary>
         public bool IsDerived;
+        /// <summary>被机制性吸收/合并的光束置位；OnBeamKill 消费方须检查此标志跳过死亡演出与派生行为</summary>
+        public bool SuppressDeathEffects;
         /// <summary>爆炸伤害倍率（新星枪管特判注入，默认1f）</summary>
         public float ExplodeDamageMul = 1f;
 

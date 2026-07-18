@@ -1696,7 +1696,12 @@ Mewtwo: {
 
 RapidBarrelModule: {
 	DisplayName: Rapid Barrel
-	Tooltip: Hyper-extended recoil spring delivers searing pulses at the cost of stability and per-shot power
+	Tooltip:
+		'''
+		Sustained fire builds barrel heat: the hotter it runs, the faster it fires, searing beams red-hot into white-glowing incandescence that sheds molten cinders
+		Redlining the gauge triggers an overheat vent for several seconds: peak fire rate with zero mana cost, steam blasting from the muzzle under a blaring alarm
+		A forced cooldown follows with heavily reduced fire rate; heat slowly dissipates while holding fire - manage the heat, ride the redline
+		'''
 }
 
 FocusBarrelModule: {
@@ -1738,7 +1743,13 @@ HarmonyGripModule: {
 
 ResonanceFrameModule: {
 	DisplayName: Resonance Frame
-	Tooltip: Harmonic-stacked frame leaks an extra beam, intensifying the volley
+	Tooltip:
+		'''
+		Standing-wave metronome: counts your shots, every fourth becomes a resonant beat beam — thicker, harder, piercing one extra target
+		On hit, a beat beam slams out a ring-shaped oscillation wave, dealing area damage and gently knocking foes outward
+		Keeping the rhythm stacks tempo to empower further beats; pausing too long resets the tempo
+		In laser mode the column pulses to a fixed beat, landing hits inside the beat window also unleashes the wave
+		'''
 }
 
 AdaptiveOpticModule: {
@@ -1770,7 +1781,12 @@ BalancedGripModule: {
 
 CapacitorBankModule: {
 	DisplayName: Capacitor Bank
-	Tooltip: Dense capacitor stack tops the orb off in a much shorter cycle, but dampens its launch energy
+	Tooltip:
+		'''
+		Charging lights up a rack of six capacitor cells overhead, one by one as the orb fills
+		Once the orb launches, the rack stays behind and discharges cell by cell, firing feed arcs at the flying orb
+		Each arc that lands pumps extra damage and blast radius into the orb — the farther it flies, the harder it hits
+		'''
 }
 
 CrystalGripModule: {
@@ -1784,12 +1800,21 @@ CrystalGripModule: {
 
 EfficientGripModule: {
 	DisplayName: Efficient Grip
-	Tooltip: Engineering-grade ergonomic grip refines both energy draw and trigger cadence
+	Tooltip:
+		'''
+		Zero-Loss Loop protocol: beam and laser hits reclaim energy from each shot's mana cost, condensing recycle cells that orbit you
+		At five cells your next left-click becomes a Zero-Loss Shot — full mana refund, and every cell floods the muzzle to empower that volley
+		'''
 }
 
 HeavyBarrelModule: {
 	DisplayName: Heavy Barrel
-	Tooltip: Reinforced rifling crushes spread and cadence, turning every shot into a heavy strike
+	Tooltip:
+		'''
+		Reinforced rifling crushes spread and cadence; every shot lands as a heavy gouge
+		Beam and laser hits on the same target carve notches; the fourth notch hammers in a piledriving maul
+		The maul deals a guaranteed crit scaled from your heaviest gouge and briefly sunders the target's armor (the sunder only benefits your own hits)
+		'''
 }
 
 HighVoltageCoreModule: {
@@ -1839,7 +1864,11 @@ LightStockModule: {
 
 MultiCellFrameModule: {
 	DisplayName: Multi-Cell Frame
-	Tooltip: Parallel cooling cells discharge two beams at once, widening coverage at the cost of per-beam damage
+	Tooltip:
+		'''
+		Matrix feed protocol: deploys a six-cell energy matrix around you; each volley that connects charges one cell, the prism laser charges more slowly
+		Once all six cells are lit, the matrix primes and fires a salvo of six seeking beams at the target from its cell positions, then empties and briefly locks down to cool off
+		'''
 }
 
 PlasmaInjectorModule: {
@@ -1862,12 +1891,17 @@ QuantumFrameModule: {
 
 ScattershotBarrelModule: {
 	DisplayName: Scattershot Barrel
-	Tooltip: Fractured muzzle splits each shot into a spray of beams, drastically expanding coverage but tanking per-beam damage
+	Tooltip:
+		'''
+		Fractured muzzle splits each shot into a spray of short-ranged beams; on its first hit or at the end of its flight, each beam shatters into a cone of glass-light shards
+		Shards never home and their damage decays sharply over distance: a point-blank volley nails the whole cluster into one target, while distant shots only graze
+		Detonating the charge orb also blasts an oversized shard burst along its flight path
+		'''
 }
 
 ThermalOpticModule: {
 	DisplayName: Thermal Optic
-	Tooltip: Infrared lock makes beams cling to their target, doubling down with both precision and crit gains
+	Tooltip: Hits brand heat scars onto targets, searing prey from iron-red to incandescence in the thermal view; at full heat the white-hot lock engages, beams bite hard onto that target with bonus crit and sustained scorching
 }
 
 VolatileFrameModule: {
@@ -2000,7 +2034,13 @@ ScrambleFieldModule: {
 
 BraceStockModule: {
 	DisplayName: Brace Stock
-	Tooltip: A heavy stabilizer brace eliminates all spread and extends beam range, trading a little fire rate for pinpoint accuracy
+	Tooltip:
+		'''
+		Standing still on solid ground for about a second auto-deploys a hydraulic tripod, anchoring into turret mode
+		While deployed: beams gain zero spread, greatly extended range and velocity, extra pierce and ballistic stabilization, plus +8% crit chance
+		Moving or leaving the ground instantly folds the rig; redeploying within 8 seconds keeps the hydraulics warm and is much faster
+		Carried baseline grants -20% spread and -5% attack speed
+		'''
 }
 
 LaunchStockModule: {
@@ -2097,9 +2137,10 @@ SniperOpticModule: {
 	DisplayName: Sniper Optic
 	Tooltip:
 		'''
-		Magnetic collimators dramatically increase projectile speed, range, and single-hit damage
-		At the cost of greatly reduced fire rate and near-zero homing
-		Best paired with the Hypersonic Barrel for extreme long-range strikes
+		Holding fire with a steady crosshair builds lock-on; a sniper guide line fades in from the muzzle
+		Once chambered, your next shot is elevated into a Skypierce Ray: massive damage, full-line pierce, instant hit
+		Firing resets the lock; jerking your aim drains progress, though moving freely does not
+		Improved beam speed and range, at the cost of slower fire rate and homing reduced to nothing
 		'''
 }
 
@@ -2133,15 +2174,23 @@ DarkMatterCoreModule: {
 
 ErgonomicStockModule: {
 	DisplayName: Ergonomic Stock
-	Tooltip: Precision ergonomic design substantially lowers mana cost with minor gains to fire rate and accuracy
+	Tooltip:
+		'''
+		The stock remembers your hands: sustained fire on one target (or roughly the same direction) builds Muscle Memory
+		Proficiency tiers unlock growing returns: tighter spread, then faster fire rate, then full-bar Gun-Body Unity
+		At Unity, hits on the memorized target refund a little mana, beams gain extra aim correction, and rhythmic afterimages trail you and the gun
+		Switching targets or holding fire quickly bleeds the memory away
+		'''
 }
 
 ExtenderStockModule: {
 	DisplayName: Extender Stock
 	Tooltip:
 		'''
-		An extended rail grants beams greater range and flight speed at minimal damage cost
-		Stack with the Sniper Optic for extreme long-range coverage
+		An extended rail grants beams greater range and flight speed
+		Terminal Cleave: once a beam has flown far enough, its residual energy unfolds sideways in place into a light blade perpendicular to its path, sweeping a fan-shaped area for finishing damage
+		Beams that die early from exhausted pierce convert into a smaller blade scaled by distance flown; point-blank deaths trigger nothing
+		In laser mode, sustain the beam briefly, then release the attack key to deliver a crosscut at the cursor's point on the column
 		'''
 }
 
@@ -2149,8 +2198,9 @@ StormStockModule: {
 	DisplayName: Storm Stock
 	Tooltip:
 		'''
-		High-density recoil springs push fire rate and beam count to the limit at the cost of per-hit damage
-		Pair with the Scattershot Barrel for carpet-coverage saturation
+		Sustained fire builds a swirling storm field around you that dissipates when you stop shooting
+		Hostile projectiles inside the field are blown off course by the cyclone, curving around you
+		When the storm gauge fills, a bolt of lightning strikes down from above onto enemies within the field
 		'''
 }
 

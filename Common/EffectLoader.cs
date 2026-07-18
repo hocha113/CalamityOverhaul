@@ -72,6 +72,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniPaperBurn { get; set; }
         public static Asset<Effect> OniVigorInk { get; set; }
         public static Asset<Effect> OniStanceBlade { get; set; }
+        public static Asset<Effect> OniHudInkWash { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }
         public static Asset<Effect> EncyclopediaKnowledge { get; set; }
@@ -140,6 +141,15 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCSonicBoom { get; set; }
         public static Asset<Effect> SHPCJudgmentRay { get; set; }
         public static Asset<Effect> SHPCHoloLattice { get; set; }
+        public static Asset<Effect> SHPCModThermal { get; set; }
+        public static Asset<Effect> SHPCModSniperLock { get; set; }
+        public static Asset<Effect> SHPCModHeavyMaul { get; set; }
+        public static Asset<Effect> SHPCModHexCell { get; set; }
+        public static Asset<Effect> SHPCModExtenderCleave { get; set; }
+        public static Asset<Effect> SHPCModErgoEcho { get; set; }
+        public static Asset<Effect> SHPCModShardburst { get; set; }
+        public static Asset<Effect> SHPCModCapacitorBank { get; set; }
+        public static Asset<Effect> SHPCModBrace { get; set; }
         public static Asset<Effect> ArcaneRift { get; set; }
         public static Asset<Effect> ArcaneHighDimension { get; set; }
         public static Asset<Effect> ArcaneRealityTremor { get; set; }
@@ -180,5 +190,11 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniKamuiFlow { get; set; }
         public static Asset<Effect> OniDismember { get; set; }
         public static Asset<Effect> OniAnnihilateArc { get; set; }
+        public static Asset<Effect> SHPCModStormField { get; set; }
+        public static Asset<Effect> SHPCModStormBolt { get; set; }
+        public static Asset<Effect> SHPCModRecycleCell { get; set; }
+        public static Asset<Effect> SHPCModResonanceWave { get; set; }
+        public static Asset<Effect> SHPCModResonanceRing { get; set; }
+        public static Asset<Effect> SHPCModRedline { get; set; }
     }
 }

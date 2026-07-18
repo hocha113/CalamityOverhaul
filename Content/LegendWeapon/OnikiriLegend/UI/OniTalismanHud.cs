@@ -61,6 +61,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         #endregion
 
         private float appear;
+        //危态缓动:底墨青斑的渗入渗出不跳变
+        private float dangerEase;
         private bool hover;
         private bool wasHovered;
         private readonly OniUIParticlePool particles = new(40);
@@ -111,6 +113,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
+                dangerEase = 0f;
                 vigor.Reset();
                 stance.Reset();
                 return;
@@ -118,6 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             particles.Update();
 
             bool danger = OniRegistry.InDanger;
+            dangerEase += ((danger ? 1f : 0f) - dangerEase) * 0.05f;
 
             //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
             //风幅与阻尼取"檐下无风时微微息动"的档位,大幅甩摆只留给悬停初捏与危态拽动
@@ -239,6 +243,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Texture2D pixel = VaultAsset.placeholder2.Value;
             Rectangle src = new(0, 0, 1, 1);
             Vector2 knot = Anchor;
+
+            ////底墨横扫:整簇的画底,拔刀时自屏外一笔写入;开簿时随 a 一起退
+            //float reveal = MathHelper.Clamp(appear * 1.25f, 0f, 1f);
+            //reveal = reveal * reveal * (3f - 2f * reveal);
+            //float washA = a * (0.90f + 0.10f * OnikiriUITheme.Breath(GlobalTimer, 3.7f, 1.6f));
+            //Rectangle washDest = new((int)(knot.X + OnikiriUITheme.HudInkWashOffset.X),
+            //    (int)(knot.Y + OnikiriUITheme.HudInkWashOffset.Y),
+            //    (int)OnikiriUITheme.HudInkWashW, (int)OnikiriUITheme.HudInkWashH);
+            //OniInkWashDraw.Draw(sb, washDest, washA, reveal, dangerEase, GlobalTimer);
+
             float rot = stripRotNow;
             //纸札顶部中点与姿态由 Verlet 绳末段决定
             Vector2 stripTop = stripTopNow;

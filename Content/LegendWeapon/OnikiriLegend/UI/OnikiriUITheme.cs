@@ -96,6 +96,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float HudVigorSeed = 7.31f;
         #endregion
 
+        #region 底墨横扫 HUD 几何
+        /// <summary>底墨 quad 左上角相对绳结锚点的偏移(X 越过屏幕左缘,笔自屏外扫入)</summary>
+        public static readonly Vector2 HudInkWashOffset = new(-104f, -18f);
+        /// <summary>底墨 quad 宽(右缘盖过鞘刀锋尖并留余量)</summary>
+        public const float HudInkWashW = 356f;
+        /// <summary>底墨 quad 高(上起绳结上方,下没过鞘刀下摆)</summary>
+        public const float HudInkWashH = 176f;
+        /// <summary>底墨形状种子:会话内恒定,画底不逐帧变形</summary>
+        public const float HudInkWashSeed = 5.83f;
+        #endregion
+
         #region 架势鞘刀 HUD 几何
         //构图纪律:柄头与气力墨脉的朱印同踩一条左轨,锋尖与墨痕尾端齐平,
         //刀整体让开纸札摆动列(含焚烧札脚)——札/墨/刀三件各归其位才不显乱
