@@ -24,6 +24,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Halibut_SkillWheel { get; private set; }
         public static ModKeybind Murasama_TriggerKey { get; private set; }
         public static ModKeybind Murasama_DownKey { get; private set; }
+        public static ModKeybind Onikiri_Execute { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -51,6 +52,7 @@ namespace CalamityOverhaul.Common
             Halibut_SkillWheel = KeybindLoader.RegisterKeybind(mod, nameof(Halibut_SkillWheel), "Tab");
             Murasama_TriggerKey = KeybindLoader.RegisterKeybind(mod, nameof(Murasama_TriggerKey), "F");
             Murasama_DownKey = KeybindLoader.RegisterKeybind(mod, nameof(Murasama_DownKey), "X");
+            Onikiri_Execute = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_Execute), "R");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
@@ -61,6 +63,7 @@ namespace CalamityOverhaul.Common
             QuestManager_Key = null;
             Murasama_TriggerKey = null;
             Murasama_DownKey = null;
+            Onikiri_Execute = null;
             Legend_Domain = null;
             Halibut_Clone = null;
             Legend_Restart = null;

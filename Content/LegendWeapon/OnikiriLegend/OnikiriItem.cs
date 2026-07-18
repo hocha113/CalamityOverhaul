@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             //把说明里的 [KEY] 占位符替换为玩家实际绑定的处决键
-            tooltips.InsertHotkeyBinding(CWRKeySystem.WeponSkill_R, noneTip: CWRKeySystem.Notbound.Value);
+            tooltips.InsertHotkeyBinding(CWRKeySystem.Onikiri_Execute, noneTip: CWRKeySystem.Notbound.Value);
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,

@@ -15,6 +15,7 @@ Halibut_Superposition.DisplayName: Flétan : superposition
 Halibut_SkillWheel.DisplayName: Flétan : maintenir pour ouvrir la roue de compétences
 Murasama_TriggerKey.DisplayName: Murasama : touche de déclenchement
 Murasama_DownKey.DisplayName: Murasama : frappe descendante
+// Onikiri_Execute.DisplayName: Onikiri: Execute
 WeponSkill_Q.DisplayName: Arme : compétence gauche
 WeponSkill_R.DisplayName: Arme : compétence droite
 Accessory_Skills.DisplayName: Compétence d'accessoire

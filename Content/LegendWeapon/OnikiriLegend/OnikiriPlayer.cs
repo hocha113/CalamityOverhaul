@@ -52,8 +52,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const int DashRefireLockTicks = 14;
         /// <summary>终结乱舞焦点距离钳制(与疾走射程同量级,演出保持在可读范围)</summary>
         private const float FinaleFocusMaxDist = 800f;
-        /// <summary>终结乱舞光标磁吸半径</summary>
-        private const float FinaleMagnetRadius = 150f;
+        /// <summary>终结乱舞光标磁吸半径(按精确碰撞箱距离衡量)</summary>
+        private const float FinaleMagnetRadius = 200f;
+        /// <summary>光标点名允许略超射程的余量:玩家明确指着谁就成全谁</summary>
+        private const float FinaleCursorSlack = 260f;
+        /// <summary>命中记忆容量与保鲜期(帧):近 5 秒打过谁,处决就认得谁</summary>
+        private const int HitMemoryCapacity = 8;
+        private const int HitMemoryLifeTicks = 300;
 
         //====状态(owner 端自治)====
         internal float Vigor = VigorMax;
@@ -65,6 +70,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private float dashParryGained;
         private readonly HashSet<int> parriedRoots = [];
         private int readyCueTimer;
+
+        //====命中记忆:处决智能选点的第二层依据====
+        private struct HitMemory
+        {
+            public int NpcId;
+            public int NpcType;
+            public int Tick;
+        }
+        private readonly HitMemory[] hitMemory = new HitMemory[HitMemoryCapacity];
 
         public override void OnEnterWorld() {
             Vigor = VigorMax;
@@ -109,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (justRight && !Player.mouseInterface && !Player.cursorItemIconEnabled) {
                 TryDash(item);
             }
-            if (CWRKeySystem.WeponSkill_R.JustPressed) {
+            if (CWRKeySystem.Onikiri_Execute.JustPressed) {
                 TryExecute(item);
             }
         }
@@ -168,17 +182,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>
-        /// 终结乱舞焦点：光标位置钳到射程内,再在小半径内磁吸到最要紧的目标
-        /// (boss 旗优先,其次最大生命,同权取近;蠕虫按主体计旗)。半径内无敌则空地也认账
+        /// 终结乱舞焦点的智能选点——四层意图级联(魂类"隐形辅助"的思路:
+        /// 帮玩家把想做的事做准,而不是替玩家做决定)：<br/>
+        /// 1. 光标直选:光标小半径内有敌(精确碰撞箱距离),吸附到最要紧者中心——玩家在瞄,帮他瞄到点上;<br/>
+        /// 2. 命中记忆:光标附近无敌说明没在瞄,回查近 5 秒打过的目标,优先 boss、其次最近命中,须在射程内——打谁处决谁;<br/>
+        /// 3. 在场 boss 兜底:什么都没打过(架势是先前攒的),射程内有 boss 就取离光标最近的一只——boss 战里几乎不会真想劈空气;<br/>
+        /// 4. 全部落空:光标钳进射程照放——玩家的选择作数,不跨屏改判
         /// </summary>
         private Vector2 ComputeFinaleFocus(out Vector2 aim) {
-            Vector2 focus = Main.MouseWorld;
-            Vector2 toMouse = focus - Player.Center;
-            float dist = toMouse.Length();
-            if (dist > FinaleFocusMaxDist) {
-                focus = Player.Center + toMouse * (FinaleFocusMaxDist / dist);
+            Vector2 mouse = Main.MouseWorld;
+            NPC picked = PickAtCursor(mouse) ?? PickFromHitMemory() ?? PickBossInRange(mouse);
+
+            Vector2 focus;
+            if (picked != null) {
+                focus = picked.Center;
+            }
+            else {
+                focus = mouse;
+                Vector2 toMouse = focus - Player.Center;
+                float dist = toMouse.Length();
+                if (dist > FinaleFocusMaxDist) {
+                    focus = Player.Center + toMouse * (FinaleFocusMaxDist / dist);
+                }
             }
 
+            aim = focus - Player.Center;
+            if (aim.LengthSquared() < 1f) {
+                aim = mouse - Player.Center;
+            }
+            if (aim.LengthSquared() < 1f) {
+                aim = Vector2.UnitX * Player.direction;
+            }
+            return focus;
+        }
+
+        /// <summary>第一层:光标直选。半径内取最要紧者(boss 旗 &gt; 最大生命 &gt; 距离,蠕虫按主体计旗);
+        /// 光标点名可略超射程(<see cref="FinaleCursorSlack"/>),但不追到天边</summary>
+        private NPC PickAtCursor(Vector2 cursor) {
             NPC best = null;
             bool bestBoss = false;
             float bestLife = 0f;
@@ -187,11 +227,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 if (!npc.CanBeChasedBy()) {
                     continue;
                 }
-                float d = Vector2.Distance(focus, npc.Center) - Math.Max(npc.width, npc.height) * 0.5f;
+                float d = DistanceToHitbox(npc, cursor);
                 if (d > FinaleMagnetRadius) {
                     continue;
                 }
-                NPC root = npc.realLife >= 0 && npc.realLife < Main.maxNPCs ? Main.npc[npc.realLife] : npc;
+                if (Vector2.Distance(Player.Center, npc.Center) > FinaleFocusMaxDist + FinaleCursorSlack) {
+                    continue;
+                }
+                NPC root = RootOf(npc);
                 bool better = best == null
                     || (root.boss != bestBoss
                         ? root.boss
@@ -203,28 +246,110 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     bestD = d;
                 }
             }
-            if (best != null) {
-                focus = best.Center;
-            }
+            return best;
+        }
 
-            aim = focus - Player.Center;
-            if (aim.LengthSquared() < 1f) {
-                aim = Main.MouseWorld - Player.Center;
+        /// <summary>第二层:命中记忆。近 5 秒打过、仍然有效且在射程内的目标里,优先 boss、其次最近命中;
+        /// 蠕虫记的是实际挨刀的节段,焦点自然落在一直在砍的那截肉上</summary>
+        private NPC PickFromHitMemory() {
+            int now = (int)Main.GameUpdateCount;
+            NPC best = null;
+            bool bestBoss = false;
+            int bestTick = int.MinValue;
+            for (int i = 0; i < hitMemory.Length; i++) {
+                ref HitMemory mem = ref hitMemory[i];
+                if (mem.Tick <= 0 || now - mem.Tick > HitMemoryLifeTicks
+                    || mem.NpcId < 0 || mem.NpcId >= Main.maxNPCs) {
+                    continue;
+                }
+                NPC npc = Main.npc[mem.NpcId];
+                //槽位可能已被新生的别的 NPC 复用,校验类型防串号
+                if (!npc.active || npc.type != mem.NpcType || !npc.CanBeChasedBy()) {
+                    continue;
+                }
+                if (Vector2.Distance(Player.Center, npc.Center) > FinaleFocusMaxDist) {
+                    continue;
+                }
+                NPC root = RootOf(npc);
+                bool better = best == null || (root.boss != bestBoss ? root.boss : mem.Tick > bestTick);
+                if (better) {
+                    best = npc;
+                    bestBoss = root.boss;
+                    bestTick = mem.Tick;
+                }
             }
-            return focus;
+            return best;
+        }
+
+        /// <summary>第三层:在场 boss 兜底。射程内的 boss(含蠕虫节段)取离光标最近者,多 boss 时尊重光标倾向</summary>
+        private NPC PickBossInRange(Vector2 cursor) {
+            NPC best = null;
+            float bestD = float.MaxValue;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy() || !RootOf(npc).boss) {
+                    continue;
+                }
+                if (Vector2.Distance(Player.Center, npc.Center) > FinaleFocusMaxDist) {
+                    continue;
+                }
+                float d = Vector2.Distance(cursor, npc.Center);
+                if (d < bestD) {
+                    bestD = d;
+                    best = npc;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>点到碰撞箱的精确距离(大体型 boss 的箱边也吸得住,不吃"中心太远"的亏)</summary>
+        private static float DistanceToHitbox(NPC npc, Vector2 point) {
+            Rectangle box = npc.Hitbox;
+            Vector2 nearest = new(MathHelper.Clamp(point.X, box.Left, box.Right),
+                MathHelper.Clamp(point.Y, box.Top, box.Bottom));
+            return Vector2.Distance(point, nearest);
+        }
+
+        /// <summary>蠕虫类归主体(boss 旗/最大生命都看头)</summary>
+        private static NPC RootOf(NPC npc)
+            => npc.realLife >= 0 && npc.realLife < Main.maxNPCs ? Main.npc[npc.realLife] : npc;
+
+        /// <summary>记入命中记忆:去重刷新,满则顶掉最旧</summary>
+        private void RecordHit(NPC npc) {
+            if (npc == null || !npc.active) {
+                return;
+            }
+            int now = (int)Main.GameUpdateCount;
+            int slot = -1;
+            for (int i = 0; i < hitMemory.Length; i++) {
+                if (hitMemory[i].NpcId == npc.whoAmI && hitMemory[i].NpcType == npc.type) {
+                    slot = i;
+                    break;
+                }
+            }
+            if (slot < 0) {
+                slot = 0;
+                for (int i = 1; i < hitMemory.Length; i++) {
+                    if (hitMemory[i].Tick < hitMemory[slot].Tick) {
+                        slot = i;
+                    }
+                }
+            }
+            hitMemory[slot] = new HitMemory { NpcId = npc.whoAmI, NpcType = npc.type, Tick = now };
         }
 
         //==================== 资源增益(玩法挂点调用,owner 端) ====================
 
-        /// <summary>连段命中:回气 + 蓄势(<see cref="CrimsonRendSlash.OnHitNPC"/> 调用)</summary>
-        internal void OnComboHit() {
+        /// <summary>连段命中:回气 + 蓄势 + 记入命中记忆(<see cref="CrimsonRendSlash.OnHitNPC"/> 调用)</summary>
+        internal void OnComboHit(NPC target) {
             Vigor = Math.Min(VigorMax, Vigor + VigorPerComboHit);
             Stance = Math.Min(StanceMax, Stance + StancePerComboHit);
+            RecordHit(target);
         }
 
-        /// <summary>疾走穿身即格挡:蓄势(<see cref="OniFlashStep"/> 标记成功时调用);
-        /// 蠕虫按 realLife 归主体只算一条,单次冲刺封顶</summary>
+        /// <summary>疾走穿身即格挡:蓄势 + 记入命中记忆(<see cref="OniFlashStep"/> 标记成功时调用);
+        /// 蓄势按 realLife 归主体只算一条,单次冲刺封顶;记忆不受封顶影响</summary>
         internal void OnDashParry(NPC npc) {
+            RecordHit(npc);
             int root = npc.realLife >= 0 ? npc.realLife : npc.whoAmI;
             if (!parriedRoots.Add(root) || dashParryGained >= StanceParryCapPerDash - 0.01f) {
                 return;

@@ -15,6 +15,7 @@ Halibut_Superposition.DisplayName: Палтус: Суперпозиция
 Halibut_SkillWheel.DisplayName: Палтус: удерживайте, чтобы открыть колесо навыков
 Murasama_TriggerKey.DisplayName: Мурамаса: Кнопка курка
 Murasama_DownKey.DisplayName: Мурамаса: Удар в падении
+// Onikiri_Execute.DisplayName: Onikiri: Execute
 WeponSkill_Q.DisplayName: Оружие: Левая кнопка навыка
 WeponSkill_R.DisplayName: Оружие: Правая кнопка навыка
 Accessory_Skills.DisplayName: Навык аксессуара

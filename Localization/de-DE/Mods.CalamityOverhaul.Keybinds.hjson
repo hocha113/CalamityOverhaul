@@ -15,6 +15,7 @@ Halibut_Superposition.DisplayName: Heilbutt: Superposition
 Halibut_SkillWheel.DisplayName: Heilbutt: Gedrückt halten, um das Fähigkeitsrad zu öffnen
 Murasama_TriggerKey.DisplayName: Murasama: Auslösetaste
 Murasama_DownKey.DisplayName: Murasama: Hinunterstoßen
+// Onikiri_Execute.DisplayName: Onikiri: Execute
 WeponSkill_Q.DisplayName: Waffe: Linke Fähigkeitstaste
 WeponSkill_R.DisplayName: Waffe: Rechte Fähigkeitstaste
 Accessory_Skills.DisplayName: Accessoire-Fähigkeit
