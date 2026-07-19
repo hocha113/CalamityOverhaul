@@ -151,6 +151,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             }
             ShootContext ctx = SHPCModificationSystem.Resolve(player);
             mult *= ctx.ManaCostMul;
+            //强制免蓝标志（速射喷射期）：不被其他改件的 ManaCostMul 加算抵消
+            if (ctx.ManaFree) {
+                mult = 0f;
+                reduce = 0f;
+            }
         }
 
         /// <summary>On_Shoot：左键光束/激光，右键蓄力球</summary>

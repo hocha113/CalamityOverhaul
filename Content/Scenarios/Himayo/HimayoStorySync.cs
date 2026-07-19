@@ -12,5 +12,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         public static bool FirstMet => Story.FirstMet;
 
         public static void MarkFirstMet() => Story.FirstMet = true;
+
+        public static bool ToriiSwordTaken => Story.ToriiSwordTaken;
+
+        public static void MarkToriiSwordTaken() => Story.ToriiSwordTaken = true;
     }
 }

@@ -12,6 +12,7 @@ using CalamityOverhaul.Content.NPCs.Modifys.Crabulons;
 using CalamityOverhaul.Content.Scenarios.Draedon;
 using CalamityOverhaul.Content.Scenarios.Draedon.Quest.DeploySignaltowers.SignalTower;
 using CalamityOverhaul.Content.Scenarios.Draedon.Tzeentch;
+using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
@@ -47,6 +48,8 @@ namespace CalamityOverhaul
         CyberBossExecutionStart,
         HackProtocolApply,
         CrabulonRecall,
+        ToriiShrineGenerationRequest,
+        ToriiShrineSync,
     }
 
     public static class CWRNetWork
@@ -104,6 +107,12 @@ namespace CalamityOverhaul
             }
             else if (type == CWRMessageType.HackProtocolApply) {
                 HackTimeNetSync.HandleApplyPacket(reader, whoAmI);
+            }
+            else if (type == CWRMessageType.ToriiShrineGenerationRequest) {
+                ToriiShrine.TryGenerateShrine();
+            }
+            else if (type == CWRMessageType.ToriiShrineSync) {
+                ToriiShrine.ReceiveShrineSync(reader);
             }
 
             ModifyCrabulon.NetHandle(type, reader, whoAmI);

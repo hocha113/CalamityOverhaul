@@ -579,8 +579,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
                     SoundEngine.PlaySound(SoundID.Item118 with { Volume = 0.55f, Pitch = 0.25f }, Projectile.Center);
                     SoundEngine.PlaySound(SoundID.DrumTomHigh with { Volume = 0.45f, Pitch = 0.1f }, Projectile.Center);
                     SpawnBurstFx();
+                    //震荡波屏震随本地玩家与波心距离衰减（全局约定：不满幅震旁观者）
+                    float falloff = 1f - MathHelper.Clamp(Main.LocalPlayer.Distance(Projectile.Center) / 900f, 0f, 1f);
+                    SHPCNaturalFx.Shake(3f * falloff);
                 }
-                SHPCNaturalFx.Shake(3f);
             }
 
             float fade = FadeAlpha();
@@ -636,6 +638,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             //击退方向沿环心向外
             modifiers.HitDirectionOverride = target.Center.X >= Projectile.Center.X ? 1 : -1;
+            //蠕虫体节折减：环扫过共血长虫时每节各结算一次，压制多节总伤尖峰（对齐延伸枪托 0.45 口径）
+            if (target.realLife >= 0 && target.realLife != target.whoAmI) {
+                modifiers.FinalDamage *= 0.45f;
+            }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Torii
+* source:	https://sketchfab.com/3d-models/torii-7c4d9c93946a41a2a73468b74436705b
+* author:	kazukisakamoto (https://sketchfab.com/kazukisakamoto)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Torii" (https://sketchfab.com/3d-models/torii-7c4d9c93946a41a2a73468b74436705b) by kazukisakamoto (https://sketchfab.com/kazukisakamoto) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

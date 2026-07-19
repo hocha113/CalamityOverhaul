@@ -93,6 +93,18 @@ namespace CalamityOverhaul
         /// </summary>
         public static List<int> PerforatorSmallSegments;
         /// <summary>
+        /// 石巨人（本体/头/双拳无 realLife 链接，全靠类型表归组）
+        /// </summary>
+        public static List<int> GolemSegments;
+        /// <summary>
+        /// 骷髅王（头+双手）
+        /// </summary>
+        public static List<int> SkeletronSegments;
+        /// <summary>
+        /// 机械骷髅王（头+四臂）
+        /// </summary>
+        public static List<int> SkeletronPrimeSegments;
+        /// <summary>
         /// 所有Boss/蠕虫体节列表的集合，批量检查
         /// </summary>
         public static List<List<int>> AllBossSegmentLists { get; private set; }
@@ -232,6 +244,9 @@ namespace CalamityOverhaul
             DestroyerSegments = [NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail];
             RavagerSegments = [CWRID.NPC_RavagerBody, CWRID.NPC_RavagerClawLeft, CWRID.NPC_RavagerClawRight, CWRID.NPC_RavagerHead, CWRID.NPC_RavagerLegLeft, CWRID.NPC_RavagerLegRight];
             PerforatorSmallSegments = [CWRID.NPC_PerforatorHeadSmall, CWRID.NPC_PerforatorBodySmall, CWRID.NPC_PerforatorTailSmall];
+            GolemSegments = [NPCID.Golem, NPCID.GolemHead, NPCID.GolemHeadFree, NPCID.GolemFistLeft, NPCID.GolemFistRight];
+            SkeletronSegments = [NPCID.SkeletronHead, NPCID.SkeletronHand];
+            SkeletronPrimeSegments = [NPCID.SkeletronPrime, NPCID.PrimeCannon, NPCID.PrimeSaw, NPCID.PrimeVice, NPCID.PrimeLaser];
 
             AllBossSegmentLists = [
                 SepulcherSegments,
@@ -249,6 +264,11 @@ namespace CalamityOverhaul
                 MoonLordSegments,
                 EaterofWorldsSegments,
                 DestroyerSegments,
+                RavagerSegments,
+                PerforatorSmallSegments,
+                GolemSegments,
+                SkeletronSegments,
+                SkeletronPrimeSegments,
             ];
 
             WormBodys = [

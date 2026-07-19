@@ -127,6 +127,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// <summary>切口辉光强度：亮起闪 → 滞拍呼吸 → 分离后稳定灼热，尾段随整体淡出</summary>
         private static float GlowStrength(DismemberEntry entry, in DismemberCut cut) {
             int age = entry.Timer - cut.Birth;
+            if (age < 0) {
+                return 0f;   //波及调度的未来切口：亮起前不可见
+            }
             float strength;
             if (age <= 2) {
                 strength = 1.35f;                         //切口亮起的过曝闪
@@ -145,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         /// <summary>切口辉光半宽：闪帧宽 → 收束成锐利热线</summary>
         private static float GlowHalfWidth(DismemberEntry entry, in DismemberCut cut) {
-            int age = entry.Timer - cut.Birth;
+            int age = Math.Max(entry.Timer - cut.Birth, 0);   //未来切口按亮起帧宽度待命
             float snapScale = MathF.Max(MathF.Min(entry.SnapWidth, entry.SnapHeight) / 160f, 0.6f);
             if (age < cut.Hold) {
                 return (7f - 3f * age / cut.Hold) * snapScale;

@@ -1729,7 +1729,12 @@ OverloadCoreModule: {
 
 SteadyStockModule: {
 	DisplayName: Steady Stock
-	Tooltip: Composite heavy stock absorbs recoil, trading some fire rate for extra damage per shot
+	Tooltip:
+		'''
+		Pauses between shots charge a voltage capacitor, shown on a gauge above your head; firing discharges it to empower that entire volley
+		A full discharge adds pierce and voltage filigree, but full charge only holds for a short window before venting to zero - deliberate, paced shots gain the most, while holding the trigger barely charges at all
+		In laser mode, igniting the beam dumps the stored charge for a brief surge of echo damage
+		'''
 }
 
 HarmonyGripModule: {
@@ -1804,6 +1809,7 @@ EfficientGripModule: {
 		'''
 		Zero-Loss Loop protocol: beam and laser hits reclaim energy from each shot's mana cost, condensing recycle cells that orbit you
 		At five cells your next left-click becomes a Zero-Loss Shot — full mana refund, and every cell floods the muzzle to empower that volley
+		In laser mode the Zero-Loss Shot instead dumps every cell at your cursor, detonating the reclaimed energy
 		'''
 }
 
@@ -1906,7 +1912,12 @@ ThermalOpticModule: {
 
 VolatileFrameModule: {
 	DisplayName: Volatile Frame
-	Tooltip: Overclocked cooling lattice squeezes out an extra beam and crit chance, while mana draw and spread spike
+	Tooltip:
+		'''
+		The frame's containment field destabilizes: every beam is born with a random chaotic mutation, marked by a glitch overlay in its mutation color
+		Fission (cyan) forks mid-flight; Overload (red) doubles damage with a frantic trajectory; Unstable (orange) detonates on first hit; Aberrant (purple) veers toward the nearest enemy
+		In laser mode the field surges periodically: Overload surges echo bonus damage, Unstable surges detonate on accumulated hits
+		'''
 }
 
 NovaBarrelModule: {

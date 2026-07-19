@@ -140,6 +140,7 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     public sealed class HimayoStoryData : DataModule
     {
         public bool FirstMet;
+        public bool ToriiSwordTaken;
     }
 
     public sealed class ShepelGiftStoryData : DataModule

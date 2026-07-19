@@ -86,9 +86,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             AddRecycleEnergy(Main.player[laser.Projectile.owner], LaserRecoverRatio, target.Center);
         }
 
-        /// <summary>命中回收：按本次射击蓝耗的比例累积凝聚能量，凝满成胞；零损待发期间不再回收</summary>
+        /// <summary>命中回收：按本次射击蓝耗的比例累积凝聚能量，凝满成胞；零损待发期间不再回收；免蓝射击无从回收</summary>
         private void AddRecycleEnergy(Player owner, float ratio, Vector2 hitPos) {
-            if (owner == null || !owner.active || cells >= MaxCells) return;
+            if (owner == null || !owner.active || cells >= MaxCells || cachedShotCost <= 0) return;
 
             cellEnergy += cachedShotCost * ratio;
             while (cellEnergy >= CellEnergyCost && cells < MaxCells) {
@@ -100,7 +100,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
             ringDirty = true;
 
-            //命中点凝取微粒：能量碎屑朝玩家回流，体现"从命中处回收"
+            //命中点凝取微粒：能量碎屑朝玩家回流，体现"从命中处回收"（屏外不烧粒子）
+            if (!VaultUtils.IsPointOnScreen(hitPos - Main.screenPosition, 150)) return;
             Vector2 back = (owner.Center - hitPos).SafeNormalize(Vector2.Zero);
             for (int i = 0; i < 2; i++) {
                 PRTLoader.NewParticle<PRT_CyberSquare>(hitPos + Main.rand.NextVector2Circular(8f, 8f),
@@ -116,7 +117,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
             Projectile p = beam.Projectile;
             Lighting.AddLight(p.Center, CellGold.ToVector3() * 0.35f);
-            if (!Main.rand.NextBool(3)) return;
+            if (!Main.rand.NextBool(3)
+                || !VaultUtils.IsPointOnScreen(p.Center - Main.screenPosition, 150)) return;
             Player owner = Main.player[p.owner];
             Vector2 back = (owner.Center - p.Center).SafeNormalize(Vector2.Zero);
             PRTLoader.NewParticle<PRT_CyberSquare>(p.Center + Main.rand.NextVector2Circular(7f, 7f),
@@ -139,9 +141,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
 
             bool holding = player.HeldItem != null && player.HeldItem.type == SHPCOverride.ID;
-            //在非右键帧刷新左键蓝耗缓存（右键期间 ModifyManaCost 把 mult 清零，采样会失真）
+            //在非右键帧刷新左键蓝耗缓存（右键期间 ModifyManaCost 把 mult 清零，采样会失真）；
+            //允许缓存为 0：免蓝窗口（速射喷射期）没花蓝就没得回收，循环让位给免蓝招牌
             if (holding && player.altFunctionUse != 2) {
-                cachedShotCost = Math.Max(player.GetManaCost(player.HeldItem), 1);
+                cachedShotCost = Math.Max(player.GetManaCost(player.HeldItem), 0);
             }
             int ringType = ModContent.ProjectileType<SHPCRecycleCellRingProj>();
             if (holding && player.ownedProjectileCounts[ringType] < 1) {
@@ -151,14 +154,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
             SyncRing(player, ringType);
 
-            //零损射击消费检测：itemAnimation 跳升 = 新一轮使用开始
+            //零损射击消费检测：itemAnimation 跳升 = 新一轮使用开始；
+            //本发蓝耗为 0（如速射喷射期强制免蓝）时按住不放——免蓝窗口里返还无意义，攒着晶胞等窗口结束；
+            //仅蓄力中的球封锁触发（防蓄力使用误判），球发射后飞行期左键齐射照常可吃零损
             bool newUse = player.itemAnimation > prevItemAnim;
             prevItemAnim = player.itemAnimation;
             if (newUse && holding && cells >= MaxCells
                 && player.altFunctionUse != 2
-                && player.ownedProjectileCounts[ModContent.ProjectileType<CyberChargeOrbProj>()] <= 0) {
+                && player.GetManaCost(player.HeldItem) > 0
+                && !OwnerHasChargingOrb(player)) {
                 ConsumeZeroLossShot(player, ringType);
             }
+        }
+
+        /// <summary>拥有者是否有仍在蓄力的能量球（飞行中的球不算）</summary>
+        private static bool OwnerHasChargingOrb(Player player) {
+            int orbType = ModContent.ProjectileType<CyberChargeOrbProj>();
+            if (player.ownedProjectileCounts[orbType] <= 0) return false;
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (p.active && p.owner == player.whoAmI && p.type == orbType
+                    && p.ModProjectile is CyberChargeOrbProj orb && orb.IsCharging) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>把凝聚进度写入星环 ai[0]；汇聚动画播放期间不打断</summary>
@@ -352,8 +372,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
             if (owner == null || !owner.active || owner.dead
-                || owner.HeldItem == null || owner.HeldItem.type != SHPCOverride.ID
-                || !SHPCModificationSystem.HasModule<EfficientGripModule>(owner)) {
+                || owner.HeldItem == null || owner.HeldItem.type != SHPCOverride.ID) {
+                Projectile.Kill();
+                return;
+            }
+            //改件自检只在拥有者端裁决：模块数据不联机同步，远端 HasModule 恒 false，
+            //若远端也 Kill 会陷入"owner netUpdate 重建→远端自杀"抖动循环
+            if (Projectile.owner == Main.myPlayer
+                && !SHPCModificationSystem.HasModule<EfficientGripModule>(owner)) {
                 Projectile.Kill();
                 return;
             }
