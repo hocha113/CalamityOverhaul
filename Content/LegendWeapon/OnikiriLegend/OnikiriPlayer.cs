@@ -13,8 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
@@ -25,9 +23,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// 架势由连段命中与疾走穿身格挡(蠕虫全身算一条,单次冲刺封顶)积攒;
     /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决：蓄满出终结乱舞(耗全部),
     /// 过半出灭世一闪(耗一半),不足则鞘刀顿挫提醒。处决键任何状态下即时响应,不被连段阻塞。<br/>
-    /// <see cref="CWRKeySystem.Onikiri_Dismember"/> 肢解：里世界专属,不耗资源——直接肢解的代价
-    /// 是纳刀后同等的肢解落回自己(<see cref="OniPlayerDismember"/>反噬僵直),斩媒介则替身受过
-    /// (<see cref="TryDismember"/>光标级联)。<br/>
+    /// 肢解无专用键：里世界中左键点中真身/媒介即化为肢解居合(<see cref="TryClickDismember"/>,
+    /// 领域翻转本身就是模式切换),直接肢解的代价是纳刀后同等的肢解落回自己
+    /// (<see cref="OniPlayerDismember"/>反噬僵直),斩媒介则替身受过。<br/>
     /// 数值 owner 端自治,不存 static、不进网络、不存档(进世界/复活重置);
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读本类,招式弹幕由 tML 自动同步
     /// </summary>
@@ -74,10 +72,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float DismemberDamageMul = 2.5f;
         /// <summary>肢解射程(与处决同量级)</summary>
         private const float DismemberRange = 800f;
-        /// <summary>光标点名真身的贴身容差(碰撞箱边距):点在身上=明确要斩真身,压过纸的优先级</summary>
+        /// <summary>点名真身的贴身容差(碰撞箱边距):点在身上=明确要斩真身,压过挂在它身上的纸</summary>
         private const float DirectPickPad = 16f;
-        /// <summary>直接肢解的兜底光标磁吸半径(精确碰撞箱距离)</summary>
-        private const float DismemberMagnetRadius = 130f;
         /// <summary>媒介点选的光标容差(点到纸面矩形距离)</summary>
         private const float PaperMagnetPad = 60f;
 
@@ -152,9 +148,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             if (CWRKeySystem.Onikiri_Execute.JustPressed) {
                 TryExecute(item);
-            }
-            if (CWRKeySystem.Onikiri_Dismember.JustPressed) {
-                TryDismember(item);
             }
         }
 
@@ -248,60 +241,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 肢解 ====================
 
         /// <summary>
-        /// 鬼切:肢解——里世界的法则,不耗气力不耗架势。<br/>
-        /// 光标三层级联：<br/>
+        /// 左键点击的肢解判定——里世界的攻击语言,不耗气力不耗架势,无专用键。<br/>
+        /// 只认按下沿的一次点击(调用方保证:<see cref="OnikiriItem.Shoot"/> 新使用 +
+        /// <see cref="CrimsonRendSlash"/> 排拍重启沿),按住扫过永不转换;两层精确点选:<br/>
         /// 1. 点在真身碰撞箱上(贴身容差) → 直接肢解,代价是纳刀后同等的肢解落回自己
         /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的反噬僵直,天然限频)。
-        /// 新影恰好挂在敌人当前位置上,没有这一层媒介会把真身永远挡住,反噬路径将不可达;<br/>
-        /// 2. 压着媒介(面影纸面) → 点锚斩纸,替身受过、全身而退,限频交给媒介再生成冷却
-        /// ——斩的是敌人"留在过去"的那张纸,指着身体则永远是指着现在;<br/>
-        /// 3. 磁吸半径内的敌人兜底 → 直接肢解。<br/>
-        /// 表世界/翻转中按键给领域拒绝反馈——先入里,再谈肢解
+        /// 新影常挂在敌人当前位置上,真身必须压过纸的优先级,否则反噬路径不可达;<br/>
+        /// 2. 点在媒介(面影纸面)上 → 点锚斩纸,替身受过、全身而退,限频交给媒介再生成冷却
+        /// ——指着纸斩的是"过去",指着身体斩的是"现在"。<br/>
+        /// 均未命中/不在里世界/演出反噬中 → 返回 false,调用方回退普攻连段。
+        /// 仅 owner 端决策(纸为客户端本地,居合弹幕经 tML 同步)
         /// </summary>
-        private void TryDismember(Item item) {
-            //演出或反噬僵直中静默:裂成两半的人拔不了刀
+        internal bool TryClickDismember(Item item) {
+            if (Player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+            //演出或反噬僵直中不受理:裂成两半的人拔不了刀
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] > 0
                 || OniPlayerDismember.IsLocked(Player)) {
-                return;
+                return false;
             }
-            //肢解只在里世界成立
+            //肢解只在里世界成立;表世界左键就是普攻
             OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
             if (domain.Phase != OniDomainPhase.Ura || !domain.WorldIsUra) {
-                OniTalismanHud.NotifyDomainDenied();
-                return;
+                return false;
             }
 
             ShootState state = Player.GetShootState();
             int damage = (int)(state.WeaponDamage * DismemberDamageMul);
             Vector2 mouse = Main.MouseWorld;
 
-            //一层:光标点名真身(碰撞箱贴身容差) → 直接肢解,反噬上身
+            //一层:点在真身碰撞箱上 → 直接肢解,反噬上身
             NPC target = PickDismemberTarget(mouse, DirectPickPad);
-            if (target == null) {
-                //二层:光标压着媒介 → 点锚斩纸(替身受过,无反噬)
-                OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
-                if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
-                    //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点
-                    Vector2 local = mouse - paper.AnchorCenter;
-                    local.X = MathHelper.Clamp(local.X, -paper.PaperHalf.X * 0.4f, paper.PaperHalf.X * 0.4f);
-                    local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
-                    Vector2 cutPoint = paper.AnchorCenter + local;
-                    OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
-                        , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
-                    return;
-                }
-                //三层:磁吸半径内的敌人兜底
-                target = PickDismemberTarget(mouse, DismemberMagnetRadius);
-            }
-
             if (target != null) {
                 OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage
                     , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
-                return;
+                return true;
             }
 
-            //落空:轻声鞘刀顿挫,不动 HUD
-            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.35f, Volume = 0.3f }, Player.Center);
+            //二层:点在媒介纸面上 → 点锚斩纸(替身受过,无反噬)
+            OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
+            if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
+                //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点
+                Vector2 local = mouse - paper.AnchorCenter;
+                local.X = MathHelper.Clamp(local.X, -paper.PaperHalf.X * 0.4f, paper.PaperHalf.X * 0.4f);
+                local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
+                Vector2 cutPoint = paper.AnchorCenter + local;
+                OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
+                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>拔刀方向:玩家→落点;重合时退回鼠标方向,再退回朝向</summary>

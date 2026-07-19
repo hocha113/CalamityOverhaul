@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,6 +65,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private bool whiffed;
         /// <summary>反噬已落下（防帧等值判断被计时抖动漏过）</summary>
         private bool selfCutDone;
+        /// <summary>起手继承的连段刀角：从普攻移交时蓄势段顺势收拢入鞘，刀不跳变</summary>
+        private float inheritRot;
+        private bool inheritPose;
         private readonly OniBladePose bladePose = new();
 
         private int TargetIndex => (int)Projectile.ai[0];
@@ -150,6 +154,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     NPC first = TargetIndex >= 0 && TargetIndex < Main.maxNPCs ? Main.npc[TargetIndex] : null;
                     targetType = first?.active == true ? first.type : -1;
                 }
+                //从连段移交时继承实体刀当前角度：蓄势段从这里顺势收拢入鞘，普攻→居合读作一整段动作
+                CrimsonRendSlash combo = CrimsonRendSlash.FindController(Owner);
+                inheritPose = combo != null && combo.TryGetBladePose(out inheritRot, out _);
                 //起手屏息的低鸣：拔刀的呼吸从这里开始
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.60f, Volume = 0.40f }, Owner.Center);
             }
@@ -254,10 +261,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             if (timer <= WindupFrames) {
-                //蓄：鞘位再反向压一分——出刀前的那口气
+                //蓄：鞘位再反向压一分——出刀前的那口气；
+                //继承连段刀角时从当前角度顺势收拢（刀已在手，不淡入，划弧带轻残影）
                 float wind = OFR.EaseOutCubic(timer / (float)WindupFrames);
-                bladePose.Rotation = sheathRot - facing * 0.30f * wind;
-                bladePose.Opacity = MathHelper.Clamp(timer / 3f, 0f, 1f);
+                if (inheritPose) {
+                    bladePose.Rotation = OniBladePose.LerpAngle(inheritRot, sheathRot - facing * 0.30f, wind);
+                    bladePose.Opacity = 1f;
+                    bladePose.PushSmear(0.4f);
+                }
+                else {
+                    bladePose.Rotation = sheathRot - facing * 0.30f * wind;
+                    bladePose.Opacity = MathHelper.Clamp(timer / 3f, 0f, 1f);
+                }
                 stretch = Player.CompositeArmStretchAmount.Quarter;
             }
             else if (timer <= StrikeFrame) {

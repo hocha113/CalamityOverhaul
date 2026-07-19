@@ -259,6 +259,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         /// <summary>本帧是否持有刀权(排拍中/子刀光未散/实体刀未收完);技能的软姿态据此让位</summary>
         internal bool ClaimsBlade => scheduling || actives.Count > 0 || bladeOpacity > 0.03f;
 
+        /// <summary>实体刀当前姿态(供肢解居合起手继承,移交瞬间刀角不跳变);刀不可见时返回 false</summary>
+        internal bool TryGetBladePose(out float rotation, out int facing) {
+            rotation = bladeRotation;
+            facing = bladeFacing;
+            return bladePoseInitialized && bladeOpacity > 0.05f;
+        }
+
         /// <summary>查找该玩家当前的连段控制器,无则 null(所有客户端可用,弹幕本身已同步)</summary>
         internal static CrimsonRendSlash FindController(Player player) {
             int type = ModContent.ProjectileType<CrimsonRendSlash>();
@@ -364,10 +371,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             yielding = hard;
         }
 
-        /// <summary>连段排拍：按住推进，松手停排，收势中再按从第一拍重启（DownLeft 由基类自动同步）</summary>
+        /// <summary>连段排拍：按住推进，松手停排，收势中再按从第一拍重启（DownLeft 由基类自动同步）；
+        /// 肢解居合演出期不排新拍（点纸后按住不把残心踩掉，居合收完按住自然续接）</summary>
         private void UpdateCombo() {
             bool canContinue = !Owner.noItems && !Owner.CCed
-                && Item.type == ModContent.ItemType<OnikiriItem>();
+                && Item.type == ModContent.ItemType<OnikiriItem>()
+                && Owner.ownedProjectileCounts[ModContent.ProjectileType<OniDismembers.OniSeverStrike>()] == 0;
             bool holding = DownLeft && canContinue && !yielding;
 
             //首拍前的纯起手窗（反向蓄势）：窗口走完无条件出刀，轻点也有完整反馈；
@@ -390,6 +399,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 return;
             }
             if (!scheduling) {
+                //按下沿（控制器存活期间的再点击）：里世界点中媒介/真身则移交肢解居合——
+                //本次不重启排拍，连段随居合的硬占刀权就地让位；按住扫过永不走到这里
+                if (Projectile.IsOwnedByLocalPlayer()
+                    && Owner.GetModPlayer<OnikiriPlayer>().TryClickDismember(Item)) {
+                    return;
+                }
                 scheduling = true;
                 if (timer - lastBeatFire > ComboResetFrames) {
                     comboIndex = 0;
