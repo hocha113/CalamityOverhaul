@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 
 namespace CalamityOverhaul.Common
@@ -72,7 +72,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniPaperBurn { get; set; }
         public static Asset<Effect> OniVigorInk { get; set; }
         public static Asset<Effect> OniStanceBlade { get; set; }
-        public static Asset<Effect> OniHudInkWash { get; set; }
         public static Asset<Effect> HalibutHudEye { get; set; }
         public static Asset<Effect> HalibutHudGauge { get; set; }
         public static Asset<Effect> EncyclopediaKnowledge { get; set; }
