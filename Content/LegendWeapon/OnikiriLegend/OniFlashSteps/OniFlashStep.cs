@@ -18,9 +18,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
     /// 神威疾走主控：零前摇零后摇的按住可控冲刺 + 延迟居合结算。<br/>
     /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身（900px 全程 ~10 帧），
     /// 之后立刻交还操控——一切华丽的东西都是非阻塞的事后余像，自己播完自己。<br/>
-    /// 长度控制走缓起加速曲线（<see cref="DashSpeedRamp"/>）：起步低位移帧就是
-    /// "点按还是长按"的输入辨义窗——点按只花掉便宜的起步帧（最小跳距 ~160-260px），
-    /// 按住则加速走满全程；松开右键即刹停；撞墙直线斩停（子步扫描，轨迹恒直，墨溅上墙）。<br/>
+    /// 长度控制走"台地+加速"曲线（<see cref="DashSpeedRamp"/>）与点按手势量化：
+    /// 前 <see cref="TapWindowFrames"/> 帧的近匀速台地是输入辨义窗，窗内松开 = 点按，
+    /// 一律滑到台地终点（~229px）统一落点——松开时刻的 ±2~3 帧人手抖动不再改变距离；
+    /// 窗后松开 = 模拟控长就地刹停，按住加速走满全程；
+    /// 撞墙直线斩停（子步扫描，轨迹恒直，墨溅上墙）。<br/>
     /// 时间轴（60fps，距离 900 全程约 0.85s 演出 / 0.17s 锁定）：<br/>
     /// 0 爆发起步、出发点墨爆、布帛撕裂+风切+低太鼓 →
     /// 巡航推进（撞墙/松手提前止步）、身后神威流带逐帧延伸、穿过的敌人缠上墨痕
@@ -36,11 +38,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public override string Texture => CWRConstant.Placeholder;
 
         //==== 时间轴常量 ====
-        //缓起加速曲线：把"点按还是长按"的输入辨义窗叠进低位移的起步帧——
-        //起步走得便宜（点按只花掉这几帧，最小跳距压到 ~160-260px），
-        //输入表明意图后再进高速段，长按 900px 全程约 10 帧（~170ms），总时长不增反缩。
-        //旧的爆发前置（头 2 帧 260px）把距离花在了松开信号还没到达的盲区里
-        private static readonly float[] DashSpeedRamp = [35f, 50f, 70f, 100f, 125f];  //px/帧，末值为巡航速度
+        //台地+加速曲线：前 TapWindowFrames 帧是近匀速的"输入辨义台地"（~40px/帧，位移便宜且平），
+        //之后进入加速段走满全程。点按的松开时刻天然有 ±2~3 帧抖动，任何单调陡增的
+        //距离函数都会把抖动放大成"一会长一会短"——台地让抖动区间上的距离几乎不变，
+        //再配合点按手势量化（窗口内松开一律滑到台地终点），落点恒定
+        private static readonly float[] DashSpeedRamp = [45f, 40f, 36f, 36f, 36f, 36f, 95f, 130f, 155f];  //px/帧，末值为巡航速度
+        /// <summary>点按判定窗（帧）：此窗内松开 = 点按手势，统一停在台地终点（~229px）；
+        /// 之后松开 = 长按的模拟控长，就地刹停</summary>
+        private const int TapWindowFrames = 6;
         private const int BrakeFrames = 2;      //硬刹：+过冲 → −回拉
         private const int JudgmentDelay = 8;    //刹停到纳刀结算
         private const int RetractDelay = 10;    //刹停到流带开始蒸发
@@ -78,6 +83,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool wallStopped;
         /// <summary>流带头端超前身体的距离（px），停止时按身前自由空间 clamp——墨最多亲到墙面，永不入墙</summary>
         private float headOffset = 100f;
+        /// <summary>点按手势已锁定：目标距离改写为台地终点，滑到位自然停，不受后续松开状态影响</summary>
+        private bool tapCommitted;
+        /// <summary>台地终点距离（Initialize 按曲线前 <see cref="TapWindowFrames"/> 帧求和）</summary>
+        private float tapDistance;
 
         private bool Dashing => stopFrame < 0 && timer <= plannedDashFrames;
         private bool Braking => stopFrame < 0 && timer > plannedDashFrames;
@@ -156,6 +165,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 acc += DashSpeedRamp[Math.Min(plannedDashFrames, DashSpeedRamp.Length - 1)];
             }
             plannedDashFrames = Math.Max(plannedDashFrames, 2);
+
+            //台地终点 = 点按手势的统一落点
+            tapDistance = 0f;
+            for (int i = 0; i < TapWindowFrames; i++) {
+                tapDistance += DashSpeedRamp[Math.Min(i, DashSpeedRamp.Length - 1)];
+            }
+            tapDistance = MathF.Min(tapDistance, Distance);
             Projectile.timeLeft = JudgmentFrame + RetractDelay + RetractFrames + 30;
 
             path.Add(GetCenter());
@@ -270,16 +286,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.GivePlayerImmuneState(10);
             HoldPose();
 
-            //松手提前收势，无下限——松手即停，最短一帧微刺也认（owner 端意图，
-            //缩短后的距离回写 ai[1] 同步远端按距离条件自然停下）
-            bool released = Projectile.IsOwnedByLocalPlayer() && !Main.mouseRight;
-            bool finished = blocked || released || traveled >= Distance - 1f;
+            //松手收势分两种手势：辨义窗内松开 = 点按，量化到台地终点统一落点
+            //（不立即刹车，滑到位由距离条件自然停——落点恒定，消掉松开时刻的 ±2~3 帧抖动）；
+            //窗后松开 = 长按的模拟控长，就地刹停。缩短距离均回写 ai[1] 同步远端
+            bool released = !tapCommitted && Projectile.IsOwnedByLocalPlayer() && !Main.mouseRight;
+            if (released && timer <= TapWindowFrames) {
+                tapCommitted = true;
+                if (Projectile.owner == Main.myPlayer && Distance > tapDistance + 1f) {
+                    Projectile.ai[1] = MathF.Max(tapDistance, 61f);
+                    Projectile.netUpdate = true;
+                }
+            }
+            bool analogStop = released && timer > TapWindowFrames;
+            bool finished = blocked || analogStop || traveled >= Distance - 1f;
             if (finished) {
                 if (blocked && !wallStopped) {
                     wallStopped = true;
                     WallSplat();
                 }
-                if (released && Projectile.owner == Main.myPlayer && traveled < Distance - 1f) {
+                if (analogStop && Projectile.owner == Main.myPlayer && traveled < Distance - 1f) {
                     Projectile.ai[1] = MathF.Max(traveled, 61f);
                     Projectile.netUpdate = true;
                 }
