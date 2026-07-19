@@ -47,3 +47,13 @@ GravitationalCollapse: {
 	DisplayName: Gravitational Collapse
 	Description: Dragged into the abyss by its own weight
 }
+
+MarbleRiposteBuff: {
+	DisplayName: Marble Riposte
+	Description: Melee damage increased by 10%
+}
+
+MarblePetrify: {
+	DisplayName: Marble Petrification
+	Description: Flesh turns to marble, movements grind to a halt
+}

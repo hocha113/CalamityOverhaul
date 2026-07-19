@@ -306,9 +306,9 @@ GraniteCrystalShard.DisplayName: Гранитный кристальный ос�
 GraniteEnergyOrb.DisplayName: Гранитная энергетическая сфера
 GraniteFlowerHeld.DisplayName: Гранитный цветок
 GraniteFlowerSeed.DisplayName: Гранитное кристальное семя
+// GraniteKnifeVoltArc.DisplayName: Granite Chain Volt
 GraniteThrowingKnifeProj.DisplayName: Гранитный метательный нож
 GraniteTomeHeld.DisplayName: Гранитный фолиант
-MarbleAegisRing.DisplayName: Мраморное кольцо эгиды
 MarbleClubHeld.DisplayName: Мраморная дубина
 MarbleDiscProj.DisplayName: Мраморный диск
 MarbleHuntingKnifeHeld.DisplayName: Мраморный охотничий нож
@@ -372,3 +372,4 @@ VictorRiftPortalProj.DisplayName: Кибер-разлом Виктора
 // SHPCStormFieldProj.DisplayName: S H P C Storm Field Proj
 // OniSeverStrike.DisplayName: Oni Sever Strike
 // SHPCVolatileGlitchProj.DisplayName: S H P C Volatile Glitch Proj
+// SHPCSteadyVoltGaugeProj.DisplayName: S H P C Steady Volt Gauge Proj

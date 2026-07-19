@@ -306,9 +306,9 @@ GraniteCrystalShard.DisplayName: Fragmento de cristal de granito
 GraniteEnergyOrb.DisplayName: Orbe de energía de granito
 GraniteFlowerHeld.DisplayName: Flor de granito
 GraniteFlowerSeed.DisplayName: Semilla de cristal de granito
+// GraniteKnifeVoltArc.DisplayName: Granite Chain Volt
 GraniteThrowingKnifeProj.DisplayName: Cuchillo arrojadizo de granito
 GraniteTomeHeld.DisplayName: Tomo de granito
-MarbleAegisRing.DisplayName: Anillo de égida de mármol
 MarbleClubHeld.DisplayName: Garrote de mármol
 MarbleDiscProj.DisplayName: Disco de mármol
 MarbleHuntingKnifeHeld.DisplayName: Cuchillo de caza de mármol
@@ -372,3 +372,4 @@ VictorRiftPortalProj.DisplayName: Grieta cibernética de Víctor
 // SHPCStormFieldProj.DisplayName: S H P C Storm Field Proj
 // OniSeverStrike.DisplayName: Oni Sever Strike
 // SHPCVolatileGlitchProj.DisplayName: S H P C Volatile Glitch Proj
+// SHPCSteadyVoltGaugeProj.DisplayName: S H P C Steady Volt Gauge Proj

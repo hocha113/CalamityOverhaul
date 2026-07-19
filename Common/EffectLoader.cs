@@ -186,6 +186,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniCrimsonBloom { get; set; }
         public static Asset<Effect> OniFinaleBlade { get; set; }
         public static Asset<Effect> OniFinalePost { get; set; }
+        public static Asset<Effect> OniFinaleWound { get; set; }
         public static Asset<Effect> OniKamuiFlow { get; set; }
         public static Asset<Effect> OniDismember { get; set; }
         public static Asset<Effect> OniAnnihilateArc { get; set; }
@@ -197,5 +198,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCModRedline { get; set; }
         public static Asset<Effect> SHPCModVolatile { get; set; }
         public static Asset<Effect> SHPCModSteadyVolt { get; set; }
+        public static Asset<Effect> GraniteArc { get; set; }
+        public static Asset<Effect> MarbleSlash { get; set; }
     }
 }

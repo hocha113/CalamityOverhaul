@@ -24,6 +24,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         public static float SeamGlow { get; private set; }
         /// <summary>裂屏滑移量（像素，两半各滑一半）</summary>
         public static float SplitOffsetPx { get; private set; }
+        /// <summary>裂屏滑移逐帧衰减系数：渲染端先衰减后取值，
+        /// 推送端如需让"本帧渲染位移"精确等于自己的包络值，按此预除
+        /// （<see cref="OniFinaleCut"/> 的伤口断面 quad 与虚空带就靠这个严格对位）</summary>
+        public const float SplitDecay = 0.70f;
         /// <summary>刀线角度（世界空间弧度，缩放各向同性故与屏幕空间一致）</summary>
         public static float SplitAngle { get; private set; }
         /// <summary>刀线中心（世界坐标）</summary>
@@ -87,7 +91,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             if (SeamGlow < 0.012f) {
                 SeamGlow = 0f;
             }
-            SplitOffsetPx *= 0.70f;
+            SplitOffsetPx *= SplitDecay;
             if (SplitOffsetPx < 0.05f) {
                 SplitOffsetPx = 0f;
             }

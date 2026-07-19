@@ -29,16 +29,30 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float side = dot(ac - c0, perp);
 
     float2 sampleUV = coords;
+    float gapMask = 0.0;
+    float gapEdge = 0.0;
     if (uSplitOffset > 1e-5)
     {
         float sideSign = side >= 0.0 ? 1.0 : -1.0;
-        //贴缝处滑移羽化，避免缝上像素采样瞬间跳变产生锯齿
-        float slide = uSplitOffset * sideSign * smoothstep(0.0, 0.012, abs(side));
+        float slide = uSplitOffset * sideSign;
         sampleUV = coords - float2(perp.x / max(uAspect, 1e-3), perp.y) * slide;
+        //两半各滑开 uSplitOffset 后，|side|<offset 的带不再有任何一半覆盖——
+        //这就是伤口内部：显示虚空而非被拉扯的屏幕像素（采样跳变也被虚空盖住，无需羽化）
+        float inGap = uSplitOffset - abs(side);
+        gapMask = smoothstep(-0.0015, 0.0015, inGap);
+        gapEdge = exp(-pow(max(inGap, 0.0) / 0.010, 2.0));
     }
 
     float4 src = tex2D(uImage0, sampleUV);
     float3 col = src.rgb;
+
+    //---- 虚空带：世界的两半之间没有东西；断面（带边）贴一条白热镶边 ----
+    if (gapMask > 0.001)
+    {
+        float3 voidCol = uSeamColor * 0.05 + float3(0.045, 0.008, 0.012);
+        col = lerp(col, voidCol, gapMask * 0.92);
+        col += uSeamColor * gapEdge * gapMask * 0.85;
+    }
 
     //---- 压暗聚焦：聚焦点附近保亮，四周压向暗酒红；边缘再叠暗角 ----
     float2 toC = coords - uCenter;

@@ -2556,8 +2556,8 @@ GraniteTome: {
 	DisplayName: Granite Tome
 	Tooltip:
 		'''
-		Conjures a slow, homing orb of granite energy
-		Shatters into seeking crystal shards on impact
+		Chants to gather three charging motes, then looses a fan of three gently homing granite energy orbs
+		Orbs shatter into seeking crystal shards on impact
 		'''
 }
 
@@ -2565,8 +2565,9 @@ GraniteFlower: {
 	DisplayName: Granite Bloom
 	Tooltip:
 		'''
-		Fires a crystal seed that blossoms into a lingering energy flower
-		The bloom pulses several times, spraying crystal petals all around
+		Lobs a crystal seed that blooms into a lingering energy flower where it lands
+		The bloom pulses three times, spraying crystal petals at the nearest enemy
+		Withers by shattering all its petals, spraying crystal shards in every direction
 		'''
 }
 
@@ -2574,7 +2575,8 @@ GraniteThrowingKnife: {
 	DisplayName: Granite Throwing Knife
 	Tooltip:
 		'''
-		Throws a piercing knife trailing crystalline energy
+		Throws a piercing knife trailing a razor-sharp azure arc
+		Striking an enemy leaps a miniature chain of lightning to another nearby foe
 		Shatters into crystal shards on its last hit or against terrain
 		'''
 }
@@ -2584,7 +2586,8 @@ GraniteWalkingBoots: {
 	Tooltip:
 		'''
 		Greatly increases running speed and acceleration
-		Crackles with blue sparks at full speed
+		The soles surge with electricity the instant you reach full speed
+		At full speed, sparks crackle underfoot and azure afterimages trail behind you
 		'''
 }
 
@@ -2592,9 +2595,10 @@ MarbleClub: {
 	DisplayName: Marble Club
 	Tooltip:
 		'''
-		A slow, heavy swing with crushing knockback
-		May petrify foes, briefly slowing them
-		The first hit of each swing unleashes a marble shockwave
+		A slow, crushing overhead slam with immense knockback
+		Hits always briefly petrify foes, leaving them stone-bound and sluggish
+		Striking the ground unleashes a full-power marble shockwave and a surging dust wave
+		Midair slams only release a weakened shock
 		'''
 }
 
@@ -2602,8 +2606,8 @@ MarbleHuntingKnife: {
 	DisplayName: Marble Hunting Knife
 	Tooltip:
 		'''
-		Swift slashing strikes
-		Every third strike is a wider finisher that sprays marble shards
+		Swift alternating slashes
+		Every third strike becomes a wider finisher, lunging forward and spraying marble shards
 		'''
 }
 
@@ -2612,7 +2616,8 @@ MarbleDisc: {
 	Tooltip:
 		'''
 		Hurls a spinning discus that ricochets between foes and walls
-		Then curves back to your hand; up to two may fly at once
+		Each ricochet into a new target gilds the discus, raising its damage by 10%, up to 30%
+		Once its bounces are spent it curves back to your hand; up to two may fly at once
 		'''
 }
 
@@ -2620,9 +2625,9 @@ MarblePebble: {
 	DisplayName: Marble Pebble
 	Tooltip:
 		'''
-		An endless sling stone, swift and prone to critical hits
+		An endless swift sling stone that bounces once off the ground
 		Deals far greater damage to foes with high maximum life
-		Bounces once off the ground
+		Striking a colossal foe bursts into golden light and a rock-shattering crack
 		'''
 }
 
@@ -2630,9 +2635,10 @@ MarbleShield: {
 	DisplayName: Marble Aegis
 	Tooltip:
 		'''
-		Increases defense and knockback resistance
-		Maintains a regenerating stone guard that absorbs an incoming hit, bursting into shards
-		Brace for a perfect block that reflects projectiles
+		Slightly increases melee knockback
+		Three orbiting marble shards form a stone guard, absorbing one incoming hit and shattering when ready
+		Press [KEY] to raise your guard: a perfect block negates the hit, crushing nearby projectiles and hurling stone blades back
+		A perfect block grants 10% increased melee damage for 5 seconds
 		'''
 }
 
@@ -2640,22 +2646,22 @@ MarbleBalloon: {
 	DisplayName: Marble Balloon
 	Tooltip:
 		'''
-		Press Down while airborne to slam down, releasing a shockwave on landing
+		Press Down while airborne to slam down; the longer the fall, the stronger and wider the landing shockwave
 		Negates fall damage
 		'''
 }
 
 MarbleinaBottle: {
 	DisplayName: Marble in a Bottle
-	Tooltip: Grants a heavy second jump
+	Tooltip: Grants a heavy, forceful second jump; hold Jump to rise higher
 }
 
 MarbleCloudBalloon: {
 	DisplayName: Marble Cloud Balloon
 	Tooltip:
 		'''
-		Grants a heavy second jump
-		Press Down while airborne to slam down, releasing a shockwave on landing
+		Grants a heavy, forceful second jump; hold Jump to rise higher
+		Press Down while airborne to slam down; the longer the fall, the stronger and wider the landing shockwave
 		Negates fall damage
 		'''
 }

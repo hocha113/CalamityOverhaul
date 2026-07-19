@@ -306,9 +306,9 @@ GraniteCrystalShard.DisplayName: Granitkristallsplitter
 GraniteEnergyOrb.DisplayName: Granitenergiekugel
 GraniteFlowerHeld.DisplayName: Granitblüte
 GraniteFlowerSeed.DisplayName: Granitkristallsamen
+// GraniteKnifeVoltArc.DisplayName: Granite Chain Volt
 GraniteThrowingKnifeProj.DisplayName: Granit-Wurfmesser
 GraniteTomeHeld.DisplayName: Granitfoliant
-MarbleAegisRing.DisplayName: Marmor-Ägisring
 MarbleClubHeld.DisplayName: Marmorkeule
 MarbleDiscProj.DisplayName: Marmordiskus
 MarbleHuntingKnifeHeld.DisplayName: Marmor-Jagdmesser
@@ -372,3 +372,4 @@ VictorRiftPortalProj.DisplayName: Victors Kyber-Riss
 // SHPCStormFieldProj.DisplayName: S H P C Storm Field Proj
 // OniSeverStrike.DisplayName: Oni Sever Strike
 // SHPCVolatileGlitchProj.DisplayName: S H P C Volatile Glitch Proj
+// SHPCSteadyVoltGaugeProj.DisplayName: S H P C Steady Volt Gauge Proj

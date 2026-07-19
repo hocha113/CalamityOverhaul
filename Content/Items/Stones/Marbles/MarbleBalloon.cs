@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -10,7 +11,7 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Items.Stones.Marbles
 {
     /// <summary>
-    /// 大理石气球：空中按↓砸地，落地产生大理石冲击波
+    /// 大理石气球：空中按↓砸向地面，下坠蓄势越久，落地冲击波的威力与范围越大
     /// </summary>
     internal class MarbleBalloon : ModItem
     {
@@ -52,25 +53,57 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     internal class MarbleBalloonPlayer : ModPlayer
     {
         public bool Equipped;
+        //云朵气球每帧点亮：二段跳粒子切换为"云雾+石尘"双份形态
+        public bool CloudJumpVariant;
         private bool slamming;
         private int slamTimer;
+        //瓶中大理石起跳后的升力窗口剩余tick：按住跳期间抵消部分重力
+        private int bottleLiftTimer;
+        //落地尘土波推进状态：>0 时逐tick沿地表双向铺开
+        private int dustWaveStep;
+        private int dustWaveMaxStep;
+        private float dustWaveGrowth;
+        private float dustWaveX;
+        private float dustWaveLeftY;
+        private float dustWaveRightY;
 
         private const float SlamSpeed = 19f;
         //砸地保险计时：即便迟迟未检测到落地，也强制结束下砸，杜绝"卡在下砸态"
         private const int MaxSlamTime = 90;
+        //冲击成长封顶的下坠时长：伤害 20→48、半径 135→170
+        private const int GrowthCap = 28;
+        //升力窗口长度：按满约多抬升一格出头
+        private const int BottleLiftWindow = 12;
 
         public bool Slamming => slamming;
 
-        public override void ResetEffects() => Equipped = false;
+        public override void ResetEffects() {
+            Equipped = false;
+            CloudJumpVariant = false;
+        }
+
+        /// <summary>瓶中大理石二段跳起跳时开启升力窗口</summary>
+        public void StartBottleLift() => bottleLiftTimer = BottleLiftWindow;
+
+        //引擎在 PreUpdateMovement 之前就把 controlDown 捕获进 fallThrough，
+        //要让下砸停在平台上（而非穿透坠落），必须在输入钩子里就清掉"按↓"
+        public override void SetControls() {
+            if (slamming) {
+                Player.controlDown = false;
+            }
+        }
 
         public override void PreUpdateMovement() {
+            UpdateBottleLift();
+            UpdateGroundDustWave();
+
             if (!Equipped) {
                 slamming = false;
                 slamTimer = 0;
                 return;
             }
 
-            bool grounded = IsGrounded(Player);
+            bool grounded = GraniteMarbleVFX.IsGrounded(Player);
 
             //落地判定优先于一切：着地或保险超时即结束下砸并触发落地效果
             if (slamming && (grounded || slamTimer > MaxSlamTime)) {
@@ -79,54 +112,168 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 slamTimer = 0;
             }
 
-            //空中按↓开始砸地
+            //空中按↓开始砸地，起手一声破风
             if (!slamming && !grounded && Player.controlDown && Player.velocity.Y * Player.gravDir > -2f) {
                 slamming = true;
                 slamTimer = 0;
                 Player.StopExtraJumpInProgress();
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 0.65f, Pitch = -0.2f, MaxInstances = 3 }, Player.Center);
+                }
             }
 
-            //砸地中：强制下坠并清除"按↓"输入，避免穿过平台导致永远落不了地
+            //砸地中：强制下坠（"按↓"已在 SetControls 阶段清除，下砸会停在平台上）
             if (slamming) {
                 slamTimer++;
                 Player.velocity.Y = SlamSpeed * Player.gravDir;
-                Player.controlDown = false;
-                if (!VaultUtils.isServer && Main.rand.NextBool(2)) {
-                    PRTLoader.NewParticle<PRT_Smoke>(Player.Center, Vector2.UnitY * -1f
-                        , GraniteMarbleVFX.MarbleDust, 0.4f).Configure(16, 0.6f, 0.05f);
-                }
+                SpawnSlamDescentDust();
             }
         }
 
-        private static bool IsGrounded(Player player) {
-            if (player.mount.Active) {
-                return false;
+        //按住跳且仍在上升：小幅抵消重力；松手或转入下落立即关窗
+        private void UpdateBottleLift() {
+            if (bottleLiftTimer <= 0) {
+                return;
             }
+            if (Player.controlJump && Player.velocity.Y * Player.gravDir < 0f) {
+                Player.velocity.Y -= 0.1f * Player.gravDir;
+                bottleLiftTimer--;
+            }
+            else {
+                bottleLiftTimer = 0;
+            }
+        }
 
-            Vector2 probeVelocity = Vector2.UnitY * player.gravDir * 2f;
-            Vector2 constrained = Collision.TileCollision(player.position, probeVelocity, player.width, player.height
-                , false, false, (int)player.gravDir);
-            return constrained.Y != probeVelocity.Y;
+        //下砸风纹：身体两侧向上拖出的尘纹速度线 + 偶发金屑，读出高速下坠的相对风
+        private void SpawnSlamDescentDust() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            float side = Main.rand.NextBool() ? -1f : 1f;
+            Vector2 pos = Player.Center + new Vector2(side * Main.rand.NextFloat(8f, 15f), Main.rand.NextFloat(-18f, 22f));
+            PRTLoader.NewParticle<PRT_Smoke>(pos, -Player.velocity * 0.16f, GraniteMarbleVFX.MarbleDust
+                , Main.rand.NextFloat(0.28f, 0.42f)).Configure(13, 0.5f, 0.03f);
+            if (Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_MarbleChip>(pos, -Player.velocity * Main.rand.NextFloat(0.12f, 0.2f)
+                    , GraniteMarbleVFX.MarbleGold, Main.rand.NextFloat(0.35f, 0.55f)).Configure(Main.rand.Next(10, 16), 0.02f);
+            }
         }
 
         private void OnSlamLand() {
+            float growth = Math.Min(slamTimer, GrowthCap) / (float)GrowthCap;
+            Vector2 feet = Player.gravDir == 1f ? Player.Bottom : Player.Top;
+            float up = -Player.gravDir;
+
             if (!VaultUtils.isServer) {
-                SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.3f }, Player.Bottom);
-                for (int i = 0; i < 14; i++) {
-                    PRTLoader.NewParticle<PRT_Smoke>(Player.Bottom, new Vector2(Main.rand.NextFloat(-6f, 6f), Main.rand.NextFloat(-3f, 0f))
-                        , GraniteMarbleVFX.MarbleDust, Main.rand.NextFloat(0.4f, 0.7f)).Configure(26, 0.7f, 0.05f);
+                //分层重响：低频砸击垫底 + 石屑迸落，蓄势越足越沉
+                SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {
+                    Volume = 0.7f + growth * 0.4f, Pitch = -0.35f - growth * 0.3f, MaxInstances = 3
+                }, feet);
+                SoundEngine.PlaySound(SoundID.Tink with {
+                    Volume = 0.35f + growth * 0.2f, Pitch = 0.1f - growth * 0.4f, MaxInstances = 3
+                }, feet);
+                if (growth > 0.6f) {
+                    SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f, Pitch = -0.7f, MaxInstances = 2 }, feet);
                 }
+
+                //落点近处反馈：石尘腾起 + 石屑迸射；沿地尘土波由 UpdateGroundDustWave 逐tick铺开
+                for (int i = 0; i < 8; i++) {
+                    PRTLoader.NewParticle<PRT_Smoke>(feet, new Vector2(Main.rand.NextFloat(-5f, 5f), up * Main.rand.NextFloat(0.6f, 3f))
+                        , GraniteMarbleVFX.MarbleDust, Main.rand.NextFloat(0.42f, 0.66f)).Configure(24, 0.7f, 0.05f);
+                }
+                int chips = 4 + (int)(growth * 5f);
+                for (int i = 0; i < chips; i++) {
+                    PRTLoader.NewParticle<PRT_MarbleChip>(feet, new Vector2(Main.rand.NextFloat(-4f, 4f), up * Main.rand.NextFloat(2.5f, 6.5f))
+                        , GraniteMarbleVFX.MarbleGold, Main.rand.NextFloat(0.5f, 0.85f)).Configure(Main.rand.Next(22, 34));
+                }
+
+                dustWaveStep = 1;
+                dustWaveMaxStep = 10 + (int)(growth * 4f);
+                dustWaveGrowth = growth;
+                dustWaveX = feet.X;
+                dustWaveLeftY = dustWaveRightY = feet.Y;
             }
 
             if (CWRServerConfig.Instance.ScreenVibration) {
-                Main.instance.CameraModifiers.Add(new PunchCameraModifier(Player.Bottom, Main.rand.NextVector2Unit()
-                    , 6f, 6f, 14, 800f, "MarbleBalloonSlam"));
+                Main.instance.CameraModifiers.Add(new PunchCameraModifier(feet, Main.rand.NextVector2Unit()
+                    , 5f + growth * 4f, 6f, 12 + (int)(growth * 8f), 800f, "MarbleBalloonSlam"));
             }
 
             if (Player.whoAmI == Main.myPlayer) {
-                Projectile.NewProjectile(Player.FromObjectGetParent(), Player.Bottom, Vector2.Zero
-                    , ModContent.ProjectileType<MarbleShockwave>(), 30, 5f, Player.whoAmI, 0f, 135f);
+                //冲击随下坠时长成长：伤害 20+下坠tick（封顶48），半径 135→170
+                int damage = 20 + Math.Min(slamTimer, GrowthCap);
+                float radius = 135f + growth * 35f;
+                Projectile.NewProjectile(Player.FromObjectGetParent(), feet, Vector2.Zero
+                    , ModContent.ProjectileType<MarbleShockwave>(), damage, 5f, Player.whoAmI, 0f, radius);
             }
+        }
+
+        //沿地表双向推进的尘土波：每tick每侧一列，跟随±5格内的地形起伏
+        private void UpdateGroundDustWave() {
+            if (dustWaveStep <= 0 || VaultUtils.isServer) {
+                return;
+            }
+            if (dustWaveStep > dustWaveMaxStep) {
+                dustWaveStep = 0;
+                return;
+            }
+            float fade = 1f - dustWaveStep / (float)dustWaveMaxStep * 0.6f;
+            for (int dir = -1; dir <= 1; dir += 2) {
+                float surfaceY = dir < 0 ? dustWaveLeftY : dustWaveRightY;
+                float x = dustWaveX + dir * dustWaveStep * 13f;
+                if (!TryFindWaveSurface(x, ref surfaceY)) {
+                    continue;
+                }
+                if (dir < 0) {
+                    dustWaveLeftY = surfaceY;
+                }
+                else {
+                    dustWaveRightY = surfaceY;
+                }
+
+                float up = -Player.gravDir;
+                Vector2 pos = new Vector2(x, surfaceY + up * 4f);
+                PRTLoader.NewParticle<PRT_Smoke>(pos, new Vector2(dir * (1.6f + dustWaveGrowth * 1.2f), up * Main.rand.NextFloat(0.8f, 1.8f))
+                    , GraniteMarbleVFX.MarbleDust, Main.rand.NextFloat(0.35f, 0.55f) * fade).Configure(20, 0.65f * fade, 0.04f);
+                if (Main.rand.NextBool(2)) {
+                    PRTLoader.NewParticle<PRT_MarbleChip>(pos, new Vector2(dir * Main.rand.NextFloat(0.8f, 2.4f), up * Main.rand.NextFloat(1.8f, 4f))
+                        , GraniteMarbleVFX.MarbleGold, Main.rand.NextFloat(0.35f, 0.6f) * fade).Configure(Main.rand.Next(16, 26));
+                }
+            }
+            dustWaveStep++;
+        }
+
+        //从上一列地表出发定位本列地表：探针格在地里则向表面方向回退，在空中则向地面方向搜索
+        private bool TryFindWaveSurface(float x, ref float y) {
+            int step = (int)Player.gravDir;
+            Point probe = new Vector2(x, y + step * 4f).ToTileCoordinates();
+            if (!WorldGen.InWorld(probe.X, probe.Y, 10)) {
+                return false;
+            }
+            //反重力时地表是天花板砖的下缘
+            float surfaceEdge = step < 0 ? 16f : 0f;
+            if (IsWaveGround(probe.X, probe.Y)) {
+                for (int i = 0; i < 5; i++) {
+                    if (!IsWaveGround(probe.X, probe.Y - step * (i + 1))) {
+                        y = (probe.Y - step * i) * 16f + surfaceEdge;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            for (int i = 1; i <= 5; i++) {
+                if (IsWaveGround(probe.X, probe.Y + step * i)) {
+                    y = (probe.Y + step * i) * 16f + surfaceEdge;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //尘土波认定的"地面"：实心块或平台（玩家可站立面）
+        private static bool IsWaveGround(int x, int y) {
+            Tile tile = Framing.GetTileSafely(x, y);
+            return tile.HasTile && (Main.tileSolid[tile.TileType] || Main.tileSolidTop[tile.TileType]);
         }
     }
 }

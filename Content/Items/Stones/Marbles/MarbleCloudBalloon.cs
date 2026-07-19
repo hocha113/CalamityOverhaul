@@ -16,7 +16,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
             player.GetJumpState<MarbleinaBottleJump>().Enable();
-            player.GetModPlayer<MarbleBalloonPlayer>().Equipped = true;
+            MarbleBalloonPlayer modPlayer = player.GetModPlayer<MarbleBalloonPlayer>();
+            modPlayer.Equipped = true;
+            //合成件身份：二段跳粒子升级为"白云雾+金石屑"双份形态
+            modPlayer.CloudJumpVariant = true;
             player.noFallDmg = true;
         }
 

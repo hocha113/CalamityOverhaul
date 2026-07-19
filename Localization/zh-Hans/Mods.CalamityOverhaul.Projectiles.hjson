@@ -306,9 +306,9 @@ GraniteCrystalShard.DisplayName: 花岗晶碎片
 GraniteEnergyOrb.DisplayName: 花岗能量球
 GraniteFlowerHeld.DisplayName: 花岗之花
 GraniteFlowerSeed.DisplayName: 花岗晶种
+GraniteKnifeVoltArc.DisplayName: 花岗链电
 GraniteThrowingKnifeProj.DisplayName: 花岗飞刀
 GraniteTomeHeld.DisplayName: 花岗岩魔典
-MarbleAegisRing.DisplayName: 大理石神盾环
 MarbleClubHeld.DisplayName: 大理石巨棍
 MarbleDiscProj.DisplayName: 大理石飞盘
 MarbleHuntingKnifeHeld.DisplayName: 大理石猎刀
@@ -372,3 +372,4 @@ OniAnnihilate.DisplayName: 鬼哭·灭世一闪
 // SHPCStormFieldProj.DisplayName: S H P C Storm Field Proj
 // OniSeverStrike.DisplayName: Oni Sever Strike
 // SHPCVolatileGlitchProj.DisplayName: S H P C Volatile Glitch Proj
+// SHPCSteadyVoltGaugeProj.DisplayName: S H P C Steady Volt Gauge Proj

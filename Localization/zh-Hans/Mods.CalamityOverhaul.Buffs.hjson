@@ -47,3 +47,13 @@ GravitationalCollapse: {
 	DisplayName: 引力坍缩
 	Description: 被自身的重量拖入深渊
 }
+
+MarbleRiposteBuff: {
+	DisplayName: 石卫反击
+	Description: 近战伤害提升10%
+}
+
+MarblePetrify: {
+	DisplayName: 大理石石化
+	Description: 血肉化作石像，行动迟滞
+}

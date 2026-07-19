@@ -304,15 +304,15 @@ DuneStalkerHeadProj.DisplayName: Dune Stalker Hook
 GraniteBloom.DisplayName: Granite Bloom
 GraniteCrystalShard.DisplayName: Granite Crystal Shard
 GraniteEnergyOrb.DisplayName: Granite Energy Orb
-GraniteFlowerHeld.DisplayName: Granite Flower Held
-GraniteFlowerSeed.DisplayName: Granite Flower Seed
-GraniteThrowingKnifeProj.DisplayName: Granite Throwing Knife Proj
-GraniteTomeHeld.DisplayName: Granite Tome Held
-MarbleAegisRing.DisplayName: Marble Aegis Ring
-MarbleClubHeld.DisplayName: Marble Club Held
-MarbleDiscProj.DisplayName: Marble Disc Proj
-MarbleHuntingKnifeHeld.DisplayName: Marble Hunting Knife Held
-MarblePebbleProj.DisplayName: Marble Pebble Proj
+GraniteFlowerHeld.DisplayName: Granite Flower
+GraniteFlowerSeed.DisplayName: Granite Crystal Seed
+GraniteKnifeVoltArc.DisplayName: Granite Chain Volt
+GraniteThrowingKnifeProj.DisplayName: Granite Throwing Knife
+GraniteTomeHeld.DisplayName: Granite Tome
+MarbleClubHeld.DisplayName: Marble Club
+MarbleDiscProj.DisplayName: Marble Discus
+MarbleHuntingKnifeHeld.DisplayName: Marble Hunting Knife
+MarblePebbleProj.DisplayName: Marble Pebble
 MarbleShard.DisplayName: Marble Shard
 MarbleShockwave.DisplayName: Marble Shockwave
 SHPCSonicBoomProj.DisplayName: S H P C Sonic Boom Proj
@@ -372,3 +372,4 @@ SHPCStormBoltProj.DisplayName: S H P C Storm Bolt Proj
 SHPCStormFieldProj.DisplayName: S H P C Storm Field Proj
 OniSeverStrike.DisplayName: Oni Sever Strike
 SHPCVolatileGlitchProj.DisplayName: S H P C Volatile Glitch Proj
+SHPCSteadyVoltGaugeProj.DisplayName: S H P C Steady Volt Gauge Proj
