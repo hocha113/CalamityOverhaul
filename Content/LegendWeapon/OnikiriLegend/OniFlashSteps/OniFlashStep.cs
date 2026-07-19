@@ -50,6 +50,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private const int TailFadeFrames = 8;   //纳刀后持刀淡出
         //==== 位移与判定常量 ====
         private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
+        /// <summary>巡航段方向键转向速率(弧度/帧)：全程合计约 ±28° 的小幅弯曲——
+        /// 响应感来自"手上的键确实在掰弯这道墨"，幅度收着防拐成蛇形</summary>
+        private const float SteerRate = 0.055f;
         private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
         private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
         private const float MarkSweepWidth = 140f;  //扫掠走廊宽(对齐墨绸视觉宽度,玩家"明明穿过了"的判断依据是那条彩带)
@@ -221,6 +224,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private void DashFrame() {
             Vector2 prevHead = GetCenter();
             Vector2 fromBody = Owner.Center;
+
+            //巡航段方向键微转向：按住的方向把墨绸小幅掰弯（爆发段保持出手直线，转向随控制位同步各端）
+            if (timer > DashBurstFrames) {
+                int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
+                int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
+                if (h != 0 || v != 0) {
+                    float delta = MathHelper.WrapAngle(new Vector2(h, v).ToRotation() - dashDir.ToRotation());
+                    dashDir = (dashDir.ToRotation() + MathHelper.Clamp(delta, -SteerRate, SteerRate))
+                        .ToRotationVector2();
+                }
+            }
+
             float speed = timer <= DashBurstFrames ? DashBurstSpeed : DashSustainSpeed;
             float stepLen = MathF.Min(speed, Distance - traveled);
 
@@ -372,13 +387,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        /// <summary>冲刺/刹车期持械姿态：角色读作"低姿态突进"，不占用物品使用</summary>
+        /// <summary>冲刺/刹车期持械姿态：角色读作"低姿态突进"，不占用物品使用（朝向跟随实时转向）</summary>
         private void HoldPose() {
             Owner.heldProj = Projectile.whoAmI;
             Owner.itemTime = Owner.itemAnimation = 2;
-            float cos = MathF.Cos(DashAngle);
-            if (MathF.Abs(cos) >= 0.05f) {
-                Owner.ChangeDir(cos > 0f ? 1 : -1);
+            if (MathF.Abs(dashDir.X) >= 0.05f) {
+                Owner.ChangeDir(dashDir.X > 0f ? 1 : -1);
             }
             Owner.itemRotation = (dashDir * Owner.direction).ToRotation();
         }
@@ -407,8 +421,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 npc.CWR().TimeFrozenTick = 3;   //穿身微滞：世界不停，只有被穿者顿一下
 
                 if (Projectile.IsOwnedByLocalPlayer()) {
+                    //墨痕走向对齐穿过瞬间的实时方向（转向后仍与轨迹一致）
                     OniFlashMark.Fire(Owner, npc, judgeDelay, Projectile.damage
-                        , Projectile.knockBack, DashAngle, Projectile.GetSource_FromAI());
+                        , Projectile.knockBack, dashDir.ToRotation(), Projectile.GetSource_FromAI());
                     //穿身即格挡:居合掠过之敌为主人蓄势(封顶/蠕虫去重在资源层)
                     Owner.GetModPlayer<OnikiriPlayer>().OnDashParry(npc);
                 }
@@ -467,18 +482,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 return;
             }
 
-            int facing = MathF.Cos(DashAngle) >= 0f ? 1 : -1;
+            //残心/纳刀沿刹停时的实时方向（转向后的最终朝向），不回读出手角
+            float dirA = dashDir.ToRotation();
+            int facing = dashDir.X >= 0f ? 1 : -1;
             int sinceJudge = timer - JudgmentFrame;
             if (sinceJudge <= 0) {
                 //残心:刀沿冲刺向平指,极轻的呼吸下沉
-                bladePose.Rotation = DashAngle + facing * 0.05f * MathF.Sin((timer - stopFrame) * 0.35f);
+                bladePose.Rotation = dirA + facing * 0.05f * MathF.Sin((timer - stopFrame) * 0.35f);
                 bladePose.Opacity = 1f;
             }
             else if (sinceJudge <= NotoFlickFrames) {
                 //纳刀一挑:EaseOut 干脆收刀回背(与连段收势的持刀位同一套语言)
                 float t = sinceJudge / (float)NotoFlickFrames;
                 float ease = 1f - (1f - t) * (1f - t) * (1f - t);
-                bladePose.Rotation = OniBladePose.LerpAngle(DashAngle, DashAngle - facing * 1.05f, ease);
+                bladePose.Rotation = OniBladePose.LerpAngle(dirA, dirA - facing * 1.05f, ease);
                 bladePose.Opacity = 1f;
                 if (sinceJudge <= 3) {
                     bladePose.PushSmear(1f - t * 0.4f);
@@ -630,7 +647,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             //兜底淡出（蒸发进度之外的最后保险）
             float opacity = 1f - MathHelper.Clamp((timer - (JudgmentFrame + RetractDelay + RetractFrames)) / 10f, 0f, 1f);
 
-            float s = sizeMul;
+            //超短径（向脚下急停等）幅宽随长度收窄：58px 半幅配 150px 短径会糊成团块
+            float totalLen = 0f;
+            for (int i = 1; i < pts.Count; i++) {
+                totalLen += Vector2.Distance(pts[i - 1], pts[i]);
+            }
+            float s = sizeMul * MathHelper.Clamp(totalLen / 320f, 0.4f, 1f);
             Span<OKF.RibbonDef> defs = [
                 //白热主脊：窄、快、几乎不撕裂，头段发光的骨架
                 new() { HalfWidth = 15f * s, PerpOffset = 0f, Seed = seed + 0.71f,

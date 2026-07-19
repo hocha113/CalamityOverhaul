@@ -75,8 +75,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 return;
             }
 
-            //细分到 ≤44px 段：收束尖与子带汇入的漏斗曲线需要足够的顶点采样
-            List<Vector2> points = SubdividePath(rawPoints);
+            //整形：剔短段 → 切角圆滑 → 细分到 ≤44px 段（极端路径的顶点自折/开裂在这里兜底）
+            List<Vector2> points = ShapePath(rawPoints);
+            if (points.Count < 2) {
+                return;
+            }
             int count = points.Count;
 
             float totalLen = 0f;
@@ -137,9 +140,58 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
+        /// <summary>剔除阈值(px)：短于此的段其切向已是噪声，垂直挤出必然自折</summary>
+        private const float MinSeg = 10f;
+
+        /// <summary>
+        /// 路径整形三步——极端情况（向脚下急停的顶点簇、转向/台阶造成的弯折）的破损兜底：<br/>
+        /// 1. 剔退化短段：顶点簇的切向是噪声，法线乱翻导致条带自折；<br/>
+        /// 2. Chaikin 两轮切角：尖角磨圆（端点保持），最宽 58px 的垂直挤出不再在拐点自交开裂；<br/>
+        /// 3. 细分到 ≤44px 段：收束尖与子带汇入的漏斗曲线需要足够采样
+        /// </summary>
+        private static List<Vector2> ShapePath(IReadOnlyList<Vector2> raw) {
+            //1. 剔短段（末点承载头端语义：距离不足时顶替前点而不是丢弃）
+            List<Vector2> culled = new(raw.Count);
+            culled.Add(raw[0]);
+            for (int i = 1; i < raw.Count; i++) {
+                if (Vector2.DistanceSquared(culled[^1], raw[i]) >= MinSeg * MinSeg) {
+                    culled.Add(raw[i]);
+                }
+                else if (i == raw.Count - 1) {
+                    if (culled.Count > 1) {
+                        culled[^1] = raw[i];
+                    }
+                    else {
+                        culled.Add(raw[i]);
+                    }
+                }
+            }
+            if (culled.Count < 3) {
+                return SubdividePath(culled);
+            }
+
+            //2. Chaikin 两轮切角
+            List<Vector2> smooth = culled;
+            for (int round = 0; round < 2; round++) {
+                List<Vector2> next = new(smooth.Count * 2) { smooth[0] };
+                for (int i = 0; i < smooth.Count - 1; i++) {
+                    next.Add(Vector2.Lerp(smooth[i], smooth[i + 1], 0.25f));
+                    next.Add(Vector2.Lerp(smooth[i], smooth[i + 1], 0.75f));
+                }
+                next.Add(smooth[^1]);
+                smooth = next;
+            }
+
+            //3. 补密
+            return SubdividePath(smooth);
+        }
+
         /// <summary>路径细分：任何超过 44px 的段插入等分点（原点集不变，仅补密）</summary>
         private static List<Vector2> SubdividePath(IReadOnlyList<Vector2> raw) {
             const float MaxSeg = 44f;
+            if (raw.Count < 2) {
+                return [.. raw];
+            }
             List<Vector2> outPts = new(raw.Count * 4);
             outPts.Add(raw[0]);
             for (int i = 1; i < raw.Count; i++) {
