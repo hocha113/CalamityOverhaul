@@ -71,6 +71,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         /// <summary>大挥+残心头段硬占刀权:连段就地冻结让位,10 帧后即恢复,"零后摇"身份不破</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => timer <= PoseFrames + 4;
 
+        /// <summary>大挥落定的签名拍软保留:硬占结束后再留 2 帧收势停顿,连段续接时刀从收势位划出而非撞进来</summary>
+        bool IOniBladeOccupant.ReservesBlade => timer <= PoseFrames + 6;
+
         /// <summary>
         /// 触发接口：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
         /// tML 自动完成多人同步；按下即斩，调用方无需后续干预。

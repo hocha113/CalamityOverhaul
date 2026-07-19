@@ -71,6 +71,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         /// <summary>位移+刹车段硬占刀权:人已化入神威,连段就地冻结让位</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => stopFrame < 0;
 
+        /// <summary>挥空后的保留余量(帧):没东西可演就不收税,只留极短落地拍</summary>
+        private const int WhiffReserveFrames = 2;
+
+        /// <summary>
+        /// 刹停后的签名拍软保留：残心 → 纳刀一挑期间连段不得重启夺刀（输入按住即缓冲，
+        /// 窗口一关自动续接）——这声"锵"与墨痕齐裂是疾走的 payoff，值得眼睛读完；
+        /// 挥空（无墨痕）提前释放；位移/技能/肢解点选不受保留影响
+        /// </summary>
+        bool IOniBladeOccupant.ReservesBlade => stopFrame >= 0
+            && timer <= (marked.Count == 0 ? stopFrame + WhiffReserveFrames : JudgmentFrame + NotoFlickFrames);
+
         private Player Owner => Main.player[Projectile.owner];
         private float DashAngle => Projectile.ai[0];
         private float Distance => Projectile.ai[1] > 60f ? Projectile.ai[1] : 900f;

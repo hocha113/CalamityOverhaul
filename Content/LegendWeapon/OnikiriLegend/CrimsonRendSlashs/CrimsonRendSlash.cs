@@ -79,6 +79,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         /// <summary>停手超过该帧数后再按从第一拍重启，短停续接拍序（节奏点按可走完整连段）</summary>
         private const int ComboResetFrames = 30;
+        /// <summary>从其它模组交接重启时的微前摇（帧）：刀从交接角度划到起手位——
+        /// 仅 <see cref="OniBladeHandoff"/> 新鲜时存在，普通点按/续拍保持当帧出刀，节奏点按玩法逐帧不变</summary>
+        private const int RestartWindupFrames = 3;
+        /// <summary>轻点缓冲（帧）：让位/签名拍保留期间的点击不丢失，窗口一关补发这一拍
+        /// （魂类输入缓冲语义：按了就有，只是等到最近的合法帧）</summary>
+        private const int PressBufferFrames = 24;
 
         /// <summary>实体刀姿态残影采样（body 锚定：绘制时挂在当前手心，只保留角度/深度）</summary>
         private struct BladeSmear
@@ -98,6 +104,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private int lastBeatFire;
         private bool scheduling;
         private bool firstBeatFired;
+        /// <summary>首拍前摇已走过的帧数（软保留/让位期间不计，保证起手弧线完整播放）</summary>
+        private int firstWindupTicks;
+        /// <summary>上帧 DownLeft，检测真按下沿（区别于让位/保留结束后的按住续接）</summary>
+        private bool prevDownLeft;
+        /// <summary>轻点缓冲余量：按下即填满，开火即清——一次点击恰好兑现一拍</summary>
+        private int pressBuffer;
+        /// <summary>本次起手/重启继承的交接刀角（<see cref="OniBladeHandoff"/>），开火即清</summary>
+        private float handoffRot;
+        private bool hasHandoff;
         private float sizeMul = 1f;
         private float curAim;
         private int lastImpactFrame = -999;
@@ -256,8 +271,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private Vector2 CenterOf(ActiveSlash a)
             => a.FrozenCenter ?? (Projectile.Center + a.Aim.ToRotationVector2() * a.Def.OffsetAlongAim);
 
-        /// <summary>本帧是否持有刀权(排拍中/子刀光未散/实体刀未收完);技能的软姿态据此让位</summary>
-        internal bool ClaimsBlade => scheduling || actives.Count > 0 || bladeOpacity > 0.03f;
+        /// <summary>本帧是否持有刀权(排拍中/子刀光未散/实体刀未收完);技能的软姿态据此让位。<br/>
+        /// 硬让位时冻结速褪的"尸体刀光"不算占刀——否则疾走刹停帧会与其残留期重叠,残心姿态被掐一帧</summary>
+        internal bool ClaimsBlade => scheduling || bladeOpacity > 0.03f || AnyLiveSlash();
+
+        /// <summary>是否存在未被硬让位冻结的活刀光</summary>
+        private bool AnyLiveSlash() {
+            for (int i = 0; i < actives.Count; i++) {
+                if (actives[i].FrozenCenter == null) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         /// <summary>实体刀当前姿态(供肢解居合起手继承,移交瞬间刀角不跳变);刀不可见时返回 false</summary>
         internal bool TryGetBladePose(out float rotation, out int facing) {
@@ -372,21 +398,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         /// <summary>连段排拍：按住推进，松手停排，收势中再按从第一拍重启（DownLeft 由基类自动同步）；
-        /// 肢解居合演出期不排新拍（点纸后按住不把残心踩掉，居合收完按住自然续接）</summary>
+        /// 肢解居合演出期不排新拍（点纸后按住不把残心踩掉，居合收完按住自然续接）；
+        /// 签名拍软保留（疾走纳刀等）期间不夺刀——输入按住即缓冲，窗口一关自动续接</summary>
         private void UpdateCombo() {
             bool canContinue = !Owner.noItems && !Owner.CCed
                 && Item.type == ModContent.ItemType<OnikiriItem>()
                 && Owner.ownedProjectileCounts[ModContent.ProjectileType<OniDismembers.OniSeverStrike>()] == 0;
-            bool holding = DownLeft && canContinue && !yielding;
+            //真按下沿：区别于让位/保留结束后的按住续接——肢解点选只认前者（按住扫过永不转换）
+            bool justPressed = DownLeft && !prevDownLeft;
+            prevDownLeft = DownLeft;
+            //轻点缓冲：让位/签名拍保留中的点击不丢失，窗口一关补发这一拍（开火即清，一击一拍）
+            if (pressBuffer > 0) {
+                pressBuffer--;
+            }
+            if (justPressed) {
+                pressBuffer = PressBufferFrames;
+            }
+            bool holding = (DownLeft || pressBuffer > 0) && canContinue && !yielding;
 
             //首拍前的纯起手窗（反向蓄势）：窗口走完无条件出刀，轻点也有完整反馈；
             //只有首次启动有这段前摇，之后的节拍间隔与重启响应完全不变
             if (!firstBeatFired) {
-                if (yielding) {
-                    //技能演出优先:首拍推迟到让位结束
+                if (yielding || OniBladeOccupancy.BladeReserved(Owner)) {
+                    //技能演出/签名拍保留优先:首拍推迟到窗口结束,前摇计数不走,起手弧线完整保留
                     return;
                 }
-                if (timer > FirstWindupFrames) {
+                if (++firstWindupTicks == 1) {
+                    //起手第一帧尝试继承交接刀角:从其它模组(疾走纳刀等)顺过来时刀不瞬移
+                    hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
+                }
+                if (firstWindupTicks > FirstWindupFrames) {
                     FireBeat();
                     firstBeatFired = true;
                     scheduling = holding;
@@ -400,16 +441,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
             if (!scheduling) {
                 //按下沿（控制器存活期间的再点击）：里世界点中媒介/真身则移交肢解居合——
-                //本次不重启排拍，连段随居合的硬占刀权就地让位；按住扫过永不走到这里
-                if (Projectile.IsOwnedByLocalPlayer()
+                //本次不重启排拍，连段随居合的硬占刀权就地让位；视同技能，无视软保留
+                if (justPressed && Projectile.IsOwnedByLocalPlayer()
                     && Owner.GetModPlayer<OnikiriPlayer>().TryClickDismember(Item)) {
+                    return;
+                }
+                //签名拍软保留：不重启夺刀，按住即缓冲，保留一结束自动走到下面续接
+                if (OniBladeOccupancy.BladeReserved(Owner)) {
                     return;
                 }
                 scheduling = true;
                 if (timer - lastBeatFire > ComboResetFrames) {
                     comboIndex = 0;
                 }
-                nextBeatTime = timer;
+                //从其它模组交接而来：吃 RestartWindupFrames 帧微前摇把刀从交接角度划到起手位；
+                //普通点按/短停续拍无新鲜交接，保持当帧出刀
+                hasHandoff = OniBladeHandoff.TryPeek(Owner, out handoffRot, out _);
+                nextBeatTime = timer + (hasHandoff ? RestartWindupFrames : 0);
             }
             if (timer >= nextBeatTime) {
                 FireBeat();
@@ -418,6 +466,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         /// <summary>开火一拍：冻结当前鼠标方向为该刀光的瞄准角，按攻速排下一拍并缩放命中冷却</summary>
         private void FireBeat() {
+            hasHandoff = false;   //交接前摇已兑现
+            pressBuffer = 0;      //缓冲的点击已兑现成这一拍
             float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : Projectile.ai[0];
             curAim = aim;
             float cos = MathF.Cos(aim);
@@ -457,13 +507,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 return;
             }
 
+            //签名拍软保留期间藏刀等待：技能姿态仍在持刀，防双刀同屏；
+            //滚动中的连段（有活刀光）不受保留影响，节奏不被打断——
+            //只剩硬让位冻结的"尸体刀光"时同样藏刀，防刹停帧收势姿态借尸还魂闪现
+            if (!AnyLiveSlash() && OniBladeOccupancy.BladeReserved(Owner)) {
+                bladeOpacity = 0f;
+                bladePoseInitialized = false;
+                return;
+            }
+
             float targetRotation;
             float targetDepth;
             var stretch = Player.CompositeArmStretchAmount.Full;
             bladeOpacity = 1f;
 
             if (!firstBeatFired) {
-                //A 首次起手：从持刀位快速反拉到肩后蓄势，深度沉入身后（首拍扫掠会把它甩回身前）
+                //A 首次起手：从持刀位快速反拉到肩后蓄势，深度沉入身后（首拍扫掠会把它甩回身前）；
+                //有交接刀角时从该角度顺势拉入蓄势位——从疾走纳刀等演出接过来时刀不瞬移
                 float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : curAim;
                 float cos = MathF.Cos(aim);
                 int facing = MathF.Abs(cos) < 0.05f ? Owner.direction : (cos > 0f ? 1 : -1);
@@ -471,19 +531,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 SlashDef first = BuildBeatDef(0, aim, facing, sizeMul);
                 float startRot = BladePathRotation(in first, aim, facing, BladePathStart);
                 float sweepSign = PathSweepSign(in first, aim, facing);
-                float windT = CSR.EaseOutCubic(MathHelper.Clamp(timer / (float)FirstWindupFrames, 0f, 1f));
-                targetRotation = startRot - sweepSign * 0.55f * windT;
+                float windT = CSR.EaseOutCubic(MathHelper.Clamp(firstWindupTicks / (float)FirstWindupFrames, 0f, 1f));
+                targetRotation = hasHandoff
+                    ? OniBladePose.LerpAngle(handoffRot, startRot - sweepSign * 0.55f, windT)
+                    : startRot - sweepSign * 0.55f * windT;
                 targetDepth = MathHelper.Lerp(0.15f, -0.85f, windT);
                 stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
             }
             else if (actives.Count == 0) {
-                //收势播完、子刀光全部过期：藏刀等待重启（重启时 UpdateCombo 先行开火，姿态同帧接管）
-                bladeOpacity = 0f;
-                bladePoseInitialized = false;
-                impactHoldFrames = 0;
-                impactRecoil = 0f;
-                bladeScalePulse = 0f;
-                return;
+                if (scheduling && hasHandoff && timer < nextBeatTime) {
+                    //B0 交接重启微前摇：刀从交接角度划向首拍起手位——模组切换刀走连续弧线
+                    float aim = ToMouse.LengthSquared() > 1f ? ToMouseA : curAim;
+                    float cos = MathF.Cos(aim);
+                    int facing = MathF.Abs(cos) < 0.05f ? Owner.direction : (cos > 0f ? 1 : -1);
+                    bladeFacing = facing;
+                    SlashDef next = BuildBeatDef(comboIndex, aim, facing, sizeMul);
+                    float startRot = BladePathRotation(in next, aim, facing, BladePathStart);
+                    float windT = CSR.EaseOutCubic(
+                        1f - (nextBeatTime - timer) / (float)RestartWindupFrames);
+                    targetRotation = OniBladePose.LerpAngle(handoffRot, startRot, windT);
+                    targetDepth = MathHelper.Lerp(-0.20f, -0.45f, windT);
+                    stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
+                }
+                else {
+                    //收势播完、子刀光全部过期：藏刀等待重启（重启时 UpdateCombo 先行开火，姿态同帧接管）
+                    bladeOpacity = 0f;
+                    bladePoseInitialized = false;
+                    impactHoldFrames = 0;
+                    impactRecoil = 0f;
+                    bladeScalePulse = 0f;
+                    return;
+                }
             }
             else {
                 ActiveSlash a = actives[^1];
@@ -714,6 +792,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Owner.SetCompositeArmFront(true, bladeArmStretch, armRotation);
             Owner.SetCompositeArmBack(true, backStretch, armRotation + 0.16f * bladeFacing);
             bladeHandWorld = Owner.GetFrontHandPosition(bladeArmStretch, armRotation);
+
+            //连段刀角同样上黑板：技能起手（肢解居合等）从这里继承，双向交接闭环
+            OniBladeHandoff.Publish(Owner, bladeRotation, bladeFacing);
         }
 
         /// <summary>存活契约：排拍中或有子刀光时续命；全部收势且命中余韵播完即 Kill，

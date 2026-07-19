@@ -154,9 +154,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     NPC first = TargetIndex >= 0 && TargetIndex < Main.maxNPCs ? Main.npc[TargetIndex] : null;
                     targetType = first?.active == true ? first.type : -1;
                 }
-                //从连段移交时继承实体刀当前角度：蓄势段从这里顺势收拢入鞘，普攻→居合读作一整段动作
+                //从连段移交时继承实体刀当前角度：蓄势段从这里顺势收拢入鞘，普攻→居合读作一整段动作；
+                //连段不在场则回退交接黑板（疾走纳刀后立刻点纸等场景，刀角同样连续）
                 CrimsonRendSlash combo = CrimsonRendSlash.FindController(Owner);
-                inheritPose = combo != null && combo.TryGetBladePose(out inheritRot, out _);
+                inheritPose = combo != null && combo.TryGetBladePose(out inheritRot, out _)
+                    || OniBladeHandoff.TryPeek(Owner, out inheritRot, out _);
                 //起手屏息的低鸣：拔刀的呼吸从这里开始
                 SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.60f, Volume = 0.40f }, Owner.Center);
             }

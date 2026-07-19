@@ -72,6 +72,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         /// <summary>开场短促硬占:清掉在场连段刀光,给演出一个干净的起手;之后普攻自由(不锁)</summary>
         bool IOniBladeOccupant.HardOccupiesBlade => timer <= 10;
 
+        /// <summary>纳刀一挑的签名拍软保留:长残心照旧可随时接管,只护刀入鞘与世界裂开压在同一拍的那一挑</summary>
+        bool IOniBladeOccupant.ReservesBlade => timer > DetonateFrame && timer <= DetonateFrame + NotoFlickFrames;
+
         /// <summary>
         /// 触发接口（调试入口）：在持有者客户端调用（<c>player.whoAmI == Main.myPlayer</c> 时），
         /// tML 自动完成多人同步；整场演出由主控自驱，调用方无需后续干预
