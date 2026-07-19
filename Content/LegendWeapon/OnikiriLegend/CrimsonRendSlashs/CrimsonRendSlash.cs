@@ -1013,7 +1013,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return false;
         }
 
-        /// <summary>割草断藤：沿各活跃刀光的弧线扫切草/藤/南瓜藤等可切物（全挥砍期生效，宽度对齐判定带）</summary>
+        /// <summary>割草断藤：沿各活跃刀光的弧线扫切草/藤/南瓜藤等可切物（全挥砍期生效，宽度对齐判定带）；
+        /// 与命中判定同款辐条覆盖月牙内侧——贴脚的草同样被刀身扫到</summary>
         public override void CutTiles() {
             if (actives.Count == 0) {
                 return;
@@ -1040,6 +1041,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     Vector2 mid = CSR.PointAt(in a.Def, center, uc, lt);
                     if (hasPrev) {
                         Utils.PlotTileLine(prev, mid, width, DelegateMethods.CutTiles);
+                    }
+                    if (k % 2 == 0) {
+                        //辐条：中心→弧上点，月牙内侧（贴身区）的草藤照割
+                        Utils.PlotTileLine(center, mid, SpokeThickness, DelegateMethods.CutTiles);
                     }
                     prev = mid;
                     hasPrev = true;
