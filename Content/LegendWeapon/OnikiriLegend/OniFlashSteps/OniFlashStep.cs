@@ -15,14 +15,17 @@ using OKF = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps.On
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
     /// <summary>
-    /// 神威疾走主控：零前摇零后摇的定距冲刺 + 延迟居合结算。<br/>
-    /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身的 ~8 帧，之后立刻交还操控——
-    /// 一切华丽的东西都是非阻塞的事后余像，自己播完自己。<br/>
-    /// 时间轴（60fps，距离 900 时约 0.75s 演出 / 0.13s 锁定）：<br/>
-    /// 0 瞬发位移（~150px/帧）、出发点墨爆、布帛撕裂+风切+低太鼓 →
-    /// 0~5 定距推进（撞墙提前止步）、身后神威流带逐帧延伸、穿过的敌人缠上墨痕
-    /// （无伤害）+ 微时停 → 6~7 硬刹带过冲回弹 → 8 交还操控 →
-    /// 纳刀帧（刹停后 8 帧）"锵"，全部墨痕同帧裂开结算 →
+    /// 神威疾走主控：零前摇零后摇的按住可控冲刺 + 延迟居合结算。<br/>
+    /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身（900px 全程 ~11 帧），
+    /// 之后立刻交还操控——一切华丽的东西都是非阻塞的事后余像，自己播完自己。<br/>
+    /// 长度控制：爆发段(2 帧 ~130px/帧)保住"按下即窜"的观感并定义轻点最小跳距(~260px)，
+    /// 巡航段(~72px/帧)是松手可控区——松开右键即刹停，按住走满全程；
+    /// 撞墙直线斩停（子步扫描，轨迹恒直，墨溅上墙）。<br/>
+    /// 时间轴（60fps，距离 900 全程约 0.85s 演出 / 0.18s 锁定）：<br/>
+    /// 0 爆发起步、出发点墨爆、布帛撕裂+风切+低太鼓 →
+    /// 巡航推进（撞墙/松手提前止步）、身后神威流带逐帧延伸、穿过的敌人缠上墨痕
+    /// （无伤害）+ 微时停 → 硬刹带过冲回弹 → 交还操控 →
+    /// 纳刀帧（按计划距离恒定）"锵"，全部墨痕同帧裂开结算 →
     /// 流带从尾端化墨蒸发（~22 帧），烟屑沿蒸发前沿剥落。<br/>
     /// 视觉语言：绯红偏黑红的流动墨绸（详见 <see cref="OniKamuiFlowRenderer"/>），
     /// 与雷电/科技无关——鬼切的神威是墨与绸，不是电。<br/>
@@ -33,7 +36,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public override string Texture => CWRConstant.Placeholder;
 
         //==== 时间轴常量 ====
-        private const float DashSpeed = 150f;   //px/帧
+        //双段速度：6 帧跑完全程时人类来不及松键（点击本身就要 100ms+），松手控长形同虚设——
+        //爆发段保住"按下即窜"的观感并定义轻点的最小跳距，巡航段把时长拉进人手可控的窗口
+        private const float DashBurstSpeed = 130f;   //爆发段速度(px/帧)
+        private const int DashBurstFrames = 2;       //爆发段帧数(轻点最小跳距 ≈ 260px)
+        private const float DashSustainSpeed = 72f;  //巡航段速度(px/帧)，900px 全程约 11 帧
         private const int BrakeFrames = 2;      //硬刹：+过冲 → −回拉
         private const int JudgmentDelay = 8;    //刹停到纳刀结算
         private const int RetractDelay = 10;    //刹停到流带开始蒸发
@@ -140,7 +147,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             dashDir = DashAngle.ToRotationVector2();
             sizeMul = Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
             seed = Projectile.identity * 0.6180339887f % 1f;
-            plannedDashFrames = Math.Max(2, (int)MathF.Ceiling(Distance / DashSpeed));
+            float burstLen = DashBurstSpeed * DashBurstFrames;
+            plannedDashFrames = Distance <= burstLen
+                ? Math.Max(2, (int)MathF.Ceiling(Distance / DashBurstSpeed))
+                : DashBurstFrames + (int)MathF.Ceiling((Distance - burstLen) / DashSustainSpeed);
             Projectile.timeLeft = JudgmentFrame + RetractDelay + RetractFrames + 30;
 
             path.Add(GetCenter());
@@ -211,7 +221,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private void DashFrame() {
             Vector2 prevHead = GetCenter();
             Vector2 fromBody = Owner.Center;
-            float stepLen = MathF.Min(DashSpeed, Distance - traveled);
+            float speed = timer <= DashBurstFrames ? DashBurstSpeed : DashSustainSpeed;
+            float stepLen = MathF.Min(speed, Distance - traveled);
 
             //直线斩停子步推进
             float moved = 0f;
