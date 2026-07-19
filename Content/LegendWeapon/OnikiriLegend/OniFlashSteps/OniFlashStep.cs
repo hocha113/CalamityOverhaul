@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
         /// <summary>巡航段方向键转向速率(弧度/帧)：全程合计约 ±28° 的小幅弯曲——
         /// 响应感来自"手上的键确实在掰弯这道墨"，幅度收着防拐成蛇形</summary>
-        private const float SteerRate = 0.055f;
+        private const float SteerRate = 0.155f;
         private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
         private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
         private const float MarkSweepWidth = 140f;  //扫掠走廊宽(对齐墨绸视觉宽度,玩家"明明穿过了"的判断依据是那条彩带)
