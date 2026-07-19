@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.Models3D.Runtime;
 using InnoVault.PRT;
@@ -126,15 +126,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             //取鸟居中段的环境光做整体着色，混一点白保证夜里仍有轮廓
             Color light = Lighting.GetColor((int)(Position.X / 16f), (int)((Position.Y - 130f) / 16f));
-            Color tint = Color.Lerp(light, Color.White, 0.16f);
-
             Model3DRenderer.Submit(new Model3DInstance(model) {
-                Position = Position + new Vector2(0f, -ModelBottomOffset * ModelScale),
+                Position = Position + new Vector2(0f, -ModelBottomOffset * ModelScale + 2),
                 Rotation = new Vector3(0f, ModelYaw, 0f),
                 Scale = new Vector3(ModelScale),
                 Layer = Model3DLayer.AfterTiles,
                 LightingEnabled = true,
-                Tint = tint,
+                Tint = light,
             });
         }
 
