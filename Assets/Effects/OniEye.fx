@@ -14,6 +14,7 @@ float uOpen;        //0闭~1全开
 float uSpin;        //勾玉环累计旋转（弧度）
 float uFlash;       //0~1 虹膜爆闪
 float uDissolve;    //0~1 消散进度
+float uUra;         //0 表世界(绯红) ~ 1 里世界(鬼火青)，未设置默认 0 保持旧观感
 
 static const float3 INK_LID = float3(0.050, 0.020, 0.055);
 static const float3 SCLERA_DARK = float3(0.085, 0.020, 0.028);
@@ -24,6 +25,14 @@ static const float3 PUPIL_BLACK = float3(0.012, 0.004, 0.010);
 static const float3 TOMOE_INK = float3(0.030, 0.008, 0.018);
 static const float3 GLOW_RED = float3(0.950, 0.180, 0.100);
 static const float3 FLASH_HOT = float3(1.000, 0.520, 0.400);
+
+//里世界调色：鬼火青家族(与 UI 主题 GhostFire/GhostDim 同源)，墨与瞳仍是墨
+static const float3 SCLERA_URA = float3(0.014, 0.042, 0.048);
+static const float3 IRIS_CORE_URA = float3(0.100, 0.740, 0.600);
+static const float3 IRIS_MID_URA = float3(0.038, 0.330, 0.290);
+static const float3 IRIS_RIM_URA = float3(0.016, 0.130, 0.120);
+static const float3 GLOW_URA = float3(0.150, 0.860, 0.690);
+static const float3 FLASH_URA = float3(0.620, 1.000, 0.920);
 
 float noiseTex(float2 uv) {
     return tex2D(uImage1, uv).r;
@@ -114,15 +123,22 @@ float4 PSEyeBase(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR
     float2 pc = p - float2(0.0, 0.01);
     float rd = length(pc);
 
+    //表里调色板：绯红人间 / 鬼火青阴间
+    float3 scleraCol = lerp(SCLERA_DARK, SCLERA_URA, uUra);
+    float3 irisCore = lerp(IRIS_CORE, IRIS_CORE_URA, uUra);
+    float3 irisMid = lerp(IRIS_MID, IRIS_MID_URA, uUra);
+    float3 irisRim = lerp(IRIS_RIM, IRIS_RIM_URA, uUra);
+    float3 flashHot = lerp(FLASH_HOT, FLASH_URA, uUra);
+
     //巩膜：暗血底，噪声脏斑
     float sn = noiseTex(p * 3.3 + 1.9);
-    float3 col = SCLERA_DARK * (0.72 + 0.28 * sn);
+    float3 col = scleraCol * (0.72 + 0.28 * sn);
 
     //虹膜三段渐变 + 笛卡尔噪斑
     float irisMask = 1.0 - smoothstep(0.325, 0.350, rd);
     float t = saturate(rd / 0.34);
-    float3 iris = lerp(IRIS_CORE, IRIS_MID, smoothstep(0.15, 0.75, t));
-    iris = lerp(iris, IRIS_RIM, smoothstep(0.78, 1.0, t));
+    float3 iris = lerp(irisCore, irisMid, smoothstep(0.15, 0.75, t));
+    iris = lerp(iris, irisRim, smoothstep(0.78, 1.0, t));
     float mottle = noiseTex(p * 4.2 + uTime * 0.03);
     iris *= 0.86 + mottle * 0.26;
     //放射状虹膜纤维：单位方向向量喂噪声，笛卡尔连续无 seam
@@ -132,7 +148,7 @@ float4 PSEyeBase(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR
     //虹膜外缘限制环（墨线勾边）
     iris = lerp(iris, TOMOE_INK, smoothstep(0.90, 1.0, t) * 0.55);
     //勾玉环轨道微亮
-    iris += IRIS_CORE * 0.18 * exp(-pow((rd - 0.215) / 0.05, 2.0));
+    iris += irisCore * 0.18 * exp(-pow((rd - 0.215) / 0.05, 2.0));
     col = lerp(col, iris, irisMask);
 
     //三勾玉
@@ -145,7 +161,7 @@ float4 PSEyeBase(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR
     col = lerp(col, PUPIL_BLACK, slit);
 
     //爆闪漂白
-    col = lerp(col, FLASH_HOT, uFlash * 0.55 * irisMask);
+    col = lerp(col, flashHot, uFlash * 0.55 * irisMask);
 
     float a = f.aperture;
     //眼睑墨线覆盖在最上
@@ -166,26 +182,31 @@ float4 PSEyeGlow(float2 coords : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR
     float2 pc = p - float2(0.0, 0.01);
     float rd = length(pc);
 
+    //表里调色板
+    float3 glowCol = lerp(GLOW_RED, GLOW_URA, uUra);
+    float3 flashHot = lerp(FLASH_HOT, FLASH_URA, uUra);
+    float3 glintCol = lerp(float3(1.0, 0.82, 0.72), float3(0.80, 1.0, 0.95), uUra);
+
     //虹膜红光，只在睁眼后泄出
     float openGate = smoothstep(0.15, 0.7, uOpen);
-    float3 col = GLOW_RED * exp(-pow(rd / 0.42, 2.0)) * 0.50 * openGate * f.aperture;
+    float3 col = glowCol * exp(-pow(rd / 0.42, 2.0)) * 0.50 * openGate * f.aperture;
 
     //湿润高光点：偏左上小亮斑，让眼睛活过来
     float2 dg = pc - float2(-0.085, -0.115);
     float glint = exp(-dot(dg, dg) * 480.0);
-    col += float3(1.0, 0.82, 0.72) * glint * 0.85 * openGate * f.aperture;
+    col += glintCol * glint * 0.85 * openGate * f.aperture;
 
     //眼睑缝隙红渗
-    col += GLOW_RED * f.stroke * 0.22 * openGate;
+    col += glowCol * f.stroke * 0.22 * openGate;
 
     //眼角血泪两点
     float2 dc1 = p - float2(0.83, -0.02);
     float2 dc2 = p - float2(-0.83, -0.02);
     float tears = exp(-dot(dc1, dc1) * 90.0) + exp(-dot(dc2, dc2) * 90.0);
-    col += GLOW_RED * tears * 0.30 * openGate;
+    col += glowCol * tears * 0.30 * openGate;
 
     //爆闪：整眼白热
-    col += FLASH_HOT * uFlash * (exp(-pow(rd / 0.55, 2.0)) * 1.6 + f.aperture * 0.5);
+    col += flashHot * uFlash * (exp(-pow(rd / 0.55, 2.0)) * 1.6 + f.aperture * 0.5);
 
     float keep = dissolveKeep(p, uDissolve);
     col *= keep * uIntensity * vertexColor.a;

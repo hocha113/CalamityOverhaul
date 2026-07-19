@@ -20,6 +20,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public Vector2 Normal;
         /// <summary>切口出生时刻（entry.Timer 时基）</summary>
         public int Birth;
+        /// <summary>本切口滞拍帧数（亮起 → 分离），供触发方与外层斩切演出对齐；0=立即分离</summary>
+        public int Hold;
     }
 
     /// <summary>肢解碎片：快照 quad 被切割线裁出的凸多边形</summary>
@@ -64,10 +66,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// 鬼切肢解定格管理器：目标被切割分开、原地僵住。<br/>
     /// 视觉三段式：触发帧由 <see cref="OniDismemberRender"/> 把 NPC 完整外观（含 glowmask 等
     /// 全部绘制层）捕获进专属 RT → <see cref="OniDismemberNPC"/> 隐藏本体，把快照按切割线
-    /// 裁成凸多边形碎片做顶点绘制 → 滞拍 <see cref="HoldFrames"/> 帧后碎片沿切线法线滑开，
+    /// 裁成凸多边形碎片做顶点绘制 → 每切口各自滞拍（默认 <see cref="HoldFrames"/> 帧，
+    /// 可由触发方传入以对齐外层斩切演出的引爆帧，0=立裂）后碎片沿切线法线滑开，
     /// 断面走 <c>OniDismember.fx</c> 的灼热辉光。快照捕获的那一瞬同时就是"定格"本身。<br/>
     /// 僵直复用 <see cref="CWRNpc.TimeFrozenTick"/> 冻结链逐帧刷新，位置钉死在锚点。<br/>
-    /// 调用入口：<see cref="Trigger(NPC, Vector2, float, int)"/>，同一目标可反复触发追加切口（上限 <see cref="MaxCuts"/>）。
+    /// 调用入口：<see cref="Trigger(NPC, Vector2, float, int, int)"/>，同一目标可反复触发追加切口（上限 <see cref="MaxCuts"/>）。
     /// </summary>
     internal class OniDismember : ICWRLoader
     {
@@ -124,24 +127,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// <param name="cutPointWorld">切线经过的世界坐标（会被收拢进身体范围）</param>
         /// <param name="cutAngle">切线方向（世界空间弧度）</param>
         /// <param name="duration">从当前帧起的持续帧数，尾段含 <see cref="FadeFrames"/> 帧淡出</param>
-        public static bool Trigger(NPC npc, Vector2 cutPointWorld, float cutAngle, int duration = DefaultDuration) {
+        /// <param name="holdFrames">本切口滞拍帧数（亮起 → 分离）；冻结与伤口亮线即刻建立，
+        /// 分离推迟到滞拍结束，供外层斩切演出（如 <see cref="OniFinaleCut"/>）把引爆帧压到同一拍；0=立即分离</param>
+        public static bool Trigger(NPC npc, Vector2 cutPointWorld, float cutAngle,
+            int duration = DefaultDuration, int holdFrames = HoldFrames) {
             if (npc == null || !npc.active) {
                 return false;
             }
 
+            holdFrames = Math.Max(holdFrames, 0);
             DismemberEntry entry = GetEntry(npc.whoAmI);
             if (entry == null || entry.NpcType != npc.type) {
                 if (entry != null) {
                     Entries.Remove(entry);  //槽位被新 NPC 复用，旧状态作废
                 }
-                entry = CreateEntry(npc, duration);
+                entry = CreateEntry(npc, duration, holdFrames);
                 Entries.Add(entry);
             }
             else {
-                entry.Duration = Math.Max(entry.Duration, entry.Timer + Math.Max(duration, FadeFrames));
+                entry.Duration = Math.Max(entry.Duration, entry.Timer + Math.Max(duration, holdFrames + FadeFrames));
             }
 
-            AddCut(entry, cutPointWorld, cutAngle);
+            AddCut(entry, cutPointWorld, cutAngle, holdFrames);
 
             //立即入冻：不等下一次系统刷新
             npc.CWR().TimeFrozenTick = 2;
@@ -182,11 +189,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         //==================== 建立与切割 ====================
 
-        private static DismemberEntry CreateEntry(NPC npc, int duration) {
+        private static DismemberEntry CreateEntry(NPC npc, int duration, int holdFrames) {
             DismemberEntry entry = new() {
                 NpcIndex = npc.whoAmI,
                 NpcType = npc.type,
-                Duration = Math.Max(duration, FadeFrames + HoldFrames),
+                Duration = Math.Max(duration, FadeFrames + holdFrames),
                 Seed = Main.rand.NextFloat(),
                 AnchorCenter = npc.Center,
                 BehindTiles = npc.behindTiles,
@@ -223,7 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             height = Math.Clamp(h & ~1, 64, 1600);
         }
 
-        private static void AddCut(DismemberEntry entry, Vector2 cutPointWorld, float cutAngle) {
+        private static void AddCut(DismemberEntry entry, Vector2 cutPointWorld, float cutAngle, int holdFrames) {
             if (entry.SnapWidth <= 0 || entry.Cuts.Count >= MaxCuts) {
                 return;
             }
@@ -237,10 +244,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 PointLocal = local,
                 Normal = new Vector2(-dir.Y, dir.X),
                 Birth = entry.Timer,
+                Hold = holdFrames,
             };
 
             SplitPieces(entry, in cut);
             entry.Cuts.Add(cut);
+
+            //零滞拍：分离当帧发生，UpdateAll 的等值检查赶不上，声画在此立即触发
+            if (cut.Hold <= 0 && !Main.dedServ) {
+                SeparationBurst(entry, in cut);
+            }
         }
 
         /// <summary>用切线把现有碎片各自一分为二（Sutherland–Hodgman 半平面裁剪）</summary>
@@ -342,12 +355,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
         //==================== 碎片运动 ====================
 
-        /// <summary>滞拍后缓出的分离曲线 0..1</summary>
-        internal static float SeparationCurve(int age) {
-            if (age < HoldFrames) {
+        /// <summary>滞拍后缓出的分离曲线 0..1（hold 为该切口自己的滞拍帧数）</summary>
+        internal static float SeparationCurve(int age, int hold) {
+            if (age < hold) {
                 return 0f;
             }
-            return OniFinaleRenderer.EaseOutCubic((age - HoldFrames) / (float)SeparateFrames);
+            return OniFinaleRenderer.EaseOutCubic((age - hold) / (float)SeparateFrames);
         }
 
         /// <summary>碎片本帧位移与旋转：各切口贡献按各自时基独立缓动，全部到位后叠加僵直微颤</summary>
@@ -360,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 if (side == 0) {
                     continue;
                 }
-                float curve = SeparationCurve(entry.Timer - entry.Cuts[i].Birth);
+                float curve = SeparationCurve(entry.Timer - entry.Cuts[i].Birth, entry.Cuts[i].Hold);
                 if (curve <= 0f) {
                     continue;
                 }
@@ -403,7 +416,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
                 if (!Main.dedServ) {
                     foreach (DismemberCut cut in entry.Cuts) {
-                        if (entry.Timer - cut.Birth == HoldFrames) {
+                        if (cut.Hold > 0 && entry.Timer - cut.Birth == cut.Hold) {
                             SeparationBurst(entry, in cut);
                         }
                     }

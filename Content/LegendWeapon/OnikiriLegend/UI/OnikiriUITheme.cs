@@ -83,6 +83,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public const float HudRopeLen = 18f;
         #endregion
 
+        #region 鬼域之眼 HUD 几何
+        /// <summary>眼心相对绳结锚点的偏移(眼悬在上,整簇纸札挂在眼下)</summary>
+        public static readonly Vector2 HudEyeOffset = new(0f, -27f);
+        /// <summary>眼 quad 半尺寸(OniEye.fx 的眼形几乎铺满 quad 宽)</summary>
+        public const float HudEyeHalf = 22f;
+        /// <summary>眼的圆形命中半径</summary>
+        public const float HudEyeHitRadius = 18f;
+        /// <summary>HUD 队列上缘扩展:绳结到眼顶再留辉光余量(|HudEyeOffset.Y|+HudEyeHalf+余量)</summary>
+        public const float HudEyeTopExtent = 56f;
+        #endregion
+
         #region 气力墨脉 HUD 几何
         /// <summary>气力墨脉 quad 左上角相对绳结锚点的偏移(不随纸札摆角,战斗中读数不晃)</summary>
         public static readonly Vector2 HudVigorOffset = new(28f, 61f);

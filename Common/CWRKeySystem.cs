@@ -25,6 +25,8 @@ namespace CalamityOverhaul.Common
         public static ModKeybind Murasama_TriggerKey { get; private set; }
         public static ModKeybind Murasama_DownKey { get; private set; }
         public static ModKeybind Onikiri_Execute { get; private set; }
+        public static ModKeybind Onikiri_DomainFlip { get; private set; }
+        public static ModKeybind Onikiri_Dismember { get; private set; }
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
@@ -53,6 +55,9 @@ namespace CalamityOverhaul.Common
             Murasama_TriggerKey = KeybindLoader.RegisterKeybind(mod, nameof(Murasama_TriggerKey), "F");
             Murasama_DownKey = KeybindLoader.RegisterKeybind(mod, nameof(Murasama_DownKey), "X");
             Onikiri_Execute = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_Execute), "R");
+            //鬼域表里翻转，默认鼠标中键（与原版 MouseMiddle 触发器同一键名体系，可在控制设置里重绑）
+            Onikiri_DomainFlip = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_DomainFlip), "Mouse3");
+            Onikiri_Dismember = KeybindLoader.RegisterKeybind(mod, nameof(Onikiri_Dismember), "F");
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
@@ -64,6 +69,8 @@ namespace CalamityOverhaul.Common
             Murasama_TriggerKey = null;
             Murasama_DownKey = null;
             Onikiri_Execute = null;
+            Onikiri_DomainFlip = null;
+            Onikiri_Dismember = null;
             Legend_Domain = null;
             Halibut_Clone = null;
             Legend_Restart = null;

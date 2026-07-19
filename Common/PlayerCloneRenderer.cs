@@ -81,5 +81,31 @@ namespace CalamityOverhaul.Common
             Prepare(owner);
             DrawPrepared(position, tint, direction, bodyFrame, legFrame, fullRotation, fullRotationOrigin);
         }
+
+        /// <summary>
+        /// 用已 <see cref="Prepare"/> 的傀儡以<b>本色</b>绘制（保留 CopyVisuals 拷来的肤色/服色，不统一染色），
+        /// 供快照捕获类用途使用。调用方负责批次与 <see cref="Main.screenPosition"/> 的上下文
+        /// </summary>
+        public static void DrawPreparedNatural(Vector2 position, int direction, float gravDir,
+            Rectangle bodyFrame, Rectangle legFrame) {
+            if (dummy == null || Main.dedServ) {
+                return;
+            }
+
+            dummy.position = position;
+            dummy.velocity = Vector2.Zero;
+            dummy.direction = direction;
+            dummy.gravDir = gravDir;
+            dummy.bodyFrame = bodyFrame;
+            dummy.legFrame = legFrame;
+            dummy.fullRotation = 0f;
+            dummy.fullRotationOrigin = default;
+            //不画手持物/手持弹幕，快照只保留身体本体
+            dummy.heldProj = -1;
+            dummy.itemAnimation = 0;
+            dummy.itemTime = 0;
+
+            Main.PlayerRenderer.DrawPlayer(Main.Camera, dummy, dummy.position, 0f, default);
+        }
     }
 }

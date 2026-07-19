@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.UIs.HudStack;
 using InnoVault.UIHandles;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,8 +15,10 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
-    /// 封印札 HUD：手持鬼切时左下角悬一张随风摆的纸札。<br/>
-    /// 札上墨批长度 = 总驾驭度；有鬼躁动时下缘焦边燃起鬼火青。点击开阖点鬼簿
+    /// 封印札 HUD：手持鬼切时左下角悬一张随风摆的纸札,整簇挂在鬼域之眼下。<br/>
+    /// 札上墨批长度 = 总驾驭度；有鬼躁动时下缘焦边燃起鬼火青。点击札开阖点鬼簿;<br/>
+    /// 眼反映领域状态(阖/表/里/离巢),左键开阖领域、右键翻转表里(见 <see cref="OniDomainEye"/>);
+    /// 领域开着时整簇不随收刀撤走,控制面不弃守
     /// </summary>
     internal sealed class OniTalismanHud : UIHandle, ILocalizedModType, IBottomLeftHud
     {
@@ -31,6 +34,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText StanceValueFormat { get; private set; }
         public static LocalizedText StanceReadyLine { get; private set; }
         public static LocalizedText StanceHalfLine { get; private set; }
+        public static LocalizedText DomainTitle { get; private set; }
+        public static LocalizedText DomainStateClosed { get; private set; }
+        public static LocalizedText DomainStateOmote { get; private set; }
+        public static LocalizedText DomainStateUra { get; private set; }
+        public static LocalizedText DomainStateShifting { get; private set; }
+        public static LocalizedText DomainToggleHintFormat { get; private set; }
+        public static LocalizedText DomainFlipHintFormat { get; private set; }
 
         public override void SetStaticDefaults() {
             HudTitle = this.GetLocalization(nameof(HudTitle), () => "封印札");
@@ -42,18 +52,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             StanceValueFormat = this.GetLocalization(nameof(StanceValueFormat), () => "{0} / {1}");
             StanceReadyLine = this.GetLocalization(nameof(StanceReadyLine), () => "锋已离鞘——只欠一拔");
             StanceHalfLine = this.GetLocalization(nameof(StanceHalfLine), () => "势已过半——足以一记灭世一闪");
+            DomainTitle = this.GetLocalization(nameof(DomainTitle), () => "鬼域之眼");
+            DomainStateClosed = this.GetLocalization(nameof(DomainStateClosed), () => "阖目——领域未展");
+            DomainStateOmote = this.GetLocalization(nameof(DomainStateOmote), () => "表世界——泛黄和纸");
+            DomainStateUra = this.GetLocalization(nameof(DomainStateUra), () => "里世界——水墨阴间");
+            DomainStateShifting = this.GetLocalization(nameof(DomainStateShifting), () => "变相中——莫扰");
+            DomainToggleHintFormat = this.GetLocalization(nameof(DomainToggleHintFormat), () => "{0} 或左键 展开/收阖领域");
+            DomainFlipHintFormat = this.GetLocalization(nameof(DomainFlipHintFormat), () => "{0} 或右键 翻转表里(阖时先展)");
         }
 
         /// <summary>气力不足反馈:墨痕干笔一颤(玩法层调用,本地客户端)</summary>
         public static void NotifyVigorDenied() => Instance?.vigor.NotifyDenied();
         /// <summary>架势不足反馈:刀在鞘中一顿(玩法层调用,本地客户端)</summary>
         public static void NotifyStanceDenied() => Instance?.stance.NotifyDenied();
+        /// <summary>领域命令被拒反馈:鬼眼急促眨动(玩法层调用,本地客户端)</summary>
+        public static void NotifyDomainDenied() => Instance?.domainEye.NotifyDenied();
 
         #region 左下角 HUD 队列接入
         bool IBottomLeftHud.HudStackActive => Active;
         int IBottomLeftHud.HudStackOrder => 0;
         Vector2 IBottomLeftHud.HudStackAnchor => NaturalAnchor;
-        float IBottomLeftHud.HudStackTopExtent => 12f;
+        //上缘顶到鬼域之眼的辉光边
+        float IBottomLeftHud.HudStackTopExtent => OnikiriUITheme.HudEyeTopExtent;
         //簇的下缘取纸札(绳+札+余量)与架势鞘刀(刀轴+刃辉下摆)中更低者
         float IBottomLeftHud.HudStackBottomExtent => MathF.Max(
             OnikiriUITheme.HudRopeLen + OnikiriUITheme.HudTalismanH + 14f,
@@ -70,6 +90,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         private readonly OniVigorStroke vigor = new();
         //架势鞘刀:墨脉之下横悬的鞘中刀,拔刀进度=架势(数据层见 OniStanceData)
         private readonly OniStanceSheath stance = new();
+        //鬼域之眼:整簇的挂点兼领域控制面(状态直读 OniDomain.Local)
+        private readonly OniDomainEye domainEye = new();
         private int emberTimer;
         //挂绳 Verlet:锚点随 HUD 队列避让移动时绳会带着滞后甩摆
         private readonly OniRope rope = new(5, OnikiriUITheme.HudRopeLen + 5f);
@@ -105,17 +127,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 && (item.type == ModContent.ItemType<OnikiriItem>());
         }
 
-        public override bool Active => LocalHolding() || appear > 0.01f;
+        /// <summary>手持鬼切,或领域仍开着(收了刀控制面也不弃守,眼还睁着就得有人管它)</summary>
+        private static bool LocalKeepAlive()
+            => LocalHolding() || (OniDomain.Local?.AnyActive ?? false);
+
+        public override bool Active => LocalKeepAlive() || appear > 0.01f;
 
         public override void Update() {
-            bool holding = LocalHolding();
-            appear = MathHelper.Clamp(appear + (holding ? 0.07f : -0.09f), 0f, 1f);
+            bool keepAlive = LocalKeepAlive();
+            appear = MathHelper.Clamp(appear + (keepAlive ? 0.07f : -0.09f), 0f, 1f);
             if (appear <= 0.01f) {
                 hover = wasHovered = false;
                 hoverOffTicks = Math.Min(hoverOffTicks + 1, 600);
                 dangerEase = 0f;
                 vigor.Reset();
                 stance.Reset();
+                domainEye.Reset();
                 return;
             }
             particles.Update();
@@ -123,14 +150,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             bool danger = OniRegistry.InDanger;
             dangerEase += ((danger ? 1f : 0f) - dangerEase) * 0.05f;
 
+            float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
+            float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
+            bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f;
+
+            //鬼域之眼:先推进眼(它是整簇的挂点),左键开阖、右键/中键翻转
+            Vector2 knot = Anchor;
+            domainEye.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition, GlobalTimer,
+                keyLeftPressState == KeyPressState.Pressed,
+                keyRightPressState == KeyPressState.Pressed || keyMiddlePressState == KeyPressState.Pressed);
+
             //挂绳推进:危态风更烈;悬停视为被手捏住,风息、阻尼加重,偶发拽动也止住
             //风幅与阻尼取"檐下无风时微微息动"的档位,大幅甩摆只留给悬停初捏与危态拽动
-            Vector2 knot = Anchor;
+            //绳结跟随眼的呼吸微移——札确实挂在那只活物身上
             float windAmp = danger ? 0.11f : 0.05f;
             if (hover) {
                 windAmp *= 0.2f;
             }
-            rope.Update(knot, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.84f);
+            rope.Update(knot + domainEye.HangSway, null, GlobalTimer, windAmp, endWeight: 0.5f, damping: hover ? 0.78f : 0.84f);
             if (danger && !hover && Main.rand.NextBool(180)) {
                 rope.Nudge(Main.rand.NextFloat(0.45f, 0.95f) * (Main.rand.NextBool() ? 1f : -1f), Main.rand.NextFloat(0.35f));
             }
@@ -188,9 +225,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             Size = new Vector2(maxX - minX, maxY - minY);
             UIHitBox = new Rectangle((int)minX, (int)minY, (int)(maxX - minX), (int)(maxY - minY));
 
-            float registerOpen = OniRegisterUI.Instance?.OpenProgress ?? 0f;
-            float riteOpen = OniEngraveRiteUI.Instance?.OpenProgress ?? 0f;
-            bool uiCovered = registerOpen > 0.4f || riteOpen > 0.4f;
             //气力墨脉与架势鞘刀推进:点鬼簿开卷时也继续呼吸,只是不受理悬浮
             vigor.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
             stance.Update(player, knot, !uiCovered && appear > 0.5f, MousePosition);
@@ -251,10 +285,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float W = OnikiriUITheme.HudTalismanW;
             float H = OnikiriUITheme.HudTalismanH;
 
-            //挂绳:上端渐隐(挂在看不见的地方),结点一枚朱菱,绳体为 Verlet 折线
-            OniBrush.DrawGradientLine(sb, knot - new Vector2(0f, 26f), knot, OnikiriUITheme.Dark * 0f, OnikiriUITheme.Deep * (a * 0.8f), 1.3f);
+            //挂绳:整簇挂在鬼域之眼下——系带自眼底垂到绳结,结点一枚朱菱,绳体为 Verlet 折线
+            Vector2 knotDraw = knot + domainEye.HangSway;
+            OniBrush.DrawGradientLine(sb, domainEye.TieTop, knotDraw, OnikiriUITheme.Deep * (a * 0.30f), OnikiriUITheme.Deep * (a * 0.85f), 1.2f);
             rope.Draw(sb, OnikiriUITheme.Deep * 0.88f, OnikiriUITheme.Deep * 0.62f, 1.3f, a);
-            sb.Draw(pixel, knot, src, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f, new Vector2(0.5f), new Vector2(4.6f), SpriteEffects.None, 0f);
+            sb.Draw(pixel, knotDraw, src, OnikiriUITheme.Seal * a, MathHelper.PiOver4 + rot * 0.4f, new Vector2(0.5f), new Vector2(4.6f), SpriteEffects.None, 0f);
+
+            //鬼域之眼(画在系带之上,盖住带头)
+            domainEye.Draw(sb, a, GlobalTimer);
 
             //札体:纸条质感(三段明暗/折角/压边/缓移光泽),危态时改走焚烧 shader
             Vector2 side = rot.ToRotationVector2();
@@ -299,6 +337,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (hover) {
                 DrawHoverPanel(sb, a);
             }
+            //鬼域之眼的悬浮说明(自判悬停,最后画保证压在其余元素上)
+            domainEye.DrawHoverTag(sb);
         }
 
         /// <summary>札脚焦边:炭黑参差 + 数簇暖色火焰,跟随摆角</summary>

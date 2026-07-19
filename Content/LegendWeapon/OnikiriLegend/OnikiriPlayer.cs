@@ -1,13 +1,20 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
@@ -18,6 +25,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// 架势由连段命中与疾走穿身格挡(蠕虫全身算一条,单次冲刺封顶)积攒;
     /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决：蓄满出终结乱舞(耗全部),
     /// 过半出灭世一闪(耗一半),不足则鞘刀顿挫提醒。处决键任何状态下即时响应,不被连段阻塞。<br/>
+    /// <see cref="CWRKeySystem.Onikiri_Dismember"/> 肢解：里世界专属,不耗资源——直接肢解的代价
+    /// 是纳刀后同等的肢解落回自己(<see cref="OniPlayerDismember"/>反噬僵直),斩媒介则替身受过
+    /// (<see cref="TryDismember"/>光标级联)。<br/>
     /// 数值 owner 端自治,不存 static、不进网络、不存档(进世界/复活重置);
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读本类,招式弹幕由 tML 自动同步
     /// </summary>
@@ -59,6 +69,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// <summary>命中记忆容量与保鲜期(帧):近 5 秒打过谁,处决就认得谁</summary>
         private const int HitMemoryCapacity = 8;
         private const int HitMemoryLifeTicks = 300;
+
+        /// <summary>肢解伤害倍率(终斩刀线/媒介脉冲单次结算);代价是反噬僵直而非资源</summary>
+        private const float DismemberDamageMul = 2.5f;
+        /// <summary>肢解射程(与处决同量级)</summary>
+        private const float DismemberRange = 800f;
+        /// <summary>直接肢解的光标磁吸半径(精确碰撞箱距离)</summary>
+        private const float DismemberMagnetRadius = 130f;
+        /// <summary>媒介点选的光标容差(点到纸面矩形距离)</summary>
+        private const float PaperMagnetPad = 60f;
 
         //====状态(owner 端自治)====
         internal float Vigor = VigorMax;
@@ -108,8 +127,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             bool justRight = Main.mouseRight && !prevMouseRight;
             prevMouseRight = Main.mouseRight;
 
+            //反噬僵直期间万籁俱寂:招式与领域输入全部静默,规避疾走/翻转拆散钉死
+            if (OniPlayerDismember.IsLocked(Player)) {
+                return;
+            }
+
             Item item = Player.GetItem();
             bool holding = item != null && item.Alives() && item.type == ModContent.ItemType<OnikiriItem>();
+            HandleDomainInput(holding);
             if (!holding || Player.dead || Player.CCed) {
                 return;
             }
@@ -125,6 +150,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             }
             if (CWRKeySystem.Onikiri_Execute.JustPressed) {
                 TryExecute(item);
+            }
+            if (CWRKeySystem.Onikiri_Dismember.JustPressed) {
+                TryDismember(item);
+            }
+        }
+
+        //==================== 鬼域 ====================
+
+        /// <summary>
+        /// 领域快捷键：<see cref="CWRKeySystem.Legend_Domain"/> 开阖(共享键,持刀才受理,防与其他传奇武器串键)；
+        /// <see cref="CWRKeySystem.Onikiri_DomainFlip"/>(默认鼠标中键)表里翻转,阖着先展到表,
+        /// 域开着时不持刀也受理——控制面不随收刀弃守。<br/>
+        /// 骇客时间(另一套时停,翻转还要挂 WorldFreeze)与点鬼簿/铭刻演出中不受理;
+        /// 仪式中被拒的命令由 HUD 鬼眼眨眼回应
+        /// </summary>
+        private void HandleDomainInput(bool holding) {
+            if (Player.dead) {
+                return;
+            }
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            if (HackTime.Active) {
+                return;
+            }
+            if ((OniRegisterUI.Instance?.IsOpen ?? false) || (OniEngraveRiteUI.Instance?.Active ?? false)) {
+                return;
+            }
+
+            if (holding && CWRKeySystem.Legend_Domain.JustPressed) {
+                if (!OniDomain.TryToggle(Player, out bool busy) && busy) {
+                    OniTalismanHud.NotifyDomainDenied();
+                }
+            }
+            //中键默认绑定:悬停在鬼眼上时 mouseInterface 为真,让位给眼的点击受理,防同帧双发
+            if ((holding || domain.AnyActive) && CWRKeySystem.Onikiri_DomainFlip.JustPressed && !Player.mouseInterface) {
+                if (!OniDomain.TryFlip(Player, out bool busy) && busy) {
+                    OniTalismanHud.NotifyDomainDenied();
+                }
             }
         }
 
@@ -179,6 +241,105 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             else {
                 OniTalismanHud.NotifyStanceDenied();
             }
+        }
+
+        //==================== 肢解 ====================
+
+        /// <summary>
+        /// 鬼切:肢解——里世界的法则,不耗气力不耗架势。<br/>
+        /// 光标两层级联：压着媒介(面影纸面)优先斩纸,替身受过、全身而退,限频交给媒介再生成冷却;
+        /// 否则取光标附近敌人直接肢解,代价是纳刀后同等的肢解落回自己
+        /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的反噬僵直,天然限频)。<br/>
+        /// 纸与真身重叠时取媒介:纸面大且是玩家主动布下的机会,规则从简。
+        /// 表世界/翻转中按键给领域拒绝反馈——先入里,再谈肢解
+        /// </summary>
+        private void TryDismember(Item item) {
+            //演出或反噬僵直中静默:裂成两半的人拔不了刀
+            if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniSeverStrike>()] > 0
+                || OniPlayerDismember.IsLocked(Player)) {
+                return;
+            }
+            //肢解只在里世界成立
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            if (domain.Phase != OniDomainPhase.Ura || !domain.WorldIsUra) {
+                OniTalismanHud.NotifyDomainDenied();
+                return;
+            }
+
+            ShootState state = Player.GetShootState();
+            int damage = (int)(state.WeaponDamage * DismemberDamageMul);
+            Vector2 mouse = Main.MouseWorld;
+
+            //一层:光标压着媒介 → 点锚斩纸
+            OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
+            if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
+                //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点
+                Vector2 local = mouse - paper.AnchorCenter;
+                local.X = MathHelper.Clamp(local.X, -paper.PaperHalf.X * 0.4f, paper.PaperHalf.X * 0.4f);
+                local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
+                Vector2 cutPoint = paper.AnchorCenter + local;
+                OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
+                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                return;
+            }
+
+            //二层:光标附近的敌人 → 直接肢解(反噬上身)
+            NPC target = PickDismemberTarget(mouse);
+            if (target != null) {
+                OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage
+                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                return;
+            }
+
+            //落空:轻声鞘刀顿挫,不动 HUD
+            SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.35f, Volume = 0.3f }, Player.Center);
+        }
+
+        /// <summary>拔刀方向:玩家→落点;重合时退回鼠标方向,再退回朝向</summary>
+        private float AimAngleFrom(Vector2 point) {
+            Vector2 aim = point - Player.Center;
+            if (aim.LengthSquared() < 1f) {
+                aim = Main.MouseWorld - Player.Center;
+            }
+            if (aim.LengthSquared() < 1f) {
+                aim = Vector2.UnitX * Player.direction;
+            }
+            return aim.ToRotation();
+        }
+
+        /// <summary>
+        /// 直接肢解目标:光标磁吸半径内最要紧者(boss 旗 &gt; 最大生命 &gt; 距离,蠕虫按主体计旗);
+        /// 蠕虫节段整体排除——冻结一节其余照动,画面会散架,头部仍可肢解
+        /// </summary>
+        private NPC PickDismemberTarget(Vector2 cursor) {
+            NPC best = null;
+            bool bestBoss = false;
+            float bestLife = 0f;
+            float bestD = float.MaxValue;
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (!npc.CanBeChasedBy() || CWRLoad.WormBodys.Contains(npc.type)) {
+                    continue;
+                }
+                float d = DistanceToHitbox(npc, cursor);
+                if (d > DismemberMagnetRadius) {
+                    continue;
+                }
+                if (Vector2.Distance(Player.Center, npc.Center) > DismemberRange) {
+                    continue;
+                }
+                NPC root = RootOf(npc);
+                bool better = best == null
+                    || (root.boss != bestBoss
+                        ? root.boss
+                        : Math.Abs(root.lifeMax - bestLife) > 1f ? root.lifeMax > bestLife : d < bestD);
+                if (better) {
+                    best = npc;
+                    bestBoss = root.boss;
+                    bestLife = root.lifeMax;
+                    bestD = d;
+                }
+            }
+            return best;
         }
 
         /// <summary>

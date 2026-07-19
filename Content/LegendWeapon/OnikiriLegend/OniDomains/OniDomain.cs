@@ -73,5 +73,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         public static OniDomainPhase GetPhase(Player player) => player.GetModPlayer<OniDomainPlayer>().Phase;
+
+        //====== 带拒绝分类的命令入口：快捷键与 HUD 鬼眼共用 ======
+
+        /// <summary>
+        /// 开阖命令。返回是否受理；<paramref name="busy"/> 为真表示"仪式进行中被拒"，
+        /// 值得给一次拒绝反馈(重复收阖之类的冗余按键则静默)
+        /// </summary>
+        internal static bool TryToggle(Player player, out bool busy) {
+            busy = false;
+            OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
+            switch (odp.Phase) {
+                case OniDomainPhase.Closed:
+                    return odp.OpenDomain();
+                case OniDomainPhase.Flipping:
+                    //翻转仪式不可打断
+                    busy = true;
+                    return false;
+                case OniDomainPhase.Closing:
+                    //已在收,冗余按键静默
+                    return false;
+                default:
+                    //Opening/Omote/Ura 均可收
+                    return odp.CloseDomain();
+            }
+        }
+
+        /// <summary>
+        /// 表里翻转命令。阖着时先展开到表世界(保证一键到位的手感)；
+        /// <paramref name="busy"/> 语义同 <see cref="TryToggle"/>
+        /// </summary>
+        internal static bool TryFlip(Player player, out bool busy) {
+            busy = false;
+            OniDomainPlayer odp = player.GetModPlayer<OniDomainPlayer>();
+            switch (odp.Phase) {
+                case OniDomainPhase.Closed:
+                    return odp.OpenDomain();
+                case OniDomainPhase.Omote:
+                case OniDomainPhase.Ura:
+                    return odp.FlipDomain();
+                case OniDomainPhase.Flipping:
+                    //已在翻,静默
+                    return false;
+                default:
+                    //开域/收域仪式中,翻不动
+                    busy = true;
+                    return false;
+            }
+        }
     }
 }

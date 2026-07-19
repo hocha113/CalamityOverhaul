@@ -673,5 +673,12 @@ OnikiriText: {
 		// StanceValueFormat: "{0} / {1}"
 		// StanceReadyLine: The edge has left its sheath — one draw remains
 		// StanceHalfLine: Past the half — enough for an Annihilating Flash
+		// DomainTitle: Eye of the Oni Domain
+		// DomainStateClosed: Shut — no domain unfolded
+		// DomainStateOmote: Omote — the yellowed-paper world
+		// DomainStateUra: Ura — the ink-wash netherworld
+		// DomainStateShifting: Mid-rite — do not disturb
+		// DomainToggleHintFormat: "{0} or Left Click: unfold / fold the domain"
+		// DomainFlipHintFormat: "{0} or Right Click: flip Omote/Ura (unfolds if shut)"
 	}
 }

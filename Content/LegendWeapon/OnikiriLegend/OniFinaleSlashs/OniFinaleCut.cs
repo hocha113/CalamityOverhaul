@@ -202,7 +202,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         //==================== 判定 ====================
 
         public override bool? CanHitNPC(NPC target) {
-            if (timer < HoldFrames || timer > DamageEnd) {
+            //零伤害生成 = 纯演出敷层（面影斩纸等），不参与判定
+            if (Projectile.damage <= 0 || timer < HoldFrames || timer > DamageEnd) {
                 return false;
             }
             return base.CanHitNPC(target);

@@ -5,6 +5,7 @@ using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -46,7 +47,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         /// <summary>落刀点（纸面中心局部像素，与身体局部 1:1 对应）</summary>
         public Vector2 CutLocal;
         public float CutAngle;
+        /// <summary>落刀后经过帧数（含滞拍延迟段；裂开进度用 <see cref="SplitAge"/>）</summary>
         public int CutAge;
+        /// <summary>纸裂延迟：落刀帧 → 纸面实际裂开（=刀线演出引爆帧）的帧数，0=落刀即裂</summary>
+        public int CutDelay;
+        /// <summary>纸面实际裂开后的帧数；负值=刀线演出滞拍中，纸还完整</summary>
+        public int SplitAge => CutAge - CutDelay;
+        //落刀时暂存、裂纸帧发射脉冲用的结算参数
+        public int PendingDamage;
+        public float PendingKnockback;
+        public int PendingPlayer = -1;
         /// <summary>裁出的纸片（纸面中心局部像素）；未成功分割时为整张纸单片</summary>
         public readonly List<Vector2[]> Halves = [];
         /// <summary>与 Halves 对齐：±1=沿切线法线哪侧滑开，0=不滑</summary>
@@ -68,7 +78,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                     a *= 1f - MathHelper.Clamp(BurnTimer / (float)OniOmokage.BurnFrames, 0f, 1f);
                 }
                 if (Cut) {
-                    a *= 1f - MathHelper.Clamp((CutAge - OniOmokage.CutLingerFrames)
+                    a *= 1f - MathHelper.Clamp((SplitAge - OniOmokage.CutLingerFrames)
                         / (float)(OniOmokage.CutVanishFrames - OniOmokage.CutLingerFrames), 0f, 1f);
                 }
                 return a;
@@ -110,8 +120,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
     /// 面影管理器：里世界中挂在敌人过去位置上的水墨留影。<br/>
     /// 翻转入里的瞬间是"快门"（<see cref="OniDomainPlayer"/> 钩子调 <see cref="ImprintVisible"/>），
     /// 屏内敌人各挂一幅由肢解同款快照渲成的墨绘挂轴；斩中纸面（<see cref="TryCut"/>）则
-    /// 纸沿刀线裂开 → 赤线脉冲飞向真身 → 到达帧调 <see cref="OniDismember.Trigger(NPC, Vector2, float, int)"/>，
-    /// 切口按纸上落刀点 1:1 映射到身体。<br/>
+    /// 落刀点起一发终斩刀线（<see cref="OniFinaleCut"/>，纯演出零伤害）滞拍 → 纳刀引爆帧
+    /// 纸沿刀线裂开、赤线脉冲此刻才飞向真身 → 到达帧调
+    /// <see cref="OniDismember.Trigger(NPC, Vector2, float, int, int)"/>（滞拍 0，真身立裂）+ 伤害结算，
+    /// 切口按纸上落刀点 1:1 映射到身体——斩切演出先落在媒介的切口上，效果结束目标才裂。<br/>
+    /// 同一次 <see cref="TryCut"/> 斩中多幅时只有首幅起刀线（防世界级效果同帧叠爆），
+    /// 其余纸面共享同一引爆节拍裂开。<br/>
     /// 全部状态为客户端本地（镜像 <see cref="OniDomainDeco"/>），伤害走 ApplyDamageToNPC 自带同步。<br/>
     /// 调试接口：<see cref="Imprint"/> / <see cref="ImprintVisible"/> / <see cref="TryCut"/> /
     /// <see cref="Clear"/> / <see cref="AutoShutterOnFlip"/>，供测试物品直接调用
@@ -148,6 +162,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         public static int PerNpcCap = 3;
         /// <summary>翻转入里时自动快门（调试开关）</summary>
         public static bool AutoShutterOnFlip = true;
+        /// <summary>
+        /// 媒介再生成冷却（帧/每 NPC）：里世界维持循环的节奏阀——被用掉（斩裂/烧散/到期）的媒介，
+        /// 敌人过这么久会再留下一幅新的。这是媒介肢解循环的最短节拍，平衡主抓手
+        /// </summary>
+        public static int ReimprintCooldown = 120;
+        /// <summary>挂新影失败（间距/容量）后的重试间隔（帧）</summary>
+        private const int ReimprintRetry = 30;
 
         /// <summary>所有活跃面影</summary>
         internal static readonly List<OmokageEntry> Entries = [];
@@ -155,6 +176,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         internal static readonly List<OmokagePulse> Pulses = [];
         /// <summary>共享快照注册表（npcIndex → 快照），RT 生命周期由 <see cref="OniOmokageRender"/> 管理</summary>
         internal static readonly Dictionary<int, OmokageSnap> Snaps = [];
+        //每 NPC 的再生成冷却计时（客户端本地，离里/清场清空）
+        private static readonly Dictionary<int, int> reimprintTimers = [];
+        //再生成计时器的周期性剔除暂存
+        private static readonly List<int> reimprintPrune = [];
 
         void ICWRLoader.UnLoadData() {
             Entries.Clear();
@@ -269,16 +294,67 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 if (!SegmentIntersectsRect(start, end, entry.AnchorCenter, entry.PaperHalf, out Vector2 hitPoint)) {
                     continue;
                 }
-                CutEntry(player, entry, hitPoint, (end - start).ToRotation(), damage, knockback);
+                //首幅独享终斩刀线，其余共享同一引爆节拍（防世界级效果同帧叠爆）
+                CutEntry(player, entry, hitPoint, (end - start).ToRotation(), damage, knockback, leadFx: !anyCut);
                 anyCut = true;
             }
             return anyCut;
+        }
+
+        /// <summary>
+        /// 技能定向斩纸：在 worldPoint 附近（容差内）找最近的未斩纸面并落刀，走完整的
+        /// 刀线滞拍 → 引爆裂纸 → 脉冲 → 真身立裂链路。找不到返回 false（调用方转空挥）。<br/>
+        /// 与 <see cref="TryCut"/> 的区别：点选而非线扫，供肢解技能点名单幅媒介
+        /// </summary>
+        /// <param name="player">攻击发起者</param>
+        /// <param name="worldPoint">落刀点（世界坐标）</param>
+        /// <param name="cutAngle">切线角度（弧度）</param>
+        /// <param name="damage">脉冲到达帧对真身结算的伤害</param>
+        /// <param name="knockback">击退</param>
+        /// <param name="tolerance">点到纸面矩形的最大距离（px）</param>
+        public static bool SeverAt(Player player, Vector2 worldPoint, float cutAngle,
+            int damage, float knockback, float tolerance = 90f) {
+            if (Main.dedServ || player == null) {
+                return false;
+            }
+            OmokageEntry entry = PickEntryNear(worldPoint, tolerance);
+            if (entry == null) {
+                return false;
+            }
+            CutEntry(player, entry, worldPoint, cutAngle, damage, knockback, leadFx: true);
+            return true;
+        }
+
+        /// <summary>离 point 最近的可斩纸面（点到纸面矩形距离 ≤ pad），无则 null；肢解技能的光标级联用</summary>
+        public static OmokageEntry PickEntryNear(Vector2 point, float pad) {
+            OmokageEntry best = null;
+            float bestD = float.MaxValue;
+            foreach (OmokageEntry entry in Entries) {
+                if (entry.Cut || entry.Burning || entry.Alpha < 0.35f) {
+                    continue;
+                }
+                float d = DistanceToRect(point, entry.AnchorCenter, entry.PaperHalf);
+                if (d <= pad && d < bestD) {
+                    bestD = d;
+                    best = entry;
+                }
+            }
+            return best;
+        }
+
+        /// <summary>点到轴对齐矩形的距离（矩形内为 0）</summary>
+        internal static float DistanceToRect(Vector2 point, Vector2 rectCenter, Vector2 rectHalf) {
+            Vector2 d = point - rectCenter;
+            Vector2 clamped = new(MathHelper.Clamp(d.X, -rectHalf.X, rectHalf.X)
+                , MathHelper.Clamp(d.Y, -rectHalf.Y, rectHalf.Y));
+            return Vector2.Distance(d, clamped);
         }
 
         /// <summary>清空全部面影与脉冲（快照 RT 由渲染端孤儿清理回收）</summary>
         public static void Clear() {
             Entries.Clear();
             Pulses.Clear();
+            reimprintTimers.Clear();
         }
 
         //==================== 状态通知 ====================
@@ -314,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         //==================== 斩纸与传导 ====================
 
         private static void CutEntry(Player player, OmokageEntry entry, Vector2 hitWorld,
-            float cutAngle, int damage, float knockback) {
+            float cutAngle, int damage, float knockback, bool leadFx) {
 
             //落刀点收拢进纸面有效范围，保证裁剪线穿过纸张
             Vector2 half = entry.PaperHalf;
@@ -326,28 +402,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             entry.CutLocal = local;
             entry.CutAngle = cutAngle;
             entry.CutAge = 0;
+            entry.CutDelay = OniFinaleCut.HoldFrames;
+            entry.PendingDamage = damage;
+            entry.PendingKnockback = knockback;
+            entry.PendingPlayer = player.whoAmI;
             BuildHalves(entry);
 
+            //纸上落刀点起终斩刀线：滞拍 → 纳刀引爆，纸在引爆帧才真正裂开；
+            //伤害走脉冲端结算，刀线零伤害纯演出
+            if (leadFx && player.whoAmI == Main.myPlayer) {
+                OniFinaleCut.Fire(player, entry.AnchorCenter + local, cutAngle, 0, 0f);
+            }
+
+            if (entry.CutDelay <= 0) {
+                OnPaperSplit(entry);
+            }
+        }
+
+        /// <summary>纸面真正裂开的一帧（刀线引爆帧）：撕裂声画迸发，赤线脉冲此刻才启程</summary>
+        private static void OnPaperSplit(OmokageEntry entry) {
             //纸裂：与纸层剥落同源的撕裂声 + 沿刀线迸出纸屑碎晶
             SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.8f, Pitch = -0.6f, MaxInstances = 3 }, entry.AnchorCenter);
             SpawnCutScraps(entry);
 
             //赤线脉冲：距离越远飞得越久，clamp 6~14 帧
             NPC npc = ValidTarget(entry.NpcIndex, entry.NpcType);
-            if (npc == null) {
-                return;
+            if (npc == null || entry.PendingPlayer < 0) {
+                return;   //因果已断：纸裂而无处传导
             }
             float dist = Vector2.Distance(entry.AnchorCenter, npc.Center);
             Pulses.Add(new OmokagePulse {
                 NpcIndex = entry.NpcIndex,
                 NpcType = entry.NpcType,
-                BodyLocal = local,
-                CutAngle = cutAngle,
+                BodyLocal = entry.CutLocal,
+                CutAngle = entry.CutAngle,
                 Travel = (int)MathHelper.Clamp(dist / 24f, 6f, 14f),
-                StartWorld = entry.AnchorCenter + local,
-                Damage = damage,
-                Knockback = knockback,
-                PlayerWhoAmI = player.whoAmI,
+                StartWorld = entry.AnchorCenter + entry.CutLocal,
+                Damage = entry.PendingDamage,
+                Knockback = entry.PendingKnockback,
+                PlayerWhoAmI = entry.PendingPlayer,
             });
             //发射帧单声风铃：因果启程
             SoundEngine.PlaySound(SoundID.Item35 with { Volume = 0.35f, Pitch = 0.4f, MaxInstances = 2 }, entry.AnchorCenter);
@@ -434,6 +527,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         /// <summary>由 <see cref="OniOmokageSystem.PostUpdateEverything"/> 驱动（客户端）</summary>
         internal static void Update() {
             UpdatePulses();
+            UpdateReimprint();
 
             for (int i = Entries.Count - 1; i >= 0; i--) {
                 OmokageEntry entry = Entries[i];
@@ -446,7 +540,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
                 if (entry.Cut) {
                     entry.CutAge++;
-                    if (entry.CutAge >= CutVanishFrames) {
+                    if (entry.SplitAge == 0) {
+                        //刀线引爆帧：纸裂 + 脉冲启程
+                        OnPaperSplit(entry);
+                    }
+                    if (entry.SplitAge >= CutVanishFrames) {
                         Entries.RemoveAt(i);
                         continue;
                     }
@@ -465,6 +563,78 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             }
         }
 
+        /// <summary>
+        /// 里世界媒介维持循环：敌人会留下媒介，被用掉的媒介过冷却后再留一幅新的。<br/>
+        /// 条件：本地域处于里侧稳态、屏内（含余量）可追击的敌人、当前没有任何"活的"
+        /// （未斩未烧）面影、且不在肢解僵直中（定格的过去没有新的过去——也避免新纸叠在碎片上）。<br/>
+        /// 冷却 <see cref="ReimprintCooldown"/> 就是媒介肢解循环的节奏阀；
+        /// 蠕虫节段不入循环（冻结一节其余照动，画面会散架）
+        /// </summary>
+        private static void UpdateReimprint() {
+            OniDomainPlayer domain = OniDomain.Local;
+            if (domain == null || domain.Phase != OniDomainPhase.Ura || !domain.WorldIsUra) {
+                if (reimprintTimers.Count > 0) {
+                    reimprintTimers.Clear();
+                }
+                return;
+            }
+
+            Rectangle view = new((int)Main.screenPosition.X - 200, (int)Main.screenPosition.Y - 200,
+                Main.screenWidth + 400, Main.screenHeight + 400);
+
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.life <= 0 || !npc.CanBeChasedBy() || !view.Intersects(npc.Hitbox)) {
+                    continue;
+                }
+                if (CWRLoad.WormBodys.Contains(npc.type)) {
+                    continue;
+                }
+                //僵直中的尸身不留新影：解除定格、重新动起来后冷却才开始走
+                if (OniDismember.IsDismembered(npc.whoAmI)) {
+                    reimprintTimers[npc.whoAmI] = ReimprintCooldown;
+                    continue;
+                }
+                if (HasLivePaper(npc)) {
+                    reimprintTimers.Remove(npc.whoAmI);
+                    continue;
+                }
+
+                int t = reimprintTimers.TryGetValue(npc.whoAmI, out int v) ? v : ReimprintCooldown;
+                if (--t <= 0) {
+                    if (Imprint(npc)) {
+                        reimprintTimers.Remove(npc.whoAmI);
+                        continue;
+                    }
+                    t = ReimprintRetry;   //间距/容量受限，稍后重试
+                }
+                reimprintTimers[npc.whoAmI] = t;
+            }
+
+            //周期性剔除失效槽位的残留计时
+            if (Main.GameUpdateCount % 60 == 0 && reimprintTimers.Count > 0) {
+                reimprintPrune.Clear();
+                foreach (int index in reimprintTimers.Keys) {
+                    if (index < 0 || index >= Main.maxNPCs || !Main.npc[index].active) {
+                        reimprintPrune.Add(index);
+                    }
+                }
+                foreach (int index in reimprintPrune) {
+                    reimprintTimers.Remove(index);
+                }
+            }
+        }
+
+        /// <summary>该 NPC 是否还挂着"活的"（未斩未烧）面影</summary>
+        private static bool HasLivePaper(NPC npc) {
+            foreach (OmokageEntry entry in Entries) {
+                if (entry.NpcIndex == npc.whoAmI && entry.NpcType == npc.type
+                    && !entry.Cut && !entry.Burning) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private static void UpdatePulses() {
             for (int i = Pulses.Count - 1; i >= 0; i--) {
                 OmokagePulse pulse = Pulses[i];
@@ -479,8 +649,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                     continue;   //因果落空，脉冲无声消散
                 }
 
-                //到达帧：切口按落刀点 1:1 映射到身体 + 伤害结算
-                OniDismember.Trigger(npc, npc.Center + pulse.BodyLocal, pulse.CutAngle);
+                //到达帧：切口按落刀点 1:1 映射到身体 + 伤害结算；
+                //滞拍的戏份已在纸上演过（刀线滞拍→引爆），真身立裂不再拖第二拍
+                OniDismember.Trigger(npc, npc.Center + pulse.BodyLocal, pulse.CutAngle, holdFrames: 0);
 
                 Player player = Main.player[pulse.PlayerWhoAmI];
                 if (player != null && player.active && pulse.Damage > 0) {

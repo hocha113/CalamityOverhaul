@@ -673,5 +673,12 @@ OnikiriText: {
 		StanceValueFormat: "{0} / {1}"
 		StanceReadyLine: 锋已离鞘——只欠一拔
 		StanceHalfLine: 势已过半——足以一记灭世一闪
+		DomainTitle: 鬼域之眼
+		DomainStateClosed: 阖目——领域未展
+		DomainStateOmote: 表世界——泛黄和纸
+		DomainStateUra: 里世界——水墨阴间
+		DomainStateShifting: 变相中——莫扰
+		DomainToggleHintFormat: "{0} 或左键 展开/收阖领域"
+		DomainFlipHintFormat: "{0} 或右键 翻转表里(阖时先展)"
 	}
 }

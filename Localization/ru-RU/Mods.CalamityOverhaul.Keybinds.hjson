@@ -16,6 +16,8 @@ Halibut_SkillWheel.DisplayName: Палтус: удерживайте, чтобы
 Murasama_TriggerKey.DisplayName: Мурамаса: Кнопка курка
 Murasama_DownKey.DisplayName: Мурамаса: Удар в падении
 // Onikiri_Execute.DisplayName: Onikiri: Execute
+// Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
+// Onikiri_Dismember.DisplayName: Onikiri: Dismember
 WeponSkill_Q.DisplayName: Оружие: Левая кнопка навыка
 WeponSkill_R.DisplayName: Оружие: Правая кнопка навыка
 Accessory_Skills.DisplayName: Навык аксессуара

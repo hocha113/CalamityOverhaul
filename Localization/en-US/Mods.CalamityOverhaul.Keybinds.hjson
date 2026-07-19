@@ -16,6 +16,8 @@ Halibut_SkillWheel.DisplayName: Halibut: Hold to open skill wheel
 Murasama_TriggerKey.DisplayName: Murasama: Trigger Key
 Murasama_DownKey.DisplayName: Murasama: Downward Strike
 Onikiri_Execute.DisplayName: Onikiri: Execute
+Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
+Onikiri_Dismember.DisplayName: Onikiri: Dismember
 WeponSkill_Q.DisplayName: Weapon: Left Skill Key
 WeponSkill_R.DisplayName: Weapon: Right Skill Key
 Accessory_Skills.DisplayName: Accessory Skill

@@ -268,8 +268,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             Vector2 paperHalf = entry.PaperHalf;
             Vector2 paperSize = paperHalf * 2f;
 
+            //滑开进度以实际裂开为时基：刀线滞拍期（SplitAge<0）纸还完整
             float cutEase = entry.Cut
-                ? OniFinaleRenderer.EaseOutCubic(MathHelper.Clamp(entry.CutAge / (float)OniOmokage.CutSlideFrames, 0f, 1f))
+                ? OniFinaleRenderer.EaseOutCubic(MathHelper.Clamp(entry.SplitAge / (float)OniOmokage.CutSlideFrames, 0f, 1f))
                 : 0f;
             //挂轴轻摆，斩开后大幅收敛（死纸不再摇）
             float sway = MathF.Sin(time * 0.8f + entry.SwayPhase) * 0.03f * (1f - cutEase * 0.7f);
@@ -384,9 +385,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
 
             float time = (float)Main.timeForVisualEffects * 0.016f;
 
-            //因果线：面影 ↔ 真身，呼吸红线，玩家靠近面影时增亮
+            //因果线：面影 ↔ 真身，呼吸红线，玩家靠近面影时增亮；
+            //刀线滞拍期（落刀但未裂）线仍在——因果尚未传导完毕
             foreach (OmokageEntry entry in OniOmokage.Entries) {
-                if (entry.Cut || entry.Burning) {
+                if (entry.Burning || entry.Cut && entry.SplitAge >= 0) {
                     continue;
                 }
                 float alpha = entry.Alpha;

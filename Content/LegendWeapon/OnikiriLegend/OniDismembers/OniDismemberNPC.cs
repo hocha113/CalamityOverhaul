@@ -102,7 +102,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             fx.Parameters["uSnapSize"]?.SetValue(new Vector2(entry.SnapWidth, entry.SnapHeight));
             //定格冷灰随滞拍结束缓入，尸身"冷下来"
-            float coldIn = OniDismember.SeparationCurve(entry.Timer - entry.Cuts[0].Birth);
+            float coldIn = OniDismember.SeparationCurve(entry.Timer - entry.Cuts[0].Birth, entry.Cuts[0].Hold);
             fx.Parameters["uDesat"]?.SetValue(0.38f * coldIn);
             fx.Parameters["uDim"]?.SetValue(1f - 0.16f * coldIn);
             fx.Parameters["uColHot"]?.SetValue(new Vector3(1.85f, 1.62f, 1.30f));
@@ -131,12 +131,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             if (age <= 2) {
                 strength = 1.35f;                         //切口亮起的过曝闪
             }
-            else if (age < OniDismember.HoldFrames) {
+            else if (age < cut.Hold) {
                 float breath = 0.5f + 0.5f * MathF.Sin(age * 0.55f - MathHelper.PiOver2);
                 strength = 0.55f + 0.30f * breath;        //滞拍呼吸：将断未断
             }
             else {
-                float t = OniDismember.SeparationCurve(age);
+                float t = OniDismember.SeparationCurve(age, cut.Hold);
                 strength = MathHelper.Lerp(1.15f, 0.72f, t)
                     + 0.06f * MathF.Sin(Main.GlobalTimeWrappedHourly * 5.1f + cut.Birth);
             }
@@ -147,10 +147,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private static float GlowHalfWidth(DismemberEntry entry, in DismemberCut cut) {
             int age = entry.Timer - cut.Birth;
             float snapScale = MathF.Max(MathF.Min(entry.SnapWidth, entry.SnapHeight) / 160f, 0.6f);
-            if (age < OniDismember.HoldFrames) {
-                return (7f - 3f * age / OniDismember.HoldFrames) * snapScale;
+            if (age < cut.Hold) {
+                return (7f - 3f * age / cut.Hold) * snapScale;
             }
-            return (4f - 1.6f * OniDismember.SeparationCurve(age)) * snapScale;
+            return (4f - 1.6f * OniDismember.SeparationCurve(age, cut.Hold)) * snapScale;
         }
 
         /// <summary>全部碎片 → 三角扇顶点（世界坐标，交给 shader 的 transformMatrix 投屏）</summary>

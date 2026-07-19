@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 float halfSize = 118f * (0.88f + 0.12f * odp.EyeOpenAmount) + 16f * odp.EyeFlash;
                 DrawEyeQuad(spriteBatch, eye, white, noise, pos, halfSize,
                     odp.EyeIntensity, odp.EyeOpenAmount, odp.EyeSpin, odp.EyeFlash,
-                    odp.EyeDissolve, odp.EffectTime);
+                    odp.EyeDissolve, odp.UraSmooth, odp.EffectTime);
             }
 
             //负片帧彩蛋：旧世界的日/月化作同一只眼看你一眼
@@ -408,14 +408,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                     : new Vector2(0.700f - camX * 0.000012f, 0.250f);
                 Vector2 pos = new(c.X * Main.screenWidth, c.Y * Main.screenHeight);
                 float bodyR = (sun ? 0.105f : 0.150f) * Main.screenHeight;
+                //旧世界的天体化眼：表世界的日染绯红，里世界的月燃鬼火青
                 DrawEyeQuad(spriteBatch, eye, white, noise, pos, bodyR * 2.3f,
-                    odp.NegativeFlash, 1f, odp.EffectTime * 1.3f, 0f, 0f, odp.EffectTime);
+                    odp.NegativeFlash, 1f, odp.EffectTime * 1.3f, 0f, 0f, sun ? 0f : 1f, odp.EffectTime);
             }
         }
 
         private static void DrawEyeQuad(SpriteBatch spriteBatch, Effect eye, Texture2D white, Texture2D noise,
             Vector2 center, float halfSize, float intensity, float open, float spin, float flash,
-            float dissolve, float time) {
+            float dissolve, float ura, float time) {
 
             var gd = Main.instance.GraphicsDevice;
             eye.Parameters["uTime"]?.SetValue(time);
@@ -424,6 +425,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             eye.Parameters["uSpin"]?.SetValue(spin);
             eye.Parameters["uFlash"]?.SetValue(flash);
             eye.Parameters["uDissolve"]?.SetValue(dissolve);
+            eye.Parameters["uUra"]?.SetValue(ura);
 
             Vector2 scale = new(halfSize * 2f / white.Width, halfSize * 2f / white.Height);
             Vector2 origin = white.Size() * 0.5f;
