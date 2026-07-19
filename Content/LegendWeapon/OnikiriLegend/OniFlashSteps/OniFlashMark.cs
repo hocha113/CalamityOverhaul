@@ -157,21 +157,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
             SoundEngine.PlaySound(CWRSound.MeatySlash with {
                 Pitch = 0.12f + seed * 0.3f,
-                Volume = 0.34f,
+                Volume = 0.46f,
+                MaxInstances = 3,   //齐裂同帧多痕限流，防爆音
             }, lastCenter);
 
             if (Main.dedServ) {
                 return;
             }
-            CrimsonImpactFX.PushImpact(lastCenter, 0.015f);
+            CrimsonImpactFX.PushImpact(lastCenter, 0.03f);
 
             Vector2 perp = (brandAngle + MathHelper.PiOver2).ToRotationVector2();
             Vector2 along = brandAngle.ToRotationVector2();
 
             PRTLoader.NewParticle<PRT_CrimsonHitFlash>(lastCenter, Vector2.Zero
-                , new Color(255, 215, 195), 0.85f * sizeMul);
+                , new Color(255, 220, 200), 1.15f * sizeMul);
 
-            int shards = 9 + (int)(seed * 4);
+            int shards = 13 + (int)(seed * 5);
             for (int i = 0; i < shards; i++) {
                 Vector2 vel = perp * Main.rand.NextFloat(2.5f, 7.5f) * (Main.rand.NextBool() ? 1f : -1f)
                     + along * Main.rand.NextFloat(1f, 3.5f) + Main.rand.NextVector2Circular(1.2f, 1.2f);
@@ -210,8 +211,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.CWR().TimeFrozenTick = 2;
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.25f, Volume = 0.6f }, target.Center);
+            //齐裂顿帧拉到接近终斩档：吃下这一刀的重量要留在身上一拍
+            target.CWR().TimeFrozenTick = 8;
+            SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.25f, Volume = 0.6f, MaxInstances = 3 }, target.Center);
         }
 
         //==================== 绘制 ====================

@@ -41,6 +41,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private const int MaxMarks = 24;        //单次冲刺标记上限
         private const int NotoFlickFrames = 6;  //纳刀一挑时长(起于纳刀结算帧,与"锵"同步)
         private const int TailFadeFrames = 8;   //纳刀后持刀淡出
+        //==== 位移与判定常量 ====
+        private const int MinDashFrames = 2;        //松手停的最短冲刺帧数(~300px 短刺下限,防 1 帧碎步)
+        private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
+        private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
+        private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
+        private const float MarkSweepWidth = 140f;  //扫掠走廊宽(对齐墨绸视觉宽度,玩家"明明穿过了"的判断依据是那条彩带)
 
         /// <summary>A/B：冲刺期隐藏本地玩家（"人化作一道神威"的完全体），默认关</summary>
         public static bool HidePlayerDuringDash => true;
@@ -59,6 +65,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private int stopFrame = -1;      //刹停帧（操控交还帧）
         private bool judged;
         private float headExt;           //刹停后流带头端 follow-through 残余外推
+        /// <summary>被墙面斩停：刹车改回弹、头端预算清零、墨溅上墙</summary>
+        private bool wallStopped;
+        /// <summary>流带头端超前身体的距离（px），停止时按身前自由空间 clamp——墨最多亲到墙面，永不入墙</summary>
+        private float headOffset = 100f;
 
         private bool Dashing => stopFrame < 0 && timer <= plannedDashFrames;
         private bool Braking => stopFrame < 0 && timer > plannedDashFrames;
@@ -124,7 +134,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         public override bool ShouldUpdatePosition() => false;
 
-        private Vector2 GetCenter() => Owner.Center + dashDir * 100;
+        private Vector2 GetCenter() => Owner.Center + dashDir * headOffset;
 
         private void Initialize() {
             initialized = true;
@@ -193,57 +203,150 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 
         //==================== 位移 ====================
 
-        /// <summary>冲刺帧：~150px 定距推进，撞墙提前止步；位移、标记、姿态、无敌帧</summary>
+        /// <summary>
+        /// 冲刺帧：~150px 定距推进，位移、标记、姿态、无敌帧。<br/>
+        /// 碰撞走"直线斩停"：沿冲刺向子步扫描（一格台阶容差），位移严格共线——
+        /// 轨迹几何上不可能弯（TileCollision 的分轴滑动是弯轨/贴地滑行的根源，弃用）；
+        /// 撞墙即停止事件（回弹刹车 + 墨溅上墙），owner 松开右键也提前收势（轻点短刺，按住全程）
+        /// </summary>
         private void DashFrame() {
-            Vector2 prevCenter = GetCenter();
-            Vector2 step = dashDir * MathF.Min(DashSpeed, Distance - traveled);
-            //Vector2 allowed = Collision.TileCollision(Owner.position, step
-            //    , Owner.width, Owner.height, fallThrough: true, fall2: true, (int)Owner.gravDir);
+            Vector2 prevHead = GetCenter();
+            Vector2 fromBody = Owner.Center;
+            float stepLen = MathF.Min(DashSpeed, Distance - traveled);
 
-            Owner.position += step;
+            //直线斩停子步推进
+            float moved = 0f;
+            bool blocked = false;
+            while (moved < stepLen - 0.01f) {
+                float sub = MathF.Min(CollisionSubStep, stepLen - moved);
+                Vector2 next = Owner.position + dashDir * sub;
+                if (!Collision.SolidCollision(next, Owner.width, Owner.height)) {
+                    Owner.position = next;
+                    moved += sub;
+                    continue;
+                }
+                //一格台阶容差：抬升一格可过则继续——地面小台阶不打断冲刺；
+                //16px 竖向微错位在 path 点距(≥64px)下彩带读不出折角
+                Vector2 lifted = next - Vector2.UnitY * (16f * Owner.gravDir);
+                if (!Collision.SolidCollision(lifted, Owner.width, Owner.height)) {
+                    Owner.position = lifted;
+                    moved += sub;
+                    continue;
+                }
+                blocked = true;
+                break;
+            }
+
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
-            traveled += step.Length();
+            traveled += moved;
+            Owner.GivePlayerImmuneState(10);
+            HoldPose();
+
+            //松手提前收势（owner 端意图，缩短后的距离回写 ai[1] 同步远端按距离条件自然停下）
+            bool released = Projectile.IsOwnedByLocalPlayer() && timer >= MinDashFrames && !Main.mouseRight;
+            bool finished = blocked || released || traveled >= Distance - 1f;
+            if (finished) {
+                if (blocked && !wallStopped) {
+                    wallStopped = true;
+                    WallSplat();
+                }
+                if (released && Projectile.owner == Main.myPlayer && traveled < Distance - 1f) {
+                    Projectile.ai[1] = MathF.Max(traveled, 61f);
+                    Projectile.netUpdate = true;
+                }
+                //任何停止都按身前自由空间收拢头端：墨最多亲到墙面，永不入墙
+                headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
+                timer = Math.Max(timer, plannedDashFrames);
+            }
 
             //撞墙帧不塞重合点，避免流带出现退化段
             if (Vector2.DistanceSquared(path[^1], GetCenter()) > 64f) {
                 path.Add(GetCenter());
             }
-            Owner.GivePlayerImmuneState(10);
-            HoldPose();
 
-            MarkSweep(prevCenter, GetCenter());
+            //扫掠锚定身体并带前导/后补：起手贴脸与终点脸前的目标都不漏
+            MarkSweep(fromBody - dashDir * SweepBackPad, Owner.Center + dashDir * SweepLead);
 
-            if (!Main.dedServ) {
-                SpawnDashWisps(prevCenter, GetCenter());
-            }
-
-            //撞墙（本帧几乎没走动）或走满：跳到刹车段，不为自己的日程表干等
-            if (step.LengthSquared() < DashSpeed * DashSpeed * 0.12f || traveled >= Distance - 1f) {
-                timer = Math.Max(timer, plannedDashFrames);
+            if (!Main.dedServ && moved > 1f) {
+                SpawnDashWisps(prevHead, GetCenter());
             }
         }
 
-        /// <summary>硬刹两帧：+过冲 → −回拉，随后交还操控；流带头端获得 follow-through 外推</summary>
+        /// <summary>身前沿冲刺向的自由距离（px，扫描上限盖住 头端+外推 预算）</summary>
+        private float FreeAheadBudget() {
+            const float MaxScan = 132f;
+            float d = 8f;
+            while (d < MaxScan) {
+                Vector2 probe = Owner.Center + dashDir * d;
+                if (Collision.SolidCollision(probe - new Vector2(2f, 2f), 4, 4)) {
+                    return d;
+                }
+                d += 8f;
+            }
+            return MaxScan;
+        }
+
+        /// <summary>撞墙的落点反馈：墨溅上墙（贴墙横向铺开）+ 闷响 + 震屏——150px/帧的身体撞在墙上应该有一声"咚"</summary>
+        private void WallSplat() {
+            Vector2 contact = Owner.Center + dashDir * MathF.Max(FreeAheadBudget() - 4f, 8f);
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.75f, Pitch = -0.55f, MaxInstances = 2 }, contact);
+            SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.6f, Pitch = -0.35f, MaxInstances = 2 }, contact);
+            Owner.CWR().GetScreenShake(3.5f);
+
+            if (Main.dedServ) {
+                return;
+            }
+            //墨沿墙面（垂直冲刺向）溅开：动能没有消失，只是换了方向
+            Vector2 perp = new(-dashDir.Y, dashDir.X);
+            for (int i = 0; i < 10; i++) {
+                float side = Main.rand.NextBool() ? 1f : -1f;
+                Vector2 vel = perp * side * Main.rand.NextFloat(2f, 6.5f) - dashDir * Main.rand.NextFloat(0.4f, 1.6f);
+                PRTLoader.NewParticle<PRT_CrimsonSmoke>(contact + perp * side * Main.rand.NextFloat(0f, 18f)
+                    , vel, Color.White, Main.rand.NextFloat(0.07f, 0.13f) * sizeMul)
+                    ?.Configure(Main.rand.Next(18, 30), new Color(115, 24, 32), new Color(28, 13, 21));
+            }
+            for (int i = 0; i < 6; i++) {
+                Vector2 vel = (-dashDir).RotatedByRandom(0.85) * Main.rand.NextFloat(2.5f, 7f);
+                PRTLoader.NewParticle<PRT_OniShard>(contact, vel, new Color(255, 116, 66)
+                    , Main.rand.NextFloat(0.3f, 0.55f) * sizeMul)
+                    ?.Configure(Main.rand.Next(14, 24), Main.rand.NextFloat(-0.2f, 0.2f)
+                        , Main.rand.NextFloat(1.2f, 2.2f), affectedByGravity: true);
+            }
+            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(contact, Vector2.Zero
+                , new Color(255, 190, 170), 0.7f * sizeMul);
+        }
+
+        /// <summary>硬刹两帧：+过冲 → −回拉，随后交还操控；流带头端获得 follow-through 外推。<br/>
+        /// 被墙面斩停时改为反震回弹（−回弹 → +落定），墙前没有前过冲的物理空间</summary>
         private void BrakeFrame() {
             int bt = timer - plannedDashFrames;   //1..BrakeFrames
-            float move = bt == 1 ? 26f : -12f;
-            Vector2 allowed = Collision.TileCollision(Owner.position, dashDir * move
-                , Owner.width, Owner.height, fallThrough: true, fall2: true, (int)Owner.gravDir);
-            Owner.position += allowed;
+            Vector2 fromBody = Owner.Center;
+            float move = wallStopped
+                ? (bt == 1 ? -14f : 5f)
+                : (bt == 1 ? 26f : -12f);
+            //小步位移同样走共线检测,保持轨迹笔直
+            Vector2 next = Owner.position + dashDir * move;
+            if (!Collision.SolidCollision(next, Owner.width, Owner.height)) {
+                Owner.position = next;
+            }
             Owner.velocity = Vector2.Zero;
             Owner.fallStart = (int)(Owner.position.Y / 16f);
 
             //过冲帧记录头端；回拉帧不回撤墨迹——身体从墨里向后挣出，墨保持前伸
-            if (bt == 1 && Vector2.DistanceSquared(path[^1], GetCenter()) > 16f) {
+            if (bt == 1 && !wallStopped && Vector2.DistanceSquared(path[^1], GetCenter()) > 16f) {
                 path.Add(GetCenter());
             }
             Owner.GivePlayerImmuneState(8);
             HoldPose();
 
+            //过冲尖端补扫：刹车段掠过的目标同样入痕
+            MarkSweep(fromBody - dashDir * SweepBackPad, Owner.Center + dashDir * SweepLead);
+
             if (bt >= BrakeFrames) {
                 stopFrame = timer;
-                headExt = 22f * sizeMul;
+                //follow-through 外推吃身前预算：墙前清零,墨不入墙
+                headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
                 Owner.CWR().GetScreenShake(2.2f);
 
                 if (!Main.dedServ) {
@@ -276,7 +379,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             if (marked.Count >= MaxMarks) {
                 return;
             }
-            float sweepWidth = 92f * sizeMul;
+            float sweepWidth = MarkSweepWidth * sizeMul;
             int judgeDelay = JudgmentFrame - timer;
 
             foreach (NPC npc in Main.ActiveNPCs) {
@@ -319,7 +422,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
         }
 
-        /// <summary>纳刀帧："锵"一声，墨痕们（各自对齐本帧）同时裂开；主控只负责声与光的确认</summary>
+        /// <summary>纳刀帧："锵"一声，墨痕们（各自对齐本帧）同时裂开；主控只负责声与光的确认。<br/>
+        /// 齐裂的重量随痕数升档（震屏/白闪/群裂闷爆）——死寂越久、穿得越多，那一声就该越响</summary>
         private void Judge() {
             judged = true;
             if (marked.Count == 0) {
@@ -327,8 +431,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
             SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.10f, Volume = 0.55f }, GetCenter());
             SoundEngine.PlaySound(SoundID.Item35 with { Pitch = 0.35f, Volume = 0.22f }, GetCenter());
-            CrimsonImpactFX.PushImpact(GetCenter(), 0.02f);
-            Owner.CWR().GetScreenShake(3f);
+            if (marked.Count >= 3) {
+                //群裂低频垫底：单声限流，不随痕数叠加防爆音
+                SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.62f, Volume = 0.55f, MaxInstances = 1 }, GetCenter());
+            }
+            CrimsonImpactFX.PushImpact(GetCenter(), MathF.Min(0.02f + marked.Count * 0.008f, 0.07f));
+            Owner.CWR().GetScreenShake(MathF.Min(3f + marked.Count * 0.8f, 8f));
         }
 
         /// <summary>

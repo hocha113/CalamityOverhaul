@@ -122,7 +122,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
     /// 屏内敌人各挂一幅由肢解同款快照渲成的墨绘挂轴；斩中纸面（<see cref="TryCut"/>）则
     /// 落刀点起一发终斩刀线（<see cref="OniFinaleCut"/>，纯演出零伤害）滞拍 → 纳刀引爆帧
     /// 纸沿刀线裂开、赤线脉冲此刻才飞向真身 → 到达帧调
-    /// <see cref="OniDismember.Trigger(NPC, Vector2, float, int, int)"/>（滞拍 0，真身立裂）+ 伤害结算，
+    /// <see cref="OniDismember.TriggerGroup"/>（滞拍 0，真身立裂，多实体整组）+ 伤害结算，
     /// 切口按纸上落刀点 1:1 映射到身体——斩切演出先落在媒介的切口上，效果结束目标才裂。<br/>
     /// 同一次 <see cref="TryCut"/> 斩中多幅时只有首幅起刀线（防世界级效果同帧叠爆），
     /// 其余纸面共享同一引爆节拍裂开。<br/>
@@ -650,8 +650,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
                 }
 
                 //到达帧：切口按落刀点 1:1 映射到身体 + 伤害结算；
-                //滞拍的戏份已在纸上演过（刀线滞拍→引爆），真身立裂不再拖第二拍
-                OniDismember.Trigger(npc, npc.Center + pulse.BodyLocal, pulse.CutAngle, holdFrames: 0);
+                //滞拍的戏份已在纸上演过（刀线滞拍→引爆），真身立裂不再拖第二拍；
+                //蠕虫等多实体从纸上那一节把整组一并裂开（hold=0 无波及窗口，全员同帧）
+                OniDismember.TriggerGroup(npc, npc.Center + pulse.BodyLocal, pulse.CutAngle, holdFrames: 0);
 
                 Player player = Main.player[pulse.PlayerWhoAmI];
                 if (player != null && player.active && pulse.Damage > 0) {

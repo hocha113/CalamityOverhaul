@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,7 +19,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public Vector2 PointLocal;
         /// <summary>单位法线，碎片沿 ±法线分离</summary>
         public Vector2 Normal;
-        /// <summary>切口出生时刻（entry.Timer 时基）</summary>
+        /// <summary>切口出生时刻（entry.Timer 时基）；可为未来帧（<see cref="OniDismember.TriggerGroup"/> 波及调度），
+        /// 亮起前几何已切好但零位移零辉光</summary>
         public int Birth;
         /// <summary>本切口滞拍帧数（亮起 → 分离），供触发方与外层斩切演出对齐；0=立即分离</summary>
         public int Hold;
@@ -70,7 +72,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// 可由触发方传入以对齐外层斩切演出的引爆帧，0=立裂）后碎片沿切线法线滑开，
     /// 断面走 <c>OniDismember.fx</c> 的灼热辉光。快照捕获的那一瞬同时就是"定格"本身。<br/>
     /// 僵直复用 <see cref="CWRNpc.TimeFrozenTick"/> 冻结链逐帧刷新，位置钉死在锚点。<br/>
-    /// 调用入口：<see cref="Trigger(NPC, Vector2, float, int, int)"/>，同一目标可反复触发追加切口（上限 <see cref="MaxCuts"/>）。
+    /// 调用入口：<see cref="Trigger(NPC, Vector2, float, int, int, int)"/>，同一目标可反复触发追加切口（上限 <see cref="MaxCuts"/>）；
+    /// 蠕虫/魔像/月总等多实体 Boss 用 <see cref="TriggerGroup"/>，经 <see cref="NpcGroupHelper"/> 把一刀铺满全组。
     /// </summary>
     internal class OniDismember : ICWRLoader
     {
@@ -98,11 +101,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public const int FadeFrames = 24;
         /// <summary>默认肢解持续帧数</summary>
         public const int DefaultDuration = 300;
+        /// <summary>波及传播速度 px/帧：<see cref="TriggerGroup"/> 伤口沿身体点亮的径向波速</summary>
+        public const float WaveSpeed = 120f;
         //小于该面积(px²)的裁剪结果视为未切中，不产生碎片
         private const float MinPieceArea = 24f;
+        //同帧引爆的成员共享一声脆响与碎晶总预算，防蠕虫全身齐崩时 80 连音爆
+        private const int ShardBudgetPerTick = 120;
 
         /// <summary>所有活跃肢解状态</summary>
         internal static readonly List<DismemberEntry> Entries = [];
+        //TriggerGroup 群组收集复用容器
+        private static readonly List<NPC> groupScratch = [];
+        private static uint lastBurstTick;
+        private static int shardsThisTick;
         /// <summary>快照 RT 注册表（npcIndex → RT），生命周期由 <see cref="OniDismemberRender"/> 管理</summary>
         internal static readonly Dictionary<int, RenderTarget2D> SnapRTs = [];
 
@@ -129,31 +140,104 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// <param name="duration">从当前帧起的持续帧数，尾段含 <see cref="FadeFrames"/> 帧淡出</param>
         /// <param name="holdFrames">本切口滞拍帧数（亮起 → 分离）；冻结与伤口亮线即刻建立，
         /// 分离推迟到滞拍结束，供外层斩切演出（如 <see cref="OniFinaleCut"/>）把引爆帧压到同一拍；0=立即分离</param>
+        /// <param name="birthDelay">切口亮起延迟帧数：冻结与快照即刻建立，伤口线推迟出现，
+        /// 供 <see cref="TriggerGroup"/> 的波及演出沿身体逐节点亮；调度方需保证 delay+hold 全组对齐</param>
         public static bool Trigger(NPC npc, Vector2 cutPointWorld, float cutAngle,
-            int duration = DefaultDuration, int holdFrames = HoldFrames) {
+            int duration = DefaultDuration, int holdFrames = HoldFrames, int birthDelay = 0) {
             if (npc == null || !npc.active) {
                 return false;
             }
 
             holdFrames = Math.Max(holdFrames, 0);
+            birthDelay = Math.Max(birthDelay, 0);
             DismemberEntry entry = GetEntry(npc.whoAmI);
             if (entry == null || entry.NpcType != npc.type) {
                 if (entry != null) {
                     Entries.Remove(entry);  //槽位被新 NPC 复用，旧状态作废
                 }
-                entry = CreateEntry(npc, duration, holdFrames);
+                entry = CreateEntry(npc, duration, birthDelay + holdFrames);
                 Entries.Add(entry);
             }
             else {
-                entry.Duration = Math.Max(entry.Duration, entry.Timer + Math.Max(duration, holdFrames + FadeFrames));
+                entry.Duration = Math.Max(entry.Duration
+                    , entry.Timer + Math.Max(duration, birthDelay + holdFrames + FadeFrames));
             }
 
-            AddCut(entry, cutPointWorld, cutAngle, holdFrames);
+            AddCut(entry, cutPointWorld, cutAngle, holdFrames, birthDelay);
 
             //立即入冻：不等下一次系统刷新
             npc.CWR().TimeFrozenTick = 2;
             npc.velocity = Vector2.Zero;
             return true;
+        }
+
+        /// <summary>
+        /// 整体肢解多实体 Boss：经 <see cref="NpcGroupHelper"/> 收集全组（蠕虫体节/魔像部件/月总部位），
+        /// 触发帧全组一并定格，随后一条刀路铺满整个身体。<br/>
+        /// 切口几何分两层：刀线真实穿过的成员用世界切线的精确交点（相邻体节伤口跨节相连）；
+        /// 未被穿过的成员把切割角变换进各自身体系（θ_m = rot_m + (θ - rot_struck)，仅同 realLife 链启用，
+        /// 蠕虫的切口沿脊线弯曲传播；无旋转的部件自然退化为同角平移），切点取自身中心。<br/>
+        /// 滞拍窗口内伤口线以 <see cref="WaveSpeed"/> 从落刀点向外逐节点亮（birthDelay 递增、hold 递减），
+        /// 全组压在同一引爆帧分离——伤口游走全身，纳刀一响齐崩
+        /// </summary>
+        /// <inheritdoc cref="Trigger(NPC, Vector2, float, int, int, int)"/>
+        public static bool TriggerGroup(NPC npc, Vector2 cutPointWorld, float cutAngle,
+            int duration = DefaultDuration, int holdFrames = HoldFrames) {
+            if (npc == null || !npc.active) {
+                return false;
+            }
+
+            NpcGroupHelper.CollectGroup(npc, groupScratch);
+            if (groupScratch.Count <= 1) {
+                return Trigger(npc, cutPointWorld, cutAngle, duration, holdFrames);
+            }
+
+            holdFrames = Math.Max(holdFrames, 0);
+            Vector2 normal = new(-MathF.Sin(cutAngle), MathF.Cos(cutAngle));
+            //解剖学角度：切割角在被击中成员身体系下的表达，供蠕虫体节沿脊线还原
+            float anatomyAngle = MathHelper.WrapAngle(cutAngle - npc.rotation);
+            int struckAnchor = NpcGroupHelper.GetAnchorIndex(npc);
+
+            //被击中者零延迟先行，保证声画顺序与 Entries 排序都以落刀点为源头
+            groupScratch.Sort((a, b) => Vector2.DistanceSquared(a.Center, cutPointWorld)
+                .CompareTo(Vector2.DistanceSquared(b.Center, cutPointWorld)));
+
+            bool any = false;
+            foreach (NPC member in groupScratch) {
+                //穿越判定用命中盒（各端同步数据，保证多人下选中的成员集合一致；快照尺寸服务器上为 0）
+                float signedDist = Vector2.Dot(member.Center - cutPointWorld, normal);
+                float slabRadius = (MathF.Abs(normal.X) * member.width + MathF.Abs(normal.Y) * member.height) * 0.6f;
+
+                Vector2 point;
+                float angle;
+                if (MathF.Abs(signedDist) <= slabRadius) {
+                    //刀线真实穿过：取线上最近点，相邻体节的伤口线严丝合缝连成一条
+                    point = member.Center - normal * signedDist;
+                    angle = cutAngle;
+                }
+                else if (NpcGroupHelper.GetAnchorIndex(member) == struckAnchor) {
+                    //同 realLife 链（蠕虫，头节自身锚即链锚）：身体系变换，
+                    //斜切头部的一刀在每一节自己的轴向上保持同样的斜度，切口沿脊线弯曲传播
+                    point = member.Center;
+                    angle = MathHelper.WrapAngle(member.rotation + anatomyAngle);
+                }
+                else {
+                    //跨链成员（魔像拳/月总手/混编机群）：同一世界角平移到部位中心，整组被同方向剪切
+                    point = member.Center;
+                    angle = cutAngle;
+                }
+
+                //波及：伤口沿身体从落刀点向外点亮，birth+hold 恒等于统一引爆帧；
+                //hold≤1 时无滞拍窗口可分配，全员立裂（面影脉冲路径）
+                int delay = 0;
+                if (holdFrames > 1) {
+                    delay = Math.Min((int)(Vector2.Distance(member.Center, cutPointWorld) / WaveSpeed), holdFrames - 1);
+                }
+
+                any |= Trigger(member, point, angle, duration, holdFrames - delay, delay);
+            }
+            groupScratch.Clear();   //不跨帧持有 NPC 引用
+            return any;
         }
 
         /// <summary>提前解除：进入淡出，随后自然恢复</summary>
@@ -230,7 +314,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             height = Math.Clamp(h & ~1, 64, 1600);
         }
 
-        private static void AddCut(DismemberEntry entry, Vector2 cutPointWorld, float cutAngle, int holdFrames) {
+        private static void AddCut(DismemberEntry entry, Vector2 cutPointWorld, float cutAngle,
+            int holdFrames, int birthDelay = 0) {
             if (entry.SnapWidth <= 0 || entry.Cuts.Count >= MaxCuts) {
                 return;
             }
@@ -243,15 +328,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             DismemberCut cut = new() {
                 PointLocal = local,
                 Normal = new Vector2(-dir.Y, dir.X),
-                Birth = entry.Timer,
+                Birth = entry.Timer + birthDelay,   //未来出生=波及调度，亮起前几何已切好但无位移无辉光
                 Hold = holdFrames,
             };
 
             SplitPieces(entry, in cut);
             entry.Cuts.Add(cut);
 
-            //零滞拍：分离当帧发生，UpdateAll 的等值检查赶不上，声画在此立即触发
-            if (cut.Hold <= 0 && !Main.dedServ) {
+            //零滞拍且非波及调度：分离当帧发生，UpdateAll 的等值检查赶不上，声画在此立即触发
+            if (cut.Hold <= 0 && birthDelay <= 0 && !Main.dedServ) {
                 SeparationBurst(entry, in cut);
             }
         }
@@ -424,13 +509,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
         }
 
-        /// <summary>断开瞬间的声画：沿切线迸出碎晶 + 脆响</summary>
+        /// <summary>断开瞬间的声画：沿切线迸出碎晶 + 脆响。
+        /// 群组齐崩时同帧只留一声脆响，碎晶共享 <see cref="ShardBudgetPerTick"/> 总预算，
+        /// 引爆按到落刀点的距离序处理，碎晶自然集中在伤口源头</summary>
         private static void SeparationBurst(DismemberEntry entry, in DismemberCut cut) {
-            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.4f, Volume = 0.55f }, entry.AnchorCenter);
+            if (Main.GameUpdateCount != lastBurstTick) {
+                lastBurstTick = Main.GameUpdateCount;
+                shardsThisTick = 0;
+                SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.4f, Volume = 0.55f }, entry.AnchorCenter);
+            }
+            int shardCount = Math.Min(10, ShardBudgetPerTick - shardsThisTick);
+            if (shardCount <= 0) {
+                return;
+            }
+            shardsThisTick += shardCount;
 
             Vector2 tangent = new(-cut.Normal.Y, cut.Normal.X);
             float halfLen = MathF.Min(entry.SnapWidth, entry.SnapHeight) * 0.4f;
-            for (int k = 0; k < 10; k++) {
+            for (int k = 0; k < shardCount; k++) {
                 Vector2 pos = entry.AnchorCenter + cut.PointLocal + tangent * Main.rand.NextFloat(-1f, 1f) * halfLen;
                 Vector2 vel = cut.Normal * Main.rand.NextFloat(1.5f, 4.5f) * (Main.rand.NextBool() ? 1f : -1f)
                     + tangent * Main.rand.NextFloat(-1f, 1f);

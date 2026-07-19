@@ -17,6 +17,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// </summary>
     internal sealed class OniDismemberRender : RenderHandle
     {
+        //单帧快照捕获上限：群组肢解（蠕虫 80+ 节）分摊到连续几帧，未捕获者本体照常绘制无缝衔接；
+        //Entries 按到落刀点的距离序排列，先捕获的恰是玩家眼前的
+        private const int MaxCapturesPerFrame = 24;
         //孤儿 RT 清理暂存
         private static readonly List<int> pruneScratch = [];
 
@@ -61,7 +64,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
-            //逐个捕获待处理目标
+            //逐个捕获待处理目标，单帧限量防群组触发帧卡顿
+            int captured = 0;
             foreach (DismemberEntry entry in OniDismember.Entries) {
                 if (entry.Captured || entry.SnapWidth <= 0) {
                     continue;
@@ -71,6 +75,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                     continue;
                 }
                 CaptureSnapshot(spriteBatch, graphicsDevice, entry, npc);
+                if (++captured >= MaxCapturesPerFrame) {
+                    break;
+                }
             }
 
             //还屏
