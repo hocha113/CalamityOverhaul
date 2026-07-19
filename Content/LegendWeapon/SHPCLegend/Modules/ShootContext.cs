@@ -23,6 +23,8 @@
         public float MergedDamageBonus;
         /// <summary>法力消耗倍率</summary>
         public float ManaCostMul;
+        /// <summary>强制免蓝：置位时左键蓝耗恒为 0，不受其他改件的 ManaCostMul 加算影响（速射喷射期用）</summary>
+        public bool ManaFree;
         /// <summary>右键蓄力时间倍率</summary>
         public float ChargeTimeMul;
         /// <summary>右键球飞行速度倍率</summary>
@@ -92,6 +94,7 @@
             MergeBeams = false,
             MergedDamageBonus = 1f,
             ManaCostMul = 1f,
+            ManaFree = false,
             ChargeTimeMul = 1f,
             OrbSpeedMul = 1f,
             CritAdd = 0,

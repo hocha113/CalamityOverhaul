@@ -116,6 +116,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 case HeatPhase.Venting:
                     ctx.AttackSpeedMul += VentAttackSpeedAdd;
                     ctx.ManaCostMul += VentManaCostAdd;
+                    //强制免蓝标志：防其他改件的 ManaCostMul 加算抵消"喷射期零蓝耗"招牌
+                    ctx.ManaFree = true;
                     break;
                 case HeatPhase.Cooling:
                     ctx.AttackSpeedMul += CoolAttackSpeedAdd;
@@ -242,8 +244,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             phaseTimer = VentFrames;
             ventSoundTimer = 20;
             heat = 1f;
-            SHPCNaturalFx.Shake(3f);
             if (player.whoAmI == Main.myPlayer) {
+                //破线屏震只给拥有者：远端玩家红线不震旁观者屏幕
+                SHPCNaturalFx.Shake(3f);
                 CombatText.NewText(player.getRect(), new Color(255, 120, 40), "// REDLINE", true, false);
             }
             if (Main.netMode == NetmodeID.Server) {
@@ -338,7 +341,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 return;
             }
             Lighting.AddLight(beam.Projectile.Center, HeatColor(snap).ToVector3() * 0.35f * snap);
-            //灼热火渣尾：热度越高越密，喷射态光束几乎连成焰线
+            //灼热火渣尾：热度越高越密，喷射态光束几乎连成焰线；光束穿墙飞万余px，屏外不白烧粒子
+            if (!VaultUtils.IsPointOnScreen(beam.Projectile.Center - Main.screenPosition, 150)) {
+                return;
+            }
             int chance = snap >= 0.999f ? 3 : (int)MathHelper.Lerp(9f, 4f, snap);
             if (Main.rand.NextBool(chance)) {
                 Vector2 perp = beam.FlightDirection.RotatedBy(MathHelper.PiOver2);
@@ -355,7 +361,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 return;
             }
             float snap = GetBeamHeat(beam.Projectile.whoAmI);
-            if (snap < SheathThreshold) {
+            if (snap < SheathThreshold
+                || !VaultUtils.IsPointOnScreen(target.Center - Main.screenPosition, 150)) {
                 return;
             }
             //红热命中：火渣飞溅，白炽弹附带灼铁嘶声

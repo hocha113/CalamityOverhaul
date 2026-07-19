@@ -226,6 +226,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
                 anchorInit = true;
             }
 
+            //持久衍生弹幕每帧自检（裁决）：蓄力中途卸改件/换预设即泄压散场，不再驻留泵伤；
+            //模块数据不联机同步，远端无从判断，只在拥有者端裁决
+            if (Projectile.owner == Main.myPlayer && state != BankState.Venting
+                && !SHPCModificationSystem.HasModule<CapacitorBankModule>(owner)) {
+                BeginVenting();
+            }
+
             CyberChargeOrbProj orb = ResolveOrb(owner);
 
             switch (state) {

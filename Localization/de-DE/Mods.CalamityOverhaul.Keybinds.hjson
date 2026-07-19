@@ -17,7 +17,6 @@ Murasama_TriggerKey.DisplayName: Murasama: Auslösetaste
 Murasama_DownKey.DisplayName: Murasama: Hinunterstoßen
 // Onikiri_Execute.DisplayName: Onikiri: Execute
 // Onikiri_DomainFlip.DisplayName: Onikiri: Flip Domain (Omote/Ura)
-// Onikiri_Dismember.DisplayName: Onikiri: Dismember
 WeponSkill_Q.DisplayName: Waffe: Linke Fähigkeitstaste
 WeponSkill_R.DisplayName: Waffe: Rechte Fähigkeitstaste
 Accessory_Skills.DisplayName: Accessoire-Fähigkeit

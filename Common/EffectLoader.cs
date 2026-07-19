@@ -196,5 +196,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> SHPCModResonanceRing { get; set; }
         public static Asset<Effect> SHPCModRedline { get; set; }
         public static Asset<Effect> SHPCModVolatile { get; set; }
+        public static Asset<Effect> SHPCModSteadyVolt { get; set; }
     }
 }

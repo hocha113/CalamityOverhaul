@@ -378,8 +378,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
         private static bool OnScreen(Vector2 worldPos)
             => VaultUtils.IsPointOnScreen(worldPos - Main.screenPosition, 200);
 
+        //覆层并存上限：多束枪管高攻速下防 Trail 绘制堆积（超出者光束仍有变异行为，仅无缎带）
+        private const int MaxOverlays = 24;
+
         /// <summary>生成故障覆层（拥有者端）；ai0=变异索引 ai1=宿主identity（跨端稳定）</summary>
         private static void SpawnOverlay(Projectile host, BeamState st) {
+            Player owner = Main.player[host.owner];
+            if (owner == null
+                || owner.ownedProjectileCounts[ModContent.ProjectileType<SHPCVolatileGlitchProj>()] >= MaxOverlays) {
+                return;
+            }
             int idx = Projectile.NewProjectile(host.GetSource_FromThis(),
                 host.Center, Vector2.Zero,
                 ModContent.ProjectileType<SHPCVolatileGlitchProj>(),
