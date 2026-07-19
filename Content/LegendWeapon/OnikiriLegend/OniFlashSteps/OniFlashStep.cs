@@ -16,12 +16,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
     /// <summary>
     /// 神威疾走主控：零前摇零后摇的按住可控冲刺 + 延迟居合结算。<br/>
-    /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身（900px 全程 ~11 帧），
+    /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身（900px 全程 ~10 帧），
     /// 之后立刻交还操控——一切华丽的东西都是非阻塞的事后余像，自己播完自己。<br/>
-    /// 长度控制：爆发段(2 帧 ~130px/帧)保住"按下即窜"的观感并定义轻点最小跳距(~260px)，
-    /// 巡航段(~72px/帧)是松手可控区——松开右键即刹停，按住走满全程；
-    /// 撞墙直线斩停（子步扫描，轨迹恒直，墨溅上墙）。<br/>
-    /// 时间轴（60fps，距离 900 全程约 0.85s 演出 / 0.18s 锁定）：<br/>
+    /// 长度控制走缓起加速曲线（<see cref="DashSpeedRamp"/>）：起步低位移帧就是
+    /// "点按还是长按"的输入辨义窗——点按只花掉便宜的起步帧（最小跳距 ~160-260px），
+    /// 按住则加速走满全程；松开右键即刹停；撞墙直线斩停（子步扫描，轨迹恒直，墨溅上墙）。<br/>
+    /// 时间轴（60fps，距离 900 全程约 0.85s 演出 / 0.17s 锁定）：<br/>
     /// 0 爆发起步、出发点墨爆、布帛撕裂+风切+低太鼓 →
     /// 巡航推进（撞墙/松手提前止步）、身后神威流带逐帧延伸、穿过的敌人缠上墨痕
     /// （无伤害）+ 微时停 → 硬刹带过冲回弹 → 交还操控 →
@@ -36,11 +36,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public override string Texture => CWRConstant.Placeholder;
 
         //==== 时间轴常量 ====
-        //双段速度：6 帧跑完全程时人类来不及松键（点击本身就要 100ms+），松手控长形同虚设——
-        //爆发段保住"按下即窜"的观感并定义轻点的最小跳距，巡航段把时长拉进人手可控的窗口
-        private const float DashBurstSpeed = 130f;   //爆发段速度(px/帧)
-        private const int DashBurstFrames = 2;       //爆发段帧数(轻点最小跳距 ≈ 260px)
-        private const float DashSustainSpeed = 72f;  //巡航段速度(px/帧)，900px 全程约 11 帧
+        //缓起加速曲线：把"点按还是长按"的输入辨义窗叠进低位移的起步帧——
+        //起步走得便宜（点按只花掉这几帧，最小跳距压到 ~160-260px），
+        //输入表明意图后再进高速段，长按 900px 全程约 10 帧（~170ms），总时长不增反缩。
+        //旧的爆发前置（头 2 帧 260px）把距离花在了松开信号还没到达的盲区里
+        private static readonly float[] DashSpeedRamp = [35f, 50f, 70f, 100f, 125f];  //px/帧，末值为巡航速度
         private const int BrakeFrames = 2;      //硬刹：+过冲 → −回拉
         private const int JudgmentDelay = 8;    //刹停到纳刀结算
         private const int RetractDelay = 10;    //刹停到流带开始蒸发
@@ -150,10 +150,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             dashDir = DashAngle.ToRotationVector2();
             sizeMul = Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f;
             seed = Projectile.identity * 0.6180339887f % 1f;
-            float burstLen = DashBurstSpeed * DashBurstFrames;
-            plannedDashFrames = Distance <= burstLen
-                ? Math.Max(2, (int)MathF.Ceiling(Distance / DashBurstSpeed))
-                : DashBurstFrames + (int)MathF.Ceiling((Distance - burstLen) / DashSustainSpeed);
+            //沿加速曲线累计到计划距离
+            plannedDashFrames = 0;
+            for (float acc = 0f; acc < Distance - 0.5f; plannedDashFrames++) {
+                acc += DashSpeedRamp[Math.Min(plannedDashFrames, DashSpeedRamp.Length - 1)];
+            }
+            plannedDashFrames = Math.Max(plannedDashFrames, 2);
             Projectile.timeLeft = JudgmentFrame + RetractDelay + RetractFrames + 30;
 
             path.Add(GetCenter());
@@ -225,8 +227,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Vector2 prevHead = GetCenter();
             Vector2 fromBody = Owner.Center;
 
-            //巡航段方向键微转向：按住的方向把墨绸小幅掰弯（爆发段保持出手直线，转向随控制位同步各端）
-            if (timer > DashBurstFrames) {
+            //方向键微转向：按住的方向把墨绸小幅掰弯（首帧保持出手直线，转向随控制位同步各端）
+            if (timer > 1) {
                 int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
                 int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
                 if (h != 0 || v != 0) {
@@ -236,7 +238,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 }
             }
 
-            float speed = timer <= DashBurstFrames ? DashBurstSpeed : DashSustainSpeed;
+            float speed = DashSpeedRamp[Math.Min(timer - 1, DashSpeedRamp.Length - 1)];
             float stepLen = MathF.Min(speed, Distance - traveled);
 
             //直线斩停子步推进
