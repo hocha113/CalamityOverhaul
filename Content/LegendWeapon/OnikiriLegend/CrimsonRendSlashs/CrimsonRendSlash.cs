@@ -961,7 +961,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             return null;
         }
 
+        /// <summary>擦边宽恕（px）：目标箱四周外扩——刀光辉光比核心带宽，视觉擦到就该算到</summary>
+        private const int GrazePad = 12;
+        /// <summary>辐条判定厚度（px）：月牙内侧"刀身"的贪婪带宽</summary>
+        private const float SpokeThickness = 36f;
+
+        /// <summary>
+        /// 贪婪判定，三层覆盖：<br/>
+        /// 1. 弧线折线段——刀锋轨迹本体，厚度对齐视觉带宽（0.8→1.0 倍，辉光宽度玩家读作刀宽）；<br/>
+        /// 2. 辐条（中心→弧上采样点）——刀是从手心扫到刀尖的实体，月牙内侧不是空洞，
+        /// 贴身目标由辐条兜住（近身打不到的根源就是旧判定只测外弧）；<br/>
+        /// 3. 目标箱外扩 <see cref="GrazePad"/>——擦边宽恕，虚接触判给玩家
+        /// </summary>
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            Rectangle greedyBox = targetHitbox;
+            greedyBox.Inflate(GrazePad, GrazePad);
+
             for (int i = 0; i < actives.Count; i++) {
                 ActiveSlash a = actives[i];
                 int lt = timer - a.Birth;
@@ -971,11 +986,52 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 float sweepU = MathHelper.Clamp(CSR.Sweep(in a.Def, lt) * 1.05f, 0f, 1f);
                 Vector2 center = CenterOf(a);
 
-                //弧/椭圆：折线采样
+                //弧/椭圆：折线采样 + 内侧辐条
                 const int samples = 15;
                 Vector2 prev = Vector2.Zero;
                 bool hasPrev = false;
-                float thickWorld = a.Def.Thick * a.Def.HalfX;
+                float thickWorld = MathF.Max(32f, a.Def.Thick * a.Def.HalfX);
+                float cp = 0f;
+                for (int k = 0; k < samples; k++) {
+                    float uc = 0.05f + 0.90f * (k / (float)(samples - 1));
+                    if (uc > sweepU) {
+                        break;
+                    }
+                    Vector2 mid = CSR.PointAt(in a.Def, center, uc, lt);
+                    if (hasPrev && Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                        , prev, mid, thickWorld, ref cp)) {
+                        return true;
+                    }
+                    if (k % 3 == 0 && Collision.CheckAABBvLineCollision(greedyBox.TopLeft(), greedyBox.Size()
+                        , center, mid, SpokeThickness, ref cp)) {
+                        return true;
+                    }
+                    prev = mid;
+                    hasPrev = true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>割草断藤：沿各活跃刀光的弧线扫切草/藤/南瓜藤等可切物（全挥砍期生效，宽度对齐判定带）</summary>
+        public override void CutTiles() {
+            if (actives.Count == 0) {
+                return;
+            }
+            DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+            for (int i = 0; i < actives.Count; i++) {
+                ActiveSlash a = actives[i];
+                int lt = timer - a.Birth;
+                if (lt < 0 || lt > Math.Max(a.Def.DamageEnd, a.Def.SweepFrames)) {
+                    continue;
+                }
+                float sweepU = MathHelper.Clamp(CSR.Sweep(in a.Def, lt) * 1.05f, 0f, 1f);
+                Vector2 center = CenterOf(a);
+
+                const int samples = 9;
+                Vector2 prev = Vector2.Zero;
+                bool hasPrev = false;
+                float width = MathF.Max(30f, a.Def.Thick * a.Def.HalfX * 0.8f);
                 for (int k = 0; k < samples; k++) {
                     float uc = 0.05f + 0.90f * (k / (float)(samples - 1));
                     if (uc > sweepU) {
@@ -983,17 +1039,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     }
                     Vector2 mid = CSR.PointAt(in a.Def, center, uc, lt);
                     if (hasPrev) {
-                        float cp = 0f;
-                        if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                            , prev, mid, MathF.Max(28f, thickWorld * 0.8f), ref cp)) {
-                            return true;
-                        }
+                        Utils.PlotTileLine(prev, mid, width, DelegateMethods.CutTiles);
                     }
                     prev = mid;
                     hasPrev = true;
                 }
             }
-            return false;
         }
 
         /// <summary>重击拍伤害加成：蓄势期间无判定的等待换成回报（快斩 ×1，重斩 ×1.3，终结 ×1.6）</summary>
