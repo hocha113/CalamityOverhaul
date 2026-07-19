@@ -42,7 +42,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private const int NotoFlickFrames = 6;  //纳刀一挑时长(起于纳刀结算帧,与"锵"同步)
         private const int TailFadeFrames = 8;   //纳刀后持刀淡出
         //==== 位移与判定常量 ====
-        private const int MinDashFrames = 2;        //松手停的最短冲刺帧数(~300px 短刺下限,防 1 帧碎步)
         private const float CollisionSubStep = 14f; //直线斩停子步长(小于玩家宽度,防隧穿)
         private const float SweepLead = 44f;        //扫掠前导:冲刺终点脸前的目标不漏标
         private const float SweepBackPad = 24f;     //扫掠后补:起手贴脸的目标不漏标
@@ -243,8 +242,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.GivePlayerImmuneState(10);
             HoldPose();
 
-            //松手提前收势（owner 端意图，缩短后的距离回写 ai[1] 同步远端按距离条件自然停下）
-            bool released = Projectile.IsOwnedByLocalPlayer() && timer >= MinDashFrames && !Main.mouseRight;
+            //松手提前收势，无下限——松手即停，最短一帧微刺也认（owner 端意图，
+            //缩短后的距离回写 ai[1] 同步远端按距离条件自然停下）
+            bool released = Projectile.IsOwnedByLocalPlayer() && !Main.mouseRight;
             bool finished = blocked || released || traveled >= Distance - 1f;
             if (finished) {
                 if (blocked && !wallStopped) {
