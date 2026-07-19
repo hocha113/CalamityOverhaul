@@ -74,7 +74,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float DismemberDamageMul = 2.5f;
         /// <summary>肢解射程(与处决同量级)</summary>
         private const float DismemberRange = 800f;
-        /// <summary>直接肢解的光标磁吸半径(精确碰撞箱距离)</summary>
+        /// <summary>光标点名真身的贴身容差(碰撞箱边距):点在身上=明确要斩真身,压过纸的优先级</summary>
+        private const float DirectPickPad = 16f;
+        /// <summary>直接肢解的兜底光标磁吸半径(精确碰撞箱距离)</summary>
         private const float DismemberMagnetRadius = 130f;
         /// <summary>媒介点选的光标容差(点到纸面矩形距离)</summary>
         private const float PaperMagnetPad = 60f;
@@ -247,10 +249,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         /// <summary>
         /// 鬼切:肢解——里世界的法则,不耗气力不耗架势。<br/>
-        /// 光标两层级联：压着媒介(面影纸面)优先斩纸,替身受过、全身而退,限频交给媒介再生成冷却;
-        /// 否则取光标附近敌人直接肢解,代价是纳刀后同等的肢解落回自己
-        /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的反噬僵直,天然限频)。<br/>
-        /// 纸与真身重叠时取媒介:纸面大且是玩家主动布下的机会,规则从简。
+        /// 光标三层级联：<br/>
+        /// 1. 点在真身碰撞箱上(贴身容差) → 直接肢解,代价是纳刀后同等的肢解落回自己
+        /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的反噬僵直,天然限频)。
+        /// 新影恰好挂在敌人当前位置上,没有这一层媒介会把真身永远挡住,反噬路径将不可达;<br/>
+        /// 2. 压着媒介(面影纸面) → 点锚斩纸,替身受过、全身而退,限频交给媒介再生成冷却
+        /// ——斩的是敌人"留在过去"的那张纸,指着身体则永远是指着现在;<br/>
+        /// 3. 磁吸半径内的敌人兜底 → 直接肢解。<br/>
         /// 表世界/翻转中按键给领域拒绝反馈——先入里,再谈肢解
         /// </summary>
         private void TryDismember(Item item) {
@@ -270,21 +275,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             int damage = (int)(state.WeaponDamage * DismemberDamageMul);
             Vector2 mouse = Main.MouseWorld;
 
-            //一层:光标压着媒介 → 点锚斩纸
-            OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
-            if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
-                //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点
-                Vector2 local = mouse - paper.AnchorCenter;
-                local.X = MathHelper.Clamp(local.X, -paper.PaperHalf.X * 0.4f, paper.PaperHalf.X * 0.4f);
-                local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
-                Vector2 cutPoint = paper.AnchorCenter + local;
-                OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
-                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
-                return;
+            //一层:光标点名真身(碰撞箱贴身容差) → 直接肢解,反噬上身
+            NPC target = PickDismemberTarget(mouse, DirectPickPad);
+            if (target == null) {
+                //二层:光标压着媒介 → 点锚斩纸(替身受过,无反噬)
+                OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
+                if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
+                    //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点
+                    Vector2 local = mouse - paper.AnchorCenter;
+                    local.X = MathHelper.Clamp(local.X, -paper.PaperHalf.X * 0.4f, paper.PaperHalf.X * 0.4f);
+                    local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
+                    Vector2 cutPoint = paper.AnchorCenter + local;
+                    OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
+                        , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                    return;
+                }
+                //三层:磁吸半径内的敌人兜底
+                target = PickDismemberTarget(mouse, DismemberMagnetRadius);
             }
 
-            //二层:光标附近的敌人 → 直接肢解(反噬上身)
-            NPC target = PickDismemberTarget(mouse);
             if (target != null) {
                 OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage
                     , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
@@ -308,10 +317,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         }
 
         /// <summary>
-        /// 直接肢解目标:光标磁吸半径内最要紧者(boss 旗 &gt; 最大生命 &gt; 距离,蠕虫按主体计旗);
+        /// 直接肢解目标:光标 pad 距离内最要紧者(boss 旗 &gt; 最大生命 &gt; 距离,蠕虫按主体计旗);
         /// 蠕虫节段整体排除——冻结一节其余照动,画面会散架,头部仍可肢解
         /// </summary>
-        private NPC PickDismemberTarget(Vector2 cursor) {
+        private NPC PickDismemberTarget(Vector2 cursor, float pad) {
             NPC best = null;
             bool bestBoss = false;
             float bestLife = 0f;
@@ -321,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                     continue;
                 }
                 float d = DistanceToHitbox(npc, cursor);
-                if (d > DismemberMagnetRadius) {
+                if (d > pad) {
                     continue;
                 }
                 if (Vector2.Distance(Player.Center, npc.Center) > DismemberRange) {

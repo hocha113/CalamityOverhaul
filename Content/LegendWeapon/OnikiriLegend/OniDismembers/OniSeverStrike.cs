@@ -62,6 +62,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         private bool struck;
         /// <summary>落刀帧目标已失效：转空挥收势</summary>
         private bool whiffed;
+        /// <summary>反噬已落下（防帧等值判断被计时抖动漏过）</summary>
+        private bool selfCutDone;
         private readonly OniBladePose bladePose = new();
 
         private int TargetIndex => (int)Projectile.ai[0];
@@ -191,7 +193,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
             //纳刀反噬：直接肢解的代价——刀入鞘的下一瞬，同等的肢解落回持刀人自己；
             //媒介路径由替身（纸）承受这一刀，无反噬
-            if (timer == SelfCutFrame && struck && !whiffed && !PointMode) {
+            if (!selfCutDone && timer >= SelfCutFrame && struck && !whiffed && !PointMode) {
+                selfCutDone = true;
                 OniPlayerDismember.Trigger(Owner, CutAngle);
             }
 

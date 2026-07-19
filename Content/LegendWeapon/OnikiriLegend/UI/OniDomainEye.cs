@@ -12,9 +12,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 {
     /// <summary>
     /// 鬼域之眼：封印札 HUD 簇的挂点与领域控制面,整簇纸札"挂"在这只眼下。<br/>
-    /// 与开域仪式共用 OniEye.fx(三勾玉写轮眼)——平时它栖在札上,开/收域时它离巢去天上干活,
-    /// HUD 处只留一圈噪声消散的空窝;表世界绯红虹膜,里世界鬼火青,翻转时负片爆闪。<br/>
-    /// 左键开阖领域,右键翻转表里(阖着先展到表);仪式进行中被拒时急促眨眼一次。<br/>
+    /// 阖目态是独立设计的"封眼"符号——闭睑有肉、睑缝主笔、封印朱点压着,皮下透一点微温
+    /// (按 236px 仪式眼作画的 shader 在 44px 下闭眼会缩成发丝,故阖目走 CPU 笔触,
+    /// 睁开 0~0.35 区间与 shader 眼交叉交棒);<br/>
+    /// 睁眼后与开域仪式共用 OniEye.fx(三勾玉写轮眼)——表世界绯红虹膜,里世界鬼火青,
+    /// 翻转时负片爆闪;开/收域时眼离巢去天上干活,HUD 处只留一圈噪声消散的空窝。<br/>
+    /// 左键开阖领域,右键翻转表里(阖着先展到表);仪式进行中被拒时睑缝抖动、朱印现裂。<br/>
     /// 由 <see cref="OniTalismanHud"/> 驱动,共用其锚点;状态直读 <see cref="OniDomain.Local"/>,
     /// 动画全部本地缓动推导
     /// </summary>
@@ -99,6 +102,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 else if (phase == OniDomainPhase.Closing) {
                     flash = MathF.Max(flash, 0.3f);
                 }
+                else if (phase == OniDomainPhase.Closed) {
+                    //归巢落定,封印重新盖上的一记
+                    flash = MathF.Max(flash, 0.35f);
+                }
                 lastPhase = phase;
             }
 
@@ -165,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            //拒绝反馈:睁着急促眨眼,阖着烦躁地睁开一条缝
+            //拒绝反馈:睁着急促眨眼,阖着则封印下烦躁地眯开一条缝
             float denyBlink = denyPulse > 0.03f ? denyPulse * (0.5f + 0.5f * MathF.Sin(time * 46f)) : 0f;
             float openDraw = MathHelper.Clamp(open * (1f - denyBlink * 0.65f) + (1f - open) * denyBlink * 0.2f, 0f, 1f);
             float presence = 1f - away * 0.92f;
@@ -180,23 +187,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
+            //阖目↔睁眼交棒:0~0.35 区间封眼层淡出、shader 眼淡入,
+            //桥掉 shader 小睁开量下线条过细的区间
+            float openRamp = MathHelper.Clamp(openDraw / 0.35f, 0f, 1f);
+            if (openRamp < 1f) {
+                DrawSealedLid(sb, intensity * (1f - openRamp), time);
+            }
+            float eyeIntensity = intensity * MathHelper.Clamp((openDraw - 0.05f) / 0.30f, 0f, 1f);
+            if (eyeIntensity <= 0.01f) {
+                return;
+            }
+
             float halfSize = OnikiriUITheme.HudEyeHalf * (0.93f + 0.07f * openDraw + 0.05f * hoverEase) + 2.5f * flash;
 
             Effect eye = EffectLoader.OniEye?.Value;
             Texture2D white = CWRAsset.Placeholder_White?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (eye == null || white == null || noise == null) {
-                DrawFallback(sb, intensity, openDraw, halfSize, time);
+                DrawFallback(sb, eyeIntensity, openDraw, halfSize, time);
                 return;
             }
 
             eye.Parameters["uTime"]?.SetValue(time);
-            eye.Parameters["uIntensity"]?.SetValue(intensity);
+            eye.Parameters["uIntensity"]?.SetValue(eyeIntensity);
             eye.Parameters["uOpen"]?.SetValue(openDraw);
             eye.Parameters["uSpin"]?.SetValue(spin);
             eye.Parameters["uFlash"]?.SetValue(flash);
             eye.Parameters["uDissolve"]?.SetValue(away);
             eye.Parameters["uUra"]?.SetValue(uraBlend);
+            //44px 小 quad 下按世界眼作画的睑线会缩成发丝,加粗一档
+            eye.Parameters["uStrokeBoost"]?.SetValue(2f);
 
             var gd = Main.instance.GraphicsDevice;
             gd.Textures[1] = noise;
@@ -224,6 +244,72 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //还原调用方的批
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend,
                 SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+        }
+
+        /// <summary>
+        /// 阖目封眼:领域未展时眼被朱印封着。闭睑填肉 + 杏叶轮廓 + 二重淡墨 +
+        /// 睑缝主笔(眼尾上挑) + 下睫飞白 + 封印朱点 + 睑下微温呼吸。<br/>
+        /// hover 时缝绷直、微温抬亮;被拒时缝抖动、朱印现裂;
+        /// 接令开域瞬间(flash 脉冲)印裂欲碎并闪光,随即交棒给 shader 眼/离巢空窝
+        /// </summary>
+        private void DrawSealedLid(SpriteBatch sb, float alpha, float time) {
+            if (alpha <= 0.01f) {
+                return;
+            }
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            float w = OnikiriUITheme.HudEyeHalf * 0.94f;
+            Vector2 c = Center;
+
+            //睑下微温:皮下有东西醒着
+            float breath = 0.5f + 0.5f * MathF.Sin(time * 1.3f);
+            Color ember = Color.Lerp(OnikiriUITheme.Bright, OnikiriUITheme.GhostFire, uraBlend);
+            OniBrush.DrawBacklight(sb, c + new Vector2(0f, 1f), 10f, ember,
+                alpha * (0.10f + 0.06f * breath + hoverEase * 0.10f));
+
+            //闭睑填肉:三条横墨带叠出杏叶剪影,眼有体量而非一条线
+            sb.Draw(pixel, c + new Vector2(0f, -2.6f), src, OnikiriUITheme.Ink * (alpha * 0.55f), 0f, new Vector2(0.5f), new Vector2(w * 1.16f, 3.4f), SpriteEffects.None, 0f);
+            sb.Draw(pixel, c, src, OnikiriUITheme.Ink * (alpha * 0.80f), 0f, new Vector2(0.5f), new Vector2(w * 1.90f, 4.2f), SpriteEffects.None, 0f);
+            sb.Draw(pixel, c + new Vector2(0f, 2.7f), src, OnikiriUITheme.Ink * (alpha * 0.50f), 0f, new Vector2(0.5f), new Vector2(w * 1.20f, 3.2f), SpriteEffects.None, 0f);
+
+            //上下睑轮廓(上弓/下弓合成杏叶)
+            Vector2 l = c - new Vector2(w, 0f);
+            Vector2 r = c + new Vector2(w, 0f);
+            OniBrush.DrawTaperedSlash(sb, l + new Vector2(1.5f, -1.2f), r + new Vector2(-1.5f, -1.2f), 1.6f, 4.8f, alpha * 0.5f);
+            OniBrush.DrawTaperedSlash(sb, l + new Vector2(2f, 1.4f), r + new Vector2(-2f, 1.4f), 1.4f, -3.8f, alpha * 0.4f);
+
+            //二重淡墨:上睑上方一道更细的浅痕(呼应 shader 眼的 dLine)
+            OniBrush.DrawTaperedSlash(sb, c + new Vector2(-w * 0.55f, -4.6f), c + new Vector2(w * 0.5f, -4.9f), 1.1f, 1.6f, alpha * 0.3f);
+
+            //睑缝主笔:hover 绷直,被拒抖动
+            float quiver = denyPulse > 0.03f ? MathF.Sin(time * 44f) * 1.1f * denyPulse : 0f;
+            float seamBow = -(1.7f - hoverEase * 1.1f);
+            Vector2 sl = new(c.X - w * 1.04f, c.Y + 0.4f + quiver);
+            Vector2 sr = new(c.X + w * 1.04f, c.Y + 0.2f - quiver);
+            OniBrush.DrawTaperedSlash(sb, sl, sr, 2.7f, seamBow, alpha * 0.95f);
+            //眼尾上挑笔锋,右长左短
+            OniBrush.DrawTaperedSlash(sb, sr + new Vector2(-1.5f, 0.2f), sr + new Vector2(5.5f, -3.6f), 1.5f, 0.5f, alpha * 0.8f);
+            OniBrush.DrawTaperedSlash(sb, sl + new Vector2(1.5f, 0.2f), sl + new Vector2(-4.5f, -3f), 1.3f, -0.5f, alpha * 0.7f);
+
+            //下睫飞白:定相不抖,右三左二不做死对称
+            Span<(float side, float t, float len)> lashes =
+                [(1f, 0.40f, 5.2f), (1f, 0.60f, 6.0f), (1f, 0.80f, 4.6f), (-1f, 0.48f, 4.8f), (-1f, 0.70f, 5.4f)];
+            foreach ((float side, float t, float len) in lashes) {
+                Vector2 root = new(c.X + side * w * t, c.Y + 1.6f);
+                Vector2 tip = root + new Vector2(side * 2.0f, len);
+                OniBrush.DrawGradientLine(sb, root, tip, OnikiriUITheme.Deep * (alpha * 0.5f), OnikiriUITheme.Dark * (alpha * 0.05f), 1.1f);
+            }
+
+            //封印朱点:睑缝中央呼吸微旋;被拒现裂,接令开域时印裂欲碎并闪光。
+            //裂纹只属于"开域接令"(相位已离开 Closed)与被拒——收域重盖的闪光是完好的新印
+            float commandCrack = (OniDomain.Local?.Phase ?? OniDomainPhase.Closed) != OniDomainPhase.Closed ? flash * 1.4f : 0f;
+            float crack = MathHelper.Clamp(MathF.Max(commandCrack, denyPulse * 0.4f), 0f, 0.85f);
+            float sealSize = 5.8f + hoverEase * 0.7f + flash * 2.2f;
+            OniBrush.DrawSealGlyph(sb, c + new Vector2(0f, 0.4f), sealSize, alpha * 0.95f,
+                MathF.Sin(time * 1.1f) * 0.05f, 1f - crack);
+            if (flash > 0.05f) {
+                OniBrush.DrawBacklight(sb, c, 9f + 6f * flash, OnikiriUITheme.Seal, alpha * flash * 0.8f);
+            }
         }
 
         /// <summary>离巢空窝:上下睑淡墨弧线 + 窝心一点将熄的余烬(被拒时余烬惊闪)</summary>

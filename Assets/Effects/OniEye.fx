@@ -15,6 +15,8 @@ float uSpin;        //勾玉环累计旋转（弧度）
 float uFlash;       //0~1 虹膜爆闪
 float uDissolve;    //0~1 消散进度
 float uUra;         //0 表世界(绯红) ~ 1 里世界(鬼火青)，未设置默认 0 保持旧观感
+float uStrokeBoost; //睑线笔宽增益。按 236px 仪式眼作画的笔宽在 44px HUD 眼上会缩成发丝,
+                    //小 quad 传 ~2 保持墨笔可读;未设置(0)按 1,世界眼观感不变
 
 static const float3 INK_LID = float3(0.050, 0.020, 0.055);
 static const float3 SCLERA_DARK = float3(0.085, 0.020, 0.028);
@@ -60,8 +62,9 @@ EyeFrame eyeFrame(float2 p, float openAmt) {
     o.aperture = inside;
 
     //墨笔描线：上下眼睑曲线，笔宽随噪声起伏出飞白
-    float wUp = 0.040 * (0.70 + 0.55 * noiseTex(float2(p.x * 2.7 + 3.1, 0.31)));
-    float wLo = 0.032 * (0.70 + 0.55 * noiseTex(float2(p.x * 2.9 + 8.7, 0.77)));
+    float boost = max(uStrokeBoost, 1.0);
+    float wUp = 0.040 * boost * (0.70 + 0.55 * noiseTex(float2(p.x * 2.7 + 3.1, 0.31)));
+    float wLo = 0.032 * boost * (0.70 + 0.55 * noiseTex(float2(p.x * 2.9 + 8.7, 0.77)));
     float sUp = exp(-pow((p.y - lidUp) / wUp, 2.0));
     float sLo = exp(-pow((p.y + lidLo) / wLo, 2.0));
     //上睑笔锋越出眼角略长并上挑，下睑收得更早
@@ -72,7 +75,7 @@ EyeFrame eyeFrame(float2 p, float openAmt) {
     float tailLift = smoothstep(0.85, 1.15, exAbs) * 0.06;
     float sTail = exp(-pow((p.y - lidUp - tailLift) / wUp, 2.0)) * step(1.0, exAbs);
     //二重线：上睑上方一道更细的淡墨
-    float dLine = exp(-pow((p.y - lidUp - 0.085 * openEff - 0.02) / 0.016, 2.0))
+    float dLine = exp(-pow((p.y - lidUp - 0.085 * openEff - 0.02) / (0.016 * boost), 2.0))
                 * smoothstep(0.25, 0.75, openEff) * env * 0.55;
 
     float stroke = max(sUp * reachUp, sLo * 0.9 * reachLo);

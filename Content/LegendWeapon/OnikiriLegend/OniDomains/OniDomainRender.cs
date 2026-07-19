@@ -426,6 +426,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             eye.Parameters["uFlash"]?.SetValue(flash);
             eye.Parameters["uDissolve"]?.SetValue(dissolve);
             eye.Parameters["uUra"]?.SetValue(ura);
+            //Effect 实例与 HUD 眼共享,参数会残留——世界眼必须显式回置笔宽增益
+            eye.Parameters["uStrokeBoost"]?.SetValue(1f);
 
             Vector2 scale = new(halfSize * 2f / white.Width, halfSize * 2f / white.Height);
             Vector2 origin = white.Size() * 0.5f;
