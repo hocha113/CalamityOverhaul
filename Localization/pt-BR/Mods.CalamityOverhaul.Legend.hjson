@@ -217,29 +217,6 @@ HalibutText: {
 	}
 }
 
-MurasamaOverride: {
-	World_Text0: Mundo Anteriormente Atualizado: <{0}> | Nivel Registrado: <{1}>
-	Text0: Desbloqueado
-	Text1: Nao desbloqueado. Necessita Prova [Unhook]
-	Text_Lang_0: Provação:
-	DisplayName: Murasama
-	Tooltip:
-		'''
-		Clique direito para mirar e carregar a energia da espada.
-		Quando um alvo e atingido com um ataque corpo a corpo verdadeiro usando o clique esquerdo, a energia da espada sera carregada.
-		Se houver inimigos poderosos por perto, a energia da espada carregara lentamente por conta propria.
-		Quando a energia da espada estiver totalmente carregada, pressione [KEY1] para liberar a lamina.
-		Durante o voo da lamina, pressione o clique esquerdo para realizar um Corte Ascendente. [Lang1]
-		Acertar um inimigo com o Corte Ascendente carregara a Arma 1.
-		Pressione [KEY2] para consumir 1 ponto de carga da arma e realizar um golpe descendente. [Lang2]
-		Quando a carga da arma atingir o valor maximo de 10 pontos,
-		acertar um inimigo com o Corte Ascendente novamente desencadeara um golpe final. [Lang3]
-		[c/ff4500:"Seria melhor se isso fosse uma espada motosserra"]
-		[Lang4]
-		legend_Text
-		'''
-}
-
 SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
@@ -255,6 +232,8 @@ SHPCOverride: {
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: Pressione [{KEY}] para abrir a lista de missoes
 	TrialPassed: Ja passou
+	World_Text0: Mundo Anteriormente Atualizado: <{0}> | Nivel Registrado: <{1}>
+	Text_Lang_0: Provação:
 }
 
 TrialBlockedHint: A proxima provacao exige que o conteudo relevante esteja ativado antes de comecar.
@@ -343,101 +322,6 @@ HalibutTrialQuestLine: {
 		Ha tambem uma poderosa criatura marinha que destruiu minha maquina; vamos nos vingar.
 		'''
 	TextDictionary_Content_14: Honestamente, eu sinto vontade de voltar para o mar.
-}
-
-MurasamaTrialQuestLine: {
-	QuestCategory: Lamina Demoníaca Murasama · Provações
-	TrackerWaiting: Alvo ausente, aguardando invocacao...
-	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Primeiro Corte Visgoso
-	Trial_1: Fantasma do Deserto
-	Trial_2: Invasor
-	Trial_3: Purga da Corrupcao
-	Trial_4: Ameaca Parasitaria
-	Trial_5: Violacao da Masmorra
-	Trial_6: Profanador Gelatinoso
-	Trial_7: Caminho para o Submundo
-	Trial_8: Limpeza Abissal
-	Trial_9: Chama Purificadora de Enxofre
-	Trial_10: Grilhoes da Tundra
-	Trial_11: Engrenagens de Aco
-	Trial_12: Aniquilacao dos Olhos Gemeos
-	Trial_13: Craneo Rei Mecanico
-	Trial_14: Operacao Sombria da Calamidade
-	Trial_15: Flor da Selva
-	Trial_16: Linha de Frente Petrificada
-	Trial_17: Eradicacao da Peste
-	Trial_18: Quebrador de Golem
-	Trial_19: Terminacao Astral
-	Trial_20: Queda Lunar
-	Trial_21: Sanção Fantasma
-	Trial_22: Exorcismo Espectral
-	Trial_23: Serpente Matadora de Deuses
-	Trial_24: Chama da Selva
-	Trial_25: Terminacao do Nucleo
-	Trial_26: Julgamento do Caos
-	Trial_27: Retorno Primordial
-	TrialSummary_0: Prove-se para mim, recruta.\nEssa bolha azul pegajosa e um bom lugar para comecar.\nCuide dela.
-	TrialSummary_1: Os restos da sereia sob o mar de areia ainda vagueiam.\nRastreie-a e acabe com ela.
-	TrialSummary_2: A lua esta alta na noite. Vamos estourar aquele olho gigante voando la em cima, e deixar aquele falso deus permanentemente cego.
-	TrialSummary_3:
-		'''
-		Os restos de falsos deuses contaminam as terras de Terra. Va libertar os continentes corrompidos.
-		Pique o cerebro daquele falso deus em pedacos, pique aquele verme roxo!
-		Quero ver sua lamina dancar pela carne alienigena!
-		'''
-	TrialSummary_4: A terra corrompida ainda pulsa como um coracao. Os parasitas de carne ainda estao ativos; os tumores corrompidos ainda estao pensando. Va bani-los completamente!
-	TrialSummary_5:
-		'''
-		A maldicao na entrada da masmorra se soltou. Sinto energia psiquica se agitando em suas profundezas, misturada com gritos, lamentacoes, sussurros...
-		Estilhaçe aquele craneo gigante.
-		'''
-	TrialSummary_6: Voce sente? Aquela corrupcao fetida que cheira a gel.\nPurifique este agregado imundo completamente.
-	TrialSummary_7: Pise no Submundo. Aquela parede de carne que se estende sobre a lava—essa e a nossa porta para a proxima era.\nRasgue-a.
-	TrialSummary_8: O excluido do Mar Sulfuroso bloqueia nossa busca pelos tesouros do abismo. Va acabar com sua devoracao e vagar.
-	TrialSummary_9: O fogo heretico daquela Emissaria de Enxofre nas profundezas da lava e uma desgraca. Va extingui-lo.
-	TrialSummary_10: No frio amargo das regioes norteiras jaz uma criacao selada de gelo e neve.\nEsmague-a antes que ela se dessole completamente.
-	TrialSummary_11: Um verme de aco massivo esta no caminho da nossa cruzada. Pique-o em pedacos.
-	TrialSummary_12: Aqueles olhos mecanicos nos olham de cima—fure-os com sua lamina.
-	TrialSummary_13: O senhor esqueleto vestiu armadura de aco pensando que poderia nos parar? Estilhaçe aquele craneo de metal.
-	TrialSummary_14: Aquela bruxa que se jogou no caos tem uma irmã clone deformada. Mate aquela alienigena, e ofereca seu sangue e fogo a lamina.
-	TrialSummary_15: A planta louca no fundo da selva enlouqueceu. Use sua lamina para acabar com este crescimento descontrolado.
-	TrialSummary_16: A raça tola dos Lihzahrd so sabe adorar estas pedras teimosas. Vamos esmaga-la em po e destruir sua fe.
-	TrialSummary_17: Em meio ao vapor e gás tóxico está uma abelha-máquina híbrida. Abata aquela coisa imunda.
-	TrialSummary_18: Aquele golem de destruicao esta devastando a terra. Pulverize seu corpo de aco completamente.
-	TrialSummary_19: Os vermes astrais estao coletando energia cosmica aqui. Acabe com ele, para que este campo estelar possa ser nosso.
-	TrialSummary_20:
-		'''
-		Aquele falso deus escondido no lado escuro da lua nada mais e do que uma colcha de retalhos defeituosa.
-		Va cortar seus tentaculos, arrancar seu coracao, e beber profundamente de seu sangue.
-		'''
-	TrialSummary_21: Uma divindade patetica que persiste sugando energia termica solar. Seu fogo heretico deve ser completamente extinto.
-	TrialSummary_22: A agregacao de mortos-vivos no fundo da masmorra. Deixe aquelas almas inquietas finalmente serem silenciadas.
-	TrialSummary_23: Aquela serpente cosmica arrogante esta se agitando atras do veu do mundo. Acabe com suas ambicoes.
-	TrialSummary_24:
-		'''
-		O Dragao da Selva, o ultimo descendente draconico aurico de Terra. Ele e muito diferente de outros alienigenas e merece nosso respeito.
-		No entanto, agora precisamos que ele morra mais uma vez para despoja-lo de sua Alma Aurica.
-		Estes materiais serao usados para forjar um conjunto de equipamentos extremamente superior.
-		'''
-	TrialSummary_25:
-		'''
-		Aquele herege da igreja mecanica acredita firmemente que seus Exo Mechs superam o poder dos deuses.
-		Tal crenca e totalmente absurda. Vamos retornar aqueles Titans ao seu estado natural—um monte de sucata.
-		'''
-	TrialSummary_26:
-		'''
-		Uma bruxa que outrora possuiu talento psiquico excepcional, que deveria ter sido uma grande aquisicao para defender Terra, mas que ha muito tempo se perdeu no caos.
-		Só podemos bani-la. Afunde a lamina em seu peito, e deixe o fogo da lealdade queimar sua alma apodrecida.
-		'''
-	TrialSummary_27:
-		'''
-		Nosso caminho de conquista ja e imparavel. Estilhaçe a armadura do dragao demoniaco sob o abismo negro.
-		Use o Terminus e envolva-se na batalha final decisiva com o alienigena.
-		'''
-	TrackerBrief: Alvo: {0}
-	BossRushTargetName: Batalha do Terminus
-	EventActiveFormat: "{0}: em andamento"
 }
 
 SHPCTrialQuestLine: {

@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// <summary>重型枪管凿击剥片：白热金属碎屑受重力坠落，由炽白冷却为暗铁</summary>
     internal class PRT_SHPCHeavySpall : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override int InGame_World_MaxCount => 3000;
         public override bool CanPool => true;
 
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (Opacity < 0.02f || Scale < 0.05f) return false;
 
-            Texture2D pixel = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
             Rectangle src = new(0, 0, 1, 1);
             Vector2 origin = new(0.5f, 0.5f);

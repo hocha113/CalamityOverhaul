@@ -113,7 +113,7 @@ namespace CalamityOverhaul.Content.Items.Tools
 
     internal class ForgottenTomeEffect : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private enum EffectPhase
         {

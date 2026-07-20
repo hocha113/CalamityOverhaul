@@ -217,25 +217,6 @@ HalibutText: {
 	}
 }
 
-MurasamaOverride: {
-	World_Text0: Dernier monde amélioré : <{0}> | Niveau enregistré : <{1}>
-	Text0: Déverrouillé
-	Text1: Non déverrouillé — Épreuve requise [Unhook]
-	Text_Lang_0: Épreuves :
-	DisplayName: Murasama
-	Tooltip:
-		'''
-		Clic droit pour viser et charger l'énergie de l'épée. Clic gauche pour une attaque de mêlée véritable ; à l'impact, l'énergie de l'épée se charge.
-		S'il y a des ennemis puissants à proximité, l'énergie de l'épée se recharge lentement d'elle-même.
-		Quand l'énergie est pleine, appuyez sur [KEY1] pour lancer la lame. Pendant son vol, clic gauche pour exécuter un Coup ascendant [Lang1]
-		Un Coup ascendant touchant un ennemi recharge l'arme 1. Appuyez sur [KEY2] pour consommer 1 point de charge et effectuer une attaque plongeante [Lang2]
-		À 10 points de charge maximum, un nouveau Coup ascendant déclenche la technique finale [Lang3]
-		[c/ff4500:"Une épée-chaîne serait mieux"]
-		[Lang4]
-		legend_Text
-		'''
-}
-
 SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
@@ -251,6 +232,8 @@ SHPCOverride: {
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: Appuyez sur [{KEY}] pour ouvrir la liste des quêtes
 	TrialPassed: Déjà réussi
+	World_Text0: Dernier monde amélioré : <{0}> | Niveau enregistré : <{1}>
+	Text_Lang_0: Épreuves :
 }
 
 TrialBlockedHint: La prochaine épreuve nécessite l'activation du contenu correspondant.
@@ -339,101 +322,6 @@ HalibutTrialQuestLine: {
 		Et une puissante créature marine a détruit ma machine ; allons lui régler son compte.
 		'''
 	TextDictionary_Content_14: Honnêtement, j'aimerais retourner à la mer.
-}
-
-MurasamaTrialQuestLine: {
-	QuestCategory: Murasama · Épreuves
-	TrackerWaiting: Cible absente, en attente d'invocation...
-	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Première entaille
-	Trial_1: Ombre du désert
-	Trial_2: Envahisseur
-	Trial_3: Purge de la corruption
-	Trial_4: Menace parasitaire
-	Trial_5: Brèche du donjon
-	Trial_6: Idole de gelée
-	Trial_7: Chemin vers l'Enfer
-	Trial_8: Nettoyage abyssal
-	Trial_9: Flamme purificatrice de soufre
-	Trial_10: Chaînes de glace
-	Trial_11: Engrenages d'acier
-	Trial_12: Annihilation des deux yeux
-	Trial_13: Crâne du roi mécanique
-	Trial_14: Opération ombre de Calamitas
-	Trial_15: Fleur de la jungle
-	Trial_16: Front pétrifié
-	Trial_17: Éradication de la peste
-	Trial_18: Briseur de golem
-	Trial_19: Fin du domaine astral
-	Trial_20: Chute lunaire
-	Trial_21: Sanction fantôme
-	Trial_22: Exorcisme des âmes
-	Trial_23: Serpent tueur de dieux
-	Trial_24: Flamme de la jungle
-	Trial_25: Fin du noyau
-	Trial_26: Jugement du chaos
-	Trial_27: Retour à l'origine
-	TrialSummary_0: Prouve-toi, recrue.\nCe blob bleu gluant est un bon début.\nOccupe-toi-en.
-	TrialSummary_1: Les reliques de sirènes sous la mer de sable errent encore.\nTraque-les et achève-les.
-	TrialSummary_2: La lune est haute dans la nuit. Allons éclater ce grand œil qui vole là-haut et rendre ce faux dieu aveugle pour toujours.
-	TrialSummary_3:
-		'''
-		Les restes des faux dieux souillent les terres de Terra. Libère les continents corrompus.
-		Hache ce cerveau de faux dieu, découpe ce ver violet !
-		Je veux voir ta lame danser dans la chair des xénos !
-		'''
-	TrialSummary_4: La terre corrompue palpite encore comme un cœur. Les parasites de chair sont actifs, les tumeurs corrompues pensent encore — bannis-les entièrement !
-	TrialSummary_5:
-		'''
-		La malédiction à l'entrée du donjon s'est relâchée. Je sens l'énergie psychique dans les profondeurs, mêlée de cris, gémissements et murmures...
-		Écrase ce gigantesque crâne.
-		'''
-	TrialSummary_6: Le sens-tu ? Cette pourriture fétide imprégnée de gelée.\nPurifie entièrement cet agrégat immonde.
-	TrialSummary_7: Entre dans l'Enfer. Ce mur de chair au-dessus de la lave est notre porte vers la prochaine ère.\nDéchire-le.
-	TrialSummary_8: L'exilé de la Mer de Soufre bloque notre quête des trésors de l'abîme. Mets fin à sa dévoration et à ses errances.
-	TrialSummary_9: Le feu hérétique de l'Émissaire de Soufre dans la lave est une insulte. Éteins-le.
-	TrialSummary_10: Dans le froid mordant du nord gît une création de glace scellée.\nÉcrase-la avant qu'elle ne se libère entièrement.
-	TrialSummary_11: Un immense ver d'acier barre notre chemin. Hache-le en morceaux.
-	TrialSummary_12: Ces yeux mécaniques nous regardent de haut — transperce-les de ta lame.
-	TrialSummary_13: Le seigneur squelette a revêtu une armure d'acier pour nous arrêter ? Écrase ce crâne de métal.
-	TrialSummary_14: Cette sorcière plongée dans le chaos a une sœur clone difforme. Tue ce xéno et offre son sang et son feu à la lame.
-	TrialSummary_15: La plante folle au fond de la jungle est hors de contrôle. Termine cette croissance déchaînée avec ta lame.
-	TrialSummary_16: Le peuple lihzahrd n'adore que ces pierres obstinées. Réduis-les en poussière et brise leur foi.
-	TrialSummary_17: Dans la vapeur et les gaz toxiques se cache un hybride abeille-machine. Abats cette ordure.
-	TrialSummary_18: Ce golem de destruction fait des ravages. Pulvérise entièrement son corps d'acier.
-	TrialSummary_19: Les vers astraux accumulent ici l'énergie cosmique. Achève-les — ce champ d'étoiles sera à nous.
-	TrialSummary_20:
-		'''
-		Le faux dieu caché sur la face cachée de la Lune n'est qu'un assemblage défectueux.
-		Coupe ses tentacules, arrache son cœur et bois profondément de son sang.
-		'''
-	TrialSummary_21: Une divinité pitoyable qui survit en aspirant l'énergie thermique solaire. Son feu hérétique doit être entièrement éteint.
-	TrialSummary_22: L'agrégat de morts-vivants au fond du donjon. Que ces âmes agitées trouvent enfin le silence.
-	TrialSummary_23: Ce serpent cosmique arrogant s'agite derrière le voile du monde. Mets fin à ses ambitions.
-	TrialSummary_24:
-		'''
-		Le Dragon de la Jungle, dernier descendant draconique aurique de Terra. Il diffère des autres xénos et mérite notre respect.
-		Pourtant, nous devons le faire mourir une fois de plus pour lui arracher son Âme aurique.
-		Ces matériaux serviront à forger un équipement d'une qualité exceptionnelle.
-		'''
-	TrialSummary_25:
-		'''
-		L'hérétique de l'Église mécanique croit fermement que ses Exo Mechs surpassent la puissance des dieux.
-		Absurde. Ramenons ces Titans à leur état naturel — un tas de ferraille.
-		'''
-	TrialSummary_26:
-		'''
-		Une sorcière au talent psychique exceptionnel, qui aurait dû défendre Terra, s'est perdue dans le chaos.
-		Nous ne pouvons que la bannir. Plonge la lame dans sa poitrine et laisse le feu de la loyauté brûler son âme pourrie.
-		'''
-	TrialSummary_27:
-		'''
-		Notre voie de conquête est déjà irrésistible. Brise l'armure du dragon démoniaque sous l'abîme noir.
-		Utilise le Terminus et livre la bataille décisive finale contre le xéno.
-		'''
-	TrackerBrief: Cible : {0}
-	BossRushTargetName: Bataille du Terminus
-	EventActiveFormat: "{0}: en cours"
 }
 
 SHPCTrialQuestLine: {

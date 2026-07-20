@@ -309,7 +309,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// </summary>
     internal class GraniteEnergyOrb : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Trail Trail;
         //扇形散开的观感窗口：延迟锁定，避免三发出膛即拧成一股
         private const int HomingDelay = 9;

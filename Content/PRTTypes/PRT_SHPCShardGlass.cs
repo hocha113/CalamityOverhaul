@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// <summary>霰射枪管玻璃碎屑：细长薄片翻滚坠落，随机反光爆闪</summary>
     internal class PRT_SHPCShardGlass : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override int InGame_World_MaxCount => 1500;
 
         private float initialScale;
@@ -60,7 +60,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (Scale < 0.08f || Opacity < 0.01f) return false;
 
-            Texture2D pixel = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
             Rectangle src = new(0, 0, 1, 1);
             Vector2 origin = new(0.5f, 0.5f);

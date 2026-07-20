@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
     /// <summary>瞬移起点解构弹幕，direction=-1 离心飞散</summary>
     internal class CyberPixelDecomposeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //寿命：略短于走廊延伸时间，让"解构"先于走廊到达终点完成
         private const int Lifetime = 22;
@@ -41,10 +41,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.CyberReform?.Value;
             if (shader == null) return false;
-            if (CWRAsset.Placeholder_White == null) return false;
+            if (VaultAsset.placeholder2 == null) return false;
             if (CWRAsset.Extra_193?.Value == null) return false;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 {
     internal class DivineJustice : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private bool spawn;
         private readonly List<LightningBolt> lightningBolts = new();
         private float chargeIntensity = 0f;

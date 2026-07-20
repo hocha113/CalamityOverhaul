@@ -1,7 +1,8 @@
-﻿using InnoVault.GameContent.BaseEntity;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -23,7 +24,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             Vector2 shootVel = velocity.SafeNormalize(Vector2.UnitX) * 18f;
 
-            int proj = Projectile.NewProjectile(
+            //ai[1] 为光谱色相：-1 = 未分光的白光波
+            Projectile.NewProjectile(
                 source,
                 position,
                 shootVel,
@@ -32,63 +34,43 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 knockback * 1.2f,
                 player.whoAmI,
                 0,
-                Main.rand.Next(7)
+                -1f
             );
-
-            if (proj >= 0 && proj < Main.maxProjectiles) {
-                Main.projectile[proj].ai[1] = Main.rand.Next(7);
-            }
 
             SetCooldown();
             SoundEngine.PlaySound(SoundID.Item105 with { Volume = 0.7f, Pitch = 0.3f }, position);
+            SoundEngine.PlaySound(SoundID.Item29 with { Volume = 0.3f, Pitch = 0.55f, MaxInstances = 3 }, position);
 
             return false;
         }
     }
 
     /// <summary>
-    /// 七彩矿石冲击波弹幕
+    /// 棱彩冲击波：一道相干白光波前。飞行中 = 冷白发丝弧线 + 前红后蓝的极窄色散边，
+    /// 身后脱落波痕残弧；命中或触地分裂时白光展开成光谱扇，子波按出射角序
+    /// 继承红→紫色相切片继续前进。<br/>
+    /// ai[0] = 分裂代数；ai[1] = 光谱色相 0..1（-1 = 白光）
     /// </summary>
-    internal class PrismiteWaveProjectile : BaseHeldProj
+    internal class PrismiteWaveProjectile : BaseHeldProj, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const int MaxLifeTime = 240;
 
         private float scale = 1f;
-        private readonly List<TrailPoint> trailPoints = new();
-        private const int MaxTrailLength = 30;
-
-        //能量粒子系统
-        private readonly List<EnergyParticle> energyParticles = new();
-        private int particleSpawnTimer = 0;
 
         //螺旋运动参数
         private float spiralPhase = 0f;
         private float spiralIntensity = 0f;
         private Vector2 baseVelocity;
 
-        //七彩配色
-        private static readonly Color[] PrismColors =
-        [
-            new Color(255, 60, 120),   //深玫瑰红
-            new Color(255, 150, 50),   //炽橙色
-            new Color(255, 230, 60),   //金黄色
-            new Color(80, 255, 120),   //翡翠绿
-            new Color(60, 180, 255),   //深天蓝
-            new Color(160, 80, 255),   //深紫罗兰
-            new Color(255, 80, 200)    //亮品红
-        ];
-
-        private Color primaryColor;
-        private Color secondaryColor;
-        private Color accentColor;
         private int generation;
-        private int colorSeed;
+        private float hueT;          //-1 白光，0..1 光谱切片
+        private Color colLead;
+        private Color colCore;
+        private Color colTrail;
         private float pulsePhase;
-        private float energyWavePhase;
-
-        //冲击波环效果
-        private readonly List<ShockwaveRing> shockwaveRings = new();
+        private float waveSeed;
+        private int waveletShedTimer;
 
         public override void SetDefaults() {
             Projectile.width = 36;
@@ -104,8 +86,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.extraUpdates = 2;
         }
 
+        public override void Initialize() {
+            generation = (int)Projectile.ai[0];
+            hueT = Projectile.ai[1];
+            FishPrismiteVFX.WaveColors(hueT, out colLead, out colCore, out colTrail);
+
+            baseVelocity = Projectile.velocity;
+            Projectile.scale = 1f - generation * 0.12f;
+            waveSeed = Main.rand.NextFloat(10f);
+
+            if (Main.dedServ) {
+                return;
+            }
+            //出生玻璃闪：各端都会执行，子波的诞生闪即光谱扇在远端的可见对应物
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            int glintCount = generation == 0 ? 6 : 3;
+            for (int i = 0; i < glintCount; i++) {
+                Vector2 vel = dir.RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 6f);
+                PRTLoader.NewParticle<PRT_FishPrismGlint>(Projectile.Center, vel, colCore, Main.rand.NextFloat(0.45f, 0.75f))
+                    ?.Configure(Main.rand.Next(10, 16));
+            }
+            if (generation == 0) {
+                //出膛棱镜闪：白光上路
+                PRTLoader.NewParticle<PRT_FishPrismGlint>(Projectile.Center, dir * 3f, FishPrismiteVFX.ColdWhite, 1.15f)
+                    ?.Configure(10);
+            }
+        }
+
         public override void AI() {
-            //螺旋运动轨迹
+            //螺旋运动轨迹（原运动骨架保留）
             spiralPhase += 0.18f;
             float lifeProgress = 1f - Projectile.timeLeft / (float)MaxLifeTime;
 
@@ -130,25 +139,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity = baseVelocity * 0.99f + perpendicular * spiralOffset;
             baseVelocity = Projectile.velocity;
 
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            Projectile.rotation = Projectile.velocity.ToRotation();
             pulsePhase += 0.2f;
-            energyWavePhase += 0.12f;
 
-            //记录拖尾点
-            TrailPoint newPoint = new TrailPoint {
-                Position = Projectile.Center,
-                Velocity = Projectile.velocity,
-                Scale = scale * Projectile.scale,
-                Color = Color.Lerp(primaryColor, secondaryColor, (float)Math.Sin(pulsePhase) * 0.5f + 0.5f),
-                TimeCreated = (int)Main.GameUpdateCount
-            };
-            trailPoints.Insert(0, newPoint);
-
-            if (trailPoints.Count > MaxTrailLength) {
-                trailPoints.RemoveAt(trailPoints.Count - 1);
-            }
-
-            //缩放动画
+            //缩放动画：入场生长、呼吸、临终收缩（原骨架保留）
             if (lifeProgress < 0.1f) {
                 scale = VaultUtils.EaseOutBack(lifeProgress / 0.1f) * 1f;
             }
@@ -160,69 +154,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 scale = 1f + breathe + lifeProgress * 0.2f;
             }
 
-            //生成能量粒子
-            particleSpawnTimer++;
-            if (particleSpawnTimer >= 1) {
-                SpawnEnergyParticle();
-                particleSpawnTimer = 0;
-            }
-
-            //更新能量粒子
-            for (int i = energyParticles.Count - 1; i >= 0; i--) {
-                energyParticles[i].Update();
-                if (energyParticles[i].ShouldRemove()) {
-                    energyParticles.RemoveAt(i);
+            if (!Main.dedServ) {
+                //波痕脱落：约 3 帧一道原地衰减的残弧（extraUpdates=2，AI 每帧 3 次）
+                if (++waveletShedTimer >= 9) {
+                    waveletShedTimer = 0;
+                    PRTLoader.NewParticle<PRT_FishPrismWavelet>(Projectile.Center, Projectile.velocity * 0.05f
+                        , colCore, scale * Projectile.scale * 0.82f)
+                        ?.Configure(Projectile.rotation, colLead, colTrail, 13, 1.014f);
+                }
+                //相位闪点：沿弧随机位置的稀疏单帧反光
+                if (Main.rand.NextBool(11)) {
+                    Vector2 perp = Projectile.velocity.RotatedBy(MathHelper.PiOver2).SafeNormalize(Vector2.Zero);
+                    Vector2 pos = Projectile.Center + perp * Main.rand.NextFloat(-40f, 40f) * scale * Projectile.scale;
+                    Color col = hueT < 0f ? FishPrismiteVFX.ColdWhite : FishPrismiteVFX.Spectrum(hueT);
+                    PRTLoader.NewParticle<PRT_FishPrismGlint>(pos, -Projectile.velocity * 0.06f, col, Main.rand.NextFloat(0.32f, 0.55f))
+                        ?.Configure(Main.rand.Next(9, 15));
                 }
             }
 
-            //更新冲击波环
-            for (int i = shockwaveRings.Count - 1; i >= 0; i--) {
-                shockwaveRings[i].Update();
-                if (shockwaveRings[i].ShouldRemove()) {
-                    shockwaveRings.RemoveAt(i);
-                }
-            }
-
-            //定期生成冲击波环效果
-            if (Main.GameUpdateCount % 15 == 0) {
-                shockwaveRings.Add(new ShockwaveRing(Projectile.Center, primaryColor, secondaryColor));
-            }
-
-            //持续粒子效果
-            if (Main.rand.NextBool()) {
-                SpawnTrailDust();
-            }
-
-            //增强发光
-            Lighting.AddLight(Projectile.Center, primaryColor.ToVector3() * 0.8f);
-        }
-
-        public override void Initialize() {
-            generation = (int)Projectile.ai[0];
-            colorSeed = (int)Projectile.ai[1];
-
-            primaryColor = PrismColors[colorSeed % PrismColors.Length];
-            secondaryColor = PrismColors[(colorSeed + 2) % PrismColors.Length];
-            accentColor = PrismColors[(colorSeed + 4) % PrismColors.Length];
-
-            baseVelocity = Projectile.velocity;
-            Projectile.scale = 1f - generation * 0.12f;
-
-            //生成初始爆发粒子
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
-                energyParticles.Add(new EnergyParticle(
-                    Projectile.Center,
-                    angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f),
-                    primaryColor,
-                    1.2f
-                ));
-            }
+            Color lightCol = hueT < 0f ? FishPrismiteVFX.ColdWhite : FishPrismiteVFX.Spectrum(hueT);
+            Lighting.AddLight(Projectile.Center, lightCol.ToVector3() * 0.35f);
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            bool splitting = generation == 0 && Projectile.numHits == 0;
+            if (splitting) {
+                //白光在体内展开的一瞬：短顿帧
+                target.CWR().TimeFrozenTick = 3;
+            }
             SplitOnImpact(Projectile.Center, Projectile.velocity);
-            SpawnImpactEffect(Projectile.Center);
+            SpawnPierceGlints(!splitting);
         }
 
         private int tileCollideCount;
@@ -243,10 +204,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             SplitOnImpact(Projectile.Center, -oldVelocity);
-            SpawnImpactEffect(Projectile.Center);
-
-            //生成冲击波环
-            shockwaveRings.Add(new ShockwaveRing(Projectile.Center, primaryColor, secondaryColor, 2f));
+            SpawnBounceFlash();
 
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
 
@@ -264,19 +222,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            if (!Projectile.IsOwnedByLocalPlayer()) {
-                return;
-            }
-
             int splitCount = 3 + HalibutData.GetDomainLayer() / 2;
             Vector2 baseDir = impactDirection.SafeNormalize(Vector2.UnitX);
             float spreadAngle = MathHelper.Pi * 0.8f;
 
+            //彩虹时刻：光谱扇演出在所有跑到这里的端上播放，子波生成仍只归主端
+            FishPrismiteVFX.PrismBurst(impactPos, baseDir, spreadAngle, splitCount, scale * Projectile.scale);
+
+            if (!Projectile.IsOwnedByLocalPlayer()) {
+                return;
+            }
+
             for (int i = 0; i < splitCount; i++) {
                 float angle = -spreadAngle / 2f + (spreadAngle * i / (splitCount - 1));
                 Vector2 splitVel = baseDir.RotatedBy(angle) * Main.rand.NextFloat(12f, 16f);
-
-                int newColorSeed = (colorSeed + i + 1) % PrismColors.Length;
+                //子波按角序继承光谱切片：红 → 紫
+                float hue = i / (float)(splitCount - 1);
 
                 Projectile.NewProjectile(
                     Projectile.GetSource_FromThis(),
@@ -287,442 +248,155 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Projectile.knockBack * 0.75f,
                     Projectile.owner,
                     generation + 1,
-                    newColorSeed
+                    hue
                 );
             }
         }
 
-        private void SpawnImpactEffect(Vector2 pos) {
-            //强化爆炸效果
-            for (int ring = 0; ring < 2; ring++) {
-                for (int i = 0; i < 24; i++) {
-                    float angle = MathHelper.TwoPi * i / 24f + ring * 0.13f;
-                    Vector2 dustVel = angle.ToRotationVector2() * (4f + ring * 4f);
-
-                    int dustType = Main.rand.Next(new int[] {
-                        DustID.RainbowMk2,
-                        DustID.PinkFairy,
-                        DustID.YellowStarDust,
-                        DustID.Firework_Blue
-                    });
-
-                    int dust = Dust.NewDust(pos, 1, 1, dustType, dustVel.X, dustVel.Y, 100,
-                        ring == 0 ? primaryColor : secondaryColor, 1.8f);
-                    Main.dust[dust].noGravity = true;
-                    Main.dust[dust].fadeIn = 1.5f;
-                }
+        /// <summary>贯穿目标时的折射闪点：光穿过身体的一小簇反光</summary>
+        private void SpawnPierceGlints(bool withChime) {
+            if (withChime) {
+                SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.25f, Pitch = 0.55f, MaxInstances = 5 }, Projectile.Center);
             }
-
-            //中心爆裂光晕
-            for (int i = 0; i < 16; i++) {
-                int dust = Dust.NewDust(pos, 1, 1, DustID.RainbowTorch, 0, 0, 0, Color.White, 2.5f);
-                Main.dust[dust].velocity = Main.rand.NextVector2Circular(7f, 7f);
-                Main.dust[dust].noGravity = true;
+            if (Main.dedServ) {
+                return;
             }
-
-            //星形粒子爆发
-            for (int i = 0; i < 8; i++) {
-                energyParticles.Add(new EnergyParticle(
-                    pos,
-                    Main.rand.NextVector2Circular(6f, 6f),
-                    accentColor,
-                    1.5f
-                ));
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = dir.RotatedByRandom(0.9f) * Main.rand.NextFloat(1.5f, 4.5f);
+                Color col = hueT < 0f
+                    ? (Main.rand.NextBool() ? FishPrismiteVFX.ColdWhite : FishPrismiteVFX.TrailBlue)
+                    : FishPrismiteVFX.Spectrum(hueT + Main.rand.NextFloat(-0.05f, 0.05f));
+                PRTLoader.NewParticle<PRT_FishPrismGlint>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f)
+                    , vel, col, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(10, 16));
             }
         }
 
-        private void SpawnEnergyParticle() {
-            Vector2 offset = Main.rand.NextVector2Circular(8f, 8f);
-            Vector2 particleVel = -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1f, 1f);
-
-            energyParticles.Add(new EnergyParticle(
-                Projectile.Center + offset,
-                particleVel,
-                Color.Lerp(primaryColor, secondaryColor, Main.rand.NextFloat()),
-                0.8f + Main.rand.NextFloat(0.4f)
-            ));
+        /// <summary>触地反弹的反射闪：一道顺新方向的波痕 + 少量接触闪点</summary>
+        private void SpawnBounceFlash() {
+            if (Main.dedServ) {
+                return;
+            }
+            float rot = Projectile.velocity.SafeNormalize(Vector2.UnitX).ToRotation();
+            PRTLoader.NewParticle<PRT_FishPrismWavelet>(Projectile.Center, Vector2.Zero, colCore, scale * Projectile.scale * 0.8f)
+                ?.Configure(rot, colLead, colTrail, 10, 1.03f);
+            for (int i = 0; i < 3; i++) {
+                Vector2 vel = rot.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(1.5f, 4f);
+                PRTLoader.NewParticle<PRT_FishPrismGlint>(Projectile.Center, vel, colCore, Main.rand.NextFloat(0.35f, 0.6f))
+                    ?.Configure(Main.rand.Next(9, 14));
+            }
         }
 
-        private void SpawnTrailDust() {
-            Color dustColor = Color.Lerp(primaryColor, accentColor, (float)Math.Sin(pulsePhase * 1.5f) * 0.5f + 0.5f);
-            int dustType = Main.rand.Next(new int[] { DustID.RainbowMk2, DustID.PinkFairy, DustID.FireworkFountain_Blue });
-
-            int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height,
-                dustType, 0, 0, 100, dustColor, 1.0f);
-            Main.dust[dust].velocity = Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(0.5f, 0.5f);
-            Main.dust[dust].noGravity = true;
-            Main.dust[dust].fadeIn = 1.1f;
+        public override void OnKill(int timeLeft) {
+            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.2f, Pitch = 0.7f, MaxInstances = 3 }, Projectile.Center);
+            if (Main.dedServ) {
+                return;
+            }
+            //退相干 aftermath：三道波痕接力扩散 + 慢漂闪点，活得比弹体久
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            float rot = dir.ToRotation();
+            float ws = MathF.Max(scale * Projectile.scale, 0.3f);
+            for (int k = 0; k < 3; k++) {
+                PRTLoader.NewParticle<PRT_FishPrismWavelet>(Projectile.Center + dir * (k * 10f)
+                    , dir * (0.6f - k * 0.2f), colCore, ws * (0.9f - k * 0.14f))
+                    ?.Configure(rot, colLead, colTrail, 16 + k * 4, 1.018f);
+            }
+            for (int i = 0; i < 6; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(1.6f, 1.6f);
+                Color col = hueT < 0f ? FishPrismiteVFX.ColdWhite : FishPrismiteVFX.Spectrum(hueT + Main.rand.NextFloat(-0.04f, 0.04f));
+                PRTLoader.NewParticle<PRT_FishPrismGlint>(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f)
+                    , vel, col, Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(14, 24));
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            DrawShockwaveRings();
-            DrawEnergyWave();
-            DrawTrail();
-            DrawEnergyParticles();
-            DrawPrismiteCore();
+            //shader 缺失时的降级：三层色散残弧直绘
+            if (FishPrismiteAssets.FishPrismWave == null) {
+                DrawFallbackArc();
+            }
             return false;
         }
 
-        private void DrawShockwaveRings() {
-            foreach (var ring in shockwaveRings) {
-                ring.Draw();
+        private void DrawFallbackArc() {
+            Texture2D tex = FishPrismiteAssets.ArcWaveTex?.Value;
+            if (tex == null) {
+                return;
             }
+            Vector2 origin = new(tex.Width * 0.72f, tex.Height * 0.5f);
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Vector2 dirVec = Projectile.rotation.ToRotationVector2();
+            float ws = scale * Projectile.scale;
+            Vector2 texScale = new Vector2(0.62f, 0.9f) * ws;
+            Main.EntitySpriteDraw(tex, pos + dirVec * 3f, null, colLead with { A = 0 } * 0.45f
+                , Projectile.rotation, origin, texScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, pos - dirVec * 3f, null, colTrail with { A = 0 } * 0.45f
+                , Projectile.rotation, origin, texScale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(tex, pos, null, colCore with { A = 0 } * 0.85f
+                , Projectile.rotation, origin, texScale, SpriteEffects.None, 0);
         }
 
-        private void DrawEnergyWave() {
-            //绘制能量波纹效果
-            Texture2D glowTex = CWRAsset.StarTexture.Value;
-            float waveProgress = energyWavePhase % MathHelper.TwoPi / MathHelper.TwoPi;
-            float waveScale = 0.3f + waveProgress * 0.8f;
-            float waveAlpha = (1f - waveProgress) * 0.4f;
-
-            Color waveColor = Color.Lerp(primaryColor, secondaryColor, waveProgress) * waveAlpha;
-            waveColor.A = 0;
-
-            Main.spriteBatch.Draw(
-                glowTex,
-                Projectile.Center - Main.screenPosition,
-                null,
-                waveColor,
-                energyWavePhase,
-                glowTex.Size() / 2f,
-                waveScale * scale * Projectile.scale,
-                SpriteEffects.None,
-                0f
-            );
-        }
-
-        private void DrawTrail() {
-            if (trailPoints.Count < 2) {
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect fx = FishPrismiteAssets.FishPrismWave;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (fx == null || noise == null || !Projectile.active) {
+                return;
+            }
+            float ws = scale * Projectile.scale;
+            if (ws < 0.05f) {
                 return;
             }
 
-            Texture2D trailTex = VaultAsset.placeholder2.Value;
-            Texture2D glowTex = CWRAsset.StarTexture.Value;
+            Vector2 dir = Projectile.rotation.ToRotationVector2();
+            Vector2 perp = dir.RotatedBy(MathHelper.PiOver2);
+            float len = 150f * ws;
+            float halfSpan = 64f * ws;
+            const float frontFrac = 0.8f;
+            Vector2 back = Projectile.Center - dir * (len * frontFrac);
+            Vector2 front = Projectile.Center + dir * (len * (1f - frontFrac));
 
-            for (int i = 0; i < trailPoints.Count - 1; i++) {
-                float progress = i / (float)trailPoints.Count;
-                float nextProgress = (i + 1) / (float)trailPoints.Count;
-
-                TrailPoint current = trailPoints[i];
-                TrailPoint next = trailPoints[i + 1];
-
-                Vector2 diff = next.Position - current.Position;
-                float length = diff.Length();
-
-                if (length < 0.1f) continue;
-
-                float trailRotation = diff.ToRotation();
-
-                //渐变宽度 - 头部宽，尾部窄
-                float width = MathHelper.Lerp(16f, 4f, progress) * current.Scale;
-
-                //三层拖尾绘制
-                //1. 外层辉光
-                Color outerColor = Color.Lerp(current.Color, secondaryColor, 0.5f) * (1f - progress) * 0.6f;
-                outerColor.A = 0;
-                Main.spriteBatch.Draw(
-                    trailTex,
-                    current.Position - Main.screenPosition,
-                    new Rectangle(0, 0, 1, 1),
-                    outerColor,
-                    trailRotation,
-                    Vector2.Zero,
-                    new Vector2(length, width * 1.8f),
-                    SpriteEffects.None,
-                    0f
-                );
-
-                //2. 中层主体
-                Color midColor = current.Color * (1f - progress * 0.7f);
-                midColor.A = 0;
-                Main.spriteBatch.Draw(
-                    trailTex,
-                    current.Position - Main.screenPosition,
-                    new Rectangle(0, 0, 1, 1),
-                    midColor,
-                    trailRotation,
-                    Vector2.Zero,
-                    new Vector2(length, width * 1.2f),
-                    SpriteEffects.None,
-                    0f
-                );
-
-                //3. 内层高光
-                Color innerColor = Color.Lerp(Color.White, current.Color, 0.3f) * (1f - progress) * 0.9f;
-                innerColor.A = 0;
-                Main.spriteBatch.Draw(
-                    trailTex,
-                    current.Position - Main.screenPosition,
-                    new Rectangle(0, 0, 1, 1),
-                    innerColor,
-                    trailRotation,
-                    Vector2.Zero,
-                    new Vector2(length, width * 0.6f),
-                    SpriteEffects.None,
-                    0f
-                );
-
-                //4. 星点装饰
-                if (i % 3 == 0 && progress < 0.7f) {
-                    float sparkScale = (1f - progress) * 0.15f * current.Scale;
-                    Color sparkColor = Color.Lerp(accentColor, Color.White, 0.5f) * (1f - progress);
-                    sparkColor.A = 0;
-                    Main.spriteBatch.Draw(
-                        glowTex,
-                        current.Position - Main.screenPosition,
-                        null,
-                        sparkColor,
-                        Main.GlobalTimeWrappedHourly * 3f + i,
-                        glowTex.Size() / 2f,
-                        sparkScale,
-                        SpriteEffects.None,
-                        0f
-                    );
-                }
+            //入场淡入 + 临终淡出（timeLeft 以 update 计，extraUpdates=2）
+            float fade = MathHelper.Clamp((MaxLifeTime - Projectile.timeLeft) / 14f, 0f, 1f);
+            if (Projectile.timeLeft < 20) {
+                fade *= Projectile.timeLeft / 20f;
             }
-        }
+            float breathe = 1.12f + 0.22f * MathF.Sin(pulsePhase);
 
-        private void DrawEnergyParticles() {
-            Texture2D particleTex = CWRAsset.StarTexture.Value;
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uSizePx"]?.SetValue(new Vector2(len, halfSpan * 2f));
+            fx.Parameters["uFrontFrac"]?.SetValue(frontFrac);
+            fx.Parameters["uR"]?.SetValue(66f * ws);
+            fx.Parameters["uSpanY"]?.SetValue(52f * ws);
+            fx.Parameters["uDisp"]?.SetValue(hueT < 0f ? 3.2f : 2.3f);
+            fx.Parameters["uColLead"]?.SetValue(colLead.ToVector3());
+            fx.Parameters["uColCore"]?.SetValue(colCore.ToVector3());
+            fx.Parameters["uColTrail"]?.SetValue(colTrail.ToVector3());
+            fx.Parameters["uCoreGain"]?.SetValue(hueT < 0f ? breathe : breathe * 0.9f);
+            fx.Parameters["uFade"]?.SetValue(fade);
+            fx.Parameters["uDark"]?.SetValue(hueT < 0f ? 0.45f : 0.32f);
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(waveSeed);
+            fx.Parameters["uNoiseTex"]?.SetValue(noise);
 
-            foreach (var particle in energyParticles) {
-                particle.Draw(particleTex);
-            }
-        }
+            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            verts[0] = new VertexPositionColorTexture((back - perp * halfSpan).ToVector3(), Color.White, new Vector2(0f, 0f));
+            verts[1] = new VertexPositionColorTexture((back + perp * halfSpan).ToVector3(), Color.White, new Vector2(0f, 1f));
+            verts[2] = new VertexPositionColorTexture((front - perp * halfSpan).ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[3] = new VertexPositionColorTexture((front + perp * halfSpan).ToVector3(), Color.White, new Vector2(1f, 1f));
 
-        private void DrawPrismiteCore() {
-            Main.instance.LoadItem(ItemID.Prismite);
-            Texture2D prismTex = Terraria.GameContent.TextureAssets.Item[ItemID.Prismite].Value;
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            //预乘输出走 AlphaBlend：暗干涉纹靠 alpha 压暗背景
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
 
-            float pulse = (float)Math.Sin(pulsePhase) * 0.5f + 0.5f;
-            float drawScale = scale * Projectile.scale * 0.9f;
-
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            Rectangle sourceRect = prismTex.Bounds;
-            Vector2 origin = sourceRect.Size() * 0.5f;
-
-            //外层能量环
-            for (int i = 0; i < 4; i++) {
-                float ringRotation = Projectile.rotation + i * MathHelper.PiOver2 + energyWavePhase;
-                float ringScale = drawScale * (1.6f + i * 0.2f + pulse * 0.3f);
-                Color ringColor = Color.Lerp(secondaryColor, accentColor, i / 4f) * (0.35f - i * 0.07f);
-                ringColor.A = 0;
-
-                Main.spriteBatch.Draw(
-                    prismTex,
-                    drawPos,
-                    sourceRect,
-                    ringColor,
-                    ringRotation,
-                    origin,
-                    ringScale,
-                    SpriteEffects.None,
-                    0f
-                );
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
             }
 
-            //中层主体 - 双层渲染
-            Color mainColor = primaryColor * 0.95f;
-            mainColor.A = 0;
-            Main.spriteBatch.Draw(
-                prismTex,
-                drawPos,
-                sourceRect,
-                mainColor,
-                Projectile.rotation,
-                origin,
-                drawScale * 1.3f,
-                SpriteEffects.None,
-                0f
-            );
-
-            //内层亮色
-            Color brightColor = Color.Lerp(primaryColor, Color.White, 0.4f) * 0.8f;
-            brightColor.A = 0;
-            Main.spriteBatch.Draw(
-                prismTex,
-                drawPos,
-                sourceRect,
-                brightColor,
-                Projectile.rotation * 0.8f,
-                origin,
-                drawScale * 1.0f,
-                SpriteEffects.None,
-                0f
-            );
-
-            //核心白色高光
-            Main.spriteBatch.Draw(
-                prismTex,
-                drawPos,
-                sourceRect,
-                Color.White with { A = 0 } * (0.7f + pulse * 0.3f),
-                Projectile.rotation * 0.5f,
-                origin,
-                drawScale * 0.75f,
-                SpriteEffects.None,
-                0f
-            );
-
-            //顶层星光爆发
-            Texture2D starTex = CWRAsset.StarTexture.Value;
-            float starIntensity = (float)Math.Pow(pulse, 2);
-            if (starIntensity > 0.4f) {
-                float starScale = drawScale * (starIntensity - 0.4f) * 3.5f;
-                Color starColor = Color.Lerp(primaryColor, Color.White, starIntensity) * 0.7f;
-                starColor.A = 0;
-
-                //十字星光
-                for (int i = 0; i < 2; i++) {
-                    Main.spriteBatch.Draw(
-                        starTex,
-                        drawPos,
-                        null,
-                        starColor,
-                        i * MathHelper.PiOver2 + Main.GlobalTimeWrappedHourly * 2f,
-                        starTex.Size() / 2f,
-                        starScale * (i == 0 ? 1f : 0.7f),
-                        SpriteEffects.None,
-                        0f
-                    );
-                }
-            }
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
         }
     }
-
-    #region 辅助数据结构
-
-    internal struct TrailPoint
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Scale;
-        public Color Color;
-        public int TimeCreated;
-    }
-
-    internal class EnergyParticle
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public Color Color;
-        public float Scale;
-        public float Life;
-        public float MaxLife;
-        public float Rotation;
-
-        public EnergyParticle(Vector2 pos, Vector2 vel, Color color, float scale) {
-            Position = pos;
-            Velocity = vel;
-            Color = color;
-            Scale = scale;
-            Life = 0f;
-            MaxLife = Main.rand.NextFloat(30f, 60f);
-            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-
-        public void Update() {
-            Life++;
-            Position += Velocity;
-            Velocity *= 0.95f;
-            Rotation += 0.1f;
-        }
-
-        public bool ShouldRemove() => Life >= MaxLife;
-
-        public void Draw(Texture2D texture) {
-            float progress = Life / MaxLife;
-            float alpha = (float)Math.Sin((1f - progress) * MathHelper.PiOver2);
-            Color drawColor = Color * alpha;
-            drawColor.A = 0;
-
-            float drawScale = Scale * (1f - progress * 0.5f) * 0.15f;
-
-            Main.spriteBatch.Draw(
-                texture,
-                Position - Main.screenPosition,
-                null,
-                drawColor,
-                Rotation,
-                texture.Size() / 2f,
-                drawScale,
-                SpriteEffects.None,
-                0f
-            );
-        }
-    }
-
-    internal class ShockwaveRing
-    {
-        public Vector2 Center;
-        public Color InnerColor;
-        public Color OuterColor;
-        public float Radius;
-        public float MaxRadius;
-        public float Life;
-        public float MaxLife;
-        public float Thickness;
-
-        public ShockwaveRing(Vector2 center, Color inner, Color outer, float speedMultiplier = 1f) {
-            Center = center;
-            InnerColor = inner;
-            OuterColor = outer;
-            Radius = 0f;
-            MaxRadius = 120f * speedMultiplier;
-            Life = 0f;
-            MaxLife = 30f / speedMultiplier;
-            Thickness = 8f;
-        }
-
-        public void Update() {
-            Life++;
-            float progress = Life / MaxLife;
-            Radius = VaultUtils.EaseOutCubic(progress) * MaxRadius;
-        }
-
-        public bool ShouldRemove() => Life >= MaxLife;
-
-        public void Draw() {
-            float progress = Life / MaxLife;
-            float alpha = (float)Math.Sin((1f - progress) * MathHelper.PiOver2) * 0.6f;
-
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            int segments = 48;
-            float angleStep = MathHelper.TwoPi / segments;
-
-            for (int i = 0; i < segments; i++) {
-                float angle1 = i * angleStep;
-                float angle2 = (i + 1) * angleStep;
-
-                Vector2 p1 = Center + angle1.ToRotationVector2() * Radius;
-                Vector2 p2 = Center + angle2.ToRotationVector2() * Radius;
-
-                Vector2 diff = p2 - p1;
-                float length = diff.Length();
-                if (length < 0.01f) continue;
-
-                float rotation = diff.ToRotation();
-
-                //渐变色
-                float colorProgress = i / (float)segments;
-                Color segmentColor = Color.Lerp(InnerColor, OuterColor, colorProgress) * alpha;
-                segmentColor.A = 0;
-
-                Main.spriteBatch.Draw(
-                    pixel,
-                    p1 - Main.screenPosition,
-                    new Rectangle(0, 0, 1, 1),
-                    segmentColor,
-                    rotation,
-                    Vector2.Zero,
-                    new Vector2(length, Thickness * (1f + (float)Math.Sin(angle1 * 4f + Life * 0.3f) * 0.3f)),
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-        }
-    }
-
-    #endregion
 }

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class HeartcarverExcisedHeart : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Heartcarver>();
 
         private Player Owner => Main.player[Projectile.owner];
@@ -278,7 +278,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class HeartcarverPulseProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Heartcarver>();
 
         private const int RingLife = 20;

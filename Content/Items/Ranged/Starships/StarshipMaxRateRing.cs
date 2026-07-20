@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //群星巨舰达到最高射速时在枪身释放的星辰光环演出
     internal class StarshipMaxRateRing : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 20;

@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: Corte molecular
-MuraTriggerDash.DisplayName: Corte molecular
-MuraBreakerSlash.DisplayName: Medio dragón ascendente
-MuraExecutionCut.DisplayName: Corte dimensional · Fin
-MuraExecutionCutOnSpan.DisplayName: Corte dimensional · Inicio
-MuraGroundSmash.DisplayName: Caída de pétalos
-EndSkillEffectStart.DisplayName: Corte dimensional · Inicio
 RebelBladeFlyAttcke.DisplayName: Hoja rebelde
 RebelBladeOrb.DisplayName: Orbe demoníaco
 RebelBladeBack.DisplayName: Hoja rebelde
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: Invocación centelleante
 SpiralStarProjectile.DisplayName: Estrella en espiral
 WaterZombie.DisplayName: Ahogado
 OceanCurrent.DisplayName: Corriente oceánica
-PowerSoundEgg.DisplayName: Huevo resonante
 CrabulonFriendHitbox.DisplayName: Espora de Crabulon
 Fireball.DisplayName: Bola de fuego
 DeadLaser.DisplayName: Láser de la muerte
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: Explosión de ácido sulfúrico
 DawnshatterFireball.DisplayName: Fuego del alba
 TransferItemProj.DisplayName: Objeto en tránsito
 Crystal.DisplayName: Cristal
-MuraDimensionSlash.DisplayName: Corte dimensional
-MuraSlashArc.DisplayName: Corte dimensional
-MuraSlashLine.DisplayName: Corte dimensional
 WGGLumberjackSaw.DisplayName: Motosierra oxidada
 WGGLifeWeaverAcorn.DisplayName: Bellota
 GammaRayBurst.DisplayName: Ráfaga de rayos gamma

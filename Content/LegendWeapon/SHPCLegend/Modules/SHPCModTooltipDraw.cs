@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules
             panelY = Math.Clamp(panelY, 4, Math.Max(4, Main.screenHeight - panelH - 4));
 
             SpriteBatch sb = Main.spriteBatch;
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             sb.Draw(pixel, new Rectangle(panelX - 1, panelY - 1, panelW + 2, panelH + 2), new Color(0, 180, 220, 160));
             sb.Draw(pixel, new Rectangle(panelX, panelY, panelW, panelH), new Color(12, 18, 38, 230));
 

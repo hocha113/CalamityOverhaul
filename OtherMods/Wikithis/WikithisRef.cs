@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules;
 using InnoVault.GameSystem;
@@ -78,7 +77,6 @@ namespace CalamityOverhaul.OtherMods.Wikithis
             }
 
             AddLegendWeaponUrls(englishIds, englishUrls, chineseIds, chineseUrls, SHPCOverride.ID, "legend/shpc");
-            AddLegendWeaponUrls(englishIds, englishUrls, chineseIds, chineseUrls, MurasamaOverride.ID, "legend/murasama");
             AddLegendWeaponUrls(englishIds, englishUrls, chineseIds, chineseUrls, HalibutOverride.ID, "legend/halibut");
 
             if (englishIds.Count == 0) {
@@ -102,9 +100,6 @@ namespace CalamityOverhaul.OtherMods.Wikithis
             if (CWRAsset.icon_small != null) {
                 if (SHPCOverride.ID > ItemID.None) {
                     _iconOverrides[SHPCOverride.ID] = CWRAsset.icon_small;
-                }
-                if (MurasamaOverride.ID > ItemID.None) {
-                    _iconOverrides[MurasamaOverride.ID] = CWRAsset.icon_small;
                 }
             }
         }
@@ -164,7 +159,7 @@ namespace CalamityOverhaul.OtherMods.Wikithis
 
         /// <summary>
         /// 手动转发 Wikithis 的 <c>GlobalItem.ModifyTooltips</c> 到 <paramref name="tooltips"/>
-        ///  <c>On_ModifyTooltips</c> 返回 <c>false</c> 而屏蔽掉钩子链的情况（例如 SHPC、村正）
+        ///  <c>On_ModifyTooltips</c> 返回 <c>false</c> 而屏蔽掉钩子链的情况（例如 SHPC）
         /// 已存在 Wikithis 行时不会重复添加
         /// </summary>
         public static void TryAppendWikiTooltip(Item item, List<TooltipLine> tooltips) {

@@ -1,8 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
 {
@@ -23,31 +21,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
                 return null;
             }
             return item.CWR()?.LegendData as SHPCData;
-        }
-
-        /// <summary>
-        /// 历史物品标记
-        /// </summary>
-        /// <param name="item"></param>
-        /// <param name="tag"></param>
-        public static void IsLegacyItem(Item item, TagCompound tag) {
-            //需要是曾经的SHPC
-            if (item.type > ItemID.None && item.type == CWRID.Item_SHPC) {
-                bool isOldSave = false;
-                if (tag.ContainsKey("LegendData:Level")) {
-                    isOldSave = true;
-                }
-                if (tag.ContainsKey("LegendData:UpgradeWorldName")) {
-                    isOldSave = true;
-                }
-                if (tag.ContainsKey("LegendData:UpgradeWorldFullName")) {
-                    isOldSave = true;
-                }
-                //标记为历史版本中存在过的传奇
-                if (isOldSave) {
-                    item.CWR().LegacyItemTranslationID = SHPCOverride.ID;
-                }
-            }
         }
     }
 }

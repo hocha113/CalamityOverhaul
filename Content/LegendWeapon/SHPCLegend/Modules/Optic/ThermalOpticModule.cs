@@ -390,7 +390,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         /// <summary>头顶 FLIR 十字标：四角旋转括弧 + 中心十字 + 右侧温度刻度，A=0 颜色实现加法发光</summary>
         private void DrawThermalReticle(NPC npc, SpriteBatch spriteBatch) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 anchor = npc.Top + new Vector2(0f, -30f) - Main.screenPosition;
             float fade = WhiteHotFade;
             float spin = (float)Main.timeForVisualEffects * 0.045f;

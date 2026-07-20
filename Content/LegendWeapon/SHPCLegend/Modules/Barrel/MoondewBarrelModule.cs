@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>月露棱镜弹幕</summary>
     internal sealed class SHPCMoondewPrismProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = 34;
@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// </summary>
     internal sealed class SHPCMoondewRefractFlashProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 5;
         private static readonly Vector3 CoreVec = new Color(220, 240, 255).ToVector3();

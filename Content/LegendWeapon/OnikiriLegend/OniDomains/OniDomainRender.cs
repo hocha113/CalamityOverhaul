@@ -289,7 +289,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
             Texture2D ring = CWRAsset.DiffusionCircle?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (ring == null || white == null) {
                 return;
             }
@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
             if (odp.Phase != OniDomainPhase.Opening) {
                 return;
             }
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (white == null) {
                 return;
             }
@@ -345,7 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         }
 
         private static void DrawFlipSlashLine(SpriteBatch spriteBatch, OniDomainPlayer odp) {
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (white == null || glow == null) {
                 return;
@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
 
         private static void DrawEyeOverlays(SpriteBatch spriteBatch, OniDomainPlayer odp) {
             Effect eye = EffectLoader.OniEye?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (eye == null || white == null || noise == null) {
                 return;
@@ -477,7 +477,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
         //====== 低画质回退：纯色叠层 ======
 
         private static void DrawLowQualityFallback(SpriteBatch spriteBatch, OniDomainPlayer odp) {
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (white == null) {
                 return;
             }

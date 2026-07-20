@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class SandSmallTornado : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 360;
         private const float MaxGroundSpeed = 5f;

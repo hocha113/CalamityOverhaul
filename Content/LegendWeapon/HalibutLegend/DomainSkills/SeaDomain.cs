@@ -98,7 +98,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     internal class SeaDomainProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private List<DomainLayer> layers;
         private int layerCount;
@@ -631,7 +631,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
             Effect shader = EffectLoader.SeaDomainField?.Value;
             if (shader == null) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 

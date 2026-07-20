@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Melee.DivineSourceBlades
     /// </summary>
     internal class DivineSourceWaveProjectile : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 46;
         private const float BaseRadius = 150f;

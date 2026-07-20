@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.HackTimes
             NPC npc = Main.npc[npcIndex];
             if (!npc.active) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (px == null) return;
 

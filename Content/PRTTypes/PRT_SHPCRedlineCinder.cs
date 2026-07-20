@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// <summary>速射枪管灼热火渣：沿速度拉伸的炽热碎屑，横向阻尼+热浮上升，色温由白炽冷却到暗红熄灭</summary>
     internal class PRT_SHPCRedlineCinder : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override int InGame_World_MaxCount => 2000;
 
         private Color hotColor;
@@ -56,7 +56,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (Scale < 0.05f || Opacity < 0.01f) return false;
 
-            Texture2D pixel = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = new(0.5f, 0.5f);
             float speed = Velocity.Length();

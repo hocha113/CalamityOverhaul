@@ -362,7 +362,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     /// </summary>
     internal sealed class SHPCResonanceWaveProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int TrailLen = 42;
         private const float PointSpacing = 10f;
@@ -540,7 +540,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     /// </summary>
     internal sealed class SHPCResonanceRingProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 26;
         /// <summary>环前沿判定厚度（像素）</summary>
@@ -663,7 +663,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.SHPCModResonanceRing?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 

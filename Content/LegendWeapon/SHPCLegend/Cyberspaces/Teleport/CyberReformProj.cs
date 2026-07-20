@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
     /// <summary>瞬移终点重组弹幕，CyberReform.fx 体素向心归位</summary>
     internal class CyberReformProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //生命：与 CyberTeleport.HideDuration(22) 对齐，留出 snap+消散尾
         private const int Lifetime = 32;
@@ -44,10 +44,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.CyberReform?.Value;
             if (shader == null) return false;
-            if (CWRAsset.Placeholder_White == null) return false;
+            if (VaultAsset.placeholder2 == null) return false;
             if (CWRAsset.Extra_193?.Value == null) return false;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;

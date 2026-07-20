@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>菌孢破片，手雷迸射追踪破片，类名SporeBoboRogue保留本地化</summary>
     internal class SporeBoboRogue : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;

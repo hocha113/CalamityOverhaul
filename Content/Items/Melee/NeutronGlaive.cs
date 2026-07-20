@@ -684,7 +684,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     internal class NeutronsOrb : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.timeLeft = 120;

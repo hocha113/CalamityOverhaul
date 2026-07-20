@@ -1,23 +1,33 @@
-ItemFilterUI: {
-	HintText: Clique esquerdo para adicionar um item
-	HintText2: Clique esquerdo para remover um item
-	CloseHint: Pressione [ESC] ou [Clique Direito] para fechar
-}
-
-LegendUpgradeConfirmUI: {
-	TitleText: Confirmacao de Upgrade de Arma Lendaria
-	DescText:
+EntryDecisionUI: {
+	CollapseHint: Clique direito para recolher
+	LegendPill: Sincronizacao de Arma Lendaria
+	LegendTitle: Confirmacao de Upgrade de Arma Lendaria
+	LegendDesc:
 		'''
 		Nivel do mundo atual detectado
 		como maior que o nivel da arma.
 		Upgrade {0} para nivel {1}?
 		'''
-	ConfirmText: Confirmar Upgrade
-	CancelText: Cancelar
-	Success: "[ITEM] foi atualizado para o nivel [LEVEL]."
-	QueueIndicator: Ainda ha {0} armas lendarias a serem confirmadas.
-	TrustText: Confiar neste mundo
-	TrustSuccess: "[ITEM] confiou neste mundo e sincronizara automaticamente a partir de agora"
+	LegendConfirm: Confirmar Upgrade
+	LegendSkip: Pular desta vez
+	LegendTrust: Confiar Neste Mundo
+	LegendSuccess: "{0} foi atualizado para o nivel {1}."
+	LegendTrustSuccess: "{0} confiou neste mundo e sincronizara automaticamente a partir de agora"
+	LegendQueue: Ainda ha {0} armas lendarias a serem confirmadas.
+	QuestPill: Verificacao de Missao Pendente
+	QuestTitle: Confirmacao de Verificacao de Missao
+	QuestDesc:
+		'''
+		Entrada de outro mundo detectada.
+		Voce quer verificar o progresso da missao
+		no mundo atual?
+		'''
+	QuestConfirm: Verificar Missoes
+	QuestSkip: Pular
+	QuestTrust: Confiar Neste Mundo
+	QuestEnabled: Verificacao de Missao Ativada
+	QuestDisabled: Verificacao de Missao Pulada
+	QuestTrusted: Mundo confiavel; a verificacao de missao sera ativada automaticamente aqui a partir de agora
 }
 
 QuestTracker: {
@@ -151,6 +161,11 @@ QuestLog: {
 	SunModeText: Modo Diurno
 	LauncherHoverText: Clique Esquerdo Alterna, Clique Direito Arrasta
 	QuestManagerText: Comissao
+	DisabledOverlayText:
+		'''
+		A verificacao de missao esta desabilitada neste mundo.
+		Reentre no mundo para escolher novamente.
+		'''
 
 	ObjectiveTemplate: {
 		DefeatNpc: Derrote {0}
@@ -169,27 +184,6 @@ ExtraMain: {
 	StaffText: EQUIPE
 	BackText: VOLTAR
 	LockedText: BLOQUEADO
-}
-
-QuestWorldConfirmUI: {
-	TitleText: Confirmacao de Verificacao de Missao
-	DescText:
-		'''
-		Entrada de outro mundo detectada.
-		Voce quer verificar o progresso da missao
-		no mundo atual?
-		'''
-	ConfirmText: Verificar Missoes
-	CancelText: Pular
-	TrustText: Confiar Neste Mundo
-	EnabledText: Verificacao de Missao Ativada
-	DisabledText: Verificacao de Missao Pulada
-	TrustedText: Mundo confiavel; a verificacao de missao sera ativada automaticamente aqui a partir de agora
-	DisabledOverlayText:
-		'''
-		A verificacao de missao esta desabilitada neste mundo.
-		Reentre no mundo para escolher novamente.
-		'''
 }
 
 Incinerator: {

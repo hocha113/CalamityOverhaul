@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
     /// </summary>
     internal class JusticeCrossMark : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float TargetNPCID => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];

@@ -172,7 +172,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
 
         /// <summary>低水波/低级光照回退，逐域栅格</summary>
         private static void DrawLowQualityFieldFallback(SpriteBatch spriteBatch) {
-            Texture2D pixel = CWRAsset.Placeholder_White?.Value;
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
             if (pixel == null) return;
 
             //压暗罩：取最强 intensity 定压暗强度
@@ -353,14 +353,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         private static void DrawBoundaryShockwaveRing(SpriteBatch spriteBatch, CyberspacePlayer cp) {
             Effect shader = EffectLoader.CyberBoundaryRing?.Value;
             if (shader == null) return;
-            if (CWRAsset.Placeholder_White?.Value == null) return;
+            if (VaultAsset.placeholder2?.Value == null) return;
             if (CWRAsset.Extra_193?.Value == null) return;
             if (cp.Intensity < 0.02f) return;
 
             float effectiveRadius = cp.EffectiveOuterRadius;
             if (effectiveRadius < Cyberspace.GridSize * 4f) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             Vector2 drawPos = cp.DomainCenter - Main.screenPosition;
             //边界环属于骨架级显示，移动时中度淡化以削弱晃眼感

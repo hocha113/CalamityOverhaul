@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //从枪口上下释放的小型群星弹幕
     internal class StarshipMicroStar : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 8;

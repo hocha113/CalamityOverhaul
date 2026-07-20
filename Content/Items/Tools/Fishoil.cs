@@ -92,7 +92,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     ///</summary>
     internal class FishoilDrinkEffect : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int EffectDuration = 90; //特效持续时间
 

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
     /// <summary>冻结能量波弹幕，领域中心向外扩散</summary>
     internal class CyberFreezeWaveProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 55;
         private float maxDrawRadius;
@@ -45,10 +45,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.DomainFre
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = CyberDomainFreezeAssets.CyberFreezeWave;
             if (shader == null) return false;
-            if (CWRAsset.Placeholder_White == null) return false;
+            if (VaultAsset.placeholder2 == null) return false;
             if (CWRAsset.Extra_193?.Value == null) return false;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;

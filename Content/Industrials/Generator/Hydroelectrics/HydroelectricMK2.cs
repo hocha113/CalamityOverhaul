@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.Industrials.Generator.Hydroelectrics
 
     internal class PRT_HomeBubble : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private bool spawn;
         public override void SetProperty() {
             Lifetime = Main.rand.Next(180, 220);

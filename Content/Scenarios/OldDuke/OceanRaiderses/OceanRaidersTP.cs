@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials;
-using CalamityOverhaul.Content.Industrials.ElectricPowers;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses.OceanRaidersUIs;
 using Microsoft.Xna.Framework.Graphics;
@@ -57,14 +57,15 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             Volume = 0.6f
         };
 
-        internal Item ItemFilter;
+        /// <summary>过滤名单。历史语义为黑名单(名单内的渔获被排除)，迁移旧存档时保持该模式</summary>
+        internal ItemFilterSet Filter = new();
         internal float hoverSengs;
 
         public override void SetBattery() {
             storedItems = new List<Item>();
             fishingParticles = new List<FishingParticle>();
             vortexEffect = new OceanRaidersVortexEffect(this);
-            ItemFilter = new Item();
+            Filter = new ItemFilterSet();
         }
 
         public override void MachineKill() {
@@ -85,7 +86,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             data.Write(isWorking);
             data.Write(hasWater);
             data.Write(fishingTimer);
-            ItemIO.Send(ItemFilter, data);
+            Filter.Write(data);
 
             //发送存储物品数据
             data.Write(storedItems.Count);
@@ -104,7 +105,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             isWorking = reader.ReadBoolean();
             hasWater = reader.ReadBoolean();
             fishingTimer = reader.ReadInt32();
-            ItemFilter = ItemIO.Receive(reader);
+            Filter.Read(reader);
 
             //接收存储物品数据
             int count = reader.ReadInt32();
@@ -118,8 +119,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override void SaveData(TagCompound tag) {
             base.SaveData(tag);
             try {
-                ItemFilter ??= new Item();
-                tag["_ItemFilter"] = ItemIO.Save(ItemFilter);
+                Filter.Save(tag, "_Filter");
 
                 //保存存储的物品
                 List<TagCompound> itemTags = new();
@@ -140,7 +140,13 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override void LoadData(TagCompound tag) {
             base.LoadData(tag);
             try {
-                ItemFilter = CWRSaveData.LoadItemFromTag(tag, "_ItemFilter", nameof(OceanRaidersTP));
+                //新格式优先；旧存档存的是整只过滤卡，历史行为是"名单内不捕获"，故迁移为黑名单模式
+                if (!Filter.TryLoad(tag, "_Filter")) {
+                    Item legacyCard = CWRSaveData.LoadItemFromTag(tag, "_ItemFilter", nameof(OceanRaidersTP));
+                    if (legacyCard.ModItem is ItemFilter card) {
+                        Filter.CopyFrom(card.Filter.OrderedItems, ItemFilterMode.Blacklist);
+                    }
+                }
 
                 //加载存储的物品
                 if (!tag.TryGet("itemTags", out List<TagCompound> itemTags)) {
@@ -172,13 +178,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
             return false;
         }
 
-        private bool IsItemFiltered(int itemType) {
-            if (ItemFilter == null || ItemFilter.IsAir) return false;
-            if (ItemFilter.TryGetGlobalItem<ItemFilterData>(out var data)) {
-                return data.Items.Contains(itemType);
-            }
-            return false;
-        }
+        private bool IsItemFiltered(int itemType) => !Filter.Matches(itemType);
 
         private void PerformFishing() {
             //模拟钓鱼，生成物品
@@ -511,50 +511,50 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
         public override void FrontDraw(SpriteBatch spriteBatch) {
             DrawChargeBar();
 
-            if (ItemFilter != null && !ItemFilter.IsAir && hoverSengs > 0.01f) {
-                var filterItems = ItemFilter.GetGlobalItem<ItemFilterData>().Items;
-                if (filterItems.Count > 0) {
-                    const float maxRadius = 150f;
-                    float currentRadius = maxRadius * hoverSengs;
-                    float angleIncrement = MathHelper.TwoPi / filterItems.Count;
+            if (!Filter.IsEmpty && hoverSengs > 0.01f) {
+                IReadOnlyList<int> filterItems = Filter.OrderedItems;
+                const float maxRadius = 150f;
+                float currentRadius = maxRadius * hoverSengs;
+                float angleIncrement = MathHelper.TwoPi / filterItems.Count;
 
-                    Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
+                Vector2 drawCenter = CenterInWorld - Main.screenPosition + new Vector2(0, 32);
+                //黑名单(排除渔获)以警示红着色区分
+                Color modeTint = Filter.Mode == ItemFilterMode.Whitelist
+                    ? Color.White
+                    : ItemFilterTheme.AccentBlacklist;
 
-                    for (int i = 0; i < filterItems.Count; i++) {
-                        int itemType = filterItems[i];
-                        if (itemType <= ItemID.None) continue;
+                for (int i = 0; i < filterItems.Count; i++) {
+                    int itemType = filterItems[i];
+                    if (itemType <= ItemID.None) continue;
 
-                        float currentAngle = angleIncrement * i - MathHelper.PiOver2;
-                        Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
-                        Vector2 itemPos = drawCenter + offset;
+                    float currentAngle = angleIncrement * i - MathHelper.PiOver2;
+                    Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
+                    Vector2 itemPos = drawCenter + offset;
 
-                        Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
-                        float scale = hoverSengs * 1.25f;
+                    Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), modeTint);
+                    float scale = hoverSengs * 1.25f;
 
-                        VaultUtils.SafeLoadItem(itemType);
-                        VaultUtils.SimpleDrawItem(Main.spriteBatch, itemType, itemPos, itemWidth: 32, scale, 0, drawColor);
-                    }
+                    VaultUtils.SafeLoadItem(itemType);
+                    VaultUtils.SimpleDrawItem(Main.spriteBatch, itemType, itemPos, itemWidth: 32, scale, 0, drawColor);
                 }
-            }
-            if (ItemFilter.Alives()) {
-                VaultUtils.SimpleDrawItem(Main.spriteBatch, ItemFilter.type, CenterInWorld - Main.screenPosition, itemWidth: 32, 1f, 0, Color.White);
+
+                VaultUtils.SimpleDrawItem(Main.spriteBatch, ModContent.ItemType<ItemFilter>()
+                    , CenterInWorld - Main.screenPosition, itemWidth: 32, 1f, 0, Color.White);
             }
         }
 
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
             Item item = player.GetItem();
-            if (item.type == ModContent.ItemType<ItemFilter>()) {
-                ItemFilter = item.Clone();
-                //深拷贝过滤数据
-                var sourceData = item.GetGlobalItem<ItemFilterData>();
-                var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
-                targetData.SetItems(sourceData.Items);
+
+            //手持过滤卡：把卡上名单安装到本机器
+            if (item.ModItem is ItemFilter card) {
+                Filter.CopyFrom(card.Filter);
 
                 SoundEngine.PlaySound(CWRSound.Select);
-
-                if (Main.netMode != NetmodeID.SinglePlayer) {
-                    SendData();
+                if (!VaultUtils.isServer) {
+                    CombatText.NewText(HitBox, ItemFilterTheme.Gold, ItemFilterEditorUI.InstalledText.Value);
                 }
+                SendData();
                 return true;
             }
 
@@ -568,7 +568,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke.OceanRaiderses
 
     internal class TransferItemProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = 16;

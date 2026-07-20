@@ -210,7 +210,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             Texture2D faceTexture = requestedFace;
             Effect assemblyEffect = EffectLoader.HimayoPortraitAssembly?.Value;
             Effect petalEffect = EffectLoader.OniDomainDeco?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (portrait == null || portrait.IsDisposed
                 || assemblyEffect == null || petalEffect == null || white == null) {
                 return;
@@ -365,7 +365,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             Vector2 portraitPosition, float portraitScale, float portraitRotation, Color drawColor, float alpha) {
 
             Effect effect = EffectLoader.HimayoPortraitAssembly.Value;
-            Texture2D noise = CWRAsset.PerlinNoise?.Value ?? CWRAsset.Placeholder_White.Value;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value ?? VaultAsset.placeholder2.Value;
 
             effect.Parameters["uProgress"]?.SetValue(Progress);
             effect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
@@ -436,7 +436,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         private void DrawPetalLayer(SpriteBatch spriteBatch, Vector2 portraitPosition,
             float portraitScale, float portraitRotation, float alpha, bool frontLayer) {
 
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (white == null) {
                 return;
             }

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Buffs
         /// <summary>死亡射线命中标记目标的伤害倍率</summary>
         public const float RayDamageMul = 1.5f;
 
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = true;

@@ -178,7 +178,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>贯体重锤：锁定单体的凿击终结爆击，落锤施加破甲；SHPCModHeavyMaul.fx</summary>
     internal sealed class SHPCHeavyMaulProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 26;
         private const int ExpandFrames = 20;
@@ -295,7 +295,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.SHPCModHeavyMaul?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 

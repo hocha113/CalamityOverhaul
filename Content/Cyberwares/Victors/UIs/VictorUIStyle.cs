@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
     /// </summary>
     internal static class VictorUIStyle
     {
-        private static Texture2D Px => CWRAsset.Placeholder_White.Value;
+        private static Texture2D Px => VaultAsset.placeholder2.Value;
         private static Texture2D Glow => CWRAsset.SoftGlow?.Value;
 
         /// <summary>四角 L 形角标，不画完整边框</summary>

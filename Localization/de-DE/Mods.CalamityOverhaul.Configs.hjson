@@ -15,15 +15,6 @@ CWRServerConfig: {
 		Tooltip: Wenn aktiviert, vibriert der Bildschirm bei bestimmten Angriffen, um den Schlag stärker zu betonen
 	}
 
-	MurasamaSpaceFragmentationBool: {
-		Label: Murasama-Endeffekt der Raumfragmentierung
-		Tooltip:
-			'''
-			Standardmäßig aktiviert, erzeugt Murasama bei der Ausführung von Endtechniken einen Bildschirmeffekt der Fragmentierung, um den Schlag zu verstärken
-			Durch Deaktivieren werden diese Effekte ausgeschaltet, je nach persönlichen Vorlieben einstellbar
-			'''
-	}
-
 	DomainConciseDisplay: {
 		Label: Domain-Minimalanzeige
 		Tooltip: Standardmäßig aus. Wenn aktiviert, werden die meisten visuellen Effekte innerhalb der Domain ausgeblendet.
@@ -32,7 +23,6 @@ CWRServerConfig: {
 	Headers: {
 		CWRSystem: Overhaul-Systemeinstellungen
 		CWRWeapon: Overhaul-Waffeneinstellungen
-		CWRUI: Overhaul-UI-Einstellungen
 		CWRWorldGen: Overhaul-Struktureinstellungen
 	}
 
@@ -48,28 +38,6 @@ CWRServerConfig: {
 			[c/c20909:Nicht vollständig implementiert]
 			Standardmäßig aktiviert, ändert das Verhalten einiger Kreaturen, z. B. Boss-KIs unter dem Einfluss des Tod-Moduls
 			Dies kann die Spielherausforderung erhöhen, je nach Vorliebe kann dies deaktiviert werden
-			'''
-	}
-
-	MuraUIStyleType: {
-		Label: Mura UI-Stil Auswahl
-		Tooltip:
-			'''
-			Stil 1: Verfeinert - Schwebend über dem Kopf
-			Stil 2: Verfeinert - Kompakt
-			Stil 3: Klassisch - Schwebend über dem Kopf
-			Stil 4: Klassisch - Kompakt
-			Stil 5: Verborgen
-			'''
-	}
-
-	MuraPosStyleType: {
-		Label: Mura UI-Position Auswahl
-		Tooltip:
-			'''
-			Voreinstellung 1: Unten rechts
-			Voreinstellung 2: Unten links
-			Voreinstellung 3: Oben zentriert
 			'''
 	}
 

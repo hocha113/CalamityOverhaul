@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// R技能万魔终焉 巨型硫磺火法阵+闪电火球全屏轰炸
     internal class PandemoniumRSkill : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Player Owner => Main.player[Projectile.owner];
         private ref float Phase => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];
@@ -470,7 +470,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Effect shader = EffectLoader.BrimstoneDomain?.Value;
             if (shader == null) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
@@ -510,7 +510,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void DrawLightningStrikes(SpriteBatch sb) {
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             foreach (var lightning in lightningStrikes) {
                 float alpha = 1f - (lightning.Life / lightning.MaxLife);

@@ -186,7 +186,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         /// <summary>选中物块赛博边框+扫描线</summary>
         private static void DrawSelectedTileFrame(SpriteBatch sb, TileScannable tileScan, float effectStr) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             Vector2 worldCenter = tileScan.WorldCenter;

@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// rotation/ChargeProgress 由手持弹幕每帧喂入
     internal class FlattenedAccretionDisk : ModProjectile, IPrimitiveDrawable, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>0~1 蓄力进度(手持喂入)</summary>
         public ref float ChargeProgress => ref Projectile.ai[2];
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             Effect effect = EffectLoader.AriaBlackHole?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (effect == null || noise == null || white == null) {
                 return;
             }

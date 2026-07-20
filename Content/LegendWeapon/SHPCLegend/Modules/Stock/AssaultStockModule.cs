@@ -40,7 +40,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// <summary>悬浮炮臂：肩侧微缩 SHPC，击发瞬间交替协战；改件卸下自毁</summary>
     internal sealed class SHPCAssaultArmProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Color ArmMain = new(255, 160, 80);
         private static readonly Color ArmEdge = new(180, 70, 20);
@@ -176,7 +176,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// </summary>
     internal sealed class SHPCArmBoltProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Color BoltMain = new(255, 170, 90);
         private static readonly Color BoltEdge = new(200, 80, 25);

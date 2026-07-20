@@ -349,12 +349,6 @@ namespace CalamityOverhaul
             return projectile.GetGlobalProjectile<CWRProjectile>();
         }
 
-        public static void Initialize(this Item item) {
-            if (item.CWR().ai == null) {
-                item.CWR().ai = [0, 0, 0];
-            }
-        }
-
         public static void BlastingSputteringDust(Projectile Projectile, int dustID1, int dustID2, int dustID3, int dustID4, int dustID5) {
             for (int i = 0; i < 40; i++) {
                 int idx = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, dustID1, 0f, 0f, 100, default, 2f);

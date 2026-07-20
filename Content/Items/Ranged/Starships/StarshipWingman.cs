@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //僚机：在玩家上下伴飞并向敌人发射小型星弹
     internal class StarshipWingman : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //正负号决定僚机在玩家上下哪一侧
         private ref float Side => ref Projectile.ai[0];

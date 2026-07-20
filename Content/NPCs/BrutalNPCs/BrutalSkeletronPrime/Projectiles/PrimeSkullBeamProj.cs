@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
     /// <summary>颅骨主炮巨型扫射光束：锚定头部，固定角速度横扫；ai[0]=头部NPC的whoAmI；ai[1]=起始角（弧度）；ai[2]=每帧扫射角速度（含方向）；展开/收束缓动，未完全展开无伤害；头部失效或脱离主炮状态时快速收束</summary>
     internal class PrimeSkullBeamProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         internal static int ExpandTime => 16;
         internal static int SweepFrames => 160;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             shader.Parameters["uImage2"]?.SetValue(CWRAsset.PerlinNoise.Value);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             //视觉宽度大于碰撞宽度，撕裂边缘需要余量
             float visualWidth = beamWidth * 3.6f;
             sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White, rot,

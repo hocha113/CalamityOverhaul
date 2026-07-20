@@ -16,7 +16,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
     /// <summary>机械骷髅王电弧链锁：头臂间带伤害的高压电弧束带(TetherSpin扇叶)；ai[0]=机械臂NPC的whoAmI；ai[1]=头部NPC的whoAmI；ai[2]=总持续时间（帧）；前<see cref="WarmupTime"/>帧预警细弱无伤害；头/臂失效或头部脱离TetherSpin时快速消散</summary>
     internal class PrimeArcChainProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]
         private static Asset<Texture2D> ThunderTex = null;
@@ -235,7 +235,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             shader.Parameters["uImage1"]?.SetValue(CWRAsset.Extra_193.Value);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             Vector2 dir = end - start;
             float dist = dir.Length();
             sb.Draw(quad, start - Main.screenPosition, null, Color.White, dir.ToRotation(),

@@ -337,7 +337,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         /// <summary>关闭动画水平亮线</summary>
         private void DrawCloseEffectLine(SpriteBatch spriteBatch) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             float glow = Math.Min(closeLineGlow, 1f);

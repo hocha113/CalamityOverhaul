@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Teleport
     /// <summary>瞬移数据走廊弹幕，Trail + CyberRiftSlash.fx</summary>
     internal class CyberRiftSlashProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //总寿命：从延伸到收尾约 0.5 秒
         private const int MaxLife = 30;

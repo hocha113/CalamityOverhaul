@@ -92,25 +92,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (VaultUtils.isServer) {
                 return;
             }
-            //黑曜石"凝结"：碎屑向内汇聚 + 暗烟
+            //黑曜石"淬凝"：暗紫玻璃屑向内汇聚 + 暗烟
             for (int i = 0; i < 16; i++) {
                 float angle = MathHelper.TwoPi * i / 16f;
                 Vector2 from = position + angle.ToRotationVector2() * Main.rand.NextFloat(40f, 70f);
                 PRTLoader.NewParticle<PRT_Spark>(from, (position - from) * 0.08f
-                    , Color.Lerp(ObsidianFishOrbit.MoltenGlow, new Color(60, 35, 70), Main.rand.NextFloat()), Main.rand.NextFloat(0.7f, 1.1f))
-                    .Configure(false, Main.rand.Next(16, 26));
+                    , Color.Lerp(ObsidianFishOrbit.SheenPurple, ObsidianFishOrbit.ObsidianDark, Main.rand.NextFloat()), Main.rand.NextFloat(0.6f, 1f))
+                    ?.Configure(false, Main.rand.Next(16, 26));
             }
             for (int i = 0; i < 6; i++) {
                 PRTLoader.NewParticle<PRT_Smoke>(position + Main.rand.NextVector2Circular(18f, 18f)
                     , Main.rand.NextVector2Circular(2f, 2f), new Color(40, 30, 45), Main.rand.NextFloat(0.7f, 1f))
-                    .Configure(24, 0.7f, 0.04f);
+                    ?.Configure(24, 0.7f, 0.04f);
             }
         }
     }
 
     /// <summary>
-    /// 黑曜石鱼：环绕玩家的熔岩玻璃护卫。倾斜椭圆轨道 + 弹簧滞后的次级运动让阵型"有重量"，
-    /// 受击时以顶点冲击波 + 玻璃碎屑炸裂。
+    /// 黑曜石鱼：环绕玩家的火山玻璃护卫。倾斜椭圆轨道 + 弹簧滞后的次级运动让阵型"有重量"，
+    /// 本体深黑近剪影，窄镜面高光随公转沿轮廓扫动（<see cref="FishObsidianAssets.FishObsidianGloss"/>）。
+    /// 受击碎裂 = 英雄时刻：裂纹冻结数帧（慢放感）后爆成贝壳状断口的锐利玻璃片
     /// </summary>
     internal class ObsidianFishOrbit : BaseHeldProj
     {
@@ -120,7 +121,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         {
             Gathering,
             Orbiting,
-            Shattering
+            Shattering,
+            Dissolving
         }
 
         private FishState State {
@@ -139,21 +141,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private Vector2 gatherStart;
         private Vector2 followVel;    //弹簧速度（次级运动）
 
-        //姿态
+        //姿态与玻璃光泽
         private float bodyRotation;
         private float glow;
         private float scaleMul = 1f;
-        private float crackPulse;
+        private float crackPulse;     //余温矿脉的怠速呼吸，幅度极低
+        private float crackHeat;      //磕碰应力，受击瞬间抬升后衰减
+        private float specBoost;      //镜面扫光脉冲包络
+        private int glintTimer;       //距下一次扫光脉冲
+        private float flash;          //爆裂过曝，只在爆点存活 1-2 帧
 
-        private Vector2 shatterVelocity;
-        private float shatterSpin;
         private readonly List<ShockRing> rings = new();
 
         public static readonly Color ObsidianDark = new(34, 22, 44);
-        public static readonly Color MoltenGlow = new(255, 95, 40);
-        public static readonly Color CrackGlow = new(255, 150, 70);
+        public static readonly Color GlassDeep = new(18, 11, 26);
+        public static readonly Color SheenPurple = new(150, 100, 210);
+        public static readonly Color RingGlow = new(214, 184, 255);
+        public static readonly Color EmberWarm = new(255, 110, 45);
 
         private const int GatherDuration = 20;
+        /// <summary>碎裂前的裂纹冻结帧数，读作短暂慢放</summary>
+        private const int CrackFreezeFrames = 8;
+        /// <summary>爆裂后余迹容器帧数，环与余尘活得比本体久</summary>
+        private const int AftermathFrames = 30;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -178,19 +188,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        /// <summary>冻结期 0→1 拉满矿脉，爆裂后作为余温辉光在容器帧里衰减归零</summary>
+        private float FreezeRamp {
+            get {
+                if (State != FishState.Shattering) {
+                    return 0f;
+                }
+                if (StateTimer <= CrackFreezeFrames) {
+                    return MathHelper.Clamp(StateTimer / (float)CrackFreezeFrames, 0f, 1f);
+                }
+                return MathHelper.Clamp(1f - (StateTimer - CrackFreezeFrames) / 14f, 0f, 1f);
+            }
+        }
+
         public override void AI() {
             if (!Owner.active || Owner.dead) {
                 Projectile.Kill();
                 return;
             }
 
-            if (!FishSkill.GetT<FishObsidian>().Active(Owner) && State != FishState.Shattering) {
-                Projectile.Kill();
-                return;
+            if (!FishSkill.GetT<FishObsidian>().Active(Owner)
+                && State is FishState.Gathering or FishState.Orbiting) {
+                StartDissolve();
             }
 
             StateTimer++;
-            crackPulse = 0.6f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f + FishIndex * 1.3f) * 0.4f;
+            crackPulse = 0.08f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2.6f + FishIndex * 1.3f) * 0.05f;
+            crackHeat *= 0.95f;
+            specBoost *= 0.87f;
+            flash *= 0.5f;
 
             switch (State) {
                 case FishState.Gathering:
@@ -202,6 +228,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 case FishState.Shattering:
                     ShatteringAI();
                     break;
+                case FishState.Dissolving:
+                    DissolvingAI();
+                    break;
             }
 
             for (int i = rings.Count - 1; i >= 0; i--) {
@@ -211,16 +240,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //暗红熔岩照明（受深度调制）
+            //玻璃几乎不发光：微弱紫泽 + 应力时的余温橙
+            float emberAmt = MathHelper.Clamp(crackPulse + crackHeat + FreezeRamp, 0f, 1f);
             float lit = glow * (0.6f + depth * 0.4f);
-            Lighting.AddLight(Projectile.Center, MoltenGlow.ToVector3() * lit * 0.5f);
+            Lighting.AddLight(Projectile.Center, new Vector3(0.10f, 0.06f, 0.16f) * lit
+                + new Vector3(1f, 0.42f, 0.15f) * emberAmt * 0.22f);
         }
 
+        /// <summary>阵型成员数，碎裂/消散中的鱼不再占位</summary>
         private int GetTotalActiveFish() {
             int count = 0;
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.type == Projectile.type && proj.owner == Projectile.owner) {
+                if (proj.active && proj.type == Projectile.type && proj.owner == Projectile.owner
+                    && proj.ai[1] < (float)FishState.Shattering) {
                     count++;
                 }
             }
@@ -231,7 +264,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int index = 0;
             for (int i = 0; i < Main.maxProjectiles; i++) {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.type == Projectile.type && proj.owner == Projectile.owner) {
+                if (proj.active && proj.type == Projectile.type && proj.owner == Projectile.owner
+                    && proj.ai[1] < (float)FishState.Shattering) {
                     if (proj.whoAmI == Projectile.whoAmI) {
                         return index;
                     }
@@ -248,6 +282,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 gatherStart = Projectile.Center;
                 swimPhase = Main.rand.NextFloat(MathHelper.TwoPi);
                 spinAngle = MathHelper.TwoPi * FishIndex / Math.Max(GetTotalActiveFish(), 1);
+                glintTimer = Main.rand.Next(40, 90);
             }
 
             myAngle = spinAngle;
@@ -260,15 +295,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             glow = MathHelper.Lerp(0.2f, 1f, p);
             scaleMul = MathHelper.Lerp(0.4f, DepthScale(depth), p);
 
+            //暗玻璃屑向鱼身淬凝
             if (!Main.dedServ && Main.rand.NextBool(4)) {
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f)
-                    , (owner.Center - Projectile.Center) * 0.02f, MoltenGlow, Main.rand.NextFloat(0.5f, 0.9f))
-                    .Configure(false, 16);
+                Vector2 from = Projectile.Center + Main.rand.NextVector2CircularEdge(26f, 26f);
+                PRTLoader.NewParticle<PRT_FishObsidianShard>(from, (Projectile.Center - from) * 0.16f
+                    , Color.Lerp(GlassDeep, SheenPurple, Main.rand.NextFloat(0.4f)), Main.rand.NextFloat(0.5f, 0.8f))
+                    ?.Configure(12, 0f, 1f);
             }
 
             if (StateTimer >= GatherDuration) {
                 State = FishState.Orbiting;
                 StateTimer = 0;
+                //嵌位瞬间的镜面过冲扫闪 + 细环
+                specBoost = 1f;
+                if (!Main.dedServ) {
+                    rings.Add(new ShockRing(Projectile.Center, 42f, 5f, RingGlow, 1f, 14, 28));
+                }
                 SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.3f, Pitch = 0.2f }, Projectile.Center);
             }
         }
@@ -305,24 +347,65 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             scaleMul = MathHelper.Lerp(scaleMul, DepthScale(depth), 0.15f);
             glow = (0.7f + (float)Math.Sin(StateTimer * 0.12f + FishIndex) * 0.2f) * (0.7f + depth * 0.3f);
 
-            //熔岩余烬偶尔滴落（近景的鱼才滴，强化层次）
-            if (!Main.dedServ && depth > 0.2f && Main.rand.NextBool(26)) {
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center + Main.rand.NextVector2Circular(12f, 12f)
-                    , new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), Main.rand.NextFloat(0.4f, 1.4f)), MoltenGlow, 0.4f)
-                    .Configure(20, hueShift: -0.012f);
+            if (Main.dedServ) {
+                return;
+            }
+
+            //镜面扫光节拍：脉冲抬高 uSpec，并在迎光轮廓处迸一粒紫白星芒
+            if (--glintTimer <= 0) {
+                glintTimer = Main.rand.Next(70, 150);
+                specBoost = 1f;
+                Vector2 rim = Projectile.Center + LightWorldAngle().ToRotationVector2() * (11f * scaleMul);
+                PRTLoader.NewParticle<PRT_Sparkle>(rim, followVel * 0.4f, new Color(226, 208, 255), 0.3f)
+                    ?.Configure(SheenPurple, 16, 0.04f, 0.5f);
+            }
+
+            //火山余温：极细热雾上浮，近景才冒
+            if (depth > 0.1f && Main.rand.NextBool(46)) {
+                PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + Main.rand.NextVector2Circular(10f, 8f)
+                    , new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.7f, -0.3f))
+                    , new Color(56, 36, 40), Main.rand.NextFloat(0.45f, 0.7f))
+                    ?.Configure(26, 0.3f, 0.02f);
+            }
+            //偶发的余烬微滴
+            if (depth > 0.2f && Main.rand.NextBool(70)) {
+                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f)
+                    , new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.5f, 1.1f))
+                    , EmberWarm * 0.8f, Main.rand.NextFloat(0.25f, 0.4f))
+                    ?.Configure(true, 14);
             }
         }
 
         private void ShatteringAI() {
-            Projectile.Center += shatterVelocity;
-            shatterVelocity *= 0.95f;
-            shatterVelocity.Y += 0.12f;
-            bodyRotation += shatterSpin;
-            shatterSpin *= 0.96f;
-            scaleMul *= 0.97f;
+            if (StateTimer <= CrackFreezeFrames) {
+                //裂纹冻结：定住轨道位置细碎抖动，矿脉在 shader 里烧起来，读作时间凝滞
+                Projectile.Center += Main.rand.NextVector2Circular(1.4f, 1.4f);
+                if (StateTimer == CrackFreezeFrames - 1) {
+                    flash = 1f;
+                }
+                if (StateTimer == CrackFreezeFrames) {
+                    Burst();
+                }
+                return;
+            }
+            //余迹容器：本体已爆掉不再绘制，环与余尘在这里活完
             glow *= 0.9f;
+            if (StateTimer >= CrackFreezeFrames + AftermathFrames) {
+                Projectile.Kill();
+            }
+        }
 
-            Projectile.alpha += 16;
+        private void DissolvingAI() {
+            scaleMul *= 0.94f;
+            glow *= 0.88f;
+            Projectile.alpha += 20;
+
+            if (!Main.dedServ && Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_FishObsidianShard>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f)
+                    , Main.rand.NextVector2Circular(1.2f, 1.2f) + Vector2.UnitY * 0.6f
+                    , GlassDeep, Main.rand.NextFloat(0.35f, 0.55f))?.Configure(Main.rand.Next(16, 24), 0.18f);
+            }
+
             if (Projectile.alpha >= 255) {
                 Projectile.Kill();
             }
@@ -339,65 +422,111 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private static float DepthScale(float depth) => 0.78f + (depth * 0.5f + 0.5f) * 0.5f;
 
+        /// <summary>世界空间光向角：缓慢漂移的高位光源，配合公转让高光沿轮廓持续移动</summary>
+        private float LightWorldAngle()
+            => -2.3f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 0.6f + FishIndex) * 0.3f;
+
         public void Shatter() {
-            if (State == FishState.Shattering) {
+            if (State is FishState.Shattering or FishState.Dissolving) {
                 return;
             }
             State = FishState.Shattering;
             StateTimer = 0;
             Projectile.friendly = false;
-            shatterVelocity = Main.rand.NextVector2Circular(10f, 10f) - Vector2.UnitY * 2f;
-            shatterSpin = Main.rand.NextFloat(-0.4f, 0.4f);
+            crackHeat = 1f;
 
-            Punch(Owner, 5f);
-            SpawnShatterEffect();
-
-            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.6f }, Projectile.Center);
+            //应力预告：高音玻璃紧绷声先行，爆点声在 Burst 落地
+            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.4f, Pitch = 0.55f }, Projectile.Center);
         }
 
-        private void SpawnShatterEffect() {
+        private void StartDissolve() {
+            State = FishState.Dissolving;
+            StateTimer = 0;
+            Projectile.friendly = false;
+            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.2f, Pitch = 0.3f }, Projectile.Center);
+        }
+
+        /// <summary>爆点：镜头冲击 + 双层声 + 贝壳状断口玻璃片四射，余迹交给容器帧</summary>
+        private void Burst() {
+            Punch(Owner, 5f);
+            SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.6f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.5f, Pitch = -0.3f }, Projectile.Center);
+
             if (Main.dedServ) {
                 return;
             }
-            rings.Add(new ShockRing(Projectile.Center, 150f, 14f, MoltenGlow, 1f, 22, 40));
 
-            //玻璃碎片（受重力四散）
-            for (int i = 0; i < 22; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(11f, 11f);
-                PRTLoader.NewParticle<PRT_Spark>(Projectile.Center, vel
-                    , Color.Lerp(CrackGlow, new Color(70, 45, 80), Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.5f))
-                    .Configure(true, Main.rand.Next(24, 38));
+            rings.Add(new ShockRing(Projectile.Center, 150f, 12f, RingGlow, 1f, 20, 40));
+            rings.Add(new ShockRing(Projectile.Center, 80f, 8f, EmberWarm * 0.5f, 1f, 26, 32));
+
+            //贝壳状断口主碎片：向轨道外侧偏置迸射，慢放帧急停后再受重力
+            Vector2 outDir = (Projectile.Center - Owner.Center).SafeNormalize(-Vector2.UnitY);
+            for (int i = 0; i < 16; i++) {
+                Vector2 vel = outDir.RotatedByRandom(1.1f) * Main.rand.NextFloat(7f, 14f)
+                    + Main.rand.NextVector2Circular(3f, 3f);
+                PRTLoader.NewParticle<PRT_FishObsidianShard>(Projectile.Center, vel
+                    , Color.Lerp(new Color(26, 16, 36), new Color(58, 36, 74), Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.9f, 1.6f))
+                    ?.Configure(Main.rand.Next(34, 52), 0.26f, 0.988f, 5);
             }
-            //熔岩芯爆光
-            for (int i = 0; i < 12; i++) {
-                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Main.rand.NextVector2Circular(7f, 7f)
-                    , MoltenGlow, Main.rand.NextFloat(0.5f, 0.9f)).Configure(22, hueShift: -0.01f);
-            }
-            //暗烟
+            //细屑
             for (int i = 0; i < 8; i++) {
-                PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center, Main.rand.NextVector2Circular(4f, 4f)
-                    , new Color(38, 28, 44), Main.rand.NextFloat(1f, 1.6f)).Configure(30, 0.7f, 0.05f);
+                PRTLoader.NewParticle<PRT_FishObsidianShard>(Projectile.Center, Main.rand.NextVector2Circular(9f, 9f)
+                    , GlassDeep, Main.rand.NextFloat(0.4f, 0.7f))
+                    ?.Configure(Main.rand.Next(20, 30), 0.26f, 0.988f, 3);
+            }
+            //棱面爆闪星芒
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(12f, 12f)
+                    , Main.rand.NextVector2Circular(3f, 3f), new Color(226, 208, 255), Main.rand.NextFloat(0.3f, 0.45f))
+                    ?.Configure(SheenPurple, 18, 0.06f, 0.6f);
+            }
+            //火山余温热雾
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f)
+                    , Main.rand.NextVector2Circular(1.4f, 1.4f) - Vector2.UnitY * 0.6f
+                    , new Color(52, 34, 40), Main.rand.NextFloat(0.8f, 1.2f))?.Configure(30, 0.5f, 0.04f);
+            }
+            //悬浮微尘：碎裂后慢慢飘落的玻璃闪点，比本体活得久
+            for (int i = 0; i < 5; i++) {
+                PRTLoader.NewParticle<PRT_Sparkle>(Projectile.Center + Main.rand.NextVector2Circular(26f, 20f)
+                    , new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(0.2f, 0.6f))
+                    , SheenPurple, Main.rand.NextFloat(0.18f, 0.28f))
+                    ?.Configure(SheenPurple * 0.7f, Main.rand.Next(34, 48), 0.03f, 0.4f);
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //磕碰应力：矿脉短暂发热
+            crackHeat = MathHelper.Min(1f, crackHeat + 0.35f);
             if (Main.dedServ) {
                 return;
             }
-            //玻璃磕碰的反射火花
             Vector2 contact = Vector2.Lerp(Projectile.Center, target.Center, 0.5f);
-            for (int i = 0; i < 8; i++) {
-                PRTLoader.NewParticle<PRT_Spark>(contact, Main.rand.NextVector2Circular(5f, 5f)
-                    , CrackGlow, Main.rand.NextFloat(0.5f, 0.9f)).Configure(true, 14);
+            //刃缘刮擦崩出的细玻璃屑
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_FishObsidianShard>(contact, Main.rand.NextVector2Circular(4f, 4f)
+                    , GlassDeep, Main.rand.NextFloat(0.35f, 0.6f))?.Configure(Main.rand.Next(14, 22), 0.22f);
             }
-            rings.Add(new ShockRing(contact, 56f, 7f, MoltenGlow, 1f, 14, 28));
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_Spark>(contact, Main.rand.NextVector2Circular(4f, 4f)
+                    , RingGlow, Main.rand.NextFloat(0.4f, 0.6f))?.Configure(true, 12);
+            }
+            rings.Add(new ShockRing(contact, 44f, 6f, RingGlow, 1f, 13, 28));
             SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.3f, Pitch = 0.5f }, target.Center);
         }
 
         public override void OnKill(int timeLeft) {
-            if (State != FishState.Shattering) {
-                SpawnShatterEffect();
+            //非碎裂路径的死亡（超时/玩家离场）只留一小撮消散屑，英雄演出专属于 Shatter
+            if (State != FishState.Shattering && !Main.dedServ) {
+                for (int i = 0; i < 5; i++) {
+                    PRTLoader.NewParticle<PRT_FishObsidianShard>(Projectile.Center, Main.rand.NextVector2Circular(3f, 3f)
+                        , GlassDeep, Main.rand.NextFloat(0.4f, 0.65f))?.Configure(Main.rand.Next(16, 26), 0.2f);
+                }
+                for (int i = 0; i < 2; i++) {
+                    PRTLoader.NewParticle<PRT_Smoke>(Projectile.Center, Main.rand.NextVector2Circular(1f, 1f)
+                        , new Color(44, 30, 38), Main.rand.NextFloat(0.6f, 0.9f))?.Configure(22, 0.4f, 0.03f);
+                }
             }
         }
 
@@ -409,37 +538,78 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float fade = (255f - Projectile.alpha) / 255f;
             float rot = bodyRotation + MathHelper.PiOver4;
             float scale = Projectile.scale * scaleMul;
+            bool bodyVisible = State != FishState.Shattering || StateTimer <= CrackFreezeFrames;
 
-            //游动残影（熔岩拖影）
-            if (State != FishState.Gathering) {
-                for (int i = 1; i < 6 && i < Projectile.oldPos.Length; i++) {
-                    if (Projectile.oldPos[i] == Vector2.Zero) {
-                        continue;
+            if (bodyVisible) {
+                //暗色玻璃拖影：残影链只在真的在动时出现，快则浓
+                if (State != FishState.Gathering) {
+                    float smear = MathHelper.Clamp(followVel.Length() / 6f, 0f, 1f);
+                    for (int i = 1; i < 6 && i < Projectile.oldPos.Length; i++) {
+                        if (Projectile.oldPos[i] == Vector2.Zero) {
+                            continue;
+                        }
+                        float t = 1f - i / 6f;
+                        Vector2 gp = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                        Main.spriteBatch.Draw(tex, gp, src, GlassDeep * (t * 0.30f * fade * smear), rot, origin
+                            , scale * MathHelper.Lerp(0.72f, 0.95f, t), SpriteEffects.None, 0f);
                     }
-                    float t = 1f - i / 6f;
-                    Vector2 gp = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
-                    Color gc = MoltenGlow with { A = 0 };
-                    Main.spriteBatch.Draw(tex, gp, src, gc * (t * 0.18f * fade), rot, origin, scale * MathHelper.Lerp(0.7f, 0.95f, t), SpriteEffects.None, 0f);
+                }
+
+                Effect fx = FishObsidianAssets.FishObsidianGloss;
+                Texture2D noise = CWRAsset.PerlinNoise?.Value;
+                if (fx != null && noise != null) {
+                    //贴图空间光向 = 世界光向抵消精灵旋转，高光随公转/自转沿轮廓扫
+                    float texAng = LightWorldAngle() - rot;
+                    float baseSpec = State == FishState.Gathering
+                        ? MathHelper.Lerp(0.5f, 1f, MathHelper.Clamp(StateTimer / GatherDuration, 0f, 1f)) : 1f;
+
+                    fx.Parameters["uLightDir"]?.SetValue(texAng.ToRotationVector2());
+                    fx.Parameters["uTexel"]?.SetValue(Vector2.One / src.Size());
+                    fx.Parameters["uSpec"]?.SetValue(baseSpec + specBoost * 2.2f + FreezeRamp * 0.9f);
+                    fx.Parameters["uSheenPhase"]?.SetValue(Main.GlobalTimeWrappedHourly * 1.5f + FishIndex * 2.1f + myAngle * 2f);
+                    fx.Parameters["uCrack"]?.SetValue(MathHelper.Clamp(crackPulse + crackHeat * 0.6f + FreezeRamp, 0f, 1f));
+                    fx.Parameters["uFlash"]?.SetValue(flash);
+                    fx.Parameters["uFade"]?.SetValue(fade);
+                    fx.Parameters["uSeed"]?.SetValue(FishIndex * 0.173f);
+                    fx.Parameters["uDepthDim"]?.SetValue(depth * 0.5f + 0.5f);
+                    fx.Parameters["uLightColor"]?.SetValue(lightColor.ToVector3());
+                    fx.Parameters["uNoiseTex"]?.SetValue(noise);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp
+                        , DepthStencilState.None, RasterizerState.CullNone, fx, Main.GameViewMatrix.TransformationMatrix);
+
+                    Main.spriteBatch.Draw(tex, drawPos, src, Color.White, rot, origin, scale, SpriteEffects.None, 0f);
+
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState
+                        , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+                }
+                else {
+                    //CPU 回退：压暗剪影 + 单层紫泽 + 应力余温，缺 .fxc 时不至于黑块或裸贴图
+                    float emberAmt = MathHelper.Clamp(crackPulse + crackHeat * 0.6f + FreezeRamp, 0f, 1f);
+                    Color body = Color.Lerp(lightColor, GlassDeep, 0.72f);
+                    body = Color.Lerp(body, Color.Black, (1f - (depth * 0.5f + 0.5f)) * 0.35f);
+                    Main.spriteBatch.Draw(tex, drawPos, src, body * fade, rot, origin, scale, SpriteEffects.None, 0f);
+                    Main.spriteBatch.Draw(tex, drawPos, src, (SheenPurple with { A = 0 }) * (glow * 0.14f * fade)
+                        , rot, origin, scale * 1.03f, SpriteEffects.None, 0f);
+                    if (emberAmt > 0.15f) {
+                        Main.spriteBatch.Draw(tex, drawPos, src, (EmberWarm with { A = 0 }) * (emberAmt * 0.3f * fade)
+                            , rot, origin, scale * 0.96f, SpriteEffects.None, 0f);
+                    }
+                    if (flash > 0.05f) {
+                        Main.spriteBatch.Draw(tex, drawPos, src, (RingGlow with { A = 0 }) * (flash * fade)
+                            , rot, origin, scale, SpriteEffects.None, 0f);
+                    }
                 }
             }
-
-            //黑曜石本体：压暗偏黑紫，模拟暗色玻璃（远景更暗）
-            Color body = Color.Lerp(lightColor, ObsidianDark, 0.55f);
-            body = Color.Lerp(body, Color.Black, (1f - (depth * 0.5f + 0.5f)) * 0.35f);
-            Main.spriteBatch.Draw(tex, drawPos, src, body * fade, rot, origin, scale, SpriteEffects.None, 0f);
-
-            //熔岩裂纹内辉（加色脉动）
-            Color crack = Color.Lerp(MoltenGlow, CrackGlow, crackPulse) with { A = 0 };
-            Main.spriteBatch.Draw(tex, drawPos, src, crack * (glow * crackPulse * 0.5f * fade), rot, origin, scale * 0.96f, SpriteEffects.None, 0f);
-            //外缘熔光
-            Main.spriteBatch.Draw(tex, drawPos, src, MoltenGlow with { A = 0 } * (glow * 0.28f * fade), rot, origin, scale * 1.08f, SpriteEffects.None, 0f);
 
             //冲击波环（顶点绘制）
             if (rings.Count > 0) {
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.AnisotropicClamp
                     , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-                Texture2D ringTex = CWRAsset.Placeholder_White.Value;
+                Texture2D ringTex = VaultAsset.placeholder2.Value;
                 foreach (ShockRing r in rings) {
                     r.Draw(ringTex);
                 }

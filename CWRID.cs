@@ -14,7 +14,6 @@ namespace CalamityOverhaul
         #region 物品ID引用
         public static int Item_SHPC => Get();
         public static int Item_HalibutCannon => Get();
-        public static int Item_Murasama => Get();
         public static int Item_Starmada => Get();
         public static int Item_DraedonPowerCell => Get();
         public static int Item_AquaticScourgeBag => Get();

@@ -7,7 +7,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
 {
     internal class NeutronLaser : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = 5;
             Projectile.height = 5;

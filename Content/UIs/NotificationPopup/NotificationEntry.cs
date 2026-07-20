@@ -51,7 +51,7 @@ namespace CalamityOverhaul.Content.UIs.NotificationPopup
         /// </summary>
         protected static void DrawPanelBackground(SpriteBatch sb, Rectangle rect,
             Color bgColor, Color borderColor, float alpha) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //外层柔和阴影，悬浮感
             for (int s = 3; s >= 1; s--) {

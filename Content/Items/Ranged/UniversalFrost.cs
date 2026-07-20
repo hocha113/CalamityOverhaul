@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 霜辉弹 高速霜光星屑 弱追踪
     internal class FrostGlimmer : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 9;
@@ -280,7 +280,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 极光霜幕 FrostAurora.fx 悬空展开 周期贯击+幕区霜灼
     internal class AuroraCurtain : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const float CurtainWidth = 720f;
         private const float CurtainHeight = 300f;
@@ -414,7 +414,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 霜光贯击 从极光幕降下纵向光矛
     internal class AuroraLance : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = 16;

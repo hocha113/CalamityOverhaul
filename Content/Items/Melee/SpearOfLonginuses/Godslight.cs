@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class Godslight : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         internal Vector2[] RayPoint;
         internal Vector2[] RayPointByX;
         internal int pointNum => 100;

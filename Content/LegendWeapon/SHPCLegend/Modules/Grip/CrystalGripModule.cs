@@ -53,7 +53,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
     /// <summary>水晶棱片：重力+220px 引力偏转，穿透 2</summary>
     internal sealed class SHPCCrystalShardProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Color GemCore = new(255, 170, 235);
         private static readonly Color GemGlow = new(210, 110, 255);
@@ -126,7 +126,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.01f) return;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             if (glow != null) {
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
             }
             if (white != null) {
                 Vector2 origin = white.Size() * 0.5f;
-                //旋转 45° 的双层矩形叠成闪烁菱晶（Placeholder_White 为 1px 白图，scale 即像素尺寸）
+                //旋转 45° 的双层矩形叠成闪烁菱晶（VaultAsset.placeholder2 为 1px 白图，scale 即像素尺寸）
                 spriteBatch.Draw(white, drawPos, null, GemGlow * fadeAlpha * 0.9f,
                     spin + MathHelper.PiOver4, origin, new Vector2(20f, 9f), SpriteEffects.None, 0f);
                 spriteBatch.Draw(white, drawPos, null, GemCore * fadeAlpha,

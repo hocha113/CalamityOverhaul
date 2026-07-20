@@ -1,3 +1,4 @@
+using CalamityOverhaul.Content.UIs.EntryDecisions;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -93,11 +94,13 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
             if (current == null) {
                 current = req;
-                PlayOpenSound();
             }
             else {
                 queue.Enqueue(req);
             }
+
+            //入世决策通道统一展示，出场时机与音效由 EntryDecisionUI 控制
+            EntryDecisionManager.Register(LegendUpgradeDecision.Instance);
         }
 
         /// <summary>确认并升级，推进队列</summary>
@@ -163,16 +166,8 @@ namespace CalamityOverhaul.Content.LegendWeapon
                     continue;
                 }
                 current = next;
-                PlayOpenSound();
                 return;
             }
-        }
-
-        private static void PlayOpenSound() {
-            if (Main.netMode == NetmodeID.Server) {
-                return;
-            }
-            SoundEngine.PlaySound(SoundID.MenuOpen with { Volume = 0.5f, Pitch = 0.2f });
         }
 
         /// <summary>每帧剔除失效当前请求</summary>
@@ -191,10 +186,14 @@ namespace CalamityOverhaul.Content.LegendWeapon
 
         public static LocalizedText QuestManagerHint { get; private set; }
         public static LocalizedText TrialPassed { get; private set; }
+        public static LocalizedText World_Text0 { get; private set; }
+        public static LocalizedText Text_Lang_0 { get; private set; }
 
         public override void SetStaticDefaults() {
             QuestManagerHint = this.GetLocalization(nameof(QuestManagerHint), () => "按下[{KEY}]打开任务列表");
             TrialPassed = this.GetLocalization(nameof(TrialPassed), () => "已通过");
+            World_Text0 = this.GetLocalization(nameof(World_Text0), () => "上次升级的世界:<{0}>|记录等级:<{1}>");
+            Text_Lang_0 = this.GetLocalization(nameof(Text_Lang_0), () => "试炼:");
         }
 
         public override void OnWorldUnload() => LegendUpgradeManager.CancelAll();

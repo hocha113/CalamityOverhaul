@@ -283,7 +283,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend
             if (index == 22) {
                 num = LegendUpgradeManagerSystem.TrialPassed.Value;
             }
-            string text = LegendData.GetLevelTrialPreText(item.CWR(), MurasamaLegend.MurasamaOverride.Text_Lang_0, num);
+            string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
             tooltips.ReplacePlaceholder("[Lang4]", text, "");
         }
     }

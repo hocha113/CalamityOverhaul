@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: Coupe moléculaire
-MuraTriggerDash.DisplayName: Coupe moléculaire
-MuraBreakerSlash.DisplayName: Demi-lune ascendante
-MuraExecutionCut.DisplayName: Coupe dimensionnelle · Fin
-MuraExecutionCutOnSpan.DisplayName: Coupe dimensionnelle · Début
-MuraGroundSmash.DisplayName: Chute au sol
-EndSkillEffectStart.DisplayName: Coupe dimensionnelle · Début
 RebelBladeFlyAttcke.DisplayName: Lame rebelle
 RebelBladeOrb.DisplayName: Orbe démoniaque
 RebelBladeBack.DisplayName: Lame rebelle
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: Invocation scintillante
 SpiralStarProjectile.DisplayName: Étoile spirale
 WaterZombie.DisplayName: Noyé
 OceanCurrent.DisplayName: Courant océanique
-PowerSoundEgg.DisplayName: Œuf résonant
 CrabulonFriendHitbox.DisplayName: Spore de Crabulon
 Fireball.DisplayName: Boule de feu
 DeadLaser.DisplayName: Laser mortel
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: Explosion d'acide sulfurique
 DawnshatterFireball.DisplayName: Feu de l'aube
 TransferItemProj.DisplayName: Objets en transit
 Crystal.DisplayName: Cristal
-MuraDimensionSlash.DisplayName: Coupe dimensionnelle
-MuraSlashArc.DisplayName: Coupe dimensionnelle
-MuraSlashLine.DisplayName: Coupe dimensionnelle
 WGGLumberjackSaw.DisplayName: Scie motorisée rouillée
 WGGLifeWeaverAcorn.DisplayName: Gland
 GammaRayBurst.DisplayName: Rafale de rayons gamma

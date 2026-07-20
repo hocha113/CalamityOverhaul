@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Stones;
+using InnoVault.PRT;
+using InnoVault.Trails;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -10,7 +14,8 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     /// <summary>
-    /// 珠宝鱼技能
+    /// 珠宝鱼技能：六色宝石按序轮换发射，每色一套音高与体色。<br/>
+    /// 材质语言：切割宝石（折射体非光源），棱面镜面闪为离散事件，命中碎成同色碎晶
     /// </summary>
     internal class FishJewel : FishSkill
     {
@@ -39,8 +44,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 int currentGemType = gemCycle % GemTypes;
                 gemCycle++;
 
+                //重音拍：与音效重音同拍，主宝石带入更重的命中演出
+                bool accentBeat = gemCycle % 4 == 0;
+
                 //生成主宝石弹幕
-                SpawnMainGem(source, player, position, velocity, damage, knockback, currentGemType);
+                SpawnMainGem(source, player, position, velocity, damage, knockback, currentGemType, accentBeat);
 
                 //根据领域等级生成额外的宝石碎片
                 int fragmentCount = 2 + HalibutData.GetDomainLayer() / 5;
@@ -49,8 +57,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //播放音乐化的宝石音效
                 PlayMusicalGemSound(position, currentGemType);
 
-                //生成节奏化的召唤特效
-                SpawnRhythmicEffect(position, currentGemType);
+                //生成节奏化的出膛特效
+                SpawnRhythmicEffect(position, velocity, currentGemType);
 
                 SetCooldown();
             }
@@ -59,7 +67,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnMainGem(IEntitySource source, Player player, Vector2 position,
-            Vector2 velocity, int damage, float knockback, int gemType) {
+            Vector2 velocity, int damage, float knockback, int gemType, bool accentBeat) {
 
             //稍微加快速度，增加节奏感
             Vector2 boostedVelocity = velocity * 1.15f;
@@ -72,7 +80,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 (int)(damage * (0.5f + HalibutData.GetDomainLayer() * 0.15f)),
                 knockback * 1.2f,
                 player.whoAmI,
-                ai0: gemType
+                ai0: gemType,
+                ai2: accentBeat ? 1f : 0f
             );
         }
 
@@ -137,72 +146,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>召唤 VFX</summary>
-        private void SpawnRhythmicEffect(Vector2 position, int gemType) {
-            Color gemColor = GetGemColor(gemType);
-
-            //主脉冲环 - 随节奏扩散
-            int pulseCount = 15;
-            float pulseIntensity = 1.0f;
-
-            //每4次射击增强一次视觉效果
-            if (gemCycle % 4 == 0) {
-                pulseCount = 25;
-                pulseIntensity = 1.5f;
+        /// <summary>出膛 VFX：定向压扁环 + 同色碎晶前抛 + 星闪，重音拍加强，六色循环完成时六色星闪扇</summary>
+        private void SpawnRhythmicEffect(Vector2 position, Vector2 velocity, int gemType) {
+            if (Main.dedServ) {
+                return;
             }
+            bool accentBeat = gemCycle % 4 == 0;
+            FishJewelVFX.LaunchBurst(position, velocity, gemType, accentBeat);
 
-            //脉冲环形粒子
-            for (int i = 0; i < pulseCount; i++) {
-                float angle = MathHelper.TwoPi * i / pulseCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 10f) * pulseIntensity;
-
-                Dust sparkle = Dust.NewDustPerfect(
-                    position,
-                    DustID.GemTopaz + gemType,
-                    velocity,
-                    100,
-                    gemColor,
-                    Main.rand.NextFloat(1.5f, 2.5f) * pulseIntensity
-                );
-                sparkle.noGravity = true;
-                sparkle.fadeIn = 1.4f;
-            }
-
-            //节奏性闪光粒子
-            int sparkleCount = 10;
-            if (gemCycle % 2 == 0) {
-                sparkleCount = 15; //偶数拍更多粒子
-            }
-
-            for (int i = 0; i < sparkleCount; i++) {
-                Dust glitter = Dust.NewDustPerfect(
-                    position + Main.rand.NextVector2Circular(25f, 25f),
-                    DustID.Enchanted_Gold,
-                    Main.rand.NextVector2Circular(4f, 4f),
-                    100,
-                    Color.Lerp(gemColor, Color.White, 0.6f),
-                    Main.rand.NextFloat(1.2f, 2.0f)
-                );
-                glitter.noGravity = true;
-            }
-
-            //每完成一个循环（6种宝石）的华丽爆发
+            //每完成一个循环（6种宝石）：序列收束的可视化
             if (gemCycle % GemTypes == 0) {
-                for (int i = 0; i < 30; i++) {
-                    float angle = MathHelper.TwoPi * i / 30f;
-                    Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(8f, 15f);
-
-                    Dust burst = Dust.NewDustPerfect(
-                        position,
-                        DustID.RainbowMk2,
-                        vel,
-                        100,
-                        Color.White,
-                        Main.rand.NextFloat(2f, 3f)
-                    );
-                    burst.noGravity = true;
-                    burst.fadeIn = 1.8f;
-                }
+                FishJewelVFX.SequenceFan(position, velocity);
             }
         }
 
@@ -236,17 +190,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 主宝石弹幕
+    /// 主宝石弹幕：宝石物品贴图为实体本体（暗体色压底），自旋渐加速，
+    /// 棱面随相位打出离散镜面闪；拖尾为同色窄条带。<br/>
+    /// ai[0]=宝石类型 ai[1]=计时 ai[2]=重音拍（1 命中附顿帧与小震）
     /// </summary>
-    internal class JewelGemProjectile : ModProjectile
+    internal class JewelGemProjectile : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float GemType => ref Projectile.ai[0];
         private ref float Time => ref Projectile.ai[1];
+        private ref float Accent => ref Projectile.ai[2];
 
         private float rotationSpeed = 0f;
-        private float musicPulse = 0f; //音乐节奏脉动
+        private float facetGlint = 0f;    //当前棱面反光强度 0..1，AI 计算 PreDraw 消费
+        private int glintDropCooldown = 0;
+        private Trail trail;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 24; //更长的拖尾
@@ -269,71 +228,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void AI() {
             Time++;
 
-            //节奏性旋转 - 加快旋转速度
-            rotationSpeed += 0.025f;
+            //自旋加速后饱和：棱面闪点节奏随之变密（飞行期演化量）
+            rotationSpeed = Math.Min(rotationSpeed + 0.0035f, 0.22f);
             Projectile.rotation += rotationSpeed;
-
-            //音乐节奏脉动（4拍节奏）
-            musicPulse = (float)Math.Sin(Time * 0.3f) * 0.5f + 0.5f;
 
             //轻微的螺旋运动 - 增加视觉动感
             float spiralWave = (float)Math.Sin(Time * 0.2f) * 0.5f;
             Vector2 perpendicular = Projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2);
             Projectile.velocity += perpendicular * spiralWave;
 
-            //璀璨照明 - 随音乐节奏脉动
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-            float pulse = 0.7f + musicPulse * 0.8f; //更强的脉动
-            Lighting.AddLight(Projectile.Center,
-                gemColor.R / 255f * pulse * 2.0f,
-                gemColor.G / 255f * pulse * 2.0f,
-                gemColor.B / 255f * pulse * 2.0f);
+            //棱面 spec flash：facetCount 个棱面随自旋对准光源，尖锐余弦脉冲 ≤2 帧
+            int facetCount = 3 + (int)GemType % 3;
+            float facetPhase = facetCount * Projectile.rotation + Projectile.whoAmI * 0.61f;
+            float glint = MathF.Pow(MathF.Max(0f, MathF.Cos(facetPhase)), 32f);
+            bool glintRise = glint > 0.5f && facetGlint <= 0.5f;
+            facetGlint = glint;
 
-            //节奏性粒子生成 - 在"拍点"上生成更多粒子
-            bool isBeat = (int)(Time / 15f) != (int)((Time - 1) / 15f); //每15帧一个拍点
-            if (Main.rand.NextBool(isBeat ? 1 : 4)) {
-                SpawnRhythmicParticles(isBeat);
+            //折射体照明：低幅常亮，闪点瞬间提亮
+            FishJewelVFX.JewelPalette pal = FishJewelVFX.Palette((int)GemType);
+            Lighting.AddLight(Projectile.Center, pal.Bright.ToVector3() * (0.42f + facetGlint * 0.5f));
+
+            if (glintDropCooldown > 0) {
+                glintDropCooldown--;
+            }
+            if (glintRise && glintDropCooldown <= 0 && !Main.dedServ) {
+                //闪点落屑：一枚悬滞光痕挂在闪点处，短暂活过弹体经过
+                glintDropCooldown = 10;
+                PRTLoader.NewParticle<PRT_FishJewelGlint>(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f)
+                    , Vector2.Zero, default, 0.55f)?.Configure((int)GemType, 12, Projectile.rotation + 0.6f, 10f);
+            }
+
+            //掉屑频率∝速度：随速度衰减而稀疏
+            if (!Main.dedServ && Main.rand.NextFloat() < Projectile.velocity.Length() * 0.022f) {
+                Dust trailDust = Dust.NewDustPerfect(
+                    Projectile.Center - Projectile.velocity * 1.5f,
+                    DustID.GemTopaz + (int)GemType,
+                    -Projectile.velocity * 0.12f + Main.rand.NextVector2Circular(0.5f, 0.5f),
+                    150, pal.Bright, Main.rand.NextFloat(0.8f, 1.2f));
+                trailDust.noGravity = true;
             }
 
             //速度衰减 - 稍慢一些保持节奏感
             Projectile.velocity *= 0.997f;
         }
 
-        private void SpawnRhythmicParticles(bool isBeat) {
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-
-            int particleCount = isBeat ? 3 : 1; //拍点时生成更多粒子
-
-            for (int i = 0; i < particleCount; i++) {
-                Dust trail = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                    DustID.GemTopaz + (int)GemType,
-                    -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f),
-                    100,
-                    gemColor,
-                    Main.rand.NextFloat(1.5f, 2.2f) * (isBeat ? 1.3f : 1.0f)
-                );
-                trail.noGravity = true;
-                trail.fadeIn = 1.4f;
-            }
-
-            //拍点时的额外闪光
-            if (isBeat && Main.rand.NextBool(2)) {
-                Dust sparkle = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Enchanted_Gold,
-                    Main.rand.NextVector2Circular(3f, 3f),
-                    100,
-                    Color.Lerp(gemColor, Color.White, 0.7f),
-                    Main.rand.NextFloat(1.5f, 2.0f)
-                );
-                sparkle.noGravity = true;
-            }
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-
             //击中音效 - 音乐化
             float[] hitPitches = new float[] { 0.2f, 0.3f, 0.4f, 0.45f, 0.55f, 0.65f };
             SoundEngine.PlaySound(SoundID.Item27 with {
@@ -347,160 +286,102 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = hitPitches[(int)GemType] + 0.3f
             }, Projectile.Center);
 
-            //节奏性爆发宝石碎片
-            for (int i = 0; i < 25; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust shard = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.GemTopaz + (int)GemType,
-                    velocity,
-                    100,
-                    gemColor,
-                    Main.rand.NextFloat(1.8f, 3.0f)
-                );
-                shard.noGravity = true;
-                shard.fadeIn = 1.5f;
-            }
+            bool accent = Accent >= 1f;
+            //同色碎晶飞溅：顺入射方向迸溅的实体晶片
+            FishJewelVFX.ImpactBurst(Projectile.Center, Projectile.velocity, (int)GemType, accent);
 
-            //闪光爆发
-            for (int i = 0; i < 15; i++) {
-                Dust flash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Enchanted_Gold,
-                    Main.rand.NextVector2Circular(6f, 6f),
-                    100,
-                    Color.White,
-                    Main.rand.NextFloat(2.0f, 3.0f)
-                );
-                flash.noGravity = true;
+            //重音拍命中：短顿帧 + 小幅定向震（手感层，不动数值）
+            if (accent) {
+                target.CWR().TimeFrozenTick = 2;
+                FishJewelVFX.Punch(Projectile.Center, Projectile.velocity, 2.2f, 9f, 6);
             }
         }
 
         public override void OnKill(int timeLeft) {
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-
-            //消失时的华丽爆破
-            for (int i = 0; i < 30; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
-                Dust explosion = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.GemTopaz + (int)GemType,
-                    velocity,
-                    100,
-                    gemColor,
-                    Main.rand.NextFloat(1.8f, 2.8f)
-                );
-                explosion.noGravity = true;
+            if (Main.dedServ) {
+                return;
             }
+            //宝石破碎：碎晶四溅活过弹体；条带改铺分段驻留光痕，尾部先蚀
+            FishJewelVFX.ShatterBurst(Projectile.Center, Projectile.velocity, (int)GemType, 8);
+            FishJewelVFX.RibbonResidue(Projectile, (int)GemType);
+        }
+
+        private float RibbonWidth(float completion) => (1f - completion) * 11f + 2f; //completion 0 = 头端最宽
+
+        private Color RibbonColor(Vector2 coord) => Color.White * (1f - coord.X);
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect fx = FishJewelAssets.FishJewelTrail;
+            if (fx == null || !Projectile.active) {
+                return;
+            }
+            FishJewelVFX.ApplyTrail(fx, (int)GemType, Projectile.whoAmI * 0.73f);
+            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trail, RibbonWidth, RibbonColor, fx);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //获取宝石纹理
             int gemItemID = FishJewel.GetGemItemID((int)GemType);
             Texture2D gemTex = TextureAssets.Item[gemItemID].Value;
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
+            FishJewelVFX.JewelPalette pal = FishJewelVFX.Palette((int)GemType);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = gemTex.Size() / 2f;
+            float fade = Projectile.Opacity;
+            float glint = facetGlint;
 
-            float fadeAlpha = 1f - Projectile.alpha / 255f;
-
-            //节奏残影拖尾
-            for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) continue;
-
-                float trailProgress = 1f - i / (float)Projectile.oldPos.Length;
-                float rhythmicAlpha = trailProgress * (0.5f + musicPulse * 0.3f) * fadeAlpha;
-
-                Color trailColor = Color.Lerp(gemColor, Color.White, trailProgress * 0.4f) * rhythmicAlpha;
-
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float rotation = Projectile.oldRot[i];
-                float scale = Projectile.scale * (0.6f + trailProgress * 0.4f);
-
-                Main.EntitySpriteDraw(
-                    gemTex,
-                    drawPos,
-                    null,
-                    trailColor,
-                    rotation,
-                    gemTex.Size() / 2f,
-                    scale,
-                    SpriteEffects.None,
-                    0
-                );
+            //底层内火：小径向底光只作垫层
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null) {
+                Main.EntitySpriteDraw(glow, drawPos, null, (pal.Bright with { A = 0 }) * ((0.3f + glint * 0.25f) * fade)
+                    , 0f, glow.Size() / 2f, Projectile.scale * (0.4f + glint * 0.08f), SpriteEffects.None, 0);
             }
 
-            //绘制主体宝石
-            Vector2 mainDrawPos = Projectile.Center - Main.screenPosition;
-            float pulse = 0.8f + musicPulse * 0.4f; //节奏脉动
-
-            //多层光晕
-            for (int i = 0; i < 4; i++) {
-                float glowScale = Projectile.scale * (1.2f + i * 0.25f + musicPulse * 0.2f) * pulse;
-                float glowAlpha = (0.5f - i * 0.1f) * fadeAlpha;
-
-                Color glowColor = Color.Lerp(gemColor, Color.White, i * 0.2f) * glowAlpha;
-
-                Main.EntitySpriteDraw(
-                    gemTex,
-                    mainDrawPos,
-                    null,
-                    glowColor,
-                    Projectile.rotation + i * 0.15f,
-                    gemTex.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0
-                );
+            //旋转拖影 + 速度残影：残影同时回退自旋相位与位置，编码自旋与运动方向
+            Color smear = pal.Bright with { A = 0 };
+            for (int i = 2; i >= 1; i--) {
+                Main.EntitySpriteDraw(gemTex, drawPos - Projectile.velocity * (i * 0.9f), null
+                    , smear * ((0.32f / i) * fade), Projectile.rotation - rotationSpeed * i * 3.4f, origin
+                    , Projectile.scale * (1f - i * 0.07f), SpriteEffects.None, 0);
             }
 
-            //绘制主体
-            Color mainColor = Color.White * fadeAlpha;
-            Main.EntitySpriteDraw(
-                gemTex,
-                mainDrawPos,
-                null,
-                mainColor,
-                Projectile.rotation,
-                gemTex.Size() / 2f,
-                Projectile.scale * (1.0f + musicPulse * 0.1f),
-                SpriteEffects.None,
-                0
-            );
+            //本体：暗宝石体色实体（AlphaBlend），闪点帧整体提亮，平时压暗
+            Color bodyCol = Color.Lerp(pal.Deep, pal.Bright, 0.4f + glint * 0.45f);
+            Main.EntitySpriteDraw(gemTex, drawPos, null, bodyCol * fade, Projectile.rotation, origin
+                , Projectile.scale, SpriteEffects.None, 0);
 
-            //绘制节奏性核心闪光
-            Color coreColor = Color.White * pulse * 0.9f * fadeAlpha;
-            Main.EntitySpriteDraw(
-                gemTex,
-                mainDrawPos,
-                null,
-                coreColor,
-                Projectile.rotation + MathHelper.PiOver4,
-                gemTex.Size() / 2f,
-                Projectile.scale * 0.7f * (0.8f + musicPulse * 0.4f),
-                SpriteEffects.None,
-                0
-            );
+            //棱面反光：随宝石姿态的窄反光线 + 四向星芒，离散事件仅峰值帧可见
+            if (glint > 0.03f) {
+                Color gcol = (pal.Glint with { A = 0 }) * (glint * fade);
+                Texture2D streak = CWRAsset.Extra_98?.Value;
+                if (streak != null) {
+                    Main.EntitySpriteDraw(streak, drawPos, null, gcol * 0.85f, Projectile.rotation + 0.6f
+                        , streak.Size() / 2f, new Vector2(0.12f, 0.4f) * Projectile.scale, SpriteEffects.None, 0);
+                }
+                Texture2D cross = FishJewelAssets.RayCross?.Value;
+                if (cross != null) {
+                    Main.EntitySpriteDraw(cross, drawPos, null, gcol, Projectile.rotation * 0.25f
+                        , cross.Size() / 2f, Projectile.scale * (0.14f + glint * 0.14f), SpriteEffects.None, 0);
+                }
+            }
 
             return false;
-        }
-
-        public override Color? GetAlpha(Color lightColor) {
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-            return Color.Lerp(lightColor, gemColor, 0.8f);
         }
     }
 
     /// <summary>
-    /// 宝石碎片弹幕
+    /// 宝石碎片弹幕：小晶体单棱翻滚，每转对准一次打出反光；拖尾为更窄的同色条带。<br/>
+    /// ai[0]=宝石类型 ai[1]=生成序号 localAI[0]=计时
     /// </summary>
-    internal class JewelFragmentProjectile : ModProjectile
+    internal class JewelFragmentProjectile : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float GemType => ref Projectile.ai[0];
         private ref float Time => ref Projectile.localAI[0];
 
         private float rotationSpeed = 0f;
         private float rhythmPhase = 0f;
+        private float facetGlint = 0f;
+        private Trail trail;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
@@ -545,132 +426,83 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //节奏性照明
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-            float lightPulse = 0.6f + rhythmPulse * 0.6f;
-            Lighting.AddLight(Projectile.Center,
-                gemColor.R / 255f * lightPulse,
-                gemColor.G / 255f * lightPulse,
-                gemColor.B / 255f * lightPulse);
+            //单棱翻滚反光：每转对准一次，尖锐脉冲
+            facetGlint = MathF.Pow(MathF.Max(0f, MathF.Cos(Projectile.rotation + rhythmPhase)), 32f);
 
-            //节奏性粒子效果
-            bool isBeat = (int)(Time / 12f) != (int)((Time - 1) / 12f);
-            if (Main.rand.NextBool(isBeat ? 2 : 6)) {
-                Dust trail = Dust.NewDustPerfect(
+            //折射体照明：低幅，闪点提亮
+            FishJewelVFX.JewelPalette pal = FishJewelVFX.Palette((int)GemType);
+            Lighting.AddLight(Projectile.Center, pal.Bright.ToVector3() * (0.28f + facetGlint * 0.35f));
+
+            //稀疏掉屑∝速度
+            if (!Main.dedServ && Main.rand.NextFloat() < Projectile.velocity.Length() * 0.012f) {
+                Dust trailDust = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.GemTopaz + (int)GemType,
-                    -Projectile.velocity * 0.4f,
-                    100,
-                    gemColor,
-                    Main.rand.NextFloat(0.9f, 1.4f) * (isBeat ? 1.4f : 1.0f)
-                );
-                trail.noGravity = true;
+                    -Projectile.velocity * 0.3f,
+                    150, pal.Bright, Main.rand.NextFloat(0.7f, 1.1f));
+                trailDust.noGravity = true;
             }
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
-
             //小型击中音效
             float[] fragmentPitches = new float[] { 0.5f, 0.6f, 0.7f, 0.75f, 0.85f, 0.95f };
             SoundEngine.PlaySound(SoundID.Item27 with {
                 Volume = 0.4f,
                 Pitch = fragmentPitches[(int)GemType]
             }, Projectile.Center);
+        }
 
-            //小型击中特效
-            for (int i = 0; i < 10; i++) {
-                Dust shard = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.GemTopaz + (int)GemType,
-                    Main.rand.NextVector2Circular(5f, 5f),
-                    100,
-                    gemColor,
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                shard.noGravity = true;
+        public override void OnKill(int timeLeft) {
+            if (Main.dedServ) {
+                return;
             }
+            //小晶破碎：命中与撞墙同走此处，碎晶与残痕活过弹体
+            FishJewelVFX.ShatterBurst(Projectile.Center, Projectile.velocity, (int)GemType, 4);
+            FishJewelVFX.RibbonResidue(Projectile, (int)GemType);
+        }
+
+        private float RibbonWidth(float completion) => (1f - completion) * 6f + 1.5f;
+
+        private Color RibbonColor(Vector2 coord) => Color.White * (0.85f - coord.X * 0.85f);
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect fx = FishJewelAssets.FishJewelTrail;
+            if (fx == null || !Projectile.active) {
+                return;
+            }
+            FishJewelVFX.ApplyTrail(fx, (int)GemType, Projectile.whoAmI * 0.73f);
+            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trail, RibbonWidth, RibbonColor, fx);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //获取宝石纹理
             int gemItemID = FishJewel.GetGemItemID((int)GemType);
             Texture2D gemTex = TextureAssets.Item[gemItemID].Value;
-            Color gemColor = FishJewel.GetGemColor((int)GemType);
+            FishJewelVFX.JewelPalette pal = FishJewelVFX.Palette((int)GemType);
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = gemTex.Size() / 2f;
+            float fade = Projectile.Opacity;
+            float glint = facetGlint;
+            float baseScale = Projectile.scale * 0.75f;
 
-            float fadeAlpha = 1f - Projectile.alpha / 255f;
-            float rhythmPulse = (float)Math.Sin(Time * 0.4f + rhythmPhase) * 0.5f + 0.5f;
+            //旋转拖影：单枚残影回退自旋相位与位置
+            Color smear = pal.Bright with { A = 0 };
+            Main.EntitySpriteDraw(gemTex, drawPos - Projectile.velocity * 0.9f, null, smear * (0.28f * fade)
+                , Projectile.rotation - rotationSpeed * 3.2f, origin, baseScale * 0.92f, SpriteEffects.None, 0);
 
-            //节奏残影拖尾
-            for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) continue;
+            //本体：暗体色小晶
+            Color bodyCol = Color.Lerp(pal.Deep, pal.Bright, 0.4f + glint * 0.45f);
+            Main.EntitySpriteDraw(gemTex, drawPos, null, bodyCol * fade, Projectile.rotation, origin
+                , baseScale, SpriteEffects.None, 0);
 
-                float progress = 1f - i / (float)Projectile.oldPos.Length;
-                Color trailColor = gemColor * progress * (0.4f + rhythmPulse * 0.3f) * fadeAlpha;
-
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float scale = Projectile.scale * 0.6f * (0.5f + progress * 0.5f);
-
-                Main.EntitySpriteDraw(
-                    gemTex,
-                    drawPos,
-                    null,
-                    trailColor,
-                    Projectile.oldRot[i],
-                    gemTex.Size() / 2f,
-                    scale,
-                    SpriteEffects.None,
-                    0
-                );
+            //翻滚反光：仅峰值帧的星点
+            if (glint > 0.05f) {
+                Texture2D cross = FishJewelAssets.RayCross?.Value;
+                if (cross != null) {
+                    Main.EntitySpriteDraw(cross, drawPos, null, (pal.Glint with { A = 0 }) * (glint * fade)
+                        , Projectile.rotation * 0.25f, cross.Size() / 2f, baseScale * 0.16f, SpriteEffects.None, 0);
+                }
             }
-
-            //绘制主体
-            Vector2 mainDrawPos = Projectile.Center - Main.screenPosition;
-            float pulse = 0.7f + rhythmPulse * 0.5f;
-
-            //节奏性光晕效果
-            for (int i = 0; i < 2; i++) {
-                float glowScale = Projectile.scale * (1.1f + i * 0.2f + rhythmPulse * 0.15f) * pulse;
-                Color glowColor = Color.Lerp(gemColor, Color.White, i * 0.35f) * (0.35f - i * 0.1f) * fadeAlpha;
-
-                Main.EntitySpriteDraw(
-                    gemTex,
-                    mainDrawPos,
-                    null,
-                    glowColor,
-                    Projectile.rotation,
-                    gemTex.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //主体
-            Main.EntitySpriteDraw(
-                gemTex,
-                mainDrawPos,
-                null,
-                Color.White * fadeAlpha,
-                Projectile.rotation,
-                gemTex.Size() / 2f,
-                Projectile.scale * 0.75f * (0.9f + rhythmPulse * 0.2f),
-                SpriteEffects.None,
-                0
-            );
-
-            //核心闪光
-            Main.EntitySpriteDraw(
-                gemTex,
-                mainDrawPos,
-                null,
-                Color.White * pulse * 0.7f * fadeAlpha,
-                Projectile.rotation + MathHelper.PiOver4,
-                gemTex.Size() / 2f,
-                Projectile.scale * 0.5f * (0.8f + rhythmPulse * 0.4f),
-                SpriteEffects.None,
-                0
-            );
 
             return false;
         }

@@ -344,7 +344,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// </summary>
     internal sealed class SHPCErgoEchoProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int HistLen = 20;
         //三重相位残影各自的滞后帧

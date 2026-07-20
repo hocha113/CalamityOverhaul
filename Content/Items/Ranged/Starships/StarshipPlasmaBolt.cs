@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //群星巨舰主弹：高速等离子星弹，命中赋予超位崩解
     internal class StarshipPlasmaBolt : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 12;

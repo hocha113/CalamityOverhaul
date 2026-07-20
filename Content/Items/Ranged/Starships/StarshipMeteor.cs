@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //终幕陨石雨：极强追踪，无视目标防御与伤害减免
     internal class StarshipMeteor : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //ai[0]启动延迟帧；ai[1]陨石雨总数，触发星系
         private ref float StartDelay => ref Projectile.ai[0];

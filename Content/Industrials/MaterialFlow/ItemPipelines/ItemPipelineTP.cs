@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.Industrials.ElectricPowers;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using InnoVault.Concurrent;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
 {
     /// <summary>物流管道 TP，路由选路+反压抽取+卡死自愈+8帧侧扫</summary>
     [VaultLoaden(CWRConstant.Asset + "MaterialFlow")]
-    internal class ItemPipelineTP : TileProcessor, ICWRLoader
+    internal class ItemPipelineTP : TileProcessor, ICWRLoader, IItemFilterHost
     {
         #region 资源和本地化
         public override int TargetTileID => ModContent.TileType<ItemPipelineTile>();
@@ -146,14 +146,8 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         /// <summary>侧位已初始化</summary>
         private bool sideStatesInitialized;
 
-        /// <summary>物品筛选器</summary>
-        internal Item ItemFilter;
-        /// <summary>筛选器版本缓存</summary>
-        private int cachedFilterVersion = -1;
-        /// <summary>筛选 ID 集合缓存</summary>
-        private readonly HashSet<int> cachedFilterItemIds = [];
-        /// <summary>空筛选即允许全部</summary>
-        private bool cachedFilterAllowAll = true;
+        /// <summary>物品筛选名单，自带 O(1) 查询，空名单=全部放行</summary>
+        internal ItemFilterSet Filter = new();
 
         /// <summary>悬停动画进度</summary>
         internal float hoverSengs;
@@ -170,7 +164,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 new ItemPipelineSideState(new Point16(-1, 0), 2),//左
                 new ItemPipelineSideState(new Point16(1, 0), 3)  //右
             ];
-            ItemFilter = new Item();
+            Filter = new ItemFilterSet();
             sideStatesInitialized = false;
 
             //新管标脏路由
@@ -695,55 +689,45 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         #endregion
 
         #region 模式切换与右键交互
+
+        ItemFilterSet IItemFilterHost.Filter => Filter;
+        public string FilterHostName => Lang.GetItemNameValue(ModContent.ItemType<ItemPipeline>());
+        public bool FilterHostAlive => Active;
+        public Vector2? FilterHostWorldCenter => CenterInWorld;
+        public void OnFilterChanged() => SendData();
+
         public override bool? RightClick(int i, int j, Tile tile, Player player) {
             if (Mode == ItemPipelineMode.Normal) {
                 return null;
             }
 
             Item item = player.GetItem();
-            if (item.type == ModContent.ItemType<ItemFilter>()) {
-                ItemFilter = item.Clone();
-                var sourceData = item.GetGlobalItem<ItemFilterData>();
-                var targetData = ItemFilter.GetGlobalItem<ItemFilterData>();
-                targetData.SetItems(sourceData.Items);
-                cachedFilterVersion = -1;//强制下次重新缓存
+
+            //手持过滤卡：把卡上名单安装到本管道
+            if (item.ModItem is ItemFilter card) {
+                Filter.CopyFrom(card.Filter);
 
                 SoundEngine.PlaySound(SoundID.Grab, CenterInWorld);
+                if (!VaultUtils.isServer) {
+                    CombatText.NewText(HitBox, GetModeColor(), ItemFilterEditorUI.InstalledText.Value);
+                }
                 SendData();
                 return true;
             }
+
+            //空手右键输入/输出端：就地打开名单编辑器
+            if (!item.Alives()) {
+                if (player.whoAmI == Main.myPlayer) {
+                    ItemFilterEditorUI.Instance?.ToggleFor(this);
+                }
+                return true;
+            }
+
             return null;
         }
 
-        /// <summary>
-        /// 检查物品是否被筛选器允许 (使用 HashSet 缓存大幅减少每帧成本)
-        /// </summary>
-        private bool IsItemAllowedByFilter(int itemType) {
-            //没设置筛选器
-            if (ItemFilter == null || ItemFilter.IsAir) {
-                return true;
-            }
-            if (ItemFilter.type != ModContent.ItemType<ItemFilter>()) {
-                return true;
-            }
-
-            var filterData = ItemFilter.GetGlobalItem<ItemFilterData>();
-            //版本变化或首次缓存, 重建集合
-            if (filterData.DataVersion != cachedFilterVersion) {
-                cachedFilterItemIds.Clear();
-                if (filterData.Items != null) {
-                    for (int i = 0; i < filterData.Items.Count; i++) {
-                        cachedFilterItemIds.Add(filterData.Items[i]);
-                    }
-                }
-                cachedFilterAllowAll = cachedFilterItemIds.Count == 0;
-                cachedFilterVersion = filterData.DataVersion;
-            }
-            if (cachedFilterAllowAll) {
-                return true;
-            }
-            return cachedFilterItemIds.Contains(itemType);
-        }
+        /// <summary>检查物品是否被筛选名单放行(空名单=全部放行)</summary>
+        private bool IsItemAllowedByFilter(int itemType) => Filter.Matches(itemType);
 
         public void CycleMode() {
             if (!IsEndpoint) {
@@ -797,7 +781,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 data.Write(item.SourceDirection);
                 data.Write(item.ReverseHops);
             }
-            ItemIO.Send(ItemFilter ?? new Item(), data);
+            Filter.Write(data);
         }
 
         public override void ReceiveData(BinaryReader reader, int whoAmI) {
@@ -823,8 +807,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             else {
                 CurrentItem = null;
             }
-            ItemFilter = ItemIO.Receive(reader);
-            cachedFilterVersion = -1;
+            Filter.Read(reader);
         }
 
         public override void SaveData(TagCompound tag) {
@@ -844,8 +827,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
 
                 try {
-                    ItemFilter ??= new Item();
-                    tag["ItemPipeline_ItemFilter"] = ItemIO.Save(ItemFilter);
+                    Filter.Save(tag, "ItemPipeline_Filter");
                 } catch (Exception ex) {
                     //单独的筛选器序列化失败不应影响主数据保存
                     CWRMod.Instance.Logger.Error($"[ItemPipelineTP:SaveData] save filter failed:{ex.Message}");
@@ -859,8 +841,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             //先把可变状态归位, 异常退出时不会留下残缺数据
             Mode = ItemPipelineMode.Normal;
             CurrentItem = null;
-            ItemFilter = new Item();
-            cachedFilterVersion = -1;
+            Filter = new ItemFilterSet();
 
             if (tag == null) {
                 ItemPipelineNetwork.MarkDirty();
@@ -895,21 +876,23 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
                 }
 
                 try {
-                    if (tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag) && filterTag != null) {
-                        ItemFilter = ItemIO.Load(filterTag) ?? new Item();
+                    //新格式优先；旧存档存的是整只过滤卡物品，迁移垫片会把旧名单回填进卡的 ModItem
+                    if (!Filter.TryLoad(tag, "ItemPipeline_Filter")
+                        && tag.TryGet<TagCompound>("ItemPipeline_ItemFilter", out var filterTag) && filterTag != null
+                        && ItemIO.Load(filterTag) is Item legacyCard && legacyCard.ModItem is ItemFilter card) {
+                        Filter.CopyFrom(card.Filter);
                     }
                 } catch (Exception ex) {
                     CWRMod.Instance.Logger.Error($"[ItemPipelineTP:LoadData] load filter failed:{ex.Message}");
-                    ItemFilter = new Item();
+                    Filter = new ItemFilterSet();
                 }
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[ItemPipelineTP:LoadData] an error has occurred:{ex.Message}");
                 Mode = ItemPipelineMode.Normal;
                 CurrentItem = null;
-                ItemFilter = new Item();
+                Filter = new ItemFilterSet();
             }
 
-            cachedFilterVersion = -1;
             //加载完毕后强制刷新一次路由
             ItemPipelineNetwork.MarkDirty();
         }
@@ -985,28 +968,30 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
         }
 
         private void DrawFilterDisplay(SpriteBatch spriteBatch) {
-            if (ItemFilter == null || ItemFilter.IsAir) return;
-            if (ItemFilter.type != ModContent.ItemType<ItemFilter>()) return;
-            if (hoverSengs <= 0.01f) return;
+            if (Filter.IsEmpty || hoverSengs <= 0.01f) {
+                return;
+            }
 
-            var filterData = ItemFilter.GetGlobalItem<ItemFilterData>();
-            if (filterData.Items.Count == 0) return;
-
+            IReadOnlyList<int> filterItems = Filter.OrderedItems;
             const float maxRadius = 80f;
             float currentRadius = maxRadius * hoverSengs;
-            float angleIncrement = MathHelper.TwoPi / filterData.Items.Count;
+            float angleIncrement = MathHelper.TwoPi / filterItems.Count;
 
             Vector2 drawCenter = CenterInWorld - Main.screenPosition;
+            //黑名单以警示红着色区分
+            Color modeTint = Filter.Mode == ItemFilterMode.Whitelist
+                ? Color.White
+                : ItemFilterTheme.AccentBlacklist;
 
-            for (int i = 0; i < filterData.Items.Count; i++) {
-                int itemType = filterData.Items[i];
+            for (int i = 0; i < filterItems.Count; i++) {
+                int itemType = filterItems[i];
                 if (itemType <= ItemID.None) continue;
 
                 float currentAngle = angleIncrement * i - MathHelper.PiOver2;
                 Vector2 offset = new Vector2((float)Math.Cos(currentAngle), (float)Math.Sin(currentAngle)) * currentRadius;
                 Vector2 itemPos = drawCenter + offset;
 
-                Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), Color.White);
+                Color drawColor = VaultUtils.MultiStepColorLerp(hoverSengs, Lighting.GetColor(Position.ToPoint()), modeTint);
                 float scale = hoverSengs * 0.8f;
 
                 VaultUtils.SafeLoadItem(itemType);

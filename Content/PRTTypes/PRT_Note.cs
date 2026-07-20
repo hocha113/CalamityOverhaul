@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.PRTTypes
 {
     internal class PRT_Note : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private int noteType;
         private float floatOffset;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -18,7 +18,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int ResearchDuration => 60 * 18;
         //活跃恶鬼索引
         private static readonly List<int> ActiveHungries = new();
-        private static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
+        internal static int MaxHungries => (1 + HalibutData.GetDomainLayer() / 3); //最多1-4个恶鬼
 
         public override bool? Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
@@ -48,13 +48,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (hungryProj >= 0 && hungryProj < Main.maxProjectiles) {
                         ActiveHungries.Add(hungryProj);
 
-                        //生成召唤特效
-                        SpawnSummonEffect(spawnPos);
+                        //显形收束:血珠倒吸+内收暗环, 本体端负责撑开
+                        FishHungerVFX.SummonConverge(spawnPos);
 
-                        //恶鬼召唤音效
+                        //恶鬼召唤音效:肉响+湿滑挤出
                         SoundEngine.PlaySound(SoundID.NPCHit1 with {
                             Volume = 0.6f,
                             Pitch = -0.3f
+                        }, spawnPos);
+                        SoundEngine.PlaySound(SoundID.NPCHit13 with {
+                            Volume = 0.4f,
+                            Pitch = -0.5f
                         }, spawnPos);
                     }
                 }
@@ -88,40 +92,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = -0.4f
             }, player.Center);
         }
-
-        private void SpawnSummonEffect(Vector2 position) {
-            //召唤时的血肉粒子效果
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 6f);
-
-                Dust blood = Dust.NewDustPerfect(
-                    position,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                blood.noGravity = true;
-            }
-
-            //额外的肉质粒子
-            for (int i = 0; i < 10; i++) {
-                Dust flesh = Dust.NewDustDirect(
-                    position - new Vector2(15),
-                    30, 30,
-                    DustID.Blood,
-                    Scale: Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                flesh.velocity = Main.rand.NextVector2Circular(3f, 3f);
-                flesh.noGravity = true;
-            }
-        }
     }
 
     /// <summary>
-    /// 恶鬼伴随弹幕
+    /// 恶鬼伴随弹幕。<br/>
+    /// 视觉身份：血肉饿鬼（湿肉捕食者），生命周期 = 血珠倒吸成形（禁 pop-in）→
+    /// 待机蠕动/垂涎（躁动幅度∝包群饱和度）→ 蓄力后撤+充血 → 复合加速扑咬 →
+    /// 咬合定帧+血沫+拉锯 → 生命尾段瘪缩渗血 → 塌散成碎肉（aftermath 活得比本体久）
     /// </summary>
     internal class HungryCompanionProjectile : ModProjectile
     {
@@ -152,15 +129,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float idleAngle = 0f;
         private float idleRadius = 100f;
         private float breathingPhase = 0f;
+        private bool orbitInit;
 
-        //视觉效果
+        //动画
         private int currentFrame = 0;
         private int frameCounter = 0;
-        private const int FrameSpeed = 5;
         private float squashStretch = 1f; //挤压拉伸效果
 
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> SoftGlow = null;
+        //血肉演出状态
+        private float facing;           //平滑朝向(嘴的指向)
+        private float wrigglePhase;     //触须蠕动相位
+        private float hungerT;          //包群饱和度0..1, 驱动饥饿可视化
+        private bool wasFull;
+        private float materializeT;     //入场成形0..1
+        private int bitePause;          //扑咬定帧剩余帧
+        private int tugTimer;           //撕扯拉锯剩余帧
+        private Vector2 tugAxis;
+        private float glintPhase;       //湿光扫掠相位
+
+        private const int MaterializeFrames = 14;
+        private const int DissolveWindow = 16;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 6; //6帧动画
@@ -182,15 +170,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //初始化随机相位
             breathingPhase = Main.rand.NextFloat(MathHelper.TwoPi);
-            idleAngle = MathHelper.TwoPi * HungryIndex / 3f;
+            wrigglePhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            glintPhase = Main.rand.NextFloat(MathHelper.TwoPi);
         }
+
+        //attackTarget 只在 owner 端由 CommandAttack 写入, 走 ExtraAI 广播防旁观端看不到扑咬
+        public override void SendExtraAI(BinaryWriter writer) {
+            writer.Write(hasAttackTarget);
+            writer.WriteVector2(attackTarget);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader) {
+            hasAttackTarget = reader.ReadBoolean();
+            attackTarget = reader.ReadVector2();
+        }
+
+        /// <summary>成形完成前不咬人：半凝的血肉没有咬合力</summary>
+        public override bool? CanDamage() => materializeT < 1f ? false : null;
 
         public override void AI() {
             Player owner = Main.player[Projectile.owner];
 
             if (!owner.active || owner.dead) {
-                //玩家死亡，恶鬼消散
-                DespawnEffect();
+                //玩家死亡:塌散演出由 OnKill 统一承担
                 Projectile.Kill();
                 return;
             }
@@ -200,46 +202,120 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
+            //包群饱和度:数量逼近上限时躁动渐强(饥饿可视化)
+            int packMax = Math.Max(1, FishHunger.MaxHungries);
+            int packNow = owner.ownedProjectileCounts[Projectile.type];
+            hungerT = MathHelper.Clamp(packNow / (float)packMax, 0f, 1f);
+            bool full = packNow >= packMax;
+            if (full && !wasFull && materializeT >= 1f) {
+                //攻击就绪的可读脉冲:一次急咬+湿响
+                squashStretch = 1.18f;
+                SoundEngine.PlaySound(SoundID.NPCHit13 with {
+                    Volume = 0.45f,
+                    Pitch = -0.15f,
+                    MaxInstances = 2
+                }, Projectile.Center);
+            }
+            wasFull = full;
+
+            //首帧按编队位铺开轨道相位(SetDefaults 时 ai[0] 还未写入)
+            if (!orbitInit) {
+                orbitInit = true;
+                idleAngle = MathHelper.TwoPi * HungryIndex / Math.Max(3, packMax);
+            }
+
+            //入场成形:血珠已在召唤点倒吸, 本体从小到大撑开
+            if (materializeT < 1f) {
+                materializeT = Math.Min(1f, materializeT + 1f / MaterializeFrames);
+            }
+
             StateTimer++;
 
-            //更新动画帧
-            UpdateAnimation();
+            //蠕动相位:饥饿越深爬得越快, 蓄力期高频颤
+            bool inWindup = State == HungryState.Attacking && StateTimer < 20 && bitePause <= 0;
+            wrigglePhase += 0.10f + hungerT * 0.11f + (inWindup ? 0.22f : 0f);
+            glintPhase += 0.05f + hungerT * 0.03f;
 
-            //状态机
-            switch (State) {
-                case HungryState.Idle:
-                    IdleAI(owner);
-                    break;
+            if (bitePause > 0) {
+                //扑咬定帧:速度与咀嚼全部冻结一拍
+                bitePause--;
+                Projectile.velocity = Vector2.Zero;
+                if (bitePause == 0 && State == HungryState.Attacking) {
+                    tugTimer = 12; //定帧结束进入撕扯拉锯
+                }
+            }
+            else {
+                //更新动画帧
+                UpdateAnimation();
 
-                case HungryState.FollowPlayer:
-                    FollowPlayerAI(owner);
-                    break;
+                //状态机
+                switch (State) {
+                    case HungryState.Idle:
+                        IdleAI(owner);
+                        break;
 
-                case HungryState.Attacking:
-                    AttackingAI(owner);
-                    break;
+                    case HungryState.FollowPlayer:
+                        FollowPlayerAI(owner);
+                        break;
 
-                case HungryState.Returning:
-                    ReturningAI(owner);
-                    break;
+                    case HungryState.Attacking:
+                        AttackingAI(owner);
+                        break;
+
+                    case HungryState.Returning:
+                        ReturningAI(owner);
+                        break;
+                }
+
+                //撕扯拉锯:沿咬轴往复抽拽, 幅度随时间衰减
+                if (tugTimer > 0) {
+                    if (State == HungryState.Attacking) {
+                        float k = tugTimer / 12f;
+                        Projectile.velocity += tugAxis * (MathF.Sin(tugTimer * 1.9f) * 3.1f * k);
+                        if (tugTimer % 3 == 0) {
+                            FishHungerVFX.TugShed(Projectile.Center + tugAxis * 10f, tugAxis);
+                        }
+                    }
+                    else {
+                        tugTimer = 0;
+                    }
+                    if (tugTimer > 0) {
+                        tugTimer--;
+                    }
+                }
             }
 
             //生物呼吸效果
             UpdateBreathing();
 
-            //照明
-            Lighting.AddLight(Projectile.Center, 0.5f, 0.2f, 0.2f);
+            //平滑朝向与旧角度缓存
+            UpdateFacing();
 
-            //定期发出生物音效
-            if (StateTimer % 120 == 0) {
+            //退场先兆:生命尾段渗血变勤(瘪缩在绘制端)
+            if (Projectile.timeLeft < DissolveWindow && Main.rand.NextBool(3)) {
+                FishHungerVFX.Drool(MouthPos, facing.ToRotationVector2());
+            }
+
+            //待机垂涎:饥饿越深滴得越勤
+            if (State != HungryState.Attacking && materializeT >= 1f
+                && Main.rand.NextBool(Math.Max(9, 26 - (int)(hungerT * 16)))) {
+                FishHungerVFX.Drool(MouthPos, facing.ToRotationVector2());
+            }
+
+            //照明:湿肉几乎不发光, 只留极淡血色
+            Lighting.AddLight(Projectile.Center, 0.16f, 0.04f, 0.04f);
+
+            //定期低吼:饥饿越深叫得越勤
+            int growlEvery = 132 - (int)(hungerT * 54);
+            if ((int)StateTimer % growlEvery == 0) {
                 SoundEngine.PlaySound(SoundID.NPCHit8 with {
                     Volume = 0.3f,
                     Pitch = -0.5f
                 }, Projectile.Center);
             }
-
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
         }
+
+        private Vector2 MouthPos => Projectile.Center + facing.ToRotationVector2() * 10f * Projectile.scale;
 
         /// <summary>
         /// 命令恶鬼攻击目标
@@ -249,18 +325,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             hasAttackTarget = true;
             State = HungryState.Attacking;
             StateTimer = 0;
+            tugTimer = 0;
+            bitePause = 0;
+            Projectile.netUpdate = true;
 
-            //攻击前的蓄力效果
-            SpawnAttackChargeEffect();
+            //蓄力吸气:血珠被倒吸进嘴
+            FishHungerVFX.ChargeSuction(MouthPos);
         }
 
         /// <summary>
         /// 待机状态：围绕玩家漂浮
         /// </summary>
         private void IdleAI(Player owner) {
-            //计算理想位置
-            idleAngle += 0.02f;
-            Vector2 idleOffset = idleAngle.ToRotationVector2() * idleRadius;
+            //计算理想位置:轨道半径带呼吸涨落, 饥饿时越游越急
+            idleAngle += 0.02f + hungerT * 0.012f;
+            float radiusBreath = idleRadius + MathF.Sin(breathingPhase * 0.8f + HungryIndex * 1.7f) * 9f;
+            Vector2 idleOffset = idleAngle.ToRotationVector2() * radiusBreath;
             Vector2 targetPos = owner.Center + idleOffset;
 
             //平滑移动
@@ -274,18 +354,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.velocity *= 0.9f;
             }
 
-            //面向玩家
-            FaceDirection(owner.Center);
-
             //定期切换到跟随状态
             if (distance > 200f) {
                 State = HungryState.FollowPlayer;
                 StateTimer = 0;
-            }
-
-            //待机粒子
-            if (Main.rand.NextBool(20)) {
-                SpawnIdleParticle();
             }
         }
 
@@ -300,20 +372,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 targetVelocity = toOwner.SafeNormalize(Vector2.Zero) * Math.Min(distance * 0.1f, 15f);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, targetVelocity, 0.15f);
 
-            //面向移动方向
-            if (Projectile.velocity.LengthSquared() > 1f) {
-                FaceDirection(Projectile.Center + Projectile.velocity);
-            }
-
             //靠近玩家后返回待机
             if (distance < 150f) {
                 State = HungryState.Idle;
                 StateTimer = 0;
             }
 
-            //跟随粒子
-            if (Main.rand.NextBool(5)) {
-                SpawnFollowParticle();
+            //急游甩落血珠
+            if (Main.rand.NextBool(7) && Projectile.velocity.Length() > 6f) {
+                FishHungerVFX.Drool(Projectile.Center - Projectile.velocity * 0.5f, -Projectile.velocity.SafeNormalize(Vector2.UnitY) * 0.5f);
             }
         }
 
@@ -335,31 +402,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 toTarget = (attackTarget - Projectile.Center).SafeNormalize(Vector2.Zero);
                 Projectile.velocity = -toTarget * (1f - attackProgress * 3f) * 2f;
 
-                //面向目标
-                FaceDirection(attackTarget);
-
-                //蓄力粒子
-                if (Main.rand.NextBool(2)) {
-                    SpawnChargeParticle();
+                //垂涎与充血在绘制端, 这里只滴涎
+                if (StateTimer % 4 == 0) {
+                    FishHungerVFX.Drool(MouthPos, toTarget);
                 }
             }
-            //20-40帧：快速冲刺
+            //20-40帧：扑咬冲刺, 复合加速(越冲越快, 拉伸随速度增长)
             else if (StateTimer < 40) {
-                //计算冲刺速度
+                float rushT = (StateTimer - 20f) / 20f;
                 Vector2 toTarget = (attackTarget - Projectile.Center).SafeNormalize(Vector2.Zero);
-                float rushSpeed = 25f;
+                float rushSpeed = MathHelper.Lerp(16f, 34f, MathF.Pow(rushT, 1.7f));
                 Projectile.velocity = toTarget * rushSpeed;
 
-                //拉伸效果
-                squashStretch = 1.5f;
+                //速度拉伸∝当前速度
+                squashStretch = 1.22f + rushT * 0.5f;
 
-                //冲刺粒子
-                if (Main.rand.NextBool(2)) {
-                    SpawnRushParticle();
+                //冲刺沿途甩沫
+                if ((int)StateTimer % 2 == 0) {
+                    FishHungerVFX.Drool(Projectile.Center, -toTarget * 0.6f);
                 }
 
-                //冲刺音效
+                //起跳一拍:蹬出暗环+后抛血珠+嘶吼
                 if (StateTimer == 20) {
+                    FishHungerVFX.LungeKick(Projectile.Center, toTarget);
                     SoundEngine.PlaySound(SoundID.NPCHit13 with {
                         Volume = 0.6f,
                         Pitch = 0.2f
@@ -390,11 +455,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 targetVelocity = toReturn.SafeNormalize(Vector2.Zero) * Math.Min(distance * 0.12f, 12f);
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, targetVelocity, 0.1f);
 
-            //面向移动方向
-            if (Projectile.velocity.LengthSquared() > 1f) {
-                FaceDirection(Projectile.Center + Projectile.velocity);
-            }
-
             //返回待机位置
             if (distance < 50f) {
                 State = HungryState.Idle;
@@ -402,10 +462,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>动画帧 tick</summary>
+        /// <summary>动画帧 tick：饥饿与攻击节奏驱动咀嚼速度</summary>
         private void UpdateAnimation() {
+            int speed = State == HungryState.Attacking
+                ? (StateTimer < 20 ? 2 : 3)
+                : (int)MathHelper.Lerp(6f, 3f, hungerT);
             frameCounter++;
-            if (frameCounter >= FrameSpeed) {
+            if (frameCounter >= speed) {
                 frameCounter = 0;
                 currentFrame++;
                 if (currentFrame >= 6) {
@@ -424,131 +487,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             squashStretch = MathHelper.Lerp(squashStretch, 1f + breathScale, 0.2f);
         }
 
-        /// <summary>
-        /// 面向目标方向
-        /// </summary>
-        private void FaceDirection(Vector2 target) {
-            Vector2 direction = target - Projectile.Center;
-            if (Math.Abs(direction.X) > 10f) {
-                Projectile.spriteDirection = direction.X > 0 ? -1 : 1; //纹理朝左，所以反转
+        /// <summary>朝向平滑：嘴指向随状态收敛，禁瞬时甩头</summary>
+        private void UpdateFacing() {
+            float desired = facing;
+            if (State == HungryState.Attacking) {
+                if (tugTimer > 0) {
+                    desired = tugAxis.ToRotation();
+                }
+                else if (hasAttackTarget && StateTimer < 20) {
+                    desired = (attackTarget - Projectile.Center).ToRotation();
+                }
+                else if (Projectile.velocity.LengthSquared() > 1f) {
+                    desired = Projectile.velocity.ToRotation();
+                }
             }
-        }
-
-        //粒子效果方法
-
-        private void SpawnIdleParticle() {
-            Dust idle = Dust.NewDustDirect(
-                Projectile.position,
-                Projectile.width,
-                Projectile.height,
-                DustID.Blood,
-                Scale: Main.rand.NextFloat(0.8f, 1.2f)
-            );
-            idle.velocity = Main.rand.NextVector2Circular(1f, 1f);
-            idle.noGravity = true;
-            idle.alpha = 150;
-        }
-
-        private void SpawnFollowParticle() {
-            Dust follow = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                DustID.Blood,
-                -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.3f),
-                100,
-                default,
-                Main.rand.NextFloat(1f, 1.5f)
-            );
-            follow.noGravity = true;
-        }
-
-        private void SpawnAttackChargeEffect() {
-            for (int i = 0; i < 15; i++) {
-                float angle = MathHelper.TwoPi * i / 15f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
-
-                Dust charge = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                charge.noGravity = true;
+            else if (Projectile.velocity.LengthSquared() > 0.6f) {
+                desired = Projectile.velocity.ToRotation();
             }
-        }
-
-        private void SpawnChargeParticle() {
-            Vector2 toTarget = (attackTarget - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Dust charge = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                DustID.Blood,
-                toTarget * Main.rand.NextFloat(1f, 3f),
-                100,
-                default,
-                Main.rand.NextFloat(1.2f, 1.8f)
-            );
-            charge.noGravity = true;
-        }
-
-        private void SpawnRushParticle() {
-            Dust rush = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                DustID.Blood,
-                -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f),
-                100,
-                default,
-                Main.rand.NextFloat(1.5f, 2.5f)
-            );
-            rush.noGravity = true;
-        }
-
-        private void DespawnEffect() {
-            //消散特效
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-
-                Dust despawn = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                despawn.noGravity = true;
-            }
-
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with {
-                Volume = 0.5f,
-                Pitch = -0.4f
-            }, Projectile.Center);
+            facing = facing.AngleLerp(desired, State == HungryState.Attacking ? 0.3f : 0.12f);
+            //oldRot 缓存喂给残影链
+            Projectile.rotation = facing + MathHelper.Pi;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中血肉粒子
-            for (int i = 0; i < 10; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
+            Vector2 dir = (target.Center - Projectile.Center).SafeNormalize(facing.ToRotationVector2());
+            float ke = MathHelper.Clamp(Projectile.velocity.Length() / 30f, 0.2f, 1f);
 
-                Dust hitBlood = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                hitBlood.noGravity = true;
+            //咬合血沫:血珠锥+筋膜屑+碎肉块
+            FishHungerVFX.BiteSpray(Projectile.Center + dir * 12f, dir, ke);
+
+            if (State == HungryState.Attacking) {
+                //扑咬定帧:咬死不动一拍, 随后进入撕扯拉锯
+                bitePause = 3;
+                tugAxis = dir;
+                squashStretch = 0.62f; //咬合压缩
+            }
+            else {
+                squashStretch = 0.78f;
             }
 
-            //击中音效
+            //击中音效:湿咬+深部肉响
             SoundEngine.PlaySound(SoundID.NPCHit13 with {
                 Volume = 0.5f,
                 Pitch = 0f
             }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Volume = 0.45f,
+                Pitch = -0.6f
+            }, Projectile.Center);
+        }
 
-            //击中后的挤压效果
-            squashStretch = 0.7f;
+        public override void OnKill(int timeLeft) {
+            //塌散:碎肉与血珠活得比本体久, 一切死亡路径共用
+            FishHungerVFX.CollapseBurst(Projectile.Center, Projectile.scale);
+            if (!Main.dedServ) {
+                SoundEngine.PlaySound(SoundID.NPCDeath1 with {
+                    Volume = 0.5f,
+                    Pitch = -0.4f
+                }, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.NPCHit13 with {
+                    Volume = 0.4f,
+                    Pitch = -0.5f
+                }, Projectile.Center);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -558,108 +559,108 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int frameHeight = hungryTex.Height / 6;
             Rectangle sourceRect = new Rectangle(0, frameHeight * currentFrame, hungryTex.Width, frameHeight);
             Vector2 origin = sourceRect.Size() / 2f;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            //绘制运动残影
-            if (State == HungryState.Attacking && StateTimer >= 20 && StateTimer < 40) {
-                DrawAttackTrail(sb, hungryTex, sourceRect, origin, lightColor, alpha);
-            }
+            //入场撑开与退场瘪缩共用的形体因子
+            float formScale = MathHelper.Lerp(0.15f, 1f, FishHungerVFX.EaseOutBack(materializeT));
+            float dissolveT = Projectile.timeLeft < DissolveWindow ? 1f - Projectile.timeLeft / (float)DissolveWindow : 0f;
+            formScale *= 1f - 0.26f * dissolveT;
+            alpha *= MathHelper.Lerp(0.35f, 1f, materializeT) * (1f - 0.45f * dissolveT);
 
-            //绘制外层血肉辉光
-            if (SoftGlow?.Value != null) {
-                Texture2D glow = SoftGlow.Value;
-                float glowScale = Projectile.scale * 1.2f * squashStretch;
-                float glowAlpha = alpha * 0.4f;
+            //躁动抖动只作用于绘制, 判定不动:蓄力期在饥饿基础上再加一层渐强
+            float windupBoost = State == HungryState.Attacking && StateTimer < 20 && bitePause <= 0
+                ? StateTimer / 20f * 2.6f : 0f;
+            float amp = hungerT * 1.9f + windupBoost;
+            Vector2 jitter = new Vector2(MathF.Sin(wrigglePhase * 3.1f + 1.7f), MathF.Sin(wrigglePhase * 2.6f)) * amp;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition + jitter;
 
-                sb.Draw(
-                    glow,
-                    drawPos,
-                    null,
-                    new Color(150, 50, 50, 0) * glowAlpha,
-                    Projectile.rotation,
-                    glow.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-
-            //绘制主体恶鬼
-            SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-            //应用挤压拉伸
+            float rot = facing + MathHelper.Pi;
+            SpriteEffects fxFlip = MathF.Cos(facing) > 0f ? SpriteEffects.FlipVertically : SpriteEffects.None;
             Vector2 scale = new Vector2(
                 Projectile.scale * squashStretch,
                 Projectile.scale / squashStretch
-            );
+            ) * formScale;
 
-            //暗化主体
-            Color drawColor = Color.Lerp(lightColor, new Color(200, 150, 150), 0.3f) * alpha;
+            //1 触须垫底:画在本体之下, 根部锚在尾侧轮廓
+            DrawTentacles(sb, drawPos, lightColor, alpha, formScale);
 
-            sb.Draw(
-                hungryTex,
-                drawPos,
-                sourceRect,
-                drawColor,
-                Projectile.rotation,
-                origin,
-                scale,
-                effects,
-                0
-            );
+            //2 扑咬残影链:旧位置+旧角度, 越旧越暗越小
+            if (State == HungryState.Attacking && StateTimer >= 20 && StateTimer < 46 && bitePause <= 0) {
+                for (int i = 2; i < Projectile.oldPos.Length; i += 2) {
+                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    float ft = 1f - i / (float)Projectile.oldPos.Length;
+                    Vector2 gp = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    Color gc = FishHungerVFX.Meat(0.35f + ft * 0.4f) * (alpha * 0.42f * ft);
+                    sb.Draw(hungryTex, gp, sourceRect, gc, Projectile.oldRot[i], origin
+                        , scale * (0.82f + ft * 0.12f), fxFlip, 0);
+                }
+            }
 
-            //蓄力阶段的发光效果
-            if (State == HungryState.Attacking && StateTimer < 20) {
-                float chargeIntensity = StateTimer / 20f;
-                Color chargeGlow = new Color(255, 100, 100) * (alpha * chargeIntensity * 0.6f);
+            //3 暗肉剪影底:向斜下错位半透, 给肉块厚度
+            Color under = FishHungerVFX.MeatDark * (alpha * 0.5f);
+            sb.Draw(hungryTex, drawPos + new Vector2(2f, 3f), sourceRect, under, rot, origin, scale, fxFlip, 0);
 
-                sb.Draw(
-                    hungryTex,
-                    drawPos,
-                    sourceRect,
-                    chargeGlow,
-                    Projectile.rotation,
-                    origin,
-                    scale * (1f + chargeIntensity * 0.2f),
-                    effects,
-                    0
-                );
+            //4 本体:环境光乘暖肉色;蓄力充血变暗不加亮, 退场失血转深
+            Color body = lightColor.MultiplyRGB(new Color(255, 214, 206));
+            if (State == HungryState.Attacking && StateTimer < 20 && bitePause <= 0) {
+                body = Color.Lerp(body, FishHungerVFX.MeatMid, StateTimer / 20f * 0.35f);
+            }
+            body = Color.Lerp(body, FishHungerVFX.MeatDark, dissolveT * 0.3f);
+            sb.Draw(hungryTex, drawPos, sourceRect, body * alpha, rot, origin, scale, fxFlip, 0);
+
+            //5 湿肉高光:极小面积镜面点沿体表缓扫(加色)
+            Texture2D glint = CWRAsset.Extra_98?.Value;
+            if (glint != null && materializeT >= 1f && dissolveT < 0.5f) {
+                Vector2 gOff = new Vector2(MathF.Cos(glintPhase), MathF.Sin(glintPhase * 1.6f)) * 5f * formScale;
+                float gA = (0.20f + 0.10f * MathF.Sin(glintPhase * 2.3f)) * alpha;
+                sb.Draw(glint, drawPos + gOff, null, (FishHungerVFX.WetGlint with { A = 0 }) * gA
+                    , rot + 0.5f, glint.Size() / 2f, new Vector2(0.09f, 0.045f) * formScale * Projectile.scale, fxFlip, 0);
             }
 
             return false;
         }
 
-        private void DrawAttackTrail(SpriteBatch sb, Texture2D hungryTex, Rectangle sourceRect,
-            Vector2 origin, Color lightColor, float alpha) {
+        /// <summary>
+        /// 触须蠕动：三条像素段链肉须锚在尾侧，相位沿体节传递+鞭梢包络；
+        /// 蓄力僵直高频颤、冲刺顺流后摆、尖端收细转暗（禁平滑收口的贴纸感）
+        /// </summary>
+        private void DrawTentacles(SpriteBatch sb, Vector2 drawPos, Color lightColor, float alpha, float formScale) {
+            Texture2D pixel = VaultAsset.placeholder2.Value;
+            Rectangle src = new(0, 0, 1, 1);
+            float rearRot = facing + MathHelper.Pi;
 
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) continue;
+            Span<float> angOff = stackalloc float[] { -0.52f, 0.04f, 0.50f };
+            Span<float> lens = stackalloc float[] { 30f, 40f, 26f };
+            Span<float> widths = stackalloc float[] { 4.4f, 5.2f, 3.6f };
 
-                float trailProgress = 1f - i / (float)Projectile.oldPos.Length;
-                float trailAlpha = trailProgress * alpha * 0.5f;
+            bool rushing = State == HungryState.Attacking && StateTimer >= 20 && bitePause <= 0;
+            bool windup = State == HungryState.Attacking && StateTimer < 20 && bitePause <= 0;
+            float ampMul = rushing ? 0.35f : windup ? 0.5f : 1f;
+            float freqMul = windup ? 2.3f : 1f;
 
-                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Color trailColor = Color.Lerp(
-                    new Color(150, 50, 50),
-                    new Color(200, 100, 100),
-                    trailProgress
-                ) * trailAlpha;
+            for (int n = 0; n < 3; n++) {
+                float seed = Projectile.whoAmI * 0.7331f + n * 2.09f;
+                Vector2 p = drawPos + rearRot.ToRotationVector2() * (8f * formScale * Projectile.scale);
+                float ang = rearRot + angOff[n] * (rushing ? 0.45f : 1f);
+                const int segs = 7;
+                float step = lens[n] / segs * formScale * Projectile.scale;
+                float baseAmp = (0.15f + hungerT * 0.15f) * ampMul;
 
-                SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-                sb.Draw(
-                    hungryTex,
-                    trailPos,
-                    sourceRect,
-                    trailColor,
-                    Projectile.rotation,
-                    origin,
-                    Projectile.scale * 0.9f,
-                    effects,
-                    0
-                );
+                for (int k = 0; k < segs; k++) {
+                    float tk = k / (segs - 1f);
+                    //蠕动:相位沿体节传递, 鞭梢包络放大
+                    ang += MathF.Sin(wrigglePhase * freqMul - k * 1.05f + seed) * baseAmp * (0.3f + tk * 1.1f);
+                    Vector2 q = p + ang.ToRotationVector2() * step;
+                    float w = MathF.Max(widths[n] * (1f - tk * 0.82f) * formScale, 0.9f);
+                    Color c = Color.Lerp(FishHungerVFX.MeatMid, FishHungerVFX.MeatDark, 0.25f + tk * 0.68f)
+                        .MultiplyRGB(lightColor) * (alpha * (0.95f - tk * 0.25f));
+                    Vector2 mid = (p + q) * 0.5f;
+                    sb.Draw(pixel, mid, src, c, ang, new Vector2(0.5f), new Vector2(step + 0.8f, w), SpriteEffects.None, 0f);
+                    p = q;
+                }
             }
         }
     }

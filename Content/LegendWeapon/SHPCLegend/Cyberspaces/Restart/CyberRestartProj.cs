@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
     /// <summary>赛博重启演出弹幕，贴附主人领域中心；按 owner 取 CyberspacePlayer</summary>
     internal class CyberRestartProj : ModProjectile, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //黑墙裂缝
         private const int CrackCount = 7;
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D pixel = CWRAsset.Placeholder_White?.Value;
+            Texture2D pixel = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (pixel == null || glow == null || crackAngles == null) {
                 return false;
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Restart
             if (shader == null) {
                 return;
             }
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (canvas == null || noise == null) {
                 return;

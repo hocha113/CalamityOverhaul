@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// 引导法阵核心控制器
     internal class PandemoniumChannel : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Player Owner => Main.player[Projectile.owner];
 
         private ref float ChargeTimer => ref Projectile.ai[0];
@@ -855,7 +855,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Effect shader = EffectLoader.BrimstoneDomain?.Value;
             if (shader == null) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
@@ -915,7 +915,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void DrawLightningArcsVisual(SpriteBatch sb) {
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             foreach (var arc in lightningArcs) {
                 float alpha = 1f - (arc.Life / arc.MaxLife);

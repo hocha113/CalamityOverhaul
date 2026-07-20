@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// </summary>
     internal class PandemoniumFirePillar : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float Life => ref Projectile.ai[0];
         private ref float MaxLife => ref Projectile.ai[1];

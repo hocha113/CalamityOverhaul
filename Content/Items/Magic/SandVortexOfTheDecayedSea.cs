@@ -114,7 +114,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class DecayedSeaVortex : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public const int Lifetime = 360;
         public const int RefreshDuration = 240;

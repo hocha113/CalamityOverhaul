@@ -207,7 +207,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
     /// </summary>
     internal class WGGLumberjackSaw : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/WGGMechanicalArmAlt")]
         private static Asset<Texture2D> arm = null;
         [VaultLoaden("CalamityOverhaul/Assets/ElectricPowers/WGGLumberjackSaw")]

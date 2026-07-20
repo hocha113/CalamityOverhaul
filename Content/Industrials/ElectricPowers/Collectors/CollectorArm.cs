@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.OtherMods.MagicStorage;
-using InnoVault.Actors;
+﻿using InnoVault.Actors;
 using InnoVault.Storages;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -40,32 +39,44 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         [SyncVar]
         public Point16 targetStoragePos = Point16.NegativeOne;
         [SyncVar]
-        public string storageIdentifier = "";
-        [SyncVar]
         public int armSlot = 0;
         [SyncVar]
         public float rotation = 0f;
+        //夹爪上物品的展示类型，graspItem实体只存在于服务端，客户端靠这个字段绘制
+        [SyncVar]
+        public int graspItemType = ItemID.None;
+        //所属收集器的坐标，同时也是TP端归属校验的依据
+        [SyncVar]
+        internal Point16 collectorPos = Point16.NegativeOne;
+
+        //服务端字段(不同步)
+        private Item graspItem;
+        private readonly List<Item> extraGraspItems = [];
+        private IStorageProvider cachedStorageProvider;
+        private int searchCooldown;
+        private bool isCollectingCoins;
+        private readonly List<int> magnetizedCoins = [];
 
         //本地字段(不同步)
-        private Item graspItem;
         private bool initialized;
-        private IStorageProvider cachedStorageProvider;
-
-        //存储目标坐标
-        [SyncVar]
-        private Point16 collectorPos = Point16.NegativeOne;
 
         //物理模拟参数
         private const float SpringStiffness = 0.15f;
         private const float Damping = 0.85f;
         private const float MaxSpeed = 16f;
         private const float ArrivalThreshold = 32f;
+        //物品搜索半径(像素)
+        private const float ItemSearchRange = 2000f;
+        //收集者锁的持续帧数，追踪期间每帧刷新
+        private const int LockDuration = 120;
 
         //视觉效果参数(仅客户端)
         private float clampOpenness = 0f;
         private float shakeIntensity = 0f;
         private int particleTimer = 0;
         private float rotationVelocity = 0f;
+        //客户端上一次观察到的同步状态，用于检测服务器状态切换
+        private byte lastClientState;
 
         //状态机
         private ArmState currentState {
@@ -74,13 +85,8 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
         private int stateTimer = 0;
 
-        //搜索冷却(避免频繁搜索)
-        private int searchCooldown = 0;
-
         //钱币吸附参数
         private const float CoinMagnetRange = 200f;
-        private bool isCollectingCoins = false;
-        private List<int> magnetizedCoins = new List<int>();
 
         //不重要物品列表
         private readonly static HashSet<int> unimportances = [
@@ -108,27 +114,32 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             graspItem = new Item();
         }
 
-        private static bool IsCoin(Item item) {
-            return item.type == ItemID.CopperCoin ||
-                   item.type == ItemID.SilverCoin ||
-                   item.type == ItemID.GoldCoin ||
-                   item.type == ItemID.PlatinumCoin;
-        }
+        #region 目标与锁
 
         private Item FindNearestItem() {
-            if (VaultUtils.isClient) return null;
+            if (VaultUtils.isClient) {
+                return null;
+            }
+
+            //先确认存在可用存储，避免对每个物品做昂贵的存储查询
+            var storageCandidates = collectorTP.GetStorageCandidates();
+            if (storageCandidates.Count == 0) {
+                collectorTP.PromptNoStorage();
+                return null;
+            }
 
             Item bestItem = null;
-            float minDistSQ = 4000000f;
-            int itemFilterType = ModContent.ItemType<ItemFilter>();
+            float minDistSQ = ItemSearchRange * ItemSearchRange;
+            bool useFilter = collectorTP.FilterInstalled;
 
             foreach (var item in Main.ActiveItems) {
-                if (!IsValidTarget(item)) continue;
+                if (!IsValidTarget(item)) {
+                    continue;
+                }
 
-                //检查过滤器
-                if (collectorTP.TagItemSign == itemFilterType) {
-                    var filterData = collectorTP.ItemFilter.GetGlobalItem<ItemFilterData>();
-                    if (!filterData.Items.Contains(item.type)) {
+                //检查过滤器(空名单=不限制)
+                if (useFilter) {
+                    if (!collectorTP.Filter.Matches(item.type)) {
                         continue;
                     }
                 }
@@ -136,52 +147,146 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     continue;
                 }
 
-                //提前检查存储目标(避免抓取后无处存放)
-                if (collectorTP.FindStorageTarget(item) == null) {
+                float distSQ = item.Center.DistanceSQ(Center);
+                if (distSQ >= minDistSQ) {
                     continue;
                 }
 
-                float distSQ = item.Center.DistanceSQ(Center);
-                if (distSQ < minDistSQ) {
-                    bestItem = item;
-                    minDistSQ = distSQ;
+                //存储检查放在最后，它是最昂贵的判断
+                if (!AnyStorageAccepts(storageCandidates, item)) {
+                    continue;
                 }
+
+                bestItem = item;
+                minDistSQ = distSQ;
             }
 
             return bestItem;
         }
 
+        private static bool AnyStorageAccepts(IReadOnlyList<IStorageProvider> candidates, Item item) {
+            for (int i = 0; i < candidates.Count; i++) {
+                IStorageProvider provider = candidates[i];
+                if (provider.IsValid && provider.CanAcceptItem(item)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private bool IsValidTarget(Item item) {
-            if (item.IsAir || !item.active) return false;
-            if (unimportances.Contains(item.type)) return false;
+            if (item.IsAir || !item.active) {
+                return false;
+            }
+            if (unimportances.Contains(item.type)) {
+                return false;
+            }
 
             int targetCollector = item.CWR().TargetByCollector;
             //只接受未被锁定或被自己锁定的物品
-            if (targetCollector >= 0 && targetCollector != WhoAmI) return false;
+            if (targetCollector >= 0 && targetCollector != WhoAmI) {
+                return false;
+            }
 
             return true;
         }
 
+        /// <summary>
+        /// 锁定物品并刷新锁时长，追踪期间需要每帧调用防止锁超时过期
+        /// </summary>
+        private void LockItem(Item item) {
+            var cwr = item.CWR();
+            cwr.TargetByCollector = WhoAmI;
+            cwr.CollectorLockTime = LockDuration;
+        }
+
+        /// <summary>
+        /// 为磁吸中的钱币续锁
+        /// </summary>
+        private void RefreshCoinLocks() {
+            foreach (int coinWhoAmI in magnetizedCoins) {
+                if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) {
+                    continue;
+                }
+                Item coin = Main.item[coinWhoAmI];
+                if (coin.active && !coin.IsAir && coin.CWR().TargetByCollector == WhoAmI) {
+                    coin.CWR().CollectorLockTime = LockDuration;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 解除本臂对目标物品与磁吸钱币的锁定
+        /// </summary>
+        private void UnlockTrackedItems() {
+            if (targetItemWhoAmI >= 0 && targetItemWhoAmI < Main.maxItems) {
+                Item item = Main.item[targetItemWhoAmI];
+                if (item.active && item.CWR().TargetByCollector == WhoAmI) {
+                    item.CWR().TargetByCollector = -1;
+                }
+            }
+            foreach (int coinWhoAmI in magnetizedCoins) {
+                if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) {
+                    continue;
+                }
+                Item coin = Main.item[coinWhoAmI];
+                if (coin.active && coin.CWR().TargetByCollector == WhoAmI) {
+                    coin.CWR().TargetByCollector = -1;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 把夹爪上的物品(含钱币找零)吐回世界，用于中断与销毁路径，防止物品凭空消失
+        /// </summary>
+        private void DropCarriedItems() {
+            if (VaultUtils.isClient) {
+                return;
+            }
+            if (graspItem.Alives()) {
+                graspItem.CWR().TargetByCollector = -1;
+                VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
+                graspItem.TurnToAir();
+            }
+            foreach (var extra in extraGraspItems) {
+                if (extra.Alives()) {
+                    VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, extra);
+                }
+            }
+            extraGraspItems.Clear();
+            graspItemType = ItemID.None;
+        }
+
+        #endregion
+
+        #region 钱币
+
         private void MagnetizeNearbyCoins(Vector2 targetCenter) {
-            if (VaultUtils.isClient) return;
+            if (VaultUtils.isClient) {
+                return;
+            }
 
             magnetizedCoins.Clear();
 
             //查找周围的所有钱币
             foreach (var coin in Main.ActiveItems) {
-                if (!coin.active || coin.IsAir) continue;
-                if (!IsCoin(coin)) continue;
+                if (!coin.active || coin.IsAir || !coin.IsACoin) {
+                    continue;
+                }
 
                 //检查距离
-                float distance = Vector2.Distance(coin.Center, targetCenter);
-                if (distance > CoinMagnetRange) continue;
+                if (Vector2.Distance(coin.Center, targetCenter) > CoinMagnetRange) {
+                    continue;
+                }
 
                 //检查是否已被其他收集器锁定
                 int targetCollector = coin.CWR().TargetByCollector;
-                if (targetCollector >= 0 && targetCollector != WhoAmI) continue;
+                if (targetCollector >= 0 && targetCollector != WhoAmI) {
+                    continue;
+                }
 
                 //锁定这个钱币
-                coin.CWR().TargetByCollector = WhoAmI;
+                LockItem(coin);
                 magnetizedCoins.Add(coin.whoAmI);
             }
 
@@ -195,33 +300,42 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private void MergeMagnetizedCoins() {
-            if (VaultUtils.isClient) return;
-            if (magnetizedCoins.Count == 0) return;
+            if (VaultUtils.isClient || magnetizedCoins.Count == 0) {
+                return;
+            }
 
             long totalValue = graspItem.IsACoin ? GetCoinValue(graspItem) * graspItem.stack : 0;
 
             //收集所有钱币的总价值
             foreach (int coinWhoAmI in magnetizedCoins) {
-                if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) continue;
+                if (coinWhoAmI < 0 || coinWhoAmI >= Main.maxItems) {
+                    continue;
+                }
 
                 Item coin = Main.item[coinWhoAmI];
-                if (!coin.active || coin.IsAir) continue;
+                if (!coin.active || coin.IsAir) {
+                    continue;
+                }
 
                 totalValue += GetCoinValue(coin) * coin.stack;
                 coin.TurnToAir();
                 NetMessage.SendData(MessageID.SyncItem, -1, -1, null, coinWhoAmI);
             }
 
-            //将总价值转换回最优钱币组合
+            //将总价值完整分解为多面值钱币，夹爪持有最大面值，其余作为找零一同携带
             if (totalValue > 0) {
-                graspItem = ConvertValueToCoin(totalValue);
+                List<Item> coins = ConvertValueToCoins(totalValue);
+                graspItem = coins[0];
                 graspItem.CWR().TargetByCollector = WhoAmI;
+                for (int i = 1; i < coins.Count; i++) {
+                    extraGraspItems.Add(coins[i]);
+                }
             }
 
             magnetizedCoins.Clear();
         }
 
-        private static int GetCoinValue(Item coin) {
+        private static long GetCoinValue(Item coin) {
             return coin.type switch {
                 ItemID.CopperCoin => 1,
                 ItemID.SilverCoin => 100,
@@ -231,24 +345,60 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             };
         }
 
-        private static Item ConvertValueToCoin(long value) {
-            //优先使用大面值钱币
-            if (value >= 1000000) {
-                return new Item(ItemID.PlatinumCoin, (int)(value / 1000000));
+        private static readonly (int type, long unit)[] CoinDenominations = [
+            (ItemID.PlatinumCoin, 1000000),
+            (ItemID.GoldCoin, 10000),
+            (ItemID.SilverCoin, 100),
+            (ItemID.CopperCoin, 1)
+        ];
+
+        /// <summary>
+        /// 把价值完整分解为一组钱币物品，不会丢失任何余数
+        /// </summary>
+        private static List<Item> ConvertValueToCoins(long value) {
+            List<Item> result = [];
+            foreach ((int type, long unit) in CoinDenominations) {
+                long count = value / unit;
+                value %= unit;
+                while (count > 0) {
+                    Item coin = new Item(type);
+                    coin.stack = (int)Math.Min(count, coin.maxStack);
+                    count -= coin.stack;
+                    result.Add(coin);
+                }
             }
-            else if (value >= 10000) {
-                return new Item(ItemID.GoldCoin, (int)(value / 10000));
+            if (result.Count == 0) {
+                result.Add(new Item(ItemID.CopperCoin));
             }
-            else if (value >= 100) {
-                return new Item(ItemID.SilverCoin, (int)(value / 100));
+            return result;
+        }
+
+        private static void CheckCoins(Chest chest) {
+            long totalValue = 0;
+
+            for (int i = 0; i < chest.item.Length; i++) {
+                Item item = chest.item[i];
+                if (item != null && !item.IsAir && item.IsACoin) {
+                    totalValue += GetCoinValue(item) * item.stack;
+                    item.TurnToAir();
+                }
             }
-            else {
-                return new Item(ItemID.CopperCoin, (int)value);
+
+            if (totalValue <= 0) {
+                return;
+            }
+
+            foreach (Item coin in ConvertValueToCoins(totalValue)) {
+                chest.AddItem(coin, true);
             }
         }
 
+        #endregion
+
+        #region 存储解析
+
         /// <summary>
-        /// 获取缓存的存储提供者，如果缓存失效则重新查找
+        /// 获取缓存的存储提供者，缓存失效则按坐标经存储工厂体系重新解析(天然兼容箱子与Magic Storage)
         /// </summary>
         private IStorageProvider GetTargetStorage() {
             if (targetStoragePos == Point16.NegativeOne) {
@@ -261,20 +411,13 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 return cachedStorageProvider;
             }
 
-            //根据标识符重新查找
-            if (storageIdentifier == "Vanilla.Chest") {
-                cachedStorageProvider = ChestStorageProvider.FromPosition(targetStoragePos);
-            }
-            else if (storageIdentifier == "MagicStorage.StorageHeart") {
-                cachedStorageProvider = MagicStorageProvider.FindNearPosition(targetStoragePos, 48, graspItem);
-            }
-            else {
-                //尝试通用查找
-                cachedStorageProvider = StorageLoader.FindStorageTarget(targetStoragePos, 48, graspItem);
-            }
-
+            cachedStorageProvider = StorageLoader.GetStorageTargetByPoint(targetStoragePos, graspItem);
             return cachedStorageProvider;
         }
+
+        #endregion
+
+        #region 运动与表现
 
         private void SpringPhysicsMove(Vector2 target, float speedMultiplier = 1f) {
             Vector2 toTarget = target - Center;
@@ -303,7 +446,9 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
         }
 
         private void SpawnMechanicalParticles(bool intensive = false) {
-            if (Main.netMode == NetmodeID.Server) return;
+            if (Main.netMode == NetmodeID.Server) {
+                return;
+            }
 
             particleTimer++;
             int spawnRate = intensive ? 8 : 16;
@@ -317,198 +462,218 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
             }
         }
 
+        private Vector2 GetIdleOffset() {
+            return armSlot switch {
+                1 => new Vector2(120, -20),
+                2 => new Vector2(-120, -20),
+                _ => new Vector2(0, -120)
+            };
+        }
+
+        /// <summary>
+        /// 状态入场表现，单人由<see cref="TransitionToState"/>触发，多人客户端由观察到的同步状态变化触发
+        /// </summary>
+        private void OnStateEnteredEffects(ArmState newState) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            switch (newState) {
+                case ArmState.Searching:
+                    SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Center);
+                    break;
+                case ArmState.MovingToChest:
+                    //抓取完成的瞬间
+                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Center);
+                    for (int i = 0; i < 15; i++) {
+                        Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
+                        Dust dust = Dust.NewDustDirect(Center - Vector2.One * 16, 32, 32,
+                            DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, 1.5f);
+                        dust.noGravity = true;
+                    }
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region 状态机
+
         private void State_Idle() {
             stateTimer++;
-            searchCooldown = Math.Max(0, searchCooldown - 1);
 
             clampOpenness = MathHelper.Lerp(clampOpenness, 1f, 0.1f);
             shakeIntensity *= 0.9f;
 
-            //每30帧且冷却结束后搜索
-            if (stateTimer >= 30 && searchCooldown == 0 && collectorTP.MachineData.UEvalue >= collectorTP.consumeUE) {
-                if (!VaultUtils.isClient) {
+            if (!VaultUtils.isClient) {
+                searchCooldown = Math.Max(0, searchCooldown - 1);
+
+                //每30帧且冷却结束后搜索
+                if (stateTimer >= 30 && searchCooldown == 0
+                    && collectorTP.MachineData.UEvalue >= CollectorTP.consumeUE) {
                     TransitionToState(ArmState.Searching);
                 }
             }
 
-            Vector2 idleOffset = GetIdleOffset();
-            SpringPhysicsMove(startPos + idleOffset, 0.8f);
+            SpringPhysicsMove(startPos + GetIdleOffset(), 0.8f);
         }
 
         private void State_Searching() {
-            //只在服务器端搜索
-            if (!VaultUtils.isClient) {
-                Item foundItem = FindNearestItem();
+            stateTimer++;
 
-                if (foundItem != null) {
-                    targetItemWhoAmI = foundItem.whoAmI;
-                    foundItem.CWR().TargetByCollector = WhoAmI;
-
-                    //检查是否为钱币,如果是则标记为钱币收集模式
-                    isCollectingCoins = IsCoin(foundItem);
-
-                    //如果是钱币,立即吸附周围的钱币
-                    if (isCollectingCoins) {
-                        MagnetizeNearbyCoins(foundItem.Center);
-                    }
-
-                    //消耗能量
-                    collectorTP.MachineData.UEvalue -= collectorTP.consumeUE;
-                    collectorTP.SendData();
-
-                    TransitionToState(ArmState.MovingToItem);
-                }
-                else {
-                    searchCooldown = 60; //设置搜索冷却
-                    TransitionToState(ArmState.Idle);
-                }
+            if (VaultUtils.isClient) {
+                //客户端保持悬停，等待服务器的搜索结果
+                SpringPhysicsMove(startPos + GetIdleOffset(), 0.8f);
+                return;
             }
 
-            //播放音效(所有客户端)
-            if (stateTimer == 1) {
-                SoundEngine.PlaySound(SoundID.Item23 with { Volume = 0.5f, Pitch = 0.3f }, Center);
+            Item foundItem = FindNearestItem();
+
+            if (foundItem != null) {
+                targetItemWhoAmI = foundItem.whoAmI;
+                LockItem(foundItem);
+
+                //检查是否为钱币,如果是则标记为钱币收集模式并立即吸附周围钱币
+                isCollectingCoins = foundItem.IsACoin;
+                if (isCollectingCoins) {
+                    MagnetizeNearbyCoins(foundItem.Center);
+                }
+
+                //消耗能量
+                collectorTP.MachineData.UEvalue -= CollectorTP.consumeUE;
+                collectorTP.SendData();
+
+                TransitionToState(ArmState.MovingToItem);
+            }
+            else {
+                searchCooldown = 60; //设置搜索冷却
+                TransitionToState(ArmState.Idle);
             }
         }
 
         private void State_MovingToItem() {
-            if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
-                TransitionToState(ArmState.Idle);
-                return;
+            if (!VaultUtils.isClient) {
+                if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
+                    TransitionToState(ArmState.Idle);
+                    return;
+                }
+
+                Item targetItem = Main.item[targetItemWhoAmI];
+                int lockOwner = targetItem.CWR().TargetByCollector;
+                if (!IsValidTarget(targetItem) || (lockOwner != WhoAmI && lockOwner != -1)) {
+                    TransitionToState(ArmState.Idle);
+                    return;
+                }
+
+                //持续续锁，防止长途追踪时锁超时
+                LockItem(targetItem);
+                RefreshCoinLocks();
+
+                targetPosition = targetItem.Center;
+
+                if (Vector2.Distance(Center, targetPosition) < ArrivalThreshold) {
+                    TransitionToState(ArmState.Grasping);
+                }
             }
-
-            Item targetItem = Main.item[targetItemWhoAmI];
-            if (!IsValidTarget(targetItem) || targetItem.CWR().TargetByCollector != WhoAmI && targetItem.CWR().TargetByCollector != -1) {
-                TransitionToState(ArmState.Idle);
-                return;
+            else if (targetItemWhoAmI >= 0 && targetItemWhoAmI < Main.maxItems) {
+                //客户端仅做表现：跟踪已同步的目标物品
+                Item targetItem = Main.item[targetItemWhoAmI];
+                if (targetItem.active && !targetItem.IsAir) {
+                    targetPosition = targetItem.Center;
+                }
             }
-
-            targetPosition = targetItem.Center;
-
-            //计算到目标的距离
-            float distanceToTarget = Vector2.Distance(Center, targetPosition);
 
             //根据距离调整速度倍率,距离越近速度越慢,防止越过
+            float distanceToTarget = Vector2.Distance(Center, targetPosition);
             float speedMultiplier = MathHelper.Clamp(distanceToTarget / ArrivalThreshold, 0.3f, 1.2f);
 
             SpringPhysicsMove(targetPosition, speedMultiplier);
             SpawnMechanicalParticles();
 
             clampOpenness = MathHelper.Lerp(clampOpenness, 0.8f, 0.15f);
-
-            if (distanceToTarget < ArrivalThreshold) {
-                TransitionToState(ArmState.Grasping);
-            }
         }
 
         private void State_Grasping() {
             stateTimer++;
 
-            if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
-                TransitionToState(ArmState.Idle);
-                return;
-            }
-
-            Item targetItem = Main.item[targetItemWhoAmI];
-
-            //检查物品是否有效，如果无效则返回空闲状态
-            if (!targetItem.Alives()) {
-                TransitionToState(ArmState.Idle);
-                return;
-            }
-
             clampOpenness = MathHelper.Lerp(clampOpenness, 0f, 0.25f);
             shakeIntensity = 1.5f;
 
-            targetPosition = targetItem.Center;
-            //抓取时保持在目标位置,速度倍率降低
-            SpringPhysicsMove(targetPosition, 0.3f);
+            if (!VaultUtils.isClient) {
+                if (targetItemWhoAmI < 0 || targetItemWhoAmI >= Main.maxItems) {
+                    TransitionToState(ArmState.Idle);
+                    return;
+                }
 
-            SpawnMechanicalParticles(intensive: true);
+                Item targetItem = Main.item[targetItemWhoAmI];
+                if (!targetItem.Alives()) {
+                    TransitionToState(ArmState.Idle);
+                    return;
+                }
 
-            //抓取完成(仅服务器端处理物品)
-            if (stateTimer > 12) {
-                if (!VaultUtils.isClient) {
+                LockItem(targetItem);
+                RefreshCoinLocks();
+                targetPosition = targetItem.Center;
+
+                //抓取完成
+                if (stateTimer > 12) {
                     graspItem = targetItem.Clone();
                     targetItem.TurnToAir();
-                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItem.whoAmI);
+                    NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetItemWhoAmI);
 
                     //如果是钱币收集模式,合并所有吸附的钱币
                     if (isCollectingCoins) {
                         MergeMagnetizedCoins();
                     }
+                    graspItemType = graspItem.type;
 
-                    //使用新存储系统查找存储目标
                     var storageProvider = collectorTP.FindStorageTarget(graspItem);
-
                     if (storageProvider != null) {
                         targetStoragePos = storageProvider.Position;
-                        storageIdentifier = storageProvider.Identifier;
                         cachedStorageProvider = storageProvider;
                         graspItem.CWR().TargetByCollector = WhoAmI;
                         TransitionToState(ArmState.MovingToChest);
                     }
                     else {
-                        //找不到存储位置,丢弃物品
-                        VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
-                        graspItem.TurnToAir();
+                        //找不到存储位置,原地放回物品
+                        DropCarriedItems();
                         TransitionToState(ArmState.Idle);
                     }
-                }
-
-                //音效和特效(所有客户端)
-                if (stateTimer == 13) {
-                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.8f, Pitch = -0.2f }, Center);
-
-                    if (Main.netMode != NetmodeID.Server) {
-                        for (int i = 0; i < 15; i++) {
-                            Vector2 particleVel = Main.rand.NextVector2Circular(4, 4);
-                            Dust dust = Dust.NewDustDirect(Center - Vector2.One * 16, 32, 32,
-                                DustID.Electric, particleVel.X, particleVel.Y, 100, Color.Cyan, 1.5f);
-                            dust.noGravity = true;
-                        }
-                    }
+                    return;
                 }
             }
+
+            SpringPhysicsMove(targetPosition, 0.3f);
+            SpawnMechanicalParticles(intensive: true);
         }
 
         private void State_MovingToChest() {
-            if (graspItem == null || graspItem.type == ItemID.None) {
-                TransitionToState(ArmState.Idle);
-                return;
-            }
-
-            //确定目标位置
-            if (targetStoragePos == Point16.NegativeOne) {
-                //目标失效
-                if (!VaultUtils.isClient) {
-                    VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
-                    graspItem.TurnToAir();
+            if (!VaultUtils.isClient) {
+                if (!graspItem.Alives() || targetStoragePos == Point16.NegativeOne) {
+                    DropCarriedItems();
+                    TransitionToState(ArmState.Idle);
+                    return;
                 }
-                TransitionToState(ArmState.Idle);
-                return;
-            }
 
-            var storage = GetTargetStorage();
-            if (storage == null || !storage.IsValid) {
-                //存储目标失效
-                if (!VaultUtils.isClient) {
-                    VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
-                    graspItem.TurnToAir();
+                var storage = GetTargetStorage();
+                if (storage == null || !storage.IsValid) {
+                    //存储目标失效
+                    DropCarriedItems();
+                    TransitionToState(ArmState.Idle);
+                    return;
                 }
-                TransitionToState(ArmState.Idle);
-                return;
+
+                targetPosition = storage.WorldCenter;
+
+                //到达目标
+                if (HitBox.Intersects(storage.HitBox)) {
+                    TransitionToState(ArmState.Depositing);
+                }
             }
 
-            targetPosition = storage.WorldCenter;
             SpringPhysicsMove(targetPosition, 1.0f);
-
-            graspItem.Center = Center;
             SpawnMechanicalParticles();
-
-            //到达目标
-            if (HitBox.Intersects(storage.HitBox)) {
-                TransitionToState(ArmState.Depositing);
-            }
+            clampOpenness = MathHelper.Lerp(clampOpenness, 0f, 0.2f);
         }
 
         private void State_Depositing() {
@@ -519,114 +684,73 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             SpawnMechanicalParticles(intensive: true);
 
-            if (stateTimer > 10) {
-                //只在服务器端处理物品存储
-                if (!VaultUtils.isClient) {
-                    var storage = GetTargetStorage();
-                    if (storage != null && storage.IsValid) {
-                        bool success = storage.DepositItem(graspItem);
-                        if (success) {
-                            storage.PlayDepositAnimation();
-                            //如果是箱子，检查并合并钱币
-                            if (storage is ChestStorageProvider chestProvider) {
-                                int chestIndex = Chest.FindChest(chestProvider.Position.X, chestProvider.Position.Y);
-                                if (chestIndex >= 0) {
-                                    CheckCoins(Main.chest[chestIndex]);
-                                }
-                            }
-                        }
-                        else {
-                            //存储失败则掉落物品
-                            VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
-                        }
-                    }
-                    else {
-                        //存储目标失效，掉落物品
-                        VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, graspItem);
-                    }
-
+            //只在服务器端处理物品存储，且只执行一次
+            if (!VaultUtils.isClient && stateTimer == 11) {
+                var storage = GetTargetStorage();
+                if (storage != null && storage.IsValid && storage.DepositItem(graspItem)) {
+                    storage.PlayDepositAnimation();
                     graspItem.TurnToAir();
-                    if (VaultUtils.isServer) {
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, graspItem.whoAmI);
+
+                    //钱币找零一并存入，存不下的落地
+                    foreach (var extra in extraGraspItems) {
+                        if (extra.Alives() && !(storage.IsValid && storage.DepositItem(extra))) {
+                            VaultUtils.SpwanItem(this.FromObjectGetParent(), HitBox, extra);
+                        }
+                    }
+                    extraGraspItems.Clear();
+                    graspItemType = ItemID.None;
+
+                    //如果是箱子，合并其中的钱币
+                    if (storage is ChestStorageProvider chestProvider && chestProvider.ChestIndex >= 0) {
+                        CheckCoins(Main.chest[chestProvider.ChestIndex]);
                     }
                 }
-
-                //音效(所有客户端)
-                if (stateTimer == 11) {
-                    SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Center);
+                else {
+                    //存储失败则掉落物品
+                    DropCarriedItems();
                 }
+            }
 
-                if (stateTimer > 15) {
-                    TransitionToState(ArmState.Idle);
-                }
+            //音效(单人与客户端按本地计时触发)
+            if (stateTimer == 11) {
+                SoundEngine.PlaySound(SoundID.Grab with { Volume = 0.6f, Pitch = 0.3f }, Center);
+            }
+
+            if (!VaultUtils.isClient && stateTimer > 15) {
+                TransitionToState(ArmState.Idle);
             }
         }
 
+        /// <summary>
+        /// 状态转换，仅服务器端调用；客户端由同步的<see cref="stateValue"/>驱动
+        /// </summary>
         private void TransitionToState(ArmState newState) {
-            bool was = currentState != newState;
+            if (VaultUtils.isClient) {
+                return;
+            }
+
+            bool changed = currentState != newState;
             currentState = newState;
             stateTimer = 0;
 
             if (newState == ArmState.Idle) {
+                //中断路径必须解除锁定，否则臂死亡后物品会被幽灵索引永久锁定
+                UnlockTrackedItems();
                 targetItemWhoAmI = -1;
                 targetStoragePos = Point16.NegativeOne;
-                storageIdentifier = "";
                 cachedStorageProvider = null;
                 isCollectingCoins = false;
                 magnetizedCoins.Clear();
+                graspItemType = ItemID.None;
             }
 
-            if (was) {
-                //只在服务器端触发网络更新
-                if (!VaultUtils.isClient) {
-                    NetUpdate = true;
-                }
+            if (changed) {
+                NetUpdate = true;
+                OnStateEnteredEffects(newState);
             }
         }
 
-        private Vector2 GetIdleOffset() {
-            return armSlot switch {
-                1 => new Vector2(120, -20),
-                2 => new Vector2(-120, -20),
-                _ => new Vector2(0, -120)
-            };
-        }
-
-        private static void CheckCoins(Chest chest) {
-            long totalValue = 0;
-
-            for (int i = 0; i < chest.item.Length; i++) {
-                Item item = chest.item[i];
-                if (item != null && !item.IsAir && item.IsACoin) {
-                    int value = item.type switch {
-                        ItemID.SilverCoin => 100,
-                        ItemID.GoldCoin => 10000,
-                        ItemID.PlatinumCoin => 1000000,
-                        _ => 1
-                    };
-                    totalValue += (long)value * item.stack;
-                    item.TurnToAir();
-                }
-            }
-
-            if (totalValue <= 0) return;
-
-            if (totalValue >= 1000000) {
-                chest.AddItem(new Item(ItemID.PlatinumCoin, (int)(totalValue / 1000000)));
-                totalValue %= 1000000;
-            }
-            if (totalValue >= 10000) {
-                chest.AddItem(new Item(ItemID.GoldCoin, (int)(totalValue / 10000)));
-                totalValue %= 10000;
-            }
-            if (totalValue >= 100) {
-                chest.AddItem(new Item(ItemID.SilverCoin, (int)(totalValue / 100)));
-                totalValue %= 100;
-            }
-            if (totalValue > 0) {
-                chest.AddItem(new Item(ItemID.CopperCoin, (int)totalValue));
-            }
-        }
+        #endregion
 
         public override void AI() {
             if (!initialized) {
@@ -636,6 +760,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                     NetUpdate = true;
                 }
                 initialized = true;
+                graspItem ??= new Item();
             }
 
             if (collectorPos == Point16.NegativeOne) {
@@ -644,12 +769,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
 
             if (!TileProcessorLoader.AutoPositionGetTP(collectorPos, out collectorTP)) {
                 if (!VaultUtils.isClient) {
+                    //收集器已消失：先吐出夹着的物品再自毁，防止物品凭空消失
+                    DropCarriedItems();
+                    UnlockTrackedItems();
                     ActorLoader.KillActor(WhoAmI);
                 }
                 return;
             }
 
             startPos = collectorTP.ArmPos;
+
+            //客户端观察到服务器同步的状态变化时，重置本地计时并触发入场表现
+            if (VaultUtils.isClient && stateValue != lastClientState) {
+                lastClientState = stateValue;
+                stateTimer = 0;
+                OnStateEnteredEffects(currentState);
+            }
 
             //状态机驱动
             switch (currentState) {
@@ -770,9 +905,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors
                 , Color.White * (0.7f + shakeIntensity * 0.3f), clampRot + MathHelper.PiOver2
                 , clampGlow.Value.GetOrig(2), 1f, SpriteEffects.None, 0f);
 
-            //绘制抓取的物品
-            if (graspItem != null && !graspItem.IsAir) {
-                VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItem.type
+            //绘制抓取的物品(类型经同步，客户端也能正确显示)
+            if (graspItemType > ItemID.None) {
+                VaultUtils.SafeLoadItem(graspItemType);
+                VaultUtils.SimpleDrawItem(Main.spriteBatch, graspItemType
                     , Center - Main.screenPosition, 1f
                     , clampRot + MathHelper.PiOver2, drawColor);
             }

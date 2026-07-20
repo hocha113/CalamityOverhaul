@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Tools
     /// 海洋百科使用特效弹幕
     internal class EncyclopediaEffect : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private enum EffectPhase
         {
@@ -458,7 +458,7 @@ namespace CalamityOverhaul.Content.Items.Tools
                 return;
             }
 
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (canvas == null || noise == null) {
                 return;

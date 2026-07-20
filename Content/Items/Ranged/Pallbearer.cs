@@ -1035,7 +1035,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class PallbearerCoffinSeal : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Pallbearer>()).DisplayName;
 
         private ref float BoundTarget => ref Projectile.ai[0];
@@ -1329,7 +1329,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>收殓标记：被掷棺沾了棺椁气息。吃钉伤害 ×1.75，落棺伤害 ×1.5，且演出全面强化</summary>
     internal class PallbearerShrouded : ModBuff
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         /// <summary>标记存留时长（10s）</summary>
         public const int MarkDuration = 600;
 
@@ -1353,7 +1353,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// <summary>封殓：落棺合盖后残留的棺椁压迫，承受伤害提高</summary>
     internal class PallbearerSealed : ModBuff
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         /// <summary>封殓承伤倍率</summary>
         public const float DamageTakenMult = 1.10f;
 

@@ -246,7 +246,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
     /// <summary>狙击导引线，纯视觉零伤害；随锁定进度自枪口渐亮延伸，锁满定格闪烁并播上膛音；SHPCModSniperLock.fx mode=0</summary>
     internal sealed class SHPCSniperLockLineProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const float MuzzleOffset = 34f;
         private const float MaxLineLength = 2400f;
@@ -378,7 +378,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
                 return false;
             }
             Effect shader = EffectLoader.SHPCModSniperLock?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) {
                 return false;
@@ -421,7 +421,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
             if (Projectile.owner != Main.myPlayer || drawCharge < 1f || fadeAlpha < 0.05f) {
                 return;
             }
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (white == null) {
                 return;
@@ -444,7 +444,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
     /// <summary>贯空射线：瞬时命中的全穿透狙击射线，音爆双响+沿线真空带；SHPCModSniperLock.fx mode=1</summary>
     internal sealed class SHPCSkypierceRayProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 34;
         private const int DamageWindow = 6;
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.SHPCModSniperLock?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) {
                 return false;

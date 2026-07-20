@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Buffs
     {
         //暂无专属图标：先跟随 TemporalStasis 用占位图，贴图补上后自动切换
         public override string Texture => ModContent.HasAsset(CWRConstant.Buff + "MarblePetrify")
-            ? CWRConstant.Buff + "MarblePetrify" : CWRConstant.Placeholder2;
+            ? CWRConstant.Buff + "MarblePetrify" : CWRConstant.VaultPlaceholder2;
 
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;

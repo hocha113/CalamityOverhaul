@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
             float close = MathHelper.Clamp(EyelidValue, 0f, 1f);
             float glow = MathHelper.Clamp(GlowValue, 0f, 1f);
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) {
                 return;
             }

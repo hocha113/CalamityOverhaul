@@ -201,7 +201,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             float halfSize = OnikiriUITheme.HudEyeHalf * (0.93f + 0.07f * openDraw + 0.05f * hoverEase) + 2.5f * flash;
 
             Effect eye = EffectLoader.OniEye?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (eye == null || white == null || noise == null) {
                 DrawFallback(sb, eyeIntensity, openDraw, halfSize, time);

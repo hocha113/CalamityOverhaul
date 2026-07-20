@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
     /// <summary>机械骷髅王通用预警：线/扇/环三模式，纯视觉无伤害；ai[0]=模式+扇形半角编码（mode=整数部分0线/1扇/2环；小数部分×10=扇形半角弧度）；ai[1]=旋转（线/扇，弧度）或半径（环，像素）；ai[2]=总时长（帧）；充能进度由timeLeft推导，各端确定性动画无需额外同步线模式(冲刺预判)纯贴图多层绘制，不经着色器；扇/环经PrimeTelegraph.fx两technique显式选择，禁止单着色器+uniform分支(MojoShader分支不可靠，曾把环画成细长椭圆)</summary>
     internal class PrimeTelegraphLine : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         internal static float LineLength => 1150f;
         internal static float FanRadius => 880f;
@@ -111,14 +111,14 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
         private readonly record struct QuadInfo(Vector2 Origin, Vector2 Scale, float Rotation);
 
         private QuadInfo FanQuad() {
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             //quad 高度 = 2×长度，保证着色器角度计算等比
             return new QuadInfo(new Vector2(0f, quad.Height / 2f),
                 new Vector2(FanRadius / quad.Width, FanRadius * 2f / quad.Height), Projectile.ai[1]);
         }
 
         private QuadInfo RingQuad() {
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             //边长 = 半径×2.6：主环在 r=0.77（恰为请求半径），外侧留收缩圈空间
             float size = Projectile.ai[1] * 2.6f;
             return new QuadInfo(quad.Size() / 2f,
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             shader.Parameters["uFanAngle"]?.SetValue(FanHalfAngle);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White,
                 info.Rotation, info.Origin, info.Scale, SpriteEffects.None, 0f);
 

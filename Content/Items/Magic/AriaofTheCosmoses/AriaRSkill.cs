@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// R技能伽马射线暴：蓄力吸光→白闪→扇形逐道点射(每3帧一道,共9道)
     internal class AriaRSkill : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int ChargeTime = 60;
         private const int BeamCount = 9;

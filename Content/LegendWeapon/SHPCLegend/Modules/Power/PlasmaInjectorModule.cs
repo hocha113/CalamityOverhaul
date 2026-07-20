@@ -44,7 +44,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
     /// <summary>等离子残阳，半径 110 灼烧+日珥；SHPCPlasmaSun.fx</summary>
     internal sealed class SHPCPlasmaSunProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 300;
         private const float AuraRadius = 110f;
@@ -148,7 +148,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.SHPCPlasmaSun?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 
@@ -189,7 +189,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
     /// </summary>
     internal sealed class SHPCSolarFlareProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = 18;

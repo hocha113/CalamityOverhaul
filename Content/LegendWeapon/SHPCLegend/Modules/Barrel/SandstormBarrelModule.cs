@@ -47,7 +47,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>砂幕弹幕：旋涡+流场+Fog，磨蚀标记</summary>
     internal sealed class SHPCSandCurtainProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const float Radius = 120f;
         private float radius => 60f;
 

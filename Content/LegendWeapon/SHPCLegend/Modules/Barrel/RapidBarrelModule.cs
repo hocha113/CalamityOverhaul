@@ -415,7 +415,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// 并为炽热光束叠加色温热鞘；开火时锚定枪口，停火悬停头顶如烟囱泄压</summary>
     internal sealed class SHPCRedlineGaugeProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxSheaths = 10;      //每帧最多绘制热鞘的光束数
         private const int SheathPoints = 12;    //热鞘 Trail 顶点数
@@ -641,7 +641,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
                 return false;
             }
             Effect shader = EffectLoader.SHPCModRedline?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) {
                 return false;

@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// <param name="mode">0 主面板 1 侧栏</param>
         public static void DrawShaderBackground(SpriteBatch sb, float alpha, Rectangle panelRect,
             Vector2 bodyLocalCenter, float bodyRadius, int mode) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             //着色器缺失降级 BgPanel
@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         /// <summary>四角括号+顶脉冲条+边线，CPU 锐利装饰</summary>
         public static void DrawFrameDecor(SpriteBatch sb, float alpha, Rectangle panelRect, float globalTimer) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             //顶部边框带脉冲
@@ -150,7 +150,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// <summary>标题栏/版本/底状态栏</summary>
         public void DrawTitleAndDecor(SpriteBatch sb, float alpha, Rectangle panelRect, Vector2 panelCenter,
             float globalTimer, string title, string statusText) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             //标题栏深色底
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// <summary>随机故障色块</summary>
         public void DrawGlitchEffect(SpriteBatch sb, float alpha, Rectangle panelRect) {
             if (glitchIntensity <= 0.01f) return;
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             float intensity = glitchIntensity * alpha;
@@ -264,7 +264,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         /// <summary>标题栏关闭钮 X 图标</summary>
         public void DrawCloseButton(SpriteBatch sb, float alpha, Rectangle panelRect, bool isHovered) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             Rectangle btnRect = GetCloseButtonRect(panelRect);

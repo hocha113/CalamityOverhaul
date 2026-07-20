@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: Murasama
-MuraTriggerDash.DisplayName: Murasama
-MuraBreakerSlash.DisplayName: Crescent Moon Slash
-MuraExecutionCut.DisplayName: Dimensional Severance - Finale
-MuraExecutionCutOnSpan.DisplayName: Dimensional Severance - Genesis
-MuraGroundSmash.DisplayName: Falling Cherry Blossom
-EndSkillEffectStart.DisplayName: Dimensional Severance - Genesis
 RebelBladeFlyAttcke.DisplayName: Rebel Blade
 RebelBladeOrb.DisplayName: Demonic Orb
 RebelBladeBack.DisplayName: Rebel Blade
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: Sparkling Summon
 SpiralStarProjectile.DisplayName: Spiral Star
 WaterZombie.DisplayName: Drowned Zombie
 OceanCurrent.DisplayName: Ocean Current
-PowerSoundEgg.DisplayName: Resonant Egg
 CrabulonFriendHitbox.DisplayName: Crabulon Spore
 Fireball.DisplayName: Fireball
 DeadLaser.DisplayName: Death Laser
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: Sulfuricacid Explosion
 DawnshatterFireball.DisplayName: Dawnshatter Fireball
 TransferItemProj.DisplayName: Items In Transit
 Crystal.DisplayName: Crystal
-MuraDimensionSlash.DisplayName: Mura Dimension Slash
-MuraSlashArc.DisplayName: Mura Slash Arc
-MuraSlashLine.DisplayName: Mura Slash Line
 WGGLumberjackSaw.DisplayName: Lumberjack Saw
 WGGLifeWeaverAcorn.DisplayName: Acorn
 GammaRayBurst.DisplayName: Gamma Ray Burst
@@ -345,7 +334,8 @@ OniFinaleCut.DisplayName: Final Tachi World-Sundering Sheathe
 OniFlashStep.DisplayName: Kamui Rush
 OniFlashMark.DisplayName: Kamui Rush Ink Brand
 OniAnnihilate.DisplayName: Oni Annihilate
-OniSakuraFlight.DisplayName: Oni Sakura Flight
+OniSakuraFlight.DisplayName: Sakura Flow Avatar
+OniZanshinSlash.DisplayName: Zanshin Strike
 SHPCHeavyMaulProj.DisplayName: S H P C Heavy Maul Proj
 SHPCRedlineGaugeProj.DisplayName: S H P C Redline Gauge Proj
 SHPCShardburstFlashProj.DisplayName: S H P C Shardburst Flash Proj

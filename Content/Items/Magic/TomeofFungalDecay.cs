@@ -124,7 +124,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
     internal class SporeBoboMagic : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 60;
             Projectile.DamageType = DamageClass.Magic;

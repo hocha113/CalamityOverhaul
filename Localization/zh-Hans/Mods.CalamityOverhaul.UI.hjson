@@ -1,22 +1,43 @@
-ItemFilterUI: {
-	HintText: 左键点击可添加项目
-	HintText2: 左键点击可移除项目
-	CloseHint: "[ESC]键或[右键点击]可关闭"
+ItemFilterEditorUI: {
+	ModeWhitelistText: 白名单
+	ModeBlacklistText: 黑名单
+	ClearText: 清空
+	UninstallText: 卸载过滤
+	CountFormat: "{0} 项"
+	EmptyHintText: 手持物品点击此处即可收录
+	OperateHintText: 持物点击=添加 · 点击条目=移除 · [右键/ESC]关闭
+	InstalledText: 名单已安装
+	UninstalledText: 过滤器已卸载
 }
 
-LegendUpgradeConfirmUI: {
-	TitleText: 传奇武器升级确认
-	DescText:
+EntryDecisionUI: {
+	CollapseHint: 右键收起
+	LegendPill: 传奇武器等级同步
+	LegendTitle: 传奇武器升级确认
+	LegendDesc:
 		'''
 		当前世界等级高于武器等级
 		是否将{0}升级到等级 {1}？
 		'''
-	ConfirmText: 确认升级
-	CancelText: 取消
-	Success: "[ITEM]已经升级到[LEVEL]级"
-	QueueIndicator: 还有 {0} 个传奇武器待确认
-	TrustText: 信任此世界
-	TrustSuccess: "[ITEM]已信任本世界，今后将自动同步"
+	LegendConfirm: 确认升级
+	LegendSkip: 本次跳过
+	LegendTrust: 信任此世界
+	LegendSuccess: "{0}已经升级到 {1} 级"
+	LegendTrustSuccess: "{0}已信任本世界，今后将自动同步"
+	LegendQueue: 还有 {0} 个传奇武器待确认
+	QuestPill: 任务检测待确认
+	QuestTitle: 任务检测确认
+	QuestDesc:
+		'''
+		检测到您从其他世界进入当前世界
+		是否在当前世界中检测任务进度？
+		'''
+	QuestConfirm: 检测任务
+	QuestSkip: 跳过
+	QuestTrust: 信任此世界
+	QuestEnabled: 已启用任务检测
+	QuestDisabled: 已跳过任务检测
+	QuestTrusted: 已信任此世界，今后自动启用任务检测
 }
 
 QuestTracker: {
@@ -150,6 +171,11 @@ QuestLog: {
 	SunModeText: 日间模式
 	LauncherHoverText: 左键交互，右键拖动
 	QuestManagerText: 委托任务
+	DisabledOverlayText:
+		'''
+		任务检测已在当前世界中被禁止
+		重新进入世界以重新选择配置
+		'''
 
 	ObjectiveTemplate: {
 		DefeatNpc: 击败{0}
@@ -168,26 +194,6 @@ ExtraMain: {
 	StaffText: 制作人员
 	BackText: 返回
 	LockedText: 未解锁
-}
-
-QuestWorldConfirmUI: {
-	TitleText: 任务检测确认
-	DescText:
-		'''
-		检测到您从其他世界进入当前世界
-		是否在当前世界中检测任务进度？
-		'''
-	ConfirmText: 检测任务
-	CancelText: 跳过
-	TrustText: 信任此世界
-	EnabledText: 已启用任务检测
-	DisabledText: 已跳过任务检测
-	TrustedText: 已信任此世界，今后自动启用任务检测
-	DisabledOverlayText:
-		'''
-		任务检测已在当前世界中被禁止
-		重新进入世界以重新选择配置
-		'''
 }
 
 Incinerator: {
@@ -233,6 +239,43 @@ ThrowerUI: {
 	AmmoModeOnText: 弹药发射
 	AmmoModeOffText: 物品投掷
 	AmmoModeHint: 弹药模式: 放入弹药时发射对应弹幕
+}
+
+CollectorUI: {
+	TitleText: 收集器控制台
+	ModeLabel: 存储模式
+	ModeAuto: 就近存储
+	ModeBoundFirst: 绑定优先
+	ModeBoundOnly: 仅限绑定
+	ModeAutoDesc: 自动存入范围内最近的可用容器
+	ModeBoundFirstDesc: 优先存入绑定容器, 失败时就近存储
+	ModeBoundOnlyDesc: 只存入绑定的容器
+	BindingsLabel: 存储绑定
+	AddBindingText: + 绑定容器
+	PickingTitle: 选取存储容器
+	PickingHint: 左键点击世界中的容器进行绑定
+	PickingExitHint: 右键或[ESC]退出选取
+	BindingFullText: 绑定已满
+	InvalidText: 失效
+	OutOfRangeText: 超出范围
+	ChestDefaultName: 箱子
+	MagicStorageName: 存储核心
+	NoBindingsHint: 尚未绑定容器, 点击下方按钮开始
+	RemoveHint: 移除绑定
+	MoveUpHint: 提升优先级
+	FilterLabel: 收集过滤
+	FilterNoneText: 无过滤(收集所有物品)
+	ClearFilterText: 清除
+	EditFilterText: 编辑
+	FilterHint: 手持物品右键收集器可设定过滤目标
+	StatusLabel: 运行状态
+	ArmCountLabel: 机械臂
+	EnergyLabel: 能量
+	StatusWorking: 运行中
+	StatusNoEnergy: 能量不足
+	StatusStarting: 启动中
+	StatusNoStorage: 无可用存储
+	CloseHint: "[ESC]或空手再次右键可关闭"
 }
 
 SHPCSoulSelectUI: {

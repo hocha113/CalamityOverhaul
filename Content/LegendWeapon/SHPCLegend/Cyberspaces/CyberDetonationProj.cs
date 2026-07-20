@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>能量球引爆 AOE，CyberDetonation.fx</summary>
     internal class CyberDetonationProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 40;
         /// <summary>基础爆炸半径（像素），受蓄力比例影响</summary>
@@ -143,10 +143,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.CyberDetonation?.Value;
             if (shader == null) return false;
-            if (CWRAsset.Placeholder_White == null) return false;
+            if (VaultAsset.placeholder2 == null) return false;
             if (CWRAsset.Extra_193?.Value == null) return false;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;

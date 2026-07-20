@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
     /// <summary>双子冲击波：无伤害纯演出，经<see cref="Renders.WarpEffectRender"/>扩张屏幕扭曲环补绘橙红/青紫双色反向旋转可见冲击环，服务端生成保证多人可见；ai[0]:尺寸档位0=冲刺音爆1=死光开火2=超新星对撞；ai[1]:主题0=激光眼青紫1=魔焰眼橙红2=双色混合</summary>
     internal class TwinsSupernovaBlast : ModProjectile, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 38;
 

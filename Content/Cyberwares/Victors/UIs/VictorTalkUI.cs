@@ -212,7 +212,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
             CyberPanelRenderer.DrawShaderBackground(spriteBatch, alpha * 0.97f, barRect, Vector2.Zero, 0f, mode: 1);
             CyberPanelRenderer.DrawFrameDecor(spriteBatch, alpha, barRect, GlobalTimer);
 
-            Texture2D px = CWRAsset.Placeholder_White.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
 
             DrawPortrait(spriteBatch, px, alpha);
             VictorUIStyle.DrawVDivider(spriteBatch, portraitRect.Right + 13, barRect.Y + 14, barRect.Bottom - 14, CyberwareTheme.Accent * (alpha * 0.5f));

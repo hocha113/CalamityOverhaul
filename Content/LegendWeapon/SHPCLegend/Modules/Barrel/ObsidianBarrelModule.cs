@@ -95,7 +95,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>黑曜石碎片：Trail+Additive，命中小脉冲</summary>
     internal sealed class SHPCObsidianShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int TrailLen = 10;
         private static readonly Color CoreColor = new(255, 110, 50);

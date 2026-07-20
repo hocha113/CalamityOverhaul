@@ -167,7 +167,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
     internal class AncientStormLightning : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public Color Light => Lighting.GetColor((int)(Projectile.position.X + Projectile.width * 0.5) / 16, (int)((Projectile.position.Y + Projectile.height * 0.5) / 16.0));
         private Trail Trail;
 
@@ -327,7 +327,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
 
     internal class AncientStormArc : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Color light => Lighting.GetColor((int)(Projectile.position.X + Projectile.width * 0.5) / 16, (int)((Projectile.position.Y + Projectile.height * 0.5) / 16.0));
         private Trail Trail;
 

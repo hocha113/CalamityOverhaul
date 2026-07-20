@@ -383,7 +383,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors.UIs
                 return;
             }
             cyberPlayer = cp;
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) {
                 return;
             }

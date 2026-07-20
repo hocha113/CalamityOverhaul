@@ -325,7 +325,7 @@ namespace CalamityOverhaul.Content.UIs.BossBars
 
         private void DrawShaderBar(SpriteBatch sb, float x, float y, float w, float h, float alpha) {
             Effect effect = EffectLoader.CyberBossBar?.Value;
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
 
             if (effect != null) {
                 sb.End();

@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: Molekularer Schnitt
-MuraTriggerDash.DisplayName: Molekularer Schnitt
-MuraBreakerSlash.DisplayName: Aufsteigender Drachenhalbmond
-MuraExecutionCut.DisplayName: Dimensionschnitt - Ende
-MuraExecutionCutOnSpan.DisplayName: Dimensionschnitt - Anfang
-MuraGroundSmash.DisplayName: Fallende Kirschblüte
-EndSkillEffectStart.DisplayName: Dimensionschnitt - Anfang
 RebelBladeFlyAttcke.DisplayName: Rebellenklinge
 RebelBladeOrb.DisplayName: Dämonenkugel
 RebelBladeBack.DisplayName: Rebellenklinge
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: Funkel-Beschwörung
 SpiralStarProjectile.DisplayName: Spiralstern
 WaterZombie.DisplayName: Ertrunkener
 OceanCurrent.DisplayName: Meeresströmung
-PowerSoundEgg.DisplayName: Resonanz-Ei
 CrabulonFriendHitbox.DisplayName: Crabulon-Spore
 Fireball.DisplayName: Feuerball
 DeadLaser.DisplayName: Todeslaser
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: Schwefelsäure-Explosion
 DawnshatterFireball.DisplayName: Morgendämmerungsfeuer
 TransferItemProj.DisplayName: Items in Übertragung
 Crystal.DisplayName: Kristall
-MuraDimensionSlash.DisplayName: Dimensionsschnitt
-MuraSlashArc.DisplayName: Dimensionsschnitt
-MuraSlashLine.DisplayName: Dimensionsschnitt
 WGGLumberjackSaw.DisplayName: Rostige Motorsäge
 WGGLifeWeaverAcorn.DisplayName: Eichel
 GammaRayBurst.DisplayName: Gammastrahlenausbruch

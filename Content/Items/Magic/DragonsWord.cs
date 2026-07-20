@@ -74,7 +74,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
     internal class DragonsWordCut : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.DamageType = DamageClass.Magic;
@@ -100,7 +100,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     }
     internal class DragonsWordMouse : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Vector2 targetPos;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 122;
@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.Items.Magic
 
     internal class DragonsWordProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float Time => ref Projectile.ai[0];
         public override void SetDefaults() {

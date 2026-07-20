@@ -1,6 +1,8 @@
+using CalamityOverhaul.Common;
+using InnoVault.PRT;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -54,6 +56,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     );
                 }
 
+                //出膛液体喷吐
+                FishIchornVFX.MuzzleSpray(position, shootDir);
+
                 //发射灵液射流音效
                 SoundEngine.PlaySound(SoundID.Item95 with {
                     Volume = 0.6f,
@@ -70,7 +75,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>全局钩子，Halibut 攻击附加灵液 debuff</summary>
+    /// <summary>全局钩子，Halibut 攻击附加灵液 debuff 并点亮蚀甲纹</summary>
     internal class FishIchornGlobalProj : GlobalProjectile
     {
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) {
@@ -80,33 +85,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 int buffDuration = 300 + HalibutData.GetDomainLayer() * 30;
                 target.AddBuff(BuffID.Ichor, buffDuration);
 
-                //灵液感染粒子效果
-                SpawnIchorInfectionEffect(target.Center);
+                //蚀甲纹标记与轻量命中溅金
+                target.GetGlobalNPC<FishIchornErosion>().Tag(buffDuration);
+                SpawnIchorInfectionEffect(projectile.Center, hit.HitDirection);
             }
         }
 
-        private static void SpawnIchorInfectionEffect(Vector2 position) {
-            //金黄色灵液爆发
-            for (int i = 0; i < 8; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Dust ichor = Dust.NewDustPerfect(
-                    position + Main.rand.NextVector2Circular(20f, 20f),
-                    DustID.Ichor,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                ichor.noGravity = true;
-                ichor.fadeIn = 1.1f;
+        //高频钩子，粒子量克制，常驻表现交给蚀甲纹脉冲
+        private static void SpawnIchorInfectionEffect(Vector2 position, int hitDirection) {
+            if (Main.dedServ) {
+                return;
+            }
+            for (int i = 0; i < 3; i++) {
+                Vector2 velocity = new(hitDirection * Main.rand.NextFloat(1f, 3f), Main.rand.NextFloat(-2.5f, -0.5f));
+                PRTLoader.NewParticle<PRT_FishIchornDroplet>(position + Main.rand.NextVector2Circular(8f, 8f)
+                    , velocity, Main.rand.NextBool(3) ? FishIchornVFX.IchorDeep : FishIchornVFX.IchorGold
+                    , Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(18, 28));
             }
         }
     }
 
-    /// <summary>灵液射流弹幕，粒子+拖尾物理</summary>
-    internal class IchorStream : ModProjectile
+    /// <summary>
+    /// 灵液射流弹幕：受重力微弯的高压液柱。液柱条带 shader 承担飞行主体，
+    /// 沿途甩滴，命中迸溅并留下挂壁金渍与蚀甲纹
+    /// </summary>
+    internal class IchorStream : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //液体流动状态
         private enum FluidState
@@ -122,25 +127,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private ref float StreamLife => ref Projectile.ai[1];
 
-        //液体粒子系统
-        private readonly List<IchorParticle> liquidParticles = new();
-        private const int MaxParticles = 100;
-        private int particleSpawnCounter = 0;
-
-        //液体拖尾粒子系统
-        private readonly List<IchorTrailParticle> trailParticles = new();
-        private const int MaxTrailParticles = 60;
-
         //液体物理参数
-        private const float Viscosity = 0.98f;        //粘度
-        private const float Gravity = 0.35f;          //重力
-        private const float SurfaceTension = 0.15f;   //表面张力
-        private const float FluidDensity = 1.2f;      //液体密度
+        private const float Gravity = 0.35f;
 
-        //视觉效果
-        private float glowPulse = 0f;
-        private readonly List<Vector2> coreTrail = new();
-        private const int MaxCoreTrail = 15;
+        private Trail trail;
+
+        /// <summary>出生淡入与消散共用的视觉包络</summary>
+        private float VisualFade => State == FluidState.Streaming
+            ? MathHelper.Clamp(StreamLife / 4f, 0f, 1f)
+            : MathHelper.Clamp(1f - Projectile.alpha / 255f, 0f, 1f);
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 20;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 32;
@@ -165,24 +165,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SplashingPhaseAI();
             }
 
-            //更新核心拖尾
-            UpdateCoreTrail();
-
-            //更新所有液体粒子
-            UpdateLiquidParticles();
-
-            //更新液体拖尾粒子
-            UpdateTrailParticles();
-
-            //辉光脉冲
-            glowPulse = (float)Math.Sin(StreamLife * 0.3f) * 0.3f + 0.7f;
-
-            //灵液金黄色照明
-            float lightIntensity = 0.8f;
-            Lighting.AddLight(Projectile.Center,
-                1.0f * lightIntensity,
-                0.8f * lightIntensity,
-                0.2f * lightIntensity);
+            //灵液金黄微光照明
+            float glow = 0.55f * VisualFade;
+            Lighting.AddLight(Projectile.Center, 1.0f * glow, 0.76f * glow, 0.18f * glow);
         }
 
         //射流 tick
@@ -193,19 +178,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //粘性阻力
             Projectile.velocity *= 0.995f;
 
-            //生成液体粒子
-            if (particleSpawnCounter++ % 2 == 0 && liquidParticles.Count < MaxParticles) {
-                SpawnStreamParticle();
-            }
-
-            //生成液体拖尾粒子
-            if (StreamLife % 2 == 0 && trailParticles.Count < MaxTrailParticles) {
-                SpawnTrailParticle();
-            }
-
-            //周期性灵液残留
-            if (StreamLife % 4 == 0) {
-                SpawnIchorResidue();
+            //液柱表面张力失稳：沿途甩滴，速度越快甩得越勤
+            if (!Main.dedServ && StreamLife % 3 == 0) {
+                float speed = Projectile.velocity.Length();
+                Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 22f);
+                Vector2 dropVel = Projectile.velocity * Main.rand.NextFloat(0.25f, 0.5f)
+                    + Projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-1.4f, 1.4f);
+                PRTLoader.NewParticle<PRT_FishIchornDroplet>(spawnPos, dropVel
+                    , Main.rand.NextBool(3) ? FishIchornVFX.IchorDeep : FishIchornVFX.IchorGold
+                    , Main.rand.NextFloat(0.45f, 0.85f) * MathHelper.Clamp(speed / 16f, 0.6f, 1.1f))
+                    ?.Configure(Main.rand.Next(20, 34));
             }
 
             //射流音效
@@ -230,141 +212,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Kill();
             }
 
-            //粒子继续更新但不生成新的
             Projectile.velocity *= 0.9f;
-        }
-
-        //生成射流液体粒子
-        private void SpawnStreamParticle() {
-            Vector2 baseVel = Projectile.velocity;
-            Vector2 particleVel = baseVel + Main.rand.NextVector2Circular(2f, 2f);
-
-            IchorParticle particle = new IchorParticle {
-                Position = Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                Velocity = particleVel * Main.rand.NextFloat(0.7f, 1.1f),
-                Size = Main.rand.NextFloat(1.2f, 2.5f),
-                Life = 0,
-                MaxLife = Main.rand.Next(25, 45),
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                RotationSpeed = Main.rand.NextFloat(-0.15f, 0.15f),
-                Opacity = 1f,
-                IsSplash = false
-            };
-
-            liquidParticles.Add(particle);
-        }
-
-        //拖尾液滴
-        private void SpawnTrailParticle() {
-            //在射流后方生成连续的液滴
-            Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(10f, 25f);
-            Vector2 particleVel = Projectile.velocity * Main.rand.NextFloat(0.5f, 0.8f);
-            particleVel += Main.rand.NextVector2Circular(1.5f, 1.5f);
-
-            IchorTrailParticle trail = new IchorTrailParticle {
-                Position = spawnPos + Main.rand.NextVector2Circular(6f, 6f),
-                Velocity = particleVel,
-                Size = Main.rand.NextFloat(0.8f, 1.8f),
-                Life = 0,
-                MaxLife = Main.rand.Next(15, 30),
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                RotationSpeed = Main.rand.NextFloat(-0.2f, 0.2f),
-                Opacity = 0.9f,
-                StretchFactor = 1f
-            };
-
-            trailParticles.Add(trail);
-        }
-
-        //更新所有液体粒子
-        private void UpdateLiquidParticles() {
-            for (int i = liquidParticles.Count - 1; i >= 0; i--) {
-                IchorParticle p = liquidParticles[i];
-                p.Life++;
-
-                //物理更新
-                if (!p.IsSplash) {
-                    //正常射流粒子
-                    p.Velocity.Y += Gravity * FluidDensity;
-                    p.Velocity *= Viscosity;
-
-                    //表面张力-向射流中心吸引
-                    Vector2 toCore = Projectile.Center - p.Position;
-                    float distToCore = toCore.Length();
-                    if (distToCore > 15f && distToCore < 60f) {
-                        p.Velocity += toCore.SafeNormalize(Vector2.Zero) * SurfaceTension;
-                    }
-                }
-                else {
-                    //溅射粒子-更强重力
-                    p.Velocity.Y += Gravity * 1.5f;
-                    p.Velocity.X *= 0.98f;
-
-                    //地面碰撞检测
-                    if (Framing.GetTileSafely(p.Position.ToTileCoordinates()).HasTile) {
-                        p.Velocity.Y *= -0.4f;
-                        p.Velocity.X *= 0.7f;
-                        if (Math.Abs(p.Velocity.Y) < 1f) {
-                            p.Velocity.Y = 0;
-                            p.Velocity.X *= 0.95f;
-                        }
-                    }
-                }
-
-                p.Position += p.Velocity;
-                p.Rotation += p.RotationSpeed;
-
-                //透明度衰减
-                float lifeRatio = p.Life / (float)p.MaxLife;
-                p.Opacity = 1f - lifeRatio;
-
-                //尺寸变化
-                if (p.IsSplash) {
-                    p.Size *= 0.98f;
-                }
-
-                //移除消逝的粒子
-                if (p.Life >= p.MaxLife || p.Opacity <= 0.05f) {
-                    liquidParticles.RemoveAt(i);
-                    continue;
-                }
-
-                liquidParticles[i] = p;
-            }
-        }
-
-        //更新液体拖尾粒子
-        private void UpdateTrailParticles() {
-            for (int i = trailParticles.Count - 1; i >= 0; i--) {
-                IchorTrailParticle p = trailParticles[i];
-                p.Life++;
-
-                //应用重力和粘性
-                p.Velocity.Y += Gravity * FluidDensity * 1.2f;
-                p.Velocity *= 0.97f;
-
-                p.Position += p.Velocity;
-                p.Rotation += p.RotationSpeed;
-
-                //拉伸效果-根据速度动态调整
-                float speed = p.Velocity.Length();
-                p.StretchFactor = MathHelper.Lerp(1f, 2.5f, Math.Min(speed / 20f, 1f));
-
-                //透明度衰减
-                float lifeRatio = p.Life / (float)p.MaxLife;
-                p.Opacity = (1f - lifeRatio) * 0.8f;
-
-                //尺寸衰减
-                p.Size *= 0.99f;
-
-                //移除消逝的粒子
-                if (p.Life >= p.MaxLife || p.Opacity <= 0.05f) {
-                    trailParticles.RemoveAt(i);
-                    continue;
-                }
-
-                trailParticles[i] = p;
-            }
         }
 
         //进入溅射状态
@@ -377,7 +225,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         //碰撞溅射
         public override bool OnTileCollide(Vector2 oldVelocity) {
             if (State == FluidState.Streaming) {
-                CreateSplashEffect(Projectile.Center, oldVelocity);
+                //贴壁迸溅并留金渍 decal
+                FishIchornVFX.SplashBurst(Projectile.Center, oldVelocity, onTile: true);
 
                 //溅射音效
                 SoundEngine.PlaySound(SoundID.Item95 with {
@@ -397,9 +246,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return true;
         }
 
-        //击中NPC-生成溅射效果
+        //击中NPC-迸溅+顿帧
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            CreateSplashEffect(Projectile.Center, Projectile.velocity);
+            //液流重击的短顿帧
+            target.CWR().TimeFrozenTick = 3;
+            FishIchornVFX.SplashBurst(Projectile.Center, Projectile.velocity, onTile: false);
 
             //附加灵液效果
             target.AddBuff(BuffID.Ichor, 360 + HalibutData.GetDomainLayer() * 40);
@@ -411,419 +262,76 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //溅射 burst
-        private void CreateSplashEffect(Vector2 hitPosition, Vector2 impactVelocity) {
-            //计算溅射方向
-            Vector2 normal = -impactVelocity.SafeNormalize(Vector2.Zero);
-            float impactSpeed = impactVelocity.Length();
-
-            //主溅射方向
-            float mainAngle = normal.ToRotation();
-
-            //根据冲击速度计算溅射粒子数量
-            int splashCount = (int)MathHelper.Clamp(impactSpeed * 3f, 20, 60);
-
-            for (int i = 0; i < splashCount; i++) {
-                //溅射角度-半球形分布
-                float spreadAngle = Main.rand.NextFloat(-MathHelper.PiOver2, MathHelper.PiOver2);
-                float angle = mainAngle + spreadAngle;
-
-                //溅射速度-符合物理的速度分布
-                float speedRatio = 1f - Math.Abs(spreadAngle) / MathHelper.PiOver2;
-                float speed = Main.rand.NextFloat(3f, 12f) * speedRatio * (impactSpeed / 20f);
-                Vector2 velocity = angle.ToRotationVector2() * speed;
-
-                //创建溅射粒子
-                if (liquidParticles.Count < MaxParticles * 2) {
-                    IchorParticle splash = new IchorParticle {
-                        Position = hitPosition + Main.rand.NextVector2Circular(8f, 8f),
-                        Velocity = velocity,
-                        Size = Main.rand.NextFloat(1.5f, 3.2f),
-                        Life = 0,
-                        MaxLife = Main.rand.Next(30, 60),
-                        Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                        RotationSpeed = Main.rand.NextFloat(-0.2f, 0.2f),
-                        Opacity = 1f,
-                        IsSplash = true
-                    };
-                    liquidParticles.Add(splash);
-                }
-
-                //原版灵液尘埃辅助
-                if (i % 3 == 0) {
-                    Dust ichor = Dust.NewDustPerfect(
-                        hitPosition,
-                        DustID.Ichor,
-                        velocity * 0.6f,
-                        100,
-                        default,
-                        Main.rand.NextFloat(1.2f, 2f)
-                    );
-                    ichor.noGravity = false;
-                    ichor.fadeIn = 1.2f;
-                }
-            }
-
-            //溅射核心-液体团块
-            for (int i = 0; i < 8; i++) {
-                float angle = mainAngle + Main.rand.NextFloat(-0.8f, 0.8f);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 10f);
-
-                if (liquidParticles.Count < MaxParticles * 2) {
-                    IchorParticle core = new IchorParticle {
-                        Position = hitPosition,
-                        Velocity = velocity,
-                        Size = Main.rand.NextFloat(2.5f, 4.5f),
-                        Life = 0,
-                        MaxLife = Main.rand.Next(40, 70),
-                        Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                        RotationSpeed = Main.rand.NextFloat(-0.25f, 0.25f),
-                        Opacity = 1f,
-                        IsSplash = true
-                    };
-                    liquidParticles.Add(core);
-                }
-            }
-
-            //溅射环形冲击波
-            CreateSplashRing(hitPosition, mainAngle, impactSpeed);
-        }
-
-        //创建溅射环形冲击波
-        private void CreateSplashRing(Vector2 center, float direction, float intensity) {
-            int ringCount = (int)(intensity * 0.8f);
-            ringCount = Math.Clamp(ringCount, 15, 30);
-
-            for (int i = 0; i < ringCount; i++) {
-                float angle = direction + MathHelper.Lerp(-MathHelper.Pi, MathHelper.Pi, i / (float)ringCount);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-
-                Dust ring = Dust.NewDustPerfect(
-                    center,
-                    DustID.Ichor,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                ring.noGravity = true;
-                ring.fadeIn = 1.3f;
-            }
-        }
-
-        //生成灵液残留效果
-        private void SpawnIchorResidue() {
-            Dust residue = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                DustID.Ichor,
-                Vector2.Zero,
-                100,
-                default,
-                Main.rand.NextFloat(1f, 1.8f)
-            );
-            residue.noGravity = true;
-            residue.velocity = -Projectile.velocity * 0.1f + Main.rand.NextVector2Circular(0.5f, 0.5f);
-            residue.fadeIn = 1.1f;
-        }
-
-        //更新核心拖尾
-        private void UpdateCoreTrail() {
-            coreTrail.Insert(0, Projectile.Center);
-            if (coreTrail.Count > MaxCoreTrail) {
-                coreTrail.RemoveAt(coreTrail.Count - 1);
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            if (State == FluidState.Splashing && Projectile.alpha > 200) {
-                //溅射状态几乎完全透明,只绘制粒子
-                DrawLiquidParticles();
-                DrawTrailParticles();
-                return false;
-            }
-
-            SpriteBatch sb = Main.spriteBatch;
-
-            //绘制液体拖尾粒子
-            DrawTrailParticles();
-
-            //绘制液体粒子系统
-            DrawLiquidParticles();
-
-            //绘制核心射流
-            if (State == FluidState.Streaming) {
-                DrawStreamCore(sb);
-            }
-
-            return false;
-        }
-
-        //拖尾液滴绘制
-        private void DrawTrailParticles() {
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
-            Texture2D streamTex = CWRAsset.LightShot.Value;
-
-            //使用加法混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            foreach (var particle in trailParticles) {
-                Vector2 drawPos = particle.Position - Main.screenPosition;
-                float rotation = particle.Velocity.ToRotation();
-
-                //灵液金黄色
-                Color ichorColor = new Color(255, 200, 50) * particle.Opacity * 0.7f;
-
-                //拉伸的液滴形状
-                Vector2 scale = new Vector2(particle.Size * 0.08f, particle.Size * 0.15f * particle.StretchFactor);
-
-                //绘制拉伸液滴主体
-                sb.Draw(
-                    streamTex,
-                    drawPos,
-                    null,
-                    ichorColor,
-                    rotation,
-                    streamTex.Size() / 2f,
-                    scale,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //液滴核心
-                Color coreColor = new Color(255, 230, 100) * particle.Opacity * 0.6f;
-                sb.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    coreColor,
-                    particle.Rotation,
-                    glowTex.Size() / 2f,
-                    particle.Size * 0.05f,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //恢复正常混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        //液滴粒子绘制
-        private void DrawLiquidParticles() {
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
-            Texture2D maskTex = CWRAsset.LightShot.Value;
-
-            //加法混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            foreach (var particle in liquidParticles) {
-                Vector2 drawPos = particle.Position - Main.screenPosition;
-                float scale = particle.Size * 0.08f;
-                float rotation = particle.Rotation;
-
-                //灵液金黄色
-                Color ichorColor = new Color(255, 200, 50) * particle.Opacity * 0.8f;
-
-                //绘制粒子主体-使用星形纹理
-                sb.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    ichorColor * 0.9f,
-                    rotation,
-                    glowTex.Size() / 2f,
-                    scale * 1.2f,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //绘制粒子核心-更亮
-                Color coreColor = new Color(255, 230, 100) * particle.Opacity;
-                sb.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    coreColor * 0.7f,
-                    rotation * 1.5f,
-                    glowTex.Size() / 2f,
-                    scale * 0.6f,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //使用遮罩纹理增加液体质感
-                if (!particle.IsSplash && particle.Size > 1.8f) {
-                    Color maskColor = new Color(255, 180, 30) * particle.Opacity * 0.5f;
-                    sb.Draw(
-                        maskTex,
-                        drawPos,
-                        null,
-                        maskColor,
-                        rotation * 0.7f,
-                        maskTex.Size() / 2f,
-                        scale * 1.8f,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
-            }
-
-            //恢复正常混合模式
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        //绘制射流核心
-        private void DrawStreamCore(SpriteBatch sb) {
-            if (coreTrail.Count < 2) return;
-
-            Texture2D coreTex = CWRAsset.LightShot.Value;
-
-            //使用加法混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            //绘制核心拖尾
-            for (int i = 0; i < coreTrail.Count - 1; i++) {
-                float progress = 1f - i / (float)coreTrail.Count;
-                Vector2 drawPos = coreTrail[i] - Main.screenPosition;
-
-                //计算方向
-                Vector2 toNext = coreTrail[i + 1] - coreTrail[i];
-                float rotation = toNext.ToRotation();
-
-                //核心颜色-金黄渐变
-                Color coreColor = Color.Lerp(
-                    new Color(255, 230, 100),
-                    new Color(255, 180, 50),
-                    progress
-                ) * progress * glowPulse * 0.8f;
-
-                float scale = progress * 0.1f;
-
-                sb.Draw(
-                    coreTex,
-                    drawPos,
-                    null,
-                    coreColor,
-                    rotation,
-                    coreTex.Size() / 2f,
-                    new Vector2(scale * 2.5f, scale * 1f),
-                    SpriteEffects.None,
-                    0
-                );
-
-                //外层光晕
-                Color glowColor = new Color(255, 200, 80) * progress * glowPulse * 0.4f;
-                sb.Draw(
-                    coreTex,
-                    drawPos,
-                    null,
-                    glowColor,
-                    rotation,
-                    coreTex.Size() / 2f,
-                    new Vector2(scale * 4f, scale * 2f),
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //绘制射流头部-最亮
-            Vector2 headPos = Projectile.Center - Main.screenPosition;
-            Color headColor = new Color(255, 240, 120) * glowPulse;
-
-            sb.Draw(
-                coreTex,
-                headPos,
-                null,
-                headColor * 0.9f,
-                Projectile.velocity.ToRotation(),
-                coreTex.Size() / 2f,
-                new Vector2(0.15f, 0.12f),
-                SpriteEffects.None,
-                0
-            );
-
-            //头部强光核心
-            Texture2D starTex = CWRAsset.StarTexture_White.Value;
-            Color starColor = new Color(255, 255, 200) * glowPulse * 0.8f;
-            sb.Draw(
-                starTex,
-                headPos,
-                null,
-                starColor,
-                StreamLife * 0.1f,
-                starTex.Size() / 2f,
-                0.08f,
-                SpriteEffects.None,
-                0
-            );
-
-            //恢复正常混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
         public override void OnKill(int timeLeft) {
-            //死亡时残留溅射
-            if (State == FluidState.Streaming) {
-                CreateSplashEffect(Projectile.Center, Projectile.velocity * 0.5f);
+            if (Main.dedServ) {
+                return;
             }
-
-            //残留灵液效果
-            for (int i = 0; i < 15; i++) {
-                Dust residue = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
-                    DustID.Ichor,
-                    Main.rand.NextVector2Circular(4f, 4f),
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                residue.noGravity = Main.rand.NextBool();
-                residue.fadeIn = 1.1f;
+            //飞行中死亡（贯穿耗尽/超时）：头部再迸溅一次
+            if (State == FluidState.Streaming) {
+                FishIchornVFX.SplashBurst(Projectile.Center, Projectile.velocity * 0.5f, onTile: false);
+            }
+            //液柱失压散珠：旧轨迹上的液体失去动压，就地凝珠坠落，活得比弹体久
+            Vector2[] oldPos = Projectile.oldPos;
+            if (oldPos != null) {
+                for (int i = 2; i < oldPos.Length; i += 4) {
+                    if (oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    Vector2 pos = oldPos[i] + Projectile.Size * 0.5f;
+                    PRTLoader.NewParticle<PRT_FishIchornDroplet>(pos + Main.rand.NextVector2Circular(4f, 4f)
+                        , Projectile.velocity * 0.12f + Main.rand.NextVector2Circular(0.8f, 0.8f)
+                        , Main.rand.NextBool(3) ? FishIchornVFX.IchorDeep : FishIchornVFX.IchorGold
+                        , Main.rand.NextFloat(0.4f, 0.7f))?.Configure(Main.rand.Next(18, 30));
+                }
             }
         }
-    }
 
-    /// <summary>
-    /// 灵液粒子数据结构
-    /// </summary>
-    internal struct IchorParticle
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Size;
-        public int Life;
-        public int MaxLife;
-        public float Rotation;
-        public float RotationSpeed;
-        public float Opacity;
-        public bool IsSplash;
-    }
+        //==== 绘制 ====
 
-    /// <summary>灵液拖尾粒子</summary>
-    internal struct IchorTrailParticle
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Size;
-        public int Life;
-        public int MaxLife;
-        public float Rotation;
-        public float RotationSpeed;
-        public float Opacity;
-        public float StretchFactor;
+        public float GetWidthFunc(float completionRatio) =>
+            MathHelper.Lerp(12f, 2.5f, completionRatio) * VisualFade; //completion 0 = 液锋端最宽
+
+        public Color GetColorFunc(Vector2 coord) => Color.White;
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ || !Projectile.active || VisualFade <= 0.01f) {
+                return;
+            }
+            //液柱条带
+            FishIchornVFX.DrawJetTrail(Projectile, ref trail, GetWidthFunc, GetColorFunc, VisualFade);
+
+            //液锋头部：条带之上的领头液团
+            SpriteBatch sb = Main.spriteBatch;
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            DrawJetHead(sb);
+            sb.End();
+        }
+
+        //液锋：随速度拉伸的三层液团，暗金压边+饱和金体+极小亮芯
+        private void DrawJetHead(SpriteBatch sb) {
+            Texture2D tex = CWRAsset.Extra_98?.Value;
+            if (tex == null) {
+                return;
+            }
+            float fade = VisualFade;
+            Vector2 pos = Projectile.Center + Projectile.velocity * 0.4f - Main.screenPosition;
+            Vector2 origin = tex.Size() * 0.5f;
+            float rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            float stretch = MathHelper.Clamp(Projectile.velocity.Length() * 0.03f, 0.2f, 0.9f);
+
+            //暗金压边
+            sb.Draw(tex, pos, null, FishIchornVFX.IchorDark * (0.85f * fade), rotation, origin
+                , new Vector2(0.5f, 0.55f + stretch * 0.9f), SpriteEffects.None, 0f);
+            //饱和金液体
+            sb.Draw(tex, pos, null, FishIchornVFX.IchorGold * fade, rotation, origin
+                , new Vector2(0.38f, 0.45f + stretch * 0.8f), SpriteEffects.None, 0f);
+            //液锋亮芯：极小面积加色
+            Color core = FishIchornVFX.IchorBright with { A = 0 };
+            sb.Draw(tex, pos, null, core * (0.7f * fade), rotation, origin
+                , new Vector2(0.14f, 0.24f + stretch * 0.35f), SpriteEffects.None, 0f);
+        }
+
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

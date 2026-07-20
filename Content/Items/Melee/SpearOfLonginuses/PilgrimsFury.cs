@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
 {
     internal class PilgrimsFury : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private NPC Target => Main.npc[(int)Projectile.ai[1]];
         private int Time {
             get => (int)Projectile.ai[0];

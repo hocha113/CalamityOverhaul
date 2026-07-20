@@ -1,4 +1,5 @@
 ﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     if (boneProj >= 0 && boneProj < Main.maxProjectiles) {
                         ActiveBones.Add(boneProj);
 
-                        //生成召唤粒子
                         SpawnSummonEffect(player.Center);
 
                         //骨质召唤音效
@@ -65,43 +65,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             ActiveBones.RemoveAll(id => id < 0 || id >= Main.maxProjectiles || !Main.projectile[id].active);
         }
 
-        private void SpawnSummonEffect(Vector2 position) {
-            //召唤时的骨质粒子效果
-            for (int i = 0; i < 15; i++) {
-                float angle = MathHelper.TwoPi * i / 15f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
-
-                Dust bone = Dust.NewDustPerfect(
-                    position,
-                    DustID.Bone,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                bone.noGravity = true;
-                bone.fadeIn = 1.2f;
+        /// <summary>召唤演出：骨从钙尘里成形，哑光骨屑上抛 + 一口粉尘，零发光</summary>
+        private static void SpawnSummonEffect(Vector2 position) {
+            if (Main.dedServ) {
+                return;
             }
-
-            //额外的骨质碎片
-            for (int i = 0; i < 8; i++) {
-                Dust shard = Dust.NewDustDirect(
-                    position - new Vector2(10),
-                    20, 20,
-                    DustID.Bone,
-                    Scale: Main.rand.NextFloat(1f, 1.5f)
-                );
-                shard.velocity = Main.rand.NextVector2Circular(3f, 3f);
-                shard.noGravity = true;
+            for (int i = 0; i < 4; i++) {
+                Vector2 vel = new Vector2(Main.rand.NextFloat(-2.2f, 2.2f), Main.rand.NextFloat(-4.2f, -1.6f));
+                PRTLoader.NewParticle<PRT_FishBoneShard>(position + Main.rand.NextVector2Circular(10f, 10f)
+                    , vel, FishBonePalette.Chip(), Main.rand.NextFloat(0.6f, 0.95f))?.Configure(Main.rand.Next(18, 28));
+            }
+            PRTLoader.NewParticle<PRT_FishBoneDust>(position, new Vector2(0f, -0.7f)
+                , FishBonePalette.Chalk, Main.rand.NextFloat(0.15f, 0.20f))?.Configure(26);
+            for (int i = 0; i < 5; i++) {
+                Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(12f, 12f), DustID.Bone
+                    , Main.rand.NextVector2Circular(2f, 2f), 120, default, Main.rand.NextFloat(0.8f, 1.3f));
             }
         }
 
-        //检查玩家是否受伤（通过Hit弹幕数量）
+        //受伤判定：借免疫帧窗口
         public static bool IsPlayerHurt(Player player) => player.immuneTime > 0;
     }
 
     /// <summary>
-    /// 旋转骨头弹幕，环绕蓄力后发射
+    /// 回旋骨弹幕：聚集入场 → 环绕加速（待机浮动相位差）→ 蓄力收束 → 回旋镖式飞出折返 → 受伤当场碎裂。<br/>
+    /// 材质：干枯骨钙，全哑光零发光；自旋 = 旋转拖影，位移 = 哑光残影链铺弧线
     /// </summary>
     internal class BonefishOrbit : BaseHeldProj
     {
@@ -113,8 +101,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Gathering,    //聚集阶段：骨头飞向玩家
             Orbiting,     //环绕阶段：环绕玩家加速旋转
             Charging,     //蓄力阶段：继续加速，准备发射
-            Launching,    //发射阶段：向目标冲刺
-            Scattering    //散射阶段：玩家受伤，向四周飞散
+            Launching,    //发射阶段：回旋镖外程，加速弯弧
+            Scattering,   //碎裂阶段：玩家受伤，裂开定帧后崩解
+            Returning,    //折返阶段：顶点悬滞后被拽回环绕位
+            Dissolving    //消散阶段：技能切换的退场收尾
         }
 
         private BoneState State {
@@ -137,9 +127,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private static int ChargeDuration => 40 - HalibutData.GetDomainLayer() * 2;      //蓄力时间
         private const float LaunchSpeed = 28f;      //发射速度
 
-        //视觉效果
-        private float glowIntensity = 0f;
-        private float trailIntensity = 0f;
+        //外程运动学：出手压速，复合加速过冲后硬刹（投掷类动力学，全程速度都在演化）
+        private const float LaunchMul = 0.6f;           //出手初速占比，余量给外程挤压
+        private const float FlightAccelMul = 1.045f;    //外程每帧复合加速，16帧约把初速翻倍
+        private const float FlightBrakeMul = 0.78f;     //加速窗关闭后每帧硬刹
+        private const float FlightCurveRad = 0.014f;    //外程每帧弯弧弧度，弯向随骨序号交替
+        private const int OutboundAccelFrames = 16;     //外程加速窗口帧数
+        private const int MaxOutboundFrames = 46;       //外程超时上限
+        private const int ApexFrames = 5;               //顶点悬滞帧数
+        private const float ReturnMaxSpeed = 30f;       //折返吸附峰值
+
+        //视觉量（各端本地，不参与同步）
+        private float trailIntensity = 0f;  //残影链强度
+        private float spinRate = 0.15f;     //当前自旋角速度，旋转拖影按它回溯
+        private float flightTopSpeed = LaunchSpeed; //本次外程速度上限，出手时按角动量算定
+        private float catchPulse = 0f;      //接骨顿挫包络，归位时半径下沉再弹回
+        private float shatterGap = 0f;      //碎裂定帧两半分离像素
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
@@ -173,20 +176,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return;
             }
 
-            if (!FishSkill.GetT<FishBone>().Active(Owner)) {
-                Projectile.Kill();
-                return;
+            //入场从半尺寸长起，防 pop-in
+            if (Projectile.localAI[1] == 0f) {
+                Projectile.localAI[1] = 1f;
+                Projectile.scale = 0.55f;
             }
 
-            //检查玩家是否受伤
-            if (FishBone.IsPlayerHurt(Owner) && State != BoneState.Scattering) {
-                EnterScatterState();
+            //受伤当场碎裂，技能切换走消散退场，两个终态不可再打断
+            if (State != BoneState.Scattering && State != BoneState.Dissolving) {
+                if (!FishSkill.GetT<FishBone>().Active(Owner)) {
+                    EnterDissolveState();
+                }
+                else if (FishBone.IsPlayerHurt(Owner)) {
+                    EnterScatterState();
+                }
             }
 
             StateTimer++;
 
-            if (Projectile.scale < 1.5f) {
-                Projectile.scale += 0.01f;
+            if (Projectile.scale < 1.5f && State != BoneState.Dissolving) {
+                Projectile.scale = MathF.Min(1.5f, Projectile.scale + 0.022f);
             }
 
             //状态机
@@ -204,23 +213,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
 
                 case BoneState.Launching:
-                    LaunchingPhaseAI(Owner);
+                    LaunchingPhaseAI();
+                    break;
+
+                case BoneState.Returning:
+                    ReturningPhaseAI(Owner);
                     break;
 
                 case BoneState.Scattering:
                     ScatteringPhaseAI();
                     break;
+
+                case BoneState.Dissolving:
+                    DissolvingPhaseAI();
+                    break;
             }
 
-            //旋转
-            Projectile.rotation += MathHelper.Lerp(0.15f, 0.8f, orbitSpeed / MaxOrbitSpeed);
+            //自旋角速度随运动能量：飞行/折返转得最疯，旋转拖影按此回溯
+            float targetSpin = State switch {
+                BoneState.Launching => 0.85f,
+                BoneState.Returning => 0.95f,
+                BoneState.Charging => MathHelper.Lerp(0.30f, 0.80f, orbitSpeed / MaxOrbitSpeed),
+                BoneState.Scattering => 0.02f,
+                BoneState.Dissolving => 0.06f,
+                _ => MathHelper.Lerp(0.15f, 0.60f, orbitSpeed / MaxOrbitSpeed),
+            };
+            spinRate = MathHelper.Lerp(spinRate, targetSpin, 0.2f);
+            Projectile.rotation += spinRate;
 
-            //骨质照明（冷白色）
-            float lightIntensity = glowIntensity * 0.6f;
-            Lighting.AddLight(Projectile.Center,
-                0.7f * lightIntensity,
-                0.7f * lightIntensity,
-                0.8f * lightIntensity);
+            catchPulse *= 0.88f;
+        }
+
+        /// <summary>待机沉浮：每骨按黄金角错开相位的轻微上下浮动</summary>
+        private Vector2 BobOffset() {
+            float phase = BoneIndex * 2.399f;
+            return new Vector2(0f, MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + phase) * 5f);
         }
 
         /// <summary>聚集阶段：飞向玩家附近</summary>
@@ -238,17 +265,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //提前开始旋转
             orbitAngle = targetAngle;
 
-            glowIntensity = MathHelper.Lerp(0f, 0.5f, progress);
-
-            //聚集骨质粒子
-            if (Main.rand.NextBool(4)) {
-                SpawnGatherParticle();
+            //成形途中零星掉钙屑
+            if (!Main.dedServ && Main.rand.NextBool(6)) {
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), DustID.Bone
+                    , Main.rand.NextVector2Circular(0.8f, 0.5f), 130, default, Main.rand.NextFloat(0.6f, 0.9f));
             }
 
             //转入环绕阶段
             if (StateTimer >= GatherDuration) {
                 State = BoneState.Orbiting;
                 StateTimer = 0;
+                catchPulse = 0.7f; //入位半径下沉再弹回
 
                 //骨头碰撞音效
                 SoundEngine.PlaySound(SoundID.Dig with {
@@ -258,7 +285,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>环绕阶段：加速绕玩家旋转</summary>
+        /// <summary>环绕阶段：加速绕玩家旋转，叠待机浮动</summary>
         private void OrbitingPhaseAI(Player owner) {
             float progress = StateTimer / OrbitDuration;
 
@@ -266,27 +293,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float speedProgress = VaultUtils.EaseInQuad(progress);
             orbitSpeed = MathHelper.Lerp(0.05f, MaxOrbitSpeed * 0.6f, speedProgress);
 
-            //半径脉冲
-            float radiusPulse = (float)Math.Sin(StateTimer * 0.3f) * 10f;
-            float currentRadius = orbitRadius + radiusPulse * progress;
+            //半径脉冲，接骨顿挫时半径先下沉再弹回
+            float radiusPulse = MathF.Sin(StateTimer * 0.3f) * 10f;
+            float currentRadius = orbitRadius + radiusPulse * progress - 16f * catchPulse * catchPulse;
 
             //更新环绕角度
             orbitAngle += orbitSpeed;
 
-            //计算环绕位置
+            //计算环绕位置：叠上错相位浮动
             Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = owner.Center + orbitOffset;
+            Vector2 targetPos = owner.Center + orbitOffset + BobOffset();
 
             //平滑跟随
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.3f);
 
-            //辉光强度增加
-            glowIntensity = MathHelper.Lerp(0.5f, 0.8f, progress);
             trailIntensity = progress;
 
-            //骨质粒子环绕
-            if (Main.rand.NextBool(3)) {
-                SpawnOrbitParticle(owner.Center, progress);
+            //低频钙屑剥落：环绕摩擦掉的粉末，受重力自然坠
+            if (!Main.dedServ && Main.rand.NextBool(14)) {
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), DustID.Bone
+                    , Main.rand.NextVector2Circular(0.6f, 0.4f), 130, default, Main.rand.NextFloat(0.6f, 0.9f));
             }
 
             //周期性骨头摩擦音效
@@ -310,35 +336,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>蓄力阶段：最高速旋转待发射</summary>
+        /// <summary>蓄力阶段：最高速旋转，半径收束预告发射</summary>
         private void ChargingPhaseAI(Player owner) {
             float progress = StateTimer / ChargeDuration;
 
             //达到最高旋转速度
             orbitSpeed = MathHelper.Lerp(MaxOrbitSpeed * 0.6f, MaxOrbitSpeed, VaultUtils.EaseInOutQuad(progress));
 
-            //半径震荡
-            float radiusOscillation = (float)Math.Sin(StateTimer * 0.5f) * 15f * progress;
+            //半径震荡收紧
+            float radiusOscillation = MathF.Sin(StateTimer * 0.5f) * 15f * progress;
             float currentRadius = orbitRadius - 20f * progress + radiusOscillation;
 
-            //更新环绕
+            //更新环绕：浮动随收束渐止（屏息）
             orbitAngle += orbitSpeed;
             Vector2 orbitOffset = orbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = owner.Center + orbitOffset;
+            Vector2 targetPos = owner.Center + orbitOffset + BobOffset() * (1f - progress);
+
+            //末4帧朝掷出反方向拉弓，出手前的反向预压
+            int framesLeft = ChargeDuration - (int)StateTimer;
+            if (framesLeft <= 4 && framesLeft >= 0) {
+                targetPos -= UnitToMouseV * ((5 - framesLeft) * 2.5f);
+            }
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.4f);
 
-            //最大辉光
-            glowIntensity = 0.8f + (float)Math.Sin(StateTimer * 0.8f) * 0.2f;
             trailIntensity = 1f;
 
-            //密集骨质粒子
-            if (Main.rand.NextBool()) {
-                SpawnChargeParticle(owner.Center, progress);
-            }
-
-            //蓄力骨质脉冲
-            if (StateTimer % 10 == 0) {
-                SpawnChargePulse(owner.Center);
+            //高速摩擦剥落升频
+            if (!Main.dedServ && Main.rand.NextBool(6)) {
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), DustID.Bone
+                    , Main.rand.NextVector2Circular(1.2f, 0.8f), 130, default, Main.rand.NextFloat(0.7f, 1f));
             }
 
             //高频骨头碰撞音效
@@ -353,28 +379,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (StateTimer >= ChargeDuration) {
                 State = BoneState.Launching;
                 StateTimer = 0;
-                LaunchToTarget(owner);
+                LaunchToTarget();
             }
         }
 
-        /// <summary>向锁定目标发射</summary>
-        private void LaunchToTarget(Player owner) {
-            //发射初速叠当前角速度
+        /// <summary>向锁定目标发射：初速刻意压低，动能在外程持续挤出来</summary>
+        private void LaunchToTarget() {
+            //速度上限叠当前角速度，出手只给六成
             float momentumBonus = orbitSpeed / MaxOrbitSpeed;
-            float finalSpeed = LaunchSpeed * (1f + momentumBonus * 0.5f);
+            flightTopSpeed = LaunchSpeed * (1f + momentumBonus * 0.5f);
 
-            Projectile.velocity = UnitToMouseV * finalSpeed;
+            Projectile.velocity = UnitToMouseV * (flightTopSpeed * LaunchMul);
             if (!Framing.GetTileSafely(Projectile.Center.ToTileCoordinates16()).HasTile) {
                 Projectile.tileCollide = true;
             }
 
-            //爆发式骨质粒子
-            SpawnLaunchBurst();
+            //出手崩屑：向后锥形甩几片哑光碎骨 + 一小口钙尘
+            if (!Main.dedServ) {
+                Vector2 back = -Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                for (int i = 0; i < 5; i++) {
+                    PRTLoader.NewParticle<PRT_FishBoneShard>(Projectile.Center
+                        , back.RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 6f) + Projectile.velocity * 0.08f
+                        , FishBonePalette.Chip(), Main.rand.NextFloat(0.7f, 1.1f))?.Configure(Main.rand.Next(18, 28));
+                }
+                PRTLoader.NewParticle<PRT_FishBoneDust>(Projectile.Center, back * 1.4f
+                    , FishBonePalette.Chalk, Main.rand.NextFloat(0.16f, 0.22f))?.Configure(26);
+            }
 
-            //强力发射音效（骨头破碎）
-            SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.6f,
-                Pitch = 0.5f
+            //轻骨破空双层：锐利挥掷 + 骨面磕响，弃用爆炸声（骨是轻器不是军火）
+            SoundEngine.PlaySound(SoundID.Item1 with {
+                Volume = 0.75f,
+                Pitch = 0.45f
             }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.NPCHit2 with {
                 Volume = 0.5f,
@@ -382,204 +417,192 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        /// <summary>飞行阶段</summary>
-        private void LaunchingPhaseAI(Player owner) {
-            //速度衰减
-            Projectile.velocity *= 0.99f;
+        /// <summary>外程阶段：出手后仍在挤压提速（复合加速过冲到约1.2倍），窗口一关硬刹进顶点，全程弯弧</summary>
+        private void LaunchingPhaseAI() {
+            bool accelWindow = StateTimer <= OutboundAccelFrames;
+            Projectile.velocity *= accelWindow ? FlightAccelMul : FlightBrakeMul;
 
-            //轨迹强度保持
+            //弯弧方向随骨序号交替，多骨齐飞时左右弧线交织
+            float curveDir = (int)BoneIndex % 2 == 0 ? 1f : -1f;
+            Projectile.velocity = Projectile.velocity.RotatedBy(FlightCurveRad * curveDir);
+
             trailIntensity = 1f;
-            glowIntensity = 0.9f;
+            FlightShedAndWhoosh();
 
-            //飞行骨质粒子
-            if (Main.rand.NextBool(3)) {
-                SpawnLaunchTrailParticle();
-            }
-
-            //超时返回环绕
-            if (StateTimer > 180) {
-                State = BoneState.Orbiting;
+            //刹到残速或超时：顶点半拍，残速砍到几乎悬停，甩一口钙尘标记折返点
+            if ((!accelWindow && Projectile.velocity.Length() < 7f) || StateTimer > MaxOutboundFrames) {
+                State = BoneState.Returning;
                 StateTimer = 0;
                 Projectile.tileCollide = false;
+                Projectile.velocity *= 0.4f;
+                SoundEngine.PlaySound(SoundID.Item32 with {
+                    Volume = 0.3f,
+                    Pitch = 0.5f
+                }, Projectile.Center);
+                if (!Main.dedServ) {
+                    for (int i = 0; i < 2; i++) {
+                        PRTLoader.NewParticle<PRT_FishBoneDust>(Projectile.Center
+                            , Main.rand.NextVector2Circular(1.2f, 1.2f), FishBonePalette.Chalk
+                            , Main.rand.NextFloat(0.13f, 0.18f))?.Configure(Main.rand.Next(20, 28));
+                    }
+                }
             }
         }
 
-        /// <summary>散射阶段：玩家受伤后四散</summary>
-        private void ScatteringPhaseAI() {
-            //速度衰减
-            Projectile.velocity *= 0.96f;
+        /// <summary>折返阶段：顶点悬滞几帧后复利加速拽回，贴近环绕半径无缝接回相位</summary>
+        private void ReturningPhaseAI(Player owner) {
+            Vector2 toOwner = owner.Center - Projectile.Center;
 
-            //淡出
-            Projectile.alpha += 5;
-            if (Projectile.alpha >= 255) {
+            if (StateTimer <= ApexFrames) {
+                //悬帧：残速继续泄掉
+                Projectile.velocity *= 0.9f;
+            }
+            else {
+                float returnSpeed = MathF.Min(8f * MathF.Pow(1.09f, StateTimer - ApexFrames), ReturnMaxSpeed);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity
+                    , toOwner.SafeNormalize(Vector2.Zero) * returnSpeed, 0.42f);
+            }
+
+            trailIntensity = 1f;
+            FlightShedAndWhoosh();
+
+            //回到环绕半径：以当前方位角接回环绕，保留部分角动量，接骨带一次顿挫
+            if (toOwner.Length() < orbitRadius + 30f && StateTimer > ApexFrames) {
+                State = BoneState.Orbiting;
+                StateTimer = 0;
+                orbitAngle = (Projectile.Center - owner.Center).ToRotation();
+                orbitSpeed = MaxOrbitSpeed * 0.35f;
+                catchPulse = 1f;
+                //清掉线速度残留：环绕期只写位置，残速会污染残影强度与碎裂动量
+                Projectile.velocity = Vector2.Zero;
+
+                //归位轻响 + 两粒接骨尘
+                SoundEngine.PlaySound(SoundID.Dig with {
+                    Volume = 0.3f,
+                    Pitch = 0.45f
+                }, Projectile.Center);
+                if (!Main.dedServ) {
+                    for (int i = 0; i < 2; i++) {
+                        Dust.NewDustPerfect(Projectile.Center, DustID.Bone
+                            , Main.rand.NextVector2Circular(1.8f, 1.8f), 120, default, Main.rand.NextFloat(0.7f, 1f));
+                    }
+                }
+            }
+        }
+
+        /// <summary>飞行途中的剥落与呼啸：甩屑率与音高都随速度爬升</summary>
+        private void FlightShedAndWhoosh() {
+            float speed = Projectile.velocity.Length();
+
+            if (!Main.dedServ && speed > 6f) {
+                int cadence = speed > 20f ? 2 : 4;
+                if (StateTimer % cadence == 0) {
+                    Dust.NewDustPerfect(Projectile.Center - Projectile.velocity * 0.4f, DustID.Bone
+                        , -Projectile.velocity * 0.05f + Main.rand.NextVector2Circular(0.5f, 0.5f)
+                        , 140, default, Main.rand.NextFloat(0.6f, 1f));
+                }
+            }
+
+            //回旋镖破空呼啸
+            if (StateTimer % 7 == 0 && speed > 10f) {
+                float speedT = MathHelper.Clamp((speed - 10f) / 24f, 0f, 1f);
+                SoundEngine.PlaySound(SoundID.Item32 with {
+                    Volume = 0.2f + 0.2f * speedT,
+                    Pitch = -0.35f + speedT * 0.75f,
+                    MaxInstances = 3
+                }, Projectile.Center);
+            }
+        }
+
+        /// <summary>碎裂阶段：先裂开定帧（两半撑缝悬滞），第4帧崩成骨屑与钙尘</summary>
+        private void ScatteringPhaseAI() {
+            Projectile.velocity *= 0.82f;
+            shatterGap += 1.6f;
+
+            //裂缝漏干粉
+            if (!Main.dedServ) {
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f), DustID.Bone
+                    , Main.rand.NextVector2Circular(0.8f, 0.8f), 140, default, Main.rand.NextFloat(0.6f, 0.9f));
+            }
+
+            if (StateTimer >= 4) {
+                SpawnShatterBurst();
                 Projectile.Kill();
             }
-
-            trailIntensity *= 0.95f;
-            glowIntensity *= 0.95f;
         }
 
-        /// <summary>切入散射状态</summary>
+        /// <summary>切入碎裂：受伤瞬间进入裂开定帧，多骨齐碎按数量压音量</summary>
         private void EnterScatterState() {
             State = BoneState.Scattering;
             StateTimer = 0;
+            shatterGap = 0f;
             Projectile.tileCollide = false;
             Projectile.friendly = false;
+            Projectile.velocity *= 0.25f;
 
-            //随机散射方向
-            float randomAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-            Projectile.velocity = randomAngle.ToRotationVector2() * Main.rand.NextFloat(12f, 20f);
-
-            //散射粒子效果
-            SpawnScatterEffect();
-
-            //骨头破碎音效
+            //骨裂双层：脆断 + 闷崩
+            int count = Math.Max(1, Owner.ownedProjectileCounts[Projectile.type]);
+            float volumeScale = 1f / MathF.Sqrt(count);
             SoundEngine.PlaySound(SoundID.NPCHit2 with {
-                Volume = 0.5f,
+                Volume = 0.5f * volumeScale,
                 Pitch = 0.2f
             }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Dig with {
-                Volume = 0.4f,
+                Volume = 0.4f * volumeScale,
                 Pitch = 0.5f
             }, Projectile.Center);
         }
 
-        private void SpawnGatherParticle() {
-            Dust gather = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                DustID.Bone,
-                (Main.player[Projectile.owner].Center - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(1f, 3f),
-                100,
-                default,
-                Main.rand.NextFloat(0.8f, 1.3f)
-            );
-            gather.noGravity = true;
-            gather.fadeIn = 1.1f;
+        /// <summary>切入消散：技能切换或收起法杖时的退场</summary>
+        private void EnterDissolveState() {
+            State = BoneState.Dissolving;
+            StateTimer = 0;
+            Projectile.tileCollide = false;
+            Projectile.friendly = false;
+            Projectile.velocity = Vector2.Zero;
         }
 
-        private void SpawnOrbitParticle(Vector2 ownerCenter, float progress) {
-            Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 velocity = toCenter * Main.rand.NextFloat(0.5f, 2f) * progress;
+        /// <summary>消散阶段：快缩快透掉两粒尘，禁 pop-out</summary>
+        private void DissolvingPhaseAI() {
+            Projectile.scale *= 0.9f;
+            Projectile.alpha = Math.Min(255, Projectile.alpha + 42);
+            trailIntensity *= 0.8f;
 
-            Dust orbit = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                DustID.Bone,
-                velocity,
-                100,
-                default,
-                Main.rand.NextFloat(0.9f, 1.4f)
-            );
-            orbit.noGravity = true;
-            orbit.fadeIn = 1.1f;
-        }
+            if (!Main.dedServ && (StateTimer == 1 || StateTimer == 3)) {
+                Dust.NewDustPerfect(Projectile.Center, DustID.Bone
+                    , Main.rand.NextVector2Circular(0.9f, 0.9f), 150, default, Main.rand.NextFloat(0.6f, 0.9f));
+            }
 
-        private void SpawnChargeParticle(Vector2 ownerCenter, float progress) {
-            Vector2 toCenter = (ownerCenter - Projectile.Center).SafeNormalize(Vector2.Zero);
-            Vector2 velocity = toCenter * Main.rand.NextFloat(2f, 5f) * progress;
-
-            //骨质粒子
-            Dust charge = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                DustID.Bone,
-                velocity,
-                100,
-                default,
-                Main.rand.NextFloat(1.2f, 1.9f)
-            );
-            charge.noGravity = true;
-            charge.fadeIn = 1.2f;
-
-            //额外骨质碎片
-            if (Main.rand.NextBool(3)) {
-                Dust shard = Dust.NewDustDirect(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    2, 2,
-                    DustID.Bone,
-                    Scale: Main.rand.NextFloat(1f, 1.5f)
-                );
-                shard.velocity = velocity * 0.6f;
-                shard.noGravity = true;
+            if (Projectile.alpha >= 255) {
+                Projectile.Kill();
             }
         }
 
-        private void SpawnChargePulse(Vector2 ownerCenter) {
-            //环形骨质脉冲
-            for (int i = 0; i < 10; i++) {
-                float angle = MathHelper.TwoPi * i / 10f;
-                Vector2 velocity = angle.ToRotationVector2() * 2.5f;
-
-                Dust pulse = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Bone,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 1.8f)
-                );
-                pulse.noGravity = true;
-                pulse.fadeIn = 1.2f;
+        /// <summary>碎裂英雄时刻：锐利骨屑抛物 + 钙粉尘雾，继承弹体动量向外崩；多骨齐碎时单骨份额收敛</summary>
+        private void SpawnShatterBurst() {
+            if (Main.dedServ) {
+                return;
             }
-        }
+            int count = Math.Max(1, Owner.ownedProjectileCounts[Projectile.type]);
+            int shardN = count >= 6 ? 3 : count >= 4 ? 4 : 5;
+            int dustN = count >= 5 ? 1 : 2;
 
-        private void SpawnLaunchBurst() {
-            //爆发式骨质粒子
-            for (int i = 0; i < 25; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 12f);
-
-                Dust burst = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Bone,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.4f, 2.2f)
-                );
-                burst.noGravity = true;
-                burst.fadeIn = 1.3f;
+            Vector2 inherit = Projectile.velocity * 0.45f;
+            for (int i = 0; i < shardN; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2.5f, 7f) + inherit;
+                vel.Y -= Main.rand.NextFloat(1.5f); //上抛偏置，落回时读出重量
+                PRTLoader.NewParticle<PRT_FishBoneShard>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
+                    , vel, FishBonePalette.Chip(), Main.rand.NextFloat(0.8f, 1.25f))?.Configure(Main.rand.Next(22, 34));
             }
-
-            //骨质碎片
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
-                Dust bone = Dust.NewDustDirect(
-                    Projectile.Center,
-                    4, 4,
-                    DustID.Bone,
-                    Scale: Main.rand.NextFloat(1.2f, 2f)
-                );
-                bone.velocity = velocity;
-                bone.noGravity = true;
+            for (int i = 0; i < dustN; i++) {
+                PRTLoader.NewParticle<PRT_FishBoneDust>(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f)
+                    , Main.rand.NextVector2Circular(1.2f, 0.9f) + inherit * 0.2f
+                    , FishBonePalette.Chalk, Main.rand.NextFloat(0.15f, 0.24f))?.Configure(Main.rand.Next(30, 44));
             }
-        }
-
-        private void SpawnLaunchTrailParticle() {
-            Dust trail = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                DustID.Bone,
-                -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.25f),
-                100,
-                default,
-                Main.rand.NextFloat(0.9f, 1.4f)
-            );
-            trail.noGravity = true;
-            trail.fadeIn = 1.1f;
-        }
-
-        private void SpawnScatterEffect() {
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(9f, 9f);
-
-                Dust scatter = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Bone,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 2.1f)
-                );
-                scatter.noGravity = true;
-                scatter.fadeIn = 1.2f;
+            //几粒环境骨尘补底噪
+            for (int i = 0; i < 4; i++) {
+                Dust.NewDustPerfect(Projectile.Center, DustID.Bone
+                    , Main.rand.NextVector2Circular(3f, 3f) + inherit * 0.3f, 100, default, Main.rand.NextFloat(0.9f, 1.4f));
             }
         }
 
@@ -598,34 +621,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.4f
             }, Projectile.Center);
 
-            //碰撞骨质碎片
-            for (int i = 0; i < 5; i++) {
-                Dust.NewDust(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Bone,
-                    Scale: Main.rand.NextFloat(1f, 1.5f)
-                );
+            //撞墙崩屑：沿反弹方向啃下几片
+            if (!Main.dedServ) {
+                Vector2 outDir = Projectile.velocity.SafeNormalize(-Vector2.UnitY);
+                for (int i = 0; i < 3; i++) {
+                    PRTLoader.NewParticle<PRT_FishBoneShard>(Projectile.Center
+                        , outDir.RotatedByRandom(0.6f) * Main.rand.NextFloat(1.5f, 4f)
+                        , FishBonePalette.Chip(), Main.rand.NextFloat(0.55f, 0.85f))?.Configure(Main.rand.Next(16, 24));
+                }
+                for (int i = 0; i < 3; i++) {
+                    Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Bone
+                        , Scale: Main.rand.NextFloat(0.8f, 1.2f));
+                }
             }
 
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中骨质粒子效果
-            for (int i = 0; i < 12; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                Dust hitDust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Bone,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 2f)
-                );
-                hitDust.noGravity = true;
-                hitDust.fadeIn = 1.2f;
+            //命中崩屑：顺行进方向的锐屑锥 + 一小口钙尘
+            if (!Main.dedServ) {
+                Vector2 dir = Projectile.velocity.SafeNormalize(Main.rand.NextVector2Unit());
+                for (int i = 0; i < 3; i++) {
+                    PRTLoader.NewParticle<PRT_FishBoneShard>(Projectile.Center
+                        , dir.RotatedByRandom(0.8f) * Main.rand.NextFloat(2f, 5.5f)
+                        , FishBonePalette.Chip(), Main.rand.NextFloat(0.6f, 0.95f))?.Configure(Main.rand.Next(16, 26));
+                }
+                PRTLoader.NewParticle<PRT_FishBoneDust>(Projectile.Center, dir * 0.8f
+                    , FishBonePalette.Chalk, Main.rand.NextFloat(0.13f, 0.18f))?.Configure(22);
+                for (int i = 0; i < 3; i++) {
+                    Dust.NewDustPerfect(Projectile.Center, DustID.Bone
+                        , Main.rand.NextVector2Circular(3f, 3f), 120, default, Main.rand.NextFloat(0.8f, 1.2f));
+                }
             }
 
             //击中音效
@@ -642,18 +669,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Rectangle sourceRect = boneTex.Frame(1, 1);
             Vector2 origin = sourceRect.Size() / 2f;
 
-            Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
-
-            if (State == BoneState.Orbiting || State == BoneState.Charging || State == BoneState.Launching) {
-                DrawBoneAfterimages(sb, boneTex, sourceRect, origin, baseColor, alpha);
+            if (alpha <= 0.01f) {
+                return false;
             }
+
+            //哑光基色：只吃环境光，微偏陈骨黄，无任何加色层
+            Color baseColor = Color.Lerp(lightColor, lightColor.MultiplyRGB(FishBonePalette.Aged), 0.35f) * alpha;
+
+            //碎裂定帧：本体换成撑缝的两半
+            if (State == BoneState.Scattering) {
+                DrawShatterHalves(sb, boneTex, drawPos, baseColor);
+                return false;
+            }
+
+            DrawMotionGhosts(sb, boneTex, sourceRect, origin, baseColor);
+            DrawSpinSmear(sb, boneTex, sourceRect, origin, baseColor);
 
             sb.Draw(
                 boneTex,
                 drawPos,
                 sourceRect,
-                baseColor * alpha,
+                baseColor,
                 Projectile.rotation,
                 origin,
                 Projectile.scale,
@@ -661,69 +698,63 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 0
             );
 
-            //蓄力/发射时的骨质辉光覆盖层
-            if ((State == BoneState.Charging || State == BoneState.Launching) && glowIntensity > 0.5f) {
-                float glowAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.4f;
-                Color boneGlow = new Color(220, 220, 240); //冷白色骨质辉光
-
-                sb.Draw(
-                    boneTex,
-                    drawPos,
-                    sourceRect,
-                    boneGlow * glowAlpha,
-                    Projectile.rotation,
-                    origin,
-                    Projectile.scale * 1.05f,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
             return false;
         }
 
-        /// <summary>骨头残影拖尾</summary>
-        private void DrawBoneAfterimages(SpriteBatch sb, Texture2D boneTex, Rectangle sourceRect,
-            Vector2 origin, Color baseColor, float alpha) {
+        /// <summary>碎裂定帧：骨身沿长轴劈成两半，缝隙渐开并各自微偏转</summary>
+        private void DrawShatterHalves(SpriteBatch sb, Texture2D tex, Vector2 drawPos, Color baseColor) {
+            int w = tex.Width, h = tex.Height;
+            Rectangle topRect = new(0, 0, w, h / 2);
+            Rectangle bottomRect = new(0, h / 2, w, h - h / 2);
+            //两半原点都取骨心，绕同一轴撑开
+            Vector2 topOrigin = new(w / 2f, h / 2f);
+            Vector2 bottomOrigin = new(w / 2f, 0f);
 
-            int afterimageCount = State == BoneState.Launching ? 12 : 8;
+            Vector2 apart = (-Vector2.UnitY * shatterGap).RotatedBy(Projectile.rotation);
+            float splitTwist = StateTimer * 0.06f;
 
-            for (int i = 0; i < afterimageCount; i++) {
-                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
+            sb.Draw(tex, drawPos + apart, topRect, baseColor, Projectile.rotation - splitTwist
+                , topOrigin, Projectile.scale, SpriteEffects.None, 0);
+            sb.Draw(tex, drawPos - apart, bottomRect, baseColor, Projectile.rotation + splitTwist
+                , bottomOrigin, Projectile.scale, SpriteEffects.None, 0);
+        }
 
-                float afterimageProgress = 1f - i / (float)afterimageCount;
-                float afterimageAlpha = afterimageProgress * trailIntensity * alpha;
+        /// <summary>位移残影链：沿旧位置铺出弧线轨迹，带旋转历史，哑光减淡不加色</summary>
+        private void DrawMotionGhosts(SpriteBatch sb, Texture2D tex, Rectangle frame, Vector2 origin, Color baseColor) {
+            float speedT = MathHelper.Clamp(Projectile.velocity.Length() / 24f, 0f, 1f);
+            //环绕时速度场为零，用轨迹强度顶上（线速度由角速度产生）
+            float strength = MathF.Max(speedT, trailIntensity * 0.5f);
+            if (strength <= 0.04f) {
+                return;
+            }
 
-                //残影色：环绕淡白，蓄力/发射渐强
-                Color afterimageColor;
-                if (State == BoneState.Launching) {
-                    afterimageColor = Color.Lerp(
-                        new Color(200, 200, 220),  //冷白
-                        new Color(240, 240, 255),  //亮白
-                        afterimageProgress
-                    ) * (afterimageAlpha * 0.7f);
+            int count = State == BoneState.Launching || State == BoneState.Returning ? 8 : 5;
+            for (int i = 1; i <= count; i++) {
+                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
                 }
-                else if (State == BoneState.Charging) {
-                    afterimageColor = new Color(210, 210, 230) * (afterimageAlpha * 0.6f);
-                }
-                else {
-                    afterimageColor = baseColor * (afterimageAlpha * 0.5f);
-                }
+                float k = 1f - i / (float)(count + 1);
+                Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float rot = i < Projectile.oldRot.Length ? Projectile.oldRot[i] : Projectile.rotation;
+                sb.Draw(tex, pos, frame, baseColor * (MathF.Pow(k, 1.6f) * 0.38f * strength), rot, origin
+                    , Projectile.scale * MathHelper.Lerp(0.80f, 0.98f, k), SpriteEffects.None, 0);
+            }
+        }
 
-                Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float afterimageScale = Projectile.scale * MathHelper.Lerp(0.85f, 1f, afterimageProgress);
-
-                sb.Draw(
-                    boneTex,
-                    afterimagePos,
-                    sourceRect,
-                    afterimageColor,
-                    Projectile.rotation - i * 0.1f * (orbitSpeed / MaxOrbitSpeed), //轻微旋转错位
-                    origin,
-                    afterimageScale,
-                    SpriteEffects.None,
-                    0
-                );
+        /// <summary>旋转拖影：同位置回溯旋转角，把自旋糊成扇面（位置残影表达不了自旋）</summary>
+        private void DrawSpinSmear(SpriteBatch sb, Texture2D tex, Rectangle frame, Vector2 origin, Color baseColor) {
+            float spinT = MathHelper.Clamp(spinRate / 0.9f, 0f, 1f);
+            if (spinT <= 0.12f) {
+                return;
+            }
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            for (int i = 1; i <= 4; i++) {
+                float fade = (0.30f - i * 0.06f) * spinT;
+                if (fade <= 0.01f) {
+                    continue;
+                }
+                sb.Draw(tex, drawPos, frame, baseColor * fade, Projectile.rotation - spinRate * i * 1.6f
+                    , origin, Projectile.scale * (1f - i * 0.015f), SpriteEffects.None, 0);
             }
         }
     }

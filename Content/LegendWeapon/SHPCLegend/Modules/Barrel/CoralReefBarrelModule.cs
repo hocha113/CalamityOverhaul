@@ -70,7 +70,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>珊瑚锚：枝程序绘+礁线 Trail</summary>
     internal sealed class SHPCCoralAnchorProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Vector3 PinkVec = new Color(255, 110, 140).ToVector3();
         private static readonly Vector3 TealVec = new Color(80, 220, 190).ToVector3();

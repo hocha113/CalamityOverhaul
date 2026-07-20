@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
     public class TheGravityShield : BaseHeldProj, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private int Time;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 80;
@@ -304,7 +304,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
     public class EmblemOfDreadDashProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public SlotId SlotId { get; private set; }
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 330;

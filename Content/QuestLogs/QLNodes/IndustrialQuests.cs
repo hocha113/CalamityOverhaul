@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Industrials.ElectricPowers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
+using CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Incinerators;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks;

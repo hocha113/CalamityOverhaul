@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>棱镜激光，枪口至光标静态光柱，线段碰撞持续伤害</summary>
     internal class CyberPrismLaserProj : BaseHeldProj, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int PointCount = 24;
         private const float MaxRange = 1600f;

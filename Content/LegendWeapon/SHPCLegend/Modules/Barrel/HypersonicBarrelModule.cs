@@ -97,7 +97,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>音爆马赫环，扩张波前伤害；SHPCSonicBoom.fx</summary>
     internal sealed class SHPCSonicBoomProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 22;
         private const int ExpandFrames = 18;
@@ -159,7 +159,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.SHPCSonicBoom?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 

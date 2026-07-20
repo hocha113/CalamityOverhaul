@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
     /// <summary>激光眼高速激光弹，替代原版<see cref="ProjectileID.DeathLaser"/>青紫渐变拖尾+发光内核+命中迸发<see cref="PRT_TwinsSpark"/>ai[1]=1强化弹(狂暴/大招)，更快更亮</summary>
     internal class RetinazerLaser : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         private const float maxTimeLeft = 720;
         private bool onSound;
         private Trail Trail;
@@ -125,7 +125,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);
             effect.Parameters["uBaseImage"].SetValue(CWRAsset.SlashFlatBlurHVMirror.Value);
-            effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uFlow"].SetValue(VaultAsset.placeholder2.Value);
             effect.Parameters["uGradient"].SetValue(CWRAsset.AbsoluteZero_Bar.Value);
             effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 

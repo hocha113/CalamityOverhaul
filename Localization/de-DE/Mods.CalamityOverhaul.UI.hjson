@@ -1,22 +1,31 @@
-ItemFilterUI: {
-	HintText: Linksklick zum Hinzufügen
-	HintText2: Linksklick zum Entfernen
-	CloseHint: "[ESC] oder [Rechtsklick] zum Schließen"
-}
-
-LegendUpgradeConfirmUI: {
-	TitleText: Bestätigung für Legendäres Waffen-Upgrade
-	DescText:
+EntryDecisionUI: {
+	CollapseHint: Rechtsklick zum Einklappen
+	LegendPill: Levelsync legendärer Waffen
+	LegendTitle: Bestätigung für Legendäres Waffen-Upgrade
+	LegendDesc:
 		'''
 		Das aktuelle Weltlevel ist höher als das Waffenlevel.
 		Möchtest du {0} auf Level {1} aufwerten?
 		'''
-	ConfirmText: Upgrade bestätigen
-	CancelText: Abbrechen
-	Success: "[ITEM] wurde auf Level [LEVEL] aufgewertet"
-	QueueIndicator: Noch {0} legendäre Waffen zur Bestätigung ausstehend
-	TrustText: Dieser Welt vertrauen
-	TrustSuccess: "[ITEM] hat dieser Welt vertraut und synchronisiert ab jetzt automatisch"
+	LegendConfirm: Upgrade bestätigen
+	LegendSkip: Diesmal überspringen
+	LegendTrust: Dieser Welt vertrauen
+	LegendSuccess: "{0} wurde auf Level {1} aufgewertet"
+	LegendTrustSuccess: "{0} hat dieser Welt vertraut und synchronisiert ab jetzt automatisch"
+	LegendQueue: Noch {0} legendäre Waffen zur Bestätigung ausstehend
+	QuestPill: Quest-Prüfung ausstehend
+	QuestTitle: Quest-Prüfung bestätigen
+	QuestDesc:
+		'''
+		Du hast diese Welt von einer anderen Welt aus betreten.
+		Soll der Quest-Fortschritt in der aktuellen Welt geprüft werden?
+		'''
+	QuestConfirm: Quest prüfen
+	QuestSkip: Überspringen
+	QuestTrust: Dieser Welt vertrauen
+	QuestEnabled: Quest-Prüfung aktiviert
+	QuestDisabled: Quest-Prüfung übersprungen
+	QuestTrusted: Welt vertraut; Quest-Prüfung wird hier künftig automatisch aktiviert
 }
 
 QuestTracker: {
@@ -150,6 +159,11 @@ QuestLog: {
 	SunModeText: Tagmodus
 	LauncherHoverText: Linksklick Interagieren, Rechtsklick Ziehen
 	QuestManagerText: Aufträge
+	DisabledOverlayText:
+		'''
+		Quest-Prüfung wurde in der aktuellen Welt deaktiviert.
+		Betritt die Welt erneut, um die Konfiguration neu zu wählen.
+		'''
 
 	ObjectiveTemplate: {
 		DefeatNpc: Besiege {0}
@@ -168,26 +182,6 @@ ExtraMain: {
 	StaffText: TEAM
 	BackText: ZURÜCK
 	LockedText: GESPERRT
-}
-
-QuestWorldConfirmUI: {
-	TitleText: Quest-Prüfung bestätigen
-	DescText:
-		'''
-		Du hast diese Welt von einer anderen Welt aus betreten.
-		Soll der Quest-Fortschritt in der aktuellen Welt geprüft werden?
-		'''
-	ConfirmText: Quest prüfen
-	CancelText: Überspringen
-	TrustText: Dieser Welt vertrauen
-	EnabledText: Quest-Prüfung aktiviert
-	DisabledText: Quest-Prüfung übersprungen
-	TrustedText: Welt vertraut; Quest-Prüfung wird hier künftig automatisch aktiviert
-	DisabledOverlayText:
-		'''
-		Quest-Prüfung wurde in der aktuellen Welt deaktiviert.
-		Betritt die Welt erneut, um die Konfiguration neu zu wählen.
-		'''
 }
 
 Incinerator: {

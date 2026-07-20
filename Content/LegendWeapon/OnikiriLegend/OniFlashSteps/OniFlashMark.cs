@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
     /// </summary>
     internal class OniFlashMark : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int RendFadeFrames = 14;   //引爆后墨裂蒸发时长
         private const int DamageWindow = 3;      //引爆帧起的伤害窗口

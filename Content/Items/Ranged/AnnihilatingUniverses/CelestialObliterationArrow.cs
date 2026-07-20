@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 {
     internal class CelestialObliterationArrow : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Trail Trail;
         private const int MaxPos = 40;
         public override void SetDefaults() {

@@ -185,7 +185,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     internal class FishTeleportProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private List<TeleportFishParticle> dissipatingFish; //消散鱼群
         private List<TeleportFishParticle> gatheringFish; //聚拢鱼群

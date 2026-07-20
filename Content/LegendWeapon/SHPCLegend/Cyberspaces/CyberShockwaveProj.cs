@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>领域展开冲击波，升层时 ai0/ai1 扫掠起止半径；按 owner 取领域中心</summary>
     internal class CyberShockwaveProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 38;
         private float maxDrawRadius;
@@ -56,10 +56,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.CyberShockwave?.Value;
             if (shader == null) return false;
-            if (CWRAsset.Placeholder_White == null) return false;
+            if (VaultAsset.placeholder2 == null) return false;
             if (CWRAsset.Extra_193?.Value == null) return false;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float t = 1f - (float)Projectile.timeLeft / Lifetime;

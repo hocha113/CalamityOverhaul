@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// 蓄力计时各端在 AI 内自走(确定性)，掷出经 ai[1]+netUpdate 同步
     internal class AccretionDisk : ModProjectile, IPrimitiveDrawable, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>蓄力帧计时(掷出后冻结)</summary>
         public ref float ChargeTime => ref Projectile.ai[0];
@@ -456,7 +456,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
 
             Effect effect = EffectLoader.AriaBlackHole?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (effect == null || noise == null || white == null) {
                 return;
             }

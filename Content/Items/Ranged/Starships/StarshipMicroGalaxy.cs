@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //陨石雨命中后汇聚于光标处的微型星系：毁灭性范围伤害
     internal class StarshipMicroGalaxy : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float TargetX => ref Projectile.ai[0];
         private ref float TargetY => ref Projectile.ai[1];

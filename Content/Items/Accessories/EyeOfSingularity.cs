@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// 伽马射线暴，事件视界射击追加追踪弹
     public class GammaRayBurst : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 8;
             Projectile.friendly = true;
@@ -324,7 +324,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// 量子迁跃，瞬移至光标并清沿途敌弹
     public class QuantumLeapProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.tileCollide = false;

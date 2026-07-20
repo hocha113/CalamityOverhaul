@@ -38,7 +38,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //CWRWeapon组
             AddToggle(nameof(config.ScreenVibration), () => config.ScreenVibration, v => config.ScreenVibration = v, false);
-            AddToggle(nameof(config.MurasamaSpaceFragmentationBool), () => config.MurasamaSpaceFragmentationBool, v => config.MurasamaSpaceFragmentationBool = v, false);
             AddToggle(nameof(config.DomainConciseDisplay), () => config.DomainConciseDisplay, v => config.DomainConciseDisplay = v, false);
             AddToggle(nameof(config.LensEasing), () => config.LensEasing, v => config.LensEasing = v, false);
 
@@ -58,7 +57,6 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
 
             //CWRWeapon组
             config.ScreenVibration = true;
-            config.MurasamaSpaceFragmentationBool = true;
             config.DomainConciseDisplay = false;
             config.LensEasing = true;
 

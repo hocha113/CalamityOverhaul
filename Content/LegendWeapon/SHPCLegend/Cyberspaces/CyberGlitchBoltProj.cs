@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>领域展开故障闪电，Trail+CyberGlitchBolt.fx</summary>
     internal class CyberGlitchBoltProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 30;
         private Vector2[] points;

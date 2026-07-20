@@ -28,7 +28,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// </summary>
     internal class OniFinaleCut : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>细线滞拍帧数：出现→纳刀引爆的间隔，主控用它对齐解冻时刻</summary>
         public const int HoldFrames = 18;

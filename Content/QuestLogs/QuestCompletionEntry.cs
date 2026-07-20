@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         }
 
         public override void DrawContent(SpriteBatch sb, Rectangle panelRect, float alpha) {
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             float time = Main.GameUpdateCount * 0.03f;
             int life = LifeTimer;
 
@@ -217,7 +217,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                     size / glow.Width * 2.5f, SpriteEffects.None, 0f);
             }
             else {
-                Texture2D pixel = TextureAssets.MagicPixel.Value;
+                Texture2D pixel = VaultAsset.placeholder2.Value;
                 Rectangle glowRect = new((int)(center.X - size * 0.6f), (int)(center.Y - size * 0.6f),
                     (int)(size * 1.2f), (int)(size * 1.2f));
                 sb.Draw(pixel, glowRect, new Color(255, 200, 80) * (0.08f * pulse * alpha));

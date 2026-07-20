@@ -1,8 +1,7 @@
-﻿using InnoVault.GameContent.BaseEntity;
-using InnoVault.PRT;
+﻿using CalamityOverhaul.Common;
+using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -47,38 +46,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
+        /// <summary>召唤云涡：云絮向心聚拢+收缩环+轻声高吟，materialize 禁 pop-in</summary>
         private static void SpawnSummonEffect(Vector2 position) {
-            //召唤云雾特效
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 9f);
-                PRTLoader.NewParticle<PRT_CloudParticle>(position + Main.rand.NextVector2Circular(20f, 20f), Vector2.Zero, Color.White, 1f)
-                    .Configure(vel, Main.rand.NextFloat(0.8f, 1.5f), new Color(240, 250, 255), 45);
-            }
-
-            //白色火花
-            for (int i = 0; i < 22; i++) {
-                float angle = MathHelper.TwoPi * i / 22f;
-                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
-                Dust d = Dust.NewDustPerfect(position, DustID.WhiteTorch, vel, 100,
-                    new Color(200, 230, 255), Main.rand.NextFloat(1.2f, 1.9f));
-                d.noGravity = true;
-                d.fadeIn = 1.2f;
-            }
-
-            //银色闪光
-            for (int i = 0; i < 12; i++) {
-                Dust shard = Dust.NewDustDirect(position - new Vector2(12), 24, 24,
-                    DustID.SilverFlame, Scale: Main.rand.NextFloat(1f, 1.6f));
-                shard.velocity = Main.rand.NextVector2Circular(4f, 4f);
-                shard.noGravity = true;
-            }
+            SoundEngine.PlaySound(SoundID.DD2_OgreRoar with { Volume = 0.35f, Pitch = 0.4f }, position);
+            FishWyverntailVFX.SummonBurst(position);
         }
     }
 
     internal class WhiteWyvernTailController : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private static int BaseLifeTime => 60 * (10 + HalibutData.GetDomainLayer());
         private ref float BaseDamage => ref Projectile.ai[0];
         private ref float BaseKnockback => ref Projectile.ai[1];
@@ -108,6 +85,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (Timer % interval == 0) {
                 NPC target = Owner.Center.FindClosestNPC(1400f);
                 Vector2 firePos = Projectile.Center + Main.rand.NextVector2Circular(24f, 24f);
+                Vector2 burstDir = Vector2.UnitY;
 
                 for (int i = 0; i < batch; i++) {
                     Vector2 dir;
@@ -117,6 +95,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }
                     else {
                         dir = Main.rand.NextVector2Unit();
+                    }
+                    if (i == 0) {
+                        burstDir = dir;
                     }
 
                     float speed = Main.rand.NextFloat(12f, 16f) + layer * 0.8f;
@@ -133,30 +114,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     }
                 }
 
-                //发射云雾效果
+                //出膛破云：低吼+锥形云爆
                 SoundEngine.PlaySound(SoundID.DD2_OgreRoar with { Volume = 0.6f, Pitch = -0.2f }, firePos);
-                for (int k = 0; k < 25; k++) {
-                    Vector2 v = Main.rand.NextVector2Circular(6f, 6f);
-                    PRTLoader.NewParticle<PRT_CloudParticle>(firePos + Main.rand.NextVector2Circular(15f, 15f), Vector2.Zero, Color.White, 1f)
-                        .Configure(v, Main.rand.NextFloat(0.6f, 1.2f), new Color(230, 245, 255), 35);
-                }
-
-                for (int k = 0; k < 18; k++) {
-                    Vector2 v = Main.rand.NextVector2Circular(5f, 5f);
-                    Dust d = Dust.NewDustPerfect(firePos, DustID.WhiteTorch, v, 120,
-                        new Color(220, 240, 255), Main.rand.NextFloat(0.9f, 1.4f));
-                    d.noGravity = true;
-                }
+                FishWyverntailVFX.MuzzleBurst(firePos, burstDir);
             }
 
-            Lighting.AddLight(Projectile.Center, 0.25f, 0.35f, 0.5f);
+            Lighting.AddLight(Projectile.Center, 0.12f, 0.16f, 0.24f);
         }
 
         public override bool? CanDamage() => false;
         public override bool PreDraw(ref Color lightColor) => false;
     }
 
-    internal class MiniWhiteWyvern : ModProjectile
+    /// <summary>
+    /// 云蛟白龙：龙身为沿轨迹重采样的 TriangleStrip 连续条带（FishWyverntailBody.fx，
+    /// 珍珠白靠灰蓝暗部塑形+背脊金鬃），体节游动波从头向尾传播；飞行沿身蜕云絮；
+    /// 命中云爆后龙身冻在原地从尾向头化云蚀散（穿透残影）<br/>
+    /// ai[0]：≥0 目标索引 / -1 无目标 / -2 命中化散 / -3 自然化散
+    /// </summary>
+    internal class MiniWhiteWyvern : ModProjectile, IPrimitiveDrawable, IOverlayDrawable
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.WyvernHead;
 
@@ -164,14 +140,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float StateTimer => ref Projectile.ai[1];
         private ref float SerpentinePhase => ref Projectile.ai[2];
 
+        /// <summary>化散演出时长（帧）：残影从尾向头蚀完的窗口</summary>
+        private const int DissolveDuration = 18;
+        private const int MaxStripPoints = 26;
+        private const float StripStep = 16f;//重采样弧长步长，龙长 ≈ 400px
+
         private NPC target;
         private float desiredRot;
         private float serpAmplitude;
         private float serpFrequency;
-
-        //云雾尾迹粒子管理
-        private readonly List<CloudTrailParticle> cloudTrail = new();
-        private int cloudSpawnTimer = 0;
+        private float swimPhase;//体节游动相位，随速度增速，纯视觉不同步
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = Main.npcFrameCount[NPCID.WyvernHead];
@@ -184,7 +162,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.height = 54;
             Projectile.friendly = true;
             Projectile.hostile = false;
-            Projectile.penetrate = 1;
+            Projectile.penetrate = -1;//命中语义由 CanDamage+化散状态门控，引擎不自杀以保留残影
             Projectile.timeLeft = 60 * 8;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
@@ -192,12 +170,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.localNPCHitCooldown = -1;
         }
 
-        public override bool? CanDamage() => true;
+        public override bool? CanDamage() => TargetIndex <= -2f ? false : true;
 
         public override void AI() {
+            if (TargetIndex <= -2f) {
+                DissolveAI();
+                return;
+            }
+
             StateTimer++;
             SerpentinePhase += 0.15f;
-            cloudSpawnTimer++;
+            swimPhase += 0.11f + Projectile.velocity.Length() * 0.006f;
 
             //获取目标
             if (TargetIndex >= 0 && TargetIndex < Main.maxNPCs && Main.npc[(int)TargetIndex].active && Main.npc[(int)TargetIndex].CanBeChasedBy()) {
@@ -224,13 +207,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Vector2 normal = dir.RotatedBy(MathHelper.PiOver2);
                 float wave = (float)Math.Sin(SerpentinePhase * serpFrequency) * serpAmplitude *
                     MathHelper.Clamp(dist / 400f, 0.2f, 1f);
-                Vector2 desiredVel = dir * MathHelper.Clamp(18f + dist * 0.01f, 12f, 32f) + normal * wave;
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, 0.15f);
-                desiredRot = Projectile.velocity.ToRotation();
 
-                if (dist < 40f) {
-                    serpAmplitude *= 0.85f;
+                //贯影拍：近身收幅提速，化作直线白影贯穿
+                float lunge = 1f;
+                float steer = 0.15f;
+                if (dist < 200f) {
+                    serpAmplitude *= 0.90f;
+                    lunge = MathHelper.Lerp(1.45f, 1f, dist / 200f);
+                    steer = 0.24f;
                 }
+                Vector2 desiredVel = dir * MathHelper.Clamp(18f + dist * 0.01f, 12f, 32f) * lunge + normal * wave;
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVel, steer);
+                desiredRot = Projectile.velocity.ToRotation();
             }
             else {
                 Projectile.velocity *= 0.97f;
@@ -248,232 +236,235 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (Projectile.frame >= frameCount) Projectile.frame = 0;
             }
 
-            //飞行云雾尾迹（每3帧生成一次）
-            if (cloudSpawnTimer % 3 == 0 && !VaultUtils.isServer) {
-                Vector2 trailPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * 20f;
-                trailPos += Main.rand.NextVector2Circular(8f, 8f);
-                PRTLoader.NewParticle<PRT_CloudParticle>(trailPos, Vector2.Zero, Color.White, 1f)
-                    .Configure(-Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1.5f, 1.5f),
-                        Main.rand.NextFloat(0.7f, 1.3f), new Color(235, 245, 255, 180), Main.rand.Next(25, 40));
-            }
-
-            //白色火花粒子
-            if (Main.rand.NextBool(5)) {
-                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,
-                    DustID.WhiteTorch, -Projectile.velocity.X * 0.2f, -Projectile.velocity.Y * 0.2f,
-                    120, new Color(220, 240, 255), Main.rand.NextFloat(0.8f, 1.2f));
-                d.noGravity = true;
-            }
-
-            //银色闪光（速度快时）
-            if (Projectile.velocity.Length() > 20f && Main.rand.NextBool(8)) {
-                Dust shimmer = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,
-                    DustID.SilverFlame, Scale: Main.rand.NextFloat(0.9f, 1.4f));
-                shimmer.velocity = -Projectile.velocity * 0.3f;
-                shimmer.noGravity = true;
-            }
-
-            //淡出
-            if (Projectile.timeLeft < 40) {
-                Projectile.alpha = (int)MathHelper.Lerp(0, 255, 1f - Projectile.timeLeft / 40f);
-            }
-
-            Lighting.AddLight(Projectile.Center, 0.35f, 0.45f, 0.65f);
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            if (Projectile.numHits > 0) {
-                return;
-            }
-            //云雾爆炸特效
+            //蜕云：龙是云所化，沿身随机骨节掉云屑，速度快蜕得密
             if (!VaultUtils.isServer) {
-                SpawnCloudExplosion(Projectile.Center, Projectile.velocity);
-            }
-
-            //原版Gore效果
-            for (int i = 0; i < 15; i++) {
-                int goreType = Main.rand.Next(11, 14); //原版云Gore
-                Vector2 goreVel = Main.rand.NextVector2Circular(4f, 4f) + Projectile.velocity * 0.3f;
-                Gore gore = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center,
-                    goreVel, goreType, Projectile.scale);
-                gore.timeLeft = Main.rand.Next(20, 35);
-                gore.scale *= 3;
-            }
-
-            //白色粒子爆发
-            for (int i = 0; i < 20; i++) {
-                Vector2 v = Main.rand.NextVector2Circular(8f, 8f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.WhiteTorch, v, 100,
-                    new Color(255, 255, 255), Main.rand.NextFloat(1.2f, 2f));
-                d.noGravity = true;
-            }
-
-            //银色冲击波
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
-                Vector2 vel = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 9f);
-                Dust shock = Dust.NewDustPerfect(Projectile.Center, DustID.SilverFlame, vel,
-                    120, Color.White, Main.rand.NextFloat(1.3f, 1.8f));
-                shock.noGravity = true;
-            }
-
-            SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
-            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.5f, Pitch = -0.3f }, Projectile.Center); //云爆音效
-            Projectile.Explode(180, default, false);
-            Projectile.Kill();
-        }
-
-        /// <summary>云雾爆炸 VFX</summary>
-        private static void SpawnCloudExplosion(Vector2 center, Vector2 impactVelocity) {
-            //大型云雾爆炸（环形扩散）
-            for (int ring = 0; ring < 3; ring++) {
-                int count = 12 + ring * 8;
-                float baseRadius = 30f + ring * 20f;
-
-                for (int i = 0; i < count; i++) {
-                    float angle = MathHelper.TwoPi * i / count;
-                    Vector2 offset = angle.ToRotationVector2() * Main.rand.NextFloat(baseRadius * 0.8f, baseRadius * 1.2f);
-                    Vector2 velocity = offset.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(3f, 7f) +
-                        impactVelocity * 0.2f;
-
-                    PRTLoader.NewParticle<PRT_CloudParticle>(center + offset * 0.3f, Vector2.Zero, Color.White, 1f)
-                        .Configure(velocity, Main.rand.NextFloat(1f, 2f) + ring * 0.3f,
-                            new Color(240, 250, 255, 200 - ring * 40), Main.rand.Next(30, 50));
+                int shedOdds = Projectile.velocity.Length() > 24f ? 2 : 4;
+                if (Main.rand.NextBool(shedOdds)) {
+                    ShedFromBody();
                 }
             }
 
-            //中心浓云
-            for (int i = 0; i < 15; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
-                PRTLoader.NewParticle<PRT_CloudParticle>(center + Main.rand.NextVector2Circular(10f, 10f), Vector2.Zero, Color.White, 1f)
-                    .Configure(vel + impactVelocity * 0.1f, Main.rand.NextFloat(1.5f, 2.5f),
-                        new Color(250, 255, 255, 220), Main.rand.Next(40, 60));
+            //自然到期转静默化散
+            if (Projectile.timeLeft <= DissolveDuration && Projectile.IsOwnedByLocalPlayer()) {
+                TargetIndex = -3f;
+                Projectile.netUpdate = true;
+            }
+
+            Lighting.AddLight(Projectile.Center, 0.18f, 0.24f, 0.34f);
+        }
+
+        /// <summary>化散：急停冻住，视觉一次性触发（远端由 netUpdate 后的 ai 值驱动），尾向头蚀由 shader 承担</summary>
+        private void DissolveAI() {
+            Projectile.velocity *= 0.82f;
+            swimPhase += 0.05f;
+
+            if (Projectile.localAI[0] == 0f) {
+                Projectile.localAI[0] = 1f;
+                if (TargetIndex == -2f) {
+                    SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.5f, Pitch = -0.3f }, Projectile.Center);
+                    FishWyverntailVFX.ImpactBurst(Projectile.Center, Projectile.velocity, Projectile.GetSource_FromThis());
+                }
+                else {
+                    FishWyverntailVFX.QuietDissolve(Projectile.Center);
+                }
+            }
+
+            //化云头几帧沿身补蜕几片云屑
+            if (!VaultUtils.isServer && Projectile.timeLeft > DissolveDuration - 8 && Projectile.timeLeft % 2 == 0) {
+                ShedFromBody();
+            }
+
+            //帧动画减速残喘
+            if (++Projectile.frameCounter >= 10) {
+                Projectile.frameCounter = 0;
+                Projectile.frame = (Projectile.frame + 1) % Main.projFrames[Projectile.type];
+            }
+
+            float dissolveT = 1f - Projectile.timeLeft / (float)DissolveDuration;
+            Lighting.AddLight(Projectile.Center, 0.18f * (1f - dissolveT), 0.24f * (1f - dissolveT), 0.34f * (1f - dissolveT));
+        }
+
+        private void ShedFromBody() {
+            int idx = Main.rand.Next(4, 30);
+            Vector2 pos;
+            if (idx < Projectile.oldPos.Length && Projectile.oldPos[idx] != Vector2.Zero) {
+                pos = Projectile.oldPos[idx] + Projectile.Size / 2f;
+            }
+            else {
+                pos = Projectile.Center;
+            }
+            FishWyverntailVFX.ShedFluff(pos, -Projectile.velocity * 0.06f + Main.rand.NextVector2Circular(0.8f, 0.8f));
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            if (Projectile.numHits > 0 || TargetIndex <= -2f) {
+                return;
+            }
+            Vector2 impactVel = Projectile.velocity;
+
+            //直击一次即范围结算（原语义），随后转入穿透残影化散
+            Projectile.Explode(180, default, false);
+
+            Projectile.velocity *= 0.25f;
+            TargetIndex = -2f;
+            Projectile.timeLeft = DissolveDuration;
+            Projectile.netUpdate = true;
+
+            //本端零延迟触发命中演出，远端在 DissolveAI 里各自补触发
+            Projectile.localAI[0] = 1f;
+            SoundEngine.PlaySound(SoundID.NPCHit13 with { Volume = 0.7f, Pitch = 0.2f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.5f, Pitch = -0.3f }, Projectile.Center);
+            FishWyverntailVFX.ImpactBurst(Projectile.Center, impactVel, Projectile.GetSource_FromThis());
+        }
+
+        /// <summary>沿 oldPos 链按固定弧长重采样：龙长恒定、密度均匀、出生时自然从头长出</summary>
+        private int ResampleBody(Span<Vector2> pts) {
+            Vector2 half = Projectile.Size / 2f;
+            Vector2 walkPos = Projectile.Center;
+            pts[0] = walkPos;
+            int n = 1;
+            float remaining = StripStep;
+
+            for (int k = 0; k < Projectile.oldPos.Length && n < MaxStripPoints; k++) {
+                if (Projectile.oldPos[k] == Vector2.Zero) {
+                    break;
+                }
+                Vector2 segEnd = Projectile.oldPos[k] + half;
+                float segLen = Vector2.Distance(walkPos, segEnd);
+                while (segLen >= remaining && n < MaxStripPoints) {
+                    walkPos += (segEnd - walkPos).SafeNormalize(Vector2.Zero) * remaining;
+                    pts[n++] = walkPos;
+                    segLen = Vector2.Distance(walkPos, segEnd);
+                    remaining = StripStep;
+                }
+                remaining -= segLen;
+                walkPos = segEnd;
+            }
+            return n;
+        }
+
+        /// <summary>体节游动波：头不摆、波从头向尾传播、身体延迟跟随（幅度沿体渐入）</summary>
+        private void ApplySwimWave(Span<Vector2> pts, Span<Vector2> raw, int n) {
+            for (int i = 0; i < n; i++) {
+                raw[i] = pts[i];
+            }
+            for (int i = 2; i < n; i++) {
+                Vector2 tangent = (raw[i] - raw[i - 1]).SafeNormalize(Vector2.UnitX);
+                Vector2 normal = new(-tangent.Y, tangent.X);
+                float amp = 7f * Projectile.scale * MathHelper.Clamp((i - 1) / 5f, 0f, 1f);
+                pts[i] += normal * ((float)Math.Sin(swimPhase - i * 0.62f) * amp);
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) {
+        /// <summary>颈段快速铺满→向尾幂衰减收尖，体节呼吸微调宽度</summary>
+        private float WidthAt(float t, int i) {
+            float neck = t < 0.10f
+                ? MathHelper.Lerp(0.78f, 1f, t / 0.10f)
+                : MathF.Pow(1f - (t - 0.10f) / 0.90f, 0.82f);
+            float breath = 1f + 0.09f * (float)Math.Sin(swimPhase * 2f - i * 1.1f);
+            return 15f * Projectile.scale * neck * breath;
+        }
+
+        /// <summary>龙身条带：珍珠白靠灰蓝暗部塑形，顶点色 r 存该段哪侧朝天供 shader 布光</summary>
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ) {
+                return;
+            }
+            Effect fx = FishWyverntailAssets.FishWyverntailBody;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (fx == null || noise == null) {
+                return;
+            }
+
+            Span<Vector2> pts = stackalloc Vector2[MaxStripPoints];
+            Span<Vector2> raw = stackalloc Vector2[MaxStripPoints];
+            int n = ResampleBody(pts);
+            if (n < 3) {
+                return;
+            }
+            ApplySwimWave(pts, raw, n);
+
+            var verts = new VertexPositionColorTexture[n * 2];
+            for (int i = 0; i < n; i++) {
+                float t = i / (float)(n - 1);
+                Vector2 tangent = i < n - 1
+                    ? (pts[i] - pts[i + 1]).SafeNormalize(Vector2.UnitX)
+                    : (pts[i - 1] - pts[i]).SafeNormalize(Vector2.UnitX);
+                Vector2 normal = new(-tangent.Y, tangent.X);
+                float w = WidthAt(t, i);
+                //+normal 侧(uv.y=0)朝天权重，屏幕上方向为 -Y
+                float upness = MathHelper.Clamp(0.5f - normal.Y * 0.75f, 0f, 1f);
+                Color vc = new(upness, 0f, 0f);
+                verts[i * 2] = new VertexPositionColorTexture((pts[i] + normal * w).ToVector3(), vc, new Vector2(t, 0f));
+                verts[i * 2 + 1] = new VertexPositionColorTexture((pts[i] - normal * w).ToVector3(), vc, new Vector2(t, 1f));
+            }
+
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            float dissolveT = TargetIndex <= -2f ? 1f - Projectile.timeLeft / (float)DissolveDuration : 0f;
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(Projectile.whoAmI * 0.61f % 1f);
+            fx.Parameters["uFade"]?.SetValue(MathHelper.Clamp(StateTimer / 12f, 0f, 1f));
+            fx.Parameters["uSwimPhase"]?.SetValue(swimPhase);
+            fx.Parameters["uDissolve"]?.SetValue(dissolveT);
+            fx.Parameters["uNoiseTex"]?.SetValue(noise);
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, verts.Length - 2);
+            }
+
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
+        }
+
+        /// <summary>头部：条带之上盖 WyvernHead 贴图（夹心遮接缝），急转留旋转拖影，化云时淡出微上飘</summary>
+        void IOverlayDrawable.DrawOverlay(SpriteBatch sb) {
+            if (Main.dedServ) {
+                return;
+            }
             Main.instance.LoadNPC(NPCID.WyvernHead);
-            Texture2D vaule = TextureAssets.Npc[NPCID.WyvernHead].Value;
-            int frameHeight = vaule.Height / Main.npcFrameCount[NPCID.WyvernHead];
-            Rectangle source = new Rectangle(0, Projectile.frame * frameHeight, vaule.Width, frameHeight);
+            Texture2D tex = TextureAssets.Npc[NPCID.WyvernHead].Value;
+            int frameHeight = tex.Height / Main.npcFrameCount[NPCID.WyvernHead];
+            Rectangle source = new(0, Projectile.frame * frameHeight, tex.Width, frameHeight);
             Vector2 origin = source.Size() / 2f;
-            float fade = 1f - Projectile.alpha / 255f;
-            float drawOffset = MathHelper.PiOver2;
+            const float drawOffset = MathHelper.PiOver2;
 
-            //绘制云雾拖尾
-            for (int i = 1; i < Projectile.oldPos.Length; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) continue;
-                float progress = 1f - i / (float)Projectile.oldPos.Length;
-                Color trailColor = new Color(200, 220, 240) * progress * 0.4f * fade;
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float rot = Projectile.oldRot[i] + drawOffset;
-                Main.EntitySpriteDraw(vaule, drawPos, source, trailColor, rot, origin,
-                    Projectile.scale * (0.9f + progress * 0.1f), SpriteEffects.None, 0);
+            float dissolveT = TargetIndex <= -2f ? 1f - Projectile.timeLeft / (float)DissolveDuration : 0f;
+            float headAlpha = (1f - dissolveT) * MathHelper.Clamp(StateTimer / 8f, 0f, 1f);
+            if (headAlpha <= 0.01f) {
+                return;
             }
 
-            //主体
-            SpriteEffects spriteEffect = Projectile.velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            Main.EntitySpriteDraw(vaule, Projectile.Center - Main.screenPosition, source,
-                lightColor * fade, Projectile.rotation + drawOffset, origin, Projectile.scale, spriteEffect, 0);
+            //珍珠白保底光：夜里也读得出白龙，仍吃 55% 环境光保体积
+            Color tileLight = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
+            Color lit = Color.Lerp(tileLight, Color.White, 0.45f) * headAlpha;
+            SpriteEffects flip = Projectile.velocity.X < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //辉光层
-            Color glow = new Color(255, 255, 255, 0) * 0.4f * fade;
-            Main.EntitySpriteDraw(vaule, Projectile.Center - Main.screenPosition, source, glow,
-                Projectile.rotation + drawOffset, origin, Projectile.scale * 1.05f, spriteEffect, 0);
+            //急转拖影：角速度大时头部留旋转残影（位置残影表达不了转向）
+            if (dissolveT <= 0f && Projectile.oldPos.Length > 6 && Projectile.oldPos[6] != Vector2.Zero) {
+                float turn = Math.Abs(MathHelper.WrapAngle(Projectile.oldRot[0] - Projectile.oldRot[6]));
+                if (turn > 0.35f) {
+                    for (int g = 1; g <= 2; g++) {
+                        int gi = g * 3;
+                        Vector2 gPos = Projectile.oldPos[gi] + Projectile.Size / 2f - Main.screenPosition;
+                        float gRot = Projectile.oldRot[gi] + drawOffset;
+                        sb.Draw(tex, gPos, source, lit * (g == 1 ? 0.28f : 0.13f), gRot, origin,
+                            Projectile.scale * (1f - g * 0.05f), flip, 0f);
+                    }
+                }
+            }
 
-            return false;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            drawPos.Y -= dissolveT * 6f;
+            sb.Draw(tex, drawPos, source, lit, Projectile.rotation + drawOffset, origin, Projectile.scale, flip, 0f);
         }
 
-        public override Color? GetAlpha(Color lightColor) => new Color(255, 255, 255, 200) * (1f - Projectile.alpha / 255f);
-    }
-
-    /// <summary>云雾粒子</summary>
-    internal class PRT_CloudParticle : BasePRT
-    {
-        public override string Texture => CWRConstant.Masking + "Fog";
-        private Vector2 velocity;
-        private float scale;
-        private Color color;
-        private float rotationSpeed;
-        private float currentRotation;
-
-        public override bool CanPool => true;
-        public void Configure(Vector2 vel, float scl, Color clr, int lifetime) {
-            velocity = vel;
-            scale = scl;
-            color = clr;
-            Lifetime = lifetime;
-            rotationSpeed = Main.rand.NextFloat(-0.08f, 0.08f);
-            currentRotation = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-
-        public override void Reset() {
-            base.Reset();
-            velocity = Vector2.Zero;
-            scale = 0f;
-            color = default;
-            rotationSpeed = 0f;
-            currentRotation = 0f;
-        }
-
-        public override void SetProperty() => PRTDrawMode = PRTDrawModeEnum.AdditiveBlend;
-
-        public override void AI() {
-            Position += velocity;
-            velocity *= 0.96f; //阻力
-            scale *= 0.98f; //缩放衰减
-            currentRotation += rotationSpeed;
-
-            //透明度渐变
-            float lifeProgress = (float)Time / Lifetime;
-            float fadeIn = MathHelper.Clamp(lifeProgress * 3f, 0f, 1f);
-            float fadeOut = MathHelper.Clamp((1f - lifeProgress) * 2f, 0f, 1f);
-            Color = color * fadeIn * fadeOut;
-        }
-
-        public override bool PreDraw(SpriteBatch spriteBatch) {
-            if (FishCloud.Fog == null) return false;
-
-            Texture2D fogTex = FishCloud.Fog;
-            Vector2 drawPos = Position - Main.screenPosition;
-            Vector2 origin = fogTex.Size() / 2f;
-
-            spriteBatch.Draw(fogTex, drawPos, null, Color, currentRotation, origin,
-                scale * 0.8f, SpriteEffects.None, 0f);
-
-            return false;
-        }
-    }
-
-    /// <summary>云雾尾迹粒子</summary>
-    internal class CloudTrailParticle
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Scale;
-        public Color Color;
-        public int Life;
-        public int MaxLife;
-        public float Rotation;
-
-        public CloudTrailParticle(Vector2 pos, Vector2 vel, float scale, Color color, int maxLife) {
-            Position = pos;
-            Velocity = vel;
-            Scale = scale;
-            Color = color;
-            Life = 0;
-            MaxLife = maxLife;
-            Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-        }
-
-        public void Update() {
-            Life++;
-            Position += Velocity;
-            Velocity *= 0.95f;
-            Scale *= 0.96f;
-            Rotation += 0.05f;
-        }
-
-        public bool ShouldRemove() => Life >= MaxLife;
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

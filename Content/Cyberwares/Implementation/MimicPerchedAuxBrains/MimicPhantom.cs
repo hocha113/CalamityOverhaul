@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.MimicPerchedAuxBrai
         /// <summary>克隆绘制复用 Player</summary>
         private static Player phantomDrawPlayer;
 
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;

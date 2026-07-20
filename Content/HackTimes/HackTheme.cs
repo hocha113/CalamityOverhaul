@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 共享绘制辅助
 
         /// <summary>1px 白色像素纹理，可能为 null</summary>
-        public static Texture2D Pixel => CWRAsset.Placeholder_White?.Value;
+        public static Texture2D Pixel => VaultAsset.placeholder2?.Value;
         /// <summary>Pixel 的 1px 源矩形</summary>
         public static readonly Rectangle SrcPixel = new(0, 0, 1, 1);
 

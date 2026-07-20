@@ -1,9 +1,7 @@
 ﻿using CalamityOverhaul.Content.Industrials.Generator;
 using CalamityOverhaul.Content.Items.Modifys;
 using CalamityOverhaul.Content.LegendWeapon;
-using CalamityOverhaul.Content.LegendWeapon.HalibutLegend;
 using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.UI;
-using CalamityOverhaul.Content.LegendWeapon.SHPCLegend;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -45,16 +43,6 @@ namespace CalamityOverhaul.Content
         #region Data
         public override bool InstancePerEntity => true;
         /// <summary>
-        /// AI槽位数量
-        /// </summary>
-        public const int MaxAISlot = 3;
-        /// <summary>
-        /// 存储物品的状态值，对这个数组的使用避免了额外类成员的创建
-        /// (自建类成员数据对于修改物品而言总是令人困惑)
-        /// 这个数组不会自动的网络同步，需要在合适的时机下调用同步指令
-        /// </summary>
-        public float[] ai = new float[MaxAISlot];
-        /// <summary>
         /// 是否是一个手持物品，改判定与<see cref="heldProjType"/> >0 具有同样的功效，都会被系统认定为手持物品
         /// </summary>
         public bool isHeldItem;
@@ -76,6 +64,12 @@ namespace CalamityOverhaul.Content
         /// 如果该物品被一个收集者视作为目标，那么该值会被设置为对应手臂的的弹幕索引
         /// </summary>
         internal int TargetByCollector = -1;
+        /// <summary>
+        /// 收集者锁定的剩余帧数，由机械臂在追踪期间持续刷新
+        /// 归零后自动解除<see cref="TargetByCollector"/>，
+        /// 避免机械臂被销毁(Actor没有死亡钩子)后物品被幽灵索引永久锁定
+        /// </summary>
+        internal int CollectorLockTime;
         /// <summary>
         /// 是否存储UE
         /// </summary>
@@ -108,10 +102,6 @@ namespace CalamityOverhaul.Content
         /// 使用的染色物品ID
         /// </summary>
         public int DyeItemID;
-        /// <summary>
-        /// 历史物品转化目标ID，如果大于0，则会试图转化
-        /// </summary>
-        public int LegacyItemTranslationID;
         #endregion
         public override void Load() {
             ItemRebuildLoader.PreSetDefaultsEvent += PreSetDefaults;
@@ -125,8 +115,7 @@ namespace CalamityOverhaul.Content
         }
         public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItem)base.Clone(from, to), to);
         public CWRItem CloneCWRItem(CWRItem cwr, Item to) {
-            //ai 与 LegendData 都是引用型:浅拷会让复制出的两件物品共写同一份状态
-            cwr.ai = ai != null ? (float[])ai.Clone() : null;
+            //LegendData 是引用型:浅拷会让复制出的两件物品共写同一份状态
             cwr.isHeldItem = isHeldItem;
             cwr.heldProjType = heldProjType;
             cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
@@ -136,7 +125,6 @@ namespace CalamityOverhaul.Content
             cwr.ConsumeUseUE = ConsumeUseUE;
             cwr.LegendData = LegendData?.Clone(to);
             cwr.DyeItemID = DyeItemID;
-            cwr.LegacyItemTranslationID = LegacyItemTranslationID;
             return cwr;
         }
 
@@ -163,7 +151,6 @@ namespace CalamityOverhaul.Content
         //调用在 ItemRebuildLoader.SetDefaults 之前
         public static void PreSetDefaults(Item item) {
             CWRItem cwrItem = item.CWR();
-            cwrItem.ai = new float[MaxAISlot];
             cwrItem.TargetLockAmmo = new Item();
             SmiperItemSet(item);
             CWRLoad.SetAmmoItem(item);
@@ -188,11 +175,6 @@ namespace CalamityOverhaul.Content
         public override void NetSend(Item item, BinaryWriter writer) {
             LegendData?.NetSend(item, writer);
 
-            ai ??= new float[MaxAISlot];
-            for (int i = 0; i < MaxAISlot; i++) {
-                writer.Write(ai[i]);
-            }
-
             writer.Write(DyeItemID);
             writer.Write(StorageUE);
             writer.Write(UEValue);
@@ -202,11 +184,6 @@ namespace CalamityOverhaul.Content
 
         public override void NetReceive(Item item, BinaryReader reader) {
             LegendData?.NetReceive(item, reader);
-
-            ai ??= new float[MaxAISlot];
-            for (int i = 0; i < MaxAISlot; i++) {
-                ai[i] = reader.ReadSingle();
-            }
 
             DyeItemID = reader.ReadInt32();
             StorageUE = reader.ReadBoolean();
@@ -284,16 +261,10 @@ namespace CalamityOverhaul.Content
             }
 
             try {
-                HalibutData.IsLegacyItem(item, tag);
-                SHPCData.IsLegacyItem(item, tag);
                 //加载数据
                 LegendData?.LoadData(item, tag);
                 //加载操作使用StorageOperation上下文，静默升级不弹窗
                 LegendData?.DoUpdate(item, LegendUpdateContext.StorageOperation);
-                //转化历史物品
-                if (LegacyItemTranslationID > ItemID.None) {
-                    item.ChangeItemType(LegacyItemTranslationID);
-                }
             } catch (Exception ex) {
                 CWRMod.Instance.Logger.Error($"[LegendData:LoadData] an error has occurred:{ex.Message}");
             }
@@ -323,10 +294,6 @@ namespace CalamityOverhaul.Content
                 //    }
                 //}
             }
-            //转化历史物品
-            if (LegacyItemTranslationID > ItemID.None) {
-                item.ChangeItemType(LegacyItemTranslationID);
-            }
         }
 
         public override void UpdateInventory(Item item, Player player) {
@@ -336,18 +303,15 @@ namespace CalamityOverhaul.Content
             RecoverUnloadedItem.UpdateInventory(item);
             if (InventoryTimer < int.MaxValue)
                 InventoryTimer++;
-            if (LegacyItemTranslationID > ItemID.None) {
-                item.ChangeItemType(LegacyItemTranslationID);
-            }
         }
 
         public override void Update(Item item, ref float gravity, ref float maxFallSpeed) {
+            //收集者锁超时自动过期，防止锁泄漏导致物品永久无法被收集
+            if (TargetByCollector >= 0 && --CollectorLockTime <= 0) {
+                TargetByCollector = -1;
+            }
             //世界掉落物，使用WorldItem上下文，静默升级不弹窗
             LegendData?.DoUpdate(item, LegendUpdateContext.WorldItem);
-            //转化历史物品
-            if (LegacyItemTranslationID > ItemID.None) {
-                item.ChangeItemType(LegacyItemTranslationID);
-            }
         }
 
         public static void OverModifyTooltip(Item item, List<TooltipLine> tooltips) {

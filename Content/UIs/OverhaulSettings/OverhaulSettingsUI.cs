@@ -394,7 +394,7 @@ namespace CalamityOverhaul.Content.UIs.OverhaulSettings
         public override void Draw(SpriteBatch spriteBatch) {
             if (_sengs <= 0.001f) return;
 
-            if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
+            if (VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 _active = false;
                 return;
             }

@@ -15,15 +15,6 @@ CWRServerConfig: {
 		Tooltip: Si se activa, al realizar algunos ataques, la pantalla vibrará, lo que podría intensificar la sensación de impacto.
 	}
 
-	MurasamaSpaceFragmentationBool: {
-		Label: Efecto de fragmentación de pantalla en el movimiento final de Murasama
-		Tooltip:
-			'''
-			Activado por defecto, el movimiento final de Murasama producirá efectos de fragmentación de pantalla para intensificar la sensación de impacto.
-			Desactivarlo deshabilitará estos efectos; puedes configurarlo según tu preferencia.
-			'''
-	}
-
 	DomainConciseDisplay: {
 		Label: Dominio en modo minimalista
 		Tooltip: Desactivado por defecto. Al activarlo, se ocultan la mayoría de efectos visuales dentro del dominio.
@@ -32,7 +23,6 @@ CWRServerConfig: {
 	Headers: {
 		CWRSystem: Ajustes del sistema Overhaul
 		CWRWeapon: Ajustes de armas Overhaul
-		CWRUI: Ajustes de interfaz Overhaul
 		CWRWorldGen: Ajustes de estructuras Overhaul
 	}
 
@@ -48,28 +38,6 @@ CWRServerConfig: {
 			[c/c20909:Incompleto]
 			Activado por defecto, modifica la IA de algunas criaturas, como la de los jefes en Modo Muerte.
 			Esto puede aumentar drásticamente la dificultad del juego; se puede elegir desactivarlo según las preferencias personales.
-			'''
-	}
-
-	MuraUIStyleType: {
-		Label: Selección de estilo de UI de Murasama
-		Tooltip:
-			'''
-			Estilo 1: Elegante - Flotante sobre la cabeza
-			Estilo 2: Elegante - Compacto
-			Estilo 3: Clásico - Flotante sobre la cabeza
-			Estilo 4: Clásico - Compacto
-			Estilo 5: Oculto
-			'''
-	}
-
-	MuraPosStyleType: {
-		Label: Selección de posición de UI de Murasama
-		Tooltip:
-			'''
-			Preajuste 1: Abajo a la derecha
-			Preajuste 2: Abajo a la izquierda
-			Preajuste 3: Arriba
 			'''
 	}
 

@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
     /// <summary>双子魔眼电弧链锁：两眼间带伤害高压电弧；ai[0]=眼睛A的whoAmI；ai[1]=眼睛B的whoAmI；ai[2]=总持续时间(帧)；前30帧预警细弱无伤害，之后全功率；任一眼失效立即消散</summary>
     internal class TwinsTetherArc : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         [VaultLoaden(CWRConstant.Masking + "ThunderTrail")]
         private static Asset<Texture2D> ThunderTex = null;

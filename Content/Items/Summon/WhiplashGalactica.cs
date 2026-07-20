@@ -162,7 +162,7 @@ namespace CalamityOverhaul.Content.Items.Summon
 
         private class WTrail : ModProjectile, IPrimitiveDrawable
         {
-            public override string Texture => CWRConstant.Placeholder;
+            public override string Texture => CWRConstant.VaultPlaceholder;
             private Trail Trail;
 
             public override void SetStaticDefaults() {

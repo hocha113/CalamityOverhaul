@@ -32,7 +32,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         public override void DrawContent(SpriteBatch sb, Rectangle rect, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             sb.Draw(px, rect, new Color(38, 6, 6) * alpha);
             sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width, 2), new Color(255, 120, 60) * alpha);
             sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2), new Color(180, 40, 20) * alpha);

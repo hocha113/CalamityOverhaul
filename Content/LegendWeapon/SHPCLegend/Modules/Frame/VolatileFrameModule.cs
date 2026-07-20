@@ -449,7 +449,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     /// </summary>
     internal sealed class SHPCVolatileGlitchProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int RibbonCap = 14;       //缎带顶点上限（≈550px 尾迹）
         private const float MinSpacing = 12f;   //历史点最小间距

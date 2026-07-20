@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //从玩家身后发射的行星弹幕，共八种形态（按 ai[0] 区分），使用 CelestialStar 着色器渲染天体
     internal class StarshipPlanet : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //行星数据：核心色、表面色、日冕色、尾迹色、应用的 debuff（取 CWRID）
         private struct PlanetData
@@ -166,7 +166,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
 
         private void DrawCelestialBody(SpriteBatch sb, Vector2 drawPos, float time, PlanetData data) {
             Effect shader = EffectLoader.CelestialStar?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) {
                 return;

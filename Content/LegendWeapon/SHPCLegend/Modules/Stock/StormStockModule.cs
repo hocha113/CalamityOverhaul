@@ -42,7 +42,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// </summary>
     internal sealed class SHPCStormFieldProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         #region 可调参数
 
@@ -300,7 +300,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         public override bool PreDraw(ref Color lightColor) {
             if (intensity < 0.02f) return false;
             Effect shader = EffectLoader.SHPCModStormField?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 
@@ -354,7 +354,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// </summary>
     internal sealed class SHPCStormBoltProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 26;
         /// <summary>伤害判定窗口帧数，其后进入残辉</summary>
@@ -574,7 +574,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.02f && skyFlash < 0.02f) return;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
 
             //短暂全屏微亮：以落点为中心的超大低透明白幕，模拟雷光照亮天地
             //12000px 保证 4K 屏最远缩放下仍满幅覆盖

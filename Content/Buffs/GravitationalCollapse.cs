@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Buffs
     //引力坍缩：被诅咒的目标化作局部引力井，持续失血并把周围的敌人拖向自己
     internal class GravitationalCollapse : ModBuff
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = true;

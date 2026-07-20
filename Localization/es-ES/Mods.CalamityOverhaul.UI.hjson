@@ -1,22 +1,31 @@
-ItemFilterUI: {
-	HintText: Clic izquierdo para añadir
-	HintText2: Clic izquierdo para quitar
-	CloseHint: "[ESC] o [Clic derecho] para cerrar"
-}
-
-LegendUpgradeConfirmUI: {
-	TitleText: Confirmar mejora de arma legendaria
-	DescText:
+EntryDecisionUI: {
+	CollapseHint: Clic derecho para plegar
+	LegendPill: Sincronización de arma legendaria
+	LegendTitle: Confirmar mejora de arma legendaria
+	LegendDesc:
 		'''
 		El nivel del mundo actual es superior al del arma.
 		¿Deseas mejorar {0} al nivel {1}?
 		'''
-	ConfirmText: Confirmar mejora
-	CancelText: Cancelar
-	Success: "[ITEM] ha sido mejorado al nivel [LEVEL]"
-	QueueIndicator: Quedan {0} armas legendarias por confirmar
-	TrustText: Confiar en este mundo
-	TrustSuccess: Se ha marcado este mundo como de confianza para [ITEM]; se sincronizará automáticamente a partir de ahora
+	LegendConfirm: Confirmar mejora
+	LegendSkip: Omitir esta vez
+	LegendTrust: Confiar en este mundo
+	LegendSuccess: "{0} ha sido mejorado al nivel {1}"
+	LegendTrustSuccess: Se ha marcado este mundo como de confianza para {0}; se sincronizará automáticamente a partir de ahora
+	LegendQueue: Quedan {0} armas legendarias por confirmar
+	QuestPill: Verificación de misión pendiente
+	QuestTitle: Confirmar verificación de misión
+	QuestDesc:
+		'''
+		Has entrado a este mundo desde otro.
+		¿Deseas verificar el progreso de las misiones en el mundo actual?
+		'''
+	QuestConfirm: Verificar
+	QuestSkip: Omitir
+	QuestTrust: Confiar en este mundo
+	QuestEnabled: Verificación activada
+	QuestDisabled: Verificación omitida
+	QuestTrusted: Mundo de confianza; la verificación se activará automáticamente aquí
 }
 
 QuestTracker: {
@@ -150,6 +159,11 @@ QuestLog: {
 	SunModeText: Modo Día
 	LauncherHoverText: Clic izq. Interactuar, Clic der. Arrastrar
 	QuestManagerText: Encargos
+	DisabledOverlayText:
+		'''
+		La verificación de misiones está deshabilitada en este mundo.
+		Vuelve a entrar al mundo para reconfigurar.
+		'''
 
 	ObjectiveTemplate: {
 		DefeatNpc: Derrota a {0}
@@ -168,26 +182,6 @@ ExtraMain: {
 	StaffText: EQUIPO
 	BackText: VOLVER
 	LockedText: BLOQUEADO
-}
-
-QuestWorldConfirmUI: {
-	TitleText: Confirmar verificación de misión
-	DescText:
-		'''
-		Has entrado a este mundo desde otro.
-		¿Deseas verificar el progreso de las misiones en el mundo actual?
-		'''
-	ConfirmText: Verificar
-	CancelText: Omitir
-	TrustText: Confiar en este mundo
-	EnabledText: Verificación activada
-	DisabledText: Verificación omitida
-	TrustedText: Mundo de confianza; la verificación se activará automáticamente aquí
-	DisabledOverlayText:
-		'''
-		La verificación de misiones está deshabilitada en este mundo.
-		Vuelve a entrar al mundo para reconfigurar.
-		'''
 }
 
 Incinerator: {

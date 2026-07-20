@@ -211,7 +211,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     internal class RestartEffectProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private List<RestartFishBoid> fishSwarms;
         private enum RestartState { Gathering, Wrapping, Restarting, Dispersing }

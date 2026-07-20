@@ -217,25 +217,6 @@ HalibutText: {
 	}
 }
 
-MurasamaOverride: {
-	World_Text0: Mundo mejorado anteriormente: <{0}> | Nivel registrado: <{1}>
-	Text0: Desbloqueado
-	Text1: No desbloqueada. Debes superar la prueba [Unhook]
-	Text_Lang_0: Prueba:
-	DisplayName: Murasama demoníaca
-	Tooltip:
-		'''
-		Clic derecho para apuntar y cargar la energía de la espada. Clic izquierdo para un ataque cuerpo a cuerpo real; al impactar, carga la energía de la espada.
-		Si hay enemigos poderosos cerca, la energía de la espada se cargará lentamente por sí sola.
-		Con la energía al máximo, pulsa [KEY1] para lanzar la hoja. Durante el vuelo, pulsa clic izquierdo para el corte ascendente [Lang1].
-		Si el corte ascendente impacta a un enemigo, carga el Arma 1. Pulsa [KEY2] para gastar 1 punto de carga y ejecutar un golpe descendente [Lang2].
-		Con 10 puntos de carga, un nuevo corte ascendente que impacte activará el movimiento final [Lang3].
-		[c/ff4500:"Sería mejor si fuera una espada-motosierra"]
-		[Lang4]
-		legend_Text
-		'''
-}
-
 SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
@@ -251,6 +232,8 @@ SHPCOverride: {
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: Pulsa [{KEY}] para abrir la lista de misiones
 	TrialPassed: Superada
+	World_Text0: Mundo mejorado anteriormente: <{0}> | Nivel registrado: <{1}>
+	Text_Lang_0: Prueba:
 }
 
 TrialBlockedHint: La siguiente prueba requiere que el contenido correspondiente esté activado.
@@ -339,101 +322,6 @@ HalibutTrialQuestLine: {
 		Y hay un poderoso ser marino que destruyó mi máquina, vamos a buscarlo para vengarnos
 		'''
 	TextDictionary_Content_14: Honestamente, quiero regresar al mar
-}
-
-MurasamaTrialQuestLine: {
-	QuestCategory: Murasama demoníaca · Pruebas
-	TrackerWaiting: Objetivo ausente, esperando invocación...
-	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Primer corte del lodo
-	Trial_1: Fantasma del desierto
-	Trial_2: Invasor
-	Trial_3: Purga de la corrupción
-	Trial_4: Amenaza parasitaria
-	Trial_5: Brecha en la mazmorra
-	Trial_6: Ídolo gelatinoso
-	Trial_7: Camino al Inframundo
-	Trial_8: Limpieza abisal
-	Trial_9: Llama purificadora de azufre
-	Trial_10: Grilletes de la tundra
-	Trial_11: Engranajes de acero
-	Trial_12: Aniquilación del doble ojo
-	Trial_13: Cráneo del rey mecánico
-	Trial_14: Operación sombra de Calamitas
-	Trial_15: Flor de la jungla
-	Trial_16: Frente petrificado
-	Trial_17: Erradicación de la plaga
-	Trial_18: Rompedor de gólems
-	Trial_19: Fin del campo astral
-	Trial_20: Caída lunar
-	Trial_21: Sanción fantasmal
-	Trial_22: Exorcismo de espectros
-	Trial_23: Serpiente matadioses
-	Trial_24: Llama de la jungla
-	Trial_25: Fin del núcleo
-	Trial_26: Juicio del caos
-	Trial_27: Retorno primordial
-	TrialSummary_0: Demuéstrame de qué estás hecho, recluta.\nEse bulto azul viscoso es un buen comienzo.\nAcaba con él.
-	TrialSummary_1: Los restos de sirena bajo el mar de arena aún vagan.\nRastrea y acaba con ellos.
-	TrialSummary_2: La luna cuelga alta en la noche. Vamos a reventar ese ojo gigante que vuela por ahí y dejar a ese falso dios ciego para siempre.
-	TrialSummary_3:
-		'''
-		Los restos de falsos dioses mancillan las tierras de Terra. Libera los continentes corrompidos.
-		¡Destroza el cerebro de ese falso dios y trocea ese gusano morado!
-		¡Quiero ver tu hoja danzar entre la carne xeno!
-		'''
-	TrialSummary_4: La tierra corrompida aún late como un corazón. Los parásitos de carne siguen activos; los tumores corrompidos aún piensan. ¡Destiérralos por completo!
-	TrialSummary_5:
-		'''
-		La maldición de la entrada de la mazmorra se ha aflojado. Siento energía psíquica en sus profundidades, mezclada con gritos, lamentos y susurros...
-		Destroza ese cráneo gigante.
-		'''
-	TrialSummary_6: ¿Lo sientes? Esa podredumbre fétida que apesta a gel.\nPurifica por completo este agregado asqueroso.
-	TrialSummary_7: Entra en el Inframundo. Ese muro de carne sobre la lava es nuestra puerta a la siguiente era.\nDespedázalo.
-	TrialSummary_8: El marginado del Mar de Azufre bloquea nuestra búsqueda de los tesoros del abismo. Acaba con su voracidad y su deambular.
-	TrialSummary_9: El fuego hereje del Emisario de Azufre en las profundidades de la lava es una afrenta. Apágalo.
-	TrialSummary_10: En el frío del norte yace una creación de hielo y nieve sellada.\nDestrúyela antes de que se desate por completo.
-	TrialSummary_11: Un gusano de acero gigante bloquea nuestra cruzada. Córtalo en pedazos.
-	TrialSummary_12: Esos ojos mecánicos nos miran desde arriba — traspásalos con tu hoja.
-	TrialSummary_13: ¿El señor esqueleto creyó que la armadura de acero nos detendría? Destroza ese cráneo metálico.
-	TrialSummary_14: Esa bruja que se entregó al caos tiene una hermana clon deforme. Mata a esa xeno y ofrece su sangre y fuego a la hoja.
-	TrialSummary_15: La planta demente en lo profundo de la jungla se ha desbocado. Usa tu hoja para acabar con este crecimiento fuera de control.
-	TrialSummary_16: La estúpida raza lihzahrd solo sabe adorar estas piedras obstinadas. Redúcelas a polvo y destruye su fe.
-	TrialSummary_17: Entre vapor y gas tóxico hay un híbrido abeja-máquina. Abate esa porquería.
-	TrialSummary_18: Ese gólem de destrucción arrasa la tierra. Pulveriza por completo su cuerpo de acero.
-	TrialSummary_19: Los gusanos astrales acumulan aquí energía cósmica. Acaba con ellos para que este campo estelar sea nuestro.
-	TrialSummary_20:
-		'''
-		Ese falso dios escondido en la cara oculta de la luna no es más que un remiendo defectuoso.
-		Corta sus tentáculos, arráncale el corazón y bebe su sangre hasta saciarte.
-		'''
-	TrialSummary_21: Un dios miserable que sobrevive absorbiendo calor solar. Su fuego hereje debe extinguirse por completo.
-	TrialSummary_22: El agregado de no muertos en lo profundo de la mazmorra. Que esas almas inquietas queden en silencio de una vez.
-	TrialSummary_23: Esa serpiente cósmica arrogante se agita tras el velo del mundo. Acaba con sus ambiciones.
-	TrialSummary_24:
-		'''
-		El Dragón de la Jungla, el último descendiente dracónico áurico de Terra. Muy distinto de otras xenos, merece nuestro respeto.
-		Sin embargo, ahora debemos hacer que muera otra vez para arrebatarle su Alma Áurica.
-		Con esos materiales forjaremos un equipamiento de altísimo nivel.
-		'''
-	TrialSummary_25:
-		'''
-		Ese hereje de la iglesia mecánica cree firmemente que sus Exo Mechs superan el poder de los dioses.
-		Una creencia absurda. Devolvamos esos Titanes a su estado natural: un montón de chatarra.
-		'''
-	TrialSummary_26:
-		'''
-		Una bruja con talento psíquico excepcional, que debió ser un gran apoyo para defender Terra, se perdió hace tiempo en el caos.
-		Solo podemos desterrarla. Clava la hoja en su pecho y deja que el fuego de la lealtad consuma su alma podrida.
-		'''
-	TrialSummary_27:
-		'''
-		Nuestro camino de conquista ya es imparable. Destroza la armadura del dragón demoníaco bajo el abismo negro.
-		Usa el Término y libra la batalla decisiva final contra la xeno.
-		'''
-	TrackerBrief: Objetivo: {0}
-	BossRushTargetName: Batalla del Término
-	EventActiveFormat: "{0}: en curso"
 }
 
 SHPCTrialQuestLine: {

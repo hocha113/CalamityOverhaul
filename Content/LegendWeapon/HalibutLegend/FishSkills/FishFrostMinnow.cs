@@ -62,7 +62,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 寒霜鲦鱼喷射器弹幕
+    /// 寒霜鲦鱼喷射器弹幕。
+    /// 实体生命周期：凝华入场（霜雾收束+镜面闪落定）、蓄力（嘴前六角晶核成型+寒气收束）、
+    /// 三口连喷（按脉冲后坐+缩身）、化雾退场（碎晶剥落，禁 pop-out）
     /// </summary>
     internal class FrostMinnowSpitterProjectile : BaseHeldProj
     {
@@ -88,9 +90,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int targetNPCID = -1;
         private float glowIntensity = 0f;
         private float pulsePhase = 0f;
-        private float frostAura = 0f;
+        private float burstKick = 0f;
+        private bool chargeGlintFired = false;
         private readonly List<Vector2> trailPositions = new();
-        private const int MaxTrailLength = 12;
+        private const int MaxTrailLength = 6;
 
         //状态持续时间
         private const int AppearDuration = 18;
@@ -100,7 +103,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         //攻击参数
         private const float SearchRange = 1400f;
+        private const int VolleyCount = 3; //连喷口数, 总弹量不变按 i%VolleyCount 分口
         private static int SnowflakeCount => 6 + HalibutData.GetDomainLayer() / 2; //喷射雪花数量
+
+        private Vector2 MouthPos => Projectile.Center + Projectile.rotation.ToRotationVector2() * 18f;
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
@@ -131,7 +137,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             StateTimer++;
             pulsePhase += 0.18f;
-            frostAura += 0.12f;
+            burstKick *= 0.86f;
 
             //状态机
             switch (State) {
@@ -139,10 +145,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     AppearingBehavior(Owner);
                     break;
                 case FishState.Charging:
-                    ChargingBehavior(Owner);
+                    ChargingBehavior();
                     break;
                 case FishState.Spitting:
-                    SpittingBehavior(Owner);
+                    SpittingBehavior();
                     break;
                 case FishState.Fading:
                     FadingBehavior();
@@ -152,13 +158,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新拖尾
             UpdateTrail();
 
-            //寒霜环境光照 - 冰蓝色
+            //寒霜环境光照: 冷蓝压低明度
             float pulse = (float)Math.Sin(pulsePhase) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center, 0.4f * pulse * glowIntensity, 0.8f * pulse * glowIntensity, 1.2f * pulse * glowIntensity);
+            Lighting.AddLight(Projectile.Center, 0.2f * pulse * glowIntensity, 0.4f * pulse * glowIntensity, 0.62f * pulse * glowIntensity);
 
-            //寒霜环境粒子
-            if (glowIntensity > 0.3f && Main.rand.NextBool(5)) {
-                SpawnFrostAmbient();
+            //低伏霜雾绕体下淌
+            if (glowIntensity > 0.3f) {
+                if (Main.rand.NextBool(9)) {
+                    FrostMinnowVFX.Mist(Projectile.Center + Main.rand.NextVector2Circular(24f, 18f)
+                        , new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), 0.1f), Main.rand.NextFloat(0.2f, 0.28f)
+                        , Main.rand.Next(26, 34), 0.16f);
+                }
+                if (Main.rand.NextBool(12)) {
+                    Dust frost = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(22f, 22f)
+                        , DustID.IceTorch, Main.rand.NextVector2Circular(0.8f, 0.8f), 0
+                        , new Color(200, 230, 255), Main.rand.NextFloat(0.9f, 1.3f));
+                    frost.noGravity = true;
+                }
             }
 
             //旋转朝向目标
@@ -178,18 +194,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private void AppearingBehavior(Player owner) {
             float progress = StateTimer / AppearDuration;
 
-            //淡入
+            //淡入, 尺寸带过冲落定
             Projectile.alpha = (int)(255 * (1f - progress));
             glowIntensity = progress;
-            Projectile.scale = progress * 0.8f;
+            Projectile.scale = FrostMinnowVFX.EaseOutBack(progress) * 0.8f;
 
-            //冰晶凝聚效果
+            //出场即面向鼠标侧
+            Projectile.rotation = InMousePos.X >= Projectile.Center.X ? 0f : MathHelper.Pi;
+
+            //凝华上浮
+            Projectile.Center += new Vector2(0f, -(1f - progress) * 0.5f);
             float floatY = (float)Math.Sin(pulsePhase * 1.2f) * 2.5f;
             Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.1f);
 
-            //出现时冰晶粒子
-            if (Main.rand.NextBool(3)) {
-                SpawnAppearDust();
+            //霜雾向体心收束凝华
+            if (StateTimer % 3 == 0) {
+                for (int i = 0; i < 2; i++) {
+                    Vector2 pos = Projectile.Center + Main.rand.NextVector2CircularEdge(38f, 38f) * Main.rand.NextFloat(0.85f, 1.2f);
+                    Dust frost = Dust.NewDustPerfect(pos, DustID.IceTorch, (Projectile.Center - pos) * 0.11f
+                        , 0, new Color(200, 230, 255), Main.rand.NextFloat(1.2f, 1.9f));
+                    frost.noGravity = true;
+                }
+            }
+            if (Main.rand.NextBool(6)) {
+                FrostMinnowVFX.Mist(Projectile.Center + Main.rand.NextVector2Circular(18f, 18f)
+                    , new Vector2(0f, 0.1f), 0.22f, 24, 0.15f);
+            }
+
+            //凝华完成拍: 镜面闪+扩散环落定
+            if (StateTimer == AppearDuration - 1) {
+                FrostMinnowVFX.Glint(Projectile.Center, 0.55f, 8);
+                FrostMinnowVFX.ImpactRing(Projectile.Center, 0f, 0.05f, 0.22f, 10);
             }
 
             if (StateTimer >= AppearDuration) {
@@ -204,7 +239,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void ChargingBehavior(Player owner) {
+        private void ChargingBehavior() {
             float progress = StateTimer / ChargeDuration;
             ChargeProgress = progress;
 
@@ -218,9 +253,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //冰晶逐渐聚集
             Projectile.scale = 0.8f + progress * 0.4f;
 
-            //蓄力时持续生成寒霜粒子
+            //寒气向嘴部收束
+            Vector2 mouthPos = MouthPos;
             if (Main.rand.NextBool(2)) {
-                SpawnChargeDust();
+                for (int i = 0; i < 2; i++) {
+                    Vector2 pos = mouthPos + Main.rand.NextVector2CircularEdge(30f, 30f) * Main.rand.NextFloat(0.8f, 1.3f);
+                    Dust frost = Dust.NewDustPerfect(pos, DustID.IceTorch, (mouthPos - pos) * 0.1f
+                        , 0, new Color(200, 230, 255), Main.rand.NextFloat(1.2f, 2f));
+                    frost.noGravity = true;
+                }
+            }
+            if (Main.rand.NextBool(9)) {
+                FrostMinnowVFX.Mist(mouthPos + Main.rand.NextVector2Circular(14f, 14f)
+                    , new Vector2(0f, 0.12f), 0.2f, 24, 0.14f);
+            }
+
+            //锁定拍: 晶核成型一记镜面闪+脆响
+            if (!chargeGlintFired && progress >= 0.85f) {
+                chargeGlintFired = true;
+                FrostMinnowVFX.Glint(MouthPos, 0.5f, 8);
+                FrostMinnowVFX.CrystalTink(MouthPos, 0.6f, 0.3f);
             }
 
             //蓄力音效
@@ -235,8 +287,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 State = FishState.Spitting;
                 StateTimer = 0;
 
-                //开始喷射
-                SpitFrostSnowflakes(owner);
+                //开始喷射: 第一口
+                SpitVolley(0);
 
                 //喷射音效
                 SoundEngine.PlaySound(SoundID.Item28 with {
@@ -251,35 +303,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void SpittingBehavior(Player owner) {
+        private void SpittingBehavior() {
             float progress = StateTimer / SpitDuration;
 
             //喷射时保持强烈发光
             glowIntensity = 1f - progress * 0.3f;
 
-            //喷射时寒气扩散
-            frostAura = 1f - progress * 0.5f;
+            //三口连喷拍点
+            if (StateTimer == 6f) {
+                SpitVolley(1);
+            }
+            else if (StateTimer == 12f) {
+                SpitVolley(2);
+            }
 
-            //喷射时后坐力效果
-            if (IsTargetValid()) {
-                NPC target = Main.npc[targetNPCID];
-                Vector2 toTarget = target.Center - Projectile.Center;
-                Vector2 recoil = -toTarget.SafeNormalize(Vector2.Zero) * (1f - progress) * 1.8f;
-                Projectile.Center += recoil * 0.08f;
-            }
-            else {
-                Vector2 toTarget = InMousePos - Projectile.Center;
-                Vector2 recoil = -toTarget.SafeNormalize(Vector2.Zero) * (1f - progress) * 1.8f;
-                Projectile.Center += recoil * 0.08f;
-            }
+            //按脉冲后坐: 每口一次后挫再回弹
+            Vector2 aim = Projectile.rotation.ToRotationVector2();
+            Projectile.Center -= aim * burstKick * 0.9f;
 
             //持续漂浮
             float floatY = (float)Math.Sin(pulsePhase) * 2f;
             Projectile.Center = Projectile.Center + new Vector2(0, floatY * 0.05f);
 
-            //喷射时持续生成冰晶粒子
-            if (Main.rand.NextBool(2)) {
-                SpawnSpitEffect();
+            //喷吐余尘
+            if (StateTimer < 22 && Main.rand.NextBool(2)) {
+                Vector2 mouthPos = MouthPos;
+                Dust frost = Dust.NewDustPerfect(mouthPos, DustID.IceTorch
+                    , aim.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f, 8f), 0
+                    , new Color(200, 230, 255), Main.rand.NextFloat(1.2f, 2f));
+                frost.noGravity = true;
+                if (Main.rand.NextBool(4)) {
+                    FrostMinnowVFX.Mist(mouthPos, aim * Main.rand.NextFloat(1f, 2.2f), 0.22f, 20, 0.16f);
+                }
             }
 
             if (StateTimer >= SpitDuration) {
@@ -299,91 +354,79 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //淡出消散
             Projectile.velocity.Y -= 0.15f;
 
+            //碎晶剥落一次
+            if (StateTimer == 2f) {
+                FrostMinnowVFX.ChipBurst(Projectile.Center, new Vector2(0f, -0.4f), 3, 1.6f);
+            }
+            //身形化雾
+            if (StateTimer % 4 == 0) {
+                FrostMinnowVFX.Mist(Projectile.Center + Main.rand.NextVector2Circular(14f, 14f)
+                    , new Vector2(0f, 0.16f), 0.26f, 22, 0.18f);
+            }
+
             if (StateTimer >= FadeDuration) {
                 Projectile.Kill();
             }
         }
 
-        private void SpitFrostSnowflakes(Player owner) {
-            if (Main.myPlayer != Projectile.owner) return;
-
-
+        /// <summary>一口喷射：弹幕仅主人客户端生成，总量与散布角保持原公式，按 i%VolleyCount 分口</summary>
+        private void SpitVolley(int volleyIndex) {
             Vector2 targetCenter = InMousePos;
             if (IsTargetValid()) {
-                NPC target = Main.npc[targetNPCID];
-                targetCenter = target.Center;
+                targetCenter = Main.npc[targetNPCID].Center;
             }
-
-            //从鱼嘴位置喷射
-            Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 18f;
+            Vector2 mouthPos = MouthPos;
             Vector2 toTarget = (targetCenter - mouthPos).SafeNormalize(Vector2.Zero);
 
-            //喷射扇形雪花
-            for (int i = 0; i < SnowflakeCount; i++) {
-                float spreadAngle = MathHelper.Lerp(-0.6f, 0.6f, i / (float)(SnowflakeCount - 1));
-                Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(10f, 16f);
+            if (Main.myPlayer == Projectile.owner) {
+                int count = SnowflakeCount;
+                for (int i = 0; i < count; i++) {
+                    if (i % VolleyCount != volleyIndex) {
+                        continue;
+                    }
+                    float spreadAngle = MathHelper.Lerp(-0.6f, 0.6f, i / (float)(count - 1));
+                    Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(10f, 16f);
 
-                int proj = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    mouthPos,
-                    velocity,
-                    ModContent.ProjectileType<FrostSnowflakeProjectile>(),
-                    Projectile.damage,
-                    2f,
-                    Projectile.owner
-                );
-                Main.projectile[proj].friendly = true;
+                    int proj = Projectile.NewProjectile(
+                        Projectile.GetSource_FromThis(),
+                        mouthPos,
+                        velocity,
+                        ModContent.ProjectileType<FrostSnowflakeProjectile>(),
+                        Projectile.damage,
+                        2f,
+                        Projectile.owner
+                    );
+                    if (proj >= 0 && proj < Main.maxProjectiles) {
+                        Main.projectile[proj].friendly = true;
+                    }
+                }
             }
 
-            //喷射爆发特效 - 冰晶爆发
-            for (int i = 0; i < 50; i++) {
-                Vector2 velocity = toTarget.RotatedByRandom(0.9f) * Main.rand.NextFloat(6f, 18f);
-                Dust frost = Dust.NewDustPerfect(
-                    mouthPos,
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
+            //喷口演出全客户端可见
+            burstKick = 1f;
+            FrostMinnowVFX.Glint(mouthPos, 0.6f, 7);
+            FrostMinnowVFX.ImpactRing(mouthPos, toTarget.ToRotation(), 0.06f, 0.26f, 10);
+            for (int i = 0; i < 2; i++) {
+                FrostMinnowVFX.Mist(mouthPos, toTarget.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f, 3f), 0.24f, 22, 0.18f);
+            }
+            for (int i = 0; i < 5; i++) {
+                Dust frost = Dust.NewDustPerfect(mouthPos, DustID.IceTorch
+                    , toTarget.RotatedByRandom(0.5f) * Main.rand.NextFloat(4f, 10f), 0
+                    , new Color(200, 230, 255), Main.rand.NextFloat(1.4f, 2.2f));
                 frost.noGravity = true;
-                frost.fadeIn = 1.5f;
             }
-
-            //冰雪爆发
-            for (int i = 0; i < 35; i++) {
-                Vector2 velocity = toTarget.RotatedByRandom(0.7f) * Main.rand.NextFloat(5f, 14f);
-                Dust snow = Dust.NewDustPerfect(
-                    mouthPos,
-                    DustID.SnowflakeIce,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2.5f, 4f)
-                );
-                snow.noGravity = true;
-            }
-
-            //寒霜冲击环
-            for (int i = 0; i < 25; i++) {
-                float angle = MathHelper.TwoPi * i / 25f;
-                Vector2 velocity = angle.ToRotationVector2() * 9f;
-                Dust ring = Dust.NewDustPerfect(
-                    mouthPos,
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(180, 220, 255),
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                ring.noGravity = true;
+            if (volleyIndex > 0) {
+                SoundEngine.PlaySound(SoundID.Item28 with { Volume = 0.4f, Pitch = -0.05f + volleyIndex * 0.12f }, mouthPos);
             }
         }
 
         private void UpdateTrail() {
-            trailPositions.Insert(0, Projectile.Center);
-            if (trailPositions.Count > MaxTrailLength) {
-                trailPositions.RemoveAt(trailPositions.Count - 1);
+            //仅位移足够时记录, 悬停不叠影
+            if (trailPositions.Count == 0 || Vector2.DistanceSquared(trailPositions[0], Projectile.Center) > 12f) {
+                trailPositions.Insert(0, Projectile.Center);
+                if (trailPositions.Count > MaxTrailLength) {
+                    trailPositions.RemoveAt(trailPositions.Count - 1);
+                }
             }
         }
 
@@ -393,140 +436,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return target.active && target.CanBeChasedBy();
         }
 
-        //特效方法
-        private void SpawnFrostAmbient() {
-            Dust frost = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
-                DustID.IceTorch,
-                Main.rand.NextVector2Circular(1.5f, 1.5f),
-                0,
-                new Color(200, 230, 255),
-                Main.rand.NextFloat(1f, 1.5f)
-            );
-            frost.noGravity = true;
-        }
-
-        private void SpawnAppearDust() {
-            for (int i = 0; i < 3; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
-                Dust frost = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(180, 220, 255),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                frost.noGravity = true;
-            }
-
-            //雪花
-            if (Main.rand.NextBool()) {
-                Dust snow = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.SnowflakeIce,
-                    Main.rand.NextVector2Circular(2f, 2f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                snow.noGravity = true;
-            }
-        }
-
-        private void SpawnChargeDust() {
-            //鱼嘴位置
-            Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 15f;
-
-            for (int i = 0; i < 3; i++) {
-                Vector2 velocity = -Projectile.rotation.ToRotationVector2().RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f);
-                Dust frost = Dust.NewDustPerfect(
-                    mouthPos + Main.rand.NextVector2Circular(12f, 12f),
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                frost.noGravity = true;
-                frost.fadeIn = 1.6f;
-            }
-
-            //雪花核心
-            if (Main.rand.NextBool()) {
-                Dust snow = Dust.NewDustPerfect(
-                    mouthPos,
-                    DustID.SnowflakeIce,
-                    -Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1f, 3f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.8f, 3f)
-                );
-                snow.noGravity = true;
-            }
-        }
-
-        private void SpawnSpitEffect() {
-            Vector2 mouthPos = Projectile.Center + Projectile.rotation.ToRotationVector2() * 20f;
-
-            for (int i = 0; i < 2; i++) {
-                Vector2 velocity = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 11f);
-                Dust frost = Dust.NewDustPerfect(
-                    mouthPos,
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                frost.noGravity = true;
-                frost.fadeIn = 1.5f;
-            }
-
-            //雪花
-            if (Main.rand.NextBool()) {
-                Dust snow = Dust.NewDustPerfect(
-                    mouthPos,
-                    DustID.SnowflakeIce,
-                    Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(4f, 9f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(2.5f, 3.5f)
-                );
-                snow.noGravity = true;
-            }
-        }
-
         public override void OnKill(int timeLeft) {
-            //消散：冰雾粒子
-            for (int i = 0; i < 40; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
-                Dust frost = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(2f, 4f)
-                );
+            //鱼体已在Fading阶段化雾, 此处只留轻收尾
+            for (int i = 0; i < 5; i++) {
+                Dust frost = Dust.NewDustPerfect(Projectile.Center, DustID.IceTorch
+                    , Main.rand.NextVector2Circular(3f, 3f), 0, new Color(200, 230, 255), Main.rand.NextFloat(1.2f, 2f));
                 frost.noGravity = true;
             }
-
-            //雪花飘散
-            for (int i = 0; i < 25; i++) {
-                Dust snow = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.SnowflakeIce,
-                    Main.rand.NextVector2Circular(6f, 6f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                snow.noGravity = true;
+            for (int i = 0; i < 2; i++) {
+                FrostMinnowVFX.Mist(Projectile.Center, Main.rand.NextVector2Circular(1.2f, 1.2f), 0.26f, 26, 0.16f);
             }
 
             SoundEngine.PlaySound(SoundID.Item30 with {
-                Volume = 0.6f,
+                Volume = 0.4f,
                 Pitch = -0.5f
             }, Projectile.Center);
         }
@@ -541,161 +463,79 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float drawRot = Projectile.rotation + (dir ? MathHelper.PiOver4 : -MathHelper.PiOver4);
 
             float alpha = (255f - Projectile.alpha) / 255f;
+            //连喷瞬间轻微缩身, 读作吐息后坐
+            float drawScale = Projectile.scale * (1f - 0.1f * burstKick);
 
-            //绘制寒霜拖尾
-            DrawFrostTrail(sb, fishTex, origin, alpha);
+            //移动尾波残影
+            DrawWake(sb, fishTex, origin, drawRot, spriteEffects, alpha);
 
-            //寒霜光晕层 - 冰蓝色
-            if (glowIntensity > 0.5f) {
-                for (int i = 0; i < 4; i++) {
-                    float glowScale = Projectile.scale * (1.2f + i * 0.18f);
-                    float glowAlpha = (glowIntensity - 0.5f) * (1f - i * 0.25f) * 0.8f * alpha;
-
-                    sb.Draw(
-                        fishTex,
-                        drawPos,
-                        null,
-                        new Color(100, 180, 255, 0) * glowAlpha,
-                        drawRot,
-                        origin,
-                        glowScale,
-                        spriteEffects,
-                        0
-                    );
-                }
+            //单层冷雾底光, 只作底层
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null && glowIntensity > 0.05f) {
+                Color under = FrostMinnowVFX.DeepBlue;
+                under.A = 0;
+                sb.Draw(glow, drawPos, null, under * (0.3f * glowIntensity * alpha), 0f, glow.Size() / 2f, 1.4f * drawScale, SpriteEffects.None, 0f);
             }
 
-            //蓄力寒气效果
-            if (State == FishState.Charging) {
-                float chargeGlow = ChargeProgress;
-                for (int i = 0; i < 3; i++) {
-                    float chargeScale = Projectile.scale * (1.4f + i * 0.25f);
-                    float chargeAlpha = chargeGlow * (1f - i * 0.3f) * 0.7f * alpha;
-
-                    sb.Draw(
-                        fishTex,
-                        drawPos,
-                        null,
-                        new Color(150, 220, 255, 0) * chargeAlpha,
-                        drawRot,
-                        origin,
-                        chargeScale,
-                        spriteEffects,
-                        0
-                    );
-                }
+            //蓄力晶核: 画在鱼身之下, 根部被鱼嘴覆盖
+            if (State == FishState.Charging && ChargeProgress > 0.1f) {
+                float eased = MathF.Pow(ChargeProgress, 0.8f);
+                Vector2 mouthDraw = MouthPos - Main.screenPosition;
+                FrostMinnowVFX.DrawHexCrystal(sb, mouthDraw, pulsePhase * 0.6f, 4f + 13f * eased
+                    , 0.85f * Math.Min(ChargeProgress * 3f, 1f) * alpha, 0.3f);
+            }
+            //释放后晶核快速收敛, 禁pop-out
+            if (State == FishState.Spitting && StateTimer <= 6f) {
+                float t = StateTimer / 6f;
+                Vector2 mouthDraw = MouthPos - Main.screenPosition;
+                FrostMinnowVFX.DrawHexCrystal(sb, mouthDraw, pulsePhase * 0.6f, 17f * (1f - t), 0.6f * (1f - t) * alpha, 0f);
             }
 
-            //寒霜光环效果
-            if (frostAura > 0.5f) {
-                float auraScale = Projectile.scale * (1.5f + (float)Math.Sin(frostAura * 3f) * 0.2f);
-                sb.Draw(
-                    fishTex,
-                    drawPos,
-                    null,
-                    new Color(180, 230, 255, 0) * frostAura * 0.5f * alpha,
-                    drawRot,
-                    origin,
-                    auraScale,
-                    spriteEffects,
-                    0
-                );
-            }
+            //顶缘受光: 先画上移淡拷贝再被本体覆盖, 只留背脊月牙
+            sb.Draw(fishTex, drawPos + new Vector2(0f, -2f), null, FrostMinnowVFX.PaleCyan * (0.4f * glowIntensity * alpha), drawRot, origin, drawScale, spriteEffects, 0f);
 
-            //主体绘制 - 冰霜蓝色调
-            Color mainColor = Color.Lerp(
-                lightColor,
-                new Color(180, 220, 255),
-                glowIntensity * 0.7f
-            );
-
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                mainColor * alpha,
-                drawRot,
-                origin,
-                Projectile.scale,
-                spriteEffects,
-                0
-            );
-
-            //脉冲冰霜效果
-            float pulseIntensity = 0.5f + (float)Math.Sin(pulsePhase) * 0.3f;
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                new Color(200, 240, 255, 0) * pulseIntensity * glowIntensity * alpha,
-                drawRot,
-                origin,
-                Projectile.scale * 1.15f,
-                spriteEffects,
-                0
-            );
-
-            //白色寒冰核心
-            if (glowIntensity > 0.7f) {
-                sb.Draw(
-                    fishTex,
-                    drawPos,
-                    null,
-                    Color.White * glowIntensity * 0.6f * alpha,
-                    drawRot,
-                    origin,
-                    Projectile.scale * 0.85f,
-                    spriteEffects,
-                    0
-                );
-            }
+            //本体冷蓝化
+            Color mainColor = Color.Lerp(lightColor, FrostMinnowVFX.PaleCyan, glowIntensity * 0.5f);
+            sb.Draw(fishTex, drawPos, null, mainColor * alpha, drawRot, origin, drawScale, spriteEffects, 0f);
 
             return false;
         }
 
-        private void DrawFrostTrail(SpriteBatch sb, Texture2D texture, Vector2 origin, float alpha) {
+        private void DrawWake(SpriteBatch sb, Texture2D texture, Vector2 origin, float drawRot, SpriteEffects spriteEffects, float alpha) {
             if (trailPositions.Count < 2) return;
-            bool dir = Projectile.rotation.ToRotationVector2().X > 0;
-            SpriteEffects spriteEffects = dir ? SpriteEffects.None : SpriteEffects.FlipVertically;
-            float drawRot = Projectile.rotation + (dir ? MathHelper.PiOver4 : -MathHelper.PiOver4);
             for (int i = 1; i < trailPositions.Count; i++) {
                 float progress = 1f - i / (float)trailPositions.Count;
-                float trailAlpha = progress * alpha * 0.6f;
-                float trailScale = Projectile.scale * MathHelper.Lerp(0.6f, 1f, progress);
-
-                //寒霜渐变色 - 冰蓝到白色
-                Color trailColor = Color.Lerp(
-                    new Color(120, 180, 220),
-                    new Color(200, 240, 255),
-                    progress
-                ) * trailAlpha;
-
+                Color ghost = FrostMinnowVFX.DeepBlue;
+                ghost.A = 70;
                 Vector2 trailPos = trailPositions[i] - Main.screenPosition;
-
-                sb.Draw(
-                    texture,
-                    trailPos,
-                    null,
-                    trailColor,
-                    drawRot - i * 0.08f,
-                    origin,
-                    trailScale,
-                    spriteEffects,
-                    0
-                );
+                sb.Draw(texture, trailPos, null, ghost * (progress * alpha * 0.3f), drawRot, origin
+                    , Projectile.scale * MathHelper.Lerp(0.7f, 0.95f, progress), spriteEffects, 0f);
             }
         }
     }
 
     /// <summary>
-    /// 寒霜雪花弹幕
+    /// 寒霜雪花弹幕。
+    /// 六角冰晶碎片核心：暗底描边/淡青中层/极小冰芯，自旋以旋转拖影表达，
+    /// 镜面闪为离散亮事件（固定受光角）；沿途剥落低伏霜雾，
+    /// 命中在目标表面生长冰凌花纹 decal 并碎裂成有棱角的冰屑
     /// </summary>
     internal class FrostSnowflakeProjectile : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float Timer => ref Projectile.ai[0];
         private float rotationSpeed = 0f;
+        private float flakeScale = 1f;
+        private float glintTimer = 0f;
+        private int glintCooldown = 0;
+        private const float GlintFrames = 4f;
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
+
         public override void SetDefaults() {
             Projectile.width = 20;
             Projectile.height = 20;
@@ -709,7 +549,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
 
-            rotationSpeed = Main.rand.NextFloat(-0.25f, 0.25f);
+            rotationSpeed = Main.rand.NextFloat(0.07f, 0.25f) * (Main.rand.NextBool() ? 1f : -1f);
+            flakeScale = Main.rand.NextFloat(0.85f, 1.12f);
+            glintCooldown = Main.rand.Next(8, 32);
         }
 
         public override void AI() {
@@ -737,36 +579,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //旋转
             Projectile.rotation += rotationSpeed;
 
-            //寒霜光照
-            Lighting.AddLight(Projectile.Center, 0.4f, 0.7f, 1f);
-
-            //冰晶轨迹
-            if (Main.rand.NextBool(3)) {
-                Dust frost = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.IceTorch,
-                    0, 0, 0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                frost.velocity = -Projectile.velocity * 0.3f;
-                frost.noGravity = true;
+            //镜面闪调度: 离散亮事件而非常亮
+            if (glintTimer > 0f) {
+                glintTimer--;
+            }
+            else if (--glintCooldown <= 0) {
+                glintTimer = GlintFrames;
+                glintCooldown = Main.rand.Next(26, 54);
             }
 
-            //雪花尾迹
-            if (Main.rand.NextBool(2)) {
-                Dust snow = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.SnowflakeIce,
-                    0, 0, 0,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                snow.velocity = -Projectile.velocity * 0.2f;
+            //寒霜光照压低明度
+            Lighting.AddLight(Projectile.Center, 0.16f * flakeScale, 0.3f * flakeScale, 0.5f * flakeScale);
+
+            //低伏霜雾沿弹道剥落, 活得比弹体久
+            if (Timer % 4 == 0 && Main.rand.NextBool(2)) {
+                FrostMinnowVFX.Mist(Projectile.Center, -Projectile.velocity * 0.08f + new Vector2(0f, 0.12f)
+                    , Main.rand.NextFloat(0.18f, 0.24f), Main.rand.Next(22, 30), 0.15f);
+            }
+            //少量冰尘底噪
+            if (Main.rand.NextBool(6)) {
+                Dust frost = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f), DustID.IceTorch
+                    , -Projectile.velocity * 0.2f, 0, new Color(200, 230, 255), Main.rand.NextFloat(0.9f, 1.4f));
+                frost.noGravity = true;
+            }
+            if (Main.rand.NextBool(9)) {
+                Dust snow = Dust.NewDustPerfect(Projectile.Center, DustID.SnowflakeIce
+                    , -Projectile.velocity * 0.15f, 0, default, Main.rand.NextFloat(1f, 1.6f));
                 snow.noGravity = true;
             }
         }
@@ -775,122 +613,68 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //冰冻敌人
             target.AddBuff(BuffID.Frostburn, 180);
 
-            //寒霜击中爆发
-            for (int i = 0; i < 18; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f);
-                Dust frost = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(1.5f, 3f)
-                );
-                frost.noGravity = true;
-            }
-
-            //雪花爆发
-            for (int i = 0; i < 10; i++) {
-                Dust snow = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.SnowflakeIce,
-                    Main.rand.NextVector2Circular(6f, 6f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                snow.noGravity = true;
-            }
+            //冰凌花纹沿目标表面爬升(同目标限频), 冰晶碎裂+沿表面扁冲击环
+            FrostMinnowVFX.FernOnNPC(target, Projectile.Center, Projectile.velocity);
+            Vector2 fromCenter = Projectile.Center - target.Center;
+            float normalRot = fromCenter.SafeNormalize(-Projectile.velocity.SafeNormalize(Vector2.UnitX)).ToRotation();
+            FrostMinnowVFX.CrystalShatter(Projectile.Center, -Projectile.velocity, 0.5f, normalRot + MathHelper.PiOver2);
+            FrostMinnowVFX.Glint(Projectile.Center, 0.45f, 7);
 
             SoundEngine.PlaySound(SoundID.Item30 with {
-                Volume = 0.5f,
+                Volume = 0.42f,
                 Pitch = 0.3f
             }, Projectile.Center);
+            FrostMinnowVFX.CrystalTink(Projectile.Center, 0.5f, 0.3f);
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) {
+            //触地留霜花印: 被截停的轴指认撞面, 花纹沿表面切向铺开
+            float tangent = Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > Math.Abs(Projectile.velocity.X - oldVelocity.X)
+                ? 0f : MathHelper.PiOver2;
+            FrostMinnowVFX.FernPrint(Projectile.Center, tangent, Main.rand.NextFloat(26f, 40f));
+            return true;
         }
 
         public override void OnKill(int timeLeft) {
-            //消散爆发 - 冰雾
-            for (int i = 0; i < 25; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(9f, 9f);
-                Dust frost = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.IceTorch,
-                    velocity,
-                    0,
-                    new Color(200, 230, 255),
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                frost.noGravity = true;
-            }
-
-            //雪花
-            for (int i = 0; i < 12; i++) {
-                Dust snow = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.SnowflakeIce,
-                    Main.rand.NextVector2Circular(7f, 7f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(2.5f, 3.5f)
-                );
-                snow.noGravity = true;
-            }
-
-            SoundEngine.PlaySound(SoundID.Item27 with {
-                Volume = 0.5f,
-                Pitch = -0.3f
-            }, Projectile.Center);
+            //消散: 冰晶碎裂, 碎屑与霜雾活得比弹体久
+            FrostMinnowVFX.CrystalShatter(Projectile.Center, -Projectile.velocity, 0.8f
+                , Projectile.velocity.ToRotation() + MathHelper.PiOver2);
+            FrostMinnowVFX.Glint(Projectile.Center, 0.5f, 7);
+            FrostMinnowVFX.CrystalTink(Projectile.Center, -0.3f, 0.42f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            //雪花形状绘制
-            Texture2D glowTex = CWRAsset.SoftGlow.Value;
+            SpriteBatch sb = Main.spriteBatch;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
-            //外层冰霜光晕
-            for (int i = 0; i < 3; i++) {
-                float scale = 0.45f + i * 0.2f;
-                float alpha = (1f - i * 0.3f) * 0.9f;
-
-                Main.spriteBatch.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    new Color(100, 180, 255, 0) * alpha,
-                    Projectile.rotation,
-                    glowTex.Size() / 2f,
-                    scale,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //交叉旋转形成雪花形状
-                Main.spriteBatch.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    new Color(150, 220, 255, 0) * alpha,
-                    Projectile.rotation + MathHelper.PiOver2,
-                    glowTex.Size() / 2f,
-                    scale * 0.8f,
-                    SpriteEffects.None,
-                    0
-                );
+            //位移残影: 旧位置一枚暗蓝迷你晶体
+            if (Projectile.oldPos.Length > 3 && Projectile.oldPos[3] != Vector2.Zero) {
+                Vector2 ghostPos = Projectile.oldPos[3] + Projectile.Size / 2f - Main.screenPosition;
+                FrostMinnowVFX.DrawHexBlades(sb, ghostPos, Projectile.oldRot[3], 8.5f * flakeScale, FrostMinnowVFX.DeepBlue, 0.14f);
             }
+            //旋转拖影: 滞后角度表达自旋
+            FrostMinnowVFX.DrawHexBlades(sb, drawPos, Projectile.rotation - rotationSpeed * 4f, 10.5f * flakeScale, FrostMinnowVFX.DeepBlue, 0.22f);
 
-            //核心亮点
-            Main.spriteBatch.Draw(
-                glowTex,
-                drawPos,
-                null,
-                Color.White with { A = 0 } * 0.95f,
-                Projectile.rotation,
-                glowTex.Size() / 2f,
-                0.28f,
-                SpriteEffects.None,
-                0
-            );
+            //本体六角冰晶
+            FrostMinnowVFX.DrawHexCrystal(sb, drawPos, Projectile.rotation, 11f * flakeScale, 1f);
 
+            //离散镜面闪, 固定受光角
+            if (glintTimer > 0f) {
+                Texture2D star = CWRAsset.StarGlow01?.Value;
+                if (star != null) {
+                    float it = MathF.Pow(glintTimer / GlintFrames, 1.6f);
+                    Vector2 so = star.Size() / 2f;
+                    Color gcol = FrostMinnowVFX.PaleCyan;
+                    gcol.A = 0;
+                    sb.Draw(star, drawPos, null, gcol * it, -0.42f, so, new Vector2(0.85f, 0.26f) * flakeScale, SpriteEffects.None, 0f);
+                    //≤2帧纯白过冲
+                    if (glintTimer >= GlintFrames - 1f) {
+                        Color white = Color.White;
+                        white.A = 0;
+                        sb.Draw(star, drawPos, null, white * (it * 0.9f), -0.42f, so, new Vector2(0.4f, 0.18f) * flakeScale, SpriteEffects.None, 0f);
+                    }
+                }
+            }
             return false;
         }
     }

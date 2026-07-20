@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// <summary>Q技能硫磺火天罚，鼠标周围大范围火柱</summary>
     internal class PandemoniumQSkill : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Player Owner => Main.player[Projectile.owner];
         private ref float Phase => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];

@@ -465,7 +465,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// 并为强化束沿飞行方向叠加电压纹路条带（pass1）；仅拥有者端存活</summary>
     internal sealed class SHPCSteadyVoltGaugeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const float RingQuadSize = 150f;   //环规画布边长（像素）
         private const float VoltQuadLen = 150f;    //电压纹路条带长度
@@ -533,7 +533,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return false;
             }
             Effect shader = EffectLoader.SHPCModSteadyVolt?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) {
                 return false;

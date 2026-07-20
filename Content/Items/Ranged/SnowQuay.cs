@@ -196,7 +196,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class SnowQuayFlake : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder3;
+        public override string Texture => CWRConstant.VaultPlaceholder3;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 14;
             Projectile.friendly = true;
@@ -242,7 +242,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class SnowQuayPackedBall : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder3;
+        public override string Texture => CWRConstant.VaultPlaceholder3;
         private ref float Power => ref Projectile.ai[0];
         private ref float BounceCount => ref Projectile.ai[1];
 
@@ -336,7 +336,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class SnowQuayShard : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder3;
+        public override string Texture => CWRConstant.VaultPlaceholder3;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 10;
             Projectile.friendly = true;

@@ -217,25 +217,6 @@ HalibutText: {
 	}
 }
 
-MurasamaOverride: {
-	World_Text0: Zuletzt verbesserte Welt: <{0}> | Aufgezeichneter Level: <{1}>
-	Text0: Entsperrt
-	Text1: Nicht entsperrt — Prüfung erforderlich [Unhook]
-	Text_Lang_0: Prüfung:
-	DisplayName: Murasama-Geisterklinge
-	Tooltip:
-		'''
-		Rechtsklick zum Zielen und Aufladen der Schwertenergie. Linksklick führt einen echten Nahkampfangriff aus; bei Treffer lädt sich die Schwertenergie auf.
-		Befinden sich starke Feinde in der Nähe, lädt sich die Schwertenergie langsam von selbst auf.
-		Ist die Schwertenergie voll, drücke [KEY1], um die Klinge abzufeuern. Während des Flugs Linksklick für einen Aufwärtsschnitt [Lang1]
-		Treffer mit dem Aufwärtsschnitt laden Waffe 1 auf. Drücke [KEY2], um 1 Ladung zu verbrauchen und einen Abwärtsschlag auszuführen [Lang2]
-		Bei maximal 10 Ladungspunkten löst ein weiterer Treffer mit dem Aufwärtsschnitt die Finisher-Technik aus [Lang3]
-		[c/ff4500:"Eine Kettensägenklinge wäre besser"]
-		[Lang4]
-		legend_Text
-		'''
-}
-
 SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
@@ -251,6 +232,8 @@ SHPCOverride: {
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: Drücke [{KEY}], um die Aufgabenliste zu öffnen
 	TrialPassed: Bestanden
+	World_Text0: Zuletzt verbesserte Welt: <{0}> | Aufgezeichneter Level: <{1}>
+	Text_Lang_0: Prüfung:
 }
 
 TrialBlockedHint: Die nächste Prüfung erfordert, dass der entsprechende Inhalt aktiviert ist.
@@ -339,101 +322,6 @@ HalibutTrialQuestLine: {
 		Und es gibt ein mächtiges Meereswesen, das meine Maschine zerstört hat. Zeit für Rache.
 		'''
 	TextDictionary_Content_14: Ehrlich gesagt möchte ich wieder ins Meer zurück.
-}
-
-MurasamaTrialQuestLine: {
-	QuestCategory: Murasama-Geisterklinge · Prüfungen
-	TrackerWaiting: Ziel nicht anwesend — warte auf Beschwörung...
-	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Schleimiger Erstschnitt
-	Trial_1: Wüstenschatten
-	Trial_2: Eindringling
-	Trial_3: Verderbnis säubern
-	Trial_4: Parasitäre Bedrohung
-	Trial_5: Dungeon-Durchbruch
-	Trial_6: Götze aus Gel
-	Trial_7: Pfad zur Hölle
-	Trial_8: Tiefsee-Säuberung
-	Trial_9: Schwefel-Reinigungsflamme
-	Trial_10: Eisige Fesseln
-	Trial_11: Stahlzahnrad
-	Trial_12: Zwillingsauge vernichten
-	Trial_13: Mechanischer Königsschädel
-	Trial_14: Calamitas-Schatten-Einsatz
-	Trial_15: Dschungelblüte
-	Trial_16: Versteinerte Front
-	Trial_17: Seuche beseitigen
-	Trial_18: Golem zerschmettern
-	Trial_19: Astralfeld beenden
-	Trial_20: Mondfall
-	Trial_21: Phantom-Sanktion
-	Trial_22: Geister austreiben
-	Trial_23: Götterschlange
-	Trial_24: Dschungelflammen
-	Trial_25: Kern beenden
-	Trial_26: Chaos-Urteil
-	Trial_27: Rückkehr zum Ursprung
-	TrialSummary_0: Rekrut, beweise dich.\nDer schleimige blaue Klumpen ist ein guter Anfang.\nErledige ihn.
-	TrialSummary_1: Die Sirenenreste unter dem Sandmeer treiben noch ihr Unwesen.\nVerfolge sie und beende sie.
-	TrialSummary_2: Der Mond hängt hoch in der Nacht. Lass uns das große Auge am Himmel platzen und den falschen Gott für immer erblinden.
-	TrialSummary_3:
-		'''
-		Die Reste falscher Götter beflecken Terras Land. Befreie die verderbten Kontinente.
-		Hacke das Gehirn des falschen Gottes klein, zerlege den violetten Wurm!
-		Ich will sehen, wie deine Klinge durch fremdes Fleisch tanzt!
-		'''
-	TrialSummary_4: Die verderbte Erde pocht noch wie ein Herz. Fleischparasiten sind aktiv, verderbte Tumore denken noch — verbanne sie vollständig!
-	TrialSummary_5:
-		'''
-		Der Fluch am Dungeon-Eingang hat nachgelassen. Ich spüre Psychokraft in der Tiefe — Schreie, Klagen, Geflüster...
-		Zerschmettere diesen Riesenschädel.
-		'''
-	TrialSummary_6: Spürst du es? Dieser faulige Gestank voller Gel.\nReinige dieses schmutzige Aggregat vollständig.
-	TrialSummary_7: Betritt die Hölle. Die Fleischmauer über der Lava ist unsere Tür in die nächste Ära.\nReiß sie entzwei.
-	TrialSummary_8: Der Ausgestoßene des Schwefelmeers blockiert unseren Weg zu den Schätzen des Abgrunds. Beende sein Verschlingen und Treiben.
-	TrialSummary_9: Das ketzerische Feuer des Schwefel-Boten in der Lava ist ein Ärgernis. Lösche es.
-	TrialSummary_10: In der bitterkalten Nordmark liegt ein versiegeltes Eiswesen.\nZerschmettere es, bevor es sich vollständig befreit.
-	TrialSummary_11: Ein riesiger Stahlwurm versperrt unseren Weg. Hacke ihn in Stücke.
-	TrialSummary_12: Diese mechanischen Augen blicken auf uns herab — durchbohre sie mit deiner Klinge.
-	TrialSummary_13: Der Skelettfürst dachte, Stahlpanzer könnten uns aufhalten? Zerschmettere diesen Metallschädel.
-	TrialSummary_14: Die Hexe, die sich dem Chaos hingab, hat eine missgebildete Klon-Schwester. Töte das Ungetüm und weihe die Klinge mit Blut und Feuer.
-	TrialSummary_15: Die wahnsinnige Pflanze tief im Dschungel ist außer Kontrolle. Beende dieses unkontrollierte Wachstum mit der Klinge.
-	TrialSummary_16: Die törichten Lihzahrds beten nur diese hartnäckigen Steine an. Zermalme sie und zerstöre ihren Glauben.
-	TrialSummary_17: In Dampf und Giftgas lauert ein Bienen-Mechanik-Hybrid. Schieß das dreckige Ding ab.
-	TrialSummary_18: Der Zerstörungsgolem wütet über das Land. Zerschmettere seinen Stahlkörper vollständig.
-	TrialSummary_19: Die Astralwürmer sammeln hier kosmische Energie. Beende sie — dann gehört uns dieses Sternfeld.
-	TrialSummary_20:
-		'''
-		Der falsche Gott auf der Mondrückseite ist nur ein mangelhaftes Flickwerk.
-		Schneide seine Tentakel ab, reiß sein Herz heraus und trinke sein Blut.
-		'''
-	TrialSummary_21: Ein erbärmlicher Gott, der von Sonnenwärme zehrt. Sein ketzerisches Feuer muss vollständig erlöschen.
-	TrialSummary_22: Das Untoten-Aggregat tief im Dungeon. Lass diese ruhelosen Seelen endlich verstummen.
-	TrialSummary_23: Die arrogante Kosmosschlange regt sich hinter dem Schleier der Welt. Beende seinen Ehrgeiz.
-	TrialSummary_24:
-		'''
-		Der Dschungeldrache — Terras letzter aurischer Drachenabkömmling, ganz anders als andere Ungetüme, er verdient Respekt.
-		Dennoch müssen wir ihn jetzt erneut töten und seine Auric-Seele nehmen.
-		Daraus schmieden wir eine überragende Ausrüstung.
-		'''
-	TrialSummary_25:
-		'''
-		Der Ketzer der Mechanischen Kirche glaubt fest, seine Exo-Mechs überträfen göttliche Macht.
-		Lächerlich. Bringen wir die Titanen zurück in ihren natürlichen Zustand — einen Haufen Schrott.
-		'''
-	TrialSummary_26:
-		'''
-		Eine Hexe mit außergewöhnlichem psychischem Talent, die Terra hätte schützen können, hat sich längst im Chaos verloren.
-		Wir können sie nur verbannen. Stoß die Klinge in ihre Brust und lass das Feuer der Treue ihre faulende Seele verbrennen.
-		'''
-	TrialSummary_27:
-		'''
-		Unser Eroberungsweg ist unaufhaltsam. Zerschmettere die Rüstung des Dämonendrachen unter dem schwarzen Abgrund.
-		Nutze den Terminus und kämpfe die letzte Entscheidungsschlacht gegen das Ungetüm.
-		'''
-	TrackerBrief: Ziel: {0}
-	BossRushTargetName: Schlacht von Terminus
-	EventActiveFormat: "{0}: im Gange"
 }
 
 SHPCTrialQuestLine: {

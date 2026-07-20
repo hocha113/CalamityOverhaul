@@ -115,7 +115,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         private static void DrawRuneOrbits(SpriteBatch sb, Vector2 center) {
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             foreach (var rune in runeOrbits) {
                 //更新角度
@@ -149,7 +149,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         private static void DrawOrbitConnections(SpriteBatch sb, Vector2 center) {
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             //每层内部连接
             for (int layer = 0; layer < 3; layer++) {
@@ -214,7 +214,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         private static void DrawWingFlames(SpriteBatch sb, Vector2 center) {
-            Texture2D glow = CWRAsset.Placeholder_White.Value;
+            Texture2D glow = VaultAsset.placeholder2.Value;
 
             //翅膀火焰位置
             float wingSpread = 28f;
@@ -251,7 +251,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow
         }
 
         private static void DrawBodyAura(SpriteBatch sb, Vector2 center) {
-            Texture2D glow = CWRAsset.Placeholder_White.Value;
+            Texture2D glow = VaultAsset.placeholder2.Value;
 
             //身体周围的硫磺火光环
             float bodyPulse = (float)Math.Sin(auraAnimationTimer * 2.5f) * 0.5f + 0.5f;

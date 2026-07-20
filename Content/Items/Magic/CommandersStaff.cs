@@ -180,7 +180,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal abstract class BaseCommandersRay : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //展开/维持/收束三段式生命周期，时长贴近原版的一次脉冲射击节奏
         private const int ExpandTime = 6;

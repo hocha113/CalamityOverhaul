@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
     /// </summary>
     internal class SpawnOldDukeWannaToFight : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = 2;

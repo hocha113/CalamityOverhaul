@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
     /// <summary>迫击炮重型榴弹：抛物线飞向预告落点，到点或撞地引爆爆炸范围对齐预警环，兑现蓄力而非普攻火箭；ai[0]=落点X；ai[1]=落点Y；ai[2]=飞行帧数（生成侧反解初速，弹道必中落点）</summary>
     internal class PrimeMortarShellProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder3;
+        public override string Texture => CWRConstant.VaultPlaceholder3;
 
         /// <summary>重力 px/帧²（与初速反解公式共享）</summary>
         internal static float Gravity => 0.3f;

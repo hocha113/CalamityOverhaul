@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
     /// <summary>魔焰眼火舌，替代原版<see cref="ProjectileID.EyeFire"/>短寿命喷吐，随飞行膨胀，纯PRT火焰流，近距压制，可被物块挡</summary>
     internal class CursedFlameJet : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 24;

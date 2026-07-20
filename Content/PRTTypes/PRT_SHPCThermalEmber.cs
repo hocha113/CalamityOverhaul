@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// <summary>热成像余烬微粒：受热体表蒸腾的方形烬点，热浮上升带对流摇摆，色温由炽热渐冷</summary>
     internal class PRT_SHPCThermalEmber : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override int InGame_World_MaxCount => 2000;
 
         private Color hotColor;
@@ -54,7 +54,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (Scale < 0.05f || Opacity < 0.01f) return false;
 
-            Texture2D pixel = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
             Vector2 origin = new(0.5f, 0.5f);
             float w = 3.4f * Scale;

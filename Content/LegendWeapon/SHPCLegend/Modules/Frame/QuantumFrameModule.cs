@@ -158,7 +158,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
     /// <summary>量子丝线：双目标虚空螺旋 Additive，穿行伤；任一端失效崩解</summary>
     internal sealed class SHPCQuantumLinkProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Color StrandBright = new(190, 130, 255);
         private static readonly Color StrandDim = new(90, 40, 190);
@@ -224,7 +224,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Frame
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (!TryGetEnds(out NPC a, out NPC b) || fadeAlpha < 0.02f) return;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (white == null) return;
 

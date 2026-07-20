@@ -25,14 +25,6 @@ namespace CalamityOverhaul.Common
         public static SoundStyle HitTheFlesh_1;
         public static SoundStyle HitTheFlesh_2;
         public static SoundStyle HitTheSteel;
-        public static SoundStyle V_Kengms;
-        public static SoundStyle V_ThisThePwero;
-        public static SoundStyle V_TOEeys;
-        public static SoundStyle V_YouSouDiad;
-        public static SoundStyle V_Dead;
-        public static SoundStyle V_Heen;
-        public static SoundStyle V_Hooaaa;
-        public static SoundStyle V_You_Wo_Namges_Is_The_Pwero;
         public static SoundStyle DeploymentSound;
         public static SoundStyle DeploymentSound_Fire;
         public static SoundStyle DeploymentSound_AP;

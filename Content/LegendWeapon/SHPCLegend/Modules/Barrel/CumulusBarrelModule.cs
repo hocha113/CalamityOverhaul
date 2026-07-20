@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>积云核心：Fog 叠云+充能环，满能主闪+3 支线</summary>
     internal sealed class SHPCCumulusNodeProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //BlobCount 5 降绘制成本
         private const int BlobCount = 5;

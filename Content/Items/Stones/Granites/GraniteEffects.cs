@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// </summary>
     internal class GraniteCrystalShard : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Trail Trail;
 
         public override void SetStaticDefaults() {

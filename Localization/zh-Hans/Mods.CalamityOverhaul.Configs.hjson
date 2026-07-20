@@ -15,15 +15,6 @@ CWRServerConfig: {
 		Tooltip: 如果开启，在进行一些攻击时会让屏幕发生振动，这或许可以让打击感更加强烈
 	}
 
-	MurasamaSpaceFragmentationBool: {
-		Label: 鬼妖村正终结技碎屏效果
-		Tooltip:
-			'''
-			默认开启，鬼妖村正进行终结技时会制造屏幕破碎的特效用于增强打击感
-			如果关闭便会禁用这些特效，可以根据您的喜好设置
-			'''
-	}
-
 	DomainConciseDisplay: {
 		Label: 领域简约显示
 		Tooltip: 默认关闭，开启后会屏蔽掉领域内大多数的视觉效果
@@ -32,7 +23,6 @@ CWRServerConfig: {
 	Headers: {
 		CWRSystem: 大修系统设置
 		CWRWeapon: 大修武器设置
-		CWRUI: 大修UI设置
 		CWRWorldGen: 大修结构设置
 	}
 
@@ -48,28 +38,6 @@ CWRServerConfig: {
 			[c/c20909:未完成]
 			默认开启，会修改一些生物的AI行为，比如死亡模组下的BossAI
 			这可能会让游戏的挑战性剧增，可以根据个人喜好选择是否关闭
-			'''
-	}
-
-	MuraUIStyleType: {
-		Label: 鬼妖村正UI样式选择
-		Tooltip:
-			'''
-			样式1:精致-悬浮于头顶
-			样式2:精致-紧凑
-			样式3:经典-悬浮于头顶
-			样式4:经典-紧凑
-			样式5:隐蔽
-			'''
-	}
-
-	MuraPosStyleType: {
-		Label: 鬼妖村正UI位置选择
-		Tooltip:
-			'''
-			预设1:右下
-			预设2:左下
-			预设3:居高
 			'''
 	}
 

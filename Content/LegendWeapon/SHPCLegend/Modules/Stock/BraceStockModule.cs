@@ -208,7 +208,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// <summary>机械三脚支架：展开/收起动画、锚定场着色器、后坐吸收表现；改件卸下或换武器自毁</summary>
     internal sealed class SHPCBraceRigProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //锚定工程绿 + 钢银金属
         private static readonly Color AnchorMain = new(110, 255, 150);
@@ -432,7 +432,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (visualDeploy <= 0.02f) {
                 return false;
             }
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) {
                 return false;
             }
@@ -469,7 +469,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
                 return;
             }
             Effect shader = EffectLoader.SHPCModBrace?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) {
                 return;
@@ -508,7 +508,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
             if (visualDeploy <= 0.02f) {
                 return;
             }
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (px == null || glow == null) {
                 return;

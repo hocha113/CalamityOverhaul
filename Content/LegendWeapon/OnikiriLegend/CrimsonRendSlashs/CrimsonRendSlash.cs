@@ -17,7 +17,7 @@ using SlashDef = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRend
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
     /// <summary>
-    /// 绯红裂空斩：按住左键驱动的滚动五段连段控制器（持械手感参照 <see cref="MurasamaLegend.MurasamaProj.MuraSlashDefault"/>）<br/>
+    /// 绯红裂空斩：按住左键驱动的滚动五段连段控制器<br/>
     /// 手感契约：<br/>
     /// 1. 每拍开火瞬间捕获鼠标方向，连段全程可转向追敌，姿态每帧跟随鼠标<br/>
     /// 2. 按住循环出刀，轻点只出首拍快斩；松手停排新拍，已挥出的刀光自然收势<br/>
@@ -34,7 +34,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     /// </summary>
     internal class CrimsonRendSlash : BaseHeldProj, IPrimitiveDrawable, ICrimsonFarDrawable, IOverlayDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //==== 节拍常量 ====
         private const int BeatCount = 5;
@@ -444,6 +444,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 //本次不重启排拍，连段随居合的硬占刀权就地让位；视同技能，无视软保留
                 if (justPressed && Projectile.IsOwnedByLocalPlayer()
                     && Owner.GetModPlayer<OnikiriPlayer>().TryClickDismember(Item)) {
+                    return;
+                }
+                //追斩窗内的按下沿：普攻化为残心斩，视同技能在保留窗里出手；
+                //清缓冲防同一次点击在追斩收势后再兑现一拍（按住续接不受影响）
+                if (justPressed && Projectile.IsOwnedByLocalPlayer()
+                    && Owner.GetModPlayer<OnikiriPlayer>().TryZanshinStrike(Item, edgeVerified: true)) {
+                    pressBuffer = 0;
                     return;
                 }
                 //签名拍软保留：不重启夺刀，按住即缓冲，保留一结束自动走到下面续接

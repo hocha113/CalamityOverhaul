@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
     /// <summary>双子魔眼持续性死亡射线：锚定眼睛，方向随NPC旋转(AI驱动扫射)；ai[0]=宿主NPC的whoAmI；ai[1]=总持续时间(帧)；ai[2]=主题0=激光眼青紫死光1=魔焰眼烈焰射线；展开/收束缓动，未完全展开无伤害；宿主死亡时快速收束</summary>
     internal class RetinazerDeathRay : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         private const float MaxBeamLength = 2800f;
         private const int ExpandTime = 18;
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Projectil
             shader.CurrentTechnique.Passes[0].Apply();
 
             //光柱面片:着色器在UV空间内完成全部造型
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             //视觉宽度比碰撞宽度更厚，撕裂边缘需要余量
             float visualWidth = beamWidth * 3.4f;
             sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White, rot,

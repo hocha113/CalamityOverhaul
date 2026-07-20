@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.PRTTypes
     /// <summary>故障数据条微粒：横向矩形碎片，间歇瞬移+主/强调双色跳变+随机闪断，不稳定机匣专属</summary>
     internal class PRT_SHPCGlitchShard : BasePRT
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override int InGame_World_MaxCount => 1200;
 
         private float initialScale;
@@ -59,7 +59,7 @@ namespace CalamityOverhaul.Content.PRTTypes
         public override bool PreDraw(SpriteBatch spriteBatch) {
             if (Scale < 0.06f || Opacity < 0.01f) return false;
 
-            Texture2D pixel = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Position - Main.screenPosition;
             Color main = swapped ? accentColor : Color;
             Color edge = swapped ? Color : accentColor;

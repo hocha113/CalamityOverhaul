@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 {
     internal class CosmicEddies : BaseHeldProj, ICWRLoader
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private float Rots => Projectile.width * Projectile.ai[1] / 40;
         private int Time { get; set; }
         private SlotId SoundSlot { get; set; }

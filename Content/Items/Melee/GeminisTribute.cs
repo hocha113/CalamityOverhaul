@@ -446,7 +446,7 @@ namespace CalamityOverhaul.Content.Items.Melee
         /// TwinsEyeOverlay 程序化魔眼
         private void DrawTwinsEye(SpriteBatch sb, Vector2 drawPos, int mode) {
             Effect shader = EffectLoader.TwinsEyeOverlay?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             if (shader == null || canvas == null) return;
 
             //计算瞳孔朝向(锁定目标方向，否则朝飞行方向)
@@ -515,7 +515,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 融合魔眼：双镰交汇寄生轰击
     internal class GeminisTributeFusion : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<GeminisTribute>()).DisplayName;
 
         private const int Duration = 90;
@@ -677,7 +677,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
         private void DrawFusionEye(SpriteBatch sb, Vector2 drawPos) {
             Effect shader = EffectLoader.TwinsEyeOverlay?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             if (shader == null || canvas == null) return;
 
             //眼睛模式在 0 和 1 之间脉动以混合 — 在 shader 内部不直接支持，但通过双绘

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
     /// <summary>音爆冲击环：无伤害纯演出，经<see cref="Renders.WarpEffectRender"/>扩张屏幕扭曲环叠加扩散圆环与火花，服务端生成保证多人可见；ai[0]:尺寸档位0=冲刺音爆1=俯冲音爆2=终结冲击</summary>
     internal class DestroyerShockwave : ModProjectile, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 36;
 

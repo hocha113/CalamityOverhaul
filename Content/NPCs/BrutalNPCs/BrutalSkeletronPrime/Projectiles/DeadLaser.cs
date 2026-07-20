@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
 {
     internal class DeadLaser : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         private const float timeLeft = 900;
         private bool onSound;
         private Trail Trail;
@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * 0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);
             effect.Parameters["uBaseImage"].SetValue(CWRAsset.SlashFlatBlurHVMirror.Value);
-            effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uFlow"].SetValue(VaultAsset.placeholder2.Value);
             effect.Parameters["uGradient"].SetValue(CWRAsset.BloodRed_Bar.Value);
             effect.Parameters["uDissolve"].SetValue(CWRAsset.Extra_193.Value);
 

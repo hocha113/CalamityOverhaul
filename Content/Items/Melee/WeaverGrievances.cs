@@ -695,7 +695,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     internal class WeaverExplode : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = 82;
             Projectile.height = 82;
@@ -721,7 +721,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 怨灵之爪：WeaverWraith.fx 程序化怨魂弹幕
     internal class WeaverBeam : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public static Color sloudColor1 => new Color(100, 43, 69);
         public static Color sloudColor2 => new Color(200, 111, 145);
 

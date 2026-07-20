@@ -261,7 +261,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     /// <summary>叠加攻击主控弹幕</summary>
     internal class SuperpositionProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private List<TimeClone> timeClones;
         private List<RuneCircle> runeCircles = new();
@@ -588,7 +588,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     /// </summary>
     internal class SuperpositionCannon : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private Player Owner => Main.player[Projectile.owner];
 
@@ -1063,7 +1063,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     /// <summary>叠加齐射的统一伤害判定弹幕：承载一束鱼群洪流</summary>
     internal class CannonFishSwarmHitbox : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private readonly List<FishEntity> fishSwarm = new();
         private int particleSpawnTimer;

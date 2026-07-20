@@ -94,7 +94,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Power
     /// <summary>高压电弧折跳，前 10 帧伤害；SHPCVoltArc.fx</summary>
     internal sealed class SHPCVoltArcProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 26;
         private const int DamageWindow = 10;

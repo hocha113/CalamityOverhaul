@@ -1,11 +1,11 @@
-using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Common;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,10 +13,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
     internal class FishDynamite : FishSkill
     {
-        //1024×256 竖向光束灰度图，爆炸旋转光用
-        [VaultLoaden(CWRConstant.Masking)]
-        public static Texture2D LightBeam = null;
-
         public override int UnlockFishID => ItemID.DynamiteFish;
         public override int DefaultCooldown => 60 * (20 - HalibutData.GetDomainLayer());
         public override int ResearchDuration => 60 * 18;
@@ -38,12 +34,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //计算投掷方向和速度
             Vector2 direction = (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX * player.direction);
             Vector2 velocity = direction * 18f; //投掷速度
+            Vector2 spawnPos = player.Center + direction * 40f;
 
             //生成雷管鱼弹幕
             int damage = 1;
             Projectile.NewProjectile(
                 player.GetSource_ItemUse(item),
-                player.Center + direction * 40f,
+                spawnPos,
                 velocity,
                 ModContent.ProjectileType<DynamiteFishProjectile>(),
                 damage,
@@ -51,17 +48,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.whoAmI
             );
 
-            //投掷音效
+            //出手硝烟与点火火星：顺投掷方向的小锥形，PRT在服务端自动no-op
+            for (int i = 0; i < 5; i++) {
+                Vector2 sv = direction.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 7f);
+                FishDynamiteVFX.FuseSpark(spawnPos, sv);
+            }
+            for (int i = 0; i < 3; i++) {
+                FishDynamiteVFX.Smoke(spawnPos + Main.rand.NextVector2Circular(6f, 6f)
+                    , direction * Main.rand.NextFloat(0.5f, 1.5f) + new Vector2(0f, -0.5f)
+                    , Main.rand.NextFloat(0.16f, 0.26f), Main.rand.Next(24, 36)
+                    , FishDynamiteVFX.SmokeHot, FishDynamiteVFX.SmokeCold);
+            }
+            FishDynamiteVFX.FusePop(spawnPos, 0.5f);
+
+            //投掷音效+引信点燃的短促火花声
             SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.8f, Pitch = -0.3f }, player.Center);
+            SoundEngine.PlaySound(SoundID.Item93 with { Volume = 0.25f, Pitch = 0.65f }, player.Center);
         }
     }
 
     /// <summary>雷管鱼滞留爆炸弹幕</summary>
     internal class DynamiteFishProjectile : ModProjectile
     {
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> SoftGlow = null;
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private ref float State => ref Projectile.ai[0]; //0=飞行中, 1=已着陆
         private ref float DetonationTimer => ref Projectile.ai[1];
         private const int MaxLifeTime = 600; //10秒生命期
@@ -69,6 +78,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const float ProximityDetectionRange = 200f; //感应范围
         private bool hasDetonated = false;
         private int warningPulseTimer = 0;
+        private float spinRate = 0f;        //当前翻滚角速度，引信火星的甩出切速用
+        private float armedIntensity = 1f;  //引信输出强度：敌情与剩余引信时间共同增压
+        private float blinkIntensity = 0f;  //警灯爆闪当前亮度
+
+        //引信端点：贴图上端，随翻滚甩动
+        private Vector2 FusePos => Projectile.Center + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 15f;
+        private int Age => MaxLifeTime - Projectile.timeLeft;
+
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -90,30 +107,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Player owner = Main.player[Projectile.owner];
 
             //状态机：飞行 -> 着陆 -> 待命 -> 引爆
-
             if (State == 0) {
-                //飞行状态
                 FlightPhaseAI();
             }
-            else if (State == 1) {
-                //着陆状态
+            else {
                 LandedPhaseAI(owner);
             }
 
-            //旋转效果
-            if (State == 0) {
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+            EmitFuse();
+
+            //照明：待命期为警灯红爆闪，飞行期为引信暖光
+            if (State == 1 && DetonationTimer >= LandingTime) {
+                Lighting.AddLight(Projectile.Center, 1.1f * blinkIntensity, 0.24f * blinkIntensity, 0.12f * blinkIntensity);
             }
             else {
-                Projectile.rotation += 0.05f;
+                Lighting.AddLight(Projectile.Center, 0.5f, 0.3f, 0.1f);
             }
-
-            //照明效果
-            float lightIntensity = State == 1 ? (1f + (float)Math.Sin(warningPulseTimer * 0.2f) * 0.5f) : 0.6f;
-            Lighting.AddLight(Projectile.Center,
-                1.2f * lightIntensity,
-                0.3f * lightIntensity,
-                0.1f * lightIntensity);
         }
 
         private void FlightPhaseAI() {
@@ -126,26 +135,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //空气阻力
             Projectile.velocity.X *= 0.99f;
 
-            //飞行轨迹粒子
-            if (Main.rand.NextBool(3)) {
-                SpawnTrailParticle();
-            }
-
-            //飞行尾迹尘埃
-            if (Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Smoke,
-                    -Projectile.velocity.X * 0.3f,
-                    -Projectile.velocity.Y * 0.3f,
-                    100,
-                    new Color(255, 100, 50),
-                    Main.rand.NextFloat(1f, 1.5f)
-                );
-                dust.noGravity = true;
-            }
+            //翻滚：出手转速最高，气阻下逐渐衰减，飞行期动力学持续演化
+            float spinDir = Projectile.velocity.X >= 0f ? 1f : -1f;
+            spinRate = MathHelper.Lerp(0.46f, 0.2f, Math.Min(Age / 50f, 1f)) * spinDir;
+            Projectile.rotation += spinRate;
         }
 
         private void LandedPhaseAI(Player owner) {
@@ -156,15 +149,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (DetonationTimer < LandingTime) {
                 Projectile.velocity *= 0.8f;
 
-                //着陆冲击波
                 if (DetonationTimer == 1) {
                     SpawnLandingEffect();
                 }
+                SettleRotation();
                 return;
             }
 
             //完全停止
             Projectile.velocity = Vector2.Zero;
+            SettleRotation();
 
             //接近检测：寻找附近的敌人
             bool enemyNearby = false;
@@ -184,9 +178,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //警告粒子效果（敌人接近时）
+            //引信增压：剩余引信时间与敌情共同抬升火星密度和警灯频率
+            float armedFrac = Utils.GetLerpValue(300f, 60f, Projectile.timeLeft, true);
+            float proxFrac = enemyNearby ? 1f - nearestDistance / ProximityDetectionRange : 0f;
+            armedIntensity = 1f + armedFrac * 1.1f + proxFrac * 1.4f;
+
+            //警灯爆闪：短促亮起指数衰减，节拍随威胁升压
+            int blinkPeriod = Math.Max(6, (int)(36f / armedIntensity));
+            float blinkPhase = warningPulseTimer % blinkPeriod / (float)blinkPeriod;
+            blinkIntensity = MathF.Pow(1f - blinkPhase, 4f);
+
+            //警告节拍（敌人接近时）
             if (enemyNearby) {
-                //加速警告频率
                 if (warningPulseTimer % (int)MathHelper.Lerp(15, 5, 1f - nearestDistance / ProximityDetectionRange) == 0) {
                     SpawnWarningPulse();
                 }
@@ -196,12 +199,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Detonate();
                 }
             }
-            else {
-                //待命粒子效果（轻微脉冲）
-                if (warningPulseTimer % 30 == 0) {
-                    SpawnIdleParticle();
-                }
-            }
 
             //超时自动引爆
             if (Projectile.timeLeft < 60) {
@@ -209,34 +206,77 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void SpawnTrailParticle() {
-            var prt = PRTLoader.NewParticle<PRT_HellFlame>(
-                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                -Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(1f, 1f),
-                Color.White,
-                Main.rand.NextFloat(0.4f, 0.8f)
-            );
-            prt.ai[0] = 0; //上升模式
-            prt.ai[1] = 0.8f;
-            prt.ai[2] = 20;
-            prt.ai[3] = 40;
+        //躺平：转角收敛到最近的四向水平位，翻滚角速度同步耗散
+        private void SettleRotation() {
+            spinRate *= 0.8f;
+            float target = MathF.Round(Projectile.rotation / MathHelper.PiOver2) * MathHelper.PiOver2;
+            float delta = MathHelper.WrapAngle(target - Projectile.rotation);
+            Projectile.rotation += delta * 0.22f + spinRate;
+        }
+
+        //引信持续输出：火星甩出、白热爆点、细烟线、灰烬，强度随状态演化
+        private void EmitFuse() {
+            if (VaultUtils.isServer || hasDetonated) {
+                return;
+            }
+
+            float intensity = State == 1 && DetonationTimer >= LandingTime ? armedIntensity : 1f;
+            Vector2 fusePos = FusePos;
+            Vector2 fuseDir = (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2();
+
+            //火星：翻滚的切向线速度把火星甩出去
+            int sparkEvery = Math.Max(1, (int)(3f / intensity));
+            if (Age % sparkEvery == 0) {
+                Vector2 tangent = new Vector2(-fuseDir.Y, fuseDir.X) * spinRate * 15f;
+                Vector2 vel = tangent * Main.rand.NextFloat(0.5f, 0.9f)
+                    + Projectile.velocity * 0.35f + Main.rand.NextVector2Circular(1.2f, 1.2f);
+                if (State == 1) {
+                    vel += new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.8f));
+                }
+                FishDynamiteVFX.FuseSpark(fusePos, vel);
+            }
+
+            //白热爆点：噼啪的心跳
+            int popEvery = Math.Max(3, (int)(9f / intensity));
+            if (Age % popEvery == 0) {
+                FishDynamiteVFX.FusePop(fusePos, Main.rand.NextFloat(0.34f, 0.5f));
+            }
+
+            //细烟线：飞行期挂在弧线后方，落地后垂直上升
+            if (Age % 4 == 0) {
+                Vector2 vel = State == 0
+                    ? -Projectile.velocity * 0.08f + new Vector2(0f, -0.5f) + Main.rand.NextVector2Circular(0.3f, 0.3f)
+                    : new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -Main.rand.NextFloat(0.7f, 1.1f));
+                FishDynamiteVFX.Smoke(fusePos, vel, Main.rand.NextFloat(0.15f, 0.24f)
+                    , Main.rand.Next(28, 44), FishDynamiteVFX.SmokeHot, FishDynamiteVFX.SmokeCold, 0.012f);
+            }
+
+            //灰烬从引信上剥落
+            if (Age % 9 == 0) {
+                FishDynamiteVFX.Ash(fusePos, new Vector2(0f, Main.rand.NextFloat(0.2f, 0.6f)), Main.rand.NextFloat(0.6f, 1f));
+            }
         }
 
         private void SpawnLandingEffect() {
-            //着陆冲击尘埃
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 5f);
-
+            //砸地扬尘：沿地面向两侧的低矮尘浪，而非全向圆环
+            for (int i = 0; i < 10; i++) {
+                float side = i % 2 == 0 ? 1f : -1f;
+                Vector2 vel = new Vector2(side * Main.rand.NextFloat(1.2f, 3.6f), -Main.rand.NextFloat(0.4f, 1.4f));
                 Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(150, 150, 150),
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
+                    Projectile.Center + new Vector2(side * Main.rand.NextFloat(0f, 10f), 8f),
+                    DustID.Smoke, vel, 120, new Color(150, 140, 130), Main.rand.NextFloat(1.0f, 1.6f));
                 dust.noGravity = true;
+            }
+            for (int i = 0; i < 3; i++) {
+                float side = i % 2 == 0 ? 1f : -1f;
+                FishDynamiteVFX.Smoke(Projectile.Center + new Vector2(side * Main.rand.NextFloat(4f, 14f), 6f)
+                    , new Vector2(side * Main.rand.NextFloat(0.8f, 2.0f), -Main.rand.NextFloat(0.3f, 0.9f))
+                    , Main.rand.NextFloat(0.22f, 0.34f), Main.rand.Next(26, 40)
+                    , FishDynamiteVFX.DustWallHot, FishDynamiteVFX.DustWallCold);
+            }
+            //火星被颠出来
+            for (int i = 0; i < 3; i++) {
+                FishDynamiteVFX.FuseSpark(FusePos, new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(1.5f, 3.5f)));
             }
 
             //着陆音效
@@ -244,44 +284,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnWarningPulse() {
-            //红色警告脉冲
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1f, 3f);
-
-                var prt = PRTLoader.NewParticle<PRT_HellFlame>(
-                    Projectile.Center + angle.ToRotationVector2() * 30f,
-                    velocity,
-                    Color.White,
-                    Main.rand.NextFloat(0.6f, 1.0f)
-                );
-                prt.ai[0] = 1; //爆炸扩散模式
-                prt.ai[1] = 1.0f;
-                prt.ai[2] = 15;
-                prt.ai[3] = 30;
+            //引信增压一拍：白热爆点+一撮火星，与哔声对齐
+            FishDynamiteVFX.FusePop(FusePos, Main.rand.NextFloat(0.5f, 0.7f));
+            for (int i = 0; i < 3; i++) {
+                FishDynamiteVFX.FuseSpark(FusePos, new Vector2(Main.rand.NextFloat(-2f, 2f), -Main.rand.NextFloat(1f, 3f)));
             }
 
             //警告音效
             SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.3f, Pitch = 0.8f }, Projectile.Center);
-        }
-
-        private void SpawnIdleParticle() {
-            //轻微待命粒子
-            for (int i = 0; i < 4; i++) {
-                float angle = MathHelper.TwoPi * i / 4f + Main.GlobalTimeWrappedHourly;
-                Vector2 velocity = angle.ToRotationVector2() * 0.5f;
-
-                var prt = PRTLoader.NewParticle<PRT_HellFlame>(
-                    Projectile.Center + angle.ToRotationVector2() * 25f,
-                    velocity,
-                    Color.White,
-                    0.5f
-                );
-                prt.ai[0] = 3; //环绕模式
-                prt.ai[1] = 0.6f;
-                prt.ai[2] = 20;
-                prt.ai[3] = 40;
-            }
         }
 
         private void Detonate() {
@@ -293,30 +303,40 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
 
-            //生成爆炸弹幕视觉效果
-            Projectile.NewProjectile(
-                Projectile.GetSource_FromThis(),
-                Projectile.Center,
-                Vector2.Zero,
-                ModContent.ProjectileType<DynamiteExplosionEffect>(),
-                0,
-                0f,
-                Projectile.owner
-            );
+            //爆炸展示层弹幕：闪光/冲击环/尘墙/烟柱/焦痕的时序驱动器，纯视觉零伤害
+            //仅弹幕主人生成并经网络同步，避免各端本地重复生成导致远端叠亮
+            if (Projectile.owner == Main.myPlayer) {
+                Projectile.NewProjectile(
+                    Projectile.GetSource_FromThis(),
+                    Projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<DynamiteExplosionEffect>(),
+                    0,
+                    0f,
+                    Projectile.owner
+                );
+            }
 
-            //大量爆炸粒子
             SpawnExplosionParticles();
+
+            //克制的震屏，随距离衰减，尊重服务器配置
+            if (!Main.dedServ && CWRServerConfig.Instance.ScreenVibration) {
+                Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center
+                    , Main.rand.NextVector2Unit(), 7f, 8f, 14, 1600f, FullName));
+            }
 
             Projectile.damage = (int)(Main.player[Projectile.owner].GetShootState().WeaponDamage * (10f + HalibutData.GetDomainLayer() * 6f));//实际爆炸伤害
             Projectile.Explode(350, default, false);
 
-            //爆炸音效
+            //爆炸三层：中频炸响+火药爆压+低频闷底
             SoundEngine.PlaySound(SoundID.Item14 with { Volume = 1.3f, Pitch = -0.4f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 1.0f, Pitch = -0.2f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.7f, Pitch = -0.9f }, Projectile.Center);
 
             //延迟Kill，等伤害判定
             Projectile.timeLeft = 3;
         }
+
         public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
             if (target.IsWormBody()) {
                 modifiers.FinalDamage *= 0.75f;
@@ -327,57 +347,44 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnExplosionParticles() {
-            //核心爆炸火焰粒子
-            for (int i = 0; i < 100; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float speed = Main.rand.NextFloat(8f, 25f);
-                Vector2 velocity = angle.ToRotationVector2() * speed;
+            if (VaultUtils.isServer) {
+                return;
+            }
+            Vector2 c = Projectile.Center;
 
-                var prt = PRTLoader.NewParticle<PRT_HellFlame>(
-                    Projectile.Center,
-                    velocity,
-                    Color.White,
-                    Main.rand.NextFloat(1.2f, 2.5f)
-                );
-                prt.ai[0] = 1; //爆炸扩散模式
-                prt.ai[1] = 2.0f;
-                prt.ai[2] = 40;
-                prt.ai[3] = 80;
+            //弹片流光：拖暗橙短尾的高速碎片，爆炸的英雄粒子
+            const int shrapnelCount = 13;
+            for (int i = 0; i < shrapnelCount; i++) {
+                float ang = MathHelper.TwoPi * i / shrapnelCount + Main.rand.NextFloat(-0.18f, 0.18f);
+                Vector2 vel = ang.ToRotationVector2() * Main.rand.NextFloat(13f, 25f);
+                PRTLoader.NewParticle<PRT_FishDynamiteShrapnel>(c + vel * 0.6f, vel
+                    , FishDynamiteVFX.ShrapnelEdge, Main.rand.NextFloat(0.85f, 1.35f))
+                    ?.Configure(Main.rand.Next(20, 32));
             }
 
-            //外层烟雾粒子
-            for (int i = 0; i < 50; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float speed = Main.rand.NextFloat(5f, 15f);
-                Vector2 velocity = angle.ToRotationVector2() * speed;
-
-                Dust smoke = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Smoke,
-                    velocity,
-                    150,
-                    new Color(80, 80, 80),
-                    Main.rand.NextFloat(2f, 4f)
-                );
-                smoke.noGravity = true;
-                smoke.velocity.Y -= 2f;
+            //火球：橙火即褪成烟的翻滚团，军火的火转烟签名
+            for (int i = 0; i < 7; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(4f, 10f);
+                FishDynamiteVFX.Smoke(c + vel * 1.5f, vel, Main.rand.NextFloat(0.5f, 0.85f)
+                    , Main.rand.Next(20, 32), FishDynamiteVFX.FireHot, FishDynamiteVFX.SmokeCold, 0.03f);
+            }
+            //外圈慢烟压底
+            for (int i = 0; i < 8; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f, 5f);
+                FishDynamiteVFX.Smoke(c + vel * 3f, vel, Main.rand.NextFloat(0.6f, 1.0f)
+                    , Main.rand.Next(40, 62), FishDynamiteVFX.SmokeHot, FishDynamiteVFX.SmokeCold);
             }
 
-            //火焰尘埃
-            for (int i = 0; i < 80; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float speed = Main.rand.NextFloat(10f, 20f);
-                Vector2 velocity = angle.ToRotationVector2() * speed;
+            //金色火星喷射
+            for (int i = 0; i < 9; i++) {
+                FishDynamiteVFX.FuseSpark(c, Main.rand.NextVector2Unit() * Main.rand.NextFloat(7f, 16f));
+            }
 
-                Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    velocity,
-                    100,
-                    new Color(255, 150, 50),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                fire.noGravity = true;
+            //Dust作廉价底噪填充
+            for (int i = 0; i < 18; i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f, 13f);
+                Dust d = Dust.NewDustPerfect(c, DustID.Smoke, vel, 140, new Color(90, 82, 76), Main.rand.NextFloat(1.6f, 2.6f));
+                d.noGravity = true;
             }
         }
 
@@ -403,11 +410,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //对敌人施加火焰debuff
+            //对敌人施加火焰debuff，爆压给一记短顿帧
             target.AddBuff(BuffID.OnFire3, 180);
+            target.CWR().TimeFrozenTick = 4;
         }
 
         public override bool PreDraw(ref Color lightColor) {
+            //引爆后的3帧伤害判定期不再画弹体，爆闪接管画面
+            if (hasDetonated) {
+                return false;
+            }
+
             Main.instance.LoadItem(ItemID.DynamiteFish);
             Texture2D fishTex = TextureAssets.Item[ItemID.DynamiteFish].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
@@ -416,85 +429,82 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             SpriteEffects effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            //飞行阶段拖尾
+            //飞行期翻滚拖影：位置残影+旋转残影双编码，读得出自旋而非贴图平移
             if (State == 0) {
-                for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                for (int i = 6; i >= 2; i -= 2) {
                     if (Projectile.oldPos[i] == Vector2.Zero) continue;
 
-                    float trailAlpha = 1f - i / (float)Projectile.oldPos.Length;
-                    Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    float ghostAlpha = (1f - i / 8f) * 0.30f;
+                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    Main.EntitySpriteDraw(fishTex, ghostPos, sourceRect, lightColor * ghostAlpha
+                        , Projectile.oldRot[i], origin, Projectile.scale * (1f - i * 0.02f), effects, 0);
+                }
 
-                    Main.EntitySpriteDraw(
-                        fishTex,
-                        trailPos,
-                        sourceRect,
-                        new Color(255, 100, 50) * (trailAlpha * 0.5f),
-                        Projectile.rotation,
-                        origin,
-                        Projectile.scale * (1f - i * 0.05f),
-                        effects,
-                        0
-                    );
+                //旋转拖影：当前位置按角速度回溯转角的残像，自旋读作糊开的扇面
+                float spinT = MathHelper.Clamp(MathF.Abs(spinRate) / 0.46f, 0f, 1f);
+                Color smear = FishDynamiteVFX.SparkDeep with { A = 0 };
+                for (int i = 1; i <= 3; i++) {
+                    float fade = (0.26f - i * 0.07f) * spinT;
+                    if (fade <= 0.01f) continue;
+                    Main.EntitySpriteDraw(fishTex, drawPos, sourceRect, smear * fade
+                        , Projectile.rotation - spinRate * i * 2.4f, origin, Projectile.scale, effects, 0);
                 }
             }
 
-            //主体绘制
+            //主体：待命期叠警灯红爆闪
             Color mainColor = lightColor;
-
-            //着陆状态的警告脉冲
-            if (State == 1) {
-                float pulse = (float)Math.Sin(warningPulseTimer * 0.2f) * 0.5f + 0.5f;
-                mainColor = Color.Lerp(lightColor, new Color(255, 100, 50), pulse * 0.6f);
+            if (blinkIntensity > 0.02f) {
+                mainColor = Color.Lerp(lightColor, FishDynamiteVFX.WarnRed, blinkIntensity * 0.45f);
             }
 
-            Main.EntitySpriteDraw(
-                fishTex,
-                drawPos,
-                sourceRect,
-                mainColor,
-                Projectile.rotation,
-                origin,
-                Projectile.scale,
-                effects,
-                0
-            );
+            //着陆余摆：一次不服气的鱼式扑腾，只动绘制比例不动判定
+            Vector2 drawScale = new Vector2(Projectile.scale);
+            if (State == 1) {
+                float ft = (DetonationTimer - 6f) / 14f;
+                if (ft > 0f && ft < 1f) {
+                    float pulse = MathF.Sin(ft * MathHelper.Pi);
+                    drawScale = new Vector2(Projectile.scale * (1f + pulse * 0.14f), Projectile.scale * (1f - pulse * 0.18f));
+                }
+            }
 
-            //着陆状态的发光效果
-            if (State == 1 && SoftGlow?.Value != null) {
-                float glowPulse = (float)Math.Sin(warningPulseTimer * 0.15f) * 0.5f + 0.5f;
-                float glowScale = Projectile.scale * (1.2f + glowPulse * 0.3f);
+            Main.EntitySpriteDraw(fishTex, drawPos, sourceRect, mainColor
+                , Projectile.rotation, origin, drawScale, effects, 0);
 
-                Main.EntitySpriteDraw(
-                    SoftGlow.Value,
-                    drawPos,
-                    null,
-                    new Color(255, 80, 30, 0) * (0.4f + glowPulse * 0.3f),
-                    Projectile.rotation,
-                    SoftGlow.Value.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0
-                );
+            //引信端常燃小火点：极小热芯，金橙非白
+            if (CWRAsset.SoftGlow?.Value is Texture2D glow) {
+                Vector2 fpos = FusePos - Main.screenPosition;
+                float flick = 0.75f + 0.25f * MathF.Sin(Age * 0.7f + Projectile.whoAmI);
+                Main.EntitySpriteDraw(glow, fpos, null, FishDynamiteVFX.SparkDeep with { A = 0 } * (0.55f * flick)
+                    , 0f, glow.Size() / 2f, 0.30f, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(glow, fpos, null, FishDynamiteVFX.SparkGold with { A = 0 } * (0.9f * flick)
+                    , 0f, glow.Size() / 2f, 0.12f, SpriteEffects.None, 0);
+
+                //警灯红点：待命期贴在弹体上与照明同拍爆闪
+                if (blinkIntensity > 0.02f) {
+                    Vector2 lampPos = drawPos - (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 8f;
+                    Main.EntitySpriteDraw(glow, lampPos, null, FishDynamiteVFX.WarnRed with { A = 0 } * (0.85f * blinkIntensity)
+                        , 0f, glow.Size() / 2f, 0.22f, SpriteEffects.None, 0);
+                }
             }
 
             return false;
         }
     }
 
-    /// <summary>
-    /// 雷管鱼爆炸特效弹幕
-    /// </summary>
+    /// <summary>雷管鱼爆炸展示层：白热过冲两帧、放射爆点与冲击环即刻打出，
+    /// 随后驱动贴地尘墙波前、蘑菇烟柱与焦痕余韵，全程纯视觉</summary>
     internal class DynamiteExplosionEffect : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
-        private const int EffectDuration = 45; //效果持续时间
-
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> SoftGlow = null;
-
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> StarTexture = null;
+        private const int EffectDuration = 150;
+        private const int FlashFrames = 2; //纯白只许过冲两帧
+        private int Age => EffectDuration - Projectile.timeLeft;
+        private bool initialized;
+        private bool grounded;
+        private float groundY;
+        private float scorchRot;
+        private float burstSeed;
 
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -509,183 +519,157 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            Projectile.scale = MathHelper.Lerp(0.5f, 3.0f, 1f - Projectile.timeLeft / (float)EffectDuration);
-            Projectile.rotation += 0.3f;
+            //按标志初始化：MP下远端收到同步弹幕时timeLeft可能已走过0帧
+            if (!initialized) {
+                initialized = true;
+                DetectGround();
+                scorchRot = Main.rand.NextFloat(-0.35f, 0.35f);
+                burstSeed = Main.rand.NextFloat(MathHelper.TwoPi);
+            }
 
-            //强烈照明
-            float lightProgress = 1f - Projectile.timeLeft / (float)EffectDuration;
-            float lightIntensity = (float)Math.Sin(lightProgress * MathHelper.Pi) * 3f;
-            Lighting.AddLight(Projectile.Center,
-                2.0f * lightIntensity,
-                0.8f * lightIntensity,
-                0.3f * lightIntensity);
+            SpawnTimedSmoke();
+
+            //照明：前几帧强橙白，快速回落到余烬微光
+            float lightT = 1f - Math.Min(Age / 30f, 1f);
+            if (lightT > 0f) {
+                float k = MathF.Pow(lightT, 2.2f);
+                Lighting.AddLight(Projectile.Center, 2.4f * k, 1.2f * k, 0.4f * k);
+            }
+        }
+
+        //向下探测地表：贴地爆炸时尘墙沿地面推进、焦痕贴地
+        private void DetectGround() {
+            Point tp = Projectile.Center.ToTileCoordinates();
+            for (int i = 0; i < 9; i++) {
+                if (WorldGen.SolidTile(tp.X, tp.Y + i)) {
+                    grounded = true;
+                    groundY = (tp.Y + i) * 16f;
+                    return;
+                }
+            }
+            grounded = false;
+        }
+
+        private void SpawnTimedSmoke() {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            Vector2 c = Projectile.Center;
+
+            //尘墙波前：沿地表向两侧逐帧推进，悬空则退化为径向扩散
+            if (Age >= 1 && Age <= 9) {
+                float front = 26f + Age * 30f;
+                if (grounded) {
+                    for (int side = -1; side <= 1; side += 2) {
+                        Vector2 pos = new Vector2(c.X + side * front, groundY - Main.rand.NextFloat(4f, 14f));
+                        Vector2 vel = new Vector2(side * (2.4f + Age * 0.16f), -Main.rand.NextFloat(0.6f, 1.8f));
+                        FishDynamiteVFX.Smoke(pos, vel, 0.30f + Age * 0.03f, Main.rand.Next(26, 42)
+                            , FishDynamiteVFX.DustWallHot, FishDynamiteVFX.DustWallCold, 0.025f);
+                        Dust d = Dust.NewDustPerfect(pos, DustID.Smoke, vel * 1.3f, 150, new Color(120, 106, 90), Main.rand.NextFloat(1.2f, 2f));
+                        d.noGravity = true;
+                    }
+                }
+                else {
+                    for (int i = 0; i < 3; i++) {
+                        Vector2 dir = Main.rand.NextVector2Unit();
+                        FishDynamiteVFX.Smoke(c + dir * front, dir * 2.6f, 0.3f, Main.rand.Next(24, 38)
+                            , FishDynamiteVFX.DustWallHot, FishDynamiteVFX.DustWallCold, 0.025f);
+                    }
+                }
+            }
+
+            //烟柱：升腾的杆，前期带火色后期转灰
+            if (Age >= 2 && Age <= 48 && Age % 3 == 0) {
+                float t = Age / 48f;
+                Vector2 pos = c + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-6f, 6f));
+                Vector2 vel = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), -Main.rand.NextFloat(2.2f, 3.4f));
+                Color hot = Color.Lerp(FishDynamiteVFX.FireHot, FishDynamiteVFX.SmokeHot, Math.Min(t * 2f, 1f));
+                FishDynamiteVFX.Smoke(pos, vel, 0.45f + t * 0.3f, Main.rand.Next(55, 85)
+                    , hot, FishDynamiteVFX.SmokeCold, 0.018f);
+            }
+
+            //蘑菇帽：柱顶横向摊开
+            if (Age >= 26 && Age <= 52 && Age % 4 == 0) {
+                Vector2 pos = c + new Vector2(Main.rand.NextFloat(-34f, 34f), -80f - Main.rand.NextFloat(0f, 70f));
+                Vector2 vel = new Vector2(Main.rand.NextFloat(-1.1f, 1.1f), -Main.rand.NextFloat(0.4f, 0.8f));
+                FishDynamiteVFX.Smoke(pos, vel, Main.rand.NextFloat(0.6f, 0.9f), Main.rand.Next(60, 92)
+                    , FishDynamiteVFX.SmokeHot, FishDynamiteVFX.SmokeCold, 0.014f);
+            }
+
+            //余韵：焦痕上的细烟与飘灰，活得比爆炸本体久
+            if (Age >= 30 && Age <= 126) {
+                if (Age % 9 == 0) {
+                    Vector2 pos = (grounded ? new Vector2(c.X, groundY) : c) + new Vector2(Main.rand.NextFloat(-16f, 16f), -4f);
+                    FishDynamiteVFX.Smoke(pos, new Vector2(Main.rand.NextFloat(-0.15f, 0.15f), -0.85f)
+                        , Main.rand.NextFloat(0.16f, 0.28f), Main.rand.Next(44, 66)
+                        , FishDynamiteVFX.SmokeHot, FishDynamiteVFX.SmokeCold, 0.01f);
+                }
+                if (Age % 14 == 0) {
+                    FishDynamiteVFX.Ash(c + Main.rand.NextVector2Circular(50f, 30f)
+                        , new Vector2(0f, Main.rand.NextFloat(0.3f, 0.8f)), Main.rand.NextFloat(0.6f, 1f));
+                }
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Vector2 center = Projectile.Center - Main.screenPosition;
-            float progress = 1f - Projectile.timeLeft / (float)EffectDuration;
-            float scale = Projectile.scale;
+            int age = Age;
+            float life = age / (float)EffectDuration;
 
-            //时间因子
-            float time = Main.GlobalTimeWrappedHourly;
-            float expandPulse = (float)Math.Sin(progress * MathHelper.Pi);
-            float fadePulse = (float)Math.Sin(progress * MathHelper.PiOver2);
+            //焦痕：深色尘渍随闪光褪去显形，贴地压扁，余韵期缓慢淡出
+            if (grounded && CWRAsset.TearSpread01?.Value is Texture2D scorch && age >= 3) {
+                float reveal = Math.Min((age - 3) / 8f, 1f);
+                float fade = 1f - Utils.GetLerpValue(0.6f, 1f, life, true);
+                Vector2 spos = new Vector2(center.X, groundY - Main.screenPosition.Y + 2f);
+                Color scol = new Color(16, 13, 11) * (0.52f * reveal * fade);
+                sb.Draw(scorch, spos, null, scol, scorchRot, scorch.Size() / 2f, new Vector2(2.4f, 0.85f), SpriteEffects.None, 0f);
+                sb.Draw(scorch, spos, null, scol * 0.7f, -scorchRot * 1.4f, scorch.Size() / 2f, new Vector2(1.7f, 0.6f), SpriteEffects.None, 0f);
+            }
 
-            //颜色定义
-            Color coreColor = new Color(255, 240, 200, 0);   //核心：亮白黄
-            Color innerColor = new Color(255, 180, 80, 0);   //内层：亮橙
-            Color midColor = new Color(255, 120, 40, 0);     //中层：橙红
-            Color outerColor = new Color(220, 60, 30, 0);    //外层：深红
+            //冲击环：单次干净的气浪，贴地时压成扁椭圆
+            if (CWRAsset.Ring01?.Value is Texture2D ring && age <= 16) {
+                float rt = age / 16f;
+                float ease = 1f - MathF.Pow(1f - rt, 3f);
+                float radius = MathHelper.Lerp(30f, 330f, ease);
+                float alpha = MathF.Pow(1f - rt, 1.7f) * 0.5f;
+                float rscale = radius * 2f / ring.Width;
+                //白热只许起步两帧，气浪迅速落回扬尘色
+                Color rcol = Color.Lerp(FishDynamiteVFX.HotWhite, FishDynamiteVFX.DustWallHot, Math.Min(rt * 8f, 1f)) with { A = 0 };
+                Vector2 rsc = grounded ? new Vector2(rscale, rscale * 0.45f) : new Vector2(rscale);
+                sb.Draw(ring, center, null, rcol * alpha, 0f, ring.Size() / 2f, rsc, SpriteEffects.None, 0f);
+            }
 
-            //光束爆发
-            if (FishDynamite.LightBeam != null && progress < 0.6f) {
-                Texture2D beam = FishDynamite.LightBeam;
-                float beamAlpha = MathHelper.Lerp(1f, 0f, progress / 0.6f);
-
-                //6条旋转光束
-                for (int i = 0; i < 6; i++) {
-                    float beamRotation = Projectile.rotation + i * MathHelper.TwoPi / 6f + time * 2f;
-                    float beamScale = scale * (0.8f + expandPulse * 0.4f);
-                    Color beamColor = Color.Lerp(coreColor, outerColor, i / 6f);
-                    beamColor *= beamAlpha * 0.7f;
-
-                    sb.Draw(
-                        beam,
-                        center,
-                        null,
-                        beamColor,
-                        beamRotation,
-                        new Vector2(beam.Width / 2f, beam.Height),
-                        beamScale * 0.1f,
-                        SpriteEffects.None,
-                        0f
-                    );
+            //核心：暗烟底先垫住，再放小而热的芯，闪光期后芯先熄
+            if (age <= 10) {
+                float ct = age / 10f;
+                if (CWRAsset.SmokeSheet01?.Value is Texture2D cloud) {
+                    Rectangle frame = new(0, 0, 512, 512);
+                    sb.Draw(cloud, center, frame, new Color(30, 26, 24) * (0.5f * (1f - ct)), burstSeed
+                        , frame.Size() / 2f, 0.5f + ct * 0.4f, SpriteEffects.None, 0f);
+                }
+                if (CWRAsset.SoftGlow?.Value is Texture2D glow) {
+                    //柔光只作底层
+                    sb.Draw(glow, center, null, FishDynamiteVFX.FireHot with { A = 0 } * (0.5f * (1f - ct))
+                        , 0f, glow.Size() / 2f, 3.2f, SpriteEffects.None, 0f);
+                }
+                if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
+                    Color ccol = (age < FlashFrames ? FishDynamiteVFX.HotWhite : FishDynamiteVFX.FireHot) with { A = 0 };
+                    float calpha = MathF.Pow(1f - ct, 2.6f);
+                    sb.Draw(flare, center, null, ccol * calpha, -burstSeed, flare.Size() / 2f, 1.1f - ct * 0.5f, SpriteEffects.None, 0f);
                 }
             }
 
-            //主体火球
-            if (SoftGlow?.Value != null) {
-                Texture2D glow = SoftGlow.Value;
-                float glowScale = scale * (2.0f + expandPulse * 0.3f);
-
-                //外层火焰
-                sb.Draw(
-                    glow,
-                    center,
-                    null,
-                    outerColor * (fadePulse * 0.6f),
-                    Projectile.rotation * 0.5f,
-                    glow.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0f
-                );
-
-                //中层
-                sb.Draw(
-                    glow,
-                    center,
-                    null,
-                    midColor * (fadePulse * 0.8f),
-                    -Projectile.rotation * 0.8f,
-                    glow.Size() / 2f,
-                    glowScale * 0.75f,
-                    SpriteEffects.None,
-                    0f
-                );
-
-                //内层
-                sb.Draw(
-                    glow,
-                    center,
-                    null,
-                    innerColor * (fadePulse * 0.9f),
-                    Projectile.rotation * 1.2f,
-                    glow.Size() / 2f,
-                    glowScale * 0.5f,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-
-            //核心高亮
-            if (SoftGlow?.Value != null && progress < 0.5f) {
-                Texture2D core = SoftGlow.Value;
-                float coreScale = scale * (0.8f + (float)Math.Sin(progress * MathHelper.Pi * 2f) * 0.4f);
-                float coreAlpha = MathHelper.Lerp(1f, 0f, progress / 0.5f);
-
-                sb.Draw(
-                    core,
-                    center,
-                    null,
-                    Color.White with { A = 0 } * coreAlpha,
-                    Projectile.rotation * 2f,
-                    core.Size() / 2f,
-                    coreScale * 0.6f,
-                    SpriteEffects.None,
-                    0f
-                );
-
-                sb.Draw(
-                    core,
-                    center,
-                    null,
-                    coreColor * coreAlpha,
-                    -Projectile.rotation * 2.5f,
-                    core.Size() / 2f,
-                    coreScale * 0.4f,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
-
-            //星形闪光
-            if (StarTexture?.Value != null && progress < 0.4f) {
-                Texture2D star = StarTexture.Value;
-                float starAlpha = MathHelper.Lerp(1f, 0f, progress / 0.4f);
-
-                for (int i = 0; i < 2; i++) {
-                    float starRot = Projectile.rotation * (3f + i) + time * (4f + i * 2f);
-                    float starScale = scale * (0.6f + i * 0.2f);
-
-                    sb.Draw(
-                        star,
-                        center,
-                        null,
-                        coreColor * (starAlpha * (0.8f - i * 0.2f)),
-                        starRot,
-                        star.Size() / 2f,
-                        starScale,
-                        SpriteEffects.None,
-                        0f
-                    );
-                }
-            }
-
-            //外围粒子环
-            if (SoftGlow?.Value != null) {
-                Texture2D particle = SoftGlow.Value;
-                int particleCount = 16;
-                float ringRadius = scale * 120f * expandPulse;
-
-                for (int i = 0; i < particleCount; i++) {
-                    float angle = MathHelper.TwoPi * i / particleCount + Projectile.rotation;
-                    Vector2 particlePos = center + angle.ToRotationVector2() * ringRadius;
-                    float particleScale = scale * 0.4f * fadePulse;
-
-                    sb.Draw(
-                        particle,
-                        particlePos,
-                        null,
-                        outerColor * (fadePulse * 0.5f),
-                        angle,
-                        particle.Size() / 2f,
-                        particleScale,
-                        SpriteEffects.None,
-                        0f
-                    );
-                }
+            //放射爆点：白热两帧过冲，随即落到琥珀熄灭
+            if (CWRAsset.RayBurst01?.Value is Texture2D rays && age <= 12) {
+                float rt = age / 12f;
+                float alpha = MathF.Pow(1f - rt, 2.1f);
+                float scale = 1.6f + rt * 1.3f;
+                Color rayCol = (age < FlashFrames
+                    ? FishDynamiteVFX.HotWhite
+                    : Color.Lerp(FishDynamiteVFX.FireHot, FishDynamiteVFX.SparkDeep, rt)) with { A = 0 };
+                sb.Draw(rays, center, null, rayCol * (alpha * 0.9f), burstSeed, rays.Size() / 2f, scale, SpriteEffects.None, 0f);
+                sb.Draw(rays, center, null, rayCol * (alpha * 0.5f), burstSeed + 0.5f, rays.Size() / 2f, scale * 0.7f, SpriteEffects.None, 0f);
             }
 
             return false;

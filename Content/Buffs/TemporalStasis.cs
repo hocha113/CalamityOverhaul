@@ -9,7 +9,7 @@ namespace CalamityOverhaul.Content.Buffs
     //时停：被禁忌诅咒命中的目标在时间上被钉死，停止一切行动
     internal class TemporalStasis : ModBuff
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
         public override void SetStaticDefaults() {
             Main.debuff[Type] = true;
             Main.pvpBuff[Type] = false;

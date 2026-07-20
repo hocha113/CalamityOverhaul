@@ -85,6 +85,7 @@ namespace CalamityOverhaul.Content.QuestLogs
         public static LocalizedText ObjectiveTemplateDefeatNpc;
         public static LocalizedText ObjectiveTemplateObtainItem;
         public static LocalizedText ObjectiveTemplateCollectItem;
+        public static LocalizedText DisabledOverlayText;
 
         private List<IQuestLogStyle> availableStyles;
         private int currentStyleIndex;
@@ -130,6 +131,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             ObjectiveTemplateDefeatNpc = this.GetLocalization("ObjectiveTemplate.DefeatNpc", () => "Defeat {0}");
             ObjectiveTemplateObtainItem = this.GetLocalization("ObjectiveTemplate.ObtainItem", () => "Obtain {0}");
             ObjectiveTemplateCollectItem = this.GetLocalization("ObjectiveTemplate.CollectItem", () => "Collect {0} {1}");
+            DisabledOverlayText = this.GetLocalization(nameof(DisabledOverlayText), () => "任务检测已在当前世界中被禁止\n重新进入世界以重新选择配置");
         }
 
         public override void SaveUIData(TagCompound tag) {
@@ -721,7 +723,7 @@ namespace CalamityOverhaul.Content.QuestLogs
                 lineAngle, new Vector2(0, 0.5f), new Vector2(lineLength, circleThickness), SpriteEffects.None, 0f);
 
             //绘制提示文本
-            string text = QuestWorldConfirmUI.DisabledOverlayText?.Value ?? "任务检测已被禁止";
+            string text = DisabledOverlayText?.Value ?? "任务检测已被禁止";
             string[] lines = text.Split('\n');
 
             float textY = center.Y + circleRadius + 30f;

@@ -132,7 +132,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalMechanicalEye.Rendering
                 DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             const float size = 380f;
             spriteBatch.Draw(quad, context.Npc.Center - Main.screenPosition, null, Color.White,
                 0f, quad.Size() / 2f, new Vector2(size / quad.Width, size / quad.Height), SpriteEffects.None, 0f);

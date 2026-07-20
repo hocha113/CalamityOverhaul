@@ -277,7 +277,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// <summary>鬼手扼颈：被掐住脖子时行动迟滞（可读、可规避，不掉伤害不禁跳）</summary>
     internal class OniNeckGripDebuff : ModBuff
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         private LocalizedText displayNameCache;
         private LocalizedText descriptionCache;

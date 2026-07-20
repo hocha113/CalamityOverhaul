@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public void Draw(SpriteBatch sb) {
             if (flyInProgress < 0.01f) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             float alpha = HackTime.Intensity * flyInProgress;

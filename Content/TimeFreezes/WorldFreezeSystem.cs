@@ -13,6 +13,12 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private delegate void Hook_UpdateLiquid(Action orig);
         //Player.UpdateEquips 拦截委托
         private delegate void Hook_UpdateEquips(Action<Player, int> orig, Player self, int i);
+        //Player.ScrollHotbar 拦截委托
+        private delegate void Hook_ScrollHotbar(Action<Player, int> orig, Player self, int offset);
+        //Player.TrySwitchingLoadout 拦截委托
+        private delegate void Hook_TrySwitchingLoadout(Action<Player, int> orig, Player self, int loadoutIndex);
+        //Player.QuickBuff/QuickHeal/QuickMana/QuickMount 拦截委托
+        private delegate void Hook_QuickAction(Action<Player> orig, Player self);
 
         //TimeGear 注册名，仅作内部时间速率叠加用
         private const string TimeGearKey = "WorldFreezeSystem";
@@ -91,6 +97,30 @@ namespace CalamityOverhaul.Content.TimeFreezes
             if (equipMethod != null) {
                 VaultHook.Add(equipMethod, (Hook_UpdateEquips)OnUpdateEquipsHook);
             }
+
+            //拦截手持栏切换（滚轮/手柄加减/点击快捷栏 changeItem 全走这里），冻结期间禁止换手持
+            MethodInfo scrollMethod = typeof(Player).GetMethod("ScrollHotbar"
+                , BindingFlags.Public | BindingFlags.Instance, null, [typeof(int)], null);
+            if (scrollMethod != null) {
+                VaultHook.Add(scrollMethod, (Hook_ScrollHotbar)OnScrollHotbarHook);
+            }
+
+            //拦截装备配置切换，冻结期间禁止换装
+            MethodInfo loadoutMethod = typeof(Player).GetMethod("TrySwitchingLoadout"
+                , BindingFlags.Public | BindingFlags.Instance, null, [typeof(int)], null);
+            if (loadoutMethod != null) {
+                VaultHook.Add(loadoutMethod, (Hook_TrySwitchingLoadout)OnTrySwitchingLoadoutHook);
+            }
+
+            //拦截快捷治疗/魔力/增益/坐骑，这些从输入层直接调用，不经过 ItemCheck
+            string[] quickActionNames = ["QuickBuff", "QuickHeal", "QuickMana", "QuickMount"];
+            foreach (string name in quickActionNames) {
+                MethodInfo quickMethod = typeof(Player).GetMethod(name
+                    , BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+                if (quickMethod != null) {
+                    VaultHook.Add(quickMethod, (Hook_QuickAction)OnQuickActionHook);
+                }
+            }
         }
 
         private static void OnUpdateLiquidHook(Action orig) {
@@ -101,6 +131,26 @@ namespace CalamityOverhaul.Content.TimeFreezes
         private static void OnUpdateEquipsHook(Action<Player, int> orig, Player self, int i) {
             if (IsActive) return;
             orig(self, i);
+        }
+
+        private static void OnScrollHotbarHook(Action<Player, int> orig, Player self, int offset) {
+            if (IsActive) {
+                //吞掉本帧滚轮偏移与点击暂存，防止解冻瞬间补切
+                self.HotbarOffset = 0;
+                self.changeItem = -1;
+                return;
+            }
+            orig(self, offset);
+        }
+
+        private static void OnTrySwitchingLoadoutHook(Action<Player, int> orig, Player self, int loadoutIndex) {
+            if (IsActive) return;
+            orig(self, loadoutIndex);
+        }
+
+        private static void OnQuickActionHook(Action<Player> orig, Player self) {
+            if (IsActive) return;
+            orig(self);
         }
 
         /// <summary>reason 冻结，重复调用幂等</summary>

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.Items.Melee.StormGoddessSpears;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.MurasamaProj;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
@@ -12,7 +11,6 @@ namespace CalamityOverhaul.Content.Players
         public static List<int> noRippersProj = [];
         void ICWRLoader.SetupData() {
             noRippersProj = [
-                ModContent.ProjectileType<MuraExecutionCut>(),
                 ModContent.ProjectileType<StormGoddessSpearHeld>(),
                 ModContent.ProjectileType<StormArc>(),
                 ModContent.ProjectileType<StormLightning>(),

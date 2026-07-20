@@ -64,7 +64,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>赛博蜂单体：Trail+Additive 头部光</summary>
     internal sealed class SHPCHiveDroneProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int TrailLen = 14;
         private static readonly Vector3 CoreVec = new Color(255, 240, 160).ToVector3();

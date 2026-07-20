@@ -203,7 +203,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
 
     internal class ClonePlayer : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int BoidCount = 10;
         private static readonly Color SpawnDustColor = new(100, 180, 255);

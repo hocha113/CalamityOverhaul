@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// </summary>
     internal class PandemoniumRainDrop : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float Timer => ref Projectile.localAI[0];
         private bool hasHit = false;
@@ -171,7 +171,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// </summary>
     internal class PandemoniumGroundFlame : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float Timer => ref Projectile.ai[0];
         private const int MaxLifetime = 120;

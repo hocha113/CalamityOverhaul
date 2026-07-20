@@ -7,12 +7,15 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
@@ -20,6 +23,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// <summary>
     /// 鬼切玩法资源层：气力(神威疾走的燃料)与架势(处决技的蓄势)。<br/>
     /// 右键=神威疾走：耗气,按下即出;气力自然恢复(消耗后有回气延迟),连段命中回气。<br/>
+    /// 表世界(黄昏表层领域)中疾走跑满仍按住右键 → 衔接樱流化身:化樱续飞逐帧耗气,
+    /// 松手/气尽/离开表世界即回卷重组(<see cref="TryChainSakuraFlight"/>/<see cref="ManageSakuraFlight"/>)。<br/>
+    /// 疾走刹停/樱流落地的操控交还帧开追斩窗:窗内左键按下沿把普攻化为残心斩
+    /// (表世界=樱衣),锵前按下缓冲到纳刀结算同帧释放(<see cref="TryZanshinStrike"/>)。<br/>
     /// 架势由连段命中与疾走穿身格挡(蠕虫全身算一条,单次冲刺封顶)积攒;
     /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决：蓄满出终结乱舞(耗全部),
     /// 过半出灭世一闪(耗一半),不足则鞘刀顿挫提醒。处决键任何状态下即时响应,不被连段阻塞。<br/>
@@ -58,6 +65,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const float AnnihilateDamageMul = 5f;
         /// <summary>冲刺再触发锁(帧):盖住位移+刹车段,防中途二次起跳双花</summary>
         private const int DashRefireLockTicks = 14;
+
+        /// <summary>樱流化身每帧耗气(疾走衔接的持续飞行,气尽自动回卷),满气冲刺后余量约可飞 1.4s</summary>
+        private const float SakuraDrainPerTick = 0.8f;
+        /// <summary>樱流入飞门槛:低于此气力不衔接,疾走照常刹停</summary>
+        private const float SakuraMinVigor = 10f;
+        /// <summary>樱流巡航速度(px/帧),模块钳制上限 48;疾走 210px/帧骤降到此,是"化形"的减速拍</summary>
+        private const float SakuraFlightSpeed = 40f;
+
+        /// <summary>追斩窗时长(帧):操控交还帧起算,盖住锵(+8)与纳刀一挑(+6)再留宽限</summary>
+        private const int ZanshinWindowTicks = 24;
+        /// <summary>追斩伤害倍率:层级卡在连段单拍与灭世一闪(5x)之间</summary>
+        private const float ZanshinDamageMul = 2f;
+        /// <summary>追斩命中回架势(每敌),比连段单拍(2.5)厚,喂处决循环</summary>
+        private const float StancePerZanshinHit = 6f;
+        /// <summary>锵后仍算"同帧"的宽限(帧):此窗内出刀视同与结算压拍,震屏减半</summary>
+        private const int ZanshinSyncSlackTicks = 2;
         /// <summary>终结乱舞焦点距离钳制(与疾走射程同量级,演出保持在可读范围)</summary>
         private const float FinaleFocusMaxDist = 800f;
         /// <summary>终结乱舞光标磁吸半径(按精确碰撞箱距离衡量)</summary>
@@ -87,6 +110,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private float dashParryGained;
         private readonly HashSet<int> parriedRoots = [];
         private int readyCueTimer;
+        //====追斩窗(owner 端自治)====
+        private int zanshinWindow;          //剩余帧数,0=关
+        private int zanshinJudgeCountdown;  //距锵帧数,窗开着时持续递减(负值=锵已过)
+        private bool zanshinHasMarks;       //开窗时疾走带墨痕:锵前按下走缓冲,同帧释放
+        private bool zanshinPending;        //按下沿已受理,挂起等锵
+        private bool prevMouseLeft;         //Shoot 路径的按下沿鉴别(按住穿过不转换)
 
         //====命中记忆:处决智能选点的第二层依据====
         private struct HitMemory
@@ -100,11 +129,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void OnEnterWorld() {
             Vigor = VigorMax;
             Stance = 0f;
+            zanshinWindow = 0;
+            zanshinPending = false;
         }
 
         public override void OnRespawn() {
             Vigor = VigorMax;
             Stance = 0f;
+            zanshinWindow = 0;
+            zanshinPending = false;
         }
 
         public override void PostUpdate() {
@@ -121,9 +154,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (dashLock > 0) {
                 dashLock--;
             }
+            TickZanshinWindow();
 
             bool justRight = Main.mouseRight && !prevMouseRight;
             prevMouseRight = Main.mouseRight;
+            //左键沿供 TryZanshinStrike 的 Shoot 路径鉴别:ItemCheck 先于 PostUpdate,
+            //此处更新后,下一帧的物品使用读到的仍是"上一帧是否按着"
+            prevMouseLeft = Main.mouseLeft;
 
             //反噬僵直期间万籁俱寂:招式与领域输入全部静默,规避疾走/翻转拆散钉死
             if (OniPlayerDismember.IsLocked(Player)) {
@@ -133,6 +170,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Item item = Player.GetItem();
             bool holding = item != null && item.Alives() && item.type == ModContent.ItemType<OnikiriItem>();
             HandleDomainInput(holding);
+            if (holding) {
+                ManageSakuraFlight();
+            }
             if (!holding || Player.dead || Player.CCed) {
                 return;
             }
@@ -141,6 +181,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return;
             }
 
+            ReleaseZanshinPending(item);
             ReadyCue();
 
             if (justRight && !Player.mouseInterface && !Player.cursorItemIconEnabled) {
@@ -188,8 +229,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         //==================== 神威疾走 ====================
 
         private void TryDash(Item item) {
-            //再触发锁内静默(是节拍不是资源问题);骑乘时位移权在坐骑
-            if (dashLock > 0 || Player.mount?.Active == true) {
+            //再触发锁内静默(是节拍不是资源问题);骑乘时位移权在坐骑;樱流握有本体时不受理
+            if (dashLock > 0 || Player.mount?.Active == true
+                || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
                 return;
             }
             if (Vigor < DashVigorCost - 0.01f) {
@@ -202,6 +244,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             dashLock = DashRefireLockTicks;
             dashParryGained = 0f;
             parriedRoots.Clear();
+            //新位移开始,上一窗作废
+            zanshinWindow = 0;
+            zanshinPending = false;
 
             ShootState state = Player.GetShootState();
             Vector2 aim = Main.MouseWorld - Player.Center;
@@ -209,12 +254,161 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
         }
 
+        //==================== 樱流化身 ====================
+
+        /// <summary>
+        /// 疾走跑满全程且右键仍按住时的樱流衔接,由 <see cref="OniFlashStep"/> 在停止帧调用(owner 端)。<br/>
+        /// 门禁:黄昏表层领域稳态(表世界)+最低气力;失败静默,疾走照常刹停即是答复。<br/>
+        /// 时长上限按当前气力折算,真实时长由 <see cref="ManageSakuraFlight"/> 的逐帧抽气决定
+        /// </summary>
+        internal bool TryChainSakuraFlight(Vector2 direction, IEntitySource source) {
+            if (Player.whoAmI != Main.myPlayer || Player.mount?.Active == true) {
+                return false;
+            }
+            //上一次飞行的控制器(含余晖期)未消亡则拒绝:模块每玩家仅一个,拿旧实例不算衔接成功
+            if (OniSakuraFlight.AnyFor(Player.whoAmI)) {
+                return false;
+            }
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            if (domain.Phase != OniDomainPhase.Omote || domain.WorldIsUra) {
+                return false;
+            }
+            if (Vigor < SakuraMinVigor - 0.01f) {
+                return false;
+            }
+            int flightFrames = (int)(Vigor / SakuraDrainPerTick);
+            if (OniSakuraFlight.Fire(Player, direction, SakuraFlightSpeed,
+                flightFrames, source, seamless: true) == null) {
+                return false;
+            }
+            //化樱起飞,疾走的旧窗作废;落地(ReleaseOwner)会开新窗
+            zanshinWindow = 0;
+            zanshinPending = false;
+            return true;
+        }
+
+        /// <summary>
+        /// 樱流飞行的经济与手势(owner 端,每帧):逐帧抽气并压住回气延迟;
+        /// 松手、气尽或领域离开表世界稳态均发出回卷,重组收尾由模块自理
+        /// </summary>
+        private void ManageSakuraFlight() {
+            if (!OniSakuraFlight.IsTraveling(Player.whoAmI)) {
+                return;
+            }
+            vigorRegenDelay = Math.Max(vigorRegenDelay, VigorRegenDelayTicks);
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            if (!Main.mouseRight || Vigor <= 0.01f
+                || domain.Phase != OniDomainPhase.Omote || domain.WorldIsUra) {
+                OniSakuraFlight.RequestStop(Player);
+                return;
+            }
+            Vigor = Math.Max(0f, Vigor - SakuraDrainPerTick);
+        }
+
+        //==================== 残心追斩 ====================
+
+        /// <summary>
+        /// 操控交还帧开追斩窗(owner 端):疾走刹停传入距锵帧数与墨痕数,樱流落地传 (0, 0)。<br/>
+        /// 窗内按下沿把普攻化为残心斩;有墨痕时锵前按下缓冲到结算同帧释放
+        /// </summary>
+        internal void OpenZanshinWindow(int judgeDelay, int markCount) {
+            if (Player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            zanshinWindow = ZanshinWindowTicks;
+            zanshinJudgeCountdown = Math.Max(judgeDelay, 0);
+            zanshinHasMarks = markCount > 0;
+            zanshinPending = false;
+        }
+
+        /// <summary>追斩窗每帧推进:锵倒计时递减(负值=锵已过),窗口过期清挂起</summary>
+        private void TickZanshinWindow() {
+            if (zanshinWindow <= 0) {
+                return;
+            }
+            zanshinWindow--;
+            zanshinJudgeCountdown--;
+            if (zanshinWindow <= 0) {
+                zanshinPending = false;
+            }
+        }
+
+        /// <summary>
+        /// 追斩按下沿受理,两条输入路径共用:<see cref="OnikiriItem.Shoot"/>(无连段控制器)传
+        /// edgeVerified=false,自行以 prevMouseLeft 鉴别按下沿(ItemCheck 先于 PostUpdate 更新,
+        /// 当帧可判,按住穿过不转换);<see cref="CrimsonRendSlash"/> 排拍路径已有 justPressed,传 true。<br/>
+        /// 有墨痕且锵未响 → 挂起缓冲,结算同帧释放(出刀与墨痕齐裂压成一拍);
+        /// 锵后/挥空 → 即时出刀。返回 false 时调用方回退连段
+        /// </summary>
+        internal bool TryZanshinStrike(Item item, bool edgeVerified) {
+            if (Player.whoAmI != Main.myPlayer || zanshinWindow <= 0) {
+                return false;
+            }
+            if (!edgeVerified && (!Main.mouseLeft || prevMouseLeft)) {
+                return false;
+            }
+            if (zanshinPending) {
+                //已挂起等锵,窗内重复点击吸收,不落回连段
+                return true;
+            }
+            //硬占刀权的演出(灭世大挥/终结乱舞开场等)期间不抢出手,落回连段的既有让位缓冲
+            if (Player.mount?.Active == true || OniPlayerDismember.IsLocked(Player)
+                || OniSakuraFlight.ControlsOwner(Player.whoAmI)
+                || OniBladeOccupancy.AnyHardOccupant(Player)
+                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniZanshinSlash>()] > 0) {
+                return false;
+            }
+
+            if (zanshinHasMarks && zanshinJudgeCountdown > 0) {
+                zanshinPending = true;
+                return true;
+            }
+            return FireZanshin(item);
+        }
+
+        /// <summary>挂起的追斩到锵释放(holding 语境每帧调用,倒计时归零即出刀);
+        /// 等锵期间玩家另起大招/化樱则弃挂起,大动作优先</summary>
+        private void ReleaseZanshinPending(Item item) {
+            if (!zanshinPending) {
+                return;
+            }
+            if (OniBladeOccupancy.AnyHardOccupant(Player) || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
+                zanshinPending = false;
+                zanshinWindow = 0;
+                return;
+            }
+            if (zanshinJudgeCountdown <= 0) {
+                FireZanshin(item);
+            }
+        }
+
+        /// <summary>追斩出刀:瞄准角与领域变体(表世界=樱衣)都在释放帧采样,锵同帧(含宽限)震屏减半</summary>
+        private bool FireZanshin(Item item) {
+            zanshinWindow = 0;
+            zanshinPending = false;
+            ShootState state = Player.GetShootState();
+            Vector2 aim = Main.MouseWorld - Player.Center;
+            OniDomainPlayer domain = Player.GetModPlayer<OniDomainPlayer>();
+            bool sakura = domain.Phase == OniDomainPhase.Omote && !domain.WorldIsUra;
+            bool synced = zanshinHasMarks && zanshinJudgeCountdown <= 0
+                && zanshinJudgeCountdown >= -ZanshinSyncSlackTicks;
+            return OniZanshinSlash.Fire(Player, aim, (int)(state.WeaponDamage * ZanshinDamageMul)
+                , state.WeaponKnockback, sakura, synced, Player.GetSource_ItemUse(item)) != null;
+        }
+
+        /// <summary>追斩命中:回架势 + 记入命中记忆(<see cref="OniZanshinSlash"/>.OnHitNPC 调用)</summary>
+        internal void OnZanshinHit(NPC target) {
+            Stance = Math.Min(StanceMax, Stance + StancePerZanshinHit);
+            RecordHit(target);
+        }
+
         //==================== 处决 ====================
 
         private void TryExecute(Item item) {
-            //演出进行中静默忽略:满屏刀光本身就是"正在忙"的答复
+            //演出进行中静默忽略:满屏刀光本身就是"正在忙"的答复;化樱期间人不在,刀也不在
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<OniFinaleSlash>()] > 0
-                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniAnnihilate>()] > 0) {
+                || Player.ownedProjectileCounts[ModContent.ProjectileType<OniAnnihilate>()] > 0
+                || OniSakuraFlight.ControlsOwner(Player.whoAmI)) {
                 return;
             }
 

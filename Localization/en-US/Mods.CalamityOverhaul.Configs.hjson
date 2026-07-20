@@ -15,15 +15,6 @@ CWRServerConfig: {
 		Tooltip: If turned on, the screen will vibrate during some attacks, which may make the hit feel more intense
 	}
 
-	MurasamaSpaceFragmentationBool: {
-		Label: Murasama Finisher Screen-Shatter Effect
-		Tooltip:
-			'''
-			Enabled by default. When Murasama performs its finisher, it creates a screen-shatter effect to enhance the impact.
-			If disabled, these effects are turned off.
-			'''
-	}
-
 	DomainConciseDisplay: {
 		Label: Domain Minimal Display
 		Tooltip: Off by default. When enabled, most visual effects within the domain will be hidden.
@@ -32,7 +23,6 @@ CWRServerConfig: {
 	Headers: {
 		CWRSystem: System Configs
 		CWRWeapon: Weapon Configs
-		CWRUI: UI Configs
 		CWRWorldGen: World Gen Configs
 	}
 
@@ -48,28 +38,6 @@ CWRServerConfig: {
 			[c/c20909:Unfinished]
 			Enabled by default, this will modify the AI behavior of certain creatures, such as Boss AI in Death Mode.
 			This might significantly increase the game's difficulty, so you can choose to disable it based on your personal preference.
-			'''
-	}
-
-	MuraUIStyleType: {
-		Label: Mura UI Style Selection
-		Tooltip:
-			'''
-			Style 1: Refined - Floating Above The Head
-			Style 2: Refined - Compact
-			Style 3: Classic - Floating Above The Head
-			Style 4: Classic - Compact
-			Style 5: Hidden
-			'''
-	}
-
-	MuraPosStyleType: {
-		Label: Mura UI Position Selection
-		Tooltip:
-			'''
-			Preset 1: Bottom Right
-			Preset 2: Bottom Left
-			Preset 3: Top Center
 			'''
 	}
 

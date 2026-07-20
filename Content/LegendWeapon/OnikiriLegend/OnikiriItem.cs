@@ -55,8 +55,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
             Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            OnikiriPlayer okp = player.GetModPlayer<OnikiriPlayer>();
             //里世界按下沿：点中媒介/真身的这一击化为肢解居合，落空回退连段
-            if (player.GetModPlayer<OnikiriPlayer>().TryClickDismember(Item)) {
+            if (okp.TryClickDismember(Item)) {
+                return false;
+            }
+            //追斩窗内的按下沿：普攻化为残心斩(边沿由 OnikiriPlayer 自持鉴别,按住穿过不转换)
+            if (okp.TryZanshinStrike(Item, edgeVerified: false)) {
                 return false;
             }
             CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: 1f, source);

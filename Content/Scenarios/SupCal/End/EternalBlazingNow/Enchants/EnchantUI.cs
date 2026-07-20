@@ -84,7 +84,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
         public static LocalizedText CollapseHint;
         public static LocalizedText EnchantTitle;
 
-        public new void LoadUIData(TagCompound tag) {
+        public override void LoadUIData(TagCompound tag) {
             tag.TryGet(Name + ":" + nameof(DrawPosition), out DrawPosition);
             if (DrawPosition == Vector2.Zero || DrawPosition == default) {
                 DrawPosition = new Vector2(168f, 320f);
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow.Enchan
             }
         }
 
-        public new void SaveUIData(TagCompound tag) {
+        public override void SaveUIData(TagCompound tag) {
             tag[Name + ":" + nameof(DrawPosition)] = DrawPosition;
             tag[Name + ":" + nameof(IsCollapsed)] = IsCollapsed;
             EnchantmentHandler.CurrentItem ??= new Item();

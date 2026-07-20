@@ -156,7 +156,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// </summary>
         public void DrawSlots(SpriteBatch sb, float alpha, Rectangle panelRect,
             string[] slotLabels, string selectedText, string emptyText, CyberwarePlayer cyberPlayer = null) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             Texture2D slotGlow = CWRAsset.SoftGlow?.Value;
@@ -273,7 +273,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         /// </summary>
         public void DrawConnectors(SpriteBatch sb, float alpha, Rectangle panelRect,
             CyberBodyRenderer body, Vector2 bodyOrigin, float dataStreamPhase) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (px == null) return;
 

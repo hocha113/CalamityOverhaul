@@ -14,7 +14,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// ai[0]=1 锚定主人中心(R技能)，0 固定发射点；ai[1]=编队相位种子
     internal class GammaRayBeam : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //三段生命周期：过冲展开→维持→收束
         internal const int ExpandTime = 4;

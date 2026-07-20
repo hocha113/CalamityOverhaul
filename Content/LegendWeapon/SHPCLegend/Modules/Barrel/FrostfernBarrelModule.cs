@@ -39,7 +39,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>霜蕨脉络：L-system 折线+Trail</summary>
     internal sealed class SHPCFrostfernLineProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Vector3 CoreVec = new Color(220, 245, 255).ToVector3();
         private static readonly Vector3 GlowVec = new Color(170, 220, 255).ToVector3();

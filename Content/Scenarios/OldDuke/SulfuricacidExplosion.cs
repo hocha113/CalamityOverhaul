@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.Scenarios.OldDuke
 {
     internal class SulfuricacidExplosion : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = 120;
             Projectile.height = 120;

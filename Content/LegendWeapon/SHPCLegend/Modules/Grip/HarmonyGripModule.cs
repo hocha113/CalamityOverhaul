@@ -86,7 +86,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Grip
     /// <summary>谐振灵雾拾取弹幕：漂移后追随玩家，触 pickup 回蓝叠层</summary>
     internal sealed class SHPCHarmonyWispProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 420;
         private const int DriftPhase = 30;

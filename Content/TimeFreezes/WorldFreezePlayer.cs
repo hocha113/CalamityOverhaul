@@ -1,5 +1,6 @@
 ﻿using System;
 using Terraria;
+using Terraria.GameInput;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.TimeFreezes
@@ -47,6 +48,56 @@ namespace CalamityOverhaul.Content.TimeFreezes
         internal int frozenRocketTime;
         //背包开启状态
         private bool snapshotInventoryOpen;
+        //冻结时的手持栏选择快照
+        private int frozenSelectedItem;
+
+        //ProcessTriggers 在 TriggersSet.CopyInto 尾部触发：control 拷贝与 QuickBuff/Loadout 消费已经发生，
+        //但数字键 1~0、快捷栏加减、径向轮盘都在 CopyInto 返回之后才被读取，此处清掉对本帧有效
+        public override void ProcessTriggers(TriggersSet triggersSet) {
+            if (!WorldFreezeSystem.IsActive) {
+                return;
+            }
+            //数字键 1~0 直改 selectedItem 不经过 ScrollHotbar，在触发器层吞掉
+            triggersSet.Hotbar1 = false;
+            triggersSet.Hotbar2 = false;
+            triggersSet.Hotbar3 = false;
+            triggersSet.Hotbar4 = false;
+            triggersSet.Hotbar5 = false;
+            triggersSet.Hotbar6 = false;
+            triggersSet.Hotbar7 = false;
+            triggersSet.Hotbar8 = false;
+            triggersSet.Hotbar9 = false;
+            triggersSet.Hotbar10 = false;
+            //手柄快捷栏加减与径向轮盘（轮盘会调 QuickMount/QuickHeal 等）同样屏蔽
+            triggersSet.HotbarPlus = false;
+            triggersSet.HotbarMinus = false;
+            triggersSet.RadialHotbar = false;
+            triggersSet.RadialQuickbar = false;
+        }
+
+        //本地玩家的 control 在 CopyInto（晚于 PreUpdate）里被重新写入，
+        //只有 SetControls 这个时机清理才真正生效；PreUpdate 里那份清理只对远程玩家实例兜底
+        public override void SetControls() {
+            if (!WorldFreezeSystem.IsActive) {
+                return;
+            }
+            Player.controlLeft = false;
+            Player.controlRight = false;
+            Player.controlUp = false;
+            Player.controlDown = false;
+            Player.controlJump = false;
+            Player.controlHook = false;
+            Player.controlMount = false;
+            Player.controlUseItem = false;
+            Player.controlUseTile = false;
+            //丢弃物品
+            Player.controlThrow = false;
+            //智能选择会临时把手持换成火把，也属于换物品路径
+            Player.controlTorch = false;
+            Player.controlSmart = false;
+            //冻结期间背包本就被强制关闭，掐掉开关键避免开合闪烁
+            Player.controlInv = false;
+        }
 
         public override void PreUpdate() {
             if (!WorldFreezeSystem.IsActive) {
@@ -93,6 +144,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
                 positionCaptured = true;
                 //背包开启状态
                 snapshotInventoryOpen = Main.playerInventory;
+                //手持栏选择快照
+                frozenSelectedItem = Player.selectedItem;
             }
 
             //锁定位置和速度
@@ -102,6 +155,11 @@ namespace CalamityOverhaul.Content.TimeFreezes
             Player.direction = frozenDirection;
             //防止解冻后摔落伤害
             Player.fallStart = (int)(Player.position.Y / 16f);
+            //锁定手持选择，滚轮/数字键/点击快捷栏在入口已拦，这里兜底直改路径
+            Player.selectedItem = frozenSelectedItem;
+            //清掉滚轮偏移与点击暂存，防止解冻瞬间补切
+            Player.HotbarOffset = 0;
+            Player.changeItem = -1;
 
             //禁移动键，保留鼠标给 UI
             Player.controlLeft = false;
@@ -124,6 +182,8 @@ namespace CalamityOverhaul.Content.TimeFreezes
             Player.position = frozenPosition;
             Player.velocity = Vector2.Zero;
             Player.direction = frozenDirection;
+            //二次锁定手持选择
+            Player.selectedItem = frozenSelectedItem;
             //还原各类冷却计时器，使其在冻结期间不流逝
             Player.potionDelay = frozenPotionDelay;
             Player.restorationDelayTime = frozenRestorationDelayTime;

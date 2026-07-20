@@ -256,7 +256,7 @@ namespace CalamityOverhaul.Content.UIs.MainMenuOverUIs
                 return;
             }
             //资源在卸载模组时可能已被释放，绘制前确认占位纹理仍可用
-            if (CWRAsset.Placeholder_White == null || CWRAsset.Placeholder_White.IsDisposed) {
+            if (VaultAsset.placeholder2 == null || VaultAsset.placeholder2.IsDisposed) {
                 Close();
                 return;
             }

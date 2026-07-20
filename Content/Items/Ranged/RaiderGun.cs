@@ -475,7 +475,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class RaiderGunDash : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private ref float Time => ref Projectile.ai[0];
         private ref float SwingDir => ref Projectile.ai[1];
         public override void SetDefaults() {

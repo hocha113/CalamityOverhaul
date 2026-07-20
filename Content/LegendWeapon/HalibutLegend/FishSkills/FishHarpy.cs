@@ -1,6 +1,5 @@
 ﻿using InnoVault.GameContent.BaseEntity;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -60,6 +59,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void CleanupInactiveFeathers() {
+            //ai[1] >= 4 覆盖 Launching 与 Fading，两者都不再占羽环位
             ActiveFeathers.RemoveAll(id => {
                 if (!id.TryGetProjectile(out var proj)) return true;
                 if (proj.type != ModContent.ProjectileType<HarpyFeatherOrbit>()) return true;
@@ -79,50 +79,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.8f
             }, player.Center);
 
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-
-                Dust charge = Dust.NewDustPerfect(
-                    player.Center,
-                    DustID.Cloud,
-                    velocity,
-                    100,
-                    new Color(255, 255, 255),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                charge.noGravity = true;
-                charge.fadeIn = 1.3f;
-            }
+            FishHarpyVFX.ChargeCue(player.Center, 130f);
         }
 
         private void SpawnSummonEffect(Vector2 position) {
-            for (int i = 0; i < 18; i++) {
-                float angle = MathHelper.TwoPi * i / 18f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(1.5f, 4f);
-
-                Dust feather = Dust.NewDustPerfect(
-                    position,
+            //新羽自玩家身侧抽出：几瓣绒羽 + 少量气流尘底噪
+            FishHarpyVFX.DownBurst(position, -Vector2.UnitY, 3, 2.2f);
+            for (int i = 0; i < 5; i++) {
+                Dust air = Dust.NewDustPerfect(
+                    position + Main.rand.NextVector2Circular(12f, 12f),
                     DustID.Cloud,
-                    velocity,
-                    100,
-                    new Color(240, 240, 255),
-                    Main.rand.NextFloat(1.2f, 1.8f)
+                    Main.rand.NextVector2Circular(1.6f, 1.6f),
+                    150,
+                    FishHarpyVFX.Cream,
+                    Main.rand.NextFloat(1.0f, 1.6f)
                 );
-                feather.noGravity = true;
-                feather.fadeIn = 1.1f;
-            }
-
-            for (int i = 0; i < 6; i++) {
-                Dust air = Dust.NewDustDirect(
-                    position - new Vector2(15),
-                    30, 30,
-                    DustID.Cloud,
-                    Scale: Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                air.velocity = Main.rand.NextVector2Circular(2f, 2f);
                 air.noGravity = true;
-                air.alpha = 120;
+                air.fadeIn = 1.05f;
             }
         }
     }
@@ -137,7 +110,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Floating,
             Orbiting,
             Charging,
-            Launching
+            Launching,
+            Fading
         }
 
         private FeatherState State {
@@ -147,14 +121,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private ref float StateTimer => ref Projectile.localAI[0];
         private ref float GlobalOrbitAngle => ref Projectile.localAI[1];
+        //飞出目标速度：各端由同一状态机本地算出，出手后加速段的收敛值
+        private ref float LaunchTargetSpeed => ref Projectile.ai[2];
 
         private const float orbitRadius = 140f;
         private float orbitSpeed = 0.03f;
         private const float MaxOrbitSpeed = 0.15f;
 
         private float floatPhase = 0f;
-        private const float floatAmplitude = 8f;
         private const float floatFrequency = 0.08f;
+        //钟摆悬长：荡摆圆弧的半径，端点悬停与中点最低都由它给出
+        private const float PendulumLength = 34f;
 
         private const int GatherDuration = 25;
         private const int FloatDuration = 35;
@@ -163,12 +140,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         private float glowIntensity = 0f;
         private float swayAngle = 0f;
+        //钟摆相位与羽轴自旋（充能期的旋转拖影来源）
+        private float pendulumPhase = 0f;
+        private float spinPhase = 0f;
+        private float spinRate = 0f;
+        private int launchTicks = 0;
+        //落叶飘行相位：发射时用 identity 播种，多人各端一致
+        private float flutterPhase = 0f;
 
         private int launchCountdown = 0;
         private const int LaunchDelay = 20;
 
-        [VaultLoaden(CWRConstant.Masking)]
-        private static Asset<Texture2D> SoftGlow = null;
+        private float SpeedT => LaunchTargetSpeed > 0f
+            ? MathHelper.Clamp(Projectile.velocity.Length() / LaunchTargetSpeed, 0f, 1f) : 1f;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
@@ -186,8 +170,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.timeLeft = 600;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 20;
+            Projectile.alpha = 255;
 
             floatPhase = Main.rand.NextFloat(MathHelper.TwoPi);
+            pendulumPhase = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
         public override void AI() {
@@ -198,12 +184,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             bool skillActive = FishSkill.GetT<FishHarpy>().Active(Owner);
 
-            if (!skillActive && State != FeatherState.Launching) {
+            if (!skillActive && State != FeatherState.Launching && State != FeatherState.Fading) {
                 if (State == FeatherState.Orbiting || State == FeatherState.Charging) {
                     LaunchFeather(Owner);
                 }
                 else {
-                    Projectile.Kill();
+                    //聚合中被打断：收羽淡出而非瞬灭
+                    State = FeatherState.Fading;
+                    StateTimer = 0;
                 }
                 return;
             }
@@ -239,17 +227,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 case FeatherState.Launching:
                     LaunchingPhaseAI();
                     break;
+
+                case FeatherState.Fading:
+                    FadingPhaseAI();
+                    break;
             }
 
-            if (State != FeatherState.Launching) {
-                swayAngle = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + floatPhase) * 0.15f;
-            }
-
-            float lightIntensity = glowIntensity * 0.4f;
+            //暖金弱光：光效克制，羽毛靠形状与运动读
+            float lightIntensity = glowIntensity * 0.3f;
             Lighting.AddLight(Projectile.Center,
-                0.9f * lightIntensity,
-                0.9f * lightIntensity,
-                1.0f * lightIntensity);
+                0.62f * lightIntensity,
+                0.55f * lightIntensity,
+                0.38f * lightIntensity);
         }
 
         private int GetActiveFeatherCount(Player owner) {
@@ -291,21 +280,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.8f
             }, owner.Center);
 
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 8f);
-
-                Dust charge = Dust.NewDustPerfect(
-                    owner.Center,
-                    DustID.Cloud,
-                    velocity,
-                    100,
-                    new Color(255, 255, 255),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                charge.noGravity = true;
-                charge.fadeIn = 1.3f;
-            }
+            FishHarpyVFX.ChargeCue(owner.Center, orbitRadius * 0.92f);
         }
 
         private void GatheringPhaseAI(Player owner) {
@@ -329,6 +304,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             GlobalOrbitAngle = targetAngle;
             glowIntensity = MathHelper.Lerp(0f, 0.4f, progress);
 
+            //materialize：淡入 + 过冲落定，禁 pop-in
+            Projectile.alpha = (int)MathHelper.Max(0, Projectile.alpha - 18);
+            Projectile.scale = MathHelper.Lerp(0.55f, 1f, EaseOutBack(progress));
+            swayAngle = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3f + floatPhase) * 0.15f;
+
             if (Main.rand.NextBool(5)) {
                 SpawnGatherParticle(owner);
             }
@@ -351,25 +331,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int totalFeathers = GetActiveFeatherCount(owner);
             float targetAngle = MathHelper.TwoPi * myIndex / Math.Max(totalFeathers, 1);
 
-            float radiusPulse = (float)Math.Sin(StateTimer * 0.15f) * 8f;
-            float currentRadius = orbitRadius + radiusPulse;
-
-            floatPhase += floatFrequency;
-            Vector2 floatOffset = new Vector2(
-                (float)Math.Sin(floatPhase * 1.2f) * floatAmplitude,
-                (float)Math.Cos(floatPhase * 0.8f) * floatAmplitude * 0.7f
-            );
-
             GlobalOrbitAngle = MathHelper.Lerp(GlobalOrbitAngle, targetAngle, 0.08f);
 
+            float currentRadius = orbitRadius + (float)Math.Sin(StateTimer * 0.05f + floatPhase) * 5f;
             Vector2 orbitPos = owner.Center + GlobalOrbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = orbitPos + floatOffset;
+
+            //钟摆飘浮：悬点在轨道位上方，羽毛沿圆弧荡摆，端点悬停、过中点最低最快
+            pendulumPhase += floatFrequency;
+            float theta = (float)Math.Sin(pendulumPhase) * 0.62f;
+            Vector2 pivot = orbitPos - new Vector2(0f, PendulumLength);
+            Vector2 targetPos = pivot + new Vector2((float)Math.Sin(theta), (float)Math.Cos(theta)) * PendulumLength;
+            //慢沉浮叠加：整体被气流缓缓托起再放下
+            targetPos.Y += (float)Math.Sin(StateTimer * 0.03f + floatPhase) * 4f;
 
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.25f);
+            swayAngle = theta * 0.85f;
 
             glowIntensity = MathHelper.Lerp(0.4f, 0.6f, progress);
 
-            if (Main.rand.NextBool(8)) {
+            //待机绒羽偶发剥落
+            if (Main.rand.NextBool(46)) {
+                FishHarpyVFX.DownBurst(Projectile.Center, Vector2.UnitY, 1, 0.8f);
+            }
+            if (Main.rand.NextBool(12)) {
                 SpawnFloatParticle();
             }
 
@@ -391,26 +375,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             orbitSpeed = MathHelper.Lerp(0.03f, MaxOrbitSpeed, speedProgress);
 
             float radiusScale = MathHelper.Lerp(1f, 0.92f, MathHelper.Clamp(speedProgress, 0f, 1f));
-            float radiusWave = (float)Math.Sin(StateTimer * 0.2f) * 6f;
+            float radiusWave = (float)Math.Sin(StateTimer * 0.2f + floatPhase) * 6f * (1f - speedProgress * 0.5f);
             float currentRadius = orbitRadius * radiusScale + radiusWave;
 
             GlobalOrbitAngle -= orbitSpeed;
 
-            float floatScale = MathHelper.Clamp(1f - speedProgress * 0.6f, 0.4f, 1f);
-            floatPhase += floatFrequency * floatScale;
-            Vector2 floatOffset = new Vector2(
-                (float)Math.Sin(floatPhase) * floatAmplitude * floatScale,
-                (float)Math.Cos(floatPhase * 0.7f) * floatAmplitude * 0.6f * floatScale
-            );
-
+            //转速上来后离心力把摆幅甩平：从钟摆飘浮渐变为绷紧的环带
+            pendulumPhase += floatFrequency * (1f + speedProgress * 0.8f);
+            float swingAmp = MathHelper.Lerp(0.62f, 0.16f, speedProgress);
+            float theta = (float)Math.Sin(pendulumPhase) * swingAmp;
             Vector2 orbitPos = owner.Center + GlobalOrbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = orbitPos + floatOffset;
+            Vector2 pivot = orbitPos - new Vector2(0f, PendulumLength);
+            Vector2 targetPos = pivot + new Vector2((float)Math.Sin(theta), (float)Math.Cos(theta)) * PendulumLength;
 
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.35f);
+            swayAngle = theta * 0.85f;
 
             glowIntensity = MathHelper.Lerp(0.6f, 0.8f, timeProgress);
 
-            if (Main.rand.NextBool(4)) {
+            if (Main.rand.NextBool(7)) {
                 SpawnOrbitParticle(timeProgress);
             }
 
@@ -427,22 +410,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             orbitSpeed = MaxOrbitSpeed;
 
-            float radiusOscillation = (float)Math.Sin(StateTimer * 0.6f) * 12f * progress;
-            float currentRadius = orbitRadius * 0.92f + radiusOscillation;
+            //盘旋收紧：预告拍，半径向内咬合；末 5 帧摆动压平 + 半径再缩，气动预备
+            float tighten = MathHelper.Clamp(StateTimer / (float)LaunchDelay, 0f, 1f);
+            bool brace = launchCountdown <= 5;
+            float radiusMul = MathHelper.Lerp(0.92f, 0.78f, VaultUtils.EaseInOutQuad(tighten));
+            float radiusOsc = (float)Math.Sin(StateTimer * 0.6f + floatPhase) * 5f * (1f - tighten);
+            float currentRadius = orbitRadius * radiusMul + radiusOsc - (brace ? 4f : 0f);
 
             GlobalOrbitAngle -= orbitSpeed;
-            Vector2 orbitOffset = GlobalOrbitAngle.ToRotationVector2() * currentRadius;
-            Vector2 targetPos = owner.Center + orbitOffset;
+
+            //羽轴自旋：中段旋起（旋转拖影的能量来源），末 5 帧收旋归位，出手瞬间羽尖已对准切向
+            spinRate = MathHelper.Lerp(spinRate, brace ? 0.05f : 0.46f, 0.12f);
+            spinPhase += spinRate;
+            if (brace) {
+                //收旋: 残余转角向 0 快速收敛, 消掉发射帧的姿态跳变
+                spinPhase = MathHelper.WrapAngle(spinPhase) * 0.45f;
+            }
+
+            pendulumPhase += floatFrequency;
+            float theta = brace ? 0f : (float)Math.Sin(pendulumPhase) * 0.10f;
+
+            Vector2 targetPos = owner.Center + GlobalOrbitAngle.ToRotationVector2() * currentRadius;
             Projectile.Center = Vector2.Lerp(Projectile.Center, targetPos, 0.4f);
+            swayAngle = theta;
 
-            glowIntensity = 0.9f + (float)Math.Sin(StateTimer * 1.2f) * 0.1f;
+            glowIntensity = 0.85f + (float)Math.Sin(StateTimer * 1.2f) * 0.1f;
 
+            //向心气流：空气被吸进收紧的羽环
             if (Main.rand.NextBool()) {
                 SpawnChargeParticle(owner.Center, progress);
             }
 
-            if (StateTimer % 8 == 0) {
-                SpawnChargePulse();
+            //环带切向涟漪：收紧的可视化预告
+            if (StateTimer % 10 == 0) {
+                Vector2 tangent = (GlobalOrbitAngle - MathHelper.PiOver2).ToRotationVector2();
+                FishHarpyVFX.AirRipple(Projectile.Center - tangent * 8f, tangent, 0.55f);
             }
 
             if (StateTimer % 6 == 0) {
@@ -466,30 +468,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
                 DustID.Cloud,
                 velocity,
-                100,
-                new Color(255, 255, 255),
-                Main.rand.NextFloat(1.3f, 2f)
+                130,
+                FishHarpyVFX.Cream,
+                Main.rand.NextFloat(1.1f, 1.7f)
             );
             charge.noGravity = true;
-            charge.fadeIn = 1.2f;
-        }
-
-        private void SpawnChargePulse() {
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f;
-                Vector2 velocity = angle.ToRotationVector2() * 3f;
-
-                Dust pulse = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Cloud,
-                    velocity,
-                    100,
-                    new Color(255, 255, 255),
-                    Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                pulse.noGravity = true;
-                pulse.fadeIn = 1.3f;
-            }
+            charge.fadeIn = 1.15f;
         }
 
         private void LaunchFeather(Player owner) {
@@ -498,11 +482,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float speedBonus = orbitSpeed / MaxOrbitSpeed;
             float finalSpeed = LaunchSpeed * (1f + speedBonus * 0.4f);
 
-            Projectile.velocity = launchDir * finalSpeed;
+            //出手只给 55% 初速，Launching 前 8 帧复利加速到全速：被气流抽直的加速拍
+            LaunchTargetSpeed = finalSpeed;
+            Projectile.velocity = launchDir * finalSpeed * 0.55f;
             Projectile.tileCollide = true;
+            Projectile.netUpdate = true;
 
             State = FeatherState.Launching;
             StateTimer = 0;
+            launchTicks = 0;
+            flutterPhase = Projectile.identity * 2.3999632f;
 
             SpawnLaunchEffect();
 
@@ -519,13 +508,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void LaunchingPhaseAI() {
-            Projectile.velocity *= 0.995f;
+            launchTicks++;
 
-            Vector2 driftForce = new Vector2(
-                (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + floatPhase) * 0.05f,
-                (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + floatPhase) * 0.04f
-            );
-            Projectile.velocity += driftForce;
+            float speed = Projectile.velocity.Length();
+            if (LaunchTargetSpeed > 0f && speed < LaunchTargetSpeed && launchTicks < 20) {
+                //复利加速段：8 帧内 0.55x 到全速；只在出手窗口内生效，反弹掉速后不再回充
+                speed = MathF.Min(speed * 1.085f, LaunchTargetSpeed);
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * speed;
+            }
+            else {
+                Projectile.velocity *= 0.998f;
+            }
+
+            //落叶式飘行：零均值正弦转向叠在直线弹道上，左右摇摆而非纯直线；
+            //加速段摆幅被抽直压平，全速后展开，随飞行缓慢衰减
+            flutterPhase += 0.30f;
+            float flutterEnvelope = MathF.Min(launchTicks / 14f, 1f) * MathF.Pow(0.9965f, launchTicks);
+            float steer = MathF.Sin(flutterPhase) * 0.052f * flutterEnvelope;
+            Projectile.velocity = Projectile.velocity.RotatedBy(steer);
 
             if (Projectile.velocity.LengthSquared() > 0.1f) {
                 Projectile.rotation = Projectile.velocity.ToRotation();
@@ -533,8 +533,37 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             glowIntensity = 0.8f;
 
-            if (Main.rand.NextBool(4)) {
-                SpawnLaunchTrailParticle();
+            //尾后空气涟漪：切开空气的痕迹，越快越密
+            float speedT = SpeedT;
+            int cadence = speedT > 0.8f ? 3 : 5;
+            if (launchTicks % cadence == 0) {
+                FishHarpyVFX.AirRipple(Projectile.Center - Projectile.velocity * 0.8f
+                    , Projectile.velocity, 0.62f + 0.5f * speedT);
+            }
+            //偶发绒羽剥落
+            if (Main.rand.NextBool(9)) {
+                FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 1, 1.2f);
+            }
+        }
+
+        private void FadingPhaseAI() {
+            //收羽退场：淡出缩小 + 两瓣绒羽脱落，禁 pop-out
+            Projectile.velocity *= 0.9f;
+            Projectile.alpha = (int)MathHelper.Min(255, Projectile.alpha + 20);
+            Projectile.scale *= 0.965f;
+            swayAngle *= 0.9f;
+            glowIntensity *= 0.85f;
+
+            if (StateTimer == 2) {
+                FishHarpyVFX.DownBurst(Projectile.Center, Vector2.UnitY, 2, 1.4f);
+                SoundEngine.PlaySound(SoundID.Item32 with {
+                    Volume = 0.15f,
+                    Pitch = 0.5f
+                }, Projectile.Center);
+            }
+
+            if (Projectile.alpha >= 255) {
+                Projectile.Kill();
             }
         }
 
@@ -571,8 +600,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
                 DustID.Cloud,
                 (owner.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(0.5f, 2f),
-                100,
-                new Color(240, 240, 255),
+                140,
+                FishHarpyVFX.Cream,
                 Main.rand.NextFloat(0.8f, 1.3f)
             );
             gather.noGravity = true;
@@ -586,8 +615,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
                 DustID.Cloud,
                 velocity,
-                100,
-                new Color(245, 245, 255),
+                150,
+                FishHarpyVFX.Cream,
                 Main.rand.NextFloat(0.7f, 1.2f)
             );
             float_.noGravity = true;
@@ -607,8 +636,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
                 DustID.Cloud,
                 velocity,
-                100,
-                new Color(250, 250, 255),
+                140,
+                FishHarpyVFX.Cream,
                 Main.rand.NextFloat(0.9f, 1.5f)
             );
             orbit.noGravity = true;
@@ -617,47 +646,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnLaunchEffect() {
-            for (int i = 0; i < 15; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(2f, 8f);
+            //出手瞬间：被气流剥下的绒羽 + 第一道破空涟漪 + 少量气流尘
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 3, 2.6f);
+            FishHarpyVFX.AirRipple(Projectile.Center - dir * 6f, Projectile.velocity, 0.9f);
 
-                Dust launch = Dust.NewDustPerfect(
+            for (int i = 0; i < 4; i++) {
+                Dust air = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Cloud,
-                    velocity,
-                    100,
-                    new Color(250, 250, 255),
-                    Main.rand.NextFloat(1.2f, 2f)
+                    dir.RotatedByRandom(0.6f) * Main.rand.NextFloat(1.5f, 4f),
+                    150,
+                    FishHarpyVFX.Cream,
+                    Main.rand.NextFloat(1.0f, 1.6f)
                 );
-                launch.noGravity = true;
-                launch.fadeIn = 1.2f;
-            }
-
-            for (int i = 0; i < 8; i++) {
-                Dust air = Dust.NewDustDirect(
-                    Projectile.Center - new Vector2(10),
-                    20, 20,
-                    DustID.Cloud,
-                    Scale: Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                air.velocity = Main.rand.NextVector2Circular(4f, 4f);
                 air.noGravity = true;
-                air.alpha = 120;
+                air.fadeIn = 1.1f;
             }
-        }
-
-        private void SpawnLaunchTrailParticle() {
-            Dust trail = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(6f, 6f),
-                DustID.Cloud,
-                -Projectile.velocity * Main.rand.NextFloat(0.1f, 0.2f),
-                100,
-                new Color(245, 245, 255),
-                Main.rand.NextFloat(0.8f, 1.4f)
-            );
-            trail.noGravity = true;
-            trail.fadeIn = 1f;
-            trail.alpha = 120;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) {
@@ -673,38 +678,54 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.5f
             }, Projectile.Center);
 
-            for (int i = 0; i < 5; i++) {
-                Dust.NewDust(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
+            //擦墙掉绒羽 + 一小口气流尘
+            FishHarpyVFX.DownBurst(Projectile.Center, -oldVelocity, 2, 2.0f);
+            for (int i = 0; i < 2; i++) {
+                Dust d = Dust.NewDustPerfect(
+                    Projectile.Center,
                     DustID.Cloud,
-                    Scale: Main.rand.NextFloat(1f, 1.5f)
+                    Main.rand.NextVector2Circular(1.5f, 1.5f),
+                    150,
+                    FishHarpyVFX.Cream,
+                    Main.rand.NextFloat(1f, 1.4f)
                 );
+                d.noGravity = true;
             }
 
             return false;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            for (int i = 0; i < 10; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                Dust hitDust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Cloud,
-                    velocity,
-                    100,
-                    new Color(250, 250, 255),
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                hitDust.noGravity = true;
-                hitDust.fadeIn = 1.1f;
+            //羽毛炸成绒羽小簇慢落：绒羽寿命长于弹体，即 aftermath
+            FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 7, 3.4f);
+            FishHarpyVFX.AirRipple(Projectile.Center, Projectile.velocity, 0.8f);
+
+            //极轻质量被肉体咬掉一口速度，穿透后的飘行读作强弩之末
+            if (State == FeatherState.Launching) {
+                Projectile.velocity *= 0.85f;
+                Projectile.netUpdate = true;
             }
 
             SoundEngine.PlaySound(SoundID.NPCHit5 with {
                 Volume = 0.4f,
                 Pitch = 0.4f
             }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item32 with {
+                Volume = 0.3f,
+                Pitch = -0.1f
+            }, Projectile.Center);
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (Main.dedServ) {
+                return;
+            }
+            //穿透耗尽或超时消散的兜底残迹
+            FishHarpyVFX.DownBurst(Projectile.Center, -Projectile.velocity, 3, 2.2f);
+            //飞行中死亡才留落羽：一根独立残迹摆锤缓降，活得比弹体久；收羽淡出不留
+            if (State == FeatherState.Launching) {
+                FishHarpyVFX.FeatherRemnant(Projectile.Center, Projectile.velocity * 0.35f);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -714,134 +735,118 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Rectangle sourceRect = featherTex.Frame(1, 1);
             Vector2 origin = sourceRect.Size() / 2f;
 
-            Color baseColor = lightColor;
             float alpha = (255f - Projectile.alpha) / 255f;
 
-            if (State == FeatherState.Orbiting || State == FeatherState.Charging || State == FeatherState.Launching) {
-                DrawFeatherAfterimages(sb, featherTex, sourceRect, origin, baseColor, alpha);
-            }
-
-            if (glowIntensity > 0.3f && SoftGlow?.Value != null) {
-                Texture2D glow = SoftGlow.Value;
-                float glowScale = Projectile.scale * (0.8f + glowIntensity * 0.4f);
-                float glowAlpha = (glowIntensity - 0.3f) * alpha * 0.3f;
-
-                if (State == FeatherState.Charging) {
-                    glowAlpha *= 1.5f;
-                }
-
-                sb.Draw(
-                    glow,
-                    drawPos,
-                    null,
-                    new Color(250, 250, 255, 0) * glowAlpha,
-                    Projectile.rotation + swayAngle,
-                    glow.Size() / 2f,
-                    glowScale,
-                    SpriteEffects.None,
-                    0f
-                );
-            }
+            //羽色：光照叠暖白羽面；充能期向淡金收拢，用饱和度而非亮度承载能量感
+            float goldT = State == FeatherState.Charging
+                ? MathHelper.Clamp(StateTimer / 20f, 0f, 1f) * 0.45f
+                : State == FeatherState.Launching ? 0.28f : 0f;
+            Color body = Color.Lerp(Color.Lerp(lightColor, FishHarpyVFX.Cream, 0.32f), FishHarpyVFX.Gold, goldT) * alpha;
 
             float drawRotation;
+            Vector2 bodyScale = new(Projectile.scale);
+            float speedT = SpeedT;
             if (State == FeatherState.Launching) {
                 drawRotation = Projectile.rotation - MathHelper.PiOver2;
+                //加速拉直：沿飞行方向拉伸、横向收窄；羽面随摇摆相位滚转，侧影厚薄循环
+                float roll = 0.82f + 0.18f * MathF.Cos(flutterPhase);
+                bodyScale = new Vector2((1f - 0.16f * speedT) * roll, 1f + 0.5f * speedT) * Projectile.scale;
             }
             else {
-                drawRotation = GlobalOrbitAngle - MathHelper.PiOver2 + swayAngle;
+                drawRotation = GlobalOrbitAngle - MathHelper.PiOver2 + swayAngle
+                    + (State == FeatherState.Charging ? spinPhase : 0f);
+                //末 6 帧箭在弦上：羽尖从径向外指预转到切向（即将到来的飞行方向），最后一帧恰好对齐出手姿态
+                if (State == FeatherState.Charging && launchCountdown <= 6) {
+                    float poseBlend = MathHelper.Clamp((6 - launchCountdown) / 5f, 0f, 1f);
+                    drawRotation -= MathHelper.PiOver2 * poseBlend;
+                }
             }
 
-            sb.Draw(
-                featherTex,
-                drawPos,
-                sourceRect,
-                baseColor * alpha,
-                drawRotation,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-            );
+            //残影层，全部压在本体之下
+            if (State == FeatherState.Launching) {
+                DrawLaunchSmear(sb, featherTex, sourceRect, origin, alpha, speedT);
+            }
+            else if (State == FeatherState.Charging) {
+                DrawSpinSmear(sb, featherTex, sourceRect, origin, alpha, drawRotation);
+            }
+            else if (State == FeatherState.Orbiting) {
+                DrawOrbitGhosts(sb, featherTex, sourceRect, origin, alpha, drawRotation);
+            }
 
-            if ((State == FeatherState.Orbiting || State == FeatherState.Charging || State == FeatherState.Launching)
-                && glowIntensity > 0.5f) {
-                float lightAlpha = (glowIntensity - 0.5f) * 2f * alpha * 0.35f;
+            //充能底光：唯一的柔光用途，极弱淡金压在羽毛下层
+            if (State == FeatherState.Charging && CWRAsset.SoftGlow?.Value != null) {
+                Texture2D glow = CWRAsset.SoftGlow.Value;
+                float glowA = 0.14f * MathHelper.Clamp(StateTimer / 15f, 0f, 1f) * alpha;
+                sb.Draw(glow, drawPos, null, FishHarpyVFX.Gold with { A = 0 } * glowA, 0f,
+                    glow.Size() / 2f, Projectile.scale * 0.9f, SpriteEffects.None, 0f);
+            }
 
-                if (State == FeatherState.Charging) {
-                    lightAlpha *= 1.3f;
-                }
+            sb.Draw(featherTex, drawPos, sourceRect, body, drawRotation, origin, bodyScale, SpriteEffects.None, 0);
 
-                Color featherLight = new Color(245, 245, 255);
-
-                sb.Draw(
-                    featherTex,
-                    drawPos,
-                    sourceRect,
-                    featherLight * lightAlpha,
-                    drawRotation,
-                    origin,
-                    Projectile.scale * 1.02f,
-                    SpriteEffects.None,
-                    0
-                );
+            //出手过冲：飞出头 2 帧一层暖白加色，瞬时即灭
+            if (State == FeatherState.Launching && launchTicks <= 2) {
+                sb.Draw(featherTex, drawPos, sourceRect, FishHarpyVFX.Cream with { A = 0 } * (0.3f * alpha),
+                    drawRotation, origin, bodyScale * 1.04f, SpriteEffects.None, 0);
             }
 
             return false;
         }
 
-        private void DrawFeatherAfterimages(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
-            Vector2 origin, Color baseColor, float alpha) {
-
-            int afterimageCount = State == FeatherState.Launching ? 10 : (State == FeatherState.Charging ? 8 : 6);
-
-            for (int i = 0; i < afterimageCount; i++) {
+        /// <summary>飞出速度拉伸残影链：旧位置 + 旧姿态 + 递增纵向拉伸 + 快衰，读作一道被抽直的羽光，
+        /// 残影姿态取自真实历史转角，摆动飘行的蛇形轨迹自然显形</summary>
+        private void DrawLaunchSmear(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
+            Vector2 origin, float alpha, float speedT) {
+            for (int i = 1; i <= 5; i++) {
                 if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
 
-                float afterimageProgress = 1f - i / (float)afterimageCount;
-                float afterimageAlpha = afterimageProgress * alpha * (State == FeatherState.Charging ? 0.6f : 0.5f);
+                float k = 1f - i / 6f;
+                float fade = MathF.Pow(k, 1.6f) * 0.38f * speedT * alpha;
+                Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                Vector2 gScale = new Vector2(1f - 0.2f * speedT, 1f + (0.5f + i * 0.12f) * speedT) * Projectile.scale;
+                float rot = (i < Projectile.oldRot.Length && Projectile.oldRot[i] != 0f
+                    ? Projectile.oldRot[i] : Projectile.rotation) - MathHelper.PiOver2;
 
-                Color afterimageColor;
-                if (State == FeatherState.Launching) {
-                    afterimageColor = Color.Lerp(
-                        new Color(240, 240, 255),
-                        new Color(255, 255, 255),
-                        afterimageProgress
-                    ) * afterimageAlpha;
-                }
-                else if (State == FeatherState.Charging) {
-                    afterimageColor = Color.Lerp(
-                        new Color(245, 245, 255),
-                        new Color(255, 255, 255),
-                        afterimageProgress
-                    ) * afterimageAlpha;
-                }
-                else {
-                    afterimageColor = new Color(245, 245, 255) * (afterimageAlpha * 0.6f);
-                }
-
-                Vector2 afterimagePos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float afterimageScale = Projectile.scale * MathHelper.Lerp(0.9f, 1f, afterimageProgress);
-
-                float afterimageRotation;
-                if (State == FeatherState.Launching) {
-                    afterimageRotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2 - i * 0.05f;
-                }
-                else {
-                    afterimageRotation = GlobalOrbitAngle - MathHelper.PiOver2 + swayAngle - i * 0.08f;
-                }
-
-                sb.Draw(
-                    featherTex,
-                    afterimagePos,
-                    sourceRect,
-                    afterimageColor,
-                    afterimageRotation,
-                    origin,
-                    afterimageScale,
-                    SpriteEffects.None,
-                    0
-                );
+                sb.Draw(featherTex, ghostPos, sourceRect, FishHarpyVFX.Cream * fade, rot,
+                    origin, gScale, SpriteEffects.None, 0);
             }
+        }
+
+        /// <summary>充能旋转拖影：同位置转角回溯的残像，羽轴自旋的可视化</summary>
+        private void DrawSpinSmear(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
+            Vector2 origin, float alpha, float drawRotation) {
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            for (int i = 1; i <= 4; i++) {
+                float fade = (0.32f - i * 0.07f) * alpha;
+                if (fade <= 0.01f) continue;
+
+                float rot = drawRotation - spinRate * i * 2.6f;
+                sb.Draw(featherTex, drawPos, sourceRect, FishHarpyVFX.Cream * fade, rot,
+                    origin, Projectile.scale * (1f - i * 0.015f), SpriteEffects.None, 0);
+            }
+        }
+
+        /// <summary>环绕位置残影：转速门控的弱哑光残像</summary>
+        private void DrawOrbitGhosts(SpriteBatch sb, Texture2D featherTex, Rectangle sourceRect,
+            Vector2 origin, float alpha, float drawRotation) {
+            float spinT = MathHelper.Clamp(orbitSpeed / MaxOrbitSpeed, 0f, 1f);
+            for (int i = 2; i <= 6; i += 2) {
+                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) continue;
+
+                float fade = (1f - i / 8f) * 0.22f * spinT * alpha;
+                Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+
+                sb.Draw(featherTex, ghostPos, sourceRect, FishHarpyVFX.Cream * fade, drawRotation - i * 0.05f,
+                    origin, Projectile.scale * 0.96f, SpriteEffects.None, 0);
+            }
+        }
+
+        /// <summary>带过冲缓出：materialize 的落定曲线</summary>
+        private static float EaseOutBack(float x) {
+            x = MathHelper.Clamp(x, 0f, 1f);
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            float xm = x - 1f;
+            return 1f + c3 * xm * xm * xm + c1 * xm * xm;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
     {
         public const int MaxLifetime = PlowSteelClampArm.WireLifetime;
 
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>锚点世界坐标，ai[0]/ai[1]</summary>
         public Vector2 AnchorWorld {
@@ -197,7 +197,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.PlowSteelClampArms
 
         /// <summary>多层光晕线段绘制</summary>
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             if (px == null) {
                 return false;
             }

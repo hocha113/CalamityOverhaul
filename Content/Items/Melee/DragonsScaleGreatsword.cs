@@ -409,7 +409,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 螺旋绿藻剑气：DragonSporeBeam.fx，命中炸毒藻雾
     internal class DragonsScaleGreatswordBeam : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 14;
@@ -535,7 +535,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 翠龙之魂：DragonSoulSerpent.fx 蛟龙追猎+毒藻雾
     internal class DragonSoulSerpent : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public static Color kelpColor1 => new Color(40, 130, 64);
         public static Color kelpColor2 => new Color(150, 235, 130);
 

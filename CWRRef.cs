@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.LegendWeapon.MurasamaLegend.UI;
 using CalamityOverhaul.Content.Players;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
@@ -1532,9 +1531,6 @@ namespace CalamityOverhaul
             if (Main.playerInventory || VaultUtils.IsInvasion()) {
                 x -= 250;
             }
-            Vector2 modifyPos = MuraChargeUI.Instance.ModifyBossHealthBarManagerPositon(x, y);
-            x = (int)modifyPos.X;
-            y = (int)modifyPos.Y;
             foreach (object ui in bars) {
                 bossHPUI_Draw_Method.Invoke(ui, [spriteBatch, x, y]);
                 y -= bossHPUI_VerticalOffsetPerBar;

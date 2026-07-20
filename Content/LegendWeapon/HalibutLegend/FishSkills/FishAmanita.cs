@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Content.Items.Ranged;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,7 +13,11 @@ using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>真菌鱼技能，周期切换孢子形态并生成对应攻击</summary>
+    /// <summary>
+    /// 真菌鱼技能，周期切换孢子形态并生成对应攻击。<br/>
+    /// 材质：发光真菌孢子（菌蓝紫微光）；四种弹药共享孢子语系，
+    /// 子色相 = 伞红（爆炸）/ 追孢青（追踪）/ 瘴紫（毒雾）/ 菌电紫白（闪电）
+    /// </summary>
     internal class FishAmanita : FishSkill
     {
         public override int UnlockFishID => ItemID.AmanitaFungifin;
@@ -49,37 +54,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
+        /// <summary>形态切换拍：菌环双脉冲 + 孢子环撒 + 湿润孢子噗，用颜色宣告下一种弹药</summary>
         private void SpawnPhaseTransitionEffect(Player player) {
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with {
-                Volume = 0.5f,
-                Pitch = 0.3f
-            }, player.Center);
+            FishAmanitaVFX.SporePuffSound(player.Center, 0.3f, 0.42f);
 
-            Color phaseColor = GetPhaseColor(sporePhase);
+            if (Main.dedServ) {
+                return;
+            }
+            Color phaseColor = FishAmanitaVFX.PhaseColor(sporePhase);
 
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 6f);
+            //暗紫压底环 + 新形态色内环：双环异速
+            PRTLoader.NewParticle<PRT_DWave>(player.Center, Vector2.Zero, FishAmanitaVFX.SporeDusk, 0.15f)
+                ?.Configure(Vector2.One, 0f, 0.85f, 14);
+            PRTLoader.NewParticle<PRT_DWave>(player.Center, Vector2.Zero, phaseColor, 0.1f)
+                ?.Configure(Vector2.One, 0f, 0.55f, 10);
 
-                Dust dust = Dust.NewDustPerfect(
-                    player.Center,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    phaseColor,
-                    Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1.3f;
+            //孢子小环：撒出后转入布朗漂移
+            for (int i = 0; i < 10; i++) {
+                float angle = MathHelper.TwoPi * i / 10f + Main.rand.NextFloat(0.3f);
+                FishAmanitaVFX.SporeDrift(player.Center + angle.ToRotationVector2() * 14f
+                    , angle.ToRotationVector2() * Main.rand.NextFloat(2.2f, 3.4f), phaseColor);
             }
 
-            //生成孢子粒子环
-            for (int i = 0; i < 20; i++) {
-                Vector2 spawnPos = player.Center + Main.rand.NextVector2Circular(80f, 80f);
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(spawnPos, Main.rand.NextVector2Circular(2f, 2f));
-                if (prt != null) {
-                    prt.Color = phaseColor;
-                    prt.Scale = Main.rand.NextFloat(0.8f, 1.4f);
+            //闪电形态切入：环身抽两道菌丝短弧宣告带电
+            if (sporePhase == 3) {
+                for (int i = 0; i < 2; i++) {
+                    Vector2 dir = Main.rand.NextVector2Unit();
+                    FishAmanitaVFX.MyceliumArc(player.Center + dir * 12f
+                        , player.Center + dir * Main.rand.NextFloat(52f, 78f)
+                        , FishAmanitaVFX.ArcVolt, 7f, 8, 1);
                 }
             }
         }
@@ -177,42 +180,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void SpawnAmbientSpores(Player player) {
-            //周期性在玩家周围生成环境孢子效果
+            if (Main.dedServ) {
+                return;
+            }
+            Color sporeColor = FishAmanitaVFX.PhaseColor(sporePhase);
+
+            //环绕玩家的低频环境孢子：发光孢子与实体孢子颗粒异质混合
             if (Main.rand.NextBool(3)) {
                 Vector2 spawnPos = player.Center + Main.rand.NextVector2Circular(60f, 60f);
-                Color sporeColor = GetPhaseColor(sporePhase);
-
-                Dust dust = Dust.NewDustPerfect(
-                    spawnPos,
-                    DustID.BlueFairy,
-                    Main.rand.NextVector2Circular(1f, 1f),
-                    100,
-                    sporeColor,
-                    Main.rand.NextFloat(1f, 1.5f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1f;
+                FishAmanitaVFX.SporeDrift(spawnPos, Main.rand.NextVector2Circular(0.8f, 0.8f)
+                    , sporeColor, 0.9f, Main.rand.Next(36, 56));
             }
-        }
-
-        private Color GetPhaseColor(int phase) {
-            return phase switch {
-                0 => new Color(255, 100, 100), //红色 - 爆炸
-                1 => new Color(100, 255, 255), //青色 - 追踪
-                2 => new Color(150, 255, 100), //绿色 - 毒雾
-                3 => new Color(255, 255, 150), //黄色 - 闪电
-                _ => Color.White
-            };
+            if (Main.rand.NextBool(4)) {
+                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(player.Center + Main.rand.NextVector2Circular(70f, 70f)
+                    , Main.rand.NextVector2Circular(1f, 1f));
+                if (prt != null) {
+                    prt.Color = sporeColor;
+                    prt.Scale = Main.rand.NextFloat(0.7f, 1.1f);
+                }
+            }
         }
     }
 
     #region 爆炸蘑菇弹幕
-    /// <summary>爆炸蘑菇，触敌或触地时爆炸</summary>
+    /// <summary>爆炸蘑菇，触敌或触地时菌盖炸裂成孢子环</summary>
     internal class AmanitaExplosiveMushroom : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Glomushroom";
 
         private bool exploded = false;
+        private float spin;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -230,26 +227,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.velocity.Y += 0.15f; //重力
 
-            //发光效果
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center, 1f * pulse, 0.3f * pulse, 0.3f * pulse);
+            //抛掷翻滚：转速随速度爬升，飞行期持续演化
+            float speed = Projectile.velocity.Length();
+            spin = MathHelper.Lerp(spin, 0.09f + speed * 0.014f, 0.2f);
+            Projectile.rotation += spin * (Projectile.velocity.X >= 0f ? 1f : -1f);
 
-            //轨迹粒子
-            if (Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.BlueFairy,
-                    0, 0, 100,
-                    new Color(255, 100, 100),
-                    1.2f
-                );
-                dust.velocity = -Projectile.velocity * 0.3f;
-                dust.noGravity = true;
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.3f + 0.7f;
+            Lighting.AddLight(Projectile.Center, 0.5f * pulse, 0.16f * pulse, 0.2f * pulse);
+
+            //孢子粉尾：甩出率∝速度
+            if (!Main.dedServ && Projectile.timeLeft % (speed > 9f ? 3 : 5) == 0) {
+                FishAmanitaVFX.SporeDrift(Projectile.Center + Main.rand.NextVector2Circular(4f, 4f)
+                    , -Projectile.velocity * 0.12f, FishAmanitaVFX.CapCrimson, 0.7f, Main.rand.Next(20, 32));
             }
         }
 
@@ -262,38 +253,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Explode();
         }
 
+        /// <summary>菌盖炸裂：孢子环 + 伞盖碎片上抛 + 瞬时孢光热芯，孢子环活得比弹体久</summary>
         private void Explode() {
             if (exploded) return;
             exploded = true;
 
             SoundEngine.PlaySound(SoundID.Item14 with {
-                Volume = 0.6f,
-                Pitch = 0.3f
+                Volume = 0.45f,
+                Pitch = 0.35f
             }, Projectile.Center);
+            FishAmanitaVFX.SporePuffSound(Projectile.Center, 0.1f, 0.6f);
 
-            //爆炸粒子
-            for (int i = 0; i < 30; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    new Color(255, 100, 100),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1.3f;
-            }
-
-            //生成孢子粒子
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, velocity);
-                if (prt != null) {
-                    prt.Color = new Color(255, 100, 100);
-                    prt.Scale = Main.rand.NextFloat(0.8f, 1.2f);
+            if (!Main.dedServ) {
+                FishAmanitaVFX.SporeRing(Projectile.Center, FishAmanitaVFX.CapCrimson, 14, 5.2f, 1.05f);
+                for (int i = 0; i < 5; i++) {
+                    Vector2 vel = (-Vector2.UnitY).RotatedByRandom(0.9f) * Main.rand.NextFloat(2.5f, 6f);
+                    PRTLoader.NewParticle<PRT_FishAmanitaCapShard>(Projectile.Center, vel
+                        , FishAmanitaVFX.CapCrimson, Main.rand.NextFloat(1.3f, 2f));
                 }
+                //孢光热芯：小面积速灭的过冲爆点
+                PRTLoader.NewParticle<PRT_Light>(Projectile.Center, Vector2.Zero
+                    , FishAmanitaVFX.SporeGlow, 0.3f)?.Configure(8, 0.9f, 0.6f, 1.4f);
             }
 
             //爆炸伤害范围
@@ -318,41 +298,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Texture2D soft = CWRAsset.SoftGlow.Value;
             Vector2 origin = texture.Size() / 2f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float dir = Projectile.velocity.X >= 0f ? 1f : -1f;
 
-            //绘制拖尾
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+            //底层孢光晕：画在蘑菇本体之下
+            float pulse = 0.72f + 0.28f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI);
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.CapCrimson with { A = 0 } * (0.4f * pulse)
+                , 0f, soft.Size() / 2f, 0.5f, SpriteEffects.None);
+
+            //位移残影：旧位置暗红渐隐
+            Color ghost = FishAmanitaVFX.CapDeep with { A = 0 };
+            for (int i = 2; i < Projectile.oldPos.Length; i += 2) {
                 float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
-                Color color = new Color(255, 100, 100) * fade * 0.5f;
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                Main.EntitySpriteDraw(texture, drawPos, null, color, Projectile.rotation, origin, Projectile.scale * 0.9f, SpriteEffects.None);
+                Vector2 gp = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float gr = i < Projectile.oldRot.Length ? Projectile.oldRot[i] : Projectile.rotation;
+                Main.EntitySpriteDraw(texture, gp, null, ghost * (fade * 0.4f), gr, origin
+                    , Projectile.scale * 0.92f, SpriteEffects.None);
             }
 
-            //绘制主体（发光）
-            float glowIntensity = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f) * 0.3f + 0.7f;
-            Main.EntitySpriteDraw(
-                texture,
-                Projectile.Center - Main.screenPosition,
-                null,
-                Color.White * glowIntensity,
-                Projectile.rotation,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None
-            );
+            //旋转拖影：自旋的可视化
+            for (int i = 1; i <= 3; i++) {
+                Main.EntitySpriteDraw(texture, drawPos, null, ghost * (0.3f - i * 0.08f)
+                    , Projectile.rotation - spin * i * 2.6f * dir, origin, Projectile.scale, SpriteEffects.None);
+            }
 
+            //本体：实体蘑菇走环境光，混入伞红微提色
+            Main.EntitySpriteDraw(texture, drawPos, null, Color.Lerp(lightColor, FishAmanitaVFX.CapCrimson, 0.22f)
+                , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
             return false;
         }
     }
     #endregion
 
     #region 追踪孢子弹幕
-    /// <summary>追踪孢子，寻最近敌人</summary>
+    /// <summary>追踪孢子，寻最近敌人，咬合强度随时间收紧</summary>
     internal class AmanitaHomingSpore : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private float homingDelay = 15f;
+        private float age;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
@@ -373,124 +360,116 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //发光效果
+            age++;
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center, 0.3f * pulse, 1f * pulse, 1f * pulse);
+            Lighting.AddLight(Projectile.Center, 0.25f * pulse, 0.6f * pulse, 0.62f * pulse);
 
-            //追踪逻辑
+            //追踪逻辑：延迟后咬合随时间收紧
             if (homingDelay > 0) {
                 homingDelay--;
             }
             else {
                 NPC target = Projectile.Center.FindClosestNPC(400f, true, chasedByNPC: npc => npc.CanBeChasedBy(Projectile));
                 if (target != null) {
-                    Projectile.SmoothHomingBehavior(target.Center, 1f, 0.1f);
+                    float bite = MathHelper.Lerp(0.05f, 0.14f, MathHelper.Clamp(age / 90f, 0f, 1f));
+                    Projectile.SmoothHomingBehavior(target.Center, 1f, bite);
                 }
             }
 
-            //轨迹粒子
-            if (Main.rand.NextBool(3)) {
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.BlueFairy,
-                    -Projectile.velocity * 0.2f,
-                    100,
-                    new Color(100, 255, 255),
-                    Main.rand.NextFloat(0.8f, 1.3f)
-                );
-                dust.noGravity = true;
-            }
-
-            //孢子粒子
-            if (Main.rand.NextBool(5)) {
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(
-                    Projectile.Center,
-                    -Projectile.velocity * 0.1f
-                );
-                if (prt != null) {
-                    prt.Color = new Color(100, 255, 255);
-                    prt.Scale *= 0.6f;
+            if (!Main.dedServ) {
+                //孢子粉尾：追孢青发光孢子
+                if (Projectile.timeLeft % 6 == 0) {
+                    FishAmanitaVFX.SporeDrift(Projectile.Center
+                        , -Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(0.4f, 0.4f)
+                        , FishAmanitaVFX.HomingCyan, 0.62f, Main.rand.Next(18, 30));
+                }
+                //实体孢子颗粒补底
+                if (Main.rand.NextBool(24)) {
+                    var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center, -Projectile.velocity * 0.1f);
+                    if (prt != null) {
+                        prt.Color = FishAmanitaVFX.HomingCyan;
+                        prt.Scale = 0.55f;
+                    }
                 }
             }
+
+            Projectile.rotation = Projectile.velocity.ToRotation();
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中特效
-            for (int i = 0; i < 10; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    new Color(100, 255, 255),
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                dust.noGravity = true;
+            FishAmanitaVFX.SporePuffSound(Projectile.Center, 0.5f, 0.3f);
+            if (Main.dedServ) {
+                return;
             }
+            //咬中：小孢子环贴着命中点炸开
+            FishAmanitaVFX.SporeRing(Projectile.Center, FishAmanitaVFX.HomingCyan, 7, 2.8f, 0.7f);
         }
 
         public override void OnKill(int timeLeft) {
-            for (int i = 0; i < 8; i++) {
-                Dust dust = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.BlueFairy,
-                    Scale: Main.rand.NextFloat(1f, 1.5f)
-                );
-                dust.velocity = Main.rand.NextVector2Circular(3f, 3f);
-                dust.noGravity = true;
-                dust.color = new Color(100, 255, 255);
+            if (Main.dedServ) {
+                return;
+            }
+            //消亡后孢子继续漂移
+            for (int i = 0; i < 5; i++) {
+                FishAmanitaVFX.SporeDrift(Projectile.Center, Main.rand.NextVector2Circular(1.6f, 1.6f)
+                    , FishAmanitaVFX.HomingCyan, 0.7f, Main.rand.Next(24, 40));
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glowTex = TextureAssets.Extra[ExtrasID.SharpTears].Value; //发光材质
+            Texture2D soft = CWRAsset.SoftGlow.Value;
+            Vector2 origin = soft.Size() / 2f;
+            float speed = Projectile.velocity.Length();
+            float stretch = MathHelper.Clamp(0.55f + speed * 0.075f, 0.6f, 1.7f);
+            float rot = Projectile.rotation + MathHelper.PiOver2;
 
-            //绘制发光拖尾
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
-                Color color = new Color(100, 255, 255) * fade * 0.6f;
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float scale = Projectile.scale * fade * 0.5f;
-
-                Main.EntitySpriteDraw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    color,
-                    0,
-                    glowTex.Size() / 2f,
-                    scale,
-                    SpriteEffects.None
-                );
+            //残影链：暗紫宽层 + 青中层双层异宽
+            for (int i = Projectile.oldPos.Length - 1; i >= 1; i -= 2) {
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                float fade = 1f - i / (float)Projectile.oldPos.Length;
+                Vector2 p = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                float gr = (i < Projectile.oldRot.Length ? Projectile.oldRot[i] : Projectile.rotation) + MathHelper.PiOver2;
+                Main.EntitySpriteDraw(soft, p, null, FishAmanitaVFX.SporeDusk with { A = 0 } * (0.3f * fade)
+                    , gr, origin, new Vector2(0.3f, 0.62f) * fade * stretch, SpriteEffects.None);
+                Main.EntitySpriteDraw(soft, p, null, FishAmanitaVFX.HomingCyan with { A = 0 } * (0.4f * fade)
+                    , gr, origin, new Vector2(0.16f, 0.5f) * fade * stretch, SpriteEffects.None);
             }
 
-            //绘制主体发光
-            Main.EntitySpriteDraw(
-                glowTex,
-                Projectile.Center - Main.screenPosition,
-                null,
-                new Color(100, 255, 255) * 0.8f,
-                0,
-                glowTex.Size() / 2f,
-                Projectile.scale * 0.8f,
-                SpriteEffects.None
-            );
-
+            //本体：速度拉伸的暗外圈 / 饱和中层，孢子实体帧作剪影核仁，极小孢光热芯
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeDusk with { A = 0 } * 0.55f
+                , rot, origin, new Vector2(0.34f, 0.5f * stretch + 0.2f), SpriteEffects.None);
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.HomingCyan with { A = 0 } * 0.85f
+                , rot, origin, new Vector2(0.2f, 0.34f * stretch + 0.12f), SpriteEffects.None);
+            Texture2D sheet = FishAmanitaAssets.SporeSheet?.Value;
+            if (sheet != null) {
+                Rectangle frame = sheet.GetRectangle(Projectile.whoAmI % 4, 4);
+                Main.EntitySpriteDraw(sheet, drawPos, frame, FishAmanitaVFX.HomingCyan with { A = 0 } * 0.95f
+                    , Projectile.rotation + age * 0.04f, frame.Size() / 2f, 0.6f, SpriteEffects.None);
+            }
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeGlow with { A = 0 } * 0.9f
+                , rot, origin, new Vector2(0.08f, 0.14f * stretch), SpriteEffects.None);
             return false;
         }
     }
     #endregion
 
     #region 毒雾蘑菇弹幕
-    /// <summary>毒雾蘑菇，落地生成持续毒雾区</summary>
+    /// <summary>毒雾蘑菇，落地伞盖破裂展开浓稠孢子云持续伤害</summary>
     internal class AmanitaToxicMushroom : ModProjectile
     {
         public override string Texture => CWRConstant.Projectile + "Glomushroom";
 
         private bool deployed = false;
+        private float spin;
+        private float cloudSeed;
+
+        //部署时间轴：timeLeft 自 DeployLife 递减做入场包络，alpha 0→255 做侵蚀驱动
+        private const int DeployLife = 180;
+
+        private float DeployAge => DeployLife - Projectile.timeLeft;
 
         public override void SetDefaults() {
             Projectile.width = 24;
@@ -514,30 +493,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             if (!deployed) {
-                //飞行阶段
-                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+                //飞行阶段：沉重翻滚 + 孢子下滴
                 Projectile.velocity.Y += 0.2f;
+                spin = MathHelper.Lerp(spin, 0.05f + Projectile.velocity.Length() * 0.009f, 0.2f);
+                Projectile.rotation += spin * (Projectile.velocity.X >= 0f ? 1f : -1f);
 
-                //发光
-                Lighting.AddLight(Projectile.Center, 0.5f, 1f, 0.4f);
+                Lighting.AddLight(Projectile.Center, 0.32f, 0.2f, 0.5f);
 
-                //轨迹粒子
-                if (Main.rand.NextBool(2)) {
-                    Dust dust = Dust.NewDustDirect(
-                        Projectile.position,
-                        Projectile.width,
-                        Projectile.height,
-                        DustID.BlueFairy,
-                        0, 0, 100,
-                        new Color(150, 255, 100),
-                        1.2f
-                    );
-                    dust.velocity = -Projectile.velocity * 0.3f;
-                    dust.noGravity = true;
+                if (!Main.dedServ && Projectile.timeLeft % 5 == 0) {
+                    //浓孢子比弹体沉，往下滴
+                    FishAmanitaVFX.SporeDrift(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f)
+                        , new Vector2(-Projectile.velocity.X * 0.05f, 0.4f)
+                        , FishAmanitaVFX.MistOrchid, 0.72f, Main.rand.Next(22, 34));
                 }
             }
             else {
-                //部署阶段 - 生成毒雾
+                //部署阶段：alpha 爬升驱动云体侵蚀，满 255 消亡
                 Projectile.velocity = Vector2.Zero;
                 Projectile.alpha += 3;
 
@@ -546,10 +517,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     return;
                 }
 
-                //周期性生成毒雾粒子
+                //周期性生成云内悬浮孢子
                 if (Projectile.timeLeft % 5 == 0) {
                     SpawnToxicCloud();
                 }
+
+                float env = MathHelper.Clamp(DeployAge / 14f, 0f, 1f) * (1f - Projectile.alpha / 255f * 0.6f);
+                Lighting.AddLight(Projectile.Center, 0.3f * env, 0.16f * env, 0.5f * env);
 
                 //持续伤害
                 if (Projectile.timeLeft % 10 == 0 && Projectile.IsOwnedByLocalPlayer()) {
@@ -558,32 +532,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        /// <summary>云内点缀：悬浮亮孢子缓慢上浮 + 实体孢子颗粒，云体主身由 shader 承担</summary>
         private void SpawnToxicCloud() {
-            for (int i = 0; i < 3; i++) {
-                Vector2 offset = Main.rand.NextVector2Circular(60f, 60f);
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center + offset,
-                    DustID.BlueFairy,
-                    Vector2.Zero,
-                    100,
-                    new Color(150, 255, 100, 100),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1.2f;
-                dust.velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
+            if (Main.dedServ) {
+                return;
             }
+            Vector2 offset = Main.rand.NextVector2Circular(62f, 44f);
+            FishAmanitaVFX.SporeDrift(Projectile.Center + offset
+                , new Vector2(0f, -0.25f) + Main.rand.NextVector2Circular(0.3f, 0.2f)
+                , Main.rand.NextBool(3) ? FishAmanitaVFX.SporeGlow : FishAmanitaVFX.MistOrchid
+                , 0.66f, Main.rand.Next(30, 46));
 
-            //孢子粒子
             if (Main.rand.NextBool(2)) {
-                Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(50f, 50f);
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(
-                    spawnPos,
-                    Main.rand.NextVector2Circular(1f, 1f)
-                );
+                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(Projectile.Center + Main.rand.NextVector2Circular(52f, 40f)
+                    , Main.rand.NextVector2Circular(0.6f, 0.4f));
                 if (prt != null) {
-                    prt.Color = new Color(150, 255, 100);
-                    prt.Scale = Main.rand.NextFloat(0.8f, 1.4f);
+                    prt.Color = FishAmanitaVFX.MistOrchid;
+                    prt.Scale = Main.rand.NextFloat(0.7f, 1.2f);
                 }
             }
         }
@@ -613,66 +578,140 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             target.AddBuff(BuffID.Poisoned, 180);
         }
 
+        /// <summary>伞盖破裂：碎片上抛 + 瘴紫孢子环，随后云体自 shader 展开</summary>
         private void Deploy() {
             if (deployed) return;
             deployed = true;
 
-            Projectile.timeLeft = 180;
+            Projectile.timeLeft = DeployLife;
             Projectile.velocity = Vector2.Zero;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
+            cloudSeed = (Projectile.identity % 97) * 0.117f;
 
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with {
-                Volume = 0.4f,
-                Pitch = -0.2f
-            }, Projectile.Center);
+            FishAmanitaVFX.SporePuffSound(Projectile.Center, -0.2f, 0.5f);
 
-            //部署特效
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    new Color(150, 255, 100),
-                    Main.rand.NextFloat(1.5f, 2f)
-                );
-                dust.noGravity = true;
+            if (!Main.dedServ) {
+                FishAmanitaVFX.SporeRing(Projectile.Center, FishAmanitaVFX.MistOrchid, 12, 3.6f, 1f);
+                for (int i = 0; i < 4; i++) {
+                    PRTLoader.NewParticle<PRT_FishAmanitaCapShard>(Projectile.Center
+                        , (-Vector2.UnitY).RotatedByRandom(1.1f) * Main.rand.NextFloat(1.8f, 4.2f)
+                        , FishAmanitaVFX.MistOrchid, Main.rand.NextFloat(1.2f, 1.8f));
+                }
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (Main.dedServ || !deployed) {
+                return;
+            }
+            //云散残留：长命孢子群继续漂移，活得比云久
+            for (int i = 0; i < 8; i++) {
+                FishAmanitaVFX.SporeDrift(Projectile.Center + Main.rand.NextVector2Circular(56f, 40f)
+                    , new Vector2(0f, -0.15f) + Main.rand.NextVector2Circular(0.35f, 0.2f)
+                    , Main.rand.NextBool(4) ? FishAmanitaVFX.SporeGlow : FishAmanitaVFX.MistOrchid
+                    , 0.7f, Main.rand.Next(50, 80));
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
             if (deployed) {
-                //毒雾状态不绘制蘑菇本体
+                DrawMistCloud();
                 return false;
             }
 
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Texture2D soft = CWRAsset.SoftGlow.Value;
             Vector2 origin = texture.Size() / 2f;
-            float alpha = (255f - Projectile.alpha) / 255f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            float dir = Projectile.velocity.X >= 0f ? 1f : -1f;
 
-            Main.EntitySpriteDraw(
-                texture,
-                Projectile.Center - Main.screenPosition,
-                null,
-                Color.Lerp(lightColor, new Color(150, 255, 100), 0.5f) * alpha,
-                Projectile.rotation,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None
-            );
+            //底层瘴紫光晕
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.MistOrchid with { A = 0 } * 0.38f
+                , 0f, soft.Size() / 2f, 0.55f, SpriteEffects.None);
 
+            //旋转拖影
+            Color ghost = FishAmanitaVFX.MistDeep with { A = 0 };
+            for (int i = 1; i <= 3; i++) {
+                Main.EntitySpriteDraw(texture, drawPos, null, ghost * (0.28f - i * 0.07f)
+                    , Projectile.rotation - spin * i * 2.4f * dir, origin, Projectile.scale, SpriteEffects.None);
+            }
+
+            //本体
+            Main.EntitySpriteDraw(texture, drawPos, null, Color.Lerp(lightColor, FishAmanitaVFX.MistOrchid, 0.3f)
+                , Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
             return false;
+        }
+
+        /// <summary>浓稠孢子云：shader quad 世界锚定，边缘噪声撕裂、内部孢子亮斑上浮；未就绪时降级雾团贴图</summary>
+        private void DrawMistCloud() {
+            float reveal = MathHelper.Clamp(DeployAge / 16f, 0f, 1f);
+            //前 45% 生命云体保持完整，之后进入噪声侵蚀消散
+            float erode = MathHelper.Clamp((Projectile.alpha / 255f - 0.45f) / 0.55f, 0f, 1f);
+            Effect fx = FishAmanitaAssets.FishAmanitaMist;
+            Vector2 center = Projectile.Center;
+            const float hx = 150f;
+            const float hy = 105f;
+
+            if (fx == null || CWRAsset.PerlinNoise?.Value == null) {
+                //降级：雾团贴图三层，暗紫压底
+                Texture2D fog = CWRAsset.Fog?.Value;
+                if (fog == null) {
+                    return;
+                }
+                float alpha = reveal * (1f - erode);
+                for (int i = 0; i < 3; i++) {
+                    float t = Main.GlobalTimeWrappedHourly * (0.2f + i * 0.13f) + i * 2.1f + cloudSeed * 10f;
+                    Vector2 off = new Vector2(MathF.Cos(t), MathF.Sin(t * 1.3f)) * (10f + i * 8f);
+                    Main.EntitySpriteDraw(fog, center + off - Main.screenPosition, null
+                        , (i == 0 ? FishAmanitaVFX.MistDeep : FishAmanitaVFX.MistOrchid) with { A = 0 } * (alpha * (0.36f - i * 0.08f))
+                        , t * 0.3f, fog.Size() / 2f, 0.9f + i * 0.22f, SpriteEffects.None);
+                }
+                return;
+            }
+
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            DepthStencilState prevDepth = device.DepthStencilState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uSeed"]?.SetValue(cloudSeed);
+            fx.Parameters["uReveal"]?.SetValue(reveal);
+            fx.Parameters["uErode"]?.SetValue(erode);
+            fx.Parameters["uSizePx"]?.SetValue(new Vector2(hx * 2f, hy * 2f));
+            fx.Parameters["uNoiseTex"]?.SetValue(CWRAsset.PerlinNoise.Value);
+            fx.Parameters["uColDense"]?.SetValue(FishAmanitaVFX.MistDeep.ToVector3());
+            fx.Parameters["uColMist"]?.SetValue(FishAmanitaVFX.MistOrchid.ToVector3());
+            fx.Parameters["uColGlow"]?.SetValue(FishAmanitaVFX.SporeGlow.ToVector3());
+
+            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            verts[0] = new VertexPositionColorTexture(new Vector3(center.X - hx, center.Y - hy, 0f), Color.White, new Vector2(0f, 0f));
+            verts[1] = new VertexPositionColorTexture(new Vector3(center.X + hx, center.Y - hy, 0f), Color.White, new Vector2(1f, 0f));
+            verts[2] = new VertexPositionColorTexture(new Vector3(center.X - hx, center.Y + hy, 0f), Color.White, new Vector2(0f, 1f));
+            verts[3] = new VertexPositionColorTexture(new Vector3(center.X + hx, center.Y + hy, 0f), Color.White, new Vector2(1f, 1f));
+
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+            }
+
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
+            device.DepthStencilState = prevDepth;
         }
     }
     #endregion
 
     #region 闪电孢子弹幕
-    /// <summary>闪电孢子，命中后链跳下一目标</summary>
+    /// <summary>闪电孢子，命中后经菌丝电弧折射至下一目标</summary>
     internal class AmanitaLightningSpore : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private int bounceCount = 0;
         private const int MaxBounces = 3;
@@ -705,33 +744,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
-            //闪电发光
             float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f) * 0.4f + 0.6f;
-            Lighting.AddLight(Projectile.Center, 1f * pulse, 1f * pulse, 0.6f * pulse);
+            Lighting.AddLight(Projectile.Center, 0.55f * pulse, 0.45f * pulse, 0.85f * pulse);
 
-            //电弧粒子
-            if (Main.rand.NextBool(2)) {
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    DustID.BlueFairy,
-                    Vector2.Zero,
-                    100,
-                    new Color(255, 255, 150),
-                    Main.rand.NextFloat(1f, 1.5f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1f;
-            }
-
-            //轨迹效果
-            if (Main.rand.NextBool(4)) {
-                var prt = PRTLoader.NewParticle<PRT_SporeBobo>(
-                    Projectile.Center,
-                    -Projectile.velocity * 0.1f
-                );
-                if (prt != null) {
-                    prt.Color = new Color(255, 255, 150);
-                    prt.Scale *= 0.5f;
+            if (!Main.dedServ) {
+                //体表生物电：低频短弧贴着飞行路径抽动
+                if (Main.rand.NextBool(20)) {
+                    Vector2 back = Projectile.Center - Projectile.velocity * Main.rand.NextFloat(2f, 5f);
+                    FishAmanitaVFX.MyceliumArc(back, Projectile.Center + Projectile.velocity * 2f
+                        , FishAmanitaVFX.ArcVolt, 5f, 6, 0, 1.3f);
+                }
+                //孢子粉尾
+                if (Main.rand.NextBool(9)) {
+                    FishAmanitaVFX.SporeDrift(Projectile.Center, -Projectile.velocity * 0.06f
+                        , FishAmanitaVFX.ArcVolt, 0.55f, Main.rand.Next(16, 26));
                 }
             }
 
@@ -764,100 +790,93 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        /// <summary>命中节点：小孢子环 + 放射短弧，菌丝网络的节点亮起</summary>
         private void SpawnLightningEffect(Vector2 position) {
             SoundEngine.PlaySound(SoundID.Item93 with {
                 Volume = 0.4f,
                 Pitch = 0.5f
             }, position);
+            SoundEngine.PlaySound(SoundID.Item85 with { Volume = 0.2f, Pitch = 0.6f, MaxInstances = 4 }, position);
 
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                Dust dust = Dust.NewDustPerfect(
-                    position,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    new Color(255, 255, 150),
-                    Main.rand.NextFloat(1.3f, 2f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1.2f;
+            if (Main.dedServ) {
+                return;
+            }
+            FishAmanitaVFX.SporeRing(position, FishAmanitaVFX.ArcVolt, 8, 3.4f, 0.8f);
+            for (int i = 0; i < 2; i++) {
+                Vector2 dir = Main.rand.NextVector2Unit();
+                FishAmanitaVFX.MyceliumArc(position, position + dir * Main.rand.NextFloat(34f, 60f)
+                    , FishAmanitaVFX.ArcVolt, 6f, 8, 1, 1.2f);
             }
         }
 
+        /// <summary>折射链：一道弯曲带分叉的菌丝主弧连接当前节点与下一目标</summary>
         private void CreateLightningChain(Vector2 start, Vector2 end) {
-            int segments = 10;
-            for (int i = 0; i < segments; i++) {
-                float progress = i / (float)segments;
-                Vector2 pos = Vector2.Lerp(start, end, progress);
-                Vector2 offset = Main.rand.NextVector2Circular(8f, 8f) * (1f - Math.Abs(progress - 0.5f) * 2f);
-
-                Dust dust = Dust.NewDustPerfect(
-                    pos + offset,
-                    DustID.BlueFairy,
-                    Vector2.Zero,
-                    100,
-                    new Color(255, 255, 150, 200),
-                    Main.rand.NextFloat(1f, 1.8f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1f;
+            if (Main.dedServ) {
+                return;
+            }
+            FishAmanitaVFX.MyceliumArc(start, end, FishAmanitaVFX.ArcVolt, 11f, 13, 2);
+            //链身孢子迸出：电流沿菌丝惊起的孢子
+            for (int i = 0; i < 4; i++) {
+                Vector2 p = Vector2.Lerp(start, end, Main.rand.NextFloat());
+                FishAmanitaVFX.SporeDrift(p, Main.rand.NextVector2Circular(1.2f, 1.2f)
+                    , FishAmanitaVFX.ArcVolt, 0.6f, Main.rand.Next(18, 30));
             }
         }
 
         public override void OnKill(int timeLeft) {
-            //最终爆炸
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                Dust dust = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.BlueFairy,
-                    velocity,
-                    100,
-                    new Color(255, 255, 150),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                dust.noGravity = true;
+            if (Main.dedServ) {
+                return;
+            }
+            //终末星散：短弧放射 + 孢子留场
+            for (int i = 0; i < 3; i++) {
+                float ang = MathHelper.TwoPi * i / 3f + Main.rand.NextFloat(0.7f);
+                FishAmanitaVFX.MyceliumArc(Projectile.Center
+                    , Projectile.Center + ang.ToRotationVector2() * Main.rand.NextFloat(30f, 52f)
+                    , FishAmanitaVFX.ArcVolt, 6f, 9, 1, 1.25f);
+            }
+            for (int i = 0; i < 6; i++) {
+                FishAmanitaVFX.SporeDrift(Projectile.Center, Main.rand.NextVector2Circular(1.6f, 1.6f)
+                    , FishAmanitaVFX.ArcVolt, 0.65f, Main.rand.Next(24, 40));
             }
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Texture2D glowTex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
+            Texture2D soft = CWRAsset.SoftGlow.Value;
+            Vector2 origin = soft.Size() / 2f;
+            float rot = Projectile.rotation + MathHelper.PiOver2;
 
-            //绘制闪电拖尾
-            for (int i = 0; i < Projectile.oldPos.Length; i++) {
-                float fade = (Projectile.oldPos.Length - i) / (float)Projectile.oldPos.Length;
-                Color color = new Color(255, 255, 150) * fade * 0.7f;
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-
-                //随机偏移模拟电弧
-                Vector2 offset = Main.rand.NextVector2Circular(2f, 2f) * (1f - fade);
-
-                Main.EntitySpriteDraw(
-                    glowTex,
-                    drawPos + offset,
-                    null,
-                    color,
-                    Projectile.rotation,
-                    glowTex.Size() / 2f,
-                    Projectile.scale * fade * 0.6f,
-                    SpriteEffects.None
-                );
+            //残影链：确定性正弦抖动模拟生物电嗡鸣，非逐帧随机
+            Vector2 perp = Projectile.velocity.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2);
+            for (int i = Projectile.oldPos.Length - 1; i >= 1; i -= 2) {
+                if (Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                float fade = 1f - i / (float)Projectile.oldPos.Length;
+                float wob = MathF.Sin(Main.GlobalTimeWrappedHourly * 14f + i * 1.7f + Projectile.whoAmI) * 2.4f * (1f - fade);
+                Vector2 p = Projectile.oldPos[i] + Projectile.Size / 2f + perp * wob - Main.screenPosition;
+                Main.EntitySpriteDraw(soft, p, null, FishAmanitaVFX.SporeDusk with { A = 0 } * (0.3f * fade)
+                    , rot, origin, new Vector2(0.24f, 0.5f) * fade, SpriteEffects.None);
+                Main.EntitySpriteDraw(soft, p, null, FishAmanitaVFX.ArcVolt with { A = 0 } * (0.42f * fade)
+                    , rot, origin, new Vector2(0.13f, 0.4f) * fade, SpriteEffects.None);
             }
 
-            //绘制主体
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f) * 0.3f + 0.7f;
-            Main.EntitySpriteDraw(
-                glowTex,
-                Projectile.Center - Main.screenPosition,
-                null,
-                new Color(255, 255, 150) * pulse,
-                Projectile.rotation + MathHelper.PiOver2,
-                glowTex.Size() / 2f,
-                Projectile.scale,
-                SpriteEffects.None
-            );
-
+            //本体：暗紫外圈 / 电紫中层速度拉伸，孢子实体帧作剪影核仁，孢光小芯
+            float speed = Projectile.velocity.Length();
+            float stretch = MathHelper.Clamp(0.5f + speed * 0.06f, 0.55f, 1.4f);
+            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 15f) * 0.25f + 0.75f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeDusk with { A = 0 } * (0.6f * pulse)
+                , rot, origin, new Vector2(0.36f, 0.44f * stretch + 0.16f), SpriteEffects.None);
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.ArcVolt with { A = 0 } * (0.85f * pulse)
+                , rot, origin, new Vector2(0.2f, 0.3f * stretch + 0.1f), SpriteEffects.None);
+            Texture2D sheet = FishAmanitaAssets.SporeSheet?.Value;
+            if (sheet != null) {
+                Rectangle frame = sheet.GetRectangle(Projectile.whoAmI % 4, 4);
+                Main.EntitySpriteDraw(sheet, drawPos, frame, FishAmanitaVFX.ArcVolt with { A = 0 } * (0.9f * pulse)
+                    , Projectile.rotation, frame.Size() / 2f, 0.52f, SpriteEffects.None);
+            }
+            Main.EntitySpriteDraw(soft, drawPos, null, FishAmanitaVFX.SporeGlow with { A = 0 } * (0.95f * pulse)
+                , rot, origin, new Vector2(0.08f, 0.13f * stretch), SpriteEffects.None);
             return false;
         }
     }

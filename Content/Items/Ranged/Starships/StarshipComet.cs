@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //特殊弹药：彗星束，命中沿途释放若干悬浮光点
     internal class StarshipComet : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 20;
@@ -103,7 +103,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.Starships
     //悬浮光点，短暂延迟后爆炸
     internal class StarshipCometOrb : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         public override void SetDefaults() {
             Projectile.width = 22;

@@ -464,7 +464,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// ai[1] 0普通 1EX
     internal class DestroyersBeam : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private bool IsEX => Projectile.ai[1] > 0f;
         private ref float Init => ref Projectile.ai[0];

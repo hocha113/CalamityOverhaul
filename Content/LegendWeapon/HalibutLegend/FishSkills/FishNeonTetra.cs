@@ -1,8 +1,8 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
-using InnoVault.PRT;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Stones;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -21,6 +21,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int walkTimer = 0;
         private const int WalkInterval = 18; //每18帧生成一次
         private Vector2 lastPlayerPosition = Vector2.Zero;
+        private int hueQueue = 0; //视觉队列号，色相相位沿生成顺序偏移
 
         public void UpdatePlayer(Player player) {
             if (Cooldown > 0) {
@@ -62,6 +63,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float distance = Main.rand.NextFloat(40f, 80f);
             Vector2 spawnPos = player.Center + angle.ToRotationVector2() * distance;
             ShootState shootState = player.GetShootState();
+            hueQueue = (hueQueue + 1) % 6;
             int neonProj = Projectile.NewProjectile(
                 shootState.Source,
                 spawnPos,
@@ -69,7 +71,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 ModContent.ProjectileType<NeonTetraLightProjectile>(),
                 (int)(shootState.WeaponDamage * (0.6f + HalibutData.GetDomainLayer() * 0.2f)),
                 2f,
-                player.whoAmI
+                player.whoAmI,
+                0f,
+                hueQueue
             );
 
             if (neonProj >= 0) {
@@ -79,27 +83,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 霓虹脂鲤发光弹幕
+    /// 霓虹脂鲤发光弹幕：深海生物荧光，青-品红呼吸脉动 + 缎带尾迹 + 浮游光斑
     /// </summary>
-    internal class NeonTetraLightProjectile : ModProjectile
+    internal class NeonTetraLightProjectile : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.NeonTetra;
 
         private ref float Timer => ref Projectile.ai[0];
-        private ref float PhaseOffset => ref Projectile.ai[1];
+        /// <summary>生成队列号 0..5，色相相位沿队列偏移</summary>
+        private ref float HueQueue => ref Projectile.ai[1];
 
         private float glowIntensity = 0f;
-        private float pulsePhase = 0f;
-        private readonly List<Vector2> trailPositions = new();
-        private const int MaxTrailLength = 10;
+        private float hitPulse = 0f; //命中提亮 0..1，每帧衰减
+        private Trail trail;
 
         //光照参数
         private const float LightRadius = 200f;
         private const int LifeTime = 120;
-        private const float DamageRadius = 150f;
+
+        /// <summary>每鱼相位：identity 派生，各客户端一致</summary>
+        private float Phase => Projectile.identity * 2.399f;
+        /// <summary>呼吸 0..1：慢周期正弦，生物发光节律（周期约84帧）</summary>
+        private float Breath => 0.5f + 0.5f * MathF.Sin(Timer * 0.075f + Phase);
+        /// <summary>当前色相 0=青 1=品红：每鱼慢速滑移，队列错相</summary>
+        private float HueT => 0.5f + 0.5f * MathF.Sin(Timer * 0.02f + HueQueue * 1.05f + Phase * 0.5f);
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 36;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults() {
@@ -115,24 +127,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
-
-            PhaseOffset = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
         public override void AI() {
             Timer++;
-            pulsePhase += 0.15f;
 
-            //淡入淡出效果
-            float lifeProgress = Timer / LifeTime;
+            //生命包络：化现淡入 → 稳态 → 消散淡出
+            float lifeProgress = Timer / (float)LifeTime;
             if (lifeProgress < 0.2f) {
-                //淡入
                 float fadeIn = lifeProgress / 0.2f;
                 Projectile.alpha = (int)(255 * (1f - fadeIn));
                 glowIntensity = fadeIn;
             }
             else if (lifeProgress > 0.7f) {
-                //淡出
                 float fadeOut = (lifeProgress - 0.7f) / 0.3f;
                 Projectile.alpha = (int)(255 * fadeOut);
                 glowIntensity = 1f - fadeOut;
@@ -142,139 +149,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 glowIntensity = 1f;
             }
 
-            //轻微漂浮运动
-            float floatX = (float)Math.Sin(pulsePhase * 0.8f + PhaseOffset) * 1.5f;
-            float floatY = (float)Math.Cos(pulsePhase * 0.6f + PhaseOffset) * 1f;
-            Projectile.velocity = new Vector2(floatX, floatY);
-
-            //旋转
-            Projectile.rotation += 0.05f;
-
-            //青色光照
-            float lightIntensity = glowIntensity * (0.8f + (float)Math.Sin(pulsePhase) * 0.2f);
-            Lighting.AddLight(Projectile.Center, 0.2f * lightIntensity, 0.8f * lightIntensity, 1f * lightIntensity);
-
-            //更新拖尾
-            UpdateTrail();
-
-            //生成青色粒子
-            if (Main.rand.NextBool(5) && glowIntensity > 0.5f) {
-                SpawnNeonParticle();
+            if (hitPulse > 0f) {
+                hitPulse -= 0.12f;
             }
 
-            //照明和伤害范围内的敌人
-            if (Timer % 15 == 0) {
-                ApplyLightingEffect();
+            //化现一拍：光斑外扩 + 微暗环 + 水滴声
+            if (Timer == 1f) {
+                FishNeonTetraVFX.MaterializeBurst(Projectile.Center, HueT);
             }
-        }
 
-        private void UpdateTrail() {
-            trailPositions.Insert(0, Projectile.Center);
-            if (trailPositions.Count > MaxTrailLength) {
-                trailPositions.RemoveAt(trailPositions.Count - 1);
+            //慢速利萨茹巡游：荧光鱼绕生成点游弋（漂移半径约30px），尾迹画出缎带环
+            Projectile.velocity = new Vector2(
+                MathF.Sin(Timer * 0.062f + Phase) * 1.9f,
+                MathF.Cos(Timer * 0.048f + Phase * 1.37f) * 1.4f);
+
+            //朝向沿泳向：贴图头朝右上，+PiOver4 校正；叠尾摆微振
+            float heading = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            float wiggle = MathF.Sin(Timer * 0.31f + Phase) * 0.09f;
+            Projectile.rotation = Timer <= 1f ? heading
+                : Projectile.rotation.AngleLerp(heading + wiggle, 0.14f);
+
+            //呼吸同步照明：饱和低明度的青-品红光，节律起伏
+            Vector3 lightHue = Vector3.Lerp(new Vector3(0.10f, 0.44f, 0.54f)
+                , new Vector3(0.44f, 0.07f, 0.36f), HueT);
+            float breathMul = (0.7f + 0.3f * Breath) * glowIntensity * (1f + hitPulse * 0.4f);
+            Lighting.AddLight(Projectile.Center, lightHue * breathMul);
+
+            //浮游光斑：巡游期缓吐，消散期加速散逸（上浮）
+            bool dissolving = lifeProgress > 0.7f;
+            if (dissolving) {
+                if (Timer % 5 == 0) {
+                    FishNeonTetraVFX.AmbientMote(Projectile.Center, Projectile.velocity - new Vector2(0f, 0.8f), HueT);
+                }
             }
+            else if (Timer % 20 == 0 && glowIntensity > 0.4f) {
+                FishNeonTetraVFX.AmbientMote(Projectile.Center, Projectile.velocity, HueT);
+            }
+
+            //照亮路径上的敌人：荧光渗染光照（描边叠层在绘制层）
+            IlluminateEnemies();
         }
 
-        private void SpawnNeonParticle() {
-            Color neonColor = new Color(50, 200, 255);
-
-            PRTLoader.NewParticle<PRT_Light>(
-                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                Main.rand.NextVector2Circular(2f, 2f),
-                neonColor,
-                0.6f
-            ).Configure(20, hueShift: 0.01f);
-        }
-
-        private void ApplyLightingEffect() {
-            //对范围内的敌人造成照明效果（显示位置）和伤害
-            for (int i = 0; i < Main.maxNPCs; i++) {
-                NPC npc = Main.npc[i];
-                if (!npc.active || npc.friendly) continue;
-
+        private void IlluminateEnemies() {
+            Vector3 hue = Vector3.Lerp(new Vector3(0.10f, 0.40f, 0.50f)
+                , new Vector3(0.40f, 0.06f, 0.32f), HueT) * ((0.55f + 0.45f * Breath) * glowIntensity);
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.friendly) {
+                    continue;
+                }
                 float distance = Vector2.Distance(Projectile.Center, npc.Center);
-
                 if (distance < LightRadius) {
-                    //照明效果显示敌人位置
-                    Lighting.AddLight(npc.Center, 0.3f, 1f, 1.2f);
-
-                    //在敌人头顶生成照明标记
-                    if (Main.rand.NextBool(3)) {
-                        SpawnLightMark(npc);
-                    }
+                    Lighting.AddLight(npc.Center, hue);
                 }
             }
         }
 
-        private void SpawnLightMark(NPC npc) {
-            Color markColor = new Color(100, 220, 255);
-
-            Dust mark = Dust.NewDustPerfect(
-                npc.Center + new Vector2(0, -npc.height / 2 - 10),
-                DustID.BlueCrystalShard,
-                Vector2.Zero,
-                0,
-                markColor,
-                1.2f
-            );
-            mark.noGravity = true;
-            mark.fadeIn = 1f;
-        }
-
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //击中时产生青色爆发
-            for (int i = 0; i < 8; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Color neonColor = new Color(50, 200, 255);
-
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center,
-                    velocity,
-                    neonColor,
-                    0.7f
-                ).Configure(25, hueShift: 0.02f);
-            }
-
-            //青色水花
-            for (int i = 0; i < 5; i++) {
-                Dust splash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    Main.rand.NextVector2Circular(3f, 3f),
-                    100,
-                    new Color(100, 220, 255),
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                splash.noGravity = true;
-            }
+            //触碰节拍：体表荧光短促提亮 + 沿命中方向 squirt，无白闪
+            hitPulse = 1f;
+            FishNeonTetraVFX.TouchBurst(Projectile.Center, target.Center, HueT);
         }
 
         public override void OnKill(int timeLeft) {
-            //消散效果
-            for (int i = 0; i < 12; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                Color neonColor = new Color(50, 200, 255);
-
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center,
-                    velocity,
-                    neonColor,
-                    Main.rand.NextFloat(0.5f, 0.8f)
-                ).Configure(30, hueShift: 0.02f);
-            }
-
-            //青色水花
-            for (int i = 0; i < 8; i++) {
-                Dust splash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    Main.rand.NextVector2Circular(4f, 4f),
-                    100,
-                    new Color(100, 220, 255),
-                    Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                splash.noGravity = Main.rand.NextBool();
-            }
+            FishNeonTetraVFX.DissolveBurst(Projectile.Center, HueT);
 
             SoundEngine.PlaySound(SoundID.Item8 with {
                 Volume = 0.3f,
@@ -282,112 +219,130 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            SpriteBatch sb = Main.spriteBatch;
+        //==== 绘制：缎带(图元层) → 底晕+敌人描边(加色层) → 鱼体+侧线(遮挡层) ====
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        /// <summary>化现过冲落定，消散微缩</summary>
+        private float ScaleEnvelope() {
+            float lifeProgress = Timer / (float)LifeTime;
+            if (lifeProgress < 0.2f) {
+                return 0.4f + 0.6f * FishNeonTetraVFX.EaseOutBack(lifeProgress / 0.2f);
+            }
+            if (lifeProgress > 0.7f) {
+                return MathHelper.Lerp(1f, 0.78f, (lifeProgress - 0.7f) / 0.3f);
+            }
+            return 1f;
+        }
+
+        public float GetTrailWidth(float completionRatio) {
+            //头宽尾尖，随呼吸与生命包络缩放
+            float w = MathF.Pow(1f - completionRatio, 0.85f) * (9f + 3.5f * Breath);
+            return w * (0.35f + 0.65f * glowIntensity);
+        }
+
+        public Color GetTrailColor(Vector2 coord) => Color.White * MathF.Pow(1f - coord.X, 1.15f);
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect fx = FishNeonTetraAssets.FishNeonTrail;
+            if (fx == null || !Projectile.active || glowIntensity <= 0.02f) {
+                return;
+            }
+            FishNeonTetraVFX.ApplyTrail(fx, Phase, Breath, glowIntensity * (1f + hitPulse * 0.3f));
+            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trail, GetTrailWidth, GetTrailColor, fx);
+        }
+
+        void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
+            if (!Projectile.active || glowIntensity <= 0.01f) {
+                return;
+            }
+            float breath = Breath;
+            Color hue = FishNeonTetraVFX.HueColor(HueT);
+            Color hueAlt = FishNeonTetraVFX.HueColor(1f - HueT);
+
+            //底层水晕：SoftGlow 仅作垫底（暗渊宽晕 + 饱和窄晕），非效果 body
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null) {
+                Vector2 gpos = Projectile.Center - Main.screenPosition;
+                float gs = Projectile.scale * (0.9f + 0.12f * breath) * glowIntensity * ScaleEnvelope();
+                spriteBatch.Draw(glow, gpos, null, (FishNeonTetraVFX.Abyss with { A = 0 }) * (0.5f * glowIntensity)
+                    , 0f, glow.Size() * 0.5f, gs * 2.2f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(glow, gpos, null, (hue with { A = 0 })
+                    * ((0.22f + 0.16f * breath) * glowIntensity * (1f + hitPulse * 0.5f))
+                    , 0f, glow.Size() * 0.5f, gs * 1.2f, SpriteEffects.None, 0f);
+            }
+
+            //荧光照亮敌人：沿身形的加色渗染描边（放大晕轮 + 原尺寸补色低染），非白闪
+            DrawEnemyRims(spriteBatch, hue, hueAlt, breath);
+        }
+
+        private void DrawEnemyRims(SpriteBatch spriteBatch, Color hue, Color hueAlt, float breath) {
+            int budget = 12; //单鱼描边上限，防蠕虫类多节 NPC 撑爆绘制量
+            foreach (NPC npc in Main.ActiveNPCs) {
+                if (npc.friendly) {
+                    continue;
+                }
+                float dist = Vector2.Distance(Projectile.Center, npc.Center);
+                if (dist >= LightRadius) {
+                    continue;
+                }
+                float rim = (1f - dist / LightRadius) * glowIntensity * (0.55f + 0.45f * breath);
+                if (rim <= 0.03f) {
+                    continue;
+                }
+
+                Main.instance.LoadNPC(npc.type);
+                Texture2D tex = TextureAssets.Npc[npc.type].Value;
+                Vector2 pos = npc.Center - Main.screenPosition + new Vector2(0f, npc.gfxOffY);
+                Vector2 origin = npc.frame.Size() * 0.5f;
+                SpriteEffects flip = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+                spriteBatch.Draw(tex, pos, npc.frame, (hue with { A = 0 }) * (0.20f * rim)
+                    , npc.rotation, origin, npc.scale * 1.07f, flip, 0f);
+                spriteBatch.Draw(tex, pos, npc.frame, (hueAlt with { A = 0 }) * (0.11f * rim)
+                    , npc.rotation, origin, npc.scale, flip, 0f);
+
+                if (--budget <= 0) {
+                    break;
+                }
+            }
+        }
+
+        void IOverlayDrawable.DrawOverlay(SpriteBatch spriteBatch) {
+            if (!Projectile.active) {
+                return;
+            }
             Texture2D fishTex = TextureAssets.Item[ItemID.NeonTetra].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = fishTex.Size() / 2f;
-
             float alpha = (255f - Projectile.alpha) / 255f;
+            float breath = Breath;
+            Color hue = FishNeonTetraVFX.HueColor(HueT);
 
-            //绘制青色拖尾
-            DrawNeonTrail(sb, fishTex, origin, alpha);
+            //呼吸挤压拉伸：±4% 反相，游弋的活物感
+            float squash = MathF.Sin(Timer * 0.075f + Phase) * 0.04f;
+            Vector2 scale = new Vector2(1f + squash, 1f - squash) * Projectile.scale * ScaleEnvelope();
 
-            //绘制青色光晕
-            for (int i = 0; i < 3; i++) {
-                float glowScale = Projectile.scale * (1.3f + i * 0.2f);
-                float glowAlpha = glowIntensity * (1f - i * 0.3f) * 0.5f * alpha;
-                Color glowColor = new Color(50, 200, 255, 0);
+            //自发光体色：暗冷底与荧光色相融合，环境光只占小头（黑暗中仍可见）
+            Color lightColor = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
+            Color body = Color.Lerp(Color.Lerp(lightColor, FishNeonTetraVFX.AbyssBody, 0.55f)
+                , hue, (0.30f + 0.25f * breath) * glowIntensity);
+            spriteBatch.Draw(fishTex, drawPos, null, body * alpha, Projectile.rotation
+                , origin, scale, SpriteEffects.None, 0f);
 
-                sb.Draw(
-                    fishTex,
-                    drawPos,
-                    null,
-                    glowColor * glowAlpha,
-                    Projectile.rotation + MathHelper.PiOver4,
-                    origin,
-                    glowScale,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //主体绘制 - 青色调
-            Color mainColor = Color.Lerp(
-                lightColor,
-                new Color(100, 220, 255),
-                glowIntensity * 0.7f
-            );
-
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                mainColor * alpha,
-                Projectile.rotation + MathHelper.PiOver4,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-            );
-
-            //脉冲光效
-            float pulseIntensity = 0.5f + (float)Math.Sin(pulsePhase) * 0.3f;
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                new Color(150, 230, 255, 0) * pulseIntensity * glowIntensity * alpha,
-                Projectile.rotation + MathHelper.PiOver4,
-                origin,
-                Projectile.scale * 1.1f,
-                SpriteEffects.None,
-                0
-            );
-
-            //白色核心高光
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                Color.White * glowIntensity * 0.6f * alpha,
-                Projectile.rotation + MathHelper.PiOver4,
-                origin,
-                Projectile.scale * 0.8f,
-                SpriteEffects.None,
-                0
-            );
-
-            return false;
-        }
-
-        private void DrawNeonTrail(SpriteBatch sb, Texture2D texture, Vector2 origin, float alpha) {
-            if (trailPositions.Count < 2) return;
-
-            for (int i = 1; i < trailPositions.Count; i++) {
-                float progress = 1f - i / (float)trailPositions.Count;
-                float trailAlpha = progress * alpha * 0.6f;
-                float trailScale = Projectile.scale * MathHelper.Lerp(0.5f, 1f, progress);
-
-                Color trailColor = Color.Lerp(
-                    new Color(30, 150, 200),
-                    new Color(100, 220, 255),
-                    progress
-                ) * trailAlpha;
-
-                Vector2 trailPos = trailPositions[i] - Main.screenPosition;
-
-                sb.Draw(
-                    texture,
-                    trailPos,
-                    null,
-                    trailColor,
-                    Projectile.rotation - i * 0.1f + MathHelper.PiOver4,
-                    origin,
-                    trailScale,
-                    SpriteEffects.None,
-                    0
-                );
+            //霓虹侧线：沿体轴的加色细条（脂鲤标志性荧光带），呼吸+命中提亮，A=0 走预乘加色
+            Texture2D streak = CWRAsset.Extra_98?.Value;
+            if (streak != null) {
+                float bodyAxis = Projectile.rotation - MathHelper.PiOver4;
+                Vector2 perp = (bodyAxis + MathHelper.PiOver2).ToRotationVector2();
+                float stripeGlow = (0.30f + 0.38f * breath) * glowIntensity * (1f + hitPulse * 0.8f) * alpha;
+                Vector2 stripeScale = new Vector2(0.065f, 0.32f) * scale; //72px 贴图 → 约4.7×23px 细条
+                //上侧当前色相、下侧补色暗一档：双色渐变在体表相接
+                spriteBatch.Draw(streak, drawPos - perp * 1.5f, null, (hue with { A = 0 }) * stripeGlow
+                    , bodyAxis + MathHelper.PiOver2, streak.Size() * 0.5f, stripeScale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(streak, drawPos + perp * 1.5f, null
+                    , (FishNeonTetraVFX.HueColor(1f - HueT) with { A = 0 }) * (stripeGlow * 0.55f)
+                    , bodyAxis + MathHelper.PiOver2, streak.Size() * 0.5f, stripeScale * new Vector2(0.8f, 0.9f), SpriteEffects.None, 0f);
             }
         }
     }

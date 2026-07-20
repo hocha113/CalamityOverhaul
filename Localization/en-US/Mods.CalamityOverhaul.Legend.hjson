@@ -217,29 +217,6 @@ HalibutText: {
 	}
 }
 
-MurasamaOverride: {
-	World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
-	Text0: Unlocked
-	Text1: Not yet unlocked. Need to pass test [Unhook]
-	Text_Lang_0: Trial:
-	DisplayName: Murasama
-	Tooltip:
-		'''
-		Right-click to aim and charge the sword's energy. 
-		When a target is hit with a true melee attack using the left-click, the sword's energy will be charged. 
-		If there are powerful enemies nearby, the sword's energy will slowly charge on its own.
-		When the sword's energy is fully charged, press [KEY1] to release the blade. 
-		During the blade's flight, press the left-click to perform an Ascending Slash. [Lang1]
-		Hitting an enemy with the Ascending Slash will charge Weapon 1. 
-		Press [KEY2] to consume 1 point of weapon charge and perform a downward strike. [Lang2]
-		When the weapon charge reaches the maximum value of 10 points, 
-		hitting an enemy with the Ascending Slash again will trigger a finishing move. [Lang3]
-		[c/ff4500:" It would be better if this were a chainsaw sword "]
-		[Lang4]
-		legend_Text
-		'''
-}
-
 SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
@@ -255,6 +232,8 @@ SHPCOverride: {
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: Press [{KEY}] to open the quest list
 	TrialPassed: Already passed
+	World_Text0: Previously Upgraded World: <{0}> | Recorded Level: <{1}>
+	Text_Lang_0: Trial:
 }
 
 TrialBlockedHint: The next trial requires the relevant content to be enabled before it can begin.
@@ -343,101 +322,6 @@ HalibutTrialQuestLine: {
 		There's also a powerful sea creature that destroyed my machine; let's seek revenge.
 		'''
 	TextDictionary_Content_14: Honestly, I feel like going back to the sea.
-}
-
-MurasamaTrialQuestLine: {
-	QuestCategory: Demon Blade Murasama · Trials
-	TrackerWaiting: Target is absent, awaiting summons...
-	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: Sludge First Cut
-	Trial_1: Desert Phantom
-	Trial_2: Invader
-	Trial_3: Corruption Purge
-	Trial_4: Parasitic Threat
-	Trial_5: Dungeon Breach
-	Trial_6: Gelatinous Defiler
-	Trial_7: Path to the Underworld
-	Trial_8: Abyssal Cleansing
-	Trial_9: Brimstone Purging Flame
-	Trial_10: Tundra Shackles
-	Trial_11: Steel Gears
-	Trial_12: Twin Eye Annihilation
-	Trial_13: Mechanical King Skull
-	Trial_14: Calamity Shadow Operation
-	Trial_15: Jungle Blossom
-	Trial_16: Petrified Frontline
-	Trial_17: Plague Eradication
-	Trial_18: Golem Breaker
-	Trial_19: Astral Termination
-	Trial_20: Lunar Fall
-	Trial_21: Phantom Sanction
-	Trial_22: Wraith Exorcism
-	Trial_23: God-Slaying Serpent
-	Trial_24: Jungle Flame
-	Trial_25: Core Termination
-	Trial_26: Chaos Judgment
-	Trial_27: Primordial Return
-	TrialSummary_0: Prove yourself to me, recruit.\nThat slimy blue blob is a good place to start.\nHandle it.
-	TrialSummary_1: The remnants of the sea scourge beneath the sands still roam.\nTrack it down and end it.
-	TrialSummary_2: The moon hangs high in the night. Let's go burst that giant eyeball flying around up there, and make that false god permanently blind.
-	TrialSummary_3:
-		'''
-		The remnants of false gods taint the lands of Terra. Go liberate the corrupted continents.
-		Hack that false god's brain to pieces, chop up that purple worm!
-		I want to see your blade dance through xenos flesh!
-		'''
-	TrialSummary_4: The corrupted earth still throbs like a heart. The flesh parasites are still active; the corrupted tumors are still thinking. Go banish them entirely!
-	TrialSummary_5:
-		'''
-		The curse at the dungeon entrance has loosened. I feel psychic energy stirring in its depths, mixed with screams, wails, whispers...
-		Shatter that giant skull.
-		'''
-	TrialSummary_6: Do you feel it? That foul corruption reeking of gel.\nPurify this filthy aggregate completely.
-	TrialSummary_7: Step into the Underworld. That wall of flesh spanning the lava—that is our door to the next era.\nTear it apart.
-	TrialSummary_8: The outcast of the Sulphurous Sea blocks our quest for the treasures of the abyss. Go end its devouring and wandering.
-	TrialSummary_9: The heretical fire of that Brimstone Emissary deep in the lava is an eyesore. Go extinguish it.
-	TrialSummary_10: In the bitter cold of the northern reaches lies a sealed creation of ice and snow.\nCrush it before it can fully unseal.
-	TrialSummary_11: A massive steel worm stands in the way of our crusade. Chop it into pieces.
-	TrialSummary_12: Those mechanical eyes look down on us—pierce them with your blade.
-	TrialSummary_13: The skeleton lord donned steel armor thinking it could stop us? Shatter that metal skull.
-	TrialSummary_14: That witch who threw herself into chaos has a deformed clone sister. Kill that xeno, and offer its blood and fire to the blade.
-	TrialSummary_15: The mad plant deep in the jungle has gone berserk. Use your blade to end this out-of-control growth.
-	TrialSummary_16: The foolish Lihzahrd race only knows how to worship these stubborn stones. Let's smash it to dust and destroy their faith.
-	TrialSummary_17: Amidst the steam and toxic gas is a bee-machine hybrid. Shoot that filthy thing down.
-	TrialSummary_18: That golem of destruction is rampaging across the land. Pulverize its steel body completely.
-	TrialSummary_19: The astral worms are gathering cosmic energy here. End it, so this star field can be ours.
-	TrialSummary_20:
-		'''
-		That false god hiding on the dark side of the moon is nothing but a flawed patchwork.
-		Go sever its tentacles, rip out its heart, and drink deep of its blood.
-		'''
-	TrialSummary_21: A pathetic deity lingering by siphoning solar thermal energy. Its heretical fire must be completely extinguished.
-	TrialSummary_22: The aggregate of undead deep in the dungeon. Let those restless souls finally be silenced.
-	TrialSummary_23: That arrogant cosmic serpent is stirring behind the veil of the world. End his ambitions.
-	TrialSummary_24:
-		'''
-		The Jungle Dragon, the last auric draconic descendant of Terra. It is vastly different from other xenos and deserves our respect.
-		However, right now we need it to die once more to strip it of its Auric Soul.
-		These materials will be used to forge an incredibly superior set of gear.
-		'''
-	TrialSummary_25:
-		'''
-		That heretic of the mechanical church firmly believes his Exo Titans surpass the power of gods.
-		Such a belief is utterly absurd. Let us return those Titans to their natural state—a pile of scrap metal.
-		'''
-	TrialSummary_26:
-		'''
-		A witch who once possessed outstanding psychic talent, who should have been a great asset in defending Terra, but who has long since lost herself to chaos.
-		We can only banish her. Plunge the blade into her chest, and let the fire of loyalty burn away her rotting soul.
-		'''
-	TrialSummary_27:
-		'''
-		Our path of conquest is already unstoppable. Shatter the armor of the demonic dragon beneath the black abyss.
-		Use the Terminus and engage in the final decisive battle with the xeno.
-		'''
-	TrackerBrief: Target：{0}
-	BossRushTargetName: Battle of Terminus
-	EventActiveFormat: "{0}: active"
 }
 
 SHPCTrialQuestLine: {

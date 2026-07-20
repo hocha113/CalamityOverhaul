@@ -217,25 +217,6 @@ HalibutText: {
 	}
 }
 
-MurasamaOverride: {
-	World_Text0: 上次升级的世界:<{0}>|记录等级:<{1}>
-	Text0: 已解锁
-	Text1: 未解锁 需要通过试炼[Unhook]
-	Text_Lang_0: 试炼:
-	DisplayName: 鬼妖村正
-	Tooltip:
-		'''
-		右键瞄准并积蓄剑之能量。左键进行真近战攻击击中目标时，将为剑之能量充能。
-		如果周围存在强大的敌人，剑之能量将会缓慢自行充能。
-		当剑之能量蓄满后，按下[KEY1]发射刀身。在刀身飞行过程中，按下左键执行升龙斩击 [Lang1]
-		升龙斩击命中敌人后会为武器1充能。按下[KEY2]消耗1点武器充能值，进行一次下砸攻击 [Lang2]
-		当武器充能值达到最大值10点后，再次用升龙斩击命中敌人将触发终结技  [Lang3]
-		[c/ff4500:"如果有链锯剑会更好"]
-		[Lang4]
-		legend_Text
-		'''
-}
-
 SHPCOverride: {
 	DisplayName: SHPC
 	Tooltip:
@@ -251,6 +232,8 @@ SHPCOverride: {
 LegendUpgradeManagerSystem: {
 	QuestManagerHint: 按下[{KEY}]打开任务列表
 	TrialPassed: 已通过
+	World_Text0: 上次升级的世界:<{0}>|记录等级:<{1}>
+	Text_Lang_0: 试炼:
 }
 
 TrialBlockedHint: 下一关需要启用相应内容后才能开始
@@ -339,101 +322,6 @@ HalibutTrialQuestLine: {
 		还有一头强大的海洋生物，它摧毁了我的机器，让我们去找它复仇
 		'''
 	TextDictionary_Content_14: 老实说，我想回海里一趟
-}
-
-MurasamaTrialQuestLine: {
-	QuestCategory: 鬼妖村正·试炼
-	TrackerWaiting: 目标不在场，等待召唤...
-	TrackerFighting: "{0}: {1:0%}"
-	Trial_0: 黏淤初斩
-	Trial_1: 沙地幽影
-	Trial_2: 入侵之人
-	Trial_3: 腐化清除
-	Trial_4: 寄生威胁
-	Trial_5: 地牢侵破
-	Trial_6: 凝胶秽神
-	Trial_7: 通向地狱
-	Trial_8: 渊海清扫
-	Trial_9: 硫磺净炎
-	Trial_10: 冰原桎梏
-	Trial_11: 钢铁齿轮
-	Trial_12: 双瞳歼灭
-	Trial_13: 机械王颅
-	Trial_14: 灾影行动
-	Trial_15: 丛林之花
-	Trial_16: 石化阵线
-	Trial_17: 瘟疫清除
-	Trial_18: 魔像破防
-	Trial_19: 星域终结
-	Trial_20: 月球坠落
-	Trial_21: 幻影制裁
-	Trial_22: 幽魂祛除
-	Trial_23: 弑神之蛇
-	Trial_24: 丛林之炎
-	Trial_25: 核心终结
-	Trial_26: 混沌裁决
-	Trial_27: 原初回归
-	TrialSummary_0: 新兵，向我证明你自己\n那个黏糊糊的蓝胖子是个好的起点\n解决它
-	TrialSummary_1: 沙海之下的海妖余孽还在游荡\n追上去，终结它
-	TrialSummary_2: 夜月当空，让我们去戳爆那颗在空中乱飞的大眼球，让那个伪神彻底变成瞎子
-	TrialSummary_3:
-		'''
-		伪神的残躯玷污着泰拉的大地，去解放被腐化的大陆
-		砍碎那坨伪神的大脑，剁碎那条紫色蠕虫！
-		我要看到你的刀在异形的血肉中飞舞!
-		'''
-	TrialSummary_4: 腐化的大地还在像心脏一样颤动，血肉的寄生者还在活动，腐化的肿瘤仍旧在思考，去将他们彻底放逐！
-	TrialSummary_5:
-		'''
-		地牢门口的诅咒已经松动，我感觉到灵能在深牢中蠢动，夹杂着惨叫、哀嚎、低语...
-		击碎那颗大头颅
-		'''
-	TrialSummary_6: 你感受到了吗？那种充斥着凝胶的恶臭腐败\n将这个污秽聚合体彻底净化
-	TrialSummary_7: 走进地狱，那道横亘在熔岩上方的血肉封印——就是我们通向下一个时代的门\n将它撕碎
-	TrialSummary_8: 硫磺之海的弃儿阻挡了我们探寻深渊的宝藏，去终结它的吞噬和游荡
-	TrialSummary_9: 熔岩深处那位硫磺使者的异端之火碍眼，去将其熄灭
-	TrialSummary_10: 北境苦寒之地有一头被封印的冰雪造物\n在它彻底解封之前，将其粉碎
-	TrialSummary_11: 一个巨大的钢铁蠕虫挡住了我们的征途，将它剁成碎片
-	TrialSummary_12: 那双机械的眼睛俯视着我们——用刃将它们刺穿
-	TrialSummary_13: 骷髅领主穿上了钢铁铠甲以为能阻止我们？击碎那颗金属骷髅头
-	TrialSummary_14: 那个投入混沌的女巫，她有一个畸变的克隆姊妹，杀了那个异形，以血和火焰祭刀
-	TrialSummary_15: 丛林深处那株疯狂的植物已经暴走，用刃终结这段失控的生长
-	TrialSummary_16: 愚蠢的蜥蜴族只会信奉这些冥顽不灵的石头，让我们把它斩为齑粉，摧毁他们的信仰
-	TrialSummary_17: 蒸汽与毒气之中有个蜜蜂机械混合体，把那个肮脏的玩意儿击落
-	TrialSummary_18: 那座毁灭魔像在大地上横冲直撞，将它的钢铁躯体彻底粉碎
-	TrialSummary_19: 星域的蠕虫将宇宙能量汇聚于此，终结它，这片星域才能属于我们
-	TrialSummary_20:
-		'''
-		那个躲在月亮背面的伪神不过是个残缺的拼凑物
-		去斩断它的触须，挖出它的心脏，用它的血来痛饮
-		'''
-	TrialSummary_21: 靠吸食恒星热能苟延残喘的可怜神明，它的异端之火需要彻底熄灭
-	TrialSummary_22: 地牢深处的亡灵聚合体，让那些不安的灵魂彻底归寂
-	TrialSummary_23: 那条傲慢的宇宙巨蟒在世界的帷幕后蠢蠢欲动，终结他的野望
-	TrialSummary_24:
-		'''
-		丛林巨龙，泰拉大陆仅存的金源龙裔，与其他异形迥然不同，它值得我们的尊重
-		然而，眼下我们却需让它再次赴死，剥夺其身上的金源魄
-		这些材料将被用来打造出一套无比上乘的装备
-		'''
-	TrialSummary_25:
-		'''
-		那个机械教会的异端笃信自己所创造的星流泰坦胜过神明之力
-		这种信念荒谬至极，让我们将那几台泰坦归还自然的状态——一堆废铁
-		'''
-	TrialSummary_26:
-		'''
-		曾拥有出色灵能天赋的女巫，本应成为守护泰拉的一大助力，却早已迷失于混沌之中
-		我们唯有将她放逐，将刀锋刺入她的胸膛，让忠诚之火焚尽她腐朽的灵魂
-		'''
-	TrialSummary_27:
-		'''
-		我们的征服之路早已不可阻挡，破碎那黑渊之下妖龙的铠甲
-		使用那终焉之石，与异形展开最终决战
-		'''
-	TrackerBrief: 目标：{0}
-	BossRushTargetName: 终焉之战
-	EventActiveFormat: "{0}: 进行中"
 }
 
 SHPCTrialQuestLine: {

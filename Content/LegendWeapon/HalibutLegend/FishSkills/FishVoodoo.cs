@@ -1,11 +1,12 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
@@ -16,13 +17,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override int UnlockFishID => ItemID.GuideVoodooFish;
         public override int DefaultCooldown => 80 * (60 - HalibutData.GetDomainLayer() * 3); //80 - 3 * 领域等级 秒
         public override int ResearchDuration => 60 * 12;
-        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) => halibutPlayer.HeldHalibut;//未装备暂停冷却
+        //未装备暂停冷却;冷却走完那一帧娃娃重织(纯视觉,宣告就绪)
+        public override bool UpdateCooldown(HalibutPlayer halibutPlayer, Player player) {
+            if (Cooldown == 1 && halibutPlayer.HeldHalibut && player.whoAmI == Main.myPlayer && Active(player)) {
+                Projectile.NewProjectile(player.GetSource_Misc("FishVoodooReweave"), player.Center, Vector2.Zero
+                    , ModContent.ProjectileType<FishVoodooRitual>(), 0, 0f, player.whoAmI, 1f);
+            }
+            return halibutPlayer.HeldHalibut;
+        }
     }
 
     /// <summary>替死受伤监听</summary>
     internal class FishVoodooPlayer : ModPlayer
     {
         private const int UnlimitedLayersThreshold = 10; //>=10 层领域时无限替死
+        private const int MaxThreads = 12; //缝线演出封顶,超出的目标立即定帧+标记
 
         private bool OnSet(int damageTaken) {
             if (!TryGetSkill(out FishVoodoo skill, out HalibutPlayer hPlayer)) {
@@ -86,13 +95,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 skill.Cooldown = 0; //保证保持 0
             }
 
-            //演出：玩家中心聚合 -> 每个目标分裂
+            //演出:凝滞开场 -> 娃娃绕线显形 -> 灵魂缝线针步缝向各目标 -> 落点针刺定帧 -> 娃娃自燃成灰
+            //标记随缝线到达生成,伤害结算仍在上方即时完成
+            PlayTriggerEffects(Player);
+            int threadBudget = MaxThreads;
             foreach (var npc in targets) {
-                PlayAbsorbEffects(Player, npc, damageTaken / targets.Count);
-                SpawnLinkDust(Player.Center, npc.Center);
-                SpawnTargetImpact(npc);
-                SpawnMarkProjectile(npc);
+                if (!npc.active) continue;
+                if (threadBudget > 0) {
+                    threadBudget--;
+                    if (Main.myPlayer == Player.whoAmI) {
+                        Vector2 dollPos = Player.Center + new Vector2(-Player.direction * 16f, -54f);
+                        Projectile.NewProjectile(Player.GetSource_Misc("FishVoodoo"), dollPos, Vector2.Zero
+                            , ModContent.ProjectileType<FishVoodooThread>(), 0, 0f, Player.whoAmI, npc.whoAmI, Main.rand.Next(4));
+                    }
+                }
+                else {
+                    npc.CWR().TimeFrozenTick = 4;
+                    SpawnMarkProjectile(npc);
+                }
             }
+            SpawnRitual();
 
             Player.GivePlayerImmuneState(60);//给个短暂的无敌防止被秒
 
@@ -169,46 +191,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return Main.npc[candidates[pick]];
         }
 
-        private static void PlayAbsorbEffects(Player player, NPC target, int dmgShare) {
-            //玩家周围暗影散裂
-            for (int i = 0; i < 24; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(5f, 5f);
-                Vector2 pos = player.Center + Main.rand.NextVector2CircularEdge(32f, 32f);
-                int dustId = Dust.NewDust(pos, 0, 0, DustID.Shadowflame, vel.X, vel.Y, 120, default, Main.rand.NextFloat(0.9f, 1.4f));
-                Main.dust[dustId].noGravity = true;
-            }
-            for (int i = 0; i < 12; i++) {
-                Vector2 dir = (target.Center - player.Center).SafeNormalize(Vector2.Zero).RotatedByRandom(0.6f);
-                Vector2 vel = dir * Main.rand.NextFloat(4f, 9f);
-                int dustId = Dust.NewDust(player.Center, 0, 0, DustID.PurpleTorch, vel.X, vel.Y, 80, default, Main.rand.NextFloat(0.8f, 1.2f));
-                Main.dust[dustId].noGravity = true;
-            }
+        /// <summary>触发一拍:双层音 + 相机 punch + 少量暗影布尘底噪(英雄时刻交给仪式弹幕与缝线)</summary>
+        private static void PlayTriggerEffects(Player player) {
             SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = -0.3f }, player.Center);
-            SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.35f, Pitch = 0.2f }, target.Center);
-        }
-
-        private static void SpawnLinkDust(Vector2 from, Vector2 to) {
-            int steps = 18;
-            for (int i = 0; i <= steps; i++) {
-                float t = i / (float)steps;
-                Vector2 pos = Vector2.Lerp(from, to, t) + Main.rand.NextVector2Circular(5f, 5f);
-                Vector2 vel = (to - from).SafeNormalize(Vector2.Zero).RotatedByRandom(0.4f) * Main.rand.NextFloat(0.5f, 2f);
-                int dustId = Dust.NewDust(pos, 0, 0, DustID.Clentaminator_Purple, vel.X, vel.Y, 150, default, Main.rand.NextFloat(0.7f, 1.3f));
+            SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.4f, Pitch = -0.1f }, player.Center);
+            if (!VaultUtils.isServer) {
+                Main.instance.CameraModifiers.Add(new PunchCameraModifier(player.Center
+                    , Main.rand.NextVector2Unit(), 3f, 6f, 10, 800f, "FishVoodoo"));
+            }
+            for (int i = 0; i < 10; i++) {
+                Vector2 vel = Main.rand.NextVector2Circular(1.6f, 1.6f);
+                Vector2 pos = player.Center + Main.rand.NextVector2CircularEdge(26f, 30f);
+                int dustId = Dust.NewDust(pos, 0, 0, DustID.Shadowflame, vel.X, vel.Y, 160, default, Main.rand.NextFloat(0.7f, 1.05f));
                 Main.dust[dustId].noGravity = true;
             }
         }
 
-        private static void SpawnTargetImpact(NPC target) {
-            for (int i = 0; i < 30; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
-                int dustId = Dust.NewDust(target.Center, 0, 0, DustID.Clentaminator_Purple, vel.X, vel.Y, 60, default, Main.rand.NextFloat(1.1f, 1.6f));
-                Main.dust[dustId].noGravity = true;
+        /// <summary>仪式娃娃(mode0),重复触发时旧仪式让位</summary>
+        private void SpawnRitual() {
+            if (Main.myPlayer != Player.whoAmI) {
+                return;
             }
-            for (int i = 0; i < 18; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(2.5f, 2.5f);
-                int dustId = Dust.NewDust(target.Center, 0, 0, DustID.MagicMirror, vel.X, vel.Y, 120, default, Main.rand.NextFloat(0.8f, 1.3f));
-                Main.dust[dustId].noGravity = true;
+            int type = ModContent.ProjectileType<FishVoodooRitual>();
+            for (int i = 0; i < Main.maxProjectiles; i++) {
+                Projectile p = Main.projectile[i];
+                if (p.active && p.owner == Player.whoAmI && p.type == type && p.ai[0] == 0f) {
+                    p.Kill();
+                }
             }
+            Projectile.NewProjectile(Player.GetSource_Misc("FishVoodoo"), Player.Center, Vector2.Zero
+                , type, 0, 0f, Player.whoAmI, 0f);
         }
 
         private void SpawnMarkProjectile(NPC target) {
@@ -220,11 +232,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
     }
 
     /// <summary>
-    /// 被标记的敌人头顶显示一个巫毒娃娃鱼视觉效果
+    /// 被缝中的敌人头顶吊起一具小布偶:吊线阻尼摆随宿主移动晃荡,
+    /// 针尾余烬按节拍明灭,到期散作灰烬与断纤(伤害转移的滞留证据)
     /// </summary>
     internal class FishVoodooMark : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder; //实际绘制时改用鱼的贴图
+        public override string Texture => CWRConstant.VaultPlaceholder;
+
+        private float sway;
+        private float swayVel;
 
         public override void SetDefaults() {
             Projectile.width = 40;
@@ -243,40 +259,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             NPC npc = Main.npc[npcId];
             if (!npc.active) { Projectile.Kill(); return; }
 
-            float bob = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + Projectile.whoAmI) * 6f;
-            Projectile.Center = npc.Top + new Vector2(0, -30 + bob);
-            Projectile.rotation += 0.08f;
+            float bob = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4.2f + Projectile.whoAmI) * 3f;
+            Projectile.Center = npc.Top + new Vector2(0, -32 + bob);
+            //吊坠阻尼摆:宿主横向速度激励
+            swayVel += -npc.velocity.X * 0.014f - sway * 0.11f;
+            swayVel *= 0.88f;
+            sway = MathHelper.Clamp(sway + swayVel, -0.65f, 0.65f);
+            Projectile.rotation = sway;
+        }
+
+        public override void OnKill(int timeLeft) {
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishVoodooAsh>(Projectile.Center + Main.rand.NextVector2Circular(5f, 7f)
+                    , new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.7f, -0.3f))
+                    , Color.White, 0.7f)?.Configure(Main.rand.Next(36, 52), 0.5f);
+            }
+            PRTLoader.NewParticle<PRT_FishVoodooFiber>(Projectile.Center
+                , new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), 0.2f), Color.White, 0.8f)?.Configure(28);
         }
 
         public override bool PreDraw(ref Color lightColor) {
-            Main.instance.LoadItem(ItemID.GuideVoodooFish);
-            Texture2D tex = TextureAssets.Item[ItemID.GuideVoodooFish].Value;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
-            Rectangle rect = tex.Frame();
-            Vector2 origin = rect.Size() / 2f;
-            float scale = 1.1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI) * 0.15f;
+            float age = 60f - Projectile.timeLeft;
+            float alpha = MathHelper.Clamp(age / 5f, 0f, 1f) * MathHelper.Clamp(Projectile.timeLeft / 10f, 0f, 1f);
+            if (alpha <= 0.02f) {
+                return false;
+            }
+            SpriteBatch sb = Main.spriteBatch;
+            Vector2 dollC = Projectile.Center;
+            Color light = Lighting.GetColor(dollC.ToTileCoordinates());
+            float lightMul = 0.5f + 0.5f * (light.R + light.G + light.B) / 765f;
 
-            //发光脉冲圈
-            Texture2D pixel = VaultAsset.placeholder2.Value;
-            Color auraColor = Color.Lerp(Color.MediumPurple, Color.HotPink, (float)Math.Sin(Main.GlobalTimeWrappedHourly * 4f) * 0.5f + 0.5f);
-            for (int i = 0; i < 6; i++) {
-                float rot = i / 6f * MathHelper.TwoPi + Main.GlobalTimeWrappedHourly * 2f;
-                Vector2 off = rot.ToRotationVector2() * 6f;
-                Main.spriteBatch.Draw(tex, pos + off, rect, auraColor * 0.25f, Projectile.rotation, origin, scale * 1.15f, SpriteEffects.None, 0f);
+            //吊线:上锚点到布偶顶,3 段虚线随摆倾斜微垂
+            Vector2 hang = dollC + new Vector2(-sway * 14f, -22f);
+            Vector2 dollTop = dollC + (Projectile.rotation - MathHelper.PiOver2).ToRotationVector2() * 12f;
+            for (int i = 0; i < 3; i++) {
+                float t0 = i / 3f;
+                Vector2 a = Vector2.Lerp(hang, dollTop, t0);
+                Vector2 b = Vector2.Lerp(hang, dollTop, t0 + 0.24f);
+                float sag = (float)Math.Sin(t0 * MathHelper.Pi) * 1.6f * sway;
+                a.X += sag;
+                b.X += sag;
+                FishVoodooArt.DrawLine(sb, a, b, FishVoodooArt.ThreadDark * (0.85f * alpha), 2f);
+                FishVoodooArt.DrawLine(sb, a, b, FishVoodooArt.ThreadCrimson * (0.7f * alpha), 1f);
             }
 
-            //主体
-            Main.spriteBatch.Draw(tex, pos, rect, Color.White, Projectile.rotation * 0.5f, origin, scale, SpriteEffects.None, 0f);
-            //高亮层
-            Main.spriteBatch.Draw(tex, pos, rect, new Color(255, 200, 255, 0) * 0.6f, -Projectile.rotation * 0.7f, origin, scale * 1.05f, SpriteEffects.None, 0f);
+            FishVoodooArt.DrawEffigy(sb, dollC, 0.55f, Projectile.rotation, alpha, lightMul);
 
-            //下方诅咒细线
-            for (int i = 0; i < 3; i++) {
-                float lineRot = (i / 3f * MathHelper.TwoPi) + Main.GlobalTimeWrappedHourly * 3f;
-                Vector2 lineStart = pos + lineRot.ToRotationVector2() * 8f;
-                Rectangle lineRect = new Rectangle(0, 0, 1, 1);
-                Vector2 lineScale = new Vector2(2f, 24f + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 6f + i) * 6f);
-                Main.spriteBatch.Draw(pixel, lineStart, lineRect, auraColor * 0.35f, MathHelper.PiOver2, Vector2.Zero, lineScale, SpriteEffects.None, 0f);
+            //针尾余烬:每 9 帧亮 2 帧,唯一加色点
+            if ((int)age % 9 < 2) {
+                Texture2D glow = FishVoodooAssets.Glow?.Value;
+                if (glow != null) {
+                    Vector2 tipPos = dollC + new Vector2(7f, 3f).RotatedBy(Projectile.rotation) * 0.55f;
+                    sb.Draw(glow, tipPos - Main.screenPosition, null, new Color(220, 110, 60, 0) * (0.7f * alpha)
+                        , 0f, glow.Size() / 2f, 0.06f, SpriteEffects.None, 0f);
+                }
             }
             return false;
         }

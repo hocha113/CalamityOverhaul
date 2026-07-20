@@ -1,4 +1,5 @@
 ﻿using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -59,9 +60,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 );
             }
 
-            //召唤特效
+            //召唤特效：地面沙沸腾，先于蝎子出土
             SpawnSummonEffect(spawnPos);
-            SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.6f, Pitch = 0.2f }, spawnPos);
+            FishScorpioVFX.BurrowSound(spawnPos);
         }
 
         private static Vector2 FindValidGroundPosition(Player player, NPC target) {
@@ -99,27 +100,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private static void SpawnSummonEffect(Vector2 position) {
-            //沙尘效果
-            for (int i = 0; i < 18; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(4f, 3f);
-                vel.Y -= Main.rand.NextFloat(1f, 3f); //向上飞散
-                Dust d = Dust.NewDustPerfect(position, DustID.Sand, vel, 100,
-                    new Color(200, 180, 140), Main.rand.NextFloat(1.2f, 2f));
-                d.noGravity = false;
-            }
-
-            //黄色沙尘
-            for (int i = 0; i < 12; i++) {
-                Dust d = Dust.NewDustDirect(position - new Vector2(16), 32, 16,
-                    DustID.YellowTorch, Scale: Main.rand.NextFloat(0.8f, 1.4f));
-                d.velocity.Y -= 2f;
-                d.noGravity = true;
-            }
+            Vector2 ground = position + new Vector2(0f, 12f);
+            //土浪 + 沙粒喷泉 + 隆起的沙丘：蝎子将从这里顶出来
+            FishScorpioVFX.GroundPlume(ground, 14, 1.1f);
+            FishScorpioVFX.Mound(ground, 60f, 40);
         }
     }
 
     /// <summary>
-    /// 蝎子哨兵，从地面爬出，向敌人发射沙丘弹幕
+    /// 蝎子哨兵，从地面爬出，向敌人发射沙龙卷
     /// </summary>
     internal class ScorpionSentry : BaseHeldProj
     {
@@ -133,8 +122,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private bool isEmerging = true; //正在从地面爬出
         private float emergeProgress = 0f;
 
+        /// <summary>攻击预告帧数，尾部聚旋的时长</summary>
+        private const int TelegraphFrames = 26;
+        /// <summary>退场沉入地面的帧数</summary>
+        private const int SinkFrames = 40;
+
+        private float telegraphT;      //预告进度0..1
+        private float leanAngle;       //身体倾角（后仰蓄力/前倾过冲/行走前倾）
+        private int recoilTimer;       //发射后坐帧
+        private bool telegraphSoundPlayed;
+        private bool sinkSoundPlayed;
+
         private static int LifeTime => 60 * (5 + HalibutData.GetDomainLayer() / 2); //5-10秒存在时间
         private static int AttackInterval => 120 - HalibutData.GetDomainLayer() * 6; //攻击间隔（随层数减少）
+
+        /// <summary>蝎尾聚旋点：尾刺卷在背后上方</summary>
+        private Vector2 TailPoint => Projectile.Center + new Vector2(-direction * 14f, -16f);
 
         public override void SetStaticDefaults() {
             Main.projFrames[Projectile.type] = 4; //蝎子有4帧动画
@@ -165,6 +168,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool? CanDamage() => false;
 
+        /// <summary>是否踩在实心物块上</summary>
+        private bool OnGround() {
+            Point tile = (Projectile.Bottom + new Vector2(0f, 4f)).ToTileCoordinates();
+            return WorldGen.InWorld(tile.X, tile.Y) && Main.tile[tile.X, tile.Y].HasSolidTile();
+        }
+
         public override void AI() {
             if (!Owner.active || Owner.dead || !FishSkill.GetT<FishScorpio>().Active(Owner)) {
                 Projectile.Kill();
@@ -173,14 +182,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             int layer = HalibutData.GetDomainLayer(Owner);
 
-            //爬出地面动画
+            //爬出地面动画：源矩形裁剪从地面顶出，不用alpha淡入
             if (isEmerging) {
-                emergeProgress += 0.05f;
+                emergeProgress += 0.04f;
                 if (emergeProgress >= 1f) {
                     emergeProgress = 1f;
                     isEmerging = false;
                 }
-                Projectile.alpha = (int)MathHelper.Lerp(255, 0, emergeProgress);
+                if (!Main.dedServ) {
+                    //沙帘：出土时细沙从背甲上滑落
+                    if (Main.rand.NextBool(2)) {
+                        Vector2 pos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-16f, 16f), -Projectile.height * emergeProgress);
+                        PRTLoader.NewParticle<PRT_FishScorpioSand>(pos, new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), 0.4f)
+                            , FishScorpioVFX.RandGrain(), Main.rand.NextFloat(0.6f, 1f))?.Configure(Main.rand.Next(14, 22), 0f);
+                    }
+                    if (Projectile.timeLeft % 8 == 0) {
+                        FishScorpioVFX.Puff(Projectile.Bottom, new Vector2(0f, -0.6f), 0.2f, 0.24f, true);
+                    }
+                }
             }
 
             //寻找目标
@@ -197,7 +216,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 direction = target.Center.X > Projectile.Center.X ? 1 : -1;
             }
 
-            if (target != null && Math.Abs(Projectile.Center.X - target.Center.X) > 6) {
+            if (recoilTimer > 0) {
+                //发射后坐：先退半步再回到步速
+                recoilTimer--;
+                Projectile.velocity.X = direction * (3f - 6f * recoilTimer / 8f);
+            }
+            else if (target != null && Math.Abs(Projectile.Center.X - target.Center.X) > 6) {
                 Projectile.velocity.X = direction * 3;
             }
             else {
@@ -211,34 +235,88 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //攻击逻辑
             AttackTimer++;
             int adjustedInterval = Math.Clamp(AttackInterval - layer * 8, 35, AttackInterval);
+            int telegraphLen = Math.Min(TelegraphFrames, adjustedInterval - 6);
+
+            //预告拍：尾部沙粒向心聚旋
+            bool telegraphActive = !isEmerging && target != null && AttackTimer >= adjustedInterval - telegraphLen;
+            if (telegraphActive) {
+                telegraphT = MathHelper.Clamp((AttackTimer - (adjustedInterval - telegraphLen)) / (float)telegraphLen, 0f, 1f);
+                if (!telegraphSoundPlayed) {
+                    telegraphSoundPlayed = true;
+                    SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.25f, Pitch = -0.1f, MaxInstances = 3 }, TailPoint);
+                }
+                if (!Main.dedServ) {
+                    //向心沙粒：从环带向尾点螺旋收拢
+                    float ang = Main.rand.NextFloat(MathHelper.TwoPi);
+                    float radius = Main.rand.NextFloat(24f, 38f);
+                    Vector2 spawn = TailPoint + ang.ToRotationVector2() * radius;
+                    Vector2 inward = (TailPoint - spawn).SafeNormalize(Vector2.Zero);
+                    Vector2 vel = inward.RotatedBy(0.7f * direction) * Main.rand.NextFloat(2f, 3.4f);
+                    PRTLoader.NewParticle<PRT_FishScorpioSand>(spawn, vel, FishScorpioVFX.RandGrain(), Main.rand.NextFloat(0.55f, 0.9f))
+                        ?.Configure(Main.rand.Next(12, 18), 1f, 0.26f, 0.9f);
+                }
+            }
+            else {
+                telegraphT = 0f;
+                telegraphSoundPlayed = false;
+            }
 
             if (!isEmerging && AttackTimer >= adjustedInterval && target != null) {
                 AttackTimer = 0;
+                telegraphSoundPlayed = false;
+                recoilTimer = 8;
                 if (Projectile.IsOwnedByLocalPlayer()) {
                     ShootAtTarget(target, layer);
                 }
             }
 
-            //帧动画
-            if (++Projectile.frameCounter >= 8) {
+            //身体倾角：后仰蓄力 → 过冲前倾 → 行走前倾，围绕足底旋转
+            float leanTarget = direction * Math.Min(Math.Abs(Projectile.velocity.X), 3f) * 0.02f;
+            leanTarget += -direction * 0.11f * telegraphT;
+            if (recoilTimer > 0) {
+                leanTarget += direction * 0.13f * (recoilTimer / 8f);
+            }
+            leanAngle = MathHelper.Lerp(leanAngle, leanTarget, 0.2f);
+
+            //帧动画：行走快踏、驻足慢摆
+            int frameRate = Math.Abs(Projectile.velocity.X) > 0.5f ? 7 : 13;
+            if (++Projectile.frameCounter >= frameRate) {
                 Projectile.frameCounter = 0;
                 Projectile.frame++;
                 if (Projectile.frame >= 4) Projectile.frame = 0;
             }
 
-            //消失前淡出
-            if (Projectile.timeLeft < 60) {
-                Projectile.alpha = (int)MathHelper.Lerp(0, 255, 1f - Projectile.timeLeft / 60f);
+            //犁痕：行走在地面上犁开细沙
+            if (!Main.dedServ && !isEmerging && OnGround() && Math.Abs(Projectile.velocity.X) > 1f) {
+                if (Projectile.timeLeft % 3 == 0) {
+                    Vector2 pos = Projectile.Bottom + new Vector2(-direction * Main.rand.NextFloat(8f, 18f), -2f);
+                    Vector2 vel = new Vector2(-direction * Main.rand.NextFloat(0.5f, 1.6f), Main.rand.NextFloat(-2.2f, -0.8f));
+                    PRTLoader.NewParticle<PRT_FishScorpioSand>(pos, vel, FishScorpioVFX.RandGrain(), Main.rand.NextFloat(0.5f, 0.9f))
+                        ?.Configure(Main.rand.Next(14, 22), 0.25f, 0.26f, 0.35f);
+                }
+                if (Projectile.timeLeft % 14 == 0) {
+                    FishScorpioVFX.Puff(Projectile.Bottom + new Vector2(-direction * 12f, -2f)
+                        , new Vector2(-direction * 0.3f, -0.25f), 0.16f, 0.12f, true);
+                }
             }
 
-            //沙尘粒子
-            if (Main.rand.NextBool(10) && !isEmerging) {
-                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height,
-                    DustID.Sand, 0, -1f, 100, default, Main.rand.NextFloat(0.8f, 1.2f));
-                d.velocity.X *= 0.3f;
+            //退场：沉回沙里，扬起土浪
+            if (Projectile.timeLeft < SinkFrames) {
+                if (!sinkSoundPlayed) {
+                    sinkSoundPlayed = true;
+                    FishScorpioVFX.BurrowSound(Projectile.Bottom, -0.15f);
+                }
+                if (!Main.dedServ) {
+                    if (Projectile.timeLeft % 2 == 0) {
+                        Vector2 pos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-16f, 16f), -2f);
+                        PRTLoader.NewParticle<PRT_FishScorpioSand>(pos, new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-2f, -0.6f))
+                            , FishScorpioVFX.RandGrain(), Main.rand.NextFloat(0.55f, 0.95f))?.Configure(Main.rand.Next(14, 22), 0.3f, 0.26f, 0.35f);
+                    }
+                    if (Projectile.timeLeft % 10 == 0) {
+                        FishScorpioVFX.Puff(Projectile.Bottom, new Vector2(0f, -0.5f), 0.2f, 0.2f, true);
+                    }
+                }
             }
-
-            Lighting.AddLight(Projectile.Center, 0.3f, 0.25f, 0.15f);
         }
 
         private void ShootAtTarget(NPC target, int layer) {
@@ -249,55 +327,41 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 predictedPos = target.Center + target.velocity * (distance / 15f);
             Vector2 shootDir = (predictedPos - Projectile.Center).SafeNormalize(Vector2.Zero);
 
-            //发射沙丘弹幕
-            int projectileType = ProjectileID.SandnadoFriendly; //友好沙尘龙卷
+            //发射沙龙卷：从尾点聚旋处出手，出膛带过冲初速
             float speed = 12f + layer * 0.6f;
             int numShots = 1 + layer / 5; //高层数多发
 
             for (int i = 0; i < numShots; i++) {
                 float angleOffset = numShots > 1 ? MathHelper.Lerp(-0.15f, 0.15f, i / (float)(numShots - 1)) : 0f;
-                Vector2 vel = shootDir.RotatedBy(angleOffset) * speed;
+                Vector2 vel = shootDir.RotatedBy(angleOffset) * speed * 1.35f;
 
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                    Projectile.Center + shootDir * 20f,
+                    TailPoint,
                     vel,
-                    projectileType,
+                    ModContent.ProjectileType<FishScorpioSandnado>(),
                     Projectile.damage,
                     Projectile.knockBack,
-                    Owner.whoAmI);
+                    Owner.whoAmI,
+                    ai0: speed);
             }
 
-            //攻击音效与特效
+            //攻击音效：出手拍 + 风啸
             SoundEngine.PlaySound(SoundID.Item17 with { Volume = 0.6f, Pitch = 0.3f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item34 with { Volume = 0.35f, Pitch = 0.55f, MaxInstances = 3 }, Projectile.Center);
 
-            //沙尘爆发
-            for (int i = 0; i < 12; i++) {
-                Vector2 vel = shootDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 6f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center + shootDir * 15f, DustID.Sand, vel,
-                    100, new Color(220, 200, 160), Main.rand.NextFloat(1.2f, 1.8f));
-                d.noGravity = true;
-            }
-
-            //黄色闪光
-            for (int i = 0; i < 6; i++) {
-                Vector2 vel = shootDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(3f, 6f);
-                Dust flash = Dust.NewDustDirect(Projectile.Center + shootDir * 10f, 8, 8,
-                    DustID.YellowTorch, Scale: Main.rand.NextFloat(1f, 1.5f));
-                flash.velocity = vel * 0.4f;
-                flash.noGravity = true;
-            }
+            //释放拍：聚好的沙顺出手方向甩出
+            FishScorpioVFX.GrainBurst(TailPoint, shootDir, 8, 3f, 6.5f, 0.6f, 0.45f);
+            FishScorpioVFX.Puff(TailPoint, shootDir * 1.5f, 0.2f, 0.24f);
         }
 
         public override void OnKill(int timeLeft) {
-            //消失时沙尘效果
-            for (int i = 0; i < 20; i++) {
-                Vector2 vel = Main.rand.NextVector2Circular(4f, 4f);
-                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.Sand, vel,
-                    100, new Color(200, 180, 140), Main.rand.NextFloat(1f, 1.6f));
-                d.noGravity = false;
+            //消失时地面翻沙，留下短命沙丘
+            FishScorpioVFX.GroundPlume(Projectile.Bottom, 10);
+            Vector2? ground = FishScorpioVFX.FindGroundBelow(Projectile.Center, 6);
+            if (ground != null) {
+                FishScorpioVFX.Mound(ground.Value, 52f, 50);
             }
-
-            SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, Pitch = 0.4f }, Projectile.Center);
+            FishScorpioVFX.BurrowSound(Projectile.Bottom, -0.3f);
         }
 
         public override bool PreDraw(ref Color lightColor) {
@@ -306,41 +370,42 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Texture2D texture = TextureAssets.Npc[NPCID.Scorpion].Value;
 
             int frameHeight = texture.Height / 4;
-            Rectangle source = new Rectangle(0, Projectile.frame * frameHeight, texture.Width, frameHeight);
-            Vector2 origin = source.Size() / 2f;
+
+            //出土/入土用源矩形裁剪：只画地面以上的身体，禁alpha幽灵
+            float coverage = 1f;
+            if (isEmerging) {
+                coverage = 1f - MathF.Pow(1f - emergeProgress, 2.4f); //easeOut顶出
+            }
+            else if (Projectile.timeLeft < SinkFrames) {
+                float sinkT = 1f - Projectile.timeLeft / (float)SinkFrames;
+                coverage = 1f - sinkT * sinkT; //easeIn沉入
+            }
+            int visibleH = Math.Max((int)(frameHeight * coverage), 2);
+            Rectangle source = new Rectangle(0, Projectile.frame * frameHeight, texture.Width, visibleH);
+
+            //足底锚点：裁剪后的可视切片贴着地面线
+            Vector2 origin = new Vector2(texture.Width / 2f, visibleH);
+            Vector2 drawPos = Projectile.Bottom - Main.screenPosition;
 
             //蝎子正面朝左，根据方向翻转
             SpriteEffects effects = direction > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            float fade = 1f - Projectile.alpha / 255f;
-
-            //爬出地面时从下往上显示
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-            if (isEmerging) {
-                drawPos.Y += (1f - emergeProgress) * Projectile.height;
+            //预告拍：尾点后方聚旋的小沙涡，画在身体之下让尾刺压住涡根
+            if (telegraphT > 0.05f) {
+                float tp = telegraphT * coverage;
+                FishScorpioVFX.DrawNado(Main.spriteBatch, TailPoint - new Vector2(0f, 6f * tp)
+                    , 30f + 12f * tp, 44f + 18f * tp, Projectile.identity * 1.37f % 10f, 0.85f, tp * 0.85f, 0.8f * tp);
             }
 
             //阴影
-            Vector2 shadowPos = drawPos + new Vector2(2, 4);
-            Main.EntitySpriteDraw(texture, shadowPos, source, Color.Black * 0.4f * fade,
-                0f, origin, Projectile.scale, effects, 0);
+            Main.EntitySpriteDraw(texture, drawPos + new Vector2(2, 4), source, Color.Black * 0.4f * coverage,
+                leanAngle, origin, Projectile.scale, effects, 0);
 
             //主体
-            Main.EntitySpriteDraw(texture, drawPos, source, lightColor * fade,
-                0f, origin, Projectile.scale, effects, 0);
-
-            //轻微发光
-            if (AttackTimer > AttackInterval - 30 && target != null) {
-                float glowIntensity = (AttackTimer - (AttackInterval - 30)) / 30f;
-                Color glow = new Color(255, 200, 100, 0) * glowIntensity * 0.5f * fade;
-                Main.EntitySpriteDraw(texture, drawPos, source, glow,
-                    0f, origin, Projectile.scale * 1.05f, effects, 0);
-            }
+            Main.EntitySpriteDraw(texture, drawPos, source, lightColor,
+                leanAngle, origin, Projectile.scale, effects, 0);
 
             return false;
         }
-
-        public override Color? GetAlpha(Color lightColor) =>
-            new Color(255, 255, 255, 200) * (1f - Projectile.alpha / 255f);
     }
 }

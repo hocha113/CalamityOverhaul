@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
     /// <summary>毁灭者「炽核熔射」口吐光柱：锚定头部口器，固定角速度慢扫；ai[0]=头部NPC的whoAmI；ai[1]=起始角（弧度）；ai[2]=每帧扫射角速度（含方向）复用DestroyerBeam.fx白热主轴+缠绕电弧+推进脉冲，红视觉区别于机械骷髅王橙炮；外覆熔焰浊浪宽晕、沿束熔滴飞溅、口器多层聚能光球展开期无伤害(公平窗口)，扫射角速压低防远端切向无解</summary>
     internal class DestroyerMawBeamProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         internal static int ExpandTime => 18;
         internal static int SweepFrames => 156;

@@ -29,7 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
     /// </summary>
     internal class OniAnnihilate : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable, IOverlayDrawable, IOniBladeOccupant
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>伤害窗末帧</summary>
         private const int DamageEnd = 8;

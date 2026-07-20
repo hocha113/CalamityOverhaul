@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
     /// 风暴电弧：小型连锁闪电，二次打击与追踪
     internal class StormArc : Lightning
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         #region 配置参数，比主闪电更小更快
         public override int MaxBranches => 2; //更少的分叉

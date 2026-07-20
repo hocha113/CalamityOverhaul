@@ -198,7 +198,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class IcicleNail : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder3;
+        public override string Texture => CWRConstant.VaultPlaceholder3;
         private bool IsHeavy => Projectile.ai[0] == 1f;
 
         public override void SetStaticDefaults() {

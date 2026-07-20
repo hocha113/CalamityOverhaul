@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces.Banish
     /// <summary>Boss 执行天雷，ai0 角度 ai1 延迟 ai2 目标 NPC</summary>
     internal class CyberExecutionBoltProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 38;
         private const int MainKeyCountMin = 14;

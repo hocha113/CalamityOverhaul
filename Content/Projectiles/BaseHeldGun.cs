@@ -191,8 +191,6 @@ namespace CalamityOverhaul.Content.Projectiles
         #region 生命周期
         public override bool IsLoadingEnabled(Mod mod) => TargetID > ItemID.None;
 
-        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
-
         //手持弹幕不应受速度更新，否则会发生轻微的抽搐
         public override bool ShouldUpdatePosition() => false;
 

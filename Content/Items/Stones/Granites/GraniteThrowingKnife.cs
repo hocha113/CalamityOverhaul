@@ -206,7 +206,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// </summary>
     internal class GraniteKnifeVoltArc : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         /// <summary>链电搜索半径 px</summary>
         internal const float JumpRange = 240f;
         private const int LifeTime = 14;

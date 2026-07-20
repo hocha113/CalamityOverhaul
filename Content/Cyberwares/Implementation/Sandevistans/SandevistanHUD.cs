@@ -226,7 +226,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Implementation.Sandevistans
         }
 
         public override void Draw(SpriteBatch sb) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             DynamicSpriteFont font = FontAssets.MouseText.Value;
             float ratio = Math.Clamp(displayRatio, 0f, 1f);
             bool active = Sandevistan.IsActive;

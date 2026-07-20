@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
     /// <summary>海洋洪流弹幕</summary>
     internal class OceanCurrent : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //液体状态
         private enum OceanState

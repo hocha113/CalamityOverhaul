@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>湿苔斑弹幕</summary>
     internal sealed class SHPCMossPatchProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Vector3 MossCoreVec = new Color(140, 230, 110).ToVector3();
         private static readonly Vector3 MossGlowVec = new Color(60, 130, 60).ToVector3();

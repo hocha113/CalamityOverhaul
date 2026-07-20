@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// </summary>
     internal class PandemoniumCircle : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float ExpandTimer => ref Projectile.ai[0];
         private ref float AttackTimer => ref Projectile.ai[1];
@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Effect shader = EffectLoader.BrimstoneDomain?.Value;
             if (shader == null) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 
@@ -369,7 +369,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
         }
 
         private void DrawLightnings(SpriteBatch sb) {
-            Texture2D pixel = CWRAsset.Placeholder_White.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             foreach (var lightning in lightnings) {
                 float alpha = 1f - (lightning.Life / lightning.MaxLife);

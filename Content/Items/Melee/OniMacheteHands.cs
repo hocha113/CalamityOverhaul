@@ -1385,7 +1385,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// </summary>
     internal class OniHandExplode : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>总寿命 = 伤害窗(5) + decal 余寿</summary>
         public const int DecalLife = 155;

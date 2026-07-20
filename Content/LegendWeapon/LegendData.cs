@@ -230,7 +230,7 @@ namespace CalamityOverhaul.Content.LegendWeapon
             if (!cwrItem.LegendData.UpgradeTagNameIsEmpty && !cwrItem.LegendData.IsUpgradeWorld) {
                 string worldName = cwrItem.LegendData.UpgradeWorldName;
                 text = VaultUtils.FormatColorTextMultiLine(
-                    MurasamaLegend.MurasamaOverride.World_Text0.Format(worldName, cwrItem.LegendData.Level), Color.Gold);
+                    LegendUpgradeManagerSystem.World_Text0.Format(worldName, cwrItem.LegendData.Level), Color.Gold);
             }
             return text;
         }

@@ -13,12 +13,6 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Quiver_back_Asset = null;
         [VaultLoaden(CWRConstant.Asset + "Players/IceGod_back")]
         public static Asset<Texture2D> IceGod_back_Asset = null;
-        [VaultLoaden(CWRConstant.Placeholder)]
-        public static Asset<Texture2D> Placeholder_Transparent = null;
-        [VaultLoaden(CWRConstant.Placeholder2)]
-        public static Asset<Texture2D> Placeholder_White = null;
-        [VaultLoaden(CWRConstant.Placeholder3)]
-        public static Asset<Texture2D> Placeholder_ERROR = null;
         [VaultLoaden(CWRConstant.UI + "JAR")]
         public static Asset<Texture2D> UI_JAR = null;
         [VaultLoaden(CWRConstant.Other + "AimTarget")]

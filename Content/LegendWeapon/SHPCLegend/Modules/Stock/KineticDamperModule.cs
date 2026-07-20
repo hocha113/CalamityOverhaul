@@ -81,7 +81,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// <summary>震地反击环，扩张波前伤害+强击退</summary>
     internal sealed class SHPCSeismicCounterProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 25;
         private static readonly Color WaveMain = new(255, 195, 100);

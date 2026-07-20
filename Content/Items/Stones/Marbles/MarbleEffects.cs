@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// </summary>
     internal class MarbleShockwave : ModProjectile, IAdditiveDrawable, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const int Life = 24;
 
         public override void SetDefaults() {
@@ -135,7 +135,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
     /// </summary>
     internal class MarbleShard : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 12;

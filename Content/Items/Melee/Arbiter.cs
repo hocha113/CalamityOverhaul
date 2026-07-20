@@ -492,7 +492,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 地面冲击点：竖直火柱+左右火蛇+持久火坑
     internal class ArbiterShockwave : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// 蔓延格数(每边)
         private ref float SpreadTiles => ref Projectile.ai[0];
@@ -589,7 +589,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 火蛇：沿地形蔓延，吸附地面，遇高墙/深渊停止
     internal class ArbiterFireSnake : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// 方向 +1右 -1左
         private ref float MoveDir => ref Projectile.ai[0];
@@ -795,7 +795,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 持久地面火坑，贴地燃烧伤害
     internal class ArbiterGroundFire : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// 初始生命(帧)
         private ref float LifeMax => ref Projectile.ai[0];

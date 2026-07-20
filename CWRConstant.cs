@@ -4,9 +4,10 @@
     {
         public const string Asset = "CalamityOverhaul/Assets/";
         public const string Effects = Asset + "Effects/";
-        public const string Placeholder = Asset + "placeholder";
-        public const string Placeholder2 = Asset + "placeholder2";
-        public const string Placeholder3 = Asset + "placeholder3";
+        //魔法像素统一使用InnoVault的公共资源，与VaultAsset.placeholder系列同源：透明1x1、白色1x1、错误占位图
+        public const string VaultPlaceholder = "InnoVault/Assets/placeholder";
+        public const string VaultPlaceholder2 = "InnoVault/Assets/placeholder2";
+        public const string VaultPlaceholder3 = "InnoVault/Assets/placeholder3";
         public const string Masking = "CalamityOverhaul/Assets/Masking/";
         public const string ColorBar = "CalamityOverhaul/Assets/ColorBar/";
         public const string Item = "CalamityOverhaul/Assets/Items/";

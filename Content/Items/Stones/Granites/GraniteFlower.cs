@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// </summary>
     internal class GraniteFlowerSeed : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private Trail Trail;
         private Vector2 bloomSpot;
         private bool hasBloomSpot;
@@ -241,7 +241,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
     /// </summary>
     internal class GraniteBloom : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const int OpenTime = 16;
         private const int PulseInterval = 44;
         private const int MaxPulses = 3;

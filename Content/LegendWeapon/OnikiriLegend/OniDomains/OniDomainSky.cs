@@ -83,7 +83,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDomains
                 return;
             }
             Effect shader = EffectLoader.OniSky?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
             if (shader == null || white == null || noise == null) {
                 return;

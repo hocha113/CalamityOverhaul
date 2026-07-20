@@ -1,8 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -77,18 +81,26 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return false;
         }
 
-        //抛掷特效
+        //抛掷特效：出手方向奶粉绒毛扑 + 两粒卡通星点
         private static void SpawnThrowEffect(Vector2 position, Vector2 direction) {
-            for (int i = 0; i < 12; i++) {
-                Vector2 velocity = direction.SafeNormalize(Vector2.Zero).RotatedByRandom(0.5f) * Main.rand.NextFloat(3f, 8f);
-                Dust dust = Dust.NewDustPerfect(
-                    position,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(180, 180, 200),
-                    Main.rand.NextFloat(1f, 1.8f)
-                );
+            Vector2 dir = direction.SafeNormalize(Vector2.Zero);
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = dir.RotatedByRandom(0.55f) * Main.rand.NextFloat(1.6f, 4.2f);
+                PRTLoader.NewParticle<PRT_FishBunnyFluff>(position + Main.rand.NextVector2Circular(6f, 6f)
+                    , vel, FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.026f, 0.042f))
+                    ?.Configure(Main.rand.Next(34, 50));
+            }
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishBunnyStar>(position + dir * 14f + Main.rand.NextVector2Circular(8f, 8f)
+                    , dir.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 2.5f)
+                    , Color.Lerp(FishBunnyPalette.HeartFlush, FishBunnyPalette.EmberHot, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.28f, 0.4f))?.Configure(Main.rand.Next(14, 20));
+            }
+            //少量尘做底噪
+            for (int i = 0; i < 6; i++) {
+                Dust dust = Dust.NewDustPerfect(position, DustID.Smoke
+                    , dir.RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 5f)
+                    , 140, new Color(210, 196, 200), Main.rand.NextFloat(0.8f, 1.3f));
                 dust.noGravity = true;
             }
         }
@@ -137,10 +149,31 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private float squashStretch = 1f;
         private float bodyRotation = 0f;
         private int idleAnimTimer = 0;
+        /// <summary>本次落地的压扁深度，按坠落速度决定，越高摔越扁</summary>
+        private float impactSquash = 0.7f;
+        /// <summary>预定起跳帧：一次落地只掷一次骰子，末尾几帧留给下蹲预告</summary>
+        private int plannedJumpTime = 0;
+        private bool crouching = false;
+        private bool apexFluffDone = false;
+
+        //心跳预警
+        private float beatPhase = 0f;
+        /// <summary>心跳亮度包络，拍点置 1 后指数衰减</summary>
+        private float beatEnvelope = 0f;
+        /// <summary>lub-dub 第二次弱搏的延迟计时</summary>
+        private int dubTimer = 0;
+        private bool heartbeatPrimed = false;
+        private int alertCooldown = 0;
 
         //爆炸参数
         private const int MaxLifeTime = 600;
         private const int ExplosionRadius = 100;
+
+        public override void SetStaticDefaults() {
+            //空中大弧跳的幽灵残影缓存
+            ProjectileID.Sets.TrailCacheLength[Type] = 6;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 32;
@@ -160,6 +193,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override void AI() {
             BunnyLife++;
+            if (alertCooldown > 0) {
+                alertCooldown--;
+            }
 
             //状态机
             switch (State) {
@@ -180,8 +216,29 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //更新生物动画
             UpdateBunnyAnimation();
 
-            //兔子粉色照明
-            float lightIntensity = 0.6f;
+            //引信预热：寿命后段心跳隐约响起，进入爆炸预警后由 ExplodingPhaseAI 接管提速
+            if (State != BunnyState.Exploding && Projectile.timeLeft < 150) {
+                float preUrgency = MathHelper.Clamp(1f - (Projectile.timeLeft - 30f) / 120f, 0f, 1f);
+                float interval = MathHelper.Lerp(30f, 16f, preUrgency);
+                beatPhase += 1f / interval;
+                if (beatPhase >= 1f) {
+                    beatPhase -= 1f;
+                    beatEnvelope = MathF.Max(beatEnvelope, 0.55f);
+                    dubTimer = 6;
+                    SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                        Volume = 0.16f,
+                        Pitch = -0.72f,
+                        MaxInstances = 5
+                    }, Projectile.Center);
+                }
+                if (dubTimer > 0 && --dubTimer == 0) {
+                    beatEnvelope = MathF.Max(beatEnvelope, 0.3f);
+                }
+                beatEnvelope *= 0.84f;
+            }
+
+            //兔子粉色照明：心跳期随包络搏动
+            float lightIntensity = 0.5f + beatEnvelope * 0.6f;
             Lighting.AddLight(Projectile.Center,
                 1.0f * lightIntensity,
                 0.7f * lightIntensity,
@@ -209,9 +266,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bodyRotation = MathHelper.Lerp(bodyRotation, Projectile.velocity.Y * 0.05f, 0.2f);
             }
 
-            //空中粒子
-            if (BunnyLife % 5 == 0) {
-                SpawnAirborneParticle();
+            //弧顶拍：过顶瞬间掉一撮绒毛，标记大弧跳最高点
+            if (!apexFluffDone && Projectile.velocity.Y > -0.5f) {
+                apexFluffDone = true;
+                if (!Main.dedServ) {
+                    PRTLoader.NewParticle<PRT_FishBunnyFluff>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
+                        , new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), -0.4f)
+                        , FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.028f, 0.042f))
+                        ?.Configure(Main.rand.Next(40, 60));
+                }
+            }
+
+            //飞行途中零星掉毛，慢飘在弧线后方
+            if (!Main.dedServ && BunnyLife % 9 == 0 && Main.rand.NextBool(3, 5)) {
+                PRTLoader.NewParticle<PRT_FishBunnyFluff>(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f)
+                    , -Projectile.velocity * 0.06f + Main.rand.NextVector2Circular(0.4f, 0.4f)
+                    , FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.022f, 0.036f))
+                    ?.Configure(Main.rand.Next(36, 56));
             }
         }
 
@@ -233,25 +304,32 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 TargetNPCID = target.whoAmI;
                 State = BunnyState.Chasing;
                 groundTime = 0;
+                plannedJumpTime = 0;
+                crouching = false;
+                //目标在追击半径边缘抖动会来回切状态，警觉提示限频防刷屏
+                if (alertCooldown <= 0) {
+                    alertCooldown = 45;
+                    SpawnAlertMark();
+                }
                 return;
             }
 
-            //随机跳跃
-            int jumpTime = Main.rand.Next(MinGroundTime, MaxGroundTime);
-            if (groundTime >= jumpTime) {
+            //落地时掷一次骰子定起跳帧，末 4 帧下蹲蓄力
+            if (plannedJumpTime <= 0) {
+                plannedJumpTime = Main.rand.Next(MinGroundTime, MaxGroundTime);
+            }
+            crouching = groundTime >= plannedJumpTime - 4;
+
+            if (groundTime >= plannedJumpTime) {
                 PerformJump(false);
                 groundTime = 0;
+                plannedJumpTime = 0;
 
                 //兔子跳跃音
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
                     Volume = 0.3f,
                     Pitch = 0.5f
                 }, Projectile.Center);
-            }
-
-            //地面待机动画
-            if (BunnyLife % 15 == 0) {
-                SpawnIdleParticle();
             }
         }
 
@@ -267,6 +345,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (!IsTargetValid()) {
                 State = BunnyState.OnGround;
                 groundTime = 0;
+                plannedJumpTime = 0;
                 return;
             }
 
@@ -279,16 +358,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //目标太远,返回普通状态
                 State = BunnyState.OnGround;
                 groundTime = 0;
+                plannedJumpTime = 0;
                 return;
             }
 
             //计算跳跃方向
             Vector2 toTarget = target.Center - Projectile.Center;
-            float targetAngle = toTarget.ToRotation();
+
+            //追击节奏更急：短窗掷骰，末 3 帧下蹲
+            if (plannedJumpTime <= 0) {
+                plannedJumpTime = Main.rand.Next(5, 15);
+            }
+            crouching = groundTime >= plannedJumpTime - 3;
 
             //朝向目标跳跃
-            int chaseJumpTime = Main.rand.Next(5, 15);
-            if (groundTime >= chaseJumpTime) {
+            if (groundTime >= plannedJumpTime) {
                 //计算跳跃速度
                 float horizontalSpeed = Math.Abs(toTarget.X) < 100f ? 6f : 9f;
                 Projectile.velocity.X = Math.Sign(toTarget.X) * horizontalSpeed;
@@ -301,6 +385,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 State = BunnyState.Airborne;
                 groundTime = 0;
+                plannedJumpTime = 0;
+                crouching = false;
+                apexFluffDone = false;
+                squashStretch = 1.38f;
 
                 //追击跳音
                 SoundEngine.PlaySound(SoundID.NPCHit1 with {
@@ -313,18 +401,60 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        //爆炸状态
+        //爆炸状态：粉红心跳，拍点随倒计时逼近越跳越快
         private void ExplodingPhaseAI() {
             //停止移动
             Projectile.velocity *= 0.85f;
 
-            //震动效果
-            squashStretch = 1f + (float)Math.Sin(BunnyLife * 0.8f) * 0.3f;
-
-            //密集粒子预警
-            if (Projectile.timeLeft % 3 == 0) {
-                SpawnExplosionWarning();
+            //进入预警的第一帧立刻给一拍
+            if (!heartbeatPrimed) {
+                heartbeatPrimed = true;
+                beatPhase = 1f;
             }
+
+            //拍点间隔从 15 帧收紧到 5.5 帧
+            float urgency = 1f - Projectile.timeLeft / 30f;
+            float interval = MathHelper.Lerp(15f, 5.5f, MathHelper.Clamp(urgency, 0f, 1f));
+            beatPhase += 1f / interval;
+
+            if (beatPhase >= 1f) {
+                beatPhase -= 1f;
+                beatEnvelope = 1f;
+                dubTimer = 5;
+
+                //闷响心跳声，节奏加速全靠拍点密度
+                SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                    Volume = 0.3f,
+                    Pitch = -0.72f,
+                    MaxInstances = 5
+                }, Projectile.Center);
+
+                if (!Main.dedServ) {
+                    //每拍一圈粉色脉搏环，越急越大越亮
+                    PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(Projectile.Center, Vector2.Zero
+                        , FishBunnyPalette.HeartFlush * (0.30f + 0.30f * urgency), 0.04f)
+                        ?.Configure(0.04f, 0.15f + 0.10f * urgency, 11);
+
+                    //急拍时毛被心跳挤出来
+                    if (interval < 10f) {
+                        for (int i = 0; i < 2; i++) {
+                            PRTLoader.NewParticle<PRT_FishBunnyFluff>(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f)
+                                , Main.rand.NextVector2Circular(1.4f, 1f) - Vector2.UnitY * 0.5f
+                                , FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.024f, 0.038f))
+                                ?.Configure(Main.rand.Next(30, 46));
+                        }
+                    }
+                }
+            }
+
+            //lub-dub 第二弱搏
+            if (dubTimer > 0 && --dubTimer == 0) {
+                beatEnvelope = MathF.Max(beatEnvelope, 0.55f);
+            }
+            beatEnvelope *= 0.84f;
+
+            //心跳物理挤压替代旧的正弦抖动
+            squashStretch = 1f + beatEnvelope * 0.14f;
         }
 
         //执行跳跃
@@ -338,9 +468,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.velocity.Y = -jumpPower;
 
             State = BunnyState.Airborne;
+            crouching = false;
+            apexFluffDone = false;
+            //蹬地瞬间过冲拉伸
+            squashStretch = 1.38f;
 
             //跳跃粒子
             SpawnJumpParticle();
+        }
+
+        //锁定目标提示：一粒警觉星点弹出 + 短促尖叫
+        private void SpawnAlertMark() {
+            SoundEngine.PlaySound(SoundID.NPCHit1 with {
+                Volume = 0.32f,
+                Pitch = 0.92f,
+                MaxInstances = 4
+            }, Projectile.Center);
+
+            if (Main.dedServ) {
+                return;
+            }
+            PRTLoader.NewParticle<PRT_FishBunnyStar>(Projectile.Top - Vector2.UnitY * 8f
+                , -Vector2.UnitY * 1.2f, FishBunnyPalette.HeartFlush, 0.42f)?.Configure(16);
         }
 
         //验证目标有效性
@@ -363,10 +512,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 squashStretch = MathHelper.Lerp(squashStretch, targetSquash, 0.2f);
             }
             //地面压扁
-            else if (State == BunnyState.OnGround) {
-                //着地瞬间压扁
-                if (groundTime < 5) {
-                    squashStretch = MathHelper.Lerp(squashStretch, 0.7f, 0.3f);
+            else if (State == BunnyState.OnGround || State == BunnyState.Chasing) {
+                //起跳前下蹲蓄力
+                if (crouching) {
+                    squashStretch = MathHelper.Lerp(squashStretch, 0.68f, 0.35f);
+                }
+                //着地瞬间按坠速压扁
+                else if (groundTime < 5) {
+                    squashStretch = MathHelper.Lerp(squashStretch, impactSquash, 0.3f);
+                }
+                else if (State == BunnyState.Chasing) {
+                    //追击时紧张
+                    float tension = (float)Math.Sin(idleAnimTimer * 0.15f) * 0.08f;
+                    squashStretch = MathHelper.Lerp(squashStretch, 1f + tension, 0.15f);
                 }
                 else {
                     //呼吸效果
@@ -374,70 +532,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     squashStretch = MathHelper.Lerp(squashStretch, 1f + breathe, 0.1f);
                 }
             }
-            //追击时紧张
-            else if (State == BunnyState.Chasing) {
-                float tension = (float)Math.Sin(idleAnimTimer * 0.15f) * 0.08f;
-                squashStretch = MathHelper.Lerp(squashStretch, 1f + tension, 0.15f);
-            }
+
+            //记录到弹幕旋转，让残影缓存拿到同样的倾角
+            Projectile.rotation = bodyRotation;
         }
 
-        //空中粒子
-        private void SpawnAirborneParticle() {
-            Dust trail = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                DustID.Smoke,
-                -Projectile.velocity * 0.2f,
-                100,
-                new Color(200, 200, 220),
-                Main.rand.NextFloat(0.8f, 1.2f)
-            );
-            trail.noGravity = true;
-        }
-
-        //待机粒子
-        private void SpawnIdleParticle() {
-            Dust idle = Dust.NewDustPerfect(
-                Projectile.Center + new Vector2(Main.rand.NextFloat(-10f, 10f), 10f),
-                DustID.Smoke,
-                new Vector2(0, -0.5f),
-                100,
-                new Color(220, 220, 240),
-                Main.rand.NextFloat(0.6f, 1f)
-            );
-            idle.noGravity = true;
-            idle.fadeIn = 0.8f;
-        }
-
-        //跳跃粒子
+        //跳跃粒子：蹬地尘 + 掉毛
         private void SpawnJumpParticle() {
-            for (int i = 0; i < 8; i++) {
-                Vector2 velocity = new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(1f, 4f));
-                Dust jump = Dust.NewDustPerfect(
-                    Projectile.Bottom,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(180, 180, 200),
-                    Main.rand.NextFloat(1f, 1.8f)
-                );
-                jump.noGravity = false;
+            if (Main.dedServ) {
+                return;
             }
-        }
-
-        //爆炸预警粒子
-        private void SpawnExplosionWarning() {
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishBunnySmoke>(Projectile.Bottom + new Vector2(Main.rand.NextFloat(-8f, 8f), -2f)
+                    , new Vector2(Main.rand.NextFloat(-1.6f, 1.6f), Main.rand.NextFloat(-0.3f, 0.1f))
+                    , Color.White, Main.rand.NextFloat(0.05f, 0.08f))
+                    ?.Configure(Main.rand.Next(20, 30), new Color(206, 192, 184), new Color(128, 120, 116), 1.012f, 0f);
+            }
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishBunnyFluff>(Projectile.Bottom - Vector2.UnitY * 6f
+                    , new Vector2(Main.rand.NextFloat(-1.4f, 1.4f), Main.rand.NextFloat(-1.2f, -0.3f))
+                    , FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.024f, 0.038f))
+                    ?.Configure(Main.rand.Next(34, 52));
+            }
+            //尘底噪
             for (int i = 0; i < 3; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Dust warning = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                    DustID.Torch,
-                    velocity,
-                    100,
-                    new Color(255, 150, 150),
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                warning.noGravity = true;
-                warning.fadeIn = 1.3f;
+                Dust jump = Dust.NewDustPerfect(Projectile.Bottom
+                    , DustID.Smoke
+                    , new Vector2(Main.rand.NextFloat(-2.4f, 2.4f), Main.rand.NextFloat(0.5f, 2f))
+                    , 140, new Color(190, 182, 186), Main.rand.NextFloat(0.8f, 1.3f));
+                jump.noGravity = false;
             }
         }
 
@@ -447,34 +570,79 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             if (State == BunnyState.Airborne && Projectile.velocity.Y == 0) {
                 State = BunnyState.OnGround;
                 groundTime = 0;
+                plannedJumpTime = 0;
 
-                //着地音效
+                //坠速越大摔得越扁，落地尘环也越大
+                float impact = MathHelper.Clamp(Math.Abs(oldVelocity.Y) / MaxFallSpeed, 0f, 1f);
+                impactSquash = MathHelper.Lerp(0.78f, 0.52f, impact);
+
+                //着地音效：摔得越重越沉
                 SoundEngine.PlaySound(SoundID.Dig with {
-                    Volume = 0.3f,
-                    Pitch = 0.5f
+                    Volume = 0.24f + 0.18f * impact,
+                    Pitch = 0.5f - 0.35f * impact
                 }, Projectile.Center);
 
-                //着地粒子
-                for (int i = 0; i < 5; i++) {
-                    Dust land = Dust.NewDustDirect(
-                        Projectile.Bottom - new Vector2(0, 5),
-                        Projectile.width,
-                        5,
-                        DustID.Smoke,
-                        Scale: Main.rand.NextFloat(1f, 1.5f)
-                    );
-                    land.velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-1f, 1f));
-                }
-
+                SpawnLandingRing(impact);
                 return false;
             }
 
             //墙壁碰撞反弹
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
                 Projectile.velocity.X = -oldVelocity.X * 0.6f;
+
+                //够快的撞墙才配一记软弹尘与闷响，慢速蹭墙不出声
+                if (Math.Abs(oldVelocity.X) > 2.5f && !Main.dedServ) {
+                    SoundEngine.PlaySound(SoundID.Dig with {
+                        Volume = 0.22f,
+                        Pitch = -0.1f,
+                        MaxInstances = 4
+                    }, Projectile.Center);
+
+                    float dir = Math.Sign(Projectile.velocity.X);
+                    for (int i = 0; i < 2; i++) {
+                        PRTLoader.NewParticle<PRT_FishBunnySmoke>(Projectile.Center + new Vector2(-dir * 10f, Main.rand.NextFloat(-6f, 6f))
+                            , new Vector2(dir * Main.rand.NextFloat(0.8f, 1.6f), Main.rand.NextFloat(-0.5f, 0.2f))
+                            , Color.White, Main.rand.NextFloat(0.045f, 0.07f))
+                            ?.Configure(Main.rand.Next(18, 26), new Color(206, 192, 184), new Color(126, 118, 114), 1.012f, 0f);
+                    }
+                    PRTLoader.NewParticle<PRT_FishBunnyFluff>(Projectile.Center - new Vector2(dir * 8f, 0f)
+                        , new Vector2(dir * 0.6f, -0.8f), FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.024f, 0.036f))
+                        ?.Configure(Main.rand.Next(32, 48));
+                }
             }
 
             return false;
+        }
+
+        //落地尘环：贴地横扫的左右哑光尘团 + 顶起的绒毛
+        private void SpawnLandingRing(float impact) {
+            if (Main.dedServ) {
+                return;
+            }
+            int puffs = 3 + (int)(impact * 3f);
+            for (int i = 0; i < puffs; i++) {
+                //左右对开、贴地压平的尘
+                float side = i % 2 == 0 ? 1f : -1f;
+                PRTLoader.NewParticle<PRT_FishBunnySmoke>(Projectile.Bottom + new Vector2(side * Main.rand.NextFloat(4f, 14f), -3f)
+                    , new Vector2(side * Main.rand.NextFloat(1.4f, 3f + impact * 2f), Main.rand.NextFloat(-0.25f, 0f))
+                    , Color.White, Main.rand.NextFloat(0.05f, 0.09f) * (0.8f + impact * 0.5f))
+                    ?.Configure(Main.rand.Next(22, 34), new Color(206, 192, 184), new Color(126, 118, 114), 1.014f, 0f);
+            }
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishBunnyFluff>(Projectile.Top + Main.rand.NextVector2Circular(8f, 4f)
+                    , new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), Main.rand.NextFloat(-1.6f, -0.6f))
+                    , FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.024f, 0.04f))
+                    ?.Configure(Main.rand.Next(36, 54));
+            }
+            //尘底噪
+            for (int i = 0; i < 4; i++) {
+                Dust land = Dust.NewDustDirect(Projectile.Bottom - new Vector2(Projectile.width * 0.5f, 5f)
+                    , Projectile.width, 5, DustID.Smoke
+                    , Scale: Main.rand.NextFloat(0.9f, 1.4f));
+                land.velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-1f, 0.2f));
+                land.color = new Color(196, 186, 184);
+                land.alpha = 140;
+            }
         }
 
         //击中敌人
@@ -500,61 +668,82 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        //创建兔子爆炸
+        //创建兔子爆炸：暖橙火心 + 哑光烟圈 + 绒毛纷飞 + 少量卡通星点
         private void CreateBunnyExplosion() {
             Projectile.Explode(ExplosionRadius, default, false);
 
-            //爆炸粒子
-            int particleCount = 45 + HalibutData.GetDomainLayer() * 5;
-            for (int i = 0; i < particleCount; i++) {
-                float angle = MathHelper.TwoPi * i / particleCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 20f);
-
-                Dust explosion = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    velocity,
-                    100,
-                    new Color(255, 180, 200),
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                explosion.noGravity = Main.rand.NextBool();
-                explosion.fadeIn = 1.4f;
+            if (VaultUtils.isServer) {
+                return;
             }
 
-            //烟雾环
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 20; j++) {
-                    float angle = MathHelper.TwoPi * j / 20f;
-                    float radius = 25f + i * 30f;
-                    Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * radius;
+            Vector2 center = Projectile.Center;
+            int layer = HalibutData.GetDomainLayer();
 
-                    Dust smoke = Dust.NewDustPerfect(
-                        spawnPos,
-                        DustID.Smoke,
-                        Vector2.Zero,
-                        100,
-                        new Color(150, 150, 150),
-                        Main.rand.NextFloat(2f, 3.5f)
-                    );
-                    smoke.velocity = angle.ToRotationVector2() * 6f;
-                    smoke.noGravity = true;
-                }
+            //两帧白闪过曝爆点，随即塌向暖橙
+            PRTLoader.NewParticle<PRT_FishBunnyStar>(center, Vector2.Zero
+                , new Color(255, 244, 230), 1.05f)?.Configure(8, true);
+
+            //卡通星点：绕爆心弹出少量四芒星
+            for (int i = 0; i < 4; i++) {
+                float ang = MathHelper.TwoPi * i / 4f + Main.rand.NextFloat(0.7f);
+                PRTLoader.NewParticle<PRT_FishBunnyStar>(center + ang.ToRotationVector2() * 10f
+                    , ang.ToRotationVector2() * Main.rand.NextFloat(2f, 4.5f)
+                    , Color.Lerp(FishBunnyPalette.EmberHot, FishBunnyPalette.HeartFlush, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.34f, 0.55f))?.Configure(Main.rand.Next(16, 26));
             }
 
-            //肉块碎片
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(15f, 15f);
-                Dust gore = Dust.NewDustDirect(
-                    Projectile.Center,
-                    4, 4,
-                    DustID.Blood,
-                    0, 0, 100,
-                    new Color(255, 150, 180),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                gore.velocity = velocity;
-                gore.noGravity = false;
+            //暖橙火心：拉丝余烬径向迸出，微重力下坠
+            int emberCount = Math.Min(10 + layer, 12);
+            for (int i = 0; i < emberCount; i++) {
+                Vector2 vel = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(2.5f, 7.5f);
+                vel.Y -= Main.rand.NextFloat(0f, 1.5f);
+                PRTLoader.NewParticle<PRT_PallbearerEmber>(center + Main.rand.NextVector2Circular(6f, 6f), vel
+                    , Main.rand.NextBool(3) ? FishBunnyPalette.EmberDeep : FishBunnyPalette.EmberHot
+                    , Main.rand.NextFloat(0.5f, 0.9f))?.Configure(Main.rand.Next(18, 30));
+            }
+
+            //哑光烟圈：环形外涌，压住加色亮部
+            for (int i = 0; i < 8; i++) {
+                float ang = MathHelper.TwoPi * i / 8f + Main.rand.NextFloat(0.35f);
+                Vector2 dir = ang.ToRotationVector2();
+                PRTLoader.NewParticle<PRT_FishBunnySmoke>(center + dir * 22f
+                    , dir * Main.rand.NextFloat(2.6f, 4.2f) + dir.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-0.8f, 0.8f)
+                    , Color.White, Main.rand.NextFloat(0.07f, 0.11f))
+                    ?.Configure(Main.rand.Next(28, 42), new Color(216, 188, 172), new Color(122, 114, 112), 1.012f, 0.004f);
+            }
+            //中心两团上浮浓烟收尾
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishBunnySmoke>(center + Main.rand.NextVector2Circular(8f, 8f)
+                    , new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), -Main.rand.NextFloat(0.8f, 1.6f))
+                    , Color.White, Main.rand.NextFloat(0.1f, 0.14f))
+                    ?.Configure(Main.rand.Next(36, 50), new Color(198, 176, 164), new Color(112, 106, 104), 1.010f, 0.012f);
+            }
+
+            //绒毛纷飞：玩偶填充物炸开，比弹体活得久
+            int fluffCount = Math.Min(12 + layer, 13);
+            for (int i = 0; i < fluffCount; i++) {
+                Vector2 vel = Main.rand.NextFloat(MathHelper.TwoPi).ToRotationVector2() * Main.rand.NextFloat(1.5f, 5.5f);
+                vel.Y -= Main.rand.NextFloat(0f, 2.5f);
+                PRTLoader.NewParticle<PRT_FishBunnyFluff>(center + Main.rand.NextVector2Circular(10f, 10f), vel
+                    , FishBunnyPalette.Fluff(), Main.rand.NextFloat(0.028f, 0.05f))
+                    ?.Configure(Main.rand.Next(50, 80));
+            }
+
+            //尘底噪
+            for (int i = 0; i < 8; i++) {
+                Dust d = Dust.NewDustPerfect(center, DustID.Smoke
+                    , Main.rand.NextVector2Circular(9f, 9f), 130
+                    , new Color(212, 190, 180), Main.rand.NextFloat(1.2f, 2f));
+                d.noGravity = Main.rand.NextBool();
+            }
+
+            //暖橙光斑一闪
+            Lighting.AddLight(center, 1.4f, 0.9f, 0.5f);
+
+            //克制的落点小震：多只兔子可能同帧炸，单发幅度压低
+            if (CWRServerConfig.Instance.ScreenVibration) {
+                Main.instance.CameraModifiers.Add(new PunchCameraModifier(center
+                    , Main.rand.NextVector2Unit(), 2f, 5f, 6, 620f, FullName));
             }
         }
 
@@ -569,16 +758,39 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 effects = SpriteEffects.FlipHorizontally;
             }
 
-            //形变缩放
-            Vector2 scale = new Vector2(Projectile.scale / squashStretch, Projectile.scale * squashStretch);
+            //形变缩放：预热期心跳给一点整体膨缩，爆炸期由 squashStretch 自己搏动
+            float beatSwell = State == BunnyState.Exploding ? 1f : 1f + beatEnvelope * 0.05f;
+            Vector2 scale = new Vector2(Projectile.scale / squashStretch, Projectile.scale * squashStretch) * beatSwell;
 
             //基础颜色
             Color drawColor = Projectile.GetAlpha(lightColor);
 
-            //爆炸前闪烁
-            if (State == BunnyState.Exploding) {
-                float flash = (float)Math.Sin(BunnyLife * 1.5f) * 0.5f + 0.5f;
-                drawColor = Color.Lerp(drawColor, new Color(255, 100, 100), flash * 0.7f);
+            //追击警觉潮红，心跳按包络瞬时泛粉：预热浅、爆炸期深
+            if (State == BunnyState.Chasing) {
+                drawColor = Color.Lerp(drawColor, new Color(255, 190, 195), 0.25f);
+            }
+            float flush = State == BunnyState.Exploding ? 0.75f : 0.3f;
+            drawColor = Color.Lerp(drawColor, FishBunnyPalette.HeartFlush, beatEnvelope * flush);
+
+            //心跳底光：夹在残影与本体之下的暖粉泛光，仅在拍点亮起
+            if (State == BunnyState.Exploding && beatEnvelope > 0.05f && CWRAsset.SoftGlow?.Value is Texture2D glowTex) {
+                Color glowCol = FishBunnyPalette.HeartFlush with { A = 0 } * (beatEnvelope * 0.45f);
+                float glowScale = 0.95f + beatEnvelope * 0.45f;
+                sb.Draw(glowTex, drawPos, null, glowCol, 0f, glowTex.Size() / 2f, glowScale, SpriteEffects.None, 0);
+            }
+
+            //空中快速移动时的幽灵残影链，读出整条跳弧
+            if (State == BunnyState.Airborne && Projectile.velocity.LengthSquared() > 30f) {
+                for (int i = Projectile.oldPos.Length - 1; i >= 1; i--) {
+                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    float fade = 0.26f * (1f - i / (float)Projectile.oldPos.Length);
+                    Color ghostColor = drawColor * fade;
+                    sb.Draw(bunnyTex, ghostPos, null, ghostColor, Projectile.oldRot[i]
+                        , bunnyTex.Size() / 2f, scale * (1f - i * 0.04f), effects, 0);
+                }
             }
 
             //绘制阴影层
@@ -612,25 +824,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 effects,
                 0
             );
-
-            //追击时眼睛发光
-            if (State == BunnyState.Chasing || State == BunnyState.Exploding) {
-                Color glowColor = State == BunnyState.Exploding
-                    ? new Color(255, 50, 50) * 0.8f
-                    : new Color(255, 200, 200) * 0.6f;
-
-                sb.Draw(
-                    bunnyTex,
-                    drawPos,
-                    null,
-                    glowColor,
-                    bodyRotation,
-                    bunnyTex.Size() / 2f,
-                    scale * 1.05f,
-                    effects,
-                    0
-                );
-            }
 
             return false;
         }

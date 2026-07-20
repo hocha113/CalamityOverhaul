@@ -684,7 +684,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// </summary>
     internal class HyperionBlastProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const int LifeTime = 24;
         private ref float Timer => ref Projectile.localAI[0];
         private float BoomScale => MathF.Abs(Projectile.ai[0]);

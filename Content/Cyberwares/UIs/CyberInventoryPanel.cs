@@ -152,7 +152,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
         public void Draw(SpriteBatch sb, float parentAlpha, CyberwarePlayer cyberPlayer) {
             if (openProgress < 0.01f || panelRect.Width < 2) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             float alpha = parentAlpha * Math.Clamp(openProgress, 0, 1);

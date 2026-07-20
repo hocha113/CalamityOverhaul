@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
     /// </summary>
     internal class VictorRiftPortalProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>总生命，与下方各阶段帧数同步</summary>
         public const int TotalLife = 220;
@@ -263,7 +263,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
             //着色器缺失时回退到简易绘制，保证不出空场
             Effect shader = EffectLoader.VictorCyberPortal?.Value;
-            if (shader == null || CWRAsset.Placeholder_White?.Value == null
+            if (shader == null || VaultAsset.placeholder2?.Value == null
                 || CWRAsset.Extra_193?.Value == null) {
                 DrawFallback(openProgress, emergePulse, collapseT);
                 return false;
@@ -308,7 +308,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
         private const float QuadOverPortal = 1.6f;
 
         private void DrawShaderPortal(Effect shader, float openProg, float emergePulse, float collapseT) {
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
 
             float halfW = BaseHalfWidth * Scale;
@@ -349,7 +349,7 @@ namespace CalamityOverhaul.Content.Cyberwares.Victors
 
         /// <summary>着色器缺失兜底：以纯色椭圆 + 多层光斑表示传送门</summary>
         private void DrawFallback(float openProg, float emergePulse, float collapseT) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float halfW = BaseHalfWidth * Scale * MathHelper.Clamp(openProg, 0f, 1f) * (1f - collapseT);
             float halfH = halfW * AspectRatio;

@@ -118,7 +118,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend
             if (index == 14) {
                 num = LegendUpgradeManagerSystem.TrialPassed.Value;
             }
-            string text = LegendData.GetLevelTrialPreText(item.CWR(), MurasamaLegend.MurasamaOverride.Text_Lang_0, num);
+            string text = LegendData.GetLevelTrialPreText(item.CWR(), LegendUpgradeManagerSystem.Text_Lang_0, num);
             tooltips.ReplacePlaceholder("[Lang4]", text, "");
         }
 

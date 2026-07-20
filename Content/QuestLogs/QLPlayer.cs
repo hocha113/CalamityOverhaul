@@ -160,7 +160,7 @@ namespace CalamityOverhaul.Content.QuestLogs
             //跨世界进入
             else if (!isSubWorld && !string.IsNullOrEmpty(LastWorldFullName) && LastWorldFullName != currentWorldFullName) {
                 DontCheckQuestInWorld = string.Empty;
-                QuestWorldConfirmUI.RequestConfirm(Player, Main.worldName, LastWorldFullName);
+                QuestWorldDecision.Request(Player);
                 return;
             }
             else if (string.IsNullOrEmpty(LastWorldFullName)) {
@@ -183,8 +183,8 @@ namespace CalamityOverhaul.Content.QuestLogs
                 return;
             }
 
-            //确认窗显示时暂停更新
-            if (QuestWorldConfirmUI.Instance != null && QuestWorldConfirmUI.Instance.Active) {
+            //决策未回答时暂停更新
+            if (QuestWorldDecision.IsPending) {
                 return;
             }
 

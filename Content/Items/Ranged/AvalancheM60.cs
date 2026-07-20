@@ -229,7 +229,6 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Masking + "Fog";
         public float randomX;
         public float randomY;
-        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 184;
             Projectile.tileCollide = false;
@@ -276,8 +275,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class ExtremeColdHail : ModProjectile
     {
-        public override string Texture => CWRConstant.Cay_Proj_Ranged + "FlurrystormIceChunk";
-        public override void AutoStaticDefaults() => AutoProj.AutoStaticDefaults(this);
+        //外观取自灾厄的冰块贴图，绘制时经GetT2DAsset安全获取，Texture本身只挂占位资源
+        public override string Texture => CWRConstant.VaultPlaceholder;
+        private const string IceChunkTexture = CWRConstant.Cay_Proj_Ranged + "FlurrystormIceChunk";
         public override void SetDefaults() {
             Projectile.width = 22;
             Projectile.height = 24;
@@ -330,8 +330,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
             return false;
         }
 
-        public override Color? GetAlpha(Color drawColor) {
-            return Projectile.timeLeft < 30 && Projectile.timeLeft % 10 < 5 ? Color.Orange : Color.White;
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D texture = CWRUtils.GetT2DAsset(IceChunkTexture).Value;
+            //消失前橙白闪烁警示，不受光照影响
+            Color drawColor = Projectile.timeLeft < 30 && Projectile.timeLeft % 10 < 5 ? Color.Orange : Color.White;
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, drawColor
+                , Projectile.rotation, texture.Size() * 0.5f, Projectile.scale, SpriteEffects.None);
+            return false;
         }
 
         public override void OnKill(int timeLeft) {

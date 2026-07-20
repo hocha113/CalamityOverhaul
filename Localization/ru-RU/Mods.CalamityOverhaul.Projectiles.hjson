@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: Молекулярный разрез
-MuraTriggerDash.DisplayName: Молекулярный разрез
-MuraBreakerSlash.DisplayName: Восходящий дракон-полумесяц
-MuraExecutionCut.DisplayName: Разрез измерения: Конец
-MuraExecutionCutOnSpan.DisplayName: Разрез измерения: Начало
-MuraGroundSmash.DisplayName: Падающая сакура
-EndSkillEffectStart.DisplayName: Разрез измерения: Начало
 RebelBladeFlyAttcke.DisplayName: Клинок мятежника
 RebelBladeOrb.DisplayName: Демоническая сфера
 RebelBladeBack.DisplayName: Клинок мятежника
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: Искрящийся призыв
 SpiralStarProjectile.DisplayName: Спиральная звезда
 WaterZombie.DisplayName: Водяной зомби
 OceanCurrent.DisplayName: Океаническое течение
-PowerSoundEgg.DisplayName: Яйцо ритма
 CrabulonFriendHitbox.DisplayName: Спора крабового гриба
 Fireball.DisplayName: Огненный шар
 DeadLaser.DisplayName: Мертвый лазер
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: Взрыв серной кислоты
 DawnshatterFireball.DisplayName: Огонь рассвета
 TransferItemProj.DisplayName: Перемещаемый предмет
 Crystal.DisplayName: Кристалл
-MuraDimensionSlash.DisplayName: Разрез измерения
-MuraSlashArc.DisplayName: Разрез измерения
-MuraSlashLine.DisplayName: Разрез измерения
 WGGLumberjackSaw.DisplayName: Ржавая цепная пила
 WGGLifeWeaverAcorn.DisplayName: Желудь
 GammaRayBurst.DisplayName: Гамма-всплеск

@@ -616,7 +616,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 破晓青火焰弹，重力+弱追踪
     internal class DawnshatterFireball : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private float scale = 1f;
         private int trailCounter;

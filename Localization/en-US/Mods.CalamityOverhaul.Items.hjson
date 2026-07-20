@@ -996,10 +996,13 @@ ItemFilter: {
 	DisplayName: Item Filter Board
 	Tooltip:
 		'''
-		Use to open the filter panel
-		Right-click a compatible machine to apply
-		Left-click a chest to copy its contents as filter rules
+		Use to open the list editor; click the panel with an item on your cursor to record it
+		Use while aiming at a collector to copy its list, or at a chest to copy its contents
+		Right-click a collector, item pipeline or other machine while holding it to install the list
 		'''
+	StateFormat: "{0} · {1} entries recorded"
+	CopiedFromChest: Copied chest contents
+	CopiedFromCollector: Copied collector list
 }
 
 SporeBubbleBlaster: {

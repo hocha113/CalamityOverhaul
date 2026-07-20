@@ -1,4 +1,5 @@
 using CalamityOverhaul.Common;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -79,7 +80,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 player.whoAmI
             );
 
-            //鱼群 130–140 条
+            //鱼群规模：基础 40-55 条，随领域层数增长
             int fishCount = Main.rand.Next(40 + 5 * HalibutData.GetDomainLayer(), 55 + 5 * HalibutData.GetDomainLayer());
             for (int i = 0; i < fishCount; i++) {
                 //在玩家周围随机位置生成鱼
@@ -140,8 +141,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Main.projectile[i].type == ModContent.ProjectileType<FishSwarmController>() &&
                     Main.projectile[i].owner == player.whoAmI) {
                     Main.projectile[i].timeLeft = 30;
+                    if (Main.projectile[i].ModProjectile is FishSwarmController ctrl) {
+                        //视觉：登记释放拍与流线束退场
+                        ctrl.SurgeCued = true;
+                        ctrl.SurgeDir = surgeDirection;
+                    }
                 }
             }
+
+            //聚拢预告：收缩环 + 向心碎光
+            FishSwarmVFX.GatherCue(player);
 
             //播放突袭音效
             SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, player.Center); //俯冲音效
@@ -151,10 +160,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>鱼群控制器，玩家移动与技能时长</summary>
-    internal class FishSwarmController : ModProjectile
+    /// <summary>鱼群控制器，玩家移动与技能时长；兼群体流线束绘制载体</summary>
+    internal class FishSwarmController : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private Player Owner => Main.player[Projectile.owner];
 
@@ -182,6 +191,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 正常移动速度
         /// </summary>
         private const float NormalSpeed = 14f;
+
+        /// <summary>突袭已触发（由 <see cref="FishSwarm.ActivateFishConeSurge"/> 置位），驱动释放拍与流线束退场</summary>
+        internal bool SurgeCued;
+
+        /// <summary>突袭方向，仅视觉用</summary>
+        internal Vector2 SurgeDir;
+
+        private Trail schoolTrail;
+        private float ribbonEnv;
+        private float wakeHeadWidth;
+        private float wakeEnv;
+
+        public override void SetStaticDefaults() {
+            //玩家路径即鱼群路径，供流线束取样
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 26;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 10;
@@ -233,57 +259,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 Owner.velocity = adjustedDirection * (currentDashSpeed + NormalSpeed * dashProgress);
 
-                //水花粒子
-                if (Main.rand.NextBool(2)) {
-                    Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(120f, 120f);
+                //化形入场英雄时刻：剪影分批溶解成鳞片 + 破水环 + 定向震（仅首帧）
+                if (DashTimer == 1) {
+                    FishSwarmVFX.DissolveBurst(Owner, DashDirection);
+                }
+
+                //冲刺水尾底噪（克制填充，主体交给鳞片与流线束）
+                if (Main.rand.NextBool(4)) {
+                    Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(46f, 46f);
                     Dust dust = Dust.NewDustPerfect(dustPos, DustID.Water,
-                        -Owner.velocity * 0.3f, Scale: Main.rand.NextFloat(1f, 1.5f));
+                        -Owner.velocity * 0.25f, Scale: Main.rand.NextFloat(0.9f, 1.4f));
                     dust.noGravity = true;
-                }
-
-                //螺旋涡流粒子（围绕玩家旋转）
-                if (Main.rand.NextBool(3)) {
-                    float spiralAngle = Main.rand.NextFloat(MathHelper.TwoPi);
-                    float spiralRadius = Main.rand.NextFloat(60f, 100f);
-                    Vector2 spiralOffset = new Vector2(
-                        (float)Math.Cos(spiralAngle) * spiralRadius,
-                        (float)Math.Sin(spiralAngle) * spiralRadius
-                    );
-
-                    Vector2 tangentialVel = new Vector2(
-                        -(float)Math.Sin(spiralAngle),
-                        (float)Math.Cos(spiralAngle)
-                    ) * 5f;
-
-                    Dust spiralDust = Dust.NewDustPerfect(
-                        Owner.Center + spiralOffset,
-                        DustID.Water,
-                        tangentialVel + Owner.velocity * 0.2f,
-                        Scale: Main.rand.NextFloat(1.2f, 2f)
-                    );
-                    spiralDust.noGravity = true;
-                    spiralDust.alpha = 80;
-                    spiralDust.color = Color.Lerp(Color.White, Color.Cyan, 0.5f);
-                }
-
-                //冲击波效果（关键时刻）
-                if (DashTimer == 1 || DashTimer == 10) {
-                    for (int i = 0; i < 20; i++) {
-                        float angle = MathHelper.TwoPi * i / 20f;
-                        Vector2 shockwaveVel = new Vector2(
-                            (float)Math.Cos(angle),
-                            (float)Math.Sin(angle)
-                        ) * 8f;
-
-                        Dust shockDust = Dust.NewDustPerfect(
-                            Owner.Center,
-                            DustID.Water,
-                            shockwaveVel,
-                            Scale: Main.rand.NextFloat(1.5f, 2.5f)
-                        );
-                        shockDust.noGravity = true;
-                        shockDust.alpha = 50;
-                    }
+                    dust.alpha = 120;
                 }
             }
             //持续移动阶段
@@ -303,14 +290,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Owner.direction = Math.Sign(Owner.velocity.X);
 
                 //持续移动的水花特效（频率较低）
-                if (Main.rand.NextBool(5)) {
+                if (Main.rand.NextBool(6)) {
                     Vector2 dustPos = Owner.Center + Main.rand.NextVector2Circular(15f, 15f);
                     Dust dust = Dust.NewDustPerfect(dustPos, DustID.Water,
                         -Owner.velocity * 0.2f, Scale: Main.rand.NextFloat(0.8f, 1.2f));
                     dust.noGravity = true;
                     dust.alpha = 100;
                 }
+
+                //高速巡游的水纹涟漪（折射暗示，低频）
+                if (DashTimer % 24 == 0 && Owner.velocity.Length() > 15f) {
+                    FishSwarmVFX.TravelRipple(Owner.Center, Owner.velocity);
+                }
             }
+
+            //突袭释放拍：聚拢结束、锥形射出的那一帧（timeLeft 由突袭激活时设为 30，聚拢 15 帧）
+            if (SurgeCued && Projectile.timeLeft == 15) {
+                FishSwarmVFX.ReleaseCue(Owner, SurgeDir);
+            }
+
+            //流线束包络：入场渐起，突袭触发后退场
+            ribbonEnv = MathHelper.Lerp(ribbonEnv, SurgeCued ? 0f : 1f, 0.1f);
 
             //防止玩家受到其他速度影响
             Owner.maxFallSpeed = 100f;
@@ -321,15 +321,51 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //技能结束时恢复玩家重力
             if (Owner != null && Owner.active) {
                 Owner.gravity = Player.defaultGravity;
+                //化形退场英雄时刻：鳞片收拢重织人形，掩住玩家显形
+                FishSwarmVFX.ReformBurst(Owner);
             }
             Owner.GetOverride<HalibutPlayer>().FishSwarmActive = false;
             Owner.GetOverride<HalibutPlayer>().FishSwarmTimer = 0;
+        }
+
+        private float SchoolWakeWidth(float completionRatio) {
+            float swell = Math.Min(completionRatio * 3.2f, 1f);     //离头端快速鼓起
+            float taper = (float)Math.Pow(1f - completionRatio, 0.85f);
+            return wakeHeadWidth * swell * taper;
+        }
+
+        private Color SchoolWakeColor(Vector2 coord) => Color.White * (wakeEnv * (1f - coord.X * 0.4f));
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            Effect fx = FishSwarmAssets.FishSwarmWake;
+            if (fx == null || !Projectile.active || !Owner.active) {
+                return;
+            }
+            float speed = Owner.velocity.Length();
+            wakeEnv = ribbonEnv * MathHelper.Clamp((speed - 7f) / 14f, 0f, 1f);
+            if (wakeEnv <= 0.04f) {
+                return;
+            }
+            wakeHeadWidth = MathHelper.Clamp(speed * 2.4f, 22f, 64f);
+
+            Vector2[] pos = new Vector2[Projectile.oldPos.Length];
+            for (int i = 0; i < pos.Length; i++) {
+                pos[i] = Projectile.oldPos[i] == Vector2.Zero
+                    ? Projectile.Center : Projectile.oldPos[i] + Projectile.Size * 0.5f;
+            }
+            schoolTrail ??= new Trail(pos, SchoolWakeWidth, SchoolWakeColor);
+            schoolTrail.TrailPositions = pos;
+
+            FishSwarmVFX.ApplyWake(fx, Projectile.whoAmI * 0.37f);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            schoolTrail.DrawTrail(fx);
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
         }
     }
 
     internal class FishingFly : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;//透明贴图，因为纹理会手动获取
+        public override string Texture => CWRConstant.VaultPlaceholder;//透明贴图，因为纹理会手动获取
 
         /// <summary>
         /// 拥有者玩家
@@ -395,6 +431,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         /// 跃动周期偏移
         /// </summary>
         private float jumpPhaseOffset = 0f;
+
+        /// <summary>
+        /// 转向敏捷度：外层鱼更迟钝，转弯时群体外缘甩尾滞后（惯性差异）
+        /// </summary>
+        private float turnAgility = 1f;
+
+        /// <summary>
+        /// 最近一次群体平均速度，鳞光传染波的流向兜底
+        /// </summary>
+        private Vector2 lastAvgVel = Vector2.Zero;
+
+        //拖影取样帧：快速时更贴近本体，读作速度拉伸而非贴图串
+        private static readonly int[] GhostIdxFast = [1, 3, 5];
+        private static readonly int[] GhostIdxSlow = [2, 4, 6];
 
         /// <summary>
         ///生命计时，判冲刺阶段
@@ -478,12 +528,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //检查技能是否结束
             if (!halibutPlayer.FishSwarmActive) {
-                //淡出效果
-                fishAlpha -= 0.05f;
+                //技能结束：向玩家收拢并入重织的剪影，禁原地淡出 pop
+                Vector2 toHome = OwnerPlayer.Center - Projectile.Center;
+                float homeDist = toHome.Length();
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, toHome.SafeNormalize(Vector2.Zero) * 24f, 0.16f);
+                fishAlpha -= homeDist < 24f ? 0.22f : 0.05f;
                 if (fishAlpha <= 0f) {
                     Projectile.Kill();
                     return;
                 }
+                if (Projectile.velocity.LengthSquared() > 0.1f) {
+                    fishRotation = Projectile.velocity.ToRotation();
+                    Projectile.rotation = fishRotation;
+                }
+                if (Math.Abs(Projectile.velocity.X) > 0.5f) {
+                    fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
+                }
+                lifeTimer++;
+                return;
             }
             else {
                 //淡入效果（冲刺阶段快速淡入）
@@ -499,6 +561,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 fishScale = Main.rand.NextFloat(0.6f, 1.3f);
                 behaviorRandomness = Main.rand.NextFloat(0.8f, 1.3f);
                 jumpPhaseOffset = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+                //按所在螺旋层分配惯性：外层转向滞后
+                int layer = Math.Min(FishID / 28, 4);
+                turnAgility = MathHelper.Lerp(1.1f, 0.78f, layer / 4f);
             }
 
             lifeTimer++;
@@ -530,8 +595,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             float swimWave = (float)Math.Sin(Main.GameUpdateCount * 0.15f + FishID) * swimWaveIntensity;
             Projectile.rotation = fishRotation + swimWave;
 
-            //生成水花特效（冲刺阶段更频繁）
-            int dustChance = isDashing ? 10 : 30;
+            //生成水花特效（冲刺阶段更频繁，仅作底噪填充）
+            int dustChance = isDashing ? 14 : 36;
             if (Main.rand.NextBool(dustChance) && fishAlpha > 0.5f) {
                 Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.Water,
                     Projectile.velocity * 0.3f, Scale: Main.rand.NextFloat(0.5f, 1f));
@@ -641,8 +706,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 pulseForce = spiralOffset.SafeNormalize(Vector2.Zero) * pulseFactor;
             totalForce += pulseForce;
 
-            //应用力和速度限制
-            Projectile.velocity += totalForce * 0.4f; //更高的加速度，响应更快
+            //应用力和速度限制（外层鱼响应更钝，转向时甩尾滞后）
+            Projectile.velocity += totalForce * (0.4f * turnAgility);
 
             //速度限制：根据在螺旋中的位置动态调整
             float baseMaxSpeed = 40f * behaviorRandomness;
@@ -748,8 +813,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             totalForce += jumpForce;
 
-            //应用力并限制速度（提高最大速度以增加动感）
-            Projectile.velocity += totalForce * 0.2f; //提高力的应用系数
+            //应用力并限制速度（外层鱼响应更钝，转向时甩尾滞后）
+            Projectile.velocity += totalForce * (0.2f * turnAgility);
 
             //正常阶段跟随玩家的部分速度（保持相对位置）
             Projectile.position += OwnerPlayer.velocity * 0.3f;
@@ -800,8 +865,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 fishDirection = Projectile.velocity.X > 0 ? 1 : -1;
             }
 
-            //突袭轨迹粒子
-            if (Main.rand.NextBool(5)) {
+            //突袭轨迹底噪（速度感主体交给流线绘制与鳞光波）
+            if (Main.rand.NextBool(8)) {
                 Dust surgeDust = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Water,
@@ -809,7 +874,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Scale: Main.rand.NextFloat(1f, 1.5f)
                 );
                 surgeDust.noGravity = true;
-                surgeDust.color = Color.Lerp(Color.Cyan, Color.White, 0.5f);
+                surgeDust.color = Color.Lerp(FishSwarmVFX.Flow, FishSwarmVFX.Silver, 0.5f);
             }
         }
 
@@ -853,7 +918,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //聚拢粒子效果
-            if (Main.rand.NextBool(8)) {
+            if (Main.rand.NextBool(10)) {
                 Dust gatherDust = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Water,
@@ -861,7 +926,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Scale: Main.rand.NextFloat(1.2f, 1.8f)
                 );
                 gatherDust.noGravity = true;
-                gatherDust.color = Color.Cyan;
+                gatherDust.color = FishSwarmVFX.Flow;
             }
         }
 
@@ -948,7 +1013,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
 
             //尖锥螺旋粒子特效
-            if (FishID % 5 == 0 && Main.rand.NextBool(2)) {
+            if (FishID % 5 == 0 && Main.rand.NextBool(3)) {
                 Dust coneDust = Dust.NewDustPerfect(
                     Projectile.Center,
                     DustID.Water,
@@ -956,7 +1021,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     Scale: Main.rand.NextFloat(1.5f, 2.5f)
                 );
                 coneDust.noGravity = true;
-                coneDust.color = Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat());
+                coneDust.color = Color.Lerp(FishSwarmVFX.Flow, FishSwarmVFX.Silver, Main.rand.NextFloat());
                 coneDust.alpha = 50;
             }
         }
@@ -1001,6 +1066,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //质心和平均速度
                 centerOfMass /= nearbyFishCount;
                 averageVelocity /= nearbyFishCount;
+                lastAvgVel = averageVelocity;
 
                 //对齐力：向平均速度方向旋转
                 float alignmentIntensity = 0.1f;
@@ -1014,6 +1080,35 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //命中演出：水珠扇 + 偶发碎光与轻水声（伤害逻辑不变）
+            FishSwarmVFX.HitSplash(Projectile.Center, Projectile.velocity);
+        }
+
+        public override void OnKill(int timeLeft) {
+            //突袭中耗尽穿透而死的鱼留下坠落水珠
+            if (surgeModeActive) {
+                FishSwarmVFX.SurgeFishDeath(Projectile.Center, Projectile.velocity);
+            }
+        }
+
+        /// <summary>
+        /// 群体共享流向：鳞光传染波的传播方向。突袭取突袭方向，
+        /// 平时取玩家位移方向，兜底用群体平均速度或自身速度
+        /// </summary>
+        private Vector2 SchoolFlowDir() {
+            if (surgeModeActive) {
+                return surgeDirection;
+            }
+            if (OwnerPlayer != null && OwnerPlayer.velocity.LengthSquared() > 16f) {
+                return OwnerPlayer.velocity.SafeNormalize(Vector2.UnitX);
+            }
+            if (lastAvgVel.LengthSquared() > 4f) {
+                return lastAvgVel.SafeNormalize(Vector2.UnitX);
+            }
+            return Projectile.velocity.SafeNormalize(Vector2.UnitX);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
             Main.instance.LoadItem(ItemID.SpecularFish);//加载关于鱼的纹理
             Texture2D value = TextureAssets.Item[ItemID.SpecularFish].Value;//获取鱼的纹理
@@ -1022,114 +1117,74 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 drawPosition = Projectile.Center - Main.screenPosition;
             Rectangle sourceRect = value.Frame(1, 1, 0, 0);
             Vector2 origin = sourceRect.Size() / 2f;
-            float drawRotation = Projectile.rotation + (fishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4);
+            float rotOffset = fishDirection > 0 ? MathHelper.PiOver4 : -MathHelper.PiOver4;
+            float drawRotation = Projectile.rotation + rotOffset;
 
             //根据朝向决定翻转
             SpriteEffects effects = fishDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-            //冲刺阶段增强拖尾
+            float speed = Projectile.velocity.Length();
             bool isDashing = lifeTimer <= DashPhase;
-            int trailLength = isDashing ? Projectile.oldPos.Length : Projectile.oldPos.Length * 2 / 3;
+            bool fast = isDashing || surgeModeActive || speed > 20f;
 
-            //冲刺阶段螺旋颜色效果
-            Color spiralColor = lightColor;
-            if (isDashing) {
-                //根据螺旋臂添加不同的颜色调制
-                int spiralArm = FishID % 5;
-                float colorPhase = (lifeTimer * 0.1f + spiralArm * MathHelper.TwoPi / 5f) % MathHelper.TwoPi;
-                Color accentColor = Color.Lerp(
-                    Color.Cyan,
-                    Color.LightBlue,
-                    (float)Math.Sin(colorPhase) * 0.5f + 0.5f
-                );
-                spiralColor = Color.Lerp(lightColor, accentColor, 0.3f);
+            //鳞光传染波：波前沿群体流向扫过、朝向又与流向一致的鱼才反光，
+            //离散小闪点在群里"传染"式波及（纯绘制，无粒子开销）
+            Vector2 flow = SchoolFlowDir();
+            float align = Vector2.Dot(Projectile.velocity.SafeNormalize(Vector2.Zero), flow);
+            Vector2 schoolCenter = OwnerPlayer?.Center ?? Projectile.Center;
+            float wave = (Main.GlobalTimeWrappedHourly * 1.35f
+                - Vector2.Dot(Projectile.Center - schoolCenter, flow) / 300f + FishID * 0.017f) % 1f;
+            if (wave < 0f) {
+                wave += 1f;
             }
+            float glintPulse = align > 0.84f && wave < 0.085f && fishAlpha > 0.6f ? 1f - wave / 0.085f : 0f;
 
-            //绘制更明显的拖尾（冲刺时形成螺旋轨迹）
-            for (int i = 0; i < trailLength; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) continue;
-
-                //冲刺阶段拖尾更明显且带有颜色渐变
-                float baseTrailAlpha = isDashing ? 0.8f : 0.6f;
-                float trailAlpha = fishAlpha * (1f - i / (float)Projectile.oldPos.Length) * baseTrailAlpha;
-                Vector2 trailPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float trailScale = fishScale * (1f - i / (float)Projectile.oldPos.Length * 0.3f);
-
-                //螺旋拖尾颜色渐变
-                Color trailColor = isDashing ?
-                    Color.Lerp(spiralColor, lightColor, i / (float)trailLength) :
-                    lightColor;
-
-                Main.EntitySpriteDraw(
-                    value,
-                    trailPos,
-                    sourceRect,
-                    trailColor * trailAlpha,
-                    drawRotation,
-                    origin,
-                    trailScale * 0.85f,
-                    effects,
-                    0
-                );
-            }
-
-            //绘制主体
-            Main.EntitySpriteDraw(
-                value,
-                drawPosition,
-                sourceRect,
-                spiralColor * fishAlpha,
-                drawRotation,
-                origin,
-                fishScale,
-                effects,
-                0
-            );
-
-            //额外的发光层（速度快时更明显，冲刺阶段更强）
-            float glowThreshold = isDashing ? 15f : 12f;
-            if (Projectile.velocity.Length() > glowThreshold) {
-                float glowAlpha = (Projectile.velocity.Length() - glowThreshold) / 10f * 0.5f * fishAlpha;
-                if (isDashing) {
-                    glowAlpha *= 1.8f; //冲刺阶段发光更强
-
-                    //螺旋发光效果：根据在螺旋中的位置产生不同强度的发光
-                    int spiralArm = FishID % 5;
-                    float glowPulse = (float)Math.Sin(lifeTimer * 0.2f + spiralArm * MathHelper.TwoPi / 5f);
-                    glowAlpha *= 1f + glowPulse * 0.3f;
+            //运动拖影：少量残影向尾端变暗收小，读作滑动而非贴图串
+            int[] ghostIdx = fast ? GhostIdxFast : GhostIdxSlow;
+            float ghostBase = fast ? 0.36f : 0.22f;
+            for (int k = 0; k < ghostIdx.Length; k++) {
+                int gi = ghostIdx[k];
+                if (gi >= Projectile.oldPos.Length || Projectile.oldPos[gi] == Vector2.Zero) {
+                    continue;
                 }
-
-                Color glowColor = isDashing ? Color.Lerp(Color.White, Color.Cyan, 0.4f) : Color.White;
-
-                Main.EntitySpriteDraw(
-                    value,
-                    drawPosition,
-                    sourceRect,
-                    glowColor * glowAlpha,
-                    drawRotation,
-                    origin,
-                    fishScale * 1.2f,
-                    effects,
-                    0
-                );
+                float f = 1f - gi / (float)Projectile.oldPos.Length;
+                float gRot = (gi < Projectile.oldRot.Length ? Projectile.oldRot[gi] : Projectile.rotation) + rotOffset;
+                Vector2 gPos = Projectile.oldPos[gi] + Projectile.Size / 2f - Main.screenPosition;
+                Color gCol = Color.Lerp(FishSwarmVFX.Deep, FishSwarmVFX.Flow, f * 0.6f) * (ghostBase * f * fishAlpha);
+                Main.EntitySpriteDraw(value, gPos, sourceRect, gCol, gRot, origin
+                    , fishScale * (0.72f + 0.2f * f), effects, 0);
             }
 
-            //超高速螺旋涡流特效（仅在冲刺阶段且速度极快时）
-            if (isDashing && Projectile.velocity.Length() > 30f) {
-                int spiralArm = FishID % 5;
-                float vortexAlpha = fishAlpha * 0.2f;
+            //突袭中三分之一的鱼贴细加色流线（速度各向异性）
+            if (surgeModeActive && FishID % 3 == 0 && speed > 22f) {
+                Texture2D line = CWRAsset.Line?.Value;
+                if (line != null) {
+                    Vector2 velNorm = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                    float len = speed * 1.1f;
+                    Vector2 lineScale = new(0.3f, len / line.Height);
+                    Main.EntitySpriteDraw(line, drawPosition - velNorm * len * 0.5f, null
+                        , FishSwarmVFX.Flow with { A = 0 } * (0.30f * fishAlpha)
+                        , Projectile.velocity.ToRotation() + MathHelper.PiOver2
+                        , line.Size() / 2f, lineScale, SpriteEffects.None, 0);
+                }
+            }
 
-                Main.EntitySpriteDraw(
-                    value,
-                    drawPosition,
-                    sourceRect,
-                    Color.Cyan * vortexAlpha,
-                    drawRotation,
-                    origin,
-                    fishScale * 1.4f,
-                    effects,
-                    0
-                );
+            //主体：鳞银体色，闪点帧短暂提到近白（禁常驻纯白）
+            Color bodyCol = Color.Lerp(lightColor, FishSwarmVFX.Silver, 0.22f);
+            if (glintPulse > 0f) {
+                bodyCol = Color.Lerp(bodyCol, FishSwarmVFX.Spec, glintPulse * 0.55f);
+            }
+            Main.EntitySpriteDraw(value, drawPosition, sourceRect, bodyCol * fishAlpha
+                , drawRotation, origin, fishScale, effects, 0);
+
+            //离散星形 glint（A=0 加色观感，瞬现即灭）
+            if (glintPulse > 0f) {
+                Texture2D star = CWRAsset.StarGlow01?.Value;
+                if (star != null) {
+                    Main.EntitySpriteDraw(star, drawPosition, null
+                        , FishSwarmVFX.Spec with { A = 0 } * (glintPulse * fishAlpha)
+                        , drawRotation, star.Size() / 2f, 0.085f + glintPulse * 0.05f, SpriteEffects.None, 0);
+                }
             }
 
             return false;

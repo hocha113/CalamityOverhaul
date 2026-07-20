@@ -133,7 +133,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>碎光弹片：非追踪锥形短程，飞得越远伤害越低，Trail+方向高光随衰减收窄</summary>
     internal sealed class SHPCShardburstShardProj : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //═════ 平衡参数 ═════
         //寿命（更新计，extraUpdates=1 时折合 21 帧）
@@ -302,7 +302,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>碎光爆闪：SHPCModShardburst.fx 玻璃裂纹+色散波前+碎屑喷发，音效与粒子的联机收敛点</summary>
     internal sealed class SHPCShardburstFlashProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 16;
         private const float BaseDrawSize = 190f;
@@ -366,7 +366,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
             //屏幕外的碎裂不值得为它重启 Immediate 批次（quad 最大半径 ~145px，留余量）
             if (!VaultUtils.IsPointOnScreen(Projectile.Center - Main.screenPosition, 250)) return false;
             Effect shader = EffectLoader.SHPCModShardburst?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 

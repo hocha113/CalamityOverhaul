@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>SHPC 右键蓄力球：蓄力/飞行/引爆 CyberDetonationProj</summary>
     internal class CyberChargeOrbProj : BaseHeldProj, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         #region 常量
 

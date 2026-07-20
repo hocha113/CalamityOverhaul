@@ -105,7 +105,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
     /// <summary>预测拦截点全息标线，纯视觉；失锁或收枪淡出</summary>
     internal sealed class SHPCAdaptiveReticleProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private static readonly Color ReticleMain = new(170, 255, 120);
         private static readonly Color ReticleAccent = new(255, 130, 200);
@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.02f) return;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (white == null) return;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;

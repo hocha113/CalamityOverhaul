@@ -1,3 +1,4 @@
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -109,10 +110,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
     }
 
-    /// <summary>溺尸弹幕，爬出地面后冲刺爆炸</summary>
+    /// <summary>溺尸弹幕：破土爬出 → 蹒跚寻敌 → 锁定倾身 → 前倾狂奔 → 尸胀爆裂</summary>
     internal class WaterZombie : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>
         /// 延迟帧数（等待后才开始出现）
@@ -120,7 +121,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private ref float DelayTime => ref Projectile.ai[0];
 
         /// <summary>
-        /// 状态机：0=延迟等待，1=从地下爬出，2=寻找目标，3=冲刺攻击，4=爆炸
+        /// 状态机：0=破土爬出，1=蹒跚寻敌，2=锁定+冲刺，3=尸胀爆裂
         /// </summary>
         private int State {
             get => (int)Projectile.localAI[0];
@@ -143,40 +144,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int EmergeDuration = 30;
 
         /// <summary>
-        /// 寻找目标持续时间
+        /// 蹒跚基准时长，叠加 whoAmI 抖动让尸群波次不齐
         /// </summary>
         private const int SeekDuration = 20;
+
+        /// <summary>锁定预告拍：刹停+倾身，扑出前的可读窗口</summary>
+        private const int LockDuration = 10;
 
         /// <summary>
         /// 冲刺持续时间
         /// </summary>
         private const int ChargeDuration = 60;
 
+        /// <summary>尸胀帧数：躯体鼓胀挣动后爆开</summary>
+        private const int InflateDuration = 8;
+
         /// <summary>
         /// 最大生存时间
         /// </summary>
         private const int MaxLifeTime = 600;
 
-        /// <summary>
-        /// 动画帧
-        /// </summary>
-        private int animationFrame = 0;
-        private int animationTimer = 0;
+        /// <summary>僵尸贴图单帧高</summary>
+        private const float SpriteHeight = 58f;
 
-        /// <summary>
-        ///透明度，渐隐渐现
-        /// </summary>
-        private float alpha = 0f;
+        private int animationFrame;
+        private float stepPhase;//步频相位，推进速度自身波动出蹒跚感
+        private int facing = -1;//贴图原朝左，1=右（翻转绘制）
+        private float bodyRot;
+        private Vector2 bodySquash = Vector2.One;
+        private float groundY;//出土地面线
+        private float breachX;//破口横坐标，洞口暗斑锚点
+        private bool groundInit;
+        private bool bursted;
+        private int shambleDur;
+        private float holeFade = 1f;
 
-        /// <summary>
-        /// 缩放比例
-        /// </summary>
-        private float scale = 0.8f;
+        private float FeetY {
+            get => Projectile.position.Y + Projectile.height;
+            set => Projectile.position.Y = value - Projectile.height;
+        }
 
-        /// <summary>
-        /// 地面粒子效果强度
-        /// </summary>
-        private float groundEffectIntensity = 0f;
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 38;
@@ -198,226 +209,192 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Projectile.alpha = 255;
                 return;
             }
+            Projectile.alpha = 0;
+
+            if (!groundInit) {
+                groundInit = true;
+                groundY = Projectile.Center.Y + 8f;//生成点在砖顶上方8像素
+                breachX = Projectile.Center.X;
+                shambleDur = SeekDuration + Projectile.whoAmI * 7 % 17;
+                facing = Main.player[Projectile.owner].direction;
+                if (facing == 0) {
+                    facing = 1;
+                }
+                //整具埋入地面线之下，靠裁剪绘制逐帧拔出
+                FeetY = groundY + SpriteHeight;
+                Projectile.velocity = Vector2.Zero;
+            }
 
             //状态机
             switch (State) {
-                case 0: //从地下爬出
+                case 0: //破土爬出
                     EmergeFromGroundAI();
                     break;
-                case 1: //寻找目标
-                    SeekTargetAI();
+                case 1: //蹒跚寻敌
+                    ShambleAI();
                     break;
-                case 2: //冲刺攻击
-                    ChargeAttackAI();
+                case 2: //锁定+冲刺
+                    LockChargeAI();
                     break;
-                case 3: //爆炸
-                    ExplodeAI();
+                case 3: //尸胀爆裂
+                    BloatExplodeAI();
                     break;
             }
 
-            //更新动画
-            animationTimer++;
-            if (animationTimer >= 8) {
-                animationTimer = 0;
-                animationFrame = (animationFrame + 1) % 3;
+            if (State != 0 && holeFade > 0f) {
+                holeFade -= 0.04f;
             }
 
-            if (State != 2) {
-                Projectile.velocity.X = Main.player[Projectile.owner].direction > 0 ? 1 : -1;
+            Projectile.rotation = bodyRot;//喂给残影缓存
+        }
+
+        /// <summary>拔出曲线：缓探头 → 卡住 → 猛拔过冲 → 落定</summary>
+        private static float EmergeCurve(float p) {
+            if (p < 0.30f) {
+                float t = p / 0.30f;
+                return 0.24f * (t * t * (3f - 2f * t));
             }
+            if (p < 0.46f) {
+                return 0.24f + 0.05f * ((p - 0.30f) / 0.16f);
+            }
+            if (p < 0.80f) {
+                float t = (p - 0.46f) / 0.34f;
+                return 0.29f + 0.75f * t * t;
+            }
+            float u = (p - 0.80f) / 0.20f;
+            return MathHelper.Lerp(1.04f, 1f, u * u * (3f - 2f * u));
         }
 
         /// <summary>爬出 tick</summary>
         private void EmergeFromGroundAI() {
             StateTimer++;
+            float p = StateTimer / (float)EmergeDuration;
+            float rise = EmergeCurve(p);
+            FeetY = groundY + SpriteHeight * (1f - rise);
+            Projectile.velocity = Vector2.Zero;
+            animationFrame = 0;
 
-            //计算出现进度（0-1）
-            float emergeProgress = StateTimer / EmergeDuration;
+            //出土挣动微晃，越接近拔出越明显
+            bodyRot = MathF.Sin(StateTimer * 0.9f + Projectile.whoAmI) * 0.035f * p;
+            bodySquash = Vector2.One;
 
-            //透明度渐显
-            alpha = MathHelper.Lerp(0f, 1f, emergeProgress);
-            Projectile.alpha = (int)((1f - alpha) * 255f);
-
-            //缩放效果（从小到正常）
-            scale = MathHelper.Lerp(0.5f, 1f, VaultUtils.EaseOutBack(emergeProgress));
-
-            //地面粒子效果强度
-            groundEffectIntensity = MathHelper.Lerp(1f, 0f, emergeProgress);
-
-            //从地下爬出：Y位置向上移动
-            float riseDistance = 60f;
-            Projectile.position.Y -= riseDistance / EmergeDuration;
-
-            if (StateTimer < EmergeDuration * 0.8f) {
-                //初期（0-40%）：地面开裂效果
-                if (emergeProgress < 0.4f) {
-                    //小型泥土颗粒从裂缝中溅出
-                    if (Main.rand.NextBool(3)) {
-                        Vector2 dustPos = Projectile.Bottom + new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-5f, 2f));
-                        float xVel = Main.rand.NextFloat(-1.5f, 1.5f);
-                        float yVel = Main.rand.NextFloat(-3f, -1f);
-
-                        Dust dirt = Dust.NewDustPerfect(
-                            dustPos,
-                            DustID.Dirt,
-                            new Vector2(xVel, yVel),
-                            Scale: Main.rand.NextFloat(0.8f, 1.3f)
-                        );
-                        dirt.noGravity = false;
-                        dirt.fadeIn = 0.8f;
-                    }
-
-                    //地面裂缝烟尘（灰色烟雾）
-                    if (Main.rand.NextBool(5)) {
-                        Dust smoke = Dust.NewDustPerfect(
-                            Projectile.Bottom + new Vector2(Main.rand.NextFloat(-10f, 10f), 0),
-                            DustID.Smoke,
-                            new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-1.5f, -0.5f)),
-                            Scale: Main.rand.NextFloat(0.6f, 1f),
-                            Alpha: 120
-                        );
-                        smoke.noGravity = true;
-                        smoke.fadeIn = 0.5f;
-                    }
+            bool hasDirt = HasSolidGround();
+            if (p < 0.72f && Main.rand.NextBool(hasDirt ? 2 : 4)) {
+                if (hasDirt) {
+                    //破口两侧土块抛物
+                    float side = Main.rand.NextBool() ? -1f : 1f;
+                    Dust dirt = Dust.NewDustPerfect(
+                        new Vector2(Projectile.Center.X + side * Main.rand.NextFloat(4f, 16f), groundY),
+                        DustID.Dirt,
+                        new Vector2(side * Main.rand.NextFloat(0.8f, 2.8f), Main.rand.NextFloat(-4.2f, -1.6f)),
+                        30, default, Main.rand.NextFloat(0.9f, 1.5f));
+                    dirt.noGravity = false;
                 }
-
-                //中期（40-70%）：强力爬出，泥土飞溅
-                if (emergeProgress >= 0.4f && emergeProgress < 0.7f) {
-                    //中型泥土块从两侧飞出
-                    if (Main.rand.NextBool(4)) {
-                        float side = Main.rand.NextBool() ? -1f : 1f;
-                        Vector2 ejectVel = new Vector2(
-                            side * Main.rand.NextFloat(2.5f, 4.5f),
-                            Main.rand.NextFloat(-4f, -2.5f)
-                        );
-
-                        Dust dirtChunk = Dust.NewDustPerfect(
-                            Projectile.Bottom + new Vector2(side * Main.rand.NextFloat(5f, 15f), 0),
-                            DustID.Dirt,
-                            ejectVel,
-                            Scale: Main.rand.NextFloat(1f, 1.6f)
-                        );
-                        dirtChunk.noGravity = false;
-                    }
-
-                    //石块碎片
-                    if (Main.rand.NextBool(6)) {
-                        float side = Main.rand.NextBool() ? -1f : 1f;
-                        Dust stone = Dust.NewDustPerfect(
-                            Projectile.Bottom,
-                            DustID.Stone,
-                            new Vector2(side * Main.rand.NextFloat(2f, 4f), Main.rand.NextFloat(-3.5f, -2f)),
-                            Scale: Main.rand.NextFloat(0.7f, 1.2f)
-                        );
-                        stone.noGravity = false;
-                    }
-
-                    //溺尸特色：水珠从身体滴落
-                    if (Main.rand.NextBool(4)) {
-                        Vector2 waterDropPos = Projectile.Center + new Vector2(
-                            Main.rand.NextFloat(-10f, 10f),
-                            Main.rand.NextFloat(-15f, 5f)
-                        );
-                        Dust waterDrop = Dust.NewDustPerfect(
-                            waterDropPos,
-                            DustID.Water,
-                            new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), Main.rand.NextFloat(1f, 2.5f)),
-                            Scale: Main.rand.NextFloat(0.6f, 1.1f),
-                            Alpha: 80
-                        );
-                        waterDrop.noGravity = false;
-                    }
-                }
-
-                //后期（70-80%）：尘埃落定
-                if (emergeProgress >= 0.7f) {
-                    //细小尘埃漂浮
-                    if (Main.rand.NextBool(6)) {
-                        Dust dustFloat = Dust.NewDustPerfect(
-                            Projectile.Bottom + new Vector2(Main.rand.NextFloat(-15f, 15f), Main.rand.NextFloat(-5f, 0)),
-                            DustID.Smoke,
-                            new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.8f, -0.2f)),
-                            Scale: Main.rand.NextFloat(0.4f, 0.7f),
-                            Alpha: 150
-                        );
-                        dustFloat.noGravity = true;
-                        dustFloat.fadeIn = 0.3f;
-                    }
-
-                    //水汽蒸发效果（青绿色）
-                    if (Main.rand.NextBool(8)) {
-                        Dust mist = Dust.NewDustPerfect(
-                            Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                            DustID.DungeonWater,
-                            new Vector2(0, Main.rand.NextFloat(-0.5f, 0)),
-                            Scale: Main.rand.NextFloat(0.5f, 0.9f),
-                            Alpha: 100
-                        );
-                        mist.noGravity = true;
-                        mist.color = Color.Lerp(Color.Cyan, Color.LightGreen, 0.6f);
-                    }
+                else {
+                    //水面或悬空生成时改用浊雾盖住破口
+                    PRTLoader.NewParticle<PRT_FishZombieMurk>(
+                        new Vector2(Projectile.Center.X, groundY), new Vector2(0f, -0.4f),
+                        FishZombieVFX.MurkMid, 0.14f)
+                        ?.Configure(26, FishZombieVFX.MurkMid, FishZombieVFX.MurkDeep, 1.008f, 0.012f);
                 }
             }
 
-            if ((int)(emergeProgress * 100) == 30) {
-                //地面冲击环
-                for (int i = 0; i < 12; i++) {
-                    float angle = MathHelper.TwoPi * i / 12f;
-                    Vector2 shockDir = new Vector2(
-                        (float)Math.Cos(angle),
-                        (float)Math.Sin(angle)
-                    );
-
-                    Dust shockDust = Dust.NewDustPerfect(
-                        Projectile.Bottom,
-                        DustID.Smoke,
-                        shockDir * Main.rand.NextFloat(2f, 3.5f),
-                        Scale: Main.rand.NextFloat(0.8f, 1.2f),
-                        Alpha: 100
-                    );
-                    shockDust.noGravity = true;
-                }
+            //已露出的躯体持续滴浊水
+            if (rise > 0.25f && Main.rand.NextBool(4)) {
+                DripFromBody(0.4f);
             }
 
-            //爬出完成音效
-            if (StateTimer == EmergeDuration / 2) {
+            //猛拔瞬间：甩水一环 + 出土音效
+            if ((int)StateTimer == EmergeDuration / 2) {
                 SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.6f, Pitch = -0.2f }, Projectile.Center);
-                SoundEngine.PlaySound(SoundID.Dig, Projectile.Center); //挖掘音效
+                SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
+                FishZombieVFX.ShakeOff(new Vector2(Projectile.Center.X, groundY - 20f), 7, 3.4f);
             }
 
             //状态转换
             if (StateTimer >= EmergeDuration) {
                 State = 1;
                 StateTimer = 0;
+                FeetY = groundY;
+                //落定小水花
+                FishZombieVFX.ShakeOff(new Vector2(Projectile.Center.X, groundY - 10f), 4, 2.2f);
             }
         }
 
-        /// <summary>寻敌 tick</summary>
-        private void SeekTargetAI() {
+        /// <summary>蹒跚 tick：不规则步频 + 摇晃 + 滴水，走完预定拍才进锁定</summary>
+        private void ShambleAI() {
             StateTimer++;
 
-            //寻找最近的敌人
-            float maxDetectDistance = 1800f;
-            var npc = Projectile.Center.FindClosestNPC(maxDetectDistance, true, true);
-            if (npc != null) {
-                targetNPC = npc.whoAmI;
+            //每4帧扫一次最近敌人
+            if (targetNPC == -1 && (int)StateTimer % 4 == 0) {
+                var npc = Projectile.Center.FindClosestNPC(1800f, true, true);
+                if (npc != null) {
+                    targetNPC = npc.whoAmI;
+                }
+            }
+            if (targetNPC != -1 && !Main.npc[targetNPC].active) {
+                targetNPC = -1;
             }
 
-            //如果找到目标或超时，进入冲刺状态
-            if (targetNPC != -1 || StateTimer >= SeekDuration) {
+            //步频相位的推进速度自身在波动：一顿一挫的不规则步子
+            float phaseSpeed = 0.11f + 0.10f * MathF.Sin(StateTimer * 0.047f + Projectile.whoAmI * 2.7f);
+            stepPhase += phaseSpeed;
+            float pulse = MathF.Max(0f, MathF.Sin(stepPhase));
+            float lurch = pulse * pulse;
+
+            int dir = targetNPC != -1
+                ? Math.Sign(Main.npc[targetNPC].Center.X - Projectile.Center.X)
+                : Main.player[Projectile.owner].direction;
+            if (dir == 0) {
+                dir = facing;
+            }
+            facing = dir;
+
+            Projectile.velocity.X = dir * (0.25f + 1.35f * lurch);
+            Projectile.velocity.Y = 0f;
+            GroundFollow();
+
+            //蹒跚的身体从不竖直：摇晃 + 步伐挤压
+            bodyRot = MathF.Sin(stepPhase * 0.5f + Projectile.whoAmI) * 0.075f + facing * 0.04f;
+            bodySquash = new Vector2(1f + lurch * 0.03f, 1f - lurch * 0.05f);
+            animationFrame = (int)(stepPhase / MathHelper.Pi) % 3;
+
+            //湿身滴水
+            if (Main.rand.NextBool(7)) {
+                DripFromBody();
+            }
+
+            if (StateTimer >= shambleDur) {
                 State = 2;
                 StateTimer = 0;
-
                 //播放咆哮音效
                 SoundEngine.PlaySound(SoundID.Zombie3 with { Volume = 0.8f, Pitch = -0.4f }, Projectile.Center);
             }
-
-            //轻微晃动效果
-            Projectile.velocity.X = (float)Math.Sin(StateTimer * 0.2f) * 0.5f;
         }
 
-        /// <summary>冲刺 tick</summary>
-        private void ChargeAttackAI() {
+        /// <summary>贴地跟随：脚下小范围找砖顶吸附，悬空缓沉，仅在蹒跚期作视觉修正</summary>
+        private void GroundFollow() {
+            int tx = (int)(Projectile.Center.X / 16f);
+            int startTy = (int)((FeetY - 22f) / 16f);
+            for (int ty = startTy; ty <= startTy + 4; ty++) {
+                if (!WorldGen.InWorld(tx, ty, 10)) {
+                    return;
+                }
+                Tile t = Framing.GetTileSafely(tx, ty);
+                if (t.HasTile && (Main.tileSolid[t.TileType] || Main.tileSolidTop[t.TileType])) {
+                    float top = ty * 16f;
+                    if (top < FeetY - 26f) {
+                        return;//高坎不硬爬
+                    }
+                    FeetY = MathHelper.Lerp(FeetY, top, 0.35f);
+                    return;
+                }
+            }
+            FeetY += 2.2f;//悬空缓沉
+        }
+
+        /// <summary>锁定+冲刺 tick：前 LockDuration 帧刹停倾身预告，随后扑出</summary>
+        private void LockChargeAI() {
             StateTimer++;
 
             //获取目标
@@ -426,73 +403,122 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 targetPosition = Main.npc[targetNPC].Center;
             }
 
-            //冲刺加速
-            if (StateTimer < ChargeDuration) {
-                Vector2 chargeDirection = (targetPosition - Projectile.Center).SafeNormalize(Vector2.Zero);
-
-                if (StateTimer == 1) {
-                    Projectile.velocity = Projectile.velocity.RotatedByRandom(0.3f);
+            if (StateTimer <= LockDuration) {
+                //锁定拍：刹停 + 朝目标压低倾身
+                Projectile.velocity *= 0.70f;
+                int dir = Math.Sign(targetPosition.X - Projectile.Center.X);
+                if (dir != 0) {
+                    facing = dir;
                 }
 
-                //加速阶段（前20帧）
-                if (StateTimer < 20) {
-                    Projectile.velocity += chargeDirection * 1.5f;
-                }
+                bodyRot = MathHelper.Lerp(bodyRot, facing * 0.26f, 0.28f);
+                bodySquash = Vector2.Lerp(bodySquash, new Vector2(1.06f, 0.92f), 0.3f);
+                animationFrame = 0;
 
-                //最大速度限制
-                float maxChargeSpeed = 20f;
-                if (Projectile.velocity.Length() > maxChargeSpeed) {
-                    Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxChargeSpeed;
+                if ((int)StateTimer == 2) {
+                    //甩水预告：湿身抖出一圈浊水
+                    FishZombieVFX.ShakeOff(Projectile.Center, 6, 3.8f);
+                    SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.55f, Pitch = -0.3f }, Projectile.Center);
                 }
-
-                //冲刺轨迹粒子
-                if (Main.rand.NextBool(2)) {
-                    Dust chargeDust = Dust.NewDustPerfect(
-                        Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                        DustID.Water,
-                        -Projectile.velocity * 0.3f,
-                        Scale: Main.rand.NextFloat(1.2f, 1.8f)
-                    );
-                    chargeDust.noGravity = true;
-                    chargeDust.color = Color.Lerp(Color.Green, Color.DarkGreen, 0.5f);
+                if ((int)StateTimer == LockDuration) {
+                    //起跑帧：一帧给足初速
+                    Projectile.velocity = (targetPosition - Projectile.Center).SafeNormalize(Vector2.UnitX * facing) * 7.5f;
                 }
-
-                //冲击波效果
-                if (StateTimer % 10 == 0) {
-                    for (int i = 0; i < 8; i++) {
-                        float angle = MathHelper.TwoPi * i / 8f;
-                        Vector2 shockVel = new Vector2(
-                            (float)Math.Cos(angle),
-                            (float)Math.Sin(angle)
-                        ) * 4f;
-
-                        Dust shock = Dust.NewDustPerfect(
-                            Projectile.Center,
-                            DustID.Water,
-                            shockVel,
-                            Scale: Main.rand.NextFloat(1.5f, 2f)
-                        );
-                        shock.noGravity = true;
-                        shock.alpha = 100;
-                    }
-                }
+                return;
             }
-            else {
-                //冲刺结束，进入爆炸
+
+            float ct = StateTimer - LockDuration;
+            Vector2 chargeDirection = (targetPosition - Projectile.Center).SafeNormalize(Vector2.Zero);
+
+            //复合加速：前段猛蹬后段续力，追踪窗口与速度上限同旧版
+            if (ct < 8f) {
+                Projectile.velocity += chargeDirection * 2.2f;
+            }
+            else if (ct < 20f) {
+                Projectile.velocity += chargeDirection * 1.1f;
+            }
+
+            float maxChargeSpeed = 20f;
+            if (Projectile.velocity.Length() > maxChargeSpeed) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * maxChargeSpeed;
+            }
+
+            if (Projectile.velocity.X != 0) {
+                facing = Math.Sign(Projectile.velocity.X);
+            }
+
+            //前倾扑咬角：水平约20度，俯冲更深，上跃微仰
+            float speed = Projectile.velocity.Length();
+            float pounce = facing == 1
+                ? Projectile.velocity.ToRotation()
+                : MathHelper.WrapAngle(MathHelper.Pi - Projectile.velocity.ToRotation());
+            float leanFull = MathHelper.Clamp(pounce, -1.1f, 1.1f) * 0.5f + 0.35f;
+            bodyRot = MathHelper.Lerp(bodyRot, facing * leanFull, 0.18f);
+            bodySquash = Vector2.Lerp(bodySquash, new Vector2(0.96f, 1.04f), 0.2f);
+
+            //狂奔帧：速度越快循环越快
+            int frameRate = Math.Max(2, 7 - (int)(speed * 0.25f));
+            if ((int)StateTimer % frameRate == 0) {
+                animationFrame = (animationFrame + 1) % 3;
+            }
+
+            //向后甩水 + 浊雾尾
+            int shed = speed > 14f ? 2 : 1;
+            for (int i = 0; i < shed; i++) {
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(9f, 15f);
+                FishZombieVFX.Drip(pos, -Projectile.velocity * Main.rand.NextFloat(0.10f, 0.22f)
+                    + new Vector2(0f, Main.rand.NextFloat(-0.5f, 0.8f)));
+            }
+            if ((int)StateTimer % 3 == 0 && speed > 6f) {
+                PRTLoader.NewParticle<PRT_FishZombieMurk>(
+                    Projectile.Center - Projectile.velocity * 0.6f, -Projectile.velocity * 0.05f,
+                    FishZombieVFX.MurkMid, Main.rand.NextFloat(0.13f, 0.21f))
+                    ?.Configure(Main.rand.Next(18, 28), FishZombieVFX.MurkMid, FishZombieVFX.MurkDeep, 1.006f, -0.010f);
+            }
+
+            if (ct >= ChargeDuration) {
+                //冲刺结束，进入爆裂
                 State = 3;
                 StateTimer = 0;
             }
         }
 
-        /// <summary>爆炸 tick</summary>
-        private void ExplodeAI() {
+        /// <summary>尸胀爆裂 tick：鼓胀挣动 InflateDuration 帧后爆开</summary>
+        private void BloatExplodeAI() {
             StateTimer++;
+            Projectile.velocity *= 0.62f;
 
-            if (StateTimer == 1) {
-                //爆炸特效
-                CreateExplosionEffect();
+            if ((int)StateTimer == 1) {
+                //临爆哽咽
+                SoundEngine.PlaySound(SoundID.Zombie2 with { Volume = 0.5f, Pitch = 0.3f }, Projectile.Center);
+            }
 
+            if (StateTimer <= InflateDuration) {
+                //尸胀：越鼓越快，表皮挣动
+                float sw = StateTimer / (float)InflateDuration;
+                float wobble = MathF.Sin(StateTimer * 1.7f) * 0.05f * sw;
+                bodySquash = new Vector2(1f + sw * sw * 0.24f + wobble, 1f + sw * sw * 0.18f - wobble);
+                bodyRot = MathHelper.Lerp(bodyRot, 0f, 0.25f);
+
+                //缝隙漏气
+                if ((int)StateTimer % 2 == 0) {
+                    PRTLoader.NewParticle<PRT_FishZombieMurk>(
+                        Projectile.Center + Main.rand.NextVector2Circular(10f, 16f), new Vector2(0f, -0.7f),
+                        FishZombieVFX.GasOlive, Main.rand.NextFloat(0.10f, 0.16f))
+                        ?.Configure(Main.rand.Next(16, 26), FishZombieVFX.GasOlive, FishZombieVFX.GasDeep, 1.010f, 0.016f);
+                    DripFromBody();
+                }
+            }
+
+            if ((int)StateTimer == InflateDuration) {
+                bursted = true;
+
+                //伤害判定与旧版一致
                 Projectile.Explode(220, default, false);
+
+                FishZombieVFX.BloatBurst(Projectile.Center);
+                FishZombieVFX.Punch(Projectile.Center);
+                SpawnGoreChunks();
 
                 //播放爆炸音效
                 SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
@@ -500,193 +526,48 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.6f, Pitch = -0.3f }, Projectile.Center);
             }
 
-            //渐隐并销毁
-            alpha -= 0.1f;
-            if (alpha <= 0f || StateTimer > 20) {
+            if (StateTimer >= InflateDuration + 4) {
                 Projectile.Kill();
             }
         }
 
-        /// <summary>爆炸 burst VFX</summary>
-        private void CreateExplosionEffect() {
-            //强力冲击环（快速扩散）
-            for (int i = 0; i < 16; i++) {
-                float angle = MathHelper.TwoPi * i / 16f;
-                Vector2 shockVel = new Vector2(
-                    (float)Math.Cos(angle),
-                    (float)Math.Sin(angle)
-                ) * Main.rand.NextFloat(10f, 14f);
-
-                Dust shockWave = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    shockVel,
-                    Scale: Main.rand.NextFloat(1.8f, 2.4f),
-                    Alpha: 50
-                );
-                shockWave.noGravity = true;
-                shockWave.color = Color.White;
+        /// <summary>尸块抛物：原版僵尸 Gore，带上抛偏置读出重力弧线</summary>
+        private void SpawnGoreChunks() {
+            if (VaultUtils.isServer) {
+                return;
             }
-
-            //大型水花
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(7f, 7f);
-                float speedBoost = Main.rand.NextFloat(1f, 1.5f);
-
-                Dust largeSplash = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
-                    DustID.Water,
-                    velocity * speedBoost,
-                    Scale: Main.rand.NextFloat(1.5f, 2.2f),
-                    Alpha: 60
-                );
-                largeSplash.noGravity = true;
-            }
-
-            //中型水花
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(6f, 6f);
-
-                Dust mediumSplash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    velocity,
-                    Scale: Main.rand.NextFloat(1f, 1.5f),
-                    Alpha: 80
-                );
-                mediumSplash.noGravity = Main.rand.NextBool();
-            }
-
-            //小型水雾
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-
-                Dust mist = Dust.NewDustPerfect(
+            int mainGoreCount = Main.rand.Next(3, 6);
+            for (int i = 0; i < mainGoreCount; i++) {
+                int goreType = Main.rand.Next(11, 14);//僵尸头/臂/腿
+                Vector2 goreVel = Main.rand.NextVector2CircularEdge(5f, 5f);
+                goreVel.Y -= 1.5f;
+                Gore.NewGore(
+                    Projectile.GetSource_Death(),
                     Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    DustID.DungeonWater,
-                    velocity,
-                    Scale: Main.rand.NextFloat(0.6f, 1f),
-                    Alpha: 120
+                    goreVel,
+                    goreType
                 );
-                mist.noGravity = true;
-                mist.color = Color.Lerp(Color.White, Color.Cyan, 0.5f);
             }
+        }
 
-            //绿色腐败水花
-            for (int i = 0; i < 18; i++) {
-                Vector2 velocity = Main.rand.NextVector2CircularEdge(8f, 8f);
-
-                Dust poison = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Poisoned,
-                    velocity,
-                    Scale: Main.rand.NextFloat(1f, 1.6f),
-                    Alpha: 70
-                );
-                poison.noGravity = true;
-                poison.color = Color.Lerp(Color.Green, Color.DarkGreen, Main.rand.NextFloat());
+        /// <summary>从躯体随机位置滴一滴浊水，出土期只从露出部分滴</summary>
+        private void DripFromBody(float velScale = 1f) {
+            Vector2 pos = Projectile.Center + new Vector2(Main.rand.NextFloat(-9f, 9f), Main.rand.NextFloat(-20f, 14f));
+            if (State == 0 && pos.Y > groundY - 4f) {
+                pos.Y = groundY - 4f;
             }
+            FishZombieVFX.Drip(pos, Projectile.velocity * 0.35f * velScale
+                + new Vector2(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(0.4f, 1.3f)));
+        }
 
-            //腐烂气泡效果
-            for (int i = 0; i < 10; i++) {
-                Dust bubble = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                    DustID.ToxicBubble,
-                    new Vector2(Main.rand.NextFloat(-2f, 2f), Main.rand.NextFloat(-4f, -1f)),
-                    Scale: Main.rand.NextFloat(0.8f, 1.3f),
-                    Alpha: 100
-                );
-                bubble.noGravity = false;
+        /// <summary>破口下方是否有实体地面（决定破土介质用土还是雾）</summary>
+        private bool HasSolidGround() {
+            Point p = new Vector2(Projectile.Center.X, groundY + 8f).ToTileCoordinates();
+            if (!WorldGen.InWorld(p.X, p.Y, 10)) {
+                return false;
             }
-
-            if (!VaultUtils.isServer) {
-                //主要尸块（3-5块）
-                int mainGoreCount = Main.rand.Next(3, 6);
-                for (int i = 0; i < mainGoreCount; i++) {
-                    //使用僵尸NPC的Gore ID范围
-                    int goreType = Main.rand.Next(11, 14);
-                    Vector2 goreVel = Main.rand.NextVector2CircularEdge(5f, 5f);
-
-                    Gore.NewGore(
-                        Projectile.GetSource_Death(),
-                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                        goreVel,
-                        goreType
-                    );
-                }
-
-                //小型碎片（2-3块）
-                int smallGoreCount = Main.rand.Next(2, 4);
-                for (int i = 0; i < smallGoreCount; i++) {
-                    Gore.NewGore(
-                        Projectile.GetSource_Death(),
-                        Projectile.Center,
-                        Main.rand.NextVector2CircularEdge(4f, 4f),
-                        GoreID.Smoke1 + Main.rand.Next(3)
-                    );
-                }
-            }
-
-            for (int i = 0; i < 12; i++) {
-                Vector2 bloodVel = Main.rand.NextVector2CircularEdge(6f, 6f);
-
-                Dust blood = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Blood,
-                    bloodVel,
-                    Scale: Main.rand.NextFloat(0.8f, 1.4f)
-                );
-                blood.noGravity = false;
-            }
-
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f + Main.rand.NextFloat(-0.2f, 0.2f);
-                Vector2 smokeVel = new Vector2(
-                    (float)Math.Cos(angle),
-                    (float)Math.Sin(angle)
-                ) * Main.rand.NextFloat(3f, 5f);
-
-                Dust smoke = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Smoke,
-                    smokeVel,
-                    Scale: Main.rand.NextFloat(1.2f, 1.8f),
-                    Alpha: 120
-                );
-                smoke.noGravity = true;
-                smoke.color = Color.Lerp(Color.Gray, Color.DarkGreen, 0.3f);
-            }
-
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 ringVel = new Vector2(
-                    (float)Math.Cos(angle),
-                    (float)Math.Sin(angle)
-                ) * Main.rand.NextFloat(9f, 12f);
-
-                Dust ring = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    ringVel,
-                    Scale: Main.rand.NextFloat(1.5f, 2f),
-                    Alpha: 90
-                );
-                ring.noGravity = true;
-                ring.color = Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat());
-                ring.fadeIn = 0.8f;
-            }
-
-            //闪光效果
-            for (int i = 0; i < 6; i++) {
-                Dust flash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Clentaminator_Cyan,
-                    Main.rand.NextVector2Circular(2f, 2f),
-                    Scale: Main.rand.NextFloat(1f, 1.5f),
-                    Alpha: 0
-                );
-                flash.noGravity = true;
-            }
+            Tile t = Framing.GetTileSafely(p.X, p.Y);
+            return t.HasTile && (Main.tileSolid[t.TileType] || Main.tileSolidTop[t.TileType]);
         }
 
         /// <summary>
@@ -701,75 +582,115 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         /// <summary>
-        /// 击中NPC后立即爆炸
+        /// 击中NPC后立即转入尸胀爆裂
         /// </summary>
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             State = 3;
             StateTimer = 0;
         }
 
+        public override void OnKill(int timeLeft) {
+            if (bursted) {
+                return;
+            }
+            //未爆而亡的退场保底：一摊浊雾，禁 pop-out
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishZombieMurk>(Projectile.Center, new Vector2(0f, -0.3f)
+                    , FishZombieVFX.MurkMid, 0.2f)?.Configure(30, FishZombieVFX.MurkMid, FishZombieVFX.MurkDeep, 1.010f, 0.008f);
+            }
+            FishZombieVFX.ShakeOff(Projectile.Center, 4, 2.5f);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
+            if (DelayTime > 0 || bursted || !groundInit) {
+                return false;
+            }
+
             //加载僵尸纹理
             Main.instance.LoadNPC(NPCID.Zombie);
             Texture2D texture = TextureAssets.Npc[NPCID.Zombie].Value;
+            Rectangle sourceRect = texture.GetRectangle(animationFrame, 3);
+            SpriteEffects effects = facing > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            //计算绘制参数
-            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
-            Rectangle sourceRect = texture.GetRectangle(animationFrame, 3); //僵尸贴图每帧高度58
-            Vector2 origin = sourceRect.Size() / 2f;
+            //浸水腐肉调色：环境光乘算压暗后拉一点灰绿保底，哑光不自发光
+            Color env = State == 0
+                ? Lighting.GetColor(new Vector2(Projectile.Center.X, groundY - 20f).ToTileCoordinates())
+                : lightColor;
+            Color body = env.MultiplyRGB(new Color(150, 172, 160));
+            body = Color.Lerp(body, FishZombieVFX.FleshSoak, 0.22f);
 
-            //朝向
-            SpriteEffects effects = Projectile.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            DrawBreachHole();
 
-            //颜色调制（溺尸应该偏绿色/青色）
-            Color drawColor = Color.Lerp(lightColor, new Color(100, 200, 180), 0.4f) * alpha;
-
-            //地面爬出时的暗影效果
-            if (State == 0 && groundEffectIntensity > 0) {
-                Color shadowColor = Color.Black * (groundEffectIntensity * 0.6f);
-                Main.EntitySpriteDraw(
-                    texture,
-                    drawPosition + new Vector2(0, 10f),
-                    sourceRect,
-                    shadowColor,
-                    0f,
-                    origin,
-                    scale * 1.2f,
-                    effects,
-                    0
-                );
+            if (State == 0) {
+                DrawEmerging(texture, sourceRect, body, effects);
+                return false;
             }
 
-            //绘制主体
-            Main.EntitySpriteDraw(
-                texture,
-                drawPosition,
-                sourceRect,
-                drawColor,
-                Projectile.rotation,
-                origin,
-                scale,
-                effects,
-                0
-            );
+            Vector2 feetScreen = new Vector2(Projectile.Center.X, FeetY) - Main.screenPosition;
+            Vector2 origin = new(sourceRect.Width / 2f, sourceRect.Height);
 
-            //冲刺状态发光效果
-            if (State == 2 && Projectile.velocity.Length() > 15f) {
-                Color glowColor = new Color(100, 255, 200) * (alpha * 0.4f);
-                Main.EntitySpriteDraw(
-                    texture,
-                    drawPosition,
-                    sourceRect,
-                    glowColor,
-                    Projectile.rotation,
-                    origin,
-                    scale * 1.1f,
-                    effects,
-                    0
-                );
+            //冲刺残影：暗色剪影链垫在本体之下，编码运动方向
+            if (State == 2 && Projectile.velocity.Length() > 8f) {
+                for (int k = 5; k >= 1; k -= 2) {
+                    Vector2 ghostFeet = Projectile.oldPos[k] + new Vector2(Projectile.width / 2f, Projectile.height);
+                    float ga = 0.26f - k * 0.038f;
+                    Main.EntitySpriteDraw(texture, ghostFeet - Main.screenPosition, sourceRect,
+                        FishZombieVFX.FleshDark * ga, Projectile.oldRot[k], origin, bodySquash, effects, 0);
+                }
             }
+
+            //主体
+            Main.EntitySpriteDraw(texture, feetScreen, sourceRect, body, bodyRot, origin, bodySquash, effects, 0);
+
+            //下半身浸水更深：底部四成再压一层暗青
+            int soakH = (int)(sourceRect.Height * 0.42f);
+            Rectangle soakRect = new(sourceRect.X, sourceRect.Y + sourceRect.Height - soakH, sourceRect.Width, soakH);
+            Vector2 soakOrigin = new(sourceRect.Width / 2f, soakH);
+            Main.EntitySpriteDraw(texture, feetScreen, soakRect,
+                FishZombieVFX.MurkDeep * 0.30f, bodyRot, soakOrigin, bodySquash, effects, 0);
 
             return false;
+        }
+
+        /// <summary>出土期绘制：贴图按地面线裁剪，只画露出部分，禁 pop-in</summary>
+        private void DrawEmerging(Texture2D texture, Rectangle sourceRect, Color body, SpriteEffects effects) {
+            float buried = FeetY - groundY;
+            if (buried <= 0f) {
+                //过冲小跳帧：已完全离地，整帧正常画
+                Vector2 fullFeet = new Vector2(Projectile.Center.X, FeetY) - Main.screenPosition;
+                Main.EntitySpriteDraw(texture, fullFeet, sourceRect, body, bodyRot,
+                    new Vector2(sourceRect.Width / 2f, sourceRect.Height), Vector2.One, effects, 0);
+                return;
+            }
+
+            int visibleH = (int)(sourceRect.Height - buried);
+            if (visibleH <= 0) {
+                return;
+            }
+
+            Rectangle clipRect = new(sourceRect.X, sourceRect.Y, sourceRect.Width, visibleH);
+            Vector2 anchor = new Vector2(Projectile.Center.X, groundY) - Main.screenPosition;
+            Vector2 clipOrigin = new(sourceRect.Width / 2f, visibleH);
+            Main.EntitySpriteDraw(texture, anchor, clipRect, body, bodyRot, clipOrigin, Vector2.One, effects, 0);
+        }
+
+        /// <summary>破口暗斑：垫在尸体之下的湿土洞口，出土后渐淡</summary>
+        private void DrawBreachHole() {
+            if (holeFade <= 0f) {
+                return;
+            }
+            Texture2D blob = FishZombieAssets.Blob?.Value;
+            if (blob == null) {
+                return;
+            }
+            float fadeIn = State == 0 ? MathF.Min(1f, StateTimer / 6f) : 1f;
+            float a = 0.45f * holeFade * fadeIn;
+            Vector2 holePos = new Vector2(breachX, groundY) - Main.screenPosition;
+            Vector2 orig = blob.Size() * 0.5f;
+            Main.EntitySpriteDraw(blob, holePos, null, new Color(14, 20, 20) * a, 0f,
+                orig, new Vector2(0.68f, 0.13f), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(blob, holePos, null, new Color(24, 34, 34) * (a * 0.6f), 0f,
+                orig, new Vector2(1.0f, 0.09f), SpriteEffects.None, 0);
         }
     }
 }

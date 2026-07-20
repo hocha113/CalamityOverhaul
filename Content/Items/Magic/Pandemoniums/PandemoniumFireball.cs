@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// </summary>
     internal class PandemoniumFireball : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private bool exploded = false;
         private ref float DelayTimer => ref Projectile.ai[0];
         private ref float ClusterMode => ref Projectile.ai[1]; //0=普通 1=集束模式

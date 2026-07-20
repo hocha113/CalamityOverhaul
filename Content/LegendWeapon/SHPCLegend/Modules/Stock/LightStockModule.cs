@@ -52,7 +52,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
     /// <summary>光链子节：沿父束 oldPos 滞后爬行，父束消亡后惯性散链</summary>
     internal sealed class SHPCBeamSegmentProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //三种主题近似色（蓝/黄/青），与 CyberTraceBeamProj 的主题索引对应
         private static readonly Color[] ThemeMain = [
@@ -144,7 +144,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Stock
 
         void IAdditiveDrawable.DrawAdditiveAfterNon(SpriteBatch spriteBatch) {
             if (fadeAlpha < 0.02f) return;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Color main = ThemeMain[ThemeIndex];

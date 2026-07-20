@@ -22,7 +22,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// </summary>
     internal class OniFinaleScar : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int FadeFrames = 12;      //引爆后残影淡出
         private const int DefaultDetonate = 70; //独立调试时的自爆延迟

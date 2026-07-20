@@ -45,7 +45,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Barrel
     /// <summary>熔岩喷口 VFX+周期喷发</summary>
     internal sealed class SHPCMagmaVentProj : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const int Lifetime = 120;
         private const int PulseInterval = 30;
 

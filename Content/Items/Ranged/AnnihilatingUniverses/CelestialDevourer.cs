@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
 {
     internal class CelestialDevourer : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         [VaultLoaden(CWRConstant.Masking + "Star")]
         private static Asset<Texture2D> starAsset = null;
         public override void SetDefaults() {

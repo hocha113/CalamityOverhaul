@@ -1,6 +1,8 @@
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -69,37 +71,36 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        //喷射口火焰效果
+        //喷射口演出：定向焰舌炬闪 + 火星锥 + 诅咒尘填充 + 墨绿烟压底 + 小定向震
         private static void SpawnMuzzleFlare(Vector2 position, Vector2 direction) {
-            //诅咒火焰爆发
-            for (int i = 0; i < 15; i++) {
-                float angle = direction.ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
-
-                Dust flame = Dust.NewDustPerfect(
-                    position,
-                    DustID.CursedTorch,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                flame.noGravity = true;
-                flame.fadeIn = 1.3f;
+            FishCursedVFX.Punch(position, direction, 3f, 9f, 8, 600f);
+            if (Main.dedServ) {
+                return;
             }
-
-            //烟雾
-            for (int i = 0; i < 8; i++) {
-                Vector2 velocity = direction * Main.rand.NextFloat(3f, 7f);
-                Dust smoke = Dust.NewDustPerfect(
-                    position,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(50, 80, 50),
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                smoke.noGravity = true;
+            //炬闪：两条高速焰舌沿射向甩出，几帧即被浮力掰弯上飘
+            for (int i = 0; i < 2; i++) {
+                Vector2 vel = direction.RotatedByRandom(0.16f) * Main.rand.NextFloat(5.5f, 8f);
+                Color col = Color.Lerp(FishCursedVFX.GreenCore, FishCursedVFX.GreenMid, Main.rand.NextFloat(0.5f));
+                PRTLoader.NewParticle<PRT_FishCursedTongue>(position + direction * 10f, vel, col, Main.rand.NextFloat(0.3f, 0.42f))
+                    ?.Configure(Main.rand.Next(9, 13), -1.2f, 0.25f);
+            }
+            //火星锥
+            for (int i = 0; i < 5; i++) {
+                Vector2 vel = direction.RotatedByRandom(0.42f) * Main.rand.NextFloat(3.5f, 9f);
+                Color col = Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.GreenDeep, Main.rand.NextFloat(0.7f));
+                PRTLoader.NewParticle<PRT_Spark>(position, vel, col, Main.rand.NextFloat(0.4f, 0.7f))?.Configure(false, 12);
+            }
+            //原版诅咒尘填充（量收紧）
+            for (int i = 0; i < 5; i++) {
+                Dust flame = Dust.NewDustPerfect(position, DustID.CursedTorch
+                    , direction.RotatedByRandom(0.5f) * Main.rand.NextFloat(4f, 9f), 100, default, Main.rand.NextFloat(1.2f, 1.9f));
+                flame.noGravity = true;
+                flame.fadeIn = 1.2f;
+            }
+            //墨绿烟压底（AlphaBlend 真遮挡）
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishCursedSmog>(position, direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(1.5f, 3f)
+                    , FishCursedVFX.SmokeDark, Main.rand.NextFloat(0.24f, 0.32f))?.Configure(24, 0.4f, 0.02f);
             }
         }
     }
@@ -115,40 +116,50 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 target.AddBuff(BuffID.CursedInferno, buffDuration);
 
                 //诅咒火焰感染粒子效果
-                SpawnCursedInfectionEffect(target.Center);
+                SpawnCursedInfectionEffect(target);
             }
         }
 
-        private static void SpawnCursedInfectionEffect(Vector2 position) {
-            //绿色诅咒火焰爆发
-            for (int i = 0; i < 10; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                Dust cursed = Dust.NewDustPerfect(
-                    position + Main.rand.NextVector2Circular(20f, 20f),
-                    DustID.CursedTorch,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 2f)
-                );
-                cursed.noGravity = true;
-                cursed.fadeIn = 1.2f;
+        //诅咒感染：一舌绿火舔上体表 + 几粒上浮余烬（每次命中都触发，量收紧）
+        private static void SpawnCursedInfectionEffect(NPC target) {
+            if (Main.dedServ) {
+                return;
+            }
+            Vector2 pos = target.Center + Main.rand.NextVector2Circular(target.width * 0.4f, target.height * 0.4f);
+            PRTLoader.NewParticle<PRT_FishCursedTongue>(pos, new Vector2(0f, -1f)
+                , Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.GreenDeep, Main.rand.NextFloat(0.5f))
+                , Main.rand.NextFloat(0.22f, 0.32f))?.Configure(Main.rand.Next(16, 24), -1.5f, 0.5f);
+            for (int i = 0; i < 3; i++) {
+                PRTLoader.NewParticle<PRT_FishCursedEmber>(pos + Main.rand.NextVector2Circular(10f, 10f)
+                    , Main.rand.NextVector2Circular(1.2f, 1.2f)
+                    , Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.GreenDeep, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.32f, 0.5f))?.Configure(Main.rand.Next(18, 28));
+            }
+            for (int i = 0; i < 2; i++) {
+                Dust d = Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(16f, 16f), DustID.CursedTorch
+                    , Main.rand.NextVector2Circular(2.5f, 2.5f), 120, default, Main.rand.NextFloat(1f, 1.5f));
+                d.noGravity = true;
             }
         }
     }
 
     /// <summary>
-    /// 诅咒火焰流弹幕
+    /// 诅咒火焰流弹幕：反重力三段轨迹。
+    /// 射出强阻尼减速 → 悬停颤动（点燃拍）→ 复利加速上浮左右摇曳；
+    /// 撞击/命中留下余燃残迹，空中燃尽则整束焰舌脱体上飘。<br/>
+    /// ai[0]=状态；ai[1]=状态内计时；localAI[0]=视觉种子
     /// </summary>
-    internal class CursedFlameStream : ModProjectile
+    internal class CursedFlameStream : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //火焰状态
         private enum FlameState
         {
-            Burning,    //燃烧状态
-            Fading      //消散状态
+            Launch,     //射出减速
+            Hover,      //悬停颤动
+            Rise,       //加速上浮
+            Fading      //消散
         }
 
         private FlameState State {
@@ -156,702 +167,384 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             set => Projectile.ai[0] = (float)value;
         }
 
-        private ref float FlameLife => ref Projectile.ai[1];
+        private ref float StateTime => ref Projectile.ai[1];
+        //视觉种子：首帧从 identity 派种，只喂演出量
+        private ref float VisualSeed => ref Projectile.localAI[0];
 
-        //火焰粒子系统
-        private readonly List<CursedFlameParticle> flameParticles = new();
-        private const int MaxParticles = 120;
-        private int particleSpawnCounter = 0;
+        private float visualRot;    //平滑体朝向，低速时立正向上
+        private float riseAccel;    //上浮加速度，复利滚增
+        private float driftX;       //上浮期残余前向动量
+        private bool impacted;      //已撞击/末次咬肉，燃尽演出不再重复
+        private int age;            //总帧龄，燃烧噼啪循环用
 
-        //火焰拖尾系统
-        private readonly List<FlameTrail> trailParticles = new();
-        private const int MaxTrailParticles = 80;
+        //==== 三段轨迹参数：飞行期每帧都有量在演化 ====
+        private const float LaunchDrag = 0.965f;        //射出段阻尼/帧（16~22 初速约 45~52 帧滑到悬停，前程约 450px）
+        private const float LaunchEndSpeed = 3.2f;      //滑到该速度进入悬停
+        private const int LaunchMaxFrames = 52;
+        private const int HoverFrames = 14;             //悬停颤动时长（点燃呼吸拍）
+        private const float RiseAccelBase = 0.16f;      //上浮初始加速度
+        private const float RiseAccelGrowth = 1.045f;   //加速度每帧复利
+        private const float RiseAccelMax = 0.55f;
+        private const float RiseMaxSpeed = 9.6f;        //上浮速度上限
+        private const int RiseFrames = 72;              //上浮时长，此后燃尽
 
-        //火焰物理参数
-        private const float AirResistance = 0.99f;    //空气阻力
-        private const float HeatRise = -0.15f;        //热力上升
-        private const float Turbulence = 0.08f;       //湍流强度
-
-        //视觉效果
-        private float glowPulse = 0f;
-        private float heatDistortion = 0f;
-        private readonly List<Vector2> coreTrail = new();
-        private const int MaxCoreTrail = 20;
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 16;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 40;
             Projectile.height = 40;
             Projectile.friendly = true;
             Projectile.penetrate = 4;
-            Projectile.timeLeft = 150;
+            Projectile.timeLeft = 200;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
-            Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 12;
         }
 
         public override void AI() {
-            FlameLife++;
-
-            if (State == FlameState.Burning) {
-                BurningPhaseAI();
+            if (VisualSeed == 0f) {
+                VisualSeed = 1f + Projectile.identity % 100 * 0.917f;
+                visualRot = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             }
-            else if (State == FlameState.Fading) {
-                FadingPhaseAI();
+            StateTime++;
+
+            switch (State) {
+                case FlameState.Launch:
+                    LaunchAI();
+                    break;
+                case FlameState.Hover:
+                    HoverAI();
+                    break;
+                case FlameState.Rise:
+                    RiseAI();
+                    break;
+                default:
+                    FadingAI();
+                    break;
             }
 
-            //更新核心拖尾
-            UpdateCoreTrail();
+            //可视朝向：高速沿速度立焰尖，低速立正向上
+            float speed = Projectile.velocity.Length();
+            float targetRot = speed > 1.6f ? Projectile.velocity.ToRotation() + MathHelper.PiOver2 : 0f;
+            visualRot = Utils.AngleLerp(visualRot, targetRot, 0.16f);
 
-            //更新所有火焰粒子
-            UpdateFlameParticles();
+            if (!Main.dedServ && State != FlameState.Fading) {
+                ShedParticles(speed);
+            }
 
-            //更新拖尾粒子
-            UpdateTrailParticles();
+            //持续燃烧噼啪（whoAmI 错相防齐射同帧齐响）
+            age++;
+            if (State != FlameState.Fading && (age + Projectile.whoAmI * 7) % 25 == 0) {
+                SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.24f, Pitch = -0.5f, MaxInstances = 4 }, Projectile.Center);
+            }
 
-            //辉光脉冲
-            glowPulse = (float)Math.Sin(FlameLife * 0.4f) * 0.3f + 0.7f;
-
-            //热力扭曲效果
-            heatDistortion = (float)Math.Sin(FlameLife * 0.2f) * 0.5f;
-
-            //诅咒火焰绿色照明
-            float lightIntensity = 0.9f * (1f - Projectile.alpha / 255f);
-            Lighting.AddLight(Projectile.Center,
-                0.3f * lightIntensity,
-                1.0f * lightIntensity,
-                0.3f * lightIntensity);
+            //暗绿照明：随消散衰减
+            float env = 1f - Projectile.alpha / 255f;
+            Lighting.AddLight(Projectile.Center, 0.10f * env, 0.32f * env, 0.12f * env);
         }
 
-        //燃烧 tick
-        private void BurningPhaseAI() {
-            //热力上升效果
-            Projectile.velocity.Y += HeatRise * 0.5f;
+        //射出减速：强阻尼 + 微湍流，速度肉眼可见地一路衰减
+        private void LaunchAI() {
+            Projectile.velocity *= LaunchDrag;
+            Projectile.velocity += new Vector2(
+                MathF.Sin(StateTime * 0.7f + VisualSeed * 3.1f),
+                MathF.Cos(StateTime * 0.9f + VisualSeed * 1.7f)) * 0.05f;
 
-            //空气阻力
-            Projectile.velocity *= AirResistance;
-
-            //湍流扰动
-            if (FlameLife % 3 == 0) {
-                Projectile.velocity += Main.rand.NextVector2Circular(Turbulence, Turbulence);
+            if (Projectile.velocity.Length() <= LaunchEndSpeed || StateTime >= LaunchMaxFrames) {
+                State = FlameState.Hover;
+                StateTime = 0;
+                //残余前向动量在此定格，供上浮期斜飘
+                driftX = MathHelper.Clamp(Projectile.velocity.X, -3.2f, 3.2f);
+                //点燃拍：原版诅咒火语系的一声轻鸣
+                SoundEngine.PlaySound(SoundID.Item20 with { Volume = 0.3f, Pitch = 0.25f, MaxInstances = 3 }, Projectile.Center);
             }
+        }
 
-            //生成火焰粒子
-            if (particleSpawnCounter++ % 1 == 0 && flameParticles.Count < MaxParticles) {
-                SpawnFlameParticle();
+        //悬停颤动：速度归零，布朗式微抖 + 竖向呼吸，焰体胀缩在绘制侧
+        private void HoverAI() {
+            Projectile.velocity *= 0.8f;
+            Projectile.velocity += new Vector2(
+                MathF.Sin(StateTime * 1.3f + VisualSeed * 5.7f) * 0.09f,
+                MathF.Sin(StateTime * 0.55f + VisualSeed * 2.3f) * 0.13f);
+
+            if (StateTime >= HoverFrames) {
+                State = FlameState.Rise;
+                StateTime = 0;
+                riseAccel = RiseAccelBase;
+                //吐息：上浮启动的软噗
+                SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Volume = 0.24f, Pitch = 0.45f, MaxInstances = 2 }, Projectile.Center);
             }
+        }
 
-            //生成拖尾粒子
-            if (FlameLife % 2 == 0 && trailParticles.Count < MaxTrailParticles) {
-                SpawnTrailParticle();
-            }
+        //复利上浮：加速度自身滚增，横向保留残余动量 + 摇曳正弦，越飘越快
+        private void RiseAI() {
+            riseAccel = MathF.Min(riseAccel * RiseAccelGrowth, RiseAccelMax);
+            Projectile.velocity.Y = MathF.Max(Projectile.velocity.Y - riseAccel, -RiseMaxSpeed);
+            //残余前向动量缓慢衰减，摇曳叠加其上：上浮读作斜飘而非原地直升
+            driftX *= 0.988f;
+            Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X
+                , driftX + MathF.Sin(StateTime * 0.11f + VisualSeed * 5.3f) * 1.4f, 0.06f);
 
-            //周期性诅咒火焰残留
-            if (FlameLife % 3 == 0) {
-                SpawnCursedResidue();
-            }
-
-            //火焰燃烧音效
-            if (FlameLife % 25 == 0) {
-                SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.3f,
-                    Pitch = -0.5f
-                }, Projectile.Center);
-            }
-
-            //超时转换为消散
-            if (FlameLife > 100 || Projectile.velocity.Length() < 1.5f) {
-                EnterFadeState();
+            if (StateTime >= RiseFrames) {
+                EnterFade();
             }
         }
 
         //消散 tick
-        private void FadingPhaseAI() {
-            //快速消散
-            Projectile.alpha += 12;
+        private void FadingAI() {
+            Projectile.alpha += 14;
             if (Projectile.alpha >= 255) {
                 Projectile.Kill();
             }
-
-            //粒子继续更新但不生成新的
-            Projectile.velocity *= 0.92f;
+            Projectile.velocity *= 0.9f;
         }
 
-        //生成火焰粒子
-        private void SpawnFlameParticle() {
-            Vector2 baseVel = Projectile.velocity;
-            Vector2 particleVel = baseVel * Main.rand.NextFloat(0.3f, 0.9f);
-            particleVel += Main.rand.NextVector2Circular(2.5f, 2.5f);
-            particleVel.Y += HeatRise * Main.rand.NextFloat(1f, 2f);
-
-            CursedFlameParticle particle = new CursedFlameParticle {
-                Position = Projectile.Center + Main.rand.NextVector2Circular(12f, 12f),
-                Velocity = particleVel,
-                Size = Main.rand.NextFloat(1.5f, 3.5f),
-                Life = 0,
-                MaxLife = Main.rand.Next(20, 40),
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                RotationSpeed = Main.rand.NextFloat(-0.2f, 0.2f),
-                Opacity = 1f,
-                ColorPhase = Main.rand.NextFloat(0f, 1f),
-                HeatIntensity = Main.rand.NextFloat(0.7f, 1f)
-            };
-
-            flameParticles.Add(particle);
-        }
-
-        //生成拖尾粒子
-        private void SpawnTrailParticle() {
-            Vector2 spawnPos = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 20f);
-            Vector2 particleVel = Projectile.velocity * Main.rand.NextFloat(0.4f, 0.7f);
-            particleVel.Y += HeatRise * 1.5f;
-
-            FlameTrail trail = new FlameTrail {
-                Position = spawnPos + Main.rand.NextVector2Circular(8f, 8f),
-                Velocity = particleVel,
-                Size = Main.rand.NextFloat(1.2f, 2.5f),
-                Life = 0,
-                MaxLife = Main.rand.Next(12, 25),
-                Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                RotationSpeed = Main.rand.NextFloat(-0.25f, 0.25f),
-                Opacity = 0.8f,
-                ColorPhase = Main.rand.NextFloat(0f, 1f)
-            };
-
-            trailParticles.Add(trail);
-        }
-
-        //更新所有火焰粒子
-        private void UpdateFlameParticles() {
-            for (int i = flameParticles.Count - 1; i >= 0; i--) {
-                CursedFlameParticle p = flameParticles[i];
-                p.Life++;
-
-                //火焰物理
-                p.Velocity.Y += HeatRise * p.HeatIntensity;
-                p.Velocity *= 0.96f;
-
-                //湍流效果
-                if (p.Life % 2 == 0) {
-                    p.Velocity += Main.rand.NextVector2Circular(Turbulence * 2f, Turbulence * 2f);
-                }
-
-                p.Position += p.Velocity;
-                p.Rotation += p.RotationSpeed;
-
-                //颜色相位变化
-                p.ColorPhase += 0.03f;
-                if (p.ColorPhase > 1f) p.ColorPhase = 0f;
-
-                //透明度衰减
-                float lifeRatio = p.Life / (float)p.MaxLife;
-                p.Opacity = (1f - lifeRatio) * p.HeatIntensity;
-
-                //尺寸变化-先膨胀后收缩
-                if (lifeRatio < 0.3f) {
-                    p.Size *= 1.02f;
-                }
-                else {
-                    p.Size *= 0.97f;
-                }
-
-                //移除消逝的粒子
-                if (p.Life >= p.MaxLife || p.Opacity <= 0.05f) {
-                    flameParticles.RemoveAt(i);
-                    continue;
-                }
-
-                flameParticles[i] = p;
+        private void EnterFade() {
+            if (State == FlameState.Fading) {
+                return;
             }
-        }
-
-        //更新拖尾粒子
-        private void UpdateTrailParticles() {
-            for (int i = trailParticles.Count - 1; i >= 0; i--) {
-                FlameTrail p = trailParticles[i];
-                p.Life++;
-
-                //热力上升
-                p.Velocity.Y += HeatRise * 1.5f;
-                p.Velocity *= 0.94f;
-
-                p.Position += p.Velocity;
-                p.Rotation += p.RotationSpeed;
-
-                //颜色相位
-                p.ColorPhase += 0.04f;
-                if (p.ColorPhase > 1f) p.ColorPhase = 0f;
-
-                //透明度衰减
-                float lifeRatio = p.Life / (float)p.MaxLife;
-                p.Opacity = (1f - lifeRatio) * 0.7f;
-
-                //尺寸衰减
-                p.Size *= 0.96f;
-
-                //移除消逝的粒子
-                if (p.Life >= p.MaxLife || p.Opacity <= 0.05f) {
-                    trailParticles.RemoveAt(i);
-                    continue;
-                }
-
-                trailParticles[i] = p;
-            }
-        }
-
-        //进入消散状态
-        private void EnterFadeState() {
             State = FlameState.Fading;
-            Projectile.velocity *= 0.5f;
-            Projectile.timeLeft = 60;
+            StateTime = 0;
+            Projectile.timeLeft = 40;
+            //撞击已放过 ImpactBurst，燃尽演出只属于寿终正寝
+            if (!impacted) {
+                GutterOut();
+            }
         }
 
-        //碰撞火焰爆发
+        //空中燃尽：整束焰舌脱体上飘 + 余烬续飘，aftermath 活得比弹体久
+        private void GutterOut() {
+            if (Main.dedServ) {
+                return;
+            }
+            FishCursedVFX.TongueBurst(Projectile.Center, 3, 0.32f, 1.8f);
+            for (int i = 0; i < 4; i++) {
+                PRTLoader.NewParticle<PRT_FishCursedEmber>(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f)
+                    , new Vector2(Main.rand.NextFloat(-0.8f, 0.8f), -Main.rand.NextFloat(0.5f, 1.4f))
+                    , Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.GreenDeep, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.34f, 0.52f))?.Configure(Main.rand.Next(26, 40));
+            }
+            for (int i = 0; i < 2; i++) {
+                PRTLoader.NewParticle<PRT_FishCursedSmog>(Projectile.Center, new Vector2(0f, -Main.rand.NextFloat(0.4f, 1f))
+                    , FishCursedVFX.SmokeDark, Main.rand.NextFloat(0.22f, 0.3f))?.Configure(30, 0.4f, 0.015f);
+            }
+        }
+
+        //焰体剥落：焰舌/余烬/暗烟/诅咒尘按节律错峰生成（whoAmI 错相防同帧齐射尖峰）
+        private void ShedParticles(float speed) {
+            int phase = (int)StateTime + Projectile.whoAmI * 3;
+
+            int tongueCadence = State switch {
+                FlameState.Hover => 3,
+                FlameState.Rise => (int)MathHelper.Clamp(5f - speed * 0.35f, 2f, 5f), //甩出率∝速度
+                _ => 5,
+            };
+            if (phase % tongueCadence == 0) {
+                Vector2 vel = Projectile.velocity * 0.4f + new Vector2(Main.rand.NextFloat(-0.6f, 0.6f), -Main.rand.NextFloat(0.3f, 0.9f));
+                Color col = Color.Lerp(FishCursedVFX.GreenCore, FishCursedVFX.GreenMid, Main.rand.NextFloat(0.3f, 0.9f));
+                PRTLoader.NewParticle<PRT_FishCursedTongue>(Projectile.Center + Main.rand.NextVector2Circular(9f, 9f)
+                    , vel, col, Main.rand.NextFloat(0.24f, 0.38f))
+                    ?.Configure(Main.rand.Next(20, 30), -Main.rand.NextFloat(1.3f, 2f), Main.rand.NextFloat(0.4f, 0.8f));
+            }
+            if (phase % 7 == 0) {
+                PRTLoader.NewParticle<PRT_FishCursedEmber>(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f)
+                    , Projectile.velocity * 0.2f + Main.rand.NextVector2Circular(0.8f, 0.8f)
+                    , Color.Lerp(FishCursedVFX.GreenMid, FishCursedVFX.GreenDeep, Main.rand.NextFloat())
+                    , Main.rand.NextFloat(0.36f, 0.55f))?.Configure(Main.rand.Next(22, 34));
+            }
+            //暗烟压底：悬停与上浮期（AlphaBlend 真遮挡）
+            if ((State == FlameState.Hover || State == FlameState.Rise) && phase % 9 == 0) {
+                PRTLoader.NewParticle<PRT_FishCursedSmog>(Projectile.Center + Main.rand.NextVector2Circular(6f, 6f)
+                    , new Vector2(0f, -Main.rand.NextFloat(0.5f, 1.2f)), FishCursedVFX.SmokeDark, 0.2f)
+                    ?.Configure(26, 0.34f, 0.012f);
+            }
+            //原版诅咒尘：低频粒状填充
+            if (phase % 6 == 0) {
+                Dust d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f)
+                    , DustID.CursedTorch, -Projectile.velocity * 0.1f + new Vector2(0f, -0.6f), 130, default, Main.rand.NextFloat(0.9f, 1.4f));
+                d.noGravity = true;
+            }
+        }
+
+        //碰撞地形：撞击爆发 + 落点余燃，弹体转入消散让尾迹优雅收束
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            if (State == FlameState.Burning) {
-                CreateFlameExplosion(Projectile.Center);
-
-                //爆炸音效
-                SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.6f,
-                    Pitch = 0.1f
-                }, Projectile.Center);
-
-                SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with {
-                    Volume = 0.4f,
-                    Pitch = -0.2f
-                }, Projectile.Center);
-
-                EnterFadeState();
+            if (State == FlameState.Fading) {
                 return false;
             }
-
-            return true;
-        }
-
-        //击中NPC-生成火焰爆发效果
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            CreateFlameExplosion(Projectile.Center);
-
-            //附加诅咒火焰效果
-            target.AddBuff(BuffID.CursedInferno, 300 + HalibutData.GetDomainLayer() * 40);
-
-            //击中音效
-            SoundEngine.PlaySound(SoundID.NPCHit3 with {
-                Volume = 0.5f,
-                Pitch = -0.3f
-            }, Projectile.Center);
-        }
-
-        //创建火焰爆发效果
-        private void CreateFlameExplosion(Vector2 position) {
-            //爆发式火焰粒子
-            int explosionCount = 30 + HalibutData.GetDomainLayer() * 5;
-
-            for (int i = 0; i < explosionCount; i++) {
-                float angle = Main.rand.NextFloat(MathHelper.TwoPi);
-                float speed = Main.rand.NextFloat(5f, 15f);
-                Vector2 velocity = angle.ToRotationVector2() * speed;
-
-                if (flameParticles.Count < MaxParticles * 2) {
-                    CursedFlameParticle explosion = new CursedFlameParticle {
-                        Position = position + Main.rand.NextVector2Circular(10f, 10f),
-                        Velocity = velocity,
-                        Size = Main.rand.NextFloat(2f, 4.5f),
-                        Life = 0,
-                        MaxLife = Main.rand.Next(25, 50),
-                        Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-                        RotationSpeed = Main.rand.NextFloat(-0.3f, 0.3f),
-                        Opacity = 1f,
-                        ColorPhase = Main.rand.NextFloat(0f, 1f),
-                        HeatIntensity = Main.rand.NextFloat(0.8f, 1f)
-                    };
-                    flameParticles.Add(explosion);
-                }
-
-                //原版诅咒火焰尘埃
-                if (i % 2 == 0) {
-                    Dust cursed = Dust.NewDustPerfect(
-                        position,
-                        DustID.CursedTorch,
-                        velocity * 0.7f,
-                        100,
-                        default,
-                        Main.rand.NextFloat(1.5f, 2.5f)
-                    );
-                    cursed.noGravity = true;
-                    cursed.fadeIn = 1.3f;
-                }
-            }
-
-            //爆炸环形冲击波
-            CreateExplosionRing(position);
-        }
-
-        //创建爆炸环形冲击波
-        private void CreateExplosionRing(Vector2 center) {
-            int ringCount = 25;
-
-            for (int i = 0; i < ringCount; i++) {
-                float angle = MathHelper.TwoPi * i / ringCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 12f);
-
-                Dust ring = Dust.NewDustPerfect(
-                    center,
-                    DustID.CursedTorch,
-                    velocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.8f, 3f)
-                );
-                ring.noGravity = true;
-                ring.fadeIn = 1.4f;
-            }
-        }
-
-        //生成诅咒火焰残留效果
-        private void SpawnCursedResidue() {
-            Dust residue = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                DustID.CursedTorch,
-                Vector2.Zero,
-                100,
-                default,
-                Main.rand.NextFloat(1f, 2f)
-            );
-            residue.noGravity = true;
-            residue.velocity = -Projectile.velocity * 0.15f + new Vector2(0, HeatRise * 2f);
-            residue.fadeIn = 1.2f;
-        }
-
-        //更新核心拖尾
-        private void UpdateCoreTrail() {
-            coreTrail.Insert(0, Projectile.Center);
-            if (coreTrail.Count > MaxCoreTrail) {
-                coreTrail.RemoveAt(coreTrail.Count - 1);
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            if (State == FlameState.Fading && Projectile.alpha > 220) {
-                //消散状态几乎完全透明,只绘制粒子
-                DrawTrailParticles();
-                DrawFlameParticles();
-                return false;
-            }
-
-            SpriteBatch sb = Main.spriteBatch;
-
-            //绘制拖尾粒子
-            DrawTrailParticles();
-
-            //绘制火焰粒子系统
-            DrawFlameParticles();
-
-            //绘制核心火焰流
-            if (State == FlameState.Burning) {
-                DrawFlameCore(sb);
-            }
-
+            impacted = true;
+            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.45f, Pitch = 0.1f, MaxInstances = 3 }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Volume = 0.28f, Pitch = -0.2f, MaxInstances = 3 }, Projectile.Center);
+            FishCursedVFX.Punch(Projectile.Center, oldVelocity, 1.6f, 9f, 6, 500f);
+            FishCursedVFX.ImpactBurst(Projectile.Center, oldVelocity, 1f);
+            EnterFade();
+            Projectile.velocity = Vector2.Zero;
             return false;
         }
 
-        //绘制拖尾粒子
-        private void DrawTrailParticles() {
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
-            Texture2D flameTex = CWRAsset.LightShot.Value;
+        //击中NPC：附加诅咒火 + 贴体余燃，贯穿继续飞
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //附加诅咒火焰效果
+            target.AddBuff(BuffID.CursedInferno, 300 + HalibutData.GetDomainLayer() * 40);
 
-            //使用加法混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            foreach (var particle in trailParticles) {
-                Vector2 drawPos = particle.Position - Main.screenPosition;
-
-                //诅咒火焰颜色-绿色到黄绿色渐变
-                Color flameColor = Color.Lerp(
-                    new Color(100, 255, 100),
-                    new Color(180, 255, 120),
-                    particle.ColorPhase
-                ) * particle.Opacity;
-
-                //绘制拖尾主体
-                sb.Draw(
-                    flameTex,
-                    drawPos,
-                    null,
-                    flameColor * 0.6f,
-                    particle.Rotation,
-                    flameTex.Size() / 2f,
-                    particle.Size * 0.1f,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //拖尾核心
-                Color coreColor = new Color(200, 255, 150) * particle.Opacity * 0.5f;
-                sb.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    coreColor,
-                    particle.Rotation * 1.5f,
-                    glowTex.Size() / 2f,
-                    particle.Size * 0.06f,
-                    SpriteEffects.None,
-                    0
-                );
+            SoundEngine.PlaySound(SoundID.NPCHit3 with { Volume = 0.4f, Pitch = -0.3f, MaxInstances = 4 }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.3f, Pitch = 0.2f, MaxInstances = 3 }, Projectile.Center);
+            FishCursedVFX.ImpactBurst(Projectile.Center, Projectile.velocity, 0.8f, target);
+            //咬肉微掉速
+            Projectile.velocity *= 0.85f;
+            //末次贯穿即终点，燃尽演出不再叠加
+            if (Projectile.penetrate <= 1) {
+                impacted = true;
             }
-
-            //恢复正常混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        //绘制火焰粒子
-        private void DrawFlameParticles() {
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D glowTex = CWRAsset.StarTexture_White.Value;
-            Texture2D maskTex = CWRAsset.LightShot.Value;
-            Texture2D extraTex = FishCloud.Fog;
-
-            //使用加法混合模式
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            foreach (var particle in flameParticles) {
-                Vector2 drawPos = particle.Position - Main.screenPosition;
-                float scale = particle.Size * 0.09f;
-                float rotation = particle.Rotation;
-
-                //诅咒火焰颜色，动态绿色渐变
-                Color baseColor = Color.Lerp(
-                    new Color(80, 255, 80),
-                    new Color(150, 255, 100),
-                    particle.ColorPhase
-                ) * particle.Opacity * particle.HeatIntensity;
-
-                //绘制火焰外层
-                Color outerColor = baseColor * 0.6f;
-                sb.Draw(
-                    extraTex,
-                    drawPos,
-                    null,
-                    outerColor,
-                    rotation,
-                    extraTex.Size() / 2f,
-                    scale * 2.5f,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //绘制火焰主体
-                Color flameColor = baseColor * 0.8f;
-                sb.Draw(
-                    maskTex,
-                    drawPos,
-                    null,
-                    flameColor,
-                    rotation * 0.7f,
-                    maskTex.Size() / 2f,
-                    scale * 1.2f,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //绘制火焰核心，最亮
-                Color coreColor = Color.Lerp(
-                    new Color(200, 255, 150),
-                    new Color(255, 255, 200),
-                    particle.ColorPhase
-                ) * particle.Opacity;
-
-                sb.Draw(
-                    glowTex,
-                    drawPos,
-                    null,
-                    coreColor * 0.9f,
-                    rotation * 1.5f,
-                    glowTex.Size() / 2f,
-                    scale * 0.7f,
-                    SpriteEffects.None,
-                    0
-                );
-
-                //额外光晕
-                if (particle.HeatIntensity > 0.8f) {
-                    Color heatColor = new Color(180, 255, 120) * particle.Opacity * 0.3f;
-                    sb.Draw(
-                        glowTex,
-                        drawPos + new Vector2(0, heatDistortion * 2f),
-                        null,
-                        heatColor,
-                        rotation * 2f,
-                        glowTex.Size() / 2f,
-                        scale * 1.3f,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
-            }
-
-            //恢复正常混合模式
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-        }
-
-        //绘制火焰核心流
-        private void DrawFlameCore(SpriteBatch sb) {
-            if (coreTrail.Count < 2) return;
-
-            Texture2D coreTex = CWRAsset.LightShot.Value;
-
-            //使用加法混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-            //绘制核心拖尾
-            for (int i = 0; i < coreTrail.Count - 1; i++) {
-                float progress = 1f - i / (float)coreTrail.Count;
-                Vector2 drawPos = coreTrail[i] - Main.screenPosition;
-
-                //计算方向
-                Vector2 toNext = coreTrail[i + 1] - coreTrail[i];
-                float rotation = toNext.ToRotation();
-
-                //核心颜色-诅咒绿色渐变
-                float colorPhase = (FlameLife * 0.1f + i * 0.2f) % 1f;
-                Color coreColor = Color.Lerp(
-                    new Color(100, 255, 100),
-                    new Color(180, 255, 120),
-                    colorPhase
-                ) * progress * glowPulse * 0.9f;
-
-                float scale = progress * 0.12f;
-
-                sb.Draw(
-                    coreTex,
-                    drawPos,
-                    null,
-                    coreColor,
-                    rotation,
-                    coreTex.Size() / 2f,
-                    new Vector2(scale * 3f, scale * 1.2f),
-                    SpriteEffects.None,
-                    0
-                );
-
-                //外层光晕
-                Color glowColor = new Color(150, 255, 130) * progress * glowPulse * 0.5f;
-                sb.Draw(
-                    coreTex,
-                    drawPos,
-                    null,
-                    glowColor,
-                    rotation,
-                    coreTex.Size() / 2f,
-                    new Vector2(scale * 5f, scale * 2.5f),
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //绘制火焰头部-最亮
-            Vector2 headPos = Projectile.Center - Main.screenPosition;
-            Color headColor = new Color(200, 255, 150) * glowPulse;
-
-            sb.Draw(
-                coreTex,
-                headPos,
-                null,
-                headColor,
-                Projectile.velocity.ToRotation(),
-                coreTex.Size() / 2f,
-                new Vector2(0.18f, 0.15f),
-                SpriteEffects.None,
-                0
-            );
-
-            //头部强光核心
-            Texture2D starTex = CWRAsset.StarTexture_White.Value;
-            Color starColor = new Color(255, 255, 200) * glowPulse * 0.9f;
-            sb.Draw(
-                starTex,
-                headPos,
-                null,
-                starColor,
-                FlameLife * 0.15f,
-                starTex.Size() / 2f,
-                0.1f,
-                SpriteEffects.None,
-                0
-            );
-
-            //恢复正常混合
-            sb.End();
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp,
-                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public override void OnKill(int timeLeft) {
-            //死亡时残留火焰
-            if (State == FlameState.Burning) {
-                CreateFlameExplosion(Projectile.Center);
+            //燃尽演出已在 EnterFade 拍点放过；这里只兜住意外死亡（穿透耗尽等）
+            if (impacted || State == FlameState.Fading) {
+                return;
             }
-
-            //残留诅咒火焰效果
-            for (int i = 0; i < 20; i++) {
-                Dust residue = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
-                    DustID.CursedTorch,
-                    Main.rand.NextVector2Circular(5f, 5f),
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                residue.noGravity = Main.rand.NextBool();
-                residue.fadeIn = 1.3f;
-            }
+            GutterOut();
         }
-    }
 
-    /// <summary>
-    /// 诅咒火焰粒子数据结构
-    /// </summary>
-    internal struct CursedFlameParticle
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Size;
-        public int Life;
-        public int MaxLife;
-        public float Rotation;
-        public float RotationSpeed;
-        public float Opacity;
-        public float ColorPhase;
-        public float HeatIntensity;
-    }
+        //==== 绘制：Fire 帧动画三层体 + 速度残影 + 条带尾迹 ====
 
-    /// <summary>
-    /// 火焰拖尾粒子数据结构
-    /// </summary>
-    internal struct FlameTrail
-    {
-        public Vector2 Position;
-        public Vector2 Velocity;
-        public float Size;
-        public int Life;
-        public int MaxLife;
-        public float Rotation;
-        public float RotationSpeed;
-        public float Opacity;
-        public float ColorPhase;
+        private float BodyScale => State switch {
+            FlameState.Hover => 0.68f,
+            FlameState.Rise => 0.62f,
+            _ => 0.58f,
+        };
+
+        /// <summary>焰尾条带：沿 oldPos 轨迹的 TriangleStrip，宽度∝速度，头段快速铺满再向尾收成尖</summary>
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ || !Projectile.active) {
+                return;
+            }
+            Effect fx = FishCursedAssets.FishCursedFlame;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            if (fx == null || noise == null) {
+                return;
+            }
+            float fade = 1f - Projectile.alpha / 255f;
+            if (fade <= 0.03f) {
+                return;
+            }
+
+            //采样点：当前中心打头，oldPos 依次向尾（去掉未写入的零槽与过近点）
+            Vector2 half = Projectile.Size / 2f;
+            Span<Vector2> pts = stackalloc Vector2[1 + Projectile.oldPos.Length];
+            int count = 0;
+            pts[count++] = Projectile.Center;
+            for (int k = 0; k < Projectile.oldPos.Length; k++) {
+                if (Projectile.oldPos[k] == Vector2.Zero) {
+                    break;
+                }
+                Vector2 p = Projectile.oldPos[k] + half;
+                if (Vector2.DistanceSquared(p, pts[count - 1]) < 4f) {
+                    continue;
+                }
+                pts[count++] = p;
+            }
+            if (count < 3) {
+                return; //悬停期尾迹自然收没
+            }
+
+            //头宽∝速度：滑行细带、上浮宽焰
+            float maxWidth = MathHelper.Clamp(6f + Projectile.velocity.Length() * 1.05f, 7f, 19f);
+            var verts = new VertexPositionColorTexture[count * 2];
+            for (int i = 0; i < count; i++) {
+                float t = i / (float)(count - 1);
+                Vector2 tangent = i < count - 1
+                    ? (pts[i] - pts[i + 1]).SafeNormalize(Vector2.UnitX)
+                    : (pts[i - 1] - pts[i]).SafeNormalize(Vector2.UnitX);
+                Vector2 normal = new(-tangent.Y, tangent.X);
+                float width = maxWidth * (0.5f + 0.5f * MathHelper.Clamp(t / 0.14f, 0f, 1f))
+                    * MathF.Pow(1f - t, 0.7f);
+                verts[i * 2] = new VertexPositionColorTexture((pts[i] + normal * width).ToVector3()
+                    , Color.White, new Vector2(t, 0f));
+                verts[i * 2 + 1] = new VertexPositionColorTexture((pts[i] - normal * width).ToVector3()
+                    , Color.White, new Vector2(t, 1f));
+            }
+
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            FishCursedVFX.ApplyFlameTrail(fx, Projectile.whoAmI * 0.61f, fade);
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, verts.Length - 2);
+            }
+
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D fire = CWRAsset.Fire?.Value;
+            if (fire == null) {
+                return false;
+            }
+            float fade = 1f - Projectile.alpha / 255f;
+            if (fade <= 0.02f) {
+                return false;
+            }
+
+            int frameIdx = (int)(Main.GameUpdateCount / 4 + VisualSeed * 7f);
+            Rectangle frame = FishCursedVFX.FireFrame(fire, frameIdx);
+            Rectangle frameAlt = FishCursedVFX.FireFrame(fire, frameIdx + 5);
+            Vector2 origin = frame.Size() * 0.5f;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+
+            float speed = Projectile.velocity.Length();
+            //速度拉伸：沿焰轴伸长、横向收窄
+            float stretchAmt = MathHelper.Clamp(speed * 0.05f, 0f, 0.85f);
+            //悬停呼吸胀缩
+            float breath = State == FlameState.Hover
+                ? 1f + 0.13f * MathF.Sin(StateTime * 0.5f + VisualSeed)
+                : 1f + 0.05f * MathF.Sin(StateTime * 0.22f + VisualSeed);
+            float body = BodyScale * breath;
+            Vector2 scale = new(body * (1f - stretchAmt * 0.28f), body * (1f + stretchAmt));
+
+            //墨绿雾底：AlphaBlend 真遮挡层，压住其上所有加色亮部
+            Texture2D fog = CWRAsset.Fog?.Value;
+            if (fog != null) {
+                Main.EntitySpriteDraw(fog, drawPos, null, FishCursedVFX.SmokeDark * (0.42f * fade)
+                    , visualRot * 0.3f, fog.Size() * 0.5f, 0.36f * body, SpriteEffects.None, 0);
+            }
+
+            //速度残影：旧位置两枚暗绿鬼影，快时才可见
+            if (speed > 4f) {
+                for (int i = 3; i <= 6; i += 3) {
+                    if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                    float ghostFade = (1f - i / 8f) * 0.3f * MathHelper.Clamp(speed / 14f, 0f, 1f) * fade;
+                    Main.EntitySpriteDraw(fire, ghostPos, frame, FishCursedVFX.GreenDeep with { A = 0 } * ghostFade
+                        , visualRot, origin, scale * 0.9f, SpriteEffects.None, 0);
+                }
+            }
+
+            //暗绿外鞘（压底异质层）
+            Main.EntitySpriteDraw(fire, drawPos, frame, FishCursedVFX.GreenDeep with { A = 0 } * (0.5f * fade)
+                , visualRot, origin, scale * 1.45f, SpriteEffects.None, 0);
+            //饱和中绿主体（错帧去相关）
+            Main.EntitySpriteDraw(fire, drawPos, frameAlt, FishCursedVFX.GreenMid with { A = 0 } * (0.8f * fade)
+                , visualRot, origin, scale, SpriteEffects.None, 0);
+
+            //黄绿焰心：LightShot 顺焰轴拉伸的细热芯
+            Texture2D shot = CWRAsset.LightShot?.Value;
+            if (shot != null) {
+                Vector2 coreScale = new Vector2(0.13f + 0.10f * stretchAmt, 0.052f) * (body / 0.6f);
+                Main.EntitySpriteDraw(shot, drawPos, null, FishCursedVFX.GreenCore with { A = 0 } * (0.8f * fade)
+                    , visualRot - MathHelper.PiOver2, shot.Size() * 0.5f, coreScale, SpriteEffects.None, 0);
+            }
+            return false;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// Q技能星流环带：单quad星环+6颗星卫结点,结点轮转弹射追踪星屑
     internal class AriaQSkill : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int NodeCount = 6;
         private const int Lifetime = 600;
@@ -157,7 +157,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             }
             Effect effect = EffectLoader.AriaStarRing?.Value;
             Texture2D noise = CWRAsset.PerlinNoise?.Value;
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (effect == null || noise == null || white == null) {
                 return;
             }
@@ -215,7 +215,7 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     /// Q技能星屑：结点弹射的追踪光矢
     internal class AriaQSkillMiniDisk : ModProjectile, IAdditiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         public ref float TargetNPCIndex => ref Projectile.ai[0];
 

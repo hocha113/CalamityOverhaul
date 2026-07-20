@@ -367,7 +367,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             if (length < 1f) {
                 return;
             }
-            Main.EntitySpriteDraw(TextureAssets.MagicPixel.Value, start - Main.screenPosition, new Rectangle(0, 0, 1, 1)
+            Main.EntitySpriteDraw(VaultAsset.placeholder2.Value, start - Main.screenPosition, new Rectangle(0, 0, 1, 1)
                 , color, toEnd.ToRotation(), new Vector2(0, 0.5f), new Vector2(length, thickness), SpriteEffects.None, 0);
         }
 
@@ -438,7 +438,7 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             }
 
             Effect shader = EffectLoader.NeutronGravityWell?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.PerlinNoise.Value;
             if (shader == null || canvas == null || noise == null) {
                 return;

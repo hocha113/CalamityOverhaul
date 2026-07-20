@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -32,11 +33,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
     /// 流带从尾端化墨蒸发（~22 帧），烟屑沿蒸发前沿剥落。<br/>
     /// 视觉语言：绯红偏黑红的流动墨绸（详见 <see cref="OniKamuiFlowRenderer"/>），
     /// 与雷电/科技无关——鬼切的神威是墨与绸，不是电。<br/>
+    /// 表世界跑满全程且右键仍按住 → 衔接樱流化身(<see cref="OniSakuraFlight"/>)：
+    /// 硬刹替换为化樱续飞，残心纳刀让位，墨痕结算照常押后。<br/>
     /// ai[0]=瞄准角(弧度) ai[1]=冲刺距离(px) ai[2]=尺寸倍率；伤害经 damage 传入墨痕全额结算
     /// </summary>
     internal class OniFlashStep : ModProjectile, IPrimitiveDrawable, IAdditiveDrawable, IOverlayDrawable, IOniBladeOccupant
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //==== 时间轴常量 ====
         //缓降台地+加速曲线：前 TapWindowFrames 帧是逐帧便宜下去的"输入辨义台地"
@@ -90,6 +93,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private bool tapCommitted;
         /// <summary>台地终点距离（Initialize 按曲线前 <see cref="TapWindowFrames"/> 帧求和）</summary>
         private float tapDistance;
+        /// <summary>已衔接樱流(表世界跑满仍按住右键)：跳过硬刹与残心纳刀，操控当帧移交</summary>
+        private bool chained;
+
+        /// <summary>衔接视觉分支的判据：owner 端看 chained，远端凭"樱流握有本体操控"推断
+        /// (不用任意阶段存在性:旧飞行的余晖期与未衔接的新冲刺可共存,会误伤收势演出)</summary>
+        private bool ChainedToSakura => chained || OniSakuraFlight.ControlsOwner(Projectile.owner);
 
         private bool Dashing => stopFrame < 0 && timer <= plannedDashFrames;
         private bool Braking => stopFrame < 0 && timer > plannedDashFrames;
@@ -320,6 +329,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 //任何停止都按身前自由空间收拢头端：墨最多亲到墙面，永不入墙
                 headOffset = MathF.Min(headOffset, MathF.Max(FreeAheadBudget() - 6f, 8f));
                 timer = Math.Max(timer, plannedDashFrames);
+                //自然跑满且右键仍按住:尝试化樱续飞(撞墙/松手不衔接)
+                if (!blocked && !analogStop) {
+                    TryChainIntoSakura();
+                }
             }
 
             //撞墙帧不塞重合点，避免流带出现退化段
@@ -379,6 +392,25 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 , new Color(255, 190, 170), 0.7f * sizeMul);
         }
 
+        /// <summary>
+        /// 表世界的樱流衔接：跑满计划距离时右键仍按住，硬刹替换为化樱续飞
+        /// (门禁与经济在 <see cref="OnikiriPlayer.TryChainSakuraFlight"/>，失败静默，照常刹停)。<br/>
+        /// 衔接后残心纳刀让位(人已化樱)，墨痕结算(<see cref="Judge"/>)照常押后：
+        /// 樱流远去，身后墨痕齐裂
+        /// </summary>
+        private void TryChainIntoSakura() {
+            if (chained || !Projectile.IsOwnedByLocalPlayer() || !Main.mouseRight) {
+                return;
+            }
+            if (!Owner.GetModPlayer<OnikiriPlayer>().TryChainSakuraFlight(dashDir, Projectile.GetSource_FromAI())) {
+                return;
+            }
+            chained = true;
+            //跳过硬刹，操控当帧移交樱流；头端照常吃 follow-through 外推，墨绸收势不缩水
+            stopFrame = timer;
+            headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
+        }
+
         /// <summary>硬刹两帧：+过冲 → −回拉，随后交还操控；流带头端获得 follow-through 外推。<br/>
         /// 被墙面斩停时改为反震回弹（−回弹 → +落定），墙前没有前过冲的物理空间</summary>
         private void BrakeFrame() {
@@ -410,6 +442,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 //follow-through 外推吃身前预算：墙前清零,墨不入墙
                 headExt = MathF.Min(22f * sizeMul, MathF.Max(FreeAheadBudget() - headOffset - 4f, 0f));
                 Owner.CWR().GetScreenShake(2.2f);
+
+                //操控交还帧开追斩窗:锵前的左键按下沿将化为残心斩,与墨痕齐裂同帧释放
+                //(衔接樱流的停止走 TryChainIntoSakura,不经过本帧,天然不开窗)
+                if (Projectile.IsOwnedByLocalPlayer()) {
+                    Owner.GetModPlayer<OnikiriPlayer>().OpenZanshinWindow(JudgmentFrame - timer, marked.Count);
+                }
 
                 if (!Main.dedServ) {
                     //刹停点几缕墨屑落定
@@ -509,6 +547,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         private void UpdateTailPose() {
             bladePose.Update();
             if (stopFrame < 0 || !Owner.active || Owner.dead) {
+                return;
+            }
+            //已化樱远去:残心纳刀没有身体可摆,结算照常押后
+            if (ChainedToSakura) {
+                bladePose.Opacity = 0f;
                 return;
             }
             if (timer - JudgmentFrame > NotoFlickFrames + TailFadeFrames
@@ -716,8 +759,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 return;
             }
 
-            //---- 刹停爆点：星芒过曝一拍，把"收束成一点"钉进眼里 ----
-            if (stopFrame >= 0 && timer - stopFrame < 5 && CWRAsset.StarFlare02?.Value is Texture2D popFlare) {
+            //---- 刹停爆点：星芒过曝一拍，把"收束成一点"钉进眼里(衔接樱流时让位瓣爆) ----
+            if (stopFrame >= 0 && timer - stopFrame < 5 && !ChainedToSakura
+                && CWRAsset.StarFlare02?.Value is Texture2D popFlare) {
                 float popT = (timer - stopFrame) / 5f;
                 float popA = MathF.Pow(1f - popT, 1.6f);
                 Vector2 popPos = path[^1] + dashDir * headExt - Main.screenPosition;

@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
     /// <summary>全息光栅 190px，触栅消解/校准；SHPCHoloLattice.fx</summary>
     internal sealed class SHPCHoloLatticeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 270;
         private const float HalfLength = 95f;
@@ -169,7 +169,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Modules.Optic
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.SHPCHoloLattice?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             if (shader == null || canvas == null || noise == null) return false;
 

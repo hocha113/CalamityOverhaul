@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
+﻿using CalamityOverhaul.Content.Industrials.ElectricPowers.TreeRegrowths;
+using CalamityOverhaul.Content.Industrials.MaterialFlow.Batterys;
 using InnoVault.Actors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -306,11 +307,16 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             Vector2 startPos = GetLaunchPosition();
 
             //生成抛射橡子Actor(并行阶段延迟到主线程执行，串行阶段立即执行)
+            //树种解析与种子滚动涉及Main.rand，一并放入主线程闭包
             Defer(() => {
+                int treeType = TreeBlueprint.ResolveTreeType(plantPos.TileX, plantPos.TileY, 0);
+                if (treeType == 0 || !TreeBlueprint.TryRollSeed(plantPos.TileX, plantPos.TileY, treeType, out int seed)) {
+                    return;
+                }
                 int actorIndex = ActorLoader.NewActor<LifeWeaverAcorn>(startPos, launchVelocity);
-                if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
-                    //传入目标位置、地面类型和预计飞行时间
-                    ActorLoader.Actors[actorIndex].OnSpawn(plantPos.TileX, plantPos.TileY, plantPos.GroundType, flightTime);
+                if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount
+                    && ActorLoader.Actors[actorIndex] is LifeWeaverAcorn acorn) {
+                    acorn.Setup(plantPos.TileX, plantPos.TileY, treeType, seed, flightTime);
                 }
             });
 

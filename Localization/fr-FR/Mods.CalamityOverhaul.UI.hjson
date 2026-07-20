@@ -1,22 +1,31 @@
-ItemFilterUI: {
-	HintText: Clic gauche pour ajouter
-	HintText2: Clic gauche pour retirer
-	CloseHint: "[ESC] ou [Clic droit] pour fermer"
-}
-
-LegendUpgradeConfirmUI: {
-	TitleText: Confirmation d'amélioration d'arme légendaire
-	DescText:
+EntryDecisionUI: {
+	CollapseHint: Clic droit pour replier
+	LegendPill: Synchronisation d'arme légendaire
+	LegendTitle: Confirmation d'amélioration d'arme légendaire
+	LegendDesc:
 		'''
 		Le niveau du monde actuel est supérieur à celui de l'arme.
 		Voulez-vous améliorer {0} au niveau {1} ?
 		'''
-	ConfirmText: Confirmer
-	CancelText: Annuler
-	Success: "[ITEM] a été amélioré au niveau [LEVEL]"
-	QueueIndicator: Il reste {0} armes légendaires à confirmer.
-	TrustText: Faire confiance à ce monde
-	TrustSuccess: "[ITEM] a fait confiance à ce monde et se synchronisera automatiquement désormais"
+	LegendConfirm: Confirmer
+	LegendSkip: Passer cette fois
+	LegendTrust: Faire confiance à ce monde
+	LegendSuccess: "{0} a été amélioré au niveau {1}"
+	LegendTrustSuccess: "{0} a fait confiance à ce monde et se synchronisera automatiquement désormais"
+	LegendQueue: Il reste {0} armes légendaires à confirmer.
+	QuestPill: Vérification de quête en attente
+	QuestTitle: Confirmation de vérification de quête
+	QuestDesc:
+		'''
+		Vous êtes entré dans ce monde depuis un autre.
+		Voulez-vous vérifier la progression des quêtes dans le monde actuel ?
+		'''
+	QuestConfirm: Vérifier
+	QuestSkip: Passer
+	QuestTrust: Faire confiance à ce monde
+	QuestEnabled: Vérification activée
+	QuestDisabled: Vérification ignorée
+	QuestTrusted: Monde approuvé : la vérification sera désormais activée automatiquement
 }
 
 QuestTracker: {
@@ -150,6 +159,11 @@ QuestLog: {
 	SunModeText: Mode Jour
 	LauncherHoverText: Clic gauche Interagir, Clic droit Glisser
 	QuestManagerText: Commissions
+	DisabledOverlayText:
+		'''
+		La vérification des quêtes est désactivée pour ce monde.
+		Entrez à nouveau dans le monde pour reconfigurer.
+		'''
 
 	ObjectiveTemplate: {
 		DefeatNpc: Vaincre {0}
@@ -168,26 +182,6 @@ ExtraMain: {
 	StaffText: ÉQUIPE
 	BackText: RETOUR
 	LockedText: VERROUILLÉ
-}
-
-QuestWorldConfirmUI: {
-	TitleText: Confirmation de vérification de quête
-	DescText:
-		'''
-		Vous êtes entré dans ce monde depuis un autre.
-		Voulez-vous vérifier la progression des quêtes dans le monde actuel ?
-		'''
-	ConfirmText: Vérifier
-	CancelText: Passer
-	TrustText: Faire confiance à ce monde
-	EnabledText: Vérification activée
-	DisabledText: Vérification ignorée
-	TrustedText: Monde approuvé : la vérification sera désormais activée automatiquement
-	DisabledOverlayText:
-		'''
-		La vérification des quêtes est désactivée pour ce monde.
-		Entrez à nouveau dans le monde pour reconfigurer.
-		'''
 }
 
 Incinerator: {

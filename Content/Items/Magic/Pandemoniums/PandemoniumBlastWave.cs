@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// </summary>
     internal class PandemoniumBlastWave : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private ref float ExpandTimer => ref Projectile.ai[0];
 
         public override void SetDefaults() {
@@ -67,7 +67,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Effect shader = EffectLoader.BrimstoneBlastWave?.Value;
             if (shader == null) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 

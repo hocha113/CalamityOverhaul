@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
 {
     internal class RocketSkeleton : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder3;
+        public override string Texture => CWRConstant.VaultPlaceholder3;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.hostile = true;

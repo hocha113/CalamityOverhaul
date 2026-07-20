@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: 分子斩切
-MuraTriggerDash.DisplayName: 分子斩切
-MuraBreakerSlash.DisplayName: 升龙半月
-MuraExecutionCut.DisplayName: 次元斩·终
-MuraExecutionCutOnSpan.DisplayName: 次元斩·始
-MuraGroundSmash.DisplayName: 落樱
-EndSkillEffectStart.DisplayName: 次元斩·始
 RebelBladeFlyAttcke.DisplayName: 叛逆之刃
 RebelBladeOrb.DisplayName: 恶魔光球
 RebelBladeBack.DisplayName: 叛逆之刃
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: 闪光之召
 SpiralStarProjectile.DisplayName: 螺旋星
 WaterZombie.DisplayName: 水鬼
 OceanCurrent.DisplayName: 洋流
-PowerSoundEgg.DisplayName: 律动之卵
 CrabulonFriendHitbox.DisplayName: 蟹波菇孢子
 Fireball.DisplayName: 火球
 DeadLaser.DisplayName: 寂灭激光
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: 硫酸爆炸
 DawnshatterFireball.DisplayName: 黎明之火
 TransferItemProj.DisplayName: 转移中的物品
 Crystal.DisplayName: 水晶
-MuraDimensionSlash.DisplayName: 次元斩
-MuraSlashArc.DisplayName: 次元斩
-MuraSlashLine.DisplayName: 次元斩
 WGGLumberjackSaw.DisplayName: 生锈动力锯
 WGGLifeWeaverAcorn.DisplayName: 橡子
 GammaRayBurst.DisplayName: 伽马射线暴
@@ -345,7 +334,8 @@ OniFinaleCut.DisplayName: 终之太刀·纳刀断世
 OniFlashStep.DisplayName: 神威疾走
 OniFlashMark.DisplayName: 神威疾走·墨痕
 OniAnnihilate.DisplayName: 鬼哭·灭世一闪
-// OniSakuraFlight.DisplayName: Oni Sakura Flight
+OniSakuraFlight.DisplayName: 樱流化身
+OniZanshinSlash.DisplayName: 残心斩
 // SHPCHeavyMaulProj.DisplayName: S H P C Heavy Maul Proj
 // SHPCRedlineGaugeProj.DisplayName: S H P C Redline Gauge Proj
 // SHPCShardburstFlashProj.DisplayName: S H P C Shardburst Flash Proj

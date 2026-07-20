@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Accessories.JusticeUnveileds
 
     internal class JUZenithWorldTime : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.timeLeft = 300;

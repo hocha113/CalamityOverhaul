@@ -17,16 +17,6 @@ namespace CalamityOverhaul.Common
         public static CWRServerConfig Instance { get; private set; }
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
-        private static class Data
-        {
-            internal const int MuraUIStyleMaxType = 5;
-            internal const int MuraUIStyleMinType = 1;
-            public static int MuraUIStyleValue;
-            internal const int MuraPosStyleMaxType = 3;
-            internal const int MuraPosStyleMinType = 1;
-            public static int MuraPosStyleValue;
-        }
-
         [Header("CWRSystem")]
 
         [BackgroundColor(35, 185, 78, 255)]
@@ -44,10 +34,6 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(true)]
         public bool ScreenVibration { get; set; }//武器屏幕振动
-
-        [BackgroundColor(192, 54, 94, 255)]
-        [DefaultValue(true)]
-        public bool MurasamaSpaceFragmentationBool { get; set; }//鬼妖终结技碎屏
 
         [BackgroundColor(192, 54, 94, 255)]
         [DefaultValue(false)]
@@ -78,42 +64,6 @@ namespace CalamityOverhaul.Common
         [BackgroundColor(100, 160, 80, 255)]
         [DefaultValue(true)]
         public bool GenSylvanOutpost { get; set; }
-
-        [Header("CWRUI")]
-
-        [BackgroundColor(45, 175, 225, 255)]
-        [SliderColor(224, 165, 56, 255)]
-        [Range(Data.MuraUIStyleMinType, Data.MuraUIStyleMaxType)]
-        [DefaultValue(1)]
-        public int MuraUIStyleType {
-            get {
-                if (Data.MuraUIStyleValue < Data.MuraUIStyleMinType) {
-                    Data.MuraUIStyleValue = Data.MuraUIStyleMinType;
-                }
-                if (Data.MuraUIStyleValue > Data.MuraUIStyleMaxType) {
-                    Data.MuraUIStyleValue = Data.MuraUIStyleMaxType;
-                }
-                return Data.MuraUIStyleValue;
-            }
-            set => Data.MuraUIStyleValue = value;
-        }
-
-        [BackgroundColor(45, 175, 225, 255)]
-        [SliderColor(224, 165, 56, 255)]
-        [Range(Data.MuraPosStyleMinType, Data.MuraPosStyleMaxType)]
-        [DefaultValue(1)]
-        public int MuraPosStyleType {
-            get {
-                if (Data.MuraPosStyleValue < Data.MuraPosStyleMinType) {
-                    Data.MuraPosStyleValue = Data.MuraPosStyleMinType;
-                }
-                if (Data.MuraPosStyleValue > Data.MuraPosStyleMaxType) {
-                    Data.MuraPosStyleValue = Data.MuraPosStyleMaxType;
-                }
-                return Data.MuraPosStyleValue;
-            }
-            set => Data.MuraPosStyleValue = value;
-        }
 
         public override void OnLoaded() {
             Instance = this;

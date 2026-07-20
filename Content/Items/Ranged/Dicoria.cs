@@ -137,7 +137,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class DicoriaRay : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private const int MaxPosNum = 100;
         private int scaleTimer = 0;
         private int scaleIndex = 0;
@@ -268,10 +268,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * -0.08f);
             effect.Parameters["uTimeG"].SetValue(Main.GlobalTimeWrappedHourly * -0.2f);
             effect.Parameters["udissolveS"].SetValue(1f);
-            effect.Parameters["uBaseImage"].SetValue(CWRAsset.Placeholder_White.Value);
-            effect.Parameters["uFlow"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uBaseImage"].SetValue(VaultAsset.placeholder2.Value);
+            effect.Parameters["uFlow"].SetValue(VaultAsset.placeholder2.Value);
             effect.Parameters["uGradient"].SetValue(CWRAsset.BloodRed_Bar.Value);
-            effect.Parameters["uDissolve"].SetValue(CWRAsset.Placeholder_White.Value);
+            effect.Parameters["uDissolve"].SetValue(VaultAsset.placeholder2.Value);
 
             Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
             for (int i = 0; i < 6; i++) {

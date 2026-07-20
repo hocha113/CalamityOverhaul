@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee.StormGoddessSpears
     /// 风暴女神之矛主闪电弹幕
     internal class StormLightning : Lightning
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         #region 配置参数
         public override int MaxBranches => 4; //增加分叉数

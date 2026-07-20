@@ -46,8 +46,8 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer
         void ICWRLoader.LoadData() {
             CWRMod.Instance.AddBossHeadTexture(CWRConstant.NPC + "BTD/BTD_Head", -1);
             iconIndex = ModContent.GetModBossHeadSlot(CWRConstant.NPC + "BTD/BTD_Head");
-            CWRMod.Instance.AddBossHeadTexture(CWRConstant.Placeholder, -1);
-            iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.Placeholder);
+            CWRMod.Instance.AddBossHeadTexture(CWRConstant.VaultPlaceholder, -1);
+            iconIndex_Void = ModContent.GetModBossHeadSlot(CWRConstant.VaultPlaceholder);
         }
 
         void ICWRLoader.UnLoadData() => DestroyerMotionFX.Unload();

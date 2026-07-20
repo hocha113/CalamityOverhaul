@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>级联节点：5 次命中后悬停周期性猎杀光束</summary>
     internal class CyberCascadeNodeProj : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //总寿命帧数（约2.2秒）
         private const int Lifetime = 130;

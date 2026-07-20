@@ -14,11 +14,17 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
     /// </summary>
     internal class LifeWeaverAcorn : Actor
     {
-        //目标种植位置(物块坐标)
-        private int targetTileX;
-        private int targetTileY;
-        //地面类型
-        private int groundType;
+        //落点/树种/蓝图种子/预计飞行时长，权威端Setup后经SyncVar同步
+        [SyncVar]
+        public int targetTileX;
+        [SyncVar]
+        public int targetTileY;
+        [SyncVar]
+        public int treeTileType;
+        [SyncVar]
+        public int growSeed;
+        [SyncVar]
+        public float expectedFlightTime;
 
         //物理参数
         private Vector2 initialVelocity;
@@ -26,7 +32,6 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         public const float Gravity = 0.25f;
 
         //飞行控制
-        private float expectedFlightTime;
         private float currentFlightTime;
 
         //状态
@@ -39,19 +44,25 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         //旋转
         private float rotationSpeed;
 
+        /// <summary>
+        /// 权威端生成后立即调用，锁定落点与这棵树的蓝图种子
+        /// </summary>
+        public void Setup(int tileX, int groundY, int treeType, int seed, float flightTime) {
+            targetTileX = tileX;
+            targetTileY = groundY;
+            treeTileType = treeType;
+            growSeed = seed;
+            expectedFlightTime = flightTime;
+            NetUpdate = true;
+        }
+
         public override void OnSpawn(params object[] args) {
             Width = 10;
             Height = 10;
             DrawExtendMode = 600;
             DrawLayer = ActorDrawLayer.Default;
 
-            if (args is not null && args.Length >= 4) {
-                targetTileX = (int)args[0];
-                targetTileY = (int)args[1];
-                groundType = (int)args[2];
-                expectedFlightTime = (float)args[3];
-            }
-
+            //生成包先应用SyncVar再回调OnSpawn，此处能拿到正确的初速度
             initialVelocity = Velocity;
             startPosition = Position;
             currentFlightTime = 0f;
@@ -61,13 +72,20 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             rotationSpeed = Main.rand.NextFloat(0.08f, 0.15f) * (initialVelocity.X > 0 ? 1 : -1);
 
             //播放发射音效
-            SoundEngine.PlaySound(SoundID.Item1 with {
-                Volume = 0.5f,
-                Pitch = 0.3f
-            }, Center);
+            if (!Main.dedServ) {
+                SoundEngine.PlaySound(SoundID.Item1 with {
+                    Volume = 0.5f,
+                    Pitch = 0.3f
+                }, Center);
+            }
         }
 
         public override void AI() {
+            //SyncVar未到达前不推进飞行逻辑(客户端首帧)
+            if (treeTileType == 0) {
+                return;
+            }
+
             if (!landed) {
                 UpdateFlying();
             }
@@ -210,15 +228,15 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
         private void UpdateLanded() {
             landedTimer++;
 
-            //落地后短暂停留
-            if (landedTimer == 20) {
-                //检测并种植树木
-                if (CanPlantTree()) {
-                    //生成树木生长Actor
-                    Vector2 treePos = new Vector2(targetTileX * 16, targetTileY * 16);
+            //落地稍作停留后交棒生长演出；蓝图生成与落地校验均以锁定的落点为准
+            if (landedTimer == 20 && !VaultUtils.isClient) {
+                if (TreeBlueprint.TryGenerate(targetTileX, targetTileY, treeTileType, growSeed, out TreeBlueprint blueprint)
+                    && blueprint.CanPlace()) {
+                    Vector2 treePos = new Vector2(targetTileX * 16, targetTileY * 16 - 16);
                     int actorIndex = ActorLoader.NewActor<TreeRegrowth>(treePos, Vector2.Zero);
-                    if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount) {
-                        ActorLoader.Actors[actorIndex].OnSpawn(targetTileX, targetTileY, GetTreeTypeForGround());
+                    if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount
+                        && ActorLoader.Actors[actorIndex] is TreeRegrowth regrowth) {
+                        regrowth.Setup(targetTileX, targetTileY, treeTileType, growSeed);
                     }
                 }
             }
@@ -226,42 +244,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
             //逐渐缩小消失
             if (landedTimer > 15) {
                 Scale -= 0.05f;
-                if (Scale <= 0) {
-                    ActorLoader.KillActor(WhoAmI);
+                if (Scale <= 0 && !VaultUtils.isClient) {
+                    RequestKill();
                 }
             }
-        }
-
-        /// <summary>
-        /// 检测是否可以种树
-        /// </summary>
-        private bool CanPlantTree() {
-            if (!WorldGen.InWorld(targetTileX, targetTileY, 10)) return false;
-
-            Tile groundTile = Main.tile[targetTileX, targetTileY];
-            if (!groundTile.HasTile) return false;
-
-            //检查上方空间
-            for (int y = targetTileY - 1; y >= targetTileY - 10; y--) {
-                if (!WorldGen.InWorld(targetTileX, y)) return false;
-                Tile tile = Main.tile[targetTileX, y];
-                if (tile.HasTile && Main.tileSolid[tile.TileType]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// 根据地面类型获取树木类型
-        /// </summary>
-        private int GetTreeTypeForGround() {
-            return groundType switch {
-                TileID.Sand or TileID.Crimsand or TileID.Ebonsand or TileID.Pearlsand => TileID.PalmTree,
-                TileID.Ash => TileID.TreeAsh,
-                _ => TileID.Trees
-            };
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {

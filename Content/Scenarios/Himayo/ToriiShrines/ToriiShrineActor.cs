@@ -548,7 +548,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             if (departPetals.Count == 0) {
                 return;
             }
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Effect petalEffect = EffectLoader.OniDomainDeco?.Value;
             if (white == null || petalEffect == null) {
                 return;

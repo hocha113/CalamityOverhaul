@@ -341,7 +341,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
             if (fallbackScratch.Count == 0) {
                 return;
             }
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             if (white == null) {
                 return;
             }
@@ -373,7 +373,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         //====== 因果线、脉冲与斩纸刀光 ======
 
         private static void DrawThreadsAndPulses(SpriteBatch spriteBatch) {
-            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Texture2D white = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (white == null || glow == null) {
                 return;

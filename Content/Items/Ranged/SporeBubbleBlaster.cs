@@ -116,7 +116,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     internal class SporeBobo : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 32;
             Projectile.DamageType = DamageClass.Ranged;

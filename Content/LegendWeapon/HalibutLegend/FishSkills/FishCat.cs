@@ -25,6 +25,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return null;
             }
 
+            //镜像FishBunny:仅主人客户端掷鱼,防远端客户端幽灵弹
+            if (player.whoAmI != Main.myPlayer) {
+                return false;
+            }
+
             if (Cooldown > 0) {
                 return false;
             }
@@ -68,24 +73,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 Pitch = 0.6f
             }, position);
 
-            SpawnThrowEffect(position, velocity);
+            FishCatVFX.ThrowBurst(position, velocity);
 
             return false;
-        }
-
-        private static void SpawnThrowEffect(Vector2 position, Vector2 direction) {
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = direction.SafeNormalize(Vector2.Zero).RotatedByRandom(0.6f) * Main.rand.NextFloat(4f, 10f);
-                Dust dust = Dust.NewDustPerfect(
-                    position,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(200, 200, 220),
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                dust.noGravity = true;
-            }
         }
     }
 
@@ -132,8 +122,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private int idleAnimTimer = 0;
         private bool isSpinning = false;
 
+        //离水扑腾与之字乱窜的表演状态,全为客户端视觉量
+        private float wriggleRot = 0f;
+        private float flopPhase = 0f;
+        private float flopAmp = 1f;
+        private int facing = 1;
+        private int lastHopDir = 0;
+        private float nextWarnMeow = 0f;
+        private bool initialized = false;
+
         private const int MaxLifeTime = 540;
         private const int ExplosionRadius = 155;
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+        }
 
         public override void SetDefaults() {
             Projectile.width = 34;
@@ -152,7 +156,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void AI() {
+            if (!initialized) {
+                initialized = true;
+                flopAmp = Main.rand.NextFloat(0.6f, 1.1f);
+                //出手翻滚:被抛出的鱼在空中挣扎打转
+                isSpinning = true;
+                spinSpeed = Main.rand.NextFloat(0.28f, 0.5f) * (Main.rand.NextBool() ? 1f : -1f);
+            }
+
             CatLife++;
+
+            if (Math.Abs(Projectile.velocity.X) > 0.4f) {
+                facing = Projectile.velocity.X < 0 ? -1 : 1;
+            }
 
             switch (State) {
                 case CatState.Airborne:
@@ -172,9 +188,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     break;
             }
 
+            //自旋结束后把残余角平滑归位,避免视觉跳变
+            if (!isSpinning && spinRotation != 0f) {
+                spinRotation = MathHelper.WrapAngle(spinRotation) * 0.8f;
+                if (Math.Abs(spinRotation) < 0.02f) {
+                    spinRotation = 0f;
+                }
+            }
+            if (State != CatState.Airborne && State != CatState.Spinning) {
+                wriggleRot *= 0.75f;
+            }
+
             UpdateCatAnimation();
 
-            float lightIntensity = 0.65f;
+            //供TrailingMode缓存旋转,残影链使用
+            Projectile.rotation = bodyRotation + spinRotation + wriggleRot;
+
+            float lightIntensity = 0.5f;
             Lighting.AddLight(Projectile.Center,
                 1.0f * lightIntensity,
                 0.8f * lightIntensity,
@@ -197,18 +227,24 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 bodyRotation = MathHelper.Lerp(bodyRotation, Projectile.velocity.Y * 0.04f, 0.25f);
             }
 
+            //离水扑腾:速度越大挣扎越猛,顶点处收敛
+            flopPhase += 0.26f + Math.Min(Projectile.velocity.Length() * 0.012f, 0.14f);
+            float vigor = MathHelper.Clamp(Projectile.velocity.Length() * 0.06f, 0.35f, 1f);
+            wriggleRot = (float)Math.Sin(flopPhase) * 0.13f * flopAmp * vigor;
+
             if (isSpinning) {
                 spinRotation += spinSpeed;
                 spinSpeed *= 0.96f;
 
                 if (Math.Abs(spinSpeed) < 0.1f) {
                     isSpinning = false;
-                    spinRotation = 0f;
                 }
             }
 
-            if (CatLife % 4 == 0) {
-                SpawnAirborneParticle();
+            //高速位移时偶发甩落油滴
+            if (CatLife % 9 == 0 && Projectile.velocity.Length() > 7f) {
+                FishCatVFX.OilDrip(Projectile.Center + Main.rand.NextVector2Circular(8f, 8f)
+                    , -Projectile.velocity * 0.1f, 1);
             }
         }
 
@@ -237,15 +273,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 if (Main.rand.NextBool(3)) {
                     InitiateSpin();
                 }
-
-                SoundEngine.PlaySound(FishCat.Sound with {
-                    Volume = 0.35f,
-                    Pitch = 0.6f
-                }, Projectile.Center);
             }
 
-            if (CatLife % 18 == 0) {
-                SpawnIdleParticle();
+            //油滑鱼身闲置滴油
+            if (CatLife % 26 == 0) {
+                FishCatVFX.OilDrip(Projectile.Bottom + new Vector2(Main.rand.NextFloat(-8f, 8f), -6f)
+                    , new Vector2(0f, 0.3f), 1);
             }
         }
 
@@ -285,47 +318,69 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 State = CatState.Airborne;
                 groundTime = 0;
+                lastHopDir = Math.Sign(toTarget.X);
 
                 if (Main.rand.NextBool(2)) {
                     InitiateSpin();
                 }
 
-                SoundEngine.PlaySound(FishCat.Sound with {
-                    Volume = 0.45f,
-                    Pitch = 0.8f
-                }, Projectile.Center);
-
-                SpawnJumpParticle();
+                EmitMeow(0.8f, FishCatVFX.MeowCream, 0.45f, 0.8f);
+                FishCatVFX.JumpDust(Projectile.Bottom, Math.Sign(toTarget.X), 1f, true);
             }
         }
 
         private void SpinningPhaseAI() {
-            if (State == CatState.Airborne) {
-                AirbornePhaseAI();
-            }
+            //旋转态=空中态+自旋,共用空中物理(旧版漏调用导致无重力直飞)
+            AirbornePhaseAI();
         }
 
         private void ExplodingPhaseAI() {
             Projectile.velocity *= 0.88f;
 
-            squashStretch = 1f + (float)Math.Sin(CatLife * 1.2f) * 0.35f;
+            float progress = MathHelper.Clamp(1f - Projectile.timeLeft / 35f, 0f, 1f);
 
-            if (Projectile.timeLeft % 2 == 0) {
-                SpawnExplosionWarning();
+            //临爆膨胀,抖动频率随进度加快
+            float freq = 0.9f + progress * 1.6f;
+            squashStretch = 1f + progress * 0.12f + (float)Math.Sin(CatLife * freq) * 0.3f;
+
+            //警告喵:间隔渐短音调渐高,声弧转橙
+            if (nextWarnMeow <= 0f) {
+                nextWarnMeow = CatLife + 2f;
+            }
+            if (CatLife >= nextWarnMeow) {
+                nextWarnMeow = CatLife + MathHelper.Lerp(11f, 4.5f, progress);
+                EmitMeow(0.45f + 0.3f * progress, FishCatVFX.MeowWarn, 0.3f, 0.65f + progress * 0.5f);
             }
         }
 
         private void PerformJump(bool isHunt) {
             float jumpPower = isHunt ? HuntJumpForce : JumpForce;
 
-            float horizontalSpeed = Main.rand.NextFloat(4f, 9f) * (Main.rand.NextBool() ? 1 : -1);
+            //之字乱窜:偏好反向上次跳,偶发同向保混乱
+            int dir = lastHopDir == 0
+                ? (Main.rand.NextBool() ? 1 : -1)
+                : (Main.rand.NextFloat() < 0.72f ? -lastHopDir : lastHopDir);
+            lastHopDir = dir;
 
-            Projectile.velocity.X = horizontalSpeed;
+            float horizontalSpeed = Main.rand.NextFloat(4f, 9f);
+
+            //碎跳变体:低矮急促的贴地弹,读出抽风感
+            bool skitter = Main.rand.NextBool(5);
+            if (skitter) {
+                jumpPower *= 0.5f;
+                horizontalSpeed *= 1.5f;
+            }
+
+            Projectile.velocity.X = dir * horizontalSpeed;
             Projectile.velocity.Y = -jumpPower;
 
             State = CatState.Airborne;
 
-            SpawnJumpParticle();
+            //音高随起跳动量:碎跳尖促,大跳低沉
+            float momentum = MathHelper.Clamp(Projectile.velocity.Length() / 19f, 0f, 1f);
+            EmitMeow(0.4f + 0.35f * momentum, FishCatVFX.MeowCream
+                , 0.32f, skitter ? 0.95f : MathHelper.Lerp(0.35f, 0.75f, momentum));
+            FishCatVFX.JumpDust(Projectile.Bottom, dir, jumpPower / JumpForce, false);
         }
 
         private void InitiateSpin() {
@@ -340,6 +395,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             NPC target = Main.npc[targetID];
             return target.active && target.CanBeChasedBy();
+        }
+
+        /// <summary>喵一声：嘴部声弧+叫声，strength 控制弧的尺寸</summary>
+        private void EmitMeow(float strength, Color color, float volume, float pitch) {
+            float mouthRot = bodyRotation + spinRotation + wriggleRot;
+            Vector2 mouthOff = new Vector2(facing * 15f, -2f).RotatedBy(mouthRot);
+            FishCatVFX.MeowArc(Projectile.Center + mouthOff, mouthOff.ToRotation(), strength, color);
+
+            SoundEngine.PlaySound(FishCat.Sound with {
+                Volume = volume,
+                Pitch = pitch
+            }, Projectile.Center);
         }
 
         private void UpdateCatAnimation() {
@@ -365,88 +432,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        private void SpawnAirborneParticle() {
-            Dust trail = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                DustID.Smoke,
-                -Projectile.velocity * 0.25f,
-                100,
-                new Color(220, 200, 180),
-                Main.rand.NextFloat(0.9f, 1.4f)
-            );
-            trail.noGravity = true;
-        }
-
-        private void SpawnIdleParticle() {
-            Dust idle = Dust.NewDustPerfect(
-                Projectile.Center + new Vector2(Main.rand.NextFloat(-12f, 12f), 12f),
-                DustID.Smoke,
-                new Vector2(0, -0.6f),
-                100,
-                new Color(230, 210, 190),
-                Main.rand.NextFloat(0.7f, 1.1f)
-            );
-            idle.noGravity = true;
-            idle.fadeIn = 0.9f;
-        }
-
-        private void SpawnJumpParticle() {
-            for (int i = 0; i < 10; i++) {
-                Vector2 velocity = new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(1.5f, 5f));
-                Dust jump = Dust.NewDustPerfect(
-                    Projectile.Bottom,
-                    DustID.Smoke,
-                    velocity,
-                    100,
-                    new Color(200, 180, 160),
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                jump.noGravity = false;
-            }
-        }
-
-        private void SpawnExplosionWarning() {
-            for (int i = 0; i < 4; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(5f, 5f);
-                Dust warning = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(18f, 18f),
-                    DustID.Torch,
-                    velocity,
-                    100,
-                    new Color(255, 200, 100),
-                    Main.rand.NextFloat(1.4f, 2.3f)
-                );
-                warning.noGravity = true;
-                warning.fadeIn = 1.4f;
-            }
-        }
-
         public override bool OnTileCollide(Vector2 oldVelocity) {
-            if (State == CatState.Airborne && Projectile.velocity.Y == 0) {
+            if ((State == CatState.Airborne || State == CatState.Spinning) && Projectile.velocity.Y == 0) {
+                bool hardLanding = Math.Abs(oldVelocity.Y) > 9f;
                 State = CatState.OnGround;
                 groundTime = 0;
+                isSpinning = false;
 
                 SoundEngine.PlaySound(SoundID.Dig with {
                     Volume = 0.35f,
                     Pitch = 0.6f
                 }, Projectile.Center);
 
-                for (int i = 0; i < 6; i++) {
-                    Dust land = Dust.NewDustDirect(
-                        Projectile.Bottom - new Vector2(0, 6),
-                        Projectile.width,
-                        6,
-                        DustID.Smoke,
-                        Scale: Main.rand.NextFloat(1.2f, 1.8f)
-                    );
-                    land.velocity = new Vector2(Main.rand.NextFloat(-3f, 3f), Main.rand.NextFloat(-1.5f, 1.5f));
-                }
+                FishCatVFX.LandDust(Projectile.Bottom, oldVelocity, hardLanding);
 
                 return false;
             }
 
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon) {
                 Projectile.velocity.X = -oldVelocity.X * 0.65f;
+                //撞墙弹回甩两滴油
+                FishCatVFX.OilDrip(Projectile.Center
+                    , new Vector2(-Math.Sign(oldVelocity.X) * 1.5f, -1f), 2);
             }
 
             return false;
@@ -458,7 +465,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            CreateCatExplosion();
+            Projectile.Explode(ExplosionRadius, default, false);
+            FishCatVFX.Explode(Projectile.Center, HalibutData.GetDomainLayer(Main.player[Projectile.owner]), facing);
 
             SoundEngine.PlaySound(SoundID.Item14 with {
                 Volume = 0.75f,
@@ -471,127 +479,92 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
-        private void CreateCatExplosion() {
-            Projectile.Explode(ExplosionRadius, default, false);
-            int particleCount = 50 + HalibutData.GetDomainLayer() * 6;
-            for (int i = 0; i < particleCount; i++) {
-                float angle = MathHelper.TwoPi * i / particleCount;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(12f, 22f);
-
-                Dust explosion = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    velocity,
-                    100,
-                    new Color(255, 220, 150),
-                    Main.rand.NextFloat(2.2f, 3.8f)
-                );
-                explosion.noGravity = Main.rand.NextBool();
-                explosion.fadeIn = 1.5f;
-            }
-
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 22; j++) {
-                    float angle = MathHelper.TwoPi * j / 22f;
-                    float radius = 30f + i * 35f;
-                    Vector2 spawnPos = Projectile.Center + angle.ToRotationVector2() * radius;
-
-                    Dust ring = Dust.NewDustPerfect(
-                        spawnPos,
-                        DustID.Smoke,
-                        Vector2.Zero,
-                        100,
-                        new Color(160, 140, 120),
-                        Main.rand.NextFloat(2f, 3.5f)
-                    );
-                    ring.velocity = angle.ToRotationVector2() * 7f;
-                    ring.noGravity = true;
-                }
-            }
-
-            for (int i = 0; i < 18; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(16f, 16f);
-                Dust chunk = Dust.NewDustDirect(
-                    Projectile.Center,
-                    5, 5,
-                    DustID.Torch,
-                    0, 0, 100,
-                    new Color(255, 200, 100),
-                    Main.rand.NextFloat(1.8f, 2.8f)
-                );
-                chunk.velocity = velocity;
-                chunk.noGravity = false;
-            }
-        }
-
         public override bool PreDraw(ref Color lightColor) {
             SpriteBatch sb = Main.spriteBatch;
             Texture2D catTex = TextureAssets.Item[ItemID.Catfish].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = catTex.Size() / 2f;
 
-            SpriteEffects effects = SpriteEffects.None;
-            if (Projectile.velocity.X < 0) {
-                effects = SpriteEffects.FlipHorizontally;
-            }
+            SpriteEffects effects = facing < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            float drawRot = bodyRotation + spinRotation + wriggleRot;
 
             Vector2 scale = new Vector2(Projectile.scale / squashStretch, Projectile.scale * squashStretch);
 
             Color drawColor = Projectile.GetAlpha(lightColor);
 
-            if (State == CatState.Exploding) {
-                float flash = (float)Math.Sin(CatLife * 1.8f) * 0.5f + 0.5f;
-                drawColor = Color.Lerp(drawColor, new Color(255, 150, 50), flash * 0.75f);
+            //速度残影链:画在一切之下,加色淡影不压暗背景
+            if (Projectile.velocity.LengthSquared() > 36f) {
+                for (int i = 3; i >= 1; i--) {
+                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;//生成头几帧缓存未填,跳过防止残影闪现在世界原点
+                    }
+                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    Color ghostColor = new Color(212, 186, 148, 0) * (0.17f - i * 0.045f);
+                    sb.Draw(catTex, ghostPos, null, ghostColor, Projectile.oldRot[i], origin, scale * 0.97f, effects, 0);
+                }
             }
 
+            //自旋拖影:位置残影表达不了自旋,用旋转错相重影
+            if (isSpinning && Math.Abs(spinSpeed) > 0.12f) {
+                for (int i = 1; i <= 2; i++) {
+                    Color smear = new Color(222, 196, 158, 0) * (0.3f / i);
+                    sb.Draw(catTex, drawPos, null, smear, drawRot - spinSpeed * 2.2f * i, origin, scale, effects, 0);
+                }
+            }
+
+            //叠层落影:体下三层渐暗,廉价立体感骨架保留
             for (int i = 0; i < 3; i++) {
                 float shadowOffset = (3 - i) * 2.5f;
                 Vector2 shadowPos = drawPos + new Vector2(0, shadowOffset);
                 Color shadowColor = new Color(0, 0, 0, 90) * (1f - i * 0.3f);
 
-                sb.Draw(
-                    catTex,
-                    shadowPos,
-                    null,
-                    shadowColor,
-                    bodyRotation + spinRotation,
-                    catTex.Size() / 2f,
-                    scale * 0.96f,
-                    effects,
-                    0
-                );
+                sb.Draw(catTex, shadowPos, null, shadowColor, drawRot, origin, scale * 0.96f, effects, 0);
             }
 
-            sb.Draw(
-                catTex,
-                drawPos,
-                null,
-                drawColor,
-                bodyRotation + spinRotation,
-                catTex.Size() / 2f,
-                scale,
-                effects,
-                0
-            );
+            if (State == CatState.Exploding) {
+                float flash = (float)Math.Sin(CatLife * 1.8f) * 0.5f + 0.5f;
+                drawColor = Color.Lerp(drawColor, new Color(255, 150, 50), flash * 0.6f);
+            }
 
-            if (State == CatState.Hunting || State == CatState.Exploding) {
-                Color glowColor = State == CatState.Exploding
-                    ? new Color(255, 100, 20) * 0.85f
-                    : new Color(255, 220, 180) * 0.65f;
+            sb.Draw(catTex, drawPos, null, drawColor, drawRot, origin, scale, effects, 0);
 
-                sb.Draw(
-                    catTex,
-                    drawPos,
-                    null,
-                    glowColor,
-                    bodyRotation + spinRotation,
-                    catTex.Size() / 2f,
-                    scale * 1.06f,
-                    effects,
-                    0
-                );
+            DrawOilSheen(sb, catTex, drawPos, scale, effects, drawRot);
+
+            //状态热度皮层:加色小幅度,替代旧的同贴图不透明叠壳
+            if (State == CatState.Hunting) {
+                float excite = 0.16f + 0.08f * (float)Math.Sin(idleAnimTimer * 0.35f);
+                sb.Draw(catTex, drawPos, null, new Color(255, 212, 150, 0) * excite, drawRot, origin, scale * 1.03f, effects, 0);
+            }
+            else if (State == CatState.Exploding) {
+                float progress = MathHelper.Clamp(1f - Projectile.timeLeft / 35f, 0f, 1f);
+                float flash = (float)Math.Sin(CatLife * (1.2f + progress * 1.3f)) * 0.5f + 0.5f;
+                sb.Draw(catTex, drawPos, null, new Color(255, 138, 58, 0) * (0.2f + 0.4f * flash * progress)
+                    , drawRot, origin, scale * 1.04f, effects, 0);
             }
 
             return false;
+        }
+
+        /// <summary>油光缓扫：抽贴图竖切片做加色高光带，被鱼形 alpha 天然遮罩，相位按 whoAmI 错开</summary>
+        private void DrawOilSheen(SpriteBatch sb, Texture2D tex, Vector2 drawPos, Vector2 scale, SpriteEffects effects, float rot) {
+            float sweep = (Main.GlobalTimeWrappedHourly * 0.5f + Projectile.whoAmI * 0.373f) % 1f;
+            int bandW = Math.Max(2, tex.Width / 7);
+            int maxX = tex.Width - bandW;
+            int bandX = (int)(sweep * maxX);
+            bool flipped = effects == SpriteEffects.FlipHorizontally;
+
+            for (int i = -1; i <= 1; i++) {
+                int x = (int)MathHelper.Clamp(bandX + i * bandW, 0, maxX);
+                Rectangle src = new Rectangle(x, 0, bandW, tex.Height);
+                //切片原点对回贴图中心;水平翻转时原点在切片内镜像
+                float originX = tex.Width * 0.5f - x;
+                if (flipped) {
+                    originX = bandW - originX;
+                }
+                float strength = i == 0 ? 0.30f : 0.13f;
+                Color sheen = new Color(255, 242, 214, 0) * strength;
+                sb.Draw(tex, drawPos, src, sheen, rot, new Vector2(originX, tex.Height * 0.5f), scale, effects, 0);
+            }
         }
     }
 }

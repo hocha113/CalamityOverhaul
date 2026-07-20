@@ -313,7 +313,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         /// <summary>像素人体完整绘制</summary>
         public void DrawBody(SpriteBatch sb, float alpha, Vector2 bodyOrigin, float globalTimer) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             float breathe = MathF.Sin(breathePhase) * 0.8f;
@@ -375,7 +375,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
 
         /// <summary>植入节点，nodeStates 0普通 1已连 2高亮</summary>
         public void DrawNodes(SpriteBatch sb, float alpha, Vector2 bodyOrigin, int[] nodeStates) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (px == null) return;
 

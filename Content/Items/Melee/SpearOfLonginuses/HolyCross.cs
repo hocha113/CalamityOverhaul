@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
     /// </summary>
     internal class HolyCross : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //十字架尺寸（像素）
         private const int VerticalLength = 44;
@@ -99,7 +99,7 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float dir = Owner.gravDir;
 
-            Texture2D pixel = TextureAssets.MagicPixel.Value;
+            Texture2D pixel = VaultAsset.placeholder2.Value;
 
             Color frameColor = new Color(60, 40, 20) * (0.7f * appear);
             Color emptyFillColor = new Color(120, 90, 40) * (0.65f * appear);

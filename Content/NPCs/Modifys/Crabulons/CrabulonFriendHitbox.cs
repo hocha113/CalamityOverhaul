@@ -5,7 +5,7 @@ namespace CalamityOverhaul.Content.NPCs.Modifys.Crabulons
 {
     internal class CrabulonFriendHitbox : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = 296;
             Projectile.height = 196;

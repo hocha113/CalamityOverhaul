@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.Items.Magic
     /// </summary>
     internal class FocusingDeathRay : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         private static readonly Color ThemeColor = new(120, 200, 255);
         private static readonly Color ThemeGlow = new(150, 110, 255);
@@ -360,7 +360,7 @@ namespace CalamityOverhaul.Content.Items.Magic
             shader.Parameters["uExpandProgress"]?.SetValue(1f);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             sb.Draw(quad, drawPos, null, Color.White, (-dir).ToRotation(),
                 new Vector2(0, quad.Height / 2f),
                 new Vector2(BoltLength / quad.Width, BoltWidth / quad.Height),

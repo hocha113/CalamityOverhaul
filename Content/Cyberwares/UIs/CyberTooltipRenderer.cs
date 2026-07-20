@@ -21,7 +21,7 @@ namespace CalamityOverhaul.Content.Cyberwares.UIs
             if (item == null || item.IsAir) return;
             if (item.ModItem is not BaseCyberware cyber) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             scanPhase += (float)Main.gameTimeCache.ElapsedGameTime.TotalSeconds * ScanLineSpeed;

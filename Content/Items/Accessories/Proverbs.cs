@@ -117,7 +117,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
     /// </summary>
     internal class ProverbsCircle : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private float circleRadius = 0f;
         private float circleAlpha = 0f;
@@ -229,7 +229,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Effect shader = EffectLoader.ProverbsGhostDomain?.Value;
             if (shader == null) return;
 
-            Texture2D canvas = CWRAsset.Placeholder_White.Value;
+            Texture2D canvas = VaultAsset.placeholder2.Value;
             Texture2D noise = CWRAsset.Extra_193.Value;
             if (canvas == null || noise == null) return;
 

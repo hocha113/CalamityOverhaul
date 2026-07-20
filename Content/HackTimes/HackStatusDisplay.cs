@@ -38,7 +38,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private static readonly HashSet<IHackableSignalTower> signalTowerSet = [];
 
         public static void Draw(SpriteBatch sb) {
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = VaultAsset.placeholder2?.Value;
             if (px == null) return;
 
             var queue = HackTimeUI.Instance?.Queue;

@@ -145,7 +145,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.ArcaneRift?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             float open = Projectile.localAI[0];
 
@@ -292,7 +292,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.ArcaneHighDimension?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
             float progress = SphereProgress;
 
@@ -420,7 +420,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
         public override bool PreDraw(ref Color lightColor) {
             Effect shader = EffectLoader.ArcaneRealityTremor?.Value;
-            Texture2D canvas = CWRAsset.Placeholder_White?.Value;
+            Texture2D canvas = VaultAsset.placeholder2?.Value;
             Texture2D noise = CWRAsset.Extra_193?.Value;
 
             float fadeAlpha = 1f - VaultUtils.EaseInQuad(Time / (float)Lifetime);

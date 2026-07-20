@@ -404,7 +404,7 @@ namespace CalamityOverhaul.Content.Items.Melee
     /// 寰宇灾厄月牙冲击波
     internal class CosmicCrescentWave : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<CosmicCalamity>();
 
         /// 阶段 0轻 1重 2终结

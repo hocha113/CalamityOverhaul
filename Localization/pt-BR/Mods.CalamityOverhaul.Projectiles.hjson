@@ -1,10 +1,3 @@
-MurasamaHeld.DisplayName: Corte Molecular
-MuraTriggerDash.DisplayName: Corte Molecular
-MuraBreakerSlash.DisplayName: Corte da Lua Crescente
-MuraExecutionCut.DisplayName: Cessacao Dimensional - Final
-MuraExecutionCutOnSpan.DisplayName: Cessacao Dimensional - Genese
-MuraGroundSmash.DisplayName: Cerejeira em Queda
-EndSkillEffectStart.DisplayName: Cessacao Dimensional - Genese
 RebelBladeFlyAttcke.DisplayName: Lamina Rebelde
 RebelBladeOrb.DisplayName: Orbe Demonico
 RebelBladeBack.DisplayName: Lamina Rebelde
@@ -107,7 +100,6 @@ SparklingSpawnEffect.DisplayName: Invocacao Cintilante
 SpiralStarProjectile.DisplayName: Estrela Espiral
 WaterZombie.DisplayName: Zombie Afogado
 OceanCurrent.DisplayName: Corrente Oceanica
-PowerSoundEgg.DisplayName: Ovo Ressonante
 CrabulonFriendHitbox.DisplayName: Esporo de Crabulon
 Fireball.DisplayName: Bola de Fogo
 DeadLaser.DisplayName: Laser da Morte
@@ -236,9 +228,6 @@ SulfuricacidExplosion.DisplayName: Explosao de Acido Sulfurico
 DawnshatterFireball.DisplayName: Bola de Fogo do Amanhecer Estilhaçado
 TransferItemProj.DisplayName: Itens em Transito
 Crystal.DisplayName: Cristal
-MuraDimensionSlash.DisplayName: Corte Dimensional Mura
-MuraSlashArc.DisplayName: Arco de Corte Mura
-MuraSlashLine.DisplayName: Linha de Corte Mura
 WGGLumberjackSaw.DisplayName: Serra do Lenhador
 WGGLifeWeaverAcorn.DisplayName: Bolota
 GammaRayBurst.DisplayName: Explosao de Raio Gama

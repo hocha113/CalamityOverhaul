@@ -248,7 +248,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 冰川晶柱：GlacierSpike.fx 程序化，ai0种子 ai1缩放
     internal class GlacierSpikeProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         private ref float Seed => ref Projectile.ai[0];
         private ref float ScaleF => ref Projectile.ai[1];
 
@@ -422,7 +422,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
     /// 冰河推进波：沿地表拔起渐高晶柱
     internal class GlacierWave : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         /// 已拔起晶柱数
         private ref float SpikeCount => ref Projectile.ai[0];
         private const int MaxSpikes = 8;

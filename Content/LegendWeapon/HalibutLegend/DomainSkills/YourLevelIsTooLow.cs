@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.DomainSkills
     /// <summary>第十眼无限重启叠加演出控制器</summary>
     internal class YourLevelIsTooLowProj : BaseHeldProj
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //时空克隆体系统
         private List<InfiniteTimeClone> timeClones;

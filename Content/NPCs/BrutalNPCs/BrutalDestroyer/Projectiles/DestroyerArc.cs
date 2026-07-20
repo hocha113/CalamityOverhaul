@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
     /// <summary>机械电弧：连接两NPC(体节/探针)高温电弧，纯演出无伤害服务端同步，客户端<see cref="ThunderTrail"/>绘抖动闪电；ai[0]:端点NPCA索引；ai[1]:端点NPCB索引</summary>
     internal class DestroyerArc : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 30;
         private const int ArcPointCount = 7;

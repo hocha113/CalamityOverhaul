@@ -1,5 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
+using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -62,43 +66,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             return null;
         }
 
-        private void SpawnSummonEffect(Vector2 position) {
-            //召唤时的暗红色能量粒子
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(3f, 7f);
-
-                Dust eye = Dust.NewDustPerfect(
-                    position,
-                    DustID.Blood,
-                    velocity,
-                    100,
-                    new Color(200, 50, 50),
-                    Main.rand.NextFloat(1.5f, 2.2f)
-                );
-                eye.noGravity = true;
-                eye.fadeIn = 1.3f;
+        private static void SpawnSummonEffect(Vector2 position) {
+            if (Main.dedServ) {
+                return;
             }
-
-            //额外的暗影粒子
-            for (int i = 0; i < 12; i++) {
-                Dust shadow = Dust.NewDustPerfect(
-                    position + Main.rand.NextVector2Circular(20f, 20f),
-                    DustID.Shadowflame,
-                    Main.rand.NextVector2Circular(4f, 4f),
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                shadow.noGravity = true;
-            }
+            //暗隙涌雾：召唤点先见暗，眼球各自的入场展开接管后续
+            FishCthuluVFX.MistPuff(position, 4, 1.1f);
+            FishCthuluVFX.BloodSpray(position, -Vector2.UnitY, 3, 3f);
+            FishCthuluVFX.DarkRing(position, Vector2.UnitX, 0.8f);
         }
     }
 
     /// <summary>
-    /// 克苏鲁之眼弹幕，具有追踪、冲刺和环绕能力
+    /// 克苏鲁之眼弹幕，具有追踪、冲刺和环绕能力。<br/>
+    /// 演出：深渊血肉之眼，凝视期只有瞳孔追踪与雾丝游动的安静，
+    /// 变形撕膜露齿是定帧英雄时刻，冲刺拖暗绸带尾流
     /// </summary>
-    internal class CthulhuEye : ModProjectile
+    internal class CthulhuEye : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/NPC_" + NPCID.EyeofCthulhu;
 
@@ -140,6 +124,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         private const int PreDashTime = 12; //冲刺前蓄力时间（帧）
         private const int PostDashTime = 20; //冲刺后恢复时间（帧）
 
+        //==== 演出状态（纯视觉，不入网络）====
+        private const int MaterializeTime = 14; //入场展开帧数
+        private const int RibbonMaxPts = 22;
+        private int spawnTimer; //入场计时
+        private int irisFlash; //虹膜过冲闪帧，≤2 帧
+        private int tearHold; //撕膜定帧：獠牙初帧冻结
+        private bool tearDone; //本次蓄力是否已撕膜
+        private float pupilStrain; //瞳孔紧张度 0..1，蓄力/冲刺散大
+        private float stretchAlong = 1f; //沿朝向挤压拉伸（蓄力压缩/冲刺拉伸）
+        private float wispPhase; //雾丝公转相位
+        private Vector2 pupilTremor; //凝视微颤偏移
+        private float ribbonFade; //冲刺绸带整体透明度包络
+        private readonly List<Vector2> ribbonPts = new(RibbonMaxPts + 2);
+
         //状态枚举
         private enum EyeState
         {
@@ -157,7 +155,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            Main.projFrames[Projectile.type] = 4;
+            Main.projFrames[Projectile.type] = 6;
         }
 
         public override void SetDefaults() {
@@ -175,6 +173,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //初始化环绕参数
             orbitAngle = EyeID * MathHelper.TwoPi / 4f;
             randOrbitRadius = Main.rand.NextFloat(-20f, 20f);
+            wispPhase = Main.rand.NextFloat(MathHelper.TwoPi);
         }
 
         public override bool? CanDamage() => AIState != (int)EyeState.Orbiting;
@@ -199,19 +198,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     OrbitingAI();
                     break;
                 case EyeState.PreDash:
-                    targetMinFrame = 2; //开始张嘴
+                    targetMinFrame = tearDone ? 3 : 0; //撕膜前仍是完整的眼，撕膜瞬间硬切獠牙帧组
                     PreDashAI();
                     break;
                 case EyeState.Dashing:
-                    targetMinFrame = 2; //保持张嘴
+                    targetMinFrame = 3; //保持露齿
                     DashingAI();
                     break;
                 case EyeState.PostDash:
-                    targetMinFrame = 2; //保持张嘴一小段时间
+                    targetMinFrame = 3; //保持露齿一小段时间
                     PostDashAI();
                     break;
                 case EyeState.Returning:
-                    targetMinFrame = 0; //开始闭嘴
+                    targetMinFrame = 0; //眼膜重新合拢
                     ReturningAI();
                     break;
             }
@@ -232,9 +231,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //平滑更新帧动画
             UpdateFrameTransition();
 
-            //生成粒子效果
-            if (Main.rand.NextBool(isDashing ? 2 : 4)) {
-                SpawnTrailParticles();
+            //演出计时与包络
+            UpdateVisualEnvelopes();
+
+            //粒子层：凝视期只有低频雾丝脱落，安静是观察期的灵魂；冲刺喷发独立
+            if (!VaultUtils.isServer) {
+                if (isDashing) {
+                    if (Main.rand.NextBool(2)) {
+                        SpawnDashParticles();
+                    }
+                }
+                else if (Main.rand.NextBool(13)) {
+                    SpawnIdleMist();
+                }
             }
 
             //淡出效果
@@ -243,16 +252,106 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }
         }
 
-        /// <summary>帧过渡 tick</summary>
+        /// <summary>入场/退场/闪帧/挤压拉伸/绸带的逐帧演出簿记</summary>
+        private void UpdateVisualEnvelopes() {
+            if (spawnTimer < 240) {
+                spawnTimer++;
+            }
+            if (irisFlash > 0) {
+                irisFlash--;
+            }
+
+            //挤压拉伸：蓄力沿冲刺向压缩，冲刺随速度拉长，其余回弹
+            float stretchTarget = 1f;
+            if (AIState == (float)EyeState.PreDash) {
+                stretchTarget = 0.88f;
+            }
+            else if (isDashing) {
+                stretchTarget = 1f + MathHelper.Clamp(Projectile.velocity.Length() / 26f, 0f, 1f) * 0.30f;
+            }
+            else if (AIState == (float)EyeState.PostDash) {
+                stretchTarget = 0.95f;
+            }
+            stretchAlong = MathHelper.Lerp(stretchAlong, stretchTarget, 0.28f);
+
+            //瞳孔紧张度：蓄力/冲刺散大，凝视期回落
+            float strainTarget = AIState == (float)EyeState.PreDash || isDashing ? 1f
+                : AIState == (float)EyeState.PostDash ? 0.45f : 0f;
+            pupilStrain = MathHelper.Lerp(pupilStrain, strainTarget, 0.16f);
+
+            //雾丝公转：缓慢基速 + 移动耦合
+            wispPhase += 0.006f + Projectile.velocity.Length() * 0.0004f;
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+
+            //虹膜微光的暗红点光：唯一光源，闪帧时略强
+            float lightMul = irisFlash > 0 ? 0.30f : 0.09f;
+            Lighting.AddLight(Projectile.Center, lightMul, lightMul * 0.16f, lightMul * 0.18f);
+
+            //入场：暗雾中展开眼睑
+            if (spawnTimer == 1) {
+                FishCthuluVFX.MistPuff(Projectile.Center, 3, 0.9f);
+                FishCthuluVFX.DarkRing(Projectile.Center, Projectile.velocity, 0.5f);
+            }
+            //退场：闭睑前释放雾丝，禁 pop-out
+            if (Projectile.timeLeft == 28) {
+                FishCthuluVFX.MistPuff(Projectile.Center, 3, 0.9f);
+            }
+
+            UpdateRibbon();
+        }
+
+        /// <summary>冲刺绸带点列：冲刺期录头，结束后尾端先蚀 + 渐隐（残迹比冲刺活得久）</summary>
+        private void UpdateRibbon() {
+            if (isDashing) {
+                ribbonFade = Math.Min(1f, ribbonFade + 0.25f);
+                //头点锚在体后：绸带从眼球身后拖出，不盖脸
+                Vector2 head = Projectile.Center
+                    - Projectile.velocity.SafeNormalize(Vector2.UnitX) * 16f * Projectile.scale;
+                if (ribbonPts.Count == 0 || Vector2.DistanceSquared(ribbonPts[0], head) > 16f) {
+                    ribbonPts.Insert(0, head);
+                }
+                else {
+                    ribbonPts[0] = head;
+                }
+                if (ribbonPts.Count > RibbonMaxPts) {
+                    ribbonPts.RemoveAt(ribbonPts.Count - 1);
+                }
+            }
+            else {
+                ribbonFade = Math.Max(0f, ribbonFade - 0.05f);
+                if (ribbonPts.Count > 0) {
+                    ribbonPts.RemoveAt(ribbonPts.Count - 1);
+                    if (ribbonPts.Count > 12) {
+                        ribbonPts.RemoveAt(ribbonPts.Count - 1);
+                    }
+                }
+                if (ribbonFade <= 0f && ribbonPts.Count > 0) {
+                    ribbonPts.Clear();
+                }
+            }
+        }
+
+        /// <summary>帧过渡 tick：撕膜后定格獠牙初帧，其余状态平滑过渡</summary>
         private void UpdateFrameTransition() {
+            //撕膜定帧：獠牙初帧冻结数帧，变形读作一次性事件而非渐变
+            if (tearHold > 0) {
+                tearHold--;
+                frameTransition = 1f;
+                Projectile.frame = 3;
+                return;
+            }
+
             //计算当前帧过渡进度
-            float targetTransition = targetMinFrame / 2f; //0或1 (因为minFrame是0或2)
+            float targetTransition = targetMinFrame / 3f; //0或1 (因为minFrame是0或3)
             frameTransition = MathHelper.Lerp(frameTransition, targetTransition, TransitionSpeed);
 
             //根据过渡进度计算实际的最小帧
-            int actualMinFrame = (int)Math.Round(frameTransition * 2);
+            int actualMinFrame = (int)Math.Round(frameTransition * 3);
 
-            //更新帧动画（在minFrame和minFrame+1之间循环）
+            //更新帧动画（在minFrame和minFrame+2之间循环）
             VaultUtils.ClockFrame(ref Projectile.frame, 5, actualMinFrame + 2, actualMinFrame);
         }
 
@@ -345,6 +444,28 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //保持朝向冲刺方向
             desiredRotation = dashDirection.ToRotation();
+
+            //撕膜拍：蓄力中点眼膜裂开露齿，定帧 + 碎屑 + 微型咆哮
+            if (!tearDone && AITimer >= PreDashTime / 2) {
+                tearDone = true;
+                frameTransition = 1f;
+                tearHold = 8;
+                irisFlash = 2;
+                if (!VaultUtils.isServer) {
+                    FishCthuluVFX.FleshBurst(Projectile.Center + dashDirection * 10f, dashDirection, 7);
+                    FishCthuluVFX.BloodSpray(Projectile.Center, dashDirection, 3, 4.5f);
+                    FishCthuluVFX.MistPuff(Projectile.Center, 2, 0.8f);
+                    SoundEngine.PlaySound(SoundID.ForceRoar with {
+                        Volume = 0.28f,
+                        Pitch = 0.62f,
+                        MaxInstances = 3
+                    }, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.NPCHit18 with {
+                        Volume = 0.5f,
+                        Pitch = -0.3f
+                    }, Projectile.Center);
+                }
+            }
 
             //蓄力完成，进入冲刺
             if (AITimer >= PreDashTime) {
@@ -439,6 +560,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             AITimer = 0;
             totalDashes++;
             noActionTimer = 0; //重置无行动计时器
+            tearDone = false; //本次蓄力的撕膜拍待触发
 
             //计算冲刺方向（预判目标移动）
             float predictionFactor = forced ? 25f : 20f; //强制冲刺时预判更多
@@ -488,11 +610,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
                 //保持朝向为冲刺方向
                 desiredRotation = dashDirection.ToRotation();
-
-                //冲刺粒子特效
-                if (Main.rand.NextBool(2)) {
-                    SpawnDashParticles();
-                }
             }
             else {
                 //冲刺结束，进入后摇恢复状态
@@ -593,47 +710,49 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         private void UpdatePupilRotation() {
-            //瞳孔朝向最近的敌人或鼠标
-            if (targetNPC >= 0 && Main.npc[targetNPC].active) {
-                Vector2 toTarget = Main.npc[targetNPC].Center - Projectile.Center;
-                pupilRotation = toTarget.ToRotation();
+            //瞳孔焦点：最近的敌人或鼠标
+            Vector2 focus = targetNPC >= 0 && Main.npc[targetNPC].active
+                ? Main.npc[targetNPC].Center
+                : Main.MouseWorld;
+            float targetRot = (focus - Projectile.Center).ToRotation();
+
+            //跳视：大偏差瞬时到位、小偏差缓跟，读作活物眼动而非匀速云台
+            float diff = MathHelper.WrapAngle(targetRot - pupilRotation);
+            if (Math.Abs(diff) > 0.55f) {
+                pupilRotation = targetRot;
             }
             else {
-                Vector2 toMouse = Main.MouseWorld - Projectile.Center;
-                pupilRotation = toMouse.ToRotation();
+                pupilRotation += diff * 0.30f;
             }
+
+            //凝视微颤：环绕观察期偶发的眼神颤动
+            if (AIState == (float)EyeState.Orbiting && Main.rand.NextBool(26)) {
+                pupilTremor = Main.rand.NextVector2Circular(1.7f, 1.7f);
+            }
+            pupilTremor *= 0.86f;
         }
 
-        private void SpawnTrailParticles() {
-            //轨迹粒子
-            Vector2 particleVelocity = -Projectile.velocity * Main.rand.NextFloat(0.2f, 0.4f);
-
-            Dust trail = Dust.NewDustPerfect(
-                Projectile.Center + Main.rand.NextVector2Circular(10f, 10f),
-                DustID.Blood,
-                particleVelocity,
-                100,
-                new Color(200, 50, 50),
-                Main.rand.NextFloat(1f, 1.5f)
-            );
-            trail.noGravity = true;
-            trail.fadeIn = 1f;
+        /// <summary>凝视期脱落的雾丝：从体缘剥离，切向缓漂</summary>
+        private void SpawnIdleMist() {
+            Vector2 off = Main.rand.NextVector2Unit() * Main.rand.NextFloat(14f, 24f);
+            PRTLoader.NewParticle<PRT_FishCthuluMist>(Projectile.Center + off
+                , off.SafeNormalize(Vector2.UnitX).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.2f, 0.5f)
+                , FishCthuluVFX.VoidMist, Main.rand.NextFloat(0.5f, 0.8f))
+                ?.Configure(Main.rand.Next(40, 60));
         }
 
+        /// <summary>冲刺喷发：尾端雾缕回卷 + 偶发暗血珠甩落，绸带承担主尾流</summary>
         private void SpawnDashParticles() {
-            //冲刺粒子特效
-            for (int i = 0; i < 2; i++) {
-                Vector2 particleVelocity = -Projectile.velocity * Main.rand.NextFloat(0.3f, 0.6f);
-
-                Dust dash = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(15f, 15f),
-                    DustID.Shadowflame,
-                    particleVelocity,
-                    100,
-                    default,
-                    Main.rand.NextFloat(1.3f, 2f)
-                );
-                dash.noGravity = true;
+            Vector2 tail = Projectile.Center - Projectile.velocity.SafeNormalize(Vector2.UnitX) * 18f;
+            PRTLoader.NewParticle<PRT_FishCthuluMist>(tail + Main.rand.NextVector2Circular(8f, 8f)
+                , -Projectile.velocity * Main.rand.NextFloat(0.06f, 0.12f)
+                , FishCthuluVFX.VoidMist, Main.rand.NextFloat(0.55f, 0.85f))
+                ?.Configure(Main.rand.Next(22, 34));
+            if (Main.rand.NextBool(3)) {
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(tail
+                    , -Projectile.velocity.RotatedByRandom(0.4f) * 0.15f
+                    , Color.Lerp(FishCthuluVFX.FleshMid, FishCthuluVFX.FleshDark, Main.rand.NextFloat(0.5f))
+                    , Main.rand.NextFloat(0.5f, 0.75f))?.Configure(Main.rand.Next(14, 22));
             }
         }
 
@@ -646,36 +765,20 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //重置无行动计时器（击中算有效行动）
             noActionTimer = 0;
 
-            //血液粒子
-            for (int i = 0; i < 10; i++) {
-                Vector2 particleVel = Main.rand.NextVector2Circular(5f, 5f);
-                Dust blood = Dust.NewDustDirect(
-                    target.position,
-                    target.width,
-                    target.height,
-                    DustID.Blood,
-                    particleVel.X,
-                    particleVel.Y,
-                    100,
-                    default,
-                    1.8f
-                );
-                blood.noGravity = true;
-            }
-
-            //暗影粒子
-            for (int i = 0; i < 6; i++) {
-                Dust shadow = Dust.NewDustDirect(
-                    target.position,
-                    target.width,
-                    target.height,
-                    DustID.Shadowflame,
-                    0, -2f,
-                    100,
-                    default,
-                    1.5f
-                );
-                shadow.noGravity = true;
+            //撕咬迸发：暗血飞沫锥 + 眼膜碎屑 + 雾涌 + 定向暗环
+            irisFlash = 2;
+            if (!VaultUtils.isServer) {
+                Vector2 biteDir = isDashing || AIState == (float)EyeState.PreDash
+                    ? dashDirection
+                    : (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX);
+                FishCthuluVFX.BloodSpray(target.Center, biteDir, 6, 7f);
+                FishCthuluVFX.FleshBurst(target.Center, biteDir, 3);
+                FishCthuluVFX.MistPuff(target.Center, 2, 0.9f, biteDir * 1.2f);
+                FishCthuluVFX.DarkRing(target.Center, biteDir, 0.7f);
+                SoundEngine.PlaySound(SoundID.NPCHit18 with {
+                    Volume = 0.45f,
+                    Pitch = -0.1f
+                }, target.Center);
             }
 
             //冲刺击中时造成debuff
@@ -707,106 +810,182 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Vector2 origin = sourceRect.Size() / 2f;
 
             float fadeAlpha = 1f - Projectile.alpha / 255f;
-
-            //绘制残影轨迹
-            bool showTrail = isDashing || AIState == (float)EyeState.PreDash || AIState == (float)EyeState.PostDash;
-            int trailLength = showTrail ? Projectile.oldPos.Length : Projectile.oldPos.Length / 2;
-
-            for (int i = 1; i < trailLength; i++) {
-                if (Projectile.oldPos[i] == Vector2.Zero) continue;
-
-                float trailProgress = 1f - i / (float)trailLength;
-                float trailAlpha = trailProgress * 0.5f * fadeAlpha;
-
-                if (showTrail) {
-                    trailAlpha *= 1.5f; //冲刺相关状态时更亮
-                }
-
-                Color trailColor = new Color(200, 50, 50) * trailAlpha;
-
-                Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-                float rotation = Projectile.oldRot[i] - MathHelper.PiOver2;
-
-                Main.EntitySpriteDraw(
-                    texture,
-                    drawPos,
-                    sourceRect,
-                    trailColor,
-                    rotation,
-                    origin,
-                    Projectile.scale * 0.6f * (0.8f + trailProgress * 0.2f),
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //绘制主体眼球
             Vector2 mainDrawPos = Projectile.Center - Main.screenPosition;
-            Color mainColor = lightColor * fadeAlpha;
 
-            Main.EntitySpriteDraw(
-                texture,
-                mainDrawPos,
-                sourceRect,
-                mainColor,
-                Projectile.rotation - MathHelper.PiOver2,
-                origin,
-                Projectile.scale * 0.6f,
-                SpriteEffects.None,
-                0
-            );
+            //入场/退场包络
+            float matT = MathHelper.Clamp(spawnTimer / (float)MaterializeTime, 0f, 1f);
+            float deathT = Projectile.timeLeft < 30 ? 1f - Projectile.timeLeft / 30f : 0f;
 
-            //发光效果
-            if (showTrail || isOrbiting) {
-                Color glowColor = new Color(255, 100, 100, 0) * 0.4f * fadeAlpha;
+            //夹心下层：两条雾丝画在眼球之下
+            DrawVoidWisps(mainDrawPos, fadeAlpha, matT, true);
 
-                if (isDashing) {
-                    glowColor *= 1.5f; //冲刺时更亮
+            //冲刺残影：暗肉色半透明鬼影，只在冲刺三态出现，凝视期静止无残影
+            bool dashPhases = isDashing || AIState == (float)EyeState.PreDash || AIState == (float)EyeState.PostDash;
+            if (dashPhases) {
+                for (int i = 2; i < Projectile.oldPos.Length; i += 3) {
+                    if (Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    float p = 1f - i / (float)Projectile.oldPos.Length;
+                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
+                    Color ghostCol = (FishCthuluVFX.FleshDark with { A = 150 }) * (p * 0.42f * fadeAlpha);
+                    Main.EntitySpriteDraw(texture, ghostPos, sourceRect, ghostCol
+                        , Projectile.oldRot[i] - MathHelper.PiOver2, origin
+                        , Projectile.scale * 0.6f * (0.72f + p * 0.24f), SpriteEffects.None, 0);
                 }
-
-                Main.EntitySpriteDraw(
-                    texture,
-                    mainDrawPos,
-                    sourceRect,
-                    glowColor,
-                    Projectile.rotation - MathHelper.PiOver2,
-                    origin,
-                    Projectile.scale * 0.7f,
-                    SpriteEffects.None,
-                    0
-                );
             }
 
-            //绘制瞳孔
-            DrawPupil(mainDrawPos, fadeAlpha);
+            //蓄力后坐偏移：撕膜期附带微幅颤抖
+            Vector2 anticipationOff = Vector2.Zero;
+            if (AIState == (float)EyeState.PreDash) {
+                float preT = MathHelper.Clamp(AITimer / (float)PreDashTime, 0f, 1f);
+                anticipationOff = -dashDirection * 5f * preT;
+                if (tearHold > 0) {
+                    anticipationOff += Main.rand.NextVector2Circular(0.8f, 0.8f);
+                }
+            }
+
+            //本体：压暗偏紫的血肉瞳体 + 挤压拉伸
+            Vector2 squash = ComputeBodySquash(matT, deathT);
+            Color bodyCol = new Color((int)(lightColor.R * 0.70f), (int)(lightColor.G * 0.58f)
+                , (int)(lightColor.B * 0.76f), 255) * fadeAlpha;
+            Main.EntitySpriteDraw(texture, mainDrawPos + anticipationOff, sourceRect, bodyCol
+                , Projectile.rotation - MathHelper.PiOver2, origin
+                , new Vector2(0.6f * squash.X, 0.6f * squash.Y) * Projectile.scale, SpriteEffects.None, 0);
+
+            //夹心上层：一条低透明雾丝盖在眼球上，形成体积包裹
+            DrawVoidWisps(mainDrawPos, fadeAlpha, matT, false);
+
+            //瞳孔与虹膜：追踪是凝视的灵魂；撕膜露齿后眼已成巨口，瞳孔随过渡淡出
+            float pupilFade = MathHelper.Clamp(1f - frameTransition * 1.6f, 0f, 1f);
+            DrawPupil(mainDrawPos + anticipationOff, fadeAlpha * matT * (1f - deathT) * pupilFade);
+
+            //撕膜/撕咬过冲：≤2 帧的虹膜色尖刺闪，唯一允许的瞬时亮点
+            if (irisFlash > 0) {
+                Texture2D tear = CWRAsset.TearSpread01?.Value;
+                if (tear != null) {
+                    Main.EntitySpriteDraw(tear, mainDrawPos + anticipationOff, null
+                        , (FishCthuluVFX.IrisRed with { A = 0 }) * (0.75f * fadeAlpha)
+                        , pupilRotation, tear.Size() / 2f, 0.55f * Projectile.scale, SpriteEffects.None, 0);
+                }
+            }
 
             return false;
         }
 
-        private void DrawPupil(Vector2 drawPos, float alpha) {
-            //使用简单的圆形表示瞳孔
-            Texture2D pupilTex = TextureAssets.Extra[ExtrasID.SharpTears].Value;
+        /// <summary>体缩放向量：x=横向 y=沿朝向；呼吸 + 蓄力压缩/冲刺拉伸 + 开闭睑</summary>
+        private Vector2 ComputeBodySquash(float matT, float deathT) {
+            float breath = MathF.Sin(Main.GlobalTimeWrappedHourly * 2.2f + Projectile.whoAmI * 1.71f) * 0.03f;
+            float along = stretchAlong * (1f - breath);
+            float across = (1f - (stretchAlong - 1f) * 0.6f) * (1f + breath);
 
-            //瞳孔偏移（朝向目标）
-            Vector2 pupilOffset = pupilRotation.ToRotationVector2() * 8f;
+            //入场：眼睑从缝隙弹开
+            across *= MathHelper.Lerp(0.10f, 1f, FishCthuluVFX.EaseOutBack(matT));
+            along *= MathHelper.Lerp(1.12f, 1f, FishCthuluVFX.SmoothStep01(matT));
 
-            Color pupilColor = new Color(50, 10, 10) * alpha;
-
-            Main.EntitySpriteDraw(
-                pupilTex,
-                drawPos + pupilOffset,
-                null,
-                pupilColor,
-                0f,
-                pupilTex.Size() / 2f,
-                0.3f,
-                SpriteEffects.None,
-                0
-            );
+            //退场：合拢成缝再消失，禁 pop-out
+            if (deathT > 0f) {
+                across *= MathHelper.Lerp(1f, 0.07f, FishCthuluVFX.SmoothStep01(deathT));
+                along *= 1f + 0.08f * deathT;
+            }
+            return new Vector2(across, along);
         }
 
-        public override Color? GetAlpha(Color lightColor) {
-            return new Color(255, 200, 200, 200) * (1f - Projectile.alpha / 255f);
+        /// <summary>虚空雾丝：贴体公转的暗紫雾带，under 画体下两条、体上一条低透明</summary>
+        private void DrawVoidWisps(Vector2 drawPos, float fade, float matT, bool underLayer) {
+            Texture2D smoke = CWRAsset.SmokeSheet01?.Value;
+            if (smoke == null || fade <= 0.01f || matT <= 0.05f) {
+                return;
+            }
+            float t = Main.GlobalTimeWrappedHourly;
+            int wispCount = underLayer ? 2 : 1;
+            for (int i = 0; i < wispCount; i++) {
+                int idx = underLayer ? i : 2;
+                float phase = wispPhase + idx * (MathHelper.TwoPi / 3f);
+                float radius = (24f + MathF.Sin(t * 0.8f + idx * 2.1f) * 7f) * Projectile.scale * matT;
+                Vector2 off = phase.ToRotationVector2() * radius;
+                //冲刺时雾丝被拖到体后
+                if (isDashing) {
+                    off = off * 0.5f - Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f;
+                }
+                int frameIdx = (Projectile.whoAmI + idx * 7) % 4;
+                Rectangle fr = new(frameIdx % 2 * 512, frameIdx / 2 * 512, 512, 512);
+                Vector2 fo = fr.Size() / 2f;
+                float alpha = (underLayer ? 0.35f : 0.20f) * fade * matT;
+                float rot = phase * 0.5f + t * 0.25f;
+                float scl = (0.16f + MathF.Sin(t * 1.1f + idx) * 0.02f) * Projectile.scale;
+                //外圈更暗更大 + 中层：两层异径异色压暗，不发光
+                Main.EntitySpriteDraw(smoke, drawPos + off, fr, FishCthuluVFX.VoidDark * (alpha * 0.7f)
+                    , rot * 0.9f, fo, scl * 1.3f, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(smoke, drawPos + off, fr, FishCthuluVFX.VoidMist * alpha
+                    , rot, fo, scl, SpriteEffects.None, 0);
+            }
+        }
+
+        /// <summary>瞳孔（近黑实心）+ 虹膜微光（小尺度暗红加色），偏移实时追踪焦点</summary>
+        private void DrawPupil(Vector2 drawPos, float fade) {
+            Texture2D dot = CWRAsset.Extra_98?.Value;
+            if (dot == null || fade <= 0.01f) {
+                return;
+            }
+            Vector2 facing = Projectile.rotation.ToRotationVector2();
+            Vector2 anchor = drawPos + facing * 13f * Projectile.scale;
+            Vector2 fine = pupilRotation.ToRotationVector2() * (3.5f + pupilStrain * 3f) + pupilTremor;
+            Vector2 pupilPos = anchor + fine;
+            Vector2 o = dot.Size() * 0.5f;
+
+            //虹膜微光：呼吸脉动的暗红，紧张与闪帧时增幅，永不到白
+            float pulse = 0.85f + MathF.Sin(Main.GlobalTimeWrappedHourly * 2.6f + Projectile.whoAmI) * 0.15f;
+            float irisAlpha = (0.30f + pupilStrain * 0.18f + (irisFlash > 0 ? 0.55f : 0f)) * pulse * fade;
+            Main.EntitySpriteDraw(dot, pupilPos, null, (FishCthuluVFX.IrisRed with { A = 0 }) * irisAlpha
+                , 0f, o, 0.34f + pupilStrain * 0.05f, SpriteEffects.None, 0);
+
+            //瞳墨：紧张时散大
+            Main.EntitySpriteDraw(dot, pupilPos, null, FishCthuluVFX.PupilInk * (0.92f * fade)
+                , 0f, o, 0.16f + pupilStrain * 0.06f, SpriteEffects.None, 0);
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ || ribbonPts.Count < 3 || ribbonFade <= 0.01f) {
+                return;
+            }
+            Effect fx = FishCthuluAssets.FishCthuluRibbon;
+            if (fx == null || CWRAsset.PerlinNoise?.Value == null) {
+                return;
+            }
+
+            float fadeAlpha = 1f - Projectile.alpha / 255f;
+            int count = ribbonPts.Count;
+            float maxWidth = 15f * Projectile.scale;
+            var verts = new VertexPositionColorTexture[count * 2];
+            for (int i = 0; i < count; i++) {
+                float t = i / (float)(count - 1);
+                Vector2 tangent = i < count - 1
+                    ? (ribbonPts[i] - ribbonPts[i + 1]).SafeNormalize(Vector2.UnitX)
+                    : (ribbonPts[i - 1] - ribbonPts[i]).SafeNormalize(Vector2.UnitX);
+                Vector2 normal = new(-tangent.Y, tangent.X);
+                float width = maxWidth * (0.55f + 0.45f * MathHelper.Clamp(t / 0.14f, 0f, 1f))
+                    * MathF.Pow(1f - t, 0.78f);
+                verts[i * 2] = new VertexPositionColorTexture((ribbonPts[i] + normal * width).ToVector3()
+                    , Color.White, new Vector2(t, 0f));
+                verts[i * 2 + 1] = new VertexPositionColorTexture((ribbonPts[i] - normal * width).ToVector3()
+                    , Color.White, new Vector2(t, 1f));
+            }
+
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            BlendState prevBlend = device.BlendState;
+            RasterizerState prevRaster = device.RasterizerState;
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+
+            FishCthuluVFX.ApplyRibbon(fx, Projectile.whoAmI * 0.61f % 1f, ribbonFade * fadeAlpha);
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, verts.Length - 2);
+            }
+
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
         }
     }
 }

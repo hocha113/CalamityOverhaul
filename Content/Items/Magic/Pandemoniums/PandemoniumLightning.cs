@@ -11,7 +11,7 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     /// <summary>闪电链，敌间跳跃闪电球</summary>
     internal class PandemoniumLightning : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private ref float ChainCount => ref Projectile.ai[0];
         private ref float TierLevel => ref Projectile.ai[1];

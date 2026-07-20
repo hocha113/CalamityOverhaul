@@ -1,18 +1,21 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Stones;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
+using InnoVault.Trails;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 {
-    /// <summary>热带梭鱼技能，边缘鱼群横穿屏幕</summary>
+    /// <summary>热带梭鱼技能，边缘鱼群横穿屏幕：涌动预告 → 高速呼啸横穿 → 水雾气泡余波</summary>
     internal class FishTropicalBarracuda : FishSkill
     {
         public override int UnlockFishID => ItemID.TropicalBarracuda;
@@ -46,6 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int edge = Main.rand.Next(4); //0=左, 1=右, 2=上, 3=下
             Vector2 spawnSide = GetSpawnEdge(edge, player);
             Vector2 targetSide = GetTargetEdge(edge, player);
+            Vector2 travelDir = (targetSide - spawnSide).SafeNormalize(Vector2.UnitX);
 
             for (int i = 0; i < schoolSize; i++) {
                 //计算生成位置（沿边缘散布）
@@ -55,17 +59,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 //计算速度方向
                 Vector2 direction = (targetPos - spawnPos).SafeNormalize(Vector2.Zero);
                 float speed = Main.rand.NextFloat(20f, 28f);
-                Vector2 velocity = direction * speed;
 
+                //预告段慢漂进场，冲刺速度写在 ai2，出闸帧一口气拉满
                 int barracudaProj = Projectile.NewProjectile(
                     source,
                     spawnPos,
-                    velocity,
+                    direction * 0.9f,
                     ModContent.ProjectileType<TropicalBarracudaProjectile>(),
                     (int)(damage * (1f + HalibutData.GetDomainLayer() * 0.25f)),
                     knockback * 1.2f,
                     player.whoAmI,
-                    ai0: i / (float)schoolSize //颜色偏移
+                    ai0: i / (float)schoolSize, //条纹身份与出闸错拍种子
+                    ai2: speed
                 );
 
                 if (barracudaProj >= 0) {
@@ -73,19 +78,30 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //生成音效
-            SoundEngine.PlaySound(SoundID.Item8 with {
-                Volume = 0.5f,
-                Pitch = 0.3f
-            }, player.Center);
+            //入场侧屏缘涌动预告：水波线渐强 + 内漂气泡，给玩家约 0.37s 预期
+            Vector2 lineCenter = GetVisibleEdgeCenter(edge);
+            Vector2 tangent = edge <= 1 ? Vector2.UnitY : Vector2.UnitX;
+            FishBarracudaVFX.EdgeTelegraph(lineCenter, tangent, travelDir, 560f, TropicalBarracudaProjectile.TelegraphTicks);
 
+            //低沉水涌：预告拍唯一的声音，大动静留给破水帧
             SoundEngine.PlaySound(SoundID.Splash with {
-                Volume = 0.4f,
-                Pitch = 0.5f
-            }, player.Center);
+                Volume = 0.55f,
+                Pitch = -0.5f
+            }, lineCenter);
+        }
 
-            //生成入水特效
-            SpawnSchoolEffect(spawnSide);
+        /// <summary>入场边缘在屏内的可见锚线中心（内缩 30px）</summary>
+        private Vector2 GetVisibleEdgeCenter(int edge) {
+            Vector2 screenCenter = Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
+            const float inset = 30f;
+
+            return edge switch {
+                0 => new Vector2(Main.screenPosition.X + inset, screenCenter.Y),
+                1 => new Vector2(Main.screenPosition.X + Main.screenWidth - inset, screenCenter.Y),
+                2 => new Vector2(screenCenter.X, Main.screenPosition.Y + inset),
+                3 => new Vector2(screenCenter.X, Main.screenPosition.Y + Main.screenHeight - inset),
+                _ => screenCenter
+            };
         }
 
         private Vector2 GetSpawnEdge(int edge, Player player) {
@@ -124,59 +140,45 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 _ => basePos
             };
         }
-
-        private void SpawnSchoolEffect(Vector2 position) {
-            //水花飞溅
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-                Dust splash = Dust.NewDustPerfect(
-                    position,
-                    DustID.Water,
-                    velocity,
-                    100,
-                    new Color(100, 200, 255),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                splash.noGravity = true;
-                splash.fadeIn = 1.3f;
-            }
-
-            //热带色彩粒子
-            for (int i = 0; i < 10; i++) {
-                float hue = Main.rand.NextFloat(1f);
-                Color tropicalColor = Main.hslToRgb(hue, 1f, 0.6f);
-
-                PRTLoader.NewParticle<PRT_Light>(
-                    position,
-                    Main.rand.NextVector2Circular(4f, 4f),
-                    tropicalColor,
-                    0.6f
-                ).Configure(25, hueShift: 0.02f);
-            }
-        }
     }
 
     /// <summary>
-    /// 热带梭鱼弹幕
+    /// 热带梭鱼弹幕：三拍屏幕级横穿。<br/>
+    /// 预告段屏外慢漂（无伤害）→ 出闸帧单帧满速、鱼群错拍破水 → 呼啸段条纹残影链 +
+    /// 白沫射流尾迹 + 沿途水雾气泡（余波活得比鱼群久）→ 屏内死亡化水收场。<br/>
+    /// ai[0]=条纹身份/错拍种子 ai[1]=计时（每 update 递增） ai[2]=冲刺速度
     /// </summary>
-    internal class TropicalBarracudaProjectile : ModProjectile
+    internal class TropicalBarracudaProjectile : ModProjectile, IPrimitiveDrawable
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.TropicalBarracuda;
 
         private ref float ColorOffset => ref Projectile.ai[0];
         private ref float Timer => ref Projectile.ai[1];
+        private ref float RushSpeed => ref Projectile.ai[2];
 
         private float swimWave = 0f;
-        private float baseHue = 0f;
-        private readonly List<Vector2> trailPositions = new();
-        private const int MaxTrailLength = 20;
+        private Trail trail;
+
+        //extraUpdates=2 三倍 update，时间常量按 update 计
+        private const int UpdatesPerTick = 3;
+        /// <summary>预告拍时长（tick），涌动线寿命与出闸时刻共用</summary>
+        public const int TelegraphTicks = 22;
+        private const int TelegraphUpdates = TelegraphTicks * UpdatesPerTick;
+        private const int StaggerUpdates = 2; //鱼群错拍出闸间隔
 
         //穿梭参数
         private const float MaxSpeed = 30f;
         private const float Acceleration = 0.5f;
 
+        /// <summary>ai0 派生的伪序号：条纹轮换与错拍出闸种子</summary>
+        private int PseudoIndex => (int)(ColorOffset * 16f);
+        private int ReleaseUpdate => TelegraphUpdates + PseudoIndex * StaggerUpdates;
+        private bool Rushing => Timer >= ReleaseUpdate;
+        private Color StripeColor => FishBarracudaVFX.Stripe(PseudoIndex);
+        private float SpeedT => MathHelper.Clamp((Projectile.velocity.Length() - 6f) / 24f, 0f, 1f);
+
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -193,12 +195,23 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             Projectile.extraUpdates = 2;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
-
-            baseHue = Main.rand.NextFloat(1f);
         }
+
+        //预告段不参与伤害：鱼还没进场
+        public override bool? CanDamage() => Rushing ? null : false;
 
         public override void AI() {
             Timer++;
+
+            //预告段：屏外顺出生速度慢漂压进，等待出闸
+            if (Timer < ReleaseUpdate) {
+                return;
+            }
+            if (Timer == ReleaseUpdate) {
+                ReleaseRush();
+                return;
+            }
+
             swimWave += 0.25f;
 
             //加速到最大速度
@@ -230,83 +243,105 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 }
             }
 
-            //更新拖尾
-            UpdateTrail();
+            //条纹色光照：亮度随速度门控
+            Lighting.AddLight(Projectile.Center, StripeColor.ToVector3() * (0.3f + 0.5f * SpeedT));
 
-            //热带色彩光照
-            float hue = (baseHue + ColorOffset + Main.GlobalTimeWrappedHourly * 0.3f) % 1f;
-            Color lightColor = Main.hslToRgb(hue, 1f, 0.6f);
-            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * 0.8f);
-
-            //游动轨迹粒子
-            if (Main.rand.NextBool(5)) {
-                SpawnSwimParticle(hue);
+            //呼啸甩尾：水珠受重力坠落、气泡与悬雾缓落，余波活得比鱼群久
+            //extraUpdates=2 三倍抽签，几率按 update 折算防全群刷屏
+            if (!Main.dedServ) {
+                if (Main.rand.NextBool(9)) {
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(
+                        Projectile.Center + Main.rand.NextVector2Circular(8f, 8f)
+                        , -Projectile.velocity * 0.08f + Main.rand.NextVector2Circular(1.2f, 1.2f)
+                        , Main.rand.NextBool(3) ? FishBarracudaVFX.Foam : FishBarracudaVFX.Turquoise
+                        , Main.rand.NextFloat(0.4f, 0.65f))?.Configure(Main.rand.Next(20, 34), 0.1f, 0.94f);
+                }
+                if (Main.rand.NextBool(18)) {
+                    PRTLoader.NewParticle<PRT_FishBarracudaBubble>(
+                        Projectile.Center - Projectile.velocity * 0.5f + Main.rand.NextVector2Circular(10f, 10f)
+                        , -Projectile.velocity * 0.02f + Main.rand.NextVector2Circular(0.4f, 0.4f)
+                        , FishBarracudaVFX.Foam, Main.rand.NextFloat(0.07f, 0.13f))?.Configure(Main.rand.Next(24, 44));
+                }
+                if (Main.rand.NextBool(20)) {
+                    PRTLoader.NewParticle<PRT_Smoke>(
+                        Projectile.Center - Projectile.velocity * 0.8f
+                        , -Projectile.velocity * 0.015f + Main.rand.NextVector2Circular(0.4f, 0.4f)
+                        , Color.Lerp(FishBarracudaVFX.SeaDeep, FishBarracudaVFX.Turquoise, 0.35f), 0.14f)
+                        ?.Configure(Main.rand.Next(30, 46), 0.22f, 0.01f);
+                }
             }
 
-            //离开屏幕后消失
-            if (IsOffScreen()) {
+            //离开屏幕后消失（出闸站稳后才检查，预告段与破水帧免死）
+            if (Timer > ReleaseUpdate + 40 && !OnScreen(200f)) {
                 Projectile.Kill();
             }
         }
 
-        private void UpdateTrail() {
-            trailPositions.Insert(0, Projectile.Center);
-            if (trailPositions.Count > MaxTrailLength) {
-                trailPositions.RemoveAt(trailPositions.Count - 1);
+        /// <summary>出闸帧：单帧拉满冲刺速度；头鱼补齐屏幕级三层破水声与一次顺向克制震屏</summary>
+        private void ReleaseRush() {
+            float speed = MathHelper.Clamp(RushSpeed, 12f, 34f);
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Projectile.velocity = dir * speed;
+            Projectile.rotation = Projectile.velocity.ToRotation();
+
+            //冲刷拖尾缓存：预告漂移的旧位置不参与射流条带
+            for (int i = 0; i < Projectile.oldPos.Length; i++) {
+                Projectile.oldPos[i] = Projectile.position;
+            }
+
+            //每条鱼自己的破水：小水花 + 身后短沫痕 + 压低的破空
+            SoundEngine.PlaySound(SoundID.Item71 with {
+                Volume = 0.22f,
+                Pitch = 0.5f,
+                MaxInstances = 3
+            }, Projectile.Center);
+            if (!Main.dedServ) {
+                FishBarracudaVFX.BurstSplash(Projectile.Center, dir, 0.5f);
+                PRTLoader.NewParticle<PRT_FishBarracudaWake>(Projectile.Center, Vector2.Zero, FishBarracudaVFX.Turquoise, 1f)
+                    ?.Configure(Projectile.Center + dir * 30f, Projectile.Center - dir * 70f, 9f, 10);
+            }
+
+            if (PseudoIndex != 0) {
+                return;
+            }
+            //头鱼代表整群：三层破水声对齐出闸帧
+            SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.75f, Pitch = 0.1f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Splash with { Volume = 0.8f, Pitch = 0.4f }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.SplashWeak with { Volume = 0.6f, Pitch = -0.25f }, Projectile.Center);
+            if (!Main.dedServ) {
+                FishBarracudaVFX.BurstSplash(Projectile.Center, dir, 1.1f);
+                //顺行进方向的一次克制震屏，只震拥有者视角
+                if (Main.myPlayer == Projectile.owner && CWRServerConfig.Instance.ScreenVibration) {
+                    Main.instance.CameraModifiers.Add(new PunchCameraModifier(
+                        Main.LocalPlayer.Center, dir, 4f, 6f, 9, 1000f, FullName));
+                }
             }
         }
 
-        private bool IsOffScreen() {
+        private bool OnScreen(float margin) {
             Rectangle screenRect = new Rectangle(
-                (int)Main.screenPosition.X - 200,
-                (int)Main.screenPosition.Y - 200,
-                Main.screenWidth + 400,
-                Main.screenHeight + 400
+                (int)(Main.screenPosition.X - margin),
+                (int)(Main.screenPosition.Y - margin),
+                Main.screenWidth + (int)(margin * 2f),
+                Main.screenHeight + (int)(margin * 2f)
             );
-
-            return !screenRect.Contains(Projectile.Center.ToPoint());
-        }
-
-        private void SpawnSwimParticle(float hue) {
-            Color particleColor = Main.hslToRgb(hue, 1f, 0.6f);
-
-            PRTLoader.NewParticle<PRT_Spark>(Projectile.Center + Main.rand.NextVector2Circular(10f, 10f), -Projectile.velocity * 0.15f + Main.rand.NextVector2Circular(1f, 1f), particleColor, Main.rand.NextFloat(0.6f, 1f)).Configure(false, 12);
+            return screenRect.Contains(Projectile.Center.ToPoint());
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            float hue = (baseHue + ColorOffset + Main.GlobalTimeWrappedHourly * 0.3f) % 1f;
-
-            //击中水花爆发
-            for (int i = 0; i < 12; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust splash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    velocity,
-                    100,
-                    new Color(100, 200, 255),
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                splash.noGravity = true;
-            }
-
-            //热带色彩爆发
-            for (int i = 0; i < 8; i++) {
-                float angle = MathHelper.TwoPi * i / 8f;
-                Vector2 velocity = angle.ToRotationVector2() * 5f;
-                Color hitColor = Main.hslToRgb((hue + i * 0.1f) % 1f, 1f, 0.6f);
-
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center,
-                    velocity,
-                    hitColor,
-                    0.7f
-                ).Configure(20, hueShift: 0.02f);
-            }
+            //穿体轻顿帧 + 沿冲刺方向的水珠锥
+            target.CWR().TimeFrozenTick = 2;
+            float ke = MathHelper.Clamp(Projectile.velocity.Length() / MaxSpeed, 0.4f, 1f);
+            FishBarracudaVFX.ImpactSpray(Projectile.Center, Projectile.velocity, StripeColor, ke);
 
             SoundEngine.PlaySound(SoundID.NPCHit25 with {
                 Volume = 0.4f,
                 Pitch = 0.3f
+            }, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.SplashWeak with {
+                Volume = 0.35f,
+                Pitch = -0.2f,
+                MaxInstances = 4
             }, Projectile.Center);
 
             //减少穿透次数
@@ -317,34 +352,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         }
 
         public override void OnKill(int timeLeft) {
-            float hue = (baseHue + ColorOffset + Main.GlobalTimeWrappedHourly * 0.3f) % 1f;
-
-            //消失水花
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                Dust splash = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Water,
-                    velocity,
-                    100,
-                    new Color(100, 200, 255),
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                splash.noGravity = Main.rand.NextBool();
+            //屏外正常离场静默；屏内死亡（穿透耗尽/超时）化水收场，沫痕比鱼身活得久
+            if (Main.dedServ || !OnScreen(80f)) {
+                return;
             }
-
-            //热带色彩爆发
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Color burstColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f);
-
-                PRTLoader.NewParticle<PRT_Light>(
-                    Projectile.Center,
-                    velocity,
-                    burstColor,
-                    Main.rand.NextFloat(0.6f, 1f)
-                ).Configure(25, hueShift: 0.02f);
-            }
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            FishBarracudaVFX.BurstSplash(Projectile.Center, -dir, 0.9f);
+            PRTLoader.NewParticle<PRT_FishBarracudaWake>(Projectile.Center, Vector2.Zero, FishBarracudaVFX.Turquoise, 1f)
+                ?.Configure(Projectile.Center, Projectile.Center - dir * 110f, 10f, 16);
 
             SoundEngine.PlaySound(SoundID.Splash with {
                 Volume = 0.5f,
@@ -352,138 +367,103 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             }, Projectile.Center);
         }
 
+        //==== 绘制：白沫射流条带（primitive）+ 条纹残影链 + 速度涂抹 + 僚机剪影 + 本体 ====
+
+        public float GetJetWidth(float completionRatio) =>
+            (1f - completionRatio) * 19f * (0.15f + 0.85f * SpeedT) * Projectile.scale;
+
+        public Color GetJetColor(Vector2 coord) =>
+            Color.White * ((0.18f + 0.62f * SpeedT) * (1f - coord.X)) * Projectile.Opacity;
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (!Rushing || !Projectile.active) {
+                return;
+            }
+            Effect fx = FishBarracudaAssets.FishBarracudaJet;
+            if (fx == null) {
+                return;
+            }
+            FishBarracudaVFX.ApplyJet(fx, Projectile.whoAmI * 0.53f);
+            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trail, GetJetWidth, GetJetColor, fx);
+        }
+
         public override bool PreDraw(ref Color lightColor) {
+            if (!Rushing) {
+                return false; //预告段鱼还在屏外水下
+            }
             SpriteBatch sb = Main.spriteBatch;
             Texture2D fishTex = TextureAssets.Item[ItemID.TropicalBarracuda].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = fishTex.Size() / 2f;
+            bool faceRight = Projectile.velocity.X >= 0f;
+            SpriteEffects flip = faceRight ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            float diag = faceRight ? MathHelper.PiOver4 : -MathHelper.PiOver4;
+            float drawRot = Projectile.rotation + diag;
+            float speedT = SpeedT;
+            float speed = Projectile.velocity.Length();
+            Vector2 dirN = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            Vector2 perp = dirN.RotatedBy(MathHelper.PiOver2);
 
-            float hue = (baseHue + ColorOffset + Main.GlobalTimeWrappedHourly * 0.3f) % 1f;
-            Color tropicalColor = Main.hslToRgb(hue, 1f, 0.7f);
+            //游动脉动：尾拍相位按鱼错开
+            float pulse = 1f + 0.05f * MathF.Sin(swimWave * 2f + Projectile.identity * 0.9f);
+            float bodyScale = Projectile.scale * pulse;
 
-            //绘制速度线拖尾
-            DrawSpeedTrail(sb, fishTex, origin, tropicalColor);
-
-            //绘制热带光晕
-            for (int i = 0; i < 3; i++) {
-                float glowScale = Projectile.scale * (1.1f + i * 0.1f);
-                float glowAlpha = (1f - i * 0.3f) * 0.4f;
-                Color glowColor = Main.hslToRgb((hue + i * 0.05f) % 1f, 1f, 0.6f) with { A = 0 };
-
-                sb.Draw(
-                    fishTex,
-                    drawPos,
-                    null,
-                    glowColor * glowAlpha,
-                    Projectile.rotation + MathHelper.PiOver4,
-                    origin,
-                    glowScale,
-                    SpriteEffects.None,
-                    0
-                );
+            //速度涂抹（最底层）：深礁青拉线糊住帧间空档
+            Texture2D streak = CWRAsset.Extra_98?.Value;
+            if (streak != null && speed > 8f) {
+                float smearLen = MathHelper.Clamp(speed * 4.2f, 50f, 190f);
+                sb.Draw(streak, drawPos - Projectile.velocity * 0.8f, null
+                    , FishBarracudaVFX.SeaDeep with { A = 0 } * (0.5f * speedT)
+                    , Projectile.velocity.ToRotation() + MathHelper.PiOver2, streak.Size() * 0.5f
+                    , new Vector2(12f / streak.Width, smearLen / streak.Height), SpriteEffects.None, 0f);
             }
 
-            //主体绘制 - 应用热带色彩
-            Color mainColor = Color.Lerp(
-                lightColor,
-                tropicalColor,
-                0.6f
-            );
+            //僚机剪影（压在主体之下）：两条小梭鱼错位随行，规模感不添实体
+            Color escortCol = Color.Lerp(lightColor, FishBarracudaVFX.SeaDeep, 0.4f);
+            for (int k = 0; k < 2; k++) {
+                float side = k == 0 ? 1f : -1f;
+                float bob = MathF.Sin(swimWave * 2f + k * 2.4f + Projectile.identity) * 3.5f;
+                Vector2 off = perp * (side * (13f + k * 4f) + bob) - dirN * (14f + k * 12f);
+                sb.Draw(fishTex, drawPos + off, null, escortCol * 0.8f, drawRot, origin
+                    , bodyScale * (0.62f - k * 0.1f), flip, 0f);
+            }
 
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                mainColor,
-                Projectile.rotation + MathHelper.PiOver4,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-            );
+            //热带条纹残影链：旧位置残像逐节换色，青绿→珊瑚→柠檬拖成色带流
+            if (speedT > 0.05f) {
+                for (int g = 0; g < 3; g++) {
+                    int i = 2 + g * 3;
+                    if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
+                        continue;
+                    }
+                    Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                    float ghostRot = (i < Projectile.oldRot.Length ? Projectile.oldRot[i] : Projectile.rotation) + diag;
+                    Color stripe = FishBarracudaVFX.Stripe(PseudoIndex + g) with { A = 0 };
+                    sb.Draw(fishTex, ghostPos, null, stripe * ((0.4f - g * 0.11f) * speedT), ghostRot, origin
+                        , bodyScale * (0.97f - g * 0.06f), flip, 0f);
+                }
+            }
 
-            //高光
-            float highlightAlpha = 0.5f * (1f + (float)Math.Sin(swimWave) * 0.3f);
-            sb.Draw(
-                fishTex,
-                drawPos,
-                null,
-                Color.White * highlightAlpha,
-                Projectile.rotation + MathHelper.PiOver4,
-                origin,
-                Projectile.scale * 0.9f,
-                SpriteEffects.None,
-                0
-            );
+            //本体近位残像：轮廓沿速度方向拉长成一道鱼形水光
+            Color bodyGhost = FishBarracudaVFX.Turquoise with { A = 0 };
+            sb.Draw(fishTex, drawPos - Projectile.velocity * 0.5f, null, bodyGhost * (0.4f * speedT)
+                , drawRot, origin, bodyScale, flip, 0f);
+            sb.Draw(fishTex, drawPos - Projectile.velocity * 1.1f, null, bodyGhost * (0.18f * speedT)
+                , drawRot, origin, bodyScale * 0.94f, flip, 0f);
+
+            //主体：轻微向绿松石压色，保留贴图自己的热带纹样
+            Color mainColor = Color.Lerp(lightColor, FishBarracudaVFX.Turquoise, 0.2f);
+            sb.Draw(fishTex, drawPos, null, mainColor, drawRot, origin, bodyScale, flip, 0f);
+
+            //破水帧头部暖闪：出闸后 ~5tick 内衰减的珊瑚星点，此后无常驻高光
+            float burstT = 1f - MathHelper.Clamp((Timer - ReleaseUpdate) / 15f, 0f, 1f);
+            Texture2D glint = CWRAsset.StarGlow01?.Value;
+            if (glint != null && burstT > 0.02f) {
+                Vector2 headPos = drawPos + dirN * 15f * bodyScale;
+                sb.Draw(glint, headPos, null, FishBarracudaVFX.Coral with { A = 0 } * (0.85f * burstT), 0f
+                    , glint.Size() / 2f, 26f / glint.Width, SpriteEffects.None, 0f);
+            }
 
             return false;
-        }
-
-        private void DrawSpeedTrail(SpriteBatch sb, Texture2D texture, Vector2 origin, Color baseColor) {
-            if (trailPositions.Count < 2) return;
-
-            for (int i = 1; i < trailPositions.Count; i++) {
-                float progress = 1f - i / (float)trailPositions.Count;
-                float trailAlpha = progress * 0.6f;
-                float trailScale = Projectile.scale * MathHelper.Lerp(0.5f, 1f, progress);
-
-                //计算热带渐变色
-                float hueShift = (baseHue + ColorOffset + i * 0.03f) % 1f;
-                Color trailColor = Main.hslToRgb(hueShift, 1f, 0.6f) * trailAlpha;
-
-                Vector2 trailPos = trailPositions[i] - Main.screenPosition;
-
-                sb.Draw(
-                    texture,
-                    trailPos,
-                    null,
-                    trailColor,
-                    Projectile.rotation - i * 0.05f + MathHelper.PiOver4,
-                    origin,
-                    trailScale,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //绘制水流拖尾线条
-            DrawWaterTrail(sb, trailPositions);
-        }
-
-        private void DrawWaterTrail(SpriteBatch sb, List<Vector2> positions) {
-            if (positions.Count < 3) return;
-
-            Texture2D lineTex = VaultAsset.placeholder2.Value;
-
-            for (int i = 0; i < positions.Count - 1; i++) {
-                float progress = 1f - i / (float)positions.Count;
-                float lineAlpha = progress * 0.4f;
-
-                Vector2 start = positions[i];
-                Vector2 end = positions[i + 1];
-                Vector2 diff = end - start;
-                float length = diff.Length();
-
-                if (length < 0.01f) continue;
-
-                float rotation = diff.ToRotation();
-                float width = 3f * progress;
-
-                //水流蓝色
-                Color waterColor = new Color(100, 200, 255, 0) * lineAlpha;
-
-                sb.Draw(
-                    lineTex,
-                    start - Main.screenPosition,
-                    new Rectangle(0, 0, 1, 1),
-                    waterColor,
-                    rotation,
-                    Vector2.Zero,
-                    new Vector2(length, width),
-                    SpriteEffects.None,
-                    0f
-                );
-            }
         }
     }
 }

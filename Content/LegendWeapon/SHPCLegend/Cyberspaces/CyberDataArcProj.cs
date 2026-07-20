@@ -13,7 +13,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.SHPCLegend.Cyberspaces
     /// <summary>两点间颤动动电弧，改件 spawn；Trail+CyberDataArc.fx</summary>
     internal class CyberDataArcProj : ModProjectile, IPrimitiveDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int MaxLife = 22;
         private const int PointCount = 18;

@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// </summary>
     internal class OniFinaleSlash : ModProjectile, IOverlayDrawable, IOniBladeOccupant
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //==== 时间轴常量 ====
         /// <summary>乱舞起点</summary>

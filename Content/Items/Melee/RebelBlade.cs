@@ -615,7 +615,7 @@ namespace CalamityOverhaul.Content.Items.Melee
 
     public class RebelBladeOrb : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = Projectile.height = 22;
             Projectile.friendly = true;

@@ -570,13 +570,22 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Lumberjacks
         }
 
         /// <summary>
-        /// 生成树木重生动画(橡子下落)
+        /// 生成树木重生动画(橡子下落)；落点/树种/蓝图种子在此一次性锁定，动画与种植保证同点同形
         /// </summary>
         private static void SpawnTreeRegrowthAnimation(int tileX, int groundY, int treeType) {
-            //生成橡子下落Actor
-            Vector2 spawnPos = new Vector2(tileX * 16 + 8, (groundY - 20) * 16);
+            //按当前地面复核树种(地形可能被转换)，并滚出一个空间校验通过的蓝图种子
+            int resolvedType = TreeBlueprint.ResolveTreeType(tileX, groundY, treeType);
+            if (resolvedType == 0 || !TreeBlueprint.TryRollSeed(tileX, groundY, resolvedType, out int seed)) {
+                return;
+            }
+
+            //Actor取左上角坐标，X偏移半宽让橡子中心对准物块中线
+            Vector2 spawnPos = new Vector2(tileX * 16 + 2, (groundY - 20) * 16);
             int actorIndex = ActorLoader.NewActor<FallingAcorn>(spawnPos, Vector2.Zero);
-            ActorLoader.Actors[actorIndex].OnSpawn(tileX, groundY, treeType);
+            if (actorIndex >= 0 && actorIndex < ActorLoader.MaxActorCount
+                && ActorLoader.Actors[actorIndex] is FallingAcorn acorn) {
+                acorn.Setup(tileX, groundY, resolvedType, seed);
+            }
         }
 
         private void State_Returning() {

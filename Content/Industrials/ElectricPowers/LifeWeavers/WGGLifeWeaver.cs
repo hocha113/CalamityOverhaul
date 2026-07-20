@@ -400,7 +400,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.LifeWeavers
     /// </summary>
     internal class WGGLifeWeaverAcorn : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public const float Gravity = 0.22f;//降低重力让弧线更明显
 
         //物理参数

@@ -10,7 +10,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalDestroyer.Projectiles
     /// <summary>热浪尾流载体：锚定头部无伤害VFX，速度越快尾流越长越强经<see cref="DestroyerMotionFX.DrawHeatWakeWarp"/>在Warp管线沿轨迹扭曲空气慢速淡出自毁，同头最多一条(<see cref="EnsureForHead"/>去重)；ai[0]:头部NPCwhoAmI</summary>
     internal class DestroyerHeatWakeProj : ModProjectile, IWarpDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         /// <summary>尾流出现的最低头部速度</summary>
         private const float MinSpeed = 20f;

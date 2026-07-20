@@ -80,7 +80,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
     public class FungiAmmo : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
         public override void SetDefaults() {
             Projectile.width = 12;
             Projectile.height = 12;

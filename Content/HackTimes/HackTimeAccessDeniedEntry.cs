@@ -41,7 +41,7 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override void DrawContent(SpriteBatch sb, Rectangle r, float alpha) {
-            Texture2D px = TextureAssets.MagicPixel.Value;
+            Texture2D px = VaultAsset.placeholder2.Value;
             float animTime = LifeTimer / 60f;
             float pulse = MathF.Sin(animTime * 4.5f) * 0.5f + 0.5f;
 

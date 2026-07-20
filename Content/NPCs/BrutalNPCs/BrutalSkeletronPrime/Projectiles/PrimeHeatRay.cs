@@ -15,7 +15,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
     /// <summary>机械骷髅王热射线基类：展开→全功率→收束未完全展开无伤害(公平阀)，宿主失效快进收束；ai[0]=宿主NPC的whoAmI（有效性判定/锚定）；ai[1]=起始角（弧度）；ai[2]=每帧扫射角速度（0=定向光束）渲染复用PrimeSkullBeam着色器，与颅骨主炮同套热能视觉</summary>
     internal abstract class PrimeHeatRayBase : ModProjectile
     {
-        public override string Texture => CWRConstant.Placeholder2;
+        public override string Texture => CWRConstant.VaultPlaceholder2;
 
         /// <summary>全功率碰撞宽度</summary>
         protected abstract float MaxWidth { get; }
@@ -182,7 +182,7 @@ namespace CalamityOverhaul.Content.NPCs.BrutalNPCs.BrutalSkeletronPrime.Projecti
             shader.Parameters["uImage2"]?.SetValue(CWRAsset.PerlinNoise.Value);
             shader.CurrentTechnique.Passes[0].Apply();
 
-            Texture2D quad = CWRAsset.Placeholder_White.Value;
+            Texture2D quad = VaultAsset.placeholder2.Value;
             //视觉宽度大于碰撞宽度，撕裂边缘需要余量
             float visualWidth = beamWidth * 3.6f;
             sb.Draw(quad, Projectile.Center - Main.screenPosition, null, Color.White, rot,

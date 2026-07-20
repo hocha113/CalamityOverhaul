@@ -23,7 +23,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// </summary>
     internal class OniFinaleRing : ModProjectile, IPrimitiveDrawable, ICrimsonFarDrawable
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         private const int Lifetime = 30;
 

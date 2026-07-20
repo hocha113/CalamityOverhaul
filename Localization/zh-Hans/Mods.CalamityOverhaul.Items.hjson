@@ -979,10 +979,13 @@ ItemFilter: {
 	DisplayName: 物品过滤板
 	Tooltip:
 		'''
-		使用可以打开过滤面板
-		右键具备相应接口的机器以应用
-		左键点击箱子可以复制内部的物品作为过滤内容
+		使用以打开名单编辑器，光标持物点击面板即可收录
+		对准收集器使用可复制机器名单，对准箱子使用可复制箱内物品
+		手持右键点击收集器、物流管道等机器以安装名单
 		'''
+	StateFormat: "{0} · 已收录 {1} 项"
+	CopiedFromChest: 已复制箱内物品
+	CopiedFromCollector: 已复制收集器名单
 }
 
 SporeBubbleBlaster: {

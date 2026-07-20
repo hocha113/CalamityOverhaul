@@ -33,7 +33,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// </summary>
     internal class OniSeverStrike : ModProjectile, IOverlayDrawable, IOniBladeOccupant
     {
-        public override string Texture => CWRConstant.Placeholder;
+        public override string Texture => CWRConstant.VaultPlaceholder;
 
         //==== 时间轴常量 ====
         /// <summary>蓄势帧数：刀在鞘位反向压势</summary>
