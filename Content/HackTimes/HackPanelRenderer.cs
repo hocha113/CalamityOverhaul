@@ -53,10 +53,10 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 排版常量
 
         private const float RowWidth = 340f;
-        private const float RowHeight = 46f;
+        private const float RowHeight = 48f;
         private const float RowGap = 5f;
         //分组标题额外占高
-        private const float GroupGap = 18f;
+        private const float GroupGap = 24f;
         private const float RightMargin = 36f;
         //旗标左端斜切宽（尖端指向屏幕中心）
         private const float TaperWidth = 12f;
@@ -71,14 +71,14 @@ namespace CalamityOverhaul.Content.HackTimes
         //列表下移，避让 RAM HUD
         private const float TopPadding = 60f;
         //详情页脚高度
-        private const float FooterHeight = 86f;
-        //字体尺寸
+        private const float FooterHeight = 92f;
+        //字体尺寸：MouseText 中文字形低于 0.5 会糊，此处 0.5 为下限
         private static float FontName => 0.80f;
-        private static float FontCost => 0.85f;
+        private static float FontCost => 0.88f;
         private static float FontDesc => 0.72f;
-        private static float FontTime => 0.50f;
-        private static float FontMicro => 0.36f;
-        private static float FontGroup => 0.40f;
+        private static float FontTime => 0.56f;
+        private static float FontMicro => 0.50f;
+        private static float FontGroup => 0.58f;
 
         //解码乱码字符池
         private const string ScrambleChars = "0123456789ABCDEF#$%&";
@@ -500,20 +500,23 @@ namespace CalamityOverhaul.Content.HackTimes
             int actualCost = HackCostEvaluator.GetActualCost(rs.Hack, HackTime.CurrentScanTarget);
             string costStr = $"{actualCost}";
             Vector2 costSize = FontAssets.MouseText.Value.MeasureString(costStr) * FontCost;
+            //悬停反色时数字用暗底色（大字号下仍清晰），常态用亮化的主色实色
             Color costColor = rs.Hover > 0.35f
                 ? HackTheme.BgDarkest * rowAlpha
-                : accent * (rowAlpha * (idleDisabled ? 0.85f : 0.95f));
+                : Color.Lerp(accent, Color.White, 0.25f) * rowAlpha;
             if (idleDisabled) {
-                float pulse = MathF.Sin(timer * 5f + index) * 0.2f + 0.8f;
+                float pulse = MathF.Sin(timer * 5f + index) * 0.15f + 0.85f;
                 costColor *= pulse;
             }
             Utils.DrawBorderString(sb, costStr,
-                new Vector2(costCell.Center.X - costSize.X * 0.5f, rect.Y + 5), costColor, FontCost);
-            //RAM 微标注
-            Vector2 ramCapSize = FontAssets.MouseText.Value.MeasureString("RAM") * 0.32f;
-            Color ramCapColor = rs.Hover > 0.35f ? HackTheme.BgDarkest * (rowAlpha * 0.8f) : accent * (rowAlpha * 0.42f);
-            Utils.DrawBorderString(sb, "RAM",
-                new Vector2(costCell.Center.X - ramCapSize.X * 0.5f, rect.Bottom - 15), ramCapColor, 0.32f);
+                new Vector2((int)(costCell.Center.X - costSize.X * 0.5f), rect.Y + 4), costColor, FontCost);
+            //RAM 微标注：无描边淡字，避免小字号黑边糊块
+            Vector2 ramCapSize = FontAssets.MouseText.Value.MeasureString("RAM") * 0.5f;
+            Color ramCapColor = rs.Hover > 0.35f
+                ? HackTheme.BgDarkest * (rowAlpha * 0.9f)
+                : Color.Lerp(accent, Color.White, 0.15f) * (rowAlpha * 0.62f);
+            HackTheme.DrawRawText(sb, "RAM",
+                new Vector2(costCell.Center.X - ramCapSize.X * 0.5f, rect.Bottom - 17), ramCapColor, 0.5f);
             //类别刻痕（格子左上角短斜线）
             Color catColor = HackTheme.CategoryColor(rs.Hack.Category);
             HackTheme.DrawLine(sb,
@@ -550,7 +553,7 @@ namespace CalamityOverhaul.Content.HackTimes
                     break;
                 case QueueSlotState.Queued:
                     badgeText = HackTime.Queued.Value;
-                    badgeColor = Color.Lerp(HackTheme.Uploading, HackTheme.TextDim, 0.4f);
+                    badgeColor = HackTheme.Uploading;
                     break;
                 case QueueSlotState.Completed:
                     badgeText = HackTime.Done.Value;
@@ -558,38 +561,39 @@ namespace CalamityOverhaul.Content.HackTimes
                     break;
                 default:
                     badgeText = idleDisabled ? HackTime.StatusNoRam.Value : HackTime.StatusReady.Value;
-                    badgeColor = idleDisabled ? HackTheme.Danger : Color.Lerp(HackTheme.AccentAlt, HackTheme.TextDim, 0.35f);
+                    badgeColor = idleDisabled ? HackTheme.Danger : HackTheme.AccentAlt;
                     break;
             }
-            HackTheme.DrawBadge(sb, new Vector2(nameX, rect.Y + 27), badgeText, badgeColor, rowAlpha * 0.9f, 0.44f);
+            HackTheme.DrawBadge(sb, new Vector2(nameX, rect.Y + 26), badgeText, badgeColor, rowAlpha, 0.56f);
 
             //---- 右区：耗时/类别 ----
             if (rs.QueueState == QueueSlotState.None) {
                 float sec = rs.Hack.UploadTime / 60f;
                 string timeStr = $"{sec:F1}s";
                 Vector2 ts = FontAssets.MouseText.Value.MeasureString(timeStr) * FontTime;
-                Color timeColor = idleDisabled ? HackTheme.Danger * 0.5f : HackTheme.TextNormal;
-                Utils.DrawBorderString(sb, timeStr, new Vector2(rect.Right - ts.X - 10, rect.Y + 6),
-                    timeColor * (rowAlpha * 0.6f), FontTime);
+                Color timeColor = idleDisabled ? HackTheme.Danger * 0.75f : HackTheme.TextBright;
+                Utils.DrawBorderString(sb, timeStr, new Vector2((int)(rect.Right - ts.X - 10), rect.Y + 5),
+                    timeColor * (rowAlpha * 0.85f), FontTime);
             }
             else if (rs.QueueState == QueueSlotState.Uploading) {
                 //大号百分比读数
                 string pct = $"{(int)(rs.QueueProgress * 100)}";
                 Vector2 ps = FontAssets.MouseText.Value.MeasureString(pct) * 0.72f;
-                Utils.DrawBorderString(sb, pct, new Vector2(rect.Right - ps.X - 18, rect.Y + 6),
+                Utils.DrawBorderString(sb, pct, new Vector2((int)(rect.Right - ps.X - 20), rect.Y + 5),
                     HackTheme.Uploading * rowAlpha, 0.72f);
-                Utils.DrawBorderString(sb, "%", new Vector2(rect.Right - 14, rect.Y + 12),
-                    HackTheme.Uploading * (rowAlpha * 0.6f), 0.4f);
+                Utils.DrawBorderString(sb, "%", new Vector2(rect.Right - 16, rect.Y + 11),
+                    HackTheme.Uploading * (rowAlpha * 0.8f), 0.5f);
             }
-            //类别符号+微标签（右下）
+            //类别符号+微标签（右下），实色亮化避免黑边吞噬
             string catSymbol = HackTheme.CategorySymbol(rs.Hack.Category);
             string catLabel = HackTheme.CategoryLabel(rs.Hack.Category);
+            Color catTextColor = Color.Lerp(catColor, Color.White, 0.2f) * (rowAlpha * 0.8f);
             Vector2 cls = FontAssets.MouseText.Value.MeasureString(catLabel) * FontMicro;
-            Utils.DrawBorderString(sb, catLabel, new Vector2(rect.Right - cls.X - 10, rect.Bottom - cls.Y - 5),
-                catColor * (rowAlpha * 0.42f), FontMicro);
-            Vector2 syms = FontAssets.MouseText.Value.MeasureString(catSymbol) * 0.34f;
-            Utils.DrawBorderString(sb, catSymbol, new Vector2(rect.Right - cls.X - syms.X - 16, rect.Bottom - cls.Y - 5),
-                catColor * (rowAlpha * 0.5f), 0.34f);
+            Utils.DrawBorderString(sb, catLabel, new Vector2((int)(rect.Right - cls.X - 10), (int)(rect.Bottom - cls.Y - 4)),
+                catTextColor, FontMicro);
+            Vector2 syms = FontAssets.MouseText.Value.MeasureString(catSymbol) * 0.48f;
+            Utils.DrawBorderString(sb, catSymbol, new Vector2((int)(rect.Right - cls.X - syms.X - 15), (int)(rect.Bottom - cls.Y - 4)),
+                catTextColor, 0.48f);
 
             //---- 禁用斜线剖面纹 ----
             if (idleDisabled) {
@@ -676,19 +680,19 @@ namespace CalamityOverhaul.Content.HackTimes
                 var hack = QuickHackDef.GetByIndex(GetGlobalIndex(i));
                 if (hack == null) continue;
 
-                float headerAlpha = alpha * Math.Min(slotFlyIn[i] * 2f, 1f) * 0.6f;
-                float y = GetRowY(startY, i) - 14f;
+                float headerAlpha = alpha * Math.Min(slotFlyIn[i] * 2f, 1f) * 0.9f;
+                float y = GetRowY(startY, i) - 20f;
                 Color catColor = HackTheme.CategoryColor(hack.Category);
 
                 string label = HackTheme.CategoryLabel(hack.Category);
-                Utils.DrawBorderString(sb, label, new Vector2(baseX + TaperWidth + 2, y - 2),
-                    catColor * headerAlpha, FontGroup);
+                Utils.DrawBorderString(sb, label, new Vector2((int)(baseX + TaperWidth + 2), (int)(y - 2)),
+                    Color.Lerp(catColor, Color.White, 0.2f) * headerAlpha, FontGroup);
                 //标题右侧引出刻度线
                 float labelW = FontAssets.MouseText.Value.MeasureString(label).X * FontGroup;
                 HackTheme.DrawDashedLine(sb,
-                    new Vector2(baseX + TaperWidth + labelW + 10, y + 4),
-                    new Vector2(baseX + RowWidth, y + 4),
-                    1f, catColor * (headerAlpha * 0.35f), 3f, 5f);
+                    new Vector2(baseX + TaperWidth + labelW + 10, y + 7),
+                    new Vector2(baseX + RowWidth, y + 7),
+                    1f, catColor * (headerAlpha * 0.4f), 3f, 5f);
             }
         }
 
@@ -863,21 +867,21 @@ namespace CalamityOverhaul.Content.HackTimes
             Color catColor = HackTheme.CategoryColor(hack.Category);
 
             //类别竖刻 + 协议名微标题
-            sb.Draw(px, new Rectangle((int)baseX, (int)footerY, 2, 12), HackTheme.SrcPixel, catColor * (alpha * 0.8f));
-            Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2(baseX + 8, footerY - 2),
-                HackTheme.TextBright * (alpha * 0.85f), 0.56f);
+            sb.Draw(px, new Rectangle((int)baseX, (int)footerY + 2, 2, 14), HackTheme.SrcPixel, catColor * (alpha * 0.9f));
+            Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2((int)(baseX + 8), (int)(footerY - 2)),
+                HackTheme.TextBright * alpha, 0.66f);
 
             //描述换行（最多3行）
             var descFont = FontAssets.MouseText.Value;
             int wrapPx = Math.Max(32, (int)(RowWidth / FontDesc) - 6);
             string[] descLines = VaultUtils.WrapTextArray(hack.Description.Value, descFont, wrapPx, 3, out _);
             float lineH = descFont.MeasureString("汉").Y * FontDesc;
-            float curY = footerY + 16f;
+            float curY = footerY + 20f;
             for (int li = 0; li < descLines.Length; li++) {
                 if (string.IsNullOrEmpty(descLines[li])) continue;
                 Utils.DrawBorderString(sb, descLines[li].TrimEnd('-', ' '),
-                    new Vector2(baseX + 8, curY + li * lineH),
-                    HackTheme.TextNormal * (alpha * 0.85f), FontDesc);
+                    new Vector2((int)(baseX + 8), (int)(curY + li * lineH)),
+                    HackTheme.TextBright * (alpha * 0.85f), FontDesc);
             }
 
             //成本与耗时行
@@ -886,12 +890,12 @@ namespace CalamityOverhaul.Content.HackTimes
             string costStr = HackTime.FooterCost.Format(actualCost);
             if (actualCost != hack.RamCost)
                 costStr += $" ×{(float)actualCost / hack.RamCost:F1}";
-            Utils.DrawBorderString(sb, costStr, new Vector2(baseX + 8, metaY),
-                HackTheme.Accent * (alpha * 0.75f), 0.48f);
+            Utils.DrawBorderString(sb, costStr, new Vector2((int)(baseX + 8), (int)metaY),
+                Color.Lerp(HackTheme.Accent, Color.White, 0.2f) * alpha, 0.56f);
             string upStr = HackTime.FooterUpload.Format($"{hack.UploadTime / 60f:F1}");
-            float costW = FontAssets.MouseText.Value.MeasureString(costStr).X * 0.48f;
-            Utils.DrawBorderString(sb, upStr, new Vector2(baseX + 8 + costW + 16, metaY),
-                HackTheme.TextNormal * (alpha * 0.6f), 0.48f);
+            float costW = FontAssets.MouseText.Value.MeasureString(costStr).X * 0.56f;
+            Utils.DrawBorderString(sb, upStr, new Vector2((int)(baseX + 8 + costW + 16), (int)metaY),
+                HackTheme.TextBright * (alpha * 0.8f), 0.56f);
         }
 
         //无悬停时的系统状态
@@ -901,26 +905,26 @@ namespace CalamityOverhaul.Content.HackTimes
             Color dotColor = hasActive
                 ? Color.Lerp(HackTheme.Uploading * 0.4f, HackTheme.Uploading, pulse) * alpha
                 : Color.Lerp(new Color(20, 100, 50), new Color(40, 200, 100), pulse) * alpha;
-            HackTheme.DrawDiamond(sb, new Vector2(baseX + 4, footerY + 7), 6f, dotColor);
+            HackTheme.DrawDiamond(sb, new Vector2(baseX + 5, footerY + 8), 7f, dotColor);
 
             string status = hasActive ? HackTime.UploadingText.Value : HackTime.BreachReady.Value;
             if (Queue != null && Queue.HasCompleted) status = HackTime.UploadComplete.Value;
-            Utils.DrawBorderString(sb, status, new Vector2(baseX + 14, footerY),
-                HackTheme.TextDim * alpha, 0.48f);
+            Utils.DrawBorderString(sb, status, new Vector2((int)(baseX + 16), (int)footerY),
+                HackTheme.TextNormal * alpha, 0.62f);
 
-            //伪十六进制标签 + 协议计数
+            //伪十六进制标签 + 协议计数：无描边装饰字
             string tag = $"NET::0x{(int)(timer * 100) % 0xFFFF:X4}";
-            Utils.DrawBorderString(sb, tag, new Vector2(baseX + RowWidth - 106, footerY),
-                HackTheme.Accent * (alpha * 0.22f), FontMicro);
+            HackTheme.DrawRawText(sb, tag, new Vector2(baseX + RowWidth - 110, footerY + 1),
+                HackTheme.Accent * (alpha * 0.5f), FontMicro);
             string countStr = HackTime.Protocols.Format(displayCount);
-            Utils.DrawBorderString(sb, countStr, new Vector2(baseX + RowWidth - 106, footerY + 16),
-                HackTheme.TextDim * (alpha * 0.3f), 0.34f);
+            HackTheme.DrawRawText(sb, countStr, new Vector2(baseX + RowWidth - 110, footerY + 18),
+                HackTheme.TextNormal * (alpha * 0.55f), FontMicro);
 
             //右键取消提示
             if (HackTime.CurrentScanTarget != null) {
                 float hintPulse = MathF.Sin(timer * 1.8f) * 0.12f + 0.88f;
-                Utils.DrawBorderString(sb, HackTime.RightClickHint.Value, new Vector2(baseX, footerY + 22f),
-                    HackTheme.TextNormal * (alpha * hintPulse), 0.72f);
+                Utils.DrawBorderString(sb, HackTime.RightClickHint.Value, new Vector2((int)baseX, (int)(footerY + 24f)),
+                    HackTheme.TextBright * (alpha * hintPulse * 0.9f), 0.72f);
             }
         }
 

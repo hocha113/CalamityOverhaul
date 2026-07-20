@@ -12,16 +12,16 @@ namespace CalamityOverhaul.Content.HackTimes
         #region 布局常量
 
         private const float LeftMargin = 36f;
-        private const float ItemWidth = 240f;
-        private const float ItemHeight = 20f;
+        private const float ItemWidth = 250f;
+        private const float ItemHeight = 25f;
         private const float ItemGap = 6f;
         private const float BarHeight = 2f;
         //状态菱形区宽
-        private const float DiamondZone = 14f;
+        private const float DiamondZone = 16f;
         //距屏幕底的基线
         private const float BottomMargin = 150f;
-        private const float FontName = 0.54f;
-        private const float FontPct = 0.44f;
+        private const float FontName = 0.64f;
+        private const float FontPct = 0.56f;
         //完成闪烁时长（秒）
         private static float CompletedDuration => 0.2f;
 
@@ -350,15 +350,15 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         private void DrawHeader(SpriteBatch sb, float alpha, float startY) {
-            float headerY = startY - 20f;
+            float headerY = startY - 26f;
             string header = $"{HackTime.UplinkHeader.Value} // {queue.Count}";
-            Utils.DrawBorderString(sb, header, new Vector2(LeftMargin, headerY),
-                HackTheme.Accent * (alpha * 0.6f), 0.40f);
+            Utils.DrawBorderString(sb, header, new Vector2((int)LeftMargin, (int)headerY),
+                Color.Lerp(HackTheme.Accent, Color.White, 0.15f) * (alpha * 0.9f), 0.56f);
             //标题下引出短线
-            float headerW = FontAssets.MouseText.Value.MeasureString(header).X * 0.40f;
-            HackTheme.DrawLine(sb, new Vector2(LeftMargin, headerY + 13),
-                new Vector2(LeftMargin + headerW + 20, headerY + 13),
-                1f, HackTheme.Accent * (alpha * 0.25f));
+            float headerW = FontAssets.MouseText.Value.MeasureString(header).X * 0.56f;
+            HackTheme.DrawLine(sb, new Vector2(LeftMargin, headerY + 18),
+                new Vector2(LeftMargin + headerW + 20, headerY + 18),
+                1f, HackTheme.Accent * (alpha * 0.3f));
         }
 
         private void DrawThread(SpriteBatch sb, Texture2D px, float alpha, int index, float startY, HackQueueEntry entry) {
@@ -386,7 +386,7 @@ namespace CalamityOverhaul.Content.HackTimes
             };
 
             //状态菱形：上传中旋转，等待呼吸，完成实心闪
-            Vector2 diamondC = new(rect.X + DiamondZone * 0.5f, rect.Y + 7f);
+            Vector2 diamondC = new(rect.X + DiamondZone * 0.5f, rect.Y + 9f);
             switch (entry.State) {
                 case HackQueueState.Uploading: {
                     float rot = timer * 3f + index;
@@ -415,7 +415,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 HackQueueState.Completed => HackTheme.Accent,
                 _ => HackTheme.TextNormal,
             };
-            Utils.DrawBorderString(sb, entry.Hack.DisplayName.Value, new Vector2(nameX, rect.Y),
+            Utils.DrawBorderString(sb, entry.Hack.DisplayName.Value, new Vector2((int)nameX, rect.Y + 1),
                 nameColor * itemAlpha, FontName);
 
             //右侧读数
@@ -437,8 +437,8 @@ namespace CalamityOverhaul.Content.HackTimes
             }
             Vector2 statusSize = FontAssets.MouseText.Value.MeasureString(statusText) * FontPct;
             Utils.DrawBorderString(sb, statusText,
-                new Vector2(rect.Right - statusSize.X - 2, rect.Y),
-                statusColor * itemAlpha, FontPct);
+                new Vector2((int)(rect.Right - statusSize.X - 2), rect.Y + 2),
+                Color.Lerp(statusColor, Color.White, 0.15f) * itemAlpha, FontPct);
 
             //细进度轨（线程底部通宽）
             int barY = rect.Bottom - (int)BarHeight - 1;

@@ -43,11 +43,11 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float InnerDecoGap = 5f;
         private const float InnerDecoR = InnerR - InnerDecoGap;
 
-        //字体
-        private const float FTitle = 0.54f;
-        private const float FValue = 0.64f;
-        private const float FWarn = 0.50f;
-        private const float FHex = 0.42f;
+        //字体：中文/关键读数不低于 0.55
+        private const float FTitle = 0.60f;
+        private const float FValue = 0.74f;
+        private const float FWarn = 0.58f;
+        private const float FHex = 0.50f;
 
         /// <summary>按 maxRam 推导弧线几何，超软上限收紧单格</summary>
         private static void ComputeArcGeom(int maxRam,
@@ -281,17 +281,16 @@ namespace CalamityOverhaul.Content.HackTimes
                     thick, col * (alpha * 0.4f));
             }
 
-            //主刻度数字，每 2 格
-            for (int i = 0; i <= maxRam; i += 2) {
+            //主刻度数字，每 4 格（0.18 缩放糊字，放大后减密度）
+            for (int i = 0; i <= maxRam; i += 4) {
                 float a = aStart + i * (cellAngle + (i < maxRam ? CellGap : 0));
                 if (i == maxRam) a = aEnd;
                 Vector2 dir = AngleDir(a);
-                Vector2 pos = center + dir * (DecoR + 14f);
+                Vector2 pos = center + dir * (DecoR + 16f);
                 string mark = $"{i}";
-                Vector2 mSize = FontAssets.MouseText.Value.MeasureString(mark) * 0.18f;
-                Utils.DrawBorderString(sb, mark,
-                    pos - mSize * 0.5f,
-                    HackTheme.TextDim * (alpha * 0.25f), 0.18f);
+                Vector2 mSize = FontAssets.MouseText.Value.MeasureString(mark) * 0.42f;
+                HackTheme.DrawRawText(sb, mark, pos - mSize * 0.5f,
+                    HackTheme.TextNormal * (alpha * 0.5f), 0.42f);
             }
         }
 
@@ -527,8 +526,8 @@ namespace CalamityOverhaul.Content.HackTimes
             string title = "//BUFFER RAM";
             Vector2 titleSize = FontAssets.MouseText.Value.MeasureString(title) * FTitle;
             Utils.DrawBorderString(sb, title,
-                new Vector2(center.X - titleSize.X * 0.5f, baseY),
-                HackTheme.Accent * (alpha * 0.55f), FTitle);
+                new Vector2((int)(center.X - titleSize.X * 0.5f), (int)baseY),
+                Color.Lerp(HackTheme.Accent, Color.White, 0.15f) * (alpha * 0.85f), FTitle);
 
             //数值读数
             string val = $"{RamSystem.DisplayCurrent}/{maxRam}";
@@ -538,15 +537,15 @@ namespace CalamityOverhaul.Content.HackTimes
                     MathF.Sin(timer * 5f) * 0.4f + 0.6f)
                 : HackTheme.TextBright;
             Utils.DrawBorderString(sb, val,
-                new Vector2(center.X - valSize.X * 0.5f, baseY + 20),
-                valColor * (alpha * 0.85f), FValue);
+                new Vector2((int)(center.X - valSize.X * 0.5f), (int)(baseY + 22)),
+                valColor * alpha, FValue);
 
-            //装饰十六进制
+            //装饰十六进制：无描边淡字
             string hex = $"0x{(int)(timer * 60) % 0xFFFF:X4}";
             Vector2 hexSize = FontAssets.MouseText.Value.MeasureString(hex) * FHex;
-            Utils.DrawBorderString(sb, hex,
-                new Vector2(center.X - hexSize.X * 0.5f, baseY + 46),
-                HackTheme.TextDim * (alpha * 0.22f), FHex);
+            HackTheme.DrawRawText(sb, hex,
+                new Vector2(center.X - hexSize.X * 0.5f, baseY + 50),
+                HackTheme.TextNormal * (alpha * 0.5f), FHex);
 
             //低RAM警告
             if (RamSystem.CurrentRam <= 2f && !HackTime.InfiniteHack) {
@@ -556,8 +555,8 @@ namespace CalamityOverhaul.Content.HackTimes
                     : HackTime.LowRam.Value;
                 Vector2 wSize = FontAssets.MouseText.Value.MeasureString(warn) * FWarn;
                 Utils.DrawBorderString(sb, warn,
-                    new Vector2(center.X - wSize.X * 0.5f, baseY + 62),
-                    HackTheme.Danger * (alpha * wPulse * 0.75f), FWarn);
+                    new Vector2((int)(center.X - wSize.X * 0.5f), (int)(baseY + 68)),
+                    Color.Lerp(HackTheme.Danger, Color.White, 0.15f) * (alpha * wPulse * 0.95f), FWarn);
             }
         }
 

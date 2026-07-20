@@ -54,9 +54,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLO
     float glitchShift = (glitchGate - 0.5) * 26.0 * uGlitch;
     float2 gp = float2(px.x + glitchShift, px.y);
 
-    //基底近黑 + 纵向渐变
-    float3 baseA = float3(0.030, 0.042, 0.058);
-    float3 baseB = float3(0.016, 0.024, 0.036);
+    //基底近黑 + 纵向渐变（保留可读对比度，别压到纯黑）
+    float3 baseA = float3(0.055, 0.075, 0.100);
+    float3 baseB = float3(0.032, 0.046, 0.066);
     float3 col = lerp(baseA, baseB, t01);
 
     //微噪声颗粒
@@ -67,9 +67,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vc : COLOR0) : COLO
     float band = sin((gp.x + gp.y * 2.2) * 0.055 - uTime * 1.1);
     col += uAccent * (band * 0.5 + 0.5) * 0.016;
 
-    //CRT横纹
+    //CRT横纹（压暗幅度收小，避免整体发闷）
     float crt = step(1.5, fmod(px.y, 3.0));
-    col *= lerp(1.0, 0.90, crt);
+    col *= lerp(1.0, 0.94, crt);
 
     //刷新带，数秒一次自上而下
     float sweepT = frac(uTime * 0.22);

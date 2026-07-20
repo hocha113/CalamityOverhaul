@@ -311,7 +311,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 new Rectangle(0, 0, 1, 1), barColor * (alpha * rFlicker));
 
             //=== 协议名称(带色散) ===
-            float fontScale = 0.50f * scale;
+            float fontScale = 0.60f * scale;
             float nameX = rect.X + 10;
             float nameY = rect.Y + 4 * scale;
             Color nameColor = Color.Lerp(HackTheme.TextBright, HackTheme.Danger, 0.4f * rPulse);
@@ -355,7 +355,7 @@ namespace CalamityOverhaul.Content.HackTimes
                 statusText = $"{(int)(p.UploadProgress * 100)}%";
                 statusColor = HackTheme.Uploading;
             }
-            float statusScale = 0.30f * scale;
+            float statusScale = 0.44f * scale;
             Vector2 stSize = FontAssets.MouseText.Value.MeasureString(statusText) * statusScale;
             Utils.DrawBorderString(sb, statusText,
                 new Vector2(rect.Right - stSize.X - 6, rect.Y + 4 * scale),
@@ -393,9 +393,9 @@ namespace CalamityOverhaul.Content.HackTimes
             float titleAlpha = Math.Min(t * 4f, 1f);
             float glitch = MathF.Sin(timer * 22f) * (1f + t * 3f);
             string title = HackTime.InitBreach.Value;
-            Color titleColor = Color.Lerp(HackTheme.Accent, HackTheme.Danger, t) * (alpha * titleAlpha * 0.65f);
+            Color titleColor = Color.Lerp(HackTheme.Accent, HackTheme.Danger, t) * (alpha * titleAlpha * 0.9f);
             Utils.DrawBorderString(sb, title,
-                new Vector2(barX + glitch, centerY - 40f), titleColor, 0.36f);
+                new Vector2(barX + glitch, centerY - 42f), titleColor, 0.58f);
 
             //进度条背景
             sb.Draw(px, new Rectangle((int)barX, (int)(centerY - barH * 0.5f), (int)barW, (int)barH),
@@ -432,10 +432,10 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //百分比
             string pctStr = $"{(int)(t * 100)}%";
-            Vector2 pctSize = FontAssets.MouseText.Value.MeasureString(pctStr) * 0.34f;
+            Vector2 pctSize = FontAssets.MouseText.Value.MeasureString(pctStr) * 0.5f;
             Utils.DrawBorderString(sb, pctStr,
                 new Vector2(barX + barW + 10, centerY - pctSize.Y * 0.5f),
-                Color.Lerp(HackTheme.Accent, HackTheme.Danger, t) * (alpha * 0.7f), 0.34f);
+                Color.Lerp(HackTheme.Accent, HackTheme.Danger, t) * (alpha * 0.9f), 0.5f);
 
             //CRT扫描线覆盖进度条区域
             Color crtLine = HackTheme.BgDarkest * (alpha * 0.04f);
@@ -470,15 +470,15 @@ namespace CalamityOverhaul.Content.HackTimes
             float blink = MathF.Sin(timer * 8f + MathF.Sin(timer * 3f) * 2f);
             if (blink > -0.2f) {
                 Utils.DrawBorderString(sb, header,
-                    new Vector2(36f + glitch, 80f), headerColor, 0.40f);
+                    new Vector2(36f + glitch, 78f), headerColor, 0.62f);
             }
 
-            //计数
+            //计数：无描边装饰字
             string countStr = $"[{popups.Count} ACTIVE]";
             float countBlink = MathF.Sin(timer * 6f) * 0.3f + 0.7f;
-            Utils.DrawBorderString(sb, countStr,
-                new Vector2(36f, 106f),
-                HackTheme.Danger * (alpha * headerAlpha * 0.35f * countBlink), 0.28f);
+            HackTheme.DrawRawText(sb, countStr,
+                new Vector2(36f, 108f),
+                HackTheme.Danger * (alpha * headerAlpha * 0.6f * countBlink), 0.46f);
 
             //警告横条
             if (modeActiveTime > 1.5f) {

@@ -78,19 +78,19 @@ namespace CalamityOverhaul.Content.HackTimes
                 float sideAlpha = (ease - 0.55f) / 0.45f * alpha;
                 float zoom = 1f + HackTime.GetZoomBoost();
                 string zoomStr = $"{zoom:F1}x";
-                Vector2 zs = FontAssets.MouseText.Value.MeasureString(zoomStr) * 0.42f;
-                Vector2 zoomPos = new(center.X - halfW - zs.X - 18f, center.Y - zs.Y * 0.5f);
-                Utils.DrawBorderString(sb, zoomStr, zoomPos, HackTheme.TextNormal * (sideAlpha * 0.55f), 0.42f);
+                Vector2 zs = FontAssets.MouseText.Value.MeasureString(zoomStr) * 0.56f;
+                Vector2 zoomPos = new((int)(center.X - halfW - zs.X - 18f), (int)(center.Y - zs.Y * 0.5f));
+                Utils.DrawBorderString(sb, zoomStr, zoomPos, HackTheme.TextBright * (sideAlpha * 0.8f), 0.56f);
                 //变焦标记连线刻度
                 HackTheme.DrawLine(sb, new Vector2(center.X - halfW - 12f, center.Y),
-                    new Vector2(center.X - halfW - 4f, center.Y), 1f, HackTheme.Accent * (sideAlpha * 0.35f));
+                    new Vector2(center.X - halfW - 4f, center.Y), 1f, HackTheme.Accent * (sideAlpha * 0.4f));
 
                 float distTiles = Vector2.Distance(Main.LocalPlayer.Center, target.WorldCenter) / 16f;
                 string distStr = $"{distTiles:F1}m";
-                Vector2 distPos = new(center.X + halfW + 18f, center.Y - zs.Y * 0.5f);
-                Utils.DrawBorderString(sb, distStr, distPos, HackTheme.TextNormal * (sideAlpha * 0.55f), 0.42f);
+                Vector2 distPos = new((int)(center.X + halfW + 18f), (int)(center.Y - zs.Y * 0.5f));
+                Utils.DrawBorderString(sb, distStr, distPos, HackTheme.TextBright * (sideAlpha * 0.8f), 0.56f);
                 HackTheme.DrawLine(sb, new Vector2(center.X + halfW + 4f, center.Y),
-                    new Vector2(center.X + halfW + 12f, center.Y), 1f, HackTheme.Accent * (sideAlpha * 0.35f));
+                    new Vector2(center.X + halfW + 12f, center.Y), 1f, HackTheme.Accent * (sideAlpha * 0.4f));
             }
 
             //头顶铭牌
@@ -119,7 +119,7 @@ namespace CalamityOverhaul.Content.HackTimes
             string name = target.LockFrameTitle;
             if (string.IsNullOrEmpty(name)) return;
 
-            float nameScale = 0.62f;
+            float nameScale = 0.68f;
             Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(name) * nameScale;
             bool hostile = HackTheme.HostileBlend > 0.5f;
 
@@ -135,8 +135,8 @@ namespace CalamityOverhaul.Content.HackTimes
             HackTheme.DrawDiamond(sb, diamondC, diamondR * 0.7f, diamondColor * 0.5f);
 
             //名称
-            Vector2 namePos = new(plateX + diamondR * 2f + 8f, plateY);
-            Utils.DrawBorderString(sb, name, namePos, HackTheme.TextBright * (alpha * 0.9f), nameScale);
+            Vector2 namePos = new((int)(plateX + diamondR * 2f + 8f), (int)plateY);
+            Utils.DrawBorderString(sb, name, namePos, HackTheme.TextBright * (alpha * 0.95f), nameScale);
             //名称底线（左对齐渐隐）
             HackTheme.DrawLine(sb, new Vector2(namePos.X, plateY + nameSize.Y + 1),
                 new Vector2(namePos.X + nameSize.X * 0.7f, plateY + nameSize.Y + 1),
@@ -145,8 +145,8 @@ namespace CalamityOverhaul.Content.HackTimes
             //状态读数（HP%等，名称右侧）
             if (target.TryGetLockFrameStatus(out string status, out Color statusColor)) {
                 Utils.DrawBorderString(sb, status,
-                    new Vector2(namePos.X + nameSize.X + 10f, plateY + 3f),
-                    statusColor * (alpha * 0.7f), 0.44f);
+                    new Vector2((int)(namePos.X + nameSize.X + 10f), (int)(plateY + 3f)),
+                    Color.Lerp(statusColor, Color.White, 0.15f) * (alpha * 0.9f), 0.56f);
             }
 
             //敌对告警符（铭牌上方闪烁三角）

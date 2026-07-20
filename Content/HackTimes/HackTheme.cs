@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.HackTimes.Scannables;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using System;
 using Terraria;
 using Terraria.GameContent;
@@ -218,20 +219,30 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
+        /// <summary>
+        /// 无描边文字。深底上的弱化/装饰文本用——<see cref="Utils.DrawBorderString"/> 的黑描边
+        /// 在低亮度填充下会把小字糊成黑块，此路径让文字随透明度干净淡出
+        /// </summary>
+        public static void DrawRawText(SpriteBatch sb, string text, Vector2 pos, Color color, float scale) {
+            if (string.IsNullOrEmpty(text)) return;
+            sb.DrawString(FontAssets.MouseText.Value, text, new Vector2((int)pos.X, (int)pos.Y),
+                color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        }
+
         /// <summary>微型状态徽章：细描边小框 + 文字，返回徽章像素宽</summary>
-        public static float DrawBadge(SpriteBatch sb, Vector2 pos, string text, Color color, float alpha, float fontScale = 0.52f) {
+        public static float DrawBadge(SpriteBatch sb, Vector2 pos, string text, Color color, float alpha, float fontScale = 0.58f) {
             Texture2D px = Pixel;
             if (px == null || string.IsNullOrEmpty(text)) return 0f;
             Vector2 size = FontAssets.MouseText.Value.MeasureString(text) * fontScale;
-            int padX = 4;
+            int padX = 5;
             int w = (int)size.X + padX * 2;
-            int h = (int)size.Y + 1;
+            int h = (int)size.Y + 2;
             Rectangle box = new((int)pos.X, (int)pos.Y, w, h);
-            sb.Draw(px, box, SrcPixel, color * (alpha * 0.10f));
+            sb.Draw(px, box, SrcPixel, color * (alpha * 0.12f));
             //只描上下两条细边，保持开放感
-            sb.Draw(px, new Rectangle(box.X, box.Y, w, 1), SrcPixel, color * (alpha * 0.45f));
-            sb.Draw(px, new Rectangle(box.X, box.Bottom - 1, w, 1), SrcPixel, color * (alpha * 0.30f));
-            Utils.DrawBorderString(sb, text, new Vector2(pos.X + padX, pos.Y - 1), color * alpha, fontScale);
+            sb.Draw(px, new Rectangle(box.X, box.Y, w, 1), SrcPixel, color * (alpha * 0.50f));
+            sb.Draw(px, new Rectangle(box.X, box.Bottom - 1, w, 1), SrcPixel, color * (alpha * 0.35f));
+            Utils.DrawBorderString(sb, text, new Vector2((int)(pos.X + padX), (int)pos.Y), color * alpha, fontScale);
             return w;
         }
 

@@ -37,11 +37,11 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private const float LeftMargin = 36f;
         private const float PanelWidth = 340f;
-        private const float RowHeight = 21f;
-        private const float TabRowHeight = 18f;
+        private const float RowHeight = 23f;
+        private const float TabRowHeight = 22f;
         private const float TitleHeight = 30f;
         private const float SepHeight = 9f;
-        private const float StatusHeight = 24f;
+        private const float StatusHeight = 26f;
         private const float TopPad = 10f;
         private const float BottomPad = 10f;
         //头像格边长
@@ -49,7 +49,7 @@ namespace CalamityOverhaul.Content.HackTimes
         //头像格与右侧行区间距
         private const float PortraitGap = 12f;
         //威胁刻度行高
-        private const float PipsRowHeight = 18f;
+        private const float PipsRowHeight = 20f;
         //扫描时长(帧)
         private const float ScanDuration = 30f;
         //每行揭示间隔(秒)
@@ -58,12 +58,12 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float TypewriterSpeed = 2.5f;
         //数据行数组容量
         private const int MaxDataRowCount = 10;
-        //字体
+        //字体：MouseText 中文低于 0.5 会糊，0.5 为下限
         private const float FontTitle = 0.86f;
         private const float FontRow = 0.72f;
-        private const float FontLabel = 0.56f;
-        private const float FontStatus = 0.60f;
-        private const float FontMicro = 0.38f;
+        private const float FontLabel = 0.62f;
+        private const float FontStatus = 0.64f;
+        private const float FontMicro = 0.50f;
 
         #endregion
 
@@ -259,13 +259,13 @@ namespace CalamityOverhaul.Content.HackTimes
                     1f, HackTheme.Border * (alpha * 0.5f), 5f, 4f);
                 curY += SepHeight;
 
-                float statusPulse = MathF.Sin(timer * 3f) * 0.15f + 0.85f;
-                Utils.DrawBorderString(sb, statusText, new Vector2(textX, curY),
-                    statusColor * (alpha * statusPulse), FontStatus);
+                float statusPulse = MathF.Sin(timer * 3f) * 0.12f + 0.88f;
+                Utils.DrawBorderString(sb, statusText, new Vector2((int)textX, (int)curY),
+                    Color.Lerp(statusColor, Color.White, 0.15f) * (alpha * statusPulse), FontStatus);
 
                 string hexTag = $"0x{(int)(timer * 50) % 0xFFFF:X4}";
-                Utils.DrawBorderString(sb, hexTag, new Vector2(baseX + PanelWidth - 78, curY + 2),
-                    HackTheme.Accent * (alpha * 0.22f), FontMicro);
+                HackTheme.DrawRawText(sb, hexTag, new Vector2(baseX + PanelWidth - 78, curY + 3),
+                    HackTheme.Accent * (alpha * 0.5f), FontMicro);
             }
 
             DrawScanLineOverlay(sb, px, panelRect, alpha);
@@ -324,22 +324,22 @@ namespace CalamityOverhaul.Content.HackTimes
         private void DrawTabs(SpriteBatch sb, float textX, float curY, float alpha, Rectangle panelRect) {
             Texture2D px = HackTheme.Pixel;
             string tab1 = $"//{HackTime.DataTab.Value}";
-            Utils.DrawBorderString(sb, tab1, new Vector2(textX, curY),
-                HackTheme.Accent * (alpha * 0.85f), 0.5f);
-            float tab1W = FontAssets.MouseText.Value.MeasureString(tab1).X * 0.5f;
+            Utils.DrawBorderString(sb, tab1, new Vector2((int)textX, (int)curY),
+                Color.Lerp(HackTheme.Accent, Color.White, 0.15f) * alpha, 0.6f);
+            float tab1W = FontAssets.MouseText.Value.MeasureString(tab1).X * 0.6f;
             //活动标签底线
-            sb.Draw(px, new Rectangle((int)textX, (int)(curY + 13), (int)tab1W, 1),
+            sb.Draw(px, new Rectangle((int)textX, (int)(curY + 17), (int)tab1W, 1),
                 HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.6f));
 
             string tab2 = HackTime.ScanTab.Value;
-            Utils.DrawBorderString(sb, tab2, new Vector2(textX + tab1W + 16, curY),
-                HackTheme.TextDim * (alpha * 0.5f), 0.5f);
+            HackTheme.DrawRawText(sb, tab2, new Vector2(textX + tab1W + 16, curY),
+                HackTheme.TextNormal * (alpha * 0.6f), 0.6f);
 
-            //右上角微型ID
+            //右上角微型ID：无描边装饰字
             string idTag = $"ID:{(lastScanTarget?.GetHashCode() ?? 0) & 0xFFF:X3}";
             Vector2 idSize = FontAssets.MouseText.Value.MeasureString(idTag) * FontMicro;
-            Utils.DrawBorderString(sb, idTag, new Vector2(panelRect.Right - idSize.X - 12, curY + 1),
-                HackTheme.TextDim * (alpha * 0.4f), FontMicro);
+            HackTheme.DrawRawText(sb, idTag, new Vector2(panelRect.Right - idSize.X - 12, curY + 2),
+                HackTheme.TextNormal * (alpha * 0.55f), FontMicro);
         }
 
         #endregion
@@ -406,8 +406,8 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //已标记戳记（格底徽章）
             float stampPulse = MathF.Sin(timer * 4f) * 0.15f + 0.85f;
-            HackTheme.DrawBadge(sb, new Vector2(cell.X + 3, cell.Bottom - 15),
-                HackTime.TargetTagged.Value, HackTheme.Accent, alpha * 0.8f * stampPulse, 0.36f);
+            HackTheme.DrawBadge(sb, new Vector2(cell.X + 2, cell.Bottom - 19),
+                HackTime.TargetTagged.Value, HackTheme.Accent, alpha * stampPulse, 0.5f);
         }
 
         private static string KindGlyph(HackTargetKind kind) => kind switch {
@@ -426,19 +426,19 @@ namespace CalamityOverhaul.Content.HackTimes
             if (lastScanTarget is not NpcScannable n || !n.IsValid) return;
             int pips = NpcScannable.ComputeThreatPips(Main.npc[n.NpcIndex]);
 
-            Utils.DrawBorderString(sb, HackTime.ThreatLabel.Value, pos,
-                HackTheme.TextDim * (alpha * 0.7f), FontMicro);
+            Utils.DrawBorderString(sb, HackTime.ThreatLabel.Value, new Vector2((int)pos.X, (int)pos.Y),
+                HackTheme.TextNormal * (alpha * 0.85f), FontMicro);
             float labelW = FontAssets.MouseText.Value.MeasureString(HackTime.ThreatLabel.Value).X * FontMicro;
 
             Color pipOn = pips >= 4 ? HackTheme.Danger : pips >= 3 ? HackTheme.Uploading : HackTheme.Accent;
             for (int i = 0; i < 5; i++) {
-                Vector2 c = new(pos.X + labelW + 12 + i * 13f, pos.Y + 6f);
+                Vector2 c = new(pos.X + labelW + 14 + i * 14f, pos.Y + 8f);
                 if (i < pips) {
                     float pulse = pips >= 4 ? MathF.Sin(timer * 5f + i) * 0.2f + 0.8f : 1f;
-                    HackTheme.DrawDiamond(sb, c, 7f, pipOn * (alpha * 0.9f * pulse));
+                    HackTheme.DrawDiamond(sb, c, 8f, pipOn * (alpha * 0.95f * pulse));
                 }
                 else {
-                    HackTheme.DrawDiamondOutline(sb, c, 3.5f, 1f, HackTheme.Border * (alpha * 0.6f));
+                    HackTheme.DrawDiamondOutline(sb, c, 4f, 1f, HackTheme.BorderBright * (alpha * 0.7f));
                 }
             }
         }
@@ -478,16 +478,16 @@ namespace CalamityOverhaul.Content.HackTimes
             curY += 18f;
             string scanText = $"{HackTime.Scanning.Value} {(int)(scanProgress * 100)}%";
             float pulse = MathF.Sin(timer * 6f) * 0.2f + 0.8f;
-            Utils.DrawBorderString(sb, scanText, new Vector2(baseX + 14, curY),
-                HackTheme.Uploading * (alpha * pulse), 0.60f);
+            Utils.DrawBorderString(sb, scanText, new Vector2((int)(baseX + 14), (int)curY),
+                Color.Lerp(HackTheme.Uploading, Color.White, 0.15f) * (alpha * pulse), 0.64f);
 
-            //滚动数据噪声
-            curY += 22f;
+            //滚动数据噪声：无描边装饰字
+            curY += 24f;
             string noise = $"0x{(int)(timer * 200) % 0xFFFFFF:X6}  "
                 + $"BUF:{(int)(timer * 80) % 999:D3}  "
                 + $"SIG:{(int)(timer * 150) % 0xFFF:X3}";
-            Utils.DrawBorderString(sb, noise, new Vector2(baseX + 14, curY),
-                HackTheme.TextDim * (alpha * 0.3f), 0.62f);
+            HackTheme.DrawRawText(sb, noise, new Vector2(baseX + 14, curY),
+                HackTheme.TextNormal * (alpha * 0.55f), 0.6f);
         }
 
         //单行数据渲染，maxWidth 限制数值起始偏移
@@ -511,13 +511,13 @@ namespace CalamityOverhaul.Content.HackTimes
             float rowShake = rowGlitch * MathF.Sin(timer * 50f + i * 7f);
 
             //标签（微型，行首刻点）
-            sb.Draw(px, new Rectangle((int)(textX + rowShake), (int)(curY + 6), 3, 3),
-                HackTheme.SrcPixel, valueColor * (alpha * 0.5f));
-            Utils.DrawBorderString(sb, label, new Vector2(textX + 8 + rowShake, curY + 1),
-                HackTheme.TextDim * (alpha * 0.75f), FontLabel);
+            sb.Draw(px, new Rectangle((int)(textX + rowShake), (int)(curY + 7), 3, 3),
+                HackTheme.SrcPixel, valueColor * (alpha * 0.6f));
+            Utils.DrawBorderString(sb, label, new Vector2((int)(textX + 8 + rowShake), (int)(curY + 1)),
+                HackTheme.TextNormal * (alpha * 0.9f), FontLabel);
 
             //数值（标签右侧固定列）
-            float valueX = textX + Math.Min(maxWidth * 0.42f, 96f) + rowShake;
+            float valueX = textX + Math.Min(maxWidth * 0.45f, 108f) + rowShake;
 
             //色散(揭示中)
             if (isCurrent && typewriterChar < value.Length) {

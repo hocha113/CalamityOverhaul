@@ -17,7 +17,7 @@ namespace CalamityOverhaul.Content.HackTimes
         private const float CardGap = 3f;
         private const float BarHeight = 3f;
         private const float BarMargin = 4f;
-        private const float FontScale = 0.28f;
+        private const float FontScale = 0.32f;
         //距NPC头顶的距离
         private const float TopOffset = 18f;
 
