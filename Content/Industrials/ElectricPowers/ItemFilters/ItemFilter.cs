@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Industrials.ElectricPowers.Collectors;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
@@ -262,6 +262,10 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.ItemFilters
             if (card.Filter.IsEmpty && tag.TryGet("_Items", out int[] legacyItems)) {
                 card.Filter.CopyFrom(legacyItems, ItemFilterMode.Whitelist);
             }
+        }
+
+        public override void SaveData(Item item, TagCompound tag) {
+            base.SaveData(item, tag);
         }
     }
 }
