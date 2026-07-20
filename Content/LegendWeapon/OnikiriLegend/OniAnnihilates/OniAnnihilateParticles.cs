@@ -56,8 +56,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int index = (int)ai[0];
-            Rectangle frame = new(index % 2 * 512, index / 2 * 512, 512, 512);
-            //沿速度方向微拉长的小墨点（帧 512px，0.16 基准缩到几十像素）
+            int frameSize = tex.Width / 2;
+            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
+            //沿速度方向微拉长的小墨点（单帧边长为贴图半宽，0.16 基准缩到几十像素）
             float stretch = MathHelper.Clamp(Velocity.Length() * 0.05f, 1f, 1.7f);
             Vector2 scale = new Vector2(0.80f, stretch) * Scale * 0.16f;
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation

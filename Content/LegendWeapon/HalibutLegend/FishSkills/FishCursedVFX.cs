@@ -330,7 +330,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int w = tex.Width / 2;
             int h = tex.Height / 2;
             Rectangle rect = new(w * (frame % 2), h * (frame / 2), w, h);
-            //帧 512px，×0.5 对齐 256px 级烟团的直觉尺寸
+            //×0.5 对齐直觉烟团尺寸（帧边长随贴图半宽变化）
             spriteBatch.Draw(tex, Position - Main.screenPosition, rect, Color * Opacity
                 , Rotation, rect.Size() / 2f, Scale * 0.5f, SpriteEffects.None, 0f);
             return false;

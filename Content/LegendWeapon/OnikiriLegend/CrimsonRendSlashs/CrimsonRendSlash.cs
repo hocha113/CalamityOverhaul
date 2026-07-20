@@ -1400,10 +1400,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             float t = (bt - 2f) / 6f;   //0..1
-            //512px 帧：峰值 ~0.36 倍 ≈ 185px 暗核，收缩至 ~60px
+            //单帧峰值 ~0.36 倍，收缩至约 1/3
             float coreS = MathHelper.Lerp(0.36f, 0.12f, t * t) * sizeMul;
             float coreA = MathF.Sin(t * MathF.PI) * 0.78f;
-            Rectangle frame = new(Projectile.whoAmI % 2 * 512, Projectile.whoAmI / 2 % 2 * 512, 512, 512);
+            int frameSize = cloud.Width / 2;
+            Rectangle frame = new(Projectile.whoAmI % 2 * frameSize, Projectile.whoAmI / 2 % 2 * frameSize, frameSize, frameSize);
 
             SpriteBatch sb = Main.spriteBatch;
             sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp

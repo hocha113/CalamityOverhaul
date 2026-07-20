@@ -984,14 +984,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
             //底层土体:三片噪形烟团随球转动拼出哑光团块剪影,画在鱼层之下(夹心)
             if (lumpTex != null) {
+                int frameSize = lumpTex.Width / 2;
+                Vector2 origin = new(frameSize * 0.5f);
                 for (int k = 0; k < 3; k++) {
-                    Rectangle frame = new(k % 2 * 512, k / 2 * 512, 512, 512);
+                    Rectangle frame = new(k % 2 * frameSize, k / 2 * frameSize, frameSize, frameSize);
                     float phase = k * 2.1f;
                     Vector2 off = (rot * 0.9f + phase).ToRotationVector2() * (k * 6f * ballSize) * deform;
                     Color c = (k == 0 ? FishDirtVFX.SoilDark : FishDirtVFX.SoilDeep).MultiplyRGB(lightColor);
                     float s = (0.16f - k * 0.022f) * ballSize;
                     sb.Draw(lumpTex, drawPos + off, frame, c * ((k == 0 ? 0.92f : 0.78f) * alpha),
-                        rot + phase, new Vector2(256f), new Vector2(s) * deform, SpriteEffects.None, 0);
+                        rot + phase, origin, new Vector2(s) * deform, SpriteEffects.None, 0);
                 }
             }
 

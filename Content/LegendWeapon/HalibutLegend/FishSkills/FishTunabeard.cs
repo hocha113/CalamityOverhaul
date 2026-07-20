@@ -350,12 +350,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                 return false;
             }
             float rot = dashDir.ToRotation();
+            int frameSize = smoke.Width / 2;
             for (int k = 0; k < 3; k++) {
                 int idx = pathPos.Count - 1 - k * 2;
                 if (idx < 0) {
                     break;
                 }
-                Rectangle frame = new(k % 2 * 512, k / 2 % 2 * 512, 512, 512);
+                Rectangle frame = new(k % 2 * frameSize, k / 2 % 2 * frameSize, frameSize, frameSize);
                 Vector2 pos = pathPos[idx] + Vector2.UnitY * Sag(DashTimer - pathBirth[idx]) - Main.screenPosition;
                 Vector2 scale = new Vector2(1.9f - k * 0.25f, 0.62f - k * 0.06f) * 0.5f * swell;
                 Main.EntitySpriteDraw(smoke, pos, frame, FishTunabeardVFX.Deep * ((0.30f - k * 0.05f) * env)

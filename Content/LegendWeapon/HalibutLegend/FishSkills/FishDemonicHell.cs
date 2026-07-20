@@ -579,17 +579,19 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             //第3层：黑烟剪影核（AlphaBlend 暗体，双帧异向翻滚，effect body 是暗结构而非光球）
             Texture2D smokeSheet = CWRAsset.SmokeSheet01?.Value;
             if (smokeSheet != null) {
+                int frameSize = smokeSheet.Width / 2;
                 int f1 = Projectile.whoAmI % 4;
                 int f2 = (Projectile.whoAmI + 2) % 4;
-                Rectangle r1 = new(f1 % 2 * 512, f1 / 2 * 512, 512, 512);
-                Rectangle r2 = new(f2 % 2 * 512, f2 / 2 * 512, 512, 512);
+                Rectangle r1 = new(f1 % 2 * frameSize, f1 / 2 * frameSize, frameSize, frameSize);
+                Rectangle r2 = new(f2 % 2 * frameSize, f2 / 2 * frameSize, frameSize, frameSize);
+                Vector2 origin = new(frameSize * 0.5f);
                 float wob = (float)Math.Sin(time * 5f + Projectile.whoAmI) * 3f * scale;
                 sb.Draw(smokeSheet, center + new Vector2(wob, -wob * 0.5f), r1,
                     new Color(30, 12, 13, 235), Projectile.rotation,
-                    new Vector2(256f), 0.22f * scale, SpriteEffects.None, 0f);
+                    origin, 0.22f * scale, SpriteEffects.None, 0f);
                 sb.Draw(smokeSheet, center - new Vector2(wob * 0.7f, wob * 0.4f), r2,
                     new Color(46, 17, 15, 205), -Projectile.rotation * 0.6f,
-                    new Vector2(256f), 0.17f * scale, SpriteEffects.None, 0f);
+                    origin, 0.17f * scale, SpriteEffects.None, 0f);
             }
 
             //第4层：前缘月牙焰（方向编码：火焰兜在弹头迎风面）
@@ -845,9 +847,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            Rectangle rect = new(frame % 2 * 512, frame / 2 * 512, 512, 512);
+            int frameSize = tex.Width / 2;
+            Rectangle rect = new(frame % 2 * frameSize, frame / 2 * frameSize, frameSize, frameSize);
             spriteBatch.Draw(tex, Position - Main.screenPosition, rect, Color * Opacity,
-                Rotation, new Vector2(256f), Scale, SpriteEffects.None, 0f);
+                Rotation, rect.Size() * 0.5f, Scale, SpriteEffects.None, 0f);
             return false;
         }
     }

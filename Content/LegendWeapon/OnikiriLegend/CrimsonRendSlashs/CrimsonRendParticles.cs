@@ -61,7 +61,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int index = (int)ai[0];
-            Rectangle frame = new(index % 2 * 512, index / 2 * 512, 512, 512);
+            int frameSize = tex.Width / 2;
+            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
                 , frame.Size() * 0.5f, Scale * 0.5f, SpriteEffects.None, 0);
             return false;

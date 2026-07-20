@@ -909,7 +909,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
                     off = off * 0.5f - Projectile.velocity.SafeNormalize(Vector2.Zero) * 16f;
                 }
                 int frameIdx = (Projectile.whoAmI + idx * 7) % 4;
-                Rectangle fr = new(frameIdx % 2 * 512, frameIdx / 2 * 512, 512, 512);
+                int frameSize = smoke.Width / 2;
+                Rectangle fr = new(frameIdx % 2 * frameSize, frameIdx / 2 * frameSize, frameSize, frameSize);
                 Vector2 fo = fr.Size() / 2f;
                 float alpha = (underLayer ? 0.35f : 0.20f) * fade * matT;
                 float rot = phase * 0.5f + t * 0.25f;

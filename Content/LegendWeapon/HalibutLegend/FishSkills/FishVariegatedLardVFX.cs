@@ -145,7 +145,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int idx = (int)ai[0];
-            Rectangle frame = new(idx % 2 * 512, idx / 2 * 512, 512, 512);
+            int frameSize = tex.Width / 2;
+            Rectangle frame = new(idx % 2 * frameSize, idx / 2 * frameSize, frameSize, frameSize);
             Vector2 pos = Position - Main.screenPosition;
             //双层同帧异径：外圈更暗更淡，压出体积而不提亮
             spriteBatch.Draw(tex, pos, frame, FishLardPalette.SmokeDark * (Opacity * 0.42f)

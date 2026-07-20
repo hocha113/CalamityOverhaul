@@ -96,7 +96,7 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> Ring01 = null;//扩散环（白RGB+Alpha形状）
         //---- 烟雾（白RGB+Alpha形状，AlphaBlend染色用）----
         [VaultLoaden(CWRConstant.Masking)]
-        public static Asset<Texture2D> SmokeSheet01 = null;//烟团序列帧2×2×512
+        public static Asset<Texture2D> SmokeSheet01 = null;//烟团序列帧 2×2（帧边长 = Width/2）
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> SmokeWisp01 = null;//拉丝烟缕（亮度型）
         //---- 噪声 ----

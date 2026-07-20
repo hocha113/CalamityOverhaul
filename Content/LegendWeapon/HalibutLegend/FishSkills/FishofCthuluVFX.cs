@@ -177,7 +177,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
 
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
-            Rectangle frame = new(frameIndex % 2 * 512, frameIndex / 2 * 512, 512, 512);
+            int frameSize = tex.Width / 2;
+            Rectangle frame = new(frameIndex % 2 * frameSize, frameIndex / 2 * frameSize, frameSize, frameSize);
             Vector2 origin = frame.Size() * 0.5f;
             Vector2 pos = Position - Main.screenPosition;
 

@@ -291,7 +291,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int index = (int)ai[0];
-            Rectangle frame = new(index % 2 * 512, index / 2 * 512, 512, 512);
+            int frameSize = tex.Width / 2;
+            Rectangle frame = new(index % 2 * frameSize, index / 2 * frameSize, frameSize, frameSize);
 
             Color env = Lighting.GetColor(Position.ToTileCoordinates());
             Color lit = Color.Lerp(Color.MultiplyRGB(env), Color, 0.30f) * Opacity;
