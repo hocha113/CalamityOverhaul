@@ -48,6 +48,10 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
             if (Main.dedServ || Main.gameMenu) {
                 return;
             }
+            //上线闸:系统未开放期间贴饰不落画——调试期留下的旧锚在正常游玩里也不显形迹
+            if (!WraithDirector.CanonContentActive) {
+                return;
+            }
             if (!WraithSiteSystem.TryGet(nameof(GhostHand), out WraithSiteRecord record) || !record.Anchored
                 || !WraithActs.ActTwo) {
                 return;

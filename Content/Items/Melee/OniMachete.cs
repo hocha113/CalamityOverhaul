@@ -62,7 +62,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.width = Item.height = 45;
             Item.damage = 2666;
             Item.DamageType = DamageClass.Generic;
-            Item.useTime = Item.useAnimation = 26;
+            Item.useTime = Item.useAnimation = 20; //真实节奏由 BladeActive 把关（普通刀 22 帧/重斩 30 帧）
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.noUseGraphic = true;
@@ -485,15 +485,15 @@ namespace CalamityOverhaul.Content.Items.Melee
         private int Beat => (int)BeatAi;
         private bool IsFinisher => Beat >= BeatCount - 1;
 
-        //==== 节拍时长（逻辑帧，受攻速缩放；前摇占比 ≥40%）====
-        private float WindupTime => IsFinisher ? 15f : 12f;
+        //==== 节拍时长（逻辑帧，受攻速缩放；前摇仍占 ~40% 保可读，但整体压紧求快）====
+        private float WindupTime => IsFinisher ? 12f : 9f;
         /// <summary>重斩独有：蓄势顶点的滞帧（爆发前的静止）</summary>
         private float HoldTime => IsFinisher ? 3f : 0f;
         private float StrikeTime => 5f;
-        private float RecoverTime => IsFinisher ? 14f : 12f;
+        private float RecoverTime => IsFinisher ? 10f : 8f;
         private float TotalTime => WindupTime + HoldTime + StrikeTime + RecoverTime;
         private float SwingArc => IsFinisher ? 4.6f : 3.4f;
-        private float BladeReach => (IsFinisher ? 165f : 148f) * Projectile.scale;
+        private float BladeReach => (IsFinisher ? 196f : 175f) * Projectile.scale;
         /// <summary>蓄势收束硬切点：之后停喷收束粒子（爆发前的静默）</summary>
         private const float ChargeSilenceAt = 0.72f;
 
@@ -582,22 +582,22 @@ namespace CalamityOverhaul.Content.Items.Melee
                 0 => new OniSlashStrip.Def {
                     Life = 24, ErodeStart = 7, ErodeFrames = 13,
                     Rot = aim + swingSign * 0.14f, Span = 3.15f, Thick = 0.32f,
-                    HalfX = 132f * s, HalfY = 180f * s, Flip = swingSign,
-                    Opacity = 0.92f, FrontGlow = 2.2f, OffsetAlongAim = 26f * s,
+                    HalfX = 156f * s, HalfY = 212f * s, Flip = swingSign,
+                    Opacity = 0.92f, FrontGlow = 2.2f, OffsetAlongAim = 30f * s,
                     TailErode = 0.50f, FlashPower = 0.55f, GoldVein = 0.25f,
                 },
                 1 => new OniSlashStrip.Def {
                     Life = 24, ErodeStart = 7, ErodeFrames = 13,
                     Rot = aim - swingSign * 0.10f, Span = 3.25f, Thick = 0.34f,
-                    HalfX = 148f * s, HalfY = 198f * s, Flip = swingSign,
-                    Opacity = 0.95f, FrontGlow = 2.4f, OffsetAlongAim = 36f * s,
+                    HalfX = 175f * s, HalfY = 234f * s, Flip = swingSign,
+                    Opacity = 0.95f, FrontGlow = 2.4f, OffsetAlongAim = 42f * s,
                     TailErode = 0.45f, FlashPower = 0.60f, GoldVein = 0.35f,
                 },
                 _ => new OniSlashStrip.Def {
                     Life = 32, ErodeStart = 9, ErodeFrames = 17,
                     Rot = aim + swingSign * 0.24f, Span = 3.45f, Thick = 0.44f,
-                    HalfX = 238f * s, HalfY = 152f * s, Flip = swingSign,
-                    Opacity = 1f, FrontGlow = 2.8f, OffsetAlongAim = -22f * s,
+                    HalfX = 280f * s, HalfY = 180f * s, Flip = swingSign,
+                    Opacity = 1f, FrontGlow = 2.8f, OffsetAlongAim = -26f * s,
                     TailErode = 0.34f, FlashPower = 0.92f, GoldVein = 1f,
                 },
             };
@@ -854,7 +854,7 @@ namespace CalamityOverhaul.Content.Items.Melee
             Vector2 origin = tex.Size() / 2f;
             Vector2 hand = Owner.GetPlayerStabilityCenter();
             float dist = BladeReach * 0.52f;
-            float drawScale = Projectile.scale * 1.35f * (1f + recoilPulse * 0.04f);
+            float drawScale = Projectile.scale * 1.52f * (1f + recoilPulse * 0.04f);
 
             SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
             //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)

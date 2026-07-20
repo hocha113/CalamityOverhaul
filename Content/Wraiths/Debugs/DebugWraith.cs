@@ -39,6 +39,8 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
         public override int HaltWindowTicks => 60 * 10;
         //外部逼死机白名单(鬼律第九条执行点):只有试件吃调试器的死机模式,正典鬼一律走自身规则
         public override bool AllowExternalHaltRequest => true;
+        //调试件豁免上线闸(WraithDirector.LiveContentEnabled),自持 DebugHauntEnabled/DebugSiteArmed 闸门
+        public override bool IsDebugContent => true;
 
         protected override void LoadExtraLocalization() {
             OmenDeath = this.GetLocalization(nameof(OmenDeath), () => "{0}没有在三息之内挣脱试件的注视");

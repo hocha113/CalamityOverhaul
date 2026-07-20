@@ -261,6 +261,10 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
                 return;
             }
             resupplyTimer = 0;
+            //上线闸:挣脱体本就物化不出来,这里再省掉 1Hz 的实体扫描
+            if (!WraithDirector.CanonContentActive) {
+                return;
+            }
 
             GhostHandActor escaped = null;
             foreach (GhostHandActor hand in ActorLoader.GetActiveActors<GhostHandActor>()) {

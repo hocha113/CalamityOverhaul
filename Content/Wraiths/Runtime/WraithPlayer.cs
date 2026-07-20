@@ -258,6 +258,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 if (!WraithRegistry.TryGet(key, out WraithDefinition definition) || definition.Ability == null) {
                     continue;
                 }
+                //上线闸:系统未开放期间正典鬼的力借不出来(出厂绑定的焦黑枯手按 P 无事发生,走"无可借之力"回执)
+                if (!WraithDirector.ContentActiveFor(definition)) {
+                    continue;
+                }
                 if (WraithBacklash.AnyEscapedAlive(key, Player.whoAmI)) {
                     escapedBlocked = true;
                     continue;

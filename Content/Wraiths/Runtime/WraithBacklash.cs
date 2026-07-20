@@ -46,6 +46,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 if (!WraithRegistry.TryGet(key, out WraithDefinition definition) || definition.ActorType == null) {
                     continue;
                 }
+                //上线闸:系统未开放期间正典鬼(出厂躁动的焦黑枯手等)不掷签,不发注定被拒的请求
+                if (!WraithDirector.ContentActiveFor(definition)) {
+                    continue;
+                }
                 if (wraithPlayer.BacklashOnCooldown(key, now) || wraithPlayer.IsEscapePending(key)
                     || AnyEscapedAlive(key, player.whoAmI)) {
                     continue;

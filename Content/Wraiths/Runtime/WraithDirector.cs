@@ -27,6 +27,25 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         /// <summary>调试闸门：DebugWraith 的自动规则以它为条件，调试物品翻转（会话级，不落档）</summary>
         internal static bool DebugHauntEnabled;
 
+        /// <summary>
+        /// 上线闸：厉鬼系统是否面向实际游玩开放。目前**未开放**——正典鬼的一切自然渠道
+        /// （据点调度、环境规则、反噬掷签与生成、借力、传闻路标、据点贴饰）统一被
+        /// <see cref="ContentActiveFor"/> 钳住，只在调试闹鬼闸开启时活动（单人调试专用）。
+        /// 系统正式上线时把本常量翻真即可，无需回收各处闸点
+        /// </summary>
+        internal const bool LiveContentEnabled = false;
+
+        /// <summary>正典内容（非调试件）的自然渠道是否放行：上线闸开或调试闹鬼闸开（后者=单人调试专用）</summary>
+        internal static bool CanonContentActive => LiveContentEnabled || DebugHauntEnabled;
+
+        /// <summary>
+        /// 该定义的自然渠道当前是否放行：正典走 <see cref="CanonContentActive"/>，调试件豁免
+        /// （自持调试闸门）。服务器与本端各自判定——调试闸是本端会话态，多人服务器恒关，
+        /// 正典内容在多人下天然静默
+        /// </summary>
+        internal static bool ContentActiveFor(WraithDefinition definition)
+            => CanonContentActive || (definition?.IsDebugContent ?? false);
+
         public override void ClearWorld() {
             cooldownUntil.Clear();
             checkTimer = 0;
@@ -76,7 +95,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         /// </summary>
         private static void TrySiteMaterialize(WraithDefinition definition) {
             WraithSitePlan plan = definition.SitePlan;
-            if (plan == null || definition.ActorType == null) {
+            if (plan == null || definition.ActorType == null || !ContentActiveFor(definition)) {
                 return;
             }
 
@@ -154,7 +173,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         private static void TryAutoMaterialize(WraithDefinition definition) {
             WraithSpawnRule rule = definition.SpawnRule;
-            if (rule == null || definition.ActorType == null) {
+            if (rule == null || definition.ActorType == null || !ContentActiveFor(definition)) {
                 return;
             }
 
@@ -191,11 +210,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>
         /// 显形一只厉鬼，返回实体 WhoAmI。全局遭遇互斥在此执行：已有厉鬼在场直接放弃（返回 -1），
-        /// 一切生成通道共用本闸。仅权威端可生成；客户端调用一律返回 -1（调试通道在多人下由
-        /// 调试器明示不受理，不发生成请求）。position 为实体左上角（Actor.Position 语义）
+        /// 一切生成通道共用本闸；上线闸（<see cref="ContentActiveFor"/>）同在此兜底——
+        /// 系统未开放期间任何旁路都物化不出正典鬼。仅权威端可生成；客户端调用一律返回 -1
+        /// （调试通道在多人下由调试器明示不受理，不发生成请求）。position 为实体左上角（Actor.Position 语义）
         /// </summary>
         public static int Materialize(WraithDefinition definition, Vector2 position) {
-            if (definition?.ActorType == null || VaultUtils.isClient || EncounterInProgress()) {
+            if (definition?.ActorType == null || VaultUtils.isClient
+                || !ContentActiveFor(definition) || EncounterInProgress()) {
                 return -1;
             }
             return ActorLoader.NewActor(ActorLoader.GetActorID(definition.ActorType), position);

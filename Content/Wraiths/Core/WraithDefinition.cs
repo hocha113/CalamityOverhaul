@@ -31,6 +31,11 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public virtual WraithBindState InitialBindState => WraithBindState.Unknown;
         /// <summary>图鉴/名录类展示是否隐藏（调试件、剧情隐藏鬼用），不影响注册与生成</summary>
         public virtual bool HiddenFromCatalog => false;
+        /// <summary>
+        /// 是否调试件：调试内容不受 <c>WraithDirector.LiveContentEnabled</c> 上线闸约束（自持调试闸门）。
+        /// 正典鬼一律保持 false——系统未开放期间，其全部自然出现渠道被上线闸钳在调试闹鬼闸后
+        /// </summary>
+        public virtual bool IsDebugContent => false;
 
         //====本地化（LoadLocalization 由注册表在 Mod.Load 期调用）====
         /// <summary>鬼名</summary>

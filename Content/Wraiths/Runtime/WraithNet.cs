@@ -320,6 +320,10 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 || definition.Ability == null) {
                 return;
             }
+            //上线闸:系统未开放期间正典鬼的力在服务器侧一律不受理(调试件豁免)
+            if (!WraithDirector.ContentActiveFor(definition)) {
+                return;
+            }
             Player caster = ResolvePlayer(whoAmI);
             if (caster == null) {
                 return;

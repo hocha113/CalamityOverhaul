@@ -1,4 +1,5 @@
 using CalamityOverhaul.Content.Wraiths.Core;
+using CalamityOverhaul.Content.Wraiths.Runtime;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.Utilities;
@@ -13,6 +14,10 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
     internal sealed class GhostHandRumors : GlobalNPC
     {
         public override void GetChat(NPC npc, ref string chat) {
+            //上线闸:系统未开放期间不放传闻——路标不该指向永不活化的据点
+            if (!WraithDirector.CanonContentActive) {
+                return;
+            }
             if (!npc.townNPC || !WraithActs.ActTwo || !Main.rand.NextBool(7)) {
                 return;
             }
