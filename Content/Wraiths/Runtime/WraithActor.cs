@@ -32,6 +32,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //反噬挣脱态：挣脱自哪名玩家的载体，-1=常规显形；挣脱是据点制的唯一合法例外
         [SyncVar]
         private int escapedOwner = -1;
+        //挣脱源玩家名，槽位被复用（原主下线、新人顶位）时的二次校验，与 escapedOwner 同步写
+        [SyncVar]
+        private string escapedOwnerName = "";
 
         private WraithPresence lastSeenPresence = WraithPresence.Materializing;
         private int presenceTimer;
@@ -64,14 +67,21 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         /// <summary>反噬挣脱态：自某玩家的载体挣脱显形</summary>
         public bool IsEscaped => escapedOwner >= 0;
 
-        /// <summary>挣脱源玩家，非挣脱态或玩家已失效为 null</summary>
+        /// <summary>挣脱源玩家，非挣脱态、玩家已失效或槽位已被他人顶替（名字对不上）为 null</summary>
         public Player EscapedOwnerPlayer {
             get {
                 if (escapedOwner < 0 || escapedOwner >= Main.maxPlayers) {
                     return null;
                 }
                 Player player = Main.player[escapedOwner];
-                return player != null && player.active ? player : null;
+                if (player == null || !player.active) {
+                    return null;
+                }
+                //槽位复用防御:挣脱时记下的名字与现占位者不符,视为原主已离场
+                if (!string.IsNullOrEmpty(escapedOwnerName) && player.name != escapedOwnerName) {
+                    return null;
+                }
+                return player;
             }
         }
 
@@ -319,6 +329,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
             escapedOwner = playerWhoAmI;
+            escapedOwnerName = Main.player[playerWhoAmI]?.name ?? "";
             NetUpdate = true;
             OnBacklashEscape(EscapedOwnerPlayer);
         }
@@ -457,6 +468,19 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             return false;
         }
 
+        //死机提示的键名缓存:键位变更低频,粗粒度定期刷新即可,不逐帧查绑定表(客户端 UI 态)
+        private static string promptKeyCache;
+        private static uint promptKeyCachedAt;
+
+        private static string ResolvePromptKeyName() {
+            if (promptKeyCache == null || Main.GameUpdateCount - promptKeyCachedAt > 60) {
+                promptKeyCachedAt = Main.GameUpdateCount;
+                promptKeyCache = CWRKeySystem.Wraith_Power?.GetAssignedKeys() is { Count: > 0 } keys
+                    ? keys[0] : CWRKeySystem.Notbound.Value;
+            }
+            return promptKeyCache;
+        }
+
         /// <summary>
         /// 死机窗口提示：本地玩家持载体走近时，头顶浮现借力键仪式提示，
         /// 窗口越接近尽头脉动越急（框架级演出，主题化时可整体覆写）
@@ -474,9 +498,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
 
-            string key = CWRKeySystem.Wraith_Power?.GetAssignedKeys() is { Count: > 0 } keys
-                ? keys[0] : CWRKeySystem.Notbound.Value;
-            string text = WraithSystemText.RitePrompt?.Format(key) ?? key;
+            string text = WraithSystemText.RitePrompt?.Format(ResolvePromptKeyName()) ?? ResolvePromptKeyName();
 
             float remaining01 = haltDuration > 0 ? HaltRemaining / (float)haltDuration : 1f;
             float pulseSpeed = MathHelper.Lerp(9f, 3f, remaining01);
@@ -513,13 +535,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 spriteBatch.Draw(pixel, pos, src, body * (alpha * (0.34f - i * 0.06f)), 0f, half, scale, SpriteEffects.None, 0f);
             }
 
-            //鬼火眼:显形过半才睁,带闪烁
+            //鬼火眼:显形过半才睁,带闪烁;眼距系数为固定常量,逐帧零分配
+            const float EyeSideFactor = 0.14f;
             if (alpha > 0.5f) {
                 float eyeA = (alpha - 0.5f) * 2f;
                 float flick = 0.75f + 0.25f * MathF.Sin(VisualPhase * 6.3f);
                 Vector2 eyeBase = center + new Vector2(0f, bob - size.Y * 0.24f);
-                foreach (float sideX in new[] { -size.X * 0.14f, size.X * 0.14f }) {
-                    Vector2 eyePos = eyeBase + new Vector2(sideX, 0f);
+                for (int side = -1; side <= 1; side += 2) {
+                    Vector2 eyePos = eyeBase + new Vector2(side * size.X * EyeSideFactor, 0f);
                     spriteBatch.Draw(pixel, eyePos, src, eye * (eyeA * 0.35f * flick), 0f, half, new Vector2(7f, 5f), SpriteEffects.None, 0f);
                     spriteBatch.Draw(pixel, eyePos, src, eye * (eyeA * 0.95f * flick), 0f, half, new Vector2(3.2f, 2.4f), SpriteEffects.None, 0f);
                 }

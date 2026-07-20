@@ -404,8 +404,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
             }
         }
 
+        //头端半宽 10px 贴 18px 能量核，避免拖成实心光锥
         public float GetWidthFunc(float completionRatio)
-            => MathF.Pow(1f - completionRatio, 0.75f) * Projectile.width * 1.35f * Projectile.scale;
+            => MathF.Pow(1f - completionRatio, 0.75f) * 10f * Projectile.scale;
 
         public Color GetColorFunc(Vector2 completionRatio) => Color.White * Projectile.Opacity;
 

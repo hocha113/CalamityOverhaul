@@ -84,7 +84,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         private float TotalTime => WindupTime + SlashTime + RecoverTime;
         //挥砍弧度与刀刃长度
         private float SwingArc => IsFinisher ? 3.6f : 2.3f;
-        private float BladeLength => IsFinisher ? 66f : 52f;
+        //刀尖距枢轴距离：贴图 36×48 半对角恰好 30px，终结斩经 scale 1.06 微增；判定与弧光贴合可见刀体
+        private const float BladeLength = 30f;
         private const float HoldDistance = 24f;
         private const float SwingDistance = 30f;
         //刀刃在无旋转时指向约 -57°（右上，依据贴图像素主轴实测）
@@ -137,7 +138,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Vector2 tip = pivot + currentRotation.ToRotationVector2() * BladeLength * Projectile.scale;
             float collisionPoint = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , pivot, tip, 26f, ref collisionPoint);
+                , pivot, tip, 22f, ref collisionPoint);
         }
 
         public override void Initialize() {
@@ -401,12 +402,13 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //TriangleStrip 扇面：x=1 最新挥砍缘，y=0 外缘（刀尖侧）
+            //TriangleStrip 扇面：x=1 最新挥砍缘，y=0 外缘（刀尖侧）；
+            //外径只比可见刀尖多 3px 能量毛边，内径收在刀身中段，弧光贴合贴图尺寸
             var bars = new VertexPositionColorTexture[trailCount * 2];
             Vector2 center = GetHandPos();
             float reach = (SwingDistance + BladeLength) * Projectile.scale;
-            float outer = reach + 8f;
-            float inner = reach * 0.3f;
+            float outer = reach + 3f;
+            float inner = reach * 0.45f;
             for (int i = 0; i < trailCount; i++) {
                 float factor = 1f - i / (float)trailCount;
                 Vector2 dir = trailRot[i].ToRotationVector2();

@@ -3,9 +3,9 @@ using System;
 
 namespace CalamityOverhaul.Content.Wraiths.Definitions
 {
-    //首批七只厉鬼的正典名录：自点鬼簿演示名录迁入，键即当年的演示键，沿用保证存档连续。
-    //目前全部为纯数据鬼（ActorType=null，不显形、不参与调度），文案在 Wraiths.hjson，
-    //谁先获得实体/能力，谁就从这里毕业成独立文件夹
+    //首批六只厉鬼的正典名录（焦黑枯手已毕业至 GhostHands/）：自点鬼簿演示名录迁入，
+    //键即当年的演示键，沿用保证存档连续。在册者均为纯数据鬼（ActorType=null，
+    //不显形、不参与调度），文案在 Wraiths.hjson，谁先获得实体/能力，谁就从这里毕业成独立文件夹
 
     /// <summary>无面女：「借颜」</summary>
     internal sealed class NoFace : WraithDefinition
@@ -40,13 +40,6 @@ namespace CalamityOverhaul.Content.Wraiths.Definitions
     {
         public override Type ActorType => null;
         public override int SortOrder => 50;
-    }
-
-    /// <summary>焦黑枯手：「攥」</summary>
-    internal sealed class GhostHand : WraithDefinition
-    {
-        public override Type ActorType => null;
-        public override int SortOrder => 60;
     }
 
     /// <summary>井中鸣：生来封印，名讳可见而来历赋力不可示人</summary>

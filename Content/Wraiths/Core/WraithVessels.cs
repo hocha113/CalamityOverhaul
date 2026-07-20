@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Wraiths.Core
 {
@@ -43,6 +44,34 @@ namespace CalamityOverhaul.Content.Wraiths.Core
 
         /// <summary>随身载体（手中优先，背包兜底）</summary>
         public static WraithVesselHandle ResolveCarried(Player player) => Resolve(carriedResolvers, player);
+
+        /// <summary>
+        /// 簿面写入后显式推送持有槽同步（仪式确认、借力磨损、调试上簿共用），
+        /// 让服务器与他端的 LegendData 副本即时跟上，不再依赖被动同步时机。
+        /// 走原版装备槽消息，物品数据经 CWRItem.NetSend → LegendData 链自动捎带；
+        /// 单人/服务器端调用为无操作
+        /// </summary>
+        public static void SyncSlot(Player player, Item item) {
+            if (!VaultUtils.isClient || player == null || item == null || item.IsAir
+                || player.whoAmI != Main.myPlayer) {
+                return;
+            }
+            int slotId = -1;
+            if (ReferenceEquals(item, Main.mouseItem)) {
+                slotId = PlayerItemSlotID.InventoryMouseItem;
+            }
+            else {
+                for (int i = 0; i < player.inventory.Length; i++) {
+                    if (ReferenceEquals(player.inventory[i], item)) {
+                        slotId = PlayerItemSlotID.Inventory0 + i;
+                        break;
+                    }
+                }
+            }
+            if (slotId >= 0) {
+                NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, slotId, item.prefix);
+            }
+        }
 
         private static WraithVesselHandle Resolve(List<Func<Player, WraithVesselHandle>> resolvers, Player player) {
             if (player == null || !player.active) {

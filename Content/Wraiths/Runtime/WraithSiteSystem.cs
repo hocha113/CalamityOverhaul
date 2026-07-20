@@ -1,5 +1,6 @@
 using CalamityOverhaul.Content.Wraiths.Core;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -56,12 +57,19 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
     /// <summary>
     /// 据点锚状态宿主：键控记录 + 世界存档（镜像 <see cref="Core.WraithWorldProgress"/> 惯例）。
-    /// 只在权威端有意义（客户端实体由生成广播带来，无需据点知识）；
-    /// 活化调度在 <see cref="WraithDirector"/>
+    /// 权威端持真身；客户端经 <c>WraithNet.SiteSync</c> 持一份只读锚位镜像
+    /// （路标/贴饰层要在遭遇之前就看见据点，公平"可先学"所系），
+    /// 冷却/事件计数/在场跟踪仍为权威端专有。活化调度在 <see cref="WraithDirector"/>
     /// </summary>
     public sealed class WraithSiteSystem : ModSystem
     {
         private static readonly Dictionary<string, WraithSiteRecord> records = [];
+
+        //====锚位镜像下发（服务器会话态）====
+        //上次已广播的锚状态,变更检测覆盖全部改锚路径(Plant/Unanchor/调度器动态锚定)
+        private static readonly Dictionary<string, (Vector2 anchor, bool anchored)> broadcastShadow = [];
+        //已补发过全量快照的客户端槽位
+        private static readonly bool[] snapshotSent = new bool[Main.maxPlayers];
 
         public static IReadOnlyDictionary<string, WraithSiteRecord> Records => records;
 
@@ -77,7 +85,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>
         /// 手工落锚（剧情/结构/调试路径），center 为据点中心；仅权威端有效。
-        /// 已有锚的据点被移锚并清掉冷却，进行中的事件不受影响
+        /// 只管移锚：冷却是另一个语义，照走 <see cref="ResetCooldown"/>，落锚绝不顺手清
         /// </summary>
         public static void Plant(string key, Vector2 center) {
             if (VaultUtils.isClient || string.IsNullOrEmpty(key)) {
@@ -86,6 +94,13 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             WraithSiteRecord record = GetOrCreate(key);
             record.Anchor = center;
             record.Anchored = true;
+        }
+
+        /// <summary>显式清零据点再活化冷却（剧情脚本/调试需要立即再演时单独调用）；仅权威端有效</summary>
+        public static void ResetCooldown(string key) {
+            if (VaultUtils.isClient || !records.TryGetValue(key, out WraithSiteRecord record)) {
+                return;
+            }
             record.CooldownUntil = 0;
         }
 
@@ -97,7 +112,53 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             record.Anchored = false;
         }
 
-        public override void ClearWorld() => records.Clear();
+        /// <summary>客户端套用一帧锚位镜像（<c>WraithNet.SiteSync</c> 入口），权威端调用无效</summary>
+        internal static void ApplyClientMirror(string key, Vector2 anchor, bool anchored) {
+            if (!VaultUtils.isClient) {
+                return;
+            }
+            WraithSiteRecord record = GetOrCreate(key);
+            record.Anchor = anchor;
+            record.Anchored = anchored;
+        }
+
+        /// <summary>
+        /// 服务器侧锚位镜像下发：逐记录对影子状态做变更检测（Plant/Unanchor/动态锚定全路径通吃），
+        /// 变更即广播；新入世界的客户端补发一次全量快照
+        /// </summary>
+        public override void PostUpdateEverything() {
+            if (!VaultUtils.isServer) {
+                return;
+            }
+            foreach ((string key, WraithSiteRecord record) in records) {
+                bool changed = !broadcastShadow.TryGetValue(key, out var shadow)
+                    || shadow.anchored != record.Anchored || shadow.anchor != record.Anchor;
+                if (changed) {
+                    broadcastShadow[key] = (record.Anchor, record.Anchored);
+                    WraithNet.SendSiteSync(key, record.Anchor, record.Anchored);
+                }
+            }
+            for (int i = 0; i < Main.maxPlayers; i++) {
+                bool online = Netplay.Clients[i].State == 10;
+                if (!online) {
+                    snapshotSent[i] = false;
+                    continue;
+                }
+                if (snapshotSent[i]) {
+                    continue;
+                }
+                snapshotSent[i] = true;
+                foreach ((string key, WraithSiteRecord record) in records) {
+                    WraithNet.SendSiteSync(key, record.Anchor, record.Anchored, i);
+                }
+            }
+        }
+
+        public override void ClearWorld() {
+            records.Clear();
+            broadcastShadow.Clear();
+            Array.Clear(snapshotSent);
+        }
 
         public override void SaveWorldData(TagCompound tag) {
             List<TagCompound> list = [];

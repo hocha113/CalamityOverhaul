@@ -10,7 +10,9 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
     /// <summary>
     /// 厉鬼调度器：Actor 无持久化，显形实体是"会消失的投影"，由这里在权威端周期评估并重新物化。
     /// 两条通道：据点制（<see cref="WraithSitePlan"/>，正典鬼的唯一出现通道，状态在
-    /// <see cref="WraithSiteSystem"/>）与环境随机（<see cref="WraithSpawnRule"/>，仅调试件保留）。
+    /// <see cref="WraithSiteSystem"/>）与环境随机（<see cref="WraithSpawnRule"/>，仅调试件保留）。<br/>
+    /// 全局遭遇互斥（鬼律第七条"同屏一鬼"）：任意厉鬼在场（含过渡态与挣脱体）即封锁一切
+    /// 新显形，四条通道（据点/自动/反噬/调试）统一在 <see cref="Materialize"/> 执行本不变量。<br/>
     /// 冷却为会话级，随世界切换清零；外部系统直接显形走 <see cref="Materialize"/>
     /// </summary>
     public sealed class WraithDirector : ModSystem
@@ -29,6 +31,26 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             cooldownUntil.Clear();
             checkTimer = 0;
             DebugHauntEnabled = false;
+            //据点武装闸同为会话态,换世界不许残留(文档"重进需重开"的执行点)
+            Debugs.DebugWraith.DebugSiteArmed = false;
+            WraithNet.ClearSession();
+        }
+
+        /// <summary>
+        /// 任意厉鬼在场（含过渡态与挣脱体）——遭遇进行中，新显形一律封锁。
+        /// 零分配热判定：活跃数 O(1) 先剪，非空才扫槽位数组（框架稠密表不对外，槽扫已是最省公开路径）
+        /// </summary>
+        public static bool EncounterInProgress() {
+            if (ActorLoader.GetActiveActorCount() <= 0) {
+                return false;
+            }
+            Actor[] actors = ActorLoader.Actors;
+            for (int i = 0; i < actors.Length; i++) {
+                if (actors[i] is WraithActor { Active: true }) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public override void PostUpdateEverything() {
@@ -48,11 +70,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         /// <summary>
-        /// 据点通道：锚定 → 冷却/条件/近距判定 → 显形并跟踪事件到收场。
-        /// 一场事件 = 该据点实体自显形到离场（无论何种退场），随后进入冷却
+        /// 据点通道：锚定 → 冷却判定 → 对每名实际入圈玩家逐人评估活化条件，条件过谁就以谁触发
+        /// （评估者=触发者，不再随机抽人评估）。一场事件 = 该据点实体自显形到离场（无论何种退场），
+        /// 随后进入冷却
         /// </summary>
         private static void TrySiteMaterialize(WraithDefinition definition) {
-            WraithSitePlan plan = definition.GetSitePlan();
+            WraithSitePlan plan = definition.SitePlan;
             if (plan == null || definition.ActorType == null) {
                 return;
             }
@@ -75,20 +98,19 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 return;
             }
 
-            Player candidate = PickCandidatePlayer();
-            if (candidate == null) {
-                return;
-            }
-
-            //动态锚定:未锚定且有选点器,按重试节流尝试
+            //动态锚定:未锚定且有选点器,按重试节流尝试;选点参照人取随机存活玩家
             if (!record.Anchored) {
                 if (plan.AnchorPicker == null || now < record.NextAnchorRetry) {
+                    return;
+                }
+                Player scout = PickCandidatePlayer();
+                if (scout == null) {
                     return;
                 }
                 record.NextAnchorRetry = now + plan.AnchorRetryTicks;
                 Vector2? anchor = plan.AnchorPicker(new WraithSiteContext {
                     Definition = definition,
-                    Candidate = candidate,
+                    Candidate = scout,
                 });
                 if (anchor == null) {
                     return;
@@ -100,29 +122,25 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             if (now < record.CooldownUntil) {
                 return;
             }
-            //同定义已有在场实体(例如反噬挣脱体)时据点不叠加,遭遇是事件不是战斗波次
-            if (CountAlive(definition) > 0) {
-                return;
-            }
 
-            WraithSiteContext context = new() {
-                Definition = definition,
-                Candidate = candidate,
-                Anchor = record.Anchor,
-            };
-            if (plan.ActivationCondition != null && !plan.ActivationCondition(context)) {
-                return;
-            }
-
-            bool anyNear = false;
+            //入圈者逐人评估:活化条件对"实际将进入据点的玩家"判定,过谁以谁触发
+            Player trigger = null;
             float triggerSq = plan.TriggerRadius * plan.TriggerRadius;
             foreach (Player player in Main.ActivePlayers) {
-                if (!player.dead && Vector2.DistanceSquared(player.Center, record.Anchor) < triggerSq) {
-                    anyNear = true;
-                    break;
+                if (player.dead || Vector2.DistanceSquared(player.Center, record.Anchor) >= triggerSq) {
+                    continue;
                 }
+                if (plan.ActivationCondition != null && !plan.ActivationCondition(new WraithSiteContext {
+                    Definition = definition,
+                    Candidate = player,
+                    Anchor = record.Anchor,
+                })) {
+                    continue;
+                }
+                trigger = player;
+                break;
             }
-            if (!anyNear) {
+            if (trigger == null) {
                 return;
             }
 
@@ -135,7 +153,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         private static void TryAutoMaterialize(WraithDefinition definition) {
-            WraithSpawnRule rule = definition.GetSpawnRule();
+            WraithSpawnRule rule = definition.SpawnRule;
             if (rule == null || definition.ActorType == null) {
                 return;
             }
@@ -172,11 +190,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         }
 
         /// <summary>
-        /// 显形一只厉鬼，返回实体 WhoAmI。客户端调用会转为向服务器请求并返回 -1，
-        /// 不计入自动冷却。position 为实体左上角（Actor.Position 语义）
+        /// 显形一只厉鬼，返回实体 WhoAmI。全局遭遇互斥在此执行：已有厉鬼在场直接放弃（返回 -1），
+        /// 一切生成通道共用本闸。仅权威端可生成；客户端调用一律返回 -1（调试通道在多人下由
+        /// 调试器明示不受理，不发生成请求）。position 为实体左上角（Actor.Position 语义）
         /// </summary>
         public static int Materialize(WraithDefinition definition, Vector2 position) {
-            if (definition?.ActorType == null) {
+            if (definition?.ActorType == null || VaultUtils.isClient || EncounterInProgress()) {
                 return -1;
             }
             return ActorLoader.NewActor(ActorLoader.GetActorID(definition.ActorType), position);

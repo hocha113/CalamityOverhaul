@@ -82,7 +82,8 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
         private const float TextureBladeAngle = -1.108f;
 
         private const float HoldDistance = 40f;
-        private const float BladeLength = 96f;
+        //棍头距枢轴距离：贴图 42×50 半对角 32.65px × 1.05 绘制缩放 ≈ 34，判定与弧光都贴合可见棍体
+        private const float BladeLength = 34f;
         //棍头沿重力探地表的最大距离（tile）
         private const int GroundProbeTiles = 6;
 
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
             Vector2 tip = pivot + currentRotation.ToRotationVector2() * BladeLength;
             float collisionPoint = 0f;
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size()
-                , pivot, tip, 42f, ref collisionPoint);
+                , pivot, tip, 30f, ref collisionPoint);
         }
 
         public override void Initialize() {
@@ -589,11 +590,12 @@ namespace CalamityOverhaul.Content.Items.Stones.Marbles
                 return;
             }
 
-            //TriangleStrip 弧光带：uv.x=1 最新挥砍缘，uv.y=0 外缘（棍头侧）
+            //TriangleStrip 弧光带：uv.x=1 最新挥砍缘，uv.y=0 外缘（棍头侧）；
+            //外径只比可见棍头多 4px 能量毛边，内径收在棍身中段，弧光贴合贴图尺寸
             var bars = new VertexPositionColorTexture[trailCount * 2];
             Vector2 center = GetHandPos();
-            float outer = HoldDistance + BladeLength + 14f;
-            float inner = (HoldDistance + BladeLength) * 0.34f;
+            float outer = HoldDistance + BladeLength + 4f;
+            float inner = (HoldDistance + BladeLength) * 0.42f;
             for (int i = 0; i < trailCount; i++) {
                 float factor = 1f - i / (float)trailCount;
                 Vector2 dir = trailRot[i].ToRotationVector2();

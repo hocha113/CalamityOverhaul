@@ -57,3 +57,18 @@ MarblePetrify: {
 	DisplayName: Marble Petrification
 	Description: Flesh turns to marble, movements grind to a halt
 }
+
+PallbearerShrouded: {
+	DisplayName: Marked for Collection
+	Description: The coffin's breath clings to it; the casket knows whom to collect
+}
+
+PallbearerSealed: {
+	DisplayName: Encoffined
+	Description: The casket's weight lingers; damage taken is increased
+}
+
+OniNeckGripDebuff: {
+	DisplayName: Oni Chokehold
+	Description: An oni hand is squeezing your throat; your movements grow heavy
+}

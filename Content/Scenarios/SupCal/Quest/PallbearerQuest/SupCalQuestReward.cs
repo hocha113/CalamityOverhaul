@@ -81,7 +81,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.PallbearerQuest
         internal override int[] TargetProjectileTypes => [
             ModContent.ProjectileType<PallbearerHeld>(),
             ModContent.ProjectileType<PallbearerArrow>(),
-            ModContent.ProjectileType<PallbearerBoomerang>()
+            ModContent.ProjectileType<PallbearerBoomerang>(),
+            ModContent.ProjectileType<PallbearerCoffinSeal>()
         ];
 
         internal override float RequiredContribution => REQUIRED_CONTRIBUTION;

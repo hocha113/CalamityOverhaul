@@ -654,12 +654,16 @@ OnikiriText: {
 		UnknownHint: 簿上留白
 		SealedOriginHint: 封印未解
 		SealedPowerHint: ———
+		UnrenewedOriginHint: 旧契认刀，不认这只手。去它被收伏之地，重续名字
+		UnrenewedPowerHint: ———
 		CloseTagText: 收卷
 		CloseHintFormat: ESC · {0} · 点击卷外 收卷
 	}
 
 	OniEngraveRiteUI: {
 		RiteTitle: 铭 刻
+		RiteTitleRenew: 续 契
+		RiteTitleResubdue: 收 伏
 		RiteHint: 落笔 · 归卷
 	}
 

@@ -205,8 +205,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public float GetWidthFunc(float c) {
+            //种子电弧细丝：中段半宽上限 7px，贴 16px 种子体
             float p = c > 0.5f ? 1f - c : c;
-            return p * 2f * Projectile.scale * Projectile.width * 1.2f;
+            return p * 2f * Projectile.scale * 7f;
         }
 
         public Color GetColorFunc(Vector2 _) => Color.White * Projectile.Opacity;

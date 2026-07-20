@@ -24,11 +24,12 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
         /// <summary>
         /// owner 端 1Hz 掷签：躁动越深、侵蚀越高，挣脱概率越大。
-        /// 一次至多放出一只；纯数据鬼（无实体类）挣不出来
+        /// 一次至多放出一只；纯数据鬼（无实体类）挣不出来；
+        /// 遭遇进行中（全局同屏一鬼）不掷签——服务器侧同样会拒绝，这里先省掉必败的请求
         /// </summary>
         public static void Judge(WraithPlayer wraithPlayer) {
             Player player = wraithPlayer.Player;
-            if (player.dead) {
+            if (player.dead || WraithDirector.EncounterInProgress()) {
                 return;
             }
             WraithVesselHandle vessel = WraithVessels.ResolveCarried(player);
@@ -45,7 +46,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                 if (!WraithRegistry.TryGet(key, out WraithDefinition definition) || definition.ActorType == null) {
                     continue;
                 }
-                if (wraithPlayer.BacklashOnCooldown(key, now) || AnyEscapedAlive(key, player.whoAmI)) {
+                if (wraithPlayer.BacklashOnCooldown(key, now) || wraithPlayer.IsEscapePending(key)
+                    || AnyEscapedAlive(key, player.whoAmI)) {
                     continue;
                 }
 
@@ -56,45 +58,58 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
                     continue;
                 }
 
-                wraithPlayer.SetBacklashCooldown(key, now + KeyCooldownTicks);
+                //冷却不在此预烧:确认制——单人生成成功即落账,多人待首次真实观测到挣脱体再落账
                 Trigger(player, definition, wraithPlayer);
                 break;
             }
         }
 
         /// <summary>
-        /// 触发一次挣脱（owner 端，调试器强制路径也走这里）：请求权威生成 + 本地播报。
-        /// 冷却由调用方决定是否落（调试强制不落）
+        /// 触发一次挣脱（owner 端，调试器强制路径也走这里），确认制：
+        /// 单人=生成成功当场播报+落冷却，失败无声无息；
+        /// 多人=发请求并挂起观察，播报/冷却延迟到 <c>WraithPlayer.WatchEscaped</c>
+        /// 首次真实观测到挣脱体——绝不先播"挣脱了"再等一个可能不来的鬼
         /// </summary>
         public static void Trigger(Player owner, WraithDefinition definition, WraithPlayer wraithPlayer = null) {
             if (definition?.ActorType == null || owner.whoAmI != Main.myPlayer) {
                 return;
             }
+            wraithPlayer ??= owner.GetModPlayer<WraithPlayer>();
             if (VaultUtils.isClient) {
                 WraithNet.SendBacklashSpawn(definition);
+                wraithPlayer.NotePendingEscape(definition.Key);
+                return;
             }
-            else {
-                SpawnEscaped(owner.whoAmI, definition);
+            if (SpawnEscaped(owner.whoAmI, definition)) {
+                wraithPlayer.NoteEscaped(definition.Key);
+                wraithPlayer.SetBacklashCooldown(definition.Key, (long)Main.GameUpdateCount + KeyCooldownTicks);
+                AnnounceEscape(owner, definition);
             }
-            (wraithPlayer ?? owner.GetModPlayer<WraithPlayer>()).NoteEscaped(definition.Key);
+        }
+
+        /// <summary>挣脱播报（文本/音/震屏），确认制下只在挣脱体真实存在后播放</summary>
+        internal static void AnnounceEscape(Player owner, WraithDefinition definition) {
             VaultUtils.Text(WraithSystemText.BacklashEscape.Format(definition.DisplayName.Value), new Color(190, 60, 70));
             SoundEngine.PlaySound(SoundID.NPCDeath52 with { Pitch = -0.6f, Volume = 0.6f }, owner.Center);
             owner.CWR()?.GetScreenShake(5f);
         }
 
-        /// <summary>权威端生成挣脱体：主人外围环带落点（鬼身不吃物块阻挡，仅避世界边缘）</summary>
-        internal static void SpawnEscaped(int playerWhoAmI, WraithDefinition definition) {
+        /// <summary>
+        /// 权威端生成挣脱体：主人外围环带落点（鬼身不吃物块阻挡，仅避世界边缘）。
+        /// 返回是否真的生成并标记成功——被全局互斥/资格挡下返回 false，调用方据此决定落不落账
+        /// </summary>
+        internal static bool SpawnEscaped(int playerWhoAmI, WraithDefinition definition) {
             if (VaultUtils.isClient || definition?.ActorType == null
                 || playerWhoAmI < 0 || playerWhoAmI >= Main.maxPlayers) {
-                return;
+                return false;
             }
             Player owner = Main.player[playerWhoAmI];
             if (owner == null || !owner.active || owner.dead) {
-                return;
+                return false;
             }
             //同键挣脱体在场不叠加(重复请求/竞态防御)
             if (AnyEscapedAlive(definition.Key, playerWhoAmI)) {
-                return;
+                return false;
             }
 
             float angle = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -108,10 +123,15 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
             int whoAmI = WraithDirector.Materialize(definition, topLeft);
             if (whoAmI >= 0 && ActorLoader.Actors[whoAmI] is WraithActor wraith) {
                 wraith.MarkEscaped(playerWhoAmI);
+                return true;
             }
+            return false;
         }
 
-        /// <summary>该键是否已有针对指定玩家的挣脱体在场（两端都可查询，实体经内建同步可见）</summary>
+        /// <summary>
+        /// 该键是否已有针对指定玩家的挣脱体在场（两端都可查询，实体经内建同步可见）。
+        /// 挣脱契约态（鬼律第十一条）：本谓词为真期间该键不可借力、仪式只受理其 Resubdue
+        /// </summary>
         public static bool AnyEscapedAlive(string key, int playerWhoAmI) {
             foreach (WraithActor wraith in ActorLoader.GetActiveActors<WraithActor>()) {
                 if (!wraith.IsEscaped || wraith.Definition == null || wraith.Definition.Key != key) {

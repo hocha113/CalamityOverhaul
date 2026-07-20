@@ -1170,10 +1170,9 @@ Pallbearer: {
 	DisplayName: 扶柩者
 	Tooltip:
 		'''
-		左键长按蓄力，松开后发射出护柩者之箭
-		蓄力时间越长，箭矢越强大
-		右键可以将弩投掷出去，
-		命中敌人后大幅加强下一次发射的箭矢并加快蓄力速度
+		长按左键装填蓄力，射出近乎瞬发的重弩栓，贯穿猎物并留下血色烙印
+		右键掷出棺弩，让棺椁的气息沾染客人
+		同一目标积累三道烙印时，落棺收殓
 		"也叫抬棺人"
 		'''
 }
@@ -1227,9 +1226,15 @@ Heartcarver: {
 	DisplayName: 刻心者
 	Tooltip:
 		'''
-		生成三把额外的仪式匕首围绕玩家旋转
-		蓄力完成后飞向目标
-		右键进行短距离突刺
+		右键进行短距离弧线突刺
+		吸收剜出的心脏可获得短暂攻速提升，并凝成环绕血刃
+		血刃会循着你下一次剜心击的声音扑向伤口
+		'''
+	CarveTip:
+		'''
+		手持时，刀会带着你的心一起跳
+		攻击落在两次心跳之间的间隙，即构成剜心击
+		以剜心击完成终结斩，能把心脏完整地剜出来
 		'''
 }
 
@@ -1237,9 +1242,15 @@ OniMachete: {
 	DisplayName: 鬼面刀
 	Tooltip:
 		'''
-		手持时会生成六条鬼手协助战斗
-		真近战攻击会释放出鬼火
+		左键挥出三段连击，第三刀为滞拍蓄势的金崩重斩
+		手持时唤出六只鬼手协助战斗
 		'''
+	SuppressTip:
+		'''
+		挥砍与命中积累硫火压制，六只鬼手的每次出击都在消耗它
+		压制熄灭时鬼手躁动：它们打得更凶，也随时会回头掐住你的脖子
+		'''
+	RestlessWarn: 硫磺火熄灭了，握紧刀柄！
 }
 
 Pandemonium: {
@@ -2640,26 +2651,46 @@ WraithDebugTool: {
 	DisplayName: 厉鬼调试器
 	Tooltip:
 		'''
-		左键在光标处显形一只调试厉鬼
-		右键开关环境自动闹鬼（单人调试）
+		右键轮换模式，左键执行
+		模式覆盖：显形 / 死机 / 据点 / 绑定 / 反噬 / 侵蚀 / 必死 / 闹鬼 / 读簿
+		走不了权威通道的模式在多人下明示不受理
 		厉鬼框架开发调试用
 		'''
-	HauntOn: 调试闹鬼已开启
-	HauntOff: 调试闹鬼已关闭
-	// ModePrefix: 模式：{0}
-	// ModeMaterialize: 显形（左键在光标处显形试件）
-	// ModeHalt: 死机（左键点鬼逼入死机，再点解除）
-	// ModeSite: 据点（左键落锚调试据点，Shift+左键拔锚）
-	// ModeBind: 绑定（左键把试件低驾驭上簿，Shift+左键高驾驭）
-	// ModeBacklash: 反噬（左键强制簿上试件挣脱）
-	// ModeErosion: 侵蚀（左键+0.2，Shift+左键清零）
-	// ModeOmen: 必死（左键对自己起三息预警拍）
-	// ModeHaunt: 闹鬼（左键翻转环境自动闹鬼闸门）
-	// HaltNoTarget: 光标下没有鬼
-	// SitePlanted: 调试据点已落锚——走近它等它显形
-	// SiteCleared: 调试据点已拔锚
-	// BindDone: 试件已上簿，驾驭度 {0}
-	// BacklashNeedBound: 簿上没有试件——先用绑定模式请它上簿
-	// ErosionValue: 侵蚀 {0}
-	// OmenStarted: 三息之后，命数当尽
+	HauntOn: 调试闹鬼已开启（试件临时上目录）
+	HauntOff: 调试闹鬼已关闭（试件恢复隐藏）
+	ModePrefix: 模式：{0}
+	ModeMaterialize: 显形（左键在光标处显形试件）
+	ModeHalt: 死机（左键点鬼逼入死机，再点解除）
+	ModeSite: 据点（左键落锚，Shift+左键拔锚，Ctrl+左键开关武装闸）
+	ModeBind: 绑定（左键低驾驭上簿，Shift+左键高驾驭+续契）
+	ModeBacklash: 反噬（左键强制簿上试件挣脱，须躁动）
+	ModeErosion: 侵蚀（左键+0.2，Shift+左键清零）
+	ModeOmen: 必死（左键对自己起三息预警拍）
+	ModeHaunt: 闹鬼（左键翻转环境自动闹鬼闸门）
+	ModeRegister: 读簿（左键打印随身簿面进度）
+	HaltNoTarget: 光标下没有鬼
+	SitePlanted: 调试据点已落锚——走近它等它显形
+	SiteCleared: 调试据点已拔锚
+	SiteArmed: 据点武装闸已开——动态锚定与活化条件放行
+	SiteDisarmed: 据点武装闸已关——它不会应门
+	BindDone: 试件已上簿，驾驭度 {0}，续签 {1}
+	BacklashNeedBound: 簿上没有试件——先用绑定模式请它上簿
+	BacklashNeedRestless: 试件不躁动，挣不出来——先低驾驭上簿
+	EncounterBusy: 遭遇进行中——同屏只容一鬼
+	ErosionValue: 侵蚀 {0}
+	OmenStarted: 三息之后，命数当尽
+	MultiplayerDenied: 该调试操作多人下不受理
+	RegisterHeader: —— 随身簿面 ——
+	RegisterLine: "{0}：{1}，驾驭 {2}，续签 {3}，遭遇 {4}"
+	RegisterEmpty: 随身没有载体
+}
+
+CharredLock: {
+	DisplayName: 焦黑的长命锁
+	Tooltip:
+		'''
+		银的，烧黑了，锁梁上有五道指痕
+		锁得住命，锁不住火
+		"递过去。或者，放在它面前。"
+		'''
 }

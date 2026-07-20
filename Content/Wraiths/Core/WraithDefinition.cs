@@ -47,7 +47,14 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             Origin = this.GetLocalization("Origin", () => "...");
             Power = this.GetLocalization("Power", () => "...");
             DeathReason = this.GetLocalization("DeathReason", () => "{0}触犯了不可触犯之物");
+            LoadExtraLocalization();
         }
+
+        /// <summary>
+        /// 装载本鬼专属的额外文案（规则专属死亡讯息等），注册期随框架文案一并调用。
+        /// 鬼律第十条"可归因"：每条规则应有点名文案，<see cref="DeathReason"/> 只是兜底
+        /// </summary>
+        protected virtual void LoadExtraLocalization() { }
 
         //====实体接线====
         /// <summary>
@@ -70,6 +77,13 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public virtual int PresentDurationLimit => 60 * 60;
         /// <summary>死机窗口帧数，窗口尽未行仪式即自然消散</summary>
         public virtual int HaltWindowTicks => 60 * 8;
+        /// <summary>
+        /// 是否受理外部死机请求（<c>WraithNet.HaltRequest</c>，含解除分支）——
+        /// **鬼律第九条的执行点**：该通道绕过规则状态机直接逼死机，默认 false 一律拒绝；
+        /// 只有调试件覆写为 true。正典鬼的死机必须与规则强相关，
+        /// 唯一合法入口是各自规则状态机在权威端直呼 <c>WraithActor.BeginHalt</c>
+        /// </summary>
+        public virtual bool AllowExternalHaltRequest => false;
 
         //====仪式数值====
         /// <summary>首次铭刻落簿的初始驾驭度（新收的鬼近乎躁动）</summary>
@@ -100,13 +114,44 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public virtual void BuildBehaviors(List<IWraithBehavior> behaviors) { }
 
         /// <summary>
-        /// 自动显形规则，默认 null：不自动出现，只能被外部显式生成。
-        /// 鬼律第五条：正典鬼一律据点制（<see cref="GetSitePlan"/>），本规则仅调试件使用
+        /// 自动显形规则工厂，默认 null：不自动出现，只能被外部显式生成。
+        /// 鬼律第五条：正典鬼一律据点制（<see cref="GetSitePlan"/>），本规则仅调试件使用。
+        /// 定义运行期不可变，实例经 <see cref="SpawnRule"/> 惰性缓存，调度端勿直呼本工厂
         /// </summary>
-        public virtual WraithSpawnRule GetSpawnRule() => null;
+        protected virtual WraithSpawnRule GetSpawnRule() => null;
 
-        /// <summary>据点计划，默认 null：无据点。据点状态与存档见 <c>WraithSiteSystem</c></summary>
-        public virtual WraithSitePlan GetSitePlan() => null;
+        /// <summary>
+        /// 据点计划工厂，默认 null：无据点。据点状态与存档见 <c>WraithSiteSystem</c>。
+        /// 实例经 <see cref="SitePlan"/> 惰性缓存，规则谓词内的动态条件照常逐次求值
+        /// </summary>
+        protected virtual WraithSitePlan GetSitePlan() => null;
+
+        private WraithSpawnRule spawnRule;
+        private bool spawnRuleCreated;
+        private WraithSitePlan sitePlan;
+        private bool sitePlanCreated;
+
+        /// <summary>缓存的自动显形规则，无规则为 null</summary>
+        public WraithSpawnRule SpawnRule {
+            get {
+                if (!spawnRuleCreated) {
+                    spawnRuleCreated = true;
+                    spawnRule = GetSpawnRule();
+                }
+                return spawnRule;
+            }
+        }
+
+        /// <summary>缓存的据点计划，无据点为 null</summary>
+        public WraithSitePlan SitePlan {
+            get {
+                if (!sitePlanCreated) {
+                    sitePlanCreated = true;
+                    sitePlan = GetSitePlan();
+                }
+                return sitePlan;
+            }
+        }
 
         //====赋力====
         private WraithAbility ability;

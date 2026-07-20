@@ -81,7 +81,8 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.YharonQuest
         internal override int[] TargetProjectileTypes => [
             ModContent.ProjectileType<OniHandMinion>(),
             ModContent.ProjectileType<OniFireBall>(),
-            ModContent.ProjectileType<OniHandExplode>()
+            ModContent.ProjectileType<OniHandExplode>(),
+            ModContent.ProjectileType<OniMacheteHeld>()
         ];
 
         internal override float RequiredContribution => REQUIRED_CONTRIBUTION;

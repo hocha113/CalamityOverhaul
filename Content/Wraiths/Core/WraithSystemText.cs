@@ -26,8 +26,12 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public static LocalizedText RiteResubdue { get; private set; }
         /// <summary>对封印之鬼行仪式被拒</summary>
         public static LocalizedText RiteDeniedSealed { get; private set; }
+        /// <summary>对他人挣脱体行仪式被拒（挣脱体只认放走它的那只手）</summary>
+        public static LocalizedText RiteDeniedEscaped { get; private set; }
         /// <summary>借力被拒：未持载体</summary>
         public static LocalizedText PowerDeniedNoVessel { get; private set; }
+        /// <summary>借力被拒：该鬼正挣脱在外（鬼不在簿上，力借不出来）</summary>
+        public static LocalizedText PowerDeniedEscaped { get; private set; }
         /// <summary>借力被拒：簿上无可借之力</summary>
         public static LocalizedText PowerDeniedNoBound { get; private set; }
         /// <summary>借力被拒：冷却未过</summary>
@@ -52,7 +56,9 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             RiteRenewPact = this.GetLocalization(nameof(RiteRenewPact), () => "「{0}」重续了契约——它认得这只手了");
             RiteResubdue = this.GetLocalization(nameof(RiteResubdue), () => "「{0}」被按回了簿上");
             RiteDeniedSealed = this.GetLocalization(nameof(RiteDeniedSealed), () => "封印未解，名讳不可示人");
+            RiteDeniedEscaped = this.GetLocalization(nameof(RiteDeniedEscaped), () => "它不认这只手——去找放走它的人");
             PowerDeniedNoVessel = this.GetLocalization(nameof(PowerDeniedNoVessel), () => "手中无刀，簿上无名");
+            PowerDeniedEscaped = this.GetLocalization(nameof(PowerDeniedEscaped), () => "簿上的名讳空着——它还在外面");
             PowerDeniedNoBound = this.GetLocalization(nameof(PowerDeniedNoBound), () => "簿上无可借之力");
             PowerDeniedCooldown = this.GetLocalization(nameof(PowerDeniedCooldown), () => "它还不肯再次应声");
             PowerTaboo = this.GetLocalization(nameof(PowerTaboo), () => "犯戒——「{0}」的名讳在簿上洇开");
@@ -70,7 +76,9 @@ namespace CalamityOverhaul.Content.Wraiths.Core
             RiteRenewPact = null;
             RiteResubdue = null;
             RiteDeniedSealed = null;
+            RiteDeniedEscaped = null;
             PowerDeniedNoVessel = null;
+            PowerDeniedEscaped = null;
             PowerDeniedNoBound = null;
             PowerDeniedCooldown = null;
             PowerTaboo = null;

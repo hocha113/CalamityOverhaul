@@ -157,10 +157,10 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public float GetWidthFunc(float c) {
-            //锐利电弧带：头端在刀体覆盖内快速展开，向尾端二次收针
+            //锐利电弧带：头端在刀体覆盖内快速展开，向尾端二次收针（半宽上限8px，贴刀刃厚度）
             float head = MathHelper.Clamp(c * 10f, 0f, 1f);
             float tail = 1f - c;
-            return head * tail * tail * 14f * Projectile.scale;
+            return head * tail * tail * 8f * Projectile.scale;
         }
 
         public Color GetColorFunc(Vector2 uv) => Color.White * Projectile.Opacity;

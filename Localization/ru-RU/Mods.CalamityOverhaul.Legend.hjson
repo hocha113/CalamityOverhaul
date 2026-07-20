@@ -658,12 +658,16 @@ OnikiriText: {
 		// UnknownHint: A blank on the register. The night is long — a name will walk up here on its own
 		// SealedOriginHint: The seal holds. Do not lift it, do not answer it, do not look back
 		// SealedPowerHint: ———
+		// UnrenewedOriginHint: The old pact knows the blade, not this hand. Go to where it was first subdued, and renew the name
+		// UnrenewedPowerHint: ———
 		// CloseTagText: ROLL
 		// CloseHintFormat: ESC · {0} · click outside to roll up
 	}
 
 	OniEngraveRiteUI: {
 		// RiteTitle: ENGRAVE
+		// RiteTitleRenew: RENEW THE PACT
+		// RiteTitleResubdue: SUBDUE
 		// RiteHint: Set down the brush · Roll the scroll
 	}
 

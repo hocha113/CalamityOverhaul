@@ -57,3 +57,18 @@ MarblePetrify: {
 	DisplayName: 大理石石化
 	Description: 血肉化作石像，行动迟滞
 }
+
+PallbearerShrouded: {
+	DisplayName: 收殓标记
+	Description: 棺椁的气息沾了身，这口棺材认得它
+}
+
+PallbearerSealed: {
+	DisplayName: 封殓
+	Description: 棺椁的压迫仍在，承受的伤害提高
+}
+
+OniNeckGripDebuff: {
+	DisplayName: 鬼手扼颈
+	Description: 一只鬼手正掐着你的脖子，行动变得沉重
+}

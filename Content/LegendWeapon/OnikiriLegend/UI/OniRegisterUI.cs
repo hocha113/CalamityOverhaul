@@ -40,6 +40,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText UnknownHint { get; private set; }
         public static LocalizedText SealedOriginHint { get; private set; }
         public static LocalizedText SealedPowerHint { get; private set; }
+        public static LocalizedText UnrenewedOriginHint { get; private set; }
+        public static LocalizedText UnrenewedPowerHint { get; private set; }
         public static LocalizedText CloseTagText { get; private set; }
         public static LocalizedText CloseHintFormat { get; private set; }
 
@@ -57,6 +59,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             UnknownHint = this.GetLocalization(nameof(UnknownHint), () => "簿上留白。夜还长，总会有名字自己走上来");
             SealedOriginHint = this.GetLocalization(nameof(SealedOriginHint), () => "封印未解。莫揭，莫应，莫回头");
             SealedPowerHint = this.GetLocalization(nameof(SealedPowerHint), () => "———");
+            //残页门控:旧契认刀不认手,认主前来历与赋力不肯示人
+            UnrenewedOriginHint = this.GetLocalization(nameof(UnrenewedOriginHint), () => "旧契认刀，不认这只手。去它被收伏之地，重续名字");
+            UnrenewedPowerHint = this.GetLocalization(nameof(UnrenewedPowerHint), () => "———");
             CloseTagText = this.GetLocalization(nameof(CloseTagText), () => "收卷");
             CloseHintFormat = this.GetLocalization(nameof(CloseHintFormat), () => "ESC · {0} · 点击卷外 收卷");
         }

@@ -46,14 +46,22 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime.Behaviors
     }
 
     /// <summary>
-    /// 凝视僵直：被任意玩家注视时速度强阻尼（石像鬼原语）。
-    /// 应放在行为列表最后，压制前面积木的输出
+    /// 凝视僵直（石像鬼原语，正典承诺"看着它，它不动"）：被任意玩家注视时真停——
+    /// 残速按 damping 衰减入定，阈值之下直接归零并逐帧压制。必须放在行为列表最后：
+    /// 前序积木每帧注入的运动意图在这里被整体清算，注视期内实体以零速收帧
     /// </summary>
-    public sealed class FreezeWhenGazedBehavior(float damping = 0.78f) : IWraithBehavior
+    public sealed class FreezeWhenGazedBehavior(float damping = 0.5f) : IWraithBehavior
     {
+        /// <summary>低于此速率（像素/帧）直接归零，不留假僵直的余漂</summary>
+        private const float SnapThreshold = 0.3f;
+
         public void Update(WraithActor wraith) {
-            if (wraith.GazedByAnyPlayer) {
-                wraith.Velocity *= damping;
+            if (!wraith.GazedByAnyPlayer) {
+                return;
+            }
+            wraith.Velocity *= damping;
+            if (wraith.Velocity.LengthSquared() < SnapThreshold * SnapThreshold) {
+                wraith.Velocity = Vector2.Zero;
             }
         }
     }

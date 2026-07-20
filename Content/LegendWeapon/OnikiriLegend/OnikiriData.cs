@@ -11,24 +11,38 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// </summary>
     internal class OnikiriData : LegendData
     {
-        //存档标记:区分"存过档(即使记录全默认)"与"本功能之前的老刀",后者读档回落出厂态
+        //存档标记:区分"存过档(即使记录全默认)"与"本功能之前的老刀"。
+        //老档兼容语义:带 InitTag 的刀读档回放存档值(演示期的高驾驭就此保留,不强行收敛);
+        //无 InitTag 的老刀与新刀一样吃下方出厂表
         private const string InitTag = "OnikiriWraiths:Init";
 
-        /// <summary>出厂铭刻名单：新刀按此表落 Bound + 驾驭度，数值沿用演示期钦定值</summary>
+        /// <summary>
+        /// 出厂铭刻名单：新刀按此表落 Bound + 驾驭度。
+        /// 认主叙事（刀认你，鬼未必认你）：契约在而威信失，出厂驾驭度收敛至认主前低位
+        /// 0.15~0.35（保留演示期的个体差异排序），重续契约后才跃升至 RenewedMastery
+        /// </summary>
         private static readonly (string Key, float Mastery)[] FactoryEngravings = [
-            ("NoFace", 0.86f),
-            ("LanternBoy", 0.58f),
-            ("CrimsonBride", 0.16f),
-            ("StandIn", 0.77f),
-            ("HeadlessShade", 0.28f),
-            ("GhostHand", 0.45f),
+            ("NoFace", 0.35f),
+            ("LanternBoy", 0.27f),
+            ("CrimsonBride", 0.15f),
+            ("StandIn", 0.31f),
+            ("HeadlessShade", 0.18f),
+            ("GhostHand", 0.22f),
         ];
 
         /// <summary>本刀的厉鬼绑定进度</summary>
-        public WraithProgressStore Wraiths { get; } = new();
+        public WraithProgressStore Wraiths { get; private set; } = new();
 
         public OnikiriData() {
             SeedFactoryState();
+        }
+
+        /// <summary>克隆链深拷：每把刀必须各持一份点鬼簿，绝不共写</summary>
+        public override LegendData Clone(Item item) {
+            OnikiriData clone = (OnikiriData)base.Clone(item);
+            clone.Wraiths = new WraithProgressStore();
+            clone.Wraiths.CopyFrom(Wraiths);
+            return clone;
         }
 
         /// <summary>从 Item 取鬼切数据，非鬼切或空物品返回 null</summary>
@@ -69,6 +83,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             base.LoadData(item, tag);
             if (tag.ContainsKey(InitTag)) {
                 Wraiths.LoadData(tag);
+                //补种老档缺失的定义初始态(只补缺失绝不覆盖):存档后新加的鬼、
+                //以及生来封印者(井中鸣)在旧刀上也封得住
+                Wraiths.SeedMissingStates();
             }
             else {
                 SeedFactoryState();

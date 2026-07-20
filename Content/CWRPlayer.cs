@@ -99,8 +99,6 @@ namespace CalamityOverhaul.Content
         public bool RaiderGunDashReady;
         /// <summary>掠袭者共享冲刺冷却(帧)，每帧减一</summary>
         public int RaiderGunDashCooldown;
-        /// <summary>抬棺人下一发弩箭伤害倍率，默认 1</summary>
-        public float PallbearerNextArrowDamageMult = 1;
         #endregion
 
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
@@ -135,7 +133,6 @@ namespace CalamityOverhaul.Content
             cwr.CustomCooldownCounter = CustomCooldownCounter;
             cwr.RaiderGunDashReady = RaiderGunDashReady;
             cwr.RaiderGunDashCooldown = RaiderGunDashCooldown;
-            cwr.PallbearerNextArrowDamageMult = PallbearerNextArrowDamageMult;
             return cwr;
         }
 
@@ -144,7 +141,6 @@ namespace CalamityOverhaul.Content
         public override void Initialize() {
             TramTPContrType = 0;
             ThermalGenerationActiveTime = 0;
-            PallbearerNextArrowDamageMult = 1;
             Reset();
         }
 

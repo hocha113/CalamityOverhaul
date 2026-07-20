@@ -1,36 +1,78 @@
-﻿using CalamityOverhaul.Content.Scenarios.Helen;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
+using CalamityOverhaul.Content.Scenarios.Helen;
 using CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts;
 using InnoVault.GameContent.BaseEntity;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
+using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace CalamityOverhaul.Content.Items.Melee
 {
+    /// <summary>鬼砍刀专属 shader 资源（域内加载器，不动 EffectLoader）</summary>
+    internal class OniMacheteAssets
+    {
+        /// <summary>挥砍刀光弧带</summary>
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Effect OniMacheteSlash { get; private set; }
+        /// <summary>鬼手硫火火鞘（缠臂燃烧的附着式火焰）</summary>
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Effect OniMacheteFlame { get; private set; }
+        /// <summary>熔金裂纹（地面 decal / NPC 覆盖双 technique）</summary>
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Effect OniMacheteCrack { get; private set; }
+        /// <summary>鬼手之火彗尾条带</summary>
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Effect OniMacheteComet { get; private set; }
+        /// <summary>鬼手扼颈全屏暗角</summary>
+        [VaultLoaden(CWRConstant.Effects)]
+        public static Effect OniMacheteGrip { get; private set; }
+    }
+
+    /// <summary>
+    /// 鬼砍刀：刀里掺金、外缠硫火，锁着六只不安分的鬼手。<br/>
+    /// 挥砍与命中积累"硫火压制"；鬼手的每次出击消耗压制。压制耗尽时鬼手躁动——
+    /// 攻击更凶，但会周期性回头掐向持刀者的脖子；重新挥刀命中即可再度压服它们
+    /// </summary>
     [VaultLoaden(CWRConstant.Item_Melee)]
     internal class OniMachete : ModItem
     {
         public override string Texture => CWRConstant.Item_Melee + "OniMachete";
         public static Texture2D OniArm = null;
         public static Texture2D OniHand = null;
-        private static readonly List<int> ActiveHands = new();
+
+        public static LocalizedText SuppressTip { get; private set; }
+        public static LocalizedText RestlessWarn { get; private set; }
+
+        public override void SetStaticDefaults() {
+            SuppressTip = this.GetLocalization(nameof(SuppressTip)
+                , () => "挥砍与命中积累硫火压制，六只鬼手的每次出击都在消耗它\n压制熄灭时鬼手躁动：它们打得更凶，也随时会回头掐住你的脖子");
+            RestlessWarn = this.GetLocalization(nameof(RestlessWarn), () => "硫磺火熄灭了，握紧刀柄！");
+        }
+
         public override void SetDefaults() {
             Item.width = Item.height = 45;
             Item.damage = 2666;
-            Item.scale = 1.8f;
             Item.DamageType = DamageClass.Generic;
-            Item.useTime = Item.useAnimation = 12;
-            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTime = Item.useAnimation = 26;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
             Item.useTurn = true;
+            Item.knockBack = 7f;
             Item.rare = ItemRarityID.Red;
-            Item.UseSound = SoundID.Item1;
+            Item.UseSound = null;
             Item.autoReuse = true;
+            Item.shoot = ModContent.ProjectileType<OniMacheteHeld>();
+            Item.shootSpeed = 12f;
         }
 
         public override void ModifyWeaponDamage(Player player, ref StatModifier damage) {
@@ -43,6 +85,10 @@ namespace CalamityOverhaul.Content.Items.Melee
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
+            TooltipLine mechanic = new(Mod, "OniSuppress", SuppressTip.Value) {
+                OverrideColor = new Color(255, 180, 70)
+            };
+            tooltips.Add(mechanic);
             if (HalibutStorySync.ReadSupCal(d => d.SupCalYharonQuestReward, d => d.SupCalYharonQuestReward)) {
                 TooltipLine line = new(Mod, "Story", SupCalDisplayText.Story3.Value);
                 line.OverrideColor = Color.OrangeRed;
@@ -50,1841 +96,814 @@ namespace CalamityOverhaul.Content.Items.Melee
             }
         }
 
-        public override void HoldItem(Player player) {
-            if (ActiveHands.Count < 6) {
-                SpawnHand(player, player.FromObjectGetParent(), player.GetWeaponDamage(Item, true), 2f);
+        public override bool CanUseItem(Player player) {
+            //收势结束进入余光期（只画刀光残体、不控角色）的旧挥砍不阻挡下一刀
+            int type = ModContent.ProjectileType<OniMacheteHeld>();
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == player.whoAmI && proj.type == type
+                    && proj.ModProjectile is OniMacheteHeld held && held.BladeActive) {
+                    return false;
+                }
             }
+            return true;
         }
 
-        public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers) {
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source
+            , Vector2 position, Vector2 velocity, int type, int damage, float knockback) {
+            OniMachetePlayer mp = player.GetModPlayer<OniMachetePlayer>();
+            int beat = mp.StepCombo();
+            float swingDir = mp.NextSwingFlip();
+            Projectile.NewProjectile(source, player.Center, velocity, type
+                , damage, knockback, player.whoAmI, beat, swingDir);
+            return false;
+        }
+
+        /// <summary>削甲：掺金的刀身连防御一起熔开（原机制保留，挪到弹幕管线统一调用）</summary>
+        internal static void ApplyGoldRend(NPC target, ref NPC.HitModifiers modifiers) {
             target.defense = Math.Max(0, target.defense - 10);
-            if (modifiers.SuperArmor || target.defense > 999)
+            if (modifiers.SuperArmor || target.defense > 999) {
                 return;
+            }
             modifiers.DefenseEffectiveness *= 0f;
         }
 
-        public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone) {
-            SpawnSummonEffect(target.Center);
-        }
+        public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
+            => ApplyGoldRend(target, ref modifiers);
 
-        public override void UpdateInventory(Player player) {
-            CleanupInactiveHands();
-        }
-
-        private static void SpawnHand(Player player, IEntitySource source, int damage, float knockback) {
-            //手臂从玩家中心生成
-            Vector2 spawnPos = player.Center;
-
-            int handProj = Projectile.NewProjectile(
-                source,
-                spawnPos,
-                Vector2.Zero,
-                ModContent.ProjectileType<OniHandMinion>(),
-                2666,//给定一个不变的基础伤害
-                knockback * 2f,
-                player.whoAmI,
-                ActiveHands.Count
-            );
-
-            if (handProj >= 0) {
-                ActiveHands.Add(handProj);
-                SpawnSummonEffect(spawnPos);
-
-                //硫磺火召唤音
-                SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.7f,
-                    Pitch = -0.4f
-                }, spawnPos);
-
-                //地狱火焰音
-                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
-                    Volume = 0.6f,
-                    Pitch = -0.5f
-                }, spawnPos);
-            }
-        }
-
-        private static void CleanupInactiveHands() {
-            ActiveHands.RemoveAll(id => {
-                if (id < 0 || id >= Main.maxProjectiles) return true;
-                Projectile proj = Main.projectile[id];
-                return !proj.active || proj.type != ModContent.ProjectileType<OniHandMinion>();
-            });
-        }
-
-        private static void SpawnSummonEffect(Vector2 position) {
-            //Brimstone 粒子爆发
-            for (int i = 0; i < 40; i++) {
-                float angle = MathHelper.TwoPi * i / 40f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(5f, 12f);
-
-                Dust dust = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.8f, 3f)
-                );
-                dust.noGravity = true;
-                dust.fadeIn = 1.4f;
+        public override void HoldItem(Player player) {
+            //owner 端生成守卫：只有持有者本人的客户端补手，杜绝服务器与旁观端重复生成
+            if (player.whoAmI != Main.myPlayer || player.dead) {
+                return;
             }
 
-            //红色火焰核心
-            for (int i = 0; i < 20; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    position,
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(8f, 8f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                fire.noGravity = true;
+            int handType = ModContent.ProjectileType<OniHandMinion>();
+            if (player.ownedProjectileCounts[handType] >= OniHandMinion.HandCount) {
+                return;
             }
 
-            //地狱火环
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 18; j++) {
-                    float angle = MathHelper.TwoPi * j / 18f;
-                    float radius = 35f + i * 25f;
-                    Vector2 spawnPos = position + angle.ToRotationVector2() * radius;
-
-                    Dust ring = Dust.NewDustPerfect(
-                        spawnPos,
-                        CWRID.Dust_Brimstone,
-                        angle.ToRotationVector2() * 4f,
-                        0,
-                        default,
-                        Main.rand.NextFloat(1.5f, 2.5f)
-                    );
-                    ring.noGravity = true;
+            //按缺失的编队位补手，每帧至多一只（六手错帧苏醒，读作逐一挣脱封印）
+            Span<bool> taken = stackalloc bool[OniHandMinion.HandCount];
+            foreach (Projectile proj in Main.ActiveProjectiles) {
+                if (proj.owner == player.whoAmI && proj.type == handType) {
+                    int idx = (int)proj.ai[0];
+                    if (idx >= 0 && idx < OniHandMinion.HandCount) {
+                        taken[idx] = true;
+                    }
                 }
+            }
+            for (int i = 0; i < OniHandMinion.HandCount; i++) {
+                if (taken[i]) {
+                    continue;
+                }
+                int damage = (int)(player.GetWeaponDamage(Item, true) * OniHandMinion.HandDamageFactor);
+                Projectile.NewProjectile(player.FromObjectGetParent(), player.Center, Vector2.Zero
+                    , handType, damage, Item.knockBack * 2f, player.whoAmI, i);
+                break;
             }
         }
     }
 
-    internal class OniHandExplode : ModProjectile
+    /// <summary>
+    /// 鬼砍刀专属玩家状态：硫火压制值 / 躁动态 / 连击计数 / 扼颈暗角包络。<br/>
+    /// 全部实例数据在 ModPlayer 上（每玩家一份），不落 static
+    /// </summary>
+    internal class OniMachetePlayer : ModPlayer
     {
-        public override string Texture => CWRConstant.Placeholder;
-        public override void SetDefaults() {
-            Projectile.width = Projectile.height = 200;
-            Projectile.penetrate = -1;
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
-            Projectile.timeLeft = 4;
-            Projectile.friendly = true;
-            Projectile.tileCollide = false;
-            Projectile.ignoreWater = false;
+        public const float SuppressionMax = 100f;
+        /// <summary>躁动 → 忠仆的回归阈值（迟滞，防临界抖动）</summary>
+        public const float RecoverThreshold = 25f;
+        /// <summary>压制不足警告线（臂上火鞘开始变薄断续）</summary>
+        public const float LowLine = 30f;
+        //鬼手在场时的被动流失（约 3.6/秒），逼玩家保持挥砍节奏
+        private const float PassiveDrain = 0.06f;
+
+        /// <summary>硫火压制值 0..100，挥砍/命中积累，鬼手出击消耗</summary>
+        public float Suppression = SuppressionMax;
+        /// <summary>压制耗尽后的躁动态：手更凶且会回头掐人</summary>
+        public bool Restless;
+        /// <summary>扼颈攻击冷却（帧），躁动期由发起的手抢占重置</summary>
+        public int GripCooldown;
+        /// <summary>扼颈暗角包络 0..1（本地视觉，掐颈的手逐帧推高）</summary>
+        public float GripVignette;
+
+        private int comboIndex;
+        private int comboResetTimer;
+        private bool swingFlip;
+        private bool lowWarned;
+
+        public bool HoldingMachete => Player.HeldItem != null
+            && Player.HeldItem.type == ModContent.ItemType<OniMachete>();
+
+        public int StepCombo() {
+            int beat = comboIndex % OniMacheteHeld.BeatCount;
+            comboIndex++;
+            comboResetTimer = 45;
+            return beat;
+        }
+
+        public float NextSwingFlip() {
+            swingFlip = !swingFlip;
+            return swingFlip ? 1f : -1f;
+        }
+
+        public void AddSuppression(float amount)
+            => Suppression = MathHelper.Clamp(Suppression + amount, 0f, SuppressionMax);
+
+        /// <summary>鬼手出击消耗；躁动期它们不再听候硫火，白吃不误</summary>
+        public void ConsumeSuppression(float amount) {
+            if (!Restless) {
+                Suppression = Math.Max(0f, Suppression - amount);
+            }
+        }
+
+        public void PushGripVignette(float strength)
+            => GripVignette = MathHelper.Clamp(MathF.Max(GripVignette, strength), 0f, 1f);
+
+        public override void PostUpdateMiscEffects() {
+            if (comboResetTimer > 0 && --comboResetTimer == 0) {
+                comboIndex = 0;
+            }
+            if (GripCooldown > 0) {
+                GripCooldown--;
+            }
+            GripVignette = Math.Max(0f, GripVignette - 0.03f);
+
+            bool handsOut = Player.ownedProjectileCounts[ModContent.ProjectileType<OniHandMinion>()] > 0;
+            if (handsOut && HoldingMachete) {
+                Suppression = Math.Max(0f, Suppression - PassiveDrain);
+
+                if (!Restless && Suppression <= 0f) {
+                    EnterRestless();
+                }
+                if (Restless && Suppression >= RecoverThreshold) {
+                    Restless = false;
+                    lowWarned = false;
+                    if (Player.whoAmI == Main.myPlayer) {
+                        SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.6f, Pitch = -0.2f }, Player.Center);
+                    }
+                }
+                if (!Restless && Suppression < LowLine && !lowWarned) {
+                    lowWarned = true;
+                    if (Player.whoAmI == Main.myPlayer) {
+                        //硫火转弱的噼啪衰声：躁动前的可读预警
+                        SoundEngine.PlaySound(SoundID.LiquidsWaterLava with { Volume = 0.8f, Pitch = -0.4f }, Player.Center);
+                    }
+                }
+                if (lowWarned && Suppression >= LowLine + 15f) {
+                    lowWarned = false;
+                }
+            }
+            else {
+                //收刀或手散尽：硫磺火自然复燃
+                Suppression = Math.Min(SuppressionMax, Suppression + 0.5f);
+                if (Restless && Suppression >= RecoverThreshold) {
+                    Restless = false;
+                }
+            }
+        }
+
+        private void EnterRestless() {
+            Restless = true;
+            //首次躁动给一段缓冲，掐颈不会即刻扑脸
+            GripCooldown = Math.Max(GripCooldown, 150);
+            if (Player.whoAmI == Main.myPlayer) {
+                SoundEngine.PlaySound(SoundID.NPCDeath52 with { Volume = 0.7f, Pitch = -0.45f }, Player.Center);
+                SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.8f, Pitch = -0.7f }, Player.Center);
+                CombatText.NewText(Player.Hitbox, new Color(255, 120, 40), OniMachete.RestlessWarn.Value, true);
+            }
         }
     }
 
-    internal class OniFireBall : ModProjectile
+    /// <summary>鬼手扼颈：被掐住脖子时行动迟滞（可读、可规避，不掉伤害不禁跳）</summary>
+    internal class OniNeckGripDebuff : ModBuff
     {
-        public override string Texture => CWRConstant.Item_Melee + "OniMachete";
+        public override string Texture => CWRConstant.Placeholder2;
 
-        private ref float Timer => ref Projectile.ai[0];
-        private ref float TargetNPCID => ref Projectile.ai[1];
-
-        public override void SetDefaults() {
-            Projectile.width = Projectile.height = 32;
-            Projectile.hostile = false;
-            Projectile.friendly = true;
-            Projectile.timeLeft = 180;
-            Projectile.extraUpdates = 1;
-            Projectile.tileCollide = true;
-            Projectile.maxPenetrate = Projectile.penetrate = 3;
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 30;
-        }
-
-        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
-            Projectile.damage = (int)(Projectile.damage * 0.60f);
-        }
-
-        public override void AI() {
-            Timer++;
-
-            //火球旋转
-            Projectile.rotation += Projectile.velocity.X * 0.13f;
-
-            //硫磺火球辉光
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 8f + Projectile.whoAmI) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center, 0.9f * pulse, 0.3f * pulse, 0.1f * pulse);
-
-            //初期加速
-            if (Timer < 15f) {
-                Projectile.velocity *= 1.02f;
-            }
-
-            //中期追踪
-            if (Timer > 15f && Timer < 120f) {
-                HomeInOnTarget();
-            }
-
-            //后期减速
-            if (Timer > 120f) {
-                Projectile.velocity *= 0.98f;
-            }
-
-            //硫磺火粒子轨迹
-            SpawnBrimstoneTrail();
-
-            //火球脉动膨胀
-            Projectile.scale = 1f + (float)Math.Sin(Timer * 0.02f) * 0.1f;
-        }
-
-        private void HomeInOnTarget() {
-            //最近敌人
-            NPC target = null;
-            float maxDistance = 600f;
-
-            if (TargetNPCID >= 0 && TargetNPCID < Main.maxNPCs) {
-                NPC potentialTarget = Main.npc[(int)TargetNPCID];
-                if (potentialTarget.active && potentialTarget.CanBeChasedBy() &&
-                    Vector2.Distance(Projectile.Center, potentialTarget.Center) < maxDistance) {
-                    target = potentialTarget;
-                }
-            }
-
-            if (target == null) {
-                target = Projectile.Center.FindClosestNPC(maxDistance);
-                if (target != null) {
-                    TargetNPCID = target.whoAmI;
-                }
-            }
-
-            if (target != null) {
-                //平滑追踪
-                Vector2 targetDirection = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
-                float currentSpeed = Projectile.velocity.Length();
-                float turnSpeed = 0.08f;
-
-                Projectile.velocity = Vector2.Lerp(
-                    Projectile.velocity.SafeNormalize(Vector2.Zero),
-                    targetDirection,
-                    turnSpeed
-                ) * currentSpeed;
-            }
-        }
-
-        private void SpawnBrimstoneTrail() {
-            //硫磺火轨迹粒子
-            if (Main.rand.NextBool(2)) {
-                Dust brimstone = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(8f, 8f),
-                    CWRID.Dust_Brimstone,
-                    -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(1f, 1f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 1.3f;
-            }
-
-            //火焰尾迹
-            if (Main.rand.NextBool(3)) {
-                Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    -Projectile.velocity * 0.2f,
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1f, 1.8f)
-                );
-                fire.noGravity = true;
-            }
-        }
-
-        public override void OnHitPlayer(Player target, Player.HurtInfo info) {
-            target.AddBuff(BuffID.OnFire3, 180);
-        }
-
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            target.AddBuff(BuffID.OnFire3, 180);
-
-            //击中特效
-            CreateHitEffect(Projectile.Center);
-        }
-
-        public override void OnKill(int timeLeft) {
-            //火球爆炸效果
-            CreateExplosionEffect(Projectile.Center);
-
-            //爆炸音效
-            SoundEngine.PlaySound(SoundID.Item74 with {
-                Volume = 0.6f,
-                Pitch = 0.2f
-            }, Projectile.Center);
-        }
-
-        private void CreateHitEffect(Vector2 position) {
-            //击中硫磺火爆发
-            for (int i = 0; i < 15; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust brimstone = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                brimstone.noGravity = true;
-            }
-
-            //火焰飞溅
-            for (int i = 0; i < 8; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    position,
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(6f, 6f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                fire.noGravity = true;
-            }
-        }
-
-        private void CreateExplosionEffect(Vector2 position) {
-            //硫磺火爆炸波
-            for (int i = 0; i < 30; i++) {
-                float angle = MathHelper.TwoPi * i / 30f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(4f, 10f);
-
-                Dust brimstone = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 1.6f;
-            }
-
-            //火焰爆炸核心
-            for (int i = 0; i < 20; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    position,
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(8f, 8f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.8f, 3f)
-                );
-                fire.noGravity = true;
-            }
-
-            //冲击环
-            for (int i = 0; i < 12; i++) {
-                float angle = MathHelper.TwoPi * i / 12f;
-                Vector2 velocity = angle.ToRotationVector2() * 6f;
-
-                Dust ring = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                ring.noGravity = true;
-            }
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity) {
-            //碰撞时爆炸
-            Projectile.Kill();
-            return false;
-        }
-
-        public override bool PreDraw(ref Color lightColor) {
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D mainValue = TextureAssets.Projectile[Type].Value;
-            Rectangle rectangle = mainValue.GetRectangle();
-            Vector2 origin = rectangle.Size() / 2f;
-            Vector2 drawPos = Projectile.Center - Main.screenPosition;
-
-            //绘制硫磺火后发光层
-            for (int i = 0; i < 3; i++) {
-                float glowScale = Projectile.scale * (1.3f + i * 0.2f);
-                float glowAlpha = 0.4f * (1f - i * 0.3f);
-
-                sb.Draw(
-                    mainValue,
-                    drawPos,
-                    rectangle,
-                    new Color(255, 100, 50, 0) * glowAlpha,
-                    Projectile.rotation,
-                    origin,
-                    glowScale,
-                    SpriteEffects.None,
-                    0
-                );
-            }
-
-            //绘制核心白色亮光
-            float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 10f + Projectile.whoAmI) * 0.3f + 0.7f;
-            sb.Draw(
-                mainValue,
-                drawPos,
-                rectangle,
-                new Color(255, 255, 255, 0) * (0.5f * pulse),
-                Projectile.rotation,
-                origin,
-                Projectile.scale * 0.8f,
-                SpriteEffects.None,
-                0
-            );
-
-            //绘制火球主体
-            sb.Draw(
-                mainValue,
-                drawPos,
-                rectangle,
-                new Color(255, 180, 100, 200),
-                Projectile.rotation,
-                origin,
-                Projectile.scale,
-                SpriteEffects.None,
-                0
-            );
-
-            //绘制炽热外缘
-            sb.Draw(
-                mainValue,
-                drawPos,
-                rectangle,
-                new Color(255, 80, 40, 0) * 0.6f,
-                Projectile.rotation,
-                origin,
-                Projectile.scale * 1.15f,
-                SpriteEffects.None,
-                0
-            );
-
-            return false;
-        }
-    }
-
-    internal class OniHandMinion : BaseHeldProj
-    {
-        public override string Texture => CWRConstant.Item_Melee + "OniHand";
-
-        private enum HandState
-        {
-            Idle,           //待机漂浮
-            Targeting,      //锁定目标
-            WindingUp,      //蓄力后拉
-            Swinging,       //挥击
-            Slamming,       //下砸
-            Sweeping,       //横扫
-            Throwing,       //投掷骨头
-            Recovering      //攻击后恢复
-        }
-
-        private ref float HandIndex => ref Projectile.ai[0];
-        private ref float StateRaw => ref Projectile.ai[1];
-        private ref float Timer => ref Projectile.ai[2];
-        private ref float StateTimer => ref Projectile.localAI[0];
-        private ref float AttackType => ref Projectile.localAI[1];
-
-        private HandState State {
-            get => (HandState)StateRaw;
-            set => StateRaw = (float)value;
-        }
-
-        private int targetNPCID = -1;
-        private Vector2 idleOffset = Vector2.Zero;
-        private Vector2 attackStartPos = Vector2.Zero;
-        private Vector2 attackTargetPos = Vector2.Zero;
-
-        //IK手臂参数
-        private readonly List<Vector2> armSegments = new();
-        private const int ArmSegmentCount = 6;
-        private const float SegmentLength = 45f;
-        private Vector2 shoulderPos = Vector2.Zero;
-        private Vector2 handPos = Vector2.Zero;
-        private float armTension = 0f; //手臂张力，IK自然度
-        private int ownerDirection = 1; //玩家朝向 (-1左, 1右)
-
-        //攻击参数
-        private const float SearchRange = 1800f;
-        private const int IdleDuration = 40;
-        private const int WindUpDuration = 30;
-        private const int SwingDuration = 18;
-        private const int SlamDuration = 22;
-        private const int SweepDuration = 35;
-        private const int ThrowDuration = 50;
-        private const int RecoverDuration = 35;
-
-        //视觉效果
-        private float glowIntensity = 0f;
-        private float impactShake = 0f;
-        private readonly List<Vector2> trailPositions = new();
-        private const int MaxTrailLength = 20;
-        private float handScale = 1f;
-        private float attackWindUpIntensity = 0f;
-
-        //投掷动作相关
-        private bool throwActionActive = false;
-        private Vector2 throwStartPos = Vector2.Zero;
-        private Vector2 throwEndPos = Vector2.Zero;
-
-        /// 各手时间偏移 0~1
-        private float personalityTimeOffset = 0f;
-
-        /// 个性速度倍率 0.85~1.15
-        private float personalitySpeedMultiplier = 1f;
-
-        /// 攻击偏好 [挥击,下砸,横扫,投掷]
-        private float[] attackPreference = new float[4];
-
-        /// 待机延迟(帧)错开索敌
-        private int personalityIdleDelay = 0;
-
-        /// 个性已初始化
-        private bool personalityInitialized = false;
-
-        /// 待机角偏移分散漂浮
-        private float personalityAngleOffset = 0f;
-
-        /// 攻击距离偏好 0.8~1.2
-        private float personalityRangePreference = 1f;
+        private LocalizedText displayNameCache;
+        private LocalizedText descriptionCache;
+        public override LocalizedText DisplayName
+            => displayNameCache ??= this.GetLocalization(nameof(DisplayName), () => "鬼手扼颈");
+        public override LocalizedText Description
+            => descriptionCache ??= this.GetLocalization(nameof(Description), () => "一只鬼手正掐着你的脖子，行动变得沉重");
 
         public override void SetStaticDefaults() {
-            Main.projFrames[Projectile.type] = 1;
-            ProjectileID.Sets.MinionSacrificable[Projectile.type] = false;
+            Main.debuff[Type] = true;
+            Main.buffNoSave[Type] = true;
+            //扼颈期间逐帧刷新短时长，不显示倒计时防图标闪烁
+            Main.buffNoTimeDisplay[Type] = true;
+            //加载期主动触碰，抢在 tML 惰性注册之前把中文默认值落进键
+            _ = DisplayName;
+            _ = Description;
         }
+
+        public override void Update(Player player, ref int buffIndex) {
+            player.moveSpeed *= 0.62f;
+            player.runAcceleration *= 0.72f;
+        }
+    }
+
+    /// <summary>
+    /// 鬼砍刀刀光条带：数据驱动的确定性时间轴（定义/几何动画/双层 quad 提交），
+    /// 架构镜像鬼切传奇 CrimsonSlashRenderer 的思想，调色换硫磺橙红+熔金，shader 独立
+    /// </summary>
+    internal static class OniSlashStrip
+    {
+        /// <summary>子刀光定义（出生时冻结，确定性数据）</summary>
+        public struct Def
+        {
+            public int Life;          //总寿命（帧）
+            public int ErodeStart;    //侵蚀起点
+            public int ErodeFrames;
+            public float Rot;         //quad 基准角（含滚转）
+            public float Span;        //弧跨度（弧度，<2π）
+            public float Thick;       //shader 厚度
+            public float HalfX;       //quad 半尺寸
+            public float HalfY;       //<HalfX 即伪3D透视压扁
+            public float Flip;        //±1 挥动镜像
+            public float Opacity;
+            public float FrontGlow;
+            public float OffsetAlongAim;
+            public float Seed;
+            public float TailErode;   //起笔端定向蒸发上限
+            public float FlashPower;  //全形白闪强度
+            public float GoldVein;    //熔金脉络权重（重斩加强）
+        }
+
+        public static float EaseOutBack(float x) {
+            x = MathHelper.Clamp(x, 0f, 1f);
+            const float c1 = 1.70158f;
+            const float c3 = c1 + 1f;
+            float xm = x - 1f;
+            return 1f + c3 * xm * xm * xm + c1 * xm * xm;
+        }
+
+        public static float SmoothStep01(float x) {
+            x = MathHelper.Clamp(x, 0f, 1f);
+            return x * x * (3f - 2f * x);
+        }
+
+        public static float Erode(in Def d, int lt)
+            => SmoothStep01((lt - d.ErodeStart) / (float)d.ErodeFrames);
+
+        public static float Opacity(in Def d, int lt)
+            => d.Opacity * (1f - MathHelper.Clamp((lt - (d.Life - 6)) / 6f, 0f, 1f));
+
+        /// <summary>出生爆发缩放：62% 起步 easeOutBack 过冲回落，随后缓慢外扩</summary>
+        public static float BirthScale(in Def d, int lt, int sweepFrames) {
+            float burstT = MathHelper.Clamp(lt / (sweepFrames + 2f), 0f, 1f);
+            float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
+            return MathHelper.Lerp(0.62f, 1f, EaseOutBack(burstT)) + 0.06f * lifeT;
+        }
+
+        /// <summary>全形白闪：完全张开瞬间过曝 1~2 帧速落</summary>
+        public static float Flash(in Def d, int lt, int sweepFrames) {
+            float ft = lt - sweepFrames;
+            float flash = ft < 0f ? 0f : ft <= 1f ? 1f : MathF.Pow(0.52f, ft - 1f);
+            return flash < 0.02f ? 0f : flash * d.FlashPower;
+        }
+
+        /// <summary>刀光带中线上一点（静态几何，供判定与粒子发射）：uc=0..1 沿刃</summary>
+        public static Vector2 PointAt(in Def d, Vector2 center, float uc) {
+            Vector2 ax = d.Rot.ToRotationVector2();
+            Vector2 ay = ax.RotatedBy(MathHelper.PiOver2);
+            float env = MathF.Sin(MathF.Pow(uc, 1.75f) * MathF.PI);
+            float w = d.Thick * MathF.Pow(MathF.Max(env, 0.0001f), 0.72f);
+            float rFrac = 0.90f - w * 0.5f;
+            float phi = d.Flip * (uc - 0.5f) * d.Span;
+            return center + ax * MathF.Cos(phi) * rFrac * d.HalfX + ay * MathF.Sin(phi) * rFrac * d.HalfY;
+        }
+
+        /// <summary>设备状态 + 帧级公共 uniform；返回 false 表示资产未就绪</summary>
+        public static bool BeginDraw(GraphicsDevice device, out Effect fx
+            , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth) {
+            fx = OniMacheteAssets.OniMacheteSlash;
+            Texture2D noise = CWRAsset.PerlinNoise?.Value;
+            prevBlend = device.BlendState;
+            prevRaster = device.RasterizerState;
+            prevDepth = device.DepthStencilState;
+            if (fx == null || noise == null) {
+                return false;
+            }
+
+            device.BlendState = BlendState.AlphaBlend;
+            device.RasterizerState = RasterizerState.CullNone;
+            device.DepthStencilState = DepthStencilState.None;
+
+            fx.Parameters["transformMatrix"]?.SetValue(VaultUtils.GetTransfromMatrix());
+            fx.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            fx.Parameters["uNoiseTex"]?.SetValue(noise);
+            return true;
+        }
+
+        public static void EndDraw(GraphicsDevice device
+            , BlendState prevBlend, RasterizerState prevRaster, DepthStencilState prevDepth) {
+            device.BlendState = prevBlend;
+            device.RasterizerState = prevRaster;
+            device.DepthStencilState = prevDepth;
+        }
+
+        /// <summary>双层异步：主体色带 → 白金核心薄条（贴锋利侧、无脉络）</summary>
+        public static void DrawTwoLayers(GraphicsDevice device, Effect fx, in Def d
+            , Vector2 center, int lt, int sweepFrames, float sweep) {
+            DrawLayer(device, fx, in d, center, lt, sweepFrames, sweep
+                , opacityMul: 1f, thickMul: 1f, frontMul: 1f, goldVein: d.GoldVein);
+            DrawLayer(device, fx, in d, center, lt, sweepFrames, sweep
+                , opacityMul: 0.90f, thickMul: 0.45f, frontMul: 1.3f, goldVein: 0f);
+        }
+
+        private static void DrawLayer(GraphicsDevice device, Effect fx, in Def d
+            , Vector2 center, int lt, int sweepFrames, float sweep
+            , float opacityMul, float thickMul, float frontMul, float goldVein) {
+            if (lt < 0 || lt >= d.Life) {
+                return;
+            }
+            float opacity = Opacity(in d, lt) * opacityMul;
+            if (opacity <= 0.012f) {
+                return;
+            }
+
+            float scale = BirthScale(in d, lt, sweepFrames);
+            //惯性收势：扫掠结束后沿挥动方向继续减速旋转
+            float followT = MathHelper.Clamp((lt - sweepFrames) / 13f, 0f, 1f);
+            float rotOff = d.Flip * 0.12f * (1f - (1f - followT) * (1f - followT));
+            //厚度呼吸：薄入 → 冲击帧最厚 → 消散期变薄
+            float lifeT = MathHelper.Clamp(lt / (float)d.Life, 0f, 1f);
+            float thickIn = VaultUtils.EaseOutCubic(MathHelper.Clamp(lt / (sweepFrames + 2f), 0f, 1f));
+            float thickBreath = MathHelper.Lerp(0.70f, 1.10f, thickIn)
+                * (1f - 0.40f * SmoothStep01((lifeT - 0.45f) / 0.55f));
+            float tailErode = d.TailErode * SmoothStep01((lt - sweepFrames) / (d.Life * 0.7f));
+
+            Vector2 axisX = (d.Rot + rotOff).ToRotationVector2();
+            Vector2 axisY = axisX.RotatedBy(MathHelper.PiOver2);
+            float hx = d.HalfX * scale;
+            float hy = d.HalfY * scale;
+
+            fx.Parameters["uSweep"]?.SetValue(sweep);
+            fx.Parameters["uErode"]?.SetValue(Erode(in d, lt));
+            fx.Parameters["uTailErode"]?.SetValue(tailErode);
+            fx.Parameters["uFlash"]?.SetValue(Flash(in d, lt, sweepFrames));
+            fx.Parameters["uOpacity"]?.SetValue(opacity);
+            fx.Parameters["uFlip"]?.SetValue(d.Flip);
+            fx.Parameters["uSeed"]?.SetValue(d.Seed);
+            fx.Parameters["uArcSpan"]?.SetValue(d.Span > 0f ? d.Span : 1f);
+            fx.Parameters["uThick"]?.SetValue(d.Thick * thickBreath * thickMul);
+            fx.Parameters["uFrontGlow"]?.SetValue(d.FrontGlow * frontMul
+                * (lt <= sweepFrames + 1 ? 1f : MathF.Max(0f, 1f - (lt - sweepFrames - 1) / 5f)));
+            fx.Parameters["uGoldVein"]?.SetValue(goldVein);
+
+            VertexPositionColorTexture[] verts = new VertexPositionColorTexture[4];
+            verts[0] = new VertexPositionColorTexture((center - axisX * hx - axisY * hy).ToVector3(), Color.White, new Vector2(0f, 0f));
+            verts[1] = new VertexPositionColorTexture((center + axisX * hx - axisY * hy).ToVector3(), Color.White, new Vector2(1f, 0f));
+            verts[2] = new VertexPositionColorTexture((center - axisX * hx + axisY * hy).ToVector3(), Color.White, new Vector2(0f, 1f));
+            verts[3] = new VertexPositionColorTexture((center + axisX * hx + axisY * hy).ToVector3(), Color.White, new Vector2(1f, 1f));
+
+            foreach (EffectPass pass in fx.CurrentTechnique.Passes) {
+                pass.Apply();
+                device.DrawUserPrimitives(PrimitiveType.TriangleStrip, verts, 0, 2);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 鬼砍刀手持挥砍（每挥一刀一发，连段编排镜像 WeaverGrievancesHeld）：<br/>
+    /// 三段连击 = 纵劈 → 反撩 → 金崩重斩；前摇 ≥40% 反拉蓄势（末端 pow 迟滞后吸），
+    /// 打击段 poly(9/12) 陡峭 ease-out 一拍完成，收势平滑过冲回稳。<br/>
+    /// 刀光为数据驱动 shader 弧带，扫掠进度与刀身挥动逐帧锁死；挥砍与命中喂养硫火压制。<br/>
+    /// ai[0]=拍位 0..2  ai[1]=挥动方向 ±1
+    /// </summary>
+    internal class OniMacheteHeld : BaseHeldProj, IPrimitiveDrawable
+    {
+        public override string Texture => CWRConstant.Item_Melee + "OniMachete";
+        public override LocalizedText DisplayName
+            => ItemLoader.GetItem(ModContent.ItemType<OniMachete>()).DisplayName;
+
+        public const int BeatCount = 3;
+
+        private ref float BeatAi => ref Projectile.ai[0];
+        private ref float SwingDirAi => ref Projectile.ai[1];
+
+        private int Beat => (int)BeatAi;
+        private bool IsFinisher => Beat >= BeatCount - 1;
+
+        //==== 节拍时长（逻辑帧，受攻速缩放；前摇占比 ≥40%）====
+        private float WindupTime => IsFinisher ? 15f : 12f;
+        /// <summary>重斩独有：蓄势顶点的滞帧（爆发前的静止）</summary>
+        private float HoldTime => IsFinisher ? 3f : 0f;
+        private float StrikeTime => 5f;
+        private float RecoverTime => IsFinisher ? 14f : 12f;
+        private float TotalTime => WindupTime + HoldTime + StrikeTime + RecoverTime;
+        private float SwingArc => IsFinisher ? 4.6f : 3.4f;
+        private float BladeReach => (IsFinisher ? 165f : 148f) * Projectile.scale;
+        /// <summary>蓄势收束硬切点：之后停喷收束粒子（爆发前的静默）</summary>
+        private const float ChargeSilenceAt = 0.72f;
+
+        private float elapsed;
+        private float speedMul = 1f;
+        private int lockedDirection = 1;
+        private int swingSign = 1;
+        private float startAngle;
+        private float endAngle;
+        private float currentRotation;
+        private float lastRotation;
+        private float strikeEased;      //本帧打击段 ease 进度（同时驱动刀身与刀光扫掠）
+        private bool strikeStarted;
+        private bool windupSoundPlayed;
+        private bool slashBorn;
+        private int slashBirth = -1;    //刀光出生帧（elapsed 时基取整）
+        private OniSlashStrip.Def slashDef;
+        private int impactHoldFrames;
+        private float recoilPulse;
+
+        /// <summary>刀身仍在挥（未进入余光期）：期间物品不可再次使用</summary>
+        internal bool BladeActive => elapsed < TotalTime;
 
         public override void SetDefaults() {
-            Projectile.width = 80;
-            Projectile.height = 80;
+            Projectile.width = Projectile.height = 54;
             Projectile.friendly = true;
-            Projectile.hostile = false;
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.penetrate = -1;
-            Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.DamageType = DamageClass.Generic;
+            Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
-
-            //初始化IK手臂段
-            for (int i = 0; i < ArmSegmentCount; i++) {
-                armSegments.Add(Vector2.Zero);
-            }
+            Projectile.ownerHitCheck = true;
+            Projectile.timeLeft = 120;
         }
 
-        /// 初始化各手个性参数
-        private void InitializePersonality() {
-            if (personalityInitialized) return;
-            personalityInitialized = true;
+        public override bool ShouldUpdatePosition() => false;
 
-            //基于 HandIndex 的固定种子
-            int seed = (int)(HandIndex * 1000) + Projectile.owner * 10000;
-            Random personalRand = new Random(seed);
-
-            //1. 时间偏移(0~60帧)
-            personalityTimeOffset = (float)personalRand.NextDouble();
-            personalityIdleDelay = personalRand.Next(0, 60);
-
-            //2. 速度倍率 ±15%
-            personalitySpeedMultiplier = 0.85f + (float)personalRand.NextDouble() * 0.3f;
-
-            //3. 攻击偏好权重
-            for (int i = 0; i < 4; i++) {
-                attackPreference[i] = 0.5f + (float)personalRand.NextDouble() * 0.5f;
-            }
-            //归一化权重
-            float totalWeight = attackPreference[0] + attackPreference[1] + attackPreference[2] + attackPreference[3];
-            for (int i = 0; i < 4; i++) {
-                attackPreference[i] /= totalWeight;
+        public override void Initialize() {
+            swingSign = Math.Sign(SwingDirAi);
+            if (swingSign == 0) {
+                swingSign = 1;
             }
 
-            //4. 待机角偏移 ±30°
-            personalityAngleOffset = ((float)personalRand.NextDouble() - 0.5f) * MathHelper.Pi / 3f;
-
-            //5. 距离偏好 ±20%
-            personalityRangePreference = 0.8f + (float)personalRand.NextDouble() * 0.4f;
-        }
-
-        /// 个性调整后的阶段时长
-        private int GetPersonalizedDuration(int baseDuration) {
-            return (int)(baseDuration * personalitySpeedMultiplier);
-        }
-
-        /// 带个性偏移的全局时间
-        private float GetPersonalizedTime() {
-            return Main.GlobalTimeWrappedHourly + personalityTimeOffset * MathHelper.TwoPi;
-        }
-
-        private void UpdateIdleOffset() {
-            //更加明显的漂浮效果
-            idleOffset.X = (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + HandIndex) * 50f;
-            idleOffset.Y = (float)Math.Cos(Main.GlobalTimeWrappedHourly * 1.5f + HandIndex) * 30f;
-        }
-
-        private void UpdateShoulderPosition(Player owner) {
-            if (State == HandState.Idle) {
-                //同步玩家朝向
-                ownerDirection = owner.direction;
+            lockedDirection = Math.Sign(ToMouse.X);
+            if (lockedDirection == 0) {
+                lockedDirection = Owner.direction;
             }
-            //肩位随朝向偏移
-            Vector2 shoulderOffset = new Vector2(8f * ownerDirection, -4f);
-            shoulderPos = owner.GetPlayerStabilityCenter() + shoulderOffset;
-        }
+            Owner.direction = lockedDirection;
 
-        public override void AI() {
-            if (!Owner.active || Owner.dead) {
-                Projectile.Kill();
-                return;
+            //重斩恒走过顶下劈的沉重轨道（随朝向取向）
+            if (IsFinisher) {
+                swingSign = lockedDirection;
             }
 
-            if (Owner.GetItem().type != ModContent.ItemType<OniMachete>()) {
-                Projectile.Kill();
-                return;
+            speedMul = Owner.GetWeaponAttackSpeed(Item);
+            if (speedMul <= 0f) {
+                speedMul = 1f;
             }
 
-            if (Timer < 30) {
-                Projectile.damage = 0;
-            }
-            else {
-                Projectile.damage = (int)(Item.damage * Owner.GetDamage(DamageClass.Generic).Additive);
-            }
+            float baseAngle = Projectile.velocity.ToRotation();
+            startAngle = baseAngle - swingSign * SwingArc * 0.5f;
+            endAngle = baseAngle + swingSign * SwingArc * 0.5f;
+            currentRotation = lastRotation = startAngle;
 
-            //初始化个性
-            InitializePersonality();
-
-            Projectile.timeLeft = 60;
-
-            Timer++;
-            StateTimer++;
-            UpdateIdleOffset();
-            UpdateShoulderPosition(Owner);
-
-            //状态机
-            switch (State) {
-                case HandState.Idle:
-                    IdleBehavior(Owner);
-                    break;
-                case HandState.Targeting:
-                    TargetingBehavior();
-                    break;
-                case HandState.WindingUp:
-                    WindUpBehavior();
-                    break;
-                case HandState.Swinging:
-                    SwingingBehavior();
-                    break;
-                case HandState.Slamming:
-                    SlammingBehavior();
-                    break;
-                case HandState.Sweeping:
-                    SweepingBehavior();
-                    break;
-                case HandState.Throwing:
-                    ThrowingBehavior();
-                    break;
-                case HandState.Recovering:
-                    RecoveringBehavior(Owner);
-                    break;
-            }
-
-            //更新IK手臂
-            UpdateArmIK();
-
-            //更新拖尾
-            UpdateTrail();
-
-            //硫磺火发光(个性时间)
-            float pulse = (float)Math.Sin(GetPersonalizedTime() * 6f) * 0.3f + 0.7f;
-            Lighting.AddLight(Projectile.Center, 0.8f * pulse, 0.2f * pulse, 0.1f * pulse);
-
-            //冲击震动衰减
-            impactShake *= 0.85f;
-
-            //手部缩放回归
-            handScale = MathHelper.Lerp(handScale, 1f, 0.1f);
-
-            //蓄力强度衰减
-            attackWindUpIntensity *= 0.95f;
-
-            //旋转朝向
-            UpdateRotation();
-
-            //硫磺火环境粒子
-            SpawnBrimstoneAmbient();
-        }
-
-        private void SpawnBrimstoneAmbient() {
-            //待攻/待机时持续硫磺火粒子
-            if (Main.rand.NextBool(5)) {
-                Dust brimstoneFire = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(30f, 30f),
-                    DustID.Torch,
-                    Vector2.UnitY * -Main.rand.NextFloat(1f, 3f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(0.8f, 1.3f)
-                );
-                brimstoneFire.noGravity = true;
-                brimstoneFire.fadeIn = 1.1f;
-            }
-
-            //高强度状态下的额外硫磺火效果
-            if (glowIntensity > 0.7f && Main.rand.NextBool(3)) {
-                Dust brimstone = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
-                    CWRID.Dust_Brimstone,
-                    Main.rand.NextVector2Circular(2f, 2f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.2f, 1.8f)
-                );
-                brimstone.noGravity = true;
-            }
-        }
-
-        private void IdleBehavior(Player owner) {
-            //应用个性化的待机延迟
-            int adjustedIdleDuration = GetPersonalizedDuration(IdleDuration) + personalityIdleDelay;
-
-            //玩家周缘漂浮(个性角偏移)
-            float angle = HandIndex * MathHelper.TwoPi / 3f + GetPersonalizedTime() * 0.5f;
-
-            //镜像 X 偏移
-            Vector2 circleOffset = angle.ToRotationVector2() * 150f;
-            circleOffset.X *= ownerDirection;
-
-            Vector2 targetPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
-            //个性速度
-            MoveToPosition(targetPos, 0.15f * personalitySpeedMultiplier);
-
-            glowIntensity = 0.4f;
-            armTension = 0.3f;
-            throwActionActive = false;
-
-            //索敌(含个性延迟)
-            if (StateTimer > adjustedIdleDuration) {
-                NPC target = owner.Center.FindClosestNPC(SearchRange);
-                if (target != null) {
-                    targetNPCID = target.whoAmI;
-                    State = HandState.Targeting;
-                    StateTimer = 0;
+            if (IsFinisher) {
+                Projectile.damage = (int)(Projectile.damage * 1.35f);
+                Projectile.scale *= 1.12f;
+                if (!VaultUtils.isServer) {
+                    SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath with { Volume = 0.55f, Pitch = -0.55f, MaxInstances = 3 }, Owner.Center);
                 }
             }
 
-            //硫磺火待机粒子
-            if (Main.rand.NextBool(8)) {
-                SpawnIdleDust();
-            }
-        }
-
-        private void TargetingBehavior() {
-            if (!IsTargetValid()) {
-                State = HandState.Idle;
-                StateTimer = 0;
-                //重随机待机延迟防同步
-                personalityIdleDelay = Main.rand.Next(0, 40);
-                return;
-            }
-
-            NPC target = Main.npc[targetNPCID];
-            float distanceToTarget = Vector2.Distance(Projectile.Center, target.Center);
-
-            //个性距离偏好
-            float adjustedThrowRange = 400f * personalityRangePreference;
-
-            //按距离选行为
-            if (distanceToTarget > adjustedThrowRange) {
-                //远距直接投掷
-                AttackType = 3;
-                State = HandState.WindingUp;
-                StateTimer = 0;
-                attackStartPos = Projectile.Center;
-                attackTargetPos = target.Center;
-                attackWindUpIntensity = 1f;
-
-                //硫磺火蓄力音效
-                SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
-                    Volume = 0.5f,
-                    Pitch = -0.4f
-                }, Projectile.Center);
-            }
-            else {
-                //距离适中，移动到目标附近
-                Vector2 approachPos = target.Center + new Vector2(0, -180f);
-                MoveToPosition(approachPos, 0.2f * personalitySpeedMultiplier);
-
-                glowIntensity = 0.6f;
-                armTension = 0.6f;
-
-                //近距选近战招式
-                if (Vector2.Distance(Projectile.Center, approachPos) < 120f) {
-                    ChooseAttackType(target);
-                    State = HandState.WindingUp;
-                    StateTimer = 0;
-                    attackStartPos = Projectile.Center;
-                    attackTargetPos = target.Center;
-                    attackWindUpIntensity = 1f;
-                }
-
-                //锁定火焰效果
-                if (StateTimer == 1) {
-                    SoundEngine.PlaySound(SoundID.Item74 with {
-                        Volume = 0.4f,
-                        Pitch = -0.3f
-                    }, Projectile.Center);
-                }
-            }
-
-            //无法接近则改投掷
-            int timeoutDuration = (int)(30 * personalitySpeedMultiplier);
-            if (StateTimer > timeoutDuration && distanceToTarget >= 120) {
-                AttackType = 3;
-                State = HandState.WindingUp;
-                StateTimer = 0;
-                attackStartPos = Projectile.Center;
-                attackTargetPos = target.Center;
-                attackWindUpIntensity = 1f;
-            }
-        }
-
-        private void ChooseAttackType(NPC target) {
-            //攻击偏好+位置打分
-            Vector2 toTarget = target.Center - Projectile.Center;
-
-            //位置打分选招式
-            float swingScore = attackPreference[0] * 1.0f;
-            float slamScore = attackPreference[1] * (Math.Abs(toTarget.Y) > Math.Abs(toTarget.X) * 1.2f && toTarget.Y > 0 ? 2.0f : 0.5f);
-            float sweepScore = attackPreference[2] * 1.0f;
-
-            //添加随机性
-            swingScore *= 0.8f + Main.rand.NextFloat(0.4f);
-            slamScore *= 0.8f + Main.rand.NextFloat(0.4f);
-            sweepScore *= 0.8f + Main.rand.NextFloat(0.4f);
-
-            //最高分招式
-            if (slamScore > swingScore && slamScore > sweepScore) {
-                AttackType = 1; //下砸
-            }
-            else if (sweepScore > swingScore) {
-                AttackType = 2; //横扫
-            }
-            else {
-                AttackType = 0; //挥击
-            }
-        }
-
-        private void WindUpBehavior() {
-            if (!IsTargetValid()) {
-                State = HandState.Idle;
-                StateTimer = 0;
-                return;
-            }
-
-            //个性速度
-            int adjustedWindUpDuration = GetPersonalizedDuration(WindUpDuration);
-            float progress = StateTimer / adjustedWindUpDuration;
-            glowIntensity = 0.6f + progress * 0.4f;
-            armTension = 0.9f;
-
-            //后拉偏移(随朝向)
-            Vector2 windUpOffset = AttackType switch {
-                0 => new Vector2(-200f * ownerDirection, -100f),  //挥击-向后上方拉
-                1 => new Vector2(0, -250f),                        //下砸-向上拉
-                2 => new Vector2(-220f * ownerDirection, 0),       //横扫-向侧后方拉
-                3 => new Vector2(-180f * ownerDirection, -120f),   //投掷-向后上方
-                _ => Vector2.Zero
-            };
-
-            Vector2 targetPos = attackStartPos + windUpOffset;
-            MoveToPosition(targetPos, 0.3f * personalitySpeedMultiplier);
-
-            //蓄力手部放大
-            handScale = 1f + progress * 0.3f;
-
-            //硫磺火蓄力粒子
-            if (Main.rand.NextBool(2)) {
-                SpawnWindUpDust();
-            }
-
-            //蓄力音(个性 pitch)
-            if (StateTimer % 8 == 0) {
-                float personalPitch = -0.6f + progress * 0.4f + (personalityTimeOffset - 0.5f) * 0.2f;
-                SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath with {
-                    Volume = 0.3f * progress,
-                    Pitch = personalPitch
-                }, Projectile.Center);
-            }
-
-            if (StateTimer >= adjustedWindUpDuration) {
-                //切攻击状态
-                State = AttackType switch {
-                    0 => HandState.Swinging,
-                    1 => HandState.Slamming,
-                    2 => HandState.Sweeping,
-                    3 => HandState.Throwing,
-                    _ => HandState.Idle
-                };
-                StateTimer = 0;
-
-                //投掷段
-                if (State == HandState.Throwing) {
-                    throwActionActive = true;
-                    throwStartPos = Projectile.Center;
-
-                    //预判投掷落点
-                    if (IsTargetValid()) {
-                        NPC target = Main.npc[targetNPCID];
-                        //个性预判时间
-                        float predictionTime = 20f * personalitySpeedMultiplier;
-                        Vector2 predictedPos = target.Center + target.velocity * predictionTime;
-                        throwEndPos = predictedPos;
-                    }
-                }
-
-                //硫磺火爆发音效
-                SoundEngine.PlaySound(SoundID.Item74 with {
-                    Volume = 0.9f,
-                    Pitch = -0.3f
-                }, Projectile.Center);
-            }
-        }
-
-        private void SwingingBehavior() {
-            int adjustedDuration = GetPersonalizedDuration(SwingDuration);
-            float progress = StateTimer / adjustedDuration;
-            glowIntensity = 1f;
-            armTension = 1f;
-
-            //挥击弧线(随朝向镜像)
-            float startAngle = MathHelper.PiOver2 * 1.2f;
-            float endAngle = -MathHelper.PiOver4 * 1.5f;
-
-            //朝向镜像角
-            if (ownerDirection == -1) {
-                startAngle = MathHelper.Pi - startAngle;
-                endAngle = MathHelper.Pi - endAngle;
-            }
-
-            float swingAngle = MathHelper.Lerp(startAngle, endAngle, VaultUtils.EaseInOutCubic(progress));
-
-            Vector2 swingOffset = new Vector2(
-                (float)Math.Cos(swingAngle) * 250f,
-                (float)Math.Sin(swingAngle) * 180f
-            );
-
-            Projectile.Center = attackTargetPos + swingOffset;
-            Projectile.velocity = (attackTargetPos - Projectile.Center) * 1.2f * personalitySpeedMultiplier;
-
-            //挥击时手部缩放效果
-            handScale = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.4f;
-
-            //挥击特效
-            SpawnSwingEffect();
-
-            if (StateTimer >= adjustedDuration) {
-                State = HandState.Recovering;
-                StateTimer = 0;
-                CreateImpactEffect(attackTargetPos);
-            }
-        }
-
-        private void SlammingBehavior() {
-            int adjustedDuration = GetPersonalizedDuration(SlamDuration);
-            float progress = StateTimer / adjustedDuration;
-            glowIntensity = 1f;
-            armTension = 1f;
-
-            //下砸速度曲线
-            Vector2 slamStart = attackTargetPos + new Vector2(0, -250f);
-            Vector2 slamEnd = attackTargetPos + new Vector2(0, 50f);
-
-            float easeProgress = VaultUtils.EaseInCubic(progress);
-            Projectile.Center = Vector2.Lerp(slamStart, slamEnd, easeProgress);
-
-            Projectile.velocity = Vector2.Lerp(
-                Vector2.Zero,
-                new Vector2(0, 60f * personalitySpeedMultiplier),
-                easeProgress
-            );
-
-            //下砸时手部逐渐握紧效果
-            handScale = 1f + (1f - progress) * 0.5f;
-
-            //下砸轨迹特效
-            SpawnSlamTrail();
-
-            if (StateTimer >= adjustedDuration) {
-                State = HandState.Recovering;
-                StateTimer = 0;
-                CreateSlamImpact(slamEnd);
-            }
-        }
-
-        private void SweepingBehavior() {
-            int adjustedDuration = GetPersonalizedDuration(SweepDuration);
-            float progress = StateTimer / adjustedDuration;
-            glowIntensity = 1f;
-            armTension = 1f;
-
-            //横扫弧线(随朝向)
-            float startAngle = -MathHelper.Pi * 1.1f;
-            float endAngle = MathHelper.Pi * 1.1f;
-
-            //横扫方向随朝向
-            if (ownerDirection == -1) {
-                (startAngle, endAngle) = (MathHelper.Pi - endAngle, MathHelper.Pi - startAngle);
-            }
-
-            float sweepAngle = MathHelper.Lerp(startAngle, endAngle, VaultUtils.EaseInOutQuad(progress));
-
-            float radius = 220f;
-            Vector2 sweepOffset = new Vector2(
-                (float)Math.Cos(sweepAngle) * radius,
-                (float)Math.Sin(sweepAngle) * radius * 0.4f
-            );
-
-            Projectile.Center = attackTargetPos + sweepOffset;
-            Projectile.velocity = Vector2.Zero;
-
-            //横扫时手部扩张
-            handScale = 1f + (float)Math.Sin(progress * MathHelper.Pi) * 0.35f;
-
-            //横扫特效
-            SpawnSweepEffect();
-
-            if (StateTimer >= adjustedDuration) {
-                State = HandState.Recovering;
-                StateTimer = 0;
-                CreateImpactEffect(Projectile.Center);
-            }
-        }
-
-        private void ThrowingBehavior() {
-            int adjustedDuration = GetPersonalizedDuration(ThrowDuration);
-            glowIntensity = 1f;
-            armTension = 0.8f;
-
-            if (StateTimer < adjustedDuration * 0.3f) {
-                //前30%蓄力姿态
-                float holdProgress = StateTimer / (adjustedDuration * 0.3f);
-                Vector2 windUpPos = throwStartPos;
-                MoveToPosition(windUpPos, 0.2f * personalitySpeedMultiplier);
-                handScale = 1f + 0.4f;
-
-                //蓄力粒子持续生成
-                if (Main.rand.NextBool(2)) {
-                    SpawnWindUpDust();
-                }
-            }
-            else if (StateTimer < adjustedDuration * 0.7f) {
-                //中40%前冲投掷
-                float throwProgress = (StateTimer - adjustedDuration * 0.3f) / (adjustedDuration * 0.4f);
-                float easeProgress = VaultUtils.EaseOutCubic(throwProgress);
-
-                //手臂快速向前冲
-                Vector2 currentPos = Vector2.Lerp(throwStartPos, throwEndPos, easeProgress);
-                Projectile.Center = currentPos;
-                Projectile.velocity = (throwEndPos - throwStartPos).SafeNormalize(Vector2.Zero) * 35f * personalitySpeedMultiplier * (1f - easeProgress);
-
-                handScale = 1f + 0.4f * (1f - throwProgress);
-
-                //中段释放骨头
-                if (StateTimer == (int)(adjustedDuration * 0.5f)) {
-                    ThrowFires();
-                }
-
-                //投掷动作轨迹特效
-                if (Main.rand.NextBool()) {
-                    SpawnThrowTrailEffect();
-                }
-            }
-            else {
-                //后30%收手减速
-                float recoverProgress = (StateTimer - adjustedDuration * 0.7f) / (adjustedDuration * 0.3f);
-                Projectile.velocity *= 0.85f;
-                handScale = 1f + 0.2f * (1f - recoverProgress);
-            }
-
-            if (StateTimer >= adjustedDuration) {
-                State = HandState.Recovering;
-                StateTimer = 0;
-                throwActionActive = false;
-            }
-        }
-
-        private void ThrowFires() {
-            if (!IsTargetValid() || Main.myPlayer != Projectile.owner) return;
-
-            NPC target = Main.npc[targetNPCID];
-
-            //掌→目标方向
-            Vector2 throwOrigin = Projectile.Center;
-            Vector2 toTarget = (target.Center - throwOrigin).SafeNormalize(Vector2.Zero);
-
-            //扇形散射 5~8 骨
-            int boneCount = 5 + Main.rand.Next(4);
-            for (int i = 0; i < boneCount; i++) {
-                //扇形散射角度
-                float spreadAngle = MathHelper.Lerp(-0.35f, 0.35f, i / (float)(boneCount - 1));
-                Vector2 velocity = toTarget.RotatedBy(spreadAngle) * Main.rand.NextFloat(10f, 12f);
-
-                //掌位生成+微偏移
-                Vector2 spawnOffset = Main.rand.NextVector2Circular(8f, 8f);
-
-                int proj = Projectile.NewProjectile(
-                    Projectile.GetSource_FromThis(),
-                    throwOrigin + spawnOffset,
-                    velocity,
-                    ModContent.ProjectileType<OniFireBall>(),
-                    (int)(Projectile.damage * 0.12),
-                    2f,
-                    Projectile.owner
-                );
-                Main.projectile[proj].friendly = true;
-            }
-
-            //硫磺火投掷爆发特效
-            for (int i = 0; i < 35; i++) {
-                Vector2 velocity = toTarget.RotatedByRandom(0.7f) * Main.rand.NextFloat(8f, 18f);
-                Dust brimstone = Dust.NewDustPerfect(
-                    throwOrigin,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2.5f, 4f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 1.6f;
-            }
-
-            //火焰爆发
-            for (int i = 0; i < 25; i++) {
-                Vector2 velocity = toTarget.RotatedByRandom(0.6f) * Main.rand.NextFloat(6f, 14f);
-                Dust fire = Dust.NewDustPerfect(
-                    throwOrigin,
-                    DustID.Torch,
-                    velocity,
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                fire.noGravity = true;
-            }
-
-            //地狱火冲击环
-            for (int i = 0; i < 20; i++) {
-                float angle = MathHelper.TwoPi * i / 20f;
-                Vector2 velocity = angle.ToRotationVector2() * 10f;
-                Dust ring = Dust.NewDustPerfect(
-                    throwOrigin,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                ring.noGravity = true;
-            }
-
-            //投掷音效，地狱火焰爆发
-            SoundEngine.PlaySound(SoundID.Item74 with {
-                Volume = 0.95f,
-                Pitch = 0.3f
-            }, throwOrigin);
-
-            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with {
-                Volume = 0.85f,
-                Pitch = 0.4f
-            }, throwOrigin);
-        }
-
-        private void RecoveringBehavior(Player owner) {
-            int adjustedDuration = GetPersonalizedDuration(RecoverDuration);
-            float progress = StateTimer / adjustedDuration;
-            glowIntensity = 1f - progress * 0.7f;
-            armTension = 0.5f;
-
-            //回待机(个性角)
-            float angle = HandIndex * MathHelper.TwoPi / 3f + GetPersonalizedTime() * 0.5f;
-            Vector2 circleOffset = angle.ToRotationVector2() * 150f;
-            circleOffset.X *= ownerDirection;
-
-            Vector2 recoverPos = shoulderPos + circleOffset + idleOffset + new Vector2(0, -80f);
-            MoveToPosition(recoverPos, 0.2f * personalitySpeedMultiplier);
-
-            if (StateTimer >= adjustedDuration) {
-                State = HandState.Idle;
-                StateTimer = 0;
-                //重随机待机延迟
-                personalityIdleDelay = Main.rand.Next(0, 50);
-            }
-        }
-
-        private void MoveToPosition(Vector2 target, float speed) {
-            Vector2 direction = target - Projectile.Center;
-            float distance = direction.Length();
-
-            if (distance > 5f) {
-                direction.Normalize();
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * distance * speed, 0.3f);
-            }
-            else {
-                Projectile.velocity *= 0.9f;
-            }
-
-            Projectile.Center += Projectile.velocity;
-        }
-
-        private void UpdateArmIK() {
-            handPos = Projectile.Center;
-
-            //FABRIK IK(含手臂张力)
-            float targetDistance = Vector2.Distance(shoulderPos, handPos);
-            float maxReach = SegmentLength * ArmSegmentCount;
-
-            //超伸展则限位
-            if (targetDistance > maxReach * 0.98f) {
-                Vector2 direction = (handPos - shoulderPos).SafeNormalize(Vector2.Zero);
-                handPos = shoulderPos + direction * maxReach * 0.98f;
-                Projectile.Center = handPos;
-            }
-
-            //前向遍历手→肩
-            armSegments[0] = handPos;
-            for (int i = 1; i < ArmSegmentCount; i++) {
-                Vector2 direction = (armSegments[i - 1] - (i == ArmSegmentCount - 1 ? shoulderPos : armSegments[i])).SafeNormalize(Vector2.Zero);
-
-                //张力调关节(随朝向弯折)
-                float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
-                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f * ownerDirection;
-
-                armSegments[i] = armSegments[i - 1] - direction * SegmentLength + perpendicular;
-            }
-
-            //反向遍历肩→手
-            armSegments[ArmSegmentCount - 1] = shoulderPos;
-            for (int i = ArmSegmentCount - 2; i >= 0; i--) {
-                Vector2 direction = (armSegments[i] - armSegments[i + 1]).SafeNormalize(Vector2.Zero);
-
-                //反向弯折(随朝向)
-                float bendFactor = (float)Math.Sin((i / (float)ArmSegmentCount) * MathHelper.Pi) * armTension;
-                Vector2 perpendicular = new Vector2(-direction.Y, direction.X) * bendFactor * 15f * ownerDirection;
-
-                armSegments[i] = armSegments[i + 1] + direction * SegmentLength + perpendicular;
-            }
-
-            //最终调整手的位置
-            Projectile.Center = armSegments[0];
-        }
-
-        private void UpdateTrail() {
-            trailPositions.Insert(0, Projectile.Center);
-            if (trailPositions.Count > MaxTrailLength) {
-                trailPositions.RemoveAt(trailPositions.Count - 1);
-            }
-        }
-
-        private void UpdateRotation() {
-            if (Projectile.velocity.LengthSquared() > 0.1f) {
-                Projectile.rotation = MathHelper.Lerp(
-                    Projectile.rotation,
-                    Projectile.velocity.ToRotation() + MathHelper.PiOver2,
-                    0.2f
-                );
-            }
-        }
-
-        private bool IsTargetValid() {
-            if (targetNPCID < 0 || targetNPCID >= Main.maxNPCs) return false;
-            NPC target = Main.npc[targetNPCID];
-            return target.active && target.CanBeChasedBy();
-        }
-
-        //VFX
-        private void SpawnIdleDust() {
-            Dust brimstone = Dust.NewDustDirect(
-                Projectile.position,
-                Projectile.width,
-                Projectile.height,
-                CWRID.Dust_Brimstone,
-                Scale: Main.rand.NextFloat(1f, 1.5f)
-            );
-            brimstone.velocity = Main.rand.NextVector2Circular(1.5f, 1.5f);
-            brimstone.noGravity = true;
-        }
-
-        private void SpawnWindUpDust() {
-            for (int i = 0; i < 3; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-                Dust brimstone = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(50f, 50f),
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                brimstone.noGravity = true;
-            }
-
-            //红色火焰核心
-            if (Main.rand.NextBool()) {
-                Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(30f, 30f),
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(3f, 3f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.2f, 2f)
-                );
-                fire.noGravity = true;
-            }
-        }
-
-        private void SpawnSwingEffect() {
-            if (Main.rand.NextBool(2)) {
-                Dust brimstone = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    CWRID.Dust_Brimstone,
-                    Scale: Main.rand.NextFloat(2f, 3f)
-                );
-                brimstone.velocity = Projectile.velocity * 0.4f;
-                brimstone.noGravity = true;
-            }
-
-            //火焰轨迹
-            if (Main.rand.NextBool()) {
-                Dust fire = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Torch,
-                    Scale: Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                fire.velocity = Projectile.velocity * 0.3f;
-                fire.noGravity = true;
-                fire.color = Color.Red;
-            }
-        }
-
-        private void SpawnSlamTrail() {
-            for (int i = 0; i < 4; i++) {
-                Dust brimstone = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    CWRID.Dust_Brimstone,
-                    0, 0, 0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                brimstone.velocity = -Projectile.velocity * 0.3f + Main.rand.NextVector2Circular(3f, 3f);
-                brimstone.noGravity = true;
-            }
-
-            //火焰尾迹
-            if (Main.rand.NextBool()) {
-                Dust fire = Dust.NewDustDirect(
-                    Projectile.position,
-                    Projectile.width,
-                    Projectile.height,
-                    DustID.Torch,
-                    0, 0, 0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.8f, 2.8f)
-                );
-                fire.velocity = -Projectile.velocity * 0.2f;
-                fire.noGravity = true;
-            }
-        }
-
-        private void SpawnSweepEffect() {
-            if (Main.rand.NextBool()) {
-                Vector2 velocity = Projectile.velocity.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.6f, 1.8f);
-                Dust brimstone = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                brimstone.noGravity = true;
-            }
-
-            //火焰弧线
-            if (Main.rand.NextBool(2)) {
-                Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    Projectile.velocity * 0.4f,
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                fire.noGravity = true;
-            }
-        }
-
-        private void SpawnThrowTrailEffect() {
-            //投掷动作的硫磺火轨迹
-            for (int i = 0; i < 3; i++) {
-                Dust brimstone = Dust.NewDustPerfect(
-                    Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
-                    CWRID.Dust_Brimstone,
-                    -Projectile.velocity * 0.4f + Main.rand.NextVector2Circular(4f, 4f),
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 1.5f;
-            }
-
-            //火焰尾迹
-            if (Main.rand.NextBool(2)) {
-                Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    -Projectile.velocity * 0.3f,
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                fire.noGravity = true;
-            }
-        }
-
-        private void CreateImpactEffect(Vector2 position) {
-            impactShake = 12f;
-
-            //硫磺火冲击波
-            for (int i = 0; i < 50; i++) {
-                float angle = MathHelper.TwoPi * i / 50f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(6f, 15f);
-
-                Dust brimstone = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 1.5f;
-            }
-
-            //红色火焰爆发
-            for (int i = 0; i < 30; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                Dust fire = Dust.NewDustPerfect(
-                    position,
-                    DustID.Torch,
-                    velocity,
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                fire.noGravity = true;
-            }
-
-            //地狱火环
-            for (int i = 0; i < 25; i++) {
-                float angle = MathHelper.TwoPi * i / 25f;
-                Vector2 velocity = angle.ToRotationVector2() * 10f;
-                Dust ring = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3f)
-                );
-                ring.noGravity = true;
-            }
-
-            SoundEngine.PlaySound(SoundID.Item74 with {
-                Volume = 0.9f,
-                Pitch = -0.5f
-            }, position);
-
-            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact with {
-                Volume = 0.8f
-            }, position);
-        }
-
-        private void CreateSlamImpact(Vector2 position) {
-            impactShake = 18f;
-
-            //强力硫磺火冲击波
-            for (int i = 0; i < 80; i++) {
-                float angle = MathHelper.TwoPi * i / 80f;
-                Vector2 velocity = angle.ToRotationVector2() * Main.rand.NextFloat(10f, 22f);
-
-                Dust brimstone = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2.5f, 4f)
-                );
-                brimstone.noGravity = true;
-                brimstone.fadeIn = 1.8f;
-            }
-
-            //地狱火焰柱
-            for (int i = 0; i < 40; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    position + Main.rand.NextVector2Circular(60f, 20f),
-                    DustID.Torch,
-                    new Vector2(Main.rand.NextFloat(-4f, 4f), Main.rand.NextFloat(-20f, -8f)),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(2.5f, 4f)
-                );
-                fire.noGravity = true;
-            }
-
-            //燃烧的余烬
-            for (int i = 0; i < 50; i++) {
-                Vector2 velocity = new Vector2(Main.rand.NextFloat(-12f, 12f), Main.rand.NextFloat(-18f, -6f));
-                Dust ember = Dust.NewDustPerfect(
-                    position,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                ember.noGravity = false;
-            }
-
-            //硫磺火环爆发
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 20; j++) {
-                    float angle = MathHelper.TwoPi * j / 20f;
-                    float radius = 50f + i * 35f;
-                    Vector2 spawnPos = position + angle.ToRotationVector2() * radius;
-
-                    Dust ring = Dust.NewDustPerfect(
-                        spawnPos,
-                        CWRID.Dust_Brimstone,
-                        angle.ToRotationVector2() * 5f,
-                        0,
-                        default,
-                        Main.rand.NextFloat(2.5f, 4f)
-                    );
-                    ring.noGravity = true;
-                }
-            }
-
-            SoundEngine.PlaySound(SoundID.Item74 with {
-                Volume = 1.2f,
-                Pitch = -0.6f
-            }, position);
-
-            SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact with {
-                Volume = 1f,
-                Pitch = -0.3f
-            }, position);
-
+            //起手即喂一点压制：挥刀本身就是仪式
             if (Projectile.IsOwnedByLocalPlayer()) {
-                Projectile.NewProjectile(Projectile.FromObjectGetParent(), Projectile.Center, Vector2.Zero
-                    , ModContent.ProjectileType<OniHandExplode>(), Projectile.damage * 3, Projectile.knockBack, Projectile.owner);
+                Owner.GetModPlayer<OniMachetePlayer>().AddSuppression(3f);
             }
+
+            BuildSlashDef(baseAngle);
         }
 
-        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            //硫磺火击中特效
-            for (int i = 0; i < 20; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(10f, 10f);
-                Dust brimstone = Dust.NewDustPerfect(
-                    target.Center,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                brimstone.noGravity = true;
-            }
-
-            //火焰爆发
-            for (int i = 0; i < 10; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    target.Center,
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(8f, 8f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                fire.noGravity = true;
-            }
-
-            SoundEngine.PlaySound(SoundID.Item74 with {
-                Volume = 0.7f,
-                Pitch = 0.3f
-            }, target.Center);
+        /// <summary>三拍变奏的确定性刀光参数：纵劈竖长椭圆 / 反撩更立 / 重斩巨扁弧含熔金脉络</summary>
+        private void BuildSlashDef(float aim) {
+            float s = Projectile.scale;
+            slashDef = Beat switch {
+                0 => new OniSlashStrip.Def {
+                    Life = 24, ErodeStart = 7, ErodeFrames = 13,
+                    Rot = aim + swingSign * 0.14f, Span = 3.15f, Thick = 0.32f,
+                    HalfX = 132f * s, HalfY = 180f * s, Flip = swingSign,
+                    Opacity = 0.92f, FrontGlow = 2.2f, OffsetAlongAim = 26f * s,
+                    TailErode = 0.50f, FlashPower = 0.55f, GoldVein = 0.25f,
+                },
+                1 => new OniSlashStrip.Def {
+                    Life = 24, ErodeStart = 7, ErodeFrames = 13,
+                    Rot = aim - swingSign * 0.10f, Span = 3.25f, Thick = 0.34f,
+                    HalfX = 148f * s, HalfY = 198f * s, Flip = swingSign,
+                    Opacity = 0.95f, FrontGlow = 2.4f, OffsetAlongAim = 36f * s,
+                    TailErode = 0.45f, FlashPower = 0.60f, GoldVein = 0.35f,
+                },
+                _ => new OniSlashStrip.Def {
+                    Life = 32, ErodeStart = 9, ErodeFrames = 17,
+                    Rot = aim + swingSign * 0.24f, Span = 3.45f, Thick = 0.44f,
+                    HalfX = 238f * s, HalfY = 152f * s, Flip = swingSign,
+                    Opacity = 1f, FrontGlow = 2.8f, OffsetAlongAim = -22f * s,
+                    TailErode = 0.34f, FlashPower = 0.92f, GoldVein = 1f,
+                },
+            };
+            slashDef.Seed = (Projectile.whoAmI * 0.191f + Beat * 0.37f) % 1f;
         }
 
-        public override void OnKill(int timeLeft) {
-            //硫磺火消散特效
-            for (int i = 0; i < 40; i++) {
-                Vector2 velocity = Main.rand.NextVector2Circular(8f, 8f);
-                Dust brimstone = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    CWRID.Dust_Brimstone,
-                    velocity,
-                    0,
-                    default,
-                    Main.rand.NextFloat(2f, 3.5f)
-                );
-                brimstone.noGravity = true;
-            }
+        private Vector2 SlashCenter => Owner.GetPlayerStabilityCenter()
+            + Projectile.velocity.ToRotation().ToRotationVector2() * slashDef.OffsetAlongAim;
 
-            //火焰余烬
-            for (int i = 0; i < 20; i++) {
-                Dust fire = Dust.NewDustPerfect(
-                    Projectile.Center,
-                    DustID.Torch,
-                    Main.rand.NextVector2Circular(6f, 6f),
-                    0,
-                    Color.Red,
-                    Main.rand.NextFloat(1.5f, 2.5f)
-                );
-                fire.noGravity = true;
+        public override bool? CanDamage() {
+            if (!BladeActive) {
+                return false;
             }
-
-            SoundEngine.PlaySound(SoundID.Item74 with {
-                Volume = 0.6f,
-                Pitch = -0.4f
-            }, Projectile.Center);
+            float strikeStart = WindupTime + HoldTime;
+            return elapsed >= strikeStart && elapsed <= strikeStart + StrikeTime + 1f;
         }
 
-        public override bool PreDraw(ref Color lightColor) {
-            SpriteBatch sb = Main.spriteBatch;
-            Texture2D handTexture = OniMachete.OniHand;
-            Vector2 origin = handTexture.Size() / 2f;
-
-            //绘制 IK 骨链
-            DrawArmChain(sb, lightColor);
-
-            //绘制攻击拖尾
-            if (State == HandState.Swinging || State == HandState.Slamming || State == HandState.Sweeping) {
-                DrawAttackTrail(sb, handTexture, origin);
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) {
+            if (CanDamage() != true) {
+                return false;
+            }
+            //三层贪婪判定：刀身线段 + 刀光弧折线 + 内侧辐条（月牙内不是空洞）
+            Rectangle greedy = targetHitbox;
+            greedy.Inflate(10, 10);
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + currentRotation.ToRotationVector2() * BladeReach;
+            float cp = 0f;
+            if (Collision.CheckAABBvLineCollision(greedy.TopLeft(), greedy.Size(), hand, tip, 44f, ref cp)) {
+                return true;
             }
 
-            //绘制投掷动作残影
-            if (throwActionActive && State == HandState.Throwing) {
-                DrawThrowActionTrail(sb, handTexture, origin, lightColor);
-            }
-
-            //冲击震屏偏移
-            Vector2 shakeOffset = Main.rand.NextVector2Circular(impactShake, impactShake);
-            Vector2 drawPos = Projectile.Center - Main.screenPosition + shakeOffset;
-
-            //蓄力红色辉光
-            if (attackWindUpIntensity > 0.3f) {
-                for (int i = 0; i < 4; i++) {
-                    float windUpScale = handScale * (1.2f + i * 0.15f);
-                    float windUpAlpha = (attackWindUpIntensity - 0.3f) * (1f - i * 0.25f) * 0.6f;
-
-                    sb.Draw(
-                        handTexture,
-                        drawPos,
-                        null,
-                        new Color(255, 80, 40, 0) * windUpAlpha,
-                        Projectile.rotation + MathHelper.Pi,
-                        origin,
-                        Projectile.scale * windUpScale,
-                        SpriteEffects.None,
-                        0
-                    );
+            Vector2 center = SlashCenter;
+            float sweepU = MathHelper.Clamp(strikeEased * 1.05f, 0f, 1f);
+            float thickWorld = MathF.Max(30f, slashDef.Thick * slashDef.HalfX);
+            const int samples = 11;
+            Vector2 prev = Vector2.Zero;
+            bool hasPrev = false;
+            for (int k = 0; k < samples; k++) {
+                float uc = 0.05f + 0.90f * (k / (float)(samples - 1));
+                if (uc > sweepU) {
+                    break;
                 }
-            }
-
-            //红橙发光层
-            if (glowIntensity > 0.5f) {
-                for (int i = 0; i < 4; i++) {
-                    float glowScale = handScale * (1.15f + i * 0.12f);
-                    float glowAlpha = (glowIntensity - 0.5f) * (1f - i * 0.25f) * 0.8f;
-
-                    sb.Draw(
-                        handTexture,
-                        drawPos,
-                        null,
-                        new Color(255, 100, 50, 0) * glowAlpha,
-                        Projectile.rotation + MathHelper.Pi,
-                        origin,
-                        Projectile.scale * glowScale,
-                        SpriteEffects.None,
-                        0
-                    );
+                Vector2 mid = OniSlashStrip.PointAt(in slashDef, center, uc);
+                if (hasPrev && Collision.CheckAABBvLineCollision(greedy.TopLeft(), greedy.Size(), prev, mid, thickWorld, ref cp)) {
+                    return true;
                 }
+                if (k % 3 == 0 && Collision.CheckAABBvLineCollision(greedy.TopLeft(), greedy.Size(), hand, mid, 34f, ref cp)) {
+                    return true;
+                }
+                prev = mid;
+                hasPrev = true;
             }
-
-            //主体绘制
-            sb.Draw(
-                handTexture,
-                drawPos,
-                null,
-                lightColor,
-                Projectile.rotation + MathHelper.Pi,
-                origin,
-                Projectile.scale * handScale,
-                SpriteEffects.None,
-                0
-            );
-
             return false;
         }
 
-        private void DrawArmChain(SpriteBatch sb, Color lightColor) {
-            //骨纹理链条
-            Texture2D boneTexture = OniMachete.OniArm;
+        public override void CutTiles() {
+            if (CanDamage() != true) {
+                return;
+            }
+            DelegateMethods.tilecut_0 = Terraria.Enums.TileCuttingContext.AttackProjectile;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            Vector2 tip = hand + currentRotation.ToRotationVector2() * BladeReach;
+            Utils.PlotTileLine(hand, tip, 36f, DelegateMethods.CutTiles);
+        }
 
-            for (int i = 0; i < armSegments.Count - 1; i++) {
-                Vector2 start = armSegments[i + 1];
-                Vector2 end = armSegments[i];
-                Vector2 diff = end - start;
-                float length = diff.Length();
-                float rotation = diff.ToRotation() - MathHelper.ToRadians(80) * ownerDirection;
+        public override void AI() {
+            if (Item.type != ModContent.ItemType<OniMachete>()) {
+                Projectile.Kill();
+                return;
+            }
+            if (!BladeActive) {
+                //余光期：交还角色控制，只等刀光走完侵蚀（期间物品已可挥下一刀）
+                if (!slashBorn || (int)elapsed - slashBirth >= slashDef.Life) {
+                    Projectile.Kill();
+                    return;
+                }
+                Projectile.timeLeft = 60;
+                elapsed += speedMul;
+                return;
+            }
 
-                //段内骨数量
-                int boneCount = Math.Max(1, (int)(length / boneTexture.Height));
+            lastRotation = currentRotation;
+            float holdEnd = WindupTime + HoldTime;
+            float strikeEnd = holdEnd + StrikeTime;
 
-                for (int j = 0; j < boneCount; j++) {
-                    float progress = j / (float)boneCount;
-                    Vector2 bonePos = Vector2.Lerp(start, end, progress);
+            if (elapsed < WindupTime) {
+                WindupMotion();
+            }
+            else if (elapsed < holdEnd) {
+                //滞帧：完全静止的一拍（爆发前的静默），刀停在最深蓄势位
+                strikeEased = 0f;
+            }
+            else if (elapsed < strikeEnd) {
+                StrikeMotion(holdEnd);
+            }
+            else {
+                RecoverMotion(strikeEnd);
+            }
 
-                    //位置微变骨尺寸
-                    float boneScale = Projectile.scale * MathHelper.Lerp(0.6f, 0.8f, (float)Math.Sin(progress * MathHelper.Pi));
+            //命中视觉停驻：冻结一帧刀角
+            if (impactHoldFrames > 0) {
+                impactHoldFrames--;
+                currentRotation = lastRotation;
+            }
+            recoilPulse *= 0.75f;
 
-                    //绘制骨头主体
-                    sb.Draw(
-                        boneTexture,
-                        bonePos - Main.screenPosition,
-                        null,
-                        lightColor * 0.9f,
-                        rotation + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i + j) * 0.1f,
-                        boneTexture.Size() / 2f,
-                        boneScale * 2f,
-                        SpriteEffects.None,
-                        0
-                    );
+            UpdatePlayerPose();
 
-                    //硫磺火辉光层
-                    if (glowIntensity > 0.4f) {
-                        sb.Draw(
-                            boneTexture,
-                            bonePos - Main.screenPosition,
-                            null,
-                            new Color(255, 100, 50, 0) * glowIntensity * 0.5f,
-                            rotation + (float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f + i + j) * 0.1f,
-                            boneTexture.Size() / 2f,
-                            boneScale * 2.1f,
-                            SpriteEffects.None,
-                            0
-                        );
+            Vector2 edgeLight = Owner.GetPlayerStabilityCenter()
+                + currentRotation.ToRotationVector2() * BladeReach * 0.7f;
+            Lighting.AddLight(edgeLight, 0.85f, 0.42f, 0.10f);
+
+            elapsed += speedMul;
+        }
+
+        /// <summary>前摇：反向蓄势，主体 easeOut 拉开 + 末端 pow(6) 迟滞后吸（突然的深呼吸）</summary>
+        private void WindupMotion() {
+            float t = elapsed / WindupTime;
+            float pull = 0.40f * VaultUtils.EaseOutCubic(t) + 0.22f * MathF.Pow(t, 6f);
+            currentRotation = startAngle - swingSign * pull;
+            strikeEased = 0f;
+
+            //收束熔金屑：向刀尖汇聚，72% 处硬切（最后一程静默）
+            if (!VaultUtils.isServer && t < ChargeSilenceAt && Main.rand.NextBool(IsFinisher ? 1 : 2)) {
+                Vector2 tip = Owner.GetPlayerStabilityCenter()
+                    + currentRotation.ToRotationVector2() * BladeReach * 0.85f;
+                Vector2 spawn = tip + Main.rand.NextVector2Unit() * Main.rand.NextFloat(60f, 150f);
+                PRTLoader.NewParticle<PRT_OniMacheteGold>(spawn, (tip - spawn) * 0.10f
+                    , default, Main.rand.NextFloat(0.30f, 0.55f))
+                    ?.Configure(Main.rand.Next(10, 16), gravity: false, cooling: 1.4f);
+            }
+            //重斩蓄势的低鸣升调
+            if (IsFinisher && !VaultUtils.isServer && !windupSoundPlayed && t >= 0.5f) {
+                windupSoundPlayed = true;
+                SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.45f, Pitch = -0.5f }, Owner.Center);
+            }
+        }
+
+        /// <summary>打击段：poly(9/12) 陡峭 ease-out，一帧启动全程锁给刀光扫掠</summary>
+        private void StrikeMotion(float strikeStart) {
+            float t = (elapsed - strikeStart) / StrikeTime;
+            strikeEased = 1f - MathF.Pow(1f - MathHelper.Clamp(t, 0f, 1f), IsFinisher ? 12f : 9f);
+            currentRotation = MathHelper.Lerp(startAngle, endAngle, strikeEased);
+
+            if (!strikeStarted) {
+                strikeStarted = true;
+                slashBorn = true;
+                slashBirth = (int)elapsed;
+                if (!VaultUtils.isServer) {
+                    //分层音效：重挥底鸣 + 硫火撕风
+                    SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.75f, Pitch = IsFinisher ? -0.55f : -0.25f + Beat * 0.12f }, Owner.Center);
+                    SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = 0.15f }, Owner.Center);
+                    if (IsFinisher) {
+                        SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot with { Volume = 0.7f, Pitch = -0.35f }, Owner.Center);
                     }
                 }
             }
-        }
 
-        private void DrawAttackTrail(SpriteBatch sb, Texture2D texture, Vector2 origin) {
-            for (int i = 0; i < trailPositions.Count; i++) {
-                if (i >= trailPositions.Count - 1) continue;
-
-                float fade = (trailPositions.Count - i) / (float)trailPositions.Count;
-                //硫磺火轨迹
-                Color trailColor = new Color(255, 120, 60, 0) * fade * 0.7f;
-
-                sb.Draw(
-                    texture,
-                    trailPositions[i] - Main.screenPosition,
-                    null,
-                    trailColor,
-                    Projectile.rotation,
-                    origin,
-                    Projectile.scale * handScale * (0.7f + fade * 0.3f),
-                    SpriteEffects.None,
-                    0
-                );
+            //刀光前缘迸屑：喷量∝本帧扫掠增量（爆发帧集中迸发）
+            if (!VaultUtils.isServer) {
+                Vector2 center = SlashCenter;
+                float edgeU = MathHelper.Clamp(strikeEased * 1.02f, 0.06f, 0.94f);
+                Vector2 pos = OniSlashStrip.PointAt(in slashDef, center, edgeU);
+                Vector2 tangent = (OniSlashStrip.PointAt(in slashDef, center, MathHelper.Clamp(edgeU + 0.04f, 0f, 1f)) - pos)
+                    .SafeNormalize(currentRotation.ToRotationVector2());
+                int count = t < 0.45f ? (IsFinisher ? 4 : 3) : 1;
+                for (int i = 0; i < count; i++) {
+                    PRTLoader.NewParticle<PRT_OniMacheteGold>(pos + Main.rand.NextVector2Circular(8f, 8f)
+                        , tangent * Main.rand.NextFloat(5f, 12f) + Main.rand.NextVector2Circular(1.5f, 1.5f)
+                        , default, Main.rand.NextFloat(0.35f, 0.7f))
+                        ?.Configure(Main.rand.Next(14, 24), gravity: true, cooling: 1.1f);
+                }
             }
         }
 
-        private void DrawThrowActionTrail(SpriteBatch sb, Texture2D texture, Vector2 origin, Color lightColor) {
-            //投掷残影
-            int trailCount = 8;
-            float throwProgress = StateTimer / ThrowDuration;
+        /// <summary>收势：短过冲泄力后回稳（follow-through），刀光余体自行侵蚀</summary>
+        private void RecoverMotion(float strikeEnd) {
+            float t = MathHelper.Clamp((elapsed - strikeEnd) / RecoverTime, 0f, 1f);
+            float overshoot = MathF.Sin(MathHelper.Clamp(t / 0.42f, 0f, 1f) * MathF.PI) * 0.13f;
+            currentRotation = endAngle + swingSign * overshoot;
+            strikeEased = 1f;
+        }
 
-            //投掷残影(30%~70%段)
-            if (throwProgress >= 0.3f && throwProgress <= 0.7f) {
-                float actionProgress = (throwProgress - 0.3f) / 0.4f;
+        private void UpdatePlayerPose() {
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.direction = lockedDirection;
+            Owner.itemTime = Owner.itemAnimation = 2;
+            Owner.itemRotation = currentRotation;
+            Owner.SetCompositeArmFront(true
+                , elapsed < WindupTime ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full
+                , currentRotation - MathHelper.PiOver2);
+            Projectile.Center = Owner.GetPlayerStabilityCenter()
+                + currentRotation.ToRotationVector2() * BladeReach * 0.55f;
+            Projectile.timeLeft = 120;
+        }
 
-                for (int i = 0; i < trailCount; i++) {
-                    float trailProgress = i / (float)trailCount;
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+            => OniMachete.ApplyGoldRend(target, ref modifiers);
 
-                    //残影插值位
-                    Vector2 trailPos = Vector2.Lerp(throwStartPos, Projectile.Center, 1f - trailProgress * 0.6f);
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            //命中喂养硫火压制（owner 端自治）
+            if (Projectile.IsOwnedByLocalPlayer()) {
+                Owner.GetModPlayer<OniMachetePlayer>().AddSuppression(IsFinisher ? 12f : 8f);
+            }
 
-                    //残影透明度衰减
-                    float alpha = (1f - trailProgress) * 0.6f * actionProgress;
-                    Color trailColor = new Color(255, 140, 70, 0) * alpha;
+            //熔金裂纹挂到受创目标（削甲可见化）
+            target.GetGlobalNPC<OniMacheteGlobalNPC>().AddCrack(IsFinisher ? 0.85f : 0.55f);
 
-                    //残影略小
-                    float trailScale = handScale * (0.85f + trailProgress * 0.15f);
+            //施力者反馈：1 帧停驻 + 刀身回坐脉冲
+            impactHoldFrames = 1;
+            recoilPulse = 1f;
 
-                    //微旋转变化
-                    float trailRotation = Projectile.rotation + (trailProgress - 0.5f) * 0.3f;
+            if (IsFinisher && CWRServerConfig.Instance.ScreenVibration) {
+                var modifier = new PunchCameraModifier(target.Center
+                    , currentRotation.ToRotationVector2(), 5f, 6f, 10, 900f, FullName);
+                Main.instance.CameraModifiers.Add(modifier);
+            }
 
-                    sb.Draw(
-                        texture,
-                        trailPos - Main.screenPosition,
-                        null,
-                        trailColor,
-                        trailRotation + MathHelper.Pi,
-                        origin,
-                        Projectile.scale * trailScale,
-                        SpriteEffects.None,
-                        0
-                    );
-                }
+            if (VaultUtils.isServer) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.NPCHit4 with { Volume = 0.8f, Pitch = -0.35f }, target.Center);
+            SoundEngine.PlaySound(SoundID.Item74 with { Volume = 0.55f, Pitch = 0.35f }, target.Center);
 
-                //额外发光层
-                for (int i = 0; i < 3; i++) {
-                    float glowProgress = i / 3f;
-                    Vector2 glowPos = Vector2.Lerp(throwStartPos, Projectile.Center, 1f - glowProgress * 0.3f);
-                    float glowAlpha = (1f - glowProgress) * 0.4f * actionProgress;
-
-                    sb.Draw(
-                        texture,
-                        glowPos - Main.screenPosition,
-                        null,
-                        new Color(255, 100, 50, 0) * glowAlpha,
-                        Projectile.rotation + MathHelper.Pi,
-                        origin,
-                        Projectile.scale * handScale * (1.3f + glowProgress * 0.2f),
-                        SpriteEffects.None,
-                        0
-                    );
+            //粒子量∝拍位动能
+            Vector2 aimDir = currentRotation.ToRotationVector2();
+            int golds = IsFinisher ? 14 : 7;
+            for (int i = 0; i < golds; i++) {
+                PRTLoader.NewParticle<PRT_OniMacheteGold>(target.Center
+                    , aimDir.RotatedByRandom(0.7) * Main.rand.NextFloat(4f, IsFinisher ? 15f : 10f)
+                    , default, Main.rand.NextFloat(0.45f, 0.85f))
+                    ?.Configure(Main.rand.Next(18, 30), gravity: true);
+            }
+            for (int i = 0; i < (IsFinisher ? 5 : 2); i++) {
+                var flame = PRTLoader.NewParticle<PRT_HellFlame>(target.Center + Main.rand.NextVector2Circular(16f, 16f)
+                    , aimDir.RotatedByRandom(0.9) * Main.rand.NextFloat(2f, 6f)
+                    , Color.White, Main.rand.NextFloat(0.5f, 0.9f));
+                if (flame != null) {
+                    flame.ai[0] = 1;
                 }
             }
+            if (IsFinisher) {
+                PRTLoader.NewParticle<PRT_DWave>(target.Center, Vector2.Zero, new Color(255, 170, 60), 0.5f)
+                    ?.Configure(new Vector2(1f, 0.65f), currentRotation, 1.5f, 20);
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            //余光期不画刀身（角色已回普通姿态，刀由下一次挥砍接管）
+            if (!BladeActive) {
+                return false;
+            }
+            Texture2D tex = TextureValue;
+            Vector2 origin = tex.Size() / 2f;
+            Vector2 hand = Owner.GetPlayerStabilityCenter();
+            float dist = BladeReach * 0.52f;
+            float drawScale = Projectile.scale * 1.35f * (1f + recoilPulse * 0.04f);
+
+            SpriteEffects effect = lockedDirection == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+            //贴图刀尖指向右上(-PiOver4)，垂直翻转后指向右下(+PiOver4)
+            float rotOffset = lockedDirection == -1 ? -MathHelper.PiOver4 : MathHelper.PiOver4;
+
+            //打击段刀身残影
+            float strikeStart = WindupTime + HoldTime;
+            if (elapsed >= strikeStart && elapsed <= strikeStart + StrikeTime + 1f) {
+                for (int i = 1; i <= 2; i++) {
+                    float rot = MathHelper.Lerp(currentRotation, lastRotation, i / 3f);
+                    Vector2 pos = hand + rot.ToRotationVector2() * dist - Main.screenPosition;
+                    Color trailColor = new Color(255, 150, 50, 0) * (0.35f * (1f - i / 3f));
+                    Main.EntitySpriteDraw(tex, pos, null, trailColor, rot + rotOffset, origin
+                        , drawScale, effect, 0);
+                }
+            }
+
+            //蓄势末段的熔金压边辉光（滞帧期最亮——静默里只剩刀在发烫）
+            float windT = MathHelper.Clamp(elapsed / WindupTime, 0f, 1f);
+            if (elapsed < strikeStart && windT > 0.55f) {
+                float heat = (windT - 0.55f) / 0.45f;
+                Vector2 pos0 = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
+                Main.EntitySpriteDraw(tex, pos0, null, new Color(255, 170, 60, 0) * (heat * 0.5f)
+                    , currentRotation + rotOffset, origin, drawScale * 1.04f, effect, 0);
+            }
+
+            //刀身本体
+            Vector2 drawPos = hand + currentRotation.ToRotationVector2() * dist - Main.screenPosition;
+            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, currentRotation + rotOffset, origin
+                , drawScale, effect, 0);
+            return false;
+        }
+
+        void IPrimitiveDrawable.DrawPrimitives() {
+            if (Main.dedServ || !slashBorn) {
+                return;
+            }
+            int lt = (int)elapsed - slashBirth;
+            if (lt < 0 || lt >= slashDef.Life) {
+                return;
+            }
+
+            GraphicsDevice device = Main.instance.GraphicsDevice;
+            if (!OniSlashStrip.BeginDraw(device, out Effect fx, out var pb, out var pr, out var pd)) {
+                return;
+            }
+            OniSlashStrip.DrawTwoLayers(device, fx, in slashDef, SlashCenter, lt
+                , (int)StrikeTime, strikeEased);
+            OniSlashStrip.EndDraw(device, pb, pr, pd);
         }
     }
 }

@@ -73,8 +73,9 @@ namespace CalamityOverhaul.Content.Items.Stones.Granites
         }
 
         public float GetWidthFunc(float completionRatio) {
+            //碎片电弧细丝：中段最宽也只有 6.5px 半宽，贴 12px 晶片体
             float progress = completionRatio > 0.5f ? 1f - completionRatio : completionRatio;
-            return progress * 2f * Projectile.scale * Projectile.width * 1.1f;
+            return progress * 2f * Projectile.scale * 6.5f;
         }
 
         public Color GetColorFunc(Vector2 completionRatio) => Color.White * Projectile.Opacity;

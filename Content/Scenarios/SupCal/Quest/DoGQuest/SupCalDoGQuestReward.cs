@@ -85,7 +85,9 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest
         internal override int[] TargetProjectileTypes => [
             ModContent.ProjectileType<HeartcarverHeld>(),
             ModContent.ProjectileType<HeartcarverDash>(),
-            ModContent.ProjectileType<HeartcarverDagger>()
+            ModContent.ProjectileType<HeartcarverDagger>(),
+            ModContent.ProjectileType<HeartcarverExcisedHeart>(),
+            ModContent.ProjectileType<HeartcarverPulseProj>()
         ];
 
         internal override float RequiredContribution => REQUIRED_CONTRIBUTION;

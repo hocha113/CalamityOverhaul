@@ -65,6 +65,18 @@ namespace CalamityOverhaul.Content.LegendWeapon
             set => SkipUpgradeWorldFullName = value ?? string.Empty;
         }
 
+        /// <summary>
+        /// 深拷贝钩子，物品克隆链（<see cref="CWRItem.CloneCWRItem"/>）调用。
+        /// 基类拷贝值字段与列表；派生类持有引用型进度容器（如鬼切的点鬼簿）必须覆写补深拷，
+        /// 否则复制出的两把刀共享同一份进度
+        /// </summary>
+        public virtual LegendData Clone(Item item) {
+            LegendData clone = (LegendData)MemberwiseClone();
+            clone.TrustedWorldFullNames = TrustedWorldFullNames != null ? new List<string>(TrustedWorldFullNames) : new List<string>();
+            clone.CompletedTrialKeys = CompletedTrialKeys != null ? new List<string>(CompletedTrialKeys) : new List<string>();
+            return clone;
+        }
+
         #region 序列化
 
         public void NetSend(Item item, BinaryWriter writer) {

@@ -131,9 +131,10 @@ namespace CalamityOverhaul.Content
             ItemRebuildLoader.PostSetDefaultsEvent -= PostSetDefaults;
             ItemRebuildLoader.PreModifyTooltipsEvent -= OverModifyTooltip;
         }
-        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItem)base.Clone(from, to));
-        public CWRItem CloneCWRItem(CWRItem cwr) {
-            cwr.ai = ai;
+        public override GlobalItem Clone(Item from, Item to) => CloneCWRItem((CWRItem)base.Clone(from, to), to);
+        public CWRItem CloneCWRItem(CWRItem cwr, Item to) {
+            //ai 与 LegendData 都是引用型:浅拷会让复制出的两件物品共写同一份状态
+            cwr.ai = ai != null ? (float[])ai.Clone() : null;
             cwr.isHeldItem = isHeldItem;
             cwr.heldProjType = heldProjType;
             cwr.hasHeldNoCanUseBool = hasHeldNoCanUseBool;
@@ -142,7 +143,7 @@ namespace CalamityOverhaul.Content
             cwr.UEValue = UEValue;
             cwr.ConsumeUseUE = ConsumeUseUE;
             cwr.OmigaSnyContent = OmigaSnyContent;
-            cwr.LegendData = LegendData;
+            cwr.LegendData = LegendData?.Clone(to);
             cwr.DyeItemID = DyeItemID;
             cwr.LegacyItemTranslationID = LegacyItemTranslationID;
             return cwr;
