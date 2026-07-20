@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
+using InnoVault.Cinematics;
 using InnoVault.Models3D.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +19,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
     /// 鸟居Actor：负责3D鸟居模型的每帧提交、鸟居下插地鬼切的绘制与拔刀交互提示。<br/>
     /// 逻辑锚点 <see cref="Actor.Position"/> 约定为鸟居正下方的地表中心（非左上角），
     /// 所有绘制/粒子/光照都相对该锚点展开。<br/>
-    /// 本地玩家拔刀后走退场演出（黄昏渐入→原地化樱消散，见 <see cref="ToriiDusk"/>），
+    /// 本地玩家右键先走拔刀仪式（蓄势→拔离→归弧到手，运镜见 <see cref="ToriiPullCutscene"/>），
+    /// 到手后进入退场演出（黄昏渐入→原地化樱消散，见 <see cref="ToriiDusk"/>），
     /// 纯客户端视觉：Actor 世界侧仍存活，未拔刀的玩家看到的鸟居原样不动
     /// </summary>
     internal class ToriiShrineActor : Actor
@@ -31,10 +33,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         //轻微的Y轴偏转让鸟居露出一点侧面进深，避免看起来像一张平面贴纸
         private const float ModelYaw = 0.32f;
 
-        //刀的中心离地高度：贴图对角半长约65px，刀尖入土约18px
-        internal const float SwordCenterHeight = 47f;
+        //插地鬼切的整体缩放：物品贴图原尺寸作静物偏大，压过鸟居基座的视觉层级
+        private const float SwordScale = 0.75f;
+        //刀的中心离地高度：贴图对角半长约65px×缩放≈49px，刀尖入土约14px
+        internal const float SwordCenterHeight = 35f;
         //刀身旋转：原贴图刀尖朝右上(-45°)，转到刀尖朝下再往回带一点倾角
         private const float SwordRotation = MathHelper.PiOver4 * 3f - 0.26f;
+        //刀尖在贴图空间的朝向为-45°，叠加插地旋转后的世界朝向；拔离方向取其反向
+        private const float SwordTipAngle = SwordRotation - MathHelper.PiOver4;
 
         private float glowTimer;
         private int motePrtTimer;
@@ -47,12 +53,21 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         private enum DeparturePhase
         {
             None,
+            /// <summary>拔刀仪式：蓄势→拔离→归弧到手（运镜由 <see cref="ToriiPullCutscene"/> 承担）</summary>
+            PullRite,
             /// <summary>黄昏渐入：模型原样，只有天色在变（<see cref="ToriiDusk"/> 包络就位）</summary>
             DuskIn,
             /// <summary>原地化樱：噪声溶解 + 樱瓣从轮廓剥离</summary>
             Dissolving,
             Gone
         }
+
+        //拔刀仪式节拍：蓄势(0-40) → 拔离滑出(40-70，46帧闪光/迸发) → 归弧到手(70-110)
+        internal const int RiteChargeFrames = 40;
+        internal const int RiteDrawFrames = 30;
+        internal const int RiteFrames = 110;
+        //运镜总时长：仪式后镜头再驻留一段，看着黄昏渐入再交还控制权
+        internal const int RiteCutsceneFrames = 170;
 
         private const int DuskInFrames = 50;
         private const int DissolveFrames = 165;
@@ -85,6 +100,13 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         private List<Vector2> silhouettePoints;
         private readonly List<DeparturePetal> departPetals = [];
         private readonly List<DeparturePetal> petalDrawBuffer = [];
+
+        //====== 拔刀仪式的绘制状态（由 UpdatePullRite 逐帧写入，DrawSword 消费） ======
+        private Vector2 riteSwordOffset;
+        private float riteSwordRotation;
+        private float riteSwordScale = 1f;
+        private float riteCharge;
+        private float riteGlint;
         #endregion
 
         public override void OnSpawn(params object[] args) {
@@ -139,7 +161,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 拔刀瞬间的本地演出：绯红光点环状迸发 + 白色碎晶，由 <see cref="ToriiShrine.PullSword"/> 调用
+        /// 拔刀瞬间的本地演出：绯红光点环状迸发 + 白色碎晶；
+        /// 仪式在拔离节拍调用，瞬发兜底路径（<see cref="ToriiShrine.PullSword"/>）在交付时调用
         /// </summary>
         public void SwordPulledBurst() {
             if (Main.dedServ) {
@@ -180,19 +203,53 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
+        /// <summary>本地是否有拔刀仪式在演，交互提示与右键受理都要在仪式期让路</summary>
+        internal static bool PullRiteHolding {
+            get {
+                foreach (ToriiShrineActor actor in ActorLoader.GetActiveActors<ToriiShrineActor>()) {
+                    if (actor.departPhase == DeparturePhase.PullRite) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 开始拔刀仪式（纯本地视觉）：蓄势→拔离→归弧到手，收尾同帧交付鬼切并进入退场。
+        /// 由 <see cref="ToriiShrine.TryBeginPullRite"/> 调用；仅 None 相位可入
+        /// </summary>
+        public bool BeginPullRite() {
+            if (Main.dedServ || departPhase != DeparturePhase.None) {
+                return false;
+            }
+
+            departPhase = DeparturePhase.PullRite;
+            departTimer = 0;
+            riteSwordOffset = Vector2.Zero;
+            riteSwordRotation = SwordRotation;
+            riteSwordScale = 1f;
+            riteCharge = 0f;
+            riteGlint = 0f;
+            return true;
+        }
+
         /// <summary>
         /// 开始退场演出（纯本地视觉）：黄昏渐入→原地化樱消散。
-        /// 拔刀瞬间由 <see cref="ToriiShrine.PullSword"/> 调用；重复调用无效
+        /// 仪式收尾或无仪式的瞬发拔刀（<see cref="ToriiShrine.PullSword"/>）调用；重复调用无效
         /// </summary>
         public void BeginDeparture() {
             if (Main.dedServ || departPhase != DeparturePhase.None) {
                 return;
             }
+            EnterDuskIn();
+        }
 
+        /// <summary>进入黄昏渐入相：接管本层合成并趁模型仍完整时申请一次剪影读回；
+        /// 黄昏渐入本身无声，天色变化就是全部预告</summary>
+        private void EnterDuskIn() {
             departPhase = DeparturePhase.DuskIn;
             departTimer = 0;
-            //接管本层合成并趁模型仍完整时申请一次剪影读回；
-            //黄昏渐入本身无声，天色变化就是全部预告
             ToriiShrineDissolve.Begin(Position);
         }
 
@@ -201,7 +258,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             return player != null && player.active && HimayoStorySync.ToriiSwordTaken;
         }
 
-        /// <summary>把退场状态复位到"从未开始"，供调试回归（拔刀标记被清除）时鸟居原样回归</summary>
+        /// <summary>把退场状态复位到"从未开始"，供调试回归（拔刀标记被清除）与仪式中止时鸟居原样回归</summary>
         private void ResetDepartureState() {
             departPhase = DeparturePhase.None;
             departTimer = 0;
@@ -210,6 +267,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             dissolveTint = 0f;
             petalSpawnCarry = 0f;
             silhouettePoints = null;
+            riteSwordOffset = Vector2.Zero;
+            riteSwordRotation = SwordRotation;
+            riteSwordScale = 1f;
+            riteCharge = 0f;
+            riteGlint = 0f;
             ToriiShrineDissolve.End();
         }
 
@@ -258,11 +320,106 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             departTimer++;
 
-            if (departPhase == DeparturePhase.DuskIn) {
+            if (departPhase == DeparturePhase.PullRite) {
+                UpdatePullRite();
+            }
+            else if (departPhase == DeparturePhase.DuskIn) {
                 UpdateDuskInPhase();
             }
             else if (departPhase == DeparturePhase.Dissolving) {
                 UpdateDissolvingPhase();
+            }
+        }
+
+        /// <summary>
+        /// 拔刀仪式逐帧推进：蓄势聚光→刀沿自身轴线拔离（闪光+迸发+一次有动机的震屏）
+        /// →归弧飞向玩家，到手帧交付鬼切并同帧进入黄昏渐入（闸门/黄昏零空隙接管）
+        /// </summary>
+        private void UpdatePullRite() {
+            Player player = Main.LocalPlayer;
+            //仪式期间玩家死亡/失效：中止并恢复原状，刀未交付可随时重拔
+            if (player == null || !player.Alives()) {
+                ResetDepartureState();
+                if (CutsceneDirector.CurrentClip is ToriiPullCutscene) {
+                    CutsceneDirector.Stop();
+                }
+                return;
+            }
+
+            //短无敌 + 面向神社，仪式很短，不给"锁着输入被打死"留机会
+            player.GivePlayerImmuneState(4);
+            if (MathF.Abs(player.Center.X - Position.X) > 8f) {
+                player.ChangeDir(player.Center.X < Position.X ? 1 : -1);
+            }
+
+            Vector2 pullDirection = (SwordTipAngle - MathHelper.Pi).ToRotationVector2();
+
+            if (departTimer <= RiteChargeFrames) {
+                //蓄势：辉光渐强，绯红光点向刀身收拢
+                riteCharge = departTimer / (float)RiteChargeFrames;
+                if (departTimer % 5 == 0) {
+                    Vector2 spawnPos = SwordAnchor + Main.rand.NextVector2CircularEdge(60f, 60f);
+                    PRTLoader.NewParticle<PRT_Light>(spawnPos, (SwordAnchor - spawnPos) * 0.055f,
+                        new Color(255, 70, 92), Main.rand.NextFloat(0.16f, 0.26f))
+                        .Configure(20, opacity: 0.85f);
+                }
+            }
+            else if (departTimer <= RiteChargeFrames + RiteDrawFrames) {
+                //拔离：沿刀轴滑出土面
+                float draw = (departTimer - RiteChargeFrames) / (float)RiteDrawFrames;
+                float eased = Smooth01(draw);
+                riteSwordOffset = pullDirection * eased * 34f;
+                riteGlint = MathHelper.Clamp(riteGlint - 0.09f, 0f, 1f);
+
+                if (departTimer == RiteChargeFrames + 6) {
+                    //离土瞬间：刃光闪帧 + 环状迸发 + 一次有动机的震屏与拔刀声
+                    riteGlint = 1f;
+                    SwordPulledBurst();
+                    player.CWR().GetScreenShake(7f);
+                    SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.35f, Volume = 0.9f }, SwordAnchor);
+                }
+            }
+            else if (departTimer < RiteFrames) {
+                //归弧：从拔离终点沿弧线飞向玩家，樱瓣拖尾
+                float t = (departTimer - RiteChargeFrames - RiteDrawFrames)
+                    / (float)(RiteFrames - RiteChargeFrames - RiteDrawFrames);
+                float eased = Smooth01(t);
+
+                Vector2 start = SwordAnchor + pullDirection * 34f;
+                Vector2 end = player.Center;
+                Vector2 control = Vector2.Lerp(start, end, 0.5f) + new Vector2(0f, -110f);
+                Vector2 arcPos = Vector2.Lerp(Vector2.Lerp(start, control, eased),
+                    Vector2.Lerp(control, end, eased), eased);
+
+                riteSwordOffset = arcPos - SwordAnchor;
+                riteSwordRotation = SwordRotation + eased * MathHelper.TwoPi * 0.75f;
+                riteSwordScale = MathHelper.Lerp(1f, 0.55f, eased);
+                riteGlint = MathHelper.Clamp(riteGlint - 0.09f, 0f, 1f);
+
+                if (departTimer % 3 == 0 && departPetals.Count < MaxDeparturePetals) {
+                    departPetals.Add(new DeparturePetal {
+                        Position = arcPos + Main.rand.NextVector2Circular(10f, 10f),
+                        Velocity = Main.rand.NextVector2Circular(0.8f, 0.8f) - new Vector2(0f, 0.4f),
+                        Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                        RotSpeed = Main.rand.NextFloat(-0.12f, 0.12f),
+                        Scale = Main.rand.NextFloat(0.4f, 0.8f),
+                        Seed = Main.rand.NextFloat(MathHelper.TwoPi),
+                        BaseAlpha = Main.rand.NextFloat(0.6f, 0.85f),
+                        MaxLife = Main.rand.Next(40, 75),
+                        Deep = Main.rand.NextBool(16),
+                    });
+                }
+            }
+            else {
+                //到手帧：交付鬼切 + 同帧进入黄昏渐入，闸门与黄昏无空隙接管；
+                //到手闪光落在玩家身上
+                ToriiShrine.GrantSwordFromRite(player);
+                for (int i = 0; i < 10; i++) {
+                    PRTLoader.NewParticle<PRT_Sparkle>(player.Center,
+                        Main.rand.NextVector2Circular(3f, 3f) - new Vector2(0f, 1.2f),
+                        new Color(255, 235, 238), Main.rand.NextFloat(0.45f, 0.8f));
+                }
+                EnterDuskIn();
             }
         }
 
@@ -493,7 +650,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 插在鸟居下的鬼切：软辉光衬底 + 脉动的绯红发光层 + 受环境光的刀身本体
+        /// 插在鸟居下的鬼切：软辉光衬底 + 脉动的绯红发光层 + 受环境光的刀身本体。
+        /// 拔刀仪式期间叠加拔离位移/归弧旋转/刃光闪帧（riteSword* 状态由 UpdatePullRite 写入）
         /// </summary>
         private void DrawSword(SpriteBatch spriteBatch) {
             Texture2D sword = ToriiShrine.OnikiriTexture?.Value;
@@ -501,22 +659,26 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return;
             }
 
-            Vector2 drawPos = SwordAnchor - Main.screenPosition;
+            bool inRite = departPhase == DeparturePhase.PullRite;
+            Vector2 drawPos = SwordAnchor + (inRite ? riteSwordOffset : Vector2.Zero) - Main.screenPosition;
+            float rotation = inRite ? riteSwordRotation : SwordRotation;
+            float scale = SwordScale * (inRite ? riteSwordScale : 1f);
             Vector2 origin = sword.Size() / 2f;
-            float pulse = MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f;
+            //蓄势期脉动增强
+            float pulse = (MathF.Sin(glowTimer * 2f) * 0.5f + 0.5f) * (1f + riteCharge * 0.8f);
 
             //软辉光衬底
             Texture2D glow = CWRAsset.SoftGlow.Value;
             Color backing = new Color(255, 60, 84) with { A = 0 } * (0.22f + pulse * 0.14f);
             spriteBatch.Draw(glow, drawPos, null, backing, 0f, glow.Size() / 2f
-                , new Vector2(150f / glow.Width, 130f / glow.Height), SpriteEffects.None, 0f);
+                , new Vector2(150f * scale / glow.Width, 130f * scale / glow.Height), SpriteEffects.None, 0f);
 
             //刀形发光层
             Color bladeGlow = new Color(255, 82, 100) with { A = 0 };
             for (int i = 0; i < 3; i++) {
-                float glowScale = 1.06f + i * 0.06f;
+                float glowScale = (1.06f + i * 0.06f) * scale;
                 float glowAlpha = (0.3f + pulse * 0.3f) * (1f - i * 0.3f);
-                spriteBatch.Draw(sword, drawPos, null, bladeGlow * glowAlpha, SwordRotation
+                spriteBatch.Draw(sword, drawPos, null, bladeGlow * glowAlpha, rotation
                     , origin, glowScale, SpriteEffects.None, 0f);
             }
 
@@ -524,11 +686,18 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             Color bodyColor = Lighting.GetColor((SwordAnchor / 16f).ToPoint());
             //刀身自带一点微光，避免夜晚完全看不见
             bodyColor = Color.Lerp(bodyColor, Color.White, 0.25f);
-            spriteBatch.Draw(sword, drawPos, null, bodyColor, SwordRotation, origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(sword, drawPos, null, bodyColor, rotation, origin, scale, SpriteEffects.None, 0f);
+
+            //离土瞬间的刃光闪帧
+            if (riteGlint > 0.01f) {
+                Color glint = Color.White with { A = 0 } * riteGlint;
+                spriteBatch.Draw(sword, drawPos, null, glint, rotation, origin, scale * 1.02f, SpriteEffects.None, 0f);
+            }
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor) {
-            if (ToriiShrine.SwordPresentForLocalPlayer()) {
+            //仪式运镜期间不叠交互提示
+            if (departPhase != DeparturePhase.PullRite && ToriiShrine.SwordPresentForLocalPlayer()) {
                 DrawInteractPrompt(spriteBatch);
             }
         }

@@ -143,15 +143,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                     //躁动由驾驭度推导,不做独立存储;阈值与反噬判定同源
                     entry.State = record.Mastery < WraithDefinition.RestlessThreshold ? OniGhostState.Restless : OniGhostState.Engraved;
                     entry.Mastery = record.Mastery;
-                    //残页门控(认主叙事):旧契认刀不认手,来历与赋力残页待据点重续后解锁
-                    if (record.PactRenewed) {
-                        entry.Origin = () => definition.Origin.Value;
-                        entry.Power = () => definition.Power.Value;
-                    }
-                    else {
-                        entry.Origin = () => OniRegisterUI.UnrenewedOriginHint.Value;
-                        entry.Power = () => OniRegisterUI.UnrenewedPowerHint.Value;
-                    }
+                    //簿面按演示期原貌呈现:Bound 即见来历与赋力。
+                    //残页门控(认主叙事)已按用户钦定撤下——PactRenewed 仍随仪式落档,但不再影响簿面
+                    entry.Origin = () => definition.Origin.Value;
+                    entry.Power = () => definition.Power.Value;
                     break;
                 default:
                     //Unknown 与 Discovered:簿面暂无"已发现未铭刻"的视觉,先按空悬呈现

@@ -15,6 +15,9 @@ namespace CalamityOverhaul.Content.Wraiths.GhostHands
         //占位贴图沿 WraithDebugTool 惯例走原版 override;专属贴图列待人工项
         public override string Texture => "Terraria/Images/Item_" + ItemID.ShadowKey;
 
+        //上线闸关时不加载:玩家侧不可见;消费端 ModContent.ItemType 对未加载内容返回 0,天然空安全
+        public override bool IsLoadingEnabled(Mod mod) => Runtime.WraithDirector.LiveContentEnabled;
+
         public override void SetDefaults() {
             Item.width = 26;
             Item.height = 26;

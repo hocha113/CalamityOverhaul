@@ -1,6 +1,7 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
+using InnoVault.Cinematics;
 using InnoVault.Models3D.Runtime;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -364,31 +365,75 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             if (Main.LocalPlayer.mouseInterface) {
                 return false;
             }
+            if (ToriiShrineActor.PullRiteHolding) {
+                return false;
+            }
             return true;
         }
 
         private static void TriggerInteraction() {
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
+            TryBeginPullRite();
+        }
+
+        /// <summary>
+        /// 背包满时拒绝拔刀：鬼切没有兜底获取途径，绝不能让它以掉落物形态
+        /// 落地冒消失风险（拔刀标记一落即不可逆，刀丢了就是永久软锁）
+        /// </summary>
+        private static bool CheckInventorySpace(Player player) {
+            Item onikiri = new(ModContent.ItemType<OnikiriItem>());
+            if (player.ItemSpace(onikiri).CanTakeItemToPersonalInventory) {
+                return true;
+            }
+            SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.5f });
+            CombatText.NewText(player.getRect(), new Color(235, 95, 118), InventoryFullHint.Value);
+            return false;
+        }
+
+        /// <summary>
+        /// 拔刀入口（本地玩家）：优先走拔刀仪式（Actor 动画 + <see cref="ToriiPullCutscene"/> 运镜），
+        /// 鬼切在仪式到手帧交付；Actor 缺席等异常情形退化为 <see cref="PullSword"/> 瞬发拔刀，
+        /// 保证刀永远不会因演出系统而拿不到
+        /// </summary>
+        internal static void TryBeginPullRite() {
+            Player player = Main.LocalPlayer;
+            if (!SwordPresentForLocalPlayer() || !CheckInventorySpace(player)) {
+                return;
+            }
+
+            foreach (ToriiShrineActor actor in ActorLoader.GetActiveActors<ToriiShrineActor>()) {
+                if (actor.BeginPullRite()) {
+                    //运镜播放失败（更高优先级片段在播）不致命：仪式照演，只是镜头不动
+                    CutsceneDirector.Play<ToriiPullCutscene, int>(actor.WhoAmI, restartSameClip: false);
+                    return;
+                }
+            }
+
             PullSword();
         }
 
         /// <summary>
-        /// 拔刀（本地玩家）：交付鬼切、落拔刀标记、震屏与声画演出；
+        /// 仪式到手帧的交付：落拔刀标记、入包、到手清响；
+        /// 拔离时刻的迸发/震屏/拔刀声由仪式自身在对应节拍播放
+        /// </summary>
+        internal static void GrantSwordFromRite(Player player) {
+            if (!SwordPresentForLocalPlayer()) {
+                return;
+            }
+
+            HimayoStorySync.MarkToriiSwordTaken();
+            player.QuickSpawnItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
+            SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.45f, Volume = 0.5f }, player.Center);
+        }
+
+        /// <summary>
+        /// 瞬发拔刀（无仪式兜底路径）：交付鬼切、落拔刀标记、震屏与声画演出，
         /// 鸟居随即开始本地退场（黄昏渐入→原地化樱消散），
         /// <see cref="FirstMetHimayo"/> 的触发策略在退场收尾后自动开演
         /// </summary>
         internal static void PullSword() {
             Player player = Main.LocalPlayer;
-            if (!SwordPresentForLocalPlayer()) {
-                return;
-            }
-
-            //背包满时拒绝拔刀：鬼切没有兜底获取途径，绝不能让它以掉落物形态
-            //落地冒消失风险（拔刀标记一落即不可逆，刀丢了就是永久软锁）
-            Item onikiri = new(ModContent.ItemType<OnikiriItem>());
-            if (!player.ItemSpace(onikiri).CanTakeItemToPersonalInventory) {
-                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.5f });
-                CombatText.NewText(player.getRect(), new Color(235, 95, 118), InventoryFullHint.Value);
+            if (!SwordPresentForLocalPlayer() || !CheckInventorySpace(player)) {
                 return;
             }
 

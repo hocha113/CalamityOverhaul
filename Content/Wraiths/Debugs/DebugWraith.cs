@@ -181,6 +181,9 @@ namespace CalamityOverhaul.Content.Wraiths.Debugs
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.SpectreStaff;
 
+        //上线闸关时不加载:物品不进图鉴/旅程复制,玩家侧不可见(用户钦定,调试期自行改码放开)
+        public override bool IsLoadingEnabled(Mod mod) => WraithDirector.LiveContentEnabled;
+
         private enum DebugMode : byte { Materialize, Halt, Site, Bind, Backlash, Erosion, Omen, Haunt, Register }
         private const int ModeCount = 9;
         //本端调试偏好,非玩法状态(同 DebugHauntEnabled 惯例,单人调试用)

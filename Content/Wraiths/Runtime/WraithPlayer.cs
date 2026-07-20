@@ -221,7 +221,8 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         //====借力键====
 
         public override void ProcessTriggers(TriggersSet triggersSet) {
-            if (!CWRKeySystem.Wraith_Power.JustPressed || Player.dead || Player.CCed) {
+            //上线闸关时键位未注册(为 null),整条借力/仪式输入链静默
+            if (CWRKeySystem.Wraith_Power?.JustPressed != true || Player.dead || Player.CCed) {
                 return;
             }
             if (WraithRites.PresentationBusy?.Invoke() == true) {

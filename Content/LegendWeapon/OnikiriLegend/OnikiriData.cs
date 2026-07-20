@@ -12,22 +12,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     internal class OnikiriData : LegendData
     {
         //存档标记:区分"存过档(即使记录全默认)"与"本功能之前的老刀"。
-        //老档兼容语义:带 InitTag 的刀读档回放存档值(演示期的高驾驭就此保留,不强行收敛);
-        //无 InitTag 的老刀与新刀一样吃下方出厂表
-        private const string InitTag = "OnikiriWraiths:Init";
+        //老档兼容语义:带 InitTag 的刀读档回放存档值;无 InitTag 的刀吃下方出厂表。
+        //标记曾为 "OnikiriWraiths:Init"(认主收敛试验期):键名升位使该批测试刀读档时
+        //重播出厂表,簿面统一回到演示期钦定态——认主叙事已按用户钦定回滚,不留中间态存档
+        private const string InitTag = "OnikiriWraiths:Init2";
 
         /// <summary>
-        /// 出厂铭刻名单：新刀按此表落 Bound + 驾驭度。
-        /// 认主叙事（刀认你，鬼未必认你）：契约在而威信失，出厂驾驭度收敛至认主前低位
-        /// 0.15~0.35（保留演示期的个体差异排序），重续契约后才跃升至 RenewedMastery
+        /// 出厂铭刻名单：新刀按此表落 Bound + 驾驭度，数值为演示期钦定值（点鬼簿的正典样貌）。
+        /// 认主收敛（0.15~0.35 低位起步）已按用户钦定回滚——簿面不做"认主前"压制
         /// </summary>
         private static readonly (string Key, float Mastery)[] FactoryEngravings = [
-            ("NoFace", 0.35f),
-            ("LanternBoy", 0.27f),
-            ("CrimsonBride", 0.15f),
-            ("StandIn", 0.31f),
-            ("HeadlessShade", 0.18f),
-            ("GhostHand", 0.22f),
+            ("NoFace", 0.86f),
+            ("LanternBoy", 0.58f),
+            ("CrimsonBride", 0.16f),
+            ("StandIn", 0.77f),
+            ("HeadlessShade", 0.28f),
+            ("GhostHand", 0.45f),
         ];
 
         /// <summary>本刀的厉鬼绑定进度</summary>

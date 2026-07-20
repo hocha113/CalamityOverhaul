@@ -28,12 +28,14 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         internal static bool DebugHauntEnabled;
 
         /// <summary>
-        /// 上线闸：厉鬼系统是否面向实际游玩开放。目前**未开放**——正典鬼的一切自然渠道
-        /// （据点调度、环境规则、反噬掷签与生成、借力、传闻路标、据点贴饰）统一被
-        /// <see cref="ContentActiveFor"/> 钳住，只在调试闹鬼闸开启时活动（单人调试专用）。
-        /// 系统正式上线时把本常量翻真即可，无需回收各处闸点
+        /// 上线闸：厉鬼系统是否面向实际游玩开放。目前**未开放**（用户钦定：完成度不足，
+        /// 不给玩家看见）——正典鬼的一切自然渠道（据点调度、环境规则、反噬掷签与生成、借力、
+        /// 传闻路标、据点贴饰）统一被 <see cref="ContentActiveFor"/> 钳住；借力键位、
+        /// 厉鬼调试器与长命锁物品在闸关时一并不注册/不加载（玩家侧零可见面）。
+        /// 系统正式上线时把本开关翻真即可，无需回收各处闸点。
+        /// static readonly 而非 const：闸点多为直接 if 判断，避免满仓 CS0162 不可达警告
         /// </summary>
-        internal const bool LiveContentEnabled = false;
+        internal static readonly bool LiveContentEnabled = false;
 
         /// <summary>正典内容（非调试件）的自然渠道是否放行：上线闸开或调试闹鬼闸开（后者=单人调试专用）</summary>
         internal static bool CanonContentActive => LiveContentEnabled || DebugHauntEnabled;
