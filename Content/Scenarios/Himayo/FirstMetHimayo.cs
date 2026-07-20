@@ -48,7 +48,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
              .Say(NarrativeIds.Mayo, Line6.Value,
                     onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
              .Say(NarrativeIds.Mayo, Line7.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Grin))
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Forsmile))
              .End();
         }
 
