@@ -2600,4 +2600,20 @@ WraithDebugTool: {
 		''' */
 	// HauntOn: Debug haunting enabled
 	// HauntOff: Debug haunting disabled
+	// ModePrefix: 模式：{0}
+	// ModeMaterialize: 显形（左键在光标处显形试件）
+	// ModeHalt: 死机（左键点鬼逼入死机，再点解除）
+	// ModeSite: 据点（左键落锚调试据点，Shift+左键拔锚）
+	// ModeBind: 绑定（左键把试件低驾驭上簿，Shift+左键高驾驭）
+	// ModeBacklash: 反噬（左键强制簿上试件挣脱）
+	// ModeErosion: 侵蚀（左键+0.2，Shift+左键清零）
+	// ModeOmen: 必死（左键对自己起三息预警拍）
+	// ModeHaunt: 闹鬼（左键翻转环境自动闹鬼闸门）
+	// HaltNoTarget: 光标下没有鬼
+	// SitePlanted: 调试据点已落锚——走近它等它显形
+	// SiteCleared: 调试据点已拔锚
+	// BindDone: 试件已上簿，驾驭度 {0}
+	// BacklashNeedBound: 簿上没有试件——先用绑定模式请它上簿
+	// ErosionValue: 侵蚀 {0}
+	// OmenStarted: 三息之后，命数当尽
 }

@@ -14,6 +14,9 @@ namespace CalamityOverhaul.Content.Wraiths.Core
     /// </summary>
     public abstract class WraithDefinition : ILocalizedModType
     {
+        /// <summary>躁动线：驾驭度低于它即视为躁动，反噬判定与簿面躁动呈现同源</summary>
+        public const float RestlessThreshold = 0.35f;
+
         public Mod Mod => CWRMod.Instance;
         /// <summary>内部名，本地化键第三段：Mods.CalamityOverhaul.Wraiths.{Name}.*</summary>
         public string Name => GetType().Name;
@@ -36,11 +39,14 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public LocalizedText Origin { get; private set; }
         /// <summary>赋予的力</summary>
         public LocalizedText Power { get; private set; }
+        /// <summary>规则死亡讯息，{0}=玩家名；鬼律第十条"可归因"，走 <see cref="Runtime.WraithLethality"/></summary>
+        public LocalizedText DeathReason { get; private set; }
 
         internal void LoadLocalization() {
             DisplayName = this.GetLocalization("DisplayName", () => "???");
             Origin = this.GetLocalization("Origin", () => "...");
             Power = this.GetLocalization("Power", () => "...");
+            DeathReason = this.GetLocalization("DeathReason", () => "{0}触犯了不可触犯之物");
         }
 
         //====实体接线====
@@ -62,6 +68,14 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         public virtual int DematerializeFrames => 35;
         /// <summary>无外部干预时的最大在场帧数，&lt;=0 表示不限时</summary>
         public virtual int PresentDurationLimit => 60 * 60;
+        /// <summary>死机窗口帧数，窗口尽未行仪式即自然消散</summary>
+        public virtual int HaltWindowTicks => 60 * 8;
+
+        //====仪式数值====
+        /// <summary>首次铭刻落簿的初始驾驭度（新收的鬼近乎躁动）</summary>
+        public virtual float FirstBindMastery => 0.15f;
+        /// <summary>重续契约（认主）后的驾驭度</summary>
+        public virtual float RenewedMastery => 0.85f;
 
         //====感知参数====
         /// <summary>凝视判定距离（像素）</summary>
@@ -85,7 +99,37 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         /// </summary>
         public virtual void BuildBehaviors(List<IWraithBehavior> behaviors) { }
 
-        /// <summary>自动显形规则，默认 null：不自动出现，只能被外部显式生成</summary>
+        /// <summary>
+        /// 自动显形规则，默认 null：不自动出现，只能被外部显式生成。
+        /// 鬼律第五条：正典鬼一律据点制（<see cref="GetSitePlan"/>），本规则仅调试件使用
+        /// </summary>
         public virtual WraithSpawnRule GetSpawnRule() => null;
+
+        /// <summary>据点计划，默认 null：无据点。据点状态与存档见 <c>WraithSiteSystem</c></summary>
+        public virtual WraithSitePlan GetSitePlan() => null;
+
+        //====赋力====
+        private WraithAbility ability;
+        private bool abilityCreated;
+
+        /// <summary>
+        /// 赋力工厂，默认 null：驾驭后无主动力。实例为全局单例且必须无状态
+        /// （冷却等每玩家数据在 <c>WraithPlayer</c>），经 <see cref="Ability"/> 惰性缓存
+        /// </summary>
+        public virtual WraithAbility CreateAbility() => null;
+
+        /// <summary>缓存的赋力单例，无赋力为 null</summary>
+        public WraithAbility Ability {
+            get {
+                if (!abilityCreated) {
+                    abilityCreated = true;
+                    ability = CreateAbility();
+                    if (ability != null) {
+                        ability.Definition = this;
+                    }
+                }
+                return ability;
+            }
+        }
     }
 }

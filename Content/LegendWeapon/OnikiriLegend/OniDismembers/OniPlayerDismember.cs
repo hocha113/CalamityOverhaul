@@ -9,8 +9,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using OFR = CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs.OniFinaleRenderer;
 
@@ -47,18 +49,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
 
     /// <summary>
     /// 反噬肢解管理器：肢解敌人时，同等的肢解落回持刀人自己——刀无善恶，斩人亦斩己。<br/>
+    /// 代价两层：必定伤害（最大生命 <see cref="SelfHurtFraction"/>，无视防御/闪避，无敌帧亦不挡）
+    /// 加全程约一秒的完全暴露僵直（不免伤、不可操作）；反噬足以夺命，残血强行肢解即自尽。<br/>
     /// 与敌方肢解（<see cref="OniDismember"/>）镜像但不相同：敌人的碎片滑开后尸身淡出，
-    /// 玩家的两半滑开悬停后<b>回拢弥合</b>，代价是全程约一秒的完全暴露僵直（不免伤、不可操作）。<br/>
+    /// 玩家的两半滑开悬停后<b>回拢弥合</b>。<br/>
     /// 时间轴：伤口亮起呼吸(<see cref="HoldFrames"/>) → 裂开滑移(<see cref="DriftFrames"/>) →
     /// 悬停(<see cref="RestFrames"/>) → 回拢(<see cref="KnitFrames"/>) → 弥合闪光(<see cref="SealFrames"/>) → 解锁。<br/>
     /// 视觉复用肢解管线：<see cref="PlayerCloneRenderer"/> 傀儡快照进专属 RT（本色、无手持物）、
     /// <see cref="OniDismember.ClipHalfPlane"/> 裁片、<c>OniDismember.fx</c> 断面辉光；
     /// 本体经 <see cref="OniPlayerDismemberHideOverride"/> 隐藏。<br/>
-    /// 由 <see cref="OniSeverStrike"/> 的同步时间轴在各端确定性触发（服务器无条目，玩家位置本就客户端权威）；
-    /// 操控锁只在本人客户端生效（<see cref="OniPlayerDismemberLock"/>）
+    /// 由 <see cref="OniSeverStrike"/> 的同步时间轴在各端确定性触发（服务器无条目，玩家位置本就客户端权威），
+    /// 伤害仅 owner 端结算后由原版受伤包同步；操控锁只在本人客户端生效（<see cref="OniPlayerDismemberLock"/>）
     /// </summary>
     internal class OniPlayerDismember : ICWRLoader
     {
+        /// <summary>反噬必定伤害：最大生命比例，无视防御与闪避</summary>
+        public const float SelfHurtFraction = 0.25f;
         /// <summary>伤口亮起 → 裂开的滞拍帧数</summary>
         public const int HoldFrames = 8;
         /// <summary>两半滑开帧数</summary>
@@ -91,12 +97,27 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             => player != null && GetEntry(player.whoAmI) != null;
 
         /// <summary>
-        /// 落下反噬：玩家当帧定格，同角度的切线裂开身体，回拢弥合后解锁。
+        /// 落下反噬：必定伤害先落（owner 端结算，原版受伤包同步），玩家当帧定格，
+        /// 同角度的切线裂开身体，回拢弥合后解锁；反噬致死则不再有回拢。
         /// 由 <see cref="OniSeverStrike"/> 在所有端调用（服务器静默跳过）
         /// </summary>
         public static void Trigger(Player player, float cutAngle) {
             if (Main.dedServ || player == null || !player.active || player.dead) {
                 return;
+            }
+
+            //必定伤害：无视防御（穿透系数 1）、不可闪避，清无敌帧保证这一刀永远落下；
+            //刀无善恶，残血强行肢解即自尽
+            if (player.whoAmI == Main.myPlayer) {
+                int selfDamage = Math.Max((int)(player.statLifeMax2 * SelfHurtFraction), 1);
+                player.immune = false;
+                player.immuneTime = 0;
+                player.Hurt(PlayerDeathReason.ByCustomReason(
+                    OniPlayerDismemberSystem.SelfHurtDeathReason.ToNetworkText(player.name))
+                    , selfDamage, 0, dodgeable: false, scalingArmorPenetration: 1f, knockback: 0f);
+                if (player.dead) {
+                    return; //死亡流程接管，僵直与弥合都不再有意义
+                }
             }
 
             Entries.RemoveAll(e => e.PlayerIndex == player.whoAmI);
@@ -301,8 +322,18 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     }
 
     /// <summary>反噬状态逐帧维护与世界卸载清理</summary>
-    internal sealed class OniPlayerDismemberSystem : ModSystem
+    internal sealed class OniPlayerDismemberSystem : ModSystem, ILocalizedModType
     {
+        public string LocalizationCategory => "Legend.OnikiriText";
+
+        /// <summary>反噬致死的死亡原因，{0}=玩家名</summary>
+        public static LocalizedText SelfHurtDeathReason { get; private set; }
+
+        public override void SetStaticDefaults() {
+            SelfHurtDeathReason = this.GetLocalization(nameof(SelfHurtDeathReason)
+                , () => "{0}被自己的一刀斩作了两段");
+        }
+
         public override void PostUpdatePlayers() {
             if (!Main.dedServ) {
                 OniPlayerDismember.UpdateAll();

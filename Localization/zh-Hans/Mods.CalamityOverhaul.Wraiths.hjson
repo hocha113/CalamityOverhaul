@@ -2,46 +2,72 @@ NoFace: {
 	DisplayName: 无面女
 	Origin: 雨夜桥头，她借走了你的脸
 	Power: 「借颜」窃取目标的相貌，短暂复制其能力
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 LanternBoy: {
 	DisplayName: 提灯童子
 	Origin: 山道尽头有灯，灯下无人，再看已是灯中人
 	Power: 「引路」灯光照出的影子会同步自身行为，影子拥有六成实力
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 CrimsonBride: {
 	DisplayName: 绯嫁
 	Origin: 花轿在门前停了七夜
 	Power: 「迎亲」拼图补全，允许使用鬼灯笼叠加自身
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 StandIn: {
 	DisplayName: 替死簿
 	Origin: 泛黄的硬皮册子里，有一页死死粘连着你的生辰
 	Power: 「替死」致命的袭击或诅咒降临的瞬间，伤害会被强制转移
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 HeadlessShade: {
 	DisplayName: 无头人影
 	Origin: 你脚下的黑影抽动着，在灯火摇晃的夜里，影子的肩膀以上空无一物
 	Power: 「拼肢」拆卸目标的肢体，也可以拼接自身断裂的躯体，用于恢复
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 GhostHand: {
 	DisplayName: 焦黑枯手
 	Origin: 一截焦黑枯瘦的恐怖手臂
 	Power: 「攥」被掐住的目标会被压制，并限制其行动
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 WellThing: {
 	DisplayName: 井中鸣
 	Origin: ———
 	Power: ———
+	// DeathReason: "{0}触犯了不可触犯之物"
 }
 
 DebugWraith: {
 	DisplayName: 调试之鬼
 	Origin: 无色的试件。它的存在只为验证闹鬼的机械仍在运转
 	Power: 「占位」——会游荡，会回望，被触碰即四散
+	// DeathReason: "{0}触犯了不可触犯之物"
+}
+
+System: {
+	// HaltPopup: 死机
+	// RitePrompt: "[{0}] 落名于簿"
+	// RiteFirstBind: 「{0}」落名于簿
+	// RiteRenewPact: 「{0}」重续了契约——它认得这只手了
+	// RiteResubdue: 「{0}」被按回了簿上
+	// RiteDeniedSealed: 封印未解，名讳不可示人
+	// PowerDeniedNoVessel: 手中无刀，簿上无名
+	// PowerDeniedNoBound: 簿上无可借之力
+	// PowerDeniedCooldown: 它还不肯再次应声
+	// PowerTaboo: 犯戒——「{0}」的名讳在簿上洇开
+	// BacklashEscape: 「{0}」从簿上挣脱了
+	// BacklashFade: 「{0}」的气息散了——它还会回来
+	// ErosionCrawl: 皮肤下有什么在爬
+	// ErosionStain: 指尖泛起尸斑的青
+	// ErosionMirror: 镜子里的东西不太像你
 }

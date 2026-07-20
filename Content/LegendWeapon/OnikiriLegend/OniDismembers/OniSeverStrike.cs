@@ -20,11 +20,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
     /// 快到只剩残影 → 落刀帧(8) 目标当帧入冻并亮起伤口线（<see cref="OniDismember"/>，
     /// 滞拍传 <see cref="OniFinaleCut.HoldFrames"/> 与终斩对齐），同帧终斩刀线锚在目标身上 →
     /// 残心(8~26) 持刀屏息，斩击已经完成、世界还没反应过来 → 纳刀(26) 一挑入鞘，
-    /// 与刀线引爆、碎片分离、伤害结算压在同一声鞘响上 → 反噬帧(32) 直接肢解的代价：
-    /// 刀已入鞘，同等的肢解落回持刀人自己（<see cref="OniPlayerDismember"/>）→ 收势淡出。<br/>
-    /// 两种模式：<b>直接</b>（ai[0]=目标 NPC 索引）斩真身，纳刀后反噬上身；
+    /// 与刀线引爆、碎片分离、伤害结算压在同一声鞘响上 → 反噬帧(32) 肢解的代价：
+    /// 刀已入鞘，同等的肢解连同必定伤害落回持刀人自己（<see cref="OniPlayerDismember"/>）→ 收势淡出。<br/>
+    /// 两种模式：<b>直接</b>（ai[0]=目标 NPC 索引）斩真身，落刀帧当场入冻；
     /// <b>点锚</b>（ai[0]=-2，<see cref="FireAtPoint"/>）斩媒介，落刀帧 owner 端经
-    /// <see cref="OniOmokage.SeverAt"/> 解析纸面，刀线/裂纸/脉冲由面影链路自驱，替身受过、无反噬。<br/>
+    /// <see cref="OniOmokage.SeverAt"/> 解析纸面，刀线/裂纸/脉冲由面影链路自驱。
+    /// 媒介只替真身受刀，不替持刀人挡代价：两种模式落刀成功均反噬。<br/>
     /// 蓄+闪期间硬占刀权（连段冻结让位），残心起转软姿态：玩家重新挥刀立刻放手，操控零阻塞。<br/>
     /// 冻结与切口由本弹幕时间轴在所有端（含服务器）确定性触发，肢解由此获得权威同步入口；
     /// 伤害由 <see cref="OniFinaleCut"/> 在引爆窗结算（巨物减伤同款）。<br/>
@@ -45,7 +46,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         public const int SheatheFrame = StrikeFrame + OniFinaleCut.HoldFrames;
         /// <summary>纳刀一挑时长</summary>
         private const int NotoFlickFrames = 6;
-        /// <summary>反噬帧：刀入鞘的下一瞬，同等的肢解落回自己（仅直接模式）</summary>
+        /// <summary>反噬帧：刀入鞘的下一瞬，同等的肢解落回自己（两种模式，落刀成功即必反噬）</summary>
         public const int SelfCutFrame = SheatheFrame + NotoFlickFrames;
         /// <summary>纳刀后持刀淡出</summary>
         private const int NotoFadeFrames = 12;
@@ -104,7 +105,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
         /// 触发接口（点锚模式）：斩向一个世界坐标上的媒介（面影纸面）。
         /// 挥舞与残心纳刀照常演出；落刀帧由 owner 端按位置解析纸面
         /// （<see cref="OniOmokage.SeverAt"/>，8 帧延迟内纸可能烧散故不存引用），
-        /// 纸上刀线/裂纸/脉冲/真身立裂全部由面影链路自驱。媒介替身受过，无反噬
+        /// 纸上刀线/裂纸/脉冲/真身立裂全部由面影链路自驱。
+        /// 媒介只替真身受刀：落刀成功同样纳刀后反噬上身
         /// </summary>
         /// <param name="player">攻击发起者</param>
         /// <param name="point">落刀点（世界坐标，应落在纸面内）</param>
@@ -201,9 +203,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
                 }
             }
 
-            //纳刀反噬：直接肢解的代价——刀入鞘的下一瞬，同等的肢解落回持刀人自己；
-            //媒介路径由替身（纸）承受这一刀，无反噬
-            if (!selfCutDone && timer >= SelfCutFrame && struck && !whiffed && !PointMode) {
+            //纳刀反噬：肢解的代价，刀入鞘的下一瞬，同等的肢解与伤害落回持刀人自己；
+            //媒介只替真身受刀不替人挡代价，两种模式落刀成功均反噬
+            //（点锚空挥仅 owner 端可知，远端极端情况下多演一场反噬视觉，伤害仍只在 owner 端结算）
+            if (!selfCutDone && timer >= SelfCutFrame && struck && !whiffed) {
                 selfCutDone = true;
                 OniPlayerDismember.Trigger(Owner, CutAngle);
             }
@@ -233,7 +236,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniDismembers
             }
 
             //反噬落下后本体交给玩家肢解管线（刀已入鞘，随身体一并定格）
-            if (!PointMode && struck && timer > SelfCutFrame) {
+            if (struck && timer > SelfCutFrame) {
                 bladePose.Opacity = 0f;
                 return;
             }

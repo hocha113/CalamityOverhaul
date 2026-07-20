@@ -2,46 +2,72 @@ NoFace: {
 	DisplayName: The Faceless Woman
 	Origin: On a rain-soaked bridge, she borrowed your face
 	Power: 「Borrowed Face」Steals a target's visage and briefly copies their abilities
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 LanternBoy: {
 	DisplayName: The Lantern Boy
 	Origin: A lamp at the end of the mountain road, no one beneath it; look again, and you are the one inside the lamp
 	Power: 「Guiding Light」Shadows cast by the lantern mirror the bearer's actions, wielding six-tenths of their strength
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 CrimsonBride: {
 	DisplayName: The Crimson Bride
 	Origin: The bridal palanquin waited at the gate for seven nights
 	Power: 「The Procession」The final piece of the set; allows Ghost Lanterns to be stacked upon yourself
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 StandIn: {
 	DisplayName: The Stand-In Ledger
 	Origin: Inside the yellowed hardback ledger, one page clings fast to your date of birth
 	Power: 「Stand-In」The instant a lethal strike or curse falls, the damage is forcibly transferred away
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 HeadlessShade: {
 	DisplayName: The Headless Figure
 	Origin: The shadow at your feet twitches; on nights when the lamplight sways, there is nothing above its shoulders
 	Power: 「Limb-Splice」Dismantles a target's limbs, or grafts its own severed body back together to recover
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 GhostHand: {
 	DisplayName: The Charred Hand
 	Origin: A length of charred, withered, horrifying arm
 	Power: 「Grip」A target caught in its clutch is suppressed and restrained
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 WellThing: {
 	DisplayName: The Ringing in the Well
 	Origin: ———
 	Power: ———
+	DeathReason: "{0}触犯了不可触犯之物"
 }
 
 DebugWraith: {
 	DisplayName: Debug Wraith
 	Origin: A colorless specimen. It exists only to prove the machinery of haunting still turns
 	Power: 「Placeholder」— it drifts, it stares back, and it scatters at a touch
+	DeathReason: "{0}触犯了不可触犯之物"
+}
+
+System: {
+	HaltPopup: 死机
+	RitePrompt: "[{0}] 落名于簿"
+	RiteFirstBind: 「{0}」落名于簿
+	RiteRenewPact: 「{0}」重续了契约——它认得这只手了
+	RiteResubdue: 「{0}」被按回了簿上
+	RiteDeniedSealed: 封印未解，名讳不可示人
+	PowerDeniedNoVessel: 手中无刀，簿上无名
+	PowerDeniedNoBound: 簿上无可借之力
+	PowerDeniedCooldown: 它还不肯再次应声
+	PowerTaboo: 犯戒——「{0}」的名讳在簿上洇开
+	BacklashEscape: 「{0}」从簿上挣脱了
+	BacklashFade: 「{0}」的气息散了——它还会回来
+	ErosionCrawl: 皮肤下有什么在爬
+	ErosionStain: 指尖泛起尸斑的青
+	ErosionMirror: 镜子里的东西不太像你
 }

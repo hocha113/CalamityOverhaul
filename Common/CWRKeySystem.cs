@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Common
         public static ModKeybind WeponSkill_Q { get; private set; }
         public static ModKeybind WeponSkill_R { get; private set; }
         public static ModKeybind Accessory_Skills { get; private set; }
+        public static ModKeybind Wraith_Power { get; private set; }
 
         public override void SetStaticDefaults() {
             Notbound = this.GetLocalization(nameof(Notbound), () => "[未绑定按键]");
@@ -59,6 +60,8 @@ namespace CalamityOverhaul.Common
             WeponSkill_Q = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_Q), "Q");
             WeponSkill_R = KeybindLoader.RegisterKeybind(mod, nameof(WeponSkill_R), "R");
             Accessory_Skills = KeybindLoader.RegisterKeybind(mod, nameof(Accessory_Skills), "V");
+            //厉鬼借力/仪式:死机窗口内对鬼行仪式,平时施放共鸣之力
+            Wraith_Power = KeybindLoader.RegisterKeybind(mod, nameof(Wraith_Power), "P");
         }
 
         public override void Unload() {
@@ -84,6 +87,7 @@ namespace CalamityOverhaul.Common
             CyberwareSkill_Key = null;
             CyberwareRadial_Key = null;
             VoidTimeShift_Key = null;
+            Wraith_Power = null;
         }
     }
 }

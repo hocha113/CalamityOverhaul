@@ -8,8 +8,9 @@ using Terraria.ModLoader;
 namespace CalamityOverhaul.Content.Wraiths.Runtime
 {
     /// <summary>
-    /// 厉鬼调度器：Actor 无持久化，显形实体是"会消失的投影"，
-    /// 由这里在权威端按各定义的 <see cref="WraithSpawnRule"/> 周期评估并重新物化。
+    /// 厉鬼调度器：Actor 无持久化，显形实体是"会消失的投影"，由这里在权威端周期评估并重新物化。
+    /// 两条通道：据点制（<see cref="WraithSitePlan"/>，正典鬼的唯一出现通道，状态在
+    /// <see cref="WraithSiteSystem"/>）与环境随机（<see cref="WraithSpawnRule"/>，仅调试件保留）。
     /// 冷却为会话级，随世界切换清零；外部系统直接显形走 <see cref="Materialize"/>
     /// </summary>
     public sealed class WraithDirector : ModSystem
@@ -21,7 +22,7 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
         private static readonly Dictionary<string, long> cooldownUntil = [];
         private static int checkTimer;
 
-        /// <summary>调试闸门：DebugWraith 的自动规则以它为条件，调试物品右键翻转（会话级，不落档）</summary>
+        /// <summary>调试闸门：DebugWraith 的自动规则以它为条件，调试物品翻转（会话级，不落档）</summary>
         internal static bool DebugHauntEnabled;
 
         public override void ClearWorld() {
@@ -42,6 +43,94 @@ namespace CalamityOverhaul.Content.Wraiths.Runtime
 
             foreach (WraithDefinition definition in WraithRegistry.All) {
                 TryAutoMaterialize(definition);
+                TrySiteMaterialize(definition);
+            }
+        }
+
+        /// <summary>
+        /// 据点通道：锚定 → 冷却/条件/近距判定 → 显形并跟踪事件到收场。
+        /// 一场事件 = 该据点实体自显形到离场（无论何种退场），随后进入冷却
+        /// </summary>
+        private static void TrySiteMaterialize(WraithDefinition definition) {
+            WraithSitePlan plan = definition.GetSitePlan();
+            if (plan == null || definition.ActorType == null) {
+                return;
+            }
+
+            WraithSiteRecord record = WraithSiteSystem.GetOrCreate(definition.Key);
+            long now = (long)Main.GameUpdateCount;
+
+            //事件进行中:盯着实体离场,离场即收账进冷却
+            if (record.ActiveWhoAmI >= 0) {
+                Actor actor = ActorLoader.Actors[record.ActiveWhoAmI];
+                bool alive = actor != null && actor.Active
+                    && actor.Generation == record.ActiveGeneration
+                    && actor.GetType() == definition.ActorType;
+                if (alive) {
+                    return;
+                }
+                record.ActiveWhoAmI = -1;
+                record.EventCount++;
+                record.CooldownUntil = now + plan.CooldownTicks;
+                return;
+            }
+
+            Player candidate = PickCandidatePlayer();
+            if (candidate == null) {
+                return;
+            }
+
+            //动态锚定:未锚定且有选点器,按重试节流尝试
+            if (!record.Anchored) {
+                if (plan.AnchorPicker == null || now < record.NextAnchorRetry) {
+                    return;
+                }
+                record.NextAnchorRetry = now + plan.AnchorRetryTicks;
+                Vector2? anchor = plan.AnchorPicker(new WraithSiteContext {
+                    Definition = definition,
+                    Candidate = candidate,
+                });
+                if (anchor == null) {
+                    return;
+                }
+                record.Anchor = anchor.Value;
+                record.Anchored = true;
+            }
+
+            if (now < record.CooldownUntil) {
+                return;
+            }
+            //同定义已有在场实体(例如反噬挣脱体)时据点不叠加,遭遇是事件不是战斗波次
+            if (CountAlive(definition) > 0) {
+                return;
+            }
+
+            WraithSiteContext context = new() {
+                Definition = definition,
+                Candidate = candidate,
+                Anchor = record.Anchor,
+            };
+            if (plan.ActivationCondition != null && !plan.ActivationCondition(context)) {
+                return;
+            }
+
+            bool anyNear = false;
+            float triggerSq = plan.TriggerRadius * plan.TriggerRadius;
+            foreach (Player player in Main.ActivePlayers) {
+                if (!player.dead && Vector2.DistanceSquared(player.Center, record.Anchor) < triggerSq) {
+                    anyNear = true;
+                    break;
+                }
+            }
+            if (!anyNear) {
+                return;
+            }
+
+            Vector2 topLeft = record.Anchor - new Vector2(definition.HitboxWidth * 0.5f, definition.HitboxHeight * 0.5f);
+            int whoAmI = Materialize(definition, topLeft);
+            if (whoAmI >= 0) {
+                record.ActiveWhoAmI = whoAmI;
+                record.ActiveGeneration = ActorLoader.Actors[whoAmI].Generation;
             }
         }
 

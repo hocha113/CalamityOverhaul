@@ -663,6 +663,8 @@ OnikiriText: {
 		// RiteHint: Set down the brush · Roll the scroll
 	}
 
+	// OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} was severed by their own blade"
+
 	OniTalismanHud: {
 		// HudTitle: Sealing Talisman
 		// HudHintFormat: "{0} or click to open the Ghost Register"

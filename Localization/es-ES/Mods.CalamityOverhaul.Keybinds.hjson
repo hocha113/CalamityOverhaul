@@ -21,3 +21,4 @@ WeponSkill_Q.DisplayName: Arma: habilidad izquierda
 WeponSkill_R.DisplayName: Arma: habilidad derecha
 Accessory_Skills.DisplayName: Habilidad de accesorio
 CWRKeySystem.Notbound: "[Sin tecla asignada]"
+// Wraith_Power.DisplayName: Wraith_ Power

@@ -14,6 +14,11 @@ namespace CalamityOverhaul.Content.Wraiths.Core
         Present,
         /// <summary>消散中：过渡结束后实体销毁</summary>
         Dematerializing,
+        /// <summary>
+        /// 死机：规则反制成功后的可驾驭临界态（鬼律第九条，唯一的"战胜"形态）。
+        /// 短窗计时，窗口内可持载体行仪式；窗口尽未被消耗则自然消散
+        /// </summary>
+        Halted,
     }
 
     /// <summary>

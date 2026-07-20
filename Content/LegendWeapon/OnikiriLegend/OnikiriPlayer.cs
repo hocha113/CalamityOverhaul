@@ -24,8 +24,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
     /// <see cref="CWRKeySystem.WeponSkill_R"/> 处决：蓄满出终结乱舞(耗全部),
     /// 过半出灭世一闪(耗一半),不足则鞘刀顿挫提醒。处决键任何状态下即时响应,不被连段阻塞。<br/>
     /// 肢解无专用键：里世界中左键点中真身/媒介即化为肢解居合(<see cref="TryClickDismember"/>,
-    /// 领域翻转本身就是模式切换),直接肢解的代价是纳刀后同等的肢解落回自己
-    /// (<see cref="OniPlayerDismember"/>反噬僵直),斩媒介则替身受过。<br/>
+    /// 领域翻转本身就是模式切换),肢解的代价是纳刀后同等的肢解连同必定伤害落回自己
+    /// (<see cref="OniPlayerDismember"/>反噬),点真身点媒介皆然,刀无善恶。<br/>
     /// 数值 owner 端自治,不存 static、不进网络、不存档(进世界/复活重置);
     /// HUD 经 <see cref="OnikiriResourceSource"/> 只读本类,招式弹幕由 tML 自动同步
     /// </summary>
@@ -68,7 +68,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         private const int HitMemoryCapacity = 8;
         private const int HitMemoryLifeTicks = 300;
 
-        /// <summary>肢解伤害倍率(终斩刀线/媒介脉冲单次结算);代价是反噬僵直而非资源</summary>
+        /// <summary>肢解伤害倍率(终斩刀线/媒介脉冲单次结算);代价是反噬(僵直+必定伤害)而非资源</summary>
         private const float DismemberDamageMul = 2.5f;
         /// <summary>肢解射程(与处决同量级)</summary>
         private const float DismemberRange = 800f;
@@ -244,11 +244,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         /// 左键点击的肢解判定——里世界的攻击语言,不耗气力不耗架势,无专用键。<br/>
         /// 只认按下沿的一次点击(调用方保证:<see cref="OnikiriItem.Shoot"/> 新使用 +
         /// <see cref="CrimsonRendSlash"/> 排拍重启沿),按住扫过永不转换;两层精确点选:<br/>
-        /// 1. 点在真身碰撞箱上(贴身容差) → 直接肢解,代价是纳刀后同等的肢解落回自己
-        /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的反噬僵直,天然限频)。
-        /// 新影常挂在敌人当前位置上,真身必须压过纸的优先级,否则反噬路径不可达;<br/>
-        /// 2. 点在媒介(面影纸面)上 → 点锚斩纸,替身受过、全身而退,限频交给媒介再生成冷却
-        /// ——指着纸斩的是"过去",指着身体斩的是"现在"。<br/>
+        /// 1. 点在真身碰撞箱上(贴身容差) → 直接肢解,当帧入冻;
+        /// 新影常挂在敌人当前位置上,真身压过纸的优先级,点谁斩谁;<br/>
+        /// 2. 点在媒介(面影纸面)上 → 点锚斩纸,裂纸放脉冲斩"过去"的真身。<br/>
+        /// 两条路落刀成功都以反噬作结:纳刀后同等的肢解连同必定伤害落回自己
+        /// (<see cref="OniPlayerDismember"/>约一秒完全暴露的僵直,天然限频),媒介只替真身受刀。<br/>
         /// 均未命中/不在里世界/演出反噬中 → 返回 false,调用方回退普攻连段。
         /// 仅 owner 端决策(纸为客户端本地,居合弹幕经 tML 同步)
         /// </summary>
@@ -279,7 +279,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 return true;
             }
 
-            //二层:点在媒介纸面上 → 点锚斩纸(替身受过,无反噬)
+            //二层:点在媒介纸面上 → 点锚斩纸(落刀成功同样反噬上身)
             OmokageEntry paper = OniOmokage.PickEntryNear(mouse, PaperMagnetPad);
             if (paper != null && Vector2.Distance(Player.Center, paper.AnchorCenter) <= DismemberRange) {
                 //落刀点收拢进纸面有效范围,拔刀方向=玩家→落刀点

@@ -1,4 +1,4 @@
-﻿HalibutOverride: {
+HalibutOverride: {
 	FishByStudied:
 		'''
 		[i:CalamityOverhaul/HalibutItem]:
@@ -662,6 +662,8 @@ OnikiriText: {
 		RiteTitle: 铭 刻
 		RiteHint: 落笔 · 归卷
 	}
+
+	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0}被自己的一刀斩作了两段"
 
 	OniTalismanHud: {
 		HudTitle: 封印札

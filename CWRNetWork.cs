@@ -16,6 +16,7 @@ using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using CalamityOverhaul.Content.Scenarios.OldDuke;
 using CalamityOverhaul.Content.Scenarios.OldDuke.Campsites;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
+using CalamityOverhaul.Content.Wraiths.Runtime;
 using System.IO;
 using Terraria.ModLoader;
 
@@ -50,6 +51,7 @@ namespace CalamityOverhaul
         CrabulonRecall,
         ToriiShrineGenerationRequest,
         ToriiShrineSync,
+        Wraith,
     }
 
     public static class CWRNetWork
@@ -121,6 +123,7 @@ namespace CalamityOverhaul
             SignalTowerTargetManager.NetHandle(type, reader, whoAmI);
             OldDukeEffect.NetHandle(type, reader, whoAmI);
             MachineEffect.NetHandle(type, reader, whoAmI);
+            WraithNet.NetHandle(type, reader, whoAmI);
         }
     }
 }

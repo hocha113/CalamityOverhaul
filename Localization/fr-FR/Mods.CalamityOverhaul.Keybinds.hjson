@@ -21,3 +21,4 @@ WeponSkill_Q.DisplayName: Arme : compétence gauche
 WeponSkill_R.DisplayName: Arme : compétence droite
 Accessory_Skills.DisplayName: Compétence d'accessoire
 CWRKeySystem.Notbound: "[Touches non assignées]"
+// Wraith_Power.DisplayName: Wraith_ Power
