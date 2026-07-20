@@ -1275,7 +1275,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             //余韵：暗紫红光球内爆收束，仅在下一拍命中前完整播放
-            if (afterglowActive && OnikiriAssets.StarFlare01?.Value is Texture2D orb) {
+            if (afterglowActive && CWRAsset.StarFlare01?.Value is Texture2D orb) {
                 float t = (timer - lastImpactFrame - 26) / 20f;
                 float oA = MathF.Sin(t * MathF.PI) * 0.42f;
                 float oS = MathHelper.Lerp(0.9f, 0.18f, CSR.EaseOutCubic(t)) * sizeMul;
@@ -1302,7 +1302,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float seedRot = Projectile.whoAmI * 1.37f;
 
             //白热核心：峰值收紧到 0.7，避免整块纯白糊住刀光笔触细节，随后急剧收缩
-            if (OnikiriAssets.StarFlare02?.Value is Texture2D flare) {
+            if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
                 float coreA = MathF.Pow(inv, 2.0f) * 0.70f;
                 float coreS = (0.85f + easeOut * 0.65f) * sizeMul;
                 sb.Draw(flare, impact, null, new Color(255, 244, 232) * coreA, seedRot
@@ -1312,7 +1312,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             //放射尖刺
-            if (OnikiriAssets.RayBurst01?.Value is Texture2D rays) {
+            if (CWRAsset.RayBurst01?.Value is Texture2D rays) {
                 float rayA = MathF.Pow(inv, 1.8f) * 0.78f;
                 float rayS = (1.1f + easeOut * 1.0f) * sizeMul;
                 sb.Draw(rays, impact, null, new Color(255, 190, 160) * rayA, seedRot * 0.4f
@@ -1320,14 +1320,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             //十字长闪沿命中拍瞄准方向
-            if (OnikiriAssets.RayCross01?.Value is Texture2D cross) {
+            if (CWRAsset.RayCross01?.Value is Texture2D cross) {
                 float cA = MathF.Pow(inv, 2.4f) * 0.82f;
                 sb.Draw(cross, impact, null, new Color(255, 230, 215) * cA, lastImpactAim
                     , cross.Size() * 0.5f, new Vector2(2.2f, 1.0f) * easeOut * sizeMul, SpriteEffects.None, 0);
             }
 
             //扩散环
-            if (OnikiriAssets.Ring01?.Value is Texture2D ring) {
+            if (CWRAsset.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.4f + easeOut * 2.2f) * sizeMul;
                 float ringA = MathF.Pow(inv, 2.5f) * 0.6f;
                 sb.Draw(ring, impact, null, new Color(255, 90, 60) * ringA, 0f
@@ -1335,7 +1335,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             //手绘撕裂形：沿瞄准方向一大一小，短命
-            if (bt < 9f && OnikiriAssets.TearSpread01?.Value is Texture2D tear) {
+            if (bt < 9f && CWRAsset.TearSpread01?.Value is Texture2D tear) {
                 float tA = MathF.Pow(1f - bt / 9f, 1.8f) * 0.85f;
                 sb.Draw(tear, impact, null, new Color(255, 150, 120) * tA, lastImpactAim
                     , tear.Size() * 0.5f, (1.5f + easeOut * 0.55f) * sizeMul, SpriteEffects.None, 0);
@@ -1345,14 +1345,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             }
 
             //锯齿冲击形垫底
-            //if (bt < 7f && OnikiriAssets.HitJagged01?.Value is Texture2D jag) {
+            //if (bt < 7f && CWRAsset.HitJagged01?.Value is Texture2D jag) {
             //    float jA = MathF.Pow(1f - bt / 7f, 2f) * 0.5f;
             //    sb.Draw(jag, impact, null, new Color(255, 80, 55) * jA, lastImpactAim + MathHelper.Pi
             //        , jag.Size() * 0.5f, (1.8f + easeOut * 0.6f) * sizeMul, SpriteEffects.None, 0);
             //}
 
             //速度线：随机截条从冲击点向后扫出
-            if (OnikiriAssets.SpeedLines01?.Value is Texture2D lines) {
+            if (CWRAsset.SpeedLines01?.Value is Texture2D lines) {
                 EnsureSpeedLineRects();
                 float lA = MathF.Pow(inv, 1.6f) * 0.5f;
                 for (int i = 0; i < speedLineRects.Length; i++) {
@@ -1387,7 +1387,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             if (lastImpactFrame < 0 || bt < 2f || bt > 8f) {
                 return;
             }
-            Texture2D cloud = OnikiriAssets.SmokeSheet01?.Value;
+            Texture2D cloud = CWRAsset.SmokeSheet01?.Value;
             if (cloud == null) {
                 return;
             }

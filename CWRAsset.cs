@@ -69,6 +69,45 @@ namespace CalamityOverhaul
         public static Asset<Texture2D> NormalMatrix = null;
         [VaultLoaden(CWRConstant.Masking)]
         public static Asset<Texture2D> Line = null;
+        //---- 刀光/月牙（亮度型：黑底白形，直接加色或作mask）----
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SlashBrush01 = null;//直线笔刷拉丝，弧向平铺用（RGB+Alpha双通道渐变）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> CrescentEdge01 = null;//硬边月牙填充（亮度型）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SlashJagged01 = null;//锯齿撕裂月牙笔刷（亮度型）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SlashStreak01 = null;//横向拉丝条纹（亮度型）
+        //---- 冲击爆点（亮度型）----
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> RayBurst01 = null;//放射状爆点尖刺
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> RayCross01 = null;//三向长条闪光
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> StarFlare01 = null;//镜头光斑式星爆
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> StarFlare02 = null;//致密核心星爆
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> StarGlow01 = null;//四芒星光点（火花粒子用）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SpeedLines01 = null;//水平速度线大图（1024，随机截条）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> HitSparkSheet01 = null;//命中火花序列帧2×2×128（Alpha型）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> HitJagged01 = null;//锯齿冲击撕裂形（Alpha型）
+        //---- 撕裂/扩散形状 ----
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> TearSpread01 = null;//冲击扩散尖刺形（Alpha型）
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> Ring01 = null;//扩散环（白RGB+Alpha形状）
+        //---- 烟雾（白RGB+Alpha形状，AlphaBlend染色用）----
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SmokeSheet01 = null;//烟团序列帧2×2×512
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> SmokeWisp01 = null;//拉丝烟缕（亮度型）
+        //---- 噪声 ----
+        [VaultLoaden(CWRConstant.Masking)]
+        public static Asset<Texture2D> NoiseSoft01 = null;//柔性大块噪声，侵蚀/参差用（亮度型，可平铺）
         [VaultLoaden(CWRConstant.ColorBar)]
         public static Asset<Texture2D> BloodRed_Bar = null;
         [VaultLoaden(CWRConstant.ColorBar)]

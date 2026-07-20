@@ -27,8 +27,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
         public static bool BeginDraw(GraphicsDevice device, out Effect fx
             , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth) {
             fx = EffectLoader.OniAnnihilateArc?.Value;
-            Texture2D brush = OnikiriAssets.SlashBrush01?.Value;
-            Texture2D noise = OnikiriAssets.NoiseSoft01?.Value;
+            Texture2D brush = CWRAsset.SlashBrush01?.Value;
+            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
             prevBlend = device.BlendState;
             prevRaster = device.RasterizerState;
             prevDepth = device.DepthStencilState;

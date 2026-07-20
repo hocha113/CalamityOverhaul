@@ -396,7 +396,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            Texture2D smoke = OnikiriAssets.SmokeSheet01.Value;
+            Texture2D smoke = CWRAsset.SmokeSheet01.Value;
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
             float time = ui.GlobalTimer;

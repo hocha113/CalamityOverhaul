@@ -485,8 +485,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages
         /// 刀光拉丝沿刀向抹出（全程衰减）→ 落刀点星爆（头 6 帧）
         /// </summary>
         private static void DrawCutSlash(SpriteBatch spriteBatch, Texture2D white, Texture2D glow, OmokageEntry entry) {
-            Texture2D brush = OnikiriAssets.SlashBrush01?.Value;
-            Texture2D flare = OnikiriAssets.StarFlare02?.Value;
+            Texture2D brush = CWRAsset.SlashBrush01?.Value;
+            Texture2D flare = CWRAsset.StarFlare02?.Value;
 
             Vector2 dir = entry.CutAngle.ToRotationVector2();
             if (!OniOmokage.ClipLineToRect(entry.CutLocal, dir, entry.PaperHalf, out float t0, out float t1)) {

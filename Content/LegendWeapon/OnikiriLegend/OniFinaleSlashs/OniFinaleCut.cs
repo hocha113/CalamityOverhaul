@@ -424,7 +424,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
         /// <summary>伤口断面 + 飞白细创痕（复用 OFR.BeginDraw 设好的设备状态，仅换 Effect）</summary>
         private void DrawWoundLayers(GraphicsDevice device) {
             Effect fx = EffectLoader.OniFinaleWound?.Value;
-            Texture2D noise = OnikiriAssets.NoiseSoft01?.Value;
+            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
             if (fx == null || noise == null) {
                 return;
             }
@@ -512,7 +512,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             sb.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp
                 , DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-            if (OnikiriAssets.StarFlare02?.Value is Texture2D flare) {
+            if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
                 //刀尖辉点：近匀速掠过全线，身后拖残影——伤口是它犁开的，因果先行
                 if (dt <= GlintFrames + 2) {
                     float travel = GlintTravel(dt);
@@ -538,14 +538,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
             }
 
             //扩散环弱化为空气被排开的一圈涟漪：环读作爆炸，斩击不需要大环
-            if (OnikiriAssets.Ring01?.Value is Texture2D ring) {
+            if (CWRAsset.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.5f + easeOut * 2.8f) * SizeMul;
                 float ringA = MathF.Pow(inv, 2.6f) * 0.38f;
                 sb.Draw(ring, screenPos, null, new Color(255, 98, 58) * ringA, 0f
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
             }
 
-            if (OnikiriAssets.SpeedLines01?.Value is Texture2D lines) {
+            if (CWRAsset.SpeedLines01?.Value is Texture2D lines) {
                 float lA = MathF.Pow(inv, 1.7f) * 0.55f;
                 for (int i = 0; i < 3; i++) {
                     float seed = (Projectile.whoAmI + i) * 0.6180339887f % 1f;

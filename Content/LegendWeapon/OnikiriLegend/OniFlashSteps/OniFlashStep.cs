@@ -717,7 +717,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
 
             //---- 刹停爆点：星芒过曝一拍，把"收束成一点"钉进眼里 ----
-            if (stopFrame >= 0 && timer - stopFrame < 5 && OnikiriAssets.StarFlare02?.Value is Texture2D popFlare) {
+            if (stopFrame >= 0 && timer - stopFrame < 5 && CWRAsset.StarFlare02?.Value is Texture2D popFlare) {
                 float popT = (timer - stopFrame) / 5f;
                 float popA = MathF.Pow(1f - popT, 1.6f);
                 Vector2 popPos = path[^1] + dashDir * headExt - Main.screenPosition;
@@ -726,7 +726,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             }
 
             //---- 出发点告别语：撕裂形沿冲刺方向绽开，短命 ----
-            if (timer < 10 && OnikiriAssets.TearSpread01?.Value is Texture2D tear) {
+            if (timer < 10 && CWRAsset.TearSpread01?.Value is Texture2D tear) {
                 Vector2 origin = path[0] - Main.screenPosition;
                 float t = timer / 10f;
                 float tA = MathF.Pow(1f - t, 1.7f) * 0.9f;
@@ -736,7 +736,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
                 spriteBatch.Draw(tear, origin, null, new Color(200, 52, 40) * (tA * 0.8f), DashAngle + 0.4f
                     , tear.Size() * 0.5f, tS * 0.72f, SpriteEffects.FlipVertically, 0);
             }
-            if (timer < 4 && OnikiriAssets.StarFlare02?.Value is Texture2D flare) {
+            if (timer < 4 && CWRAsset.StarFlare02?.Value is Texture2D flare) {
                 Vector2 origin = path[0] - Main.screenPosition;
                 float fA = 1f - timer / 4f;
                 spriteBatch.Draw(flare, origin, null, new Color(255, 240, 228) * (fA * 0.85f)

@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
     /// </summary>
     internal class PRT_OniInkDrop : BasePRT
     {
-        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/OnikiriLegend/Textures/Smoke/SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
         public override bool CanPool => true;
 
         private Color initialColor;

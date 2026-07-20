@@ -12,7 +12,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs
     /// </summary>
     internal class PRT_OniShard : BasePRT
     {
-        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/OnikiriLegend/Textures/Impact/StarGlow01";
+        public override string Texture => CWRConstant.Masking + "StarGlow01";
         public override bool CanPool => true;
         public override int InGame_World_MaxCount => 4000;
 

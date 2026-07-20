@@ -8,7 +8,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     /// <summary>刀光燃尽烟：暗红→焦黑 AlphaBlend 染色烟团，缓慢外漂、放大、消散</summary>
     internal class PRT_CrimsonSmoke : BasePRT
     {
-        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/OnikiriLegend/Textures/Smoke/SmokeSheet01";
+        public override string Texture => CWRConstant.Masking + "SmokeSheet01";
         public override bool CanPool => true;
 
         private float spin;
@@ -71,7 +71,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     /// <summary>冲击火花：加色四芒星拉长条，惯性抛物 + 末段重力下坠</summary>
     internal class PRT_CrimsonSpark : BasePRT
     {
-        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/OnikiriLegend/Textures/Impact/StarGlow01";
+        public override string Texture => CWRConstant.Masking + "StarGlow01";
         public override bool CanPool => true;
         public override int InGame_World_MaxCount => 4000;
 
@@ -123,7 +123,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     /// <summary>命中火花序列帧：2×2 手绘火花图集单次播放，加色</summary>
     internal class PRT_CrimsonHitFlash : BasePRT
     {
-        public override string Texture => "CalamityOverhaul/Content/LegendWeapon/OnikiriLegend/Textures/Impact/HitSparkSheet01";
+        public override string Texture => CWRConstant.Masking + "HitSparkSheet01";
         public override bool CanPool => true;
 
         public override void SetProperty() {

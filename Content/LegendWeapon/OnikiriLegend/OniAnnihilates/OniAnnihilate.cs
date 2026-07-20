@@ -416,7 +416,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates
 
         /// <summary>冲击环双层：暗墨环（AlphaBlend）+ 绯红缘环（加色、略超前）</summary>
         private void DrawBurstRings() {
-            if (OnikiriAssets.Ring01?.Value is not Texture2D ring) {
+            if (CWRAsset.Ring01?.Value is not Texture2D ring) {
                 return;
             }
             Vector2 screenPos = Projectile.Center - Main.screenPosition;

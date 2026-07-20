@@ -35,7 +35,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public static bool BeginDraw(GraphicsDevice device, out Effect fx
             , out BlendState prevBlend, out RasterizerState prevRaster, out DepthStencilState prevDepth) {
             fx = EffectLoader.OniKamuiFlow?.Value;
-            Texture2D noise = OnikiriAssets.NoiseSoft01?.Value;
+            Texture2D noise = CWRAsset.NoiseSoft01?.Value;
             prevBlend = device.BlendState;
             prevRaster = device.RasterizerState;
             prevDepth = device.DepthStencilState;

@@ -612,7 +612,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             if (flash <= 0.01f) {
                 return;
             }
-            Texture2D ring = OnikiriAssets.Ring01.Value;
+            Texture2D ring = CWRAsset.Ring01.Value;
             Vector2 pos = SilhouetteCenter + new Vector2(0f, 26f + ResubduePush);
             float diameter = 46f + (1f - flash) * 74f;
             sb.Draw(ring, pos, null, OnikiriUITheme.Deep * (a * flash * strength), 0f,
@@ -666,7 +666,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 return;
             }
 
-            Texture2D smoke = OnikiriAssets.SmokeSheet01.Value;
+            Texture2D smoke = CWRAsset.SmokeSheet01.Value;
             int frameSize = smoke.Width / 2;
             Vector2 origin = new(frameSize * 0.5f);
             //运动轴:摆幅走扭动瞬时值;构图轴:续契收拢挨近名讳,收伏挣扎外抛散架
@@ -853,7 +853,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             float flash = Flash(StampHitAt);
             if (flash > 0.01f) {
-                Texture2D ring = OnikiriAssets.Ring01.Value;
+                Texture2D ring = CWRAsset.Ring01.Value;
                 //冲击环:直径自 30px 扩至 100px,随扩散淡出
                 float diameter = 30f + (1f - flash) * 70f;
                 sb.Draw(ring, sealPos, null, OnikiriUITheme.Seal * (a * flash * 0.8f), 0f,
@@ -881,7 +881,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             float flash = Flash(PressDoneAt);
             if (flash > 0.01f) {
-                Texture2D ring = OnikiriAssets.Ring01.Value;
+                Texture2D ring = CWRAsset.Ring01.Value;
                 float diameter = 24f + (1f - flash) * 44f;
                 sb.Draw(ring, sealPos, null, OnikiriUITheme.Seal * (a * flash * 0.55f), 0f,
                     ring.Size() * 0.5f, diameter / ring.Width, SpriteEffects.None, 0f);
@@ -903,7 +903,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
 
             float flash = Flash(NailHitAt, 22f);
             if (flash > 0.01f) {
-                Texture2D ring = OnikiriAssets.Ring01.Value;
+                Texture2D ring = CWRAsset.Ring01.Value;
                 float diameter = 34f + (1f - flash) * 106f;
                 sb.Draw(ring, sealPos, null, OnikiriUITheme.Seal * (a * flash * 0.9f), 0f,
                     ring.Size() * 0.5f, diameter / ring.Width, SpriteEffects.None, 0f);
