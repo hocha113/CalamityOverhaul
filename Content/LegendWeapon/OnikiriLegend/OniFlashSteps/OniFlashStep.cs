@@ -16,14 +16,15 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
 {
     /// <summary>
     /// 神威疾走主控：零前摇零后摇的按住可控冲刺 + 延迟居合结算。<br/>
-    /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身（900px 全程 ~10 帧），
+    /// 手感契约：按键帧=位移第一帧，操作锁定只有冲刺本身（900px 全程 ~12 帧），
     /// 之后立刻交还操控——一切华丽的东西都是非阻塞的事后余像，自己播完自己。<br/>
-    /// 长度控制走"台地+加速"曲线（<see cref="DashSpeedRamp"/>）与点按手势量化：
-    /// 前 <see cref="TapWindowFrames"/> 帧的近匀速台地是输入辨义窗，窗内松开 = 点按，
-    /// 一律滑到台地终点（~229px）统一落点——松开时刻的 ±2~3 帧人手抖动不再改变距离；
+    /// 长度控制走"缓降台地+加速"曲线（<see cref="DashSpeedRamp"/>）与点按手势量化：
+    /// 前 <see cref="TapWindowFrames"/> 帧逐帧便宜下去的台地是输入辨义窗，窗内松开 = 点按，
+    /// 一律滑到台地终点（~278px）统一落点——松开时刻的 ±2~3 帧人手抖动不再改变距离；
+    /// 松手采样先于位移，刚出窗 1 帧的松开落点仍与点按重合，宽容度白赚一帧；
     /// 窗后松开 = 模拟控长就地刹停，按住加速走满全程；
     /// 撞墙直线斩停（子步扫描，轨迹恒直，墨溅上墙）。<br/>
-    /// 时间轴（60fps，距离 900 全程约 0.85s 演出 / 0.17s 锁定）：<br/>
+    /// 时间轴（60fps，距离 900 全程约 0.8s 演出 / 0.23s 锁定）：<br/>
     /// 0 爆发起步、出发点墨爆、布帛撕裂+风切+低太鼓 →
     /// 巡航推进（撞墙/松手提前止步）、身后神威流带逐帧延伸、穿过的敌人缠上墨痕
     /// （无伤害）+ 微时停 → 硬刹带过冲回弹 → 交还操控 →
@@ -38,14 +39,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         public override string Texture => CWRConstant.Placeholder;
 
         //==== 时间轴常量 ====
-        //台地+加速曲线：前 TapWindowFrames 帧是近匀速的"输入辨义台地"（~40px/帧，位移便宜且平），
-        //之后进入加速段走满全程。点按的松开时刻天然有 ±2~3 帧抖动，任何单调陡增的
-        //距离函数都会把抖动放大成"一会长一会短"——台地让抖动区间上的距离几乎不变，
-        //再配合点按手势量化（窗口内松开一律滑到台地终点），落点恒定
-        private static readonly float[] DashSpeedRamp = [45f, 40f, 36f, 36f, 36f, 36f, 95f, 130f, 155f];  //px/帧，末值为巡航速度
-        /// <summary>点按判定窗（帧）：此窗内松开 = 点按手势，统一停在台地终点（~229px）；
-        /// 之后松开 = 长按的模拟控长，就地刹停</summary>
-        private const int TapWindowFrames = 6;
+        //缓降台地+加速曲线：前 TapWindowFrames 帧是逐帧便宜下去的"输入辨义台地"
+        //（首帧 60px 爆发起步，尾帧只值 ~24px），窗后先垫一帧过渡再跳档巡航走满全程。
+        //点按的松开时刻天然有 ±2~3 帧抖动（人手 ±20~40ms 叠加 60Hz 轮询相位 ±1 帧），
+        //任何单调陡增的距离函数都会把抖动放大成"一会长一会短"——缓降让抖动区间上
+        //的每帧代价最小，再配合点按手势量化（窗口内松开一律滑到台地终点），落点恒定
+        private static readonly float[] DashSpeedRamp = [60f, 48f, 38f, 30f, 27f, 26f, 25f, 24f, 95f, 150f, 190f, 210f];  //px/帧，末值为巡航速度
+        /// <summary>点按判定窗（帧）：此窗内松开 = 点按手势，统一停在台地终点（~278px）；
+        /// 之后松开 = 长按的模拟控长，就地刹停。8 帧 ≈ 133ms 盖住真实点按时长分布的主体，
+        /// 且松手采样先于位移（见 <see cref="DashFrame"/>），有效宽容 ~150ms</summary>
+        private const int TapWindowFrames = 8;
         private const int BrakeFrames = 2;      //硬刹：+过冲 → −回拉
         private const int JudgmentDelay = 8;    //刹停到纳刀结算
         private const int RetractDelay = 10;    //刹停到流带开始蒸发
@@ -234,7 +237,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
         //==================== 位移 ====================
 
         /// <summary>
-        /// 冲刺帧：~150px 定距推进，位移、标记、姿态、无敌帧。<br/>
+        /// 冲刺帧：沿 <see cref="DashSpeedRamp"/> 推进，位移、标记、姿态、无敌帧。<br/>
+        /// 松手手势采样在本帧位移之前——玩家说"停"的那一帧不再替他多走一步陡坡，
+        /// 刚出辨义窗 1 帧的松开落点与点按完全一致；<br/>
         /// 碰撞走"直线斩停"：沿冲刺向子步扫描（一格台阶容差），位移严格共线——
         /// 轨迹几何上不可能弯（TileCollision 的分轴滑动是弯轨/贴地滑行的根源，弃用）；
         /// 撞墙即停止事件（回弹刹车 + 墨溅上墙），owner 松开右键也提前收势（轻点短刺，按住全程）
@@ -243,41 +248,57 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Vector2 prevHead = GetCenter();
             Vector2 fromBody = Owner.Center;
 
-            //方向键微转向：按住的方向把墨绸小幅掰弯（首帧保持出手直线，转向随控制位同步各端）
-            if (timer > 1) {
-                int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
-                int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
-                if (h != 0 || v != 0) {
-                    float delta = MathHelper.WrapAngle(new Vector2(h, v).ToRotation() - dashDir.ToRotation());
-                    dashDir = (dashDir.ToRotation() + MathHelper.Clamp(delta, -SteerRate, SteerRate))
-                        .ToRotationVector2();
+            //松手收势分两种手势，采样先于位移（按下帧 mouseRight 必为真，无误判）：
+            //辨义窗内松开 = 点按，量化到台地终点统一落点（不立即刹车，滑到位由距离条件
+            //自然停——落点恒定，消掉松开时刻的 ±2~3 帧抖动）；
+            //窗后松开 = 长按的模拟控长，本帧跳过位移就地刹停。缩短距离均回写 ai[1] 同步远端
+            bool released = !tapCommitted && Projectile.IsOwnedByLocalPlayer() && !Main.mouseRight;
+            if (released && timer <= TapWindowFrames) {
+                tapCommitted = true;
+                if (Distance > tapDistance + 1f) {
+                    Projectile.ai[1] = MathF.Max(tapDistance, 61f);
+                    Projectile.netUpdate = true;
                 }
             }
+            bool analogStop = released && timer > TapWindowFrames;
 
-            float speed = DashSpeedRamp[Math.Min(timer - 1, DashSpeedRamp.Length - 1)];
-            float stepLen = MathF.Min(speed, Distance - traveled);
-
-            //直线斩停子步推进
             float moved = 0f;
             bool blocked = false;
-            while (moved < stepLen - 0.01f) {
-                float sub = MathF.Min(CollisionSubStep, stepLen - moved);
-                Vector2 next = Owner.position + dashDir * sub;
-                if (!Collision.SolidCollision(next, Owner.width, Owner.height)) {
-                    Owner.position = next;
-                    moved += sub;
-                    continue;
+            if (!analogStop) {
+                //方向键微转向：按住的方向把墨绸小幅掰弯（首帧保持出手直线，转向随控制位同步各端）
+                if (timer > 1) {
+                    int h = (Owner.controlRight ? 1 : 0) - (Owner.controlLeft ? 1 : 0);
+                    int v = (Owner.controlDown ? 1 : 0) - (Owner.controlUp ? 1 : 0);
+                    if (h != 0 || v != 0) {
+                        float delta = MathHelper.WrapAngle(new Vector2(h, v).ToRotation() - dashDir.ToRotation());
+                        dashDir = (dashDir.ToRotation() + MathHelper.Clamp(delta, -SteerRate, SteerRate))
+                            .ToRotationVector2();
+                    }
                 }
-                //一格台阶容差：抬升一格可过则继续——地面小台阶不打断冲刺；
-                //16px 竖向微错位在 path 点距(≥64px)下彩带读不出折角
-                Vector2 lifted = next - Vector2.UnitY * (16f * Owner.gravDir);
-                if (!Collision.SolidCollision(lifted, Owner.width, Owner.height)) {
-                    Owner.position = lifted;
-                    moved += sub;
-                    continue;
+
+                float speed = DashSpeedRamp[Math.Min(timer - 1, DashSpeedRamp.Length - 1)];
+                float stepLen = MathF.Min(speed, Distance - traveled);
+
+                //直线斩停子步推进
+                while (moved < stepLen - 0.01f) {
+                    float sub = MathF.Min(CollisionSubStep, stepLen - moved);
+                    Vector2 next = Owner.position + dashDir * sub;
+                    if (!Collision.SolidCollision(next, Owner.width, Owner.height)) {
+                        Owner.position = next;
+                        moved += sub;
+                        continue;
+                    }
+                    //一格台阶容差：抬升一格可过则继续——地面小台阶不打断冲刺；
+                    //16px 竖向微错位在 path 点距(≥64px)下彩带读不出折角
+                    Vector2 lifted = next - Vector2.UnitY * (16f * Owner.gravDir);
+                    if (!Collision.SolidCollision(lifted, Owner.width, Owner.height)) {
+                        Owner.position = lifted;
+                        moved += sub;
+                        continue;
+                    }
+                    blocked = true;
+                    break;
                 }
-                blocked = true;
-                break;
             }
 
             Owner.velocity = Vector2.Zero;
@@ -286,25 +307,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             Owner.GivePlayerImmuneState(10);
             HoldPose();
 
-            //松手收势分两种手势：辨义窗内松开 = 点按，量化到台地终点统一落点
-            //（不立即刹车，滑到位由距离条件自然停——落点恒定，消掉松开时刻的 ±2~3 帧抖动）；
-            //窗后松开 = 长按的模拟控长，就地刹停。缩短距离均回写 ai[1] 同步远端
-            bool released = !tapCommitted && Projectile.IsOwnedByLocalPlayer() && !Main.mouseRight;
-            if (released && timer <= TapWindowFrames) {
-                tapCommitted = true;
-                if (Projectile.owner == Main.myPlayer && Distance > tapDistance + 1f) {
-                    Projectile.ai[1] = MathF.Max(tapDistance, 61f);
-                    Projectile.netUpdate = true;
-                }
-            }
-            bool analogStop = released && timer > TapWindowFrames;
             bool finished = blocked || analogStop || traveled >= Distance - 1f;
             if (finished) {
                 if (blocked && !wallStopped) {
                     wallStopped = true;
                     WallSplat();
                 }
-                if (analogStop && Projectile.owner == Main.myPlayer && traveled < Distance - 1f) {
+                if (analogStop && traveled < Distance - 1f) {
                     Projectile.ai[1] = MathF.Max(traveled, 61f);
                     Projectile.netUpdate = true;
                 }
@@ -340,7 +349,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFlashSteps
             return MaxScan;
         }
 
-        /// <summary>撞墙的落点反馈：墨溅上墙（贴墙横向铺开）+ 闷响 + 震屏——150px/帧的身体撞在墙上应该有一声"咚"</summary>
+        /// <summary>撞墙的落点反馈：墨溅上墙（贴墙横向铺开）+ 闷响 + 震屏——全速 ~200px/帧的身体撞在墙上应该有一声"咚"</summary>
         private void WallSplat() {
             Vector2 contact = Owner.Center + dashDir * MathF.Max(FreeAheadBudget() - 4f, 8f);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.75f, Pitch = -0.55f, MaxInstances = 2 }, contact);
