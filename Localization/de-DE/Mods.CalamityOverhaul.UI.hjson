@@ -1,3 +1,15 @@
+ItemFilterEditorUI: {
+	// ModeWhitelistText: Whitelist
+	// ModeBlacklistText: Blacklist
+	// ClearText: Clear
+	// UninstallText: Uninstall
+	// CountFormat: "{0} entries"
+	// EmptyHintText: Click here while holding an item to record it
+	// OperateHintText: Click with item = add · Click entry = remove · [Right-click/ESC] close
+	// InstalledText: Filter list installed
+	// UninstalledText: Filter uninstalled
+}
+
 EntryDecisionUI: {
 	CollapseHint: Rechtsklick zum Einklappen
 	LegendPill: Levelsync legendärer Waffen
@@ -227,6 +239,43 @@ ThrowerUI: {
 	AmmoModeOnText: Munitionsmodus
 	AmmoModeOffText: Item-Wurfmodus
 	AmmoModeHint: Munitionsmodus: Feuert entsprechende Projektile ab, wenn Munition eingelegt wird
+}
+
+CollectorUI: {
+	// TitleText: Collector Console
+	// ModeLabel: Storage Mode
+	// ModeAuto: Nearest
+	// ModeBoundFirst: Bound First
+	// ModeBoundOnly: Bound Only
+	// ModeAutoDesc: Deposits into the nearest available container in range
+	// ModeBoundFirstDesc: Prefers bound containers, falls back to nearest
+	// ModeBoundOnlyDesc: Only deposits into bound containers
+	// BindingsLabel: Storage Bindings
+	// AddBindingText: + Bind Container
+	// PickingTitle: Select Storage Container
+	// PickingHint: Left click a container in the world to bind it
+	// PickingExitHint: Right click or [ESC] to exit
+	// BindingFullText: Bindings Full
+	// InvalidText: Invalid
+	// OutOfRangeText: Out of Range
+	// ChestDefaultName: Chest
+	// MagicStorageName: Storage Heart
+	// NoBindingsHint: No containers bound, click the button below to start
+	// RemoveHint: Remove binding
+	// MoveUpHint: Raise priority
+	// FilterLabel: Collection Filter
+	// FilterNoneText: No filter (collects everything)
+	// ClearFilterText: Clear
+	// EditFilterText: Edit
+	// FilterHint: Right click the collector while holding an item to set a filter
+	// StatusLabel: Status
+	// ArmCountLabel: Arms
+	// EnergyLabel: Energy
+	// StatusWorking: Running
+	// StatusNoEnergy: No Energy
+	// StatusStarting: Starting Up
+	// StatusNoStorage: No Storage Available
+	// CloseHint: "[ESC] or right click again with empty hands to close"
 }
 
 SHPCSoulSelectUI: {

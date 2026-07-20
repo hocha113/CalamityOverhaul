@@ -1,4 +1,4 @@
-using CalamityOverhaul.Common;
+﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -193,7 +193,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int index = (int)ai[0];
             Rectangle frame = new(index % 2 * 512, index / 2 * 512, 512, 512);
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity
-                , Rotation, frame.Size() * 0.5f, Scale * 0.2f, SpriteEffects.None, 0f);
+                , Rotation, frame.Size() * 0.5f, Scale * 0.2f / 6f, SpriteEffects.None, 0f);
             return false;
         }
     }

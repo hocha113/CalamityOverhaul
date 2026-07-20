@@ -1,4 +1,4 @@
-using InnoVault.PRT;
+﻿using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -381,7 +381,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
             int index = (int)ai[0];
             Rectangle frame = new Rectangle(index % 2 * 512, index / 2 * 512, 512, 512);
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, Color * Opacity, Rotation
-                , new Vector2(256f, 256f), Scale, SpriteEffects.None, 0f);
+                , new Vector2(256f, 256f), Scale / 6f, SpriteEffects.None, 0f);
             return false;
         }
     }

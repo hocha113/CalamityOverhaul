@@ -990,6 +990,9 @@ ItemFilter: {
 		Clique direito em uma maquina compativel para aplicar
 		Clique esquerdo em um bau para copiar seu conteudo como regras de filtro
 		'''
+	// StateFormat: "{0} · {1} entries recorded"
+	// CopiedFromChest: Copied chest contents
+	// CopiedFromCollector: Copied collector list
 }
 
 SporeBubbleBlaster: {

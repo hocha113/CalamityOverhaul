@@ -1002,6 +1002,9 @@ ItemFilter: {
 		Щёлкните ПКМ по механизму с соответствующим интерфейсом, чтобы применить
 		Щёлкните ЛКМ по сундуку, чтобы скопировать его содержимое в качестве фильтра
 		'''
+	// StateFormat: "{0} · {1} entries recorded"
+	// CopiedFromChest: Copied chest contents
+	// CopiedFromCollector: Copied collector list
 }
 
 SporeBubbleBlaster: {

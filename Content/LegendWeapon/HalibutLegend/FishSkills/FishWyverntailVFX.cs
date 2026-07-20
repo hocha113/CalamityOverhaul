@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -76,7 +76,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.HalibutLegend.FishSkills
         public override bool PreDraw(SpriteBatch spriteBatch) {
             Texture2D tex = PRTLoader.PRT_IDToTexture[ID];
             int fi = (int)ai[0];
-            Rectangle frame = new(fi % 2 * 512, fi / 2 * 512, 512, 512);
+            int wd = tex.Width / 2;
+            Rectangle frame = new(fi % 2 * wd, fi / 2 * wd, wd, wd);
             spriteBatch.Draw(tex, Position - Main.screenPosition, frame, baseColor * Opacity,
                 Rotation, frame.Size() / 2f, Scale * 0.22f, SpriteEffects.None, 0f);
             return false;

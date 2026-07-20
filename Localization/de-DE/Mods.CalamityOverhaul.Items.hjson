@@ -980,6 +980,9 @@ ItemFilter: {
 		Rechtsklick auf kompatible Maschinen zum Anwenden
 		Linksklick auf Kiste kopiert deren Inhalt als Filterregeln
 		'''
+	// StateFormat: "{0} · {1} entries recorded"
+	// CopiedFromChest: Copied chest contents
+	// CopiedFromCollector: Copied collector list
 }
 
 SporeBubbleBlaster: {
