@@ -32,7 +32,11 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         /// <summary>溶解推进度：0=完好 1=溶尽，由退场状态机逐帧写入</summary>
         public static float Progress { get; set; }
-        /// <summary>地面裁剪线（世界Y），之下的模型像素视为已入土</summary>
+        /// <summary>
+        /// 地面裁剪线（世界Y），之下的模型像素视为已入土。
+        /// 原地化樱方案下不再需要入土遮挡，<see cref="Begin"/> 会把它压到锚点远下方使其失效；
+        /// shader 通道保留，未来需要"沉降/半埋"类演出时直接回填即可
+        /// </summary>
         public static float GroundY { get; set; }
         /// <summary>鸟居地面锚点，用于计算 shader 作用包围盒</summary>
         public static Vector2 Anchor { get; private set; }
@@ -47,7 +51,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             Anchor = anchor;
             Progress = 0f;
-            GroundY = anchor.Y + 2f;
+            //中性化：远低于模型可视范围，地面裁剪不参与本演出
+            GroundY = anchor.Y + 1000f;
 
             if (!hooked) {
                 Model3DRenderer.CompositeOverride = CompositeFn;

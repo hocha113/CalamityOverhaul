@@ -18,9 +18,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
     /// <summary>
     /// 鬼切鸟居：世界出生点附近的地表会立起一座鸟居（3D模型+<see cref="ToriiShrineActor"/>），
     /// 鸟居下插着鬼切。刀从开荒第一天就在那里，随时可拔。拔刀按玩家独立结算
-    /// （<see cref="Data.Modules.HimayoStoryData.ToriiSwordTaken"/>），拔刀后鸟居对该玩家
-    /// 颤抖沉入地下并溶解退场（<see cref="ToriiShrineActor"/> 的本地演出），拿到刀后
-    /// <see cref="FirstMetHimayo"/> 会经由其触发策略自动接管
+    /// （<see cref="Data.Modules.HimayoStoryData.ToriiSwordTaken"/>），拔刀后天色渐入逢魔黄昏
+    /// （<see cref="ToriiDusk"/>），鸟居对该玩家原地化樱消散（<see cref="ToriiShrineActor"/> 的本地演出），
+    /// 拿到刀后 <see cref="FirstMetHimayo"/> 会经由其触发策略在演出收尾后自动接管，黄昏持续到对话落幕
     /// </summary>
     internal class ToriiShrine : ModSystem, ILocalizedModType, IWorldInfo
     {
@@ -374,8 +374,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         /// <summary>
         /// 拔刀（本地玩家）：交付鬼切、落拔刀标记、震屏与声画演出；
-        /// 鸟居随即开始本地退场（颤抖→沉入地下→溶解），
-        /// <see cref="FirstMetHimayo"/> 的触发策略检测到背包里的鬼切后会自动开演
+        /// 鸟居随即开始本地退场（黄昏渐入→原地化樱消散），
+        /// <see cref="FirstMetHimayo"/> 的触发策略在退场收尾后自动开演
         /// </summary>
         internal static void PullSword() {
             Player player = Main.LocalPlayer;
