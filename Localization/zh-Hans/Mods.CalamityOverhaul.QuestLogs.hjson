@@ -279,36 +279,6 @@ QuestNode: {
 		DetailedDescription: 演奏群星的乐章。这本魔法书能召唤黑洞与类星体，让敌人在宇宙的歌声中消逝。
 	}
 
-	DarkMatterCompressorQuest: {
-		DisplayName: 暗物质压缩机
-		Description: 获得暗物质压缩机
-		DetailedDescription: 操纵宇宙中最神秘的物质。这台机器能将暗物质压缩成高密度的能量球，用于更高级的合成。
-	}
-
-	InfiniteIngotQuest: {
-		DisplayName: 无尽锭
-		Description: 锻造无尽锭
-		DetailedDescription: 超越了物质守恒定律的金属。它是通往终极力量的基石，蕴含着无尽的可能性。
-	}
-
-	InfinitePickQuest: {
-		DisplayName: 无尽镐
-		Description: 获得无尽镐
-		DetailedDescription: 没有什么能阻挡这把镐子。它能挖掘一切，甚至是世界的基岩。
-	}
-
-	InfiniteToiletQuest: {
-		DisplayName: 无尽马桶
-		Description: 获得无尽马桶
-		DetailedDescription: 神明的王座。虽然听起来很荒谬，但它确实象征着某种......至高无上的权力。
-	}
-
-	InfinityCatalystQuest: {
-		DisplayName: 无尽催化剂
-		Description: 获得无尽催化剂
-		DetailedDescription: 启动无尽反应的关键媒介。它能让物质在湮灭与重生中循环，产生巨大的能量。
-	}
-
 	NeutronBowQuest: {
 		DisplayName: 中子弓
 		Description: 获得中子弓
@@ -361,18 +331,6 @@ QuestNode: {
 		DisplayName: 终末石
 		Description: 获得终末石
 		DetailedDescription: 开启终末挑战的钥匙。凝视这块石头，准备迎接来自整个世界最强生物的连续审判。
-	}
-
-	TransmutationOfMatterQuest: {
-		DisplayName: 物质转化台
-		Description: 获得物质转化台
-		DetailedDescription: 炼金术的终极形态。这台机器能打破等价交换的原则，将物质随意转化，甚至无中生有。
-	}
-
-	HeavenfallLongbowQuest: {
-		DisplayName: 无尽弓
-		Description: 获得无尽弓
-		DetailedDescription: 射杀过神明的长弓。现在将重现于世。
 	}
 
 	SpearOfLonginusQuest: {

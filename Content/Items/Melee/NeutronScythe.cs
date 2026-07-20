@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,7 +48,14 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<NeutronScytheHeld>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronScythe;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(11)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override bool AltFunctionUse(Player player) => true;

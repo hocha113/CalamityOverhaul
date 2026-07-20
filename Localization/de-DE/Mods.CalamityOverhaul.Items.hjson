@@ -93,87 +93,9 @@ AnnihilatingUniverse: {
 		'''
 }
 
-HeavenfallLongbow: {
-	DisplayName: Himmelsfall-Langbogen
-	Tooltip:
-		'''
-		Feuert unendliche Pfeile ab, gefolgt von Regenbogenenergie des Endes
-		Rechtsklick lässt Himmelpfeile vom Himmel fallen
-		Nach dem Aufladen [KEY] drücken, um das Urteil der Myriaden zu entfesseln
-		[legend]
-		'''
-	Legend:
-		'''
-
-		Vor hundert Milliarden Jahren erlosch das Feuer des Krieges nicht; 
-		es glimmt wie glühende Kohlen und durchdringt die endlose Zeit, um bis heute zu brennen.
-		Dies sind die Überreste der Götterdämmerung, 
-		das Nachleuchten des uralten kosmischen Zerfalls, das ewige Echo des Werdens.
-		Der Gott des Leuchtens, die Verkörperung der galaktischen Ordnung, 
-		fiel in der größten Rebellion, die das Universum je gesehen hat.
-		Sein Körper zerschellte wie Sterne, 
-		seine Splitter wurden zu unzähligen strahlenden göttlichen Funken und verteilten sich in allen Ecken der Galaxis.
-		Diese Funken brachten Leben, Wissen und Wunder hervor, doch sie brachten auch Gier, 
-		Zerstörung und Entweihung. Die Sterblichen verehren seine Überreste und nennen sie heilige Reliquien;
-		doch jene Wunderdinge sind nichts als schwache Nachahmungen seiner Macht, Symbole der vermessenen Hybris der Sterblichen.
-		Doch unter den endlosen Ruinen und vergessenen Relikten gibt es ein Artefakt, das selbst die Wunder der Götter überragt.
-		Es ist Zeuge des Sturzes des höchsten Gottes und zugleich der Auslöser seines Falls in die ewige Nacht – ein legendärer Langbogen.
-		Er brannte in der Wut des Himmels, sandte den tödlichen Pfeil aus, der die Macht des Höchsten zerschmetterte und die Ambitionen der Götter beendete.
-		Mit dem Ende des Krieges wurde dieser Bogen von den Fluten der Zeit verschlungen und in endloser Mysterien und Legenden begraben.
-		Doch jetzt dreht sich das Rad des Schicksals erneut. Der Zorn des Himmels entflammt aufs Neue. 
-		Der Gottesmörderbogen wird wieder auftauchen, inmitten der Symphonie der Sterne, und die Geschichte wird erneut in Blut und Sternenstaub geschrieben.
-
-		'''
-}
-
-InfiniteIngot: {
-	DisplayName: Unendlicher Barren
-	Tooltip: Die Macht des Universums liegt in deiner Hand
-}
-
-TransmutationOfMatterItem: {
-	DisplayName: Omega-Materie-Konverter
-	Tooltip:
-		'''
-		Rechtsklick nach dem Platzieren, um das Synthese-Tisch-Menü zu öffnen
-		"Deine Reise der Gier beginnt jetzt"
-		'''
-}
-
-DarkMatterCompressorItem: {
-	DisplayName: Dunkelmaterie-Kompressor
-	Tooltip: Rekonstruiert Materie wie ein schwarzes Loch
-}
-
-InfinitePick: {
-	DisplayName: Unendliche Spitzhacke
-	Tooltip:
-		'''
-		Rechtsklick zerstört alles, was sie berührt
-		Drücke [KEY], um den Modus zu wechseln
-		"Du spürst, dass das Land von Terraria in Angst erzittert, wann immer du sie hältst"
-		'''
-}
-
-DarkMatterBall: {
-	DisplayName: Dunkelmateriekugel
-	Tooltip:
-		'''
-		Sie wurde zu einem Schwarzen Loch komprimiert, bleibt aber wunderbar stabil
-		Rechtsklick mit Item in der Hand, um Gegenstände hineinzulegen
-		Rechtsklick mit leeren Händen, um den Inhalt herauszuholen
-		'''
-	Contents: Inhalt:
-}
-
 NeutronStarIngot: {
 	DisplayName: Neutronensternbarren
 	Tooltip: Das Gewicht des Universums in deinen Fingerspitzen
-}
-
-InfinityCatalyst: {
-	DisplayName: Unendlicher Katalysator
-	Tooltip: Deine Gier erreicht ihren Höhepunkt
 }
 
 DawnshatterAzure: {
@@ -184,48 +106,6 @@ DawnshatterAzure: {
 		Halte die rechte Maustaste gedrückt, um mit erhobener Waffe vorzustoßen
 		Feuer reinigt die Seele und plündert deine Feinde vollständig
 		'''
-}
-
-DecayParticles: {
-	DisplayName: Zerfallspartikel
-	Tooltip:
-		'''
-		Ein flüchtiger Blick auf die Essenz der Materie
-		Das bloße Dasein ist ein Wunder
-		'''
-}
-
-DecaySubstance: {
-	DisplayName: Zerfallende Materie
-	Tooltip:
-		'''
-		Sie verfällt unendlich
-		Der Zyklus von Zerstörung und Wiedergeburt
-		'''
-}
-
-DissipationSubstance: {
-	DisplayName: Zerfallende Substanz
-	Tooltip:
-		'''
-		Die Realität kann ihr Wesen kaum erfassen
-		Sie zerfällt ständig, ist aber dennoch riesig
-		'''
-}
-
-SpectralMatter: {
-	DisplayName: Spektrale Materie
-	Tooltip: Ungefähr 3.700.000.000.000 Tonnen
-}
-
-InfiniteToiletItem: {
-	OnlyZenithCondition: Nur in der Zenith-Welt
-
-	InfiniteToiletItem: {
-		OnlyZenithCondition: Nur in der Zenith-Welt
-		DisplayName: Unendliche Toilette
-		Tooltip: ""
-	}
 }
 
 StormGoddessSpear: {

@@ -1,6 +1,6 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Projectiles;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -15,21 +15,6 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
     internal class AriaofTheCosmos : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "AriaofTheCosmos";
-        public readonly static string[] FullItems = ["0", "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0",
-            "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0",
-            "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0",
-            "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/Rock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock",
-            "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0",
-            "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0",
-            "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "CalamityMod/MiracleMatter", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityOverhaul/StarflowPlatedBlock", "0", "0", "0", "0",
-            "CalamityOverhaul/AriaofTheCosmos"
-        ];
-
-        public override void SetStaticDefaults() {
-            SupertableUI.ModCall_OtherRpsData_StringList.Add(FullItems);
-        }
 
         /// <summary>Q技能冷却(帧) 2秒</summary>
         public int QSkillCooldown;
@@ -57,7 +42,19 @@ namespace CalamityOverhaul.Content.Items.Magic.AriaofTheCosmoses
             Item.shoot = ModContent.ProjectileType<AccretionDisk>();
             Item.shootSpeed = 0f;
             Item.channel = true;
-            Item.CWR().OmigaSnyContent = FullItems;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_MiracleMatter, CWRID.Item_Rock)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(CWRID.Item_MiracleMatter, 24)
+                .AddIngredient<StarflowPlatedBlock>(16)
+                .AddIngredient(CWRID.Item_Rock)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         //右键：蓄力压扁吸积盘

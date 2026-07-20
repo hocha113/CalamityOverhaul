@@ -1,14 +1,9 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.QuestLogs;
-using CalamityOverhaul.Content.Tiles;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
 namespace CalamityOverhaul.Content
 {
@@ -31,13 +26,6 @@ namespace CalamityOverhaul.Content
         public static RecipeGroup AdamantiteBarGroup;
         public static RecipeGroup MythrilBarGroup;
 
-        public static void SpawnAction(Recipe recipe, Item item, List<Item> consumedItems, Item destinationStack) {
-            item.TurnToAir();
-            Main.LocalPlayer.CWR().InspectOmigaTime = 120;
-            CombatText.NewText(Main.LocalPlayer.Hitbox, Main.DiscoColor
-                , Language.GetTextValue($"Mods.CalamityOverhaul.Tools.RecipesLoseText"));
-        }
-
         public override void SetStaticDefaults() {
             ApostolicRelicsGroup = this.GetLocalization(nameof(ApostolicRelicsGroup), () => "使徒遗物");
             GodEaterWeaponGroup = this.GetLocalization(nameof(GodEaterWeaponGroup), () => "噬神者武器");
@@ -49,24 +37,6 @@ namespace CalamityOverhaul.Content
             GodDWGroup = null;
             FishGroup = null;
             AdamantiteBarGroup = null;
-        }
-
-        private static void ModifyResultContent(Recipe recipe) {
-            //添加无尽催化剂的额外联动合成
-            {
-                if (CWRLoad.EternitySoul > ItemID.None) {
-                    if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                        recipe.AddIngredient(CWRLoad.DeviatingEnergy, InfinityCatalyst.QFD(15));
-                        recipe.AddIngredient(CWRLoad.AbomEnergy, InfinityCatalyst.QFD(15));
-                        recipe.AddIngredient(CWRLoad.EternalEnergy, InfinityCatalyst.QFD(15));
-                    }
-                }
-                if (CWRLoad.MetanovaBar > ItemID.None) {
-                    if (recipe.HasResult(ItemType<InfinityCatalyst>())) {
-                        recipe.AddIngredient(CWRLoad.MetanovaBar, InfinityCatalyst.QFD(15));
-                    }
-                }
-            }
         }
 
         private static void AddResultContent() {
@@ -197,66 +167,16 @@ namespace CalamityOverhaul.Content
             }
         }
 
-        private static void SetOmigaSnyRecipes() {
-            //key代表合成结果，value代表需要的材料列表
-            Dictionary<int, string[]> omigaSnyRecipeDic = [];
-            foreach (var pair in CWRLoad.ItemIDToOmigaSnyContent) {
-                if (pair.Value == null) {
-                    continue;
-                }
-                if (!CWRLoad.ItemAutoloadingOmigaSnyRecipe[pair.Key]) {
-                    continue;//如果该物品不需要自动装填终焉合成内容，就跳过它
-                }
-                omigaSnyRecipeDic.Add(pair.Key, pair.Value);
-            }
-
-            //key代表材料，value代表这个材料需要的数量
-            Dictionary<int, int> ingredientDic;
-
-            foreach (KeyValuePair<int, string[]> snyContent in omigaSnyRecipeDic) {
-                ingredientDic = [];
-                foreach (var fullName in snyContent.Value) {
-                    int itemID = VaultUtils.GetItemTypeFromFullName(fullName);
-                    //不要在材料里面添加空气物品或者添加自己
-                    if (itemID == snyContent.Key || itemID == ItemID.None) {
-                        continue;
-                    }
-                    if (!ingredientDic.TryAdd(itemID, 1)) {
-                        ingredientDic[itemID]++;
-                    }
-                }
-
-                if (ingredientDic.Count == 0) {
-                    continue;
-                }
-
-                Recipe recipe = Recipe.Create(snyContent.Key);
-                //进行一下排序，让是终焉物品的材料排在前面
-                foreach (var ingredientPair in ingredientDic.OrderByDescending(pair => CWRLoad.ItemIDToOmigaSnyContent[pair.Key] != null)) {
-                    if (ingredientPair.Key == ItemID.None || ingredientPair.Value <= 0) {
-                        continue;
-                    }
-                    recipe.AddIngredient(ingredientPair.Key, ingredientPair.Value);
-                }
-                recipe.AddBlockingSynthesisEvent()
-                    .AddTile(TileType<TransmutationOfMatter>())
-                    .DisableDecraft()
-                    .Register();
-            }
-        }
-
         public override void AddRecipes() {
-            SetOmigaSnyRecipes();
             AddResultContent();
         }
 
         public override void PostAddRecipes() {
-            //遍历所有配方，执行对应的配方修改，这个应该执行在最前，防止覆盖后续的修改操作
+            if (!CWRServerConfig.Instance.QuestLog) {
+                return;
+            }
             for (int i = 0; i < Recipe.numRecipes; i++) {
-                if (CWRServerConfig.Instance.QuestLog) {
-                    Main.recipe[i].AddOnCraftCallback(QLPlayer.CraftedItem);
-                }
-                ModifyResultContent(Main.recipe[i]);
+                Main.recipe[i].AddOnCraftCallback(QLPlayer.CraftedItem);
             }
         }
 

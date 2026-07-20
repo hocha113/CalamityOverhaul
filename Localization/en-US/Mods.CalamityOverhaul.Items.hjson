@@ -93,90 +93,9 @@ AnnihilatingUniverse: {
 		'''
 }
 
-HeavenfallLongbow: {
-	DisplayName: Heavenfall Longbow
-	Tooltip:
-		'''
-		Fires endless arrows; terminal rainbow energy follows shortly after
-		Right-click calls heaven's arrows down from the sky
-		After charging, press [KEY] to unleash the Myriad Judgment
-		[legend]
-		'''
-	Legend:
-		'''
-
-		The flames of war from a billion years ago have never truly been extinguished. 
-		Like smoldering embers, they traverse the endless corridors of time, burning brightly even now.
-		They are the remnants of the Twilight of the Gods, the afterglow of the universe’s ancient schism, the ceaseless echoes of existence and annihilation.
-
-		The Radiant God, embodiment of galactic order, fell in the greatest rebellion the cosmos has ever witnessed.
-		The divine body shattered like a collapsing star, scattering countless brilliant fragments across every corner of the galaxy.
-		Those fragments became the seeds of life, the spark of knowledge, the cradle of miracles—and yet, 
-		they also bore the stain of greed, destruction, and desecration.
-		Mortals revere these remnants, calling them sacred relics; 
-		yet the so-called miracles crafted from them are but crude imitations of the divine, the reckless hubris of those who do not know reverence.
-
-		But among the forgotten ruins and the echoes of legend, there exists an artifact that transcends all relics. 
-		It is no mere witness to the fall of the Supreme God; it was the very weapon that cast Him into eternal oblivion—a bow of legend.
-		Once wreathed in the fury of heaven’s fire, 
-		it loosed the fatal arrow that sundered the divine authority and extinguished the hubris of gods, bringing their ambitions to ruin.
-		As the war ended, the bow too was claimed by the tides of time, buried in the endless shroud of mystery and myth.
-
-		Yet now, the wheel of fate turns once more. 
-		The fires of heaven reignite, and that god-slaying bow shall emerge anew amid the symphony of stars.
-		Once more, it shall carve the annals of history in blood and stardust.
-
-		'''
-}
-
-InfiniteIngot: {
-	DisplayName: Infinite Ingot
-	Tooltip: The power of many worlds, universes and galaxies all coalesce into this singular ingot.
-}
-
-TransmutationOfMatterItem: {
-	DisplayName: Omega Substance Polymerizer
-	Tooltip:
-		'''
-		An Experimental Device of Draedon's Creation. Placing it down and right clicking it opens an extended crafting interface to go beyond mortal limits.
-		"Your Journey into Greedy Madness is now underway."
-		'''
-}
-
-DarkMatterCompressorItem: {
-	DisplayName: Dark Matter Compressor
-	Tooltip: A Culmination of Several workstations, now able to compress pure matter like a black hole.
-}
-
-InfinitePick: {
-	DisplayName: Universal Greed Pickaxe
-	Tooltip:
-		'''
-		Right-click and destroy everything it touches
-		Press [KEY] to change the mode
-		'You can sense that the very lands of Terraria trembles in fear whenever you hold it.'
-		'''
-}
-
-DarkMatterBall: {
-	DisplayName: Dark Matter Ball
-	Tooltip:
-		'''
-		It has been compressed into a black hole, yet miraculously remains stable.
-		Right-click while holding the item to store items inside.
-		Right-click with an empty hand to retrieve stored items.
-		'''
-	Contents: Contents:
-}
-
 NeutronStarIngot: {
 	DisplayName: Neutron Star Ingot
 	Tooltip: The weight of all things, gathered at your fingertips
-}
-
-InfinityCatalyst: {
-	DisplayName: Infinity Catalyst
-	Tooltip: Your greed is about to reach its peak
 }
 
 DawnshatterAzure: {
@@ -187,48 +106,6 @@ DawnshatterAzure: {
 		Hold the right mouse button to dash while raising your weapon.
 		"Let the flames purify your soul and utterly plunder your enemies."
 		'''
-}
-
-DecayParticles: {
-	DisplayName: Decay Particles
-	Tooltip:
-		'''
-		A glimpse into the source of matter
-		Existence itself is a miracle
-		'''
-}
-
-DecaySubstance: {
-	DisplayName: Decay Substance
-	Tooltip:
-		'''
-		It is in endless decay
-		A cycle of destruction and renewal
-		'''
-}
-
-DissipationSubstance: {
-	DisplayName: Dissipation Substance
-	Tooltip:
-		'''
-		Reality has trouble capturing its essence
-		It's disappearing, but it's huge
-		'''
-}
-
-SpectralMatter: {
-	DisplayName: Spectral Matter
-	Tooltip: About 3.7 trillion billion tons
-}
-
-InfiniteToiletItem: {
-	OnlyZenithCondition: Only in Zenith World
-
-	InfiniteToiletItem: {
-		OnlyZenithCondition: Only in Zenith World
-		DisplayName: Infinite Toilet Item
-		Tooltip: ""
-	}
 }
 
 StormGoddessSpear: {
@@ -1254,6 +1131,7 @@ Heartcarver: {
 	DisplayName: Heartcarver
 	Tooltip:
 		'''
+		Each stab hurls a spinning blood dagger that hunts by the scent of wounds
 		Right click to perform a short arcing lunge
 		Absorbed hearts grant brief attack speed and condense into orbiting blood blades
 		Blood blades lunge at the wound of your next Carving Strike

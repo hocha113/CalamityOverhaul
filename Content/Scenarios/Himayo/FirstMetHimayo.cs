@@ -1,5 +1,6 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -51,9 +52,12 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
              .End();
         }
 
+        //拿到鬼切即触发，但要等鸟居退场演出（含余响后的静默拍）收完——
+        //目送容身的鸟居沉没之后，真夜才开口
         protected override NarrativePolicy ConfigurePolicy() => new() {
             IsCompleted = _ => HimayoStorySync.FirstMet,
-            CanTrigger = (_, player) => player.HasItem(ModContent.ItemType<OnikiriItem>()),
+            CanTrigger = (_, player) => player.HasItem(ModContent.ItemType<OnikiriItem>())
+                && !ToriiShrineActor.DepartureHoldingStage,
             OnTriggered = _ => HimayoStorySync.MarkFirstMet(),
         };
 

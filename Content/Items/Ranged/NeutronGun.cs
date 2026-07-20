@@ -1,8 +1,8 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.Projectiles;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -44,7 +44,14 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGun;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(11)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         //右键：发射蓄能重击

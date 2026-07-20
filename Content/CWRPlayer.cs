@@ -37,8 +37,6 @@ namespace CalamityOverhaul.Content
         public float ScreenShakeValue;
         /// <summary>火力发电活跃帧数</summary>
         public int ThermalGenerationActiveTime;
-        /// <summary>是否开启超级合成台</summary>
-        public bool SupertableUIStartBool;
         /// <summary>是否坐在大排档塑料椅</summary>
         public bool InFoodStallChair;
         /// <summary>是否手持鬼妖</summary>
@@ -55,10 +53,6 @@ namespace CalamityOverhaul.Content
         public int RideElectricMinRocketRecoverStateTime;
         /// <summary>升龙技充能</summary>
         public int RisingDragonCharged;
-        /// <summary>Tram 归属</summary>
-        public int TramTPContrType = -1;
-        /// <summary>欧米茄指示箭头计数器</summary>
-        public int InspectOmigaTime;
         /// <summary>实时绘制位置矫正</summary>
         internal Vector2 SpecialDrawPositionOffset;
         /// <summary>玩家位置变化量</summary>
@@ -104,7 +98,6 @@ namespace CalamityOverhaul.Content
         public CWRPlayer CloneCWRPlayer(CWRPlayer cwr) {
             cwr.ScreenShakeValue = ScreenShakeValue;
             cwr.ThermalGenerationActiveTime = ThermalGenerationActiveTime;
-            cwr.SupertableUIStartBool = SupertableUIStartBool;
             cwr.InFoodStallChair = InFoodStallChair;
             cwr.HeldMurasamaBool = HeldMurasamaBool;
             cwr.EndSkillEffectStartBool = EndSkillEffectStartBool;
@@ -113,8 +106,6 @@ namespace CalamityOverhaul.Content
             cwr.RideElectricMinRocket = RideElectricMinRocket;
             cwr.RideElectricMinRocketRecoverStateTime = RideElectricMinRocketRecoverStateTime;
             cwr.RisingDragonCharged = RisingDragonCharged;
-            cwr.TramTPContrType = TramTPContrType;
-            cwr.InspectOmigaTime = InspectOmigaTime;
             cwr.SpecialDrawPositionOffset = SpecialDrawPositionOffset;
             cwr.PlayerPositionChange = PlayerPositionChange;
             cwr.oldPlayerPositionChange = oldPlayerPositionChange;
@@ -139,7 +130,6 @@ namespace CalamityOverhaul.Content
         public override ModPlayer Clone(Player newEntity) => CloneCWRPlayer((CWRPlayer)base.Clone(newEntity));
 
         public override void Initialize() {
-            TramTPContrType = 0;
             ThermalGenerationActiveTime = 0;
             Reset();
         }
@@ -234,9 +224,6 @@ namespace CalamityOverhaul.Content
         }
 
         public override void PostUpdate() {
-            if (InspectOmigaTime > 0) {
-                InspectOmigaTime--;
-            }
             if (ThermalGenerationActiveTime > 0) {
                 ThermalGenerationActiveTime--;
             }

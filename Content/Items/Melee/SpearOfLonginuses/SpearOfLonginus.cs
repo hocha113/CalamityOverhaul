@@ -1,4 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
+﻿using CalamityOverhaul.Content.Items.Materials;
 using InnoVault.GameSystem;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -62,10 +62,27 @@ namespace CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses
             Item.shoot = ModContent.ProjectileType<LonginusThrow>();
             Item.shootSpeed = 15f;
             Item.DamageType = DamageClass.Melee;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_SpearOfLonginus;
             Item.CWR().isHeldItem = true;
             ItemOverride.ItemMeleePrefixDic[Type] = true;
             ItemOverride.ItemRangedPrefixDic[Type] = false;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_ShadowspecBar, CWRID.Item_ScarletDevil
+                , CWRID.Item_EssenceFlayer, CWRID.Item_Rock)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(ItemID.Gungnir)
+                .AddIngredient<CosmicCalamity>()
+                .AddIngredient<NeutronStarIngot>(3)
+                .AddIngredient(CWRID.Item_ShadowspecBar, 17)
+                .AddIngredient(CWRID.Item_ScarletDevil)
+                .AddIngredient(CWRID.Item_EssenceFlayer)
+                .AddIngredient(CWRID.Item_Rock)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override void ModifyResearchSorting(ref ItemGroup itemGroup) => itemGroup = ItemGroup.MeleeWeapon;

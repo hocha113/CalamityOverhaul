@@ -1,9 +1,8 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
-using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,7 +36,49 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = CWRID.Rarity_Turquoise;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_EmblemOfDread;
+        }
+
+        /// <summary>真正击杀目标：无视免伤直接清空生命并触发战利品，蠕虫类假人一并处理</summary>
+        public static void KillAction(NPC npc) {
+            npc.dontTakeDamage = false;
+            _ = npc.SimpleStrikeNPC(npc.lifeMax, 0);
+            npc.life = 0;
+            npc.checkDead();
+            npc.HitEffect();
+            npc.NPCLoot();
+            if (npc.type == NPCID.TargetDummy) {
+                VaultUtils.KillPuppet(new Point16((int)(npc.Center.X / 16), (int)(npc.Center.Y / 16)));
+            }
+            npc.netUpdate = true;
+            npc.netUpdate2 = true;
+            npc.active = false;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_ElementalGauntlet, CWRID.Item_Affliction, CWRID.Item_DarkSunRing
+                , CWRID.Item_DraedonsHeart, CWRID.Item_AsgardianAegis, CWRID.Item_Radiance, CWRID.Item_YharimsGift
+                , CWRID.Item_TheSponge, CWRID.Item_TheAmalgam, CWRID.Item_WarbanneroftheRighteous
+                , CWRID.Item_ReaperToothNecklace, CWRID.Item_OccultSkullCrown, CWRID.Item_ChaliceOfTheBloodGod)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(12)
+                .AddIngredient(CWRID.Item_ElementalGauntlet)
+                .AddIngredient(CWRID.Item_Affliction)
+                .AddIngredient(CWRID.Item_DarkSunRing)
+                .AddIngredient(CWRID.Item_DraedonsHeart)
+                .AddIngredient(CWRID.Item_AsgardianAegis)
+                .AddIngredient(CWRID.Item_Radiance)
+                .AddIngredient(CWRID.Item_YharimsGift)
+                .AddIngredient(CWRID.Item_TheSponge)
+                .AddIngredient(CWRID.Item_TheAmalgam)
+                .AddIngredient(CWRID.Item_WarbanneroftheRighteous)
+                .AddIngredient(CWRID.Item_ReaperToothNecklace)
+                .AddIngredient(CWRID.Item_OccultSkullCrown)
+                .AddIngredient(CWRID.Item_ChaliceOfTheBloodGod)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {
@@ -392,7 +433,7 @@ namespace CalamityOverhaul.Content.Items.Accessories
 
             if (target.life < KilllineByLife && hit.DamageType
                 == CWRRef.GetTrueMeleeDamageClass() && Main.rand.NextBool(8)) {
-                HeavenfallLongbow.KillAction(target);
+                EmblemOfDread.KillAction(target);
             }
         }
 

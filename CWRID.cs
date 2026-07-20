@@ -188,6 +188,36 @@ namespace CalamityOverhaul
         public static int Item_HostileOnyxTurret => Get();
         public static int Item_HostilePlagueTurret => Get();
         public static int Item_HostileWaterTurret => Get();
+        public static int Item_MiracleMatter => Get();
+        public static int Item_PlanebreakersPouch => Get();
+        public static int Item_QuiverofNihility => Get();
+        public static int Item_DynamoStemCells => Get();
+        public static int Item_DaawnlightSpiritOrigin => Get();
+        public static int Item_ElementalGauntlet => Get();
+        public static int Item_DarkSunRing => Get();
+        public static int Item_DraedonsHeart => Get();
+        public static int Item_AsgardianAegis => Get();
+        public static int Item_Radiance => Get();
+        public static int Item_YharimsGift => Get();
+        public static int Item_TheSponge => Get();
+        public static int Item_TheAmalgam => Get();
+        public static int Item_WarbanneroftheRighteous => Get();
+        public static int Item_ReaperToothNecklace => Get();
+        public static int Item_OccultSkullCrown => Get();
+        public static int Item_ChaliceOfTheBloodGod => Get();
+        public static int Item_SigilofCalamitas => Get();
+        public static int Item_ManaPolarizer => Get();
+        public static int Item_EtherealTalisman => Get();
+        public static int Item_ChaosStone => Get();
+        public static int Item_Eternity => Get();
+        public static int Item_RedSun => Get();
+        public static int Item_DraconicDestruction => Get();
+        public static int Item_DragonPow => Get();
+        public static int Item_DragonRage => Get();
+        public static int Item_ScarletDevil => Get();
+        public static int Item_EssenceFlayer => Get();
+        public static int Item_SubsumingVortex => Get();
+        public static int Item_CrystylCrusher => Get();
         #endregion
         #region NPC ID引用
         public static int NPC_Cataclysm => Get();
@@ -375,6 +405,18 @@ namespace CalamityOverhaul
         #region ID有效性
 
         public static bool IsValid(int id) => id > 0;
+
+        /// <summary>
+        /// 所有给定ID均已成功解析时返回<see langword="true"/>，用作跨模组配方注册守卫
+        /// </summary>
+        public static bool AllValid(params int[] ids) {
+            foreach (int id in ids) {
+                if (id <= 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         /// <summary>
         /// 可疑镀层与神秘电路板是否均已成功解析（工业化灾厄材料配方分支）

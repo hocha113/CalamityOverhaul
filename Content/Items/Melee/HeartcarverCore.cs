@@ -205,14 +205,14 @@ namespace CalamityOverhaul.Content.Items.Melee
                 ?.Configure(0.03f, isLub ? 0.15f : 0.10f, 10);
         }
 
-        /// <summary>窗口开启瞬间：持手处一点粉白冷光，一瞬即灭</summary>
+        /// <summary>窗口开启瞬间：持手处一粒血珠上浮欲坠，一瞬即灭</summary>
         private void SpawnWindowCue() {
             if (VaultUtils.isServer) {
                 return;
             }
             Vector2 hand = Player.MountedCenter + new Vector2(Player.direction * 12f, 0f);
-            PRTLoader.NewParticle<PRT_Line>(hand, new Vector2(0f, -0.7f),
-                HeartcarverPalette.Myocard * 0.8f, 0.85f)?.Configure(false, 8);
+            PRTLoader.NewParticle<PRT_HeartcarverDroplet>(hand, new Vector2(0f, -1.1f),
+                HeartcarverPalette.Myocard * 0.85f, 0.6f)?.Configure(10, 0.06f);
         }
     }
 

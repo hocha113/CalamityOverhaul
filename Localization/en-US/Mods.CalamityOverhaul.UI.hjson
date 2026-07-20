@@ -1,4 +1,4 @@
-﻿ItemFilterUI: {
+ItemFilterUI: {
 	HintText: Left-click to add an item
 	HintText2: Left-click to remove an item
 	CloseHint: Press [ESC] or [Right-click] to close
@@ -647,6 +647,14 @@ HackTime: {
 	SignalTowerScanStatusElectrified: Residual Charge
 	SignalTowerScanProtocol: Available Protocols
 	RightClickHint: Right-click to deselect target
+	StatusReady: READY
+	StatusNoRam: NO RAM
+	UplinkHeader: UPLINK
+	DataTab: DATA
+	ScanTab: SCAN
+	TargetTagged: TARGET TAGGED
+	FooterUpload: UPLOAD {0}s
+	FooterCost: COST {0} RAM
 	AccessDeniedTitle: HACK TIME UNAVAILABLE
 	AccessDeniedDesc: Connect a smart weapon or install a netrunner cyberware to access hacking abilities.
 }
@@ -820,15 +828,6 @@ AbandonedPortalStrings: {
 	DiagnosticBroken: ERR-0xC4: Positioning Ring Fractured / Main Power Loop Disconnected
 	DiagnosticRepairing: INFO: Nano-weld array synchronizing... Do not move the portal base
 	DiagnosticRepaired: OK: All Subsystems Online / Coordinate Parsing Ready
-}
-
-SupertableUI: {
-	RecipeViewLabel: View recipe
-	RecipeEmptyLabel: nothing
-	PlacementMonitorOff: Turn Off Placement Monitor
-	PlacementMonitorOn: Turn On Placement Monitor
-	QuickPlaceMaterials: Quick Place Materials
-	QuickTakeMaterials: Quick Take Materials
 }
 
 ArrowHolderUI: {

@@ -1,5 +1,4 @@
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
-using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
 using InnoVault.Models3D.Runtime;
@@ -18,9 +17,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 {
     /// <summary>
     /// 鬼切鸟居：世界出生点附近的地表会立起一座鸟居（3D模型+<see cref="ToriiShrineActor"/>），
-    /// 鸟居下插着鬼切。刀从开荒第一天就在那里，但要等丛林龙陨落（无灾厄时以月亮领主为准）才拔得动；
-    /// 早期尝试会触发 <see cref="ToriiSealedDialogue"/> 的低语。拔刀按玩家独立结算
-    /// （<see cref="Data.Modules.HimayoStoryData.ToriiSwordTaken"/>），拿到刀后
+    /// 鸟居下插着鬼切。刀从开荒第一天就在那里，随时可拔。拔刀按玩家独立结算
+    /// （<see cref="Data.Modules.HimayoStoryData.ToriiSwordTaken"/>），拔刀后鸟居对该玩家
+    /// 颤抖沉入地下并溶解退场（<see cref="ToriiShrineActor"/> 的本地演出），拿到刀后
     /// <see cref="FirstMetHimayo"/> 会经由其触发策略自动接管
     /// </summary>
     internal class ToriiShrine : ModSystem, ILocalizedModType, IWorldInfo
@@ -44,7 +43,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         public string LocalizationCategory => "ADV.ToriiShrine";
 
         public static LocalizedText InteractHint { get; private set; }
-        public static LocalizedText SealedHint { get; private set; }
+        public static LocalizedText InventoryFullHint { get; private set; }
 
         //交互状态（纯本地）
         private static bool isPlayerNearby;
@@ -59,7 +58,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
         public override void SetStaticDefaults() {
             InteractHint = this.GetLocalization(nameof(InteractHint), () => "[右键] 拔刀");
-            SealedHint = this.GetLocalization(nameof(SealedHint), () => "[右键] 握住刀柄");
+            InventoryFullHint = this.GetLocalization(nameof(InventoryFullHint), () => "背包已满，腾出一格再来拔刀");
         }
 
         public override void SaveWorldData(TagCompound tag) {
@@ -82,6 +81,21 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 IsGenerated = false;
                 ShrinePosition = Vector2.Zero;
             }
+
+            //存档半损防线：位置键缺失/越界时废弃标记，让下一次更新走正常重新选址，
+            //否则鸟居会"生成"在(0,0)之类玩家永远找不到的地方
+            if (IsGenerated && !IsValidShrinePosition(ShrinePosition)) {
+                CWRMod.Instance.Logger.Warn($"[ToriiShrine:LoadWorldData] Discarding invalid shrine position {ShrinePosition}, will regenerate");
+                IsGenerated = false;
+                ShrinePosition = Vector2.Zero;
+            }
+        }
+
+        /// <summary>神社锚点是否落在世界有效范围内（含选址器同款的40格边缘余量）</summary>
+        private static bool IsValidShrinePosition(Vector2 position) {
+            const float Margin = 40f * 16f;
+            return position.X >= Margin && position.X <= Main.maxTilesX * 16f - Margin
+                && position.Y >= Margin && position.Y <= Main.maxTilesY * 16f - Margin;
         }
 
         public override void NetSend(BinaryWriter writer) {
@@ -171,7 +185,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 尝试生成神社（服务器或单人执行）：选址失败时兜底在出生点正上方
+        /// 尝试生成神社（服务器或单人执行）：选址失败时兜底在出生点，并尽量向下吸附到实心地面
         /// </summary>
         public static void TryGenerateShrine() {
             if (VaultUtils.isClient) {
@@ -186,7 +200,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
 
             Vector2? position = ToriiShrineLocationFinder.FindBestLocation();
-            GenerateShrine(position ?? new Vector2(Main.spawnTileX * 16f + 8f, Main.spawnTileY * 16f));
+            if (position == null) {
+                //兜底也要落地：出生点向下吸附地面，免得极端地形（空岛/虚空类世界）出现悬空鸟居；
+                //连地面都没有时保留出生点原始坐标，至少保证神社存在且可交互
+                Vector2 spawnPos = new(Main.spawnTileX * 16f + 8f, Main.spawnTileY * 16f);
+                position = ToriiShrineLocationFinder.TrySnapToGround(spawnPos, out Vector2 snapped)
+                    ? snapped : spawnPos;
+            }
+            GenerateShrine(position.Value);
 
             if (VaultUtils.isServer) {
                 SyncShrineToClients();
@@ -237,13 +258,14 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         }
 
         /// <summary>
-        /// 神社出现时的客户端听觉反馈：附近玩家能听到一声远处的清响
+        /// 神社出现时的客户端听觉反馈：附近玩家能听到一声远处的清响。
+        /// 半径需覆盖选址器的最远落点（160格），保证新世界首次进入必有提示音
         /// </summary>
         private static void OnShrineGenerated() {
             if (Main.dedServ) {
                 return;
             }
-            if (Main.LocalPlayer.Alives() && Main.LocalPlayer.DistanceSQ(ShrinePosition) < 2200f * 2200f) {
+            if (Main.LocalPlayer.Alives() && Main.LocalPlayer.DistanceSQ(ShrinePosition) < 3200f * 3200f) {
                 SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.55f, Pitch = -0.35f }, ShrinePosition);
             }
         }
@@ -283,6 +305,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             IsGenerated = false;
             ShrinePosition = Vector2.Zero;
             ResetLocalState();
+            //退场演出若被世界卸载打断，归还 Models3D 合成权
+            ToriiShrineDissolve.Reset();
         }
 
         #region 交互
@@ -300,14 +324,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             return !player.HasItem(ModContent.ItemType<OnikiriItem>());
         }
 
-        /// <summary>
-        /// 拔刀的进度门槛：丛林龙陨落之后；无灾厄环境退化为月亮领主
-        /// </summary>
-        public static bool GateOpen => CWRRef.Has ? CWRRef.GetDownedYharon() : NPC.downedMoonlord;
-
         public static float GetInteractPromptAlpha() => interactPromptAlpha;
 
-        public static string GetPromptText() => GateOpen ? InteractHint.Value : SealedHint.Value;
+        public static string GetPromptText() => InteractHint.Value;
 
         private static void UpdateInteraction() {
             CheckPlayerProximity();
@@ -345,31 +364,31 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             if (Main.LocalPlayer.mouseInterface) {
                 return false;
             }
-            if (NarrativeRouter.IsActive<ToriiSealedDialogue>()) {
-                return false;
-            }
             return true;
         }
 
         private static void TriggerInteraction() {
             SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.3f, Volume = 0.6f });
-
-            if (!GateOpen) {
-                //还不是时候：刀身低语
-                NarrativeRouter.Begin<ToriiSealedDialogue>();
-                return;
-            }
-
             PullSword();
         }
 
         /// <summary>
         /// 拔刀（本地玩家）：交付鬼切、落拔刀标记、震屏与声画演出；
+        /// 鸟居随即开始本地退场（颤抖→沉入地下→溶解），
         /// <see cref="FirstMetHimayo"/> 的触发策略检测到背包里的鬼切后会自动开演
         /// </summary>
         internal static void PullSword() {
             Player player = Main.LocalPlayer;
             if (!SwordPresentForLocalPlayer()) {
+                return;
+            }
+
+            //背包满时拒绝拔刀：鬼切没有兜底获取途径，绝不能让它以掉落物形态
+            //落地冒消失风险（拔刀标记一落即不可逆，刀丢了就是永久软锁）
+            Item onikiri = new(ModContent.ItemType<OnikiriItem>());
+            if (!player.ItemSpace(onikiri).CanTakeItemToPersonalInventory) {
+                SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = -0.6f, Volume = 0.5f });
+                CombatText.NewText(player.getRect(), new Color(235, 95, 118), InventoryFullHint.Value);
                 return;
             }
 
@@ -382,6 +401,7 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             foreach (ToriiShrineActor actor in ActorLoader.GetActiveActors<ToriiShrineActor>()) {
                 actor.SwordPulledBurst();
+                actor.BeginDeparture();
             }
         }
         #endregion

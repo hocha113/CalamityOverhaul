@@ -279,36 +279,6 @@ QuestNode: {
 		DetailedDescription: Toca la sinfonía de las estrellas; invoca agujeros negros y cuásares hasta disolver a los enemigos.
 	}
 
-	DarkMatterCompressorQuest: {
-		DisplayName: Compresor de materia oscura
-		Description: Obtén el compresor de materia oscura
-		DetailedDescription: Manipula la materia más misteriosa; comprime materia oscura en esferas de alta densidad.
-	}
-
-	InfiniteIngotQuest: {
-		DisplayName: Lingote infinito
-		Description: Forja lingote infinito
-		DetailedDescription: Un metal que trasciende la conservación de la masa; piedra angular del poder supremo.
-	}
-
-	InfinitePickQuest: {
-		DisplayName: Pico infinito
-		Description: Obtén pico infinito
-		DetailedDescription: Nada lo detiene; puede minar hasta el lecho rocoso del mundo.
-	}
-
-	InfiniteToiletQuest: {
-		DisplayName: Retrete infinito
-		Description: Obtén retrete infinito
-		DetailedDescription: El trono de los dioses; absurdo, pero simboliza un poder supremo.
-	}
-
-	InfinityCatalystQuest: {
-		DisplayName: Catalizador infinito
-		Description: Obtén catalizador infinito
-		DetailedDescription: Clave para la reacción infinita; la materia cicla entre aniquilación y renacimiento.
-	}
-
 	NeutronBowQuest: {
 		DisplayName: Arco de neutrones
 		Description: Obtén arco de neutrones
@@ -361,18 +331,6 @@ QuestNode: {
 		DisplayName: Piedra del fin
 		Description: Obtén piedra del fin
 		DetailedDescription: Llave del desafío final; contempla la piedra y enfrenta a los seres más fuertes del mundo.
-	}
-
-	TransmutationOfMatterQuest: {
-		DisplayName: Transmutador de materia
-		Description: Obtén transmutador de materia
-		DetailedDescription: Alquimia suprema que rompe el intercambio equivalente y crea de la nada.
-	}
-
-	HeavenfallLongbowQuest: {
-		DisplayName: Arco infinito
-		Description: Obtén arco infinito
-		DetailedDescription: Un arco que derribó dioses; vuelve al mundo.
 	}
 
 	SpearOfLonginusQuest: {

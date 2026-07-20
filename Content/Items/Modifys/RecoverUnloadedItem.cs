@@ -2,9 +2,11 @@
 using CalamityOverhaul.Content.Items.Accessories;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
+using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using InnoVault.GameSystem;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 
@@ -33,8 +35,34 @@ namespace CalamityOverhaul.Content.Items.Modifys
             RecoverUnloadedItemDic.Add("CalamityOverhaul/Gangarus", ModContent.ItemType<SpearOfLonginus>());
             RecoverUnloadedItemDic.Add("CalamityOverhaul/UEPipelineInput", ModContent.ItemType<UEPipeline>());
             RecoverUnloadedItemDic.Add("CalamityOverhaul/NeutronStarMuzzleBrake", ModContent.ItemType<EyeOfSingularity>());
+            AddInfiniteSeriesRecovers();
             TargetID = ModContent.ItemType<UnloadedItem>();
         }
+
+        /// <summary>
+        /// 无尽系列与超级工作台移除后的替补映射：材料折算为链上仍然存在的等价物，
+        /// 灾厄不在场时回落到原版物品，保证旧存档不留卸载占位
+        /// </summary>
+        private static void AddInfiniteSeriesRecovers() {
+            int neutronIngot = ModContent.ItemType<NeutronStarIngot>();
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/InfiniteIngot", neutronIngot);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/InfinityCatalyst", neutronIngot);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/DarkMatterBall",
+                CWRID.Item_ShadowspecBar > 0 ? CWRID.Item_ShadowspecBar : neutronIngot);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/SpectralMatter",
+                CWRID.Item_DarkPlasma > 0 ? CWRID.Item_DarkPlasma : ItemID.LunarBar);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/DecayParticles", ItemID.ChlorophyteBar);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/DecaySubstance", ItemID.LunarBar);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/DissipationSubstance", ItemID.LunarBar);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/HeavenfallLongbow", ModContent.ItemType<NeutronBow>());
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/InfinitePick",
+                CWRID.Item_CrystylCrusher > 0 ? CWRID.Item_CrystylCrusher : ItemID.SolarFlarePickaxe);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/InfiniteToiletItem", ItemID.GoldenToilet);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/DarkMatterCompressorItem", ItemID.LunarCraftingStation);
+            RecoverUnloadedItemDic.Add("CalamityOverhaul/TransmutationOfMatterItem",
+                CWRID.Item_DraedonsForge > 0 ? CWRID.Item_DraedonsForge : ItemID.LunarCraftingStation);
+        }
+
         void ICWRLoader.UnLoadData() => RecoverUnloadedItemDic?.Clear();
         public static void UpdateInventory(Item item) {
             if (item.type != TargetID) {

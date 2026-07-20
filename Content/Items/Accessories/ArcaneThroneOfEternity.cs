@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,7 +26,23 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = CWRID.Rarity_Turquoise;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_ArcaneThroneOfEternity;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_SigilofCalamitas, CWRID.Item_ManaPolarizer
+                , CWRID.Item_EtherealTalisman, CWRID.Item_ChaosStone, CWRID.Item_Eternity)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(12)
+                .AddIngredient(CWRID.Item_SigilofCalamitas)
+                .AddIngredient(CWRID.Item_ManaPolarizer)
+                .AddIngredient(CWRID.Item_EtherealTalisman)
+                .AddIngredient(CWRID.Item_ChaosStone)
+                .AddIngredient(CWRID.Item_Eternity)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

@@ -1,7 +1,7 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,7 +47,14 @@ namespace CalamityOverhaul.Content.Items.Ranged.NeutronBows
             Item.value = Item.buyPrice(13, 33, 75, 0);
             Item.crit = 20;
             Item.shoot = ModContent.ProjectileType<NeutronBowHeld>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronBow;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(11)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         //右键蓄力

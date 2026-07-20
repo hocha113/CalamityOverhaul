@@ -1,6 +1,5 @@
 ﻿using CalamityOverhaul.Content.Buffs;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,7 +33,19 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.value = Item.buyPrice(0, 85, 5, 5);
             Item.rare = ItemRarityID.Red;
             Item.shoot = ModContent.ProjectileType<DragonsWordProj>();
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_DragonsWord;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_YharonSoulFragment, CWRID.Item_SubsumingVortex, CWRID.Item_Rock)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(CWRID.Item_SubsumingVortex)
+                .AddIngredient(CWRID.Item_YharonSoulFragment, 39)
+                .AddIngredient(CWRID.Item_Rock)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override bool AltFunctionUse(Player player) => true;

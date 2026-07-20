@@ -1,7 +1,7 @@
 using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.DamageModify;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.GameSystem;
 using InnoVault.PRT;
@@ -52,9 +52,16 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.crit = 8;
             Item.shoot = ModContent.ProjectileType<NeutronGlaiveHeld>();
             Item.shootSpeed = 18f;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronGlaive;
             //noMelee ????????????
             ItemOverride.ItemMeleePrefixDic[Type] = true;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(11)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override bool CanUseItem(Player player) {

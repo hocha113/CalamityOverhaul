@@ -1058,6 +1058,7 @@ ToriiShrine: {
 	ToriiShrine: {
 		InteractHint: "[Right Click] Draw the blade"
 		SealedHint: "[Right Click] Grip the hilt"
+		InventoryFullHint: 背包已满，腾出一格再来拔刀
 	}
 }
 

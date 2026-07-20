@@ -33,7 +33,6 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> TzeentchSky { get; set; }
         public static Asset<Effect> GradientTrail { get; set; }
         public static Asset<Effect> DeductDraw { get; set; }
-        public static Asset<Effect> Crystal { get; set; }
         public static Asset<Effect> AccretionDisk { get; set; }
         public static Asset<Effect> AriaBlackHole { get; set; }
         public static Asset<Effect> AriaGammaRay { get; set; }
@@ -96,6 +95,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> VoidArrival { get; set; }
         public static Asset<Effect> CyberBossBar { get; set; }
         public static Asset<Effect> HackRamArc { get; set; }
+        public static Asset<Effect> HackDeckPanel { get; set; }
         public static Asset<Effect> SHPCCoreOrb { get; set; }
         public static Asset<Effect> CyberwareRadialPanel { get; set; }
         public static Asset<Effect> CyberwarePanel { get; set; }
@@ -177,6 +177,7 @@ namespace CalamityOverhaul.Common
         public static Asset<Effect> OniSky { get; set; }
         public static Asset<Effect> OniDomainDeco { get; set; }
         public static Asset<Effect> HimayoPortraitAssembly { get; set; }
+        public static Asset<Effect> ToriiDissolve { get; set; }
         public static Asset<Effect> OniEye { get; set; }
         public static Asset<Effect> AckBackdrop { get; set; }
         public static Asset<Effect> AckFinale { get; set; }

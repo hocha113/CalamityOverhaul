@@ -146,11 +146,6 @@ GlacialShell.DisplayName: Gletscherpanzer
 GlacierSpikeProj.DisplayName: Gletschernadel
 GlacierWave.DisplayName: Gletscherwelle
 ExtremeColdHail.DisplayName: Eiskalter Hagel
-HeavenRainbowImpact.DisplayName: Himmelregenbogen-Einschlag
-InfiniteArrow.DisplayName: Unendlicher Pfeil
-InfiniteRune.DisplayName: Unendliche Rune
-ParadiseArrow.DisplayName: Himmelspfeil
-VientianePunishment.DisplayName: Strafe der Myriaden
 IceExplosionFriend.DisplayName: Eisexplosion
 IceParclose.DisplayName: Eisvorhang
 FrostGlimmer.DisplayName: Frostschimmer
@@ -178,9 +173,6 @@ ElementWhipProjectile.DisplayName: Elementarpeitsche
 GhostFireWhipProjectile.DisplayName: Geisterfeuerpeitsche
 WhiplashGalacticaProjectile.DisplayName: Galaktische Peitsche
 WTrail.DisplayName: Spur
-InfiniteEnmgs.DisplayName: Unendliche Energie
-InfinitePickProj.DisplayName: Unendliche Spitzhacke
-SpanDMBall.DisplayName: Dunkelmateriekugel
 CthulhuEye.DisplayName: Auge von Cthulhu
 JewelFragmentProjectile.DisplayName: Juwelenfragment
 JewelGemProjectile.DisplayName: Juwelenstern

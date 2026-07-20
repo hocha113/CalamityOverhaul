@@ -278,9 +278,9 @@ namespace CalamityOverhaul
             return npc;
         }
 
-        public static Recipe AddBlockingSynthesisEvent(this Recipe recipe) =>
-             recipe.AddConsumeIngredientCallback((Recipe recipe, int type, ref int amount, bool isDecrafting) => { amount = 0; })
-            .AddOnCraftCallback(CWRCrafted.SpawnAction);
+        /// <summary>终局配方站台：嘉登熔炉，灾厄缺席时回落到远古操纵机</summary>
+        public static Recipe AddEndgameStation(this Recipe recipe) =>
+            recipe.AddTile(CWRID.Tile_DraedonsForge > 0 ? CWRID.Tile_DraedonsForge : TileID.LunarCraftingStation);
 
         /// <summary>用宿主本地化文本替换原版 Tooltip 行</summary>
         public static void OnModifyTooltips(Mod mod, List<TooltipLine> tooltips, LocalizedText value) {

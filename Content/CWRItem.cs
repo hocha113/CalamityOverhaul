@@ -93,14 +93,6 @@ namespace CalamityOverhaul.Content
         /// </summary>
         public float ConsumeUseUE;
         /// <summary>
-        /// 这个物品所属的终焉合成内容，这决定了它的物品简介是否绘制终焉合成表格
-        /// </summary>
-        public string[] OmigaSnyContent;
-        /// <summary>
-        /// 是否自动装填终焉合成配方？如果的话，默认为<see langword="true"/>，这个属性只有在设置了<see cref="OmigaSnyContent"/>时才有意义
-        /// </summary>
-        public bool AutoloadingOmigaSnyRecipe = true;
-        /// <summary>
         /// 被传奇武器所使用，保存一些数据
         /// </summary>
         public LegendData LegendData;
@@ -142,7 +134,6 @@ namespace CalamityOverhaul.Content
             cwr.StorageUE = StorageUE;
             cwr.UEValue = UEValue;
             cwr.ConsumeUseUE = ConsumeUseUE;
-            cwr.OmigaSnyContent = OmigaSnyContent;
             cwr.LegendData = LegendData?.Clone(to);
             cwr.DyeItemID = DyeItemID;
             cwr.LegacyItemTranslationID = LegacyItemTranslationID;

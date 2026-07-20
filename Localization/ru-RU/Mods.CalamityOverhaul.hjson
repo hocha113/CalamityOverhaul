@@ -1,5 +1,4 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Бесконечный урон
-Tools.RecipesLoseText: Вы не можете создать этот предмет напрямую!
 
 Biomes: {
 	TungstenBiome: {

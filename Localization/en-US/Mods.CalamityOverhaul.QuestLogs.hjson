@@ -279,36 +279,6 @@ QuestNode: {
 		DetailedDescription: Perform the symphony of the stars. This tome summons black holes and quasars, letting enemies vanish amidst the song of the universe.
 	}
 
-	DarkMatterCompressorQuest: {
-		DisplayName: Dark Matter Compressor
-		Description: Obtain Dark Matter Compressor
-		DetailedDescription: Manipulate the most mysterious matter in the universe. This machine compresses dark matter into high-density energy spheres for advanced crafting.
-	}
-
-	InfiniteIngotQuest: {
-		DisplayName: Infinite Ingot
-		Description: Forge Infinite Ingot
-		DetailedDescription: A metal that transcends the law of conservation of mass. It is the cornerstone to ultimate power, containing infinite possibilities.
-	}
-
-	InfinitePickQuest: {
-		DisplayName: Infinite Pickaxe
-		Description: Obtain Infinite Pickaxe
-		DetailedDescription: Nothing can stop this pickaxe. It can mine everything, even the bedrock of the world.
-	}
-
-	InfiniteToiletQuest: {
-		DisplayName: Infinite Toilet
-		Description: Obtain Infinite Toilet
-		DetailedDescription: The throne of gods. Though it sounds absurd, it truly symbolizes some form of... supreme authority.
-	}
-
-	InfinityCatalystQuest: {
-		DisplayName: Infinity Catalyst
-		Description: Obtain Infinity Catalyst
-		DetailedDescription: The key medium to start the infinite reaction. It allows matter to cycle between annihilation and rebirth, generating immense energy.
-	}
-
 	NeutronBowQuest: {
 		DisplayName: Neutron Bow
 		Description: Obtain Neutron Bow
@@ -361,18 +331,6 @@ QuestNode: {
 		DisplayName: Terminus
 		Description: Obtain Terminus
 		DetailedDescription: The key to starting the Boss Rush. Gaze into this stone and prepare to face a continuous trial against the world's strongest beings.
-	}
-
-	TransmutationOfMatterQuest: {
-		DisplayName: Matter Transmuter
-		Description: Obtain Matter Transmuter
-		DetailedDescription: The ultimate form of alchemy. This machine breaks the principle of equivalent exchange, converting matter at will, or creating it from nothing.
-	}
-
-	HeavenfallLongbowQuest: {
-		DisplayName: Infinite Bow
-		Description: Obtain Infinite Bow
-		DetailedDescription: A longbow that has shot down gods. Now it shall reappear in the world.
 	}
 
 	SpearOfLonginusQuest: {

@@ -665,6 +665,7 @@ OnikiriText: {
 		// RiteTitleRenew: RENEW THE PACT
 		// RiteTitleResubdue: SUBDUE
 		// RiteHint: Set down the brush · Roll the scroll
+		// RiteHintResubdue: Force it back · Seal the scroll
 	}
 
 	// OniPlayerDismemberSystem.SelfHurtDeathReason: "{0} was severed by their own blade"

@@ -6,20 +6,22 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    //左侧骇入队列渲染器
+    //左下角上行链路线程条渲染器
     internal class HackQueueRenderer
     {
         #region 布局常量
 
         private const float LeftMargin = 36f;
-        private const float ItemWidth = 280f;
-        private const float ItemHeight = 52f;
-        private const float ItemGap = 4f;
-        private const float SlashWidth = 14f;
-        private const float BarHeight = 4f;
-        private const float FontName = 0.62f;
-        private const float FontPct = 0.38f;
-        private const float FontStatus = 0.30f;
+        private const float ItemWidth = 240f;
+        private const float ItemHeight = 20f;
+        private const float ItemGap = 6f;
+        private const float BarHeight = 2f;
+        //状态菱形区宽
+        private const float DiamondZone = 14f;
+        //距屏幕底的基线
+        private const float BottomMargin = 150f;
+        private const float FontName = 0.54f;
+        private const float FontPct = 0.44f;
         //完成闪烁时长（秒）
         private static float CompletedDuration => 0.2f;
 
@@ -325,41 +327,47 @@ namespace CalamityOverhaul.Content.HackTimes
         public void Draw(SpriteBatch sb) {
             if (queue.Count == 0) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = HackTheme.Pixel;
             if (px == null) return;
             float alpha = HackTime.Intensity;
             if (alpha < 0.01f) return;
 
-            //标题
-            DrawHeader(sb, alpha);
+            float startY = GetStartY();
 
-            //队列条目
+            //左侧细竖轨，把线程串成一组
+            float railTop = startY - 18f;
+            float railBottom = startY + queue.Count * (ItemHeight + ItemGap) - ItemGap + 2f;
+            sb.Draw(px, new Rectangle((int)(LeftMargin - 8), (int)railTop, 1, (int)(railBottom - railTop)),
+                HackTheme.SrcPixel, HackTheme.Border * (alpha * 0.6f));
+
+            //标题
+            DrawHeader(sb, alpha, startY);
+
+            //线程条目
             for (int i = 0; i < queue.Count; i++) {
-                DrawQueueItem(sb, px, alpha, i, queue[i]);
+                DrawThread(sb, px, alpha, i, startY, queue[i]);
             }
         }
 
-        private void DrawHeader(SpriteBatch sb, float alpha) {
-            float headerY = GetStartY() - 26f;
-            string header = HackTime.UploadQueue.Value;
-            Color headerColor = HackTheme.Accent * (alpha * 0.55f);
-            Utils.DrawBorderString(sb, header, new Vector2(LeftMargin, headerY), headerColor, 0.34f);
-
-            //队列计数
-            string countStr = $"[{queue.Count}]";
-            Vector2 countSize = FontAssets.MouseText.Value.MeasureString(countStr) * 0.28f;
-            Utils.DrawBorderString(sb, countStr,
-                new Vector2(LeftMargin + FontAssets.MouseText.Value.MeasureString(header).X * 0.34f + 8, headerY + 2),
-                HackTheme.TextDim * (alpha * 0.4f), 0.28f);
+        private void DrawHeader(SpriteBatch sb, float alpha, float startY) {
+            float headerY = startY - 20f;
+            string header = $"{HackTime.UplinkHeader.Value} // {queue.Count}";
+            Utils.DrawBorderString(sb, header, new Vector2(LeftMargin, headerY),
+                HackTheme.Accent * (alpha * 0.6f), 0.40f);
+            //标题下引出短线
+            float headerW = FontAssets.MouseText.Value.MeasureString(header).X * 0.40f;
+            HackTheme.DrawLine(sb, new Vector2(LeftMargin, headerY + 13),
+                new Vector2(LeftMargin + headerW + 20, headerY + 13),
+                1f, HackTheme.Accent * (alpha * 0.25f));
         }
 
-        private void DrawQueueItem(SpriteBatch sb, Texture2D px, float alpha, int index, HackQueueEntry entry) {
+        private void DrawThread(SpriteBatch sb, Texture2D px, float alpha, int index, float startY, HackQueueEntry entry) {
             float fly = entry.FlyIn;
             if (fly < 0.01f) return;
 
-            float y = GetStartY() + index * (ItemHeight + ItemGap);
+            float y = startY + index * (ItemHeight + ItemGap);
             //飞入偏移（从左侧滑入）
-            float flyOffset = (1f - EaseOutCubic(fly)) * -300f;
+            float flyOffset = (1f - HackTheme.EaseOutCubic(fly)) * -260f;
             //完成态淡出
             float fadeAlpha = 1f;
             if (entry.State == HackQueueState.Completed) {
@@ -370,48 +378,47 @@ namespace CalamityOverhaul.Content.HackTimes
             float x = LeftMargin + flyOffset;
             Rectangle rect = new((int)x, (int)y, (int)ItemWidth, (int)ItemHeight);
 
-            //背景
-            Color bgColor = entry.State switch {
-                HackQueueState.Uploading => Color.Lerp(HackTheme.BgSlot, HackTheme.Uploading, 0.06f),
-                HackQueueState.Completed => Color.Lerp(HackTheme.BgSlot, HackTheme.Accent, 0.08f * fadeAlpha),
-                _ => HackTheme.BgSlot,
-            };
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor * (itemAlpha * 0.88f));
-
-            //CRT 扫描线
-            DrawCRTOverlay(sb, px, rect, itemAlpha * 0.04f);
-
-            //右侧斜切遮罩
-            DrawSlashCutRight(sb, px, rect, itemAlpha);
-
-            //左侧类别色条
             Color catColor = HackTheme.CategoryColor(entry.Hack.Category);
-            float breathe = MathF.Sin(timer * 2.5f + index * 1.1f) * 0.1f + 0.9f;
-            float barGlow = entry.State == HackQueueState.Uploading ? 1f : 0.5f;
-            barGlow *= breathe;
-            sb.Draw(px, new Rectangle(rect.X + 2, rect.Y + 3, 3, rect.Height - 6),
-                new Rectangle(0, 0, 1, 1), catColor * (itemAlpha * barGlow));
-            //色条渐变扩散
-            sb.Draw(px, new Rectangle(rect.X + 5, rect.Y + 3, 10, rect.Height - 6),
-                new Rectangle(0, 0, 1, 1), catColor * (itemAlpha * barGlow * 0.06f));
+            Color threadColor = entry.State switch {
+                HackQueueState.Uploading => HackTheme.Uploading,
+                HackQueueState.Completed => HackTheme.Accent,
+                _ => HackTheme.TextDim,
+            };
 
-            //类别符号
-            string catSymbol = HackTheme.CategorySymbol(entry.Hack.Category);
-            Utils.DrawBorderString(sb, catSymbol, new Vector2(rect.X + 10, rect.Y + 6),
-                catColor * (itemAlpha * 0.5f), 0.24f);
+            //状态菱形：上传中旋转，等待呼吸，完成实心闪
+            Vector2 diamondC = new(rect.X + DiamondZone * 0.5f, rect.Y + 7f);
+            switch (entry.State) {
+                case HackQueueState.Uploading: {
+                    float rot = timer * 3f + index;
+                    sb.Draw(px, diamondC, HackTheme.SrcPixel, threadColor * (itemAlpha * 0.9f),
+                        rot, new Vector2(0.5f), 8f, SpriteEffects.None, 0f);
+                    sb.Draw(px, diamondC, HackTheme.SrcPixel, HackTheme.BgDarkest * itemAlpha,
+                        rot, new Vector2(0.5f), 4f, SpriteEffects.None, 0f);
+                    break;
+                }
+                case HackQueueState.Completed: {
+                    float flash = MathF.Sin(entry.CompletedTimer * 12f) * 0.3f + 0.7f;
+                    HackTheme.DrawDiamond(sb, diamondC, 8f, threadColor * (itemAlpha * flash));
+                    break;
+                }
+                default: {
+                    float breathe = MathF.Sin(timer * 2.5f + index * 1.1f) * 0.25f + 0.75f;
+                    HackTheme.DrawDiamondOutline(sb, diamondC, 4f, 1f, threadColor * (itemAlpha * breathe));
+                    break;
+                }
+            }
 
-            //协议名称
-            float nameX = rect.X + 28;
-            float nameY = rect.Y + 6;
+            //协议名
+            float nameX = rect.X + DiamondZone + 6f;
             Color nameColor = entry.State switch {
                 HackQueueState.Uploading => Color.Lerp(HackTheme.TextBright, HackTheme.Uploading, 0.3f),
                 HackQueueState.Completed => HackTheme.Accent,
                 _ => HackTheme.TextNormal,
             };
-            Utils.DrawBorderString(sb, entry.Hack.DisplayName.Value, new Vector2(nameX, nameY),
+            Utils.DrawBorderString(sb, entry.Hack.DisplayName.Value, new Vector2(nameX, rect.Y),
                 nameColor * itemAlpha, FontName);
 
-            //状态文字
+            //右侧读数
             string statusText;
             Color statusColor;
             switch (entry.State) {
@@ -420,89 +427,49 @@ namespace CalamityOverhaul.Content.HackTimes
                     statusColor = HackTheme.Uploading;
                     break;
                 case HackQueueState.Completed:
-                    float flash = MathF.Sin(entry.CompletedTimer * 12f) * 0.3f + 0.7f;
                     statusText = HackTime.Done.Value;
-                    statusColor = HackTheme.Accent * flash;
+                    statusColor = HackTheme.Accent;
                     break;
                 default:
-                    statusText = HackTime.Queued.Value;
+                    statusText = $"{entry.Hack.UploadTime / 60f:F1}s";
                     statusColor = HackTheme.TextDim;
                     break;
             }
             Vector2 statusSize = FontAssets.MouseText.Value.MeasureString(statusText) * FontPct;
             Utils.DrawBorderString(sb, statusText,
-                new Vector2(rect.Right - (int)SlashWidth - statusSize.X - 8, rect.Y + 8),
+                new Vector2(rect.Right - statusSize.X - 2, rect.Y),
                 statusColor * itemAlpha, FontPct);
 
-            //等待态上传时间
-            if (entry.State == HackQueueState.Waiting) {
-                float sec = entry.Hack.UploadTime / 60f;
-                string timeStr = $"{sec:F1}s";
-                Vector2 ts = FontAssets.MouseText.Value.MeasureString(timeStr) * FontStatus;
-                Utils.DrawBorderString(sb, timeStr,
-                    new Vector2(rect.Right - (int)SlashWidth - ts.X - 8, rect.Bottom - ts.Y - 6),
-                    HackTheme.TextDim * (itemAlpha * 0.5f), FontStatus);
-            }
-
-            //进度条
-            int barY = rect.Bottom - (int)BarHeight - 4;
-            int barX = rect.X + 28;
-            int barW = rect.Width - 28 - (int)SlashWidth - 8;
-            //背景槽
+            //细进度轨（线程底部通宽）
+            int barY = rect.Bottom - (int)BarHeight - 1;
+            int barX = (int)nameX;
+            int barW = rect.Width - (int)DiamondZone - 8;
             sb.Draw(px, new Rectangle(barX, barY, barW, (int)BarHeight),
-                new Rectangle(0, 0, 1, 1), HackTheme.ProgressBg * (itemAlpha * 0.6f));
-            //填充
+                HackTheme.SrcPixel, HackTheme.ProgressBg * (itemAlpha * 0.8f));
             float progress = entry.UploadProgress;
             int fillW = (int)(barW * progress);
             if (fillW > 0) {
                 Color fillColor = entry.State == HackQueueState.Completed
-                    ? HackTheme.Accent
-                    : HackTheme.ProgressFill;
+                    ? HackTheme.Accent : HackTheme.ProgressFill;
                 sb.Draw(px, new Rectangle(barX, barY, fillW, (int)BarHeight),
-                    new Rectangle(0, 0, 1, 1), fillColor * (itemAlpha * 0.85f));
+                    HackTheme.SrcPixel, fillColor * (itemAlpha * 0.9f));
                 //进度前端辉光
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null && entry.State == HackQueueState.Uploading && fillW > 2) {
                     Color tipGlow = HackTheme.ProgressGlow * (itemAlpha * 0.35f);
                     tipGlow.A = 0;
                     sb.Draw(glow, new Vector2(barX + fillW, barY + BarHeight * 0.5f), null,
-                        tipGlow, 0, glow.Size() / 2, new Vector2(0.1f, 0.03f), SpriteEffects.None, 0);
+                        tipGlow, 0, glow.Size() / 2, new Vector2(0.08f, 0.02f), SpriteEffects.None, 0);
                 }
-                //高光线
-                sb.Draw(px, new Rectangle(barX, barY, fillW, 1),
-                    new Rectangle(0, 0, 1, 1), HackTheme.TextBright * (itemAlpha * 0.12f));
             }
 
-            //上传扫描线
-            if (entry.State == HackQueueState.Uploading) {
-                float scanPos = (timer * 2f + index * 0.3f) % 1.4f - 0.2f;
-                DrawScanLine(sb, px, rect, scanPos, itemAlpha * 0.2f);
-            }
+            //线程与竖轨的连接刻点
+            sb.Draw(px, new Rectangle((int)(LeftMargin - 8), (int)(rect.Y + 6), 5, 1),
+                HackTheme.SrcPixel, threadColor * (itemAlpha * 0.5f));
 
-            //边框
-            Color borderCol = entry.State switch {
-                HackQueueState.Uploading => Color.Lerp(HackTheme.Border, HackTheme.Uploading, 0.4f),
-                HackQueueState.Completed => Color.Lerp(HackTheme.Border, HackTheme.Accent, 0.3f * fadeAlpha),
-                _ => HackTheme.Border,
-            };
-            //顶边
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, rect.Width - (int)SlashWidth, 1),
-                new Rectangle(0, 0, 1, 1), borderCol * (itemAlpha * 0.5f));
-            //底边
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderCol * (itemAlpha * 0.35f));
-            //左边
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 1, rect.Height),
-                new Rectangle(0, 0, 1, 1), borderCol * (itemAlpha * 0.35f));
-            //右斜切边线
-            DrawSlashEdgeRight(sb, px, rect, borderCol * (itemAlpha * 0.45f));
-
-            //完成底光带
-            if (entry.State == HackQueueState.Completed) {
-                float completedPulse = MathF.Sin(entry.CompletedTimer * 8f) * 0.3f + 0.7f;
-                sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, rect.Width, 2),
-                    new Rectangle(0, 0, 1, 1), HackTheme.Accent * (itemAlpha * 0.4f * completedPulse));
-            }
+            //类别微刻（名称左上小色点）
+            sb.Draw(px, new Rectangle((int)nameX - 2, rect.Y + 1, 2, 2),
+                HackTheme.SrcPixel, catColor * (itemAlpha * 0.8f));
         }
 
         #endregion
@@ -511,59 +478,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private float GetStartY() {
             float totalH = queue.Count * (ItemHeight + ItemGap) - ItemGap;
-            return (Main.screenHeight - totalH) * 0.5f;
-        }
-
-        #endregion
-
-        #region 视觉辅助
-
-        private static void DrawCRTOverlay(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
-            Color line = HackTheme.BgDarkest * alpha;
-            for (int dy = 0; dy < rect.Height; dy += 3) {
-                sb.Draw(px, new Rectangle(rect.X, rect.Y + dy, rect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), line);
-            }
-        }
-
-        //右侧斜切遮罩（镜像）
-        private static void DrawSlashCutRight(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
-            Color mask = HackTheme.BgDarkest * (alpha * 0.95f);
-            int slashW = (int)SlashWidth;
-            for (int dy = 0; dy < rect.Height; dy++) {
-                float t = (float)dy / rect.Height;
-                int cutW = (int)(slashW * t);
-                if (cutW > 0)
-                    sb.Draw(px, new Rectangle(rect.Right - cutW, rect.Y + dy, cutW, 1),
-                        new Rectangle(0, 0, 1, 1), mask);
-            }
-        }
-
-        //右侧斜切边线
-        private static void DrawSlashEdgeRight(SpriteBatch sb, Texture2D px, Rectangle rect, Color color) {
-            Vector2 top = new(rect.Right, rect.Y);
-            Vector2 bottom = new(rect.Right - SlashWidth, rect.Bottom);
-            DrawLine(sb, px, top, bottom, 1f, color);
-        }
-
-        private static void DrawScanLine(SpriteBatch sb, Texture2D px, Rectangle rect, float pos, float alpha) {
-            int lineX = rect.X + (int)(rect.Width * pos);
-            if (lineX < rect.X || lineX > rect.Right - 2) return;
-            sb.Draw(px, new Rectangle(lineX, rect.Y + 1, 2, rect.Height - 2),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * alpha);
-        }
-
-        private static void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, float thickness, Color color) {
-            Vector2 diff = end - start;
-            float length = diff.Length();
-            if (length < 1f) return;
-            sb.Draw(px, start, new Rectangle(0, 0, 1, 1), color, diff.ToRotation(),
-                Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
-        }
-
-        private static float EaseOutCubic(float t) {
-            float inv = 1f - t;
-            return 1f - inv * inv * inv;
+            return Main.screenHeight - BottomMargin - totalH;
         }
 
         #endregion

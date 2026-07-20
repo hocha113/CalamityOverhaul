@@ -1,5 +1,4 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Daño infinito
-Tools.RecipesLoseText: ¡No puedes fabricar este objeto directamente!
 
 Biomes: {
 	TungstenBiome: {

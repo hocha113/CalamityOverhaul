@@ -26,11 +26,16 @@ namespace CalamityOverhaul.Content.HackTimes
         }
 
         public override void Update() {
+            //敌我双主色随当前目标过渡
+            HackTheme.UpdateProfile();
+
             Panel.Update();
             //Queue.Update 由 CWRWorld.PostUpdateEverything 驱动
             InfiniteHack.Update();
             ScanInfo.Update();
             Ram.Update();
+            //悬停协议成本传给RAM弧做预扣闪烁
+            Ram.PreviewCost = Panel.HoveredCostPreview;
 
             bool mouseOnPanel = Panel.ContainsMouse();
             UpdateClickSelection(mouseOnPanel);

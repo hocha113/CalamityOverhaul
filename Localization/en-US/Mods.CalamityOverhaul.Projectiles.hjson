@@ -146,11 +146,6 @@ GlacialShell.DisplayName: Glacial Shell
 GlacierSpikeProj.DisplayName: Glacier Spike
 GlacierWave.DisplayName: Glacial Surge
 ExtremeColdHail.DisplayName: Extreme Cold Hail
-HeavenRainbowImpact.DisplayName: Heavenly Rainbow Impact
-InfiniteArrow.DisplayName: Infinite Arrow
-InfiniteRune.DisplayName: Infinite Rune
-ParadiseArrow.DisplayName: Paradise Arrow
-VientianePunishment.DisplayName: Vientiane's Punishment
 IceExplosionFriend.DisplayName: Ice Explosion
 IceParclose.DisplayName: Ice Parclose
 FrostGlimmer.DisplayName: Frost Glimmer
@@ -178,9 +173,6 @@ ElementWhipProjectile.DisplayName: Element Whip
 GhostFireWhipProjectile.DisplayName: Ghost Fire Whip
 WhiplashGalacticaProjectile.DisplayName: Whiplash Galactica
 WTrail.DisplayName: Trail
-InfiniteEnmgs.DisplayName: Infinite Energy
-InfinitePickProj.DisplayName: Infinite Pickaxe
-SpanDMBall.DisplayName: Dark Matter Ball
 CthulhuEye.DisplayName: Cthulhu Eye
 JewelFragmentProjectile.DisplayName: Jewel Fragment
 JewelGemProjectile.DisplayName: Jewel Star

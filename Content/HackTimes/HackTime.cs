@@ -219,6 +219,16 @@ namespace CalamityOverhaul.Content.HackTimes
 
         public static LocalizedText RightClickHint { get; private set; }
 
+        //重做UI新增本地化字段
+        public static LocalizedText StatusReady { get; private set; }
+        public static LocalizedText StatusNoRam { get; private set; }
+        public static LocalizedText UplinkHeader { get; private set; }
+        public static LocalizedText DataTab { get; private set; }
+        public static LocalizedText ScanTab { get; private set; }
+        public static LocalizedText TargetTagged { get; private set; }
+        public static LocalizedText FooterUpload { get; private set; }
+        public static LocalizedText FooterCost { get; private set; }
+
         //权限校验失败弹窗本地化字段
         public static LocalizedText AccessDeniedTitle { get; private set; }
         public static LocalizedText AccessDeniedDesc { get; private set; }
@@ -410,6 +420,15 @@ namespace CalamityOverhaul.Content.HackTimes
             SignalTowerScanProtocol = this.GetLocalization(nameof(SignalTowerScanProtocol));
 
             RightClickHint = this.GetLocalization(nameof(RightClickHint));
+
+            StatusReady = this.GetLocalization(nameof(StatusReady));
+            StatusNoRam = this.GetLocalization(nameof(StatusNoRam));
+            UplinkHeader = this.GetLocalization(nameof(UplinkHeader));
+            DataTab = this.GetLocalization(nameof(DataTab));
+            ScanTab = this.GetLocalization(nameof(ScanTab));
+            TargetTagged = this.GetLocalization(nameof(TargetTagged));
+            FooterUpload = this.GetLocalization(nameof(FooterUpload));
+            FooterCost = this.GetLocalization(nameof(FooterCost));
 
             AccessDeniedTitle = this.GetLocalization(nameof(AccessDeniedTitle));
             AccessDeniedDesc = this.GetLocalization(nameof(AccessDeniedDesc));

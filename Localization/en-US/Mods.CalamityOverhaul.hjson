@@ -1,5 +1,4 @@
 EndlessDamageClassTextContent.EndlessDamageClass.DisplayName: Endless Damage
-Tools.RecipesLoseText: You cannot craft this item directly!
 
 Biomes: {
 	TungstenBiome: {

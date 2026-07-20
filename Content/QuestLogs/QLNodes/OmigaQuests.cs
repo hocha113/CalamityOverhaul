@@ -4,12 +4,9 @@ using CalamityOverhaul.Content.Items.Magic.Pandemoniums;
 using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Melee;
 using CalamityOverhaul.Content.Items.Melee.SpearOfLonginuses;
-using CalamityOverhaul.Content.Items.Placeable;
 using CalamityOverhaul.Content.Items.Ranged;
 using CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses;
-using CalamityOverhaul.Content.Items.Ranged.HeavenfallLongbows;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
-using CalamityOverhaul.Content.Items.Tools;
 using CalamityOverhaul.Content.QuestLogs.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -30,208 +27,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             }
         }
 
-        public static void AddPostTransmutationParent(QuestNode quest) {
+        public static void AddPostRockParent(QuestNode quest) {
             if (CWRID.Item_Rock > 0) {
                 quest.ParentIDs.Add(nameof(RockQuestII));
             }
             else {
-                quest.ParentIDs.Add(nameof(TransmutationOfMatterQuest));
-            }
-        }
-    }
-
-    internal class DarkMatterCompressorQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<DarkMatterCompressorItem>();
-            Position = new Vector2(0, -150);
-            OmigaQuestParents.AddRockGateParent(this);
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<DarkMatterBall>(),
-                Amount = 10
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<DarkMatterCompressorItem>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class InfinityCatalystQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<InfinityCatalyst>();
-            Position = new Vector2(0, -150);
-            AddParent<TransmutationOfMatterQuest>();
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 1
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<InfinityCatalyst>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class InfiniteIngotQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<InfiniteIngot>();
-            Position = new Vector2(0, -150);
-            AddParent<InfinityCatalystQuest>();
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 2
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<InfiniteIngot>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class InfinitePickQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<InfinitePick>();
-            Position = new Vector2(150, -150);
-            AddParent<InfiniteIngotQuest>();
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<InfinitePick>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class HeavenfallLongbowQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<HeavenfallLongbow>();
-            Position = new Vector2(-150, -150);
-            AddParent<InfiniteIngotQuest>();
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 5
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<HeavenfallLongbow>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class InfiniteToiletQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<InfiniteToiletItem>();
-            Position = new Vector2(0, -150);
-            AddParent<InfiniteIngotQuest>();
-            QuestType = QuestType.Side;
-            Difficulty = QuestDifficulty.Easy;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 1
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<InfiniteToiletItem>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
-            }
-        }
-    }
-
-    internal class TransmutationOfMatterQuest : QuestNode
-    {
-        public override void SetStaticDefaults() {
-            IconType = QuestIconType.Item;
-            IconItemType = ModContent.ItemType<TransmutationOfMatterItem>();
-            Position = new Vector2(0, -150);
-            AddParent<DarkMatterCompressorQuest>();
-            QuestType = QuestType.Main;
-            Difficulty = QuestDifficulty.Master;
-
-            AddObtainObjective();
-
-            Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
-                Amount = 10
-            });
-        }
-
-        public override void UpdateByPlayer() {
-            Player player = Main.LocalPlayer;
-            int count = player.InquireItem(ModContent.ItemType<TransmutationOfMatterItem>());
-            Objectives[0].CurrentProgress = count;
-            if (Objectives[0].IsCompleted && !IsCompleted) {
-                IsCompleted = true;
+                //没有RockQuestII时直接挂到岩石门槛链上，位置补上原本两级父节点的纵向偏移
+                quest.Position += new Vector2(0, -300);
+                AddRockGateParent(quest);
             }
         }
     }
@@ -242,14 +45,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AnnihilatingUniverse>();
             Position = new Vector2(150, -200);
-            OmigaQuestParents.AddPostTransmutationParent(this);
+            OmigaQuestParents.AddPostRockParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
             AddObtainObjective();
 
             Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                ItemType = ModContent.ItemType<NeutronStarIngot>(),
                 Amount = 5
             });
         }
@@ -270,14 +73,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<AriaofTheCosmos>();
             Position = new Vector2(150, -100);
-            OmigaQuestParents.AddPostTransmutationParent(this);
+            OmigaQuestParents.AddPostRockParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
             AddObtainObjective();
 
             Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                ItemType = ModContent.ItemType<NeutronStarIngot>(),
                 Amount = 5
             });
         }
@@ -298,14 +101,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<Pandemonium>();
             Position = new Vector2(150, 0);
-            OmigaQuestParents.AddPostTransmutationParent(this);
+            OmigaQuestParents.AddPostRockParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
             AddObtainObjective();
 
             Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                ItemType = ModContent.ItemType<NeutronStarIngot>(),
                 Amount = 5
             });
         }
@@ -326,14 +129,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<SpearOfLonginus>();
             Position = new Vector2(150, 100);
-            OmigaQuestParents.AddPostTransmutationParent(this);
+            OmigaQuestParents.AddPostRockParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
             AddObtainObjective();
 
             Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                ItemType = ModContent.ItemType<NeutronStarIngot>(),
                 Amount = 5
             });
         }
@@ -354,14 +157,14 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<DragonsWord>();
             Position = new Vector2(150, 200);
-            OmigaQuestParents.AddPostTransmutationParent(this);
+            OmigaQuestParents.AddPostRockParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
             AddObtainObjective();
 
             Rewards.Add(new QuestReward {
-                ItemType = ModContent.ItemType<InfiniteIngot>(),
+                ItemType = ModContent.ItemType<NeutronStarIngot>(),
                 Amount = 5
             });
         }
@@ -382,8 +185,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
 
         public override void SetStaticDefaults() {
             IconTexturePath = "CalamityMod/UI/MiscTextures/BossRushIcon";
-            Position = new Vector2(200, 0);
-            AddParent<TransmutationOfMatterQuest>();
+            Position = new Vector2(200, -300);
+            OmigaQuestParents.AddRockGateParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 
@@ -410,8 +213,8 @@ namespace CalamityOverhaul.Content.QuestLogs.QLNodes
         public override void SetStaticDefaults() {
             IconType = QuestIconType.Item;
             IconItemType = ModContent.ItemType<NeutronStarIngot>();
-            Position = new Vector2(-200, 0);
-            AddParent<TransmutationOfMatterQuest>();
+            Position = new Vector2(-200, -300);
+            OmigaQuestParents.AddRockGateParent(this);
             QuestType = QuestType.Main;
             Difficulty = QuestDifficulty.Master;
 

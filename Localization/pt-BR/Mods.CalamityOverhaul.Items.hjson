@@ -93,90 +93,9 @@ AnnihilatingUniverse: {
 		'''
 }
 
-HeavenfallLongbow: {
-	DisplayName: Arco Longo da Queda Celestial
-	Tooltip:
-		'''
-		Dispara flechas infinitas; a energia arco-iris do fim seguira em seguida
-		Clique direito faz flechas celestiais cairem do ceu
-		Pressione [KEY] para iniciar o Julgamento de Vientiane quando totalmente carregado
-		[legend]
-		'''
-	Legend:
-		'''
-
-		As chamas da guerra de um bilhao de anos atras nunca foram verdadeiramente extintas.
-		Como brasas fumegantes, elas atravessam os corredores infinitos do tempo, queimando intensamente ainda hoje.
-		Elas sao os restos do Crepusculo dos Deuses, o resplendor da antiga cisao do universo, os ecos incessantes da existencia e aniquilacao.
-
-		O Deus Radiante, personificacao da ordem galatica, caiu na maior rebeliao que o cosmos ja testemunhou.
-		O corpo divino se estilhaçou como uma estrela em colapso, espalhando inumeros fragmentos brilhantes por cada canto da galaxia.
-		Aqueles fragmentos se tornaram as sementes da vida, a centelha do conhecimento, o berco dos milagres—e ainda,
-		eles tambem carregaram a mancha da ganancia, destruicao e profanacao.
-		Mortais reverenciam estes restos, chamando-os de reliquias sagradas;
-		ainda assim, os chamados milagres forjados a partir deles sao meras imitacoes cruas do divino, a arrogancia imprudente daqueles que nao conhecem a reverencia.
-
-		Mas entre as ruinas esquecidas e os ecos da lenda, existe um artefato que transcende todas as reliquias.
-		Ele nao e mera testemunha da queda do Deus Supremo; foi a propria arma que o lancou no esquecimento eterno—um arco de lenda.
-		Outrora envolto na furia do fogo celestial,
-		ele disparou a flecha fatal que rompeu a autoridade divina e extinguiu a arrogancia dos deuses, arruinando suas ambicoes.
-		Quando a guerra terminou, o arco tambem foi reivindicado pelas mares do tempo, enterrado no sudario sem fim do misterio e do mito.
-
-		E ainda assim, a roda do destino gira mais uma vez.
-		Os fogos do ceu reacendem, e aquele arco matador de deuses emergira novamente em meio a sinfonia das estrelas.
-		Mais uma vez, ele esculpira os anais da historia em sangue e poeira estelar.
-
-		'''
-}
-
-InfiniteIngot: {
-	DisplayName: Lingote Infinito
-	Tooltip: O poder do universo, nas palmas das suas maos
-}
-
-TransmutationOfMatterItem: {
-	DisplayName: Polimerizador de Materia Omega
-	Tooltip:
-		'''
-		Coloque no chao e clique com o botao direito para abrir a bancada de fabricacao
-		"Sua jornada gananciosa comeca agora"
-		'''
-}
-
-DarkMatterCompressorItem: {
-	DisplayName: Compressor de Materia Escura
-	Tooltip: Reconstitui materia como um buraco negro
-}
-
-InfinitePick: {
-	DisplayName: Picareta da Ganancia Universal
-	Tooltip:
-		'''
-		Clique direito e destrua tudo o que tocar
-		Pressione [KEY] para mudar o modo
-		'Voce pode sentir que as proprias terras de Terraria tremem de medo sempre que voce a segura.'
-		'''
-}
-
-DarkMatterBall: {
-	DisplayName: Bola de Materia Escura
-	Tooltip:
-		'''
-		Foi comprimida em um buraco negro, mas milagrosamente permanece estavel.
-		Clique direito enquanto segura o item para armazenar itens dentro.
-		Clique direito com a mao vazia para recuperar itens armazenados.
-		'''
-	Contents: Conteudo:
-}
-
 NeutronStarIngot: {
 	DisplayName: Lingote de Estrela de Neutrons
 	Tooltip: O peso de todas as coisas, reunido em suas pontas dos dedos
-}
-
-InfinityCatalyst: {
-	DisplayName: Catalisador do Infinito
-	Tooltip: Sua ganancia esta prestes a atingir o apice
 }
 
 DawnshatterAzure: {
@@ -187,48 +106,6 @@ DawnshatterAzure: {
 		Segure o botao direito do mouse para investir enquanto levanta sua arma
 		"Deixe as chamas purificarem sua alma e saquearem completamente seus inimigos"
 		'''
-}
-
-DecayParticles: {
-	DisplayName: Particulas de Decaimento
-	Tooltip:
-		'''
-		Um vislumbre da fonte da materia
-		A existencia em si e um milagre
-		'''
-}
-
-DecaySubstance: {
-	DisplayName: Substancia de Decaimento
-	Tooltip:
-		'''
-		Esta em eterno declinio
-		Um ciclo de destruicao e renovacao
-		'''
-}
-
-DissipationSubstance: {
-	DisplayName: Substancia de Dissipacao
-	Tooltip:
-		'''
-		A realidade tem dificuldade em capturar sua essencia
-		Esta desaparecendo, mas e enorme
-		'''
-}
-
-SpectralMatter: {
-	DisplayName: Materia Espectral
-	Tooltip: Cerca de 3,7 trilhoes de toneladas
-}
-
-InfiniteToiletItem: {
-	OnlyZenithCondition: Apenas no Mundo Zenith
-
-	InfiniteToiletItem: {
-		OnlyZenithCondition: Apenas no Mundo Zenith
-		DisplayName: Vaso Sanitario Infinito
-		Tooltip: ""
-	}
 }
 
 StormGoddessSpear: {

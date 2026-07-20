@@ -93,80 +93,9 @@ AnnihilatingUniverse: {
 		'''
 }
 
-HeavenfallLongbow: {
-	DisplayName: 天堂陨落长弓
-	Tooltip:
-		'''
-		发射无尽之箭，终焉彩虹能量将随后而至
-		右键让天堂之箭从天而降
-		蓄力完成后按下[KEY]启动万象审判
-		[legend]
-		'''
-	Legend:
-		'''
-
-		百亿年前的战火并未熄灭，它们如炽烈的余烬，穿越无尽时光，至今燃烧不息。
-		那是众神黄昏的遗迹，是古老宇宙裂变时刻的余光，是生生不息的回响。
-		耀界之神，银河秩序的化身，在那场宇宙间最伟大的反叛中陨落。
-		祂的身躯如同星辰碎裂，化作无数璀璨的神辉，散落至银河的每一个角落。
-		那些光辉孕育了生命、知识与奇迹，也带来了贪婪、毁灭与亵渎。凡人崇拜着祂的残骸，称之为神圣遗迹；
-		而那些奇迹之物，不过是对祂力量的拙劣复制，是凡人不知敬畏的狂妄象征。
-		但在无尽的遗忘与遗迹之中，有一物品超越了神迹，它不仅见证了至高神的陨落，更亲手将其送入永夜的深渊——这是一把传说中的长弓。
-		它曾在天堂的怒火中燃烧，射出那致命的一箭，粉碎了至高神的权能，终结了众神的野望。
-		随着战争的终结，这柄弓也随时间的洪流被埋葬在无尽的神秘与传说中。
-		而如今，命运的齿轮再次转动，天堂的怒火重新点燃。那柄杀神之弓，将在众星的赞歌中复现，再次将历史书写于鲜血与星尘之上
-
-		'''
-}
-
-InfiniteIngot: {
-	DisplayName: 无尽锭
-	Tooltip: 寰宇之力，就在掌中
-}
-
-TransmutationOfMatterItem: {
-	DisplayName: 终焉物质聚合仪
-	Tooltip:
-		'''
-		放置后右键打开合成台
-		"你的贪婪之旅将正式启程"
-		'''
-}
-
-DarkMatterCompressorItem: {
-	DisplayName: 暗物质压缩机
-	Tooltip: 如黑洞般重构物质
-}
-
-InfinitePick: {
-	DisplayName: 寰宇贪婪镐
-	Tooltip:
-		'''
-		右键摧毁触及的一切
-		按下[KEY]切换形态
-		"你可以感觉到，每当你握住，泰拉瑞亚的土地就会在恐惧中颤抖"
-		'''
-}
-
-DarkMatterBall: {
-	DisplayName: 暗物质球
-	Tooltip:
-		'''
-		它已经被压缩成了黑洞，但却奇迹般的保持住了稳定状态
-		手持物品右键可以将物品存入其中
-		空手右键可以将容纳物取出
-		'''
-	Contents: 内容物:
-}
-
 NeutronStarIngot: {
 	DisplayName: 中子星锭
 	Tooltip: 万物之重，聚合指尖
-}
-
-InfinityCatalyst: {
-	DisplayName: 无尽催化剂
-	Tooltip: 你的贪婪即将达到顶点
 }
 
 DawnshatterAzure: {
@@ -177,48 +106,6 @@ DawnshatterAzure: {
 		长按右键举枪冲刺
 		"烈火净化灵魂，将你的敌人彻底掠夺干净"
 		'''
-}
-
-DecayParticles: {
-	DisplayName: 虚粒子
-	Tooltip:
-		'''
-		对物质本源的一丝窥视
-		存在本身便是一种奇迹
-		'''
-}
-
-DecaySubstance: {
-	DisplayName: 衰变物质
-	Tooltip:
-		'''
-		它在无穷无尽的衰败着
-		循环着毁灭与新生
-		'''
-}
-
-DissipationSubstance: {
-	DisplayName: 消渐物质
-	Tooltip:
-		'''
-		现实已经难以捕捉它的本质
-		它不断的消散，但又无比庞大
-		'''
-}
-
-SpectralMatter: {
-	DisplayName: 幽灵物质
-	Tooltip: 大约3700000亿吨吧
-}
-
-InfiniteToiletItem: {
-	OnlyZenithCondition: 仅在天顶世界
-
-	InfiniteToiletItem: {
-		OnlyZenithCondition: 仅在天顶世界
-		DisplayName: 无限马桶
-		Tooltip: ""
-	}
 }
 
 StormGoddessSpear: {
@@ -1226,6 +1113,7 @@ Heartcarver: {
 	DisplayName: 刻心者
 	Tooltip:
 		'''
+		刺击出手时掷出旋转的血匕，循着伤口的气味追猎
 		右键进行短距离弧线突刺
 		吸收剜出的心脏可获得短暂攻速提升，并凝成环绕血刃
 		血刃会循着你下一次剜心击的声音扑向伤口

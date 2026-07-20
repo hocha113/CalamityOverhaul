@@ -972,7 +972,7 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.ItemPipelines
             }
         }
 
-        [VaultLoaden(CWRConstant.UI + "SupertableUIs/InputArrow3")]
+        [VaultLoaden(CWRConstant.UI + "InputArrow3")]
         private static Asset<Texture2D> InputArrow = null!;
 
         public override void FrontDraw(SpriteBatch spriteBatch) {

@@ -1,7 +1,6 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Scenarios.SupCal.End.EternalBlazingNow;
 using CalamityOverhaul.Content.Scenarios.SupCal.SupCalDisplayTexts;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -16,21 +15,9 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
     internal class Pandemonium : ModItem
     {
         public override string Texture => CWRConstant.Item_Magic + "Pandemonium";
-        public readonly static string[] FullItems = ["0", "0", "0", "0", "CalamityMod/AshesofAnnihilation", "0", "0", "0", "0",
-            "0", "0", "0", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "0", "0", "0",
-            "0", "0", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "0", "0",
-            "0", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/Heresy", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "0",
-            "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/Rock", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation",
-            "0", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/Vehemence", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "0",
-            "0", "0", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "0", "0",
-            "0", "0", "0", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "CalamityMod/AshesofAnnihilation", "0", "0", "0",
-            "0", "0", "0", "0", "CalamityMod/AshesofAnnihilation", "0", "0", "0", "0",
-            "CalamityOverhaul/Pandemonium"
-        ];
 
         public override void SetStaticDefaults() {
             ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-            SupertableUI.ModCall_OtherRpsData_StringList.Add(FullItems);
         }
 
         public override void SetDefaults() {
@@ -51,7 +38,21 @@ namespace CalamityOverhaul.Content.Items.Magic.Pandemoniums
             Item.shoot = ModContent.ProjectileType<PandemoniumChannel>();
             Item.shootSpeed = 10f;
             Item.channel = true;
-            Item.CWR().OmigaSnyContent = FullItems;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_AshesofAnnihilation, CWRID.Item_Heresy
+                , CWRID.Item_Vehemence, CWRID.Item_Rock)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(CWRID.Item_Heresy)
+                .AddIngredient(CWRID.Item_Vehemence)
+                .AddIngredient(CWRID.Item_AshesofAnnihilation, 38)
+                .AddIngredient(CWRID.Item_Rock)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips) {

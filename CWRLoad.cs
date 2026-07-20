@@ -10,15 +10,6 @@ namespace CalamityOverhaul
 {
     public static class CWRLoad
     {
-        #region 跨Mod物品ID
-        public static int EternitySoul;
-        public static int DevisCurse;
-        public static int DeviatingEnergy;
-        public static int AbomEnergy;
-        public static int EternalEnergy;
-        public static int MetanovaBar;
-        #endregion
-
         #region Boss/蠕虫体节列表
         /// <summary>
         /// 灾坟虫
@@ -159,14 +150,6 @@ namespace CalamityOverhaul
         /// 该枪械是否必定消耗弹药
         /// </summary>
         internal static Dictionary<int, bool> ItemIsGunAndMustConsumeAmmunition { get; private set; } = [];
-        /// <summary>
-        /// 从物品id映射到对应的终焉合成内容上，如果该物品没有终焉合成则返回<see langword="null"/>
-        /// </summary>
-        internal static Dictionary<int, string[]> ItemIDToOmigaSnyContent { get; private set; } = [];
-        /// <summary>
-        /// 该物品是否自动装填终焉合成内容
-        /// </summary>
-        internal static Dictionary<int, bool> ItemAutoloadingOmigaSnyRecipe { get; private set; } = [];
         #endregion
 
         #region NPC/弹幕属性
@@ -219,7 +202,6 @@ namespace CalamityOverhaul
         public static void Setup() {
             SetupBossSegmentLists();
             SetupStaticData();
-            SetupCrossModItems();
             SetupItemData();
             SetupNPCData();
             SetupProjectileData();
@@ -295,19 +277,6 @@ namespace CalamityOverhaul
             ];
         }
 
-        private static void SetupCrossModItems() {
-            if (CWRMod.Instance.fargowiltasSouls != null) {
-                EternitySoul = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternitySoul").Type;
-                DevisCurse = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("DevisCurse").Type;
-                DeviatingEnergy = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("DeviatingEnergy").Type;
-                AbomEnergy = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("AbomEnergy").Type;
-                EternalEnergy = CWRMod.Instance.fargowiltasSouls.Find<ModItem>("EternalEnergy").Type;
-            }
-            if (CWRMod.Instance.catalystMod != null) {
-                MetanovaBar = CWRMod.Instance.catalystMod.Find<ModItem>("MetanovaBar").Type;
-            }
-        }
-
         private static void SetupItemData() {
             for (int itemType = 0; itemType < ItemLoader.ItemCount; itemType++) {
                 Item item = ContentSamples.ItemsByType[itemType];
@@ -319,8 +288,6 @@ namespace CalamityOverhaul
                 ItemIsBowAndArrowNum[itemType] = 1;
                 ItemIsRanged[itemType] = false;
                 ItemIsRangedAndCanRightClickFire[itemType] = false;
-                ItemIDToOmigaSnyContent[itemType] = null;
-                ItemAutoloadingOmigaSnyRecipe[itemType] = true;
 
                 if (item == null || item.type == ItemID.None) {
                     continue;
@@ -331,14 +298,6 @@ namespace CalamityOverhaul
                 }
                 if (item.createWall != -1 && !WallToItem.ContainsKey(item.createWall)) {
                     WallToItem.Add(item.createWall, item.type);
-                }
-
-                CWRItem cwrItem = item.CWR();
-
-                string[] snyOmig = cwrItem.OmigaSnyContent;
-                if (snyOmig != null) {
-                    ItemIDToOmigaSnyContent[itemType] = snyOmig;
-                    ItemAutoloadingOmigaSnyRecipe[itemType] = cwrItem.AutoloadingOmigaSnyRecipe;
                 }
             }
 
@@ -408,8 +367,6 @@ namespace CalamityOverhaul
             ItemIsRangedAndCanRightClickFire?.Clear();
             ItemIsBowAndArrowNum?.Clear();
             ItemIsGunAndMustConsumeAmmunition?.Clear();
-            ItemIDToOmigaSnyContent?.Clear();
-            ItemAutoloadingOmigaSnyRecipe?.Clear();
             NPCValue.ImmuneFrozen?.Clear();
             ProjValue.ImmuneFrozen?.Clear();
             AllBossSegmentLists = null;

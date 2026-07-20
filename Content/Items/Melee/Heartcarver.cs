@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.Localization;
@@ -248,15 +249,15 @@ namespace CalamityOverhaul.Content.Items.Melee
                     ? MathHelper.Lerp(10f, -16f, MathF.Pow(t, 3f))
                     : MathHelper.Lerp(10f, -8f, MathF.Sin(t * MathHelper.PiOver2));
 
-                //终结斩蓄力：血线向持握点收束；72% 处硬切静默，给爆发留一口气
+                //终结斩蓄力：血珠被拽向持握点，高速拉丝成血线（液体，不是能量线）；72% 处硬切静默
                 if (IsFinisher && !VaultUtils.isServer && elapsed < WindupTime * 0.72f && elapsed % 2f < speedMul) {
                     float angle = Main.rand.NextFloat(MathHelper.TwoPi);
                     float dist = Main.rand.NextFloat(70f, 130f);
                     Vector2 spawnPos = Owner.Center + angle.ToRotationVector2() * dist;
-                    Vector2 vel = (Owner.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(6f, 11f);
-                    PRTLoader.NewParticle<PRT_Line>(spawnPos, vel,
-                        HeartcarverPalette.Blood(Main.rand.NextFloat()), Main.rand.NextFloat(1.2f, 2f))
-                        ?.Configure(false, Main.rand.Next(8, 14));
+                    Vector2 vel = (Owner.Center - spawnPos).SafeNormalize(Vector2.Zero) * Main.rand.NextFloat(8f, 13f);
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(spawnPos, vel,
+                        HeartcarverPalette.Blood(Main.rand.NextFloat()), Main.rand.NextFloat(0.9f, 1.3f))
+                        ?.Configure(Main.rand.Next(10, 15), 0.02f, 1f);
                 }
             }
             else if (elapsed < stabEnd) {
@@ -281,11 +282,21 @@ namespace CalamityOverhaul.Content.Items.Melee
             elapsed += speedMul;
         }
 
-        /// <summary>刺出的一帧：对照心跳窗口判定剜心击，锚定刺线快照，铺刺击音</summary>
+        /// <summary>刺出的一帧：对照心跳窗口判定剜心击，掷出追猎血匕，锚定刺线快照，铺刺击音</summary>
         private void OnStrikeStart() {
             if (Projectile.IsOwnedByLocalPlayer() && Owner.GetModPlayer<HeartcarverPlayer>().JudgeCarve()) {
                 CarveFlag = 1f;
                 Projectile.netUpdate = true;
+            }
+
+            //随刺掷出旋转追踪的血匕（远程延伸）；终结斩不掷——它的手要留着剜心
+            if (Projectile.IsOwnedByLocalPlayer() && !IsFinisher
+                && Owner.ownedProjectileCounts[ModContent.ProjectileType<HeartcarverThrownDagger>()] < 4) {
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(),
+                    Owner.GetPlayerStabilityCenter() + stabUnit * 22f, stabUnit * 15f,
+                    ModContent.ProjectileType<HeartcarverThrownDagger>(),
+                    (int)(Projectile.damage * 0.4f), Projectile.knockBack * 0.4f,
+                    Owner.whoAmI, ai1: CarveFlag);
             }
 
             lanceOrigin = Owner.GetPlayerStabilityCenter();
@@ -371,13 +382,21 @@ namespace CalamityOverhaul.Content.Items.Melee
                 Main.instance.CameraModifiers.Add(modifier);
             }
 
-            //动脉裂纹放射：命中点的血线爆发
-            int lineCount = extracted ? 12 : 7;
-            for (int i = 0; i < lineCount; i++) {
-                float ang = MathHelper.TwoPi * i / lineCount + Main.rand.NextFloat(-0.2f, 0.2f);
-                PRTLoader.NewParticle<PRT_Line>(target.Center, ang.ToRotationVector2() * Main.rand.NextFloat(6f, 13f),
-                    HeartcarverPalette.Heat(Main.rand.NextFloat(0.4f)), Main.rand.NextFloat(1.4f, 2.4f))
-                    ?.Configure(false, Main.rand.Next(10, 18));
+            //动脉喷溅：伤口放射状喷出高速血珠，出膛拉丝成线、随重力坠成弧——液体的血，不是能量线
+            int spurtCount = extracted ? 16 : 10;
+            for (int i = 0; i < spurtCount; i++) {
+                float ang = MathHelper.TwoPi * i / spurtCount + Main.rand.NextFloat(-0.25f, 0.25f);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(target.Center,
+                    ang.ToRotationVector2() * Main.rand.NextFloat(7f, 14f),
+                    Main.rand.NextBool(3) ? HeartcarverPalette.Arterial : HeartcarverPalette.Blood(Main.rand.NextFloat(0.6f)),
+                    Main.rand.NextFloat(1f, 1.5f))?.Configure(Main.rand.Next(22, 34), 0.3f);
+            }
+            //几滴沉重的慢血：喷溅的余韵
+            for (int i = 0; i < (extracted ? 5 : 3); i++) {
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(target.Center,
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 3.5f),
+                    HeartcarverPalette.ArterialDeep, Main.rand.NextFloat(1.2f, 1.7f))
+                    ?.Configure(Main.rand.Next(26, 40), 0.34f);
             }
             SpawnBloodBurst(target.Center, extracted ? 18 : 10, extracted ? 11f : 8f);
             PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(target.Center, Vector2.Zero,
@@ -647,15 +666,15 @@ namespace CalamityOverhaul.Content.Items.Melee
             Owner.velocity = Vector2.Zero;
             Owner.Center = dashStartPos - dashDirection * reel;
 
-            //收束血线：能量向持刀者汇聚
+            //收束血流：血珠被拽向持刀者，高速拉丝（液体收束，不是能量线）
             if (!VaultUtils.isServer) {
                 for (int i = 0; i < 2; i++) {
                     float ang = Main.rand.NextFloat(MathHelper.TwoPi);
                     Vector2 spawnPos = Owner.Center + ang.ToRotationVector2() * Main.rand.NextFloat(60f, 120f);
-                    PRTLoader.NewParticle<PRT_Line>(spawnPos,
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(spawnPos,
                         (Owner.Center - spawnPos) * 0.16f,
-                        HeartcarverPalette.Blood(Main.rand.NextFloat()), Main.rand.NextFloat(1f, 1.7f))
-                        ?.Configure(false, Main.rand.Next(6, 10));
+                        HeartcarverPalette.Blood(Main.rand.NextFloat()), Main.rand.NextFloat(0.8f, 1.2f))
+                        ?.Configure(Main.rand.Next(8, 12), 0.02f, 1f);
                 }
             }
         }
@@ -780,12 +799,13 @@ namespace CalamityOverhaul.Content.Items.Melee
                     HeartcarverPalette.Blood(Main.rand.NextFloat()), Main.rand.NextFloat(1.3f, 2.2f))
                     ?.Configure(Main.rand.Next(18, 30));
             }
+            //起步尾流：血珠向身后甩出，坠成血弧
             for (int i = 0; i < 8; i++) {
                 float spread = Main.rand.NextFloat(-0.5f, 0.5f);
-                PRTLoader.NewParticle<PRT_Line>(Owner.Center,
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Owner.Center,
                     (-dashDirection).RotatedBy(spread) * Main.rand.NextFloat(4f, 9f),
-                    HeartcarverPalette.ArterialDeep, Main.rand.NextFloat(1.2f, 2f))
-                    ?.Configure(false, Main.rand.Next(8, 14));
+                    HeartcarverPalette.ArterialDeep, Main.rand.NextFloat(1f, 1.5f))
+                    ?.Configure(Main.rand.Next(16, 26), 0.22f);
             }
             PRTLoader.NewParticle<PRT_HeartcarverPulseRing>(Owner.Center, Vector2.Zero,
                 HeartcarverPalette.Arterial, 1f)?.Configure(0.1f, 0.7f, 14);
@@ -954,6 +974,150 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             device.BlendState = origBlend;
             device.RasterizerState = origRaster;
+        }
+    }
+
+    /// <summary>
+    /// 旋转追猎的血匕：每段刺击出手时随刺掷出的远程延伸（同屏上限 4 柄）。<br/>
+    /// 直飞十余帧后咬住最近的猎物强追踪；在心跳间隙掷出的血匕继承剜心击（必定暴击、周身更亮）。<br/>
+    /// 液血视觉：旋转拖影糊成轮刃 + 位移残像 + 血珠甩尾，命中喷溅动脉血弧
+    /// </summary>
+    internal class HeartcarverThrownDagger : ModProjectile
+    {
+        public override string Texture => CWRConstant.Item_Melee + "Heartcarver";
+        public override LocalizedText DisplayName => VaultUtils.GetLocalizedItemName<Heartcarver>();
+
+        /// <summary>继承的剜心击标记（ai1 传入，>0.5 生效）</summary>
+        private bool IsCarve => Projectile.ai[1] > 0.5f;
+        private ref float Timer => ref Projectile.localAI[0];
+
+        /// <summary>直飞帧数（update 计），此后开始咬定目标</summary>
+        private const int StraightUpdates = 12;
+        private const float FlySpeed = 15f;
+
+        public override void SetStaticDefaults() {
+            ProjectileID.Sets.TrailCacheLength[Type] = 10;
+            ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
+
+        public override void SetDefaults() {
+            Projectile.DamageType = DamageClass.Generic;
+            Projectile.width = Projectile.height = 26;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.penetrate = 2;
+            Projectile.timeLeft = 210; //extraUpdates=1 → 实际 ~1.75s
+            Projectile.extraUpdates = 1;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = -1;
+        }
+
+        public override void AI() {
+            Timer++;
+
+            //自旋：转出去的刀，转速微随速度
+            Projectile.rotation += (0.38f + Projectile.velocity.Length() * 0.012f) * Projectile.direction;
+
+            //直飞一小段再咬定目标：先看到"掷出"，再看到"追猎"
+            if (Timer > StraightUpdates) {
+                NPC target = Projectile.Center.FindClosestNPC(900f);
+                if (target != null) {
+                    Projectile.SmoothHomingBehavior(target.Center, 1.02f, 0.1f);
+                }
+            }
+            //追踪掉头不掉速
+            float speed = Projectile.velocity.Length();
+            if (speed < FlySpeed * 0.8f) {
+                Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * FlySpeed * 0.8f;
+            }
+
+            //血珠甩尾：旋转的刀把血往外抡
+            if (!VaultUtils.isServer && Timer % 5 == 0) {
+                Vector2 fling = Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1.5f, 3f)
+                    - Projectile.velocity * 0.1f;
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center, fling,
+                    HeartcarverPalette.Blood(Main.rand.NextFloat(0.6f)), Main.rand.NextFloat(0.6f, 0.9f))
+                    ?.Configure(Main.rand.Next(12, 18), 0.18f);
+            }
+
+            Lighting.AddLight(Projectile.Center, HeartcarverPalette.Arterial.ToVector3() * (IsCarve ? 0.4f : 0.22f));
+        }
+
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) {
+            if (target.IsWormBody()) {
+                modifiers.FinalDamage *= 0.5f;
+            }
+            //心跳间隙里掷出的刀记得那个拍子
+            if (IsCarve) {
+                modifiers.SetCrit();
+            }
+        }
+
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+            target.AddBuff(BuffID.Bleeding, 120);
+
+            if (VaultUtils.isServer) {
+                return;
+            }
+            SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.55f, Pitch = 0.15f }, target.Center);
+            //命中喷溅：入射向血弧
+            Vector2 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            for (int i = 0; i < 6; i++) {
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(target.Center,
+                    dir.RotatedByRandom(0.6f) * Main.rand.NextFloat(4f, 9f),
+                    Main.rand.NextBool(3) ? HeartcarverPalette.Arterial : HeartcarverPalette.Blood(Main.rand.NextFloat(0.6f)),
+                    Main.rand.NextFloat(0.8f, 1.2f))?.Configure(Main.rand.Next(18, 28), 0.28f);
+            }
+        }
+
+        public override void OnKill(int timeLeft) {
+            if (VaultUtils.isServer) {
+                return;
+            }
+            //化血消散
+            for (int i = 0; i < 5; i++) {
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center,
+                    Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f),
+                    HeartcarverPalette.ArterialDeep, Main.rand.NextFloat(0.7f, 1.1f))
+                    ?.Configure(Main.rand.Next(14, 22), 0.26f);
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) {
+            Texture2D tex = TextureAssets.Projectile[Type].Value;
+            Vector2 drawPos = Projectile.Center - Main.screenPosition;
+            Vector2 origin = tex.Size() * 0.5f;
+            float drawRot = Projectile.rotation + MathHelper.PiOver4;
+            Color ghostBlood = HeartcarverPalette.ArterialDeep with { A = 0 };
+
+            //位移残像：旧位置的暗血残影
+            for (int i = 2; i <= 6; i += 2) {
+                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                float fade = (1f - i / 8f) * 0.3f;
+                Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                float ghostRot = (i < Projectile.oldRot.Length ? Projectile.oldRot[i] : Projectile.rotation) + MathHelper.PiOver4;
+                Main.EntitySpriteDraw(tex, ghostPos, null, ghostBlood * fade, ghostRot, origin
+                    , Projectile.scale * 0.92f, SpriteEffects.None, 0);
+            }
+
+            //旋转拖影：回溯旋转角糊成轮刃
+            for (int i = 1; i <= 3; i++) {
+                float fade = 0.26f - i * 0.07f;
+                Main.EntitySpriteDraw(tex, drawPos, null, ghostBlood * fade,
+                    drawRot - 0.42f * i * Projectile.direction, origin, Projectile.scale, SpriteEffects.None, 0);
+            }
+
+            //底光：剜心匕更亮，泛心肌粉白
+            Texture2D soft = CWRAsset.SoftGlow.Value;
+            Color glow = (IsCarve ? HeartcarverPalette.Myocard : HeartcarverPalette.Arterial) with { A = 0 };
+            Main.EntitySpriteDraw(soft, drawPos, null, glow * (IsCarve ? 0.5f : 0.3f), 0f
+                , soft.Size() * 0.5f, 0.5f, SpriteEffects.None, 0);
+
+            Main.EntitySpriteDraw(tex, drawPos, null, lightColor, drawRot, origin, Projectile.scale, SpriteEffects.None, 0);
+            return false;
         }
     }
 
@@ -1177,11 +1341,12 @@ namespace CalamityOverhaul.Content.Items.Melee
 
             if (!VaultUtils.isServer) {
                 SoundEngine.PlaySound(SoundID.Item71 with { Volume = 0.7f, Pitch = 0.4f }, Projectile.Center);
+                //出击血浪：血珠沿扑击方向甩出拉丝
                 for (int i = 0; i < 5; i++) {
-                    PRTLoader.NewParticle<PRT_Line>(Projectile.Center,
-                        launchDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(4f, 9f),
-                        HeartcarverPalette.Heat(Main.rand.NextFloat(0.4f)), Main.rand.NextFloat(1.2f, 2f))
-                        ?.Configure(false, Main.rand.Next(8, 14));
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(Projectile.Center,
+                        launchDir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5f, 10f),
+                        HeartcarverPalette.Blood(Main.rand.NextFloat(0.5f)), Main.rand.NextFloat(0.9f, 1.3f))
+                        ?.Configure(Main.rand.Next(10, 16), 0.1f);
                 }
             }
         }

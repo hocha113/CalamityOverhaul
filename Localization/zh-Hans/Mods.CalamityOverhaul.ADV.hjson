@@ -1053,6 +1053,7 @@ ToriiShrine: {
 	ToriiShrine: {
 		InteractHint: "[右键] 拔刀"
 		SealedHint: "[右键] 握住刀柄"
+		// InventoryFullHint: 背包已满，腾出一格再来拔刀
 	}
 }
 

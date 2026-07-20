@@ -1,4 +1,5 @@
-﻿using CalamityOverhaul.Content.RAMSystems;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.RAMSystems;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,11 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>骇入面板渲染器，协议条目右侧飞入</summary>
+    /// <summary>骇入面板渲染器：右侧协议旗标列，尖端指向屏幕中心目标</summary>
     internal class HackPanelRenderer
     {
+        #region 状态字段
+
         //槽位飞入进度 0..1
         private float[] slotFlyIn;
         //槽位悬停动画
@@ -18,10 +21,16 @@ namespace CalamityOverhaul.Content.HackTimes
         private float[] slotGlitchSeed;
         //槽位绘制矩形，悬停检测用
         private Rectangle[] slotRects;
+        //槽位纵向偏移（分组标题产生的错位）
+        private float[] slotYOffset;
+        //该槽位是否为分组首行
+        private bool[] slotGroupHead;
         //悬停槽位索引
         private int hoveredSlot = -1;
         //是否有悬停槽位
         public bool HasHoveredSlot => hoveredSlot >= 0;
+        /// <summary>悬停协议的实际RAM消耗，无悬停为0，RAM弧预扣闪烁用</summary>
+        public int HoveredCostPreview { get; private set; }
         //全局计时
         private float timer;
         //是否显示
@@ -34,39 +43,64 @@ namespace CalamityOverhaul.Content.HackTimes
         private float glitchBandY;
         //故障带冷却
         private float glitchBandCooldown;
-        //当前目标类型
-        private HackTargetKind currentTargetKind;
-        //槽位到协议全局索引映射
-        private readonly List<int> filteredIndices = [];
+        //槽位到协议全局索引映射（按类别分组后的显示顺序）
+        private readonly List<int> displayIndices = [];
         //过滤后协议数量
         private int displayCount;
 
-        //条目排版常量
-        private const float ItemWidth = 420f;
-        private const float ItemHeight = 78f;
-        private const float ItemGap = 5f;
+        #endregion
+
+        #region 排版常量
+
+        private const float RowWidth = 340f;
+        private const float RowHeight = 46f;
+        private const float RowGap = 5f;
+        //分组标题额外占高
+        private const float GroupGap = 18f;
         private const float RightMargin = 36f;
-        //左侧斜切宽度
-        private const float SlashWidth = 22f;
-        //电路树左偏移
-        private const float TrunkOffsetX = 56f;
+        //旗标左端斜切宽（尖端指向屏幕中心）
+        private const float TaperWidth = 12f;
+        //成本大格宽
+        private const float CostCellWidth = 46f;
+        //电路树主干左偏移
+        private const float TrunkOffsetX = 44f;
         //首条目前延迟（秒）
         private const float BaseEntryDelay = 0.2f;
         //条目飞入间隔（秒）
-        private const float EntryStagger = 0.07f;
+        private const float EntryStagger = 0.06f;
         //列表下移，避让 RAM HUD
         private const float TopPadding = 60f;
+        //详情页脚高度
+        private const float FooterHeight = 86f;
         //字体尺寸
-        private static float FontName => 0.92f;
-        private static float FontDesc => 0.74f;
-        private static float FontIndex => 0.52f;
-        private static float FontTime => 0.52f;
-        private static float FontStatus => 0.48f;
+        private static float FontName => 0.80f;
+        private static float FontCost => 0.85f;
+        private static float FontDesc => 0.72f;
+        private static float FontTime => 0.50f;
+        private static float FontMicro => 0.36f;
+        private static float FontGroup => 0.40f;
+
+        //解码乱码字符池
+        private const string ScrambleChars = "0123456789ABCDEF#$%&";
+
+        #endregion
+
+        #region 生命周期
 
         public void Show(HackTargetKind targetKind = HackTargetKind.Npc) {
-            currentTargetKind = targetKind;
-            QuickHackDef.GetFilteredIndices(targetKind, filteredIndices);
-            displayCount = filteredIndices.Count;
+            //先取过滤集，再按类别分组排序
+            List<int> filtered = [];
+            QuickHackDef.GetFilteredIndices(targetKind, filtered);
+
+            displayIndices.Clear();
+            foreach (QuickHackCategory cat in Enum.GetValues<QuickHackCategory>()) {
+                for (int i = 0; i < filtered.Count; i++) {
+                    var hack = QuickHackDef.GetByIndex(filtered[i]);
+                    if (hack != null && hack.Category == cat)
+                        displayIndices.Add(filtered[i]);
+                }
+            }
+            displayCount = displayIndices.Count;
             if (displayCount == 0) {
                 Hide();
                 return;
@@ -77,9 +111,25 @@ namespace CalamityOverhaul.Content.HackTimes
                 slotHoverAnim = new float[displayCount];
                 slotGlitchSeed = new float[displayCount];
                 slotRects = new Rectangle[displayCount];
+                slotYOffset = new float[displayCount];
+                slotGroupHead = new bool[displayCount];
             }
+
+            //预计算分组标题偏移
+            float acc = 0f;
+            QuickHackCategory? lastCat = null;
+            for (int i = 0; i < displayCount; i++) {
+                var hack = QuickHackDef.GetByIndex(displayIndices[i]);
+                bool newGroup = lastCat == null || hack.Category != lastCat.Value;
+                slotGroupHead[i] = newGroup;
+                if (newGroup) acc += GroupGap;
+                slotYOffset[i] = acc;
+                lastCat = hack.Category;
+            }
+
             visible = true;
             hoveredSlot = -1;
+            HoveredCostPreview = 0;
             revealTime = 0f;
             glitchBandY = -100f;
             glitchBandCooldown = 0.5f;
@@ -92,6 +142,7 @@ namespace CalamityOverhaul.Content.HackTimes
         public void Hide() {
             visible = false;
             hoveredSlot = -1;
+            HoveredCostPreview = 0;
             //队列生命周期独立于面板，CWRWorld 全局驱动
         }
 
@@ -99,10 +150,15 @@ namespace CalamityOverhaul.Content.HackTimes
             Queue?.Clear();
         }
 
+        #endregion
+
+        #region 更新
+
         public void Update() {
             timer += 0.016f;
 
             if (!visible) {
+                HoveredCostPreview = 0;
                 if (slotFlyIn == null) return;
                 for (int i = 0; i < slotFlyIn.Length; i++)
                     slotFlyIn[i] = MathHelper.Lerp(slotFlyIn[i], 0f, 0.15f);
@@ -125,12 +181,12 @@ namespace CalamityOverhaul.Content.HackTimes
             //故障带下移
             glitchBandCooldown -= 0.016f;
             if (glitchBandCooldown <= 0f) {
-                glitchBandY += 600f * 0.016f; //匀速
-                float totalH = displayCount * (ItemHeight + ItemGap);
-                float startY = (Main.screenHeight - totalH) * 0.5f + TopPadding;
-                if (glitchBandY > startY + totalH + 50f) {
+                glitchBandY += 600f * 0.016f;
+                float totalH = GetListHeight();
+                float startY = GetListStartY(totalH);
+                if (glitchBandY > startY + totalH + 60f) {
                     glitchBandY = startY - 50f;
-                    glitchBandCooldown = 2f + Main.rand.NextFloat() * 3f; //随机冷却
+                    glitchBandCooldown = 2f + Main.rand.NextFloat() * 3f;
                 }
             }
 
@@ -139,6 +195,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
         private void UpdateHover() {
             hoveredSlot = -1;
+            HoveredCostPreview = 0;
             int mx = Main.mouseX;
             int my = Main.mouseY;
             for (int i = 0; i < slotRects.Length; i++) {
@@ -150,7 +207,11 @@ namespace CalamityOverhaul.Content.HackTimes
                     var qs = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
                     bool disabled = hack != null && !RamSystem.CanAfford(hack.RamCost)
                         || qs != QueueSlotState.None;
-                    if (!disabled) hoveredSlot = i;
+                    if (!disabled) {
+                        hoveredSlot = i;
+                        if (hack != null)
+                            HoveredCostPreview = HackCostEvaluator.GetActualCost(hack, HackTime.CurrentScanTarget);
+                    }
                     break;
                 }
             }
@@ -166,8 +227,8 @@ namespace CalamityOverhaul.Content.HackTimes
 
         //槽位索引到协议全局索引
         private int GetGlobalIndex(int displaySlot) {
-            if (displaySlot >= 0 && displaySlot < filteredIndices.Count)
-                return filteredIndices[displaySlot];
+            if (displaySlot >= 0 && displaySlot < displayIndices.Count)
+                return displayIndices[displaySlot];
             return -1;
         }
 
@@ -203,695 +264,683 @@ namespace CalamityOverhaul.Content.HackTimes
             return false;
         }
 
+        #endregion
+
+        #region 布局计算
+
+        //列表总高（含分组标题）
+        private float GetListHeight() {
+            if (displayCount <= 0) return 0f;
+            return displayCount * (RowHeight + RowGap) - RowGap + slotYOffset[displayCount - 1];
+        }
+
+        private float GetListStartY(float totalH) {
+            return (Main.screenHeight - totalH - FooterHeight) * 0.5f + TopPadding;
+        }
+
+        private float GetBaseX() => Main.screenWidth - RightMargin - RowWidth;
+
+        private float GetRowY(float startY, int i) {
+            return startY + i * (RowHeight + RowGap) + slotYOffset[i];
+        }
+
+        #endregion
+
         #region 主绘制入口
 
         public void Draw(SpriteBatch sb) {
             HackTargetFrame.Draw(sb, timer);
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = HackTheme.Pixel;
             if (px == null) return;
             float alpha = HackTime.Intensity;
             if (alpha < 0.01f) return;
-            if (slotFlyIn == null) return;
+            if (slotFlyIn == null || displayCount == 0) return;
 
-            DrawAmbientNoise(sb, px, alpha);
-            DrawConnectorTree(sb, px, alpha);
-            DrawItems(sb, px, alpha);
-            DrawGlitchBand(sb, px, alpha);
-            DrawStatusBar(sb, px, alpha);
+            float totalH = GetListHeight();
+            float startY = GetListStartY(totalH);
+            float baseX = GetBaseX();
+
+            DrawAmbientNoise(sb, px, alpha, baseX, startY, totalH);
+            DrawConnectorTree(sb, px, alpha, baseX, startY, totalH);
+
+            //行几何与状态快照
+            if (rowStates == null || rowStates.Length != displayCount)
+                rowStates = new RowState[displayCount];
+            RowState[] rows = rowStates;
+            BuildRowStates(rows, baseX, startY);
+
+            //行背景：着色器材质优先，缺失回退CPU旗标填充
+            Effect deck = EffectLoader.HackDeckPanel?.Value;
+            if (deck != null) {
+                DrawRowBackgroundsShader(sb, px, deck, rows, alpha);
+            }
+            else {
+                DrawRowBackgroundsCPU(sb, rows, alpha);
+            }
+
+            //行前景
+            for (int i = 0; i < displayCount; i++) {
+                if (rows[i].Skip) continue;
+                DrawRowForeground(sb, px, alpha, i, in rows[i]);
+            }
+
+            //分组微标题
+            DrawGroupHeaders(sb, alpha, baseX, startY);
+
+            DrawGlitchBand(sb, px, alpha, baseX);
+            DrawFooter(sb, px, alpha, baseX, startY + totalH + 14f);
         }
 
         #endregion
 
-        #region 背景噪波纹理
+        #region 行状态快照
+
+        private struct RowState
+        {
+            public Rectangle Rect;
+            public QuickHackDef Hack;
+            public float Fly;
+            public float Hover;
+            public float Glitch;
+            public QueueSlotState QueueState;
+            public float QueueProgress;
+            public bool Disabled;
+            public bool Skip;
+            public Color AccentColor;
+        }
+
+        //行状态快照池
+        private RowState[] rowStates;
+
+        private void BuildRowStates(RowState[] rows, float baseX, float startY) {
+            for (int i = 0; i < displayCount; i++) {
+                ref RowState rs = ref rows[i];
+                rs = default;
+                float fly = slotFlyIn[i];
+                if (fly < 0.01f) {
+                    slotRects[i] = Rectangle.Empty;
+                    rs.Skip = true;
+                    continue;
+                }
+
+                int globalIdx = GetGlobalIndex(i);
+                rs.Hack = QuickHackDef.GetByIndex(globalIdx);
+                if (rs.Hack == null) {
+                    slotRects[i] = Rectangle.Empty;
+                    rs.Skip = true;
+                    continue;
+                }
+
+                rs.Fly = fly;
+                rs.Hover = slotHoverAnim[i];
+                rs.QueueState = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
+                rs.QueueProgress = Queue?.GetSlotProgress(globalIdx, HackTime.CurrentScanTarget) ?? 0f;
+                rs.Disabled = !RamSystem.CanAfford(rs.Hack.RamCost) || rs.QueueState is QueueSlotState.Uploading or QueueSlotState.Queued;
+                if (rs.Disabled && rs.QueueState == QueueSlotState.None) rs.Hover = 0f;
+
+                //飞入偏移（弹性过冲）+ 故障抖动
+                float flyOffset = (1f - HackTheme.EaseOutBack(fly)) * 400f;
+                rs.Glitch = 0f;
+                if (fly < 0.85f) {
+                    float seed = slotGlitchSeed[i] + timer * 25f;
+                    rs.Glitch = (MathF.Sin(seed) + MathF.Sin(seed * 2.7f) * 0.5f) * (1f - fly);
+                }
+
+                float y = GetRowY(startY, i);
+                //悬停向屏幕中心（左）扩展
+                float hoverExpand = rs.Hover * 14f;
+                float x = baseX + flyOffset + rs.Glitch * 16f - hoverExpand;
+                Rectangle rect = new((int)x, (int)y, (int)(RowWidth + hoverExpand), (int)RowHeight);
+                slotRects[i] = rect;
+                rs.Rect = rect;
+
+                //整行主色由状态决定
+                rs.AccentColor = ResolveRowAccent(in rs, i);
+            }
+        }
+
+        //整行换色语义：红=不可用，琥珀=队列/上传，青/红主题色=可用
+        private Color ResolveRowAccent(in RowState rs, int index) {
+            Color accent;
+            if (rs.QueueState == QueueSlotState.Uploading) accent = HackTheme.Uploading;
+            else if (rs.QueueState == QueueSlotState.Queued) accent = Color.Lerp(HackTheme.Uploading, HackTheme.BgSlotHover, 0.35f);
+            else if (rs.QueueState == QueueSlotState.Completed) accent = HackTheme.Accent;
+            else if (rs.Disabled) accent = HackTheme.Danger;
+            else accent = HackTheme.Accent;
+
+            //无限骇入：全体红色闪烁
+            if (HackTime.InfiniteHack) {
+                float rFlicker = MathF.Sin(timer * 15f + slotGlitchSeed[index] * 3f) * 0.35f
+                    + MathF.Sin(timer * 23f + slotGlitchSeed[index] * 7f) * 0.15f + 0.5f;
+                accent = Color.Lerp(accent, HackTheme.Danger, 0.55f + rFlicker * 0.25f);
+            }
+            return accent;
+        }
+
+        #endregion
+
+        #region 行背景
+
+        private void DrawRowBackgroundsShader(SpriteBatch sb, Texture2D px, Effect deck, Span<RowState> rows, float alpha) {
+            sb.End();
+            sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, deck, Main.UIScaleMatrix);
+
+            for (int i = 0; i < displayCount; i++) {
+                ref RowState rs = ref rows[i];
+                if (rs.Skip) continue;
+
+                float rowAlpha = alpha * Math.Min(rs.Fly * 2.5f, 1f);
+                deck.Parameters["uTime"]?.SetValue(timer + slotGlitchSeed[i]);
+                deck.Parameters["uAlpha"]?.SetValue(rowAlpha);
+                deck.Parameters["uResolution"]?.SetValue(new Vector2(rs.Rect.Width, rs.Rect.Height));
+                deck.Parameters["uTaperLeft"]?.SetValue(TaperWidth);
+                deck.Parameters["uTaperRight"]?.SetValue(0f);
+                deck.Parameters["uAccent"]?.SetValue(rs.AccentColor.ToVector3());
+                deck.Parameters["uHover"]?.SetValue(rs.Hover);
+                deck.Parameters["uDisabled"]?.SetValue(rs.Disabled && rs.QueueState == QueueSlotState.None ? 1f : 0f);
+                deck.Parameters["uProgress"]?.SetValue(rs.QueueState == QueueSlotState.Uploading ? rs.QueueProgress : 0f);
+                deck.Parameters["uGlitch"]?.SetValue(Math.Abs(rs.Glitch));
+                deck.CurrentTechnique.Passes[0].Apply();
+                sb.Draw(px, rs.Rect, Color.White);
+            }
+
+            sb.End();
+            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+        }
+
+        private void DrawRowBackgroundsCPU(SpriteBatch sb, Span<RowState> rows, float alpha) {
+            for (int i = 0; i < displayCount; i++) {
+                ref RowState rs = ref rows[i];
+                if (rs.Skip) continue;
+                float rowAlpha = alpha * Math.Min(rs.Fly * 2.5f, 1f);
+
+                Color bg = Color.Lerp(HackTheme.BgSlot, HackTheme.BgSlotHover, rs.Hover * 0.6f);
+                if (rs.Disabled && rs.QueueState == QueueSlotState.None)
+                    bg = Color.Lerp(HackTheme.BgDarkest, new Color(45, 8, 8), 0.4f);
+                else if (rs.QueueState == QueueSlotState.Uploading)
+                    bg = Color.Lerp(bg, HackTheme.Uploading, 0.08f);
+
+                HackTheme.DrawPennantFill(sb, rs.Rect, TaperWidth, 0f, bg * (rowAlpha * 0.92f));
+                HackTheme.DrawCRTOverlay(sb, rs.Rect, rowAlpha * 0.05f);
+
+                //上传进度填充
+                if (rs.QueueState == QueueSlotState.Uploading && rs.QueueProgress > 0.01f) {
+                    Rectangle fill = rs.Rect;
+                    fill.Width = (int)(rs.Rect.Width * rs.QueueProgress);
+                    HackTheme.DrawPennantFill(sb, fill, TaperWidth, 0f, rs.AccentColor * (rowAlpha * 0.12f));
+                }
+            }
+        }
+
+        #endregion
+
+        #region 行前景
+
+        private void DrawRowForeground(SpriteBatch sb, Texture2D px, float alpha, int index, in RowState rs) {
+            Rectangle rect = rs.Rect;
+            float rowAlpha = alpha * Math.Min(rs.Fly * 2.5f, 1f);
+            Color accent = rs.AccentColor;
+            bool idleDisabled = rs.Disabled && rs.QueueState == QueueSlotState.None;
+
+            //---- 成本大格（左端，指向目标） ----
+            Rectangle costCell = new(rect.X + (int)TaperWidth, rect.Y, (int)CostCellWidth, rect.Height);
+            //悬停反色：格子亮起、数字变暗
+            if (rs.Hover > 0.35f) {
+                sb.Draw(px, costCell, HackTheme.SrcPixel, accent * (rowAlpha * 0.85f * rs.Hover));
+            }
+            else {
+                //格子右侧分隔细线
+                sb.Draw(px, new Rectangle(costCell.Right, rect.Y + 4, 1, rect.Height - 8),
+                    HackTheme.SrcPixel, accent * (rowAlpha * 0.30f));
+            }
+
+            int actualCost = HackCostEvaluator.GetActualCost(rs.Hack, HackTime.CurrentScanTarget);
+            string costStr = $"{actualCost}";
+            Vector2 costSize = FontAssets.MouseText.Value.MeasureString(costStr) * FontCost;
+            Color costColor = rs.Hover > 0.35f
+                ? HackTheme.BgDarkest * rowAlpha
+                : accent * (rowAlpha * (idleDisabled ? 0.85f : 0.95f));
+            if (idleDisabled) {
+                float pulse = MathF.Sin(timer * 5f + index) * 0.2f + 0.8f;
+                costColor *= pulse;
+            }
+            Utils.DrawBorderString(sb, costStr,
+                new Vector2(costCell.Center.X - costSize.X * 0.5f, rect.Y + 5), costColor, FontCost);
+            //RAM 微标注
+            Vector2 ramCapSize = FontAssets.MouseText.Value.MeasureString("RAM") * 0.32f;
+            Color ramCapColor = rs.Hover > 0.35f ? HackTheme.BgDarkest * (rowAlpha * 0.8f) : accent * (rowAlpha * 0.42f);
+            Utils.DrawBorderString(sb, "RAM",
+                new Vector2(costCell.Center.X - ramCapSize.X * 0.5f, rect.Bottom - 15), ramCapColor, 0.32f);
+            //类别刻痕（格子左上角短斜线）
+            Color catColor = HackTheme.CategoryColor(rs.Hack.Category);
+            HackTheme.DrawLine(sb,
+                new Vector2(costCell.X + 1, rect.Y + 6),
+                new Vector2(costCell.X + 7, rect.Y + 1),
+                1.4f, catColor * (rowAlpha * 0.9f));
+
+            //---- 协议名（解码乱码入场） ----
+            float nameX = costCell.Right + 12;
+            float nameY = rect.Y + 5;
+            string displayName = GetDecodedName(rs.Hack.DisplayName.Value, rs.Fly, index);
+            Color nameColor;
+            if (idleDisabled) nameColor = Color.Lerp(HackTheme.TextNormal, HackTheme.Danger, 0.55f) * 0.6f;
+            else if (rs.QueueState == QueueSlotState.Completed) nameColor = HackTheme.Accent;
+            else nameColor = Color.Lerp(HackTheme.TextBright, Color.White, rs.Hover * 0.4f);
+
+            //色散残影（悬停）
+            if (rs.Hover > 0.2f) {
+                float aberration = rs.Hover * 1.6f;
+                Utils.DrawBorderString(sb, displayName, new Vector2(nameX - aberration, nameY),
+                    new Color(220, 40, 40) * (rowAlpha * rs.Hover * 0.22f), FontName);
+                Utils.DrawBorderString(sb, displayName, new Vector2(nameX + aberration, nameY + 0.5f),
+                    new Color(40, 80, 220) * (rowAlpha * rs.Hover * 0.22f), FontName);
+            }
+            Utils.DrawBorderString(sb, displayName, new Vector2(nameX, nameY), nameColor * rowAlpha, FontName);
+
+            //---- 状态徽章（名称下） ----
+            string badgeText;
+            Color badgeColor;
+            switch (rs.QueueState) {
+                case QueueSlotState.Uploading:
+                    badgeText = HackTime.UploadingPct.Format((int)(rs.QueueProgress * 100));
+                    badgeColor = HackTheme.Uploading;
+                    break;
+                case QueueSlotState.Queued:
+                    badgeText = HackTime.Queued.Value;
+                    badgeColor = Color.Lerp(HackTheme.Uploading, HackTheme.TextDim, 0.4f);
+                    break;
+                case QueueSlotState.Completed:
+                    badgeText = HackTime.Done.Value;
+                    badgeColor = HackTheme.Accent;
+                    break;
+                default:
+                    badgeText = idleDisabled ? HackTime.StatusNoRam.Value : HackTime.StatusReady.Value;
+                    badgeColor = idleDisabled ? HackTheme.Danger : Color.Lerp(HackTheme.AccentAlt, HackTheme.TextDim, 0.35f);
+                    break;
+            }
+            HackTheme.DrawBadge(sb, new Vector2(nameX, rect.Y + 27), badgeText, badgeColor, rowAlpha * 0.9f, 0.44f);
+
+            //---- 右区：耗时/类别 ----
+            if (rs.QueueState == QueueSlotState.None) {
+                float sec = rs.Hack.UploadTime / 60f;
+                string timeStr = $"{sec:F1}s";
+                Vector2 ts = FontAssets.MouseText.Value.MeasureString(timeStr) * FontTime;
+                Color timeColor = idleDisabled ? HackTheme.Danger * 0.5f : HackTheme.TextNormal;
+                Utils.DrawBorderString(sb, timeStr, new Vector2(rect.Right - ts.X - 10, rect.Y + 6),
+                    timeColor * (rowAlpha * 0.6f), FontTime);
+            }
+            else if (rs.QueueState == QueueSlotState.Uploading) {
+                //大号百分比读数
+                string pct = $"{(int)(rs.QueueProgress * 100)}";
+                Vector2 ps = FontAssets.MouseText.Value.MeasureString(pct) * 0.72f;
+                Utils.DrawBorderString(sb, pct, new Vector2(rect.Right - ps.X - 18, rect.Y + 6),
+                    HackTheme.Uploading * rowAlpha, 0.72f);
+                Utils.DrawBorderString(sb, "%", new Vector2(rect.Right - 14, rect.Y + 12),
+                    HackTheme.Uploading * (rowAlpha * 0.6f), 0.4f);
+            }
+            //类别符号+微标签（右下）
+            string catSymbol = HackTheme.CategorySymbol(rs.Hack.Category);
+            string catLabel = HackTheme.CategoryLabel(rs.Hack.Category);
+            Vector2 cls = FontAssets.MouseText.Value.MeasureString(catLabel) * FontMicro;
+            Utils.DrawBorderString(sb, catLabel, new Vector2(rect.Right - cls.X - 10, rect.Bottom - cls.Y - 5),
+                catColor * (rowAlpha * 0.42f), FontMicro);
+            Vector2 syms = FontAssets.MouseText.Value.MeasureString(catSymbol) * 0.34f;
+            Utils.DrawBorderString(sb, catSymbol, new Vector2(rect.Right - cls.X - syms.X - 16, rect.Bottom - cls.Y - 5),
+                catColor * (rowAlpha * 0.5f), 0.34f);
+
+            //---- 禁用斜线剖面纹 ----
+            if (idleDisabled) {
+                Rectangle hatchArea = new(costCell.Right + 2, rect.Y + 2, rect.Width - costCell.Width - (int)TaperWidth - 4, rect.Height - 4);
+                HackTheme.DrawHatch(sb, hatchArea, 11f, HackTheme.Danger * (rowAlpha * 0.10f));
+            }
+
+            //---- 开放式描边：顶发丝线 + 底暗线 + 右端亮端帽 + 斜切边 ----
+            Color edge = accent * (rowAlpha * (0.35f + rs.Hover * 0.4f));
+            //顶线超出行宽的悬挑
+            sb.Draw(px, new Rectangle(rect.X + (int)TaperWidth, rect.Y, rect.Width - (int)TaperWidth + 6, 1),
+                HackTheme.SrcPixel, edge);
+            //底线
+            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
+                HackTheme.SrcPixel, edge * 0.5f);
+            //右端2px端帽 + 出头小刻度
+            sb.Draw(px, new Rectangle(rect.Right - 2, rect.Y, 2, rect.Height),
+                HackTheme.SrcPixel, accent * (rowAlpha * (0.5f + rs.Hover * 0.5f)));
+            sb.Draw(px, new Rectangle(rect.Right, rect.Y + rect.Height / 2 - 1, 4, 2),
+                HackTheme.SrcPixel, accent * (rowAlpha * 0.35f));
+            //左斜切边线
+            HackTheme.DrawLine(sb,
+                new Vector2(rect.X + TaperWidth, rect.Y),
+                new Vector2(rect.X, rect.Bottom),
+                1f, edge * 0.9f);
+
+            //---- 扫描线 ----
+            if (rs.Hover > 0.1f || rs.QueueState == QueueSlotState.Uploading || HackTime.InfiniteHack) {
+                float scanSpeed = HackTime.InfiniteHack ? 3.5f : rs.QueueState == QueueSlotState.Uploading ? 2.5f : 1.8f;
+                float scanAlpha = HackTime.InfiniteHack ? 0.3f : rs.QueueState == QueueSlotState.Uploading ? 0.28f : rs.Hover * 0.2f;
+                float scanPos = (timer * scanSpeed + index * 0.4f) % 1.4f - 0.2f;
+                DrawScanLine(sb, px, rect, scanPos, rowAlpha * scanAlpha, accent);
+            }
+
+            //---- 悬停角标与辉光 ----
+            if (rs.Hover > 0.15f) {
+                Color bracket = accent * (rowAlpha * rs.Hover * 0.7f);
+                HackTheme.DrawCornerBracket(sb, new Vector2(rect.Right - 1, rect.Y), -1, 1, 7, 1f, bracket);
+                HackTheme.DrawCornerBracket(sb, new Vector2(rect.Right - 1, rect.Bottom - 1), -1, -1, 7, 1f, bracket);
+                Texture2D glow = CWRAsset.SoftGlow?.Value;
+                if (glow != null) {
+                    Color slotGlow = accent * (rowAlpha * rs.Hover * 0.07f);
+                    slotGlow.A = 0;
+                    sb.Draw(glow, rect.Center.ToVector2(), null, slotGlow, 0,
+                        glow.Size() / 2, new Vector2(rect.Width / 30f, rect.Height / 26f),
+                        SpriteEffects.None, 0);
+                }
+            }
+
+            //---- 完成白闪 ----
+            if (rs.QueueState == QueueSlotState.Completed) {
+                float flash = MathF.Sin(timer * 10f) * 0.5f + 0.5f;
+                sb.Draw(px, rect, HackTheme.SrcPixel, HackTheme.Accent * (rowAlpha * 0.10f * flash));
+            }
+        }
+
+        //解码乱码：入场未完成时名称部分字符替换为十六进制噪声
+        private string GetDecodedName(string name, float fly, int index) {
+            if (fly >= 0.92f || string.IsNullOrEmpty(name)) return name;
+            float decodeProgress = Math.Clamp((fly - 0.3f) / 0.62f, 0f, 1f);
+            int decoded = (int)(name.Length * decodeProgress);
+            int frameSeed = (int)(timer * 24f) * 31 + index * 977;
+            Span<char> buf = stackalloc char[name.Length];
+            for (int c = 0; c < name.Length; c++) {
+                if (c < decoded) {
+                    buf[c] = name[c];
+                }
+                else {
+                    int h = frameSeed + c * 131;
+                    h = h * 1103515245 + 12345;
+                    buf[c] = ScrambleChars[Math.Abs(h) % ScrambleChars.Length];
+                }
+            }
+            return new string(buf);
+        }
+
+        #endregion
+
+        #region 分组标题
+
+        private void DrawGroupHeaders(SpriteBatch sb, float alpha, float baseX, float startY) {
+            for (int i = 0; i < displayCount; i++) {
+                if (!slotGroupHead[i] || slotFlyIn[i] < 0.4f) continue;
+                var hack = QuickHackDef.GetByIndex(GetGlobalIndex(i));
+                if (hack == null) continue;
+
+                float headerAlpha = alpha * Math.Min(slotFlyIn[i] * 2f, 1f) * 0.6f;
+                float y = GetRowY(startY, i) - 14f;
+                Color catColor = HackTheme.CategoryColor(hack.Category);
+
+                string label = HackTheme.CategoryLabel(hack.Category);
+                Utils.DrawBorderString(sb, label, new Vector2(baseX + TaperWidth + 2, y - 2),
+                    catColor * headerAlpha, FontGroup);
+                //标题右侧引出刻度线
+                float labelW = FontAssets.MouseText.Value.MeasureString(label).X * FontGroup;
+                HackTheme.DrawDashedLine(sb,
+                    new Vector2(baseX + TaperWidth + labelW + 10, y + 4),
+                    new Vector2(baseX + RowWidth, y + 4),
+                    1f, catColor * (headerAlpha * 0.35f), 3f, 5f);
+            }
+        }
+
+        #endregion
+
+        #region 背景噪波与故障带
 
         //背景水平噪波
-        private void DrawAmbientNoise(SpriteBatch sb, Texture2D px, float alpha) {
+        private void DrawAmbientNoise(SpriteBatch sb, Texture2D px, float alpha, float baseX, float startY, float totalH) {
             bool anyVisible = false;
             for (int i = 0; i < slotFlyIn.Length; i++) {
                 if (slotFlyIn[i] > 0.3f) { anyVisible = true; break; }
             }
             if (!anyVisible) return;
 
-            float totalH = displayCount * (ItemHeight + ItemGap) - ItemGap;
-            float startY = (Main.screenHeight - totalH) * 0.5f + TopPadding - 10f;
-            float baseX = Main.screenWidth - RightMargin - ItemWidth - TrunkOffsetX - 20;
-            float endX = Main.screenWidth - RightMargin + 10;
-            float regionH = totalH + 20f;
+            float x0 = baseX - TrunkOffsetX - 20;
+            float x1 = Main.screenWidth - RightMargin + 10;
+            float regionH = totalH + FooterHeight + 20f;
 
-            float noiseAlpha = alpha * 0.025f;
-            //水平噪波线
+            float noiseAlpha = alpha * 0.022f;
             for (int dy = 0; dy < (int)regionH; dy += 3) {
                 float seed = dy * 0.73f + timer * 8f;
                 float brightness = MathF.Sin(seed) * 0.5f + 0.5f;
                 if (brightness < 0.3f) continue;
-                sb.Draw(px, new Rectangle((int)baseX, (int)(startY + dy), (int)(endX - baseX), 1),
-                    new Rectangle(0, 0, 1, 1), HackTheme.Accent * (noiseAlpha * brightness));
+                sb.Draw(px, new Rectangle((int)x0, (int)(startY - 10 + dy), (int)(x1 - x0), 1),
+                    HackTheme.SrcPixel, HackTheme.Accent * (noiseAlpha * brightness));
             }
         }
 
-        #endregion
-
-        #region 故障色偏带
-
         //故障色偏带
-        private void DrawGlitchBand(SpriteBatch sb, Texture2D px, float alpha) {
+        private void DrawGlitchBand(SpriteBatch sb, Texture2D px, float alpha, float baseX) {
             if (glitchBandCooldown > 0f) return;
 
             float bandH = 4f + MathF.Sin(timer * 30f) * 2f;
             float bandAlpha = alpha * 0.15f;
-            float baseX = Main.screenWidth - RightMargin - ItemWidth - TrunkOffsetX - 10;
-            float endX = Main.screenWidth - RightMargin + 5;
+            float x0 = baseX - TrunkOffsetX - 10;
+            float x1 = Main.screenWidth - RightMargin + 5;
 
-            //主色偏带
-            sb.Draw(px, new Rectangle((int)(baseX + 3), (int)glitchBandY, (int)(endX - baseX), (int)bandH),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * bandAlpha);
-            //偏移红色伪影
-            sb.Draw(px, new Rectangle((int)(baseX - 2), (int)(glitchBandY + 1), (int)(endX - baseX), (int)(bandH * 0.5f)),
-                new Rectangle(0, 0, 1, 1), new Color(200, 30, 60) * (bandAlpha * 0.4f));
+            sb.Draw(px, new Rectangle((int)(x0 + 3), (int)glitchBandY, (int)(x1 - x0), (int)bandH),
+                HackTheme.SrcPixel, HackTheme.Accent * bandAlpha);
+            sb.Draw(px, new Rectangle((int)(x0 - 2), (int)(glitchBandY + 1), (int)(x1 - x0), (int)(bandH * 0.5f)),
+                HackTheme.SrcPixel, new Color(200, 30, 60) * (bandAlpha * 0.4f));
         }
 
         #endregion
 
         #region 电路连接树
 
-        private void DrawConnectorTree(SpriteBatch sb, Texture2D px, float alpha) {
+        private void DrawConnectorTree(SpriteBatch sb, Texture2D px, float alpha, float baseX, float listStartY, float totalH) {
             if (HackTime.CurrentScanTarget == null) return;
 
-            float totalH = displayCount * (ItemHeight + ItemGap) - ItemGap;
-            float listStartY = (Main.screenHeight - totalH) * 0.5f + TopPadding;
-            float baseX = Main.screenWidth - RightMargin - ItemWidth;
             float trunkX = baseX - TrunkOffsetX;
             Vector2 screenCenter = new(Main.screenWidth * 0.5f, Main.screenHeight * 0.5f);
 
             float wireProgress = Math.Clamp(revealTime * 3f, 0f, 1f);
-            float wireAlpha = alpha * wireProgress * 0.45f;
+            float wireAlpha = alpha * wireProgress * 0.40f;
             Color wireColor = HackTheme.Accent * wireAlpha;
 
-            //主干水平线
-            float hLineEnd = MathHelper.Lerp(screenCenter.X, trunkX, EaseOutCubic(wireProgress));
-            DrawLine(sb, px, screenCenter, new Vector2(hLineEnd, screenCenter.Y), 1.5f, wireColor);
+            //主干水平线（中心→主干），虚化暗示
+            float hLineEnd = MathHelper.Lerp(screenCenter.X, trunkX, HackTheme.EaseOutCubic(wireProgress));
+            HackTheme.DrawDashedLine(sb, screenCenter, new Vector2(hLineEnd, screenCenter.Y),
+                1.2f, wireColor * 0.7f, 7f, 9f);
 
-            //水平线节点
-            float nodeSpacing = 36f;
-            for (float nx = screenCenter.X + nodeSpacing; nx < hLineEnd; nx += nodeSpacing) {
-                float nodePulse = MathF.Sin(timer * 4f + nx * 0.02f) * 0.3f + 0.7f;
-                sb.Draw(px, new Vector2(nx - 1.5f, screenCenter.Y - 1.5f),
-                    new Rectangle(0, 0, 1, 1), HackTheme.Accent * (wireAlpha * 0.5f * nodePulse),
-                    0, Vector2.Zero, 3f, SpriteEffects.None, 0);
-            }
-
-            //垂直干线
             if (wireProgress > 0.3f) {
                 float trunkProg = Math.Clamp((wireProgress - 0.3f) / 0.7f, 0f, 1f);
-                float trunkTop = MathHelper.Lerp(screenCenter.Y, listStartY + ItemHeight * 0.5f, trunkProg);
-                float trunkBot = MathHelper.Lerp(screenCenter.Y, listStartY + totalH - ItemHeight * 0.5f, trunkProg);
-                DrawLine(sb, px, new Vector2(trunkX, trunkTop), new Vector2(trunkX, trunkBot), 1.5f, wireColor * 0.7f);
+                float firstCY = GetRowY(listStartY, 0) + RowHeight * 0.5f;
+                float lastCY = GetRowY(listStartY, displayCount - 1) + RowHeight * 0.5f;
+                float trunkTop = MathHelper.Lerp(screenCenter.Y, firstCY, trunkProg);
+                float trunkBot = MathHelper.Lerp(screenCenter.Y, lastCY, trunkProg);
+                //垂直干线保持实线（结构件）
+                HackTheme.DrawLine(sb, new Vector2(trunkX, trunkTop), new Vector2(trunkX, trunkBot), 1.5f, wireColor * 0.8f);
 
-                //分支线 + 节点
+                //分支：待命虚线，悬停/上传实线点亮
                 for (int i = 0; i < displayCount; i++) {
                     float fly = slotFlyIn[i];
                     if (fly < 0.05f) continue;
-                    float itemCY = listStartY + i * (ItemHeight + ItemGap) + ItemHeight * 0.5f;
-                    float branchEnd = MathHelper.Lerp(trunkX, baseX - 4, fly);
-                    Color branchColor = wireColor * 0.5f;
-                    if (i == hoveredSlot) branchColor = HackTheme.Accent * (wireAlpha * 1f);
+                    float itemCY = GetRowY(listStartY, i) + RowHeight * 0.5f;
+                    float branchEndX = slotRects[i] != Rectangle.Empty ? slotRects[i].X - 2 : baseX - 4;
+
                     int gi = GetGlobalIndex(i);
-                    if (Queue != null) {
-                        var qs = Queue.GetSlotState(gi, HackTime.CurrentScanTarget);
-                        if (qs == QueueSlotState.Uploading) branchColor = HackTheme.Uploading * (wireAlpha * 0.8f);
-                        else if (qs == QueueSlotState.Queued) branchColor = HackTheme.Uploading * (wireAlpha * 0.4f);
+                    var qs = Queue?.GetSlotState(gi, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
+                    bool lit = i == hoveredSlot || qs == QueueSlotState.Uploading;
+
+                    Vector2 p0 = new(trunkX, itemCY);
+                    Vector2 p1 = new(MathHelper.Lerp(trunkX, branchEndX, fly), itemCY);
+
+                    if (lit) {
+                        Color litColor = qs == QueueSlotState.Uploading
+                            ? HackTheme.Uploading * (wireAlpha * 1.6f)
+                            : HackTheme.Accent * (wireAlpha * 1.8f);
+                        HackTheme.DrawLine(sb, p0, p1, 1.4f, litColor);
+                        //末端菱形节点
+                        HackTheme.DrawDiamond(sb, p1, 5f, litColor * 1.2f);
+                        HackTheme.DrawDiamond(sb, p1, 2.4f, HackTheme.BgDarkest * alpha);
                     }
-                    DrawLine(sb, px, new Vector2(trunkX, itemCY), new Vector2(branchEnd, itemCY), 1f, branchColor);
+                    else {
+                        Color idleColor = qs == QueueSlotState.Queued
+                            ? HackTheme.Uploading * (wireAlpha * 0.6f)
+                            : wireColor * 0.45f;
+                        HackTheme.DrawDashedLine(sb, p0, p1, 1f, idleColor, 4f, 6f);
+                    }
 
-                    //分支节点（菱形感，两点）
-                    sb.Draw(px, new Vector2(trunkX - 2, itemCY - 2),
-                        new Rectangle(0, 0, 1, 1), branchColor * 2f,
-                        0, Vector2.Zero, 4f, SpriteEffects.None, 0);
-                    sb.Draw(px, new Vector2(trunkX - 1, itemCY - 1),
-                        new Rectangle(0, 0, 1, 1), HackTheme.BgDarkest,
-                        0, Vector2.Zero, 2f, SpriteEffects.None, 0);
-
-                    //分支末端小箭头
-                    sb.Draw(px, new Vector2(branchEnd - 1, itemCY - 2),
-                        new Rectangle(0, 0, 1, 1), branchColor * 1.2f,
-                        0, Vector2.Zero, new Vector2(2, 4), SpriteEffects.None, 0);
+                    //分组首行的主干节点
+                    if (slotGroupHead[i]) {
+                        HackTheme.DrawDiamondOutline(sb, new Vector2(trunkX, itemCY), 4f, 1f, wireColor * 0.9f);
+                    }
                 }
             }
 
-            //流动数据光点沿电路移动（三个光点循环）
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null) {
-                for (int d = 0; d < 3; d++) {
-                    float flowT = (timer * 0.6f + d * 0.33f) % 1f;
+            //流动数据光点（主干路径两个）
+            Texture2D glowTex = CWRAsset.SoftGlow?.Value;
+            if (glowTex != null) {
+                for (int d = 0; d < 2; d++) {
+                    float flowT = (timer * 0.55f + d * 0.5f) % 1f;
                     Vector2 flowPos;
                     if (flowT < 0.5f) {
-                        float t = flowT / 0.5f;
-                        flowPos = Vector2.Lerp(screenCenter, new Vector2(trunkX, screenCenter.Y), t);
+                        flowPos = Vector2.Lerp(screenCenter, new Vector2(trunkX, screenCenter.Y), flowT / 0.5f);
                     }
                     else {
                         float t = (flowT - 0.5f) / 0.5f;
-                        float tTop = listStartY + ItemHeight * 0.5f;
-                        float tBot = listStartY + totalH - ItemHeight * 0.5f;
+                        float tTop = GetRowY(listStartY, 0) + RowHeight * 0.5f;
+                        float tBot = GetRowY(listStartY, displayCount - 1) + RowHeight * 0.5f;
                         flowPos = new Vector2(trunkX, MathHelper.Lerp(tTop, tBot, t));
                     }
-                    float dotIntensity = 1f - d * 0.25f;
-                    Color dotGlow = HackTheme.Accent * (alpha * 0.3f * dotIntensity);
+                    Color dotGlow = HackTheme.Accent * (alpha * 0.28f * (1f - d * 0.3f));
                     dotGlow.A = 0;
-                    sb.Draw(glow, flowPos, null, dotGlow, 0, glow.Size() / 2, 0.08f, SpriteEffects.None, 0);
+                    sb.Draw(glowTex, flowPos, null, dotGlow, 0, glowTex.Size() / 2, 0.07f, SpriteEffects.None, 0);
                 }
-            }
 
-            //上传时在对应分支上有动态脉冲
-            if (Queue != null && glow != null && wireProgress > 0.3f) {
+                //上传分支脉冲
                 for (int i = 0; i < displayCount; i++) {
                     int gi = GetGlobalIndex(i);
-                    if (Queue.GetSlotState(gi, HackTime.CurrentScanTarget) != QueueSlotState.Uploading) continue;
-                    float itemCY = listStartY + i * (ItemHeight + ItemGap) + ItemHeight * 0.5f;
+                    if (Queue == null || Queue.GetSlotState(gi, HackTime.CurrentScanTarget) != QueueSlotState.Uploading) continue;
+                    float itemCY = GetRowY(listStartY, i) + RowHeight * 0.5f;
+                    float branchEndX = slotRects[i] != Rectangle.Empty ? slotRects[i].X - 2 : baseX - 4;
                     float pulseT = timer * 2f % 1f;
-                    float pulseX = MathHelper.Lerp(trunkX, baseX - 4, pulseT);
+                    float pulseX = MathHelper.Lerp(trunkX, branchEndX, pulseT);
                     Color pulseCol = HackTheme.Uploading * (alpha * 0.4f * (1f - pulseT));
                     pulseCol.A = 0;
-                    sb.Draw(glow, new Vector2(pulseX, itemCY), null, pulseCol, 0, glow.Size() / 2, 0.06f, SpriteEffects.None, 0);
+                    sb.Draw(glowTex, new Vector2(pulseX, itemCY), null, pulseCol, 0, glowTex.Size() / 2, 0.06f, SpriteEffects.None, 0);
                 }
             }
         }
 
         #endregion
 
-        #region 协议条目列表
+        #region 详情页脚
 
-        private void DrawItems(SpriteBatch sb, Texture2D px, float alpha) {
-            float totalH = displayCount * (ItemHeight + ItemGap) - ItemGap;
-            float startY = (Main.screenHeight - totalH) * 0.5f + TopPadding;
-            float baseX = Main.screenWidth - RightMargin - ItemWidth;
-
-            for (int i = 0; i < displayCount; i++) {
-                float fly = slotFlyIn[i];
-                if (fly < 0.01f) {
-                    slotRects[i] = Rectangle.Empty;
-                    continue;
-                }
-
-                int globalIdx = GetGlobalIndex(i);
-                QuickHackDef hack = QuickHackDef.GetByIndex(globalIdx);
-                float hover = slotHoverAnim[i];
-                float y = startY + i * (ItemHeight + ItemGap);
-
-                //RAM不足或已入队则禁用
-                QueueSlotState queueState = Queue?.GetSlotState(globalIdx, HackTime.CurrentScanTarget) ?? QueueSlotState.None;
-                bool slotDisabled = !RamSystem.CanAfford(hack.RamCost)
-                    || queueState != QueueSlotState.None;
-                if (slotDisabled) hover = 0f;
-
-                //飞入偏移（弹性过冲）
-                float flyOffset = (1f - EaseOutBack(fly)) * 400f;
-                //故障动画
-                float glitch = 0f;
-                if (fly < 0.85f) {
-                    float seed = slotGlitchSeed[i] + timer * 25f;
-                    glitch = (MathF.Sin(seed) + MathF.Sin(seed * 2.7f) * 0.5f) * (1f - fly) * 16f;
-                }
-
-                float x = baseX + flyOffset + glitch;
-                float hoverExpand = hover * 18f;
-                float w = ItemWidth + hoverExpand;
-                Rectangle rect = new((int)(x - hoverExpand), (int)y, (int)w, (int)ItemHeight);
-                slotRects[i] = rect;
-
-                float itemAlpha = alpha * Math.Min(fly * 2.5f, 1f);
-                float queueProgress = Queue?.GetSlotProgress(globalIdx, HackTime.CurrentScanTarget) ?? 0f;
-
-                DrawSingleItem(sb, px, itemAlpha, rect, hack, i, hover, queueState, queueProgress);
-            }
-        }
-
-        private void DrawSingleItem(SpriteBatch sb, Texture2D px, float alpha, Rectangle rect,
-            QuickHackDef hack, int index, float hover, QueueSlotState queueState, float queueProgress) {
-
-            bool isUploading = queueState == QueueSlotState.Uploading;
-            bool isQueued = queueState == QueueSlotState.Queued;
-            bool isCompleted = queueState == QueueSlotState.Completed;
-            //禁用状态：RAM不足 或 已在上传队列中
-            bool isDisabled = !RamSystem.CanAfford(hack.RamCost)
-                || isUploading || isQueued;
-
-            //背景
-            Color bgColor = Color.Lerp(HackTheme.BgSlot, HackTheme.BgSlotHover, hover * 0.6f);
-            if (isDisabled) {
-                //禁用时背景压暗并带红色偏移
-                float redPulse = MathF.Sin(timer * 4f + index * 1.2f) * 0.15f + 0.85f;
-                bgColor = Color.Lerp(HackTheme.BgDarkest, new Color(45, 8, 8), 0.35f * redPulse);
-            }
-            else if (isUploading) bgColor = Color.Lerp(bgColor, HackTheme.Uploading, 0.08f);
-            else if (isQueued) bgColor = Color.Lerp(bgColor, HackTheme.Uploading, 0.03f);
-            if (isCompleted) {
-                float flash = MathF.Sin(timer * 10f) * 0.5f + 0.5f;
-                bgColor = Color.Lerp(bgColor, HackTheme.Accent, flash * 0.15f);
-            }
-            //无限骇入：背景红色脉冲
-            if (HackTime.InfiniteHack) {
-                float rPulse = MathF.Sin(timer * 18f + slotGlitchSeed[index] * 5f) * 0.3f + 0.7f;
-                bgColor = Color.Lerp(bgColor, HackTheme.Danger, 0.12f * rPulse);
-            }
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor * (alpha * 0.92f));
-            //底部暗色渐变（条目底部1/3区域微微加暗）
-            int gradH = rect.Height / 3;
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - gradH, rect.Width, gradH),
-                new Rectangle(0, 0, 1, 1), HackTheme.BgSlotHover * (alpha * 0.25f));
-
-            //斜角遮罩
-            DrawSlashCut(sb, px, rect, alpha);
-
-            //CRT 扫描线
-            DrawCRTOverlay(sb, px, rect, alpha * 0.05f);
-
-            //顶边高光
-            Color highlightLine = Color.Lerp(HackTheme.Border, HackTheme.Accent, hover * 0.3f);
-            sb.Draw(px, new Rectangle(rect.X + (int)SlashWidth + 4, rect.Y + 1, rect.Width - (int)SlashWidth - 8, 1),
-                new Rectangle(0, 0, 1, 1), highlightLine * (alpha * 0.18f));
-
-            //左侧色条
-            Color catColor = HackTheme.CategoryColor(hack.Category);
-            //禁用时色条变为暗红/灰
-            if (isDisabled) {
-                catColor = Color.Lerp(new Color(80, 25, 25), HackTheme.Danger, 0.3f);
-            }
-            //无限骇入：红色闪烁覆盖
-            else if (HackTime.InfiniteHack) {
-                float rFlicker = MathF.Sin(timer * 15f + slotGlitchSeed[index] * 3f) * 0.35f
-                    + MathF.Sin(timer * 23f + slotGlitchSeed[index] * 7f) * 0.15f + 0.5f;
-                catColor = Color.Lerp(HackTheme.Danger, new Color(255, 60, 30), rFlicker * 0.3f);
-            }
-            float breathe = MathF.Sin(timer * 2.5f + index * 0.8f) * 0.15f + 0.85f;
-            float barGlow = isUploading ? 1f : 0.45f + hover * 0.55f;
-            barGlow *= breathe;
-            int barX = rect.X + (int)SlashWidth;
-            //色条主体（加粗到4px）
-            sb.Draw(px, new Rectangle(barX, rect.Y + 3, 4, rect.Height - 6),
-                new Rectangle(0, 0, 1, 1), catColor * (alpha * barGlow));
-            //色条右侧的渐变消散（低透明度扩展）
-            sb.Draw(px, new Rectangle(barX + 4, rect.Y + 3, 16, rect.Height - 6),
-                new Rectangle(0, 0, 1, 1), catColor * (alpha * barGlow * 0.08f));
-            //色条辉光
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null && barGlow > 0.4f) {
-                Color barGlowCol = catColor * (alpha * barGlow * 0.12f);
-                barGlowCol.A = 0;
-                sb.Draw(glow, new Vector2(barX + 2, rect.Center.Y), null, barGlowCol,
-                    0, glow.Size() / 2, new Vector2(0.06f, rect.Height / 35f), SpriteEffects.None, 0);
-            }
-
-            //分类符号
-            string catSymbol = HackTheme.CategorySymbol(hack.Category);
-            Color symColor = catColor * (alpha * (0.35f + hover * 0.3f));
-            Utils.DrawBorderString(sb, catSymbol, new Vector2(barX + 8, rect.Y + rect.Height * 0.5f - 6), symColor, 0.40f);
-
-            //扫描线
-            if (hover > 0.1f || isUploading || isQueued || HackTime.InfiniteHack) {
-                float scanSpeed = HackTime.InfiniteHack ? 3.5f : isUploading ? 2.5f : 1.8f;
-                float scanAlpha = HackTime.InfiniteHack ? 0.35f : isUploading ? 0.3f : isQueued ? 0.15f : hover * 0.22f;
-                float scanPos = (timer * scanSpeed + index * 0.4f) % 1.4f - 0.2f;
-                DrawScanLine(sb, px, rect, scanPos, alpha * scanAlpha);
-            }
-
-            //边框
-            Color borderCol;
-            if (isDisabled) {
-                float rBrd = MathF.Sin(timer * 5f + index * 1.5f) * 0.2f + 0.8f;
-                borderCol = HackTheme.Danger * (0.4f * rBrd);
-            }
-            else if (isUploading)
-                borderCol = Color.Lerp(HackTheme.Border, HackTheme.Uploading, 0.5f);
-            else if (isQueued)
-                borderCol = Color.Lerp(HackTheme.Border, HackTheme.Uploading, 0.25f);
-            else
-                borderCol = Color.Lerp(HackTheme.Border, HackTheme.Accent, hover * 0.5f);
-            //无限骇入：边框红色闪烁
-            if (HackTime.InfiniteHack) {
-                float rBorder = MathF.Sin(timer * 20f + slotGlitchSeed[index] * 6f) * 0.3f + 0.7f;
-                borderCol = Color.Lerp(borderCol, HackTheme.Danger, 0.5f * rBorder);
-            }
-            //顶边
-            sb.Draw(px, new Rectangle(rect.X + (int)SlashWidth, rect.Y, rect.Width - (int)SlashWidth, 1),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.55f));
-            //底边
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.4f));
-            //右边
-            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, rect.Height),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.35f));
-            //斜边边线
-            DrawSlashEdge(sb, px, rect, borderCol * (alpha * 0.5f));
-
-            //悬停角标
-            if (hover > 0.15f) {
-                DrawCornerAccents(sb, px, rect, alpha * hover, catColor);
-            }
-
-            //悬停外发光
-            if (hover > 0.1f && glow != null) {
-                Color slotGlow = catColor * (alpha * hover * 0.06f);
-                slotGlow.A = 0;
-                sb.Draw(glow, rect.Center.ToVector2(), null, slotGlow, 0,
-                    glow.Size() / 2, new Vector2(rect.Width / 30f, rect.Height / 30f),
-                    SpriteEffects.None, 0);
-            }
-
-            //编号
-            string idxStr = $"{index + 1:D2}";
-            Color idxColor = isDisabled
-                ? HackTheme.Danger * (alpha * 0.25f)
-                : Color.Lerp(HackTheme.TextNormal, catColor, hover * 0.6f) * (alpha * 0.6f);
-            Vector2 idxPos = new(rect.X + SlashWidth + 10, rect.Y + 10);
-            Utils.DrawBorderString(sb, idxStr, idxPos, idxColor, FontIndex);
-
-            //协议名称
-            float nameX = rect.X + SlashWidth + 48;
-            float nameY = rect.Y + 8;
-            Color nameColor;
-            if (isDisabled) {
-                //禁用时名称变为暗红灰
-                nameColor = Color.Lerp(HackTheme.TextNormal, HackTheme.Danger, 0.4f) * 0.5f;
-            }
-            else {
-                nameColor = Color.Lerp(HackTheme.TextBright, Color.White, hover * 0.3f);
-                if (isUploading) nameColor = Color.Lerp(nameColor, HackTheme.Uploading, 0.35f);
-                if (isQueued) nameColor = Color.Lerp(nameColor, HackTheme.Uploading, 0.15f);
-                if (isCompleted) nameColor = HackTheme.Accent;
-            }
-            //无限骇入：名称红色闪烁
-            if (HackTime.InfiniteHack) {
-                float rName = MathF.Sin(timer * 12f + slotGlitchSeed[index] * 4.3f) * 0.25f + 0.75f;
-                nameColor = Color.Lerp(nameColor, HackTheme.Danger, 0.5f * rName);
-            }
-            //色散（悬停时红偏移+蓝色叠加）
-            if (hover > 0.2f) {
-                float aberration = hover * 1.8f;
-                Color redGhost = new Color(220, 40, 40) * (alpha * hover * 0.2f);
-                Color blueGhost = new Color(40, 80, 220) * (alpha * hover * 0.2f);
-                Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2(nameX - aberration, nameY), redGhost, FontName);
-                Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2(nameX + aberration, nameY + 0.5f), blueGhost, FontName);
-            }
-            Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2(nameX, nameY), nameColor * alpha, FontName);
-
-            //名称下分隔点线
-            float sepY = rect.Y + 38;
-            Color sepColor = isDisabled ? HackTheme.Danger * (alpha * 0.1f)
-                : HackTheme.Border * (alpha * (0.15f + hover * 0.15f));
-            for (float dx = 0; dx < rect.Width - SlashWidth - 60; dx += 8) {
-                sb.Draw(px, new Rectangle((int)(rect.X + SlashWidth + 48 + dx), (int)sepY, 4, 1),
-                    new Rectangle(0, 0, 1, 1), sepColor);
-            }
-
-            //效果描述
-            Vector2 descPos = new(rect.X + SlashWidth + 48, rect.Y + 44);
-            Color descColor = isDisabled
-                ? HackTheme.TextNormal * 0.3f
-                : Color.Lerp(HackTheme.TextNormal, HackTheme.TextBright, 0.3f + hover * 0.4f);
-            //描述区宽度需扣除右侧状态区，Wordwrap 用缩放前像素
-            var descFont = FontAssets.MouseText.Value;
-            int descWrapPx = Math.Max(32, (int)((rect.Right - descPos.X - 30f) / FontDesc));
-            string[] descLines = VaultUtils.WrapTextArray(hack.Description.Value, descFont, descWrapPx, 2, out _);
-            float descLineH = descFont.MeasureString("汉").Y * FontDesc;
-            for (int li = 0; li < descLines.Length; li++) {
-                if (string.IsNullOrEmpty(descLines[li])) continue;
-                Utils.DrawBorderString(sb, descLines[li].TrimEnd('-', ' '),
-                    new Vector2(descPos.X, descPos.Y + li * descLineH),
-                    descColor * (alpha * 0.85f), FontDesc);
-            }
-
-            //右侧状态区
-            if (isDisabled && !isUploading && !isQueued) {
-                //RAM不足禁用，显示 LOCKED
-                float lockPulse = MathF.Sin(timer * 5f + index) * 0.25f + 0.75f;
-                string lockStr = HackTime.Locked.Value;
-                Vector2 lockSize = FontAssets.MouseText.Value.MeasureString(lockStr) * 0.50f;
-                Vector2 lockPos = new(rect.Right - lockSize.X - 14,
-                    rect.Y + (rect.Height - lockSize.Y) * 0.5f - 8);
-                Utils.DrawBorderString(sb, lockStr, lockPos,
-                    HackTheme.Danger * (alpha * 0.7f * lockPulse), 0.50f);
-                //RAM消耗（LOCKED下方）
-                int lockedActualCost = HackCostEvaluator.GetActualCost(hack, HackTime.CurrentScanTarget);
-                string ramStr2 = BuildRamLabel(hack, lockedActualCost);
-                Vector2 ramSize2 = FontAssets.MouseText.Value.MeasureString(ramStr2) * FontTime;
-                Vector2 ramPos2 = new(rect.Right - ramSize2.X - 14, lockPos.Y + lockSize.Y + 2);
-                Utils.DrawBorderString(sb, ramStr2, ramPos2,
-                    HackTheme.Danger * (alpha * 0.5f * lockPulse), FontTime);
-            }
-            else if (isUploading) {
-                DrawUploadIndicator(sb, px, alpha, rect, queueProgress);
-            }
-            else if (isCompleted) {
-                float flash = MathF.Sin(timer * 8f) * 0.3f + 0.7f;
-                string doneStr = HackTime.Done.Value;
-                Vector2 okSize = FontAssets.MouseText.Value.MeasureString(doneStr) * 0.54f;
-                Vector2 okPos = new(rect.Right - okSize.X - 14, rect.Y + (rect.Height - okSize.Y) * 0.5f);
-                Utils.DrawBorderString(sb, doneStr, okPos, HackTheme.Accent * (alpha * flash), 0.54f);
-            }
-            else if (isQueued) {
-                string queuedStr = HackTime.Queued.Value;
-                Vector2 qSize = FontAssets.MouseText.Value.MeasureString(queuedStr) * 0.50f;
-                Vector2 qPos = new(rect.Right - qSize.X - 14, rect.Y + (rect.Height - qSize.Y) * 0.5f);
-                float qPulse = MathF.Sin(timer * 3f) * 0.15f + 0.85f;
-                Utils.DrawBorderString(sb, queuedStr, qPos, HackTheme.Uploading * (alpha * 0.6f * qPulse), 0.50f);
-            }
-            else {
-                //上传耗时（右上角）
-                float sec = hack.UploadTime / 60f;
-                string timeStr = $"{sec:F1}s";
-                Vector2 ts = FontAssets.MouseText.Value.MeasureString(timeStr) * FontTime;
-                Vector2 tp = new(rect.Right - ts.X - 14, rect.Y + 10);
-                Utils.DrawBorderString(sb, timeStr, tp, HackTheme.TextNormal * (alpha * 0.55f), FontTime);
-
-                //RAM消耗（右侧，上传耗时左边）
-                int displayActualCost = HackCostEvaluator.GetActualCost(hack, HackTime.CurrentScanTarget);
-                bool canAfford = RamSystem.CanAfford(displayActualCost);
-                string ramStr = BuildRamLabel(hack, displayActualCost);
-                Color ramColor = canAfford ? HackTheme.Accent : HackTheme.Danger;
-                if (!canAfford) {
-                    float ramPulse = MathF.Sin(timer * 6f) * 0.3f + 0.7f;
-                    ramColor *= ramPulse;
-                }
-                Vector2 ramSize = FontAssets.MouseText.Value.MeasureString(ramStr) * FontTime;
-                Vector2 ramPos = new(tp.X - ramSize.X - 12, rect.Y + 10);
-                Utils.DrawBorderString(sb, ramStr, ramPos, ramColor * (alpha * 0.7f), FontTime);
-
-                //分类标签（右下角）
-                string catLabel = HackTheme.CategoryLabel(hack.Category);
-                Vector2 cls = FontAssets.MouseText.Value.MeasureString(catLabel) * 0.38f;
-                Vector2 clp = new(rect.Right - cls.X - 14, rect.Bottom - cls.Y - 8);
-                Utils.DrawBorderString(sb, catLabel, clp, catColor * (alpha * 0.35f), 0.38f);
-            }
-
-            //上传进度光条
-            if (isUploading) {
-                int fillW = (int)(rect.Width * queueProgress);
-                sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 2, fillW, 2),
-                    new Rectangle(0, 0, 1, 1), HackTheme.Uploading * (alpha * 0.5f));
-                if (glow != null && fillW > 4) {
-                    Color tipGlow = HackTheme.Uploading * (alpha * 0.25f);
-                    tipGlow.A = 0;
-                    sb.Draw(glow, new Vector2(rect.X + fillW, rect.Bottom - 1), null,
-                        tipGlow, 0, glow.Size() / 2, new Vector2(0.12f, 0.02f), SpriteEffects.None, 0);
-                }
-            }
-        }
-
-        #endregion
-
-        #region 视觉效果
-
-        //RAM 成本文字，倍率>1 时附倍率标签
-        private static string BuildRamLabel(QuickHackDef hack, int actualCost) {
-            if (actualCost == hack.RamCost) return $"{actualCost} RAM";
-            float mult = (float)actualCost / hack.RamCost;
-            return $"{actualCost} RAM ×{mult:F1}";
-        }
-
-        //左侧斜角遮罩
-        private static void DrawSlashCut(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
-            Color mask = HackTheme.BgDarkest * (alpha * 0.95f);
-            int slashW = (int)SlashWidth;
-            for (int dy = 0; dy < rect.Height; dy++) {
-                float t = (float)dy / rect.Height;
-                int cutW = (int)(slashW * (1f - t));
-                if (cutW > 0)
-                    sb.Draw(px, new Rectangle(rect.X, rect.Y + dy, cutW, 1),
-                        new Rectangle(0, 0, 1, 1), mask);
-            }
-        }
-
-        //斜边边线
-        private static void DrawSlashEdge(SpriteBatch sb, Texture2D px, Rectangle rect, Color color) {
-            Vector2 top = new(rect.X + SlashWidth, rect.Y);
-            Vector2 bottom = new(rect.X, rect.Bottom);
-            DrawLine(sb, px, top, bottom, 1f, color);
-        }
-
-        //CRT水平暗线叠加（每三像素的暗纹）
-        private static void DrawCRTOverlay(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
-            Color line = HackTheme.BgDarkest * alpha;
-            for (int dy = 0; dy < rect.Height; dy += 3) {
-                sb.Draw(px, new Rectangle(rect.X, rect.Y + dy, rect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), line);
-            }
-        }
-
-        //悬停角标：四角的小L形加亮
-        private static void DrawCornerAccents(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha, Color color) {
-            int arm = 8;
-            Color c = color * (alpha * 0.6f);
-            //左上
-            sb.Draw(px, new Rectangle(rect.X + (int)SlashWidth, rect.Y, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.X + (int)SlashWidth, rect.Y, 1, arm), new Rectangle(0, 0, 1, 1), c);
-            //右上
-            sb.Draw(px, new Rectangle(rect.Right - arm, rect.Y, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, arm), new Rectangle(0, 0, 1, 1), c);
-            //左下
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - arm, 1, arm), new Rectangle(0, 0, 1, 1), c);
-            //右下
-            sb.Draw(px, new Rectangle(rect.Right - arm, rect.Bottom - 1, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Bottom - arm, 1, arm), new Rectangle(0, 0, 1, 1), c);
-        }
-
-        //扫描线：一条竖线从左到右横穿条目
-        private static void DrawScanLine(SpriteBatch sb, Texture2D px, Rectangle rect, float pos, float alpha) {
-            int lineX = rect.X + (int)(rect.Width * pos);
-            if (lineX < rect.X || lineX > rect.Right - 2) return;
-            sb.Draw(px, new Rectangle(lineX, rect.Y + 1, 2, rect.Height - 2),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * alpha);
-            //扫描辉光
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null) {
-                Color gc = HackTheme.Accent * (alpha * 0.6f);
-                gc.A = 0;
-                sb.Draw(glow, new Vector2(lineX, rect.Center.Y), null, gc, 0,
-                    glow.Size() / 2, new Vector2(0.1f, rect.Height / 40f), SpriteEffects.None, 0);
-            }
-        }
-
-        //上传进度指示器（右上角百分比+底部进度条+光点尾迹）
-        private void DrawUploadIndicator(SpriteBatch sb, Texture2D px, float alpha, Rectangle rect, float progress) {
-            int barW = 80;
-            int barH = 5;
-            int barX = rect.Right - barW - 14;
-            int barY = rect.Bottom - barH - 8;
-
-            //背景槽
-            sb.Draw(px, new Rectangle(barX, barY, barW, barH),
-                new Rectangle(0, 0, 1, 1), HackTheme.ProgressBg * alpha);
-            int fillW = (int)(barW * progress);
-            if (fillW > 0) {
-                //填充
-                sb.Draw(px, new Rectangle(barX, barY, fillW, barH),
-                    new Rectangle(0, 0, 1, 1), HackTheme.ProgressFill * (alpha * 0.9f));
-                //进度条前端辉光
-                Texture2D glow = CWRAsset.SoftGlow?.Value;
-                if (glow != null && fillW > 2) {
-                    Color tipGlow = HackTheme.ProgressGlow * (alpha * 0.4f);
-                    tipGlow.A = 0;
-                    sb.Draw(glow, new Vector2(barX + fillW, barY + barH * 0.5f), null,
-                        tipGlow, 0, glow.Size() / 2, new Vector2(0.12f, 0.04f), SpriteEffects.None, 0);
-                }
-                //进度条内高光线
-                sb.Draw(px, new Rectangle(barX, barY, fillW, 1),
-                    new Rectangle(0, 0, 1, 1), HackTheme.TextBright * (alpha * 0.15f));
-            }
-
-            //百分比文字
-            string pct = $"{(int)(progress * 100)}%";
-            Vector2 ps = FontAssets.MouseText.Value.MeasureString(pct) * FontTime;
-            Vector2 pp = new(rect.Right - ps.X - 10, rect.Y + 8);
-            Utils.DrawBorderString(sb, pct, pp, HackTheme.Uploading * alpha, FontTime);
-        }
-
-        #endregion
-
-        #region 底部状态栏
-
-        private void DrawStatusBar(SpriteBatch sb, Texture2D px, float alpha) {
+        private void DrawFooter(SpriteBatch sb, Texture2D px, float alpha, float baseX, float footerY) {
             bool anyVisible = false;
             for (int i = 0; i < slotFlyIn.Length; i++) {
                 if (slotFlyIn[i] > 0.5f) { anyVisible = true; break; }
             }
             if (!anyVisible) return;
 
-            float totalH = displayCount * (ItemHeight + ItemGap) - ItemGap;
-            float startY = (Main.screenHeight - totalH) * 0.5f + TopPadding;
-            float bottomY = startY + totalH + 14f;
-            float baseX = Main.screenWidth - RightMargin - ItemWidth;
+            //分隔虚线
+            HackTheme.DrawDashedLine(sb, new Vector2(baseX, footerY - 6),
+                new Vector2(baseX + RowWidth, footerY - 6), 1f, HackTheme.Border * (alpha * 0.5f), 5f, 4f);
 
-            //分隔线
-            sb.Draw(px, new Rectangle((int)baseX, (int)(bottomY - 4), (int)ItemWidth, 1),
-                new Rectangle(0, 0, 1, 1), HackTheme.Border * (alpha * 0.3f));
+            if (hoveredSlot >= 0) {
+                var hack = QuickHackDef.GetByIndex(GetGlobalIndex(hoveredSlot));
+                if (hack != null) {
+                    DrawFooterDetail(sb, px, alpha, baseX, footerY, hack);
+                    return;
+                }
+            }
+            DrawFooterStatus(sb, px, alpha, baseX, footerY);
+        }
 
-            //状态指示灯
+        //悬停协议详情
+        private void DrawFooterDetail(SpriteBatch sb, Texture2D px, float alpha, float baseX, float footerY, QuickHackDef hack) {
+            Color catColor = HackTheme.CategoryColor(hack.Category);
+
+            //类别竖刻 + 协议名微标题
+            sb.Draw(px, new Rectangle((int)baseX, (int)footerY, 2, 12), HackTheme.SrcPixel, catColor * (alpha * 0.8f));
+            Utils.DrawBorderString(sb, hack.DisplayName.Value, new Vector2(baseX + 8, footerY - 2),
+                HackTheme.TextBright * (alpha * 0.85f), 0.56f);
+
+            //描述换行（最多3行）
+            var descFont = FontAssets.MouseText.Value;
+            int wrapPx = Math.Max(32, (int)(RowWidth / FontDesc) - 6);
+            string[] descLines = VaultUtils.WrapTextArray(hack.Description.Value, descFont, wrapPx, 3, out _);
+            float lineH = descFont.MeasureString("汉").Y * FontDesc;
+            float curY = footerY + 16f;
+            for (int li = 0; li < descLines.Length; li++) {
+                if (string.IsNullOrEmpty(descLines[li])) continue;
+                Utils.DrawBorderString(sb, descLines[li].TrimEnd('-', ' '),
+                    new Vector2(baseX + 8, curY + li * lineH),
+                    HackTheme.TextNormal * (alpha * 0.85f), FontDesc);
+            }
+
+            //成本与耗时行
+            float metaY = curY + descLines.Length * lineH + 4f;
+            int actualCost = HackCostEvaluator.GetActualCost(hack, HackTime.CurrentScanTarget);
+            string costStr = HackTime.FooterCost.Format(actualCost);
+            if (actualCost != hack.RamCost)
+                costStr += $" ×{(float)actualCost / hack.RamCost:F1}";
+            Utils.DrawBorderString(sb, costStr, new Vector2(baseX + 8, metaY),
+                HackTheme.Accent * (alpha * 0.75f), 0.48f);
+            string upStr = HackTime.FooterUpload.Format($"{hack.UploadTime / 60f:F1}");
+            float costW = FontAssets.MouseText.Value.MeasureString(costStr).X * 0.48f;
+            Utils.DrawBorderString(sb, upStr, new Vector2(baseX + 8 + costW + 16, metaY),
+                HackTheme.TextNormal * (alpha * 0.6f), 0.48f);
+        }
+
+        //无悬停时的系统状态
+        private void DrawFooterStatus(SpriteBatch sb, Texture2D px, float alpha, float baseX, float footerY) {
             float pulse = (MathF.Sin(timer * 3.5f) + 1f) * 0.5f;
             bool hasActive = Queue != null && !Queue.IsEmpty;
             Color dotColor = hasActive
                 ? Color.Lerp(HackTheme.Uploading * 0.4f, HackTheme.Uploading, pulse) * alpha
                 : Color.Lerp(new Color(20, 100, 50), new Color(40, 200, 100), pulse) * alpha;
-            sb.Draw(px, new Vector2(baseX, bottomY + 3),
-                new Rectangle(0, 0, 1, 1), dotColor, 0, Vector2.Zero, 4f, SpriteEffects.None, 0);
+            HackTheme.DrawDiamond(sb, new Vector2(baseX + 4, footerY + 7), 6f, dotColor);
 
-            //指示灯辉光
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null) {
-                Color dglow = dotColor * 0.15f;
-                dglow.A = 0;
-                sb.Draw(glow, new Vector2(baseX + 2, bottomY + 5), null, dglow,
-                    0, glow.Size() / 2, 0.04f, SpriteEffects.None, 0);
-            }
-
-            //状态文本
             string status = hasActive ? HackTime.UploadingText.Value : HackTime.BreachReady.Value;
             if (Queue != null && Queue.HasCompleted) status = HackTime.UploadComplete.Value;
-            Utils.DrawBorderString(sb, status, new Vector2(baseX + 14, bottomY),
-                HackTheme.TextDim * alpha, FontStatus);
+            Utils.DrawBorderString(sb, status, new Vector2(baseX + 14, footerY),
+                HackTheme.TextDim * alpha, 0.48f);
 
-            //伪十六进制标签
+            //伪十六进制标签 + 协议计数
             string tag = $"NET::0x{(int)(timer * 100) % 0xFFFF:X4}";
-            Utils.DrawBorderString(sb, tag, new Vector2(baseX + ItemWidth - 110, bottomY),
-                HackTheme.Accent * (alpha * 0.22f), 0.36f);
-
-            //协议计数
+            Utils.DrawBorderString(sb, tag, new Vector2(baseX + RowWidth - 106, footerY),
+                HackTheme.Accent * (alpha * 0.22f), FontMicro);
             string countStr = HackTime.Protocols.Format(displayCount);
-            Utils.DrawBorderString(sb, countStr, new Vector2(baseX + ItemWidth - 110, bottomY + 20),
-                HackTheme.TextDim * (alpha * 0.25f), 0.34f);
+            Utils.DrawBorderString(sb, countStr, new Vector2(baseX + RowWidth - 106, footerY + 16),
+                HackTheme.TextDim * (alpha * 0.3f), 0.34f);
 
             //右键取消提示
             if (HackTime.CurrentScanTarget != null) {
-                string hint = HackTime.RightClickHint.Value;
                 float hintPulse = MathF.Sin(timer * 1.8f) * 0.12f + 0.88f;
-                Utils.DrawBorderString(sb, hint, new Vector2(baseX, bottomY + 22f),
-                    HackTheme.TextNormal * hintPulse, 0.8f);
+                Utils.DrawBorderString(sb, HackTime.RightClickHint.Value, new Vector2(baseX, footerY + 22f),
+                    HackTheme.TextNormal * (alpha * hintPulse), 0.72f);
             }
         }
 
         #endregion
 
-        #region 工具函数
+        #region 视觉辅助
 
-        private static void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, float thickness, Color color) {
-            Vector2 diff = end - start;
-            float length = diff.Length();
-            if (length < 1f) return;
-            sb.Draw(px, start, new Rectangle(0, 0, 1, 1), color, diff.ToRotation(),
-                Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
-        }
-
-        private static float EaseOutCubic(float t) {
-            float inv = 1f - t;
-            return 1f - inv * inv * inv;
-        }
-
-        private static float EaseOutBack(float t) {
-            const float c1 = 1.70158f;
-            const float c3 = c1 + 1f;
-            float inv = t - 1f;
-            return 1f + c3 * inv * inv * inv + c1 * inv * inv;
+        //扫描线：一条竖线横穿条目
+        private static void DrawScanLine(SpriteBatch sb, Texture2D px, Rectangle rect, float pos, float alpha, Color color) {
+            int lineX = rect.X + (int)(rect.Width * pos);
+            if (lineX < rect.X || lineX > rect.Right - 2) return;
+            sb.Draw(px, new Rectangle(lineX, rect.Y + 1, 2, rect.Height - 2),
+                HackTheme.SrcPixel, color * alpha);
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
+            if (glow != null) {
+                Color gc = color * (alpha * 0.6f);
+                gc.A = 0;
+                sb.Draw(glow, new Vector2(lineX, rect.Center.Y), null, gc, 0,
+                    glow.Size() / 2, new Vector2(0.1f, rect.Height / 40f), SpriteEffects.None, 0);
+            }
         }
 
         #endregion

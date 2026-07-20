@@ -1,8 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Projectiles;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,7 +39,14 @@ namespace CalamityOverhaul.Content.Items.Magic
             Item.UseSound = null;//开火音效在HeldProj
             Item.noMelee = true;
             Item.noUseGraphic = true;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_NeutronWand;
+        }
+
+        public override void AddRecipes() {
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(11)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         //右键：蓄力中子湮灭阵列

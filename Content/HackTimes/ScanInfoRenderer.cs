@@ -1,3 +1,5 @@
+using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.HackTimes.Scannables;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -5,11 +7,13 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>目标扫描信息面板渲染器</summary>
+    /// <summary>目标档案面板：左侧分节数据牌，全息头像 + 威胁刻度 + 逐行解码</summary>
     internal class ScanInfoRenderer
     {
+        #region 状态字段
+
         //上一帧扫描目标
-        private IScannable lastScanTarget;
+        private IHackTarget lastScanTarget;
         //扫描目标数据行数
         private int currentDataRowCount;
         //扫描进度(0~1)
@@ -27,30 +31,41 @@ namespace CalamityOverhaul.Content.HackTimes
         //故障抖动强度
         private float glitchIntensity;
 
-        //布局参数
-        public static float PanelWidth => 420f;
-        public static float RowHeight => 22f;
-        public static float HeaderHeight => 34f;
-        public static float SepHeight => 10f;
-        public static float StatusHeight => 28f;
-        public static float GapToList => 18f;
-        public static float TopPad => 10f;
-        public static float BottomPad => 10f;
+        #endregion
+
+        #region 布局参数
+
+        private const float LeftMargin = 36f;
+        private const float PanelWidth = 340f;
+        private const float RowHeight = 21f;
+        private const float TabRowHeight = 18f;
+        private const float TitleHeight = 30f;
+        private const float SepHeight = 9f;
+        private const float StatusHeight = 24f;
+        private const float TopPad = 10f;
+        private const float BottomPad = 10f;
+        //头像格边长
+        private const float PortraitSize = 86f;
+        //头像格与右侧行区间距
+        private const float PortraitGap = 12f;
+        //威胁刻度行高
+        private const float PipsRowHeight = 18f;
         //扫描时长(帧)
-        public static float ScanDuration => 30f;
+        private const float ScanDuration = 30f;
         //每行揭示间隔(秒)
-        public static float RowRevealInterval => 0.13f;
+        private const float RowRevealInterval = 0.13f;
         //打字机速度(字符/帧)
-        public static float TypewriterSpeed => 2.5f;
+        private const float TypewriterSpeed = 2.5f;
         //数据行数组容量
         private const int MaxDataRowCount = 10;
-        //字体大小
-        public static float FontHeader => 0.90f;
-        public static float FontRow => 0.80f;
-        public static float FontStatus => 0.80f;
-        public static float FontNoise => 0.70f;
-        //面板纵向锚点偏移倍率
-        public static float PanelVerticalOffsetRatio => 0.12f;
+        //字体
+        private const float FontTitle = 0.86f;
+        private const float FontRow = 0.72f;
+        private const float FontLabel = 0.56f;
+        private const float FontStatus = 0.60f;
+        private const float FontMicro = 0.38f;
+
+        #endregion
 
         //缓存的扫描数据
         private readonly string[] rowLabels = new string[MaxDataRowCount];
@@ -59,16 +74,18 @@ namespace CalamityOverhaul.Content.HackTimes
         private string statusText = "";
         private Color statusColor;
 
+        #region 更新
+
         public void Update() {
             timer += 0.016f;
 
-            IScannable currentTarget = HackTime.CurrentScanTarget;
+            IHackTarget currentTarget = HackTime.CurrentScanTarget;
 
             //目标切换时重置扫描
             if (currentTarget != lastScanTarget) {
                 lastScanTarget = currentTarget;
                 if (currentTarget != null) {
-                    currentDataRowCount = currentTarget.ScanRowCount;
+                    currentDataRowCount = Math.Min(currentTarget.ScanRowCount, MaxDataRowCount);
                     StartScan();
                 }
                 else {
@@ -117,7 +134,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //打字机推进
             if (revealedRows > 0 && revealedRows <= currentDataRowCount) {
-                string val = rowValues[revealedRows - 1];
+                string val = rowValues[revealedRows - 1] ?? "";
                 typewriterChar = Math.Min(typewriterChar + TypewriterSpeed, val.Length);
             }
 
@@ -135,26 +152,34 @@ namespace CalamityOverhaul.Content.HackTimes
             statusColor = HackTheme.Uploading;
         }
 
+        #endregion
+
+        #region 主绘制
+
         public void Draw(SpriteBatch sb) {
             if (lastScanTarget == null && flyInProgress < 0.01f) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = HackTheme.Pixel;
             if (px == null) return;
 
             float alpha = HackTime.Intensity * flyInProgress;
             if (alpha < 0.01f) return;
 
-            //面板位置
-            int protocolCount = QuickHackDef.Count;
-            float listTotalH = protocolCount * (78f + 5f) - 5f;
-            float panelH = TopPad + HeaderHeight + SepHeight
-                + currentDataRowCount * RowHeight + SepHeight + StatusHeight + BottomPad;
-            float baseX = Main.screenWidth / 2 - PanelWidth / 2;
-            float desiredTop = Main.screenHeight * 0.5f + listTotalH * PanelVerticalOffsetRatio;
-            float panelTop = Math.Min(desiredTop, Main.screenHeight - panelH - 6f);
+            //侧行数：头像右侧最多容纳的行
+            int sideRows = Math.Min(currentDataRowCount, 3);
+            int belowRows = currentDataRowCount - sideRows;
+            float portraitBlockH = PortraitSize + 4f + PipsRowHeight;
+            float sideBlockH = Math.Max(portraitBlockH, sideRows * RowHeight);
+            float panelH = TopPad + TabRowHeight + TitleHeight + SepHeight
+                + sideBlockH + (belowRows > 0 ? 4f + belowRows * RowHeight : 0f)
+                + SepHeight + StatusHeight + BottomPad;
 
-            //飞入偏移
-            float flyOffset = (1f - EaseOutCubic(flyInProgress)) * 300f;
+            //位置：左侧垂直居中
+            float baseX = LeftMargin;
+            float panelTop = (Main.screenHeight - panelH) * 0.5f;
+
+            //飞入偏移（自左）
+            float flyOffset = (1f - HackTheme.EaseOutCubic(flyInProgress)) * -300f;
             baseX += flyOffset;
 
             //故障抖动
@@ -165,64 +190,35 @@ namespace CalamityOverhaul.Content.HackTimes
 
             Rectangle panelRect = new((int)baseX, (int)panelTop, (int)PanelWidth, (int)panelH);
 
-            //面板背景
-            sb.Draw(px, panelRect, new Rectangle(0, 0, 1, 1), HackTheme.BgPanel * (alpha * 0.88f));
-
-            //底部渐亮
-            int gradH = panelRect.Height / 3;
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - gradH, panelRect.Width, gradH),
-                new Rectangle(0, 0, 1, 1), HackTheme.BgSlotHover * (alpha * 0.15f));
-
-            //CRT暗纹
-            DrawCRTOverlay(sb, px, panelRect, alpha * 0.04f);
-
-            //边框
-            Color borderCol = Color.Lerp(HackTheme.Border, HackTheme.Accent, 0.2f);
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.5f));
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 1, panelRect.Width, 1),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.4f));
-            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, 1, panelRect.Height),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.35f));
-            sb.Draw(px, new Rectangle(panelRect.Right - 1, panelRect.Y, 1, panelRect.Height),
-                new Rectangle(0, 0, 1, 1), borderCol * (alpha * 0.35f));
-
-            //角标括号
-            DrawCornerBrackets(sb, px, panelRect, alpha, HackTheme.Accent);
-
-            //左侧强调竖条
-            float barBreathe = MathF.Sin(timer * 2.5f) * 0.1f + 0.9f;
-            sb.Draw(px, new Rectangle(panelRect.X + 3, panelRect.Y + 5, 3, panelRect.Height - 10),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * (alpha * 0.3f * barBreathe));
-
-            //顶部高光线
-            sb.Draw(px, new Rectangle(panelRect.X + 4, panelRect.Y + 1, panelRect.Width - 8, 1),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * (alpha * 0.12f));
+            DrawPanelBackground(sb, px, panelRect, alpha);
 
             float curY = panelTop + TopPad;
             float textX = baseX + 14f;
 
-            //标题
-            string header = "//SCAN ANALYSIS";
-            int headerChars = scanProgress < 1f
-                ? (int)(header.Length * Math.Min(scanProgress * 2.5f, 1f))
-                : header.Length;
-            headerChars = Math.Clamp(headerChars, 0, header.Length);
-            string visibleHeader = header[..headerChars];
-            Utils.DrawBorderString(sb, visibleHeader, new Vector2(textX, curY),
-                HackTheme.Accent * (alpha * 0.75f), FontHeader);
+            //标签页行
+            DrawTabs(sb, textX, curY, alpha, panelRect);
+            curY += TabRowHeight;
 
-            //闪烁光标
-            if (headerChars < header.Length || scanProgress < 1f && (int)(timer * 8f) % 2 == 0) {
-                float cursorX = textX + FontAssets.MouseText.Value.MeasureString(visibleHeader).X * FontHeader + 2;
+            //标题（目标名，打字机）
+            string title = lastScanTarget?.LockFrameTitle ?? "";
+            int titleChars = scanProgress < 1f
+                ? (int)(title.Length * Math.Min(scanProgress * 2.5f, 1f))
+                : title.Length;
+            titleChars = Math.Clamp(titleChars, 0, title.Length);
+            string visibleTitle = title[..titleChars];
+            Utils.DrawBorderString(sb, visibleTitle, new Vector2(textX, curY),
+                HackTheme.TextBright * (alpha * 0.95f), FontTitle);
+            //光标
+            if (titleChars < title.Length && (int)(timer * 8f) % 2 == 0) {
+                float cursorX = textX + FontAssets.MouseText.Value.MeasureString(visibleTitle).X * FontTitle + 2;
                 Utils.DrawBorderString(sb, "█", new Vector2(cursorX, curY),
-                    HackTheme.Accent * (alpha * 0.55f), FontHeader);
+                    HackTheme.Accent * (alpha * 0.55f), FontTitle);
             }
+            curY += TitleHeight;
 
-            curY += HeaderHeight;
-
-            //分隔线
-            DrawDashedLine(sb, px, baseX + 10, curY, PanelWidth - 20, alpha);
+            //分隔虚线
+            HackTheme.DrawDashedLine(sb, new Vector2(baseX + 10, curY), new Vector2(baseX + PanelWidth - 10, curY),
+                1f, HackTheme.Border * (alpha * 0.5f), 5f, 4f);
             curY += SepHeight;
 
             //扫描阶段
@@ -233,16 +229,34 @@ namespace CalamityOverhaul.Content.HackTimes
                 return;
             }
 
-            //数据行
-            for (int i = 0; i < currentDataRowCount; i++) {
-                if (i >= revealedRows) break;
-                DrawDataRow(sb, px, textX, curY, i, alpha);
-                curY += RowHeight;
+            //头像格 + 威胁刻度
+            Rectangle portraitRect = new((int)textX, (int)curY, (int)PortraitSize, (int)PortraitSize);
+            DrawPortrait(sb, px, portraitRect, alpha);
+            DrawThreatPips(sb, new Vector2(textX, curY + PortraitSize + 6f), alpha);
+
+            //头像右侧数据行
+            int sideCount = Math.Min(revealedRows, sideRows);
+            float sideX = textX + PortraitSize + PortraitGap;
+            for (int i = 0; i < sideCount; i++) {
+                DrawDataRow(sb, px, sideX, curY + i * RowHeight, i, alpha,
+                    PanelWidth - PortraitSize - PortraitGap - 28f);
+            }
+            curY += sideBlockH;
+
+            //下方整宽数据行
+            if (belowRows > 0) {
+                curY += 4f;
+                for (int i = sideRows; i < revealedRows && i < currentDataRowCount; i++) {
+                    DrawDataRow(sb, px, textX, curY + (i - sideRows) * RowHeight, i, alpha,
+                        PanelWidth - 28f);
+                }
+                curY += belowRows * RowHeight;
             }
 
             //底部分隔与状态
             if (revealedRows >= currentDataRowCount) {
-                DrawDashedLine(sb, px, baseX + 10, curY, PanelWidth - 20, alpha);
+                HackTheme.DrawDashedLine(sb, new Vector2(baseX + 10, curY), new Vector2(baseX + PanelWidth - 10, curY),
+                    1f, HackTheme.Border * (alpha * 0.5f), 5f, 4f);
                 curY += SepHeight;
 
                 float statusPulse = MathF.Sin(timer * 3f) * 0.15f + 0.85f;
@@ -250,15 +264,188 @@ namespace CalamityOverhaul.Content.HackTimes
                     statusColor * (alpha * statusPulse), FontStatus);
 
                 string hexTag = $"0x{(int)(timer * 50) % 0xFFFF:X4}";
-                Utils.DrawBorderString(sb, hexTag, new Vector2(baseX + PanelWidth - 96, curY),
-                    HackTheme.Accent * (alpha * 0.22f), 0.44f);
+                Utils.DrawBorderString(sb, hexTag, new Vector2(baseX + PanelWidth - 78, curY + 2),
+                    HackTheme.Accent * (alpha * 0.22f), FontMicro);
             }
 
             DrawScanLineOverlay(sb, px, panelRect, alpha);
             DrawOuterGlow(sb, panelRect, alpha);
         }
 
-        #region 内部绘制
+        #endregion
+
+        #region 面板背景与框架
+
+        private void DrawPanelBackground(SpriteBatch sb, Texture2D px, Rectangle panelRect, float alpha) {
+            Effect deck = EffectLoader.HackDeckPanel?.Value;
+            if (deck != null) {
+                deck.Parameters["uTime"]?.SetValue(timer);
+                deck.Parameters["uAlpha"]?.SetValue(alpha * 0.92f);
+                deck.Parameters["uResolution"]?.SetValue(new Vector2(panelRect.Width, panelRect.Height));
+                deck.Parameters["uTaperLeft"]?.SetValue(0f);
+                deck.Parameters["uTaperRight"]?.SetValue(16f);
+                deck.Parameters["uAccent"]?.SetValue(HackTheme.Accent.ToVector3());
+                deck.Parameters["uHover"]?.SetValue(0f);
+                deck.Parameters["uDisabled"]?.SetValue(0f);
+                deck.Parameters["uProgress"]?.SetValue(0f);
+                deck.Parameters["uGlitch"]?.SetValue(glitchIntensity * 0.6f);
+                sb.End();
+                sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                    DepthStencilState.None, RasterizerState.CullNone, deck, Main.UIScaleMatrix);
+                sb.Draw(px, panelRect, Color.White);
+                sb.End();
+                sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.UIScaleMatrix);
+            }
+            else {
+                //CPU回退：暗底 + 右下斜切近似（整块填充）+ CRT
+                sb.Draw(px, panelRect, HackTheme.SrcPixel, HackTheme.BgPanel * (alpha * 0.9f));
+                HackTheme.DrawCRTOverlay(sb, panelRect, alpha * 0.04f);
+            }
+
+            //开放式框架：左强调轨 + 顶部悬挑发丝线 + 底部短线，右侧不封口
+            float railBreathe = MathF.Sin(timer * 2.5f) * 0.1f + 0.9f;
+            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y + 4, 3, panelRect.Height - 8),
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.55f * railBreathe));
+            sb.Draw(px, new Rectangle(panelRect.X + 3, panelRect.Y + 4, 8, panelRect.Height - 8),
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.05f));
+            //顶线向右悬挑出面板
+            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Y, panelRect.Width + 14, 1),
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.40f));
+            //底线只画左半
+            sb.Draw(px, new Rectangle(panelRect.X, panelRect.Bottom - 1, panelRect.Width / 2, 1),
+                HackTheme.SrcPixel, HackTheme.Border * (alpha * 0.6f));
+            //左上角标
+            HackTheme.DrawCornerBracket(sb, new Vector2(panelRect.X, panelRect.Y), 1, 1, 10, 1.4f,
+                HackTheme.Accent * (alpha * 0.6f));
+        }
+
+        //标签页：DATA 高亮 + SCAN 暗置
+        private void DrawTabs(SpriteBatch sb, float textX, float curY, float alpha, Rectangle panelRect) {
+            Texture2D px = HackTheme.Pixel;
+            string tab1 = $"//{HackTime.DataTab.Value}";
+            Utils.DrawBorderString(sb, tab1, new Vector2(textX, curY),
+                HackTheme.Accent * (alpha * 0.85f), 0.5f);
+            float tab1W = FontAssets.MouseText.Value.MeasureString(tab1).X * 0.5f;
+            //活动标签底线
+            sb.Draw(px, new Rectangle((int)textX, (int)(curY + 13), (int)tab1W, 1),
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.6f));
+
+            string tab2 = HackTime.ScanTab.Value;
+            Utils.DrawBorderString(sb, tab2, new Vector2(textX + tab1W + 16, curY),
+                HackTheme.TextDim * (alpha * 0.5f), 0.5f);
+
+            //右上角微型ID
+            string idTag = $"ID:{(lastScanTarget?.GetHashCode() ?? 0) & 0xFFF:X3}";
+            Vector2 idSize = FontAssets.MouseText.Value.MeasureString(idTag) * FontMicro;
+            Utils.DrawBorderString(sb, idTag, new Vector2(panelRect.Right - idSize.X - 12, curY + 1),
+                HackTheme.TextDim * (alpha * 0.4f), FontMicro);
+        }
+
+        #endregion
+
+        #region 全息头像
+
+        private void DrawPortrait(SpriteBatch sb, Texture2D px, Rectangle cell, float alpha) {
+            //格子底与描边
+            sb.Draw(px, cell, HackTheme.SrcPixel, HackTheme.BgDarkest * (alpha * 0.8f));
+            Color cellEdge = HackTheme.Accent * (alpha * 0.35f);
+            sb.Draw(px, new Rectangle(cell.X, cell.Y, cell.Width, 1), HackTheme.SrcPixel, cellEdge);
+            sb.Draw(px, new Rectangle(cell.X, cell.Bottom - 1, cell.Width, 1), HackTheme.SrcPixel, cellEdge * 0.6f);
+            sb.Draw(px, new Rectangle(cell.X, cell.Y, 1, cell.Height), HackTheme.SrcPixel, cellEdge * 0.8f);
+            sb.Draw(px, new Rectangle(cell.Right - 1, cell.Y, 1, cell.Height), HackTheme.SrcPixel, cellEdge * 0.8f);
+
+            //全息闪烁
+            float flicker = 0.82f + 0.18f * MathF.Sin(timer * 27f + MathF.Sin(timer * 11f) * 2f);
+            float holoAlpha = alpha * flicker;
+
+            bool drewSprite = false;
+            if (lastScanTarget is NpcScannable n && n.IsValid) {
+                NPC npc = Main.npc[n.NpcIndex];
+                Main.instance.LoadNPC(npc.type);
+                Texture2D tex = TextureAssets.Npc[npc.type]?.Value;
+                if (tex != null) {
+                    Rectangle frame = npc.frame;
+                    if (frame.Width <= 0 || frame.Height <= 0)
+                        frame = new Rectangle(0, 0, tex.Width, tex.Height);
+                    float fit = Math.Min((cell.Width - 14f) / frame.Width, (cell.Height - 14f) / frame.Height);
+                    fit = Math.Min(fit, 2.4f);
+                    Vector2 origin = new(frame.Width * 0.5f, frame.Height * 0.5f);
+                    Vector2 pos = cell.Center.ToVector2();
+                    SpriteEffects dir = npc.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+                    //色散残影
+                    sb.Draw(tex, pos - new Vector2(1.6f, 0), frame, new Color(220, 40, 40) * (holoAlpha * 0.30f),
+                        0f, origin, fit, dir, 0);
+                    sb.Draw(tex, pos + new Vector2(1.6f, 0), frame, new Color(40, 120, 220) * (holoAlpha * 0.30f),
+                        0f, origin, fit, dir, 0);
+                    //主体单色全息
+                    Color holoTint = Color.Lerp(HackTheme.Accent, Color.White, 0.35f);
+                    sb.Draw(tex, pos, frame, holoTint * (holoAlpha * 0.85f), 0f, origin, fit, dir, 0);
+                    drewSprite = true;
+                }
+            }
+
+            if (!drewSprite) {
+                //非NPC：类别大字形
+                string glyph = KindGlyph(lastScanTarget?.TargetType?.Kind ?? HackTargetKind.None);
+                Vector2 gs = FontAssets.MouseText.Value.MeasureString(glyph) * 1.4f;
+                Utils.DrawBorderString(sb, glyph,
+                    new Vector2(cell.Center.X - gs.X * 0.5f, cell.Center.Y - gs.Y * 0.5f),
+                    HackTheme.Accent * (holoAlpha * 0.7f), 1.4f);
+                HackTheme.DrawDiamondOutline(sb, cell.Center.ToVector2(), cell.Width * 0.34f, 1.2f,
+                    HackTheme.Accent * (holoAlpha * 0.35f));
+            }
+
+            //格内扫描横纹与滚动亮线
+            HackTheme.DrawCRTOverlay(sb, cell, alpha * 0.12f);
+            float scanT = timer * 0.8f % 1f;
+            int scanY = cell.Y + (int)(scanT * cell.Height);
+            sb.Draw(px, new Rectangle(cell.X + 1, scanY, cell.Width - 2, 1),
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.20f * (1f - Math.Abs(scanT - 0.5f) * 2f)));
+
+            //已标记戳记（格底徽章）
+            float stampPulse = MathF.Sin(timer * 4f) * 0.15f + 0.85f;
+            HackTheme.DrawBadge(sb, new Vector2(cell.X + 3, cell.Bottom - 15),
+                HackTime.TargetTagged.Value, HackTheme.Accent, alpha * 0.8f * stampPulse, 0.36f);
+        }
+
+        private static string KindGlyph(HackTargetKind kind) => kind switch {
+            HackTargetKind.Tile => "▣",
+            HackTargetKind.Wraith => "☠",
+            HackTargetKind.Turret => "◇",
+            HackTargetKind.SignalTower => "◎",
+            HackTargetKind.Projectile => "»",
+            HackTargetKind.Water => "≈",
+            HackTargetKind.Item => "●",
+            _ => "◆",
+        };
+
+        //威胁菱形刻度（仅NPC，其余留空）
+        private void DrawThreatPips(SpriteBatch sb, Vector2 pos, float alpha) {
+            if (lastScanTarget is not NpcScannable n || !n.IsValid) return;
+            int pips = NpcScannable.ComputeThreatPips(Main.npc[n.NpcIndex]);
+
+            Utils.DrawBorderString(sb, HackTime.ThreatLabel.Value, pos,
+                HackTheme.TextDim * (alpha * 0.7f), FontMicro);
+            float labelW = FontAssets.MouseText.Value.MeasureString(HackTime.ThreatLabel.Value).X * FontMicro;
+
+            Color pipOn = pips >= 4 ? HackTheme.Danger : pips >= 3 ? HackTheme.Uploading : HackTheme.Accent;
+            for (int i = 0; i < 5; i++) {
+                Vector2 c = new(pos.X + labelW + 12 + i * 13f, pos.Y + 6f);
+                if (i < pips) {
+                    float pulse = pips >= 4 ? MathF.Sin(timer * 5f + i) * 0.2f + 0.8f : 1f;
+                    HackTheme.DrawDiamond(sb, c, 7f, pipOn * (alpha * 0.9f * pulse));
+                }
+                else {
+                    HackTheme.DrawDiamondOutline(sb, c, 3.5f, 1f, HackTheme.Border * (alpha * 0.6f));
+                }
+            }
+        }
+
+        #endregion
+
+        #region 数据行与扫描阶段
 
         //扫描阶段 UI
         private void DrawScanPhase(SpriteBatch sb, Texture2D px, float baseX, float curY, float alpha) {
@@ -268,17 +455,16 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //进度条背景
             sb.Draw(px, new Rectangle((int)barX, (int)curY, (int)barW, barH),
-                new Rectangle(0, 0, 1, 1), HackTheme.ProgressBg * alpha);
+                HackTheme.SrcPixel, HackTheme.ProgressBg * alpha);
 
             //填充
             int fillW = (int)(barW * scanProgress);
             if (fillW > 0) {
                 sb.Draw(px, new Rectangle((int)barX, (int)curY, fillW, barH),
-                    new Rectangle(0, 0, 1, 1), HackTheme.ProgressFill * (alpha * 0.85f));
+                    HackTheme.SrcPixel, HackTheme.ProgressFill * (alpha * 0.85f));
                 sb.Draw(px, new Rectangle((int)barX, (int)curY, fillW, 1),
-                    new Rectangle(0, 0, 1, 1), HackTheme.TextBright * (alpha * 0.2f));
+                    HackTheme.SrcPixel, HackTheme.TextBright * (alpha * 0.2f));
 
-                //前端辉光
                 Texture2D glow = CWRAsset.SoftGlow?.Value;
                 if (glow != null) {
                     Color tipGlow = HackTheme.ProgressGlow * (alpha * 0.35f);
@@ -290,7 +476,7 @@ namespace CalamityOverhaul.Content.HackTimes
 
             //扫描状态文字
             curY += 18f;
-            string scanText = $"SCANNING... {(int)(scanProgress * 100)}%";
+            string scanText = $"{HackTime.Scanning.Value} {(int)(scanProgress * 100)}%";
             float pulse = MathF.Sin(timer * 6f) * 0.2f + 0.8f;
             Utils.DrawBorderString(sb, scanText, new Vector2(baseX + 14, curY),
                 HackTheme.Uploading * (alpha * pulse), 0.60f);
@@ -301,14 +487,14 @@ namespace CalamityOverhaul.Content.HackTimes
                 + $"BUF:{(int)(timer * 80) % 999:D3}  "
                 + $"SIG:{(int)(timer * 150) % 0xFFF:X3}";
             Utils.DrawBorderString(sb, noise, new Vector2(baseX + 14, curY),
-                HackTheme.TextDim * (alpha * 0.3f), FontNoise);
+                HackTheme.TextDim * (alpha * 0.3f), 0.62f);
         }
 
-        //单行数据渲染
-        private void DrawDataRow(SpriteBatch sb, Texture2D px, float textX, float curY, int i, float alpha) {
+        //单行数据渲染，maxWidth 限制数值起始偏移
+        private void DrawDataRow(SpriteBatch sb, Texture2D px, float textX, float curY, int i, float alpha, float maxWidth) {
             bool isCurrent = i == revealedRows - 1;
-            string label = rowLabels[i];
-            string value = rowValues[i];
+            string label = rowLabels[i] ?? "";
+            string value = rowValues[i] ?? "";
             Color valueColor = rowColors[i];
 
             //打字机截断
@@ -321,20 +507,21 @@ namespace CalamityOverhaul.Content.HackTimes
             //揭示时的行内抖动
             float rowGlitch = 0f;
             if (isCurrent && typewriterChar < value.Length * 0.5f)
-                rowGlitch = (1f - typewriterChar / value.Length) * 4f;
+                rowGlitch = (1f - typewriterChar / Math.Max(value.Length, 1)) * 4f;
             float rowShake = rowGlitch * MathF.Sin(timer * 50f + i * 7f);
 
-            //标签
-            string labelText = $"◆ {label}";
-            Utils.DrawBorderString(sb, labelText, new Vector2(textX + rowShake, curY),
-                HackTheme.TextDim * (alpha * 0.7f), FontRow);
+            //标签（微型，行首刻点）
+            sb.Draw(px, new Rectangle((int)(textX + rowShake), (int)(curY + 6), 3, 3),
+                HackTheme.SrcPixel, valueColor * (alpha * 0.5f));
+            Utils.DrawBorderString(sb, label, new Vector2(textX + 8 + rowShake, curY + 1),
+                HackTheme.TextDim * (alpha * 0.75f), FontLabel);
 
-            //数值
-            float valueX = textX + 110f + rowShake;
+            //数值（标签右侧固定列）
+            float valueX = textX + Math.Min(maxWidth * 0.42f, 96f) + rowShake;
 
             //色散(揭示中)
             if (isCurrent && typewriterChar < value.Length) {
-                float aberr = (1f - typewriterChar / value.Length) * 1.5f;
+                float aberr = (1f - typewriterChar / Math.Max(value.Length, 1)) * 1.5f;
                 Utils.DrawBorderString(sb, visibleValue, new Vector2(valueX - aberr, curY),
                     new Color(220, 40, 40) * (alpha * 0.15f), FontRow);
                 Utils.DrawBorderString(sb, visibleValue, new Vector2(valueX + aberr, curY + 0.3f),
@@ -350,15 +537,11 @@ namespace CalamityOverhaul.Content.HackTimes
                 Utils.DrawBorderString(sb, "▌", new Vector2(cursorX, curY),
                     HackTheme.Accent * (alpha * 0.5f), FontRow);
             }
-
-            //已完成行的呼吸指示点
-            if (!isCurrent || typewriterChar >= value.Length) {
-                float dotPulse = MathF.Sin(timer * 2f + i * 1.2f) * 0.2f + 0.8f;
-                sb.Draw(px, new Vector2(textX - 8, curY + 5),
-                    new Rectangle(0, 0, 1, 1), valueColor * (alpha * 0.25f * dotPulse),
-                    0, Vector2.Zero, 3f, SpriteEffects.None, 0);
-            }
         }
+
+        #endregion
+
+        #region 覆盖层
 
         //面板内竖向扫描线
         private void DrawScanLineOverlay(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
@@ -366,7 +549,7 @@ namespace CalamityOverhaul.Content.HackTimes
             float scanY = rect.Y + scanT * rect.Height;
             float scanFade = 1f - Math.Abs(scanT - 0.5f) * 2f;
             sb.Draw(px, new Rectangle(rect.X + 2, (int)scanY, rect.Width - 4, 1),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * (alpha * 0.08f * scanFade));
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.08f * scanFade));
         }
 
         //面板外发光
@@ -378,45 +561,6 @@ namespace CalamityOverhaul.Content.HackTimes
             sb.Draw(glow, rect.Center.ToVector2(), null, panelGlow, 0,
                 glow.Size() / 2, new Vector2(rect.Width / 25f, rect.Height / 25f),
                 SpriteEffects.None, 0);
-        }
-
-        #endregion
-
-        #region 工具方法
-
-        private static void DrawCRTOverlay(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha) {
-            Color line = HackTheme.BgDarkest * alpha;
-            for (int dy = 0; dy < rect.Height; dy += 3)
-                sb.Draw(px, new Rectangle(rect.X, rect.Y + dy, rect.Width, 1),
-                    new Rectangle(0, 0, 1, 1), line);
-        }
-
-        private static void DrawDashedLine(SpriteBatch sb, Texture2D px, float x, float y, float width, float alpha) {
-            for (float dx = 0; dx < width; dx += 6)
-                sb.Draw(px, new Rectangle((int)(x + dx), (int)y, 3, 1),
-                    new Rectangle(0, 0, 1, 1), HackTheme.Border * (alpha * 0.35f));
-        }
-
-        private static void DrawCornerBrackets(SpriteBatch sb, Texture2D px, Rectangle rect, float alpha, Color color) {
-            int arm = 10;
-            Color c = color * (alpha * 0.4f);
-            //左上
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.X, rect.Y, 1, arm), new Rectangle(0, 0, 1, 1), c);
-            //右上
-            sb.Draw(px, new Rectangle(rect.Right - arm, rect.Y, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Y, 1, arm), new Rectangle(0, 0, 1, 1), c);
-            //左下
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - 1, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.X, rect.Bottom - arm, 1, arm), new Rectangle(0, 0, 1, 1), c);
-            //右下
-            sb.Draw(px, new Rectangle(rect.Right - arm, rect.Bottom - 1, arm, 1), new Rectangle(0, 0, 1, 1), c);
-            sb.Draw(px, new Rectangle(rect.Right - 1, rect.Bottom - arm, 1, arm), new Rectangle(0, 0, 1, 1), c);
-        }
-
-        private static float EaseOutCubic(float t) {
-            float inv = 1f - t;
-            return 1f - inv * inv * inv;
         }
 
         #endregion

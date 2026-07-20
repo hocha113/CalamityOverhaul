@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Common;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.TileProcessors;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -21,7 +20,20 @@ namespace CalamityOverhaul.Content.Industrials.MaterialFlow.Pipelines
         public override void SetDefaults() {
             base.SetDefaults();
             Item.rare = ItemRarityID.Red;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_CreativePipeline;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_MiracleMatter, CWRID.Item_ShadowspecBar)) {
+                return;
+            }
+            //原配方吃无尽锭，移除后改用奇迹物质+暗影耀斑锭作为终局无限能源的代价
+            CreateRecipe()
+                .AddIngredient<UEPipeline>()
+                .AddIngredient(CWRID.Item_MiracleMatter)
+                .AddIngredient(CWRID.Item_ShadowspecBar, 5)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
     }
 

@@ -279,36 +279,6 @@ QuestNode: {
 		DetailedDescription: Joue la symphonie des étoiles. Ce grimoire invoque trous noirs et quasars pour faire disparaître les ennemis dans le chant de l'univers.
 	}
 
-	DarkMatterCompressorQuest: {
-		DisplayName: Compresseur de matière noire
-		Description: Obtenir le compresseur de matière noire
-		DetailedDescription: Manipule la matière la plus mystérieuse de l'univers. Cette machine compresse la matière noire en orbes d'énergie pour des crafts avancés.
-	}
-
-	InfiniteIngotQuest: {
-		DisplayName: Lingot infini
-		Description: Forger un lingot infini
-		DetailedDescription: Un métal qui transcende la loi de conservation de la masse. La pierre angulaire du pouvoir ultime, aux possibilités infinies.
-	}
-
-	InfinitePickQuest: {
-		DisplayName: Pioche infinie
-		Description: Obtenir la pioche infinie
-		DetailedDescription: Rien n'arrête cette pioche. Elle peut miner tout, y compris le bedrock du monde.
-	}
-
-	InfiniteToiletQuest: {
-		DisplayName: Toilettes infinies
-		Description: Obtenir les toilettes infinies
-		DetailedDescription: Le trône des dieux. Absurde en apparence, mais symbole d'une autorité suprême.
-	}
-
-	InfinityCatalystQuest: {
-		DisplayName: Catalyseur infini
-		Description: Obtenir le catalyseur infini
-		DetailedDescription: Le médium clé pour déclencher la réaction infinie. Il fait circuler la matière entre annihilation et renaissance, générant une énergie colossale.
-	}
-
 	NeutronBowQuest: {
 		DisplayName: Arc à neutrons
 		Description: Obtenir l'arc à neutrons
@@ -361,18 +331,6 @@ QuestNode: {
 		DisplayName: Terminus
 		Description: Obtenir Terminus
 		DetailedDescription: La clé pour lancer le Boss Rush. Contemple cette pierre et prépare-toi à affronter les créatures les plus puissantes du monde.
-	}
-
-	TransmutationOfMatterQuest: {
-		DisplayName: Transmutateur de matière
-		Description: Obtenir le transmutateur de matière
-		DetailedDescription: La forme ultime de l'alchimie. Cette machine brise l'équivalence et transforme la matière à volonté, voire la crée ex nihilo.
-	}
-
-	HeavenfallLongbowQuest: {
-		DisplayName: Arc infini
-		Description: Obtenir l'Arc infini
-		DetailedDescription: Un arc long qui a abattu des dieux. Il refait surface dans ce monde.
 	}
 
 	SpearOfLonginusQuest: {

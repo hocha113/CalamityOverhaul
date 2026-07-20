@@ -645,6 +645,14 @@ HackTime: {
 	SignalTowerScanStatusElectrified: Остаточный заряд
 	SignalTowerScanProtocol: Доступные протоколы
 	RightClickHint: ПКМ для снятия выделения с цели
+	// StatusReady: READY
+	// StatusNoRam: NO RAM
+	// UplinkHeader: UPLINK
+	// DataTab: DATA
+	// ScanTab: SCAN
+	// TargetTagged: TARGET TAGGED
+	// FooterUpload: UPLOAD {0}s
+	// FooterCost: COST {0} RAM
 	AccessDeniedTitle: Время взлома недоступно
 	AccessDeniedDesc: Требуется умное оружие или сетевой киберимплант для использования навыков взлома
 }
@@ -818,15 +826,6 @@ AbandonedPortalStrings: {
 	DiagnosticBroken: ERR-0xC4: Разрыв кольца позиционирования / Главный энергетический контур отключен
 	DiagnosticRepairing: INFO: Синхронизация массива нано-сварки... Не сдвигайте основание врат
 	DiagnosticRepaired: OK: Все подсистемы в сети / Разрешение координат готово
-}
-
-SupertableUI: {
-	RecipeViewLabel: Просмотреть рецепт
-	RecipeEmptyLabel: Нет
-	PlacementMonitorOff: Отключить наблюдение за расстановкой
-	PlacementMonitorOn: Включить наблюдение за расстановкой
-	QuickPlaceMaterials: Быстрая установка материалов
-	QuickTakeMaterials: Быстрое извлечение материалов
 }
 
 ArrowHolderUI: {

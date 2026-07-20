@@ -86,6 +86,7 @@ namespace CalamityOverhaul.Content.Scenarios.SupCal.Quest.DoGQuest
             ModContent.ProjectileType<HeartcarverHeld>(),
             ModContent.ProjectileType<HeartcarverDash>(),
             ModContent.ProjectileType<HeartcarverDagger>(),
+            ModContent.ProjectileType<HeartcarverThrownDagger>(),
             ModContent.ProjectileType<HeartcarverExcisedHeart>(),
             ModContent.ProjectileType<HeartcarverPulseProj>()
         ];

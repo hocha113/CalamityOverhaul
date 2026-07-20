@@ -146,11 +146,6 @@ GlacialShell.DisplayName: Projectile glacial
 GlacierSpikeProj.DisplayName: Pilier glaciaire
 GlacierWave.DisplayName: Vague glaciaire
 ExtremeColdHail.DisplayName: Grêle glaciale
-HeavenRainbowImpact.DisplayName: Impact de l'arc-en-ciel céleste
-InfiniteArrow.DisplayName: Flèche infinie
-InfiniteRune.DisplayName: Rune infinie
-ParadiseArrow.DisplayName: Flèche du paradis
-VientianePunishment.DisplayName: Châtiment des myriades
 IceExplosionFriend.DisplayName: Explosion de glace
 IceParclose.DisplayName: Voile de glace
 FrostGlimmer.DisplayName: Scintillement givré
@@ -178,9 +173,6 @@ ElementWhipProjectile.DisplayName: Fouet élémentaire
 GhostFireWhipProjectile.DisplayName: Fouet de feu fantôme
 WhiplashGalacticaProjectile.DisplayName: Fouet galactique
 WTrail.DisplayName: Traînée
-InfiniteEnmgs.DisplayName: Énergie infinie
-InfinitePickProj.DisplayName: Pioche infinie
-SpanDMBall.DisplayName: Orbe de matière noire
 CthulhuEye.DisplayName: Œil de Cthulhu
 JewelFragmentProjectile.DisplayName: Fragment de joyau
 JewelGemProjectile.DisplayName: Étoile de joyau

@@ -20,7 +20,7 @@ namespace CalamityOverhaul.Content.Industrials.ElectricPowers.Throwers
         public static LocalizedText WorkingText { get; private set; }
         public static LocalizedText IdleText { get; private set; }
 
-        [VaultLoaden(CWRConstant.UI + "SupertableUIs/InputArrow3")]
+        [VaultLoaden(CWRConstant.UI + "InputArrow3")]
         internal static Asset<Texture2D> InputArrow = null!;
 
         public override void SetStaticDefaults() {

@@ -1,5 +1,4 @@
 ﻿using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -42,7 +41,25 @@ namespace CalamityOverhaul.Content.Items.Melee
             Item.rare = CWRID.Rarity_DarkOrange;
             Item.shoot = ModContent.ProjectileType<DawnshatterSpearThrust>();
             Item.shootSpeed = 1f;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_DawnshatterAzure;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_ShadowspecBar, CWRID.Item_RedSun, CWRID.Item_DraconicDestruction
+                , CWRID.Item_DragonPow, CWRID.Item_DragonRage, CWRID.Item_Rock)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient(ItemID.DayBreak)
+                .AddIngredient(ItemID.FragmentSolar, 16)
+                .AddIngredient(CWRID.Item_ShadowspecBar, 3)
+                .AddIngredient(CWRID.Item_RedSun)
+                .AddIngredient(CWRID.Item_DraconicDestruction)
+                .AddIngredient(CWRID.Item_DragonPow)
+                .AddIngredient(CWRID.Item_DragonRage)
+                .AddIngredient(CWRID.Item_Rock)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override bool AltFunctionUse(Player player) => true;

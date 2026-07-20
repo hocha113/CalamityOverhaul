@@ -1,19 +1,25 @@
-﻿using CalamityOverhaul.Content.PRTTypes;
+﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.PRTTypes;
 using InnoVault.Actors;
 using InnoVault.Models3D.Runtime;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 {
     /// <summary>
     /// 鸟居Actor：负责3D鸟居模型的每帧提交、鸟居下插地鬼切的绘制与拔刀交互提示。<br/>
     /// 逻辑锚点 <see cref="Actor.Position"/> 约定为鸟居正下方的地表中心（非左上角），
-    /// 所有绘制/粒子/光照都相对该锚点展开
+    /// 所有绘制/粒子/光照都相对该锚点展开。<br/>
+    /// 本地玩家拔刀后走退场演出（颤抖→沉入地下→溶解成樱瓣散去），
+    /// 纯客户端视觉：Actor 世界侧仍存活，未拔刀的玩家看到的鸟居原样不动
     /// </summary>
     internal class ToriiShrineActor : Actor
     {
@@ -37,6 +43,60 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
         /// <summary>刀的中心点（世界坐标）</summary>
         public Vector2 SwordAnchor => Position + new Vector2(0f, -SwordCenterHeight);
 
+        #region 退场状态
+        private enum DeparturePhase
+        {
+            None,
+            Trembling,
+            Sinking,
+            Gone
+        }
+
+        private const int TrembleFrames = 50;
+        private const int SinkFrames = 165;
+        //余响之后再留约0.83秒静默拍，真夜才开口（见 DepartureHoldingStage）
+        private const int PostGoneQuietFrames = 50;
+        //下沉总深度：略超模型可视高度(~260px)保证完全没入
+        private const float SinkDepth = 300f;
+        private const float TrembleMaxAmp = 3.2f;
+        private const float ModelTopHeight = 260f;
+        //柱脚离锚点的横向距离，冒土/落点音效用
+        private const float PillarOffsetX = 96f;
+        private const int MaxDeparturePetals = 260;
+
+        private sealed class DeparturePetal
+        {
+            public Vector2 Position;
+            public Vector2 Velocity;
+            public float Rotation;
+            public float RotSpeed;
+            public float Scale;
+            public float Seed;
+            public float BaseAlpha;
+            public float Depth;
+            public int Age;
+            public int MaxLife;
+            public bool Deep;
+        }
+
+        private DeparturePhase departPhase;
+        private bool departInitChecked;
+        private bool burialThudDone;
+        private int departTimer;
+        private int departFrames;
+        private int postGoneTimer;
+        private float trembleAmp;
+        private float jitterX;
+        private float rotationJitter;
+        private float sinkOffset;
+        private float modelOpacity = 1f;
+        private float dissolveTint;
+        private float petalSpawnCarry;
+        private List<Vector2> silhouettePoints;
+        private readonly List<DeparturePetal> departPetals = [];
+        private readonly List<DeparturePetal> petalDrawBuffer = [];
+        #endregion
+
         public override void OnSpawn(params object[] args) {
             Width = 64;
             Height = 128;
@@ -57,7 +117,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return;
             }
 
-            if (ToriiShrine.SwordPresentForLocalPlayer()) {
+            UpdateDeparture();
+
+            if (departPhase == DeparturePhase.None && ToriiShrine.SwordPresentForLocalPlayer()) {
                 Lighting.AddLight(SwordAnchor, 0.5f, 0.12f, 0.16f);
                 UpdateAmbience();
             }
@@ -106,17 +168,390 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             }
         }
 
+        #region 退场演出
+        /// <summary>
+        /// 初见对话的排期闸门：本地退场演出进行中（含余响后的静默拍）时为 true，
+        /// <see cref="FirstMetHimayo"/> 借此把真夜的开场白排到鸟居完全消散之后。
+        /// 服务端与"进场即缺席"的场合恒为 false，不会卡住被赠刀等无退场可看的玩家
+        /// </summary>
+        internal static bool DepartureHoldingStage {
+            get {
+                foreach (ToriiShrineActor actor in ActorLoader.GetActiveActors<ToriiShrineActor>()) {
+                    if (actor.departPhase == DeparturePhase.Trembling
+                        || actor.departPhase == DeparturePhase.Sinking) {
+                        return true;
+                    }
+                    if (actor.departPhase == DeparturePhase.Gone
+                        && actor.postGoneTimer < PostGoneQuietFrames) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 开始退场演出（纯本地视觉）：颤抖→沉入地下→溶解成樱瓣散去。
+        /// 拔刀瞬间由 <see cref="ToriiShrine.PullSword"/> 调用；重复调用无效
+        /// </summary>
+        public void BeginDeparture() {
+            if (Main.dedServ || departPhase != DeparturePhase.None) {
+                return;
+            }
+
+            departPhase = DeparturePhase.Trembling;
+            departTimer = 0;
+            departFrames = 0;
+            //接管本层合成并趁模型仍完整时申请一次剪影读回
+            ToriiShrineDissolve.Begin(Position);
+            SoundEngine.PlaySound(SoundID.WormDigQuiet with { Pitch = -0.7f, Volume = 0.85f }, Position);
+        }
+
+        private static bool LocalPlayerTookSword() {
+            Player player = Main.LocalPlayer;
+            return player != null && player.active && HimayoStorySync.ToriiSwordTaken;
+        }
+
+        /// <summary>把退场状态复位到"从未开始"，供调试回归（拔刀标记被清除）时鸟居原样回归</summary>
+        private void ResetDepartureState() {
+            departPhase = DeparturePhase.None;
+            departTimer = 0;
+            departFrames = 0;
+            postGoneTimer = 0;
+            trembleAmp = 0f;
+            jitterX = 0f;
+            rotationJitter = 0f;
+            sinkOffset = 0f;
+            modelOpacity = 1f;
+            dissolveTint = 0f;
+            petalSpawnCarry = 0f;
+            burialThudDone = false;
+            silhouettePoints = null;
+            ToriiShrineDissolve.End();
+        }
+
+        private void UpdateDeparture() {
+            if (!departInitChecked) {
+                //本地玩家未就绪前不判定，防止把"早已拔过刀"误判为进行中拔刀而重播退场
+                Player player = Main.LocalPlayer;
+                if (player == null || !player.active) {
+                    return;
+                }
+                departInitChecked = true;
+                //进场时就已拔过刀的玩家：鸟居直接缺席，不重播退场；
+                //顺带解掉前任Actor（调试重建等）可能遗留的合成钩子。
+                //静默拍计时置为已过期，重进世界补触发的初见对话不被压住
+                if (HimayoStorySync.ToriiSwordTaken) {
+                    departPhase = DeparturePhase.Gone;
+                    postGoneTimer = PostGoneQuietFrames;
+                    ToriiShrineDissolve.End();
+                    return;
+                }
+            }
+
+            if (departPhase == DeparturePhase.Gone && !LocalPlayerTookSword() && departPetals.Count == 0) {
+                //拔刀标记被重置（调试回归流）：鸟居原样回归，允许重看退场
+                ResetDepartureState();
+            }
+
+            if (departPhase == DeparturePhase.None) {
+                //兜底：拔刀瞬间 Actor 不在场（如恰逢补种）时靠剧情标记补触发
+                if (LocalPlayerTookSword()) {
+                    BeginDeparture();
+                }
+                else {
+                    return;
+                }
+            }
+
+            UpdateDeparturePetals();
+
+            if (departPhase == DeparturePhase.Gone) {
+                if (postGoneTimer < PostGoneQuietFrames) {
+                    postGoneTimer++;
+                }
+                return;
+            }
+
+            departFrames++;
+            departTimer++;
+
+            if (departPhase == DeparturePhase.Trembling) {
+                UpdateTremblePhase();
+            }
+            else if (departPhase == DeparturePhase.Sinking) {
+                UpdateSinkPhase();
+            }
+
+            //共用抖动：颤抖期渐强，下沉期渐弱，掩盖切相瞬间
+            jitterX = MathF.Sin(departFrames * 1.9f) * trembleAmp;
+            rotationJitter = MathF.Sin(departFrames * 2.3f) * 0.012f * (trembleAmp / TrembleMaxAmp);
+        }
+
+        private void UpdateTremblePhase() {
+            trembleAmp = TrembleMaxAmp * (departTimer / (float)TrembleFrames);
+
+            if (departTimer % 9 == 0) {
+                NearShake(1.5f);
+            }
+            if (departTimer % 6 == 0) {
+                SpawnSoilBurst(1);
+            }
+            SpawnDeparturePetals(0.22f);
+
+            if (departTimer >= TrembleFrames) {
+                departPhase = DeparturePhase.Sinking;
+                departTimer = 0;
+                SoundEngine.PlaySound(SoundID.WormDig with { Pitch = -0.5f, Volume = 0.8f }, Position);
+            }
+        }
+
+        private void UpdateSinkPhase() {
+            float t = departTimer / (float)SinkFrames;
+            //ease-in：起沉迟缓，越沉越快
+            sinkOffset = t * t * SinkDepth;
+            trembleAmp = MathHelper.Lerp(TrembleMaxAmp, 0.9f, t);
+
+            ToriiShrineDissolve.Progress = Smooth01((t - 0.28f) / 0.62f);
+            ToriiShrineDissolve.GroundY = Position.Y + 2f;
+            modelOpacity = 1f - Smooth01((t - 0.66f) / 0.30f);
+            dissolveTint = Smooth01((t - 0.30f) / 0.55f);
+
+            if (departTimer % 3 == 0) {
+                SpawnSoilBurst(1 + (int)(t * 3f));
+            }
+            if (departTimer % 16 == 0) {
+                SoundEngine.PlaySound(SoundID.Dig with { Pitch = Main.rand.NextFloat(-0.45f, -0.15f), Volume = 0.55f }, Position);
+            }
+            if (departTimer % 42 == 0) {
+                SoundEngine.PlaySound(SoundID.WormDigQuiet with { Pitch = -0.6f, Volume = 0.6f }, Position);
+            }
+            if (departTimer % 12 == 0) {
+                NearShake(0.9f);
+            }
+            SpawnDeparturePetals(MathHelper.Lerp(0.5f, 3f, MathF.Sin(t * MathHelper.Pi)));
+
+            //顶梁没入土面的顿挫
+            if (!burialThudDone && sinkOffset > ModelTopHeight) {
+                burialThudDone = true;
+                NearShake(5f);
+                SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.6f, Volume = 0.85f }, Position);
+            }
+
+            //沉没中的余光渐弱
+            float lightFade = (1f - t) * 0.55f;
+            if (lightFade > 0.02f) {
+                Lighting.AddLight(Position + new Vector2(0f, -110f + sinkOffset * 0.5f),
+                    0.5f * lightFade, 0.12f * lightFade, 0.16f * lightFade);
+            }
+
+            if (departTimer >= SinkFrames) {
+                departPhase = DeparturePhase.Gone;
+                //静默拍从余响这一刻起算，走完才放行初见对话
+                postGoneTimer = 0;
+                ToriiShrineDissolve.End();
+                //与神社现世时的清响首尾呼应的一声余响
+                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.45f, Pitch = -0.5f }, Position);
+            }
+        }
+
+        private void NearShake(float strength) {
+            Player player = Main.LocalPlayer;
+            if (player.Alives() && player.DistanceSQ(Position) < 2200f * 2200f) {
+                player.CWR().GetScreenShake(strength);
+            }
+        }
+
+        /// <summary>柱脚冒土 + 偶发绯红光点，颤抖与下沉期共用</summary>
+        private void SpawnSoilBurst(int count) {
+            for (int i = 0; i < count * 2; i++) {
+                float side = Main.rand.NextBool() ? -1f : 1f;
+                Vector2 pos = new(Position.X + side * PillarOffsetX + Main.rand.NextFloat(-16f, 16f),
+                    Position.Y + Main.rand.NextFloat(-4f, 2f));
+                Dust dust = Dust.NewDustPerfect(pos, DustID.Dirt,
+                    new Vector2(Main.rand.NextFloat(-0.9f, 0.9f), Main.rand.NextFloat(-2.8f, -0.9f)),
+                    120, default, Main.rand.NextFloat(1.1f, 1.7f));
+                dust.noGravity = false;
+            }
+            if (Main.rand.NextBool(3)) {
+                Vector2 motePos = new(Position.X + Main.rand.NextFloat(-70f, 70f), Position.Y - Main.rand.NextFloat(0f, 30f));
+                PRTLoader.NewParticle<PRT_Light>(motePos, new Vector2(0f, -0.5f), new Color(255, 70, 92), 0.2f)
+                    .Configure(40, opacity: 0.8f);
+            }
+        }
+
+        /// <summary>
+        /// 花瓣发射点就绪检查：优先用层 RT 读回的真实剪影，读回失败/超时则退回程序化几何
+        /// </summary>
+        private void EnsureSilhouettePoints() {
+            if (silhouettePoints != null) {
+                return;
+            }
+            if (ToriiShrineDissolve.TryTakeSilhouette(out List<Vector2> captured)) {
+                silhouettePoints = captured;
+            }
+            else if (departPhase == DeparturePhase.Sinking && departTimer > 10) {
+                silhouettePoints = BuildFallbackSilhouette();
+            }
+        }
+
+        /// <summary>程序化剪影兜底：双柱 + 笠木 + 贯，对应 2 倍缩放模型的大致几何</summary>
+        private static List<Vector2> BuildFallbackSilhouette() {
+            List<Vector2> points = new(250);
+            void Fill(float x0, float y0, float x1, float y1, int count) {
+                for (int i = 0; i < count; i++) {
+                    points.Add(new Vector2(Main.rand.NextFloat(x0, x1), Main.rand.NextFloat(y0, y1)));
+                }
+            }
+            Fill(-104f, -235f, -84f, -6f, 70);
+            Fill(84f, -235f, 104f, -6f, 70);
+            Fill(-168f, -266f, 168f, -234f, 70);
+            Fill(-130f, -192f, 130f, -166f, 40);
+            return points;
+        }
+
+        private void SpawnDeparturePetals(float rate) {
+            if (departPetals.Count >= MaxDeparturePetals) {
+                return;
+            }
+            EnsureSilhouettePoints();
+            if (silhouettePoints == null || silhouettePoints.Count == 0) {
+                return;
+            }
+
+            petalSpawnCarry += rate;
+            while (petalSpawnCarry >= 1f && departPetals.Count < MaxDeparturePetals) {
+                petalSpawnCarry -= 1f;
+                for (int attempt = 0; attempt < 6; attempt++) {
+                    Vector2 offset = silhouettePoints[Main.rand.Next(silhouettePoints.Count)];
+                    Vector2 world = Position + offset + new Vector2(jitterX, sinkOffset);
+                    if (world.Y > Position.Y - 6f) {
+                        //已沉入土面的部位不再剥离
+                        continue;
+                    }
+
+                    float outward = offset.X >= 0f ? 1f : -1f;
+                    departPetals.Add(new DeparturePetal {
+                        Position = world,
+                        Velocity = new Vector2(
+                            outward * Main.rand.NextFloat(0.2f, 1.1f) + Main.rand.NextFloat(-0.6f, 0.6f),
+                            Main.rand.NextFloat(-1.6f, -0.35f)),
+                        Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+                        RotSpeed = Main.rand.NextFloat(-0.12f, 0.12f),
+                        Scale = Main.rand.NextFloat(0.45f, 0.95f),
+                        Seed = Main.rand.NextFloat(MathHelper.TwoPi),
+                        BaseAlpha = Main.rand.NextFloat(0.72f, 0.95f),
+                        MaxLife = Main.rand.Next(55, 105),
+                        Deep = Main.rand.NextBool(16),
+                    });
+                    break;
+                }
+            }
+        }
+
+        private void UpdateDeparturePetals() {
+            for (int i = departPetals.Count - 1; i >= 0; i--) {
+                DeparturePetal petal = departPetals[i];
+                petal.Age++;
+                if (petal.Age >= petal.MaxLife) {
+                    departPetals.RemoveAt(i);
+                    continue;
+                }
+
+                petal.Velocity *= 0.977f;
+                petal.Velocity.Y += 0.006f;
+                petal.Velocity.X += MathF.Sin(petal.Age * 0.11f + petal.Seed) * 0.03f;
+                petal.Velocity.Y += MathF.Cos(petal.Age * 0.08f + petal.Seed) * 0.012f;
+                petal.Position += petal.Velocity;
+                petal.Rotation += petal.RotSpeed;
+                petal.Depth = MathF.Sin(petal.Age * 0.09f + petal.Seed);
+            }
+        }
+
+        /// <summary>
+        /// 樱瓣绘制：借 <see cref="EffectLoader.OniDomainDeco"/> 的 TechPetal SDF，
+        /// Immediate 批内逐瓣摆 quad，画完恢复 ActorRender 的批次约定
+        /// </summary>
+        private void DrawDeparturePetals(SpriteBatch spriteBatch) {
+            if (departPetals.Count == 0) {
+                return;
+            }
+            Texture2D white = CWRAsset.Placeholder_White?.Value;
+            Effect petalEffect = EffectLoader.OniDomainDeco?.Value;
+            if (white == null || petalEffect == null) {
+                return;
+            }
+
+            petalDrawBuffer.Clear();
+            petalDrawBuffer.AddRange(departPetals);
+            petalDrawBuffer.Sort(static (a, b) => a.Depth.CompareTo(b.Depth));
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp,
+                DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+            try {
+                petalEffect.Parameters["uTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
+                petalEffect.CurrentTechnique = petalEffect.Techniques["TechPetal"];
+                petalEffect.CurrentTechnique.Passes[0].Apply();
+
+                Vector2 origin = white.Size() * 0.5f;
+                foreach (DeparturePetal petal in petalDrawBuffer) {
+                    float life = petal.Age / (float)petal.MaxLife;
+                    float envelope = MathF.Pow(MathF.Sin(life * MathHelper.Pi), 0.45f);
+                    float alpha = petal.BaseAlpha * envelope;
+                    if (alpha <= 0.01f) {
+                        continue;
+                    }
+
+                    float front = (petal.Depth + 1f) * 0.5f;
+                    float flip = MathHelper.Lerp(0.2f, 1f, MathF.Abs(petal.Depth));
+                    float stretch = 1f + MathHelper.Clamp(petal.Velocity.Length() / 9f, 0f, 0.3f);
+
+                    Color back = petal.Deep ? new Color(178, 48, 79) : new Color(244, 157, 183);
+                    Color middle = petal.Deep ? new Color(229, 90, 119) : new Color(255, 196, 213);
+                    Color face = petal.Deep ? new Color(255, 174, 191) : new Color(255, 243, 247);
+                    Color color = front < 0.5f
+                        ? Color.Lerp(back, middle, front * 2f)
+                        : Color.Lerp(middle, face, front * 2f - 1f);
+                    //PSPetal 自行输出预乘色：只写透明度，不再压暗 RGB
+                    color.A = (byte)(alpha * byte.MaxValue);
+
+                    float width = 19f * petal.Scale * flip;
+                    float height = 25f * petal.Scale * stretch;
+                    spriteBatch.Draw(white, petal.Position - Main.screenPosition, null, color,
+                        petal.Rotation, origin,
+                        new Vector2(width / white.Width, height / white.Height), SpriteEffects.None, 0f);
+                }
+            }
+            finally {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState,
+                    DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            }
+        }
+
+        private static float Smooth01(float value) {
+            value = MathHelper.Clamp(value, 0f, 1f);
+            return value * value * (3f - 2f * value);
+        }
+        #endregion
+
         public override bool PreDraw(SpriteBatch spriteBatch, ref Color drawColor) {
-            SubmitToriiModel();
+            if (departPhase != DeparturePhase.Gone) {
+                SubmitToriiModel();
+            }
 
             if (ToriiShrine.SwordPresentForLocalPlayer()) {
                 DrawSword(spriteBatch);
             }
+
+            DrawDeparturePetals(spriteBatch);
             return false;
         }
 
         /// <summary>
-        /// 每个渲染帧向Models3D管线提交一次鸟居实例：生命周期跟随Actor绘制，无需常驻注册/注销
+        /// 每个渲染帧向Models3D管线提交一次鸟居实例：生命周期跟随Actor绘制，无需常驻注册/注销。
+        /// 退场期间叠加抖动位移、下沉偏移与渐隐
         /// </summary>
         private void SubmitToriiModel() {
             Vault3DModel model = ToriiShrine.ToriiModel;
@@ -124,15 +559,21 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return;
             }
 
-            //取鸟居中段的环境光做整体着色，混一点白保证夜里仍有轮廓
-            Color light = Lighting.GetColor((int)(Position.X / 16f), (int)((Position.Y - 130f) / 16f));
+            //取鸟居中段的环境光做整体着色，混一点白保证夜里仍有轮廓；下沉时采样点跟着走，入土自然渐暗
+            Color light = Lighting.GetColor((int)(Position.X / 16f), (int)((Position.Y - 130f + sinkOffset * 0.6f) / 16f));
+            if (dissolveTint > 0f) {
+                //溶解时向樱粉褪色，与剥离花瓣的色彩交接
+                light = Color.Lerp(light, new Color(255, 205, 216), dissolveTint * 0.32f);
+            }
+
             Model3DRenderer.Submit(new Model3DInstance(model) {
-                Position = Position + new Vector2(0f, -ModelBottomOffset * ModelScale + 2),
-                Rotation = new Vector3(0f, ModelYaw, 0f),
+                Position = Position + new Vector2(jitterX, -ModelBottomOffset * ModelScale + 2 + sinkOffset),
+                Rotation = new Vector3(0f, ModelYaw, rotationJitter),
                 Scale = new Vector3(ModelScale),
                 Layer = Model3DLayer.AfterTiles,
                 LightingEnabled = true,
                 Tint = light,
+                Opacity = modelOpacity,
             });
         }
 

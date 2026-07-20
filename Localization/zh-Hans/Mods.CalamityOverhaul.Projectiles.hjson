@@ -146,11 +146,6 @@ GlacialShell.DisplayName: 冰晶炮弹
 GlacierSpikeProj.DisplayName: 冰川晶柱
 GlacierWave.DisplayName: 冰河推进波
 ExtremeColdHail.DisplayName: 极寒冰雹
-HeavenRainbowImpact.DisplayName: 天堂虹冲击
-InfiniteArrow.DisplayName: 无尽之箭
-InfiniteRune.DisplayName: 无尽符文
-ParadiseArrow.DisplayName: 天堂之箭
-VientianePunishment.DisplayName: 万象天罚
 IceExplosionFriend.DisplayName: 冰爆
 IceParclose.DisplayName: 冰之帷幕
 FrostGlimmer.DisplayName: 霜辉弹
@@ -178,9 +173,6 @@ ElementWhipProjectile.DisplayName: 元素之鞭
 GhostFireWhipProjectile.DisplayName: 幽灵火鞭
 WhiplashGalacticaProjectile.DisplayName: 银河之鞭
 WTrail.DisplayName: 轨迹
-InfiniteEnmgs.DisplayName: 无尽能量
-InfinitePickProj.DisplayName: 无尽镐
-SpanDMBall.DisplayName: 暗物质球
 CthulhuEye.DisplayName: 克苏鲁之眼
 JewelFragmentProjectile.DisplayName: 宝石碎片
 JewelGemProjectile.DisplayName: 宝石之星

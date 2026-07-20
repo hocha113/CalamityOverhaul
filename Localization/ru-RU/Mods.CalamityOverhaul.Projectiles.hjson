@@ -146,11 +146,6 @@ GlacialShell.DisplayName: Ледяной снаряд
 GlacierSpikeProj.DisplayName: Ледниковый шип
 GlacierWave.DisplayName: Ледниковая волна
 ExtremeColdHail.DisplayName: Град лютой стужи
-HeavenRainbowImpact.DisplayName: Небесный радужный удар
-InfiniteArrow.DisplayName: Бесконечная стрела
-InfiniteRune.DisplayName: Бесконечная руна
-ParadiseArrow.DisplayName: Райская стрела
-VientianePunishment.DisplayName: Вселенская кара
 IceExplosionFriend.DisplayName: Ледяной взрыв
 IceParclose.DisplayName: Ледяная завеса
 FrostGlimmer.DisplayName: Морозное мерцание
@@ -178,9 +173,6 @@ ElementWhipProjectile.DisplayName: Элементальный хлыст
 GhostFireWhipProjectile.DisplayName: Хлыст призрачного огня
 WhiplashGalacticaProjectile.DisplayName: Галактический хлыст
 WTrail.DisplayName: След
-InfiniteEnmgs.DisplayName: Бесконечная энергия
-InfinitePickProj.DisplayName: Бесконечная кирка
-SpanDMBall.DisplayName: Сфера темной материи
 CthulhuEye.DisplayName: Глаз Ктулху
 JewelFragmentProjectile.DisplayName: Осколок драгоценного камня
 JewelGemProjectile.DisplayName: Драгоценная звезда

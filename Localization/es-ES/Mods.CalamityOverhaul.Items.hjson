@@ -93,84 +93,9 @@ AnnihilatingUniverse: {
 		'''
 }
 
-HeavenfallLongbow: {
-	DisplayName: Gran Arco de Caída del Cielo
-	Tooltip:
-		'''
-		Lanza flechas infinitas; la energía del arco iris del fin del mundo llegará después.
-		El botón derecho hace que una flecha del cielo caiga del cielo.
-		Pulsa [KEY] después de cargar para activar el Juicio Universal.
-		[legend]
-		'''
-	Legend:
-		'''
-
-		Hace cien mil millones de años, el fuego de la guerra no se extinguió; 
-		brilla como brasas ardientes, atravesando la eternidad para arder hasta hoy.
-		Son los vestigios del ocaso de los dioses, el resplandor residual de la antigua disolución cósmica, el eco eterno de la vida y la destrucción.
-		El Dios del Resplandor, encarnación del orden galáctico, cayó en la mayor rebelión que el universo jamás haya presenciado.
-		Su cuerpo se fragmentó como estrellas rotas, y sus pedazos se convirtieron en innumerables chispas divinas resplandecientes que se dispersaron por cada rincón de la galaxia.
-		Estas chispas dieron origen a la vida, al conocimiento y a los milagros, pero también trajeron consigo la codicia, la ruina y la profanación. 
-		Los mortales veneran sus restos y los llaman reliquias sagradas;
-		sin embargo, esas maravillas no son más que burdas imitaciones de su poder, símbolos de la arrogancia imprudente de los mortales.
-		Pero entre las infinitas ruinas y reliquias olvidadas, existe un artefacto que supera incluso los milagros divinos.
-		No solo fue testigo de la caída del Dios Supremo, sino que fue el instrumento que lo envió al abismo de la noche eterna: un legendario arco largo.
-		Ardió con la furia del cielo, lanzó la flecha mortal que destrozó el poder del Supremo y puso fin a las ambiciones de los dioses.
-		Con el fin de la guerra, este arco fue sepultado en el flujo del tiempo, perdido entre misterios y leyendas infinitas.
-		Pero ahora, los engranajes del destino vuelven a girar. La furia celestial se enciende de nuevo. 
-		El arco asesino de dioses resurgirá, en medio de la sinfonía de las estrellas, para escribir la historia una vez más con sangre y polvo de estrellas.
-
-		'''
-}
-
-InfiniteIngot: {
-	DisplayName: Lingote Infinito
-	Tooltip: El poder del universo, en tu mano.
-}
-
-TransmutationOfMatterItem: {
-	DisplayName: Consola de Fusión Omega
-	Tooltip:
-		'''
-		Colócalo y haz clic derecho para abrir la mesa de elaboración.
-		"Tu viaje de avaricia comenzará oficialmente."
-		'''
-}
-
-DarkMatterCompressorItem: {
-	DisplayName: Compresor de Materia Oscura
-	Tooltip: Reconfigurando la materia como un agujero negro.
-}
-
-InfinitePick: {
-	DisplayName: Pico de Codicia Universal
-	Tooltip:
-		'''
-		Haz clic derecho para destruir todo lo que toque.
-		Presiona [KEY] para cambiar de forma.
-		"Puedes sentirlo, cada vez que lo sostienes, la tierra de Terraria tiembla de miedo."
-		'''
-}
-
-DarkMatterBall: {
-	DisplayName: Esfera de Materia Oscura
-	Tooltip:
-		'''
-		Ha sido comprimida en un agujero negro, pero milagrosamente sigue siendo estable.
-		Haz clic derecho mientras sostienes el objeto para almacenar cosas dentro.
-		Haz clic derecho con las manos vacías para recuperar los objetos almacenados.
-		'''
-	Contents: Contenido:
-}
-
 NeutronStarIngot: {
 	DisplayName: Lingote de estrella de neutrones
 	Tooltip: El peso de todo, concentrado en la yema de los dedos.
-}
-
-InfinityCatalyst: {
-	DisplayName: Catalizador Infinito
-	Tooltip: Tu codicia está a punto de alcanzar su punto máximo.
 }
 
 DawnshatterAzure: {
@@ -181,48 +106,6 @@ DawnshatterAzure: {
 		Mantén clic derecho para embestir con el arma alzada.
 		El fuego purifica el alma, despojando a tus enemigos por completo.
 		'''
-}
-
-DecayParticles: {
-	DisplayName: Partículas de Decaimiento
-	Tooltip:
-		'''
-		Una breve mirada a la esencia de la materia.
-		La existencia misma es un milagro.
-		'''
-}
-
-DecaySubstance: {
-	DisplayName: Materia en Decaimiento
-	Tooltip:
-		'''
-		Está en un continuo proceso de descomposición.
-		Circulando entre la destrucción y el renacimiento.
-		'''
-}
-
-DissipationSubstance: {
-	DisplayName: Materia de Disipación
-	Tooltip:
-		'''
-		La realidad ya no puede capturar su esencia.
-		Se disipa continuamente, pero es inmensa.
-		'''
-}
-
-SpectralMatter: {
-	DisplayName: Materia Espectral
-	Tooltip: Alrededor de 3,700,000 billones de toneladas.
-}
-
-InfiniteToiletItem: {
-	OnlyZenithCondition: Solo en el mundo Zenith
-
-	InfiniteToiletItem: {
-		OnlyZenithCondition: Solo en el mundo Zenith
-		DisplayName: Retrete infinito
-		Tooltip: ""
-	}
 }
 
 StormGoddessSpear: {

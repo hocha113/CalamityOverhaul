@@ -26,13 +26,10 @@ namespace CalamityOverhaul.Content.Scenarios.Draedon.PQCDs.DraedonShops
                     continue;
                 }
 
-                if (recipe.createItem.CWR().OmigaSnyContent != null) {
-                    continue;//跳过特殊内容物品
-                }
-
                 int itemType = recipe.createItem.type;
 
-                if (itemType == ModContent.ItemType<InfinityCatalyst>()) {
+                //跳过终局聚合材料，不允许在商店直接购买
+                if (itemType == ModContent.ItemType<NeutronStarIngot>()) {
                     continue;
                 }
 

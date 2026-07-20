@@ -1,8 +1,8 @@
 ﻿using CalamityOverhaul.Common;
 using CalamityOverhaul.Content.Buffs;
+using CalamityOverhaul.Content.Items.Materials;
 using CalamityOverhaul.Content.Items.Ranged.NeutronBows;
 using CalamityOverhaul.Content.PRTTypes;
-using CalamityOverhaul.Content.UIs.SupertableUIs;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
@@ -30,7 +30,23 @@ namespace CalamityOverhaul.Content.Items.Accessories
             Item.accessory = true;
             Item.value = Item.buyPrice(180, 22, 15, 0);
             Item.rare = CWRID.Rarity_Turquoise;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_EyeOfSingularity;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_PlanebreakersPouch, CWRID.Item_QuiverofNihility
+                , CWRID.Item_DynamoStemCells, CWRID.Item_DaawnlightSpiritOrigin)) {
+                return;
+            }
+            CreateRecipe()
+                .AddIngredient<NeutronStarIngot>(12)
+                .AddIngredient<ElementMuzzleBrake>()
+                .AddIngredient(CWRID.Item_PlanebreakersPouch)
+                .AddIngredient(CWRID.Item_QuiverofNihility)
+                .AddIngredient(CWRID.Item_DynamoStemCells)
+                .AddIngredient(CWRID.Item_DaawnlightSpiritOrigin)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual) {

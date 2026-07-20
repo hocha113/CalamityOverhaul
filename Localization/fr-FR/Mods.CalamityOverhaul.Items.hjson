@@ -93,86 +93,9 @@ AnnihilatingUniverse: {
 		'''
 }
 
-HeavenfallLongbow: {
-	DisplayName: Arc Long de la Chute du Paradis
-	Tooltip:
-		'''
-		Tire des flèches sans fin, suivies d'une énergie d'arc-en-ciel terminale
-		Utiliser le clic droit pour faire tomber des flèches du paradis
-		Après avoir chargé, appuyer sur [KEY] pour lancer le Jugement des Myriades
-		[legend]
-		'''
-	Legend:
-		'''
-
-		Il y a cent milliards d’années, le feu de la guerre ne s’éteignit pas ; 
-		il brille encore tel des braises ardentes, traversant l’éternité pour embraser le présent.
-		Ce sont les vestiges du Crépuscule des Dieux, la lumière résiduelle de l’antique dislocation cosmique, 
-		l’écho incessant de la vie et de la destruction.
-		Le Dieu de la Lumière, incarnation de l’ordre galactique, 
-		périt dans la plus grande rébellion que l’univers ait jamais connue.
-		Son corps éclata comme des étoiles en fragments, se dispersant en d’innombrables éclats divins étincelants aux confins de la galaxie.
-		Ces éclats donnèrent naissance à la vie, à la connaissance et aux miracles, 
-		mais engendrèrent également la cupidité, la ruine et la profanation. Les mortels vénèrent ses vestiges et les appellent des reliques sacrées ;
-		pourtant, ces merveilles ne sont que des imitations maladroites de sa puissance, des symboles de l’arrogance imprudente des mortels.
-		Mais parmi les ruines sans fin et les reliques oubliées, il existe un artefact qui dépasse même les miracles divins.
-		Ce fut non seulement le témoin de la chute du Dieu Suprême, mais également l’instrument de sa descente dans l’abîme éternel – un arc légendaire.
-		Il brûlait dans la fureur céleste, lançant la flèche fatale qui brisa le pouvoir du Suprême et mit fin aux ambitions divines.
-		À la fin de la guerre, cet arc fut enseveli dans le flot du temps, perdu parmi les mystères et les légendes infinies.
-		Mais aujourd’hui, les rouages du destin tournent à nouveau. La fureur céleste s’embrase de nouveau. 
-		L’arc du tueur de dieux refera surface, au cœur de la symphonie des étoiles, pour écrire l’histoire à nouveau dans le sang et la poussière d’étoiles.
-
-		'''
-}
-
-InfiniteIngot: {
-	DisplayName: Lingot Infini
-	Tooltip: Le pouvoir de l'univers, dans la paume de ta main
-}
-
-TransmutationOfMatterItem: {
-	DisplayName: Dispositif de Transmutation de la Matière Oméga
-	Tooltip:
-		'''
-		Placer et utiliser le clic droit pour ouvrir la station de synthèse
-		"Ton voyage de cupidité commence officiellement"
-		'''
-}
-
-DarkMatterCompressorItem: {
-	DisplayName: Compresseur de Matière Sombre
-	Tooltip: Reconstruit la matière comme un trou noir
-}
-
-InfinitePick: {
-	DisplayName: Pioche de l'Avarice Infinie
-	Tooltip:
-		'''
-		Détruit tout ce qu'elle touche avec le clic droit
-		Appuyez sur [KEY] pour changer de forme
-		"Vous pouvez sentir que chaque fois que vous la tenez, la terre de Terraria tremble de peur"
-		'''
-}
-
-DarkMatterBall: {
-	DisplayName: Sphère de Matière Noire
-	Tooltip:
-		'''
-		Elle a été compressée en un trou noir, mais reste miraculeusement stable.
-		Faites un clic droit en tenant l'objet pour y stocker des objets.
-		Faites un clic droit avec les mains vides pour récupérer les objets stockés.
-		'''
-	Contents: Contenu :
-}
-
 NeutronStarIngot: {
 	DisplayName: Lingot d'étoile à neutrons
 	Tooltip: Le poids de toute chose, agrégé à la pointe des doigts
-}
-
-InfinityCatalyst: {
-	DisplayName: Catalyseur Infini
-	Tooltip: Votre avidité atteint son apogée
 }
 
 DawnshatterAzure: {
@@ -183,48 +106,6 @@ DawnshatterAzure: {
 		Maintenez le clic droit pour foncer avec le fusil
 		Le feu purifie l'âme, dépossède complètement vos ennemis
 		'''
-}
-
-DecayParticles: {
-	DisplayName: Particules de Décadence
-	Tooltip:
-		'''
-		Une légère aperçu de l'essence même de la matière
-		L'existence elle-même est un miracle
-		'''
-}
-
-DecaySubstance: {
-	DisplayName: Substance de Décadence
-	Tooltip:
-		'''
-		Elle se dégrade à l'infini
-		Circulant entre destruction et renaissance
-		'''
-}
-
-DissipationSubstance: {
-	DisplayName: Substance de Dissipation
-	Tooltip:
-		'''
-		La réalité a du mal à saisir sa nature
-		Elle se dissipe constamment, mais reste immense
-		'''
-}
-
-SpectralMatter: {
-	DisplayName: Matière Spectrale
-	Tooltip: Environ 3,7 quadrillions de tonnes
-}
-
-InfiniteToiletItem: {
-	OnlyZenithCondition: Uniquement dans le monde de Zenith
-
-	InfiniteToiletItem: {
-		OnlyZenithCondition: Uniquement dans le monde de Zenith
-		DisplayName: Toilettes infinies
-		Tooltip: ""
-	}
 }
 
 StormGoddessSpear: {

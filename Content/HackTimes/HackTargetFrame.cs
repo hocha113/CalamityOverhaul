@@ -5,14 +5,14 @@ using Terraria.GameContent;
 
 namespace CalamityOverhaul.Content.HackTimes
 {
-    /// <summary>中央目标锁定框渲染</summary>
+    /// <summary>中央目标锁定框：稀疏刻度 + 头顶铭牌，锁定感交给目标本体高亮</summary>
     internal static class HackTargetFrame
     {
         public static void Draw(SpriteBatch sb, float timer) {
             float camProg = HackTime.CameraProgress;
             if (camProg < 0.01f) return;
 
-            Texture2D px = CWRAsset.Placeholder_White?.Value;
+            Texture2D px = HackTheme.Pixel;
             if (px == null) return;
 
             //统一 IHackTarget 读取锁定框元数据
@@ -23,110 +23,79 @@ namespace CalamityOverhaul.Content.HackTimes
             Vector2 center = new(Main.screenWidth * 0.5f, Main.screenHeight * 0.5f);
 
             Vector2 half = target.LockFrameHalfSize;
-            float baseHalfW = half.X;
-            float baseHalfH = half.Y;
-            string targetName = target.LockFrameTitle ?? string.Empty;
-            string hpStr = null;
-            Color hpColor = default;
-            if (target.TryGetLockFrameStatus(out string status, out Color statusColor)) {
-                hpStr = status;
-                hpColor = statusColor;
-            }
+            float ease = HackTheme.EaseOutCubic(camProg);
+            //锁定收拢过冲：从外围快速收进并轻微回弹
+            float snap = HackTheme.EaseOutBack(Math.Clamp(camProg * 1.25f, 0f, 1f));
+            float expand = 1f + (1f - snap) * 1.1f;
+            float halfW = (half.X * 1.08f + 6f) * expand;
+            float halfH = (half.Y * 1.08f + 6f) * expand;
 
-            float ease = EaseOutCubic(camProg);
-            float expand = 1f + (1f - ease) * 0.8f;
-            float halfW = baseHalfW * expand;
-            float halfH = baseHalfH * expand;
-
-            int armLen = (int)(24f * ease);
+            int armLen = (int)(16f * ease);
             if (armLen < 2) return;
-            Color frameColor = HackTheme.Accent * (alpha * 0.75f);
-            Color dimColor = HackTheme.Accent * (alpha * 0.25f);
+            Color frameColor = HackTheme.Accent * (alpha * 0.65f);
+            Color dimColor = HackTheme.Accent * (alpha * 0.22f);
 
-            //四角方括号
-            DrawFrameBracket(sb, px, center, -halfW, -halfH, armLen, frameColor);
-            DrawFrameBracket(sb, px, center, halfW, -halfH, armLen, frameColor);
-            DrawFrameBracket(sb, px, center, -halfW, halfH, armLen, frameColor);
-            DrawFrameBracket(sb, px, center, halfW, halfH, armLen, frameColor);
+            //四角细括号
+            HackTheme.DrawCornerBracket(sb, center + new Vector2(-halfW, -halfH), 1, 1, armLen, 1.2f, frameColor);
+            HackTheme.DrawCornerBracket(sb, center + new Vector2(halfW, -halfH), -1, 1, armLen, 1.2f, frameColor);
+            HackTheme.DrawCornerBracket(sb, center + new Vector2(-halfW, halfH), 1, -1, armLen, 1.2f, frameColor);
+            HackTheme.DrawCornerBracket(sb, center + new Vector2(halfW, halfH), -1, -1, armLen, 1.2f, frameColor);
 
-            //四角辉光
-            Texture2D glow = CWRAsset.SoftGlow?.Value;
-            if (glow != null && ease > 0.3f) {
-                Color cg = HackTheme.Accent * (alpha * 0.08f * ease);
-                cg.A = 0;
-                Vector2[] corners = {
-                    center + new Vector2(-halfW, -halfH),
-                    center + new Vector2(halfW, -halfH),
-                    center + new Vector2(-halfW, halfH),
-                    center + new Vector2(halfW, halfH)
-                };
-                foreach (var c in corners)
-                    sb.Draw(glow, c, null, cg, 0, glow.Size() / 2, 0.1f, SpriteEffects.None, 0);
-            }
-
-            //边缘刻度标记
+            //每边中点一个小刻度（稀疏，不封闭）
             if (ease > 0.5f) {
-                float tickAlpha = (ease - 0.5f) * 2f * alpha * 0.35f;
-                Color tickColor = HackTheme.Border * tickAlpha;
-                int tickCount = 6;
-                for (int i = 1; i < tickCount; i++) {
-                    float t = (float)i / tickCount;
-                    float tx = MathHelper.Lerp(center.X - halfW, center.X + halfW, t);
-                    float ty = MathHelper.Lerp(center.Y - halfH, center.Y + halfH, t);
-                    sb.Draw(px, new Rectangle((int)tx, (int)(center.Y - halfH), 1, 5),
-                        new Rectangle(0, 0, 1, 1), tickColor);
-                    sb.Draw(px, new Rectangle((int)tx, (int)(center.Y + halfH - 5), 1, 5),
-                        new Rectangle(0, 0, 1, 1), tickColor);
-                    sb.Draw(px, new Rectangle((int)(center.X - halfW), (int)ty, 5, 1),
-                        new Rectangle(0, 0, 1, 1), tickColor);
-                    sb.Draw(px, new Rectangle((int)(center.X + halfW - 5), (int)ty, 5, 1),
-                        new Rectangle(0, 0, 1, 1), tickColor);
-                }
+                Color tickColor = HackTheme.Accent * ((ease - 0.5f) * 2f * alpha * 0.35f);
+                sb.Draw(px, new Rectangle((int)center.X, (int)(center.Y - halfH), 1, 5), HackTheme.SrcPixel, tickColor);
+                sb.Draw(px, new Rectangle((int)center.X, (int)(center.Y + halfH - 5), 1, 5), HackTheme.SrcPixel, tickColor);
+                sb.Draw(px, new Rectangle((int)(center.X - halfW), (int)center.Y, 5, 1), HackTheme.SrcPixel, tickColor);
+                sb.Draw(px, new Rectangle((int)(center.X + halfW - 5), (int)center.Y, 5, 1), HackTheme.SrcPixel, tickColor);
             }
 
-            //中心十字
-            float crossLen = 8f * ease;
+            //中心十字（极淡）
+            float crossLen = 7f * ease;
             sb.Draw(px, new Rectangle((int)(center.X - crossLen), (int)center.Y, (int)(crossLen * 2), 1),
-                new Rectangle(0, 0, 1, 1), dimColor);
+                HackTheme.SrcPixel, dimColor);
             sb.Draw(px, new Rectangle((int)center.X, (int)(center.Y - crossLen), 1, (int)(crossLen * 2)),
-                new Rectangle(0, 0, 1, 1), dimColor);
+                HackTheme.SrcPixel, dimColor);
 
-            //旋转环指示器（用4条短斜线模拟）
-            if (ease > 0.6f) {
-                float ringAlpha = (ease - 0.6f) / 0.4f * alpha * 0.2f;
-                float rot = timer * 0.5f;
-                float ringR = Math.Max(halfW, halfH) + 12f;
-                Color ringCol = HackTheme.Accent * ringAlpha;
-                for (int a = 0; a < 4; a++) {
-                    float angle = rot + a * MathHelper.PiOver2;
+            //上传中才出现的旋转分段环
+            bool uploading = false;
+            var queue = HackTimeUI.Instance?.Queue;
+            if (queue != null && queue.TryGetActiveEntry(target, out _, out bool completed) && !completed)
+                uploading = true;
+            if (uploading && ease > 0.5f) {
+                float ringR = Math.Max(halfW, halfH) + 14f;
+                Color ringCol = HackTheme.Uploading * (alpha * 0.4f);
+                float rot = timer * 1.6f;
+                for (int a = 0; a < 6; a++) {
+                    float angle = rot + a * MathHelper.TwoPi / 6f;
                     Vector2 dir = new(MathF.Cos(angle), MathF.Sin(angle));
-                    Vector2 p1 = center + dir * (ringR - 6);
-                    Vector2 p2 = center + dir * (ringR + 6);
-                    DrawLine(sb, px, p1, p2, 1.5f, ringCol);
+                    HackTheme.DrawLine(sb, center + dir * (ringR - 5), center + dir * (ringR + 5), 1.4f, ringCol);
                 }
             }
 
-            //文字标签
+            //侧边扫描仪微标记：左侧变焦，右侧距离
+            if (ease > 0.55f) {
+                float sideAlpha = (ease - 0.55f) / 0.45f * alpha;
+                float zoom = 1f + HackTime.GetZoomBoost();
+                string zoomStr = $"{zoom:F1}x";
+                Vector2 zs = FontAssets.MouseText.Value.MeasureString(zoomStr) * 0.42f;
+                Vector2 zoomPos = new(center.X - halfW - zs.X - 18f, center.Y - zs.Y * 0.5f);
+                Utils.DrawBorderString(sb, zoomStr, zoomPos, HackTheme.TextNormal * (sideAlpha * 0.55f), 0.42f);
+                //变焦标记连线刻度
+                HackTheme.DrawLine(sb, new Vector2(center.X - halfW - 12f, center.Y),
+                    new Vector2(center.X - halfW - 4f, center.Y), 1f, HackTheme.Accent * (sideAlpha * 0.35f));
+
+                float distTiles = Vector2.Distance(Main.LocalPlayer.Center, target.WorldCenter) / 16f;
+                string distStr = $"{distTiles:F1}m";
+                Vector2 distPos = new(center.X + halfW + 18f, center.Y - zs.Y * 0.5f);
+                Utils.DrawBorderString(sb, distStr, distPos, HackTheme.TextNormal * (sideAlpha * 0.55f), 0.42f);
+                HackTheme.DrawLine(sb, new Vector2(center.X + halfW + 4f, center.Y),
+                    new Vector2(center.X + halfW + 12f, center.Y), 1f, HackTheme.Accent * (sideAlpha * 0.35f));
+            }
+
+            //头顶铭牌
             if (ease > 0.4f) {
-                float labelAlpha = (ease - 0.4f) / 0.6f * alpha;
-
-                string label = HackTime.TargetLocked.Value;
-                Vector2 labelSize = FontAssets.MouseText.Value.MeasureString(label) * 0.46f;
-                Vector2 labelPos = new(center.X - labelSize.X * 0.5f, center.Y - halfH - 22f);
-                Utils.DrawBorderString(sb, label, labelPos, HackTheme.Accent * (labelAlpha * 0.7f), 0.46f);
-
-                if (!string.IsNullOrEmpty(targetName)) {
-                    Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(targetName) * 0.48f;
-                    Vector2 namePos = new(center.X - nameSize.X * 0.5f, center.Y + halfH + 8f);
-                    Utils.DrawBorderString(sb, targetName, namePos, HackTheme.TextBright * (labelAlpha * 0.6f), 0.48f);
-                }
-
-                //状态信息（NPC为生命值百分比，物块为分类）
-                if (hpStr != null) {
-                    Vector2 hpSize = FontAssets.MouseText.Value.MeasureString(hpStr) * 0.38f;
-                    Vector2 hpPos = new(center.X - hpSize.X * 0.5f, center.Y + halfH + 30f);
-                    Utils.DrawBorderString(sb, hpStr, hpPos, hpColor * (labelAlpha * 0.45f), 0.38f);
-                }
+                DrawNameplate(sb, timer, target, center, halfW, halfH, (ease - 0.4f) / 0.6f * alpha);
             }
 
             //水平扫描线
@@ -134,8 +103,8 @@ namespace CalamityOverhaul.Content.HackTimes
             float scanY = center.Y - halfH + scanT * halfH * 2;
             float scanFade = 1f - Math.Abs(scanT - 0.5f) * 2f;
             sb.Draw(px, new Rectangle((int)(center.X - halfW), (int)scanY, (int)(halfW * 2), 1),
-                new Rectangle(0, 0, 1, 1), HackTheme.Accent * (alpha * 0.14f * scanFade));
-            //扫描线辉光
+                HackTheme.SrcPixel, HackTheme.Accent * (alpha * 0.12f * scanFade));
+            Texture2D glow = CWRAsset.SoftGlow?.Value;
             if (glow != null) {
                 Color sg = HackTheme.Accent * (alpha * 0.04f * scanFade);
                 sg.A = 0;
@@ -144,31 +113,55 @@ namespace CalamityOverhaul.Content.HackTimes
             }
         }
 
-        private static void DrawFrameBracket(SpriteBatch sb, Texture2D px,
-            Vector2 center, float ox, float oy, int armLen, Color color) {
-            int cx = (int)(center.X + ox);
-            int cy = (int)(center.Y + oy);
-            int dirH = ox < 0 ? 1 : -1;
-            int dirV = oy < 0 ? 1 : -1;
+        //头顶铭牌：阵营菱形 + 名称 + 状态读数 + 敌对告警
+        private static void DrawNameplate(SpriteBatch sb, float timer, IHackTarget target,
+            Vector2 center, float halfW, float halfH, float alpha) {
+            string name = target.LockFrameTitle;
+            if (string.IsNullOrEmpty(name)) return;
 
-            int hx = dirH > 0 ? cx : cx - armLen;
-            sb.Draw(px, new Rectangle(hx, cy, armLen, 2), new Rectangle(0, 0, 1, 1), color);
+            float nameScale = 0.62f;
+            Vector2 nameSize = FontAssets.MouseText.Value.MeasureString(name) * nameScale;
+            bool hostile = HackTheme.HostileBlend > 0.5f;
 
-            int vy = dirV > 0 ? cy : cy - armLen;
-            sb.Draw(px, new Rectangle(cx, vy, 2, armLen), new Rectangle(0, 0, 1, 1), color);
-        }
+            float plateY = center.Y - halfH - 30f;
+            float diamondR = 5f;
+            float totalW = diamondR * 2f + 8f + nameSize.X;
+            float plateX = center.X - totalW * 0.5f;
 
-        private static void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, float thickness, Color color) {
-            Vector2 diff = end - start;
-            float length = diff.Length();
-            if (length < 1f) return;
-            sb.Draw(px, start, new Rectangle(0, 0, 1, 1), color, diff.ToRotation(),
-                Vector2.Zero, new Vector2(length, thickness), SpriteEffects.None, 0f);
-        }
+            //菱形阵营徽记
+            Vector2 diamondC = new(plateX + diamondR, plateY + nameSize.Y * 0.5f);
+            Color diamondColor = HackTheme.Accent * (alpha * 0.9f);
+            HackTheme.DrawDiamondOutline(sb, diamondC, diamondR, 1.2f, diamondColor);
+            HackTheme.DrawDiamond(sb, diamondC, diamondR * 0.7f, diamondColor * 0.5f);
 
-        private static float EaseOutCubic(float t) {
-            float inv = 1f - t;
-            return 1f - inv * inv * inv;
+            //名称
+            Vector2 namePos = new(plateX + diamondR * 2f + 8f, plateY);
+            Utils.DrawBorderString(sb, name, namePos, HackTheme.TextBright * (alpha * 0.9f), nameScale);
+            //名称底线（左对齐渐隐）
+            HackTheme.DrawLine(sb, new Vector2(namePos.X, plateY + nameSize.Y + 1),
+                new Vector2(namePos.X + nameSize.X * 0.7f, plateY + nameSize.Y + 1),
+                1f, HackTheme.Accent * (alpha * 0.35f));
+
+            //状态读数（HP%等，名称右侧）
+            if (target.TryGetLockFrameStatus(out string status, out Color statusColor)) {
+                Utils.DrawBorderString(sb, status,
+                    new Vector2(namePos.X + nameSize.X + 10f, plateY + 3f),
+                    statusColor * (alpha * 0.7f), 0.44f);
+            }
+
+            //敌对告警符（铭牌上方闪烁三角）
+            if (hostile) {
+                float warnPulse = MathF.Sin(timer * 6f) * 0.3f + 0.7f;
+                Vector2 warnC = new(center.X, plateY - 12f);
+                Color warnColor = HackTheme.Danger * (alpha * 0.85f * warnPulse);
+                //小三角
+                HackTheme.DrawLine(sb, warnC + new Vector2(-5, 4), warnC + new Vector2(0, -5), 1.4f, warnColor);
+                HackTheme.DrawLine(sb, warnC + new Vector2(5, 4), warnC + new Vector2(0, -5), 1.4f, warnColor);
+                HackTheme.DrawLine(sb, warnC + new Vector2(-5, 4), warnC + new Vector2(5, 4), 1.4f, warnColor);
+                //感叹号点
+                sb.Draw(HackTheme.Pixel, new Rectangle((int)warnC.X, (int)warnC.Y - 2, 1, 3), HackTheme.SrcPixel, warnColor);
+                sb.Draw(HackTheme.Pixel, new Rectangle((int)warnC.X, (int)warnC.Y + 2, 1, 1), HackTheme.SrcPixel, warnColor);
+            }
         }
     }
 }

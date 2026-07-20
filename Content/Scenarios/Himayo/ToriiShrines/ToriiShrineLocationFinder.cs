@@ -77,8 +77,10 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
                 return false;
             }
 
-            //必须在地表附近，不接受把鸟居立进洞穴里
-            if (groundY > Main.worldSurface + 40) {
+            //必须在地表附近，不接受把鸟居立进出生点脚下的随机洞穴里；
+            //但出生点本身在地下的世界（如"别往下挖"类种子）按出生高度放行，
+            //否则所有候选列都会被绝对地表线拒绝、永远只能走悬空兜底
+            if (groundY > Main.worldSurface + 40 && Math.Abs(groundY - Main.spawnTileY) > 60) {
                 return false;
             }
 

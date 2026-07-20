@@ -645,6 +645,14 @@ HackTime: {
 	SignalTowerScanStatusElectrified: Charge résiduelle
 	SignalTowerScanProtocol: Protocoles disponibles
 	RightClickHint: Clic droit pour désélectionner
+	// StatusReady: READY
+	// StatusNoRam: NO RAM
+	// UplinkHeader: UPLINK
+	// DataTab: DATA
+	// ScanTab: SCAN
+	// TargetTagged: TARGET TAGGED
+	// FooterUpload: UPLOAD {0}s
+	// FooterCost: COST {0} RAM
 	AccessDeniedTitle: HACK TIME INDISPONIBLE
 	AccessDeniedDesc: Connectez une arme intelligente ou installez une cyberware netrunner pour accéder aux capacités de piratage.
 }
@@ -818,15 +826,6 @@ AbandonedPortalStrings: {
 	DiagnosticBroken: ERR-0xC4: Anneau de positionnement fracturé / Boucle d'alimentation principale déconnectée
 	DiagnosticRepairing: INFO: Réseau de soudure nano en synchronisation… Ne pas déplacer la base du portail
 	DiagnosticRepaired: OK: Tous les sous-systèmes en ligne / Analyse des coordonnées prête
-}
-
-SupertableUI: {
-	RecipeViewLabel: Voir la recette
-	RecipeEmptyLabel: Aucun
-	PlacementMonitorOff: Désactiver la surveillance de placement
-	PlacementMonitorOn: Activer la surveillance de placement
-	QuickPlaceMaterials: Déposer rapidement des matériaux
-	QuickTakeMaterials: Ramasser rapidement des matériaux
 }
 
 ArrowHolderUI: {

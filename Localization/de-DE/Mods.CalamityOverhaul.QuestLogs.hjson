@@ -279,36 +279,6 @@ QuestNode: {
 		DetailedDescription: Spiele die Symphonie der Sterne. Beschwört Schwarze Löcher und Quasare — Feinde verschwinden im Kosmosgesang.
 	}
 
-	DarkMatterCompressorQuest: {
-		DisplayName: Dunkle-Materie-Kompressor
-		Description: Erhalte Dunkle-Materie-Kompressor
-		DetailedDescription: Manipuliere das rätselhafteste Materium. Komprimiert Dunkle Materie zu Energiekugeln für fortgeschrittenes Crafting.
-	}
-
-	InfiniteIngotQuest: {
-		DisplayName: Endlosbarren
-		Description: Schmiede Endlosbarren
-		DetailedDescription: Ein Metall jenseits des Erhaltungssatzes — Grundstein ultimativer Macht mit endlosen Möglichkeiten.
-	}
-
-	InfinitePickQuest: {
-		DisplayName: Endlos-Spitzhacke
-		Description: Erhalte Endlos-Spitzhacke
-		DetailedDescription: Nichts stoppt diese Spitzhacke — selbst Grundgestein der Welt.
-	}
-
-	InfiniteToiletQuest: {
-		DisplayName: Endlos-Toilette
-		Description: Erhalte Endlos-Toilette
-		DetailedDescription: Der Thron der Götter. Absurd — und doch höchste Autorität.
-	}
-
-	InfinityCatalystQuest: {
-		DisplayName: Endlos-Katalysator
-		Description: Erhalte Endlos-Katalysator
-		DetailedDescription: Schlüsselmedium der Endlosreaktion — Materie zirkuliert zwischen Vernichtung und Wiedergeburt.
-	}
-
 	NeutronBowQuest: {
 		DisplayName: Neutronenbogen
 		Description: Erhalte Neutronenbogen
@@ -361,18 +331,6 @@ QuestNode: {
 		DisplayName: Terminus
 		Description: Erhalte Terminus
 		DetailedDescription: Schlüssel zum Boss-Rush. Blicke in den Stein und stelle dich der stärksten Wesen der Welt.
-	}
-
-	TransmutationOfMatterQuest: {
-		DisplayName: Materie-Transmutator
-		Description: Erhalte Materie-Transmutator
-		DetailedDescription: Ultimative Alchemie — bricht Äquivalenz, wandelt Materie willkürlich oder erschafft sie.
-	}
-
-	HeavenfallLongbowQuest: {
-		DisplayName: Endlosbogen
-		Description: Erhalte Endlosbogen
-		DetailedDescription: Ein Langbogen, der Götter erlegte — kehrt zurück.
 	}
 
 	SpearOfLonginusQuest: {

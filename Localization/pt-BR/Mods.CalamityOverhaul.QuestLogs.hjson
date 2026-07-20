@@ -279,36 +279,6 @@ QuestNode: {
 		DetailedDescription: Execute a sinfonia das estrelas. Este tomo invoca buracos negros e quasares, fazendo os inimigos desaparecerem em meio a cancao do universo.
 	}
 
-	DarkMatterCompressorQuest: {
-		DisplayName: Compressor de Materia Escura
-		Description: Obtenha Compressor de Materia Escura
-		DetailedDescription: Manipule a materia mais misteriosa do universo. Esta maquina comprime materia escura em esferas de energia de alta densidade para fabricacao avancada.
-	}
-
-	InfiniteIngotQuest: {
-		DisplayName: Lingote Infinito
-		Description: Forje o Lingote Infinito
-		DetailedDescription: Um metal que transcende a lei da conservacao da massa. E a pedra angular para o poder supremo, contendo infinitas possibilidades.
-	}
-
-	InfinitePickQuest: {
-		DisplayName: Picareta Infinita
-		Description: Obtenha Picareta Infinita
-		DetailedDescription: Nada pode parar esta picareta. Ela pode minerar tudo, ate a rocha madre do mundo.
-	}
-
-	InfiniteToiletQuest: {
-		DisplayName: Banheiro Infinito
-		Description: Obtenha Banheiro Infinito
-		DetailedDescription: O trono dos deuses. Embora pareca absurdo, realmente simboliza alguma forma de... autoridade suprema.
-	}
-
-	InfinityCatalystQuest: {
-		DisplayName: Catalisador do Infinito
-		Description: Obtenha Catalisador do Infinito
-		DetailedDescription: O catalisador-chave para iniciar a reacao infinita. Permite que a materia circule entre aniquilacao e renascimento, gerando energia imensa.
-	}
-
 	NeutronBowQuest: {
 		DisplayName: Arco de Neutrons
 		Description: Obtenha Arco de Neutrons
@@ -361,18 +331,6 @@ QuestNode: {
 		DisplayName: Terminus
 		Description: Obtenha Terminus
 		DetailedDescription: A chave para iniciar o Boss Rush. Contemple esta pedra e prepare-se para enfrentar um julgamento continuo contra os seres mais fortes do mundo.
-	}
-
-	TransmutationOfMatterQuest: {
-		DisplayName: Transmutador de Materia
-		Description: Obtenha Transmutador de Materia
-		DetailedDescription: A forma final da alquimia. Esta maquina quebra o principio da troca equivalente, convertendo materia a vontade, ou criando-a do nada.
-	}
-
-	HeavenfallLongbowQuest: {
-		DisplayName: Arco Infinito
-		Description: Obtenha Arco Infinito
-		DetailedDescription: Um arco longo que derrubou deuses. Agora reaparecera no mundo.
 	}
 
 	SpearOfLonginusQuest: {

@@ -146,11 +146,6 @@ GlacialShell.DisplayName: Projetil Glacial
 GlacierSpikeProj.DisplayName: Espinhaco Glacial
 GlacierWave.DisplayName: Onda Glacial
 ExtremeColdHail.DisplayName: Granizo Extremo Frio
-HeavenRainbowImpact.DisplayName: Impacto do Arco-Iris Celestial
-InfiniteArrow.DisplayName: Flecha Infinita
-InfiniteRune.DisplayName: Runa Infinita
-ParadiseArrow.DisplayName: Flecha do Paraiso
-VientianePunishment.DisplayName: Castigo de Vientiane
 IceExplosionFriend.DisplayName: Explosao de Gelo
 IceParclose.DisplayName: Parclose de Gelo
 FrostGlimmer.DisplayName: Brilho Gelido
@@ -178,9 +173,6 @@ ElementWhipProjectile.DisplayName: Chicote Elemental
 GhostFireWhipProjectile.DisplayName: Chicote de Fogo Fantasma
 WhiplashGalacticaProjectile.DisplayName: Chicote Galactico
 WTrail.DisplayName: Rastro
-InfiniteEnmgs.DisplayName: Energia Infinita
-InfinitePickProj.DisplayName: Picareta Infinita
-SpanDMBall.DisplayName: Bola de Materia Escura
 CthulhuEye.DisplayName: Olho de Cthulhu
 JewelFragmentProjectile.DisplayName: Fragmento de Joia
 JewelGemProjectile.DisplayName: Estrela de Joia

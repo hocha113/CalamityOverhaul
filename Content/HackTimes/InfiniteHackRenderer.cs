@@ -293,10 +293,10 @@ namespace CalamityOverhaul.Content.HackTimes
             //色散偏移
             float aberration = (1f - lifeFrac) * 2.5f + 0.5f;
 
-            //=== 背景 ===
+            //=== 背景（右端斜切旗标，与主面板同语言） ===
             float rPulse = MathF.Sin(timer * 16f + p.GlitchSeed * 4f) * 0.2f + 0.8f;
             Color bgColor = Color.Lerp(HackTheme.BgSlot, HackTheme.Danger, 0.10f * rPulse);
-            sb.Draw(px, rect, new Rectangle(0, 0, 1, 1), bgColor * (alpha * 0.90f));
+            HackTheme.DrawPennantFill(sb, rect, 0f, 9f * scale, bgColor * (alpha * 0.90f));
 
             //CRT暗纹
             Color crtLine = HackTheme.BgDarkest * (alpha * 0.06f);

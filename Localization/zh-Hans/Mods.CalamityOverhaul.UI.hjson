@@ -645,6 +645,14 @@ HackTime: {
 	SignalTowerScanStatusElectrified: 过电残留
 	SignalTowerScanProtocol: 可用协议
 	RightClickHint: 右键取消选中目标
+	StatusReady: 就绪
+	StatusNoRam: RAM 不足
+	UplinkHeader: 上行链路
+	DataTab: 数据
+	ScanTab: 扫描
+	TargetTagged: 目标已标记
+	FooterUpload: 上传 {0}s
+	FooterCost: 消耗 {0} RAM
 	AccessDeniedTitle: 骇客时间不可用
 	AccessDeniedDesc: 需要连接智能武器或者植入网络义体后才能使用骇客技能
 }
@@ -818,15 +826,6 @@ AbandonedPortalStrings: {
 	DiagnosticBroken: ERR-0xC4: 定位环裂隙 / 主能源回路断开
 	DiagnosticRepairing: INFO: 纳米焊缝阵列同步中…请勿移动门基座
 	DiagnosticRepaired: OK: 全部子系统在线 / 坐标解析就绪
-}
-
-SupertableUI: {
-	RecipeViewLabel: 查看配方
-	RecipeEmptyLabel: 无
-	PlacementMonitorOff: 关闭摆放监视
-	PlacementMonitorOn: 开启摆放监视
-	QuickPlaceMaterials: 快捷放置材料
-	QuickTakeMaterials: 快捷拿取材料
 }
 
 ArrowHolderUI: {

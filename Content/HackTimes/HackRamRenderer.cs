@@ -15,6 +15,8 @@ namespace CalamityOverhaul.Content.HackTimes
         private float flyInProgress;
         //平滑显示RAM值（视觉过渡用）
         private float displayRam;
+        /// <summary>悬停协议的预扣RAM，0为无预览，HackTimeUI 每帧写入</summary>
+        public int PreviewCost;
 
         //弧线几何常量
         //弧线内径
@@ -116,10 +118,57 @@ namespace CalamityOverhaul.Content.HackTimes
                 DrawDataFlow(sb, center, aStart, totalSweep, alpha);
             }
 
+            //悬停协议的预扣闪烁覆盖
+            DrawPreviewBlink(sb, px, center, aStart, cellAngle, maxRam, alpha);
+
             //端点角标与标签
             DrawEndCaps(sb, px, center, aStart, totalSweep, alpha);
             DrawLabels(sb, center, alpha, maxRam);
         }
+
+        #region 预扣闪烁
+
+        //悬停协议时，即将被消耗的格段闪烁提示
+        private void DrawPreviewBlink(SpriteBatch sb, Texture2D px, Vector2 center,
+            float aStart, float cellAngle, int maxRam, float alpha) {
+            if (PreviewCost <= 0) return;
+
+            float current = displayRam;
+            if (current <= 0.01f) return;
+
+            //从顶部往下扣：闪烁 [spendFrom, current] 区段
+            float spendFrom = current - PreviewCost;
+            bool affordable = RamSystem.CanAfford(PreviewCost);
+            if (!affordable) spendFrom = 0f;
+
+            float blink = MathF.Sin(timer * 9f) * 0.5f + 0.5f;
+            Color blinkColor = affordable
+                ? Color.Lerp(HackTheme.ProgressGlow, Color.White, 0.45f) * (alpha * 0.42f * blink)
+                : HackTheme.Danger * (alpha * 0.5f * blink);
+
+            for (int i = 0; i < maxRam; i++) {
+                float segStart = Math.Max(spendFrom - i, 0f);
+                float segEnd = Math.Min(current - i, 1f);
+                if (segEnd - segStart <= 0.01f) continue;
+
+                float cStart = aStart + i * (cellAngle + CellGap);
+                DrawArc(sb, px, center, InnerR + 3f, OuterR - 3f,
+                    cStart + cellAngle * segStart, cStart + cellAngle * segEnd, blinkColor);
+            }
+
+            //消耗边界的径向标记线
+            if (affordable && spendFrom > 0.01f) {
+                int boundCell = (int)spendFrom;
+                float inCell = spendFrom - boundCell;
+                if (boundCell < maxRam) {
+                    float boundAngle = aStart + boundCell * (cellAngle + CellGap) + cellAngle * inCell;
+                    DrawRadialLine(sb, px, center, InnerR - 2f, OuterR + 2f, boundAngle, 1.6f,
+                        Color.Lerp(HackTheme.TextBright, HackTheme.ProgressGlow, 0.5f) * (alpha * (0.5f + blink * 0.4f)));
+                }
+            }
+        }
+
+        #endregion
 
         #region 着色器渲染
 

@@ -1,5 +1,4 @@
-﻿using CalamityOverhaul.Content.UIs.SupertableUIs;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -30,7 +29,23 @@ namespace CalamityOverhaul.Content.Items.Ranged.AnnihilatingUniverses
             Item.useAmmo = AmmoID.Arrow;
             Item.value = Item.buyPrice(220, 25, 5, 5); ;
             Item.rare = ItemRarityID.Red;
-            Item.CWR().OmigaSnyContent = SupertableRecipeData.FullItems_AnnihilatingUniverse;
+        }
+
+        public override void AddRecipes() {
+            if (!CWRID.AllValid(CWRID.Item_ShadowspecBar, CWRID.Item_CosmiliteBar
+                , CWRID.Item_Alluvion, CWRID.Item_Deathwind, CWRID.Item_Rock)) {
+                return;
+            }
+            //22个暗影耀斑锭中11个折算自被移除的暗物质球
+            CreateRecipe()
+                .AddIngredient(CWRID.Item_Alluvion)
+                .AddIngredient(CWRID.Item_Deathwind)
+                .AddIngredient(CWRID.Item_CosmiliteBar, 11)
+                .AddIngredient(CWRID.Item_ShadowspecBar, 22)
+                .AddIngredient(CWRID.Item_Rock)
+                .AddEndgameStation()
+                .DisableDecraft()
+                .Register();
         }
 
         public override void ModifyWeaponCrit(Player player, ref float crit) => crit += 32;

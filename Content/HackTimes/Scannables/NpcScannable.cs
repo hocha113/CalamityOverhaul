@@ -70,21 +70,7 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
             }
 
             //THREAT，相对玩家生命/防御/减伤
-            float relThreat = 0f;
-            if (!IsNonCombatNpc(npc)) {
-                Player localPlayer = Main.LocalPlayer;
-                float playerDR = Math.Clamp(localPlayer.endurance, 0f, 0.99f);
-                //有效单次伤害
-                float effectiveDmg = Math.Max(1f, npc.damage - localPlayer.statDefense * 0.5f) * (1f - playerDR);
-                //单次命中 HP 占比
-                float hitImpact = effectiveDmg / Math.Max(localPlayer.statLifeMax, 1);
-                //HP 比取 log2 压缩 Boss 数值
-                float hpRatio = (float)npc.lifeMax / Math.Max(localPlayer.statLifeMax, 1);
-                float durabilityIndex = MathF.Log2(1f + hpRatio);
-                //NPC自身防御系数
-                float defenseIndex = npc.defense / 50f;
-                relThreat = hitImpact * 50f + durabilityIndex * 5f + defenseIndex * 5f;
-            }
+            float relThreat = ComputeRelativeThreat(npc);
             labels[1] = HackTime.ThreatLabel.Value;
             if (relThreat >= 40f) {
                 values[1] = HackTime.ThreatExtreme.Value;
@@ -129,6 +115,33 @@ namespace CalamityOverhaul.Content.HackTimes.Scannables
 
         private static bool IsNonCombatNpc(NPC npc) {
             return npc.townNPC || npc.friendly || npc.CountsAsACritter;
+        }
+
+        /// <summary>相对玩家的威胁值，扫描行与档案星级共用</summary>
+        public static float ComputeRelativeThreat(NPC npc) {
+            if (IsNonCombatNpc(npc)) return 0f;
+            Player localPlayer = Main.LocalPlayer;
+            float playerDR = Math.Clamp(localPlayer.endurance, 0f, 0.99f);
+            //有效单次伤害
+            float effectiveDmg = Math.Max(1f, npc.damage - localPlayer.statDefense * 0.5f) * (1f - playerDR);
+            //单次命中 HP 占比
+            float hitImpact = effectiveDmg / Math.Max(localPlayer.statLifeMax, 1);
+            //HP 比取 log2 压缩 Boss 数值
+            float hpRatio = (float)npc.lifeMax / Math.Max(localPlayer.statLifeMax, 1);
+            float durabilityIndex = MathF.Log2(1f + hpRatio);
+            //NPC自身防御系数
+            float defenseIndex = npc.defense / 50f;
+            return hitImpact * 50f + durabilityIndex * 5f + defenseIndex * 5f;
+        }
+
+        /// <summary>威胁星级 0..5，档案面板菱形刻度用</summary>
+        public static int ComputeThreatPips(NPC npc) {
+            float t = ComputeRelativeThreat(npc);
+            if (t >= 40f) return 5;
+            if (t >= 20f) return 4;
+            if (t >= 8f) return 3;
+            if (t >= 3f) return 2;
+            return t > 0f ? 1 : 0;
         }
 
         #endregion
