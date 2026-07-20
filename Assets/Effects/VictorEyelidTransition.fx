@@ -15,15 +15,16 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0, float4 vertexColor : COLOR
     float2 px = coords * uResolution;
     float cx = coords.x;
 
-    //眼睑弧形：中央比两侧晚一点闭合，更像真实眨眼
+    //眼睑弧形：中央下探最深先合拢，两侧稍晚，像真实眨眼
     float curve = sin(cx * 3.14159265) * uResolution.y * 0.075;
     float halfH = uResolution.y * 0.5;
-    float reach = uClose * (halfH + curve);
+    float soft = 12.0;
+    //+soft+4 重叠余量：curve 在 x=0/1 归零且 uClose 渐近到不了 1，无余量时全闭态两侧中线羽化边凑不满 alpha=1 漏光
+    float reach = uClose * (halfH + curve + soft + 4.0);
 
     float topEdge = reach;
     float botEdge = uResolution.y - reach;
 
-    float soft = 12.0;
     float topCover = 1.0 - smoothstep(topEdge - soft, topEdge, px.y);
     float botCover = smoothstep(botEdge, botEdge + soft, px.y);
     float lid = saturate(topCover + botCover);
