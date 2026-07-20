@@ -665,6 +665,7 @@ OnikiriText: {
 		RiteTitleRenew: 续 契
 		RiteTitleResubdue: 收 伏
 		RiteHint: 落笔 · 归卷
+		RiteHintResubdue: 押 回 · 缄 卷
 	}
 
 	OniPlayerDismemberSystem.SelfHurtDeathReason: "{0}被自己的一刀斩作了两段"

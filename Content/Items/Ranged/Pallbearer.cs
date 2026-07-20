@@ -123,7 +123,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Idle,       //待机
             Loading,    //装填棺钉
             Charged,    //满弦蓄力
-            Firing      //发射收势
+            Firing,     //发射收势
+            Winding     //掷棺蓄势：反向后拉，力量长在出手前
         }
 
         private CrossbowState State {
@@ -140,12 +141,15 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private float recoilPunch;      //后座位移 px，指数收回
         private float stringSnap;       //弦回弹：1 拉满 → 发射瞬间 -0.22 过冲 → 归零
         private bool chargeCue;         //72% 静默切入提示音只播一次
+        private float windupPull;       //掷棺蓄势后拉位移 px（迟滞后吸曲线）
 
         //==== 常量 ====
         private const int LoadDuration = 28;        //装填时长
         private const int MaxChargeDuration = 60;   //最大蓄力时长
         private const int FireDuration = 12;        //射击收势时长
         private const float ChargeSilence = 0.72f;  //蓄力硬切静默点
+        private const int WindupFrames = 7;         //掷棺蓄势帧数：短到不打断节奏，长到看得见
+        private const float WindupPullDist = 26f;   //蓄势后拉幅度 px
 
         private float bowstringPullback; //弓弦拉动进度 0-1
 
@@ -189,6 +193,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 case CrossbowState.Firing:
                     HandleFiring();
                     break;
+                case CrossbowState.Winding:
+                    HandleWinding();
+                    break;
             }
 
             recoilPunch *= 0.74f; //后座指数收回
@@ -211,6 +218,25 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
 
             if (DownRight) {
+                //先蓄势再出手：力量长在出手前的反向动作里
+                State = CrossbowState.Winding;
+                StateTimer = 0;
+                windupPull = 0f;
+                SoundEngine.PlaySound(SoundID.DoorOpen with { Pitch = -0.55f, Volume = 0.45f, MaxInstances = 2 }, Owner.Center);
+            }
+        }
+
+        /// <summary>
+        /// 掷棺蓄势：pow(t,3) 迟滞后吸——前几帧几乎不动，最后两帧猛地拽向身后，随即出手。
+        /// 一旦进入即不可取消（挥出重物没有半途收力的余地）
+        /// </summary>
+        private void HandleWinding() {
+            float t = MathHelper.Clamp(StateTimer / (float)WindupFrames, 0f, 1f);
+            windupPull = MathF.Pow(t, 3f) * WindupPullDist;
+
+            //拽到最深的一帧甩出
+            if (StateTimer >= WindupFrames) {
+                windupPull = 0f;
                 ThrowCrossbow();
             }
         }
@@ -361,6 +387,9 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 //枪口血橙暖色爆闪：小面积、一瞬即灭
                 PRTLoader.NewParticle<PRT_Light>(muzzle, aim * 2f, PallbearerVFX.Ember, 0.36f + 0.2f * charge)
                     ?.Configure(9, 1f, 1.5f, 2.4f);
+                //枪口破空痕：沿射向拉长的粗短光痕，几帧即灭——击发那一帧的"烟斗"
+                PRTLoader.NewParticle<PRT_PallbearerTracer>(muzzle, Vector2.Zero, default, 1f)
+                    ?.Configure(muzzle - aim * 14f, muzzle + aim * (95f + 55f * charge), 20f + 10f * charge, 6);
                 //粒子量∝动能：血色锐线锥
                 int lineCount = (int)(8 + 9 * charge);
                 for (int i = 0; i < lineCount; i++) {
@@ -377,29 +406,33 @@ namespace CalamityOverhaul.Content.Items.Ranged
             }
         }
 
-        /// <summary>右键掷棺：一帧设满高速甩出——让棺椁的气息先沾染客人</summary>
+        /// <summary>掷棺出手帧：蓄势拽到最深后的爆发——快出手、飞行中还在持续加速</summary>
         private void ThrowCrossbow() {
             Vector2 aim = Projectile.velocity.SafeNormalize(Vector2.UnitX * Owner.direction);
             if (Projectile.IsOwnedByLocalPlayer()) {
                 Projectile.NewProjectile(
                     Owner.GetSource_ItemUse(Owner.GetItem()),
                     Projectile.Center,
-                    aim * PallbearerBoomerang.LaunchSpeed, //instant set：出手即满速
+                    aim * PallbearerBoomerang.LaunchSpeed, //出手即快，此后复利加速持续压榨
                     ModContent.ProjectileType<PallbearerBoomerang>(),
                     (int)(Projectile.damage * 0.85f),
                     Projectile.knockBack * 1.5f,
                     Owner.whoAmI
                 );
                 if (!Owner.mount.Active) {
-                    Owner.velocity -= aim * 1.4f; //甩出的反作用
+                    Owner.velocity -= aim * 1.8f; //甩出的反作用
                 }
             }
 
-            //沉重的木器破空 + 棺盖颤响 + 出手震屏
+            //沉重的木器破空 + 棺盖颤响 + 出手震屏 + 手边一道破空痕
             SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -0.5f, Volume = 1f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Dig with { Pitch = -0.8f, Volume = 0.45f }, Projectile.Center);
             SoundEngine.PlaySound(SoundID.DoorClosed with { Pitch = -0.3f, Volume = 0.4f }, Projectile.Center);
-            PallbearerVFX.Punch(Projectile.Center, aim, 4.5f, 8f, 10, 700f);
+            PallbearerVFX.Punch(Projectile.Center, aim, 5.5f, 9f, 10, 700f);
+            if (!Main.dedServ) {
+                PRTLoader.NewParticle<PRT_PallbearerTracer>(Projectile.Center, Vector2.Zero, default, 1f)
+                    ?.Configure(Projectile.Center - aim * 10f, Projectile.Center + aim * 120f, 22f, 6);
+            }
             Projectile.Kill();
         }
 
@@ -434,6 +467,13 @@ namespace CalamityOverhaul.Content.Items.Ranged
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
                     Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, targetArmRot);
                     break;
+                case CrossbowState.Winding:
+                    //蓄势：整条手臂随棺弩拽向身后
+                    float windT = windupPull / WindupPullDist;
+                    armRotation = MathHelper.Lerp(armRotation, targetArmRot - 1.1f * dir * windT, 0.5f);
+                    Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation);
+                    Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+                    break;
                 default:
                     armRotation = MathHelper.Lerp(armRotation, targetArmRot, 0.2f);
                     Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, armRotation);
@@ -451,7 +491,8 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.velocity = aimDir; //稳定的方向向量
 
             float holdDistance = 20f + ((State == CrossbowState.Loading || State == CrossbowState.Charged) ? bowstringPullback * 8f : 0f);
-            holdDistance -= recoilPunch; //发射后座
+            holdDistance -= recoilPunch;  //发射后座
+            holdDistance -= windupPull;   //掷棺蓄势：棺弩拽向身后
             if (State == CrossbowState.Firing) {
                 holdDistance -= stringSnap * 8f; //弦过冲：击发瞬间弩身随弦轻微前送再弹回
             }
@@ -503,7 +544,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override string Texture => CWRConstant.Item_Ranged + "Pallbearer";
         public override LocalizedText DisplayName => ItemLoader.GetItem(ModContent.ItemType<Pallbearer>()).DisplayName;
 
-        private enum BoomerangState { Throwing, Braking, Returning }
+        private enum BoomerangState { Throwing, Braking, Hover, Returning }
         private BoomerangState State {
             get => (BoomerangState)Projectile.ai[0];
             set {
@@ -517,20 +558,26 @@ namespace CalamityOverhaul.Content.Items.Ranged
         private ref float ReturnSpeed => ref Projectile.ai[2];
         private ref float SpinSpeed => ref Projectile.localAI[0];
 
-        private Trail trail;
+        private Trail trailOuter;
+        private Trail trailCore;
 
-        //==== 基础参数（MOTION.md 冲刺配方：launch is a set / 近直线 / 硬刹 / 吸附回收）====
-        /// <summary>出手即满速（instant set，无缓加速）</summary>
-        public const float LaunchSpeed = 44f;
-        private const int MaxFlightFrames = 26;        //直线段最长帧数
+        //==== 运动学参数 ====
+        //恒速直线没有动力学：加速感 = 出手快且飞行中仍在复利压榨；
+        //力量感 = 出手前的反向蓄势 + 顶点硬刹的过冲 + 全速砸进手里的收势
+        /// <summary>出手初速：已经很快，但只是起点</summary>
+        public const float LaunchSpeed = 26f;
+        private const float FlightAccelMul = 1.055f;   //飞行段复利加速/帧：越飞越快，呼啸越来越尖
+        private const float FlightMaxSpeed = 74f;      //飞行段速度上限
+        private const int MaxFlightFrames = 24;        //直线段最长帧数
         private const float MaxDistance = 950f;        //最大射程
-        private const int BrakeFrames = 6;             //硬刹帧数
-        private const float BrakeMul = 0.78f;          //硬刹每帧衰减
-        private const float ReturnMaxSpeed = 66f;      //回程吸附峰值
-        private const float ReturnAccel = 2.6f;        //回程加速度/帧
+        private const float BrakeMul = 0.62f;          //硬刹每帧衰减：撞上空气墙
+        private const int HoverFrames = 8;             //顶点悬滞：猛拽前的半拍屏息
+        private const int ReturnCreepFrames = 4;       //回程前几帧的缓慢蠕动：链条绷紧的张力
+        private const float ReturnAccelMul = 1.13f;    //回程复利加速/帧：被链条猛拽回来
+        private const float ReturnMaxSpeed = 78f;      //回程峰值，全速砸进手里不减速
 
         public override void SetStaticDefaults() {
-            ProjectileID.Sets.TrailCacheLength[Type] = 16;
+            ProjectileID.Sets.TrailCacheLength[Type] = 22;
             ProjectileID.Sets.TrailingMode[Type] = 2;
         }
 
@@ -548,7 +595,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Projectile.localNPCHitCooldown = 14;
         }
 
-        public override bool? CanDamage() => Time > 0;
+        public override bool? CanDamage() => State == BoomerangState.Hover ? false : Time > 0;
 
         public override void AI() {
             if (!Owner.active || Owner.dead) { Projectile.Kill(); return; }
@@ -559,39 +606,72 @@ namespace CalamityOverhaul.Content.Items.Ranged
 
             switch (State) {
                 case BoomerangState.Throwing: {
-                    //近直线：不做任何弧线缓动；咬肉减速后立刻回满巡航速
+                    //复利加速：出手已快，仍每帧 ×1.055 持续压榨——棺弩越飞越快地撕开空气
                     float speed = Projectile.velocity.Length();
-                    if (speed < LaunchSpeed) {
-                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX) * MathF.Min(speed * 1.13f + 0.6f, LaunchSpeed);
+                    if (speed < FlightMaxSpeed) {
+                        Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX)
+                            * MathF.Min(speed * FlightAccelMul, FlightMaxSpeed);
                     }
                     if (Time >= MaxFlightFrames || toPlayer.Length() > MaxDistance) {
                         State = BoomerangState.Braking;
                         Time = 0f;
+                        //撞上空气墙的破空爆响
+                        SoundEngine.PlaySound(SoundID.Item71 with { Pitch = -0.2f, Volume = 0.6f, MaxInstances = 2 }, Projectile.Center);
                     }
                     break;
                 }
                 case BoomerangState.Braking: {
-                    //硬刹：×0.78/f，六帧内钉停在空中
+                    //硬刹 ×0.62/f：全速一头钉停。刹死后残余一丝反向过冲（质量惯性）
                     Projectile.velocity *= BrakeMul;
-                    if (Time >= BrakeFrames) {
+                    if (Projectile.velocity.Length() < 2.5f) {
+                        Projectile.velocity = -Projectile.velocity.SafeNormalize(Vector2.Zero) * 1.6f;
+                        State = BoomerangState.Hover;
+                        Time = 0f;
+                        if (!Main.dedServ) {
+                            PallbearerVFX.EmberBurst(Projectile.Center, 4, 2.4f, 0.7f);
+                        }
+                    }
+                    break;
+                }
+                case BoomerangState.Hover: {
+                    //顶点屏息：反向过冲衰减成轻微浮沉，转速掉下来——猛拽前的半拍死寂
+                    Projectile.velocity *= 0.82f;
+                    Projectile.velocity.Y += MathF.Sin(Time * 0.55f) * 0.14f;
+                    if (Time >= HoverFrames) {
                         State = BoomerangState.Returning;
                         Time = 0f;
-                        ReturnSpeed = 24f;
+                        ReturnSpeed = 10f;
+                        //链条绷紧的一声闷响
                         SoundEngine.PlaySound(SoundID.Item8 with { Pitch = -0.3f, Volume = 0.7f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Unlock with { Pitch = -0.6f, Volume = 0.4f }, Projectile.Center);
                     }
                     break;
                 }
                 default: {
-                    //高速吸附折返：直指玩家，速度线性拉满
-                    ReturnSpeed = MathF.Min(ReturnSpeed + ReturnAccel, ReturnMaxSpeed);
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity
-                        , toPlayer.SafeNormalize(Vector2.Zero) * ReturnSpeed, 0.42f);
+                    //回程两段：前几帧缓慢蠕动（链条张力），随后复利猛拽，全速砸进手里不减速
+                    if (Time <= ReturnCreepFrames) {
+                        Projectile.velocity = Vector2.Lerp(Projectile.velocity
+                            , toPlayer.SafeNormalize(Vector2.Zero) * ReturnSpeed, 0.3f);
+                    }
+                    else {
+                        ReturnSpeed = MathF.Min(ReturnSpeed * ReturnAccelMul, ReturnMaxSpeed);
+                        Projectile.velocity = Vector2.Lerp(Projectile.velocity
+                            , toPlayer.SafeNormalize(Vector2.Zero) * ReturnSpeed, 0.5f);
+                    }
 
-                    if (toPlayer.Length() < 64f) {
-                        //catch 顿挫：接住的一下有分量
-                        Owner.GetModPlayer<CWRPlayer>().GetScreenShake(4.5f);
+                    if (toPlayer.Length() < 70f) {
+                        //catch：全速砸进手里——震屏、双层闷响、余烬迸出、玩家被顶得一晃
+                        Owner.GetModPlayer<CWRPlayer>().GetScreenShake(5.5f);
                         SoundEngine.PlaySound(SoundID.Grab with { Volume = 1f, Pitch = 0f }, Owner.Center);
-                        SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.4f, Pitch = -0.5f }, Owner.Center);
+                        SoundEngine.PlaySound(SoundID.Dig with { Volume = 0.55f, Pitch = -0.5f }, Owner.Center);
+                        if (!Owner.mount.Active) {
+                            Owner.velocity += Projectile.velocity.SafeNormalize(Vector2.Zero) * 1.5f;
+                        }
+                        if (!Main.dedServ) {
+                            PallbearerVFX.EmberBurst(playerCenter, 5, 3f, 0.8f);
+                            PRTLoader.NewParticle<PRT_PallbearerTracer>(playerCenter, Vector2.Zero, default, 1f)
+                                ?.Configure(Projectile.Center - Projectile.velocity * 1.5f, playerCenter, 16f, 7);
+                        }
                         Projectile.Kill();
                         return;
                     }
@@ -599,28 +679,32 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 }
             }
 
-            //旋转呼啸随速度
+            //旋转随速度；回程被链条拽着转得更疯
             float velLen = Projectile.velocity.Length();
-            float targetSpin = 0.22f + velLen / 95f;
+            float targetSpin = 0.1f + velLen / 80f * (State == BoomerangState.Returning ? 1.35f : 1f);
             SpinSpeed = MathHelper.Lerp(SpinSpeed, targetSpin, 0.3f);
             Projectile.rotation += SpinSpeed * Math.Sign(Projectile.velocity.X == 0 ? Owner.direction : Projectile.velocity.X);
 
-            if (Time % 8 == 0 && velLen > 14f) {
-                float speedT = MathHelper.Clamp((velLen - 14f) / 52f, 0f, 1f);
+            //呼啸随速度爬升：加速感听得见
+            if (Time % 7 == 0 && velLen > 14f) {
+                float speedT = MathHelper.Clamp((velLen - 14f) / 60f, 0f, 1f);
                 SoundEngine.PlaySound(SoundID.Item32 with {
-                    Volume = 0.3f + 0.18f * speedT,
-                    Pitch = -0.3f + speedT * 0.8f,
+                    Volume = 0.28f + 0.24f * speedT,
+                    Pitch = -0.3f + speedT * 0.9f,
                     MaxInstances = 2
                 }, Projectile.Center);
             }
 
-            //速度门控的血色余烬甩尾
-            if (!Main.dedServ && Time % 4 == 0 && velLen > 18f) {
-                float tipAngle = Projectile.rotation + (Main.rand.NextBool() ? 0f : MathHelper.Pi);
-                Vector2 tip = Projectile.Center + tipAngle.ToRotationVector2() * 34f;
-                PRTLoader.NewParticle<PRT_PallbearerEmber>(tip
-                    , tipAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(1.5f, 3f)
-                    , PallbearerVFX.BloodDeep, Main.rand.NextFloat(0.45f, 0.7f))?.Configure(14);
+            //余烬甩尾：甩出率随速度升档——越快甩得越凶
+            if (!Main.dedServ && velLen > 16f) {
+                int cadence = velLen > 55f ? 1 : velLen > 34f ? 2 : 4;
+                if (Time % cadence == 0) {
+                    float tipAngle = Projectile.rotation + (Main.rand.NextBool() ? 0f : MathHelper.Pi);
+                    Vector2 tip = Projectile.Center + tipAngle.ToRotationVector2() * 34f;
+                    PRTLoader.NewParticle<PRT_PallbearerEmber>(tip
+                        , tipAngle.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(1.5f, 3.5f)
+                        , PallbearerVFX.BloodDeep, Main.rand.NextFloat(0.45f, 0.7f))?.Configure(14);
+                }
             }
 
             Lighting.AddLight(Projectile.Center, PallbearerVFX.Blood.ToVector3() * 0.26f);
@@ -646,32 +730,76 @@ namespace CalamityOverhaul.Content.Items.Ranged
             PallbearerVFX.Splinters(target.Center, -Projectile.velocity.SafeNormalize(Vector2.UnitX), 3, 4.5f);
         }
 
-        //==== 绘制：Trail 条带取代 sprite 残影 ====
+        //==== 绘制：双层条带 + 旋转拖影 + 殓棺锁链 ====
 
-        public float GetWidthFunc(float completionRatio) {
-            float speedFade = MathHelper.Clamp(Projectile.velocity.Length() / 40f, 0.2f, 1f);
-            return (1f - completionRatio) * 24f * speedFade; //completion 0 = 最新端（头）最宽
+        private float SpeedT => MathHelper.Clamp(Projectile.velocity.Length() / ReturnMaxSpeed, 0f, 1f);
+
+        public float GetOuterWidth(float completionRatio) {
+            float speedFade = MathHelper.Clamp(Projectile.velocity.Length() / 46f, 0.15f, 1f);
+            return (1f - completionRatio) * 38f * speedFade; //completion 0 = 最新端（头）最宽
         }
 
-        public Color GetColorFunc(Vector2 coord) {
-            float speedT = MathHelper.Clamp(Projectile.velocity.Length() / ReturnMaxSpeed, 0f, 1f);
-            return Color.White * ((0.25f + 0.7f * speedT) * (1f - coord.X));
+        public Color GetOuterColor(Vector2 coord) =>
+            Color.White * ((0.18f + 0.5f * SpeedT) * (1f - coord.X));
+
+        public float GetCoreWidth(float completionRatio) {
+            float speedFade = MathHelper.Clamp(Projectile.velocity.Length() / 46f, 0.15f, 1f);
+            return (1f - completionRatio) * 13f * speedFade;
         }
+
+        public Color GetCoreColor(Vector2 coord) =>
+            Color.White * ((0.35f + 0.65f * SpeedT) * MathF.Pow(1f - coord.X, 1.5f));
 
         void IPrimitiveDrawable.DrawPrimitives() {
             Effect fx = PallbearerAssets.PallbearerTrail;
             if (fx == null || !Projectile.active) {
                 return;
             }
+            //宽软外层铺氛围，窄亮内芯给锐度：同一 fx 两次装配
             PallbearerVFX.ApplyTrail(fx, Projectile.whoAmI * 0.37f);
-            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trail, GetWidthFunc, GetColorFunc, fx);
+            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trailOuter, GetOuterWidth, GetOuterColor, fx);
+            PallbearerVFX.ApplyTrail(fx, Projectile.whoAmI * 0.37f + 0.5f);
+            GraniteMarbleVFX.DrawTrailFromOldPos(Projectile, ref trailCore, GetCoreWidth, GetCoreColor, fx);
         }
 
         public override bool PreDraw(ref Color lightColor) {
             Texture2D texture = TextureAssets.Item[ModContent.ItemType<Pallbearer>()].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() / 2f;
-            float speedFactor = Math.Clamp(Projectile.velocity.Length() / ReturnMaxSpeed, 0f, 1f);
+            float speedFactor = SpeedT;
+            SpriteBatch sb = Main.spriteBatch;
+
+            //殓棺锁链：悬滞时垂坠松弛，回程猛拽绷直，亮环奔向持弩人——"被棺链拽回来"
+            if (State == BoomerangState.Hover || State == BoomerangState.Returning) {
+                float taut = State == BoomerangState.Hover ? 0.3f : 0.45f + 0.55f * speedFactor;
+                PallbearerVFX.DrawChain(sb, Projectile.Center, Owner.GetPlayerStabilityCenter()
+                    , taut, 0.55f, Main.GlobalTimeWrappedHourly * 1.7f);
+            }
+
+            //位移拖影：旧位置的暗红残像，速度越快越实
+            Color ghostBlood = PallbearerVFX.BloodDeep with { A = 0 };
+            for (int i = 2; i <= 8; i += 3) {
+                if (i >= Projectile.oldPos.Length || Projectile.oldPos[i] == Vector2.Zero) {
+                    continue;
+                }
+                float fade = (1f - i / 10f) * 0.32f * speedFactor;
+                Vector2 ghostPos = Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition;
+                float ghostRot = i < Projectile.oldRot.Length ? Projectile.oldRot[i] : Projectile.rotation;
+                Main.EntitySpriteDraw(texture, ghostPos, null, ghostBlood * fade
+                    , ghostRot, origin, Projectile.scale * 0.96f, SpriteEffects.None, 0);
+            }
+
+            //旋转拖影：按转速回溯旋转角的残像糊成磨盘——自旋的可视化
+            float spinT = MathHelper.Clamp(SpinSpeed / 0.85f, 0f, 1f);
+            for (int i = 1; i <= 4; i++) {
+                float fade = (0.3f - i * 0.06f) * spinT;
+                if (fade <= 0.01f) {
+                    continue;
+                }
+                float ghostRot = Projectile.rotation - SpinSpeed * i * 2.2f * Math.Sign(Projectile.velocity.X == 0 ? 1 : Projectile.velocity.X);
+                Main.EntitySpriteDraw(texture, drawPos, null, ghostBlood * fade
+                    , ghostRot, origin, Projectile.scale, SpriteEffects.None, 0);
+            }
 
             //速度门控的深红底晕：慢时无光，快时血光拖行
             Texture2D soft = CWRAsset.SoftGlow.Value;
@@ -702,6 +830,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public const float MarkedDamageMult = 1.75f;
 
         private Trail trail;
+        //弹道光痕锚点：各端本地在首帧记录出膛位置，终点事件时铺一道驻留光痕
+        private Vector2 birthPos;
+        private bool birthSet;
+        private bool tracerSpawned;
 
         public override void SetStaticDefaults() {
             ProjectileID.Sets.TrailCacheLength[Type] = 24;
@@ -727,6 +859,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
         public override bool? CanDamage() => Mode == ModeFlight ? null : false;
 
         public override void AI() {
+            if (!birthSet) {
+                birthSet = true;
+                birthPos = Projectile.Center;
+            }
             if (Mode == ModeFlight) {
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
                 //飞行余烬：低频，血色一线
@@ -788,8 +924,22 @@ namespace CalamityOverhaul.Content.Items.Ranged
                 , (int)(Projectile.damage * 3f), 12f, Projectile.owner, target.whoAmI);
         }
 
+        /// <summary>终点事件铺弹道光痕：出膛点→终点的三层驻留光束，弹体死后仍挂在空中缓缓熄灭</summary>
+        private void SpawnTracer() {
+            if (Main.dedServ || tracerSpawned || !birthSet) {
+                return;
+            }
+            tracerSpawned = true;
+            if (Vector2.DistanceSquared(birthPos, Projectile.Center) < 40f * 40f) {
+                return; //贴脸命中不铺痕
+            }
+            PRTLoader.NewParticle<PRT_PallbearerTracer>(Projectile.Center, Vector2.Zero, default, 1f)
+                ?.Configure(birthPos, Projectile.Center, 9f + 8f * ChargeLevel, 13);
+        }
+
         public override bool OnTileCollide(Vector2 oldVelocity) {
             //钉进地面：楔子插在土里短暂存留——把东西钉死在地上的家伙
+            SpawnTracer();
             Mode = ModeStuckTile;
             Projectile.velocity = Vector2.Zero;
             Projectile.timeLeft = 300; //5 拍折算 ≈ 1s
@@ -806,6 +956,10 @@ namespace CalamityOverhaul.Content.Items.Ranged
             if (Main.dedServ) {
                 return;
             }
+            //飞行中死亡（穿透耗尽/超时）：此刻铺光痕；钉地模式早已铺过
+            if (Mode == ModeFlight) {
+                SpawnTracer();
+            }
             //消隐：一点余烬与尘土
             PallbearerVFX.EmberBurst(Projectile.Center, 2, 1.6f, 0.6f);
             for (int i = 0; i < 3; i++) {
@@ -818,7 +972,7 @@ namespace CalamityOverhaul.Content.Items.Ranged
         //==== 绘制 ====
 
         public float GetWidthFunc(float completionRatio) =>
-            (1f - completionRatio) * (8f + 5f * ChargeLevel); //completion 0 = 钉头端最宽
+            (1f - completionRatio) * (14f + 8f * ChargeLevel); //completion 0 = 钉头端最宽
 
         public Color GetColorFunc(Vector2 coord) => Color.White * (0.6f + 0.3f * ChargeLevel) * (1f - coord.X);
 
@@ -838,9 +992,24 @@ namespace CalamityOverhaul.Content.Items.Ranged
             Texture2D texture = TextureAssets.Projectile[Type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Vector2 origin = texture.Size() / 2f;
-
-            //钉体带一层血色浸染
             Color bodyColor = Color.Lerp(lightColor, PallbearerVFX.BloodDeep, 0.22f) * Projectile.Opacity;
+
+            if (Mode == ModeFlight) {
+                //高速拉伸残影：把渲染帧之间 5 次 update 的空档糊上，弹体读作一道钉光而非跳帧的贴图
+                Color ghost = PallbearerVFX.Blood with { A = 0 };
+                Main.EntitySpriteDraw(texture, drawPos - Projectile.velocity * 1.4f - Main.rand.NextVector2Circular(0.5f, 0.5f)
+                    , null, ghost * 0.38f, Projectile.rotation, origin
+                    , new Vector2(0.86f, 1.5f) * Projectile.scale, SpriteEffects.None, 0);
+                Main.EntitySpriteDraw(texture, drawPos - Projectile.velocity * 2.8f, null, ghost * 0.16f
+                    , Projectile.rotation, origin, new Vector2(0.78f, 1.8f) * Projectile.scale, SpriteEffects.None, 0);
+
+                //本体沿速度方向轻微拉伸：运动方向性
+                Main.EntitySpriteDraw(texture, drawPos, null, bodyColor, Projectile.rotation, origin
+                    , new Vector2(0.92f, 1.18f) * Projectile.scale, SpriteEffects.None, 0);
+                return false;
+            }
+
+            //钉地模式：静止原样
             Main.EntitySpriteDraw(texture, drawPos, null, bodyColor,
                 Projectile.rotation, origin, Projectile.scale * 0.92f, SpriteEffects.None, 0);
             return false;

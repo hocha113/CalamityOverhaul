@@ -30,12 +30,14 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
         public static LocalizedText RiteTitleRenew { get; private set; }
         public static LocalizedText RiteTitleResubdue { get; private set; }
         public static LocalizedText RiteHint { get; private set; }
+        public static LocalizedText RiteHintResubdue { get; private set; }
 
         public override void SetStaticDefaults() {
             RiteTitle = this.GetLocalization(nameof(RiteTitle), () => "铭 刻");
             RiteTitleRenew = this.GetLocalization(nameof(RiteTitleRenew), () => "续 契");
             RiteTitleResubdue = this.GetLocalization(nameof(RiteTitleResubdue), () => "收 伏");
             RiteHint = this.GetLocalization(nameof(RiteHint), () => "落笔 · 归卷");
+            RiteHintResubdue = this.GetLocalization(nameof(RiteHintResubdue), () => "押 回 · 缄 卷");
         }
 
         public override bool CloseOnEscape => true;
@@ -592,10 +594,10 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
             //====朱印(砸章/覆押/钉死)====
             DrawStamp(spriteBatch, a);
 
-            //====静场提示====
+            //====静场提示(收伏的静场没有"归卷"的安宁,只有押回)====
             float hintA = MathHelper.Clamp((timer - StillAt - 12f) / 30f, 0f, 1f) * a;
             if (hintA > 0.01f) {
-                string hint = RiteHint.Value;
+                string hint = (riteKind == WraithRiteKind.Resubdue ? RiteHintResubdue : RiteHint).Value;
                 float pulse = OnikiriUITheme.Breath(GlobalTimer, 1.3f, 2.2f);
                 Vector2 hSize = font.MeasureString(hint) * 0.72f;
                 Utils.DrawBorderString(spriteBatch, hint,
@@ -716,9 +718,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI
                 };
                 float flick = 0.75f + 0.25f * (float)Math.Sin(GlobalTimer * flickSpeed);
                 Vector2 eyeSway = new((float)Math.Sin(GlobalTimer * 0.9f) * 7f * sway, (float)Math.Cos(GlobalTimer * 0.7f) * 4f * sway);
-                Vector2 eyeL = basePos + eyeSway + new Vector2(-9f, -46f);
-                Vector2 eyeR = basePos + eyeSway + new Vector2(9f, -44f);
-                foreach (Vector2 eye in new[] { eyeL, eyeR }) {
+                //左右眼步进循环,逐帧零分配(镜像 WraithActor.DrawBody 的 side 惯例)
+                for (int side = -1; side <= 1; side += 2) {
+                    Vector2 eye = basePos + eyeSway + new Vector2(9f * side, side < 0 ? -46f : -44f);
                     sb.Draw(pixel, eye, src, OnikiriUITheme.GhostDim * (a * eyeA * 0.5f * flick), 0f, new Vector2(0.5f), new Vector2(5.6f, 4.4f), SpriteEffects.None, 0f);
                     sb.Draw(pixel, eye, src, OnikiriUITheme.GhostFire * (a * eyeA * 0.95f * flick), 0f, new Vector2(0.5f), new Vector2(2.6f, 2.0f), SpriteEffects.None, 0f);
                 }
