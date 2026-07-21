@@ -1,6 +1,7 @@
 ﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.Narrative;
 using CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines;
+using InnoVault.Narrative.Audio;
 using InnoVault.Narrative.Composition;
 using InnoVault.Narrative.Core;
 using InnoVault.Narrative.Runtime;
@@ -22,6 +23,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
         public static LocalizedText Line6 { get; private set; }
         public static LocalizedText Line7 { get; private set; }
 
+        private static NarrativeVoiceBank Voice;
+
         public override StyleId DefaultStyle => NarrativeIds.Onikiri;
 
         public override void SetStaticDefaults() {
@@ -33,22 +36,30 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             Line5 = this.GetLocalization(nameof(Line5), () => "头疼……我的状态大概介于活人和异类之间吧。");
             Line6 = this.GetLocalization(nameof(Line6), () => "完全搞不懂发生了什么……");
             Line7 = this.GetLocalization(nameof(Line7), () => "不过从今天开始，就请多多关照了。");
+            Voice = NarrativeVoiceBank.Create(Mod, "Content/Scenarios/Himayo/Lines/FirstMetHimayo", count: 7);
         }
 
         protected override void Build(NarrativeComposer n) {
-            n.Say(NarrativeIds.Mayo, Line1.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt))
-             .Say(NarrativeIds.Mayo, Line2.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
-             .Say(NarrativeIds.Mayo, Line3.Value)
-             .Say(NarrativeIds.Mayo, Line4.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt))
-             .Say(NarrativeIds.Mayo, Line5.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
-             .Say(NarrativeIds.Mayo, Line6.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate))
-             .Say(NarrativeIds.Mayo, Line7.Value,
-                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Forsmile))
+            // allowSkipThrough：换脸是装饰，不挡 Skip
+            n.Say(NarrativeIds.Mayo, Line1.Value, Voice[1],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt),
+                    allowSkipThrough: true)
+             .Say(NarrativeIds.Mayo, Line2.Value, Voice[2],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate),
+                    allowSkipThrough: true)
+             .Say(NarrativeIds.Mayo, Line3.Value, Voice[3])
+             .Say(NarrativeIds.Mayo, Line4.Value, Voice[4],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Doubt),
+                    allowSkipThrough: true)
+             .Say(NarrativeIds.Mayo, Line5.Value, Voice[5],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate),
+                    allowSkipThrough: true)
+             .Say(NarrativeIds.Mayo, Line6.Value, Voice[6],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Ruminate),
+                    allowSkipThrough: true)
+             .Say(NarrativeIds.Mayo, Line7.Value, Voice[7],
+                    onEnter: HimayoNarrativePortrait.FaceEnter(HimayoFullBodyPortrait.Face.Forsmile),
+                    allowSkipThrough: true)
              .End();
         }
 

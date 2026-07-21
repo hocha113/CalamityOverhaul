@@ -591,54 +591,54 @@ OnikiriOverride: {
 }
 
 OnikiriTrialQuestLine: {
-	// QuestCategory: 鬼切·试炼
-	// TrackerWaiting: 目标不在场，等待召唤...
+	// QuestCategory: Onikiri · Trial Cuts
+	// TrackerWaiting: It isn't here yet. Wait—or we go ask for it.
 	// TrackerFighting: "{0}: {1:0%}"
-	// TrackerBrief: 试刃目标：{0}
-	// BossRushTargetName: 终焉之战
-	// EventActiveFormat: "{0}: 进行中"
-	// Trial_0: 不速之瞳
-	// Trial_1: 邪物双生
-	// Trial_2: 腐巢血祀
-	// Trial_3: 凝胶伪神
-	// Trial_4: 血墙试刃
-	// Trial_5: 硫海巨虫
-	// Trial_6: 硫火使者
-	// Trial_7: 钢铁长虫
-	// Trial_8: 双瞳裂解
-	// Trial_9: 机械王颅
-	// Trial_10: 灾影摹本
-	// Trial_11: 丛林妖花
-	// Trial_12: 遗迹石卫
-	// Trial_13: 邪教仪典
-	// Trial_14: 月背斩痕
-	// Trial_15: 地核圣火
-	// Trial_16: 幽魂共生体
-	// Trial_17: 弑神之刃
-	// Trial_18: 龙裔试羽
-	// Trial_19: 造物巨械
-	// Trial_20: 至尊女巫
-	// Trial_21: 终焉乱舞
-	// TrialSummary_0: 第一刀：那只悬空巨眼。斩下它，让鬼切记住何谓「试刃」。
-	// TrialSummary_1: 腐土巨虫与血肉之脑——择一斩核，邪气便知刀名。
-	// TrialSummary_2: 腐巢意志或血肉宿主，污秽聚合之物。斩尽源头。
-	// TrialSummary_3: 凝胶居然自称神？提纯到只剩一滩，看它还能剩什么神格。
-	// TrialSummary_4: 地狱横亘血肉长墙。穿过它，硬模式之门才会为刀敞开。
-	// TrialSummary_5: 硫磺之海浮出巨虫。拆下它的吞噬器官。
-	// TrialSummary_6: 熔岩深处的硫火使者。熄灭核心火焰。
-	// TrialSummary_7: 钢铁蠕虫第一台。切成可回收的废料。
-	// TrialSummary_8: 空中镜像双瞳。逐个拆除武装。
-	// TrialSummary_9: 戴旧王颅骨的机械末席。轰碎那颗金属头颅。
-	// TrialSummary_10: 女巫的克隆体在游荡。用它校准灾厄之刃的反应。
-	// TrialSummary_11: 丛林地下妖艳花苞已开。采集后斩落。
-	// TrialSummary_12: 神庙石卫等待充能。顺便试一试遗迹之铁。
-	// TrialSummary_13: 地牢门前狂热仪典。打断他们。
-	// TrialSummary_14: 月亮背面的秘密将被知晓。世界回到原来的样子。
-	// TrialSummary_15: 寄生地核的神明注意到了你。取得它的热能。
-	// TrialSummary_16: 地牢怨灵聚成共生体。记录它，然后让它归于沉寂。
-	// TrialSummary_17: 它吞噬神明——但我们不是神。斩之。
-	// TrialSummary_18: 世上仅存的龙裔。去见它，取一羽。
-	// TrialSummary_19: 拜访造物主的巨械。带回控制核心。
-	// TrialSummary_20: 女巫的存在令人困扰。终止她的混沌实验。
-	// TrialSummary_21: 曾被击败的敌人联合总攻。终焉乱舞，一刀定局。
+	// TrackerBrief: Next cut: {0}
+	// BossRushTargetName: Night That Won't Break
+	// EventActiveFormat: "{0}: underway"
+	// Trial_0: The Unblinking
+	// Trial_1: Two Things in the Dirt
+	// Trial_2: Clumped Filth
+	// Trial_3: Walking Sugar
+	// Trial_4: Meat in the Way
+	// Trial_5: Worm on the Brimstone Sea
+	// Trial_6: The One in the Fire
+	// Trial_7: Iron Long-Worm
+	// Trial_8: A Pair of Fake Eyes
+	// Trial_9: The Skull-Wearer
+	// Trial_10: Shadow That Mimics a Walk
+	// Trial_11: Flower Opened Wrong
+	// Trial_12: Guard in the Stone House
+	// Trial_13: Those at the Door
+	// Trial_14: Far Side of the Moon
+	// Trial_15: Fire in the Earth's Heart
+	// Trial_16: Ghosts in a Clump
+	// Trial_17: God-Eater
+	// Trial_18: Dragon Still Alive
+	// Trial_19: The Maker's Iron
+	// Trial_20: That Witch
+	// Trial_21: Night Gathering Again
+	// TrialSummary_0: There's something hanging in the sky that won't blink. Looking at it makes me tired. Go make it close its eyes.
+	// TrialSummary_1: In the dirt it's either a worm or a brain. Whichever's filthier, cut that. The blade will know the taste.
+	// TrialSummary_2: The filth has bunched up. The source is there—help me cut it loose.
+	// TrialSummary_3: A puddle of sugar calling itself a god. If names were that easy, I'd be a goddess already. Go take its name off.
+	// TrialSummary_4: The road's blocked by a wall of meat. Cut straight through. What's past it sits heavier than here.
+	// TrialSummary_5: A worm surfaced on the brimstone sea. One open mouth and it reeks. Don't let it near the shore.
+	// TrialSummary_6: Something in the lava is still burning. When the flame goes out, that place can breathe again.
+	// TrialSummary_7: An iron long-worm. The first one. Cut it open—don't race it for length.
+	// TrialSummary_8: Two eyes in the sky, pretending to be a pair of people. One at a time.
+	// TrialSummary_9: An iron lump wearing an old king's skull. Take the head and the rest is just parts.
+	// TrialSummary_10: A shadow copying someone else's walk. The closer it gets, the more it bothers me. Help me cut it down.
+	// TrialSummary_11: A flower opened underground that shouldn't have. When it falls, the ground air clears a little.
+	// TrialSummary_12: A guard in a stone house that won't blink. Wake it up—or put it to sleep.
+	// TrialSummary_13: People muttering at the dungeon door. The rite isn't finished—interrupt them.
+	// TrialSummary_14: Something's pressed against the far side of the moon. Peel it open. The world gets lighter.
+	// TrialSummary_15: A fire that won't go cold lives in the earth's heart. Go see it. The blade will run hot—bear with it.
+	// TrialSummary_16: Ghosts stuck in one clump. Don't count them. Split the whole mass and they scatter.
+	// TrialSummary_17: It has eaten gods. We aren't gods—but if a blade fears gods, it's only iron. Go.
+	// TrialSummary_18: One dragon left in the world. Go see it. If a feather falls, pick one up for me too.
+	// TrialSummary_19: Someone built themselves an iron giant. The core's inside—pull it out and it stops.
+	// TrialSummary_20: That witch. Where she stays, the night turns sticky. Go end her.
+	// TrialSummary_21: They're gathering again. Like a night that won't break. The longest cut is yours. I'll watch.
 }

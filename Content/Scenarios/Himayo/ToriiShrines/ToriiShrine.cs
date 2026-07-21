@@ -1,4 +1,4 @@
-using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
+﻿using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.OtherMods.SubWorld;
 using InnoVault.Actors;
 using InnoVault.Cinematics;
@@ -266,9 +266,9 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             if (Main.dedServ) {
                 return;
             }
-            if (Main.LocalPlayer.Alives() && Main.LocalPlayer.DistanceSQ(ShrinePosition) < 3200f * 3200f) {
-                SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.55f, Pitch = -0.35f }, ShrinePosition);
-            }
+            //if (Main.LocalPlayer.Alives() && Main.LocalPlayer.DistanceSQ(ShrinePosition) < 3200f * 3200f) {
+            //    SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.55f, Pitch = -0.35f }, ShrinePosition);
+            //}
         }
 
         /// <summary>
@@ -423,7 +423,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
 
             HimayoStorySync.MarkToriiSwordTaken();
             player.QuickSpawnItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
-            SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.45f, Volume = 0.5f }, player.Center);
         }
 
         /// <summary>
@@ -441,8 +440,6 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo.ToriiShrines
             player.QuickSpawnItem(player.GetSource_Misc("ToriiShrine"), ModContent.ItemType<OnikiriItem>());
 
             player.CWR().GetScreenShake(10f);
-            SoundEngine.PlaySound(SoundID.Item71 with { Pitch = 0.35f, Volume = 0.9f }, ShrinePosition);
-            SoundEngine.PlaySound(SoundID.Item4 with { Pitch = 0.45f, Volume = 0.5f }, ShrinePosition);
 
             foreach (ToriiShrineActor actor in ActorLoader.GetActiveActors<ToriiShrineActor>()) {
                 actor.SwordPulledBurst();
