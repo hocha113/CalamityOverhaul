@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniFinaleSlashs;
@@ -145,12 +146,21 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
 
         public override bool ShouldUpdatePosition() => false;
 
+        private float bladeScale = 1f;
+
         private void Initialize() {
             initialized = true;
             float seed = Projectile.identity * 0.6180339887f % 1f;
             float cos = MathF.Cos(CutAngle);
             facing = MathF.Abs(cos) < 0.05f ? Owner.direction : MathF.Sign(cos);
             Owner.ChangeDir(facing);
+
+            //ai[2] 已被锵同帧占用：成长尺寸从持有物品读取
+            Item held = Owner.GetItem();
+            bladeScale = held.type == OnikiriOverride.ID
+                ? OnikiriOverride.GetBladeScale(held)
+                : 1f;
+            bladePose.Scale = 0.9f * bladeScale;
 
             //反拔起手:纳刀位有新鲜交接就从那里划出;弧长不足时沿反手侧补足,避免只剩抽搐
             float endRot = CutAngle + facing * SwingFront;
@@ -170,7 +180,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs
                 ColorShiftDelay = 10, ColorShiftFrames = 20,
                 Mode = 0f, Rot = CutAngle, Span = ArcSpan,
                 Thick = 0.42f,
-                HalfX = ArcHalfX, HalfY = ArcHalfY, Flip = facing,
+                HalfX = ArcHalfX * bladeScale, HalfY = ArcHalfY * bladeScale, Flip = facing,
                 Opacity = 1f, FrontGlow = IsSakura ? 2.1f : 1.9f, Seed = seed + 0.29f,
                 TailErode = 0.35f, FlashPower = 0.9f,
                 RazorTailWiden = 0.70f,

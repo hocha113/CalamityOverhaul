@@ -418,10 +418,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 Stance = 0f;
                 Vector2 focus = ComputeFinaleFocus(out Vector2 aim);
                 OniFinaleSlash.Fire(Player, focus, aim, state.WeaponDamage
-                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                    , state.WeaponKnockback, scale: OnikiriOverride.GetFinaleScale(item)
+                    , source: Player.GetSource_ItemUse(item));
             }
             else if (Stance >= AnnihilateCost - 0.01f) {
-                //过半:灭世一闪,以我为中心朝光标张开
+                //过半:灭世一闪,以我为中心朝光标张开——尺寸恒 1.0(已是上限)
                 Stance -= AnnihilateCost;
                 Vector2 aim = Main.MouseWorld - Player.Center;
                 OniAnnihilate.Fire(Player, Player.Center, aim, (int)(state.WeaponDamage * AnnihilateDamageMul)
@@ -469,7 +470,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             NPC target = PickDismemberTarget(mouse, DirectPickPad);
             if (target != null) {
                 OniSeverStrike.Fire(Player, target, AimAngleFrom(target.Center), damage
-                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                    , state.WeaponKnockback, scale: OnikiriOverride.GetBladeScale(item)
+                    , source: Player.GetSource_ItemUse(item));
                 return true;
             }
 
@@ -482,7 +484,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
                 local.Y = MathHelper.Clamp(local.Y, -paper.PaperHalf.Y * 0.4f, paper.PaperHalf.Y * 0.4f);
                 Vector2 cutPoint = paper.AnchorCenter + local;
                 OniSeverStrike.FireAtPoint(Player, cutPoint, AimAngleFrom(cutPoint), damage
-                    , state.WeaponKnockback, source: Player.GetSource_ItemUse(item));
+                    , state.WeaponKnockback, scale: OnikiriOverride.GetBladeScale(item)
+                    , source: Player.GetSource_ItemUse(item));
                 return true;
             }
 

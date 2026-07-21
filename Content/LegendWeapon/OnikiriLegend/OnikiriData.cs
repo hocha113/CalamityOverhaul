@@ -1,4 +1,6 @@
+using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
 using CalamityOverhaul.Content.Wraiths.Core;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ModLoader.IO;
@@ -6,11 +8,16 @@ using Terraria.ModLoader.IO;
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
 {
     /// <summary>
-    /// 鬼切的传奇数据：点鬼簿绑定层。每把刀实例各持一份 <see cref="WraithProgressStore"/>，
-    /// 随物品存档与联机同步；无试炼路线（TargetLevel 恒 0），传奇升级流程天然不触发
+    /// 鬼切的传奇数据：点鬼簿绑定层 + 试炼路线。每把刀实例各持一份 <see cref="WraithProgressStore"/>，
+    /// 随物品存档与联机同步；试炼进度驱动 <see cref="LegendData.Level"/>
     /// </summary>
     internal class OnikiriData : LegendData
     {
+        internal override IReadOnlyList<LegendTrialDefinition> TrialDefinitions
+            => LegendTrialRouteCatalog.OnikiriProgression;
+
+        public override int TargetLevel => GetVersionedTrialTargetLevel();
+
         //存档标记:区分"存过档(即使记录全默认)"与"本功能之前的老刀"。
         //老档兼容语义:带 InitTag 的刀读档回放存档值;无 InitTag 的刀吃下方出厂表。
         //标记曾为 "OnikiriWraiths:Init"(认主收敛试验期):键名升位使该批测试刀读档时

@@ -24,7 +24,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void SetDefaults() {
             Item.width = 90;
             Item.height = 96;
-            Item.damage = 420;
             Item.DamageType = CWRRef.GetTrueMeleeDamageClass();
             Item.knockBack = 6.5f;
             Item.crit = 8;
@@ -39,8 +38,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             Item.shootSpeed = 1f;
             Item.rare = CWRID.Rarity_BurnishedAuric > 0 ? CWRID.Rarity_BurnishedAuric : ItemRarityID.Purple;
             Item.value = Item.buyPrice(0, 25, 0, 0);
-            //点鬼簿绑定层:每把刀一份厉鬼进度(存档/联机走 CWRItem 的 LegendData 通道)
-            Item.CWR().LegendData = new OnikiriData();
+            OnikiriOverride.SetDefaultsFunc(Item);
         }
 
         /// <summary>连段控制器在场时由它自驱排拍；肢解居合演出期同样封锁再使用，防按住把残心踩掉</summary>
@@ -51,6 +49,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
         public override void ModifyTooltips(List<TooltipLine> tooltips) {
             //把说明里的 [KEY] 占位符替换为玩家实际绑定的处决键
             tooltips.InsertHotkeyBinding(CWRKeySystem.Onikiri_Execute, noneTip: CWRKeySystem.Notbound.Value);
+            OnikiriOverride.SetTooltip(Item, ref tooltips);
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source,
@@ -64,7 +63,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (okp.TryZanshinStrike(Item, edgeVerified: false)) {
                 return false;
             }
-            CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: 1f, source);
+            float bladeScale = OnikiriOverride.GetBladeScale(Item);
+            CrimsonRendSlash.Fire(player, player.Center, velocity, damage, knockback, scale: bladeScale, source);
             return false;
         }
     }

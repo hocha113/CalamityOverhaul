@@ -1,4 +1,5 @@
 ﻿using CalamityOverhaul.Common;
+using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniAnnihilates;
 using InnoVault.GameContent.BaseEntity;
 using InnoVault.PRT;
@@ -201,6 +202,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 ? MathHelper.Clamp(Owner.GetAdjustedItemScale(Item), 0.5f, 1.5f)
                 : 1f;
             sizeMul = (Projectile.ai[2] > 0.05f ? Projectile.ai[2] : 1f) * itemScale;
+            sizeMul = Math.Min(sizeMul, OnikiriOverride.MaxCompositeBladeScale);
             curAim = Projectile.ai[0];
             scheduling = true;
             nextBeatTime = FirstWindupFrames + 1;

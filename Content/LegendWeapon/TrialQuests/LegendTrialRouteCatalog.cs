@@ -11,12 +11,17 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
     {
         private static IReadOnlyList<LegendTrialDefinition> shpcProgression;
         private static IReadOnlyList<LegendTrialDefinition> halibutProgression;
+        private static IReadOnlyList<LegendTrialDefinition> onikiriProgression;
 
         public static IReadOnlyList<LegendTrialDefinition> SHPCProgression
             => shpcProgression ??= CreateSHPC();
 
         public static IReadOnlyList<LegendTrialDefinition> HalibutProgression
             => halibutProgression ??= CreateHalibut();
+
+        public static IReadOnlyList<LegendTrialDefinition> OnikiriProgression
+            => onikiriProgression ??= CreateOnikiri();
+
 
         public static LegendTrialDefinition[] CreateSHPC(LocalizedText[] titles = null, LocalizedText[] summaries = null,
             LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
@@ -42,6 +47,33 @@ namespace CalamityOverhaul.Content.LegendWeapon.TrialQuests
             Trial("shpc.019.exo_mechs", Npc(() => [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead], InWorldBossPhase.Downed29), titles, summaries, 19),
             Trial("shpc.020.supreme_calamitas", Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30), titles, summaries, 20),
             Trial("shpc.021.boss_rush", BossRush(bossRushName, eventActiveFormat), titles, summaries, 21),
+        ];
+
+        /// <summary>鬼切试炼：目标序列与 SHPC 同密，稳定键为 onikiri.*</summary>
+        public static LegendTrialDefinition[] CreateOnikiri(LocalizedText[] titles = null, LocalizedText[] summaries = null,
+            LocalizedText bossRushName = null, LocalizedText eventActiveFormat = null) => [
+            Trial("onikiri.000.eye_of_cthulhu", Npc(() => [NPCID.EyeofCthulhu], InWorldBossPhase.DownedV1), titles, summaries, 0),
+            Trial("onikiri.001.evil_boss", Npc(() => [NPCID.EaterofWorldsHead, NPCID.BrainofCthulhu], InWorldBossPhase.DownedV2), titles, summaries, 1),
+            Trial("onikiri.002.calamity_evil_boss", Npc(() => [CWRID.NPC_HiveMind, CWRID.NPC_PerforatorHive], () => InWorldBossPhase.Downed3.Invoke() || InWorldBossPhase.Downed4.Invoke()), titles, summaries, 2),
+            Trial("onikiri.003.slime_god", Npc(() => [CWRID.NPC_SlimeGodCore], InWorldBossPhase.Downed5), titles, summaries, 3),
+            Trial("onikiri.004.wall_of_flesh", Npc(() => [NPCID.WallofFlesh], () => Main.hardMode), titles, summaries, 4),
+            Trial("onikiri.005.aquatic_scourge", Npc(() => [CWRID.NPC_AquaticScourgeHead], InWorldBossPhase.Downed8), titles, summaries, 5),
+            Trial("onikiri.006.brimstone_elemental", Npc(() => [CWRID.NPC_BrimstoneElemental], InWorldBossPhase.Downed7), titles, summaries, 6),
+            Trial("onikiri.007.destroyer", Npc(() => [NPCID.TheDestroyer], () => NPC.downedMechBoss1), titles, summaries, 7),
+            Trial("onikiri.008.twins", Npc(() => [NPCID.Retinazer, NPCID.Spazmatism], () => NPC.downedMechBoss2), titles, summaries, 8),
+            Trial("onikiri.009.skeletron_prime", Npc(() => [NPCID.SkeletronPrime], () => NPC.downedMechBoss3), titles, summaries, 9),
+            Trial("onikiri.010.calamitas_clone", Npc(() => [CWRID.NPC_CalamitasClone], InWorldBossPhase.Downed10), titles, summaries, 10),
+            Trial("onikiri.011.plantera", Npc(() => [NPCID.Plantera], InWorldBossPhase.VDownedV7), titles, summaries, 11),
+            Trial("onikiri.012.golem", Npc(() => [NPCID.Golem, NPCID.GolemHead], InWorldBossPhase.DownedV7), titles, summaries, 12),
+            Trial("onikiri.013.cultist", Npc(() => [NPCID.CultistBoss], InWorldBossPhase.DownedV8), titles, summaries, 13),
+            Trial("onikiri.014.moon_lord", Npc(() => [NPCID.MoonLordCore], InWorldBossPhase.VDownedV16), titles, summaries, 14),
+            Trial("onikiri.015.providence", Npc(() => [CWRID.NPC_Providence], InWorldBossPhase.Downed19), titles, summaries, 15),
+            Trial("onikiri.016.polterghast", Npc(() => [CWRID.NPC_Polterghast], InWorldBossPhase.Downed23), titles, summaries, 16),
+            Trial("onikiri.017.devourer_of_gods", Npc(() => [CWRID.NPC_DevourerofGodsHead], InWorldBossPhase.Downed27), titles, summaries, 17),
+            Trial("onikiri.018.yharon", Npc(() => [CWRID.NPC_Yharon], InWorldBossPhase.Downed28), titles, summaries, 18),
+            Trial("onikiri.019.exo_mechs", Npc(() => [CWRID.NPC_AresBody, CWRID.NPC_Apollo, CWRID.NPC_Artemis, CWRID.NPC_ThanatosHead], InWorldBossPhase.Downed29), titles, summaries, 19),
+            Trial("onikiri.020.supreme_calamitas", Npc(() => [CWRID.NPC_SupremeCalamitas], InWorldBossPhase.Downed30), titles, summaries, 20),
+            Trial("onikiri.021.boss_rush", BossRush(bossRushName, eventActiveFormat), titles, summaries, 21),
         ];
 
         public static LegendTrialDefinition[] CreateHalibut(LocalizedText[] titles = null, Func<int, LocalizedText> summaryProvider = null,
