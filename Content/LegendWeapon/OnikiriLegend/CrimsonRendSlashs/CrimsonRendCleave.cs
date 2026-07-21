@@ -145,17 +145,13 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
             target.CWR().TimeFrozenTick = 4;
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.2f, Volume = 0.7f }, target.Center);
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
+            SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
+                Pitch = steel ? -0.05f : -0.2f,
+                Volume = 0.7f
+            }, target.Center);
 
-            if (Main.dedServ) {
-                return;
-            }
-            for (int i = 0; i < 8; i++) {
-                Vector2 vel = BladeAngle.ToRotationVector2().RotatedByRandom(0.6) * Main.rand.NextFloat(4f, 11f);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center, vel, new Color(255, 96, 60)
-                    , Main.rand.NextFloat(0.4f, 0.75f))
-                    ?.Configure(Main.rand.Next(14, 26), affectedByGravity: true);
-            }
+            CrimsonRendHitVFX.SpawnHitTick(target.Center, BladeAngle.ToRotationVector2(), SizeMul, steel);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;

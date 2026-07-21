@@ -29,6 +29,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
     /// 节拍（60fps，攻速 1）：首次 +2 帧纯起手，此后纵斩下劈 +10 反手上撩 +10 月牙重斩 +13 蓄势重斩 +15 蓄势终结 +24 回到首拍；
     /// 前三拍快斩 easeOut 干脆完成，后两拍高离心率椭圆重斩走蓄势-滞帧-爆发曲线，重击伤害加成回报等待<br/>
     /// 每拍首次命中触发同一套爆点全层演出（强度随拍位递增），拒绝"只有最后一下有反馈"；
+    /// 命中材质分流：金属（NPCValue.ISTheofSteel）保留白热火花，血肉改走重力血珠四溅；
     /// 不冻结世界或目标时间，屏幕级只保留短白闪与 Bloom，防眩晕<br/>
     /// ai[0]=初始瞄准角(弧度，远端未同步鼠标前的回退) ai[2]=尺寸倍率
     /// </summary>
@@ -119,6 +120,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         private Vector2 lastImpactPos;
         private float lastImpactAim;
         private float lastImpactFlip = 1f;
+        /// <summary>最近一次爆点是否砍在金属上（驱动粒子与爆点绘制材质）</summary>
+        private bool lastImpactSteel;
         private Rectangle[] speedLineRects;
         private float[] speedLineOffsets;
         //==== 实体刀姿态时间轴（纯视觉，确定性推演，不上网络） ====
@@ -816,49 +819,22 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             Projectile.Kill();
         }
 
-        /// <summary>每拍首次命中共用的爆点全层演出（白闪 + 粒子层 + 加色爆点绘制），
+        /// <summary>每拍首次命中共用的爆点全层演出（材质按目标分流：金属火花 / 血肉四溅），
         /// 强度按拍位 power(0..1) 缩放；不冻结世界或目标时间，命中确认交给音效/粒子/白闪本身</summary>
-        private void TriggerImpactBurst(Vector2 pos, float power, float aim, float flip) {
+        private void TriggerImpactBurst(Vector2 pos, float power, float aim, float flip, bool steel) {
             lastImpactFrame = timer;
             lastImpactPos = pos;
             lastImpactAim = aim;
             lastImpactFlip = flip;
+            lastImpactSteel = steel;
 
             SoundEngine.PlaySound(CWRSound.KatanaHit with { Pitch = 0.5f - power * 0.2f, Volume = 0.5f + power * 0.4f }, pos);
-            //SoundEngine.PlaySound(SoundID.Item122 with { Pitch = 0.6f - power * 0.1f, Volume = 0.2f + power * 0.25f }, pos);
 
-            CrimsonImpactFX.PushImpact(pos, 0.02f + power * 0.01f);
+            //血肉命中压低屏幕白闪：伤口反馈靠血珠，不靠金属耀斑
+            float flash = steel ? 0.02f + power * 0.01f : 0.008f + power * 0.004f;
+            CrimsonImpactFX.PushImpact(pos, flash);
 
-            if (Main.dedServ) {
-                return;
-            }
-
-            Vector2 aimDir = aim.ToRotationVector2();
-
-            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(pos, Vector2.Zero
-                , new Color(255, 225, 205), (0.75f + power * 0.8f) * sizeMul);
-            int satellites = 1 + (int)(power * 2f);
-            for (int i = 0; i < satellites; i++) {
-                Vector2 off = Main.rand.NextVector2Circular(24f, 24f) * sizeMul;
-                PRTLoader.NewParticle<PRT_CrimsonHitFlash>(pos + off, off * 0.05f
-                    , new Color(255, 140, 110), Main.rand.NextFloat(0.5f, 0.75f) * sizeMul);
-            }
-
-            int mainSparks = 8 + (int)(power * 14f);
-            for (int i = 0; i < mainSparks; i++) {
-                Vector2 vel = aimDir.RotatedByRandom(0.78) * Main.rand.NextFloat(5f, 12f + power * 10f) * sizeMul;
-                Color c = Main.rand.NextBool(3) ? new Color(255, 236, 210) : new Color(255, 92, 58);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, c
-                    , Main.rand.NextFloat(0.45f, 0.7f + power * 0.4f) * sizeMul)
-                    ?.Configure(Main.rand.Next(18, 30 + (int)(power * 12f)), affectedByGravity: true);
-            }
-            int backSparks = 2 + (int)(power * 5f);
-            for (int i = 0; i < backSparks; i++) {
-                Vector2 vel = (-aimDir).RotatedByRandom(1.1) * Main.rand.NextFloat(3f, 8f) * sizeMul;
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 70, 46)
-                    , Main.rand.NextFloat(0.35f, 0.6f) * sizeMul)
-                    ?.Configure(Main.rand.Next(16, 26), affectedByGravity: false);
-            }
+            CrimsonRendHitVFX.SpawnImpactBurst(pos, aim.ToRotationVector2(), power, sizeMul, steel);
         }
 
         /// <summary>屏幕级演出包络：仅 Bloom + 命中脉冲（白闪由节拍触发）；
@@ -1068,7 +1044,11 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
-            SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, Volume = 0.75f }, target.Center);
+            bool steel = CWRLoad.NPCValue.ISTheofSteel(target);
+            SoundEngine.PlaySound((steel ? SoundID.NPCHit4 : SoundID.NPCHit1) with {
+                Pitch = steel ? -0.1f : -0.3f,
+                Volume = 0.75f
+            }, target.Center);
 
             //刀刀入肉:连段命中为主人回气蓄势,并记入处决的命中记忆(owner 端自治)
             if (Projectile.IsOwnedByLocalPlayer()) {
@@ -1079,7 +1059,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             ActiveSlash a = FindDamagingSlash();
             if (a != null && !a.ImpactDone) {
                 a.ImpactDone = true;
-                TriggerImpactBurst(target.Center, (a.Beat + 1) / (float)BeatCount, a.Aim, a.Def.Flip);
+                TriggerImpactBurst(target.Center, (a.Beat + 1) / (float)BeatCount, a.Aim, a.Def.Flip, steel);
 
                 //命中反馈只捏实体刀姿态（1 帧停驻 + 反向回坐 + ~4% 尺寸脉冲），
                 //不冻结世界/目标，不影响判定与下一拍排程；仅当命中拍仍是当前持刀拍时生效
@@ -1091,16 +1071,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                 }
             }
 
-            if (Main.dedServ) {
-                return;
-            }
             Vector2 aimDir = (a?.Aim ?? curAim).ToRotationVector2();
-            for (int i = 0; i < 8; i++) {
-                Vector2 vel = aimDir.RotatedByRandom(0.65) * Main.rand.NextFloat(4f, 12f);
-                PRTLoader.NewParticle<PRT_CrimsonSpark>(target.Center, vel, new Color(255, 96, 60)
-                    , Main.rand.NextFloat(0.4f, 0.8f))
-                    ?.Configure(Main.rand.Next(16, 28), affectedByGravity: true);
-            }
+            CrimsonRendHitVFX.SpawnHitTick(target.Center, aimDir, sizeMul, steel);
         }
 
         //==================== 绘制 ====================
@@ -1294,7 +1266,7 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             sb.End();
         }
 
-        /// <summary>命中爆点全 layer：星爆核心/放射尖刺/十字闪/扩散环/撕裂形/速度线</summary>
+        /// <summary>命中爆点全 layer：金属＝白热星爆/放射/十字；血肉＝暗红伤口撕裂/血环（无纯白核）</summary>
         private void DrawImpactBurst(SpriteBatch sb) {
             float bt = MathHelper.Clamp(timer - lastImpactFrame, 0f, BurstFadeFrames);
             float bp = bt / BurstFadeFrames;
@@ -1308,6 +1280,16 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
             float easeOut = 1f - MathF.Pow(inv, 3f);
             float seedRot = Projectile.whoAmI * 1.37f;
 
+            if (lastImpactSteel) {
+                DrawSteelImpactBurst(sb, impact, aimDir, inv, easeOut, seedRot, bt);
+            }
+            else {
+                DrawFleshImpactBurst(sb, impact, aimDir, inv, easeOut, seedRot, bt);
+            }
+        }
+
+        private void DrawSteelImpactBurst(SpriteBatch sb, Vector2 impact, Vector2 aimDir
+            , float inv, float easeOut, float seedRot, float bt) {
             //白热核心：峰值收紧到 0.7，避免整块纯白糊住刀光笔触细节，随后急剧收缩
             if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
                 float coreA = MathF.Pow(inv, 2.0f) * 0.70f;
@@ -1318,7 +1300,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , flare.Size() * 0.5f, coreS * 1.3f, SpriteEffects.None, 0);
             }
 
-            //放射尖刺
             if (CWRAsset.RayBurst01?.Value is Texture2D rays) {
                 float rayA = MathF.Pow(inv, 1.8f) * 0.78f;
                 float rayS = (1.1f + easeOut * 1.0f) * sizeMul;
@@ -1326,14 +1307,12 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , rays.Size() * 0.5f, rayS, SpriteEffects.None, 0);
             }
 
-            //十字长闪沿命中拍瞄准方向
             if (CWRAsset.RayCross01?.Value is Texture2D cross) {
                 float cA = MathF.Pow(inv, 2.4f) * 0.82f;
                 sb.Draw(cross, impact, null, new Color(255, 230, 215) * cA, lastImpactAim
                     , cross.Size() * 0.5f, new Vector2(2.2f, 1.0f) * easeOut * sizeMul, SpriteEffects.None, 0);
             }
 
-            //扩散环
             if (CWRAsset.Ring01?.Value is Texture2D ring) {
                 float ringS = (0.4f + easeOut * 2.2f) * sizeMul;
                 float ringA = MathF.Pow(inv, 2.5f) * 0.6f;
@@ -1341,7 +1320,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
             }
 
-            //手绘撕裂形：沿瞄准方向一大一小，短命
             if (bt < 9f && CWRAsset.TearSpread01?.Value is Texture2D tear) {
                 float tA = MathF.Pow(1f - bt / 9f, 1.8f) * 0.85f;
                 sb.Draw(tear, impact, null, new Color(255, 150, 120) * tA, lastImpactAim
@@ -1351,14 +1329,6 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                     , SpriteEffects.FlipVertically, 0);
             }
 
-            //锯齿冲击形垫底
-            //if (bt < 7f && CWRAsset.HitJagged01?.Value is Texture2D jag) {
-            //    float jA = MathF.Pow(1f - bt / 7f, 2f) * 0.5f;
-            //    sb.Draw(jag, impact, null, new Color(255, 80, 55) * jA, lastImpactAim + MathHelper.Pi
-            //        , jag.Size() * 0.5f, (1.8f + easeOut * 0.6f) * sizeMul, SpriteEffects.None, 0);
-            //}
-
-            //速度线：随机截条从冲击点向后扫出
             if (CWRAsset.SpeedLines01?.Value is Texture2D lines) {
                 EnsureSpeedLineRects();
                 float lA = MathF.Pow(inv, 1.6f) * 0.5f;
@@ -1369,6 +1339,53 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
                         + aimDir.RotatedBy(MathHelper.PiOver2) * (off - 0.5f) * 110f * sizeMul;
                     sb.Draw(lines, pos, src, new Color(255, 170, 140) * lA, lastImpactAim
                         , src.Size() * 0.5f, new Vector2(0.40f + easeOut * 0.30f, 0.42f) * sizeMul
+                        , SpriteEffects.None, 0);
+                }
+            }
+        }
+
+        private void DrawFleshImpactBurst(SpriteBatch sb, Vector2 impact, Vector2 aimDir
+            , float inv, float easeOut, float seedRot, float bt) {
+            //暗红软核：伤口体积，禁纯白
+            if (CWRAsset.StarFlare02?.Value is Texture2D flare) {
+                float coreA = MathF.Pow(inv, 1.8f) * 0.48f;
+                float coreS = (0.7f + easeOut * 0.55f) * sizeMul;
+                sb.Draw(flare, impact, null, CrimsonRendHitVFX.WoundHot * coreA, seedRot
+                    , flare.Size() * 0.5f, coreS, SpriteEffects.None, 0);
+                sb.Draw(flare, impact, null, CrimsonRendHitVFX.BloodDeep * (coreA * 0.7f), -seedRot * 0.5f
+                    , flare.Size() * 0.5f, coreS * 1.25f, SpriteEffects.None, 0);
+            }
+
+            //血环外扩
+            if (CWRAsset.Ring01?.Value is Texture2D ring) {
+                float ringS = (0.35f + easeOut * 1.8f) * sizeMul;
+                float ringA = MathF.Pow(inv, 2.2f) * 0.55f;
+                sb.Draw(ring, impact, null, CrimsonRendHitVFX.Blood * ringA, 0f
+                    , ring.Size() * 0.5f, ringS, SpriteEffects.None, 0);
+            }
+
+            //刃向撕裂口：读作切开的创面
+            if (bt < 10f && CWRAsset.TearSpread01?.Value is Texture2D tear) {
+                float tA = MathF.Pow(1f - bt / 10f, 1.6f) * 0.9f;
+                sb.Draw(tear, impact, null, CrimsonRendHitVFX.Arterial * tA, lastImpactAim
+                    , tear.Size() * 0.5f, (1.35f + easeOut * 0.5f) * sizeMul, SpriteEffects.None, 0);
+                sb.Draw(tear, impact, null, CrimsonRendHitVFX.BloodDeep * (tA * 0.8f)
+                    , lastImpactAim + 0.4f * lastImpactFlip
+                    , tear.Size() * 0.5f, (0.95f + easeOut * 0.35f) * sizeMul
+                    , SpriteEffects.FlipVertically, 0);
+            }
+
+            //暗红速度线（无白热放射/十字）
+            if (CWRAsset.SpeedLines01?.Value is Texture2D lines) {
+                EnsureSpeedLineRects();
+                float lA = MathF.Pow(inv, 1.5f) * 0.42f;
+                for (int i = 0; i < speedLineRects.Length; i++) {
+                    Rectangle src = speedLineRects[i];
+                    float off = speedLineOffsets[i];
+                    Vector2 pos = impact - aimDir * (36f + off * 60f + easeOut * 36f) * sizeMul
+                        + aimDir.RotatedBy(MathHelper.PiOver2) * (off - 0.5f) * 95f * sizeMul;
+                    sb.Draw(lines, pos, src, CrimsonRendHitVFX.WoundHot * lA, lastImpactAim
+                        , src.Size() * 0.5f, new Vector2(0.36f + easeOut * 0.28f, 0.4f) * sizeMul
                         , SpriteEffects.None, 0);
                 }
             }

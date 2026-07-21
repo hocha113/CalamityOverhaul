@@ -1,10 +1,135 @@
-﻿using InnoVault.PRT;
+﻿using CalamityOverhaul.Content.PRTTypes;
+using InnoVault.PRT;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 
 namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.CrimsonRendSlashs
 {
+    /// <summary>
+    /// 绯红裂空命中材质分流：金属走火花/白热，血肉走重力血珠（复用刻心者液滴）。
+    /// 挥空刀光呼吸粒子不走此处。
+    /// </summary>
+    internal static class CrimsonRendHitVFX
+    {
+        public static readonly Color Blood = new(156, 22, 28);
+        public static readonly Color BloodDeep = new(96, 12, 18);
+        public static readonly Color Arterial = new(188, 32, 40);
+        public static readonly Color WoundHot = new(210, 70, 58);
+
+        /// <summary>每拍首次命中爆点粒子：金属火花 vs 血肉四溅</summary>
+        public static void SpawnImpactBurst(Vector2 pos, Vector2 aimDir, float power, float sizeMul, bool steel) {
+            if (Main.dedServ) {
+                return;
+            }
+            if (steel) {
+                SpawnSteelBurst(pos, aimDir, power, sizeMul);
+            }
+            else {
+                SpawnFleshBurst(pos, aimDir, power, sizeMul);
+            }
+        }
+
+        /// <summary>同拍后续命中的轻量跟刀粒子</summary>
+        public static void SpawnHitTick(Vector2 pos, Vector2 aimDir, float sizeMul, bool steel) {
+            if (Main.dedServ) {
+                return;
+            }
+            if (steel) {
+                for (int i = 0; i < 8; i++) {
+                    Vector2 vel = aimDir.RotatedByRandom(0.65) * Main.rand.NextFloat(4f, 12f) * sizeMul;
+                    PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 96, 60)
+                        , Main.rand.NextFloat(0.4f, 0.8f) * sizeMul)
+                        ?.Configure(Main.rand.Next(16, 28), affectedByGravity: true);
+                }
+            }
+            else {
+                for (int i = 0; i < 6; i++) {
+                    Vector2 vel = aimDir.RotatedByRandom(0.75) * Main.rand.NextFloat(4.5f, 11f) * sizeMul;
+                    vel.Y -= Main.rand.NextFloat(0.4f, 1.8f);
+                    Color c = Main.rand.NextBool(3) ? Arterial : Blood;
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
+                        , Main.rand.NextFloat(0.95f, 1.55f) * sizeMul)
+                        ?.Configure(Main.rand.Next(20, 34), 0.30f);
+                }
+                //一两滴慢重余韵
+                for (int i = 0; i < 2; i++) {
+                    Vector2 vel = aimDir.RotatedByRandom(1.1) * Main.rand.NextFloat(1.2f, 3.5f) * sizeMul;
+                    PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, BloodDeep
+                        , Main.rand.NextFloat(1.1f, 1.7f) * sizeMul)
+                        ?.Configure(Main.rand.Next(28, 42), 0.36f);
+                }
+            }
+        }
+
+        private static void SpawnSteelBurst(Vector2 pos, Vector2 aimDir, float power, float sizeMul) {
+            PRTLoader.NewParticle<PRT_CrimsonHitFlash>(pos, Vector2.Zero
+                , new Color(255, 225, 205), (0.75f + power * 0.8f) * sizeMul);
+            int satellites = 1 + (int)(power * 2f);
+            for (int i = 0; i < satellites; i++) {
+                Vector2 off = Main.rand.NextVector2Circular(24f, 24f) * sizeMul;
+                PRTLoader.NewParticle<PRT_CrimsonHitFlash>(pos + off, off * 0.05f
+                    , new Color(255, 140, 110), Main.rand.NextFloat(0.5f, 0.75f) * sizeMul);
+            }
+
+            int mainSparks = 8 + (int)(power * 14f);
+            for (int i = 0; i < mainSparks; i++) {
+                Vector2 vel = aimDir.RotatedByRandom(0.78) * Main.rand.NextFloat(5f, 12f + power * 10f) * sizeMul;
+                Color c = Main.rand.NextBool(3) ? new Color(255, 236, 210) : new Color(255, 92, 58);
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, c
+                    , Main.rand.NextFloat(0.45f, 0.7f + power * 0.4f) * sizeMul)
+                    ?.Configure(Main.rand.Next(18, 30 + (int)(power * 12f)), affectedByGravity: true);
+            }
+            int backSparks = 2 + (int)(power * 5f);
+            for (int i = 0; i < backSparks; i++) {
+                Vector2 vel = (-aimDir).RotatedByRandom(1.1) * Main.rand.NextFloat(3f, 8f) * sizeMul;
+                PRTLoader.NewParticle<PRT_CrimsonSpark>(pos, vel, new Color(255, 70, 46)
+                    , Main.rand.NextFloat(0.35f, 0.6f) * sizeMul)
+                    ?.Configure(Main.rand.Next(16, 26), affectedByGravity: false);
+            }
+        }
+
+        private static void SpawnFleshBurst(Vector2 pos, Vector2 aimDir, float power, float sizeMul) {
+            //伤口暗红雾：体积垫底，不发光
+            for (int i = 0; i < 2 + (int)(power * 2f); i++) {
+                Vector2 vel = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.4f, 1.6f) * sizeMul;
+                PRTLoader.NewParticle<PRT_CrimsonSmoke>(pos + Main.rand.NextVector2Circular(8f, 6f) * sizeMul
+                    , vel, Color.White, Main.rand.NextFloat(0.08f, 0.14f) * sizeMul)
+                    ?.Configure(Main.rand.Next(22, 36), Blood, BloodDeep, 0.01f);
+            }
+
+            //动脉喷溅：沿刃向锥形甩出，出膛拉丝、重力坠弧
+            int mainDrops = 10 + (int)(power * 16f);
+            for (int i = 0; i < mainDrops; i++) {
+                Vector2 vel = aimDir.RotatedByRandom(0.82) * Main.rand.NextFloat(6f, 13f + power * 10f) * sizeMul;
+                vel.Y -= Main.rand.NextFloat(0.8f, 2.8f);
+                Color c = Main.rand.NextBool(4) ? Arterial : (Main.rand.NextBool() ? Blood : WoundHot);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, c
+                    , Main.rand.NextFloat(1.0f, 1.75f + power * 0.35f) * sizeMul)
+                    ?.Configure(Main.rand.Next(22, 36 + (int)(power * 10f)), 0.30f);
+            }
+
+            //慢重血珠：喷溅余韵，读作液体而非火花
+            int slowDrops = 3 + (int)(power * 5f);
+            for (int i = 0; i < slowDrops; i++) {
+                Vector2 vel = aimDir.RotatedByRandom(1.15) * Main.rand.NextFloat(1.4f, 4.2f) * sizeMul;
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, BloodDeep
+                    , Main.rand.NextFloat(1.2f, 1.9f) * sizeMul)
+                    ?.Configure(Main.rand.Next(30, 48), 0.36f, 0.978f);
+            }
+
+            //背向溅出：伤口反侧的慢弧
+            int backDrops = 2 + (int)(power * 4f);
+            for (int i = 0; i < backDrops; i++) {
+                Vector2 vel = (-aimDir).RotatedByRandom(1.0) * Main.rand.NextFloat(2.5f, 7f) * sizeMul;
+                vel.Y -= Main.rand.NextFloat(0.3f, 1.5f);
+                PRTLoader.NewParticle<PRT_HeartcarverDroplet>(pos, vel, Blood
+                    , Main.rand.NextFloat(0.9f, 1.4f) * sizeMul)
+                    ?.Configure(Main.rand.Next(20, 34), 0.28f);
+            }
+        }
+    }
+
     /// <summary>刀光燃尽烟：暗红→焦黑 AlphaBlend 染色烟团，缓慢外漂、放大、消散</summary>
     internal class PRT_CrimsonSmoke : BasePRT
     {
