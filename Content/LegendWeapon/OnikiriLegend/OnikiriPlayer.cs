@@ -10,6 +10,7 @@ using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniOmokages;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniSakuraFlights;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.OniZanshinSlashs;
 using CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.UI;
+using CalamityOverhaul.Content.Scenarios.Himayo;
 using InnoVault.PRT;
 using System;
 using System.Collections.Generic;
@@ -144,6 +145,9 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend
             if (Main.dedServ || Player.whoAmI != Main.myPlayer) {
                 return;
             }
+
+            //试炼门禁硬倒计时：与招式输入无关，反噬僵直期也要推进（叙事忙碌时内部会暂停）
+            HimayoStorySync.TickTrialUnlockSafety(Player);
 
             if (vigorRegenDelay > 0) {
                 vigorRegenDelay--;

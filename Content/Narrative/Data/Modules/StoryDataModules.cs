@@ -140,7 +140,14 @@ namespace CalamityOverhaul.Content.Narrative.Data.Modules
     public sealed class HimayoStoryData : DataModule
     {
         public bool FirstMet;
+        /// <summary>初遇对话播完（FirstMetHimayo OnCompleted）；试炼委托以此为门禁</summary>
+        public bool PostFirstMetIsComplete;
         public bool ToriiSwordTaken;
+        /// <summary>
+        /// 试炼解锁硬性倒计时剩余帧：0=未武装，&gt;0=倒数中。
+        /// 拔刀后武装；叙事忙碌时暂停；到期强制视为初遇完成，防整条线卡死
+        /// </summary>
+        public int TrialUnlockSafetyTicks;
     }
 
     public sealed class ShepelGiftStoryData : DataModule

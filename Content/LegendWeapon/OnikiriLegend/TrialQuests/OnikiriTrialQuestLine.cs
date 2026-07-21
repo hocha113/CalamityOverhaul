@@ -1,6 +1,6 @@
 using CalamityOverhaul.Content.EntrustManager;
 using CalamityOverhaul.Content.LegendWeapon.TrialQuests;
-using CalamityOverhaul.Content.Narrative;
+using CalamityOverhaul.Content.Scenarios.Himayo;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -110,12 +110,8 @@ namespace CalamityOverhaul.Content.LegendWeapon.OnikiriLegend.TrialQuests
         protected override LocalizedText TrackerBriefText => TrackerBrief;
         protected override IReadOnlyList<LegendTrialDefinition> Trials => trials;
 
-        protected override bool CanCreateEntries(Player player) {
-            if (NarrativeTriggerGate.IsBusy) {
-                return false;
-            }
-            return player.HasItem(OnikiriOverride.ID);
-        }
+        protected override bool CanCreateEntries(Player player)
+            => HimayoStorySync.CanStartOnikiriTrialQuests(player);
 
         protected override LegendData GetLegendData(Player player) => FindLegendData(player, OnikiriOverride.ID);
         protected override IEntrustEntryStyle CreateEntryStyle() => new OnikiriEntryStyle();

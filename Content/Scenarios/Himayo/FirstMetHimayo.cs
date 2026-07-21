@@ -59,6 +59,8 @@ namespace CalamityOverhaul.Content.Scenarios.Himayo
             CanTrigger = (_, player) => player.HasItem(ModContent.ItemType<OnikiriItem>())
                 && !ToriiShrineActor.DepartureHoldingStage,
             OnTriggered = _ => HimayoStorySync.MarkFirstMet(),
+            //对话真正落幕才记「播完」：试炼委托以此为发放门禁
+            OnCompleted = _ => HimayoStorySync.MarkPostFirstMetComplete(),
         };
 
         protected override void OnStarted() => HimayoNarrativePortrait.ShowPetalAssembly();
